@@ -133,7 +133,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTUtilsApp::checkUGENETitle(os, "UGENE");
 
     QMenu *m = GTMenu::showMainMenu(os, MWMENU_FILE);
-    QAction *result = GTMenu::getMenuItem(os, m, ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
+    QAction *result = GTMenu::getMenuItem(os, m, ACTION_PROJECTSUPPORT__EXPORT_PROJECT, false);
     GTGlobals::sleep();
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
     GTGlobals::sleep(100);

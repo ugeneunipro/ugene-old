@@ -2675,7 +2675,7 @@ GUI_TEST_CLASS_DEFINITION( test_2152 ){
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "CAP3"));
     GTMouseDriver::click(os);
-    GTUtilsWorkflowDesigner::setParameter(os,"Output file", sandBoxDir + "out.ace",GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os,"Output file", QDir().absoluteFilePath(sandBoxDir + "out.ace"),GTUtilsWorkflowDesigner::textValue);
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "File List"));
     GTMouseDriver::click(os);
@@ -2821,11 +2821,7 @@ GUI_TEST_CLASS_DEFINITION( test_2163 ) {
     GTGlobals::sleep(500);
    
    //4. Double click on the results table.
-    TaskScheduler* scheduller = AppContext::getTaskScheduler();
-    GTGlobals::sleep(5000);
-    while(!scheduller->getTopLevelTasks().isEmpty()){
-       GTGlobals::sleep();
-    }
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
     QTableWidget *idList = qobject_cast<QTableWidget*>(GTWidget::findWidget(os, "idList"));
     GTWidget::click(os, idList);
     GTGlobals::sleep();
@@ -2933,10 +2929,7 @@ GUI_TEST_CLASS_DEFINITION( test_2167 ) {
     GTWidget::click(os, searchIdsButton);
     GTGlobals::sleep(500);
 
-    TaskScheduler* scheduller = AppContext::getTaskScheduler();
-    while (!scheduller->getTopLevelTasks().isEmpty()){
-       GTGlobals::sleep();
-    }
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
     // 4. Select a result id in the table.
     QTableWidget* resultsView = qobject_cast<QTableWidget*>(GTWidget::findWidget(os, "idList"));
@@ -2951,9 +2944,7 @@ GUI_TEST_CLASS_DEFINITION( test_2167 ) {
     GTWidget::click(os, searchIdsButton);
     GTGlobals::sleep(500);
 
-    while (!scheduller->getTopLevelTasks().isEmpty()){
-       GTGlobals::sleep();
-    }
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
     // Expected: the table contains only the last results. There are no previous items and additional empty lines.
     QPoint p2 = resultsView->mapFromGlobal(GTTableView::getCellPosition(os, resultsView, 0, 3));
@@ -4207,6 +4198,7 @@ GUI_TEST_CLASS_DEFINITION( test_2424 ) {
     GTUtilsWorkflowDesigner::setParameter( os, "Output file", outputFilePath, GTUtilsWorkflowDesigner::textValue );
     //     3. Launch the schema. 
     //     Expected state: schema didnt start, error "Quality filter example"
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
     GTWidget::click( os,GTAction::button( os,"Run workflow" ) );
     GTGlobals::sleep( );
     GTUtilsWorkflowDesigner::checkErrorList(os, "Quality Filter Example: Empty script text");

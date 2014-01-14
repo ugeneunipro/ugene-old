@@ -45,6 +45,7 @@ public:
 
     // global position of menu action's center
     static QPoint actionPos(U2OpStatus &os, const QMenu* menu, QAction* action);
+
 private:
     static void clickMenuItemPrivate(U2OpStatus &os, const QMenu *menu, const QStringList &itemName, GTGlobals::UseMethod m = GTGlobals::UseMouse, bool byText = false);
 };

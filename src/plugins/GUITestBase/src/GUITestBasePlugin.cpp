@@ -1020,7 +1020,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0011_2, "https://ugene.unipro.ru/tracker/browse/UGENE-2538");
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0012);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0023);
-    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0024);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0024,"https://ugene.unipro.ru/tracker/browse/UGENE-2644");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Repeat Finder

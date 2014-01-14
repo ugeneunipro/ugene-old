@@ -1020,7 +1020,12 @@ GUI_TEST_CLASS_DEFINITION( test_0024 ) {
 
     //4. Open the "Tree Setting" option panel tab
     // it does automatically
-
+    GTUtilsProjectTreeView::openView(os);
+    GTUtilsProjectTreeView::toggleView(os);
+    MSAEditorUI* ui = AppContext::getMainWindow()->getQMainWindow()->findChild<MSAEditorUI*>();
+    QSplitter* splitter = ui->findChild<QSplitter*>();
+    splitter->setSizes(QList<int>()<<100<<0<<0);
+    GTGlobals::sleep(500);
     //5. Check the "Align labels" checkbox in the "Labels" section
     QCheckBox *alignLabelsButton = dynamic_cast<QCheckBox *>(
         GTWidget::findWidget( os, "alignLabelsCheck" ) );
@@ -1032,7 +1037,10 @@ GUI_TEST_CLASS_DEFINITION( test_0024 ) {
     foreach ( const QGraphicsItem *item, treeViewItems ) {
         initialLocations[item] = item->boundingRect( );
     }
+    // GTWidget::getAllWidgetsInfo(os);
 
+;
+    //GTGlobals::sleep(2000);
     //6. Check the "Show names" checkbox twice
     QCheckBox *showNamesButton = dynamic_cast<QCheckBox *>(
         GTWidget::findWidget( os, "showNamesCheck" ) );
