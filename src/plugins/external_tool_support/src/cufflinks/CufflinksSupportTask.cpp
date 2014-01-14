@@ -41,6 +41,7 @@
 
 #include "CufflinksSupport.h"
 #include "../ExternalToolSupportL10N.h"
+#include "tophat/TopHatSettings.h"
 #include "CufflinksSupportTask.h"
 
 namespace U2 {
@@ -131,6 +132,7 @@ ExternalToolRunTask * CufflinksSupportTask::runCufflinks() {
     // Init the arguments list
     QStringList arguments;
 
+    arguments << "-p" << QString::number(TopHatSettings::getThreadsCount());
     arguments << "--output-dir" << settings.outDir;
 
     if (!settings.referenceAnnotation.isEmpty()) {

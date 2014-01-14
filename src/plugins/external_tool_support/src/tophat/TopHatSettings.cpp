@@ -41,8 +41,7 @@ void TopHatInputData::cleanupReads() {
 }
 
 TopHatSettings::TopHatSettings()
-    : threads(1),
-      noNovelJunctions(false),
+    : noNovelJunctions(false),
       fusionSearch(false),
       transcriptomeOnly(false),
       prefilterMultihits(false),
@@ -50,11 +49,6 @@ TopHatSettings::TopHatSettings()
       bowtieMode(vMode),
       useBowtie1(false)
 {
-    AppSettings *settings = AppContext::getAppSettings();
-    SAFE_POINT(NULL != settings, "NULL settings", );
-    AppResourcePool *pool = settings->getAppResourcePool();
-    SAFE_POINT(NULL != pool, "NULL resource pool", );
-    threads = pool->getIdealThreadCount();
 }
 
 void TopHatSettings::cleanupReads() {
@@ -68,6 +62,17 @@ Workflow::WorkflowContext * TopHatSettings::workflowContext() const {
 Workflow::DbiDataStorage * TopHatSettings::storage() const {
     CHECK(NULL != workflowContext(), NULL);
     return workflowContext()->getDataStorage();
+}
+
+uint TopHatSettings::getThreadsCount() {
+    AppSettings *settings = AppContext::getAppSettings();
+    SAFE_POINT(NULL != settings, "NULL settings", 1);
+    AppResourcePool *pool = settings->getAppResourcePool();
+    SAFE_POINT(NULL != pool, "NULL resource pool", 1);
+
+    uint threads = pool->getIdealThreadCount();
+    CHECK(0 != threads, 1);
+    return threads;
 }
 
 }

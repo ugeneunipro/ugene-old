@@ -29,6 +29,8 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/U2SafePoints.h>
 
+#include "tophat/TopHatSettings.h"
+
 #include "CuffmergeSupportTask.h"
 
 namespace U2 {
@@ -141,6 +143,7 @@ Task * CuffmergeSupportTask::createCuffmergeTask() {
 
     QStringList args;
     {
+        args << "-p" << QString::number(TopHatSettings::getThreadsCount());
         if (!settings.refAnnsUrl.isEmpty()) {
             args << "--ref-gtf" << settings.refAnnsUrl;
         }

@@ -57,7 +57,6 @@ public:
     TopHatSettings();
 
     // Workflow element parameters
-    uint                threads;
     QString             bowtieIndexPathAndBasename;
     int                 mateInnerDistance;
     int                 mateStandardDeviation;
@@ -89,6 +88,8 @@ public:
     void cleanupReads();
     Workflow::WorkflowContext * workflowContext() const;
     Workflow::DbiDataStorage * storage() const;
+
+    static uint getThreadsCount();
 };
 
 }

@@ -166,8 +166,7 @@ ExternalToolRunTask * TopHatSupportTask::runTophat() {
     // Init the arguments list
     QStringList arguments;
 
-    uint threads = (0 == settings.threads) ? 1 : settings.threads;
-    arguments << "-p" << QString::number(threads);
+    arguments << "-p" << QString::number(TopHatSettings::getThreadsCount());
     arguments << "--output-dir" << settings.outDir;
     arguments << "--mate-inner-dist" << QString::number(settings.mateInnerDistance);
     arguments << "--mate-std-dev" << QString::number(settings.mateStandardDeviation);

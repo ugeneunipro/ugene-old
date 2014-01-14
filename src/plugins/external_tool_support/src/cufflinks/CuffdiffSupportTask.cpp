@@ -31,6 +31,8 @@
 
 #include <U2Lang/DbiDataStorage.h>
 
+#include "tophat/TopHatSettings.h"
+
 #include "CuffdiffSupportTask.h"
 
 namespace U2 {
@@ -129,6 +131,7 @@ Task * CuffdiffSupportTask::createTranscriptTask() {
 Task * CuffdiffSupportTask::createCuffdiffTask() {
     // prepare arguments
     QStringList arguments;
+    arguments << "-p" << QString::number(TopHatSettings::getThreadsCount());
     arguments << "--output-dir" << settings.outDir;
     if (settings.timeSeriesAnalysis) {
         arguments << "--time-series";
