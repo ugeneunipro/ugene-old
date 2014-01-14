@@ -71,6 +71,8 @@ public:
 
     ADVSequenceObjectContext* getSequenceContext() const {return ctx;}
 
+    qint64 getLastPressPos() const { return lastPressPos; }
+
     virtual void setStartPos(qint64 pos);
 
     virtual void setCenterPos(qint64 pos);

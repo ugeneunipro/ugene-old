@@ -1101,6 +1101,18 @@ void AnnotatedDNAView::sl_addSequencePart(){
     cfg.mode = EditSequenceMode_Insert;
     cfg.source = U2Region(0, seqObj->getSequenceLength());
     cfg.alphabet = seqObj->getAlphabet();
+    cfg.position = 1;
+
+    ADVSingleSequenceWidget *wgt = qobject_cast<ADVSingleSequenceWidget*> (focusedWidget);
+    if (wgt != NULL) {
+        QList<GSequenceLineView*> views = wgt->getLineViews();
+        foreach (GSequenceLineView* v, views) {
+            if (v->hasFocus()) {
+                cfg.position = v->getLastPressPos();
+                break;
+            }
+        }
+    }
 
     const QVector<U2Region>& selection = seqCtx->getSequenceSelection()->getSelectedRegions();
     cfg.selectionRegions = selection;
@@ -1161,6 +1173,7 @@ void AnnotatedDNAView::sl_replaceSequencePart() {
     cfg.alphabet = seqObj->getAlphabet();
     U2Region selection = seqCtx->getSequenceSelection()->getSelectedRegions().first();
     cfg.initialText = seqObj->getSequenceData(selection);
+    cfg.position = 1;
 
     cfg.selectionRegions.append(selection);
     

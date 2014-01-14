@@ -153,11 +153,6 @@ void GSequenceLineView::removeSelection(const U2Region& r) {
 void GSequenceLineView::mousePressEvent(QMouseEvent* me) {
     setFocus();
 
-    if (me->button() == Qt::RightButton) {
-        QWidget::mousePressEvent(me);
-        return;
-    }
-
     QPoint renderAreaPos = toRenderAreaPoint(me->pos());
     if (!renderArea->rect().contains(renderAreaPos)) {
         scrollBar->setupRepeatAction(QAbstractSlider::SliderNoAction);
@@ -169,6 +164,11 @@ void GSequenceLineView::mousePressEvent(QMouseEvent* me) {
     lastPressPos = renderArea->coordToPos(renderAreaPos.x());
 
     SAFE_POINT(lastPressPos >= visibleRange.startPos && lastPressPos <= visibleRange.endPos(), "Last mouse press position is out of visible range!",);
+
+    if (me->button() == Qt::RightButton) {
+        QWidget::mousePressEvent(me);
+        return;
+    }
 
     if (!ignoreMouseSelectionEvents) {
         ctx->getSequenceSelection()->clear();

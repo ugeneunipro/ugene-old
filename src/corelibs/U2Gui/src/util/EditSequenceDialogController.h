@@ -62,6 +62,7 @@ struct U2GUI_EXPORT EditSequencDialogConfig {
     const DNAAlphabet* alphabet;
     QByteArray initialText;
     QVector<U2Region> selectionRegions; 
+    int position;
 };
 
 class U2GUI_EXPORT EditSequenceDialogController : public QDialog {

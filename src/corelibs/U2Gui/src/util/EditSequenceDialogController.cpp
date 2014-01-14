@@ -83,6 +83,10 @@ SeqPasterEventFilter::SeqPasterEventFilter( QObject* parent )
     ui->insertPositionSpin->setMinimum(1);
     ui->insertPositionSpin->setMaximum(seqEndPos);
 
+    if ((1 < cfg.position) && (cfg.position < seqEndPos)) {
+        ui->insertPositionSpin->setValue(cfg.position);
+    }
+
     if (cfg.mode == EditSequenceMode_Insert) { 
         setWindowTitle(tr("Insert sequence"));
         if (!cfg.selectionRegions.isEmpty()){
