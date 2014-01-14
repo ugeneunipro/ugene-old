@@ -36,8 +36,6 @@
 
 namespace U2 {
 
-class AnnotationTableObject;
-
 namespace Workflow {
 
 class U2LANG_EXPORT DbiDataStorage {
@@ -82,9 +80,9 @@ public:
     /* NOTE: deallocate memory! */
     static MAlignmentObject *getMsaObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
     /* NOTE: deallocate memory! */
-    static AnnotationTableObject * getAnnotationTableObject( DbiDataStorage *storage, const SharedDbiDataHandler &handler );
+    static QList<AnnotationData> getAnnotationTable( DbiDataStorage *storage, const QVariant &annObjList );
 };
-    
+
 } // Workflow
 
 } // U2

@@ -87,16 +87,7 @@ Task *GeneByGeneReportWorker::tick() {
         if (data.contains(ANNOT_SLOT_ID)){
             annVar = data[ANNOT_SLOT_ID];
         }
-        SharedDbiDataHandler annTableId = annVar.value<SharedDbiDataHandler>( );
-        QScopedPointer<AnnotationTableObject> annTableObj(StorageUtils::getAnnotationTableObject(context->getDataStorage(), annTableId));
-        if (NULL == annTableObj.data()) {
-            return NULL;
-        }
-
-        QList<AnnotationData> annData;
-        foreach ( const Annotation &a, annTableObj->getAnnotations( ) ) {
-            annData << a.getData( );
-        }
+        const QList<AnnotationData> annData = StorageUtils::getAnnotationTable(context->getDataStorage(), annVar);
 
         SharedDbiDataHandler seqId = data.value(SEQ_SLOT_ID).value<SharedDbiDataHandler>();
         QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
@@ -105,7 +96,7 @@ Task *GeneByGeneReportWorker::tick() {
         }
         DNASequence seq = seqObj->getWholeSequence();
 
-        geneData.insert(seqObj->getSequenceName(), qMakePair(seq,annData));
+        geneData.insert(seqObj->getSequenceName(), qMakePair(seq, annData));
     }
 
     if (!inChannel->isEnded()) {

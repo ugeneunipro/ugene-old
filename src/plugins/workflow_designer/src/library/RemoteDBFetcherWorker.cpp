@@ -331,13 +331,8 @@ Task* FetchSequenceByIdFromAnnotationWorker::tick() {
             return NULL;
         }
         QVariantMap qm = inputMessage.getData().toMap();
-        const SharedDbiDataHandler annTableId = qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<SharedDbiDataHandler>();
-        QScopedPointer<AnnotationTableObject> annotationTable(
-            StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
-        QList<AnnotationData> inputAnns;
-        foreach ( const Annotation &a, annotationTable->getAnnotations( ) ) {
-            inputAnns << a.getData( );
-        }
+        const QList<AnnotationData> inputAnns = StorageUtils::getAnnotationTable(
+            context->getDataStorage( ), qm[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )] );
 
         QStringList accIds;
 
@@ -350,19 +345,14 @@ Task* FetchSequenceByIdFromAnnotationWorker::tick() {
 
         Task* task = new LoadRemoteDocumentTask(accIds.join(","), dbId);
         connect(task, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-
         return task;
-
-
     } else if (input->isEnded()) {
         setDone();
         output->setEnded();
     }
 
     return NULL;
-
 }
-
 
 void FetchSequenceByIdFromAnnotationWorker::cleanup() {
 }

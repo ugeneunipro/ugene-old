@@ -612,19 +612,24 @@ void WorkflowUtils::print(const QString &slotString, const QVariant &data, DataT
         || BaseTypes::STRING_LIST_TYPE() == type) {
         text += data.toString();
     } else if (BaseTypes::DNA_SEQUENCE_TYPE() == type) {
-        U2SequenceObject *obj = StorageUtils::getSequenceObject( storage, data.value<SharedDbiDataHandler>( ) );
-        CHECK(NULL != obj, );
-        data2text(context, BaseDocumentFormats::FASTA, obj, text);
+        QScopedPointer<U2SequenceObject> obj( StorageUtils::getSequenceObject( storage,
+            data.value<SharedDbiDataHandler>( ) ) );
+        CHECK(NULL != obj.data( ), );
+        data2text( context, BaseDocumentFormats::FASTA, obj.data( ), text );
     } else if (BaseTypes::MULTIPLE_ALIGNMENT_TYPE() == type) {
-        MAlignmentObject *obj = StorageUtils::getMsaObject( storage, data.value<SharedDbiDataHandler>( ) );
-        CHECK(NULL != obj, );
-        data2text(context, BaseDocumentFormats::CLUSTAL_ALN, obj, text);
-    } else if (BaseTypes::ANNOTATION_TABLE_TYPE() == type
-        || BaseTypes::ANNOTATION_TABLE_LIST_TYPE() == type)
+        QScopedPointer<MAlignmentObject> obj( StorageUtils::getMsaObject( storage,
+            data.value<SharedDbiDataHandler>( ) ) );
+        CHECK(NULL != obj.data( ), );
+        data2text( context, BaseDocumentFormats::CLUSTAL_ALN, obj.data( ), text );
+    } else if ( BaseTypes::ANNOTATION_TABLE_TYPE() == type
+        || BaseTypes::ANNOTATION_TABLE_LIST_TYPE() == type )
     {
-        AnnotationTableObject *obj = StorageUtils::getAnnotationTableObject( storage, data.value<SharedDbiDataHandler>( ) );
-        CHECK( NULL != obj, );
-        data2text(context, BaseDocumentFormats::PLAIN_GENBANK, obj, text);
+        QList<AnnotationData> annotationList = StorageUtils::getAnnotationTable( storage, data );
+        AnnotationTableObject obj( "Annotations", storage->getDbiRef( ) );
+        foreach ( const AnnotationData &ad, annotationList ) {
+            obj.addAnnotation( ad );
+        }
+        data2text(context, BaseDocumentFormats::PLAIN_GENBANK, &obj, text);
     } else {
         text += "Can not print data of this type: " + type->getDisplayName();
     }

@@ -248,16 +248,8 @@ void CuffmergeWorker::takeAnnotations() {
     SAFE_POINT(data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId()),
         "No annotations in a message", );
 
-    SharedDbiDataHandler annTableId = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()].value<SharedDbiDataHandler>();
-    QScopedPointer<AnnotationTableObject> annsObj(StorageUtils::getAnnotationTableObject(
-        context->getDataStorage(), annTableId));
-    SAFE_POINT( NULL != annsObj.data( ), "Invalid annotation table!", );
-
-    anns << QList<AnnotationData>( );
-    QList<AnnotationData> &targetList = anns.last( );
-    foreach ( const Annotation &a, annsObj->getAnnotations( ) ) {
-        targetList << a.getData( );
-    }
+    QVariant annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
+    anns << StorageUtils::getAnnotationTable( context->getDataStorage( ), annsVar );
 }
 
 CuffmergeSettings CuffmergeWorker::scanParameters() const {

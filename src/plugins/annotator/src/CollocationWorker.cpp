@@ -223,15 +223,8 @@ Task* CollocationWorker::tick() {
         QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
         CHECK(NULL != seqObj.data(), NULL);
 
-        SharedDbiDataHandler annTableId = qm.value(FEATURE_TABLE_SLOT).value<SharedDbiDataHandler>( );
-        QScopedPointer<AnnotationTableObject> annTableObj(
-            StorageUtils::getAnnotationTableObject(context->getDataStorage(), annTableId));
-        CHECK(NULL != annTableObj.data( ), NULL);
-
-        QList<AnnotationData> atl;
-        foreach ( const Annotation &a, annTableObj->getAnnotations( ) ) {
-            atl << a.getData( );
-        }
+        const QList<AnnotationData> atl = StorageUtils::getAnnotationTable(
+            context->getDataStorage(), qm.value(FEATURE_TABLE_SLOT));
 
         qint64 seqLength = seqObj->getSequenceLength();
         if ((0 != seqLength) && !atl.isEmpty()) {

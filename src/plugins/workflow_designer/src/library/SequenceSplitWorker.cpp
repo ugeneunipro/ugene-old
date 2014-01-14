@@ -139,16 +139,11 @@ Task * SequenceSplitWorker::tick() {
         CHECK( NULL != seqObj.data(), NULL );
         DNASequence inputSeq = seqObj->getWholeSequence();
 
-        SharedDbiDataHandler annTableId = qm.value(BaseSlots::ANNOTATION_TABLE_SLOT().getId()).value<SharedDbiDataHandler>();
-        QScopedPointer<AnnotationTableObject> annTableObj(StorageUtils::getAnnotationTableObject(context->getDataStorage(), annTableId));
-        if ( NULL != annTableObj.data( ) ) {
-            foreach ( const Annotation &a, annTableObj->getAnnotations( ) ) {
-                inputAnns << a.getData( );
-            }
-        }
+        inputAnns << StorageUtils::getAnnotationTable( context->getDataStorage( ),
+            qm[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )] );
 
         bool noSeq = inputSeq.isNull();
-        bool noAnns = ( NULL == annTableObj.data( ) ) || inputAnns.isEmpty();
+        bool noAnns = inputAnns.isEmpty();
         if( noSeq || noAnns ) {
             if( noSeq ) {
                 coreLog.info(tr("No sequence provided to split worker"));

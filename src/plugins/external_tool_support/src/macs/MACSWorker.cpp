@@ -122,21 +122,10 @@ Task *MACSWorker::tick() {
         if (data.contains(CONTROL_SLOT_ID)) {
             conVar = data[CONTROL_SLOT_ID];
         }
-        SharedDbiDataHandler treatTableId = treatVar.value<SharedDbiDataHandler>( );
-        QScopedPointer<AnnotationTableObject> treatTableObj( StorageUtils::getAnnotationTableObject(
-            context->getDataStorage(), treatTableId ) );
-        QList<AnnotationData> treatData;
-        foreach ( const Annotation &a, treatTableObj->getAnnotations( ) ) {
-            treatData << a.getData( );
-        }
-
-        SharedDbiDataHandler conTableId = conVar.value<SharedDbiDataHandler>( );
-        QScopedPointer<AnnotationTableObject> conTableObj( StorageUtils::getAnnotationTableObject(
-            context->getDataStorage(), conTableId ) );
-        QList<AnnotationData> conData;
-        foreach ( const Annotation &a, conTableObj->getAnnotations( ) ) {
-            conData << a.getData( );
-        }
+        const QList<AnnotationData> treatData = StorageUtils::getAnnotationTable(
+            context->getDataStorage( ), treatVar );
+        const QList<AnnotationData> conData = StorageUtils::getAnnotationTable(
+            context->getDataStorage( ), conVar );
 
         MACSSettings settings = createMACSSettings(os);
         if (os.hasError()) {

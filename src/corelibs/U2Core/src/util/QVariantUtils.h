@@ -26,9 +26,8 @@
 #include <QtCore/QMap>
 #include <QtCore/QString>
 #include <QtCore/QVariant>
-#include <assert.h>
-#include <U2Core/global.h>
-#include <U2Core/AnnotationData.h>
+
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -46,7 +45,7 @@ public:
         if (res.type() == QVariant::Map) {
             return res.toMap();
         }
-        assert(emptyMapIfError); Q_UNUSED(emptyMapIfError);
+        SAFE_POINT(emptyMapIfError, "Empty variant map detected!", QVariantMap());
         return QVariantMap();
     }
 
@@ -67,7 +66,7 @@ public:
             QStringList l = v.toStringList();
             return (l << s);
         } else {
-            assert(v.type() == QVariant::Invalid);
+            SAFE_POINT(v.type() == QVariant::Invalid, "Unexpected variant type!", QVariant(s));
         }
         return QVariant(s);
     }
@@ -77,7 +76,7 @@ public:
             QStringList l = v.toStringList();
             return QVariant(l += sl);
         } else {
-            assert(v.type() == QVariant::Invalid);
+            SAFE_POINT(v.type() == QVariant::Invalid, "Unexpected variant type!", QVariant(sl));
         }
         return QVariant(sl);
     }

@@ -83,16 +83,8 @@ Task *ConductGOWorker::tick() {
         }
 
         treatVar = data[ANNOT_SLOT_ID];
-
-        const SharedDbiDataHandler annTableId = treatVar.value<SharedDbiDataHandler>();
-        QScopedPointer<AnnotationTableObject> tableObject(
-            StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
-        SAFE_POINT( NULL != tableObject.data( ), "Invalid annotation table encountered!", NULL);
-
-        QList<AnnotationData> treatData;
-        foreach ( const Annotation &a, tableObject->getAnnotations( ) ) {
-            treatData << a.getData( );
-        }
+        const QList<AnnotationData> treatData = StorageUtils::getAnnotationTable(
+            context->getDataStorage( ), treatVar );
 
         ConductGOSettings settings = createConductGOSettings();
 

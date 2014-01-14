@@ -124,12 +124,14 @@ void WorkflowDebugMessageParserImpl::convertMessagesToDocuments( const QString &
             + "m" + QString::number( messageCounter );
         if ( BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ) == messageType ) {
             const QVariant annotationsData = mapData[convertedType];
-            const SharedDbiDataHandler annTableId = annotationsData.value<SharedDbiDataHandler>();
-            QScopedPointer<AnnotationTableObject> annotationTable(
-                StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
-            SAFE_POINT( NULL != annotationTable.data( ), "Invalid annotation table encountered!", );
+            const QList<AnnotationData> annList = StorageUtils::getAnnotationTable(
+                context->getDataStorage( ), annotationsData );
 
-            ExportObjectUtils::exportAnnotations( annotationTable->getAnnotations( ), baseFileUrl );
+            AnnotationTableObject *annsObj = new AnnotationTableObject( "Annotations",
+                context->getDataStorage( )->getDbiRef( ) );
+            annsObj->addAnnotations( annList );
+
+            ExportObjectUtils::exportAnnotations( annsObj->getAnnotations( ), baseFileUrl );
         } else {
             GObject *objectToWrite = fetchObjectFromMessage( messageType, mapData[convertedType] );
             if( U2_LIKELY( NULL != objectToWrite ) ) {

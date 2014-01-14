@@ -92,14 +92,9 @@ Task * ImportAnnotationsWorker::tick() {
 void ImportAnnotationsWorker::addTaskAnnotations( const QVariant &data, Task *t ) {
     QVariantMap dataMap = data.toMap( );
     if ( dataMap.contains( BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ) ) ) {
-        SharedDbiDataHandler tableId = dataMap[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )]
-            .value<SharedDbiDataHandler>( );
-        QScopedPointer<AnnotationTableObject> annTable( StorageUtils::getAnnotationTableObject(
-            context->getDataStorage( ), tableId ) );
-        QList<AnnotationData> result;
-        foreach ( const Annotation &ann, annTable->getAnnotations( ) ) {
-            result << ann.getData( );
-        }
+        const QList<AnnotationData> result = StorageUtils::getAnnotationTable(
+            context->getDataStorage( ), dataMap[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )] );
+
         annsMap[t] = result;
     }
 }

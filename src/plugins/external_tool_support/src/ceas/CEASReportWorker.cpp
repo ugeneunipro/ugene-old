@@ -124,15 +124,9 @@ CEASTaskSettings CEASReportWorker::createTaskSettings(U2OpStatus &os) {
         os.setError("There must be peak data(bed) or signal data (wiggle)");
         return CEASTaskSettings();
     }else{
-        if (data.contains(BED_SLOT_ID)){
-            const SharedDbiDataHandler annTableId = data[BED_SLOT_ID].value<SharedDbiDataHandler>();
-            QScopedPointer<AnnotationTableObject> tableObject(
-                StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
-            SAFE_POINT( NULL != tableObject.data( ), "Invalid annotation table encountered!", CEASTaskSettings( ) );
-
-            foreach ( const Annotation &a, tableObject->getAnnotations( ) ) {
-                bedData << a.getData( );
-            }
+        if (data.contains(BED_SLOT_ID)) {
+            bedData << StorageUtils::getAnnotationTable( context->getDataStorage( ),
+                data[BED_SLOT_ID] );
         }
 
         if (data.contains(WIG_SLOT_ID)){

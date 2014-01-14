@@ -96,9 +96,12 @@ namespace {
             return NULL;
         }
         const QVariant annotationsData = data[slot];
-        const SharedDbiDataHandler annTableId = annotationsData.value<SharedDbiDataHandler>();
-        AnnotationTableObject *annsObj = StorageUtils::getAnnotationTableObject(
-            context->getDataStorage( ), annTableId );
+        const QList<AnnotationData> annList = StorageUtils::getAnnotationTable(
+            context->getDataStorage( ), annotationsData );
+
+        AnnotationTableObject *annsObj = new AnnotationTableObject( "Annotations",
+            context->getDataStorage( )->getDbiRef( ) );
+        annsObj->addAnnotations( annList );
 
         return annsObj;
     }

@@ -66,12 +66,7 @@ Task* FilterAnnotationsWorker::tick() {
 
         QVariantMap qm = inputMessage.getData().toMap();
         const QVariant annsVar = qm[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        const SharedDbiDataHandler annTableId = annsVar.value<SharedDbiDataHandler>();
-        QScopedPointer<AnnotationTableObject> annotationTable(
-            StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
-        foreach ( const Annotation &a, annotationTable->getAnnotations( ) ) {
-            inputAnns << a.getData( );
-        }
+        inputAnns << StorageUtils::getAnnotationTable( context->getDataStorage( ), annsVar );
 
         bool accept = actor->getParameter( WHICH_FILTER_ATTR )->getAttributeValue<bool>(context);
         QString namesStr = actor->getParameter( FILTER_NAMES_ATTR )->getAttributeValue<QString>(context);

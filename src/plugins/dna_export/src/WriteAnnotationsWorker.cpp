@@ -121,22 +121,11 @@ Task * WriteAnnotationsWorker::tick() {
         }
 
         const QVariant annVar = qm[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        SharedDbiDataHandler annTableId;
-        if ( annVar.canConvert<QVariantList>( ) ) {
-            const QVariantList annObjsList = annVar.toList();
-            CHECK( !annObjsList.isEmpty( ), NULL );
-            annTableId = annObjsList.first( ).value<SharedDbiDataHandler>( );
-        } else if ( annVar.canConvert<SharedDbiDataHandler>( ) ) {
-            annTableId = annVar.value<SharedDbiDataHandler>( );
-        }
-
-        QScopedPointer<AnnotationTableObject> annsObj(StorageUtils::getAnnotationTableObject(
-            context->getDataStorage(), annTableId));
-        SAFE_POINT( NULL != annsObj.data( ), "Invalid annotation table object encountered!", NULL );
+        const QList<AnnotationData> inputAnns = StorageUtils::getAnnotationTable(
+            context->getDataStorage( ), annVar );
 
         bool isWriteNames = getValue<bool>(WRITE_NAMES);
-        foreach ( const Annotation &a, annsObj->getAnnotations( ) ) {
-            AnnotationData ad = a.getData( );
+        foreach ( AnnotationData ad, inputAnns ) {
             if ( isWriteNames ) {
                 U2Qualifier seqNameQual;
                 seqNameQual.name = "Sequence Name";

@@ -39,19 +39,14 @@ AnnotationsMessageTranslator::AnnotationsMessageTranslator( const QVariant &atom
     WorkflowContext *initContext )
     : BaseMessageTranslator( atomicMessage, initContext )
 {
-    SAFE_POINT( source.canConvert<SharedDbiDataHandler>( ), "Invalid annotation data detected!", );
-    SharedDbiDataHandler annTableId = source.value<SharedDbiDataHandler>( );
-    annTableObject = StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId );
-    SAFE_POINT( NULL != annTableObject, "Invalid sequence object!", );
+    annTable = StorageUtils::getAnnotationTable( context->getDataStorage( ), source );
 }
 
 QString AnnotationsMessageTranslator::getTranslation( ) const {
-    const QList<Annotation> annotations = annTableObject->getAnnotations( );
-    QString result = QObject::tr( ANNOTATIONS_COUNT_LABEL ) + QString::number( annotations.size( ) )
+    QString result = QObject::tr( ANNOTATIONS_COUNT_LABEL ) + QString::number( annTable.size( ) )
         + INFO_TAGS_SEPARATOR + NEW_LINE_SYMBOL;
     quint32 annotationsCounter = 1;
-    foreach( const Annotation &annotation, annotations ) {
-        const AnnotationData data = annotation.getData( );
+    foreach( const AnnotationData &data, annTable ) {
         result += " " + QString::number( annotationsCounter ) + ". "
             + QObject::tr( ANNOTATION_NAME_LABEL ) + "'" + data.name + "'"
             + INFO_FEATURES_SEPARATOR;

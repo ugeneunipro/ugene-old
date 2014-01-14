@@ -465,15 +465,8 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
 
     if (data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId())) {
         const QVariant &annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        const SharedDbiDataHandler annTableId = annsVar.value<SharedDbiDataHandler>();
-        QScopedPointer<AnnotationTableObject> tableObject(
-            StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
-        SAFE_POINT( NULL != tableObject.data( ), "Invalid annotation table encountered!", );
-
-        QList<AnnotationData> atl;
-        foreach ( const Annotation &a, tableObject->getAnnotations( ) ) {
-            atl << a.getData( );
-        }
+        const QList<AnnotationData> atl = StorageUtils::getAnnotationTable(
+            context->getDataStorage( ), annsVar );
 
         if (!atl.isEmpty()) {
             AnnotationTableObject *att = NULL;
@@ -527,15 +520,8 @@ void GenbankWriter::streamingStoreEntry(DocumentFormat* format, IOAdapter *io, c
     QList<GObject*> anObjList;
     if (data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId())) {
         const QVariant &annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        const SharedDbiDataHandler annTableId = annsVar.value<SharedDbiDataHandler>();
-        QScopedPointer<AnnotationTableObject> tableObject(
-            StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
-        SAFE_POINT( NULL != tableObject.data( ), "Invalid annotation table encountered!", );
-
-        QList<AnnotationData> atl;
-        foreach ( const Annotation &a, tableObject->getAnnotations( ) ) {
-            atl << a.getData( );
-        }
+        const QList<AnnotationData> atl = StorageUtils::getAnnotationTable(
+            context->getDataStorage( ), annsVar );
 
         if (!atl.isEmpty()) {
             if (annotationName.isEmpty()) {
@@ -603,15 +589,9 @@ void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowCo
 
     if (data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId())) {
         const QVariant &annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        const SharedDbiDataHandler annTableId = annsVar.value<SharedDbiDataHandler>();
-        QScopedPointer<AnnotationTableObject> tableObject(
-            StorageUtils::getAnnotationTableObject( context->getDataStorage( ), annTableId ) );
-        SAFE_POINT( NULL != tableObject.data( ), "Invalid annotation table encountered!", );
+        const QList<AnnotationData> atl = StorageUtils::getAnnotationTable(
+            context->getDataStorage( ), annsVar );
 
-        QList<AnnotationData> atl;
-        foreach ( const Annotation &a, tableObject->getAnnotations( ) ) {
-            atl << a.getData( );
-        }
         if (!atl.isEmpty()) {
             AnnotationTableObject *att = NULL;
             if (dna) {

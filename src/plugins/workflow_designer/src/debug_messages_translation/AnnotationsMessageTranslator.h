@@ -28,8 +28,6 @@
 
 namespace U2 {
 
-class AnnotationTableObject;
-
 class AnnotationsMessageTranslator : public BaseMessageTranslator {
 public:
     AnnotationsMessageTranslator( const QVariant &atomicMessage,
@@ -38,7 +36,7 @@ public:
     QString getTranslation( ) const;
 
 protected:
-    AnnotationTableObject *annTableObject;
+    QList<AnnotationData> annTable;
 };
 
 } // namespace U2

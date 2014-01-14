@@ -120,16 +120,12 @@ static DNASequence getSequence(QScriptContext *ctx, QScriptEngine *engine, int a
     return seqObj->getWholeSequence();
 }
 
-static QList<AnnotationData> getAnnotationTable(QScriptContext *ctx, QScriptEngine *engine, int argNum) {
-    WorkflowScriptEngine *wse = ScriptEngineUtils::workflowEngine(engine);
-    const SharedDbiDataHandler annTableId = ctx->argument(argNum).toVariant().value<SharedDbiDataHandler>();
-    QScopedPointer<AnnotationTableObject> annTableObj(
-        StorageUtils::getAnnotationTableObject(wse->getWorkflowContext()->getDataStorage(), annTableId));
-
-    QList<AnnotationData> result;
-    foreach ( const Annotation &a, annTableObj->getAnnotations( ) ) {
-        result << a.getData( );
-    }
+static QList<AnnotationData> getAnnotationTable( QScriptContext *ctx, QScriptEngine *engine,
+    int argNum )
+{
+    WorkflowScriptEngine *wse = ScriptEngineUtils::workflowEngine( engine );
+    QList<AnnotationData> result = StorageUtils::getAnnotationTable(
+        wse->getWorkflowContext( )->getDataStorage( ), ctx->argument( argNum ).toVariant( ) );
     return result;
 }
 

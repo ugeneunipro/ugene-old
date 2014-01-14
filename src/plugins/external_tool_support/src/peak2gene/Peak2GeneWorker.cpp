@@ -96,13 +96,8 @@ Task *Peak2GeneWorker::tick() {
         }
 
         treatVar = data[TREAT_SLOT_ID];
-        SharedDbiDataHandler treatTableId = treatVar.value<SharedDbiDataHandler>( );
-        QScopedPointer<AnnotationTableObject> treatTableObj( StorageUtils::getAnnotationTableObject(
-            context->getDataStorage(), treatTableId ) );
-        QList<AnnotationData> treatData;
-        foreach ( const Annotation &a, treatTableObj->getAnnotations( ) ) {
-            treatData << a.getData( );
-        }
+        const QList<AnnotationData> treatData = StorageUtils::getAnnotationTable(
+            context->getDataStorage( ), treatVar );
 
         Peak2GeneSettings settings = createPeak2GeneSettings(os);
         if (os.hasError()) {

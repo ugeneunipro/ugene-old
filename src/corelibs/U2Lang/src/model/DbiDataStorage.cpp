@@ -165,6 +165,8 @@ SharedDbiDataHandler DbiDataStorage::putAnnotationTable( const QList<AnnotationD
     SAFE_POINT( NULL != dbiHandle, "Invalid DBI handle!", SharedDbiDataHandler( ) );
 
     AnnotationTableObject obj( "Annotations", dbiHandle->getDbiRef( ) );
+    obj.addAnnotations( anns );
+
     U2EntityRef ent = obj.getEntityRef( );
 
     U2OpStatusImpl os;
@@ -282,18 +284,39 @@ MAlignmentObject *StorageUtils::getMsaObject(DbiDataStorage *storage, const Shar
     return new MAlignmentObject(objName, msaRef);
 }
 
-AnnotationTableObject * StorageUtils::getAnnotationTableObject( DbiDataStorage *storage,
-    const SharedDbiDataHandler &handler )
+QList<AnnotationData> StorageUtils::getAnnotationTable( DbiDataStorage *storage,
+    const QVariant &annObjList )
 {
-    CHECK( NULL != handler.constData( ), NULL );
-    U2Object *dbObject = storage->getObject( handler, 10 );
-    QScopedPointer<U2AnnotationTable> table( dynamic_cast<U2AnnotationTable *>( dbObject ) );
-    CHECK( NULL != table.data( ), NULL );
+    QList<AnnotationData> result;
 
-    U2EntityRef tableRef( handler->getDbiRef( ), table->id );
-    QString objName = table->visualName;
+    QVariantList objectList;
+    if ( annObjList.canConvert<QVariantList>( ) ) {
+        objectList << annObjList.toList( );
+    } else if ( annObjList.canConvert<SharedDbiDataHandler>( ) ) {
+        objectList << QVariant::fromValue( annObjList );
+    } else {
+        return result;
+    }
+    CHECK( !objectList.isEmpty( ), result );
 
-    return new AnnotationTableObject( objName, tableRef );
+    foreach ( const QVariant &varObj, objectList ) {
+        const SharedDbiDataHandler annTableId = varObj.value<SharedDbiDataHandler>( );
+
+        SAFE_POINT( NULL != annTableId.constData( ), "Invalid annotation table object reference!",
+            result );
+        U2Object *dbObject = storage->getObject( annTableId, 10 );
+        QScopedPointer<U2AnnotationTable> table( dynamic_cast<U2AnnotationTable *>( dbObject ) );
+        SAFE_POINT( NULL != table.data( ), "Invalid annotation table object referenced!", result );
+
+        U2EntityRef tableRef( annTableId->getDbiRef( ), table->id );
+        QString objName = table->visualName;
+
+        AnnotationTableObject annTableObj( objName, tableRef );
+        foreach ( const Annotation &a, annTableObj.getAnnotations( ) ) {
+            result << a.getData( );
+        }
+    }
+    return result;
 }
 
 } // Workflow

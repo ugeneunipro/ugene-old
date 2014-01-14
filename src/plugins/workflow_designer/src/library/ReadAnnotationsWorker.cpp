@@ -87,21 +87,15 @@ void ReadAnnotationsWorker::onTaskFinished(Task *task) {
 void ReadAnnotationsWorker::sl_datasetEnded() {
     CHECK(datasetData.size() > 0, );
     QList<SharedDbiDataHandler> annTableIds;
+    QList<AnnotationData> anns;
     foreach (const QVariantMap &m, datasetData) {
-        annTableIds << m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()].value<SharedDbiDataHandler>();
+        const QVariant annsVar = m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
+        anns << StorageUtils::getAnnotationTable( context->getDataStorage( ), annsVar );
     }
+
+    const SharedDbiDataHandler resultTableId = context->getDataStorage( )->putAnnotationTable( anns );
+
     QVariantMap m;
-
-    QList<AnnotationData> allInputAnns;
-    foreach ( const SharedDbiDataHandler &tableId, annTableIds ) {
-        QScopedPointer<AnnotationTableObject> annotationTable(
-            StorageUtils::getAnnotationTableObject( context->getDataStorage( ), tableId ) );
-        foreach ( const Annotation &a, annotationTable->getAnnotations( ) ) {
-            allInputAnns << a.getData( );
-        }
-    }
-    const SharedDbiDataHandler resultTableId = context->getDataStorage( )->putAnnotationTable( allInputAnns );
-
     m[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(resultTableId);
     m[BaseSlots::DATASET_SLOT().getId()] = datasetData.first()[BaseSlots::DATASET_SLOT().getId()];
 

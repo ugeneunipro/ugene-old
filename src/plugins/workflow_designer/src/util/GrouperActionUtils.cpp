@@ -406,15 +406,8 @@ static void shiftAnns( QList<AnnotationData> &newAnns, qint64 offset ) {
 }
 
 bool MergeAnnotationPerformer::applyAction( const QVariant &newData ) {
-    SharedDbiDataHandler newAnnTableId = newData.value<SharedDbiDataHandler>( );
-    QScopedPointer<AnnotationTableObject> newAnnTableObj( StorageUtils::getAnnotationTableObject(
-        context->getDataStorage( ), newAnnTableId ) );
-    SAFE_POINT( NULL != newAnnTableObj.data( ), "Invalid annotation table object!", false );
-
-    QList<AnnotationData> newAnns;
-    foreach ( const Annotation &a, newAnnTableObj->getAnnotations( ) ) {
-        newAnns << a.getData( );
-    }
+    QList<AnnotationData> newAnns = StorageUtils::getAnnotationTable( context->getDataStorage( ),
+        newData );
 
     bool unique = false;
     if ( action.hasParameter( ActionParameters::UNIQUE ) ) {
