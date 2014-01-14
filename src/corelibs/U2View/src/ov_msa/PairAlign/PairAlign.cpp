@@ -151,6 +151,11 @@ void PairAlign::connectSignals() {
 
     connect(firstSeqSelectorWC,         SIGNAL(si_selectionChanged()),         SLOT(sl_selectorTextChanged()));
     connect(secondSeqSelectorWC,        SIGNAL(si_selectionChanged()),         SLOT(sl_selectorTextChanged()));
+    connect(msa->getMSAObject(),        SIGNAL(si_lockedStateChanged()),       SLOT(sl_checkState()));
+}
+
+void PairAlign::sl_checkState(){
+    checkState();
 }
 
 void PairAlign::checkState() {
@@ -166,11 +171,12 @@ void PairAlign::checkState() {
     if (true == sequencesChanged) {
         updatePercentOfSimilarity();
     }
-
+    
+    bool readOnly = msa->getMSAObject()->isStateLocked();
     canDoAlign = ((MAlignmentRow::invalidRowId() != firstSeqSelectorWC->sequenceId())
                   && (MAlignmentRow::invalidRowId() != secondSeqSelectorWC->sequenceId())
                   && (firstSeqSelectorWC->sequenceId() != secondSeqSelectorWC->sequenceId())
-                  && sequenceNamesIsOk && alphabetIsOk);
+                  && sequenceNamesIsOk && alphabetIsOk && (!readOnly || inNewWindowCheckBox->isChecked()));
 
     alignButton->setEnabled(canDoAlign);
 
@@ -340,7 +346,9 @@ void PairAlign::sl_distanceCalculated() {
 
 void PairAlign::sl_alignComplete() {
     if (true == pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask->isFinished()) {
-        msa->getMSAObject()->updateCachedMAlignment();
+        if(!inNewWindowCheckBox->isChecked()){
+            msa->getMSAObject()->updateCachedMAlignment();
+        }
         pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask = NULL;
     }
     checkState();

@@ -79,6 +79,7 @@ private slots:
     void sl_distanceCalculated();
     void sl_alignComplete();
     void sl_selectorTextChanged();
+    void sl_checkState();
 
 private:
     MSAEditor* msa;

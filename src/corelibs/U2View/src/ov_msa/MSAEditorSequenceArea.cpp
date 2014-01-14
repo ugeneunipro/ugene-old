@@ -181,7 +181,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     complementAction->setObjectName("replace_selected_rows_with_complement");
     connect(complementAction, SIGNAL(triggered()), SLOT(sl_complementCurrentSelection()));
 
-   connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
+    connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
         SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
     connect(editor->getMSAObject(), SIGNAL(si_lockedStateChanged()), SLOT(sl_lockedStateChanged()));
 
