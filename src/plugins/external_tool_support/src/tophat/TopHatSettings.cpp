@@ -19,6 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
+#include <U2Core/AppResources.h>
+#include <U2Core/AppSettings.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "TopHatSettings.h"
@@ -38,7 +41,8 @@ void TopHatInputData::cleanupReads() {
 }
 
 TopHatSettings::TopHatSettings()
-    : noNovelJunctions(false),
+    : threads(1),
+      noNovelJunctions(false),
       fusionSearch(false),
       transcriptomeOnly(false),
       prefilterMultihits(false),
@@ -46,6 +50,11 @@ TopHatSettings::TopHatSettings()
       bowtieMode(vMode),
       useBowtie1(false)
 {
+    AppSettings *settings = AppContext::getAppSettings();
+    SAFE_POINT(NULL != settings, "NULL settings", );
+    AppResourcePool *pool = settings->getAppResourcePool();
+    SAFE_POINT(NULL != pool, "NULL resource pool", );
+    threads = pool->getIdealThreadCount();
 }
 
 void TopHatSettings::cleanupReads() {
