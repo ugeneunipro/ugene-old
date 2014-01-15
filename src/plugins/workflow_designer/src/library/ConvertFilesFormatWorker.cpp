@@ -24,6 +24,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentImport.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/FailTask.h>
@@ -166,6 +167,18 @@ void ConvertFilesFormatWorker::getWorkingDir( QString &workingDir ) {
     workingDir = workingDirPath;
 }
 
+namespace {
+    QString getFormatId(const FormatDetectionResult &r) {
+        if (NULL != r.format) {
+            return r.format->getFormatId();
+        }
+        if (NULL != r.importer) {
+            return r.importer->getId();
+        }
+        return "";
+    }
+}
+
 Task* ConvertFilesFormatWorker::tick() {
     if( inputUrlPort->hasMessage() ) {
          const Message inputMessage = getMessageAndSetupScriptValues(inputUrlPort);
@@ -183,7 +196,7 @@ Task* ConvertFilesFormatWorker::tick() {
              monitor()->addError( "Undefined file format", getActorId() );
              return NULL;
          }
-         const QString detectedFormat = formats.first().extension;
+         const QString detectedFormat = getFormatId(formats.first());
 
          if( excludedFormats.contains( detectedFormat, Qt::CaseInsensitive ) ||
              selectedFormatExtensions.contains( detectedFormat, Qt::CaseInsensitive ) )

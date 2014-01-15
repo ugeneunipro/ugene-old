@@ -78,7 +78,7 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
         if (line.startsWith('@') &&
             ((STATE_START_PARSING == state)  ||
             (STATE_QUALITY == state && lastQualityLength == lastSequenceLength))
-            && (line.length() > 1) && QChar(line.at(1)).isLetter()) {
+            && (line.length() > 1) && QChar(line.at(1)).isLetterOrNumber()) {
             sequenceCount++;
             state = STATE_SEQ_HEADER;
             lastSequenceLength = 0;
