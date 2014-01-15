@@ -355,11 +355,18 @@ Task::ReportResult GTest_CheckAnnotationLocation::report() {
         algoLog.trace(msg);
         return ReportResult_Finished;
     }
-    for(int i=0; i<n; i++) {
-        const U2Region& l = location[i];
+    for ( int i = 0; i < n; i++ ) {
         const U2Region& al = alocation[i];
-        if (l!=al) {
-            stateInfo.setError(QString("location not matched, idx=%1, \"%2..%3\", expected \"%4..%5\"").arg(i).arg(al.startPos+1).arg(al.endPos()).arg(l.startPos+1).arg(l.endPos()));
+        bool matched = false;
+        for ( int j = 0; j < n; j++ ) {
+            const U2Region& l = location[j];
+            if ( l == al ) {
+                matched = true;
+                break;
+            }
+        }
+        if ( !matched ) {
+            stateInfo.setError(QString("location not matched, idx=%1, \"%2..%3\"").arg(i).arg(al.startPos+1).arg(al.endPos()));
             return ReportResult_Finished;
         }
     }
@@ -876,14 +883,20 @@ Task::ReportResult GTest_CheckAnnotationsNamesInTwoObjects::report() {
 //////////////////////////////////////////////////////////
             const QList<Annotation> annList = myAnnotation->getAnnotations();
             const QList<Annotation> annList2 = myAnnotation2->getAnnotations();
-            
-            for(int n=0;(n != annList.size())&&(n != annList2.size());n++){
-                if(annList.at(n).getName() != annList2.at(n).getName()){
-                    stateInfo.setError(QString("annotations names  in position %1 not matched").arg(n));
+
+            for ( int i = 0; i != annList.size( ); i++ ) {
+                bool matched = false;
+                for ( int j = 0; j != annList2.size( ); ++j ) {
+                    if ( annList.at( i ).getName( ) == annList2.at( j ).getName( ) ) {
+                        matched = true;
+                        break;
+                    }
+                }
+                if ( !matched ) {
+                    stateInfo.setError( QString( "annotations names  in position %1 not matched" ).arg( i ) );
                     return ReportResult_Finished;
                 }
             }
-
 //////////////////////////////////////////////////////////
         }
 
