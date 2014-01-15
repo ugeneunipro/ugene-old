@@ -60,7 +60,13 @@ function showLoadButton(showHint) {
     }
 }
 
-function showFileButton(url) {
+function showFileButton(url, disabled) {
+    if (disabled == true) {
+        disabled = 'disabled';
+    } else {
+        disabled = '';
+    }
+
     if (url.length == 0)
         return "";
     var fileName = url.slice(url.lastIndexOf('/') + 1, url.length);
@@ -68,7 +74,8 @@ function showFileButton(url) {
     var button = 
         '<div class="file-button-ctn">' +
             '<div class="btn-group full-width file-btn-group">' + 
-                '<button class="btn full-width long-text" onclick="agent.openUrl(\'' + url + '\')">' + fileName +
+                '<button class="btn full-width long-text" onclick="agent.openUrl(\'' + url + '\')"' +
+                                disabled + '>' + fileName +
                 '</button>' +
                     '<button class="btn dropdown-toggle" data-toggle="dropdown">' + 
                         '<span class="caret"></span>' +

@@ -79,7 +79,7 @@ void ParametersWidget::createWidget(const QList<WorkerParamsInfo> &workersParams
                     QString createParamFunc = "pwAddFilesParameter";
                     createParamFunc += "('" + tabId + "', ";
                     createParamFunc += "'" + paramName + "', ";
-                    createParamFunc += "'" + paramValue + "')";
+                    createParamFunc += "'" + paramValue + "', false)";
 
                     container.evaluateJavaScript(createParamFunc);
                 }
@@ -89,7 +89,9 @@ void ParametersWidget::createWidget(const QList<WorkerParamsInfo> &workersParams
                 QString paramValue = WorkflowUtils::getStringForParameterDisplayRole(paramValueVariant);
 
                 QString createParamFunc;
-                if (NotAnUrl == WorkflowUtils::isUrlAttribute(param, info.actor)) {
+
+                UrlAttributeType type = WorkflowUtils::isUrlAttribute(param, info.actor);
+                if (type == NotAnUrl || QString::compare(paramValueVariant.toString(), "default", Qt::CaseInsensitive) == 0) {
                     createParamFunc = "pwAddCommonParameter";
                 }
                 else {
@@ -98,7 +100,18 @@ void ParametersWidget::createWidget(const QList<WorkerParamsInfo> &workersParams
 
                 createParamFunc += "('" + tabId + "', ";
                 createParamFunc += "'" + paramName + "', ";
-                createParamFunc += "'" + paramValue + "')";
+                createParamFunc += "'" + paramValue + "'";
+
+                if (type != NotAnUrl && QString::compare(paramValueVariant.toString(), "default", Qt::CaseInsensitive) != 0) {
+                    bool disableOpeningByUgene = false;
+                    if (type == InputDir || type == OutputDir) {
+                        disableOpeningByUgene = true;
+                    }
+                    createParamFunc += ", " + QString::number(disableOpeningByUgene);
+                }
+
+                createParamFunc += ")";
+
                 container.evaluateJavaScript(createParamFunc);
             }
         }
