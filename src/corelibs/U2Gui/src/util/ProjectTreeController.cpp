@@ -1197,16 +1197,16 @@ void ProjectTreeController::sl_onAddObjectToSelectedDocument() {
 }
 
 void ProjectTreeController::sl_onRemoveSelectedObjects() {
-    QList<GObject*> objs = getGObjectSelection()->getSelectedObjects();
+    QList<GObject*> objs = objectSelection.getSelectedObjects();
 
     if (objs.isEmpty()) {
         return;
     }
-    objectSelection.clear();
 
     foreach (GObject* obj, objs) {
         Document* doc = obj->getDocument();
         assert(doc != NULL);
+        objectSelection.removeFromSelection(obj);
         doc->removeObject(obj);
     }
 }
