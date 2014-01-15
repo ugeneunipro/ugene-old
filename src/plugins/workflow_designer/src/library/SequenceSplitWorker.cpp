@@ -139,7 +139,7 @@ Task * SequenceSplitWorker::tick() {
         CHECK( NULL != seqObj.data(), NULL );
         DNASequence inputSeq = seqObj->getWholeSequence();
 
-        inputAnns << StorageUtils::getAnnotationTable( context->getDataStorage( ),
+        inputAnns = StorageUtils::getAnnotationTable( context->getDataStorage( ),
             qm[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )] );
 
         bool noSeq = inputSeq.isNull();
