@@ -146,8 +146,8 @@ void SpideySupportContext::sl_align_with_Spidey() {
         int ret = msgBox.exec();
         if (ret == QMessageBox::Yes ) {
             AppContext::getAppSettingsGUI()->showSettingsDialog(ExternalToolSupportSettingsPageId);
-            return;
         }
+        return;
     }
 
     ProjectTreeControllerModeSettings settings;
