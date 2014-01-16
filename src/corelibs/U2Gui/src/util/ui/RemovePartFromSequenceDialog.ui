@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>319</width>
-    <height>277</height>
+    <height>308</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -83,7 +83,7 @@
         <item>
          <widget class="QRadioButton" name="resizeRB">
           <property name="text">
-           <string>Resize</string>
+           <string>Crop corresponding annotation</string>
           </property>
           <property name="checked">
            <bool>true</bool>
@@ -93,7 +93,7 @@
         <item>
          <widget class="QRadioButton" name="removeRB">
           <property name="text">
-           <string>Remove</string>
+           <string>Remove corresponding annotation</string>
           </property>
          </widget>
         </item>
