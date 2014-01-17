@@ -53,6 +53,7 @@ WizardPage * WizardPageController::getPage() const {
 }
 
 void WizardPageController::applyLayout() {
+    wc->clearControllers();
     qDeleteAll(controllers);
     controllers.clear();
     QLayout *old = wPage->layout();

@@ -81,6 +81,7 @@ public:
     bool isBroken() const;
 
     void addPropertyController(const AttributeInfo &info, PropertyWizardController *ctrl);
+    void clearControllers();
 
     // SchemaConfig
     virtual RunFileSystem * getRFS();

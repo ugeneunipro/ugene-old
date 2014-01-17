@@ -520,8 +520,8 @@ Descriptor WorkflowUtils::getSlotDescOfDatatype(const DataTypePtr & dt) {
     if(dtId == BaseTypes::STRING_TYPE()->getId()) {
         return BaseSlots::TEXT_SLOT();
     }
-    assert(false);
-    return *dt;
+    SAFE_POINT(false, "Unexpected slot type", Descriptor());
+    return Descriptor();
 }
 
 static QStringList initLowerToUpperList() {

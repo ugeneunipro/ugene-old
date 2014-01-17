@@ -401,6 +401,10 @@ void WizardController::addPropertyController(const AttributeInfo &info, Property
     propertyControllers[info.toString()] = ctrl;
 }
 
+void WizardController::clearControllers() {
+    propertyControllers.clear();
+}
+
 RunFileSystem * WizardController::getRFS() {
     RunFileSystem *result = new RunFileSystem(this);
     RFSUtils::initRFS(*result, schema->getProcesses(), this);
