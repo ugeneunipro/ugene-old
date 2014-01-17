@@ -92,6 +92,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSingleSequenceWidget.h>
@@ -4202,6 +4203,37 @@ GUI_TEST_CLASS_DEFINITION( test_2424 ) {
     GTWidget::click( os,GTAction::button( os,"Run workflow" ) );
     GTGlobals::sleep( );
     GTUtilsWorkflowDesigner::checkErrorList(os, "Quality Filter Example: Empty script text");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2449 ) {
+//    1. Open "COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+//    2. Create a phylogenetic tree for the alignment.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_2449.nwk", 0, 0, true));
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, "Accept"));
+    GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() << "Tree" << "Build Tree");
+
+//    3. Open tree options panel widget (it can be opened automatically after tree building).
+//    4. Open font settings on the OP widget.
+    GTWidget::click(os, GTWidget::findWidget(os, "lblFontSettings"));
+
+//    There is a font size spinbox. You can set zero value to it: in this case font has its standard size (on mac), but this value is incorrect.
+    QSpinBox* sizeSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "fontSizeSpinBox"));
+    CHECK_SET_ERR(NULL != sizeSpinBox, "Size spin box not found");
+
+    GTWidget::setFocus(os, sizeSpinBox);
+    int prev = 0;
+    while (0 < sizeSpinBox->value()) {
+        prev = sizeSpinBox->value();
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+        GTGlobals::sleep(100);
+        if (prev <= sizeSpinBox->value()) {
+            break;
+        }
+    }
+
+    CHECK_SET_ERR(0 < sizeSpinBox->value(), "Invalid size spin box bound");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2460 ) {
