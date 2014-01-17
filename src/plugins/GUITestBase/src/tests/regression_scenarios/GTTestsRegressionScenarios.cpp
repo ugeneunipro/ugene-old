@@ -71,6 +71,7 @@
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h"
@@ -4333,6 +4334,22 @@ GUI_TEST_CLASS_DEFINITION( test_2519 ) {
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1..8999"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2605 ) {
+    GTLogTracer logTracer;
+    // 1. Open file _common_data/fasta/multy_fa.fa as multiple alignment
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "multy_fa.fa");
+    // 2. Export subalignment from this msa to any MSA format
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_EXPORT<<"Save subalignment"));
+    GTUtilsDialog::waitForDialog(os,new ExtractSelectedAsMSADialogFiller(os,
+        testDir + "_common_data/scenarios/sandbox/2605.aln",
+        QStringList() << "SEQUENCE_1"<<"SEQUENCE_2", 6, 237));
+    GTMenu::showContextMenu(os,GTWidget::findWidget(os,"msa_editor_sequence_area"));
+
+    // Expected state: export successfull, no any messages in log like "There is no sequence objects in given file, unable to convert it in multiple alignment"
+    CHECK_SET_ERR(!logTracer.hasError(), "Unexpected error");
 }
 
 } // GUITest_regression_scenarios namespace
