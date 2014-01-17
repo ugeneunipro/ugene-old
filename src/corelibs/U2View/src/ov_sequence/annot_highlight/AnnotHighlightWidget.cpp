@@ -148,22 +148,21 @@ bool AnnotHighlightWidget::isValidIndex(const QList<Annotation> &annotForNextPre
 }
 
 int AnnotHighlightWidget::searchAnnotWithEqualsStartPos(const QList<AnnotationTableObject *> &items,
-    QList<Annotation> &annotForNextPrev, const Annotation &prev, int currentPosition)
+    QList<Annotation> &annotForNextPrev, const Annotation *prev, int currentPosition)
 {
     int qurIdx = -1;
     int currentIdx = qurIdx;
     foreach ( AnnotationTableObject *aTable, items ) {
         SAFE_POINT( NULL != aTable, "Invalid annotation table!", -1 );
         foreach ( const Annotation &annotation, aTable->getAnnotations( ) ) {
-            const U2LocationData *locData = annotation.getLocation( ).data( );
-            SAFE_POINT( NULL != locData, "Invalid location data!", -1 );
+            const U2Location locData = annotation.getLocation( );
             foreach ( const U2Region &curPos, locData->regions ) {
                 if ( curPos.startPos == currentPosition ) {
                     annotForNextPrev.append( annotation );
                     qurIdx++;
                 }
             }
-            if ( prev == annotation ) {
+            if ( NULL != prev && *prev == annotation ) {
                 currentIdx = qurIdx;
             }
         }
@@ -190,8 +189,7 @@ qint64 AnnotHighlightWidget::searchNextPosition( const QList<AnnotationTableObje
         SAFE_POINT(aTable != NULL, "Invalid annotation table!", -1);
         foreach ( const Annotation &annotation, aTable->getAnnotations( ) ) {
             int locateIdx = 0;
-            const U2LocationData* locData = annotation.getLocation().data();
-            SAFE_POINT(locData != NULL, "Invalid location data!", -1);
+            const U2Location locData = annotation.getLocation();
             foreach ( const U2Region &curPos, locData->regions ) {
                 if (isNext(isForward, curPos.startPos, endPos, minPos)) {
                     minPos = curPos.startPos;
@@ -213,16 +211,15 @@ void AnnotHighlightWidget::annotationNavigate(bool isForward) {
     SAFE_POINT(GSequenceLineViews[0] != NULL, "GSequenceLineView is NULL", );
     qint64 currentPosition = GSequenceLineViews[0]->getVisibleRange().center();
     AnnotationSelection* as = annotatedDnaView->getAnnotationsSelection();
-    if (as == NULL) {
-        return;
-    }
+    CHECK(NULL != as, );
+    const QList<AnnotationSelectionData> selectionData = as->getSelection();
 
     const Annotation *prev = NULL;
     //get selected annotation
-    if (!as->getSelection().empty()){
-        prev = &as->getSelection()[0].annotation;
+    if (!selectionData.empty()){
+        prev = &selectionData.first( ).annotation;
         SAFE_POINT(prev != NULL, "Annotation is null", );
-        const U2LocationData* locData = prev->getLocation().data();
+        const U2Location locData = prev->getLocation();
         if (locData->regions.empty()){
             prev = NULL;
         }
@@ -254,7 +251,7 @@ void AnnotHighlightWidget::annotationNavigate(bool isForward) {
     qint64 currentIdx = 0;
 
     QList<Annotation> annotForNextPrev;
-    currentIdx = searchAnnotWithEqualsStartPos(items, annotForNextPrev, *prev, currentPosition);
+    currentIdx = searchAnnotWithEqualsStartPos(items, annotForNextPrev, prev, currentPosition);
     currentIdx += 2 * isForward - 1;
 
     if (!isValidIndex(annotForNextPrev, currentIdx)) {
@@ -263,7 +260,7 @@ void AnnotHighlightWidget::annotationNavigate(bool isForward) {
         }
         locIdx = searchNextPosition(items, endPos, isForward, &currentPosition);
         SAFE_POINT(locIdx >= 0, "locIdx is not valid", );
-        searchAnnotWithEqualsStartPos(items, annotForNextPrev, *prev, currentPosition);
+        searchAnnotWithEqualsStartPos(items, annotForNextPrev, prev, currentPosition);
         currentIdx = (isForward)?(0):(annotForNextPrev.size() - 1);
     }
     currentPosition = minPos;

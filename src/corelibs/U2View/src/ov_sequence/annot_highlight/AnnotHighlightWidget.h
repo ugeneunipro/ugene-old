@@ -124,7 +124,7 @@ private:
     bool isValidIndex(const QList<Annotation> &annotForNextPrev, int position);
 
     int searchAnnotWithEqualsStartPos( const QList<AnnotationTableObject *>& items,
-        QList<Annotation> &annotForNextPrev, const Annotation &prev, int currentPosition );
+        QList<Annotation> &annotForNextPrev, const Annotation *prev, int currentPosition );
 
     bool isNext(bool isForward, qint64 startPos, qint64 endPos, qint64 minPos);
 
