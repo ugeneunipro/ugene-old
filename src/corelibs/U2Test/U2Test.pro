@@ -11,7 +11,8 @@ HEADERS += src/GTest.h \
            src/gui_tests/GUITestService.h \
            src/gui_tests/GUITestLauncher.h \
            src/gui_tests/GUITestTeamcityLogger.h \
-           src/gui_tests/GUITestBase.h
+           src/gui_tests/GUITestBase.h \
+           src/gui_tests/GUITestWindow.h
 SOURCES += src/GTest.cpp \
            src/GTestFrameworkComponents.cpp \
            src/TestRunnerTask.cpp \
@@ -21,9 +22,13 @@ SOURCES += src/GTest.cpp \
            src/gui_tests/GUITestService.cpp \
            src/gui_tests/GUITestLauncher.cpp \
            src/gui_tests/GUITestTeamcityLogger.cpp \
-           src/gui_tests/GUITestBase.cpp
+           src/gui_tests/GUITestBase.cpp \
+           src/gui_tests/GUITestWindow.cpp
 
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
+
+FORMS += \
+           GUITestingWindow.ui

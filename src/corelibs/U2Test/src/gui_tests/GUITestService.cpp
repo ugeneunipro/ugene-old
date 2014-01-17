@@ -22,6 +22,7 @@
 #include "GUITestService.h"
 #include "GUITestBase.h"
 #include "GUITestTeamcityLogger.h"
+#include "GUITestWindow.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QMainWindow>
 
@@ -66,6 +67,7 @@ runTestsAction(NULL), testLauncher(NULL) {
     connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(sl_registerService()));
 
     setQtFileDialogView();
+
 }
 
 GUITestService::~GUITestService() {
@@ -98,6 +100,10 @@ void GUITestService::sl_registerService() {
             QTimer::singleShot(1000, this, SLOT(runGUICrazyUserTest()));
             break;
 
+        case CREATE_GUI_TEST:
+            new GUITestingWindow();
+            break;
+
         case NONE:
         default:
             registerServiceTask();
@@ -107,6 +113,11 @@ void GUITestService::sl_registerService() {
 
 const GUITestService::LaunchOptions GUITestService::getLaunchOptions(CMDLineRegistry* cmdLine) const {
     CHECK(cmdLine, NONE);
+
+    if(cmdLine->hasParameter(CMDLineCoreOptions::CREATE_GUI_TEST)){
+        return CREATE_GUI_TEST;
+    }
+
 
     if (cmdLine->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST)) {
         QString paramValue = cmdLine->getParameterValue(CMDLineCoreOptions::LAUNCH_GUI_TEST);

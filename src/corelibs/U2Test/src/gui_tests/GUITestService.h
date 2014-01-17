@@ -42,7 +42,7 @@ class CMDLineRegistry;
 class U2TEST_EXPORT GUITestService: public Service {
     Q_OBJECT
 public:
-    enum LaunchOptions {NONE, RUN_ONE_TEST, RUN_ALL_TESTS, RUN_ALL_TESTS_BATCH, RUN_TEST_SUITE, RUN_CRAZY_USER_MODE};
+    enum LaunchOptions {NONE, RUN_ONE_TEST, RUN_ALL_TESTS, RUN_ALL_TESTS_BATCH, RUN_TEST_SUITE, RUN_CRAZY_USER_MODE, CREATE_GUI_TEST};
 
     GUITestService(QObject *parent = NULL);
     virtual ~GUITestService();

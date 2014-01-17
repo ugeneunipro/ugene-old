@@ -16,6 +16,16 @@ namespace U2 {
 
 #define TESTNAME(className) QString(GUI_TEST_PREFIX) + #className
 
+#define DIALOG_FILLER_DECLARATION(className, DialogName) \
+    class className : public Filler { \
+    public: \
+        className(U2OpStatus& os):Filler(os, DialogName){} \
+        virtual void run(); \
+    }
+
+#define DIALOG_FILLER_DEFFINITION(className) \
+    void className::run()
+
 #define GUI_TEST_CLASS_DECLARATION(className) \
     class className : public GUITest { \
     public: \
