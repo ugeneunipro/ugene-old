@@ -22,6 +22,7 @@
 #include "LoadDASDocumentTask.h"
 
 #include <U2Core/DocumentModel.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -142,7 +143,13 @@ QList<Task*> LoadDASDocumentTask::onSubTaskFinished( Task *subTask ){
         if ( isAllDataLoaded( ) ) {
             AnnotationTableObject *annotationTableObject = NULL;
             if ( !annotationData.isEmpty( ) ) {
-                annotationTableObject = new AnnotationTableObject( "das_annotations", resultDocument->getDbiRef( ) );
+                U2DbiRegistry *dbiReg = AppContext::getDbiRegistry();
+                SAFE_POINT_EXT(NULL != dbiReg, setError("NULL DBI registry"), subTasks);
+
+                U2DbiRef dbiRef = dbiReg->getSessionTmpDbiRef(stateInfo);
+                CHECK_OP(stateInfo, subTasks);
+
+                annotationTableObject = new AnnotationTableObject( "das_annotations", dbiRef );
                 
                 foreach ( const QString &grname, annotationData.keys( ) ) {
                     const QList<AnnotationData> sdata = annotationData[grname];
