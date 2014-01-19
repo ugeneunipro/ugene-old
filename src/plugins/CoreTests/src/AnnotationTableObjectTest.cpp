@@ -274,6 +274,7 @@ Task::ReportResult GTest_CheckAnnotationSequence::report() {
     U2SequenceObject* dnaObj = getContext<U2SequenceObject>(this, seqCtxName);
     if (dnaObj == NULL) {
         stateInfo.setError("Invalid sequence context");
+        return ReportResult_Finished;
     }
     
     GTestAnnotationDataItem *annCtx = getContext<GTestAnnotationDataItem>(this,aCtxName);

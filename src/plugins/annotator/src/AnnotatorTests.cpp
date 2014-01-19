@@ -45,6 +45,8 @@ namespace U2 {
 #define DOC_ATTR "doc"
 #define SEQ_ATTR "seq"
 #define EXPECTED_RESULTS_ATTR  "expected_results"
+#define RES_ATTR "result"
+#define CIRCULAR_ATTR "circular"
 
 void GTest_AnnotatorSearch::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
@@ -171,6 +173,108 @@ Task::ReportResult GTest_AnnotatorSearch::report() {
     }
     return ReportResult_Finished;
 }
+
+//////////////////////////////////////////////////////////////////////////
+//GTest_PlasmidAutoAnnotation
+
+void GTest_CustomAutoAnnotation::init(XMLTestFormat *tf, const QDomElement& el) {
+    Q_UNUSED(tf);
+
+    docName = el.attribute(DOC_ATTR);
+    if (docName.isEmpty()) {
+        failMissingValue(DOC_ATTR);
+        return;
+    } 
+
+    seqName = el.attribute(SEQ_ATTR);
+    if (seqName.isEmpty()) {
+        failMissingValue(SEQ_ATTR);
+        return;
+    }
+
+    resultDocContextName = el.attribute(RES_ATTR);
+    if (resultDocContextName.isEmpty()) {
+        failMissingValue(RES_ATTR);
+        return;
+    }
+    
+    isCircular = false;
+    QString strCircular = el.attribute(CIRCULAR_ATTR);
+    if (!strCircular.isEmpty()) {
+        if (strCircular == "true") {
+            isCircular = true;
+        }
+    } 
+
+       
+}
+
+void GTest_CustomAutoAnnotation::prepare() {
+    searchTask = NULL;
+    Document* doc = getContext<Document>(this, docName);
+    if (doc == NULL) {
+        stateInfo.setError(  QString("context not found %1").arg(docName) );
+        return;
+    }
+    
+    QList<GObject*> list = doc->findGObjectByType(GObjectTypes::SEQUENCE);
+    if (list.size() == 0) {
+        stateInfo.setError(  QString("container of object with type \"%1\" is empty").arg(GObjectTypes::SEQUENCE) );
+        return;
+    }
+    
+    GObject *obj = list.first();
+    if(obj==NULL){
+        stateInfo.setError(  QString("object with type \"%1\" not found").arg(GObjectTypes::SEQUENCE) );
+        return;
+    }
+    assert(obj!=NULL);
+    U2SequenceObject * dnaObj = qobject_cast<U2SequenceObject*>(obj);
+    if(dnaObj==NULL){
+        stateInfo.setError(  QString("error can't cast to sequence from GObject") );
+        return;
+    }
+    
+    if (isCircular) {
+        dnaObj->setCircular(true);
+    }
+
+    QString customAnnotationDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/custom_annotations";
+    QString plasmidFeaturesPath = customAnnotationDir + "/plasmid_features.txt";
+    SharedFeatureStore store( new FeatureStore("plasmids", plasmidFeaturesPath));
+    if (!store->load()) {
+        stateInfo.setError( QString("Failed to load plasmid feature database %1").arg(plasmidFeaturesPath));
+        return;
+    }
+    
+    AnnotationTableObject *ao = new AnnotationTableObject( resultDocContextName, doc->getDbiRef() );
+    addContext(resultDocContextName, ao);
+    
+    searchTask = new CustomPatternAnnotationTask(ao, dnaObj->getEntityRef(), store);
+    addSubTask(searchTask);
+    
+    
+}
+
+Task::ReportResult GTest_CustomAutoAnnotation::report() {
+    /*if(searchTask != NULL){
+        if (!searchTask->hasError()){
+            QVector<U2Region> actualResults = searchTask->popResults();
+            int actualSize = actualResults.size(), expectedSize = expectedResults.size();
+            if (actualSize != expectedSize) {
+                stateInfo.setError(  QString("Expected and Actual lists of regions are different: %1 %2").arg(expectedSize).arg(actualSize) );
+                return ReportResult_Finished;
+            }
+            qSort(actualResults); qSort(expectedResults);
+            if (actualResults != expectedResults) {
+                stateInfo.setError(  QString("One of the expected regions not found in results").arg(expectedSize).arg(actualSize) );
+            }
+        }
+    }*/
+    return ReportResult_Finished;
+}
+
+
 
 //////////////////////////////////////////////////////////////////////////
 //GTest_GeneByGeneApproach

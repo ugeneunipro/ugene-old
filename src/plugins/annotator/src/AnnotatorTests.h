@@ -30,6 +30,7 @@
 #include <U2View/AnnotatedDNAView.h>
 #include "CollocationsDialogController.h"
 #include "GeneByGeneReportTask.h"
+#include "CustomPatternAnnotationTask.h"
 
 namespace U2 {
 
@@ -50,6 +51,23 @@ private:
     CollocationSearchTask *searchTask;
     QVector<U2Region> expectedResults;
 };
+
+class GTest_CustomAutoAnnotation : public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CustomAutoAnnotation, "custom-auto-annotation-search");
+    
+    void prepare();
+    Task::ReportResult report();
+private:
+    QString seqName;
+    QString docName;
+    QString resultDocContextName;
+    bool isCircular;
+    SharedFeatureStore featureStore;
+    CustomPatternAnnotationTask* searchTask;
+};
+
 
 class GTest_GeneByGeneApproach : public GTest{
 public:

@@ -128,6 +128,7 @@ QList<XMLTestFactory*> AnnotatorTests::createTestFactories() {
     QList<XMLTestFactory*> res;
     res.append(GTest_AnnotatorSearch::createFactory());
     res.append(GTest_GeneByGeneApproach::createFactory());
+    res.append(GTest_CustomAutoAnnotation::createFactory());
     return res;
 }
 

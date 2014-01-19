@@ -38,17 +38,13 @@ namespace U2 {
 // CustomPatternAnnotationTask
 
 CustomPatternAnnotationTask::CustomPatternAnnotationTask(AnnotationTableObject* aObj, const U2::U2EntityRef &entityRef, const SharedFeatureStore &store)
-    : Task(tr("Custom pattern annotation"), TaskFlags_NR_FOSCOE), aTableObj(aObj), seqRef(entityRef),  featureStore(store)
+    : Task(tr("Custom pattern annotation"), TaskFlags_NR_FOSCOE), dnaObj("ref", entityRef), aTableObj(aObj), featureStore(store)
 {
     GCOUNTER( cvar, tvar, "CustomPatternAnnotationTask" );
 }
 
-
 void CustomPatternAnnotationTask::prepare()
 {
-    // TODO: support circular sequence by adding an overhang of max pattern size 
-
-    U2SequenceObject dnaObj("ref", seqRef);
     sequence = dnaObj.getWholeSequenceData();
     
     if (dnaObj.isCircular()) {
@@ -106,7 +102,6 @@ QList<Task*> CustomPatternAnnotationTask::onSubTaskFinished(Task* subTask) {
     const QList<int>& results = task->getResults();
     PatternInfo info = taskFeatureNames.take(task);
     
-    U2SequenceObject dnaObj("ref", seqRef);
     qint64 seqLen = dnaObj.getSequenceLength();
 
     foreach (int pos, results) {
@@ -176,7 +171,7 @@ bool FeatureStore::load()
 
         FeaturePattern pattern;
 
-        pattern.name = lineItems[0];
+        pattern.name = lineItems[0].trimmed();
         pattern.sequence = lineItems[2].toUpper();
         if (pattern.sequence.length() < minPatternSize) {
             minPatternSize = pattern.sequence.length();
