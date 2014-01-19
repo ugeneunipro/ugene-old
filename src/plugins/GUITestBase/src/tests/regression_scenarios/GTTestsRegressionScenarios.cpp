@@ -4351,6 +4351,22 @@ GUI_TEST_CLASS_DEFINITION( test_2605 ) {
     // Expected state: export successfull, no any messages in log like "There is no sequence objects in given file, unable to convert it in multiple alignment"
     CHECK_SET_ERR(!logTracer.hasError(), "Unexpected error");
 }
+GUI_TEST_CLASS_DEFINITION( test_2612 ) {
+	//  1. Open sequence "samples/fasta/human_T1.fa".
+	GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+	//	2. Search for 20 first nucleotides (TTGTCAGATTCACCAAAGTT) using Find Pattern.
+	GTUtilsOptionsPanel::runFindPatternWithHotKey("TTGTCAGATTCACCAAAGTT", os);
+	//	Expected state: the annotation with pattern created and shown in sequence view.
+	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
+	QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+	GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+	//  3. Delete annotation from annotation editor.
+	GTMouseDriver::click(os);
+	GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+	//	Expected state: there is no annotation in sequence view.
+	GTGlobals::sleep(100);
+	CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", GTGlobals::FindOptions(false))==NULL, "Annotations document not deleted");
+}
 
 } // GUITest_regression_scenarios namespace
 
