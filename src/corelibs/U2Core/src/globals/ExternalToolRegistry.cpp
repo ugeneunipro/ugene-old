@@ -60,6 +60,15 @@ ExternalToolValidation ExternalTool::getToolValidation() {
     return result; 
 }
 
+bool ExternalTool::isMuted() const {
+#ifdef UGENE_NGS
+    // Tool cannot be muted in the NGS pack
+    return false;
+#else
+    return muted;
+#endif
+}
+
 ////////////////////////////////////////
 //ExternalToolValidationListener
 ExternalToolValidationListener::ExternalToolValidationListener(const QString& toolName) {

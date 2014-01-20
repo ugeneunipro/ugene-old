@@ -86,7 +86,7 @@ public:
     void setVersion(const QString& _version);
 
     bool isValid() const { return isValidTool; }
-    bool isMuted() const { return muted; }
+    bool isMuted() const;
     bool isModule() const { return isModuleTool; }
 signals:
     void si_pathChanged();
