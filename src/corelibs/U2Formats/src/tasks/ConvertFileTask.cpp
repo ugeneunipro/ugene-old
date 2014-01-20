@@ -81,7 +81,11 @@ QList<Task*> ConvertFileTask::onSubTaskFinished(Task *subTask) {
         return result;
     }
 
-    QString fileName = srcDoc->getName() + "." + targetFormat;
+    QString ext = targetFormat;
+    if (!df->getSupportedDocumentFileExtensions().isEmpty()) {
+        ext = df->getSupportedDocumentFileExtensions().first();
+    }
+    QString fileName = srcDoc->getName() + "." + ext;
     targetUrl = GUrlUtils::rollFileName(workingDir + fileName, QSet<QString>());
 
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(srcDoc->getURL()));

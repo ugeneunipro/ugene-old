@@ -39,6 +39,17 @@ private:
     bool                isFileUrl, runThisTest;
 };
 
+class GTest_CreateTmpDir : public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CreateTmpDir, "create-temp-dir");
+
+    ReportResult report();
+
+private:
+    QString url;
+};
+
 class GTest_RemoveTmpDir : public GTest {
     Q_OBJECT
 public:

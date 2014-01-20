@@ -67,12 +67,32 @@ Task::ReportResult GTest_ConvertPath::report() {
 }
 
 /************************************************************************/
-/* GTest_RemoveTmpDir */
+/* GTest_CreateTmpDir */
 /************************************************************************/
 #define TEMP_DATA_DIR_ENV_ID "TEMP_DATA_DIR" 
 #define URL_ATTR "url"
 #define DATA_ATTR "data"
 #define EXISTS_ATTR "exists"
+
+void GTest_CreateTmpDir::init(XMLTestFormat * /*tf*/, const QDomElement &el) {
+    url = el.attribute(URL_ATTR);
+}
+
+Task::ReportResult GTest_CreateTmpDir::report() {
+    QDir tmpDir(env->getVar(TEMP_DATA_DIR_ENV_ID));
+    bool exists = tmpDir.exists(url);
+    if (!exists) {
+        bool created = tmpDir.mkdir(url);
+        if (!created) {
+            setError("Can not create a directory: " + url);
+        }
+    }
+    return ReportResult_Finished;
+}
+
+/************************************************************************/
+/* GTest_RemoveTmpDir */
+/************************************************************************/
 void GTest_RemoveTmpDir::init(XMLTestFormat * /*tf*/, const QDomElement &el) {
     url = env->getVar( TEMP_DATA_DIR_ENV_ID ) + "/" + el.attribute(URL_ATTR);
 }
@@ -199,6 +219,7 @@ bool GTest_CheckStorageFile::findRecursive(const QString& currentDirUrl) {
 QList<XMLTestFactory*> GUrlTests::createTestFactories() {
     QList<XMLTestFactory*> res;
     res.append(GTest_ConvertPath::createFactory());
+    res.append(GTest_CreateTmpDir::createFactory());
     res.append(GTest_RemoveTmpDir::createFactory());
     res.append(GTest_RemoveTmpFile::createFactory());
     res.append(GTest_CreateTmpFile::createFactory());

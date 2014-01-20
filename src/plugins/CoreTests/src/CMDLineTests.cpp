@@ -37,6 +37,7 @@ namespace U2 {
 #define TEMP_DATA_DIR_ENV_ID   "TEMP_DATA_DIR" 
 #define CONFIG_FILE_ENV_ID "CONFIG_FILE"
 #define CONFIG_PROTOTYPE "PROTOTYPE"
+#define WORKINK_DIR_ATTR "working-dir"
 
 /************************
  * GTest_RunCMDLine
@@ -58,6 +59,10 @@ void GTest_RunCMDLine::init(XMLTestFormat *tf, const QDomElement& el) {
     setUgeneclPath();
     setArgs(el);
     proc = new QProcess(this);
+    if (el.hasAttribute(WORKINK_DIR_ATTR)) {
+        QString workingDir = el.attribute(WORKINK_DIR_ATTR);
+        proc->setWorkingDirectory(env->getVar(TEMP_DATA_DIR_ENV_ID) + "/" + workingDir);
+    }
     QString protosPath = env->getVar(COMMON_DATA_DIR_ENV_ID) + "/" +  env->getVar(CONFIG_PROTOTYPE);
     QDir protoDir(protosPath), userScriptsDir(WorkflowSettings::getUserDirectory());
     QStringList filters;
@@ -89,6 +94,9 @@ void GTest_RunCMDLine::setArgs(const QDomElement & el) {
         }
         if(node.nodeName() == "nomessage"){
             unexpectedMessage = node.nodeValue();
+            continue;
+        }
+        if(node.nodeName() == WORKINK_DIR_ATTR){
             continue;
         }
         QString argument = "--" + node.nodeName() + "=" + getVal(node.nodeValue());
