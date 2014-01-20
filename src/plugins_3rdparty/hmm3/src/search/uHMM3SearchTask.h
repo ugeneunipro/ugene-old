@@ -52,21 +52,21 @@ class UHMM3SearchTask : public Task {
     Q_OBJECT
 
 public:
-    UHMM3SearchTask(const UHMM3SearchTaskSettings &settings, P7_HMM *hmmProfile, const QByteArray &sequence);
+    UHMM3SearchTask(const UHMM3SearchTaskSettings &settings, const QList<const P7_HMM *>& hmmProfiles, const QByteArray &sequence);
     
     virtual void prepare();
     virtual void run();
 
-    UHMM3SearchResult getResult() const {
+    QList<UHMM3SearchResult> getResult() const {
         assert(isFinished());
         return result;
     }
 
 private:
-    UHMM3SearchTaskSettings settings;
-    P7_HMM                  *hmmProfile;
-    QByteArray              sequence;
-    UHMM3SearchResult       result;
+    UHMM3SearchTaskSettings   settings;
+    QList<const P7_HMM *>     hmmProfiles;
+    QByteArray                sequence;
+    QList<UHMM3SearchResult>  result;
 
 }; // UHMM3SearchTask
 
@@ -76,7 +76,7 @@ class UHMM3LoadProfileAndSearchTask : public Task {
 public:
     UHMM3LoadProfileAndSearchTask(const UHMM3SearchTaskSettings &settings, const QString &hmmProfileFile, const QByteArray &sequence);
 
-    UHMM3SearchResult getResult() const {
+    QList<UHMM3SearchResult> getResult() const {
         assert(isFinished());
         return hmmSearchTask->getResult();
     }
@@ -88,7 +88,6 @@ private:
     LoadDocumentTask        *loadHmmProfileTask;
     UHMM3SearchTask         *hmmSearchTask;
 
-    P7_HMM                  *hmmProfile;
     UHMM3SearchTaskSettings settings;
     QByteArray              sequence;
 
@@ -152,13 +151,13 @@ private:
     SequenceWalkerTask* getSWSubtask();
     
 private:
-    const P7_HMM*                       hmm;
+    QList<const P7_HMM*>                hmms;
     DNASequence                         sequence;
     UHMM3SearchTaskSettings             settings;
     DNATranslation*                     complTranslation;
     DNATranslation*                     aminoTranslation;
-    QList<UHMM3SWSearchTaskDomainResult> results;
-    QList<UHMM3SWSearchTaskDomainResult> overlaps;
+    QMap<int, QList<UHMM3SWSearchTaskDomainResult> > results;
+    QMap<int, QList<UHMM3SWSearchTaskDomainResult> > overlaps;
     QMutex                              writeResultsMtx;
     SequenceWalkerTask*                 swTask;
     LoadDocumentTask*                   loadHmmTask;

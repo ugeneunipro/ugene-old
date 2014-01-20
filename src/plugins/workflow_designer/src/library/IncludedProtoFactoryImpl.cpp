@@ -52,7 +52,7 @@ ActorPrototype *IncludedProtoFactoryImpl::_getScriptProto(QList<DataTypePtr > in
 
     QMap<Descriptor, DataTypePtr> map;
     foreach(const DataTypePtr & tptr, input) {
-        if(tptr == DataTypePtr()) {
+        if(!tptr || tptr == DataTypePtr()) {
             coreLog.error(LocalWorkflow::ScriptWorker::tr("For input port was set empty data type"));
             return NULL;
         }
@@ -66,7 +66,7 @@ ActorPrototype *IncludedProtoFactoryImpl::_getScriptProto(QList<DataTypePtr > in
 
     map.clear();
     foreach(const DataTypePtr & tptr, output) {
-        if(tptr == DataTypePtr()) {
+        if(!tptr || tptr == DataTypePtr()) {
             coreLog.error(LocalWorkflow::ScriptWorker::tr("For output port was set empty data type"));
             return NULL;
         }

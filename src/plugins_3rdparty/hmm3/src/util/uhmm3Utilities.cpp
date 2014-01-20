@@ -193,19 +193,22 @@ ESL_MSA * UHMM3Utilities::convertMSA( const MAlignment & ma ) {
     return msa;
 }
 
-P7_HMM * UHMM3Utilities::getHmmFromDocument( Document* doc, TaskStateInfo& ti ) {
-    assert( NULL != doc );
-    if( doc->getObjects().isEmpty() ) {
-        ti.setError( "no_hmm_found_in_file" );
-        return NULL;
-    } else {
-        UHMMObject* obj = qobject_cast< UHMMObject* >( doc->getObjects().first() );
-        if( NULL == obj ) {
-            ti.setError( "cannot_cast_to_hmm_object" );
-            return NULL;
+QList<const P7_HMM *> UHMM3Utilities::getHmmsFromDocument( Document* doc, TaskStateInfo& ti ){
+    QList<const P7_HMM *> res;
+    SAFE_POINT( NULL != doc, "UHMM3Utilities::getHmmsFromDocument:: doc is NULL",  res);
+
+    const QList<GObject*>& gobjects = doc->getObjects();
+    foreach(GObject* gobj, gobjects){
+        UHMMObject* obj = qobject_cast< UHMMObject* >( gobj );
+        if( NULL != obj ) {
+            res.append((P7_HMM*)obj->getHMM());
         }
-        return (P7_HMM*)obj->getHMM();
     }
+
+    if (res.isEmpty()){
+        ti.setError( "no_hmm_found_in_file" );
+    }
+    return res;
 }
 
 } // U2

@@ -72,18 +72,21 @@ static void recountUHMM3SWSearchRegions( UHMM3SearchSeqDomainResult& res, bool i
 }
 
 UHMM3SWSearchTask::UHMM3SWSearchTask( const P7_HMM* h, const DNASequence& s, const UHMM3SearchTaskSettings& set, int ch )
-: Task( "", TaskFlag_NoRun ), hmm( h ), sequence( s ), settings( set ), 
+: Task( "", TaskFlag_NoRun ), sequence( s ), settings( set ), 
   complTranslation( NULL ), aminoTranslation( NULL ), swTask( NULL ), loadHmmTask( NULL ), searchChunkSize(ch) {
     GCOUNTER( cvar, tvar, "UHMM3SWSearchTask" );
     
+    
+
     assert(searchChunkSize > 0);
-    if( NULL == hmm ) {
+    if( NULL == h ) {
         setTaskName( tr( "Sequence_walker_HMM_search_task" ) );
         stateInfo.setError( L10N::badArgument( "hmm" ) );
         return;
     }
-    assert( NULL != hmm->name );
-    setTaskName( tr( "Sequence_walker_hmm_search_with_'%1'" ).arg( hmm->name ) );
+    hmms.append(h);
+    assert( NULL != h->name );
+    setTaskName( tr( "Sequence_walker_hmm_search_with_'%1'" ).arg( h->name ) );
     
     if( !sequence.seq.length() ) {
         stateInfo.setError( L10N::badArgument( "sequence" ) );
@@ -92,7 +95,7 @@ UHMM3SWSearchTask::UHMM3SWSearchTask( const P7_HMM* h, const DNASequence& s, con
 }
 
 UHMM3SWSearchTask::UHMM3SWSearchTask( const QString& hF, const DNASequence& seq, const UHMM3SearchTaskSettings& s, int ch)
-: Task( "", TaskFlag_NoRun ), hmm( NULL ), sequence( seq ), settings( s ), 
+: Task( "", TaskFlag_NoRun ), sequence( seq ), settings( s ), 
   complTranslation( NULL ), aminoTranslation( NULL ), swTask( NULL ), loadHmmTask( NULL ), hmmFilename( hF ), searchChunkSize(ch) {
     
     assert(searchChunkSize > 0);
@@ -111,14 +114,14 @@ UHMM3SWSearchTask::UHMM3SWSearchTask( const QString& hF, const DNASequence& seq,
 
 SequenceWalkerTask* UHMM3SWSearchTask::getSWSubtask() {
     assert( !hasError() );
-    assert( NULL != hmm );
+    SAFE_POINT( !hmms.isEmpty(), "UHMM3SWSearchTask::getSWSubtask:: No HMM profiles", NULL );
     
-    bool ok = checkAlphabets( hmm->abc->type, sequence.alphabet );
+    bool ok = checkAlphabets( hmms.first()->abc->type, sequence.alphabet );
     if( !ok ) {
         assert( hasError() );
         return NULL;
     }
-    ok = setTranslations( hmm->abc->type, sequence.alphabet );
+    ok = setTranslations( hmms.first()->abc->type, sequence.alphabet );
     if( !ok ) {
         assert( hasError() );
         return NULL;
@@ -145,7 +148,7 @@ void UHMM3SWSearchTask::prepare() {
         return;
     }
     
-    if( NULL != hmm ) {
+    if( !hmms.isEmpty() ) {
         swTask = getSWSubtask();
         if( NULL == swTask ) {
             assert( hasError() );
@@ -169,7 +172,12 @@ QList< Task* > UHMM3SWSearchTask::onSubTaskFinished( Task* subTask ) {
     }
     
     if( loadHmmTask == subTask ) {
-        hmm = UHMM3Utilities::getHmmFromDocument( loadHmmTask->getDocument(), stateInfo );
+        hmms = UHMM3Utilities::getHmmsFromDocument( loadHmmTask->getDocument(), stateInfo );
+        //init results and overlaps
+        for(int i = 0; i<hmms.size(); i++){
+            results[i] = QList<UHMM3SWSearchTaskDomainResult>();
+            overlaps[i] = QList<UHMM3SWSearchTaskDomainResult>();
+        }
         swTask = getSWSubtask();
         if( NULL == swTask ) {
             assert( hasError() );
@@ -197,14 +205,23 @@ void UHMM3SWSearchTask::onRegion( SequenceWalkerSubtask* t, TaskStateInfo& ti ) 
     UHMM3SearchTaskLocalStorage::createTaskContext( t->getTaskId() );
     int wholeSeqSz = t->getGlobalConfig().seqSize;
     wholeSeqSz = t->isAminoTranslated() ? (wholeSeqSz / 3) : wholeSeqSz;
-    UHMM3SearchResult generalRes = UHMM3Search::search( hmm, seq, seqLen, settings.inner, ti, wholeSeqSz );
-    if( ti.hasError() ) {
-        UHMM3SearchTaskLocalStorage::freeTaskContext( t->getTaskId() );
-        return;
+    QList<UHMM3SearchResult > generalResults;
+    foreach(const P7_HMM* hmm, hmms){
+        UHMM3SearchResult generalRes = UHMM3Search::search( hmm, seq, seqLen, settings.inner, ti, wholeSeqSz );
+        generalResults.append(generalRes);
+        if( ti.hasError() ) {
+            UHMM3SearchTaskLocalStorage::freeTaskContext( t->getTaskId() );
+            return;
+        }
     }
     
     QMutexLocker locker( &writeResultsMtx );
-    writeResults(generalRes.domainResList, t, results, overlaps, hmm->M);
+    for(int i = 0; i<hmms.size(); i++){
+        if (i < generalResults.size()){
+            UHMM3SearchResult generalRes = generalResults[i];
+            writeResults(generalRes.domainResList, t, results[i], overlaps[i], hmms.at(i)->M);
+        }
+    }
     UHMM3SearchTaskLocalStorage::freeTaskContext( t->getTaskId() );
 }
 
@@ -241,10 +258,16 @@ void UHMM3SWSearchTask::writeResults(const QList<UHMM3SearchSeqDomainResult> & d
 
 QList< TaskResourceUsage > UHMM3SWSearchTask::getResources( SequenceWalkerSubtask * t ) {
     assert( NULL != t );
-    assert( !sequence.isNull() && NULL != hmm );
+    assert( !sequence.isNull() && !hmms.isEmpty() );
     
     QList< TaskResourceUsage > res;
-    int howManyMem = countSearchMemInMB( t->getRegionSequenceLen(), hmm->M );
+    int howManyMem = 0;
+    for(int i = 0; i<hmms.size(); i++){
+        int tmp = countSearchMemInMB( t->getRegionSequenceLen(), hmms.at(i)->M );
+        if (howManyMem < tmp){
+            howManyMem = tmp;
+        }
+    }
     res << TaskResourceUsage( RESOURCE_MEMORY, howManyMem );
     algoLog.trace( QString( "%1 requires %2 of memory" ).arg( getTaskName() ).arg( howManyMem ) );
     return res;
@@ -322,8 +345,10 @@ Task::ReportResult UHMM3SWSearchTask::report() {
     if(hasError()) {
         return ReportResult_Finished;
     }
-    processOverlaps(overlaps, results, hmm->M / 2);
-    qSort(results.begin(), results.end(), uhmm3SearchDomainResultLessThan);
+    for(int i = 0; i<hmms.size(); i++){
+        processOverlaps(overlaps[i], results[i], hmms.at(i)->M / 2);
+        qSort(results[i].begin(), results[i].end(), uhmm3SearchDomainResultLessThan);
+    }
     return ReportResult_Finished;
 }
 
@@ -379,7 +404,11 @@ bool UHMM3SWSearchTask::setTranslations( int hmmAl, const DNAAlphabet* seqAl ) {
 }
 
 QList<UHMM3SWSearchTaskDomainResult> UHMM3SWSearchTask::getResults() const {
-    return results;
+    QList<UHMM3SWSearchTaskDomainResult> res;
+    for(int i = 0; i<hmms.size(); i++){
+        res.append(results[i]);
+    }
+    return res;
 }
 
 QList< SharedAnnotationData >
@@ -412,7 +441,11 @@ UHMM3SWSearchTask::getResultsAsAnnotations( const QList<UHMM3SWSearchTaskDomainR
 }
 
 QList< SharedAnnotationData > UHMM3SWSearchTask::getResultsAsAnnotations( const QString & aname ) {
-    return getResultsAsAnnotations( results, hmm, aname );
+    QList< SharedAnnotationData > res;
+    for(int i = 0; i<hmms.size(); i++){
+        res.append( getResultsAsAnnotations( results[i], hmms.at(i), aname ) );
+    }
+    return res;
 }
 
 /*****************************************************
@@ -427,20 +460,33 @@ UHMM3SearchTaskSettings::UHMM3SearchTaskSettings() {
 * UHMM3SearchTask
 *****************************************************/
 
-UHMM3SearchTask::UHMM3SearchTask(const UHMM3SearchTaskSettings &_settings, P7_HMM *_hmmProfile, const QByteArray &_sequence)
+UHMM3SearchTask::UHMM3SearchTask(const UHMM3SearchTaskSettings &_settings, const QList<const P7_HMM *>& _hmmProfiles, const QByteArray &_sequence)
         : Task(tr("HMM search task"), TaskFlag_None),
-          settings(_settings), hmmProfile(_hmmProfile), sequence(_sequence)
+          settings(_settings), hmmProfiles(_hmmProfiles), sequence(_sequence)
 {
-    assert(hmmProfile && "Bad HMM profile given");
-    assert(hmmProfile->name);
+    assert(!hmmProfiles.isEmpty() && "Bad HMM profile given");
+    assert(hmmProfiles.first()->name);
 
-    setTaskName(tr("HMM search with '%1'").arg(hmmProfile->name));
+    if (hmmProfiles.size() == 1){
+        setTaskName(tr("HMM search with '%1'").arg(hmmProfiles.first()->name));
+    }else{
+        setTaskName(tr("HMM search with %1 profiles").arg(hmmProfiles.size()));
+    }
+    
 }
 
 void UHMM3SearchTask::prepare() {
-    assert(hmmProfile->M > 0);
+    assert(!hmmProfiles.isEmpty() && "Bad HMM profile given");
+    assert(hmmProfiles.first()->M > 0);
 
-    int howManyMem = countSearchMemInMB(sequence.length(), hmmProfile->M);
+    int howManyMem = 0;
+    for(int i = 0; i<hmmProfiles.size(); i++){
+        int tmp = countSearchMemInMB( sequence.length(), hmmProfiles.at(i)->M );
+        if (howManyMem < tmp){
+            howManyMem = tmp;
+        }
+    }
+
     addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, howManyMem));
 
     algoLog.trace(QString("%1 needs %2 of memory").arg(getTaskName()).arg(howManyMem));
@@ -448,7 +494,10 @@ void UHMM3SearchTask::prepare() {
 
 void UHMM3SearchTask::run() {   
     UHMM3SearchTaskLocalStorage::createTaskContext( getTaskId() );
-    result = UHMM3Search::search(hmmProfile, sequence.data(), sequence.length(), settings.inner, stateInfo, sequence.length());
+    foreach(const P7_HMM * hmm, hmmProfiles){
+        UHMM3SearchResult res = UHMM3Search::search(hmm, sequence.data(), sequence.length(), settings.inner, stateInfo, sequence.length());
+        result.append(res);
+    }
     UHMM3SearchTaskLocalStorage::freeTaskContext( getTaskId() );
 }
 
@@ -459,7 +508,7 @@ void UHMM3SearchTask::run() {
 UHMM3LoadProfileAndSearchTask::UHMM3LoadProfileAndSearchTask(const UHMM3SearchTaskSettings &_settings, const QString &_hmmProfileFile, const QByteArray &_sequence)
         : Task(tr("HMM search with '%1' HMM profile file").arg(_hmmProfileFile), TaskFlags_NR_FOSCOE),
           loadHmmProfileTask(0), hmmSearchTask(0),
-          hmmProfile(0), settings(_settings), sequence(_sequence)
+          settings(_settings), sequence(_sequence)
 {
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(_hmmProfileFile));
     assert(iof);
@@ -477,10 +526,10 @@ QList<Task*> UHMM3LoadProfileAndSearchTask::onSubTaskFinished(Task* subTask) {
     }
 
     if (loadHmmProfileTask == subTask) {
-        hmmProfile = UHMM3Utilities::getHmmFromDocument(loadHmmProfileTask->getDocument(), stateInfo);
-        assert(hmmProfile && "Bad HMM profile");
+        QList<const P7_HMM *> hmmProfiles = UHMM3Utilities::getHmmsFromDocument(loadHmmProfileTask->getDocument(), stateInfo);
+        assert(!hmmProfiles.isEmpty() && "Bad HMM profile");
 
-        hmmSearchTask = new UHMM3SearchTask(settings, hmmProfile, sequence);
+        hmmSearchTask = new UHMM3SearchTask(settings, hmmProfiles, sequence);
         subTasks << hmmSearchTask;
     }
     else if (hmmSearchTask == subTask) {

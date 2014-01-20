@@ -58,6 +58,7 @@ static void loadAll( IOAdapter* io, QList< GObject* >& objects, U2OpStatus& os) 
     
     while( !io->isEof() && !os.isCoR()) {
         loadOne( io, objects, os);
+        os.setProgress(io->getProgress());
     }
 }
 

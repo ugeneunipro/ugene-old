@@ -45,7 +45,7 @@ public:
     
     static ESL_MSA * convertMSA( const MAlignment & ma );
     
-    static P7_HMM * getHmmFromDocument( Document* doc, TaskStateInfo& ti );
+    static QList<const P7_HMM *> getHmmsFromDocument( Document* doc, TaskStateInfo& ti );
     
 }; // UHMM3Utilities
 

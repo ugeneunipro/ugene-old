@@ -61,7 +61,13 @@ enum HMMERHeaderTags {
     HMM3_NULE, // in HMMER2 only
     HMM3_HMM,
     HMM3_BM,
-    HMM3_SM
+    HMM3_SM,
+
+    //HMMER 3.1
+    HMM3_MAXL,
+    HMM3_MM,
+    HMM3_CONS,
+    HMM3_COMPO
 }; // HMMERHeaderTags
 
 static QMap< QByteArray, HMMERHeaderTags > getHeaderTagsMap() {
@@ -88,6 +94,13 @@ static QMap< QByteArray, HMMERHeaderTags > getHeaderTagsMap() {
         ret["HMM"]      = HMM3_HMM;
         ret["BM"]       = HMM3_BM;
         ret["SM"]       = HMM3_SM;
+
+        //HMMER3.1
+        ret["MAXL"]     = HMM3_MAXL;
+        ret["MM"]       = HMM3_MM;
+        ret["CONS"]     = HMM3_CONS;
+        ret["COMPO"]    = HMM3_COMPO;
+
     }
     return ret;
 }
@@ -488,6 +501,10 @@ P7_HMM * UHMMFormatReader::readHMMER3ASCII() {
                 continue;
             case HMM3_BM:
             case HMM3_SM:
+            case HMM3_MAXL:
+            case HMM3_MM:
+            case HMM3_CONS:
+            case HMM3_COMPO:
                 //TODO: update HMMER and start use these fields too
                 break;
             case HMM3_BAD_TAG:

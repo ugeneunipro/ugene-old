@@ -199,6 +199,7 @@ MAlignment SimpleMSAWorkflow4GObjectTask::getResult() {
     MAlignment res;
     CHECK_OP(stateInfo, res);
 
+    SAFE_POINT(runWorkflowTask!=NULL,"SimpleMSAWorkflow4GObjectTask::getResult. No task has been created.",res);
     Document* d = runWorkflowTask->getDocument();
     CHECK_EXT(d!=NULL, setError(tr("Result document not found!")), res);
     CHECK_EXT(d->getObjects().size() == 1, setError(tr("Result document content not matched! %1").arg(d->getURLString())), res);
