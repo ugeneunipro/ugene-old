@@ -104,6 +104,9 @@ ProjectTreeController::ProjectTreeController(QObject* parent, QTreeWidget* _tree
     
     removeSelectedObjectsAction = new QAction(QIcon(":core/images/remove_gobject.png"), tr("Remove object from document"), this);
     connect(removeSelectedObjectsAction, SIGNAL(triggered()), SLOT(sl_onRemoveSelectedObjects()));
+    removeSelectedObjectsAction->setShortcut(QKeySequence(Qt::Key_Delete));
+    removeSelectedDocumentsAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    tree->addAction(removeSelectedObjectsAction);
 
     loadSelectedDocumentsAction = new QAction(QIcon(":core/images/load_selected_documents.png"), tr("Load selected documents"), this);
     loadSelectedDocumentsAction->setObjectName("action_load_selected_documents");
