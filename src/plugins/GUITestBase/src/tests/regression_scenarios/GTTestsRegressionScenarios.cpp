@@ -4336,6 +4336,20 @@ GUI_TEST_CLASS_DEFINITION( test_2519 ) {
     GTGlobals::sleep(5000);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2565 ) {
+    //    1. Open "samples/Genbank/murine.gb".
+    //    2. Press Ctrl+F.
+    //    3. Insert the pattern "GCTAGCTTAAGTAACGCCACTTTT".
+    //    4. Click "Search".
+    //    Expected: the pattern is not found. Notification with this information appears.
+    GTLogTracer l;
+    GTFileDialog::openFile(os, dataDir+"samples/Genbank/", "murine.gb");
+    GTUtilsOptionsPanel::runFindPatternWithHotKey("GCTAGCTTAAGTAACGCCACTTTT", os);
+    CHECK_SET_ERR(l.checkMessage(QString("Searching patterns in sequence task: No results found.")),
+                  "No expected message in the log");
+
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2605 ) {
     GTLogTracer logTracer;
     // 1. Open file _common_data/fasta/multy_fa.fa as multiple alignment
