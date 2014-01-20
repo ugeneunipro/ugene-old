@@ -455,6 +455,7 @@ void FindPatternWidget::initAlgorithmLayout()
     spinMatch->setMaximum(100);
     spinMatch->setSingleStep(1);
     spinMatch->setValue(100);
+    spinMatch->setObjectName("spinBoxMatch");
 
     layoutMismatch->addWidget(lblMatch);
     layoutMismatch->addWidget(spinMatch);
