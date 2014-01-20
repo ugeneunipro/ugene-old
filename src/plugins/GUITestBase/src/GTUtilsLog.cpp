@@ -20,6 +20,7 @@
  */
 
 #include "GTUtilsLog.h"
+#include "U2Core/LogCache.h"
 
 namespace U2 {
 
@@ -37,6 +38,20 @@ void GTLogTracer::onMessage(const LogMessage &msg) {
     if (msg.level == LogLevel_ERROR) {
         wasError = true;
     }
+
+}
+
+QList<LogMessage*> GTLogTracer::getMessages(){
+    return LogCache::getAppGlobalInstance()->messages;
+}
+
+bool GTLogTracer::checkMessage(QString s){
+    foreach (LogMessage* message, getMessages()){
+        if(message->text.contains(s,Qt::CaseInsensitive)){
+            return true;
+        }
+    }
+    return false;
 }
 
 #define GT_CLASS_NAME "GTUtilsLog"

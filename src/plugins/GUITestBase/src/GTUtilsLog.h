@@ -37,6 +37,8 @@ public:
     bool hasError() const { return wasError; }
 
     void onMessage(const LogMessage& msg);
+    static QList<LogMessage*> getMessages();
+    static bool checkMessage(QString s);
 
 private:
     bool wasError;
