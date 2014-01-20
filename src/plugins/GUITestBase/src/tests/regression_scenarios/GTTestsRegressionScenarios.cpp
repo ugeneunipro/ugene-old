@@ -2763,7 +2763,7 @@ GUI_TEST_CLASS_DEFINITION( test_1924 )
 
     //4. Click OK
     //Expected state: subsequence inserted
-    //Bug state: Warning message is shown first	
+    //Bug state: Warning message is shown first
 
     int sequenceLength = GTUtilsSequenceView::getLengthOfSequence(os);
     CHECK_SET_ERR(sequenceLength == 199957, "Sequence length is " + QString::number(sequenceLength) + ", expected 199957");
@@ -4403,20 +4403,20 @@ GUI_TEST_CLASS_DEFINITION( test_2605 ) {
     CHECK_SET_ERR(!logTracer.hasError(), "Unexpected error");
 }
 GUI_TEST_CLASS_DEFINITION( test_2612 ) {
-	//  1. Open sequence "samples/fasta/human_T1.fa".
-	GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
-	//	2. Search for 20 first nucleotides (TTGTCAGATTCACCAAAGTT) using Find Pattern.
-	GTUtilsOptionsPanel::runFindPatternWithHotKey("TTGTCAGATTCACCAAAGTT", os);
-	//	Expected state: the annotation with pattern created and shown in sequence view.
-	GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
-	QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
-	GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
-	//  3. Delete annotation from annotation editor.
-	GTMouseDriver::click(os);
-	GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
-	//	Expected state: there is no annotation in sequence view.
-	GTGlobals::sleep(100);
-	CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", GTGlobals::FindOptions(false))==NULL, "Annotations document not deleted");
+    // 1. Open sequence "samples/fasta/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    // 2. Search for 20 first nucleotides (TTGTCAGATTCACCAAAGTT) using Find Pattern.
+    GTUtilsOptionsPanel::runFindPatternWithHotKey("TTGTCAGATTCACCAAAGTT", os);
+    // Expected state: the annotation with pattern created and shown in sequence view.
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    // 3. Delete annotation from annotation editor.
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    // Expected state: there is no annotation in sequence view.
+    GTGlobals::sleep(100);
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", GTGlobals::FindOptions(false))==NULL, "Annotations document not deleted");
 }
 
 } // GUITest_regression_scenarios namespace
