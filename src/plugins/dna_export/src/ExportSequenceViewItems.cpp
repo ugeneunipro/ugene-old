@@ -548,12 +548,18 @@ void ADVExportContext::prepareMAFromBlastAnnotations(MAlignment& ma, const QStri
         CHECK_EXT(maxLen * ma.getNumRows() <= MAX_ALI_MODEL, os.setError(tr("Alignment is too large")), );
 
         QByteArray rowSequence;
-        AnnotationSelection::getAnnotationSequence(rowSequence, a, MAlignment_GapChar, seqRef,  
-            NULL, NULL, os);
-        CHECK_OP(os, );
+        QString subjSeq = a.annotation.findFirstQualifierValue( "subj_seq" );
+        if(!subjSeq.isEmpty()){
+            ma.addRow(rowName, subjSeq.toAscii(), os);
+            CHECK_OP(os, );
+        }else{
+            AnnotationSelection::getAnnotationSequence(rowSequence, a, MAlignment_GapChar, seqRef,  
+                NULL, NULL, os);
+            CHECK_OP(os, );
+            ma.addRow(rowName, rowSequence, os);
+            CHECK_OP(os, );
+        }
 
-        ma.addRow(rowName, rowSequence, os);
-        CHECK_OP(os, );
         int offset = a.annotation.getLocation()->regions.first().startPos;
         ma.insertGaps(rowIdx, 0, offset, os);
         CHECK_OP(os, );
