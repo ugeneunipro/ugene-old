@@ -296,8 +296,8 @@ Task::ReportResult GTest_UHMM3Search::report() {
     if( stateInfo.hasError() ) {
         return ReportResult_Finished;
     }
-    assert( NULL != searchTaskToCtx );
-    if( !searchTaskToCtx->hasError() && !searchTaskToCtx->isCanceled() ) {
+    
+    if(searchTaskToCtx != NULL && !searchTaskToCtx->hasError() && !searchTaskToCtx->isCanceled() ) {
         addContext( searchTaskCtxName, searchTaskToCtx );
         ctxAdded = true;
     }
@@ -445,9 +445,9 @@ void GTest_UHMM3SearchCompare::generalCompareResults( const UHMM3SearchResult& m
     }
     
     if( myFull.isReported ) {
-//         if( !compareNumbers<float>( myFull.bias, trueFull.bias )   ) { 
-//             ti.setError( QString( "full_seq_bias_not_matched: %1 and %2" ).arg( myFull.bias ).arg( trueFull.bias ) );  return; 
-//         }
+        if( !compareNumbers<float>( myFull.bias, trueFull.bias )   ) { 
+            ti.setError( QString( "full_seq_bias_not_matched: %1 and %2" ).arg( myFull.bias ).arg( trueFull.bias ) );  return; 
+        }
         if( !compareNumbers<double>( myFull.eval, trueFull.eval )  ) {
             ti.setError( QString( "full_seq_eval_not_matched: %1 and %2" ).arg( myFull.eval ).arg( trueFull.eval ) );  return; 
         }
@@ -476,9 +476,9 @@ void GTest_UHMM3SearchCompare::generalCompareResults( const UHMM3SearchResult& m
         if( !compareNumbers<double>( myCurDom.acc, trueCurDom.acc ) )   { 
             ti.setError( QString( "dom_acc_not_matched: %1 and %2" ).arg( myCurDom.acc ).arg( trueCurDom.acc ) );   return; 
         }
-//         if( !compareNumbers<float>( myCurDom.bias, trueCurDom.bias ) )  { 
-//             ti.setError( QString( "dom_bias_not_matched: %1 and %2" ).arg( myCurDom.bias ).arg( trueCurDom.bias ) );  return; 
-//         }
+        if( !compareNumbers<float>( myCurDom.bias, trueCurDom.bias ) )  { 
+            ti.setError( QString( "dom_bias_not_matched: %1 and %2" ).arg( myCurDom.bias ).arg( trueCurDom.bias ) );  return; 
+        }
         if( !compareNumbers<double>( myCurDom.cval, trueCurDom.cval ) )  { 
             ti.setError( QString( "dom_cval_not_matched: %1 and %2" ).arg( myCurDom.cval ).arg( trueCurDom.cval ) );  return; 
         }
