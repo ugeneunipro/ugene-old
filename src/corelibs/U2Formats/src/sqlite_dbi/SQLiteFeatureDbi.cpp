@@ -104,16 +104,15 @@ private:
 void SQLiteFeatureDbi::createAnnotationTableObject( U2AnnotationTable &table,
     const QString &folder, U2OpStatus &os )
 {
-    SQLiteTransaction t( db, os );
     dbi->getSQLiteObjectDbi( )->createObject( table, folder, SQLiteDbiObjectRank_TopLevel, os );
     CHECK_OP( os, );
 
     static const QString queryString( "INSERT INTO AnnotationTable (object, rootId) VALUES(?1, ?2)" );
-    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery( queryString, db, os );
+    SQLiteQuery q( queryString, db, os );
     CHECK_OP( os, );
-    q->bindDataId( 1, table.id );
-    q->bindDataId( 2, table.rootFeature );
-    q->insert( );
+    q.bindDataId( 1, table.id );
+    q.bindDataId( 2, table.rootFeature );
+    q.insert( );
     SAFE_POINT( !os.hasError( ), "Error on Feature DB insertion!", );
 }
 
@@ -140,7 +139,6 @@ U2AnnotationTable SQLiteFeatureDbi::getAnnotationTableObject( const U2DataId &ta
 void SQLiteFeatureDbi::renameAnnotationTableObject( const U2DataId &tableId,
     const QString &name, U2OpStatus &os )
 {
-    SQLiteTransaction t( db, os );
     U2Object tableObj;
     dbi->getSQLiteObjectDbi( )->getObject( tableObj, tableId, os );
     CHECK_OP( os, );
@@ -162,7 +160,7 @@ U2Feature SQLiteFeatureDbi::getFeature(const U2DataId& featureId, U2OpStatus& os
     return res;
 }
 
-static void add (QString& buf, const QString& str, const QString& op, int& n) {
+static void add(QString& buf, const QString& str, const QString& op, int& n) {
     if (!buf.isEmpty()) {
         buf += " AND ";
     }
@@ -210,7 +208,6 @@ static QString toSqlOrderOpFromCompareOp(ComparisonOp op) {
     }
     return res;
 }
-
 
 QSharedPointer<SQLiteQuery> SQLiteFeatureDbi::createFeatureQuery( const QString &selectPart,
     const FeatureQuery &fq, bool useOrder, U2OpStatus &os, SQLiteTransaction *trans )
@@ -362,9 +359,7 @@ qint64 SQLiteFeatureDbi::countFeatures( const FeatureQuery &fq, U2OpStatus &os )
 }
 
 U2DbiIterator<U2Feature>* SQLiteFeatureDbi::getFeatures(const FeatureQuery& fq, U2OpStatus& os) {
-    SQLiteTransaction t(db, os);
-
-    QSharedPointer<SQLiteQuery> q = createFeatureQuery("SELECT " + FDBI_FIELDS, fq, true, os, &t);
+    QSharedPointer<SQLiteQuery> q = createFeatureQuery("SELECT " + FDBI_FIELDS, fq, true, os);
     CHECK_OP(os, NULL);
     return new SqlRSIterator<U2Feature>(q, new SqlFeatureRSLoader(), NULL, U2Feature(), os);
 }
@@ -372,15 +367,15 @@ U2DbiIterator<U2Feature>* SQLiteFeatureDbi::getFeatures(const FeatureQuery& fq, 
 QList<U2FeatureKey> SQLiteFeatureDbi::getFeatureKeys(const U2DataId& featureId, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     static const QString queryString("SELECT name, value FROM FeatureKey WHERE feature = ?1");
-    QSharedPointer<SQLiteQuery> q  = t.getPreparedQuery(queryString, db, os);
+    SQLiteQuery q(queryString, db, os);
 
-    q->bindDataId(1, featureId);
+    q.bindDataId(1, featureId);
     CHECK_OP(os, QList<U2FeatureKey>());
     QList<U2FeatureKey> result;
-    while(q->step()) {
+    while(q.step()) {
         U2FeatureKey key;
-        key.name = q->getCString(0);
-        key.value = q->getCString(1);
+        key.name = q.getCString(0);
+        key.value = q.getCString(1);
         result.append(key);
     }
     return result;
@@ -429,6 +424,8 @@ void SQLiteFeatureDbi::createFeature(U2Feature& feature, const QList<U2FeatureKe
 }
 
 void SQLiteFeatureDbi::addKey(const U2DataId& featureId, const U2FeatureKey& key, U2OpStatus& os) {
+    DBI_TYPE_CHECK(featureId, U2Type::Feature, os, );
+
     SQLiteQuery qk("INSERT INTO FeatureKey(feature, name, value) VALUES(?1, ?2, ?3)"  , db, os);
     addKeyCommon(qk, featureId, key);
 }
@@ -497,17 +494,15 @@ void SQLiteFeatureDbi::updateKeyValue(const U2DataId& featureId, const U2Feature
 bool SQLiteFeatureDbi::getKeyValue( const U2DataId &featureId, U2FeatureKey &key, U2OpStatus &os ) {
     DBI_TYPE_CHECK( featureId, U2Type::Feature, os, false );
 
-    SQLiteTransaction t ( db, os );
-
     static const QString queryString( "SELECT value FROM FeatureKey WHERE feature = ?1 AND name = ?2" );
-    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery( queryString, db, os );
+    SQLiteQuery q( queryString, db, os );
     CHECK_OP( os, false );
 
-    q->bindDataId( 1, featureId );
-    q->bindString( 2, key.name );
+    q.bindDataId( 1, featureId );
+    q.bindString( 2, key.name );
 
-    if ( q->step( ) ) {
-        key.value = q->getCString( 0 );
+    if ( q.step( ) ) {
+        key.value = q.getCString( 0 );
         return true;
     } else {
         return false;
@@ -516,6 +511,8 @@ bool SQLiteFeatureDbi::getKeyValue( const U2DataId &featureId, U2FeatureKey &key
 
 void SQLiteFeatureDbi::updateLocation(const U2DataId& featureId, const U2FeatureLocation& location, U2OpStatus& os) {
     DBI_TYPE_CHECK(featureId, U2Type::Feature, os, );
+
+    SQLiteTransaction t( db, os );
 
     SQLiteQuery qf("UPDATE Feature SET strand = ?1, start = ?2, len = ?3 WHERE id = ?4" , db, os);
     qf.bindInt32(1, location.strand.getDirectionValue());
@@ -534,6 +531,8 @@ void SQLiteFeatureDbi::updateLocation(const U2DataId& featureId, const U2Feature
 
 void SQLiteFeatureDbi::removeFeature(const U2DataId& featureId, U2OpStatus& os) {
     DBI_TYPE_CHECK(featureId, U2Type::Feature, os, );
+
+    SQLiteTransaction t( db, os );
 
     SQLiteQuery qk("DELETE FROM FeatureKey WHERE feature = ?1" , db, os);
     qk.bindDataId(1, featureId);
