@@ -2200,18 +2200,19 @@ GUI_TEST_CLASS_DEFINITION( test_2049 ){
     
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
     
-    GTWidget::click(os, GTWidget::findWidget(os, "Codon table"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Codon table"));
+    GTWidget::click(os, GTWidget::findWidget(os, "AminoToolbarButton"));
     GTGlobals::sleep(500);
     QWidget* w = GTWidget::findWidget(os, "Codon table widget");
-    QPixmap pixmapBefore = QPixmap::grabWidget(w);
+    int ititHeight = GTWidget::findWidget(os, "Leucine (Leu)",w)->geometry().height();
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"3. The Yeast Mitochondrial Code"));
     GTWidget::click(os, GTWidget::findWidget(os, "AminoToolbarButton"));
     GTGlobals::sleep(500);
 
     w = GTWidget::findWidget(os, "Codon table widget");
-    QPixmap pixmapAfter = QPixmap::grabWidget(w);
-    CHECK_SET_ERR(pixmapBefore.toImage() != pixmapAfter.toImage(), "codone table not changed");
+    int finalHeight = GTWidget::findWidget(os, "Leucine (Leu)",w)->geometry().height();
+    CHECK_SET_ERR(ititHeight != finalHeight, "codone table not changed");
     }
 
 GUI_TEST_CLASS_DEFINITION( test_2070 ){
@@ -2624,8 +2625,7 @@ GUI_TEST_CLASS_DEFINITION( test_2144 )
 
 GUI_TEST_CLASS_DEFINITION( test_2150 ){
     // 1. Open Workflow Designer.
-    QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     // 2. Open the "Align sequences with MUSCLE" sample scheme.
     GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
 
@@ -2647,7 +2647,7 @@ GUI_TEST_CLASS_DEFINITION( test_2150 ){
 
     // 5. Run the workflow.
     GTWidget::click(os,GTAction::button(os,"Run workflow"));
-    GTGlobals::sleep();
+    GTGlobals::sleep(5000);
     //GTUtilsTaskTreeView::waitTaskFinidhed(os,1000);
 
     // 6. During the workflow execution open the "Tasks" panel in the bottom, find in the task tree the "MUSCLE alignment" subtask and cancel it.
@@ -2825,27 +2825,22 @@ GUI_TEST_CLASS_DEFINITION( test_2163 ) {
    //4. Double click on the results table.
     GTUtilsTaskTreeView::waitTaskFinidhed(os);
     QTableWidget *idList = qobject_cast<QTableWidget*>(GTWidget::findWidget(os, "idList"));
-    GTWidget::click(os, idList);
+
     GTGlobals::sleep();
+
+    QPoint p1 = idList->mapFromGlobal(GTTableView::getCellPosition(os, idList, 0, 0));
+    GTMouseDriver::moveTo(os, GTTableView::getCellPosition(os, idList, 0, 0 ));
+    QString value1 = idList->itemAt(p1)->text();
+    GTMouseDriver::doubleClick(os);
+
+
+    // 4. Try to delete value from table
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
-    // 4. Select a result id in the table.
-    QPoint p1 = idList->mapFromGlobal(GTTableView::getCellPosition(os, idList, 0, 3));
-    GTWidget::click(os, idList, Qt::LeftButton, p1);
-
-    int count1 = idList->model()->rowCount();
-    QString value1 = idList->itemAt(p1)->text();
-
-    //Expected: the table contains only the last results. There are no previous items and additional empty lines.
-    QPoint p2 = idList->mapFromGlobal(GTTableView::getCellPosition(os, idList, 0, 3));
-    GTWidget::click(os, idList, Qt::LeftButton, p2);
-
-    int count2 = idList->model()->rowCount();
-    QString value2 = idList->itemAt(p2)->text();
-
-    CHECK_SET_ERR(count1 == count2, "There are empty rows!");
+    //Expected state: value not deleted
+    QString value2 = idList->itemAt(p1)->text();
     CHECK_SET_ERR(value1 == value2, "Results differ!");
-
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2164 ) {
@@ -3303,11 +3298,12 @@ GUI_TEST_CLASS_DEFINITION( test_2266_1 ){
     GTMouseDriver::click(os);
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/ugenedb/", "Klebsislla_ref.fa");
 
+    QString baseDirName = QDateTime::currentDateTime().toString("yyyy.MM.dd_hh-mm");
     GTWidget::click(os,GTAction::button(os,"Run workflow"));
 
     GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
-    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox", "variations.vcf");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox" + baseDirName + "/", "variations.vcf");
 
     QTreeWidgetItem *seqDoc = GTUtilsProjectTreeView::findItem(os, "pkF70_variations");
     QTreeWidgetItem *seqDoc1 = GTUtilsProjectTreeView::findItem(os, "pkf140_variations");
@@ -3890,7 +3886,8 @@ GUI_TEST_CLASS_DEFINITION( test_2378_1 ) {
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Assembly");
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Write Assembly"));
     GTMouseDriver::click(os);
-    GTUtilsWorkflowDesigner::setParameter(os, "Output file", testDir + "_common_data/scenarios/sandbox/test_2378_1.bam", GTUtilsWorkflowDesigner::textValue);
+    //QString //absPath =
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", QDir(testDir).absolutePath() + "_common_data/scenarios/sandbox/test_2378_1.bam", GTUtilsWorkflowDesigner::textValue);
 
     GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Assembly"), GTUtilsWorkflowDesigner::getWorker(os, "Write Assembly"));
 

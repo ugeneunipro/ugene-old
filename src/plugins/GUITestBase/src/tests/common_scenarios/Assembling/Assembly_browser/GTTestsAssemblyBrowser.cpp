@@ -87,6 +87,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "replace" ));
     GTUtilsDialog::waitForDialog(os,new ImportBAMFileFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.bam");
+    GTGlobals::sleep(1000);
 //2. convert bam file to example-alignment.ugenedb
 //Expected state: conversion finished without error
 

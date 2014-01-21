@@ -161,10 +161,16 @@ void GTUtilsDialog::checkAllFinished(U2OpStatus &os) {
 
     foreach(GUIDialogWaiter* w, pool) {
         GT_CHECK(w, "NULL GUIDialogWaiter");
-        bool hasCorrectState = (w->hadRun && w->getSettings().destiny == GUIDialogWaiter::MustBeRun) ||
-                (!w->hadRun && w->getSettings().destiny == GUIDialogWaiter::MustNotBeRun) ||
-                (w->getSettings().destiny == GUIDialogWaiter::NoMatter);
-        GT_CHECK(hasCorrectState, QString("%1 has incorrect finish state").arg((w->getSettings().objectName)));
+        switch  (w->getSettings().destiny){
+        case GUIDialogWaiter::MustBeRun:
+            GT_CHECK(w->hadRun, QString("\"%1\" not run but should be").arg((w->getSettings().objectName)));
+            break;
+        case GUIDialogWaiter::MustNotBeRun:
+            GT_CHECK(!w->hadRun, QString("\"%1\" had run but should not").arg((w->getSettings().objectName)));
+            break;
+        case GUIDialogWaiter::NoMatter:
+            break;
+        }
     }
 }
 #undef GT_METHOD_NAME

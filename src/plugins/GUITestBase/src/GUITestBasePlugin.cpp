@@ -169,7 +169,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1622);
     REGISTER_TEST(GUITest_regression_scenarios::test_1688);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1689, "outdated");
-    REGISTER_TEST(GUITest_regression_scenarios::test_1701);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1701, "https://ugene.unipro.ru/tracker/browse/UGENE-2684");
     REGISTER_TEST(GUITest_regression_scenarios::test_1703);
     REGISTER_TEST(GUITest_regression_scenarios::test_1708);
     REGISTER_TEST(GUITest_regression_scenarios::test_1720);
@@ -224,7 +224,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2128_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2138);
     REGISTER_TEST(GUITest_regression_scenarios::test_2140);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2150);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2150, "task tree view cant be tested");
     REGISTER_TEST(GUITest_regression_scenarios::test_2152);
     REGISTER_TEST(GUITest_regression_scenarios::test_2156);
     REGISTER_TEST(GUITest_regression_scenarios::test_2157);
