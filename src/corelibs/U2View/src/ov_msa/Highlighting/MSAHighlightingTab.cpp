@@ -44,7 +44,6 @@ static inline QVBoxLayout * initVBoxLayout(QWidget * w) {
 static inline QHBoxLayout * initHBoxLayout(QWidget * w) {
     QHBoxLayout * layout = new QHBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
-    //layout->setSpacing(5);
     layout->setAlignment(Qt::AlignTop);
 
     w->setLayout(layout);
@@ -70,7 +69,6 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
 
     QVBoxLayout * layout = initVBoxLayout(group);
     highlightingScheme = new QComboBox();
-    //highlightingScheme->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
 
     hint = new QLabel("");
     hint->setWordWrap(true);
@@ -85,10 +83,14 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
     layout2->addWidget(exportHighlightning);
     layout2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
+    layout->setSpacing(ITEMS_SPACING);
     layout->addSpacing(TITLE_SPACING);  
     layout->addWidget(highlightingScheme);
     layout->addWidget(hint);
     layout->addWidget(useDots);
+#ifdef Q_OS_MAC
+    layout->addSpacerItem(new QSpacerItem(40, 8, QSizePolicy::Expanding, QSizePolicy::Minimum));
+#endif
     layout->addWidget(buttonAndSpacer);
 
     return group;
