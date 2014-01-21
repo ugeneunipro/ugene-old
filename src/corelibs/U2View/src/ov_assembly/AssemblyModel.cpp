@@ -336,10 +336,28 @@ void AssemblyModel::onReferenceRemoved() {
     }
 }
 
+namespace {
+    bool isAssemblyDoc(const Document *doc, const U2Assembly &assembly) {
+        CHECK(NULL != doc, false);
+        foreach (const GObject *obj, doc->findGObjectByType(GObjectTypes::ASSEMBLY)) {
+            if (NULL == obj) {
+                continue;
+            }
+            const U2EntityRef &ent = obj->getEntityRef();
+            if ((ent.entityId == assembly.id) && (ent.dbiRef.dbiId == assembly.dbiId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
 // when reference doc removed from project
 void AssemblyModel::sl_referenceDocRemoved(Document* d) {
     if (d != NULL && refObj != NULL && refObj->getDocument() == d) {
-        onReferenceRemoved();
+        if (!isAssemblyDoc(d, assembly)) {
+            onReferenceRemoved();
+        }
     }
 
     foreach (VariantTrackObject *trackObj, trackObjList) {
