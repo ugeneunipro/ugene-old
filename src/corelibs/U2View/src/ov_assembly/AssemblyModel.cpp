@@ -326,7 +326,7 @@ void AssemblyModel::sl_referenceLoadingFailed() {
 void AssemblyModel::onReferenceRemoved() {
     QMessageBox::StandardButtons fl = QMessageBox::Yes | QMessageBox::No;
     QMessageBox::StandardButton btn = QMessageBox::question(QApplication::activeWindow(), tr("Errors"),
-        tr("Remove association of '%1' sequence with '%2' assembly?").arg(refObj->getGObjectName()).arg(assembly.visualName),fl, QMessageBox::Yes);
+        tr("The '%1' sequence is associated with the '%2' assembly?\nDo you want to remove the association?").arg(refObj->getGObjectName()).arg(assembly.visualName),fl, QMessageBox::Yes);
     if (btn == QMessageBox::Yes) {
         sl_unassociateReference();
     } else {
