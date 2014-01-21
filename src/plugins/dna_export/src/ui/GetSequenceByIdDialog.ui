@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Get sequences by ID</string>
+   <string>Get Sequences by ID</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -30,7 +30,7 @@
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>Save to directctory:</string>
+          <string>Save to directory:</string>
          </property>
         </widget>
        </item>
