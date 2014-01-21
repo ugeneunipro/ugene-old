@@ -355,6 +355,7 @@ ProcessRun ExternalToolSupportUtils::prepareProcess(const QString &toolName, con
     }
     result.program = tool->getPath();
     QString toolRunnerProgram = tool->getToolRunnerProgram();
+    QString listenerProgramMessage = result.program;
 
     if (!toolRunnerProgram.isEmpty()){
         ScriptingToolRegistry *stregister = AppContext::getScriptingToolRegistry();
@@ -366,6 +367,7 @@ ProcessRun ExternalToolSupportUtils::prepareProcess(const QString &toolName, con
         }
         result.arguments.prepend(result.program);
         result.program = stool->getPath();
+        listenerProgramMessage.prepend(result.program + " ");
     }
 
     QProcessEnvironment processEnvironment = QProcessEnvironment::systemEnvironment();
@@ -383,7 +385,7 @@ ProcessRun ExternalToolSupportUtils::prepareProcess(const QString &toolName, con
     algoLog.details(tr("Launching %1 tool: %2 %3").arg(toolName).arg(result.program).arg(arguments.join(" ")));
     if(NULL != listener) {
         listener->setToolName(toolName);
-        listener->addNewLogMessage(result.program, PROGRAM_PATH);
+        listener->addNewLogMessage(listenerProgramMessage, PROGRAM_PATH);
         QString argumentsLine = ExternalToolSupportUtils::prepareArgumentsForCmdLine(arguments);
         argumentsLine.replace(" -", "\n-");
 
