@@ -169,16 +169,6 @@ public:
     Workflow::Metadata getMeta(const QList<WorkflowProcessItem*> &items);
 
     void refreshView() {sl_refreshActorDocs();}
-    
-    /**
-    * Schema can run on local and remote machine
-    * if it is run on remote machine then all needed files on local filesystem
-    * are saved with schema and passed to remote machine (see WorkflowRemoteRunTask for details)
-    */
-    enum RunMode {
-        LOCAL_HOST,
-        REMOTE_MACHINE
-    }; // RunMode
 
     // SchemaConfig
     virtual RunFileSystem * getRFS();
@@ -215,10 +205,9 @@ private slots:
     void sl_setStyle();
     void sl_toggleStyle();
     void sl_refreshActorDocs();
-    
-    void sl_setRunMode();
+
     void sl_changeScriptMode();
-    
+
     bool sl_validate(bool notify = true);
     void sl_estimate();
     void sl_estimationTaskFinished();
@@ -317,7 +306,6 @@ private:
     int pasteCount;
 
     bool scriptingMode;
-    RunMode runMode;
 
     QMenu *elementsMenu;
 
@@ -363,11 +351,9 @@ private:
     QAction* scaleSep;
     QAction* scaleAction;
     QAction* styleAction;
-    QAction* runModeAction;
     QAction* scriptAction;
     QAction* dmAction;
     QList<QAction*> styleActions;
-    QList<QAction*> runModeActions;
     QList<QAction*> scriptingActions;
     QComboBox *scaleComboBox;
 

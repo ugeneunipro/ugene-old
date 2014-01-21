@@ -314,7 +314,6 @@ WorkflowView::WorkflowView(WorkflowGObject* go)
 : MWMDIWindow(tr("Workflow Designer")), running(false), sceneRecreation(false), go(go), currentProto(NULL), currentActor(NULL),
 pasteCount(0), debugInfo(new WorkflowDebugStatus(this)), debugActions()
 {
-    runMode = (RunMode)WorkflowSettings::getRunMode();
     scriptingMode = WorkflowSettings::getScriptingMode();
     elementsMenu = NULL;
     schema = new Schema();
@@ -350,7 +349,6 @@ WorkflowView::~WorkflowView() {
     if(AppContext::getProjectService()) {
         AppContext::getProjectService()->enableSaveAction(true);
     }
-    WorkflowSettings::setRunMode((int)runMode);
     WorkflowSettings::setScriptingMode(scriptingMode);
 }
 
@@ -776,20 +774,6 @@ void WorkflowView::createActions() {
         connect(extStyle, SIGNAL(triggered()), SLOT(sl_setStyle()));
     }
 
-    { // run mode
-        QAction * localHostRunMode = new QAction( tr( "Local host" ), this );
-        localHostRunMode->setCheckable( true );
-        localHostRunMode->setObjectName("Local host");
-        localHostRunMode->setChecked( LOCAL_HOST == runMode );
-        runModeActions << localHostRunMode;
-        connect( localHostRunMode, SIGNAL( triggered() ), SLOT( sl_setRunMode() ) );
-
-        QAction * remoteMachineRunMode = new QAction( tr( "Remote machine" ), this );
-        remoteMachineRunMode->setObjectName("Remote machine");
-        remoteMachineRunMode->setCheckable( true );
-        remoteMachineRunMode->setChecked( REMOTE_MACHINE == runMode );
-    }
-
     { // scripting mode
         QAction * notShowScriptAction = new QAction( tr( "Hide scripting options" ), this );
         notShowScriptAction->setObjectName("Hide scripting options");
@@ -1170,35 +1154,6 @@ static void addUrlLocationParameter( Actor * actor ) {
     }
 }
 
-void WorkflowView::sl_setRunMode() {
-    QAction * a = qobject_cast<QAction*>( sender() );
-    CHECK(NULL != a, );
-    if( runModeActions[0] == a ) { // local host run mode
-        runMode = LOCAL_HOST;
-    } else if( runModeActions[1] == a ) { // remote machine run mode
-        runMode = REMOTE_MACHINE;
-    }
-
-    runModeActions[0]->setChecked( LOCAL_HOST == runMode );
-    runModeActions[1]->setChecked( REMOTE_MACHINE == runMode );
-
-    // change actors that are on pallette now
-    foreach(Actor *actor, schema->getProcesses()) {
-        switch( runMode ) {
-        case LOCAL_HOST:
-            removeUrlLocationParameter(actor);
-            break;
-        case REMOTE_MACHINE:
-            addUrlLocationParameter(actor);
-            break;
-        default:
-            assert(false);
-        }
-    }
-
-    scene->sl_deselectAll();
-}
-
 void WorkflowView::sl_changeScriptMode() {
     QAction *a = qobject_cast<QAction*>(sender());
     if(a != NULL) {
@@ -1270,7 +1225,6 @@ void WorkflowView::setupMDIToolbar(QToolBar* tb) {
     scaleAction = tb->addWidget(scaleComboBox);
     scaleSep = tb->addSeparator();
     styleAction = tb->addWidget(styleMenu(this, styleActions));
-    runModeAction = tb->addWidget(runMenu(this, runModeActions));
     scriptAction = tb->addWidget(scriptMenu(this, scriptingActions));
     tb->addAction(dmAction);
 
@@ -1317,7 +1271,6 @@ void WorkflowView::setupActions() {
     scaleSep->setVisible(!dashboard);
 
     styleAction->setVisible(!dashboard);
-    runModeAction->setVisible(editMode);
     scriptAction->setVisible(editMode);
 }
 
@@ -1360,12 +1313,6 @@ void WorkflowView::setupViewMenu(QMenu* m) {
         ttMenu->addAction(a);
     }
     m->addMenu(ttMenu);
-    
-    QMenu * runModeMenu = new QMenu( tr( "Run mode" ) );
-    foreach( QAction * a, runModeActions ) {
-        runModeMenu->addAction( a );
-    }
-    m->addMenu( runModeMenu );
 
     QMenu* scriptMenu = new QMenu(tr("Scripting mode"));
     foreach(QAction* a, scriptingActions) {
@@ -1429,13 +1376,6 @@ void WorkflowView::setupContextMenu(QMenu* m) {
                 m->addMenu(ttMenu);
             }
         }
-        m->addSeparator();
-
-        QMenu * runModeMenu = new QMenu( tr( "Run mode" ) );
-        foreach( QAction * a, runModeActions ) {
-            runModeMenu->addAction( a );
-        }
-        m->addMenu( runModeMenu );
         m->addSeparator();
 
         m->addAction(selectAction);
@@ -1594,16 +1534,7 @@ void WorkflowView::remoteLaunch() {
 
 void WorkflowView::sl_launch() {
     if(!debugInfo->isPaused()) {
-        switch( runMode ) {
-        case LOCAL_HOST:
-            localHostLaunch();
-            break;
-        case REMOTE_MACHINE:
-            remoteLaunch();
-            break;
-        default:
-            assert( false );
-        }
+        localHostLaunch();
         if(NULL != scene->getRunner()) {
             stopAction->setEnabled(true);
             pauseAction->setEnabled(true);
@@ -1951,7 +1882,6 @@ void WorkflowView::sl_pasteSample(const QString& s) {
             lastPaste.clear();
         }
         sl_pasteItems(s, true);
-        sl_setRunMode();
         sl_updateTitle();
         sl_updateUi();
         scene->connectConfigurationEditors();
@@ -2415,9 +2345,6 @@ Actor * WorkflowView::createActor(ActorPrototype *proto, const QVariantMap &para
     assert(NULL != actor);
 
     actor->setLabel(newActorLabel(proto, schema->getProcesses()));
-    if( WorkflowView::REMOTE_MACHINE == runMode ) {
-        addUrlLocationParameter(actor);
-    }
     return actor;
 }
 
