@@ -280,31 +280,6 @@ void LoadSeqTask::prepare() {
         stateInfo.setError(tr("Unsupported document format: %1").arg(url));
         return;
     }
-
-    const QSet<GObjectType> &types = format->getSupportedObjectTypes();
-    if (!types.contains(GObjectTypes::ANNOTATION_TABLE)) {
-        // no memory resources should be reserved for this file, because
-        // sequences and alignments are stored into the database
-        return;
-    }
-
-    int memUseMB = 0;
-    QFileInfo file(url);
-    memUseMB = file.size() / (1024*1024);
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
-    if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE) {
-        qint64 bytes = ZlibAdapter::getUncompressedFileSizeInBytes(url);
-        if (bytes > 0) {
-            memUseMB = bytes / (1024*1024);
-        }
-    } else if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
-        memUseMB *= 2.5; //Need to calculate compress level
-    }
-    coreLog.trace(QString("load document:Memory resource %1").arg(memUseMB));
-
-    if (memUseMB > 0) {
-        addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, false));
-    }
 }
 
 void LoadSeqTask::run() {
