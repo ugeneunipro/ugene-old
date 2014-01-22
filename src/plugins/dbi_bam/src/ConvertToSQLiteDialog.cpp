@@ -231,7 +231,13 @@ void ConvertToSQLiteDialog::sl_refUrlButtonClicked() {
         currentUrl = ui.refUrlEdit->text();
     }
     QString dir = currentUrl.dirPath() + "/" + currentUrl.baseFileName();
-    QString value = QFileDialog::getOpenFileName(this, QObject::tr("Reference File"), dir);
+    QString value;
+    #ifdef Q_OS_MAC
+        if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+            value = QFileDialog::getOpenFileName(this, QObject::tr("Reference File"), dir, "", 0, QFileDialog::DontUseNativeDialog);
+        } else
+    #endif
+    value = QFileDialog::getOpenFileName(this, QObject::tr("Reference File"), dir);
     if(!value.isEmpty()) {
         ui.refUrlEdit->setText(value);
         hideReferenceMessage();
@@ -348,7 +354,13 @@ void ConvertToSQLiteDialog::accept() {
 static const QString DIR_HELPER_DOMAIN("ConvertToSQLiteDialog");
 void ConvertToSQLiteDialog::on_destinationUrlButton_clicked() {
     QString dir = sourceUrl.dirPath() + "/" + sourceUrl.baseFileName();
-    QString returnedValue = QFileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination UGENEDB File"), dir, BAMDbiPlugin::tr("UGENEDB Files (*.ugenedb);;All Files (*)"), NULL, QFileDialog::DontConfirmOverwrite);
+        QString returnedValue;
+    #ifdef Q_OS_MAC
+        if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+            returnedValue = QFileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination UGENEDB File"), dir, BAMDbiPlugin::tr("UGENEDB Files (*.ugenedb);;All Files (*)"), NULL, QFileDialog::DontConfirmOverwrite | QFileDialog::DontUseNativeDialog);
+        } else
+    #endif
+    returnedValue = QFileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination UGENEDB File"), dir, BAMDbiPlugin::tr("UGENEDB Files (*.ugenedb);;All Files (*)"), NULL, QFileDialog::DontConfirmOverwrite);
     if(!returnedValue.isEmpty()) {
         ui.destinationUrlEdit->setText(returnedValue);
     }

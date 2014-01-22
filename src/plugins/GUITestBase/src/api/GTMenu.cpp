@@ -185,9 +185,13 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
         GTMouseDriver::moveTo(os, actionPosition); // move cursor to action
         GTGlobals::sleep(200);
 
+#ifndef Q_OS_MAC
         if (!clickingSubMenu) {
             GTMouseDriver::click(os);
         }
+#else
+        GTMouseDriver::click(os);
+#endif
         break;
     }
     case GTGlobals::UseKey:
