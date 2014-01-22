@@ -84,7 +84,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 //1. open view for _common_data\scenarios\assembly\example-alignment.bam
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "replace" ));
+    //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "replace" ));
     GTUtilsDialog::waitForDialog(os,new ImportBAMFileFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.bam");
     GTGlobals::sleep(1000);

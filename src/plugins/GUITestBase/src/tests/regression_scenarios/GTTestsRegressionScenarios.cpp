@@ -3298,12 +3298,13 @@ GUI_TEST_CLASS_DEFINITION( test_2266_1 ){
     GTMouseDriver::click(os);
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/ugenedb/", "Klebsislla_ref.fa");
 
+    //this is the name of output dir. Created here: WorkflowContextCMDLine::createSubDirectoryForRun
     QString baseDirName = QDateTime::currentDateTime().toString("yyyy.MM.dd_hh-mm");
     GTWidget::click(os,GTAction::button(os,"Run workflow"));
 
     GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
-    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox" + baseDirName + "/", "variations.vcf");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" + baseDirName + "/", "variations.vcf");
 
     QTreeWidgetItem *seqDoc = GTUtilsProjectTreeView::findItem(os, "pkF70_variations");
     QTreeWidgetItem *seqDoc1 = GTUtilsProjectTreeView::findItem(os, "pkf140_variations");
