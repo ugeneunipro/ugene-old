@@ -162,7 +162,7 @@ QDialog(d) {
     errorEdit->setText(sender.getReport());
     connect(additionalInfoTextEdit,SIGNAL(textChanged()), 
 SLOT(sl_onMaximumMessageSizeReached()));
-    connect(sendButton, SIGNAL(clicked()), SLOT(sl_onClicked()));
+    connect(sendButton, SIGNAL(clicked()), SLOT(sl_onOkClicked()));
     connect(cancelButton, SIGNAL(clicked()), SLOT(sl_onCancelClicked()));
 
     QFile file(getUgeneName());
