@@ -155,7 +155,7 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
 
         Assembly aceAssembly = iterator->next();
         CHECK_OP(stateInfo, totalReadsImported);
-        CHECK_EXT(aceAssembly.isValid(), setError("Invalid source file"), totalReadsImported);
+        CHECK_EXT(aceAssembly.isValid(), setError(tr("Invalid source file")), totalReadsImported);
         Assembly::Sequence aceReference = aceAssembly.getReference();
         references.insert(assemblyNum, aceReference);
 
@@ -205,6 +205,7 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
 
         corruptedAssembly = U2Assembly();
     }
+    CHECK_EXT( aceReader->getContigsCount() == assemblyNum, setError(tr("Invalid source file")), totalReadsImported);
 
     return totalReadsImported;
 }
@@ -315,11 +316,11 @@ void ConvertAceToSqliteTask::removeCorruptedAssembly() {
     U2OpStatusImpl os;
 
     U2ObjectDbi* objDbi = dbi->getObjectDbi();
-    SAFE_POINT(NULL != objDbi, "Object DBI is NULL", );
+    SAFE_POINT(NULL != objDbi, tr("Object DBI is NULL"), );
     U2AssemblyDbi* assDbi = dbi->getAssemblyDbi();
-    SAFE_POINT(NULL != assDbi, "Assembly DBI is NULL", );
+    SAFE_POINT(NULL != assDbi, tr("Assembly DBI is NULL"), );
     U2CrossDatabaseReferenceDbi* crossDbi = dbi->getCrossDatabaseReferenceDbi();
-    SAFE_POINT(NULL != crossDbi, "Cross reference DBI is NULL", );
+    SAFE_POINT(NULL != crossDbi, tr("Cross reference DBI is NULL"), );
 
     // remove the assembly object
     objDbi->removeObject(corruptedAssembly.id, os);

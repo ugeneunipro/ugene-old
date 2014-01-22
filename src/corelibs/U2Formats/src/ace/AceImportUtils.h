@@ -71,6 +71,7 @@ public:
 
     Assembly getAssembly();
     bool isFinish();
+    int getContigsCount() { return contigsCount; }
 
 private:
     void skipBreaks(IOAdapter *io, char *buff, qint64 *len);
