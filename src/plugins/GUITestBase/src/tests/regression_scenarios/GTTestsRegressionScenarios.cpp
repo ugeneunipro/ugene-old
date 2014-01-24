@@ -4385,6 +4385,23 @@ GUI_TEST_CLASS_DEFINITION( test_2566 ) {
     CHECK_SET_ERR( !l.hasError( ), "Unexpected error in log!" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2577 ) {
+
+    //1. Open {data/samples/CLUSTALW/COI.aln}.
+    GTLogTracer l;
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
+
+    //2. Call context menu somewhere on the alignment, select {Consenssus mode...} menu item.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
+    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+
+    //Expected state: options panel "General" tab opens.
+    QWidget *panel = GTWidget::findWidget(os, "OP_MSA_GENERAL");
+    CHECK_SET_ERR(NULL != panel, "General OP tab does not appear");
+    GTGlobals::sleep(500);
+
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2605 ) {
     GTLogTracer logTracer;
     // 1. Open file _common_data/fasta/multy_fa.fa as multiple alignment
