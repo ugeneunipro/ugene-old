@@ -40,7 +40,7 @@ AttributeInfo::AttributeInfo(const QString &_actorId, const QString &_attrId, co
 void AttributeInfo::validate(const QList<Workflow::Actor*> &actors, U2OpStatus &os) const {
     Workflow::Actor *actor = WorkflowUtils::actorById(actors, actorId);
     if (NULL == actor) {
-        os.setError(QObject::tr("Unknown actor id: %1").arg(actorId));
+        os.setError(QObject::tr("Actor is not found, id: %1").arg(actorId));
         return;
     }
     if (!actor->hasParameter(attrId)) {

@@ -350,7 +350,7 @@
     </message>
     <message>
         <location filename="../src/model/wizard/Variable.cpp" line="82"/>
-        <source>Undefined variable: %1</source>
+        <source>Variable is not defined: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -395,7 +395,7 @@
     </message>
     <message>
         <location filename="../src/support/AttributeInfo.cpp" line="43"/>
-        <source>Unknown actor id: %1</source>
+        <source>Actor is not found, id: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -421,11 +421,6 @@
     <message>
         <location filename="../src/support/serialize/HRWizardSerializer.cpp" line="526"/>
         <source>The variable is already defined: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/support/WorkflowDebugMessageParser.cpp" line="119"/>
-        <source>Messages in requested queue include info of the &apos;%1&apos; data type that is currently unsupported for view. No intermediate data will be displayed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
