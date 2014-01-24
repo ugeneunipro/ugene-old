@@ -149,7 +149,7 @@ size_t AppResourcePool::getCurrentAppMemory() {
     //look_up_our_self(&usage);
     return usage.vsize;
 #endif
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
     PROCESS_MEMORY_COUNTERS memCounter;
     bool result = GetProcessMemoryInfo(GetCurrentProcess(), &memCounter, sizeof( memCounter ));
     return memCounter.WorkingSetSize;
