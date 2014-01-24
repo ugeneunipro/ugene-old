@@ -122,6 +122,7 @@ void AnnotHighlightWidget::initLayout()
 
     prevAnnotation = new QPushButton(QIcon(":core/images/backward.png"), "");
     prevAnnotation->setFixedSize(32,32);
+    prevAnnotation->setToolTip(AnnotHighlightWidget::tr("Previous annotation"));
     QObject::connect(prevAnnotation, SIGNAL(clicked()),this, SLOT(sl_onPrevAnnotationClick()));
     buttonsLayout->addWidget(prevAnnotation);
 
@@ -129,7 +130,7 @@ void AnnotHighlightWidget::initLayout()
 
     nextAnnotation = new QPushButton(QIcon(":core/images/forward.png"), "");
     nextAnnotation->setFixedSize(32,32);
-    QObject::connect(nextAnnotation, SIGNAL(clicked()),this, SLOT(sl_onNextAnnotationClick()));
+    nextAnnotation->setToolTip(AnnotHighlightWidget::tr("Next annotation"));
     buttonsLayout->addWidget(nextAnnotation);
 
     // Init main layout
