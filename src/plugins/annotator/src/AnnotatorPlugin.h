@@ -45,10 +45,13 @@ private:
 class AnnotatorViewContext: public GObjectViewWindowContext {
     Q_OBJECT
 public:
-    AnnotatorViewContext(QObject* p);
+    AnnotatorViewContext(QObject* p, bool customFeaturesAvailable);
+private:
+    bool customFeaturesAvailable;
 
 protected slots:
     void sl_showCollocationDialog();
+    void sl_showCustomAutoAnnotationDialog();
 
 protected:
     virtual void initViewContext(GObjectView* view);

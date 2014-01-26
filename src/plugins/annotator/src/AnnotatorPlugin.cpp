@@ -21,6 +21,7 @@
 
 #include "AnnotatorPlugin.h"
 #include "CollocationsDialogController.h"
+#include "CustomAutoAnnotationDialog.h"
 
 #include "AnnotatorTests.h"
 
@@ -52,22 +53,20 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
-#define PLASMID_FEATURES_GROUP_NAME "plasmid_features"
-
 AnnotatorPlugin::AnnotatorPlugin() : Plugin(tr("dna_annotator_plugin"), tr("dna_annotator_plugin_desc")), viewCtx(NULL)
 {
     if (AppContext::getMainWindow()) {
-        viewCtx = new AnnotatorViewContext(this);
-        viewCtx->init();
-
         QString customAnnotationDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/custom_annotations";
         QString plasmidFeaturesPath = customAnnotationDir + "/plasmid_features.txt";
         SharedFeatureStore store( new FeatureStore(PLASMID_FEATURES_GROUP_NAME, plasmidFeaturesPath));
-        if (store->load()) {
+        store->load();
+        if (store->isLoaded()) {
             CustomPatternAutoAnnotationUpdater* aaUpdater = new CustomPatternAutoAnnotationUpdater(store);
             AppContext::getAutoAnnotationsSupport()->registerAutoAnnotationsUpdater(aaUpdater);
         }
-
+     
+        viewCtx = new AnnotatorViewContext(this, store->isLoaded());
+        viewCtx->init();
     }
     LocalWorkflow::CollocationWorkerFactory::init();
     LocalWorkflow::GeneByGeneReportWorkerFactory::init();
@@ -88,7 +87,8 @@ AnnotatorPlugin::AnnotatorPlugin() : Plugin(tr("dna_annotator_plugin"), tr("dna_
     }
 }
 
-AnnotatorViewContext::AnnotatorViewContext(QObject* p) : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID) {
+AnnotatorViewContext::AnnotatorViewContext(QObject* p, bool customAutoAnnotations)
+: GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID), customFeaturesAvailable(customAutoAnnotations) {
 
 }
 
@@ -96,6 +96,11 @@ void AnnotatorViewContext::initViewContext(GObjectView* v) {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(v);
     ADVGlobalAction* a = new ADVGlobalAction(av, QIcon(":annotator/images/regions.png"), tr("Find annotated regions..."), 30);
     connect(a, SIGNAL(triggered()), SLOT(sl_showCollocationDialog()));
+   
+    if (customFeaturesAvailable) {
+        ADVGlobalAction* a = new ADVGlobalAction(av, QIcon(":annotator/images/plasmid_features.png"), tr("Annotate plasmid and custom features..."), 31);
+        connect(a, SIGNAL(triggered()), SLOT(sl_showCustomAutoAnnotationDialog()));
+    }
 }
 
 void AnnotatorViewContext::sl_showCollocationDialog() {
@@ -122,6 +127,21 @@ void AnnotatorViewContext::sl_showCollocationDialog() {
     }
     CollocationsDialogController d(allNames.toList(), seqCtx);
     d.exec();
+}
+
+
+void AnnotatorViewContext::sl_showCustomAutoAnnotationDialog() {
+    QAction* a = (QAction*)sender();
+    GObjectViewAction* viewAction = qobject_cast<GObjectViewAction*>(a);
+    AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
+    assert(av);
+
+    ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
+    if (seqCtx == NULL) { 
+        return;
+    }
+    CustomAutoAnnotationDialog dlg(seqCtx);
+    dlg.exec();
 }
 
 QList<XMLTestFactory*> AnnotatorTests::createTestFactories() {

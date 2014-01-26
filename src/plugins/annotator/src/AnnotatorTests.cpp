@@ -242,7 +242,8 @@ void GTest_CustomAutoAnnotation::prepare() {
     QString customAnnotationDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/custom_annotations";
     QString plasmidFeaturesPath = customAnnotationDir + "/plasmid_features.txt";
     SharedFeatureStore store( new FeatureStore("plasmids", plasmidFeaturesPath));
-    if (!store->load()) {
+    store->load();
+    if (!store->isLoaded()) {
         stateInfo.setError( QString("Failed to load plasmid feature database %1").arg(plasmidFeaturesPath));
         return;
     }

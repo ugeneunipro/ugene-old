@@ -31,11 +31,26 @@
 #include <U2Core/AnnotationData.h>
 
 namespace U2 {
-
+   
 class AnnotationTableObject;
+
+#define PLASMID_FEATURES_GROUP_NAME "plasmid_features"
+#define FILTERED_FEATURE_LIST "filter_feature_list"
+
+class PlasmidFeatureTypes {
+public:
+    static const QString GENE;
+    static const QString FEATURE;
+    static const QString ORIGIN;
+    static const QString PRIMER;
+    static const QString PROMOTER;
+    static const QString REGULATORY;
+    static const QString TERMINATOR;
+};
 
 struct FeaturePattern {
     QString name;
+    QString type;
     QByteArray sequence;
 };
 
@@ -45,7 +60,8 @@ class FeatureStore {
     int minFeatureSize;
 public:
     FeatureStore(const QString& storeName, const QString& filePath) : name(storeName), path(filePath), minFeatureSize(0) {}
-    bool load();
+    void load();
+    bool isLoaded() const { return !features.isEmpty(); }
     int getMinFeatureSize() const { return minFeatureSize; }
     const QString& getName() const { return name; }
     const QList<FeaturePattern>& getFeatures() const { return features; }
@@ -57,7 +73,8 @@ class CustomPatternAnnotationTask :  public Task
 {
     Q_OBJECT
 public:
-    CustomPatternAnnotationTask(AnnotationTableObject* aobj, const U2EntityRef& entityRef, const SharedFeatureStore& store );
+    CustomPatternAnnotationTask(AnnotationTableObject* aobj, const U2EntityRef& entityRef, const SharedFeatureStore& store, 
+        const QStringList& filteredFeatures = QStringList() );
     
     void prepare();
     QList<Task*> onSubTaskFinished(Task* subTask);
@@ -77,6 +94,7 @@ private:
     AnnotationTableObject* aTableObj;
     QByteArray sequence;
     SharedFeatureStore featureStore;
+    QStringList filteredFeatures;
 };
 
 class CustomPatternAutoAnnotationUpdater : public AutoAnnotationsUpdater {

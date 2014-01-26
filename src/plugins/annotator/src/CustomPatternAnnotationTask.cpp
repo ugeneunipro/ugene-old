@@ -29,6 +29,7 @@
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Algorithm/SArrayIndex.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/Settings.h>
 
 #include "CustomPatternAnnotationTask.h"
 
@@ -37,8 +38,18 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // CustomPatternAnnotationTask
 
-CustomPatternAnnotationTask::CustomPatternAnnotationTask(AnnotationTableObject* aObj, const U2::U2EntityRef &entityRef, const SharedFeatureStore &store)
-    : Task(tr("Custom pattern annotation"), TaskFlags_NR_FOSCOE), dnaObj("ref", entityRef), aTableObj(aObj), featureStore(store)
+const QString PlasmidFeatureTypes::FEATURE("Feature");
+const QString PlasmidFeatureTypes::GENE("Gene");
+const QString PlasmidFeatureTypes::ORIGIN("Origin");
+const QString PlasmidFeatureTypes::PRIMER("Primer");
+const QString PlasmidFeatureTypes::PROMOTER("Promoter");
+const QString PlasmidFeatureTypes::REGULATORY("Regulatory");
+const QString PlasmidFeatureTypes::TERMINATOR("Terminator");
+
+CustomPatternAnnotationTask::CustomPatternAnnotationTask(AnnotationTableObject* aObj, const U2::U2EntityRef &entityRef, 
+                                                         const SharedFeatureStore &store, const QStringList& filteredFeatureTypes)
+    : Task(tr("Custom pattern annotation"), TaskFlags_NR_FOSCOE), dnaObj("ref", entityRef), aTableObj(aObj), 
+    featureStore(store), filteredFeatures(filteredFeatureTypes)
 {
     GCOUNTER( cvar, tvar, "CustomPatternAnnotationTask" );
 }
@@ -68,6 +79,10 @@ void CustomPatternAnnotationTask::prepare()
     assert(complTT);
 
     foreach (const FeaturePattern& pattern, patterns) {
+
+        if (filteredFeatures.contains(pattern.type)) {
+            continue;
+        }
         
         if (pattern.sequence.length() > sequence.length()) {
             continue;
@@ -146,12 +161,12 @@ QList<Task*> CustomPatternAnnotationTask::onSubTaskFinished(Task* subTask) {
 //////////////////////////////////////////////////////////////////////////
 // FeatureStore
 
-bool FeatureStore::load()
+void FeatureStore::load()
 {
     QFile inputFile(path);
 
     if (!inputFile.open(QIODevice::ReadOnly | QIODevice::Text) ) {
-        return false;
+        return;
     }
     
     int minPatternSize = INT_MAX;
@@ -172,6 +187,7 @@ bool FeatureStore::load()
         FeaturePattern pattern;
 
         pattern.name = lineItems[0].trimmed();
+        pattern.type = lineItems[1].trimmed();
         pattern.sequence = lineItems[2].toUpper();
         if (pattern.sequence.length() < minPatternSize) {
             minPatternSize = pattern.sequence.length();
@@ -183,8 +199,6 @@ bool FeatureStore::load()
     if (minPatternSize != INT_MAX) {
         minFeatureSize = minPatternSize;
     }
-
-    return !features.isEmpty( );
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -199,9 +213,12 @@ CustomPatternAutoAnnotationUpdater::CustomPatternAutoAnnotationUpdater(const Sha
 
 Task* CustomPatternAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const AutoAnnotationObject* aa )
 {
+    
+    QStringList filteredFeatureTypes = AppContext::getSettings()->getValue(FILTERED_FEATURE_LIST, QStringList()).toStringList();
+    
     AnnotationTableObject *aObj = aa->getAnnotationObject();
     const U2EntityRef& dnaRef = aa->getSeqObject()->getEntityRef();
-    Task* task = new CustomPatternAnnotationTask(aObj, dnaRef, featureStore );
+    Task* task = new CustomPatternAnnotationTask(aObj, dnaRef, featureStore, filteredFeatureTypes );
 
     return task;
 }
