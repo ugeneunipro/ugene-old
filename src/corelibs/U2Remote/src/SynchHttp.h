@@ -24,6 +24,8 @@
 
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkProxy>
+#include <QtNetwork/QAuthenticator>
 #include <QtCore/QEventLoop>
 
 #include <U2Core/global.h>
@@ -41,6 +43,7 @@ public:
     QString errorString() {return errString;}
 protected slots:
     virtual void finished(QNetworkReply*);
+    virtual void onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
 
 private:
     QEventLoop* loop;

@@ -34,6 +34,7 @@ SyncHTTP::SyncHTTP(QObject* parent)
 }
 
 QString SyncHTTP::syncGet(const QUrl& url) {
+    connect(this,SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
     QNetworkRequest request(url);
     QNetworkReply *reply = get(request);
     SAFE_POINT(reply != NULL, "SyncHTTP::syncGet no reply is created", "");
@@ -47,6 +48,7 @@ QString SyncHTTP::syncGet(const QUrl& url) {
 }
 
 QString SyncHTTP::syncPost(const QUrl & url, QIODevice * data) {
+    connect(this,SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
     QNetworkRequest request(url);
     QNetworkReply *reply = post(request, data);
     SAFE_POINT(reply != NULL, "SyncHTTP::syncGet no reply is created", "");
@@ -62,6 +64,12 @@ QString SyncHTTP::syncPost(const QUrl & url, QIODevice * data) {
 void SyncHTTP::finished(QNetworkReply*) {
     SAFE_POINT(loop != NULL, "SyncHTTP::finished no event loop", );
     loop->exit();
+}
+
+void SyncHTTP::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth){
+    auth->setUser(proxy.user());
+    auth->setPassword(proxy.password());
+    disconnect(this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
 }
 
 SyncHTTP::~SyncHTTP(){
