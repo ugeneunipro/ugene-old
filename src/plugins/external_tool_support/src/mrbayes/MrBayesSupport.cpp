@@ -19,21 +19,22 @@
  * MA 02110-1301, USA.
  */
 
+#include "MrBayesDialogWidget.h"
 #include "MrBayesTask.h"
 #include "MrBayesTests.h"
 #include "MrBayesSupport.h"
-#include "MrBayesDialogWidget.h"
 
-#include <U2Core/AppContext.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 
+#include <U2Core/AppContext.h>
 #include <U2Core/GAutoDeleteList.h>
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/DialogUtils.h>
 
-#include <U2Test/XMLTestFormat.h>
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
+
 #include <U2Test/GTest.h>
 #include <U2Test/GTestFrameworkComponents.h>
+#include <U2Test/XMLTestFormat.h>
 
 namespace U2 {
 
@@ -44,24 +45,23 @@ MrBayesSupport::MrBayesSupport(const QString& name, const QString& path) : Exter
         grayIcon = QIcon(":external_tool_support/images/mrbayes_gray.png");
         warnIcon = QIcon(":external_tool_support/images/mrbayes_warn.png");
     }
+
 #ifdef Q_OS_WIN
-    executableFileName="mrbayes.exe";
-#else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-    executableFileName="mrbayes"; //need check on unix
-    #endif
+    executableFileName = "mb.exe";
+#elif defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    executableFileName = "mb";
 #endif
-    validationArguments<<"";
-    validMessage="MrBayes";
-    description=tr("<i>MrBayes</i> is a program for the Bayesian estimation of phylogeny." 
+
+    validMessage = "MrBayes";
+    description = tr("<i>MrBayes</i> is a program for the Bayesian estimation of phylogeny."
                    "Bayesian inference of phylogeny is based upon a quantity called the posterior "
                    "probability distribution of trees, which is the probability of a tree conditioned "
                    "on the observations. The conditioning is accomplished using Bayes's theorem. "
                    "The posterior probability distribution of trees is impossible to calculate analytically; "
                    "instead, MrBayes uses a simulation technique called Markov chain Monte Carlo (or MCMC) "
                    "to approximate the posterior probabilities of trees.");
-    versionRegExp=QRegExp("MrBayes v(\\d+\\.\\d+\\.\\d+)");
-    toolKitName="MrBayes";
+    versionRegExp = QRegExp("MrBayes v(\\d+\\.\\d+\\.\\d+)");
+    toolKitName = "MrBayes";
 
     //register the method  
     PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
@@ -71,12 +71,13 @@ MrBayesSupport::MrBayesSupport(const QString& name, const QString& path) : Exter
 ////////////////////////////////////////
 //MrBayesAdapter
 
-Task* MrBayesAdapter::createCalculatePhyTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s){
+Task* MrBayesAdapter::createCalculatePhyTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s) {
     return new MrBayesSupportTask(ma, s);
 }
-void MrBayesAdapter::setupCreatePhyTreeUI(CreatePhyTreeDialogController* c, const MAlignment& ma){
+
+void MrBayesAdapter::setupCreatePhyTreeUI(CreatePhyTreeDialogController* c, const MAlignment& ma) {
     CreatePhyTreeWidget* w = new MrBayesWidget(c, ma);
-    c->insertContrWidget(1,w);
+    c->insertContrWidget(1, w);
 }
 
 ////////////////////////////////////////
@@ -93,20 +94,21 @@ QString MrBayesModelTypes::cprev("cprev");
 QString MrBayesModelTypes::vt("vt");
 QString MrBayesModelTypes::blosum("blosum");
 QString MrBayesModelTypes::equalin("equalin");
-QList<QString> MrBayesModelTypes::getAAModelTypes(){
-    static QList<QString> list;
-    if (list.isEmpty()) {
-        list.append(MrBayesModelTypes::poisson);
-        list.append(MrBayesModelTypes::jones);
-        list.append(MrBayesModelTypes::dayhoff);
-        list.append(MrBayesModelTypes::mtrev);
-        list.append(MrBayesModelTypes::mtmam);
-        list.append(MrBayesModelTypes::wag);
-        list.append(MrBayesModelTypes::rtrev);
-        list.append(MrBayesModelTypes::cprev);
-        list.append(MrBayesModelTypes::vt);
-        list.append(MrBayesModelTypes::blosum);
-        list.append(MrBayesModelTypes::equalin);
+
+QStringList MrBayesModelTypes::getAAModelTypes(){
+    static QStringList list;
+    if (U2_UNLIKELY(list.isEmpty())) {
+        list << MrBayesModelTypes::poisson
+             << MrBayesModelTypes::jones
+             << MrBayesModelTypes::dayhoff
+             << MrBayesModelTypes::mtrev
+             << MrBayesModelTypes::mtmam
+             << MrBayesModelTypes::wag
+             << MrBayesModelTypes::rtrev
+             << MrBayesModelTypes::cprev
+             << MrBayesModelTypes::vt
+             << MrBayesModelTypes::blosum
+             << MrBayesModelTypes::equalin;
     }
 
     return list;
@@ -115,14 +117,13 @@ QList<QString> MrBayesModelTypes::getAAModelTypes(){
 QString MrBayesModelTypes::JC69("JC69 (Nst=1)");
 QString MrBayesModelTypes::HKY85("HKY85 (Nst=2)");
 QString MrBayesModelTypes::GTR("GTR (Nst=6)");
-QString MrBayesModelTypes::Codon("Codon");
-QList<QString> MrBayesModelTypes::getSubstitutionModelTypes(){
-    static QList<QString> list;
-    if (list.isEmpty()) {
-        list.append(MrBayesModelTypes::JC69);
-        list.append(MrBayesModelTypes::HKY85);
-        list.append(MrBayesModelTypes::GTR);
-        //list.append(MrBayesModelTypes::Codon);
+
+QStringList MrBayesModelTypes::getSubstitutionModelTypes() {
+    static QStringList list;
+    if (U2_UNLIKELY(list.isEmpty())) {
+        list << MrBayesModelTypes::JC69
+             << MrBayesModelTypes::HKY85
+             << MrBayesModelTypes::GTR;
     }
 
     return list;
@@ -132,15 +133,17 @@ QString MrBayesVariationTypes::equal("equal");
 QString MrBayesVariationTypes::gamma("gamma");
 QString MrBayesVariationTypes::propinv("propinv");
 QString MrBayesVariationTypes::invgamma("invgamma");
-QList<QString> MrBayesVariationTypes::getVariationTypes(){
+
+QStringList MrBayesVariationTypes::getVariationTypes() {
     static QList<QString> list;
-    if (list.isEmpty()) {
-        list.append(MrBayesVariationTypes::equal);
-        list.append(MrBayesVariationTypes::gamma);
-        list.append(MrBayesVariationTypes::propinv);
-        list.append(MrBayesVariationTypes::invgamma);
+    if (U2_UNLIKELY(list.isEmpty())) {
+        list << MrBayesVariationTypes::equal
+             << MrBayesVariationTypes::gamma
+             << MrBayesVariationTypes::propinv
+             << MrBayesVariationTypes::invgamma;
     }
 
     return list;
 }
-}//namespace
+
+}   // namespace U2
