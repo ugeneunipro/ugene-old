@@ -52,7 +52,7 @@ MrBayesSupport::MrBayesSupport(const QString& name, const QString& path) : Exter
     executableFileName = "mb";
 #endif
 
-    validationArguments << "";
+    validationArguments << "";      // anyting to get info and exit with error
     validMessage = "MrBayes";
     description = tr("<i>MrBayes</i> is a program for the Bayesian estimation of phylogeny."
                    "Bayesian inference of phylogeny is based upon a quantity called the posterior "
