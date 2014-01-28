@@ -4309,6 +4309,15 @@ GUI_TEST_CLASS_DEFINITION( test_2475 ) {
     GTWidget::click(os, GTAction::button(os,"Validate workflow"));
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2496 ) {
+    // 1. Open file testDir/_common_data/scenarios/assembly/example-alignment.bam
+    // Expected state: import bam dialog appeared
+
+    GTUtilsDialog::waitForDialog(os,
+                                 new ImportBAMFileFiller(os, testDir + "_common_data/scenarios/sandbox/example-alignment.bam.ugenedb"));
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.bam");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2519 ) {
     // 1. Open {data/samples/FASTA/human_T1.fa}.
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
