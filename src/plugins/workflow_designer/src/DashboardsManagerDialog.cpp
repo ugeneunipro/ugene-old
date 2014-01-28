@@ -55,6 +55,10 @@ void DashboardsManagerDialog::setupList() {
     header << tr("Name") << tr("Directory");
     listWidget->setHeaderLabels(header);
     listWidget->header()->setMovable(false);
+
+    const int defaultNameColumnWidth = 250;
+    listWidget->header()->resizeSection(0, defaultNameColumnWidth);
+
     foreach (const DashboardInfo &info, task->getResult()) {
         QStringList data;
         data << info.name << info.dirName;

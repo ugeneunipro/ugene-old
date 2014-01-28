@@ -56,7 +56,7 @@ const Descriptor BaseActorCategories::CATEGORY_ASSEMBLY() {
 }
 
 const Descriptor BaseActorCategories::CATEGORY_RNA_SEQ() {
-    return Descriptor("rna", tr("NGS: RNA Analysis"), "");
+    return Descriptor("rna", tr("NGS: RNA-Seq Analysis"), "");
 }
 
 const Descriptor BaseActorCategories::CATEGORY_CALL_VARIATIONS() {
@@ -89,7 +89,7 @@ const Descriptor BaseActorCategories::CATEGORY_SNP_ANNOTATION()
 }
 
 const Descriptor BaseActorCategories::CATEGORY_CHIP_SEQ() {
-    return Descriptor("chs", tr("NGS: ChIP-Seq analysis"), "");
+    return Descriptor("chs", tr("NGS: ChIP-Seq Analysis"), "");
 }
 
 }//Workflow namespace
