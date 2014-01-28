@@ -40,12 +40,11 @@ namespace U2 {
 class StrandContext;
 
 FindAlgorithmTask::FindAlgorithmTask(const FindAlgorithmTaskSettings& s) 
-: Task (tr("Find in sequence task"), TaskFlag_None), config(s), currentPos(0),currentLen(0)
+: Task (tr("Find in sequence task"), TaskFlag_None), config(s)
 {
     GCOUNTER(cvar, tvar, "FindAlgorithmTask");
     tpm = Progress_Manual;
     complementRun = false;
-    currentPos = s.searchRegion.startPos;
     assert(config.strand == FindAlgorithmStrand_Direct || config.complementTT!=NULL);
 
     addTaskResource(TaskResourceUsage(RESOURCE_MEMORY,
@@ -65,13 +64,10 @@ void FindAlgorithmTask::run() {
         config.searchRegion,
         config.pattern.constData(),
         config.pattern.length(),
-        config.singleShot,
         config.maxErr,
         config.maxRegExpResult,
         stateInfo.cancelFlag,
-        stateInfo.progress,
-        currentPos,
-        currentLen);
+        stateInfo.progress);
 }
 
 void FindAlgorithmTask::onResult(const FindAlgorithmResult& r) {

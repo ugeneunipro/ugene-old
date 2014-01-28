@@ -29,7 +29,6 @@
 
 namespace U2 {
 
-
 class U2ALGORITHM_EXPORT FindAlgorithmResult {
 public:
     static const int NOT_ENOUGH_MEMORY_ERROR;
@@ -102,21 +101,17 @@ public:
         DNATranslation* complementTT = NULL,
         DNATranslation* proteinTT = NULL,
         const U2Region& searchRegion = U2Region(),
-        bool singleShot = false,
         int maxErr = 0,
         FindAlgorithmPatternSettings _patternSettings = FindAlgorithmPatternSettings_Subst, 
         bool ambBases = false,
         int _maxRegExpResult = 100,
-        int _maxResult2Find = 5000) : pattern(pattern), strand(strand), complementTT(complementTT), proteinTT(proteinTT),
-searchRegion(searchRegion), singleShot(singleShot), maxErr(maxErr), patternSettings (_patternSettings ), useAmbiguousBases (ambBases),
-    maxRegExpResult(_maxRegExpResult),maxResult2Find(_maxResult2Find){}
+        int _maxResult2Find = 5000);
 
     QByteArray                          pattern;
     FindAlgorithmStrand                 strand;
     DNATranslation*                     complementTT;
     DNATranslation*                     proteinTT;
     U2Region                            searchRegion;
-    bool                                singleShot;
     int                                 maxErr;
     FindAlgorithmPatternSettings        patternSettings;
     bool                                useAmbiguousBases;
@@ -135,29 +130,23 @@ public:
         FindAlgorithmStrand strand, // if not direct there complTT must not be NULL
         FindAlgorithmPatternSettings patternSettings,
         bool supportAmbigiousBases,
-        const char* sequence, 
-        int seqLen, 
-        const U2Region& range,  
-        const char* pattern, 
-        int patternLen, 
-        bool singleShot,
+        const char* sequence,
+        int seqLen,
+        const U2Region& range,
+        const char* pattern,
+        int patternLen,
         int maxErr,
         int maxRegExpResult,
-        int& stopFlag, 
-        int& percentsCompleted, 
-        int& currentPos,
-        int currentLen
-        );
+        int& stopFlag,
+        int& percentsCompleted);
 
     static void find(
         FindAlgorithmResultsListener* rl,
         const FindAlgorithmSettings& config,
-        const char* sequence, 
-        int seqLen, 
-        int& stopFlag, 
-        int& percentsCompleted, 
-        int& currentPos,
-        int currentLen) {
+        const char* sequence,
+        int seqLen,
+        int& stopFlag,
+        int& percentsCompleted) {
             find(rl,
                 config.proteinTT,
                 config.complementTT,
@@ -169,13 +158,10 @@ public:
                 config.searchRegion,
                 config.pattern.constData(),
                 config.pattern.length(),
-                config.singleShot,
                 config.maxErr,
                 config.maxRegExpResult,
-                stopFlag, 
-                percentsCompleted, 
-                currentPos,
-                currentLen);
+                stopFlag,
+                percentsCompleted);
     }
 
     static int estimateRamUsageInMbytes(const FindAlgorithmPatternSettings patternSettings,

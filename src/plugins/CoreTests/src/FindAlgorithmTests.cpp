@@ -205,7 +205,7 @@ Task::ReportResult GTest_FindAlgorithmTest::report(){
     }
 
     for(int i = 0; i < actualResults.size(); i++){
-        if(actualResults[i].region != expectedResults[i]){
+        if(!expectedResults.contains(actualResults[i].region)){
             stateInfo.setError(GTest::tr("Expected and actual regions are different: %1..%2 , %3..%4")
                 .arg(expectedResults[i].startPos)
                 .arg(expectedResults[i].endPos())

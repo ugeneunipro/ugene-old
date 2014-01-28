@@ -1223,9 +1223,6 @@ void FindPatternWidget::initFindPatternTask( const QList<NamePattern>& patterns)
         " Skipping the pattern search.", );
     settings.searchRegion = region;
 
-    // Not a single shot
-    settings.singleShot = false;
-
     // Algorithm settings
     settings.patternSettings = static_cast<FindAlgorithmPatternSettings>(selectedAlgorithm);
 

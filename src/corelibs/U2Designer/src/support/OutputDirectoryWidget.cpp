@@ -19,13 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include <QEvent>
-#include <QFileDialog>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QVBoxLayout>
+#include <QtCore/QEvent>
+
+#include <QtGui/QFileDialog>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
+#include <QtGui/QPushButton>
+#include <QtGui/QVBoxLayout>
 
 #include <U2Core/U2SafePoints.h>
 
@@ -69,8 +70,8 @@ void OutputDirectoryWidget::sl_browse() {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Select a directory"), pathEdit->text());
 
     if(!dir.isEmpty()) {
-        if (!dir.endsWith("/")) {
-            dir += "/";
+        if (!dir.endsWith(QDir::separator())) {
+            dir += QDir::separator();
         }
         pathEdit->setText(dir);
         WorkflowSettings::setWorkflowOutputDirectory(dir);

@@ -47,9 +47,6 @@ public:
 
     virtual void run();
     virtual void onResult(const FindAlgorithmResult& r);
-    
-    int getCurrentPos() const {return currentPos;}
-    void setCurrentLen(int _currentLen){currentLen = _currentLen;}
 
     QList<FindAlgorithmResult> popResults();
 
@@ -57,9 +54,7 @@ public:
 
 private:
     FindAlgorithmTaskSettings config;
-    
-    int     currentPos;
-    int     currentLen;
+
     bool    complementRun;
 
     QList<FindAlgorithmResult> newResults;
