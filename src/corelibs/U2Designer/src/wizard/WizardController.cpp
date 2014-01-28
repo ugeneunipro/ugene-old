@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QKeyEvent>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QSizePolicy>
@@ -39,6 +40,7 @@
 #include "PropertyWizardController.h"
 #include "RadioController.h"
 #include "SettingsController.h"
+#include "TophatSamplesWidgetController.h"
 #include "UrlAndDatasetWizardController.h"
 #include "WDWizardPage.h"
 #include "WizardPageController.h"
@@ -66,6 +68,7 @@ namespace U2 {
 WizardController::WizardController(Schema *s, const Wizard *w)
 : QObject(), schema(s), wizard(w), runAfterApply(false)
 {
+    rejected = false;
     broken = false;
     currentActors = s->getProcesses();
     vars = w->getVariables();
@@ -98,6 +101,7 @@ QWizard * WizardController::createGui() {
     result->setButtonText(QWizard::FinishButton, finishLabel);
     result->setOption(QWizard::NoBackButtonOnStartPage);
 
+    result->installEventFilter(this);
     return result;
 }
 
@@ -184,6 +188,14 @@ namespace {
             wc->setAttributeValue(bw->idxName, nameAttr->getDefaultPureValue());
         }
 
+        void visit(TophatSamplesWidget *tsw) {
+            QList<TophatSample> defSamples;
+            defSamples << TophatSample("Sample1", QStringList());
+            defSamples << TophatSample("Sample2", QStringList());
+            QString defaultSamples = WorkflowUtils::packSamples(defSamples);
+            wc->setAttributeValue(tsw->samplesAttr, defaultSamples);
+        }
+
     private:
         WizardController *wc;
     };
@@ -219,6 +231,22 @@ void WizardController::sl_customButtonClicked(int which) {
         CHECK(NULL != w, );
         defaults(w->currentPage());
     }
+}
+
+bool WizardController::eventFilter(QObject *watched, QEvent *event) {
+    CHECK(NULL != event, false);
+
+    if (event->type() == QEvent::Close) { // if close button is pressed
+        rejected = true;
+    } else if (event->type() == QEvent::KeyPress) { // if ESC is pressed
+        QKeyEvent *keyEvent = dynamic_cast<QKeyEvent*>(event);
+        CHECK(NULL != keyEvent, QObject::eventFilter(watched, event));
+
+        if ((keyEvent->key() == Qt::Key_Escape) && (keyEvent->modifiers() == Qt::NoModifier)) {
+            rejected = true;
+        }
+    }
+    return QObject::eventFilter(watched, event);
 }
 
 void WizardController::assignParameters() {
@@ -367,6 +395,10 @@ void WizardController::setBroken() {
 
 bool WizardController::isBroken() const {
     return broken;
+}
+
+bool WizardController::isRejected() const {
+    return rejected;
 }
 
 WizardController::ApplyResult WizardController::applyChanges(Metadata &meta) {
@@ -605,6 +637,14 @@ void WidgetCreator::visit(BowtieWidget *bw) {
     controllers << controller;
     U2OpStatusImpl os;
     result = controller->createGUI(os);
+}
+
+void WidgetCreator::visit(TophatSamplesWidget *tsw) {
+    TophatSamplesWidgetController *controller = new TophatSamplesWidgetController(wc, tsw);
+    controllers << controller;
+    U2OpStatusImpl os;
+    result = controller->createGUI(os);
+    fullWidth = true;
 }
 
 QWidget * WidgetCreator::getResult() {

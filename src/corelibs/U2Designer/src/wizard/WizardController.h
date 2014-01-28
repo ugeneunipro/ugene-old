@@ -80,6 +80,8 @@ public:
     void setBroken();
     bool isBroken() const;
 
+    bool isRejected() const;
+
     void addPropertyController(const AttributeInfo &info, PropertyWizardController *ctrl);
     void clearControllers();
 
@@ -91,7 +93,10 @@ public:
     Attribute * getAttribute(const AttributeInfo &info) const;
     DelegateTags * getTags(const AttributeInfo &info);
 
+    bool eventFilter(QObject *watched, QEvent *event);
+
 private:
+    bool rejected;
     bool broken;
     Schema *schema;
     const Wizard *wizard;
@@ -140,6 +145,7 @@ public:
     virtual void visit(RadioWidget *rw);
     virtual void visit(SettingsWidget *sw);
     virtual void visit(BowtieWidget *sw);
+    virtual void visit(TophatSamplesWidget *tsw);
 
     QWidget * getResult();
     QList<WidgetController*> & getControllers();

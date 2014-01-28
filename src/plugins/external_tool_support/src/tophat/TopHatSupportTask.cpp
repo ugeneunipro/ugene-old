@@ -328,4 +328,8 @@ QString TopHatSupportTask::getOutBamUrl() const {
     return settings.outDir + "/accepted_hits.bam";
 }
 
+QString TopHatSupportTask::getSampleName() const {
+    return settings.sample;
+}
+
 }

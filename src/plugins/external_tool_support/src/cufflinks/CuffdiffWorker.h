@@ -58,9 +58,8 @@ private:
     CommunicationChannel *inAssembly;
     CommunicationChannel *inTranscript;
 
-    bool fromFiles;
-    QList<SharedDbiDataHandler> assemblies;
-    QStringList assemblyUrls;
+    bool groupBySamples;
+    QMap<QString, QStringList> assemblyUrls;
 
 private:
     void initSlotsState();

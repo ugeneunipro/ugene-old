@@ -21,6 +21,7 @@
 
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Lang/BaseAttributes.h>
 #include <U2Lang/WizardWidgetVisitor.h>
 #include <U2Lang/WorkflowUtils.h>
 
@@ -380,6 +381,37 @@ void BowtieWidget::accept(WizardWidgetVisitor *visitor) {
 void BowtieWidget::validate(const QList<Actor*> &actors, U2OpStatus &os) const {
     idxName.validate(actors, os);
     idxDir.validate(actors, os);
+}
+
+/************************************************************************/
+/* TophatSamplesWidget */
+/************************************************************************/
+const QString TophatSamplesWidget::ID("tophat-samples");
+TophatSamplesWidget::TophatSamplesWidget()
+: WizardWidget(), samplesAttr("", "")
+{
+
+}
+
+void TophatSamplesWidget::accept(WizardWidgetVisitor *visitor) {
+    visitor->visit(this);
+}
+
+void TophatSamplesWidget::validate(const QList<Actor*> &actors, U2OpStatus &os) const {
+    samplesAttr.validate(actors, os);
+    CHECK_OP(os, );
+
+    foreach (const Actor *a, actors) {
+        if (a->getId() == datasetsProvider) {
+            Attribute *attr = a->getParameter(BaseAttributes::URL_IN_ATTRIBUTE().getId());
+            URLAttribute *datasetAttr = dynamic_cast<URLAttribute*>(attr);
+            if (NULL == datasetAttr) {
+                os.setError(QObject::tr("The actor has not the dataset attribute"));
+            }
+            return;
+        }
+    }
+    os.setError(QObject::tr("Unknown actor ID: ") + datasetsProvider);
 }
 
 } // U2

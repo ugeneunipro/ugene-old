@@ -45,13 +45,41 @@ CuffdiffSupportTask::CuffdiffSupportTask(const CuffdiffSettings &_settings)
     diffTask = NULL;
 }
 
-void CuffdiffSupportTask::prepare() {
-    int assemblyCount = settings.assemblies.size();
-    if (settings.fromFiles) {
-        assemblyCount = settings.assemblyUrls.size();
+namespace {
+    QStringList prepareAssemblyUrlsArgs(bool groupBySamples, const QMap<QString, QStringList> &assemblyUrls) {
+        QStringList result;
+
+        if (groupBySamples) {
+            result << "-L";
+            result << QStringList(assemblyUrls.keys()).join(",");
+            foreach (const QStringList &urls, assemblyUrls.values()) {
+                result << urls.join(",");
+            }
+        } else {
+            foreach (const QStringList &urls, assemblyUrls.values()) {
+                result << urls;
+            }
+        }
+        return result;
     }
-    CHECK_EXT(assemblyCount >= 2,
-        stateInfo.setError(tr("At least 2 assemblies are required for Cuffdiff")), );
+
+    int getSamplesCount(bool groupBySamples, const QMap<QString, QStringList> &assemblyUrls) {
+        if (groupBySamples) {
+            return assemblyUrls.size();
+        } else {
+            QStringList allUrls;
+            foreach (const QStringList &urls, assemblyUrls.values()) {
+                allUrls << urls;
+            }
+            return allUrls.size();
+        }
+    }
+}
+
+void CuffdiffSupportTask::prepare() {
+    int samplesCount = getSamplesCount(settings.groupBySamples, settings.assemblyUrls);
+    CHECK_EXT(samplesCount >= 2,
+        stateInfo.setError(tr("At least 2 sets of assemblies are required for Cuffdiff")), );
 
     setupWorkingDir();
     CHECK_OP(stateInfo, );
@@ -64,20 +92,6 @@ void CuffdiffSupportTask::prepare() {
     Task *t = createTranscriptTask();
     CHECK_OP(stateInfo, );
     addSubTask(t);
-
-    if (settings.fromFiles) {
-        return;
-    }
-
-    int i = 0;
-    settings.assemblyUrls.clear();
-    foreach (const Workflow::SharedDbiDataHandler &id, settings.assemblies) {
-        QString url = workingDir + "/" + QString("tmp_%1.sam").arg(i); i++;
-        settings.assemblyUrls << url;
-        Task *t = createAssemblyTask(id, url);
-        CHECK_OP(stateInfo, );
-        addSubTask(t);
-    }
 }
 
 void CuffdiffSupportTask::setupWorkingDir() {
@@ -106,16 +120,6 @@ QList<Task*> CuffdiffSupportTask::onSubTaskFinished(Task *subTask) {
 Task::ReportResult CuffdiffSupportTask::report() {
     settings.cleanup();
     return ReportResult_Finished;
-}
-
-ConvertAssemblyToSamTask * CuffdiffSupportTask::createAssemblyTask(const Workflow::SharedDbiDataHandler &id, const QString &url) {
-    QScopedPointer<AssemblyObject> assObj(Workflow::StorageUtils::getAssemblyObject(settings.storage, id));
-    CHECK_EXT(NULL != assObj.data(),
-        stateInfo.setError(tr("Unable to get an assembly object.")), NULL);
-
-    ConvertAssemblyToSamTask *t = new ConvertAssemblyToSamTask(assObj->getEntityRef(), url);
-    saveTasks << t;
-    return t;
 }
 
 Task * CuffdiffSupportTask::createTranscriptTask() {
@@ -169,9 +173,7 @@ Task * CuffdiffSupportTask::createCuffdiffTask() {
     }
 
     arguments << transcriptUrl;
-    foreach (const QString &url, settings.assemblyUrls) {
-        arguments << url;
-    }
+    arguments << prepareAssemblyUrlsArgs(settings.groupBySamples, settings.assemblyUrls);
 
     // create task
     logParser.reset(new LogParser());
@@ -260,13 +262,12 @@ CuffdiffSettings::CuffdiffSettings() {
     fdr = 0.05;
     maxMleIterations = 5000;
     emitCountTables = false;
-    fromFiles = false;
     storage = NULL;
     workingDir = "default";
+    groupBySamples = false;
 }
 
 void CuffdiffSettings::cleanup() {
-    assemblies.clear();
     transcript.clear();
 }
 

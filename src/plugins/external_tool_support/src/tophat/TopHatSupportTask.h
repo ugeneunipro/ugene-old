@@ -49,6 +49,7 @@ public:
     Task::ReportResult report();
     QStringList getOutputFiles() const;
     QString getOutBamUrl() const;
+    QString getSampleName() const;
 
     Workflow::SharedDbiDataHandler getAcceptedHits() const { return acceptedHits; }
 private:

@@ -126,6 +126,10 @@ void DatasetsController::checkName(const QString &newName, U2OpStatus &os, const
         os.setError(tr("Dataset name is empty"));
         return;
     }
+    if (newName.contains(";") || newName.contains(":")) {
+        os.setError(tr("Dataset name can not contain ':' and ';' symbols"));
+        return;
+    }
     foreach (const QString &name, names()) {
         if (name != exception && name == newName) {
             os.setError(tr("This dataset name already exists"));

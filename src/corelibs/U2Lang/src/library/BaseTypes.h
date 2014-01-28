@@ -42,7 +42,7 @@ public:
     static DataTypePtr NUM_TYPE();
     static DataTypePtr URL_DATASETS_TYPE();
     static DataTypePtr ANY_TYPE();
-    
+
 }; // BaseTypes
 
 // value factories for core datatypes

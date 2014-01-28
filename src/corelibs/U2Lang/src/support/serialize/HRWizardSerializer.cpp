@@ -54,6 +54,7 @@ const QString HRWizardParser::FINISH_LABEL("finish-label");
 const QString HRWizardParser::TOOLTIP("tooltip");
 const QString HRWizardParser::HAS_RUN_BUTTON("has-run-button");
 const QString HRWizardParser::HAS_DEFAULTS_BUTTON("has-defaults-button");
+const QString HRWizardParser::DATASETS_PROVIDER("datasets-provider");
 
 HRWizardParser::HRWizardParser(Tokenizer &tokenizer, const QMap<QString, Actor*> &_actorMap)
 : tokenizer(tokenizer), actorMap(_actorMap)
@@ -417,6 +418,20 @@ void WizardWidgetParser::visit(BowtieWidget *bw) {
     CHECK_OP(os, );
 }
 
+void WizardWidgetParser::visit(TophatSamplesWidget *tsw) {
+    pairs = ParsedPairs(data, 0);
+    if (!pairs.equalPairs.contains(HRWizardParser::DATASETS_PROVIDER)) {
+        os.setError(HRWizardParser::tr("Not enough attributes for Tophat samples widget"));
+        return;
+    }
+    if (1 != pairs.blockPairsList.size()) {
+        os.setError(HRWizardParser::tr("Not enough attributes for Tophat samples widget"));
+        return;
+    }
+    tsw->datasetsProvider = pairs.equalPairs[HRWizardParser::DATASETS_PROVIDER];
+    tsw->samplesAttr = parseInfo(pairs.blockPairsList[0].first, pairs.blockPairsList[0].second);
+}
+
 SelectorValue WizardWidgetParser::parseSelectorValue(ActorPrototype *srcProto, const QString &valueDef) {
     ParsedPairs pairs(valueDef, 0);
     if (!pairs.equalPairs.contains(HRWizardParser::ID)) {
@@ -518,6 +533,8 @@ WizardWidget * WizardWidgetParser::createWidget(const QString &id) {
         return new SettingsWidget();
     } else if (BowtieWidget::ID == id) {
         return new BowtieWidget();
+    } else if (TophatSamplesWidget::ID == id) {
+        return new TophatSamplesWidget();
     } else {
         return new AttributeWidget();
     }
@@ -778,6 +795,16 @@ void WizardWidgetSerializer::visit(BowtieWidget *bw) {
     bData += serializeInfo(bw->idxName, depth + 1);
     result = HRSchemaSerializer::makeBlock(BowtieWidget::ID,
         Constants::NO_NAME, bData, depth);
+}
+
+void WizardWidgetSerializer::visit(TophatSamplesWidget *tsw) {
+    QString tsData;
+    tsData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::DATASETS_PROVIDER,
+        tsw->datasetsProvider, depth + 1);
+    tsData += serializeInfo(tsw->samplesAttr, depth + 1);
+
+    result = HRSchemaSerializer::makeBlock(TophatSamplesWidget::ID,
+        Constants::NO_NAME, tsData, depth);
 }
 
 QString WizardWidgetSerializer::serializeSlotsMapping(const QList<SlotMapping> &mappings, int depth) const {

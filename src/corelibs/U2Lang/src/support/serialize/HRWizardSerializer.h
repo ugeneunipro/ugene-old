@@ -91,6 +91,7 @@ public:
     static const QString HAS_DEFAULTS_BUTTON;
     static const QString BWT_DIR;
     static const QString BWT_IDX_NAME;
+    static const QString DATASETS_PROVIDER;
 };
 
 class U2LANG_EXPORT HRWizardSerializer {
@@ -123,7 +124,8 @@ public:
     virtual void visit(UrlAndDatasetWidget *ldsw);
     virtual void visit(RadioWidget *rw);
     virtual void visit(SettingsWidget *sw);
-    virtual void visit(BowtieWidget *sw);
+    virtual void visit(BowtieWidget *bw);
+    virtual void visit(TophatSamplesWidget *tsw);
 
 private:
     QString title;
@@ -178,7 +180,8 @@ public:
     virtual void visit(UrlAndDatasetWidget *ldsw);
     virtual void visit(RadioWidget *rw);
     virtual void visit(SettingsWidget *sw);
-    virtual void visit(BowtieWidget *sw);
+    virtual void visit(BowtieWidget *bw);
+    virtual void visit(TophatSamplesWidget *tsw);
 
     const QString & getResult();
 

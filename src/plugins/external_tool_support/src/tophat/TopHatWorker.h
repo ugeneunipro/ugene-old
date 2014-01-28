@@ -44,15 +44,17 @@ protected:
 
 class DatasetData {
 public:
-    DatasetData(bool groupByDatasets);
+    DatasetData(bool groupByDatasets, const QString &samplesMapStr);
     bool isGroup() const;
 
     /** Initialize the data by dataset on first check */
     bool isCurrent(const QString &dataset);
     void replaceCurrent(const QString &dataset);
+    QString getCurrentSample() const;
 
 private:
     bool groupByDatasets;
+    QString samplesMapStr;
     QString currentDataset;
     bool inited;
 
@@ -106,6 +108,7 @@ public:
     virtual Worker* createWorker(Actor* actor) { return new TopHatWorker(actor); }
 
     static const QString OUT_DIR;
+    static const QString SAMPLES_MAP;
     static const QString BOWTIE_INDEX_DIR;
     static const QString BOWTIE_INDEX_BASENAME;
     static const QString REF_SEQ;
@@ -143,6 +146,10 @@ public:
 class BowtieToolsValidator : public ActorValidator {
 public:
     virtual bool validate(const Actor *actor, ProblemList &problemList, const QMap<QString, QString> &options) const;
+
+private:
+    bool validateBowtie(const Actor *actor, ProblemList &problemList) const;
+    bool validateSamples(const Actor *actor, ProblemList &problemList) const;
 };
 
 class BowtieFilesRelation : public AttributeRelation {

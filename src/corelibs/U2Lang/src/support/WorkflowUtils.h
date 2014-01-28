@@ -30,6 +30,7 @@
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/Schema.h>
 #include <U2Lang/SupportClass.h>
+#include <U2Lang/SupportStructures.h>
 #include <U2Lang/WorkflowContext.h>
 
 class QListWidgetItem;
@@ -148,6 +149,9 @@ public:
     static bool validateDatasets(const QList<Dataset> &sets, ProblemList &problemList);
 
     static QScriptValue datasetsToScript(const QList<Dataset> &sets, QScriptEngine &engine);
+
+    static QString packSamples(const QList<TophatSample> &samples);
+    static QList<TophatSample> unpackSamples(const QString &samplesStr, U2OpStatus &os);
 
 private:
     static QStringList initExtensions();

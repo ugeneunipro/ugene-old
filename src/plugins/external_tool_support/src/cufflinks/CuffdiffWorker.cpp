@@ -50,20 +50,13 @@ namespace LocalWorkflow {
 class InputSlotValidator : public PortValidator {
 public:
     virtual bool validate(const IntegralBusPort *port, ProblemList &problemList) const {
-        bool data = isBinded(port, BaseSlots::ASSEMBLY_SLOT().getId());
-        bool url = isBinded(port, BaseSlots::URL_SLOT().getId());
-
-        QString dataName = slotName(port, BaseSlots::ASSEMBLY_SLOT().getId());
-        QString urlName = slotName(port, BaseSlots::URL_SLOT().getId());
-        if (!data && !url) {
-            problemList.append(Problem(IntegralBusPort::tr("One of these slots must be not empty: '%1', '%2'").arg(dataName).arg(urlName)));
+        bool binded = isBinded(port, BaseSlots::URL_SLOT().getId());
+        if (!binded) {
+            QString name = slotName(port, BaseSlots::URL_SLOT().getId());
+            problemList.append(Problem(IntegralBusPort::tr("'%1' slot must be not binded").arg(name)));
             return false;
         }
 
-        if (data && url) {
-            problemList.append(Problem(IntegralBusPort::tr("Only one of these slots must be binded: '%1', '%2'").arg(dataName).arg(urlName)));
-            return false;
-        }
         return true;
     }
 };
@@ -87,6 +80,8 @@ static const QString MAX_MLE_ITERATIONS("max-mle-iterations");
 static const QString EMIT_COUNT_TABLES("emit-count-tables");
 static const QString EXT_TOOL_PATH("path");
 static const QString TMP_DIR_PATH("tmp-dir");
+
+static const QString SAMPLE_SLOT_ID("sample");
 
 void CuffdiffWorkerFactory::init()
 {
@@ -213,10 +208,13 @@ void CuffdiffWorkerFactory::init()
         Descriptor annsDesc(BasePorts::IN_ANNOTATIONS_PORT_ID(),
             CuffdiffWorker::tr("Annotations"),
             CuffdiffWorker::tr("Transcript annotations"));
+        Descriptor sampleDesc(SAMPLE_SLOT_ID,
+            CuffdiffWorker::tr("Sample"),
+            CuffdiffWorker::tr("Sample name of assembly file"));
 
         QMap<Descriptor, DataTypePtr> assemblyTypeMap;
-        assemblyTypeMap[BaseSlots::ASSEMBLY_SLOT()] = BaseTypes::ASSEMBLY_TYPE();
         assemblyTypeMap[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
+        assemblyTypeMap[sampleDesc] = BaseTypes::STRING_TYPE();
         DataTypePtr assemblyType(new MapDataType(BasePorts::IN_ASSEMBLY_PORT_ID(), assemblyTypeMap));
 
         QMap<Descriptor, DataTypePtr> annotationsTypeMap;
@@ -310,14 +308,16 @@ QString CuffdiffPrompter::composeRichDoc()
  * CuffdiffWorker
  *****************************/
 CuffdiffWorker::CuffdiffWorker(Actor *actor)
-: BaseWorker(actor, false), inAssembly(NULL), inTranscript(NULL), fromFiles(false)
+: BaseWorker(actor, false), inAssembly(NULL), inTranscript(NULL), groupBySamples(false)
 {
 }
 
 void CuffdiffWorker::initSlotsState() {
     Port *port = actor->getPort(BasePorts::IN_ASSEMBLY_PORT_ID());
     IntegralBusPort *bus = dynamic_cast<IntegralBusPort*>(port);
-    fromFiles = bus->getProducers(BaseSlots::ASSEMBLY_SLOT().getId()).isEmpty();
+
+    QList<Actor*> producers = bus->getProducers(SAMPLE_SLOT_ID);
+    groupBySamples = !producers.isEmpty();
 }
 
 void CuffdiffWorker::init() {
@@ -372,7 +372,7 @@ void CuffdiffWorker::sl_onTaskFinished() {
 }
 
 void CuffdiffWorker::cleanup() {
-    assemblies.clear();
+
 }
 
 CuffdiffSettings CuffdiffWorker::scanParameters() const {
@@ -404,9 +404,8 @@ CuffdiffSettings CuffdiffWorker::takeSettings() {
     const QList<AnnotationData> anns = StorageUtils::getAnnotationTable(
         context->getDataStorage( ), annsVar );
 
-    result.fromFiles = fromFiles;
+    result.groupBySamples = groupBySamples;
     result.assemblyUrls = assemblyUrls;
-    result.assemblies = assemblies;
     result.transcript = anns;
     result.storage = context->getDataStorage();
 
@@ -417,15 +416,14 @@ void CuffdiffWorker::takeAssembly() {
     Message m = getMessageAndSetupScriptValues(inAssembly);
     QVariantMap data = m.getData().toMap();
 
-    if (fromFiles) {
-        SAFE_POINT(data.contains(BaseSlots::URL_SLOT().getId()),
-            "No url in a message", );
-        assemblyUrls << data[BaseSlots::URL_SLOT().getId()].toString();
-    } else {
-        SAFE_POINT(data.contains(BaseSlots::ASSEMBLY_SLOT().getId()),
-            "No assembly in a message", );
-        assemblies << data[BaseSlots::ASSEMBLY_SLOT().getId()].value<SharedDbiDataHandler>();
+    SAFE_POINT(data.contains(BaseSlots::URL_SLOT().getId()),
+        "No url in a message", );
+    QString sampleName;
+    if (groupBySamples) {
+        SAFE_POINT(data.contains(SAMPLE_SLOT_ID), "No sample in a message", );
+        sampleName = data[SAMPLE_SLOT_ID].toString();
     }
+    assemblyUrls[sampleName] << data[BaseSlots::URL_SLOT().getId()].toString();
 }
 
 } // namespace LocalWorkflow

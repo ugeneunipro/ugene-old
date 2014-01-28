@@ -265,6 +265,23 @@ public:
     AttributeInfo idxName;
 };
 
+/************************************************************************/
+/* TophatSamplesWidget */
+/************************************************************************/
+class U2LANG_EXPORT TophatSamplesWidget : public WizardWidget {
+public:
+    TophatSamplesWidget();
+
+    virtual void accept(WizardWidgetVisitor *visitor);
+    virtual void validate(const QList<Actor*> &actors, U2OpStatus &os) const;
+
+    static const QString ID;
+
+public:
+    AttributeInfo samplesAttr;
+    QString datasetsProvider;
+};
+
 } // U2
 
 #endif // _U2_WIZARDWIDGET_H_

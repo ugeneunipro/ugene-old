@@ -29,6 +29,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/L10n.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
 
@@ -53,6 +54,7 @@ namespace LocalWorkflow {
 const QString TopHatWorkerFactory::ACTOR_ID("tophat");
 
 const QString TopHatWorkerFactory::OUT_DIR("out-dir");
+const QString TopHatWorkerFactory::SAMPLES_MAP("samples");
 const QString TopHatWorkerFactory::BOWTIE_INDEX_DIR("bowtie-index-dir");
 const QString TopHatWorkerFactory::BOWTIE_INDEX_BASENAME("bowtie-index-basename");
 const QString TopHatWorkerFactory::REF_SEQ("ref-seq");
@@ -89,6 +91,7 @@ static const QString PAIRED_IN_URL_SLOT_ID("paired-url");
 
 static const QString OUT_MAP_DESCR_ID("out.tophat");
 static const QString ACCEPTED_HITS_SLOT_ID("accepted.hits");
+static const QString SAMPLE_SLOT_ID("sample");
 static const QString OUT_BAM_URL_SLOT_ID("hits-url");
 
 static const QString BOWTIE1("Bowtie1");
@@ -160,11 +163,15 @@ void TopHatWorkerFactory::init()
     Descriptor assemblyDesc(ACCEPTED_HITS_SLOT_ID,
         TopHatWorker::tr("Accepted hits"),
         TopHatWorker::tr("Accepted hits found by TopHat"));
+    Descriptor sampleDesc(SAMPLE_SLOT_ID,
+        TopHatWorker::tr("Sample name"),
+        TopHatWorker::tr("Sample name for running Cuffdiff"));
     Descriptor outUrlDesc(OUT_BAM_URL_SLOT_ID,
         TopHatWorker::tr("Accepted hits url"),
         TopHatWorker::tr("The url to the assembly file with the accepted hits"));
 
     outputMap[assemblyDesc] = BaseTypes::ASSEMBLY_TYPE();
+    outputMap[sampleDesc] = BaseTypes::STRING_TYPE();
     outputMap[outUrlDesc] = BaseTypes::STRING_TYPE();
 
     DataTypePtr mapDataType(new MapDataType(OUT_MAP_DESCR_ID, outputMap));
@@ -183,6 +190,10 @@ void TopHatWorkerFactory::init()
     Descriptor outDir(OUT_DIR,
         TopHatWorker::tr("Output directory"),
         TopHatWorker::tr("The base name of output directory. It could be modified with a suffix."));
+
+    Descriptor samplesMap(SAMPLES_MAP,
+        TopHatWorker::tr("Samples map"),
+        TopHatWorker::tr("The map which divide all input datasets into samples. Every sample has the unique name."));
 
     Descriptor bowtieIndexDir(BOWTIE_INDEX_DIR,
         TopHatWorker::tr("Bowtie index directory"),
@@ -369,6 +380,7 @@ void TopHatWorkerFactory::init()
     attributes << new Attribute(samtoolsPath, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
     attributes << new Attribute(extToolPath, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
     attributes << new Attribute(tmpDir, BaseTypes::STRING_TYPE(), true, QVariant(L10N::defaultStr()));
+    attributes << new Attribute(samplesMap, BaseTypes::STRING_TYPE(), false, "");
 
     // Create the actor prototype
     ActorPrototype* proto = new IntegralBusActorPrototype(topHatDescriptor,
@@ -510,7 +522,7 @@ TopHatWorker::TopHatWorker(Actor* actor)
     : BaseWorker(actor, false /*autoTransit*/),
       input(NULL),
       output(NULL),
-      datasetsData(false)
+      datasetsData(false, "")
 {
 
 }
@@ -544,7 +556,7 @@ void TopHatWorker::initPairedReads() {
 
 void TopHatWorker::initDatasetData() {
     QList<Actor*> producers = getProducers(DATASET_SLOT_ID);
-    datasetsData = DatasetData(!producers.isEmpty());
+    datasetsData = DatasetData(!producers.isEmpty(), getValue<QString>(TopHatWorkerFactory::SAMPLES_MAP));
 }
 
 void TopHatWorker::initSettings() {
@@ -632,6 +644,7 @@ void TopHatWorker::init() {
 }
 
 Task * TopHatWorker::runTophat() {
+    settings.sample = datasetsData.getCurrentSample();
     TopHatSupportTask * topHatSupportTask = new TopHatSupportTask(settings);
     topHatSupportTask->addListeners(createLogListeners());
     connect(topHatSupportTask, SIGNAL(si_stateChanged()), SLOT(sl_topHatTaskFinished()));
@@ -643,8 +656,9 @@ Task * TopHatWorker::checkDatasets(const QVariantMap &data) {
     if (datasetsData.isGroup()) {
         QString dataset = data[DATASET_SLOT_ID].toString();
         if (!datasetsData.isCurrent(dataset)) {
+            Task *t = runTophat();
             datasetsData.replaceCurrent(dataset);
-            return runTophat();
+            return t;
         }
     }
     return NULL;
@@ -695,6 +709,7 @@ void TopHatWorker::sl_topHatTaskFinished()
     if (output) {
         QVariantMap m;
         m[ACCEPTED_HITS_SLOT_ID] = qVariantFromValue<SharedDbiDataHandler>(t->getAcceptedHits());
+        m[SAMPLE_SLOT_ID] = t->getSampleName();
         m[OUT_BAM_URL_SLOT_ID] = t->getOutBamUrl();
         output->put(Message(output->getBusType(), m));
         foreach (const QString &url, t->getOutputFiles()) {
@@ -710,8 +725,8 @@ void TopHatWorker::cleanup()
 /************************************************************************/
 /* DatasetData */
 /************************************************************************/
-DatasetData::DatasetData(bool _groupByDatasets)
-: groupByDatasets(_groupByDatasets)
+DatasetData::DatasetData(bool groupByDatasets, const QString &samplesMapStr)
+: groupByDatasets(groupByDatasets), samplesMapStr(samplesMapStr)
 {
     inited = false;
 }
@@ -735,6 +750,18 @@ bool DatasetData::isCurrent(const QString &dataset) {
 void DatasetData::replaceCurrent(const QString &dataset) {
     currentDataset = dataset;
     inited = true;
+}
+
+QString DatasetData::getCurrentSample() const {
+    U2OpStatus2Log os;
+    QList<TophatSample> samples = WorkflowUtils::unpackSamples(samplesMapStr, os);
+    CHECK_OP(os, "");
+    foreach (const TophatSample &sample, samples) {
+        if (sample.datasets.contains(currentDataset)) {
+            return sample.name;
+        }
+    }
+    return "";
 }
 
 /************************************************************************/
@@ -764,7 +791,7 @@ bool InputSlotsValidator::validate(const IntegralBusPort *port, ProblemList &pro
     return true;
 }
 
-bool BowtieToolsValidator::validate( const Actor *actor, ProblemList &problemList, const QMap<QString, QString> &/*options*/ ) const {
+bool BowtieToolsValidator::validateBowtie(const Actor *actor, ProblemList &problemList) const {
     Attribute *attr = actor->getParameter( TopHatWorkerFactory::BOWTIE_TOOL_PATH );
     SAFE_POINT( NULL != attr, "NULL attribute", false );
 
@@ -812,6 +839,43 @@ bool BowtieToolsValidator::validate( const Actor *actor, ProblemList &problemLis
         problemList << WorkflowUtils::externalToolError( bowTieTool->getName( ) );
     }
     return valid;
+}
+
+bool BowtieToolsValidator::validateSamples(const Actor *actor, ProblemList &problemList) const {
+    bool valid = true;
+    Attribute *samplesAttr = actor->getParameter(TopHatWorkerFactory::SAMPLES_MAP);
+
+    U2OpStatusImpl os;
+    QList<TophatSample> samples = WorkflowUtils::unpackSamples(samplesAttr->getAttributePureValue().toString(), os);
+    if (os.hasError()) {
+        problemList << Problem(os.getError(), actor->getLabel());
+        valid = false;
+    }
+    CHECK(samples.size() > 0, valid);
+
+    if (1 == samples.size()) {
+        problemList << Problem(QObject::tr("At least two samples are required"), actor->getLabel());
+        valid = false;
+    }
+
+    QStringList names;
+    foreach (const TophatSample &sample, samples) {
+        if (names.contains(sample.name)) {
+            problemList << Problem(QObject::tr("Duplicate sample name: ") + sample.name, actor->getLabel());
+            valid = false;
+        }
+        names << sample.name;
+        if (sample.datasets.isEmpty()) {
+            problemList << Problem(QObject::tr("No datasets in the sample: ") + sample.name, actor->getLabel());
+            valid = false;
+        }
+    }
+    return valid;
+}
+
+bool BowtieToolsValidator::validate( const Actor *actor, ProblemList &problemList, const QMap<QString, QString> &/*options*/ ) const {
+    bool valid = validateBowtie(actor, problemList);
+    return valid && validateSamples(actor, problemList);
 }
 
 /************************************************************************/

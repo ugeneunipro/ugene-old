@@ -60,9 +60,8 @@ struct CuffdiffSettings {
     bool emitCountTables;
     QString outDir;
 
-    bool fromFiles;
-    QStringList assemblyUrls;
-    QList<Workflow::SharedDbiDataHandler> assemblies;
+    bool groupBySamples;
+    QMap<QString, QStringList> assemblyUrls;
     QList<AnnotationData> transcript;
     Workflow::DbiDataStorage *storage;
     QString workingDir;
@@ -99,7 +98,6 @@ private:
 
     static const QString outSubDirBaseName;
 private:
-    ConvertAssemblyToSamTask * createAssemblyTask(const Workflow::SharedDbiDataHandler &id, const QString &url);
     Task * createTranscriptTask();
 
     void addTranscriptObject();

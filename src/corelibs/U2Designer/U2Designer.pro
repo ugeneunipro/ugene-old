@@ -40,6 +40,7 @@ HEADERS += src/BreakpointHitCountDialog.h \
            src/wizard/RadioController.h \
            src/wizard/SelectorActors.h \
            src/wizard/SettingsController.h \
+           src/wizard/TophatSamplesWidgetController.h \
            src/wizard/UrlAndDatasetWizardController.h \
            src/wizard/WDWizardPage.h \
            src/wizard/WidgetController.h \
@@ -103,6 +104,7 @@ SOURCES += src/BreakpointHitCountDialog.cpp \
            src/wizard/RadioController.cpp \
            src/wizard/SelectorActors.cpp \
            src/wizard/SettingsController.cpp \
+           src/wizard/TophatSamplesWidgetController.cpp \
            src/wizard/UrlAndDatasetWizardController.cpp \
            src/wizard/WDWizardPage.cpp \
            src/wizard/WidgetController.cpp \

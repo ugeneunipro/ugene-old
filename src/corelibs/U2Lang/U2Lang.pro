@@ -59,6 +59,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/support/ScriptWorkerSerializer.h \
            src/support/SimpleWorkflowTask.h \
            src/support/SupportClass.h \
+           src/support/SupportStructures.h \
            src/support/WorkflowBreakpoint.h \
            src/support/WorkflowBreakpointSharedInfo.h \
            src/support/WorkflowDebugMessageParser.h \
@@ -159,6 +160,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/support/ScriptWorkerSerializer.cpp \
            src/support/SimpleWorkflowTask.cpp \
            src/support/SupportClass.cpp \
+           src/support/SupportStructures.cpp \
            src/support/WorkflowBreakpoint.cpp \
            src/support/WorkflowBreakpointSharedInfo.cpp \
            src/support/WorkflowDebugMessageParser.cpp \

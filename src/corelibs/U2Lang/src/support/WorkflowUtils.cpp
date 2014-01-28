@@ -1107,6 +1107,29 @@ QScriptValue WorkflowUtils::datasetsToScript(const QList<Dataset> &sets, QScript
     return setsArray;
 }
 
+QString WorkflowUtils::packSamples(const QList<TophatSample> &samples) {
+    QStringList result;
+    foreach (const TophatSample &sample, samples) {
+        result << sample.name + ":" + sample.datasets.join(";");
+    }
+    return result.join(";;");
+}
+
+QList<TophatSample> WorkflowUtils::unpackSamples(const QString &samplesStr, U2OpStatus &os) {
+    QList<TophatSample> result;
+
+    QStringList pairs = samplesStr.split(";;", QString::SkipEmptyParts);
+    foreach (const QString &pairStr, pairs) {
+        QStringList pair = pairStr.split(":", QString::KeepEmptyParts);
+        if (2 != pair.size()) {
+            os.setError(tr("Wrong samples map string"));
+            return result;
+        }
+        result << TophatSample(pair[0], pair[1].split(";", QString::SkipEmptyParts));
+    }
+    return result;
+}
+
 /*****************************
  * PrompterBaseImpl
  *****************************/

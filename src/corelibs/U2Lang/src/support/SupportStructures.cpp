@@ -19,29 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_WIZARDWIDGETVISITOR_H_
-#define _U2_WIZARDWIDGETVISITOR_H_
-
-#include <U2Lang/ElementSelectorWidget.h>
-#include <U2Lang/WizardWidget.h>
+#include "SupportStructures.h"
 
 namespace U2 {
 
-class U2LANG_EXPORT WizardWidgetVisitor {
-public:
-    virtual void visit(AttributeWidget *) = 0;
-    virtual void visit(WidgetsArea *) = 0;
-    virtual void visit(GroupWidget *) = 0;
-    virtual void visit(LogoWidget *) = 0;
-    virtual void visit(ElementSelectorWidget *) = 0;
-    virtual void visit(PairedReadsWidget *) = 0;
-    virtual void visit(UrlAndDatasetWidget *) = 0;
-    virtual void visit(RadioWidget *) = 0;
-    virtual void visit(SettingsWidget *) = 0;
-    virtual void visit(BowtieWidget *) = 0;
-    virtual void visit(TophatSamplesWidget *) = 0;
-};
+TophatSample::TophatSample(const QString &name, const QStringList &datasets)
+: name(name), datasets(datasets)
+{
+
+}
 
 } // U2
-
-#endif // _U2_WIZARDWIDGETVISITOR_H_
