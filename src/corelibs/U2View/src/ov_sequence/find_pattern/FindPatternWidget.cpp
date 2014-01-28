@@ -437,7 +437,6 @@ void FindPatternWidget::initLayout()
 
 void FindPatternWidget::initAlgorithmLayout()
 {
-    
     boxAlgorithm->addItem(tr("Exact"), FindAlgorithmPatternSettings_Exact);
     if(!isAminoSequenceSelected) {
         boxAlgorithm->addItem(tr("InsDel"), FindAlgorithmPatternSettings_InsDel);
@@ -474,6 +473,9 @@ void FindPatternWidget::initAlgorithmLayout()
     layoutRegExpLen->addWidget(boxUseMaxResultLen);
     layoutRegExpLen->addWidget(boxMaxResultLen);
     layoutAlgorithmSettings->addLayout(layoutRegExpLen);
+    boxMaxResultLen->setEnabled( false );
+    connect( boxUseMaxResultLen, SIGNAL( toggled( bool ) ), boxMaxResultLen,
+        SLOT( setEnabled( bool ) ) );
 
     selectedAlgorithm = boxAlgorithm->itemData(boxAlgorithm->currentIndex()).toInt();
 }

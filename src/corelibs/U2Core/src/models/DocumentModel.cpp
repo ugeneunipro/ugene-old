@@ -20,7 +20,8 @@
  * MA 02110-1301, USA.
  */
 
-#include "DocumentModel.h"
+#include <QtCore/QFileInfo>
+#include <QtCore/QScopedPointer>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/GHints.h>
@@ -40,11 +41,7 @@
 #include <U2Core/UnloadedObject.h>
 #include <U2Core/DocumentUtils.h>
 
-#include <QtCore/QFileInfo>
-
-
-#include <memory>
-
+#include "DocumentModel.h"
 
 namespace U2 {
 
@@ -53,24 +50,14 @@ const QString DocumentFormat::MERGED_SEQ_LOCK = DocumentFormat::tr( "Document se
 const QString DocumentFormat::DBI_REF_HINT("dbi_alias");
 const QString DocumentMimeData::MIME_TYPE("application/x-ugene-document-mime");
 
+Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const GUrl& url,
+    U2OpStatus& os, const QVariantMap& hints)
+{
+    const U2DbiRef tmpDbiRef = fetchDbiRef( hints, os );
+    CHECK_OP( os, NULL );
 
-Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const GUrl& url, U2OpStatus& os, const QVariantMap& hints) {
-    U2DbiRef tmpDbiRef;
-    const QSet<GObjectType> &types = getSupportedObjectTypes();
-    bool useTmpDbi = types.contains(GObjectTypes::SEQUENCE)
-        || types.contains(GObjectTypes::VARIANT_TRACK)
-        || types.contains(GObjectTypes::MULTIPLE_ALIGNMENT)
-        || types.contains(GObjectTypes::ASSEMBLY);
-    if (useTmpDbi) {
-        if (hints.contains(DBI_REF_HINT)) {
-            tmpDbiRef = hints.value(DBI_REF_HINT).value<U2DbiRef>();
-        } else {
-            tmpDbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
-            CHECK_OP(os, NULL);
-        }
-    }
-
-    Document* doc = new Document(this, iof, url, tmpDbiRef, QList<UnloadedObjectInfo>(), hints, QString());
+    Document* doc = new Document(this, iof, url, tmpDbiRef, QList<UnloadedObjectInfo>(),
+        hints, QString());
     doc->setLoaded(true);
     doc->setDocumentOwnsDbiResources(true);
     return doc;
@@ -88,7 +75,7 @@ Document* DocumentFormat::createNewUnloadedDocument(IOAdapterFactory* iof, const
 }
 
 Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, const QVariantMap& hints, U2OpStatus& os) {
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Read)) {
         os.setError(L10N::errorOpeningFileRead(url));
         return NULL;
@@ -96,29 +83,37 @@ Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, c
 
     Document* res = NULL;
 
-    const QSet<GObjectType> &types = getSupportedObjectTypes();
-    bool useTmpDbi = types.contains(GObjectTypes::SEQUENCE)
-                  || types.contains(GObjectTypes::VARIANT_TRACK)
-                  || types.contains(GObjectTypes::MULTIPLE_ALIGNMENT)
-                  || types.contains(GObjectTypes::ANNOTATION_TABLE);
-    if (useTmpDbi) {
-        U2DbiRef dbiRef;
-        if (hints.contains(DBI_REF_HINT)) {
-            dbiRef = hints.value(DBI_REF_HINT).value<U2DbiRef>();
-        } else {
-            dbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
-            CHECK_OP(os, NULL);
-        }
+    const U2DbiRef dbiRef = fetchDbiRef( hints, os );
+    CHECK_OP( os, NULL );
 
+    if ( dbiRef.isValid( ) ) {
         DbiConnection con(dbiRef, os);
         CHECK_OP(os, NULL);
 
-        res = loadDocument(io.get(), dbiRef, hints, os);
+        res = loadDocument(io.data(), dbiRef, hints, os);
         CHECK_OP(os, NULL);
     } else {
-        res = loadDocument(io.get(), U2DbiRef(), hints, os);
+        res = loadDocument(io.data(), U2DbiRef(), hints, os);
     }
     return res;
+}
+
+U2DbiRef DocumentFormat::fetchDbiRef( const QVariantMap &hints, U2OpStatus &os ) const {
+    U2DbiRef result;
+    const QSet<GObjectType> &types = getSupportedObjectTypes( );
+    const bool useTmpDbi = types.contains( GObjectTypes::SEQUENCE )
+        || types.contains( GObjectTypes::VARIANT_TRACK )
+        || types.contains( GObjectTypes::MULTIPLE_ALIGNMENT )
+        || types.contains( GObjectTypes::ANNOTATION_TABLE )
+        || types.contains( GObjectTypes::ASSEMBLY );
+    if ( useTmpDbi ) {
+        if ( hints.contains( DBI_REF_HINT ) ) {
+            result = hints.value( DBI_REF_HINT ).value<U2DbiRef>( );
+        } else {
+            result = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
+        }
+    }
+    return result;
 }
 
 DNASequence* DocumentFormat::loadSequence(IOAdapter*, U2OpStatus& os) {
@@ -150,13 +145,13 @@ void DocumentFormat::storeDocument(Document* doc, U2OpStatus& os, IOAdapterFacto
         assert(res == url.getURLString()); //ensure that GUrls are always canonical
     }
     
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Write)) {
         os.setError(L10N::errorOpeningFileWrite(url));
         return;
     }
     
-    storeDocument(doc, io.get(), os);
+    storeDocument(doc, io.data(), os);
 }
 
 bool DocumentFormat::checkConstraints(const DocumentFormatConstraints& c) const {

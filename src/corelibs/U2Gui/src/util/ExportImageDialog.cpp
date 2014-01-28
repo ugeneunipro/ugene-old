@@ -211,13 +211,6 @@ bool ExportImageDialog::exportToPDF(){
     return painter.end();
 }
 bool ExportImageDialog::exportToBitmap(){
-//    QImage image(ui->widthSpinBox->value(), ui->heightSpinBox->value(), QImage::Format_RGB32);
-//    image.fill(palette().color(QPalette::Window).rgb());
-//    QPainter painter;
-//    painter.begin(&image);
-//    widget->render(&painter);
-//    bool result = painter.end();
-//    return (result && image.save(filename));
     rect.setRight( this->getWidth() );
     rect.setBottom( this->getHeight() );
     QPixmap image = QPixmap::grabWidget(widget, widget->rect());
@@ -284,24 +277,20 @@ void ExportImageDialog::sl_onFormatsBoxItemChanged(const QString &text)
     ui->fileNameEdit->setText(QDir::toNativeSeparators(fileName));
 
     setSizeControlsEnabled(!isVectorGraphicFormat(format));
-    if((format == "jpeg") || (format == "jpg") || (format == "png")){
-        ui->qualityLabel->setEnabled(true);
-        ui->qualityHorizontalSlider->setEnabled(true);
-        ui->qualitySpinBox->setEnabled(true);
-    }else{
-        ui->qualityLabel->setEnabled(false);
-        ui->qualityHorizontalSlider->setEnabled(false);
-        ui->qualitySpinBox->setEnabled(false);
-    }
+
+    const bool areQualityWidgetsVisible = isLossyFormat( format );
+    ui->qualityLabel->setVisible( areQualityWidgetsVisible );
+    ui->qualityHorizontalSlider->setVisible( areQualityWidgetsVisible );
+    ui->qualitySpinBox->setVisible( areQualityWidgetsVisible );
 }
 
-bool ExportImageDialog::isVectorGraphicFormat( const QString& formatName )
-{
-    if ((formatName == SVG_FORMAT) || (formatName == PS_FORMAT) || (formatName == PDF_FORMAT)) {
-        return true;
-    }
-    return false;
+bool ExportImageDialog::isVectorGraphicFormat( const QString &formatName ) {
+    return ( SVG_FORMAT == formatName ) || ( PS_FORMAT == formatName )
+        || ( PDF_FORMAT == formatName );
+}
 
+bool ExportImageDialog::isLossyFormat(const QString &formatName) {
+    return ( "jpeg" == formatName ) || ( "jpg" == formatName ) || ( "png" == formatName );
 }
 
 int ExportImageDialog::getVectorFormatIdByName( const QString& formatName )

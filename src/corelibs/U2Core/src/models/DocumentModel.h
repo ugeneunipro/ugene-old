@@ -214,6 +214,9 @@ protected:
     QStringList         fileExtensions;
     QSet<GObjectType>   supportedObjectTypes;
     QString             formatDescription;
+
+private:
+    U2DbiRef fetchDbiRef( const QVariantMap &hints, U2OpStatus &os ) const;
 };
 
 class DocumentFormatConstraints {

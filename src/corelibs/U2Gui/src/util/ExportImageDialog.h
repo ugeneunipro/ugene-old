@@ -62,8 +62,9 @@ private:
     void setupComponents();
     void setSizeControlsEnabled(bool enabled);
 
-    static bool isVectorGraphicFormat(const QString& formatName);
-    static int getVectorFormatIdByName(const QString& formatName);
+    static bool isVectorGraphicFormat(const QString &formatName);
+    static int getVectorFormatIdByName(const QString &formatName);
+    static bool isLossyFormat(const QString &formatName);
 
 private:
     QList<QString> supportedFormats;
