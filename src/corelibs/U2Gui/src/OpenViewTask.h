@@ -32,7 +32,7 @@ namespace U2 {
 class Document;
 class LoadDocumentTask;
 class LoadRemoteDocumentTask;
-class ConvertIdAndLoadDASDocumentTask;
+class ConvertIdAndLoadDasDocumentTask;
 class DocumentProviderTask;
 
 
@@ -81,7 +81,7 @@ private:
     QString                             fullpath;
     DASSource                           referenceSource;
     QList<DASSource>                    featureSources;
-    ConvertIdAndLoadDASDocumentTask*    loadDasDocumentTask;
+    ConvertIdAndLoadDasDocumentTask*    loadDasDocumentTask;
     bool                                convertId;
 };
 

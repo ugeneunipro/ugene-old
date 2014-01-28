@@ -557,15 +557,15 @@ QList<Task *> UniprotBlastAndLoadDASAnnotations::onSubTaskFinished( Task *subTas
                 }
                 
                 foreach ( const DASSource &featureSource, settings.featureSources ) {
-                    LoadDASObjectTask *loadAnnotationsTask
-                        = new LoadDASObjectTask( uniprotRes.accession, featureSource, DASFeatures );
+                    LoadDasObjectTask *loadAnnotationsTask
+                        = new LoadDasObjectTask( uniprotRes.accession, featureSource, DASFeatures );
                     dasTasks << loadAnnotationsTask;
                 }
             }
         }
         subtasks = dasTasks;
     }else if ( dasTasks.contains(subTask ) ) {
-        LoadDASObjectTask *loadDasObjectTask = qobject_cast<LoadDASObjectTask *>( subTask );
+        LoadDasObjectTask *loadDasObjectTask = qobject_cast<LoadDasObjectTask *>( subTask );
         if ( !loadDasObjectTask ) {
             return subtasks;
         }

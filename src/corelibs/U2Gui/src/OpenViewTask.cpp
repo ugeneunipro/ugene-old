@@ -358,7 +358,7 @@ LoadDASDocumentsAndOpenViewTask::LoadDASDocumentsAndOpenViewTask( const QString&
 }
 
 void LoadDASDocumentsAndOpenViewTask::prepare(){
-    loadDasDocumentTask = new ConvertIdAndLoadDASDocumentTask(accNumber, fullpath, referenceSource, featureSources, convertId);
+    loadDasDocumentTask = new ConvertIdAndLoadDasDocumentTask(accNumber, fullpath, referenceSource, featureSources, convertId);
 
     addSubTask(loadDasDocumentTask);
 }

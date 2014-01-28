@@ -38,7 +38,7 @@
 
 namespace U2 {
 
-LoadDASDocumentTask::LoadDASDocumentTask( const QString& accId, const QString& _fullPath, const DASSource& _referenceSource, const QList<DASSource>& _featureSources )
+LoadDasDocumentTask::LoadDasDocumentTask( const QString& accId, const QString& _fullPath, const DASSource& _referenceSource, const QList<DASSource>& _featureSources )
 : BaseLoadRemoteDocumentTask(_fullPath, TaskFlags(TaskFlag_FailOnSubtaskCancel | TaskFlag_MinimizeSubtaskErrorText | TaskFlag_NoRun))
 ,accNumber(accId)
 ,featureSources(_featureSources)
@@ -50,32 +50,32 @@ LoadDASDocumentTask::LoadDASDocumentTask( const QString& accId, const QString& _
 
 }
 
-void LoadDASDocumentTask::prepare(){
+void LoadDasDocumentTask::prepare(){
     BaseLoadRemoteDocumentTask::prepare();
     if (!isCached()){
         //load sequence
-        loadSequenceTask = new LoadDASObjectTask(accNumber, referenceSource, DASSequence);
+        loadSequenceTask = new LoadDasObjectTask(accNumber, referenceSource, DASSequence);
         addSubTask(loadSequenceTask);
 
         //load annotations
         foreach(const DASSource& s, featureSources){
-            LoadDASObjectTask* featureTask = new LoadDASObjectTask(accNumber, s, DASFeatures);
+            LoadDasObjectTask* featureTask = new LoadDasObjectTask(accNumber, s, DASFeatures);
             loadFeaturesTasks.append(featureTask);
             addSubTask(featureTask);
         }
     }
 }
 
-QString LoadDASDocumentTask::getFileFormat( const QString & dbid ){
+QString LoadDasDocumentTask::getFileFormat( const QString & dbid ){
     Q_UNUSED(dbid);
     return GENBANK_FORMAT;
 }
 
-GUrl LoadDASDocumentTask::getSourceURL(){
+GUrl LoadDasDocumentTask::getSourceUrl(){
     return GUrl();
 }
 
-QString LoadDASDocumentTask::getFileName(){
+QString LoadDasDocumentTask::getFileName(){
     format = getFileFormat("");
     accNumber.replace(";",",");
     QStringList accIds = accNumber.split(",");
@@ -88,8 +88,11 @@ QString LoadDASDocumentTask::getFileName(){
     return "";
 }
 
-QList<Task*> LoadDASDocumentTask::onSubTaskFinished( Task *subTask ){
+QList<Task*> LoadDasDocumentTask::onSubTaskFinished( Task *subTask ){
     QList<Task *> subTasks;
+    if ( isCanceled() || hasError() ) {
+        return subTasks;
+    }
 
     if ( subTask == loadDocumentTask ) {
         if ( subTask->hasError( ) ) {
@@ -120,7 +123,7 @@ QList<Task*> LoadDASDocumentTask::onSubTaskFinished( Task *subTask ){
 
             loadSequenceTask = NULL;
         } else {
-            LoadDASObjectTask *ftask = qobject_cast<LoadDASObjectTask *>( subTask );
+            LoadDasObjectTask *ftask = qobject_cast<LoadDasObjectTask *>( subTask );
             if ( NULL != ftask && loadFeaturesTasks.contains( ftask ) ) {
                 const int idx = loadFeaturesTasks.indexOf( ftask );
                 if ( idx == -1 ) {
@@ -130,7 +133,7 @@ QList<Task*> LoadDASDocumentTask::onSubTaskFinished( Task *subTask ){
                 loadFeaturesTasks.removeAt( idx );
 
                 if ( ftask->hasError( ) ) {
-                    ioLog.error( tr( "Cannot find DAS features for: %1" ).arg( accNumber ) );
+                    ioLog.error( tr( "Cannot find DAS features for '%1' on %2" ).arg( accNumber ).arg( ftask->getSource( ).getName( ) ) );
                 } else {
                     //merge features
                     if ( !isCanceled( ) ) {
@@ -200,11 +203,11 @@ QList<Task*> LoadDASDocumentTask::onSubTaskFinished( Task *subTask ){
 
 }
 
-bool LoadDASDocumentTask::isAllDataLoaded( ) {
+bool LoadDasDocumentTask::isAllDataLoaded( ) {
     return ( NULL == loadSequenceTask && loadFeaturesTasks.isEmpty( ) );
 }
 
-void LoadDASDocumentTask::mergeFeatures( const QMap<QString, QList<AnnotationData> > &newAnnotations ) {
+void LoadDasDocumentTask::mergeFeatures( const QMap<QString, QList<AnnotationData> > &newAnnotations ) {
     const QStringList &keys =  newAnnotations.keys( );
     foreach ( const QString &key, keys ) {
         if ( annotationData.contains(key ) ) {
@@ -226,8 +229,8 @@ void LoadDASDocumentTask::mergeFeatures( const QMap<QString, QList<AnnotationDat
 
 //////////////////////////////////////////////////////////////////////////
 //LoadDASObjectTask
-LoadDASObjectTask::LoadDASObjectTask( const QString& accId, const DASSource& _source, DASObjectType objType)
-:Task(tr("Load DAS data for: %1").arg(accId), TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText)
+LoadDasObjectTask::LoadDasObjectTask( const QString& accId, const DASSource& _source, DASObjectType objType)
+    :Task(tr("Load DAS data for '%1' from %2").arg(accId).arg(_source.getName()), TaskFlags_FOSCOE | TaskFlag_MinimizeSubtaskErrorText)
 ,accNumber(accId)
 ,source(_source)
 ,objectType(objType)
@@ -239,12 +242,12 @@ LoadDASObjectTask::LoadDASObjectTask( const QString& accId, const DASSource& _so
     
 }
 
-LoadDASObjectTask::~LoadDASObjectTask(){
+LoadDasObjectTask::~LoadDasObjectTask(){
     delete loop;
     delete networkManager;
 }
 
-void LoadDASObjectTask::run(){
+void LoadDasObjectTask::run(){
     if (stateInfo.isCanceled()){
         return;
     }
@@ -271,7 +274,15 @@ void LoadDASObjectTask::run(){
     connect( downloadReply, SIGNAL(uploadProgress( qint64, qint64 )),
         this, SLOT(sl_uploadProgress(qint64,qint64)) );
 
+    QTimer::singleShot(100, this, SLOT(sl_cancelCheck()));
+    QTimer::singleShot(60000, this, SLOT(sl_timeout()));
+
     loop->exec();
+    disconnect(0, 0, this, 0);
+    if (isCanceled() || hasError()) {
+        return;
+    }
+
     ioLog.trace("Download finished.");
     
     QByteArray result = downloadReply->readAll();
@@ -301,24 +312,58 @@ void LoadDASObjectTask::run(){
     
 }
 
-void LoadDASObjectTask::sl_replyFinished( QNetworkReply* reply ) {
+DNASequence* LoadDasObjectTask::getSequence() {
+    return seq;
+}
+
+const QString& LoadDasObjectTask::getAccession() const {
+    return accNumber;
+}
+
+const DASSource& LoadDasObjectTask::getSource() const {
+    return source;
+}
+
+const QMap<QString, QList<AnnotationData> >& LoadDasObjectTask::getAnnotationData( ) const {
+    return annotationData;
+}
+
+void LoadDasObjectTask::sl_replyFinished( QNetworkReply* reply ) {
     Q_UNUSED(reply);
     loop->exit();
 }
 
-void LoadDASObjectTask::sl_onError( QNetworkReply::NetworkError error ){
+void LoadDasObjectTask::sl_onError( QNetworkReply::NetworkError error ){
     stateInfo.setError(QString("NetworkReply error %1").arg(error));
     loop->exit();
-
 }
 
-void LoadDASObjectTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal ){
+void LoadDasObjectTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal ){
     stateInfo.progress = bytesSent/ bytesTotal * 100;
+}
+
+void LoadDasObjectTask::sl_cancelCheck() {
+    if (isCanceled()) {
+        if (loop->isRunning()) {
+            loop->exit();
+        }
+    } else {
+        QTimer::singleShot(100, this, SLOT(sl_cancelCheck()));
+    }
+}
+
+void LoadDasObjectTask::sl_timeout() {
+    if (!hasError() && !isCanceled()) {
+        setError(tr("Remote server does not respond"));
+    }
+    if (loop->isRunning()) {
+        loop->exit();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
 //ConvertAndLoadDASDocumentTask
-ConvertIdAndLoadDASDocumentTask::ConvertIdAndLoadDASDocumentTask(const QString& accId,
+ConvertIdAndLoadDasDocumentTask::ConvertIdAndLoadDasDocumentTask(const QString& accId,
                                                                  const QString& _fullPath,
                                                                  const DASSource& _referenceSource,
                                                                  const QList<DASSource>& _featureSources,
@@ -335,17 +380,17 @@ ConvertIdAndLoadDASDocumentTask::ConvertIdAndLoadDASDocumentTask(const QString& 
 
 }
 
-void ConvertIdAndLoadDASDocumentTask::prepare() {
+void ConvertIdAndLoadDasDocumentTask::prepare() {
     if (convertId) {
         convertDasIdTask = new ConvertDasIdTask(accessionNumber);
         addSubTask(convertDasIdTask);
     } else {
-        loadDasDocumentTask = new LoadDASDocumentTask(accessionNumber, fullPath, referenceSource, featureSources);
+        loadDasDocumentTask = new LoadDasDocumentTask(accessionNumber, fullPath, referenceSource, featureSources);
         addSubTask(loadDasDocumentTask);
     }
 }
 
-QList<Task*> ConvertIdAndLoadDASDocumentTask::onSubTaskFinished(Task *subTask) {
+QList<Task*> ConvertIdAndLoadDasDocumentTask::onSubTaskFinished(Task *subTask) {
     QList<Task*> subTasks;
 
     if (subTask->isCanceled()) {
@@ -359,7 +404,7 @@ QList<Task*> ConvertIdAndLoadDASDocumentTask::onSubTaskFinished(Task *subTask) {
                           arg(convertDasIdTask->getAccessionNumber()));
             accessionNumber = convertDasIdTask->getAccessionNumber();
         }
-        loadDasDocumentTask = new LoadDASDocumentTask(accessionNumber, fullPath, referenceSource, featureSources);
+        loadDasDocumentTask = new LoadDasDocumentTask(accessionNumber, fullPath, referenceSource, featureSources);
         subTasks << loadDasDocumentTask;
     }
     if (subTask == loadDasDocumentTask && loadDasDocumentTask->hasError()) {

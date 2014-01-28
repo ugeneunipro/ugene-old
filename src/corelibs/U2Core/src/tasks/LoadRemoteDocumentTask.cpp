@@ -76,7 +76,7 @@ BaseLoadRemoteDocumentTask::BaseLoadRemoteDocumentTask(const QString& _downloadP
 }
 
 void BaseLoadRemoteDocumentTask::prepare(){
-    sourceUrl = getSourceURL();
+    sourceUrl = getSourceUrl();
     fileName = getFileName();
 
     if (!downloadPath.isEmpty()) {
@@ -229,7 +229,7 @@ QString LoadRemoteDocumentTask::getFileFormat( const QString & dbid ){
     }
 }
 
-GUrl LoadRemoteDocumentTask::getSourceURL(){
+GUrl LoadRemoteDocumentTask::getSourceUrl(){
     if (!fileUrl.isEmpty()){
         return fileUrl;
     }else{

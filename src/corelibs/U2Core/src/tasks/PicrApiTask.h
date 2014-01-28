@@ -97,6 +97,7 @@ public:
 
 class U2CORE_EXPORT ConvertDasIdTask : public Task {
     Q_OBJECT
+    Q_DISABLE_COPY(ConvertDasIdTask)
 public:
     ConvertDasIdTask(const QString& resId);
     virtual ~ConvertDasIdTask();
@@ -108,6 +109,9 @@ public slots:
     void sl_replyFinished(QNetworkReply* reply);
     void sl_onError(QNetworkReply::NetworkError error);
     void sl_uploadProgress(qint64 bytesSent, qint64 bytesTotal);
+
+    void sl_cancelCheck();
+    void sl_timeout();
 
 private:
     QString getRequestUrlString();

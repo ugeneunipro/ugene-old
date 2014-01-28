@@ -116,7 +116,7 @@ public:
 
 protected:
     virtual QString getFileFormat(const QString & dbid) = 0;
-    virtual GUrl getSourceURL() = 0;
+    virtual GUrl getSourceUrl() = 0;
     virtual QString getFileName() = 0;
 
     
@@ -150,7 +150,7 @@ public:
 
 protected:
     virtual QString getFileFormat(const QString & dbid);
-    virtual GUrl getSourceURL();
+    virtual GUrl getSourceUrl();
     virtual QString getFileName();
     QList<Task*> onSubTaskFinished(Task* subTask);
 

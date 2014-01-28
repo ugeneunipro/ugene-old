@@ -172,7 +172,7 @@ void DasOptionsPanelWidget::sl_loadAnnotations() {
     loadDasObjectTasks.clear();
     foreach(const QString &accNumber, accessionNumbers){
         foreach (DASSource featureSource, featureSources) {
-            LoadDASObjectTask * loadAnnotationsTask = new LoadDASObjectTask(accNumber, featureSource, DASFeatures);
+            LoadDasObjectTask * loadAnnotationsTask = new LoadDasObjectTask(accNumber, featureSource, DASFeatures);
             connect(loadAnnotationsTask,
                     SIGNAL(si_stateChanged()),
                     SLOT(sl_onLoadAnnotationsFinish()));
@@ -230,7 +230,7 @@ void DasOptionsPanelWidget::sl_blastSearchFinish() {
 }
 
 void DasOptionsPanelWidget::sl_onLoadAnnotationsFinish() {
-    LoadDASObjectTask* loadDasObjectTask = qobject_cast<LoadDASObjectTask*>(sender());
+    LoadDasObjectTask* loadDasObjectTask = qobject_cast<LoadDasObjectTask*>(sender());
     SAFE_POINT(loadDasObjectTask, "Sender is not defined", );
 
     if (loadDasObjectTask->isFinished() && loadDasObjectTasks.contains(loadDasObjectTask)) {

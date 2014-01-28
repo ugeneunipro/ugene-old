@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-    class LoadDASDocumentTask;
+    class LoadDasDocumentTask;
 
     class GTest_LoadDASDocumentTask : public GTest {
         Q_OBJECT
@@ -37,7 +37,7 @@ namespace U2 {
         void prepare();
         ReportResult report();
     private:
-        LoadDASDocumentTask *t;
+        LoadDasDocumentTask *t;
         QString dbName;
         QString docId;
         QString expectedDoc;

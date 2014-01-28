@@ -80,7 +80,7 @@ void GTest_LoadDASDocumentTask::prepare(){
             return;
         }
         QList<DASSource> featureSources = dasRegistry->getFeatureSourcesByType(refSource.getReferenceType());
-        t = new LoadDASDocumentTask(docId, "", refSource, featureSources);
+        t = new LoadDasDocumentTask(docId, "", refSource, featureSources);
         addSubTask(t);
     }
 }

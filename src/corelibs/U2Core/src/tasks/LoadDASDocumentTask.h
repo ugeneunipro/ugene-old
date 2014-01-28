@@ -68,21 +68,27 @@ private:
 
 };
 
-class U2CORE_EXPORT LoadDASObjectTask : public Task{
+class U2CORE_EXPORT LoadDasObjectTask : public Task{
     Q_OBJECT
+    Q_DISABLE_COPY(LoadDasObjectTask)
 public:
-    LoadDASObjectTask (const QString& accId, const DASSource& source, DASObjectType objType);
-    virtual ~LoadDASObjectTask();
+    LoadDasObjectTask (const QString& accId, const DASSource& source, DASObjectType objType);
+    virtual ~LoadDasObjectTask();
 
     virtual void run();
 
-    DNASequence*    getSequence(){return seq;}
-    QString         getAccession(){return accNumber;}
-    QMap<QString, QList<AnnotationData> >    getAnnotationData( ) { return annotationData; }
+    DNASequence*                                    getSequence();
+    const QString&                                  getAccession() const;
+    const DASSource&                                getSource() const;
+    const QMap<QString, QList<AnnotationData> >&    getAnnotationData( ) const;
+
 public slots:
     void sl_replyFinished(QNetworkReply* reply);
     void sl_onError(QNetworkReply::NetworkError error);
     void sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal);
+
+    void sl_cancelCheck();
+    void sl_timeout();
 
 private:
     QString                 accNumber;
@@ -92,22 +98,24 @@ private:
     QEventLoop*             loop;
     QNetworkReply*          downloadReply;
     QNetworkAccessManager*  networkManager;
+    QTimer*                 timeoutTimer;
+    QTimer*                 cancelCheckTimer;
 
     DNASequence*            seq;
 
     QMap<QString, QList<AnnotationData> > annotationData;
 };
 
-class U2CORE_EXPORT LoadDASDocumentTask : public BaseLoadRemoteDocumentTask{
+class U2CORE_EXPORT LoadDasDocumentTask : public BaseLoadRemoteDocumentTask{
     Q_OBJECT
 public:
-    LoadDASDocumentTask(const QString& accId, const QString& fullPath, const DASSource& referenceSource, const QList<DASSource>& featureSources);
+    LoadDasDocumentTask(const QString& accId, const QString& fullPath, const DASSource& referenceSource, const QList<DASSource>& featureSources);
 
 protected:
     virtual void prepare();
 
     virtual QString getFileFormat(const QString & dbid);
-    virtual GUrl    getSourceURL();
+    virtual GUrl    getSourceUrl();
     virtual QString getFileName();
 
     QList<Task*> onSubTaskFinished(Task* subTask);
@@ -122,8 +130,8 @@ private:
     QList<DASSource>        featureSources;
     DASSource               referenceSource;
 
-    LoadDASObjectTask*             loadSequenceTask;
-    QList<LoadDASObjectTask*>      loadFeaturesTasks;
+    LoadDasObjectTask*             loadSequenceTask;
+    QList<LoadDasObjectTask*>      loadFeaturesTasks;
 
     SaveDocumentTask*               saveDocumentTask;
 
@@ -131,10 +139,10 @@ private:
     QMap<QString, QList<AnnotationData> > annotationData;
 }; 
 
-class U2CORE_EXPORT ConvertIdAndLoadDASDocumentTask : public Task {
+class U2CORE_EXPORT ConvertIdAndLoadDasDocumentTask : public Task {
     Q_OBJECT
 public:
-    ConvertIdAndLoadDASDocumentTask(const QString& accId, const QString& fullPath, const DASSource& referenceSource, const QList<DASSource>& featureSources, bool convertId = false);
+    ConvertIdAndLoadDasDocumentTask(const QString& accId, const QString& fullPath, const DASSource& referenceSource, const QList<DASSource>& featureSources, bool convertId = false);
     Document* getDocument() { return loadDasDocumentTask->getDocument(); }
     Document* takeDocument() { return loadDasDocumentTask->takeDocument(); }
     QString getLocalUrl() { return loadDasDocumentTask->getLocalUrl(); }
@@ -145,7 +153,7 @@ public:
 
 private:
     ConvertDasIdTask*       convertDasIdTask;
-    LoadDASDocumentTask*    loadDasDocumentTask;
+    LoadDasDocumentTask*    loadDasDocumentTask;
 
     QString                 accessionNumber;
     QString                 fullPath;

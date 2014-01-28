@@ -265,7 +265,15 @@ void ConvertDasIdTask::run() {
     connect( downloadReply, SIGNAL(uploadProgress( qint64, qint64 )),
         this, SLOT(sl_uploadProgress(qint64,qint64)) );
 
+    QTimer::singleShot(100, this, SLOT(sl_cancelCheck()));
+    QTimer::singleShot(60000, this, SLOT(sl_timeout()));
+
     loop->exec();
+    disconnect(0, 0, this, 0);
+    if (isCanceled() || hasError()) {
+        return;
+    }
+
     ioLog.trace("Download finished.");
 
     QByteArray result = downloadReply->readAll();
@@ -301,6 +309,25 @@ void ConvertDasIdTask::sl_uploadProgress(qint64 bytesSent, qint64 bytesTotal) {
     stateInfo.progress = bytesSent/ bytesTotal * 100;
 }
 
+void ConvertDasIdTask::sl_cancelCheck() {
+    if (isCanceled()) {
+        if (loop->isRunning()) {
+            loop->exit();
+        }
+    } else {
+        QTimer::singleShot(100, this, SLOT(sl_cancelCheck()));
+    }
+}
+
+void ConvertDasIdTask::sl_timeout() {
+    if (!hasError() && !isCanceled()) {
+        setError(tr("Remote server does not respond"));
+    }
+    if (loop->isRunning()) {
+        loop->exit();
+    }
+}
+
 QString ConvertDasIdTask::getRequestUrlString() {
     QString res = "";
     if (resourceId.isEmpty()) {
@@ -311,6 +338,7 @@ QString ConvertDasIdTask::getRequestUrlString() {
 
     return res;
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 //GetDasIdsBySequenceTask
