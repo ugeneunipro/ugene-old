@@ -72,11 +72,11 @@ DotPlotErrors SaveDotPlotTask::checkFile(const QString &filename) {
 
     QFile file(filename);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        return DotPlotErrors::ErrorOpen;
+        return ErrorOpen;
     }
 
     file.close();
-    return DotPlotErrors::NoErrors;
+    return NoErrors;
 }
 
 void SaveDotPlotTask::saveDotPlot(QTextStream &stream){
@@ -126,7 +126,7 @@ void SaveDotPlotTask::saveDotPlot(QTextStream &stream){
 DotPlotErrors LoadDotPlotTask::checkFile(const QString &filename, const QString &seqXName, const QString &seqYName) {
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        return DotPlotErrors::ErrorOpen;
+        return ErrorOpen;
     }
 
     QTextStream stream(&file);
@@ -137,10 +137,10 @@ DotPlotErrors LoadDotPlotTask::checkFile(const QString &filename, const QString 
     readedXName = stream.readLine();
     readedYName = stream.readLine();
 
-    DotPlotErrors err = DotPlotErrors::NoErrors;
+    DotPlotErrors err = NoErrors;
 
     if (seqXName != readedXName || seqYName != readedYName) {
-        err = DotPlotErrors::ErrorNames;
+        err = ErrorNames;
     }
 
     file.close();

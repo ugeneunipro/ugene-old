@@ -537,7 +537,7 @@ bool DotPlotWidget::sl_showSaveFileDialog() {
     DotPlotErrors err = SaveDotPlotTask::checkFile(lod.url);
 
     switch (err) {
-        case DotPlotErrors::ErrorOpen:
+        case ErrorOpen:
             QMessageBox::critical(this, tr("File opening error"), tr("Error opening file %1").arg(lod.url));
             return false;
         default:
@@ -597,11 +597,11 @@ bool DotPlotWidget::sl_showLoadFileDialog() {
     );
 
     switch (err) {
-        case DotPlotErrors::ErrorOpen:
+        case ErrorOpen:
             QMessageBox::critical(this, tr("File opening error"), tr("Error opening file %1").arg(lod.url));
             return false;
 
-        case DotPlotErrors::ErrorNames:
+        case ErrorNames:
             if (QMessageBox::critical(this, tr("Sequences are different"), tr("Current and loading sequences are different. Continue loading dot-plot anyway?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
                 break; // load dotplot anyway
             }

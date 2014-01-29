@@ -57,6 +57,7 @@
 #include <U2Core/Task.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/CreateObjectRelationDialogController.h>
 #include <U2Gui/DialogUtils.h>
@@ -805,6 +806,10 @@ QString AnnotatedDNAView::addObject( GObject *o ) {
    
     if ( o->getGObjectType( ) == GObjectTypes::SEQUENCE ) {
         U2SequenceObject *dnaObj = qobject_cast<U2SequenceObject *>( o );
+        U2OpStatusImpl status;
+        if (!dnaObj->isValidDbiObject(status)) {
+            return "";
+        }
         ADVSequenceObjectContext *sc = new ADVSequenceObjectContext( this, dnaObj );
         seqContexts.append( sc );
         //if mainSplitter==NULL -> its view initialization and widgets will be added later
