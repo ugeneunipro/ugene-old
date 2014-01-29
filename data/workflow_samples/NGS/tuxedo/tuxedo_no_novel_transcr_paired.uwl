@@ -82,6 +82,7 @@ workflow "Multiple datasets Tuxedo: paired-end reads"{
     files-conversion.url->tophat.in-sequence.paired-url
     read-annotations.annotations->cuffdiff.in-annotations.annotations
     tophat.hits-url->cuffdiff.in-assembly.url
+    tophat.sample->cuffdiff.in-assembly.sample
     read-sequence-1.url->files-conversion.in-file.url
     read-sequence.url->files-conversion-1.in-file.url
 

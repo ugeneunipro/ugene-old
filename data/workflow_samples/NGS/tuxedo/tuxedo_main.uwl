@@ -61,6 +61,7 @@ workflow "Main Tuxedo: single-end reads"{
     cufflinks.isolevel.slot->cuffmerge.in-annotations.annotations
     cuffmerge.annotations->cuffdiff.in-annotations.annotations
     tophat.hits-url->cuffdiff.in-assembly.url
+    tophat.sample->cuffdiff.in-assembly.sample
     read-sequence.url->files-conversion.in-file.url
 
     .meta {

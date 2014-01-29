@@ -54,6 +54,7 @@ workflow "Multiple datasets Tuxedo: single-end reads"{
     files-conversion.url->tophat.in-sequence.in-url
     read-annotations.annotations->cuffdiff.in-annotations.annotations
     tophat.hits-url->cuffdiff.in-assembly.url
+    tophat.sample->cuffdiff.in-assembly.sample
     read-sequence.url->files-conversion.in-file.url
 
     .meta {
