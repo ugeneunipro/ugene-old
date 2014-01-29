@@ -25,6 +25,7 @@
 
 #include <U2Gui/HBar.h>
 #include <U2View/AnnotatedDNAView.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QString>
 #include <QtCore/QPair>
@@ -166,7 +167,7 @@ DotPlotSplitter::~DotPlotSplitter() {
 void DotPlotSplitter::addView(DotPlotWidget* view) {
 
     dotPlotList.append(view);
-    Q_ASSERT(splitter);
+    SAFE_POINT(splitter, "splitter is NULL", );
     splitter->addWidget(view);
 
     connect(view,
@@ -236,7 +237,7 @@ bool DotPlotSplitter::isEmpty() const{
 // each DotPlotWidget defines if it should add menu
 void DotPlotSplitter::buildPopupMenu(QMenu *m) {
     foreach (DotPlotWidget *w, dotPlotList) {
-        Q_ASSERT(w);
+        SAFE_POINT(w, "w is NULL", );
         w->buildPopupMenu(m);
     }
 }
@@ -248,7 +249,7 @@ void DotPlotSplitter::sl_toggleSyncLock(bool l) {
 
 void DotPlotSplitter::sl_toggleFilter(){
     foreach (DotPlotWidget *w, dotPlotList) {
-        Q_ASSERT(w);
+        SAFE_POINT(w, "w is NULL", );
         w->sl_filter();
         break; //todo: support several widgets
     }

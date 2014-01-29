@@ -49,7 +49,7 @@ public:
 
     void run();
 
-    static DotPlotDialogs::Errors checkFile(const QString &filename);
+    static DotPlotErrors checkFile(const QString &filename);
 
 private:
     QString filename;
@@ -77,7 +77,7 @@ public:
 
     void run();
 
-    static DotPlotDialogs::Errors checkFile(const QString &filename, const QString &seqXName, const QString &seqYName);
+    static DotPlotErrors checkFile(const QString &filename, const QString &seqXName, const QString &seqYName);
 
 private:
     QString filename;

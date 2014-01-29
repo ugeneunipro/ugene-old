@@ -33,6 +33,7 @@
 #include <U2Core/DNATranslation.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 #include <U2Algorithm/RepeatFinderSettings.h>
@@ -53,6 +54,7 @@
 #include <QtGui/QToolTip>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
 
 namespace U2 {
 
@@ -91,7 +93,7 @@ DotPlotWidget::DotPlotWidget(AnnotatedDNAView* dnaView)
     w = width() - 2*textSpace;
     h = height() - 2*textSpace;
 
-    Q_ASSERT(dnaView);
+    SAFE_POINT(dnaView, "dnaView is NULL", );
     this->dnaView = dnaView;
 
     initActionsAndSignals();
@@ -157,12 +159,12 @@ void DotPlotWidget::connectSequenceSelectionSignals() {
         return;
     }
 
-    Q_ASSERT(dnaView);
+    SAFE_POINT(dnaView, "dnaView is NULL", );
     connect (dnaView, SIGNAL(si_sequenceWidgetRemoved(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetRemoved(ADVSequenceWidget*)));
 
     foreach (ADVSequenceObjectContext* ctx, dnaView->getSequenceContexts()) {
 
-        Q_ASSERT(ctx);
+        SAFE_POINT(ctx, "ctx is NULL", );
 
         connect(ctx->getSequenceSelection(),
             SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)),
@@ -398,7 +400,7 @@ void DotPlotWidget::sl_buildDotplotTaskStateChanged() {
     dpFilteredResultsRevCompl->clear();
 
     if (!dpDirectResultListener->stateOk || !dpRevComplResultsListener->stateOk) {
-        DotPlotDialogs::tooManyResults();
+        QMessageBox::critical(this, tr("Too many results"), tr("Too many results. Try to increase minimum repeat length"));
     }
     foreach(DotPlotResults dpR, *dpDirectResultListener->dotPlotList){
         dpFilteredResults->append(dpR);
@@ -532,26 +534,24 @@ bool DotPlotWidget::sl_showSaveFileDialog() {
     }
 
     // check if file opens
-    DotPlotDialogs::Errors err = SaveDotPlotTask::checkFile(lod.url);
+    DotPlotErrors err = SaveDotPlotTask::checkFile(lod.url);
 
     switch (err) {
-        case DotPlotDialogs::ErrorOpen:
-            DotPlotDialogs::fileOpenError(lod.url);
+        case DotPlotErrors::ErrorOpen:
+            QMessageBox::critical(this, tr("File opening error"), tr("Error opening file %1").arg(lod.url));
             return false;
-
         default:
             break;
     }
 
     TaskScheduler* ts = AppContext::getTaskScheduler();
     if (dotPlotTask) { // Check if there is already some dotPlotTask
-        DotPlotDialogs::taskRunning();
-
+        QMessageBox::critical(this, tr("Task is already running"), tr("Build or Load DotPlot task is already running"));
         return false;
     }
-    Q_ASSERT(dpDirectResultListener);
-    Q_ASSERT(sequenceX);
-    Q_ASSERT(sequenceY);
+    SAFE_POINT(dpDirectResultListener, "dpDirectResultListener is NULL", false);
+    SAFE_POINT(sequenceX, "sequenceX is NULL", false);
+    SAFE_POINT(sequenceY, "sequenceY is NULL", false);
 
     dotPlotTask = new SaveDotPlotTask(
             lod.url,
@@ -579,31 +579,30 @@ bool DotPlotWidget::sl_showLoadFileDialog() {
     }
 
     if (dotPlotTask) { // Check if there is already some dotPlotTask
-        DotPlotDialogs::taskRunning();
-
+        QMessageBox::critical(this, tr("Task is already running"), tr("Build or Load DotPlot task is already running"));
         return false;
     }
 
-    Q_ASSERT(sequenceX);
-    Q_ASSERT(sequenceY);
+    SAFE_POINT(sequenceX, "sequenceX is NULL", false);
+    SAFE_POINT(sequenceY, "sequenceY is NULL", false);
 
-    Q_ASSERT(sequenceX->getSequenceObject());
-    Q_ASSERT(sequenceY->getSequenceObject());
+    SAFE_POINT(sequenceX->getSequenceObject(), "sequenceX->getSequenceObject() object is NULL", false);
+    SAFE_POINT(sequenceY->getSequenceObject(), "sequenceY->getSequenceObject() object is NULL", false);
 
     // check if the file opens and names of the loading sequences same as names of current sequences
-    DotPlotDialogs::Errors err = LoadDotPlotTask::checkFile(
+    DotPlotErrors err = LoadDotPlotTask::checkFile(
             lod.url,
             sequenceX->getSequenceObject()->getGObjectName(),
             sequenceY->getSequenceObject()->getGObjectName()
     );
 
     switch (err) {
-        case DotPlotDialogs::ErrorOpen:
-            DotPlotDialogs::fileOpenError(lod.url);
+        case DotPlotErrors::ErrorOpen:
+            QMessageBox::critical(this, tr("File opening error"), tr("Error opening file %1").arg(lod.url));
             return false;
 
-        case DotPlotDialogs::ErrorNames:
-            if (DotPlotDialogs::loadDifferent() == QMessageBox::Yes) {
+        case DotPlotErrors::ErrorNames:
+            if (QMessageBox::critical(this, tr("Sequences are different"), tr("Current and loading sequences are different. Continue loading dot-plot anyway?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
                 break; // load dotplot anyway
             }
             else {
@@ -614,11 +613,11 @@ bool DotPlotWidget::sl_showLoadFileDialog() {
             break;
     }
 
-    Q_ASSERT(dpDirectResultListener);
-    Q_ASSERT(dpDirectResultListener->dotPlotList);
+    SAFE_POINT(dpDirectResultListener, "dpDirectResultListener is NULL", false);
+    SAFE_POINT(dpDirectResultListener->dotPlotList, "dpDirectResultListener->dotPlotList is NULL", false);
 
-    Q_ASSERT(dpRevComplResultsListener);
-    Q_ASSERT(dpRevComplResultsListener->dotPlotList);
+    SAFE_POINT(dpRevComplResultsListener, "dpRevComplResultsListener is NULL", false);
+    SAFE_POINT(dpRevComplResultsListener->dotPlotList, "dpRevComplResultsListener->dotPlotList is NULL", false);
 
     dotPlotTask = new LoadDotPlotTask(
             lod.url,
@@ -647,11 +646,11 @@ bool DotPlotWidget::sl_showLoadFileDialog() {
 bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
 
     if (dotPlotTask) { // Check if there is already some dotPlotTask
-        DotPlotDialogs::taskRunning();
+        QMessageBox::critical(this, tr("Task is already running"), tr("Build or Load DotPlot task is already running"));
         return false;
     }
 
-    Q_ASSERT(dnaView);
+    SAFE_POINT(dnaView, "dnaView is NULL", false);
 
     DotPlotDialog d(this, dnaView, minLen, identity, sequenceX, sequenceY, direct, inverted, dotPlotDirectColor, dotPlotInvertedColor, disableLoad);
     if (d.exec() != QDialog::Accepted) {
@@ -677,41 +676,49 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
     direct = d.isDirect();
     inverted = d.isInverted();
 
-    Q_ASSERT(direct || inverted);
+    SAFE_POINT(direct || inverted, "direct || inverted is false", false);
 
     dotPlotDirectColor = d.getDirectColor();
     dotPlotInvertedColor = d.getInvertedColor();
 
-    Q_ASSERT(d.minLenBox);
-    Q_ASSERT(d.identityBox);
+    SAFE_POINT(d.minLenBox, "d.minLenBox is NULL", false);
+    SAFE_POINT(d.identityBox, "d.identityBox is NULL", false);
 
     minLen = d.minLenBox->value();
     identity = d.identityBox->value();
 
     connectSequenceSelectionSignals();
 
-    Q_ASSERT(dpDirectResultListener);
-    Q_ASSERT(dpDirectResultListener->dotPlotList);
+    SAFE_POINT(dpDirectResultListener, "dpDirectResultListener is NULL", false);
+    SAFE_POINT(dpDirectResultListener->dotPlotList, "dpDirectResultListener->dotPlotList is NULL", false);
     dpDirectResultListener->dotPlotList->clear();
 
-    Q_ASSERT(dpRevComplResultsListener);
-    Q_ASSERT(dpRevComplResultsListener->dotPlotList);
+    SAFE_POINT(dpRevComplResultsListener, "dpRevComplResultsListener is NULL", false);
+    SAFE_POINT(dpRevComplResultsListener->dotPlotList, "dpRevComplResultsListener->dotPlotList is NULL", false);
     dpRevComplResultsListener->dotPlotList->clear();
 
-    Q_ASSERT(sequenceX);
-    Q_ASSERT(sequenceY);
+    if(!sequenceX){
+        QMessageBox::critical(this, tr("Invalid sequence"), tr("First selected sequence is invalid"));
+        return false;
+    }
 
+    if(!sequenceY){
+        QMessageBox::critical(this, tr("Invalid sequence"), tr("Second selected sequence is invalid"));
+        return false;
+    }
+
+    
     if ((sequenceX->getAlphabet()->getType() != sequenceY->getAlphabet()->getType())){
 
         sequenceX = NULL;
         sequenceY = NULL;
 
-        DotPlotDialogs::wrongAlphabetTypes();
+        QMessageBox::critical(this, tr("Wrong alphabet types"), tr("Both sequence must have the same alphabet"));
         return false;
     }
 
-    Q_ASSERT(sequenceX->getSequenceObject());
-    Q_ASSERT(sequenceY->getSequenceObject());
+    SAFE_POINT(sequenceX->getSequenceObject(), "sequenceX->getSequenceObject() is NULL", false);
+    SAFE_POINT(sequenceY->getSequenceObject(), "sequenceY->getSequenceObject() is NULL", false);
 
 
     const DNAAlphabet *al = sequenceX->getAlphabet();
@@ -782,7 +789,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
 // ask user if he wants to save dotplot first
 void DotPlotWidget::sl_showDeleteDialog() {
 
-    int answer = DotPlotDialogs::saveDotPlot();
+    QMessageBox::StandardButton answer = QMessageBox::information(this, tr("Save dot-plot"), tr("Save dot-plot data before closing?")/*, QMessageBox::Yes , QMessageBox::No , QMessageBox::Cancel*/);
     bool saveDotPlot;
 
     switch (answer) {
@@ -844,8 +851,8 @@ void DotPlotWidget::pixMapUpdate() {
 
     QLine line;
 
-    Q_ASSERT(dpDirectResultListener);
-    Q_ASSERT(dpDirectResultListener->dotPlotList);
+    SAFE_POINT(dpDirectResultListener, "dpDirectResultListener is NULL", );
+    SAFE_POINT(dpDirectResultListener->dotPlotList, "dpDirectResultListener->dotPlotList is NULL", );
 
     // draw to the dotplot direct results
     if (direct) {
@@ -928,7 +935,7 @@ bool DotPlotWidget::getLineToDraw(const DotPlotResults &r, QLine *line, float ra
         return false;
     }
 
-    Q_ASSERT(line);
+    SAFE_POINT(line, "line is NULL", false);
 
     if (invert) {
         float tmpX = x1;
@@ -982,8 +989,8 @@ void DotPlotWidget::drawFocus(QPainter& p) const{
 
 void DotPlotWidget::drawNames(QPainter &p) const {
 
-    Q_ASSERT(sequenceX->getSequenceObject());
-    Q_ASSERT(sequenceY->getSequenceObject());
+    SAFE_POINT(sequenceX->getSequenceObject(), "sequenceX->getSequenceObject() is NULL", );
+    SAFE_POINT(sequenceX->getSequenceObject(), "sequenceY->getSequenceObject() is NULL", );
     QString nameX = sequenceX->getSequenceObject()->getGObjectName();
     QString nameY = sequenceY->getSequenceObject()->getGObjectName();
 
@@ -1166,8 +1173,8 @@ void DotPlotWidget::drawSelection(QPainter &p) const{
     int xSeqLen = sequenceX->getSequenceLength();
     int ySeqLen = sequenceY->getSequenceLength();
 
-    Q_ASSERT(xSeqLen);
-    Q_ASSERT(ySeqLen);
+    SAFE_POINT(xSeqLen, "xSeqLen is zero", );
+    SAFE_POINT(ySeqLen, "ySeqLen is zero", );
 
     // for each selected part on the sequence X, highlight selected part on the sequence Y
     if((selectionX && selectionX->getSelectedRegions().size() > 1)){
@@ -1378,14 +1385,14 @@ void DotPlotWidget::zoomReset() {
 // translate visible coords to the sequence coords (starts from 0)
 QPoint DotPlotWidget::sequenceCoords(const QPointF &c) const {
 
-    Q_ASSERT(sequenceX);
-    Q_ASSERT(sequenceY);
+    SAFE_POINT(sequenceX, "sequenceX is NULL", QPoint());
+    SAFE_POINT(sequenceY, "sequenceY is NULL", QPoint());
 
     int xLen = sequenceX->getSequenceLength();
     int yLen = sequenceY->getSequenceLength();
 
-    Q_ASSERT(w>0);
-    Q_ASSERT(h>0);
+    SAFE_POINT(w>0, "w is lesser or equal zero", QPoint());
+    SAFE_POINT(h>0, "h is lesser or equal zero", QPoint());
 
     int innerX = (c.x() * xLen)/w;
     int innerY = (c.y() * yLen)/h;
@@ -1412,12 +1419,12 @@ void DotPlotWidget::sequencesCoordsSelection(const QPointF &start, const QPointF
         startY = tmp;
     }
 
-    Q_ASSERT(dnaView);
+    SAFE_POINT(dnaView, "dnaView is NULL", );
     foreach (ADVSequenceWidget *w, dnaView->getSequenceWidgets()) {
 
-        Q_ASSERT(w);
+        SAFE_POINT(w, "w is NULL", );
         foreach (ADVSequenceObjectContext *s, w->getSequenceContexts()) {
-            Q_ASSERT(s);
+            SAFE_POINT(s, "s is NULL", );
 
             if ( ((int)(endX-startX) > 0) && (s == sequenceX)) {
                 s->getSequenceSelection()->setRegion(U2Region(startX, endX-startX));
@@ -1498,8 +1505,8 @@ const DotPlotResults* DotPlotWidget::findNearestRepeat(const QPoint &p) {
     float x = p.x();
     float y = p.y();
 
-    Q_ASSERT(sequenceX);
-    Q_ASSERT(sequenceY);
+    SAFE_POINT(sequenceX, "sequenceX is NULL", NULL);
+    SAFE_POINT(sequenceY, "sequenceY is NULL", NULL);
 
     if ((sequenceX->getSequenceLength() <= 0) || (sequenceY->getSequenceLength() <= 0)) {
         return NULL;
@@ -1513,7 +1520,7 @@ const DotPlotResults* DotPlotWidget::findNearestRepeat(const QPoint &p) {
 
     bool first = true;
 
-    Q_ASSERT (dpDirectResultListener);
+    SAFE_POINT (dpDirectResultListener, "dpDirectResultListener is NULL", NULL);
     //foreach (const DotPlotResults &r, *dpDirectResultListener->dotPlotList) {
     foreach (const DotPlotResults &r, *dpFilteredResults) {
 
@@ -1534,7 +1541,7 @@ const DotPlotResults* DotPlotWidget::findNearestRepeat(const QPoint &p) {
         first = false;
     }
 
-    Q_ASSERT (dpRevComplResultsListener);
+    SAFE_POINT (dpRevComplResultsListener, "dpRevComplResultsListener is NULL", NULL);
     //foreach (const DotPlotResults &r, *dpRevComplResultsListener->dotPlotList) {
     foreach (const DotPlotResults &r, *dpFilteredResultsRevCompl) {
 
@@ -1595,7 +1602,7 @@ void DotPlotWidget::paintEvent(QPaintEvent *e) {
 
 void DotPlotWidget::resizeEvent(QResizeEvent *e) {
 
-    Q_ASSERT(e);
+    SAFE_POINT(e, "e is NULL", );
 
     if (e->oldSize() == e->size()) {
         return;
@@ -1622,7 +1629,7 @@ void DotPlotWidget::resizeEvent(QResizeEvent *e) {
 // zoom in/zoom out
 void DotPlotWidget::wheelEvent(QWheelEvent *e) {
 
-    Q_ASSERT(e);
+    SAFE_POINT(e, "e is NULL", );
     setFocus();
     if (dotPlotTask) {
         return;
@@ -1709,7 +1716,7 @@ void DotPlotWidget::resetZooming() {
 // user clicked on the minimap
 void DotPlotWidget::miniMapShift() {
 
-    Q_ASSERT(miniMap);
+    SAFE_POINT(miniMap, "miniMap is NULL", );
 
     QPointF fromMiniMap = miniMap->fromMiniMap(clickedSecond, zoom);
     shiftX = -fromMiniMap.x();
@@ -1722,7 +1729,7 @@ void DotPlotWidget::miniMapShift() {
 void DotPlotWidget::mousePressEvent(QMouseEvent *e) {
     setFocus();
 
-    Q_ASSERT(e);
+    SAFE_POINT(e, "e is NULL", );
 
     QWidget::mousePressEvent(e);
 
@@ -1772,7 +1779,7 @@ QPointF DotPlotWidget::unshiftedUnzoomed(const QPointF &p) const {
 
 void DotPlotWidget::mouseMoveEvent(QMouseEvent *e) {
 
-    Q_ASSERT(e);
+    SAFE_POINT(e, "e is NULL", );
 
     QWidget::mouseMoveEvent(e);
 
@@ -1813,11 +1820,11 @@ void DotPlotWidget::mouseMoveEvent(QMouseEvent *e) {
 
 }
 void DotPlotWidget::sequenceClearSelection(){
-    Q_ASSERT(dnaView);
+    SAFE_POINT(dnaView, "dnaView is NULL", );
     foreach (ADVSequenceWidget *w, dnaView->getSequenceWidgets()) {
-        Q_ASSERT(w);
+        SAFE_POINT(w, "w is NULL", );
         foreach (ADVSequenceObjectContext *s, w->getSequenceContexts()) {
-            Q_ASSERT(s);
+            SAFE_POINT(s, "s is NULL", );
             s->getSequenceSelection()->clear();
         }
     }
@@ -1856,9 +1863,9 @@ void DotPlotWidget::sl_filter(){
 
     DotPlotFilterDialog d(QApplication::activeWindow(), sequenceX, sequenceY);
     if(d.exec()){
-        Q_ASSERT(dpDirectResultListener);
-        Q_ASSERT(sequenceX);
-        Q_ASSERT(sequenceY);
+        SAFE_POINT(dpDirectResultListener, "dpDirectResultListener is NULL", );
+        SAFE_POINT(sequenceX, "sequenceX is NULL", );
+        SAFE_POINT(sequenceY, "sequenceY is NULL", );
 
         QList<Task*> tasks;
 
@@ -1893,7 +1900,7 @@ void DotPlotWidget::sl_filter(){
 
 void DotPlotWidget::mouseReleaseEvent(QMouseEvent *e) {
     setFocus();
-    Q_ASSERT(e);
+    SAFE_POINT(e, "e is NULL", );
 
     if (dotPlotTask) {
         return;

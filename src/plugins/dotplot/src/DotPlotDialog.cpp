@@ -29,6 +29,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/LastUsedDirHelper.h>
@@ -271,7 +272,7 @@ void DotPlotDialog::sl_loadTaskStateChanged(Task* t){
                 }
                 GUrl URL(curURL);
                 Project *project = AppContext::getProject();
-                Q_ASSERT(project);
+                SAFE_POINT(project, "project is NULL", );
                 Document *doc = project->findDocumentByURL(URL);
                 if (!doc || !doc->isLoaded()) {
                     return;
@@ -293,7 +294,7 @@ void DotPlotDialog::sl_loadTaskStateChanged(Task* t){
     
 
     if (loadTask->getStateInfo().hasError()) {
-        DotPlotDialogs::filesOpenError();
+        QMessageBox::critical(this, tr("Error"), tr("Error opening files"));
         return;
     }
 

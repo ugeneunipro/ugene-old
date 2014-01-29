@@ -23,6 +23,7 @@
 
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
@@ -73,7 +74,7 @@ void DotPlotFilesDialog::sl_openFirstFile() {
     LastUsedDirHelper lod("DotPlot first file");
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Open first file"), lod.dir, filter);
 
-    Q_ASSERT(firstFileEdit);
+    SAFE_POINT(firstFileEdit, "firstFileEdit is NULL", );
     if (!lod.url.isEmpty()) {
         firstFileEdit->setText(lod.url);
         FormatDetectionConfig conf;
@@ -105,7 +106,7 @@ void DotPlotFilesDialog::sl_openSecondFile() {
     }
     lod.url = QFileDialog::getOpenFileName(NULL, tr("Open second file"), lod.dir, filter);
 
-    Q_ASSERT(secondFileEdit);
+    SAFE_POINT(secondFileEdit, "secondFileEdit is NULL", );
     if (!lod.url.isEmpty()) {
         secondFileEdit->setText(lod.url);
         FormatDetectionConfig conf;
@@ -129,8 +130,8 @@ void DotPlotFilesDialog::sl_openSecondFile() {
 // ok button clicked
 void DotPlotFilesDialog::accept() {
 
-    Q_ASSERT(firstFileEdit);
-    Q_ASSERT(secondFileEdit);
+    SAFE_POINT(firstFileEdit, "firstFileEdit is NULL", );
+    SAFE_POINT(secondFileEdit, "secondFileEdit is NULL", );
 
     firstFileName = firstFileEdit->text();
     secondFileName = secondFileEdit->text();

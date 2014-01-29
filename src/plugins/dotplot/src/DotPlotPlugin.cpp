@@ -94,7 +94,7 @@ void DotPlotViewContext::sl_loadTaskStateChanged(Task* task) {
     }
 
     if (loadTask->getStateInfo().hasError()) {
-        DotPlotDialogs::filesOpenError();
+        QMessageBox::critical(NULL, tr("Error"), tr("Error opening files"));
         return;
     }
 

@@ -47,23 +47,7 @@ private:
     float ratio;
 };
 
-// error messages and dialogs
-class DotPlotDialogs: QObject {
-    Q_OBJECT
-public:
-    enum Errors {ErrorOpen, ErrorNames, NoErrors};
-
-    static void taskRunning();
-    static int saveDotPlot();
-    static void fileOpenError(const QString &filename);
-    static void filesOpenError();
-    static int loadDifferent();
-    static void loadWrongFormat();
-    static void wrongAlphabetTypes();
-    static void tooManyResults();
-};
-
-
+enum DotPlotErrors {ErrorOpen, ErrorNames, NoErrors};
 
 struct DotPlotResults {
     DotPlotResults(): x(0), y(0), len(0){};

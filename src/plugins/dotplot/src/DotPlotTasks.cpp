@@ -68,31 +68,31 @@ void LoadDotPlotTask::run() {
 }
 
 // check if the file opens
-DotPlotDialogs::Errors SaveDotPlotTask::checkFile(const QString &filename) {
+DotPlotErrors SaveDotPlotTask::checkFile(const QString &filename) {
 
     QFile file(filename);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        return DotPlotDialogs::ErrorOpen;
+        return DotPlotErrors::ErrorOpen;
     }
 
     file.close();
-    return DotPlotDialogs::NoErrors;
+    return DotPlotErrors::NoErrors;
 }
 
 void SaveDotPlotTask::saveDotPlot(QTextStream &stream){
 
-    Q_ASSERT (sequenceX);
-    Q_ASSERT (sequenceY);
+    SAFE_POINT (sequenceX, "sequenceX is NULL", );
+    SAFE_POINT (sequenceY, "sequenceY is NULL", );
 
     stream << sequenceX->getGObjectName() << endl;
     stream << sequenceY->getGObjectName() << endl;
 
     stream << minLen << " " << identity << endl;
 
-    Q_ASSERT(directList);
+    SAFE_POINT(directList, "directList is NULL", );
 
     int listSizes = directList->size() + inverseList->size();
-    Q_ASSERT (listSizes);
+    SAFE_POINT (listSizes, "listSizes is NULL", );
 
     int i=0;
     foreach(const DotPlotResults &r, *directList) {
@@ -108,7 +108,7 @@ void SaveDotPlotTask::saveDotPlot(QTextStream &stream){
 
     stream << endl << "0 0 0" << endl;
 
-    Q_ASSERT(inverseList);
+    SAFE_POINT(inverseList, "inverseList is NULL", );
 
     foreach(const DotPlotResults &r, *inverseList) {
         if (stateInfo.cancelFlag) {
@@ -123,12 +123,10 @@ void SaveDotPlotTask::saveDotPlot(QTextStream &stream){
 }
 
 // check if the file opens and sequence names are the same
-DotPlotDialogs::Errors LoadDotPlotTask::checkFile(const QString &filename, const QString &seqXName, const QString &seqYName) {
-
+DotPlotErrors LoadDotPlotTask::checkFile(const QString &filename, const QString &seqXName, const QString &seqYName) {
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-
-        return DotPlotDialogs::ErrorOpen;
+        return DotPlotErrors::ErrorOpen;
     }
 
     QTextStream stream(&file);
@@ -139,10 +137,10 @@ DotPlotDialogs::Errors LoadDotPlotTask::checkFile(const QString &filename, const
     readedXName = stream.readLine();
     readedYName = stream.readLine();
 
-    DotPlotDialogs::Errors err = DotPlotDialogs::NoErrors;
+    DotPlotErrors err = DotPlotErrors::NoErrors;
 
     if (seqXName != readedXName || seqYName != readedYName) {
-        err = DotPlotDialogs::ErrorNames;
+        err = DotPlotErrors::ErrorNames;
     }
 
     file.close();
@@ -196,8 +194,8 @@ bool LoadDotPlotTask::loadDotPlot(QTextStream &stream, int fileSize) {
             newDotPlotInverseList.push_back(r);
         }
 
-        Q_ASSERT (stream.device());
-        Q_ASSERT (fileSize);
+        SAFE_POINT (stream.device(), "stream.device() is NULL", false);
+        SAFE_POINT (fileSize, "fileSize is NULL", false);
 
         int streamPos = stream.device()->pos();
         stateInfo.progress = (100*streamPos)/fileSize;
@@ -209,16 +207,16 @@ bool LoadDotPlotTask::loadDotPlot(QTextStream &stream, int fileSize) {
         *inverted = true;
     }
 
-    Q_ASSERT(directList);
+    SAFE_POINT(directList, "directList is NULL", false);
     directList->clear();
     *directList = newDotPlotDirectList;
 
-    Q_ASSERT(inverseList);
+    SAFE_POINT(inverseList, "inverseList is NULL", false);
     inverseList->clear();
     *inverseList = newDotPlotInverseList;
 
-    Q_ASSERT(minLen);
-    Q_ASSERT(identity);
+    SAFE_POINT(minLen, "minLen is NULL", false);
+    SAFE_POINT(identity, "identity is NULL", false);
 
     *minLen = newMinLen;
     *identity = newIdentity;
@@ -262,7 +260,7 @@ Document *DotPlotLoadDocumentsTask::loadFile(QString inFile, int gapSize) {
 
     Project *project = AppContext::getProject();
 
-    Q_ASSERT(project);
+    SAFE_POINT(project, "project is NULL", NULL);
     Document *doc = project->findDocumentByURL(url);
 
     // document already present in the project
@@ -277,7 +275,7 @@ Document *DotPlotLoadDocumentsTask::loadFile(QString inFile, int gapSize) {
     }
 
     DocumentFormat* format = formats.first().format;
-    Q_ASSERT(format);
+    SAFE_POINT(format, "format is NULL", NULL);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
 
     QVariantMap hints;

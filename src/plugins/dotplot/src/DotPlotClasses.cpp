@@ -22,6 +22,7 @@
 #include "DotPlotClasses.h"
 #include <QtCore/qmath.h>
 #include <QtCore/qnumeric.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -29,7 +30,7 @@ DotPlotMiniMap::DotPlotMiniMap(int bigMapW, int bigMapH, float ratio) {
 
     this->ratio = ratio;
 
-    Q_ASSERT(ratio>0);
+    SAFE_POINT(ratio>0, "ratio value less or equal zero", );
 
     w = bigMapW/ratio;
     h = bigMapH/ratio;
@@ -111,7 +112,7 @@ void DotPlotResultsListener::onResult(const RFResult& r) {
     }
 
     if (dotPlotList->size() > maxResults) {
-        Q_ASSERT(rfTask);
+        SAFE_POINT(rfTask, "rfTask is NULL", );
         rfTask->cancel();
         stateOk = false;
 
@@ -132,7 +133,7 @@ void DotPlotResultsListener::onResults(const QVector<RFResult>& v) {
         }
 
         if (dotPlotList->size() > maxResults) {
-            Q_ASSERT(rfTask);
+            SAFE_POINT(rfTask, "rfTask is NULL", );
             rfTask->cancel();
             stateOk = false;
 
@@ -161,56 +162,6 @@ void DotPlotRevComplResultsListener::onResults(const QVector<RFResult>& v) {
         results << res;
     }
     DotPlotResultsListener::onResults(results);
-}
-
-
-// dialogs and error messages
-void DotPlotDialogs::taskRunning() {
-
-    QMessageBox mb(QMessageBox::Critical, tr("Task is already running"), tr("Build or Load DotPlot task is already running"));
-    mb.exec();
-}
-
-int DotPlotDialogs::saveDotPlot() {
-
-    QMessageBox mb(QMessageBox::Information, tr("Save dot-plot"), tr("Save dot-plot data before closing?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-    return mb.exec();
-}
-
-void DotPlotDialogs::fileOpenError(const QString &filename) {
-
-    QMessageBox mb(QMessageBox::Critical, tr("File opening error"), tr("Error opening file %1").arg(filename));
-    mb.exec();
-}
-
-void DotPlotDialogs::filesOpenError() {
-
-    QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Error opening files"));
-    mb.exec();
-}
-
-int DotPlotDialogs::loadDifferent() {
-
-    QMessageBox mb(QMessageBox::Critical, tr("Sequences are different"), tr("Current and loading sequences are different. Continue loading dot-plot anyway?"), QMessageBox::Yes | QMessageBox::No);
-    return mb.exec();
-}
-
-void DotPlotDialogs::loadWrongFormat() {
-
-    QMessageBox mb(QMessageBox::Critical, tr("Wrong format"), tr("Wrong dot-plot file format, loading aborted"));
-    mb.exec();
-}
-
-void DotPlotDialogs::wrongAlphabetTypes() {
-
-    QMessageBox mb(QMessageBox::Critical, tr("Wrong alphabet types"), tr("Both sequence must have the same alphabet"));
-    mb.exec();
-}
-
-void DotPlotDialogs::tooManyResults() {
-
-    QMessageBox mb(QMessageBox::Critical, tr("Too many results"), tr("Too many results. Try to increase minimum repeat length"));
-    mb.exec();
 }
 
 }
