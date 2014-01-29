@@ -263,7 +263,7 @@
               </spacer>
              </item>
              <item>
-              <widget class="QToolButton" name="boltAttrButton">
+              <widget class="QToolButton" name="boldAttrButton">
                <property name="font">
                 <font>
                  <weight>75</weight>
@@ -485,7 +485,7 @@
   <tabstop>heightSlider</tabstop>
   <tabstop>labelsColorButton</tabstop>
   <tabstop>fontSizeSpinBox</tabstop>
-  <tabstop>boltAttrButton</tabstop>
+  <tabstop>boldAttrButton</tabstop>
   <tabstop>italicAttrButton</tabstop>
   <tabstop>underlineAttrButton</tabstop>
   <tabstop>branchesColorButton</tabstop>

@@ -1119,10 +1119,11 @@ void TreeViewerUI::sl_rectLayoutRecomputed() {
         defaultZoom();
         updateRect();
 
-        updateTreeSettings();
-
         break;
     }
+    updateTreeSettings();
+    updateSettings();
+    updateTextSettings();
 }
 
 void TreeViewerUI::sl_onBranchCollapsed(GraphicsRectangularBranchItem*) {

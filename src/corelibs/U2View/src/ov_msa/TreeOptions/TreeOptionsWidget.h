@@ -63,7 +63,7 @@ private slots:
     void sl_onLayoutChanged(int index);
     void sl_labelsColorButton();
     void sl_branchesColorButton();
-    void sl_textSettingsChanged();
+    void sl_fontChanged();
     void sl_branchSettingsChanged();
 
     void sl_onLblLinkActivated(const QString& link);

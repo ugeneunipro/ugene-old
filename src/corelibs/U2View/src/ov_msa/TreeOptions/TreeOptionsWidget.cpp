@@ -142,11 +142,11 @@ void TreeOptionsWidget::connectSlots()
 
     //Labels format widgets
     connect(labelsColorButton,   SIGNAL(clicked()),     SLOT(sl_labelsColorButton()));
-    connect(boltAttrButton,      SIGNAL(clicked(bool)), SLOT(sl_textSettingsChanged()));
-    connect(italicAttrButton,    SIGNAL(clicked(bool)), SLOT(sl_textSettingsChanged()));
-    connect(underlineAttrButton, SIGNAL(clicked(bool)), SLOT(sl_textSettingsChanged()));
-    connect(fontSizeSpinBox,     SIGNAL(valueChanged(int)), SLOT(sl_textSettingsChanged()));
-    connect(fontComboBox,        SIGNAL(currentFontChanged(const QFont &)), SLOT(sl_textSettingsChanged()));
+    connect(boldAttrButton,      SIGNAL(clicked(bool)), SLOT(sl_fontChanged()));
+    connect(italicAttrButton,    SIGNAL(clicked(bool)), SLOT(sl_fontChanged()));
+    connect(underlineAttrButton, SIGNAL(clicked(bool)), SLOT(sl_fontChanged()));
+    connect(fontSizeSpinBox,     SIGNAL(valueChanged(int)), SLOT(sl_fontChanged()));
+    connect(fontComboBox,        SIGNAL(currentFontChanged(const QFont &)), SLOT(sl_fontChanged()));
 
     //Branches settings widgets
     connect(widthSlider,   SIGNAL(valueChanged(int)), SLOT(sl_onGeneralSettingsChanged()));
@@ -211,11 +211,11 @@ void TreeOptionsWidget::updateFormatSettings() {
 
     fontSizeSpinBox->setValue(textSettings.textFont.pointSize());
 
-    boltAttrButton->setCheckable(true);
+    boldAttrButton->setCheckable(true);
     italicAttrButton->setCheckable(true);
     underlineAttrButton->setCheckable(true);
 
-    boltAttrButton->setChecked(textSettings.textFont.bold());
+    boldAttrButton->setChecked(textSettings.textFont.bold());
     italicAttrButton->setChecked(textSettings.textFont.italic());
     underlineAttrButton->setChecked(textSettings.textFont.underline());
 
@@ -267,11 +267,11 @@ void TreeOptionsWidget::sl_onGeneralSettingsChanged()
     getTreeViewer()->updateSettings(treeSettings);
 }
 
-void TreeOptionsWidget::sl_textSettingsChanged() {
+void TreeOptionsWidget::sl_fontChanged() {
     QFont newFont = fontComboBox->currentFont();
     newFont.setPointSize(fontSizeSpinBox->value());
 
-    newFont.setBold(boltAttrButton->isChecked());
+    newFont.setBold(boldAttrButton->isChecked());
     newFont.setItalic(italicAttrButton->isChecked());
     newFont.setUnderline(underlineAttrButton->isChecked());
 
@@ -317,7 +317,7 @@ void TreeOptionsWidget::sl_labelsColorButton() {
     if (newColor.isValid()) {
        textSettings.textColor = newColor;
         labelsColorButton->setStyleSheet(COLOR_BOX_STYLE.arg(textSettings.textColor.name()));
-        sl_textSettingsChanged();
+        getTreeViewer()->updateSettings(textSettings);
     }
 }
 
