@@ -282,7 +282,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2475);
     REGISTER_TEST(GUITest_regression_scenarios::test_2496);
     REGISTER_TEST(GUITest_regression_scenarios::test_2519);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2543, "Figure out the correct way of using PermissionSetter");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2543, "Figure out the correct way of using PermissionSetter");
     REGISTER_TEST(GUITest_regression_scenarios::test_2565);
     REGISTER_TEST(GUITest_regression_scenarios::test_2566);
     REGISTER_TEST(GUITest_regression_scenarios::test_2577);
