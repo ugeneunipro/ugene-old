@@ -150,7 +150,7 @@ QString GTest_RunCMDLine::getVal( const QString & val ) {
         return splitVal(val, LOCAL_DATA_DIR_PREFIX.size(), env->getVar(LOCAL_DATA_DIR_ENV_ID), false);
     }
     if (val.startsWith(WORKFLOW_SAMPLES_DIR_PREFIX)) {
-        return splitVal(val, WORKFLOW_SAMPLES_DIR_PREFIX.size(), env->getVar(WORKFLOW_SAMPLES_ENV_ID) + "/", false);
+        return splitVal(val, WORKFLOW_SAMPLES_DIR_PREFIX.size(), env->getVar(WORKFLOW_SAMPLES_ENV_ID), false);
     }
     return val;
 }
