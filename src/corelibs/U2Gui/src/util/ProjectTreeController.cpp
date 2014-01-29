@@ -533,7 +533,7 @@ void ProjectTreeController::sl_onContextMenuRequested(const QPoint&) {
 
     QMenu* editMenu = m.addMenu(tr("Edit"));
     editMenu->menuAction()->setObjectName( ACTION_PROJECT__EDIT_MENU);
-    if(pv != NULL){
+    if(pv != NULL && renameAction->isEnabled()){
         editMenu->addAction(renameAction);
     }
     if (addReadonlyFlagAction->isEnabled()) {
