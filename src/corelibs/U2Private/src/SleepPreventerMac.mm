@@ -24,7 +24,7 @@
 
 namespace U2 {
 
-#ifdef MAC_OS_X_VERSION_10_6
+#if defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED > 1050
 
 class SleepPreventerMac::Private {
 public:
