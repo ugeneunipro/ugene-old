@@ -28,6 +28,7 @@
 #include <QtCore/QEventLoop>
 #include <QtCore/QLinkedList>
 #include <QtCore/QMutex>
+#include <QtNetwork/QAuthenticator>
 
 
 class QNetworkAccessManager;
@@ -128,6 +129,7 @@ private slots:
     void add_data();
     void done();
     void progress( qint64 done, qint64 total );
+    void onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
 
 };
 

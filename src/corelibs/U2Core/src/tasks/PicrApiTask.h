@@ -28,6 +28,7 @@
 #include <QtCore/QEventLoop>
 #include <QtCore/QUrl>
 #include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QAuthenticator>
 
 namespace U2 {
 
@@ -113,6 +114,9 @@ public slots:
     void sl_cancelCheck();
     void sl_timeout();
 
+private slots:
+    void onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
+
 private:
     QString getRequestUrlString();
 
@@ -142,6 +146,9 @@ public slots:
     void sl_replyFinished(QNetworkReply* reply);
     void sl_onError(QNetworkReply::NetworkError error);
     void sl_uploadProgress(qint64 bytesSent, qint64 bytesTotal);
+
+private slots:
+    void onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
 
 protected:
     QByteArray              sequence;

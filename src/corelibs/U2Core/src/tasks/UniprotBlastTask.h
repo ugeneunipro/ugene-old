@@ -32,6 +32,7 @@
 #include <QtCore/QTimer>
 
 #include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QAuthenticator>
 
 namespace U2 {
 
@@ -63,6 +64,8 @@ private slots:
     void sl_onError(QNetworkReply::NetworkError error);
     void sl_timerShouts();
     void sl_timeout();
+    void onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
+
 
 private:
     static void registerMetaType();

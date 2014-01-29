@@ -33,6 +33,7 @@
 #include <QtCore/QEventLoop>
 #include <QtCore/QUrl>
 #include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QAuthenticator>
 
 namespace U2 {
 
@@ -89,7 +90,8 @@ public slots:
 
     void sl_cancelCheck();
     void sl_timeout();
-
+private slots:
+    void onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
 private:
     QString                 accNumber;
     DASSource               source;

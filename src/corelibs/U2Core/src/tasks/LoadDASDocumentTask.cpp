@@ -258,6 +258,7 @@ void LoadDasObjectTask::run(){
 
     networkManager = new QNetworkAccessManager();
     connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(sl_replyFinished(QNetworkReply*)));
+    connect(networkManager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
     NetworkConfiguration* nc = AppContext::getAppSettings()->getNetworkConfiguration();
     
     ioLog.trace("Downloading xml file...");
@@ -359,6 +360,12 @@ void LoadDasObjectTask::sl_timeout() {
     if (loop->isRunning()) {
         loop->exit();
     }
+}
+
+void LoadDasObjectTask::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth){
+    auth->setUser(proxy.user());
+    auth->setPassword(proxy.password());
+    disconnect(this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
 }
 
 //////////////////////////////////////////////////////////////////////////

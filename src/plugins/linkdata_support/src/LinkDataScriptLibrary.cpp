@@ -22,6 +22,9 @@
 #include "LinkDataScriptLibrary.h"
 
 #include <U2Core/Log.h>
+#include <U2Core/NetworkConfiguration.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
 #include <U2Lang/WorkflowScriptEngine.h>
 
 #include <QtNetwork/QNetworkRequest>
@@ -57,6 +60,13 @@ void LinkDataRequestHandler::sl_onReplyFinished(QNetworkReply* reply) {
     }
     eventLoop->exit();
 }
+
+void LinkDataRequestHandler::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth){
+    auth->setUser(proxy.user());
+    auth->setPassword(proxy.password());
+    disconnect(this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
+}
+
 
 static QString readScript (const QString& filename)
 {
@@ -98,11 +108,15 @@ QScriptValue LinkDataScriptLibrary::fetchFile(QScriptContext *ctx, QScriptEngine
 
     QNetworkRequest request(LINKDATA_API_URL.arg(workId).arg(filename));
     QNetworkAccessManager networkManager;
-    networkManager.get(request);
+    NetworkConfiguration* nc = AppContext::getAppSettings()->getNetworkConfiguration();
+    QNetworkProxy proxy = nc->getProxyByUrl(LINKDATA_API_URL.arg(workId).arg(filename));
+    networkManager.setProxy(proxy);
+
     QEventLoop eventLoop;
     LinkDataRequestHandler handler(&eventLoop);
     handler.connect(&networkManager, SIGNAL(finished(QNetworkReply*)), SLOT(sl_onReplyFinished(QNetworkReply*)));
-
+    handler.connect(&networkManager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
+    networkManager.get(request);
     eventLoop.exec();
 
     if(handler.hasError()) {
@@ -118,6 +132,7 @@ QScriptValue LinkDataScriptLibrary::fetchFile(QScriptContext *ctx, QScriptEngine
 
     return result;
 }
+
 
 } //U2
  

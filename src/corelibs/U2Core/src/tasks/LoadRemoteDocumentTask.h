@@ -28,6 +28,7 @@
 
 #include <QtCore/QUrl>
 #include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QAuthenticator>
 #include <QtXml/QXmlReader>
 
 class QEventLoop;
@@ -171,6 +172,7 @@ protected slots:
     virtual void sl_replyFinished( QNetworkReply *reply ) = 0;
     void sl_onError( QNetworkReply::NetworkError error );
     void sl_uploadProgress( qint64 bytesSent, qint64 bytesTotal );
+    virtual void onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
 
 protected:
     // method should be called from the thread where @networkManager is actually used

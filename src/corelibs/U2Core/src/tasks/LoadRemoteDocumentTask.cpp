@@ -354,6 +354,12 @@ void BaseEntrezRequestTask::sl_uploadProgress( qint64 bytesSent, qint64 bytesTot
     stateInfo.progress = bytesSent / bytesTotal * 100;
 }
 
+void BaseEntrezRequestTask::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth){
+    auth->setUser(proxy.user());
+    auth->setPassword(proxy.password());
+    disconnect(this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
+}
+
 void BaseEntrezRequestTask::createLoopAndNetworkManager(const QString& queryString)
 {
     SAFE_POINT( NULL == networkManager, "Attempting to initialize network manager twice", );
@@ -364,6 +370,7 @@ void BaseEntrezRequestTask::createLoopAndNetworkManager(const QString& queryStri
     NetworkConfiguration* nc = AppContext::getAppSettings( )->getNetworkConfiguration( );
     QNetworkProxy proxy = nc->getProxyByUrl( queryString );
     networkManager->setProxy( proxy );
+    connect(networkManager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
 
     SAFE_POINT( NULL == loop, "Attempting to initialize loop twice", );
     loop = new QEventLoop;

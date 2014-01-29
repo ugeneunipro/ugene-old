@@ -310,6 +310,12 @@ void RemoteServiceMachineReplyHandler::sl_onTimer() {
     inactiveCount++;
 }
 
+void RemoteServiceMachineReplyHandler::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth){
+    auth->setUser(proxy.user());
+    auth->setPassword(proxy.password());
+    disconnect(this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
+}
+
 
 QMap<QString,UctpElementData> RemoteServiceMachine::sendRequest(TaskStateInfo& si,  UctpRequestBuilder& requestBuilder ) {
     
@@ -328,6 +334,7 @@ QMap<QString,UctpElementData> RemoteServiceMachine::sendRequest(TaskStateInfo& s
     //qint64 dataLength = dataSource->size();
     QEventLoop eventLoop;
     QNetworkAccessManager networkManager;
+    networkManager.setProxy(proxy);
 
     QNetworkRequest request (remoteServiceUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/xml");
@@ -344,6 +351,7 @@ QMap<QString,UctpElementData> RemoteServiceMachine::sendRequest(TaskStateInfo& s
     RemoteServiceMachineReplyHandler handler(protocolHandler.get(), &eventLoop, &replyData, command, &si, reply, AppContext::getAppSettings()->getNetworkConfiguration()->remoteRequestTimeout() * 1000);
 
     connect(&networkManager, SIGNAL(finished(QNetworkReply*)), &handler, SLOT(sl_onReplyFinished(QNetworkReply*)));
+    connect(&networkManager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), &handler, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
     connect(reply, SIGNAL(uploadProgress(qint64, qint64)), &handler, SLOT(sl_onUploadProgress(qint64, qint64)));
     connect(reply, SIGNAL(downloadProgress(qint64, qint64)), &handler, SLOT(sl_onDownloadProgress(qint64, qint64)));
     connect(&timer, SIGNAL(timeout()), &handler, SLOT(sl_onTimer()));

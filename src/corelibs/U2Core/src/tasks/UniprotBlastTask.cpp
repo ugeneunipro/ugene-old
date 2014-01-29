@@ -63,6 +63,7 @@ ReplyHandler::ReplyHandler(const QString& _url, TaskStateInfo* _os) :
 void ReplyHandler::sendRequest() {
     QUrl requestUrl(url);
     QNetworkRequest request(requestUrl);
+    connect(networkManager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
 
     QNetworkReply* reply = networkManager->get(request);
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
@@ -160,7 +161,11 @@ void ReplyHandler::sl_timeout() {
     attemptNumber++;
     sendRequest();
 }
-
+void ReplyHandler::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth){
+    auth->setUser(proxy.user());
+    auth->setPassword(proxy.password());
+    disconnect(this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
+}
 void ReplyHandler::registerMetaType() {
     if (!isMetaRegistered) {
         qRegisterMetaType<ReplyHandler::ReplyState>("ReplyHandler::ReplyState");

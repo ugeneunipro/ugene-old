@@ -103,6 +103,7 @@ bool HttpFileAdapter::open( const QUrl& url, const QNetworkProxy & p)
         close();
     }
     netManager->setProxy(p);
+    connect(netManager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
     if(url.toString().length()>MAX_GET_LENGTH) {
         QNetworkRequest netRequest(url);
         reply=netManager->post(netRequest, url.encodedQuery());
@@ -323,6 +324,12 @@ QString HttpFileAdapter::errorString() const{
         return reply->errorString();
     }
     return "";
+}
+
+void HttpFileAdapter::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth){
+    auth->setUser(proxy.user());
+    auth->setPassword(proxy.password());
+    disconnect(this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
 }
 
 }//namespace

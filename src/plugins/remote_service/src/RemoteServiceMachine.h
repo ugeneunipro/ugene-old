@@ -26,6 +26,7 @@
 #include <QtCore/QPointer>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkProxy>
+#include <QtNetwork/QAuthenticator>
 
 #ifndef QT_NO_OPENSSL
 #include <QtNetwork/QSslError>
@@ -152,6 +153,7 @@ private slots:
     void sl_onUploadProgress(qint64 bytesSent, qint64 bytesTotal);
     void sl_onDownloadProgress(qint64 bytesSent, qint64 bytesTotal);
     void sl_onTimer();
+    void onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
 private:
     const int                       requestTimeout;
     Uctp*                           protocolHandler;

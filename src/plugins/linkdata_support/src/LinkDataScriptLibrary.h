@@ -23,6 +23,7 @@
 
 #include <QtScript>
 #include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QAuthenticator>
 
 namespace U2 {
 
@@ -45,6 +46,7 @@ public:
     QByteArray getResult() const;
 private slots:
     void sl_onReplyFinished(QNetworkReply* reply);
+    void onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
 private:
     QEventLoop* eventLoop;
     QByteArray result;
