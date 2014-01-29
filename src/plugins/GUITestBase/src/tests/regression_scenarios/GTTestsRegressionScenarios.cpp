@@ -4343,6 +4343,32 @@ GUI_TEST_CLASS_DEFINITION( test_2519 ) {
     GTGlobals::sleep(5000);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2543 ) {
+    //1. Open "samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
+
+    //2. Click the "Build tree" button on the toolbar.
+    //Expected state: a "Build Phylogenetic Tree" dialog appeared.
+    //3. Set the output file location to any read-only folder.
+    const QString outputFilePath = testDir + "_common_data/scenarios/sandbox/gui_regr_2543";
+    QDir sandboxDir( testDir + "_common_data/scenarios/sandbox" );
+    sandboxDir.mkdir( "gui_regr_2543" );
+    PermissionsSetter permSetter;
+    const QFile::Permissions p = QFile::WriteOwner | QFile::WriteUser | QFile::WriteGroup
+        | QFile::WriteOther;
+    bool res = permSetter.setPermissions( outputFilePath, ~p );
+    CHECK_SET_ERR( res, "Can't set permissions" );
+
+    GTUtilsDialog::waitForDialog( os, new BuildTreeDialogFiller( os, outputFilePath + "/test.nwk", 0, 0, true ) );
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot( os, new LicenseAgreemntDialogFiller( os ) );
+    QAbstractButton *tree= GTAction::button( os, "Build Tree" );
+    GTWidget::click( os, tree );
+    GTGlobals::sleep( 500 );
+
+    //Expected state: UGENE does not allow to create tree, the message dialog appears
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller( os, QMessageBox::Ok ) );
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2565 ) {
     //    1. Open "samples/Genbank/murine.gb".
     //    2. Press Ctrl+F.
