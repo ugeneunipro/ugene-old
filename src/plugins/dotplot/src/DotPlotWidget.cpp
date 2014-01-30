@@ -789,7 +789,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
 // ask user if he wants to save dotplot first
 void DotPlotWidget::sl_showDeleteDialog() {
 
-    QMessageBox::StandardButton answer = QMessageBox::information(this, tr("Save dot-plot"), tr("Save dot-plot data before closing?")/*, QMessageBox::Yes , QMessageBox::No , QMessageBox::Cancel*/);
+    int answer = QMessageBox::information(this, tr("Save dot-plot"), tr("Save dot-plot data before closing?"), QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel);
     bool saveDotPlot;
 
     switch (answer) {
