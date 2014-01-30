@@ -22,6 +22,7 @@ workflow "Call variants with SAMtools"{
     call_variants {
         type:call_variants;
         name:"Call Variants";
+        max-dep:100;
         variants-url:variations.vcf;
     }
     files-conversion-1 {
