@@ -6,9 +6,6 @@
 #include "faidx.h"
 #include "sam.h"
 
-extern const int READ_ERROR_CODE;
-extern char * SAMTOOLS_ERROR_MESSAGE;
-
 #define TYPE_BAM  1
 #define TYPE_READ 2
 

@@ -31,6 +31,8 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/FormatUtils.h>
 #include <U2Core/L10n.h>
+#include <U2Core/TmpDirChecker.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Gui/ObjectViewModel.h>
 #include "BAMDbiPlugin.h"
 #include "BaiReader.h"
@@ -290,6 +292,17 @@ bool ConvertToSQLiteDialog::checkReferencesState() {
     return true;
 }
 
+namespace {
+    bool checkWritePermissions(const QString &fileUrl) {
+        QDir dir = QFileInfo(fileUrl).dir();
+        if (!dir.exists()) {
+            bool created = dir.mkpath(dir.absolutePath());
+            CHECK(created, false);
+        }
+        return TmpDirChecker::checkWritePermissions(dir.absolutePath());
+    }
+}
+
 void ConvertToSQLiteDialog::accept() {
     destinationUrl = GUrl(ui.destinationUrlEdit->text());
     bamInfo.setUnmappedSelected(ui.importUnmappedBox->checkState() == Qt::Checked);
@@ -299,6 +312,9 @@ void ConvertToSQLiteDialog::accept() {
     } else if(!destinationUrl.isLocalFile()) {
         ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
         QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destination URL must point to a local file"));
+    } else if (!checkWritePermissions(destinationUrl.getURLString())) {
+        ui.destinationUrlEdit->setFocus(Qt::OtherFocusReason);
+        QMessageBox::critical(this, windowTitle(), BAMDbiPlugin::tr("Destination URL directory has not write permissions"));
     } else {
         if (!checkReferencesState()) {
             return;

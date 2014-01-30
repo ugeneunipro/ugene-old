@@ -36,57 +36,106 @@
 namespace U2 {
 namespace BAM {
 
-PrepareToImportTask::PrepareToImportTask( const GUrl& url, bool sam, const QString& refUrl ) : Task("Prepare assembly file to import", TaskFlag_None), 
-                                                                        sourceURL( url ), refUrl(refUrl), samFormat(sam), newURL(false)
+PrepareToImportTask::PrepareToImportTask( const GUrl& url, bool sam, const QString& refUrl, const QString &workingDir ) : Task("Prepare assembly file to import", TaskFlag_None), 
+                                                                        sourceURL( url ), refUrl(refUrl), workingDir(workingDir), samFormat(sam), newURL(false)
 { 
     tpm = Progress_Manual; 
 }
 
-void PrepareToImportTask::run() {
-    GUrl currentURL;
-    QString destinationURL ;
-    QString dirPath = QString();
-    U2OpStatusImpl status;
+QString PrepareToImportTask::getBamUrl() const {
+    if (samFormat) {
+        QString samUrl = sourceURL.getURLString();
+        return workingDir + "/" + QFileInfo(samUrl).fileName() + ".bam";
+    } else {
+        return sourceURL.getURLString();
+    }
+}
 
-    currentURL = sourceURL;
-    if( samFormat == true ) {
+QString PrepareToImportTask::getSortedBamUrl(const QString &bamUrl) const {
+    return workingDir + "/" + QFileInfo(bamUrl).fileName() + "_sorted";
+}
+
+QString PrepareToImportTask::getIndexedBamUrl(const QString &sortedBamUrl) const {
+    return workingDir + "/" + QFileInfo(sortedBamUrl).fileName();
+}
+
+QString PrepareToImportTask::getFastaUrl() const {
+    return workingDir + "/" + QFileInfo(refUrl).fileName();
+}
+
+QString PrepareToImportTask::getCopyError(const QString &url1, const QString &url2) const {
+    return tr("Can not copy the '%1' file to '%2'").arg(url1).arg(url2);
+}
+
+namespace {
+    bool equalUrls(const QString &url1, const QString &url2) {
+        return QFileInfo(url1).absoluteFilePath() == QFileInfo(url2).absoluteFilePath();
+    }
+}
+
+bool PrepareToImportTask::needToCopyBam(const QString &sortedBamUrl) const {
+    const QString indexedBamUrl = getIndexedBamUrl(sortedBamUrl);
+    return !equalUrls(indexedBamUrl, sortedBamUrl);
+}
+
+bool PrepareToImportTask::needToCopyFasta() const {
+    return !equalUrls(getFastaUrl(), refUrl);
+}
+
+void PrepareToImportTask::run() {
+    // SAM to BAM if needed
+    QString bamUrl = getBamUrl();
+    if (samFormat) {
+        newURL = true;
+        stateInfo.setDescription(tr("Converting SAM to BAM"));
+
         checkReferenceFile();
         CHECK_OP(stateInfo, );
 
-        dirPath = sourceURL.dirPath();
-        if( !dirPath.endsWith("/") ) {
-            dirPath.append("/");
-        }
-        destinationURL = dirPath + currentURL.fileName() + ".bam";
-        stateInfo.setDescription( "Converting SAM to BAM" );
-        BAMUtils::ConvertOption options(true, refUrl);
-        BAMUtils::convertToSamOrBam( currentURL, destinationURL, options, stateInfo );
+        BAMUtils::ConvertOption options(true /*SAM to BAM*/, refUrl);
+        BAMUtils::convertToSamOrBam(sourceURL, bamUrl, options, stateInfo);
         CHECK_OP(stateInfo, );
-        if( !newURL ) {
-            newURL = true;
-        }
-        currentURL = destinationURL;
     }
-    stateInfo.setProgress( 33 );
-    bool sortedBam = BAMUtils::isSortedBam( currentURL, stateInfo );
+    stateInfo.setProgress(33);
+
+    bool sorted = BAMUtils::isSortedBam(bamUrl, stateInfo);
     CHECK_OP(stateInfo, );
-    if( !sortedBam ) {
-        const QString sortedFileName = dirPath + currentURL.fileName() + "_sorted";
-        stateInfo.setDescription( "Sorting BAM" );
-        currentURL = BAMUtils::sortBam( currentURL, sortedFileName, stateInfo );
-        CHECK_OP(stateInfo, );
-        if( !newURL ) {
-            newURL = true;
-        }
-    } 
-    stateInfo.setProgress( 66 );
-    if( !BAMUtils::hasValidBamIndex( currentURL ) ) {
-        stateInfo.setDescription( "Creating BAM index" );
-        BAMUtils::createBamIndex( currentURL, stateInfo );
+
+    // Sort BAM if needed
+    QString sortedBamUrl;
+    if (sorted) {
+        sortedBamUrl = bamUrl;
+    } else {
+        newURL = true;
+        stateInfo.setDescription(tr("Sorting BAM"));
+
+        sortedBamUrl = BAMUtils::sortBam(bamUrl, getSortedBamUrl(bamUrl), stateInfo).getURLString();
         CHECK_OP(stateInfo, );
     }
-    stateInfo.setProgress( 100 );
-    sourceURL = currentURL;
+    stateInfo.setProgress( 66 );
+
+    bool indexed = BAMUtils::hasValidBamIndex(sortedBamUrl);
+
+    // Index BAM if needed
+    QString indexedBamUrl;
+    if (indexed) {
+        indexedBamUrl = sortedBamUrl;
+    } else {
+        indexedBamUrl = getIndexedBamUrl(sortedBamUrl);
+        if (needToCopyBam(sortedBamUrl)) {
+            newURL = true;
+            stateInfo.setDescription(tr("Coping sorted BAM"));
+
+            bool copied = QFile::copy(sortedBamUrl, indexedBamUrl);
+            CHECK_EXT(copied, setError(getCopyError(sortedBamUrl, indexedBamUrl)), );
+        }
+        stateInfo.setDescription(tr("Creating BAM index"));
+
+        BAMUtils::createBamIndex(indexedBamUrl, stateInfo);
+        CHECK_OP(stateInfo, );
+    }
+    stateInfo.setProgress(100);
+    sourceURL = indexedBamUrl;
 }
 
 namespace {
@@ -125,6 +174,15 @@ void PrepareToImportTask::checkReferenceFile() {
     if (BaseDocumentFormats::FASTA != formatId) {
         setError(tr("The detected reference sequence format is '%1'. Only FASTA is supported").arg(formatId));
         return;
+    }
+
+    if (!BAMUtils::hasValidFastaIndex(refUrl)) {
+        if (needToCopyFasta()) {
+            bool copied = QFile::copy(refUrl, getFastaUrl());
+            CHECK_EXT(copied, setError(getCopyError(refUrl, getFastaUrl())), );
+
+            refUrl = getFastaUrl();
+        }
     }
 }
 

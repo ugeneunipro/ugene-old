@@ -28,6 +28,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/TmpDirChecker.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -230,6 +231,12 @@ void BAMImporterTask::prepare() {
     startTime = time(0);
 }
 
+namespace {
+    QString getDirUrl(const GUrl &fileUrl) {
+        return QFileInfo(fileUrl.getURLString()).dir().absolutePath();
+    }
+}
+
 QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     if (subTask->hasError()) {
@@ -259,7 +266,11 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
             }
         }
         if (convert) {
-            prepareToImportTask = new PrepareToImportTask( loadInfoTask->getSourceUrl(), loadInfoTask->isSam(), refUrl );
+            QString dirUrl = getDirUrl(loadInfoTask->getSourceUrl());
+            if (!TmpDirChecker::checkWritePermissions(dirUrl)) {
+                dirUrl = getDirUrl(destUrl);
+            }
+            prepareToImportTask = new PrepareToImportTask( loadInfoTask->getSourceUrl(), loadInfoTask->isSam(), refUrl, dirUrl );
             res << prepareToImportTask;
         }
    } else if ( prepareToImportTask == subTask && prepareToImportTask->isNewURL() ) {

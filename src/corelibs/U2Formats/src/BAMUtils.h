@@ -53,6 +53,8 @@ public:
 
     static bool hasValidBamIndex(const GUrl &bamUrl);
 
+    static bool hasValidFastaIndex(const GUrl &fastaUrl);
+
     static void createBamIndex(const GUrl &bamUrl, U2OpStatus &os);
 
     static void writeDocument(Document *doc, U2OpStatus &os);

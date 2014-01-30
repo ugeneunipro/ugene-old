@@ -31,6 +31,9 @@ typedef struct {
 	bam_header_t *header;
 } samfile_t;
 
+extern const int READ_ERROR_CODE;
+extern char * SAMTOOLS_ERROR_MESSAGE;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

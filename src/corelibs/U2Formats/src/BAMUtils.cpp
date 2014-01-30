@@ -38,7 +38,6 @@ extern "C" {
 #include <bam.h>
 #include <bam_sort.c>
 #include <sam.h>
-#include <sam.c>
 #include <sam_header.h>
 #include <bgzf.h>
 }
@@ -286,7 +285,7 @@ GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2O
 }
 
 bool BAMUtils::hasValidBamIndex(const GUrl &bamUrl) {
-    const QByteArray &bamFileName = bamUrl.getURLString().toLocal8Bit();
+    const QByteArray bamFileName = bamUrl.getURLString().toLocal8Bit();
 
     bam_index_t *index = bam_index_load(bamFileName.constData());
     
@@ -294,6 +293,19 @@ bool BAMUtils::hasValidBamIndex(const GUrl &bamUrl) {
         return false;
     } else {
         bam_index_destroy(index);
+        return true;
+    }
+}
+
+bool BAMUtils::hasValidFastaIndex(const GUrl &fastaUrl) {
+    const QByteArray fastaFileName = fastaUrl.getURLString().toLocal8Bit();
+
+    char *index = samfaipath(fastaFileName.constData());
+
+    if (NULL == index) {
+        return false;
+    } else {
+        free(index);
         return true;
     }
 }
