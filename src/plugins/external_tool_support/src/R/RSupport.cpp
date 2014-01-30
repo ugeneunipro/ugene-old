@@ -50,7 +50,7 @@ RSupport::RSupport(const QString& name, const QString& path) : ExternalTool(name
     executableFileName = "Rscript";
 #endif
 #endif
-    validMessage = "R ";
+    validMessage = "R scripting front-end";
     validationArguments << "--version";
 
     description+=tr("Rscript interpreter");
