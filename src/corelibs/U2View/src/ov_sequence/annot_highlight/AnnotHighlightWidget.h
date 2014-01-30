@@ -73,6 +73,7 @@ private slots:
     void sl_onAnnotationObjectRemoved( AnnotationTableObject * );
     void sl_onNextAnnotationClick();
     void sl_onPrevAnnotationClick();
+    void sl_onAnnotationSelectionChanged();
 
 private:
     void initLayout();
@@ -129,7 +130,19 @@ private:
     bool isNext(bool isForward, qint64 startPos, qint64 endPos, qint64 minPos);
 
     qint64 searchNextPosition( const QList<AnnotationTableObject *> &items, int endPos,
-        bool isForward, qint64 *currentPosition );
+        bool isForward, qint64 &currentPosition );
+    /**
+     * Returns true if provided annotation region is:
+     *  - the first one in case "fromTheBeginning" is true,
+     *  - the last one in case "fromTheBeginning" is false.
+     */
+    bool isFirstAnnotationRegion(const Annotation *annotation, const U2Region& region, bool fromTheBeginning = true);
+
+    /**
+     * Returns first selected annotation.
+     * Start region position will be stored in "start".
+     */
+    const Annotation * findFirstSelectedAnnotationRegion(qint64 &start, bool fromTheBeginning = true);
 
     AnnotatedDNAView* annotatedDnaView;
 
@@ -145,8 +158,8 @@ private:
     ShowAllAnnotTypesLabel* showAllLabel;
     QLabel* settingsTitle;
     AnnotHighlightSettingsWidget* annotSettingsWidget;
-    QPushButton* nextAnnotation;
-    QPushButton* prevAnnotation;
+    QPushButton* nextAnnotationButton;
+    QPushButton* prevAnnotationButton;
 };
 
 } // namespace

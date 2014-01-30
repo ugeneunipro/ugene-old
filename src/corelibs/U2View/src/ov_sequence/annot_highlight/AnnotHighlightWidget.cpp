@@ -32,6 +32,7 @@
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/PanView.h>
+#include <limits>
 
 namespace U2 {
 
@@ -120,18 +121,22 @@ void AnnotHighlightWidget::initLayout()
     buttonsLayout->setContentsMargins(0, 0, 0, 0);
     buttonsLayout->setSpacing(0);
 
-    prevAnnotation = new QPushButton(QIcon(":core/images/backward.png"), "");
-    prevAnnotation->setFixedSize(32,32);
-    prevAnnotation->setToolTip(AnnotHighlightWidget::tr("Previous annotation"));
-    QObject::connect(prevAnnotation, SIGNAL(clicked()),this, SLOT(sl_onPrevAnnotationClick()));
-    buttonsLayout->addWidget(prevAnnotation);
-
+    prevAnnotationButton = new QPushButton(QIcon(":core/images/backward.png"), "");
+    prevAnnotationButton->setFixedSize(32,32);
+    prevAnnotationButton->setToolTip(AnnotHighlightWidget::tr("Previous annotation"));
+    prevAnnotationButton->setDisabled(true);
+    buttonsLayout->addWidget(prevAnnotationButton);
     buttonsLayout->addSpacerItem(new QSpacerItem(0,0, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
-    nextAnnotation = new QPushButton(QIcon(":core/images/forward.png"), "");
-    nextAnnotation->setFixedSize(32,32);
-    nextAnnotation->setToolTip(AnnotHighlightWidget::tr("Next annotation"));
-    buttonsLayout->addWidget(nextAnnotation);
+    nextAnnotationButton = new QPushButton(QIcon(":core/images/forward.png"), "");
+    nextAnnotationButton->setFixedSize(32,32);
+    nextAnnotationButton->setToolTip(AnnotHighlightWidget::tr("Next annotation"));
+    buttonsLayout->addWidget(nextAnnotationButton);
+    if (annotatedDnaView->getAnnotationObjects(true).isEmpty()) {
+        nextAnnotationButton->setDisabled(true);
+    } else {
+        sl_onAnnotationSelectionChanged();
+    }
 
     // Init main layout
     mainLayout->addWidget(noAnnotTypesLabel);
@@ -179,10 +184,11 @@ bool AnnotHighlightWidget::isNext( bool isForward, qint64 startPos, qint64 endPo
 }
 
 qint64 AnnotHighlightWidget::searchNextPosition( const QList<AnnotationTableObject *> &items,
-    int endPos, bool isForward, qint64* currentPosition)
+    int endPos, bool isForward, qint64& currentPosition)
 {
     int locIdx = 0;
-    qint64 minPos = Q_INT64_C(9223372036854775807);
+    qint64 MAX = std::numeric_limits<qint64>::max();
+    qint64 minPos = MAX;
     if (!isForward) {
         minPos = -1;
     }
@@ -200,76 +206,115 @@ qint64 AnnotHighlightWidget::searchNextPosition( const QList<AnnotationTableObje
             }
         }
     }
-    *currentPosition = minPos;
+    currentPosition = minPos;
+    if (currentPosition == -1 || currentPosition == MAX) {
+        currentPosition = -1;
+        return -1;
+    }
     return locIdx;
 }
 
+bool AnnotHighlightWidget::isFirstAnnotationRegion(const Annotation *annotation, const U2Region &region, bool fromTheBeginning) {
+    const QList<AnnotationTableObject*> annotObjects = annotatedDnaView->getAnnotationObjects();
+    QList<Annotation> annots;
+    qint64 next = searchAnnotWithEqualsStartPos(annotObjects, annots, annotation, region.startPos);
+    if (next != (fromTheBeginning ? 0: annots.size() - 1 )) {
+        return false;
+    }
+    searchNextPosition(annotObjects, region.startPos, !fromTheBeginning, next);
+    if (next != -1) {
+        return false;
+    }
+    return true;
+
+}
+
+const Annotation * AnnotHighlightWidget::findFirstSelectedAnnotationRegion(qint64 &start, bool fromTheBeginning) {
+    AnnotationSelection* as = annotatedDnaView->getAnnotationsSelection();
+    CHECK(NULL != as, NULL);
+
+    const QList<AnnotationSelectionData> selectionData = as->getSelection();
+    start = -1;
+    int annotationIdx = -1;
+    int i = 0;
+    foreach (AnnotationSelectionData selectionItem, selectionData) {
+        foreach (U2Region region, selectionItem.getSelectedRegions()) {
+            if (start == -1) {
+                start = region.startPos;
+                annotationIdx = i;
+            } else {
+                if ( (region.startPos - start) * (fromTheBeginning ? 1 : -1) > 0 ) {
+                    start = region.startPos;
+                    annotationIdx = i;
+                }
+            }
+        }
+        i++;
+    }
+
+    // get start annotation
+    const Annotation *startAnnotation = NULL;
+    if (annotationIdx < selectionData.size() && annotationIdx != -1) {
+        startAnnotation = &selectionData[annotationIdx].annotation;
+    }
+
+    const QList<AnnotationTableObject *> items = annotatedDnaView->getAnnotationObjects(true);
+    QList<Annotation> annotForNextPrev;
+    if (as->isEmpty()) {
+        // no selected annotations - choose first one
+        searchNextPosition(items, -1, true, start);
+        searchAnnotWithEqualsStartPos(items, annotForNextPrev, NULL, start);
+        startAnnotation = &annotForNextPrev.first();
+    }
+
+    return startAnnotation;
+}
+
 void AnnotHighlightWidget::annotationNavigate(bool isForward) {
-    ADVSingleSequenceWidget* widgetInFocus = ((ADVSingleSequenceWidget*)annotatedDnaView->getSequenceWidgetInFocus());
-    SAFE_POINT(widgetInFocus != NULL, "widgetInFocus is null", );
-    QList<GSequenceLineView*> GSequenceLineViews = widgetInFocus->getLineViews();
-    SAFE_POINT(!GSequenceLineViews.empty(), "GSequenceLineViews is empty", );
-    SAFE_POINT(GSequenceLineViews[0] != NULL, "GSequenceLineView is NULL", );
-    qint64 currentPosition = GSequenceLineViews[0]->getVisibleRange().center();
+    qint64 startPos = -1;
+    const Annotation *startAnnotation = findFirstSelectedAnnotationRegion(startPos, isForward);
+    CHECK(startAnnotation != NULL, );
+
+    // find annotations started at the same position
+    const QList<AnnotationTableObject *> items = annotatedDnaView->getAnnotationObjects(true);
+    QList<Annotation> annotationsInTheSamePosition;
+    qint64 idx = searchAnnotWithEqualsStartPos(items, annotationsInTheSamePosition, startAnnotation, startPos);
+    idx += 2 * isForward - 1;
+
+    // check if next annotation is already selected
     AnnotationSelection* as = annotatedDnaView->getAnnotationsSelection();
     CHECK(NULL != as, );
-    const QList<AnnotationSelectionData> selectionData = as->getSelection();
-
-    const Annotation *prev = NULL;
-    //get selected annotation
-    if (!selectionData.empty()){
-        prev = &selectionData.first( ).annotation;
-        SAFE_POINT(prev != NULL, "Annotation is null", );
-        const U2Location locData = prev->getLocation();
-        if (locData->regions.empty()){
-            prev = NULL;
+    while (isValidIndex(annotationsInTheSamePosition, idx)) {
+        if (!as->contains(annotationsInTheSamePosition[idx])) {
+            break;
         }
+        idx += 2 * isForward - 1;
     }
 
     int locIdx = 0;
-
-    if (prev != NULL){
-        const AnnotationSelectionData* annotSelectData = as->getAnnotationData( *prev );
-        SAFE_POINT(annotSelectData != NULL, "annotSelectData is null", );
-        locIdx = annotSelectData->locationIdx;
-    }
-    if (locIdx < 0){
-        locIdx = 0;
-    }
-
-    const Annotation *tmp = prev;
-    qint64 minPos = 0;
-    if ( NULL != prev ) {
-        SAFE_POINT(locIdx < prev->getRegions().size(), "locIdx is not valid", );
-        currentPosition = prev->getRegions()[locIdx].startPos;
-    }
-    qint64 endPos = currentPosition;
-    as->disconnect(this);
-    as->clear();
-
-    const QList<AnnotationTableObject *> items = annotatedDnaView->getAnnotationObjects(true);
-
-    qint64 currentIdx = 0;
-
-    QList<Annotation> annotForNextPrev;
-    currentIdx = searchAnnotWithEqualsStartPos(items, annotForNextPrev, prev, currentPosition);
-    currentIdx += 2 * isForward - 1;
-
-    if (!isValidIndex(annotForNextPrev, currentIdx)) {
-        if (!annotForNextPrev.empty()) {
-            annotForNextPrev.clear();
+    if (!isValidIndex(annotationsInTheSamePosition, idx)) {
+        qint64 nextAnnPosition = -1;
+        locIdx = searchNextPosition(items, startPos, isForward, nextAnnPosition);
+        // there is no more annotations
+        if (locIdx == -1) {
+            return;
         }
-        locIdx = searchNextPosition(items, endPos, isForward, &currentPosition);
-        SAFE_POINT(locIdx >= 0, "locIdx is not valid", );
-        searchAnnotWithEqualsStartPos(items, annotForNextPrev, prev, currentPosition);
-        currentIdx = (isForward)?(0):(annotForNextPrev.size() - 1);
+        annotationsInTheSamePosition.clear();
+        searchAnnotWithEqualsStartPos(items, annotationsInTheSamePosition, NULL, nextAnnPosition);
+        if (annotationsInTheSamePosition.size() != 0) {
+            idx = (isForward)?(0):(annotationsInTheSamePosition.size() - 1);
+        } else {
+            idx = -1;
+        }
     }
-    currentPosition = minPos;
-    if (isValidIndex(annotForNextPrev, currentIdx)) {
-        tmp = &annotForNextPrev[currentIdx];
+
+    const Annotation *nextAnnotation = startAnnotation;
+    if (isValidIndex(annotationsInTheSamePosition, idx)) {
+        nextAnnotation = &annotationsInTheSamePosition[idx];
     }
-    if (tmp != NULL) {
-        as->addToSelection(*tmp, locIdx);
+    if (nextAnnotation != NULL && nextAnnotation != startAnnotation) {
+        as->clear();
+        as->addToSelection(*nextAnnotation, locIdx);
     }
 }
 
@@ -279,6 +324,32 @@ void AnnotHighlightWidget::sl_onNextAnnotationClick() {
 
 void AnnotHighlightWidget::sl_onPrevAnnotationClick() {
     annotationNavigate(false);
+}
+
+void AnnotHighlightWidget::sl_onAnnotationSelectionChanged() {
+    AnnotationSelection* as = annotatedDnaView->getAnnotationsSelection();
+    CHECK(as != NULL, );
+    if (as->isEmpty()) {
+        nextAnnotationButton->setDisabled(false);
+        prevAnnotationButton->setDisabled(true);
+    } else {
+        nextAnnotationButton->setDisabled(false);
+        prevAnnotationButton->setDisabled(false);
+
+        // find first or last annotation region
+        foreach (AnnotationSelectionData selData, as->getSelection()) {
+            Annotation a = selData.annotation;
+            foreach (U2Region region, selData.getSelectedRegions()) {
+                if (isFirstAnnotationRegion(&a, region, false)) {
+                    nextAnnotationButton->setDisabled(true);
+                }
+                if (isFirstAnnotationRegion(&a, region)) {
+                    prevAnnotationButton->setDisabled(true);
+                }
+            }
+        }
+
+    }
 }
 
 void AnnotHighlightWidget::setNoAnnotTypesLabelValue()
@@ -342,6 +413,15 @@ void AnnotHighlightWidget::connectSlots()
     foreach ( const AnnotationTableObject *annotTableObj, seqAnnotTableObjs ) {
         connectSlotsForAnnotTableObj(annotTableObj);
     }
+
+    connect(prevAnnotationButton, SIGNAL(clicked()),this, SLOT(sl_onPrevAnnotationClick()));
+
+    connect(nextAnnotationButton, SIGNAL(clicked()), this, SLOT(sl_onNextAnnotationClick()));
+
+    AnnotationSelection* as = annotatedDnaView->getAnnotationsSelection();
+    CHECK(as != NULL, );
+    connect(as, SIGNAL(si_selectionChanged(AnnotationSelection*,QList<Annotation>,QList<Annotation>)),
+            SLOT(sl_onAnnotationSelectionChanged()));
 }
 
 void AnnotHighlightWidget::connectSlotsForAnnotTableObj(const AnnotationTableObject *annotTableObj)
@@ -480,6 +560,8 @@ void AnnotHighlightWidget::loadAnnotTypes()
     else {
         setNoAnnotsLayout();
     }
+
+    nextAnnotationButton->setDisabled( annotatedDnaView->getAnnotationObjects().isEmpty() );
 }
 
 void AnnotHighlightWidget::sl_storeNewColor(const QString& annotName, const QColor& newColor)
