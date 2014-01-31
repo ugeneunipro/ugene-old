@@ -58,13 +58,21 @@ private:
 class U2GUI_EXPORT ReloadDocumentTask : public Task{
     Q_OBJECT
 public:
-    ReloadDocumentTask(Document *d);
-    virtual void prepare();
-    virtual QList<Task*> onSubTaskFinished(Task* subTask);
+    ReloadDocumentTask( Document *d );
+    virtual void prepare( );
+    virtual QList<Task *> onSubTaskFinished( Task* subTask );
+
 private:
+    void saveObjectRelationsFromDoc( );
+    void restoreObjectRelationsForDoc( );
+    static void restoreObjectRelationsForObject( GObject *obj,
+        const QList<GObjectRelation> &relations );
+
     Document *doc;
     GUrl url;
     Task *removeDocTask;
+    Task *openDocTask;
+    QMultiMap<QString, GObjectRelation> savedObjectRelations;
 };
 
 }//namespace

@@ -46,7 +46,7 @@ CreateObjectRelationDialogController::CreateObjectRelationDialogController(GObje
 
     QIcon objectIcon(":/core/images/gobject.png");
     foreach(GObject* obj, objects) {
-        ui->listWidget->addItem(new QListWidgetItem(objectIcon, obj->getGObjectName()));        
+        ui->listWidget->addItem(new QListWidgetItem(objectIcon, obj->getGObjectName()));
     }
     ui->listWidget->setItemSelected(ui->listWidget->item(0), true);
     ui->relationHintLabel->setText(relationHint);

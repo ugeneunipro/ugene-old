@@ -19,28 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "UnloadDocumentTask.h"
-
-#include <U2Core/DocumentModel.h>
-#include <U2Core/Log.h>
-#include <U2Gui/ObjectViewModel.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/L10n.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/SaveDocumentTask.h>
-#include <U2Core/RemoveDocumentTask.h>
-
-#include <U2Core/GObjectUtils.h>
-
 #include <QtGui/QMessageBox>
 #include <QtGui/QApplication>
 
-#include <memory>
+#include <U2Core/AppContext.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/L10n.h>
+#include <U2Core/Log.h>
+#include <U2Gui/ObjectViewModel.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/RemoveDocumentTask.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/U2SafePoints.h>
+
+#include "UnloadDocumentTask.h"
 
 namespace U2 {
-
 
 //////////////////////////////////////////////////////////////////////////
 // unload document
@@ -157,24 +154,85 @@ QString UnloadDocumentTask::checkSafeUnload(Document* doc) {
     return QString();
 }
 
-ReloadDocumentTask::ReloadDocumentTask( Document *d ):Task("Reloading given document", TaskFlags_NR_FOSE_COSC),doc(d), url(d->getURL()){}
+ReloadDocumentTask::ReloadDocumentTask( Document *d )
+    : Task( "Reloading given document", TaskFlags_NR_FOSE_COSC ), doc( d ), url( d->getURL( ) ),
+    removeDocTask( NULL ), openDocTask( NULL )
+{
 
-void ReloadDocumentTask::prepare(){
-    removeDocTask = new RemoveMultipleDocumentsTask(AppContext::getProject(), QList<Document*>()<<doc, false, false);
-    addSubTask(removeDocTask);
 }
 
-QList<Task*> ReloadDocumentTask::onSubTaskFinished( Task* subTask ){
-    QList<Task*> res;
+void ReloadDocumentTask::prepare( ) {
+    saveObjectRelationsFromDoc( );
 
-    if (subTask == removeDocTask){
-    Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(url);
-        if (openTask != NULL) {
-            res.append(openTask);
+    removeDocTask = new RemoveMultipleDocumentsTask( AppContext::getProject( ),
+        QList<Document *>( ) << doc, false, false );
+    addSubTask( removeDocTask );
+}
+
+QList<Task *> ReloadDocumentTask::onSubTaskFinished( Task* subTask ) {
+    QList<Task *> res;
+
+    if ( subTask == removeDocTask ) {
+        openDocTask = AppContext::getProjectLoader( )->openWithProjectTask( url );
+        if ( openDocTask != NULL ) {
+            res.append( openDocTask );
         }
+    } else if ( subTask == openDocTask ) {
+        Project *currentProj = AppContext::getProject( );
+        SAFE_POINT( NULL != currentProj, "Invalid project state!", res );
+        doc = currentProj->findDocumentByURL( url );
+        SAFE_POINT( NULL != doc, "Reloaded document not found!", res );
+        SAFE_POINT( !doc->isStateLocked( ) && doc->isLoaded( ),
+            "Unable to restore relations between external objects!", res );
+        restoreObjectRelationsForDoc( );
     }
 
     return res;
 }
 
-}//namespace
+void ReloadDocumentTask::saveObjectRelationsFromDoc( ) {
+    foreach ( GObject *curObj, doc->getObjects( ) ) {
+        const QList<GObjectRelation> curObjRelations = curObj->getObjectRelations( );
+        if ( !curObjRelations.isEmpty( ) ) {
+            const QString curObjName = curObj->getGObjectName( );
+            if ( savedObjectRelations.contains( curObjName ) ) {
+                coreLog.error( "Objects with same names detected during saving of object relations!" );
+            }
+            foreach ( const GObjectRelation &relation, curObjRelations ) {
+                if ( doc->getURLString( ) != relation.getDocURL( ) ) { // don't save relations within a single object
+                    savedObjectRelations.insert( curObjName, relation );
+                }
+            }
+        }
+    }
+}
+
+void ReloadDocumentTask::restoreObjectRelationsForDoc( ) {
+    foreach ( GObject *curObj, doc->getObjects( ) ) {
+        const QString curObjName = curObj->getGObjectName( );
+        if ( !savedObjectRelations.contains( curObjName ) ) {
+            continue;
+        }
+        restoreObjectRelationsForObject( curObj, savedObjectRelations.values( curObjName ) );
+    }
+}
+
+void ReloadDocumentTask::restoreObjectRelationsForObject( GObject *obj,
+    const QList<GObjectRelation> &relations )
+{
+    Project *currentProj = AppContext::getProject( );
+    SAFE_POINT( NULL != currentProj, "Invalid project state!", );
+
+    foreach ( const GObjectRelation &relation, relations ) {
+        Document *relatedDoc = currentProj->findDocumentByURL( relation.ref.docUrl );
+        if ( NULL == relatedDoc ) {
+            continue;
+        }
+        GObject *relatedObj = relatedDoc->findGObjectByName( relation.ref.objName );
+        if ( NULL != relatedObj && relatedObj->getGObjectType( ) == relation.ref.objType ) {
+            obj->addObjectRelation( relation );
+        }
+    }
+}
+
+} // namespace U2

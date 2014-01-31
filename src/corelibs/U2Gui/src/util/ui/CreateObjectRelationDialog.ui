@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>CreateObjectRelationDialog</class>
- <widget class="QDialog" name="CreateObjectRelationDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="CreateObjectRelationDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,28 +10,28 @@
     <height>352</height>
    </rect>
   </property>
-  <property name="windowTitle" >
-   <string>Edit object relations</string>
+  <property name="windowTitle">
+   <string>Edit Object Relations</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="relationHintLabel" >
-     <property name="text" >
+    <widget class="QLabel" name="relationHintLabel">
+     <property name="text">
       <string>Associate object with:</string>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QListWidget" name="listWidget" />
+    <widget class="QListWidget" name="listWidget"/>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" >
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <spacer name="horizontalSpacer" >
-       <property name="orientation" >
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -39,15 +40,15 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="okButotn" >
-       <property name="text" >
-        <string>Ok</string>
+      <widget class="QPushButton" name="okButotn">
+       <property name="text">
+        <string>OK</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="cancelButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="cancelButton">
+       <property name="text">
         <string>Cancel</string>
        </property>
       </widget>
@@ -64,11 +65,11 @@
    <receiver>CreateObjectRelationDialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>157</x>
      <y>329</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>144</x>
      <y>175</y>
     </hint>
@@ -80,11 +81,11 @@
    <receiver>CreateObjectRelationDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>240</x>
      <y>329</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>144</x>
      <y>175</y>
     </hint>

@@ -260,7 +260,8 @@ void DocumentUpdater::notifyUserAndReloadDocuments(const QList<Document*> & outd
         QMessageBox::StandardButton btn = QMessageBox::question(
             dynamic_cast<QWidget *>(AppContext::getMainWindow()),
             U2_APP_TITLE,
-            tr("Document '%1' was modified. Do you wish to reload it?").arg(doc->getName()),
+            tr("Document '%1' was modified. Do you want to reload it?\n"
+            "Note that reloading may cause closing of some views associated with objects from the document.").arg(doc->getName()),
             QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll);
 
         switch (btn) {
