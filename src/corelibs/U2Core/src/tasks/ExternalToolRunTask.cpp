@@ -370,11 +370,18 @@ ProcessRun ExternalToolSupportUtils::prepareProcess(const QString &toolName, con
         listenerProgramMessage.prepend(result.program + " ");
     }
 
+#ifdef Q_OS_WIN
+    const QString pathVariableSeparator = ";";
+#else
+    const QString pathVariableSeparator = ":";
+#endif
+
     QProcessEnvironment processEnvironment = QProcessEnvironment::systemEnvironment();
-    foreach (QString path, additionalPaths) {
-        path = path + ":" + processEnvironment.value("PATH");
-        processEnvironment.insert("PATH", path);
+    QString path = additionalPaths.join(pathVariableSeparator) + pathVariableSeparator + processEnvironment.value("PATH");
+    if (!additionalPaths.isEmpty()) {
+        algoLog.trace(QString("PATH environment variable: '%1'").arg(path));
     }
+    processEnvironment.insert("PATH", path);
 
     result.process = new QProcess();
     result.process->setProcessEnvironment(processEnvironment);

@@ -182,8 +182,9 @@ Task* CEASSupportTask::createETTask(){
     logParser = new CEASLogParser();
     ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
     SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", new FailTask("R script tool wasn't found in the registry"));
+    const QString rDir = QFileInfo(rTool->getPath()).dir().absolutePath();
 
-    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_CEAS, args, logParser, workingDir, QStringList() << rTool->getPath());
+    ExternalToolRunTask* runTask = new ExternalToolRunTask(ET_CEAS, args, logParser, workingDir, QStringList() << rDir);
     setListenerForTask(runTask);
     res = runTask;
 

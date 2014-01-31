@@ -156,9 +156,9 @@ QList<Task*> ConservationPlotTask::onSubTaskFinished(Task* subTask) {
             logParser = new ConservationPlotLogParser();
             ExternalTool* rTool = AppContext::getExternalToolRegistry()->getByName(ET_R);
             SAFE_POINT(NULL != rTool, "R script tool wasn't found in the registry", result);
+            const QString rDir = QFileInfo(rTool->getPath()).dir().absolutePath();
 
-
-            etTask = new ExternalToolRunTask(ET_CONSERVATION_PLOT, args, logParser, workingDir, QStringList() << rTool->getPath());
+            etTask = new ExternalToolRunTask(ET_CONSERVATION_PLOT, args, logParser, workingDir, QStringList() << rDir);
             setListenerForTask(etTask);
             result << etTask;
         }

@@ -53,7 +53,7 @@ RequestForSnpTask::RequestForSnpTask( const QString &_scriptPath, const QVariant
         SAFE_POINT( inputData[key].canConvert<QString>( ), "Invalid argument passed to script", );
         pythonArguments << key << inputData[key].toString( );
     }
-    requestTask = new ExternalToolRunTask( "embedded python", pythonArguments, (&responseLogParser) );
+    requestTask = new ExternalToolRunTask( "python", pythonArguments, (&responseLogParser) );
     addSubTask( requestTask );
 }
 
