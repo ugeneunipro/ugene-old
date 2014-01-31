@@ -910,7 +910,7 @@ U2TrackModType ModificationAction::prepare(U2OpStatus& os) {
         // If a user mod step has already been created for this action
         // then it can not be deleted. The version must be incremented.
         // Obsolete duplicate step must be deleted
-        if (dbi->getSQLiteModDbi()->isUserStepStarted()) {
+        if (dbi->getSQLiteModDbi()->isUserStepStarted(masterObjId)) {
             dbi->getSQLiteModDbi()->removeDuplicateUserStep(masterObjId, masterObjVersionToTrack, os);
 
             // Increment the object version
@@ -937,7 +937,7 @@ void ModificationAction::addModification(const U2DataId& objId, qint64 modType, 
         qint64 objVersion = dbi->getObjectDbi()->getObjectVersion(objId, os);
         SAFE_POINT_OP(os, );
 
-        if ((objId == masterObjId) && (dbi->getSQLiteModDbi()->isUserStepStarted())) {
+        if ((objId == masterObjId) && (dbi->getSQLiteModDbi()->isUserStepStarted(masterObjId))) {
             objVersion++;
         }
 

@@ -596,7 +596,9 @@ void MSAEditor::copyRowFromSequence(U2SequenceObject *seqObj, U2OpStatus &os) {
 }
 
 void MSAEditor::sl_onSeqOrderChanged( QStringList* order ){
-    msaObject->sortRowsByList(*order);
+    if(!msaObject->isStateLocked()) {
+        msaObject->sortRowsByList(*order);
+    }
 }
 
 void MSAEditor::sl_showTreeOP() {

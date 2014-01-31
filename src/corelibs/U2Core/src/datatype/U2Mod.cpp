@@ -43,23 +43,23 @@ const qint64 U2ModType::msaSetNewRowsOrder    = 3008;
 
 
 U2UseCommonUserModStep::U2UseCommonUserModStep(const U2EntityRef &entity, U2OpStatus &os)
-: dbi(NULL), valid(false), con(NULL)
+: dbi(NULL), valid(false), con(NULL), masterObjId(entity.entityId)
 {
     // Open connection
     con.reset(new DbiConnection(entity.dbiRef, os));
     CHECK_OP(os, );
     CHECK_EXT(NULL != con->dbi, os.setError("NULL root dbi"), );
     dbi = con->dbi;
-    init(entity.entityId, os);
+    init(os);
 }
 
-U2UseCommonUserModStep::U2UseCommonUserModStep(U2Dbi* _dbi, const U2DataId& masterObjId, U2OpStatus& os)
-: dbi(_dbi), valid(false), con(NULL)
+U2UseCommonUserModStep::U2UseCommonUserModStep(U2Dbi* _dbi, const U2DataId& _masterObjId, U2OpStatus& os)
+: dbi(_dbi), valid(false), con(NULL), masterObjId(_masterObjId)
 {
-    init(masterObjId, os);
+    init(os);
 }
 
-void U2UseCommonUserModStep::init(const U2DataId &masterObjId, U2OpStatus &os) {
+void U2UseCommonUserModStep::init(U2OpStatus &os) {
     // No mutexes are needed because start/end of
     // user mod steps are made only in main thread
     CHECK_EXT(NULL != dbi, os.setError("NULL dbi!"), );
@@ -73,7 +73,7 @@ void U2UseCommonUserModStep::init(const U2DataId &masterObjId, U2OpStatus &os) {
 U2UseCommonUserModStep::~U2UseCommonUserModStep() {
     if (valid) {
         U2OpStatus2Log os;
-        dbi->getModDbi()->endCommonUserModStep(os);
+        dbi->getModDbi()->endCommonUserModStep(masterObjId, os);
     }
 }
 

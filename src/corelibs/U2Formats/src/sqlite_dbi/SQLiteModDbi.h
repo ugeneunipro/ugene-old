@@ -30,6 +30,7 @@
 namespace U2 {
 
 class U2FORMATS_EXPORT U2UseCommonMultiModStep {
+Q_DISABLE_COPY(U2UseCommonMultiModStep)
 public:
     /**
      * Master object ID refers to the user modifications step.
@@ -40,8 +41,16 @@ public:
 private:
     SQLiteDbi *sqliteDbi;
     bool valid;
+    const U2DataId &masterObjId;
 };
 
+struct ModStepsDescriptor {
+    ModStepsDescriptor();
+
+    qint64 userModStepId;
+    qint64 multiModStepId;
+    bool removeUserStepWithMulti;
+};
 
 class U2FORMATS_EXPORT SQLiteModDbi : public U2ModDbi, public SQLiteChildDBICommon {
 public:
@@ -92,7 +101,7 @@ public:
      * Deletes the user modifications step if it doesn't contain any multi modification steps.
      * Do not use this method, use "U2UseCommonUserModStep" instead!
      */
-    virtual void endCommonUserModStep(U2OpStatus &os);
+    virtual void endCommonUserModStep(const U2DataId& masterObjId, U2OpStatus &os);
 
     /**
      * Starts a common multiple modifications step.
@@ -106,11 +115,11 @@ public:
      * Ends a common multiple modifications step.
      * Do not use this method, use "U2UseCommonMultiModStep" instead!
      */
-    void endCommonMultiModStep(U2OpStatus &os);
+    void endCommonMultiModStep(const U2DataId& userMasterObjId, U2OpStatus &os);
 
     /** Specifies whether a step has been started */
-    static bool isUserStepStarted() { return currentUserModStepId != -1; }
-    static bool isMultiStepStarted() { return currentMultiModStepId != -1; }
+    static bool isUserStepStarted(const U2DataId& userMasterObjId);
+    static bool isMultiStepStarted(const U2DataId& userMasterObjId);
 
     /** Specifies whether there are user steps that can be undone/redone */
     bool canUndo(const U2DataId &objectId, U2OpStatus &os);
@@ -135,22 +144,12 @@ private:
      * Sets "currentMultiModStepId" to the added record ID.
      * Warning: it is assumed that a user modification step has been started!
      */
-    void createMultiModStep(U2OpStatus &os);
+    void createMultiModStep(const U2DataId &masterObjId, U2OpStatus &os);
 
     /** Removes user steps with the specified IDs and all affected multiple and single steps */
     void removeSteps(QList<qint64> userStepIds, U2OpStatus &os);
 
-    /** User modifications step ID if it has been started, or -1 otherwise */
-    static qint64 currentUserModStepId;
-
-    /** Multiple modifications step ID if it has been started, or -1  otherwise */
-    static qint64 currentMultiModStepId;
-
-    /** ID of the master object of the current user modifications step */
-    static U2DataId currentMasterObjId;
-
-    /** Specifies whether user step was created for multiple step only */
-    static bool removeUserStepWithMulti;
+    static QMap<U2DataId, ModStepsDescriptor> modStepsByObject;
 };
 
 } // namespace
