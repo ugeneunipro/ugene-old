@@ -84,9 +84,9 @@ workflow "ChIP-seq analysis with control"{
     read-annotations-1.annotations->macs-id.in-data.control-ann
     macs-id.wiggle-treat->ceas-report.in-data.enrichment-signal
     macs-id.peak-regions->ceas-report.in-data.peak-regions
-    macs-id.peak-regions->conservation_plot-id.in-data.cp_treat-ann
-    macs-id.peak-regions->seqpos-id.in-data.cp_treat-ann
-    macs-id.peak-regions->peak2gene-id.in-data._treat-ann
+    macs-id.peak-summits->conservation_plot-id.in-data.cp_treat-ann
+    macs-id.peak-summits->seqpos-id.in-data.cp_treat-ann
+    macs-id.peak-summits->peak2gene-id.in-data._treat-ann
     peak2gene-id.gene-annotation->conduct-go-id.in-data.in-ann
     peak2gene-id.gene-annotation->write-annotations.in-annotations.annotations
     peak2gene-id.peak-annotation->write-annotations-1.in-annotations.annotations
@@ -109,6 +109,35 @@ workflow "ChIP-seq analysis with control"{
                 }
             }
             [time];
+        }
+        parameter-aliases {
+            read-annotations.url-in {
+                alias:treat_in;
+            }
+            read-annotations-1.url-in {
+                alias:control_in;
+            }
+            macs-id.output-dir {
+                alias:macs_out;
+            }
+            macs-id.tag-size {
+                alias:tag_size;
+            }
+            ceas-report.anns-file {
+                alias:ceas_annotation_out;
+            }
+            ceas-report.image-file {
+                alias:ceas_report;
+            }
+            conservation_plot-id.output-file {
+                alias:plot_out;
+            }
+            seqpos-id.output-dir {
+                alias:seqpos_out;
+            }
+            conduct-go-id.output-dir {
+                alias:GO_out;
+            }
         }
         visual {
             scale:85;
