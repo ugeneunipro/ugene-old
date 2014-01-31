@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-#if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) && (__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ >= 1060)
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= 1060
 
 class SleepPreventerMac : public SleepPreventer {
 public:
