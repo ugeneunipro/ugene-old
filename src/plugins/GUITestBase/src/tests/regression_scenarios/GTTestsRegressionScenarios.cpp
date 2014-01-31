@@ -4318,6 +4318,25 @@ GUI_TEST_CLASS_DEFINITION( test_2496 ) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.bam");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2506 ) {
+    // 1. Open file _common_data/vcf_consensus/vcf_cons_out_damaged_1.vcf
+    // Expected state: error message appears.
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, testDir + "_common_data/vcf_consensus/", "vcf_cons_out_damaged_1.vcf");
+
+    CHECK_SET_ERR(l.hasError() == true, "There is no expected error message in log");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2506_1 ) {
+    // 1. Open file _common_data/vcf_consensus/vcf_cons_out_damaged_2.vcf
+    // Expected state: error message appears.
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, testDir + "_common_data/vcf_consensus/", "vcf_cons_out_damaged_2.vcf");
+
+    CHECK_SET_ERR(l.hasError() == true, "There is no expected error message in log");
+}
 GUI_TEST_CLASS_DEFINITION( test_2519 ) {
     // 1. Open {data/samples/FASTA/human_T1.fa}.
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
