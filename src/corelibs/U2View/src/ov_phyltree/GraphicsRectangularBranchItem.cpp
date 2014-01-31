@@ -60,11 +60,14 @@ void GraphicsRectangularBranchItem::collapse() {
             }
 
             GraphicsRectangularBranchItem* childItem = dynamic_cast<GraphicsRectangularBranchItem*>(graphItem);
-            if (!childItem)
+            if (NULL == childItem) {
                 continue;
+            }
 
             childItem->setCollapsed(!childItem->isCollapsed());
-            childItem->setVisible(branchItem->isVisible() &&!branchItem->isCollapsed());
+            if(NULL == childItem->getNameText()) {
+                childItem->setVisible(branchItem->isVisible() &&!branchItem->isCollapsed());
+            }
             if(childItem->isCollapsed() && !branchItem->isCollapsed()) {
                 childItem->drawCollapsedRegion();
             }
