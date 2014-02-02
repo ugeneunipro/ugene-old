@@ -50,6 +50,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/DocWorkers.h \
            src/library/ExternalProcessWorker.h \
            src/library/ExtractConsensusWorker.h \
+           src/library/FilterAnnotationsByQualifierWorker.h \
            src/library/FilterAnnotationsWorker.h \
            src/library/FindWorker.h \
            src/library/GenericReadActor.h \
@@ -147,6 +148,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/ExternalProcessWorker.cpp \
            src/library/ExtractConsensusWorker.cpp \
            src/library/FilterAnnotationsWorker.cpp \
+           src/library/FilterAnnotationsByQualifierWorker.cpp \
            src/library/FindWorker.cpp \
            src/library/GenericReadActor.cpp \
            src/library/GenericReadWorker.cpp \

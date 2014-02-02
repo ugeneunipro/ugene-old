@@ -34,6 +34,7 @@
 #include "ImportAnnotationsWorker.h"
 #include "SequencesToMSAWorker.h"
 #include "FilterAnnotationsWorker.h"
+#include "FilterAnnotationsByQualifierWorker.h"
 #include "CDSearchWorker.h"
 #include "StatisticWorkers.h"
 #include "ReverseComplementWorker.h"
@@ -279,6 +280,7 @@ void CoreLib::init() {
     Alignment2SequenceWorkerFactory::init();
     ImportAnnotationsWorkerFactory::init();
     FilterAnnotationsWorkerFactory::init();
+    FilterAnnotationsByQualifierWorkerFactory::init();
     SequencesToMSAWorkerFactory::init();
     CDSearchWorkerFactory::init();
     DNAStatWorkerFactory::init();
