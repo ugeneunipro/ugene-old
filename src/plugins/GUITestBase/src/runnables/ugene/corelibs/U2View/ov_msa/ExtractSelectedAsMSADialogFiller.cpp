@@ -60,30 +60,36 @@ void ExtractSelectedAsMSADialogFiller::run() {
     QLineEdit *filepathEdit=dialog->findChild<QLineEdit*>("filepathEdit");
     GT_CHECK(filepathEdit!=NULL, "filepathEdit is NULL");
     GTLineEdit::setText(os,filepathEdit,filepath);
+    GTGlobals::sleep(300);
 
     QWidget *noneButton = dialog->findChild<QWidget*>("noneButton");
     GT_CHECK(noneButton!=NULL, "noneButton is NULL");
     GTWidget::click(os,noneButton);
 
+
     if(invertButtonPress){
+        GTGlobals::sleep(300);
         QWidget *invertButton = dialog->findChild<QWidget*>("invertButton");
         GT_CHECK(invertButton!=NULL, "invertButton is NULL");
         GTWidget::click(os,invertButton);
     }
 
     if(allButtonPress){
+        GTGlobals::sleep(300);
         QWidget *allButton = dialog->findChild<QWidget*>("allButton");
         GT_CHECK(allButton!=NULL, "allButton is NULL");
         GTWidget::click(os,allButton);
     }
 
     if(noneButtonPress){
+        GTGlobals::sleep(300);
         QWidget *noneButton = dialog->findChild<QWidget*>("noneButton");
         GT_CHECK(noneButton!=NULL, "noneButton is NULL");
         GTWidget::click(os,noneButton);
     }
 
     if(addToProj){
+        GTGlobals::sleep(300);
         QCheckBox *addToProjCheck = dialog->findChild<QCheckBox*>("addToProjBox");
         GT_CHECK(addToProjCheck!=NULL, "addToProjBox is NULL");
         GTCheckBox::setChecked(os,addToProjCheck,addToProj);
@@ -99,12 +105,11 @@ void ExtractSelectedAsMSADialogFiller::run() {
     GTMouseDriver::moveTo(os,p);
     GTMouseDriver::click(os);
     for(int i=0; i<table->rowCount() ;i++){
-        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["down"]);
-        GTGlobals::sleep(100);
         foreach(QString s, list){
             QCheckBox *box = qobject_cast<QCheckBox*>(table->cellWidget(i,0));
             if (s==box->text()){
-                GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["space"]);
+                GT_CHECK(box->isEnabled(), QString("%1 box is disabled").arg(box->text()));
+                box->setChecked(true);
             }
         }
     }

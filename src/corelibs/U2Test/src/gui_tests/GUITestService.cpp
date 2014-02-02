@@ -37,7 +37,7 @@
 #include <U2Core/Log.h>
 
 /**************************************************** to use qt file dialog *************************************************************/
-#ifdef __linux__
+#if defined(Q_OS_LINUX) || defined(Q_WS_MAC)
 typedef QStringList(*_qt_filedialog_open_filenames_hook)(QWidget * parent, const QString &caption, const QString &dir,
                                                           const QString &filter, QString *selectedFilter, QFileDialog::Options options);
 typedef QString(*_qt_filedialog_open_filename_hook)     (QWidget * parent, const QString &caption, const QString &dir,
@@ -370,14 +370,14 @@ void GUITestService::writeTestResult(const QString& result) {
 
 void GUITestService::setQtFileDialogView()
 {
-#ifdef __linux__
+//#ifdef __linux__
     if (!qgetenv("UGENE_USE_NATIVE_DIALOGS").isEmpty()) {
         qt_filedialog_open_filename_hook = 0;
         qt_filedialog_open_filenames_hook = 0;
         qt_filedialog_save_filename_hook = 0;
         qt_filedialog_existing_directory_hook = 0;
     }
-#endif
+//#endif
 }
 
 void GUITestService::clearSandbox()

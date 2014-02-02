@@ -86,7 +86,13 @@ void URLListWidget::addUrlItem(UrlItem *urlItem) {
 
 void URLListWidget::sl_addFileButton() {
     LastUsedDirHelper lod;
-    QStringList files = QFileDialog::getOpenFileNames(NULL, tr("Select file"), lod.dir);
+    QStringList files;
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        files = QFileDialog::getOpenFileNames(NULL, tr("Select file"), lod.dir, "", 0, QFileDialog::DontUseNativeDialog);
+    } else
+#endif
+    files = QFileDialog::getOpenFileNames(NULL, tr("Select file"), lod.dir);
     foreach (const QString &file, files) {
         lod.url = file;
         addUrl(file);

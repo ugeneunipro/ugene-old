@@ -223,7 +223,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2128);
     REGISTER_TEST(GUITest_regression_scenarios::test_2128_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2138);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2140);
+    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2140, "https://ugene.unipro.ru/tracker/browse/UGENE-2716");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2150, "task tree view cant be tested");
     REGISTER_TEST(GUITest_regression_scenarios::test_2152);
     REGISTER_TEST(GUITest_regression_scenarios::test_2156);
@@ -246,7 +246,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2225_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2225_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2259);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2266_1);
+    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2266_1, "https://ugene.unipro.ru/tracker/browse/UGENE-2715");
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2268, "https://ugene.unipro.ru/tracker/browse/UGENE-2579");
@@ -266,7 +266,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2375);
     REGISTER_TEST(GUITest_regression_scenarios::test_2377);
     REGISTER_TEST(GUITest_regression_scenarios::test_2378);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2378_1);
+    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2378_1, "https://ugene.unipro.ru/tracker/browse/UGENE-2714");
     REGISTER_TEST(GUITest_regression_scenarios::test_2379);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2382, "Failed because of https://ugene.unipro.ru/tracker/browse/UGENE-2477");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2382_1, "Failed because of https://ugene.unipro.ru/tracker/browse/UGENE-2477");

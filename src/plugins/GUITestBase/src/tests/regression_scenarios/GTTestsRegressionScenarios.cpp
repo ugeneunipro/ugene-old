@@ -3206,6 +3206,7 @@ GUI_TEST_CLASS_DEFINITION( test_2224 )
 
     // 3. Select a region in the sequence area
     GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 4 ), QPoint( 7, 12 ) );
+    GTGlobals::sleep(500);
 
     // 4. Shift the region in one base
     GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 6, 7 ), QPoint( 7, 7 ) );
@@ -4023,7 +4024,12 @@ GUI_TEST_CLASS_DEFINITION( test_2401 ) {
     // Expected: the file is imported without errors, the assembly is opened.
     // 4. Close the project.
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+#ifdef Q_OS_MAC
+        QMenu *menu = GTMenu::showMainMenu(os, MWMENU_FILE);
+        GTMenu::clickMenuItem(os, menu, ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+#else
     GTKeyboardDriver::keyClick(os, 'q', GTKeyboardDriver::key["ctrl"]);
+#endif
     GTGlobals::sleep();
 
     // 5. Open the file "_common_data/ace/ace_test_11_(error).ace".
@@ -4277,9 +4283,10 @@ GUI_TEST_CLASS_DEFINITION( test_2475 ) {
         virtual void run(){
             GTGlobals::sleep();
 #ifdef Q_OS_MAC
-            GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
-            GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
-            GTWidget::click(os,GTWidget::findWidget(os,"bttnCancel"));
+            //GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+            //GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+            //GTWidget::click(os,GTWidget::findButtonByText(os, "Cancel"));
 #else
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
 #endif

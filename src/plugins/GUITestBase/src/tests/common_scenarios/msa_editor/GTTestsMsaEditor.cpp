@@ -1,3 +1,4 @@
+
 /**
  * UGENE - Integrated Bioinformatics Tools.
  * Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
@@ -34,6 +35,7 @@
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsBookmarksTreeView.h"
+#include "GTUtilsProject.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/FontDialogFiller.h"
@@ -2831,14 +2833,15 @@ GUI_TEST_CLASS_DEFINITION(test_0028_windows){
 
 GUI_TEST_CLASS_DEFINITION(test_0029){
     //    1. open document samples/CLUSTALW/COI.aln
-        GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+        GTUtilsProject::openFiles(os, dataDir + "samples/CLUSTALW/COI.aln");
     //    2. Select first sequence
         GTUtilsMSAEditorSequenceArea::click(os,QPoint(0,0));
         GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_EXPORT<<"Save sequence",GTGlobals::UseMouse));
         Runnable* r = new ExportSelectedSequenceFromAlignment(os,testDir + "_common_data/scenarios/sandbox/export.fasta",ExportSelectedSequenceFromAlignment::FASTA,true);
         GTUtilsDialog::waitForDialog(os, r);
 
-        GTMouseDriver::click(os,Qt::RightButton);
+        GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
+        //GTMouseDriver::click(os,Qt::RightButton);
 
         GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"export.fasta"));
         GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"Phaneroptera_falcata"));

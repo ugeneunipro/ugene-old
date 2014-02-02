@@ -156,7 +156,7 @@ public:
         QPoint i = dataset->mapToGlobal(dataset->rect().bottomLeft());
         QPoint j = cancel->mapToGlobal(cancel->rect().topLeft());
 
-        CHECK_SET_ERR(qAbs(i.y()-j.y())<50, QString("%1   %2").arg(i.y()).arg(j.y()));
+        CHECK_SET_ERR(qAbs(i.y()-j.y())<100, QString("%1   %2").arg(i.y()).arg(j.y()));
         GTWidget::click(os,cancel);
     }
 };
@@ -165,7 +165,7 @@ public:
 
 GUI_TEST_CLASS_DEFINITION(test_0002){
 //    1. Open WD
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 //    2. Open tuxedo pipeline from samples
