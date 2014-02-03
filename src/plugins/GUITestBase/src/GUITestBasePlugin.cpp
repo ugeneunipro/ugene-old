@@ -193,7 +193,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1924);
     REGISTER_TEST(GUITest_regression_scenarios::test_1986);
 
-    REGISTER_TEST(GUITest_regression_scenarios::test_2006);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2006,"https://ugene.unipro.ru/tracker/browse/UGENE-2717");
     REGISTER_TEST(GUITest_regression_scenarios::test_2007);
     REGISTER_TEST(GUITest_regression_scenarios::test_2012);
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_1);
@@ -912,6 +912,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0014_2);
 
     REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0020);
+    REGISTER_TEST(GUITest_Common_scenarios_dp_view::generation_test);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/Assembly browser
