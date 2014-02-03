@@ -244,7 +244,7 @@ void UserActionsWriter::filterMouseMessages(){
     message.prepend(typeMap.value(m->type()) + QString(" "));
     if(message != prevMessage){
         if(!buffer.isEmpty()){
-            userActLog.trace(buffer);
+            userActLog.trace(QString("Typed string. Length=%1").arg(buffer.length()));
             buffer = "";
         }
 
@@ -304,7 +304,7 @@ void UserActionsWriter::filterKeyboardMessages(){
         }
 
         if(!buffer.isEmpty()){
-            userActLog.trace(buffer);
+            userActLog.trace(QString("Typed string. Length=%1").arg(buffer.length()));
             buffer = "";
         }
 
