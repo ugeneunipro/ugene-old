@@ -623,6 +623,8 @@ IMPLEMENT_TEST( CInterfaceManualTests, call_variants ) {
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, callVariants, L"variants-url", L"variations.vcf" );
     CHECK_U2_ERROR( error );
+    error = setSchemeElementAttribute( scheme, callVariants, L"max-dep", L"100" );
+    CHECK_U2_ERROR( error );
 
     error = addFlowToScheme( scheme, readAssembly, L"out-url", convertBam, L"in-file" );
     CHECK_U2_ERROR( error );
@@ -744,13 +746,13 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq ) {
     error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", ceasReport,
         L"in-data.peak-regions" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", conservationPlotId,
+    error = addSchemeActorsBinding( scheme, macsId, L"peak-summits", conservationPlotId,
         L"in-data.cp_treat-ann" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", seqPosId,
+    error = addSchemeActorsBinding( scheme, macsId, L"peak-summits", seqPosId,
         L"in-data.cp_treat-ann" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", peak2GeneId,
+    error = addSchemeActorsBinding( scheme, macsId, L"peak-summits", peak2GeneId,
         L"in-data._treat-ann" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, peak2GeneId, L"gene-annotation", conductGoId,
@@ -875,13 +877,13 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq_with_control ) {
     error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", ceasReport,
         L"in-data.peak-regions" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", conservationPlotId,
+    error = addSchemeActorsBinding( scheme, macsId, L"peak-summits", conservationPlotId,
         L"in-data.cp_treat-ann" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", seqPosId,
+    error = addSchemeActorsBinding( scheme, macsId, L"peak-summits", seqPosId,
         L"in-data.cp_treat-ann" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, macsId, L"peak-regions", peak2GeneId,
+    error = addSchemeActorsBinding( scheme, macsId, L"peak-summits", peak2GeneId,
         L"in-data._treat-ann" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, peak2GeneId, L"gene-annotation", conductGoId,

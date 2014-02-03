@@ -460,8 +460,13 @@ QString EMBLGenbankAbstractDocument::genObjectName(QSet<QString>& usedNames, con
             }
         }
     }
-    if (t == GObjectTypes::ANNOTATION_TABLE) {
-        name += " features";
+
+    const QString featuresPostfix = "features";
+    const QString annotsPostfix = "annotations";
+    if (t == GObjectTypes::ANNOTATION_TABLE && !name.endsWith(featuresPostfix, Qt::CaseInsensitive)
+        && !name.endsWith(annotsPostfix, Qt::CaseInsensitive))
+    {
+        name += " " + featuresPostfix;
     }
     //now variate name if there are duplicates
     int n2 = 1;
