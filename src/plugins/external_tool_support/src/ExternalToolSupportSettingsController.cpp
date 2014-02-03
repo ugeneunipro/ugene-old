@@ -557,7 +557,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
                         QString executableFileName = AppContext::getExternalToolRegistry()->getByName(item->text(0))->getExecutableFileName();
                         while (it.hasNext() && fileNotFound) {
                             it.next();
-                            QString fpath = it.filePath() + "/" + executableFileName;
+                            QString fpath = it.filePath() + QDir::separator() + executableFileName;
                             
                             QFileInfo info(fpath);
                             if (info.exists() && info.isFile()) {
@@ -570,9 +570,6 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
                                 clearToolPathButton->setEnabled(true);
                                 toolNames << item->text(0);
                                 toolPaths.insert(item->text(0), path);
-                                /*ExternalToolValidateTask* validateTask = new ExternalToolValidateTask(item->text(0), path);
-                                connect(validateTask, SIGNAL(si_stateChanged()), SLOT(sl_validateTaskStateChanged()));
-                                AppContext::getTaskScheduler()->registerTopLevelTask(validateTask);*/
                                 fileNotFound = false;
                             }
                         }
@@ -617,14 +614,14 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath() {
                     PathLineEdit* lineEdit = itemWid->findChild<PathLineEdit*>("PathLineEdit");
 
                     if (lineEdit->text().isEmpty()) {
-                        QString toolPath = dirPath + "/" + dirName;
+                        QString toolPath = dirPath + QDir::separator() + dirName;
                         QDir toolDir(toolPath);
                         LimitedDirIterator it(toolDir);
                         bool fileNotFound = true;
                         QString executableFileName = AppContext::getExternalToolRegistry()->getByName(item->text(0))->getExecutableFileName();
                         while (it.hasNext() && fileNotFound) {
                             it.next();
-                            QString fName = it.filePath() + "/" + executableFileName;
+                            QString fName = it.filePath() + QDir::separator() + executableFileName;
                             QFileInfo info(fName);
                             if (info.exists() && info.isFile()) {
                                 QString path = QDir::toNativeSeparators(fName);
@@ -657,10 +654,6 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath() {
             connect(listener, SIGNAL(si_validationComplete()), SLOT(sl_validationComplete()));
             etManager->validate(toolNames, toolPaths, listener);
         }
-        /*if (!validationTasks.isEmpty()) {
-            SequentialMultiTask* checkExternalToolsTask = new SequentialMultiTask(tr("Checking external tool and its dependencies"), validationTasks, TaskFlags_NR_FOSCOE);
-            AppContext::getTaskScheduler()->registerTopLevelTask(checkExternalToolsTask);
-        }*/
     }
 }
 

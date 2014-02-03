@@ -53,7 +53,7 @@ void ExternalToolSearchTask::run() {
 
     foreach (const QString& dirName, entryList) {
         if (dirName == TOOLS) {
-            toolsDir = appDir.absolutePath()+ "/" + dirName;
+            toolsDir = appDir.absolutePath()+ QDir::separator() + dirName;
             break;
         }
     }
@@ -66,7 +66,7 @@ void ExternalToolSearchTask::run() {
 
         while (it.hasNext() && fileNotFound) {
             it.next();
-            QString toolPath(it.filePath() + "/" + exeName);
+            QString toolPath(it.filePath() + QDir::separator() + exeName);
             QFileInfo info(toolPath);
             if (info.exists() && info.isFile()) {
                 toolPaths << QDir::toNativeSeparators(toolPath);
@@ -94,7 +94,7 @@ void ExternalToolSearchTask::run() {
         CHECK(!exeName.isEmpty(), );
 
         foreach (const QString& curPath, paths) {
-            QString exePath = curPath + "/" + exeName;
+            QString exePath = curPath + QDir::separator() + exeName;
             QFileInfo info(exePath);
             if (info.exists()) {
                 toolPaths << exePath;

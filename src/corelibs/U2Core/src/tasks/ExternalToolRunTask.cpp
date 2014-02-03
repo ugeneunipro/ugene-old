@@ -389,7 +389,7 @@ ProcessRun ExternalToolSupportUtils::prepareProcess(const QString &toolName, con
         result.process->setWorkingDirectory(workingDirectory);
         algoLog.details(tr("Working directory is \"%1\"").arg(result.process->workingDirectory()));
     }
-    algoLog.details(tr("Launching %1 tool: %2 %3").arg(toolName).arg(result.program).arg(arguments.join(" ")));
+    algoLog.details(tr("Launching %1 tool: %2 %3").arg(toolName).arg(result.program).arg(result.arguments.join(" ")));
     if(NULL != listener) {
         listener->setToolName(toolName);
         listener->addNewLogMessage(listenerProgramMessage, PROGRAM_PATH);
