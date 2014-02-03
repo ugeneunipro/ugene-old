@@ -211,7 +211,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2032);
     REGISTER_TEST(GUITest_regression_scenarios::test_2049);
     REGISTER_TEST(GUITest_regression_scenarios::test_2070);
-    REGISTER_TEST_IGNORED_LINUX(GUITest_regression_scenarios::test_2089, "no forbidden folder characters on linux");
+    REGISTER_TEST_WINDOWS(GUITest_regression_scenarios::test_2089, "no forbidden folder characters on linux and mac");
     REGISTER_TEST(GUITest_regression_scenarios::test_2077);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2093_1,"dashboards");
     REGISTER_TEST(GUITest_regression_scenarios::test_2093_2);
@@ -220,8 +220,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_3);
     REGISTER_TEST(GUITest_regression_scenarios::test_2122);
     REGISTER_TEST(GUITest_regression_scenarios::test_2124);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2128);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2128_1);
+    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2128, "https://ugene.unipro.ru/tracker/browse/UGENE-2718");
+    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2128_1, "https://ugene.unipro.ru/tracker/browse/UGENE-2718");
     REGISTER_TEST(GUITest_regression_scenarios::test_2138);
     REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2140, "https://ugene.unipro.ru/tracker/browse/UGENE-2716");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2150, "task tree view cant be tested");
@@ -912,7 +912,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0014_2);
 
     REGISTER_TEST(GUITest_Common_scenarios_dp_view::test_0020);
-    REGISTER_TEST(GUITest_Common_scenarios_dp_view::generation_test);
+    //REGISTER_TEST(GUITest_Common_scenarios_dp_view::generation_test);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/Assembly browser
