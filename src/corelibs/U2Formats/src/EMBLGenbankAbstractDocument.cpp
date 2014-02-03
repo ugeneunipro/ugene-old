@@ -459,15 +459,16 @@ QString EMBLGenbankAbstractDocument::genObjectName(QSet<QString>& usedNames, con
                 name = EMBLGenbankAbstractDocument::DEFAULT_OBJ_NAME;
             }
         }
-        if(t == GObjectTypes::ANNOTATION_TABLE) {
-            name+=" features";
-        }
+    }
+    if (t == GObjectTypes::ANNOTATION_TABLE) {
+        name += " features";
     }
     //now variate name if there are duplicates
     int n2 = 1;
     QString res = name;
     while (usedNames.contains(res)) {
-        res =  name + " " + QString::number(n) + (n2 == 1 ? QString("") : ("."+QString::number(n2)));
+        res =  name + " " + QString::number(n) + (n2 == 1 ? QString("") : ("." + QString::number(n2)));
+        ++n2;
     }
     usedNames.insert(res);
     return res;
