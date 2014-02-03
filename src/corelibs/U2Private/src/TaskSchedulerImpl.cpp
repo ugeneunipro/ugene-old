@@ -693,12 +693,7 @@ void TaskSchedulerImpl::createSleepPreventer() {
 #ifndef Q_OS_MAC
     sleepPreventer = new SleepPreventer;
 #else
-    if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_6) {
-        // Some functions are available on Mac OS X version 10.6 and later
-        sleepPreventer = new SleepPreventerMac;
-    } else {
-        sleepPreventer = new SleepPreventer;
-    }
+    sleepPreventer = new SleepPreventerMac;
 #endif
 }
 

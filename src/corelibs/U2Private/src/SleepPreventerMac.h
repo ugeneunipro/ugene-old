@@ -43,6 +43,11 @@ private:
     bool isActive;
 };
 
+#else
+
+class SleepPreventerMac : public SleepPreventer {
+};
+
 #endif
 
 }   // namespace U2
