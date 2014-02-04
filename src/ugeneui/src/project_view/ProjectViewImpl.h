@@ -56,7 +56,6 @@ private:
     void update();
     void notifyUserAndReloadDocuments(const QList<Document*> &outdatedDocs);
     void notifyUserAndProcessRemovedDocuments(const QList<Document*> &removedDocs);
-    void reloadDocsWithNewPermisions(const QList<Document*> &outdatedPermDocs);
     bool isAnyDialogOpened() const;
     bool makeDecision(Document *doc, QListIterator<Document*> &iter);
 

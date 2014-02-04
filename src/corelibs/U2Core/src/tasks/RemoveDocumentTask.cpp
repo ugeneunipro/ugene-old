@@ -55,9 +55,9 @@ void RemoveMultipleDocumentsTask::prepare() {
                 docs.append(d);
             }
         }
-        QList<Document*> modifiedDocs = SaveMiltipleDocuments::findModifiedDocuments(docs);
+        QList<Document*> modifiedDocs = SaveMultipleDocuments::findModifiedDocuments(docs);
         if (!modifiedDocs.isEmpty()) {
-            addSubTask(new SaveMiltipleDocuments(modifiedDocs, useGUI));
+            addSubTask(new SaveMultipleDocuments(modifiedDocs, useGUI));
         }
     }
    

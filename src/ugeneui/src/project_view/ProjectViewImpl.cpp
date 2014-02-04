@@ -118,8 +118,9 @@ void DocumentUpdater::update() {
     // build list of documents which files were modified between calls to sl_update()
     QList<Document*> outdatedDocs;
     QList<Document *> removedDocs;
-    QList<Document *> outdatedPermDocs;
     foreach(Document* doc, docs2check) {
+        SAFE_POINT(doc != NULL, tr("Project contains NULL document"), );
+
         if (!doc->isLoaded()) {
             continue;
         }
@@ -132,9 +133,6 @@ void DocumentUpdater::update() {
         QFile::Permissions perm= DocumentUtils::getPermissions(doc);
         if (perm==0) {// the document was not loaded or saved
             continue;
-        }
-        if (!doc->hasUserModLock() && !perm.testFlag(QFile::WriteUser) && fi.exists()) { // file was modified
-            outdatedPermDocs.append(doc);
         }
 
         DbiDocumentFormat* dbiFormat = qobject_cast<DbiDocumentFormat*>(doc->getDocumentFormat());
@@ -158,8 +156,6 @@ void DocumentUpdater::update() {
         notifyUserAndReloadDocuments(outdatedDocs);
     if(!removedDocs.isEmpty())
         notifyUserAndProcessRemovedDocuments(removedDocs);
-    if(!outdatedPermDocs.isEmpty())
-        reloadDocsWithNewPermisions(outdatedPermDocs);
 }
 
 bool DocumentUpdater::isAnyDialogOpened() const
@@ -301,24 +297,6 @@ void DocumentUpdater::notifyUserAndReloadDocuments(const QList<Document*> & outd
     // setup multi task : reload documents + open views
 
     reloadDocuments(docs2Reload);
-}
-
-void DocumentUpdater::reloadDocsWithNewPermisions(const QList<Document *> &outdatedPermDocs){
-    coreLog.trace(QString("Permissions for %1 docs changed!").arg(outdatedPermDocs.size()));
-    if(isAnyDialogOpened())
-        return;
-
-    QListIterator<Document*> iter(outdatedPermDocs);
-    while (iter.hasNext()) {
-        Document* doc = iter.next();
-        QMessageBox::information(
-            dynamic_cast<QWidget *>(AppContext::getMainWindow()),
-            U2_APP_TITLE,
-            tr("Permission for document '%1' was changed outside UGENE. It should be reloaded.").arg(doc->getName()),
-            QMessageBox::Ok);
-        if(!doc->hasUserModLock())//don't unlock documents when changing permissions
-            doc->setUserModLock(!DocumentUtils::getPermissions(doc).testFlag(QFile::WriteUser));
-    }
 }
 
 void DocumentUpdater::sl_updateTaskStateChanged() {
@@ -630,7 +608,7 @@ void ProjectViewImpl::sl_onSaveSelectedDocs() {
         }
     }
     if (!modifiedDocs.isEmpty()) {
-        AppContext::getTaskScheduler()->registerTopLevelTask(new SaveMiltipleDocuments(modifiedDocs, false));
+        AppContext::getTaskScheduler()->registerTopLevelTask(new SaveMultipleDocuments(modifiedDocs, false, SavedNewDoc_Open));
     }
 }
 

@@ -469,9 +469,6 @@ void Document::loadFrom(Document* sourceDoc) {
         modLocks[DocumentModLock_FORMAT_AS_INSTANCE] = new StateLock(dLock->getUserDesc());
         lockState(modLocks[DocumentModLock_FORMAT_AS_INSTANCE]);
     }
-    if(!DocumentUtils::getPermissions(sourceDoc).testFlag(QFile::WriteUser)){
-        setUserModLock(true);
-    }
 
     dbiRef = sourceDoc->dbiRef;
     documentOwnsDbiResources = sourceDoc->isDocumentOwnsDbiResources();

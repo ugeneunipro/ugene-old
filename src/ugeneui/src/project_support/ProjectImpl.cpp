@@ -108,6 +108,7 @@ void ProjectImpl::setProjectURL(const QString& newURL) {
 
 Document* ProjectImpl::findDocumentByURL(const QString & url) const {
     foreach(Document* d, docs) {
+        SAFE_POINT(d != NULL, tr("Project contains NULL document"), NULL);
         if (d->getURLString() == url) {
             return d;
         }

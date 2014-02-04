@@ -79,14 +79,19 @@ private:
     QSet<QString>       excludeFileNames;
 };
 
+enum SavedNewDocFlag {
+    SavedNewDoc_Open = true,
+    SavedNewDoc_DoNotOpen = false
+};
 
-class U2CORE_EXPORT SaveMiltipleDocuments: public Task {
+class U2CORE_EXPORT SaveMultipleDocuments: public Task {
     Q_OBJECT
 public:
-
-    SaveMiltipleDocuments(const QList<Document*>& docs, bool askBeforeSave);
+    SaveMultipleDocuments(const QList<Document*>& docs, bool askBeforeSave, SavedNewDocFlag openFlag = SavedNewDoc_DoNotOpen);
 
     static QList<Document*> findModifiedDocuments(const QList<Document*>& docs);
+private:
+    GUrl chooseAnotherUrl(Document* doc);
 };
 
 class U2CORE_EXPORT SaveCopyAndAddToProjectTask : public Task {
