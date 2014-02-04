@@ -19,28 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_PEAK2GENE_SUPPORT_
-#define _U2_PEAK2GENE_SUPPORT_
+#ifndef _U2_EXTERNAL_TOOL_UTILS_H_
+#define _U2_EXTERNAL_TOOL_UTILS_H_
 
-#include <U2Core/ExternalToolRegistry.h>
+#include <QtCore/QString>
 
 namespace U2 {
 
-#define ET_PEAK2GENE "peak2gene"
-#define REFGENE_DIR_NAME "refGene"
-#define REF_GENES_DATA_NAME "Gene annotation table"
-#define TRANSLATIONS_DIR_NAME "geneIdTranslations"
-#define ENTREZ_TRANSLATION_DATA_NAME "Entrez ID translations"
-
-class Peak2GeneSupport : public ExternalTool {
-    Q_OBJECT
+class ExternalToolUtils {
 public:
-    Peak2GeneSupport(const QString &name);
+    static void addDefaultCistromeDirToSettings();
+    static void addCistromeDataPath(const QString& dataName, const QString& dirName, bool entriesAreFolders = false);
 
-private:
-    void initialize();
+    static const QString CISTROME_DATA_DIR;
 };
 
-} // U2
+}   // namespace U2
 
-#endif // _U2_PEAK2GENE_SUPPORT_
+#endif // _U2_EXTERNAL_TOOL_UTILS_H_

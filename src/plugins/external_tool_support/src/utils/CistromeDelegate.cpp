@@ -20,6 +20,7 @@
  */
 
 #include "CistromeDelegate.h"
+#include "utils/ExternalToolUtils.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DataPathRegistry.h>
@@ -28,8 +29,6 @@
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/WorkflowEnv.h>
-
-#define CISTROME_DATA_DIR "CISTROME_DATA_DIR"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -72,8 +71,8 @@ void CistromeComboBoxWithUrlsDelegate::updateValues(const QString &dataPathName,
 }
 
 void CistromeComboBoxWithUrlsDelegate::updateDataPath(const QString &dataPathName, const QString &dirName, bool folders) {
-    QString cistromeDataPath = AppContext::getSettings()->getValue(CISTROME_DATA_DIR).toString();
-    QString dirPath = cistromeDataPath + "/" + dirName;
+    QString cistromeDataPath = AppContext::getSettings()->getValue(ExternalToolUtils::CISTROME_DATA_DIR).toString();
+    QString dirPath = cistromeDataPath + QDir::separator() + dirName;
 
     U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
     SAFE_POINT(dpr, "U2DataPathRegistry is NULL", );

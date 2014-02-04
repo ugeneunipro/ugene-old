@@ -27,7 +27,6 @@
 namespace U2 {
 
 #define ET_SEQPOS "seqpos"
-#define CISTROME_DATA_DIR "CISTROME_DATA_DIR"
 #define ASSEMBLY_DIR_NAME "genomes"
 #define ASSEMBLY_DIR "Assembly dir"
 

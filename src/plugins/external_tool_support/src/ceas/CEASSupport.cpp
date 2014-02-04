@@ -20,14 +20,12 @@
  */
 
 #include "CEASSupport.h"
-
-#include <python/PythonSupport.h>
-#include <R/RSupport.h>
+#include "python/PythonSupport.h"
+#include "R/RSupport.h"
+#include "utils/ExternalToolUtils.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/DataPathRegistry.h>
 #include <U2Core/Settings.h>
-
 
 namespace U2 {
 
@@ -63,19 +61,8 @@ void CEASSupport::initialize() {
 
     versionRegExp=QRegExp(executableFileName + " -- (\\d+\\.\\d+\\.\\d+.\\d+) \\(package version (\\d+\\.\\d+\\.\\d+)\\)");
 
-    U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
-    if (dpr) {
-        QString refGenePath = AppContext::getSettings()->getValue(CISTROME_DATA_DIR).toString() + "/" + REFGENE_DIR_NAME;
-        U2DataPath* dp = new U2DataPath(REF_GENES_DATA_NAME, refGenePath);
-        if (!dp->isValid()) {
-            delete dp;
-            dp = new U2DataPath(REF_GENES_DATA_NAME, QString(PATH_PREFIX_DATA) + QString(":") + "cistrome/" + REFGENE_DIR_NAME);
-        }
-
-        if (!dpr->registerEntry(dp)) {
-            delete dp;
-        }
-    }
+    ExternalToolUtils::addDefaultCistromeDirToSettings();
+    ExternalToolUtils::addCistromeDataPath(REF_GENES_DATA_NAME, REFGENE_DIR_NAME);
 
     muted = true;
 }

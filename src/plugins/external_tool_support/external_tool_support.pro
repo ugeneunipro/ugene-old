@@ -2,6 +2,7 @@ include (external_tool_support.pri)
 
 # Input
 HEADERS += src/ETSProjectViewItemsContoller.h \
+           src/ExternalToolManager.h \
            src/ExternalToolSupportL10N.h \
            src/ExternalToolSupportPlugin.h \
            src/ExternalToolSupportSettings.h \
@@ -28,12 +29,14 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/blast_plus/RPSBlastSupportTask.h \
            src/blast_plus/TBlastNPlusSupportTask.h \
            src/blast_plus/TBlastXPlusSupportTask.h \
+           src/bowtie/bowtie_tests/bowtieTests.h \
            src/bowtie/BowtieSettingsWidget.h \
            src/bowtie/BowtieSupport.h \
            src/bowtie/BowtieTask.h \
            src/bowtie2/Bowtie2Support.h \
            src/bowtie2/Bowtie2Task.h \
            src/bowtie2/Bowtie2SettingsWidget.h \
+           src/bwa/bwa_tests/bwaTests.h \
            src/bwa/BwaSettingsWidget.h \
            src/bwa/BwaSupport.h \
            src/bwa/BwaTask.h \
@@ -89,6 +92,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/peak2gene/Peak2GeneWorker.h \
            src/perl/PerlSupport.h \
            src/python/PythonSupport.h \
+           src/R/RSupport.h \
            src/samtools/BcfToolsSupport.h \
            src/samtools/SamToolsExtToolSupport.h \
            src/samtools/TabixSupportTask.h \
@@ -109,19 +113,16 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/tophat/TopHatWorker.h \
            src/utils/BlastRunCommonDialog.h \
            src/utils/BlastTaskSettings.h \
+           src/utils/CistromeDelegate.h \
            src/utils/ExportTasks.h \
+           src/utils/ExternalToolSearchTask.h \
            src/utils/ExternalToolSupportAction.h \
            src/utils/ExternalToolValidateTask.h \
+           src/utils/ExternalToolUtils.h \
            src/vcftools/VcfConsensusWorker.h \
            src/vcftools/VcfConsensusSupport.h \
            src/vcftools/VcfConsensusSupportTask.h \
-           src/vcfutils/VcfutilsSupport.h \
-           src/bowtie/bowtie_tests/bowtieTests.h \
-           src/bwa/bwa_tests/bwaTests.h \
-    src/R/RSupport.h \
-    src/ExternalToolManager.h \
-    src/utils/CistromeDelegate.h \
-    src/utils/ExternalToolSearchTask.h
+           src/vcfutils/VcfutilsSupport.h
 FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/BlastDBCmdDialog.ui \
          src/ui/BowtieBuildSettings.ui \
@@ -140,6 +141,7 @@ FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/SelectPathDialog.ui \
          src/ui/TCoffeeSupportRunDialog.ui
 SOURCES += src/ETSProjectViewItemsContoller.cpp \
+           src/ExternalToolManager.cpp \
            src/ExternalToolSupportPlugin.cpp \
            src/ExternalToolSupportSettings.cpp \
            src/ExternalToolSupportSettingsController.cpp \
@@ -165,12 +167,14 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/blast_plus/RPSBlastSupportTask.cpp \
            src/blast_plus/TBlastNPlusSupportTask.cpp \
            src/blast_plus/TBlastXPlusSupportTask.cpp \
+           src/bowtie/bowtie_tests/bowtieTests.cpp \
            src/bowtie/BowtieSettingsWidget.cpp \
            src/bowtie/BowtieSupport.cpp \
            src/bowtie/BowtieTask.cpp \
            src/bowtie2/Bowtie2Support.cpp \
            src/bowtie2/Bowtie2Task.cpp \
            src/bowtie2/Bowtie2SettingsWidget.cpp \
+           src/bwa/bwa_tests/bwaTests.cpp \
            src/bwa/BwaSettingsWidget.cpp \
            src/bwa/BwaSupport.cpp \
            src/bwa/BwaTask.cpp \
@@ -226,6 +230,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/peak2gene/Peak2GeneWorker.cpp \
            src/perl/PerlSupport.cpp \
            src/python/PythonSupport.cpp \
+           src/R/RSupport.cpp \
            src/samtools/BcfToolsSupport.cpp \
            src/samtools/SamToolsExtToolSupport.cpp \
            src/samtools/TabixSupportTask.cpp \
@@ -246,19 +251,16 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/tophat/TopHatWorker.cpp \
            src/utils/BlastRunCommonDialog.cpp \
            src/utils/BlastTaskSettings.cpp \
+           src/utils/CistromeDelegate.cpp \
            src/utils/ExportTasks.cpp \
+           src/utils/ExternalToolSearchTask.cpp \
            src/utils/ExternalToolSupportAction.cpp \
+           src/utils/ExternalToolUtils.cpp \
            src/utils/ExternalToolValidateTask.cpp \
            src/vcftools/VcfConsensusWorker.cpp \
            src/vcftools/VcfConsensusSupport.cpp \
            src/vcftools/VcfConsensusSupportTask.cpp \
-           src/vcfutils/VcfutilsSupport.cpp \
-           src/bowtie/bowtie_tests/bowtieTests.cpp \
-           src/bwa/bwa_tests/bwaTests.cpp \
-    src/R/RSupport.cpp \
-    src/ExternalToolManager.cpp \
-    src/utils/CistromeDelegate.cpp \
-    src/utils/ExternalToolSearchTask.cpp
+           src/vcfutils/VcfutilsSupport.cpp
 RESOURCES += external_tool_support.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \

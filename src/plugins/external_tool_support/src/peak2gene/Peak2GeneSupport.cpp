@@ -20,11 +20,10 @@
  */
 
 #include "Peak2GeneSupport.h"
-
-#include <python/PythonSupport.h>
+#include "python/PythonSupport.h"
+#include "utils/ExternalToolUtils.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/DataPathRegistry.h>
 #include <U2Core/Settings.h>
 
 namespace U2 {
@@ -55,30 +54,9 @@ void Peak2GeneSupport::initialize() {
 
     versionRegExp=QRegExp(executableFileName + "v\\d+\\.\\d+");
 
-    U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
-    if (dpr) {
-        QString refGenePath = AppContext::getSettings()->getValue(CISTROME_DATA_DIR).toString() + "/" + REFGENE_DIR_NAME;
-        U2DataPath* dp = new U2DataPath(REF_GENES_DATA_NAME, refGenePath);
-        if (!dp->isValid()) {
-            delete dp;
-            dp = new U2DataPath(REF_GENES_DATA_NAME, QString(PATH_PREFIX_DATA) + QString(":") + "cistrome/" + REFGENE_DIR_NAME);
-        }
-
-        if (!dpr->registerEntry(dp)) {
-            delete dp;
-        }
-
-        QString translationsPath = AppContext::getSettings()->getValue(CISTROME_DATA_DIR).toString() + "/" + TRANSLATIONS_DIR_NAME;
-        U2DataPath* dp1 = new U2DataPath(ENTREZ_TRANSLATION_DATA_NAME, translationsPath);
-        if (!dp1->isValid()) {
-            delete dp1;
-            dp1 = new U2DataPath(ENTREZ_TRANSLATION_DATA_NAME, QString(PATH_PREFIX_DATA) + QString(":") + "cistrome/" + TRANSLATIONS_DIR_NAME);
-        }
-
-        if (!dpr->registerEntry(dp1)) {
-            delete dp1;
-        }
-    }
+    ExternalToolUtils::addDefaultCistromeDirToSettings();
+    ExternalToolUtils::addCistromeDataPath(REF_GENES_DATA_NAME, REFGENE_DIR_NAME);
+    ExternalToolUtils::addCistromeDataPath(ENTREZ_TRANSLATION_DATA_NAME, TRANSLATIONS_DIR_NAME);
 
     muted = true;
 }

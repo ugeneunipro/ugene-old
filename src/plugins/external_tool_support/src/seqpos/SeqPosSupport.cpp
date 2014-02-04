@@ -20,12 +20,11 @@
  */
 
 #include "SeqPosSupport.h"
-
-#include <python/PythonSupport.h>
-#include <R/RSupport.h>
+#include "python/PythonSupport.h"
+#include "R/RSupport.h"
+#include "utils/ExternalToolUtils.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/DataPathRegistry.h>
 #include <U2Core/Settings.h>
 
 namespace U2 {
@@ -60,22 +59,8 @@ void SeqPosSupport::initialize() {
 
     versionRegExp=QRegExp("Version \\d+\\.\\d+");
 
-    U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
-    if (dpr) {
-        QString assemblyPath = AppContext::getSettings()->getValue(CISTROME_DATA_DIR).toString() + "/" + ASSEMBLY_DIR_NAME;
-        U2DataPath* dp = new U2DataPath(ASSEMBLY_DIR, assemblyPath);
-        if (!dp->isValid()) {
-            delete dp;
-            dp = new U2DataPath(ASSEMBLY_DIR, QString(PATH_PREFIX_DATA) + QString(":") + "cistrome/" + ASSEMBLY_DIR_NAME, true);
-        }
-
-        if (!dpr->registerEntry(dp)) {
-            delete dp;
-        }
-    }
-
-//    errorDescriptions.insert("CRITICAL: numpy 1.3 or greater must be installed", SeqPosSupport::tr("Please, install numpy 1.3 or greater for your Python to run SeqPos"));
-//    errorDescriptions.insert("CRITICAL: DJANGO 1.1.1 or greater must be installed", SeqPosSupport::tr("Please, install DJANGO 1.1.1 or greater for your Python to run SeqPos"));
+    ExternalToolUtils::addDefaultCistromeDirToSettings();
+    ExternalToolUtils::addCistromeDataPath(ASSEMBLY_DIR, ASSEMBLY_DIR_NAME, true);
 
     muted = true;
 }

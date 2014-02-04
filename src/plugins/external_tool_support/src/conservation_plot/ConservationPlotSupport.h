@@ -27,7 +27,6 @@
 namespace U2 {
 
 #define ET_CONSERVATION_PLOT "conservation_plot"
-#define CISTROME_DATA_DIR "CISTROME_DATA_DIR"
 #define CONSERVATION_DIR_NAME "phastCons"
 #define CONSERVATION_DATA_NAME "conservation_data"
 
