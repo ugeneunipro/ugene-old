@@ -127,8 +127,8 @@ QList<Task*> OpenProjectTask::onSubTaskFinished(Task* subTask) {
 
 //////////////////////////////////////////////////////////////////////////
 /// Save project
-SaveProjectTask::SaveProjectTask(SaveProjectTaskKind _k, Project* p, const QString& _url) 
-    : Task(tr("save_project_task_name"), TaskFlag_NoRun), k(_k), proj(p), url(_url)
+SaveProjectTask::SaveProjectTask(SaveProjectTaskKind _k, Project* p, const QString& _url, bool silentSave_) 
+    : Task(tr("save_project_task_name"), TaskFlag_NoRun), k(_k), proj(p), url(_url), silentSave(silentSave_)
 {
 }
 
@@ -149,14 +149,19 @@ void SaveProjectTask::prepare() {
         int savedSaveProjectState = AppContext::getAppSettings()->getUserAppsSettings()->getAskToSaveProject();
 
         QWidget* mainWindow = AppContext::getMainWindow()->getQMainWindow();
-        int code = savedSaveProjectState;
-        if (QDialogButtonBox::NoButton == savedSaveProjectState) {
-            // QMessageBox::NoButton is a special invalid button state, represents that no saved choise was made
-            SaveProjectDialogController saveProjectDialog(mainWindow);
-            code = saveProjectDialog.exec();
+        int code;
+        if(silentSave == true){
+            code = QDialogButtonBox::Yes;
+        }else{
+            code = savedSaveProjectState;
+            if (QDialogButtonBox::NoButton == savedSaveProjectState) {
+                // QMessageBox::NoButton is a special invalid button state, represents that no saved choise was made
+                SaveProjectDialogController saveProjectDialog(mainWindow);
+                code = saveProjectDialog.exec();
 
-            if (QDialogButtonBox::Cancel != code && true == saveProjectDialog.dontAskCheckBox->isChecked()) {
-                AppContext::getAppSettings()->getUserAppsSettings()->setAskToSaveProject(code);
+                if (QDialogButtonBox::Cancel != code && true == saveProjectDialog.dontAskCheckBox->isChecked()) {
+                    AppContext::getAppSettings()->getUserAppsSettings()->setAskToSaveProject(code);
+                }
             }
         }
 
@@ -338,7 +343,7 @@ Task(tr("Export project task"), TaskFlags_NR_FOSCOE), compress(_compress), desti
 void ExportProjectTask::prepare(){
     Project *pr = AppContext::getProject();
     if (pr->isItemModified()) {
-        addSubTask(new SaveProjectTask(SaveProjectTaskKind_SaveProjectAndDocuments, pr));
+        addSubTask(new SaveProjectTask(SaveProjectTaskKind_SaveProjectAndDocuments, pr, QString::null, true));
     }
 }
 

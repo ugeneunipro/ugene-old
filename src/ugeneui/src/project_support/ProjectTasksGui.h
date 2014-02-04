@@ -85,7 +85,7 @@ class SaveProjectTask : public Task {
     Q_OBJECT
 
 public:
-    SaveProjectTask(SaveProjectTaskKind k, Project* p = NULL, const QString& url = QString::null);
+    SaveProjectTask(SaveProjectTaskKind k, Project* p = NULL, const QString& url = QString::null, bool silentSave_ = false);
     ~SaveProjectTask();
 
     virtual void prepare();
@@ -95,6 +95,7 @@ private:
     SaveProjectTaskKind k;
     Project* proj;
     QString url;
+    bool silentSave;
 };
 
 class SaveOnlyProjectTask : public Task {
