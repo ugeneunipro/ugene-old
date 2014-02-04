@@ -158,6 +158,7 @@ private:
 };
 
 class CAP3LogParser : public ExternalToolLogParser {
+    // TODO: Implement it (UGENE-2725)
 public:
     CAP3LogParser();
     int getProgress();

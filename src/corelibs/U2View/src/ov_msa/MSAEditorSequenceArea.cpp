@@ -1121,11 +1121,20 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
     if (!hasFocus()) {
         return;
     }
+
     int key = e->key();
     bool shift = e->modifiers().testFlag(Qt::ShiftModifier);
     const bool ctrl = e->modifiers( ).testFlag( Qt::ControlModifier );
+#ifdef Q_OS_MAC
+    // In one case it is better to use a Command key as modifier,
+    // in another - a Control key. genuineCtrl - Control key on Mac OS X.
+    const bool genuineCtrl = e->modifiers( ).testFlag( Qt::MetaModifier );
+#else
+    const bool genuineCtrl = ctrl;
+#endif
     static QPoint selectionStart(0, 0);
     static QPoint selectionEnd(0, 0);
+
     if (ctrl && (key == Qt::Key_Left || key == Qt::Key_Right || key == Qt::Key_Up || key == Qt::Key_Down)) {
         //remap to page_up/page_down
         shift = key == Qt::Key_Up || key == Qt::Key_Down;
@@ -1302,11 +1311,12 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
             }
             break;
         case Qt::Key_Backspace:
-            removeGapsPrecedingSelection( ctrl ? 1 : -1 );
+            removeGapsPrecedingSelection( genuineCtrl ? 1 : -1 );
             break;
         case Qt::Key_Insert:
         case Qt::Key_Space:
-            insertGapsBeforeSelection( ctrl ? 1 : -1 );
+            // We can't use Command+Space on Mac OS X - it is reserved
+            insertGapsBeforeSelection( genuineCtrl ? 1 : -1 );
             break;
         case Qt::Key_Shift:
             if (!selection.isNull()) {
