@@ -4399,6 +4399,31 @@ GUI_TEST_CLASS_DEFINITION( test_2519 ) {
     GTGlobals::sleep(5000);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2542 ) {
+    // 1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    // 2. Lock the document
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__edit_menu"
+        << "action_document_lock"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI.aln"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // 3. Do pairwise alignment with any sequences.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(1, 1));
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_PAIRALIGN"));
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Output settings"));
+
+    QCheckBox *check = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "inNewWindowCheckBox"));
+    CHECK_SET_ERR(check != NULL, "inNewWindowCheckBox not found!");
+    GTCheckBox::setChecked(os, check, false);
+
+    // State:
+    // Align button not active if file locked for writing (user locking or format didn't support writing) and selected aligning in current file option
+    QWidget *alignButton = GTWidget::findWidget(os, "alignButton");
+    CHECK_SET_ERR(!alignButton->isEnabled(), "Align button is enabled");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2543 ) {
     //1. Open "samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );

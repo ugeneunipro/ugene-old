@@ -108,6 +108,7 @@ ArrowHeaderWidget::ArrowHeaderWidget(QString caption, bool _isOpened)
     arrowHeaderLayout->setAlignment(Qt::AlignTop);
 
     arrow = new QLabel();
+    arrow->setObjectName("ArrowHeader_" + caption);
     if (isOpened) {
         arrow->setPixmap(QPixmap(":core/images/arrow_down.png"));
     } else {
