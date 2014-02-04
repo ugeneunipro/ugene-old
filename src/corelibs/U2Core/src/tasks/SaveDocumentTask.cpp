@@ -34,8 +34,6 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GUrlUtils.h>
 
-#include <U2Gui/MainWindow.h>
-
 #include <QtGui/QMessageBox>
 #include <QtGui/QApplication>
 #include <QtGui/QFileDialog>
@@ -248,7 +246,7 @@ GUrl SaveMultipleDocuments::chooseAnotherUrl(Document* doc) {
     GUrl url;
     do {
         QMessageBox msgBox;
-        msgBox.setParent(dynamic_cast<QWidget *>(AppContext::getMainWindow()));
+        msgBox.setParent(dynamic_cast<QWidget *>(QApplication::activeWindow()));
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.setWindowTitle(U2_APP_TITLE);
 
@@ -263,7 +261,7 @@ GUrl SaveMultipleDocuments::chooseAnotherUrl(Document* doc) {
         if (msgBox.clickedButton() == saveButton) {
             QString newFileUrl = GUrlUtils::rollFileName(doc->getURLString(), "_modified_", DocumentUtils::getNewDocFileNameExcludesHint( ) );
             QString saveFileFilter = doc->getDocumentFormat()->getSupportedDocumentFileExtensions().join(" *.").prepend("*.");
-            QFileDialog fileDialog(dynamic_cast<QWidget*>(AppContext::getMainWindow()),
+            QFileDialog fileDialog(dynamic_cast<QWidget*>(QApplication::activeWindow()),
                                    tr("Save as"), newFileUrl, saveFileFilter);
             fileDialog.setAcceptMode(QFileDialog::AcceptSave);
 
