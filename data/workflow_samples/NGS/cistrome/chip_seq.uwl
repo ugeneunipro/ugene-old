@@ -98,28 +98,34 @@ workflow "ChIP-seq analysis"{
         }
         parameter-aliases {
             read-annotations.url-in {
-                alias:in;
-            }
-            macs-id.output-dir {
-                alias:macs_out;
+                alias: in;
             }
             macs-id.tag-size {
-                alias:tag_size;
+                alias: tag_size;
+            }
+            macs-id.output-dir {
+                alias: out_macs;
             }
             ceas-report.anns-file {
-                alias:ceas_annotation_out;
+                alias: out_ceas_ann;
             }
             ceas-report.image-file {
-                alias:ceas_report;
+                alias: out_ceas_report;
             }
             conservation_plot-id.output-file {
-                alias:plot_out;
+                alias: out_plot;
             }
             seqpos-id.output-dir {
-                alias:seqpos_out;
+                alias: out_seqpos;
             }
             conduct-go-id.output-dir {
-                alias:GO_out;
+                alias: out_conduct_go;
+            }
+            write-annotations.url-out {
+                alias:out_peak2gene_genes;
+            }
+            write-annotations-1.url-out {
+                alias:out_peak2gene_peaks;
             }
         }
         visual {
