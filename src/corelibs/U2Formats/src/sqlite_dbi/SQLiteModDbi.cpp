@@ -403,7 +403,7 @@ void SQLiteModDbi::endCommonUserModStep(const U2DataId &userMasterObjId, U2OpSta
     SAFE_POINT(modStepsByObject.contains(userMasterObjId), QString("There are not modification steps for object with id %1").arg(userMasterObjId.toLong()),);
 
     qint64 userModStepId = modStepsByObject[userMasterObjId].userModStepId;
-    qint64 multiModStepId = modStepsByObject[userMasterObjId].userModStepId;
+    qint64 multiModStepId = modStepsByObject[userMasterObjId].multiModStepId;
 
     modStepsByObject.remove(userMasterObjId);
 
