@@ -1469,7 +1469,7 @@ GUI_TEST_CLASS_DEFINITION( test_1859 ) {
     GTWidget::click( os,GTAction::button( os,"Run workflow" ) );
     GTGlobals::sleep( );
 
-    GTUtilsLog::check( os, lt );
+    CHECK_SET_ERR(lt.hasError(), "no error in log");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1860) {
@@ -1706,7 +1706,7 @@ GUI_TEST_CLASS_DEFINITION( test_1921 )
 
 GUI_TEST_CLASS_DEFINITION( test_2006 )
 {
-    const int MSA_WIDTH = 50;
+    const int MSA_WIDTH = 30;
     const int MSA_HEIGHT = 3;
 
     // 1. Open "data/samples/CLUSTAL/COI.aln" and save it's part to a string
@@ -4323,7 +4323,7 @@ GUI_TEST_CLASS_DEFINITION( test_2487 ) {
     // 3. Call context menu.
     // 'Reroot tree' and 'Collapse ' options must be disabled
 
-    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.nwk");
+    GTFileDialog::openFile(os, dataDir + "samples/Newick/", "COI.nwk");
 
     QList<QGraphicsItem*> items = GTUtilsPhyTree::getNodes(os);
     CHECK_SET_ERR(items.size() != 0, "Tree is empty");
