@@ -37,7 +37,6 @@
 
 #include "GTTestsWorkflowParemeterValidation.h"
 
-//extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 namespace U2 {
 
 namespace GUITest_common_scenarios_workflow_parameters_validation {
@@ -204,7 +203,7 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
     //Expected state: The "File not found" error has appeared in the "Error list"
     GTUtilsWorkflowDesigner::checkErrorList( os, "File not found" );
 }
-//TODO: do not use qt_ntfs_permission_lookup here.I'm serious.
+
 GUI_TEST_CLASS_DEFINITION(test_0005){
     GTLogTracer l;
     QDir d(testDir + "_common_data/scenarios/sandbox/permDir");
@@ -258,7 +257,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     CHECK_SET_ERR(res, "Not good test");
     int i = GTUtilsWorkflowDesigner::checkErrorList(os, "Can't access output file path:");
     CHECK_SET_ERR(i==1, "There are no error messages about write access in WD directory");
-    }
+}
 
 
 GUI_TEST_CLASS_DEFINITION( test_0006 ) {

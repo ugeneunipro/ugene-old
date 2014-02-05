@@ -37,7 +37,7 @@ public:
 
 private:
     bool setRecursive(const QString& path, QFile::Permissions perm);
-    bool setOnce(const QString& path, QFile::Permissions perm);
+    bool setOnce(const QString& path, QFile::Permissions perm, bool savePreviousState = true);
 
     QMap<QString, QFile::Permissions> previousState;
 };

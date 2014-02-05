@@ -4439,15 +4439,17 @@ GUI_TEST_CLASS_DEFINITION( test_2543 ) {
         | QFile::WriteOther;
     bool res = permSetter.setPermissions( outputFilePath, ~p );
     CHECK_SET_ERR( res, "Can't set permissions" );
+    GTGlobals::sleep( 2000 );
 
-    GTUtilsDialog::waitForDialog( os, new BuildTreeDialogFiller( os, outputFilePath + "/test.nwk", 0, 0, true ) );
+    GTUtilsDialog::waitForDialog( os, new BuildTreeDialogFiller( os, outputFilePath + "/test.nwk",
+        0, 0, true ) );
     GTUtilsDialog::waitForDialogWhichMayRunOrNot( os, new LicenseAgreemntDialogFiller( os ) );
-    QAbstractButton *tree= GTAction::button( os, "Build Tree" );
-    GTWidget::click( os, tree );
-    GTGlobals::sleep( 500 );
-
     //Expected state: UGENE does not allow to create tree, the message dialog appears
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller( os, QMessageBox::Ok ) );
+
+    QAbstractButton *tree= GTAction::button( os, "Build Tree" );
+    GTWidget::click( os, tree );
+    GTGlobals::sleep( 2000 );
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2565 ) {

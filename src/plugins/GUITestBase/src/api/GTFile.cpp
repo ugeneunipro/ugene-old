@@ -24,6 +24,102 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 
+#ifdef Q_OS_WIN
+
+// Microsoft's example of how to change file system permissions is used below.
+// See http://msdn.microsoft.com/en-us/library/windows/desktop/aa379283%28v=vs.85%29.aspx for details.
+
+#include <Aclapi.h>
+
+DWORD AddAceToObjectsSecurityDescriptor (
+    LPTSTR pszObjName,          // name of object
+    SE_OBJECT_TYPE ObjectType,  // type of object
+    LPTSTR pszTrustee,          // trustee for new ACE
+    TRUSTEE_FORM TrusteeForm,   // format of trustee structure
+    DWORD dwAccessRights,       // access mask for new ACE
+    ACCESS_MODE AccessMode,     // type of ACE
+    DWORD dwInheritance         // inheritance flags for new ACE
+    )
+{
+    DWORD dwRes = 0;
+    PACL pOldDACL = NULL;
+    PACL pNewDACL = NULL;
+    PSECURITY_DESCRIPTOR pSD = NULL;
+    EXPLICIT_ACCESS ea;
+
+    if ( NULL == pszObjName ) {
+        return ERROR_INVALID_PARAMETER;
+    }
+
+    // Get a pointer to the existing DACL.
+
+    dwRes = GetNamedSecurityInfo( pszObjName, ObjectType, DACL_SECURITY_INFORMATION, NULL, NULL,
+        &pOldDACL, NULL, &pSD );
+    if ( ERROR_SUCCESS != dwRes ) {
+        printf( "GetNamedSecurityInfo Error %u\n", dwRes );
+        goto Cleanup;
+    }
+
+    // Initialize an EXPLICIT_ACCESS structure for the new ACE. 
+
+    ZeroMemory( &ea, sizeof( EXPLICIT_ACCESS ) );
+    ea.grfAccessPermissions = dwAccessRights;
+    ea.grfAccessMode = AccessMode;
+    ea.grfInheritance= dwInheritance;
+    ea.Trustee.TrusteeForm = TrusteeForm;
+    ea.Trustee.ptstrName = pszTrustee;
+
+    // Create a new ACL that merges the new ACE
+    // into the existing DACL.
+
+    dwRes = SetEntriesInAcl( 1, &ea, pOldDACL, &pNewDACL );
+    if ( ERROR_SUCCESS != dwRes ) {
+        printf( "SetEntriesInAcl Error %u\n", dwRes );
+        goto Cleanup;
+    }
+
+    // Attach the new ACL as the object's DACL.
+
+    dwRes = SetNamedSecurityInfo( pszObjName, ObjectType, DACL_SECURITY_INFORMATION, NULL, NULL,
+        pNewDACL, NULL );
+    if ( ERROR_SUCCESS != dwRes ) {
+        printf( "SetNamedSecurityInfo Error %u\n", dwRes );
+        goto Cleanup;
+    }
+
+Cleanup:
+
+    if ( pSD != NULL ) {
+        LocalFree( static_cast<HLOCAL>( pSD ) );
+    }
+    if (pNewDACL != NULL) {
+        LocalFree( static_cast<HLOCAL>( pNewDACL ) );
+    }
+
+    return dwRes;
+}
+
+static void qt2WinPermissions( QFile::Permissions p, DWORD &allowedPermissions, DWORD &deniedPermissions )
+{
+    if ( 0 != ( p & ( QFile::ReadOwner | QFile::ReadUser | QFile::ReadOther | QFile::ReadGroup ) ) ) {
+        allowedPermissions |= FILE_GENERIC_READ;
+    } else {
+        deniedPermissions |= FILE_GENERIC_READ;
+    }
+    if ( 0 != ( p & ( QFile::WriteOwner | QFile::WriteUser | QFile::WriteOther | QFile::WriteGroup ) ) ) {
+        allowedPermissions |= FILE_GENERIC_WRITE;
+    } else {
+        deniedPermissions |= FILE_GENERIC_WRITE;
+    }
+    if ( 0 != ( p & ( QFile::ExeOwner | QFile::ExeUser | QFile::ExeOther | QFile::ExeGroup ) ) ) {
+        allowedPermissions |= FILE_GENERIC_EXECUTE;
+    } else {
+        deniedPermissions |= FILE_GENERIC_EXECUTE;
+    }
+}
+
+#endif
+
 namespace U2 {
 
 PermissionsSetter::PermissionsSetter() {
@@ -35,7 +131,7 @@ PermissionsSetter::~PermissionsSetter() {
         QFile::Permissions p = file.permissions();
 
         p = previousState.value(path, p);
-        file.setPermissions(p);
+        setOnce( path, p, false );
     }
 }
 
@@ -65,17 +161,45 @@ bool PermissionsSetter::setRecursive(const QString& path, QFile::Permissions per
     return res;
 }
 
-bool PermissionsSetter::setOnce(const QString& path, QFile::Permissions perm) {
-    QFileInfo fileInfo(path);
-    CHECK(fileInfo.exists(), false);
-    CHECK(!fileInfo.isSymLink(), false);
+bool PermissionsSetter::setOnce( const QString &path, QFile::Permissions perm, bool savePreviousState ) {
+    QFileInfo fileInfo( path );
+    CHECK( fileInfo.exists( ), false );
+    CHECK( !fileInfo.isSymLink( ), false );
 
-    QFile file(path);
-    QFile::Permissions p = file.permissions();
-    previousState.insert(path, p);
-
+    QFile file( path );
+    QFile::Permissions p = file.permissions( );
+    if ( savePreviousState ) {
+        previousState.insert( path, p );
+    }
     p &= perm;
-    return file.setPermissions(p);
+
+#ifdef Q_OS_WIN
+    if ( fileInfo.isRelative( ) && !fileInfo.makeAbsolute( ) ) {
+        return false;
+    }
+    const QString windowsPath = QDir::toNativeSeparators( fileInfo.filePath( ) );
+
+    const int pathLength = windowsPath.size( );
+    QScopedArrayPointer<wchar_t> pathString( new wchar_t[pathLength + 1] );
+
+    windowsPath.toWCharArray( pathString.data( ) );
+    pathString[pathLength] = '\0';
+
+    DWORD allowed = 0;
+    DWORD denied = 0;
+    qt2WinPermissions( p, allowed, denied );
+
+    DWORD dwRes = AddAceToObjectsSecurityDescriptor( pathString.data( ), SE_FILE_OBJECT, L"CURRENT_USER",
+        TRUSTEE_IS_NAME, allowed, GRANT_ACCESS, NO_INHERITANCE );
+    if ( ERROR_SUCCESS == dwRes ) {
+        dwRes = AddAceToObjectsSecurityDescriptor( pathString.data( ), SE_FILE_OBJECT, L"CURRENT_USER",
+            TRUSTEE_IS_NAME, denied, DENY_ACCESS, NO_INHERITANCE );
+    }
+
+    return ERROR_SUCCESS == dwRes;
+#else
+    return file.setPermissions( p );
+#endif
 }
 
 #define GT_CLASS_NAME "GTFile"
