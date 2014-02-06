@@ -259,7 +259,7 @@ QString EventFilter::setValuesWhenFocusGone(QWidget *w){
         if(name == "qt_scrollarea_viewport"){
             return "";
         }
-        result.append(QString("QSpinBox* combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, \"%1\"));\n").arg(combo->objectName()));
+        result.append(QString("QComboBox* combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, \"%1\"));\n").arg(combo->objectName()));
         result.append(QString("CHECK_SET_ERR(combo != NULL, \"%1 not found!\");\n").arg(combo->objectName()));
         result.append(QString("GTComboBox::setIndexWithText(os, combo , \"%1\");\n\n").arg(combo->currentText()));
         focusWidget = NULL;
@@ -338,8 +338,8 @@ QString EventFilter::toolButtonCode(QToolButton *toolButton) const{
         result.append(QString("GTWidget::click(os, GTWidget::findWidget(os, \"%1\"))\n").arg(toolButton->objectName()));
     }else {
         CHECK(toolButton->defaultAction() != NULL, "")
-        result.append(QString("QAdstractButton* button = GTAction::button(os, \"%1\")\n").arg(toolButton->defaultAction()->objectName()));
-        result.append(QString("GTWidget::click(os, button))\n\n"));
+        result.append(QString("QAbstractButton* button = GTAction::button(os, \"%1\");\n").arg(toolButton->defaultAction()->objectName()));
+        result.append(QString("GTWidget::click(os, button));\n\n"));
 
         if(toolButton->defaultAction()->menu() != NULL){
             result.append(QString("GTGlobals::sleep(200)"));
@@ -446,7 +446,7 @@ QString EventFilter::generateFillerSource() const{
 
 QString EventFilter::generateParametersConstructorCode(){
     QString result;
-    QList<QWidget*> list= QApplication::activeModalWidget()->findChildren<QWidget*>();
+    QList<QWidget*> list = QApplication::activeModalWidget()->findChildren<QWidget*>();
 
     foreach(QWidget* child, list){
         if(child->objectName() == "" || child->objectName() == "qt_spinbox_lineedit"){
