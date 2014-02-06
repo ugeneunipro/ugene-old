@@ -54,7 +54,10 @@ HEADERS += src/uHMM3Plugin.h \
            src/hmmer3/easel/esl_tree.h \
            src/hmmer3/easel/esl_vectorops.h \
            src/hmmer3/easel/esl_wuss.h \
-           src/hmmer3/impl_sse/impl_sse.h
+           src/hmmer3/impl_sse/impl_sse.h \
+           src/workers/HMM3IOWorker.h \
+           src/workers/HMM3BuildWorker.h \
+           src/workers/HMM3SearchWorker.h
 FORMS += src/build/ui/UHMM3BuildDialog.ui \
          src/phmmer/ui/UHMM3PhmmerDialog.ui \
          src/search/ui/UHMM3SearchDialog.ui
@@ -139,6 +142,9 @@ SOURCES += src/uHMM3Plugin.cpp \
            src/hmmer3/impl_sse/p7_omx.cpp \
            src/hmmer3/impl_sse/p7_oprofile.cpp \
            src/hmmer3/impl_sse/stotrace.cpp \
-           src/hmmer3/impl_sse/vitfilter.cpp
+           src/hmmer3/impl_sse/vitfilter.cpp \
+           src/workers/HMM3IOWorker.cpp  \
+           src/workers/HMM3BuildWorker.cpp \
+           src/workers/HMM3SearchWorker.cpp 
 RESOURCES += hmm3.qrc
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts

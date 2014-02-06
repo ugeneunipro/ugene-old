@@ -85,7 +85,7 @@ private:
     UHMM3BuildTaskSettings      settings;
     QString                     inFile;
     QList< MAlignment >         msas;
-    QList< P7_HMM* >            hmms;
+    QList<const P7_HMM* >            hmms;
     LoadDocumentTask*           loadTask;
     QList< UHMM3BuildTask* >    buildTasks;
     SaveDocumentTask*           saveHmmFileTask;

@@ -49,6 +49,8 @@
 #include <search/uHMM3SearchDialogImpl.h>
 #include <phmmer/uHMM3PhmmerDialogImpl.h>
 
+#include <workers/HMM3IOWorker.h>
+
 #include "uHMM3Plugin.h"
 
 Q_DECLARE_METATYPE(QMenu*);
@@ -70,6 +72,8 @@ UHMM3Plugin::UHMM3Plugin() : Plugin( tr( "hmm3_plugin_name" ), tr( "hmm3_plugin_
     assert( NULL != dfRegistry );
     bool ok = dfRegistry->registerFormat( new UHMMFormat( dfRegistry ) );
     assert( ok ); Q_UNUSED( ok );
+
+    LocalWorkflow::HMM3Lib::init();
 
     QDActorPrototypeRegistry* qdpr = AppContext::getQDActorProtoRegistry();
     qdpr->registerProto(new UHMM3QDActorPrototype());

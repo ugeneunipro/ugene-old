@@ -24,8 +24,11 @@
 #include <U2Core/MAlignmentInfo.h>
 #include <U2Core/SMatrix.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/IOAdapterUtils.h>
 
 #include <gobject/uHMMObject.h>
+#include <format/uHMMFormat.h>
 #include "uhmm3Utilities.h"
 
 using namespace U2;
@@ -209,6 +212,33 @@ QList<const P7_HMM *> UHMM3Utilities::getHmmsFromDocument( Document* doc, TaskSt
         ti.setError( "no_hmm_found_in_file" );
     }
     return res;
+}
+
+QList< GObject* > UHMM3Utilities::getDocObjects( const QList< const P7_HMM* >& hmms ){
+    QList< GObject* > res;
+    foreach(const  P7_HMM* hmm, hmms ) {
+        res.append( new UHMMObject( const_cast<P7_HMM*>(hmm), QString( hmm->name ) ) );
+    }
+    return res;
+}
+
+Document * UHMM3Utilities::getSavingDocument( const QList<const  P7_HMM* >& hmms, const QString & outfile ){
+    assert( !hmms.isEmpty() );
+    QList< GObject* > docObjects = getDocObjects( hmms );
+    UHMMFormat* hmmFrmt = qobject_cast< UHMMFormat* >
+        ( AppContext::getDocumentFormatRegistry()->getFormatById( UHMMFormat::UHHMER_FORMAT_ID ) );
+    assert( NULL != hmmFrmt );
+
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( outfile ) );
+    assert( NULL != iof );
+
+    U2OpStatus2Log os;
+    Document* doc = hmmFrmt->createNewLoadedDocument(iof, outfile, os, QVariantMap());
+    CHECK_OP(os, NULL);
+    foreach(GObject* obj, docObjects) {
+        doc->addObject(obj);
+    }
+    return doc;
 }
 
 } // U2

@@ -34,6 +34,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <gobject/uHMMObject.h>
+#include <util/uhmm3Utilities.h>
 
 #include "uhmm3build.h"
 #include "uHMM3BuildTask.h"
@@ -42,32 +43,6 @@
 
 using namespace U2;
 
-static QList< GObject* > getDocObjects( const QList< P7_HMM* >& hmms ) {
-    QList< GObject* > res;
-    foreach( P7_HMM* hmm, hmms ) {
-        res.append( new UHMMObject( hmm, QString( hmm->name ) ) );
-    }
-    return res;
-}
-
-static Document * getSavingDocument( const QList< P7_HMM* >& hmms, const QString & outfile ) {
-    assert( !hmms.isEmpty() );
-    QList< GObject* > docObjects = getDocObjects( hmms );
-    UHMMFormat* hmmFrmt = qobject_cast< UHMMFormat* >
-        ( AppContext::getDocumentFormatRegistry()->getFormatById( UHMMFormat::UHHMER_FORMAT_ID ) );
-    assert( NULL != hmmFrmt );
-    
-    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( outfile ) );
-    assert( NULL != iof );
-    
-    U2OpStatus2Log os;
-    Document* doc = hmmFrmt->createNewLoadedDocument(iof, outfile, os, QVariantMap());
-    CHECK_OP(os, NULL);
-    foreach(GObject* obj, docObjects) {
-        doc->addObject(obj);
-    }
-    return doc;
-}
 
 namespace U2 {
 
@@ -276,7 +251,7 @@ QList< Task* > UHMM3BuildToFileTask::onSubTaskFinished( Task* sub ) {
         
         if( buildTasks.isEmpty() ) { /* all build tasks had finished */
             assert( !hmms.isEmpty() );
-            savingDocument = getSavingDocument( hmms, settings.outFile );
+            savingDocument = UHMM3Utilities::getSavingDocument( hmms, settings.outFile );
             saveHmmFileTask = new SaveDocumentTask( savingDocument );    
             res << saveHmmFileTask;
         }
