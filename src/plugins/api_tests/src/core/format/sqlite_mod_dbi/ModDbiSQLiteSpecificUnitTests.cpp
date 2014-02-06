@@ -2813,8 +2813,6 @@ IMPLEMENT_MOD_TEST(ModDbiSQLiteSpecificUnitTests, userSteps_severalActUndoRedoAc
     CHECK_NO_ERROR(os);
     qint64 baseVersion1 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId1, os);
     CHECK_NO_ERROR(os);
-    qint64 baseVersion2 = sqliteDbi->getObjectDbi()->getObjectVersion(msaId2, os);
-    CHECK_NO_ERROR(os);
 
     for (int i = 0; i < 3; ++i) {
         // Create user step, msaId1 - master

@@ -208,18 +208,6 @@ static QToolButton * styleMenu(WorkflowView *parent, const QList<QAction*> &acti
     return tt;
 }
 
-static QToolButton * runMenu(WorkflowView *parent, const QList<QAction*> &runModeActions) {
-    QToolButton *runModeToolButton = new QToolButton(parent);
-    runModeToolButton->setObjectName("Run mode");
-    QMenu *runModeMenu = new QMenu( QObject::tr( "Run mode" ), parent );
-    foreach(QAction * a, runModeActions) {
-        runModeMenu->addAction( a );
-    }
-    runModeToolButton->setDefaultAction( runModeMenu->menuAction() );
-    runModeToolButton->setPopupMode( QToolButton::InstantPopup );
-    return runModeToolButton;
-}
-
 static QToolButton * scriptMenu(WorkflowView *parent, const QList<QAction*> &scriptingActions) {
     QToolButton *scriptingModeButton = new QToolButton(parent);
     QMenu *scriptingModeMenu = new QMenu( QObject::tr( "Scripting mode" ), parent );
@@ -1122,36 +1110,6 @@ void WorkflowView::sl_setStyle() {
         }
     }
     scene->update();
-}
-
-// FIXME: move to utils classes
-static void removeUrlLocationParameter( Actor * actor ) {
-    assert( NULL != actor );
-    Attribute * attr = actor->getParameter( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId() );
-    if( NULL != attr ) {
-        Attribute * removed = actor->removeParameter( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId() );
-        assert( attr == removed );
-        Q_UNUSED(removed);
-
-        delete attr;
-        delete actor->getEditor()->removeDelegate( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId() );
-    }
-}
-
-// FIXME: move to utils classes
-static void addUrlLocationParameter( Actor * actor ) {
-    assert( NULL != actor );
-    Attribute * urlAttr = actor->getParameter( BaseAttributes::URL_IN_ATTRIBUTE().getId() );
-    Attribute * urlLocationAttr = actor->getParameter( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId() );
-    if( NULL != urlAttr && NULL == urlLocationAttr && NULL != actor->getEditor() ) {
-        actor->addParameter( BaseAttributes::URL_LOCATION_ATTRIBUTE().getId(), 
-            new Attribute( BaseAttributes::URL_LOCATION_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true ) );
-        SchemaRunModeDelegate * runModeDelegate = new SchemaRunModeDelegate();
-        URLDelegate * urlDelegate = qobject_cast<URLDelegate*>
-            ( actor->getEditor()->getDelegate( BaseAttributes::URL_IN_ATTRIBUTE().getId() ) );
-        QObject::connect( runModeDelegate, SIGNAL( si_showOpenFileButton( bool ) ), urlDelegate, SLOT( sl_showEditorButton( bool ) ) );
-        actor->getEditor()->addDelegate( runModeDelegate, BaseAttributes::URL_LOCATION_ATTRIBUTE().getId() );
-    }
 }
 
 void WorkflowView::sl_changeScriptMode() {

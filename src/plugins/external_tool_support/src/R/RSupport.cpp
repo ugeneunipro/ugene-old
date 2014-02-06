@@ -99,7 +99,7 @@ RModuleSupport::RModuleSupport(const QString& name) : ExternalToolModule(name) {
 }
 
 QString RModuleSupport::getScript() const {
-    return QString("list <- installed.packages();list[grep('%1',list)];list['%1','Version'];");
+    return QString("list <- installed.packages();list[grep('%1',rownames(list))];list['%1','Version'];");
 }
 
 RModuleGostatsSupport::RModuleGostatsSupport(const QString &name) : RModuleSupport(name) {

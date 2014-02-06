@@ -55,6 +55,7 @@ QWidget* MSAHighlightingTab::createColorGroup(){
 
     QVBoxLayout * layout = initVBoxLayout(group);
     colorScheme = new QComboBox();
+    colorScheme->setObjectName("colorScheme");
     colorScheme->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
     
     layout->addSpacing(TITLE_SPACING);  
@@ -69,6 +70,7 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
 
     QVBoxLayout * layout = initVBoxLayout(group);
     highlightingScheme = new QComboBox();
+    highlightingScheme->setObjectName("highlightingScheme");
 
     hint = new QLabel("");
     hint->setWordWrap(true);
@@ -77,6 +79,7 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
 
     exportHighlightning = new QToolButton();
     exportHighlightning->setText(tr("Export"));
+    exportHighlightning->setObjectName("exportHighlightning");
     
     QWidget *buttonAndSpacer = new QWidget(this);
     QHBoxLayout * layout2 = initHBoxLayout(buttonAndSpacer);

@@ -4520,6 +4520,39 @@ GUI_TEST_CLASS_DEFINITION( test_2577 ) {
 
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2578 ) {
+//    1. Open {data/samples/CLUSTALW/COI.aln}.
+    GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
+
+//    2. Open options panel 'Highlighting' tab.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+
+//    3. Select 'agreements' highlighting scheme.
+    QComboBox* combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
+    CHECK_SET_ERR(combo != NULL, "highlightingScheme not found!");
+    GTComboBox::setIndexWithText(os, combo , "Agreements");
+
+    QWidget* exportButton = GTWidget::findWidget(os, "exportHighlightning");
+    CHECK_SET_ERR(NULL != exportButton, "exportButton not found");
+    CHECK_SET_ERR(!exportButton->isEnabled(), "exportButton is enabled unexpectedly");
+
+//    4. Select any reference sequence.
+//    Expected state: the "Export" button is active.
+    GTWidget::click(os, GTWidget::findWidget(os, "sequenceLineEdit"));
+    GTKeyboardDriver::keySequence(os, "Montana_montana");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    CHECK_SET_ERR(exportButton->isEnabled(), "exportButton is disabled unexpectedly");
+
+//    5. Select 'General' tab, then select 'Highlighting' tab again.
+//    Expected state: the "Export" button is active.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_GENERAL"));
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+
+    exportButton = GTWidget::findWidget(os, "exportHighlightning");
+    CHECK_SET_ERR(NULL != exportButton, "exportButton not found");
+    CHECK_SET_ERR(exportButton->isEnabled(), "exportButton is disabled unexpectedly");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2605 ) {
     GTLogTracer logTracer;
     // 1. Open file _common_data/fasta/multy_fa.fa as multiple alignment
@@ -4535,6 +4568,7 @@ GUI_TEST_CLASS_DEFINITION( test_2605 ) {
     // Expected state: export successfull, no any messages in log like "There is no sequence objects in given file, unable to convert it in multiple alignment"
     CHECK_SET_ERR(!logTracer.hasError(), "Unexpected error");
 }
+
 GUI_TEST_CLASS_DEFINITION( test_2612 ) {
     // 1. Open sequence "samples/fasta/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
@@ -4550,6 +4584,24 @@ GUI_TEST_CLASS_DEFINITION( test_2612 ) {
     // Expected state: there is no annotation in sequence view.
     GTGlobals::sleep(100);
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", GTGlobals::FindOptions(false))==NULL, "Annotations document not deleted");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2667 ) {
+//    1. Open {/data/samples/genbank/murine.gb}.
+//    Expected state: a document was added, it contains two object: an annotation and a sequence
+    GTFileDialog::openFile(os, dataDir + "/samples/genbank/", "murine.gb");
+
+//    2. Select the annotation object in the project view.
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::click(os);
+
+//    3. Press "delete" key.
+//    Expected state: the annotation object is removed from the document.
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::FindOptions options;
+    options.failIfNull = false;
+    QTreeWidgetItem* annotationsItem = GTUtilsProjectTreeView::findItem(os, GTUtilsProjectTreeView::getTreeWidget(os), "NC_001363 features", options);
+    CHECK_SET_ERR(NULL == annotationsItem, "item was not deleted");
 }
 
 } // GUITest_regression_scenarios namespace
