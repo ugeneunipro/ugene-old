@@ -59,6 +59,13 @@ IMPLEMENT_TEST(UdrSchemaUnitTests, addField_RecordId) {
     CHECK_TRUE(os.hasError(), "record_id field");
 }
 
+IMPLEMENT_TEST(UdrSchemaUnitTests, addField_Object) {
+    U2OpStatusImpl os;
+    UdrSchema schema("id", U2Type::Unknown);
+    schema.addField(UdrSchema::FieldDesc(UdrSchema::OBJECT_FIELD_NAME, UdrSchema::INTEGER), os);
+    CHECK_TRUE(os.hasError(), "duplicate name");
+}
+
 IMPLEMENT_TEST(UdrSchemaUnitTests, addField_DuplicateName) {
     U2OpStatusImpl os;
     UdrSchema schema("id");
@@ -259,6 +266,13 @@ IMPLEMENT_TEST(UdrSchemaUnitTests, UdrValue_Double_getDouble) {
     CHECK_NO_ERROR(os);
 }
 
+IMPLEMENT_TEST(UdrSchemaUnitTests, UdrValue_String_getDataId) {
+    UdrValue v(QString("id"));
+    U2OpStatusImpl os;
+    v.getDataId(os);
+    CHECK_TRUE(os.hasError(), "no error");
+}
+
 IMPLEMENT_TEST(UdrSchemaUnitTests, isCorrectName_CorrectName) {
     CHECK_TRUE(UdrSchemaRegistry::isCorrectName("name_Of_the_id_is_Correct_0001"), "name is correct");
 }
@@ -275,11 +289,44 @@ IMPLEMENT_TEST(UdrSchemaUnitTests, isCorrectName_HasSpaces) {
     CHECK_FALSE(UdrSchemaRegistry::isCorrectName("name 1"), "has spaces");
 }
 
+IMPLEMENT_TEST(UdrSchemaUnitTests, registerSchema_DuplicateDatatype) {
+    U2OpStatusImpl os;
+
+    QScopedPointer<UdrSchema> schema1(new UdrSchema("registerSchema_DuplicateDatatype_1", 199));
+    AppContext::getUdrSchemaRegistry()->registerSchema(schema1.data(), os);
+    CHECK_NO_ERROR(os);
+    schema1.take();
+
+    UdrSchema schema2("registerSchema_DuplicateDatatype_2", 199);
+    AppContext::getUdrSchemaRegistry()->registerSchema(&schema2, os);
+    CHECK_TRUE(os.hasError(), "duplicate datatype");
+}
+
 IMPLEMENT_TEST(UdrSchemaUnitTests, registerSchema_IncorrectName) {
     UdrSchema schema("schema 1");
     U2OpStatusImpl os;
     AppContext::getUdrSchemaRegistry()->registerSchema(&schema, os);
     CHECK_TRUE(os.hasError(), "registered");
+}
+
+IMPLEMENT_TEST(UdrSchemaUnitTests, UdrSchema_ObjectReference) {
+    UdrSchema schema("id", U2Type::Sequence);
+    CHECK_TRUE(1 == schema.size(), "wrong size");
+    CHECK_TRUE(schema.hasObjectReference(), "object reference");
+
+    U2OpStatusImpl os;
+    UdrSchema::FieldDesc field = schema.getField(0, os);
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(UdrSchema::OBJECT_FIELD_NAME == field.getName(), "name");
+    CHECK_TRUE(UdrSchema::ID == field.getDataType(), "dataType");
+    CHECK_TRUE(UdrSchema::INDEXED == field.getIndexType(), "indexType");
+    CHECK_TRUE(U2Type::Sequence == field.getObjectType(), "objectType");
+}
+
+IMPLEMENT_TEST(UdrSchemaUnitTests, UdrSchema_NoObjectReference) {
+    UdrSchema schema("id");
+    CHECK_TRUE(0 == schema.size(), "wrong size");
+    CHECK_FALSE(schema.hasObjectReference(), "no object reference");
 }
 
 } // U2

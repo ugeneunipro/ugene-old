@@ -35,8 +35,9 @@ public:
     ~UdrSchemaRegistry();
 
     void registerSchema(const UdrSchema *schema, U2OpStatus &os);
-    QList<UdrSchemaId> getRegisteredSchemas();
-    const UdrSchema * getSchemaById(const UdrSchemaId &id);
+    QList<UdrSchemaId> getRegisteredSchemas() const;
+    const UdrSchema * getSchemaById(const UdrSchemaId &id) const;
+    const UdrSchema * getSchemaByObjectType(const U2DataType &type) const;
 
     /**
      * Check the names of schemas and fields that they consist of
@@ -45,7 +46,7 @@ public:
     static bool isCorrectName(const QByteArray &name);
 
 private:
-    QMutex mutex;
+    mutable QMutex mutex;
     QHash<UdrSchemaId, const UdrSchema*> schemas;
 };
 

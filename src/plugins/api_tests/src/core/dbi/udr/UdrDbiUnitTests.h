@@ -42,6 +42,8 @@ public:
     static U2DataId id2;
     static U2DataId id_2;
     static QByteArray dataSchema2;
+    static U2DataId obj1Schema3;
+    static U2DataId obj2Schema3;
 
 private:
     static TestDbiProvider dbiProvider;
@@ -80,6 +82,14 @@ DECLARE_TEST(UdrDbiUnitTests, InputStream_skip_OutOfRange_2_negative);
 DECLARE_TEST(UdrDbiUnitTests, InputStream_skip_Range_1);
 /* Skipping data from BLOB with adapter 4 */
 DECLARE_TEST(UdrDbiUnitTests, InputStream_skip_Range_2_negative);
+/* createObject 1 */
+DECLARE_TEST(UdrDbiUnitTests, createObject);
+/* createObject 2 */
+DECLARE_TEST(UdrDbiUnitTests, createObject_removeObject);
+/* getObjectRecords 1 */
+DECLARE_TEST(UdrDbiUnitTests, getObjectRecords_1);
+/* getObjectRecords 2 */
+DECLARE_TEST(UdrDbiUnitTests, getObjectRecords_2);
 
 } // U2
 
@@ -96,5 +106,9 @@ DECLARE_METATYPE(UdrDbiUnitTests, InputStream_skip_OutOfRange_1);
 DECLARE_METATYPE(UdrDbiUnitTests, InputStream_skip_OutOfRange_2_negative);
 DECLARE_METATYPE(UdrDbiUnitTests, InputStream_skip_Range_1);
 DECLARE_METATYPE(UdrDbiUnitTests, InputStream_skip_Range_2_negative);
+DECLARE_METATYPE(UdrDbiUnitTests, createObject);
+DECLARE_METATYPE(UdrDbiUnitTests, createObject_removeObject);
+DECLARE_METATYPE(UdrDbiUnitTests, getObjectRecords_1);
+DECLARE_METATYPE(UdrDbiUnitTests, getObjectRecords_2);
 
 #endif // _U2_UDR_DBI_UNIT_TESTS_H_

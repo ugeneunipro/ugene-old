@@ -20,7 +20,7 @@
  */
 
 #include <U2Core/AppContext.h>
-#include <U2Core/UdrSchemaRegistry.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/UdrSchemaRegistry.h>
 #include <U2Core/UdrDbi.h>
@@ -32,10 +32,19 @@ namespace U2 {
 namespace {
     const UdrSchemaId TEST_SCHEMA_ID("UnitTest");
     const UdrSchemaId TEST_SCHEMA_ID_2("UnitTest_2");
+    const UdrSchemaId TEST_SCHEMA_ID_3("UnitTest_3");
+    const U2DataType TEST_SCHEMA_TYPE_3 = 151;
     const int INT_FIELD = 0;
     const int DOUBLE_FIELD = 1;
     const int STRING_FIELD = 2;
     const int BLOB_FIELD = 3;
+
+    class SchemaObject3 : public U2Object {
+    public:
+        SchemaObject3() : U2Object() {}
+        SchemaObject3(U2DataId id, const U2DbiId &dbId) : U2Object(id, dbId, 0) {}
+        U2DataType getType() { return TEST_SCHEMA_TYPE_3; }
+    };
 
     QList<UdrValue> getData(qint64 iv, double dv, const QString &sv) {
         QList<UdrValue> data;
@@ -68,6 +77,23 @@ namespace {
         return id;
     }
 
+    U2DataId createObjectSchema3(const QStringList &data, U2OpStatus &os) {
+        UdrDbi *dbi = UdrTestData::getUdrDbi();
+
+        SchemaObject3 obj;
+        obj.dbiId = dbi->getRootDbi()->getDbiId();
+        dbi->createObject(TEST_SCHEMA_ID_3, obj, "", os);
+        CHECK_OP(os, "");
+
+        foreach (const QString &datum, data) {
+            QList<UdrValue> rec;
+            rec << obj.id << datum;
+            dbi->addRecord(TEST_SCHEMA_ID_3, rec, os);
+            CHECK_OP(os, "");
+        }
+        return obj.id;
+    }
+
     void checkWrittenDataSchema2(const UdrRecordId &id, const QByteArray &srcData, U2OpStatus &os) {
         UdrDbi *dbi = UdrTestData::getUdrDbi();
         QScopedPointer<InputStream> iStream(dbi->createInputStream(id, 1, os));
@@ -88,6 +114,8 @@ U2DataId UdrTestData::id1("");
 U2DataId UdrTestData::id2("");
 U2DataId UdrTestData::id_2("");
 QByteArray UdrTestData::dataSchema2("");
+U2DataId UdrTestData::obj1Schema3("");
+U2DataId UdrTestData::obj2Schema3("");
 
 void UdrTestData::init() {
     initTestUdr();
@@ -141,6 +169,14 @@ void UdrTestData::initTestUdr() {
         reg->registerSchema(schema, os);
         SAFE_POINT_OP(os, );
     }
+    { // init test schema 3
+        UdrSchema *schema = new UdrSchema(TEST_SCHEMA_ID_3, TEST_SCHEMA_TYPE_3);
+        schema->addField(UdrSchema::FieldDesc("data", UdrSchema::STRING), os);
+        SAFE_POINT_OP(os, );
+
+        reg->registerSchema(schema, os);
+        SAFE_POINT_OP(os, );
+    }
 }
 
 void UdrTestData::initTestData() {
@@ -162,6 +198,13 @@ void UdrTestData::initTestData() {
                       "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT";
         QList<QByteArray> data; data << dataSchema2;
         id_2 = writeDataSchema2(data, os).recordId;
+        SAFE_POINT_OP(os, );
+    }
+
+    { // schema 3
+        obj1Schema3 = createObjectSchema3(QStringList("data1"), os);
+        SAFE_POINT_OP(os, );
+        obj2Schema3 = createObjectSchema3(QStringList() << "data2" << "data3", os);
         SAFE_POINT_OP(os, );
     }
 }
@@ -392,6 +435,61 @@ IMPLEMENT_TEST(UdrDbiUnitTests, InputStream_skip_Range_2_negative) {
     CHECK_NO_ERROR(os);
     CHECK_TRUE(100 == read, "wrong read 2");
     CHECK_TRUE(UdrTestData::dataSchema2.mid(100) == data.left(read), "wrong data 2");
+}
+
+IMPLEMENT_TEST(UdrDbiUnitTests, createObject) {
+    U2OpStatusImpl os;
+    createObjectSchema3(QStringList(), os);
+    CHECK_NO_ERROR(os);
+}
+
+IMPLEMENT_TEST(UdrDbiUnitTests, createObject_removeObject) {
+    U2OpStatusImpl os;
+    QStringList data; data << "1" << "2";
+    U2DataId objId = createObjectSchema3(data, os);
+    CHECK_NO_ERROR(os);
+
+    UdrDbi *dbi = UdrTestData::getUdrDbi();
+    QList<UdrRecord> records1 = dbi->getObjectRecords(TEST_SCHEMA_ID_3, objId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(2 == records1.size(), "size 1");
+
+    U2ObjectDbi *oDbi = dbi->getRootDbi()->getObjectDbi();
+    oDbi->removeObject(objId, os);
+    CHECK_NO_ERROR(os);
+
+    QList<UdrRecord> records2 = dbi->getObjectRecords(TEST_SCHEMA_ID_3, objId, os);
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(0 == records2.size(), "size 1");
+}
+
+IMPLEMENT_TEST(UdrDbiUnitTests, getObjectRecords_1) {
+    U2OpStatusImpl os;
+    UdrDbi *dbi = UdrTestData::getUdrDbi();
+
+    QList<UdrRecord> records = dbi->getObjectRecords(TEST_SCHEMA_ID_3, UdrTestData::obj1Schema3, os);
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(1 == records.size(), "size");
+    UdrRecord r = records.first();
+    CHECK_TRUE(r.getDataId(0, os) == UdrTestData::obj1Schema3, "object");
+    CHECK_TRUE(r.getString(1, os) == "data1", "data");
+}
+
+IMPLEMENT_TEST(UdrDbiUnitTests, getObjectRecords_2) {
+    U2OpStatusImpl os;
+    UdrDbi *dbi = UdrTestData::getUdrDbi();
+
+    QList<UdrRecord> records = dbi->getObjectRecords(TEST_SCHEMA_ID_3, UdrTestData::obj2Schema3, os);
+    CHECK_NO_ERROR(os);
+    CHECK_TRUE(2 == records.size(), "size");
+
+    UdrRecord r1 = records.first();
+    CHECK_TRUE(r1.getDataId(0, os) == UdrTestData::obj2Schema3, "object 1");
+    CHECK_TRUE(r1.getString(1, os) == "data2", "data 1");
+
+    UdrRecord r2 = records.last();
+    CHECK_TRUE(r2.getDataId(0, os) == UdrTestData::obj2Schema3, "object 2");
+    CHECK_TRUE(r2.getString(1, os) == "data3", "data 2");
 }
 
 } // U2

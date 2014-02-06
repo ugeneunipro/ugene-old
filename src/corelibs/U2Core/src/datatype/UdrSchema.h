@@ -23,6 +23,7 @@
 #define _U2_UDRSCHEMA_H_
 
 #include <U2Core/U2OpStatus.h>
+#include <U2Core/U2Type.h>
 
 namespace U2 {
 
@@ -41,7 +42,8 @@ public:
         INTEGER,
         DOUBLE,
         STRING,
-        BLOB
+        BLOB,
+        ID
     };
 
     /**
@@ -54,10 +56,11 @@ public:
 
     /**
      * The auxiliary descriptive class for keeping Unified Data Record fields.
+     * @objectType is used only for fields with the ID datatype.
      */
     class U2CORE_EXPORT FieldDesc {
     public:
-        FieldDesc(const QByteArray &name, DataType dataType, IndexType indexType = NOT_INDEXED);
+        FieldDesc(const QByteArray &name, DataType dataType, IndexType indexType = NOT_INDEXED, U2DataType objectType = U2Type::Unknown);
 
         /**
          * The name of the field.
@@ -72,11 +75,16 @@ public:
          * Indexed field or not.
          */
         IndexType getIndexType() const;
+        /**
+         * The type of objects if the field describes the ID datatype.
+         */
+        U2DataType getObjectType() const;
 
     private:
         QByteArray name;
         DataType dataType;
         IndexType indexType;
+        U2DataType objectType;
     };
 
 public:
@@ -85,6 +93,12 @@ public:
      * It must consist of Latin letters, digits (not first character) and "_" only.
      */
     UdrSchema(const UdrSchemaId &id);
+
+    /**
+     * A schema can be used to describe data of some Object.
+     * In this case the additional field "object" is created. Its fieldNum is 0 (OBJECT_FIELD_NUM).
+     */
+    UdrSchema(const UdrSchemaId &id, U2DataType objectType);
 
     /**
      * The name of a new field must be unique within the schema.
@@ -120,12 +134,28 @@ public:
     FieldDesc getField(int fieldNum, U2OpStatus &os) const;
 
     /**
+     * Returns true if the schema is created for describing data of some object type.
+     */
+    bool hasObjectReference() const;
+
+    /**
      * Reserved name of the field for record identifier.
      */
     static const QByteArray RECORD_ID_FIELD_NAME;
 
+    /**
+     * Reserved name of the field for object.
+     */
+    static const QByteArray OBJECT_FIELD_NAME;
+
+    /**
+     * Reserved number of the field for object.
+     */
+    static const int OBJECT_FIELD_NUM;
+
 private:
     const UdrSchemaId id;
+    bool withObjectReference;
     QList< QList<int> > multiIndexes;
     QList<FieldDesc> fields;
 

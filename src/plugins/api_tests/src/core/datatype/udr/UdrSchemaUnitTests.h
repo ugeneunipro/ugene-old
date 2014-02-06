@@ -28,6 +28,8 @@ namespace U2 {
 
 /* Can not add field with the name == record_id */
 DECLARE_TEST(UdrSchemaUnitTests, addField_RecordId);
+/* Can not add field with the name == object to the schema with object reference */
+DECLARE_TEST(UdrSchemaUnitTests, addField_Object);
 /* Can not add fields with similar names */
 DECLARE_TEST(UdrSchemaUnitTests, addField_DuplicateName);
 /* Can not add a field incorrect name */
@@ -74,6 +76,8 @@ DECLARE_TEST(UdrSchemaUnitTests, UdrValue_Null_getInt);
 DECLARE_TEST(UdrSchemaUnitTests, UdrValue_Null_getString);
 /* UdrValue types mismatches 5 */
 DECLARE_TEST(UdrSchemaUnitTests, UdrValue_Double_getDouble);
+/* UdrValue types mismatches 6 */
+DECLARE_TEST(UdrSchemaUnitTests, UdrValue_String_getDataId);
 /* Schema and field name checker 1 */
 DECLARE_TEST(UdrSchemaUnitTests, isCorrectName_CorrectName);
 /* Schema and field name checker 2 */
@@ -84,10 +88,17 @@ DECLARE_TEST(UdrSchemaUnitTests, isCorrectName_FirstUnderscore);
 DECLARE_TEST(UdrSchemaUnitTests, isCorrectName_HasSpaces);
 /* Schema and field name checker 5 */
 DECLARE_TEST(UdrSchemaUnitTests, registerSchema_IncorrectName);
+/* Datatype */
+DECLARE_TEST(UdrSchemaUnitTests, registerSchema_DuplicateDatatype);
+/* Schema with object reference */
+DECLARE_TEST(UdrSchemaUnitTests, UdrSchema_ObjectReference);
+/* Schema without object reference */
+DECLARE_TEST(UdrSchemaUnitTests, UdrSchema_NoObjectReference);
 
 } // U2
 
 DECLARE_METATYPE(UdrSchemaUnitTests, addField_RecordId);
+DECLARE_METATYPE(UdrSchemaUnitTests, addField_Object);
 DECLARE_METATYPE(UdrSchemaUnitTests, addField_DuplicateName);
 DECLARE_METATYPE(UdrSchemaUnitTests, addField_IncorrectName);
 DECLARE_METATYPE(UdrSchemaUnitTests, addField_BLOB_1_not_indexed);
@@ -111,10 +122,14 @@ DECLARE_METATYPE(UdrSchemaUnitTests, UdrValue_String_getDouble);
 DECLARE_METATYPE(UdrSchemaUnitTests, UdrValue_Null_getInt);
 DECLARE_METATYPE(UdrSchemaUnitTests, UdrValue_Null_getString);
 DECLARE_METATYPE(UdrSchemaUnitTests, UdrValue_Double_getDouble);
+DECLARE_METATYPE(UdrSchemaUnitTests, UdrValue_String_getDataId);
 DECLARE_METATYPE(UdrSchemaUnitTests, isCorrectName_CorrectName);
 DECLARE_METATYPE(UdrSchemaUnitTests, isCorrectName_FirstDigit);
 DECLARE_METATYPE(UdrSchemaUnitTests, isCorrectName_FirstUnderscore);
 DECLARE_METATYPE(UdrSchemaUnitTests, isCorrectName_HasSpaces);
+DECLARE_METATYPE(UdrSchemaUnitTests, registerSchema_DuplicateDatatype);
 DECLARE_METATYPE(UdrSchemaUnitTests, registerSchema_IncorrectName);
+DECLARE_METATYPE(UdrSchemaUnitTests, UdrSchema_ObjectReference);
+DECLARE_METATYPE(UdrSchemaUnitTests, UdrSchema_NoObjectReference);
 
 #endif // _U2_UDR_SCHEMA_UNIT_TESTS_H_

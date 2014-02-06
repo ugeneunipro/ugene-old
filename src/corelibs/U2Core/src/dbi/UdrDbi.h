@@ -45,6 +45,21 @@ public:
     virtual UdrRecord getRecord(const UdrRecordId &recordId, U2OpStatus &os) = 0;
 
     /**
+     * Adds a new (empty) UDR object instance into database.
+     * Sets the assigned id to the passed U2Object instance.
+     * The folder must exist in the database.
+     * Requires: U2DbiFeature_WriteUdr feature support.
+     *           The schema with the @schemaId must have the object reference.
+     */
+    virtual void createObject(const UdrSchemaId &schemaId, U2Object &udrObject, const QString &folder, U2OpStatus &os) = 0;
+
+    /**
+     * Returns the list of records associated with the given @objectId.
+     * The schema with the @schemaId must have the object reference.
+     */
+    virtual QList<UdrRecord> getObjectRecords(const UdrSchemaId &schemaId, const U2DataId &objectId, U2OpStatus &os) = 0;
+
+    /**
      * Removes the record with the given identifier.
      */
     virtual void removeRecord(const UdrRecordId &recordId, U2OpStatus &os) = 0;

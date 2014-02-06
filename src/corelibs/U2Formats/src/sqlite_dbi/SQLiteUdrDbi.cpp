@@ -25,12 +25,19 @@
 
 #include "SQLiteBlobInputStream.h"
 #include "SQLiteBlobOutputStream.h"
+#include "SQLiteObjectDbi.h"
 
 #include "SQLiteUdrDbi.h"
 
 namespace U2 {
 
-static const QString TABLE_PREFIX = "UdrSchema_";
+namespace {
+    const QString TABLE_PREFIX = "UdrSchema_";
+
+    QString tableName(const UdrSchemaId &schemaId) {
+        return TABLE_PREFIX + schemaId;
+    }
+}
 
 SQLiteUdrDbi::SQLiteUdrDbi(SQLiteDbi *dbi)
 : UdrDbi(dbi), SQLiteChildDBICommon(dbi)
@@ -74,6 +81,47 @@ UdrRecord SQLiteUdrDbi::getRecord(const UdrRecordId &recordId, U2OpStatus &os) {
     CHECK_OP(os, result);
 
     return UdrRecord(recordId, data, os);
+}
+
+void SQLiteUdrDbi::createObject(const UdrSchemaId &schemaId, U2Object &udrObject, const QString &folder, U2OpStatus &os) {
+    const UdrSchema *schema = udrSchema(schemaId, os);
+    CHECK_OP(os, );
+    SAFE_POINT_EXT(schema->hasObjectReference(), os.setError("No object reference"), );
+
+    const UdrSchema::FieldDesc field = schema->getField(UdrSchema::OBJECT_FIELD_NUM, os);
+    CHECK_OP(os, );
+    SAFE_POINT_EXT(field.getObjectType() == udrObject.getType(), os.setError("Wrong object type"), );
+
+    dbi->getSQLiteObjectDbi()->createObject(udrObject, folder, SQLiteDbiObjectRank_TopLevel, os);
+}
+
+QList<U2DataId> SQLiteUdrDbi::getObjectRecordIds(const UdrSchema *schema, const U2DataId &objectId, U2OpStatus &os) {
+    QList<U2DataId> result;
+    SAFE_POINT_EXT(schema->hasObjectReference(), os.setError("No object reference"), result);
+
+    SQLiteQuery q("SELECT " + UdrSchema::RECORD_ID_FIELD_NAME + " FROM " + tableName(schema->getId()) + " WHERE " + UdrSchema::OBJECT_FIELD_NAME + " = ?1", db, os);
+    q.bindDataId(1, objectId);
+
+    while (q.step()) {
+        result << q.getDataId(0, U2Type::UdrRecord);
+    }
+    return result;
+}
+
+QList<UdrRecord> SQLiteUdrDbi::getObjectRecords(const UdrSchemaId &schemaId, const U2DataId &objectId, U2OpStatus &os) {
+    QList<UdrRecord> result;
+    const UdrSchema *schema = udrSchema(schemaId, os);
+    CHECK_OP(os, result);
+
+    const QList<U2DataId> ids = getObjectRecordIds(schema, objectId, os);
+    CHECK_OP(os, result);
+
+    foreach (const U2DataId &id, ids) {
+        result << getRecord(UdrRecordId(schemaId, id), os);
+        CHECK_OP(os, result);
+    }
+
+    return result;
 }
 
 void SQLiteUdrDbi::removeRecord(const UdrRecordId &recordId, U2OpStatus &os) {
@@ -135,6 +183,8 @@ void SQLiteUdrDbi::createTable(const UdrSchema *schema, U2OpStatus &os) {
         query += ", " + fieldDef(field);
         CHECK_OP(os, );
     }
+    query += foreignKeysDef(schema, os);
+    CHECK_OP(os, );
     query += ")";
 
     SQLiteQuery(query, db, os).execute();
@@ -161,10 +211,6 @@ const UdrSchema * SQLiteUdrDbi::udrSchema(const UdrSchemaId &schemaId, U2OpStatu
     const UdrSchema *schema = udrRegistry->getSchemaById(schemaId);
     SAFE_POINT_EXT(NULL != schema, os.setError("NULL UDR schema"), NULL);
     return schema;
-}
-
-QString SQLiteUdrDbi::tableName(const UdrSchemaId &schemaId) {
-    return TABLE_PREFIX + schemaId;
 }
 
 QString SQLiteUdrDbi::insertDef(const UdrSchema *schema, U2OpStatus &os) {
@@ -207,8 +253,26 @@ QString SQLiteUdrDbi::fieldDef(const UdrSchema::FieldDesc &field) {
         case UdrSchema::BLOB:
             def += "BLOB";
             break;
+        case UdrSchema::ID:
+            def += "INTEGER NOT NULL";
+            break;
     }
     return def;
+}
+
+QString SQLiteUdrDbi::foreignKeysDef(const UdrSchema *schema, U2OpStatus &os) {
+    QString result;
+
+    for (int i=0; i<schema->size(); i++) {
+        const UdrSchema::FieldDesc field = schema->getField(i, os);
+        CHECK_OP(os, "");
+
+        if (UdrSchema::ID == field.getDataType()) {
+            result += ", FOREIGN KEY(" + field.getName() + ") REFERENCES Object(id)";
+        }
+    }
+
+    return result;
 }
 
 QStringList SQLiteUdrDbi::fieldNames(const UdrSchema *schema, U2OpStatus &os, const QList<int> &nums) {
@@ -269,6 +333,9 @@ void SQLiteUdrDbi::bindData(const QList<UdrValue> &data, const UdrSchema *schema
             case UdrSchema::BLOB:
                 q.bindBlob(i+1, "");
                 break;
+            case UdrSchema::ID:
+                q.bindDataId(i+1, value.getDataId(os));
+                break;
         }
         CHECK_OP(os, );
     }
@@ -298,6 +365,9 @@ void SQLiteUdrDbi::retreiveData(QList<UdrValue> &data, const UdrSchema *schema, 
             case UdrSchema::BLOB:
                 data << UdrValue();
                 break;
+            case UdrSchema::ID:
+                data << UdrValue(q.getDataId(colNum, field.getObjectType()));
+                break;
         }
         CHECK_OP(os, );
     }
@@ -325,6 +395,21 @@ UdrSchema::FieldDesc SQLiteUdrDbi::getBlobField(const UdrSchemaId &schemaId, int
         os.setError("Only BLOB fields can be used");
     }
     return field;
+}
+
+/************************************************************************/
+/* SQLiteUdrDbiUtils */
+/************************************************************************/
+void SQLiteUdrDbiUtils::removeObjectRecords(const U2DataId &objectId, U2DataType type, DbRef *db, U2OpStatus &os) {
+    UdrSchemaRegistry *udrRegistry = AppContext::getUdrSchemaRegistry();
+    SAFE_POINT_EXT(NULL != udrRegistry, os.setError("NULL UDR registry"), );
+
+    const UdrSchema *schema = udrRegistry->getSchemaByObjectType(type);
+    SAFE_POINT_EXT(NULL != schema, os.setError("Unknown schema type"), );
+
+    SQLiteQuery q("DELETE FROM " + tableName(schema->getId()) + " WHERE " + UdrSchema::OBJECT_FIELD_NAME + " = ?1", db, os);
+    q.bindDataId(1, objectId);
+    q.execute();
 }
 
 } // U2

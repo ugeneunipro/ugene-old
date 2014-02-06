@@ -72,10 +72,12 @@ public:
     static const U2DataType VariantType             = 6;
     static const U2DataType FilterTableType         = 7;
     static const U2DataType KnownMutationsTrackType = 8;
-    static const U2DataType UdrRecord               = 9;
     static const U2DataType AnnotationTable         = 10;
+    /** UDR object types 101..199 */
+
     static const U2DataType CrossDatabaseReference  = 999;
 
+    /**
     /** SCO (non-object, non-root) types */
     static const U2DataType Annotation              = 1000;
     static const U2DataType AnnotationGroup         = 1001;
@@ -86,6 +88,8 @@ public:
     /** Sequence feature */
     static const U2DataType Feature                 = 1300;
 
+    static const U2DataType UdrRecord               = 1400;
+
     /**  Attribute types */
     static const U2DataType AttributeInteger        = 2001;
     static const U2DataType AttributeReal           = 2002;
@@ -93,6 +97,7 @@ public:
     static const U2DataType AttributeByteArray      = 2004;
 
     static bool isObjectType(U2DataType type) {return type > 0 && type < 999;}
+    static bool isUdrObjectType(U2DataType type) {return type > 100 && type < 200;}
 
     static bool isAttributeType(U2DataType type) {return type >=2000 && type < 2100;}
 

@@ -56,6 +56,7 @@ public:
     UdrValue(qint64 intValue);
     UdrValue(double doubleValue);
     UdrValue(const QString &stringValue);
+    UdrValue(const U2DataId &dataId);
 
     /**
      * Returns an integer value if it is the integer container.
@@ -69,6 +70,10 @@ public:
      * Returns a string value if it is the string container.
      */
     QString getString(U2OpStatus &os) const;
+    /**
+     * Returns a object id if it is the U2DataId container.
+     */
+    U2DataId getDataId(U2OpStatus &os) const;
 
 private:
     bool isNull;
@@ -76,6 +81,7 @@ private:
     qint64 intValue;
     double doubleValue;
     QString stringValue;
+    U2DataId dataId;
 
 private:
     void init(UdrSchema::DataType dataType, bool isNull = false);
@@ -109,6 +115,11 @@ public:
      * Returns the string value of the field with the number @fieldNum.
      */
     QString getString(int fieldNum, U2OpStatus &os) const;
+
+    /**
+     * Returns the object id value of the field with the number @fieldNum.
+     */
+    U2DataId getDataId(int fieldNum, U2OpStatus &os) const;
 
 private:
     const UdrRecordId id;

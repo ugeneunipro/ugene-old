@@ -67,6 +67,11 @@ UdrValue::UdrValue(const QString &stringValue) {
     this->stringValue = stringValue;
 }
 
+UdrValue::UdrValue(const U2DataId &dataId) {
+    init(UdrSchema::ID);
+    this->dataId = dataId;
+}
+
 bool UdrValue::checkType(UdrSchema::DataType askedDataType, U2OpStatus &os) const {
     if (isNull) {
         os.setError("NULL value");
@@ -92,6 +97,11 @@ double UdrValue::getDouble(U2OpStatus &os) const {
 QString UdrValue::getString(U2OpStatus &os) const {
     CHECK(checkType(UdrSchema::STRING, os), "");
     return stringValue;
+}
+
+U2DataId UdrValue::getDataId(U2OpStatus &os) const {
+    CHECK(checkType(UdrSchema::ID, os), "");
+    return dataId;
 }
 
 /************************************************************************/
@@ -123,6 +133,11 @@ double UdrRecord::getDouble(int fieldNum, U2OpStatus &os) const {
 QString UdrRecord::getString(int fieldNum, U2OpStatus &os) const {
     CHECK(checkNum(fieldNum, os), "");
     return data[fieldNum].getString(os);
+}
+
+U2DataId UdrRecord::getDataId(int fieldNum, U2OpStatus &os) const {
+    CHECK(checkNum(fieldNum, os), "");
+    return data[fieldNum].getDataId(os);
 }
 
 bool UdrRecord::checkNum(int fieldNum, U2OpStatus &os) const {

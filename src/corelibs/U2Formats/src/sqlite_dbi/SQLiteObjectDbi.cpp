@@ -21,6 +21,7 @@
 
 #include "SQLiteMsaDbi.h"
 #include "SQLiteObjectDbi.h"
+#include "SQLiteUdrDbi.h"
 
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2DbiPackUtils.h>
@@ -255,7 +256,11 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
             //TODO: removeCrossDatabaseReferenceObject(objectId.id);
             break;
         default:
-            os.setError(SQLiteL10N::tr("Unknown object type! Id: %1, type: %2").arg(U2DbiUtils::text(objectId)).arg(type));
+            if (U2Type::isUdrObjectType(type)) {
+                SQLiteUdrDbiUtils::removeObjectRecords(objectId, type, db, os);
+            } else {
+                os.setError(SQLiteL10N::tr("Unknown object type! Id: %1, type: %2").arg(U2DbiUtils::text(objectId)).arg(type));
+            }
     }
     CHECK_OP(os, false);
 

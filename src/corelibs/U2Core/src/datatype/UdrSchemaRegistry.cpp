@@ -21,13 +21,16 @@
 
 #include <QtCore/QRegExp>
 
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "UdrSchemaRegistry.h"
 
 namespace U2 {
 
-UdrSchemaRegistry::UdrSchemaRegistry() {
+UdrSchemaRegistry::UdrSchemaRegistry()
+: mutex(QMutex::Recursive)
+{
 
 }
 
@@ -41,17 +44,42 @@ void UdrSchemaRegistry::registerSchema(const UdrSchema *schema, U2OpStatus &os) 
     CHECK_EXT(isCorrectName(schema->getId()), os.setError("Incorrect schema id"), );
     CHECK_EXT(!schemas.contains(schema->getId()), os.setError("Duplicate schema id"), );
 
+    if (schema->hasObjectReference()) {
+        const UdrSchema::FieldDesc objField = schema->getField(UdrSchema::OBJECT_FIELD_NUM, os);
+        CHECK_OP(os, );
+        const UdrSchema *objSchema = getSchemaByObjectType(objField.getObjectType());
+        CHECK_EXT(NULL == objSchema, os.setError("Schema for this type already exists"), );
+    }
+
     schemas[schema->getId()] = schema;
 }
 
-QList<UdrSchemaId> UdrSchemaRegistry::getRegisteredSchemas() {
+QList<UdrSchemaId> UdrSchemaRegistry::getRegisteredSchemas() const {
     QMutexLocker lock(&mutex);
     return schemas.keys();
 }
 
-const UdrSchema * UdrSchemaRegistry::getSchemaById(const UdrSchemaId &id) {
+const UdrSchema * UdrSchemaRegistry::getSchemaById(const UdrSchemaId &id) const {
     QMutexLocker lock(&mutex);
     return schemas.value(id, NULL);
+}
+
+const UdrSchema * UdrSchemaRegistry::getSchemaByObjectType(const U2DataType &type) const {
+    QMutexLocker lock(&mutex);
+    foreach (const UdrSchema *schema, schemas.values()) {
+        if (!schema->hasObjectReference()) {
+            continue;
+        }
+
+        U2OpStatus2Log os;
+        const UdrSchema::FieldDesc objField = schema->getField(UdrSchema::OBJECT_FIELD_NUM, os);
+        CHECK_OP(os, NULL);
+
+        if (objField.getObjectType() == type) {
+            return schema;
+        }
+    }
+    return NULL;
 }
 
 bool UdrSchemaRegistry::isCorrectName(const QByteArray &name) {

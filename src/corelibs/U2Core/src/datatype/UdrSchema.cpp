@@ -21,6 +21,7 @@
 
 #include <QtCore/QSet>
 
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UdrSchemaRegistry.h>
 
@@ -29,9 +30,11 @@
 namespace U2 {
 
 const QByteArray UdrSchema::RECORD_ID_FIELD_NAME("record_id");
+const QByteArray UdrSchema::OBJECT_FIELD_NAME("object");
+const int UdrSchema::OBJECT_FIELD_NUM = 0;
 
-UdrSchema::FieldDesc::FieldDesc(const QByteArray &name, UdrSchema::DataType dataType, UdrSchema::IndexType indexType)
-: name(name), dataType(dataType), indexType(indexType)
+UdrSchema::FieldDesc::FieldDesc(const QByteArray &name, UdrSchema::DataType dataType, UdrSchema::IndexType indexType, U2DataType objectType)
+: name(name), dataType(dataType), indexType(indexType), objectType(objectType)
 {
 
 }
@@ -48,10 +51,23 @@ UdrSchema::IndexType UdrSchema::FieldDesc::getIndexType() const {
     return indexType;
 }
 
+U2DataType UdrSchema::FieldDesc::getObjectType() const {
+    SAFE_POINT(ID == dataType, "Not ID datatype", objectType);
+    return objectType;
+}
+
 UdrSchema::UdrSchema(const UdrSchemaId &id)
-: id(id)
+: id(id), withObjectReference(false)
 {
 
+}
+
+UdrSchema::UdrSchema(const UdrSchemaId &id, U2DataType objectType)
+: id(id), withObjectReference(true)
+{
+    U2OpStatusImpl os;
+    addField(FieldDesc(OBJECT_FIELD_NAME, ID, INDEXED, objectType), os);
+    SAFE_POINT_OP(os, );
 }
 
 bool UdrSchema::contains(const QByteArray &name) const {
@@ -100,6 +116,10 @@ int UdrSchema::size() const {
 UdrSchema::FieldDesc UdrSchema::getField(int fieldNum, U2OpStatus &os) const {
     CHECK_EXT(0 <= fieldNum && fieldNum < size(), os.setError("Out of range"), FieldDesc("", INTEGER));
     return fields[fieldNum];
+}
+
+bool UdrSchema::hasObjectReference() const {
+    return withObjectReference;
 }
 
 } // U2
