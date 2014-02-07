@@ -426,16 +426,6 @@ int main(int argc, char **argv)
     appContext->setDocumentFormatRegistry(dfr);
     ImportDialogFactories::registerFactories();
     
-    PluginSupportImpl* psp = new PluginSupportImpl();
-    appContext->setPluginSupport(psp);
-
-    ServiceRegistryImpl* sreg = new ServiceRegistryImpl() ;
-    appContext->setServiceRegistry(sreg);
-
-    DocumentFormatConfigurators* dfc = new DocumentFormatConfigurators();
-    appContext->setDocumentFormatConfigurators(dfc);
-    BaseDocumentFormatConfigurators::initBuiltInConfigurators();
-    
     IOAdapterRegistryImpl* io = new IOAdapterRegistryImpl();
     appContext->setIOAdapterRegistry(io);
 
@@ -444,9 +434,6 @@ int main(int argc, char **argv)
 
     DNAAlphabetRegistry* dal = new DNAAlphabetRegistryImpl(dtr);
     appContext->setDNAAlphabetRegistry(dal);
-
-    ProjectLoaderImpl* pli = new ProjectLoaderImpl();
-    appContext->setProjectLoader(pli);
 
     DBXRefRegistry* dbxr = new DBXRefRegistry();
     appContext->setDBXRefRegistry(dbxr);
@@ -459,7 +446,7 @@ int main(int argc, char **argv)
 
     MSAConsensusAlgorithmRegistry* msaConsReg = new MSAConsensusAlgorithmRegistry();
     appContext->setMSAConsensusAlgorithmRegistry(msaConsReg);
-    
+
     AssemblyConsensusAlgorithmRegistry* assemblyConsReg = new AssemblyConsensusAlgorithmRegistry();
     appContext->setAssemblyConsensusAlgorithmRegistry(assemblyConsReg);
 
@@ -475,7 +462,7 @@ int main(int argc, char **argv)
     SmithWatermanTaskFactoryRegistry* swar = new SmithWatermanTaskFactoryRegistry();
     appContext->setSmithWatermanTaskFactoryRegistry(swar);
 
-    SWMulAlignResultNamesTagsRegistry * swmarntr = new SWMulAlignResultNamesTagsRegistry();
+    SWMulAlignResultNamesTagsRegistry* swmarntr = new SWMulAlignResultNamesTagsRegistry();
     appContext->setSWMulAlignResultNamesTagsRegistry(swmarntr);
 
     RepeatFinderTaskFactoryRegistry* rfr = new RepeatFinderTaskFactoryRegistry();
@@ -496,8 +483,6 @@ int main(int argc, char **argv)
     StructuralAlignmentAlgorithmRegistry *saar = new StructuralAlignmentAlgorithmRegistry();
     appContext->setStructuralAlignmentAlgorithmRegistry(saar);
 
-    CMDLineUtils::init();
-    
     PhyTreeGeneratorRegistry* genRegistry = new PhyTreeGeneratorRegistry();
     appContext->setPhyTreeGeneratorRegistry(genRegistry);
 
@@ -510,41 +495,27 @@ int main(int argc, char **argv)
     SecStructPredictAlgRegistry* sspar = new SecStructPredictAlgRegistry();
     appContext->setSecStructPedictAlgRegistry(sspar);
 
-    CudaGpuRegistry * cgr = new CudaGpuRegistry();
-    appContext->setCudaGpuRegistry(cgr); 
+    CudaGpuRegistry* cgr = new CudaGpuRegistry();
+    appContext->setCudaGpuRegistry(cgr);
 
 #ifdef OPENCL_SUPPORT
-    OpenCLGpuRegistry * oclgr = new OpenCLGpuRegistry();
+    OpenCLGpuRegistry* oclgr = new OpenCLGpuRegistry();
     appContext->setOpenCLGpuRegistry( oclgr );
 #endif
 
-    RecentlyDownloadedCache* rdc = new RecentlyDownloadedCache();
-    appContext->setRecentlyDownloadedCache(rdc);
-
-    DistributedComputingUtil * dcu = new DistributedComputingUtil();
-    
-    VirtualFileSystemRegistry * vfsReg = new VirtualFileSystemRegistry();
+    VirtualFileSystemRegistry* vfsReg = new VirtualFileSystemRegistry();
     appContext->setVirtualFileSystemRegistry( vfsReg );
-    
-    Workflow::WorkflowEnv::init(new Workflow::WorkflowEnvImpl());
-    Workflow::WorkflowEnv::getDomainRegistry()->registerEntry(new LocalWorkflow::LocalDomainFactory());
-    
 
     DnaAssemblyAlgRegistry* assemblyReg = new DnaAssemblyAlgRegistry();
     appContext->setDnaAssemblyAlgRegistry(assemblyReg);
     DnaAssemblySupport assemblySupport;
+    Q_UNUSED(assemblySupport);
 
     MSAAlignAlgRegistry* alignReg = new MSAAlignAlgRegistry();
     appContext->setMSAAlignAlgRegistry(alignReg);
 
     DataBaseRegistry *dbr = new DataBaseRegistry();
     appContext->setDataBaseRegistry(dbr);
-
-    AutoAnnotationsSupport* aaSupport = new AutoAnnotationsSupport();
-    appContext->setAutoAnnotationsSupport(aaSupport);
-
-    GUITestBase *tb = new GUITestBase();
-    appContext->setGUITestBase(tb);
 
     SplicedAlignmentTaskRegistry* splicedAlignmentTaskRegistiry = new SplicedAlignmentTaskRegistry();
     appContext->setSplicedAlignmentTaskRegistry(splicedAlignmentTaskRegistiry);
@@ -555,8 +526,47 @@ int main(int argc, char **argv)
     OPCommonWidgetFactoryRegistry *opCommonWidgetFactoryRegistry = new OPCommonWidgetFactoryRegistry();
     appContext->setOPCommonWidgetFactoryRegistry(opCommonWidgetFactoryRegistry);
 
-	WorkflowScriptRegistry* workflowScriptRegistry = new WorkflowScriptRegistry();
-	appContext->setWorkflowScriptRegistry(workflowScriptRegistry);
+    WorkflowScriptRegistry* workflowScriptRegistry = new WorkflowScriptRegistry();
+    appContext->setWorkflowScriptRegistry(workflowScriptRegistry);
+
+    PairwiseAlignmentRegistry* pairwiseAlignmentRegistry = new PairwiseAlignmentRegistry();
+    appContext->setPairwiseAlignmentRegistry(pairwiseAlignmentRegistry);
+
+    U2DataPathRegistry* dpr = new U2DataPathRegistry();
+    appContext->setDataPathRegistry(dpr);
+
+    DASSourceRegistry* dsr = new DASSourceRegistry();
+    appContext->setDASSourceRegistry(dsr);
+
+    Workflow::WorkflowEnv::init(new Workflow::WorkflowEnvImpl());
+    Workflow::WorkflowEnv::getDomainRegistry()->registerEntry(new LocalWorkflow::LocalDomainFactory());
+
+    ServiceRegistryImpl* sreg = new ServiceRegistryImpl() ;
+    appContext->setServiceRegistry(sreg);
+
+    PluginSupportImpl* psp = new PluginSupportImpl();
+    appContext->setPluginSupport(psp);
+
+    DocumentFormatConfigurators* dfc = new DocumentFormatConfigurators();
+    appContext->setDocumentFormatConfigurators(dfc);
+    BaseDocumentFormatConfigurators::initBuiltInConfigurators();
+
+    ProjectLoaderImpl* pli = new ProjectLoaderImpl();
+    appContext->setProjectLoader(pli);
+
+    CMDLineUtils::init();
+
+    RecentlyDownloadedCache* rdc = new RecentlyDownloadedCache();
+    appContext->setRecentlyDownloadedCache(rdc);
+
+    DistributedComputingUtil * dcu = new DistributedComputingUtil();
+
+
+    AutoAnnotationsSupport* aaSupport = new AutoAnnotationsSupport();
+    appContext->setAutoAnnotationsSupport(aaSupport);
+
+    GUITestBase *tb = new GUITestBase();
+    appContext->setGUITestBase(tb);
 
     AppFileStorage *appFileStorage = new AppFileStorage();
     U2OpStatusImpl os;
@@ -568,18 +578,9 @@ int main(int argc, char **argv)
         appContext->setAppFileStorage(appFileStorage);
     }
 
-    PairwiseAlignmentRegistry* pairwiseAlignmentRegistry = new PairwiseAlignmentRegistry();
-    appContext->setPairwiseAlignmentRegistry(pairwiseAlignmentRegistry);
-
-    U2DataPathRegistry* dpr = new U2DataPathRegistry();
-    appContext->setDataPathRegistry(dpr);
-
-    DASSourceRegistry* dsr = new DASSourceRegistry();
-    appContext->setDASSourceRegistry(dsr);
-
     // Register all Options Panel groups on the required GObjectViews
     Init::initOptionsPanels();
-    
+
     if(!cmdLineRegistry->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST)) {
         QStringList urls = CMDLineRegistryUtils::getPureValues();
 
@@ -634,164 +635,185 @@ int main(int argc, char **argv)
         Shtirlitz::saveGatheredInfo();
     }
 
-    Workflow::WorkflowEnv::shutdown();
-
     delete dcu;
 
-    delete pairwiseAlignmentRegistry;
-    appContext->setPairwiseAlignmentRegistry(NULL);
-
-    delete splicedAlignmentTaskRegistiry;
-    appContext->setSplicedAlignmentTaskRegistry(NULL);
-
-    delete tb;
     appContext->setGUITestBase(NULL);
+    delete tb;
     
-    delete vfsReg;
-    appContext->setVirtualFileSystemRegistry( NULL );
+    appContext->setRecentlyDownloadedCache(NULL);
+    delete rdc;
+
+    appContext->setProjectLoader(NULL);
+    delete pli;
+
+    appContext->setPluginSupport(NULL);
+    delete psp;
+
+    appContext->setServiceRegistry(NULL);
+    delete sreg;
+
+    Workflow::WorkflowEnv::shutdown();
 
     appContext->setDASSourceRegistry( NULL );
     delete dsr;
 
     appContext->setDataPathRegistry( NULL );
     delete dpr;
-    
-    delete rdc;
-    appContext->setRecentlyDownloadedCache(NULL);
 
-    delete swrfr;
-    appContext->setSWResultFilterRegistry(NULL);
+    appContext->setPairwiseAlignmentRegistry(NULL);
+    delete pairwiseAlignmentRegistry;
 
-    delete swar;
-    appContext->setSmithWatermanTaskFactoryRegistry(NULL);
+    appContext->setWorkflowScriptRegistry(NULL);
+    delete workflowScriptRegistry;
 
-    delete msfr;
-    appContext->setMolecularSurfaceFactoryRegistry(NULL);
+    appContext->setOPCommonWidgetFactoryRegistry(NULL);
+    delete opCommonWidgetFactoryRegistry;
 
-    delete smr;
-    appContext->setSubstMatrixRegistry(NULL);
+    appContext->setOPWidgetFactoryRegistry(NULL);
+    delete opWidgetFactoryRegistry;
 
-    delete mcsr;
-    appContext->setMSAColorSchemeRegistry(NULL);
+    appContext->setSplicedAlignmentTaskRegistry(NULL);
+    delete splicedAlignmentTaskRegistiry;
 
-    delete dbxr;
-    appContext->setDBXRefRegistry(NULL);
+    appContext->setDataBaseRegistry(NULL);
+    delete dbr;
 
-    delete pli;
-    appContext->setProjectLoader(NULL);
+    appContext->setMSAAlignAlgRegistry(NULL);
+    delete alignReg;
 
-    delete sreg;
-    appContext->setServiceRegistry(NULL);
+    appContext->setDnaAssemblyAlgRegistry(NULL);
+    delete assemblyReg;
 
-    delete psp;
-    appContext->setPluginSupport(NULL);
-
-    delete etr;
-    appContext->setExternalToolRegistry(NULL);
-
-    delete str;
-    appContext->setScriptingToolRegistry(NULL);
-
-    delete mw;
-    appContext->setMainWindow(NULL);
-
-    delete tf;
-    appContext->setTestFramework(NULL);
-
-    delete ovfr;
-    appContext->setObjectViewFactoryRegistry(NULL);
-
-    delete dal;
-    appContext->setDNAAlphabetRegistry(NULL);
-
-    delete dtr;
-    appContext->setDNATranslationRegistry(NULL);
-
-    delete io;
-    appContext->setIOAdapterRegistry(NULL);
-
-    delete dfc;
-    appContext->setDocumentFormatConfigurators(NULL);
-
-    delete dfr;
-    appContext->setDocumentFormatRegistry(NULL);
-
-    delete dbiRegistry;
-    appContext->setDbiRegistry(NULL);
-
-    delete schemaRegistry;
-    appContext->setUdrSchemaRegistry(NULL);
-
-    delete ts;
-    appContext->setTaskScheduler(NULL);
-
-    delete asr;
-    appContext->setAnnotationSettingsRegistry(NULL);
-
-    delete resTrack;
-    appContext->setResourceTracker(NULL);
-
-    delete cgr;
-    appContext->setCudaGpuRegistry(NULL);
+    appContext->setVirtualFileSystemRegistry( NULL );
+    delete vfsReg;
 
 #ifdef OPENCL_SUPPORT
+    appContext->setOpenCLGpuRegistry(NULL);
     delete oclgr;
 #endif
-    appContext->setOpenCLGpuRegistry(NULL);
 
-    delete cmdLineRegistry;
-    appContext->setCMDLineRegistry(NULL);
+    appContext->setCudaGpuRegistry(NULL);
+    delete cgr;
 
-    delete sspar;
     appContext->setSecStructPedictAlgRegistry(NULL);
+    delete sspar;
 
-    delete msaConsReg;
-    appContext->setMSAConsensusAlgorithmRegistry(NULL);
-    
-    delete msaDistReg;
-    appContext->setMSADistanceAlgorithmRegistry(NULL);
+    appContext->setSWResultFilterRegistry(NULL);
+    delete swrfr;
 
-    delete assemblyConsReg;
-    appContext->setAssemblyConsensusAlgorithmRegistry(NULL);
+    appContext->setMolecularSurfaceFactoryRegistry(NULL);
+    delete msfr;
 
-    delete pwmConvReg;
-    appContext->setPWMConversionAlgorithmRegistry(NULL);
+    appContext->setPhyTreeGeneratorRegistry(NULL);
+    delete genRegistry;
 
-    delete assemblyReg;
-    appContext->setDnaAssemblyAlgRegistry(NULL);
-
-    delete alignReg;
-    appContext->setMSAAlignAlgRegistry(NULL);
-    
-    delete dbr;
-    appContext->setDataBaseRegistry(NULL);
-
-    delete aaSupport;
-    appContext->setAutoAnnotationsSupport(NULL);
-
-    delete qpr;
-    appContext->setQDActorFactoryRegistry(NULL);
-
-    delete cdsfr;
-    appContext->setCDSearchFactoryRegistry(NULL);
-
-    delete saar;
     appContext->setStructuralAlignmentAlgorithmRegistry(NULL);
+    delete saar;
+
+    appContext->setCDSearchFactoryRegistry(NULL);
+    delete cdsfr;
+
+    appContext->setQDActorFactoryRegistry(NULL);
+    delete qpr;
+
+    appContext->setExternalToolRegistry(NULL);
+    delete etr;
+
+    appContext->setScriptingToolRegistry(NULL);
+    delete str;
+
+    appContext->setRepeatFinderTaskFactoryRegistry(NULL);
+    delete rfr;
+
+    appContext->setSWMulAlignResultNamesTagsRegistry(NULL);
+    delete swmarntr;
+
+    appContext->setSmithWatermanTaskFactoryRegistry(NULL);
+    delete swar;
+
+    appContext->setSubstMatrixRegistry(NULL);
+    delete smr;
+
+    appContext->setPWMConversionAlgorithmRegistry(NULL);
+    delete pwmConvReg;
+
+    appContext->setMSADistanceAlgorithmRegistry(NULL);
+    delete msaDistReg;
+
+    appContext->setAssemblyConsensusAlgorithmRegistry(NULL);
+    delete assemblyConsReg;
+
+    appContext->setMSAConsensusAlgorithmRegistry(NULL);
+    delete msaConsReg;
+
+    appContext->setMSAHighlightingSchemeRegistry(NULL);
+    delete mhsr;
+
+    appContext->setMSAColorSchemeRegistry(NULL);
+    delete mcsr;
+
+    appContext->setDBXRefRegistry(NULL);
+    delete dbxr;
+
+    appContext->setDNAAlphabetRegistry(NULL);
+    delete dal;
+
+    appContext->setDNATranslationRegistry(NULL);
+    delete dtr;
+
+    appContext->setIOAdapterRegistry(NULL);
+    delete io;
+
+    appContext->setDocumentFormatRegistry(NULL);
+    delete dfr;
+
+    appContext->setDbiRegistry(NULL);
+    delete dbiRegistry;
+
+    appContext->setUdrSchemaRegistry(NULL);
+    delete schemaRegistry;
+
+    appContext->setObjectViewFactoryRegistry(NULL);
+    delete ovfr;
+
+    appContext->setAnnotationSettingsRegistry(NULL);
+    delete asr;
+
+    appContext->setCMDLineRegistry(NULL);
+    delete cmdLineRegistry;
+
+    appContext->setMainWindow(NULL);
+    delete mw;
+
+    appContext->setTestFramework(NULL);
+    delete tf;
+
+    appContext->setDocumentFormatConfigurators(NULL);
+    delete dfc;
+
+    appContext->setTaskScheduler(NULL);
+    delete ts;
+
+    appContext->setResourceTracker(NULL);
+    delete resTrack;
+
+    appContext->setAutoAnnotationsSupport(NULL);
+    delete aaSupport;
 
     bool deleteSettingsFile = userAppSettings->resetSettings();
     QString iniFile = AppContext::getSettings()->fileName();
     
-    delete appSettingsGUI;
     appContext->setAppSettingsGUI(NULL);
+    delete appSettingsGUI;
 
     appContext->setAppSettings(NULL);
     delete appSettings;
 
-    delete settings;
     appContext->setSettings(NULL);
+    delete settings;
 
-    delete globalSettings;
     appContext->setGlobalSettings(NULL);
+    delete globalSettings;
 
     if (deleteSettingsFile){
         QFile ff;

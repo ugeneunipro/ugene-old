@@ -80,6 +80,9 @@ public:
 
     bool allLoaded;
     
+private slots:
+    void sl_registerServices();
+
 protected:
     void registerPlugin(PluginRef* ref); 
     QString getPluginFileURL(Plugin* p) const;

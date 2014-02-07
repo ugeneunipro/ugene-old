@@ -72,6 +72,8 @@ PluginSupportImpl::PluginSupportImpl(): allLoaded(false) {
         pluginFiles.insert(file);
     }
 
+    connect(this, SIGNAL(si_allStartUpPluginsLoaded()), SLOT(sl_registerServices()));
+
     //read all plugins from the current folder and from ./plugins folder
     // use SKIP list to learn which plugin should not be loaded
     QStringList skipFiles = settings->getValue(settings->toVersionKey(SKIP_LIST_SETTINGS), QStringList()).toStringList();
@@ -240,16 +242,20 @@ PluginRef::~PluginRef() {
     plugin = NULL;
 }
 
+void PluginSupportImpl::sl_registerServices() {
+    ServiceRegistry* sr = AppContext::getServiceRegistry();
+    foreach(PluginRef* ref, plugRefs) {
+        foreach(Service* s, ref->plugin->getServices()) {
+            AppContext::getTaskScheduler()->registerTopLevelTask(sr->registerServiceTask(s));
+        }
+    }
+}
+
 void PluginSupportImpl::registerPlugin(PluginRef* ref) {
     plugRefs.push_back(ref);
     plugins.push_back(ref->plugin);
     updateSavedState(ref);
     emit si_pluginAdded(ref->plugin);
-
-    ServiceRegistry* sr = AppContext::getServiceRegistry();
-    foreach(Service* s, ref->plugin->getServices()) {
-        AppContext::getTaskScheduler()->registerTopLevelTask(sr->registerServiceTask(s));
-    }
 }
 
 

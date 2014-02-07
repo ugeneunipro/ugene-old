@@ -62,7 +62,7 @@ public:
 
 protected:
     static WorkflowEnv* instance;
-    static WorkflowEnv* getInstance() {assert(instance); return instance;}
+    static WorkflowEnv* getInstance();
 
 public:
     virtual ~WorkflowEnv() {}
