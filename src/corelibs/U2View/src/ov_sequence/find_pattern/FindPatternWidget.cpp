@@ -53,6 +53,10 @@ const QString COLOR_NAME_FOR_INFO_MESSAGES = "green";
 const QString STYLESHEET_COLOR_DEFINITION = "color: ";
 const QString STYLESHEET_DEFINITIONS_SEPARATOR = ";";
 
+const int REG_EXP_MIN_RESULT_LEN = 1;
+const int REG_EXP_MAX_RESULT_LEN = 1000;
+const int REG_EXP_MAX_RESULT_SINGLE_STEP = 20;
+
 namespace U2 {
 
 class FastaPatternsWalker {
@@ -465,11 +469,12 @@ void FindPatternWidget::initAlgorithmLayout()
     layoutAlgorithmSettings->addWidget(useAmbiguousBasesBox);
 
     layoutRegExpLen = new QHBoxLayout();
-    boxUseMaxResultLen = new QCheckBox(tr("Limit result length"));
+    boxUseMaxResultLen = new QCheckBox(tr("Results no longer than"));
     boxMaxResultLen = new QSpinBox();
-    boxMaxResultLen->setMinimum(0);
-    boxMaxResultLen->setMaximum(500);
-    boxMaxResultLen->setSingleStep(20);
+    boxMaxResultLen->setMinimum(REG_EXP_MIN_RESULT_LEN);
+    boxMaxResultLen->setMaximum(REG_EXP_MAX_RESULT_LEN);
+    boxMaxResultLen->setSingleStep(REG_EXP_MAX_RESULT_SINGLE_STEP);
+    boxMaxResultLen->setValue(REG_EXP_MAX_RESULT_LEN);
     layoutRegExpLen->addWidget(boxUseMaxResultLen);
     layoutRegExpLen->addWidget(boxMaxResultLen);
     layoutAlgorithmSettings->addLayout(layoutRegExpLen);
