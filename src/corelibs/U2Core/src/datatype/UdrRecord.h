@@ -122,9 +122,9 @@ public:
     U2DataId getDataId(int fieldNum, U2OpStatus &os) const;
 
 private:
-    const UdrRecordId id;
+    UdrRecordId id;
     const UdrSchema *schema;
-    const QList<UdrValue> data;
+    QList<UdrValue> data;
 
 private:
     bool checkNum(int fieldNum, U2OpStatus &os) const;
