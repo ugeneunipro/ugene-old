@@ -767,8 +767,8 @@ int main(int argc, char **argv)
     appContext->setDocumentFormatRegistry(NULL);
     delete dfr;
 
-    appContext->setDbiRegistry(NULL);
     delete dbiRegistry;
+    appContext->setDbiRegistry(NULL);
 
     appContext->setUdrSchemaRegistry(NULL);
     delete schemaRegistry;
