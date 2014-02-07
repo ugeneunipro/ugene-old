@@ -4541,6 +4541,7 @@ GUI_TEST_CLASS_DEFINITION( test_2578 ) {
     GTWidget::click(os, GTWidget::findWidget(os, "sequenceLineEdit"));
     GTKeyboardDriver::keySequence(os, "Montana_montana");
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep(300);
     CHECK_SET_ERR(exportButton->isEnabled(), "exportButton is disabled unexpectedly");
 
 //    5. Select 'General' tab, then select 'Highlighting' tab again.
@@ -4589,7 +4590,7 @@ GUI_TEST_CLASS_DEFINITION( test_2612 ) {
 GUI_TEST_CLASS_DEFINITION( test_2667 ) {
 //    1. Open {/data/samples/genbank/murine.gb}.
 //    Expected state: a document was added, it contains two object: an annotation and a sequence
-    GTFileDialog::openFile(os, dataDir + "/samples/genbank/", "murine.gb");
+    GTFileDialog::openFile(os, dataDir + "/samples/Genbank/", "murine.gb");
 
 //    2. Select the annotation object in the project view.
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));

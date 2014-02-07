@@ -65,6 +65,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsDialog::waitForDialog( os, new MessageBoxDialogFiller( os, QMessageBox::Close,
         "Approximate estimation time of the workflow run is" ) );
     GTWidget::click(os,GTAction::button(os,"Estimate workflow"));
+    GTGlobals::sleep();
 }
 
 } // namespace GUITTest_common_scenarios_workflow_estimating
