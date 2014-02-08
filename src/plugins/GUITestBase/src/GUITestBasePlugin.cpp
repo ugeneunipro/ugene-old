@@ -969,9 +969,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002_1,"no such scheme on windows");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0003,"no such scheme on windows");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0005,"no such scheme on windows");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0006,"no such scheme on windows");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0006_1,"no such scheme on windows");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0007,"no such scheme on windows");
+    REGISTER_TEST_LINUX(GUITest_common_scenarios_workflow_designer::test_0006,"no such scheme on windows, https://ugene.unipro.ru/tracker/browse/UGENE-2738 on mac");
+    REGISTER_TEST_LINUX(GUITest_common_scenarios_workflow_designer::test_0006_1,"no such scheme on windows, https://ugene.unipro.ru/tracker/browse/UGENE-2738 on mac");
+    REGISTER_TEST_LINUX(GUITest_common_scenarios_workflow_designer::test_0007,"no such scheme on windows, https://ugene.unipro.ru/tracker/browse/UGENE-2738 on mac");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0009,"no such scheme on windows");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0010,"no such scheme on windows");
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0013);
@@ -982,7 +982,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Workflow designer/Workflow parameters validation
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0001);
-    REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0002);
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_workflow_parameters_validation::test_0002, "qt dialog can't be shown");
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0006);
@@ -1003,9 +1003,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer/Scripting
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_common_scenarios_workflow_scripting::test_0001);
-    REGISTER_TEST(GUITest_common_scenarios_workflow_scripting::test_0003);
-    REGISTER_TEST(GUITest_common_scenarios_workflow_scripting::test_0004);
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_workflow_scripting::test_0001, "https://ugene.unipro.ru/tracker/browse/UGENE-2739");
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_workflow_scripting::test_0003, "https://ugene.unipro.ru/tracker/browse/UGENE-2739");
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_workflow_scripting::test_0004, "https://ugene.unipro.ru/tracker/browse/UGENE-2739");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/NIAID_pipelines

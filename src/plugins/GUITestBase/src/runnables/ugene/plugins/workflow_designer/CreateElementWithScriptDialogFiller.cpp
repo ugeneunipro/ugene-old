@@ -65,7 +65,7 @@ void ScriptEditorDialogFiller::run(){
     GT_CHECK(edit, "textEdit not found")
     edit->setText(text);
 
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep(3000);
     if(checkSyntax){
         GTUtilsDialog::waitForDialog(os,new MessageBoxDialogFiller(os, QMessageBox::Ok, checkSyntaxResult));
         GTWidget::click(os, GTWidget::findWidget(os, "checkButton", dialog));

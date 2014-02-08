@@ -429,7 +429,7 @@ AddTreeWidget::AddTreeWidget(MSAEditor* msa)
     buildTreeButton = new QPushButton(QIcon(":core/images/phylip.png"), tr("Build tree"), this);
     buildTreeButton->setMinimumWidth(20);
     buttonLayout->addWidget(buildTreeButton);
-    openTreeButton->setObjectName( "BuildTreeButton" );
+    buildTreeButton->setObjectName( "BuildTreeButton" );
 
     mainLayout->addLayout(buttonLayout);
 

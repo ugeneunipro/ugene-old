@@ -2174,7 +2174,13 @@ void WorkflowView::sl_loadScene() {
 
     QString dir = AppContext::getSettings()->getValue(LAST_DIR, QString("")).toString();
     QString filter = DesignerUtils::getSchemaFileFilter(true, true);
-    QString url = QFileDialog::getOpenFileName(0, tr("Open workflow file"), dir, filter);
+    QString url;
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        url = QFileDialog::getOpenFileName(0, tr("Open workflow file"), dir, filter, 0, QFileDialog::DontUseNativeDialog);
+    }else
+#endif
+    url = QFileDialog::getOpenFileName(0, tr("Open workflow file"), dir, filter);
     if (!url.isEmpty()) {
         AppContext::getSettings()->setValue(LAST_DIR, QFileInfo(url).absoluteDir().absolutePath());
         sl_loadScene(url, false);

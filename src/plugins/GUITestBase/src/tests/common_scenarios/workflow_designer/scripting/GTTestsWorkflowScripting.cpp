@@ -132,6 +132,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
     GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogFiller(os, "", "url_out = url + \".result.fa\";"));
     GTUtilsWorkflowDesigner::setParameterScripting(os, "output file", "user script");
+    GTGlobals::sleep(3000);
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os,"Read sequence"));
     GTMouseDriver::click(os);

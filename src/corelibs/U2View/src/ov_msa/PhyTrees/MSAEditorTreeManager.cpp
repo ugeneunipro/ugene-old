@@ -269,7 +269,13 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
 void MSAEditorTreeManager::openTreeFromFile() {
     LastUsedDirHelper h;
     QString filter = DialogUtils::prepareDocumentsFileFilter(BaseDocumentFormats::NEWICK, false, QStringList());
-    QString file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter);
+    QString file;
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter, 0, QFileDialog::DontUseNativeDialog);
+    }else
+#endif
+    file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter);
     CHECK(!file.isEmpty(),);
     if (QFileInfo(file).exists()) {
         h.url = file;

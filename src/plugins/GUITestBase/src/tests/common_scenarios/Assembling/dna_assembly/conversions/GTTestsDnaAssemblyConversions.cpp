@@ -47,13 +47,15 @@ GUI_TEST_CLASS_DEFINITION( test_0001 ) {
     CHECK_OP( os, );
     GTUtilsDialog::waitForDialog( os, new MessageBoxDialogFiller( os, QMessageBox::Yes ) );
     CHECK_OP( os, );
+    GTUtilsDialog::waitForDialog( os, new ImportBAMFileFiller(os, sandBoxDir + "output.ugenedb") );
+    CHECK_OP( os, );
 
     QMenu *mainMenu = GTMenu::showMainMenu( os, MWMENU_TOOLS );
     CHECK_OP( os, );
     GTMenu::clickMenuItemByName( os, mainMenu, QStringList( ) << "Align to reference"
         << "Align short reads" );
     CHECK_OP( os, );
-    GTGlobals::sleep( 5000 );
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
     CHECK_SET_ERR( !l.hasError( ), "Error message expected in log" );
     GTFile::check( os, "_common_data/e_coli/NC_008253.gb.fasta" );

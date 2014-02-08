@@ -3214,7 +3214,10 @@ GUI_TEST_CLASS_DEFINITION( test_2224 )
 
     // 5. Click in the leftmost column of the selected region
     GTUtilsMSAEditorSequenceArea::click( os, QPoint( 1, 7 ) );
-
+#ifdef Q_OS_MAC
+    GTGlobals::sleep(1000);
+    GTMouseDriver::click(os);
+#endif
     // 7. Check the result state
     GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 11, 17 ) );
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );

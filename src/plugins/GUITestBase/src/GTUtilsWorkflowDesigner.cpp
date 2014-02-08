@@ -294,6 +294,7 @@ WorkflowPortItem* GTUtilsWorkflowDesigner::getPortById(U2OpStatus &os, WorkflowP
 QRect GTUtilsWorkflowDesigner::getItemRect(U2OpStatus &os,QString itemName){
 //TODO: support finding items when there are several similar workers in scheme
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    GT_CHECK_RESULT(sceneView !=NULL, "scene view not found", QRect());
     QList<QGraphicsItem *> items = sceneView->items();
 
     foreach(QGraphicsItem* it, items) {
@@ -496,7 +497,7 @@ void GTUtilsWorkflowDesigner::setParameterScripting(U2OpStatus &os, QString para
     //SET VALUE
     QComboBox* box = qobject_cast<QComboBox*>(table->findChild<QComboBox*>());
     GT_CHECK(box, "QComboBox not found. Scripting might be unavaluable for this parameter");
-    GTComboBox::setIndexWithText(os, box, scriptMode);
+    GTComboBox::setIndexWithText(os, box, scriptMode, false);
 }
 #undef GT_METHOD_NAME
 

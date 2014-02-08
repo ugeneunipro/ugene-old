@@ -89,7 +89,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005){
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    //GTUtilsTaskTreeView::waitTaskFinidhed(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0000) {

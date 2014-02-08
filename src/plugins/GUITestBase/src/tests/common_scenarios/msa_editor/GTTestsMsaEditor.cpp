@@ -370,8 +370,11 @@ GUI_TEST_CLASS_DEFINITION(test_0003_4) {
     GTGlobals::sleep();
 
     GTUtilsMdi::click(os, GTGlobals::Close);
-    GTGlobals::sleep();
-
+    GTGlobals::sleep(1000);
+#ifdef Q_OS_MAC
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(1000);
+#endif
     QWidget* mdiWindow = GTUtilsMdi::activeWindow(os, false);
     CHECK_SET_ERR(mdiWindow == NULL, "There is an MDI window");
 
