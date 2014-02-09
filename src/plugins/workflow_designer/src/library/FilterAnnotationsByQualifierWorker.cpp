@@ -39,7 +39,7 @@
 namespace U2 {
 namespace LocalWorkflow {
 
-const QString FilterAnnotationsByQualifierWorkerFactory::ACTOR_ID("filter-annotations-by-qualifierF");
+const QString FilterAnnotationsByQualifierWorkerFactory::ACTOR_ID("filter-annotations-by-qualifier");
 
 const static QString QUALIFER_NAME_ATTR( "qualifier-name" );
 const static QString QUALIFER_VALUE_ATTR( "qualifier-value" );
@@ -136,11 +136,7 @@ void FilterAnnotationsByQualifierWorkerFactory::init() {
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
 
     proto->setPrompter( new FilterAnnotationsByQualifierPrompter() );
-    /*{
-        QMap<QString, PropertyDelegate*> delegateMap;
-        delegateMap[FILTER_NAMES_ATTR] = new LineEditDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true, false, false);
-        proto->setEditor(new DelegateEditor(delegateMap));
-    }*/
+    
     WorkflowEnv::getProtoRegistry()->registerProto( BaseActorCategories::CATEGORY_BASIC(), proto );
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById( LocalDomainFactory::ID );
     localDomain->registerEntry( new FilterAnnotationsByQualifierWorkerFactory() );
