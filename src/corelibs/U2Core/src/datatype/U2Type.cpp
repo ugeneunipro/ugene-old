@@ -23,42 +23,38 @@
 
 namespace U2 {
 
-/**
- * If you change something here do not forget to update an appropriate comment in the header file
- */
-
-const U2DataType U2Type::Unknown                        = 0;
+const U2DataType U2Type::Unknown;
 
 /** Object types */
-const U2DataType U2Type::Sequence                       = 1;
-const U2DataType U2Type::Msa                            = 2;
-const U2DataType U2Type::PhyTree                        = 3;
-const U2DataType U2Type::Assembly                       = 4;
-const U2DataType U2Type::VariantTrack                   = 5;
-const U2DataType U2Type::VariantType                    = 6;
-const U2DataType U2Type::FilterTableType                = 7;
-const U2DataType U2Type::KnownMutationsTrackType        = 8;
-const U2DataType U2Type::AnnotationTable                = 10;
-const U2DataType U2Type::RawData                        = 101;
+const U2DataType U2Type::Sequence;
+const U2DataType U2Type::Msa;
+const U2DataType U2Type::PhyTree;
+const U2DataType U2Type::Assembly;
+const U2DataType U2Type::VariantTrack;
+const U2DataType U2Type::VariantType;
+const U2DataType U2Type::FilterTableType;
+const U2DataType U2Type::KnownMutationsTrackType;
+const U2DataType U2Type::AnnotationTable;
+const U2DataType U2Type::RawData;
 
-const U2DataType U2Type::CrossDatabaseReference         = 999;
+const U2DataType U2Type::CrossDatabaseReference;
 
 /** SCO (non-object, non-root) types */
-const U2DataType U2Type::Annotation                     = 1000;
-const U2DataType U2Type::AnnotationGroup                = 1001;
+const U2DataType U2Type::Annotation;
+const U2DataType U2Type::AnnotationGroup;
 
 /**  Assembly read */
-const U2DataType U2Type::AssemblyRead                   = 1100;
+const U2DataType U2Type::AssemblyRead;
 
 /** Sequence feature */
-const U2DataType U2Type::Feature                        = 1300;
+const U2DataType U2Type::Feature;
 
-const U2DataType U2Type::UdrRecord                      = 1400;
+const U2DataType U2Type::UdrRecord;
 
 /**  Attribute types */
-const U2DataType U2Type::AttributeInteger               = 2001;
-const U2DataType U2Type::AttributeReal                  = 2002;
-const U2DataType U2Type::AttributeString                = 2003;
-const U2DataType U2Type::AttributeByteArray             = 2004;
+const U2DataType U2Type::AttributeInteger;
+const U2DataType U2Type::AttributeReal;
+const U2DataType U2Type::AttributeString;
+const U2DataType U2Type::AttributeByteArray;
 
 } // U2
