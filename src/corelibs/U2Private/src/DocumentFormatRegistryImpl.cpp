@@ -23,6 +23,9 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DbiDocumentFormat.h>
+#include <U2Core/RawDataUdrSchema.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/PlainTextFormat.h>
 #include <U2Formats/FastaFormat.h>
@@ -113,6 +116,10 @@ DocumentFormat* DocumentFormatRegistryImpl::getFormatById(DocumentFormatId id) c
 
 
 void DocumentFormatRegistryImpl::init() {
+    U2OpStatusImpl os;
+    RawDataUdrSchema::init(os);
+    SAFE_POINT_OP(os, );
+
     PlainTextFormat* text = new PlainTextFormat(this);
     registerFormat(text);   
 

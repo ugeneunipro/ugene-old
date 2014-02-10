@@ -440,7 +440,9 @@ Document* ABIFormat::parseABI(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapter
     DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, "Chromatogram");
     objects.append(chromObj);
     QString seqComment = dna.info.value(DNAInfo::COMMENT).toStringList().join("\n");
-    objects.append(new TextObject(seqComment, "Info"));
+    TextObject *textObj = TextObject::createInstance(seqComment, "Info", dbiRef, os);
+    CHECK_OP(os, NULL);
+    objects.append(textObj);
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
     chromObj->addObjectRelation(GObjectRelation(GObjectReference(seqObj), GObjectRelationRole::SEQUENCE));
     return doc;

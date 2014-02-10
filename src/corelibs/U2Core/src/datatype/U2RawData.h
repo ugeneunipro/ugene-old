@@ -19,34 +19,32 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_TEXT_OBJECT_H_
-#define _U2_TEXT_OBJECT_H_
+#ifndef _U2_RAWDATA_H_
+#define _U2_RAWDATA_H_
 
-#include <U2Core/GObject.h>
-#include <U2Core/UdrRecord.h>
-
-#include "GObjectTypes.h"
+#include <U2Core/U2Type.h>
 
 namespace U2 {
 
-class U2CORE_EXPORT TextObject: public GObject {
-    Q_OBJECT
+/**
+ * Raw data representation. The data itself must be packed using
+ * a serializer. The serializer's identifier is kept by this structure.
+ */
+class U2CORE_EXPORT U2RawData : public U2Object {
 public:
-    static TextObject * createInstance(const QString &text, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap = QVariantMap());
+    U2RawData() : U2Object() {}
+    U2RawData(const U2DbiRef &dbiRef) : U2Object(U2DataId(), dbiRef.dbiId, 0) {}
 
-    TextObject(const QString &objectName, const U2EntityRef &textRef, const QVariantMap &hintsMap = QVariantMap());
+    /** The url which the data is taken from */
+    QString url;
 
-    QString getText() const;
+    /** The identifier of a serializer which the data is packed by */
+    QString serializer;
 
-    void setText(const QString &newText);
-
-    GObject * clone(const U2DbiRef&, U2OpStatus&) const;
-
-private:
-    void commitTextToDB(const QString &newText);
+    // implement U2Object
+    virtual U2DataType getType() { return U2Type::RawData; }
 };
 
-}//namespace
+} // U2
 
-
-#endif
+#endif // _U2_RAWDATA_H_

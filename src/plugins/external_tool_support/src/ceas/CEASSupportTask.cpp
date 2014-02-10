@@ -82,7 +82,7 @@ const QString CEASSupportTask::BASE_DIR_NAME("ceas_report");
 
 CEASSupportTask::CEASSupportTask(const CEASTaskSettings &_settings)
 : ExternalToolSupportTask("Running CEAS report task", TaskFlag_None),
-settings(_settings), bedDoc(NULL), wigDoc(NULL),
+settings(_settings), bedDoc(NULL),
 bedTask(NULL), wigTask(NULL), etTask(NULL), activeSubtasks(0), logParser(NULL)
 {
 
@@ -95,7 +95,6 @@ CEASSupportTask::~CEASSupportTask() {
 void CEASSupportTask::cleanup() {
 
     delete bedDoc; bedDoc = NULL;
-    delete wigDoc; wigDoc = NULL;
     delete logParser; logParser = NULL;
 
     //remove tmp files
@@ -150,21 +149,6 @@ void CEASSupportTask::createBedDoc() {
         }
         bedDoc->addObject(ato);
     }
-}
-
-void CEASSupportTask::createWigDoc() {
-    QString wigUrl = workingDir + "/" + "tmp.wig";
-
-    DocumentFormat *wigFormat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::PLAIN_TEXT);
-    CHECK_EXT(NULL != wigFormat, stateInfo.setError("NULL wig format"), );
-
-    wigDoc = wigFormat->createNewLoadedDocument(
-        IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), wigUrl, stateInfo);
-    CHECK_OP(stateInfo, );
-    wigDoc->setDocumentOwnsDbiResources(false);
-
-    TextObject *to = new TextObject(settings.getWigData(), "wig_object");
-    wigDoc->addObject(to);
 }
 
 bool CEASSupportTask::canStartETTask() const {

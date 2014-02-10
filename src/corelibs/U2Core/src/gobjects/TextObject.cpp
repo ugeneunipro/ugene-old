@@ -19,22 +19,59 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/RawDataUdrSchema.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
 #include "TextObject.h"
 
 namespace U2 {
 
-void TextObject::setText(const QString& newText) {
-    text = newText;
+TextObject * TextObject::createInstance(const QString &text, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap) {
+    U2RawData object(dbiRef);
+    object.url = objectName;
+
+    RawDataUdrSchema::createObject(dbiRef, object, os);
+    CHECK_OP(os, NULL);
+
+    U2EntityRef entRef(dbiRef, object.id);
+    RawDataUdrSchema::writeContent(text.toUtf8(), entRef, os);
+    CHECK_OP(os, NULL);
+
+    return new TextObject(objectName, entRef, hintsMap);
+}
+
+TextObject::TextObject(const QString &objectName, const U2EntityRef &textRef, const QVariantMap &hintsMap)
+: GObject(GObjectTypes::TEXT, objectName, hintsMap)
+{
+    entityRef = textRef;
+}
+
+QString TextObject::getText() const {
+    U2OpStatus2Log os;
+    QByteArray content = RawDataUdrSchema::readAllContent(entityRef, os);
+    return QString::fromUtf8(content);
+}
+
+void TextObject::setText(const QString &newText) {
+    commitTextToDB(newText);
     setModified(true);
 }
 
-GObject* TextObject::clone(const U2DbiRef&, U2OpStatus&) const {
-    TextObject* cln = new TextObject(text, getGObjectName(), getGHintsMap());
-    cln->setIndexInfo(getIndexInfo());
-    return cln;
+GObject * TextObject::clone(const U2DbiRef &dstRef, U2OpStatus &os) const {
+    U2RawData dstObject = RawDataUdrSchema::cloneObject(entityRef, dstRef, os);
+    CHECK_OP(os, NULL);
+
+    U2EntityRef dstEntRef(dstRef, dstObject.id);
+    TextObject *dst = new TextObject(getGObjectName(), dstEntRef, getGHintsMap());
+    dst->setIndexInfo(getIndexInfo());
+    return dst;
 }
 
+void TextObject::commitTextToDB(const QString &newText) {
+    U2OpStatus2Log os;
+    RawDataUdrSchema::writeContent(newText.toUtf8(), entityRef, os);
+}
 
 }//namespace
-
-

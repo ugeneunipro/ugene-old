@@ -43,7 +43,9 @@ PlainTextFormat::PlainTextFormat(QObject* p) : DocumentFormat(p, DocumentFormatF
 Document* PlainTextFormat::createNewLoadedDocument(IOAdapterFactory* io, const QString& url, const QVariantMap& fs) {
     U2OpStatus2Log os;
     Document* d = DocumentFormat::createNewLoadedDocument(io, url, os, fs);
-    GObject* o = new TextObject("", "Text");
+    CHECK_OP(os, NULL);
+    GObject* o = TextObject::createInstance("", "Text", d->getDbiRef(), os);
+    CHECK_OP(os, NULL);
     d->addObject(o);
     return d;
 }
@@ -73,7 +75,8 @@ Document* PlainTextFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, c
     
     //todo: check file-readonly status?
 
-    TextObject* to = new TextObject(text, "Text");
+    TextObject* to = TextObject::createInstance(text, "Text", dbiRef, os);
+    CHECK_OP(os, NULL);
     QList<GObject*> objects;
     objects.append(to);
     Document* d = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);

@@ -36,7 +36,7 @@ public:
 
     virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const;
 
-protected:
+private:
     DNAChromatogram chrom;
 };
 

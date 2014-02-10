@@ -29,10 +29,13 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/MAlignmentImporter.h>
+#include <U2Core/RawDataUdrSchema.h>
+#include <U2Core/TextObject.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2FeatureDbi.h>
 #include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2RawData.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2SequenceUtils.h>
@@ -91,40 +94,41 @@ U2Object *DbiDataStorage::getObject(const SharedDbiDataHandler &handler, const U
     DbiConnection *connection = this->getConnection(handler->getDbiRef(), os);
     CHECK_OP(os, NULL);
 
-    //if (U2Type::Sequence == type) {
-    if (1 == type) {
+    if (U2Type::Sequence == type) {
         U2SequenceDbi *dbi = connection->dbi->getSequenceDbi();
         U2Sequence seq = dbi->getSequenceObject(objectId, os);
         SAFE_POINT_OP(os, NULL);
 
         return new U2Sequence(seq);
-    } else if (2 == type) {
+    } else if (U2Type::Msa == type) {
         U2MsaDbi *dbi = connection->dbi->getMsaDbi();
         U2Msa msa = dbi->getMsaObject(objectId, os);
         SAFE_POINT_OP(os, NULL);
 
         return new U2Msa(msa);
-    //} else if (U2Type::VariantTrack == type) {
-    } else if (5 == type) {
+    } else if (U2Type::VariantTrack == type) {
         U2VariantDbi *dbi = connection->dbi->getVariantDbi();
         U2VariantTrack track = dbi->getVariantTrack(objectId, os);
         SAFE_POINT_OP(os, NULL);
 
         return new U2VariantTrack(track);
-    //} else if (U2Type::Assembly == type) {
-    } else if (4 == type) {
+    } else if (U2Type::Assembly == type) {
         U2AssemblyDbi *dbi = connection->dbi->getAssemblyDbi();
         U2Assembly assembly = dbi->getAssemblyObject(objectId, os);
         SAFE_POINT_OP(os, NULL);
 
         return new U2Assembly(assembly);
-    //} else if (U2Type::AnnotationTable == type) {
-    } else if ( 10 == type ) {
+    } else if (U2Type::AnnotationTable == type) {
         U2FeatureDbi *dbi = connection->dbi->getFeatureDbi();
         U2AnnotationTable annTable = dbi->getAnnotationTableObject(objectId, os);
         SAFE_POINT_OP(os, NULL);
 
         return new U2AnnotationTable(annTable);
+    } else if (U2Type::RawData == type) {
+        U2RawData rawData = RawDataUdrSchema::getObject(handler->entRef, os);
+        SAFE_POINT_OP(os, NULL);
+
+        return new U2RawData(rawData);
     } else {
         assert(0);
     }
@@ -317,6 +321,22 @@ QList<AnnotationData> StorageUtils::getAnnotationTable( DbiDataStorage *storage,
         }
     }
     return result;
+}
+
+QString StorageUtils::getText(DbiDataStorage *storage, const QVariant &data) {
+    if (data.canConvert<SharedDbiDataHandler>()) {
+        SharedDbiDataHandler handler = data.value<SharedDbiDataHandler>();
+        QScopedPointer<U2RawData> rawData(dynamic_cast<U2RawData*>(storage->getObject(handler, U2Type::RawData)));
+        CHECK(NULL != rawData.data(), "");
+
+        U2EntityRef objRef(storage->getDbiRef(), rawData->id);
+        TextObject textObj("", objRef);
+        return textObj.getText();
+    } else if (data.canConvert<QString>()) {
+        return data.toString();
+    }
+    SAFE_POINT(true, "Unexpected data type", "");
+    return "";
 }
 
 } // Workflow

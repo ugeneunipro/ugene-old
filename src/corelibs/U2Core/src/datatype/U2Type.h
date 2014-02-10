@@ -74,6 +74,7 @@ public:
     static const U2DataType KnownMutationsTrackType = 8;
     static const U2DataType AnnotationTable         = 10;
     /** UDR object types 101..199 */
+    static const U2DataType RawData                 = 101;
 
     static const U2DataType CrossDatabaseReference  = 999;
 

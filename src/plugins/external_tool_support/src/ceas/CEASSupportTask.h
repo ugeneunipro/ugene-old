@@ -74,7 +74,6 @@ private:
     QString workingDir;
 
     Document *bedDoc;
-    Document *wigDoc;
 
     SaveDocumentTask *bedTask;
     SaveDocumentTask *wigTask;
@@ -88,7 +87,6 @@ private:
 
 private:
     void createBedDoc();
-    void createWigDoc();
     bool canStartETTask() const;
     bool copyFile(const QString &src, const QString &dst);
     Task* createETTask();

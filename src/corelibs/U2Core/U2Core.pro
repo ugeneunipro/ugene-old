@@ -14,6 +14,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/BioStruct3D.h \
            src/datatype/DamageEffect.h \
            src/datatype/DASSource.h \
+           src/datatype/DbiIdBasedData.h \
            src/datatype/DIProperties.h \
            src/datatype/DNAAlphabet.h \
            src/datatype/DNAAlphabetRegistryImpl.h \
@@ -24,7 +25,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/DNASequenceUtils.h \
            src/datatype/DNATranslation.h \
            src/datatype/DNATranslationImpl.h \
-           src/datatype/DbiIdBasedData.h \
            src/datatype/FeatureColors.h \
            src/datatype/Gene.h \
            src/datatype/KnownMutations.h \
@@ -48,6 +48,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/U2Msa.h \
            src/datatype/U2Qualifier.h \
            src/datatype/U2Range.h \
+           src/datatype/U2RawData.h \
            src/datatype/U2Region.h \
            src/datatype/U2Sequence.h \
            src/datatype/U2Type.h \
@@ -212,7 +213,8 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/U2OpStatusUtils.h \
            src/util/U2SequenceUtils.h \
            src/util/U2VariationUtils.h \
-           src/util/VariationPropertiesUtils.h
+           src/util/VariationPropertiesUtils.h \
+           src/datatype/udr/RawDataUdrSchema.h
 SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/cmdline/CMDLineRegistry.cpp \
            src/cmdline/CMDLineUtils.cpp \
@@ -226,6 +228,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/BaseTranslations.cpp \
            src/datatype/BioStruct3D.cpp \
            src/datatype/DASSource.cpp \
+           src/datatype/DbiIdBasedData.cpp \
            src/datatype/DNAAlphabet.cpp \
            src/datatype/DNAAlphabetRegistryImpl.cpp \
            src/datatype/DNAInfo.cpp \
@@ -236,7 +239,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/DNATranslationImpl.cpp \
            src/datatype/FeatureColors.cpp \
            src/datatype/Gene.cpp \
-           src/datatype/DbiIdBasedData.cpp \
            src/datatype/MAlignment.cpp \
            src/datatype/MAlignmentInfo.cpp \
            src/datatype/Matrix44.cpp \
@@ -375,7 +377,8 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/U2FeatureUtils.cpp \
            src/util/U2SequenceUtils.cpp \
            src/util/U2VariationUtils.cpp \
-           src/util/VariationPropertiesUtils.cpp
+           src/util/VariationPropertiesUtils.cpp \
+           src/datatype/udr/RawDataUdrSchema.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \

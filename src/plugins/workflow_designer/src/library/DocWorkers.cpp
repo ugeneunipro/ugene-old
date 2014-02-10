@@ -162,7 +162,9 @@ void TextWriter::data2doc(Document* doc, const QVariantMap& data) {
     QString text = list.join("\n");
     TextObject* to = qobject_cast<TextObject*>(GObjectUtils::selectOne(doc->getObjects(), GObjectTypes::TEXT, UOF_LoadedOnly));
     if (!to) {
-        to = new TextObject(text, QString("Text %1").arg(++ct));
+        U2OpStatus2Log os;
+        to = TextObject::createInstance(text, QString("Text %1").arg(++ct), context->getDataStorage()->getDbiRef(), os);
+        CHECK_OP(os, );
         doc->addObject(to);
     } else {
         to->setText(to->getText() + "\n" + text);

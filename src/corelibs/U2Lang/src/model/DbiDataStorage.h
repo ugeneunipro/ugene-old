@@ -81,6 +81,8 @@ public:
     static MAlignmentObject *getMsaObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
     /* NOTE: deallocate memory! */
     static QList<AnnotationData> getAnnotationTable( DbiDataStorage *storage, const QVariant &annObjList );
+
+    static QString getText(DbiDataStorage *storage, const QVariant &data);
 };
 
 } // Workflow

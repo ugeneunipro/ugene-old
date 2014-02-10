@@ -28,6 +28,7 @@
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/TextObject.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/ExportObjectUtils.h>
 
@@ -175,7 +176,8 @@ GObject *WorkflowDebugMessageParserImpl::fetchObjectFromMessage( const QString &
         SAFE_POINT( messageData.canConvert<QString>( ), "Supplied message doesn't contain text data",
             NULL );
         const QString documentText = messageData.value<QString>( );
-        result = new TextObject( documentText, "wd_investigation_tmp_text_object" );
+        U2OpStatus2Log os;
+        result = TextObject::createInstance( documentText, "wd_investigation_tmp_text_object", context->getDataStorage()->getDbiRef(), os );
         return result;
     } else if ( BaseSlots::URL_SLOT( ).getId( ) == messageType
         || BaseSlots::DATASET_SLOT( ).getId( ) == messageType

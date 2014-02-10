@@ -120,14 +120,14 @@ namespace {
         return msaObj;
     }
 
-    static TextObject * toText(const QVariantMap &data, U2OpStatus &os) {
+    static TextObject * toText(const QVariantMap &data, WorkflowContext *context, U2OpStatus &os) {
         QString slot = BaseSlots::TEXT_SLOT().getId();
         if (!data.contains(slot)) {
             os.setError(QObject::tr("Empty text slot"));
             return NULL;
         }
         QString text = data[slot].value<QString>();
-        return new TextObject(text, "tmp_text_object");
+        return TextObject::createInstance(text, "tmp_text_object", context->getDataStorage()->getDbiRef(), os);
     }
 
     static QString generateAndCreateURL(const QString &extention, const QString &name) {
@@ -200,7 +200,7 @@ namespace {
             rel << GObjectRelation(GObjectReference(seqObj), GObjectRelationRole::SEQUENCE);
             annsObj->setObjectRelations(rel);
         } else if (dataCfg.isText()) {
-            TextObject *textObj = toText(data, os);
+            TextObject *textObj = toText(data, context, os);
             CHECK_OP(os, );
             d->addObject(textObj);
         }
