@@ -23,38 +23,4 @@
 
 namespace U2 {
 
-const U2DataType U2Type::Unknown;
-
-/** Object types */
-const U2DataType U2Type::Sequence;
-const U2DataType U2Type::Msa;
-const U2DataType U2Type::PhyTree;
-const U2DataType U2Type::Assembly;
-const U2DataType U2Type::VariantTrack;
-const U2DataType U2Type::VariantType;
-const U2DataType U2Type::FilterTableType;
-const U2DataType U2Type::KnownMutationsTrackType;
-const U2DataType U2Type::AnnotationTable;
-const U2DataType U2Type::RawData;
-
-const U2DataType U2Type::CrossDatabaseReference;
-
-/** SCO (non-object, non-root) types */
-const U2DataType U2Type::Annotation;
-const U2DataType U2Type::AnnotationGroup;
-
-/**  Assembly read */
-const U2DataType U2Type::AssemblyRead;
-
-/** Sequence feature */
-const U2DataType U2Type::Feature;
-
-const U2DataType U2Type::UdrRecord;
-
-/**  Attribute types */
-const U2DataType U2Type::AttributeInteger;
-const U2DataType U2Type::AttributeReal;
-const U2DataType U2Type::AttributeString;
-const U2DataType U2Type::AttributeByteArray;
-
 } // U2

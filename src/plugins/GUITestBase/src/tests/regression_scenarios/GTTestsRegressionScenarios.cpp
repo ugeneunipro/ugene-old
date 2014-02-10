@@ -71,7 +71,6 @@
 #include "runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
-#include "runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
@@ -1144,47 +1143,6 @@ GUI_TEST_CLASS_DEFINITION( test_1688 ) {
     GTFileDialog::openFile( os, testDir + "_common_data/scenarios/_regression/1688/", "sr100.000.fa");
     GTGlobals::sleep( 60000 );
     GTUtilsLog::check( os, l );
-}
-
-GUI_TEST_CLASS_DEFINITION(test_1689){
-//1. Open "data/samples/CLUSTALW/COI.aln"
-    GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
-//2. Select "Consensus mode..." in the context menu on MSA area
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
-    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
-
-    QComboBox *consensusCombo=qobject_cast<QComboBox*>(GTWidget::findWidget(os,"consensusType"));
-    CHECK_SET_ERR(consensusCombo!=NULL, "consensusCombo is NULL");
-    GTComboBox::setCurrentIndex(os,consensusCombo, 1);
-
-    QSpinBox *thresholdSpinBox=qobject_cast<QSpinBox*>(GTWidget::findWidget(os,"thresholdSpinBox"));
-    CHECK_SET_ERR(thresholdSpinBox!=NULL, "consensusCombo is NULL");
-    GTSpinBox::setValue(os,thresholdSpinBox,10,GTGlobals::UseKeyBoard);
-//3. Remember current threshold value (by default: 100% for the default algorithm)
-
-//4. Change threshold value with spinbox: delete one zero. New value is 10%
-
-//5. Click the "OK" button
-
-//6. Repeat the 2nd step
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
-    GTUtilsDialog::waitForDialog(os, new ConsensusSelectionDialogFiller(os,1,10,true));
-    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
-//7. Restore previous value (with the "Reset" button, or by entering the deleted zero into the spinbox)
-
-//8. Click the "OK" button
-
-//9. Close MSA Editor
-     GTUtilsMdi::click(os,GTGlobals::Close);
-
-//10. Open "COI.aln" from the project view
-    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os, "COI"));
-    GTMouseDriver::doubleClick(os);
-//11. Repeat the 2nd step
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Consensus mode",GTGlobals::UseMouse));
-    GTUtilsDialog::waitForDialog(os, new CheckConsensusValues(os,-1,100));
-    GTMenu::showContextMenu(os,GTUtilsMdi::activeWindow(os));
-//Expected state: the threshold is 100%
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1701 ) {

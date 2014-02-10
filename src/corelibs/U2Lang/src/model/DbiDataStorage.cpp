@@ -246,7 +246,7 @@ void DbiDataStorage::openDbi(const U2DbiRef &dbiRef, U2OpStatus &os) {
 U2SequenceObject *StorageUtils::getSequenceObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
     CHECK(NULL != handler.constData(), NULL);
     //QScopedPointer<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(handler, U2Type::Sequence)));
-    QScopedPointer<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(handler, U2Type::Sequence)));
+    QScopedPointer<U2Sequence> seqDbi(dynamic_cast<U2Sequence*>(storage->getObject(handler, 1)));
     CHECK(NULL != seqDbi.data(), NULL);
 
     U2EntityRef ent(handler->getDbiRef(), seqDbi->id);
@@ -256,7 +256,7 @@ U2SequenceObject *StorageUtils::getSequenceObject(DbiDataStorage *storage, const
 VariantTrackObject *StorageUtils::getVariantTrackObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
     CHECK(NULL != handler.constData(), NULL);
     //QScopedPointer<U2VariantTrack> track(dynamic_cast<U2VariantTrack*>(storage->getObject(handler, U2Type::VariantTrack)));
-    QScopedPointer<U2VariantTrack> track(dynamic_cast<U2VariantTrack*>(storage->getObject(handler, U2Type::VariantTrack)));
+    QScopedPointer<U2VariantTrack> track(dynamic_cast<U2VariantTrack*>(storage->getObject(handler, 5)));
     CHECK(NULL != track.data(), NULL);
 
     U2EntityRef trackRef(handler->getDbiRef(), track->id);
@@ -267,7 +267,8 @@ VariantTrackObject *StorageUtils::getVariantTrackObject(DbiDataStorage *storage,
 
 AssemblyObject *StorageUtils::getAssemblyObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
     CHECK(NULL != handler.constData(), NULL);
-    QScopedPointer<U2Assembly> assembly(dynamic_cast<U2Assembly*>(storage->getObject(handler, U2Type::Assembly)));
+    //QScopedPointer<U2Assembly> assembly(dynamic_cast<U2Assembly*>(storage->getObject(handler, U2Type::Assembly)));
+    QScopedPointer<U2Assembly> assembly(dynamic_cast<U2Assembly*>(storage->getObject(handler, 4)));
     CHECK(NULL != assembly.data(), NULL);
 
     U2EntityRef assemblyRef(handler->getDbiRef(), assembly->id);
@@ -279,7 +280,8 @@ AssemblyObject *StorageUtils::getAssemblyObject(DbiDataStorage *storage, const S
 
 MAlignmentObject *StorageUtils::getMsaObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
     CHECK(NULL != handler.constData(), NULL);
-    QScopedPointer<U2Msa> msa(dynamic_cast<U2Msa*>(storage->getObject(handler, U2Type::Msa)));
+    //QScopedPointer<U2Msa> msa(dynamic_cast<U2Msa*>(storage->getObject(handler, U2Type::Msa)));
+    QScopedPointer<U2Msa> msa(dynamic_cast<U2Msa*>(storage->getObject(handler, 2)));
     CHECK(NULL != msa.data(), NULL);
 
     U2EntityRef msaRef(handler->getDbiRef(), msa->id);
@@ -308,7 +310,8 @@ QList<AnnotationData> StorageUtils::getAnnotationTable( DbiDataStorage *storage,
 
         SAFE_POINT( NULL != annTableId.constData( ), "Invalid annotation table object reference!",
             result );
-        U2Object *dbObject = storage->getObject( annTableId, U2Type::AnnotationTable );
+        //U2Object *dbObject = storage->getObject( annTableId, U2Type::AnnotationTable );
+        U2Object *dbObject = storage->getObject( annTableId, 10 );
         QScopedPointer<U2AnnotationTable> table( dynamic_cast<U2AnnotationTable *>( dbObject ) );
         SAFE_POINT( NULL != table.data( ), "Invalid annotation table object referenced!", result );
 
@@ -326,7 +329,8 @@ QList<AnnotationData> StorageUtils::getAnnotationTable( DbiDataStorage *storage,
 QString StorageUtils::getText(DbiDataStorage *storage, const QVariant &data) {
     if (data.canConvert<SharedDbiDataHandler>()) {
         SharedDbiDataHandler handler = data.value<SharedDbiDataHandler>();
-        QScopedPointer<U2RawData> rawData(dynamic_cast<U2RawData*>(storage->getObject(handler, U2Type::RawData)));
+        //QScopedPointer<U2RawData> rawData(dynamic_cast<U2RawData*>(storage->getObject(handler, RawData)));
+        QScopedPointer<U2RawData> rawData(dynamic_cast<U2RawData*>(storage->getObject(handler, 101)));
         CHECK(NULL != rawData.data(), "");
 
         U2EntityRef objRef(storage->getDbiRef(), rawData->id);

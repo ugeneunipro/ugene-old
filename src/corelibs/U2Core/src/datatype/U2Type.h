@@ -56,8 +56,6 @@ typedef QString U2DbiId;
 /** 
     Built in types 
     Note: Maximum value used for type must be <=4096
-
-    If you add a type do not forget to add a definition in a source file
 */
 
 class U2CORE_EXPORT U2Type {
@@ -115,7 +113,7 @@ enum U2TrackModType {
 class U2CORE_EXPORT U2DbiRef {
 public:
     U2DbiRef(const U2DbiFactoryId& _dbiFactoryId = U2DbiFactoryId(), const U2DbiId& _dbiId = U2DbiId()) 
-        : dbiFactoryId(_dbiFactoryId), dbiId(_dbiId){};
+        : dbiFactoryId(_dbiFactoryId), dbiId(_dbiId) {}
     
     bool isValid() const {return !dbiFactoryId.isEmpty() && !dbiId.isEmpty();}
 

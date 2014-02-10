@@ -34,7 +34,6 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "runnables/qt/PopupChooser.h"
-#include "runnables/ugene/corelibs/U2View/ov_msa/ConsensusSelectorDialogFiller.h"
 #include "GTUtilsMdi.h"
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
