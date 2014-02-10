@@ -27,18 +27,6 @@
 
 #include <QtGui/QApplication>
 
-
-#include "api/GTWidget.h"
-#include "api/GTSpinBox.h"
-#include "api/GTDoubleSpinBox.h"
-#include "api/GTCheckBox.h"
-#include "api/GTLineEdit.h"
-#include "api/GTComboBox.h"
-#include "api/GTRadioButton.h"
-#include <QtGui/QApplication>
-#include <QtGui/QGroupBox>
-#include <QtGui/QComboBox>
-
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::DotPlotFiller"
@@ -65,61 +53,6 @@ void DotPlotFiller::run() {
     GTCheckBox::setChecked(os, invertedCheckBox, invertedRepeats);
 
     GTWidget::click(os, GTWidget::findWidget(os, "startButton", dialog));
-}
-#undef GT_METHOD_NAME
-#undef GT_CLASS_NAME
-
-
-
-
-
-#define GT_CLASS_NAME "GTUtilsDialog::AlignShortReadsFiller"
-#define GT_METHOD_NAME "run"
-
-void DotPlotFilesDialogFiller::run() {
-QWidget* dialog = QApplication::activeModalWidget();
-GT_CHECK(dialog, "activeModalWidget is NULL");
-
-QLineEdit* firstFileEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "firstFileEdit", dialog));
-GT_CHECK(firstFileEdit, "firstFileEdit is NULL");
-GTLineEdit::setText(os, firstFileEdit, parameters->line_firstFileEdit_text);
-
-if(parameters->button_openFirstButton_clicked){
-GTWidget::click(os, GTWidget::findWidget(os,"openFirstButton"));
-}
-
-QCheckBox* mergeFirstCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "mergeFirstCheckBox", dialog));
-GT_CHECK(mergeFirstCheckBox, "mergeFirstCheckBox is NULL");
-GTCheckBox::setChecked(os, mergeFirstCheckBox, parameters->is_mergeFirstCheckBox_checked);
-
-QSpinBox* gapFirst = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "gapFirst", dialog));
-GT_CHECK(gapFirst, "gapFirst is NULL")
-;GTSpinBox::setValue(os, gapFirst, parameters->spin_gapFirst_value);QCheckBox* oneSequenceCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "oneSequenceCheckBox", dialog));
-GT_CHECK(oneSequenceCheckBox, "oneSequenceCheckBox is NULL");
-GTCheckBox::setChecked(os, oneSequenceCheckBox, parameters->is_oneSequenceCheckBox_checked);
-
-QLineEdit* secondFileEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "secondFileEdit", dialog));
-GT_CHECK(secondFileEdit, "secondFileEdit is NULL");
-GTLineEdit::setText(os, secondFileEdit, parameters->line_secondFileEdit_text);
-
-if(parameters->button_openSecondButton_clicked){
-GTWidget::click(os, GTWidget::findWidget(os,"openSecondButton"));
-}
-
-QCheckBox* mergeSecondCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "mergeSecondCheckBox", dialog));
-GT_CHECK(mergeSecondCheckBox, "mergeSecondCheckBox is NULL");
-GTCheckBox::setChecked(os, mergeSecondCheckBox, parameters->is_mergeSecondCheckBox_checked);
-
-QSpinBox* gapSecond = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "gapSecond", dialog));
-GT_CHECK(gapSecond, "gapSecond is NULL")
-;GTSpinBox::setValue(os, gapSecond, parameters->spin_gapSecond_value);if(parameters->button_startButton_clicked){
-GTWidget::click(os, GTWidget::findWidget(os,"startButton"));
-}
-
-if(parameters->button_cancelButton_clicked){
-GTWidget::click(os, GTWidget::findWidget(os,"cancelButton"));
-}
-
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

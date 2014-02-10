@@ -26,13 +26,11 @@ workflow "ChIP-seq analysis"{
     conservation_plot-id {
         type:conservation_plot-id;
         name:"Build Conservation Plot";
-        assembly_version:/home/vmalin/ugene_copy/ugene/trunk/data/cistrome/phastCons/hg19;
         output-file:conservation.bmp;
     }
     seqpos-id {
         type:seqpos-id;
         name:"Collect Motifs with SeqPos";
-        assembly:/home/vmalin/ugene_copy/ugene/trunk/data/cistrome/genomes/hg19;
         output-dir:tools_output;
     }
     peak2gene-id {
@@ -57,6 +55,7 @@ workflow "ChIP-seq analysis"{
         url-out:peaks.bed;
     }
 
+
     .actor-bindings {
         read-annotations.out-annotations->macs-id.in-data
         macs-id.out-data->ceas-report.in-data
@@ -79,6 +78,24 @@ workflow "ChIP-seq analysis"{
     peak2gene-id.peak-annotation->write-annotations-1.in-annotations.annotations
 
     .meta {
+        estimations {
+            function cistromeTime(tagsSize, dbCount) {
+                return 240*tagsSize*dbCount;
+            }
+            var db = new String(utils.attributeValue("seqpos-id.motif_db"));
+            var dbCount = db.split(',').length;
+            var sets = utils.attributeValue("read-annotations.url-in");
+            var time = 0;
+            var ram = 0;
+            for (var i=0; i<sets.length; i++) {
+                var set = sets[i];
+                for (var j=0; j<set.length; j++) {
+                    var tagsSize = utils.fileSize(set[j]) / (1024*1024);
+                    time += cistromeTime(tagsSize, dbCount);
+                }
+            }
+            [time];
+        }
         parameter-aliases {
             read-annotations.url-in {
                 alias: in;
@@ -105,68 +122,68 @@ workflow "ChIP-seq analysis"{
                 alias: out_conduct_go;
             }
             write-annotations.url-out {
-                alias:gene_out;
+                alias:out_peak2gene_genes;
             }
             write-annotations-1.url-out {
-                alias:peak_out;
+                alias:out_peak2gene_peaks;
             }
         }
         visual {
             scale:90;
             ceas-report {
-                pos:"-1050 -555";
+                pos:"-1062 -564";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 148.25 84";
                 in-data.angle:18.6279;
             }
             conduct-go-id {
-                pos:"-1050 -330";
+                pos:"-1061 -338";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:19.6538;
             }
             conservation_plot-id {
-                pos:"-450 -780";
+                pos:"-462 -790";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:250.56;
             }
             macs-id {
-                pos:"-810 -780";
+                pos:"-822 -789";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
                 out-data.angle:322.481;
             }
             peak2gene-id {
-                pos:"-810 -555";
+                pos:"-822 -564";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:15.8192;
                 out-data.angle:289.204;
             }
             read-annotations {
-                pos:"-1050 -780";
+                pos:"-1061 -790";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 bounds:"-30 -30 85.25 90";
                 out-annotations.angle:360;
             }
             seqpos-id {
-                pos:"-450 -585";
+                pos:"-462 -594";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
             }
             write-annotations {
-                pos:"-645 -300";
+                pos:"-652 -308";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-annotations.angle:42.0492;
             }
             write-annotations-1 {
-                pos:"-840 -285";
+                pos:"-854 -306";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-annotations.angle:25.7693;
@@ -195,24 +212,6 @@ workflow "ChIP-seq analysis"{
             read-annotations.out-annotations->macs-id.in-data {
                 text-pos:"-47 -25";
             }
-        }
-        estimations {
-function cistromeTime(tagsSize, dbCount) {
-                return 240*tagsSize*dbCount;
-            }
-            var db = new String(utils.attributeValue("seqpos-id.motif_db"));
-            var dbCount = db.split(',').length;
-            var sets = utils.attributeValue("read-annotations.url-in");
-            var time = 0;
-            var ram = 0;
-            for (var i=0; i<sets.length; i++) {
-                var set = sets[i];
-                for (var j=0; j<set.length; j++) {
-                    var tagsSize = utils.fileSize(set[j]) / (1024*1024);
-                    time += cistromeTime(tagsSize, dbCount);
-                }
-            }
-            [time];
         }
         wizard {
             name:"ChIP-seq Analysis Wizard";

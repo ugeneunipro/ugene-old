@@ -101,8 +101,8 @@ QList<LogMessage> LogCache::getLastMessages(int count) {
     QList<LogMessage> lastMessages;
     for (int i = cacheSize; --i>=lastToAdd;) {
         LogMessage* m = messages.at(i);
-        /*if (m->categories.contains(ULOG_CAT_USER_ACTIONS))
-            continue;*/
+        if (m->categories.contains(ULOG_CAT_USER_ACTIONS))
+            continue;
         lastMessages.prepend(*m);
     }
     lock.unlock();

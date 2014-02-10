@@ -54,7 +54,6 @@ void MessageBoxDialogFiller::run() {
     }
 
     QAbstractButton* button = messageBox->button(b);
-
     GT_CHECK(button != NULL, "There is no such button in messagebox");
 
     GTWidget::click(os, button);

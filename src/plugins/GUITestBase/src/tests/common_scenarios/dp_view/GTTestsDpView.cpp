@@ -40,7 +40,6 @@
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
-#include "runnables/generated/FirstGeneratedFiller.h"
 
 namespace U2 {
 
@@ -278,23 +277,6 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
     GTMouseDriver::moveTo(os, ground_widget.center());
     GTMouseDriver::click(os);
 //Expected state: Dotplot view has been selected, UGENE didn't crash
-}
-
-GUI_TEST_CLASS_DEFINITION(generation_test){
-
-    PWMBuildDialogFiller::Parameters* pars = new PWMBuildDialogFiller::Parameters();
-    pars->line_inputEdit_text = "input_file";
-    pars->line_outputEdit_text = "output_file";
-    pars->radio_dinucleicButton_clicked = true;
-    pars->radio_weightButton_clicked = true;
-    pars->combo_algorithmCombo_text = "Log-odds";
-    pars->button_okButton_clicked = true;
-    GTUtilsDialog::waitForDialog(os, new PWMBuildDialogFiller(os, pars));
-
-    QMenu* menu = GTMenu::showMainMenu(os, "mwmenu_tools");
-    GTMenu::clickMenuItemByName(os, menu, QStringList() << "Weight matrix"
-     << "Build Weight Matrix");
-    GTGlobals::sleep();
 }
 } // namespace GUITest_Assembly_browser_
 } // namespace U2

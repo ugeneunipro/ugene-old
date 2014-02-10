@@ -804,7 +804,6 @@ Task::ReportResult GTest_CompareFiles::report() {
  * GTest_Compare_VCF_Files
  *******************************/
 const int NUMBER_OF_COLUMNS = 5;
-const int NUMDER_OF_LINES_VCF = 36;
 void GTest_Compare_VCF_Files::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
 
@@ -842,16 +841,10 @@ Task::ReportResult GTest_Compare_VCF_Files::report() {
     }
 
     int lineNum = 0;
-    int i = 0;
     while(1) {
         QByteArray bytes1 = f1.readLine(READ_LINE_MAX_SZ);
 
         QByteArray bytes2 = f2.readLine(READ_LINE_MAX_SZ);
-
-        if(i<NUMDER_OF_LINES_VCF){
-            i++;
-            continue;
-        }//skip first lines containing file info
 
         if(bytes1.isEmpty() || bytes2.isEmpty()) {
             if( bytes1 != bytes2 ) {
@@ -864,12 +857,12 @@ Task::ReportResult GTest_Compare_VCF_Files::report() {
 
         int tabCounter=0;
         for(int i=0; i<size; i++){
-            /*if (bytes1[i]=='\t'){
+            if (bytes1[i]=='\t'){
                 tabCounter++;
                 if(tabCounter==NUMBER_OF_COLUMNS){
                     break;
                 }
-            }*/
+            }
 
             if( bytes1[i] != bytes2[i] ) {
                 setError(QString("files are note equal at line %1. %2 and %3").arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));

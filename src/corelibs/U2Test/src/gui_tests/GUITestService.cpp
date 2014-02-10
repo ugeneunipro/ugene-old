@@ -37,7 +37,7 @@
 #include <U2Core/Log.h>
 
 /**************************************************** to use qt file dialog *************************************************************/
-#ifdef __linux__
+#ifdef Q_OS_LINUX
 typedef QStringList(*_qt_filedialog_open_filenames_hook)(QWidget * parent, const QString &caption, const QString &dir,
                                                           const QString &filter, QString *selectedFilter, QFileDialog::Options options);
 typedef QString(*_qt_filedialog_open_filename_hook)     (QWidget * parent, const QString &caption, const QString &dir,

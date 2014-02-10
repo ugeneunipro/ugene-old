@@ -143,7 +143,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTGlobals::sleep();
     GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
-    CHECK_SET_ERR(!l.hasError( ), QString("Log has error: %1").arg(l.getError()));
+    CHECK_SET_ERR(!l.hasError( ), "Error message expected in log");
     GTFile::check(os, "_common_data/e_coli/e_coli_1000.gff.fasta");
 }
 
