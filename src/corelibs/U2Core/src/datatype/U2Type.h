@@ -78,7 +78,6 @@ public:
 
     static const U2DataType CrossDatabaseReference  = 999;
 
-    /**
     /** SCO (non-object, non-root) types */
     static const U2DataType Annotation              = 1000;
     static const U2DataType AnnotationGroup         = 1001;
