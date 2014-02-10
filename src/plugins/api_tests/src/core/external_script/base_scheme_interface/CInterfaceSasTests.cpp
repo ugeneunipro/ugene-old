@@ -31,7 +31,11 @@
 #include "CInterfaceSasTests.h"
 
 static const QString WORKING_DIR = U2::AppContext::getWorkingDirectoryPath( );
+#ifndef Q_OS_MAC
 static const QString PROPER_WD_SCHEMES_PATH = WORKING_DIR + "/../../test/_common_data/cmdline/wd-sas-schemes/";
+#else
+static const QString PROPER_WD_SCHEMES_PATH = WORKING_DIR + "/../../../../../../test/_common_data/cmdline/wd-sas-schemes/";
+#endif
 
 static U2ErrorType getActorDisplayName( const QString &actorId, QString &actorName ) {
     U2::Workflow::ActorPrototypeRegistry *prototypeRegistry
