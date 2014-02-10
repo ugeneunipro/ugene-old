@@ -35,6 +35,7 @@ public:
 
     void reset() { wasError = false; }
     bool hasError() const { return wasError; }
+    QString getError() const {return error;}
 
     void onMessage(const LogMessage& msg);
     static QList<LogMessage*> getMessages();
@@ -42,6 +43,7 @@ public:
 
 private:
     bool wasError;
+    QString error;
 };
 
 class GTUtilsLog {

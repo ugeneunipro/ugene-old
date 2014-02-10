@@ -37,6 +37,7 @@ void GTLogTracer::onMessage(const LogMessage &msg) {
 
     if (msg.level == LogLevel_ERROR) {
         wasError = true;
+        error = msg.text;
     }
 
 }
