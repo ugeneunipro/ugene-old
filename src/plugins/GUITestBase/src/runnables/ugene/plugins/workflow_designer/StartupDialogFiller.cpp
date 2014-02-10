@@ -57,6 +57,7 @@ void StartupDialogFiller::run(){
             pathEdit->setText(rightPath);
         }
     }
+    GTGlobals::sleep();
 
     use(dialog);
 }

@@ -34,6 +34,55 @@ namespace U2 {
         int minLen, identity;
         bool invertedRepeats, but1kpressed;
     };
+
+
+class DotPlotFilesDialogFiller : public Filler {
+public:
+class Parameters {
+public:
+Parameters():
+line_firstFileEdit_text(""),
+button_openFirstButton_clicked(false),
+is_mergeFirstCheckBox_checked(0),
+spin_gapFirst_value(0),
+is_oneSequenceCheckBox_checked(0),
+line_secondFileEdit_text(""),
+button_openSecondButton_clicked(false),
+is_mergeSecondCheckBox_checked(0),
+spin_gapSecond_value(0),
+button_startButton_clicked(false),
+button_cancelButton_clicked(false){}
+
+
+QString line_firstFileEdit_text;
+bool button_openFirstButton_clicked;
+bool is_mergeFirstCheckBox_checked;
+int spin_gapFirst_value;
+bool is_oneSequenceCheckBox_checked;
+QString line_secondFileEdit_text;
+bool button_openSecondButton_clicked;
+bool is_mergeSecondCheckBox_checked;
+int spin_gapSecond_value;
+bool button_startButton_clicked;
+bool button_cancelButton_clicked;
+};
+
+
+DotPlotFilesDialogFiller(U2OpStatus &os, Parameters* parameters) :
+Filler(os, "DotPlotFilesDialog"),
+parameters(parameters) {
+CHECK_SET_ERR(parameters, "Invalid filler parameters: NULL pointer");
 }
+
+virtual void run();
+
+private:
+
+Parameters* parameters;
+
+};
+
+}
+
 
 #endif

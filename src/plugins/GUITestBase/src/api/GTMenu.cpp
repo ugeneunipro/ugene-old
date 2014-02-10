@@ -172,6 +172,7 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
     switch(m) {
     case GTGlobals::UseMouse:
     {
+        //GTMouseDriver::release(os);
         QPoint actionPosition = actionPos(os, menu, action);
 
         QPoint firstMoveTo = QPoint(actionPosition.x(), currentCursorPosition.y()); // move by X first
@@ -190,6 +191,7 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
             GTMouseDriver::click(os);
         }
 #else
+        Q_UNUSED(clickingSubMenu)
         GTMouseDriver::click(os);
 #endif
         break;
