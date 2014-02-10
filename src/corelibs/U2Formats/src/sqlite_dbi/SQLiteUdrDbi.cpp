@@ -63,13 +63,13 @@ UdrRecordId SQLiteUdrDbi::addRecord(const UdrSchemaId &schemaId, const QList<Udr
 
 UdrRecord SQLiteUdrDbi::getRecord(const UdrRecordId &recordId, U2OpStatus &os) {
     UdrRecord result(recordId, QList<UdrValue>(), os);
-    const UdrSchema *schema = udrSchema(recordId.schemaId, os);
+    const UdrSchema *schema = udrSchema(recordId.getSchemaId(), os);
     CHECK_OP(os, result);
 
     SQLiteQuery q(selectDef(schema, os), db, os);
     CHECK_OP(os, result);
 
-    q.bindDataId(1, recordId.recordId);
+    q.bindDataId(1, recordId.getRecordId());
 
     bool ok = q.step();
     CHECK_EXT(ok, os.setError("Unknown record id"), result);
@@ -125,25 +125,25 @@ QList<UdrRecord> SQLiteUdrDbi::getObjectRecords(const UdrSchemaId &schemaId, con
 }
 
 void SQLiteUdrDbi::removeRecord(const UdrRecordId &recordId, U2OpStatus &os) {
-    SQLiteQuery q("DELETE FROM " + tableName(recordId.schemaId) + " WHERE " + UdrSchema::RECORD_ID_FIELD_NAME + " = ?1", db, os);
-    q.bindDataId(1, recordId.recordId);
+    SQLiteQuery q("DELETE FROM " + tableName(recordId.getSchemaId()) + " WHERE " + UdrSchema::RECORD_ID_FIELD_NAME + " = ?1", db, os);
+    q.bindDataId(1, recordId.getRecordId());
     q.execute();
 }
 
 InputStream * SQLiteUdrDbi::createInputStream(const UdrRecordId &recordId, int fieldNum, U2OpStatus &os) {
-    UdrSchema::FieldDesc field = getBlobField(recordId.schemaId, fieldNum, os);
+    UdrSchema::FieldDesc field = getBlobField(recordId.getSchemaId(), fieldNum, os);
     CHECK_OP(os, NULL);
 
-    return new SQLiteBlobInputStream(db, tableName(recordId.schemaId).toAscii(), field.getName(), recordId.recordId, os);
+    return new SQLiteBlobInputStream(db, tableName(recordId.getSchemaId()).toAscii(), field.getName(), recordId.getRecordId(), os);
 }
 
 OutputStream * SQLiteUdrDbi::createOutputStream(const UdrRecordId &recordId, int fieldNum, qint64 size, U2OpStatus &os) {
     CHECK_EXT(size >= 0, os.setError("Negative stream size"), NULL);
     CHECK_EXT(size <= INT_MAX, os.setError("Too big stream size"), NULL);
-    UdrSchema::FieldDesc field = getBlobField(recordId.schemaId, fieldNum, os);
+    UdrSchema::FieldDesc field = getBlobField(recordId.getSchemaId(), fieldNum, os);
     CHECK_OP(os, NULL);
 
-    return new SQLiteBlobOutputStream(db, tableName(recordId.schemaId).toAscii(), field.getName(), recordId.recordId, (int)size, os);
+    return new SQLiteBlobOutputStream(db, tableName(recordId.getSchemaId()).toAscii(), field.getName(), recordId.getRecordId(), (int)size, os);
 }
 
 /************************************************************************/

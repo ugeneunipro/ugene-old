@@ -78,6 +78,8 @@ namespace {
 
         object.serializer = record.getString(SERIALIZER, os);
         CHECK_OP(os, recId);
+
+        return recId;
     }
 
     UdrRecordId createObjectCore(UdrDbi *dbi, U2RawData &object, U2OpStatus &os) {

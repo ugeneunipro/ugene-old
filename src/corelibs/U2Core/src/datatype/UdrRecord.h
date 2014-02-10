@@ -37,11 +37,15 @@ public:
     /**
      * Schema identifier that is unique within UGENE.
      */
-    const UdrSchemaId schemaId;
+    const UdrSchemaId &getSchemaId() const;
     /**
      * Record identifier that is unique within the schema.
      */
-    const U2DataId recordId;
+    const U2DataId &getRecordId() const;
+
+private:
+    UdrSchemaId schemaId;
+    U2DataId recordId;
 };
 
 /**

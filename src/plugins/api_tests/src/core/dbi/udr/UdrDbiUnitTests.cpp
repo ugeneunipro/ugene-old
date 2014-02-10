@@ -185,9 +185,9 @@ void UdrTestData::initTestData() {
 
     U2OpStatusImpl os;
     { // schema 1
-        id1 = dbi->addRecord(TEST_SCHEMA_ID, getData(20, 30.0, "test str"), os).recordId;
+        id1 = dbi->addRecord(TEST_SCHEMA_ID, getData(20, 30.0, "test str"), os).getRecordId();
         SAFE_POINT_OP(os, );
-        id2 = dbi->addRecord(TEST_SCHEMA_ID, getData(48, 37.0, "test str 2"), os).recordId;
+        id2 = dbi->addRecord(TEST_SCHEMA_ID, getData(48, 37.0, "test str 2"), os).getRecordId();
         SAFE_POINT_OP(os, );
     }
 
@@ -197,7 +197,7 @@ void UdrTestData::initTestData() {
                       "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
                       "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT";
         QList<QByteArray> data; data << dataSchema2;
-        id_2 = writeDataSchema2(data, os).recordId;
+        id_2 = writeDataSchema2(data, os).getRecordId();
         SAFE_POINT_OP(os, );
     }
 

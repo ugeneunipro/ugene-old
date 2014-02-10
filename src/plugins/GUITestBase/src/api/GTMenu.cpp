@@ -190,6 +190,7 @@ QAction* GTMenu::clickMenuItem(U2OpStatus &os, const QMenu *menu, const QString 
             GTMouseDriver::click(os);
         }
 #else
+        Q_UNUSED(clickingSubMenu);
         GTMouseDriver::click(os);
 #endif
         break;

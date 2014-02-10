@@ -38,6 +38,14 @@ UdrRecordId::UdrRecordId(const UdrSchemaId &schemaId, const U2DataId &recordId)
 
 }
 
+const UdrSchemaId &UdrRecordId::getSchemaId() const {
+    return schemaId;
+}
+
+const U2DataId &UdrRecordId::getRecordId() const {
+    return recordId;
+}
+
 /************************************************************************/
 /* UdrValue */
 /************************************************************************/
@@ -112,8 +120,8 @@ UdrRecord::UdrRecord(const UdrRecordId &id, const QList<UdrValue> &data, U2OpSta
 {
     UdrSchemaRegistry *udrRegistry = AppContext::getUdrSchemaRegistry();
     SAFE_POINT_EXT(NULL != udrRegistry, os.setError("NULL UDR registry"), );
-    schema = udrRegistry->getSchemaById(id.schemaId);
-    SAFE_POINT_EXT(NULL != schema, os.setError("Unknown schema id: " + QString(id.schemaId)), );
+    schema = udrRegistry->getSchemaById(id.getSchemaId());
+    SAFE_POINT_EXT(NULL != schema, os.setError("Unknown schema id: " + QString(id.getSchemaId())), );
 }
 
 const UdrRecordId & UdrRecord::getId() const {

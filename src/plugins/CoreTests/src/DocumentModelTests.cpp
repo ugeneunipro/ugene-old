@@ -862,15 +862,7 @@ Task::ReportResult GTest_Compare_VCF_Files::report() {
         }
         int size = qMin<int>(bytes1.size(), bytes2.size());
 
-        int tabCounter=0;
         for(int i=0; i<size; i++){
-            /*if (bytes1[i]=='\t'){
-                tabCounter++;
-                if(tabCounter==NUMBER_OF_COLUMNS){
-                    break;
-                }
-            }*/
-
             if( bytes1[i] != bytes2[i] ) {
                 setError(QString("files are note equal at line %1. %2 and %3").arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
                 return ReportResult_Finished;
