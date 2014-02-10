@@ -107,6 +107,9 @@ workflow "Main Tuxedo: paired-end reads"{
                 alias:tophat_out_dir;
                 description:"The directory to store TopHat output files.";
             }
+            tophat.samples {
+                alias:samples_map;
+            }
             cufflinks.out-dir {
                 alias:cufflinks_out_dir;
                 description:"The directory to store Cufflinks output files.";
