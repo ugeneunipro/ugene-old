@@ -272,6 +272,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2382_1, "Failed because of https://ugene.unipro.ru/tracker/browse/UGENE-2477");
     REGISTER_TEST(GUITest_regression_scenarios::test_2392);
     REGISTER_TEST(GUITest_regression_scenarios::test_2401);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2402);
     REGISTER_TEST(GUITest_regression_scenarios::test_2406);
     REGISTER_TEST(GUITest_regression_scenarios::test_2407);
     REGISTER_TEST(GUITest_regression_scenarios::test_2410);

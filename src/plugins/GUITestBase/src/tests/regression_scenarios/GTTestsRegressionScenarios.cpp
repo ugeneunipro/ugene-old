@@ -4063,6 +4063,34 @@ GUI_TEST_CLASS_DEFINITION( test_2401 ) {
     CHECK_SET_ERR(NULL != item, "No assembly");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2402) {
+    QDir outputDir(testDir + "_common_data/scenarios/sandbox");
+    const QString outputFilePath = outputDir.absolutePath( ) + "/test_2402.gb";
+
+    // 1.Open Workflow Designer
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    // 2.Add 'Read Sequence' element
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    // 3. Add 'Assembly Sequences witn CAP3' element
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Assembly Sequences with CAP3");
+    WorkflowProcessItem *readWorker = GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence");
+    WorkflowProcessItem *assemblyWorker = GTUtilsWorkflowDesigner::getWorker(os, "Assembly Sequences with CAP3");
+    // 4. Connect elements 
+    GTUtilsWorkflowDesigner::connect(os, readWorker, assemblyWorker);
+
+    //Expected state: all slots are connected
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Genbank", "sars.gb");
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Assembly Sequences with CAP3"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", outputFilePath, GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Well done!"));
+    GTWidget::click( os,GTAction::button( os,"Validate workflow" ) );
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2406 ) {
 //    1. Create the {Read Sequence -> Write Sequence} workflow.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
