@@ -729,6 +729,16 @@ GUI_TEST_CLASS_DEFINITION(test_1113){//commit AboutDialogController.cpp
     };
     GTGlobals::sleep(1000);
     GTUtilsDialog::waitForDialog(os, new EscClicker(os));
+#ifdef Q_OS_MAC
+    //hack for mac
+    MainWindow *mw = AppContext::getMainWindow();
+    CHECK_SET_ERR(mw != NULL, "MainWindow is NULL");
+    QMainWindow *mainWindow = mw->getQMainWindow();
+    CHECK_SET_ERR(mainWindow != NULL, "QMainWindow is NULL");
+    QWidget* w = qobject_cast<QWidget*>(mainWindow);
+    GTWidget::click(os, w, Qt::LeftButton, QPoint(5,5));
+    GTGlobals::sleep(500);
+#endif
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["f1"]);
     GTGlobals::sleep(1000);
 //Expected state: About dialog appeared, shown info includes platform info (32/64)
@@ -2559,6 +2569,16 @@ GUI_TEST_CLASS_DEFINITION( test_2138 )
     //1. Open _common_data/scenarios/_regression/2138/1.fa
     //2. Press "Join sequences into alignment..." radio button
     //3. Press "OK" button
+#ifdef Q_OS_MAC
+    //hack for mac
+    MainWindow *mw = AppContext::getMainWindow();
+    CHECK_SET_ERR(mw != NULL, "MainWindow is NULL");
+    QMainWindow *mainWindow = mw->getQMainWindow();
+    CHECK_SET_ERR(mainWindow != NULL, "QMainWindow is NULL");
+    QWidget* w = qobject_cast<QWidget*>(mainWindow);
+    GTWidget::click(os, w, Qt::LeftButton, QPoint(5,5));
+    GTGlobals::sleep(500);
+#endif
 
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/_regression/2138/1.fa");
