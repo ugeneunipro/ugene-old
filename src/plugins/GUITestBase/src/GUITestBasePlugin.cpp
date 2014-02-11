@@ -945,7 +945,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0001);
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0002);
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0003);
-    REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
+    REGISTER_TEST_IGNORED(GUITest_dna_assembly_conversions::test_0004, "https://ugene.unipro.ru/tracker/browse/UGENE-2760");
 
     /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/sam
