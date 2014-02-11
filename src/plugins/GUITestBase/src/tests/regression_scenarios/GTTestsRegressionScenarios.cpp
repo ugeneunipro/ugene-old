@@ -3924,6 +3924,7 @@ GUI_TEST_CLASS_DEFINITION( test_2379 ) {
             QLineEdit *projectFileEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "projectFileEdit", dialog));
             GTLineEdit::setText(os, projectFileEdit, projectFile);
 
+            GTGlobals::sleep();
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
 
             GTGlobals::sleep();
@@ -4275,10 +4276,7 @@ GUI_TEST_CLASS_DEFINITION( test_2475 ) {
         virtual void run(){
             GTGlobals::sleep();
 #ifdef Q_OS_MAC
-            //GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
-            //GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
-            //GTWidget::click(os,GTWidget::findButtonByText(os, "Cancel"));
+            GTWidget::click(os, WizardFiller::getCancelButton(os));
 #else
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
 #endif

@@ -68,15 +68,14 @@ public:
 
     WizardFiller(U2OpStatus &_os, QString name):Filler(_os, name){}
 
-protected:
     void setParameters(U2OpStatus &_os,pairValList list, int i);
     void fill(U2OpStatus &_os,pairValList list);
-    QPushButton* getButtonByText(U2OpStatus &_os, QString text);
-    QPushButton* getNextButton(U2OpStatus &_os);
-    QPushButton* getCancelButton(U2OpStatus &_os);
-    QPushButton* getSetupButton(U2OpStatus &_os);
-    QPushButton* getFinishButton(U2OpStatus &_os);
-    QToolButton* getExpandButton(U2OpStatus &_os);
+    static QPushButton* getButtonByText(U2OpStatus &_os, QString text);
+    static QPushButton* getNextButton(U2OpStatus &_os);
+    static QPushButton* getCancelButton(U2OpStatus &_os);
+    static QPushButton* getSetupButton(U2OpStatus &_os);
+    static QPushButton* getFinishButton(U2OpStatus &_os);
+    static QToolButton* getExpandButton(U2OpStatus &_os);
     QString actualizePath(lineEditValue *);
 };
 
