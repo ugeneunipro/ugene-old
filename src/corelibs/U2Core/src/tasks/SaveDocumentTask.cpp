@@ -246,7 +246,6 @@ GUrl SaveMultipleDocuments::chooseAnotherUrl(Document* doc) {
     GUrl url;
     do {
         QMessageBox msgBox;
-        msgBox.setParent(dynamic_cast<QWidget *>(QApplication::activeWindow()));
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.setWindowTitle(U2_APP_TITLE);
 
