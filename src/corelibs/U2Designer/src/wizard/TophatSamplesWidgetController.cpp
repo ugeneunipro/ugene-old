@@ -521,7 +521,8 @@ QScrollArea * TophatSamples::createScrollArea() {
     scrollArea->setWidget(scrollable);
     scrollArea->setWidgetResizable(true);
     scrollArea->setFrameShape(QFrame::NoFrame);
-    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     listLayout = new QVBoxLayout(scrollable);
     listLayout->setContentsMargins(0, 0, 0, 0);
     return scrollArea;
