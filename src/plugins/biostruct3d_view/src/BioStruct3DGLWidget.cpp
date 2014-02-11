@@ -728,6 +728,7 @@ void BioStruct3DGLWidget::createActions()
     foreach(const QString &key, BioStruct3DColorSchemeRegistry::factoriesNames()) {
         action = new QAction(key, colorSchemeActions);
         action->setCheckable(true);
+        action->setObjectName(key);
     }
 
     molSurfaceRenderActions = new QActionGroup(this);
@@ -797,13 +798,16 @@ void BioStruct3DGLWidget::createMenus()
     // Color scheme selection
     selectColorSchemeMenu = new QMenu(tr("Coloring Scheme"));
     selectColorSchemeMenu->addActions(colorSchemeActions->actions());
+    selectColorSchemeMenu->menuAction()->setObjectName("Coloring Scheme");
 
     // Molecular surface
     QMenu* surfaceMenu = new QMenu(tr("Molecular Surface Render Style"));
     surfaceMenu->addActions(molSurfaceRenderActions->actions());
+    surfaceMenu->menuAction()->setObjectName("Molecular Surface Render Style");
 
     QMenu *surfaceTypeMenu = new QMenu(tr("Molecular Surface"));
     surfaceTypeMenu->addActions(molSurfaceTypeActions->actions());
+    surfaceTypeMenu->menuAction()->setObjectName("Molecular Surface");
 
     // Display (context) menu
     displayMenu = new QMenu(this);

@@ -1145,6 +1145,36 @@ GUI_TEST_CLASS_DEFINITION( test_1688 ) {
     GTUtilsLog::check( os, l );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1700 )
+{
+    //    1. Open file "https://ugene.unipro.ru/tracker/secure/attachment/12864/pdb1a07.ent.gz".
+    GTFileDialog::openFile(os, testDir + "_common_data/pdb/", "pdb1a07.ent.gz");
+
+    // Expected state: UGENE displays sequence and 3d structure
+    GTUtilsMdi::findWindow(os, "pdb1a07.ent.gz");
+
+
+    // 2. In context menu of 3d view: {Render style -> Ball-and-Stick}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< "Render Style"<< "Ball-and-Stick"));
+    QMenu* menu = GTMenu::showContextMenu(os, GTWidget::findWidget(os, "1-1A07"));
+
+    //3) In context menu of 3d view: {Coloring scheme -> <Any different from current scheme>}
+    //Repeat step 3) many times
+
+    bool curSchemeFlag = true;
+    for(int i = 0; i < 10; i++) {
+        if(curSchemeFlag) {
+            GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Coloring Scheme" << "Chemical Elements"));
+            curSchemeFlag = false;
+        }
+        else {
+            GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Coloring Scheme" << "Secondary Structure"));
+            curSchemeFlag = true;
+        }
+        GTMenu::showContextMenu(os, GTWidget::findWidget(os, "1-1A07"));
+    }
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1701 ) {
     //1. Open 2 PDB files("_common_data/pdb/1A5H.pdb" and "_common_data/pdb/1CF7.pdb")
     //2. In each of them set {Render style -> Ball and Stick}
