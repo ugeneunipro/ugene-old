@@ -4326,6 +4326,39 @@ GUI_TEST_CLASS_DEFINITION( test_2475 ) {
     GTWidget::click(os, GTAction::button(os,"Validate workflow"));
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2482 ) {
+    // 1. Open "COI.nwk".
+    GTFileDialog::openFile(os, dataDir + "samples/Newick/", "COI.nwk");
+
+    // 2. Change the tree layout to unrooted.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< "Unrooted"));
+    GTWidget::click(os, GTWidget::findWidget(os, "Layout"));
+
+    // 3. Select any node in the tree that is not a leaf.
+    QList<QGraphicsItem*> items = GTUtilsPhyTree::getNodes(os);
+    CHECK_SET_ERR(items.size() >= 4, "Incorrect tree size");
+
+    QPoint nodeCoords = GTUtilsPhyTree::getGlobalCoord(os, items.at(3));
+    GTMouseDriver::moveTo(os, nodeCoords);
+
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    // 4. Call context menu on the Tree Viewer.
+    // Expected state: menu items "Swap Sublings" and "Reroot tree" are disabled.
+    QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+    CHECK_SET_ERR(activePopupMenu != NULL, "There is no popup menu appeared");
+
+    const QList<QAction*> menuActions = activePopupMenu->actions();
+
+    foreach (QAction* a, menuActions) {
+        if (a->text() == "Reroot tree" || a->text() == "Swap Sublings") {
+            CHECK_SET_ERR( !a->isEnabled(), a->text() + " action is enabled");
+        }
+    }
+}
+
+
 GUI_TEST_CLASS_DEFINITION( test_2487 ) {
     // 1. Open "COI.nwk".
     // 2. Select root-node.
