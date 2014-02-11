@@ -62,7 +62,7 @@ namespace {
     UdrRecordId getRecordId(UdrDbi *dbi, const U2DataId &objId, U2OpStatus &os) {
         const QList<UdrRecord> records = dbi->getObjectRecords(RawDataUdrSchema::ID, objId, os);
         CHECK_OP(os, UdrRecordId("", ""));
-        SAFE_POINT_EXT(1 == records.size(), os.setError("Unexpected records count"), UdrRecordId("", ""));
+        CHECK_EXT(1 == records.size(), os.setError("Unexpected records count"), UdrRecordId("", ""));
         return records.first().getId();
     }
 
@@ -120,6 +120,7 @@ U2RawData RawDataUdrSchema::getObject(const U2EntityRef &objRef, U2OpStatus &os)
     CHECK_OP(os, U2RawData());
 
     U2RawData result(objRef.dbiRef);
+    result.id = objRef.entityId;
     retrieveObject(con.dbi, result, os);
     return result;
 }
@@ -171,6 +172,7 @@ U2RawData RawDataUdrSchema::cloneObject(const U2EntityRef &srcObjRef, const U2Db
 
     // Copy object
     U2RawData dstObject(dstDbiRef);
+    dstObject.id = srcObjRef.entityId;
     const UdrRecordId srcId = retrieveObject(src.dbi, dstObject, os);
     CHECK_OP(os, error);
     const UdrRecordId dstId = createObjectCore(dst.dbi, dstObject, os);

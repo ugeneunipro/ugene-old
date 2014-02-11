@@ -3,11 +3,13 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 
+#include "core/datatype/udr/RawDataUdrSchemaUnitTests.h"
 #include "core/dbi/assembly/AssemblyDbiUnitTests.h"
 #include "core/dbi/attribute/AttributeDbiUnitTests.h"
 #include "core/dbi/sequence/SequenceDbiUnitTests.h"
 #include "core/dbi/udr/UdrDbiUnitTests.h"
 #include "core/gobjects/FeaturesTableObjectUnitTest.h"
+#include "core/gobjects/TextObjectUnitTests.h"
 #include "core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.h"
 
 
@@ -110,6 +112,8 @@ void UnitTestSuite::cleanup() {
     FeaturesTableObjectTestData::shutdown();
     MsaSQLiteSpecificTestData::shutdown();
     UdrTestData::shutdown();
+    RawDataUdrSchemaTestData::shutdown();
+    TextObjectTestData::shutdown();
 
     if (passed){
         taskLog.info("Test passed: " + QString::number(passed));

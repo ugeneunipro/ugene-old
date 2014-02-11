@@ -8,6 +8,7 @@ HEADERS += \
     src/core/datatype/annotations/AnnotationUnitTests.h \
     src/core/datatype/msa/MAlignmentUnitTests.h \
     src/core/datatype/msa/MAlignmentRowUnitTests.h \
+    src/core/datatype/udr/RawDataUdrSchemaUnitTests.h \
     src/core/datatype/udr/UdrSchemaUnitTests.h \
     src/core/dbi/DbiTest.h \
     src/core/dbi/assembly/AssemblyDbiTestUtil.h \
@@ -26,6 +27,7 @@ HEADERS += \
     src/core/format/sqlite_object_dbi/SQLiteObjectDbiUnitTests.h \
     src/core/gobjects/FeaturesTableObjectUnitTest.h \
     src/core/gobjects/MAlignmentObjectUnitTests.h \
+    src/core/gobjects/TextObjectUnitTests.h \
     src/core/util/MAlignmentImporterExporterUnitTests.h \
     src/UnitTestSuite.h \  
     src/core/util/MsaDbiUtilsUnitTests.h \
@@ -38,6 +40,7 @@ SOURCES += \
     src/core/datatype/annotations/AnnotationUnitTests.cpp \
     src/core/datatype/msa/MAlignmentUnitTests.cpp \
     src/core/datatype/msa/MAlignmentRowUnitTests.cpp \
+    src/core/datatype/udr/RawDataUdrSchemaUnitTests.cpp \
     src/core/datatype/udr/UdrSchemaUnitTests.cpp \
     src/core/dbi/DbiTest.cpp \
     src/core/dbi/assembly/AssemblyDbiTestUtil.cpp \
@@ -55,6 +58,7 @@ SOURCES += \
     src/core/format/sqlite_object_dbi/SQLiteObjectDbiUnitTests.cpp \
     src/core/gobjects/FeaturesTableObjectUnitTest.cpp \
     src/core/gobjects/MAlignmentObjectUnitTests.cpp \
+    src/core/gobjects/TextObjectUnitTests.cpp \
     src/core/util/MAlignmentImporterExporterUnitTests.cpp \
     src/UnitTestSuite.cpp \  
     src/core/util/MsaDbiUtilsUnitTests.cpp \
