@@ -212,6 +212,7 @@ private:
     QString doc2Path;
     bool byLines;
     QStringList commentsStartWith;
+    bool line_num_only;
     
 };
 

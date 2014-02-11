@@ -654,6 +654,7 @@ static const QString TMP_ATTR_ID  = "temp";
 static const QString TMP_ATTR_SPLITTER = ",";
 static const QString BY_LINES_ATTR_ID = "by_lines";
 static const QString COMMENTS_START_WITH = "comments_start_with";
+static const QString COMPARE_LINE_NUMBER_ONLY = "line_num_only";
 
 void GTest_CompareFiles::replacePrefix(QString &path) {
     QString result;
@@ -710,6 +711,12 @@ void GTest_CompareFiles::init(XMLTestFormat *tf, const QDomElement& el) {
         return;
     }
 
+    if (!el.attribute(COMPARE_LINE_NUMBER_ONLY).isEmpty()){
+        line_num_only = true;
+    }else{
+        line_num_only = false;
+    }
+
     // Get the full documents paths
     if (!tmpAttr.isEmpty()) {
         // Attribute "tmp" is used to determine paths prefixes,
@@ -755,7 +762,7 @@ Task::ReportResult GTest_CompareFiles::report() {
         
         if(bytes1.isEmpty() || bytes2.isEmpty()) {
             if( bytes1 != bytes2 ) {
-                setError(QString("The files are of different sizes!"));
+                setError(QString("The files %1 and %2 are of different sizes!").arg(f1.fileName()).arg(f2.fileName()));
                 return ReportResult_Finished;
             }
             break;
@@ -765,10 +772,16 @@ Task::ReportResult GTest_CompareFiles::report() {
             bytes1 = bytes1.trimmed();
             bytes2 = bytes2.trimmed();
         }
+
+        if(line_num_only){
+            //do not compare lines values
+            continue;
+        }
+
         if(commentsStartWith.isEmpty()){
             if( bytes1 != bytes2 ) {
-                setError(QString("The files are not equal at line %1."
-                    "The first file contains '%2'' and the second contains '%3'!")
+                setError(QString("The files \'%1\' and \'%2\' are not equal at line %3."
+                    "The first file contains '%4'' and the second contains '%5'!").arg(f1.fileName()).arg(f2.fileName())
                     .arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
                 return ReportResult_Finished;
             }
