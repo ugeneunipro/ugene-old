@@ -78,6 +78,9 @@ workflow "Main Tuxedo: single-end reads"{
                 alias:tophat_out_dir;
                 description:"The directory to store TopHat output files.";
             }
+            tophat.bowtie-version {
+                alias:bowtie_version;
+            }
             tophat.samples {
                 alias:samples_map;
             }

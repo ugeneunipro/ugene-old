@@ -50,9 +50,24 @@ workflow "Single dataset Tuxedo: single-end reads"{
                 alias:bowtie_index_dir;
                 description:"The directory with the Bowtie index for the reference sequence.";
             }
+            tophat.bowtie-version {
+                alias:bowtie_version;
+            }
+            tophat.known-transcript {
+                alias:known_transcript;
+            }
+            tophat.mate-inner-distance {
+                alias:mate_inner_distance;
+            }
             tophat.out-dir {
                 alias:tophat_out_dir;
                 description:"The directory to store TopHat output files.";
+            }
+            cufflinks.min-isoform-fraction {
+                alias:min_isoform_fraction;
+            }
+            cufflinks.library-type {
+                alias:library_type;
             }
             cufflinks.out-dir {
                 alias:cufflinks_out_dir;
