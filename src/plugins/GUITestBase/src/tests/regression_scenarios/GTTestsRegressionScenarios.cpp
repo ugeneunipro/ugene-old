@@ -3945,8 +3945,11 @@ GUI_TEST_CLASS_DEFINITION( test_2379 ) {
             GTLineEdit::setText(os, projectFileEdit, projectFile);
 
             GTGlobals::sleep();
+#ifdef Q_OS_MACX
+            GTWidget::click(os, GTWidget::findButtonByText(os, "Create", dialog));
+#else
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-
+#endif
             GTGlobals::sleep();
         }
 
