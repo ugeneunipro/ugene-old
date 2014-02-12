@@ -525,7 +525,8 @@ Document* SCFFormat::parseSCF(const U2DbiRef& dbiRef, IOAdapter* io, const QVari
     U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, dna.getName() + " sequence", objects, dna, os);
     CHECK_OP(os, NULL);
     SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
-    DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, dna.getName() + " chromatogram");
+    DNAChromatogramObject* chromObj = DNAChromatogramObject::createInstance(cd, dna.getName() + " chromatogram", dbiRef, os);
+    CHECK_OP(os, NULL);
     objects.append(chromObj);
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
     chromObj->addObjectRelation(GObjectRelation(GObjectReference(seqObj), GObjectRelationRole::SEQUENCE));

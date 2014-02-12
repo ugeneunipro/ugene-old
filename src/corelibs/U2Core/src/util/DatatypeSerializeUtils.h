@@ -19,34 +19,36 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_DNA_CHROMATOGRAM_OBJECT_H_
-#define _U2_DNA_CHROMATOGRAM_OBJECT_H_
+#ifndef _U2_DATATYPE_SERIALIZE_UTILS_H_
+#define _U2_DATATYPE_SERIALIZE_UTILS_H_
 
-#include <QtCore/QMutex>
-
-#include <U2Core/GObject.h>
 #include <U2Core/DNAChromatogram.h>
+#include <U2Core/U2OpStatus.h>
 
 namespace U2 {
 
-class  U2CORE_EXPORT DNAChromatogramObject: public GObject {
-    Q_OBJECT
+/**
+ * The class of utilities for serializing/deserializing chromatograms
+ * into/from the binary representation.
+ */
+class U2CORE_EXPORT DNAChromatogramSerializer {
 public:
-    static DNAChromatogramObject * createInstance(const DNAChromatogram &chroma, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap = QVariantMap());
+    /**
+     * The serializer identifier.
+     */
+    static const QString ID;
 
-    DNAChromatogramObject(const QString &objectName, const U2EntityRef &chromaRef, const QVariantMap &hintsMap = QVariantMap());
+    /**
+     * Returns the binary representation of @chroma.
+     */
+    static QByteArray serialize(const DNAChromatogram &chroma);
 
-    const DNAChromatogram & getChromatogram() const;
-
-    GObject * clone(const U2DbiRef &dstRef, U2OpStatus &os) const;
-
-private:
-    mutable QMutex mutex;
-    mutable bool cached;
-    mutable DNAChromatogram cache;
+    /**
+     * Returns DNAChromatogram extracted from @binary.
+     */
+    static DNAChromatogram deserialize(const QByteArray &binary, U2OpStatus &os);
 };
 
-}//namespace
+} // U2
 
-
-#endif
+#endif // _U2_DATATYPE_SERIALIZE_UTILS_H_

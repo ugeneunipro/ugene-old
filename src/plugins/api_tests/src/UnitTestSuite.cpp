@@ -8,6 +8,7 @@
 #include "core/dbi/attribute/AttributeDbiUnitTests.h"
 #include "core/dbi/sequence/SequenceDbiUnitTests.h"
 #include "core/dbi/udr/UdrDbiUnitTests.h"
+#include "core/gobjects/DNAChromatogramObjectUnitTests.h"
 #include "core/gobjects/FeaturesTableObjectUnitTest.h"
 #include "core/gobjects/TextObjectUnitTests.h"
 #include "core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.h"
@@ -114,6 +115,7 @@ void UnitTestSuite::cleanup() {
     UdrTestData::shutdown();
     RawDataUdrSchemaTestData::shutdown();
     TextObjectTestData::shutdown();
+    DNAChromatogramObjectTestData::shutdown();
 
     if (passed){
         taskLog.info("Test passed: " + QString::number(passed));

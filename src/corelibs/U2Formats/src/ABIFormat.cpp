@@ -437,7 +437,8 @@ Document* ABIFormat::parseABI(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapter
     U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, dna.getName(), objects, dna, os);
     CHECK_OP(os, NULL);
     SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
-    DNAChromatogramObject* chromObj = new DNAChromatogramObject(cd, "Chromatogram");
+    DNAChromatogramObject* chromObj = DNAChromatogramObject::createInstance(cd, "Chromatogram", dbiRef, os);
+    CHECK_OP(os, NULL);
     objects.append(chromObj);
     QString seqComment = dna.info.value(DNAInfo::COMMENT).toStringList().join("\n");
     TextObject *textObj = TextObject::createInstance(seqComment, "Info", dbiRef, os);

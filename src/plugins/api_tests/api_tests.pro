@@ -25,11 +25,13 @@ HEADERS += \
     src/core/format/genbank/LocationParserUnitTests.h \
     src/core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.h \
     src/core/format/sqlite_object_dbi/SQLiteObjectDbiUnitTests.h \
+    src/core/gobjects/DNAChromatogramObjectUnitTests.h \
     src/core/gobjects/FeaturesTableObjectUnitTest.h \
     src/core/gobjects/MAlignmentObjectUnitTests.h \
     src/core/gobjects/TextObjectUnitTests.h \
     src/core/util/MAlignmentImporterExporterUnitTests.h \
     src/UnitTestSuite.h \  
+    src/core/util/DatatypeSerializeUtilsUnitTest.h \
     src/core/util/MsaDbiUtilsUnitTests.h \
     src/core/util/MsaUtilsUnitTests.h \
     src/core/format/sqlite_mod_dbi/ModDbiSQLiteSpecificUnitTests.h \
@@ -56,11 +58,13 @@ SOURCES += \
     src/core/format/genbank/LocationParserUnitTests.cpp \
     src/core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.cpp \
     src/core/format/sqlite_object_dbi/SQLiteObjectDbiUnitTests.cpp \
+    src/core/gobjects/DNAChromatogramObjectUnitTests.cpp \
     src/core/gobjects/FeaturesTableObjectUnitTest.cpp \
     src/core/gobjects/MAlignmentObjectUnitTests.cpp \
     src/core/gobjects/TextObjectUnitTests.cpp \
     src/core/util/MAlignmentImporterExporterUnitTests.cpp \
     src/UnitTestSuite.cpp \  
+    src/core/util/DatatypeSerializeUtilsUnitTest.cpp \
     src/core/util/MsaDbiUtilsUnitTests.cpp \
     src/core/util/MsaUtilsUnitTests.cpp \
     src/core/format/sqlite_mod_dbi/ModDbiSQLiteSpecificUnitTests.cpp \
