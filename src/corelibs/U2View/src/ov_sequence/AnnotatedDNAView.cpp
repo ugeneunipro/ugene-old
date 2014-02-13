@@ -718,16 +718,16 @@ void AnnotatedDNAView::sl_onContextMenuRequested( const QPoint &scrollAreaPos ) 
 
     if ( annotationSelection->getSelection( ).size( ) == 1 ) {
         const Annotation a = annotationSelection->getSelection().first().annotation;
-        QString name = a.getName( );
-        AnnotationSettings *as = AppContext::getAnnotationsSettingsRegistry( )->getAnnotationSettings( a );
+        const AnnotationData aData = a.getData( );
+        AnnotationSettingsRegistry *registry = AppContext::getAnnotationsSettingsRegistry( );
+        AnnotationSettings *as = registry->getAnnotationSettings( aData );
         if ( as->visible ) {
-            toggleHLAction->setText( tr( "Disable '%1' highlighting").arg( name ) );
+            toggleHLAction->setText( tr( "Disable '%1' highlighting").arg( aData.name ) );
         } else {
-            toggleHLAction->setText( tr( "Enable '%1' highlighting" ).arg( name ) );
+            toggleHLAction->setText( tr( "Enable '%1' highlighting" ).arg( aData.name ) );
         }
 
-        AnnotationSettings *asettings = AppContext::getAnnotationsSettingsRegistry( )->getAnnotationSettings( a );
-        QIcon icon = GUIUtils::createSquareIcon( asettings->color, 10 );
+        const QIcon icon = GUIUtils::createSquareIcon( as->color, 10 );
         toggleHLAction->setIcon( icon );
         
         toggleHLAction->setObjectName( "toggle_HL_action" );
@@ -756,11 +756,11 @@ void AnnotatedDNAView::sl_toggleHL( ) {
         return;
     }
     const Annotation a= annotationSelection->getSelection( ).first( ).annotation;
-    QString name = a.getName( );
-    AnnotationSettings *as = AppContext::getAnnotationsSettingsRegistry( )->getAnnotationSettings( a );
+    const AnnotationData aData = a.getData( );
+    AnnotationSettingsRegistry *registry = AppContext::getAnnotationsSettingsRegistry( );
+    AnnotationSettings *as = registry->getAnnotationSettings( aData );
     as->visible = !as->visible;
-    AppContext::getAnnotationsSettingsRegistry( )->changeSettings(
-        QList<AnnotationSettings *>( ) << as, true );
+    registry->changeSettings( QList<AnnotationSettings *>( ) << as, true );
 }
 
 QString AnnotatedDNAView::tryAddObject(GObject* o) {

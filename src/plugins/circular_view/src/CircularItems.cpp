@@ -66,22 +66,21 @@ CircularAnnotationItem::~CircularAnnotationItem()
     regions.clear();
 }
 
-void CircularAnnotationItem::paint(QPainter *p,const QStyleOptionGraphicsItem *item,QWidget *widget) {
-    Q_UNUSED(item);
-    AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    AnnotationSettings* as = asr->getAnnotationSettings(annotation);
+void CircularAnnotationItem::paint( QPainter *p,const QStyleOptionGraphicsItem *item, QWidget *widget ) {
+    Q_UNUSED( item );
+    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
+    AnnotationSettings *as = asr->getAnnotationSettings( annotation.getData( ) );
     this->color = as->color;
-    foreach(CircurlarAnnotationRegionItem* item, regions) {
-        item->paint(p, NULL, widget);
+    foreach ( CircurlarAnnotationRegionItem *item, regions ) {
+        item->paint( p, NULL, widget );
     }
 }
 
-QRectF CircularAnnotationItem::boundingRect() const{
+QRectF CircularAnnotationItem::boundingRect() const {
     return _boundingRect;
 }
 
-Annotation CircularAnnotationItem::getAnnotation() const
-{
+Annotation CircularAnnotationItem::getAnnotation() const {
     return annotation;
 }
 
@@ -171,47 +170,48 @@ static bool labelLengthLessThan(CircularAnnotationLabel* l1, CircularAnnotationL
 }
 
 CircularAnnotationLabel::CircularAnnotationLabel( const Annotation &ann, int _region,
-    int sequenceLength, const QFont& font, CircularViewRenderArea* renderArea )
-    : annotation( ann ), labelFont(font), region(_region), ra(renderArea), hasPosition(false),
-    inner(false), seqLen(sequenceLength)
+    int sequenceLength, const QFont &font, CircularViewRenderArea *renderArea )
+    : annotation( ann ), labelFont( font ), region( _region ), ra( renderArea ), hasPosition( false ),
+    inner( false ), seqLen( sequenceLength )
 {
-    const U2Region& r = annotation.getRegions()[region];
-    qreal startAngle = (float)r.startPos / (float)sequenceLength * 360;
-    qreal spanAngle = qMin((float)r.length / (float)sequenceLength * 360, float(360 - startAngle));
-    startAngle+=renderArea->rotationDegree;
-    float middleAngle = 360 - (startAngle + spanAngle /2.0);
+    const AnnotationData aData = annotation.getData( );
+    const U2Region &r = aData.getRegions( )[region];
+    const qreal startAngle = renderArea->rotationDegree + (float)r.startPos / (float)sequenceLength * 360;
+    const qreal spanAngle = qMin( ( float ) r.length / ( float ) sequenceLength * 360,
+        float( 360 - startAngle ) );
+    const float middleAngle = 360 - ( startAngle + spanAngle / 2.0 );
     annotationAngle = middleAngle;
-    if (annotationAngle<0) {
-        annotationAngle+=360;
+    if ( annotationAngle < 0 ) {
+        annotationAngle += 360;
     }
 
-    startA = startAngle*PI/180;
-    endA = spanAngle*PI/180 + startA;
-    spanA = spanAngle*PI/180;
-    if(startA>2*PI) {
-        startA -=2*PI;
+    startA = startAngle * PI / 180;
+    endA = spanAngle * PI / 180 + startA;
+    spanA = spanAngle * PI / 180;
+    if (  startA > 2 * PI ) {
+        startA -= 2 * PI;
     }
-    else if(startA<0) {
-        startA +=2*PI;
+    else if ( startA < 0 ) {
+        startA += 2 * PI;
     }
-    if(endA>2*PI) {
-        endA -=2*PI;
+    if ( endA > 2 * PI ) {
+        endA -= 2 * PI;
     }
-    else if(endA<0) {
-        endA +=2*PI;
+    else if ( endA < 0 ) {
+        endA += 2 * PI;
     }
 
     const int yLevel = renderArea->annotationYLevel[annotation];
 
-    midRect = QRectF(-renderArea->middleEllipseSize/2 - yLevel * renderArea->ellipseDelta/2,
-        -renderArea->middleEllipseSize/2 - yLevel * renderArea->ellipseDelta/2, 
+    midRect = QRectF( -renderArea->middleEllipseSize / 2 - yLevel * renderArea->ellipseDelta / 2,
+        -renderArea->middleEllipseSize / 2 - yLevel * renderArea->ellipseDelta / 2,
         renderArea->middleEllipseSize + yLevel * renderArea->ellipseDelta,
-        renderArea->middleEllipseSize + yLevel * renderArea->ellipseDelta);
-    setVisible(false);
+        renderArea->middleEllipseSize + yLevel * renderArea->ellipseDelta );
+    setVisible( false );
 
-    AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    AnnotationSettings* as = asr->getAnnotationSettings(annotation);
-    labelText=GSequenceLineViewAnnotated::prepareAnnotationText(annotation, as);
+    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
+    AnnotationSettings *as = asr->getAnnotationSettings( aData );
+    labelText = GSequenceLineViewAnnotated::prepareAnnotationText( aData, as );
 }
 
 void CircularAnnotationLabel::prepareLabels(QList<CircularAnnotationLabel*>& labelItems) {

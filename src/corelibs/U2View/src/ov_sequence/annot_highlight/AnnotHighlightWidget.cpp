@@ -451,7 +451,6 @@ void AnnotHighlightWidget::sl_onShowAllStateChanged()
     loadAnnotTypes();
 }
 
-
 void AnnotHighlightWidget::sl_onSelectedItemChanged(const QString& annotName)
 {
     AnnotationSettingsRegistry* annotRegistry = AppContext::getAnnotationsSettingsRegistry();
@@ -459,7 +458,6 @@ void AnnotHighlightWidget::sl_onSelectedItemChanged(const QString& annotName)
     AnnotationSettings* selectedAnnotSettings = annotRegistry->getAnnotationSettings(annotName);
     annotSettingsWidget->setSettings(selectedAnnotSettings, annotNamesWithAminoInfo.value(annotName));
 }
-
 
 void AnnotHighlightWidget::findAllAnnotationsNamesForSequence()
 {

@@ -737,25 +737,24 @@ void CircularViewRenderArea::drawRuler( QPainter& p ) {
     p.restore();
 }
 
-void CircularViewRenderArea::drawAnnotations(QPainter& p) {
-    ADVSequenceObjectContext* ctx = view->getSequenceContext();
+void CircularViewRenderArea::drawAnnotations( QPainter &p ) {
+    ADVSequenceObjectContext *ctx = view->getSequenceContext( );
 
-    foreach(CircularAnnotationItem* item, circItems) {
+    foreach ( CircularAnnotationItem *item, circItems ) {
         delete item;
     }
-    circItems.clear();
-    labelList.clear();
-    annotationYLevel.clear();
-    regionY.clear();
-    circItems.clear();
+    circItems.clear( );
+    labelList.clear( );
+    annotationYLevel.clear( );
+    regionY.clear( );
+    circItems.clear( );
 
-    AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    //for(QSet<AnnotationTableObject*>::const_iterator i = ctx->getAnnotationObjects().begin(); i != ctx->getAnnotationGObjects().constEnd(); i++) {
+    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
     //TODO: there need const order of annotation tables
-    QSet<AnnotationTableObject *> anns = ctx->getAnnotationObjects(true);   
+    QSet<AnnotationTableObject *> anns = ctx->getAnnotationObjects( true );
     foreach ( AnnotationTableObject *ao, anns ) {
         foreach ( const Annotation &a, ao->getAnnotations( ) ) {
-            AnnotationSettings* as = asr->getAnnotationSettings(a);
+            AnnotationSettings *as = asr->getAnnotationSettings(a.getData());
             buildAnnotationItem(DrawAnnotationPass_DrawFill, a, false, as);
             buildAnnotationLabel(p.font(), a, as);
         }
@@ -777,6 +776,7 @@ void CircularViewRenderArea::drawAnnotations(QPainter& p) {
 void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const Annotation &a,
     bool selected /* = false */, const AnnotationSettings* as /* = NULL */)
 {
+    const AnnotationData aData = a.getData( );
     if (!as->visible && (pass == DrawAnnotationPass_DrawFill || !selected)) {
         return;
     }
@@ -785,7 +785,7 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
 
     int seqLen = ctx->getSequenceLength();
 
-    const QVector<U2Region>& location = a.getRegions();
+    const QVector<U2Region>& location = aData.getRegions();
 
     U2Region generalLocation(location.first().startPos, location.last().startPos - location.first().startPos + location.last().length);
 
@@ -815,7 +815,7 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
 
     QList<CircurlarAnnotationRegionItem*> regions;
 
-    bool splitted = U1AnnotationUtils::isSplitted(a.getLocation(), U2Region(0, ctx->getSequenceLength()));
+    bool splitted = U1AnnotationUtils::isSplitted(aData.location, U2Region(0, ctx->getSequenceLength()));
     bool splittedItemIsReady = false;
 
     foreach(const U2Region& r, location) {
@@ -863,7 +863,7 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
             path.arcTo(innerRect, -startAngle-spanAngle, spanAngle);
             path.closeSubpath();
         } else {
-            if(a.getStrand().isCompementary()) {
+            if(aData.getStrand().isCompementary()) {
                 path.moveTo(outerRect.width()/2 * cos((startAngle + dAlpha) / 180.0 * PI),
                     outerRect.height()/2 * sin((startAngle + dAlpha) / 180.0 * PI));
                 path.lineTo((outerRect.width()/2 + arrowHeightDelta) * cos((startAngle + dAlpha) / 180.0 * PI),
@@ -893,34 +893,37 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
     circItems[a] = item;
 }
 
-void CircularViewRenderArea::buildAnnotationLabel(const QFont& font, const Annotation &a, const AnnotationSettings* as) {
+void CircularViewRenderArea::buildAnnotationLabel( const QFont &font, const Annotation &a, const AnnotationSettings *as) {
+    const AnnotationData aData = a.getData( );
 
-    if (!as->visible) {
+    if ( !as->visible ) {
         return;
     }
 
-    if(!circItems.contains(a)) {
+    if( !circItems.contains( a ) ) {
         return;
     }
 
-    ADVSequenceObjectContext* ctx = view->getSequenceContext();
-    U2Region seqReg(0, ctx->getSequenceLength());
-    bool splitted = U1AnnotationUtils::isSplitted(a.getLocation(), seqReg);
+    ADVSequenceObjectContext *ctx = view->getSequenceContext( );
+    U2Region seqReg( 0, ctx->getSequenceLength( ) );
+    bool splitted = U1AnnotationUtils::isSplitted( aData.location, seqReg );
 
     int seqLen = seqReg.length;
-    const QVector<U2Region>& location = a.getRegions();
-    for(int r = 0; r < location.count(); r++) {
-        if (splitted && r != 0) {
+    const QVector<U2Region> &location = aData.getRegions( );
+    for( int r = 0; r < location.count( ); r++ ) {
+        if ( splitted && 0 != r ) {
             break;
         }
-        CircularAnnotationLabel* label = new CircularAnnotationLabel(a, r, seqLen, font, this);
-        labelList.append(label);
-        CircurlarAnnotationRegionItem* ri = circItems[a]->getRegions()[r];
-        ri->setLabel(label);
+        CircularAnnotationLabel *label = new CircularAnnotationLabel( a, r, seqLen, font, this );
+        labelList.append( label );
+        CircurlarAnnotationRegionItem *ri = circItems[a]->getRegions( )[r];
+        ri->setLabel( label );
     }
 }
 
-U2Region CircularViewRenderArea::getAnnotationYRange( const Annotation &, int, const AnnotationSettings*) const{
+U2Region CircularViewRenderArea::getAnnotationYRange( const Annotation &, int,
+    const AnnotationSettings * ) const
+{
     return U2Region(0,0);
 }
 

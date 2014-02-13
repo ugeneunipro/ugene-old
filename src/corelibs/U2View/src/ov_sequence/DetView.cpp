@@ -309,31 +309,25 @@ void DetViewRenderArea::updateLines() {
     assert(numLines > 0);
 }
 
-U2Region DetViewRenderArea::getAnnotationYRange( const Annotation &a, int region, const AnnotationSettings* as) const {
-    bool complement = a.getStrand().isCompementary() && getDetView()->hasComplementaryStrand();
-    TriState aminoState = TriState_Unknown; //a->getAminoFrame();
-    if (aminoState == TriState_Unknown) {
-        aminoState = as->amino ? TriState_Yes : TriState_No;
-    }
-    bool transl = getDetView()->hasTranslations() && aminoState == TriState_Yes;
-    int frame = U1AnnotationUtils::getRegionFrame(view->getSequenceLength(), a.getStrand(), a.isOrder(), region, a.getRegions());
+U2Region DetViewRenderArea::getAnnotationYRange( const Annotation &a, int region,
+    const AnnotationSettings *as ) const
+{
+    const AnnotationData aData = a.getData( );
+    const U2Strand strand = aData.getStrand( );
+    const bool complement = strand.isCompementary( ) && getDetView( )->hasComplementaryStrand( );
+    const TriState aminoState = as->amino ? TriState_Yes : TriState_No;
+    const bool transl = getDetView( )->hasTranslations( ) && ( aminoState == TriState_Yes );
+    const int frame = U1AnnotationUtils::getRegionFrame( view->getSequenceLength( ), strand,
+        aData.isOrder( ), region, aData.getRegions( ) );
     int line = -1;
     if (complement) {
-        if (transl) {
-            line = firstComplTransLine + frame;
-        } else {
-            line = complementLine;
-        }
+        line = transl ? firstComplTransLine + frame : complementLine;
     } else {
-        if (transl) {
-            line = firstDirectTransLine + frame;
-        } else {
-            line = baseLine;
-        }
+        line = transl ? firstDirectTransLine + frame : baseLine;
     }
-    assert(line!=-1);
-    int y = getLineY(line);
-    return U2Region(y, lineHeight);
+    SAFE_POINT( -1 != line, "Unable to calculate annotation vertical position!", U2Region( ) );
+    int y = getLineY( line );
+    return U2Region( y, lineHeight );
 }
 
 bool DetViewRenderArea::isOnTranslationsLine(int y) const {
@@ -588,8 +582,8 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
     p.setFont(sequenceFont);
 }
 
-bool DetViewRenderArea::deriveTranslationCharColor(qint64 pos, U2Strand strand,
-    const QList<Annotation> &annotationsInRange, QColor& result)
+bool DetViewRenderArea::deriveTranslationCharColor( qint64 pos, const U2Strand &strand,
+    const QList<Annotation> &annotationsInRange, QColor &result )
 {
     // logic:
     // no annotations found -> grey
@@ -598,60 +592,57 @@ bool DetViewRenderArea::deriveTranslationCharColor(qint64 pos, U2Strand strand,
     // 2+ annotations found on nucleic -> black
 
     int nAnnotations = 0;
-    U2Region tripletRange = strand == U2Strand::Complementary ? U2Region(pos - 2, 2) : U2Region(pos, 2);
-    AnnotationSettings* as = NULL;
-    int sequenceLen = view->getSequenceLength();
+    const U2Region tripletRange = strand.isCompementary( ) ? U2Region( pos - 2, 2 )
+        : U2Region( pos, 2 );
+    AnnotationSettings *as = NULL;
+    AnnotationSettingsRegistry *registry = AppContext::getAnnotationsSettingsRegistry( );
+    const int sequenceLen = view->getSequenceLength( );
     foreach ( const Annotation &a, annotationsInRange ) {
-        if (a.getStrand() != strand) {
+        const AnnotationData aData = a.getData( );
+        if ( aData.getStrand( ) != strand ) {
             continue;
         }
         bool annotationOk = false;
         AnnotationSettings *tas = NULL;
-        bool order = a.isOrder();
-        const QVector<U2Region>& location = a.getRegions();
-        for (int i = 0, n = location.size(); i < n; i++) {
-            const U2Region& r = location.at(i);
-            if (!r.contains(tripletRange)) {
+        const bool order = aData.isOrder( );
+        const QVector<U2Region> &location = aData.getRegions( );
+        for ( int i = 0, n = location.size( ); i < n; i++ ) {
+            const U2Region &r = location.at( i );
+            if ( !r.contains(tripletRange ) ) {
                 continue;
             }
-            int regionFrame = U1AnnotationUtils::getRegionFrame(sequenceLen, strand, order, i, location);
-            int posFrame = strand == U2Strand::Complementary ? (sequenceLen - pos) % 3 : (pos % 3);
-            if (regionFrame ==  posFrame) {
-                tas = AppContext::getAnnotationsSettingsRegistry()->getAnnotationSettings(a);
-                if (tas->visible){
+            const int regionFrame = U1AnnotationUtils::getRegionFrame( sequenceLen, strand, order,
+                i, location );
+            const int posFrame = strand.isCompementary( ) ? ( sequenceLen - pos ) % 3 : pos % 3;
+            if ( regionFrame ==  posFrame ) {
+                tas = registry->getAnnotationSettings( aData );
+                if ( tas->visible ) {
                     annotationOk = true;
                     break;
                 }
             }
         }
-        if (annotationOk) {
+        if ( annotationOk ) {
             nAnnotations++;
             as = tas;
-            if (nAnnotations > 1) {
+            if ( nAnnotations > 1 ) {
                 break;
             }
         }
-        
     }
-    if (nAnnotations == 0) {
+    if ( 0 == nAnnotations ) {
         result = Qt::gray;
         return false;
     }
 
-    if (nAnnotations > 1) {
+    if ( nAnnotations > 1 ) {
         result == Qt::black;
         return true;
     }
-    TriState aminoState = TriState_Unknown; //annotation->getAminoFrame();
-    if (aminoState == TriState_Unknown) {
-        aminoState = as->amino ? TriState_Yes : TriState_No;
-    }
-    bool aminoOverlap = aminoState == TriState_Yes; // annotation is drawn on amino strand -> use black color for letters
-    if (aminoOverlap) {
-        result = Qt::black;
-    } else {
-        result = as->color.darker(300);
-    }
+    const TriState aminoState = as->amino ? TriState_Yes : TriState_No;
+    const bool aminoOverlap = ( aminoState == TriState_Yes ); // annotation is drawn on amino strand -> use black color for letters
+    result = aminoOverlap ? Qt::black : as->color.darker( 300 );
+
     return true;
 }
 

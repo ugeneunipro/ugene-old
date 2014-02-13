@@ -90,7 +90,7 @@ public:
      * beyond the @region or each annotation that intersects it.
      */
     QList<Annotation>       getAnnotationsByRegion( const U2Region &region,
-                                bool contains = false );
+                                bool contains = false ) const;
     /**
      * Reimplemented from GObject
      */

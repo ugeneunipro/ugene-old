@@ -33,40 +33,40 @@ namespace U2 {
 
 class PVRowData {
 public:
-    PVRowData(const QString& _key) : key(_key){}
+                            PVRowData( const QString &key );
 
-    bool fitToRow(const QVector<U2Region>& locations);
+    bool                    fitToRow( const QVector<U2Region> &locations );
 
-    QString key;
+    QString                 key;
     //invariant: keep the ranges in ascending order
-    QVector<U2Region> ranges;
-    QList<Annotation> annotations;
+    QVector<U2Region>       ranges;
+    QList<Annotation>       annotations;
 };
 
 class PVRowsManager {
 public:
-    PVRowsManager() {}
-    ~PVRowsManager();
-    void clear();
+                                        PVRowsManager( );
+                                        ~PVRowsManager( );
+    void                                clear( );
 
-    void addAnnotation( const Annotation &f, const QString &key );
-    void removeAnnotation( const Annotation &f );
+    void                                addAnnotation( const Annotation &f, const QString &key );
+    void                                removeAnnotation( const Annotation &f );
 
-    bool contains(const QString& key) const;
-    int getNumRows() const {return rows.size();}
-    PVRowData* getRow(int row) const;
+    bool                                contains( const QString &key ) const;
+    int                                 getNumRows( ) const;
+    PVRowData *                         getRow( int row ) const;
 
     /**
      * returns -1 if @a is not found
      */
-    int getAnnotationRowIdx( const Annotation &a ) const;
-    PVRowData* getAnnotationRow( const Annotation &a ) const {return rowByAnnotation.value(a, NULL);}
+    int                                 getAnnotationRowIdx( const Annotation &a ) const;
+    PVRowData *                         getAnnotationRow( const Annotation &a ) const;
     
-    int getNumAnnotationsInRow(int rowNum) const;
+    int                                 getNumAnnotationsInRow( int rowNum ) const;
 
 private:
-    QList<PVRowData*> rows;
-    QMap<Annotation, PVRowData*> rowByAnnotation;
+    QList<PVRowData *>                  rows;
+    QMap<Annotation, PVRowData *>       rowByAnnotation;
 };
 
 } // namespace

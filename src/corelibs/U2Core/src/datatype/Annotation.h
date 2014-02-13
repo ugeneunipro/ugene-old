@@ -84,7 +84,7 @@ public:
 
     void                    removeQualifier( const U2Qualifier &q );
 
-    AnnotationGroup       getGroup( ) const;
+    AnnotationGroup         getGroup( ) const;
     /** 
      * Appends to @res all existing qualifiers with the given @name
      */
@@ -95,8 +95,9 @@ public:
      */
     QString                 findFirstQualifierValue( const QString &name ) const;
 
-    QString                 getQualifiersTip( int maxRows, U2SequenceObject *seqObj = NULL,
-                                DNATranslation *complTT = NULL, DNATranslation *aminoTT = NULL) const;
+    static QString          getQualifiersTip( const AnnotationData &data, int maxRows,
+                                U2SequenceObject *seqObj = NULL, DNATranslation *complTT = NULL,
+                                DNATranslation *aminoTT = NULL);
 
     bool                    isCaseAnnotation( ) const;
 

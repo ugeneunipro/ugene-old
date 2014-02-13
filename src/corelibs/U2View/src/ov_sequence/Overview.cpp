@@ -416,21 +416,24 @@ int OverviewRenderArea::getAnnotationDensity (int pos) const {
     return annotationsOnPos.at(pos-1);
 }
 
-void OverviewRenderArea::setAnnotationsOnPos() {
-    annotationsOnPos.clear();
-    ADVSequenceObjectContext* ctx = view->getSequenceContext();
-    qint64 len = ctx->getSequenceLength();
-    annotationsOnPos.resize(len);
-    U2Region sequenceRange(0, ctx->getSequenceObject()->getSequenceLength());
-    AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects(true);
+void OverviewRenderArea::setAnnotationsOnPos( ) {
+    annotationsOnPos.clear( );
+    const ADVSequenceObjectContext *ctx = view->getSequenceContext( );
+    const qint64 len = ctx->getSequenceLength( );
+    annotationsOnPos.resize( len );
+
+    const U2Region sequenceRange( 0, ctx->getSequenceObject( )->getSequenceLength( ) );
+    AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
+    const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects( true );
+
     foreach ( AnnotationTableObject *at, aObjs ) {
         foreach ( const Annotation &a, at->getAnnotations( ) ) {
-            AnnotationSettings* as = asr->getAnnotationSettings(a);
-            if(as->visible) {
-                foreach ( const U2Region& r, a.getRegions( ) ) {
-                    U2Region innerRegion = r.intersect(sequenceRange);
-                    for(qint64 i = innerRegion.startPos;i < innerRegion.endPos(); i++) {
+            const AnnotationData &ad = a.getData( );
+            const AnnotationSettings *as = asr->getAnnotationSettings( ad );
+            if ( as->visible ) {
+                foreach ( const U2Region &r, ad.getRegions( ) ) {
+                    const U2Region innerRegion = r.intersect( sequenceRange );
+                    for ( qint64 i = innerRegion.startPos; i < innerRegion.endPos( ); i++ ) {
                         annotationsOnPos[i]++;
                     }
                 }

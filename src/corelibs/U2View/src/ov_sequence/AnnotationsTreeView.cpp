@@ -1089,23 +1089,25 @@ bool AnnotationsTreeView::eventFilter(QObject* o, QEvent* e) {
     if (o != tree->viewport()) {
         return false;
     }
-    QEvent::Type etype = e->type();
+    const QEvent::Type etype = e->type();
     switch (etype) {
         case QEvent::ToolTip: {
-            QHelpEvent* he = (QHelpEvent*)e;
-            QPoint globalPos = he->globalPos();
-            QPoint viewportPos = tree->viewport()->mapFromGlobal(globalPos);
-            QTreeWidgetItem* item = tree->itemAt(viewportPos);
-            if (item != NULL) {
-                AVItem* avi = static_cast<AVItem*>(item);
-                if (avi->type == AVItemType_Annotation) {
-                    AVAnnotationItem* ai = static_cast<AVAnnotationItem*>(avi);
-                    ADVSequenceObjectContext* sc = ctx->getSequenceContext(ai->getAnnotationTableObject());
-                    QString tip = ai->annotation.getQualifiersTip(15, 
-                        sc?sc->getSequenceObject():NULL,
-                        sc?sc->getComplementTT():NULL);
-                    if (!tip.isEmpty()) {
-                        QToolTip::showText(he->globalPos(), tip);
+            const QHelpEvent *he = static_cast<const QHelpEvent *>( e );
+            const QPoint globalPos = he->globalPos( );
+            const QPoint viewportPos = tree->viewport( )->mapFromGlobal( globalPos );
+            const QTreeWidgetItem *item = tree->itemAt( viewportPos );
+            if ( NULL != item ) {
+                const AVItem *avi = static_cast<const AVItem *>( item );
+                if ( AVItemType_Annotation == avi->type ) {
+                    const AVAnnotationItem *ai = static_cast<const AVAnnotationItem *>( avi );
+                    const AnnotationTableObject *table = ai->getAnnotationTableObject( );
+                    const ADVSequenceObjectContext *sc = ctx->getSequenceContext( table );
+                    const bool seqObjectContextValid = ( NULL != sc );
+                    const QString tip = Annotation::getQualifiersTip( ai->annotation.getData( ), 15,
+                        seqObjectContextValid ? sc->getSequenceObject( ) : NULL,
+                        seqObjectContextValid ? sc->getComplementTT( ) : NULL );
+                    if ( !tip.isEmpty( ) ) {
+                        QToolTip::showText( he->globalPos( ), tip );
                         return true;
                     }
                 }
@@ -2026,57 +2028,58 @@ QMap<QString, QIcon>& AVAnnotationItem::getIconsCache() {
     return iconsCache;
 }
 
-void AVAnnotationItem::updateVisual(ATVAnnUpdateFlags f) {
-    const AnnotationData data = annotation.getData( );
-    const AnnotationSettings* as = AppContext::getAnnotationsSettingsRegistry()->getAnnotationSettings(annotation);
+void AVAnnotationItem::updateVisual( ATVAnnUpdateFlags f ) {
+    const AnnotationData aData = annotation.getData( );
+    AnnotationSettingsRegistry *registry = AppContext::getAnnotationsSettingsRegistry( );
+    const AnnotationSettings* as = registry->getAnnotationSettings( aData );
     
-    if (f.testFlag(ATVAnnUpdateFlag_BaseColumns)) {
-        QMap<QString, QIcon>& cache = getIconsCache();
-        QIcon icon = cache.value(data.name);
-        if (icon.isNull()) {
-            QColor iconColor = as->visible ? as->color : Qt::lightGray;
-            icon = GUIUtils::createSquareIcon(iconColor, 9);
-            if (cache.size() > MAX_ICONS_CACHE_SIZE) {
-                cache.clear();
+    if ( f.testFlag(ATVAnnUpdateFlag_BaseColumns ) ) {
+        QMap<QString, QIcon> &cache = getIconsCache( );
+        QIcon icon = cache.value( aData.name );
+        if ( icon.isNull( ) ) {
+            const QColor iconColor = as->visible ? as->color : Qt::lightGray;
+            icon = GUIUtils::createSquareIcon( iconColor, 9 );
+            if ( cache.size( ) > MAX_ICONS_CACHE_SIZE ) {
+                cache.clear( );
             }
-            cache[data.name] = icon;
+            cache[aData.name] = icon;
         }
-        assert(!icon.isNull());
+        SAFE_POINT( !icon.isNull( ), "Unable to initialize icon for annotation tree item!", );
 
-        setIcon(0, icon);
-        setText(0, annotation.getName());
-        locationString = Genbank::LocationParser::buildLocationString(&data);
-        setText(1, locationString);
+        setIcon( 0, icon );
+        setText( 0, aData.name );
+        locationString = Genbank::LocationParser::buildLocationString( &aData );
+        setText( 1, locationString );
     }
 
-    if (f.testFlag(ATVAnnUpdateFlag_QualColumns)) {
+    if ( f.testFlag( ATVAnnUpdateFlag_QualColumns ) ) {
         //setup custom qualifiers columns
-        AnnotationsTreeView* atv = getAnnotationTreeView();
-        assert(atv!=NULL);
-        const QStringList& colNames = atv->getQualifierColumnNames();
+        AnnotationsTreeView *atv = getAnnotationTreeView( );
+        SAFE_POINT( NULL != atv, "Invalid annotations tree view!", );
+        const QStringList &colNames = atv->getQualifierColumnNames( );
         hasNumericQColumns = false;
-        for (int i=0, n = colNames.size(); i < n ;i++) {
-            int col = 2+i;
-            QString colName = colNames[i];
-            QString colText = annotation.findFirstQualifierValue(colName);
-            setText(2+i, colText);
-            bool linked = processLinks(colName, colText,  col);
-            if (!linked) {
+        for ( int i = 0, n = colNames.size( ); i < n ;i++ ) {
+            const int col = 2 + i;
+            const QString colName = colNames[i];
+            const QString colText = aData.findFirstQualifierValue( colName );
+            setText( 2 + i, colText );
+            const bool linked = processLinks( colName, colText,  col );
+            if ( !linked ) {
                 bool ok  = false;
-                double d = colText.toDouble(&ok);
-                if (ok) {
-                    setData(col, Qt::UserRole, d);
+                double d = colText.toDouble( &ok );
+                if ( ok ) {
+                    setData( col, Qt::UserRole, d );
                     hasNumericQColumns = true;
                 }
             }
         }
     }
 
-    if (f.testFlag(ATVAnnUpdateFlag_ReverseAnnotationSelection)) {
-        setSelected(!isSelected());
+    if ( f.testFlag(ATVAnnUpdateFlag_ReverseAnnotationSelection ) ) {
+        setSelected( !isSelected( ) );
     }
 
-    GUIUtils::setMutedLnF(this, !as->visible, true);
+    GUIUtils::setMutedLnF( this, !as->visible, true );
 }
 
 QVariant AVAnnotationItem::data( int col, int role ) const {

@@ -68,8 +68,8 @@ QStringList AnnotationSettingsRegistry::getAllSettings() const {
     return (persistentMap.keys() + transientMap.keys()).toSet().toList();
 }
 
-AnnotationSettings * AnnotationSettingsRegistry::getAnnotationSettings( const Annotation &a ) {
-    AnnotationSettings *s = getAnnotationSettings( a.getName( ) );
+AnnotationSettings * AnnotationSettingsRegistry::getAnnotationSettings( const AnnotationData &a ) {
+    AnnotationSettings *s = getAnnotationSettings( a.name );
     //don't show non-positional features that span the whole sequence
     if ( a.findFirstQualifierValue( "non-positional" ) != QString::null ) {
         s->visible = false;
@@ -100,7 +100,6 @@ AnnotationSettings* AnnotationSettingsRegistry::getAnnotationSettings(const QStr
     transientMap[name]=s;
     return s;
 }
-
 
 void AnnotationSettingsRegistry::read() {
 

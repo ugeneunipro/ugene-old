@@ -558,7 +558,7 @@ U2DbiIterator<U2Feature>* SQLiteFeatureDbi::getFeaturesByRegion( const U2Region&
     const QString queryStringk = "SELECT " + FDBI_FIELDS + " FROM Feature AS f INNER JOIN "
         "FeatureLocationRTreeIndex AS fr ON f.id = fr.id AND "
         + ( parentId.isEmpty( ) ? "" : "f.parent = ?3 AND " )
-        + ( contains ? "fr.start >= ?1 AND fr.end <= ?2" : "fr.start < ?2 AND fr.end > ?1" );
+        + ( contains ? "fr.start >= ?1 AND fr.end <= ?2" : "fr.start <= ?2 AND fr.end >= ?1" );
     QSharedPointer<SQLiteQuery> q = t.getPreparedQuery( queryStringk, db, os );
 
     q->bindInt64( 1, reg.startPos );

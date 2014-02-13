@@ -195,7 +195,7 @@ QList<U2Region> AnnotationTableObject::getAnnotatedRegions( ) const {
 }
 
 QList<Annotation> AnnotationTableObject::getAnnotationsByRegion( const U2Region &region,
-    bool contains )
+    bool contains ) const
 {
     QList<Annotation> result;
 

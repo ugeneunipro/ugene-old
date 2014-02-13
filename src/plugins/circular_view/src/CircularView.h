@@ -132,11 +132,14 @@ public:
 protected:
     void resizeEvent(QResizeEvent *e);
     virtual void drawAll(QPaintDevice* pd);
-    virtual U2Region getAnnotationYRange( const Annotation &a, int ri, const AnnotationSettings* as) const;
-    void buildAnnotationItem(DrawAnnotationPass pass, const Annotation &a, bool selected = false, const AnnotationSettings* as = NULL);
+    virtual U2Region getAnnotationYRange( const Annotation &a, int ri,
+        const AnnotationSettings *as) const;
+    void buildAnnotationItem( DrawAnnotationPass pass, const Annotation &a,
+        bool selected = false, const AnnotationSettings *as = NULL );
     virtual void drawAnnotations(QPainter& p);
     void paintContent(QPainter& p);
-    void buildAnnotationLabel(const QFont& font, const Annotation &a, const AnnotationSettings* as);
+    void buildAnnotationLabel( const QFont &font, const Annotation &a,
+        const AnnotationSettings *as );
     void drawSequenceName(QPainter& p);
     void drawRuler(QPainter& p);
     void drawRulerNotches(QPainter& p, int start, int span, int seqLen);

@@ -196,7 +196,8 @@ public:
     int getRowLinesOffset() const {return rowLinesOffset;}
     void setRowLinesOffset(int r);
 
-    virtual U2Region getAnnotationYRange( const Annotation &a, int region, const AnnotationSettings* as) const;
+    virtual U2Region getAnnotationYRange( const Annotation &a, int region,
+        const AnnotationSettings *as ) const;
 
     bool updateNumVisibleRows();
     bool canIncreaseLines();

@@ -49,7 +49,7 @@ public:
     /**
      * The annotation selected
      */
-    Annotation        annotation;
+    Annotation          annotation;
     /**
      * Location idx that is preferable for visualization
      * -1 == not specified, 0..N == idx of U2Region in 'location' field

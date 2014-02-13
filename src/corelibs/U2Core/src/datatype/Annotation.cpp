@@ -457,21 +457,17 @@ static QString getAlignmentTip( const QString &ref, const QList<U2CigarToken> &t
     return alignmentTip;
 }
 
-QString Annotation::getQualifiersTip( int maxRows, U2SequenceObject *seqObj,
-    DNATranslation *complTT, DNATranslation *aminoTT ) const
+QString Annotation::getQualifiersTip( const AnnotationData &data, int maxRows,
+    U2SequenceObject *seqObj, DNATranslation *complTT, DNATranslation *aminoTT )
 {
-    SAFE_POINT( 0 < maxRows && NULL != seqObj, "Invalid parameters passed!", QString( ) );
+    SAFE_POINT( 0 < maxRows, "Invalid maximum row count parameter passed!", QString( ) );
     QString tip;
-
-    U2OpStatusImpl os;
-    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( dbId,
-        parentObject->getEntityRef( ).dbiRef, os );
-    SAFE_POINT_OP( os, tip );
 
     int rows = 0;
     const int QUALIFIER_VALUE_CUT = 40;
 
-    QString cigar, ref;
+    QString cigar;
+    QString ref;
     if ( !data.qualifiers.isEmpty( ) ) {
         tip += "<nobr>";
         bool first = true;
@@ -504,21 +500,21 @@ QString Annotation::getQualifiersTip( int maxRows, U2SequenceObject *seqObj,
     }
 
     if ( !cigar.isEmpty( ) && !ref.isEmpty( ) ) {
-        QList<U2CigarToken> tokens = parceCigar( cigar );
-        QString alignmentTip = getAlignmentTip( ref, tokens, QUALIFIER_VALUE_CUT );
+        const QList<U2CigarToken> tokens = parceCigar( cigar );
+        const QString alignmentTip = getAlignmentTip( ref, tokens, QUALIFIER_VALUE_CUT );
         tip += "<br><b>Reference</b> = " + alignmentTip;
         rows++;
     }
 
     bool canShowSeq = true;
-    int seqLen = ( NULL != seqObj ) ? seqObj->getSequenceLength( ) : 0;
+    const int seqLen = ( NULL != seqObj ) ? seqObj->getSequenceLength( ) : 0;
     foreach ( const U2Region &r, data.location->regions ) {
         if ( r.endPos( ) > seqLen ) {
             canShowSeq = false;
         }
     }
 
-    if ( seqObj && rows <= maxRows && ( data.location->strand.isCompementary( ) || complTT != NULL )
+    if ( NULL != seqObj && rows <= maxRows && ( data.location->strand.isCompementary( ) || complTT != NULL )
         && canShowSeq )
     {
         QVector<U2Region> loc = data.location->regions;
@@ -535,7 +531,7 @@ QString Annotation::getQualifiersTip( int maxRows, U2SequenceObject *seqObj,
             if ( !aminoVal.isEmpty( ) ) {
                 aminoVal += "^";
             }
-            const U2Region& r = loc.at( i );
+            const U2Region &r = loc.at( i );
             const int len = qMin( int( r.length ), QUALIFIER_VALUE_CUT - seqVal.length( ) );
             if ( len != r.length ) {
                 complete = false;
@@ -546,14 +542,14 @@ QString Annotation::getQualifiersTip( int maxRows, U2SequenceObject *seqObj,
                 TextUtils::reverse( ba.data( ), len );
                 seqVal += QString::fromLocal8Bit( ba.data( ), len );
                 if ( NULL != aminoTT ) {
-                    int aminoLen = aminoTT->translate( ba.data( ), len );
+                    const int aminoLen = aminoTT->translate( ba.data( ), len );
                     aminoVal += QString::fromLocal8Bit( ba.data( ), aminoLen );
                 }
             } else {
                 QByteArray ba = seqObj->getSequenceData( U2Region( r.startPos, len ) );
                 seqVal += QString::fromLocal8Bit( ba.constData( ), len );
                 if ( NULL != aminoTT ) {
-                    int aminoLen = aminoTT->translate( ba.data( ), len );
+                    const int aminoLen = aminoTT->translate( ba.data( ), len );
                     aminoVal += QString::fromLocal8Bit( ba.data( ), aminoLen );
                 }
             }
