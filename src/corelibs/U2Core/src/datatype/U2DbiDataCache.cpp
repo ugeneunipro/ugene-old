@@ -40,7 +40,10 @@ U2DbiDataCache<Id, Data>::U2DbiDataCache( int _maxCacheSizeInBytes, U2ChildDbi *
 {
     SAFE_POINT( NULL != dbi, "Invalid DBI detected!", );
     QMutexLocker( dataGuard );
-    setMaxCacheSize( _maxCacheSizeInBytes );
+
+    U2OpStatusImpl os;
+    setMaxCacheSizeInBytes( _maxCacheSizeInBytes, os );
+    SAFE_POINT_OP( os, );
 }
 
 template <typename Id, typename Data>

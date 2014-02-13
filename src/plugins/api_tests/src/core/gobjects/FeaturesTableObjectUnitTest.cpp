@@ -669,7 +669,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByRegion ) {
     ft.addAnnotations( annotations );
 
     const QList<Annotation> anns1 = ft.getAnnotationsByRegion( U2Region( 500, 500 ), false );
-    CHECK_EQUAL( 0, anns1.size( ), "annotation count" );
+    CHECK_EQUAL( 2, anns1.size( ), "annotation count" );
 
     const QList<Annotation> anns2 = ft.getAnnotationsByRegion( U2Region( 500, 500 ), true );
     CHECK_EQUAL( 0, anns2.size( ), "annotation count" );
