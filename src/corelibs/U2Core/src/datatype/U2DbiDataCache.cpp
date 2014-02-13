@@ -1,4 +1,4 @@
-﻿/**
+/**
  * UGENE - Integrated Bioinformatics Tools.
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
@@ -22,6 +22,7 @@
 #include <QtCore/QMutexLocker>
 
 #include <U2Core/U2Dbi.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "U2DbiDataCache.h"

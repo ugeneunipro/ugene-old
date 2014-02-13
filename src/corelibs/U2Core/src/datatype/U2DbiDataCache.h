@@ -1,4 +1,4 @@
-﻿/**
+/**
  * UGENE - Integrated Bioinformatics Tools.
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
