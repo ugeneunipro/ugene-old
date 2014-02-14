@@ -190,7 +190,7 @@ void U2DbiDataCache<Id, Data>::incrementAccessCount( const Id &id, U2OpStatus &o
     const int accessCount = accessCount2id.key( id, NOT_FOUND_VALUE_INDEX );
     CHECK_EXT( NOT_FOUND_VALUE_INDEX != accessCount && 1, os.setError( "Invalid data ID detected!" ), );
     accessCount2id.remove( accessCount, id );
-    accessCount.insert( accessCount + 1, id );
+    accessCount2id.insert( accessCount + 1, id );
 }
 
 template <typename Id, typename Data>
