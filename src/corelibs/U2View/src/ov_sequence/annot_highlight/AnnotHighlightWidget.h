@@ -67,7 +67,8 @@ private slots:
     void sl_storeNewColor(const QString& annotName, const QColor& newColor);
     void sl_storeNewSettings(AnnotationSettings* annotSettings);
     void sl_onSequenceModified(ADVSequenceObjectContext*);
-    void sl_onAnnotationsAddedRemoved( const QList<Annotation> & );
+    void sl_onAnnotationsAdded( const QList<Annotation> & );
+    void sl_onAnnotationsRemoved( const QList<Annotation> & );
     void sl_onAnnotationModified( const AnnotationModification &annotModifs );
     void sl_onAnnotationObjectAdded( AnnotationTableObject * );
     void sl_onAnnotationObjectRemoved( AnnotationTableObject * );
@@ -143,6 +144,8 @@ private:
      * Start region position will be stored in "start".
      */
     const Annotation * findFirstSelectedAnnotationRegion(qint64 &start, bool fromTheBeginning = true);
+
+    void updateAnnotationNames( );
 
     AnnotatedDNAView* annotatedDnaView;
 

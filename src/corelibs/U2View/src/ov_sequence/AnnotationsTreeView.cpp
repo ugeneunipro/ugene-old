@@ -530,31 +530,35 @@ void AnnotationsTreeView::sl_onAnnotationsAdded( const QList<Annotation> &as ) {
 }
 
 void AnnotationsTreeView::sl_onAnnotationsRemoved( const QList<Annotation> &as ) {
-    TreeSorter ts(this);
+    TreeSorter ts( this );
     
-    tree->disconnect(this, SIGNAL(sl_onItemSelectionChanged()));
+    tree->disconnect( this, SIGNAL( sl_onItemSelectionChanged( ) ) );
 
-    AnnotationTableObject *aObj = qobject_cast<AnnotationTableObject *>(sender());
-    SAFE_POINT(aObj != NULL, "Invalid annotation table detected!", );
-    AVGroupItem* groupItem = findGroupItem(aObj->getRootGroup());
-    QSet<AVGroupItem*> groupsToUpdate;
+    AnnotationTableObject *aObj = qobject_cast<AnnotationTableObject *>( sender( ) );
+    SAFE_POINT( aObj != NULL, "Invalid annotation table detected!", );
+    AVGroupItem *groupItem = findGroupItem( aObj->getRootGroup( ) );
+    QHash<AVGroupItem *, int> groups2RemovedCount;
 
     foreach ( const Annotation &a, as ) {
-        QList<AVAnnotationItem*> aItems;
-        groupItem->findAnnotationItems(aItems, a);
-        SAFE_POINT(!aItems.isEmpty(), "Unexpected annotation view items detected!", );
-        foreach(AVAnnotationItem* ai, aItems) {
-            groupsToUpdate.insert(static_cast<AVGroupItem*>(ai->parent()));
+        QList<AVAnnotationItem *> aItems;
+        groupItem->findAnnotationItems( aItems, a );
+        SAFE_POINT( !aItems.isEmpty( ), "Unexpected annotation view items detected!", );
+        foreach ( AVAnnotationItem *ai, aItems ) {
+            AVGroupItem *parentGroup = static_cast<AVGroupItem*>( ai->parent( ) );
+            if ( groups2RemovedCount.contains( parentGroup ) ) {
+                ++groups2RemovedCount[parentGroup];
+            } else {
+                groups2RemovedCount.insert( parentGroup, 1 );
+            }
             delete ai;
         }
     }
-    foreach(AVGroupItem* g, groupsToUpdate) {
-        g->updateVisual();
+    foreach ( AVGroupItem *g, groups2RemovedCount.keys( ) ) {
+        g->updateVisual( groups2RemovedCount[g] );
     }
 
-    connect(tree, SIGNAL(itemSelectionChanged()), SLOT(sl_onItemSelectionChanged()));
-    
-    sl_onItemSelectionChanged();
+    connect( tree, SIGNAL( itemSelectionChanged( ) ), SLOT( sl_onItemSelectionChanged( ) ) );
+    sl_onItemSelectionChanged( );
 }
 
 void AnnotationsTreeView::sl_onAnnotationModified( const AnnotationModification &md ) {
@@ -644,7 +648,7 @@ void AnnotationsTreeView::sl_onGroupRemoved( const AnnotationGroup &parent,
         }
     }
 
-    pg->updateVisual( );
+    pg->updateVisual( 0, 1 );
 
     connect( tree, SIGNAL( itemSelectionChanged( ) ), SLOT( sl_onItemSelectionChanged( ) ) );
 }
@@ -1929,39 +1933,41 @@ const QIcon& AVGroupItem::getDocumentIcon() {
     return groupIcon;
 }
 
-void AVGroupItem::updateVisual() {
-    if (parent() == NULL) { // document item
-        AnnotationTableObject* aobj  = group.getGObject();
-        Document* doc = aobj->getDocument();
-        QString text = aobj->getGObjectName();
-        if (doc != NULL ) {
-            QString docShortName = aobj->getDocument()->getName();
-            assert(!docShortName.isEmpty());
-            text = group.getGObject()->getGObjectName() + " ["+docShortName+"]";
-            if (aobj->isTreeItemModified()) { 
-                text+=" *";
+void AVGroupItem::updateVisual( int removedAnnotationCount, int removedSubgroupCount ) {
+    SAFE_POINT( 0 <= removedAnnotationCount && 0 <= removedSubgroupCount,
+        "Invalid removed item count!", )
+    if ( parent( ) == NULL ) { // document item
+        AnnotationTableObject *aobj  = group.getGObject( );
+        Document *doc = aobj->getDocument( );
+        QString text = aobj->getGObjectName( );
+        if ( doc != NULL ) {
+            const QString docShortName = aobj->getDocument( )->getName( );
+            SAFE_POINT( !docShortName.isEmpty( ), "Invalid document name detected!", );
+            text = group.getGObject( )->getGObjectName( ) + " [" + docShortName + "]";
+            if ( aobj->isTreeItemModified( ) ) { 
+                text += " *";
             }
         }
-        setText(0, text);
-        setIcon(0, getDocumentIcon());
-        GUIUtils::setMutedLnF(this, aobj->getAnnotations().count() == 0, false);
+        setText( 0, text );
+        setIcon( 0, getDocumentIcon( ) );
+        GUIUtils::setMutedLnF( this, aobj->getAnnotations( ).isEmpty( ), false );
     } else { // usual groups with annotations
-        int na = group.getAnnotations().size();
-        int ng = group.getSubgroups().size();
-        QString nameString = group.getName() + "  " + QString("(%1, %2)").arg(ng).arg(na);
-        setText(0, nameString);
-        setIcon(0, getGroupIcon());
+        int na = group.getAnnotations( ).size( ) - removedAnnotationCount;
+        int ng = group.getSubgroups( ).size( ) - removedSubgroupCount;
+        const QString nameString = group.getName( ) + "  " + QString( "(%1, %2)" ).arg( ng ).arg( na );
+        setText( 0, nameString );
+        setIcon( 0, getGroupIcon( ) );
 
         // if all child items are muted -> mute this group too
-        bool showDisabled = childCount() > 0; //empty group is not disabled
-        for (int i = 0; i < childCount(); i++) {
-            QTreeWidgetItem* childItem = child(i);
-            if (!GUIUtils::isMutedLnF(childItem))  {
+        bool showDisabled = childCount( ) > 0; //empty group is not disabled
+        for ( int i = 0; i < childCount( ); i++ ) {
+            QTreeWidgetItem *childItem = child( i );
+            if ( !GUIUtils::isMutedLnF( childItem ) ) {
                 showDisabled = false;
                 break;
             }
         }
-        GUIUtils::setMutedLnF(this, showDisabled, false);
+        GUIUtils::setMutedLnF( this, showDisabled, false );
     }
 }
 
@@ -2340,7 +2346,7 @@ Task::ReportResult FindQualifierTask::report(){
         }
 
         if(foundResult && ai){
-            const U2Qualifier & u2qual = ai->annotation.getQualifiers().at(p.second);
+            const U2Qualifier u2qual = ai->annotation.getQualifiers().at(p.second);
             qual = ai->findQualifierItem(u2qual.name, u2qual.value);
             qual->setSelected(true);
             qual->parent()->setSelected(true);

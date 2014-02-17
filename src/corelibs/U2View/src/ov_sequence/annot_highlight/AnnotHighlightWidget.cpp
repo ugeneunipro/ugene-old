@@ -429,9 +429,9 @@ void AnnotHighlightWidget::connectSlots()
 void AnnotHighlightWidget::connectSlotsForAnnotTableObj(const AnnotationTableObject *annotTableObj)
 {
     connect(annotTableObj, SIGNAL(si_onAnnotationsAdded(const QList<Annotation> &)),
-        SLOT(sl_onAnnotationsAddedRemoved(const QList<Annotation> &)));
+        SLOT(sl_onAnnotationsAdded(const QList<Annotation> &)));
     connect(annotTableObj, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation> &)),
-        SLOT(sl_onAnnotationsAddedRemoved(const QList<Annotation> &)));
+        SLOT(sl_onAnnotationsRemoved(const QList<Annotation> &)));
     connect(annotTableObj, SIGNAL(si_onAnnotationModified(const AnnotationModification &)),
         SLOT(sl_onAnnotationModified(const AnnotationModification &)));
 }
@@ -439,9 +439,9 @@ void AnnotHighlightWidget::connectSlotsForAnnotTableObj(const AnnotationTableObj
 void AnnotHighlightWidget::disconnectSlotsForAnnotTableObj(const AnnotationTableObject *annotTableObj)
 {
     disconnect(annotTableObj, SIGNAL(si_onAnnotationsAdded(const QList<Annotation> &)),
-        this, SLOT(sl_onAnnotationsAddedRemoved(const QList<Annotation> &)));
+        this, SLOT(sl_onAnnotationsAdded(const QList<Annotation> &)));
     disconnect(annotTableObj, SIGNAL(si_onAnnotationsRemoved(const QList<Annotation> &)),
-        this, SLOT(sl_onAnnotationsAddedRemoved(const QList<Annotation>&)));
+        this, SLOT(sl_onAnnotationsRemoved(const QList<Annotation>&)));
     disconnect(annotTableObj, SIGNAL(si_onAnnotationModified(const AnnotationModification&)),
         this, SLOT(sl_onAnnotationModified(const AnnotationModification&)));
 }
@@ -514,14 +514,18 @@ void AnnotHighlightWidget::findAllAnnotationsNamesInSettings()
     }
 }
 
-void AnnotHighlightWidget::loadAnnotTypes()
-{
-    // Get the annotation names
+void AnnotHighlightWidget::updateAnnotationNames( ) {
     if (showAllLabel->isShowAllSelected()) {
         findAllAnnotationsNamesInSettings();
     } else {
         findAllAnnotationsNamesForSequence();
     }
+}
+
+void AnnotHighlightWidget::loadAnnotTypes()
+{
+    // Get the annotation names
+    updateAnnotationNames( );
 
     QList<QString> annotNames = annotNamesWithAminoInfo.keys();
     qSort(annotNames);
@@ -589,9 +593,43 @@ void AnnotHighlightWidget::sl_onSequenceModified(ADVSequenceObjectContext* /* se
     loadAnnotTypes();
 }
 
-void AnnotHighlightWidget::sl_onAnnotationsAddedRemoved(const QList<Annotation>& /* annotations */)
+void AnnotHighlightWidget::sl_onAnnotationsAdded(const QList<Annotation>& /* annotations */)
 {
     loadAnnotTypes();
+}
+
+void AnnotHighlightWidget::sl_onAnnotationsRemoved( const QList<Annotation> &annotations ) {
+    const QString selectedAnnotName = annotTree->getCurrentItemAnnotName();
+
+    QList<QTreeWidgetItem *> removedItems;
+    bool isSelectedItemRemoved = false;
+    foreach ( const Annotation &a, annotations ) {
+        const QString annotName = a.getName( );
+        if ( selectedAnnotName == annotName ) {
+            isSelectedItemRemoved = true;
+        }
+        removedItems << annotTree->findItems( annotName, Qt::MatchExactly );
+    }
+
+    updateAnnotationNames( );
+
+    if ( annotNamesWithAminoInfo.count( ) == removedItems.count( ) ) { // all annotations were removed
+        annotTree->clear( );
+        setNoAnnotsLayout( );
+    } else {
+        setLayoutWithAnnotsSelection( );
+        foreach ( QTreeWidgetItem *item, removedItems ) {
+            delete annotTree->takeTopLevelItem( annotTree->indexOfTopLevelItem( item ) );
+        }
+
+        if ( isSelectedItemRemoved ) {
+            annotTree->setFirstItemSelected( );
+        } else {
+            annotTree->setItemSelectedWithAnnotName( selectedAnnotName );
+        }
+    }
+
+    nextAnnotationButton->setDisabled( annotatedDnaView->getAnnotationObjects( ).isEmpty( ) );
 }
 
 void AnnotHighlightWidget::sl_onAnnotationModified(const AnnotationModification& /* modifications */)

@@ -253,7 +253,9 @@ class AVGroupItem : public AVItem {
 public:
     AVGroupItem( AnnotationsTreeView *atv, AVGroupItem *parent, const AnnotationGroup &g );
 
-    void updateVisual( );
+    // @removedAnnotationCount and @removedSubgroupCount represent count of annotation and subgroups
+    // that are about to be deleted
+    void updateVisual( int removedAnnotationCount = 0, int removedSubgroupCount = 0 );
     void updateAnnotations( const QString &nameFilter, ATVAnnUpdateFlags flags );
     void findAnnotationItems( QList<AVAnnotationItem *> &result, const Annotation &a ) const;
 
