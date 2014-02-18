@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>385</width>
-    <height>212</height>
+    <width>330</width>
+    <height>205</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Plasmid auto annotations</string>
+   <string>Plasmid Auto Annotations</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -19,7 +19,7 @@
      <property name="title">
       <string>Selected features</string>
      </property>
-     <layout class="QFormLayout" name="formLayout">
+     <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QCheckBox" name="promotersBox">
         <property name="text">
@@ -48,17 +48,17 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QCheckBox" name="featureBox">
-        <property name="text">
-         <string>Other features</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
        <widget class="QCheckBox" name="genesBox">
         <property name="text">
          <string>Gene</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="featureBox">
+        <property name="text">
+         <string>Other features</string>
         </property>
        </widget>
       </item>
@@ -71,6 +71,19 @@
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
