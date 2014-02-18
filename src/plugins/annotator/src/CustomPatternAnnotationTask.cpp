@@ -68,6 +68,11 @@ void CustomPatternAnnotationTask::prepare()
         return;
     }
     char unknownChar = 'N';
+
+    if (sequence.length() < featureStore->getMinFeatureSize()) {
+        return;
+    }
+
     index = QSharedPointer<SArrayIndex>( new SArrayIndex(sequence.constData(), sequence.length(), 
         featureStore->getMinFeatureSize(), stateInfo, unknownChar) );
     
