@@ -23,6 +23,8 @@
 #define _U2_DATATYPE_SERIALIZE_UTILS_H_
 
 #include <U2Core/DNAChromatogram.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/PhyTree.h>
 #include <U2Core/U2OpStatus.h>
 
 namespace U2 {
@@ -47,6 +49,33 @@ public:
      * Returns DNAChromatogram extracted from @binary.
      */
     static DNAChromatogram deserialize(const QByteArray &binary, U2OpStatus &os);
+};
+
+/**
+ * The class of utilities for serializing/deserializing phylogenetic
+ * trees into/from the binary representation of Newick format.
+ */
+class U2CORE_EXPORT NewickPhyTreeSerializer {
+public:
+    /**
+     * The serializer identifier.
+     */
+    static const QString ID;
+
+    /**
+     * Returns the binary representation of @tree.
+     */
+    static QByteArray serialize(const PhyTree &tree);
+
+    /**
+     * Returns PhyTree extracted from @binary.
+     */
+    static PhyTree deserialize(const QByteArray &binary, U2OpStatus &os);
+
+    /**
+     * Returns the list of trees parsed from @io
+     */
+    static QList<PhyTree> parseTrees(IOAdapter *io, U2OpStatus &os);
 };
 
 } // U2

@@ -120,31 +120,28 @@ bool PhyNode::isConnected(const PhyNode* node) const {
     return false;
 }
 
-void PhyNode::dumpBranches() const{
-    std::cout<<"Branches are: ";
-    for(int i =0; i<branches.size(); i++){
-        QString node1name = "null";
-        if(branches[i]->node1!=0){
-            node1name = branches[i]->node1->name;
-        }
-
-        QString node2name = "null";
-        if(branches[i]->node2!=0){
-            node2name = branches[i]->node2->name;
-        }
-        std::cout<<"branch from node "<<node1name.toLatin1().constData()
-            <<" to "<<node2name.toLatin1().constData()
-            <<" with distance "<<branches[i]->distance<<std::endl;
-    }
-
-}
-
-PhyNode* PhyNode::getParentNode() {
+PhyNode * PhyNode::parent() const {
     foreach(PhyBranch* currentBrunch, branches) {
         if(currentBrunch->node2 == this)
             return currentBrunch->node1;
     }
     return NULL;
+}
+
+const PhyNode * PhyNode::getParentNode() const {
+    return parent();
+}
+
+PhyNode * PhyNode::getParentNode() {
+    return parent();
+}
+
+PhyBranch * PhyNode::getBranchAt(int i) const {
+    return branches[i];
+}
+
+PhyBranch * PhyNode::getBranch(int i) const {
+    return getBranchAt(i);
 }
 
 void PhyNode::setParentNode(PhyNode* newParent, double distance) {
@@ -257,7 +254,7 @@ PhyNode* PhyNode::clone() const {
     return myClone;
 }
 
-void PhyNode::print(QList<PhyNode*>& nodes, int tab, int distance){
+void PhyNode::print(QList<PhyNode*>& nodes, int tab, int distance) {
     if(nodes.contains(this)){
         return;
     }
@@ -277,7 +274,6 @@ void PhyNode::print(QList<PhyNode*>& nodes, int tab, int distance){
     }
 }
 
-
 void PhyNode::addToTrack(QSet<const PhyNode*>& track) const {
     if (track.contains(this)) {
         return;
@@ -289,10 +285,10 @@ void PhyNode::addToTrack(QSet<const PhyNode*>& track) const {
     }
 }
 
-double PhyNode::getDistanceToRoot() {
+double PhyNode::getDistanceToRoot() const {
     double distanceToRoot = 0.0;
-    const PhyBranch* currentBranch = getParentBranch();
-    PhyNode* currentNode = getParentNode();
+    const PhyBranch *currentBranch = getParentBranch();
+    const PhyNode *currentNode = getParentNode();
     while(NULL != currentBranch) {
         SAFE_POINT(currentNode != this, "There is cyclic graph in the phylogenetic tree", 0.0);
         distanceToRoot += currentBranch->distance;

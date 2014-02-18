@@ -26,6 +26,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/PhyTreeObject.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 #include <U2Algorithm/PhyTreeGeneratorTask.h>
 #include <U2Core/LoadDocumentTask.h>
@@ -112,7 +113,10 @@ Task::ReportResult GTest_CalculateTreeFromAligment::report()
 
     if (!task->hasError()) {
         PhyTree tree = task->getResult();
-        PhyTreeObject* obj = new PhyTreeObject(tree, treeObjContextName);
+        U2DbiRef dbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(stateInfo);
+        CHECK_OP(stateInfo, ReportResult_Finished);
+        PhyTreeObject *obj = PhyTreeObject::createInstance(tree, treeObjContextName, dbiRef, stateInfo);
+        CHECK_OP(stateInfo, ReportResult_Finished);
         addContext(treeObjContextName,obj);
     }        
 
@@ -164,12 +168,12 @@ Task::ReportResult GTest_CheckPhyNodeHasSibling::report()
     
     bool foundSibling = false;
     
-    const QList<PhyBranch*> branches = node->branches;
-    assert(branches.count() == 1);
-    const PhyBranch* parentBranch = branches.at(0);
+    assert(node->branchCount() == 1);
+    const PhyBranch* parentBranch = node->getBranch(0);
     const PhyNode* parent = parentBranch->node1 == node ? parentBranch->node2 : parentBranch->node1;
-    
-    foreach(const PhyBranch* branch, parent->branches) {
+
+    for (int i=0; i<parent->branchCount(); i++) {
+        const PhyBranch *branch = parent->getBranch(i);
         if ( (parent == branch->node1 && branch->node2->getName() == siblingName) ||
              ((branch->node1->getName() == siblingName) && (node == branch->node1)) )    
         {
@@ -234,9 +238,8 @@ Task::ReportResult GTest_CheckPhyNodeBranchDistance::report()
         return ReportResult_Finished;
     }
 
-    const QList<PhyBranch*> branches = node->branches;
-    assert(branches.count() == 1);
-    const PhyBranch* parentBranch = branches.at(0);
+    assert(node->branchCount() == 1);
+    const PhyBranch* parentBranch = node->getBranch(0);
     double chkDistance = parentBranch->distance;
     if (distance - chkDistance > EPS) {
         stateInfo.setError(QString("Distances don't match! Expected %1, real dist is %2").arg(distance).arg(chkDistance));

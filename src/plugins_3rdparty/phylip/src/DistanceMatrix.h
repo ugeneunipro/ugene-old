@@ -81,7 +81,6 @@ private:
 	void printIndex();
 	int getNewIndex(QString name, QPair<int, int> loc, QMap<QString, int>& old_map);
 	void dumpRawData();
-	PhyTreeData* getTree(){return treedata;}
 	static bool areTreesEqual(PhyTree* tree1, PhyTree* tree2);
 	static void addNodeToList(QList<PhyNode*>& nodelist, QMap<QString, int>& nodemap, QList<PhyBranch*>& branches,  PhyNode* node);
 	void switchName(PhyNode* node);

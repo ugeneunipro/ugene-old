@@ -32,14 +32,22 @@ IOAdapter* StringAdapterFactory::createIOAdapter() {
 }
 
 StringAdapter::StringAdapter(StringAdapterFactory *f, QObject *o)
-: IOAdapter(f, o), opened(false)
+: IOAdapter(f, o), opened(false), pos(0)
 {
 
+}
+
+StringAdapter::StringAdapter(const QByteArray &data)
+: IOAdapter(NULL), buffer(data)
+{
+    opened = true;
+    pos = 0;
 }
 
 bool StringAdapter::open(const GUrl &, IOAdapterMode) {
     buffer.clear();
     opened = true;
+    pos = 0;
 
     return true;
 }
@@ -49,20 +57,29 @@ void StringAdapter::close() {
     opened = false;
 }
 
-qint64 StringAdapter::readBlock(char * /*data*/, qint64 /*maxSize*/) {
-    // todo
-    return -1;
+qint64 StringAdapter::readBlock(char * data, qint64 maxSize) {
+    qint64 size = qMin<qint64>((buffer.length() - pos), maxSize);
+    memcpy(data, buffer.constData() + pos, size);
+    pos += size;
+    return size;
 }
 
 qint64 StringAdapter::writeBlock(const char* data, qint64 size) {
     QByteArray ar(data, size);
-    buffer += ar;
+    buffer.insert(pos, ar);
+    pos += size;
     return size;
 }
 
-bool StringAdapter::skip(qint64 /*nBytes*/) {
-    // todo
-    return false;
+bool StringAdapter::skip(qint64 nBytes) {
+    if (nBytes >= 0) {
+        qint64 size = qMin<qint64>((buffer.length() - pos), nBytes);
+        pos += size;
+    } else {
+        qint64 size = qMin<qint64>(pos, -nBytes);
+        pos += size;
+    }
+    return true;
 }
 
 qint64 StringAdapter::left() const {
@@ -71,17 +88,17 @@ qint64 StringAdapter::left() const {
 }
 
 int StringAdapter::getProgress() const {
-    // todo
-    return -1;
+    if (buffer.isEmpty()) {
+        return -1;
+    }
+    return (100 * pos) / buffer.length();
 }
 
 qint64 StringAdapter::bytesRead() const {
-    // todo
-    return -1;
+    return pos;
 }
 
-QString StringAdapter::errorString() const{
-    // toso
+QString StringAdapter::errorString() const {
     return "";
 }
 

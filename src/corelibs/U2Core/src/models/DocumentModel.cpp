@@ -106,7 +106,8 @@ U2DbiRef DocumentFormat::fetchDbiRef( const QVariantMap &hints, U2OpStatus &os )
         || types.contains( GObjectTypes::MULTIPLE_ALIGNMENT )
         || types.contains( GObjectTypes::ANNOTATION_TABLE )
         || types.contains( GObjectTypes::ASSEMBLY )
-        || types.contains( GObjectTypes::TEXT );
+        || types.contains( GObjectTypes::TEXT )
+        || types.contains( GObjectTypes::PHYLOGENETIC_TREE );
     if ( useTmpDbi ) {
         if ( hints.contains( DBI_REF_HINT ) ) {
             result = hints.value( DBI_REF_HINT ).value<U2DbiRef>( );

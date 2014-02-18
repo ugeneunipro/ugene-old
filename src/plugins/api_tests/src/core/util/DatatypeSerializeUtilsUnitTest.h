@@ -39,10 +39,16 @@ public:
 DECLARE_TEST(DatatypeSerializeUtilsUnitTest, DNAChromatogramSerializer_true);
 /* DNAChromatogramSerializer 2 */
 DECLARE_TEST(DatatypeSerializeUtilsUnitTest, DNAChromatogramSerializer_false);
+/* NewickPhyTreeSerializer 1 */
+DECLARE_TEST(DatatypeSerializeUtilsUnitTest, NewickPhyTreeSerializer);
+/* NewickPhyTreeSerializer 2 */
+DECLARE_TEST(DatatypeSerializeUtilsUnitTest, NewickPhyTreeSerializer_failed);
 
 } // U2
 
 DECLARE_METATYPE(DatatypeSerializeUtilsUnitTest, DNAChromatogramSerializer_true);
 DECLARE_METATYPE(DatatypeSerializeUtilsUnitTest, DNAChromatogramSerializer_false);
+DECLARE_METATYPE(DatatypeSerializeUtilsUnitTest, NewickPhyTreeSerializer);
+DECLARE_METATYPE(DatatypeSerializeUtilsUnitTest, NewickPhyTreeSerializer_failed);
 
 #endif // _U2_DATATYPE_SERIALIZE_UTILS_UNIT_TESTS_H_

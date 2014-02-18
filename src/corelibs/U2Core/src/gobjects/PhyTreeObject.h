@@ -22,8 +22,6 @@
 #ifndef _U2_PHYTREE_OBJECT_H_
 #define _U2_PHYTREE_OBJECT_H_
 
-#include "GObjectTypes.h"
-
 #include <U2Core/GObject.h>
 #include <U2Core/PhyTree.h>
 
@@ -32,11 +30,14 @@ namespace U2 {
 class U2CORE_EXPORT PhyTreeObject : public GObject {
     Q_OBJECT
 public:
-    PhyTreeObject(const PhyTree& _tree, const QString& objectName, const QVariantMap& hintsMap = QVariantMap()) 
-        : GObject(GObjectTypes::PHYLOGENETIC_TREE, objectName, hintsMap), tree(_tree){};
+    static PhyTreeObject * createInstance(const PhyTree &tree, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap = QVariantMap());
+
+    PhyTreeObject(const QString &objectName, const U2EntityRef &treeRef, const QVariantMap &hintsMap = QVariantMap());
 
     virtual const PhyTree& getTree() const {return tree;}
     void setTree(const PhyTree& _tree);
+
+    void onTreeChanged();
 
     void rerootPhyTree(PhyNode* node);
     // Warning!
@@ -45,18 +46,21 @@ public:
     const PhyNode* findPhyNodeByName(const QString& name);
 
     virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const;
-    PhyTreeObject* clone() const;
 
-    void update(){ tree->update();}
-    
     // Utility functions
-    
     // Compares number of nodes and nodes with names (how many nodes etc.)
     static bool treesAreAlike(const PhyTree& tree1, const PhyTree& tree2);
 signals:
     void si_phyTreeChanged();
-protected:
+private:
     PhyTree tree;
+
+private:
+    PhyTreeObject(const PhyTree &tree, const QString &objectName, const U2EntityRef &treeRef, const QVariantMap &hintsMap);
+    void retrieve();
+    void commit();
+    static void commit(const PhyTree &tree, const U2EntityRef &treeRef, U2OpStatus &os);
+    static void commit(const PhyTree &tree, const U2EntityRef &treeRef);
 };
 
 

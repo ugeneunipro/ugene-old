@@ -28,14 +28,14 @@
 
 namespace U2 {
 
-CreateRectangularBranchesTask::CreateRectangularBranchesTask(PhyNode *n): size(0), current(0), node(n) {}
+CreateRectangularBranchesTask::CreateRectangularBranchesTask(const PhyNode *n): size(0), current(0), node(n) {}
 
 GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(const PhyNode *node) {
     if (isCanceled() || stateInfo.hasError())
         return NULL;
 
 
-    int branches = node->getNumberOfBranches();
+    int branches = node->branchCount();
     if (branches == 1 && (node->getName()=="" || node->getName()=="ROOT")) {
         assert(node != node->getSecondNodeOfBranch(0));
         return getBranch(node->getSecondNodeOfBranch(0));
@@ -59,8 +59,7 @@ GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(const Ph
             item = new GraphicsRectangularBranchItem();
         }
         else {
-            item = new GraphicsRectangularBranchItem(node->getBranchesDistance(ind));
-            item->setPhyBranch(node->branches[ind]);
+            item = new GraphicsRectangularBranchItem(node->getBranchesDistance(ind), node->getBranch(ind));
         }
         int size = items.size();
         assert(size > 0);
@@ -110,8 +109,7 @@ GraphicsRectangularBranchItem* CreateRectangularBranchesTask::getBranch(const Ph
         if(branches != 1){
             item = new GraphicsRectangularBranchItem(0, y, node->getName());
         }else{
-            item = new GraphicsRectangularBranchItem(0, y, node->getName(), node->getBranchesDistance(0));
-            item->setPhyBranch(node->branches.at(0));
+            item = new GraphicsRectangularBranchItem(0, y, node->getName(), node->getBranchesDistance(0), node->getBranch(0));
         }
         
         return item;

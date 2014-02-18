@@ -269,10 +269,10 @@ const QString NEXUSParser::CMD_TREE        = "tree";
 const QString NEXUSParser::CMD_UTREE       = "utree";
 const QString NEXUSParser::CMD_TRANSLATE   = "translate";
 
-QList<GObject*> NEXUSParser::loadObjects()
+QList<GObject*> NEXUSParser::loadObjects(const U2DbiRef &dbiRef)
 {
     while (tz.look() != "") {
-        if (!readBlock(global)) {
+        if (!readBlock(global, dbiRef)) {
             break;
         }
         reportProgress();
@@ -314,7 +314,7 @@ bool NEXUSParser::readSimpleCommand(Context &ctx)
     return true;
 }
 
-bool NEXUSParser::readBlock(Context &ctx) {
+bool NEXUSParser::readBlock(Context &ctx, const U2DbiRef &dbiRef) {
     if (tz.get().toLower() != BEGIN){ 
         errors.append(QString("\'%1\' expected").arg(BEGIN)); 
         return false; 
@@ -336,7 +336,7 @@ bool NEXUSParser::readBlock(Context &ctx) {
             return false;
         }
     } else if (blockName == BLK_TREES) {
-        if (!readTreesContents(ctx)) {
+        if (!readTreesContents(ctx, dbiRef)) {
             return false;
         }
     } else {
@@ -477,7 +477,7 @@ bool NEXUSParser::readDataContents(Context &ctx) {
     return true;
 }
 
-bool NEXUSParser::readTreesContents(Context&) {
+bool NEXUSParser::readTreesContents(Context&, const U2DbiRef &dbiRef) {
     QMap <QString, QString> namesTranslation;
 
     while (true) {
@@ -654,7 +654,9 @@ bool NEXUSParser::readTreesContents(Context&) {
                 // build tree object
                 PhyTree tree(new PhyTreeData());
                 tree->setRootNode(nodeStack.pop());
-                addObject(new PhyTreeObject(tree, treeName));
+                PhyTreeObject *obj = PhyTreeObject::createInstance(tree, treeName, dbiRef, ti);
+                CHECK_OP_EXT(ti, errors << ti.getError(), false);
+                addObject(obj);
             }
         } else if (cmd == END) {
             break;
@@ -688,7 +690,7 @@ QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, const U2DbiRef& dbiRef, 
     }
 
     NEXUSParser parser(io, dbiRef, ti);
-    QList<GObject*> objects = parser.loadObjects();
+    QList<GObject*> objects = parser.loadObjects(dbiRef);
     
     if (parser.hasError()) {
         QByteArray msg = "NEXUSParser: ";
@@ -804,7 +806,7 @@ void writeMAligment(const MAlignment &ma, bool simpleName, IOAdapter *io, U2OpSt
 }
 
 static void writeNode(const PhyNode* node, IOAdapter* io) {
-    int branches = node->getNumberOfBranches();
+    int branches = node->branchCount();
 
     if (branches == 1 && (node->getName()=="" || node->getName()=="ROOT")) {
         assert(node != node->getSecondNodeOfBranch(0));

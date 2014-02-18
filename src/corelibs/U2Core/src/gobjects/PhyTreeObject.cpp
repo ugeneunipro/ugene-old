@@ -19,29 +19,93 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/DatatypeSerializeUtils.h>
+#include <U2Core/RawDataUdrSchema.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
+#include "GObjectTypes.h"
+
 #include "PhyTreeObject.h"
 
 namespace U2 {
 
-GObject* PhyTreeObject::clone(const U2DbiRef&, U2OpStatus&) const {
-    PhyTreeObject* cln = new PhyTreeObject(tree, getGObjectName(), getGHintsMap());
-    cln->setIndexInfo(getIndexInfo());
-    return cln;
+PhyTreeObject * PhyTreeObject::createInstance(const PhyTree &tree, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap) {
+    U2RawData object(dbiRef);
+    object.url = objectName;
+    object.serializer = NewickPhyTreeSerializer::ID;
+
+    RawDataUdrSchema::createObject(dbiRef, object, os);
+    CHECK_OP(os, NULL);
+
+    U2EntityRef entRef(dbiRef, object.id);
+    commit(tree, entRef, os);
+    CHECK_OP(os, NULL);
+
+    return new PhyTreeObject(tree, objectName, entRef, hintsMap);
 }
 
-PhyTreeObject* PhyTreeObject::clone() const {
-    PhyTreeObject* cln = new PhyTreeObject(tree, getGObjectName(), getGHintsMap());
+void PhyTreeObject::commit(const PhyTree &tree, const U2EntityRef &treeRef, U2OpStatus &os) {
+    CHECK_EXT(NULL != tree.data(), os.setError("NULL tree data"), );
+    QByteArray data = NewickPhyTreeSerializer::serialize(tree);
+    RawDataUdrSchema::writeContent(data, treeRef, os);
+}
+
+void PhyTreeObject::commit(const PhyTree &tree, const U2EntityRef &treeRef) {
+    U2OpStatus2Log os;
+    commit(tree, treeRef, os);
+}
+
+void PhyTreeObject::commit() {
+    commit(tree, entityRef);
+}
+
+void PhyTreeObject::retrieve() {
+    U2OpStatus2Log os;
+    QString serializer = RawDataUdrSchema::getObject(entityRef, os).serializer;
+    CHECK_OP(os, );
+    SAFE_POINT(NewickPhyTreeSerializer::ID == serializer, "Unknown serializer id", );
+
+    QByteArray data = RawDataUdrSchema::readAllContent(entityRef, os);
+    CHECK_OP(os, );
+
+    tree = NewickPhyTreeSerializer::deserialize(data, os);
+}
+
+PhyTreeObject::PhyTreeObject(const QString &objectName, const U2EntityRef &treeRef, const QVariantMap &hintsMap)
+: GObject(GObjectTypes::PHYLOGENETIC_TREE, objectName, hintsMap)
+{
+    entityRef = treeRef;
+    retrieve();
+}
+
+PhyTreeObject::PhyTreeObject(const PhyTree &tree, const QString &objectName, const U2EntityRef &treeRef, const QVariantMap &hintsMap)
+: GObject(GObjectTypes::PHYLOGENETIC_TREE, objectName, hintsMap), tree(tree)
+{
+    entityRef = treeRef;
+}
+
+void PhyTreeObject::onTreeChanged() {
+    commit();
+    setModified(true);
+}
+
+GObject* PhyTreeObject::clone(const U2DbiRef &dstDbi, U2OpStatus &os) const {
+    PhyTreeObject* cln = createInstance(tree, getGObjectName(), dstDbi, os, getGHintsMap());
+    CHECK_OP(os, NULL);
     cln->setIndexInfo(getIndexInfo());
     return cln;
 }
 
 void PhyTreeObject::setTree(const PhyTree& _tree) {
-    tree = _tree; 
+    tree = _tree;
+    onTreeChanged();
     emit si_phyTreeChanged();
 }
 
 void PhyTreeObject::rerootPhyTree(PhyNode* node) {
     PhyTreeUtils::rerootPhyTree(tree, node);
+    onTreeChanged();
     emit si_phyTreeChanged();
 }
 
@@ -62,7 +126,7 @@ bool PhyTreeObject::treesAreAlike( const PhyTree& tree1, const PhyTree& tree2 )
             if (n2->getName() != n1->getName()) {
                 continue;
             }
-            if (n1->getNumberOfBranches() != n2->getNumberOfBranches()) {
+            if (n1->branchCount() != n2->branchCount()) {
                 return false;
             }
         }

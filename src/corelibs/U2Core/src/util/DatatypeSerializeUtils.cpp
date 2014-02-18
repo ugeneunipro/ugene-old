@@ -19,8 +19,12 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QBitArray>
+#include <QtCore/QStack>
 #include <QtCore/QtEndian>
 
+#include <U2Core/StringAdapter.h>
+#include <U2Core/TextUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "DatatypeSerializeUtils.h"
@@ -28,6 +32,7 @@
 namespace U2 {
 
 const QString DNAChromatogramSerializer::ID = "chroma_1.14";
+const QString NewickPhyTreeSerializer::ID = "newick_1.14";
 
 namespace {
     template<class T>
@@ -110,6 +115,9 @@ namespace {
     }
 }
 
+/************************************************************************/
+/* DNAChromatogramSerializer */
+/************************************************************************/
 QByteArray DNAChromatogramSerializer::serialize(const DNAChromatogram &chroma) {
     QByteArray result;
     result += packNum<int>(chroma.traceLength);
@@ -157,6 +165,188 @@ DNAChromatogram DNAChromatogramSerializer::deserialize(const QByteArray &binary,
     CHECK_OP(os, result);
     result.hasQV = unpackBool(data, length, offset, os);
     return result;
+}
+
+/************************************************************************/
+/* NewickPhyTreeSerializer */
+/************************************************************************/
+namespace {
+    void packTreeNode(QByteArray &binary, const PhyNode *node) {
+        int branches = node->branchCount();
+        if (branches == 1 && (node->getName() == "" || node->getName() == "ROOT")) {
+            assert(node != node->getSecondNodeOfBranch(0));
+            packTreeNode(binary, node->getSecondNodeOfBranch(0));
+            return;
+        }
+        if (branches > 1) {
+            binary.append("(");
+            bool first = true;
+            for (int i = 0; i < branches; ++i) {
+                if (node->getSecondNodeOfBranch(i)!= node) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        binary.append(",");
+                    }
+                    packTreeNode(binary, node->getSecondNodeOfBranch(i));
+                    binary.append(":");
+                    binary.append(QByteArray::number(node->getBranchesDistance(i)));
+                }
+            }
+            binary.append(")");
+        } else {
+            binary.append(QString(node->getName()).replace(' ', '_').toLatin1());
+        }
+    }
+}
+
+#define BUFF_SIZE 1024
+/* TODO:
+ Unquoted labels may not contain blanks, parentheses, square brackets, single_quotes, colons, semicolons, or commas.
+ Single quote characters in a quoted label are represented by two single quotes.
+ Blanks or tabs may appear anywhere except within unquoted labels or branch_lengths.
+ Newlines may appear anywhere except within labels or branch_lengths.
+ Comments are enclosed in square brackets and may appear anywhere newlines are permitted. 
+*/
+QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si) {
+    QList<PhyTree> result;
+    QByteArray block(BUFF_SIZE, '\0');
+    int blockLen;
+    bool done = true;
+
+    QBitArray ops(256);
+    ops['('] = ops[')'] = ops[':']  = ops[','] = ops[';'] = true;
+    enum ReadState {RS_NAME, RS_WEIGHT};
+    ReadState state = RS_NAME;
+    QString lastStr;
+    PhyNode *rd = new PhyNode();
+
+    QStack<PhyNode*> nodeStack;
+    QStack<PhyBranch*>  branchStack;
+    nodeStack.push(rd);
+    while ((blockLen = io->readBlock(block.data(), BUFF_SIZE)) > 0) {
+        for (int i = 0; i < blockLen; ++i) {
+            unsigned char c = block[i];
+            if (TextUtils::WHITES[(uchar)c]) {
+                continue;
+            }
+            done = false;
+            if (!ops[(uchar)c]) { //not ops -> cache
+                lastStr.append(c);
+                continue;
+            }
+            // use cached value
+            if (state == RS_NAME) {
+                nodeStack.top()->setName(lastStr);
+            } else {
+                assert(state == RS_WEIGHT);
+                if (!branchStack.isEmpty()) { //ignore root node weight if present
+                    if (nodeStack.size() < 2) {
+                        si.setError(QObject::tr("Unexpected weight: %1").arg(lastStr));
+                    }
+                    bool ok = false;
+                    branchStack.top()->distance = lastStr.toDouble(&ok);
+                    if (!ok) {
+                        si.setError(QObject::tr("Error parsing weight: %1").arg(lastStr));
+                        break;
+                    }           
+                }
+            }
+
+            // advance in state
+            if (c == '(') { //new child
+                assert(!nodeStack.isEmpty());
+                PhyNode* pn = new PhyNode();
+                PhyBranch* bd = PhyTreeData::addBranch(nodeStack.top(),pn, 0);
+                nodeStack.push(pn);
+                branchStack.push(bd);
+                state = RS_NAME;
+            } else if (c == ':') { //weight start
+                if (state == RS_WEIGHT) {
+                    si.setError(QObject::tr("Unexpected weight start token: %1").arg(lastStr));
+                    break;
+                }
+                state = RS_WEIGHT;
+            } else if ( c == ',') { //new sibling
+                assert(!nodeStack.isEmpty());
+                assert(!branchStack.isEmpty());
+                if (nodeStack.isEmpty() || branchStack.isEmpty()) {
+                    si.setError(QObject::tr("Unexpected new sibling %1").arg(lastStr));
+                    break;
+                }
+                nodeStack.pop();
+                branchStack.pop();
+                PhyNode* pn = new PhyNode();
+                PhyBranch* bd = PhyTreeData::addBranch(nodeStack.top(), pn, 0);
+                nodeStack.push(pn);
+                branchStack.push(bd);
+                state = RS_NAME;
+            } else if ( c == ')' ) { //end of the branch, go up
+                nodeStack.pop();
+                if (nodeStack.isEmpty()) {
+                    si.setError(QObject::tr("Unexpected closing bracket :%1").arg(lastStr));
+                    break;
+                }
+                assert(!branchStack.isEmpty());
+                branchStack.pop();
+                state = RS_NAME;
+            } else if (c == ';') {
+                if (!branchStack.isEmpty() || nodeStack.size()!=1) {
+                    si.setError(QObject::tr("Unexpected end of file"));
+                    break;
+                }
+                PhyTree tree(new PhyTreeData());
+                tree->setRootNode(nodeStack.pop());
+                result << tree;
+                nodeStack.push(rd = new PhyNode());
+                done = true;
+            } 
+            lastStr.clear();
+        }
+        if (si.isCoR()) {
+            delete rd;
+            rd = NULL;
+            break;
+        }
+        si.setProgress(io->getProgress());
+    }
+    if (!si.isCoR()) {
+        if (!branchStack.isEmpty() || nodeStack.size()!=1) {
+            delete rd;
+            si.setError(QObject::tr("Unexpected end of file"));
+            return result;
+        }
+        if (!done) {
+            PhyNode *node = nodeStack.pop();
+            PhyTree tree(new PhyTreeData());
+            tree->setRootNode(node);
+            result << tree;
+        } else {
+            delete rd;
+            if (result.empty()) {
+                si.setError(QObject::tr("Empty file"));
+            }
+        }
+    }
+    return result;
+}
+
+QByteArray NewickPhyTreeSerializer::serialize(const PhyTree &tree) {
+    QByteArray result;
+    packTreeNode(result, tree->getRootNode());
+    result.append(";\n");
+    return result;
+}
+
+PhyTree NewickPhyTreeSerializer::deserialize(const QByteArray &binary, U2OpStatus &os) {
+    StringAdapter io(binary);
+    QList<PhyTree> trees = parseTrees(&io, os);
+    CHECK_OP(os, PhyTree());
+    if (1 != trees.size()) {
+        os.setError("Unexpected count of trees");
+        return PhyTree();
+    }
+    return trees.first();
 }
 
 } // U2

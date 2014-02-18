@@ -912,6 +912,7 @@ void TreeViewerUI::sl_swapTriggered() {
         GraphicsButtonItem *buttonItem = dynamic_cast<GraphicsButtonItem*>(graphItem);
         if (buttonItem && buttonItem->isSelectedTop()) {
             buttonItem->swapSiblings();
+            phyObject->onTreeChanged();
             break;
         }
     }
@@ -943,8 +944,6 @@ void TreeViewerUI::sl_rerootTriggered() {
 }
 
 void TreeViewerUI::collapseSelected() {
-    phyObject->update();
-
     QList<QGraphicsItem *> childItems = items();
     foreach (QGraphicsItem *graphItem, childItems) {
         GraphicsButtonItem *buttonItem = dynamic_cast<GraphicsButtonItem*>(graphItem);
@@ -957,7 +956,6 @@ void TreeViewerUI::collapseSelected() {
 }
 
 bool TreeViewerUI::isSelectedCollapsed(){
-    phyObject->update();
     foreach (QGraphicsItem *graphItem, items()) {
         GraphicsButtonItem *buttonItem = dynamic_cast<GraphicsButtonItem*>(graphItem);
 

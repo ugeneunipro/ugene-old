@@ -380,7 +380,7 @@ void DistanceMatrix::switchName(PhyNode* node){
 	if(str.startsWith("___")){
 		node->setName("");
 	}
-	for(int i=0; i<node->getNumberOfBranches(); i++){
+	for(int i=0; i<node->branchCount(); i++){
 		node->setBranchesDistance(i, abs(node->getBranchesDistance(i)));
 		if(node->getBranchesDistance(i) != node->getBranchesDistance(i)){
 			node->setBranchesDistance(i, 1.0);
@@ -506,18 +506,10 @@ PhyNode* DistanceMatrix::findNode(PhyNode* startnode, QString name){
 	if(startnode->getName() == name){
 		return startnode;
 	}else{
-		QList<PhyBranch*> blist = startnode->branches;
-		//			for(int i = 0; i< blist.size(); i++){
-		//				std::cout<<"Node name: "<<startnode->name.toStdString()<<std::endl;
-		//				std::cout<<"Branch # "<<i<<std::endl;
-		//				std::cout<<(blist[i]->node1->name.toStdString())<<std::endl;
-		//				std::cout<<(blist[i]->node2->name.toStdString())<<std::endl;
-		//				
-		//			}
-
-		for(int i = 0; i< blist.size(); i++){
-			if(!visited_list.contains(blist[i]->node2->getName())){
-				PhyNode* node2 = findNode(blist[i]->node2, name);
+        for (int i=0; i<startnode->branchCount(); i++) {
+            PhyBranch *branch = startnode->getBranch(i);
+			if(!visited_list.contains(branch->node2->getName())){
+				PhyNode* node2 = findNode(branch->node2, name);
 				if(node2!=0){
 					return node2;
 				}
@@ -587,10 +579,10 @@ void DistanceMatrix::printPhyNode(PhyNode* node, int tab, QList<PhyNode*>& nodes
 	}
 	tab++;
 	std::cout<<"name: "<<node->getName().toLatin1().constData()<<std::endl;
-	QList<PhyBranch* > blist = node->branches;
-	for(int i=0; i<blist.size(); i++){
-		printPhyNode(blist[i]->node2, tab, nodes);
-	}
+    for (int i=0; i<node->branchCount(); i++) {
+        PhyBranch *branch = node->getBranch(i);
+        printPhyNode(branch->node2, tab, nodes);
+    }
 }
 bool DistanceMatrix::areTreesEqual(PhyTree* tree1, PhyTree* tree2){
 	QMap<QString, int> nodes1;
@@ -636,26 +628,21 @@ void DistanceMatrix::addNodeToList(QList<PhyNode*>& nodelist, QMap<QString, int>
 	}else{
 		nodelist.append(node);
 		if(node->getName()!="ROOT" && node->getName()!="" && !node->getName().startsWith("___")){
-			int l = node->getNumberOfBranches();
-			QList<PhyBranch* > brlist = node->branches;
-			for(int i =0; i<l; i++){
-				if(brlist[i]->node2 == node){
-					int d = brlist[i]->distance;
-					nodemap.insert(node->getName(), d);
-
-				}
-			}
-
-		}
-		QList<PhyBranch* > nodebranches = node->branches;
-		int s = node->getNumberOfBranches();
-		for(int i=0; i<s; i++){
-			if(!branches.contains(nodebranches[i])){
-				branches.append(nodebranches[i]);
-				addNodeToList(nodelist, nodemap, branches, nodebranches[i]->node2);
-			}
-
-		}
+            for (int i=0; i<node->branchCount(); i++) {
+                PhyBranch *branch = node->getBranch(i);
+                if(branch->node2 == node){
+                    int d = branch->distance;
+                    nodemap.insert(node->getName(), d);
+                }
+            }
+        }
+        for (int i=0; i<node->branchCount(); i++) {
+            PhyBranch *branch = node->getBranch(i);
+            if(!branches.contains(branch)){
+                branches.append(branch);
+                addNodeToList(nodelist, nodemap, branches, branch->node2);
+            }
+        }
 	}
 
 }

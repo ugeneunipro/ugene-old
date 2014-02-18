@@ -73,7 +73,7 @@ public:
         assert(io_ && "IO must exist");
     }
 
-    QList<GObject*> loadObjects();
+    QList<GObject*> loadObjects(const U2DbiRef &dbiRef);
 
     bool hasError() { return !errors.isEmpty(); }
     bool hasWarnings() { return !warnings.isEmpty(); }
@@ -87,11 +87,11 @@ private:
     bool skipCommand();
     bool readSimpleCommand(Context &ctx);
 
-    bool readBlock(Context &ctx);
+    bool readBlock(Context &ctx, const U2DbiRef &dbiRef);
     bool skipBlockContents();
     bool readTaxaContents(Context &ctx);
     bool readDataContents(Context &ctx);
-    bool readTreesContents(Context &ctx);
+    bool readTreesContents(Context &ctx, const U2DbiRef &dbiRef);
 
     void reportProgress() { ti.setProgress(io->getProgress()); }
 

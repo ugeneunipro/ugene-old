@@ -28,6 +28,7 @@ HEADERS += \
     src/core/gobjects/DNAChromatogramObjectUnitTests.h \
     src/core/gobjects/FeaturesTableObjectUnitTest.h \
     src/core/gobjects/MAlignmentObjectUnitTests.h \
+    src/core/gobjects/PhyTreeObjectUnitTests.h \
     src/core/gobjects/TextObjectUnitTests.h \
     src/core/util/MAlignmentImporterExporterUnitTests.h \
     src/UnitTestSuite.h \  
@@ -61,6 +62,7 @@ SOURCES += \
     src/core/gobjects/DNAChromatogramObjectUnitTests.cpp \
     src/core/gobjects/FeaturesTableObjectUnitTest.cpp \
     src/core/gobjects/MAlignmentObjectUnitTests.cpp \
+    src/core/gobjects/PhyTreeObjectUnitTests.cpp \
     src/core/gobjects/TextObjectUnitTests.cpp \
     src/core/util/MAlignmentImporterExporterUnitTests.cpp \
     src/UnitTestSuite.cpp \  

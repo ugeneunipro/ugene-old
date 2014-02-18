@@ -35,12 +35,12 @@ class CreateRectangularBranchesTask: public CreateBranchesTask {
     int size;
     int current;
     qreal scale;
-    PhyNode* node;
+    const PhyNode* node;
     qreal minDistance, maxDistance;
     GraphicsRectangularBranchItem* getBranch(const PhyNode *node);
 
 public:
-    CreateRectangularBranchesTask(PhyNode *n);
+    CreateRectangularBranchesTask(const PhyNode *n);
     void run();
     qreal getScale() { return scale; }
 };

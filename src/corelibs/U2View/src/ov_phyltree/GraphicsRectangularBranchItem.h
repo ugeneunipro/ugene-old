@@ -42,8 +42,8 @@ public:
     
     GraphicsRectangularBranchItem(const QString& name, GraphicsRectangularBranchItem* pitem);
     GraphicsRectangularBranchItem();
-    GraphicsRectangularBranchItem(qreal d);
-    GraphicsRectangularBranchItem(qreal x, qreal y, const QString& name, qreal d);
+    GraphicsRectangularBranchItem(qreal d, PhyBranch *branch);
+    GraphicsRectangularBranchItem(qreal x, qreal y, const QString& name, qreal d, PhyBranch *branch);
     GraphicsRectangularBranchItem(qreal x, qreal y, const QString& name);
 
     QRectF boundingRect() const;
@@ -61,9 +61,8 @@ public:
     void collapse();
     void setCollapsed(bool isCollapsed) {collapsed = isCollapsed;}
     void swapSiblings();
-    void redrawBranches(int& current, qreal& minDistance, qreal& maxDistance, PhyNode* root);
+    void redrawBranches(int& current, qreal& minDistance, qreal& maxDistance, const PhyNode* root);
 
-    void setPhyBranch(PhyBranch* p);
     const PhyBranch* getPhyBranch() const {return phyBranch;}
     GraphicsRectangularBranchItem* getChildItemByPhyBranch(const PhyBranch* branch);
 

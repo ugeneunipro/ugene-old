@@ -169,7 +169,9 @@ void MSAEditorTreeManager::sl_openTree() {
     }
 
     if(isNewDocument) {
-        newObj = new PhyTreeObject(treeGeneratorTask->getResult(), "Tree");
+        U2OpStatus2Log os;
+        newObj = PhyTreeObject::createInstance(treeGeneratorTask->getResult(), "Tree", d->getDbiRef(), os);
+        CHECK_OP(os, );
         d->addObject(newObj);
     }
     else {
