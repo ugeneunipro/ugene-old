@@ -32,7 +32,7 @@ namespace U2 {
 
 class GTUtilsTaskTreeView {
 public:
-    static void waitTaskFinidhed(U2OpStatus &os, long timeout=120000);
+    static void waitTaskFinidhed(U2OpStatus &os, long timeout=180000);
     static void click(U2OpStatus &os, const QString &itemName, Qt::MouseButton b = Qt::LeftButton);
     static void openView(U2OpStatus& os);
     static void toggleView(U2OpStatus& os);
