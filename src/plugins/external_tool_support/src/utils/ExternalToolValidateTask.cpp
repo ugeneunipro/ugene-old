@@ -282,7 +282,7 @@ QList<Task*> ExternalToolSearchAndValidateTask::onSubTaskFinished(Task *subTask)
 Task::ReportResult ExternalToolSearchAndValidateTask::report() {
     qint64 endTime = TimeCounter::getCounter();
     if (U2_UNLIKELY(qgetenv("UGENE_GUI_TEST").toInt() == 1)) {
-        taskLog.trace(QString("ExternalToolSearchAndValidateTask: tool '%1', %2 micro seconds").arg(toolName).arg(endTime - startTime);
+        taskLog.trace(QString("ExternalToolSearchAndValidateTask: tool '%1', %2 micro seconds").arg(toolName).arg(endTime - startTime));
     }
 
     ExternalToolRegistry* etRegistry = AppContext::getExternalToolRegistry();
