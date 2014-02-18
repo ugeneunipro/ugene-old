@@ -79,6 +79,7 @@ private:
 
     QProcess*   externalToolProcess;
 
+    qint64      startTime;
 };
 
 class ExternalToolSearchAndValidateTask : public ExternalToolValidateTask {
@@ -86,6 +87,7 @@ class ExternalToolSearchAndValidateTask : public ExternalToolValidateTask {
 public:
     ExternalToolSearchAndValidateTask(const QString& toolName);
 
+    void prepare();
     virtual QList<Task*> onSubTaskFinished(Task *subTask);
     virtual Task::ReportResult report();
 
@@ -95,6 +97,8 @@ private:
     bool        toolIsFound;
     ExternalToolSearchTask*     searchTask;
     ExternalToolJustValidateTask*   validateTask;
+
+    qint64      startTime;
 };
 
 class ExternalToolsValidateTask : public SequentialMultiTask {
