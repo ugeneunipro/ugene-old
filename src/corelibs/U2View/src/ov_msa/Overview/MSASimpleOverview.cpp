@@ -133,8 +133,8 @@ void MSASimpleOverview::drawOverview(QPainter &p) {
             int next = qRound( stepY * (double)(seq + 1) );
             rect.setHeight( next - prev );
 
-            prev = round( stepX * (double)pos );
-            next = round( stepX * (double)(pos + 1) );
+            prev = qRound( stepX * (double)pos );
+            next = qRound( stepX * (double)(pos + 1) );
             rect.setWidth( next - prev );
 
             QColor color = colorScheme->getColor(seq, pos);
