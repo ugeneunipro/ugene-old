@@ -144,6 +144,7 @@ private:
      * Start region position will be stored in "start".
      */
     const Annotation * findFirstSelectedAnnotationRegion(qint64 &start, bool fromTheBeginning = true);
+    bool noAnnotatedRegions();
 
     void updateAnnotationNames( );
 

@@ -134,7 +134,7 @@ void AnnotHighlightWidget::initLayout()
     nextAnnotationButton->setFixedSize(32,32);
     nextAnnotationButton->setToolTip(AnnotHighlightWidget::tr("Next annotation"));
     buttonsLayout->addWidget(nextAnnotationButton);
-    if (annotatedDnaView->getAnnotationObjects(true).isEmpty()) {
+    if (noAnnotatedRegions()) {
         nextAnnotationButton->setDisabled(true);
     } else {
         sl_onAnnotationSelectionChanged();
@@ -217,7 +217,7 @@ qint64 AnnotHighlightWidget::searchNextPosition( const QList<AnnotationTableObje
 }
 
 bool AnnotHighlightWidget::isFirstAnnotationRegion(const Annotation *annotation, const U2Region &region, bool fromTheBeginning) {
-    const QList<AnnotationTableObject*> annotObjects = annotatedDnaView->getAnnotationObjects();
+    const QList<AnnotationTableObject*> annotObjects = annotatedDnaView->getAnnotationObjects(true);
     QList<Annotation> annots;
     qint64 next = searchAnnotWithEqualsStartPos(annotObjects, annots, annotation, region.startPos);
     if (next != (fromTheBeginning ? 0: annots.size() - 1 )) {
@@ -270,6 +270,17 @@ const Annotation * AnnotHighlightWidget::findFirstSelectedAnnotationRegion(qint6
     }
 
     return startAnnotation;
+}
+
+bool AnnotHighlightWidget::noAnnotatedRegions() {
+    const QList<AnnotationTableObject*> items = annotatedDnaView->getAnnotationObjects(true);
+    foreach (AnnotationTableObject* object, items) {
+        SAFE_POINT(object != NULL, "Annotation table object is NULL", true);
+        if (!object->getAnnotatedRegions().isEmpty()) {
+            return false;
+        }
+    }
+    return true;
 }
 
 void AnnotHighlightWidget::annotationNavigate(bool isForward) {
@@ -331,8 +342,9 @@ void AnnotHighlightWidget::sl_onPrevAnnotationClick() {
 void AnnotHighlightWidget::sl_onAnnotationSelectionChanged() {
     AnnotationSelection* as = annotatedDnaView->getAnnotationsSelection();
     CHECK(as != NULL, );
+
     if (as->isEmpty()) {
-        nextAnnotationButton->setDisabled(false);
+        nextAnnotationButton->setDisabled(noAnnotatedRegions());
         prevAnnotationButton->setDisabled(true);
     } else {
         nextAnnotationButton->setDisabled(false);
@@ -565,7 +577,9 @@ void AnnotHighlightWidget::loadAnnotTypes()
         setNoAnnotsLayout();
     }
 
-    nextAnnotationButton->setDisabled( annotatedDnaView->getAnnotationObjects().isEmpty() );
+    if (noAnnotatedRegions()) {
+        nextAnnotationButton->setDisabled(true);
+    }
 }
 
 void AnnotHighlightWidget::sl_storeNewColor(const QString& annotName, const QColor& newColor)
@@ -616,6 +630,7 @@ void AnnotHighlightWidget::sl_onAnnotationsRemoved( const QList<Annotation> &ann
     if ( annotNamesWithAminoInfo.count( ) == removedItems.count( ) ) { // all annotations were removed
         annotTree->clear( );
         setNoAnnotsLayout( );
+        nextAnnotationButton->setDisabled(true);
     } else {
         setLayoutWithAnnotsSelection( );
         foreach ( QTreeWidgetItem *item, removedItems ) {
@@ -628,8 +643,6 @@ void AnnotHighlightWidget::sl_onAnnotationsRemoved( const QList<Annotation> &ann
             annotTree->setItemSelectedWithAnnotName( selectedAnnotName );
         }
     }
-
-    nextAnnotationButton->setDisabled( annotatedDnaView->getAnnotationObjects( ).isEmpty( ) );
 }
 
 void AnnotHighlightWidget::sl_onAnnotationModified(const AnnotationModification& /* modifications */)
