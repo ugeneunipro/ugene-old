@@ -43,6 +43,8 @@ public:
     
     int getConsensusCharPercent(int pos);
 
+    int getConsensusLength() const { return cache.size(); }
+
     void setConsensusAlgorithm(MSAConsensusAlgorithmFactory* algo);
 
     MSAConsensusAlgorithm* getConsensusAlgorithm() const {return algorithm;}

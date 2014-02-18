@@ -61,6 +61,8 @@ public:
 
     MSAConsensusAlgorithm* getConsensusAlgorithm() const;
 
+    QSharedPointer <MSAEditorConsensusCache> getConsensusCache() { return consensusCache; }
+
 protected:
     virtual bool event(QEvent* e);
     void paintEvent(QPaintEvent*);
@@ -121,7 +123,7 @@ private:
     int                 curPos;
     bool                scribbling, selecting;
 
-    MSAEditorConsensusCache*    consensusCache;
+    QSharedPointer<MSAEditorConsensusCache>    consensusCache;
     
     bool                completeRedraw;
     QPixmap*            cachedView;

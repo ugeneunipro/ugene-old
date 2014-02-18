@@ -105,7 +105,6 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
    
     delSelectionAction = new QAction(tr("Remove selection"), this);
     delSelectionAction->setObjectName("Remove selection");
-    delSelectionAction->setShortcut(QKeySequence(Qt::Key_Delete));
     delSelectionAction->setShortcutContext(Qt::WidgetShortcut);
     connect(delSelectionAction, SIGNAL(triggered()), SLOT(sl_delCurrentSelection()));
 
@@ -120,7 +119,6 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     
     insSymAction = new QAction(tr("Fill selection with gaps"), this);
     insSymAction->setObjectName("fill_selection_with_gaps");
-    insSymAction->setShortcut(QKeySequence(Qt::Key_Space));
     insSymAction->setShortcutContext(Qt::WidgetShortcut);
     connect(insSymAction, SIGNAL(triggered()), SLOT(sl_fillCurrentSelectionWithGaps()));
     addAction(insSymAction);
@@ -558,6 +556,7 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
             //curSeq++;
         }
     }
+    emit si_visibleRangeChanged();
 }
 
 void MSAEditorSequenceArea::drawSelection( QPainter &p )
@@ -1063,6 +1062,9 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
             U2UseCommonUserModStep userModStep( editor->getMSAObject( )->getEntityRef( ), os );
             Q_UNUSED(userModStep);
             shiftSelectedRegion( shift );
+            emit si_stopMSAChanging(true);
+        } else {
+            emit si_stopMSAChanging(false);
         }
     } else if ( Qt::LeftButton == e->button( ) ) {
         updateSelection(newCurPos);
@@ -1099,6 +1101,8 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
                 changeTracker.startTracking( os );
                 CHECK_OP( os, );
                 editor->getMSAObject()->saveState();
+
+                emit si_startMSAChanging();
             }
         }
         if (!shifting) {
@@ -1308,6 +1312,7 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
                 sl_delCol();
             } else {
                 deleteCurrentSelection();
+                emit si_startMSAChanging();
             }
             break;
         case Qt::Key_Backspace:
@@ -1317,6 +1322,7 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
         case Qt::Key_Space:
             // We can't use Command+Space on Mac OS X - it is reserved
             insertGapsBeforeSelection( genuineCtrl ? 1 : -1 );
+            emit si_startMSAChanging();
             break;
         case Qt::Key_Shift:
             if (!selection.isNull()) {
@@ -1329,6 +1335,15 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
             break;
     }
     QWidget::keyPressEvent(e);
+}
+
+void MSAEditorSequenceArea::keyReleaseEvent(QKeyEvent *ke) {
+    if ( (ke->key() == Qt::Key_Space || ke->key() == Qt::Key_Delete )
+            && (!ke->isAutoRepeat()) ){
+        emit si_stopMSAChanging(true);
+    }
+
+    QWidget::keyPressEvent(ke);
 }
 
 void MSAEditorSequenceArea::focusInEvent(QFocusEvent* fe) {
@@ -1738,7 +1753,9 @@ void MSAEditorSequenceArea::sl_delCol() {
 }
 
 void MSAEditorSequenceArea::sl_fillCurrentSelectionWithGaps() {
+    emit si_startMSAChanging();
     insertGapsBeforeSelection();
+    emit si_stopMSAChanging(true);
 }
 
 void MSAEditorSequenceArea::sl_goto() {

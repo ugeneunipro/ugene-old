@@ -302,6 +302,9 @@ signals:
     void si_selectionChanged(const QStringList& selectedRows);
     void si_highlightingChanged();
     void si_visibleRangeChanged(QStringList visibleSequences, int reqHeight);
+    void si_visibleRangeChanged();
+    void si_startMSAChanging();
+    void si_stopMSAChanging(bool msaUpdated);
 
 public slots:
     void sl_changeColorSchemeOutside(const QString &name);
@@ -314,6 +317,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent*); 
     void mouseMoveEvent(QMouseEvent*);
     void keyPressEvent(QKeyEvent *);
+    void keyReleaseEvent(QKeyEvent *);
     void focusOutEvent(QFocusEvent* fe); 
     void focusInEvent(QFocusEvent* fe);
 

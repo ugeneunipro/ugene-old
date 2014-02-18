@@ -25,6 +25,7 @@
 #include "MSAEditorState.h"
 #include "MSAEditorConsensusArea.h"
 #include "MSAEditorOffsetsView.h"
+#include "MSAEditorOverviewArea.h"
 #include "MSAEditorSequenceArea.h"
 #include "MSAEditorNameList.h"
 #include "MSAEditorStatusBar.h"
@@ -186,7 +187,7 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     connect(exportHighlightedAction, SIGNAL(triggered()), this, SLOT(sl_exportHighlighted()));
     exportHighlightedAction->setDisabled(true);
 
-    updateActions();
+    updateActions();    
 }
 
 int MSAEditor::getRowHeight() const {
@@ -313,6 +314,13 @@ void MSAEditor::onObjectRenamed(GObject*, const QString&) {
     OpenMSAEditorTask::updateTitle(this);
 }
 
+bool MSAEditor::onCloseEvent() {
+    if (ui->getOverviewArea() != NULL) {
+        ui->getOverviewArea()->cancelRendering();
+    }
+    return true;
+}
+
 static void saveFont(const QFont& f) {
     Settings* s = AppContext::getSettings();
     s->setValue(SETTINGS_ROOT + SETTINGS_FONT_FAMILY, f.family());
@@ -374,6 +382,7 @@ void MSAEditor::buildStaticToolbar(QToolBar* tb) {
     tb->addAction(zoomInAction);
     tb->addAction(zoomOutAction);
     tb->addAction(zoomToSelectionAction);
+    tb->addAction(showOverviewAction);
     tb->addAction(resetFontAction);
     tb->addAction(changeFontAction);
     tb->addAction(buildTreeAction);
@@ -500,6 +509,13 @@ QWidget* MSAEditor::createWidget() {
     unsetReferenceSequenceAction->setObjectName("unset_reference");
     connect(unsetReferenceSequenceAction, SIGNAL(triggered()), SLOT(sl_unsetReferenceSeq()));
 
+    //! TODO: set icon
+    showOverviewAction = new QAction("Overview", this);
+    showOverviewAction->setObjectName("Show overview");
+    showOverviewAction->setCheckable(true);
+    showOverviewAction->setChecked(true);
+    connect(showOverviewAction, SIGNAL(triggered()), ui->getOverviewArea(), SLOT(sl_show()));
+
     optionsPanel = new OptionsPanel(this);
     OPWidgetFactoryRegistry *opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
 
@@ -537,6 +553,13 @@ bool MSAEditor::isAlignmentEmpty() const {
 
 void MSAEditor::sl_onContextMenuRequested(const QPoint & pos) {
     Q_UNUSED(pos);
+
+    if (ui->childAt(pos) != NULL) {
+        // ignore context menu request if overview area was clicked on
+        if (ui->childAt(pos)->objectName() == ui->overviewArea->objectName()) {
+            return;
+        }
+    }
 
     QMenu m;
 
@@ -797,6 +820,7 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
     consArea = new MSAEditorConsensusArea(this);
     offsetsView = new MSAEditorOffsetsViewController(this, editor, seqArea);
     statusWidget = new MSAEditorStatusWidget(editor->getMSAObject(), seqArea);
+    overviewArea = new MSAEditorOverviewArea(this);
 
     QWidget* label1 = createLabelWidget();
     QWidget* label2 = createLabelWidget();
@@ -838,15 +862,18 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
     label->setMinimumHeight(consArea->height());
     cvBar->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
 
-    QGridLayout *mainLayout = new QGridLayout();
-    mainLayout->setMargin(0);
-    mainLayout->setSpacing(0);
-    mainLayout->addWidget(view.getSpliter(), 0, 0, 2, 1);
-    mainLayout->addWidget(cvBar, 1, 1);
-    mainLayout->addWidget(label, 0, 1);
-    mainLayout->addWidget(statusWidget, 2, 0, 1, 2);
-    QWidget *mainWidget = new QWidget();
-    mainWidget->setLayout(mainLayout);
+    QGridLayout *gridLayout = new QGridLayout();
+    gridLayout->setMargin(0);
+    gridLayout->setSpacing(0);
+    gridLayout->addWidget(view.getSpliter(), 0, 0, 2, 1);
+    gridLayout->addWidget(cvBar, 1, 1);
+    gridLayout->addWidget(label, 0, 1);
+    gridLayout->addWidget(statusWidget, 2, 0, 1, 2);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout();
+    mainLayout->addLayout(gridLayout);
+    mainLayout->addWidget(overviewArea);
+
     setLayout(mainLayout);
 
     connect(collapseModel, SIGNAL(toggled()), offsetsView, SLOT(sl_modelChanged()));

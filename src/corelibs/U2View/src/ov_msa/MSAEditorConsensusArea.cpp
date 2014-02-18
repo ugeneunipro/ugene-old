@@ -96,7 +96,8 @@ MSAEditorConsensusArea::MSAEditorConsensusArea(MSAEditorUI* _ui) : editor(_ui->e
         algo = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(BuiltInConsensusAlgorithms::DEFAULT_ALGO);
         AppContext::getSettings()->setValue(lastUsedAlgoKey, BuiltInConsensusAlgorithms::DEFAULT_ALGO);
     }
-    consensusCache = new MSAEditorConsensusCache(this, editor->getMSAObject(), algo);
+
+    consensusCache = QSharedPointer <MSAEditorConsensusCache>( new MSAEditorConsensusCache(NULL, editor->getMSAObject(), algo) );
     connect(consensusCache->getConsensusAlgorithm(), SIGNAL(si_thresholdChanged(int)), SLOT(sl_onConsensusThresholdChanged(int)));
     addAction(ui->getCopySelectionAction());
     restoreLastUsedConsensusThreshold();

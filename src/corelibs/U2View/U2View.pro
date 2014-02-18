@@ -45,6 +45,7 @@ HEADERS += src/Init.h \
            src/ov_msa/MSAEditorFactory.h \
            src/ov_msa/MSAEditorNameList.h \
            src/ov_msa/MSAEditorOffsetsView.h \
+           src/ov_msa/MSAEditorOverviewArea.h \
            src/ov_msa/MSAEditorSequenceArea.h \
            src/ov_msa/MSAEditorState.h \
            src/ov_msa/MSAEditorStatusBar.h \
@@ -62,6 +63,10 @@ HEADERS += src/Init.h \
            src/ov_msa/General/MSAGeneralTabFactory.h \
            src/ov_msa/Highlighting/MSAHighlightingTab.h \
            src/ov_msa/Highlighting/MSAHighlightingTabFactory.h \
+           src/ov_msa/Overview/MSAGraphOverview.h \
+           src/ov_msa/Overview/MSAOverview.h \
+           src/ov_msa/Overview/MSAOverviewContextMenu.h \
+           src/ov_msa/Overview/MSASimpleOverview.h \
            src/ov_msa/TreeOptions/TreeOptionsWidget.h \
            src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.h \
            src/ov_msa/PhyTrees/MSAEditorTreeViewer.h \
@@ -237,6 +242,7 @@ SOURCES += src/Init.cpp \
            src/ov_msa/MSAEditorFactory.cpp \
            src/ov_msa/MSAEditorNameList.cpp \
            src/ov_msa/MSAEditorOffsetsView.cpp \
+           src/ov_msa/MSAEditorOverviewArea.cpp \
            src/ov_msa/MSAEditorSequenceArea.cpp \
            src/ov_msa/MSAEditorState.cpp \
            src/ov_msa/MSAEditorStatusBar.cpp \
@@ -254,6 +260,10 @@ SOURCES += src/Init.cpp \
            src/ov_msa/General/MSAGeneralTabFactory.cpp \
            src/ov_msa/Highlighting/MSAHighlightingTab.cpp \
            src/ov_msa/Highlighting/MSAHighlightingTabFactory.cpp \
+           src/ov_msa/Overview/MSAGraphOverview.cpp \
+           src/ov_msa/Overview/MSAOverview.cpp \
+           src/ov_msa/Overview/MSAOverviewContextMenu.cpp \
+           src/ov_msa/Overview/MSASimpleOverview.cpp \
            src/ov_msa/TreeOptions/TreeOptionsWidget.cpp \
            src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.cpp \
            src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp \

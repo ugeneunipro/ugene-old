@@ -49,6 +49,7 @@ class MSAEditorSequenceArea;
 class MSAEditorConsensusArea;
 class MSAEditorNameList;
 class MSAEditorOffsetsViewController;
+class MSAEditorOverviewArea;
 class MSAEditorStatusWidget;
 class MSAEditorUndoFramework;
 class PhyTreeGeneratorLauncherTask;
@@ -201,6 +202,8 @@ protected:
     virtual QWidget* createWidget();
     bool eventFilter(QObject* o, QEvent* e);
     virtual void onObjectRenamed(GObject* obj, const QString& oldName);
+    virtual bool onCloseEvent();
+
 private:
     void addCopyMenu(QMenu* m);
     void addEditMenu(QMenu* m);
@@ -230,6 +233,7 @@ private:
     QAction*          zoomInAction;
     QAction*          zoomOutAction;
     QAction*          zoomToSelectionAction;
+    QAction*          showOverviewAction;
     QAction*          changeFontAction;
     QAction*          resetFontAction;
     QAction*          buildTreeAction;
@@ -295,6 +299,7 @@ public:
     MSAEditorSequenceArea*  getSequenceArea() {return seqArea;}
     MSAEditorNameList*      getEditorNameList() {return nameList;}
     MSAEditorConsensusArea* getConsensusArea() {return consArea;}
+    MSAEditorOverviewArea*  getOverviewArea() {return overviewArea;}
 
     void createDistanceColumn(MSADistanceMatrix* algo);
 
@@ -329,6 +334,7 @@ private:
     MSAEditorNameList*                 nameList;
     MSAEditorSequenceArea*             seqArea;
     MSAEditorConsensusArea*            consArea;
+    MSAEditorOverviewArea*             overviewArea;
     MSAEditorOffsetsViewController*    offsetsView;
     MSAEditorStatusWidget*             statusWidget;
     QWidget*                           seqAreaContainer;
