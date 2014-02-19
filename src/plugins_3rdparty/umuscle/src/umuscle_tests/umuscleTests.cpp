@@ -253,8 +253,8 @@ Task::ReportResult GTest_CompareMAlignment::report() {
     for (int i=0;i<listSize;i++) {
         MAlignmentObject* ma1 = qobject_cast<MAlignmentObject*>(objs1.at(i));
         MAlignmentObject* ma2 = qobject_cast<MAlignmentObject*>(objs2.at(i));
-        const QList<MAlignmentRow> &alignedSeqs1 = ma1->getMAlignment().getRows();
-        const QList<MAlignmentRow> &alignedSeqs2 = ma2->getMAlignment().getRows();
+        const QList<MAlignmentRow> alignedSeqs1 = ma1->getMAlignment().getRows();
+        const QList<MAlignmentRow> alignedSeqs2 = ma2->getMAlignment().getRows();
         if(ma1->objectName()!=ma2->objectName()) {
             stateInfo.setError(  QString("MAlignmentObjects name not matched \"%1\", expected \"%2\"").arg(ma1->objectName()).arg(ma2->objectName()) );
             return ReportResult_Finished;
