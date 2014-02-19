@@ -20,22 +20,24 @@
  */
 
 #include "HelpButton.h"
+#include "U2Gui/GUIUtils.h"
 
-#include <QDesktopServices>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QUrl>
+#include <QtGui/QPushButton>
 
 namespace U2{
 
-HelpButton::HelpButton(QWidget *target ,QDialogButtonBox *b, QString lnk):QObject(target), link(lnk){
+HelpButton::HelpButton(QObject *parent, QDialogButtonBox *b, const QString& _pageId) : QObject(parent), pageId(_pageId){
     QPushButton *hb = new QPushButton(tr("Help"));
     connect(hb, SIGNAL(clicked()), SLOT(sl_buttonClicked()));
     b->addButton(hb, QDialogButtonBox::HelpRole);
 }
 
+HelpButton::HelpButton(QObject *parent, QAbstractButton *hb, const QString& _pageId) : QObject(parent), pageId(_pageId){
+    connect(hb, SIGNAL(clicked()), SLOT(sl_buttonClicked()));
+}
+
 void HelpButton::sl_buttonClicked(){
-    QDesktopServices::openUrl(QUrl(link, QUrl::TolerantMode));
+    GUIUtils::runWebBrowser("https://ugene.unipro.ru/wiki/pages/viewpage.action?pageId="+pageId);
 }
 
 }

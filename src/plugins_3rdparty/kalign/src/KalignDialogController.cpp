@@ -32,6 +32,9 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #include <QtGui/QToolButton>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 /* TRANSLATOR U2::KalignDialogController */    
 
@@ -56,6 +59,10 @@ KalignDialogController::KalignDialogController(QWidget* w, const MAlignment& _ma
 : QDialog(w), ma(_ma), settings(_settings)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227786");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     setupUiExt();
     inputGroupBox->setVisible(false);
     this->adjustSize();
@@ -67,13 +74,14 @@ KalignDialogController::KalignDialogController(QWidget* w, const MAlignment& _ma
     foreach(DNATranslation* t, aminoTs) {
         translationTableBox->addItem(t->getTranslationName());
         }
+
 }
 
 void KalignDialogController::setupUiExt() {    
-	gapOpenSpinBox->setEnabled(false);
-	gapExtensionPenaltySpinBox->setEnabled(false);
-	terminalGapSpinBox->setEnabled(false);
-	bonusScoreSpinBox->setEnabled(false);
+    gapOpenSpinBox->setEnabled(false);
+    gapExtensionPenaltySpinBox->setEnabled(false);
+    terminalGapSpinBox->setEnabled(false);
+    bonusScoreSpinBox->setEnabled(false);
 
     if(ma.getAlphabet()->isAmino()) {
         gapOpenSpinBox->setValue(53.9);
@@ -87,10 +95,10 @@ void KalignDialogController::setupUiExt() {
         bonusScoreSpinBox->setValue(28.3);
     }
 
-	QObject::connect(gapOpenCheckBox, SIGNAL(clicked(bool)), gapOpenSpinBox, SLOT(setEnabled(bool)));
-	QObject::connect(gapExtensionPenaltyCheckBox, SIGNAL(clicked(bool)), gapExtensionPenaltySpinBox, SLOT(setEnabled(bool)));
-	QObject::connect(terminalGapCheckBox, SIGNAL(clicked(bool)), terminalGapSpinBox, SLOT(setEnabled(bool)));
-	QObject::connect(bonusScoreCheckBox, SIGNAL(clicked(bool)), bonusScoreSpinBox, SLOT(setEnabled(bool)));
+    QObject::connect(gapOpenCheckBox, SIGNAL(clicked(bool)), gapOpenSpinBox, SLOT(setEnabled(bool)));
+    QObject::connect(gapExtensionPenaltyCheckBox, SIGNAL(clicked(bool)), gapExtensionPenaltySpinBox, SLOT(setEnabled(bool)));
+    QObject::connect(terminalGapCheckBox, SIGNAL(clicked(bool)), terminalGapSpinBox, SLOT(setEnabled(bool)));
+    QObject::connect(bonusScoreCheckBox, SIGNAL(clicked(bool)), bonusScoreSpinBox, SLOT(setEnabled(bool)));
 
 }
 
@@ -113,7 +121,12 @@ KalignAlignWithExtFileSpecifyDialogController::KalignAlignWithExtFileSpecifyDial
 : QDialog(w), settings(_settings)
     {
     setupUi(this);
-    this->adjustSize();
+    new HelpButton(this, buttonBox, "4227786");
+
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
+    //this->adjustSize();
     connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));
     connect(outputFilePathButton, SIGNAL(clicked()), SLOT(sl_outputPathButtonClicked()));
 

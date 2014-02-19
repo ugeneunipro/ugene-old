@@ -19,6 +19,8 @@
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 #include <U2View/LicenseDialog.h>
 
@@ -31,6 +33,10 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
 : QDialog(parent), msa(mobj->getMAlignment()), settings(_settings){
     ui = new Ui_CreatePhyTree;
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "4227492");
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Build"));
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     ui->verticalLayout->getContentsMargins ( NULL, NULL, &rightMargin, NULL );
     PhyTreeGeneratorRegistry* registry = AppContext::getPhyTreeGeneratorRegistry();
     QStringList nameList = registry->getNameList();
@@ -40,7 +46,10 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
     }
     const GUrl& msaURL = mobj->getDocument()->getURL();
     GUrl url = GUrlUtils::rollFileName(msaURL.dirPath() + "/" + msaURL.baseFileName() + ".nwk", DocumentUtils::getNewDocFileNameExcludesHint());
-    connect(ui->okButton, SIGNAL(clicked()), SLOT(sl_okClicked()));
+
+    QPushButton *okButton = ui->buttonBox->button(QDialogButtonBox::Ok);
+
+    connect(okButton, SIGNAL(clicked()), SLOT(sl_okClicked()));
     connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseClicked()));
     connect(ui->algorithmBox, SIGNAL(currentIndexChanged ( int )), SLOT(sl_comboIndexChaged(int)));
     connect(ui->storeSettings, SIGNAL(clicked()), SLOT(sl_onStoreSettings()));
@@ -67,6 +76,7 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
     }
     ui->displayWithAlignmentEditor->setChecked(true);
     ui->syncCheckBox->setCheckState(Qt::Checked);
+
 }
 
 void CreatePhyTreeDialogController::sl_okClicked(){

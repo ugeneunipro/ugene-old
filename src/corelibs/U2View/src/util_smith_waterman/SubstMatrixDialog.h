@@ -53,6 +53,8 @@ private:
     int hlInnerRow;
 
     SMatrix m;
+
+    QPushButton* bttnClose;
 };
 
 } // namespace

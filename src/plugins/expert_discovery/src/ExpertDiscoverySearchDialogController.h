@@ -91,6 +91,8 @@ private:
     ExpertDiscoverySearchTask* task;
     QTimer* timer;
     RegionSelector* rs;
+    QPushButton* pbSearch;
+    QPushButton* pbClose;
 };
 
 }//namespace

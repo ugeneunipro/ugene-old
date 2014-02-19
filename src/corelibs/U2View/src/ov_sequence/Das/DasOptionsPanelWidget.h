@@ -119,6 +119,8 @@ private:
     const static QString WHOLE_SEQUENCE;
     const static QString SELECTED_REGION;
     const static QString CUSTOM_REGION;
+
+    QPushButton* annotateButton;
 };
 
 }   // namespace

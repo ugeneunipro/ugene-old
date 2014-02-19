@@ -33,6 +33,8 @@
 #include <U2Core/Log.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Gui/HelpButton.h>
+
 
 #include <QFileDialog>
 #include <QtCore/QDir>
@@ -431,6 +433,9 @@ void ColorSchemaSettingsPageWidget::sl_onDeleteColorSchema(){
 
 CreateColorSchemaDialog::CreateColorSchemaDialog(CustomColorSchema* _newSchema, QStringList _usedNames) : usedNames(_usedNames), newSchema(_newSchema) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227260");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Create"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     alphabetComboBox->insertItem(0, QString(tr("Amino acid")), DNAAlphabet_AMINO);
     alphabetComboBox->insertItem(1, QString(tr("Nucleotide")), DNAAlphabet_NUCL);
@@ -442,14 +447,19 @@ CreateColorSchemaDialog::CreateColorSchemaDialog(CustomColorSchema* _newSchema, 
     adjustSize( );
 
     connect(schemeName, SIGNAL(textEdited ( const QString&)), SLOT(sl_schemaNameEdited(const QString&)));
-    connect(createButton, SIGNAL(clicked()), SLOT(sl_createSchema()));
-    connect(cancelButton, SIGNAL(clicked()), SLOT(sl_cancel()));
+
+    QPushButton *createButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton *cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+
+    connect(createButton, SIGNAL(clicked()), this, SLOT(sl_createSchema()));
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(sl_cancel()));
 
     QSet<QString > excluded;
     foreach(const QString& usedName, usedNames){
         excluded.insert(usedName);
     }
     schemeName->setText(GUrlUtils::rollFileName("Custom color scheme", excluded));
+
 }
 
 bool CreateColorSchemaDialog::isNameExist(const QString& text){

@@ -21,6 +21,7 @@
 
 #include "BranchSettingsDialog.h"
 #include <QtGui/QColorDialog>
+#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -30,11 +31,13 @@ BranchSettingsDialog::BranchSettingsDialog(QWidget *parent, const BranchSettings
     changedSettings(branchSettings) 
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227571");
 
     thicknessSpinBox->setValue(settings.branchThickness);
     updateColorButton();
 
     connect(colorButton, SIGNAL(clicked()), SLOT(sl_colorButton()));
+
 }
 
 void BranchSettingsDialog::updateColorButton() {

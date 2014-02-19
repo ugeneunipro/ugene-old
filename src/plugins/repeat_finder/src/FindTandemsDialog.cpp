@@ -32,6 +32,7 @@
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
+#include <U2Gui/HelpButton.h>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QLineEdit>
@@ -56,6 +57,10 @@ FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
 {
     sc = _sc;
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227627");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Start"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     tabWidget->setCurrentIndex(0);
 
     CreateAnnotationModel m;
@@ -90,6 +95,7 @@ FindTandemsDialog::FindTandemsDialog(ADVSequenceObjectContext* _sc)
     rangeSelectorLayout->addWidget(rs);
 
     setWindowIcon(QIcon(":/ugene/images/ugene_16.png"));
+
 }
 
 QStringList FindTandemsDialog::getAvailableAnnotationNames() const {

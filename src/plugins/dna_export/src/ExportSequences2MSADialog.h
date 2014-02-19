@@ -50,6 +50,7 @@ public:
 
 private:    
     SaveDocumentGroupController* saveContoller;
+    QPushButton* okButton;
 
 };
 

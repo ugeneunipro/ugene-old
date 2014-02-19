@@ -51,10 +51,13 @@
 #include <U2Gui/ProjectView.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/OpenViewTask.h>
+#include <U2Gui/HelpButton.h>
 
 #include <U2View/DnaAssemblyGUIExtension.h>
 
 #include <QtGui/QAction>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 
@@ -134,15 +137,15 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     fileMenu->insertActions(fileMenu->actions().first(), actions);
 
     QToolBar* tb = mw->getToolbar(MWTOOLBAR_MAIN);
-	tb->addAction(newProjectAction);
-	tb->addAction(openProjectAction);
+    tb->addAction(newProjectAction);
+    tb->addAction(openProjectAction);
 
-	updateState();
+    updateState();
 }
 
 
 void ProjectLoaderImpl::updateState() {
-	recentProjectsMenu->setDisabled(recentProjectsMenu->isEmpty());
+    recentProjectsMenu->setDisabled(recentProjectsMenu->isEmpty());
 }
 
 #define MAX_RECENT_FILES 7
@@ -659,6 +662,11 @@ void SaveProjectDialogController::sl_clicked(QAbstractButton *button) {
 //////////////////////////////////////////////////////////////////////////
 ProjectDialogController::ProjectDialogController(ProjectDialogController::Mode m, QWidget *p):QDialog(p) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227222");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Create"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
+    createButton = buttonBox->button(QDialogButtonBox::Ok);
     setModal(true);
     fileEditIsEmpty = false;
     QString lastDir =AppContext::getSettings()->getValue(SETTINGS_DIR + "last_dir", QString(""), true).toString();
@@ -667,9 +675,6 @@ ProjectDialogController::ProjectDialogController(ProjectDialogController::Mode m
     if (m == Save_Project) {
         setWindowTitle(ProjectLoaderImpl::tr("Save project as"));
         createButton->setText(ProjectLoaderImpl::tr("Save"));
-        titleLabel->setVisible(false);
-        resize(width(), height() - titleLabel->pixmap()->height());
-        frame->setFrameShape(QFrame::NoFrame);
         projectNameEdit->setText(AppContext::getProject()->getProjectName());
         QString url = AppContext::getProject()->getProjectURL();
         if (!url.isEmpty()) {
@@ -691,6 +696,7 @@ ProjectDialogController::ProjectDialogController(ProjectDialogController::Mode m
     connect(projectFileEdit, SIGNAL(textEdited(const QString&)), SLOT(sl_fileNameEdited(const QString&)));
     connect(projectNameEdit, SIGNAL(textEdited(const QString&)), SLOT(sl_projectNameEdited(const QString&)));
     updateState();
+
 }
 
 void ProjectDialogController::updateState() { 

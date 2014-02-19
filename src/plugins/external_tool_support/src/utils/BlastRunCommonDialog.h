@@ -37,6 +37,9 @@ public:
     BlastRunCommonDialog(QWidget* parent);
 
     const BlastTaskSettings &getSettings()const;
+    QPushButton* okButton;
+    QPushButton* cancelButton;
+    QPushButton* restoreButton;
 protected slots:
     virtual void sl_runQuery() = 0;
     virtual void sl_lineEditChanged() = 0;
@@ -55,6 +58,7 @@ protected:
     BlastTaskSettings                   settings;
     bool                                needRestoreDefault;
     CreateAnnotationWidgetController*   ca_c;
+
 };
 }//namespace
 #endif // _U2_BLAST_RUN_COMMON_DIALOG_H

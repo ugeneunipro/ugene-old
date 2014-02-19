@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>HMMBuildDialog</class>
- <widget class="QDialog" name="HMMBuildDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="HMMBuildDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,42 +10,42 @@
     <height>269</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>hmmbuild_dialog_title</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="gridLayout_2" >
-     <item row="0" column="0" >
-      <widget class="QLabel" name="msaFileLabel" >
-       <property name="text" >
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="msaFileLabel">
+       <property name="text">
         <string>msa_file_label</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1" >
-      <widget class="QLineEdit" name="msaFileEdit" />
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="msaFileEdit"/>
      </item>
-     <item row="0" column="2" >
-      <widget class="QToolButton" name="msaFileButton" >
-       <property name="text" >
+     <item row="0" column="2">
+      <widget class="QToolButton" name="msaFileButton">
+       <property name="text">
         <string>...</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="0" >
-      <widget class="QLabel" name="label_2" >
-       <property name="text" >
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
         <string>result_hmm_label</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" >
-      <widget class="QLineEdit" name="resultFileEdit" />
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="resultFileEdit"/>
      </item>
-     <item row="1" column="2" >
-      <widget class="QToolButton" name="resultFileButton" >
-       <property name="text" >
+     <item row="1" column="2">
+      <widget class="QToolButton" name="resultFileButton">
+       <property name="text">
         <string>...</string>
        </property>
       </widget>
@@ -52,68 +53,68 @@
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="expertGroup" >
-     <property name="title" >
+    <widget class="QGroupBox" name="expertGroup">
+     <property name="title">
       <string>expert_options</string>
      </property>
-     <property name="checkable" >
+     <property name="checkable">
       <bool>true</bool>
      </property>
-     <property name="checked" >
+     <property name="checked">
       <bool>false</bool>
      </property>
-     <layout class="QGridLayout" name="gridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="label_5" >
-        <property name="toolTip" >
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="toolTip">
          <string>name_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>name_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>name_tip</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>name</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="2" >
-       <widget class="QLineEdit" name="nameEdit" >
-        <property name="toolTip" >
+      <item row="0" column="1" colspan="2">
+       <widget class="QLineEdit" name="nameEdit">
+        <property name="toolTip">
          <string>name_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>name_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>name_tip</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label_7" >
-        <property name="toolTip" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="toolTip">
          <string>default_hmmls_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>default_hmmls_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>default_hmmls_tip</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>default_hmmls</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <spacer name="horizontalSpacer_5" >
-        <property name="orientation" >
+      <item row="1" column="1">
+       <spacer name="horizontalSpacer_5">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>478</width>
           <height>20</height>
@@ -121,47 +122,47 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="2" >
-       <widget class="QRadioButton" name="hmmlsButton" >
-        <property name="toolTip" >
+      <item row="1" column="2">
+       <widget class="QRadioButton" name="hmmlsButton">
+        <property name="toolTip">
          <string>default_hmmls_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>default_hmmls_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>default_hmmls_tip</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string/>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="label_3" >
-        <property name="toolTip" >
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="toolTip">
          <string>multi_domain_hmmfs_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>multi_domain_hmmfs_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>multi_domain_hmmfs_tip</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>multi_domain_hmmfs</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" >
-       <spacer name="horizontalSpacer_2" >
-        <property name="orientation" >
+      <item row="2" column="1">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>222</width>
           <height>20</height>
@@ -169,44 +170,44 @@
         </property>
        </spacer>
       </item>
-      <item row="2" column="2" >
-       <widget class="QRadioButton" name="hmmfsButton" >
-        <property name="toolTip" >
+      <item row="2" column="2">
+       <widget class="QRadioButton" name="hmmfsButton">
+        <property name="toolTip">
          <string>multi_domain_hmmfs_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>multi_domain_hmmfs_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>multi_domain_hmmfs_tip</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="label_4" >
-        <property name="toolTip" >
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="toolTip">
          <string>single_global_hmms_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>single_global_hmms_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>single_global_hmms_tip</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>single_global_hmms</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1" >
-       <spacer name="horizontalSpacer_3" >
-        <property name="orientation" >
+      <item row="3" column="1">
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>222</width>
           <height>20</height>
@@ -214,44 +215,44 @@
         </property>
        </spacer>
       </item>
-      <item row="3" column="2" >
-       <widget class="QRadioButton" name="hmmsButton" >
-        <property name="toolTip" >
+      <item row="3" column="2">
+       <widget class="QRadioButton" name="hmmsButton">
+        <property name="toolTip">
          <string>single_global_hmms_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>single_global_hmms_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>single_global_hmms_tip</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="4" column="0" >
-       <widget class="QLabel" name="label_6" >
-        <property name="toolTip" >
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="toolTip">
          <string>single_local_hmmsw_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>single_local_hmmsw</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>single_local_hmmsw</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>single_local_hmmsw</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1" >
-       <spacer name="horizontalSpacer_4" >
-        <property name="orientation" >
+      <item row="4" column="1">
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>222</width>
           <height>20</height>
@@ -259,18 +260,18 @@
         </property>
        </spacer>
       </item>
-      <item row="4" column="2" >
-       <widget class="QRadioButton" name="hmmswButton" >
-        <property name="toolTip" >
+      <item row="4" column="2">
+       <widget class="QRadioButton" name="hmmswButton">
+        <property name="toolTip">
          <string>single_local_hmmsw</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>single_local_hmmsw</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>single_local_hmmsw</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string/>
         </property>
        </widget>
@@ -279,11 +280,11 @@
     </widget>
    </item>
    <item>
-    <spacer name="verticalSpacer" >
-     <property name="orientation" >
+    <spacer name="verticalSpacer">
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" stdset="0" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>21</height>
@@ -292,20 +293,20 @@
     </spacer>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" >
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="statusLabel" >
-       <property name="text" >
+      <widget class="QLabel" name="statusLabel">
+       <property name="text">
         <string/>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer" >
-       <property name="orientation" >
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -313,39 +314,32 @@
        </property>
       </spacer>
      </item>
-     <item>
-      <widget class="QPushButton" name="okButton" >
-       <property name="text" >
-        <string>ok_button</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton" >
-       <property name="text" >
-        <string>close_button</string>
-       </property>
-      </widget>
-     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>HMMBuildDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>543</x>
-     <y>220</y>
+    <hint type="sourcelabel">
+     <x>230</x>
+     <y>248</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>296</x>
-     <y>121</y>
+    <hint type="destinationlabel">
+     <x>230</x>
+     <y>134</y>
     </hint>
    </hints>
   </connection>

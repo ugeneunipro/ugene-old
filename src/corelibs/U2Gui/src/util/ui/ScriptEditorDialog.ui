@@ -56,19 +56,22 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="0" colspan="3">
+    <layout class="QVBoxLayout" name="scriptEditorLayout"/>
+   </item>
    <item row="3" column="0" colspan="3">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="1" column="1">
-      <widget class="QPushButton" name="saveAsButton">
-       <property name="text">
-        <string>Save as..</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="0">
       <widget class="QPushButton" name="checkButton">
        <property name="text">
         <string>Check syntax</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="saveAsButton">
+       <property name="text">
+        <string>Save as..</string>
        </property>
       </widget>
      </item>
@@ -86,20 +89,6 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="3">
-      <widget class="QPushButton" name="okButton">
-       <property name="text">
-        <string>Done</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QLabel" name="lineInfo">
-       <property name="text">
-        <string>Line:</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="2">
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -113,17 +102,34 @@
        </property>
       </spacer>
      </item>
-     <item row="1" column="4">
-      <widget class="QPushButton" name="cancelButton">
+     <item row="0" column="3">
+      <widget class="QLabel" name="lineInfo">
        <property name="text">
-        <string>Cancel</string>
+        <string>Line:</string>
        </property>
       </widget>
      </item>
+     <item row="1" column="3">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
     </layout>
    </item>
-   <item row="2" column="0" colspan="3">
-    <layout class="QVBoxLayout" name="scriptEditorLayout"/>
+   <item row="4" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -132,34 +138,34 @@
  </resources>
  <connections>
   <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
-   <receiver>ScriptEditorDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>352</x>
-     <y>189</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>105</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>okButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
    <receiver>ScriptEditorDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>271</x>
-     <y>189</y>
+     <x>241</x>
+     <y>318</y>
     </hint>
     <hint type="destinationlabel">
-     <x>199</x>
-     <y>105</y>
+     <x>241</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>ScriptEditorDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>241</x>
+     <y>318</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>241</x>
+     <y>169</y>
     </hint>
    </hints>
   </connection>

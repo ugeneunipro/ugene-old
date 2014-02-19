@@ -49,7 +49,7 @@ private:
     QComboBox *highlightingScheme;
     QLabel *hint;
     QCheckBox *useDots;
-    QToolButton *exportHighlightning;
+    QPushButton *exportHighlightning;
 };
 
 } // namespace

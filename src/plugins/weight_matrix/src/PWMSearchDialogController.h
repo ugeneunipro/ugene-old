@@ -100,7 +100,7 @@ private:
 
 private:
     ADVSequenceObjectContext*                           ctx;
-    U2Region                                             initialSelection;
+    U2Region                                            initialSelection;
     
     PFMatrix                                            intermediate;
     PWMatrix                                            model;    
@@ -109,7 +109,12 @@ private:
 
     WeightMatrixSearchTask*                             task;
     QTimer*                                             timer;
-    RegionSelector*                                      rs;
+    RegionSelector*                                     rs;
+
+    QPushButton*                                        pbSearch;
+    QPushButton*                                        pbClose;
+    QPushButton*                                        queueButton;
+
 };
 
 }//namespace

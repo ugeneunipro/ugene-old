@@ -28,6 +28,8 @@
 #include <U2Core/MAlignmentObject.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 #include <U2View/MSAEditor.h>
 #include <U2View/WebWindow.h>
@@ -44,6 +46,9 @@ namespace U2 {
 
 DistanceMatrixMSAProfileDialog::DistanceMatrixMSAProfileDialog(QWidget* p, MSAEditor* _c) : QDialog(p), ctx(_c) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227438");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Generate"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     QStringList algo = AppContext::getMSADistanceAlgorithmRegistry()->getAlgorithmIds();
     algoCombo->addItems(algo);
@@ -60,6 +65,7 @@ DistanceMatrixMSAProfileDialog::DistanceMatrixMSAProfileDialog(QWidget* p, MSAEd
     connect(fileButton, SIGNAL(clicked()), SLOT(sl_selectFile()));
     connect(htmlRB, SIGNAL(toggled(bool)), SLOT(sl_formatChanged(bool)));
     connect(csvRB, SIGNAL(toggled(bool)), SLOT(sl_formatChanged(bool)));
+
 }
 
 void DistanceMatrixMSAProfileDialog::sl_selectFile() {

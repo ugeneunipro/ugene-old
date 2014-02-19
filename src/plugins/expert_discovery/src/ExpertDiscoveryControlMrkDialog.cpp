@@ -6,6 +6,8 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 
@@ -13,10 +15,12 @@ ExpertDiscoveryControlMrkDialog::ExpertDiscoveryControlMrkDialog(QWidget *parent
 : QDialog(parent){
 
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
 
     connect(openFirstButton, SIGNAL(clicked()), SLOT(sl_openFirstFile()));
 
     filter = DialogUtils::prepareFileFilter("Markup files", QStringList() << "xml" << "gb");
+
 }
 
 void ExpertDiscoveryControlMrkDialog::accept(){

@@ -38,7 +38,7 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/CreateAnnotationDialog.h>
-
+#include <U2Gui/HelpButton.h>
 
 #include <QtGui/QToolButton>
 #include <QtGui/QMenu>
@@ -55,6 +55,9 @@ CollocationsDialogController::CollocationsDialogController(QStringList _names, A
     task = NULL;
     qSort(allNames);
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     
     QStringList list;
     list.append(tr("click_to_add_new_annotation"));
@@ -69,6 +72,9 @@ CollocationsDialogController::CollocationsDialogController(QStringList _names, A
     annotationsTree->setColumnWidth(0, w - 30);
     annotationsTree->setUniformRowHeights(true);
     
+    searchButton = buttonBox->button(QDialogButtonBox::Ok);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+
     connect(plusButton,   SIGNAL(clicked()), SLOT(sl_plusClicked()));
     connect(searchButton, SIGNAL(clicked()), SLOT(sl_searchClicked()));
     connect(cancelButton, SIGNAL(clicked()), SLOT(sl_cancelClicked()));

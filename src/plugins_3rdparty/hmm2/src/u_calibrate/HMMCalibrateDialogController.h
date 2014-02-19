@@ -28,6 +28,8 @@ private slots:
 
 private:
     Task* task;
+    QPushButton* okButton;
+    QPushButton* cancelButton;
 };
 
 } //namespace

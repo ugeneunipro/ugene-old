@@ -67,9 +67,9 @@ void HMMSearchWorkerFactory::init() {
     
     {
         Descriptor nd(NAME_ATTR, HMMSearchWorker::tr("Result annotation"), HMMSearchWorker::tr("A name of the result annotations."));
-        Descriptor nsd(NSEQ_ATTR, HMMSearchWorker::tr("Number of seqs"), QApplication::translate("HMMSearchDialog", "e_value_as_nsec_tip", 0, QApplication::UnicodeUTF8));
-        Descriptor ded(DOM_E_ATTR, HMMSearchWorker::tr("Filter by high E-value"), QApplication::translate("HMMSearchDialog", "results_evalue_cutoff_tip", 0, QApplication::UnicodeUTF8));
-        Descriptor dtd(DOM_T_ATTR, HMMSearchWorker::tr("Filter by low score"), QApplication::translate("HMMSearchDialog", "results_score_cutoff_tip", 0, QApplication::UnicodeUTF8));
+        Descriptor nsd(NSEQ_ATTR, HMMSearchWorker::tr("Number of seqs"), QApplication::translate("HMMSearchDialog", "Calculate the E-value scores as if we had seen a sequence database of &lt;n&gt; sequences.", 0, QApplication::UnicodeUTF8));
+        Descriptor ded(DOM_E_ATTR, HMMSearchWorker::tr("Filter by high E-value"), QApplication::translate("HMMSearchDialog", "E-value filtering can be used to exclude low-probability hits from result.", 0, QApplication::UnicodeUTF8));
+        Descriptor dtd(DOM_T_ATTR, HMMSearchWorker::tr("Filter by low score"), QApplication::translate("HMMSearchDialog", "Score based filtering is an alternative to E-value filtering to exclude low-probability hits from result.", 0, QApplication::UnicodeUTF8));
 
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, QVariant("hmm_signal"));
         a << new Attribute(nsd, BaseTypes::NUM_TYPE(), false, QVariant(1));

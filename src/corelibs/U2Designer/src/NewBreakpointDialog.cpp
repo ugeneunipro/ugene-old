@@ -21,6 +21,8 @@
 
 #include "ui/ui_NewBreakpointDialog.h"
 #include "NewBreakpointDialog.h"
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 namespace U2 {
 
@@ -28,8 +30,12 @@ NewBreakpointDialog::NewBreakpointDialog(const QStringList &elementsNames, QWidg
     Qt::WindowFlags f) : QDialog(parent, f), ui(new Ui::NewBreakpointDialog())
 {
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "3245084");
     ui->elementCombo->addItems(elementsNames);
-    connect(ui->okButton, SIGNAL(clicked()), SLOT(sl_announceNewBreakpoint()));
+
+    QPushButton *okButton = ui->buttonBox->button(QDialogButtonBox::Ok);
+    connect(okButton, SIGNAL(clicked()), SLOT(sl_announceNewBreakpoint()));
+
 }
 
 NewBreakpointDialog::~NewBreakpointDialog() {

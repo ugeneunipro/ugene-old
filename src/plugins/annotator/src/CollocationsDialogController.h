@@ -72,6 +72,9 @@ private:
     QToolButton*                plusButton;
     CollocationSearchTask*      task;
     QTimer*                     timer;
+    QPushButton*                searchButton;
+    QPushButton*                cancelButton;
+
 };
 
 class CDCResultItem : public QListWidgetItem {

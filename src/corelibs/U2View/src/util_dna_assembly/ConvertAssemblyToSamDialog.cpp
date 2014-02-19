@@ -26,10 +26,12 @@
 #include <U2Core/DocumentUtils.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/HelpButton.h>
+
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
-
+#include <QtGui/QPushButton>
 
 
 namespace U2 {
@@ -41,11 +43,17 @@ ConvertAssemblyToSamDialog::ConvertAssemblyToSamDialog(QWidget* parent, QString 
 {
     ui = new Ui_AssemblyToSamDialog;
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "4227719");
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Convert"));
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
+    QPushButton* convertButton = ui->buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* cancelButton = ui->buttonBox->button(QDialogButtonBox::Cancel);
 
     connect(ui->setDbPathButton, SIGNAL(clicked()), SLOT(sl_onSetDbPathButtonClicked()));
     connect(ui->setSamPathButton, SIGNAL(clicked()), SLOT(sl_onSetSamPathButtonClicked()));
-    connect(ui->convertButton, SIGNAL(clicked()), SLOT(accept()));
-    connect(ui->cancelButton, SIGNAL(clicked()), SLOT(reject()));
+    connect(convertButton, SIGNAL(clicked()), SLOT(accept()));
+    connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
 
     if ("" != dbPath) {
         ui->dbPathEdit->setText(dbPath);
@@ -59,6 +67,7 @@ ConvertAssemblyToSamDialog::ConvertAssemblyToSamDialog(QWidget* parent, QString 
         ui->dbPathEdit->setText(dbFileUrl.getURLString());
         buildSamUrl(dbFileUrl);
     }
+
 }
 
 void ConvertAssemblyToSamDialog::accept() {

@@ -27,6 +27,7 @@
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Gui/HelpButton.h>
 
 #include <QtGui/QMessageBox>
 
@@ -131,6 +132,10 @@ SendSelectionDialog::SendSelectionDialog(const U2SequenceObject* dnaso, bool _is
     ca_m.sequenceLen = dnaso->getSequenceLength();
     ca_c = new CreateAnnotationWidgetController(ca_m, this);
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     optionsTab->setCurrentIndex(0);
     int idx = 2;
     QWidget *wdgt;
@@ -152,6 +157,9 @@ SendSelectionDialog::SendSelectionDialog(const U2SequenceObject* dnaso, bool _is
     alignComboBoxes();
 
     connect( dataBase, SIGNAL(currentIndexChanged(int)), SLOT(sl_scriptSelected(int)) );
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+
     connect( okButton, SIGNAL(clicked()), SLOT(sl_OK()) );
     connect( cancelButton, SIGNAL(clicked()), SLOT(sl_Cancel()) );
     connect( megablastCheckBox, SIGNAL(stateChanged(int)),SLOT(sl_megablastChecked(int)) );

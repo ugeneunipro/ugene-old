@@ -32,6 +32,7 @@
 #include <U2Algorithm/EnzymeModel.h>
 #include "EnzymesIO.h"
 #include "EditFragmentDialog.h"
+#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -43,6 +44,8 @@ EditFragmentDialog::EditFragmentDialog( DNAFragment& fragment, QWidget* p )
 {
     
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227661");
+
     connect(lBluntButton, SIGNAL(toggled(bool)), SLOT(sl_onLeftBluntButtonToogled(bool)));
     connect(rBluntButton, SIGNAL(toggled(bool)), SLOT(sl_onRightBluntButtonToggled(bool)));
 

@@ -34,6 +34,7 @@
 
 #include <QtGui/QInputDialog>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
 
 
 namespace U2 {
@@ -140,12 +141,15 @@ QString EnzymesSelectorDialogHandler::getSelectedString(QDialog* dlg) {
 EnzymesSelectorDialog::EnzymesSelectorDialog(EnzymesSelectorDialogHandler* parent)
 : factory(parent) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227631");
+
     QVBoxLayout* vl = new QVBoxLayout();
     enzSel = new EnzymesSelectorWidget();
     vl->setMargin(0);
     vl->addWidget(enzSel);
     enzymesSelectorWidget->setLayout(vl);
     enzymesSelectorWidget->setMinimumSize(enzSel->size());
+
 }
 
 QString EnzymesSelectorDialog::getSelectedString() const {

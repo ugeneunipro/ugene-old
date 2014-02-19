@@ -24,12 +24,17 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <ov_msa/MSAEditorSequenceArea.h>
 #include <qfiledialog.h>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 
 namespace U2{
 
     ExportHighligtningDialogController::ExportHighligtningDialogController(MSAEditorUI *msaui_, QWidget* p ): QDialog(p){
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227438");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     connect(fileButton, SIGNAL(clicked()), SLOT(sl_fileButtonClicked()));
 
@@ -53,6 +58,7 @@ namespace U2{
 
     startPosBox->setValue(startPos);
     endPosBox->setValue(endPos);
+
 }
 
 void ExportHighligtningDialogController::accept(){

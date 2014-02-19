@@ -1,50 +1,51 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>SiteconBuildDialog</class>
- <widget class="QDialog" name="SiteconBuildDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="SiteconBuildDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>243</height>
+    <height>259</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>SITECON build</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="gridLayout_2" >
-     <item row="0" column="0" >
-      <widget class="QLabel" name="inputLabel" >
-       <property name="text" >
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="inputLabel">
+       <property name="text">
         <string>Input alignment (nucleic)</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1" >
-      <widget class="QLineEdit" name="inputEdit" />
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="inputEdit"/>
      </item>
-     <item row="0" column="2" >
-      <widget class="QToolButton" name="inputButton" >
-       <property name="text" >
+     <item row="0" column="2">
+      <widget class="QToolButton" name="inputButton">
+       <property name="text">
         <string>...</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="0" >
-      <widget class="QLabel" name="outputLabel" >
-       <property name="text" >
+     <item row="1" column="0">
+      <widget class="QLabel" name="outputLabel">
+       <property name="text">
         <string>Output model</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" >
-      <widget class="QLineEdit" name="outputEdit" />
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="outputEdit"/>
      </item>
-     <item row="1" column="2" >
-      <widget class="QToolButton" name="outputButton" >
-       <property name="text" >
+     <item row="1" column="2">
+      <widget class="QToolButton" name="outputButton">
+       <property name="text">
         <string>...</string>
        </property>
       </widget>
@@ -52,29 +53,29 @@
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="optionsBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="optionsBox">
+     <property name="title">
       <string>Options</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="windowSizeLabel" >
-        <property name="toolTip" >
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="windowSizeLabel">
+        <property name="toolTip">
          <string>Window is used to pick out the most important alignment region and is located at the center of the alignment.
            Must be: windows size is not greater than TFBS alignment length,
            recommended: windows size is not greater than 50 bp.</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Window size</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <spacer name="horizontalSpacer_2" >
-        <property name="orientation" >
+      <item row="0" column="1">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>40</width>
           <height>20</height>
@@ -82,52 +83,52 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="2" >
-       <widget class="QSpinBox" name="windowSizeSpin" >
-        <property name="minimumSize" >
+      <item row="0" column="2">
+       <widget class="QSpinBox" name="windowSizeSpin">
+        <property name="minimumSize">
          <size>
           <width>70</width>
           <height>0</height>
          </size>
         </property>
-        <property name="toolTip" >
+        <property name="toolTip">
          <string>Window is used to pick out the most important alignment region and is located at the center of the alignment.
            Must be: windows size is not greater than TFBS alignment length,
            recommended: windows size is not greater than 50 bp.</string>
         </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="suffix" >
+        <property name="suffix">
          <string>bp</string>
         </property>
-        <property name="minimum" >
+        <property name="minimum">
          <number>1</number>
         </property>
-        <property name="maximum" >
+        <property name="maximum">
          <number>1000</number>
         </property>
-        <property name="value" >
+        <property name="value">
          <number>40</number>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="windowSizeLabel_2" >
-        <property name="toolTip" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="windowSizeLabel_2">
+        <property name="toolTip">
          <string>The random seed, where &lt;n&gt; is a positive integer. You can use this option to generate reproducible results for different runs on the same data.</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Calibration random seed</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <spacer name="horizontalSpacer_3" >
-        <property name="orientation" >
+      <item row="1" column="1">
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>207</width>
           <height>20</height>
@@ -135,50 +136,50 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="2" >
-       <widget class="QSpinBox" name="seedSpin" >
-        <property name="minimumSize" >
+      <item row="1" column="2">
+       <widget class="QSpinBox" name="seedSpin">
+        <property name="minimumSize">
          <size>
           <width>64</width>
           <height>0</height>
          </size>
         </property>
-        <property name="toolTip" >
+        <property name="toolTip">
          <string>The random seed, where &lt;n&gt; is a positive integer. You can use this option to generate reproducible results for different runs on the same data.</string>
         </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="suffix" >
+        <property name="suffix">
          <string/>
         </property>
-        <property name="minimum" >
+        <property name="minimum">
          <number>0</number>
         </property>
-        <property name="maximum" >
+        <property name="maximum">
          <number>2000000000</number>
         </property>
-        <property name="value" >
+        <property name="value">
          <number>0</number>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="windowSizeLabel_3" >
-        <property name="toolTip" >
+      <item row="2" column="0">
+       <widget class="QLabel" name="windowSizeLabel_3">
+        <property name="toolTip">
          <string>Length of random synthetic sequences used to calibrate the profile. Should not be less than window size.</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Calibration sequence length</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" >
-       <spacer name="horizontalSpacer_4" >
-        <property name="orientation" >
+      <item row="2" column="1">
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>244</width>
           <height>20</height>
@@ -186,58 +187,58 @@
         </property>
        </spacer>
       </item>
-      <item row="2" column="2" >
-       <widget class="QComboBox" name="calibrationSeqLenBox" >
-        <property name="toolTip" >
+      <item row="2" column="2">
+       <widget class="QComboBox" name="calibrationSeqLenBox">
+        <property name="toolTip">
          <string>Length of random synthetic sequences used to calibrate the profile. Should not be less than window size.</string>
         </property>
-        <property name="layoutDirection" >
+        <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>
         </property>
-        <property name="styleSheet" >
-         <string notr="true" />
+        <property name="styleSheet">
+         <string notr="true"/>
         </property>
-        <property name="currentIndex" >
+        <property name="currentIndex">
          <number>2</number>
         </property>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>       100 Kb</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>       500 Kb</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>         1 Mb</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>         5 Mb</string>
          </property>
         </item>
        </widget>
       </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="label" >
-        <property name="toolTip" >
+      <item row="3" column="0">
+       <widget class="QLabel" name="label">
+        <property name="toolTip">
          <string>Optional feature, in most cases applying no weight will fit. In some cases choosing algorithm 2 will increase the recognition quality.</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Weight algorithm</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1" >
-       <spacer name="horizontalSpacer_5" >
-        <property name="orientation" >
+      <item row="3" column="1">
+       <spacer name="horizontalSpacer_5">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>234</width>
           <height>20</height>
@@ -245,21 +246,21 @@
         </property>
        </spacer>
       </item>
-      <item row="3" column="2" >
-       <widget class="QComboBox" name="weightAlgCombo" >
-        <property name="toolTip" >
+      <item row="3" column="2">
+       <widget class="QComboBox" name="weightAlgCombo">
+        <property name="toolTip">
          <string>Optional feature, in most cases applying no weight will fit. In some cases choosing algorithm 2 will increase the recognition quality.</string>
         </property>
-        <property name="layoutDirection" >
+        <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>
         </property>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>       None</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>  Algorithm N2</string>
          </property>
         </item>
@@ -269,11 +270,11 @@
     </widget>
    </item>
    <item>
-    <spacer name="verticalSpacer" >
-     <property name="orientation" >
+    <spacer name="verticalSpacer">
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" stdset="0" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>10</height>
@@ -282,60 +283,40 @@
     </spacer>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" >
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="statusLabel" >
-       <property name="text" >
+      <widget class="QLabel" name="statusLabel">
+       <property name="text">
         <string>Default status</string>
        </property>
       </widget>
      </item>
-     <item>
-      <spacer name="horizontalSpacer_1" >
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0" >
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="okButton" >
-       <property name="text" >
-        <string>Build</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton" >
-       <property name="text" >
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>SiteconBuildDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>395</x>
-     <y>142</y>
+    <hint type="sourcelabel">
+     <x>244</x>
+     <y>222</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>222</x>
-     <y>82</y>
+    <hint type="destinationlabel">
+     <x>244</x>
+     <y>121</y>
     </hint>
    </hints>
   </connection>

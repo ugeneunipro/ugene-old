@@ -44,6 +44,8 @@
 #include <U2Gui/ShowHideSubgroupWidget.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 
@@ -114,6 +116,11 @@ DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv)
 ,getIdsTask(NULL)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Fetch annotations"));
+
+    annotateButton = buttonBox->button(QDialogButtonBox::Ok);
+
     initialize();
     connectSignals();
     checkState();

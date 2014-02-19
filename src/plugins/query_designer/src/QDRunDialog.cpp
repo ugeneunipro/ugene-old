@@ -57,6 +57,7 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
 
 
 //TODO: there are issues with 'docWithSequence' here
@@ -72,11 +73,18 @@ namespace U2 {
 QDRunDialog::QDRunDialog(QDScheme* _scheme, QWidget* parent, const QString& defaultIn, const QString& defaultOut)
 : QDialog(parent), scheme(_scheme) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227741");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Run"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     inFileEdit->setText(defaultIn);
     outFileEdit->setText(defaultOut);
     connect(tbInFile, SIGNAL(clicked()), SLOT(sl_selectFile()));
     connect(tbOutFile, SIGNAL(clicked()), SLOT(sl_selectFile()));
+
+    QPushButton* runBtn = buttonBox->button(QDialogButtonBox::Ok);
     connect(runBtn, SIGNAL(clicked()), SLOT(sl_run()));
+
 }
 
 void QDRunDialog::sl_selectFile() {
@@ -281,11 +289,16 @@ QList<Task*> QDRunDialogTask::onSubTaskFinished(Task* subTask) {
 QDDialog::QDDialog(ADVSequenceObjectContext* _ctx)
 : QDialog(_ctx->getAnnotatedDNAView()->getWidget()), ctx(_ctx), scheme(NULL), txtDoc(NULL) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227741");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     rs=new RegionSelector(this, ctx->getSequenceLength(), false, ctx->getSequenceSelection());
     rangeSelectorLayout->addWidget(rs);
 
     addAnnotationsWidget();
     connectGUI();
+
 }
 
 void QDDialog::addAnnotationsWidget() {
@@ -308,6 +321,8 @@ void QDDialog::addAnnotationsWidget() {
 
 void QDDialog::connectGUI() {
     connect(tbSelectQuery, SIGNAL(clicked()), SLOT(sl_selectScheme()));
+
+    QPushButton* okBtn = buttonBox->button(QDialogButtonBox::Ok);
     connect(okBtn, SIGNAL(clicked()), SLOT(sl_okBtnClicked()));
 }
 

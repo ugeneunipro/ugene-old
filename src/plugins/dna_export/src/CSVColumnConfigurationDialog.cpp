@@ -23,6 +23,8 @@
 
 #include <U2Core/L10n.h>
 #include <U2Core/Annotation.h>
+#include <U2Gui/HelpButton.h>
+
 
 #include "QtGui/QMessageBox"
 
@@ -32,6 +34,7 @@ CSVColumnConfigurationDialog::CSVColumnConfigurationDialog(QWidget* w, const Col
 : QDialog(w), config(_config)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227368");
 
     connect(complMarkRB, SIGNAL(toggled(bool)), SLOT(sl_complMarkToggle(bool)));
     connect(startRB, SIGNAL(toggled(bool)), SLOT(sl_startToggle(bool)));
@@ -70,6 +73,7 @@ CSVColumnConfigurationDialog::CSVColumnConfigurationDialog(QWidget* w, const Col
         default:
             assert(0);
     }
+
 }
 
 

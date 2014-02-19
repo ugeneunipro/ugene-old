@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="utf-8"?>
+<ui version="4.0">
  <class>DNAStatMSAProfileDialog</class>
- <widget class="QDialog" name="DNAStatMSAProfileDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="DNAStatMSAProfileDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,29 +10,29 @@
     <height>347</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Generate Alignment Profile</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2" >
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QGroupBox" name="groupBox_2" >
-     <property name="title" >
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
       <string>Profile mode</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2" >
-      <item row="0" column="0" >
-       <widget class="QRadioButton" name="countsRB" >
-        <property name="text" >
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="countsRB">
+        <property name="text">
          <string>Counts</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QRadioButton" name="percentsRB" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="percentsRB">
+        <property name="text">
          <string>Percents</string>
         </property>
        </widget>
@@ -40,28 +41,28 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
       <string>Custom options</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout" >
+     <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QCheckBox" name="gapCB" >
-        <property name="text" >
+       <widget class="QCheckBox" name="gapCB">
+        <property name="text">
          <string>Show scores for gaps</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="unusedCB" >
-        <property name="text" >
+       <widget class="QCheckBox" name="unusedCB">
+        <property name="text">
          <string>Show scores for symbols not used in alignment</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="skipGapPositionsCB" >
-        <property name="text" >
+       <widget class="QCheckBox" name="skipGapPositionsCB">
+        <property name="text">
          <string>Skip gaps in consensus position increments</string>
         </property>
        </widget>
@@ -70,142 +71,97 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="saveBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="saveBox">
+     <property name="title">
       <string>Save profile to file</string>
      </property>
-     <property name="checkable" >
+     <property name="checkable">
       <bool>true</bool>
      </property>
-     <property name="checked" >
+     <property name="checked">
       <bool>false</bool>
      </property>
-     <layout class="QGridLayout" name="gridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="label" >
-        <property name="text" >
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
          <string>File</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QLineEdit" name="fileEdit" />
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="fileEdit"/>
       </item>
-      <item row="0" column="2" >
-       <widget class="QToolButton" name="fileButton" >
-        <property name="text" >
+      <item row="0" column="2">
+       <widget class="QToolButton" name="fileButton">
+        <property name="text">
          <string>...</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2" >
-       <widget class="QRadioButton" name="htmlRB" >
-        <property name="text" >
+      <item row="2" column="0" colspan="2">
+       <widget class="QRadioButton" name="htmlRB">
+        <property name="text">
          <string>Hypertext  (.HTML)</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" >
-       <widget class="QRadioButton" name="csvRB" >
-        <property name="text" >
+      <item row="3" column="0">
+       <widget class="QRadioButton" name="csvRB">
+        <property name="text">
          <string>Comma separated ( .CSV)</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>false</bool>
         </property>
        </widget>
       </item>
      </layout>
-     <zorder>label</zorder>
-     <zorder>fileEdit</zorder>
-     <zorder>fileButton</zorder>
-     <zorder>htmlRB</zorder>
-     <zorder>csvRB</zorder>
     </widget>
    </item>
    <item>
-    <spacer name="verticalSpacer" >
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
-     <property name="sizeHint" stdset="0" >
-      <size>
-       <width>20</width>
-       <height>17</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" >
-     <item>
-      <spacer name="horizontalSpacer" >
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0" >
-        <size>
-         <width>38</width>
-         <height>18</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="okButton" >
-       <property name="text" >
-        <string>Generate </string>
-       </property>
-       <property name="default" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton" >
-       <property name="text" >
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
    <receiver>DNAStatMSAProfileDialog</receiver>
-   <slot>reject()</slot>
+   <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>498</x>
-     <y>238</y>
-    </hint>
-    <hint type="destinationlabel" >
+    <hint type="sourcelabel">
      <x>273</x>
-     <y>130</y>
+     <y>326</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>273</x>
+     <y>173</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>okButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>DNAStatMSAProfileDialog</receiver>
-   <slot>accept()</slot>
+   <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>415</x>
-     <y>238</y>
-    </hint>
-    <hint type="destinationlabel" >
+    <hint type="sourcelabel">
      <x>273</x>
-     <y>130</y>
+     <y>326</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>273</x>
+     <y>173</y>
     </hint>
    </hints>
   </connection>

@@ -31,6 +31,9 @@
 
 #include <phmmer/uhmm3PhmmerTask.h>
 #include "uHMM3PhmmerDialogImpl.h"
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 
@@ -42,7 +45,10 @@ const QString UHMM3PhmmerDialogImpl::ANNOTATIONS_DEFAULT_NAME   = "signal";
 UHMM3PhmmerDialogImpl::UHMM3PhmmerDialogImpl( const U2SequenceObject * seqObj, QWidget * p ) : QDialog( p ) {
     assert( NULL != seqObj );
     setupUi( this );
-    
+    new HelpButton(this, buttonBox, "4227697");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     model.dbSequence = seqObj->getWholeSequence();
     setModelValues(); // default model here
     
@@ -60,6 +66,9 @@ UHMM3PhmmerDialogImpl::UHMM3PhmmerDialogImpl( const U2SequenceObject * seqObj, Q
     curLayout->insertWidget( ANNOTATIONS_WIDGET_LOCATION, annotationsWidgetController->getWidget() );
     firstTab->setMinimumHeight( firstTab->size().height() );
     
+    QPushButton* okPushButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* cancelPushButton = buttonBox->button(QDialogButtonBox::Cancel);
+
     connect( queryToolButton, SIGNAL( clicked() ), SLOT( sl_queryToolButtonClicked() ) );
     connect( okPushButton, SIGNAL( clicked() ), SLOT( sl_okButtonClicked() ) );
     connect( cancelPushButton, SIGNAL( clicked() ), SLOT( sl_cancelButtonClicked() ) );
@@ -68,6 +77,7 @@ UHMM3PhmmerDialogImpl::UHMM3PhmmerDialogImpl( const U2SequenceObject * seqObj, Q
     connect( domZCheckBox, SIGNAL( stateChanged( int ) ), SLOT( sl_domZCheckBoxChanged( int ) ) );
     connect( maxCheckBox, SIGNAL( stateChanged( int ) ), SLOT( sl_maxCheckBoxChanged( int ) ) );
     connect( domESpinBox, SIGNAL( valueChanged( int ) ), SLOT( sl_domESpinBoxChanged( int ) ) );
+
 }
 
 void UHMM3PhmmerDialogImpl::setModelValues() {

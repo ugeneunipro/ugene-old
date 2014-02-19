@@ -29,6 +29,8 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2{
 
@@ -45,7 +47,9 @@ static QString fixProjectFile(const QString& name) {
 ExportProjectDialogController::ExportProjectDialogController(QWidget *p, const QString& defaultProjectFileName) 
 : QDialog(p) 
 {
-	setupUi(this);
+    setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
+
     setModal(true);
     projectFile = fixProjectFile(defaultProjectFileName);
     projectFileEdit->setText(projectFile);
@@ -53,7 +57,8 @@ ExportProjectDialogController::ExportProjectDialogController(QWidget *p, const Q
     if (proj == NULL || !proj->isItemModified()) {
         warningLabel->setVisible(false);
     }
-	connect(browseButton, SIGNAL(clicked()), this, SLOT(sl_onBrowseButton()));
+    connect(browseButton, SIGNAL(clicked()), this, SLOT(sl_onBrowseButton()));
+
 }
 
 void ExportProjectDialogController::accept(){

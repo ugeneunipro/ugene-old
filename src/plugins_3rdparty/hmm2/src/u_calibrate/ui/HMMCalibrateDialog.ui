@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>HMMCalibrateDialog</class>
- <widget class="QDialog" name="HMMCalibrateDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="HMMCalibrateDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,25 +10,25 @@
     <height>314</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>hmmcalibrate_dialog_title</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" >
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="label" >
-       <property name="text" >
+      <widget class="QLabel" name="label">
+       <property name="text">
         <string>hmm_file_name</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="hmmFileEdit" />
+      <widget class="QLineEdit" name="hmmFileEdit"/>
      </item>
      <item>
-      <widget class="QToolButton" name="hmmFileButton" >
-       <property name="text" >
+      <widget class="QToolButton" name="hmmFileButton">
+       <property name="text">
         <string>...</string>
        </property>
       </widget>
@@ -35,39 +36,39 @@
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="expertGroupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="expertGroupBox">
+     <property name="title">
       <string>expert_options</string>
      </property>
-     <property name="checkable" >
+     <property name="checkable">
       <bool>true</bool>
      </property>
-     <property name="checked" >
+     <property name="checked">
       <bool>false</bool>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="label_2" >
-        <property name="toolTip" >
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="toolTip">
          <string>fixed_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>fixed_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>fixed_tip</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>fixed</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <spacer name="horizontalSpacer" >
-        <property name="orientation" >
+      <item row="0" column="1">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>323</width>
           <height>20</height>
@@ -75,59 +76,59 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="2" >
-       <widget class="QSpinBox" name="fixedBox" >
-        <property name="minimumSize" >
+      <item row="0" column="2">
+       <widget class="QSpinBox" name="fixedBox">
+        <property name="minimumSize">
          <size>
           <width>100</width>
           <height>0</height>
          </size>
         </property>
-        <property name="toolTip" >
+        <property name="toolTip">
          <string>fixed_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>fixed_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>fixed_tip</string>
         </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="minimum" >
+        <property name="minimum">
          <number>0</number>
         </property>
-        <property name="maximum" >
+        <property name="maximum">
          <number>10000000</number>
         </property>
-        <property name="value" >
+        <property name="value">
          <number>0</number>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label_3" >
-        <property name="toolTip" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="toolTip">
          <string>mean_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>mean_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>mean_tip</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>mean</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <spacer name="horizontalSpacer_2" >
-        <property name="orientation" >
+      <item row="1" column="1">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>323</width>
           <height>20</height>
@@ -135,59 +136,59 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="2" >
-       <widget class="QSpinBox" name="meanBox" >
-        <property name="minimumSize" >
+      <item row="1" column="2">
+       <widget class="QSpinBox" name="meanBox">
+        <property name="minimumSize">
          <size>
           <width>100</width>
           <height>0</height>
          </size>
         </property>
-        <property name="toolTip" >
+        <property name="toolTip">
          <string>mean_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>mean_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>mean_tip</string>
         </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="minimum" >
+        <property name="minimum">
          <number>1</number>
         </property>
-        <property name="maximum" >
+        <property name="maximum">
          <number>100000000</number>
         </property>
-        <property name="value" >
+        <property name="value">
          <number>325</number>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="label_4" >
-        <property name="toolTip" >
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="toolTip">
          <string>num_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>num_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>num_tip</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>num</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" >
-       <spacer name="horizontalSpacer_3" >
-        <property name="orientation" >
+      <item row="2" column="1">
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>323</width>
           <height>20</height>
@@ -195,59 +196,59 @@
         </property>
        </spacer>
       </item>
-      <item row="2" column="2" >
-       <widget class="QSpinBox" name="numBox" >
-        <property name="minimumSize" >
+      <item row="2" column="2">
+       <widget class="QSpinBox" name="numBox">
+        <property name="minimumSize">
          <size>
           <width>100</width>
           <height>0</height>
          </size>
         </property>
-        <property name="toolTip" >
+        <property name="toolTip">
          <string>num_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>num_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>num_tip</string>
         </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="minimum" >
+        <property name="minimum">
          <number>1</number>
         </property>
-        <property name="maximum" >
+        <property name="maximum">
          <number>1000000</number>
         </property>
-        <property name="value" >
+        <property name="value">
          <number>5000</number>
         </property>
        </widget>
       </item>
-      <item rowspan="2" row="3" column="0" >
-       <widget class="QLabel" name="label_5" >
-        <property name="toolTip" >
+      <item row="3" column="0" rowspan="2">
+       <widget class="QLabel" name="label_5">
+        <property name="toolTip">
          <string>sd_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>sd_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>sd_tip</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>sd</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1" >
-       <spacer name="horizontalSpacer_4" >
-        <property name="orientation" >
+      <item row="3" column="1">
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>323</width>
           <height>20</height>
@@ -255,53 +256,53 @@
         </property>
        </spacer>
       </item>
-      <item rowspan="2" row="3" column="2" >
-       <widget class="QDoubleSpinBox" name="sdBox" >
-        <property name="toolTip" >
+      <item row="3" column="2" rowspan="2">
+       <widget class="QDoubleSpinBox" name="sdBox">
+        <property name="toolTip">
          <string>sd_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>sd_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>sd_tip</string>
         </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="minimum" >
+        <property name="minimum">
          <double>0.010000000000000</double>
         </property>
-        <property name="maximum" >
+        <property name="maximum">
          <double>1000000.000000000000000</double>
         </property>
-        <property name="value" >
+        <property name="value">
          <double>200.000000000000000</double>
         </property>
        </widget>
       </item>
-      <item row="5" column="0" >
-       <widget class="QLabel" name="label_6" >
-        <property name="toolTip" >
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="toolTip">
          <string>seed_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>seed_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>seed_tip</string>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>seed</string>
         </property>
        </widget>
       </item>
-      <item rowspan="2" row="4" column="1" >
-       <spacer name="horizontalSpacer_5" >
-        <property name="orientation" >
+      <item row="4" column="1" rowspan="2">
+       <spacer name="horizontalSpacer_5">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>323</width>
           <height>20</height>
@@ -309,21 +310,21 @@
         </property>
        </spacer>
       </item>
-      <item row="5" column="2" >
-       <widget class="QSpinBox" name="seedBox" >
-        <property name="toolTip" >
+      <item row="5" column="2">
+       <widget class="QSpinBox" name="seedBox">
+        <property name="toolTip">
          <string>seed_tip</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>seed_tip</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>seed_tip</string>
         </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="maximum" >
+        <property name="maximum">
          <number>2000000000</number>
         </property>
        </widget>
@@ -332,33 +333,33 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="outputGroupBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="outputGroupBox">
+     <property name="title">
       <string>output_file_name</string>
      </property>
-     <property name="checkable" >
+     <property name="checkable">
       <bool>true</bool>
      </property>
-     <property name="checked" >
+     <property name="checked">
       <bool>false</bool>
      </property>
-     <layout class="QGridLayout" name="gridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLineEdit" name="outFileEdit" >
-        <property name="toolTip" >
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLineEdit" name="outFileEdit">
+        <property name="toolTip">
          <string>output_file_name</string>
         </property>
-        <property name="statusTip" >
+        <property name="statusTip">
          <string>output_file_name</string>
         </property>
-        <property name="whatsThis" >
+        <property name="whatsThis">
          <string>output_file_name</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="QToolButton" name="outFileButton" >
-        <property name="text" >
+      <item row="0" column="1">
+       <widget class="QToolButton" name="outFileButton">
+        <property name="text">
          <string>...</string>
         </property>
        </widget>
@@ -367,11 +368,11 @@
     </widget>
    </item>
    <item>
-    <spacer name="verticalSpacer" >
-     <property name="orientation" >
+    <spacer name="verticalSpacer">
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" stdset="0" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>5</height>
@@ -380,20 +381,20 @@
     </spacer>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2" >
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QLabel" name="statusLabel" >
-       <property name="text" >
+      <widget class="QLabel" name="statusLabel">
+       <property name="text">
         <string/>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_6" >
-       <property name="orientation" >
+      <spacer name="horizontalSpacer_6">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>328</width>
          <height>22</height>
@@ -401,39 +402,32 @@
        </property>
       </spacer>
      </item>
-     <item>
-      <widget class="QPushButton" name="okButton" >
-       <property name="text" >
-        <string>ok_button</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton" >
-       <property name="text" >
-        <string>close_button</string>
-       </property>
-      </widget>
-     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>HMMCalibrateDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>630</x>
-     <y>286</y>
+    <hint type="sourcelabel">
+     <x>262</x>
+     <y>293</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>339</x>
-     <y>154</y>
+    <hint type="destinationlabel">
+     <x>262</x>
+     <y>156</y>
     </hint>
    </hints>
   </connection>

@@ -43,6 +43,8 @@ private slots:
 private:
     QString                         name;//name of tool that used for formating database
     FormatDBSupportTaskSettings&    settings;
+    QPushButton*                    formatButton;
+    QPushButton*                    cancelButton;
 };
 
 }//namespace

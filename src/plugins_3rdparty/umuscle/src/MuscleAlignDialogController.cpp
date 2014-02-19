@@ -30,6 +30,8 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QToolButton>
 #include <QtGui/QFileDialog>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 
 /* TRANSLATOR U2::MuscleAlignDialogController */    
@@ -40,6 +42,10 @@ MuscleAlignDialogController::MuscleAlignDialogController(QWidget* w, const MAlig
     : QDialog(w), ma(_ma), settings(_settings)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227699");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     translateCheckBox->setEnabled(ma.getAlphabet()->isNucleic());
     inputGroupBox->setVisible(false);
     this->adjustSize();
@@ -65,6 +71,7 @@ MuscleAlignDialogController::MuscleAlignDialogController(QWidget* w, const MAlig
     foreach(DNATranslation* t, aminoTs) {
         translationTableBox->addItem(t->getTranslationName());
     }
+
 }
 
 void MuscleAlignDialogController::accept() {
@@ -123,7 +130,10 @@ MuscleAlignWithExtFileSpecifyDialogController::MuscleAlignWithExtFileSpecifyDial
 : QDialog(w), settings(_settings)
 {
     setupUi(this);
-    this->adjustSize();
+    new HelpButton(this, buttonBox, "4227699");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+    //this->adjustSize();
     //add input and output files 
 
     connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));

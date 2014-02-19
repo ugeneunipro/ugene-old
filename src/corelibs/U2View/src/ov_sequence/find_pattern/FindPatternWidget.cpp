@@ -47,6 +47,8 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Formats/FastaFormat.h>
 #include <U2Formats/GenbankFeatures.h>
+#include <U2Gui/HelpButton.h>
+
 
 const QString NEW_LINE_SYMBOL = "\n";
 const QString COLOR_NAME_FOR_INFO_MESSAGES = "green";
@@ -367,6 +369,10 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
     : annotatedDnaView(_annotatedDnaView)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227320");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
+
+    btnSearch = buttonBox->button(QDialogButtonBox::Ok);
 
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     if (activeContext != 0) {

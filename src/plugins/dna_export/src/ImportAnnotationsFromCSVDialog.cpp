@@ -36,6 +36,8 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 #include <QtCore/QFileInfo>
 #include <QtGui/QFileDialog>
@@ -60,6 +62,10 @@ ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w)
 : QDialog (w)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227368");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Run"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     connect(readFileButton, SIGNAL(clicked()), SLOT(sl_readFileClicked()));
     connect(previewButton, SIGNAL(clicked()), SLOT(sl_previewClicked()));
     connect(guessButton, SIGNAL(clicked()), SLOT(sl_guessSeparatorClicked()));
@@ -116,6 +122,7 @@ ImportAnnotationsFromCSVDialog::ImportAnnotationsFromCSVDialog(QWidget* w)
     // connect this slot after initial dialog model is set up
     connect(removeQuotesCheck, SIGNAL(toggled(bool)),SLOT(sl_removeQuotesToggled(bool)));
     connect(linesToSkipBox, SIGNAL(valueChanged(int)), SLOT(sl_linesToSkipChanged(int)));
+
 }
 
 void ImportAnnotationsFromCSVDialog::accept() {

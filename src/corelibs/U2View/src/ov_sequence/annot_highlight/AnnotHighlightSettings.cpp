@@ -25,6 +25,8 @@
 #include <U2Core/U2SafePoints.h>
 
 #include "AnnotHighlightSettings.h"
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 

@@ -32,6 +32,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MultiTask.h>
+#include <U2Gui/HelpButton.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
@@ -39,6 +40,7 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolButton>
 #include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
 
 namespace U2 {
 
@@ -48,6 +50,11 @@ BlastRunCommonDialog::BlastRunCommonDialog(QWidget* _parent) :
             QDialog(_parent)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227766");
+    buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Restore to default"));
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     optionsTab->setCurrentIndex(0);
 
     //I don`t know what this in local BLAST
@@ -68,10 +75,14 @@ BlastRunCommonDialog::BlastRunCommonDialog(QWidget* _parent) :
     sl_onMatchScoresChanged(0);
     connect(megablastCheckBox,SIGNAL(toggled(bool)),SLOT(sl_megablastChecked()));
 
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+    QPushButton* restoreButton = buttonBox->button(QDialogButtonBox::Yes);
     connect(okButton,SIGNAL(clicked()),SLOT(sl_runQuery()));
     connect(restoreButton,SIGNAL(clicked()),SLOT(sl_restoreDefault()));
     sl_onProgNameChange(0);
     okButton->setEnabled(false);
+
 }
 const BlastTaskSettings &BlastRunCommonDialog::getSettings() const {
     return settings;

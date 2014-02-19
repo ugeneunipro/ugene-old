@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>426</width>
-    <height>149</height>
+    <height>156</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -92,78 +92,49 @@
     </spacer>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <spacer name="horizontalSpacer_1">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="startButton">
-       <property name="text">
-        <string>Ok</string>
-       </property>
-       <property name="default">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>firstFileEdit</tabstop>
   <tabstop>openFirstButton</tabstop>
-  <tabstop>startButton</tabstop>
-  <tabstop>cancelButton</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>startButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
    <receiver>ExpertDiscoveryControlDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>416</x>
-     <y>518</y>
+     <x>212</x>
+     <y>135</y>
     </hint>
     <hint type="destinationlabel">
-     <x>273</x>
-     <y>270</y>
+     <x>212</x>
+     <y>77</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>ExpertDiscoveryControlDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>499</x>
-     <y>518</y>
+     <x>212</x>
+     <y>135</y>
     </hint>
     <hint type="destinationlabel">
-     <x>273</x>
-     <y>270</y>
+     <x>212</x>
+     <y>77</y>
     </hint>
    </hints>
   </connection>

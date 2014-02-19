@@ -39,6 +39,7 @@
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 
+#include <U2Gui/HelpButton.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -503,6 +504,9 @@ public:
 CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalProcessConfig *cfg, bool lastPage)
 : QWizard(p), initialCfg(NULL), lastPage(lastPage) {
     ui.setupUi(this);
+
+    new U2::HelpButton(this, button(QWizard::HelpButton), "2097199");
+
     connect(ui.addInputButton, SIGNAL(clicked()), SLOT(sl_addInput()));
     connect(ui.addOutputButton, SIGNAL(clicked()), SLOT(sl_addOutput()));
     connect(ui.deleteInputButton, SIGNAL(clicked()), SLOT(sl_deleteInput()));
@@ -513,7 +517,7 @@ CreateExternalProcessDialog::CreateExternalProcessDialog(QWidget *p, ExternalPro
     connect(this, SIGNAL(currentIdChanged(int)), SLOT(sl_validatePage(int)));
     //connect(button(QWizard::FinishButton), SIGNAL(clicked()), SLOT(sl_OK()));
     //connect(button(QWizard::NextButton), SIGNAL(clicked()), SLOT(sl_generateTemplateString()));
-
+    
     QFontMetrics info(ui.descr1TextEdit->font());
     ui.descr1TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
     ui.descr2TextEdit->setFixedHeight(info.height() * INFO_STRINGS_NUM);
@@ -647,6 +651,9 @@ void CreateExternalProcessDialog::sl_deleteAttribute() {
 CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/ )
 : QWizard(p), initialCfg(NULL), lastPage(false) {
     ui.setupUi(this);
+    
+    new U2::HelpButton(this, button(QWizard::HelpButton), "4227131");
+
     connect(ui.addInputButton, SIGNAL(clicked()), SLOT(sl_addInput()));
     connect(ui.addOutputButton, SIGNAL(clicked()), SLOT(sl_addOutput()));
     connect(ui.deleteInputButton, SIGNAL(clicked()), SLOT(sl_deleteInput()));

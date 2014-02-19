@@ -24,6 +24,9 @@
 #include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QFileDialog>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 
@@ -31,7 +34,12 @@ BlastDBCmdDialog::BlastDBCmdDialog(BlastDBCmdSupportTaskSettings &_settings, QWi
         QDialog(_parent), settings(_settings)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227766");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Fetch"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+    fetchButton = buttonBox->button(QDialogButtonBox::Ok);
     connect(inputDbToolButton, SIGNAL(clicked()), SLOT(sl_onSelectInputDbButtonClick()) );
     connect(browseOutputButton, SIGNAL(clicked()), SLOT(sl_onSelectOutputFileButtonClick()) );
     connect(queryIdEdit, SIGNAL(textChanged( const QString& )), SLOT(sl_onQueryLineEditTextChanged()));
@@ -39,6 +47,7 @@ BlastDBCmdDialog::BlastDBCmdDialog(BlastDBCmdSupportTaskSettings &_settings, QWi
     connect(fetchButton, SIGNAL(clicked()), SLOT(sl_BlastDBCmd()));
 
     update();
+
 }
 
 

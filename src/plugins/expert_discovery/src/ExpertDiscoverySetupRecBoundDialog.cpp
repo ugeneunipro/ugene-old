@@ -1,6 +1,7 @@
 #include "ExpertDiscoverySetupRecBoundDialog.h"
 
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -16,6 +17,7 @@ ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dR
 ,graphWidget(NULL){
 
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
     
     boundLabel->setStyleSheet(QString("color : %1;").arg(ExpertDiscoveryRecognitionErrorGraphWidget::BOUNDCOLOR.name()));
     er1Lable->setStyleSheet(QString("color : %1;").arg(ExpertDiscoveryRecognitionErrorGraphWidget::ER1COLOR.name()));
@@ -55,6 +57,7 @@ ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dR
     maxBoundSpin->setValue(50);
 
     sl_recBoundChaged(recognizationBound);
+
 }
 
 void ExpertDiscoverySetupRecBoundDialog::accept(){

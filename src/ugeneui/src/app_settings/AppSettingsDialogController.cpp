@@ -24,6 +24,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Gui/AppSettingsGUI.h>
+#include <U2Gui/HelpButton.h>
 
 #include <QtGui/QTreeWidget>
 #include <QtGui/QHBoxLayout>
@@ -33,6 +34,8 @@ namespace U2 {
 
 AppSettingsDialogController::AppSettingsDialogController(const QString& pageId, QWidget *p):QDialog(p) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227376");
+
     currentPage = NULL;
     
     QHBoxLayout *pageLayout = new QHBoxLayout();
@@ -56,6 +59,7 @@ AppSettingsDialogController::AppSettingsDialogController(const QString& pageId, 
             tree->setCurrentItem(tree->topLevelItem(0));
         }
     }
+
 }
 
 bool AppSettingsDialogController::checkCurrentState(bool saveStateInItem, bool showError) {

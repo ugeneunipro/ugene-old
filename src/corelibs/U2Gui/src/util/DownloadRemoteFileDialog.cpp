@@ -40,6 +40,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/HelpButton.h>
 
 #include "DownloadRemoteFileDialog.h"
 #include "ui/ui_DownloadRemoteFileDialog.h"
@@ -55,6 +56,7 @@ QString DownloadRemoteFileDialog::defaultDB("");
 DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQueryDB(false) {
     ui = new Ui_DownloadRemoteFileDialog;
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "4227258");
 
     ui->dasfeaturesWidget->setResizeMode(QListView::Adjust);
     ui->dasBox->hide();

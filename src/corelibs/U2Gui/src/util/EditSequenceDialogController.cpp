@@ -29,6 +29,7 @@
 #include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/HelpButton.h>
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
@@ -64,6 +65,7 @@ SeqPasterEventFilter::SeqPasterEventFilter( QObject* parent )
 : QDialog(p), filter(""), pos(1), config(cfg) {
     ui = new Ui_EditSequenceDialog;
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "4227330");
 
     connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
     addSeqpasterWidget();

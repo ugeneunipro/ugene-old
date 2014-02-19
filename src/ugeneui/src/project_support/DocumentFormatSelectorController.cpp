@@ -24,6 +24,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/DocumentImport.h>
+#include <U2Gui/HelpButton.h>
 
 #include <QtGui/QMessageBox>
 
@@ -34,6 +35,8 @@ DocumentFormatSelectorController::DocumentFormatSelectorController(QList<FormatD
 : QDialog(p), formatDetectionResults(results)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
+
     setObjectName("DocumentFormatSelectorDialog");
 }
 

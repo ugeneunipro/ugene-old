@@ -23,6 +23,9 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Algorithm/PWMConversionAlgorithmRegistry.h>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 
@@ -30,12 +33,15 @@ SetParametersDialogController::SetParametersDialogController(QWidget *w)
     : QDialog(w) {
 
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
     
     QStringList algo = AppContext::getPWMConversionAlgorithmRegistry()->getAlgorithmIds();
     algorithmComboBox->addItems(algo);
 
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
     connect(okButton, SIGNAL(clicked()), SLOT(sl_onOkButton()));
     connect(scoreSlider, SIGNAL(valueChanged(int)), SLOT(sl_onSliderMoved(int)));
+
 }
 
 void SetParametersDialogController::sl_onSliderMoved(int value) {

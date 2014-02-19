@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>539</width>
-    <height>466</height>
+    <height>477</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -228,7 +228,24 @@
       <string>Merge options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout" rowstretch="0,0" columnstretch="0,1">
-      <item row="1" column="1">
+      <item row="0" column="1">
+       <widget class="QRadioButton" name="mergeButton">
+        <property name="text">
+         <string>Merge sequences</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="separateButton">
+        <property name="text">
+         <string>Save as separate sequences</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QLabel" name="merge_gap_label">
@@ -252,69 +269,15 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="1">
-       <widget class="QRadioButton" name="mergeButton">
-        <property name="text">
-         <string>Merge sequences</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="separateButton">
-        <property name="text">
-         <string>Save as separate sequences</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
    <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>4</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="exportButton">
-       <property name="text">
-        <string>Export</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -340,27 +303,9 @@
   <tabstop>separateButton</tabstop>
   <tabstop>mergeButton</tabstop>
   <tabstop>mergeSpinBox</tabstop>
-  <tabstop>exportButton</tabstop>
-  <tabstop>cancelButton</tabstop>
  </tabstops>
  <resources/>
  <connections>
-  <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
-   <receiver>U2::ExportSequencesDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>528</x>
-     <y>456</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>251</x>
-     <y>82</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>mergeButton</sender>
    <signal>toggled(bool)</signal>
@@ -486,6 +431,22 @@
     <hint type="destinationlabel">
      <x>197</x>
      <y>103</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>U2::ExportSequencesDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>269</x>
+     <y>456</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>269</x>
+     <y>238</y>
     </hint>
    </hints>
   </connection>

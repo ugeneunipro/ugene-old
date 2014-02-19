@@ -29,6 +29,8 @@
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNATranslation.h>
@@ -48,6 +50,9 @@ ExportSequencesDialog::ExportSequencesDialog( bool m, bool allowComplement, bool
     : QDialog( p ), sequenceName( sourceFileBaseName )
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227242");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     SaveDocumentGroupControllerConfig conf;
     conf.dfc.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
@@ -163,6 +168,7 @@ ExportSequencesDialog::ExportSequencesDialog( bool m, bool allowComplement, bool
     }
 
     formatId = id;
+    QPushButton* exportButton = buttonBox->button(QDialogButtonBox::Ok);
     connect(exportButton, SIGNAL(clicked()), SLOT(sl_exportClicked()));
     connect(translateButton, SIGNAL(clicked()), SLOT(sl_translationTableEnabler()));
     connect(translationTableButton, SIGNAL(clicked()), SLOT(sl_translationTableEnabler()));
@@ -170,6 +176,7 @@ ExportSequencesDialog::ExportSequencesDialog( bool m, bool allowComplement, bool
     
     int height = layout()->minimumSize().height();
     setMaximumHeight(height);
+
 }
 
 

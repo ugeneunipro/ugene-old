@@ -21,6 +21,7 @@
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QPushButton>
+#include <U2Gui/HelpButton.h>
 
 #include "DashboardsManagerDialog.h"
 
@@ -42,6 +43,8 @@ DashboardsManagerDialog::DashboardsManagerDialog(ScanDashboardsDirTask *_task, Q
 : QDialog(parent), task(_task)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "3244851");
+
     setupList();
 
     connect(checkButton, SIGNAL(clicked()), SLOT(sl_check()));

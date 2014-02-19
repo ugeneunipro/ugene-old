@@ -27,6 +27,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
 #include "Primer3Dialog.h"
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 
@@ -35,6 +37,17 @@ Primer3Dialog::Primer3Dialog(const Primer3TaskSettings &defaultSettings, ADVSequ
         defaultSettings(defaultSettings)
 {
     ui.setupUi(this);
+    new HelpButton(this, ui.buttonBox, "4227733");
+
+    QPushButton* pbPick = ui.buttonBox->button(QDialogButtonBox::Cancel);
+    QPushButton* pbReset = ui.buttonBox->button(QDialogButtonBox::Ok);
+
+    connect(pbPick, SIGNAL(clicked()), SLOT(sl_pbPick_clicked()));
+    connect(pbReset, SIGNAL(clicked()), SLOT(sl_pbReset_clicked()));
+
+    ui.buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Reset form"));
+    ui.buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Pick primers"));
+
     ui.tabWidget->setCurrentIndex(0);
 
     {
@@ -91,6 +104,7 @@ Primer3Dialog::Primer3Dialog(const Primer3TaskSettings &defaultSettings, ADVSequ
     }   
 
     reset();
+
 }
 
 Primer3TaskSettings Primer3Dialog::getSettings()const
@@ -607,7 +621,7 @@ void Primer3Dialog::showInvalidInputMessage(QWidget *field, QString fieldLabel)
     QMessageBox::critical(this, windowTitle(), tr("The field '%1' has invalid value").arg(fieldLabel));
 }
 
-void Primer3Dialog::on_pbPick_clicked()
+void Primer3Dialog::sl_pbPick_clicked()
 {
     bool isRegionOk=false;
     rs->getRegion(&isRegionOk);
@@ -622,7 +636,7 @@ void Primer3Dialog::on_pbPick_clicked()
     }
 }
 
-void Primer3Dialog::on_pbReset_clicked()
+void Primer3Dialog::sl_pbReset_clicked()
 {
     reset();
     rs->reset();

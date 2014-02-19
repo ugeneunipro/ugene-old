@@ -3,6 +3,8 @@
 #include "ExpertDiscoveryAdvSetDialog.h"
 
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 
@@ -12,6 +14,8 @@ ExpertDiscoveryExtSigWiz::ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f,
 ,folder(NULL){
 
     setupUi(this);
+    new U2::HelpButton(this, button(QWizard::HelpButton), "4227131");
+
 //1 page
     connect(advancedButton, SIGNAL(clicked()), SLOT(sl_advButton()));
     state.setDefaultState();

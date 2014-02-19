@@ -29,6 +29,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QColorDialog>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
 
 #include "GraphSettingsDialog.h"
 
@@ -64,11 +65,9 @@ GraphSettingsDialog::GraphSettingsDialog( GSequenceGraphDrawer* d, const U2Regio
         cl->addSpacerItem(new QSpacerItem(50,25, QSizePolicy::Expanding));
         cLayouts.append(cl);
     }
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
 
-    QPushButton* cancelButton = new QPushButton(tr("Cancel"), this);
-    QPushButton* okButton = new QPushButton(tr("OK"), this);
-    buttonsLayout->addWidget(okButton);
-    buttonsLayout->addWidget(cancelButton);
+    buttonsLayout->addWidget(buttonBox);
 
     l->addWidget(wss);
     foreach(QLayout* cl, cLayouts) {
@@ -83,6 +82,10 @@ GraphSettingsDialog::GraphSettingsDialog( GSequenceGraphDrawer* d, const U2Regio
 
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     setMinimumWidth(200);
+
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+    new HelpButton(this, buttonBox, "4227414");
 
     connect(cancelButton, SIGNAL(clicked()), SLOT(sl_onCancelClicked()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_onOkClicked()));

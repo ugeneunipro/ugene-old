@@ -21,6 +21,8 @@
 
 #include "TreeSettingsDialog.h"
 #include <U2Core/global.h>
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 
@@ -31,6 +33,7 @@ TreeSettingsDialog::TreeSettingsDialog(QWidget *parent, const TreeSettings &tree
 {
 
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227569");
 
     heightSlider->setValue(settings.height_coef);
     widthlSlider->setValue(settings.width_coef);
@@ -56,7 +59,7 @@ TreeSettingsDialog::TreeSettingsDialog(QWidget *parent, const TreeSettings &tree
         assert(false && "Unexpected tree type value.");
         break;
     }
-    
+
 }
 
 void TreeSettingsDialog::accept() {

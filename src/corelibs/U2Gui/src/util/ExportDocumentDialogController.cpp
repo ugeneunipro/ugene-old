@@ -33,6 +33,8 @@
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 #include <QtGui/QFileDialog>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 namespace U2{
 
@@ -41,6 +43,10 @@ ExportDocumentDialogController::ExportDocumentDialogController(Document* d, QWid
 {
     ui = new Ui_ExportDocumentDialog();
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "227234");
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     initSaveController(sourceDoc->getObjects(), sourceDoc->getURLString());
     ui->fileNameEdit->setText(saveController->getDefaultFileName());
 }
@@ -61,6 +67,7 @@ ExportDocumentDialogController::ExportDocumentDialogController(GObject *object, 
             ->getSupportedDocumentFileExtensions().first());
     }
     ui->fileNameEdit->setText(fileName);
+    new HelpButton(this, ui->buttonBox, "https://ugene.unipro.ru/wiki/display/UUOUM/Editing+Fragment+Overhangs");
 }
 
 void ExportDocumentDialogController::initSaveController(const QList<GObject *> &objects,

@@ -20,23 +20,35 @@
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
+
 
 namespace U2 {
 HMMBuildDialogController::HMMBuildDialogController(const QString& _pn, const MAlignment& _ma, QWidget* p) 
 :QDialog(p), ma(_ma), profileName(_pn)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227685");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Build"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Close"));
 
     if (!ma.isEmpty()) {
         msaFileButton->setHidden(true);
         msaFileEdit->setHidden(true);
         msaFileLabel->setHidden(true);
     }
+
+    okButton = buttonBox->button(QDialogButtonBox::Ok);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+
     connect(msaFileButton, SIGNAL(clicked()), SLOT(sl_msaFileClicked()));
     connect(resultFileButton, SIGNAL(clicked()), SLOT(sl_resultFileClicked()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_okClicked()));
     
     task = NULL;
+
 }
 
 void HMMBuildDialogController::sl_msaFileClicked() {
@@ -324,9 +336,9 @@ void HMMBuildTask::_run() {
     }
     U2OpStatus2Log os;
     for (int i=0; i<ma.getNumRows();i++) {
-		const MAlignmentRow& row = ma.getRow(i);
+        const MAlignmentRow& row = ma.getRow(i);
         QByteArray seq = row.toByteArray(ma.getLength(), os);
-		free(msa->aseq[i]);
+        free(msa->aseq[i]);
         msa->aseq[i] = sre_strdup(seq.constData(), seq.size());
         QByteArray name = row.getName().toLatin1();
         msa->sqname[i] = sre_strdup(name.constData(), name.size());

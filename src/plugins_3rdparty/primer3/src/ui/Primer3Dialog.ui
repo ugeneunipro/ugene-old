@@ -3907,30 +3907,14 @@ p, li { white-space: pre-wrap; }
        </property>
       </spacer>
      </item>
-     <item>
-      <widget class="QPushButton" name="pbReset">
-       <property name="text">
-        <string>Reset Form</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbPick">
-       <property name="text">
-        <string>Pick Primers</string>
-       </property>
-       <property name="autoDefault">
-        <bool>true</bool>
-       </property>
-       <property name="default">
-        <bool>true</bool>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -4043,8 +4027,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>edit_PRIMER_MIN_END_QUALITY</tabstop>
   <tabstop>edit_PRIMER_QUALITY_RANGE_MIN</tabstop>
   <tabstop>edit_PRIMER_QUALITY_RANGE_MAX</tabstop>
-  <tabstop>pbReset</tabstop>
-  <tabstop>pbPick</tabstop>
  </tabstops>
  <resources/>
  <connections>

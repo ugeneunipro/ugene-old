@@ -30,6 +30,7 @@
 #include <U2Formats/EMBLPlainTextFormat.h>
 #include <U2Formats/DocumentFormatUtils.h>
 
+
 #include <ui/ui_FormatSettingsDialog.h>
 #include <ui/ui_MultipartDocFormatConfiguratorWidget.h>
 
@@ -66,7 +67,7 @@ void MultiPartDocFormatConfigurator::configure(QVariantMap& info) {
     // create GUI
     QDialog configDialog;
     Ui_FormatSettingsDialog dModel;
-	configDialog.setWindowIcon(QIcon(":/ugene/images/ugene_16.png"));
+    configDialog.setWindowIcon(QIcon(":/ugene/images/ugene_16.png"));
     dModel.setupUi(&configDialog);
 
     Ui_MultipartDocFormatConfiguratorWidget wModel;
@@ -75,6 +76,7 @@ void MultiPartDocFormatConfigurator::configure(QVariantMap& info) {
     wModel.setupUi(w);
     
     dModel.verticalLayout->insertWidget(0, w);
+    
 
     // fill GUI with default settings
     BaseDocumentFormatConfigurators::loadDefaultFormatSettings(formatId, info);

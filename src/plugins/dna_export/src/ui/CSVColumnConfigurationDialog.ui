@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>425</width>
-    <height>296</height>
+    <height>304</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -192,56 +192,16 @@
     </spacer>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="okButton">
-       <property name="text">
-        <string>Ok</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
-   <receiver>CSVColumnConfigurationDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>352</x>
-     <y>183</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>102</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>qualifierRB</sender>
    <signal>toggled(bool)</signal>
@@ -291,22 +251,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>okButton</sender>
-   <signal>clicked()</signal>
-   <receiver>CSVColumnConfigurationDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>271</x>
-     <y>183</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>102</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>complValueCheck</sender>
    <signal>toggled(bool)</signal>
    <receiver>complValueEdit</receiver>
@@ -319,6 +263,38 @@
     <hint type="destinationlabel">
      <x>355</x>
      <y>113</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>CSVColumnConfigurationDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>283</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>212</x>
+     <y>151</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>CSVColumnConfigurationDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>283</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>212</x>
+     <y>151</y>
     </hint>
    </hints>
   </connection>

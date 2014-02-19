@@ -14,48 +14,39 @@
    <string>Find Qualifier</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="6" column="0" colspan="6">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="selectAllButton">
-       <property name="text">
-        <string>Select All</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="nextButton">
-       <property name="text">
-        <string>Next</string>
-       </property>
-       <property name="default">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="5" column="0" colspan="5">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Match Parameter</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="contaiinsButton">
+        <property name="text">
+         <string>Contains substring</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">buttonGroup</string>
+        </attribute>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="exactButton">
+        <property name="text">
+         <string>Exact match</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">buttonGroup</string>
+        </attribute>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
-   <item row="4" column="0" colspan="6">
+   <item row="4" column="0" colspan="5">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Qualifier</string>
@@ -84,38 +75,6 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0" colspan="6">
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>Match Parameter</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="1" column="0">
-       <widget class="QRadioButton" name="contaiinsButton">
-        <property name="text">
-         <string>Contains substring</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-        <attribute name="buttonGroup">
-         <string>buttonGroup</string>
-        </attribute>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="exactButton">
-        <property name="text">
-         <string>Exact match</string>
-        </property>
-        <attribute name="buttonGroup">
-         <string>buttonGroup</string>
-        </attribute>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
    <item row="0" column="2">
     <widget class="QLabel" name="groupLabel">
      <property name="sizePolicy">
@@ -126,19 +85,6 @@
      </property>
      <property name="text">
       <string>Group Name</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="label">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Search in:</string>
      </property>
     </widget>
    </item>
@@ -155,39 +101,59 @@
      </property>
     </spacer>
    </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Search in:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="5">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Yes</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>SearchQualifierDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>308</x>
-     <y>230</y>
+     <x>159</x>
+     <y>220</y>
     </hint>
     <hint type="destinationlabel">
-     <x>241</x>
-     <y>91</y>
+     <x>159</x>
+     <y>120</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>nextButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
    <receiver>SearchQualifierDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>225</x>
-     <y>230</y>
+     <x>159</x>
+     <y>220</y>
     </hint>
     <hint type="destinationlabel">
      <x>159</x>
-     <y>114</y>
+     <y>120</y>
     </hint>
    </hints>
   </connection>

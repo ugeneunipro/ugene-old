@@ -58,8 +58,8 @@ ExportConsensusVariationsDialog::ExportConsensusVariationsDialog(QWidget *p, con
     QList<RegionPreset> presets = QList<RegionPreset>() << RegionPreset(tr("Visible"), visibleRegion);
     regionSelector = new RegionSelector(this, settings.model->getModelLength(os), false, NULL, presets);
 
-    int insertPos = verticalLayout->count() - 1;
-    verticalLayout->insertWidget(insertPos, regionSelector);
+//    int insertPos = verticalLayout->count() - 1;
+//    verticalLayout->insertWidget(insertPos, regionSelector);
 
     filepathLineEdit->setText(settings.fileName);
     saveController->setSelectedFormatId(settings.formatId);
@@ -76,8 +76,8 @@ ExportConsensusVariationsDialog::ExportConsensusVariationsDialog(QWidget *p, con
     variationModeComboBox->addItem(tr("Similar"), Mode_Similar);
     variationModeComboBox->addItem(tr("All"), Mode_All);
 
-    connect(okPushButton, SIGNAL(clicked()), SLOT(accept()));
-    connect(cancelPushButton, SIGNAL(clicked()), SLOT(reject()));
+//    connect(okPushButton, SIGNAL(clicked()), SLOT(accept()));
+//    connect(cancelPushButton, SIGNAL(clicked()), SLOT(reject()));
     setMaximumHeight(layout()->minimumSize().height());
 }
 

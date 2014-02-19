@@ -29,6 +29,8 @@
 
 #include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Gui/RegionSelector.h>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 #include <QtGui/QMessageBox>
 
@@ -38,6 +40,9 @@ ExportConsensusDialog::ExportConsensusDialog(QWidget *p, const ExportConsensusTa
     : QDialog(p), settings(settings_)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227548");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     //hide for this dialog
     variationModeComboBox->hide();
     variationModeLabel->hide();
@@ -58,7 +63,7 @@ ExportConsensusDialog::ExportConsensusDialog(QWidget *p, const ExportConsensusTa
     QList<RegionPreset> presets = QList<RegionPreset>() << RegionPreset(tr("Visible"), visibleRegion);
     regionSelector = new RegionSelector(this, settings.model->getModelLength(os), false, NULL, presets);
 
-    int insertPos = verticalLayout->count() - 1;
+    int insertPos = verticalLayout->count() - 3;
     verticalLayout->insertWidget(insertPos, regionSelector);
 
     filepathLineEdit->setText(settings.fileName);
@@ -72,9 +77,13 @@ ExportConsensusDialog::ExportConsensusDialog(QWidget *p, const ExportConsensusTa
     algorithmComboBox->addItems(algos);
     algorithmComboBox->setCurrentIndex(algos.indexOf(settings.consensusAlgorithm->getId()));
 
+    QPushButton *okPushButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton *cancelPushButton = buttonBox->button(QDialogButtonBox::Cancel);
+
     connect(okPushButton, SIGNAL(clicked()), SLOT(accept()));
     connect(cancelPushButton, SIGNAL(clicked()), SLOT(reject()));
     setMaximumHeight(layout()->minimumSize().height());
+
 }
 
 void ExportConsensusDialog::accept() {

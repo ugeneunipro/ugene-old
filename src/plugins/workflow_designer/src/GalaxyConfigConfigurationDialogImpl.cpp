@@ -26,6 +26,7 @@
 #include "GalaxyConfigConfigurationDialogImpl.h"
 
 
+
 namespace U2 {
 namespace Workflow {
 
@@ -44,6 +45,7 @@ GalaxyConfigConfigurationDialogImpl::GalaxyConfigConfigurationDialogImpl( const 
     connect( destinationPathToolButton, SIGNAL(clicked()), SLOT( sl_destinationToolButtonClicked() ) );
 
     schemePath = _schemePath;
+
 }
 
 void GalaxyConfigConfigurationDialogImpl::sl_ugeneToolButtonClicked( ) {

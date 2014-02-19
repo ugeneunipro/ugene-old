@@ -27,6 +27,7 @@
 #include <U2Core/MAlignmentObject.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/HelpButton.h>
 
 #include <U2View/MSAEditor.h>
 #include <U2View/WebWindow.h>
@@ -38,9 +39,12 @@ namespace U2 {
 
 DNAStatMSAProfileDialog::DNAStatMSAProfileDialog(QWidget* p, MSAEditor* _c) : QDialog(p), ctx(_c) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227438");
+
     connect(fileButton, SIGNAL(clicked()), SLOT(sl_selectFile()));
     connect(htmlRB, SIGNAL(toggled(bool)), SLOT(sl_formatChanged(bool)));
     connect(csvRB, SIGNAL(toggled(bool)), SLOT(sl_formatChanged(bool)));
+
 }
 
 void DNAStatMSAProfileDialog::sl_selectFile() {

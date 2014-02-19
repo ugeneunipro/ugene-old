@@ -25,6 +25,8 @@
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QVBoxLayout>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 
 namespace U2 {
@@ -33,11 +35,14 @@ StartupDialog::StartupDialog(QWidget *parent)
 : QDialog(parent)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "1474787");
+
     outDirWidget = new OutputDirectoryWidget(this, false /*don't commitOnHide*/);
     QVBoxLayout *l = new QVBoxLayout(box);
     l->setMargin(3);
     l->addWidget(outDirWidget);
 
+    QPushButton* buttons = buttonBox->button(QDialogButtonBox::Ok);
     connect(buttons, SIGNAL(accepted()), this, SLOT(sl_accepted()));
 
 #ifdef Q_OS_WIN

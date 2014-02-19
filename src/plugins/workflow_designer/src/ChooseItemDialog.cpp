@@ -22,13 +22,17 @@
 #include "ChooseItemDialog.h"
 
 #include <U2Lang/WorkflowUtils.h>
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 
 ChooseItemDialog::ChooseItemDialog(QWidget* p) : QDialog(p)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "1474787");
     connect(listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(accept()));
+
 }
 
 QString ChooseItemDialog::select(const QMap<QString, QIcon>& items) {

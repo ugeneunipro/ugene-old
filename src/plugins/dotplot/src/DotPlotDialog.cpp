@@ -34,6 +34,7 @@
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
@@ -50,6 +51,8 @@ DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int 
 ,openSequenceTask(NULL), curURL("")
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227416");
+    startButton = buttonBox->button(QDialogButtonBox::Ok);
 
     SAFE_POINT(adv != NULL, "DotPlotDialog called without view context!", );
     
@@ -113,6 +116,7 @@ DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int 
     if(hideLoadSequences){
         loadSequenceButton->hide();
     }
+
 }
 
 void DotPlotDialog::accept() {

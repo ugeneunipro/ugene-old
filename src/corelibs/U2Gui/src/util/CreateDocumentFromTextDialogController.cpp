@@ -21,7 +21,6 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
-#include <QtGui/QMessageBox>
 
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -51,16 +50,22 @@
 
 #include "ui/ui_CreateDocumentFromTextDialog.h"
 #include "CreateDocumentFromTextDialogController.h"
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 namespace U2{
 
 CreateDocumentFromTextDialogController::CreateDocumentFromTextDialogController(QWidget* p): QDialog(p) {
     ui = new Ui_CreateDocumentFromTextDialog();
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "4227232");
 
     //TODO: use format name here 
     ui->formatBox->addItem("FASTA", BaseDocumentFormats::FASTA);
     ui->formatBox->addItem("Genbank", BaseDocumentFormats::PLAIN_GENBANK);
+
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Create"));
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     connect(ui->browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
     connect(ui->formatBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_indexChanged(int)));

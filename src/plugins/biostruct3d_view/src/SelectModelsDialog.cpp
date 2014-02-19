@@ -22,6 +22,9 @@
 #include "SelectModelsDialog.h"
 #include <QMessageBox>
 #include <cassert>
+#include <QtGui/QPushButton>
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 
@@ -29,6 +32,12 @@ SelectModelsDialog::SelectModelsDialog(const QList<int> &_modelIds, const QList<
         : QDialog(parent), Ui::SelectModelsDialog()
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
+    buttonBox->button(QDialogButtonBox::Reset)->setText(tr("All"));
+    buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Invert"));
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Ok"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
 
     QVector<int> modelIds = _modelIds.toVector();
     QSet<int> selectedItems = _selectedItems.toSet();
@@ -43,6 +52,9 @@ SelectModelsDialog::SelectModelsDialog(const QList<int> &_modelIds, const QList<
     }
 
     connect(modelsList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(sl_onItemDoubleClicked(QListWidgetItem*)));
+
+    QPushButton* allButton = buttonBox->button(QDialogButtonBox::Reset);
+    QPushButton* inverButton = buttonBox->button(QDialogButtonBox::Yes);
 
     connect(allButton, SIGNAL(clicked()), this, SLOT(sl_onSlectAll()));
     connect(inverButton, SIGNAL(clicked()), this, SLOT(sl_onInvertSelection()));

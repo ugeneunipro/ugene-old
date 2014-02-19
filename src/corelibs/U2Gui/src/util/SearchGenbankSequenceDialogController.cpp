@@ -23,6 +23,8 @@
 #include <QtGui/QToolButton>
 #include <QtGui/QComboBox>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 #include <U2Core/AppContext.h>
 
@@ -38,14 +40,20 @@ SearchGenbankSequenceDialogController::SearchGenbankSequenceDialogController(QWi
 {
     ui = new Ui_SearchGenbankSequenceDialog();
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "4227131");
+
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Download"));
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Close"));
     
     ui->databaseBox->addItem(EntrezUtils::NCBI_DB_NUCLEOTIDE);
     ui->databaseBox->addItem(EntrezUtils::NCBI_DB_PROTEIN);
 
     queryBlockController = new QueryBuilderController(this);
 
+    QPushButton *downloadButton = ui->buttonBox->button(QDialogButtonBox::Ok);
+
     connect( ui->searchButton, SIGNAL( clicked( ) ), SLOT( sl_searchButtonClicked( ) ) );
-    connect( ui->downloadButton, SIGNAL( clicked( ) ), SLOT( sl_downloadButtonClicked( ) ) );
+    connect( downloadButton, SIGNAL( clicked( ) ), SLOT( sl_downloadButtonClicked( ) ) );
     connect( ui->treeWidget, SIGNAL( itemSelectionChanged( ) ),
         SLOT( sl_itemSelectionChanged( ) ) );
     connect( ui->treeWidget, SIGNAL( itemActivated ( QTreeWidgetItem *, int ) ),
@@ -55,6 +63,7 @@ SearchGenbankSequenceDialogController::SearchGenbankSequenceDialogController(QWi
 
     ui->treeWidget->header()->setStretchLastSection(false);
     ui->treeWidget->header()->setResizeMode(1, QHeaderView::Stretch);
+
 }
 
 SearchGenbankSequenceDialogController::~SearchGenbankSequenceDialogController()
@@ -152,7 +161,7 @@ void SearchGenbankSequenceDialogController::sl_downloadButtonClicked()
 
 void SearchGenbankSequenceDialogController::sl_itemSelectionChanged()
 {
-    ui->downloadButton->setEnabled(ui->treeWidget->selectedItems().size() > 0);
+    downloadButton->setEnabled(ui->treeWidget->selectedItems().size() > 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

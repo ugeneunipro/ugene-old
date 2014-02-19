@@ -25,8 +25,10 @@
 #include <U2Core/Settings.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Core/L10n.h>
+#include <QtGui/QPushButton>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
@@ -37,6 +39,11 @@ namespace U2 {
 
 ExportSequences2MSADialog::ExportSequences2MSADialog(QWidget* p, const QString& defaultUrl): QDialog(p) {
     setupUi(this);    
+    new HelpButton(this, buttonBox, "4227244");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+    okButton = buttonBox->button(QDialogButtonBox::Ok);
+
     addToProjectFlag = true;
     useGenbankHeader = false;
 

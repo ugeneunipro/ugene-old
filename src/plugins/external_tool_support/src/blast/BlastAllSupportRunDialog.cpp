@@ -37,6 +37,7 @@
 #include <U2Core/MultiTask.h>
 #include <U2Core/ProjectService.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Gui/HelpButton.h>
 
 #include <U2Gui/GUIUtils.h>
 
@@ -65,6 +66,9 @@ BlastAllSupportRunDialog::BlastAllSupportRunDialog(U2SequenceObject* _dnaso, QSt
     wdgt->setMinimumHeight(150);
     verticalLayout_4->addWidget(wdgt);
 
+    okButton = buttonBox->button(QDialogButtonBox::Ok);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+
     programName->removeItem(2);//gpu-blastp
     if(dnaso->getAlphabet()->getType() == DNAAlphabet_AMINO){
         programName->removeItem(0);//blastn
@@ -79,6 +83,7 @@ BlastAllSupportRunDialog::BlastAllSupportRunDialog(U2SequenceObject* _dnaso, QSt
     databasePathLineEdit->setText(lastDBPath);
     baseNameLineEdit->setText(lastDBName);
     connect(cancelButton,SIGNAL(clicked()),SLOT(reject()));
+
 }
 
 void BlastAllSupportRunDialog::sl_lineEditChanged(){
@@ -143,6 +148,10 @@ BlastAllWithExtFileSpecifySupportRunDialog::BlastAllWithExtFileSpecifySupportRun
     QToolButton * selectToolPathButton = new QToolButton(widget);
     selectToolPathButton->setVisible(true);
     selectToolPathButton->setText("...");
+
+    okButton = buttonBox->button(QDialogButtonBox::Ok);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+
     connect(selectToolPathButton, SIGNAL(clicked()), inputFileLineEdit, SLOT(sl_onBrowse()));
     connect(inputFileLineEdit,SIGNAL(textChanged(QString)),this, SLOT(sl_inputFileLineEditChanged(QString)));
 

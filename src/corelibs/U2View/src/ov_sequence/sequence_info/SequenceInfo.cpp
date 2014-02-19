@@ -32,6 +32,7 @@
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
+#include <U2Gui/HelpButton.h>
 
 
 namespace U2 {
@@ -88,6 +89,13 @@ void SequenceInfo::initLayout()
     dinuclWidget->setObjectName("Dinucleotides");
 
     mainLayout->addWidget(dinuclWidget);
+
+    QHBoxLayout* helpLayout = new QHBoxLayout();
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    helpLayout->addWidget(buttonBox);
+    new HelpButton(this, buttonBox, "4227298");
+
+    mainLayout->addLayout(helpLayout);
 
     // Make some labels selectable by a user (so he could copy them)
     sequenceRegionLength->setTextInteractionFlags(Qt::TextSelectableByMouse);

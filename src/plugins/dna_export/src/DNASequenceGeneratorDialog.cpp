@@ -30,6 +30,8 @@
 
 #include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -53,6 +55,10 @@ QMap<char, qreal> DNASequenceGeneratorDialog::content = initContent();
 
 DNASequenceGeneratorDialog::DNASequenceGeneratorDialog(QWidget* p) : QDialog(p) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Generate"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     seedSpinBox->setEnabled(false);
 
     referenceButton->setChecked(true);
@@ -72,12 +78,15 @@ DNASequenceGeneratorDialog::DNASequenceGeneratorDialog(QWidget* p) : QDialog(p) 
     conf.saveTitle = tr("Save sequences");
     saveGroupContoller = new SaveDocumentGroupController(conf, this);
 
+    generateButton = buttonBox->button(QDialogButtonBox::Ok);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     connect(inputButton, SIGNAL(clicked()), SLOT(sl_browseReference()));
     connect(configureButton, SIGNAL(clicked()), SLOT(sl_configureContent()));
     connect(generateButton, SIGNAL(clicked()), SLOT(sl_generate()));
     connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
     connect(referenceButton, SIGNAL(toggled(bool)), SLOT(sl_refButtonToggled(bool)));
     connect(seedCheckBox, SIGNAL(stateChanged (int)), SLOT(sl_stateChanged(int)));
+
 }
 
 void DNASequenceGeneratorDialog::sl_stateChanged(int state) {
@@ -150,6 +159,9 @@ void DNASequenceGeneratorDialog::sl_refButtonToggled(bool checked) {
 BaseContentDialog::BaseContentDialog(QMap<char, qreal>& percentMap_, QWidget* p)
 : QDialog(p), percentMap(percentMap_) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Save"));
+
     percentASpin->setValue(percentMap.value('A')*100.0);
     percentCSpin->setValue(percentMap.value('C')*100.0);
     percentGSpin->setValue(percentMap.value('G')*100.0);
@@ -161,6 +173,8 @@ BaseContentDialog::BaseContentDialog(QMap<char, qreal>& percentMap_, QWidget* p)
     percentGCSpin->setValue(gcSkew);
     gcSkewPrev = gcSkew;
     
+    saveButton = buttonBox->button(QDialogButtonBox::Ok);
+
     connect(saveButton, SIGNAL(clicked()), SLOT(sl_save()));
     connect(baseContentRadioButton, SIGNAL(clicked()), SLOT(sl_baseClicked()));
     connect(gcSkewRadioButton, SIGNAL(clicked()), SLOT(sl_gcSkewClicked()));
@@ -183,6 +197,7 @@ BaseContentDialog::BaseContentDialog(QMap<char, qreal>& percentMap_, QWidget* p)
     }
     baseContentRadioButton->setChecked(!gc);
     gcSkewRadioButton->setChecked(gc);
+
 }
 
 void BaseContentDialog::sl_baseClicked() {

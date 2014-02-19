@@ -50,6 +50,9 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 #define SETTINGS_ROOT   QString("plugin_weight_matrix/")
 
@@ -60,16 +63,22 @@ PWMBuildDialogController::PWMBuildDialogController(QWidget* w)
 {
     task = NULL;
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227731");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Start"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     QStringList algo = AppContext::getPWMConversionAlgorithmRegistry()->getAlgorithmIds();
     algorithmCombo->addItems(algo);
 
     this->resize(this->width(), this->minimumHeight());
 
+    okButton = buttonBox->button(QDialogButtonBox::Ok);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     connect(inputButton, SIGNAL(clicked()), SLOT(sl_inFileButtonClicked()));
     connect(outputButton, SIGNAL(clicked()), SLOT(sl_outFileButtonClicked()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_okButtonClicked()));
     connect(weightButton, SIGNAL(toggled(bool)), SLOT(sl_matrixTypeChanged(bool)));
+
 }
 
 

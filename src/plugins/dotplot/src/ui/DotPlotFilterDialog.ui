@@ -150,46 +150,17 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="startButton">
-       <property name="text">
-        <string>OK</string>
-       </property>
-       <property name="default">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>noFiltrationRadio</tabstop>
   <tabstop>featuresRadio</tabstop>
-  <tabstop>startButton</tabstop>
-  <tabstop>cancelButton</tabstop>
   <tabstop>featuresTree</tabstop>
   <tabstop>allButton</tabstop>
   <tabstop>differentButton</tabstop>
@@ -199,34 +170,34 @@
  <resources/>
  <connections>
   <connection>
-   <sender>startButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
    <receiver>DotPlotFilterDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>453</x>
-     <y>390</y>
+     <x>273</x>
+     <y>380</y>
     </hint>
     <hint type="destinationlabel">
      <x>273</x>
-     <y>270</y>
+     <y>200</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>DotPlotFilterDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>536</x>
-     <y>390</y>
+     <x>273</x>
+     <y>380</y>
     </hint>
     <hint type="destinationlabel">
      <x>273</x>
-     <y>270</y>
+     <y>200</y>
     </hint>
    </hints>
   </connection>

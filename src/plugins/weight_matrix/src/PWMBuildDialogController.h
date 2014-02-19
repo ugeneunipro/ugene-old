@@ -63,7 +63,8 @@ private slots:
 private:
     Task* task;
     AlignmentLogoRenderArea* logoArea;
-
+    QPushButton* okButton;
+    QPushButton* cancelButton;
     void replaceLogo(const MAlignment& ma);
 };
 

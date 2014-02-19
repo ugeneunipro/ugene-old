@@ -36,6 +36,7 @@
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/HelpButton.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -70,7 +71,8 @@ public:
 
 ExpertDiscoverySearchDialogController::ExpertDiscoverySearchDialogController(ADVSequenceObjectContext* _ctx, ExpertDiscoveryData& data, QWidget *p):QDialog(p), edData(data) {
     setupUi(this);
-    
+    new HelpButton(this, buttonBox, "4227131");
+
     ctx = _ctx;
     task = NULL;
     
@@ -86,6 +88,7 @@ ExpertDiscoverySearchDialogController::ExpertDiscoverySearchDialogController(ADV
     
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), SLOT(sl_onTimer()));
+
 }
 
 ExpertDiscoverySearchDialogController::~ExpertDiscoverySearchDialogController() {
@@ -94,6 +97,9 @@ ExpertDiscoverySearchDialogController::~ExpertDiscoverySearchDialogController() 
 
 void ExpertDiscoverySearchDialogController::connectGUI() {
     //buttons
+    pbSearch = buttonBox->button(QDialogButtonBox::Ok);
+    pbClose = buttonBox->button(QDialogButtonBox::Cancel);
+
     connect(pbSaveAnnotations, SIGNAL(clicked()), SLOT(sl_onSaveAnnotations()));
     connect(pbClear, SIGNAL(clicked()), SLOT(sl_onClearList()));
     connect(pbSearch, SIGNAL(clicked()), SLOT(sl_onSearch()));

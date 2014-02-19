@@ -47,26 +47,16 @@
       <property name="title">
        <string>Branch bounds</string>
       </property>
-      <widget class="QWidget" name="gridLayoutWidget">
+      <widget class="QWidget" name="">
        <property name="geometry">
         <rect>
-         <x>9</x>
-         <y>9</y>
-         <width>291</width>
-         <height>121</height>
+         <x>10</x>
+         <y>14</y>
+         <width>301</width>
+         <height>100</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Condition probability level</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QLineEdit" name="condProbEdit"/>
-        </item>
         <item row="1" column="0">
          <widget class="QLabel" name="label_2">
           <property name="text">
@@ -74,8 +64,15 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="2">
+        <item row="1" column="1">
          <widget class="QLineEdit" name="fishCritEdit"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Condition probability level</string>
+          </property>
+         </widget>
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="label_3">
@@ -84,9 +81,6 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="2">
-         <widget class="QLineEdit" name="minComplexEdit"/>
-        </item>
         <item row="3" column="0">
          <widget class="QLabel" name="label_4">
           <property name="text">
@@ -94,21 +88,14 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="2">
-         <widget class="QLineEdit" name="maxComplEdit"/>
-        </item>
         <item row="0" column="1">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
+         <widget class="QLineEdit" name="condProbEdit"/>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="minComplexEdit"/>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="maxComplEdit"/>
         </item>
        </layout>
       </widget>
@@ -131,30 +118,16 @@
         <rect>
          <x>10</x>
          <y>10</y>
-         <width>291</width>
+         <width>301</width>
          <height>121</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string>Min. correlation on positive</string>
-          </property>
-         </widget>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="minCorNegEdit"/>
         </item>
-        <item row="0" column="2">
-         <widget class="QLineEdit" name="minCorPosEdit"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>Max. correlation on positive</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QLineEdit" name="maxCorPosEdit"/>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="maxCorNegEdit"/>
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="label_7">
@@ -163,9 +136,6 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="2">
-         <widget class="QLineEdit" name="minCorNegEdit"/>
-        </item>
         <item row="3" column="0">
          <widget class="QLabel" name="label_8">
           <property name="text">
@@ -173,21 +143,25 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="2">
-         <widget class="QLineEdit" name="maxCorNegEdit"/>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Min. correlation on positive</string>
+          </property>
+         </widget>
         </item>
         <item row="0" column="1">
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+         <widget class="QLineEdit" name="minCorPosEdit"/>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="maxCorPosEdit"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Max. correlation on positive</string>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
+         </widget>
         </item>
        </layout>
       </widget>

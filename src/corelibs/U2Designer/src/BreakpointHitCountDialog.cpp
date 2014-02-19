@@ -21,10 +21,13 @@
 
 #include <limits>
 #include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
 #include <QtGui/QIntValidator>
 
 #include "ui/ui_BreakpointHitCountDialog.h"
 #include "BreakpointHitCountDialog.h"
+#include <U2Gui/HelpButton.h>
+
 
 const int LOWER_BOUNDARY_FOR_HIT_COUNTER_PARAMETER = 1;
 const int UPPER_BOUNDARY_FOR_HIT_COUNTER_PARAMETER = std::numeric_limits<int>::max();
@@ -48,6 +51,7 @@ BreakpointHitCountDialog::BreakpointHitCountDialog(const QStringList &hitCountCo
 {
     ui = new Ui_BreakpointHitCountDialog();
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "3245088");
 
     ui->hitConditionCombo->addItems(hitCountConditions);
     ui->hitConditionCombo->setCurrentIndex(hitCountConditions.indexOf(conditionOnLaunch));
@@ -57,10 +61,13 @@ BreakpointHitCountDialog::BreakpointHitCountDialog(const QStringList &hitCountCo
     ui->currentHitCountValueLabel->setText(QString::number(hitCountOnLaunch));
     ui->hitParameterEdit->setText(QString::number(hitCountParameterOnLaunch));
 
-    connect(ui->okButton, SIGNAL(clicked()), SLOT(sl_dialogAccepted()));
-    connect(ui->resetHitCounterButton, SIGNAL(clicked()), SLOT(sl_resetHitCount()));
-    connect(ui->hitConditionCombo, SIGNAL(currentIndexChanged(const QString &)),
-        SLOT(sl_hitConditionChanged(const QString &)));
+    QPushButton *resetButton = ui->buttonBox->button(QDialogButtonBox::Reset);
+    QPushButton *okButton = ui->buttonBox->button(QDialogButtonBox::Ok);
+
+    connect(resetButton, SIGNAL(clicked()), this, SLOT(sl_resetHitCount()));
+    connect(okButton, SIGNAL(clicked()), this, SLOT(sl_dialogAccepted()));
+    connect(ui->hitConditionCombo, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_hitConditionChanged(const QString &)));
+
 }
 
 BreakpointHitCountDialog::~BreakpointHitCountDialog() {

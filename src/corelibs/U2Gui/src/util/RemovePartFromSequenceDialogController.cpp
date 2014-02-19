@@ -31,12 +31,14 @@
 
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
+#include <QtGui/QPushButton>
 
 
 
@@ -49,6 +51,10 @@ RemovePartFromSequenceDialogController::RemovePartFromSequenceDialogController(U
 {
     ui = new Ui_RemovePartFromSequenceDialog;
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "4227330");
+
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Remove"));
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     
     QFileInfo fi(docUrl);
     ui->filepathEdit->setText(fi.absoluteDir().absolutePath() + "/" + fi.baseName() + "_new" + "." + fi.completeSuffix());
@@ -64,6 +70,7 @@ RemovePartFromSequenceDialogController::RemovePartFromSequenceDialogController(U
     ui->formatBox->addItem("Genbank", BaseDocumentFormats::PLAIN_GENBANK);
     connect(ui->mergeAnnotationsBox, SIGNAL(toggled(bool)), this, SLOT(sl_mergeAnnotationsToggled(bool)));
     sl_indexChanged(0);
+
 }
 
 void RemovePartFromSequenceDialogController::accept(){

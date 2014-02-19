@@ -6,6 +6,8 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 
@@ -13,6 +15,7 @@ ExpertDiscoveryPosNegMrkDialog::ExpertDiscoveryPosNegMrkDialog(QWidget *parent)
 : QDialog(parent), generateDescr(true){
 
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
 
     connect(openFirstButton, SIGNAL(clicked()), SLOT(sl_openFirstFile()));
     connect(openSecondButton, SIGNAL(clicked()), SLOT(sl_openSecondFile()));
@@ -29,6 +32,7 @@ ExpertDiscoveryPosNegMrkDialog::ExpertDiscoveryPosNegMrkDialog(QWidget *parent)
     openThirdButton->hide();
 
     filter = DialogUtils::prepareFileFilter("Markup files", QStringList() << "xml" << "gb");
+
 }
 
 void ExpertDiscoveryPosNegMrkDialog::accept(){

@@ -26,6 +26,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Formats/DocumentFormatUtils.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+#include <U2Gui/HelpButton.h>
 
 namespace U2{
 
@@ -73,6 +74,8 @@ bool DocumentReadingModeSelectorController::adjustReadingMode(FormatDetectionRes
     QDialog d(QApplication::activeWindow());
     d.setModal(true);
     ui.setupUi(&d);
+
+    new HelpButton(&d, ui.buttonBox, "4227131");
 
     bool canBeShortReads = minSequenceSize > 0 && maxSequenceSize < 2000;
     bool haveReadAligners = !AppContext::getDnaAssemblyAlgRegistry()->getRegisteredAlgorithmIds().isEmpty();

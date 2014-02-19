@@ -27,6 +27,8 @@
 
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
@@ -39,6 +41,9 @@ DotPlotFilesDialog::DotPlotFilesDialog(QWidget *parent)
 : QDialog(parent)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227418");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Next"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     connect(openFirstButton, SIGNAL(clicked()), SLOT(sl_openFirstFile()));
     connect(openSecondButton, SIGNAL(clicked()), SLOT(sl_openSecondFile()));
@@ -49,6 +54,7 @@ DotPlotFilesDialog::DotPlotFilesDialog(QWidget *parent)
 
     filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true).append("\n").append(
         DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, false));
+
 }
 
 void DotPlotFilesDialog::sl_oneSequence() {

@@ -34,6 +34,7 @@
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 
@@ -47,6 +48,8 @@ CreateFragmentDialog::CreateFragmentDialog( ADVSequenceObjectContext* ctx,  QWid
 {
     
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227649");
+
     tabWidget->setCurrentIndex(0);
         
     seqObj = ctx->getSequenceObject();
@@ -57,6 +60,7 @@ CreateFragmentDialog::CreateFragmentDialog( ADVSequenceObjectContext* ctx,  QWid
     relatedAnnotations = ctx->getAnnotationObjects(true).toList();
     
     setupAnnotationsWidget();
+
 
 }
 

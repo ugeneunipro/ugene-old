@@ -28,6 +28,9 @@
 
 #include <gobject/uHMMObject.h>
 #include "uHMM3BuildDialogImpl.h"
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 
@@ -35,6 +38,10 @@ const QString UHMM3BuildDialogImpl::MA_FILES_DIR_ID     = "uhmmer3_build_ma_file
 const QString UHMM3BuildDialogImpl::HMM_FILES_DIR_ID    = "uhmmer3_build_hmm_files_dir";
 
 void UHMM3BuildDialogImpl::setSignalsAndSlots() {
+
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+
     connect( maOpenFileButton, SIGNAL( clicked() ), SLOT( sl_maOpenFileButtonClicked() ) );
     connect( outHmmfileToolButton, SIGNAL( clicked() ), SLOT( sl_outHmmFileButtonClicked() ) );
     connect( okButton, SIGNAL( clicked() ), SLOT( sl_buildButtonClicked() ) );
@@ -52,6 +59,10 @@ void UHMM3BuildDialogImpl::setSignalsAndSlots() {
 
 void UHMM3BuildDialogImpl::initialize() {
     setupUi( this );
+    new HelpButton(this, buttonBox, "4227693");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Build"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     setModelValues(); // build settings are default here
     setSignalsAndSlots();
 }
@@ -66,6 +77,7 @@ UHMM3BuildDialogImpl::UHMM3BuildDialogImpl( const MAlignment & ma, QWidget * p )
         maLoadFromFileLabel->hide();
         maOpenFileButton->hide();
     }
+
 }
 
 void UHMM3BuildDialogImpl::setModelValues() {

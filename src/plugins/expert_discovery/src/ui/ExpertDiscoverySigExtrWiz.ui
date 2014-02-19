@@ -31,6 +31,9 @@
   <property name="wizardStyle">
    <enum>QWizard::ClassicStyle</enum>
   </property>
+  <property name="options">
+   <set>QWizard::HaveHelpButton|QWizard::HelpButtonOnRight</set>
+  </property>
   <property name="titleFormat">
    <enum>Qt::AutoText</enum>
   </property>

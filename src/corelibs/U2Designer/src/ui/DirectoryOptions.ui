@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>201</width>
-    <height>92</height>
+    <width>223</width>
+    <height>98</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -72,7 +72,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Inlude mask</string>
+        <string>Inсlude mask</string>
        </property>
       </widget>
      </item>

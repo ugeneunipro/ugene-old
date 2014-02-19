@@ -2087,7 +2087,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="131"/>
         <source>web_browser_path</source>
-        <translation>Specified executable</translation>
+        <translation>Custom browser</translation>
     </message>
     <message>
         <location filename="../src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui" line="166"/>

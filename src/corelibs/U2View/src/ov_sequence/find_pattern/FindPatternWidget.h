@@ -218,6 +218,7 @@ private:
     static const QString ALGORITHM_SETTINGS;
     static const QString SEARCH_IN_SETTINGS;
     static const QString OTHER_SETTINGS;
+    QPushButton* btnSearch;
 };
 
 } // namespace

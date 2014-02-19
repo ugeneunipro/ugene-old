@@ -30,6 +30,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/Timer.h>
+#include <U2Gui/HelpButton.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/LastUsedDirHelper.h>
@@ -51,6 +52,7 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QInputDialog>
 #include <QtGui/QHeaderView>
+
 
 //TODO: group by TYPE, ORGANIZM
 //TODO: check whole group (tristate mode)
@@ -511,6 +513,7 @@ void EnzymesSelectorWidget::sl_saveEnzymesFile()
 FindEnzymesDialog::FindEnzymesDialog(ADVSequenceObjectContext* sctx)
 : QDialog(sctx->getAnnotatedDNAView()->getWidget()), seqCtx(sctx) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "https://ugene.unipro.ru/wiki/display/UUOUM/Editing+Fragment+Overhangs");
 
     circularButton->setChecked(seqCtx->getSequenceObject()->isCircular());
 

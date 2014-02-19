@@ -102,6 +102,7 @@ private:
     EntrezQueryTask* searchTask;
     QScopedPointer<ESummaryResultHandler> summaryResultHandler;
     EntrezQueryTask* summaryTask;
+    QPushButton* downloadButton;
 
 public slots:
     void sl_searchButtonClicked();

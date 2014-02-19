@@ -48,6 +48,7 @@
 #include <QtGui/QSplitter>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
 
 
 namespace U2 {
@@ -1138,6 +1139,7 @@ AddConstraintDialog::AddConstraintDialog(QueryScene* _scene, QDDistanceType _kin
                                          QDElement* defSrc, QDElement* defDst)
 : scene(_scene), kind(_kind) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227741");
 
     QString title = "Add %1 Constraint";
     switch (kind)

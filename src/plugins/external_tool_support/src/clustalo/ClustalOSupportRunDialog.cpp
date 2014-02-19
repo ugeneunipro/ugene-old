@@ -27,7 +27,9 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/HelpButton.h>
 #include <U2Core/GUrlUtils.h>
+#include <QtGui/QPushButton>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
@@ -40,12 +42,19 @@ ClustalOSupportRunDialog::ClustalOSupportRunDialog(const MAlignment& _ma, Clusta
         QDialog(_parent), ma(_ma), settings(_settings)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227737");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     inputGroupBox->setVisible(false);
     this->adjustSize();
-    connect(this->cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
-    connect(this->alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+    QPushButton* alignButton = buttonBox->button(QDialogButtonBox::Ok);
+    connect(cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
+    connect(alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
     numberOfCPUSpinBox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     numberOfCPUSpinBox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
+
 }
 
 void ClustalOSupportRunDialog::sl_align(){
@@ -69,12 +78,18 @@ ClustalOWithExtFileSpecifySupportRunDialog::ClustalOWithExtFileSpecifySupportRun
         QDialog(_parent), settings(_settings)
 {
     setupUi(this);
-    this->adjustSize();
+    new HelpButton(this, buttonBox, "4227737");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
+    //this->adjustSize();
     connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));
     connect(outputFilePathButton, SIGNAL(clicked()), SLOT(sl_outputPathButtonClicked()));
 
-    connect(this->cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
-    connect(this->alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+    QPushButton* alignButton = buttonBox->button(QDialogButtonBox::Ok);
+    connect(cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
+    connect(alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
 
     numberOfCPUSpinBox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
     numberOfCPUSpinBox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());

@@ -53,6 +53,8 @@ private slots:
 private:
     Task* task;
     SiteconPlugin* plug;
+    QPushButton* okButton;
+    QPushButton* cancelButton;
 };
 
 class SiteconBuildTask : public Task {

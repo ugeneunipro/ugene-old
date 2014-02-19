@@ -43,6 +43,8 @@
 
 #include "DnaAssemblyDialog.h"
 #include "DnaAssemblyGUIExtension.h"
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 
@@ -63,6 +65,10 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
   customGUI(NULL)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227707");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Start"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     QStringList names = assemblyRegistry->getRegisteredAlgorithmIds();
     methodNamesBox->addItems(names);
     // TODO: change the way default method is set
@@ -113,6 +119,7 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
         ShortReadsTableItem* item = new ShortReadsTableItem(shortReadsTable, read);
         ShortReadsTableItem::addItemToTable(item, shortReadsTable);
     }
+
 }
 
 void DnaAssemblyDialog::updateState() {

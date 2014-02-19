@@ -21,6 +21,7 @@
 
 #include "ButtonSettingsDialog.h"
 #include <QtGui/QColorDialog>
+#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -30,11 +31,13 @@ ButtonSettingsDialog::ButtonSettingsDialog(QWidget *parent, const ButtonSettings
     changedSettings(buttonSettings)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
 
     radiusSpinBox->setValue(settings.radius);
     updateColorButton();
 
     connect(colorButton, SIGNAL(clicked()), SLOT(sl_colorButton()));
+
 }
 
 void ButtonSettingsDialog::updateColorButton() {

@@ -24,6 +24,7 @@
 #include "ui/ui_AuthentificationDialog.h"
 #include "AuthenticationDialog.h"
 
+
 namespace U2 {
 
 AuthDialog::AuthDialog( QWidget* parent )
@@ -32,6 +33,7 @@ AuthDialog::AuthDialog( QWidget* parent )
     ui = new Ui_AuthentificationDialog();
     ui->setupUi(this);
     connect(ui->OKButton, SIGNAL(clicked()), SLOT(sl_onOkButtonClicked()));
+
 }
 
 QString AuthDialog::getUserName() const

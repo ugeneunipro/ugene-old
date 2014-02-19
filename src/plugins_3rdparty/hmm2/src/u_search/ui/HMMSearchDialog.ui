@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>HMMSearchDialog</class>
- <widget class="QDialog" name="HMMSearchDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="HMMSearchDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,37 +10,37 @@
     <height>222</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="minimumSize" >
+  <property name="minimumSize">
    <size>
     <width>500</width>
     <height>222</height>
    </size>
   </property>
-  <property name="windowTitle" >
-   <string>hmm_search_dialog_title</string>
+  <property name="windowTitle">
+   <string>HMM search</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2" >
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QLabel" name="label" >
-       <property name="text" >
-        <string>hmm_file</string>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>File with HMM profile:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="hmmFileEdit" />
+      <widget class="QLineEdit" name="hmmFileEdit"/>
      </item>
      <item>
-      <widget class="QToolButton" name="hmmFileButton" >
-       <property name="text" >
+      <widget class="QToolButton" name="hmmFileButton">
+       <property name="text">
         <string>...</string>
        </property>
       </widget>
@@ -47,45 +48,45 @@
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="expertOptionsBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Minimum" hsizetype="Preferred" >
+    <widget class="QGroupBox" name="expertOptionsBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
-      <string>expert_box_title</string>
+     <property name="title">
+      <string>Expert options</string>
      </property>
-     <property name="checkable" >
+     <property name="checkable">
       <bool>true</bool>
      </property>
-     <property name="checked" >
+     <property name="checked">
       <bool>false</bool>
      </property>
-     <layout class="QGridLayout" name="gridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="label_5" >
-        <property name="toolTip" >
-         <string>results_evalue_cutoff_tip</string>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="toolTip">
+         <string>E-value filtering can be used to exclude low-probability hits from result.</string>
         </property>
-        <property name="statusTip" >
-         <string>results_evalue_cutoff_tip</string>
+        <property name="statusTip">
+         <string>E-value filtering can be used to exclude low-probability hits from result.</string>
         </property>
-        <property name="whatsThis" >
-         <string>results_evalue_cutoff_tip</string>
+        <property name="whatsThis">
+         <string>E-value filtering can be used to exclude low-probability hits from result.</string>
         </property>
-        <property name="text" >
-         <string>results_evalue_cutoff</string>
+        <property name="text">
+         <string>Filter results with E-value greater then:</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="2" >
-       <spacer name="horizontalSpacer_4" >
-        <property name="orientation" >
+      <item row="0" column="2">
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>319</width>
           <height>20</height>
@@ -93,12 +94,12 @@
         </property>
        </spacer>
       </item>
-      <item row="3" column="2" >
-       <spacer name="horizontalSpacer_3" >
-        <property name="orientation" >
+      <item row="3" column="2">
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>319</width>
           <height>20</height>
@@ -106,62 +107,62 @@
         </property>
        </spacer>
       </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="label_4" >
-        <property name="toolTip" >
-         <string>results_score_cutoff_tip</string>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="toolTip">
+         <string>Score based filtering is an alternative to E-value filtering to exclude low-probability hits from result.</string>
         </property>
-        <property name="statusTip" >
-         <string>results_score_cutoff_tip</string>
+        <property name="statusTip">
+         <string>Score based filtering is an alternative to E-value filtering to exclude low-probability hits from result.</string>
         </property>
-        <property name="whatsThis" >
-         <string>results_score_cutoff_tip</string>
+        <property name="whatsThis">
+         <string>Score based filtering is an alternative to E-value filtering to exclude low-probability hits from result.</string>
         </property>
-        <property name="text" >
-         <string>results_score_cutoff</string>
+        <property name="text">
+         <string>Filter results with Score lower than:</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="3" >
-       <widget class="QDoubleSpinBox" name="minScoreBox" >
-        <property name="toolTip" >
-         <string>results_score_cutoff_tip</string>
+      <item row="3" column="3">
+       <widget class="QDoubleSpinBox" name="minScoreBox">
+        <property name="toolTip">
+         <string>Score based filtering is an alternative to E-value filtering to exclude low-probability hits from result.</string>
         </property>
-        <property name="statusTip" >
-         <string>results_score_cutoff_tip</string>
+        <property name="statusTip">
+         <string>Score based filtering is an alternative to E-value filtering to exclude low-probability hits from result.</string>
         </property>
-        <property name="whatsThis" >
-         <string>results_score_cutoff_tip</string>
+        <property name="whatsThis">
+         <string>Score based filtering is an alternative to E-value filtering to exclude low-probability hits from result.</string>
         </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="accelerated" >
+        <property name="accelerated">
          <bool>false</bool>
         </property>
-        <property name="decimals" >
+        <property name="decimals">
          <number>1</number>
         </property>
-        <property name="minimum" >
+        <property name="minimum">
          <double>-999999999.000000000000000</double>
         </property>
-        <property name="maximum" >
+        <property name="maximum">
          <double>999999999.000000000000000</double>
         </property>
-        <property name="singleStep" >
+        <property name="singleStep">
          <double>0.100000000000000</double>
         </property>
-        <property name="value" >
+        <property name="value">
          <double>0.000000000000000</double>
         </property>
        </widget>
       </item>
-      <item row="5" column="2" >
-       <spacer name="horizontalSpacer_2" >
-        <property name="orientation" >
+      <item row="5" column="2">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>319</width>
           <height>20</height>
@@ -169,94 +170,94 @@
         </property>
        </spacer>
       </item>
-      <item row="5" column="3" >
-       <widget class="QSpinBox" name="evalueAsNSeqBox" >
-        <property name="minimumSize" >
+      <item row="5" column="3">
+       <widget class="QSpinBox" name="evalueAsNSeqBox">
+        <property name="minimumSize">
          <size>
           <width>100</width>
           <height>0</height>
          </size>
         </property>
-        <property name="toolTip" >
-         <string>e_value_as_nsec_tip</string>
+        <property name="toolTip">
+         <string>Calculate the E-value scores as if we had seen a sequence database of &lt;n&gt; sequences.</string>
         </property>
-        <property name="statusTip" >
-         <string>e_value_as_nsec_tip</string>
+        <property name="statusTip">
+         <string>Calculate the E-value scores as if we had seen a sequence database of &lt;n&gt; sequences.</string>
         </property>
-        <property name="whatsThis" >
-         <string>e_value_as_nsec_tip</string>
+        <property name="whatsThis">
+         <string>Calculate the E-value scores as if we had seen a sequence database of &lt;n&gt; sequences.</string>
         </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="maximum" >
+        <property name="maximum">
          <number>2000000000</number>
         </property>
-        <property name="value" >
+        <property name="value">
          <number>1</number>
         </property>
        </widget>
       </item>
-      <item row="5" column="0" >
-       <widget class="QLabel" name="label_3" >
-        <property name="toolTip" >
-         <string>e_value_as_nsec_tip</string>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="toolTip">
+         <string>Calculate the E-value scores as if we had seen a sequence database of &lt;n&gt; sequences.</string>
         </property>
-        <property name="statusTip" >
-         <string>e_value_as_nsec_tip</string>
+        <property name="statusTip">
+         <string>Calculate the E-value scores as if we had seen a sequence database of &lt;n&gt; sequences.</string>
         </property>
-        <property name="whatsThis" >
-         <string>e_value_as_nsec_tip</string>
+        <property name="whatsThis">
+         <string>Calculate the E-value scores as if we had seen a sequence database of &lt;n&gt; sequences.</string>
         </property>
-        <property name="text" >
-         <string>e_value_as_n_seq</string>
+        <property name="text">
+         <string>Number of sequences in dababase:</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="3" >
-       <widget class="QSpinBox" name="domEvalueCuttofBox" >
-        <property name="toolTip" >
-         <string>results_evalue_cutoff_tip</string>
+      <item row="0" column="3">
+       <widget class="QSpinBox" name="domEvalueCuttofBox">
+        <property name="toolTip">
+         <string>E-value filtering can be used to exclude low-probability hits from result.</string>
         </property>
-        <property name="statusTip" >
-         <string>results_evalue_cutoff_tip</string>
+        <property name="statusTip">
+         <string>E-value filtering can be used to exclude low-probability hits from result.</string>
         </property>
-        <property name="whatsThis" >
-         <string>results_evalue_cutoff_tip</string>
+        <property name="whatsThis">
+         <string>E-value filtering can be used to exclude low-probability hits from result.</string>
         </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="suffix" >
+        <property name="suffix">
          <string/>
         </property>
-        <property name="prefix" >
+        <property name="prefix">
          <string>1E</string>
         </property>
-        <property name="minimum" >
+        <property name="minimum">
          <number>-99</number>
         </property>
-        <property name="maximum" >
+        <property name="maximum">
          <number>0</number>
         </property>
-        <property name="value" >
+        <property name="value">
          <number>-1</number>
         </property>
        </widget>
       </item>
-      <item row="6" column="0" >
-       <widget class="QLabel" name="label_2" >
-        <property name="text" >
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
          <string>Algorithm</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="2" >
-       <spacer name="horizontalSpacer_5" >
-        <property name="orientation" >
+      <item row="6" column="2">
+       <spacer name="horizontalSpacer_5">
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>40</width>
           <height>20</height>
@@ -264,16 +265,16 @@
         </property>
        </spacer>
       </item>
-      <item row="6" column="3" >
-       <widget class="QComboBox" name="algoCombo" >
-        <property name="toolTip" >
-         <string>algo_combo_tip</string>
+      <item row="6" column="3">
+       <widget class="QComboBox" name="algoCombo">
+        <property name="toolTip">
+         <string>Variants of algorithm</string>
         </property>
-        <property name="statusTip" >
-         <string>algo_combo_tip</string>
+        <property name="statusTip">
+         <string>Variants of algorithm</string>
         </property>
-        <property name="whatsThis" >
-         <string>algo_combo_tip</string>
+        <property name="whatsThis">
+         <string>Variants of algorithm</string>
         </property>
        </widget>
       </item>
@@ -281,11 +282,11 @@
     </widget>
    </item>
    <item>
-    <spacer name="verticalSpacer" >
-     <property name="orientation" >
+    <spacer name="verticalSpacer">
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" stdset="0" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>3</height>
@@ -294,20 +295,20 @@
     </spacer>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" >
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="statusLabel" >
-       <property name="text" >
+      <widget class="QLabel" name="statusLabel">
+       <property name="text">
         <string/>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer" >
-       <property name="orientation" >
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -315,39 +316,32 @@
        </property>
       </spacer>
      </item>
-     <item>
-      <widget class="QPushButton" name="okButton" >
-       <property name="text" >
-        <string>ok_button</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton" >
-       <property name="text" >
-        <string>close_button</string>
-       </property>
-      </widget>
-     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>HMMSearchDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>439</x>
-     <y>194</y>
+    <hint type="sourcelabel">
+     <x>249</x>
+     <y>201</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>244</x>
-     <y>108</y>
+    <hint type="destinationlabel">
+     <x>249</x>
+     <y>110</y>
     </hint>
    </hints>
   </connection>

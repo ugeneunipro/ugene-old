@@ -28,7 +28,9 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolButton>
+#include <U2Gui/HelpButton.h>
 #include <U2Core/GUrlUtils.h>
+#include <QtGui/QPushButton>
 
 namespace U2 {
 ////////////////////////////////////////
@@ -37,11 +39,18 @@ ClustalWSupportRunDialog::ClustalWSupportRunDialog(const MAlignment& _ma, Clusta
         QDialog(_parent), ma(_ma), settings(_settings)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4228539");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     inputGroupBox->setVisible(false);
     this->adjustSize();
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+    QPushButton* alignButton = buttonBox->button(QDialogButtonBox::Ok);
+
     connect(this->iterationTypeCheckBox,SIGNAL(toggled(bool)),this,SLOT(sl_iterationTypeEnabled(bool)));
-    connect(this->cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
-    connect(this->alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
+    connect(cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
+    connect(alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
 
 
     if(ma.getAlphabet()->isAmino()){
@@ -54,6 +63,7 @@ ClustalWSupportRunDialog::ClustalWSupportRunDialog(const MAlignment& _ma, Clusta
         weightMatrixComboBox->addItem("GONNET");
         weightMatrixComboBox->addItem("ID");
     }
+
 }
 void ClustalWSupportRunDialog::sl_iterationTypeEnabled(bool checked){
     if(checked){
@@ -108,12 +118,19 @@ ClustalWWithExtFileSpecifySupportRunDialog::ClustalWWithExtFileSpecifySupportRun
         QDialog(_parent), settings(_settings)
 {
     setupUi(this);
-    this->adjustSize();
+    new HelpButton(this, buttonBox, "4228539");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
+    //this->adjustSize();
     connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));
     connect(outputFilePathButton, SIGNAL(clicked()), SLOT(sl_outputPathButtonClicked()));
 
-    connect(this->cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
-    connect(this->alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+    QPushButton* alignButton = buttonBox->button(QDialogButtonBox::Ok);
+
+    connect(cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
+    connect(alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
 
     proteinGapParamGroupBox->setEnabled(true);
     weightMatrixComboBox->insertSeparator(2);

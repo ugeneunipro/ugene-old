@@ -43,6 +43,7 @@
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Gui/HelpButton.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
 
@@ -52,6 +53,9 @@ namespace U2{
 CreateSubalignimentDialogController::CreateSubalignimentDialogController(MAlignmentObject *_mobj, const QRect& selection, QWidget *p)
 : QDialog(p), mobj(_mobj), saveContoller(NULL){
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227464");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Extract"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     connect(browseButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
     connect(allButton, SIGNAL(clicked()), SLOT(sl_allButtonClicked()));
@@ -114,6 +118,7 @@ CreateSubalignimentDialogController::CreateSubalignimentDialogController(MAlignm
         sequencesTableWidget->setCellWidget(i, 0, cb);
         sequencesTableWidget->setRowHeight(i, 15);
     }
+
 }
 
 QString CreateSubalignimentDialogController::getSavePath(){ 

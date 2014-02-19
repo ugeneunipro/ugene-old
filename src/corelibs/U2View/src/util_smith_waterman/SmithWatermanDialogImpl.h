@@ -112,6 +112,10 @@ private:
     SWMulAlignResultNamesTagsRegistry *tagsRegistry;
     QList<QPushButton *> *templateButtons;
     QBitArray *templateButtonsApplicability;
+
+    QPushButton* bttnRun;
+    QPushButton* bttnCancel;
+    QPushButton* remoteRunPushButton;
 };
 
 } // namespace

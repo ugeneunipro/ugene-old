@@ -38,7 +38,7 @@ namespace U2 {
 class CreateAnnotationWidgetController;
 class AnnotationTableObject;
 
-class SendSelectionDialog: public QDialog, Ui_Dialog {
+class SendSelectionDialog: public QDialog, Ui_RemoteBLASTDialog {
     Q_OBJECT
 public:
     SendSelectionDialog( const U2SequenceObject* dnaso, bool _isAminoSeq, QWidget *p = NULL );

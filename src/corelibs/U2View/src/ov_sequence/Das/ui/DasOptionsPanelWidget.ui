@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>262</width>
+    <width>248</width>
     <height>468</height>
    </rect>
   </property>
@@ -286,17 +286,14 @@
      <property name="sizeConstraint">
       <enum>QLayout::SetMinAndMaxSize</enum>
      </property>
-     <item>
-      <widget class="QPushButton" name="annotateButton">
-       <property name="toolTip">
-        <string>Load annotations from DAS by selected ID(s)</string>
-       </property>
-       <property name="text">
-        <string>Fetch Annotations</string>
-       </property>
-      </widget>
-     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QLabel" name="lblInfoMessage">

@@ -24,7 +24,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -653,61 +653,19 @@
        </property>
       </spacer>
      </item>
-     <item>
-      <widget class="QPushButton" name="startButton">
-       <property name="text">
-        <string>Start</string>
-       </property>
-       <property name="default">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>startButton</sender>
-   <signal>clicked()</signal>
-   <receiver>FindRepeatsDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>543</x>
-     <y>340</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>273</x>
-     <y>270</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
-   <receiver>FindRepeatsDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>624</x>
-     <y>340</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>273</x>
-     <y>270</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>maxDistCheck</sender>
    <signal>toggled(bool)</signal>
@@ -849,6 +807,38 @@
     <hint type="destinationlabel">
      <x>602</x>
      <y>133</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>FindRepeatsDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>317</x>
+     <y>330</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>317</x>
+     <y>175</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>FindRepeatsDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>317</x>
+     <y>330</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>317</x>
+     <y>175</y>
     </hint>
    </hints>
   </connection>

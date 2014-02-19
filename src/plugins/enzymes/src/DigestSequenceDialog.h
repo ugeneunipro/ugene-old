@@ -81,6 +81,7 @@ private:
     int                                 animationCounter;
     static const QString                WAIT_MESSAGE;
     static const QString                HINT_MESSAGE;
+    QPushButton* okButton;
 };
 
 } //namespace

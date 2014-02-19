@@ -6,6 +6,9 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 
@@ -13,6 +16,9 @@ ExpertDiscoveryPosNegDialog::ExpertDiscoveryPosNegDialog(QWidget *parent)
 : QDialog(parent), generateNeg(false), negativePerPositive(100){
 
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Next"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     connect(openFirstButton, SIGNAL(clicked()), SLOT(sl_openFirstFile()));
     connect(openSecondButton, SIGNAL(clicked()), SLOT(sl_openSecondFile()));
@@ -22,6 +28,7 @@ ExpertDiscoveryPosNegDialog::ExpertDiscoveryPosNegDialog(QWidget *parent)
         ";;" + DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, false);
 
     negPerPositivespinBox->setDisabled(!oneSequenceCheckBox->isChecked());
+
 }
 
 void ExpertDiscoveryPosNegDialog::accept(){

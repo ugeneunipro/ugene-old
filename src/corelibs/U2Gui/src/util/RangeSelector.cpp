@@ -30,6 +30,7 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QLabel>
 #include <QtGui/QIntValidator>
+#include <U2Gui/HelpButton.h>
 #include <math.h>
 
 namespace U2 {
@@ -232,6 +233,10 @@ MultipleRangeSelector::MultipleRangeSelector(QWidget* _parent, const QVector<U2R
 
     ui = new Ui_RangeSelectionDialog;
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "4227316");
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Go"));
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
 
     {
         ui->startEdit->setValidator(new QIntValidator(1, seqLen, ui->startEdit));

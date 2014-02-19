@@ -26,6 +26,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/HelpButton.h>
 
 
 namespace U2 {
@@ -94,6 +95,13 @@ AssemblyInfoWidget::AssemblyInfoWidget(AssemblyBrowser *browser, QWidget *p)
     }
     QWidget * infoGroup = new ShowHideSubgroupWidget("INFO", tr("Assembly Information"), asmWidget, true);
     mainLayout->addWidget(infoGroup);
+
+    QHBoxLayout* helpLayout = new QHBoxLayout();
+    helpLayout->setContentsMargins(0, 5, 0, 0);
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    helpLayout->addWidget(buttonBox);
+    new HelpButton(this, buttonBox, "4227559");
+    mainLayout->addLayout(helpLayout);
 
     QByteArray md5 = model->getReferenceMd5(st);
     QByteArray species = model->getReferenceSpecies(st);

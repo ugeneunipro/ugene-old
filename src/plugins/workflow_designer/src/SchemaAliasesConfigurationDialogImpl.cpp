@@ -23,6 +23,9 @@
 
 #include <U2Lang/ActorModel.h>
 #include "SchemaAliasesConfigurationDialogImpl.h"
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 namespace Workflow {
@@ -30,6 +33,10 @@ namespace Workflow {
 SchemaAliasesConfigurationDialogImpl::SchemaAliasesConfigurationDialogImpl( const Schema & schema, QWidget * p )
 : QDialog(p), procNameMaxSz(0) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "1474787");
+
+    QPushButton* cancelPushButton = buttonBox->button(QDialogButtonBox::Cancel);
+    QPushButton* okPushButton = buttonBox->button(QDialogButtonBox::Ok);
     
     connect( cancelPushButton, SIGNAL(clicked()), SLOT(reject()) );
     connect( okPushButton, SIGNAL(clicked()), SLOT(accept()));
@@ -53,6 +60,7 @@ SchemaAliasesConfigurationDialogImpl::SchemaAliasesConfigurationDialogImpl( cons
     connect( paramAliasesTableWidget, SIGNAL( cellChanged(int, int) ), SLOT(sl_onDataChange(int, int)) );
     
     initializeModel(schema);
+
 }
 
 void SchemaAliasesConfigurationDialogImpl::initializeModel( const Schema & schema ) {

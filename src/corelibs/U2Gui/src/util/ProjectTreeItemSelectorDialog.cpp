@@ -30,6 +30,7 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QSpacerItem>
 #include <QtGui/QPushButton>
+#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -37,9 +38,11 @@ ProjectTreeItemSelectorDialogImpl::ProjectTreeItemSelectorDialogImpl(QWidget* p,
 : QDialog(p)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227206");
     controller = new ProjectTreeController(this, treeWidget, s);
     connect(controller, SIGNAL(si_doubleClicked(GObject*)), this, SLOT(sl_objectClicked(GObject*)));
     acceptByDoubleClick = false;
+
 }
 
 void ProjectTreeItemSelectorDialogImpl::sl_objectClicked(GObject* obj) {

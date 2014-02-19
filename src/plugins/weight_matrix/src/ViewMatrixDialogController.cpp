@@ -26,9 +26,12 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Gui/HelpButton.h>
 
 #include <QtGui/QTableWidget>
 #include <QtGui/QTableWidgetItem>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 
@@ -161,9 +164,13 @@ MatrixAndLogoController::MatrixAndLogoController( PWMatrix matrix, QWidget *p):Q
 
 ViewMatrixDialogController::ViewMatrixDialogController(PFMatrix matrix, QWidget *w): QDialog(w){
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227731");
+    buttonBox->button(QDialogButtonBox::Close)->setText(tr("Ñlose"));
+
     ml = new MatrixAndLogoController(matrix, this);
     MLLayout->addWidget(ml);
 
+    QPushButton* closeButton = buttonBox->button(QDialogButtonBox::Close);
     setMinimumHeight(ml->height() + closeButton->height() + layout()->margin()*2 + layout()->spacing());
     setMinimumWidth(ml->width());
     connect(closeButton, SIGNAL(clicked()), SLOT(sl_onCloseButton()));
@@ -171,9 +178,13 @@ ViewMatrixDialogController::ViewMatrixDialogController(PFMatrix matrix, QWidget 
 
 ViewMatrixDialogController::ViewMatrixDialogController(PWMatrix matrix, QWidget *w): QDialog(w){
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227731");
+    buttonBox->button(QDialogButtonBox::Close)->setText(tr("Ñlose"));
+    
     ml = new MatrixAndLogoController(matrix, this);
     MLLayout->addWidget(ml);
 
+    QPushButton* closeButton = buttonBox->button(QDialogButtonBox::Close);
     setMinimumHeight(ml->height() + closeButton->height() + layout()->margin()*2 + layout()->spacing());
     setMinimumWidth(ml->width());
     connect(closeButton, SIGNAL(clicked()), SLOT(sl_onCloseButton()));

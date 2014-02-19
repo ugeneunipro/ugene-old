@@ -47,6 +47,7 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/HelpButton.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequenceSelection.h>
@@ -57,6 +58,7 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QFileDialog>
+#include <QtGui/QPushButton>
 
 namespace U2 {
 
@@ -105,6 +107,15 @@ public:
 
 PWMSearchDialogController::PWMSearchDialogController(ADVSequenceObjectContext* _ctx, QWidget *p):QDialog(p) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227727");
+    buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Add to queue"));
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
+    pbSearch = buttonBox->button(QDialogButtonBox::Ok);
+    pbClose = buttonBox->button(QDialogButtonBox::Cancel);
+    queueButton = buttonBox->button(QDialogButtonBox::Yes);
+
     model = PWMatrix();
     intermediate = PFMatrix();
     
@@ -128,6 +139,7 @@ PWMSearchDialogController::PWMSearchDialogController(ADVSequenceObjectContext* _
     pbSelectModelFile->setFocus();
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), SLOT(sl_onTimer()));
+
 }
 
 void PWMSearchDialogController::connectGUI() {

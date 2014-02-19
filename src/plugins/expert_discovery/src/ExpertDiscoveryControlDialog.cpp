@@ -6,6 +6,7 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -13,11 +14,13 @@ ExpertDiscoveryControlDialog::ExpertDiscoveryControlDialog(QWidget *parent)
 : QDialog(parent){
 
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
 
     connect(openFirstButton, SIGNAL(clicked()), SLOT(sl_openFirstFile()));
 
     filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true)+
         ";;" + DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, false);
+
 }
 
 void ExpertDiscoveryControlDialog::accept(){

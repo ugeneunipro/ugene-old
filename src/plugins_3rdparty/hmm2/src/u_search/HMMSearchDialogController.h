@@ -70,6 +70,8 @@ private:
     DNASequence                         dnaSequence;
     Task*                               searchTask;
     CreateAnnotationWidgetController*   createController;
+    QPushButton*                        okButton;
+    QPushButton*                        cancelButton;
 };
 
 

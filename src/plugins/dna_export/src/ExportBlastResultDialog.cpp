@@ -26,10 +26,12 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Gui/HelpButton.h>
 #include <U2Core/L10n.h>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
+#include <QtGui/QPushButton>
 
 #define SETTINGS_ROOT QString("dna_export/")
 
@@ -37,6 +39,10 @@ namespace U2 {
 
 ExportBlastResultDialog::ExportBlastResultDialog(QWidget* p, const QString& defaultUrl): QDialog(p) {
     setupUi(this);    
+    new HelpButton(this, buttonBox, "4228531");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     addToProjectFlag = true;
     
     nameIdBox->addItem("accession");
@@ -57,6 +63,7 @@ ExportBlastResultDialog::ExportBlastResultDialog(QWidget* p, const QString& defa
     conf.defaultFormatId = BaseDocumentFormats::CLUSTAL_ALN;
     saveContoller = new SaveDocumentGroupController(conf, this);
 
+
 }
 
 
@@ -75,6 +82,7 @@ void ExportBlastResultDialog::accept() {
 }
 
 void ExportBlastResultDialog::setOkButtonText(const QString& text) const {
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
     okButton->setText(text);
 }
 

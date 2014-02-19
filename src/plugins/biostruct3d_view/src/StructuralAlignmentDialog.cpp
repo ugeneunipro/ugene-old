@@ -27,6 +27,7 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Gui/HelpButton.h>
 
 #include <U2Algorithm/StructuralAlignmentAlgorithm.h>
 #include <U2Algorithm/StructuralAlignmentAlgorithmFactory.h>
@@ -54,6 +55,7 @@ StructuralAlignmentDialog::StructuralAlignmentDialog(const BioStruct3DObject *fi
         : QDialog(parent), task(0)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
 
     StructuralAlignmentAlgorithmRegistry *reg = AppContext::getStructuralAlignmentAlgorithmRegistry();
     foreach (const QString &id, reg->getFactoriesIds()) {

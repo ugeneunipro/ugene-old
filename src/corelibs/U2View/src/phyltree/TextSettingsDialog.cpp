@@ -21,6 +21,8 @@
 
 #include "TextSettingsDialog.h"
 #include <QtGui/QColorDialog>
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 
@@ -28,6 +30,7 @@ TextSettingsDialog::TextSettingsDialog(QWidget *parent, const TextSettings &text
 : QDialog(parent), settings(textSettings), changedSettings(textSettings) {
 
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227581");
 
     updateColorButton();
     fontComboBox->setCurrentFont(settings.textFont);
@@ -41,6 +44,7 @@ TextSettingsDialog::TextSettingsDialog(QWidget *parent, const TextSettings &text
     overlineToolButton->setVisible(false);
 
     connect(colorButton, SIGNAL(clicked()), SLOT(sl_colorButton()));
+
 }
 
 void TextSettingsDialog::updateColorButton() {

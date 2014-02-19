@@ -29,6 +29,8 @@
 #include <U2Core/FormatUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Gui/HelpButton.h>
+
 
 //#include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/MainWindow.h>

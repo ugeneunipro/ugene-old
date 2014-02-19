@@ -28,6 +28,7 @@
 
 #include <U2Gui/PositionSelector.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/HelpButton.h>
 
 
 namespace U2 {
@@ -59,6 +60,14 @@ AssemblyNavigationWidget::AssemblyNavigationWidget(AssemblyBrowser *_browser, QW
     CoveredRegionsLabel * coveredLabel = new CoveredRegionsLabel(browser, this);
     QWidget * coveredGroup = new ShowHideSubgroupWidget("COVERED", tr("Most Covered Regions"), coveredLabel, true);
     mainLayout->addWidget(coveredGroup);
+
+    QHBoxLayout* helpLayout = new QHBoxLayout();
+    helpLayout->setContentsMargins(0, 5, 0, 0);
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    helpLayout->addWidget(buttonBox);
+    new HelpButton(this, buttonBox, "4227555");
+    mainLayout->addLayout(helpLayout);
+
 }
 
 void AssemblyNavigationWidget::sl_updateZoomingState(){

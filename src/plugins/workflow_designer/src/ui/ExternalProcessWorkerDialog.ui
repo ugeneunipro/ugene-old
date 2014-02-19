@@ -17,7 +17,7 @@
    <enum>QWizard::ClassicStyle</enum>
   </property>
   <property name="options">
-   <set>QWizard::HelpButtonOnRight</set>
+   <set>QWizard::HaveHelpButton|QWizard::HelpButtonOnRight</set>
   </property>
   <widget class="QWizardPage" name="wizardPage_2">
    <layout class="QVBoxLayout" name="verticalLayout_4">

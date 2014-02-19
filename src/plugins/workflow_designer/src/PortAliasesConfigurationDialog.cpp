@@ -25,6 +25,9 @@
 #include <U2Lang/WorkflowUtils.h>
 
 #include "PortAliasesConfigurationDialog.h"
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 namespace Workflow {
@@ -32,7 +35,11 @@ namespace Workflow {
 PortAliasesConfigurationDialog::PortAliasesConfigurationDialog( const Schema & schema, QWidget * p )
 : QDialog(p), portNameMaxSz(0), currentRow(-1) {
     setupUi(this);
-    
+    new HelpButton(this, buttonBox, "1474787");
+
+    QPushButton* cancelPushButton = buttonBox->button(QDialogButtonBox::Cancel);
+    QPushButton* okPushButton = buttonBox->button(QDialogButtonBox::Ok);
+
     connect(cancelPushButton, SIGNAL(clicked()), SLOT(reject()));
     connect(okPushButton, SIGNAL(clicked()), SLOT(accept()));
     connect(portAliasEdit, SIGNAL(textChanged (const QString &)), SLOT(sl_portAliasChanged(const QString &)));
@@ -70,6 +77,7 @@ PortAliasesConfigurationDialog::PortAliasesConfigurationDialog( const Schema & s
     connect(portAliasesTableWidget, SIGNAL(cellChanged(int, int)), SLOT(sl_onDataChange(int, int)));
     
     initializeModel(schema);
+
 }
 
 void PortAliasesConfigurationDialog::clearAliasTable() {

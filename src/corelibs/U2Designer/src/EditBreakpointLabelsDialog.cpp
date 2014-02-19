@@ -25,6 +25,7 @@
 
 #include "ui/ui_EditBreakpointLabelsDialog.h"
 #include "EditBreakpointLabelsDialog.h"
+#include <U2Gui/HelpButton.h>
 
 const QString LABEL_LEFT_SIDE_OFFSET = "    ";
 
@@ -39,15 +40,22 @@ EditBreakpointLabelsDialog::EditBreakpointLabelsDialog(const QStringList &existi
       ui(new Ui::EditBreakpointLabelsDialog())
 {
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "3245088");
+
     ui->addLabelButton->setEnabled(false);
     initExistingLabelsList(existingLabels);
 
     connect(ui->newLabelEdit, SIGNAL(textChanged(const QString &)),
         SLOT(sl_newLabelEditChanged(const QString &)));
     connect(ui->addLabelButton, SIGNAL(clicked()), SLOT(sl_newLabelAdded()));
-    connect(ui->okButton, SIGNAL(clicked()), SLOT(accept()));
-    connect(ui->okButton, SIGNAL(clicked()), SLOT(sl_dialogAccepted()));
-    connect(ui->cancelButton, SIGNAL(clicked()), SLOT(reject()));
+
+    QPushButton *okButton = ui->buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton *cancelButton = ui->buttonBox->button(QDialogButtonBox::Cancel);
+
+    connect(okButton, SIGNAL(clicked()), SLOT(accept()));
+    connect(okButton, SIGNAL(clicked()), SLOT(sl_dialogAccepted()));
+    connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
+
 }
 
 EditBreakpointLabelsDialog::~EditBreakpointLabelsDialog() {

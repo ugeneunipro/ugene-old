@@ -26,11 +26,17 @@
 #include <U2Core/Settings.h>
 #include <U2Designer/DesignerUtils.h>
 #include <QtGui/QFileDialog>
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 
 WorkflowMetaDialog::WorkflowMetaDialog(QWidget * p, const Metadata& meta): QDialog(p), meta(meta) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "2097175");
+
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+    okButton = buttonBox->button(QDialogButtonBox::Ok);
 
     connect(browseButton, SIGNAL(clicked()), SLOT(sl_onBrowse()));
     connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));

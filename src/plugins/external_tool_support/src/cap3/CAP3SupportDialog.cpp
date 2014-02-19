@@ -26,6 +26,8 @@
 #include <QtGui/QFileDialog>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 
 namespace U2 {
@@ -36,6 +38,9 @@ CAP3SupportDialog::CAP3SupportDialog(CAP3SupportTaskSettings& s, QWidget* parent
 : QDialog(parent), settings(s)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227725");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Run"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     tabWidget->setCurrentIndex(0);
     QString outputUrl;
@@ -47,6 +52,7 @@ CAP3SupportDialog::CAP3SupportDialog(CAP3SupportTaskSettings& s, QWidget* parent
     connect(specifyOutputPathButton, SIGNAL(clicked()), SLOT(sl_onSpecifyOutputPathButtonClicked()));
 
     initSettings();
+
 }
 
 void CAP3SupportDialog::initSettings() {

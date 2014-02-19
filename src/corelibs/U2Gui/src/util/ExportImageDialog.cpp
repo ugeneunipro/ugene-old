@@ -33,6 +33,7 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QPainter>
 #include <QtGui/QPrinter>
+#include <U2Gui/HelpButton.h>
 
 #include <QtSvg/QSvgGenerator>
 #include <QDomDocument>
@@ -69,6 +70,8 @@ int ExportImageDialog::getHeight() {
 void ExportImageDialog::setupComponents() {
     ui = new Ui_ImageExportForm;
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "4227400");
+
     if(useVectorFormats){
         supportedFormats.append("svg");
         supportedFormats.append("ps");

@@ -43,6 +43,10 @@ private slots:
     void sl_onBrowse();
     void sl_onSave();
     void sl_onURLChanged(const QString & text);
+
+private:
+    QPushButton* cancelButton;
+    QPushButton* okButton;
 };
 
 }//namespace

@@ -28,6 +28,8 @@
 #include <U2Gui/DialogUtils.h>
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolButton>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 namespace U2 {
 
@@ -37,10 +39,17 @@ TCoffeeSupportRunDialog::TCoffeeSupportRunDialog(TCoffeeSupportTaskSettings& _se
         QDialog(_parent), settings(_settings)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4228545");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     inputGroupBox->setVisible(false);
     this->adjustSize();
-    connect(this->cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
-    connect(this->alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+    QPushButton* alignButton = buttonBox->button(QDialogButtonBox::Ok);
+    connect(cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
+    connect(alignButton,SIGNAL(clicked()),this,SLOT(sl_align()));
+
 }
 
 void TCoffeeSupportRunDialog::sl_align(){
@@ -61,11 +70,18 @@ TCoffeeWithExtFileSpecifySupportRunDialog::TCoffeeWithExtFileSpecifySupportRunDi
         QDialog(_parent), settings(_settings)
 {
     setupUi(this);
-    this->adjustSize();
+    new HelpButton(this, buttonBox, "4228545");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
+    //this->adjustSize();
     connect(inputFilePathButton, SIGNAL(clicked()), SLOT(sl_inputPathButtonClicked()));
     connect(outputFilePathButton, SIGNAL(clicked()), SLOT(sl_outputPathButtonClicked()));
-    connect(this->cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(this->alignButton, SIGNAL(clicked()), this, SLOT(sl_align()));
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+    QPushButton* alignButton = buttonBox->button(QDialogButtonBox::Ok);
+
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(alignButton, SIGNAL(clicked()), this, SLOT(sl_align()));
 }
 
 void TCoffeeWithExtFileSpecifySupportRunDialog::sl_inputPathButtonClicked() {

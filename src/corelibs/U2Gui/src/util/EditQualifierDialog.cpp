@@ -23,6 +23,7 @@
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QKeyEvent>
+#include <U2Gui/HelpButton.h>
 
 #include <ui/ui_EditQualifierDialog.h>
 #include "EditQualifierDialog.h"
@@ -34,6 +35,7 @@ EditQualifierDialog::EditQualifierDialog(QWidget* p, const U2Qualifier& q, bool 
 {
     ui = new Ui_EditQualifierDialog;
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "4227360");
     
     if(true == ro){
         this->setWindowTitle(tr("View Qualifier"));

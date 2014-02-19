@@ -32,6 +32,8 @@
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/HelpButton.h>
+
 
 #include "ConstructMoleculeDialog.h"
 #include "EditFragmentDialog.h"
@@ -43,6 +45,8 @@ ConstructMoleculeDialog::ConstructMoleculeDialog(const QList<DNAFragment>& fragm
 : QDialog(p), fragments(fragmentList)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227651");
+
     tabWidget->setCurrentIndex(0);
     
     foreach (const DNAFragment& frag, fragments) {
@@ -74,7 +78,6 @@ ConstructMoleculeDialog::ConstructMoleculeDialog(const QList<DNAFragment>& fragm
     connect(molConstructWidget, SIGNAL(	itemClicked ( QTreeWidgetItem *, int)), SLOT(sl_onItemClicked(QTreeWidgetItem *, int)) );
     
     molConstructWidget->installEventFilter(this);
-
 }
 
 void ConstructMoleculeDialog::accept()

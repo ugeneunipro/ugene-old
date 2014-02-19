@@ -26,9 +26,11 @@
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/HelpButton.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolButton>
+#include <QtGui/QPushButton>
 
 namespace U2 {
 
@@ -38,6 +40,9 @@ FormatDBSupportRunDialog::FormatDBSupportRunDialog(const QString &_name, FormatD
         QDialog(_parent), name(_name), settings(_settings)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4228533");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Format"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     connect(inputFilesToolButton,SIGNAL(clicked()),SLOT(sl_onBrowseInputFiles()));
     connect(inputDirToolButton,SIGNAL(clicked()),SLOT(sl_onBrowseInputDir()));
@@ -63,9 +68,12 @@ FormatDBSupportRunDialog::FormatDBSupportRunDialog(const QString &_name, FormatD
         nucleotideTypeRadioButton->setChecked(true);
     }
 
+    formatButton = buttonBox->button(QDialogButtonBox::Ok);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     formatButton->setEnabled(false);
-    connect(this->cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
-    connect(this->formatButton,SIGNAL(clicked()),this,SLOT(sl_formatDB()));
+    connect(cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
+    connect(formatButton,SIGNAL(clicked()),this,SLOT(sl_formatDB()));
+
 }
 
 void FormatDBSupportRunDialog::sl_onBrowseInputFiles(){

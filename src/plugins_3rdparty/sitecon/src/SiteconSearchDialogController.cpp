@@ -39,6 +39,7 @@
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/HelpButton.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -49,6 +50,7 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QFileDialog>
+#include <QtGui/QPushButton>
 
 namespace U2 {
 
@@ -80,6 +82,13 @@ public:
 
 SiteconSearchDialogController::SiteconSearchDialogController(ADVSequenceObjectContext* _ctx, QWidget *p):QDialog(p) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227673");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
+    pbSearch = buttonBox->button(QDialogButtonBox::Ok);
+    pbClose = buttonBox->button(QDialogButtonBox::Cancel);
+    
     model = NULL;
     
     //props = _props;
@@ -100,6 +109,7 @@ SiteconSearchDialogController::SiteconSearchDialogController(ADVSequenceObjectCo
     pbSelectModelFile->setFocus();
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), SLOT(sl_onTimer()));
+
 }
 
 SiteconSearchDialogController::~SiteconSearchDialogController() {

@@ -22,6 +22,7 @@
 
 #include "SettingsDialog.h"
 #include <U2Core/Log.h>
+#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -30,6 +31,8 @@ BioStruct3DSettingsDialog::BioStruct3DSettingsDialog()
         : anaglyphStatus(NOT_AVAILABLE), anaglyphSettings(AnaglyphSettings::defaultSettings())
 {
     setupUi(this);
+
+    new HelpButton(this, buttonBox, "4227376");
 
     glWidget = NULL;
     initColorSchemes();

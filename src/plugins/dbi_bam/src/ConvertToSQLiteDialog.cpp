@@ -34,6 +34,7 @@
 #include <U2Core/TmpDirChecker.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/HelpButton.h>
 #include "BAMDbiPlugin.h"
 #include "BaiReader.h"
 #include "ConvertToSQLiteDialog.h"
@@ -44,6 +45,10 @@ namespace BAM {
 
 ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _bamInfo, bool sam) : QDialog(QApplication::activeWindow()), sourceUrl(_sourceUrl), bamInfo(_bamInfo) {
     ui.setupUi(this);
+    new HelpButton(this, ui.buttonBox, "4227509");
+    ui.buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Import"));
+    ui.buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     if (sam) {
         setWindowTitle(tr("Import SAM File"));
     } else {
@@ -90,13 +95,15 @@ ConvertToSQLiteDialog::ConvertToSQLiteDialog(const GUrl& _sourceUrl, BAMInfo& _b
         }
         ui.tableWidget->verticalHeader()->setDefaultSectionSize(QFontMetrics(QFont()).height() + 5);
     }
+    QPushButton* okButton = ui.buttonBox->button(QDialogButtonBox::Ok);
     ui.importUnmappedBox->setCheckState(bamInfo.isUnmappedSelected() ? Qt::Checked : Qt::Unchecked);
     ui.destinationUrlEdit->setText(sourceUrl.dirPath() + "/" + sourceUrl.fileName() + ".ugenedb");
     ui.sourceUrlView->setText(QDir::cleanPath(sourceUrl.getURLString()));
-    ui.okButton->setFocus();
+    okButton->setFocus();
     connect(ui.tableWidget, SIGNAL(itemChanged(QTableWidgetItem*)), SLOT(sl_assemblyCheckChanged(QTableWidgetItem*)));
     adjustSize();
     resize(500, height());
+
 }
 
 void ConvertToSQLiteDialog::hideReferenceUrl() {

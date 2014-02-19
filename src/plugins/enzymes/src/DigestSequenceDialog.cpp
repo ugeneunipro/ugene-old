@@ -34,6 +34,7 @@
 #include <U2Core/Settings.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/HelpButton.h>
 #include <U2Formats/GenbankLocationParser.h>
 
 #include "EnzymesIO.h"
@@ -52,6 +53,9 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
 : QDialog(p),seqCtx(ctx), timer(NULL), animationCounter(0)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227647");
+
+    okButton = buttonBox->button(QDialogButtonBox::Ok);
     tabWidget->setCurrentIndex(0);
         
     dnaObj = qobject_cast<U2SequenceObject*>(ctx->getSequenceGObject());
@@ -90,6 +94,7 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
             timer->start(400);
         }
     }
+
 }
 
 QList<SEnzymeData> DigestSequenceDialog::findEnzymeDataById( const QString& id )

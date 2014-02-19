@@ -39,6 +39,7 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Settings.h>
+#include <U2Gui/HelpButton.h>
 
 #include <U2Algorithm/SmithWatermanReportCallback.h>
 #include "SubstMatrixDialog.h"
@@ -68,6 +69,14 @@ SmithWatermanDialog::SmithWatermanDialog(QWidget* w,
     dialogConfig = _dialogConfig;
         
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227681");
+    buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Remote run"));
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
+    remoteRunPushButton = buttonBox->button(QDialogButtonBox::Yes);
+    bttnRun = buttonBox->button(QDialogButtonBox::Ok);
+    bttnCancel = buttonBox->button(QDialogButtonBox::Cancel);
 
     tabWidget->setCurrentIndex(0);
     regionSelector = new RegionSelector(this, ctx->getSequenceLength(), true, ctx->getSequenceSelection());
@@ -113,7 +122,7 @@ SmithWatermanDialog::SmithWatermanDialog(QWidget* w,
     updatePatternFieldVisualState();
 
     teditPattern->setFocus();
-    
+
     //! FIXME:
     remoteRunPushButton->setVisible(false);
 }

@@ -32,6 +32,8 @@
 #include "ov_phyltree/TreeViewer.h"
 #include "ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h"
 #include "phyltree/TreeSettingsDialog.h"
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 
@@ -63,6 +65,8 @@ TreeOptionsWidget::TreeOptionsWidget(MSAEditor* m, const TreeOpWidgetViewSetting
 
     contentWidget = new QWidget();
     setupUi(contentWidget);
+    new HelpButton(this, buttonBox, "4227131");
+
     treeSettings = getTreeViewer()->getTreeSettings();
     createGroups();
 }
@@ -74,6 +78,8 @@ TreeOptionsWidget::TreeOptionsWidget(TreeViewer* tree, const TreeOpWidgetViewSet
 
     contentWidget = new QWidget();
     setupUi(contentWidget);
+    new HelpButton(this, buttonBox, "4227131");
+
     treeSettings = treeViewer->getTreeSettings();
     createGroups();
 }
@@ -432,6 +438,13 @@ AddTreeWidget::AddTreeWidget(MSAEditor* msa)
     buildTreeButton->setObjectName( "BuildTreeButton" );
 
     mainLayout->addLayout(buttonLayout);
+
+    QHBoxLayout* helpLayout = new QHBoxLayout();
+    helpLayout->setContentsMargins(0, 5, 0, 0);
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    helpLayout->addWidget(buttonBox);
+    new HelpButton(this, buttonBox, "4227222");
+    mainLayout->addLayout(helpLayout);
 
     connect(openTreeButton, SIGNAL(clicked()), SLOT(sl_onOpenTreeTriggered()));
     connect(buildTreeButton, SIGNAL(clicked()), SLOT(sl_onBuildTreeTriggered()));

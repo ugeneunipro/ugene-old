@@ -25,12 +25,17 @@
 
 #include <QtCore/QDir>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 namespace U2 {
 
 PWMJASPARDialogController::PWMJASPARDialogController(QWidget *w) 
 : QDialog(w) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227729");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Select"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     QString jasparDir = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/position_weight_matrix/JASPAR";
     QDir dir(jasparDir);
@@ -56,11 +61,14 @@ PWMJASPARDialogController::PWMJASPARDialogController(QWidget *w)
     }
     fileName = "";
 
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     connect(okButton, SIGNAL(clicked()), SLOT(sl_onOK()));
     connect(cancelButton, SIGNAL(clicked()), SLOT(sl_onCancel()));
     connect(jasparTree, SIGNAL(itemSelectionChanged()), SLOT(sl_onSelectionChanged()));
     connect(jasparTree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)), SLOT(sl_onDoubleClicked(QTreeWidgetItem*, int)));
     connect(propertiesTable, SIGNAL(itemClicked(QTableWidgetItem*)), SLOT(sl_onTableItemClicked(QTableWidgetItem*)));
+
 }
 
 void PWMJASPARDialogController::sl_onOK() {

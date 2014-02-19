@@ -73,6 +73,8 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
 : QDialog(_ctx->getAnnotatedDNAView()->getWidget()) 
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227619");
+
     tabWidget->setCurrentIndex(0);
 
     ctx = _ctx;
@@ -106,7 +108,6 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
     sl_translationChanged();
 
     createAnnotationWidget();
-    new HelpButton(this, buttonBox, "http://ugene.unipro.ru/documentation/manual/plugins/orf_marker.html");
 }
 
 static QString triplet2str(const Triplet& t) {

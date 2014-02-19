@@ -30,6 +30,7 @@
 #include <U2Gui/CreateAnnotationWidgetController.h>
 
 #include "EditAnnotationDialogController.h"
+#include <U2Gui/HelpButton.h>
 
 /* TRANSLATOR U2::EditAnnotationDialogController */
 
@@ -40,6 +41,7 @@ EditAnnotationDialogController::EditAnnotationDialogController( const Annotation
 {
 
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227348");
 
     nameEdit->setText(a.name);
     locationEdit->setText(Genbank::LocationParser::buildLocationString(&a));
@@ -53,6 +55,7 @@ EditAnnotationDialogController::EditAnnotationDialogController( const Annotation
     connect(complementButton, SIGNAL(clicked()), SLOT(sl_complementLocation()));
     connect(locationEdit, SIGNAL(returnPressed()), SLOT(accept()));
     connect(nameEdit, SIGNAL(returnPressed()), SLOT(accept()));
+
 }
 
 void EditAnnotationDialogController::sl_onTextChanged(const QString& changedText){

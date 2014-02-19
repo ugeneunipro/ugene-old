@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>765</width>
-    <height>424</height>
+    <height>426</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -753,48 +753,11 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_8">
-     <item>
-      <spacer name="horizontalSpacer_5">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="remoteRunPushButton">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string>Remote run...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="bttnRun">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string>Search</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="bttnCancel">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Yes</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -823,27 +786,7 @@
   <tabstop>refSubseqNameTmpl</tabstop>
   <tabstop>patternSubseqNameTmpl</tabstop>
   <tabstop>patternSequenceName</tabstop>
-  <tabstop>bttnRun</tabstop>
-  <tabstop>bttnCancel</tabstop>
-  <tabstop>remoteRunPushButton</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>bttnCancel</sender>
-   <signal>clicked()</signal>
-   <receiver>SmithWatermanDialogBase</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>755</x>
-     <y>442</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>544</x>
-     <y>111</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

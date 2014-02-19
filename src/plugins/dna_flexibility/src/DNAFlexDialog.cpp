@@ -25,8 +25,10 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/HelpButton.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
+#include <QtGui/QPushButton>
 
 #include <QtGui/QMessageBox>
 
@@ -38,6 +40,10 @@ DNAFlexDialog::DNAFlexDialog(ADVSequenceObjectContext* _ctx)
   : QDialog(_ctx->getAnnotatedDNAView()->getWidget())
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227611");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     ctx = _ctx;
 
     // Get the sequence length
@@ -78,6 +84,7 @@ DNAFlexDialog::DNAFlexDialog(ADVSequenceObjectContext* _ctx)
     connect(doubleSpinBoxThreshold, SIGNAL(valueChanged(double)), SLOT(sl_spinThresholdChanged(double)));
     connect(btnRemember, SIGNAL(clicked()), SLOT(sl_rememberSettings()));
     connect(btnDefaults, SIGNAL(clicked()), SLOT(sl_defaultSettings()));
+
 }
 
 

@@ -28,11 +28,12 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/GObjectRelationRoles.h>
 
-
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QPushButton>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 
@@ -43,13 +44,17 @@ CreateAnnotationDialog::CreateAnnotationDialog(QWidget* p, CreateAnnotationModel
 
     QHBoxLayout* buttonsLayout = new QHBoxLayout();
     buttonsLayout->addStretch(1);
-    createButton = new QPushButton(tr("Create"), this);
-    createButton->setObjectName("create_button");
-    buttonsLayout->addWidget(createButton);
-    cancelButton = new QPushButton(tr("Cancel"), this);
-    cancelButton->setObjectName("cancel_button");
-    buttonsLayout->addWidget(cancelButton);
-    
+
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
+    buttonsLayout->addWidget(buttonBox);
+
+    createButton = buttonBox->button(QDialogButtonBox::Ok);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+
+    new HelpButton(this, buttonBox, "4227222");
+    createButton->setText(tr("Create"));
+    cancelButton->setText(tr("Cancel"));
+
     QVBoxLayout* topLayout = new QVBoxLayout();
     topLayout->setObjectName("new_annotation_dialog_layout");
     

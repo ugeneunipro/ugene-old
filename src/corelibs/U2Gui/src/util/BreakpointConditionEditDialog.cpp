@@ -23,6 +23,8 @@
 
 #include "ui/ui_BreakpointConditionEditDialog.h"
 #include "BreakpointConditionEditDialog.h"
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2 {
 
@@ -54,6 +56,8 @@ BreakpointConditionEditDialog::BreakpointConditionEditDialog(QWidget *parent,
     ui->conditionBox->setChecked(conditionEnabled);
 
     connect(ui->buttonBox, SIGNAL(accepted()), SLOT(sl_dialogAccepted()));
+    new HelpButton(this, ui->buttonBox, "https://ugene.unipro.ru/wiki/display/UUOUM/Editing+Fragment+Overhangs");
+
 }
 
 BreakpointConditionEditDialog::~BreakpointConditionEditDialog() {

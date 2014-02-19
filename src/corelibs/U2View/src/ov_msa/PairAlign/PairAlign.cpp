@@ -59,6 +59,8 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QLayout>
 #include <QtGui/QHBoxLayout>
+#include <U2Gui/HelpButton.h>
+
 
 inline U2::U2DataId getSequenceIdByRowId( U2::MSAEditor* msa, qint64 rowId, U2::U2OpStatus &os ) {
     U2::MAlignmentRow row = msa->getMSAObject()->getMAlignment().getRowByRowId(rowId, os);
@@ -81,6 +83,10 @@ PairAlign::PairAlign(MSAEditor* _msa) : msa(_msa), pairwiseAlignmentWidgetsSetti
     SAFE_POINT(NULL != pairwiseAlignmentWidgetsSettings, "pairwiseAlignmentWidgetsSettings is NULL.", );
 
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227131");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
+    alignButton = buttonBox->button(QDialogButtonBox::Ok);
+
     firstSeqSelectorWC = new SequenceSelectorWidgetController(msa);
     secondSeqSelectorWC = new SequenceSelectorWidgetController(msa);
 
@@ -145,7 +151,8 @@ void PairAlign::connectSignals() {
     connect(showHideOutputWidget,       SIGNAL(si_subgroupStateChanged(QString)),   SLOT(sl_subwidgetStateChanged(QString)));
     connect(algorithmListComboBox,      SIGNAL(currentIndexChanged(QString)),       SLOT(sl_algorithmSelected(QString)));
     connect(inNewWindowCheckBox,        SIGNAL(clicked(bool)),                      SLOT(sl_inNewWindowCheckBoxChangeState(bool)));
-    connect(alignButton,                SIGNAL(clicked()),                          SLOT(sl_alignButtonPressed()));
+    connect(alignButton, SIGNAL(clicked()), this, SLOT(sl_alignButtonPressed()));
+    //connect(alignButton,                SIGNAL(clicked()),                          SLOT(sl_alignButtonPressed()));
     connect(outputFileSelectButton,     SIGNAL(clicked()),                          SLOT(sl_selectFileButtonClicked()));
     connect(outputFileLineEdit,         SIGNAL(textChanged(QString)),               SLOT(sl_outputFileChanged(QString)));
 

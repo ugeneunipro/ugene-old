@@ -14,8 +14,8 @@ namespace U2{
 
 class MultipleDocumentsReadingModeSelectorController {
 public:	
-	static bool adjustReadingMode(QVariantMap& , QList<GUrl>& urls,const QMap<QString, qint64>& headerSequenceLengths);
-	static bool mergeDocumentOption(const FormatDetectionResult& formatResult, QMap<QString, qint64>* headerSequenceLengths);    
+    static bool adjustReadingMode(QVariantMap& , QList<GUrl>& urls,const QMap<QString, qint64>& headerSequenceLengths);
+    static bool mergeDocumentOption(const FormatDetectionResult& formatResult, QMap<QString, qint64>* headerSequenceLengths);    
 private:
     MultipleDocumentsReadingModeSelectorController();
 };

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>479</width>
-    <height>202</height>
+    <height>221</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,13 +46,6 @@
      <item row="3" column="2" colspan="2">
       <widget class="QLineEdit" name="sequenceNameLineEdit"/>
      </item>
-     <item row="5" column="0" colspan="4">
-      <widget class="QCheckBox" name="keepGapsCheckBox">
-       <property name="text">
-        <string>Keep gaps</string>
-       </property>
-      </widget>
-     </item>
      <item row="4" column="0">
       <widget class="QLabel" name="algorithmLabel">
        <property name="text">
@@ -83,6 +76,13 @@
     </layout>
    </item>
    <item>
+    <widget class="QCheckBox" name="keepGapsCheckBox">
+     <property name="text">
+      <string>Keep gaps</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QCheckBox" name="addToProjectCheckBox">
@@ -94,34 +94,14 @@
        </property>
       </widget>
      </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="okPushButton">
-       <property name="text">
-        <string>Export</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelPushButton">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

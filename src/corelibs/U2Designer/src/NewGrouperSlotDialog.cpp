@@ -26,6 +26,7 @@
 #include "GrouperEditorWidget.h"
 
 #include "NewGrouperSlotDialog.h"
+#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -33,6 +34,7 @@ NewGrouperSlotDialog::NewGrouperSlotDialog(QWidget *parent, QList<Descriptor> &i
 : QDialog(parent), inSlots(inSlots), names(names)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "2097363");
 
     foreach (const Descriptor &d, inSlots) {
         slotBox->addItem(d.getDisplayName(), d.getId());
@@ -100,6 +102,7 @@ AnnsActionDialog::AnnsActionDialog(QWidget *parent, GrouperSlotAction *action, Q
 : ActionDialog(parent)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "2097363");
 
     slotBox->addItem(tr("<Don't shift>"));
     foreach (const QString &slot, mergeSeqSlots) {
@@ -144,6 +147,7 @@ SequeceActionDialog::SequeceActionDialog(QWidget *parent, GrouperSlotAction *act
 : ActionDialog(parent)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "2097363");
 
     if (NULL != action) {
         if (ActionTypes::MERGE_SEQUENCE == action->getType()) {
@@ -206,7 +210,7 @@ MsaActionDialog::MsaActionDialog(QWidget *parent, GrouperSlotAction *action)
 : ActionDialog(parent)
 {
     setupUi(this);
-
+    new HelpButton(this, buttonBox, "2097363");
     if (NULL != action) {
         assert(ActionTypes::MERGE_MSA == action->getType());
         if (action->hasParameter(ActionParameters::MSA_NAME)) {
@@ -238,7 +242,7 @@ StringActionDialog::StringActionDialog(QWidget *parent, GrouperSlotAction *actio
 : ActionDialog(parent)
 {
     setupUi(this);
-
+    new HelpButton(this, buttonBox, "2097363");
     if (NULL != action) {
         assert(ActionTypes::MERGE_STRING == action->getType());
         if (action->hasParameter(ActionParameters::SEPARATOR)) {

@@ -25,6 +25,7 @@
 #include <U2Lang/Marker.h>
 #include <U2Lang/MarkerUtils.h>
 
+
 #include "MarkerEditorWidget.h"
 
 namespace U2 {
@@ -51,6 +52,7 @@ MarkerEditorWidget::MarkerEditorWidget(QAbstractTableModel *markerModel, QWidget
     connect(removeButton, SIGNAL(clicked()), SLOT(sl_onRemoveButtonClicked()));
     connect(table, SIGNAL(entered(const QModelIndex &)), SLOT(sl_onItemEntered(const QModelIndex &)));
     connect(table, SIGNAL(pressed(const QModelIndex &)), SLOT(sl_onItemSelected(const QModelIndex &)));
+
 }
 
 void MarkerEditorWidget::sl_onAddButtonClicked() {

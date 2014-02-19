@@ -42,6 +42,8 @@ private slots:
 private:
     void update();
     BlastDBCmdSupportTaskSettings&    settings;
+    QPushButton* cancelButton;
+    QPushButton* fetchButton;
 };
 
 }//namespace

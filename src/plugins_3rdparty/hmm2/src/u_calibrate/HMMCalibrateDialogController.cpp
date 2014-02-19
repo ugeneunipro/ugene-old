@@ -11,6 +11,9 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 
@@ -19,10 +22,16 @@ HMMCalibrateDialogController::HMMCalibrateDialogController(QWidget* w)
 {
     task = NULL;
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227687");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Calibrate"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Close"));
 
+    okButton = buttonBox->button(QDialogButtonBox::Ok);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     connect(hmmFileButton, SIGNAL(clicked()), SLOT(sl_hmmFileButtonClicked()));
     connect(outFileButton, SIGNAL(clicked()), SLOT(sl_outFileButtonClicked()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_okButtonClicked()));
+
 }
 
 

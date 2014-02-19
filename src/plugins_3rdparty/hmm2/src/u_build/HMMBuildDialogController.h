@@ -38,6 +38,8 @@ private:
     MAlignment  ma;
     QString     profileName;
     Task*       task;
+    QPushButton* okButton;
+    QPushButton* cancelButton;
 
 };
 

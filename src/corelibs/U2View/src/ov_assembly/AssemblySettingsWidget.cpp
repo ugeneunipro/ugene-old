@@ -27,6 +27,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -209,6 +210,13 @@ QWidget * AssemblySettingsWidget::createRulerSettings() {
     QAction * coverageAct = browser->getCoverageOnRulerAction();
     createTwoWayBinding(showCoverage, coverageAct);
     layout->addWidget(showCoverage);
+
+    QHBoxLayout* helpLayout = new QHBoxLayout();
+    helpLayout->setContentsMargins(0, 5, 0, 0);
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    helpLayout->addWidget(buttonBox);
+    new HelpButton(this, buttonBox, "4227557");
+    layout->addLayout(helpLayout);
 
     return group;
 }

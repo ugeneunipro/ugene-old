@@ -147,38 +147,11 @@ Load markup for your sequences in specified XML format or genbank format.</strin
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <spacer name="horizontalSpacer_1">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="startButton">
-       <property name="text">
-        <string>Ok</string>
-       </property>
-       <property name="default">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -189,8 +162,6 @@ Load markup for your sequences in specified XML format or genbank format.</strin
   <tabstop>openSecondButton</tabstop>
   <tabstop>secondFileEdit</tabstop>
   <tabstop>addToCurrentCheck</tabstop>
-  <tabstop>startButton</tabstop>
-  <tabstop>cancelButton</tabstop>
   <tabstop>openThirdButton</tabstop>
   <tabstop>thirdFileEdit</tabstop>
   <tabstop>oneSequenceCheckBox</tabstop>
@@ -198,34 +169,34 @@ Load markup for your sequences in specified XML format or genbank format.</strin
  <resources/>
  <connections>
   <connection>
-   <sender>startButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
    <receiver>ExpertDiscoveryPosNegMrkDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>382</x>
-     <y>373</y>
+     <x>222</x>
+     <y>282</y>
     </hint>
     <hint type="destinationlabel">
-     <x>273</x>
-     <y>270</y>
+     <x>222</x>
+     <y>151</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>ExpertDiscoveryPosNegMrkDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>465</x>
-     <y>373</y>
+     <x>222</x>
+     <y>282</y>
     </hint>
     <hint type="destinationlabel">
-     <x>273</x>
-     <y>270</y>
+     <x>222</x>
+     <y>151</y>
     </hint>
    </hints>
   </connection>

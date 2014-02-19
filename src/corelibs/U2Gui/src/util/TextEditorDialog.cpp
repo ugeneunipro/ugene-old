@@ -23,6 +23,7 @@
 #include "ui/ui_TextEditorDialog.h"
 
 #include <QtGui/QKeyEvent>
+#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -31,12 +32,14 @@ TextEditorDialog::TextEditorDialog(QWidget* parent, const QString& title, const 
 {
     ui = new Ui_TextEditorDialog();
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "4227131");
     setWindowTitle(title);
     ui->valueLabel->setText(label);
     ui->textEdit->setPlainText(text);
     if (acceptOnEnter) {
         ui->textEdit->installEventFilter(this);
     }
+
 }
 
 bool TextEditorDialog::eventFilter(QObject *o, QEvent *e) {

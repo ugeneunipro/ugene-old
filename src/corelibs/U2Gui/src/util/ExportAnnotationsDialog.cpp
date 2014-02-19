@@ -26,7 +26,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/global.h>
 #include <U2Core/U2SafePoints.h>
-
+#include <U2Gui/HelpButton.h>
 #include <U2Core/FormatUtils.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
@@ -42,6 +42,7 @@ ExportAnnotationsDialog::ExportAnnotationsDialog( const QString &filename, QWidg
     : QDialog( parent ), ui( new Ui::ExportAnnotationsDialog( ) )
 {
     ui->setupUi( this );
+    new HelpButton(this, ui->buttonBox, "4227370");
 
     ui->fileNameEdit->setText( filename );
     connect( ui->chooseFileButton, SIGNAL( clicked( ) ), SLOT( sl_onChooseFileButtonClicked( ) ) );

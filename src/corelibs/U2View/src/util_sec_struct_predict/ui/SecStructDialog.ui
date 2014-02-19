@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="utf-8"?>
+<ui version="4.0">
  <class>SecStructDialog</class>
- <widget class="QDialog" name="SecStructDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="SecStructDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,42 +10,42 @@
     <height>480</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Secondary Structure Prediction</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3" >
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QLabel" name="label_3" >
-       <property name="text" >
+      <widget class="QLabel" name="label_3">
+       <property name="text">
         <string>Algorithm</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="algorithmComboBox" />
+      <widget class="QComboBox" name="algorithmComboBox"/>
      </item>
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2" >
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QLabel" name="label" >
-       <property name="text" >
+      <widget class="QLabel" name="label">
+       <property name="text">
         <string>Range Start:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="rangeStartSpinBox" />
+      <widget class="QSpinBox" name="rangeStartSpinBox"/>
      </item>
      <item>
-      <spacer name="horizontalSpacer_2" >
-       <property name="orientation" >
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -53,21 +54,21 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="label_2" >
-       <property name="text" >
+      <widget class="QLabel" name="label_2">
+       <property name="text">
         <string>Range End:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="rangeEndSpinBox" />
+      <widget class="QSpinBox" name="rangeEndSpinBox"/>
      </item>
      <item>
-      <spacer name="horizontalSpacer_3" >
-       <property name="orientation" >
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -78,20 +79,20 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" >
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="label_4" >
-       <property name="text" >
+      <widget class="QLabel" name="label_4">
+       <property name="text">
         <string>Results:</string>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer" >
-       <property name="orientation" >
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -102,37 +103,37 @@
     </layout>
    </item>
    <item>
-    <widget class="QTableWidget" name="resultsTable" >
-     <property name="editTriggers" >
+    <widget class="QTableWidget" name="resultsTable">
+     <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
-     <property name="columnCount" >
+     <property name="columnCount">
       <number>0</number>
      </property>
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_6" >
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
      <item>
-      <widget class="QLabel" name="label_5" >
-       <property name="text" >
+      <widget class="QLabel" name="label_5">
+       <property name="text">
         <string>Total predicted:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="totalPredictedStatus" >
-       <property name="text" >
+      <widget class="QLabel" name="totalPredictedStatus">
+       <property name="text">
         <string>0</string>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_4" >
-       <property name="orientation" >
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -143,50 +144,29 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4" >
-     <item>
-      <widget class="QPushButton" name="startButton" >
-       <property name="text" >
-        <string>Start prediction</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="saveAnnotationButton" >
-       <property name="focusPolicy" >
-        <enum>Qt::WheelFocus</enum>
-       </property>
-       <property name="text" >
-        <string>Save As Annotation...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton" >
-       <property name="text" >
-        <string>Close</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Save</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
    <receiver>SecStructDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
-     <x>403</x>
-     <y>544</y>
+    <hint type="sourcelabel">
+     <x>219</x>
+     <y>459</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>244</x>
-     <y>283</y>
+    <hint type="destinationlabel">
+     <x>219</x>
+     <y>239</y>
     </hint>
    </hints>
   </connection>

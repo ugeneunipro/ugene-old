@@ -3,6 +3,7 @@
 #include <QtGui/QMessageBox>
 #include <QValidator>
 #include <QDoubleValidator>
+#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -56,6 +57,8 @@ ExpertDiscoveryAdvSetDialog::ExpertDiscoveryAdvSetDialog(QWidget *parent,
     connect( checkCorrel, SIGNAL(clicked()), SLOT(sl_checkCorrel()) );
 
     hideParameters();
+    new HelpButton(this, buttonBox, "https://ugene.unipro.ru/wiki/display/UUOUM/Editing+Fragment+Overhangs");
+
 }
 
 void ExpertDiscoveryAdvSetDialog::accept(){

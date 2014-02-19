@@ -35,6 +35,9 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 
 namespace U2 {
@@ -45,6 +48,10 @@ BuildIndexDialog::BuildIndexDialog(const DnaAssemblyAlgRegistry* registry, QWidg
 : QDialog(p), assemblyRegistry(registry), customGUI(NULL)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227723");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Start"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     QStringList names = registry->getRegisteredAlgorithmsWithIndexFileSupport();
     methodNamesBox->addItems(names);
     // TODO: change the way default method is set

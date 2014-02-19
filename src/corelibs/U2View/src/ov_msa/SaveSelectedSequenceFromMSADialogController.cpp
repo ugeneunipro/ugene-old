@@ -26,11 +26,18 @@
 #include <QtGui/QMessageBox>
 
 #include <U2Core/L10n.h>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 
 SaveSelectedSequenceFromMSADialogController::SaveSelectedSequenceFromMSADialogController(QWidget* p): QDialog(p) {
     setupUi(this);    
+    new HelpButton(this, buttonBox, "4227246");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     trimGapsFlag = false;
     addToProjectFlag = true;
 
@@ -44,6 +51,7 @@ SaveSelectedSequenceFromMSADialogController::SaveSelectedSequenceFromMSADialogCo
     conf.parentWidget = this;
     conf.defaultFormatId = BaseDocumentFormats::FASTA;
     saveContoller = new SaveDocumentGroupController(conf, this);
+
 }
 
 void SaveSelectedSequenceFromMSADialogController::accept() {

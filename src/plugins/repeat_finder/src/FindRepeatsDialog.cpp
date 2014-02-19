@@ -36,6 +36,7 @@
 #include <U2View/AnnotatedDNAView.h>
 
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
 #include <math.h>
 
 namespace U2 {
@@ -71,6 +72,11 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
 {
     sc = _sc;
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227625");
+
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Start"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     tabWidget->setCurrentIndex(0);
     
     CreateAnnotationModel m;
@@ -112,7 +118,6 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     connect(minLenHeuristicsButton, SIGNAL(clicked()), SLOT(sl_minLenHeuristics()));
     connect(hundredPercentButton, SIGNAL(clicked()), SLOT(sl_hundredPercent()));
 
-
     connect(minLenBox, SIGNAL(valueChanged(int)), SLOT(sl_repeatParamsChanged(int)));
     connect(identityBox, SIGNAL(valueChanged(int)), SLOT(sl_repeatParamsChanged(int)));
 
@@ -139,6 +144,7 @@ FindRepeatsDialog::FindRepeatsDialog(ADVSequenceObjectContext* _sc)
     updateStatus();
 
     setWindowIcon(QIcon(":/ugene/images/ugene_16.png"));
+
 }
 
 void FindRepeatsDialog::prepareAMenu(QToolButton* tb, QLineEdit* le, const QStringList& names) {

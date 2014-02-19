@@ -44,6 +44,8 @@ private:
     U2SequenceObject*  dnaso;
     QString &lastDBPath;
     QString &lastDBName;
+    QPushButton* okButton;
+    QPushButton* cancelButton;
 };
 
 class BlastAllWithExtFileSpecifySupportRunDialog : public BlastRunCommonDialog {
@@ -67,6 +69,8 @@ private:
     QList<GObjectReference>     sequencesRefList;
     QString &lastDBPath;
     QString &lastDBName;
+    QPushButton* okButton;
+    QPushButton* cancelButton;
 };
 }//namespace
 #endif // _U2_BLASTALL_SUPPORT_RUN_DIALOG_H

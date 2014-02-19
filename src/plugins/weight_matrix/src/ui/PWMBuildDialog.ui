@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Build weight or frequency matrix</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1,0,0">
    <item>
     <layout class="QGridLayout" name="gridLayout_2">
      <item row="0" column="0">
@@ -181,42 +181,19 @@
        </property>
       </spacer>
      </item>
-     <item>
-      <widget class="QPushButton" name="okButton">
-       <property name="text">
-        <string>Start</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancelButton">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>cancelButton</sender>
-   <signal>clicked()</signal>
-   <receiver>PWMBuildDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>395</x>
-     <y>142</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>222</x>
-     <y>82</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>weightButton</sender>
    <signal>toggled(bool)</signal>
@@ -246,6 +223,22 @@
     <hint type="destinationlabel">
      <x>320</x>
      <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>PWMBuildDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>244</x>
+     <y>338</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>244</x>
+     <y>179</y>
     </hint>
    </hints>
   </connection>

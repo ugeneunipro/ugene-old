@@ -20,16 +20,24 @@
  */
 
 #include "DeleteGapsDialog.h"
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 
 namespace U2 {
 
 DeleteGapsDialog::DeleteGapsDialog(QWidget* parent, int rowNum): QDialog(parent) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227470");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Remove"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
     allRadioButton->setChecked(true);
     absoluteSpinBox->setMinimum(1);
     absoluteSpinBox->setMaximum(rowNum);
+
+    QPushButton *deleteButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton *cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
 
     connect(absoluteRadioButton, SIGNAL(clicked()), SLOT(sl_onRadioButtonClicked()));
     connect(relativeRadioButton, SIGNAL(clicked()), SLOT(sl_onRadioButtonClicked()));
@@ -38,6 +46,7 @@ DeleteGapsDialog::DeleteGapsDialog(QWidget* parent, int rowNum): QDialog(parent)
     connect(cancelButton, SIGNAL(clicked()), SLOT(sl_onCancelClicked()));
 
     sl_onRadioButtonClicked();
+
 }
 
 void DeleteGapsDialog::sl_onRadioButtonClicked() {

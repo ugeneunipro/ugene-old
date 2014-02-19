@@ -21,20 +21,26 @@
 
 #include "U2Core/global.h"
 
-#include <QWidget>
-#include <QString>
-#include <QDialogButtonBox>
+#include <QtCore/QString>
 
-namespace U2{
+#include <QtGui/QWidget>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QAbstractButton>
+
+namespace U2 {
 
 class U2GUI_EXPORT HelpButton: public QObject {
     Q_OBJECT
+
 public:
-    HelpButton(QWidget *target, QDialogButtonBox *b, QString lnk);
+    HelpButton(QObject *parent, QDialogButtonBox *b, const QString& pageId);
+    HelpButton(QObject *parent, QAbstractButton *b, const QString& pageId);
+
 private slots:
     void sl_buttonClicked();
+
 private:
-    QString link;
+    QString pageId;
 };
 
 }

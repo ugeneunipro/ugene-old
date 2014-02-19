@@ -42,6 +42,8 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+
 
 #define SETTINGS_ROOT   QString("plugin_sitecon/")
 #define CALIBRATION_LEN "calibration_len"
@@ -54,13 +56,20 @@ SiteconBuildDialogController::SiteconBuildDialogController(SiteconPlugin* pl, QW
 {
     task = NULL;
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227671");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Build"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
 
     weightAlgCombo->setCurrentIndex(AppContext::getSettings()->getValue(SETTINGS_ROOT + WEIGHT_ALG, 1).toInt());
     calibrationSeqLenBox->setCurrentIndex(AppContext::getSettings()->getValue(SETTINGS_ROOT + CALIBRATION_LEN).toInt());
 
+    okButton = buttonBox->button(QDialogButtonBox::Ok);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     connect(inputButton, SIGNAL(clicked()), SLOT(sl_inFileButtonClicked()));
     connect(outputButton, SIGNAL(clicked()), SLOT(sl_outFileButtonClicked()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_okButtonClicked()));
+
 }
 
 

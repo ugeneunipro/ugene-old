@@ -29,6 +29,9 @@
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QKeyEvent>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 
@@ -39,6 +42,11 @@ SearchQualifierDialog::SearchQualifierDialog(QWidget* p, AnnotationsTreeView * _
 {
      ui = new Ui_SearchQualifierDialog;
      ui->setupUi(this);
+     new HelpButton(this, ui->buttonBox, "4227131");
+     ui->buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Select all"));
+     ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Next"));
+     ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
 
      ui->valueEdit->installEventFilter(this);
 
@@ -76,7 +84,9 @@ SearchQualifierDialog::SearchQualifierDialog(QWidget* p, AnnotationsTreeView * _
      }
      ui->groupLabel->setText(groupName);
 
-     connect(ui->selectAllButton, SIGNAL( clicked() ), SLOT( sl_searchAll() ));
+     QPushButton *selectAllButton = ui->buttonBox->button(QDialogButtonBox::Yes);
+     connect(selectAllButton, SIGNAL( clicked() ), SLOT( sl_searchAll() ));
+
 }
 
 bool SearchQualifierDialog::eventFilter(QObject *obj, QEvent *e) {

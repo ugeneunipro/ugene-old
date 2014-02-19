@@ -28,12 +28,18 @@
 #include <U2Core/DNASequenceObject.h>
 
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
+
 
 namespace U2{
 
 SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController( GSequenceGraphDrawer *_d, GSequenceGraphData *_gd, QWidget *parent, ADVSequenceObjectContext* _ctx )
 :QDialog(parent), ctx(_ctx), d(_d), gd(_gd) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227410");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Save"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     CreateAnnotationModel m;
     m.hideLocation = true;
     m.data.name = QString("graph_cutoffs");
@@ -77,6 +83,7 @@ SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController( GSequenceGra
     minCutoffBox->setMaximum(max);
     minCutoffBox->setMinimum(min);
     minCutoffBox->setValue(min);
+
 }
 
 void SaveGraphCutoffsDialogController::accept(){

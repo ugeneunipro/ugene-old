@@ -31,7 +31,8 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
-
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 #include <cmath>
 #include <cassert>
@@ -47,6 +48,10 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl( const U2SequenceObject * seqObj, Q
     assert( NULL != seqObj );
     
     setupUi( this );
+    new HelpButton(this, buttonBox, "4227695");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Run"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     useScoreTresholdGroup.addButton( useExplicitScoreTresholdButton );
     useScoreTresholdGroup.addButton( useGATresholdsButton );
     useScoreTresholdGroup.addButton( useNCTresholdsButton );
@@ -71,6 +76,9 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl( const U2SequenceObject * seqObj, Q
     curLayout->insertWidget( 1, aw );
     aw->setMinimumSize( aw->layout()->minimumSize() );
 
+    QPushButton* searchButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+
     connect( cancelButton, SIGNAL( clicked() ), SLOT( sl_cancelButtonClicked() ) );
     connect( searchButton, SIGNAL( clicked() ), SLOT( sl_okButtonClicked() ) );
     connect( useEvalTresholdsButton, SIGNAL( toggled( bool ) ), SLOT( sl_useEvalTresholdsButtonChanged( bool ) ) );
@@ -80,6 +88,7 @@ UHMM3SearchDialogImpl::UHMM3SearchDialogImpl( const U2SequenceObject * seqObj, Q
     connect( domESpinBox, SIGNAL( valueChanged( int ) ), SLOT( sl_domESpinBoxChanged( int ) ) );
     connect( queryHmmFileToolButton, SIGNAL( clicked() ), SLOT( sl_queryHmmFileToolButtonClicked() ) );
     connect( domZCheckBox, SIGNAL( stateChanged( int ) ), SLOT( sl_domZCheckBoxChanged( int ) ) );
+
 }
 
 void UHMM3SearchDialogImpl::setModelValues() {

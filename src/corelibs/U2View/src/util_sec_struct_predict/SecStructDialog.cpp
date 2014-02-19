@@ -40,14 +40,24 @@
 
 #include <QtCore/QMutableListIterator>
 #include <QtGui/QHeaderView>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 
 SecStructDialog::SecStructDialog( ADVSequenceObjectContext* _ctx, QWidget *p ) : QDialog(p), rangeStart(0), rangeEnd(0), ctx(_ctx), task(NULL)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227669");
+
     sspr = AppContext::getSecStructPredictAlgRegistry();
     algorithmComboBox->addItems(sspr->getAlgNameList());
+    
+    saveAnnotationButton = buttonBox->button(QDialogButtonBox::Save);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+    startButton = buttonBox->button(QDialogButtonBox::Ok);
+
     saveAnnotationButton->setDisabled(true);
     
     U2Region initialSelection = ctx->getSequenceSelection()->isEmpty() ? U2Region() : ctx->getSequenceSelection()->getSelectedRegions().first();

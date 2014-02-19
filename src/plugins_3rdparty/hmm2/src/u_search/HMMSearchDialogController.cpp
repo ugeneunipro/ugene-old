@@ -41,6 +41,9 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 
@@ -49,6 +52,9 @@ HMMSearchDialogController::HMMSearchDialogController(const U2SequenceObject* seq
 {
     searchTask = NULL;
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227689s");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Close"));
 
     CreateAnnotationModel cm;
     cm.hideLocation = true;
@@ -69,9 +75,13 @@ HMMSearchDialogController::HMMSearchDialogController(const U2SequenceObject* seq
     }
     algoCombo->addItem( tr("Conservative"), HMMSearchAlgo_Conservative );
 
+    okButton = buttonBox->button(QDialogButtonBox::Ok);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+
     connect(hmmFileButton, SIGNAL(clicked()), SLOT(sl_hmmFileClicked()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_okClicked()));
-	connect(domEvalueCuttofBox,SIGNAL(valueChanged(int)), SLOT(sl_expSpinBoxValueChanged(int)));
+    connect(domEvalueCuttofBox,SIGNAL(valueChanged(int)), SLOT(sl_expSpinBoxValueChanged(int)));
+
 }
 
 void HMMSearchDialogController::sl_expSpinBoxValueChanged(int i){

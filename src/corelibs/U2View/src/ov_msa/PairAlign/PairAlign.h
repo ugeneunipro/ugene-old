@@ -95,6 +95,8 @@ private:
     SequenceSelectorWidgetController *firstSeqSelectorWC;
     SequenceSelectorWidgetController *secondSeqSelectorWC;
 
+    QPushButton *alignButton;
+
     bool showSequenceWidget;
     bool showAlgorithmWidget;
     bool showOutputWidget;

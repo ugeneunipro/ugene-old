@@ -35,6 +35,8 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 
 namespace U2 {
@@ -355,6 +357,7 @@ private:
 
 CreateScriptElementDialog::CreateScriptElementDialog(QWidget *p, ActorPrototype* proto): QDialog(p), editing(false) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "2097351");
 
     inputList->setModel(new CfgListModel());
     inputList->setItemDelegate(new ProxyDelegate());
@@ -374,6 +377,8 @@ CreateScriptElementDialog::CreateScriptElementDialog(QWidget *p, ActorPrototype*
     connect(deleteOutputButton, SIGNAL(clicked()), SLOT(sl_deleteOutputClicked()));
     connect(deleteAttributeButton, SIGNAL(clicked()), SLOT(sl_deleteAttributeClicked()));
 
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     connect(fileButton, SIGNAL(clicked()), SLOT(sl_getDirectory()));
     connect(okButton, SIGNAL(clicked()), SLOT(sl_okClicked()));
     connect(cancelButton, SIGNAL(clicked()), SLOT(sl_cancelClicked()));
@@ -386,6 +391,7 @@ CreateScriptElementDialog::CreateScriptElementDialog(QWidget *p, ActorPrototype*
         fillFields(proto);
         editing = true;
     }
+
 }
 
 static DataTypePtr getDatatypeOfSlotDesc(const Descriptor & dt) {

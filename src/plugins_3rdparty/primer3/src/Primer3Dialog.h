@@ -64,8 +64,8 @@ private:
     Primer3TaskSettings settings;
     RegionSelector* rs;
 private slots:
-    void on_pbReset_clicked();
-    void on_pbPick_clicked();
+    void sl_pbReset_clicked();
+    void sl_pbPick_clicked();
 };
 
 } // namespace U2

@@ -133,6 +133,7 @@ private slots:
 private:
     void setupDefaults();
     bool fileEditIsEmpty;
+    QPushButton* createButton;
 };
 
 

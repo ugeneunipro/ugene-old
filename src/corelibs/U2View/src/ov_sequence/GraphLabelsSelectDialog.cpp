@@ -29,6 +29,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QCheckBox>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
 
 #include "GraphLabelsSelectDialog.h"
 
@@ -46,14 +47,18 @@ GraphLabelsSelectDialog::GraphLabelsSelectDialog(int maxWindowSize, QWidget* par
     QHBoxLayout* spinLayout = new QHBoxLayout();
     buttonsLayout->addStretch(10);
 
-    QPushButton* cancelButton = new QPushButton(tr("Cancel"), this);
-    QPushButton* okButton = new QPushButton(tr("OK"), this);
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
+
     QLabel* spinLabel = new QLabel(tr("Window size"), this);
-    buttonsLayout->addWidget(okButton);
-    buttonsLayout->addWidget(cancelButton);
+    buttonsLayout->addWidget(buttonBox);
     spinLayout->addWidget(spinLabel);
     spinLayout->addWidget(stepSpinBox);
     usedIntervalsCheck->setText(tr("Mark labels only in selected area"));
+
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+
+    new HelpButton(this, buttonBox, "4227414");
 
     mainLayout->addLayout(spinLayout);
     mainLayout->addWidget(usedIntervalsCheck);

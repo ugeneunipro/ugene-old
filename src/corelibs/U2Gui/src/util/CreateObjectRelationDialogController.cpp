@@ -30,6 +30,7 @@
 
 #include <QtGui/QIcon>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -43,6 +44,7 @@ CreateObjectRelationDialogController::CreateObjectRelationDialogController(GObje
     ui = new Ui_CreateObjectRelationDialog;
 
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "4227338");
 
     QIcon objectIcon(":/core/images/gobject.png");
     foreach(GObject* obj, objects) {

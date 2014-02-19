@@ -28,6 +28,7 @@
 #include <U2Core/AnnotationSettings.h>
 #include <U2Core/AppContext.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/HelpButton.h>
 
 #include <QtGui/QMessageBox>
 
@@ -43,6 +44,8 @@ DotPlotFilterDialog::DotPlotFilterDialog(QWidget *parent, ADVSequenceObjectConte
 ,seqYItem(NULL)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227416");
+
     
     {
         filterGroup = new QButtonGroup(this);
@@ -94,7 +97,6 @@ DotPlotFilterDialog::DotPlotFilterDialog(QWidget *parent, ADVSequenceObjectConte
         connect(invertButton, SIGNAL(clicked()), SLOT(sl_invertSelection()));
         connect(clearButton, SIGNAL(clicked()), SLOT(sl_clearSelection()));
     }
-
 }
 
 QSet<QString> DotPlotFilterDialog::getUniqueAnnotationNames(ADVSequenceObjectContext *seq){

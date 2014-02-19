@@ -28,6 +28,7 @@
 #include <U2Core/L10n.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
 #include "ScriptEditorWidget.h"
 
 #include "ui/ui_ScriptEditorDialog.h"
@@ -39,6 +40,10 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget* w, const QString& roHeaderText, 
 : QDialog(w), ui(new Ui_ScriptEditorDialog())
 {
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "2097207");
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Done"));
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     setModal(true);
 
     scriptEdit = new ScriptEditorWidget(this);
@@ -56,6 +61,7 @@ ScriptEditorDialog::ScriptEditorDialog(QWidget* w, const QString& roHeaderText, 
     connect(scriptEdit, SIGNAL(si_cursorPositionChanged()), SLOT(sl_cursorPositionChanged()));
 
     updateState();
+
 }
 
 ScriptEditorDialog::~ScriptEditorDialog() {

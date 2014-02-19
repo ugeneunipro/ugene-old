@@ -23,6 +23,7 @@
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Gui/HelpButton.h>
 
 #include "ImportSchemaDialog.h"
 
@@ -30,6 +31,7 @@ namespace U2 {
 
 ImportSchemaDialog::ImportSchemaDialog(QWidget* p) : QDialog(p) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "1474787");
 }
 
 void ImportSchemaDialog::accept() {

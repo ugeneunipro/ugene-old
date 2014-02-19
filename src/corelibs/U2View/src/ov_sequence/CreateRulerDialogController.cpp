@@ -29,6 +29,9 @@
 #include <QtGui/QLineEdit>
 #include <QtGui/QMessageBox>
 #include <QtGui/QColorDialog>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 
@@ -37,6 +40,10 @@ CreateRulerDialogController::CreateRulerDialogController(const QSet<QString>& na
 : QDialog(p)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227310");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Create"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     setMaximumHeight(layout()->minimumSize().height());
     
     filter = namesToFilter;
@@ -55,6 +62,7 @@ CreateRulerDialogController::CreateRulerDialogController(const QSet<QString>& na
 
     connect(colorButton, SIGNAL(clicked()), SLOT(sl_colorButtonClicked()));
     setWindowIcon(QIcon(":/ugene/images/ugene_16.png"));
+
 }
 
 void CreateRulerDialogController::updateColorSample() {

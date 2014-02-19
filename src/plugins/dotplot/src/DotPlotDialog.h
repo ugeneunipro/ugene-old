@@ -87,6 +87,7 @@ private:
 
     Task* openSequenceTask;
     QString curURL;
+    QPushButton* startButton;
 };
 
 } //namespace

@@ -28,6 +28,7 @@
 #include "RemoteServiceMachine.h"
 #include "RemoteServiceUtilTasks.h"
 #include "RemoteTasksDialog.h"
+#include <U2Gui/HelpButton.h>
 
 
 namespace U2 {
@@ -50,6 +51,8 @@ RemoteTasksDialog::RemoteTasksDialog(const RemoteServiceSettingsPtr& settings,QW
     refresh();
     
     updateState();
+    new HelpButton(this, buttonBox, "https://ugene.unipro.ru/wiki/display/UUOUM/Editing+Fragment+Overhangs");
+
 }
 
 void RemoteTasksDialog::updateState() {

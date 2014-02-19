@@ -1,79 +1,80 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>WorkflowMetaDialog</class>
- <widget class="QDialog" name="WorkflowMetaDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="WorkflowMetaDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>444</width>
-    <height>227</height>
+    <width>469</width>
+    <height>240</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Workflow properties</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" >
-   <item row="0" column="0" >
-    <widget class="QLabel" name="label_3" >
-     <property name="text" >
-      <string>Location</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" >
-    <widget class="QLineEdit" name="urlEdit" />
-   </item>
-   <item row="0" column="2" >
-    <widget class="QPushButton" name="browseButton" >
-     <property name="text" >
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QLabel" name="label" >
-     <property name="text" >
-      <string>Name</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" >
-    <widget class="QLineEdit" name="nameEdit" />
-   </item>
-   <item row="2" column="0" >
-    <widget class="QLabel" name="label_2" >
-     <property name="text" >
-      <string>Comment</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2" >
-    <widget class="QPushButton" name="okButton" >
-     <property name="enabled" >
-      <bool>true</bool>
-     </property>
-     <property name="text" >
-      <string>OK</string>
-     </property>
-     <property name="default" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2" >
-    <widget class="QPushButton" name="cancelButton" >
-     <property name="text" >
-      <string>Cancel</string>
-     </property>
-     <property name="autoDefault" >
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1" >
-    <widget class="QTextEdit" name="commentEdit" />
-   </item>
-  </layout>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>214</y>
+     <width>451</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>9</y>
+     <width>451</width>
+     <height>201</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Location</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="urlEdit"/>
+    </item>
+    <item row="0" column="2">
+     <widget class="QPushButton" name="browseButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Name</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1" colspan="2">
+     <widget class="QLineEdit" name="nameEdit"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Comment</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1" colspan="2">
+     <widget class="QTextEdit" name="commentEdit"/>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <resources/>
  <connections/>

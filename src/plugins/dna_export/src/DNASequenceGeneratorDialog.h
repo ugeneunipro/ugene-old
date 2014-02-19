@@ -43,6 +43,8 @@ private slots:
 private:
     SaveDocumentGroupController* saveGroupContoller;
     static QMap<char, qreal> content;
+    QPushButton* generateButton;
+    QPushButton* cancelButton;
 };
 
 class BaseContentDialog : public QDialog, public Ui_BaseContentDialog {
@@ -57,6 +59,7 @@ private:
     QMap<char, qreal>& percentMap;
     float gcSkew;
     float gcSkewPrev;
+    QPushButton* saveButton;
 };
 
 } //namespace

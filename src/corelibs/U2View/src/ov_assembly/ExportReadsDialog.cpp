@@ -28,11 +28,18 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
+
 
 namespace U2 {
 
 ExportReadsDialog::ExportReadsDialog(QWidget * p, const QList<DocumentFormatId> & formats) : QDialog(p) {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227544");
+
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     
     foreach(const DocumentFormatId & fid, formats) {
         documentFormatComboBox->addItem(fid, fid);
@@ -40,11 +47,14 @@ ExportReadsDialog::ExportReadsDialog(QWidget * p, const QList<DocumentFormatId> 
         assert(df != NULL);
         filter += QString("%1 - (*.%2);;").arg(fid).arg(df->getSupportedDocumentFileExtensions().first());
     }
-    
+    QPushButton *okPushButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton *cancelPushButton = buttonBox->button(QDialogButtonBox::Cancel);
+
     connect(okPushButton, SIGNAL(clicked()), SLOT(accept()));
     connect(cancelPushButton, SIGNAL(clicked()), SLOT(reject()));
     connect(filepathToolButton, SIGNAL(clicked()), SLOT(sl_selectFile()));
     setMaximumHeight(layout()->minimumSize().height());
+
 }
 
 void ExportReadsDialog::accept() {

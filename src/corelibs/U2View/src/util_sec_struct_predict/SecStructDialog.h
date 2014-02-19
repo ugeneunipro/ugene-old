@@ -52,6 +52,9 @@ private:
     ADVSequenceObjectContext* ctx;
     SecStructPredictTask* task;
     SecStructPredictAlgRegistry* sspr;
+    QPushButton* saveAnnotationButton;
+    QPushButton* startButton;
+    QPushButton* cancelButton;
     void connectGUI();
     void updateState();
     void showResults();

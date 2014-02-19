@@ -30,6 +30,8 @@
 
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
@@ -40,6 +42,10 @@ namespace U2 {
 
 ExportChromatogramDialog::ExportChromatogramDialog(QWidget* p, const GUrl& fileUrl): QDialog(p) {
     setupUi(this);    
+    new HelpButton(this, buttonBox, "4227406");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
     addToProjectFlag = true;
 
     //SaveDocumentGroupControllerConfig conf;
@@ -47,7 +53,6 @@ ExportChromatogramDialog::ExportChromatogramDialog(QWidget* p, const GUrl& fileU
     fileNameEdit->setText( newUrl.getURLString() );
     formatCombo->addItem( BaseDocumentFormats::SCF.toUpper() );
     connect(fileButton, SIGNAL(clicked()),SLOT(sl_onBrowseClicked()) );
-    
     
 }
 
