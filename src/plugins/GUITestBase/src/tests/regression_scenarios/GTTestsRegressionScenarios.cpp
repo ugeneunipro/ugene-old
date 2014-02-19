@@ -3612,6 +3612,23 @@ GUI_TEST_CLASS_DEFINITION( test_2309 ) {
 
     QStringList newNames = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(newNames == initialNames, "Wrong sequences order");
+
+    int key;
+#ifdef Q_OS_MAC
+    key = GTKeyboardDriver::key["cmd"];
+#else
+    key = GTKeyboardDriver::key["ctrl"];
+#endif
+        GTGlobals::sleep();
+        GTWidget::click(os, GTUtilsProjectTreeView::getTreeWidget(os));
+        GTKeyboardDriver::keyClick(os, 'a', key);
+        GTGlobals::sleep(100);
+
+        GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::NoToAll));
+        GTGlobals::sleep(200);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+        GTGlobals::sleep(100);
 }
 GUI_TEST_CLASS_DEFINITION( test_2318 ) {
     class FirstItemPopupChooser : public PopupChooser {
