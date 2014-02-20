@@ -158,6 +158,9 @@ void SaveProjectTask::prepare() {
                 // QMessageBox::NoButton is a special invalid button state, represents that no saved choise was made
                 SaveProjectDialogController saveProjectDialog(mainWindow);
                 code = saveProjectDialog.exec();
+                if (code == QDialog::Rejected) {
+                    code = QDialogButtonBox::Cancel;
+                }
 
                 if (QDialogButtonBox::Cancel != code && true == saveProjectDialog.dontAskCheckBox->isChecked()) {
                     AppContext::getAppSettings()->getUserAppsSettings()->setAskToSaveProject(code);
