@@ -679,6 +679,8 @@ void NEXUSParser::addObject(GObject *obj) {
 
 QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, const U2DbiRef& dbiRef, U2OpStatus &ti) {
     assert(io && "io must exist");
+    DbiOperationsBlock opBlock(dbiRef, ti);
+    CHECK_OP(ti, QList<GObject*>());
 
     const int HEADER_LEN = 6;
     QByteArray header(HEADER_LEN, 0);

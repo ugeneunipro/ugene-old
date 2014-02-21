@@ -53,6 +53,8 @@ Document* PlainTextFormat::createNewLoadedDocument(IOAdapterFactory* io, const Q
 #define BUFF_SIZE 1024
 
 Document* PlainTextFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
+    DbiOperationsBlock opBlock(dbiRef, os);
+    CHECK_OP(os, NULL);
     QString text;
     int size = io->left();
     if (size > 0) {

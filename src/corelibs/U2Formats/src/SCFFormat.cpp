@@ -36,6 +36,7 @@
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2DbiUtils.h>
 
 /* TRANSLATOR U2::SCFFormat */    
 
@@ -514,7 +515,8 @@ static uchar getMaxProb(uchar probA, uchar probC, uchar probG, uchar probT ) {
 }
 
 Document* SCFFormat::parseSCF(const U2DbiRef& dbiRef, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os) {    
-    
+    DbiOperationsBlock opBlock(dbiRef, os);
+    CHECK_OP(os, NULL);
     DNASequence dna;
     DNAChromatogram cd;
     if ( !loadSCFObjects(io, dna, cd, os ) ) {

@@ -485,14 +485,15 @@ static void checkStack(const QVector<SQLiteTransaction*>& stack) {
 }
 
 SQLiteTransaction::SQLiteTransaction(DbRef* ref, U2OpStatus& _os)
-: db(ref), os(_os) 
+    : db(ref), os(_os), cacheQueries(true), started(false)
 {
 #ifdef _DEBUG
     thread = QThread::currentThread();
 #endif
     QMutexLocker m(&db->lock);
+    CHECK(db->useTransaction, );
 
-    if (db->useTransaction && db->transactionStack.isEmpty()) {
+    if (db->transactionStack.isEmpty()) {
         db->lock.lock();
         int rc = sqlite3_exec(db->handle, "BEGIN TRANSACTION;", NULL, NULL, NULL);
         if (rc != SQLITE_OK) {
@@ -501,11 +502,9 @@ SQLiteTransaction::SQLiteTransaction(DbRef* ref, U2OpStatus& _os)
             return;
         }
     }
-    if (db->useTransaction) {
-        checkStack(db->transactionStack);
-        db->transactionStack << this;
-    }
-
+    checkStack(db->transactionStack);
+    db->transactionStack << this;
+    started = true;
 }
 
 void SQLiteTransaction::clearPreparedQueries() {
@@ -517,14 +516,15 @@ void SQLiteTransaction::clearPreparedQueries() {
 
 SQLiteTransaction::~SQLiteTransaction() {
     QMutexLocker m(&db->lock);
+    CHECK(db->useTransaction, );
+    CHECK(started, );
+    SAFE_POINT(!db->transactionStack.isEmpty(), "Empty transaction stack", );
+    SAFE_POINT(db->transactionStack.last() == this, "Wrong transaction in stack", );
 
-    assert(db->transactionStack.last() == this);
-    if (db->useTransaction) {
-        checkStack(db->transactionStack);
-        db->transactionStack.pop_back();
-    }
+    checkStack(db->transactionStack);
+    db->transactionStack.pop_back();
 
-    if (db->useTransaction && db->transactionStack.isEmpty()) {
+    if (db->transactionStack.isEmpty()) {
         int rc;
         if (os.hasError()) {
             rc = sqlite3_exec(db->handle, "ROLLBACK TRANSACTION;", NULL, NULL, NULL);

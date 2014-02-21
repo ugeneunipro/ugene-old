@@ -128,6 +128,8 @@ FormatCheckResult NewickFormat::checkRawData(const QByteArray& rawData, const GU
 
 static QList<GObject*> parseTrees(IOAdapter *io, const U2DbiRef& dbiRef, U2OpStatus& si) {
     QList<GObject*> objects;
+    DbiOperationsBlock opBlock(dbiRef, si);
+    CHECK_OP(si, objects);
     QList<PhyTree> trees = NewickPhyTreeSerializer::parseTrees(io, si);
     CHECK_OP(si, objects);
 

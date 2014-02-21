@@ -36,6 +36,7 @@
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2DbiUtils.h>
 
 #include <time.h>
 
@@ -425,7 +426,8 @@ static void replace_nl(char *string) {
 }
 
 Document* ABIFormat::parseABI(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os) {
-
+    DbiOperationsBlock opBlock(dbiRef, os);
+    CHECK_OP(os, NULL);
     DNASequence dna;
     DNAChromatogram cd;
 

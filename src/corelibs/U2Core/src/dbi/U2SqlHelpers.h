@@ -250,6 +250,7 @@ private:
     DbRef* db;
     U2OpStatus& os;
     bool cacheQueries;
+    bool started;
 
     void clearPreparedQueries();
 
