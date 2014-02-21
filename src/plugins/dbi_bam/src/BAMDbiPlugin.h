@@ -27,6 +27,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/DocumentImport.h>
 #include <U2Core/DocumentProviderTask.h>
+#include <time.h>
 
 #include "PrepareToImportTask.h"
 
