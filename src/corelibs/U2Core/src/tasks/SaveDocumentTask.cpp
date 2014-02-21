@@ -33,6 +33,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/TmpDirChecker.h>
 
 #include <QtGui/QMessageBox>
 #include <QtGui/QApplication>
@@ -44,7 +45,10 @@
 namespace U2 {
 
 bool isNoWritePermission(GUrl &url) {
-    return (QFile::exists(url.getURLString()) && !QFile::permissions(url.getURLString()).testFlag(QFile::WriteUser));
+    if (!QFile::exists(url.getURLString())) {
+        return (!TmpDirChecker::checkWritePermissions(url.dirPath()));
+    }
+    return (!QFile::permissions(url.getURLString()).testFlag(QFile::WriteUser));
 }
 
 SaveDocumentTask::SaveDocumentTask(Document* _doc, IOAdapterFactory* _io, const GUrl& _url, SaveDocFlags _flags)

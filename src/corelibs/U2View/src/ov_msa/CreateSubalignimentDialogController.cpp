@@ -27,6 +27,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/TmpDirChecker.h>
 
 #include <U2Formats/GenbankLocationParser.h>
 
@@ -162,12 +163,20 @@ void CreateSubalignimentDialogController::accept(){
         QMessageBox::critical(this, this->windowTitle(), tr("Directory to save is not exists"));
         return;
     }
+    if (!TmpDirChecker::checkWritePermissions(dirToSave.absolutePath())) {
+        QMessageBox::critical(this, this->windowTitle(), tr("No write permission to '%1' directory").arg(dirToSave.absolutePath()));
+        return;
+    }
     if(filepathEdit->text().isEmpty()){
         QMessageBox::critical(this, this->windowTitle(), tr("No path specified"));
         return;
     }
     if(fi.baseName().isEmpty()){
         QMessageBox::critical(this, this->windowTitle(), tr("Filename to save is empty"));
+        return;
+    }
+    if (!fi.permissions().testFlag(QFile::WriteUser)) {
+        QMessageBox::critical(this, this->windowTitle(), tr("No write permission to '%1' file").arg(fi.fileName()));
         return;
     }
     
