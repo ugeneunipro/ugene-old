@@ -28,6 +28,8 @@
 #include "runnables/qt/MessageBoxFiller.h"
 #include <QtGui/QApplication>
 #include <QtGui/QComboBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 
 namespace U2 {
 
@@ -47,11 +49,12 @@ void AlignShortReadsFiller::run() {
     CHECK_OP(os, );
 
     GTGlobals::sleep(500);
-    QWidget* assembleyButton = GTWidget::findWidget(os, "assembleyButton", dialog);
-    CHECK_OP(os, );
-    GT_CHECK(assembleyButton, "assembleyButton is NULL");
-    GTWidget::click(os, assembleyButton);
-    CHECK_OP(os, );
+
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
+
     GTGlobals::sleep(5000);
     if (!dialog->isVisible()){
         return;

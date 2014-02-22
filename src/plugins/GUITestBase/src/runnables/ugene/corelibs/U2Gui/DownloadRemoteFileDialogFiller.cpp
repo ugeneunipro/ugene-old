@@ -26,6 +26,8 @@
 
 #include <QtGui/QApplication>
 #include <QtGui/QAbstractButton>
+#include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 
 namespace U2 {
 
@@ -54,12 +56,18 @@ void RemoteDBDialogFiller::run() {
         GTComboBox::setCurrentIndex(os, formatBox, outFormatVal);
     }
     if (pressCancel) {
-        QAbstractButton *rejectButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "rejectButton", dialog));
-        GTWidget::click(os, rejectButton);
+        QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+        GT_CHECK(box != NULL, "buttonBox is NULL");
+        QPushButton* button = box->button(QDialogButtonBox::Cancel);
+        GT_CHECK(button !=NULL, "cancel button is NULL");
+        GTWidget::click(os, button);
     }
     else {
-        QAbstractButton *acceptButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "acceptButton", dialog));
-        GTWidget::click(os, acceptButton);
+        QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+        GT_CHECK(box != NULL, "buttonBox is NULL");
+        QPushButton* button = box->button(QDialogButtonBox::Ok);
+        GT_CHECK(button !=NULL, "cancel button is NULL");
+        GTWidget::click(os, button);
     }
 }
 #undef GT_METHOD_NAME

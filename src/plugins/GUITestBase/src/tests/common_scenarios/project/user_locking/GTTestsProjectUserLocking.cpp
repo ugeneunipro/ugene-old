@@ -40,6 +40,8 @@
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2Core/DocumentModel.h>
 #include <QtGui/QRadioButton>
+#include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 
 namespace U2 {
 
@@ -69,10 +71,11 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
             GT_CHECK(comboBox->count() == 0, "ComboBox is not empty");
 
-            QPushButton *cancelButton = dialog->findChild<QPushButton*>("cancel_button");
-            GT_CHECK(cancelButton != NULL, "Button \"cancel\" not found");
-
-            GTWidget::click(os, cancelButton);
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            GT_CHECK(box != NULL, "buttonBox is NULL");
+            QPushButton* button = box->button(QDialogButtonBox::Cancel);
+            GT_CHECK(button !=NULL, "cancel button is NULL");
+            GTWidget::click(os, button);
         }
 
     private:
@@ -120,10 +123,11 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
 
             GT_CHECK(comboBox->count() != 0, "ComboBox is empty");
 
-            QPushButton *cancelButton = dialog->findChild<QPushButton*>("cancel_button");
-            GT_CHECK(cancelButton != NULL, "Button \"cancel\" not found");
-
-            GTWidget::click(os, cancelButton);
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            GT_CHECK(box != NULL, "buttonBox is NULL");
+            QPushButton* button = box->button(QDialogButtonBox::Cancel);
+            GT_CHECK(button !=NULL, "cancel button is NULL");
+            GTWidget::click(os, button);
         }
 
     private:

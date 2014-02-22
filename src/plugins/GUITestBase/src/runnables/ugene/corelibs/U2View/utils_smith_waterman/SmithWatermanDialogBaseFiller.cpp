@@ -29,6 +29,8 @@
 #include <QtGui/QSpinBox>
 #include <QtGui/QRadioButton>
 #include <QtGui/QGroupBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 
 const int RESULT_INTERSECTION_FILTER_INDEX = 0;
 const QString TEST_NAME_FOR_MA_RESULTS = "_test]";
@@ -153,8 +155,12 @@ void SmithWatermanDialogFiller::run() {
         dblSpinGapExtd->setValue(GAP_EXTENDING_PENALTY);
     }
 
-    QAbstractButton *searchButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "bttnRun", dialog));
-    GTWidget::click(os, searchButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
+
     GTGlobals::sleep();
 }
 #undef GT_METHOD_NAME

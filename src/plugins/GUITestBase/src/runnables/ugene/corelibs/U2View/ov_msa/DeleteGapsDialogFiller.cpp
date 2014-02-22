@@ -27,6 +27,8 @@
 #include <QtGui/QApplication>
 #include <QtGui/QAbstractButton>
 #include <QtGui/QSpinBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 
 namespace U2 {
 
@@ -45,8 +47,12 @@ void DeleteGapsDialogFiller::run() {
         QRadioButton* withNumberOfGaps = dialog->findChild<QRadioButton*>("absoluteRadioButton");
         GTRadioButton::click(os, withNumberOfGaps);
     }
-    QAbstractButton *removeButton = dialog->findChild<QAbstractButton*>("deleteButton");
-    GTWidget::click(os, removeButton);
+
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -69,8 +75,11 @@ void RemoveGapColsDialogFiller::run() {
         GTSpinBox::setValue(os, box, spinValue);
     }
 
-    QAbstractButton *removeButton = dialog->findChild<QAbstractButton*>("deleteButton");
-    GTWidget::click(os, removeButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

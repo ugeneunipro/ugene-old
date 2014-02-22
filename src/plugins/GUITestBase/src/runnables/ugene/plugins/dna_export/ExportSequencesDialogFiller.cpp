@@ -30,6 +30,7 @@
 #include <QtCore/QDir>
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 
 namespace U2 {
 
@@ -54,9 +55,11 @@ void ExportSelectedRegionFiller::run()
     GT_CHECK(lineEdit != NULL, "File name line edit not found");
     GTLineEdit::setText(os, lineEdit, path + name);
 
-    QPushButton *okButton = dialog->findChild<QPushButton*>(QString::fromUtf8("exportButton"));
-    GT_CHECK(okButton != NULL, "Export button not found");
-    GTWidget::click(os, okButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -138,9 +141,11 @@ void ExportSequenceOfSelectedAnnotationsFiller::run()
 
     GTGlobals::sleep(200);
 
-    QPushButton *exportButton = dialog->findChild<QPushButton*>(QString::fromUtf8("exportButton"));
-    GT_CHECK(exportButton != NULL, "Export button not found");
-    GTWidget::click(os, exportButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

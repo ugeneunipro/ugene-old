@@ -26,6 +26,8 @@
 #include <QtGui/QApplication>
 #include <QtGui/QAbstractButton>
 #include <QtGui/QCheckBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 
 namespace U2 {
 
@@ -60,8 +62,12 @@ void FindRepeatsDialogFiller::run() {
     QCheckBox *invertedRepeatsIndicator = qobject_cast<QCheckBox *>(GTWidget::findWidget(os, "invertCheck", dialog));
     invertedRepeatsIndicator->setChecked(searchInverted);
 
-    QAbstractButton *startButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "startButton", dialog));
-    GTWidget::click(os, startButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
+
     GTGlobals::sleep();
 }
 

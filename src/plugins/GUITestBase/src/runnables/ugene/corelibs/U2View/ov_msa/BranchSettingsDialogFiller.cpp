@@ -23,6 +23,7 @@
 #include <QPushButton>
 #include <QColorDialog>
 #include <QSpinBox>
+#include <QtGui/QDialogButtonBox>
 
 #include "api/GTWidget.h"
 #include "api/GTSpinBox.h"
@@ -44,7 +45,11 @@ void BranchSettingsDialogFiller::run(){
     QSpinBox* thicknessSpinBox = dialog->findChild<QSpinBox*>("thicknessSpinBox");
     GTSpinBox::setValue(os,thicknessSpinBox,10);
 
-    GTWidget::click(os,GTWidget::findWidget(os,"okButton"));
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 
 }
 #undef GT_METHOD_NAME

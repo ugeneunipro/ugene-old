@@ -27,6 +27,7 @@
 
 #include <QtCore/QDir>
 #include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 #include <QtGui/QApplication>
 
 namespace U2 {
@@ -79,9 +80,11 @@ void ExportDocumentDialogFiller::run()
         GTCheckBox::setChecked(os, addCheckBox, addToProject);
     }
 
-    QPushButton *btSave = dialog->findChild<QPushButton*>(QString::fromUtf8("createButton"));
-    GT_CHECK(btSave != NULL, "Save button not found");
-    GTWidget::click(os, btSave);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

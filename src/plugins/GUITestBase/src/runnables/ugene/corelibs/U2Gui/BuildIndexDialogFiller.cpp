@@ -7,6 +7,8 @@
 #include <QtGui/QApplication>
 #include <QtGui/QComboBox>
 #include <QtGui/QLineEdit>
+#include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 
 namespace U2 {
 
@@ -34,7 +36,10 @@ void BuildIndexDialogFiller::run() {
         indexFileNameEdit->setText(indPath + indFileName);
     }
 
-    GTWidget::click(os, GTWidget::findWidget(os, "buildButton", dialog));
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

@@ -28,6 +28,8 @@
 
 #include <QtGui/QAbstractButton>
 #include <QtGui/QApplication>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QPushButton>
 
 namespace U2 {
 
@@ -83,9 +85,11 @@ void CreateAnnotationWidgetChecker::run() {
         GT_CHECK (text2 == location, "This name is not expected name");
         }
 
-    QWidget *cancelButton = GTWidget::findWidget(os, "cancel_button", dialog);
-    GT_CHECK(cancelButton != NULL, "Cancel button is NULL");
-    GTWidget::click(os, cancelButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Cancel);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -111,8 +115,10 @@ void CreateAnnotationWidgetFiller::run() {
     GT_CHECK(locationLineEdit != NULL, "LineEdit is NULL");
     GTLineEdit::setText(os, locationLineEdit, location);
 
-    QAbstractButton *createButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "create_button", dialog));
-    GTWidget::click(os, createButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

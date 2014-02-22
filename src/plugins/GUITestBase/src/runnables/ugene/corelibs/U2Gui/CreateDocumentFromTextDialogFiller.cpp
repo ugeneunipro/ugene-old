@@ -31,6 +31,7 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QRadioButton>
 #include <QtGui/QApplication>
+#include <QtGui/QDialogButtonBox>
 
 namespace U2 {
 
@@ -118,10 +119,11 @@ void CreateDocumentFiller::run()
         GTCheckBox::setChecked(os, saveFileCheckBox);
         }
 
-    QPushButton *createButton = dialog->findChild<QPushButton*>(QString::fromUtf8("OKButton"));
-    GT_CHECK(createButton != NULL, "Create button not found");
-
-    GTWidget::click(os, createButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 }
 
 #undef GT_METHOD_NAME
@@ -212,10 +214,11 @@ void CancelCreateDocumentFiller::run()
         GTCheckBox::setChecked(os, saveFileCheckBox);
         }
 
-    QPushButton *cancelButton = dialog->findChild<QPushButton*>(QString::fromUtf8("cancelButton"));
-    GT_CHECK(cancelButton != NULL, "Create button not found");
-
-    GTWidget::click(os, cancelButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Cancel);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
     }
 
 #undef GT_METHOD_NAME

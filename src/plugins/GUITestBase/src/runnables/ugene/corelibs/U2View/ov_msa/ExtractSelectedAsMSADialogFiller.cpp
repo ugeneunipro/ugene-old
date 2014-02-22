@@ -34,6 +34,8 @@
 #include <QApplication>
 #include <QCheckBox>
 #include <QTableWidget>
+#include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 
 
 namespace U2 {
@@ -115,7 +117,12 @@ void ExtractSelectedAsMSADialogFiller::run() {
     }
 
     GTGlobals::sleep();
-    GTWidget::click(os, GTWidget::findWidget(os,"okButton"));
+
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 
 
 }

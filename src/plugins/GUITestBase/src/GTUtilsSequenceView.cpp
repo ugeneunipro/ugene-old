@@ -41,6 +41,7 @@
 #include <QtGui/QApplication>
 #include <QtGui/QPlainTextEdit>
 #include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 
 #include <U2View/ADVSingleSequenceWidget.h>
 
@@ -61,9 +62,11 @@ public:
 
         *str = textEdit->toPlainText();
 
-        QPushButton *cancel = widget->findChild<QPushButton*>();
-        GT_CHECK(cancel != NULL, "Button \"cancel\" not found");
-        GTWidget::click(os, cancel);
+        QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", widget));
+        GT_CHECK(box != NULL, "buttonBox is NULL");
+        QPushButton* button = box->button(QDialogButtonBox::Cancel);
+        GT_CHECK(button !=NULL, "cancel button is NULL");
+        GTWidget::click(os, button);
     }
 
 private:

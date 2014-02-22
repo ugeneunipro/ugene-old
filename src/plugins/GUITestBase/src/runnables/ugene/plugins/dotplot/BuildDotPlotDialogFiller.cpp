@@ -26,6 +26,8 @@
 #include "api/GTLineEdit.h"
 
 #include <QtGui/QApplication>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QPushButton>
 
 namespace U2 {
 
@@ -53,8 +55,10 @@ void BuildDotPlotFiller::run() {
         }
     }
 
-    GTWidget::click(os, GTWidget::findWidget(os, "startButton", dialog));
-
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
     if (cancel) {
         GTWidget::click(os, GTWidget::findWidget(os, "cancelButton", dialog));
     }

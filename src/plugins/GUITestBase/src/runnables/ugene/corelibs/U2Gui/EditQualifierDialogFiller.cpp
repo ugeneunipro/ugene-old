@@ -54,10 +54,10 @@ void EditQualifierFiller::run()
     GT_CHECK(valueEdit != NULL, "value line edit not found");
     GTTextEdit::setText(os, valueEdit, valueName);
 
-    QPushButton* okButton = dialog->findChild<QPushButton*>("okButton");
-    GT_CHECK(okButton != NULL, "okButton is NULL"); 
-
-    //GTWidget::click(os, okButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
     
     if(closeErrormessageBox){
         GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
@@ -67,9 +67,9 @@ void EditQualifierFiller::run()
 
         GTLineEdit::setText(os, nameEdit, "nice_name", noCheck);
         GTTextEdit::setText(os, valueEdit, "nice_val");
-        GTWidget::click(os, okButton);
+        GTWidget::click(os, button);
     }else{
-        GTWidget::click(os, okButton);
+        GTWidget::click(os, button);
     }
     
 }

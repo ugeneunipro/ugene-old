@@ -24,6 +24,7 @@
 #include "api/GTSpinBox.h"
 #include "api/GTCheckBox.h"
 #include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 
 #include <QtGui/QApplication>
 
@@ -52,7 +53,10 @@ void DotPlotFiller::run() {
     QCheckBox* invertedCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "invertedCheckBox", dialog));
     GTCheckBox::setChecked(os, invertedCheckBox, invertedRepeats);
 
-    GTWidget::click(os, GTWidget::findWidget(os, "startButton", dialog));
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

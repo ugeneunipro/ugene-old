@@ -869,7 +869,11 @@ public:
             CHECK_SET_ERR(box->isChecked(),"box " + box->text() + " is not checked");
         }
 
-        GTWidget::click(os, GTWidget::findWidget(os,"cancelButton"));
+        QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+        CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+        QPushButton* button = box->button(QDialogButtonBox::Cancel);
+        CHECK_SET_ERR(button !=NULL, "cancel button is NULL");
+        GTWidget::click(os, button);
     }
 };
 GUI_TEST_CLASS_DEFINITION(test_0015){

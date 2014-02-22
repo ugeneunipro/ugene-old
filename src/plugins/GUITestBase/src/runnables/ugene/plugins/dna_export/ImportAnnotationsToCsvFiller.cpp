@@ -32,6 +32,7 @@
 #include <QtCore/QDir>
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 #include <QtGui/QRadioButton>
 #include <QtGui/QTableWidget>
 
@@ -58,7 +59,7 @@ Filler(_os, "ImportAnnotationsFromCSVDialog"), fileToRead(_fileToRead), resultFi
     comboBoxItems[Genbank] = "Genbank";
     comboBoxItems[Swiss_Prot] = "Swiss_Prot";
 }
-
+#define GT_METHOD_NAME "run"
 class RoleFiller : public Filler {
 public:
     RoleFiller(U2OpStatus &os, ImportAnnotationsToCsvFiller::RoleParameter* _parameter)
@@ -120,12 +121,16 @@ public:
         delete parameter; 
         parameter = NULL;
         
-        QPushButton *okButton = dialog->findChild<QPushButton*>("okButton");
-        GTWidget::click(os, okButton);
+        QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+        GT_CHECK(box != NULL, "buttonBox is NULL");
+        QPushButton* button = box->button(QDialogButtonBox::Ok);
+        GT_CHECK(button !=NULL, "ok button is NULL");
+        GTWidget::click(os, button);
     }
 private:
     ImportAnnotationsToCsvFiller::RoleParameter *parameter;
 };
+#undef GT_METHOD_NAME
 
 class GTTableWidget {
 public:
@@ -206,9 +211,11 @@ void ImportAnnotationsToCsvFiller::run()
         GTMouseDriver::moveTo(os, GTTableWidget::headerItemCenter(os, previewTable, r.column));
         GTMouseDriver::click(os);
     }
-    QPushButton *runButton = dialog->findChild<QPushButton*>(QString::fromUtf8("runButton")); // KILL
-    GT_CHECK(runButton != NULL, "Export button not found");
-    GTWidget::click(os, runButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

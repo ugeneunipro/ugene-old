@@ -25,6 +25,8 @@
 
 #include <QtGui/QApplication>
 #include <QtGui/QAbstractButton>
+#include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 
 namespace U2 {
 
@@ -45,8 +47,11 @@ void SaveProjectAsDialogFiller::run() {
     QLineEdit *projectFileEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "projectFileEdit", dialog));
     GTLineEdit::setText(os, projectFileEdit, projectFile);
 
-    QAbstractButton *createButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "createButton", dialog));
-    GTWidget::click(os, createButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 
     GTGlobals::sleep();
 }

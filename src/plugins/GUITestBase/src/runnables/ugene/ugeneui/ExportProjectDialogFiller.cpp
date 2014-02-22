@@ -25,6 +25,8 @@
 
 #include <QtGui/QApplication>
 #include <QtGui/QAbstractButton>
+#include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 
 namespace U2 {
 
@@ -39,9 +41,11 @@ void ExportProjectDialogChecker::run() {
     GT_CHECK(projectFileLineEdit != NULL, "LineEdit is NULL");
     GT_CHECK(projectFileLineEdit->text() == projectName, "Project name is not " + projectName);
 
-    QAbstractButton *cancelButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "CancelButton", dialog));
-    GT_CHECK(cancelButton != NULL, "CancelButton is NULL");
-    GTWidget::click(os, cancelButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Cancel);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -61,9 +65,11 @@ void ExportProjectDialogSizeChecker::run() {
 
     GT_CHECK(projectFileLineEdit->height() == projectFolderLineEdit->height(), "LineEdits vertical sizes is different");
 
-    QAbstractButton *cancelButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "CancelButton", dialog));
-    GT_CHECK(cancelButton != NULL, "CancelButton is NULL");
-    GTWidget::click(os, cancelButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Cancel);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -85,9 +91,11 @@ void ExportProjectDialogFiller::run() {
         GTLineEdit::setText(os, projectFileLineEdit, projectName);
     }
 
-    QAbstractButton *okButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "OKButton", dialog));
-    GT_CHECK(okButton != NULL, "CancelButton is NULL");
-    GTWidget::click(os, okButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

@@ -26,6 +26,7 @@
 
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 #include <QtGui/QCheckBox>
 #include <QtGui/QDoubleSpinBox>
 
@@ -50,9 +51,11 @@ void KalignDialogFiller::run()
         GTDoubleSpinbox::setValue(os,gapOpenSpinBox,gapOpenVal,GTGlobals::UseKeyBoard);
     }
 
-    QPushButton *alignButton = dialog->findChild<QPushButton*>(QString::fromUtf8("alignButton"));
-    GT_CHECK(alignButton != NULL, "export button not found");
-    GTWidget::click(os, alignButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

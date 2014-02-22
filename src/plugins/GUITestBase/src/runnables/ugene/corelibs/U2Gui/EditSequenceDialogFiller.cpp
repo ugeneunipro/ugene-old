@@ -135,12 +135,12 @@ void InsertSequenceFiller::run()
         }
     }
 
-   
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 
-    QPushButton *createButton = dialog->findChild<QPushButton*>(QString::fromUtf8("OKButton"));
-    GT_CHECK(createButton != NULL, "Create button not found");
-
-    GTWidget::click(os, createButton);
 }
 
 #undef GT_METHOD_NAME

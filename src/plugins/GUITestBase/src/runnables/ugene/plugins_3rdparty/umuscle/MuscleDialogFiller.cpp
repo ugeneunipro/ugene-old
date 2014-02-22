@@ -28,6 +28,7 @@
 #include <QtGui/QComboBox>
 #include <QtGui/QPushButton>
 #include <QtGui/QCheckBox>
+#include <QtGui/QDialogButtonBox>
 
 namespace U2 {
 
@@ -51,9 +52,11 @@ void MuscleDialogFiller::run(){
     QCheckBox *stableCB = dialog->findChild<QCheckBox*>("stableCB");
     GTCheckBox::setChecked(os, stableCB, doNotReArr);
 
-    QPushButton *alignButton = dialog->findChild<QPushButton*>(QString::fromUtf8("alignButton"));
-    GT_CHECK(alignButton != NULL, "export button not found");
-    GTWidget::click(os, alignButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 }
 
 
