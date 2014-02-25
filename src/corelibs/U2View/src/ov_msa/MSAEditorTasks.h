@@ -24,7 +24,7 @@
 
 #include <U2Core/GObjectReference.h>
 #include <U2Gui/ObjectViewTasks.h>
-
+#include <U2Core/DocumentProviderTask.h>
 namespace U2 {
 
 class MAlignmentObject;
@@ -63,6 +63,52 @@ public:
     UpdateMSAEditorTask(GObjectView* v, const QString& stateName, const QVariantMap& stateData);
 
     virtual void update();
+};
+
+enum NonAlphabetSymbolsPolicy {
+    Skip,
+    ReplaceWithDefault,
+    ReplaceWithGap,
+    AllowAllSymbols
+};
+
+class ExportMSAConsensusTaskSettings {
+public:
+    ExportMSAConsensusTaskSettings();
+
+    bool keepGaps;
+    NonAlphabetSymbolsPolicy policy;
+    MSAEditor* msa;
+    QString url;
+    DocumentFormatId format;
+    QString name;
+    bool addToProjectFlag;
+};
+
+class ExtractConsensusTask : public Task {
+public:
+    ExtractConsensusTask( bool keepGaps, NonAlphabetSymbolsPolicy policy, MSAEditor* msa);
+    void run();
+    const QByteArray& getExtractedConsensus() const;
+private:
+    bool keepGaps;
+    NonAlphabetSymbolsPolicy policy;
+    MSAEditor* msa;
+    QByteArray filteredConsensus;
+};
+
+class ExportMSAConsensusTask : public DocumentProviderTask {
+public:
+    ExportMSAConsensusTask(const ExportMSAConsensusTaskSettings& s);
+    
+    void prepare();
+protected:
+    QList<Task*> onSubTaskFinished(Task* subTask);
+private:
+    Document* createDocument();
+    ExportMSAConsensusTaskSettings settings;
+    ExtractConsensusTask *extractConsensus;
+    QByteArray filteredConsensus;
 };
 
 } // namespace

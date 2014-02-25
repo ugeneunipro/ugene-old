@@ -37,6 +37,7 @@
 #include <U2View/SeqStatisticsWidgetFactory.h>
 #include <U2View/MSAGeneralTabFactory.h>
 #include <U2View/MSAHighlightingTabFactory.h>
+#include <U2View/MSAExportConsensusTabFactory.h>
 #include "ov_msa/TreeOptions/TreeOptionsWidgetFactory.h"
 #include <U2View/DasWidgetFactory.h>
 
@@ -74,6 +75,7 @@ void Init::initOptionsPanels()
     opWidgetFactoryRegistry->registerFactory(new PairAlignFactory());
     opWidgetFactoryRegistry->registerFactory(new MSATreeOptionsWidgetFactory());
     opWidgetFactoryRegistry->registerFactory(new AddTreeWidgetFactory());
+    opWidgetFactoryRegistry->registerFactory(new MSAExportConsensusFactoryTab());
 
     SeqStatisticsWidgetFactory *msaSeqStatisticvsFactory = new SeqStatisticsWidgetFactory();
     QString msaSeqStatisticsId = msaSeqStatisticvsFactory->getOPGroupParameters().getGroupId();

@@ -112,6 +112,10 @@ MSAEditorConsensusArea::~MSAEditorConsensusArea() {
     delete childObject;
 }
 
+QSharedPointer <MSAEditorConsensusCache> MSAEditorConsensusArea::getConsensusCache() { 
+    return consensusCache; 
+}
+
 bool MSAEditorConsensusArea::event(QEvent* e) {
     if (e->type() == QEvent::ToolTip) {
         QHelpEvent* he = static_cast<QHelpEvent*>(e);

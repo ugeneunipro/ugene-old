@@ -23,18 +23,30 @@
 #include "MSAEditor.h"
 #include "MSAEditorFactory.h"
 #include "MSAEditorState.h"
+#include "MSAEditorConsensusArea.h"
 
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
 #include <U2Core/L10n.h>
-#include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
-#include <U2Core/DocumentModel.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/UnloadedObject.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/TextObject.h>
+#include <U2Core/UnloadedObject.h>
 
+#include <U2Gui/OpenViewTask.h>
+
+#include <U2Formats/DocumentFormatUtils.h>
 
 #include <QtCore/QSet>
 
@@ -193,5 +205,108 @@ void UpdateMSAEditorTask::update() {
 
     OpenSavedMSAEditorTask::updateRanges(stateData, msaView);
 }
+
+
+ExportMSAConsensusTask::ExportMSAConsensusTask(const ExportMSAConsensusTaskSettings& s )
+: DocumentProviderTask(tr("Export consensus to MSA")
+, (TaskFlags(TaskFlag_NoRun) | TaskFlag_FailOnSubtaskError | TaskFlag_CancelOnSubtaskCancel))
+, settings(s){
+    setVerboseLogMode(true);
+    SAFE_POINT_EXT(s.msa != NULL, setError("Given msa pointer is NULL"), );
+}
+
+void ExportMSAConsensusTask::prepare(){
+    extractConsensus = new ExtractConsensusTask(settings.keepGaps, settings.policy, settings.msa);
+    addSubTask(extractConsensus);
+}
+
+QList<Task*> ExportMSAConsensusTask::onSubTaskFinished( Task* subTask ){
+    QList<Task*> result;
+    if(subTask == extractConsensus && !isCanceled() && !hasError()) {
+        Document *takenDoc = createDocument();
+        CHECK_OP(stateInfo, result);
+        SaveDocumentTask *t = new SaveDocumentTask(takenDoc, takenDoc->getIOAdapterFactory(), takenDoc->getURL());
+        if (settings.addToProjectFlag){
+            AppContext::getTaskScheduler()->registerTopLevelTask(new AddDocumentAndOpenViewTask(takenDoc));
+        }else{
+            t->addFlag(SaveDoc_DestroyAfter);
+        }
+        AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    }
+    return result;
+}
+
+Document *ExportMSAConsensusTask::createDocument(){
+    filteredConsensus = extractConsensus->getExtractedConsensus();
+    CHECK_EXT(!filteredConsensus.isEmpty(), setError("Consensus is empty!"), NULL);
+    QString fullPath = GUrlUtils::prepareFileLocation(settings.url, stateInfo);
+    CHECK_OP(stateInfo, NULL);
+    GUrl url(fullPath);
+
+    IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(settings.url));
+    DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(settings.format);
+    CHECK_EXT(df, setError("Document format is NULL!"), NULL);
+    GObject *obj = NULL;
+    QScopedPointer<Document> doc(df->createNewLoadedDocument(iof, fullPath, stateInfo));
+    CHECK_OP(stateInfo, NULL);
+    if (df->getFormatId() == BaseDocumentFormats::PLAIN_TEXT){
+        obj = TextObject::createInstance(filteredConsensus, settings.name, doc->getDbiRef(), stateInfo);
+    }else{
+        obj = DocumentFormatUtils::addSequenceObject(doc->getDbiRef(), settings.name, filteredConsensus, false, QVariantMap(), stateInfo);
+    }
+    CHECK_OP(stateInfo, NULL);
+    doc->addObject(obj);
+    return doc.take();
+}
+
+ExtractConsensusTask::ExtractConsensusTask( bool keepGaps_, NonAlphabetSymbolsPolicy policy_, MSAEditor* msa_ )
+: Task(tr("Export consensus to MSA"), TaskFlags(TaskFlag_None)), 
+keepGaps(keepGaps_), policy(policy_), msa(msa_){
+    setVerboseLogMode(true);
+    SAFE_POINT_EXT(msa != NULL, setError("Given msa pointer is NULL"), );
+}
+
+void ExtractConsensusTask::run() {
+    const DNAAlphabet *alphabet = msa->getMSAObject()->getAlphabet();
+    CHECK(msa->getUI(), );
+    CHECK(msa->getUI()->getConsensusArea(), );
+    CHECK(msa->getUI()->getConsensusArea()->getConsensusCache(),)
+    foreach(QChar c, msa->getUI()->getConsensusArea()->getConsensusCache()->getConsensusLine(true)){
+        if(c == '-' && !keepGaps){
+            continue;
+        }
+        if (policy == AllowAllSymbols){
+            filteredConsensus.append(c);
+        }else{
+            if(alphabet->getAlphabetChars(true).contains(c.toAscii())){
+                switch (policy)
+                {
+                case Skip:
+                    break;
+                case ReplaceWithGap:
+                    filteredConsensus.append('-');
+                    break;
+                case ReplaceWithDefault:
+                    filteredConsensus.append(alphabet->getDefaultSymbol());
+                    break;
+                default:
+                    setError("Got unknown policy in settings");
+                    break;
+                }
+            }else{
+                filteredConsensus.append(c);
+            }            
+        }
+    }
+}
+
+const QByteArray& ExtractConsensusTask::getExtractedConsensus() const {
+    return filteredConsensus;
+}
+
+
+ExportMSAConsensusTaskSettings::ExportMSAConsensusTaskSettings(): keepGaps(true), policy(Skip), msa(NULL), 
+format(BaseDocumentFormats::PLAIN_TEXT), addToProjectFlag(false)
+{}
 
 } // namespace

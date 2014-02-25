@@ -162,7 +162,9 @@ HEADERS += src/Init.h \
            src/ov_msa/PairAlign/PairAlign.h \
            src/util_msa_align/PairwiseAlignmentGUIExtension.h \
            src/ov_sequence/Das/DasWidgetFactory.h \
-           src/ov_sequence/Das/DasOptionsPanelWidget.h
+           src/ov_sequence/Das/DasOptionsPanelWidget.h \
+           src/ov_msa/ExportConsensus/MSAExportConsensusTabFactory.h \
+           src/ov_msa/ExportConsensus/MSAExportConsensusTab.h
 FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_assembly/ui/ExportReadsDialog.ui \
          src/ov_msa/ui/CreateSubalignimentDialog.ui \
@@ -175,6 +177,7 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui \
          src/ov_msa/ui/SequenceSelectorWidget.ui \
          src/ov_msa/ui/ExportHighlightedDialog.ui \
+         src/ov_msa/ui/ExportConsensusWidget.ui \
          src/ov_sequence/annot_highlight/ui/AnnotHighlightSettings.ui \
          src/ov_sequence/find_pattern/ui/FindPatternForm.ui \
          src/ov_sequence/ui/CreateRulerDialog.ui \
@@ -354,7 +357,9 @@ SOURCES += src/Init.cpp \
            src/ov_msa/PairAlign/PairAlign.cpp \
            src/util_msa_align/PairwiseAlignmentGUIExtension.cpp \
            src/ov_sequence/Das/DasWidgetFactory.cpp \
-           src/ov_sequence/Das/DasOptionsPanelWidget.cpp
+           src/ov_sequence/Das/DasOptionsPanelWidget.cpp \
+           src/ov_msa/ExportConsensus/MSAExportConsensusTab.cpp \
+           src/ov_msa/ExportConsensus/MSAExportConsensusTabFactory.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \

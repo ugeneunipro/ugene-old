@@ -22,6 +22,8 @@
 #ifndef _U2_MSA_EDITOR_CONSENSUS_AREA_H_
 #define _U2_MSA_EDITOR_CONSENSUS_AREA_H_
 
+#include "MSAEditorConsensusCache.h"
+
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
 
@@ -61,7 +63,7 @@ public:
 
     MSAConsensusAlgorithm* getConsensusAlgorithm() const;
 
-    QSharedPointer <MSAEditorConsensusCache> getConsensusCache() { return consensusCache; }
+    QSharedPointer <MSAEditorConsensusCache> getConsensusCache();
 
 protected:
     virtual bool event(QEvent* e);
