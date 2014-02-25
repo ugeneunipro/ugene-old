@@ -120,7 +120,7 @@ QMap<int, QList<SharedAnnotationData> > BioStruct3D::generateChainAnnotations() 
     const char* molNameQualifier = "molecule_name";
     //const char* pdbChainIdQualifier = "pdb_id";
     
-    QMap<int, SharedMolecule>::iterator iter = moleculeMap.begin();
+    QMap<int, SharedMolecule>::ConstIterator iter = moleculeMap.constBegin();
     while (iter != moleculeMap.end()) {
         int length = iter.value()->residueMap.size();
         SharedAnnotationData sd( new AnnotationData);
