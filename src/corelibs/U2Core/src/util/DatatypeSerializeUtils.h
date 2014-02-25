@@ -22,6 +22,7 @@
 #ifndef _U2_DATATYPE_SERIALIZE_UTILS_H_
 #define _U2_DATATYPE_SERIALIZE_UTILS_H_
 
+#include <U2Core/BioStruct3D.h>
 #include <U2Core/DNAChromatogram.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/PhyTree.h>
@@ -77,6 +78,29 @@ public:
      */
     static QList<PhyTree> parseTrees(IOAdapter *io, U2OpStatus &os);
 };
+
+/**
+ * The class of utilities for serializing/deserializing 3D structures
+ * into/from the binary representation.
+ */
+class U2CORE_EXPORT BioStruct3DSerializer {
+public:
+    /**
+     * The serializer identifier.
+     */
+    static const QString ID;
+
+    /**
+     * Returns the binary representation of @bioStruct.
+     */
+    static QByteArray serialize(const BioStruct3D &bioStruct);
+
+    /**
+     * Returns BioStruct3D extracted from @binary.
+     */
+    static BioStruct3D deserialize(const QByteArray &binary, U2OpStatus &os);
+};
+
 
 } // U2
 

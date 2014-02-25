@@ -25,6 +25,7 @@ HEADERS += \
     src/core/format/genbank/LocationParserUnitTests.h \
     src/core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.h \
     src/core/format/sqlite_object_dbi/SQLiteObjectDbiUnitTests.h \
+    src/core/gobjects/BioStruct3DObjectUnitTests.h \
     src/core/gobjects/DNAChromatogramObjectUnitTests.h \
     src/core/gobjects/FeaturesTableObjectUnitTest.h \
     src/core/gobjects/MAlignmentObjectUnitTests.h \
@@ -59,6 +60,7 @@ SOURCES += \
     src/core/format/genbank/LocationParserUnitTests.cpp \
     src/core/format/sqlite_msa_dbi/MsaDbiSQLiteSpecificUnitTests.cpp \
     src/core/format/sqlite_object_dbi/SQLiteObjectDbiUnitTests.cpp \
+    src/core/gobjects/BioStruct3DObjectUnitTests.cpp \
     src/core/gobjects/DNAChromatogramObjectUnitTests.cpp \
     src/core/gobjects/FeaturesTableObjectUnitTest.cpp \
     src/core/gobjects/MAlignmentObjectUnitTests.cpp \

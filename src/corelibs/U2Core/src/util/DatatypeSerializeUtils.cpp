@@ -33,12 +33,56 @@ namespace U2 {
 
 const QString DNAChromatogramSerializer::ID = "chroma_1.14";
 const QString NewickPhyTreeSerializer::ID = "newick_1.14";
+const QString BioStruct3DSerializer::ID = "3d_1.14";
+
+#define CHECK_SIZE(size, result) \
+    if (offset + size > length) { \
+        os.setError("The data is too short"); \
+        return result; \
+    }
 
 namespace {
     template<class T>
     inline QByteArray packNum(const T &num) {
         T leNum = qToLittleEndian<T>(num);
         return QByteArray((char*)&leNum, sizeof(T));
+    }
+    template<>
+    inline QByteArray packNum(const double &num) {
+        QByteArray numStr = QByteArray::number(num);
+        return packNum<int>(numStr.size()) + numStr;
+    }
+    template<>
+    inline QByteArray packNum(const float &num) {
+        QByteArray numStr = QByteArray::number(num);
+        return packNum<int>(numStr.size()) + numStr;
+    }
+    template<class T>
+    inline T unpackNum(const uchar *data, int length, int &offset, U2OpStatus &os) {
+        CHECK_SIZE(int(sizeof(T)), T());
+        T result = qFromLittleEndian<T>(data + offset);
+        offset += sizeof(T);
+        return result;
+    }
+    inline QByteArray unpackReal(const uchar *data, int length, int &offset, U2OpStatus &os) {
+        int size = unpackNum<int>(data, length, offset, os);
+        CHECK_OP(os, "");
+        CHECK_SIZE(size, "");
+        QByteArray result((const char*)data + offset, size);
+        offset += size;
+        return result;
+    }
+    template<>
+    inline double unpackNum(const uchar *data, int length, int &offset, U2OpStatus &os) {
+        QByteArray numStr = unpackReal(data, length, offset, os);
+        CHECK_OP(os, 0.0);
+        return numStr.toDouble();
+    }
+    template<>
+    inline float unpackNum(const uchar *data, int length, int &offset, U2OpStatus &os) {
+        QByteArray numStr = unpackReal(data, length, offset, os);
+        CHECK_OP(os, 0.0f);
+        return numStr.toFloat();
     }
 
     template<class T>
@@ -50,32 +94,6 @@ namespace {
         }
         return result;
     }
-
-    inline QByteArray packCharVector(const QVector<char> &vector) {
-        QByteArray result;
-        result += packNum<int>(vector.size());
-        foreach (const char &c, vector) {
-            result += c;
-        }
-        return result;
-    }
-
-    inline QByteArray packBool(bool value) {
-        char c = (value) ? 1 : 0;
-        return QByteArray(1, c);
-    }
-
-    template<class T>
-    inline T unpackNum(const uchar *data, int length, int &offset, U2OpStatus &os) {
-        if (offset + int(sizeof(T)) > length) {
-            os.setError("The data is too short");
-            return T();
-        }
-        T result = qFromLittleEndian<T>(data + offset);
-        offset += sizeof(T);
-        return result;
-    }
-
     template<class T>
     inline QVector<T> unpackNumVector(const uchar *data, int length, int &offset, U2OpStatus &os) {
         QVector<T> result;
@@ -89,26 +107,33 @@ namespace {
         return result;
     }
 
+    inline QByteArray packCharVector(const QVector<char> &vector) {
+        QByteArray result;
+        result += packNum<int>(vector.size());
+        foreach (const char &c, vector) {
+            result += c;
+        }
+        return result;
+    }
     inline QVector<char> unpackCharVector(const uchar *data, int length, int &offset, U2OpStatus &os) {
         QVector<char> result;
         int size = unpackNum<int>(data, length, offset, os);
         CHECK_OP(os, result);
         for (int i=0; i<size; i++) {
-            if (offset + 1 > length) {
-                os.setError("The data is too short");
-                return result;
-            }
+            CHECK_SIZE(1, result);
             result << data[offset];
             offset++;
         }
         return result;
     }
 
+    inline QByteArray packBool(bool value) {
+        char c = (value) ? 1 : 0;
+        return QByteArray(1, c);
+    }
+
     inline bool unpackBool(const uchar *data, int length, int &offset, U2OpStatus &os) {
-        if (offset + 1 > length) {
-            os.setError("The data is too short");
-            return false;
-        }
+        CHECK_SIZE(1, false);
         uchar c = data[offset];
         offset++;
         return (0 == c) ? false : true;
@@ -347,6 +372,388 @@ PhyTree NewickPhyTreeSerializer::deserialize(const QByteArray &binary, U2OpStatu
         return PhyTree();
     }
     return trees.first();
+}
+
+/************************************************************************/
+/* BioStruct3DSerializer */
+/************************************************************************/
+namespace {
+    class PackContext {
+    public:
+        QList<SharedAtom> atoms;
+    };
+
+    template<class T>
+    T unpack(const uchar *data, int length, int &offset, U2OpStatus &os);
+    template<class T>
+    T unpack(const uchar *data, int length, int &offset, U2OpStatus &os, PackContext &ctx);
+
+    template<>
+    inline char unpack(const uchar *data, int length, int &offset, U2OpStatus &os) {
+        CHECK_SIZE(1, 0);
+        char result = data[offset];
+        offset++;
+        return result;
+    }
+
+    inline QByteArray pack(const QByteArray &data) {
+        return packNum<int>(data.size()) + data;
+    }
+    template<>
+    inline QByteArray unpack(const uchar *data, int length, int &offset, U2OpStatus &os) {
+        int size = unpackNum<int>(data, length, offset, os);
+        CHECK_SIZE(size, "");
+        QByteArray result((const char*)data + offset, size);
+        offset += size;
+        return result;
+    }
+
+    inline QByteArray pack(const QString &data) {
+        return pack(data.toUtf8());
+    }
+    template<>
+    inline QString unpack(const uchar *data, int length, int &offset, U2OpStatus &os) {
+        return QString::fromUtf8(unpack<QByteArray>(data, length, offset, os));
+    }
+
+    inline QByteArray pack(const ResidueIndex &data) {
+        QByteArray result;
+        result += packNum<int>(data.toInt());
+        result += packNum<int>(data.getOrder());
+        result += data.getInsCode();
+        return result;
+    }
+    template<>
+    inline ResidueIndex unpack(const uchar *data, int length, int &offset, U2OpStatus &os) {
+        int resId = unpackNum<int>(data, length, offset, os);
+        CHECK_OP(os, ResidueIndex());
+        int order = unpackNum<int>(data, length, offset, os);
+        CHECK_OP(os, ResidueIndex());
+        char insCode = unpack<char>(data, length, offset, os);
+        CHECK_OP(os, ResidueIndex());
+
+        ResidueIndex result(resId, insCode);
+        result.setOrder(order);
+        return result;
+    }
+    template<>
+    inline QByteArray packNum(const ResidueIndex &num) {
+        return pack(num);
+    }
+    template<>
+    inline ResidueIndex unpackNum(const uchar *data, int length, int &offset, U2OpStatus &os) {
+        return unpack<ResidueIndex>(data, length, offset, os);
+    }
+
+    inline QByteArray pack(const ResidueData &data) {
+        QByteArray result;
+        result += char(data.type);
+        result += pack(data.name);
+        result += data.acronym;
+        result += packNum<int>(data.chainIndex);
+        return result;
+    }
+    inline QByteArray pack(const SharedResidue &data, PackContext & /*ctx*/) {
+        return pack(*data.data());
+    }
+    template<>
+    inline SharedResidue unpack(const uchar *data, int length, int &offset, U2OpStatus &os, PackContext & /*ctx*/) {
+        SharedResidue result(new ResidueData());
+        result->type = ResidueData::Type(unpack<char>(data, length, offset, os));
+        CHECK_OP(os, result);
+
+        result->name = unpack<QByteArray>(data, length, offset, os);
+        CHECK_OP(os, result);
+
+        result->acronym = unpack<char>(data, length, offset, os);
+        CHECK_OP(os, result);
+
+        result->chainIndex = unpackNum<int>(data, length, offset, os);
+        return result;
+    }
+
+    inline QByteArray pack(const Vector3D &data) {
+        QByteArray result;
+        result += packNum<double>(data.x);
+        result += packNum<double>(data.y);
+        result += packNum<double>(data.z);
+        return result;
+    }
+    template<>
+    inline Vector3D unpack(const uchar *data, int length, int &offset, U2OpStatus &os) {
+        Vector3D result;
+        result.x = unpackNum<double>(data, length, offset, os);
+        CHECK_OP(os, result);
+        result.y = unpackNum<double>(data, length, offset, os);
+        CHECK_OP(os, result);
+        result.z = unpackNum<double>(data, length, offset, os);
+        return result;
+    }
+
+    inline QByteArray pack(const Matrix44 &data) {
+        QByteArray result;
+        for (int i=0; i<16; i++) {
+            result += packNum<float>(data[i]);
+        }
+        return result;
+    }
+    template<>
+    inline Matrix44 unpack(const uchar *data, int length, int &offset, U2OpStatus &os) {
+        Matrix44 result;
+        for (int i=0; i<16; i++) {
+            result[i] = unpackNum<float>(data, length, offset, os);
+            CHECK_OP(os, result);
+        }
+        return result;
+    }
+
+    inline QByteArray pack(const AtomData &data) {
+        QByteArray result;
+        result += packNum<int>(data.atomicNumber);
+        result += packNum<int>(data.chainIndex);
+        result += pack(data.residueIndex);
+        result += pack(data.name);
+        result += pack(data.coord3d);
+        result += packNum<float>(data.occupancy);
+        result += packNum<float>(data.temperature);
+        return result;
+    }
+    inline QByteArray pack(const SharedAtom &data, PackContext &ctx) {
+        if (ctx.atoms.contains(data)) {
+            int num = ctx.atoms.indexOf(data);
+            return packNum<int>(num);
+        }
+        QByteArray result;
+        result += packNum<int>(ctx.atoms.size());
+        result += pack(*data.data());
+        ctx.atoms << data;
+        return result;
+    }
+    template<>
+    inline AtomData unpack(const uchar *data, int length, int &offset, U2OpStatus &os) {
+        AtomData result;
+        result.atomicNumber = unpackNum<int>(data, length, offset, os);
+        CHECK_OP(os, result);
+        result.chainIndex = unpackNum<int>(data, length, offset, os);
+        CHECK_OP(os, result);
+        result.residueIndex = unpack<ResidueIndex>(data, length, offset, os);
+        CHECK_OP(os, result);
+        result.name = unpack<QByteArray>(data, length, offset, os);
+        CHECK_OP(os, result);
+        result.coord3d = unpack<Vector3D>(data, length, offset, os);
+        CHECK_OP(os, result);
+        result.occupancy = unpackNum<float>(data, length, offset, os);
+        CHECK_OP(os, result);
+        result.temperature = unpackNum<float>(data, length, offset, os);
+        return result;
+    }
+    template<>
+    inline SharedAtom unpack(const uchar *data, int length, int &offset, U2OpStatus &os, PackContext &ctx) {
+        int num = unpackNum<int>(data, length, offset, os);
+        CHECK_OP(os, SharedAtom());
+        if (num < ctx.atoms.size()) {
+            return ctx.atoms[num];
+        }
+        SAFE_POINT_EXT(num == ctx.atoms.size(), os.setError("Unexpected atom number"), SharedAtom());
+        AtomData atom = unpack<AtomData>(data, length, offset, os);
+        CHECK_OP(os, SharedAtom());
+        SharedAtom result(new AtomData(atom));
+        ctx.atoms << result;
+        return result;
+    }
+
+    inline QByteArray pack(const Bond &data, PackContext &ctx) {
+        QByteArray result;
+        result += pack(data.getAtom1(), ctx);
+        result += pack(data.getAtom2(), ctx);
+        return result;
+    }
+    template<>
+    inline Bond unpack(const uchar *data, int length, int &offset, U2OpStatus &os, PackContext &ctx) {
+        SharedAtom atom1 = unpack<SharedAtom>(data, length, offset, os, ctx);
+        CHECK_OP(os, Bond(SharedAtom(), SharedAtom()));
+        SharedAtom atom2 = unpack<SharedAtom>(data, length, offset, os, ctx);
+        return Bond(atom1, atom2);
+    }
+
+    inline QByteArray pack(const SecondaryStructure &data) {
+        QByteArray result;
+        result += char(data.type);
+        result += data.chainIdentifier;
+        result += packNum<int>(data.chainIndex);
+        result += packNum<int>(data.startSequenceNumber);
+        result += packNum<int>(data.endSequenceNumber);
+        return result;
+    }
+    inline QByteArray pack(const SharedSecondaryStructure &data, PackContext & /*ctx*/) {
+        return pack(*data.data());
+    }
+    template<>
+    inline SharedSecondaryStructure unpack(const uchar *data, int length, int &offset, U2OpStatus &os, PackContext & /*ctx*/) {
+        SharedSecondaryStructure result(new SecondaryStructure());
+        result->type = SecondaryStructure::Type(unpack<char>(data, length, offset, os));
+        CHECK_OP(os, result);
+
+        result->chainIdentifier = unpack<char>(data, length, offset, os);
+        CHECK_OP(os, result);
+
+        result->chainIndex = unpackNum<int>(data, length, offset, os);
+        result->startSequenceNumber = unpackNum<int>(data, length, offset, os);
+        result->endSequenceNumber = unpackNum<int>(data, length, offset, os);
+        return result;
+    }
+
+    template<class T>
+    inline QByteArray packList(const QList<T> &data, PackContext &ctx) {
+        QByteArray result;
+        result += packNum<int>(data.size());
+        foreach (const T &d, data) {
+            result += pack(d, ctx);
+        }
+        return result;
+    }
+    template<class T>
+    inline QList<T> unpackList(const uchar *data, int length, int &offset, U2OpStatus &os, PackContext &ctx) {
+        QList<T> result;
+        int size = unpackNum<int>(data, length, offset, os);
+        CHECK_OP(os, result);
+        for (int i=0; i<size; i++) {
+            result << unpack<T>(data, length, offset, os, ctx);
+            CHECK_OP(os, result);
+        }
+        return result;
+    }
+
+    inline QByteArray pack(const Molecule3DModel &data, PackContext &ctx) {
+        QByteArray result;
+        result += packList<SharedAtom>(data.atoms, ctx);
+        result += packList<Bond>(data.bonds, ctx);
+        return result;
+    }
+    template<>
+    inline Molecule3DModel unpack(const uchar *data, int length, int &offset, U2OpStatus &os, PackContext &ctx) {
+        Molecule3DModel result;
+        result.atoms = unpackList<SharedAtom>(data, length, offset, os, ctx);
+        CHECK_OP(os, result);
+        result.bonds = unpackList<Bond>(data, length, offset, os, ctx);
+        CHECK_OP(os, result);
+        return result;
+    }
+
+    template<class KeyT, class ValueT>
+    inline QByteArray packMap(const QMap<KeyT, ValueT> &data, PackContext &ctx) {
+        QByteArray result;
+        result += packNum<int>(data.size());
+        foreach (const KeyT &idx, data.keys()) {
+            result += packNum<KeyT>(idx);
+            result += pack(data[idx], ctx);
+        }
+        return result;
+    }
+    template<class KeyT, class ValueT>
+    inline QMap<KeyT, ValueT> unpackMap(const uchar *data, int length, int &offset, U2OpStatus &os, PackContext &ctx) {
+        QMap<KeyT, ValueT> result;
+        int size = unpackNum<int>(data, length, offset, os);
+        CHECK_OP(os, result);
+        for (int i=0; i<size; i++) {
+            KeyT key = unpackNum<KeyT>(data, length, offset, os);
+            CHECK_OP(os, result);
+            ValueT value = unpack<ValueT>(data, length, offset, os, ctx);
+            CHECK_OP(os, result);
+            result[key] = value;
+        }
+        return result;
+    }
+
+    inline QByteArray pack(const MoleculeData &data, PackContext &ctx) {
+        QByteArray result;
+        result += packMap<ResidueIndex, SharedResidue>(data.residueMap, ctx);
+        result += packList<Molecule3DModel>(data.models, ctx);
+        result += pack(data.name);
+        result += packBool(data.engineered);
+        return result;
+    }
+    inline QByteArray pack(const SharedMolecule &data, PackContext &ctx) {
+        return pack(*data.data(), ctx);
+    }
+    template<>
+    inline SharedMolecule unpack(const uchar *data, int length, int &offset, U2OpStatus &os, PackContext &ctx) {
+        SharedMolecule result(new MoleculeData());
+        result->residueMap = unpackMap<ResidueIndex, SharedResidue>(data, length, offset, os, ctx);
+        CHECK_OP(os, result);
+        result->models = unpackList<Molecule3DModel>(data, length, offset, os, ctx);
+        CHECK_OP(os, result);
+        result->name = unpack<QString>(data, length, offset, os);
+        CHECK_OP(os, result);
+        result->engineered = unpackBool(data, length, offset, os);
+        return result;
+    }
+
+    inline QByteArray pack(const AtomCoordSet &data, PackContext &ctx) {
+        QByteArray result;
+        result += packNum<int>(data.size());
+        foreach (int idx, data.keys()) {
+            result += packNum<int>(idx);
+            result += pack(data[idx], ctx);
+        }
+        return result;
+    }
+    template<>
+    inline AtomCoordSet unpack(const uchar *data, int length, int &offset, U2OpStatus &os, PackContext &ctx) {
+        AtomCoordSet result;
+        int size = unpackNum<int>(data, length, offset, os);
+        CHECK_OP(os, result);
+        for (int i=0; i<size; i++) {
+            int key = unpackNum<int>(data, length, offset, os);
+            CHECK_OP(os, result);
+            SharedAtom value = unpack<SharedAtom>(data, length, offset, os, ctx);
+            CHECK_OP(os, result);
+            result[key] = value;
+        }
+        return result;
+    }
+}
+
+QByteArray BioStruct3DSerializer::serialize(const BioStruct3D &bioStruct) {
+    PackContext ctx;
+    QByteArray result;
+    result += packMap<int, SharedMolecule>(bioStruct.moleculeMap, ctx);
+    result += packMap<int, AtomCoordSet>(bioStruct.modelMap, ctx);
+    result += packList<SharedSecondaryStructure>(bioStruct.secondaryStructures, ctx);
+    result += packList<Bond>(bioStruct.interMolecularBonds, ctx);
+    result += pack(bioStruct.descr);
+    result += pack(bioStruct.pdbId);
+    result += packNum<double>(bioStruct.getRadius());
+    result += pack(bioStruct.getCenter());
+    result += pack(bioStruct.getTransform());
+    return result;
+}
+
+BioStruct3D BioStruct3DSerializer::deserialize(const QByteArray &binary, U2OpStatus &os) {
+    const uchar *data = (const uchar*)(binary.data());
+    int offset = 0;
+    int length = binary.length();
+
+    PackContext ctx;
+    BioStruct3D result;
+    result.moleculeMap = unpackMap<int, SharedMolecule>(data, length, offset, os, ctx);
+    CHECK_OP(os, result);
+    result.modelMap = unpackMap<int, AtomCoordSet>(data, length, offset, os, ctx);
+    CHECK_OP(os, result);
+    result.secondaryStructures = unpackList<SharedSecondaryStructure>(data, length, offset, os, ctx);
+    CHECK_OP(os, result);
+    result.interMolecularBonds = unpackList<Bond>(data, length, offset, os, ctx);
+    CHECK_OP(os, result);
+    result.descr = unpack<QString>(data, length, offset, os);
+    CHECK_OP(os, result);
+    result.pdbId = unpack<QByteArray>(data, length, offset, os);
+    CHECK_OP(os, result);
+    result.setRadius(unpackNum<double>(data, length, offset, os));
+    CHECK_OP(os, result);
+    result.setCenter(unpack<Vector3D>(data, length, offset, os));
+    CHECK_OP(os, result);
+    result.setTransform(unpack<Matrix44>(data, length, offset, os));
+    return result;
 }
 
 } // U2

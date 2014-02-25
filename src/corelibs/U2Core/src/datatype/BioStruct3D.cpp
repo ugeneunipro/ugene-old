@@ -248,6 +248,14 @@ const Molecule3DModel BioStruct3D::getModelByIndex(int moleculeId, int index) co
     return moleculeMap[moleculeId]->models[index];
 }
 
+void BioStruct3D::setRadius(double value) {
+    radius = value;
+}
+
+void BioStruct3D::setCenter(const Vector3D &value) {
+    rotationCenter = value;
+}
+
 /* class U2CORE_EXPORT BioStruct3DChainSelection */
 
 BioStruct3DChainSelection::BioStruct3DChainSelection(const BioStruct3D &biostruct_)
@@ -322,6 +330,14 @@ bool ResidueIndex::operator==( const ResidueIndex& other ) const
 bool ResidueIndex::operator!=( const ResidueIndex& other ) const
 {
     return !(*this == other);
+}
+
+int ResidueIndex::getOrder() const {
+    return order;
+}
+
+char ResidueIndex::getInsCode() const {
+    return insCode;
 }
 
 } // namespace U2

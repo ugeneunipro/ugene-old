@@ -756,11 +756,14 @@ QHash<QByteArray, int> PDBFormat::createAtomNumMap()
 Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, BioStruct3D &bioStruct,
     DocumentFormat *format, IOAdapterFactory *iof, const GUrl &url, U2OpStatus &os, const QVariantMap &fs )
 {
+    DbiOperationsBlock opBlock(dbiRef, os);
+    CHECK_OP(os, NULL);
     QList<GObject*> objects;
     QMap<AnnotationTableObject *, U2SequenceObject *> relationsMap;
     QString objectName = bioStruct.pdbId.isEmpty() ? url.baseFileName() : bioStruct.pdbId;
 
-    BioStruct3DObject* biostrucObj = new BioStruct3DObject(bioStruct, objectName);
+    BioStruct3DObject* biostrucObj = BioStruct3DObject::createInstance(bioStruct, objectName, dbiRef, os, fs);
+    CHECK_OP(os, NULL);
     QMap<int, QList<SharedAnnotationData> > anns = bioStruct.generateAnnotations();
     TmpDbiObjects dbiObjects(dbiRef, os);
     foreach(int key, bioStruct.moleculeMap.keys()) {

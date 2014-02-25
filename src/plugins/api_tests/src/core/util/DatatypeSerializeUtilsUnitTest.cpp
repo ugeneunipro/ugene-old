@@ -19,9 +19,14 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/BioStruct3DObject.h>
 #include <U2Core/DatatypeSerializeUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+
+#include <U2Formats/PDBFormat.h>
+
+#include "../gobjects/BioStruct3DObjectUnitTests.h"
 
 #include "DatatypeSerializeUtilsUnitTest.h"
 
@@ -91,6 +96,29 @@ IMPLEMENT_TEST(DatatypeSerializeUtilsUnitTest, NewickPhyTreeSerializer_failed) {
 
     U2OpStatusImpl os;
     PhyTree tree = NewickPhyTreeSerializer::deserialize(treeData, os);
+    CHECK_TRUE(os.hasError(), "no error");
+}
+
+IMPLEMENT_TEST(DatatypeSerializeUtilsUnitTest, BioStruct3DSerializer) {
+    U2OpStatusImpl os;
+    BioStruct3D bioStruct1 = BioStruct3DObjectTestData::readBioStruct("Ncbi.pdb", os);
+    CHECK_NO_ERROR(os);
+
+    QByteArray data1 = BioStruct3DSerializer::serialize(bioStruct1);
+    BioStruct3D bioStruct2 = BioStruct3DSerializer::deserialize(data1, os);
+    CHECK_NO_ERROR(os);
+
+    QByteArray data2 = BioStruct3DSerializer::serialize(bioStruct2);
+    CHECK_TRUE(data1 == data2, "data");
+}
+
+IMPLEMENT_TEST(DatatypeSerializeUtilsUnitTest, BioStruct3DSerializer_failed) {
+    BioStruct3D bioStruct;
+    QByteArray data = BioStruct3DSerializer::serialize(bioStruct);
+    QByteArray broken = data.left(data.size() / 2);
+
+    U2OpStatusImpl os;
+    BioStruct3DSerializer::deserialize(broken, os);
     CHECK_TRUE(os.hasError(), "no error");
 }
 

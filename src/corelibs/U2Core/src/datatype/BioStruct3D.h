@@ -50,6 +50,9 @@ public:
     bool operator!=(const ResidueIndex& other) const;
     int toInt() const { return resId; }
     void setOrder(int ord) { order = ord; }
+
+    int getOrder() const;
+    char getInsCode() const;
 };
 
 
@@ -99,8 +102,8 @@ class Bond
     SharedAtom atom2;
 public:
     Bond(const SharedAtom& a1, const SharedAtom& a2) : atom1(a1), atom2(a2) { }
-    const SharedAtom getAtom1() { return atom1; }
-    const SharedAtom getAtom2() { return atom2; }
+    const SharedAtom getAtom1() const { return atom1; }
+    const SharedAtom getAtom2() const { return atom2; }
 };
 
 //! Represents protein secondary structure: alpha-helix, beta-strand, turn
@@ -189,6 +192,9 @@ public:
     double getRadius()  const { return radius; }
     const Vector3D& getCenter() const { return rotationCenter; }
 
+    void setRadius(double value);
+    void setCenter(const Vector3D &value);
+
     QByteArray getRawSequenceByChainId(int id) const;
     int getNumberOfAtoms() const;
     int getNumberOfResidues() const;
@@ -226,9 +232,6 @@ public:
 private:
     QMap<int, QList<SharedAnnotationData> > generateChainAnnotations() const;
     void generateSecStructureAnnotations(QMap<int, QList<SharedAnnotationData> > &result) const;
-
-private:
-    BioStruct3D& operator= (const BioStruct3D&);
 
 private:
     double radius;

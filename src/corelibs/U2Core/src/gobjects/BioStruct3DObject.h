@@ -31,16 +31,21 @@ namespace U2 {
 class  U2CORE_EXPORT BioStruct3DObject: public GObject {
     Q_OBJECT
 public:
-    BioStruct3DObject(const BioStruct3D& bioStruct, const QString& objectName, const QVariantMap& hintsMap = QVariantMap());
-    const BioStruct3D& getBioStruct3D() const { return bioStruct3D;}
-    virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const;
+    static BioStruct3DObject * createInstance(const BioStruct3D &bioStruct3D, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap = QVariantMap());
+    BioStruct3DObject(const QString &objectName, const U2EntityRef &structRef, const QVariantMap &hintsMap = QVariantMap());
 
-protected:
+    const BioStruct3D & getBioStruct3D() const { return bioStruct3D;}
+    GObject * clone(const U2DbiRef&, U2OpStatus&) const;
+
+private:
+    BioStruct3DObject(const BioStruct3D &bioStruct3D, const QString &objectName, const U2EntityRef &structRef, const QVariantMap &hintsMap);
+    void retrieve();
+
+private:
     BioStruct3D     bioStruct3D;
-
 };
 
-} //namespace
+} // U2
 
 
 #endif //_U2_BIOSTRUCT3D_OBJECT_H_
