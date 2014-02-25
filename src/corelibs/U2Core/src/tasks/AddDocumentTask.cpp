@@ -31,10 +31,11 @@ namespace U2 {
 
 
 AddDocumentTask::AddDocumentTask(Document * _d, const AddDocumentTaskConfig& _conf) :
-Task( tr("Adding document to project: %1").arg(_d->getURLString()), TaskFlags_NR_FOSE_COSC), document(_d), dpt(NULL), conf(_conf)
+Task("Add document task", TaskFlags_NR_FOSE_COSC), document(_d), dpt(NULL), conf(_conf)
 {
     CHECK_EXT(_d != NULL, setError("Document pointer ]is NULL"), );
     SAFE_POINT(document->isMainThreadObject(), QString("Document added to the project does not belong to the main application thread: %1 !").arg(document->getURLString()),);
+    setTaskName(tr("Adding document to project: %1").arg(_d->getURLString()));
     if(AppContext::getProject() == NULL){
         addSubTask( AppContext::getProjectLoader()->createNewProjectTask());
     }else{
@@ -43,9 +44,10 @@ Task( tr("Adding document to project: %1").arg(_d->getURLString()), TaskFlags_NR
 }
 
 AddDocumentTask::AddDocumentTask(DocumentProviderTask * _dpt, const AddDocumentTaskConfig& c) :
-Task( tr("Adding document to project: %1").arg(_dpt->getDocumentDescription()), TaskFlags_NR_FOSE_COSC), document(NULL), dpt(_dpt), conf(c)
+Task("Add document task", TaskFlags_NR_FOSE_COSC), document(NULL), dpt(_dpt), conf(c)
 {
     CHECK_EXT(_dpt != NULL, setError("Document provider task pointer is NULL"), );
+    setTaskName(tr("Adding document to project: %1").arg(_dpt->getDocumentDescription()));
     addSubTask(dpt);
 }
 
