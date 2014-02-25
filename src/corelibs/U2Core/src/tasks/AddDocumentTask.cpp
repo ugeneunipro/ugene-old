@@ -33,15 +33,20 @@ namespace U2 {
 AddDocumentTask::AddDocumentTask(Document * _d, const AddDocumentTaskConfig& _conf) :
 Task( tr("Adding document to project: %1").arg(_d->getURLString()), TaskFlags_NR_FOSE_COSC), document(_d), dpt(NULL), conf(_conf)
 {
-    setSubtaskProgressWeight(0);
+    CHECK_EXT(_d != NULL, setError("Document pointer ]is NULL"), );
     SAFE_POINT(document->isMainThreadObject(), QString("Document added to the project does not belong to the main application thread: %1 !").arg(document->getURLString()),);
+    if(AppContext::getProject() == NULL){
+        addSubTask( AppContext::getProjectLoader()->createNewProjectTask());
+    }else{
+        setSubtaskProgressWeight(0);
+    }
 }
 
 AddDocumentTask::AddDocumentTask(DocumentProviderTask * _dpt, const AddDocumentTaskConfig& c) :
 Task( tr("Adding document to project: %1").arg(_dpt->getDocumentDescription()), TaskFlags_NR_FOSE_COSC), document(NULL), dpt(_dpt), conf(c)
 {
+    CHECK_EXT(_dpt != NULL, setError("Document provider task pointer is NULL"), );
     addSubTask(dpt);
-    // setSubtaskProgressWeight(0);
 }
 
 QList<Task*> AddDocumentTask::onSubTaskFinished(Task* subTask) {
