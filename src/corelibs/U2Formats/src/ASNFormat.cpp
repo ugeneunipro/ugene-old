@@ -91,7 +91,6 @@ Document* ASNFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     ioLog.trace(QString("BioStruct3D loaded from ASN tree (%1)").arg(io->toString()));
     
     bioStruct.calcCenterAndMaxDistance();
-    bioStruct.generateAnnotations();
     os.setProgress(90);
     
     Document* doc = PDBFormat::createDocumentFromBioStruct3D(dbiRef, bioStruct, this, io->getFactory(), io->toString(), os, fs);

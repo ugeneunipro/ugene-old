@@ -62,7 +62,6 @@ private:
     
     void initUtilityMaps();
     void updateSecStructChainIndexes(BioStruct3D& biostruc);
-    void fillBioStruct3DAnnotationTable(AnnotationTableObject *ao, const BioStruct3D& bioStruct);
 
 
     class PDBParser {

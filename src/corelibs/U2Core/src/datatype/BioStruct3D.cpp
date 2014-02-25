@@ -38,7 +38,7 @@ QString BioStruct3D::SecStructTypeQualifierName("sec_struct_type");
 
 BioStruct3D::BioStruct3D()
         : moleculeMap(), modelMap(),
-        annotations(), secondaryStructures(),
+        secondaryStructures(),
         interMolecularBonds(),
         descr(), pdbId(),
         radius(0), rotationCenter(),
@@ -49,7 +49,7 @@ BioStruct3D::BioStruct3D()
 
 BioStruct3D::BioStruct3D(const BioStruct3D &other)
     : moleculeMap(other.moleculeMap), modelMap(other.modelMap),
-    annotations(other.annotations), secondaryStructures(other.secondaryStructures),
+    secondaryStructures(other.secondaryStructures),
     interMolecularBonds(other.interMolecularBonds),
     descr(other.descr), pdbId(other.pdbId),
     radius(other.radius), rotationCenter(other.rotationCenter),
@@ -107,14 +107,16 @@ int BioStruct3D::getNumberOfAtoms() const
     return coordSet.count();
 }
 
-void BioStruct3D::generateAnnotations()
+QMap<int, QList<SharedAnnotationData> > BioStruct3D::generateAnnotations() const
 {
-    generateChainAnnotations();
-    generateSecStructureAnnotations();
+    QMap<int, QList<SharedAnnotationData> > result = generateChainAnnotations();
+    generateSecStructureAnnotations(result);
+    return result;
 }
 
-void BioStruct3D::generateChainAnnotations()
+QMap<int, QList<SharedAnnotationData> > BioStruct3D::generateChainAnnotations() const
 {
+    QMap<int, QList<SharedAnnotationData> > result;
     const char* molNameQualifier = "molecule_name";
     //const char* pdbChainIdQualifier = "pdb_id";
     
@@ -127,10 +129,10 @@ void BioStruct3D::generateChainAnnotations()
         sd->qualifiers.append(U2Qualifier(ChainIdQualifierName, QString("%1").arg(iter.key()) ));
         sd->qualifiers.append(U2Qualifier(molNameQualifier, (*iter)->name));
         
-        (*iter)->annotations.append(sd);
+        result[iter.key()].append(sd);
         ++iter;
     }
-    
+    return result;
 }
 
 int BioStruct3D::getNumberOfResidues() const
@@ -192,7 +194,7 @@ const QString BioStruct3D::getSecStructTypeName( SecondaryStructure::Type type )
 
 }
 
-void BioStruct3D::generateSecStructureAnnotations()
+void BioStruct3D::generateSecStructureAnnotations(QMap<int, QList<SharedAnnotationData> > &result) const
 {
     // TODO: issue 0000637
     if (moleculeMap.isEmpty())
@@ -213,7 +215,7 @@ void BioStruct3D::generateSecStructureAnnotations()
         U2Region chainRegion(startIndex, numResidues);
         sd->location->regions << chainRegion;
         Q_ASSERT(moleculeMap.contains(chainId));
-        moleculeMap[chainId]->annotations.append(sd);
+        result[chainId].append(sd);
     }
 
 }

@@ -155,7 +155,6 @@ public:
     // its indexes are NOT model ids taken from PDB
     QList<Molecule3DModel> models;
 
-    QList<SharedAnnotationData> annotations;
     QString name;
     bool engineered;
 };
@@ -181,7 +180,6 @@ public:
 
     QMap <int, SharedMolecule> moleculeMap;
     QMap <int, AtomCoordSet> modelMap;
-    QList<SharedAnnotationData> annotations;
     QList<SharedSecondaryStructure> secondaryStructures;
     QList<Bond> interMolecularBonds;
     QString descr;
@@ -211,9 +209,11 @@ public:
     /** @returns model by it's index number in our data structure */
     const Molecule3DModel getModelByIndex(int moleculeId, int index) const;
 
-    // Modifiers
+    // Modifier
     void calcCenterAndMaxDistance();
-    void generateAnnotations();
+
+    /** Generates the map: chainId <-> annotations */
+    QMap<int, QList<SharedAnnotationData> > generateAnnotations() const;
 
     /** Biostruct 3D model should be transforemd with this matrix */
     void setTransform(const Matrix44 &m) { transform = m; }
@@ -224,8 +224,8 @@ public:
     static const QString getSecStructTypeName(SecondaryStructure::Type type);
 
 private:
-    void generateChainAnnotations();
-    void generateSecStructureAnnotations();
+    QMap<int, QList<SharedAnnotationData> > generateChainAnnotations() const;
+    void generateSecStructureAnnotations(QMap<int, QList<SharedAnnotationData> > &result) const;
 
 private:
     BioStruct3D& operator= (const BioStruct3D&);

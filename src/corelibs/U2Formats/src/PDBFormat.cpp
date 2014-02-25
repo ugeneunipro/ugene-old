@@ -102,7 +102,6 @@ Document* PDBFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     os.setProgress(85);
 
     algoLog.trace("Generating chains annotations...");
-    bioStruct.generateAnnotations();
     os.setProgress(90);
     calculateBonds(bioStruct);
     
@@ -584,13 +583,6 @@ char PDBFormat::getAcronymByName( const QByteArray& name )
 
 }
 
-void PDBFormat::fillBioStruct3DAnnotationTable( AnnotationTableObject *ao, const BioStruct3D& bioStruct ) {
-    
-    foreach (SharedAnnotationData sdata, bioStruct.annotations) {
-        ao->addAnnotation( *sdata, bioStruct.pdbId );
-    }
-}
-
 static inline bool existsCovalentBond( double r1, double r2, double distance ) {
     static const double tolerance = 0.45;
 
@@ -769,7 +761,7 @@ Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, Bio
     QString objectName = bioStruct.pdbId.isEmpty() ? url.baseFileName() : bioStruct.pdbId;
 
     BioStruct3DObject* biostrucObj = new BioStruct3DObject(bioStruct, objectName);
-    
+    QMap<int, QList<SharedAnnotationData> > anns = bioStruct.generateAnnotations();
     TmpDbiObjects dbiObjects(dbiRef, os);
     foreach(int key, bioStruct.moleculeMap.keys()) {
         // Create dna sequence object
@@ -790,7 +782,7 @@ Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, Bio
         // create AnnnotationTableObject
         AnnotationTableObject *aObj = new AnnotationTableObject( QString( bioStruct.pdbId )
             + QString( " chain %1 annotation" ).arg( key ), dbiRef );
-        foreach ( SharedAnnotationData sd, bioStruct.moleculeMap.value( key )->annotations ) {
+        foreach ( SharedAnnotationData sd, anns.value( key ) ) {
             aObj->addAnnotation( *sd );
         }
         objects.append(aObj);
