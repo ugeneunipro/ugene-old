@@ -34,9 +34,9 @@
 #include <QtGui/QLabel>
 #include <QtGui/QToolButton>
 
-#ifdef Q_OS_LINUX
+#ifdef Q_OS_UNIX
 #include <QtCore/QTimer>
-#endif // Q_OS_LINUX
+#endif // Q_OS_UNIX
 
 
 namespace U2 {

@@ -533,7 +533,7 @@ void WidgetCreator::visit(WidgetsArea *wa) {
         int labelSize = wa->getLabelSize();
 #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
         labelSize *= 1.3;
-#elif defined(Q_OS_LINUX)
+#elif defined(Q_OS_UNIX)
         labelSize *= 1.4;
 #endif
         WidgetCreator wcr(wc, labelSize);

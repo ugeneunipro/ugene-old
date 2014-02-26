@@ -261,7 +261,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006){
-#ifndef Q_OS_LINUX
+#ifndef Q_OS_UNIX
     //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 #endif
 //1. Do menu Settings->Prefrences

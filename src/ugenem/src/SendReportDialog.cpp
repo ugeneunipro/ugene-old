@@ -46,6 +46,9 @@
 #include <Psapi.h>
 #include <Winbase.h> //for IsProcessorFeaturePresent
 #endif
+#if defined(Q_OS_LINUX) || defined(Q_OS_FREEBSD)
+#include <unistd.h> // for sysconf(3)
+#endif
 
 #define HOST_URL "http://ugene.unipro.ru"
 //#define HOST_URL "http://127.0.0.1"
@@ -195,7 +198,7 @@ void SendReportDialog::sl_onMaximumMessageSizeReached() {
 
 QString SendReportDialog::getCommandForRunUgene() const {
     QString command = getUgeneName();
-#if defined Q_OS_LINUX || defined Q_OS_MAC
+#if defined Q_OS_UNIX
     command.prepend("./");
 #endif
     return command;
@@ -205,7 +208,7 @@ QString SendReportDialog::getUgeneName() const {
     QString name;
     bool isWin = false;
     Q_UNUSED(isWin);
-#ifdef Q_OS_LINUX
+#ifdef Q_OS_UNIX
     name = "ugene";
 #endif
 #ifdef Q_OS_WIN32
@@ -227,7 +230,7 @@ QString SendReportDialog::getUgeneName() const {
 
 QStringList SendReportDialog::getParameters() const {
     QStringList parameters;
-#ifdef Q_OS_LINUX
+#ifdef Q_OS_UNIX
     parameters << "-ui";
 #endif
     if (Utils::hasDatabaseUrl()) {
@@ -314,6 +317,8 @@ QString ReportSender::getOSVersion() {
 
 #elif defined(Q_OS_LINUX)
     result = "Linux";
+#elif defined(Q_OS_FREEBSD)
+    result = "FreeBSD";
 #elif defined(Q_OS_MAC)
     result = "Mac ";
     switch (QSysInfo::MacintoshVersion) {
@@ -377,17 +382,15 @@ int ReportSender::getTotalPhysicalMemory() {
         totalPhysicalMemory = memory_status.ullTotalPhys / (1024 * 1024);
     }
 
-#elif defined(Q_OS_LINUX)
-    QProcess p;
-    p.start("awk", QStringList() << "/MemTotal/ {print $2}" << "/proc/meminfo");
-    p.waitForFinished();
-    QString memory = p.readAllStandardOutput();
-    p.close();
-    bool ok = false;
-    qlonglong output_mem = memory.toLongLong(&ok);
-    if (ok) {
-        totalPhysicalMemory = output_mem / 1024;
-    }
+#elif defined(Q_OS_LINUX) || defined(Q_OS_FREEBSD)
+    long pagesize = sysconf(_SC_PAGESIZE);
+    long numpages = sysconf(_SC_PHYS_PAGES);
+
+    // Assume that page size is always a multiple of 1024, so it can be
+    // divided without losing any precision.  On the other hand, number
+    // of pages would hardly overflow `long' when multiplied by a small
+    // number (number of pages / 1024), so we should be safe here.
+    totalPhysicalMemory = (int)(numpages * (pagesize / 1024) / 1024);
 
 #elif defined(Q_OS_MAC)
 // TODO
