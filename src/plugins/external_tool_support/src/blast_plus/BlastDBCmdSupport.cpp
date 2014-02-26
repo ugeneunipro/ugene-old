@@ -57,7 +57,7 @@ BlastDbCmdSupport::BlastDbCmdSupport(const QString& path) : ExternalTool(ET_BLAS
 #ifdef Q_OS_WIN
     executableFileName="blastdbcmd.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
     executableFileName="blastdbcmd";
     #endif
 #endif

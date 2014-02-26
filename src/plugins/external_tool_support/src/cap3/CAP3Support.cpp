@@ -57,7 +57,7 @@ CAP3Support::CAP3Support(const QString& name, const QString& path) : ExternalToo
 #ifdef Q_OS_WIN
     executableFileName="cap3.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
     executableFileName="cap3";
     #endif
 #endif

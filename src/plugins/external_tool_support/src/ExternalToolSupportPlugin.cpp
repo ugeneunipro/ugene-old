@@ -152,7 +152,7 @@ public:
         if(envList.indexOf(QRegExp("PATH=.*",Qt::CaseInsensitive))>=0){
             QString pathEnv = envList.at(envList.indexOf(QRegExp("PATH=.*",Qt::CaseInsensitive)));
             QStringList paths;
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX)
             paths = pathEnv.split("=").at(1).split(":");
 #elif defined(Q_OS_WIN)
             paths = pathEnv.split("=").at(1).split(";");

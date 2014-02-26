@@ -40,7 +40,7 @@ SamToolsExtToolSupport::SamToolsExtToolSupport(const QString& name, const QStrin
 #ifdef Q_OS_WIN
     executableFileName = "samtools.exe";
 #else
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX)
     executableFileName = "samtools";
 #endif
 #endif

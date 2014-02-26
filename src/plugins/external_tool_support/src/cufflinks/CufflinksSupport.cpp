@@ -44,7 +44,7 @@ CufflinksSupport::CufflinksSupport(const QString& name, const QString& path)
 #ifdef Q_OS_WIN
         executableFileName = "cuffcompare.exe";
 #else
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX)
         executableFileName = "cuffcompare";
 #endif
 #endif
@@ -60,7 +60,7 @@ CufflinksSupport::CufflinksSupport(const QString& name, const QString& path)
 #ifdef Q_OS_WIN
         executableFileName = "cuffdiff.exe";
 #else
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX)
         executableFileName = "cuffdiff";
 #endif
 #endif
@@ -75,7 +75,7 @@ CufflinksSupport::CufflinksSupport(const QString& name, const QString& path)
 #ifdef Q_OS_WIN
         executableFileName = "cufflinks.exe";
 #else
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX)
         executableFileName = "cufflinks";
 #endif
 #endif
@@ -91,7 +91,7 @@ CufflinksSupport::CufflinksSupport(const QString& name, const QString& path)
 #ifdef Q_OS_WIN
         executableFileName = "cuffmerge.py";
 #else
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX)
         executableFileName = "cuffmerge";
 #endif
 #endif
@@ -105,7 +105,7 @@ CufflinksSupport::CufflinksSupport(const QString& name, const QString& path)
     else if (name == ET_GFFREAD) {
 #ifdef Q_OS_WIN
         executableFileName = "gffread.exe";
-#elif defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#elif defined(Q_OS_UNIX)
         executableFileName = "gffread";
 #endif
         validMessage = "gffread <input_gff>";

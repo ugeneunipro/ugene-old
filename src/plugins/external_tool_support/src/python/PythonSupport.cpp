@@ -47,7 +47,7 @@ PythonSupport::PythonSupport(const QString& name, const QString& path) : Externa
 #ifdef Q_OS_WIN
     executableFileName = "python.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
     executableFileName = "python2.7";
     #endif
 #endif
@@ -79,7 +79,7 @@ PythonModuleSupport::PythonModuleSupport(const QString &name) :
 #ifdef Q_OS_WIN
     executableFileName = "python.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
     executableFileName = "python2.7";
     #endif
 #endif

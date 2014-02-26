@@ -36,7 +36,7 @@ PerlSupport::PerlSupport(const QString &name, const QString &path)
     }
 #ifdef Q_OS_WIN
     executableFileName = "perl.exe";
-#elif defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#elif defined(Q_OS_UNIX)
     executableFileName = "perl";
 #endif
     validMessage = "This is perl";

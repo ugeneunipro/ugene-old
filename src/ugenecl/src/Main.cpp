@@ -177,7 +177,7 @@ static void setDataSearchPaths() {
         dataSearchPaths.push_back( appDirPath+RELATIVE_DEV_DATA_DIR );
     }
 
-#if (defined(Q_OS_LINUX) || defined(Q_OS_UNIX)) && defined( UGENE_DATA_DIR )
+#if (defined(Q_OS_UNIX)) && defined( UGENE_DATA_DIR )
     //using directory which is set during installation process on linux
     QString ugene_data_dir( UGENE_DATA_DIR );
     if( QDir(ugene_data_dir).exists() ) {

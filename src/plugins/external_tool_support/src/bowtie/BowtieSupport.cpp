@@ -39,7 +39,7 @@ BowtieSupport::BowtieSupport(const QString &name, const QString &path):
 #ifdef Q_OS_WIN
         executableFileName="bowtie.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
         executableFileName="bowtie";
     #endif
 #endif
@@ -47,7 +47,7 @@ BowtieSupport::BowtieSupport(const QString &name, const QString &path):
 #ifdef Q_OS_WIN
         executableFileName="bowtie-build.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
         executableFileName="bowtie-build";
     #endif
 #endif

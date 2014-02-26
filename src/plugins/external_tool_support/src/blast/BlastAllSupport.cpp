@@ -63,7 +63,7 @@ BlastAllSupport::BlastAllSupport(const QString& name, const QString& path) : Ext
 #ifdef Q_OS_WIN
         executableFileName="blastall.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
         executableFileName="blastall";
     #endif
 #endif

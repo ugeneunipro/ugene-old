@@ -23,7 +23,7 @@
 #include <QtGui/QMessageBox>
 #include <QtCore/QTextStream>
 #include "SendReportDialog.h"
-#ifdef Q_OS_LINUX
+#ifdef Q_OS_UNIX
 #include <X11/Xlib.h>
 #endif
 #include "Utils.h"
@@ -43,7 +43,7 @@ namespace {
 
 int main(int argc, char *argv[]){
     QString message = loadReport(argc, argv);
-#ifdef Q_OS_LINUX
+#ifdef Q_OS_UNIX
     if(XOpenDisplay(NULL) == NULL) {
         QCoreApplication a(argc, argv);
         QTextStream stream(stdin);

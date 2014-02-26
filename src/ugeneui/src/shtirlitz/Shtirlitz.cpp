@@ -240,6 +240,12 @@ void Shtirlitz::getOsNameAndVersion( QString & name, QString & version ) {
 #elif defined(Q_OS_LINUX)
     name = "Linux";
     Q_UNUSED(version);//no version is available :(
+#elif defined(Q_OS_FREEBSD)
+    name = "FreeBSD";
+    Q_UNUSED(version);//no version is available :(
+#elif defined(Q_OS_UNIX)
+    name = "Unix";
+    Q_UNUSED(version);//no version is available :(
 #else
     name = "Other";
 #endif

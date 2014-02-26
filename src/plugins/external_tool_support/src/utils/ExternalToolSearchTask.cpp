@@ -81,7 +81,7 @@ void ExternalToolSearchTask::run() {
 
     if (pathIndex >= 0) {
         QString pathEnv = envList.at(pathIndex);
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX)
         QStringList paths = pathEnv.split("=").at(1).split(":");
 #else
 #ifdef Q_OS_WIN

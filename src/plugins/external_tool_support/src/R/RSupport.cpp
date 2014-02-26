@@ -46,7 +46,7 @@ RSupport::RSupport(const QString& name, const QString& path) : ExternalTool(name
 #ifdef Q_OS_WIN
     executableFileName = "Rscript.exe";
 #else
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX)
     executableFileName = "Rscript";
 #endif
 #endif
@@ -77,7 +77,7 @@ RModuleSupport::RModuleSupport(const QString& name) : ExternalToolModule(name) {
 #ifdef Q_OS_WIN
     executableFileName = "Rscript.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
     executableFileName = "Rscript";
     #endif
 #endif

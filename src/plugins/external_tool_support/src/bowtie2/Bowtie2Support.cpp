@@ -44,7 +44,7 @@ Bowtie2Support::Bowtie2Support(const QString& name, const QString& path /* = */ 
 #ifdef Q_OS_WIN
         executableFileName = "bowtie2-align.exe";
 #else
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX)
         executableFileName = "bowtie2-align";
 #endif
 #endif
@@ -60,7 +60,7 @@ Bowtie2Support::Bowtie2Support(const QString& name, const QString& path /* = */ 
 #ifdef Q_OS_WIN
         executableFileName = "bowtie2-build.exe";
 #else
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX)
         executableFileName = "bowtie2-build";
 #endif
 #endif
@@ -81,7 +81,7 @@ Bowtie2Support::Bowtie2Support(const QString& name, const QString& path /* = */ 
 #ifdef Q_OS_WIN
         executableFileName = "bowtie2-inspect.exe";
 #else
-#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX)
         executableFileName = "bowtie2-inspect";
 #endif
 #endif

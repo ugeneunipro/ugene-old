@@ -58,7 +58,7 @@ ClustalOSupport::ClustalOSupport(const QString& name, const QString& path) : Ext
 #ifdef Q_OS_WIN
     executableFileName="ClustalO.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
     executableFileName="clustalo";
     #endif
 #endif

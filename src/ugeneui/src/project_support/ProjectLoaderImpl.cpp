@@ -226,18 +226,7 @@ void ProjectLoaderImpl::sl_openRecentFile() {
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(task);	
     prependToRecentItems(url.getURLString());
-#ifdef Q_OS_LINUX
-    if(QString("4.5.0") == qVersion())
-    {
-        QTimer::singleShot(0,this,SLOT(sl_updateRecentItemsMenu()));
-    }
-    else
-    {
-#endif // Q_OS_LINUX
-        updateRecentItemsMenu();
-#ifdef Q_OS_LINUX
-    }
-#endif // Q_OS_LINUX
+    updateRecentItemsMenu();
  }
 
 void ProjectLoaderImpl::prependToRecentProjects(const QString& url) {

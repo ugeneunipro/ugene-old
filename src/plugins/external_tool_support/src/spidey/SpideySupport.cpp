@@ -64,7 +64,7 @@ SpideySupport::SpideySupport(const QString& name, const QString& path) : Externa
 #ifdef Q_OS_WIN
     executableFileName="Spidey.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
     executableFileName="spidey";
     #endif
 #endif

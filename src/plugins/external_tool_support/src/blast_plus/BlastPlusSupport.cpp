@@ -73,7 +73,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 #ifdef Q_OS_WIN
     executableFileName="blastn.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
     executableFileName="blastn";
     #endif
 #endif
@@ -85,7 +85,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 #ifdef Q_OS_WIN
     executableFileName="blastp.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
     executableFileName="blastp";
     #endif
 #endif
@@ -98,7 +98,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 // #ifdef Q_OS_WIN
 //     executableFileName="blastp.exe";
 // #else
-//     #ifdef Q_OS_LINUX
+//     #ifdef Q_OS_UNIX
 //     executableFileName="blastp";
 //     #endif
 // #endif
@@ -109,7 +109,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 #ifdef Q_OS_WIN
     executableFileName="blastx.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
     executableFileName="blastx";
     #endif
 #endif
@@ -121,7 +121,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 #ifdef Q_OS_WIN
     executableFileName="tblastn.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
     executableFileName="tblastn";
     #endif
 #endif
@@ -133,7 +133,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 #ifdef Q_OS_WIN
     executableFileName="tblastx.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
     executableFileName="tblastx";
     #endif
 #endif
@@ -147,7 +147,7 @@ BlastPlusSupport::BlastPlusSupport(const QString& name, const QString& path) : E
 #ifdef Q_OS_WIN
     executableFileName="rpsblast.exe";
 #else
-    #if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+    #if defined(Q_OS_UNIX)
     executableFileName="rpsblast";
     #endif
 #endif

@@ -48,7 +48,7 @@ MrBayesSupport::MrBayesSupport(const QString& name, const QString& path) : Exter
 
 #ifdef Q_OS_WIN
     executableFileName = "mb.exe";
-#elif defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#elif defined(Q_OS_UNIX)
     executableFileName = "mb";
 #endif
 

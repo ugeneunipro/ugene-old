@@ -36,7 +36,7 @@ BcfToolsSupport::BcfToolsSupport(const QString &name)
 
 #ifdef Q_OS_WIN
     executableFileName = "bcftools.exe";
-#elif defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+#elif defined(Q_OS_UNIX)
     executableFileName = "bcftools";
 #endif
 

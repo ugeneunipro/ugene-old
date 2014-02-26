@@ -20,7 +20,7 @@
  */
 
 //using 3rd-party zlib (not included in ugene bundle) on *nix
-#if defined(Q_OS_LINUX) || defined(Q_OS_UNIX)
+#if defined(Q_OS_UNIX)
 #include <zlib.h>
 #else
 #include "zlib.h"
