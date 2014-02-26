@@ -6,12 +6,14 @@ HEADERS += src/CircularItems.h \
            src/CircularViewPlugin.h \
            src/CircularViewSplitter.h \
            src/ExportImageCircularViewDialog.h \
-           src/RestrictionMapWidget.h
+           src/RestrictionMapWidget.h \
+           src/ShiftSequenceStartTask.h
 SOURCES += src/CircularItems.cpp \
            src/CircularView.cpp \
            src/CircularViewPlugin.cpp \
            src/CircularViewSplitter.cpp \
            src/ExportImageCircularViewDialog.cpp \
-           src/RestrictionMapWidget.cpp
+           src/RestrictionMapWidget.cpp \
+           src/ShiftSequenceStartTask.cpp
 RESOURCES += circular_view.qrc
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
