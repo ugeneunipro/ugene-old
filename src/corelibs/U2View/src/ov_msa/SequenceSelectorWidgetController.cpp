@@ -46,6 +46,8 @@ SequenceSelectorWidgetController::SequenceSelectorWidgetController(MSAEditor* _m
         SLOT(sl_seqLineEditEditingFinished(const MAlignment& , const MAlignmentModInfo&)));
 
     connect(completer, SIGNAL(si_editingFinished()), SLOT(sl_seqLineEditEditingFinished()));
+
+    connect(completer, SIGNAL(si_completerClosed()), SLOT(sl_setDefaultLineEditValue()));
 }
 
 SequenceSelectorWidgetController::~SequenceSelectorWidgetController() {
@@ -65,6 +67,7 @@ void SequenceSelectorWidgetController::setSequenceId(qint64 newId) {
     if (seqLineEdit->text() != selectedName) {
         seqLineEdit->setText(selectedName);
         seqLineEdit->setCursorPosition(CURSOR_START_POSITION);
+        defaultSeqName = selectedName;
     }
 }
 
@@ -77,9 +80,6 @@ void SequenceSelectorWidgetController::updateCompleter() {
     const MAlignment& ma = maObj->getMAlignment();
     QStringList newNamesList = ma.getRowNames();
     filler->updateSeqList(newNamesList);
-    if (!newNamesList.contains(defaultSeqName) && defaultSeqName != "") {
-        defaultSeqName = "";
-    }
     if (!newNamesList.contains(seqLineEdit->text())) {
         sl_seqLineEditEditingFinished();
     }
@@ -89,7 +89,6 @@ void SequenceSelectorWidgetController::sl_seqLineEditEditingFinished(const MAlig
     MAlignmentObject* maObj = msa->getMSAObject();
     const MAlignment& ma = maObj->getMAlignment();
     filler->updateSeqList(ma.getRowNames());
-    defaultSeqName = "";
     sl_seqLineEditEditingFinished();
 }
 
@@ -136,8 +135,14 @@ void SequenceSelectorWidgetController::sl_addSeqClicked() {
 
 void SequenceSelectorWidgetController::sl_deleteSeqClicked() {
     seqLineEdit->setText("");
+    defaultSeqName = "";
     setSequenceId(MAlignmentRow::invalidRowId());
     emit si_selectionChanged();
+}
+
+void SequenceSelectorWidgetController::sl_setDefaultLineEditValue() {
+    seqLineEdit->setText(defaultSeqName);
+    seqLineEdit->clearFocus();
 }
 
 }

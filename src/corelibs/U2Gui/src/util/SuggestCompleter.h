@@ -60,6 +60,7 @@ public:
 
 signals:
     void si_editingFinished();
+    void si_completerClosed();
 
 protected slots:
     void doneCompletion();

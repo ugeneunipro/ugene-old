@@ -79,6 +79,7 @@ bool BaseCompleter::eventFilter(QObject *obj, QEvent *ev){
 
     if (ev->type() == QEvent::MouseButtonPress) {
         popup->hide();
+        emit si_completerClosed();
         return false;
     }
 
@@ -95,6 +96,7 @@ bool BaseCompleter::eventFilter(QObject *obj, QEvent *ev){
          case Qt::Key_Escape:
              editor->setFocus();
              popup->hide();
+             emit si_completerClosed();
              consumed = true;
 
          case Qt::Key_Up:

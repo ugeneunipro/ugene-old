@@ -49,6 +49,7 @@ private slots:
     void sl_seqLineEditEditingFinished(const MAlignment& , const MAlignmentModInfo&);
     void sl_addSeqClicked();
     void sl_deleteSeqClicked();
+    void sl_setDefaultLineEditValue();
 
 private:
     void updateCompleter();
