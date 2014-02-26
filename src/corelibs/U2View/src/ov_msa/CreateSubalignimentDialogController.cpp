@@ -160,7 +160,7 @@ void CreateSubalignimentDialogController::accept(){
     QFileInfo fi(filepathEdit->text());
     QDir dirToSave(fi.dir());
     if (!dirToSave.exists()){
-        QMessageBox::critical(this, this->windowTitle(), tr("Directory to save is not exists"));
+        QMessageBox::critical(this, this->windowTitle(), tr("Directory to save does not exist"));
         return;
     }
     if (!TmpDirChecker::checkWritePermissions(dirToSave.absolutePath())) {
@@ -175,7 +175,7 @@ void CreateSubalignimentDialogController::accept(){
         QMessageBox::critical(this, this->windowTitle(), tr("Filename to save is empty"));
         return;
     }
-    if (!fi.permissions().testFlag(QFile::WriteUser)) {
+    if (fi.exists() && !fi.permissions().testFlag(QFile::WriteUser)) {
         QMessageBox::critical(this, this->windowTitle(), tr("No write permission to '%1' file").arg(fi.fileName()));
         return;
     }
