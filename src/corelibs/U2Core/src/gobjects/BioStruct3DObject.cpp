@@ -43,7 +43,7 @@ BioStruct3DObject * BioStruct3DObject::createInstance(const BioStruct3D &bioStru
     RawDataUdrSchema::writeContent(data, entRef, os);
     CHECK_OP(os, NULL);
 
-    return new BioStruct3DObject(objectName, entRef, hintsMap);
+    return new BioStruct3DObject(bioStruct3D, objectName, entRef, hintsMap);
 }
 
 BioStruct3DObject::BioStruct3DObject(const QString &objectName, const U2EntityRef &structRef, const QVariantMap &hintsMap)
@@ -53,7 +53,7 @@ BioStruct3DObject::BioStruct3DObject(const QString &objectName, const U2EntityRe
     retrieve();
 }
 
-BioStruct3DObject::BioStruct3DObject(const BioStruct3D &bioStruct, const QString &objectName, const U2EntityRef &structRef, const QVariantMap &hintsMap)
+BioStruct3DObject::BioStruct3DObject(const BioStruct3D &bioStruct3D, const QString &objectName, const U2EntityRef &structRef, const QVariantMap &hintsMap)
 : GObject(GObjectTypes::BIOSTRUCTURE_3D, objectName, hintsMap), bioStruct3D(bioStruct3D)
 {
     entityRef = structRef;

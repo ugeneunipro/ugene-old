@@ -34,6 +34,8 @@ namespace U2 {
 const QString DNAChromatogramSerializer::ID = "chroma_1.14";
 const QString NewickPhyTreeSerializer::ID = "newick_1.14";
 const QString BioStruct3DSerializer::ID = "3d_1.14";
+const QString WMatrixSerializer::ID = "wm_1.14";
+const QString FMatrixSerializer::ID = "fm_1.14";
 
 #define CHECK_SIZE(size, result) \
     if (offset + size > length) { \
@@ -162,7 +164,7 @@ QByteArray DNAChromatogramSerializer::serialize(const DNAChromatogram &chroma) {
 
 DNAChromatogram DNAChromatogramSerializer::deserialize(const QByteArray &binary, U2OpStatus &os) {
     DNAChromatogram result;
-    const uchar *data = (const uchar*)(binary.data());
+    const uchar *data = reinterpret_cast<const uchar*>(binary.data());
     int offset = 0;
     int length = binary.length();
 
@@ -730,7 +732,7 @@ QByteArray BioStruct3DSerializer::serialize(const BioStruct3D &bioStruct) {
 }
 
 BioStruct3D BioStruct3DSerializer::deserialize(const QByteArray &binary, U2OpStatus &os) {
-    const uchar *data = (const uchar*)(binary.data());
+    const uchar *data = reinterpret_cast<const uchar*>(binary.data());
     int offset = 0;
     int length = binary.length();
 
@@ -753,6 +755,109 @@ BioStruct3D BioStruct3DSerializer::deserialize(const QByteArray &binary, U2OpSta
     result.setCenter(unpack<Vector3D>(data, length, offset, os));
     CHECK_OP(os, result);
     result.setTransform(unpack<Matrix44>(data, length, offset, os));
+    return result;
+}
+
+/************************************************************************/
+/* WMatrixSerializer */
+/************************************************************************/
+namespace {
+    template<class T>
+    inline QByteArray packArray(const QVarLengthArray<T> &data) {
+        QByteArray result;
+        result += packNum<int>(data.size());
+        foreach (const T &d, data) {
+            result += packNum<T>(d);
+        }
+        return result;
+    }
+    template<class T>
+    inline QVarLengthArray<T> unpackArray(const uchar *data, int length, int &offset, U2OpStatus &os) {
+        QVarLengthArray<T> result;
+        int size = unpackNum<int>(data, length, offset, os);
+        CHECK_OP(os, result);
+        for (int i=0; i<size; i++) {
+            result << unpackNum<T>(data, length, offset, os);
+            CHECK_OP(os, result);
+        }
+        return result;
+    }
+    inline QByteArray packMap(const QMap<QString, QString> &data) {
+        QByteArray result;
+        result += packNum<int>(data.size());
+        foreach (const QString &key, data.keys()) {
+            result += pack(key);
+            result += pack(data[key]);
+        }
+        return result;
+    }
+    inline QMap<QString, QString> unpackMap(const uchar *data, int length, int &offset, U2OpStatus &os) {
+        QMap<QString, QString> result;
+        int size = unpackNum<int>(data, length, offset, os);
+        CHECK_OP(os, result);
+        for (int i=0; i<size; i++) {
+            QString key = unpack<QString>(data, length, offset, os);
+            CHECK_OP(os, result);
+            QString value = unpack<QString>(data, length, offset, os);
+            CHECK_OP(os, result);
+            result[key] = value;
+        }
+        return result;
+    }
+}
+
+QByteArray WMatrixSerializer::serialize(const PWMatrix &matrix) {
+    QByteArray result;
+    result += packArray<float>(matrix.data);
+    result += char(matrix.type);
+    result += packMap(matrix.info.getProperties());
+    return result;
+}
+
+PWMatrix WMatrixSerializer::deserialize(const QByteArray &binary, U2OpStatus &os) {
+    const uchar *data = reinterpret_cast<const uchar*>(binary.data());
+    int offset = 0;
+    int length = binary.length();
+
+    QVarLengthArray<float> matrix = unpackArray<float>(data, length, offset, os);
+    CHECK_OP(os, PWMatrix());
+    PWMatrixType type = PWMatrixType(unpack<char>(data, length, offset, os));
+    CHECK_OP(os, PWMatrix());
+    QMap<QString, QString> props = unpackMap(data, length, offset, os);
+    CHECK_OP(os, PWMatrix());
+
+    PWMatrix result(matrix, type);
+    result.info = UniprobeInfo(props);
+
+    return result;
+}
+
+/************************************************************************/
+/* FMatrixSerializer */
+/************************************************************************/
+QByteArray FMatrixSerializer::serialize(const PFMatrix &matrix) {
+    QByteArray result;
+    result += packArray<int>(matrix.data);
+    result += char(matrix.type);
+    result += packMap(matrix.info.getProperties());
+    return result;
+}
+
+PFMatrix FMatrixSerializer::deserialize(const QByteArray &binary, U2OpStatus &os) {
+    const uchar *data = reinterpret_cast<const uchar*>(binary.data());
+    int offset = 0;
+    int length = binary.length();
+
+    QVarLengthArray<int> matrix = unpackArray<int>(data, length, offset, os);
+    CHECK_OP(os, PFMatrix());
+    PFMatrixType type = PFMatrixType(unpack<char>(data, length, offset, os));
+    CHECK_OP(os, PFMatrix());
+    QMap<QString, QString> props = unpackMap(data, length, offset, os);
+    CHECK_OP(os, PFMatrix());
+
+    PFMatrix result(matrix, type);
+    result.info = JasparInfo(props);
+
     return result;
 }
 

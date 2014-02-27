@@ -99,23 +99,11 @@ Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, c
 }
 
 U2DbiRef DocumentFormat::fetchDbiRef( const QVariantMap &hints, U2OpStatus &os ) const {
-    U2DbiRef result;
-    const QSet<GObjectType> &types = getSupportedObjectTypes( );
-    const bool useTmpDbi = types.contains( GObjectTypes::SEQUENCE )
-        || types.contains( GObjectTypes::VARIANT_TRACK )
-        || types.contains( GObjectTypes::MULTIPLE_ALIGNMENT )
-        || types.contains( GObjectTypes::ANNOTATION_TABLE )
-        || types.contains( GObjectTypes::ASSEMBLY )
-        || types.contains( GObjectTypes::TEXT )
-        || types.contains( GObjectTypes::PHYLOGENETIC_TREE );
-    if ( useTmpDbi ) {
-        if ( hints.contains( DBI_REF_HINT ) ) {
-            result = hints.value( DBI_REF_HINT ).value<U2DbiRef>( );
-        } else {
-            result = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
-        }
+    if ( hints.contains( DBI_REF_HINT ) ) {
+        return hints.value( DBI_REF_HINT ).value<U2DbiRef>( );
+    } else {
+        return AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
     }
-    return result;
 }
 
 DNASequence* DocumentFormat::loadSequence(IOAdapter*, U2OpStatus& os) {

@@ -122,4 +122,77 @@ IMPLEMENT_TEST(DatatypeSerializeUtilsUnitTest, BioStruct3DSerializer_failed) {
     CHECK_TRUE(os.hasError(), "no error");
 }
 
+IMPLEMENT_TEST(DatatypeSerializeUtilsUnitTest, WMatrixSerializer) {
+    QVarLengthArray<float> data;
+    data << 0.000000000000000f << 2.854232788085938f << 7.135581970214844f << 0.000000000000000f << 1.427116394042969f << 0.000000000000000 << 0.000000000000000f << 5.708465576171875f << 0.000000000000000f << 0.000000000000000f <<
+    0.000000000000000f << 3.932225704193115f << 0.000000000000000f << 0.000000000000000f << 1.966112852096558f << 3.932225704193115f << 0.000000000000000f << 0.000000000000000f << 3.932225704193115f << 0.000000000000000f <<
+    0.000000000000000f << 0.000000000000000f << 0.000000000000000f << 11.512926101684570 << 0.000000000000000f << 0.000000000000000f << 0.000000000000000f << 0.000000000000000f << 0.000000000000000f << 0.000000000000000f <<
+    3.269632339477539f << 0.653926491737366f << 0.000000000000000f << 0.000000000000000f << 1.961779475212097f << 1.961779475212097f << 3.269632339477539f << 0.653926491737366f << 1.961779475212097f << 3.269632339477539f;
+
+    PWMatrix m1(data, PWM_MONONUCLEOTIDE);
+    QMap<QString, QString> props;
+    props["aaa"] = "bbb";
+    m1.setInfo(UniprobeInfo(props));
+
+    QByteArray binary = WMatrixSerializer::serialize(m1);
+    U2OpStatusImpl os;
+    PWMatrix m2 = WMatrixSerializer::deserialize(binary, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_TRUE(1 == m2.getProperties().size(), "props");
+    CHECK_TRUE("bbb" == m2.getProperty("aaa"), "aaa");
+    CHECK_TRUE(PWM_MONONUCLEOTIDE == m2.getType(), "type");
+    CHECK_TRUE(11 == (int)m2.getValue(2, 3), "value");
+}
+
+IMPLEMENT_TEST(DatatypeSerializeUtilsUnitTest, WMatrixSerializer_failed) {
+    U2OpStatusImpl os;
+    WMatrixSerializer::deserialize("qqqqqqqqqqqqqqqqq", os);
+    CHECK_TRUE(os.hasError(), "no error");
+}
+
+IMPLEMENT_TEST(DatatypeSerializeUtilsUnitTest, FMatrixSerializer) {
+    QVarLengthArray<int> data;
+    data << 0 << 2 << 0 << 0 << 0 << 0 << 0 << 0 << 0 <<
+    0 << 0 << 0 << 0 << 1 << 0 << 0 << 1 << 0 <<
+    0 << 0 << 5 << 0 << 0 << 0 << 0 << 0 << 0 <<
+    0 << 0 << 0 << 0 << 0 << 0 << 0 << 3 << 0 <<
+    0 << 2 << 0 << 0 << 0 << 0 << 0 << 0 << 0 <<
+    0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 <<
+    0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 <<
+    0 << 0 << 0 << 0 << 1 << 2 << 0 << 0 << 2 <<
+    0 << 0 << 0 << 1 << 0 << 0 << 0 << 0 << 0 <<
+    0 << 0 << 0 << 1 << 0 << 0 << 0 << 0 << 0 <<
+    0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 <<
+    0 << 0 << 0 << 3 << 0 << 0 << 0 << 0 << 0 <<
+    2 << 1 << 0 << 0 << 0 << 0 << 4 << 0 << 0 <<
+    2 << 0 << 0 << 0 << 1 << 0 << 0 << 1 << 0 <<
+    0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 <<
+    1 << 0 << 0 << 0 << 2 << 3 << 1 << 0 << 3;
+
+    PFMatrix m1(data, PFM_DINUCLEOTIDE);
+    QMap<QString, QString> props;
+    props["aaa"] = "bbb";
+    props["ccc"] = "ddd";
+    m1.setInfo(JasparInfo(props));
+
+    QByteArray binary = FMatrixSerializer::serialize(m1);
+    U2OpStatusImpl os;
+    PFMatrix m2 = FMatrixSerializer::deserialize(binary, os);
+    CHECK_NO_ERROR(os);
+
+    CHECK_TRUE(2 == m2.getProperties().size(), "props");
+    CHECK_TRUE("bbb" == m2.getProperty("aaa"), "aaa");
+    CHECK_TRUE("ddd" == m2.getProperty("ccc"), "ccc");
+    CHECK_TRUE(PFM_DINUCLEOTIDE == m2.getType(), "type");
+    CHECK_TRUE(2 == m2.getValue(7, 5), "value 1");
+    CHECK_TRUE(3 == m2.getValue(15, 8), "value 2");
+}
+
+IMPLEMENT_TEST(DatatypeSerializeUtilsUnitTest, FMatrixSerializer_failed) {
+    U2OpStatusImpl os;
+    FMatrixSerializer::deserialize("qqqqqqqqqqqqqqqqq", os);
+    CHECK_TRUE(os.hasError(), "no error");
+}
+
 } // U2

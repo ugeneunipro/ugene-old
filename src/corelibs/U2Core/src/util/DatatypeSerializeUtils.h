@@ -25,6 +25,8 @@
 #include <U2Core/BioStruct3D.h>
 #include <U2Core/DNAChromatogram.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/PFMatrix.h>
+#include <U2Core/PWMatrix.h>
 #include <U2Core/PhyTree.h>
 #include <U2Core/U2OpStatus.h>
 
@@ -101,6 +103,49 @@ public:
     static BioStruct3D deserialize(const QByteArray &binary, U2OpStatus &os);
 };
 
+/**
+ * The class of utilities for serializing/deserializing weight matrices
+ * into/from the binary representation.
+ */
+class U2CORE_EXPORT WMatrixSerializer {
+public:
+    /**
+     * The serializer identifier.
+     */
+    static const QString ID;
+
+    /**
+     * Returns the binary representation of @matrix.
+     */
+    static QByteArray serialize(const PWMatrix &matrix);
+
+    /**
+     * Returns PWMatrix extracted from @binary.
+     */
+    static PWMatrix deserialize(const QByteArray &binary, U2OpStatus &os);
+};
+
+/**
+ * The class of utilities for serializing/deserializing frequency matrices
+ * into/from the binary representation.
+ */
+class U2CORE_EXPORT FMatrixSerializer {
+public:
+    /**
+     * The serializer identifier.
+     */
+    static const QString ID;
+
+    /**
+     * Returns the binary representation of @matrix.
+     */
+    static QByteArray serialize(const PFMatrix &matrix);
+
+    /**
+     * Returns PFMatrix extracted from @binary.
+     */
+    static PFMatrix deserialize(const QByteArray &binary, U2OpStatus &os);
+};
 
 } // U2
 

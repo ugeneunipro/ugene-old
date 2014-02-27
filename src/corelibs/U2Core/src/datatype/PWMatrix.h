@@ -58,6 +58,7 @@ private:
 //Position frequency matrix
 //Also known as PSSM - Position score-specific matrix
 class U2CORE_EXPORT PWMatrix {
+    friend class WMatrixSerializer;
 public:
     //create empty matrix
     PWMatrix() : data(QVarLengthArray<float>()), length(0), type(PWM_MONONUCLEOTIDE) {};

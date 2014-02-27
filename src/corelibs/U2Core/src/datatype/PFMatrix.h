@@ -61,6 +61,7 @@ enum PFMatrixType {
 
 //Position frequency matrix
 class U2CORE_EXPORT PFMatrix {
+    friend class FMatrixSerializer;
 public:
     //create empty matrix
     PFMatrix() : data(QVarLengthArray<int>()), length(0), type(PFM_MONONUCLEOTIDE) {};

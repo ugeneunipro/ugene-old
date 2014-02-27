@@ -47,6 +47,14 @@ DECLARE_TEST(DatatypeSerializeUtilsUnitTest, NewickPhyTreeSerializer_failed);
 DECLARE_TEST(DatatypeSerializeUtilsUnitTest, BioStruct3DSerializer);
 /* BioStruct3DSerializer 2 */
 DECLARE_TEST(DatatypeSerializeUtilsUnitTest, BioStruct3DSerializer_failed);
+/* WMatrixSerializer 1 */
+DECLARE_TEST(DatatypeSerializeUtilsUnitTest, WMatrixSerializer);
+/* WMatrixSerializer 2 */
+DECLARE_TEST(DatatypeSerializeUtilsUnitTest, WMatrixSerializer_failed);
+/* FMatrixSerializer 1 */
+DECLARE_TEST(DatatypeSerializeUtilsUnitTest, FMatrixSerializer);
+/* FMatrixSerializer 2 */
+DECLARE_TEST(DatatypeSerializeUtilsUnitTest, FMatrixSerializer_failed);
 
 } // U2
 
@@ -56,5 +64,9 @@ DECLARE_METATYPE(DatatypeSerializeUtilsUnitTest, NewickPhyTreeSerializer);
 DECLARE_METATYPE(DatatypeSerializeUtilsUnitTest, NewickPhyTreeSerializer_failed);
 DECLARE_METATYPE(DatatypeSerializeUtilsUnitTest, BioStruct3DSerializer);
 DECLARE_METATYPE(DatatypeSerializeUtilsUnitTest, BioStruct3DSerializer_failed);
+DECLARE_METATYPE(DatatypeSerializeUtilsUnitTest, WMatrixSerializer);
+DECLARE_METATYPE(DatatypeSerializeUtilsUnitTest, WMatrixSerializer_failed);
+DECLARE_METATYPE(DatatypeSerializeUtilsUnitTest, FMatrixSerializer);
+DECLARE_METATYPE(DatatypeSerializeUtilsUnitTest, FMatrixSerializer_failed);
 
 #endif // _U2_DATATYPE_SERIALIZE_UTILS_UNIT_TESTS_H_

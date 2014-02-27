@@ -57,18 +57,16 @@ class PFMatrixObject: public GObject {
 public:
     static const GObjectType TYPE;
 
-    PFMatrixObject(const PFMatrix& _m, const QString& objectName, const QVariantMap& hintsMap = QVariantMap()) 
-        : GObject(TYPE, objectName, hintsMap), m(_m){};
+    static PFMatrixObject * createInstance(const PFMatrix &matrix, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap = QVariantMap());
+    PFMatrixObject(const QString &objectName, const U2EntityRef &matrixRef, const QVariantMap &hintsMap = QVariantMap());
 
-    virtual const PFMatrix getMatrix() const {return m;}
+    const PFMatrix & getMatrix() const;
+    GObject * clone(const U2DbiRef&, U2OpStatus&) const;
 
-    virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const{
-        PFMatrixObject* cln = new PFMatrixObject(m, getGObjectName(), getGHintsMap());
-        cln->setIndexInfo(getIndexInfo());
-        return cln;
-    };
+private:
+    PFMatrixObject(const PFMatrix &matrix, const QString &objectName, const U2EntityRef &matrixRef, const QVariantMap &hintsMap);
 
-protected:
+private:
     PFMatrix m;
 };
 
@@ -118,18 +116,16 @@ class PWMatrixObject: public GObject {
 public:
     static const GObjectType TYPE;
 
-    PWMatrixObject(const PWMatrix& _m, const QString& objectName, const QVariantMap& hintsMap = QVariantMap()) 
-        : GObject(TYPE, objectName, hintsMap), m(_m){};
+    static PWMatrixObject * createInstance(const PWMatrix &matrix, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap = QVariantMap());
+    PWMatrixObject(const QString &objectName, const U2EntityRef &matrixRef, const QVariantMap &hintsMap = QVariantMap());
 
-    virtual const PWMatrix getMatrix() const {return m;}
+    const PWMatrix & getMatrix() const;
+    GObject * clone(const U2DbiRef&, U2OpStatus&) const;
 
-    virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const{
-        PWMatrixObject* cln = new PWMatrixObject(m, getGObjectName(), getGHintsMap());
-        cln->setIndexInfo(getIndexInfo());
-        return cln;
-    };
+private:
+    PWMatrixObject(const PWMatrix &matrix, const QString &objectName, const U2EntityRef &matrixRef, const QVariantMap &hintsMap);
 
-protected:
+private:
     PWMatrix m;
 };
 
