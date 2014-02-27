@@ -47,6 +47,9 @@ if [ -e "../../tools" ]; then
     ln -s "../../../../../../tools" "${TARGET_EXE_DIR}/tools"
 fi
 
+echo copying ugenem
+cp "$DEBUG_DIR/ugenem.app/Contents/MacOS/ugenem" "$TARGET_EXE_DIR"
+
 echo copying console binary
 cp "$DEBUG_DIR/ugenecld.app/Contents/MacOS/ugenecld" "$TARGET_EXE_DIR"
 changeCoreInstallNames ugenecld
