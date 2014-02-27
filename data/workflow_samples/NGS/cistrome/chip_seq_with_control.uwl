@@ -5,13 +5,6 @@
 
 workflow "ChIP-seq analysis with control"{
 
-    read-annotations {
-        type:read-annotations;
-        name:"Treatment Tags";
-        url-in {
-            dataset:Dataset;
-        }
-    }
     macs-id {
         type:macs-id;
         name:"Find Peaks with MACS";
@@ -42,13 +35,6 @@ workflow "ChIP-seq analysis with control"{
         name:"Conduct GO";
         output-dir:tools_output;
     }
-    read-annotations-1 {
-        type:read-annotations;
-        name:"Control Tags";
-        url-in {
-            dataset:Dataset;
-        }
-    }
     multiplexer {
         type:multiplexer;
         name:Multiplexer;
@@ -65,23 +51,36 @@ workflow "ChIP-seq analysis with control"{
         document-format:bed;
         url-out:peaks.bed;
     }
-
+    get-file-list {
+        type:get-file-list;
+        name:"Treatment Tags";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    get-file-list-1 {
+        type:get-file-list;
+        name:"Control Tags";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
 
     .actor-bindings {
-        read-annotations.out-annotations->multiplexer.input-data-1
         macs-id.out-data->ceas-report.in-data
         macs-id.out-data->conservation_plot-id.in-data
         macs-id.out-data->seqpos-id.in-data
         macs-id.out-data->peak2gene-id.in-data
+        multiplexer.output-data->macs-id.in-data
         peak2gene-id.out-data->conduct-go-id.in-data
         peak2gene-id.out-data->write-annotations.in-annotations
         peak2gene-id.out-data->write-annotations-1.in-annotations
-        read-annotations-1.out-annotations->multiplexer.input-data-2
-        multiplexer.output-data->macs-id.in-data
+        get-file-list-1.out-url->multiplexer.input-data-2
+        get-file-list.out-url->multiplexer.input-data-1
     }
 
-    read-annotations.annotations->macs-id.in-data._treatment-ann
-    read-annotations-1.annotations->macs-id.in-data.control-ann
+    get-file-list.url->macs-id.in-data._treatment-ann
+    get-file-list-1.url->macs-id.in-data.control-ann
     macs-id.wiggle-treat->ceas-report.in-data.enrichment-signal
     macs-id.peak-regions->ceas-report.in-data.peak-regions
     macs-id.peak-summits->conservation_plot-id.in-data.cp_treat-ann
@@ -98,7 +97,7 @@ workflow "ChIP-seq analysis with control"{
             }
             var db = new String(utils.attributeValue("seqpos-id.motif_db"));
             var dbCount = db.split(',').length;
-            var sets = utils.attributeValue("read-annotations.url-in");
+            var sets = utils.attributeValue("get-file-list.url-in");
             var time = 0;
             var ram = 0;
             for (var i=0; i<sets.length; i++) {
@@ -111,12 +110,6 @@ workflow "ChIP-seq analysis with control"{
             [time];
         }
         parameter-aliases {
-            read-annotations.url-in {
-                alias:treat_in;
-            }
-            read-annotations-1.url-in {
-                alias:control_in;
-            }
             macs-id.output-dir {
                 alias:macs_out;
             }
@@ -159,6 +152,18 @@ workflow "ChIP-seq analysis with control"{
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
             }
+            get-file-list {
+                pos:"-958.824 -855.294";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-url.angle:360;
+            }
+            get-file-list-1 {
+                pos:"-958.824 -694.118";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-url.angle:360;
+            }
             macs-id {
                 pos:"-453 -806";
                 style:ext;
@@ -181,20 +186,6 @@ workflow "ChIP-seq analysis with control"{
                 in-data.angle:16.1722;
                 out-data.angle:292.805;
             }
-            read-annotations {
-                pos:"-971 -872";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 77.25 88";
-                out-annotations.angle:360;
-            }
-            read-annotations-1 {
-                pos:"-969 -716";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 76.25 74";
-                out-annotations.angle:360;
-            }
             seqpos-id {
                 pos:"-150 -597";
                 style:ext;
@@ -212,6 +203,12 @@ workflow "ChIP-seq analysis with control"{
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-annotations.angle:23.9625;
+            }
+            get-file-list-1.out-url->multiplexer.input-data-2 {
+                text-pos:"-42.3047 -28";
+            }
+            get-file-list.out-url->multiplexer.input-data-1 {
+                text-pos:"-42.3047 -28";
             }
             macs-id.out-data->ceas-report.in-data {
                 text-pos:"-87 -22";
@@ -237,12 +234,6 @@ workflow "ChIP-seq analysis with control"{
             peak2gene-id.out-data->write-annotations.in-annotations {
                 text-pos:"4 -27";
             }
-            read-annotations-1.out-annotations->multiplexer.input-data-2 {
-                text-pos:"-37 -19";
-            }
-            read-annotations.out-annotations->multiplexer.input-data-1 {
-                text-pos:"-34 -20";
-            }
         }
         wizard {
             name:"ChIP-seq Analysis Wizard";
@@ -254,10 +245,10 @@ workflow "ChIP-seq analysis with control"{
                     group {
                         title:"Input files";
                         label-size:120;
-                        read-annotations.url-in {
+                        get-file-list.url-in {
                             label:"Treatment Tags";
                         }
-                        read-annotations-1.url-in {
+                        get-file-list-1.url-in {
                             label:"Control Tags";
                         }
                     }

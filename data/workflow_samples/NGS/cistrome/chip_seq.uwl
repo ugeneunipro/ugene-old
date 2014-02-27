@@ -5,13 +5,6 @@
 
 workflow "ChIP-seq analysis"{
 
-    read-annotations {
-        type:read-annotations;
-        name:"Read Tags";
-        url-in {
-            dataset:Dataset;
-        }
-    }
     macs-id {
         type:macs-id;
         name:"Find Peaks with MACS";
@@ -54,10 +47,15 @@ workflow "ChIP-seq analysis"{
         document-format:bed;
         url-out:peaks.bed;
     }
-
+    get-file-list {
+        type:get-file-list;
+        name:"Read Tags";
+        url-in {
+            dataset:"Dataset";
+        }
+    }
 
     .actor-bindings {
-        read-annotations.out-annotations->macs-id.in-data
         macs-id.out-data->ceas-report.in-data
         macs-id.out-data->conservation_plot-id.in-data
         macs-id.out-data->seqpos-id.in-data
@@ -65,9 +63,10 @@ workflow "ChIP-seq analysis"{
         peak2gene-id.out-data->conduct-go-id.in-data
         peak2gene-id.out-data->write-annotations.in-annotations
         peak2gene-id.out-data->write-annotations-1.in-annotations
+        get-file-list.out-url->macs-id.in-data
     }
 
-    read-annotations.annotations->macs-id.in-data._treatment-ann
+    get-file-list.url->macs-id.in-data._treatment-ann
     macs-id.wiggle-treat->ceas-report.in-data.enrichment-signal
     macs-id.peak-regions->ceas-report.in-data.peak-regions
     macs-id.peak-summits->conservation_plot-id.in-data.cp_treat-ann
@@ -84,7 +83,7 @@ workflow "ChIP-seq analysis"{
             }
             var db = new String(utils.attributeValue("seqpos-id.motif_db"));
             var dbCount = db.split(',').length;
-            var sets = utils.attributeValue("read-annotations.url-in");
+            var sets = utils.attributeValue("get-file-list.url-in");
             var time = 0;
             var ram = 0;
             for (var i=0; i<sets.length; i++) {
@@ -97,14 +96,11 @@ workflow "ChIP-seq analysis"{
             [time];
         }
         parameter-aliases {
-            read-annotations.url-in {
-                alias: in;
+            macs-id.output-dir {
+                alias: out_macs;
             }
             macs-id.tag-size {
                 alias: tag_size;
-            }
-            macs-id.output-dir {
-                alias: out_macs;
             }
             ceas-report.anns-file {
                 alias: out_ceas_ann;
@@ -122,10 +118,10 @@ workflow "ChIP-seq analysis"{
                 alias: out_conduct_go;
             }
             write-annotations.url-out {
-                alias:out_peak2gene_genes;
+                alias: out_peak2gene_genes;
             }
             write-annotations-1.url-out {
-                alias:out_peak2gene_peaks;
+                alias: out_peak2gene_peaks;
             }
         }
         visual {
@@ -149,6 +145,13 @@ workflow "ChIP-seq analysis"{
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:250.56;
             }
+            get-file-list {
+                pos:"-1055.56 -788.889";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 102.292 81.8889";
+                out-url.angle:360;
+            }
             macs-id {
                 pos:"-822 -789";
                 style:ext;
@@ -162,13 +165,6 @@ workflow "ChIP-seq analysis"{
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:15.8192;
                 out-data.angle:289.204;
-            }
-            read-annotations {
-                pos:"-1061 -790";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 85.25 90";
-                out-annotations.angle:360;
             }
             seqpos-id {
                 pos:"-462 -594";
@@ -187,6 +183,9 @@ workflow "ChIP-seq analysis"{
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-annotations.angle:25.7693;
+            }
+            get-file-list.out-url->macs-id.in-data {
+                text-pos:"-42.3047 -28";
             }
             macs-id.out-data->ceas-report.in-data {
                 text-pos:"-87 -18";
@@ -209,9 +208,6 @@ workflow "ChIP-seq analysis"{
             peak2gene-id.out-data->write-annotations.in-annotations {
                 text-pos:"3 -24";
             }
-            read-annotations.out-annotations->macs-id.in-data {
-                text-pos:"-47 -25";
-            }
         }
         wizard {
             name:"ChIP-seq Analysis Wizard";
@@ -223,7 +219,7 @@ workflow "ChIP-seq analysis"{
                     group {
                         title:"MACS input";
                         label-size:120;
-                        read-annotations.url-in {
+                        get-file-list.url-in {
                             label:"Treatment tags";
                         }
                     }
