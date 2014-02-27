@@ -36,8 +36,9 @@ class LoadDocumentTask;
 
 class MACSTask : public ExternalToolSupportTask {
     Q_OBJECT
+    Q_DISABLE_COPY(MACSTask)
 public:
-    MACSTask(const MACSSettings &_settings, const QList<AnnotationData> &_treatAnn, const QList<AnnotationData> &_conAnn);
+    MACSTask(const MACSSettings &settings, const GUrl &treatUrl, const GUrl &conUrl);
     virtual ~MACSTask();
 
     virtual void prepare();
@@ -56,33 +57,20 @@ private:
     MACSSettings settings;
     QString workingDir;
 
-    QList<AnnotationData> treatAnn;
-    QList<AnnotationData> conAnn;
-
-    Document *treatDoc;
-    Document *conDoc;
+    GUrl treatUrl;
+    GUrl conUrl;
 
     Document *peaksDoc;
     Document *summitsDoc;
 
-    SaveDocumentTask *treatTask;
-    SaveDocumentTask *conTask;
     LoadDocumentTask *peaksTask;
     LoadDocumentTask *summitsTask;
     ExternalToolRunTask *etTask;
-
-    int activeSubtasks;
 
     ExternalToolLogParser *logParser;
 
     static const QString BASE_DIR_NAME;
     static const QString BASE_SUBDIR_NAME;
-    static const QString TREAT_NAME;
-    static const QString CON_NAME;
-
-private:
-    Document* createDoc(const QList<AnnotationData> &annData, const QString &name);
-    bool canStartETTask() const;
 };
 
 class MACSLogParser : public ExternalToolLogParser {

@@ -110,29 +110,19 @@ Task *MACSWorker::tick() {
         Message m = getMessageAndSetupScriptValues(inChannel);
         QVariantMap data = m.getData().toMap();
 
-        QVariant treatVar;
-        QVariant conVar;
-        if (!data.contains(TREATMENT_SLOT_ID)) {
-            os.setError("Treatment slot is empty");
-            return new FailTask(os.getError());
-        }
-
-        treatVar = data[TREATMENT_SLOT_ID];
-
-        if (data.contains(CONTROL_SLOT_ID)) {
-            conVar = data[CONTROL_SLOT_ID];
-        }
-        const QList<AnnotationData> treatData = StorageUtils::getAnnotationTable(
-            context->getDataStorage( ), treatVar );
-        const QList<AnnotationData> conData = StorageUtils::getAnnotationTable(
-            context->getDataStorage( ), conVar );
-
         MACSSettings settings = createMACSSettings(os);
         if (os.hasError()) {
             return new FailTask(os.getError());
         }
 
-        MACSTask* t = new MACSTask(settings, treatData, conData);
+        GUrl treatUrl(data.value(TREATMENT_SLOT_ID).toString());
+        GUrl conUrl;
+        if (data.contains(CONTROL_SLOT_ID)) {
+            conUrl = data.value(CONTROL_SLOT_ID).toString();
+        }
+
+        MACSTask* t = new MACSTask(settings, treatUrl, conUrl);
+
         t->addListeners(createLogListeners());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
@@ -282,8 +272,8 @@ void MACSWorkerFactory::init() {
     Descriptor conDesc(CONTROL_SLOT_ID,
         MACSWorker::tr("Control features"),
         MACSWorker::tr("Control features (Optional)."));
-    inTypeMap[treatDesc] = BaseTypes::ANNOTATION_TABLE_LIST_TYPE();
-    inTypeMap[conDesc] = BaseTypes::ANNOTATION_TABLE_TYPE();
+    inTypeMap[treatDesc] = BaseTypes::STRING_TYPE();
+    inTypeMap[conDesc] = BaseTypes::STRING_TYPE();
 
     Descriptor inPortDesc(IN_PORT_DESCR,
         MACSWorker::tr("MACS data"),
@@ -399,7 +389,7 @@ void MACSWorkerFactory::init() {
             MACSWorker::tr("Auto bimodal"),
             MACSWorker::tr("Whether turn on the auto pair model process."
             "If set, when MACS failed to build paired model, it will use the nomodel"
-            "settings, the ìShift sizeî parameter to shift and extend each tags (--on-auto)."));
+            "settings, the ‚ÄúShift size‚Äù parameter to shift and extend each tags (--on-auto)."));
         Descriptor scaleLargeDesc(SCALE_LARGE_ATTR_ID,
             MACSWorker::tr("Scale to large"),
             MACSWorker::tr(" When set, scale the small sample up to the bigger sample."
@@ -418,12 +408,12 @@ void MACSWorkerFactory::init() {
         Descriptor broadDesc(BROAD_ATTR_ID,
             MACSWorker::tr("Broad"),
             MACSWorker::tr("If set, MACS will try to call broad peaks by linking nearby highly enriched regions."
-            "The linking region is controlled by another cutoff through ìBroad cutoffî."
+            "The linking region is controlled by another cutoff through ‚ÄúBroad cutoff‚Äù."
             "The maximum linking region length is 4 times of d from MACS."));
         Descriptor broadCutoffDesc(BROAD_CUTOFF_ATTR_ID,
             MACSWorker::tr("Broad cutoff"),
-            MACSWorker::tr("Cutoff for broad region. This option is not available unless ìBroadî is set."
-            "If ìP-valueî is set, this is a pvalue cutoff, otherwise, it's a qvalue cutoff."));
+            MACSWorker::tr("Cutoff for broad region. This option is not available unless ‚ÄúBroad‚Äù is set."
+            "If ‚ÄúP-value‚Äù is set, this is a pvalue cutoff, otherwise, it's a qvalue cutoff."));
 
 
         attrs << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, QVariant(""));
@@ -447,7 +437,7 @@ void MACSWorkerFactory::init() {
 
         Attribute* shiftAttr = new Attribute(shiftSizeDesc, BaseTypes::NUM_TYPE(), false, QVariant(100));
         foldAttr ->addRelation(new VisibilityRelation(USE_MODEL_ATTR_ID, "False"));
-        //TODO:Available if: ìUse modelî is False OR building model by MACSis failed
+        //TODO:Available if: ‚ÄúUse model‚Äù is False OR building model by MACSis failed
         attrs << shiftAttr;
 
         
@@ -576,9 +566,9 @@ QString MACSPrompter::composeRichDoc() {
     
     QString dir = getHyperlink(OUTPUT_DIR, getURL(OUTPUT_DIR));
 
-    res.append(tr("Uses annotations from <u>%1</u> as treatment").arg(treatUrl));
+    res.append(tr("Uses <u>%1</u> as treatment").arg(treatUrl));
     if (controlProducer){
-        res.append(tr(" and annotations from <u>%1</u> as control").arg(conUrl));
+        res.append(tr(" and <u>%1</u> as control").arg(conUrl));
     }
  
     res.append(tr(" to call peaks."));

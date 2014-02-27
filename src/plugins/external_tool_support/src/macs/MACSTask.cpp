@@ -44,25 +44,18 @@ namespace U2 {
 
 const QString MACSTask::BASE_DIR_NAME("macs_tmp");
 const QString MACSTask::BASE_SUBDIR_NAME("macs");
-const QString MACSTask::TREAT_NAME("treatment");
-const QString MACSTask::CON_NAME("control");
 
-MACSTask::MACSTask(const MACSSettings &_settings, const QList<AnnotationData> &_treatAnn, const QList<AnnotationData> &_conAnn)
-: ExternalToolSupportTask("MACS peak calling", TaskFlag_None)
-, settings(_settings)
-, treatAnn(_treatAnn)
-, conAnn(_conAnn)
-, treatDoc(NULL)
-, conDoc(NULL)
-, peaksDoc(NULL)
-, summitsDoc(NULL)
-, treatTask(NULL)
-, conTask(NULL)
-, peaksTask(NULL)
-, summitsTask(NULL)
-, etTask(NULL)
-, activeSubtasks(0)
-, logParser(NULL)
+MACSTask::MACSTask(const MACSSettings &_settings, const GUrl &_treatUrl, const GUrl &_conUrl)
+    : ExternalToolSupportTask(tr("MACS peak calling"), TaskFlag_None)
+    , settings(_settings)
+    , treatUrl(_treatUrl)
+    , conUrl(_conUrl)
+    , peaksDoc(NULL)
+    , summitsDoc(NULL)
+    , peaksTask(NULL)
+    , summitsTask(NULL)
+    , etTask(NULL)
+    , logParser(NULL)
 {
 
 }
@@ -72,14 +65,13 @@ MACSTask::~MACSTask() {
 }
 
 void MACSTask::cleanup() {
-    treatAnn.clear();
-    conAnn.clear();
 
-    delete treatDoc; treatDoc = NULL;
-    delete conDoc; conDoc = NULL;
-    delete logParser; logParser = NULL;
-    delete peaksDoc; peaksDoc = NULL;
-    delete summitsDoc; summitsDoc = NULL;
+    delete logParser;
+    logParser = NULL;
+    delete peaksDoc;
+    peaksDoc = NULL;
+    delete summitsDoc;
+    summitsDoc = NULL;
 
     //remove tmp files
     QString tmpDirPath = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath(BASE_DIR_NAME);
@@ -97,50 +89,16 @@ void MACSTask::prepare() {
     CHECK_OP(stateInfo, );
 
     settings.outDir = GUrlUtils::createDirectory(
-        settings.outDir + "/" + BASE_SUBDIR_NAME,
+        settings.outDir + QDir::separator() + BASE_SUBDIR_NAME,
         "_", stateInfo);
     CHECK_OP(stateInfo, );
 
-    treatDoc = createDoc(treatAnn, TREAT_NAME);
-    CHECK_OP(stateInfo, );
+    QStringList args = settings.getArguments(treatUrl.getURLString(), conUrl.isEmpty() ? "" : conUrl.getURLString());
 
-    treatTask = new SaveDocumentTask(treatDoc);
-    addSubTask(treatTask);
-    activeSubtasks++;
-
-    if (!conAnn.isEmpty()){
-        conDoc = createDoc(conAnn, CON_NAME);
-        CHECK_OP(stateInfo, );
-
-        conTask = new SaveDocumentTask(conDoc);
-        addSubTask(conTask);
-        activeSubtasks++;
-    }
-}
-
-Document * MACSTask::createDoc( const QList<AnnotationData> &annData, const QString &name ) {
-    Document *doc = NULL;
-
-    const QString docUrl = workingDir + "/" + name +".bed";
-
-    DocumentFormat *bedFormat = AppContext::getDocumentFormatRegistry( )
-        ->getFormatById( BaseDocumentFormats::BED );
-    CHECK_EXT( NULL != bedFormat, stateInfo.setError( "NULL bed format" ), doc );
-
-    doc = bedFormat->createNewLoadedDocument(
-        IOAdapterUtils::get( BaseIOAdapters::LOCAL_FILE ), docUrl, stateInfo );
-    CHECK_OP( stateInfo, doc );
-    doc->setDocumentOwnsDbiResources( false );
-
-    AnnotationTableObject *ato = new AnnotationTableObject( name, doc->getDbiRef( ) );
-    ato->addAnnotations( annData );
-    doc->addObject( ato );
-
-    return doc;
-}
-
-bool MACSTask::canStartETTask() const {
-    return (0 == activeSubtasks);
+    logParser = new MACSLogParser();
+    etTask = new ExternalToolRunTask(ET_MACS, args, logParser, getSettings().outDir);
+    setListenerForTask(etTask);
+    addSubTask(etTask);
 }
 
 QList<Task*> MACSTask::onSubTaskFinished(Task* subTask) {
@@ -148,20 +106,10 @@ QList<Task*> MACSTask::onSubTaskFinished(Task* subTask) {
     CHECK(!subTask->isCanceled(), result);
     CHECK(!subTask->hasError(), result);
 
-    if (treatTask == subTask || conTask == subTask) {
-        activeSubtasks--;
-        if (canStartETTask()) {
-            QStringList args = settings.getArguments(treatDoc->getURLString(), conAnn.isEmpty() ? "" : conDoc->getURLString());
-
-            logParser = new MACSLogParser();
-            etTask = new ExternalToolRunTask(ET_MACS, args, logParser, getSettings().outDir);
-            setListenerForTask(etTask);
-            result << etTask;
-        }
-    }else if(subTask == etTask){
+    if(subTask == etTask){
         //read annotations
-        QString peaksName = getSettings().outDir + "/" + getSettings().fileNames+"_peaks.bed";
-        QString summitName = getSettings().outDir + "/" + getSettings().fileNames+"_summits.bed";
+        QString peaksName = getSettings().outDir + QDir::separator() + getSettings().fileNames+"_peaks.bed";
+        QString summitName = getSettings().outDir + QDir::separator() + getSettings().fileNames+"_summits.bed";
 
         peaksTask=
             new LoadDocumentTask(BaseDocumentFormats::BED,
@@ -244,9 +192,9 @@ QString MACSTask::getWiggleUrl(){
     QString res = "";
     
     if (settings.wiggleOut){
-        res = getSettings().outDir + "/" 
-            + getSettings().fileNames +"_MACS_wiggle/"
-            + "treat/"
+        res = getSettings().outDir + QDir::separator()
+            + getSettings().fileNames +"_MACS_wiggle" + QDir::separator()
+            + "treat" + QDir::separator()
             + getSettings().fileNames+"_treat_afterfiting_all.wig";
     }
 
@@ -259,11 +207,11 @@ QStringList MACSTask::getOutputFiles(){
     QString current;
 
     current = getSettings().fileNames + "_peaks.bed";
-    if (QFile::exists(getSettings().outDir+"/"+current)){
+    if (QFile::exists(getSettings().outDir + QDir::separator() + current)){
         result << current;
     }
     current = getSettings().fileNames + "_summits.bed";
-    if (QFile::exists(getSettings().outDir+"/"+current)){
+    if (QFile::exists(getSettings().outDir + QDir::separator() + current)){
         result << current;
     }
 
