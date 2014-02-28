@@ -292,7 +292,7 @@ public:
     QString exportHighligtning(int startPos, int endPos, int startingIndex, bool keepGaps, bool dots);
 
     MSAColorScheme* getCurrentColorScheme(){return colorScheme;}
-    MSAHighlightingScheme* getCurrentHighlightingScheme(){return highlitingScheme;}
+    MSAHighlightingScheme* getCurrentHighlightingScheme(){return highlightingScheme;}
     bool getUseDotsCheckedState(){return useDotsAction->isChecked();}
 
     void onVisibleRangeChanged();
@@ -467,7 +467,7 @@ private:
     bool            completeRedraw;
 
     MSAColorScheme* colorScheme;
-    MSAHighlightingScheme* highlitingScheme;
+    MSAHighlightingScheme* highlightingScheme;
     bool            highlightSelection;
 
     QList<QAction*> colorSchemeMenuActions;

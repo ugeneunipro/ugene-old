@@ -20,11 +20,13 @@
  */
 
 #include "MSAGraphOverview.h"
+#include "MSAGraphCalculationTask.h"
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorConsensusArea.h>
 #include <U2View/MSAEditorConsensusCache.h>
 #include <U2View/MSAEditorSequenceArea.h>
+#include <U2View/MSAColorScheme.h>
 
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
@@ -35,13 +37,15 @@ namespace U2 {
 MSAGraphOverview::MSAGraphOverview(MSAEditorUI *ui)
     : MSAOverview(ui),
       redrawGraph(true),
-      isBlocked(false)
+      isBlocked(false),
+      method(Strict),
+      graphCalculationTask(NULL)
 {
     setFixedHeight(FIXED_HEIGHT);
 
     displaySettings = new MSAGraphOverviewDisplaySettings();
 
-    connect(&overviewPixmapTaskRunner, SIGNAL(si_finished()), SLOT(sl_redraw()));
+    connect(&graphCalculationTaskRunner, SIGNAL(si_finished()), SLOT(sl_redraw()));
     connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(MAlignment,MAlignmentModInfo)),
             SLOT(sl_drawGraph()));
 
@@ -55,7 +59,7 @@ MSAGraphOverview::MSAGraphOverview(MSAEditorUI *ui)
 
 void MSAGraphOverview::cancelRendering() {
     if (isRendering) {
-        overviewPixmapTaskRunner.cancel();
+        graphCalculationTaskRunner.cancel();
     }
 }
 
@@ -78,7 +82,7 @@ void MSAGraphOverview::paintEvent(QPaintEvent *e) {
         return;
     }
 
-    if (!overviewPixmapTaskRunner.isFinished()) {
+    if (!graphCalculationTaskRunner.isFinished()) {
         cachedConsensus = QPixmap(size());
         QPainter pConsensus(&cachedConsensus);
         pConsensus.fillRect(cachedConsensus.rect(), Qt::gray);
@@ -139,7 +143,8 @@ void MSAGraphOverview::sl_drawGraph() {
     if (!isVisible() || isBlocked) {
         return;
     }
-    overviewPixmapTaskRunner.cancel();
+    graphCalculationTaskRunner.cancel();
+
 
     MSAEditorConsensusArea* ca = ui->getConsensusArea();
     SAFE_POINT(ca != NULL, "Consensus area is NULL!", );
@@ -147,12 +152,47 @@ void MSAGraphOverview::sl_drawGraph() {
     QSharedPointer<MSAEditorConsensusCache> cache = ca->getConsensusCache();
     SAFE_POINT(cache != NULL, "Consensus is NULL!", );
 
-    task = new CalcConsensusOverviewPolygonTask(cache, width());
-    connect(task, SIGNAL(si_calculationStarted()), SLOT(sl_startRendering()));
-    connect(task, SIGNAL(si_calculationStoped()), SLOT(sl_stopRendering()));
+    switch (method) {
+    case Strict:
+        graphCalculationTask = new MSAConsensusOverviewCalculationTask(cache, editor->getAlignmentLen(),
+                                                                       width(), FIXED_HEIGHT);
+        break;
+    case Gaps:
+        graphCalculationTask = new MSAGapOverviewCalculationTask(editor->getMSAObject(),
+                                                                 editor->getAlignmentLen(),
+                                                                 width(), FIXED_HEIGHT);
+        break;
+    case Clustal:
+        graphCalculationTask = new MSAClustalOverviewCalculationTask(editor->getMSAObject(),
+                                                                     editor->getAlignmentLen(),
+                                                                     width(), FIXED_HEIGHT);
+        break;
+    case Highlighting:
+        MSAHighlightingScheme* hScheme = sequenceArea->getCurrentHighlightingScheme();
+        QString hSchemeId = hScheme->getFactory()->getId();
 
-    overviewPixmapTaskRunner.run( task );
+        MSAColorScheme* cScheme = sequenceArea->getCurrentColorScheme();
+        QString cSchemeId = cScheme->getFactory()->getId();
+
+        graphCalculationTask = new MSAHighlightingOverviewCalculationTask(editor,
+                                                                          cSchemeId,
+                                                                          hSchemeId,
+                                                                          editor->getAlignmentLen(),
+                                                                          width(), FIXED_HEIGHT);
+        break;
+    }
+
+    connect(graphCalculationTask, SIGNAL(si_calculationStarted()), SLOT(sl_startRendering()));
+    connect(graphCalculationTask, SIGNAL(si_calculationStoped()), SLOT(sl_stopRendering()));
+    graphCalculationTaskRunner.run( graphCalculationTask );
+
     sl_redraw();
+}
+
+void MSAGraphOverview::sl_highlightingChanged() {
+    if (method == Highlighting) {
+        sl_drawGraph();
+    }
 }
 
 void MSAGraphOverview::sl_graphOrientationChanged(MSAGraphOverviewDisplaySettings::OrientationMode orientation) {
@@ -176,6 +216,13 @@ void MSAGraphOverview::sl_graphColorChanged(QColor color) {
     }
 }
 
+void MSAGraphOverview::sl_calculationMethodChanged(MSAGraphCalculationMethod _method) {
+    if (method != _method) {
+        method = _method;
+        sl_drawGraph();
+    }
+}
+
 void MSAGraphOverview::sl_startRendering() {
     isRendering = true;
 }
@@ -185,7 +232,7 @@ void MSAGraphOverview::sl_stopRendering() {
 }
 
 void MSAGraphOverview::sl_blockRendering() {
-    overviewPixmapTaskRunner.cancel();
+    graphCalculationTaskRunner.cancel();
 
     disconnect(editor->getMSAObject(), 0, this, 0);
 
@@ -221,29 +268,36 @@ void MSAGraphOverview::drawOverview(QPainter &p) {
     p.setPen(displaySettings->color);
     p.setBrush(displaySettings->color);
 
-    if (overviewPixmapTaskRunner.getResult().isEmpty() && !isBlocked) {
+    if (graphCalculationTaskRunner.getResult().isEmpty() && !isBlocked) {
         sl_drawGraph();
         return;
     }
 
     // area graph
     if (displaySettings->type == MSAGraphOverviewDisplaySettings::Area) {
-        p.drawPolygon( overviewPixmapTaskRunner.getResult() );
+        p.drawPolygon( graphCalculationTaskRunner.getResult() );
     }
 
     // line graph
     if (displaySettings->type == MSAGraphOverviewDisplaySettings::Line) {
-        p.drawPolyline(overviewPixmapTaskRunner.getResult());
+        p.drawPolyline(graphCalculationTaskRunner.getResult());
     }
 
-    // hystogram - need to set proper empty space between columns
+    // hystogram
     if (displaySettings->type == MSAGraphOverviewDisplaySettings::Hystogram) {
-        int columnWidth = 1;
-        if (overviewPixmapTaskRunner.getResult().size() != width()) {
-            columnWidth = qRound( width() / (double)overviewPixmapTaskRunner.getResult().size() - 1 );
-        }
-        foreach (const QPointF point, overviewPixmapTaskRunner.getResult()) {
-            p.drawRect(point.x(), point.y(), columnWidth, height() - point.y());
+        int size = graphCalculationTaskRunner.getResult().size();
+        for (int i = 0; i < size; i++) {
+            const QPointF point = graphCalculationTaskRunner.getResult().at(i);
+            QPointF nextPoint;
+            if (i != size - 1) {
+                nextPoint = graphCalculationTaskRunner.getResult().at(i + 1);
+            } else {
+                nextPoint = QPointF(width(), point.y());
+            }
+
+            p.drawRect( point.x(), point.y(),
+                        static_cast<int>(nextPoint.x() - point.x()) - 2 * (width() > 2 * size),
+                        height() - point.y());
         }
     }
 
@@ -258,7 +312,7 @@ void MSAGraphOverview::drawOverview(QPainter &p) {
 void MSAGraphOverview::moveVisibleRange(QPoint _pos) {
     const QRect& overviewRect = rect();
     QRect newVisibleRange(cachedVisibleRange);
-    newVisibleRange.moveLeft(_pos.x() - (double)cachedVisibleRange.width() / 2 );
+    newVisibleRange.moveLeft(_pos.x() - static_cast<double>(cachedVisibleRange.width()) / 2 );
 
     if (!overviewRect.contains(newVisibleRange)) {
         if (newVisibleRange.x() < 0) {
@@ -272,60 +326,5 @@ void MSAGraphOverview::moveVisibleRange(QPoint _pos) {
     sequenceArea->setFirstVisibleBase(pos);
     update();
 }
-
-
-// CalcConsensusOverviewPolygonTask
-void CalcConsensusOverviewPolygonTask::run() {
-    SAFE_POINT(consensus != NULL, tr("Consensus is NULL"), );
-    emit si_calculationStarted();
-    constructConsensusPolygon(result);
-    emit si_calculationStoped();
-}
-
-void CalcConsensusOverviewPolygonTask::constructConsensusPolygon(QPolygonF &polygon) {
-    if (consensus->getConsensusLength() == 0 ) {
-        return;
-    }
-
-    double stepY = MSAGraphOverview::FIXED_HEIGHT / (double)100;
-    QVector<QPointF> points;
-    points.append(QPointF(0, MSAGraphOverview::FIXED_HEIGHT));
-
-    if ( consensus->getConsensusLength() < width ) {
-        double stepX = width / (double)consensus->getConsensusLength();
-        for (int pos = 0; pos < consensus->getConsensusLength() - 1; pos++) {
-            if (isCanceled()) {
-                return;
-            }
-            int percent = consensus->getConsensusCharPercent(pos);
-            points.append(QPointF(stepX * pos,
-                                  MSAGraphOverview::FIXED_HEIGHT - stepY * percent));
-        }
-        points.append(QPointF( width,
-                               MSAGraphOverview::FIXED_HEIGHT - stepY* consensus->getConsensusCharPercent(consensus->getConsensusLength() - 1)));
-
-    } else {
-
-        double consStep = consensus->getConsensusLength() / (double)width;
-        for (int pos = 0; pos < width; pos++) {
-            double average = 0;
-            int count = 0;
-            for (int i = consStep * pos; i < consStep * (pos + 1); i++) {
-                if (isCanceled()) {
-                    return;
-                }
-                average += consensus->getConsensusCharPercent(i);
-                count++;
-            }
-            average /= count;
-            points.append( QPointF(pos, MSAGraphOverview::FIXED_HEIGHT - stepY * average ));
-        }
-    }
-
-    points.append(QPointF(width, MSAGraphOverview::FIXED_HEIGHT));
-    polygon = QPolygonF(points);
-}
-
-
 
 } // namespace

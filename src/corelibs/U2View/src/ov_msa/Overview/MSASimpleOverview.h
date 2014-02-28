@@ -34,6 +34,7 @@ class MSAEditor;
 class MSAEditorUI;
 class MSAEditorSequenceArea;
 class MSAColorScheme;
+class MSAHighlightingScheme;
 
 
 class U2VIEW_EXPORT MSASimpleOverview : public MSAOverview {
@@ -41,7 +42,7 @@ class U2VIEW_EXPORT MSASimpleOverview : public MSAOverview {
 public:
     MSASimpleOverview(MSAEditorUI *ui);
     const static int FIXED_HEIGTH = 70;
-    bool isValid();
+    bool isValid() const;
 
 public slots:
     void sl_visibleRangeChanged();
@@ -62,6 +63,7 @@ private:
 
 private:
     MSAColorScheme*         colorScheme;
+    MSAHighlightingScheme*  highlightingScheme;
 
     QPixmap cachedMSAOverview;
 

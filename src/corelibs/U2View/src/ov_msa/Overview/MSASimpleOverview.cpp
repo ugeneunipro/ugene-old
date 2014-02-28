@@ -20,6 +20,7 @@
  */
 
 #include "MSASimpleOverview.h"
+#include "MSAGraphCalculationTask.h"
 
 #include <U2View/MSAColorScheme.h>
 #include <U2View/MSAEditor.h>
@@ -39,6 +40,11 @@ MSASimpleOverview::MSASimpleOverview(MSAEditorUI *_ui)
     setFixedHeight(FIXED_HEIGTH);
 
     colorScheme = sequenceArea->getCurrentColorScheme();
+    highlightingScheme = sequenceArea->getCurrentHighlightingScheme();
+
+    if (!isValid()) {
+        setVisible(false);
+    }
 }
 
 void MSASimpleOverview::sl_visibleRangeChanged() {
@@ -74,6 +80,7 @@ void MSASimpleOverview::sl_highlightingChanged() {
         return;
     }
     colorScheme = sequenceArea->getCurrentColorScheme();
+    highlightingScheme = sequenceArea->getCurrentHighlightingScheme();
     redrawMSAOverview = true;
     update();
 }
@@ -123,6 +130,8 @@ void MSASimpleOverview::drawOverview(QPainter &p) {
     stepX = width() / (double)editor->getAlignmentLen();
     stepY = height() / (double)editor->getNumSequences();
 
+    QString highlightingSchemeId = sequenceArea->getCurrentHighlightingScheme()->getFactory()->getId();
+
     for (int seq = 0; seq < editor->getNumSequences(); seq++) {
         for (int pos = 0; pos < editor->getAlignmentLen(); pos++) {
             QRect rect;
@@ -138,7 +147,19 @@ void MSASimpleOverview::drawOverview(QPainter &p) {
             rect.setWidth( next - prev );
 
             QColor color = colorScheme->getColor(seq, pos);
-            if (color.isValid()) {
+            if (MSAHighlightingOverviewCalculationTask::isGapScheme(highlightingSchemeId)) {
+                color = Qt::gray;
+            }
+
+            bool drawColor = true;
+            drawColor = MSAHighlightingOverviewCalculationTask::isCellHighlighted(
+                        editor->getMSAObject(),
+                        highlightingScheme,
+                        colorScheme,
+                        seq, pos,
+                        editor->getReferenceRowId());
+
+            if (color.isValid() && drawColor) {
                 p.fillRect(rect, color);
             }
         }
@@ -200,7 +221,7 @@ void MSASimpleOverview::moveVisibleRange(QPoint _pos) {
     sequenceArea->setFirstVisibleSequence(pos);
 }
 
-bool MSASimpleOverview::isValid() {
+bool MSASimpleOverview::isValid() const {
     if (width() < editor->getAlignmentLen() || height() < editor->getNumSequences()) {
         return false;
     }

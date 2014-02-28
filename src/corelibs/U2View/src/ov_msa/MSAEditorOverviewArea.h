@@ -39,6 +39,8 @@ class U2VIEW_EXPORT MSAEditorOverviewArea : public QWidget {
 public:
     MSAEditorOverviewArea(MSAEditorUI* ui);
     void cancelRendering();
+
+    static const QString OVERVIEW_AREA_OBJECT_NAME;
 public slots:
     void sl_onContextMenuRequested(const QPoint& p);
     void sl_show();

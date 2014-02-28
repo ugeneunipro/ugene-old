@@ -33,7 +33,7 @@
 
 namespace U2 {
 
-#define OVERVIEW_AREA_OBJECT_NAME "msa_overview_area"
+const QString MSAEditorOverviewArea::OVERVIEW_AREA_OBJECT_NAME  = "msa_overview_area";
 
 MSAEditorOverviewArea::MSAEditorOverviewArea(MSAEditorUI *ui) {
     setObjectName(OVERVIEW_AREA_OBJECT_NAME);
@@ -54,6 +54,12 @@ MSAEditorOverviewArea::MSAEditorOverviewArea(MSAEditorUI *ui) {
     connect(ui, SIGNAL(customContextMenuRequested(QPoint)), SLOT(sl_onContextMenuRequested(QPoint)));
     connect(ui->getSequenceArea(), SIGNAL(si_highlightingChanged()),
             simpleOverview, SLOT(sl_highlightingChanged()));
+    connect(ui->getSequenceArea(), SIGNAL(si_highlightingChanged()),
+            graphOverview, SLOT(sl_highlightingChanged()));
+    connect(ui->getEditor(), SIGNAL(si_referenceSeqChanged(qint64)),
+            graphOverview, SLOT(sl_highlightingChanged()));
+    connect(ui->getEditor(), SIGNAL(si_referenceSeqChanged(qint64)),
+            simpleOverview, SLOT(sl_highlightingChanged()));
 
     contextMenu =  new MSAOverviewContextMenu(simpleOverview, graphOverview);
 
@@ -63,6 +69,8 @@ MSAEditorOverviewArea::MSAEditorOverviewArea(MSAEditorUI *ui) {
             graphOverview, SLOT(sl_graphColorChanged(QColor)));
     connect(contextMenu, SIGNAL(si_graphOrientationSelected(MSAGraphOverviewDisplaySettings::OrientationMode)),
             graphOverview, SLOT(sl_graphOrientationChanged(MSAGraphOverviewDisplaySettings::OrientationMode)));
+    connect(contextMenu, SIGNAL(si_calculationMethodSelected(MSAGraphCalculationMethod)),
+            graphOverview, SLOT(sl_calculationMethodChanged(MSAGraphCalculationMethod)));
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     setMaximumHeight( graphOverview->FIXED_HEIGHT + simpleOverview->FIXED_HEIGTH + 5 );

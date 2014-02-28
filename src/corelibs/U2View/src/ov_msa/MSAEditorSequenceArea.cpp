@@ -267,7 +267,7 @@ void MSAEditorSequenceArea::prepareHighlightingMenuActions() {
         hsf = hsr->getMSAHighlightingSchemeFactoryById(atype == DNAAlphabet_AMINO ? MSAHighlightingScheme::EMPTY_AMINO : MSAHighlightingScheme::EMPTY_NUCL);
     }
     assert(hsf!=NULL);
-    highlitingScheme = hsf->create(this, maObj);
+    highlightingScheme = hsf->create(this, maObj);
 
     QList<MSAHighlightingSchemeFactory*> factories= hsr->getMSAHighlightingSchemes(atype);
     foreach(MSAHighlightingSchemeFactory* f, factories) {
@@ -400,11 +400,11 @@ void MSAEditorSequenceArea::sl_changeHighlightScheme(){
 
     QString id = a->data().toString();
     MSAHighlightingSchemeFactory* f = AppContext::getMSAHighlightingSchemeRegistry()->getMSAHighlightingSchemeFactoryById(id);
-    delete highlitingScheme;
+    delete highlightingScheme;
     if (ui->editor->getMSAObject() == NULL)
         return;
 
-    highlitingScheme = f->create(this, ui->editor->getMSAObject());
+    highlightingScheme = f->create(this, ui->editor->getMSAObject());
     foreach(QAction* action, highlightingSchemeMenuActions) {
         action->setChecked(action == a);
     }
@@ -513,13 +513,13 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
                 
                 QColor color = colorScheme->getColor(seq, pos);
 
-                QString cname = highlitingScheme->metaObject()->className();
+                QString cname = highlightingScheme->metaObject()->className();
 
                 if(cname == "U2::MSAHighlightingSchemeGaps"){
                     const char refChar = 'z';              
                     bool drawColor = false;
-                    highlitingScheme->setUseDots(useDotsAction->isChecked());
-                    highlitingScheme->process(refChar, c, drawColor);
+                    highlightingScheme->setUseDots(useDotsAction->isChecked());
+                    highlightingScheme->process(refChar, c, drawColor);
                     if(cname == "U2::MSAHighlightingSchemeGaps"){
                         color = QColor(192, 192, 192);
                     }
@@ -539,8 +539,8 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
                 }else{
                     const char refChar = r->charAt(pos);              
                     bool drawColor = false;
-                    highlitingScheme->setUseDots(useDotsAction->isChecked());
-                    highlitingScheme->process(refChar, c, drawColor);
+                    highlightingScheme->setUseDots(useDotsAction->isChecked());
+                    highlightingScheme->process(refChar, c, drawColor);
                     if(cname == "U2::MSAHighlightingSchemeGaps"){
                         color = QColor(192, 192, 192);
                     }
@@ -1062,10 +1062,8 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
             U2UseCommonUserModStep userModStep( editor->getMSAObject( )->getEntityRef( ), os );
             Q_UNUSED(userModStep);
             shiftSelectedRegion( shift );
-            emit si_stopMSAChanging(true);
-        } else {
-            emit si_stopMSAChanging(false);
         }
+        emit si_stopMSAChanging(true);
     } else if ( Qt::LeftButton == e->button( ) ) {
         updateSelection(newCurPos);
     }
@@ -2559,8 +2557,8 @@ QString MSAEditorSequenceArea::exportHighligtning( int startPos, int endPos, int
             const char refChar = r->charAt(pos);
             if (refChar == '-' && !keepGaps) continue;
             bool drawColor = false;
-            highlitingScheme->setUseDots(useDotsAction->isChecked());
-            highlitingScheme->process(refChar, c, drawColor);
+            highlightingScheme->setUseDots(useDotsAction->isChecked());
+            highlightingScheme->process(refChar, c, drawColor);
 
             if (drawColor) {
                 rowStr.append(c);

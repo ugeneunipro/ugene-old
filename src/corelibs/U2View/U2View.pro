@@ -63,6 +63,7 @@ HEADERS += src/Init.h \
            src/ov_msa/General/MSAGeneralTabFactory.h \
            src/ov_msa/Highlighting/MSAHighlightingTab.h \
            src/ov_msa/Highlighting/MSAHighlightingTabFactory.h \
+           src/ov_msa/Overview/MSAGraphCalculationTask.h \
            src/ov_msa/Overview/MSAGraphOverview.h \
            src/ov_msa/Overview/MSAOverview.h \
            src/ov_msa/Overview/MSAOverviewContextMenu.h \
@@ -263,6 +264,7 @@ SOURCES += src/Init.cpp \
            src/ov_msa/General/MSAGeneralTabFactory.cpp \
            src/ov_msa/Highlighting/MSAHighlightingTab.cpp \
            src/ov_msa/Highlighting/MSAHighlightingTabFactory.cpp \
+           src/ov_msa/Overview/MSAGraphCalculationTask.cpp \
            src/ov_msa/Overview/MSAGraphOverview.cpp \
            src/ov_msa/Overview/MSAOverview.cpp \
            src/ov_msa/Overview/MSAOverviewContextMenu.cpp \

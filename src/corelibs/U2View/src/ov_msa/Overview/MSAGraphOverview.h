@@ -30,24 +30,7 @@
 namespace U2 {
 
 class MSAEditorConsensusCache;
-
-class CalcConsensusOverviewPolygonTask : public BackgroundTask<QPolygonF> {
-    Q_OBJECT
-public:
-    CalcConsensusOverviewPolygonTask(QSharedPointer<MSAEditorConsensusCache> _consensus, int _width)
-        : BackgroundTask<QPolygonF>(tr("Render consensus overview"), TaskFlag_None),
-          consensus(_consensus),
-          width(_width){}
-    void run();
-signals:
-    void si_calculationStarted();
-    void si_calculationStoped();
-private:
-    void constructConsensusPolygon(QPolygonF &polygon);
-    QSharedPointer<MSAEditorConsensusCache>    consensus;
-    int                         width;
-};
-
+class MSAGraphCalculationTask;
 
 class MSAGraphOverviewDisplaySettings {
 public:
@@ -72,6 +55,13 @@ public:
     OrientationMode orientation;
 };
 
+enum MSAGraphCalculationMethod {
+    Strict,         // the most frequent nucleotide
+    Gaps,           // percent of gaps
+    Clustal,        // 0-30-60-100 groups
+    Highlighting    // count only highlighted cells
+};
+
 
 class U2VIEW_EXPORT MSAGraphOverview : public MSAOverview {
     Q_OBJECT
@@ -87,15 +77,18 @@ public:
     MSAGraphOverviewDisplaySettings::GraphType getCurrentGraphType() const { return displaySettings->type; }
     MSAGraphOverviewDisplaySettings::OrientationMode getCurrentOrientationMode() const
     { return displaySettings->orientation; }
+    MSAGraphCalculationMethod getCurrentCalculationMethod() const { return method; }
 
 public slots:
     void sl_visibleRangeChanged();
     void sl_redraw();
     void sl_drawGraph();
+    void sl_highlightingChanged();
 
     void sl_graphOrientationChanged(MSAGraphOverviewDisplaySettings::OrientationMode orientation);
     void sl_graphTypeChanged(MSAGraphOverviewDisplaySettings::GraphType type);
     void sl_graphColorChanged(QColor color);
+    void sl_calculationMethodChanged(MSAGraphCalculationMethod method);
 
     void sl_startRendering();
     void sl_stopRendering();
@@ -118,10 +111,12 @@ private:
     bool isRendering;
     bool isBlocked;
 
-    BackgroundTaskRunner<QPolygonF> overviewPixmapTaskRunner;
-    CalcConsensusOverviewPolygonTask * task;
+    BackgroundTaskRunner<QPolygonF>     graphCalculationTaskRunner;
 
     MSAGraphOverviewDisplaySettings*    displaySettings;
+    MSAGraphCalculationMethod           method;
+
+    MSAGraphCalculationTask*            graphCalculationTask;
 };
 
 } // namespace

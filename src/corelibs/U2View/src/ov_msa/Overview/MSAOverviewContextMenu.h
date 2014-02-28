@@ -41,18 +41,23 @@ signals:
     void si_graphTypeSelected(MSAGraphOverviewDisplaySettings::GraphType type);
     void si_graphOrientationSelected(MSAGraphOverviewDisplaySettings::OrientationMode orientation);
     void si_colorSelected(QColor color);
+    void si_calculationMethodSelected(MSAGraphCalculationMethod method);
 
 public slots:
     void sl_graphTypeActionTriggered(QAction*);
     void sl_graphOrientationActionTriggered(QAction*);
     void sl_colorActionTriggered();
+    void sl_caclulationMethodActionTriggered(QAction*);
 
 private:
     void initSimpleOverviewAction();
     void initDisplaySettingsMenu();
+    void initCalculationMethodMenu();
 
     void initGraphTypeSubmenu();
     void initOrientationSubmenu();
+
+    QAction*    createCheckableAction(const QString& text, QActionGroup* group = NULL);
 
     MSASimpleOverview*  simpleOverview;
     MSAGraphOverview*   graphOverview;
@@ -74,6 +79,14 @@ private:
     QAction*            bottomToTopOrientationAction;
 
     QAction*    colorAction;
+
+    QMenu*              calculationMethodMenu;
+
+    QActionGroup*   calculationMethodActionGroup;
+    QAction*            strictMethodAction;
+    QAction*            gapMethodAction;
+    QAction*            clustalMethodAction;
+    QAction*            highlightingMethodAction;
 };
 
 } // namespace
