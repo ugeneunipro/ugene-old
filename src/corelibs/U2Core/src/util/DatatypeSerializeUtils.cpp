@@ -164,7 +164,7 @@ QByteArray DNAChromatogramSerializer::serialize(const DNAChromatogram &chroma) {
 
 DNAChromatogram DNAChromatogramSerializer::deserialize(const QByteArray &binary, U2OpStatus &os) {
     DNAChromatogram result;
-    const uchar *data = reinterpret_cast<const uchar*>(binary.data());
+    const uchar *data = (const uchar*)(binary.data());
     int offset = 0;
     int length = binary.length();
 
@@ -732,7 +732,7 @@ QByteArray BioStruct3DSerializer::serialize(const BioStruct3D &bioStruct) {
 }
 
 BioStruct3D BioStruct3DSerializer::deserialize(const QByteArray &binary, U2OpStatus &os) {
-    const uchar *data = reinterpret_cast<const uchar*>(binary.data());
+    const uchar *data = (const uchar*)(binary.data());
     int offset = 0;
     int length = binary.length();
 
@@ -815,7 +815,7 @@ QByteArray WMatrixSerializer::serialize(const PWMatrix &matrix) {
 }
 
 PWMatrix WMatrixSerializer::deserialize(const QByteArray &binary, U2OpStatus &os) {
-    const uchar *data = reinterpret_cast<const uchar*>(binary.data());
+    const uchar *data = (const uchar*)(binary.data());
     int offset = 0;
     int length = binary.length();
 
@@ -844,7 +844,7 @@ QByteArray FMatrixSerializer::serialize(const PFMatrix &matrix) {
 }
 
 PFMatrix FMatrixSerializer::deserialize(const QByteArray &binary, U2OpStatus &os) {
-    const uchar *data = reinterpret_cast<const uchar*>(binary.data());
+    const uchar *data = (const uchar*)(binary.data());
     int offset = 0;
     int length = binary.length();
 
