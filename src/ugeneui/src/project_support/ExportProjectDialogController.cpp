@@ -24,13 +24,14 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
-#include <U2Gui/HelpButton.h>
-
+#include <QtGui/QPushButton>
 
 namespace U2{
 
@@ -59,6 +60,10 @@ ExportProjectDialogController::ExportProjectDialogController(QWidget *p, const Q
     }
     connect(browseButton, SIGNAL(clicked()), this, SLOT(sl_onBrowseButton()));
 
+    SAFE_POINT(buttonBox, "buttonBox not initialized", );
+    QPushButton *b = buttonBox->button(QDialogButtonBox::Ok);
+    SAFE_POINT(b, "buttonBox without OK button", );
+    b->setText(tr("Export"));
 }
 
 void ExportProjectDialogController::accept(){
