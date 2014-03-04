@@ -314,7 +314,7 @@ void CallVariantsWorkerFactory::init() {
         CallVariantsWorker::tr("Enable pair/trio calling. For trio calling, option -s is usually needed to be"
         " applied to configure the trio members and their ordering. In the file supplied to the option -s, the "
         "first sample must be the child, the second the father and the third the mother. The valid values of STR "
-        "are ‘pair’, ‘trioauto’, ‘trioxd’ and ‘trioxs’, where ‘pair’ calls differences between two input samples, and ‘trioxd’ (‘trioxs’)"
+        "are 'Â‘pairÂ’', 'Â‘trioautoÂ’', 'Â‘trioxdÂ’' and 'Â‘trioxsÂ’', where 'Â‘pairÂ’' calls differences between two input samples, and 'Â‘trioxdÂ’' ('Â‘trioxsÂ’')"
         "specifies that the input is from the X chromosome non-PAR regions and the child is a female (male) (bcf view)(-T)."));
 
     Descriptor n1(N1,
