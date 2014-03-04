@@ -89,6 +89,12 @@ void MarkerEditorWidget::sl_onRemoveButtonClicked() {
     }
 
     markerModel->removeRows(selected.first().row(), 1, selected.first());
+
+    SAFE_POINT(table->model(), "cant retrieve table model count", );
+    if(table->model()->rowCount() == 0){
+        editButton->setEnabled(false);
+        removeButton->setEnabled(false);
+    }
 }
 
 void MarkerEditorWidget::sl_onItemEntered(const QModelIndex &idx) {
