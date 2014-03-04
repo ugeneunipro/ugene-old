@@ -41,7 +41,6 @@ QWidget *ProxyDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem
             editor = QItemDelegate::createEditor(parent, option, index);
         }
     }
-    editor->setFixedHeight(20);
     return editor;
 }
 
