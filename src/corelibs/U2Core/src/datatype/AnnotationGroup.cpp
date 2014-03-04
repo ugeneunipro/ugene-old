@@ -70,7 +70,7 @@ bool AnnotationGroup::isValidGroupName( const QString &name, bool pathMode ) {
 void AnnotationGroup::findAllAnnotationsInGroupSubTree( QList<Annotation> &set ) const {
     U2OpStatusImpl os;
     QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( dbId,
-        parentObject->getEntityRef( ).dbiRef, os );
+        parentObject->getEntityRef( ).dbiRef, os, Recursive, Nonroot );
     SAFE_POINT_OP( os, );
 
     foreach ( const U2Feature &feature, subfeatures ) {
@@ -95,7 +95,7 @@ QList<Annotation> AnnotationGroup::getAnnotations( ) const {
 
     U2OpStatusImpl os;
     QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( dbId,
-        parentObject->getEntityRef( ).dbiRef, os, false );
+        parentObject->getEntityRef( ).dbiRef, os, Nonrecursive, Nonroot );
     SAFE_POINT_OP( os, resultAnnotations );
 
     foreach ( const U2Feature &feature, subfeatures ) {
@@ -108,8 +108,8 @@ QList<Annotation> AnnotationGroup::getAnnotations( ) const {
 
 Annotation AnnotationGroup::addAnnotation( const AnnotationData &a ) {
     U2OpStatusImpl os;
-    const U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures( a, dbId,
-        parentObject->getEntityRef( ).dbiRef, os );
+    const U2Feature feature = U2FeatureUtils::exportAnnotationDataToFeatures( a,
+        parentObject->getRootFeatureId( ), dbId, parentObject->getEntityRef( ).dbiRef, os );
 
     Annotation result( feature.id, parentObject );
     SAFE_POINT_OP( os, result );
@@ -139,19 +139,23 @@ void AnnotationGroup::addAnnotation( const Annotation &a ) {
 void AnnotationGroup::removeAnnotation( const Annotation &a ) {
     SAFE_POINT( a.getGObject( ) == parentObject,
         "Attempting to remove annotation belonging to different object!", );
+#ifdef _DEBUG
     U2OpStatusImpl os;
     QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( dbId,
-        parentObject->getEntityRef( ).dbiRef, os, false );
+        parentObject->getEntityRef( ).dbiRef, os, Nonrecursive, Nonroot );
     SAFE_POINT_OP( os, );
 
     // iterate through all subfeatures to check whether the annotation does belong to this group
     foreach ( const U2Feature &subfeature, subfeatures ) {
         if ( subfeature.id == a.getId( ) ) {
+#endif
             parentObject->removeAnnotation( a );
+#ifdef _DEBUG
             return;
         }
     }
     SAFE_POINT( false, "Attempting to remove annotation belonging to different group!", );
+#endif
 }
 
 void AnnotationGroup::removeAnnotations( const QList<Annotation> &annotations ) {
@@ -163,7 +167,7 @@ QList<AnnotationGroup> AnnotationGroup::getSubgroups( ) const {
 
     U2OpStatusImpl os;
     QList<U2Feature> subfeatures = U2FeatureUtils::getSubGroups( dbId,
-        parentObject->getEntityRef( ).dbiRef, os, false );
+        parentObject->getEntityRef( ).dbiRef, os, Nonrecursive );
     SAFE_POINT_OP( os, result );
 
     foreach ( const U2Feature &sub, subfeatures ) {
@@ -178,7 +182,7 @@ void AnnotationGroup::removeSubgroup( AnnotationGroup &g ) {
     U2OpStatusImpl os;
 
     QList<U2Feature> subfeatures = U2FeatureUtils::getSubGroups( dbId,
-        parentObject->getEntityRef( ).dbiRef, os, false );
+        parentObject->getEntityRef( ).dbiRef, os, Nonrecursive );
     SAFE_POINT_OP( os, );
     foreach ( const U2Feature &sub, subfeatures ) {
         if ( sub.id == g.getId( ) ) {
@@ -266,7 +270,7 @@ AnnotationGroup AnnotationGroup::getSubgroup( const QString &path, bool create )
     AnnotationGroup subgroup( *this );
     U2OpStatusImpl os;
     const QList<U2Feature> subfeatures = U2FeatureUtils::getSubGroups( dbId,
-        parentObject->getEntityRef( ).dbiRef, os, false );
+        parentObject->getEntityRef( ).dbiRef, os, Nonrecursive );
     SAFE_POINT_OP( os, subgroup );
     foreach ( const U2Feature &feature, subfeatures ) {
         if ( feature.name == subgroupName ) {
@@ -276,7 +280,8 @@ AnnotationGroup AnnotationGroup::getSubgroup( const QString &path, bool create )
     }
     if ( dbId == subgroup.getId( ) && create ) {
         const U2Feature subgroupFeature = U2FeatureUtils::exportAnnotationGroupToFeature(
-            subgroupName, dbId, parentObject->getEntityRef( ).dbiRef, os );
+            subgroupName, parentObject->getRootFeatureId( ), dbId,
+            parentObject->getEntityRef( ).dbiRef, os );
         SAFE_POINT_OP( os, subgroup );
         subgroup = AnnotationGroup( subgroupFeature.id, parentObject );
 
@@ -297,7 +302,7 @@ void AnnotationGroup::getSubgroupPaths( QStringList &res ) const {
 
     U2OpStatusImpl os;
     const QList<U2Feature> subfeatures = U2FeatureUtils::getSubGroups( dbId,
-        parentObject->getEntityRef( ).dbiRef, os, false );
+        parentObject->getEntityRef( ).dbiRef, os, Nonrecursive );
     SAFE_POINT_OP( os, );
 
     foreach ( const U2Feature &sub, subfeatures ) {

@@ -119,7 +119,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationSingleRegion ) {
 
     U2OpStatusImpl os;
     const QList<U2Feature> annSubfeatures = U2FeatureUtils::getSubAnnotations( objRootFeatureId,
-        dbiRef, os );
+        dbiRef, os, Recursive, Nonroot );
     CHECK_NO_ERROR( os );
     CHECK_EQUAL( 1, annSubfeatures.size( ), "annotation subfeatures of root feature" );
 
@@ -171,7 +171,8 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationMultipleRegion ) {
     CHECK_TRUE( !objRootFeatureId.isEmpty( ), "invalid root feature id" );
 
     U2OpStatusImpl os;
-    const QList<U2Feature> annSubfeatures = U2FeatureUtils::getSubAnnotations( objRootFeatureId, dbiRef, os );
+    const QList<U2Feature> annSubfeatures = U2FeatureUtils::getSubAnnotations( objRootFeatureId,
+        dbiRef, os, Recursive, Nonroot );
     CHECK_NO_ERROR( os );
     CHECK_EQUAL( 4, annSubfeatures.size( ), "annotating subfeatures of root feature" );
 
@@ -260,7 +261,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addFeatureSingleRegion ) {
 
     // -- check accessible as subfeature --
     const QList<U2Feature> subs = U2FeatureUtils::getSubAnnotations( ft.getRootFeatureId( ),
-        dbiRef, os );
+        dbiRef, os, Recursive, Nonroot );
     CHECK_NO_ERROR( os );
     CHECK_EQUAL( 1, subs.size( ), "number of subfeatures of root feature" );
     CHECK_EQUAL( sourceFeature.id, subs.first( ).id, "first subfeature of root feature" );
@@ -464,7 +465,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotation ) {
 
     U2OpStatusImpl os;
     const QList<U2Feature> featuresAfter = U2FeatureUtils::getSubAnnotations(
-        subgroup.first( ).getId( ), dbiRef, os );
+        subgroup.first( ).getId( ), dbiRef, os, Recursive, Nonroot );
     CHECK_NO_ERROR( os );
     CHECK_EQUAL( 2, featuresAfter.size( ), "annotation count" );
 }
@@ -508,7 +509,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotations ) {
 
     U2OpStatusImpl os;
     const QList<U2Feature> featuresAfter = U2FeatureUtils::getSubAnnotations(
-        subgroup.first( ).getId( ), dbiRef, os );
+        subgroup.first( ).getId( ), dbiRef, os, Recursive, Nonroot );
     CHECK_NO_ERROR( os );
     CHECK_EQUAL( 0, featuresAfter.size( ), "annotation count" );
 }

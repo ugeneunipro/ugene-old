@@ -146,6 +146,9 @@ public:
                                         const QString &featureName, const U2DataId &seqId,
                                         U2OpStatus &os );
 
+    U2DbiIterator<U2Feature> *      getSubFeatures( const U2DataId &rootId,
+                                        const QString &featureName, U2OpStatus &os );
+
     U2DbiIterator<U2Feature> *      getFeaturesBySequence( const QString &featureName,
                                         const U2DataId& seqId, U2OpStatus &os );
 

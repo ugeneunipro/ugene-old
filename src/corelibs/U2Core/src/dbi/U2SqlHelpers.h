@@ -292,6 +292,7 @@ public:
     virtual bool hasNext() {
         return !endOfStream;
     }
+
     virtual T next() {
         if (endOfStream) {
             assert(0);
@@ -301,19 +302,20 @@ public:
         fetchNext();
         return currentResult;
     }
+
     virtual T peek() {
         if (endOfStream) {
             assert(0);
             return defaultValue;
         }
         return nextResult;
-
     }
+
 private:
     void fetchNext() {
         do {
             if (!query->step()) {
-                endOfStream = true;        
+                endOfStream = true;
                 return;
             }
             nextResult = loader->load(query.data());

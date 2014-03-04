@@ -349,9 +349,7 @@ QList<Annotation> GSequenceLineViewAnnotated::findAnnotationsInRange(const U2Reg
     QList<Annotation> result;
     const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects( true );
     foreach ( AnnotationTableObject *ao, aObjs) {
-        foreach ( const Annotation &a, ao->getAnnotationsByRegion( range ) ) {
-            result.append( a );
-        }
+        result << ao->getAnnotationsByRegion( range );
     }
     return result;
 }
@@ -395,7 +393,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotations( QPainter& p ) {
     pen1.setWidth( 1 );
 
     foreach ( const AnnotationTableObject *ao, ctx->getAnnotationObjects( true ) ) {
-        foreach ( const Annotation &a, ao->getAnnotations( ) ) {
+        foreach ( const Annotation &a, ao->getAnnotationsByRegion( view->getVisibleRange( ) ) ) {
             AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
             AnnotationSettings *as = asr->getAnnotationSettings( a.getData( ) );
             drawAnnotation( p, DrawAnnotationPass_DrawFill, a, pen1, false, as );
@@ -501,7 +499,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotation( QPainter &p, DrawAnno
                 if ( simple && annotationRect.width( ) > MIN_WIDTH_TO_DRAW_EXTRA_FEATURES ) {
                     if ( drawSettings.drawCutSites ) {
                         const QString cutStr
-                            = a.findFirstQualifierValue( GBFeatureUtils::QUALIFIER_CUT );
+                            = aData.findFirstQualifierValue( GBFeatureUtils::QUALIFIER_CUT );
                         bool hasD = false;
                         bool hasC = false;
                         int cutD = 0;
@@ -520,12 +518,12 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotation( QPainter &p, DrawAnno
                         }
 
                         if ( hasD ) {
-                            const int cutPosDirect = a.getStrand( ).isDirect( ) ? r.startPos + cutD
+                            const int cutPosDirect = aData.getStrand( ).isDirect( ) ? r.startPos + cutD
                                 : r.startPos + cutC;
                             drawCutSite( p, annotationRect, as->color, cutPosDirect , true );
                         }
                         if ( hasC ) {
-                            const int cutPosCompl = a.getStrand( ).isDirect( ) ? r.endPos( ) - cutC
+                            const int cutPosCompl = aData.getStrand( ).isDirect( ) ? r.endPos( ) - cutC
                                 : r.endPos( ) - cutD;
                             drawCutSite( p, annotationRect, as->color, cutPosCompl, false );
                         }

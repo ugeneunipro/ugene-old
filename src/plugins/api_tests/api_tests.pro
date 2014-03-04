@@ -51,6 +51,7 @@ SOURCES += \
     src/core/dbi/assembly/AssemblyDbiUnitTests.cpp \
     src/core/dbi/sequence/SequenceDbiUnitTests.cpp \
     src/core/dbi/attribute/AttributeDbiUnitTests.cpp \
+    src/core/dbi/features/FeatureDbiUnitTests.cpp \
     src/core/dbi/msa/MsaDbiUnitTests.cpp \
     src/core/dbi/udr/UdrDbiUnitTests.cpp \
     src/core/external_script/base_scheme_interface/CInterfaceManualTests.cpp \

@@ -35,6 +35,8 @@
 #include <QtCore/QHash>
 #include <QtCore/QSet>
 
+class QMutex;
+
 namespace U2 {
 
 // For the classes below, see description in class definition
@@ -137,9 +139,10 @@ enum U2DbiFeature {
     U2DbiFeature_AttributeSorting               = 400,
 
     /** DBI supports undo/redo of changing operations */
-    U2DbiFeature_UndoRedo                       = 500
-};
+    U2DbiFeature_UndoRedo                       = 500,
 
+    U2DbiFeature_CacheFeatures                  = 600
+};
 
 /** 
     DBI factory provides functions to create new DBI instances
@@ -319,6 +322,7 @@ public:
 
     virtual void stopOperationBlock() {}
 
+    virtual QMutex * getDbMutex( ) const { return NULL; }
 };
 
 /** 
@@ -328,10 +332,10 @@ public:
 class U2ChildDbi {
 protected:
     U2ChildDbi(U2Dbi* _rootDbi) : rootDbi (_rootDbi){}
-    
-    virtual ~U2ChildDbi(){}
 
 public:
+    virtual ~U2ChildDbi(){}
+
     U2Dbi* getRootDbi() const { return rootDbi; }
 
 private:

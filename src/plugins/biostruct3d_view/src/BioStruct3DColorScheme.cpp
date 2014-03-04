@@ -238,13 +238,12 @@ const QMap<QString, QColor> SecStructColorScheme::getSecStructAnnotationColors(c
             AnnotationTableObject *ao = qobject_cast<AnnotationTableObject *>(obj);
             SAFE_POINT( NULL != ao, "Invalid annotation table!", colors );
 
-            foreach ( const Annotation &a, ao->getAnnotations( ) ) {
-                const QString name = a.getName();
-                if (name == BioStruct3D::SecStructAnnotationTag) {
-                    QString ssName = a.getQualifiers().first().value;
-                    AnnotationSettings* as = asr->getAnnotationSettings(ssName);
-                    colors.insert(ssName, as->color);
-                }
+            foreach ( const Annotation &a,
+                ao->getAnnotationsByName( BioStruct3D::SecStructAnnotationTag ) )
+            {
+                QString ssName = a.getQualifiers().first().value;
+                AnnotationSettings* as = asr->getAnnotationSettings(ssName);
+                colors.insert(ssName, as->color);
             }
         }
     }

@@ -79,7 +79,7 @@ public:
     /**
      * Returns list of annotations having @name
      */
-    QList<Annotation>       getAnnotationsByName( const QString &name );
+    QList<Annotation>       getAnnotationsByName( const QString &name ) const;
     /**
      * Returns list containing all annotation regions
      */

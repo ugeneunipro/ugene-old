@@ -26,6 +26,8 @@
 #include <U2Core/Settings.h>
 #include <U2Core/RemoveAnnotationsTask.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/U2FeatureUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "AutoAnnotationsSupport.h"
@@ -106,7 +108,10 @@ AutoAnnotationObject::AutoAnnotationObject( U2SequenceObject *obj, QObject *pare
 }
 
 AutoAnnotationObject::~AutoAnnotationObject( ) {
+    U2OpStatusImpl os;
+    U2FeatureUtils::removeFeature( aobj->getRootFeatureId( ), aobj->getEntityRef( ).dbiRef, os );
     delete aobj;
+    SAFE_POINT_OP( os, );
 }
 
 void AutoAnnotationObject::update( ) {

@@ -112,7 +112,7 @@ void Annotation::setStrand( const U2Strand &strand ) {
     U2Location location = data.location;
     if ( strand != location->strand ) {
         location->strand = strand;
-        U2FeatureUtils::updateFeatureLocation( dbId, location,
+        U2FeatureUtils::updateFeatureLocation( dbId, parentObject->getRootFeatureId( ), location,
             parentObject->getEntityRef( ).dbiRef, os );
         SAFE_POINT_OP( os, );
 
@@ -139,7 +139,7 @@ void Annotation::setLocationOperator( U2LocationOperator op ) {
     U2Location location = data.location;
     if ( op != location->op ) {
         location->op = op;
-        U2FeatureUtils::updateFeatureLocation( dbId, location,
+        U2FeatureUtils::updateFeatureLocation( dbId, parentObject->getRootFeatureId( ), location,
             parentObject->getEntityRef( ).dbiRef, os );
         SAFE_POINT_OP( os, );
 
@@ -159,7 +159,7 @@ U2Location Annotation::getLocation( ) const {
 
 void Annotation::setLocation( const U2Location &location ) {
     U2OpStatusImpl os;
-    U2FeatureUtils::updateFeatureLocation( dbId, location,
+    U2FeatureUtils::updateFeatureLocation( dbId, parentObject->getRootFeatureId( ), location,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, );
 
@@ -182,7 +182,7 @@ void Annotation::updateRegions(const QVector<U2Region> &regions ) {
     U2Location location = data.location;
     if ( regions != location->regions ) {
         location->regions = regions;
-        U2FeatureUtils::updateFeatureLocation( dbId, location,
+        U2FeatureUtils::updateFeatureLocation( dbId, parentObject->getRootFeatureId( ), location,
             parentObject->getEntityRef( ).dbiRef, os );
         SAFE_POINT_OP( os, );
 
@@ -202,7 +202,7 @@ void Annotation::addLocationRegion( const U2Region &reg ) {
     U2Location location = data.location;
     if ( !location->regions.contains( reg ) ) {
         location->regions << reg;
-        U2FeatureUtils::updateFeatureLocation( dbId, location,
+        U2FeatureUtils::updateFeatureLocation( dbId, parentObject->getRootFeatureId( ), location,
             parentObject->getEntityRef( ).dbiRef, os );
         SAFE_POINT_OP( os, );
 
@@ -339,11 +339,13 @@ bool Annotation::annotationLessThan( const Annotation &first, const Annotation &
 bool Annotation::annotationLessThanByRegion( const Annotation &first,
     const Annotation &second )
 {
-    SAFE_POINT( !first.getLocation( )->isEmpty( ) || !second.getLocation( )->isEmpty( ),
+    const U2Location firstLocation = first.getLocation( );
+    const U2Location secondLocation = second.getLocation( );
+    SAFE_POINT( !firstLocation->isEmpty( ) && !secondLocation->isEmpty( ),
         "Invalid annotation's location detected!", false );
 
-    const U2Region &r1 = first.getRegions( ).first( );
-    const U2Region &r2 = second.getRegions( ).first( );
+    const U2Region &r1 = firstLocation->regions.first( );
+    const U2Region &r2 = secondLocation->regions.first( );
     return r1 < r2;
 }
 

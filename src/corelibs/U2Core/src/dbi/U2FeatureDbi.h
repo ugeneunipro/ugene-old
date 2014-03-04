@@ -52,15 +52,37 @@ enum StrandQuery{
 
 class FeatureQuery {
 public:
-    FeatureQuery() : topLevelOnly(false), featureNameOrderOp(OrderOp_None),  keyNameOrderOp(OrderOp_None),
-        keyValueCompareOp(ComparisonOp_Invalid), keyValueOrderOp(OrderOp_None), 
-        intersectRegion(-1, 0), startPosOrderOp(OrderOp_None)
-        ,closestFeature(ComparisonOp_Invalid)
-    ,strandQuery(Strand_Both){}
+    FeatureQuery( )
+        : topLevelOnly(false), featureNameOrderOp(OrderOp_None), keyNameOrderOp(OrderOp_None),
+        keyValueCompareOp(ComparisonOp_Invalid), keyValueOrderOp(OrderOp_None),
+        intersectRegion(-1, 0), startPosOrderOp(OrderOp_None),
+        closestFeature(ComparisonOp_Invalid), strandQuery(Strand_Both)
+    {
+
+    }
+
+    bool operator == ( const FeatureQuery &other ) const {
+        return sequenceId == other.sequenceId
+            && parentFeatureId == other.parentFeatureId
+            && rootFeatureId == other.rootFeatureId
+            && topLevelOnly == other.topLevelOnly
+            && featureName == other.featureName
+            && featureNameOrderOp == other.featureNameOrderOp
+            && keyName == other.keyName
+            && keyNameOrderOp == other.keyNameOrderOp
+            && keyValue == other.keyValue
+            && keyValueCompareOp == other.keyValueCompareOp
+            && keyValueOrderOp == other.keyValueOrderOp
+            && intersectRegion == other.intersectRegion
+            && startPosOrderOp == other.startPosOrderOp
+            && closestFeature == other.closestFeature
+            && strandQuery == other.strandQuery;
+    }
 
     U2DataId        sequenceId;
 
     U2DataId        parentFeatureId;
+    U2DataId        rootFeatureId;
     bool            topLevelOnly;
 
     QString         featureName;
@@ -200,13 +222,16 @@ public:
      * Returns features that matched the query. Returns NULL if error occurs
      */
     virtual U2DbiIterator<U2Feature> *  getFeaturesByRegion( const U2Region &reg,
-                                            const U2DataId &parentId, const QString &featureName,
+                                            const U2DataId &rootId, const QString &featureName,
                                             const U2DataId &seqId, U2OpStatus &os,
                                             bool contains = false ) = 0;
 
     virtual U2DbiIterator<U2Feature> *  getSubFeatures( const U2DataId &parentId,
                                             const QString &featureName, const U2DataId &seqId,
                                             U2OpStatus &os ) = 0;
+
+    virtual U2DbiIterator<U2Feature> *  getSubFeatures( const U2DataId &rootId,
+                                            const QString &featureName, U2OpStatus &os ) = 0;
 
     virtual U2DbiIterator<U2Feature> *  getFeaturesBySequence( const QString &featureName,
                                             const U2DataId &seqId, U2OpStatus &os ) = 0;

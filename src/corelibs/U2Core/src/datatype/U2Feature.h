@@ -33,11 +33,10 @@ namespace U2 {
 
 class U2CORE_EXPORT U2AnnotationTable : public U2Object {
 public:
-    U2AnnotationTable( )
+    U2AnnotationTable( ) : U2Object( )
     {
 
     }
-
     U2AnnotationTable( const U2DataId &id, const QString &dbId, qint64 version )
         : U2Object( id, dbId, version )
     {
@@ -54,8 +53,7 @@ public:
 /** Feature location */
 class U2CORE_EXPORT U2FeatureLocation {
 public:
-    U2FeatureLocation( )
-    {
+    U2FeatureLocation( ) {
 
     }
 
@@ -97,6 +95,10 @@ public:
      */
     U2DataId                    parentFeatureId;
     /**
+     * Id of the feature that represents the root of the annotation tree
+     */
+    U2DataId                    rootFeatureId;
+    /**
      * Name of the feature. Not a FeatureKey, because in that case can be features with no name
      */
     QString                     name;
@@ -111,11 +113,7 @@ public:
  */
 class U2CORE_EXPORT U2FeatureKey {
 public:
-    /**
-     * Constructs new empty (and invalid) key
-     */
-    U2FeatureKey( )
-    {
+    U2FeatureKey( ) {
 
     }
     /**

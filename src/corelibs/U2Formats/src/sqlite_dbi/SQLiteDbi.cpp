@@ -31,6 +31,7 @@
 #include "SQLiteSNPTablesDbi.h"
 #include "SQLiteKnownMutationsDbi.h"
 #include "SQLiteUdrDbi.h"
+#include "../caching_dbi/CachingFeatureDbi.h"
 
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SqlHelpers.h>
@@ -44,8 +45,9 @@
 
 namespace U2 {
 
-
-SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
+SQLiteDbi::SQLiteDbi()
+    : U2AbstractDbi (SQLiteDbiFactory::ID), cachingFeatureDbi( NULL )
+{
     db = new DbRef();
     objectDbi = new SQLiteObjectDbi(this);
     sequenceDbi = new SQLiteSequenceDbi(this);
@@ -63,7 +65,9 @@ SQLiteDbi::SQLiteDbi() : U2AbstractDbi (SQLiteDbiFactory::ID){
 }
 
 SQLiteDbi::~SQLiteDbi() {
-    assert(db->handle == NULL);
+    SAFE_POINT( NULL == db->handle, "Invalid DB handle detected!", );
+
+    disableCaching( );
 
     delete udrDbi;
     delete objectDbi;
@@ -79,8 +83,6 @@ SQLiteDbi::~SQLiteDbi() {
     delete knownMutationsDbi;
     delete db;
 }
-
-
 
 U2ObjectDbi* SQLiteDbi::getObjectDbi()  {
     return objectDbi;
@@ -111,8 +113,10 @@ U2VariantDbi* SQLiteDbi::getVariantDbi() {
     return variantDbi;
 }
 
-U2FeatureDbi* SQLiteDbi::getFeatureDbi() {
-    return featureDbi;
+U2FeatureDbi * SQLiteDbi::getFeatureDbi( ) {
+    return features.contains( U2DbiFeature_CacheFeatures )
+        ? static_cast<U2FeatureDbi *>( cachingFeatureDbi )
+        : featureDbi;
 }
 
 U2ModDbi* SQLiteDbi::getModDbi() {
@@ -150,7 +154,6 @@ SNPTablesDbi* SQLiteDbi::getSNPTableDbi(){
 KnownMutationsDbi* SQLiteDbi::getKnownMutationsDbi(){
     return knownMutationsDbi;
 }
-
 
 QString SQLiteDbi::getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) {
     SQLiteQuery q("SELECT value FROM Meta WHERE name = ?1", db, os);
@@ -191,6 +194,10 @@ void SQLiteDbi::stopOperationBlock() {
     this->db->useCache = false;
     operationsBlockTransaction = NULL;
     delete transactionToDelete;
+}
+
+QMutex * SQLiteDbi::getDbMutex( ) const {
+    return &db->lock;
 }
 
 static int isEmptyCallback(void *o, int argc, char ** /*argv*/, char ** /*column*/) {
@@ -249,6 +256,18 @@ void SQLiteDbi::upgrade(U2OpStatus &os) {
     objectDbi->upgrade(os);
 }
 
+void SQLiteDbi::enableCaching( ) {
+    if ( features.contains( U2DbiFeature_CacheFeatures ) ) {
+        cachingFeatureDbi = new CachingFeatureDbi( featureDbi );
+    }
+}
+
+void SQLiteDbi::disableCaching( ) {
+    if ( features.contains( U2DbiFeature_CacheFeatures ) ) {
+        delete cachingFeatureDbi;
+    }
+}
+
 void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& os){
     QString appVersionText = getProperty(SQLITE_DBI_OPTION_APP_VERSION, "", os);
     if (os.hasError()) {
@@ -269,7 +288,6 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
             setProperty(key, props.value(key), os);
         }
     }
-
 
     // set up features list
     features.insert(U2DbiFeature_ReadSequence);
@@ -296,6 +314,7 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
     features.insert(U2DbiFeature_WriteModifications);
     features.insert(U2DbiFeature_ReadUdr);
     features.insert(U2DbiFeature_WriteUdr);
+    features.insert(U2DbiFeature_CacheFeatures);
 }
 
 void SQLiteDbi::setState(U2DbiState s) {
@@ -367,6 +386,7 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
         if (!os.hasError()) {
             ioLog.trace(QString("SQLite: initialized: %1\n").arg(url));
         }
+        enableCaching( );
     } while (0);
     
     if (os.hasError()) {

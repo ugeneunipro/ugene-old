@@ -91,16 +91,14 @@ void ADVSequenceObjectContext::guessAminoTT( const AnnotationTableObject *ao ) {
     DNATranslation* res = NULL;
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
     // try to guess relevant translation from a CDS feature (if any)
-    foreach ( const Annotation &ann, ao->getAnnotations( ) ) {
-        if ( ann.getName( ) == "CDS") {
-            QList<U2Qualifier> ql;
-            ann.findQualifiers( "transl_table", ql );
-            if (ql.size() > 0) {
-                QString guess = "NCBI-GenBank #"+ql.first().value;
-                res = tr->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO, guess);
-                if (res !=NULL) {
-                    break;
-                }
+    foreach ( const Annotation &ann, ao->getAnnotationsByName( "CDS" ) ) {
+        QList<U2Qualifier> ql;
+        ann.findQualifiers( "transl_table", ql );
+        if (ql.size() > 0) {
+            QString guess = "NCBI-GenBank #"+ql.first().value;
+            res = tr->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO, guess);
+            if (res !=NULL) {
+                break;
             }
         }
     }

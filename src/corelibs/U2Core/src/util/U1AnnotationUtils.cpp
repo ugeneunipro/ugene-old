@@ -346,16 +346,14 @@ QString U1AnnotationUtils::guessAminoTranslation( AnnotationTableObject *ao, con
 
     if ( NULL != ao && NULL != al ) {
         if ( al->isNucleic( ) ) {
-            foreach ( const Annotation &ann, ao->getAnnotations( ) ) {
-                if ( ann.getName( ) == "CDS" ) {
-                    QList<U2Qualifier> ql;
-                    ann.findQualifiers( "transl_table", ql );
-                    if ( !ql.isEmpty( ) ) {
-                        const QString guess = "NCBI-GenBank #" + ql.first( ).value;
-                        res = tr->lookupTranslation( al, DNATranslationType_NUCL_2_AMINO, guess );
-                        if ( NULL != res ) {
-                            return guess;
-                        }
+            foreach ( const Annotation &ann, ao->getAnnotationsByName( "CDS" ) ) {
+                QList<U2Qualifier> ql;
+                ann.findQualifiers( "transl_table", ql );
+                if ( !ql.isEmpty( ) ) {
+                    const QString guess = "NCBI-GenBank #" + ql.first( ).value;
+                    res = tr->lookupTranslation( al, DNATranslationType_NUCL_2_AMINO, guess );
+                    if ( NULL != res ) {
+                        return guess;
                     }
                 }
             }

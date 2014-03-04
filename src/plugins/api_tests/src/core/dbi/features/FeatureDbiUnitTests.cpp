@@ -535,7 +535,9 @@ IMPLEMENT_TEST( FeatureDbiUnitTests, updateKeyValue ) {
     U2Feature feature2 = FeatureTestData::createTestFeature1( seq, os );
     CHECK_NO_ERROR( os );
     featureDbi->updateKeyValue( feature2.id, U2FeatureKey( "qwe", "newValue" ), os );
-    CHECK_NO_ERROR( os );
+    CHECK_TRUE( os.hasError( ), "Error expected!" );
+    U2OpStatusImpl clearOpStatus;
+    os = clearOpStatus;
     // all the feature's keys should stay unchanged
     keys = featureDbi->getFeatureKeys( feature2.id, os );
     CHECK_NO_ERROR( os );

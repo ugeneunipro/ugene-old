@@ -39,7 +39,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/U2Assembly.h \
            src/datatype/U2Attribute.h \
            src/datatype/U2CoreAttributes.h \
-           src/datatype/U2DbiDataCache.h \
            src/datatype/U2Feature.h \
            src/datatype/U2FeatureKeys.h \
            src/datatype/U2Identity.h \
@@ -67,6 +66,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/dbi/U2AttributeDbi.h \
            src/dbi/U2CrossDatabaseReferenceDbi.h \
            src/dbi/U2Dbi.h \
+           src/dbi/U2DbiDataCache.h \
            src/dbi/U2DbiPackUtils.h \
            src/dbi/U2DbiRegistry.h \
            src/dbi/U2DbiUtils.h \
@@ -249,7 +249,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/PWMatrix.cpp \
            src/datatype/SMatrix.cpp \
            src/datatype/U2CoreAttributes.cpp \
-           src/datatype/U2DbiDataCache.cpp \
            src/datatype/U2Mod.cpp \
            src/datatype/U2Region.cpp \
            src/datatype/U2Type.cpp \
