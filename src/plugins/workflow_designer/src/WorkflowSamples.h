@@ -26,11 +26,19 @@
 #include <U2Gui/GlassView.h>
 #include <U2Core/Task.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QToolBox>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QToolBox>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QTreeWidget>
+#endif
 
 #include <QtXml/qdom.h>
 

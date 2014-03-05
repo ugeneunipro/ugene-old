@@ -22,10 +22,17 @@
 #include "GTAction.h"
 #include <U2Core/AppContext.h>
 #include <U2Gui/MainWindow.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
 #include <QtGui/QMainWindow>
 #include <QtGui/QAbstractButton>
 #include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QAbstractButton>
+#include <QtWidgets/QToolButton>
+#endif
 
 namespace U2 {
 

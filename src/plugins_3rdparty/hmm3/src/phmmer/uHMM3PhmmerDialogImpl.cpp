@@ -21,9 +21,6 @@
 
 #include <cassert>
 
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-
 #include <U2Core/AppContext.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Gui/LastUsedDirHelper.h>
@@ -32,7 +29,15 @@
 #include <phmmer/uhmm3PhmmerTask.h>
 #include "uHMM3PhmmerDialogImpl.h"
 #include <U2Gui/HelpButton.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#endif
 
 
 namespace U2 {

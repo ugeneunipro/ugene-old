@@ -1,7 +1,11 @@
 #include "ColorSchemaDialogController.h"
 
 #include <QtGui/QPainter>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QColorDialog>
+#else
+#include <QtWidgets/QColorDialog>
+#endif
 #include <U2Gui/HelpButton.h>
 
 namespace U2{

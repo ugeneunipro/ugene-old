@@ -64,10 +64,17 @@
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QClipboard>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QDialog>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include <memory>
 

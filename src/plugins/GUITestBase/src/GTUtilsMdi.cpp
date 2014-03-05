@@ -23,10 +23,17 @@
 #include <api/GTMouseDriver.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Core/AppContext.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMdiSubWindow>
 #include <QtGui/QMenu>
-#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMdiSubWindow>
+#include <QtWidgets/QMenu>
+#endif
 
 namespace U2 {
 

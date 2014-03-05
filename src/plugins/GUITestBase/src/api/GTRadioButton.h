@@ -23,7 +23,12 @@
 #define _U2_GT_RADIOBUTTON_H_
 
 #include "api/GTGlobals.h"
+
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QRadioButton>
+#else
+#include <QtWidgets/QRadioButton>
+#endif
 
 namespace U2 {
 

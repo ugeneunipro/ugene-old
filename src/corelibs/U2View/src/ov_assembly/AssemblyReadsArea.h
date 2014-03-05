@@ -24,9 +24,17 @@
 
 #include <assert.h>
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
 #include <QtGui/QScrollBar>
 #include <QtGui/QMenu>
+#else
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QScrollBar>
+#include <QtWidgets/QMenu>
+#endif
+
 #include <QtCore/QSharedPointer>
 
 #include <U2Core/U2Assembly.h>

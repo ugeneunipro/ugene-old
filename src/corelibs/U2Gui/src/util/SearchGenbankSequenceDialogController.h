@@ -26,9 +26,16 @@
 
 #include <U2Core/LoadRemoteDocumentTask.h>
 
-#include <QtGui/QDialog>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLineEdit>
+#include <QtGui/QDialog>
 #include <QtGui/QComboBox>
+#else
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QComboBox>
+#endif
+
 #include <QtCore/QList>
 #include <QtCore/QString>
 #include <QtCore/QScopedPointer>

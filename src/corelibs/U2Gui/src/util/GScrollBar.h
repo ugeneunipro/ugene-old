@@ -23,7 +23,11 @@
 #define _U2_GSCROLL_BAR_H_
 
 #include <U2Core/global.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QScrollBar>
+#else
+#include <QtWidgets/QScrollBar>
+#endif
 
 namespace U2 {
 

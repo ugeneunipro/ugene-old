@@ -30,8 +30,13 @@
 #include <U2Algorithm/EnzymeModel.h>
 #include "EnzymesQuery.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeWidget>
 #include <QtGui/QTreeWidgetItem>
+#else
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QTreeWidgetItem>
+#endif
 #include <QtCore/QTimer>
 
 namespace U2 {

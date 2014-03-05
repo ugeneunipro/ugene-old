@@ -24,8 +24,13 @@
 
 #include "api/GTGlobals.h"
 
-#include <QTreeWidget>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QTreeWidget>
 #include <QtGui/QGraphicsItem>
+#else
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QGraphicsItem>
+#endif
 
 namespace U2 {
 class WorkflowProcessItem;

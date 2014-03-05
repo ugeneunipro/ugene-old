@@ -22,7 +22,12 @@
 #ifndef _U2_GROUP_HEADER_IMAGE_WIDGET_H_
 #define _U2_GROUP_HEADER_IMAGE_WIDGET_H_
 
-#include <QtGui/QtGui>
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QLabel>
+#else
+#include <QtWidgets/QLabel>
+#endif
 #include <U2Core/global.h>
 
 namespace U2 {

@@ -23,7 +23,11 @@
 #define _U2_APPSETTINGS_GUI_H_
 
 #include <U2Core/global.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
+#else
+#include <QtWidgets/QWidget>
+#endif
 
 namespace U2 {
 

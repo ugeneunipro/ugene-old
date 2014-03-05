@@ -22,7 +22,11 @@
 #define _U2_GRAPH_LABELS_SELECT_DIALOG_H_
 
 #include <U2Core/U2Region.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 class GSequenceGraphDrawer;
 class QSpinBox;

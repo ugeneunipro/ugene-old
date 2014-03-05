@@ -35,6 +35,11 @@
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
 #include <U2View/ADVConstants.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QHeaderView>
+#else
+#include <QtWidgets/QHeaderView>
+#endif
 
 namespace U2 {
 

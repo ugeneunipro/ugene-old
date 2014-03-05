@@ -48,8 +48,13 @@
 #include <U2Test/GTestFrameworkComponents.h>
 
 #include <QtCore/QDir>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2 {
 

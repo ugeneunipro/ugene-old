@@ -27,10 +27,13 @@
 
 #include <ui/ui_RemoteMachineMonitorDialog.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
 #include <QtGui/QCheckBox>
-
-
+#else
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QCheckBox>
+#endif
 
 namespace U2 {
 

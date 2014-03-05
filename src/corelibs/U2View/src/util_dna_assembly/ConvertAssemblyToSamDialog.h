@@ -23,7 +23,11 @@
 #define _U2_CONVERT_ASSEMBLY_TO_SAM_DIALOG_H_
 
 #include <U2Core/GUrl.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 class Ui_AssemblyToSamDialog;
 

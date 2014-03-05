@@ -22,10 +22,19 @@
 #ifndef _U2_TREE_VIEWER_H_
 #define _U2_TREE_VIEWER_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QGraphicsView>
 #include <QtGui/QToolBar>
 #include <QtGui/QToolButton>
 #include <QtGui/QScrollBar>
+#else
+#include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QScrollBar>
+#endif
+
 #include <QtCore/QMap>
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentObject.h>

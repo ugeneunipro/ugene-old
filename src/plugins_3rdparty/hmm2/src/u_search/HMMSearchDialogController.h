@@ -31,7 +31,11 @@
 #include <U2Core/DNASequence.h>
 #include <U2Core/AnnotationData.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 #include <QtCore/QPointer>
 
 struct plan7_s;

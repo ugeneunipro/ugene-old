@@ -28,10 +28,16 @@
 #include <U2Core/Timer.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <QtGui/QDesktopServices>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QMenu>
+#else
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QMenu>
+#endif
+#include <QtGui/QDesktopServices>
 
 /* TRANSLATOR U2::TaskViewDockWidget */
 

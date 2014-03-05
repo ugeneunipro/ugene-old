@@ -19,10 +19,17 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtGui/QPainterPath>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QMenu>
-#include <QtGui/QPainterPath>
 #include <QtGui/QToolTip>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolTip>
+#endif
+
 
 #include <U2Core/AnnotationData.h>
 #include <U2Core/AnnotationModification.h>

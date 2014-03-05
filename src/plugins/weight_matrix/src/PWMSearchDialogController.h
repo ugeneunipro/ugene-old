@@ -28,7 +28,11 @@
 #include <ui/ui_PWMSearchDialog.h>
 
 #include <QtCore/QList>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeWidgetItem>
+#else
+#include <QtWidgets/QTreeWidgetItem>
+#endif
 #include <QtGui/QCloseEvent>
 #include <QtCore/QTimer>
 

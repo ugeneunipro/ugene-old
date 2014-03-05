@@ -22,10 +22,14 @@
 #ifndef _U2_TCOFFEE_SUPPORT_RUN_DIALOG_H
 #define _U2_TCOFFEE_SUPPORT_RUN_DIALOG_H
 
-#include <QtGui/QDialog>
 #include <U2Gui/DialogUtils.h>
 #include <ui/ui_TCoffeeSupportRunDialog.h>
 #include "TCoffeeSupportTask.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 namespace U2 {
 

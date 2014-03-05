@@ -27,7 +27,11 @@
 #include <U2Core/ServiceModel.h>
 #include <U2Test/TestRunnerTask.h>
 #include <QtScript>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
+#else
+#include <QtWidgets/QAction>
+#endif
 
 namespace U2 {
 

@@ -119,7 +119,13 @@
 #include <project_support/ProjectTasksGui.h>
 
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QStyleFactory>
+#include <QtWidgets/QMessageBox>
+#endif
 #include <QtGui/QIcon>
 
 #include <U2Core/UserActionsWriter.h>

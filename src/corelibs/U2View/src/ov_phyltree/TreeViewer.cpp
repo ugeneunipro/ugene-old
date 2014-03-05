@@ -64,18 +64,30 @@
 #include <QtCore/QStack>
 #include <QtCore/QQueue>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QMouseEvent>
+#include <QtGui/QMessageBox>
+#include <QtGui/QSplitter>
 #include <QtGui/QPrinter>
 #include <QtGui/QPrintDialog>
+#include <QtGui/QGraphicsSimpleTextItem>
+#include <QtGui/QGraphicsLineItem>
+#else
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QSplitter>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintDialog>
+#include <QtWidgets/QGraphicsSimpleTextItem>
+#include <QtWidgets/QGraphicsLineItem>
+#include <QtWidgets/QGraphicsItem>
+#endif
+
+#include <QtGui/QMouseEvent>
+
 #include <QtGui/QPainter>
 #include <QtXml/QtXml>
 #include <QtSvg/QSvgGenerator>
-#include <QtGui/QGraphicsSimpleTextItem>
-#include <QtGui/QGraphicsLineItem>
-#include <QtGui/QMessageBox>
-#include <QtGui/QSplitter>
-
 
 namespace U2 {
 
@@ -599,7 +611,7 @@ void TreeViewerUI::updateTextSettings(){
     if(updatingItems.isEmpty()){
         updatingItems = items();
 
-        QList<QGraphicsItem*> legendChildItems = legend->children();
+        QList<QGraphicsItem*> legendChildItems = legend->childItems();
         if(!legendChildItems.isEmpty()){
             QGraphicsSimpleTextItem* legendText = dynamic_cast<QGraphicsSimpleTextItem*>(legendChildItems.first());
             if(legendText){

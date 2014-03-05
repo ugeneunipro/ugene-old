@@ -27,10 +27,17 @@
 
 
 
-#include <QApplication>
-#include <QCheckBox>
-#include <QRadioButton>
-#include <QGroupBox>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
+#include <QtGui/QCheckBox>
+#include <QtGui/QRadioButton>
+#include <QtGui/QGroupBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QGroupBox>
+#endif
 
 namespace U2 {
 

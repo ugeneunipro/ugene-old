@@ -53,7 +53,12 @@
 #include <U2Gui/ProjectParsing.h>
 
 #include <QtXml/QDomDocument>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
+
 
 #include <QtCore/QMutex>
 

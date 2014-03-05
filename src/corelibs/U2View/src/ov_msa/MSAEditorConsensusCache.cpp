@@ -68,7 +68,7 @@ void MSAEditorConsensusCache::updateCacheItem(int pos) {
     int nSeq = ma.getNumRows();
 
     ci.topChar = algorithm->getConsensusCharAndScore(ma, pos, count);
-    ci.topPercent = (char)qRound(count * 100 / nSeq);
+    ci.topPercent = (char)qRound(count * 100. / nSeq);
     assert(ci.topPercent >=0 && ci.topPercent<=100);
     ci.version = currentVersion;
 }

@@ -24,17 +24,29 @@
 
 #include <U2Gui/GUIUtils.h>
 
+#include <QtGui/QIntValidator>
+#include <QtGui/QPalette>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QAction>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QToolButton>
-#include <QtGui/QPushButton>
-#include <QtGui/QLabel>
 #include <QtGui/QGroupBox>
-#include <QtGui/QIntValidator>
 #include <QtGui/QMessageBox>
-#include <QtGui/QPalette>
 #include <QtGui/QMenu>
-#include <QAction>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QMenu>
+#endif
 #include <QContextMenuEvent>
 #include <math.h>
 

@@ -23,8 +23,13 @@
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QMenu>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMenu>
+#endif
 
 namespace U2 {
 

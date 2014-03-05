@@ -29,9 +29,15 @@
 
 #include <QtCore/QVariantMap>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
 #include <QtGui/QComboBox>
 #include <QtGui/QDoubleSpinBox>
+#else
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QDoubleSpinBox>
+#endif
 
 namespace U2 {
 

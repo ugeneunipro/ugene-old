@@ -29,8 +29,14 @@
 
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Core/ProjectModel.h>
-#include <QtGui/QTreeWidgetItem>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QTreeWidgetItem>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QTreeWidgetItem>
+#endif
+
 
 namespace U2 {
 

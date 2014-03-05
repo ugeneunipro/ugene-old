@@ -32,8 +32,13 @@
 #include <U2View/ADVUtils.h>
 #include <U2Core/AnnotationTableObject.h>
 
-#include <QtGui/QMenu>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#include <QtGui/QMenu>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QMenu>
+#endif
 
 #include <U2Test/XMLTestFormat.h>
 #include <U2Test/GTest.h>

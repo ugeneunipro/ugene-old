@@ -38,8 +38,13 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/DialogUtils.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
 #include <QtGui/QToolBar>
+#else
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolBar>
+#endif
 
 namespace U2 {
 

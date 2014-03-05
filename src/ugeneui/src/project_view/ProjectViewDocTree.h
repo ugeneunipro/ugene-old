@@ -23,7 +23,11 @@
 #define _U2_PROJECT_VIEW_DOC_TREE_H_
 
 #include <QtCore/QMimeData>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QTreeWidget>
+#endif
 
 namespace U2 {
 

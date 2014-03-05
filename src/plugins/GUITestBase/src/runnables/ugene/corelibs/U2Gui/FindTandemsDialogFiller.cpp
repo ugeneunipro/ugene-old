@@ -23,8 +23,13 @@
 #include "api/GTWidget.h"
 #include "api/GTTabWidget.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QAbstractButton>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QAbstractButton>
+#endif
 
 namespace U2 {
 

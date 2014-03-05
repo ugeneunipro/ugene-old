@@ -21,13 +21,23 @@
 
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QLabel>
 #include <QtGui/QSpinBox>
 #include <QtGui/QCheckBox>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QToolButton>
-#include <QtGui/QLabel>
 #include <QtGui/QSizePolicy>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QSizePolicy>
+#endif
 #include <QtGui/QPixmap>
 #include <QtGui/QDesktopServices>
 #include <QtCore/QUrl>

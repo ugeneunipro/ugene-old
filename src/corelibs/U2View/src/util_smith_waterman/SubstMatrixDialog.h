@@ -27,7 +27,11 @@
 #include <U2Core/global.h>
 #include <U2Core/SMatrix.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 namespace U2 {
 

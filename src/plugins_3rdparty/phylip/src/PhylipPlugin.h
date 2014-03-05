@@ -26,8 +26,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Gui/ObjectViewModel.h>
 
-#include <QtGui/QMenu>
-
 namespace U2 {
 
 

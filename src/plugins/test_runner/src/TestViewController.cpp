@@ -33,16 +33,27 @@
 #include <U2Core/CMDLineCoreOptions.h>
 #include <memory>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QLineEdit>
+#include <QtGui/QMenu>
+#include <QtGui/QToolBar>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
-#include <QtGui/QFormLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QFormLayout>
-#include <QtGui/QLineEdit>
-#include <QtGui/QMenu>
-#include <QtGui/QToolBar>
+#else
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QFormLayout>
+#endif
 
 
 /* TRANSLATOR U2::TestViewController */

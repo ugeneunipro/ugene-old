@@ -22,9 +22,13 @@
 #ifndef _BREAKPOINT_HIT_COUNT_DIALOG_H_
 #define _BREAKPOINT_HIT_COUNT_DIALOG_H_
 
-#include <QtGui/QDialog>
-
 #include <U2Core/global.h>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 extern const int LOWER_BOUNDARY_FOR_HIT_COUNTER_PARAMETER;
 

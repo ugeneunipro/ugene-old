@@ -21,8 +21,12 @@
 
 #include "Notification.h"
 
-#include <QtCore/QTime>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QStatusBar>
+#else
+#include <QtWidgets/QStatusBar>
+#endif
+#include <QtCore/QTime>
 
 namespace U2 {
 

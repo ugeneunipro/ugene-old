@@ -31,10 +31,16 @@
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVUtils.h>
 
-#include <QtGui/QMenu>
 #include <QtCore/QMap>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QMessageBox>
+#include <QtGui/QMenu>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QMenu>
+#endif
 
 #include <U2Core/AppContext.h>
 

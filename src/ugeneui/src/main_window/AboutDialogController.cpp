@@ -26,11 +26,17 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 
-#include <QtGui/QHBoxLayout>
 #include <QtGui/QPainter>
 #include <QtGui/QBrush>
-#include <QtGui/QMessageBox>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QStyle>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QMessageBox>
+#endif
 #include <assert.h>
 
 namespace U2 {
@@ -186,7 +192,7 @@ void AWidget::timerEvent(QTimerEvent* e) {
     page ^= 1;
 
     if (qrand()  % 128 == 0) {
-        int r = 3 + qRound(qrand() * 4 / RAND_MAX);
+        int r = 3 + qRound(qrand() * 4. / RAND_MAX);
         int h = 300 + qrand() * 200 / RAND_MAX;
         int x = 1 + r + qrand()%(image1.width() -2*r-1);
         int y = 1 + r + qrand()%(image1.height()-2*r-1);

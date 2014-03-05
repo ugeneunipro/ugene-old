@@ -42,12 +42,21 @@
 
 #include <U2Designer/DelegateEditors.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
 #include <QtGui/QToolBar>
 #include <QtGui/QTabWidget>
 #include <QtGui/QSplitter>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QSplitter>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#endif
 #include <U2Gui/HelpButton.h>
 
 
@@ -1188,8 +1197,8 @@ AddConstraintDialog::AddConstraintDialog(QueryScene* _scene, QDDistanceType _kin
 void AddConstraintDialog::accept() {
     int min = minSpin->text().toInt();
     int max = maxSpin->text().toInt();
-    QDElement* src = qVariantValue<QDElement*>(fromCBox->itemData(fromCBox->currentIndex()));
-    QDElement* dst = qVariantValue<QDElement*>(toCBox->itemData(toCBox->currentIndex()));
+    QDElement* src = fromCBox->itemData(fromCBox->currentIndex()).value<QDElement*>();
+    QDElement* dst = toCBox->itemData(toCBox->currentIndex()).value<QDElement*>();
     scene->addDistanceConstraint(src, dst, kind, min, max);
     QDialog::accept();
 }

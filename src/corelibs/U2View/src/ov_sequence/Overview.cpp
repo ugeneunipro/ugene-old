@@ -34,8 +34,13 @@
 #include <U2Gui/GraphUtils.h>
 #include <U2Gui/GScrollBar.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QToolTip>
+#else
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QToolTip>
+#endif
 
 namespace U2 {
 

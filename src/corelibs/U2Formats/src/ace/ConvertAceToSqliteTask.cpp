@@ -169,7 +169,7 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
         U2CrossDatabaseReference crossDbRef;
         crossDbRef.dataRef.dbiRef.dbiId = dbi->getDbiId();
         crossDbRef.dataRef.dbiRef.dbiFactoryId = dbi->getFactoryId();
-        crossDbRef.dataRef.entityId = reference.visualName.toAscii();
+        crossDbRef.dataRef.entityId = reference.visualName.toLatin1();
         crossDbRef.dataRef.version = 1;
         crossDbi->createCrossReference(crossDbRef, stateInfo);
         CHECK_OP(stateInfo, totalReadsImported);

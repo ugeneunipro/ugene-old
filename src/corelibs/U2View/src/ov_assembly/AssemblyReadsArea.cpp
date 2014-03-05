@@ -24,12 +24,17 @@
 #include <assert.h>
 #include <math.h>
 
-#include <QtGui/QVBoxLayout>
 #include <QtGui/QPainter>
 #include <QtGui/QCursor>
 #include <QtGui/QResizeEvent>
 #include <QtGui/QWheelEvent>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QVBoxLayout>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QVBoxLayout>
+#endif
 #include <QtGui/QClipboard>
 
 #include <U2Core/U2AssemblyUtils.h>

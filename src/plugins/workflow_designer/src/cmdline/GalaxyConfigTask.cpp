@@ -32,6 +32,11 @@
 #include <U2Designer/DelegateEditors.h>
 #include <U2Core/U2SafePoints.h>
 #include "GalaxyConfigTask.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#endif
 
 namespace U2 {
 using namespace WorkflowSerialize;

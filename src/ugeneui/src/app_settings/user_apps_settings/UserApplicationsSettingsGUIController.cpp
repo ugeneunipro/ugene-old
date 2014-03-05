@@ -28,9 +28,15 @@
 #include <U2Core/Log.h>
 
 #include <QtCore/QFile>
-#include <QtGui/QFileDialog>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QStyleFactory>
+#include <QtGui/QFileDialog>
 #include <QtGui/QDialogButtonBox>
+#else
+#include <QtWidgets/QStyleFactory>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QDialogButtonBox>
+#endif
 
 #include "U2Core/TmpDirChecker.h"
 

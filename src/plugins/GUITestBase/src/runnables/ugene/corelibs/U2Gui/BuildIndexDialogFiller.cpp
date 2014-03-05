@@ -4,11 +4,19 @@
 #include "api/GTComboBox.h"
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QComboBox>
-#include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
+#include <QtGui/QLineEdit>
+#include <QtGui/QComboBox>
 #include <QtGui/QDialogButtonBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QDialogButtonBox>
+#endif
 
 namespace U2 {
 

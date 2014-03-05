@@ -30,9 +30,15 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Gui/MainWindow.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QMainWindow>
 #include <QtGui/QTreeWidget>
-#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QTreeWidget>
+#endif
 
 namespace U2 {
 

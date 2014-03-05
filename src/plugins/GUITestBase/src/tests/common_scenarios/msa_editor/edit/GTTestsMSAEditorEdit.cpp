@@ -46,7 +46,11 @@
 #include <U2View/MSAEditorSequenceArea.h>
 #include <QComboBox>
 #include <QSpinBox>
-#include <QApplication>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#endif
 #include <QCheckBox>
 #include <QTableWidget>
 namespace U2 {

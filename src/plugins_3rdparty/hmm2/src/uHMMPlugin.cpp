@@ -57,10 +57,17 @@
 
 #include <U2Test/GTestFrameworkComponents.h>
 
-#include <QtGui/QMenu>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
+#include <QtGui/QMenu>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#endif
 
 Q_DECLARE_METATYPE(QMenu*);
 

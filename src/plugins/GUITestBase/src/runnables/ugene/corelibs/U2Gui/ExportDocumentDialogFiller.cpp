@@ -26,9 +26,15 @@
 #include "api/GTCheckBox.h"
 
 #include <QtCore/QDir>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QPushButton>
 #include <QtGui/QDialogButtonBox>
-#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QDialogButtonBox>
+#endif
 
 namespace U2 {
 

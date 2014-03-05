@@ -32,7 +32,12 @@
 #include <U2Gui/OptionsPanel.h>
 
 #include <QtCore/QFileInfo>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QVBoxLayout>
+#else
+#include <QtWidgets/QVBoxLayout>
+#endif
+
 
 //BUG:535 refactor closing interface.
 //Idea: make it QObject and call 'deleteLater' on it

@@ -22,8 +22,13 @@
 #include "GTTreeWidget.h"
 #include "GTUtilsProjectTreeView.h"
 #include "api/GTMouseDriver.h"
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeWidget>
 #include <QtGui/QHeaderView>
+#else
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QHeaderView>
+#endif
 
 namespace U2 {
 

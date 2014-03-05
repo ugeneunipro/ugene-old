@@ -20,9 +20,15 @@
  */
 #include "StartupDialogFiller.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
+#include <QtGui/QLineEdit>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLineEdit>
+#endif
 
 #include "api/GTWidget.h"
 #include "runnables/qt/MessageBoxFiller.h"

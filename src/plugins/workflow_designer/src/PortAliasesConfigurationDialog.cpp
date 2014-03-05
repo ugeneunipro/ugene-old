@@ -26,7 +26,11 @@
 
 #include "PortAliasesConfigurationDialog.h"
 #include <U2Gui/HelpButton.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QPushButton>
+#endif
 
 
 namespace U2 {
@@ -47,7 +51,12 @@ PortAliasesConfigurationDialog::PortAliasesConfigurationDialog( const Schema & s
     
     okPushButton->setDefault(true);
     portAliasesTableWidget->verticalHeader()->hide();
+
+#if (QT_VERSION < 0x050000) //Qt 5
     portAliasesTableWidget->horizontalHeader()->setClickable(false);
+#else
+    portAliasesTableWidget->horizontalHeader()->setSectionsClickable(false);
+#endif
     portAliasesTableWidget->horizontalHeader()->setStretchLastSection( true );
     
     foreach (Actor *actor, schema.getProcesses()) {
@@ -104,7 +113,7 @@ void PortAliasesConfigurationDialog::sl_portSelected(int row) {
 
         QTableWidgetItem *portNameItem = new QTableWidgetItem(it.key().getDisplayName()) ;
         portAliasesTableWidget->setItem(rowInd, 0, portNameItem);
-        portNameItem->setData( Qt::UserRole, qVariantFromValue<Descriptor>( it.key() ) );
+        portNameItem->setData( Qt::UserRole, QVariant::fromValue( it.key() ) );
         portNameItem->setFlags(portNameItem->flags() ^ Qt::ItemIsSelectable ^ Qt::ItemIsEditable);
 
         QTableWidgetItem *aliasItem = new QTableWidgetItem(it.value());
@@ -141,7 +150,7 @@ void PortAliasesConfigurationDialog::sl_onDataChange(int row, int col) {
     Port *port = portListMap.value(portListWidget->currentRow());
     assert(NULL != port);
 
-    Descriptor desc = qVariantValue<Descriptor>(portAliasesTableWidget->item(row, 0)->data(Qt::UserRole));
+    Descriptor desc = portAliasesTableWidget->item(row, 0)->data(Qt::UserRole).value<Descriptor>();
     assert(model.aliases.value(port).contains(desc));
 
     model.aliases[port][desc] = portAliasesTableWidget->item(row, 1)->text();

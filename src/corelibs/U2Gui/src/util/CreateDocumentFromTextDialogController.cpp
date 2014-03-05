@@ -19,9 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/AppContext.h>
@@ -51,7 +48,15 @@
 #include "ui/ui_CreateDocumentFromTextDialog.h"
 #include "CreateDocumentFromTextDialogController.h"
 #include <U2Gui/HelpButton.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2{
 

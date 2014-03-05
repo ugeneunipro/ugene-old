@@ -8,7 +8,11 @@
 #include <U2Core/MAlignment.h>
 #include <U2Core/Task.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 struct plan7_s;
 

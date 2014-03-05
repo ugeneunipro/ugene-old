@@ -22,8 +22,13 @@
 #include "NCBISearchDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 
-#include <QApplication>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QTreeWidget>
+#endif
 
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"

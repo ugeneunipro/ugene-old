@@ -20,10 +20,17 @@
  */
 
 #include <U2Core/Task.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 #include <QtGui/QTextEdit>
 #include <QtGui/QDesktopWidget>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QDesktopWidget>
+#endif
 #include <U2Gui/DialogUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>

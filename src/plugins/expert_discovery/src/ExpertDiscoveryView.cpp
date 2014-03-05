@@ -30,8 +30,13 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SequenceUtils.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#endif
 
 
 namespace U2{

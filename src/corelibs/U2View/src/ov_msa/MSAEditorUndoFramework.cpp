@@ -25,7 +25,11 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MAlignment.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
+#else
+#include <QtWidgets/QAction>
+#endif
 
 namespace U2 {
 

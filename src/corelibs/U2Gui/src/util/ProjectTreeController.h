@@ -31,9 +31,14 @@
 #include <U2Core/GObjectReference.h>
 
 #include <QtCore/QPointer>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeWidget>
-#include <QtGui/QIcon>
 #include <QtGui/QItemDelegate>
+#else
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QItemDelegate>
+#endif
+#include <QtGui/QIcon>
 
 namespace U2 {
 

@@ -10,8 +10,14 @@
 
 #include <U2Gui/MainWindow.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QToolBar>
 #include <QTreeWidget>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QTreeWidget>
+#endif
 
 namespace U2{
 class ExpertDiscoverySignalsAutoAnnotationUpdater;

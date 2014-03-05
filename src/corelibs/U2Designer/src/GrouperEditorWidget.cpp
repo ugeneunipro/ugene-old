@@ -60,9 +60,14 @@ GrouperEditorWidget::GrouperEditorWidget(GrouperSlotsCfgModel *grouperModel, Act
 
     setupUi(this);
     {
+#if (QT_VERSION < 0x050000) //Qt 5
         slotsTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-        slotsTable->horizontalHeader()->setStretchLastSection(true);
         slotsTable->horizontalHeader()->setClickable(false);
+#else
+        slotsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+        slotsTable->horizontalHeader()->setSectionsClickable(false);
+#endif
+        slotsTable->horizontalHeader()->setStretchLastSection(true);
         slotsTable->verticalHeader()->hide();
         slotsTable->verticalHeader()->setDefaultSectionSize(QFontMetrics(QFont()).height() + 6);
     }

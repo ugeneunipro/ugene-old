@@ -27,7 +27,11 @@
 #include <U2Core/ServiceTypes.h>
 #include <U2Core/Task.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
+#else
+#include <QtWidgets/QAction>
+#endif
 
 namespace U2 {
 

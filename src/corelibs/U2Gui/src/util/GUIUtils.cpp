@@ -30,9 +30,14 @@
 #include <QtCore/QFile>
 #include <QtCore/QProcess>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QPainter>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMessageBox>
+#endif
+#include <QtGui/QPainter>
 
 #include <QUrl>
 #include <QDesktopServices>

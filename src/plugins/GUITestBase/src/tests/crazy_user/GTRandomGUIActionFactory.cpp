@@ -23,7 +23,11 @@
 #include "api/GTWidget.h"
 #include "api/GTFileDialog.h"
 #include <U2Test/GUITest.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
+#else
+#include <QtWidgets/QFileDialog>
+#endif
 #include <QtCore/QDirIterator>
 
 namespace U2 {

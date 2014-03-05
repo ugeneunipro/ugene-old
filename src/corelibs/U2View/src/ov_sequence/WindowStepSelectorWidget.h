@@ -22,11 +22,18 @@
 #ifndef _U2_WINDOW_STEP_SELECTOR_WIDGET_
 #define _U2_WINDOW_STEP_SELECTOR_WIDGET_
 
+#include <U2Core/U2Region.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
 #include <QtGui/QSpinBox>
 #include <QtGui/QDoubleSpinBox>
 #include <QtGui/QGroupBox>
-#include <U2Core/U2Region.h>
+#else
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QDoubleSpinBox>
+#include <QtWidgets/QGroupBox>
+#endif
 
 namespace U2 {
 

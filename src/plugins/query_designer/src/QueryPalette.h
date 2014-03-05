@@ -22,8 +22,14 @@
 #ifndef _U2_QUERY_PALETTE_H_
 #define _U2_QUERY_PALETTE_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QTreeWidget>
+#endif
 
 namespace U2 {
 

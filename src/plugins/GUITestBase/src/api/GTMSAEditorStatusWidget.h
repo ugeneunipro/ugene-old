@@ -23,8 +23,6 @@
 #define _U2_GT_MSAEDITOR_STATUSWIDGET_H_
 
 #include "api/GTGlobals.h"
-
-#include <QtGui/QSpinBox>
 #include <U2View/MSAEditorStatusBar.h>
 
 namespace U2 {

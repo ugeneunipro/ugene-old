@@ -36,21 +36,33 @@
 #include <QtCore/QFile>
 #include <QtCore/QUrl>
 #include <QtCore/QTextStream>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
+#include <QtGui/QStyle>
 #include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
 #include <QtGui/QMenu>
 #include <QtGui/QToolButton>
-
 #include <QtGui/QHeaderView>
-#include <QtGui/QApplication>
-#include <QtCore/QAbstractItemModel>
 #include <QtGui/QTreeView>
-#include <QtGui/QStyle>
-#include <QtGui/QPainter>
-#include <QtGui/QStyledItemDelegate>
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QStyledItemDelegate>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QTreeView>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QStyledItemDelegate>
+#endif
+#include <QtCore/QAbstractItemModel>
+#include <QtGui/QPainter>
 #include <QtGui/QContextMenuEvent>
 #include <QtGui/QTextDocument>
-#include <QtGui/QLineEdit>
 
 Q_DECLARE_METATYPE(QTextDocument*);
 

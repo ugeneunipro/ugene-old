@@ -26,9 +26,15 @@
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U2Region.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLineEdit>
 #include <QtGui/QDialog>
 #include <QtGui/QComboBox>
+#else
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QComboBox>
+#endif
 
 namespace U2 {
 

@@ -25,11 +25,19 @@
 
 #include <U2Core/DocumentModel.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QSpacerItem>
-#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QSpacerItem>
+#endif
 #include <U2Gui/HelpButton.h>
 
 namespace U2 {

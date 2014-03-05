@@ -23,11 +23,19 @@
 #include "api/GTWidget.h"
 #include "api/GTTabWidget.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QPushButton>
 #include <QtGui/QAbstractButton>
 #include <QtGui/QCheckBox>
-#include <QtGui/QPushButton>
 #include <QtGui/QDialogButtonBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QAbstractButton>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QDialogButtonBox>
+#endif
 
 namespace U2 {
 

@@ -41,7 +41,11 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
+#else
+#include <QtWidgets/QMainWindow>
+#endif
 
 namespace U2 {
 

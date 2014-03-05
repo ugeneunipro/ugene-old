@@ -24,10 +24,17 @@
 #include "api/GTLineEdit.h"
 #include "api/GTRadioButton.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QToolButton>
 #include <QtGui/QPushButton>
+#include <QtGui/QToolButton>
 #include <QtGui/QDialogButtonBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QDialogButtonBox>
+#endif
 
 namespace U2 {
 

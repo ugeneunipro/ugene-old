@@ -26,7 +26,11 @@
 #include "SiteconAlgorithm.h"
 #include <U2Core/Task.h>
 #include <U2Core/MAlignment.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 namespace U2 {
 

@@ -34,11 +34,17 @@
 #include <U2Core/PhyTreeObject.h>
 
 #include <U2Gui/GUIUtils.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QSplitter>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QSplitter>
+#endif
+
 #include <QtGui/QClipboard>
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
-#include <QtGui/QSplitter>
 
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 #include <U2Algorithm/MSADistanceAlgorithm.h>

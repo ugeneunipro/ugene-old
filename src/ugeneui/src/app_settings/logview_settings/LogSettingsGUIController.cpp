@@ -25,11 +25,19 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/LogCache.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QHeaderView>
 #include <QtGui/QToolButton>
 #include <QtGui/QColorDialog>
 #include <QtGui/QFileDialog>
 #include <QMessageBox>
+#else
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2 {
 

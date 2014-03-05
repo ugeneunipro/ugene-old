@@ -27,8 +27,13 @@
 #include <QtGui/QPainter>
 #include <QtGui/QPen>
 #include <QtCore/QStack>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QGraphicsScene>
 #include <QtGui/QGraphicsView>
+#else
+#include <QtWidgets/QGraphicsScene>
+#include <QtWidgets/QGraphicsView>
+#endif
 #include <U2Core/PhyTreeObject.h>
 #include <U2Core/AppContext.h>
 #include <qmath.h>

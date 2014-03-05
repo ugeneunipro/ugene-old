@@ -27,7 +27,11 @@
 #include <U2Algorithm/RepeatFinderSettings.h>
 #include <U2Core/U2Region.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
 #include <QtGui/QPainter>
 #include <QtCore/QMutex>
 

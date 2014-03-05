@@ -31,8 +31,13 @@
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/MainWindow.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2 {
 

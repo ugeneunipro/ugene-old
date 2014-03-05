@@ -31,8 +31,14 @@
 
 #include <QtCore/QTimer>
 #include <QtCore/QMutex>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
 #include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QToolButton>
+#endif
+
 
 namespace U2 {
 

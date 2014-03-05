@@ -31,10 +31,17 @@
 #include "api/GTSpinBox.h"
 
 #include <QtCore/QDir>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QDialogButtonBox>
 #include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 #include <QtGui/QGroupBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QGroupBox>
+#endif
 
 namespace U2 {
 

@@ -21,12 +21,20 @@
 
 #include "PositionSelector.h"
 
+#include <QtGui/QIntValidator>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QPushButton>
 #include <QtGui/QToolButton>
-#include <QtGui/QIntValidator>
-#include <QtGui/QLabel>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QToolButton>
+#endif
 #include <math.h>
 
 namespace U2 {

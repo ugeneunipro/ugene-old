@@ -23,9 +23,12 @@
 #define GTGRAPHICSITEM_H
 
 #include <U2Core/U2OpStatus.h>
-#include <QtGui/QGraphicsItem>
 #include "GTGlobals.h"
-
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QGraphicsItem>
+#else
+#include <QtWidgets/QGraphicsItem>
+#endif
 
 namespace U2 {
 

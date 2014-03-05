@@ -22,7 +22,12 @@
 #ifndef _U2_BAM_CONVERT_TO_SQLITE_DIALOG_H_
 #define _U2_BAM_CONVERT_TO_SQLITE_DIALOG_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 #include <QtCore/QList>
 #include <U2Core/GUrl.h>
 #include "ui_ConvertToSQLiteDialog.h"

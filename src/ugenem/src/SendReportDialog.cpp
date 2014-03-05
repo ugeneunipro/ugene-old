@@ -32,13 +32,18 @@
 #include <QtCore/QSysInfo>
 #include <QtCore/QFile>
 #include <QtCore/QProcess>
+#include <QtCore/QThread>
 
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkProxy>
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
 
 #ifdef Q_OS_WIN
 #include <intrin.h>
@@ -147,7 +152,7 @@ bool ReportSender::send(const QString &additionalInfo) {
     fullPath += report.toUtf8();
     //send report
     QUrl url=QUrl(fullPath);
-    reply = netManager->post(QNetworkRequest(url),url.encodedQuery());
+    reply = netManager->post(QNetworkRequest(url),url.toEncoded());
     loop.exec();
     if( reply->error() != QNetworkReply::NoError ) {
         return false;
@@ -446,14 +451,14 @@ QString ReportSender::getCPUInfo() {
     unsigned logical = (regs[1] >> 16) & 0xff; // EBX[23:16]
 
     result+= "\n  logical cpus: " + QString::number(logical);
-    unsigned cores = logical;
+    unsigned cores = 0;
 
-    if (cpuVendor == "GenuineIntel") {
+    if (cpuVendor.contains("GenuineIntel")) {
       // Get DCP cache info
       cpuID(4, regs);
       cores = ((regs[0] >> 26) & 0x3f) + 1; // EAX[31:26] + 1
 
-    } else if (cpuVendor == "AuthenticAMD") {
+    } else if (cpuVendor.contains("AuthenticAMD")) {
       // Get NC: Number of CPU cores - 1
       cpuID(0x80000008, regs);
       cores = ((unsigned)(regs[2] & 0xff)) + 1; // ECX[7:0] + 1

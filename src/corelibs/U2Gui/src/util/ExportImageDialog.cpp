@@ -28,11 +28,17 @@
 #include <U2Core/TextUtils.h>
 #include <U2Gui/DialogUtils.h>
 
-#include <QtGui/QImageWriter>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
-#include <QtGui/QPainter>
 #include <QtGui/QPrinter>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#include <QtPrintSupport/QPrinter>
+#endif
+#include <QtGui/QImageWriter>
+#include <QtGui/QPainter>
 #include <U2Gui/HelpButton.h>
 
 #include <QtSvg/QSvgGenerator>

@@ -31,11 +31,17 @@
 #include <QtCore/QPair>
 #include <QtCore/QSet>
 
-#include <QtGui/QVBoxLayout>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
+#include <QtGui/QVBoxLayout>
 #include <QtGui/QMenu>
-
 #include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolButton>
+#endif
 
 namespace U2 {
 

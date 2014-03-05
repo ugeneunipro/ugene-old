@@ -33,10 +33,17 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
 
-#include <QtGui/QLayout>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLabel>
+#include <QtGui/QLayout>
 #include <QtGui/QGroupBox>
 #include <QtGui/QFormLayout>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QFormLayout>
+#endif
 
 namespace U2 {
 

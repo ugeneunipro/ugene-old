@@ -23,9 +23,15 @@
 #define _U2_PAN_VIEW_H_
 
 #include <QtGui/QFont>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QScrollBar>
 #include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QScrollBar>
+#include <QtWidgets/QToolButton>
+#endif
 
 #include <U2Core/Annotation.h>
 

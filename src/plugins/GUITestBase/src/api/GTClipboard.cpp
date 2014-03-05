@@ -23,7 +23,12 @@
 
 #include <QtCore/QMimeData>
 #include <QtGui/QClipboard>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#endif
+
 
 namespace U2 {
 

@@ -45,7 +45,7 @@
 #include <U2Core/MultiTask.h>
 #include <U2Core/TaskSignalMapper.h>
 
-#include <QtGui/QApplication>
+//#include <QtGui/QApplication>
 /* TRANSLATOR U2::LocalWorkflow::HMM3SearchWorker */
 
 namespace U2 {

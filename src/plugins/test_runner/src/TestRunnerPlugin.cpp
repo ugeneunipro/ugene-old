@@ -31,7 +31,12 @@
 
 #include <U2Test/GTest.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
+#else
+#include <QtWidgets/QMenu>
+#endif
+
 #include <QtXml/QtXml>
 #include <QtCore/QProcess>
 

@@ -44,7 +44,6 @@
 #include "u_search/HMMSearchWorker.h"
 
 /* TRANSLATOR U2::LocalWorkflow::HMMLib */
-
 namespace U2 {
 namespace LocalWorkflow {
 

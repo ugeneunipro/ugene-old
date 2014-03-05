@@ -23,7 +23,13 @@
 
 #include "api/GTGlobals.h"
 #include <QtCore/QPoint>
+
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTableView>
+#else
+#include <QtWidgets/QTableView>
+#endif
+
 namespace U2{
 class GTTableView
 {

@@ -31,12 +31,20 @@
 #include <U2Lang/BaseSlots.h>
 
 #include <QtCore/QAbstractItemModel>
+#include <U2Gui/HelpButton.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
 #include <QtGui/QTableView>
 #include <QtGui/QHeaderView>
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
-#include <U2Gui/HelpButton.h>
-#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTableView>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#endif
 
 
 namespace U2 {

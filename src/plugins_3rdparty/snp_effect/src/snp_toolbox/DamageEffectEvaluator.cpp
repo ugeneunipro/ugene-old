@@ -256,7 +256,7 @@ DamageEffect DamageEffectEvaluator::formatDamageEffect( const U2Variant& var, co
 
     if (!mut.dbSnpId.isEmpty()){
         res.inDbSNP = true;
-        varDbi->updateVariantPublicId(trackId, var.id, QString::fromAscii(mut.dbSnpId), os);
+        varDbi->updateVariantPublicId(trackId, var.id, QString::fromLatin1(mut.dbSnpId), os);
         CHECK_OP(os, res);
     }
     res.avSift = mut.avSift;

@@ -27,6 +27,12 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "GTTestsWorkflowNameFilter.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QTreeWidget>
+#endif
+
 namespace U2 {
 
 namespace GUITest_common_scenarios_workflow_name_filter {

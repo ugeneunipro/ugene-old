@@ -23,7 +23,13 @@
 #include "GTWidget.h"
 #include <U2Gui/MainWindow.h>
 #include <U2Core/AppContext.h>
-#include <QMainWindow>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMainWindow>
+#else
+#include <QtWidgets/QMainWindow>
+#endif
+
 
 #include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"

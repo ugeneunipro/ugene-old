@@ -22,13 +22,18 @@
 #ifndef PRIMER3DIALOG_H
 #define PRIMER3DIALOG_H
 
-#include <QtGui/QDialog>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/RegionSelector.h>
 
 #include "ui_Primer3Dialog.h"
 #include "Primer3Task.h"
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 namespace U2 {
 

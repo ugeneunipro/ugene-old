@@ -29,10 +29,15 @@
 #include <U2Test/GTest.h>
 #include <U2Test/GTestFrameworkComponents.h>
 #include <U2Core/IOAdapter.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMenu>
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolBar>
-
-#include <QtGui/QMenu>
+#else
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QToolBar>
+#endif
 #include <memory>
 //todo: remember splitter geom
 

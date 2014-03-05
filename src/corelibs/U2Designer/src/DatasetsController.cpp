@@ -20,8 +20,14 @@
 */
 
 #include <QFileInfo>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QMessageBox>
 #include <QSplitter>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QSplitter>
+#include <QtWidgets/QGroupBox>
+#endif
 
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>

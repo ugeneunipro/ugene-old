@@ -34,13 +34,23 @@
 #include "runnables/qt/MessageBoxFiller.h"
 #include "../../src/corelibs/U2Designer/src/wizard/WDWizardPage.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QRadioButton>
 #include <QtGui/QLabel>
+#include <QtGui/QRadioButton>
 #include <QtGui/QToolButton>
 #include <QtGui/QWizard>
 #include <QtGui/QScrollArea>
 #include <QtGui/QComboBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QWizard>
+#include <QtWidgets/QScrollArea>
+#include <QtWidgets/QComboBox>
+#endif
 #include <QDir>
 
 namespace U2 {

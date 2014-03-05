@@ -25,7 +25,11 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 #include <U2Designer/DesignerUtils.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
+#else
+#include <QtWidgets/QFileDialog>
+#endif
 #include <U2Gui/HelpButton.h>
 
 

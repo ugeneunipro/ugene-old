@@ -23,8 +23,14 @@
 #define _U2_GUI_GTSCROLLBAR_H_
 
 #include <U2Core/U2OpStatus.h>
-#include <QtGui>
-#include <Qt>
+#include <QtCore/QPoint>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QScrollBar>
+#include <QtGui/QStyleOptionSlider>
+#else
+#include <QtWidgets/QScrollBar>
+#include <QtWidgets/QStyleOptionSlider>
+#endif
 #include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"
 

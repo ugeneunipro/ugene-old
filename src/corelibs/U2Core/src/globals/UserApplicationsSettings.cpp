@@ -31,13 +31,19 @@
 #include <QtCore/QProcessEnvironment>
 
 #include <QtGui/QDesktopServices>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QStyle>
 #include <QtGui/QStyleFactory>
 #include <QtGui/QDialogButtonBox>
-#if (QT_VERSION >= 0x050000)
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QStyleFactory>
+#include <QtWidgets/QDialogButtonBox>
 #include <QStandardPaths>
 #endif
+
 
 
 namespace U2 {

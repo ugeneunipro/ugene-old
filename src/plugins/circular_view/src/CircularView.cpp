@@ -36,12 +36,17 @@
 #include <U2Gui/GScrollBar.h>
 #include <U2Core/FormatUtils.h>
 #include <U2Gui/GraphUtils.h>
-
-#include <QtGui/QTextEdit>
-#include <QtGui/QGridLayout>
 #include <QtGui/QPainter>
 #include <QtGui/QFontMetrics>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QTextEdit>
+#include <QtGui/QGridLayout>
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QDialog>
+#endif
 
 #include "CircularItems.h"
 #include <U2Core/Log.h>

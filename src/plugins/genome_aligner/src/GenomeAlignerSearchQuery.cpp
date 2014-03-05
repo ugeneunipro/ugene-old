@@ -200,7 +200,7 @@ SearchQueryContainer::~SearchQueryContainer() {
 
 void SearchQueryContainer::append(SearchQuery *qu) {
     if (length == allocated) {
-        queries = (SearchQuery**)qRealloc(queries, (allocated + reallocSize)*sizeof(SearchQuery*));
+        queries = (SearchQuery**) realloc(queries, (allocated + reallocSize)*sizeof(SearchQuery*));
         allocated += reallocSize;
     }
 

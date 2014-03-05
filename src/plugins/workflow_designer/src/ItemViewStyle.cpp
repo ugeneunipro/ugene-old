@@ -22,18 +22,28 @@
 #include <qmath.h>
 #include <QtGui/QBitmap>
 #include <QtGui/QPainter>
-#include <QtGui/QGraphicsTextItem>
-#include <QtGui/QGraphicsSimpleTextItem>
-#include <QtGui/QGraphicsSceneMouseEvent>
-#include <QtGui/QStyleOptionGraphicsItem>
-#include <QtGui/QGraphicsView>
 #include <QtGui/QRadialGradient>
 #include <QtGui/QTextDocument>
+#include <QtGui/QAbstractTextDocumentLayout>
+
+#include <QtXml/QDomDocument>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QGraphicsTextItem>
+#include <QtGui/QGraphicsSimpleTextItem>
+#include <QtGui/QStyleOptionGraphicsItem>
+#include <QtGui/QGraphicsView>
 #include <QtGui/QColorDialog>
 #include <QtGui/QFontDialog>
-#include <QtGui/QFontDialog>
-#include <QtGui/QAbstractTextDocumentLayout>
-#include <QtXml/QDomDocument>
+#include <QtGui/QGraphicsSceneMouseEvent>
+#else
+#include <QtWidgets/QGraphicsTextItem>
+#include <QtWidgets/QGraphicsSimpleTextItem>
+#include <QtWidgets/QStyleOptionGraphicsItem>
+#include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QFontDialog>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
+#endif
 
 #include <U2Core/Log.h>
 #include <U2Lang/ActorModel.h>
@@ -166,7 +176,11 @@ void SimpleProcStyle::paint(QPainter *painter,
     painter->save();
     QTextDocument d;
     d.setDefaultFont(defFont);
+#if (QT_VERSION < 0x050000) //Qt 5
     d.setHtml("<center>" + Qt::escape(owner->getProcess()->getLabel()) + "</center>");
+#else
+    d.setHtml("<center>" + owner->getProcess()->getLabel().toHtmlEscaped() + "</center>");
+#endif
     d.setTextWidth(R*2);
     //d.setDefaultTextOption(QTextOption(Qt::AlignHCenter));
     painter->translate(-d.size().width()/2, -d.size().height()/2);

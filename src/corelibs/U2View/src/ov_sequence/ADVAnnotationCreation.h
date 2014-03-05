@@ -25,7 +25,11 @@
 #include <U2Core/Task.h>
 #include <U2Core/AnnotationData.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
+#else
+#include <QtWidgets/QAction>
+#endif
 #include <QtCore/QPointer>
 
 namespace U2 {

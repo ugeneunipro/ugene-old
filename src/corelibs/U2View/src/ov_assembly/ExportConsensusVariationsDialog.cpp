@@ -30,7 +30,11 @@
 #include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Gui/RegionSelector.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2 {
 

@@ -37,8 +37,13 @@
 
 #include <U2Gui/GScrollBar.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include "GraphLabelsSelectDialog.h"
 

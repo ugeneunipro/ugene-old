@@ -27,9 +27,16 @@
 #include <QtCore/QHash>
 #include <QtCore/QRegExp>
 #include <QtCore/QTimer>
-#include <QtGui/QPlainTextEdit>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLineEdit>
+#include <QtGui/QPlainTextEdit>
 #include <QtGui/QShortcut>
+#else
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPlainTextEdit>
+#include <QtWidgets/QShortcut>
+#endif
+
 #include <QtGui/QSyntaxHighlighter>
 
 namespace U2 {

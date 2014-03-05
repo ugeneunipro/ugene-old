@@ -26,7 +26,11 @@
 #include <U2Core/MultiTask.h>
 #include <U2Core/TaskSignalMapper.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#endif
 /* TRANSLATOR U2::LocalWorkflow::HMMSearchWorker */
 
 namespace U2 {

@@ -31,10 +31,13 @@
 #include <U2Core/TextObject.h>
 #include <U2Core/SelectionUtils.h>
 
-
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QScrollBar>
-
+#else
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QScrollBar>
+#endif
 
 namespace U2 {
 

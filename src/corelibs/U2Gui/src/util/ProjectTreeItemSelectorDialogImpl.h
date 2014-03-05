@@ -23,7 +23,12 @@
 #define _U2_PROJECT_TREE_ITEM_SELECTOR_DIALOG_IMPL_H_
 
 #include <ui/ui_ProjectTreeItemSelectorDialogBase.h>
+
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 namespace U2 {
 

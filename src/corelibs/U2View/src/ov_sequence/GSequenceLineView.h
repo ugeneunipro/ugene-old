@@ -25,12 +25,17 @@
 #include <U2Core/U2Region.h>
 
 #include <QtCore/QFlag>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
+#include <QtGui/QMenu>
+#else
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QMenu>
+#endif
 #include <QtGui/QMouseEvent>
 #include <QtGui/QWheelEvent>
 #include <QtGui/QFocusEvent>
 #include <QtGui/QPainter>
-#include <QtGui/QMenu>
 
 
 namespace U2 {

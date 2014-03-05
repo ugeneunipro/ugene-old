@@ -4,8 +4,13 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#endif
 #include <U2Gui/HelpButton.h>
 
 

@@ -23,10 +23,17 @@
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QAbstractButton>
 #include <QtGui/QPushButton>
+#include <QtGui/QAbstractButton>
 #include <QtGui/QDialogButtonBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QAbstractButton>
+#include <QtWidgets/QDialogButtonBox>
+#endif
 
 namespace U2 {
 

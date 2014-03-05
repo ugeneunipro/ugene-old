@@ -22,7 +22,12 @@
 #ifndef _U2_CAP3_SUPPORT_DIALOG_H_
 #define _U2_CAP3_SUPPORT_DIALOG_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 #include <ui/ui_CAP3SupportDialog.h>
 
 namespace U2 {

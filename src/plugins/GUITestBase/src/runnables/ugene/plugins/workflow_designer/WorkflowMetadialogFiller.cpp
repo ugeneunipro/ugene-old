@@ -24,7 +24,11 @@
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#endif
 
 namespace U2{
 #define GT_CLASS_NAME "GTUtilsDialog::StartupDialogFiller"

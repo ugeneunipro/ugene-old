@@ -33,7 +33,11 @@
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ObjectViewTreeController.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDockWidget>
+#else
+#include <QtWidgets/QDockWidget>
+#endif
 
 namespace U2 {
 

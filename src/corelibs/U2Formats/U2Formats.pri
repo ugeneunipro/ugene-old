@@ -24,6 +24,7 @@ win32:LIBS += -lws2_32
 win32:DEFINES += _USE_MATH_DEFINES "inline=__inline" "__func__=__FUNCTION__" "R_OK=4" "atoll=_atoi64" "alloca=_alloca"
 
 INCLUDEPATH += ../../libs_3rdparty/sqlite3/src
+equals(QT_MAJOR_VERSION, 5): QT += widgets
 
 !debug_and_release|build_pass {
 

@@ -24,9 +24,14 @@
 
 #include <U2Core/U2AssemblyUtils.h>
 
-#include <QtGui/QBoxLayout>
 #include <QtGui/QMouseEvent>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QBoxLayout>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QBoxLayout>
+#endif
 
 namespace U2 {
 

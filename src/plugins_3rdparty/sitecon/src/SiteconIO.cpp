@@ -38,7 +38,7 @@
 #include <QtCore/QVector>
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
-#include <QtCore/QTextIStream>
+#include <QtCore/QTextStream>
 #include <QtCore/qmath.h>
 
 #include <memory>

@@ -43,11 +43,18 @@
 #include <QtCore/QMimeData>
 #include <QtCore/QMap>
 #include <QtGui/QDrag>
+#include <QtGui/QKeyEvent>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QLineEdit>
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#endif
 
 /* TRANSLATOR U2::ProjectTreeController */
 

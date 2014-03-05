@@ -23,8 +23,13 @@
 #include "GUITestBase.h"
 #include "GUITestTeamcityLogger.h"
 #include "GUITestWindow.h"
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QMainWindow>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMainWindow>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/CMDLineRegistry.h>

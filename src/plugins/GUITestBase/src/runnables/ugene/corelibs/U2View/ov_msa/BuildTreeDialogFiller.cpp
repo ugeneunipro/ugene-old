@@ -29,15 +29,27 @@
 #include "api/GTRadioButton.h"
 
 
-#include <QComboBox>
-#include <QSpinBox>
-#include <QApplication>
-#include <QGroupBox>
-#include <QCheckBox>
-#include <QDoubleSpinBox>
-#include <QRadioButton>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QPushButton>
+#include <QtGui/QComboBox>
+#include <QtGui/QSpinBox>
+#include <QtGui/QGroupBox>
+#include <QtGui/QCheckBox>
+#include <QtGui/QDoubleSpinBox>
+#include <QtGui/QRadioButton>
 #include <QtGui/QDialogButtonBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QDoubleSpinBox>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QDialogButtonBox>
+#endif
 
 namespace U2 {
 

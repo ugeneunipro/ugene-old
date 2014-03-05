@@ -23,9 +23,15 @@
 
 #include <QtCore/QString>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QAbstractButton>
+#else
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QAbstractButton>
+#endif
 
 namespace U2 {
 

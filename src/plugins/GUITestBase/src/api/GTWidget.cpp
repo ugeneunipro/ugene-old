@@ -23,9 +23,15 @@
 #include "GTMouseDriver.h"
 #include <U2Core/AppContext.h>
 #include <U2Gui/MainWindow.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
 #include <QtGui/QMainWindow>
-#include <QtGui/qcombobox.h>
+#include <QtGui/QComboBox>
+#else
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QComboBox>
+#endif
 
 // TODO: this is a fast fix
 #include <U2View/ADVSingleSequenceWidget.h>

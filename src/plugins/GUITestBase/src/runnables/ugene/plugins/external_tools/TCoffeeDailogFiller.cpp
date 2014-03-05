@@ -21,9 +21,11 @@
 
 #include "TCoffeeDailogFiller.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QCheckBox>
-#include <QtGui/QSpinBox>
+#else
+#include <QtWidgets/QApplication>
+#endif
 
 #include "api/GTWidget.h"
 #include "api/GTCheckBox.h"

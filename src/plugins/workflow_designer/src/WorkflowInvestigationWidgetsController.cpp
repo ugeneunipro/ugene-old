@@ -19,11 +19,20 @@
  * MA 02110-1301, USA.
  */
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QTabWidget>
 #include <QtGui/QTableView>
 #include <QtGui/QHeaderView>
 #include <QtGui/QMenu>
-#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QTableView>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QMenu>
+#endif
 #include <QtGui/QClipboard>
 
 #include "InvestigationDataModel.h"
@@ -88,7 +97,11 @@ bool WorkflowInvestigationWidgetsController::eventFilter(QObject *watched, QEven
     {
         if(NULL == investigationView->model() && NULL != investigatedLink) {
             createInvestigationModel();
+#if (QT_VERSION < 0x050000) //Qt 5
             investigationView->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+#else
+            investigationView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
             adjustInvestigationColumnWidth(investigationView);
         }
     }

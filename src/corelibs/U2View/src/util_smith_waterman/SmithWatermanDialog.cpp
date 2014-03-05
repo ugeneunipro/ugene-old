@@ -22,10 +22,16 @@
 #include "SmithWatermanDialogImpl.h"
 
 #include <QtCore/QStringList>
+#include <QtCore/QRegExp>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
-#include <QtCore/QRegExp>
 #include <QtGui/QCheckBox>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QCheckBox>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>

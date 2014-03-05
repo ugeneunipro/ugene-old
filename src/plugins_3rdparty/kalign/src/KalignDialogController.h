@@ -22,13 +22,17 @@
 #ifndef _U2_KALIGN_ALIGN_DIALOG_CONTROLLER_H_
 #define _U2_KALIGN_ALIGN_DIALOG_CONTROLLER_H_
 
-#include <QtGui/QDialog>
-
 #include <U2Core/GAutoDeleteList.h>
 #include <U2Gui/DialogUtils.h>
 
 #include <ui/ui_KalignDialog.h>
 #include "KalignTask.h"
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 namespace U2 {
 

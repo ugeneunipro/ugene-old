@@ -27,8 +27,13 @@
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentInfo.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
 #include <QtGui/QGraphicsItem>
+#else
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QGraphicsItem>
+#endif
 
 namespace U2 {
 

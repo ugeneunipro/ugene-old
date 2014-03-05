@@ -25,10 +25,17 @@
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
 #include <QtGui/QToolBar>
 #include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QToolButton>
+#endif
 
 namespace U2 {
 

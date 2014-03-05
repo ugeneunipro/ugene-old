@@ -35,13 +35,23 @@
 #include <U2Core/Log.h>
 #include <QtGui/QBitmap>
 #include <QtGui/QPainter>
+#include <QtGui/QRadialGradient>
+#include <QtGui/QTextDocument>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QGraphicsTextItem>
+#include <QtGui/QGraphicsItem>
 #include <QtGui/QGraphicsSimpleTextItem>
 #include <QtGui/QGraphicsSceneMouseEvent>
 #include <QtGui/QStyleOptionGraphicsItem>
 #include <QtGui/QGraphicsView>
-#include <QtGui/QRadialGradient>
-#include <QtGui/QTextDocument>
+#else
+#include <QtWidgets/QGraphicsTextItem>
+#include <QtWidgets/QGraphicsItem>
+#include <QtWidgets/QGraphicsSimpleTextItem>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
+#include <QtWidgets/QStyleOptionGraphicsItem>
+#include <QtWidgets/QGraphicsView>
+#endif
 #include <QtCore/qmath.h>
 
 #include <U2Core/QVariantUtils.h>
@@ -293,7 +303,7 @@ QVariant WorkflowProcessItem::itemChange ( GraphicsItemChange change, const QVar
         break;
     case ItemZValueHasChanged:
     {
-        qreal z = qVariantValue<qreal>(value);
+        qreal z = value.value<qreal>();
         foreach(WorkflowPortItem* pit, ports) {
             pit->setZValue(z);
         }
@@ -373,7 +383,7 @@ QVariant WorkflowProcessItem::itemChange ( GraphicsItemChange change, const QVar
         }
         break;
     case ItemSceneChange:
-        if (qVariantValue<QGraphicsScene*>(value) == NULL) {
+        if ((value.value<QGraphicsScene*>()) == NULL) {
             foreach(WorkflowPortItem* pit, ports) {
                 scene()->removeItem(pit);
             }
@@ -580,8 +590,8 @@ void WorkflowPortItem::setOrientation(qreal angle) {
         qreal y = R * qSin(angle * 2 * M_PI / 360);
         
         resetTransform();
-        translate(x, y);
-        rotate(angle);    
+        setTransform(QTransform::fromTranslate(x, y), true);
+        setRotation(angle);
     } else { // EXTENDED STYLE
         resetTransform();
         QRectF rec = owner->boundingRect();
@@ -619,7 +629,7 @@ void WorkflowPortItem::setOrientation(qreal angle) {
             intersectPoint.setX(qBound(min, v, max));
         }
 
-        translate(intersectPoint.x(), intersectPoint.y());
+        setTransform(QTransform::fromTranslate(intersectPoint.x(), intersectPoint.y()), true);
         //qreal polyAngle = polyLine.angle();
         qreal norm = polyLine.normalVector().angle();
         qreal df = qAbs(norm - angle);
@@ -629,7 +639,7 @@ void WorkflowPortItem::setOrientation(qreal angle) {
         //log.info(QString("centerLine=[%1,%2]->[%3,%4]").arg(centerLine.p1().x()).arg(centerLine.p1().y()).arg(centerLine.p2().x()).arg(centerLine.p2().y()));
         //log.info(QString("polyLine=[%1,%2]->[%3,%4]").arg(polyLine.p1().x()).arg(polyLine.p1().y()).arg(polyLine.p2().x()).arg(polyLine.p2().y()));
         //log.info(QString("a=%1 pa=%2 pn=%3 n=%4 df=%5").arg(angle).arg(polyAngle).arg(polyLine.normalVector().angle()).arg(norm).arg(df));
-        rotate(-norm);
+        setRotation(-norm);
     }
     if (oldOrientation != orientation) {
         WorkflowScene * sc = qobject_cast<WorkflowScene*>(owner->scene());
@@ -1005,7 +1015,7 @@ QVariant WorkflowPortItem::itemChange ( GraphicsItemChange change, const QVarian
             //dit->update(dit->boundingRect());
             dit->updatePos();
         }
-    } else if (change == ItemSceneChange && qVariantValue<QGraphicsScene*>(value) == NULL) {
+    } else if (change == ItemSceneChange && (value.value<QGraphicsScene*>()) == NULL) {
         foreach(WorkflowBusItem* dit, flows) {
             scene()->removeItem(dit);
             delete dit;
@@ -1052,7 +1062,7 @@ void WorkflowBusItem::updatePos() {
 }
 
 QVariant WorkflowBusItem::itemChange ( GraphicsItemChange change, const QVariant & value ) {
-    if (change == ItemSceneChange && qVariantValue<QGraphicsScene*>(value) == NULL) {
+    if (change == ItemSceneChange && (value.value<QGraphicsScene*>()) == NULL) {
         dst->removeDataFlow(this);
         src->removeDataFlow(this);
         disconnect(dst->getPort(), SIGNAL(bindingChanged()), this, SLOT(sl_update()));

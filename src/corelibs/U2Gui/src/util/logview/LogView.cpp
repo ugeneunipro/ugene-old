@@ -30,10 +30,17 @@
 
 #include <QtCore/QDate>
 #include <QtCore/QThread>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
-#include <QtGui/QApplication>
 #include <QtGui/QVBoxLayout>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QVBoxLayout>
+#endif
 
 namespace U2 {
 

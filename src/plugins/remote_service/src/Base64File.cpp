@@ -84,7 +84,7 @@ qint64 Base64File::readData( char *data, qint64 maxlen )
 
         qint64 bytesToRead = maxlen - bytesRead;
         qint64 len = bufLen > bytesToRead ? bytesToRead : bufLen;
-        qMemCopy(data + bytesRead, buf.data() + bufOffset, len );
+        memcpy(data + bytesRead, buf.data() + bufOffset, len );
         bufOffset += len;
         bytesRead += len;
         bufLen -= len;

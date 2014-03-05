@@ -21,8 +21,13 @@
 
 #include "WebWindow.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QVBoxLayout>
 #include <QtWebKit/QWebView>
+#else
+#include <QtWidgets/QVBoxLayout>
+#include <QtWebKitWidgets/QWebView>
+#endif
 
 namespace U2 {
 

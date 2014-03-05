@@ -25,7 +25,11 @@
 #include <ui/ui_ViewMatrixDialog.h>
 #include <ui/ui_MatrixAndLogoWidget.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 #include <U2Core/PFMatrix.h>
 #include <U2Core/PWMatrix.h>

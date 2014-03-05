@@ -46,10 +46,15 @@
 
 #include <assert.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
-#include <QtGui/QTreeWidgetItem>
 #include <QtGui/QTreeView>
+#else
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QTreeView>
+#endif
 
 #include "ORFMarkerTask.h"
 

@@ -25,13 +25,21 @@
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
 #include "api/GTCheckBox.h"
-#include <QGroupBox>
 
 #include <QtCore/QDir>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QPushButton>
 #include <QtGui/QRadioButton>
-#include <QtGui/QApplication>
+#include <QGroupBox>
 #include <QtGui/QDialogButtonBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QDialogButtonBox>
+#endif
 
 namespace U2 {
 

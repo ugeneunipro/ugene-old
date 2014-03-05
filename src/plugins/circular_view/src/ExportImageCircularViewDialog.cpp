@@ -29,7 +29,11 @@
 #include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QImageWriter>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPrinter>
+#else
+#include <QtPrintSupport/QPrinter>
+#endif
 #include <QDomDocument>
 #include <QtSvg/QSvgGenerator>
 

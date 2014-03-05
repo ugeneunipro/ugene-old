@@ -15,10 +15,16 @@
 #include <set>
 #include <iomanip>
 
-#include <QProgressDialog>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
-#include <QFile>
 #include <QFileDialog>
+#include <QProgressDialog>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QProgressDialog>
+#endif
+#include <QFile>
 #include <QTime>
 #include <QDomDocument>
 #include <QtCore/qmath.h>

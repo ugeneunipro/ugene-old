@@ -37,22 +37,34 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
+#include <QtGui/QAction>
+#include <QtGui/QStyle>
 #include <QtGui/QMenu>
 #include <QtGui/QToolBox>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QToolButton>
-#include <QtGui/QAction>
-
 #include <QtGui/QHeaderView>
-#include <QtGui/QApplication>
-#include <QtCore/QAbstractItemModel>
 #include <QtGui/QTreeView>
-#include <QtGui/QStyle>
-#include <QtGui/QPainter>
-#include <QtGui/QItemDelegate>
-#include <QtGui/QTreeView>
-#include <QtGui/QContextMenuEvent>
 #include <QtGui/QMessageBox>
+#include <QtGui/QItemDelegate>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolBox>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QTreeView>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QItemDelegate>
+#endif
+#include <QtCore/QAbstractItemModel>
+#include <QtGui/QPainter>
+#include <QtGui/QContextMenuEvent>
 
 #include <QtCore/QDir>
 
@@ -166,7 +178,7 @@ void PaletteDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
         buttonOption.subControls = QStyle::SC_ToolButton;
         buttonOption.features = QStyleOptionToolButton::None;
 
-        QAction* action = qVariantValue<QAction*>(index.data(Qt::UserRole));
+        QAction* action = index.data(Qt::UserRole).value<QAction*>();
         buttonOption.text = action->text();
         buttonOption.icon = action->icon();
         if (!buttonOption.icon.isNull()) {
@@ -219,7 +231,12 @@ WorkflowPaletteElements::WorkflowPaletteElements(ActorPrototypeRegistry* reg, QW
     setMouseTracking(true);
     setColumnCount(1);
     header()->hide();
+#if (QT_VERSION < 0x050000) //Qt 5
     header()->setResizeMode(QHeaderView::Stretch);
+#else
+    header()->setSectionResizeMode(QHeaderView::Stretch);
+#endif
+
     //setTextElideMode (Qt::ElideMiddle);
     setContent(reg);
     connect(reg, SIGNAL(si_registryModified()), SLOT(rebuild()));
@@ -395,7 +412,7 @@ void WorkflowPaletteElements::sortTree() {
 QTreeWidgetItem* WorkflowPaletteElements::createItemWidget(QAction *a) {
     QTreeWidgetItem* item = new QTreeWidgetItem();
     item->setToolTip(0, a->toolTip());
-    item->setData(0, Qt::UserRole, qVariantFromValue<QAction*>(a));
+    item->setData(0, Qt::UserRole, QVariant::fromValue(a));
     actionMap[a] = item;
     connect(a, SIGNAL(triggered()), SLOT(handleItemAction()));
     connect(a, SIGNAL(toggled(bool)), SLOT(handleItemAction()));
@@ -411,7 +428,7 @@ QAction* WorkflowPaletteElements::createItemAction(ActorPrototype* item) {
         item->setIconPath(":workflow_designer/images/green_circle.png");
     }
     a->setIcon(item->getIcon());
-    a->setData(qVariantFromValue(item));
+    a->setData(QVariant::fromValue(item));
     connect(a, SIGNAL(triggered(bool)), SLOT(sl_selectProcess(bool)));
     connect(a, SIGNAL(toggled(bool)), SLOT(sl_selectProcess(bool)));
     return a;
@@ -468,7 +485,7 @@ void WorkflowPaletteElements::sl_selectProcess(bool checked) {
         assert(currentAction);
     }
     emit processSelected(currentAction ? 
-        qVariantValue<Workflow::ActorPrototype*>(currentAction->data()) : NULL );
+        (currentAction->data().value<Workflow::ActorPrototype*>()) : NULL );
 }
 
 void WorkflowPaletteElements::editElement() {
@@ -586,7 +603,7 @@ void WorkflowPaletteElements::mouseMoveEvent(QMouseEvent * event) {
         if ((event->pos() - dragStartPosition).manhattanLength() <= QApplication::startDragDistance()) return;
         QTreeWidgetItem* item = itemAt(event->pos());
         if (!item) return;
-        QAction* action = qVariantValue<QAction*>(item->data(0, Qt::UserRole));
+        QAction* action = item->data(0, Qt::UserRole).value<QAction*>();
         if (!action) return;
         ActorPrototype* proto = action->data().value<ActorPrototype*>();
         assert(proto);
@@ -627,7 +644,7 @@ void WorkflowPaletteElements::mousePressEvent(QMouseEvent * event) {
             return;
         }
 
-        QAction* action = qVariantValue<QAction*>(item->data(0, Qt::UserRole));
+        QAction* action = item->data(0, Qt::UserRole).value<QAction*>();
         if (action) {
             action->toggle();
             dragStartPosition = event->pos();

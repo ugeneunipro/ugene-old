@@ -23,8 +23,13 @@
 #include <cassert>
 
 #include <QtCore/QtAlgorithms>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLabel>
 #include <QtGui/QCheckBox>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QCheckBox>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Remote/ProtocolInfo.h>
@@ -65,8 +70,13 @@ RemoteMachineScanDialogImpl::RemoteMachineScanDialogImpl() {
     updateTimer.start( SCAN_UPDATE_TIME );
     
     machinesTableWidget->horizontalHeader()->setHighlightSections( false );
+#if (QT_VERSION < 0x050000) //Qt 5
     machinesTableWidget->horizontalHeader()->setClickable( false );
     machinesTableWidget->verticalHeader()->setClickable( false );
+#else
+    machinesTableWidget->horizontalHeader()->setSectionsClickable( false );
+    machinesTableWidget->verticalHeader()->setSectionsClickable( false );
+#endif
     machinesTableWidget->setSelectionMode( QAbstractItemView::NoSelection );
     machinesTableWidget->setEditTriggers( QAbstractItemView::NoEditTriggers );
     resizeTable();
@@ -170,7 +180,12 @@ RemoteMachineScanDialogModel RemoteMachineScanDialogImpl::getModel() const {
 }
 
 void RemoteMachineScanDialogImpl::resizeTable() {
+
+#if (QT_VERSION < 0x050000) //Qt 5
     machinesTableWidget->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
+#else
+    machinesTableWidget->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
+#endif
     machinesTableWidget->horizontalHeader()->resizeSections( QHeaderView::ResizeToContents );    
 }
 

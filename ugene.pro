@@ -69,6 +69,7 @@ SUBDIRS += \
           src/plugins/browser_support \
           src/plugins/linkdata_support
 
+equals(QT_MAJOR_VERSION, 5): SUBDIRS -= src/plugins_3rdparty/hmm2 src/plugins/query_designer src/plugins/api_tests
 use_cuda() {
     SUBDIRS += src/plugins/cuda_support
 }

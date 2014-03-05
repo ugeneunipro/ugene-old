@@ -24,7 +24,11 @@
 
 #include <U2Core/GObjectReference.h>
 #include <U2Gui/ObjectViewTasks.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QSplitter>
+#else
+#include <QtWidgets/QSplitter>
+#endif
 #include <U2Algorithm/CreatePhyTreeSettings.h>
 
 namespace U2 {

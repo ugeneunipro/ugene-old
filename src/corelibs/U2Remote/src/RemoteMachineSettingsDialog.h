@@ -22,10 +22,14 @@
 #ifndef _U2_REMOTE_MACHINE_SETTINGS_DIALOG_H_
 #define _U2_REMOTE_MACHINE_SETTINGS_DIALOG_H_
 
-#include <QtGui/QDialog>
-
 #include <U2Remote/RemoteMachine.h>
 #include <U2Remote/ProtocolUI.h>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 #include <ui/ui_RemoteMachineSettingsDialog.h>
 

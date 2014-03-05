@@ -27,8 +27,13 @@
 #include <QtCore/QSignalMapper>
 #include <QtCore/QEvent>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMdiArea>
 #include <QtGui/QMdiSubWindow>
+#else
+#include <QtWidgets/QMdiArea>
+#include <QtWidgets/QMdiSubWindow>
+#endif
 
 namespace U2 {
 

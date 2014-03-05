@@ -26,10 +26,18 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/MainWindow.h>
 
-#include <QtGui/QTreeWidget>
+
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QPushButton>
+#include <QtGui/QTreeWidget>
 #include <QtGui/QTextEdit>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QTextEdit>
+#endif
 #include <QtGui/QMouseEvent>
 
 

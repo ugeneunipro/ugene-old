@@ -34,7 +34,11 @@
 #include <ui/ui_FormatSettingsDialog.h>
 #include <ui/ui_MultipartDocFormatConfiguratorWidget.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QGroupBox>
+#else
+#include <QtWidgets/QGroupBox>
+#endif
 
 namespace U2 {
 

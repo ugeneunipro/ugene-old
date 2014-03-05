@@ -24,9 +24,13 @@
 #include "api/GTWidget.h"
 #include "runnables/qt/MessageBoxFiller.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QTextEdit>
-
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QTextEdit>
+#endif
 
 
 namespace U2{

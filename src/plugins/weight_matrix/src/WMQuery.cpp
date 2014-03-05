@@ -35,7 +35,11 @@
 
 #include <U2Gui/DialogUtils.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#endif
 
 
 namespace U2 {
@@ -181,7 +185,7 @@ QDWMActorPrototype::QDWMActorPrototype() {
     descriptor.setDisplayName(QObject::tr("Weight Matrix"));
     descriptor.setDocumentation(QObject::tr("Searches the sequence for transcription factor binding sites significantly similar to the specified weight matrix."));
 
-    Descriptor scd(SCORE_ATTR, QObject::tr("Min score"), QApplication::translate("PWMSearchDialog", "min_err_tip", 0, QApplication::UnicodeUTF8));
+    Descriptor scd(SCORE_ATTR, QObject::tr("Min score"), QApplication::translate("PWMSearchDialog", "min_err_tip", 0));
     Descriptor mx(PROFILE_URL_ATTR, QObject::tr("Matrix"), QObject::tr("Path to profile"));
 
     attributes << new Attribute(scd, BaseTypes::NUM_TYPE(), false, 85);

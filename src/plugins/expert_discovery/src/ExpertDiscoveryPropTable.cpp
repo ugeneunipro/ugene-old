@@ -1,7 +1,12 @@
 #include "ExpertDiscoveryPropTable.h"
 
-#include <QHeaderView>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#include <QHeaderView>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QHeaderView>
+#endif
 
 namespace U2 {
 

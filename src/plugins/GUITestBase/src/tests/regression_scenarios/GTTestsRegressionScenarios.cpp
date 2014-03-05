@@ -100,6 +100,18 @@
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditor.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMenu>
+#include <QtGui/QMainWindow>
+#include <QtGui/QHeaderView>
+#include <QtGui/QTableWidget>
+#else
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QTableWidget>
+#endif
+
 namespace U2 {
 
 namespace GUITest_regression_scenarios {

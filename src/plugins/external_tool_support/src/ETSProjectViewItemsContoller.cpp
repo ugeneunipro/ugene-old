@@ -40,8 +40,13 @@
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/SelectionUtils.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include "blast/FormatDBSupport.h"
 #include "blast/FormatDBSupportRunDialog.h"

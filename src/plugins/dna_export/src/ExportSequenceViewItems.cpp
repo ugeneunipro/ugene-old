@@ -62,8 +62,13 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/OpenViewTask.h>
 
-#include <QtGui/QMainWindow>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#include <QtGui/QMainWindow>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QMainWindow>
+#endif
 
 namespace U2 {
 
@@ -550,7 +555,7 @@ void ADVExportContext::prepareMAFromBlastAnnotations(MAlignment& ma, const QStri
         QByteArray rowSequence;
         QString subjSeq = a.annotation.findFirstQualifierValue( "subj_seq" );
         if(!subjSeq.isEmpty()){
-            ma.addRow(rowName, subjSeq.toAscii(), os);
+            ma.addRow(rowName, subjSeq.toLatin1(), os);
             CHECK_OP(os, );
         }else{
             AnnotationSelection::getAnnotationSequence(rowSequence, a, MAlignment_GapChar, seqRef,  

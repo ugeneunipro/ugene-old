@@ -33,10 +33,16 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/AppSettingsGUI.h>
 
+#include <U2Gui/HelpButton.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
-#include <U2Gui/HelpButton.h>
 #include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
 
 
 

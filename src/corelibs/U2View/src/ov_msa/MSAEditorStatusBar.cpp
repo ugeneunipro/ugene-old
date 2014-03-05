@@ -26,7 +26,11 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QHBoxLayout>
+#else
+#include <QtWidgets/QHBoxLayout>
+#endif
 #include <QtGui/QKeyEvent>
 
 namespace U2 {

@@ -29,13 +29,19 @@
 #include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Gui/HelpButton.h>
 #include <U2Core/L10n.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#include <QtGui/QMessageBox>
+#include <QtGui/QFileDialog>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#endif
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNATranslation.h>
 
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
 
 namespace U2 {
 

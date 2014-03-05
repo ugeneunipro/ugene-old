@@ -39,9 +39,14 @@
 #include <U2View/LicenseDialog.h>
 
 #include <QtCore/QMutableListIterator>
-#include <QtGui/QHeaderView>
 #include <U2Gui/HelpButton.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#include <QtGui/QHeaderView>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QHeaderView>
+#endif
 
 
 namespace U2 {

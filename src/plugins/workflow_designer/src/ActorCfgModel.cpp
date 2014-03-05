@@ -72,7 +72,9 @@ void ActorCfgModel::setActor(Actor* cfg) {
             }
         }
     }
-    reset();
+//    reset();
+    beginResetModel();
+    endResetModel();
 }
 
 void dumpDescriptors(const QList<Descriptor> & descriptors) {
@@ -144,7 +146,9 @@ void ActorCfgModel::setupAttributesScripts() {
 }
 
 void ActorCfgModel::update() {
-    reset();
+//    reset();
+    beginResetModel();
+    endResetModel();
 }
 
 int ActorCfgModel::columnCount(const QModelIndex &) const { 

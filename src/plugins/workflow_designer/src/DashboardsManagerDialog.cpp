@@ -19,8 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QMessageBox>
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
+#endif
 #include <U2Gui/HelpButton.h>
 
 #include "DashboardsManagerDialog.h"
@@ -57,7 +63,11 @@ void DashboardsManagerDialog::setupList() {
     QStringList header;
     header << tr("Name") << tr("Directory");
     listWidget->setHeaderLabels(header);
+#if (QT_VERSION < 0x050000) //Qt 5
     listWidget->header()->setMovable(false);
+#else
+    listWidget->header()->setSectionsMovable(false);
+#endif
 
     const int defaultNameColumnWidth = 250;
     listWidget->header()->resizeSection(0, defaultNameColumnWidth);

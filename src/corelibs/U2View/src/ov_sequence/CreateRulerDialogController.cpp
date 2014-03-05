@@ -23,14 +23,24 @@
 
 #include <U2Core/TextUtils.h>
 
-#include <QtGui/QSpinBox>
+
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLabel>
-#include <QtGui/QPalette>
+#include <QtGui/QPushButton>
 #include <QtGui/QLineEdit>
+#include <QtGui/QSpinBox>
 #include <QtGui/QMessageBox>
 #include <QtGui/QColorDialog>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QColorDialog>
+#endif
+#include <QtGui/QPalette>
 #include <U2Gui/HelpButton.h>
-#include <QtGui/QPushButton>
 
 
 namespace U2 {

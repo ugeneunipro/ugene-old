@@ -30,7 +30,11 @@
 #include <U2Core/Settings.h>
 #include <project_support/ProjectLoaderImpl.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2 {
 

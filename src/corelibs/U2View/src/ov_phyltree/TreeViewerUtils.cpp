@@ -23,8 +23,13 @@
 
 #include <U2Gui/LastUsedDirHelper.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#endif
 
 #define IMAGE_DIR "image"
 

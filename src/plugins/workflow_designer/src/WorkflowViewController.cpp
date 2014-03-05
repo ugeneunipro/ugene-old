@@ -24,9 +24,14 @@
 #include <functional>
 
 #include <QtCore/QFileInfo>
-#include <QtGui/QBoxLayout>
 #include <QtGui/QClipboard>
 #include <QtGui/QCloseEvent>
+#include <QtGui/QPainter>
+#include <QtGui/QPixmap>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPrinter>
+#include <QtGui/QBoxLayout>
 #include <QtGui/QComboBox>
 #include <QtGui/QFileDialog>
 #include <QtGui/QGraphicsSceneMouseEvent>
@@ -34,14 +39,28 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
-#include <QtGui/QPainter>
-#include <QtGui/QPixmap>
-#include <QtGui/QPrinter>
-#include <QtGui/QShortcut>
 #include <QtGui/QSplitter>
 #include <QtGui/QTableWidget>
 #include <QtGui/QToolBar>
 #include <QtGui/QToolButton>
+#include <QtGui/QShortcut>
+#else
+#include <QtPrintSupport/QPrinter>
+#include <QtWidgets/QBoxLayout>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
+#include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QSplitter>
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QShortcut>
+#endif
+
 #include <QtSvg/QSvgGenerator>
 
 #include <U2Core/AppContext.h>
@@ -2630,7 +2649,7 @@ void WorkflowScene::setupLinkCtxMenu(const QString& href, Actor* actor, const QP
 }
 
 void WorkflowScene::sl_openDocuments() {
-    const QString& urlStr = qVariantValue<QString>(openDocumentsAction->data());
+    const QString& urlStr = openDocumentsAction->data().value<QString>();
     const QStringList& _urls = WorkflowUtils::expandToUrls(urlStr);
     QList<GUrl> urls;
     foreach(const QString& url, _urls) {

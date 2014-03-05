@@ -23,8 +23,12 @@
 #define _U2_MSAEditor_TREE_VIEWER_H_
 
 #include "U2View/TreeViewer.h"
-#include <U2Algorithm/CreatePhyTreeSettings.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QGraphicsLineItem>
+#else
+#include <QtWidgets/QGraphicsLineItem>
+#endif
+
 #include <QtCore/QMap>
 #include <U2Algorithm/CreatePhyTreeSettings.h>
 

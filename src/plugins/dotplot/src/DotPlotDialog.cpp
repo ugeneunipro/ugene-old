@@ -39,8 +39,13 @@
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QColorDialog>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QColorDialog>
+#endif
 
 namespace U2 {
 

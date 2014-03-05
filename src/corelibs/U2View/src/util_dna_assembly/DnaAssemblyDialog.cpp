@@ -19,10 +19,15 @@
  * MA 02110-1301, USA.
  */
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#endif
 #include <QtGui/QKeyEvent>
-
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
@@ -86,9 +91,14 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
     
     shortReadsTable->installEventFilter(this);
     QHeaderView* header = shortReadsTable->header();
-    header->setClickable( false );
     header->setStretchLastSection( false );
+#if (QT_VERSION < 0x050000) //Qt 5
+    header->setClickable( false );
     header->setResizeMode( 0, QHeaderView::Stretch );
+#else
+    header->setSectionsClickable( false );
+    header->setSectionResizeMode( 0, QHeaderView::Stretch );
+#endif
 
     prebuiltIndexCheckBox->setChecked(prebuiltIndex);
     sl_onAlgorithmChanged(methodNamesBox->currentText());

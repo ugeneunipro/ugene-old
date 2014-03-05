@@ -22,7 +22,12 @@
 #ifndef _U2_SCRIPT_EDITOR_DELEGATE_H_
 #define _U2_SCRIPT_EDITOR_DELEGATE_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
+#else
+#include <QtWidgets/QWidget>
+#endif
 
 class QBoxLayout;
 class QLineEdit;

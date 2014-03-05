@@ -23,7 +23,12 @@
 #define GTSEQUENCEREADINGMODEDIALOGUTILS_H
 
 #include "GTUtilsDialog.h"
-#include <QSpinBox>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QSpinBox>
+#else
+#include <QtWidgets/QSpinBox>
+#endif
 
 namespace U2 {
 

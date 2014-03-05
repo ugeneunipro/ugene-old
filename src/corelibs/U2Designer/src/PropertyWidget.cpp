@@ -19,8 +19,15 @@
  * MA 02110-1301, USA.
  */
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QLayout>
 #include <QFileDialog>
+#else
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QListView>
+#endif
 
 #include <U2Core/L10n.h>
 #include <U2Core/U2OpStatusUtils.h>

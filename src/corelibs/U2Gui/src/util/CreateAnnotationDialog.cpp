@@ -28,10 +28,18 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/GObjectRelationRoles.h>
 
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
 #include <QtGui/QMessageBox>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QVBoxLayout>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#endif
+
 #include <U2Gui/HelpButton.h>
 
 

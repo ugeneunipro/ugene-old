@@ -22,7 +22,12 @@
 #ifndef _U2_DNA_STATS_WINDOW_H_
 #define _U2_DNA_STATS_WINDOW_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtWebKit/QWebView>
+#else
+#include <QtWebKitWidgets/QWebView>
+#endif
 
 #include <U2Core/global.h>
 #include <U2Gui/MainWindow.h>

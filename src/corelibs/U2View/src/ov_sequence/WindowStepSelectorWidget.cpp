@@ -21,9 +21,15 @@
 
 #include "WindowStepSelectorWidget.h"
 
-#include <QtGui/QFormLayout>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#include <QtGui/QFormLayout>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QFormLayout>
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include <limits.h>
 

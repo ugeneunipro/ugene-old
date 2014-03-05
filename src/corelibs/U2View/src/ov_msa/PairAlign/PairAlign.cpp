@@ -56,9 +56,15 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QLayout>
 #include <QtGui/QHBoxLayout>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QHBoxLayout>
+#endif
 #include <U2Gui/HelpButton.h>
 
 

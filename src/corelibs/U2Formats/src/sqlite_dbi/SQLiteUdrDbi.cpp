@@ -134,7 +134,7 @@ InputStream * SQLiteUdrDbi::createInputStream(const UdrRecordId &recordId, int f
     UdrSchema::FieldDesc field = getBlobField(recordId.getSchemaId(), fieldNum, os);
     CHECK_OP(os, NULL);
 
-    return new SQLiteBlobInputStream(db, tableName(recordId.getSchemaId()).toAscii(), field.getName(), recordId.getRecordId(), os);
+    return new SQLiteBlobInputStream(db, tableName(recordId.getSchemaId()).toLatin1(), field.getName(), recordId.getRecordId(), os);
 }
 
 OutputStream * SQLiteUdrDbi::createOutputStream(const UdrRecordId &recordId, int fieldNum, qint64 size, U2OpStatus &os) {
@@ -143,7 +143,7 @@ OutputStream * SQLiteUdrDbi::createOutputStream(const UdrRecordId &recordId, int
     UdrSchema::FieldDesc field = getBlobField(recordId.getSchemaId(), fieldNum, os);
     CHECK_OP(os, NULL);
 
-    return new SQLiteBlobOutputStream(db, tableName(recordId.getSchemaId()).toAscii(), field.getName(), recordId.getRecordId(), (int)size, os);
+    return new SQLiteBlobOutputStream(db, tableName(recordId.getSchemaId()).toLatin1(), field.getName(), recordId.getRecordId(), (int)size, os);
 }
 
 /************************************************************************/

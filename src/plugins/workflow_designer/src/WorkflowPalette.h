@@ -27,8 +27,13 @@
 
 #include <ui/ui_PaletteWidget.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QTreeWidget>
+#endif
 
 namespace U2 {
 using namespace Workflow;

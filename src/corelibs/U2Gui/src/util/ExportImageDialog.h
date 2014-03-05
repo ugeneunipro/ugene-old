@@ -26,7 +26,12 @@
 
 #include <QtCore/QList>
 #include <QtCore/QString>
+
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 class Ui_ImageExportForm;
 

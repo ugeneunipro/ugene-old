@@ -22,7 +22,12 @@
 #include "GTUtilsPhyTree.h"
 #include "api/GTWidget.h"
 #include "math.h"
-#include "QtGui/QGraphicsItem"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QGraphicsItem>
+#else
+#include <QtWidgets/QGraphicsItem>
+#endif
+
 namespace U2
 {
 const int widthMin = 6;

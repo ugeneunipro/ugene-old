@@ -47,6 +47,13 @@
 #include <U2View/MSAEditorFactory.h>
 #include <U2View/ADVConstants.h>
 #include <QtGui/QClipboard>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
+#include <QtGui/QMainWindow>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMainWindow>
+#endif
 
 namespace U2 {
 

@@ -22,13 +22,23 @@
 #include <U2Core/U2SafePoints.h>
 #include "ADVGraphModel.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
 #include <QtGui/QSpinBox>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QPushButton>
-#include <QtGui/QLabel>
 #include <QtGui/QCheckBox>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QMessageBox>
+#endif
 #include <U2Gui/HelpButton.h>
 
 #include "GraphLabelsSelectDialog.h"

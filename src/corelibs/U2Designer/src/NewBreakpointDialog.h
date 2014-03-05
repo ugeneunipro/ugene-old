@@ -22,9 +22,13 @@
 #ifndef _NEW_BREAKPOINT_DIALOG_H_
 #define _NEW_BREAKPOINT_DIALOG_H_
 
-#include <QtGui/QDialog>
-
 #include <U2Core/global.h>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 namespace Ui {
 

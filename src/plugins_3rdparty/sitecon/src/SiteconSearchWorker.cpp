@@ -44,7 +44,7 @@
 #include <U2Core/FailTask.h>
 #include <U2Core/TaskSignalMapper.h>
 
-#include <QtGui/QApplication>
+//#include <QtGui/QApplication>
 /* TRANSLATOR U2::LocalWorkflow::SiteconSearchWorker */
 
 namespace U2 {

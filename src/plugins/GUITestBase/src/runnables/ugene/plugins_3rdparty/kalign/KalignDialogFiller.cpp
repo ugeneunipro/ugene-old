@@ -24,11 +24,15 @@
 #include "api/GTCheckBox.h"
 #include "api/GTDoubleSpinBox.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
 #include <QtGui/QDialogButtonBox>
-#include <QtGui/QCheckBox>
-#include <QtGui/QDoubleSpinBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QDialogButtonBox>
+#endif
 
 namespace U2 {
 

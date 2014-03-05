@@ -130,13 +130,13 @@ QString VariationInfo::getInGeneEffectInfo( const QString& geneName, QMap<Report
         canHaveEffect = false;
     }
 
-    result.append(QString("%1 --> %2").arg(QString::fromAscii(variant.refData)).arg(QString::fromAscii(variant.obsData)));
+    result.append(QString("%1 --> %2").arg(QString::fromLatin1(variant.refData)).arg(QString::fromLatin1(variant.obsData)));
     U2Region variantRegion (variant.startPos, 1);
     QByteArray refDataInDb = seqDbi->getSequenceData(seqId, variantRegion, os);
     refDataInDb = refDataInDb.toUpper();
 
     if(refDataInDb != variant.refData){ //change SNP ref data if needed
-        result.append(QString("    WARNING. Reference data: %1").arg(QString::fromAscii(refDataInDb)));
+        result.append(QString("    WARNING. Reference data: %1").arg(QString::fromLatin1(refDataInDb)));
     }
     result.append("\n");
     if(canHaveEffect){
@@ -168,7 +168,7 @@ QString VariationInfo::getInGeneEffectInfo( const QString& geneName, QMap<Report
             }else{
                 variedTriplet = VariationPropertiesUtils::varyTriplet(damagedTriplet, variant, codonPos);
             }
-            result.append(QString("Codon: %1 => %2\n").arg(QString::fromAscii(damagedTriplet)).arg(QString::fromAscii(variedTriplet)));
+            result.append(QString("Codon: %1 => %2\n").arg(QString::fromLatin1(damagedTriplet)).arg(QString::fromLatin1(variedTriplet)));
            
             QList<DNATranslation*> translList = AppContext::getDNATranslationRegistry()->lookupTranslation(alphabet, DNATranslationType_NUCL_2_AMINO);
             SAFE_POINT(!translList.isEmpty(), "No Translations", result);
@@ -604,7 +604,7 @@ QString VariationInfo::getVariationInfoHeader(){
         sequenceName = seq.visualName;
     }
     
-    res += QString("%1 %2 %3-->%4").arg(sequenceName).arg(variant.startPos + 1).arg(QString::fromAscii(variant.refData)).arg(QString::fromAscii(variant.obsData));
+    res += QString("%1 %2 %3-->%4").arg(sequenceName).arg(variant.startPos + 1).arg(QString::fromLatin1(variant.refData)).arg(QString::fromLatin1(variant.obsData));
 
     return res;
 }

@@ -38,8 +38,13 @@
 #include <U2Lang/WorkflowUtils.h>
 #include "TableViewTabKey.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QHeaderView>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QHeaderView>
+#endif
 #include <QtGui/QKeyEvent>
 
 #define MAIN_SPLITTER "main.splitter"
@@ -77,7 +82,6 @@ customWidget(NULL), subject(NULL), actor(NULL)
 
     actorModel = new ActorCfgModel(this, owner);
     table->setModel(actorModel);
-    table->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
     
     table->horizontalHeader()->setStretchLastSection(true);
     //table->horizontalHeader()->setStretchLastSection(false);
@@ -85,7 +89,13 @@ customWidget(NULL), subject(NULL), actor(NULL)
     //table->horizontalHeader()->setResizeMode(1, QHeaderView::Interactive);
     //table->horizontalHeader()->setResizeMode(2, QHeaderView::Stretch);
     
+#if (QT_VERSION < 0x050000) //Qt 5
     table->horizontalHeader()->setClickable(false);
+    table->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+#else
+    table->horizontalHeader()->setSectionsClickable(false);
+    table->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
     table->verticalHeader()->hide();
     table->verticalHeader()->setDefaultSectionSize(QFontMetrics(QFont()).height() + 6);
     table->setItemDelegate(new SuperDelegate(this));
@@ -161,7 +171,12 @@ void WorkflowEditor::changeScriptMode(bool _mode) {
     }
     actorModel->changeScriptMode(_mode);
     //table->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+
+#if (QT_VERSION < 0x050000) //Qt 5
     table->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+#else
+    table->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+#endif
     table->horizontalHeader()->setStretchLastSection(true);
     if(_mode) {
         int tWidth = table->width();

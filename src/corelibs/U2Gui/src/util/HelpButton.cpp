@@ -22,7 +22,11 @@
 #include "HelpButton.h"
 #include "U2Gui/GUIUtils.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QPushButton>
+#endif
 
 namespace U2{
 

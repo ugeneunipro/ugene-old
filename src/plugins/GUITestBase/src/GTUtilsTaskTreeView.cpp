@@ -30,7 +30,11 @@
 #include <U2Core/AppContext.h>
 #include <QtCore/QTimer>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QTreeWidget>
+#endif
 
 namespace U2 {
 

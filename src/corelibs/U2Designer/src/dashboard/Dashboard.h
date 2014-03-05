@@ -23,7 +23,12 @@
 #define _U2_DASHBOARD_H_
 
 #include <QWebElement>
+
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QWebView>
+#else
+#include <QtWebKitWidgets/QWebView>
+#endif
 
 #include <U2Core/U2SafePoints.h>
 

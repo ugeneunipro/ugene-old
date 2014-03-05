@@ -22,10 +22,17 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QLineEdit>
 #include <QtGui/QFileDialog>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QLineEdit>
+#else
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#endif
 
 #include "SettingsController.h"
 

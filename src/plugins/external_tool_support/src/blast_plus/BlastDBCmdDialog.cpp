@@ -23,9 +23,14 @@
 
 #include <U2Gui/LastUsedDirHelper.h>
 
-#include <QtGui/QFileDialog>
 #include <U2Gui/HelpButton.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#include <QtGui/QFileDialog>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QFileDialog>
+#endif
 
 
 namespace U2 {

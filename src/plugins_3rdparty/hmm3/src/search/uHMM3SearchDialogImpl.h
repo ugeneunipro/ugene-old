@@ -22,8 +22,14 @@
 #ifndef _GB2_UHMM3_SEARCH_DLG_IMPL_H_
 #define _GB2_UHMM3_SEARCH_DLG_IMPL_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
 #include <QtGui/QButtonGroup>
+#else
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QButtonGroup>
+#endif
 
 #include <U2Core/DNASequence.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>

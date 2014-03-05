@@ -27,7 +27,11 @@
 #include <U2Gui/ObjectViewModel.h>
 
 #include <QtCore/QMap>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
+#else
+#include <QtWidgets/QAction>
+#endif
 
 #include <U2View/ADVSequenceWidget.h>
 

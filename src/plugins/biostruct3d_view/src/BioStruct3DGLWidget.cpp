@@ -56,9 +56,15 @@
 
 
 #include <QtGui/QMouseEvent>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
 #include <QtGui/QColorDialog>
 #include <QtGui/QFileDialog>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QFileDialog>
+#endif
 #include <QtGui/QImageWriter>
 #include <QtCore/QTime>
 #include <QtOpenGL>

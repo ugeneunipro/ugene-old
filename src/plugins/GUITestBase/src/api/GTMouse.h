@@ -23,7 +23,11 @@
 #define U2_GUI_GTMOUSE_H_
 
 #include "api/GTGlobals.h"
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
+#else
+#include <QtWidgets/QWidget>
+#endif
 
 
 namespace U2 {

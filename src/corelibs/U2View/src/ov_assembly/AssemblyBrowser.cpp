@@ -42,8 +42,12 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/VariantTrackObject.h>
 
-#include <QtGui/QVBoxLayout>
 #include <QtGui/QPainter>
+#include <QtCore/QEvent>
+#include <QtGui/QDropEvent>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
+#include <QtGui/QVBoxLayout>
 #include <QtGui/QMenu>
 #include <QtGui/QToolBar>
 #include <QtGui/QFileDialog>
@@ -51,10 +55,19 @@
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QScrollBar>
 #include <QtGui/QToolButton>
-#include <QtCore/QEvent>
-#include <QtGui/QDropEvent>
-#include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QScrollBar>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QDesktopWidget>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/U2DbiRegistry.h>

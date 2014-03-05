@@ -34,8 +34,13 @@
 #include <U2View/AnnotatedDNAView.h>
 #include <U2Gui/HelpButton.h>
 
-#include <QtGui/QMessageBox>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLineEdit>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMessageBox>
+#endif
 #include <math.h>
 
 namespace U2 {

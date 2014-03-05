@@ -19,10 +19,18 @@
  * MA 02110-1301, USA.
  */
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMenu>
-#include <QtGui/QPushButton>
 #include <QtGui/QWidgetAction>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QWidgetAction>
+#endif
 #include <U2Gui/HelpButton.h>
 
 #include <U2Core/U2SafePoints.h>

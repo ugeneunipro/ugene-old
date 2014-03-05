@@ -32,8 +32,13 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ScriptEditorDialog.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QGraphicsScene>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QGraphicsScene>
+#endif
 
 class QComboBox;
 class QSplitter;

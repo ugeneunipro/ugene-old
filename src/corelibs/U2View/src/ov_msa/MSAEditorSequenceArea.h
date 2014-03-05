@@ -22,10 +22,18 @@
 #ifndef _U2_MSA_EDITOR_SEQUENCE_AREA_H_
 #define _U2_MSA_EDITOR_SEQUENCE_AREA_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
 #include <QtGui/QMenu>
 #include <QtGui/QToolBar>
 #include <QtGui/QRubberBand>
+#else
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QRubberBand>
+#endif
 
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>

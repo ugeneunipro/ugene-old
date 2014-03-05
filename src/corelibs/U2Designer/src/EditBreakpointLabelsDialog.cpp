@@ -20,7 +20,11 @@
  */
 
 #include <QtCore/QStringList>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QCheckBox>
+#else
+#include <QtWidgets/QCheckBox>
+#endif
 #include <QtGui/QKeyEvent>
 
 #include "ui/ui_EditBreakpointLabelsDialog.h"

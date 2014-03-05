@@ -32,7 +32,11 @@
 #include <QtCore/QHash>
 #include <QtCore/QString>
 #include <QtCore/QList>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QPushButton>
+#endif
 #include <QtCore/QBitArray>
 #include <QtCore/QStringList>
 

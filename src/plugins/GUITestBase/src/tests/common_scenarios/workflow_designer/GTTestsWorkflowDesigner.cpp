@@ -45,8 +45,19 @@
 #include "GTUtilsApp.h"
 #include "GTUtilsLog.h"
 
-#include <QGraphicsItem>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QTextEdit>
+#include <QtGui/QGraphicsItem>
+#include <QtGui/QGraphicsView>
+#include <QtGui/QDesktopWidget>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QGraphicsItem>
+#include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QDesktopWidget>
+#endif
 #include <U2Core/AppContext.h>
 #include <QProcess>
 #include "../../workflow_designer/src/WorkflowViewItems.h"

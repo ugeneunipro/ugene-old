@@ -31,10 +31,17 @@
 #include "runnables/qt/MessageBoxFiller.h"
 
 #include <QtCore/QDir>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QDialogButtonBox>
 #include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 #include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QToolButton>
+#endif
 
 
 namespace U2 {

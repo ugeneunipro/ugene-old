@@ -29,7 +29,12 @@
 #include <U2Core/GObjectTypes.h>
 
 #include <QtGui/QIcon>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
+
 #include <U2Gui/HelpButton.h>
 
 namespace U2 {

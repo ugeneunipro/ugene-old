@@ -174,7 +174,7 @@ QString EDPIPropertyTypeStaticString::getValue(int i) const
 
 bool EDPIPropertyTypeStaticString::isValidValue(QString strValue) const
 {
-    return TRUE;
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////////

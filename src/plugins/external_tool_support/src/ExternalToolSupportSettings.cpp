@@ -32,10 +32,17 @@
 
 #include <QtCore/QSettings>
 #include <QtCore/QFile>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QStyle>
 #include <QtGui/QStyleFactory>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QStyleFactory>
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2 {
 

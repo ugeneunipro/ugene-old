@@ -22,8 +22,13 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectSelection.h>
 
-#include<QtGui/QMenu>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#endif
 
 
 namespace U2 {

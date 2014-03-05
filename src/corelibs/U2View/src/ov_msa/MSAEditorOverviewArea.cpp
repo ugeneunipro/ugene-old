@@ -27,9 +27,13 @@
 #include "Overview/MSAGraphOverview.h"
 #include "Overview/MSAOverviewContextMenu.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QActionGroup>
-
+#else
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QActionGroup>
+#endif
 
 namespace U2 {
 

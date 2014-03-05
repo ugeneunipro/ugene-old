@@ -28,22 +28,34 @@
 
 #include <QtCore/QModelIndex>
 #include <QtCore/QPointer>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLineEdit>
+#include <QtGui/QPushButton>
 #include <QtGui/QToolButton>
 #include <QtGui/QDialog>
 #include <QtGui/QListWidget>
-#include <QtGui/QPushButton>
-
 #include <QtGui/QSpinBox>
 #include <QtGui/QComboBox>
-#include <QtGui/QLineEdit>
-#include <QtGui/QToolButton>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QFileDialog>
+#include <QtGui/QTextEdit>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QTextEdit>
+#endif
+
 #include <QtCore/QCoreApplication>
 #include <QtGui/QKeyEvent>
-#include <QtGui/QTextEdit>
 
 #include "PropertyWidget.h"
 

@@ -26,7 +26,11 @@
 
 #include <U2Gui/OPWidgetFactory.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QtGui>
+#else
+#include <QtWidgets/QtWidgets>
+#endif
 
 
 namespace U2 {

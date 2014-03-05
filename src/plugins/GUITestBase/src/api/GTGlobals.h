@@ -26,7 +26,11 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/Log.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
+#else
+#include <QtWidgets/QAction>
+#endif
 
 namespace U2 {
 

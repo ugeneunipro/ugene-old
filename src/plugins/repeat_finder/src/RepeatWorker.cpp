@@ -42,7 +42,7 @@
 #include <U2Core/GObjectReference.h>
 #include <U2Core/FailTask.h>
 
-#include <QtGui/QApplication>
+//#include <QtGui/QApplication>
 
 /* TRANSLATOR U2::LocalWorkflow::RepeatWorker */
 

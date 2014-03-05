@@ -27,9 +27,15 @@
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
 #include <QtGui/QScrollBar>
 #include <QtGui/QRubberBand>
+#else
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QScrollBar>
+#include <QtWidgets/QRubberBand>
+#endif
 
 #include "PhyTrees/MSAEditorTreeViewer.h"
 

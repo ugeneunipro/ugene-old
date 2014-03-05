@@ -35,10 +35,16 @@
 #include <U2Core/ProjectModel.h>
 #include <U2View/ADVConstants.h>
 #include <U2Gui/ObjectViewModel.h>
-#include <QtGui/QMainWindow>
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMainWindow>
 #include <QtGui/QHeaderView>
+#else
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QHeaderView>
+#endif
 
 namespace U2 {
 

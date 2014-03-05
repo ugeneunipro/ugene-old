@@ -2,7 +2,11 @@
 
 #include "ExpertDiscoveryAdvSetDialog.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
 #include <U2Gui/HelpButton.h>
 
 
@@ -103,7 +107,7 @@ void ExpertDiscoveryExtSigWiz::sl_distButton(){
     QTreeWidgetItem *op = new QTreeWidgetItem(distItem);
     op->setText(0, QString::fromStdString(pOp->getDescription()));
     void* pointer = (void*)pOp;
-    QVariant variant = qVariantFromValue<void*>(pointer);
+    QVariant variant = QVariant::fromValue(pointer);
     op->setData(0, Qt::UserRole, variant);
 
     predicatesTree->setCurrentItem(op);
@@ -115,7 +119,7 @@ void ExpertDiscoveryExtSigWiz::sl_repetButton(){
     QTreeWidgetItem *op = new QTreeWidgetItem(repetItem);
     op->setText(0, QString::fromStdString(pOp->getDescription()));
     void* pointer = (void*)pOp;
-    QVariant variant = qVariantFromValue<void*>(pointer);
+    QVariant variant = QVariant::fromValue(pointer);
     op->setData(0, Qt::UserRole, variant);
     //predicatesTree->clearSelection();
     predicatesTree->setCurrentItem(op);
@@ -127,7 +131,7 @@ void ExpertDiscoveryExtSigWiz::sl_intervButton(){
     QTreeWidgetItem *op = new QTreeWidgetItem(intervItem);
     op->setText(0, QString::fromStdString(pOp->getDescription()));
     void* pointer = (void*)pOp;
-    QVariant variant = qVariantFromValue<void*>(pointer);
+    QVariant variant = QVariant::fromValue(pointer);
     op->setData(0, Qt::UserRole, variant);
     //predicatesTree->clearSelection();
     predicatesTree->setCurrentItem(op);
@@ -140,7 +144,7 @@ void ExpertDiscoveryExtSigWiz::sl_deleteButton(){
     }
     QTreeWidgetItem* item = predicatesTree->selectedItems().first();
     QVariant variant = item->data(0, Qt::UserRole);
-    void* pointer = qVariantValue<void*>(variant);
+    void* pointer = variant.value<void*>();
     Operation* pOp = (Operation*) pointer;
     if (pOp == NULL)
         return;
@@ -225,7 +229,7 @@ void ExpertDiscoveryExtSigWiz::predicatesByDefault(bool isLetters){
             QTreeWidgetItem *op = new QTreeWidgetItem(distItem);
             op->setText(0, QString::fromStdString(pOp->getDescription()));
             void* pointer = (void*)pOp;
-            QVariant variant = qVariantFromValue<void*>(pointer);
+            QVariant variant = QVariant::fromValue(pointer);
             op->setData(0, Qt::UserRole, variant);
             distItem->setExpanded(true);
         }
@@ -236,7 +240,7 @@ void ExpertDiscoveryExtSigWiz::predicatesByDefault(bool isLetters){
             QTreeWidgetItem *op = new QTreeWidgetItem(distItem);
             op->setText(0, QString::fromStdString(pOp->getDescription()));
             void* pointer = (void*)pOp;
-            QVariant variant = qVariantFromValue<void*>(pointer);
+            QVariant variant = QVariant::fromValue(pointer);
             op->setData(0, Qt::UserRole, variant);
             distItem->setExpanded(true);
         }
@@ -253,7 +257,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
     QList<QTreeWidgetItem*> ch = distItem->takeChildren();
     foreach(QTreeWidgetItem* item, ch){
         variant = item->data(0, Qt::UserRole);
-        pointer = qVariantValue<void*>(variant);
+        pointer = variant.value<void*>();
         pOp = (Operation*) pointer;
         predicates.push_back(pOp);
         delete item;
@@ -262,7 +266,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
     ch = repetItem->takeChildren();
     foreach(QTreeWidgetItem* item, ch){
         variant = item->data(0, Qt::UserRole);
-        pointer = qVariantValue<void*>(variant);
+        pointer = variant.value<void*>();
         pOp = (Operation*) pointer;
         predicates.push_back(pOp);
         delete item;
@@ -271,7 +275,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
     ch = intervItem->takeChildren();
     foreach(QTreeWidgetItem* item, ch){
         variant = item->data(0, Qt::UserRole);
-        pointer = qVariantValue<void*>(variant);
+        pointer = variant.value<void*>();
         pOp = (Operation*) pointer;
         predicates.push_back(pOp);
         delete item;
@@ -305,7 +309,7 @@ void ExpertDiscoveryExtSigWiz::accept(){
         if(!treeFoldersWidget->selectedItems().isEmpty()){
             QTreeWidgetItem* item = treeFoldersWidget->selectedItems().first();    
             QVariant variant = item->data(0, Qt::UserRole);
-            void* pointer = qVariantValue<void*>(variant);
+            void* pointer = variant.value<void*>();
             CSFolder* f = (CSFolder*) pointer;
             folder = f;
         }
@@ -361,7 +365,7 @@ void ExpertDiscoveryExtSigWiz::updateTree(const CSFolder* pFolder, QTreeWidgetIt
     }
     nTreeItem->setText(0,strName);
     void* pointer = (void*)pFolder;
-    QVariant variant = qVariantFromValue<void*>(pointer);
+    QVariant variant = QVariant::fromValue(pointer);
     nTreeItem->setData(0, Qt::UserRole, variant);
     int nFolderNum = pFolder->getFolderNumber();
     for (int i=0; i<nFolderNum; i++){
@@ -383,11 +387,11 @@ void ExpertDiscoveryExtSigWiz::sl_selectionChanged (QTreeWidgetItem * current, Q
 
     if(previous != distItem && previous != intervItem && previous != repetItem && sigSet[curIndex]->isReadyToClose() && curIndex != T_UNDEFINED){
         QVariant variant = previous->data(0, Qt::UserRole);
-        void* pointer = qVariantValue<void*>(variant);
+        void* pointer = variant.value<void*>();
         Operation* pOp = (Operation*) pointer;
         sigSet[curIndex]->saveData(pOp);
         previous->setText(0, QString::fromStdString(pOp->getDescription()));
-        variant = qVariantFromValue<void*>(pointer);
+        variant = QVariant::fromValue(pointer);
         previous->setData(0, Qt::UserRole, variant);
         sigSetLayout->setCurrentIndex(T_UNDEFINED);
     }
@@ -399,17 +403,17 @@ void ExpertDiscoveryExtSigWiz::sl_selectionChanged (QTreeWidgetItem * current, Q
     }else if(current->parent()==distItem){
         sigSetLayout->setCurrentIndex(T_DISTANCE);
         QVariant variant = current->data(0,Qt::UserRole);
-        void* dataP = qVariantValue<void*>(variant);
+        void* dataP = variant.value<void*>();
         ((DistanceSet*)sigSet[T_DISTANCE])->loadData(dataP);
     }else if(current->parent()==intervItem){
         sigSetLayout->setCurrentIndex(T_INTERVAL);
         QVariant variant = current->data(0,Qt::UserRole);
-        void* dataP = qVariantValue<void*>(variant);
+        void* dataP = variant.value<void*>();
         ((IntervalSet*)sigSet[T_INTERVAL])->loadData(dataP);
     }else if(current->parent()==repetItem){
         sigSetLayout->setCurrentIndex(T_REITERATION);
         QVariant variant = current->data(0,Qt::UserRole);
-        void* dataP = qVariantValue<void*>(variant);
+        void* dataP = variant.value<void*>();
         ((RepetitionSet*)sigSet[T_REITERATION])->loadData(dataP);
     }
 }

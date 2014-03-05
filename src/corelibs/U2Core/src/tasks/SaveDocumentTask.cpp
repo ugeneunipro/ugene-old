@@ -35,10 +35,17 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/TmpDirChecker.h>
 
-#include <QtGui/QMessageBox>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QFileDialog>
 #include <QtGui/QPushButton>
+#include <QtGui/QMessageBox>
+#include <QtGui/QFileDialog>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#endif
 
 #include <memory>
 

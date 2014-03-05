@@ -24,7 +24,11 @@
 
 #include "GTUtilsDialog.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QToolButton>
+#endif
 
 namespace U2 {
 

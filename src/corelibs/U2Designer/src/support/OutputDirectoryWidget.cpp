@@ -21,12 +21,21 @@
 
 #include <QtCore/QEvent>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
+#include <QtGui/QLineEdit>
 #include <QtGui/QFileDialog>
 #include <QtGui/QHBoxLayout>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
 #include <QtGui/QVBoxLayout>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#endif
 
 #include <U2Core/U2SafePoints.h>
 

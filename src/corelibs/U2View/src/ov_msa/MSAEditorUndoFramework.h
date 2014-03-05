@@ -25,7 +25,11 @@
 #include <U2Core/global.h>
 #include <U2Core/MAlignment.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QUndoStack>
+#else
+#include <QtWidgets/QUndoStack>
+#endif
 
 namespace U2 {
 

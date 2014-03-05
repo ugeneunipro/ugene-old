@@ -29,8 +29,13 @@
 #include <U2View/GSequenceGraphView.h>
 #include <U2View/ADVSequenceWidget.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
 #include <QtGui/QToolBar>
+#else
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolBar>
+#endif
 #include <QtCore/QPointer>
 
 namespace U2 {

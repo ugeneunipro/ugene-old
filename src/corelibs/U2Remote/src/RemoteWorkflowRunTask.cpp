@@ -227,9 +227,15 @@ QString RemoteWorkflowRunTask::generateReport() const {
     QString res;
     res+="<table width='75%'>";
     res+=QString("<tr><th>%1</th><th>%2</th><th>%3</th></tr>").arg(tr("Task")).arg(tr("Status")).arg(tr("Details"));
+#if (QT_VERSION < 0x050000) //Qt 5
     QString name = Qt::escape(getTaskName());
-    QString status = hasError() ? tr("Failed") : isCanceled() ? tr("Canceled") : tr("Finished");
     QString error = Qt::escape(getError()).replace("\n", "<br>");
+#else
+    QString name = getTaskName().toHtmlEscaped();
+    QString error = getError().toHtmlEscaped().replace("\n", "<br>");
+#endif
+    QString status = hasError() ? tr("Failed") : isCanceled() ? tr("Canceled") : tr("Finished");
+
     if (hasError()) {
         name = "<font color='red'>"+name+"</font>";
         status = "<font color='red'>"+status+"</font>";

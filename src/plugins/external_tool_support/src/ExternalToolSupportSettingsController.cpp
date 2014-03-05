@@ -32,7 +32,11 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/GUIUtils.h>
 
-#include <QtGui>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QtGui>
+#else
+#include <QtWidgets/QtWidgets>
+#endif
 
 #include <blast/BlastAllSupport.h>
 #include <blast/FormatDBSupport.h>

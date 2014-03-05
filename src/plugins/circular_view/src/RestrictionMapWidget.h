@@ -22,7 +22,12 @@
 #ifndef _U2_RESTRICTION_MAP_WIDGET_H_
 #define _U2_RESTRICTION_MAP_WIDGET_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QTreeWidget>
+#endif
 
 #include <U2Core/Annotation.h>
 

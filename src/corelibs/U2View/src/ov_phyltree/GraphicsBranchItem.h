@@ -22,7 +22,12 @@
 #ifndef _U2_GRAPHICS_BRANCH_ITEM_H_
 #define _U2_GRAPHICS_BRANCH_ITEM_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAbstractGraphicsShapeItem>
+#else
+#include <QtWidgets/QAbstractGraphicsShapeItem>
+#endif
 #include "TreeSettings.h"
 
 namespace U2 {

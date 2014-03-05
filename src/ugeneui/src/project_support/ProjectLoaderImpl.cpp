@@ -55,8 +55,13 @@
 
 #include <U2View/DnaAssemblyGUIExtension.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QPushButton>
+#endif
 
 
 namespace U2 {

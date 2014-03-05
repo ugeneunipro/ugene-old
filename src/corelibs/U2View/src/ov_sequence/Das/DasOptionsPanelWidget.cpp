@@ -395,8 +395,14 @@ void DasOptionsPanelWidget::initialize() {
     idList->addAction(openInNewViewAction);
     idList->addAction(fetchIdsAction);
 
+
+#if (QT_VERSION < 0x050000) //Qt 5
     idList->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
     idList->horizontalHeader()->setResizeMode(1, QHeaderView::ResizeToContents);
+#else
+    idList->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+    idList->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+#endif
 
     //disable editing of the results
     idList->setEditTriggers(QAbstractItemView::NoEditTriggers);

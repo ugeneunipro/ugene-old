@@ -28,9 +28,15 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
 #include <U2Gui/MainWindow.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenuBar>
-#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenuBar>
+#endif
 
 namespace U2 {
 

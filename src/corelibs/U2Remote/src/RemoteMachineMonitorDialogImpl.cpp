@@ -35,9 +35,15 @@
 #include <U2Remote/RemoteMachineTasks.h>
 #include <U2Remote/RemoteMachineMonitor.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLabel>
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#endif
 
 #include <memory>
 
@@ -94,9 +100,14 @@ rmm(monitor), getPublicMachinesTask( NULL ) {
     okPushButton->setDefault( true );
     
     QHeaderView * header = machinesTreeWidget->header();
-    header->setClickable( false );
     header->setStretchLastSection( false );
+#if (QT_VERSION < 0x050000) //Qt 5
+    header->setClickable( false );
     header->setResizeMode( 1, QHeaderView::Stretch );
+#else
+    header->setSectionsClickable( false );
+    header->setSectionResizeMode( 1, QHeaderView::Stretch );
+#endif
     
     if( runTaskMode ) {
         okPushButton->setText( OK_BUTTON_RUN );

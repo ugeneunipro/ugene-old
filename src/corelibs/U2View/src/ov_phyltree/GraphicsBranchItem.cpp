@@ -24,9 +24,13 @@
 #include "TreeViewerUtils.h"
 
 #include <QtGui/QPainter>
-#include <QtGui/QGraphicsScene>
 #include <QtCore/QStack>
 #include <U2Core/U2SafePoints.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QGraphicsScene>
+#else
+#include <QtWidgets/QGraphicsScene>
+#endif
 
 namespace U2 {
 

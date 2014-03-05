@@ -23,7 +23,12 @@
 #define _U2_GT_SPINBOX_H_
 
 #include "api/GTGlobals.h"
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QSpinBox>
+#else
+#include <QtWidgets/QSpinBox>
+#endif
+
 
 namespace U2 {
 

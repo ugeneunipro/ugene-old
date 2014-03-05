@@ -24,13 +24,23 @@
 #include "api/GTTabWidget.h"
 #include "api/GTTextEdit.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QPushButton>
 #include <QtGui/QAbstractButton>
 #include <QtGui/QSpinBox>
 #include <QtGui/QRadioButton>
 #include <QtGui/QGroupBox>
-#include <QtGui/QPushButton>
 #include <QtGui/QDialogButtonBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QAbstractButton>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QDialogButtonBox>
+#endif
 
 const int RESULT_INTERSECTION_FILTER_INDEX = 0;
 const QString TEST_NAME_FOR_MA_RESULTS = "_test]";

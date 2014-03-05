@@ -37,13 +37,21 @@
 #include <U2Gui/GraphUtils.h>
 #include <U2Gui/GScrollBar.h>
 
-#include <QtGui/QTextEdit>
 #include <QtGui/QPainter>
 #include <QtGui/QFontMetrics>
-#include <QtGui/QMenu>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QTextEdit>
+#include <QtGui/QMenu>
 #include <QtGui/QLayout>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2 {
 

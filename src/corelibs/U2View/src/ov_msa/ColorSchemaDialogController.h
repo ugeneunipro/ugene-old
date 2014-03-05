@@ -5,9 +5,13 @@
 
 #include <QtCore/QMap>
 
-#include <QtGui/QDialog>
 #include <QtGui/QPixmap>
 #include <QtGui/QMouseEvent>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 namespace U2{
 

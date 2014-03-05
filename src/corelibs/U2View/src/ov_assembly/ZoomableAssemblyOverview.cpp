@@ -29,11 +29,18 @@
 #include <U2Core/AppContext.h>
 
 #include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QPainter>
-#include <QtGui/QMouseEvent>
 #include <QtGui/QLabel>
 #include <QtGui/QMenu>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QMenu>
+#endif
+
+#include <QtGui/QPainter>
+#include <QtGui/QMouseEvent>
 
 #include <math.h>
 
@@ -229,7 +236,7 @@ void ZoomableAssemblyOverview::drawSelection(QPainter & p) {
     }
 
     //cached selection can be outside the visible range, so intersect it with it
-    QRect selectionToDraw = rect().intersect(cachedSelection);
+    QRect selectionToDraw = rect().intersected(cachedSelection);
     if(selectionToDraw.isNull()) {
         return;
     }

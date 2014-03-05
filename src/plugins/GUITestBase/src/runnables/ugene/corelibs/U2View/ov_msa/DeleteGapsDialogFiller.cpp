@@ -24,11 +24,19 @@
 #include "api/GTRadioButton.h"
 #include "api/GTSpinBox.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QPushButton>
 #include <QtGui/QAbstractButton>
 #include <QtGui/QSpinBox>
-#include <QtGui/QPushButton>
 #include <QtGui/QDialogButtonBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QAbstractButton>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QDialogButtonBox>
+#endif
 
 namespace U2 {
 

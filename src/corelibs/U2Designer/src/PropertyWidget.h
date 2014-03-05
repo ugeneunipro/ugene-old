@@ -22,12 +22,22 @@
 #ifndef _U2_PROPERTYWIDGET_H_
 #define _U2_PROPERTYWIDGET_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QSpinBox>
 #include <QToolButton>
-#include <QVariant>
 #include <QWidget>
+#else
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QDoubleSpinBox>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QWidget>
+#endif
+#include <QVariant>
 
 #include <U2Lang/ConfigurationEditor.h>
 

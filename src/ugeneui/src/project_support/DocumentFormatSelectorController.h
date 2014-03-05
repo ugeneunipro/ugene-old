@@ -27,9 +27,15 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentUtils.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QRadioButton>
 #include <QtGui/QToolButton>
 #include <QtGui/QComboBox>
+#else
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QComboBox>
+#endif
 
 namespace U2 {
 

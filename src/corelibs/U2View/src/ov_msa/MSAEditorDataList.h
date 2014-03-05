@@ -25,10 +25,18 @@
 
 //#include <QtGui/QWidget>
 //#include <U2Core/U2Region.h>
-#include <QtGui/QPushButton>
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLabel>
+#include <QtGui/QPushButton>
 #include <QtGui/QTabWidget>
 #include <QtGui/QSplitter>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QSplitter>
+#endif
 
 #include <U2Core/Task.h>
 #include <U2Core/MAlignment.h>

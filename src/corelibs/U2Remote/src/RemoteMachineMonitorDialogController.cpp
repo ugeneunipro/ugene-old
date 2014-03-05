@@ -22,7 +22,11 @@
 #include "RemoteMachineMonitorDialogController.h"
 #include "RemoteMachineMonitorDialogImpl.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
 
 /* TRANSLATOR U2::RemoteMachineMonitorDialogImpl */
 

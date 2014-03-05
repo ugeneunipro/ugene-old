@@ -26,11 +26,19 @@
 #include <U2Gui/Notification.h>
 #include <U2Core/Log.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
 #include <QtGui/QLabel>
 #include <QtGui/QProgressBar>
-#include <QtGui/QPixmap>
 #include <QtGui/QHBoxLayout>
+#else
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QProgressBar>
+#include <QtWidgets/QHBoxLayout>
+#endif
+
+#include <QtGui/QPixmap>
 
 namespace U2 {
 

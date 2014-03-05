@@ -22,7 +22,13 @@
 #ifndef _U2_MSA_HIGHLIGHTING_TAB_H_
 #define _U2_MSA_HIGHLIGHTING_TAB_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QtGui>
+#else
+#include <QtWidgets/QtWidgets>
+#endif
+
 #include <U2View/MSAEditor.h>
 
 namespace U2 {

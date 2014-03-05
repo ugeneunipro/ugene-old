@@ -42,7 +42,7 @@
 #include <U2Core/FailTask.h>
 #include <U2Core/DASSource.h>
 #include <U2Core/UniprotBlastTask.h>
-#include <QtGui/QApplication>
+//#include <QtGui/QApplication>
 
 
 namespace U2 {

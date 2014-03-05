@@ -23,7 +23,11 @@
 #define _U2_GT_PLAINTEXTEDIT_H_
 
 #include "api/GTGlobals.h"
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPlainTextEdit>
+#else
+#include <QtWidgets/QPlainTextEdit>
+#endif
 
 namespace U2 {
 

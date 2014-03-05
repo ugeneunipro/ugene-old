@@ -645,7 +645,7 @@ void MsaDbiUtils::updateMsa(const U2EntityRef& msaRef, const MAlignment& al, U2O
     QVariantMap alInfo = al.getInfo();
 
     foreach (QString key, alInfo.keys()) {
-        QString val = qVariantValue<QString>(alInfo.value(key));
+        QString val = alInfo.value(key).value<QString>();
         U2StringAttribute attr(msaRef.entityId, key, val);
 
         attrDbi->createStringAttribute(attr, os);

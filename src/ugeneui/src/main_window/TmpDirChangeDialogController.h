@@ -3,9 +3,16 @@
 
 #include <ui/ui_TmpDirChangeDialog.h>
 
-#include <QtGui/QDialog>
+
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLabel>
+#include <QtGui/QDialog>
 #include <QtGui/QFileDialog>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QFileDialog>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>

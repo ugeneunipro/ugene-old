@@ -22,8 +22,14 @@
 #ifndef _U2_EXPORT_PROJECT_VIEW_ITEMS_H_
 #define _U2_EXPORT_PROJECT_VIEW_ITEMS_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMenu>
+#endif
 
 #include <U2Core/global.h>
 #include <U2Core/Annotation.h>

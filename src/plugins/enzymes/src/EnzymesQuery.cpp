@@ -32,7 +32,11 @@
 
 #include <U2Lang/BaseTypes.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QInputDialog>
+#else
+#include <QtWidgets/QInputDialog>
+#endif
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
 

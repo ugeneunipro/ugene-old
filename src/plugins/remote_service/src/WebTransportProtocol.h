@@ -32,7 +32,7 @@
 
 #include <QtXml/QXmlDefaultHandler>
 #include <QtXml/QXmlSimpleReader>
-#include <QtXml/QXmlStreamWriter>
+#include <QtCore/QXmlStreamWriter>
 
 
 

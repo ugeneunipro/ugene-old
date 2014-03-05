@@ -29,13 +29,23 @@
 #include "api/GTKeyboardDriver.h"
 
 
-#include <QComboBox>
-#include <QSpinBox>
-#include <QApplication>
-#include <QCheckBox>
-#include <QTableWidget>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QPushButton>
+#include <QtGui/QComboBox>
+#include <QtGui/QSpinBox>
+#include <QtGui/QCheckBox>
+#include <QtGui/QTableWidget>
 #include <QtGui/QDialogButtonBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QDialogButtonBox>
+#endif
 
 
 namespace U2 {

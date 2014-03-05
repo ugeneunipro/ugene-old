@@ -40,9 +40,15 @@
 
 #include <QtCore/QTextStream>
 #include <QtGui/QClipboard>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2 {
 

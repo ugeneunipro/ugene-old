@@ -35,7 +35,14 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/ObjectViewModel.h>
-//#include <QtGui/QApplication>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
+#include <QtGui/QMainWindow>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMainWindow>
+#endif
 
 namespace U2 {
 

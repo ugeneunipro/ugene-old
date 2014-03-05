@@ -24,13 +24,19 @@
 #include <U2Lang/QueryDesignerRegistry.h>
 
 #include <U2Core/AppContext.h>
-
-#include <QtGui/QHeaderView>
 #include <QtGui/QMouseEvent>
-#include <QtGui/QApplication>
 
-#include <QtGui/QItemDelegate>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QAction>
+#include <QtGui/QItemDelegate>
+#include <QtGui/QHeaderView>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QItemDelegate>
+#include <QtWidgets/QHeaderView>
+#endif
 
 
 namespace U2 {

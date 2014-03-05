@@ -36,11 +36,15 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
-#include <QtGui/QPushButton>
-
-
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#endif
 
 namespace U2{
 

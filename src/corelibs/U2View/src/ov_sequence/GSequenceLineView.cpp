@@ -31,9 +31,15 @@
 #include <U2Gui/GScrollBar.h>
 #include <U2Gui/ObjectViewModel.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QTextEdit>
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QVBoxLayout>
+#endif
 
 
 namespace U2 {

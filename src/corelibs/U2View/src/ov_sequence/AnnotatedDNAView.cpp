@@ -72,12 +72,21 @@
 #include <U2View/SecStructPredictUtils.h>
 #include <U2View/CodonTable.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
 #include <QtGui/QScrollArea>
 #include <QtGui/QToolBar>
 #include <QtGui/QVBoxLayout>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QScrollArea>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QVBoxLayout>
+#endif
 
 #include <memory>
 

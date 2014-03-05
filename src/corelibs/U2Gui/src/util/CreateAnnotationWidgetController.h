@@ -26,13 +26,23 @@
 #include <U2Core/U2Region.h>
 #include <U2Core/DocumentModel.h>
 
-#include <QtGui/QMenu>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
+#include <QtGui/QMenu>
 #include <QtGui/QRadioButton>
 #include <QtGui/QToolButton>
 #include <QtGui/QComboBox>
-#include <QtGui/QLabel>
 #include <QtGui/QGroupBox>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QGroupBox>
+#endif
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
 

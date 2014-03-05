@@ -23,7 +23,12 @@
 #define _U2_REMOTE_MACHINE_SCAN_DIALOG_IMPL_H_
 
 #include <QtCore/QTimer>
+
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 #include <U2Remote/RemoteMachine.h>
 #include <ui/ui_RemoteMachineScanDialog.h>

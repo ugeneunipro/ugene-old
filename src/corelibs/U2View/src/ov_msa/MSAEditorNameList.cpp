@@ -29,11 +29,16 @@
 
 #include <U2Gui/GUIUtils.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QInputDialog>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QInputDialog>
+#endif
 #include <QtGui/QClipboard>
 #include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
-#include <QtGui/QInputDialog>
 
 namespace U2 {
 

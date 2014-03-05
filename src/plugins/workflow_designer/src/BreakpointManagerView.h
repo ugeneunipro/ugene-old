@@ -22,7 +22,12 @@
 #ifndef _U2_BREAKPOINT_MANAGER_VIEW_H_
 #define _U2_BREAKPOINT_MANAGER_VIEW_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
+#else
+#include <QtWidgets/QWidget>
+#endif
 
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/Schema.h>

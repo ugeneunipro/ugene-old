@@ -39,9 +39,13 @@
 #include <U2View/GSequenceLineViewAnnotated.h>
 
 #include <QtGui/QFont>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QScrollBar>
-
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QScrollBar>
+#endif
 
 namespace U2 {
 

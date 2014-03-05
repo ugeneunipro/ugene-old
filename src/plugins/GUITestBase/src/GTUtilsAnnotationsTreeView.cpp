@@ -28,8 +28,13 @@
 #include "GTUtilsTaskTreeView.h"
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/MainWindow.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
 #include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QTreeWidget>
+#endif
 #include <U2View/AnnotationsTreeView.h>
 
 namespace U2 {

@@ -32,17 +32,26 @@
 #include <U2Gui/HBar.h>
 #include <U2Gui/DialogUtils.h>
 
+#include <QtGui/QPixmap>
+#include <QtGui/QPainter>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QFileDialog>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QPrinter>
-#include <QtGui/QPixmap>
-#include <QtGui/QPainter>
 #include <QtGui/QMessageBox>
 #include <QtGui/QTreeWidget>
-
-#include <QtGui/QApplication>
-
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtPrintSupport/QPrinter>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QTreeWidget>
+#endif
 
 namespace U2 {
 

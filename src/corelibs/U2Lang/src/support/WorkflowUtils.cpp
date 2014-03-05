@@ -23,7 +23,11 @@
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 #include <QtCore/QUrl>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QListWidgetItem>
+#else
+#include <QtWidgets/QListWidgetItem>
+#endif
 
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/CoreLibConstants.h>

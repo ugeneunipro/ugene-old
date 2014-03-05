@@ -29,15 +29,27 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
-#include <QtGui/QToolButton>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
 #include <QtGui/QLineEdit>
+#include <QtGui/QToolButton>
 #include <QtGui/QComboBox>
 #include <QtGui/QGroupBox>
 #include <QtGui/QCheckBox>
-#include <QtGui/QPushButton>
-#include <QtGui/QLabel>
 #include <QtGui/QVBoxLayout>
+#else
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QVBoxLayout>
+#endif
 
 #include <U2View/MSAEditor.h>
 

@@ -19,14 +19,26 @@
  * MA 02110-1301, USA.
  */
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QAction>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QGroupBox>
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QAction>
 #include <QtGui/QToolBar>
 #include <QtGui/QCheckBox>
 #include <QtGui/QMenu>
 #include <QtGui/QGraphicsScene>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QGraphicsScene>
+#endif
 
 #include <U2Lang/WorkflowDebugStatus.h>
 #include <U2Lang/WorkflowSettings.h>

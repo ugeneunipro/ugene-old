@@ -24,11 +24,19 @@
 
 #include <U2Formats/GenbankLocationParser.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QToolButton>
-#include <QtGui/QPushButton>
-#include <QtGui/QLabel>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QToolButton>
+#endif
 #include <QtGui/QIntValidator>
 #include <U2Gui/HelpButton.h>
 #include <math.h>

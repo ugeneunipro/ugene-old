@@ -22,9 +22,15 @@
 #include "SelectDocumentFormatDialogFiller.h"
 #include "api/GTWidget.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QDialogButtonBox>
 #include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QDialogButtonBox>
+#endif
 
 namespace U2 {
 

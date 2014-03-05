@@ -29,13 +29,23 @@
 #include <U2Core/QVariantUtils.h>
 
 #include <QtGui/QPainter>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QGraphicsScene>
 #include <QtGui/QGraphicsSceneMouseEvent>
 #include <QtGui/QStyleOptionGraphicsItem>
 #include <QtGui/QGraphicsView>
-#include <QtGui/QTextDocument>
 #include <QtGui/QInputDialog>
 #include <QtGui/QMenu>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QGraphicsScene>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
+#include <QtWidgets/QStyleOptionGraphicsItem>
+#include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QMenu>
+#endif
+#include <QtGui/QTextDocument>
 
 #define ANNOTATION_MIN_SIZE GRID_STEP
 #define ANNOTATION_MAX_SIZE 4 * GRID_STEP
@@ -714,7 +724,7 @@ QVariant QDElement::itemChange( GraphicsItemChange change, const QVariant & valu
             }
             break;
         case ItemSceneChange:
-            if(qVariantValue<QGraphicsScene*>(value)==NULL) {
+            if((value.value<QGraphicsScene*>())==NULL) {
                 foreach(Footnote* fn, links) {
                     scene()->removeItem(fn);
                     delete fn;
@@ -722,7 +732,7 @@ QVariant QDElement::itemChange( GraphicsItemChange change, const QVariant & valu
             }
             break;
         case ItemSceneHasChanged:
-            if(qVariantValue<QGraphicsScene*>(value)!=NULL) {
+            if((value.value<QGraphicsScene*>())!=NULL) {
                 sl_refresh();
                 adaptSize();
                 QueryScene* qs = qobject_cast<QueryScene*>(scene());
@@ -900,7 +910,7 @@ QVariant Footnote::itemChange(GraphicsItemChange change, const QVariant &value) 
             scene()->addItem(rightRef);
         }
     } else if(change==ItemSceneChange) {
-        if(qVariantValue<QGraphicsScene*>(value)==NULL) {
+        if((value.value<QGraphicsScene*>())==NULL) {
             scene()->removeItem(leftRef);
             scene()->removeItem(rightRef);
             delete leftRef;

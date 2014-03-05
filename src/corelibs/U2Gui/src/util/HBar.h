@@ -23,8 +23,13 @@
 #define _U2_HBAR_H_
 
 #include <U2Core/global.h>
-#include <QtGui/QToolBar>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QAction>
+#include <QtGui/QToolBar>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QToolBar>
+#endif
 
 namespace U2 {
 

@@ -24,8 +24,13 @@
 
 #include <U2Core/global.h>
 
-#include <QtGui/QLineEdit>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
+#include <QtGui/QLineEdit>
+#else
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QLineEdit>
+#endif
 
 class QLabel;
 class QLineEdit;

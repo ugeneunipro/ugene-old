@@ -21,12 +21,18 @@
 
 #include "SubstMatrixDialog.h"
 
+#include <U2Gui/HelpButton.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
 #include <QtGui/QScrollBar>
 #include <QtGui/QHeaderView>
 #include <QtGui/QTableWidgetItem>
-#include <U2Gui/HelpButton.h>
-#include <QtGui/QPushButton>
-
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QScrollBar>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QTableWidgetItem>
+#endif
 
 namespace U2 {
 
@@ -113,8 +119,14 @@ void SubstMatrixDialog::prepareTable() {
         tableMatrix->setItem(0, i+1, ptwi);
     }
 
+#if (QT_VERSION < 0x050000) //Qt 5
     tableMatrix->verticalHeader()->setResizeMode(QHeaderView::Stretch);
     tableMatrix->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+#else
+    tableMatrix->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    tableMatrix->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+#endif
+
     tableMatrix->setMinimumSize(CELL_WIDTH * (n + 1) + 20, CELL_WIDTH * (n + 1) + 20); //+20 is for borders
 }
 

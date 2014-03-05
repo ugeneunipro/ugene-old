@@ -24,8 +24,13 @@
 
 #include <U2Gui/MainWindow.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenuBar>
 #include <QtGui/QMenu>
+#else
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QMenu>
+#endif
 #include <QtCore/QEvent>
 
 namespace U2 {

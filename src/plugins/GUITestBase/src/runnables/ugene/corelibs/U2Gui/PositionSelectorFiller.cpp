@@ -24,8 +24,13 @@
 #include "api/GTWidget.h"
 #include "api/GTKeyboardDriver.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#endif
 
 namespace U2 {
 

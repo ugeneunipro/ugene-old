@@ -30,15 +30,22 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Gui/HelpButton.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#include <QtGui/QMessageBox>
+#include <QtGui/QFileDialog>
+#include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QTreeWidget>
+#endif
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/L10n.h>
 
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#include <QtGui/QTreeWidget>
 
 #define SETTINGS_ROOT QString("dna_export/")
 

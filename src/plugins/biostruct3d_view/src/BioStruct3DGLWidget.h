@@ -33,9 +33,15 @@
 #include <QtCore/QTimer>
 #include <QtCore/QSharedPointer>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QAction>
 #include <QtGui/QMenu>
 #include <QtGui/QActionGroup>
-#include <QtGui/QAction>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QActionGroup>
+#endif
 #include <QtGui/QColor>
 
 #include <QtOpenGL/QGLWidget>

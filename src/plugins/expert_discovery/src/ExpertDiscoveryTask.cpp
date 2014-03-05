@@ -34,8 +34,13 @@
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/GHints.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#endif
 
 #include <QtCore/QSet>
 #include <QtCore/QList>

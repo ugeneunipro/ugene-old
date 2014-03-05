@@ -26,10 +26,17 @@
 #include "api/GTComboBox.h"
 #include "api/GTKeyboardDriver.h"
 
-#include <QtGui/QAbstractButton>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QDialogButtonBox>
 #include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QAbstractButton>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QAbstractButton>
+#endif
 
 namespace U2 {
 

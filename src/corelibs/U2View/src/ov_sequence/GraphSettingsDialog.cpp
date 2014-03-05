@@ -23,12 +23,21 @@
 #include "ADVGraphModel.h"
 #include "WindowStepSelectorWidget.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QPushButton>
-#include <QtGui/QLabel>
 #include <QtGui/QColorDialog>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QMessageBox>
+#endif
 #include <U2Gui/HelpButton.h>
 
 #include "GraphSettingsDialog.h"

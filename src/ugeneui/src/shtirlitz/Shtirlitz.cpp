@@ -25,8 +25,13 @@
 #include <QtCore/QProcess>
 #include <QtCore/QUrl>
 
-#include <QtGui/QMessageBox>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include <QtNetwork/QNetworkReply>
 
@@ -192,7 +197,7 @@ QString Shtirlitz::formCountersReport() {
     Settings * s = AppContext::getSettings();
     QString countersReport;
     countersReport += "COUNTERS REPORT:\n";
-    countersReport += "ID: " + getUniqueUgeneId() + "\n";
+    countersReport += "ID: " + getUniqueUgeneId().toString() + "\n";
     QStringList savedCounters = s->getAllKeys( SETTINGS_COUNTERS );
     if( savedCounters.empty() ){
         countersReport += "NO INFO\n";
@@ -218,7 +223,7 @@ QString Shtirlitz::formSystemReport() {
     
     QString systemReport;
     systemReport += "SYSTEM REPORT:\n";
-    systemReport += "ID: " + getUniqueUgeneId() + "\n";
+    systemReport += "ID: " + getUniqueUgeneId().toString() + "\n";
     systemReport += "Date and time: " + dateAndTime + "\n";
     systemReport += "Qt Version: " + qtVersion + "\n";
     systemReport += "UGENE version: " + ugeneVer + "\n";

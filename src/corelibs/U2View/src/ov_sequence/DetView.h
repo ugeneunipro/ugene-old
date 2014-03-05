@@ -23,7 +23,11 @@
 #define _U2_DET_VIEW_H_
 
 #include <QtGui/QFont>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
+#else
+#include <QtWidgets/QAction>
+#endif
 
 #include <U2Core/U2Location.h>
 

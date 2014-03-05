@@ -35,9 +35,15 @@
 
 #include <QtCore/QVariantMap>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
 #include <QtGui/QSplitter>
 #include <QtGui/QTabWidget>
+#else
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QSplitter>
+#include <QtWidgets/QTabWidget>
+#endif
 #include "PhyTrees/MSAEditorTreeManager.h"
 
 namespace U2 {

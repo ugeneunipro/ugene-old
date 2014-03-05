@@ -24,8 +24,13 @@
 
 #include <U2Core/global.h>
 
-#include <QtGui/QWidget>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
+#include <QtGui/QWidget>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QWidget>
+#endif
 
 namespace U2 {
 

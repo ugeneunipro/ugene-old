@@ -23,8 +23,13 @@
 #define _U2_ANNOTATED_DNA_VIEW_H_
 
 #include <QtCore/QPointer>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTextEdit>
 #include <QtGui/QSplitter>
+#else
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QSplitter>
+#endif
 
 #include <U2Core/Annotation.h>
 #include <U2Core/Task.h>

@@ -46,10 +46,17 @@
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/GUIUtils.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMainWindow>
+#include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolButton>
-#include <QtGui/QMessageBox>
-#include <QtGui/QMainWindow>
+#else
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QToolButton>
+#endif
 
 namespace U2 {
 

@@ -272,7 +272,7 @@ void SeqNamesConvertor::restoreNames(const PhyTree& tree) {
 const QString& SeqNamesConvertor::generateNewAlphabeticId() {
     int idSize = lastIdStr.size();
     for(int i = idSize - 1; i >= 0; i--) {
-        char curChar = lastIdStr.at(i).toAscii();
+        char curChar = lastIdStr.at(i).toLatin1();
         if(curChar < 'z') {
             lastIdStr[i] = curChar + 1;
             return lastIdStr;

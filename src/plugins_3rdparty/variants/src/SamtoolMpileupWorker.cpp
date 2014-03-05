@@ -44,7 +44,7 @@
 #include <U2Core/FailTask.h>
 #include <U2Core/U2OpStatusUtils.h>
 
-#include <QtGui/QApplication>
+//#include <QtGui/QApplication>
 
 #include "limits.h"
 

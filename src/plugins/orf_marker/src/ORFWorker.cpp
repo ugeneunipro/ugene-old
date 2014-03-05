@@ -41,7 +41,11 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Algorithm/ORFAlgorithmTask.h>
 #include <U2Core/FailTask.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#endif
 
 /* TRANSLATOR U2::LocalWorkflow::ORFWorker */
 
@@ -82,12 +86,12 @@ void ORFWorkerFactory::init() {
     {
         Descriptor nd(NAME_ATTR, ORFWorker::tr("Annotate as"), ORFWorker::tr("Name of the result annotations marking found ORFs."));
         Descriptor ttd(ID_ATTR, ORFWorker::tr("Genetic code"), ORFWorker::tr("Which genetic code should be used for translating the input nucleotide sequence."));
-        Descriptor ld(LEN_ATTR, ORFWorker::tr("Min length, bp:"), QApplication::translate("ORFDialogBase", "Ignore ORFs shorter than the specified length.", 0, QApplication::UnicodeUTF8));
-        Descriptor fd(FIT_ATTR, ORFWorker::tr("Require stop codon"), QApplication::translate("ORFDialogBase", "Require stop codon", 0, QApplication::UnicodeUTF8));
-        Descriptor ind(INIT_ATTR, ORFWorker::tr("Require init codon"), QApplication::translate("ORFDialogBase", "\n""Ignore boundary ORFs which last beyond the search region\n""(i.e. have no stop codon within the range).\n", 0, QApplication::UnicodeUTF8));
+        Descriptor ld(LEN_ATTR, ORFWorker::tr("Min length, bp:"), QApplication::translate("ORFDialogBase", "Ignore ORFs shorter than the specified length.", 0));
+        Descriptor fd(FIT_ATTR, ORFWorker::tr("Require stop codon"), QApplication::translate("ORFDialogBase", "Require stop codon", 0));
+        Descriptor ind(INIT_ATTR, ORFWorker::tr("Require init codon"), QApplication::translate("ORFDialogBase", "\n""Ignore boundary ORFs which last beyond the search region\n""(i.e. have no stop codon within the range).\n", 0));
         Descriptor ad(ALT_ATTR, ORFWorker::tr("Allow alternative codons"), QApplication::translate("ORFDialogBase", "\n"
             "               Allow ORFs starting with alternative initiation codons,\n"
-            "               accordingly to the current translation table.\n", 0, QApplication::UnicodeUTF8));
+            "               accordingly to the current translation table.\n", 0));
         Descriptor isc(ISC_ATTR, ORFWorker::tr("Include stop codon"), ORFWorker::tr("The result annotation will includes stop codon if this option is set."));
         Descriptor mr(RES_ATTR,ORFWorker::tr("Max result"),ORFWorker::tr("Find results not achieved by specified count."));
         Descriptor lr(LIMIT_ATTR,ORFWorker::tr("Limit results"),ORFWorker::tr("The amount of results will be limited id that option is setted."));

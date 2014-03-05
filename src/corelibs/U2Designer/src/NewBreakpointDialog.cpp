@@ -22,7 +22,11 @@
 #include "ui/ui_NewBreakpointDialog.h"
 #include "NewBreakpointDialog.h"
 #include <U2Gui/HelpButton.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QPushButton>
+#endif
 
 namespace U2 {
 

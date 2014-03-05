@@ -7,7 +7,11 @@
 #include "ExpertDiscoveryData.h"
 
 #include <QObject>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QAction>
+#else
+#include <QtWidgets/QAction>
+#endif
  #include <QActionGroup>
 #include <QMenu>
 #include <QTreeWidget>

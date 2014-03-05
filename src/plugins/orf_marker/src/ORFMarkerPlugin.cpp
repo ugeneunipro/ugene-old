@@ -33,9 +33,14 @@
 #include <U2View/ADVUtils.h>
 #include <U2Lang/QueryDesignerRegistry.h>
 
-#include <QtGui/QMenu>
 #include <QtCore/QMap>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
+#include <QtGui/QMenu>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMenu>
+#endif
 
 #include "ORFMarkerTests.h"
 

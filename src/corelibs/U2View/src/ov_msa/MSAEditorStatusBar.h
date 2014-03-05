@@ -26,10 +26,17 @@
 #include <QtCore/QVector>
 #include <QtCore/QEvent>
 
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
+#include <QtGui/QLineEdit>
+#else
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLineEdit>
+#endif
 
 namespace U2 {
 

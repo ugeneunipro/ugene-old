@@ -56,14 +56,23 @@
 #include <U2Gui/TreeWidgetUtils.h>
 
 #include <QtCore/QFileInfo>
-#include <QtGui/QVBoxLayout>
 #include <QtGui/QPainter>
-#include <QtGui/QMenu>
 #include <QtGui/QClipboard>
-#include <QtGui/QToolTip>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QLineEdit>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
 #include <QtGui/QHeaderView>
-#include <QtGui/QLineEdit>
+#include <QtGui/QToolTip>
+#else
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QToolTip>
+#endif
 
 /* TRANSLATOR U2::AnnotationsTreeView */
 

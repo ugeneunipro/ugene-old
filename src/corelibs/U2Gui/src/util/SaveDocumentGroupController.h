@@ -24,9 +24,15 @@
 
 #include <U2Core/DocumentModel.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLineEdit>
 #include <QtGui/QComboBox>
 #include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QToolButton>
+#endif
 
 namespace U2{
 

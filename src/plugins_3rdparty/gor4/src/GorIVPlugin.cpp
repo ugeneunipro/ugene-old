@@ -19,9 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QMenu>
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
+#include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#endif
 #include <QtCore/QMap>
 #include <QtCore/QFile>
 

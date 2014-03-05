@@ -22,7 +22,11 @@
 #include <cctype>
 #include "GTKeyboardDriver.h"
 #include "api/GTGlobals.h"
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#endif
 
 #if defined __linux__
     #define XK_LATIN1      // for latin symbol

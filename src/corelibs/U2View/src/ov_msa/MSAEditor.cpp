@@ -69,16 +69,28 @@
 #include <U2Gui/ExportDocumentDialogController.h>
 #include <U2Gui/ExportObjectUtils.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLabel>
-#include <QtGui/QPainter>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QGridLayout>
-#include <QtGui/QResizeEvent>
 #include <QtGui/QToolBar>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #include <QtGui/QFontDialog>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFontDialog>
+#endif
+
+#include <QtGui/QPainter>
+#include <QtGui/QResizeEvent>
 #include <U2Gui/GScrollBar.h>
 #include <QtSvg/QSvgGenerator>
 

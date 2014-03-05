@@ -46,12 +46,21 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HBar.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QToolButton>
 #include <QtGui/QWidgetAction>
 #include <QtGui/QDialog>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QWidgetAction>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include "GSequenceGraphView.h"
 

@@ -25,8 +25,11 @@
 #include "GSequenceLineView.h"
 #include "ADVGraphModel.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
-
+#else
+#include <QtWidgets/QMenu>
+#endif
 
 namespace U2 {
 

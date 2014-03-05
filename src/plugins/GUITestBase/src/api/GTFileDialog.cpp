@@ -29,13 +29,23 @@
 #include "GTWidget.h"
 
 #include <U2Gui/MainWindow.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QPushButton>
 #include <QtGui/QLineEdit>
 #include <QtGui/QTreeView>
-#include <QtGui/QFileSystemModel>
 #include <QtGui/QHeaderView>
 #include <QtGui/QFileDialog>
-#include <QtGui/QPushButton>
+#include <QtGui/QFileSystemModel>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QTreeView>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QFileSystemModel>
+#endif
 
 #define FILE_NAME_LINE_EDIT "fileNameEdit"
 

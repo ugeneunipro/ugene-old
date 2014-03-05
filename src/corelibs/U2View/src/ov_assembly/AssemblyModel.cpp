@@ -50,8 +50,13 @@
 
 #include <U2Gui/ObjectViewTasks.h>
 
-#include <QtGui/QMessageBox>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include <memory>
 

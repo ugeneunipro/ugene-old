@@ -23,14 +23,22 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Core/DocumentUtils.h>
-#include <QtGui/QMessageBox>
 
 #include <U2Gui/LastUsedDirHelper.h>
-#include <QtGui/QFileDialog>
-#include <QtGui/QToolButton>
 #include <U2Gui/HelpButton.h>
 #include <U2Core/GUrlUtils.h>
+
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#include <QtGui/QFileDialog>
+#include <QtGui/QToolButton>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2 {
 ////////////////////////////////////////

@@ -52,10 +52,17 @@
 
 #include <memory>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QGridLayout>
 #include <QtGui/QGroupBox>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QGroupBox>
+#endif
 
 //#define SETTINGS_LAST_USED_ANNOTATION_NAME "create_annotation/last_name"
 #define SETTINGS_LASTDIR "create_annotation/last_dir"

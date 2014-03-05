@@ -21,6 +21,8 @@
 
 #include "UserActionsWriter.h"
 #include <QtGui/QMouseEvent>
+#include <U2Gui/MainWindow.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QWidget>
 #include <QtGui/QLabel>
@@ -31,10 +33,25 @@
 #include <QtGui/QTreeWidget>
 #include <QtGui/QListWidget>
 #include <QtGui/QMainWindow>
-#include <U2Gui/MainWindow.h>
 #include <QtGui/QDialog>
 #include <QtGui/QMessageBox>
 #include <QtGui/QAbstractSpinBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QAbstractSpinBox>
+#endif
+
 #include "Log.h"
 #include "U2SafePoints.h"
 

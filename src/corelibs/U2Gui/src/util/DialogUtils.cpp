@@ -35,8 +35,13 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QCoreApplication>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#endif
 
 namespace U2 {
 

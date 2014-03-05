@@ -39,9 +39,14 @@
 #include <U2Algorithm/MSAConsensusUtils.h>
 
 #include <QtGui/QPainter>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QClipboard>
 #include <QtGui/QToolTip>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QToolTip>
+#endif
+#include <QtGui/QClipboard>
 
 namespace U2 {
 

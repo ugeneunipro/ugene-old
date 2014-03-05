@@ -32,6 +32,11 @@
 #include "SeqPosTask.h"
 #include "SeqPosSettings.h"
 #include "utils/CistromeDelegate.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QLabel>
+#else
+#include <QtWidgets/QLabel>
+#endif
 
 namespace U2 {
 namespace LocalWorkflow {

@@ -38,12 +38,21 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
 #include <U2View/MSAEditor.h>
-#include <QTreeWidget>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QTreeWidget>
 #include <QtGui/QToolButton>
 #include <QtGui/QGraphicsView>
 #include <QtGui/QListWidget>
 #include <QtGui/QTableView>
 #include <QtGui/QSpinBox>
+#else
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QTableView>
+#include <QtWidgets/QSpinBox>
+#endif
 #include <U2Core/AppContext.h>
 #include "../../workflow_designer/src/WorkflowViewItems.h"
 

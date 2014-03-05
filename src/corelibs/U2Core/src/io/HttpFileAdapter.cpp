@@ -106,7 +106,7 @@ bool HttpFileAdapter::open( const QUrl& url, const QNetworkProxy & p)
     connect(netManager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
     if(url.toString().length()>MAX_GET_LENGTH) {
         QNetworkRequest netRequest(url);
-        reply=netManager->post(netRequest, url.encodedQuery());
+        reply=netManager->post(netRequest, url.toEncoded());
     }
     else {
         QNetworkRequest netRequest(url);

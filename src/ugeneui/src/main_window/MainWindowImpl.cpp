@@ -48,8 +48,13 @@
 
 #include <U2Gui/GUIUtils.h>
 
-#include <QtGui/QToolBar>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
+#include <QtGui/QToolBar>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QToolBar>
+#endif
 #include <QtGui/QPainter>
 #include <QtGui/QFont>
 #include <QtGui/QPixmap>

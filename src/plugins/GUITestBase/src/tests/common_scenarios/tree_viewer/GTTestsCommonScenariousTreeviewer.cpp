@@ -45,9 +45,17 @@
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
-#include <QGraphicsItem>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMainWindow>
+#include <QtGui/QGraphicsItem>
+#include <QtGui/QGraphicsView>
+#else
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QGraphicsItem>
+#include <QtWidgets/QGraphicsView>
+#endif
 #include <U2Core/AppContext.h>
-#include <QGraphicsView>
 #include <QColor>
 #include <QRgb>
 

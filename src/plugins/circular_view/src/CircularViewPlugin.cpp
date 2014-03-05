@@ -40,8 +40,13 @@
 
 #include <U2Gui/GUIUtils.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
 #include <QtGui/QMenu>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QMenu>
+#endif
 
 #include <limits>
 

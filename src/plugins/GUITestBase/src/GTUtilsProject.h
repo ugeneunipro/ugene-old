@@ -27,7 +27,11 @@
 #include "GTUtilsDocument.h"
 
 #include <U2Core/GUrl.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2 {
 

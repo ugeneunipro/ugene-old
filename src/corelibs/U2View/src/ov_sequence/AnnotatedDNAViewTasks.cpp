@@ -40,7 +40,12 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <QApplication>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#endif
+
 #include <QtCore/QSet>
 #include <QMessageBox>
 

@@ -31,7 +31,11 @@
 #include <QtCore/QVariant>
 #include <QtCore/QPointer>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
+#else
+#include <QtWidgets/QWidget>
+#endif
 
 
 namespace U2 {

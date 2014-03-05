@@ -30,7 +30,11 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/HelpButton.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2 {
 

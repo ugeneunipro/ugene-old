@@ -35,9 +35,14 @@ MarkerEditorWidget::MarkerEditorWidget(QAbstractTableModel *markerModel, QWidget
 {
     setupUi(this);
     {
+#if (QT_VERSION < 0x050000) //Qt 5
         table->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-        table->horizontalHeader()->setStretchLastSection(true);
         table->horizontalHeader()->setClickable(false);
+#else
+        table->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+        table->horizontalHeader()->setSectionsClickable(false);
+#endif
+        table->horizontalHeader()->setStretchLastSection(true);
         table->verticalHeader()->hide();
         table->verticalHeader()->setDefaultSectionSize(QFontMetrics(QFont()).height() + 6);
     }

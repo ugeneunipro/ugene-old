@@ -23,7 +23,11 @@
 #define _U2_ADV_SPLIT_WIDGET_H_
 
 #include <U2Core/global.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QSplitter>
+#else
+#include <QtWidgets/QSplitter>
+#endif
 
 namespace U2 {
     

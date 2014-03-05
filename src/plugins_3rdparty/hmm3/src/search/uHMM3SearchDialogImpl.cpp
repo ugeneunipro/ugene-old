@@ -29,10 +29,16 @@
 
 #include <gobject/uHMMObject.h>
 
+#include <U2Gui/HelpButton.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
-#include <U2Gui/HelpButton.h>
-#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include <cmath>
 #include <cassert>

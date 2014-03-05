@@ -30,9 +30,15 @@
 #include <U2Gui/RegionSelector.h>
 #include <U2Core/U2Region.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
 #include <QtGui/QCheckBox>
 #include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QToolButton>
+#endif
 
 namespace U2 {
 class CreateAnnotationWidgetController;

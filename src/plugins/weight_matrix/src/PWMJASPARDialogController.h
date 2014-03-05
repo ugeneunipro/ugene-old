@@ -24,9 +24,15 @@
 
 #include <ui/ui_SearchJASPARDatabase.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QTreeWidgetItem>
+#else
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QTreeWidgetItem>
+#endif
 
 #include <U2Core/PFMatrix.h>
 

@@ -155,7 +155,7 @@ qint64 BufferedDataReader::readData( char *data, qint64 maxlen )
         curIdx++;
     }
     
-    qMemCopy(data, preparedBuf.constData(), len);
+    memcpy(data, preparedBuf.constData(), len);
 
     return len;
 }

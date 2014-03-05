@@ -50,6 +50,11 @@
 
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMdiSubWindow>
+#else
+#include <QtWidgets/QMdiSubWindow>
+#endif
 
 namespace U2{
 

@@ -26,7 +26,11 @@
 #include "ui_SettingsDialog.h"
 #include "AnaglyphRenderer.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QColorDialog>
+#else
+#include <QtWidgets/QColorDialog>
+#endif
 
 namespace U2 {
 

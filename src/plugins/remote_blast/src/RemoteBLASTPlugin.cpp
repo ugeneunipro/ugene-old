@@ -37,11 +37,16 @@
 #include <U2Test/GTest.h>
 #include <U2Test/GTestFrameworkComponents.h>
 
-#include <QtGui/QMenu>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#include <QtGui/QMenu>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QMenu>
+#endif
 
 #include "RemoteBLASTPlugin.h"
 #include "BlastQuery.h"

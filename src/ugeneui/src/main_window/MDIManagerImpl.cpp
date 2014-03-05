@@ -28,11 +28,18 @@
 #include <U2Core/UserApplicationsSettings.h>
 
 #include <QtCore/QSet>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QToolBar>
-#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QToolBar>
+#endif
+//#include <QtGui/QApplication>
 #include <QtGui/QtEvents>
 
 namespace U2 {

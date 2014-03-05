@@ -24,7 +24,11 @@
 #include "ColorDialogFiller.h"
 #include <QColor>
 #include <QColorDialog>
-#include <QApplication>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#endif
 #include <QWidget>
 #include <QSpinBox>
 namespace U2{

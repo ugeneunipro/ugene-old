@@ -40,9 +40,14 @@
 #include <U2Gui/CreateAnnotationDialog.h>
 #include <U2Gui/HelpButton.h>
 
+#include <QtCore/QFileInfo>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QToolButton>
 #include <QtGui/QMenu>
-#include <QtCore/QFileInfo>
+#else
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QMenu>
+#endif
 
 namespace U2 {
 class U2SequenceObject;

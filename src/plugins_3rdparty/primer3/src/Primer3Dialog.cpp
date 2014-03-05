@@ -20,7 +20,13 @@
  */
 
 #include <cfloat>
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
+
 #include <U2View/AnnotatedDNAView.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/L10n.h>

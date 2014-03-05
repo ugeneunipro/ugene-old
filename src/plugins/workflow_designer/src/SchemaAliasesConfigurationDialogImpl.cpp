@@ -24,7 +24,11 @@
 #include <U2Lang/ActorModel.h>
 #include "SchemaAliasesConfigurationDialogImpl.h"
 #include <U2Gui/HelpButton.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QPushButton>
+#endif
 
 
 namespace U2 {
@@ -43,7 +47,12 @@ SchemaAliasesConfigurationDialogImpl::SchemaAliasesConfigurationDialogImpl( cons
     
     okPushButton->setDefault(true);
     paramAliasesTableWidget->verticalHeader()->hide();
+
+#if (QT_VERSION < 0x050000) //Qt 5
     paramAliasesTableWidget->horizontalHeader()->setClickable(false);
+#else
+    paramAliasesTableWidget->horizontalHeader()->setSectionsClickable(false);
+#endif
     paramAliasesTableWidget->horizontalHeader()->setStretchLastSection( true );
     
     foreach( Actor * actor, schema.getProcesses() ) {
@@ -138,7 +147,7 @@ void SchemaAliasesConfigurationDialogImpl::sl_procSelected( int row ) {
         
         QTableWidgetItem * paramNameItem = new QTableWidgetItem(it.key().getDisplayName()) ;
         paramAliasesTableWidget->setItem( rowInd, 0, paramNameItem );
-        paramNameItem->setData( Qt::UserRole, qVariantFromValue<Descriptor>( it.key() ) );
+        paramNameItem->setData( Qt::UserRole, QVariant::fromValue( it.key() ) );
         paramNameItem->setFlags( paramNameItem->flags() ^ Qt::ItemIsSelectable ^ Qt::ItemIsEditable );
         
         QTableWidgetItem * aliasItem = new QTableWidgetItem( it.value() );
@@ -168,7 +177,7 @@ void SchemaAliasesConfigurationDialogImpl::sl_onDataChange( int row, int col ) {
     ActorId id = procListMap.value( procsListWidget->currentRow() );
     assert( !id.isEmpty() );
     
-    Descriptor desc = qVariantValue<Descriptor>( paramAliasesTableWidget->item( row, 0 )->data( Qt::UserRole ) );
+    Descriptor desc = paramAliasesTableWidget->item( row, 0 )->data( Qt::UserRole ).value<Descriptor>();
     assert(model.aliases.value(id).contains(desc));
     if(col == 1) {
         model.aliases[id][desc] = paramAliasesTableWidget->item( row, 1 )->text();

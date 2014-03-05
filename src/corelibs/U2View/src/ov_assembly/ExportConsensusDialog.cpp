@@ -30,9 +30,13 @@
 #include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Gui/RegionSelector.h>
 #include <U2Gui/HelpButton.h>
-#include <QtGui/QPushButton>
-
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2 {
 

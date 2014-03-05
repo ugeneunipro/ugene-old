@@ -6,7 +6,11 @@
 //#include "ExpertDiscoveryCSUtil.h"
 #include "ExpertDiscoveryData.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QAction>
+#else
+#include <QtWidgets/QAction>
+#endif
 #include <QMenu>
 #include <QTreeWidget>
 

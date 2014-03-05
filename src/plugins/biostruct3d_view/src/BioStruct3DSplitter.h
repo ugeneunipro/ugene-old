@@ -22,11 +22,19 @@
 #include <U2Core/Task.h>
 #include <U2View/ADVSplitWidget.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QAction>
 #include <QtGui/QSplitter>
 #include <QtGui/QToolBar>
 #include <QtGui/QToolButton>
 #include <QtGui/QComboBox>
-#include <QtGui/QAction>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QSplitter>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QComboBox>
+#endif
 #include <memory>
 
 namespace U2 {

@@ -37,10 +37,17 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolButton>
 #include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2 {
 

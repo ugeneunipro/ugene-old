@@ -22,7 +22,12 @@
 #ifndef _U2_BREAKPOINT_CONDITION_EDIT_DIALOG_H_
 #define _U2_BREAKPOINT_CONDITION_EDIT_DIALOG_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 #include <U2Core/global.h>
 

@@ -23,7 +23,11 @@
 #include <U2View/MSAEditorDataList.h>
 #include <U2View/MSAEditor.h>
 #include <U2Gui/ObjectViewModel.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QVBoxLayout>
+#else
+#include <QtWidgets/QVBoxLayout>
+#endif
 #include <U2Core/DocumentModel.h>
 
 

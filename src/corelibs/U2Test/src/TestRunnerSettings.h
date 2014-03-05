@@ -18,7 +18,7 @@ public:
     template<class T>
     T getValue(const QString& key) const {
         const QVariant& val = d.value(key);
-        return qVariantValue<T>(val);
+        return val.value<T>();
     }
 
     template<class T>
@@ -38,7 +38,7 @@ public:
         const QVariantList& varList = val.toList();
         QList<T> list;
         foreach(const QVariant& var, varList) {
-            list << qVariantValue<T>(var);
+            list << var.value<T>();
         }
         return list;
     }

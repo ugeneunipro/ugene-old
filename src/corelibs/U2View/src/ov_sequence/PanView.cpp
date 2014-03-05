@@ -40,11 +40,17 @@
 #include <U2Gui/GraphUtils.h>
 #include <U2Gui/GScrollBar.h>
 
-#include <QtGui/QTextEdit>
-#include <QtGui/QGridLayout>
 #include <QtGui/QPainter>
 #include <QtGui/QFontMetrics>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#include <QtGui/QTextEdit>
+#include <QtGui/QGridLayout>
+#else
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QGridLayout>
+#endif
 
 
 namespace U2 {

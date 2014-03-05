@@ -28,8 +28,13 @@
 #include <U2Core/Version.h>
 
 #include <QtGui/QMouseEvent>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QColorDialog>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QColorDialog>
+#endif
 
 namespace U2 {
 

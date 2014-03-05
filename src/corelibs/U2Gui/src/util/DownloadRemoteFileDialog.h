@@ -24,7 +24,12 @@
 
 #include <U2Core/global.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
+
 #include <QtCore/QList>
 #include <QtCore/QString>
 #include <QNetworkReply>

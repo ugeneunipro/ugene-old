@@ -26,8 +26,13 @@
 #include <U2View/PanView.h>
 #include <U2Core/U2Region.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
 #include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolButton>
+#endif
 
 #include <QtCore/QTimer>
 

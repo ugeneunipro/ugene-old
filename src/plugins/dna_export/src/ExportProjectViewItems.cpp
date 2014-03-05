@@ -64,9 +64,15 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectView.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMainWindow>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMainWindow>
+#endif
 
 #define ACTION_EXPORT_SEQUENCE "export sequences"
 #define ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT "export sequences as alignment"

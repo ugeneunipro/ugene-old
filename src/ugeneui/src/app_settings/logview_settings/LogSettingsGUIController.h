@@ -27,8 +27,13 @@
 #include <LogSettings.h>
 #include <U2Gui/AppSettingsGUI.h>
 
-#include <QtGui/QTableWidgetItem>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLabel>
+#include <QtGui/QTableWidgetItem>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QTableWidgetItem>
+#endif
 #include <QtCore/QUrl>
 
 namespace U2 {

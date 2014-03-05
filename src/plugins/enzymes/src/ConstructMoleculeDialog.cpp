@@ -21,8 +21,13 @@
 
 #include <QtCore/QScopedPointer>
 
-#include <QtGui/QFileDialog>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#include <QtGui/QFileDialog>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>

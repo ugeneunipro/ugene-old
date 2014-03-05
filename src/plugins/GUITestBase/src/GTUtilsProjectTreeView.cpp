@@ -27,7 +27,11 @@
 #include "GTUtilsTaskTreeView.h"
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/MainWindow.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
+#else
+#include <QtWidgets/QMainWindow>
+#endif
 
 namespace U2 {
 

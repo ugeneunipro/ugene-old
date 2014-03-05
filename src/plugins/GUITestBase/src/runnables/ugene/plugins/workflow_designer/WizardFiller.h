@@ -23,8 +23,14 @@
 #define _U2_GT_RUNNABLES_WIZARD_FILLER_H_
 
 #include "GTUtilsDialog.h"
-#include <QPushButton>
-#include <QToolButton>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
+#include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QToolButton>
+#endif
 
 namespace U2 {
 

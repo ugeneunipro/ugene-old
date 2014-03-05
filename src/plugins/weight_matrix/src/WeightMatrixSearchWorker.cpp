@@ -43,7 +43,11 @@
 #include <U2Core/FailTask.h>
 #include <U2Core/TaskSignalMapper.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#endif
 /* TRANSLATOR U2::LocalWorkflow::PWMatrixSearchWorker */
 
 namespace U2 {
@@ -77,7 +81,7 @@ void PWMatrixSearchWorker::registerProto() {
         Descriptor nd(NAME_ATTR, PWMatrixSearchWorker::tr("Result annotation"), 
             PWMatrixSearchWorker::tr("Annotation name for marking found regions."));
         Descriptor scd(SCORE_ATTR, PWMatrixSearchWorker::tr("Min score"), 
-            QApplication::translate("PWMSearchDialog", "min_err_tip", 0, QApplication::UnicodeUTF8));
+            QApplication::translate("PWMSearchDialog", "min_err_tip", 0));
         
         a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, "misc_feature");
         a << new Attribute(BaseAttributes::STRAND_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, BaseAttributes::STRAND_BOTH());

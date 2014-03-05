@@ -27,7 +27,11 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include "RemoteBLASTTask.h" 
 #include "RemoteBLASTConsts.h"

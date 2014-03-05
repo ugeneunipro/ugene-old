@@ -36,9 +36,13 @@
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/LastUsedDirHelper.h>
 
-
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include <U2Core/BaseDocumentFormats.h>
 
@@ -72,7 +76,11 @@ CreateSubalignimentDialogController::CreateSubalignimentDialogController(MAlignm
     sequencesTableWidget->verticalHeader()->setHidden( true );
     sequencesTableWidget->horizontalHeader()->setHidden( true );
     sequencesTableWidget->setShowGrid(false);
+#if (QT_VERSION < 0x050000) //Qt 5
     sequencesTableWidget->horizontalHeader()->setResizeMode( 0, QHeaderView::Stretch );
+#else
+    sequencesTableWidget->horizontalHeader()->setSectionResizeMode( 0, QHeaderView::Stretch );
+#endif
 
     SaveDocumentGroupControllerConfig conf;
     conf.dfc.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);

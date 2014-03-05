@@ -23,7 +23,11 @@
 #define _U2_GUI_GTTOOLBAR_H_
 
 #include "api/GTGlobals.h"
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QToolBar>
+#else
+#include <QtWidgets/QToolBar>
+#endif
 
 namespace U2 {
 

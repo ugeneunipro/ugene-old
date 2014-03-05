@@ -27,12 +27,21 @@
 #include <U2Core/GAutoDeleteList.h>
 #include "PanView.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
+#include <QtGui/QLabel>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QMenu>
 #include <QtGui/QToolBar>
-#include <QtGui/QLabel>
 #include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QToolButton>
+#endif
 
 #ifdef Q_OS_UNIX
 #include <QtCore/QTimer>

@@ -23,7 +23,14 @@
 #define _U2_GUI_GTWIDGET_H_
 
 #include "api/GTGlobals.h"
+
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAbstractButton>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QAbstractButton>
+#include <QtWidgets/QPushButton>
+#endif
 
 namespace U2 {
 

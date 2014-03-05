@@ -30,9 +30,15 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Remote/SynchHttp.h>
 
-#include <QtGui/QMessageBox>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#include <QtGui/QMessageBox>
 #include <QtGui/QMainWindow>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QMainWindow>
+#endif
 #include <QtNetwork/QNetworkReply>
 
 namespace U2 {

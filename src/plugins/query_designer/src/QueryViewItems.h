@@ -27,11 +27,17 @@
 #include "QueryPalette.h"
 #include "QDDocument.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QGraphicsItem>
 #include <QtGui/QGraphicsTextItem>
+#include <QtGui/QGraphicsSceneMouseEvent>
+#else
+#include <QtWidgets/QGraphicsItem>
+#include <QtWidgets/QGraphicsTextItem>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
+#endif
 #include <QtGui/QFontMetricsF>
 #include <QtGui/QKeyEvent>
-#include <QtGui/QGraphicsSceneMouseEvent>
 
 #include <QtCore/QFlag>
 

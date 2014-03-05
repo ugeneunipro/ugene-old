@@ -35,8 +35,11 @@
 
 #include <U2Algorithm/ORFAlgorithmTask.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-
+#else
+#include <QtWidgets/QApplication>
+#endif
 
 namespace U2 {
 
@@ -200,11 +203,11 @@ QDORFActorPrototype::QDORFActorPrototype() {
          );
 
      Descriptor ttd(ID_ATTR, QDORFActor::tr("Genetic code"), QDORFActor::tr("Which genetic code should be used for translating the input nucleotide sequence."));
-     Descriptor ld(LEN_ATTR, QDORFActor::tr("Min length, bp:"), QApplication::translate("ORFDialogBase", "Ignore ORFs shorter than the specified length", 0, QApplication::UnicodeUTF8));
-     Descriptor ind(INIT_ATTR, QDORFActor::tr("Require init codon"), QApplication::translate("ORFDialogBase", "\n""Ignore boundary ORFs which last beyond the search region\n""(i.e. have no stop codon within the range).\n", 0, QApplication::UnicodeUTF8));
+     Descriptor ld(LEN_ATTR, QDORFActor::tr("Min length, bp:"), QApplication::translate("ORFDialogBase", "Ignore ORFs shorter than the specified length", 0));
+     Descriptor ind(INIT_ATTR, QDORFActor::tr("Require init codon"), QApplication::translate("ORFDialogBase", "\n""Ignore boundary ORFs which last beyond the search region\n""(i.e. have no stop codon within the range).\n", 0));
      Descriptor ad(ALT_ATTR, QDORFActor::tr("Allow alternative codons"), QApplication::translate("ORFDialogBase", "\n"
      "               Allow ORFs starting with alternative initiation codons,\n"
-     "               accordingly to the current translation table.\n", 0, QApplication::UnicodeUTF8));
+     "               accordingly to the current translation table.\n", 0));
      Descriptor mld(MAX_LENGTH_ATTR, QDORFActor::tr("Max length"), QDORFActor::tr("Maximum length of annotation allowed."));
      Descriptor fd(FIT_ATTR, QDORFActor::tr("Require stop codon"), QDORFActor::tr("Require stop codon."));
      Descriptor mr(RES_ATTR,QDORFActor::tr("Max result"),QDORFActor::tr("Find results not achieved by specified count."));

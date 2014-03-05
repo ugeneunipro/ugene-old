@@ -47,7 +47,11 @@
 #include <U2Test/GTest.h>
 #include <U2Test/GTestFrameworkComponents.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
+#else
+#include <QtWidgets/QMenu>
+#endif
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>

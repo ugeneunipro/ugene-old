@@ -22,8 +22,14 @@
 #ifndef _U2_ESTIMATION_REPORTER_H_
 #define _U2_ESTIMATION_REPORTER_H_
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QWebView>
 #include <QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWebKitWidgets/QWebView>
+#endif
 
 #include <U2Core/global.h>
 #include <U2Lang/SchemaEstimationTask.h>

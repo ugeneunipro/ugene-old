@@ -11,7 +11,11 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
+#else
+#include <QtWidgets/QFileDialog>
+#endif
 #include <U2Gui/HelpButton.h>
 
 #include <memory>

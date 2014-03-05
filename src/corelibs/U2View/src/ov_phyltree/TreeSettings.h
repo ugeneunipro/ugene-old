@@ -23,7 +23,11 @@
 #define _U2_TREE_SETTINGS_H_
 
 #include <QtGui/QFontInfo>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
 namespace U2 {
 

@@ -28,8 +28,11 @@
 
 #include <U2Gui/MainWindow.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QGraphicsScene>
-
+#else
+#include <QtWidgets/QGraphicsScene>
+#endif
 
 namespace U2 {
 

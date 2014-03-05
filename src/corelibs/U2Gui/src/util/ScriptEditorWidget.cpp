@@ -19,10 +19,18 @@
  * MA 02110-1301, USA.
  */
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLineEdit>
 #include <QtGui/QTextEdit>
 #include <QtGui/QSplitter>
 #include <QtGui/QBoxLayout>
+#else
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QSplitter>
+#include <QtWidgets/QBoxLayout>
+#endif
 
 #include "ScriptHighlighter.h"
 #include "ScriptEditorWidget.h"

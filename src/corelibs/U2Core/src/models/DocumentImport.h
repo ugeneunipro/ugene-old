@@ -24,7 +24,12 @@
 
 #include <U2Core/DocumentModel.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
+
 
 namespace U2 {
 

@@ -23,7 +23,11 @@
 #define _U2_GT_TABBAR_H_
 
 #include "api/GTGlobals.h"
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTabBar>
+#else
+#include <QtWidgets/QTabBar>
+#endif
 
 namespace U2 {
 

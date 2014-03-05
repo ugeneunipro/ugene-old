@@ -26,10 +26,16 @@
 #include <U2Core/PhyTreeObject.h>
 #include <QtGui/QPainter> 
 #include <QtGui/QPen>
-#include <QtGui/QGraphicsSceneMouseEvent>
 #include <QtCore/QList>
-#include <QtGui/QMenu>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QGraphicsScene>
+#include <QtGui/QGraphicsSceneMouseEvent>
+#include <QtGui/QMenu>
+#else
+#include <QtWidgets/QGraphicsScene>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
+#include <QtWidgets/QMenu>
+#endif
 
 namespace U2 {
 

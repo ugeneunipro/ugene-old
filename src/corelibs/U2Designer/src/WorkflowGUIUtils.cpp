@@ -129,7 +129,11 @@ void DesignerGUIUtils::setupSamplesDocument(const Descriptor& d, const QIcon& ic
     QString img("img://img");
     
     doc->addResource(QTextDocument::ImageResource, QUrl(img), ico.pixmap(200));
+#if (QT_VERSION < 0x050000) //Qt 5
     QString body = Qt::escape(d.getDocumentation()).replace("\n", "<br>");
+#else
+    QString body = d.getDocumentation().toHtmlEscaped().replace("\n", "<br>");
+#endif
     int brk = body.indexOf("<br><br>");
     int shift = 8;
     if (brk <= 0) {

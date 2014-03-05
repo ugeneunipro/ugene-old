@@ -21,9 +21,17 @@
 
 #include <QDesktopServices>
 #include <QFile>
+
+
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QMessageBox>
 #include <QWebFrame>
-#include <QApplication>
+#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWebKitWidgets/QWebFrame>
+#include <QtWidgets/QApplication>
+#endif
 #include <QClipboard>
 
 #include <U2Core/AppContext.h>

@@ -37,8 +37,13 @@
 #include <U2Remote/RemoteWorkflowRunTask.h>
 #include "RemoteMachineMonitorDialogImpl.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
 #include <QtGui/QCheckBox>
+#else
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QCheckBox>
+#endif
 
 #include <cassert>
 #include <memory>

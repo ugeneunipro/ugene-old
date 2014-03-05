@@ -7,9 +7,15 @@
 #include <U2View/ADVSplitWidget.h>
 #include <U2View/ADVSequenceWidget.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLabel>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QTableWidget>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QTableWidget>
+#endif
 
 namespace U2 {
 

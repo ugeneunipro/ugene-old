@@ -29,7 +29,11 @@
 
 #include <U2Gui/RegionSelector.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QListWidget>
+#else
+#include <QtWidgets/QListWidget>
+#endif
 
 namespace U2 {
 

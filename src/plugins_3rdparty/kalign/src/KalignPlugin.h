@@ -26,7 +26,11 @@
 #include <U2Core/AppContext.h>
 #include <U2Gui/ObjectViewModel.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
+#else
+#include <QtWidgets/QMenu>
+#endif
 
 //#include <kalign_local_task/KalignLocalTask.h> //TODO
 

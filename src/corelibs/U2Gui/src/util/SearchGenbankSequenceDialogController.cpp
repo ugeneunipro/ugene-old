@@ -19,12 +19,20 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Gui/HelpButton.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
 #include <QtGui/QLineEdit>
 #include <QtGui/QToolButton>
 #include <QtGui/QComboBox>
 #include <QtGui/QMessageBox>
-#include <U2Gui/HelpButton.h>
-#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include <U2Core/AppContext.h>
 
@@ -62,7 +70,11 @@ SearchGenbankSequenceDialogController::SearchGenbankSequenceDialogController(QWi
         SLOT( sl_taskStateChanged( Task * ) ) );
 
     ui->treeWidget->header()->setStretchLastSection(false);
+#if (QT_VERSION < 0x050000) //Qt 5
     ui->treeWidget->header()->setResizeMode(1, QHeaderView::Stretch);
+#else
+    ui->treeWidget->header()->setSectionResizeMode(1, QHeaderView::Stretch);
+#endif
 
 }
 

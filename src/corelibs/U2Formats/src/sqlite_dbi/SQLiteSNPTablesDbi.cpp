@@ -299,7 +299,7 @@ void SQLiteSNPTablesDbi::renameFilterTable (const U2DataId& fTable, const QStrin
     }
 
     SQLiteQuery q1("UPDATE FilterTableNames SET filterName=?1 WHERE id=?2", db, os);
-    q1.bindBlob(1, newName.toAscii());
+    q1.bindBlob(1, newName.toLatin1());
     q1.bindDataId(2, fTable);
     q1.update();
     SAFE_POINT_OP(os,);

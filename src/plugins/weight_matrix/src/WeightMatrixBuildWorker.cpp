@@ -79,7 +79,7 @@ void PWMatrixBuildWorker::registerProto() {
     
     {
         Descriptor ad(ALG_ATTR, PWMatrixBuildWorker::tr("Weight algorithm"), 
-            QApplication::translate("PWMBuildDialog", "algo_tip", 0, QApplication::UnicodeUTF8));
+            QApplication::translate("PWMBuildDialog", "algo_tip", 0));
         a << new Attribute(ad, BaseTypes::STRING_TYPE(), true, BuiltInPWMConversionAlgorithms::BVH_ALGO);
     }
 

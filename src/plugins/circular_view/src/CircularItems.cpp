@@ -25,7 +25,11 @@
 #include <U2Core/AnnotationSettings.h>
 #include <U2Gui/GraphUtils.h>
 #include <U2Core/AppContext.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QGraphicsLineItem>
+#else
+#include <QtWidgets/QGraphicsLineItem>
+#endif
 
 namespace U2 {
 

@@ -56,9 +56,15 @@
 
 #include <U2Test/GTestFrameworkComponents.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMainWindow>
+#else
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMainWindow>
+#endif
 
 namespace U2 {
 

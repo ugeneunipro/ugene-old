@@ -24,9 +24,14 @@
 
 #include <U2Core/global.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLineEdit>
-#include <QtGui/QValidator>
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QDialog>
+#endif
+#include <QtGui/QValidator>
 
 namespace U2 {
 

@@ -41,9 +41,15 @@
 
 #include <U2Gui/GUIUtils.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolButton>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFileDialog>
+#endif
 
 #include "BlastAllSupportRunDialog.h"
 

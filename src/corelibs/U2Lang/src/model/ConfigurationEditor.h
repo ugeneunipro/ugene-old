@@ -27,7 +27,11 @@
 #include <U2Lang/Attribute.h>
 #include <U2Lang/SchemaConfig.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QItemDelegate>
+#else
+#include <QtWidgets/QItemDelegate>
+#endif
 
 class QWidget;
 
@@ -119,6 +123,7 @@ protected:
  * in our case, inheritors will provide this facilities for attributes of configuration
  */
 class U2LANG_EXPORT PropertyDelegate : public QItemDelegate {
+    Q_OBJECT
 public:
     enum Type {
         NO_TYPE,

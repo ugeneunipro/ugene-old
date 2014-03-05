@@ -23,7 +23,11 @@
 
 #include "../util/WorkerNameValidator.h"
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>

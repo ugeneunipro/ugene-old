@@ -34,7 +34,11 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/FailTask.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#else
+#include <QtWidgets/QApplication>
+#endif
 
 #include <QtCore/QFileInfo>
 
@@ -164,7 +168,7 @@ QDSiteconActorPrototype::QDSiteconActorPrototype() {
 
     {
         Descriptor scd(SCORE_ATTR, QDSiteconActor::tr("Min score"),
-            QApplication::translate("SiteconSearchDialog", "min_err_tip", 0, QApplication::UnicodeUTF8));
+            QApplication::translate("SiteconSearchDialog", "min_err_tip", 0));
         Descriptor e1d(E1_ATTR, QDSiteconActor::tr("Min Err1"),
             QDSiteconActor::tr("Alternative setting for filtering results, minimal value of Error type I."
             "<br>Note that all thresholds (by score, by err1 and by err2) are applied when filtering results."));

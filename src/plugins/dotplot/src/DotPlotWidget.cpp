@@ -50,11 +50,15 @@
 #include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QMouseEvent>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QToolTip>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QToolTip>
+#include <QtWidgets/QMessageBox>
+#endif
 
 namespace U2 {
 

@@ -26,8 +26,13 @@
 #include <U2Core/U2Type.h>
 
 #include <QtCore/QSet>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
 #include <QtGui/QMenu>
+#else
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QMenu>
+#endif
 
 namespace U2 {
 

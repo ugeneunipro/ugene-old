@@ -27,10 +27,17 @@
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
 #include <QtGui/QToolButton>
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QDialog>
+#endif
 
 class Ui_RangeSelectionDialog;
 

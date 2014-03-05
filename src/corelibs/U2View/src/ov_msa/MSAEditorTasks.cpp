@@ -278,7 +278,7 @@ void ExtractConsensusTask::run() {
         if (policy == AllowAllSymbols){
             filteredConsensus.append(c);
         }else{
-            if(alphabet->getAlphabetChars(true).contains(c.toAscii())){
+            if(alphabet->getAlphabetChars(true).contains(c.toLatin1())){
                 switch (policy)
                 {
                 case Skip:

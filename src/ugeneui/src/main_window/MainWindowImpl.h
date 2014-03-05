@@ -25,10 +25,17 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/Notification.h>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenuBar>
 #include <QtGui/QMenu>
 #include <QtGui/QMdiArea>
+#else
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMdiArea>
+#endif
 
 class QMdiArea;
 class QToolBar;

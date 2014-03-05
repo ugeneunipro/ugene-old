@@ -78,6 +78,7 @@ private:
 /* SequenceScriptClass */
 /************************************************************************/
 class U2LANG_EXPORT SequenceScriptClass : public DbiScriptClass {
+    Q_OBJECT
 public:
     using DbiScriptClass::newInstance;
 

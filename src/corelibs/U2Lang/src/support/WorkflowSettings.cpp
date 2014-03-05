@@ -28,10 +28,16 @@
 
 #include <QtCore/QSettings>
 #include <QtCore/QDir>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QStyle>
-#include <QtGui/QColor>
 #include <QtGui/QStyleFactory>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QStyleFactory>
+#endif
+#include <QtGui/QColor>
 #include <U2Core/GUrl.h>
 
 namespace U2 {

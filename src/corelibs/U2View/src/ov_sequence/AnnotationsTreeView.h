@@ -24,9 +24,14 @@
 
 #include <QtCore/QFlags>
 #include <QtCore/QTimer>
-#include <QtGui/QTreeWidget>
 #include <QtGui/QCloseEvent>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLabel>
+#include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QTreeWidget>
+#endif
 #include <QtCore/QQueue>
 #include <QtCore/QPair>
 
