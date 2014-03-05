@@ -26,7 +26,7 @@
 #include "CachingDbiIterator.h"
 #include "CachingFeatureDbi.h"
 
-static const qint64 FEATURE_CACHE_SIZE = 1 << 24; // 16 Mb
+static const qint64 FEATURE_CACHE_SIZE = 1 << 10; // 1 Mb
 static const int FEATURE_KEY_NOT_FOUND_INDEX = -1;
 
 namespace U2 {
