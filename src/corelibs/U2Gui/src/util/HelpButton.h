@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
+#ifndef _U2_HELP_BUTTON_H
+#define _U2_HELP_BUTTON_H
 
 #include "U2Core/global.h"
 
@@ -50,3 +52,4 @@ private:
 };
 
 }
+#endif
