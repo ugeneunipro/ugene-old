@@ -495,6 +495,9 @@ void DotPlotWidget::sl_onSequenceSelectionChanged(LRegionsSelection* s, const QV
 
     QObject *sen = sender();
 
+    if((sequenceX == NULL)||(sequenceY == NULL)){
+        return;
+    }
     DNASequenceSelection *dnaSelection = qobject_cast<DNASequenceSelection*>(sen);
     if (dnaSelection) {
        
