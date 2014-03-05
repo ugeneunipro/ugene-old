@@ -49,6 +49,8 @@ FormatDBSupportRunDialog::FormatDBSupportRunDialog(const QString &_name, FormatD
     new HelpButton(this, buttonBox, "4228533");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Format"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+    formatButton = buttonBox->button(QDialogButtonBox::Ok);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
 
     connect(inputFilesToolButton,SIGNAL(clicked()),SLOT(sl_onBrowseInputFiles()));
     connect(inputDirToolButton,SIGNAL(clicked()),SLOT(sl_onBrowseInputDir()));
@@ -73,9 +75,6 @@ FormatDBSupportRunDialog::FormatDBSupportRunDialog(const QString &_name, FormatD
     if (!settings.isInputAmino) {
         nucleotideTypeRadioButton->setChecked(true);
     }
-
-    formatButton = buttonBox->button(QDialogButtonBox::Ok);
-    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     formatButton->setEnabled(false);
     connect(cancelButton,SIGNAL(clicked()),this,SLOT(reject()));
     connect(formatButton,SIGNAL(clicked()),this,SLOT(sl_formatDB()));
