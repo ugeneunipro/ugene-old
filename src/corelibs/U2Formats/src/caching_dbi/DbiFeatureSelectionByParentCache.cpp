@@ -21,15 +21,6 @@
 
 #include "DbiFeatureSelectionByParentCache.h"
 
-uint qHash( const U2::SubfeatureFilterParams &c ) {
-    const int magicNumber = 0x9e3779b9;
-    uint seed = 0;
-    seed ^= qHash( c.parentId ) + magicNumber + ( seed << 8 ) + ( seed >> 2 );
-    seed ^= qHash( c.seqId ) + magicNumber + ( seed << 7 ) + ( seed >> 3 );
-    seed ^= qHash( c.name ) + magicNumber + ( seed << 6 ) + ( seed >> 4 );
-    return seed;
-}
-
 namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////
@@ -45,6 +36,15 @@ SubfeatureFilterParams::SubfeatureFilterParams( const U2DataId &parentId, const 
 
 bool SubfeatureFilterParams::operator ==( const SubfeatureFilterParams &other ) const {
     return parentId == other.parentId && seqId == other.seqId && name == other.name;
+}
+
+uint qHash( const SubfeatureFilterParams &c ) {
+    const int magicNumber = 0x9e3779b9;
+    uint seed = 0;
+    seed ^= qHash( c.parentId ) + magicNumber + ( seed << 8 ) + ( seed >> 2 );
+    seed ^= qHash( c.seqId ) + magicNumber + ( seed << 7 ) + ( seed >> 3 );
+    seed ^= qHash( c.name ) + magicNumber + ( seed << 6 ) + ( seed >> 4 );
+    return seed;
 }
 
 //////////////////////////////////////////////////////////////////////////

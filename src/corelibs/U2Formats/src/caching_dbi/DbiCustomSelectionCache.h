@@ -41,7 +41,9 @@ class DbiCustomSelectionCache :         public DbiIteratorCache<Criterion, T>,
                                         public DbiCacheListener<Id, Data>,
                                         public DbiDataReducer<Data, T>
 {
-public:
+    typedef DbiIteratorCacheListener<Criterion, T> CacheListener;
+
+public :
                                         DbiCustomSelectionCache(
                                             U2DbiDataCache<Id, Data> *mainCache );
 
@@ -69,7 +71,7 @@ public:
 
     void                                onSelectionFinished( );
 
-protected:
+protected :
     // this method accesses data by @id in @mainCache,
     // so it's crucial for performance that required data are cached
     virtual bool                        satisfies( const Criterion &c, const Id &id ) = 0;
@@ -90,7 +92,7 @@ protected:
 template <typename Id, typename Data, typename Criterion, typename T>
 DbiCustomSelectionCache<Id, Data, Criterion, T>::DbiCustomSelectionCache(
     U2DbiDataCache<Id, Data> *mainCache )
-    : DbiCacheListener( mainCache )
+    : DbiCacheListener<Id, Data>( mainCache )
 {
     SAFE_POINT( NULL != mainCache, "Invalid DBI cache detected!", );
 }
@@ -98,7 +100,7 @@ DbiCustomSelectionCache<Id, Data, Criterion, T>::DbiCustomSelectionCache(
 template <typename Id, typename Data, typename Criterion, typename T>
 void DbiCustomSelectionCache<Id, Data, Criterion, T>::onSelectionFinished( ) {
     foreach ( const Criterion &c, recentlyFetched.uniqueKeys( ) ) {
-        foreach ( CacheListener *listener, subscribers ) {
+        foreach ( CacheListener *listener, this->subscribers ) {
             listener->submitNewData( c, recentlyFetched.values( c ) );
         }
     }
@@ -168,7 +170,7 @@ QList<T> DbiCustomSelectionCache<Id, Data, Criterion, T>::getData( const Criteri
     SAFE_POINT( areDataCached( filter ), "Attempting reading non-cached data from cache!", result );
     U2OpStatusImpl os;
     foreach ( const Id &id, criterion2Id.values( filter ) ) {
-        result << excerpt( cache->getData( id, os ) );
+        result << excerpt( this->cache->getData( id, os ) );
         SAFE_POINT_OP( os, result );
     }
     return result;

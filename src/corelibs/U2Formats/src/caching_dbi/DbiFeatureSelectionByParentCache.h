@@ -32,10 +32,12 @@ struct SubfeatureFilterParams {
 
     bool operator ==( const SubfeatureFilterParams &other ) const;
 
-    const U2DataId    parentId;
-    const U2DataId    seqId;
-    const QString     name;
+    U2DataId    parentId;
+    U2DataId    seqId;
+    QString     name;
 };
+
+uint qHash( const SubfeatureFilterParams &c );
 
 class DbiFeatureSelectionByParentCache
     : public DbiCustomSelectionCache<U2DataId, FeatureWithKeys, SubfeatureFilterParams, U2Feature>
@@ -49,7 +51,5 @@ private :
 };
 
 }
-
-extern uint qHash( const U2::SubfeatureFilterParams &c );
 
 #endif // _U2_DBI_FEATURE_SELECTION_BY_PARENT_CACHE_H_

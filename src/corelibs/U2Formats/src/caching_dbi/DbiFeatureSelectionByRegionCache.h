@@ -34,8 +34,8 @@ struct FeatureRegionFilterParams : public SubfeatureFilterParams {
 
     bool operator ==( const FeatureRegionFilterParams &other ) const;
 
-    const U2Region    region;
-    const bool        contains;
+    U2Region    region;
+    bool        contains;
 };
 
 class DbiFeatureSelectionByRegionCache
