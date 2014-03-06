@@ -48,8 +48,8 @@ StartupDialog::StartupDialog(QWidget *parent)
     l->setMargin(3);
     l->addWidget(outDirWidget);
 
-    QPushButton* buttons = buttonBox->button(QDialogButtonBox::Ok);
-    connect(buttons, SIGNAL(accepted()), this, SLOT(sl_accepted()));
+    const QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
+    connect(button, SIGNAL(clicked()), this, SLOT(sl_accepted()));
 
 #ifdef Q_OS_WIN
     QFont f( "Arial", 8, QFont::Bold);
