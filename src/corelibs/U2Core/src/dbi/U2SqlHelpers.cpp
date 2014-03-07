@@ -88,7 +88,7 @@ static void traceQueryDestroy(const QString& q) {
 #endif
 
 SQLiteQuery::SQLiteQuery(const QString& _sql, DbRef* d, U2OpStatus& _os) 
-: db(d), os(&_os), st(NULL), sql(_sql)
+: db(d), os(&_os), st(NULL), sql(_sql), locker(&d->lock)
 {
     prepare();
 
@@ -98,7 +98,7 @@ SQLiteQuery::SQLiteQuery(const QString& _sql, DbRef* d, U2OpStatus& _os)
 }
 
 SQLiteQuery::SQLiteQuery(const QString& _sql, qint64 offset, qint64 count, DbRef* d, U2OpStatus& _os)
-: db(d), os(&_os), st(NULL), sql(_sql)
+: db(d), os(&_os), st(NULL), sql(_sql), locker(&d->lock)
 {
     U2DbiUtils::addLimit(sql, offset, count);
     prepare();
@@ -140,8 +140,6 @@ SQLiteQuery::~SQLiteQuery() {
     traceQueryDestroy(sql);
 #endif
 }
-
-
 
 bool SQLiteQuery::reset(bool clearBindings) {
     if (hasError()) {
@@ -325,7 +323,7 @@ void SQLiteQuery::bindInt64(int idx, qint64 val) {
         return;
     }
     assert(st!=NULL);
-    int rc = sqlite3_bind_int64(st, idx, val);    
+    int rc = sqlite3_bind_int64(st, idx, val);
     if (rc != SQLITE_OK) {
         setError(SQLiteL10n::tr("Error binding int64 value! Query: '%1', idx: %2, value: %3").arg(sql).arg(idx).arg(val));
         return;
@@ -338,7 +336,7 @@ void SQLiteQuery::bindBool(int idx, bool val) {
     }
     assert(st!=NULL);
     int b = (val == 0 ? 0 : 1);
-    int rc = sqlite3_bind_int(st, idx, b);    
+    int rc = sqlite3_bind_int(st, idx, b);
     if (rc != SQLITE_OK) {
         setError(SQLiteL10n::tr("Error binding boolean value! Query: '%1', idx: %2, value: %3").arg(sql).arg(idx).arg(b));
         return;
@@ -379,8 +377,6 @@ void SQLiteQuery::execute() {
 }
 
 qint64 SQLiteQuery::update(qint64 expectedRows) {
-    QMutexLocker m(&db->lock); // lock db in order to retrieve valid row id for insert
-
     if (step()) {
         qint64 res = getInt64(0);
         if (expectedRows != -1 && expectedRows != res) {
@@ -392,8 +388,6 @@ qint64 SQLiteQuery::update(qint64 expectedRows) {
 }
 
 qint64 SQLiteQuery::insert() {
-    QMutexLocker m(&db->lock); // lock db in order to retrieve valid row id for insert
-
     execute();
     if (hasError()) {
         return -1;
@@ -408,8 +402,6 @@ U2DataId SQLiteQuery::insert(U2DataType type, const QByteArray& dbExtra) {
     }
     return U2DbiUtils::toU2DataId(lastRowId, type, dbExtra);
 }
-
-
 
 qint64 SQLiteQuery::selectInt64() {
     if (step()) {
@@ -427,7 +419,6 @@ qint64 SQLiteQuery::selectInt64(qint64 defaultValue) {
     }
     return defaultValue;
 }
-
 
 U2DataId SQLiteQuery::selectDataId(U2DataType type, const QByteArray& dbExtra) {
     if (step()) {

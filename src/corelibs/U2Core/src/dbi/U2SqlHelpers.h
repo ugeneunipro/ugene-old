@@ -89,8 +89,10 @@ private:
     
 public:
     /** 
-        Constructs prepared statement for SQLiteDB 
+        Constructs prepared statement for SQLiteDB
         If failed the error message is written to 'os'
+        It's desirable to release this object as soon as possible because it locks
+        the database for concurrent modifications from other threads
     */
     SQLiteQuery(const QString& sql, DbRef* d, U2OpStatus& os);
     SQLiteQuery(const QString& sql, qint64 offset, qint64 count, DbRef* d, U2OpStatus& os);
@@ -233,6 +235,7 @@ private:
     U2OpStatus*     os;
     sqlite3_stmt*   st;
     QString         sql;
+    QMutexLocker    locker;
 };
 
 /** Helper class to mark transaction regions */
