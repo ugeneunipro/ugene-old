@@ -351,6 +351,11 @@ Task(tr("Export project task"), TaskFlags_NR_FOSCOE), compress(_compress), desti
 void ExportProjectTask::prepare(){
     Project *pr = AppContext::getProject();
     if (pr->isItemModified()) {
+        //setting url in case of anonymous project
+        if (pr->getProjectURL().isEmpty()) {
+            QString tempDir = AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath();
+            pr->setProjectURL(tempDir + QDir::separator() + projectFile);
+        }
         addSubTask(new SaveProjectTask(SaveProjectTaskKind_SaveProjectAndDocuments, pr, QString::null, true));
     }
 }
