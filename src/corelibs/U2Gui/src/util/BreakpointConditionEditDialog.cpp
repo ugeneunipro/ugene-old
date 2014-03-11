@@ -35,6 +35,7 @@ BreakpointConditionEditDialog::BreakpointConditionEditDialog(QWidget *parent,
 {
     ui = new Ui_BreakpointConditionEditDialog();
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "3245088");
 
     scriptEdit = new ScriptEditorWidget(this);
     scriptEdit->setVariablesText(variablesText);
@@ -56,7 +57,6 @@ BreakpointConditionEditDialog::BreakpointConditionEditDialog(QWidget *parent,
     ui->conditionBox->setChecked(conditionEnabled);
 
     connect(ui->buttonBox, SIGNAL(accepted()), SLOT(sl_dialogAccepted()));
-    new HelpButton(this, ui->buttonBox, "https://ugene.unipro.ru/wiki/display/UUOUM/Editing+Fragment+Overhangs");
 
 }
 
