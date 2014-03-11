@@ -105,6 +105,8 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QHeaderView>
 #include <QtGui/QTableWidget>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QPushButton>
 #else
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMainWindow>
@@ -949,7 +951,13 @@ GUI_TEST_CLASS_DEFINITION(test_1252){
 //check delition of annotation document
    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "Annotations", GTGlobals::FindOptions(false))==NULL, "Annotations document not deleted");
 //    5. Click search again
-    GTWidget::click(os, GTWidget::findWidget(os,"btnSearch"));
+
+   QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox"));
+   CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+   QPushButton* button = box->button(QDialogButtonBox::Ok);
+   CHECK_SET_ERR(button !=NULL, "ok button is NULL");
+   GTWidget::click(os, button);
+
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
@@ -984,7 +992,12 @@ GUI_TEST_CLASS_DEFINITION(test_1252_1){
 //check delition of annotation document
     CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "Annotations", GTGlobals::FindOptions(false))==NULL, "Annotations document not deleted");
 //    5. Click search again
-    GTWidget::click(os, GTWidget::findWidget(os,"btnSearch"));
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox"));
+    CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    CHECK_SET_ERR(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
+
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
@@ -1059,7 +1072,12 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
     //4. Click search again
-    GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
+
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox"));
+    CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    CHECK_SET_ERR(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
@@ -4522,8 +4540,12 @@ GUI_TEST_CLASS_DEFINITION( test_2542 ) {
 
     // State:
     // Align button not active if file locked for writing (user locking or format didn't support writing) and selected aligning in current file option
-    QWidget *alignButton = GTWidget::findWidget(os, "alignButton");
-    CHECK_SET_ERR(!alignButton->isEnabled(), "Align button is enabled");
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox"));
+    CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    CHECK_SET_ERR(button !=NULL, "ok button is NULL");
+
+    CHECK_SET_ERR(!button->isEnabled(), "Align button is enabled");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2543 ) {

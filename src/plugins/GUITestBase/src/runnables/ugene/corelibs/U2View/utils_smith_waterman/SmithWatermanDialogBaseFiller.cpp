@@ -76,8 +76,11 @@ void SmithWatermanDialogFiller::run() {
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
     if (button == Cancel) {
-        QAbstractButton *cancelButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "bttnCancel", dialog));
-        GTWidget::click(os, cancelButton);
+        QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+        GT_CHECK(box != NULL, "buttonBox is NULL");
+        QPushButton* button = box->button(QDialogButtonBox::Cancel);
+        GT_CHECK(button !=NULL, "cancel button is NULL");
+        GTWidget::click(os, button);
         return;
     }
 

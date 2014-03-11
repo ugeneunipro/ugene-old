@@ -83,9 +83,13 @@ void EditAnnotationChecker::run()
         QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("nameEdit");
         GT_CHECK(lineEdit != NULL, "line edit not found");
         QString text = lineEdit->text();
-        QPushButton* okButton = dialog->findChild<QPushButton*>("OKButton");
-        GT_CHECK(okButton != NULL, "okButton is NULL");
-        GTWidget::click(os, okButton);
+
+        QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+        GT_CHECK(box != NULL, "buttonBox is NULL");
+        QPushButton* button = box->button(QDialogButtonBox::Ok);
+        GT_CHECK(button !=NULL, "ok button is NULL");
+        GTWidget::click(os, button);
+
         GT_CHECK (text == annotationName, "This name is not expected name");
     }
 
@@ -94,9 +98,13 @@ void EditAnnotationChecker::run()
         GT_CHECK(lineEdit1 != NULL, "line edit not found");
 
         QString text = lineEdit1->text();
-        QPushButton* okButton = dialog->findChild<QPushButton*>("OKButton");
-        GT_CHECK(okButton != NULL, "okButton is NULL");
-        GTWidget::click(os, okButton);
+
+        QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+        GT_CHECK(box != NULL, "buttonBox is NULL");
+        QPushButton* button = box->button(QDialogButtonBox::Ok);
+        GT_CHECK(button !=NULL, "ok button is NULL");
+        GTWidget::click(os, button);
+
         GT_CHECK (text == location, "This name is not expected name");
     }
 

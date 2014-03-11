@@ -172,6 +172,7 @@ void GTUtilsWorkflowDesigner::selectAlgorithm(U2OpStatus &os, QTreeWidgetItem* a
     }
 
     algorithm->parent()->setExpanded(true);
+    algorithm->treeWidget()->scrollToItem(algorithm);
     GTMouseDriver::moveTo(os,GTTreeWidget::getItemCenter(os,algorithm));
 }
 #undef GT_METHOD_NAME
@@ -346,6 +347,7 @@ void GTUtilsWorkflowDesigner::connect(U2OpStatus &os, WorkflowProcessItem * from
 
 QList<WorkflowProcessItem*> GTUtilsWorkflowDesigner::getWorkers(U2OpStatus &os){
     QList<WorkflowProcessItem*> result;
+    QWidget* w = GTWidget::findWidget(os,"sceneView");
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
     QList<QGraphicsItem *> items = sceneView->items();
     foreach(QGraphicsItem* it, items){

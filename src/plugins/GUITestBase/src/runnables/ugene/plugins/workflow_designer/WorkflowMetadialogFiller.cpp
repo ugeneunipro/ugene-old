@@ -26,6 +26,8 @@
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QPushButton>
 #else
 #include <QtWidgets/QApplication>
 #endif
@@ -45,7 +47,11 @@ void WorkflowMetaDialogFiller::run(){
      GT_CHECK(nameEdit, "urlEdit not found");
      GTLineEdit::setText(os, nameEdit,name);
 
-     GTWidget::click(os, GTWidget::findWidget(os, "okButton"));
+     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+     GT_CHECK(box != NULL, "buttonBox is NULL");
+     QPushButton* button = box->button(QDialogButtonBox::Ok);
+     GT_CHECK(button !=NULL, "ok button is NULL");
+     GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

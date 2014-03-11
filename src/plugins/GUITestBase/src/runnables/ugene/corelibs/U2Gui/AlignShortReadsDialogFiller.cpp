@@ -66,8 +66,11 @@ void AlignShortReadsFiller::run() {
     if (!dialog->isVisible()){
         return;
     }
-    QWidget* cancelButton = GTWidget::findWidget(os, "cancelButton", dialog);
-    GTWidget::click(os, cancelButton);
+
+    button = box->button(QDialogButtonBox::Cancel);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
+
 }
 
 void AlignShortReadsFiller::setCommonParameters(QWidget* dialog) {

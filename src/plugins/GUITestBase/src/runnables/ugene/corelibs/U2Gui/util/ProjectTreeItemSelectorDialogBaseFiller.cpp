@@ -28,6 +28,7 @@
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
 #include <QtGui/QTreeWidget>
+#include <QtGui/QDialogButtonBox>
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QPushButton>
@@ -52,10 +53,11 @@ void ProjectTreeItemSelectorDialogBaseChecker::run(){
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, foundItems[0]));
     GTMouseDriver::click(os);
 
-    QPushButton* okButton = dialog->findChild<QPushButton*>("okButton");
-    GT_CHECK(okButton != NULL, "treeWidget is NULL");
-
-    GTWidget::click(os, okButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 }
 
 #undef GT_METHOD_NAME
