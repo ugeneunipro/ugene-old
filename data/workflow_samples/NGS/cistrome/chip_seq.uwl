@@ -123,6 +123,9 @@ workflow "ChIP-seq analysis"{
             write-annotations-1.url-out {
                 alias: out_peak2gene_peaks;
             }
+            get-file-list.url-in {
+                alias:in;
+            }
         }
         visual {
             scale:90;
