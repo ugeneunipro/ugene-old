@@ -30,6 +30,7 @@
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QPushButton>
@@ -93,9 +94,11 @@ void ExportToSequenceFormatFiller::run()
 
     GTGlobals::sleep(100);
 
-    QPushButton *okButton = dialog->findChild<QPushButton*>(QString::fromUtf8("okButton"));
-    GT_CHECK(okButton != NULL, "OK button not found");
-    GTWidget::click(os, okButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 }
 
 #undef GT_METHOD_NAME

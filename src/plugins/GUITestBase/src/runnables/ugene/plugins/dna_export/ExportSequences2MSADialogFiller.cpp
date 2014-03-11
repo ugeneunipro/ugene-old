@@ -29,6 +29,7 @@
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QPushButton>
@@ -77,10 +78,11 @@ void ExportSequenceAsAlignmentFiller::run()
     QCheckBox *checkBox = dialog->findChild<QCheckBox*>(QString::fromUtf8("addToProjectBox"));
     GTCheckBox::setChecked(os, checkBox, addToProject);
 
-    QPushButton *exportButton = dialog->findChild<QPushButton*>(QString::fromUtf8("okButton"));
-    GT_CHECK(exportButton != NULL, "Export button not found");
-
-    GTWidget::click(os, exportButton);
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
