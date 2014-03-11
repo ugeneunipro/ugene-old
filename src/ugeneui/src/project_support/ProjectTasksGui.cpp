@@ -355,8 +355,9 @@ void ExportProjectTask::prepare(){
         if (pr->getProjectURL().isEmpty()) {
             QString tempDir = AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath();
             pr->setProjectURL(tempDir + QDir::separator() + projectFile);
+        }else{
+            addSubTask(new SaveProjectTask(SaveProjectTaskKind_SaveProjectAndDocuments, pr, QString::null, true));  
         }
-        addSubTask(new SaveProjectTask(SaveProjectTaskKind_SaveProjectAndDocuments, pr, QString::null, true));
     }
 }
 

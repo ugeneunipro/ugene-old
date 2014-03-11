@@ -61,7 +61,8 @@ ExportProjectDialogController::ExportProjectDialogController(QWidget *p, const Q
     projectFile = fixProjectFile(defaultProjectFileName);
     projectFileEdit->setText(projectFile);
     Project* proj = AppContext::getProject();
-    if (proj == NULL || !proj->isItemModified()) {
+    setFixedHeight(height());
+    if (proj == NULL || !proj->isItemModified() || proj->getProjectURL().isEmpty()) {
         warningLabel->setVisible(false);
     }
     connect(browseButton, SIGNAL(clicked()), this, SLOT(sl_onBrowseButton()));
