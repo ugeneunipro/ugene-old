@@ -929,7 +929,7 @@ void CreateExternalProcessDialog::sl_validateName( const QString &text) {
     if (res) {
         statusStr = statusTemplate.arg("green").arg(tr("It is the correct name"));
     } else {
-        statusStr = statusTemplate.arg("red").arg(error);
+        statusStr = statusTemplate.arg("#A6392E").arg(error);
     }
     ui.descr1TextEdit->setText(descr1.arg(statusStr));
 }
