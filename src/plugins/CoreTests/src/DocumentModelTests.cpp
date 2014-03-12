@@ -890,8 +890,8 @@ QByteArray GTest_Compare_VCF_Files::getLine(IOAdapter* io) {
     do {
         bool lineOk = true;
         qint64 len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
-        CHECK_EXT(len != 0, setError("Unexpected end of file"), line);
-        CHECK_EXT(lineOk || io->isEof(), setError("Line is too long"), line);
+        CHECK(len != 0, "");
+        CHECK_EXT(lineOk || io->isEof(), setError("Line is too long"), "");
 
         line = (QByteArray::fromRawData(buff, len)).trimmed();
     } while (line.startsWith(COMMENT_MARKER));
