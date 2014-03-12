@@ -23,8 +23,12 @@
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 #else
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QDialogButtonBox>
 #endif
 
 #include "api/GTWidget.h"
@@ -38,7 +42,11 @@ void FindAnnotationCollocationsDialogFiller::run() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
-    GTWidget::click(os, GTWidget::findWidget(os, "cancelButton", dialog));
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Cancel);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 

@@ -39,6 +39,8 @@
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QRadioButton>
 #include <QtWidgets/QGroupBox>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QPushButton>
 #endif
 
 namespace U2 {

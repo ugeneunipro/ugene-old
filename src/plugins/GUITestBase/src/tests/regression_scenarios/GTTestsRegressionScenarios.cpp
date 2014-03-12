@@ -112,6 +112,8 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QTableWidget>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QPushButton>
 #endif
 
 namespace U2 {
@@ -2942,7 +2944,12 @@ GUI_TEST_CLASS_DEFINITION( test_2165 ) {
     GTGlobals::sleep(500);
 
     //4. Press the "Search" button
-    GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox"));
+    CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    CHECK_SET_ERR(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
+
     GTGlobals::sleep(500);
     GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
@@ -3768,12 +3775,11 @@ GUI_TEST_CLASS_DEFINITION( test_2351 ) {
             }
             projectFileEdit->setText(projectFile);
 
-            QAbstractButton *createButton = qobject_cast<QAbstractButton*>(GTWidget::findWidget(os, "createButton", dialog));
-            if (NULL == createButton) {
-                os.setError("createButton not found");
-                return;
-            }
-            createButton->click();
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+            QPushButton* button = box->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(button !=NULL, "ok button is NULL");
+            GTWidget::click(os, button);
         }
 
     private:
@@ -4620,8 +4626,10 @@ GUI_TEST_CLASS_DEFINITION( test_2566 ) {
      GTSpinBox::setValue( os, matchingBox, 30, GTGlobals::UseKeyBoard );
 
 //6. Click "Search".
-    QPushButton *searchButton = static_cast<QPushButton *>( GTWidget::findWidget(os, "btnSearch") );
-    GTWidget::click( os, searchButton );
+     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox"));
+     QPushButton* button = box->button(QDialogButtonBox::Ok);
+     CHECK_SET_ERR(button !=NULL, "ok button is NULL");
+     GTWidget::click(os, button);
 
 //Expected state: the task finished successfully.
     CHECK_SET_ERR( !l.hasError( ), "Unexpected error in log!" );

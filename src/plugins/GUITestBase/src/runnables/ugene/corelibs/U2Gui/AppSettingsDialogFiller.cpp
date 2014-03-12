@@ -103,7 +103,11 @@ void NewColorSchemeCreator::run(){
     GTUtilsDialog::waitForDialog(os, new CreateAlignmentColorSchemeDialogFiller(os, schemeName, al));
     GTWidget::click(os, addSchemaButton);
 
-    GTWidget::click(os,GTWidget::findWidget(os,"okButton"));
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
@@ -128,7 +132,12 @@ void CreateAlignmentColorSchemeDialogFiller::run(){
     GTGlobals::sleep( 500 );
 
     GTUtilsDialog::waitForDialog(os, new ColorSchemeDialogFiller(os));
-    GTWidget::click(os, GTWidget::findWidget(os, "createButton",dialog));
+
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

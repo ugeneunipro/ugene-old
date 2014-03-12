@@ -2642,7 +2642,7 @@ GUI_TEST_CLASS_DEFINITION(test_0025){
     MSAEditorUI* ui = qobject_cast<MSAEditorUI*>(nameListWidget);
 
     QFont f = ui->getEditor()->getFont();
-    QString expectedFont = "Verdana,10,-1,5,50,0,0,0,0,0";
+    QString expectedFont = "Verdana,10,-1,5,75,0,0,0,0,0";
 
     CHECK_SET_ERR(f.toString() == expectedFont,"Expected: " + expectedFont + "found: " + f.toString())
     ;
@@ -2732,7 +2732,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026_2_linux){
     qint64 bigSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/bigImage.jpeg");
     qint64 smallSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/smallImage.jpeg");
 
-    CHECK_SET_ERR(bigSize==811416 && smallSize==188067, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
+    CHECK_SET_ERR(bigSize==786541 && smallSize==175301, QString().setNum(bigSize) + "  " + QString().setNum(smallSize));
 //    Expected state: image is exported
 }
 
@@ -2809,7 +2809,7 @@ GUI_TEST_CLASS_DEFINITION(test_0028_linux){
 //    file name: test/_common_data/scenarios/sandbox/image.bmp
 //    press Save
     qint64 fileSize = GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/test.svg");
-    CHECK_SET_ERR(fileSize==713665, "Expected size: 727634, Current size: " + QString().setNum(fileSize));
+    CHECK_SET_ERR(fileSize==660567, "Expected size: 660567, Current size: " + QString().setNum(fileSize));
 //    Expected state:  SVG is exported
 
 }

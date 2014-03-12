@@ -32,6 +32,8 @@
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QTextEdit>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QPushButton>
 #endif
 
 

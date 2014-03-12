@@ -33,6 +33,7 @@
 #include <QtGui/QDialogButtonBox>
 #else
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QPushButton>
 #endif
 

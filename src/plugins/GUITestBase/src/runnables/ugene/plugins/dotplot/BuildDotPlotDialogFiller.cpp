@@ -66,7 +66,9 @@ void BuildDotPlotFiller::run() {
     GT_CHECK(button !=NULL, "ok button is NULL");
     GTWidget::click(os, button);
     if (cancel) {
-        GTWidget::click(os, GTWidget::findWidget(os, "cancelButton", dialog));
+        button = box->button(QDialogButtonBox::Cancel);
+        GT_CHECK(button !=NULL, "cancel button is NULL");
+        GTWidget::click(os, button);
     }
 }
 #undef GT_METHOD_NAME

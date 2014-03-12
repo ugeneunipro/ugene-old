@@ -86,7 +86,11 @@ void DistanceMatrixDialogFiller::run(){
     GTCheckBox::setChecked(os,checkBox,excludeGaps);
 
 
-    GTWidget::click(os, GTWidget::findWidget(os,"okButton"));
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

@@ -164,7 +164,7 @@ QPoint GTUtilsTaskTreeView::getTreeViewItemPosition( U2OpStatus &os, const QStri
     QPoint p = treeWidget->rect().center();
     if (item) {
         p = treeWidget->visualItemRect(item).center();
-        p.setY(p.y() + treeWidget->visualItemRect(item).height()); //+ height because of header item
+        p.setY(p.y() + treeWidget->visualItemRect(item).height() + 5); //+ height because of header item; +5 because height is not enough
     }
 
     return treeWidget->mapToGlobal(p);

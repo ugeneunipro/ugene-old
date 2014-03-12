@@ -25,9 +25,11 @@
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QTreeWidget>
+#include <QtGui/QDialogButtonBox>
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QDialogButtonBox>
 #endif
 
 #include "api/GTWidget.h"
@@ -49,7 +51,7 @@ void NCBISearchDialogFiller::run(){
     GT_CHECK(queryEditLE != NULL,"queryEdit line not found");
     GTLineEdit::setText(os, queryEditLE, query);
 
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTWidget::click(os, GTWidget::findWidget(os, "searchButton", dialog));
     GTGlobals::sleep(5000);
 
 
@@ -63,9 +65,15 @@ void NCBISearchDialogFiller::run(){
     }
 
     if (doubleEnter) {
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        GTWidget::click(os, GTWidget::findWidget(os, "searchButton"));
         GTGlobals::sleep(5000);
-        GTWidget::click(os, GTWidget::findWidget(os, "closeButton"));
+
+        QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+        GT_CHECK(box != NULL, "buttonBox is NULL");
+        QPushButton* button = box->button(QDialogButtonBox::Cancel);
+        GT_CHECK(button !=NULL, "cancel button is NULL");
+        GTWidget::click(os, button);
+
         return;
     }
 
@@ -74,9 +82,16 @@ void NCBISearchDialogFiller::run(){
     GT_CHECK(w, "treeWidget not found");
 
     GTWidget::click(os, w, Qt::LeftButton, QPoint(10,35));//fast fix, clicking first result
-    GTWidget::click(os, GTWidget::findWidget(os, "downloadButton"));
 
-    GTWidget::click(os, GTWidget::findWidget(os, "closeButton"));
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "ok button is NULL");
+    GTWidget::click(os, button);
+
+    button = box->button(QDialogButtonBox::Cancel);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 

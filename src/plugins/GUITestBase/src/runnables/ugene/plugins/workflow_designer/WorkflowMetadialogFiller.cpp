@@ -30,6 +30,8 @@
 #include <QtGui/QPushButton>
 #else
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QPushButton>
 #endif
 
 namespace U2{
