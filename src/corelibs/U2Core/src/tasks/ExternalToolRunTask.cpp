@@ -39,6 +39,11 @@
 #include <QtCore/QDir>
 #include <QtCore/QCoreApplication>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
+
 namespace U2 {
 
 #define WIN_LAUNCH_CMD_COMMAND "cmd /C "
@@ -106,7 +111,18 @@ void ExternalToolRunTask::run(){
     }
     while(!externalToolProcess->waitForFinished(1000)){
         if (isCanceled()) {
-            externalToolProcess->kill();
+#if (!defined(Q_OS_WIN32) && !defined(Q_OS_WINCE)) || defined(qdoc)
+            long numPid = externalToolProcess->pid();
+#else
+            Q_PID pid = externalToolProcess->pid();
+            long numPid = pid->dwProcessId;
+#endif
+#ifdef Q_OS_WIN
+            QProcess::execute(QString("taskkill /PID %1 /T /F").arg(numPid));
+#endif
+#ifdef Q_OS_UNIX
+            QProcess::execute(QString("kill -15 -- %1").arg(numPid));
+#endif
         }
     }
 
