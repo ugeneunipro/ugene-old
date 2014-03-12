@@ -365,8 +365,6 @@ void MAFFTLogParser::parseErrOutput(const QString& partOfLog){
     lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
     lastErrLine=lastPartOfLog.takeLast();
     foreach(QString buf, lastPartOfLog){
-        printf(buf.toAscii());
-        printf("\r\n");
         if(buf.contains("WARNING")
             ||buf.contains("rejected.")
             ||buf.contains("identical.")
@@ -387,18 +385,9 @@ int MAFFTLogParser::getProgress(){
      Constructing a UPGMA tree - 25%
      Progressive alignment - 30-80%
      STEP 001-002-3 - 80-100%
-     Switching to the memsave mode - from now progress unknown
     */
     if (!lastPartOfLog.isEmpty()) {
         foreach (QString buf, lastPartOfLog) {
-            
-            printf(buf.toAscii());
-            printf("\r\n");
-            
-            if (buf.contains("Switching to the memsave mode")){
-                progress = -1;
-                algoLog.info("MAFFT: has switched to memsave mode, it unable to track it progress");
-            }
             if (buf.contains("Making")) {
                 if (firstDistanceMatrix) {
                     if (!secondDistanceMatrix) {
