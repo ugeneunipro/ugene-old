@@ -223,10 +223,14 @@ class GTest_Compare_VCF_Files : public GTest {
     ReportResult report();
 
 private:
+    IOAdapter* createIoAdapter(const QString& filePath);
+    QByteArray getLine(IOAdapter* io);
+
     QString doc1Path;
     QString doc2Path;
-    bool byLines;
 
+    static const int READ_BUFF_SIZE = 4096;
+    static const QByteArray COMMENT_MARKER;
 };
 
 class GTest_Compare_PDF_Files : public GTest {

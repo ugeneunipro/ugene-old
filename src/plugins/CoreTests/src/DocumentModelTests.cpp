@@ -22,12 +22,14 @@
 #include "DocumentModelTests.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/IOAdapter.h>
 #include <U2Core/DocumentImport.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObject.h>
 #include <U2Core/GHints.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/Log.h>
+#include <U2Core/TextUtils.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -816,8 +818,8 @@ Task::ReportResult GTest_CompareFiles::report() {
 /*******************************
  * GTest_Compare_VCF_Files
  *******************************/
-const int NUMBER_OF_COLUMNS = 5;
-const int NUMDER_OF_LINES_VCF = 36;
+const QByteArray GTest_Compare_VCF_Files::COMMENT_MARKER = "#";
+
 void GTest_Compare_VCF_Files::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
 
@@ -836,60 +838,65 @@ void GTest_Compare_VCF_Files::init(XMLTestFormat *tf, const QDomElement& el) {
         return;
     }
     doc2Path = (tmpDocNums.contains("2") ? env->getVar( "TEMP_DATA_DIR" ) : env->getVar("COMMON_DATA_DIR")) + "/" + doc2Path;
-
-    byLines = !el.attribute(BY_LINES_ATTR_ID).isEmpty();
 }
 
-
 Task::ReportResult GTest_Compare_VCF_Files::report() {
-    QFile f1(doc1Path);
-    if(!f1.open(QIODevice::ReadOnly)) {
-        setError(QString("Cannot open %1 file").arg(doc1Path));
-        return ReportResult_Finished;
-    }
+    QScopedPointer<IOAdapter> doc1Adapter(createIoAdapter(doc1Path));
+    CHECK_OP(stateInfo, ReportResult_Finished);
 
-    QFile f2(doc2Path);
-    if(!f2.open(QIODevice::ReadOnly)) {
-        setError(QString("Cannot open %1 file").arg(doc2Path));
-        return ReportResult_Finished;
-    }
+    QScopedPointer<IOAdapter> doc2Adapter(createIoAdapter(doc2Path));
+    CHECK_OP(stateInfo, ReportResult_Finished);
 
     int lineNum = 0;
-    int i = 0;
-    while(1) {
-        QByteArray bytes1 = f1.readLine(READ_LINE_MAX_SZ);
+    while(!doc1Adapter->isEof() && !doc2Adapter->isEof()) {
+        QByteArray bytes1 = getLine(doc1Adapter.data());
+        QByteArray bytes2 = getLine(doc2Adapter.data());
+        lineNum++;
 
-        QByteArray bytes2 = f2.readLine(READ_LINE_MAX_SZ);
-
-        if(i<NUMDER_OF_LINES_VCF){
-            i++;
-            continue;
-        }//skip first lines containing file info
-
-        if(bytes1.isEmpty() || bytes2.isEmpty()) {
-            if( bytes1 != bytes2 ) {
-                setError(QString("files are of different size"));
-                return ReportResult_Finished;
-            }
-            break;
+        if (bytes1 != bytes2) {
+            setError(QString("files are note equal at line %1. \n%2\n and \n%3\n").arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
+            return ReportResult_Finished;
         }
-        int size = qMin<int>(bytes1.size(), bytes2.size());
+    }
 
-        for(int i=0; i<size; i++){
-            if( bytes1[i] != bytes2[i] ) {
-                setError(QString("files are note equal at line %1. %2 and %3").arg(lineNum).arg(QString(bytes1)).arg(QString(bytes2)));
-                return ReportResult_Finished;
-            }
-        }
-
-
-
-        if(bytes2.endsWith("\n") || byLines) {
-            lineNum++;
-        }
+    if (!doc1Adapter->isEof() || !doc2Adapter->isEof()) {
+        setError("files are of different size");
+        return ReportResult_Finished;
     }
 
     return ReportResult_Finished;
+}
+
+IOAdapter* GTest_Compare_VCF_Files::createIoAdapter(const QString& filePath) {
+    IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filePath));
+    CHECK_EXT(NULL != factory, setError("IOAdapterFactory is NULL"), NULL);
+    IOAdapter* ioAdapter = factory->createIOAdapter();
+
+    if (!ioAdapter->open(filePath, IOAdapterMode_Read)) {
+        delete ioAdapter;
+        setError(QString("Can't open file '%1'").arg(filePath));
+        return NULL;
+    }
+
+    return ioAdapter;
+}
+
+QByteArray GTest_Compare_VCF_Files::getLine(IOAdapter* io) {
+    QByteArray line;
+
+    QByteArray readBuff(READ_BUFF_SIZE + 1, 0);
+    char* buff = readBuff.data();
+
+    do {
+        bool lineOk = true;
+        qint64 len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
+        CHECK_EXT(len != 0, setError("Unexpected end of file"), line);
+        CHECK_EXT(lineOk || io->isEof(), setError("Line is too long"), line);
+
+        line = (QByteArray::fromRawData(buff, len)).trimmed();
+    } while (line.startsWith(COMMENT_MARKER));
+
+    return line;
 }
 
 /*******************************
