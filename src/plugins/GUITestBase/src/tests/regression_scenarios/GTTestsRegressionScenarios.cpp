@@ -4632,7 +4632,7 @@ GUI_TEST_CLASS_DEFINITION( test_2566 ) {
      GTWidget::click(os, button);
 
 //Expected state: the task finished successfully.
-    CHECK_SET_ERR( !l.hasError( ), "Unexpected error in log!" );
+    CHECK_SET_ERR( !l.hasError( ), "Unexpected error in log!: " + l.getError() );
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2577 ) {

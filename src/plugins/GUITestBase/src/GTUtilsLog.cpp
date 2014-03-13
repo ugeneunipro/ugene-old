@@ -59,7 +59,7 @@ bool GTLogTracer::checkMessage(QString s){
 #define GT_METHOD_NAME "check"
 void GTUtilsLog::check(U2OpStatus &os, GTLogTracer& l) {
     GTGlobals::sleep(500);
-    GT_CHECK(l.hasError() == false, "There is an error in log");
+    GT_CHECK(l.hasError() == false, "There is an error in log: " + l.getError());
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
