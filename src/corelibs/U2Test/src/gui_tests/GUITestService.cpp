@@ -109,6 +109,10 @@ void GUITestService::sl_registerService() {
             new GUITestingWindow();
             break;
 
+        case RUN_ALL_TESTS_NO_IGNORED:
+            registerAllTestsTaskNoIgnored();
+            break;
+
         case NONE:
         default:
             registerServiceTask();
@@ -140,6 +144,10 @@ const GUITestService::LaunchOptions GUITestService::getLaunchOptions(CMDLineRegi
         return RUN_TEST_SUITE;
     }
 
+    if (cmdLine->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST_NO_IGNORED)) {
+        return RUN_ALL_TESTS_NO_IGNORED;
+    }
+
     if (cmdLine->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST_CRAZY_USER)) {
         return RUN_CRAZY_USER_MODE;
     }
@@ -155,10 +163,18 @@ void GUITestService::registerAllTestsTask() {
     connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_taskStateChanged(Task*)));
 }
 
-Task* GUITestService::createTestLauncherTask() const {
+void GUITestService::registerAllTestsTaskNoIgnored() {
+
+    testLauncher = createTestLauncherTask(0, true);
+    AppContext::getTaskScheduler()->registerTopLevelTask(testLauncher);
+
+    connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_taskStateChanged(Task*)));
+}
+
+Task* GUITestService::createTestLauncherTask(int suiteNumber, bool noIgnored) const {
     SAFE_POINT(NULL == testLauncher,"",NULL);
 
-    Task *task = new GUITestLauncher();
+    Task *task = new GUITestLauncher(suiteNumber, noIgnored);
     return task;
 }
 

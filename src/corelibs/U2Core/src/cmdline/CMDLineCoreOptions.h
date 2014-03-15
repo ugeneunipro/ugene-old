@@ -45,6 +45,7 @@ public:
     static const QString LOG_LEVEL;
     static const QString CREATE_GUI_TEST;
     static const QString LAUNCH_GUI_TEST;
+    static const QString LAUNCH_GUI_TEST_NO_IGNORED;
     static const QString LAUNCH_GUI_TEST_BATCH;
     static const QString LAUNCH_GUI_TEST_SUITE;
     static const QString LAUNCH_GUI_TEST_CRAZY_USER;

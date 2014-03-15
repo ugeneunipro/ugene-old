@@ -42,9 +42,9 @@
 
 namespace U2 {
 
-GUITestLauncher::GUITestLauncher(int _suiteNumber)
+GUITestLauncher::GUITestLauncher(int _suiteNumber, bool _noIgnored)
     : Task("gui_test_launcher", TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled),
-      suiteNumber(_suiteNumber) {
+      suiteNumber(_suiteNumber), noIgnored(_noIgnored) {
 
     tpm = Task::Progress_Manual;
 }
@@ -126,6 +126,12 @@ bool GUITestLauncher::initGUITestBase() {
     }
     else{
         tests = list;
+    }
+
+    if(noIgnored){
+        foreach(GUITest* test, tests){
+            test->setIgnored(false);
+        }
     }
     return true;
 }

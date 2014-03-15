@@ -35,7 +35,7 @@ class GUITest;
 class GUITestLauncher: public Task {
     Q_OBJECT
 public:
-    GUITestLauncher(int _suiteNumber=0);
+    GUITestLauncher(int _suiteNumber=0, bool _noIgnored = false);
 
     virtual void run();
     virtual QString generateReport() const;
@@ -44,6 +44,7 @@ private:
     QList<GUITest *> tests;
     QMap<QString, QString> results;
     int suiteNumber;
+    bool noIgnored;
 
     static QStringList getTestProcessArguments(const QString &testName);
     static QProcessEnvironment getProcessEnvironment(const QString &testName);

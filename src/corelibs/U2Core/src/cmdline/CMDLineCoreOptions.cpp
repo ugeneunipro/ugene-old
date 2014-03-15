@@ -41,6 +41,7 @@ const QString CMDLineCoreOptions::LOG_FORMAT    = "log-format";
 const QString CMDLineCoreOptions::LOG_LEVEL     = "log-level";
 const QString CMDLineCoreOptions::CREATE_GUI_TEST   = "create-gui-test";
 const QString CMDLineCoreOptions::LAUNCH_GUI_TEST   = "gui-test";
+const QString CMDLineCoreOptions::LAUNCH_GUI_TEST_NO_IGNORED   = "gui-test-no-ignored";
 const QString CMDLineCoreOptions::LAUNCH_GUI_TEST_BATCH = "gui-test-batch";
 const QString CMDLineCoreOptions::LAUNCH_GUI_TEST_SUITE = "gui-test-suite";
 const QString CMDLineCoreOptions::LAUNCH_GUI_TEST_CRAZY_USER = "gui-test-crazy-user";
