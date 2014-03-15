@@ -303,8 +303,7 @@ void GTFile::removeDir(QString dirName)
 void GTFile::removeDir(QString dirName)
 {
     QDir dir(dirName);
-
-
+    coreLog.trace("removing dir: " + dirName);
 
     foreach (QFileInfo fileInfo, dir.entryInfoList()) {
         QString fileName = fileInfo.fileName();
@@ -323,6 +322,8 @@ void GTFile::removeDir(QString dirName)
 
         }
     }dir.rmdir(dir.absoluteFilePath(dirName));
+
+    coreLog.trace("directory removed: " + dirName);
 
 }
 #endif

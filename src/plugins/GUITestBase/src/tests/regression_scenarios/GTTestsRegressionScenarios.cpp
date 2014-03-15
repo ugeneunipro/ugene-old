@@ -1714,11 +1714,11 @@ GUI_TEST_CLASS_DEFINITION( test_1919 )
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "File Format Conversion"));
     GTMouseDriver::click(os);
-    GTUtilsWorkflowDesigner::setParameter(os, "Document format", 1, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", 2, GTUtilsWorkflowDesigner::comboValue);
 
     // add setting source url in input data
 
-    //GTWidget::click(os,GTAction::button(os,"Run workflow"));
+    GTWidget::click(os,GTAction::button(os,"Run workflow"));
 
     GTUtilsLog::check(os, l);
 }
@@ -3452,7 +3452,7 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2316 ) {
-    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, dataDir+"samples/../workflow_samples/Alignment", "basic_align.uwl");
 
     GTGlobals::sleep(5000);
@@ -3492,7 +3492,7 @@ GUI_TEST_CLASS_DEFINITION( test_2270 ){
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2281 ){
-    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     // 1. Open WD sample "Align Sequences with MUSCLE
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
