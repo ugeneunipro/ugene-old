@@ -4059,7 +4059,7 @@ GUI_TEST_CLASS_DEFINITION( test_2382_1 ) {
     QString sandboxDir = testDir + "_common_data/scenarios/sandbox/";
     QString assDocName = "test_2382_1.ugenedb";
     GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandboxDir + assDocName));
-    GTFileDialog::openFile(os, testDir + "_common_data/ace/", "test_new_.cap.ace");
+    GTFileDialog::openFile(os, testDir + "_common_data/ace/", "test_new.cap.ace");
 
     GTGlobals::sleep();
     CHECK_SET_ERR( !l.hasError( ), "There must be no errors!" );
