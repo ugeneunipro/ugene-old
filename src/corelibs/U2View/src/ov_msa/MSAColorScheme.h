@@ -78,6 +78,13 @@ public:
     virtual MSAColorScheme* create(QObject* p, MAlignmentObject* obj);
 };
 
+class MSAColorSchemePercIdentGrayscaleFactory : public MSAColorSchemeFactory {
+    Q_OBJECT
+public:
+    MSAColorSchemePercIdentGrayscaleFactory(QObject* p, const QString& id, const QString& name, DNAAlphabetType atype);
+    virtual MSAColorScheme* create(QObject* p, MAlignmentObject* obj);
+};
+
 class MSAColorSchemeClustalXFactory : public MSAColorSchemeFactory {
     Q_OBJECT
 public:
@@ -100,6 +107,7 @@ public:
     static QString UGENE_NUCL;
     static QString JALVIEW_NUCL;
     static QString IDENTPERC_NUCL;
+    static QString IDENTPERC_NUCL_GRAY;
     static QString CUSTOM_NUCL;
 
     static QString EMPTY_AMINO;
@@ -112,6 +120,7 @@ public:
     static QString TURN_AMINO;
     static QString BURIED_AMINO;
     static QString IDENTPERC_AMINO;
+    static QString IDENTPERC_AMINO_GRAY;
     static QString CLUSTALX_AMINO;
     static QString CUSTOM_AMINO;
 
@@ -152,6 +161,11 @@ protected:
     int                 mask4[4];
     char                tmpChars[4];
     int                 tmpRanges[4];
+};
+
+class U2VIEW_EXPORT MSAColorSchemePercIdentGrayscale : public MSAColorSchemePercIdent {
+public:
+    MSAColorSchemePercIdentGrayscale(QObject* p, MSAColorSchemeFactory* f, MAlignmentObject* o);
 };
 
 //CLUSTALX

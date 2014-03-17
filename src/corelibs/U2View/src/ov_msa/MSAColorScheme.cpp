@@ -72,6 +72,14 @@ MSAColorScheme* MSAColorSchemePercIdentFactory::create(QObject* p, MAlignmentObj
     return new MSAColorSchemePercIdent(p, this, o);
 }
 
+MSAColorSchemePercIdentGrayscaleFactory::MSAColorSchemePercIdentGrayscaleFactory(QObject* p, const QString& _id, const QString& _name, DNAAlphabetType _atype) 
+: MSAColorSchemeFactory(p, _id, _name, _atype)
+{
+}
+
+MSAColorScheme* MSAColorSchemePercIdentGrayscaleFactory::create(QObject* p, MAlignmentObject* o) {
+    return new MSAColorSchemePercIdentGrayscale(p, this, o);
+}
 
 MSAColorSchemeClustalXFactory::MSAColorSchemeClustalXFactory(QObject* p, const QString& _id, const QString& _name, DNAAlphabetType _atype) 
 : MSAColorSchemeFactory(p, _id, _name, _atype)
@@ -149,6 +157,13 @@ void MSAColorSchemePercIdent::updateCache() {
         indentCache[i] = MSAConsensusUtils::packConsensusCharsToInt(ma, i, mask4, true);
     }
     cacheVersion = objVersion;
+}
+
+MSAColorSchemePercIdentGrayscale::MSAColorSchemePercIdentGrayscale( QObject* p, MSAColorSchemeFactory* f, MAlignmentObject* o ) :
+    MSAColorSchemePercIdent(p, f, o) {
+    colorsByRange[0] = QColor("#646464");
+    colorsByRange[1] = QColor("#999999");
+    colorsByRange[2] = QColor("#CCCCCC");
 }
 
 /// CLUSTAL
@@ -705,6 +720,7 @@ QString MSAColorScheme::EMPTY_NUCL      = "COLOR_SCHEME_EMPTY_NUCL";
 QString MSAColorScheme::UGENE_NUCL      = "COLOR_SCHEME_UGENE_NUCL";
 QString MSAColorScheme::JALVIEW_NUCL    = "COLOR_SCHEME_JALVIEW_NUCL";
 QString MSAColorScheme::IDENTPERC_NUCL  = "COLOR_SCHEME_IDENTPERC_NUCL";
+QString MSAColorScheme::IDENTPERC_NUCL_GRAY  = "COLOR_SCHEME_IDENTPERC_NUCL_GRAY";
 QString MSAColorScheme::CUSTOM_NUCL       = "COLOR_SCHEME_CUSTOM_NUCL";
 
 QString MSAColorScheme::EMPTY_AMINO     = "COLOR_SCHEME_EMPTY_AMINO";
@@ -717,6 +733,7 @@ QString MSAColorScheme::STRAND_AMINO    = "COLOR_SCHEME_STRAND_AMINO";
 QString MSAColorScheme::TURN_AMINO      = "COLOR_SCHEME_TURN_AMINO";
 QString MSAColorScheme::BURIED_AMINO    = "COLOR_SCHEME_BURIED_AMINO";
 QString MSAColorScheme::IDENTPERC_AMINO = "COLOR_SCHEME_IDENTPERC_AMINO";
+QString MSAColorScheme::IDENTPERC_AMINO_GRAY = "COLOR_SCHEME_IDENTPERC_AMINO_GRAY";
 QString MSAColorScheme::CLUSTALX_AMINO  = "COLOR_SCHEME_CLUSTALX_AMINO";
 QString MSAColorScheme::CUSTOM_AMINO      = "COLOR_SCHEME_CUSTOM_AMINO";
 
@@ -757,6 +774,7 @@ void MSAColorSchemeRegistry::initBuiltInSchemes() {
     addMSAColorSchemeFactory(new MSAColorSchemeStaticFactory(this, MSAColorScheme::JALVIEW_NUCL, tr("Jalview"), DNAAlphabet_NUCL, colorsPerChar));
 
     addMSAColorSchemeFactory(new MSAColorSchemePercIdentFactory(this, MSAColorScheme::IDENTPERC_NUCL,  tr("Percentage Identity"), DNAAlphabet_NUCL));
+    addMSAColorSchemeFactory(new MSAColorSchemePercIdentGrayscaleFactory(this, MSAColorScheme::IDENTPERC_NUCL_GRAY,  tr("Percentage Identity (gray)"), DNAAlphabet_NUCL));
 
     //amino
     fillEmptyCS(colorsPerChar);
@@ -795,6 +813,7 @@ void MSAColorSchemeRegistry::initBuiltInSchemes() {
     addMSAColorSchemeFactory(new MSAColorSchemeStaticFactory(this, MSAColorScheme::BURIED_AMINO, tr("Buried index"), DNAAlphabet_AMINO, colorsPerChar));
 
     addMSAColorSchemeFactory(new MSAColorSchemePercIdentFactory(this, MSAColorScheme::IDENTPERC_AMINO, tr("Percentage Identity"), DNAAlphabet_AMINO));
+    addMSAColorSchemeFactory(new MSAColorSchemePercIdentGrayscaleFactory(this, MSAColorScheme::IDENTPERC_AMINO_GRAY, tr("Percentage Identity (gray)"), DNAAlphabet_AMINO));
     
     addMSAColorSchemeFactory(new MSAColorSchemeClustalXFactory(this, MSAColorScheme::CLUSTALX_AMINO,  tr("Clustal X"), DNAAlphabet_AMINO));   
 
