@@ -60,6 +60,9 @@ public:
     static void writeDocument(Document *doc, U2OpStatus &os);
 
     static void writeObjects(const QList<GObject*> &objects, const GUrl &url, const DocumentFormatId &formatId, U2OpStatus &os);
+
+    static bool isEquelByLengthSam(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpStatus &os );
+
 };
 
 } // U2

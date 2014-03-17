@@ -50,7 +50,6 @@ public:
     QList<Task*> onSubTaskFinished(Task* subTask);
 
 private:    
-    void parseBowtieOutput(MAlignment& result, QString text);
     DnaAssemblyToRefTaskSettings config;
     QString readsFileName;
     GUrl readsFileUrl;
@@ -59,11 +58,7 @@ private:
     QString negativeError;
     bool usePrebuildIndex;
     bool subTaskFailed;
-    LoadDocumentTask* resultLoadTask;
-    LoadDocumentTask* patternLoadTask;
     BowtieTask* bowtieTask;
-    MAlignment ma1;
-    MAlignment ma2;
     DocumentFormatId format;
     DocumentFormatId patternFormat;
 };

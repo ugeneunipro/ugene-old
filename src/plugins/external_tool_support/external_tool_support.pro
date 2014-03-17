@@ -9,6 +9,8 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/ExternalToolSupportSettingsController.h \
            src/RnaSeqCommon.h \
            src/TaskLocalStorage.h \
+           src/bedtools/BedtoolsSupport.h \
+           src/bedtools/BedtoolsSupportTask.h \
            src/blast/BlastAllSupport.h \
            src/blast/BlastAllSupportRunDialog.h \
            src/blast/BlastAllSupportTask.h \
@@ -40,6 +42,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/bwa/BwaSettingsWidget.h \
            src/bwa/BwaSupport.h \
            src/bwa/BwaTask.h \
+           src/bwa/BwaWorker.h \
            src/cap3/CAP3Support.h \
            src/cap3/CAP3SupportDialog.h \
            src/cap3/CAP3SupportTask.h \
@@ -130,6 +133,7 @@ FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/Bowtie2Settings.ui \
          src/ui/BwaBuildSettings.ui \
          src/ui/BwaSettings.ui \
+         src/ui/BwaMemSettings.ui \
          src/ui/BwaSwSettings.ui \
          src/ui/CAP3SupportDialog.ui \
          src/ui/ClustalOSupportRunDialog.ui \
@@ -147,6 +151,8 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/ExternalToolSupportSettingsController.cpp \
            src/RnaSeqCommon.cpp \
            src/TaskLocalStorage.cpp \
+           src/bedtools/BedtoolsSupport.cpp \
+           src/bedtools/BedtoolsSupportTask.cpp \
            src/blast/BlastAllSupport.cpp \
            src/blast/BlastAllSupportRunDialog.cpp \
            src/blast/BlastAllSupportTask.cpp \
@@ -178,6 +184,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/bwa/BwaSettingsWidget.cpp \
            src/bwa/BwaSupport.cpp \
            src/bwa/BwaTask.cpp \
+           src/bwa/BwaWorker.cpp \
            src/cap3/CAP3Support.cpp \
            src/cap3/CAP3SupportDialog.cpp \
            src/cap3/CAP3SupportTask.cpp \

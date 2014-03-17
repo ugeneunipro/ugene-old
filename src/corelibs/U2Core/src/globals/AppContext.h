@@ -90,6 +90,7 @@ class U2DataPathRegistry;
 class PairwiseAlignmentRegistry;
 class DASSourceRegistry;
 class ScriptingToolRegistry;
+class ConvertFactoryRegistry;
 
 class U2CORE_EXPORT AppContext  : public QObject {
     Q_OBJECT
@@ -242,6 +243,8 @@ public:
 
     static ScriptingToolRegistry* getScriptingToolRegistry() { return getInstance()->_getScriptingToolRegistry(); }
 
+    static ConvertFactoryRegistry* getConvertFactoryRegistry() { return getInstance()->_getConvertFactoryRegistry(); }
+
     static QString getWorkingDirectoryPath() { return getInstance()->_getWorkingDirectoryPath(); }
 protected:
     static AppContext* getInstance() {assert(instance); return instance;}
@@ -310,6 +313,7 @@ protected:
     virtual U2DataPathRegistry* _getDataPathRegistry() const = 0;
     virtual DASSourceRegistry* _getDASSourceRegistry() const = 0; 
     virtual ScriptingToolRegistry* _getScriptingToolRegistry() const = 0;
+    virtual ConvertFactoryRegistry* _getConvertFactoryRegistry() const = 0;
 
     virtual void _registerGlobalObject(AppGlobalObject* go) = 0;
     virtual void _unregisterGlobalObject(const QString& id) = 0;

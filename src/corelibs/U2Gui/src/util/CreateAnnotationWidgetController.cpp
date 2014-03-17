@@ -556,8 +556,10 @@ QString CreateAnnotationWidgetController::validate() {
 
 
 void CreateAnnotationWidgetController::updateModel(bool forValidation) {
+    SAFE_POINT(annotationNameEdit != NULL, "CreateAnnotationWidgetController::updateModel no widget", );
     model.data.name = annotationNameEdit->text();
 
+    SAFE_POINT(groupNameEdit != NULL, "CreateAnnotationWidgetController::updateModel no widget", );
     model.groupName = groupNameEdit->text();
     if (model.groupName == GROUP_NAME_AUTO) {
         model.groupName = model.data.name;
@@ -566,6 +568,7 @@ void CreateAnnotationWidgetController::updateModel(bool forValidation) {
     model.data.location->reset();
     
     if (!model.hideLocation) {
+        SAFE_POINT(locationEdit != NULL, "CreateAnnotationWidgetController::updateModel no widget", );
         QByteArray locEditText = locationEdit->text().toLatin1();
         Genbank::LocationParser::parseLocation(	locEditText.constData(),
             locationEdit->text().length(), model.data.location, model.sequenceLen);

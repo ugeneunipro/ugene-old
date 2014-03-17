@@ -316,4 +316,74 @@ bool BwaSwGUIExtensionsFactory::hasBuildIndexWidget() {
     return true;
 }
 
+// BwaMemSettingsWidget
+
+BwaMemSettingsWidget::BwaMemSettingsWidget(QWidget *parent):
+    DnaAssemblyAlgorithmMainWidget(parent)
+{
+    setupUi(this);
+    layout()->setContentsMargins(0,0,0,0);
+
+    numThreadsSpinbox->setMaximum(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
+    numThreadsSpinbox->setValue(AppContext::getAppSettings()->getAppResourcePool()->getIdealThreadCount());
+}
+
+QMap<QString,QVariant> BwaMemSettingsWidget::getDnaAssemblyCustomSettings() {
+    QMap<QString, QVariant> settings;
+
+    settings.insert(BwaTask::OPTION_THREADS, numThreadsSpinbox->value());
+    settings.insert(BwaTask::OPTION_MIN_SEED, minSeedSpinbox->value());
+    settings.insert(BwaTask::OPTION_BAND_WIDTH, bandWidthSpinbox->value());
+    settings.insert(BwaTask::OPTION_DROPOFF, dropoffSpinbox->value());
+    settings.insert(BwaTask::OPTION_INTERNAL_SEED_LOOKUP, internalSeedSpinbox->value());
+    settings.insert(BwaTask::OPTION_SKIP_SEED_THRESHOLD, skipSeedSpinbox->value());
+    settings.insert(BwaTask::OPTION_DROP_CHAINS_THRESHOLD, dropChainSpinbox->value());
+    settings.insert(BwaTask::OPTION_MAX_MATE_RESCUES, mateRescueSpinbox->value());
+
+    if (skipMateCheckBox->isChecked()) {
+        settings.insert(BwaTask::OPTION_SKIP_MATE_RESCUES, true);
+    }
+    if (skipPairingCheckBox->isChecked()) {
+        settings.insert(BwaTask::OPTION_SKIP_PAIRING, true);
+    }
+    
+    settings.insert(BwaTask::OPTION_MATCH_SCORE, matchScoreSpinbox->value());
+    settings.insert(BwaTask::OPTION_MISMATCH_PENALTY, mismatchScoreSpinbox->value());
+    settings.insert(BwaTask::OPTION_GAP_OPEN_PENALTY, gapOpenSpinbox->value());
+    settings.insert(BwaTask::OPTION_GAP_EXTENSION_PENALTY, gapExtSpinbox->value());
+    settings.insert(BwaTask::OPTION_CLIPPING_PENALTY, clippingPenSpinbox->value());
+    settings.insert(BwaTask::OPTION_UNPAIRED_PENALTY, penaltyUnpairedSpinbox->value());
+    settings.insert(BwaTask::OPTION_SCORE_THRESHOLD, scoreThresholdSpinbox->value());
+
+    settings.insert(BwaTask::OPTION_MEM_ALIGNMENT,true);
+    return settings;
+}
+
+void BwaMemSettingsWidget::buildIndexUrl(const GUrl &) {
+    // do nothing
+}
+
+bool BwaMemSettingsWidget::isParametersOk(QString &) {
+    return true;
+}
+
+// BwaMemGUIExtensionsFactory
+
+DnaAssemblyAlgorithmMainWidget *BwaMemGUIExtensionsFactory::createMainWidget(QWidget *parent) {
+    return new BwaMemSettingsWidget(parent);
+}
+
+DnaAssemblyAlgorithmBuildIndexWidget *BwaMemGUIExtensionsFactory::createBuildIndexWidget(QWidget *parent) {
+    return new BwaBuildSettingsWidget(parent);
+}
+
+bool BwaMemGUIExtensionsFactory::hasMainWidget() {
+    return true;
+}
+
+bool BwaMemGUIExtensionsFactory::hasBuildIndexWidget() {
+    return true;
+}
+
+
 } //namespace

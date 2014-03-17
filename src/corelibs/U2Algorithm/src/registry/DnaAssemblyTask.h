@@ -83,9 +83,10 @@ public:
     DnaAssemblyToReferenceTask(const DnaAssemblyToRefTaskSettings& settings, TaskFlags flags = TaskFlags_FOSCOE, bool justBuildIndex = false);
     virtual ~DnaAssemblyToReferenceTask() {}
     bool isHaveResult() const {return haveResults;}
+    const DnaAssemblyToRefTaskSettings& getSettings() const{return settings;}
 
 protected:
-    const DnaAssemblyToRefTaskSettings& settings;
+    DnaAssemblyToRefTaskSettings settings;
     bool justBuildIndex;
     bool haveResults;
 };

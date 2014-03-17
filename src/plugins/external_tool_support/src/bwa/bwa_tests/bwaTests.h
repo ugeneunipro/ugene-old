@@ -59,11 +59,7 @@ private:
     QString resultDirPath;
     bool usePrebuildIndex;
     bool subTaskFailed;
-    LoadDocumentTask* resultLoadTask;
-    LoadDocumentTask* patternLoadTask;
     BwaTask* bwaTask;
-    MAlignment ma1;
-    MAlignment ma2;
 };
 
 class BwaTests {

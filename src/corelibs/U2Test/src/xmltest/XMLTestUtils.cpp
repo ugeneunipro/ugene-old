@@ -21,6 +21,8 @@
 
 #include "XMLTestUtils.h"
 
+#include <U2Core/GUrlUtils.h>
+
 namespace U2 {
 
 QList<XMLTestFactory*>  XMLTestUtils::createTestFactories() {
@@ -29,6 +31,7 @@ QList<XMLTestFactory*>  XMLTestUtils::createTestFactories() {
     res.append(XMLMultiTest::createFactory());
     res.append(GTest_DeleteTmpFile::createFactory());
     res.append(GTest_Fail::createFactory());
+    res.append(GTest_CreateTmpFolder::createFactory());
 
     return res;
 }
@@ -110,6 +113,28 @@ Task::ReportResult GTest_DeleteTmpFile::report() {
         stateInfo.setError(QString("TMP file not found: %1").arg(url));
     } else if(!QFileInfo(url).isDir()) {
         QFile::remove(url);
+    } else{
+        GUrlUtils::removeDir(url, stateInfo);
+    }
+    return ReportResult_Finished;
+}
+
+void GTest_CreateTmpFolder::init(XMLTestFormat*, const QDomElement& el) {
+    url = el.attribute("folder");
+    if (url.isEmpty()) {
+        failMissingValue("folder");
+        return;
+    }
+    url = env->getVar("TEMP_DATA_DIR") + "/" + url;
+
+}
+
+Task::ReportResult GTest_CreateTmpFolder::report() {
+    if (!QDir(url).exists()) {
+        bool ok = QDir::root().mkpath(url);
+        if (!ok) {
+            stateInfo.setError(QString("Cannot create folder: %1").arg(url));
+        }
     }
     return ReportResult_Finished;
 }

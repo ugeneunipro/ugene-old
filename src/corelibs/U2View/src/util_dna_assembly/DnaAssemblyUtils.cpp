@@ -170,7 +170,7 @@ ConvertFileTask * getConvertTask(const GUrl &url, const QStringList &targetForma
 
     if (INCORRECT == r) {
         QDir dir = QFileInfo(url.getURLString()).absoluteDir();
-        return new ConvertFileTask(url, targetFormats.first(), dir.absolutePath());
+        return new DefaultConvertFileTask(url, detectedFormat, targetFormats.first(), dir.absolutePath());
     }
     return NULL;
 }

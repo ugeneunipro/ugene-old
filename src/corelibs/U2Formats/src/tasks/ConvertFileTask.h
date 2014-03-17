@@ -30,24 +30,76 @@ namespace U2 {
 class LoadDocumentTask;
 class SaveDocumentTask;
 
+//
 class U2FORMATS_EXPORT ConvertFileTask : public Task {
 public:
-    ConvertFileTask(const GUrl &sourceURL, const QString &targetFormat, const QString &dir);
-
-    void prepare();
-    QList<Task*> onSubTaskFinished(Task *subTask);
+    ConvertFileTask(const GUrl &sourceURL, const QString &detectedFormat, const QString &targetFormat, const QString &dir);
+    
     GUrl getSourceURL() const;
     QString getResult() const;
-
-private:
+protected:
     GUrl sourceURL;
+    QString detectedFormat;
     QString targetFormat;
     QString workingDir;
     QString targetUrl;
+};// ConvertFileTask
+
+
+//use this task for default conversions
+class U2FORMATS_EXPORT DefaultConvertFileTask : public ConvertFileTask  {
+public:
+    DefaultConvertFileTask(const GUrl &sourceURL, const QString &detectedFormat, const QString &targetFormat, const QString &dir);
+
+protected:
+    void prepare();
+    QList<Task*> onSubTaskFinished(Task *subTask);
+
+private:
 
     LoadDocumentTask *loadTask;
     SaveDocumentTask *saveTask;
-}; // ConvertFileTask
+}; //DefaultConvertFileTask
+
+//SAM->BAM creates a sorted and indexed BAM
+class U2FORMATS_EXPORT BamSamConversionTask : public ConvertFileTask {
+public:
+    BamSamConversionTask(const GUrl &sourceURL, const QString &detectedFormat, const QString &targetFormat, const QString &dir);
+
+protected:
+    void prepare();
+    void run();
+
+private:
+    bool samToBam;
+}; //BamSamConversionTask
+
+//////////////////////////////////////////////////////////////////////////
+//Factories and registries
+class U2FORMATS_EXPORT ConvertFileFactory: public QObject{
+public:
+    //return true if it is a custom conversion for given formats
+    virtual bool isCustomFormatTask (const QString& detectedFormat, const QString& targetFormat){return true;}
+    virtual ConvertFileTask* getTask(const GUrl &sourceURL, const QString &detectedFormat, const QString &targetFormat, const QString &dir) {return new DefaultConvertFileTask(sourceURL, detectedFormat, targetFormat, dir);}
+};
+
+class U2FORMATS_EXPORT BAMConvertFactory : public ConvertFileFactory{
+public:
+    virtual bool isCustomFormatTask (const QString& detectedFormat, const QString& targetFormat);
+    virtual ConvertFileTask* getTask(const GUrl &sourceURL, const QString &detectedFormat, const QString &targetFormat, const QString &dir) {return new BamSamConversionTask(sourceURL, detectedFormat, targetFormat, dir);}
+};
+
+class U2FORMATS_EXPORT ConvertFactoryRegistry : public QObject{
+public:
+    ConvertFactoryRegistry(QObject *o = 0);
+    ~ConvertFactoryRegistry();
+    bool registerConvertFactory(ConvertFileFactory* f);
+    void unregisterConvertFactory(ConvertFileFactory* f);
+    ConvertFileFactory *getFactoryByFormats(const QString& detectedFormat, const QString& targetFormat);
+private:
+    QList<ConvertFileFactory*> factories;
+};
+
 
 } // U2
 

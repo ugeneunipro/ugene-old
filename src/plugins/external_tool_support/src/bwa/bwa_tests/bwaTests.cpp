@@ -40,6 +40,7 @@
 #include <U2Core/GUrlUtils.h>
 
 #include <U2Formats/SAMFormat.h>
+#include <U2Formats/BAMUtils.h>
 
 #include <U2View/DnaAssemblyUtils.h>
 
@@ -79,7 +80,6 @@ namespace U2 {
 void GTest_Bwa::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
     bwaTask = NULL;
-    resultLoadTask = NULL;
     indexName = "";
     readsFileName = "";
     patternFileName = "";
@@ -118,8 +118,11 @@ void GTest_Bwa::init(XMLTestFormat *tf, const QDomElement& el) {
     }
     {
         const QString attr = ALG_NAME_ATTR;
-        if(el.attribute(attr) == BwaTask::ALGORITHM_BWA_SW) {
+        const QString algName = el.attribute(attr);
+        if(algName == BwaTask::ALGORITHM_BWA_SW) {
             config.setCustomValue(BwaTask::OPTION_SW_ALIGNMENT, true);
+        }else if (algName == BwaTask::ALGORITHM_BWA_MEM){
+            config.setCustomValue(BwaTask::OPTION_MEM_ALIGNMENT, true);
         }
     }
     {
@@ -327,44 +330,6 @@ QList<Task*> GTest_Bwa::onSubTaskFinished(Task* subTask) {
             bwaTask->setError("Reference assembly failed - no possible alignment found");
             return res;
         }
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(config.resultFileName));
-        // SAM format is removed from supported formats list and supported only by BAM plugin
-        // Create it manually and provide to LoadDocumentTask
-        SAMFormat* samFormat = new SAMFormat();
-        resultLoadTask = new LoadDocumentTask(samFormat, config.resultFileName,iof);
-        samFormat->setParent(resultLoadTask);
-        res << resultLoadTask;
-
-    } else if (subTask == resultLoadTask) {
-
-        Document* doc = resultLoadTask->getDocument();
-        CHECK_EXT(doc != NULL, setError("Failed to load result document"), res);
-        ma1 =  qobject_cast<MAlignmentObject*> (doc->getObjects().first())->getMAlignment();
-        QFileInfo patternFile(env->getVar("COMMON_DATA_DIR")+"/"+patternFileName);
-        IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(patternFile.absoluteFilePath()));
-
-        // SAM format is removed from supported formats list and supported only by BAM plugin
-        // Create it manually and provide to LoadDocumentTask
-        SAMFormat* samFormat = new SAMFormat();
-        patternLoadTask = new LoadDocumentTask(samFormat, patternFile.absoluteFilePath(), iof);
-        samFormat->setParent(patternLoadTask);
-
-        patternLoadTask->setSubtaskProgressWeight(0);
-        res << patternLoadTask;
-
-    } else if(subTask == patternLoadTask) {
-        if(patternLoadTask->hasError()) {
-            subTaskFailed = true;
-            return res;
-        }
-        Document *doc = patternLoadTask->getDocument();
-        assert(doc!=NULL);
-
-        QList<GObject*> list = doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
-        CHECK_EXT(list.size() > 0, setError(  QString("container of object with type \"%1\" is empty").arg(GObjectTypes::MULTIPLE_ALIGNMENT) ), res);
-        MAlignmentObject* ma2Obj = qobject_cast<MAlignmentObject*>(list.first());
-        CHECK_EXT(ma2Obj != NULL, setError(QString("Can't cast GObject to MAlignmentObject")), res);
-        ma2 = ma2Obj->getMAlignment();
     }
     return res;
 }
@@ -374,47 +339,8 @@ void GTest_Bwa::run() {
     if(subTaskFailed) {
         return;
     }
-
-    const QList<MAlignmentRow> &alignedSeqs1 = ma1.getRows();
-    const QList<MAlignmentRow> &alignedSeqs2 = ma2.getRows();
-
-    if(alignedSeqs1.count() != alignedSeqs2.count()) {
-        stateInfo.setError(QString("Aligned sequences number not matched \"%1\", expected \"%2\"").arg(alignedSeqs1.count()).arg(alignedSeqs2.count()));
-        return;
-    }
-
-    foreach(const MAlignmentRow &maItem1, alignedSeqs1) {
-        bool nameFound = false;
-        if(maItem1.getName().compare("reference", Qt::CaseInsensitive)==0) continue;
-        foreach(const MAlignmentRow &maItem2, alignedSeqs2) {
-            if (maItem1.getName() == maItem2.getName()) {
-                nameFound = true;
-                int l1 = maItem1.getCoreLength();
-                int l2 = maItem2.getCoreLength();
-                if (l1 != l2) {
-                    stateInfo.setError(  QString("Aligned sequences \"%1\" length not matched \"%2\", expected \"%3\"").arg(maItem1.getName()).arg(l1).arg(l2) );
-                    return;
-                }
-                if (maItem1.getCore() != maItem2.getCore()) {
-                    stateInfo.setError(  QString("Aligned sequences \"%1\" not matched \"%2\", expected \"%3\"").arg(maItem1.getName()).arg(QString(maItem1.getCore())).arg(QString(maItem2.getCore())) );
-                    return;
-                }
-
-                //DNAQuality qual1 = maItem1.getCoreQuality();
-                //DNAQuality qual2 = maItem1.getCoreQuality();
-                //if(qual1.type != qual2.type) {
-                //    stateInfo.setError(  QString("Aligned sequences quality type \"%1\" not matched \"%2\", expected \"%3\"").arg(maItem1.getName()).arg(qual1.type).arg(qual2.type) );
-                //}
-                //if(qual1.qualCodes != qual2.qualCodes) {
-                //    stateInfo.setError(  QString("Aligned sequences quality \"%1\" not matched \"%2\", expected \"%3\"").arg(maItem1.getName()).arg(QString(qual1.qualCodes)).arg(QString(qual2.qualCodes)) );
-                //    return;
-                //}
-            }
-        }
-        if (!nameFound) {
-            stateInfo.setError(  QString("aligned sequence not found \"%1\"").arg(maItem1.getName()) );
-        }
-    }
+    QFileInfo patternFile(env->getVar("COMMON_DATA_DIR")+"/"+patternFileName);
+    BAMUtils::isEquelByLengthSam(config.resultFileName, patternFile.absoluteFilePath(), stateInfo);
 }
 
 Task::ReportResult GTest_Bwa::report() {
@@ -453,8 +379,6 @@ void GTest_Bwa::cleanup() {
         GUrlUtils::removeDir(resultDirPath, stateInfo);
     }
 
-    ma1.clear();
-    ma2.clear();
 }
 
 

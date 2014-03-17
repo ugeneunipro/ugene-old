@@ -84,9 +84,22 @@ namespace {
     QString truncatedError(const QByteArray &file) {
         return QObject::tr("Truncated file: \"%1\"").arg(file.constData());
     }
+
+    void samreadCheck(int read, U2OpStatus &os, const QByteArray& fileName)
+    {
+        if (READ_ERROR_CODE == read) {
+            if (NULL != SAMTOOLS_ERROR_MESSAGE) {
+                os.setError(SAMTOOLS_ERROR_MESSAGE);
+            } else {
+                os.setError(readsError(fileName));
+            }
+        } else if (read < -1) {
+            os.setError(truncatedError(fileName));
+        }
+    }
 }
 
-#define SAMTOOL_CHECK(cond, msg) \
+#define SAMTOOL_CHECK(cond, msg, ret) \
     if (!(cond)) {\
         if (NULL != SAMTOOLS_ERROR_MESSAGE) { \
             os.setError(SAMTOOLS_ERROR_MESSAGE); \
@@ -94,8 +107,9 @@ namespace {
             os.setError(msg); \
         } \
         closeFiles(in, out); \
-        return; \
+        return ret; \
     } \
+
 
 void BAMUtils::convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, const ConvertOption &options, U2OpStatus &os ) {
     const QByteArray samFileName = samUrl.getURLString().toLocal8Bit();
@@ -113,16 +127,16 @@ void BAMUtils::convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, const C
         void *aux = NULL;
         if (options.samToBam && !options.referenceUrl.isEmpty()) {
             aux = samfaipath(options.referenceUrl.toLocal8Bit().constData());
-            SAMTOOL_CHECK(NULL != aux, faiError(options.referenceUrl.toLocal8Bit()));
+            SAMTOOL_CHECK(NULL != aux, faiError(options.referenceUrl.toLocal8Bit()), );
         }
 
         in = samopen(sourceName.constData(), readMode, aux);
-        SAMTOOL_CHECK(NULL != in, openFileError(sourceName));
-        SAMTOOL_CHECK(NULL != in->header, headerError(sourceName));
+        SAMTOOL_CHECK(NULL != in, openFileError(sourceName), );
+        SAMTOOL_CHECK(NULL != in->header, headerError(sourceName), );
 
         QByteArray writeMode = ( options.samToBam ) ? "wb" : "wh";
         out = samopen(targetName.constData(), writeMode, in->header);
-        SAMTOOL_CHECK(NULL != out, openFileError(targetName));
+        SAMTOOL_CHECK(NULL != out, openFileError(targetName), );
     }
     // convert files
     bam1_t *b = bam_init1();
@@ -132,15 +146,7 @@ void BAMUtils::convertToSamOrBam(const GUrl &samUrl, const GUrl &bamUrl, const C
             samwrite(out, b); // write the alignment to `out'
         }
 
-        if (READ_ERROR_CODE == r) {
-            if (NULL != SAMTOOLS_ERROR_MESSAGE) {
-                os.setError(SAMTOOLS_ERROR_MESSAGE);
-            } else {
-                os.setError(readsError(sourceName));
-            }
-        } else if (r < -1) {
-            os.setError(truncatedError(sourceName));
-        }
+        samreadCheck(r, os, sourceName);
         bam_destroy1(b);
     }
 
@@ -471,6 +477,60 @@ void BAMUtils::writeObjects(const QList<GObject*> &objects, const GUrl &urlStr, 
 
     writeObjectsWithSamtools(out, objects, os);
     samclose(out);
+}
+
+//the function assumes the equel order of alignments in files
+bool BAMUtils::isEquelByLengthSam(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpStatus &os){
+    const QByteArray& fileName1 = fileUrl1.getURLString().toLocal8Bit();
+    const QByteArray& fileName2 = fileUrl2.getURLString().toLocal8Bit();
+
+    samfile_t *in = NULL;
+    samfile_t *out = NULL;
+
+    {
+        void *aux = NULL;
+        in = samopen(fileName1.constData(), "r", aux);
+        SAMTOOL_CHECK(NULL != in, openFileError(fileName1), false);
+        SAMTOOL_CHECK(NULL != in->header, headerError(fileName1), false);
+
+        out = samopen(fileName2.constData(), "r", aux);
+        SAMTOOL_CHECK(NULL != out, openFileError(fileName2), false);
+        SAMTOOL_CHECK(NULL != out->header, headerError(fileName2), false);
+    }
+
+    if(*(in->header->target_len) != *(out->header->target_len)){
+        os.setError(QString("Different target length of files. %1 and %2").arg(qint64(in->header->target_len)).arg(qint64(out->header->target_len)));
+        closeFiles(in, out);
+        return false;
+    }
+
+    bam1_t *b1 = bam_init1();
+    bam1_t *b2 = bam_init1();
+    int r1;
+    int r2;
+    {
+        while ((r1 = samread(in, b1)) >= 0) { // read one alignment from file1
+            if((r2 = samread(out, b2) >= 0)){ //read one alignment from file2
+
+            }else{
+                samreadCheck(r2, os, fileName2);
+                os.setError("Differrent number of reads in files");
+                break;
+            }
+        }
+
+        samreadCheck(r1, os, fileName1);
+        bam_destroy1(b1);
+        bam_destroy1(b2);
+    }
+
+    closeFiles(in, out);
+
+    if(os.hasError()){
+        return false;
+    }
+
+    return true;
 }
 
 } // U2

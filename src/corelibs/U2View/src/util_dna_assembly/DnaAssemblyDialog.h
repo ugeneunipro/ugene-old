@@ -67,6 +67,7 @@ public:
     const QString getAlgorithmName();
     const QString getResultFileName();
     bool isPrebuiltIndex() const;
+    bool isPaired() const;
     bool isSamOutput() const;
     QMap<QString,QVariant> getCustomSettings();
 

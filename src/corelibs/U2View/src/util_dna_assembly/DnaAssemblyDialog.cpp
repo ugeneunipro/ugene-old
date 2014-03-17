@@ -326,6 +326,10 @@ bool DnaAssemblyDialog::isPrebuiltIndex() const {
     return prebuiltIndexCheckBox->isChecked();
 }
 
+bool DnaAssemblyDialog::isPaired() const {
+    return libraryComboBox->currentIndex() == 0 ? false : true;
+}
+
 bool DnaAssemblyDialog::isSamOutput() const {
     return samBox->isChecked();
 }
@@ -458,6 +462,7 @@ DnaAssemblyToRefTaskSettings DnaAssemblyGUIUtils::getSettings(DnaAssemblyDialog 
     s.setCustomSettings(dialog->getCustomSettings());
     s.shortReadSets = dialog->getShortReadSets();
     s.prebuiltIndex = dialog->isPrebuiltIndex();
+    s.pairedReads = dialog->isPaired();
 
     return s;
 }

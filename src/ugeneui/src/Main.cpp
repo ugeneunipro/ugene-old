@@ -78,6 +78,8 @@
 #include <U2Gui/BaseDocumentFormatConfigurators.h>
 #include <U2Gui/LogView.h>
 
+#include <U2Formats/ConvertFileTask.h>
+
 #include <U2View/MSAColorScheme.h>
 #include <U2View/DnaAssemblyUtils.h>
 #include <U2View/Init.h>
@@ -544,6 +546,9 @@ int main(int argc, char **argv)
     DASSourceRegistry* dsr = new DASSourceRegistry();
     appContext->setDASSourceRegistry(dsr);
 
+    ConvertFactoryRegistry* convertFactoryRegistry = new ConvertFactoryRegistry();
+    appContext->setConvertFactoryRegistry(convertFactoryRegistry);
+
     Workflow::WorkflowEnv::init(new Workflow::WorkflowEnvImpl());
     Workflow::WorkflowEnv::getDomainRegistry()->registerEntry(new LocalWorkflow::LocalDomainFactory());
 
@@ -703,6 +708,9 @@ int main(int argc, char **argv)
 
     appContext->setSecStructPedictAlgRegistry(NULL);
     delete sspar;
+
+    appContext->setConvertFactoryRegistry(NULL);
+    delete convertFactoryRegistry;
 
     appContext->setSWResultFilterRegistry(NULL);
     delete swrfr;

@@ -97,7 +97,6 @@ void BwaAlignTask::prepare() {
         return;
     }
 
-
     foreach (const ShortReadSet& readSet, readSets) {
         QStringList arguments;
         arguments.append("aln");
@@ -225,18 +224,110 @@ void BwaAlignTask::LogParser::parseErrOutput(const QString &partOfLog) {
     }
 }
 
+
+// BwaMemAlignTask
+
+BwaMemAlignTask::BwaMemAlignTask(const QString &indexPath, const DnaAssemblyToRefTaskSettings &settings):
+    Task("BWA MEM reads assembly", TaskFlags_NR_FOSCOE),
+    indexPath(indexPath),
+    settings(settings)
+{
+}
+
+void BwaMemAlignTask::prepare() {
+    if (settings.shortReadSets.size() == 0) {
+        setError(tr("Short reads are not provided"));
+        return;
+    }
+
+    const ShortReadSet& readSet = settings.shortReadSets.at(0);
+
+    settings.pairedReads = readSet.type == ShortReadSet::PairedEndReads;
+
+    if (settings.pairedReads && settings.shortReadSets.size() != 2) {
+        setError(tr("Wrong settings of paired reads. For paired-read alignment by BWA MEM only a single pair of reads is acceptable."));
+        return;
+    }
+    QStringList arguments;
+
+    arguments.append("mem");
+
+    arguments.append("-t");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_THREADS, 1).toString());
+
+    arguments.append("-k");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_MIN_SEED, 19).toString());
+
+    arguments.append("-w");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_BAND_WIDTH, 100).toString());
+
+    arguments.append("-d");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_DROPOFF, 100).toString());
+
+    arguments.append("-r");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_INTERNAL_SEED_LOOKUP, float(1.5)).toString());
+
+    arguments.append("-c");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_SKIP_SEED_THRESHOLD, 10000).toString());
+
+    arguments.append("-D");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_DROP_CHAINS_THRESHOLD, float(0.5)).toString());
+
+    arguments.append("-m");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_MATE_RESCUES, 100).toString());
+
+    if(settings.getCustomValue(BwaTask::OPTION_SKIP_MATE_RESCUES, false).toBool()){
+        arguments.append("-S");
+    }
+
+    if(settings.getCustomValue(BwaTask::OPTION_SKIP_PAIRING, false).toBool()){
+        arguments.append("-P");
+    }
+
+    arguments.append("-A");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_MATCH_SCORE, 1).toString());
+
+    arguments.append("-B");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_MISMATCH_PENALTY, 4).toString());
+
+    arguments.append("-O");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_GAP_OPEN_PENALTY, 6).toString());
+
+    arguments.append("-E");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_GAP_EXTENSION_PENALTY, 1).toString());
+
+    arguments.append("-L");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_CLIPPING_PENALTY, 5).toString());
+
+    arguments.append("-U");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_UNPAIRED_PENALTY, 17).toString());
+
+    arguments.append("-T");
+    arguments.append(settings.getCustomValue(BwaTask::OPTION_SCORE_THRESHOLD, 30).toString());
+    
+    arguments.append( indexPath );
+    arguments.append( readSet.url.getURLString() );
+    if(settings.pairedReads && settings.shortReadSets.size() == 2){
+        const ShortReadSet& readSetPaired = settings.shortReadSets.at(1);
+        arguments.append( readSetPaired.url.getURLString() );
+    }
+    
+    ExternalToolRunTask* alignTask = new ExternalToolRunTask(ET_BWA, arguments, &logParser, NULL);
+    alignTask->setStandartOutputFile(settings.resultFileName.getURLString() );
+    addSubTask(alignTask);
+}
+
+
 // BwaSwAlignTask
 
 BwaSwAlignTask::BwaSwAlignTask(const QString &indexPath, const DnaAssemblyToRefTaskSettings &settings):
-    Task("Bwa reads assembly", TaskFlags_NR_FOSCOE),
+    Task("BWA SW reads assembly", TaskFlags_NR_FOSCOE),
     indexPath(indexPath),
     settings(settings)
 {
 }
 
 void BwaSwAlignTask::prepare() {
-
-
     if (settings.shortReadSets.size() == 0) {
         setError(tr("Short reads are not provided"));
         return;
@@ -319,27 +410,43 @@ const QString BwaTask::OPTION_MAX_LONG_DELETION_EXTENSIONS = "max-long-deletion-
 const QString BwaTask::OPTION_SEED_LENGTH = "seed-length";
 const QString BwaTask::OPTION_MAX_SEED_DIFFERENCES = "max-seed-differences";
 const QString BwaTask::OPTION_MAX_QUEUE_ENTRIES = "max-queue-entries";
-const QString BwaTask::OPTION_THREADS = "threads";
-const QString BwaTask::OPTION_MISMATCH_PENALTY = "mismatch-penalty";
-const QString BwaTask::OPTION_GAP_OPEN_PENALTY = "gap-open-penalty";
-const QString BwaTask::OPTION_GAP_EXTENSION_PENALTY = "gap-extension-penalty";
 const QString BwaTask::OPTION_BEST_HITS = "best-hits";
 const QString BwaTask::OPTION_QUALITY_THRESHOLD = "quality-threshold";
-const QString BwaTask::OPTION_BARCODE_LENGTH = "barcode-length";
 const QString BwaTask::OPTION_COLORSPACE = "colorspace";
+const QString BwaTask::OPTION_BARCODE_LENGTH = "barcode-length";
 const QString BwaTask::OPTION_LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS = "long-scaled-gap-penalty-for-long-deletions";
 const QString BwaTask::OPTION_NON_ITERATIVE_MODE = "non-iterative-mode";
 const QString BwaTask::OPTION_SW_ALIGNMENT = "bwa-sw-alignment";
-const QString BwaTask::OPTION_MATCH_SCORE = "match-score";
+const QString BwaTask::OPTION_MEM_ALIGNMENT = "bwa-mem-alignment";
 const QString BwaTask::OPTION_PREFER_HARD_CLIPPING = "prefer-hard-clipping";
 const QString BwaTask::OPTION_REV_ALGN_THRESHOLD = "rev-algn";
 const QString BwaTask::OPTION_Z_BEST = "z-best";
-const QString BwaTask::OPTION_SCORE_THRESHOLD = "score-threshold";
 const QString BwaTask::OPTION_CHUNK_SIZE = "chunk-size";
 const QString BwaTask::OPTION_MASK_LEVEL = "mask-level";
+
+const QString BwaTask::OPTION_THREADS = "threads";
+const QString BwaTask::OPTION_MIN_SEED = "min-seed";
 const QString BwaTask::OPTION_BAND_WIDTH = "band-width";
+const QString BwaTask::OPTION_DROPOFF = "dropoff";
+const QString BwaTask::OPTION_INTERNAL_SEED_LOOKUP = "seed-lookup";
+const QString BwaTask::OPTION_SKIP_SEED_THRESHOLD = "seed-threshold";
+const QString BwaTask::OPTION_DROP_CHAINS_THRESHOLD = "drop-chains";
+const QString BwaTask::OPTION_MAX_MATE_RESCUES = "mate-rescue";
+const QString BwaTask::OPTION_SKIP_MATE_RESCUES = "skip-mate-rescues";
+const QString BwaTask::OPTION_SKIP_PAIRING = "skip-pairing";
+const QString BwaTask::OPTION_MATCH_SCORE = "match-score";
+const QString BwaTask::OPTION_MISMATCH_PENALTY = "mistmatch-penalty";
+const QString BwaTask::OPTION_GAP_OPEN_PENALTY = "gap-open-penalty";
+const QString BwaTask::OPTION_GAP_EXTENSION_PENALTY = "gap-ext-penalty";
+const QString BwaTask::OPTION_CLIPPING_PENALTY = "clipping-penalty";
+const QString BwaTask::OPTION_UNPAIRED_PENALTY = "inpaired-panalty";
+const QString BwaTask::OPTION_SCORE_THRESHOLD = "score-threshold";
+
 const QString BwaTask::ALGORITHM_BWA_SW = "BWA-SW";
 const QString BwaTask::ALGORITHM_BWA_ALN = "BWA";
+const QString BwaTask::ALGORITHM_BWA_MEM = "BWA-MEM";
+
+
 
 
 BwaTask::BwaTask(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex):
@@ -350,11 +457,7 @@ BwaTask::BwaTask(const DnaAssemblyToRefTaskSettings &settings, bool justBuildInd
 void BwaTask::prepare() {
     QString indexFileName = settings.indexFileName;
     if(indexFileName.isEmpty()) {
-        if(settings.prebuiltIndex) {
-            indexFileName = settings.refSeqUrl.dirPath() + "/" + settings.refSeqUrl.baseFileName();
-        } else {
-            indexFileName = settings.resultFileName.dirPath() + "/" + settings.resultFileName.baseFileName();
-        }
+        indexFileName = settings.refSeqUrl.getURLString();
     }
     if(!settings.prebuiltIndex) {
         buildIndexTask = new BwaBuildIndexTask(settings.refSeqUrl.getURLString(), indexFileName, settings);
@@ -366,7 +469,16 @@ void BwaTask::prepare() {
                 return;
             }
             alignTask = new BwaSwAlignTask(indexFileName, settings);
-        } else {
+        } else  if (settings.getCustomValue(OPTION_MEM_ALIGNMENT, false) == true) {
+            if(!settings.pairedReads && settings.shortReadSets.size() > 1) {
+                setError(tr("Multiple read files are not supported by bwa-mem. Please combine your reads into single FASTA file."));
+                return;
+            }else if(settings.pairedReads && settings.shortReadSets.size() != 2) {
+                setError(tr("Please, provide two files with paired reads."));
+                return;
+            }
+            alignTask = new BwaMemAlignTask(indexFileName, settings);
+        }else{
             alignTask = new BwaAlignTask(indexFileName, settings.shortReadSets, settings.resultFileName.getURLString(), settings);
         }
     }
@@ -400,9 +512,4 @@ QList<Task *> BwaTask::onSubTaskFinished(Task *subTask) {
 DnaAssemblyToReferenceTask *BwaTaskFactory::createTaskInstance(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex) {
     return new BwaTask(settings, justBuildIndex);
 }
-
-
-
-
-
 } // namespace U2

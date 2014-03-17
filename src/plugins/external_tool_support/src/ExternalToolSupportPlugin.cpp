@@ -124,6 +124,8 @@
 #include "vcfutils/VcfutilsSupport.h"
 #include "samtools/BcfToolsSupport.h"
 #include "R/RSupport.h"
+#include "bwa/BwaWorker.h"
+#include "bedtools/BedtoolsSupport.h"
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -365,6 +367,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     SpideySupport* spideySupport = new SpideySupport(ET_SPIDEY);
     etRegistry->registerEntry(spideySupport);
 
+    //bedtools
+    BedtoolsSupport* bedtoolsSupport = new BedtoolsSupport(ET_BEDTOOLS);
+    etRegistry->registerEntry(bedtoolsSupport);
+
     // TopHat
     TopHatSupport* tophatTool = new TopHatSupport(ET_TOPHAT);
     etRegistry->registerEntry(tophatTool);
@@ -480,6 +486,9 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(BwaTask::ALGORITHM_BWA_SW, new BwaTaskFactory(),
         new BwaSwGUIExtensionsFactory(), true/*Index*/, false/*Dbi*/, false/*Paired*/, referenceFormats, readsFormats));
 
+    AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(BwaTask::ALGORITHM_BWA_MEM, new BwaTaskFactory(),
+        new BwaMemGUIExtensionsFactory(), true/*Index*/, false/*Dbi*/, true/*Paired*/, referenceFormats, readsFormats));
+
     readsFormats << BaseDocumentFormats::RAW_DNA_SEQUENCE;
     AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(Bowtie2Task::taskName, new Bowtie2TaskFactory(),
         new Bowtie2GUIExtensionsFactory(), true/*Index*/, false /*Dbi*/, true/*Paired-reads*/, referenceFormats, readsFormats));
@@ -555,6 +564,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     LocalWorkflow::ConductGOWorkerFactory::init();
     LocalWorkflow::CAP3WorkerFactory::init();
     LocalWorkflow::VcfConsensusWorkerFactory::init();
+    LocalWorkflow::BWAMEMWorkerFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service

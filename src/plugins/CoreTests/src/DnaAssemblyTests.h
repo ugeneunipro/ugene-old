@@ -53,6 +53,15 @@ private:
     QString pairedReads;
 };
 
+class GTest_AssemblycompareTwoSAMbyLength : public GTest {
+    Q_OBJECT
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_AssemblycompareTwoSAMbyLength, "compare-sam-by-length");
+
+    ReportResult report();
+    QString file1Url;
+    QString file2Url;
+};
+
 
 class DnaAssemblyTests {
 public:

@@ -69,6 +69,7 @@
 #include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
 #include <U2Algorithm/PairwiseAlignmentRegistry.h>
 
+#include <U2Formats/ConvertFileTask.h>
 #include <U2Formats/DocumentFormatUtils.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
@@ -444,6 +445,9 @@ int main(int argc, char **argv)
     StructuralAlignmentAlgorithmRegistry *saar = new StructuralAlignmentAlgorithmRegistry();
     appContext->setStructuralAlignmentAlgorithmRegistry(saar);
 
+    ConvertFactoryRegistry* convertFactoryRegistry = new ConvertFactoryRegistry();
+    appContext->setConvertFactoryRegistry(convertFactoryRegistry);
+
     SplicedAlignmentTaskRegistry* splicedAlignmentTaskRegistry = new SplicedAlignmentTaskRegistry();
     appContext->setSplicedAlignmentTaskRegistry(splicedAlignmentTaskRegistry);
 
@@ -635,6 +639,9 @@ int main(int argc, char **argv)
 
     appContext->setStructuralAlignmentAlgorithmRegistry(NULL);
     delete saar;
+
+    appContext->setConvertFactoryRegistry(NULL);
+    delete convertFactoryRegistry;
 
     delete splicedAlignmentTaskRegistry;
     appContext->setSplicedAlignmentTaskRegistry(NULL);

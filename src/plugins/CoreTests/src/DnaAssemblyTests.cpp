@@ -26,6 +26,8 @@
 #include <U2Core/IOAdapter.h>
 
 #include <U2Formats/SAMFormat.h>
+#include <U2Formats/BAMUtils.h>
+
 
 #include <U2Algorithm/DnaAssemblyTask.h>
 #include <U2Algorithm/DnaAssemblyMultiTask.h>
@@ -37,6 +39,8 @@
 
 namespace U2 {
 
+#define FILE1_ATTR "file1"
+#define FILE2_ATTR "file2"
 #define REF_SEQ_ATTR "ref-seq"
 #define INDEX_FILE_ATTR "index-file"
 #define METHOD_NAME_ATTR "assembly-method"
@@ -166,12 +170,39 @@ void GTest_DnaAssemblyToReferenceTask::cleanup()
      }
 }
 
+//----------------------------------------------------------
+void GTest_AssemblycompareTwoSAMbyLength::init(XMLTestFormat *tf, const QDomElement& el) {
+    Q_UNUSED(tf);
+
+    file1Url = el.attribute(FILE1_ATTR);
+    if (file1Url.isEmpty()) {
+        failMissingValue(FILE1_ATTR);
+        return;
+    }
+    file1Url = env->getVar("TEMP_DATA_DIR")+"/" + file1Url;
+
+    file2Url = el.attribute(FILE2_ATTR);
+    if (file2Url.isEmpty()) {
+        failMissingValue(FILE2_ATTR);
+        return;
+    }
+    file2Url = env->getVar("COMMON_DATA_DIR")+"/" + file2Url;
+}
+
+Task::ReportResult GTest_AssemblycompareTwoSAMbyLength::report() {
+    BAMUtils::isEquelByLengthSam(file1Url, file2Url, stateInfo);
+
+    return ReportResult_Finished;
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 QList<XMLTestFactory*> DnaAssemblyTests::createTestFactories()
 {
     QList<XMLTestFactory*> res;
     res.append(GTest_DnaAssemblyToReferenceTask::createFactory());
+    res.append(GTest_AssemblycompareTwoSAMbyLength::createFactory());
     
     return res;
 }

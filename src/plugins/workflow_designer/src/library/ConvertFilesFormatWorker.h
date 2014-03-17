@@ -49,6 +49,8 @@ public:
     void cleanup();
 
 private:
+   
+
     IntegralBus *inputUrlPort;
     IntegralBus *outputUrlPort;
     QString targetFormat;
@@ -61,7 +63,7 @@ public slots:
 private:
     QString takeUrl();
     QString detectFormat(const QString &url);
-    QString createWorkingDir();
+    QString createWorkingDir(const QString& fileUrl);
     void sendResult(const QString &url);
     Task * getConvertTask(const QString &detectedFormat, const QString &url);
 }; //ConvertFilesFormatWorker
@@ -74,18 +76,6 @@ public:
     Worker* createWorker(Actor* a) { return new ConvertFilesFormatWorker(a); }
 }; //ConvertFilesFormatWorkerFactory
 
-class BamSamConversionTask : public Task {
-    Q_OBJECT
-public:
-    BamSamConversionTask(const GUrl &sourceURL, const GUrl &destinationURL, bool samToBam);
-    void run();
-    QString getDestinationURL();
-
-private:
-    GUrl sourceURL;
-    GUrl destinationURL;
-    bool samToBam;
-}; //BamSamConversionTask
 
 } //LocalWorkflow
 } //U2

@@ -95,6 +95,15 @@ private:
     QString url;
 };
 
+class GTest_CreateTmpFolder: public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY_EXT(GTest_CreateTmpFolder, "create-folder", TaskFlag_NoRun);
+    ReportResult report();
+private:
+    QString url;
+};
+
 
 } //namespace
 

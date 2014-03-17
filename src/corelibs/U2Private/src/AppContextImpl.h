@@ -95,6 +95,7 @@ public:
         workingDirectoryPath = "";
         dsr = NULL;
         str = NULL;
+        cfr = NULL;
     }
 
     ~AppContextImpl();
@@ -290,6 +291,11 @@ public:
         pairwiseAlignmentRegistry = par;
     }
 
+    void setConvertFactoryRegistry(ConvertFactoryRegistry* _cfr) {
+        assert(cfr == NULL || _cfr == NULL);
+        cfr = _cfr;
+    }
+
     void setGUIMode(bool v) {
         guiMode = v;
     }
@@ -374,6 +380,7 @@ protected:
     virtual U2DataPathRegistry*             _getDataPathRegistry() const { return dpr; }
     virtual DASSourceRegistry*              _getDASSourceRegistry() const { return dsr; }
     virtual ScriptingToolRegistry*          _getScriptingToolRegistry() const { return str; }
+    virtual ConvertFactoryRegistry*         _getConvertFactoryRegistry() const { return cfr; }
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
     virtual AppGlobalObject* _getGlobalObjectById(const QString& id) const;
@@ -446,6 +453,7 @@ private:
     U2DataPathRegistry *dpr;
     DASSourceRegistry *dsr;
     ScriptingToolRegistry *str;
+    ConvertFactoryRegistry *cfr;
     bool guiMode;
     QString activeWindow;
     QString workingDirectoryPath;

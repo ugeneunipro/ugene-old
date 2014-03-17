@@ -59,6 +59,8 @@ static const QString INPUT_PORT( "in-file" );
 static const QString OUTPUT_PORT( "out-file" );
 static const QString OUTPUT_SUBDIR( "Converted files/" );
 static const QString EXCLUDED_FORMATS_ID( "excluded-formats" );
+static const QString OUT_MODE_ID( "out-mode" );
+static const QString CUSTOM_DIR_ID( "custom-dir" );
 
 /************************************************************************/
 /* ConvertFilesFormatPrompter */
@@ -77,7 +79,14 @@ QString ConvertFilesFormatPrompter::composeRichDoc() {
 /* ConvertFilesFormatWorkerFactory */
 /************************************************************************/
 namespace {
-    enum MapType {IDS, BOOLEANS};
+    enum OutDirectory{
+        FILE_DIRECTORY = 0,
+        WORKFLOW_INTERNAL,
+        CUSTOM
+    };
+    enum MapType {IDS,
+        BOOLEANS
+    };
     QVariantMap getFormatsMap(MapType mapType) {
         const QList<DocumentFormatId> allFormats = AppContext::getDocumentFormatRegistry()->getRegisteredFormats();
 
@@ -124,7 +133,20 @@ void ConvertFilesFormatWorkerFactory::init() {
         Descriptor excludedFormats(EXCLUDED_FORMATS_ID, ConvertFilesFormatWorker::tr("Excluded formats"),
             ConvertFilesFormatWorker::tr("Input file won't be converted to any of selected formats."));
 
+        Descriptor outDir(OUT_MODE_ID, ConvertFilesFormatWorker::tr("Output directory"),
+            ConvertFilesFormatWorker::tr("Select an output directory. <b>Custom</b> - specify the output directory in the 'Custom directory' parameter. "
+            "<b>Workflow</b> - internal workflow directory. "
+            "<b>Input file</b> - the directory of the input file."));
+
+        Descriptor customDir(CUSTOM_DIR_ID, ConvertFilesFormatWorker::tr("Custom directory"),
+            ConvertFilesFormatWorker::tr("Select the custom output directory."));
+
         a << new Attribute( BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true );
+        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FILE_DIRECTORY));
+        Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
+        customDirAttr->addRelation(new VisibilityRelation(OUT_MODE_ID, ConvertFilesFormatWorker::tr("Custom")));
+        a << customDirAttr;
+        //a << new Attribute( customDir, BaseTypes::STRING_TYPE(), false, QString(""));
         a << new Attribute( excludedFormats, BaseTypes::STRING_TYPE(), false );
     }
 
@@ -135,6 +157,17 @@ void ConvertFilesFormatWorkerFactory::init() {
 
         QVariantMap formatsBooleans = getFormatsMap(BOOLEANS);
         delegates[EXCLUDED_FORMATS_ID] = new ComboBoxWithChecksDelegate(formatsBooleans);
+
+        QVariantMap directoryMap;
+        QString fileDir = ConvertFilesFormatWorker::tr("Input file");
+        QString workflowDir = ConvertFilesFormatWorker::tr("Workflow");
+        QString customD = ConvertFilesFormatWorker::tr("Custom");
+        directoryMap[fileDir] = FILE_DIRECTORY;
+        directoryMap[workflowDir] = WORKFLOW_INTERNAL;
+        directoryMap[customD] = CUSTOM;
+        delegates[OUT_MODE_ID] = new ComboBoxDelegate(directoryMap);
+
+        delegates[CUSTOM_DIR_ID] = new URLDelegate("", "", false, true);
     }
 
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
@@ -192,12 +225,9 @@ void ConvertFilesFormatWorker::cleanup() {
 
 namespace {
     QString getTargetUrl(Task *task) {
-        BamSamConversionTask *bamSamTask = dynamic_cast<BamSamConversionTask*>(task);
         ConvertFileTask *convertFileTask = dynamic_cast<ConvertFileTask*>(task);
 
-        if (NULL != bamSamTask) {
-            return bamSamTask->getDestinationURL();
-        } else if (NULL != convertFileTask) {
+        if (NULL != convertFileTask) {
             return convertFileTask->getResult();
         }
         return "";
@@ -215,12 +245,37 @@ void ConvertFilesFormatWorker::sl_taskFinished(Task *task) {
     monitor()->addOutputFile(url, getActorId());
 }
 
-QString ConvertFilesFormatWorker::createWorkingDir() {
-    QString result = context->workingDir();
-    if (!result.endsWith("/")) {
-        result += "/";
+QString ConvertFilesFormatWorker::createWorkingDir( const QString& fileUrl ){
+    QString result;
+
+    bool useInternal = false;
+
+    int dirMode = getValue<int>(OUT_MODE_ID);
+
+    if(dirMode == FILE_DIRECTORY){
+        result = GUrl(fileUrl).dirPath() + "/";
+    }else if (dirMode == CUSTOM){
+        QString customDir = getValue<QString>(CUSTOM_DIR_ID);
+        if (!customDir.isEmpty()){
+            result = customDir;
+            if (!result.endsWith("/")) {
+                result += "/";
+            }
+        }else{
+            algoLog.error(tr("Convert Format: result directory is empty, default workflow directory is used"));
+            useInternal = true;
+        }
+    }else{
+        useInternal = true;
     }
-    result += OUTPUT_SUBDIR;
+    
+    if (useInternal){
+        result = context->workingDir();
+        if (!result.endsWith("/")) {
+            result += "/";
+        }
+        result += OUTPUT_SUBDIR;
+    }
 
     QDir dir(result);
     if (!dir.exists(result)) {
@@ -238,15 +293,6 @@ namespace {
             return r.importer->getId();
         }
         return "";
-    }
-
-    bool isBamConversion(const QString &srcFormat, const QString &dstFormat) {
-        bool isSrcSam = (srcFormat == BaseDocumentFormats::SAM);
-        bool isSrcBam = (srcFormat == BaseDocumentFormats::BAM);
-        bool isDstSam = (dstFormat == BaseDocumentFormats::SAM);
-        bool isDstBam = (dstFormat == BaseDocumentFormats::BAM);
-
-        return (isSrcSam && isDstBam) || (isSrcBam && isDstSam);
     }
 }
 
@@ -282,42 +328,16 @@ void ConvertFilesFormatWorker::sendResult(const QString &url) {
 }
 
 Task * ConvertFilesFormatWorker::getConvertTask(const QString &detectedFormat, const QString &url) {
-    QString workingDir = createWorkingDir();
+    QString workingDir = createWorkingDir(url);
 
-    if (isBamConversion(detectedFormat, targetFormat)) {
-        bool samToBam = (detectedFormat == BaseDocumentFormats::SAM);
-        QString extension = (samToBam) ? ".bam" : ".sam";
-        QString destinationURL = workingDir + QFileInfo(url).fileName() + extension;
-        destinationURL = GUrlUtils::rollFileName(destinationURL, QSet<QString>());
+    ConvertFactoryRegistry* r =  AppContext::getConvertFactoryRegistry();
+    SAFE_POINT(r != NULL, "ConvertFilesFormatWorker::getConvertTask ConvertFactoryRegistry is NULL", NULL);
+    ConvertFileFactory* f = r->getFactoryByFormats(detectedFormat, targetFormat);
+    SAFE_POINT(f != NULL, "ConvertFilesFormatWorker::getConvertTask ConvertFileFactory is NULL", NULL);
 
-        return new BamSamConversionTask(url, destinationURL, samToBam);
-    } else {
-        return new ConvertFileTask(url, targetFormat, workingDir);
-    }
+    return f->getTask(url, detectedFormat, targetFormat, workingDir);
 }
 
-/************************************************************************/
-/* BamSamConversionTask */
-/************************************************************************/
-BamSamConversionTask::BamSamConversionTask(const GUrl &sourceURL, const GUrl &destinationURL, bool samToBam)
-: Task(tr("BAM/SAM conversion task"), TaskFlag_None), sourceURL(sourceURL),
-destinationURL(destinationURL), samToBam(samToBam)
-{
-
-}
-
-void BamSamConversionTask::run() {
-    BAMUtils::ConvertOption options(samToBam);
-    if (samToBam) {
-        BAMUtils::convertToSamOrBam(sourceURL, destinationURL, options, stateInfo);
-    } else {
-        BAMUtils::convertToSamOrBam(destinationURL, sourceURL, options, stateInfo);
-    }
-}
-
-QString BamSamConversionTask::getDestinationURL() {
-    return destinationURL.getURLString();
-}
 
 } //LocalWorkflow
 } //U2
