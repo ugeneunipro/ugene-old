@@ -109,7 +109,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_regression_scenarios::test_0734);
     REGISTER_TEST(GUITest_regression_scenarios::test_0928);
-    REGISTER_TEST(GUITest_regression_scenarios::test_0986);
+    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_0986, "https://ugene.unipro.ru/tracker/browse/UGENE-2796");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_0986_1, "https://ugene.unipro.ru/tracker/browse/UGENE-2796");
     REGISTER_TEST(GUITest_regression_scenarios::test_0986_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_0986_3);
@@ -172,7 +172,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1701, "https://ugene.unipro.ru/tracker/browse/UGENE-2684");
     REGISTER_TEST(GUITest_regression_scenarios::test_1703);
     REGISTER_TEST(GUITest_regression_scenarios::test_1708);
-    REGISTER_TEST_IGNORED_LINUX(GUITest_regression_scenarios::test_1720, "https://ugene.unipro.ru/tracker/browse/UGENE-2855");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1720, "https://ugene.unipro.ru/tracker/browse/UGENE-2855");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1786, "https://ugene.unipro.ru/tracker/browse/UGENE-2607");
     REGISTER_TEST(GUITest_regression_scenarios::test_1808);
     REGISTER_TEST(GUITest_regression_scenarios::test_1811);
@@ -223,7 +223,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2128, "https://ugene.unipro.ru/tracker/browse/UGENE-2718");
     REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2128_1, "https://ugene.unipro.ru/tracker/browse/UGENE-2718");
     REGISTER_TEST(GUITest_regression_scenarios::test_2138);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2140);
+    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2140, "fix for mac");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2150, "task tree view cant be tested");
     REGISTER_TEST(GUITest_regression_scenarios::test_2152);
     REGISTER_TEST(GUITest_regression_scenarios::test_2156);
@@ -249,7 +249,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2266_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2268);
+    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2268, "fix for mac");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2282, "https://ugene.unipro.ru/tracker/browse/UGENE-2454");
     REGISTER_TEST(GUITest_regression_scenarios::test_2284);
     REGISTER_TEST(GUITest_regression_scenarios::test_2316);
@@ -945,7 +945,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     // Common scenarios/Assembling/dna_assembly/conversions
     /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0001);
-    REGISTER_TEST(GUITest_dna_assembly_conversions::test_0002);
+    REGISTER_TEST_IGNORED(GUITest_dna_assembly_conversions::test_0002, "https://ugene.unipro.ru/tracker/browse/UGENE-2866");
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0003);
     REGISTER_TEST_IGNORED(GUITest_dna_assembly_conversions::test_0004, "https://ugene.unipro.ru/tracker/browse/UGENE-2760");
 
