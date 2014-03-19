@@ -23,6 +23,7 @@
 #include "CircularView.h"
 #include "CircularViewSplitter.h"
 #include "RestrictionMapWidget.h"
+#include "SetSequenceOriginDialog.h"
 
 #include <U2Core/GObject.h>
 #include <U2Core/DocumentModel.h>
@@ -81,6 +82,9 @@ void CircularViewContext::initViewContext(GObjectView* v) {
     exportAction = new GObjectViewAction(this, v, tr("Save circular view as image"));
     exportAction->setIcon(QIcon(":/core/images/cam2.png"));
 
+    setSequenceOriginAction = new GObjectViewAction(this, v, tr("Set sequence origin..."));
+    connect(setSequenceOriginAction, SIGNAL(triggered()), SLOT(sl_setSequenceOrigin()));
+
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(v);
 
     foreach(ADVSequenceWidget* w, av->getSequenceWidgets()) {
@@ -89,11 +93,14 @@ void CircularViewContext::initViewContext(GObjectView* v) {
     connect(av, SIGNAL(si_sequenceWidgetAdded(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetAdded(ADVSequenceWidget*)));
     connect (av, SIGNAL(si_sequenceWidgetRemoved(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetRemoved(ADVSequenceWidget*)));
     
-    ADVGlobalAction* globalToggleViewAction = new ADVGlobalAction(av, 
+    ADVGlobalAction* globalToggleViewAction = new ADVGlobalAction(av,
         QIcon(":circular_view/images/circular.png"), 
         tr("Toggle circular views"), 
         std::numeric_limits<int>::max()); // big enough to be the last one?
     connect(globalToggleViewAction, SIGNAL(triggered()), SLOT(sl_toggleViews()));
+
+
+
 
 }
 
@@ -190,6 +197,13 @@ void CircularViewContext::buildMenu(U2::GObjectView *v, QMenu *m) {
     QMenu* exportMenu = GUIUtils::findSubMenu(m, ADV_MENU_EXPORT);
     SAFE_POINT(exportMenu != NULL, "exportMenu", );
     exportMenu->addAction(exportAction);
+
+    QMenu* editMenu = GUIUtils::findSubMenu(m, ADV_MENU_EDIT);
+    SAFE_POINT(editMenu != NULL, "editMenu", );
+    editMenu->addAction(setSequenceOriginAction);
+
+
+
 }
 //////////////////////////////////////////////////////////////////////////
 
@@ -258,6 +272,18 @@ void CircularViewContext::sl_toggleViews()
         }
     }
 
+
+}
+
+void CircularViewContext::sl_setSequenceOrigin()
+{
+    AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*> (setSequenceOriginAction->getObjectView());
+    if (av == NULL) {
+        return;
+    }
+
+    SetSequenceOriginDialog dlg(av->getSequenceWidgetInFocus());
+    dlg.exec();
 
 }
 

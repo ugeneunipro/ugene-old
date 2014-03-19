@@ -59,6 +59,7 @@ protected slots:
     void sl_sequenceWidgetAdded(ADVSequenceWidget*);
     void sl_sequenceWidgetRemoved(ADVSequenceWidget* w);
     void sl_toggleViews();
+    void sl_setSequenceOrigin();
 protected:
     virtual void initViewContext(GObjectView* view);
     void buildMenu(GObjectView* v, QMenu* m);
@@ -66,6 +67,7 @@ protected:
     void removeCircularView(GObjectView* view);
 private:
     GObjectViewAction* exportAction;
+    GObjectViewAction* setSequenceOriginAction;
 };    
 
 class CircularViewAction : public ADVSequenceWidgetAction {
