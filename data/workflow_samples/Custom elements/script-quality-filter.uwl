@@ -1,19 +1,21 @@
 #@UGENE_WORKFLOW
 #This workflow filters sequences with quality >= than parameter "quality" and writes result in file in FASTQ format
 
+include "QualityFilter.usa" as "Script-Quality Filter Example"
+
 workflow "Quality filter"{
+
     read-sequence {
         type:read-sequence;
         name:"Read sequence";
-        merge-gap:10;
-        mode:0;
+        url-in {
+            dataset:"Dataset 1";
+        }
     }
     write-fastq {
         type:write-sequence;
         name:"Write FASTQ";
-        accumulate:true;
-		document-format:fastq;
-        write-mode:2;
+        document-format:fastq;
         url-out:filtered.fastq;
     }
     Script-Quality-filter-example {
@@ -26,9 +28,18 @@ if (hasQuality(in_sequence)) {
     qual = getMinimumQuality(in_sequence);
     if(qual >= quality) {
         out_sequence = in_sequence;
-    }
+    }else{
+out_sequence = null;
+	}
+}else{
+out_sequence = null;
 }
         };
+    }
+
+    .actor-bindings {
+        Script-Quality-filter-example.out->write-fastq.in-sequence
+        read-sequence.out-sequence->Script-Quality-filter-example.in
     }
 
     Script-Quality-filter-example.sequence->write-fastq.in-sequence.sequence
@@ -36,30 +47,30 @@ if (hasQuality(in_sequence)) {
 
     .meta {
         visual {
-            read-sequence {
-                pos:"-780 -600";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                out-sequence.angle:360;
-            }
-            write-fastq {
-                pos:"-330 -600";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-sequence.angle:180;
-            }
             Script-Quality-filter-example {
-                pos:"-600 -600";
+                pos:"-585 -585";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in.angle:180;
                 out.angle:360;
             }
-            read-sequence.out-sequence->Script-Quality-filter-example.in {
-                text-pos:"-27.5 -24";
+            read-sequence {
+                pos:"-765 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            write-fastq {
+                pos:"-315 -585";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
             }
             Script-Quality-filter-example.out->write-fastq.in-sequence {
                 text-pos:"-32.5 -24";
+            }
+            read-sequence.out-sequence->Script-Quality-filter-example.in {
+                text-pos:"-27.5 -24";
             }
         }
         wizard {
@@ -100,3 +111,4 @@ if (hasQuality(in_sequence)) {
         }
     }
 }
+
