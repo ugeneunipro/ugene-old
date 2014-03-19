@@ -840,17 +840,27 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
     label2->setMinimumHeight(consArea->height());
     offsetsView->getLeftWidget()->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
     offsetsView->getRightWidget()->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
+    seqArea->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    shBar->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     QGridLayout* seqAreaLayout = new QGridLayout();
     seqAreaLayout->setMargin(0);
     seqAreaLayout->setSpacing(0);
-    seqAreaLayout->addWidget(consArea, 0, 1);
+
     seqAreaLayout->addWidget(label1, 0, 0);
-    seqAreaLayout->addWidget(offsetsView->getLeftWidget(), 1, 0, 2, 1);
+    seqAreaLayout->addWidget(consArea, 0, 1);
+    seqAreaLayout->addWidget(label2, 0, 2, 1, 2);
+
+    seqAreaLayout->addWidget(offsetsView->getLeftWidget(), 1, 0);
     seqAreaLayout->addWidget(seqArea, 1, 1);
-    seqAreaLayout->addWidget(label2, 0, 2);
-    seqAreaLayout->addWidget(offsetsView->getRightWidget(), 1, 2, 2, 1);
-    seqAreaLayout->addWidget(shBar, 2, 1, 1, 1);
+    seqAreaLayout->addWidget(offsetsView->getRightWidget(), 1, 2);
+    seqAreaLayout->addWidget(cvBar, 1, 3);
+
+    seqAreaLayout->addWidget(shBar, 2, 0, 1, 3);
+
+    seqAreaLayout->setRowStretch(1, 1);
+    seqAreaLayout->setColumnStretch(1, 1);
+
     seqAreaContainer = new QWidget();
     seqAreaContainer->setLayout(seqAreaLayout);
 
@@ -870,20 +880,13 @@ MSAEditorUI::MSAEditorUI(MSAEditor* _editor)
     view.addObject(nameAreaContainer, 0, 0.1);
     view.addObject(seqAreaContainer, 1, 3);
 
-    label = createLabelWidget();
-    label->setMinimumHeight(consArea->height());
-    cvBar->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
-
-    QGridLayout *gridLayout = new QGridLayout();
-    gridLayout->setMargin(0);
-    gridLayout->setSpacing(0);
-    gridLayout->addWidget(view.getSpliter(), 0, 0, 2, 1);
-    gridLayout->addWidget(cvBar, 1, 1);
-    gridLayout->addWidget(label, 0, 1);
-    gridLayout->addWidget(statusWidget, 2, 0, 1, 2);
-
     QVBoxLayout *mainLayout = new QVBoxLayout();
-    mainLayout->addLayout(gridLayout);
+    mainLayout->setMargin(0);
+    mainLayout->setSpacing(0);
+
+    mainLayout->addWidget(view.getSpliter());
+    mainLayout->setStretch(0, 1);
+    mainLayout->addWidget(statusWidget);
     mainLayout->addWidget(overviewArea);
 
     setLayout(mainLayout);
