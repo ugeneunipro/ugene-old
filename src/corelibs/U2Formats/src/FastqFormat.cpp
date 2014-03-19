@@ -129,7 +129,6 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
 
 static QString readSequenceName(U2OpStatus& os, IOAdapter *io, char beginWith = '@') {
 
-    MemoryLocker l(os);
     QByteArray buffArray(BUFF_SIZE+1, 0);
     char* buff = buffArray.data();
 
@@ -157,7 +156,6 @@ static bool checkFirstSymbol(const QByteArray& b, char symbol) {
 
 static void readSequence(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, char readUntil = '+') {
 
-    MemoryLocker l(os);
     QByteArray buffArray(BUFF_SIZE+1, 0);
     char* buff = buffArray.data();
 
@@ -177,14 +175,12 @@ static void readSequence(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, ch
         }
 
         sequence.append(trimmed);
-        l.tryAcquire(trimmed.size());
         CHECK_OP(os,);
     }
 }
 
 static void readQuality(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, int count) {
 
-    MemoryLocker l(os);
     QByteArray buffArray(BUFF_SIZE+1, 0);
     char* buff = buffArray.data();
 
@@ -206,7 +202,6 @@ static void readQuality(U2OpStatus& os, IOAdapter *io, QByteArray &sequence, int
         }
 
         sequence.append(trimmed);
-        l.tryAcquire(trimmed.size());
         CHECK_OP(os,);
     }
 }
@@ -258,7 +253,6 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
             if (settingsMakeUniqueName) {
                 objName = (merge) ? "Sequence" : TextUtils::variate(sequenceName, "_", uniqueNames);
                 objName.squeeze();
-                memoryLocker.tryAcquire(2*objName.size());
                 uniqueNames.insert(objName);
             }
             seqImporter.startSequence(dbiRef,objName,false,os);
@@ -292,7 +286,6 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
         // read qualities
         qualityScores.clear();
         readQuality(os, io, qualityScores, sequence.size());
-        MemoryLocker lQuality(os, qCeil(qualityScores.size()/(1000*1000)));
         CHECK_OP_BREAK(os);
 
         static const QString err = U2::FastqFormat::tr("Not a valid FASTQ file: %1. Bad quality scores: inconsistent size.").arg(docUrl.getURLString());
@@ -301,13 +294,10 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
         seqNumber++;
         progressUpNum++;
         if (merge) {
-            memoryLocker.tryAcquire(sequenceName.size());
             headers.append(sequenceName);
             mergedMapping.append(U2Region(sequenceStart, sequence.length() ));
         }
         else {
-            memoryLocker.tryAcquire(800);
-            memoryLocker.tryAcquire(qualityScores.capacity());
             U2Sequence u2seq = seqImporter.finalizeSequence(os);
             dbiObjects.objects << u2seq.id;
             CHECK_OP_BREAK(os);
