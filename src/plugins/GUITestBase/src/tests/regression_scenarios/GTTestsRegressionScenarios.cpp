@@ -3484,7 +3484,7 @@ GUI_TEST_CLASS_DEFINITION( test_2269 ){
 GUI_TEST_CLASS_DEFINITION( test_2270 ){
     //1. Open file "data/cmdline/snp.uwl"
     //Ecpected state: scheme opened in WD without problems
-
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTLogTracer lt;
     GTFileDialog::openFile(os, dataDir+"cmdline/", "snp.uwl");
     GTGlobals::sleep(500);
