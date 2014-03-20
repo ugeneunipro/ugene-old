@@ -75,6 +75,7 @@ void WorkflowScriptLibrary::initEngine(WorkflowScriptEngine *engine) {
     foo.setProperty("printToLog",engine->newFunction(debugOut));
     foo.setProperty("isAmino", engine->newFunction(isAmino));
     foo.setProperty("getMinimumQuality", engine->newFunction(getMinimumQuality));
+    foo.setProperty("getTrimmedByQuality", engine->newFunction(getTrimmedByQuality));
     foo.setProperty("hasQuality",engine->newFunction(hasQuality));
     foo.setProperty("sequenceFromText", engine->newFunction(sequenceFromText));
 
@@ -255,9 +256,6 @@ QScriptValue WorkflowScriptLibrary::sequenceSize(QScriptContext *ctx, QScriptEng
     }
 
     DNASequence seq = getSequence(ctx, engine, 0);
-    if(seq.seq.isEmpty()) {
-        return ctx->throwError(QObject::tr("Empty or invalid sequence"));
-    }
     int size = seq.length();
 
     QScriptValue calee = ctx->callee();
@@ -418,6 +416,62 @@ QScriptValue WorkflowScriptLibrary::getMinimumQuality(QScriptContext *ctx, QScri
     QScriptValue calee = ctx->callee();
     calee.setProperty("res", minQual);
     return calee.property("res");
+}
+
+QScriptValue WorkflowScriptLibrary::getTrimmedByQuality(QScriptContext *ctx, QScriptEngine *engine) {
+    if(ctx->argumentCount() != 3) {
+        return ctx->throwError(QObject::tr("Incorrect number of arguments"));
+    }else {
+        int minQuality = 100;
+        int minLength = 0;
+        QScriptValue calee = ctx->callee();
+
+        DNASequence dna = getSequence(ctx, engine, 0);
+
+        QVariant var = ctx->argument(1).toVariant();
+        bool ok;
+        minQuality = var.toInt(&ok);
+        if(!ok) {
+            return ctx->throwError(QObject::tr("Second argument must be a number"));
+        }
+
+        var = ctx->argument(2).toVariant();
+        minLength = var.toInt(&ok);
+        if(!ok) {
+            return ctx->throwError(QObject::tr("Third argument must be a number"));
+        }
+
+        if(dna.seq.isEmpty()) {
+            return ctx->throwError(QObject::tr("Empty or invalid sequence"));
+        }
+
+        int seqLen = dna.length();
+        if(seqLen > dna.quality.qualCodes.length()){
+            //quality length is shorter than the length of the sequence. return the an empty sequence
+            DNASequence emptySequence ("empty", QByteArray(), NULL);
+            calee.setProperty("res", putSequence(engine, emptySequence));
+            return calee.property("res");
+        }else{
+            int endPosition = seqLen-1;
+            for (; endPosition>=0; endPosition--){
+                int quality = dna.quality.getValue(endPosition);
+                if(dna.quality.getValue(endPosition) >= minQuality){
+                    break;
+                }
+            }
+            if(endPosition>=0 && endPosition+1 >= minLength){
+                DNASequence trimmed(dna.getName(), dna.seq.left(endPosition+1), dna.alphabet);
+                trimmed.quality = dna.quality;
+                trimmed.quality.qualCodes = trimmed.quality.qualCodes.left(endPosition+1);
+                calee.setProperty("res", putSequence(engine, trimmed));
+                return calee.property("res");
+            }else{
+                DNASequence emptySequence("empty", QByteArray(), NULL);
+                calee.setProperty("res", putSequence(engine, emptySequence));
+                return calee.property("res");
+            }
+        }
+    }
 }
 
 QScriptValue WorkflowScriptLibrary::hasQuality(QScriptContext *ctx, QScriptEngine *engine) {

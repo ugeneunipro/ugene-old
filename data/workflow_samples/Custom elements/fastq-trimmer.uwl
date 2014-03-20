@@ -1,0 +1,89 @@
+#@UGENE_WORKFLOW
+#The workflow scans each input sequence from the end to find the first position where the quality is greater or equal to the minimum quality threshold. Then it trims the sequence to that position. If a the whole sequence has quality less than the threshold or the length of the output sequence less than the minimum length threshold then the sequence is skipped.
+
+include "FASTQ Trimmer.usa" as "Script-FASTQ Trimmer"
+
+workflow "FASTQ Trimmer"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read Sequence";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write Sequence";
+        document-format:fastq;
+        url-out:fastq.fastq;
+    }
+    Script-FASTQ-Trimmer {
+        type:"Script-FASTQ Trimmer";
+        name:"FASTQ Trimmer";
+        script {
+var trimmedSequence = getTrimmedByQuality(in_sequence, min_quality, min_sequence_length);
+
+if(size(trimmedSequence) != 0){
+out_sequence = trimmedSequence;
+}else{
+out_sequence = null;
+}
+        };
+        min_quality:30;
+        min_sequence_length:0;
+    }
+
+    .actor-bindings {
+        Script-FASTQ-Trimmer.out->write-sequence.in-sequence
+        read-sequence.out-sequence->Script-FASTQ-Trimmer.in
+    }
+
+    Script-FASTQ-Trimmer.sequence->write-sequence.in-sequence.sequence
+    read-sequence.sequence->Script-FASTQ-Trimmer.in.sequence
+
+    .meta {
+        parameter-aliases {
+            read-sequence.url-in {
+                alias:in;
+            }
+            write-sequence.url-out {
+                alias:out;
+            }
+            Script-FASTQ-Trimmer.min_quality {
+                alias:min_quality;
+            }
+            Script-FASTQ-Trimmer.min_sequence_length {
+                alias:min_seq_len;
+            }
+        }
+        visual {
+            Script-FASTQ-Trimmer {
+                pos:"-525 -495";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in.angle:180;
+                out.angle:360;
+            }
+            read-sequence {
+                pos:"-765 -495";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-sequence.angle:360;
+            }
+            write-sequence {
+                pos:"-225 -495";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            Script-FASTQ-Trimmer.out->write-sequence.in-sequence {
+                text-pos:"-40.7422 -27";
+            }
+            read-sequence.out-sequence->Script-FASTQ-Trimmer.in {
+                text-pos:"-33.8281 -27";
+            }
+        }
+    }
+}
+

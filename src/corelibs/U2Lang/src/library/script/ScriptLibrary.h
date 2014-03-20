@@ -73,6 +73,7 @@ public:
     static QScriptValue sequenceFromText(QScriptContext *ctx, QScriptEngine *engine);
     static QScriptValue isAmino(QScriptContext *ctx, QScriptEngine *);
     static QScriptValue getMinimumQuality(QScriptContext *ctx, QScriptEngine *);
+    static QScriptValue getTrimmedByQuality(QScriptContext *ctx, QScriptEngine *);
     static QScriptValue hasQuality(QScriptContext *ctx, QScriptEngine *);
 
     // ================== Alignment =======================
