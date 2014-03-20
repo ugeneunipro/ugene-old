@@ -454,7 +454,6 @@ QScriptValue WorkflowScriptLibrary::getTrimmedByQuality(QScriptContext *ctx, QSc
         }else{
             int endPosition = seqLen-1;
             for (; endPosition>=0; endPosition--){
-                int quality = dna.quality.getValue(endPosition);
                 if(dna.quality.getValue(endPosition) >= minQuality){
                     break;
                 }
