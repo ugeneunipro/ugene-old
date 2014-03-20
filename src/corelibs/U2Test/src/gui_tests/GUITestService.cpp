@@ -318,6 +318,7 @@ void GUITestService::runGUITest(GUITest* t) {
     }
 
     QString testResult = os.hasError() ? os.getError() : GUITestTeamcityLogger::successResult;
+    testResult.replace('\n','|n');
     writeTestResult(testResult);
 
     exit(0);
@@ -385,7 +386,6 @@ void GUITestService::sl_taskStateChanged(Task* t) {
 }
 
 void GUITestService::writeTestResult(const QString& result) {
-
     printf("%s\n", (QString(GUITESTING_REPORT_PREFIX) + ":" + result).toUtf8().data());
 }
 

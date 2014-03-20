@@ -188,7 +188,7 @@ QString GUITestLauncher::performTest(const QString& testName, bool isLong) {
         return readTestResult(process.readAllStandardOutput());
     }
 
-    return tr("An error occurred while finishing UGENE: ") + process.errorString();
+    return tr("An error occurred while finishing UGENE: ") + process.errorString() + '\n' + readTestResult(process.readAllStandardOutput());
 }
 
 QStringList GUITestLauncher::getTestProcessArguments(const QString &testName) {
@@ -205,13 +205,14 @@ QString GUITestLauncher::readTestResult(const QByteArray& output) {
         QString str = stream.readLine();
 
         if (str.contains(GUITESTING_REPORT_PREFIX)) {
-            msg = str.split(":").last();
+            msg =str.remove(0, str.indexOf(':')+1);// str.split(":").last();
             if (!msg.isEmpty()) {
                 break;
             }
         }
     }
 
+    msg.replace('|n', '\n');
     return msg;
 }
 
