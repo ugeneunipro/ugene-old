@@ -100,7 +100,6 @@ int AppResourcePool::getTotalPhysicalMemory() {
     totalPhysicalMemory = (int)(numpages * (pagesize/1024)/1024);
 
 #elif defined(Q_OS_MAC)
-// TODO
      QProcess p;
      p.start("sh", QStringList() << "-c" << "sysctl hw.memsize | awk -F ' ' '{print $2}'");
      p.waitForFinished();
@@ -161,8 +160,21 @@ size_t AppResourcePool::getCurrentAppMemory() {
      if (ok) {
          return output_mem / 1024;
      }
-#else
-    coreLog.error("Current application memory: Unsupported OS");
+#elif defined(Q_OS_MAC)
+    qint64 pid = QCoreApplication::applicationPid();
+
+    QProcess p;
+    // Virtual private memory size in megabytes
+    p.start("sh", QStringList() << "-c" << "top -l 1 -pid " + QString::number(pid) + " -e -stats vprvt | tail -1 | sed 's/M+//g'");
+    p.waitForFinished();
+    const QString outputString = p.readAllStandardOutput();
+    p.close();
+    bool ok = false;
+    size_t output_mem = outputString.toULong(&ok);
+    if (ok) {
+        coreLog.error(QString::number(  output_mem));
+        return output_mem * 1024 * 1024;
+    }
 #endif
     return -1;
 }
