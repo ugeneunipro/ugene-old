@@ -7,8 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>619</width>
-    <height>407</height>
+    <height>273</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>619</width>
+    <height>273</height>
+   </size>
   </property>
   <property name="maximumSize">
    <size>
@@ -581,19 +587,6 @@ a database file</string>
          </item>
         </layout>
        </item>
-       <item>
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="extOptionsTab">
@@ -692,19 +685,6 @@ a database file</string>
       </layout>
      </widget>
     </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>0</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

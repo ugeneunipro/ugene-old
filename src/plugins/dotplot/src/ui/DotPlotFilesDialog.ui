@@ -20,7 +20,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Build dotplot from sequences</string>
+   <string>Build Dotplot from Sequences</string>
   </property>
   <property name="windowIcon">
    <iconset>

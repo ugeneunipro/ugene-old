@@ -5,7 +5,7 @@
     <name>DotPlotDialog</name>
     <message>
         <location filename="../src/ui/DotPlotDialog.ui" line="17"/>
-        <source>Dotplot</source>
+        <source>DotPlot</source>
         <translation></translation>
     </message>
     <message>
@@ -127,7 +127,7 @@
     </message>
     <message>
         <location filename="../src/ui/DotPlotFilesDialog.ui" line="23"/>
-        <source>Build dotplot from sequences</source>
+        <source>Build Dotplot from Sequences</source>
         <translation>Построить dotplot последовательностей</translation>
     </message>
     <message>
@@ -176,8 +176,8 @@
     <name>DotPlotFilterDialog</name>
     <message>
         <location filename="../src/ui/DotPlotFilterDialog.ui" line="17"/>
-        <source>Dotplot</source>
-        <translation>Dotplot</translation>
+        <source>DotPlot</source>
+        <translation>DotPlot</translation>
     </message>
     <message>
         <location filename="../src/ui/DotPlotFilterDialog.ui" line="30"/>

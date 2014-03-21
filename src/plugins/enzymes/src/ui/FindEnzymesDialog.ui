@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Find restriction sites</string>
+   <string>Find Restriction Sites</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

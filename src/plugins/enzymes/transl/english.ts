@@ -413,7 +413,7 @@
     <name>EnzymesSelectorDialog</name>
     <message>
         <location filename="../src/ui/EnzymesSelectorDialog.ui" line="20"/>
-        <source>Select enzymes</source>
+        <source>Select Enzymes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -568,7 +568,7 @@ p, li { white-space: pre-wrap; }
     <name>FindEnzymesDialog</name>
     <message>
         <location filename="../src/ui/FindEnzymesDialog.ui" line="17"/>
-        <source>Find restriction sites</source>
+        <source>Find Restriction Sites</source>
         <translation></translation>
     </message>
     <message>
