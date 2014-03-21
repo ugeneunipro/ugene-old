@@ -476,6 +476,16 @@ bool CreateColorSchemaDialog::isSchemaNameValid(const QString& text, QString& de
         description = tr( "Name of scheme is empty." );
         return false;
     }
+    int spaces = 0;
+    for(int i = 0; i < text.length(); i++){
+        if (text[i] == ' '){
+            spaces++;
+        }
+    }
+    if(spaces == text.length()){
+        description = tr( "Name can't contain only spaces." );
+        return false;
+    }
     for(int i = 0; i < text.length(); ++i){
         if(!text[i].isDigit() && !text[i].isLetter() && text[i] != QChar('_') && !text[i].isSpace()){
             description = tr( "Name has to consist of letters, digits, spaces" ) + "<br>"
@@ -487,6 +497,7 @@ bool CreateColorSchemaDialog::isSchemaNameValid(const QString& text, QString& de
         description = tr( "Color scheme with the same name already exists." );
         return false;
     }
+ 
     return true;
 }
 
