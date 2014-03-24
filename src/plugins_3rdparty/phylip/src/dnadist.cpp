@@ -34,10 +34,10 @@ long sites, categs, weightsum, datasets, ith, rcategs;
 boolean freqsfrom, jukes, kimura, logdet, gama, invar, similarity, lower, f84,
 weights, progress, ctgry, mulsets, justwts, firstset, baddists;
 boolean matrix_flags;       /* Matrix output format */
-node **nodep;
+node **nodep = NULL;
 double xi, xv, ttratio, ttratio0, freqa, freqc, freqg, freqt, freqr, freqy,
 freqar, freqcy, freqgr, freqty, cvi, invarfrac, sumrates, fracchange;
-steptr oldweight;
+steptr oldweight = NULL;
 double rate[maxcategs];
 double **d = NULL;
 double sumweightrat = 0;                  /* these values were propagated  */
@@ -1299,11 +1299,6 @@ void makedists()
     for (j = 0; j < nmlngth; j++)
       putchar(nayme[spp - 1][j]);
     putchar('\n');
-  }
-  for (i = 0; i < spp; i++) {
-    for (j = 0; j < endsite; j++)
-      free(nodep[i]->x[j]);
-    free(nodep[i]->x);
   }
 }  /* makedists */
 

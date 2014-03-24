@@ -9,8 +9,12 @@
 
 long nonodes, endsite, outgrno, nextree, which;
 boolean interleaved, printdata, outgropt, treeprint, dotdiff, transvp;
-steptr weight, category, alias, location, ally;
-sequence y;
+steptr weight = NULL;
+steptr category = NULL;
+steptr alias = NULL;
+steptr location = NULL;
+steptr ally = NULL;
+sequence y = NULL;
 
 
 void fix_x(node* p,long site, double maxx, long rcategs)
