@@ -167,6 +167,9 @@ class MuscleGObjectRunFromSchemaTask : public AlignGObjectTask {
     Q_OBJECT
 public:
     MuscleGObjectRunFromSchemaTask(MAlignmentObject * obj, const MuscleTaskSettings & config);
+
+    void prepare();
+    void setMAObject(MAlignmentObject* maobj);
 private:
     MuscleTaskSettings config;
 };

@@ -58,7 +58,7 @@ class U2ALGORITHM_EXPORT AlignGObjectTask : public Task {
 public:
     AlignGObjectTask(const QString& taskName, TaskFlags f, MAlignmentObject* maobj)
         : Task(taskName, f), obj(maobj) {}
-    void setMAObject(MAlignmentObject* maobj) { obj = maobj; }
+    virtual void setMAObject(MAlignmentObject* maobj) { obj = maobj; }
     MAlignmentObject* getMAObject() { return obj; }
 protected:
     QPointer<MAlignmentObject> obj;
@@ -74,6 +74,7 @@ protected:
 
 class U2ALGORITHM_EXPORT AlignInAminoFormTask : public Task {
     Q_OBJECT
+    Q_DISABLE_COPY(AlignInAminoFormTask)
 public:
     AlignInAminoFormTask(MAlignmentObject* obj, AlignGObjectTask* alignTask, const QString& traslId);
     ~AlignInAminoFormTask();
@@ -84,8 +85,11 @@ public:
 protected:
     AlignGObjectTask* alignTask;
     MAlignmentObject *maObj, *clonedObj;
-    MAlignment bufMA;
+    //MAlignment bufMA;
     QString traslId;
+    Document* tmpDoc;
+    QMap<qint64, QList<U2MsaGap> > rowsGapModel;
+    QMap<qint64, QList<U2MsaGap> > emptyGapModel;
 };
 
 

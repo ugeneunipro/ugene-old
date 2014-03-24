@@ -220,14 +220,15 @@ Task::ReportResult KalignGObjectTask::report() {
 //KalignGObjectRunFromSchemaTask
 
 
-KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject * o, const KalignTaskSettings & c) 
-: AlignGObjectTask("", TaskFlags_NR_FOSCOE,o), config(c)
+KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject * obj, const KalignTaskSettings & c) 
+: AlignGObjectTask("", TaskFlags_NR_FOSCOE,obj), config(c)
 {
-    QString tName = tr("KAlign align '%1'").arg(o->getDocument()->getName());
-    setTaskName(tName);
+    setMAObject(obj);
     setUseDescriptionFromSubtask(true);
     setVerboseLogMode(true);
+}
 
+void KalignGObjectRunFromSchemaTask::prepare() {
     SimpleMSAWorkflowTaskConfig conf;
     conf.algoName = "KAlign";
     conf.schemaName = "align-kalign";
@@ -236,9 +237,19 @@ KalignGObjectRunFromSchemaTask::KalignGObjectRunFromSchemaTask(MAlignmentObject 
     conf.schemaArgs<< QString("--gap-open-penalty=%1").arg(config.gapOpenPenalty);
     conf.schemaArgs<< QString("--gap-terminal-penalty=%1").arg(config.termGapPenalty);
 
-    addSubTask(new SimpleMSAWorkflow4GObjectTask(QString("Workflow wrapper '%1'").arg(tName), o, conf));
+    addSubTask(new SimpleMSAWorkflow4GObjectTask(tr("Workflow wrapper '%1'").arg(getTaskName()), obj, conf));
 }
 
+void KalignGObjectRunFromSchemaTask::setMAObject(MAlignmentObject* maobj) {
+    SAFE_POINT_EXT(maobj != NULL, setError(tr("Invalid MSA object detected")),);
+    const Document* maDoc = maobj->getDocument();
+    SAFE_POINT_EXT(NULL != maDoc, setError(tr("Invalid MSA document detected")),);
+    const QString objName = maDoc->getName();
+
+    AlignGObjectTask::setMAObject(maobj);
+    const QString tName = tr("KAlign align '%1'").arg(objName);
+    setTaskName(tName);
+}
 
 //////////////////////////////////////////////////////////////////////////
 /// KalignWithExtFileSpecifySupportTask

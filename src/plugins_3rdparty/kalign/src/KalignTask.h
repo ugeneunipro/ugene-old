@@ -113,6 +113,9 @@ class KalignGObjectRunFromSchemaTask : public AlignGObjectTask {
     Q_OBJECT
 public:
     KalignGObjectRunFromSchemaTask(MAlignmentObject * obj, const KalignTaskSettings & config);
+
+    void prepare();
+    void setMAObject(MAlignmentObject* maobj);
 private:
     KalignTaskSettings      config;
 };

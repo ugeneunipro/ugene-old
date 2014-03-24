@@ -556,30 +556,17 @@ Task::ReportResult MuscleWithExtFileSpecifySupportTask::report(){
 
 //////////////////////////////////
 //MuscleGObjectRunFromSchemaTask
-MuscleGObjectRunFromSchemaTask::MuscleGObjectRunFromSchemaTask(MAlignmentObject * o, const MuscleTaskSettings & c) 
-: AlignGObjectTask("", TaskFlags_NR_FOSCOE, o), config(c)
+MuscleGObjectRunFromSchemaTask::MuscleGObjectRunFromSchemaTask(MAlignmentObject * obj, const MuscleTaskSettings & c) 
+: AlignGObjectTask("", TaskFlags_NR_FOSCOE, obj), config(c)
 {
-    assert(config.op == MuscleTaskOp_Align || config.op == MuscleTaskOp_Refine);
-    assert(config.profile.isEmpty());
+    setMAObject(obj);
+    SAFE_POINT_EXT(config.profile.isEmpty(), setError(tr("Invalid config profile detected")),);
+
     setUseDescriptionFromSubtask(true);
     setVerboseLogMode(true);
-    
-    QString objName = o->getDocument()->getName();
-    assert(!objName.isEmpty());
-    
-    QString tName;
-    switch(config.op) {
-        case MuscleTaskOp_Align:
-            tName = tr("MUSCLE align '%1'").arg(objName);
-            break;
-        case MuscleTaskOp_Refine: 
-            tName = tr("MUSCLE refine '%1'").arg(objName);
-            break;
-        default: 
-            assert(false);
-    }
-    setTaskName(tName);
+}
 
+void MuscleGObjectRunFromSchemaTask::prepare() {
     SimpleMSAWorkflowTaskConfig conf;
     conf.algoName = "Muscle";
     conf.schemaName = "align";
@@ -590,7 +577,28 @@ MuscleGObjectRunFromSchemaTask::MuscleGObjectRunFromSchemaTask(MAlignmentObject 
         conf.schemaArgs << QString("--range=%1").arg(QString("%1..%2").arg(config.regionToAlign.startPos + 1).arg(config.regionToAlign.endPos()));
     }
 
-    addSubTask(new SimpleMSAWorkflow4GObjectTask(QString("Workflow wrapper '%1'").arg(tName), o, conf));
+    addSubTask(new SimpleMSAWorkflow4GObjectTask(tr("Workflow wrapper '%1'").arg(getTaskName()), obj, conf));
+}
+
+void MuscleGObjectRunFromSchemaTask::setMAObject(MAlignmentObject* maobj) {
+    SAFE_POINT_EXT(maobj != NULL, setError(tr("Invalid MSA object detected")),);
+    const Document* maDoc = maobj->getDocument();
+    SAFE_POINT_EXT(NULL != maDoc, setError(tr("Invalid MSA document detected")),);
+    const QString objName = maDoc->getName();
+    SAFE_POINT_EXT(!objName.isEmpty(), setError(tr("Invalid MSA object name detected")),);
+    AlignGObjectTask::setMAObject(maobj);
+    QString tName;
+    switch(config.op) {
+        case MuscleTaskOp_Align:
+            tName = tr("MUSCLE align '%1'").arg(objName);
+            break;
+        case MuscleTaskOp_Refine: 
+            tName = tr("MUSCLE refine '%1'").arg(objName);
+            break;
+        default:
+            SAFE_POINT_EXT(false, setError(tr("Invalid config detected")),);
+    }
+    setTaskName(tName);
 }
 
 } //namespace
