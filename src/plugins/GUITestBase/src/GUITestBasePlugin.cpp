@@ -944,7 +944,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     /////////////////////////////////////////////////////////////////////////
     // Common scenarios/Assembling/dna_assembly/conversions
     /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_dna_assembly_conversions::test_0001);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_dna_assembly_conversions::test_0001, "external tools unreacheble out of the box");
     REGISTER_TEST_IGNORED(GUITest_dna_assembly_conversions::test_0002, "https://ugene.unipro.ru/tracker/browse/UGENE-2866");
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0003);
     REGISTER_TEST_IGNORED(GUITest_dna_assembly_conversions::test_0004, "https://ugene.unipro.ru/tracker/browse/UGENE-2760");
@@ -993,7 +993,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Workflow designer/Estimating
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_workflow_estimating::test_0001);
-    REGISTER_TEST(GUITest_common_scenarios_workflow_estimating::test_0002);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_estimating::test_0002, "external tools unreacheble out of the box");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer/Name filter
@@ -1068,7 +1068,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0011_1);
 
-    REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0012);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_undo_redo::test_0012, "external tools unreacheble out of the box");
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
