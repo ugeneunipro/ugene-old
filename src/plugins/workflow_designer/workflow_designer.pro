@@ -60,6 +60,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/ImportAnnotationsWorker.h \
            src/library/IncludedProtoFactoryImpl.h \
            src/library/MarkSequenceWorker.h \
+           src/library/MergeBamWorker.h \
            src/library/MSA2SequenceWorker.h \
            src/library/MultiplexerWorker.h \
            src/library/PassFilterWorker.h \
@@ -157,6 +158,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/ImportAnnotationsWorker.cpp \
            src/library/IncludedProtoFactoryImpl.cpp \
            src/library/MarkSequenceWorker.cpp \
+           src/library/MergeBamWorker.cpp \
            src/library/MSA2SequenceWorker.cpp \
            src/library/MultiplexerWorker.cpp \
            src/library/PassFilterWorker.cpp \

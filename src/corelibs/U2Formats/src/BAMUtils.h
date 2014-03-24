@@ -51,6 +51,8 @@ public:
      */
     static GUrl sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2OpStatus &os);
 
+    static GUrl mergeBam(const QStringList &bamUrl, const QString &mergetBamTargetUrl, U2OpStatus &os);
+
     static bool hasValidBamIndex(const GUrl &bamUrl);
 
     static bool hasValidFastaIndex(const GUrl &fastaUrl);
@@ -61,7 +63,7 @@ public:
 
     static void writeObjects(const QList<GObject*> &objects, const GUrl &url, const DocumentFormatId &formatId, U2OpStatus &os);
 
-    static bool isEquelByLengthSam(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpStatus &os );
+    static bool isEquelByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpStatus &os, bool isBAM = false );
 
 };
 

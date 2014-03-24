@@ -60,6 +60,7 @@ class GTest_AssemblycompareTwoSAMbyLength : public GTest {
     ReportResult report();
     QString file1Url;
     QString file2Url;
+    bool isBam;
 };
 
 

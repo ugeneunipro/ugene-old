@@ -97,6 +97,18 @@ namespace {
             os.setError(truncatedError(fileName));
         }
     }
+    QList<QByteArray> convertStringList(const QStringList& sList){
+        QList<QByteArray> result;
+        for(int i = 0; i < sList.size(); i++){
+            result.append(sList.at(i).toLocal8Bit());
+        }
+        return result;
+    }
+    void convertByteArray(const QList<QByteArray>& byteArray, char ** charArray){
+        for(int i = 0; i < byteArray.size(); i++){
+            charArray[i] = const_cast<char*>(byteArray[i].constData());
+        }
+    }
 }
 
 #define SAMTOOL_CHECK(cond, msg, ret) \
@@ -290,6 +302,22 @@ GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2O
     return QString(sortedFileName);
 }
 
+GUrl BAMUtils::mergeBam(const QStringList &bamUrls, const QString &mergetBamTargetUrl, U2OpStatus &os){
+    coreLog.details(BAMUtils::tr("Merging BAM files: \"%1\". Resulting merged file is: \"%2\"")
+        .arg(QString(bamUrls.join(","))).arg(QString(mergetBamTargetUrl)));
+
+    int urlsSize = bamUrls.size();
+    char** mergeArgv = new char*[urlsSize];
+    QList<QByteArray> byteArray = convertStringList(bamUrls);
+    convertByteArray(byteArray, mergeArgv);
+
+    bam_merge_core(0, mergetBamTargetUrl.toLocal8Bit().constData(), 0, urlsSize, mergeArgv, 0, 0);
+
+    delete mergeArgv;
+
+    return QString(mergetBamTargetUrl);
+}
+
 bool BAMUtils::hasValidBamIndex(const GUrl &bamUrl) {
     const QByteArray bamFileName = bamUrl.getURLString().toLocal8Bit();
 
@@ -480,28 +508,35 @@ void BAMUtils::writeObjects(const QList<GObject*> &objects, const GUrl &urlStr, 
 }
 
 //the function assumes the equel order of alignments in files
-bool BAMUtils::isEquelByLengthSam(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpStatus &os){
+bool BAMUtils::isEquelByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpStatus &os, bool isBAM){
     const QByteArray& fileName1 = fileUrl1.getURLString().toLocal8Bit();
     const QByteArray& fileName2 = fileUrl2.getURLString().toLocal8Bit();
 
     samfile_t *in = NULL;
     samfile_t *out = NULL;
 
+    QByteArray readMode = "r";
+    if(isBAM){
+        readMode = "rb";
+    }
     {
         void *aux = NULL;
-        in = samopen(fileName1.constData(), "r", aux);
+        in = samopen(fileName1.constData(), readMode.constData(), aux);
         SAMTOOL_CHECK(NULL != in, openFileError(fileName1), false);
         SAMTOOL_CHECK(NULL != in->header, headerError(fileName1), false);
 
-        out = samopen(fileName2.constData(), "r", aux);
+        out = samopen(fileName2.constData(), readMode.constData(), aux);
         SAMTOOL_CHECK(NULL != out, openFileError(fileName2), false);
         SAMTOOL_CHECK(NULL != out->header, headerError(fileName2), false);
     }
 
-    if(*(in->header->target_len) != *(out->header->target_len)){
-        os.setError(QString("Different target length of files. %1 and %2").arg(qint64(in->header->target_len)).arg(qint64(out->header->target_len)));
-        closeFiles(in, out);
-        return false;
+    if(in->header->target_len && out->header->target_len){
+        //if there are headers
+        if(*(in->header->target_len) != *(out->header->target_len)){
+            os.setError(QString("Different target length of files. %1 and %2").arg(qint64(in->header->target_len)).arg(qint64(out->header->target_len)));
+            closeFiles(in, out);
+            return false;
+        }
     }
 
     bam1_t *b1 = bam_init1();
@@ -520,6 +555,9 @@ bool BAMUtils::isEquelByLengthSam(const GUrl &fileUrl1, const GUrl &fileUrl2, U2
         }
 
         samreadCheck(r1, os, fileName1);
+        if(r2 = samread(out, b2) >= 0){
+            os.setError("Differrent number of reads in files");
+        }
         bam_destroy1(b1);
         bam_destroy1(b2);
     }

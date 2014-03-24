@@ -49,6 +49,7 @@ namespace U2 {
 #define RES_FILE_NAME "res-file"
 #define CUSTOM_ATTR "custom-options"
 #define PAIRED_READS_ATTR "paired-reads"
+#define IS_BAM_ATTR "isbam"
 
 void GTest_DnaAssemblyToReferenceTask::init(XMLTestFormat*, const QDomElement& el)  {
     
@@ -187,10 +188,17 @@ void GTest_AssemblycompareTwoSAMbyLength::init(XMLTestFormat *tf, const QDomElem
         return;
     }
     file2Url = env->getVar("COMMON_DATA_DIR")+"/" + file2Url;
+
+    QString isBamAtr = el.attribute(IS_BAM_ATTR);
+    if (!isBamAtr.isEmpty()) {
+        isBam = true;
+    }else{
+        isBam = false;
+    }
 }
 
 Task::ReportResult GTest_AssemblycompareTwoSAMbyLength::report() {
-    BAMUtils::isEquelByLengthSam(file1Url, file2Url, stateInfo);
+    BAMUtils::isEquelByLength(file1Url, file2Url, stateInfo, isBam);
 
     return ReportResult_Finished;
 }

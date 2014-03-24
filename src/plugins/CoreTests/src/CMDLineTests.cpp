@@ -120,13 +120,17 @@ void GTest_RunCMDLine::setArgs(const QDomElement & el) {
     cmdLog.info(commandLine);
 }
 
-QString GTest_RunCMDLine::splitVal(const QString & val, int midSize, const QString & prefix, bool isTmp) {
-    QStringList dsVals = val.mid(midSize).split(";;");
+QString GTest_RunCMDLine::splitVal(const QString & val, QString prefValue, const QString & prefix, bool isTmp) {
+    int midSize = prefValue.size();
+    QStringList dsVals = val.split(";;");
     QStringList result;
     foreach (const QString &dsVal, dsVals) {
         QStringList realVals = dsVal.split(";");
         QStringList dsResult;
-        foreach(const QString & s, realVals) {
+        foreach(QString s, realVals) {
+            if(s.startsWith(prefValue)){
+                s = s.mid(midSize);
+            }
             QString filename = prefix + s;
             dsResult << filename;
             if(isTmp) {
@@ -143,19 +147,19 @@ QString GTest_RunCMDLine::getVal( const QString & val ) {
         return val;
     }
     if (val.startsWith(COMMON_DATA_DIR_PREFIX)) {
-        return splitVal(val, COMMON_DATA_DIR_PREFIX.size(), env->getVar(COMMON_DATA_DIR_ENV_ID) + "/", false);
+        return splitVal(val, COMMON_DATA_DIR_PREFIX, env->getVar(COMMON_DATA_DIR_ENV_ID) + "/", false);
     }
     if (val.startsWith(TMP_DATA_DIR_PREFIX)) {
-        return splitVal(val, TMP_DATA_DIR_PREFIX.size(), env->getVar(TEMP_DATA_DIR_ENV_ID) + "/", true);
+        return splitVal(val, TMP_DATA_DIR_PREFIX, env->getVar(TEMP_DATA_DIR_ENV_ID) + "/", true);
     }
     if (val == CONFIG_FILE_PATH) {
         return env->getVar(COMMON_DATA_DIR_ENV_ID) + "/" + env->getVar(CONFIG_FILE_ENV_ID);
     }
     if (val.startsWith(LOCAL_DATA_DIR_PREFIX)) {
-        return splitVal(val, LOCAL_DATA_DIR_PREFIX.size(), env->getVar(LOCAL_DATA_DIR_ENV_ID), false);
+        return splitVal(val, LOCAL_DATA_DIR_PREFIX, env->getVar(LOCAL_DATA_DIR_ENV_ID), false);
     }
     if (val.startsWith(WORKFLOW_SAMPLES_DIR_PREFIX)) {
-        return splitVal(val, WORKFLOW_SAMPLES_DIR_PREFIX.size(), env->getVar(WORKFLOW_SAMPLES_ENV_ID), false);
+        return splitVal(val, WORKFLOW_SAMPLES_DIR_PREFIX, env->getVar(WORKFLOW_SAMPLES_ENV_ID), false);
     }
     return val;
 }

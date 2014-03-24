@@ -74,6 +74,7 @@ HEADERS += src/ABIFormat.h \
            src/tasks/BgzipTask.h \
            src/tasks/ConvertAssemblyToSamTask.h \
            src/tasks/ConvertFileTask.h \
+           src/tasks/MergeBamTask.h \
            src/sqlite_dbi/assembly/AssemblyPackAlgorithm.h \
            src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.h \
            src/sqlite_dbi/assembly/RTreeAssemblyAdapter.h \
@@ -145,6 +146,7 @@ SOURCES += src/ABIFormat.cpp \
            src/tasks/BgzipTask.cpp \
            src/tasks/ConvertAssemblyToSamTask.cpp \
            src/tasks/ConvertFileTask.cpp \
+           src/tasks/MergeBamTask.cpp \
            src/sqlite_dbi/assembly/AssemblyPackAlgorithm.cpp \
            src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp \
            src/sqlite_dbi/assembly/RTreeAssemblyAdapter.cpp \

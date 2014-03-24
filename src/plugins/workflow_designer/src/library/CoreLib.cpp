@@ -55,6 +55,7 @@
 #include "library/WriteVariationWorker.h"
 #include "library/ReadAnnotationsWorker.h"
 #include "library/DASAnnotationWorker.h"
+#include "library/MergeBamWorker.h"
 #include "util/WriteSequenceValidator.h"
 
 #include "RemoteDBFetcherWorker.h"
@@ -299,6 +300,7 @@ void CoreLib::init() {
     WriteAssemblyWorkerFactory::init();
     ReadAnnotationsWorkerFactory::init();
     ConvertFilesFormatWorkerFactory::init();
+    MergeBamWorkerFactory::init();
     DASAnnotationWorkerFactory::init();
     ExtractConsensusWorkerFactory::init();
 

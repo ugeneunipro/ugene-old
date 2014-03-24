@@ -53,7 +53,7 @@ private:
     void setUgeneclPath();
     void setArgs( const QDomElement & owner );
     QString getVal( const QString & val );
-    QString splitVal(const QString & val, int midSize, const QString & prefix, bool isTmp);
+    QString splitVal(const QString & val, QString prefValue, const QString & prefix, bool isTmp);
     
 private:
     QString expectedMessage;
