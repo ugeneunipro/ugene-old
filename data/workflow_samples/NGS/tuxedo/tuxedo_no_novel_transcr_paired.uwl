@@ -14,6 +14,7 @@ workflow "Multiple datasets Tuxedo: paired-end reads"{
         type:cuffdiff;
         name:"Test for Diff. Expression with Cuffdiff";
         out-dir:tools_output;
+        multi-read-correct:true;
     }
     multiplexer {
         type:multiplexer;
