@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include "api/GTClipboard.h"
 #include "GTTestsSequenceEdit.h"
 #include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
@@ -295,14 +296,22 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 GUI_TEST_CLASS_DEFINITION(test_0009) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/AMINO.fa");
     GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 10, 13));
+    
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
     GTGlobals::sleep();
+    
+    /**/
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
-    GTKeyboardUtils::copy(os);
+    /**/
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    //GTKeyboardUtils::copy(os);
     GTGlobals::sleep(1000);
-    QString sequence = QApplication::clipboard()->text();
+    
+    QString sequence = GTClipboard::text(os);
     CHECK_SET_ERR("ACCC" == sequence, "Incorrect sequence is copied");
+    
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0010) {
