@@ -299,14 +299,10 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
     
     GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
     GTGlobals::sleep();
-    
-    /**/
     GTKeyboardUtils::selectAll(os);
     GTGlobals::sleep(1000);
-    /**/
 
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
-    //GTKeyboardUtils::copy(os);
     GTGlobals::sleep(1000);
     
     QString sequence = GTClipboard::text(os);
@@ -324,7 +320,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_COPY << ADV_COPY_TRANSLATION_ACTION, GTGlobals::UseKey));
     GTMenu::showContextMenu(os, mdiWindow);
     GTGlobals::sleep(1000);
-    QString text = QApplication::clipboard()->text();
+    QString text = GTClipboard::text(os);
 
     CHECK_SET_ERR(text == "K*K", "Sequcence part translated to <" + text + ">, expected K*K");
 }
@@ -342,7 +338,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 
     const QString expectedSequence = "AATGA";
 
-    QString realSequence = QApplication::clipboard()->text();
+    QString realSequence = GTClipboard::text(os);
     CHECK_SET_ERR(expectedSequence == realSequence, "Sequence is not pasted");
 
 }
