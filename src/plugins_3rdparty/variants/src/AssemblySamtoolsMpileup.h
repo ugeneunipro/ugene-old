@@ -84,7 +84,7 @@ class CallVariantsTaskSettings{
     int gapSize;
     int window;
     float pvalue1;
-    float pvalue2;
+    double pvalue2;
     float pvalue3;
     float pvalue4;
     float pvalueHwe;

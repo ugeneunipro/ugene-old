@@ -828,7 +828,7 @@ CallVariantsTaskSettings CallVariantsWorker::getSettings() {
     settings.gapSize = getValue<int>(GAP_SIZE);
     settings.window = getValue<int>(WINDOW);
     settings.pvalue1 = getValue<float>(PVALUE1);
-    settings.pvalue2 = getValue<QString>(PVALUE2).toFloat();
+    settings.pvalue2 = getValue<QString>(PVALUE2).toDouble();
     settings.pvalue3 = getValue<float>(PVALUE3);
     settings.pvalue4 = getValue<float>(PVALUE4);
     settings.pvalueHwe = getValue<float>(PVALUE_HWE);
