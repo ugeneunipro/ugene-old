@@ -356,7 +356,7 @@ void TopHatWorkerFactory::init()
     }
     attributes << new Attribute(bowtieIndexBasename, BaseTypes::STRING_TYPE(), true, QVariant(""));
     // attributes << new Attribute(refSeq, BaseTypes::STRING_TYPE(), true, QVariant(""));
-    attributes << new Attribute(mateInnerDistance, BaseTypes::NUM_TYPE(), false, QVariant(200));
+    attributes << new Attribute(mateInnerDistance, BaseTypes::NUM_TYPE(), false, QVariant(50));
     attributes << new Attribute(mateStandardDeviation, BaseTypes::NUM_TYPE(), false, QVariant(20));
     attributes << new Attribute(libraryType, BaseTypes::NUM_TYPE(), false, QVariant(0));
     attributes << new Attribute(noNovelJunctions, BaseTypes::BOOL_TYPE(), false, QVariant(false));
