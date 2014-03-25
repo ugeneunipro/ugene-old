@@ -1630,15 +1630,6 @@ GUI_TEST_CLASS_DEFINITION( test_1886_1 )
     GTMouseDriver::click( os, Qt::RightButton );
     GTGlobals::sleep( 200 );
     GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( QPoint( 8, 4 ), QPoint( 13, 12 ) ) );
-
-    // 5. Release left mouse button
-    GTMouseDriver::release( os );
-    GTGlobals::sleep( 200 );
-
-    // 6. Insert gaps with the Space button
-    GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["space"] );
-    GTGlobals::sleep( 500 );
-    GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( QPoint( 14, 4 ), QPoint( 19, 12 ) ) );
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1886_2 )

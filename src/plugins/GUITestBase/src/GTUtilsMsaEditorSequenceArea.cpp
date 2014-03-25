@@ -98,7 +98,6 @@ void GTUtilsMSAEditorSequenceArea::checkSelectedRect(U2OpStatus &os, const QRect
     CHECK_SET_ERR(expectedRect == msaEditRegion, "Unexpected selection region");
 }
 #undef GT_METHOD_NAME
-
 #define GT_METHOD_NAME "checkSorted"
 void GTUtilsMSAEditorSequenceArea::checkSorted(U2OpStatus &os, bool sortedState) {
 

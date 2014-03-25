@@ -225,7 +225,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2138);
     REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2140, "fix for mac");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2150, "task tree view cant be tested");
-    REGISTER_TEST(GUITest_regression_scenarios::test_2152);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2152, "external tools unreacheble out of the box");
     REGISTER_TEST(GUITest_regression_scenarios::test_2156);
     REGISTER_TEST(GUITest_regression_scenarios::test_2157);
     REGISTER_TEST(GUITest_regression_scenarios::test_2160);
@@ -246,10 +246,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2225_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2225_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2259);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2266_1);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2266_1, "external tools unreacheble out of the box");
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
-    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2268, "fix for mac");
+    REGISTER_TEST_LINUX(GUITest_regression_scenarios::test_2268, "fix for mac, win external tools unreacheble out of the box");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2282, "https://ugene.unipro.ru/tracker/browse/UGENE-2454");
     REGISTER_TEST(GUITest_regression_scenarios::test_2284);
     REGISTER_TEST(GUITest_regression_scenarios::test_2316);
@@ -272,7 +272,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2382_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2392);
     REGISTER_TEST(GUITest_regression_scenarios::test_2401);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2402);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2402, "win external tools unreacheble out of the box");
     REGISTER_TEST(GUITest_regression_scenarios::test_2406);
     REGISTER_TEST(GUITest_regression_scenarios::test_2407);
     REGISTER_TEST(GUITest_regression_scenarios::test_2410);
@@ -931,10 +931,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Assembling/bowtie2
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0001, "Restore when this tool becomes available");
-    REGISTER_TEST(GUITest_Bowtie2::test_0002);
-    REGISTER_TEST(GUITest_Bowtie2::test_0003);
-    REGISTER_TEST(GUITest_Bowtie2::test_0004);
-    REGISTER_TEST(GUITest_Bowtie2::test_0005);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0002, "Restore when this tool becomes available");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0003, "Restore when this tool becomes available");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0004, "Restore when this tool becomes available");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0005, "Restore when this tool becomes available");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/dna_assembly
@@ -986,7 +986,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0001);
     REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_workflow_parameters_validation::test_0002, "qt dialog can't be shown");
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0003);
-    REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0005);
+    REGISTER_TEST_WINDOWS(GUITest_common_scenarios_workflow_parameters_validation::test_0005, "Test should run not under admin user on WIN");
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0006);
 
 /////////////////////////////////////////////////////////////////////////
