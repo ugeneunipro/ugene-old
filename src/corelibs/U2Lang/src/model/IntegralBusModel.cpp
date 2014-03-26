@@ -357,7 +357,9 @@ void IntegralBusPort::setupBusMap() {
     filterAmbiguousSlots(keys, to->getDatatypesMap(), busMap);
     foreach(const Descriptor & key, keys) {
         // FIXME: hack for not binding 'Location' slot
-        if(key == BaseSlots::URL_SLOT()) {
+        // 'Location' slot should NOT be binded for any writers to avoid writing to source of data
+        // If there is only one slot - there are no objections for binding URL
+        if(key == BaseSlots::URL_SLOT() && keys.size() > 1) {
             busMap.insert(key.getId(), "");
             continue;
         }
