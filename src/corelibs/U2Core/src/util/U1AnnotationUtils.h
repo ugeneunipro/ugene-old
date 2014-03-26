@@ -33,7 +33,7 @@ class GObject;
 class GObjectReference;
 class U2SequenceObject;
 
-class AnnotatedRegion {
+class U2CORE_EXPORT AnnotatedRegion {
 public:
     AnnotatedRegion();
     AnnotatedRegion(const Annotation &annotation, int regionIdx);
