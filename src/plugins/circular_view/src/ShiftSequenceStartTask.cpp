@@ -47,25 +47,25 @@ namespace U2 {
 
 ShiftSequenceStartTask::ShiftSequenceStartTask( U2SequenceObject *_seqObj, int _shiftSize )
 
-:Task(tr("ShiftSequenceStartTask"), TaskFlag_NoRun), seqObj(_seqObj),shiftSize(_shiftSize)
+:Task(tr("ShiftSequenceStartTask"), TaskFlag_NoRun), seqObj(_seqObj),seqStart(_shiftSize)
 {
     GCOUNTER( cvar, tvar, "ShiftSequenceStartTask" );
 }
 
 Task::ReportResult ShiftSequenceStartTask::report(){
 
-    if (!seqObj->isCircular() || shiftSize == 0) {
+    if ( seqStart == 0 ) {
+        setError("New sequence origin is the same as the old one");
         return ReportResult_Finished;
     }
 
-    CHECK(abs(shiftSize) < seqObj->getSequenceLength(), ReportResult_Finished);
+    CHECK(abs(seqStart) < seqObj->getSequenceLength(), ReportResult_Finished);
     
     Document* curDoc = seqObj->getDocument();
     CHECK_EXT(!curDoc->isStateLocked(), setError(tr("Document is locked")), ReportResult_Finished);
 
     DNASequence dna = seqObj->getWholeSequence();
-    int shiftPos = dna.seq.length() - shiftSize;
-    dna.seq = dna.seq.mid(shiftPos, shiftSize) + dna.seq.mid(0, shiftPos);
+    dna.seq = dna.seq.mid(seqStart) + dna.seq.mid(0, seqStart);
     seqObj->setWholeSequence(dna);
     
 
@@ -82,13 +82,13 @@ Task::ReportResult ShiftSequenceStartTask::report(){
         docs.append(curDoc);
     }
 
-    fixAnnotations();
+    fixAnnotations(seqStart);
 
     return ReportResult_Finished;
 }
 
 
-void ShiftSequenceStartTask::fixAnnotations( ) {
+void ShiftSequenceStartTask::fixAnnotations( int shiftSize ) {
     foreach ( Document *d, docs ) {
         QList<GObject *> annotationTablesList = d->findGObjectByType( GObjectTypes::ANNOTATION_TABLE );
         foreach ( GObject *table, annotationTablesList ) {
@@ -96,7 +96,7 @@ void ShiftSequenceStartTask::fixAnnotations( ) {
             if ( ato->hasObjectRelation( seqObj, GObjectRelationRole::SEQUENCE ) ){
                 foreach ( Annotation an, ato->getAnnotations( ) ) {
                     const U2Location& location = an.getLocation();
-                    U2Location newLocation = shiftLocation(location, shiftSize);
+                    U2Location newLocation = shiftLocation(location, shiftSize, seqObj->getSequenceLength() );
                     an.setLocation(newLocation);
                     
                 }
@@ -106,15 +106,52 @@ void ShiftSequenceStartTask::fixAnnotations( ) {
 }
 
 
-U2Location ShiftSequenceStartTask::shiftLocation(const U2Location& location, int shiftSize) {
-    // TODO: special handling for location intersecting 0
+U2Location ShiftSequenceStartTask::shiftLocation(const U2Location& location, int shiftSize, int seqLength) {
+
     U2Location newLocation(location);
     newLocation->regions.clear();
-    
-    foreach( const U2Region& r, location->regions) {
-        U2Region newRegion(r.startPos + shiftSize, r.length );
+        
+    int joinIdx = -1;
+
+    int numRegions = location->regions.size();
+    for( int i = 0; i < numRegions; ++i) {
+        const U2Region& r = location->regions[i];
+        if (r.endPos() == seqLength && ( i + 1 < numRegions ) ) {
+            const U2Region& r2 = location->regions[i+1];
+            if (r2.startPos == 0) {
+                joinIdx = i;
+            }
+        }
+
+        U2Region newRegion(r.startPos - shiftSize, r.length );
+        if (newRegion.endPos() <= 0) {
+            newRegion.startPos += seqLength;
+        } else if (newRegion.startPos < 0) {
+            int additionStartPos = newRegion.startPos + seqLength;
+            int additionLength = seqLength - additionStartPos;
+            U2Region newRegionAddition(additionStartPos, additionLength);
+            newLocation->regions.append(newRegionAddition);
+            newRegion.startPos = 0;
+            newRegion.length = r.length - additionLength;
+            newLocation->op = U2LocationOperator_Join;
+        }
         newLocation->regions.append(newRegion);
     }
+
+
+    if (joinIdx != -1) {
+        if (newLocation->regions.size() > joinIdx + 1) {
+            const U2Region& r1 = newLocation->regions[joinIdx];
+            const U2Region& r2 = newLocation->regions[joinIdx + 1];
+            assert (r1.endPos() == r2.startPos);
+            U2Region joined(r1.startPos, r1.length + r2.length);
+            newLocation->regions.replace(joinIdx, joined);
+            newLocation->regions.remove(joinIdx + 1);
+
+        }
+    }
+
+
 
     return newLocation;
 }

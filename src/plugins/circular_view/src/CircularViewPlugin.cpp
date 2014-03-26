@@ -24,6 +24,7 @@
 #include "CircularViewSplitter.h"
 #include "RestrictionMapWidget.h"
 #include "SetSequenceOriginDialog.h"
+#include "ShiftSequenceStartTask.h"
 
 #include <U2Core/GObject.h>
 #include <U2Core/DocumentModel.h>
@@ -38,6 +39,7 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVUtils.h>
+#include <U2Core/DNASequenceSelection.h>
 
 #include <U2Gui/GUIUtils.h>
 
@@ -82,7 +84,7 @@ void CircularViewContext::initViewContext(GObjectView* v) {
     exportAction = new GObjectViewAction(this, v, tr("Save circular view as image"));
     exportAction->setIcon(QIcon(":/core/images/cam2.png"));
 
-    setSequenceOriginAction = new GObjectViewAction(this, v, tr("Set sequence origin..."));
+    setSequenceOriginAction = new GObjectViewAction(this, v, tr("Set new sequence origin..."));
     connect(setSequenceOriginAction, SIGNAL(triggered()), SLOT(sl_setSequenceOrigin()));
 
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(v);
@@ -282,8 +284,25 @@ void CircularViewContext::sl_setSequenceOrigin()
         return;
     }
 
+    ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
+    U2SequenceObject *seqObj = seqCtx->getSequenceObject();
+
+    if (seqObj == NULL) {
+        return;
+    }
+
     SetSequenceOriginDialog dlg(av->getSequenceWidgetInFocus());
-    dlg.exec();
+    int res = dlg.exec();
+
+    if (res == QDialog::Accepted) {
+        int newSeqStart = dlg.getSequenceShift();
+        if (newSeqStart != 1) {
+            seqCtx->getSequenceSelection()->clear();
+            Task *t = new ShiftSequenceStartTask(seqObj, newSeqStart - 1);
+            AppContext::getTaskScheduler()->registerTopLevelTask(t);
+            connect(t, SIGNAL(si_stateChanged()), av, SLOT(sl_sequenceModifyTaskStateChanged()));
+        }
+    }
 
 }
 

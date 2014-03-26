@@ -40,9 +40,11 @@ SetSequenceOriginDialog::SetSequenceOriginDialog(ADVSequenceWidget* parent ) : Q
 
 }
 
-void SetSequenceOriginDialog::accept()
+int SetSequenceOriginDialog::getSequenceShift()
 {
+    return seqOriginBox->value();
 }
+
 
 
 } // namespace

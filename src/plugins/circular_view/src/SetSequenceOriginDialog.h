@@ -35,8 +35,7 @@ class SetSequenceOriginDialog : public QDialog, Ui_SetSequenceOriginDialog
     ADVSequenceObjectContext* seqContext;
 public:
     SetSequenceOriginDialog(ADVSequenceWidget* parent);
-
-    void accept();
+    int getSequenceShift();
 
 
 };

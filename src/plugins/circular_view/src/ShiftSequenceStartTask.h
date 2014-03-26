@@ -33,16 +33,16 @@ class U2SequenceObject;
 class ShiftSequenceStartTask : public Task {
     Q_OBJECT
 public:
-    ShiftSequenceStartTask( U2SequenceObject *_seqObj, int shiftSize);
+    ShiftSequenceStartTask( U2SequenceObject *_seqObj, int newSeqStart);
 
     virtual Task::ReportResult report();
 
 private:
-    void fixAnnotations();
-    static U2Location shiftLocation(const U2Location& location, int shiftSize);
+    void fixAnnotations(int shiftSize);
+    static U2Location shiftLocation(const U2Location& location, int seqStart, int seqLength);
     U2SequenceObject*   seqObj;
     QList<Document*> docs;
-    int shiftSize;    
+    int seqStart;
 };
 
 
