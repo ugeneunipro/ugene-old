@@ -30,6 +30,7 @@
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
 
+#include <U2View/ADVSequenceWidget.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
 #include <U2Gui/HelpButton.h>
@@ -38,10 +39,25 @@
 namespace U2 {
 
 
+const int SequenceInfo::COMMON_STATISTICS_VALUE_MAX_WIDTH = 90;
 const QString SequenceInfo::CAPTION_SEQ_REGION_LENGTH = "Length: ";
+
+//nucl
+const QString SequenceInfo::CAPTION_SEQ_GC_CONTENT = "GC Content: ";
+const QString SequenceInfo::CAPTION_SEQ_MOLAR_WEIGHT = "Molar Weight: ";
+const QString SequenceInfo::CAPTION_SEQ_MOLAR_EXT_COEF = "Molat Ext. Coef: ";
+const QString SequenceInfo::CAPTION_SEQ_MELTING_TM = "Melting TM: ";
+
+const QString SequenceInfo::CAPTION_SEQ_NMOLE_OD = "nmole/OD<sub>260</sub> : ";
+const QString SequenceInfo::CAPTION_SEQ_MG_OD = QChar(0x3BC) + QString("g/OD<sub>260</sub> : "); // 0x3BC - greek 'mu'
+
+//amino
+const QString SequenceInfo::CAPTION_SEQ_MOLECULAR_WEIGHT = "Molecular Weight: ";
+const QString SequenceInfo::CAPTION_SEQ_ISOELECTIC_POINT = "Isoelectic Point: ";
 
 const QString SequenceInfo::CHAR_OCCUR_GROUP_ID = "char_occur_group";
 const QString SequenceInfo::DINUCL_OCCUR_GROUP_ID = "dinucl_occur_group";
+const QString SequenceInfo::STAT_GROUP_ID = "stat_group";
 
 
 SequenceInfo::SequenceInfo(AnnotatedDNAView* _annotatedDnaView)
@@ -65,14 +81,13 @@ void SequenceInfo::initLayout()
 
     setLayout(mainLayout);
 
-    // Length
-    QFormLayout* lengthLayout = new QFormLayout();
-    QLabel* captionSeqRegionLength = new QLabel(CAPTION_SEQ_REGION_LENGTH);
-    qint64 length = currentRegion.length;
-    sequenceRegionLength = new QLabel(QString::number(length));
-    sequenceRegionLength->setObjectName("Length");
-    lengthLayout->addRow(captionSeqRegionLength, sequenceRegionLength);
-    mainLayout->addLayout(lengthLayout);
+    // Common statistics
+    statisticLabel = new QLabel(this);
+    statsWidget = new ShowHideSubgroupWidget(STAT_GROUP_ID, tr("Common Statistics"), statisticLabel, true);
+    SAFE_POINT(statsWidget->layout() != NULL, tr("No layout in ShowHideSubgroupWidget"),);
+    statsWidget->layout()->setContentsMargins(0, 0, 0, 0);
+
+    mainLayout->addWidget(statsWidget);
 
     // Characters occurrence
     charOccurLabel = new QLabel(this);
@@ -98,9 +113,9 @@ void SequenceInfo::initLayout()
     mainLayout->addLayout(helpLayout);
 
     // Make some labels selectable by a user (so he could copy them)
-    sequenceRegionLength->setTextInteractionFlags(Qt::TextSelectableByMouse);
     charOccurLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
     dinuclLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    statisticLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
     updateLayout();
 }
@@ -156,7 +171,6 @@ void SequenceInfo::updateDinuclLayout()
     }
 }
 
-
 void SequenceInfo::connectSlotsForSeqContext(ADVSequenceObjectContext* seqContext)
 {
     SAFE_POINT(seqContext, "A sequence context is NULL!",);
@@ -192,6 +206,7 @@ void SequenceInfo::connectSlots()
     // Calculations have been finished
     connect(&charOccurTaskRunner, SIGNAL(si_finished()), SLOT(sl_updateCharOccurData()));
     connect(&dinuclTaskRunner, SIGNAL(si_finished()), SLOT(sl_updateDinuclData()));
+    connect(&dnaStatisticsTaskRunner, SIGNAL(si_finished()), SLOT(sl_updateStatData()));
 
     // A subgroup has been opened/closed
     connect(charOccurWidget, SIGNAL(si_subgroupStateChanged(QString)), SLOT(sl_subgroupStateChanged(QString)));
@@ -305,13 +320,7 @@ QString getFormattedLongNumber(qint64 num)
 
 void SequenceInfo::launchCalculations(QString subgroupId)
 {
-    // The length is shown for all sequences
-    if (subgroupId.isEmpty())
-    {
-        sequenceRegionLength->setText(getFormattedLongNumber(currentRegion.length));
-    }
-
-    // Launch the characters and dinucleotides calculation tasks,
+    // Launch the statistics, characters and dinucleotides calculation tasks,
     // if corresponding groups are present and opened
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     SAFE_POINT(0 != activeContext, "A sequence context is NULL!",);
@@ -337,6 +346,16 @@ void SequenceInfo::launchCalculations(QString subgroupId)
             dinuclWidget->showProgress();
 
             dinuclTaskRunner.run(new DinuclOccurTask(alphabet, seqRef, currentRegion));
+        }
+    }
+
+    if (subgroupId.isEmpty() || subgroupId == STAT_GROUP_ID)
+    {
+        if ((!statsWidget->isHidden()) && (statsWidget->isSubgroupOpened()))
+        {
+            statsWidget->showProgress();
+
+            dnaStatisticsTaskRunner.run(new DNAStatisticsTask(activeContext, currentRegion));
         }
     }
 }
@@ -380,6 +399,47 @@ void SequenceInfo::sl_updateDinuclData()
     dinuclInfo += "</table>";
 
     dinuclLabel->setText(dinuclInfo);
+}
+
+void SequenceInfo::sl_updateStatData() {
+    statsWidget->hideProgress();
+
+    DNAStatistics stats = dnaStatisticsTaskRunner.getResult();
+
+    ADVSequenceWidget *wgt = annotatedDnaView->getSequenceWidgetInFocus();
+    SAFE_POINT(wgt != NULL, tr("Sequence widget is NULL"), );
+    ADVSequenceObjectContext *ctx = wgt->getActiveSequenceContext();
+    SAFE_POINT(ctx != NULL, tr("Sequence context is NULL"), );
+    SAFE_POINT(ctx->getAlphabet() != NULL, tr("Sequence alphbet is NULL"), );
+
+    QString statsInfo = "<table cellspacing=5>";
+    statsInfo += formTableRow( CAPTION_SEQ_REGION_LENGTH,  getFormattedLongNumber(stats.length) );
+    if (ctx->getAlphabet()->isNucleic()) {
+        statsInfo += formTableRow( CAPTION_SEQ_GC_CONTENT, QString::number(stats.gcContent, 'f', 2) + "%");
+        statsInfo += formTableRow( CAPTION_SEQ_MOLAR_WEIGHT, QString::number(stats.molarWeight, 'f', 2) + " Da");
+        statsInfo += formTableRow( CAPTION_SEQ_MOLAR_EXT_COEF, QString::number(stats.molarExtCoef) + " I/mol");
+        statsInfo += formTableRow( CAPTION_SEQ_MELTING_TM, QString::number(stats.meltingTm, 'f', 2) + " C");
+
+        statsInfo += formTableRow( CAPTION_SEQ_NMOLE_OD, QString::number(stats.nmoleOD260, 'f', 2));
+        statsInfo += formTableRow( CAPTION_SEQ_MG_OD, QString::number(stats.mgOD260, 'f', 2));
+    } else if (ctx->getAlphabet()->isAmino()) {
+        statsInfo += formTableRow( CAPTION_SEQ_MOLECULAR_WEIGHT, QString::number(stats.molecularWeight, 'f', 2));
+        statsInfo += formTableRow( CAPTION_SEQ_ISOELECTIC_POINT, QString::number(stats.isoelectricPoint, 'f', 2));
+    }
+
+    statsInfo += "</table>";
+
+    statisticLabel->setText(statsInfo);
+}
+
+QString SequenceInfo::formTableRow(const QString& caption, QString value) const {
+    QString result;
+
+    QFontMetrics metrics = statisticLabel->fontMetrics();
+    result = "<tr><td><b>" + tr("%1").arg(caption) + "</b></td><td>"
+            + metrics.elidedText(value, Qt::ElideRight, COMMON_STATISTICS_VALUE_MAX_WIDTH)
+            + "</td></tr>";
+    return result;
 }
 
 

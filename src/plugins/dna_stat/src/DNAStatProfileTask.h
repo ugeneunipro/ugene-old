@@ -28,31 +28,34 @@
 namespace U2 {
 
 class ADVSequenceObjectContext;
+class CharOccurTask;
+class DinuclOccurTask;
+class DNAStatisticsTask;
 
 class DNAStatProfileTask : public Task {
     Q_OBJECT
 public:
     DNAStatProfileTask(ADVSequenceObjectContext *context);
-    void run();
-    ReportResult report();
-    const QString& getResult() const { return resultText; }
+
+    QList <Task*> onSubTaskFinished(Task *subTask);
+
+    QString getResult() const;
 
 private:
-    void computeStats();
-    double calcPi(const QByteArray& seq);
-    double calcChargeState(const QMap<char,int>& countMap, double pH );
     ADVSequenceObjectContext* ctx;
     qint64 seqLen;
-    QVector<qint64>         contentCounter;
-    //TODO: optimize
-    QMap<QByteArray, int>   diNuclCounter;
-    qint64 nA, nT, nC, nG;
-    QString resultText;
-    // static tables
-    static QMap<char,double> pMWMap; // protein molecular weight
-    static QMap<char,double> pKaMap; // pKa values
-    static QMap<char,int> pChargeMap; // protein charges
     
+    QString charResult;
+    QString dinucResult;
+    QString statResult;
+
+    CharOccurTask*         charTask;
+    DinuclOccurTask*       dinucTask;
+    DNAStatisticsTask*    statTask;
+
+    QString formCharResultString() const;
+    QString formDinucResultString() const;
+    QString formStatResultString() const;
 };
 
 }// namespace

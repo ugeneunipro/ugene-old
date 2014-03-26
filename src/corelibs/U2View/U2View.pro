@@ -134,6 +134,7 @@ HEADERS += src/Init.h \
            src/ov_sequence/codon_table/CodonTable.h \
            src/ov_sequence/sequence_info/CharOccurTask.h \
            src/ov_sequence/sequence_info/DinuclOccurTask.h \
+           src/ov_sequence/sequence_info/DNAStatisticsTask.h \
            src/ov_sequence/sequence_info/SequenceInfo.h \
            src/ov_sequence/sequence_info/SequenceInfoFactory.h \
            src/ov_sequence/SaveGraphCutoffsDialogController.h \
@@ -334,6 +335,7 @@ SOURCES += src/Init.cpp \
            src/ov_sequence/find_pattern/FindPatternWidgetFactory.cpp \
            src/ov_sequence/sequence_info/CharOccurTask.cpp \
            src/ov_sequence/sequence_info/DinuclOccurTask.cpp \
+           src/ov_sequence/sequence_info/DNAStatisticsTask.cpp \
            src/ov_sequence/sequence_info/SequenceInfo.cpp \
            src/ov_sequence/sequence_info/SequenceInfoFactory.cpp \
            src/ov_sequence/codon_table/CodonTable.cpp \

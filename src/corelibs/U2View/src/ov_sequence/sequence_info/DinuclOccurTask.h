@@ -33,7 +33,7 @@ class DNAAlphabet;
 class U2SequenceObject;
 class U2Region;
 
-class DinuclOccurTask : public BackgroundTask< QMap<QByteArray, qint64> >
+class U2VIEW_EXPORT DinuclOccurTask : public BackgroundTask< QMap<QByteArray, qint64> >
 {
 public:
     DinuclOccurTask(const DNAAlphabet* alphabet, U2EntityRef seqRef, U2Region region);

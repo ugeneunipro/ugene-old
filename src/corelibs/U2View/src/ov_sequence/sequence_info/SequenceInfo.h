@@ -24,6 +24,7 @@
 
 #include "CharOccurTask.h"
 #include "DinuclOccurTask.h"
+#include "DNAStatisticsTask.h"
 
 #include <U2Core/BackgroundTaskRunner.h>
 #include <U2Core/U2Region.h>
@@ -69,6 +70,7 @@ private slots:
     /** Update calculated info */
     void sl_updateCharOccurData();
     void sl_updateDinuclData();
+    void sl_updateStatData();
 
     /** A subgroup (e.g. characters occurrence subgroup) has been opened/closed */
     void sl_subgroupStateChanged(QString subgroupId);
@@ -103,9 +105,13 @@ private:
      */
     void launchCalculations(QString subgroupId = QString(""));
 
+    QString  formTableRow(const QString& caption, QString value) const;
 
     AnnotatedDNAView* annotatedDnaView;
-    QLabel* sequenceRegionLength;
+
+    ShowHideSubgroupWidget* statsWidget;
+    QLabel* statisticLabel;
+    BackgroundTaskRunner< DNAStatistics > dnaStatisticsTaskRunner;
 
     ShowHideSubgroupWidget* charOccurWidget;
     QLabel* charOccurLabel;
@@ -117,9 +123,25 @@ private:
 
     U2Region currentRegion;
 
+    static const int COMMON_STATISTICS_VALUE_MAX_WIDTH;
     static const QString CAPTION_SEQ_REGION_LENGTH;
+
+    //nucl
+    static const QString CAPTION_SEQ_GC_CONTENT;
+    static const QString CAPTION_SEQ_MOLAR_WEIGHT;
+    static const QString CAPTION_SEQ_MOLAR_EXT_COEF;
+    static const QString CAPTION_SEQ_MELTING_TM;
+
+    static const QString CAPTION_SEQ_NMOLE_OD;
+    static const QString CAPTION_SEQ_MG_OD;
+
+    //amino
+    static const QString CAPTION_SEQ_MOLECULAR_WEIGHT;
+    static const QString CAPTION_SEQ_ISOELECTIC_POINT;
+
     static const QString CHAR_OCCUR_GROUP_ID;
     static const QString DINUCL_OCCUR_GROUP_ID;
+    static const QString STAT_GROUP_ID;
 };
 
 
