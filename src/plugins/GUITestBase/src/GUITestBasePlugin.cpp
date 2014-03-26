@@ -932,9 +932,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0001, "Restore when this tool becomes available");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0002, "Restore when this tool becomes available");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0003, "Restore when this tool becomes available");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0004, "Restore when this tool becomes available");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0005, "Restore when this tool becomes available");
+    REGISTER_TEST_LINUX(GUITest_Bowtie2::test_0003, "Restore when this tool becomes available, https://ugene.unipro.ru/tracker/browse/UGENE-2893");
+    REGISTER_TEST_LINUX(GUITest_Bowtie2::test_0004, "Restore when this tool becomes available, https://ugene.unipro.ru/tracker/browse/UGENE-2893");
+    REGISTER_TEST_LINUX(GUITest_Bowtie2::test_0005, "Restore when this tool becomes available, https://ugene.unipro.ru/tracker/browse/UGENE-2893");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/dna_assembly
