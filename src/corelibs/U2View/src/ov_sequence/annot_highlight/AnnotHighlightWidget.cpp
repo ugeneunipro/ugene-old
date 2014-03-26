@@ -27,12 +27,13 @@
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U1AnnotationUtils.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/PanView.h>
-#include <limits>
+#include <limits.h>
 #include <U2Gui/HelpButton.h>
 
 namespace U2 {
@@ -156,130 +157,20 @@ void AnnotHighlightWidget::initLayout()
     setLayout(mainLayout);
 }
 
-bool AnnotHighlightWidget::isValidIndex(const QList<Annotation> &annotForNextPrev,
-    int position)
-{
-    return !annotForNextPrev.empty() && position >= 0 && position < annotForNextPrev.size();
-}
-
-int AnnotHighlightWidget::searchAnnotWithEqualsStartPos(const QList<AnnotationTableObject *> &items,
-    QList<Annotation> &annotForNextPrev, const Annotation *prev, int currentPosition)
-{
-    int qurIdx = -1;
-    int currentIdx = qurIdx;
-    foreach ( AnnotationTableObject *aTable, items ) {
-        SAFE_POINT( NULL != aTable, "Invalid annotation table!", -1 );
-        foreach ( const Annotation &annotation, aTable->getAnnotations( ) ) {
-            const U2Location locData = annotation.getLocation( );
-            foreach ( const U2Region &curPos, locData->regions ) {
-                if ( curPos.startPos == currentPosition ) {
-                    annotForNextPrev.append( annotation );
-                    qurIdx++;
-                }
-            }
-            if ( NULL != prev && *prev == annotation ) {
-                currentIdx = qurIdx;
+bool AnnotHighlightWidget::isFirstAnnotatedRegion(Annotation annotation, const U2Region &region, bool fromTheBeginning) const {
+    AnnotatedRegion annRegion;
+    if (findFirstAnnotatedRegion(annRegion, fromTheBeginning)) {
+        if (annRegion.annotation == annotation) {
+            SAFE_POINT(annRegion.annotation.getRegions().size() > annRegion.regionIdx, "Invalid annotation region", false);
+            if (annRegion.annotation.getRegions()[annRegion.regionIdx] == region) {
+                return true;
             }
         }
     }
-    return currentIdx;
+    return false;
 }
 
-bool AnnotHighlightWidget::isNext( bool isForward, qint64 startPos, qint64 endPos, qint64 minPos ) {
-    if ( isForward ) {
-        return startPos > endPos && startPos < minPos;
-    }
-    return startPos < endPos && startPos > minPos;
-}
-
-qint64 AnnotHighlightWidget::searchNextPosition( const QList<AnnotationTableObject *> &items,
-    int endPos, bool isForward, qint64& currentPosition)
-{
-    int locIdx = 0;
-    qint64 MAX = std::numeric_limits<qint64>::max();
-    qint64 minPos = MAX;
-    if (!isForward) {
-        minPos = -1;
-    }
-    foreach ( const AnnotationTableObject *aTable, items) {
-        SAFE_POINT(aTable != NULL, "Invalid annotation table!", -1);
-        foreach ( const Annotation &annotation, aTable->getAnnotations( ) ) {
-            int locateIdx = 0;
-            const U2Location locData = annotation.getLocation();
-            foreach ( const U2Region &curPos, locData->regions ) {
-                if (isNext(isForward, curPos.startPos, endPos, minPos)) {
-                    minPos = curPos.startPos;
-                    locIdx = locateIdx;
-                }
-                locateIdx++;
-            }
-        }
-    }
-    currentPosition = minPos;
-    if (currentPosition == -1 || currentPosition == MAX) {
-        currentPosition = -1;
-        return -1;
-    }
-    return locIdx;
-}
-
-bool AnnotHighlightWidget::isFirstAnnotationRegion(const Annotation *annotation, const U2Region &region, bool fromTheBeginning) {
-    const QList<AnnotationTableObject*> annotObjects = annotatedDnaView->getAnnotationObjects(true);
-    QList<Annotation> annots;
-    qint64 next = searchAnnotWithEqualsStartPos(annotObjects, annots, annotation, region.startPos);
-    if (next != (fromTheBeginning ? 0: annots.size() - 1 )) {
-        return false;
-    }
-    searchNextPosition(annotObjects, region.startPos, !fromTheBeginning, next);
-    if (next != -1) {
-        return false;
-    }
-    return true;
-
-}
-
-const Annotation * AnnotHighlightWidget::findFirstSelectedAnnotationRegion(qint64 &start, bool fromTheBeginning) {
-    AnnotationSelection* as = annotatedDnaView->getAnnotationsSelection();
-    CHECK(NULL != as, NULL);
-
-    const QList<AnnotationSelectionData> selectionData = as->getSelection();
-    start = -1;
-    int annotationIdx = -1;
-    int i = 0;
-    foreach (AnnotationSelectionData selectionItem, selectionData) {
-        foreach (U2Region region, selectionItem.getSelectedRegions()) {
-            if (start == -1) {
-                start = region.startPos;
-                annotationIdx = i;
-            } else {
-                if ( (region.startPos - start) * (fromTheBeginning ? 1 : -1) > 0 ) {
-                    start = region.startPos;
-                    annotationIdx = i;
-                }
-            }
-        }
-        i++;
-    }
-
-    // get start annotation
-    const Annotation *startAnnotation = NULL;
-    if (annotationIdx < selectionData.size() && annotationIdx != -1) {
-        startAnnotation = &selectionData[annotationIdx].annotation;
-    }
-
-    const QList<AnnotationTableObject *> items = annotatedDnaView->getAnnotationObjects(true);
-    QList<Annotation> annotForNextPrev;
-    if (as->isEmpty()) {
-        // no selected annotations - choose first one
-        searchNextPosition(items, -1, true, start);
-        searchAnnotWithEqualsStartPos(items, annotForNextPrev, NULL, start);
-        startAnnotation = &annotForNextPrev.first();
-    }
-
-    return startAnnotation;
-}
-
-bool AnnotHighlightWidget::noAnnotatedRegions() {
+bool AnnotHighlightWidget::noAnnotatedRegions() const {
     const QList<AnnotationTableObject*> items = annotatedDnaView->getAnnotationObjects(true);
     foreach (AnnotationTableObject* object, items) {
         SAFE_POINT(object != NULL, "Annotation table object is NULL", true);
@@ -290,60 +181,121 @@ bool AnnotHighlightWidget::noAnnotatedRegions() {
     return true;
 }
 
-void AnnotHighlightWidget::annotationNavigate(bool isForward) {
-    qint64 startPos = -1;
-    const Annotation *startAnnotation = findFirstSelectedAnnotationRegion(startPos, isForward);
-    CHECK(startAnnotation != NULL, );
-
-    // find annotations started at the same position
-    const QList<AnnotationTableObject *> items = annotatedDnaView->getAnnotationObjects(true);
-    QList<Annotation> annotationsInTheSamePosition;
-    qint64 idx = searchAnnotWithEqualsStartPos(items, annotationsInTheSamePosition, startAnnotation, startPos);
-    idx += 2 * isForward - 1;
-
-    // check if next annotation is already selected
+void AnnotHighlightWidget::selectNextAnnotation(bool isForward) const {
     AnnotationSelection* as = annotatedDnaView->getAnnotationsSelection();
-    CHECK(NULL != as, );
-    while (isValidIndex(annotationsInTheSamePosition, idx)) {
-        if (!as->contains(annotationsInTheSamePosition[idx])) {
-            break;
-        }
-        idx += 2 * isForward - 1;
+    CHECK(as != NULL, );
+
+    bool isAnnRegionValid = false;
+    AnnotatedRegion annRegion;
+
+    if (as->isEmpty() && isForward) {
+        // no selected annotation regions - choose first one
+        isAnnRegionValid = findFirstAnnotatedRegion(annRegion);
+    } else {
+        // choose next acoording to selection
+        isAnnRegionValid = findNextUnselectedAnnotatedRegion(annRegion, isForward);
     }
 
-    int locIdx = 0;
-    if (!isValidIndex(annotationsInTheSamePosition, idx)) {
-        qint64 nextAnnPosition = -1;
-        locIdx = searchNextPosition(items, startPos, isForward, nextAnnPosition);
-        // there is no more annotations
-        if (locIdx == -1) {
-            return;
-        }
-        annotationsInTheSamePosition.clear();
-        searchAnnotWithEqualsStartPos(items, annotationsInTheSamePosition, NULL, nextAnnPosition);
-        if (annotationsInTheSamePosition.size() != 0) {
-            idx = (isForward)?(0):(annotationsInTheSamePosition.size() - 1);
-        } else {
-            idx = -1;
-        }
-    }
-
-    const Annotation *nextAnnotation = startAnnotation;
-    if (isValidIndex(annotationsInTheSamePosition, idx)) {
-        nextAnnotation = &annotationsInTheSamePosition[idx];
-    }
-    if (nextAnnotation != NULL && nextAnnotation != startAnnotation) {
+    if (isAnnRegionValid) {
         as->clear();
-        as->addToSelection(*nextAnnotation, locIdx);
+        as->addToSelection( annRegion.annotation, annRegion.regionIdx);
     }
+    return;
+}
+
+bool AnnotHighlightWidget::findFirstAnnotatedRegion(AnnotatedRegion &annRegion, bool fromTheBeginging) const {
+    return findFirstAnnotatedRegionAfterPos(annRegion,
+                                            fromTheBeginging ? -1 : LLONG_MAX,
+                                            fromTheBeginging);
+}
+
+bool AnnotHighlightWidget::findFirstAnnotatedRegionAfterPos(AnnotatedRegion &annRegion, qint64 startPos, bool isForward) const {
+    qint64 boundary = isForward ? LLONG_MAX : -1;
+    qint64 sign = isForward ? 1 : -1;
+    qint64 pos = boundary;
+
+    const QList<AnnotationTableObject *> annObjects = annotatedDnaView->getAnnotationObjects(true);
+    foreach (AnnotationTableObject *annObject, annObjects) {
+        SAFE_POINT(annotatedDnaView->getSequenceContext(annObject) != NULL, tr("Sequence context is NULL"), false);
+        qint64 seqLen = annotatedDnaView->getSequenceContext(annObject)->getSequenceLength();
+        QList<Annotation> annots = annObject->getAnnotationsByRegion(U2Region(isForward ? startPos : 0,
+                                                                              isForward ? seqLen - startPos : startPos));
+        foreach (Annotation a, annots) {
+            QVector <U2Region> regions = a.getRegions();
+            for (int i = 0; i < regions.size(); i++ ){
+                if ( sign * regions[i].startPos > sign * startPos
+                     && sign *regions[i].startPos < sign * pos) {
+                    pos = regions[i].startPos;
+                    annRegion.annotation = a;
+                    annRegion.regionIdx = i;
+                }
+            }
+        }
+    }
+
+    if (pos == boundary) {
+        return false;
+    }
+
+    QList<AnnotatedRegion> regionsAtTheSamePosition = getAllAnnotatedRegionsByStartPos(pos);
+    if (!regionsAtTheSamePosition.isEmpty()) {
+        annRegion = regionsAtTheSamePosition[ isForward ? 0 : (regionsAtTheSamePosition.size() - 1) ];
+        return true;
+    }
+
+    return false;
+}
+
+bool AnnotHighlightWidget::findNextUnselectedAnnotatedRegion(AnnotatedRegion &annRegion, bool fromTheBeginning) const {
+
+    AnnotationSelection* as = annotatedDnaView->getAnnotationsSelection();
+    CHECK(as != NULL, false);
+    CHECK(!as->isEmpty(), false);
+
+    // detect the most right/left start position in selection
+    const QList<AnnotationSelectionData> selectionData = as->getSelection();
+    int start = -1;
+    foreach (AnnotationSelectionData selectionItem, selectionData) {
+        foreach (U2Region region, selectionItem.getSelectedRegions()) {
+            if (start == -1) {
+                start = region.startPos;
+            } else {
+                if ( (region.startPos - start) * (fromTheBeginning ? 1 : -1) > 0 ) {
+                    start = region.startPos;
+                }
+            }
+        }
+    }
+
+    QList<AnnotatedRegion> regionsAtTheSamePosition = getAllAnnotatedRegionsByStartPos(start);
+    // find the next unselected
+    for (int i = 0; i < regionsAtTheSamePosition.size(); i++) {
+        int idx = fromTheBeginning ? regionsAtTheSamePosition.size() - 1 - i : i;
+        if (as->contains( regionsAtTheSamePosition[idx].annotation, regionsAtTheSamePosition[idx].regionIdx )) {
+            idx += (fromTheBeginning ? 1 : -1);
+            if (idx < 0 || idx == regionsAtTheSamePosition.size()) {
+                break;
+            }
+            annRegion = regionsAtTheSamePosition[idx];
+            return true;
+        }
+
+    }
+
+    return findFirstAnnotatedRegionAfterPos(annRegion, start, fromTheBeginning);
+}
+
+QList<AnnotatedRegion> AnnotHighlightWidget::getAllAnnotatedRegionsByStartPos(qint64 startPos) const {
+    const QList<AnnotationTableObject *> annObjects = annotatedDnaView->getAnnotationObjects(true);
+    return U1AnnotationUtils::getAnnotatedRegionsByStartPos(annObjects, startPos);
 }
 
 void AnnotHighlightWidget::sl_onNextAnnotationClick() {
-    annotationNavigate(true);
+    selectNextAnnotation(true);
 }
 
 void AnnotHighlightWidget::sl_onPrevAnnotationClick() {
-    annotationNavigate(false);
+    selectNextAnnotation(false);
 }
 
 void AnnotHighlightWidget::sl_onAnnotationSelectionChanged() {
@@ -361,10 +313,10 @@ void AnnotHighlightWidget::sl_onAnnotationSelectionChanged() {
         foreach (AnnotationSelectionData selData, as->getSelection()) {
             Annotation a = selData.annotation;
             foreach (U2Region region, selData.getSelectedRegions()) {
-                if (isFirstAnnotationRegion(&a, region, false)) {
+                if (isFirstAnnotatedRegion(a, region, false)) {
                     nextAnnotationButton->setDisabled(true);
                 }
-                if (isFirstAnnotationRegion(&a, region)) {
+                if (isFirstAnnotatedRegion(a, region)) {
                     prevAnnotationButton->setDisabled(true);
                 }
             }

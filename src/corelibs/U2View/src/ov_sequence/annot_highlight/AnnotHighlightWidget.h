@@ -33,6 +33,7 @@ class ADVSequenceObjectContext;
 class ADVSequenceWidget;
 class AnnotatedDNAView;
 class AnnotationTableObject;
+class AnnotatedRegion;
 
 /** Label that can be pressed with two states: show all types or types for sequence only */
 class ShowAllAnnotTypesLabel : public QLabel
@@ -119,32 +120,24 @@ private:
      */
     void findAllAnnotationsNamesInSettings();
 
-    Annotation binSearch();
-
-    void annotationNavigate(bool isForward);
-
-    bool isValidIndex(const QList<Annotation> &annotForNextPrev, int position);
-
-    int searchAnnotWithEqualsStartPos( const QList<AnnotationTableObject *>& items,
-        QList<Annotation> &annotForNextPrev, const Annotation *prev, int currentPosition );
-
-    bool isNext(bool isForward, qint64 startPos, qint64 endPos, qint64 minPos);
-
-    qint64 searchNextPosition( const QList<AnnotationTableObject *> &items, int endPos,
-        bool isForward, qint64 &currentPosition );
-    /**
-     * Returns true if provided annotation region is:
-     *  - the first one in case "fromTheBeginning" is true,
-     *  - the last one in case "fromTheBeginning" is false.
-     */
-    bool isFirstAnnotationRegion(const Annotation *annotation, const U2Region& region, bool fromTheBeginning = true);
+    void selectNextAnnotation(bool isForward) const;
 
     /**
-     * Returns first selected annotation.
-     * Start region position will be stored in "start".
+     * Returns true if provided @region of @annotation is:
+     *  - the first one in case @fromTheBeginning is true,
+     *  - the last one in case @fromTheBeginning is false.
      */
-    const Annotation * findFirstSelectedAnnotationRegion(qint64 &start, bool fromTheBeginning = true);
-    bool noAnnotatedRegions();
+    bool isFirstAnnotatedRegion(Annotation annotation, const U2Region& region, bool fromTheBeginning = true) const;
+
+    bool noAnnotatedRegions() const;
+
+    bool findFirstAnnotatedRegion(AnnotatedRegion &annRegion, bool fromTheBeginning = true) const;
+
+    bool findFirstAnnotatedRegionAfterPos(AnnotatedRegion &annRegion, qint64 startPos, bool isForward) const;
+
+    bool findNextUnselectedAnnotatedRegion(AnnotatedRegion &annRegion, bool isForward) const;
+
+    QList<AnnotatedRegion> getAllAnnotatedRegionsByStartPos(qint64 startPos) const;
 
     void updateAnnotationNames( );
 

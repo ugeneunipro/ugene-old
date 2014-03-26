@@ -38,6 +38,18 @@ namespace U2 {
 QString U1AnnotationUtils::lowerCaseAnnotationName( "lower_case" );
 QString U1AnnotationUtils::upperCaseAnnotationName( "upper_case" );
 
+AnnotatedRegion::AnnotatedRegion()
+    : annotation( Annotation(U2DataId(), NULL)),
+      regionIdx(-1){}
+
+AnnotatedRegion::AnnotatedRegion(const Annotation &annotation, int regionIdx)
+    : annotation(annotation),
+      regionIdx(regionIdx){}
+
+AnnotatedRegion::AnnotatedRegion(const AnnotatedRegion &annRegion)
+    : annotation( annRegion.annotation ),
+      regionIdx( annRegion.regionIdx ) {}
+
 QList<QVector<U2Region> > U1AnnotationUtils::fixLocationsForReplacedRegion(
     const U2Region &region2Remove, qint64 region2InsertLength, const QVector<U2Region> &original,
     AnnotationStrategyForResize s )
@@ -360,6 +372,24 @@ QString U1AnnotationUtils::guessAminoTranslation( AnnotationTableObject *ao, con
         }
     }
     return "";
+}
+
+QList <AnnotatedRegion> U1AnnotationUtils::getAnnotatedRegionsByStartPos(QList<AnnotationTableObject*> annotationObjects,
+                                                                        qint64 startPos){
+    QList <AnnotatedRegion> result;
+    foreach (AnnotationTableObject* annObject, annotationObjects) {
+        QList <Annotation> annots = annObject->getAnnotationsByRegion(U2Region(startPos, 1));
+        foreach (Annotation a, annots) {
+            QVector <U2Region> regions = a.getRegions();
+            for (int i = 0; i < regions.size(); i++) {
+                if (regions[i].startPos == startPos) {
+                    AnnotatedRegion ar(a, i);
+                    result.append( ar );
+                }
+            }
+        }
+    }
+    return result;
 }
 
 } //namespace

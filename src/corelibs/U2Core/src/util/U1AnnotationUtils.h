@@ -23,6 +23,7 @@
 #define _U1_ANNOTATION_UTILS_H_
 
 #include <U2Core/AnnotationData.h>
+#include <U2Core/Annotation.h>
 
 namespace U2 {
 
@@ -31,6 +32,16 @@ class AnnotationTableObject;
 class GObject;
 class GObjectReference;
 class U2SequenceObject;
+
+class AnnotatedRegion {
+public:
+    AnnotatedRegion();
+    AnnotatedRegion(const Annotation &annotation, int regionIdx);
+    AnnotatedRegion(const AnnotatedRegion &annRegion);
+public:
+    Annotation  annotation;
+    int         regionIdx;
+};
 
 /**
  * U2Annotation and related structures utility functions
@@ -85,6 +96,9 @@ public:
         const QList<U2Region> &regs );
 
     static QString guessAminoTranslation( AnnotationTableObject *ao, const DNAAlphabet *al );
+
+    static QList<AnnotatedRegion>  getAnnotatedRegionsByStartPos(QList<AnnotationTableObject*> annotationObjects,
+                                                                 qint64 startPos );
 
     static QString lowerCaseAnnotationName;
     static QString upperCaseAnnotationName;

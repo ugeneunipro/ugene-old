@@ -605,7 +605,7 @@ U2DbiIterator<U2Feature> * SQLiteFeatureDbi::getSubFeatures( const U2DataId &par
 {
     SQLiteTransaction t( db, os );
     static const QString queryStringk( "SELECT " + FDBI_FIELDS + " FROM Feature AS f "
-        "WHERE f.parent = ?1" );
+        "WHERE f.parent = ?1 ORDER BY f.start" );
     QSharedPointer<SQLiteQuery> q =  t.getPreparedQuery( queryStringk, db, os );
 
     q->bindDataId( 1, parentId );
@@ -619,7 +619,7 @@ U2DbiIterator<U2Feature> * SQLiteFeatureDbi::getSubFeatures( const U2DataId &roo
 {
     SQLiteTransaction t( db, os );
     static const QString queryStringk( "SELECT " + FDBI_FIELDS + " FROM Feature AS f "
-        "WHERE f.root = ?1" );
+        "WHERE f.root = ?1 ORDER BY f.start" );
     QSharedPointer<SQLiteQuery> q =  t.getPreparedQuery( queryStringk, db, os );
 
     q->bindDataId( 1, rootId );
