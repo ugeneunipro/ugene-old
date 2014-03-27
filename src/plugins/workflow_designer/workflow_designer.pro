@@ -59,6 +59,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/GroupWorker.h \
            src/library/ImportAnnotationsWorker.h \
            src/library/IncludedProtoFactoryImpl.h \
+           src/library/FilterBamWorker.h \
            src/library/MarkSequenceWorker.h \
            src/library/MergeBamWorker.h \
            src/library/MSA2SequenceWorker.h \
@@ -150,6 +151,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/ExtractConsensusWorker.cpp \
            src/library/FilterAnnotationsWorker.cpp \
            src/library/FilterAnnotationsByQualifierWorker.cpp \
+           src/library/FilterBamWorker.cpp \
            src/library/FindWorker.cpp \
            src/library/GenericReadActor.cpp \
            src/library/GenericReadWorker.cpp \
