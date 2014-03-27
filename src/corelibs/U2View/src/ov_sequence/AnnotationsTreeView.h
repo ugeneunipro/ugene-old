@@ -260,7 +260,7 @@ public:
 
     // @removedAnnotationCount and @removedSubgroupCount represent count of annotation and subgroups
     // that are about to be deleted
-    void updateVisual( int removedAnnotationCount = 0, int removedSubgroupCount = 0 );
+    void updateVisual( int removedAnnotationCount = 0 );
     void updateAnnotations( const QString &nameFilter, ATVAnnUpdateFlags flags );
     void findAnnotationItems( QList<AVAnnotationItem *> &result, const Annotation &a ) const;
 

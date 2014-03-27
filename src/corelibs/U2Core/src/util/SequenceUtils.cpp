@@ -186,7 +186,7 @@ static void shiftAnnotations( AnnotationTableObject *newAnnObj,
 
             newAnnObj->addAnnotation( newAnnotation, a.getGroup( ).getName( ) );
         }
-    }    
+    }
 }
 
 static void importGroupSequences2newObject( const QList<U2SequenceObject *> &seqObjects,

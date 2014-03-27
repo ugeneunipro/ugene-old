@@ -29,7 +29,6 @@
 
 namespace U2 {
 
-class AnnotationTableObject;
 class U2FeatureDbi;
 class U2OpStatus;
 
@@ -48,7 +47,8 @@ public:
     /**
      * Creates DB representation of AnnotationTableObject
      */
-    static U2AnnotationTable createAnnotationTable( const QString &tableName, const U2DbiRef &dbiRef, U2OpStatus &os );
+    static U2AnnotationTable        createAnnotationTable( const QString &tableName,
+                                        const U2DbiRef &dbiRef, U2OpStatus &os );
     /**
      * Sets @name as a name of DB representation of AnnotationTableObject.
      * Sets error to @os if @name is an empty string
@@ -82,8 +82,7 @@ public:
                                         U2OpStatus &op );
     /**
      * Imports feature to annotation. If feature's location region is empty then child features are
-     * treated as subregions. If feature has grouping key (U2FeatureKeyGrouping) then
-     * empty annotation is returned
+     * treated as subregions
      */
     static AnnotationData           getAnnotationDataFromFeature( const U2DataId &featureId,
                                         const U2DbiRef &dbiRef, U2OpStatus &op );
@@ -107,11 +106,24 @@ public:
     static QList<U2Feature>         getSubGroups( const U2DataId &parentFeatureId,
                                         const U2DbiRef &dbiRef, U2OpStatus &os,
                                         OperationScope scope = Recursive,
-                                        ParentFeatureStatus parentIs = Nonroot );
+                                        ParentFeatureStatus parent = Nonroot );
     /**
-     * Removes feature, its children from db and corresponding annotation if exists
+     * Counts children of the specified type which are one level below the parentFeature if parent is non-root.
+     * Otherwise all subfeatures of the given type are taken into account.
+     */
+    static qint64                   countOfChildren( const U2DataId &parentFeatureId,
+                                        ParentFeatureStatus parentIs, const U2DbiRef &dbiRef,
+                                        const U2Feature::FeatureType &childrenType,
+                                        U2OpStatus &os );
+    /**
+     * Removes feature, its children from db
      */
     static void                     removeFeature( const U2DataId &featureId,
+                                        const U2DbiRef &dbiRef, U2OpStatus &op );
+    /**
+     * Removes root feature and its children from db
+     */
+    static void                     removeFeaturesByRoot( const U2DataId &rootId,
                                         const U2DbiRef &dbiRef, U2OpStatus &op );
     /**
      * Adds @feature with @keys to DB. After the invocation @feature.id
@@ -153,11 +165,6 @@ public:
     static QList<U2Feature>         getAnnotatingFeaturesByRegion( const U2DataId &rootFeatureId,
                                         const U2DbiRef &dbiRef, const U2Region &range,
                                         U2OpStatus &os, bool contains = false );
-    /**
-     * Returning value specifies if the feature having @featureId is a group feature
-     */
-    static bool                     isGroupFeature( const U2DataId &featureId,
-                                        const U2DbiRef &dbiRef, U2OpStatus &os );
     /**
      * Returning value specifies whether the annotation represented by the feature cased or not
      */
@@ -208,33 +215,18 @@ public:
                                         U2OpStatus &op );
 
 private:
-    enum FeatureType {
-        Annotation,
-        Group,
-        Any
-    };
-
     /**
      * Returns list of all child features of parent feature with given id.
      * If @scope == Recursive the list contains all the children of child features and so on
      */
-    static QList<U2Feature>         getSubFeatures( const U2DataId &parentFeatureId,
+    static QList<U2Feature>         getFeaturesByParent( const U2DataId &parentFeatureId,
                                         const U2DbiRef &dbiRef, U2OpStatus &os,
                                         OperationScope scope = Recursive,
-                                        FeatureType type = Annotation,
-                                        ParentFeatureStatus parent = Root );
-    /**
-     * Removes subfeatures having given @rootFeatureId as parent feature ID.
-     * Parent feature is not deleted
-     */
-    static void                     removeSubfeatures( const U2DataId &rootFeatureId,
-                                        const U2DbiRef &dbiRef, U2OpStatus &op );
-    /**
-     * Counts children which one level below the parentFeature. All features are taken into account
-     * regardless of the object type they represent
-     */
-    static qint64                   countChildren( const U2DataId &parentFeatureId,
-                                        const U2DbiRef &dbiRef, U2OpStatus &os );
+                                        const FeatureFlags &type = U2Feature::Annotation,
+                                        SubfeatureSelectionMode mode = NotSelectParentFeature );
+    static QList<U2Feature>         getFeaturesByRoot( const U2DataId &rootFeatureId,
+                                        const U2DbiRef &dbiRef, U2OpStatus &os,
+                                        const FeatureFlags &type = U2Feature::Annotation );
 
     static void                     createFeatureEntityFromAnnotationData(
                                         const AnnotationData &annotation,
@@ -243,9 +235,6 @@ private:
                                         QList<U2FeatureKey> &resFeatureKeys );
 
     static U2FeatureKey             createFeatureKeyLocationOperator( U2LocationOperator value );
-
-    static bool                     featureMatchesType( const U2Feature &feature, FeatureType type,
-                                        const U2DbiRef &dbiRef, U2OpStatus &os );
 
     static bool                     keyExists( const U2DataId &featureId, const QString &keyName,
                                         const U2DbiRef &dbiRef, U2OpStatus &os );

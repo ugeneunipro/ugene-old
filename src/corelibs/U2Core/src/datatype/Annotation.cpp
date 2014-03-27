@@ -36,11 +36,10 @@
 
 namespace U2 {
 
-Annotation::Annotation( const U2DataId &_featureId,AnnotationTableObject *_parentObject )
-    : DbiIdBasedData( _featureId ), parentObject( _parentObject )
+Annotation::Annotation( const U2DataId &featureId,AnnotationTableObject *_parentObject )
+    : U2Entity( featureId ), parentObject( _parentObject )
 {
-    SAFE_POINT( NULL != parentObject && !dbId.isEmpty( ),
-        "Invalid feature table detected!", );
+    //SAFE_POINT( NULL != parentObject && hasValidId( ), "Invalid feature table detected!", );
 }
 
 Annotation::~Annotation( ) {
@@ -53,7 +52,7 @@ AnnotationTableObject * Annotation::getGObject( ) const {
 
 AnnotationData Annotation::getData( ) const {
     U2OpStatusImpl os;
-    const AnnotationData result = U2FeatureUtils::getAnnotationDataFromFeature( dbId,
+    const AnnotationData result = U2FeatureUtils::getAnnotationDataFromFeature( id,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, result );
     return result;
@@ -61,7 +60,7 @@ AnnotationData Annotation::getData( ) const {
 
 QString Annotation::getName( ) const {
     U2OpStatusImpl os;
-    const U2Feature feature = U2FeatureUtils::getFeatureById( dbId,
+    const U2Feature feature = U2FeatureUtils::getFeatureById( id,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, QString( ) );
     return feature.name;
@@ -70,7 +69,7 @@ QString Annotation::getName( ) const {
 void Annotation::setName( const QString &name ) {
     SAFE_POINT( !name.isEmpty( ), "Attempting to set an empty name for an annotation!", );
     U2OpStatusImpl os;
-    U2FeatureUtils::updateFeatureName( dbId, name, parentObject->getEntityRef( ).dbiRef, os );
+    U2FeatureUtils::updateFeatureName( id, name, parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, );
 
     parentObject->setModified( true );
@@ -80,7 +79,7 @@ void Annotation::setName( const QString &name ) {
 
 bool Annotation::isOrder( ) const {
     U2OpStatusImpl os;
-    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( dbId,
+    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( id,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, false );
     return data.isOrder( );
@@ -88,7 +87,7 @@ bool Annotation::isOrder( ) const {
 
 bool Annotation::isJoin( ) const {
     U2OpStatusImpl os;
-    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( dbId,
+    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( id,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, false );
     return data.isJoin( );
@@ -97,7 +96,7 @@ bool Annotation::isJoin( ) const {
 U2Strand Annotation::getStrand( ) const {
     // use only root feature to determine the strand
     U2OpStatusImpl os;
-    const U2Feature feature = U2FeatureUtils::getFeatureById( dbId,
+    const U2Feature feature = U2FeatureUtils::getFeatureById( id,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, U2Strand( ) );
     return feature.location.strand;
@@ -105,14 +104,14 @@ U2Strand Annotation::getStrand( ) const {
 
 void Annotation::setStrand( const U2Strand &strand ) {
     U2OpStatusImpl os;
-    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( dbId,
+    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( id,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, );
 
     U2Location location = data.location;
     if ( strand != location->strand ) {
         location->strand = strand;
-        U2FeatureUtils::updateFeatureLocation( dbId, parentObject->getRootFeatureId( ), location,
+        U2FeatureUtils::updateFeatureLocation( id, parentObject->getRootFeatureId( ), location,
             parentObject->getEntityRef( ).dbiRef, os );
         SAFE_POINT_OP( os, );
 
@@ -124,7 +123,7 @@ void Annotation::setStrand( const U2Strand &strand ) {
 
 U2LocationOperator Annotation::getLocationOperator( ) const {
     U2OpStatusImpl os;
-    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( dbId,
+    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( id,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, data.location->op );
     return data.location->op;
@@ -132,14 +131,14 @@ U2LocationOperator Annotation::getLocationOperator( ) const {
 
 void Annotation::setLocationOperator( U2LocationOperator op ) {
     U2OpStatusImpl os;
-    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( dbId,
+    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( id,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, );
 
     U2Location location = data.location;
     if ( op != location->op ) {
         location->op = op;
-        U2FeatureUtils::updateFeatureLocation( dbId, parentObject->getRootFeatureId( ), location,
+        U2FeatureUtils::updateFeatureLocation( id, parentObject->getRootFeatureId( ), location,
             parentObject->getEntityRef( ).dbiRef, os );
         SAFE_POINT_OP( os, );
 
@@ -151,7 +150,7 @@ void Annotation::setLocationOperator( U2LocationOperator op ) {
 
 U2Location Annotation::getLocation( ) const {
     U2OpStatusImpl os;
-    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( dbId,
+    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( id,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, data.location );
     return data.location;
@@ -159,7 +158,7 @@ U2Location Annotation::getLocation( ) const {
 
 void Annotation::setLocation( const U2Location &location ) {
     U2OpStatusImpl os;
-    U2FeatureUtils::updateFeatureLocation( dbId, parentObject->getRootFeatureId( ), location,
+    U2FeatureUtils::updateFeatureLocation( id, parentObject->getRootFeatureId( ), location,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, );
 
@@ -175,14 +174,14 @@ QVector<U2Region> Annotation::getRegions( ) const {
 void Annotation::updateRegions(const QVector<U2Region> &regions ) {
     SAFE_POINT( !regions.isEmpty( ), "Attempting to assign the annotation to an empty region!", );
     U2OpStatusImpl os;
-    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( dbId,
+    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( id,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, );
 
     U2Location location = data.location;
     if ( regions != location->regions ) {
         location->regions = regions;
-        U2FeatureUtils::updateFeatureLocation( dbId, parentObject->getRootFeatureId( ), location,
+        U2FeatureUtils::updateFeatureLocation( id, parentObject->getRootFeatureId( ), location,
             parentObject->getEntityRef( ).dbiRef, os );
         SAFE_POINT_OP( os, );
 
@@ -195,14 +194,14 @@ void Annotation::updateRegions(const QVector<U2Region> &regions ) {
 void Annotation::addLocationRegion( const U2Region &reg ) {
     SAFE_POINT( !reg.isEmpty( ), "Attempting to annotate an empty region!", );
     U2OpStatusImpl os;
-    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( dbId,
+    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( id,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, );
 
     U2Location location = data.location;
     if ( !location->regions.contains( reg ) ) {
         location->regions << reg;
-        U2FeatureUtils::updateFeatureLocation( dbId, parentObject->getRootFeatureId( ), location,
+        U2FeatureUtils::updateFeatureLocation( id, parentObject->getRootFeatureId( ), location,
             parentObject->getEntityRef( ).dbiRef, os );
         SAFE_POINT_OP( os, );
 
@@ -214,7 +213,7 @@ void Annotation::addLocationRegion( const U2Region &reg ) {
 
 QVector<U2Qualifier> Annotation::getQualifiers( ) const {
     U2OpStatusImpl os;
-    QList<U2FeatureKey> keys = U2FeatureUtils::getFeatureKeys( dbId,
+    QList<U2FeatureKey> keys = U2FeatureUtils::getFeatureKeys( id,
         parentObject->getEntityRef( ).dbiRef, os );
 
     for ( int i = 0; i < keys.size( ); ++i ) {
@@ -233,7 +232,7 @@ QVector<U2Qualifier> Annotation::getQualifiers( ) const {
 void Annotation::addQualifier( const U2Qualifier &q ) {
     SAFE_POINT( q.isValid( ), "Invalid annotation qualifier detected!", );
     U2OpStatusImpl os;
-    U2FeatureUtils::addFeatureKey( dbId, U2FeatureKey( q.name, q.value ),
+    U2FeatureUtils::addFeatureKey( id, U2FeatureKey( q.name, q.value ),
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, );
 
@@ -245,7 +244,7 @@ void Annotation::addQualifier( const U2Qualifier &q ) {
 void Annotation::removeQualifier( const U2Qualifier &q ) {
     SAFE_POINT( q.isValid( ), "Invalid annotation qualifier detected!", );
     U2OpStatusImpl os;
-    U2FeatureUtils::removeFeatureKey( dbId, U2FeatureKey( q.name, q.value ),
+    U2FeatureUtils::removeFeatureKey( id, U2FeatureKey( q.name, q.value ),
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, );
 
@@ -256,7 +255,7 @@ void Annotation::removeQualifier( const U2Qualifier &q ) {
 
 bool Annotation::isCaseAnnotation( ) const {
     U2OpStatusImpl os;
-    const bool cased = U2FeatureUtils::isCaseAnnotation( dbId,
+    const bool cased = U2FeatureUtils::isCaseAnnotation( id,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, false );
     return cased;
@@ -266,10 +265,10 @@ void Annotation::setCaseAnnotation( bool caseAnnotation ) {
     U2OpStatusImpl os;
     const bool cased = isCaseAnnotation( );
     if ( caseAnnotation && !cased ) {
-        U2FeatureUtils::addFeatureKey( dbId, U2FeatureKey( U2FeatureKeyCase, QString( ) ),
+        U2FeatureUtils::addFeatureKey( id, U2FeatureKey( U2FeatureKeyCase, QString( ) ),
             parentObject->getEntityRef( ).dbiRef, os );
     } else if ( !caseAnnotation && cased ) {
-        U2FeatureUtils::removeFeatureKey( dbId, U2FeatureKey( U2FeatureKeyCase, QString( ) ),
+        U2FeatureUtils::removeFeatureKey( id, U2FeatureKey( U2FeatureKeyCase, QString( ) ),
             parentObject->getEntityRef( ).dbiRef, os );
     }
     SAFE_POINT_OP( os, );
@@ -277,19 +276,18 @@ void Annotation::setCaseAnnotation( bool caseAnnotation ) {
 
 AnnotationGroup Annotation::getGroup( ) const {
     U2OpStatusImpl os;
-    const U2Feature feature = U2FeatureUtils::getFeatureById( dbId,
+    const U2Feature feature = U2FeatureUtils::getFeatureById( id,
         parentObject->getEntityRef( ).dbiRef, os );
 
     AnnotationGroup result( feature.parentFeatureId, parentObject );
     SAFE_POINT_OP( os, result );
-    SAFE_POINT( !feature.parentFeatureId.isEmpty( ), "Invalid annotation detected!", result );
     return result;
 }
 
 void Annotation::findQualifiers( const QString &name, QList<U2Qualifier> &res ) const {
     SAFE_POINT( !name.isEmpty( ), "Attempting to find a qualifier having an empty name!", );
     U2OpStatusImpl os;
-    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( dbId,
+    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( id,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, );
 
@@ -304,7 +302,7 @@ QString Annotation::findFirstQualifierValue( const QString &name ) const {
     SAFE_POINT( !name.isEmpty( ), "Attempting to find a qualifier having an empty name!",
         QString::null );
     U2OpStatusImpl os;
-    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( dbId,
+    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( id,
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, QString::null );
 
@@ -319,14 +317,14 @@ QString Annotation::findFirstQualifierValue( const QString &name ) const {
 bool Annotation::annotationLessThan( const Annotation &first, const Annotation &second ) {
     U2OpStatusImpl os;
 
-    const U2Feature firstFeature = U2FeatureUtils::getFeatureById( first.getId( ),
+    const U2Feature firstFeature = U2FeatureUtils::getFeatureById( first.id,
         first.getGObject( )->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, false );
     const U2Feature firstFeatureGroup = U2FeatureUtils::getFeatureById(
         firstFeature.parentFeatureId, first.getGObject( )->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, false );
 
-    const U2Feature secondFeature = U2FeatureUtils::getFeatureById( second.getId( ),
+    const U2Feature secondFeature = U2FeatureUtils::getFeatureById( second.id,
         second.getGObject( )->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, false );
     const U2Feature secondFeatureGroup = U2FeatureUtils::getFeatureById(

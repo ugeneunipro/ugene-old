@@ -485,7 +485,10 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
     QFont fontIS = sequenceFontSmall;
     fontIS.setItalic(true);
 
-    const QList<Annotation> annotationsInRange = detView->findAnnotationsInRange(visibleRange);
+    QList<AnnotationData> annotationsInRange;
+    foreach( const Annotation &a, detView->findAnnotationsInRange( visibleRange ) ) {
+        annotationsInRange << a.getData( );
+    }
 
     {//direct translations
         for(int i = 0; i < 3; i++) {
@@ -591,7 +594,7 @@ void DetViewRenderArea::drawTranslations(QPainter& p) {
 }
 
 bool DetViewRenderArea::deriveTranslationCharColor( qint64 pos, const U2Strand &strand,
-    const QList<Annotation> &annotationsInRange, QColor &result )
+    const QList<AnnotationData> &annotationsInRange, QColor &result )
 {
     // logic:
     // no annotations found -> grey
@@ -605,8 +608,7 @@ bool DetViewRenderArea::deriveTranslationCharColor( qint64 pos, const U2Strand &
     AnnotationSettings *as = NULL;
     AnnotationSettingsRegistry *registry = AppContext::getAnnotationsSettingsRegistry( );
     const int sequenceLen = view->getSequenceLength( );
-    foreach ( const Annotation &a, annotationsInRange ) {
-        const AnnotationData aData = a.getData( );
+    foreach ( const AnnotationData &aData, annotationsInRange ) {
         if ( aData.getStrand( ) != strand ) {
             continue;
         }

@@ -51,6 +51,10 @@ public:
      */
     QList<Annotation>       getAnnotations( ) const;
     /**
+     * Returning value specifies if at least a single annotation belongs to the object
+     */
+    bool                    hasAnnotations( ) const;
+    /**
      * Returns root group
      */
     AnnotationGroup         getRootGroup( );

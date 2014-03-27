@@ -136,18 +136,31 @@ public:
      */
     void                            removeFeature( const U2DataId &featureId, U2OpStatus &os );
     /**
+     * Removes subfeatures along with their parent feature from database
+     * Requires: U2DbiFeature_WriteFeature feature support
+     */
+    void                            removeFeaturesByParent( const U2DataId &parentId,
+                                        U2OpStatus &os, SubfeatureSelectionMode mode );
+    /**
+     * Removes subfeatures along with their root feature from database
+     * Requires: U2DbiFeature_WriteFeature feature support
+     */
+    void                            removeFeaturesByRoot( const U2DataId &rootId,
+                                        U2OpStatus &os, SubfeatureSelectionMode mode );
+    /**
      * Returns features that matched the query. Returns NULL if error occurs
      */
     U2DbiIterator<U2Feature> *      getFeaturesByRegion( const U2Region &reg,
                                         const U2DataId &parentId, const QString &featureName,
                                         const U2DataId &seqId, U2OpStatus &os, bool contains );
 
-    U2DbiIterator<U2Feature> *      getSubFeatures( const U2DataId &parentId,
+    U2DbiIterator<U2Feature> *      getFeaturesByParent( const U2DataId &parentId,
                                         const QString &featureName, const U2DataId &seqId,
-                                        U2OpStatus &os );
+                                        U2OpStatus &os, SubfeatureSelectionMode includeParent );
 
-    U2DbiIterator<U2Feature> *      getSubFeatures( const U2DataId &rootId,
-                                        const QString &featureName, U2OpStatus &os );
+    U2DbiIterator<U2Feature> *      getFeaturesByRoot( const U2DataId &rootId,
+                                        const FeatureFlags &types, const QString &featureName,
+                                        U2OpStatus &os );
 
     U2DbiIterator<U2Feature> *      getFeaturesBySequence( const QString &featureName,
                                         const U2DataId& seqId, U2OpStatus &os );

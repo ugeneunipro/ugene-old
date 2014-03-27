@@ -322,7 +322,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getRootGroup ) {
     ft.addAnnotation( anData, grname );
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
-    CHECK_FALSE( rootGroup.getId( ).isEmpty( ), "root group ID" );
+    CHECK_TRUE( rootGroup.hasValidId( ), "root group ID" );
 
     const QList<AnnotationGroup> subgroups = rootGroup.getSubgroups( );
     CHECK_EQUAL( 1, subgroups.size( ), "count of annotation groups" );
@@ -355,7 +355,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToRootGroup ) {
     ft.addAnnotations( annotations );
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
-    CHECK_FALSE( rootGroup.getId( ).isEmpty( ), "root group ID" );
+    CHECK_TRUE( rootGroup.hasValidId( ), "root group ID" );
 
     const QList<AnnotationGroup> subgroups = rootGroup.getSubgroups( );
     CHECK_EQUAL( 2, subgroups.size( ), "root annotation group has subgroups" );
@@ -407,7 +407,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToSubgroup ) {
     ft.addAnnotations( annotations, grname );
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
-    CHECK_FALSE( rootGroup.getId( ).isEmpty( ), "root group ID" );
+    CHECK_TRUE( rootGroup.hasValidId( ), "root group ID" );
 
     const QList<AnnotationGroup> subgroup1 = rootGroup.getSubgroups( );
     CHECK_EQUAL( 1, subgroup1.size( ), "root group's subgroups" );
@@ -449,7 +449,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotation ) {
     ft.addAnnotations( annotations, grname );
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
-    CHECK_FALSE( rootGroup.getId( ).isEmpty( ), "root group ID" );
+    CHECK_TRUE( rootGroup.hasValidId( ), "root group ID" );
 
     const QList<AnnotationGroup> subgroup = rootGroup.getSubgroups( );
     CHECK_EQUAL( 1, subgroup.size( ), "root group's subgroups" );
@@ -465,7 +465,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotation ) {
 
     U2OpStatusImpl os;
     const QList<U2Feature> featuresAfter = U2FeatureUtils::getSubAnnotations(
-        subgroup.first( ).getId( ), dbiRef, os, Recursive, Nonroot );
+        subgroup.first( ).id, dbiRef, os, Recursive, Nonroot );
     CHECK_NO_ERROR( os );
     CHECK_EQUAL( 2, featuresAfter.size( ), "annotation count" );
 }
@@ -497,7 +497,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotations ) {
     ft.addAnnotations( annotations, grname );
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
-    CHECK_FALSE( rootGroup.getId( ).isEmpty( ), "root group ID" );
+    CHECK_TRUE( rootGroup.hasValidId( ), "root group ID" );
 
     const QList<AnnotationGroup> subgroup = rootGroup.getSubgroups( );
     CHECK_EQUAL( 1, subgroup.size( ), "root group's subgroups" );
@@ -509,7 +509,7 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotations ) {
 
     U2OpStatusImpl os;
     const QList<U2Feature> featuresAfter = U2FeatureUtils::getSubAnnotations(
-        subgroup.first( ).getId( ), dbiRef, os, Recursive, Nonroot );
+        subgroup.first( ).id, dbiRef, os, Recursive, Nonroot );
     CHECK_NO_ERROR( os );
     CHECK_EQUAL( 0, featuresAfter.size( ), "annotation count" );
 }
@@ -547,8 +547,8 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, clone ) {
         dynamic_cast<AnnotationTableObject *>( ft.clone( dbiRef, os ) ) );
 
     const AnnotationGroup clonedRootGroup = clonedTable->getRootGroup( );
-    CHECK_FALSE( clonedRootGroup.getId( ).isEmpty( ), "cloned root group ID" );
-    CHECK_NOT_EQUAL( clonedRootGroup.getId( ), sourceRootGroup.getId( ), "root group" );
+    CHECK_TRUE( clonedRootGroup.hasValidId( ), "cloned root group ID" );
+    CHECK_NOT_EQUAL( clonedRootGroup.id, sourceRootGroup.id, "root group" );
 
     const QList<AnnotationGroup> clonedSubgroups = clonedRootGroup.getSubgroups( );
     QList<AnnotationGroup> sourceSubgroups = sourceRootGroup.getSubgroups( );

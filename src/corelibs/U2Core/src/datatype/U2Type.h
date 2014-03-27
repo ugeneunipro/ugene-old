@@ -155,12 +155,20 @@ public:
 */
 class U2CORE_EXPORT U2Entity {
 public:
-    U2Entity(U2DataId _id = U2DataId()) : id(_id){}
-    virtual ~U2Entity(){}
+                    U2Entity( U2DataId id = U2DataId( ) );
+                    U2Entity( const U2Entity &other );
 
-    bool hasValidId() const {return ! id.isEmpty();}
+    virtual         ~U2Entity( );
 
-    U2DataId id;
+    bool            hasValidId() const;
+
+    U2Entity        operator =( const U2Entity &other );
+
+    bool            operator ==( const U2Entity &other ) const;
+    bool            operator !=( const U2Entity &other ) const;
+    bool            operator <( const U2Entity &other ) const;
+
+    U2DataId        id;
 };
 
 

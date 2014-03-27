@@ -30,6 +30,12 @@
 #include "../../gobjects/FeaturesTableObjectUnitTest.h"
 #include "AnnotationUnitTests.h"
 
+#define CHECK_REGIONS_MATCH( first, second ) \
+CHECK_TRUE( first.size( ) == second.size( ), "Invalid annotation's region count" ); \
+foreach ( const U2Region &region, first ) { \
+    CHECK_TRUE( second.contains( region ), "Invalid annotation's region" ); \
+}
+
 namespace U2 {
 
 static U2DbiRef getDbiRef( ) {
@@ -71,7 +77,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, get_IdObjectData ) {
         "Unexpected value of annotation's parent object" );
 
     U2OpStatusImpl os;
-    const U2Feature feature = U2FeatureUtils::getFeatureById( annotation.getId( ), dbiRef, os );
+    const U2Feature feature = U2FeatureUtils::getFeatureById( annotation.id, dbiRef, os );
     CHECK_EQUAL( U2Region( ), feature.location.region, "Annotation's region" );
     CHECK_TRUE( feature.location.strand.isDirect( ), "Annotation has to belong to direct strand" );
 
@@ -163,8 +169,13 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Location ) {
     newLocation->strand = U2Strand::Complementary;
     annotation.setLocation( newLocation );
 
-    CHECK_TRUE( *newLocation == *annotation.getLocation( ),
-        "Unexpected annotation's location" );
+    const U2Location resultLocation = annotation.getLocation( );
+
+    CHECK_REGIONS_MATCH( newLocation->regions, resultLocation->regions);
+
+    CHECK_TRUE( resultLocation->op == newLocation->op, "Illegal annotation's location operator!" );
+    CHECK_TRUE( resultLocation->regionType == newLocation->regionType, "Illegal annotation's region type!" );
+    CHECK_TRUE( resultLocation->strand == newLocation->strand, "Illegal annotation's strand!" );
 }
 
 IMPLEMENT_TEST( AnnotationUnitTest, getSet_Regions ) {
@@ -180,21 +191,20 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Regions ) {
 
     const QVector<U2Region> initRegions = anData.getRegions( );
 
-    CHECK_TRUE( annotation.getRegions( ) == initRegions, "Unexpected annotation's regions" );
+    CHECK_REGIONS_MATCH( annotation.getRegions( ), initRegions );
 
     const U2Region supplementedRegion( 45, 434 );
     annotation.addLocationRegion( supplementedRegion );
 
-    CHECK_TRUE( annotation.getRegions( )
-        == ( QVector<U2Region>( initRegions ) << supplementedRegion ),
-        "Unexpected annotation's regions" );
+    CHECK_REGIONS_MATCH( annotation.getRegions( ),
+        ( QVector<U2Region>( initRegions ) << supplementedRegion ) );
 
     QVector<U2Region> newRegions( initRegions );
     newRegions.remove( 0, 2 );
     newRegions << U2Region( 45, 543 ) << U2Region( 434, 432 );
     annotation.updateRegions( newRegions );
 
-    CHECK_TRUE( annotation.getRegions( ) == newRegions, "Unexpected annotation's regions" );
+    CHECK_REGIONS_MATCH( annotation.getRegions( ), newRegions );
 }
 
 IMPLEMENT_TEST( AnnotationUnitTest, getSet_Qualifiers ) {

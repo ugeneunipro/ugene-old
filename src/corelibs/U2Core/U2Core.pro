@@ -14,7 +14,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/BioStruct3D.h \
            src/datatype/DamageEffect.h \
            src/datatype/DASSource.h \
-           src/datatype/DbiIdBasedData.h \
            src/datatype/DIProperties.h \
            src/datatype/DNAAlphabet.h \
            src/datatype/DNAAlphabetRegistryImpl.h \
@@ -230,7 +229,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/BaseTranslations.cpp \
            src/datatype/BioStruct3D.cpp \
            src/datatype/DASSource.cpp \
-           src/datatype/DbiIdBasedData.cpp \
            src/datatype/DNAAlphabet.cpp \
            src/datatype/DNAAlphabetRegistryImpl.cpp \
            src/datatype/DNAInfo.cpp \

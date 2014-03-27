@@ -23,13 +23,12 @@
 #define _U2_ANNOTATION_GROUP_H_
 
 #include <U2Core/Annotation.h>
-#include <U2Core/DbiIdBasedData.h>
 
 namespace U2 {
 
 class AnnotationTableObject;
 
-class U2CORE_EXPORT AnnotationGroup : public DbiIdBasedData {
+class U2CORE_EXPORT AnnotationGroup : public U2Entity {
 public:
                             AnnotationGroup( const U2DataId &featureId,
                                 AnnotationTableObject *parentObject );
@@ -46,9 +45,9 @@ public:
      */
     void                    findAllAnnotationsInGroupSubTree( QList<Annotation> &set ) const;
 
-    QList<Annotation>     getAnnotations( ) const;
+    QList<Annotation>       getAnnotations( ) const;
 
-    Annotation            addAnnotation( const AnnotationData &a );
+    Annotation              addAnnotation( const AnnotationData &a );
 
     void                    addAnnotation( const Annotation &a );
 
@@ -56,7 +55,7 @@ public:
 
     void                    removeAnnotations( const QList<Annotation> &annotations );
 
-    QList<AnnotationGroup> getSubgroups( ) const;
+    QList<AnnotationGroup>  getSubgroups( ) const;
 
     void                    removeSubgroup( AnnotationGroup &g );
 
@@ -66,18 +65,18 @@ public:
 
     QString                 getGroupPath( ) const;
 
-    AnnotationTableObject *   getGObject( ) const;
+    AnnotationTableObject * getGObject( ) const;
 
     /*
      * Returns parent annotation group. Returns *this (i.e. the same group) for a top-level group
      */
-    AnnotationGroup       getParentGroup( ) const;
+    AnnotationGroup         getParentGroup( ) const;
     /*
      * Returns subgroup located in @path. @create specifies whether it's required to create
      * a new group(s) accordingly to @path if they are not exist. If @create == false and
      * there are no subgroups satisfying @path, then *this is returned.
      */
-    AnnotationGroup       getSubgroup( const QString &path, bool create );
+    AnnotationGroup         getSubgroup( const QString &path, bool create );
 
     void                    getSubgroupPaths( QStringList &res ) const;
     /**
@@ -99,7 +98,7 @@ public:
     static const QChar      GROUP_PATH_SEPARATOR;
 
 private:
-    AnnotationTableObject *   parentObject;
+    AnnotationTableObject * parentObject;
 };
 
 } // namespace U2

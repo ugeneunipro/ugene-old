@@ -23,7 +23,6 @@
 #define _U2_ANNOTATION_H_
 
 #include <U2Core/AnnotationData.h>
-#include <U2Core/DbiIdBasedData.h>
 #include <U2Core/U2Location.h>
 #include <U2Core/U2Qualifier.h>
 #include <U2Core/U2Type.h>
@@ -39,14 +38,14 @@ class DNATranslation;
 class AnnotationTableObject;
 class U2SequenceObject;
 
-class U2CORE_EXPORT Annotation : public DbiIdBasedData {
+class U2CORE_EXPORT Annotation : public U2Entity {
 public:
                             Annotation( const U2DataId &featureId,
                                 AnnotationTableObject *parentObject );
 
                             ~Annotation( );
 
-    AnnotationTableObject *   getGObject( ) const;
+    AnnotationTableObject * getGObject( ) const;
 
     AnnotationData          getData( ) const;
 
@@ -116,7 +115,7 @@ public:
     static bool             isValidQualifierValue( const QString &v );
 
 private:
-    AnnotationTableObject *   parentObject;
+    AnnotationTableObject * parentObject;
 };
 
 } // namespace U2

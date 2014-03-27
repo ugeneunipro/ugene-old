@@ -25,12 +25,13 @@
 #include <U2Core/global.h>
 #include <U2Core/BackgroundTaskRunner.h>
 
+#include <U2View/MSAEditorConsensusCache.h>
+
 #include <QtGui/QPolygonF>
 
 namespace U2 {
 
 class MSAEditor;
-class MSAEditorConsensusCache;
 class MAlignmentObject;
 class MSAConsensusAlgorithm;
 class MSAColorScheme;

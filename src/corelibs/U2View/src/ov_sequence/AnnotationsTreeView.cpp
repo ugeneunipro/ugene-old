@@ -657,7 +657,7 @@ void AnnotationsTreeView::sl_onGroupRemoved( const AnnotationGroup &parent,
         }
     }
 
-    pg->updateVisual( 0, 1 );
+    pg->updateVisual( );
 
     connect( tree, SIGNAL( itemSelectionChanged( ) ), SLOT( sl_onItemSelectionChanged( ) ) );
 }
@@ -1433,12 +1433,21 @@ void AnnotationsTreeView::finishDragAndDrop(Qt::DropAction dndAction) {
     // It is required for the case of cross-view drag and drop.
     int i = 0;
     foreach ( AnnotationGroup g, dstGroupList ) {
-        g.addAnnotation(dndAdded.at(i));
+        switch (dndAction) {
+        case Qt::MoveAction :
+            g.addAnnotation(dndAdded.at(i));
+            break;
+        case Qt::CopyAction :
+            g.addAnnotation(dndAdded.at(i).getData());
+            break;
+        }
         i++;
     }
+
     i = 0;
-    foreach ( AnnotationGroup g, srcGroupList ) {
-        g.removeAnnotation(dndToRemove.at(i));
+    foreach ( const AnnotationGroup &g, srcGroupList ) {
+        AnnotationGroupModification md(AnnotationModification_RemovedFromGroup, dndToRemove.at(i), g);
+        g.getGObject()->emit_onAnnotationModified(md);
         i++;
     }
 
@@ -1942,9 +1951,8 @@ const QIcon& AVGroupItem::getDocumentIcon() {
     return groupIcon;
 }
 
-void AVGroupItem::updateVisual( int removedAnnotationCount, int removedSubgroupCount ) {
-    SAFE_POINT( 0 <= removedAnnotationCount && 0 <= removedSubgroupCount,
-        "Invalid removed item count!", )
+void AVGroupItem::updateVisual( int removedAnnotationCount ) {
+    SAFE_POINT( 0 <= removedAnnotationCount, "Invalid removed item count!", )
     if ( parent( ) == NULL ) { // document item
         AnnotationTableObject *aobj  = group.getGObject( );
         Document *doc = aobj->getDocument( );
@@ -1959,10 +1967,10 @@ void AVGroupItem::updateVisual( int removedAnnotationCount, int removedSubgroupC
         }
         setText( 0, text );
         setIcon( 0, getDocumentIcon( ) );
-        GUIUtils::setMutedLnF( this, aobj->getAnnotations( ).isEmpty( ), false );
+        GUIUtils::setMutedLnF( this, !aobj->hasAnnotations( ), false );
     } else { // usual groups with annotations
         int na = group.getAnnotations( ).size( ) - removedAnnotationCount;
-        int ng = group.getSubgroups( ).size( ) - removedSubgroupCount;
+        int ng = group.getSubgroups( ).size( );
         const QString nameString = group.getName( ) + "  " + QString( "(%1, %2)" ).arg( ng ).arg( na );
         setText( 0, nameString );
         setIcon( 0, getGroupIcon( ) );

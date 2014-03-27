@@ -109,7 +109,8 @@ AutoAnnotationObject::AutoAnnotationObject( U2SequenceObject *obj, QObject *pare
 
 AutoAnnotationObject::~AutoAnnotationObject( ) {
     U2OpStatusImpl os;
-    U2FeatureUtils::removeFeature( aobj->getRootFeatureId( ), aobj->getEntityRef( ).dbiRef, os );
+    U2FeatureUtils::removeFeaturesByRoot(aobj->getRootFeatureId( ),
+        aobj->getEntityRef( ).dbiRef, os);
     delete aobj;
     SAFE_POINT_OP( os, );
 }

@@ -80,10 +80,31 @@ inline bool U2FeatureLocation::operator==(const U2FeatureLocation& l) const {
 }
 
 /**
+ * The flags specify whether the group operation has to be applied to the parent feature
+ * besides its child features. 
+ */
+enum SubfeatureSelectionMode {
+    SelectParentFeature,
+    NotSelectParentFeature
+};
+
+/**
  * Sequence annotation. Used to annotate set of sequence regions
  */
 class U2CORE_EXPORT U2Feature: public U2Entity {
 public:
+    enum FeatureType {
+        Invalid,
+        Annotation,
+        Group
+    };
+
+    U2Feature( )
+        : type( Annotation )
+    {
+
+    }
+
     bool operator== ( const U2Feature &f ) const { return f.id == id; }
     bool operator!= ( const U2Feature &f ) const { return !( *this == f ); }
     /**
@@ -106,7 +127,13 @@ public:
      * Annotation location
      */
     U2FeatureLocation           location;
+    /**
+     * Type of feature
+     */
+    FeatureType                 type;
 };
+
+typedef QFlags<U2Feature::FeatureType> FeatureFlags;
 
 /**
  * Feature key

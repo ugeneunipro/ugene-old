@@ -535,9 +535,8 @@ IMPLEMENT_TEST( FeatureDbiUnitTests, updateKeyValue ) {
     U2Feature feature2 = FeatureTestData::createTestFeature1( seq, os );
     CHECK_NO_ERROR( os );
     featureDbi->updateKeyValue( feature2.id, U2FeatureKey( "qwe", "newValue" ), os );
-    CHECK_TRUE( os.hasError( ), "Error expected!" );
-    U2OpStatusImpl clearOpStatus;
-    os = clearOpStatus;
+    CHECK_NO_ERROR( os );
+
     // all the feature's keys should stay unchanged
     keys = featureDbi->getFeatureKeys( feature2.id, os );
     CHECK_NO_ERROR( os );
@@ -677,7 +676,8 @@ IMPLEMENT_TEST( FeatureDbiUnitTests, getSubFeatures ) {
     CHECK_NO_ERROR( os );
     U2Feature feature3 = FeatureTestData::createTestFeature3( seq, os, feature2 );
     CHECK_NO_ERROR( os );
-    U2DbiIterator<U2Feature> *iter = featureDbi->getSubFeatures( feature2.id, QString( ), seq.id, os );
+    U2DbiIterator<U2Feature> *iter = featureDbi->getFeaturesByParent( feature2.id, QString( ),
+        seq.id, os );
     CHECK_NO_ERROR( os );
 
     while ( iter->hasNext( ) ) {

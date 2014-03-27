@@ -108,7 +108,6 @@ U2AttributeDbi* SQLiteDbi::getAttributeDbi() {
     return attributeDbi;
 }
 
-
 U2VariantDbi* SQLiteDbi::getVariantDbi() {
     return variantDbi;
 }
@@ -258,6 +257,7 @@ void SQLiteDbi::upgrade(U2OpStatus &os) {
 
 void SQLiteDbi::enableCaching( ) {
     if ( features.contains( U2DbiFeature_CacheFeatures ) ) {
+        SAFE_POINT(NULL == cachingFeatureDbi, "Attempting to recreate Caching Feature DBI!", );
         cachingFeatureDbi = new CachingFeatureDbi( featureDbi );
     }
 }
@@ -265,6 +265,7 @@ void SQLiteDbi::enableCaching( ) {
 void SQLiteDbi::disableCaching( ) {
     if ( features.contains( U2DbiFeature_CacheFeatures ) ) {
         delete cachingFeatureDbi;
+        cachingFeatureDbi = NULL;
     }
 }
 
@@ -314,7 +315,6 @@ void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& o
     features.insert(U2DbiFeature_WriteModifications);
     features.insert(U2DbiFeature_ReadUdr);
     features.insert(U2DbiFeature_WriteUdr);
-    features.insert(U2DbiFeature_CacheFeatures);
 }
 
 void SQLiteDbi::setState(U2DbiState s) {
@@ -361,6 +361,7 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
         SQLiteQuery("PRAGMA temp_store = MEMORY", db, os).execute();
         SQLiteQuery("PRAGMA journal_mode = MEMORY", db, os).execute();
         SQLiteQuery("PRAGMA cache_size = 50000", db, os).execute();
+        SQLiteQuery("PRAGMA recursive_triggers = ON", db, os).execute();
         //SQLiteQuery("PRAGMA page_size = 4096", db, os).execute();
         //TODO: int sqlite3_enable_shared_cache(int);
         //TODO: read_uncommitted

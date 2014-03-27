@@ -60,7 +60,7 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, get_IdObject ) {
     ft.addAnnotation( anData, groupName3 );
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
-    CHECK_FALSE( rootGroup.getId( ).isEmpty( ), "Invalid root group ID" );
+    CHECK_TRUE( rootGroup.hasValidId( ), "Invalid root group ID" );
     const QList<AnnotationGroup> subgroups = rootGroup.getSubgroups( );
     CHECK_EQUAL( 2, subgroups.size( ), "Count of subgroups" );
 
@@ -68,7 +68,7 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, get_IdObject ) {
     foreach ( const AnnotationGroup &subgroup, subgroups ) {
         CHECK_TRUE( &ft == subgroup.getGObject( ), "Unexpected parent object" );
         U2OpStatusImpl os;
-        const U2Feature f = U2FeatureUtils::getFeatureById( subgroup.getId( ), dbiRef, os );
+        const U2Feature f = U2FeatureUtils::getFeatureById( subgroup.id, dbiRef, os );
         CHECK_NO_ERROR( os );
         if ( "subgroup1" == f.name ) {
             groupMatches.setBit( 0, true );
@@ -102,7 +102,7 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, getSet_Name ) {
     ft.addAnnotation( anData, groupName );
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
-    CHECK_FALSE( rootGroup.getId( ).isEmpty( ), "Invalid root group ID" );
+    CHECK_TRUE( rootGroup.hasValidId( ), "Invalid root group ID" );
     const QList<AnnotationGroup> subgroups = rootGroup.getSubgroups( );
     CHECK_EQUAL( 1, subgroups.size( ), "Count of subgroups" );
 
@@ -141,7 +141,7 @@ IMPLEMENT_TEST( AnnotationGroupUnitTest, groupHierarchy ) {
         CHECK_EQUAL( 2, subgroup.getGroupDepth( ), "Subgroup's depth" );
 
         U2OpStatusImpl os;
-        const U2Feature f = U2FeatureUtils::getFeatureById( subgroup.getId( ), dbiRef, os );
+        const U2Feature f = U2FeatureUtils::getFeatureById( subgroup.id, dbiRef, os );
         CHECK_NO_ERROR( os );
         AnnotationGroup secondLevelSubgroup = subgroup;
         if ( "subgroup1" == f.name ) {

@@ -94,16 +94,23 @@ public :
 
     void                        removeFeature( const U2DataId &featureId, U2OpStatus &os );
 
+    void                        removeFeaturesByParent( const U2DataId &parentId,
+                                    U2OpStatus &os, SubfeatureSelectionMode mode );
+
+    void                        removeFeaturesByRoot( const U2DataId &rootId,
+                                    U2OpStatus &os, SubfeatureSelectionMode mode );
+
     U2DbiIterator<U2Feature> *  getFeaturesByRegion( const U2Region &reg, const U2DataId &parentId,
                                     const QString &featureName, const U2DataId &seqId,
                                     U2OpStatus &os, bool contains = false );
 
-    U2DbiIterator<U2Feature> *  getSubFeatures( const U2DataId &parentId,
+    U2DbiIterator<U2Feature> *  getFeaturesByParent( const U2DataId &parentId,
                                     const QString &featureName, const U2DataId &seqId,
-                                    U2OpStatus &os );
+                                    U2OpStatus &os, SubfeatureSelectionMode mode );
 
-    U2DbiIterator<U2Feature> *  getSubFeatures( const U2DataId &rootId,
-                                    const QString &featureName, U2OpStatus &os );
+    U2DbiIterator<U2Feature> *  getFeaturesByRoot( const U2DataId &rootId,
+                                    const FeatureFlags &types, const QString &featureName,
+                                    U2OpStatus &os );
     /**
      * The data fetched by result DB iterator is not cached.
      */

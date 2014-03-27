@@ -56,7 +56,8 @@ public:
         : topLevelOnly(false), featureNameOrderOp(OrderOp_None), keyNameOrderOp(OrderOp_None),
         keyValueCompareOp(ComparisonOp_Invalid), keyValueOrderOp(OrderOp_None),
         intersectRegion(-1, 0), startPosOrderOp(OrderOp_None),
-        closestFeature(ComparisonOp_Invalid), strandQuery(Strand_Both)
+        closestFeature(ComparisonOp_Invalid), strandQuery(Strand_Both),
+        featureType(U2Feature::Annotation)
     {
 
     }
@@ -76,7 +77,8 @@ public:
             && intersectRegion == other.intersectRegion
             && startPosOrderOp == other.startPosOrderOp
             && closestFeature == other.closestFeature
-            && strandQuery == other.strandQuery;
+            && strandQuery == other.strandQuery
+            && featureType == other.featureType;
     }
 
     U2DataId        sequenceId;
@@ -113,7 +115,10 @@ public:
     ComparisonOp    closestFeature;
 
     StrandQuery     strandQuery;
+
+    U2Feature::FeatureType featureType;
 };
+
 /**
  * An interface to obtain 'read' access to sequence features
  */
@@ -123,18 +128,18 @@ public:
      * Creates a DB representation of AnnotationTableObject.
      * @table has to be fully initialized except of the id field.
      */
-    virtual void                    createAnnotationTableObject( U2AnnotationTable &table,
-                                        const QString &folder, U2OpStatus &os ) = 0;
+    virtual void                        createAnnotationTableObject( U2AnnotationTable &table,
+                                            const QString &folder, U2OpStatus &os ) = 0;
     /**
      * Returns a DB representation of AnnotationTableObject having supplied @tableId.
      */
-    virtual U2AnnotationTable       getAnnotationTableObject( const U2DataId &tableId,
-                                        U2OpStatus &os ) = 0;
+    virtual U2AnnotationTable           getAnnotationTableObject( const U2DataId &tableId,
+                                            U2OpStatus &os ) = 0;
     /**
      * Renames a DB representation of AnnotationTableObject having supplied @tableId.
      */
-    virtual void                    renameAnnotationTableObject( const U2DataId &tableId,
-                                        const QString &name, U2OpStatus &os ) = 0;
+    virtual void                        renameAnnotationTableObject( const U2DataId &tableId,
+                                            const QString &name, U2OpStatus &os ) = 0;
     /**
      * Reads feature data by id
      */
@@ -219,6 +224,20 @@ public:
     virtual void                        removeFeature( const U2DataId &featureId,
                                             U2OpStatus &os ) = 0;
     /**
+     * Removes subfeatures along with their parent feature from database
+     * Requires: U2DbiFeature_WriteFeature feature support
+     */
+    virtual void                        removeFeaturesByParent( const U2DataId &parentId,
+                                            U2OpStatus &os, SubfeatureSelectionMode mode
+                                            = SelectParentFeature ) = 0;
+    /**
+     * Removes subfeatures along with their root feature from database
+     * Requires: U2DbiFeature_WriteFeature feature support
+     */
+    virtual void                        removeFeaturesByRoot( const U2DataId &rootId,
+                                            U2OpStatus &os, SubfeatureSelectionMode mode
+                                            = SelectParentFeature ) = 0;
+    /**
      * Returns features that matched the query. Returns NULL if error occurs
      */
     virtual U2DbiIterator<U2Feature> *  getFeaturesByRegion( const U2Region &reg,
@@ -226,12 +245,14 @@ public:
                                             const U2DataId &seqId, U2OpStatus &os,
                                             bool contains = false ) = 0;
 
-    virtual U2DbiIterator<U2Feature> *  getSubFeatures( const U2DataId &parentId,
+    virtual U2DbiIterator<U2Feature> *  getFeaturesByParent( const U2DataId &parentId,
                                             const QString &featureName, const U2DataId &seqId,
-                                            U2OpStatus &os ) = 0;
+                                            U2OpStatus &os,
+                                            SubfeatureSelectionMode mode = NotSelectParentFeature ) = 0;
 
-    virtual U2DbiIterator<U2Feature> *  getSubFeatures( const U2DataId &rootId,
-                                            const QString &featureName, U2OpStatus &os ) = 0;
+    virtual U2DbiIterator<U2Feature> *  getFeaturesByRoot( const U2DataId &rootId,
+                                            const FeatureFlags &types, const QString &featureName,
+                                            U2OpStatus &os ) = 0;
 
     virtual U2DbiIterator<U2Feature> *  getFeaturesBySequence( const QString &featureName,
                                             const U2DataId &seqId, U2OpStatus &os ) = 0;

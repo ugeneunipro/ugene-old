@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QCoreApplication>
+
 #include <U2Core/AnnotationTableObjectConstraints.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -70,6 +72,14 @@ QList<Annotation> AnnotationTableObject::getAnnotations( ) const {
     return result;
 }
 
+bool AnnotationTableObject::hasAnnotations( ) const {
+    U2OpStatusImpl os;
+    const qint64 subFeaturesCount = U2FeatureUtils::countOfChildren( rootFeatureId, Root,
+        entityRef.dbiRef, U2Feature::Annotation, os );
+    SAFE_POINT_OP( os, false );
+    return ( 0 != subFeaturesCount );
+}
+
 AnnotationGroup AnnotationTableObject::getRootGroup( ) {
     return AnnotationGroup( rootFeatureId, this );
 }
@@ -83,7 +93,6 @@ void AnnotationTableObject::addAnnotation( const AnnotationData &a, const QStrin
     const Annotation ann = subgroup.addAnnotation( a );
 
     setModified( true );
-    emit si_onAnnotationsAdded( QList<Annotation>( ) << ann );
 }
 
 void AnnotationTableObject::addAnnotations( const QList<AnnotationData> &annotations,
@@ -92,7 +101,6 @@ void AnnotationTableObject::addAnnotations( const QList<AnnotationData> &annotat
     if ( annotations.isEmpty( ) ) {
         return;
     }
-    GTIMER( c1, t1, "AnnotationTableObject::addAnnotations [populate data tree]" );
     AnnotationGroup rootGroup( rootFeatureId, this );
     AnnotationGroup group( rootGroup );
     QList<Annotation> resultAnnotations;
@@ -111,19 +119,17 @@ void AnnotationTableObject::addAnnotations( const QList<AnnotationData> &annotat
                 previousGroupName = groupName;
             }
             resultAnnotations << group.addAnnotation( a );
+            QCoreApplication::processEvents( );
         }
     } else {
         group = rootGroup.getSubgroup( groupName, true );
         foreach ( const AnnotationData &a, annotations ) {
             resultAnnotations << group.addAnnotation( a );
+            QCoreApplication::processEvents( );
         }
      }
 
-    t1.stop( );
     setModified( true );
-
-    GTIMER( c2, t2, "AnnotationTableObject::addAnnotations [notify]" );
-    emit si_onAnnotationsAdded( resultAnnotations );
 }
 
 void AnnotationTableObject::removeAnnotation( const Annotation &a ) {
@@ -250,10 +256,10 @@ void AnnotationTableObject::addFeature( U2Feature &f, QList<U2FeatureKey> keys, 
 
 void AnnotationTableObject::removeAnnotationFromDb( const Annotation &a ) {
     SAFE_POINT( this == a.getGObject( ), "Annotation belongs to another object!", );
-    SAFE_POINT( !a.getId( ).isEmpty( ), "Invalid feature ID detected!", );
+    SAFE_POINT( a.hasValidId( ), "Invalid feature ID detected!", );
 
     U2OpStatusImpl os;
-    U2FeatureUtils::removeFeature( a.getId( ), entityRef.dbiRef, os );
+    U2FeatureUtils::removeFeature( a.id, entityRef.dbiRef, os );
 }
 
 void AnnotationTableObject::copyFeaturesToObject( const U2Feature &feature,
@@ -267,9 +273,7 @@ void AnnotationTableObject::copyFeaturesToObject( const U2Feature &feature,
     obj->addFeature( copiedFeature, keys, os );
     CHECK_OP( os, );
 
-    const bool isGroup = U2FeatureUtils::isGroupFeature( feature.id, entityRef.dbiRef, os );
-    CHECK_OP( os, );
-    if ( isGroup ) {
+    if ( U2Feature::Group == feature.type ) {
         // consider both grouping features and annotating
         QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( feature.id,
             entityRef.dbiRef, os, Nonrecursive, Nonroot );
@@ -289,12 +293,8 @@ QList<Annotation> AnnotationTableObject::convertFeaturesToAnnotations(
     U2OpStatusImpl os;
 
     foreach ( const U2Feature &feature, features ) {
-        if (
-#ifdef _DEBUG
-            !U2FeatureUtils::isGroupFeature( feature.id, entityRef.dbiRef, os ) &&
-#endif
-            !feature.name.isEmpty( ) )
-        { // this case corresponds to complete annotations, not to partial (e.g. joins, orders)
+        if ( U2Feature::Annotation == feature.type && !feature.name.isEmpty( ) ) {
+            // this case corresponds to complete annotations, not to partial (e.g. joins, orders)
             results << Annotation( feature.id, const_cast<AnnotationTableObject *>( this ) );
         }
     }

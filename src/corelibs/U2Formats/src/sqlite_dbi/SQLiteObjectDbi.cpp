@@ -243,7 +243,7 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& 
                 U2EntityRef tableRef( dbi->getDbiRef( ), objectId );
                 U2AnnotationTable table = U2FeatureUtils::getAnnotationTable( tableRef, os );
                 CHECK_OP( os, false );
-                U2FeatureUtils::removeFeature( table.rootFeature, tableRef.dbiRef, os );
+                U2FeatureUtils::removeFeaturesByRoot( table.rootFeature, tableRef.dbiRef, os );
             }
             break;
         case U2Type::PhyTree:

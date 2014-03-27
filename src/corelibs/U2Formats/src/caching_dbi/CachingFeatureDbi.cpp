@@ -219,6 +219,18 @@ void CachingFeatureDbi::removeFeature( const U2DataId &featureId, U2OpStatus &os
     removeData( featureId, os );
 }
 
+void CachingFeatureDbi::removeFeaturesByParent( const U2DataId &parentId,
+    U2OpStatus &os, SubfeatureSelectionMode mode )
+{
+    /*TODO: implement*/
+}
+
+void CachingFeatureDbi::removeFeaturesByRoot( const U2DataId &rootId,
+    U2OpStatus &os, SubfeatureSelectionMode mode )
+{
+    /*TODO: implement*/
+}
+
 U2DbiIterator<U2Feature> * CachingFeatureDbi::getFeaturesByRegion( const U2Region &reg,
     const U2DataId &parentId, const QString &featureName, const U2DataId &seqId, U2OpStatus &os,
     bool contains )
@@ -232,21 +244,21 @@ U2DbiIterator<U2Feature> * CachingFeatureDbi::getFeaturesByRegion( const U2Regio
     return cachingIter;
 }
 
-U2DbiIterator<U2Feature> * CachingFeatureDbi::getSubFeatures( const U2DataId &parentId,
-    const QString &featureName, const U2DataId &seqId, U2OpStatus &os )
+U2DbiIterator<U2Feature> * CachingFeatureDbi::getFeaturesByParent( const U2DataId &parentId,
+    const QString &featureName, const U2DataId &seqId, U2OpStatus &os, SubfeatureSelectionMode mode )
 {
-    U2DbiIterator<U2Feature> *original = getWrappedDbi( )->getSubFeatures( parentId, featureName,
-        seqId, os );
+    U2DbiIterator<U2Feature> *original = getWrappedDbi( )->getFeaturesByParent( parentId, featureName,
+        seqId, os, mode );
     SubfeatureFilterParams filter( parentId, seqId, featureName );
     CachingDbiIterator<SubfeatureFilterParams, U2Feature> *cachingIter
         = new CachingDbiIterator<SubfeatureFilterParams, U2Feature>( filter, cacheByParentFeature, original );
     return cachingIter;
 }
 
-U2DbiIterator<U2Feature> * CachingFeatureDbi::getSubFeatures( const U2DataId &rootId,
-    const QString &featureName, U2OpStatus &os )
+U2DbiIterator<U2Feature> * CachingFeatureDbi::getFeaturesByRoot( const U2DataId &rootId,
+    const FeatureFlags &types, const QString &featureName, U2OpStatus &os )
 {
-    return getWrappedDbi( )->getSubFeatures( rootId, featureName, os );
+    return getWrappedDbi( )->getFeaturesByRoot( rootId, types, featureName, os );
 }
 
 U2DbiIterator<U2Feature> * CachingFeatureDbi::getFeaturesBySequence( const QString &featureName,
