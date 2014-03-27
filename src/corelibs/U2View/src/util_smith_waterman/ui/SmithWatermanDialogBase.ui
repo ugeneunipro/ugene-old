@@ -788,5 +788,22 @@
   <tabstop>patternSequenceName</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>SmithWatermanDialogBase</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>382</x>
+     <y>405</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>382</x>
+     <y>212</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
