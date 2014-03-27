@@ -84,6 +84,7 @@ void SequenceInfo::initLayout()
     // Common statistics
     statisticLabel = new QLabel(this);
     statsWidget = new ShowHideSubgroupWidget(STAT_GROUP_ID, tr("Common Statistics"), statisticLabel, true);
+    statsWidget->setObjectName("Common Statistics");
     SAFE_POINT(statsWidget->layout() != NULL, tr("No layout in ShowHideSubgroupWidget"),);
     statsWidget->layout()->setContentsMargins(0, 0, 0, 0);
 

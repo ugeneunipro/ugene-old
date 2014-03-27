@@ -41,6 +41,7 @@
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h"
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
 
@@ -188,11 +189,16 @@ GUI_TEST_CLASS_DEFINITION(test_0003){//commit sequenceInfo
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 //    2. Activate Information tab on Options panel at the right edge of UGENE window.
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+    QWidget *w = GTWidget::findWidget(os,"Common Statistics");
+    CHECK_SET_ERR(w != NULL, "No Common Statistics widget");
 
-    QLabel *w=(QLabel*)GTWidget::findWidget(os,"Length");
+    QLabel *l = w->findChild<QLabel*>();
+    CHECK_SET_ERR(l != NULL, "No child label in Common Statistics widget");
     GTWidget::click(os, w);
+
     GTGlobals::sleep(1000);
-    CHECK_SET_ERR(w->text()=="199 950 ", "Found: " + w->text());
+    CHECK_SET_ERR(l->text().contains("<tr><td><b>Length: </b></td><td>199 950 </td></tr>"),
+                  "Sequence length is wrong");
 //    Expected state: sequence length must be 199950
 }
 
@@ -202,11 +208,16 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1){//commit sequenceInfo
     GTFileDialog::openFile(os,testDir + "_common_data/scenarios/_regression/1093/","refrence.fa");
 //    2. Activate Information tab on Options panel at the right edge of UGENE window.
     GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+    QWidget *w = GTWidget::findWidget(os,"Common Statistics");
+    CHECK_SET_ERR(w != NULL, "No Common Statistics widget");
 
-    QLabel *w=(QLabel*)GTWidget::findWidget(os,"Length");
+    QLabel *l = w->findChild<QLabel*>();
+    CHECK_SET_ERR(l != NULL, "No child label in Common Statistics widget");
     GTWidget::click(os, w);
+
     GTGlobals::sleep(1000);
-    CHECK_SET_ERR(w->text()=="114 ", "Found: " + w->text());
+    CHECK_SET_ERR(l->text().contains("<tr><td><b>Length: </b></td><td>114 </td></tr>"),
+                  "Sequence length is wrong");
 //    Expected state: sequence length must be 114
 }
 GUI_TEST_CLASS_DEFINITION(test_0004){
@@ -320,5 +331,197 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     GTGlobals::sleep();
 
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0007) {
+    // nucl statistics 1
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "human_T1_cutted.fa");
+
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+    QWidget *w = GTWidget::findWidget(os,"Common Statistics");
+    CHECK_SET_ERR(w != NULL, "No Common Statistics widget");
+    GTWidget::click(os, w);
+
+    QLabel *l = w->findChild<QLabel*>();
+    CHECK_SET_ERR(l != NULL, "No child label in Common Statistics widget");
+
+    QString s = QString("<table cellspacing=5>"
+                        "<tr><td><b>Length: </b></td><td>200 </td></tr>"
+                        "<tr><td><b>GC Content: </b></td><td>44.50%</td></tr>"
+                        "<tr><td><b>Molar Weight: </b></td><td>62050.31 Da</td></tr>"
+                        "<tr><td><b>Molat Ext. Coef: </b></td><td>2312900 I/mol</td></tr>"
+                        "<tr><td><b>Melting TM: </b></td><td>79.78 C</td></tr>"
+                        "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>0.43</td></tr>"
+                        "<tr><td><b>") + QChar(0x3BC) + QString("g/OD<sub>260</sub> : </b></td><td>26.83</td></tr></table>");
+
+    GTGlobals::sleep(1000);
+
+    CHECK_SET_ERR(l->text() == s, "Found: " + l->text());
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0008) {
+    // nucl statistics 2
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+    QWidget *w = GTWidget::findWidget(os,"Common Statistics");
+    CHECK_SET_ERR(w != NULL, "No Common Statistics widget");
+    GTWidget::click(os, w);
+
+    QLabel *l = w->findChild<QLabel*>();
+    CHECK_SET_ERR(l != NULL, "No child label in Common Statistics widget");
+
+    QString s = QString("<table cellspacing=5>"
+                      "<tr><td><b>Length: </b></td><td>199 950 </td></tr>"
+                      "<tr><td><b>GC Content: </b></td><td>38.84%</td></tr>"
+                      "<tr><td><b>Molar Weight: </b></td><td>61730585.82 Da</td></tr>"
+                      "<tr><td><b>Molat Ext. Coef: </b></td><td>2223359500 I/") + QChar(0x2026)
+            + QString("</td></tr>"
+                      "<tr><td><b>Melting TM: </b></td><td>80.82 C</td></tr>"
+                      "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>0.00</td></tr>"
+                      "<tr><td><b>") + QChar(0x3BC) + QString("g/OD<sub>260</sub> : </b></td><td>27.76</td></tr>"
+                      "</table>");
+
+    GTGlobals::sleep(1000);
+
+    CHECK_SET_ERR(l->text() == s, "Found: " + l->text());
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0009) {
+    // amino statistics
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "titin.fa");
+
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+    QWidget *w = GTWidget::findWidget(os,"Common Statistics");
+    CHECK_SET_ERR(w != NULL, "No Common Statistics widget");
+    GTWidget::click(os, w);
+
+    QLabel *l = w->findChild<QLabel*>();
+    CHECK_SET_ERR(l != NULL, "No child label in Common Statistics widget");
+
+    QString s = QString("<table cellspacing=5>"
+                        "<tr><td><b>Length: </b></td><td>26 926 </td></tr>"
+                        "<tr><td><b>Molecular Weight: </b></td><td>2993901.23</td></tr>"
+                        "<tr><td><b>Isoelectic Point: </b></td><td>6.74</td></tr></table>");
+
+    GTGlobals::sleep(1000);
+
+    CHECK_SET_ERR(l->text() == s, "Found: " + l->text());
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010) {
+    // nucl statistics update on selection
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+    QWidget *w = GTWidget::findWidget(os,"Common Statistics");
+    CHECK_SET_ERR(w != NULL, "No Common Statistics widget");
+    GTWidget::click(os, w);
+
+    QLabel *l = w->findChild<QLabel*>();
+    CHECK_SET_ERR(l != NULL, "No child label in Common Statistics widget");
+
+    QString s = QString("<table cellspacing=5>"
+                      "<tr><td><b>Length: </b></td><td>199 950 </td></tr>"
+                      "<tr><td><b>GC Content: </b></td><td>38.84%</td></tr>"
+                      "<tr><td><b>Molar Weight: </b></td><td>61730585.82 Da</td></tr>"
+                      "<tr><td><b>Molat Ext. Coef: </b></td><td>2223359500 I/") + QChar(0x2026)
+            + QString("</td></tr>"
+                      "<tr><td><b>Melting TM: </b></td><td>80.82 C</td></tr>"
+                      "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>0.00</td></tr>"
+                      "<tr><td><b>") + QChar(0x3BC) + QString("g/OD<sub>260</sub> : </b></td><td>27.76</td></tr>"
+                      "</table>");
+
+    QString labelText = l->text();
+
+    GTGlobals::sleep(1000);
+    CHECK_SET_ERR(l->text() == s, "Found: " + l->text());
+
+    // select sequence region
+    GTUtilsSequenceView::selectSequenceRegion(os, 1, 40);
+    GTGlobals::sleep(1000);
+    CHECK_SET_ERR(labelText != l->text(), "Statistics did not change");
+
+    s = QString("<table cellspacing=5>"
+                "<tr><td><b>Length: </b></td><td>40 </td></tr>"
+                "<tr><td><b>GC Content: </b></td><td>32.50%</td></tr>"
+                "<tr><td><b>Molar Weight: </b></td><td>12525.15 Da</td></tr>"
+                "<tr><td><b>Molat Ext. Coef: </b></td><td>479900 I/mol</td></tr>"
+                "<tr><td><b>Melting TM: </b></td><td>61.42 C</td></tr>"
+                "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>2.08</td></tr>"
+                "<tr><td><b>") + QChar(0x3BC) + QString("g/OD<sub>260</sub> : </b></td><td>26.10</td></tr></table>");
+
+    CHECK_SET_ERR(l->text() == s, "Found: " + l->text());
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011) {
+    // raw alphabet
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "numbers_in_the_middle.fa");
+
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+    QWidget *w = GTWidget::findWidget(os,"Common Statistics");
+    CHECK_SET_ERR(w != NULL, "No Common Statistics widget");
+    GTWidget::click(os, w);
+
+    QLabel *l = w->findChild<QLabel*>();
+    CHECK_SET_ERR(l != NULL, "No child label in Common Statistics widget");
+
+    QString s = QString("<table cellspacing=5>"
+                        "<tr><td><b>Length: </b></td><td>230 </td></tr>"
+                        "</table>");
+
+    GTGlobals::sleep(1000);
+
+    CHECK_SET_ERR(l->text() == s, "Found: " + l->text());
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0012) {
+    // focus change
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "numbers_in_the_middle.fa");
+
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_SEQ_INFO"));
+    QWidget *w = GTWidget::findWidget(os,"Common Statistics");
+    CHECK_SET_ERR(w != NULL, "No Common Statistics widget");
+
+    QLabel *l = w->findChild<QLabel*>();
+    CHECK_SET_ERR(l != NULL, "No child label in Common Statistics widget");
+    GTWidget::click(os, w);
+
+    QWidget *w0 = GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
+    CHECK_SET_ERR(w0 != NULL, "ADV single sequence widget 0 is NULL");
+    GTWidget::click(os, w0);
+    QString s = QString("<table cellspacing=5>"
+                        "<tr><td><b>Length: </b></td><td>70 </td></tr>"
+                        "</table>");
+    CHECK_SET_ERR(l->text() == s, "Statistics is wrong!");
+
+    GTGlobals::sleep(1000);
+    QWidget *w1 = GTWidget::findWidget(os, "ADV_single_sequence_widget_1");
+    CHECK_SET_ERR(w1 != NULL, "ADV single sequence widget 1 is NULL");
+    GTWidget::click(os, w1);
+    s = QString("<table cellspacing=5>"
+                "<tr><td><b>Length: </b></td><td>70 </td></tr>"
+                "<tr><td><b>GC Content: </b></td><td>48.57%</td></tr>"
+                "<tr><td><b>Molar Weight: </b></td><td>21391.80 Da</td></tr>"
+                "<tr><td><b>Molat Ext. Coef: </b></td><td>743200 I/mol</td></tr>"
+                "<tr><td><b>Melting TM: </b></td><td>75.36 C</td></tr>"
+                "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>1.35</td></tr>"
+                "<tr><td><b>") + QChar(0x3BC) + QString("g/OD<sub>260</sub> : </b></td><td>28.78</td></tr></table>");
+    CHECK_SET_ERR(l->text() == s, "Statistics is wrong!");
+
+    GTGlobals::sleep(1000);
+    QWidget *w2 = GTWidget::findWidget(os, "ADV_single_sequence_widget_2");
+    CHECK_SET_ERR(w2 != NULL, "ADV single sequence widget 2 is NULL");
+    GTWidget::click(os, w2);
+    s = QString("<table cellspacing=5>"
+                            "<tr><td><b>Length: </b></td><td>70 </td></tr>"
+                            "<tr><td><b>Molecular Weight: </b></td><td>5752.43</td></tr>"
+                            "<tr><td><b>Isoelectic Point: </b></td><td>5.15</td></tr></table>");
+    CHECK_SET_ERR(l->text() == s, "Statistics is wrong!");
+}
+
 } // namespace GUITest_common_scenarios_annotations_edit
 } // namespace U2

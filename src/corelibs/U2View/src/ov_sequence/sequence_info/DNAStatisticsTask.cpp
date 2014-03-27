@@ -181,7 +181,7 @@ void DNAStatisticsTask::computeStats(){
         if (al->isRNA()) {
             result.molarWeight = nA * 329.21 + nT * 306.17 + nC * 305.18 + nG * 345.21 + 159.0;
         } else {
-            result.molarWeight = nA * 313.21 + nT * 304.2 + nC * 289.18 + nG * 329.21 + 17.04;
+            result.molarWeight = nA * 313.21 + nT * 304.2 + nC * 289.18 + nG * 329.21 + 79;
         }
 
         result.molarExtCoef = nA*15400 + nT*8800 + nC*7300 + nG*11700;
@@ -189,10 +189,14 @@ void DNAStatisticsTask::computeStats(){
         if (region.length < 15) {
             result.meltingTm = (nA+nT) * 2 + (nG + nC) * 4;
         } else {
-            result.meltingTm = 64.9 + 41*(nG + nC-16.4)/(double)(nA+nT+nG+nC);
+            if (nA+nT+nG+nC != 0) {
+                result.meltingTm = 64.9 + 41*(nG + nC-16.4)/(double)(nA+nT+nG+nC);
+            }
         }
 
-        result.nmoleOD260 = (double)1000000 / result.molarExtCoef;
+        if (result.molarExtCoef != 0) {
+            result.nmoleOD260 = (double)1000000 / result.molarExtCoef;
+        }
 
         result.mgOD260 = result.nmoleOD260 * result.molarWeight * 0.001;
 
