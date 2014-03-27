@@ -193,7 +193,8 @@ void FilterBamWorkerFactory::init() {
         formatMap[BaseDocumentFormats::BAM] = BaseDocumentFormats::BAM;
         formatMap[BaseDocumentFormats::SAM] = BaseDocumentFormats::SAM;
         delegates[OUT_FORMAT_ID] = new ComboBoxDelegate(formatMap);
-        delegates[MAPQ_ID] = new SpinBoxDelegate();
+        QVariantMap lenMap; lenMap["minimum"] = QVariant(0); lenMap["maximum"] = QVariant(INT_MAX);
+        delegates[MAPQ_ID] = new SpinBoxDelegate(lenMap);
 
         QVariantMap flags;
         QMap<QString, QString> filterCodes = getFilterCodes();
