@@ -85,7 +85,7 @@ protected:
 private slots:
     void sl_refreshTree();
 signals:
-    void si_refreshTree(MSAEditorTreeViewer& treeViewer);
+    void si_refreshTree(MSAEditorTreeViewer* treeViewer);
 private:
     QAction*              refreshTreeAction;
     QAction*              sortSeqAction;

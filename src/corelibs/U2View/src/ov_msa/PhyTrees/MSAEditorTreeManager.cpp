@@ -70,7 +70,7 @@
 
 namespace U2 {
 MSAEditorTreeManager::MSAEditorTreeManager(MSAEditor* _editor )
- : QObject(_editor), editor(_editor), msaObject(NULL), treeGeneratorTask(NULL), addExistingTree(false) {
+ : QObject(_editor), editor(_editor), msaObject(NULL), addExistingTree(false) {
      SAFE_POINT(NULL != editor, "Invlalid parameter were passed into constructor MSAEditorTreeManager",);
 }
 
@@ -104,44 +104,58 @@ void MSAEditorTreeManager::buildTreeWithDialog() {
 }
 
 void MSAEditorTreeManager::buildTree(const CreatePhyTreeSettings& buildSettings) {
-    const MAlignment& ma = msaObject->getMAlignment();
+    createPhyTreeGeneratorTask(buildSettings);
+}
 
+void MSAEditorTreeManager::sl_refreshTree(MSAEditorTreeViewer* treeViewer) {
+    CHECK(canRefreshTree(treeViewer),);
+
+    createPhyTreeGeneratorTask(treeViewer->getCreatePhyTreeSettings(), true, treeViewer);
+}
+
+void MSAEditorTreeManager::createPhyTreeGeneratorTask(const CreatePhyTreeSettings& buildSettings, bool refreshExistingTree, MSAEditorTreeViewer* treeViewer) {
+    const MAlignment& ma = msaObject->getMAlignment();
     settings = buildSettings;
 
-    treeGeneratorTask = new PhyTreeGeneratorLauncherTask(ma, settings);
-    connect(treeGeneratorTask, SIGNAL(si_stateChanged()), SLOT(sl_openTree()));
+    PhyTreeGeneratorLauncherTask* treeGeneratorTask = new PhyTreeGeneratorLauncherTask(ma, settings);
+    if(refreshExistingTree) {
+        activeRefreshTasks[treeViewer] = treeGeneratorTask;
+        connect(new TaskSignalMapper(treeGeneratorTask), SIGNAL(si_taskSucceeded(Task*)), SLOT(sl_treeRebuildingFinished(Task*)));
+        connect(treeViewer, SIGNAL(destroyed()), treeGeneratorTask, SLOT(sl_onCalculationCanceled()));
+    }
+    else {
+        connect(new TaskSignalMapper(treeGeneratorTask), SIGNAL(si_taskSucceeded(Task*)), SLOT(sl_openTree(Task*)));
+    }
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
     scheduler->registerTopLevelTask(treeGeneratorTask);
 }
 
-void MSAEditorTreeManager::sl_refreshTree(MSAEditorTreeViewer& treeViewer) {
-    CHECK(canRefreshTree(&treeViewer),);
-    refreshingTree = &treeViewer;
-    const MAlignment& ma = msaObject->getMAlignment();
-    settings = treeViewer.getCreatePhyTreeSettings();
+void MSAEditorTreeManager::sl_treeRebuildingFinished(Task* _treeBuildTask) {
+    PhyTreeGeneratorLauncherTask* treeBuildTask = qobject_cast<PhyTreeGeneratorLauncherTask*>(_treeBuildTask);
+    if(NULL == treeBuildTask || treeBuildTask->isCanceled()) {
+        return;
+    }
 
-    treeGeneratorTask = new PhyTreeGeneratorLauncherTask(ma, settings);
-    connect(treeGeneratorTask, SIGNAL(si_stateChanged()), SLOT(sl_treeRebuildingFinished()));
-    TaskScheduler* scheduler = AppContext::getTaskScheduler();
-    scheduler->registerTopLevelTask(treeGeneratorTask);
-}
-void MSAEditorTreeManager::sl_treeRebuildingFinished() {
-    bool taskFailed = treeGeneratorTask->getState() != Task::State_Finished || treeGeneratorTask->hasError() || treeGeneratorTask->isCanceled();
-    CHECK(!taskFailed, );
+    MSAEditorTreeViewer* refreshingTree = activeRefreshTasks.key(treeBuildTask);
+    CHECK(NULL != refreshingTree,);
+    activeRefreshTasks.remove(refreshingTree);
+
     PhyTreeObject *treeObj = refreshingTree->getPhyObject();
-    PhyTree res = treeGeneratorTask->getResult();
-
-    treeObj->setTree(treeGeneratorTask->getResult());
+    treeObj->setTree(treeBuildTask->getResult());
 }
 
 bool MSAEditorTreeManager::canRefreshTree(MSAEditorTreeViewer* treeViewer) {
     bool canRefresh = (treeViewer->getParentAlignmentName() == msaObject->getMAlignment().getName());
-    return canRefresh;
+    return canRefresh && !activeRefreshTasks.contains(treeViewer);
 }
 
-void MSAEditorTreeManager::sl_openTree() {
-    bool taskIsFailed = treeGeneratorTask->getState() != Task::State_Finished || treeGeneratorTask->hasError() || treeGeneratorTask->isCanceled();
-    CHECK(!taskIsFailed, )
+void MSAEditorTreeManager::sl_openTree(Task* treeBuildTask) {
+    CHECK(!treeBuildTask->isCanceled(), )
+
+    PhyTreeGeneratorLauncherTask* treeGeneratorTask = qobject_cast<PhyTreeGeneratorLauncherTask*>(treeBuildTask);
+    if(NULL == treeBuildTask) {
+        return;
+    }
 
     const GUrl& msaURL = msaObject->getDocument()->getURL();
     SAFE_POINT(!msaURL.isEmpty(), QString("Tree URL in MSAEditorTreeManager::sl_openTree() is empty"),);
@@ -263,7 +277,7 @@ void MSAEditorTreeManager::sl_openTreeTaskFinished(Task* t) {
             treeView->setMSAEditor(editor);
             treeView->setSynchronizationMode(settings.syncAlignmentWithTree ? FullSynchronization : OnlySeqsSelection);
             
-            connect(treeView, SIGNAL(si_refreshTree(MSAEditorTreeViewer&)), SLOT(sl_refreshTree(MSAEditorTreeViewer&)));
+            connect(treeView, SIGNAL(si_refreshTree(MSAEditorTreeViewer*)), SLOT(sl_refreshTree(MSAEditorTreeViewer*)));
         }
         else {
             GObjectViewWindow* w = new GObjectViewWindow(task->getTreeViewer(), editor->getName(), !task->getStateData().isEmpty());
@@ -321,16 +335,15 @@ void MSAEditorTreeManager::loadTreeFromFile(const QString& treeFileName) {
     }
 
     const QList<GObject*>& objects = doc->getObjects();
-    const MSAEditorMultiTreeViewer* mtv = editor->getUI()->getMultiTreeViewer();
+    const MSAEditorMultiTreeViewer* multiTreeViewer = getMultiTreeViewer();
+    CHECK(NULL != multiTreeViewer,);
     foreach(GObject* obj, objects) {
         if(GObjectTypes::PHYLOGENETIC_TREE == obj->getGObjectType()) {
             PhyTreeObject* treeObject = qobject_cast<PhyTreeObject*>(obj);
             if(NULL == treeObject) {
                 continue;
             }
-            if(NULL != mtv) {
-                CHECK(!mtv->getTreeNames().contains(doc->getName()),);
-            }
+            CHECK(!multiTreeViewer->getTreeNames().contains(doc->getName()),);
             Task* task = new MSAEditorOpenTreeViewerTask(treeObject, this);
             scheduler->registerTopLevelTask(task);
         }
@@ -338,7 +351,16 @@ void MSAEditorTreeManager::loadTreeFromFile(const QString& treeFileName) {
 }
 
 void MSAEditorTreeManager::sl_onWindowClosed(GObjectViewWindow* viewWindow) {
-    editor->getUI()->getMultiTreeViewer()->sl_onTabCloseRequested(viewWindow);
+    MSAEditorMultiTreeViewer* multiTreeViewer = getMultiTreeViewer();
+    CHECK(NULL != multiTreeViewer,);
+    multiTreeViewer->sl_onTabCloseRequested(viewWindow);
+}
+
+MSAEditorMultiTreeViewer* MSAEditorTreeManager::getMultiTreeViewer() const {
+    SAFE_POINT(NULL != editor, tr("Incorrect reference to the MSAEditor"), NULL);
+    MSAEditorUI* msaEditorUi = editor->getUI();
+    SAFE_POINT(NULL != msaEditorUi, tr("Incorrect reference to the MSAEditor"), NULL);
+    return msaEditorUi->getMultiTreeViewer();
 }
 
 }//namespace

@@ -70,4 +70,8 @@ Task::ReportResult PhyTreeGeneratorLauncherTask::report(){
     return ReportResult_Finished;
 }
 
+void PhyTreeGeneratorLauncherTask::sl_onCalculationCanceled() {
+    cancel();
+}
+
 } //namespace

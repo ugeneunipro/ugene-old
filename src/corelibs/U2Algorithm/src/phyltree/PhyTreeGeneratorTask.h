@@ -52,6 +52,8 @@ public:
     void prepare();
     void run(){};
     ReportResult report();
+private slots:
+    void sl_onCalculationCanceled();
 private:
     MAlignment                  inputMA;
     PhyTree                     result;

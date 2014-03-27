@@ -77,7 +77,7 @@ void MSAEditorTreeViewer::setCreatePhyTreeSettings(const CreatePhyTreeSettings& 
 }
 
 void MSAEditorTreeViewer::sl_refreshTree() {
-    emit si_refreshTree(*this);
+    emit si_refreshTree(this);
 }
 void MSAEditorTreeViewer::setSynchronizationMode(SynchronizationMode newSyncMode) {
     CHECK(NULL != msa,);
