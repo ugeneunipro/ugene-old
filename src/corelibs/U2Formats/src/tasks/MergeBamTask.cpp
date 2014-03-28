@@ -62,10 +62,10 @@ void MergeBamTask::run(){
         return;
     }
 
-    targetUrl = workingDir + outputName;
-
-    BAMUtils::mergeBam(bamUrls, targetUrl, stateInfo);
+    BAMUtils::mergeBam(bamUrls, workingDir + outputName, stateInfo);
     CHECK_OP(stateInfo, );
+
+    targetUrl = workingDir + outputName;
 
     //TODO: bam merge assumes that a BAM files is sorted. Otherwise the sorting step can be added here
 

@@ -37,6 +37,7 @@
 extern "C" {
 #include <bam.h>
 #include <bam_sort.c>
+#include <bam_rmdup.c>
 #include <sam.h>
 #include <sam_header.h>
 #include <bgzf.h>
@@ -316,6 +317,46 @@ GUrl BAMUtils::mergeBam(const QStringList &bamUrls, const QString &mergetBamTarg
     delete mergeArgv;
 
     return QString(mergetBamTargetUrl);
+}
+
+GUrl BAMUtils::rmdupBam(const QString &bamUrl, const QString &rmdupBamTargetUrl, U2OpStatus &os, bool removeSingleEnd, bool treatReads)
+{
+    coreLog.details(BAMUtils::tr("Remove PCR duplicate in BAM file: \"%1\". Resulting  file is: \"%2\"")
+        .arg(QString(bamUrl)).arg(QString(rmdupBamTargetUrl)));
+
+    int is_se = 0;
+    int force_se = 0;
+    if(removeSingleEnd){
+        is_se = 1;
+    }
+    if(treatReads){
+        is_se = 1;
+        force_se = 1;
+    }
+
+    const QByteArray& inFileName = bamUrl.toLocal8Bit();
+    const QByteArray& outFileName = rmdupBamTargetUrl.toLocal8Bit();
+    samfile_t *in = NULL;
+    samfile_t *out = NULL;
+    {
+        in = samopen(inFileName, "rb", 0);
+        SAMTOOL_CHECK(NULL != in, openFileError(inFileName), QString(""));
+        SAMTOOL_CHECK(NULL != in->header, headerError(inFileName), QString(""));
+
+        out = samopen(outFileName, "wb", in->header);
+        SAMTOOL_CHECK(NULL != out, openFileError(outFileName), QString(""));
+    }
+
+    if (is_se){
+        bam_rmdupse_core(in, out, force_se);
+    } else{
+        bam_rmdup_core(in, out);
+    }
+
+    samclose(in);
+    samclose(out);
+
+    return QString(rmdupBamTargetUrl);
 }
 
 bool BAMUtils::hasValidBamIndex(const GUrl &bamUrl) {

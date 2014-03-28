@@ -53,6 +53,8 @@ public:
 
     static GUrl mergeBam(const QStringList &bamUrl, const QString &mergetBamTargetUrl, U2OpStatus &os);
 
+    static GUrl rmdupBam(const QString &bamUrl, const QString &rmdupBamTargetUrl, U2OpStatus &os, bool removeSingleEnd = false, bool treatReads = false);
+
     static bool hasValidBamIndex(const GUrl &bamUrl);
 
     static bool hasValidFastaIndex(const GUrl &fastaUrl);

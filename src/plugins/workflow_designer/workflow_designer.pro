@@ -70,6 +70,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/ReadVariationWorker.h \
            src/library/RemoteDBFetcherWorker.h \
            src/library/ReverseComplementWorker.h \
+           src/library/RmdupBamWorker.h \
            src/library/SchemaWorker.h \
            src/library/ScriptWorker.h \
            src/library/SequenceSplitWorker.h \
@@ -169,6 +170,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/ReadVariationWorker.cpp \
            src/library/RemoteDBFetcherWorker.cpp \
            src/library/ReverseComplementWorker.cpp \
+           src/library/RmdupBamWorker.cpp \
            src/library/SchemaWorker.cpp \
            src/library/ScriptWorker.cpp \
            src/library/SequenceSplitWorker.cpp \
