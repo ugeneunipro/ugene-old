@@ -51,7 +51,7 @@ workflow "ChIP-seq analysis"{
         type:get-file-list;
         name:"Read Tags";
         url-in {
-            dataset:"Dataset";
+            dataset:Dataset;
         }
     }
 

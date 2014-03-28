@@ -669,7 +669,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq ) {
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, L"read-annotations", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH,
         readAnnotations );
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"macs-id", MAX_ELEMENT_NAME_LENGTH, macsId );
@@ -718,7 +718,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq ) {
     error = setSchemeElementAttribute( scheme, writeAnnotations1, L"url-out", L"peaks.bed" );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, readAnnotations, L"out-annotations", macsId, L"in-data" );
+    error = addFlowToScheme( scheme, readAnnotations, L"out-url", macsId, L"in-data" );
     CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, macsId, L"out-data", ceasReport, L"in-data" );
     CHECK_U2_ERROR( error );
@@ -737,7 +737,7 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq ) {
         L"in-annotations" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readAnnotations, L"annotations", macsId,
+    error = addSchemeActorsBinding( scheme, readAnnotations, L"url", macsId,
         L"in-data._treatment-ann" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, macsId, L"wiggle-treat", ceasReport,
@@ -784,10 +784,10 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq_with_control ) {
     U2ErrorType error = createScheme( NULL, &scheme );
     CHECK_U2_ERROR( error );
 
-    error = addElementToScheme( scheme, L"read-annotations", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH,
         readAnnotations1 );
     CHECK_U2_ERROR( error );
-    error = addElementToScheme( scheme, L"read-annotations", MAX_ELEMENT_NAME_LENGTH,
+    error = addElementToScheme( scheme, L"get-file-list", MAX_ELEMENT_NAME_LENGTH,
         readAnnotations2 );
     CHECK_U2_ERROR( error );
     error = addElementToScheme( scheme, L"macs-id", MAX_ELEMENT_NAME_LENGTH, macsId );
@@ -812,9 +812,9 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq_with_control ) {
         writeAnnotations1 );
     CHECK_U2_ERROR( error );
 
-    error = setSchemeElementAttribute( scheme, readAnnotations1, L"url-in.dataset", L"Dataset" );
+    error = setSchemeElementAttribute( scheme, readAnnotations1, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
-    error = setSchemeElementAttribute( scheme, readAnnotations2, L"url-in.dataset", L"Dataset" );
+    error = setSchemeElementAttribute( scheme, readAnnotations2, L"url-in.dataset", L"Dataset 1" );
     CHECK_U2_ERROR( error );
     error = setSchemeElementAttribute( scheme, macsId, L"output-dir", L"tools_output" );
     CHECK_U2_ERROR( error );
@@ -840,11 +840,9 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq_with_control ) {
     error = setSchemeElementAttribute( scheme, writeAnnotations1, L"url-out", L"peaks.bed" );
     CHECK_U2_ERROR( error );
 
-    error = addFlowToScheme( scheme, readAnnotations1, L"out-annotations", multiplexer,
-        L"input-data-1" );
+    error = addFlowToScheme( scheme, readAnnotations1, L"out-url", multiplexer, L"input-data-1" );
     CHECK_U2_ERROR( error );
-    error = addFlowToScheme( scheme, readAnnotations2, L"out-annotations", multiplexer,
-        L"input-data-2" );
+    error = addFlowToScheme( scheme, readAnnotations2, L"out-url", multiplexer, L"input-data-2" );
     CHECK_U2_ERROR( error );
     error = addFlowToScheme( scheme, multiplexer, L"output-data", macsId, L"in-data" );
     CHECK_U2_ERROR( error );
@@ -865,10 +863,10 @@ IMPLEMENT_TEST( CInterfaceManualTests, chip_seq_with_control ) {
         L"in-annotations" );
     CHECK_U2_ERROR( error );
 
-    error = addSchemeActorsBinding( scheme, readAnnotations1, L"annotations", macsId,
+    error = addSchemeActorsBinding( scheme, readAnnotations1, L"url", macsId,
         L"in-data._treatment-ann" );
     CHECK_U2_ERROR( error );
-    error = addSchemeActorsBinding( scheme, readAnnotations2, L"annotations", macsId,
+    error = addSchemeActorsBinding( scheme, readAnnotations2, L"url", macsId,
         L"in-data.control-ann" );
     CHECK_U2_ERROR( error );
     error = addSchemeActorsBinding( scheme, macsId, L"wiggle-treat", ceasReport,
