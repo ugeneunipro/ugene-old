@@ -121,7 +121,7 @@ namespace {
 
 void FilterBamWorkerFactory::init() {
     Descriptor desc( ACTOR_ID, FilterBamWorker::tr("Filter BAM/SAM files"),
-        FilterBamWorker::tr("Filter BAM/SAM files using SAMTools view.") );
+        FilterBamWorker::tr("Filters BAM/SAM files using SAMTools view.") );
 
     QList<PortDescriptor*> p;
     {
