@@ -157,7 +157,7 @@ void FilterBamWorkerFactory::init() {
 
         Descriptor regionFilter(REGION_ID, FilterBamWorker::tr("Region"),
             FilterBamWorker::tr("Regions to filter. For BAM output only. chr2 to output the whole chr2. chr2:1000 to output regions of chr 2 starting from 1000. "
-                                "chr2:1000-2000 to ouput regions of chr2 between 1000 and 2000 including the end point. To input multiple regions use the space seprator (e.g. chr1 chr2 chr3:1000-2000)"));
+                                "chr2:1000-2000 to ouput regions of chr2 between 1000 and 2000 including the end point. To input multiple regions use the space seprator (e.g. chr1 chr2 chr3:1000-2000)."));
 
         Descriptor mapqFilter(MAPQ_ID, FilterBamWorker::tr("MAPQ threshold"),
             FilterBamWorker::tr("Minimum MAPQ quality score."));
