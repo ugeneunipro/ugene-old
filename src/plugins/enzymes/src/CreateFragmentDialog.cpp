@@ -73,6 +73,7 @@ CreateFragmentDialog::CreateFragmentDialog( U2SequenceObject* obj, const U2Regio
     : QDialog(p)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227649");
     seqObj = obj;
 
     QList<GObject*> aObjects = GObjectUtils::findAllObjects(UOF_LoadedOnly,GObjectTypes::ANNOTATION_TABLE);
