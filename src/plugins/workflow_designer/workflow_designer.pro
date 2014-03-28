@@ -84,6 +84,7 @@ HEADERS += src/ActorCfgModel.h \
            src/util/DatasetValidator.h \
            src/util/GrouperActionUtils.h \
            src/util/RequiredSlotsValidator.h \
+           src/util/SamtoolsWorkersUtils.h \
            src/util/SaveSchemaImageUtils.h \
            src/util/WorkerNameValidator.h \
            src/util/WriteSequenceValidator.h \
@@ -184,6 +185,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/util/DatasetValidator.cpp \
            src/util/GrouperActionUtils.cpp \
            src/util/RequiredSlotsValidator.cpp \
+           src/util/SamtoolsWorkersUtils.cpp \
            src/util/SaveSchemaImageUtils.cpp \
            src/util/WorkerNameValidator.cpp \
            src/util/WriteSequenceValidator.cpp \

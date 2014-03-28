@@ -57,8 +57,6 @@ public slots:
 
 private:
     QString takeUrl();
-    QString detectFormat(const QString &url);
-    QString createWorkingDir(const QString& fileUrl);
     QString getTargetName(const QString& fileUrl, const QString& outDir);
     void sendResult(const QString &url);
 }; //RmdupBamWorker

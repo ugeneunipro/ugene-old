@@ -58,8 +58,6 @@ public slots:
 
 private:
     QString takeUrl();
-    QString detectFormat(const QString &url);
-    QString createWorkingDir(const QString& fileUrl);
     void sendResult(const QString &url);
     QString getTargetName(const QString& fileUrl, const QString& outDir);
 

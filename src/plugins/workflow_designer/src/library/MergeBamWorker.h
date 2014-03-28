@@ -58,8 +58,6 @@ public slots:
 
 private:
     QString takeUrl();
-    QString detectFormat(const QString &url);
-    QString createWorkingDir(const QString& fileUrl);
     QString getOutputName(const QString& fileUrl);
     void sendResult(const QString &url);
 }; //MergeBamWorker

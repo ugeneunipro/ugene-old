@@ -42,6 +42,8 @@
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
 
+#include "util/SamtoolsWorkersUtils.h"
+
 #include "RmdupBamWorker.h"
 
 namespace U2 {
@@ -51,7 +53,6 @@ const QString RmdupBamWorkerFactory::ACTOR_ID("rmdup-bam");
 static const QString SHORT_NAME( "mb" );
 static const QString INPUT_PORT( "in-file" );
 static const QString OUTPUT_PORT( "out-file" );
-static const QString OUTPUT_SUBDIR( "Rmdup_BAM/" );
 static const QString OUT_MODE_ID( "out-mode" );
 static const QString CUSTOM_DIR_ID( "custom-dir" );
 static const QString OUT_NAME_ID( "out-name" );
@@ -75,11 +76,6 @@ QString RmdupBamPrompter::composeRichDoc() {
 /* RmdupBamWorkerFactory */
 /************************************************************************/
 namespace {
-    enum OutDirectory{
-        FILE_DIRECTORY = 0,
-        WORKFLOW_INTERNAL,
-        CUSTOM
-    };
 
     static const QString DEFAULT_NAME( "Default" );
 }
@@ -123,7 +119,7 @@ void RmdupBamWorkerFactory::init() {
         Descriptor treatReads(TREAT_READS_ID, RmdupBamWorker::tr("Treat as single-end"),
             RmdupBamWorker::tr("Treat paired-end reads and single-end reads (-S)."));
 
-        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FILE_DIRECTORY));
+        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(SamtoolsWorkerUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
         customDirAttr->addRelation(new VisibilityRelation(OUT_MODE_ID, RmdupBamWorker::tr("Custom")));
         a << customDirAttr;
@@ -138,9 +134,9 @@ void RmdupBamWorkerFactory::init() {
         QString fileDir = RmdupBamWorker::tr("Input file");
         QString workflowDir = RmdupBamWorker::tr("Workflow");
         QString customD = RmdupBamWorker::tr("Custom");
-        directoryMap[fileDir] = FILE_DIRECTORY;
-        directoryMap[workflowDir] = WORKFLOW_INTERNAL;
-        directoryMap[customD] = CUSTOM;
+        directoryMap[fileDir] = SamtoolsWorkerUtils::FILE_DIRECTORY;
+        directoryMap[workflowDir] = SamtoolsWorkerUtils::WORKFLOW_INTERNAL;
+        directoryMap[customD] = SamtoolsWorkerUtils::CUSTOM;
         delegates[OUT_MODE_ID] = new ComboBoxDelegate(directoryMap);
 
         delegates[CUSTOM_DIR_ID] = new URLDelegate("", "", false, true);
@@ -177,12 +173,14 @@ Task * RmdupBamWorker::tick() {
         const QString url = takeUrl();
         CHECK(!url.isEmpty(), NULL);
 
-        const QString detectedFormat = detectFormat(url);
-        CHECK(!url.isEmpty(), NULL);
+        const QString detectedFormat = SamtoolsWorkerUtils::detectFormat(url);
+        if(detectedFormat.isEmpty()){
+            monitor()->addError(tr("Unknown file format: ") + url, getActorId());
+            return NULL;
+        }
 
         if(detectedFormat == BaseDocumentFormats::BAM){
-
-            QString outputDir = createWorkingDir(url);
+            const QString outputDir = SamtoolsWorkerUtils::createWorkingDir(url, getValue<int>(OUT_MODE_ID), getValue<QString>(CUSTOM_DIR_ID), context->workingDir());
 
             BamRmdupSetting setting;
             setting.outDir = outputDir;
@@ -190,6 +188,7 @@ Task * RmdupBamWorker::tick() {
             setting.inputUrl = url;
             setting.removeSingleEnd = getValue<bool>(REMOVE_SINGLE_END_ID);
             setting.treatReads = getValue<bool>(TREAT_READS_ID);
+
             Task *t = new SamtoolsRmdupTask(setting);
             connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
             return t;
@@ -230,44 +229,6 @@ void RmdupBamWorker::sl_taskFinished(Task *task) {
     monitor()->addOutputFile(url, getActorId());
 }
 
-QString RmdupBamWorker::createWorkingDir( const QString& fileUrl ){
-    QString result;
-
-    bool useInternal = false;
-
-    int dirMode = getValue<int>(OUT_MODE_ID);
-
-    if(dirMode == FILE_DIRECTORY){
-        result = GUrl(fileUrl).dirPath() + "/";
-    }else if (dirMode == CUSTOM){
-        QString customDir = getValue<QString>(CUSTOM_DIR_ID);
-        if (!customDir.isEmpty()){
-            result = customDir;
-            if (!result.endsWith("/")) {
-                result += "/";
-            }
-        }else{
-            algoLog.error(tr("Result directory is empty, default workflow directory is used"));
-            useInternal = true;
-        }
-    }else{
-        useInternal = true;
-    }
-    
-    if (useInternal){
-        result = context->workingDir();
-        if (!result.endsWith("/")) {
-            result += "/";
-        }
-        result += OUTPUT_SUBDIR;
-    }
-
-    QDir dir(result);
-    if (!dir.exists(result)) {
-        dir.mkdir(result);
-    }
-    return result;
-}
 QString RmdupBamWorker::getTargetName (const QString &fileUrl, const QString &outDir){
     QString name = getValue<QString>(OUT_NAME_ID);
 
@@ -283,18 +244,6 @@ QString RmdupBamWorker::getTargetName (const QString &fileUrl, const QString &ou
 }
 
 
-namespace {
-    QString getFormatId(const FormatDetectionResult &r) {
-        if (NULL != r.format) {
-            return r.format->getFormatId();
-        }
-        if (NULL != r.importer) {
-            return r.importer->getId();
-        }
-        return "";
-    }
-}
-
 QString RmdupBamWorker::takeUrl() {
     const Message inputMessage = getMessageAndSetupScriptValues(inputUrlPort);
     if (inputMessage.isEmpty()) {
@@ -306,28 +255,13 @@ QString RmdupBamWorker::takeUrl() {
     return data[BaseSlots::URL_SLOT().getId()].toString();
 }
 
-QString RmdupBamWorker::detectFormat(const QString &url) {
-    FormatDetectionConfig cfg;
-    cfg.bestMatchesOnly = false;
-    cfg.useImporters = true;
-    cfg.excludeHiddenFormats = false;
-
-    const QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url, cfg);
-    if (formats.empty()) {
-        monitor()->addError(tr("Unknown file format: ") + url, getActorId());
-        return "";
-    }
-
-    return getFormatId(formats.first());
-}
-
 void RmdupBamWorker::sendResult(const QString &url) {
     const Message message(BaseTypes::STRING_TYPE(), url);
     outputUrlPort->put(message);
 }
 
 SamtoolsRmdupTask::SamtoolsRmdupTask(const BamRmdupSetting &settings)
-:Task(QString("Samtools rmdup for &1").arg(settings.inputUrl), TaskFlag_None)
+:Task(QString("Samtools rmdup for %1").arg(settings.inputUrl), TaskFlag_None)
 ,settings(settings)
 {
 

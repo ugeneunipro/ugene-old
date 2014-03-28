@@ -42,6 +42,8 @@
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
 
+#include "util/SamtoolsWorkersUtils.h"
+
 #include "FilterBamWorker.h"
 
 namespace U2 {
@@ -78,12 +80,6 @@ QString FilterBamPrompter::composeRichDoc() {
 /* FilterBamWorkerFactory */
 /************************************************************************/
 namespace {
-    enum OutDirectory{
-        FILE_DIRECTORY = 0,
-        WORKFLOW_INTERNAL,
-        CUSTOM
-    };
-
     static const QString DEFAULT_NAME( "Default" );
 
     QMap<QString, QString> getFilterCodes(){
@@ -165,7 +161,7 @@ void FilterBamWorkerFactory::init() {
         Descriptor flagFilter(FLAG_ID, FilterBamWorker::tr("Skip flag"),
             FilterBamWorker::tr("Skip alignment with the selected items. Select the items in the combobox to configure bit flag. Do not select the items to avoid filtration by this parameter."));
 
-        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FILE_DIRECTORY));
+        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(SamtoolsWorkerUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
         customDirAttr->addRelation(new VisibilityRelation(OUT_MODE_ID, FilterBamWorker::tr("Custom")));
         a << customDirAttr;
@@ -182,9 +178,9 @@ void FilterBamWorkerFactory::init() {
         QString fileDir = FilterBamWorker::tr("Input file");
         QString workflowDir = FilterBamWorker::tr("Workflow");
         QString customD = FilterBamWorker::tr("Custom");
-        directoryMap[fileDir] = FILE_DIRECTORY;
-        directoryMap[workflowDir] = WORKFLOW_INTERNAL;
-        directoryMap[customD] = CUSTOM;
+        directoryMap[fileDir] = SamtoolsWorkerUtils::FILE_DIRECTORY;
+        directoryMap[workflowDir] = SamtoolsWorkerUtils::WORKFLOW_INTERNAL;
+        directoryMap[customD] = SamtoolsWorkerUtils::CUSTOM;
         delegates[OUT_MODE_ID] = new ComboBoxDelegate(directoryMap);
 
         delegates[CUSTOM_DIR_ID] = new URLDelegate("", "", false, true);
@@ -234,12 +230,13 @@ Task * FilterBamWorker::tick() {
         const QString url = takeUrl();
         CHECK(!url.isEmpty(), NULL);
 
-        const QString detectedFormat = detectFormat(url);
-        CHECK(!url.isEmpty(), NULL);
-
+        const QString detectedFormat = SamtoolsWorkerUtils::detectFormat(url);
+        if(detectedFormat.isEmpty()){
+            monitor()->addError(tr("Unknown file format: ") + url, getActorId());
+            return NULL;
+        }
         if(detectedFormat == BaseDocumentFormats::BAM || detectedFormat == BaseDocumentFormats::SAM){
-
-            QString outputDir = createWorkingDir(url);
+            const QString outputDir = SamtoolsWorkerUtils::createWorkingDir(url, getValue<int>(OUT_MODE_ID), getValue<QString>(CUSTOM_DIR_ID), context->workingDir());
 
             BamFilterSetting setting;
             setting.outDir = outputDir;
@@ -290,58 +287,6 @@ void FilterBamWorker::sl_taskFinished(Task *task) {
     monitor()->addOutputFile(url, getActorId());
 }
 
-QString FilterBamWorker::createWorkingDir( const QString& fileUrl ){
-    QString result;
-
-    bool useInternal = false;
-
-    int dirMode = getValue<int>(OUT_MODE_ID);
-
-    if(dirMode == FILE_DIRECTORY){
-        result = GUrl(fileUrl).dirPath() + "/";
-    }else if (dirMode == CUSTOM){
-        QString customDir = getValue<QString>(CUSTOM_DIR_ID);
-        if (!customDir.isEmpty()){
-            result = customDir;
-            if (!result.endsWith("/")) {
-                result += "/";
-            }
-        }else{
-            algoLog.error(tr("Result directory is empty, default workflow directory is used"));
-            useInternal = true;
-        }
-    }else{
-        useInternal = true;
-    }
-    
-    if (useInternal){
-        result = context->workingDir();
-        if (!result.endsWith("/")) {
-            result += "/";
-        }
-        result += OUTPUT_SUBDIR;
-    }
-
-    QDir dir(result);
-    if (!dir.exists(result)) {
-        dir.mkdir(result);
-    }
-    return result;
-}
-
-
-namespace {
-    QString getFormatId(const FormatDetectionResult &r) {
-        if (NULL != r.format) {
-            return r.format->getFormatId();
-        }
-        if (NULL != r.importer) {
-            return r.importer->getId();
-        }
-        return "";
-    }
-}
-
 QString FilterBamWorker::takeUrl() {
     const Message inputMessage = getMessageAndSetupScriptValues(inputUrlPort);
     if (inputMessage.isEmpty()) {
@@ -351,21 +296,6 @@ QString FilterBamWorker::takeUrl() {
 
     const QVariantMap data = inputMessage.getData().toMap();
     return data[BaseSlots::URL_SLOT().getId()].toString();
-}
-
-QString FilterBamWorker::detectFormat(const QString &url) {
-    FormatDetectionConfig cfg;
-    cfg.bestMatchesOnly = false;
-    cfg.useImporters = true;
-    cfg.excludeHiddenFormats = false;
-
-    const QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url, cfg);
-    if (formats.empty()) {
-        monitor()->addError(tr("Unknown file format: ") + url, getActorId());
-        return "";
-    }
-
-    return getFormatId(formats.first());
 }
 
 void FilterBamWorker::sendResult(const QString &url) {

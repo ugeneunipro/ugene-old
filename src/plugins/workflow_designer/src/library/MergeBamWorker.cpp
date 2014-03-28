@@ -43,6 +43,8 @@
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
 
+#include "util/SamtoolsWorkersUtils.h"
+
 #include "MergeBamWorker.h"
 
 namespace U2 {
@@ -52,7 +54,6 @@ const QString MergeBamWorkerFactory::ACTOR_ID("merge-bam");
 static const QString SHORT_NAME( "mb" );
 static const QString INPUT_PORT( "in-file" );
 static const QString OUTPUT_PORT( "out-file" );
-static const QString OUTPUT_SUBDIR( "Merged_BAM/" );
 static const QString OUT_MODE_ID( "out-mode" );
 static const QString CUSTOM_DIR_ID( "custom-dir" );
 static const QString OUT_NAME_ID( "out-name" );
@@ -74,12 +75,6 @@ QString MergeBamPrompter::composeRichDoc() {
 /* MergeBamWorkerFactory */
 /************************************************************************/
 namespace {
-    enum OutDirectory{
-        FILE_DIRECTORY = 0,
-        WORKFLOW_INTERNAL,
-        CUSTOM
-    };
-
     static const QString DEFAULT_NAME( "Default" );
 }
 
@@ -117,7 +112,7 @@ void MergeBamWorkerFactory::init() {
             MergeBamWorker::tr("A name of an output BAM file. If default of empty value is provided the output name is the name of the first BAM file with .merged.bam extention."));
 
 
-        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FILE_DIRECTORY));
+        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(SamtoolsWorkerUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
         customDirAttr->addRelation(new VisibilityRelation(OUT_MODE_ID, MergeBamWorker::tr("Custom")));
         a << customDirAttr;
@@ -130,9 +125,9 @@ void MergeBamWorkerFactory::init() {
         QString fileDir = MergeBamWorker::tr("Input file");
         QString workflowDir = MergeBamWorker::tr("Workflow");
         QString customD = MergeBamWorker::tr("Custom");
-        directoryMap[fileDir] = FILE_DIRECTORY;
-        directoryMap[workflowDir] = WORKFLOW_INTERNAL;
-        directoryMap[customD] = CUSTOM;
+        directoryMap[fileDir] = SamtoolsWorkerUtils::FILE_DIRECTORY;
+        directoryMap[workflowDir] = SamtoolsWorkerUtils::WORKFLOW_INTERNAL;
+        directoryMap[customD] = SamtoolsWorkerUtils::CUSTOM;
         delegates[OUT_MODE_ID] = new ComboBoxDelegate(directoryMap);
 
         delegates[CUSTOM_DIR_ID] = new URLDelegate("", "", false, true);
@@ -169,12 +164,15 @@ Task * MergeBamWorker::tick() {
         const QString url = takeUrl();
         CHECK(!url.isEmpty(), NULL);
 
-        const QString detectedFormat = detectFormat(url);
-        CHECK(!url.isEmpty(), NULL);
+        const QString detectedFormat = SamtoolsWorkerUtils::detectFormat(url);
+        if(detectedFormat.isEmpty()){
+            monitor()->addError(tr("Unknown file format: ") + url, getActorId());
+            return NULL;
+        }
 
         if(detectedFormat == BaseDocumentFormats::BAM){
             if(outputDir.isEmpty()){
-                outputDir = createWorkingDir(url);
+                outputDir = SamtoolsWorkerUtils::createWorkingDir(url, getValue<int>(OUT_MODE_ID), getValue<QString>(CUSTOM_DIR_ID), context->workingDir());
             }
             urls.append(url);
         }
@@ -229,44 +227,6 @@ void MergeBamWorker::sl_taskFinished(Task *task) {
     monitor()->addOutputFile(url, getActorId());
 }
 
-QString MergeBamWorker::createWorkingDir( const QString& fileUrl ){
-    QString result;
-
-    bool useInternal = false;
-
-    int dirMode = getValue<int>(OUT_MODE_ID);
-
-    if(dirMode == FILE_DIRECTORY){
-        result = GUrl(fileUrl).dirPath() + "/";
-    }else if (dirMode == CUSTOM){
-        QString customDir = getValue<QString>(CUSTOM_DIR_ID);
-        if (!customDir.isEmpty()){
-            result = customDir;
-            if (!result.endsWith("/")) {
-                result += "/";
-            }
-        }else{
-            algoLog.error(tr("Merge BAM: result directory is empty, default workflow directory is used"));
-            useInternal = true;
-        }
-    }else{
-        useInternal = true;
-    }
-    
-    if (useInternal){
-        result = context->workingDir();
-        if (!result.endsWith("/")) {
-            result += "/";
-        }
-        result += OUTPUT_SUBDIR;
-    }
-
-    QDir dir(result);
-    if (!dir.exists(result)) {
-        dir.mkdir(result);
-    }
-    return result;
-}
 QString MergeBamWorker::getOutputName (const QString& fileUrl ){
     QString name = getValue<QString>(OUT_NAME_ID);
 
@@ -275,19 +235,6 @@ QString MergeBamWorker::getOutputName (const QString& fileUrl ){
         name = name + ".merged.bam";
     }
     return name;
-}
-
-
-namespace {
-    QString getFormatId(const FormatDetectionResult &r) {
-        if (NULL != r.format) {
-            return r.format->getFormatId();
-        }
-        if (NULL != r.importer) {
-            return r.importer->getId();
-        }
-        return "";
-    }
 }
 
 QString MergeBamWorker::takeUrl() {
@@ -299,21 +246,6 @@ QString MergeBamWorker::takeUrl() {
 
     const QVariantMap data = inputMessage.getData().toMap();
     return data[BaseSlots::URL_SLOT().getId()].toString();
-}
-
-QString MergeBamWorker::detectFormat(const QString &url) {
-    FormatDetectionConfig cfg;
-    cfg.bestMatchesOnly = false;
-    cfg.useImporters = true;
-    cfg.excludeHiddenFormats = false;
-
-    const QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url, cfg);
-    if (formats.empty()) {
-        monitor()->addError(tr("Unknown file format: ") + url, getActorId());
-        return "";
-    }
-
-    return getFormatId(formats.first());
 }
 
 void MergeBamWorker::sendResult(const QString &url) {
