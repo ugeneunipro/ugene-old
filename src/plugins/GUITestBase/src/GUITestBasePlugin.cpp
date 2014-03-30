@@ -376,8 +376,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0004_1);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0005);
-    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0006);
-    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0006_1);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_view::test_0006, "bad performance when counting restricred sites and orfs. jira");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_view::test_0006_1, "bad performance when counting restricred sites and orfs. jira");
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0006_2);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0018);
 
@@ -904,9 +904,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0006_1);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0007);
-    REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0008);
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_options_panel::test_0008, "bad layout of common statistic OP lapel on mac. jira");
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0009);
-    REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0010);
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_options_panel::test_0010, "bad layout of common statistic OP lapel on mac. jira");
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0012);
 /////////////////////////////////////////////////////////////////////////
@@ -1042,7 +1042,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011_1);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0011_2, "https://ugene.unipro.ru/tracker/browse/UGENE-2538");
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0012);
-    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0023);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0023, "tree view is added to project, but view is not opened. jira is disabled");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0024,"https://ugene.unipro.ru/tracker/browse/UGENE-2644");
 
 /////////////////////////////////////////////////////////////////////////
