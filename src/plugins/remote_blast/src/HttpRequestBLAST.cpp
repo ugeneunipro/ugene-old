@@ -159,7 +159,7 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
 
     if(response.indexOf("Status=WAITING")!=-1 || response.indexOf("<BlastOutput>")==-1 || response.indexOf("</BlastOutput>")==-1){
         connectionError = true; 
-        error = QObject::tr("Database couldn't prepare the response");
+        error = QObject::tr("Database couldn't prepare the response. You can increase timeout and perform search again.");
         return;
     }
     output = response;
