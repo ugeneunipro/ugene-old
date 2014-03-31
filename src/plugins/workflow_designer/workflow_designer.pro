@@ -76,6 +76,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/SequenceSplitWorker.h \
            src/library/SequencesToMSAWorker.h \
            src/library/StatisticWorkers.h \
+           src/library/SortBamWorker.h \
            src/library/Text2SequenceWorker.h \
            src/library/WriteAssemblyWorkers.h \
            src/library/WriteVariationWorker.h \
@@ -177,6 +178,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/SequenceSplitWorker.cpp \
            src/library/SequencesToMSAWorker.cpp \
            src/library/StatisticWorkers.cpp \
+           src/library/SortBamWorker.cpp \
            src/library/Text2SequenceWorker.cpp \
            src/library/WriteAssemblyWorkers.cpp \
            src/library/WriteVariationWorker.cpp \

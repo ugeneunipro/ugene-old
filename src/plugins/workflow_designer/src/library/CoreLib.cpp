@@ -58,6 +58,7 @@
 #include "library/MergeBamWorker.h"
 #include "library/FilterBamWorker.h"
 #include "library/RmdupBamWorker.h"
+#include "library/SortBamWorker.h"
 #include "util/WriteSequenceValidator.h"
 
 #include "RemoteDBFetcherWorker.h"
@@ -305,6 +306,7 @@ void CoreLib::init() {
     MergeBamWorkerFactory::init();
     FilterBamWorkerFactory::init();
     RmdupBamWorkerFactory::init();
+    SortBamWorkerFactory::init();
     DASAnnotationWorkerFactory::init();
     ExtractConsensusWorkerFactory::init();
 

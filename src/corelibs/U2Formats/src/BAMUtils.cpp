@@ -258,13 +258,18 @@ inline static qint64 mB2bytes(int mb) {
     return (qint64)mb * 1024 * 1024;
 }
 
-#define INITIAL_SAMTOOLS_MEM_SIZE_MB 500000000
+#define INITIAL_SAMTOOLS_MEM_SIZE_MB 500
 #define SAMTOOLS_MEM_BOOST 5
 
 GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2OpStatus &os) {
     const QByteArray &bamFileName = bamUrl.getURLString().toLocal8Bit();
 
-    QByteArray sortedFileName = sortedBamBaseName.toLocal8Bit() + ".bam";
+    QString baseName = sortedBamBaseName;
+    if(baseName.endsWith(".bam")){
+        baseName = baseName.left(baseName.size() - QString(".bam").size());
+    }
+    QByteArray sortedFileName = baseName.toLocal8Bit() + ".bam";
+
 
     // get memory resource
     AppSettings *appSettings = AppContext::getAppSettings();
@@ -290,13 +295,12 @@ GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2O
         maxMemMB = maxMemMB * 2 / 3;
         CHECK_EXT(maxMemMB > 0, os.setError("Failed to lock enough memory resource"), QString());
     }
-
     // sort bam
     {
         coreLog.details(BAMUtils::tr("Sort bam file: \"%1\" using %2 Mb of memory. Result sorted file is: \"%3\"")
             .arg(QString(bamFileName)).arg(maxMemMB).arg(QString(sortedFileName)));
         size_t maxMemBytes = (size_t)(mB2bytes(maxMemMB)); // maxMemMB < 500 Mb, so the conversation is correct!
-        bam_sort_core(0, bamFileName.constData(), sortedBamBaseName.toLocal8Bit().constData(), maxMemBytes); //maxMemBytes
+        bam_sort_core(0, bamFileName.constData(), baseName.toLocal8Bit().constData(), maxMemBytes); //maxMemBytes
     }
     memory->release(maxMemMB);
 

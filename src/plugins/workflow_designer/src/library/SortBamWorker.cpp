@@ -44,52 +44,50 @@
 
 #include "util/SamtoolsWorkersUtils.h"
 
-#include "RmdupBamWorker.h"
+#include "SortBamWorker.h"
 
 namespace U2 {
 namespace LocalWorkflow {
 
-const QString RmdupBamWorkerFactory::ACTOR_ID("rmdup-bam");
+const QString SortBamWorkerFactory::ACTOR_ID("Sort-bam");
 static const QString SHORT_NAME( "mb" );
 static const QString INPUT_PORT( "in-file" );
 static const QString OUTPUT_PORT( "out-file" );
 static const QString OUT_MODE_ID( "out-mode" );
 static const QString CUSTOM_DIR_ID( "custom-dir" );
 static const QString OUT_NAME_ID( "out-name" );
-static const QString REMOVE_SINGLE_END_ID( "remove-single-end" );
-static const QString TREAT_READS_ID( "treat_reads" );
+static const QString INDEX_ID( "index" );
 
 /************************************************************************/
-/* RmdupBamPrompter */
+/* SortBamPrompter */
 /************************************************************************/
-QString RmdupBamPrompter::composeRichDoc() {
+QString SortBamPrompter::composeRichDoc() {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(INPUT_PORT));
     const Actor* producer = input->getProducer(BaseSlots::URL_SLOT().getId());
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
 
-    QString doc = tr("Remove PCR duplicates of BAM files from %1 with SAMTools rmdup.").arg(producerName);
+    QString doc = tr("Sort BAM file %1 with SAMTools sort.").arg(producerName);
     return doc;
 }
 
 /************************************************************************/
-/* RmdupBamWorkerFactory */
+/* SortBamWorkerFactory */
 /************************************************************************/
 namespace {
-
     static const QString DEFAULT_NAME( "Default" );
 }
 
-void RmdupBamWorkerFactory::init() {
-    Descriptor desc( ACTOR_ID, RmdupBamWorker::tr("Remove duplicates in BAM files"),
-        RmdupBamWorker::tr("Remove PCR duplicates of BAM files using SAMTools rmdup.") );
+void SortBamWorkerFactory::init() {
+    Descriptor desc( ACTOR_ID, SortBamWorker::tr("Sort BAM files"),
+        SortBamWorker::tr("Sort BAM files using SAMTools Sort.") );
 
     QList<PortDescriptor*> p;
     {
-        Descriptor inD(INPUT_PORT, RmdupBamWorker::tr("BAM File"),
-            RmdupBamWorker::tr("Set of BAM files to rmdup"));
-        Descriptor outD(OUTPUT_PORT, RmdupBamWorker::tr("Cleaned BAM File"),
-            RmdupBamWorker::tr("Cleaned BAM file"));
+        Descriptor inD(INPUT_PORT, SortBamWorker::tr("BAM File"),
+            SortBamWorker::tr("Set of BAM files to sort"));
+        Descriptor outD(OUTPUT_PORT, SortBamWorker::tr("Sorted BAM File"),
+            SortBamWorker::tr("Sorted BAM file"));
 
         QMap<Descriptor, DataTypePtr> inM;
         inM[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
@@ -102,38 +100,34 @@ void RmdupBamWorkerFactory::init() {
 
     QList<Attribute*> a;
     {
-        Descriptor outDir(OUT_MODE_ID, RmdupBamWorker::tr("Output directory"),
-            RmdupBamWorker::tr("Select an output directory. <b>Custom</b> - specify the output directory in the 'Custom directory' parameter. "
+        Descriptor outDir(OUT_MODE_ID, SortBamWorker::tr("Output directory"),
+            SortBamWorker::tr("Select an output directory. <b>Custom</b> - specify the output directory in the 'Custom directory' parameter. "
             "<b>Workflow</b> - internal workflow directory. "
             "<b>Input file</b> - the directory of the input file."));
 
-        Descriptor customDir(CUSTOM_DIR_ID, RmdupBamWorker::tr("Custom directory"),
-            RmdupBamWorker::tr("Select the custom output directory."));
+        Descriptor customDir(CUSTOM_DIR_ID, SortBamWorker::tr("Custom directory"),
+            SortBamWorker::tr("Select the custom output directory."));
 
-        Descriptor outName(OUT_NAME_ID, RmdupBamWorker::tr("Output BAM name"),
-            RmdupBamWorker::tr("A name of an output BAM file. If default of empty value is provided the output name is the name of the first BAM file with .nodup.bam extention."));
+        Descriptor outName(OUT_NAME_ID, SortBamWorker::tr("Output BAM name"),
+            SortBamWorker::tr("A name of an output BAM file. If default of empty value is provided the output name is the name of the first BAM file with .sorted.bam extention."));
 
-        Descriptor removeSE(REMOVE_SINGLE_END_ID, RmdupBamWorker::tr("Remove for single-end reads"),
-            RmdupBamWorker::tr("Remove duplicate for single-end reads. By default, the command works for paired-end reads only (-s)."));
-
-        Descriptor treatReads(TREAT_READS_ID, RmdupBamWorker::tr("Treat as single-end"),
-            RmdupBamWorker::tr("Treat paired-end reads and single-end reads (-S)."));
+        Descriptor index(INDEX_ID, SortBamWorker::tr("Build index"),
+            SortBamWorker::tr("Build index for the sorted file with SAMTools index."));
 
         a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(SamtoolsWorkerUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
-        customDirAttr->addRelation(new VisibilityRelation(OUT_MODE_ID, RmdupBamWorker::tr("Custom")));
+        customDirAttr->addRelation(new VisibilityRelation(OUT_MODE_ID, SortBamWorker::tr("Custom")));
         a << customDirAttr;
         a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(DEFAULT_NAME));
-        a << new Attribute( removeSE, BaseTypes::BOOL_TYPE(), false, QVariant(false));
-        a << new Attribute( treatReads, BaseTypes::BOOL_TYPE(), false, QVariant(false));
+        a << new Attribute( index, BaseTypes::BOOL_TYPE(), false, QVariant(true));
     }
 
     QMap<QString, PropertyDelegate*> delegates;
     {
         QVariantMap directoryMap;
-        QString fileDir = RmdupBamWorker::tr("Input file");
-        QString workflowDir = RmdupBamWorker::tr("Workflow");
-        QString customD = RmdupBamWorker::tr("Custom");
+        QString fileDir = SortBamWorker::tr("Input file");
+        QString workflowDir = SortBamWorker::tr("Workflow");
+        QString customD = SortBamWorker::tr("Custom");
         directoryMap[fileDir] = SamtoolsWorkerUtils::FILE_DIRECTORY;
         directoryMap[workflowDir] = SamtoolsWorkerUtils::WORKFLOW_INTERNAL;
         directoryMap[customD] = SamtoolsWorkerUtils::CUSTOM;
@@ -144,17 +138,17 @@ void RmdupBamWorkerFactory::init() {
 
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     proto->setEditor(new DelegateEditor(delegates));
-    proto->setPrompter(new RmdupBamPrompter());
+    proto->setPrompter(new SortBamPrompter());
 
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CONVERTERS(), proto);
     DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
-    localDomain->registerEntry(new RmdupBamWorkerFactory());
+    localDomain->registerEntry(new SortBamWorkerFactory());
 }
 
 /************************************************************************/
-/* RmdupBamWorker */
+/* SortBamWorker */
 /************************************************************************/
-RmdupBamWorker::RmdupBamWorker(Actor *a)
+SortBamWorker::SortBamWorker(Actor *a)
 :BaseWorker(a)
 ,inputUrlPort(NULL)
 ,outputUrlPort(NULL)
@@ -163,12 +157,12 @@ RmdupBamWorker::RmdupBamWorker(Actor *a)
 
 }
 
-void RmdupBamWorker::init() {
+void SortBamWorker::init() {
     inputUrlPort = ports.value(INPUT_PORT);
     outputUrlPort = ports.value(OUTPUT_PORT);
 }
 
-Task * RmdupBamWorker::tick() {
+Task * SortBamWorker::tick() {
     if (inputUrlPort->hasMessage()) {
         const QString url = takeUrl();
         CHECK(!url.isEmpty(), NULL);
@@ -182,14 +176,13 @@ Task * RmdupBamWorker::tick() {
         if(detectedFormat == BaseDocumentFormats::BAM){
             const QString outputDir = SamtoolsWorkerUtils::createWorkingDir(url, getValue<int>(OUT_MODE_ID), getValue<QString>(CUSTOM_DIR_ID), context->workingDir());
 
-            BamRmdupSetting setting;
+            BamSortSetting setting;
             setting.outDir = outputDir;
             setting.outName = getTargetName(url, outputDir);
             setting.inputUrl = url;
-            setting.removeSingleEnd = getValue<bool>(REMOVE_SINGLE_END_ID);
-            setting.treatReads = getValue<bool>(TREAT_READS_ID);
+            setting.index = getValue<bool>(INDEX_ID);
 
-            Task *t = new SamtoolsRmdupTask(setting);
+            Task *t = new SamtoolsSortTask(setting);
             connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
             return t;
         }
@@ -202,23 +195,23 @@ Task * RmdupBamWorker::tick() {
     return NULL;
 }
 
-void RmdupBamWorker::cleanup() {
+void SortBamWorker::cleanup() {
     outUrls.clear();
 }
 
 namespace {
     QString getTargetUrl(Task *task) {
 
-        SamtoolsRmdupTask *rmdupTask = dynamic_cast<SamtoolsRmdupTask*>(task);
+        SamtoolsSortTask *sortTask = dynamic_cast<SamtoolsSortTask*>(task);
 
-        if (NULL != rmdupTask) {
-            return rmdupTask->getResult();
+        if (NULL != sortTask) {
+            return sortTask->getResult();
         }
         return "";
     }
 }
 
-void RmdupBamWorker::sl_taskFinished(Task *task) {
+void SortBamWorker::sl_taskFinished(Task *task) {
     CHECK(!task->hasError(), );
     CHECK(!task->isCanceled(), );
 
@@ -229,12 +222,12 @@ void RmdupBamWorker::sl_taskFinished(Task *task) {
     monitor()->addOutputFile(url, getActorId());
 }
 
-QString RmdupBamWorker::getTargetName (const QString &fileUrl, const QString &outDir){
+QString SortBamWorker::getTargetName (const QString &fileUrl, const QString &outDir){
     QString name = getValue<QString>(OUT_NAME_ID);
 
     if(name == DEFAULT_NAME || name.isEmpty()){
         name = QFileInfo(fileUrl).fileName();
-        name = name + ".nodup.bam";
+        name = name + ".sorted.bam";
     }
     if(outUrls.contains(outDir + name)){
         name.append(QString("_%1").arg(outUrls.size()));
@@ -244,7 +237,7 @@ QString RmdupBamWorker::getTargetName (const QString &fileUrl, const QString &ou
 }
 
 
-QString RmdupBamWorker::takeUrl() {
+QString SortBamWorker::takeUrl() {
     const Message inputMessage = getMessageAndSetupScriptValues(inputUrlPort);
     if (inputMessage.isEmpty()) {
         outputUrlPort->transit();
@@ -255,19 +248,19 @@ QString RmdupBamWorker::takeUrl() {
     return data[BaseSlots::URL_SLOT().getId()].toString();
 }
 
-void RmdupBamWorker::sendResult(const QString &url) {
+void SortBamWorker::sendResult(const QString &url) {
     const Message message(BaseTypes::STRING_TYPE(), url);
     outputUrlPort->put(message);
 }
 
-SamtoolsRmdupTask::SamtoolsRmdupTask(const BamRmdupSetting &settings)
-:Task(QString("Samtools rmdup for %1").arg(settings.inputUrl), TaskFlag_None)
+SamtoolsSortTask::SamtoolsSortTask(const BamSortSetting &settings)
+:Task(QString("Samtools sort for %1").arg(settings.inputUrl), TaskFlag_None)
 ,settings(settings)
 {
 
 }
 
-void SamtoolsRmdupTask::prepare(){
+void SamtoolsSortTask::prepare(){
     if (settings.inputUrl.isEmpty()){
         setError(tr("No assembly URL to filter"));
         return ;
@@ -280,11 +273,11 @@ void SamtoolsRmdupTask::prepare(){
     }
 }
 
-void SamtoolsRmdupTask::run(){
-    BAMUtils::rmdupBam(settings.inputUrl, settings.outDir + settings.outName, stateInfo, settings.removeSingleEnd, settings.treatReads);
+void SamtoolsSortTask::run(){
+    resultUrl = BAMUtils::sortBam(settings.inputUrl, settings.outDir + settings.outName, stateInfo).getURLString();
     CHECK_OP(stateInfo, );
 
-    resultUrl = settings.outDir + settings.outName;
+    BAMUtils::createBamIndex(resultUrl, stateInfo);
 }
 
 } //LocalWorkflow
