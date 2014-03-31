@@ -6,21 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>208</width>
-    <height>117</height>
+    <width>251</width>
+    <height>135</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QCheckBox" name="checkShowHideAnnots">
-     <property name="text">
-      <string>Show annotations of this type</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QCheckBox" name="checkShowOnTranslation">
      <property name="text">
@@ -31,17 +24,17 @@
    <item row="3" column="0">
     <widget class="QLineEdit" name="editQualifiers"/>
    </item>
+   <item row="0" column="0">
+    <widget class="QCheckBox" name="checkShowHideAnnots">
+     <property name="text">
+      <string>Show annotations of this type</string>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QCheckBox" name="checkVisualQualifier">
      <property name="text">
       <string>Show value of qualifier:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::NoButton</set>
      </property>
     </widget>
    </item>

@@ -30,7 +30,6 @@
 #include <U2View/MSAEditorConsensusArea.h>
 
 #include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
-#include <U2Gui/HelpButton.h>
 
 
 namespace U2 {
@@ -39,7 +38,6 @@ MSAGeneralTab::MSAGeneralTab(MSAEditor* _msa) : msa(_msa) {
     SAFE_POINT(NULL != msa, "MSA Editor not defined.", );
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227131");
 
     ShowHideSubgroupWidget* alignmentInfo = new ShowHideSubgroupWidget("ALIGNMENT_INFO", tr("Alignment info"), alignmentInfoWidget, true);
     ShowHideSubgroupWidget* consensusMode = new ShowHideSubgroupWidget("CONSENSUS_MODE", tr("Consensus mode"), consensusModeWidget, true);

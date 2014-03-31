@@ -34,7 +34,6 @@
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/PanView.h>
 #include <limits.h>
-#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -142,18 +141,13 @@ void AnnotHighlightWidget::initLayout()
         sl_onAnnotationSelectionChanged();
     }
 
-    QHBoxLayout* helpLayout = new QHBoxLayout();
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
-    helpLayout->addWidget(buttonBox);
-    new HelpButton(this, buttonBox, "4227350");
-
     // Init main layout
     mainLayout->addWidget(noAnnotTypesLabel);
     mainLayout->addWidget(annotTreeTitle);
     mainLayout->addLayout(treeLayout);
     mainLayout->addLayout(settingsLayout);
     mainLayout->addLayout(buttonsLayout);
-    mainLayout->addLayout(helpLayout);
+
     setLayout(mainLayout);
 }
 

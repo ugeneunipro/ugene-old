@@ -96,10 +96,6 @@ OptionsPanelWidget::OptionsPanelWidget()
         "border-color: palette(shadow);"
         " }");
 
-    QSpacerItem* optionsWidgetsSpacer = new QSpacerItem(0, 0,
-        QSizePolicy::Minimum, QSizePolicy::Expanding);
-    optionsLayout->addItem(optionsWidgetsSpacer);
-
     optionsScrollArea->setWidget(optionsWidget);
 
     // The widget is used to add additional decoration to the groups panel
@@ -141,7 +137,10 @@ GroupHeaderImageWidget* OptionsPanelWidget::createHeaderImageWidget(const QStrin
 }
 
 
-GroupOptionsWidget* OptionsPanelWidget::createOptionsWidget(const QString& groupId, const QString& title, QWidget* _widget, QList<QWidget*> commonWidgets)
+GroupOptionsWidget* OptionsPanelWidget::createOptionsWidget(const QString& groupId,
+                                                            const QString& title,
+                                                            const QString& documentationPage,
+                                                            QWidget* _widget, QList<QWidget*> commonWidgets)
 {
     SAFE_POINT(NULL != _widget, "NULL main widget!",  NULL);
     QWidget *innerWidgets = new QWidget;
@@ -158,7 +157,7 @@ GroupOptionsWidget* OptionsPanelWidget::createOptionsWidget(const QString& group
 
     innerWidgets->setLayout(layout);
 
-    GroupOptionsWidget* groupWidget = new GroupOptionsWidget(groupId, title, innerWidgets);
+    GroupOptionsWidget* groupWidget = new GroupOptionsWidget(groupId, title, documentationPage, innerWidgets);
 
     // Add widget to the layout and "parent" it
     optionsLayout->insertWidget(0, groupWidget);

@@ -66,7 +66,10 @@ public:
      * Creates a new options widget and owns it by putting into the layout.
      * Additional (common) widgets, if any, are put below the widget.
      */
-    GroupOptionsWidget* createOptionsWidget(const QString& groupId, const QString& title, QWidget* widget, QList<QWidget*> commonWidgets);
+    GroupOptionsWidget* createOptionsWidget(const QString& groupId,
+                                            const QString& title,
+                                            const QString& documentaionLink,
+                                            QWidget* widget, QList<QWidget*> commonWidgets);
 
     /** Shows/hides the options scroll area widget (the left part of the OP) */
     void openOptionsPanel();

@@ -55,7 +55,7 @@ private:
     QComboBox *highlightingScheme;
     QLabel *hint;
     QCheckBox *useDots;
-    QPushButton *exportHighlightning;
+    QToolButton *exportHighlightning;
 };
 
 } // namespace

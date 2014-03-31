@@ -37,7 +37,7 @@ namespace U2 {
 class GroupOptionsWidget : public QWidget
 {
 public:
-    GroupOptionsWidget(const QString& groupId, const QString& title, QWidget* widget);
+    GroupOptionsWidget(const QString& groupId, const QString& title, const QString& documentationPage, QWidget* widget);
 
     inline const QString& getGroupId() { return groupId; }
     inline static int getWidgetWidth() { return WIDGET_WIDTH; }

@@ -143,7 +143,8 @@ void OptionsPanel::openOptionsGroup(const QString& groupId)
     }
 
     // Create the tab widget
-    widget->createOptionsWidget(groupId, parameters.getTitle(), opWidgetFactory->createWidget(objView), commonWidgets);
+    widget->createOptionsWidget(groupId, parameters.getTitle(), parameters.getDocumentationPage(),
+                                opWidgetFactory->createWidget(objView), commonWidgets);
     headerWidget->setHeaderSelected();
     activeGroupId = groupId;
 }

@@ -44,7 +44,6 @@
 #include <U2Gui/ShowHideSubgroupWidget.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/GUIUtils.h>
-#include <U2Gui/HelpButton.h>
 
 
 namespace U2 {
@@ -116,10 +115,6 @@ DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv)
 ,getIdsTask(NULL)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227131");
-    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Fetch annotations"));
-
-    annotateButton = buttonBox->button(QDialogButtonBox::Ok);
 
     initialize();
     connectSignals();
@@ -257,9 +252,8 @@ void DasOptionsPanelWidget::sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSeq
     }
 
     // Update region selector widget
-    disconnect(SIGNAL(si_onSelectionChanged(GSelection*)),
-               this,
-               SLOT(sl_onSelectionChanged(GSelection*)));
+    disconnect(this,
+               SLOT(sl_onSelectionChanged(LRegionsSelection*,QVector<U2Region>,QVector<U2Region>)));
 
     selection = ctx->getSequenceSelection();
 

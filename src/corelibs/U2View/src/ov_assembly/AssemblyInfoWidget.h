@@ -55,6 +55,7 @@ private:
     static const QString GROUP_ID;
     static const QString GROUP_ICON_STR;
     static const QString GROUP_TITLE;
+    static const QString GROUP_DOC_PAGE;
 };
 
 } // namespace

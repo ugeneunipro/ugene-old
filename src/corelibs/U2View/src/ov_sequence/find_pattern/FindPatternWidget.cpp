@@ -47,7 +47,6 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Formats/FastaFormat.h>
 #include <U2Formats/GenbankFeatures.h>
-#include <U2Gui/HelpButton.h>
 
 
 const QString NEW_LINE_SYMBOL = "\n";
@@ -369,10 +368,6 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
     : annotatedDnaView(_annotatedDnaView)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227320");
-    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
-
-    btnSearch = buttonBox->button(QDialogButtonBox::Ok);
 
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     if (activeContext != 0) {
@@ -454,7 +449,7 @@ void FindPatternWidget::initAlgorithmLayout()
     }
     boxAlgorithm->addItem(tr("Regular expression"), FindAlgorithmPatternSettings_RegExp);
 
-    layoutMismatch = new QHBoxLayout(this);
+    layoutMismatch = new QHBoxLayout();
 
     lblMatch = new QLabel(tr("Should match"));
 

@@ -27,7 +27,6 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 #include "U2View/MSAEditorDataList.h"
-#include <U2Gui/HelpButton.h>
 
 
 namespace U2 {
@@ -52,8 +51,6 @@ SeqStatisticsWidget::SeqStatisticsWidget(MSAEditor* m):msa(m){
 
     distancesStatisticsGroup = new QWidget(this);
     ui.setupUi(distancesStatisticsGroup);
-
-    new HelpButton(this, ui.buttonBox, "4227131");
 
     QWidget * similarityGroup = new ShowHideSubgroupWidget("REFERENCE", tr("Distances column"), distancesStatisticsGroup, true);
     updateWidgetsSettings();

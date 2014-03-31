@@ -37,16 +37,18 @@ enum ObjectViewType {ObjViewType_SequenceView, ObjViewType_AlignmentEditor, ObjV
 struct U2GUI_EXPORT OPGroupParameters
 {
 public:
-    OPGroupParameters(QString groupId, QPixmap headerImage, QString title);
+    OPGroupParameters(QString groupId, QPixmap headerImage, QString title, QString documentationPage);
 
     inline QString getGroupId() { return groupId; }
     inline QPixmap getIcon() { return groupIcon; }
     inline QString getTitle() { return groupTitle; }
+    inline QString getDocumentationPage() { return groupDocumentationPage; }
 
 private:
     QString groupId;
     QPixmap groupIcon;
     QString groupTitle;
+    QString groupDocumentationPage;
 };
 
 class U2GUI_EXPORT OPFactoryFilterVisitorInterface{

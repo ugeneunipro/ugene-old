@@ -26,7 +26,6 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
-#include <U2Gui/HelpButton.h>
 
 
 namespace U2 {
@@ -96,13 +95,6 @@ AssemblyInfoWidget::AssemblyInfoWidget(AssemblyBrowser *browser, QWidget *p)
     QWidget * infoGroup = new ShowHideSubgroupWidget("INFO", tr("Assembly Information"), asmWidget, true);
     mainLayout->addWidget(infoGroup);
 
-    QHBoxLayout* helpLayout = new QHBoxLayout();
-    helpLayout->setContentsMargins(0, 5, 0, 0);
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
-    helpLayout->addWidget(buttonBox);
-    new HelpButton(this, buttonBox, "4227559");
-    mainLayout->addLayout(helpLayout);
-
     QByteArray md5 = model->getReferenceMd5(st);
     QByteArray species = model->getReferenceSpecies(st);
     QString uri = model->getReferenceUri(st);
@@ -130,6 +122,7 @@ AssemblyInfoWidget::AssemblyInfoWidget(AssemblyBrowser *browser, QWidget *p)
 const QString AssemblyInfoWidgetFactory::GROUP_ID = "OP_ASS_INFO";
 const QString AssemblyInfoWidgetFactory::GROUP_ICON_STR = ":core/images/chart_bar.png";
 const QString AssemblyInfoWidgetFactory::GROUP_TITLE = QString(tr("Assembly Statistics"));
+const QString AssemblyInfoWidgetFactory::GROUP_DOC_PAGE = "4227559";
 
 
 AssemblyInfoWidgetFactory::AssemblyInfoWidgetFactory()
@@ -156,7 +149,7 @@ QWidget* AssemblyInfoWidgetFactory::createWidget(GObjectView* objView)
 
 OPGroupParameters AssemblyInfoWidgetFactory::getOPGroupParameters()
 {
-    return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE);
+    return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE, GROUP_DOC_PAGE);
 }
 
 

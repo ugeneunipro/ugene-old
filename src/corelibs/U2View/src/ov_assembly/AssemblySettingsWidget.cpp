@@ -27,7 +27,6 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
-#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -211,13 +210,6 @@ QWidget * AssemblySettingsWidget::createRulerSettings() {
     createTwoWayBinding(showCoverage, coverageAct);
     layout->addWidget(showCoverage);
 
-    QHBoxLayout* helpLayout = new QHBoxLayout();
-    helpLayout->setContentsMargins(0, 5, 0, 0);
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
-    helpLayout->addWidget(buttonBox);
-    new HelpButton(this, buttonBox, "4227557");
-    layout->addLayout(helpLayout);
-
     return group;
 }
 
@@ -228,6 +220,7 @@ QWidget * AssemblySettingsWidget::createRulerSettings() {
 const QString AssemblySettingsWidgetFactory::GROUP_ID = "OP_ASS_SETTINGS";
 const QString AssemblySettingsWidgetFactory::GROUP_ICON_STR = ":core/images/settings2.png";
 const QString AssemblySettingsWidgetFactory::GROUP_TITLE = QString(tr("Assembly Browser Settings"));
+const QString AssemblySettingsWidgetFactory::GROUP_DOC_PAGE = "4227557";
 
 
 AssemblySettingsWidgetFactory::AssemblySettingsWidgetFactory()
@@ -254,7 +247,7 @@ QWidget* AssemblySettingsWidgetFactory::createWidget(GObjectView* objView)
 
 OPGroupParameters AssemblySettingsWidgetFactory::getOPGroupParameters()
 {
-    return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE);
+    return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE, GROUP_DOC_PAGE);
 }
 
 

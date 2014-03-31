@@ -65,7 +65,6 @@
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QHBoxLayout>
 #endif
-#include <U2Gui/HelpButton.h>
 
 
 inline U2::U2DataId getSequenceIdByRowId( U2::MSAEditor* msa, qint64 rowId, U2::U2OpStatus &os ) {
@@ -89,9 +88,6 @@ PairAlign::PairAlign(MSAEditor* _msa) : msa(_msa), pairwiseAlignmentWidgetsSetti
     SAFE_POINT(NULL != pairwiseAlignmentWidgetsSettings, "pairwiseAlignmentWidgetsSettings is NULL.", );
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227131");
-    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
-    alignButton = buttonBox->button(QDialogButtonBox::Ok);
 
     firstSeqSelectorWC = new SequenceSelectorWidgetController(msa);
     secondSeqSelectorWC = new SequenceSelectorWidgetController(msa);

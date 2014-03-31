@@ -26,10 +26,11 @@
 
 namespace U2 {
 
-OPGroupParameters::OPGroupParameters(QString _groupId, QPixmap headerImage, QString title)
-    :  groupId(_groupId),
+OPGroupParameters::OPGroupParameters(QString groupId, QPixmap headerImage, QString title, QString documentationPage)
+    :  groupId(groupId),
        groupIcon(headerImage),
-       groupTitle(title)
+       groupTitle(title),
+       groupDocumentationPage(documentationPage)
 {
 }
 

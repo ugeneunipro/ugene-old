@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>230</width>
-    <height>251</height>
+    <height>302</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -94,7 +94,16 @@
             <string>Profile mode</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
-            <property name="margin">
+            <property name="leftMargin">
+             <number>5</number>
+            </property>
+            <property name="topMargin">
+             <number>5</number>
+            </property>
+            <property name="rightMargin">
+             <number>5</number>
+            </property>
+            <property name="bottomMargin">
              <number>5</number>
             </property>
             <item>
@@ -170,13 +179,6 @@
        </widget>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::NoButton</set>
-     </property>
     </widget>
    </item>
   </layout>

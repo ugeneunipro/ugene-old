@@ -25,7 +25,6 @@
 #include <U2View/MSAColorScheme.h>
 #include <U2View/MSAEditorSequenceArea.h>
 #include <U2Core/AppContext.h>
-#include <U2Gui/HelpButton.h>
 
 namespace U2 {
 
@@ -78,14 +77,14 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
 
     useDots = new QCheckBox(tr("Use dots"));
 
-    //exportHighlightning = new QToolButton();
-    //exportHighlightning->setText(tr("Export"));
-    //exportHighlightning->setObjectName("exportHighlightning");
-    
-    //QWidget *buttonAndSpacer = new QWidget(this);
-    //QHBoxLayout * layout2 = initHBoxLayout(buttonAndSpacer);
-    //layout2->addWidget(exportHighlightning);
-    //layout2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    exportHighlightning = new QToolButton();
+    exportHighlightning->setText(tr("Export"));
+    exportHighlightning->setObjectName("exportHighlightning");
+
+    QWidget *buttonAndSpacer = new QWidget(this);
+    QHBoxLayout * layout2 = initHBoxLayout(buttonAndSpacer);
+    layout2->addWidget(exportHighlightning);
+    layout2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
     layout->setSpacing(ITEMS_SPACING);
     layout->addSpacing(TITLE_SPACING);  
@@ -95,7 +94,7 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
 #ifdef Q_OS_MAC
     layout->addSpacerItem(new QSpacerItem(40, 8, QSizePolicy::Expanding, QSizePolicy::Minimum));
 #endif
-    //layout->addWidget(buttonAndSpacer);
+    layout->addWidget(buttonAndSpacer);
 
     return group;
 }
@@ -109,14 +108,6 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m):msa(m){
 
     QWidget * highlightingGroup = new ShowHideSubgroupWidget("HIGHLIGHTING", tr("Highlighting"), createHighlightingGroup(), true);
     mainLayout->addWidget(highlightingGroup);
-
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal);
-    exportHighlightning = buttonBox->button(QDialogButtonBox::Ok);
-    exportHighlightning->setText(tr("Export"));
-    exportHighlightning->setObjectName("exportHighlightning");
-
-    new HelpButton(this, buttonBox, "4227222");
-    mainLayout->addWidget(buttonBox);
 
     seqArea = msa->getUI()->getSequenceArea();
 

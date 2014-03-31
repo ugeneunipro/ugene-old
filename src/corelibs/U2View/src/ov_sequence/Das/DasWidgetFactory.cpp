@@ -32,6 +32,7 @@ namespace U2 {
 const QString DasWidgetFactory::GROUP_ID = "OP_DAS";
 const QString DasWidgetFactory::GROUP_ICON_STR = ":core/images/regions.png";
 const QString DasWidgetFactory::GROUP_TITLE = QString(tr("DAS Annotations"));
+const QString DasWidgetFactory::GROUP_DOC_PAGE = "4227131";
 
 
 DasWidgetFactory::DasWidgetFactory()
@@ -58,7 +59,7 @@ QWidget* DasWidgetFactory::createWidget(GObjectView* objView)
 
 OPGroupParameters DasWidgetFactory::getOPGroupParameters()
 {
-    return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE);
+    return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE, GROUP_DOC_PAGE);
 }
 
 bool DasWidgetFactory::passFiltration( OPFactoryFilterVisitorInterface* filter ){

@@ -20,12 +20,13 @@
  */
 
 #include "GroupOptionsWidget.h"
+#include <U2Gui/HelpButton.h>
 
 
 namespace U2 {
 
 
-GroupOptionsWidget::GroupOptionsWidget(const QString& _groupId, const QString& _title, QWidget* _widget)
+GroupOptionsWidget::GroupOptionsWidget(const QString& _groupId, const QString& _title, const QString& documentationPage, QWidget* _widget)
     : groupId(_groupId),
       widget(_widget),
       title(_title)
@@ -53,6 +54,20 @@ GroupOptionsWidget::GroupOptionsWidget(const QString& _groupId, const QString& _
     mainLayout->setSpacing(0);
     mainLayout->addWidget(titleWidget);
     mainLayout->addWidget(widget);
+
+    QPushButton *helpButton = new QPushButton("Help", this);
+    helpButton->setMaximumWidth(60);
+    new HelpButton(this, helpButton, documentationPage);
+    QSpacerItem *spacer = new QSpacerItem(WIDGET_WIDTH, 0, QSizePolicy::Maximum, QSizePolicy::Expanding);
+    mainLayout->addSpacerItem(spacer);
+
+    QHBoxLayout *helpLayout = new QHBoxLayout();
+    helpLayout->addWidget(helpButton, 0, Qt::AlignRight);
+    helpLayout->setContentsMargins(0, 0, 10, 0);
+
+    mainLayout->addLayout(helpLayout);
+    mainLayout->setAlignment(helpLayout, Qt::AlignBottom);
+
     setLayout(mainLayout);
 
     setFocusProxy(widget);

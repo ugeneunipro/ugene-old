@@ -28,7 +28,6 @@
 
 #include <U2Gui/PositionSelector.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
-#include <U2Gui/HelpButton.h>
 
 
 namespace U2 {
@@ -60,14 +59,6 @@ AssemblyNavigationWidget::AssemblyNavigationWidget(AssemblyBrowser *_browser, QW
     CoveredRegionsLabel * coveredLabel = new CoveredRegionsLabel(browser, this);
     QWidget * coveredGroup = new ShowHideSubgroupWidget("COVERED", tr("Most Covered Regions"), coveredLabel, true);
     mainLayout->addWidget(coveredGroup);
-
-    QHBoxLayout* helpLayout = new QHBoxLayout();
-    helpLayout->setContentsMargins(0, 5, 0, 0);
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
-    helpLayout->addWidget(buttonBox);
-    new HelpButton(this, buttonBox, "4227555");
-    mainLayout->addLayout(helpLayout);
-
 }
 
 void AssemblyNavigationWidget::sl_updateZoomingState(){
@@ -135,6 +126,7 @@ void CoveredRegionsLabel::sl_updateContent() {
 const QString AssemblyNavigationWidgetFactory::GROUP_ID = "OP_ASS_NAVIGATION";
 const QString AssemblyNavigationWidgetFactory::GROUP_ICON_STR = ":core/images/goto.png";
 const QString AssemblyNavigationWidgetFactory::GROUP_TITLE = QString(tr("Navigation"));
+const QString AssemblyNavigationWidgetFactory::GROUP_DOC_PAGE = "4227555";
 
 
 AssemblyNavigationWidgetFactory::AssemblyNavigationWidgetFactory()
@@ -161,7 +153,7 @@ QWidget* AssemblyNavigationWidgetFactory::createWidget(GObjectView* objView)
 
 OPGroupParameters AssemblyNavigationWidgetFactory::getOPGroupParameters()
 {
-    return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE);
+    return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE, GROUP_DOC_PAGE);
 }
 
 
