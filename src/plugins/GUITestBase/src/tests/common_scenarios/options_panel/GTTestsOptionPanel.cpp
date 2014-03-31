@@ -369,12 +369,11 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     QLabel *l = w->findChild<QLabel*>();
     CHECK_SET_ERR(l != NULL, "No child label in Common Statistics widget");
-
     QString s = QString("<table cellspacing=5>"
                       "<tr><td><b>Length: </b></td><td>199 950 </td></tr>"
                       "<tr><td><b>GC Content: </b></td><td>38.84%</td></tr>"
                       "<tr><td><b>Molar Weight: </b></td><td>61730585.82 Da</td></tr>"
-                      "<tr><td><b>Molat Ext. Coef: </b></td><td>2223359500 I/") + QChar(0x2026)
+                      "<tr><td><b>Molat Ext. Coef: </b></td><td>2223359500 I/mol")
             + QString("</td></tr>"
                       "<tr><td><b>Melting TM: </b></td><td>80.82 C</td></tr>"
                       "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>0.00</td></tr>"
@@ -383,7 +382,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     GTGlobals::sleep(1000);
 
-    CHECK_SET_ERR(l->text() == s, "Found: " + l->text());
+    CHECK_SET_ERR(l->text() == s,"Expected: "+ s + "\nFound: " + l->text());
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0009) {
@@ -419,12 +418,11 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 
     QLabel *l = w->findChild<QLabel*>();
     CHECK_SET_ERR(l != NULL, "No child label in Common Statistics widget");
-
     QString s = QString("<table cellspacing=5>"
                       "<tr><td><b>Length: </b></td><td>199 950 </td></tr>"
                       "<tr><td><b>GC Content: </b></td><td>38.84%</td></tr>"
                       "<tr><td><b>Molar Weight: </b></td><td>61730585.82 Da</td></tr>"
-                      "<tr><td><b>Molat Ext. Coef: </b></td><td>2223359500 I/") + QChar(0x2026)
+                      "<tr><td><b>Molat Ext. Coef: </b></td><td>2223359500 I/mol")
             + QString("</td></tr>"
                       "<tr><td><b>Melting TM: </b></td><td>80.82 C</td></tr>"
                       "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>0.00</td></tr>"
@@ -434,7 +432,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
     QString labelText = l->text();
 
     GTGlobals::sleep(1000);
-    CHECK_SET_ERR(l->text() == s, "Found: " + l->text());
+    CHECK_SET_ERR(l->text() == s,"Expected: "+ s + "\nFound: " + l->text());
 
     // select sequence region
     GTUtilsSequenceView::selectSequenceRegion(os, 1, 40);
