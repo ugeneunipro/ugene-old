@@ -164,9 +164,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTMouseDriver::click(os);
 
     GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogFiller(os, "",
-        "if(size(in_seq) >= 10000) { \
-            out_seq = in_seq; \
-        }"));
+        "if(size(in_seq) >= 10000) \{out_seq = in_seq;\}"));
     GTWidget::click(os, GTAction::button(os, "editScriptAction"));
 
     WorkflowProcessItem *script = GTUtilsWorkflowDesigner::getWorker(os, "workflow_scripting_test_0004");
