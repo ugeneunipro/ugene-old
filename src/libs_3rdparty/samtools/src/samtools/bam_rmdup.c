@@ -180,7 +180,11 @@ int bam_rmdup(int argc, char *argv[])
 {
 	int c, is_se = 0, force_se = 0;
 	samfile_t *in, *out;
-	while ((c = getopt(argc, argv, "sS")) >= 0) {
+#ifdef Q_OS_WIN 
+    while ((c = getopt()) >= 0) { //this code never been called so it just fix for compilation
+#else
+    while ((c = getopt(argc, argv, "sS")) >= 0) {
+#endif
 		switch (c) {
 		case 's': is_se = 1; break;
 		case 'S': force_se = is_se = 1; break;
