@@ -85,7 +85,7 @@ void MSAEditorOverviewArea::cancelRendering() {
 }
 
 bool MSAEditorOverviewArea::isOverviewWidget(QWidget *wgt) const {
-    if (wgt == simpleOverview || wgt == graphOverview) {
+    if (wgt == simpleOverview || wgt == graphOverview || wgt == this) {
         return true;
     }
     return false;
