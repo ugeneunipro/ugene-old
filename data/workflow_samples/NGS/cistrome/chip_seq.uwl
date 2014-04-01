@@ -53,6 +53,43 @@ workflow "ChIP-seq analysis"{
         url-in {
             dataset:Dataset;
         }
+        .validator {
+            type:script;
+            script {
+                function endsWith(str, suffix) {
+                    var index = str.toString().lastIndexOf(suffix);
+                    return (index !== -1) && (index + suffix.length == str.toString().length);
+                }
+                function isExtentionValid(file, possibleExts) {
+                    var i;
+                    for (i = 0; i < possibleExts.length; i++) {
+                        if (endsWith(file, possibleExts[i])) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                var inputDatasets = ctx.attributeValue("url-in");
+                var possibleExts = [".txt",
+                                    ".bam",
+                                    ".sam",
+                                    ".bed",
+                                    ".ebwt"];
+                var i;
+                loops:
+                for (i = 0; i < inputDatasets.length; i++) {
+                    var j;
+                    for (j = 0; j < inputDatasets[i].length; j++) {
+                        var file = inputDatasets[i][j];
+                        if (isExtentionValid(file, possibleExts) == false) {
+                            ctx.warning("MACS tool supports the following formats: ELAND, BED, ELANDMULTI, ELANDEXPORT, ELANDMULTIPET (for pair-end tags), SAM, BAM or BOWTIE.\nAn error may occur if input data does not correspond the requirements.");
+                            break loops;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     .actor-bindings {
