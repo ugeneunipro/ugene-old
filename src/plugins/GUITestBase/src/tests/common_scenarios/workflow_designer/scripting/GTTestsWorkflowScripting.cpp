@@ -161,7 +161,8 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTWidget::click(os, GTAction::button(os, "createScriptAction"));
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os,"workflow_scripting_test_0004"));
-    GTMouseDriver::click(os);   QString scriptText;
+    GTMouseDriver::click(os);
+    QString scriptText;
 #ifdef  Q_OS_MAC
     scriptText = "if(size(in_seq) >= 10000) {out_seq = in_seq;}";
 #else
@@ -169,7 +170,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 #endif
 
     GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogFiller(os, "",
-        "if(size(in_seq) >= 10000) \{out_seq = in_seq;\}"));
+        scriptText));
     GTWidget::click(os, GTAction::button(os, "editScriptAction"));
 
     WorkflowProcessItem *script = GTUtilsWorkflowDesigner::getWorker(os, "workflow_scripting_test_0004");
