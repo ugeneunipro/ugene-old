@@ -142,7 +142,7 @@ void VcfConsensusWorkerFactory::init() {
     QList<Attribute*> attrs;
     {
         Descriptor outAttDesc(OUT_FASTA_URL_ID, VcfConsensusWorker::tr("Output FASTA consensus"),
-                              VcfConsensusWorker::tr("The url to the output file with the result consensus"));
+                              VcfConsensusWorker::tr("The url to the output file with the result consensus."));
         attrs << new Attribute(outAttDesc, BaseTypes::STRING_TYPE(), true);
     }
 
