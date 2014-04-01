@@ -394,8 +394,8 @@ void MSAEditor::buildStaticToolbar(QToolBar* tb) {
     tb->addAction(zoomInAction);
     tb->addAction(zoomOutAction);
     tb->addAction(zoomToSelectionAction);
-    tb->addAction(showOverviewAction);
     tb->addAction(resetFontAction);
+    tb->addAction(showOverviewAction);
     tb->addAction(changeFontAction);
     tb->addAction(buildTreeAction);
     tb->addAction(saveScreenshotAction);
@@ -568,7 +568,7 @@ void MSAEditor::sl_onContextMenuRequested(const QPoint & pos) {
 
     if (ui->childAt(pos) != NULL) {
         // ignore context menu request if overview area was clicked on
-        if (ui->childAt(pos)->objectName() == ui->overviewArea->objectName()) {
+        if (ui->overviewArea->isOverviewWidget(ui->childAt(pos))) {
             return;
         }
     }

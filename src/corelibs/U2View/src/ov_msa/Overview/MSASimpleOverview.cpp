@@ -42,9 +42,7 @@ MSASimpleOverview::MSASimpleOverview(MSAEditorUI *_ui)
     colorScheme = sequenceArea->getCurrentColorScheme();
     highlightingScheme = sequenceArea->getCurrentHighlightingScheme();
 
-    if (!isValid()) {
-        setVisible(false);
-    }
+    setVisible(false);
 }
 
 void MSASimpleOverview::sl_visibleRangeChanged() {
@@ -89,7 +87,13 @@ void MSASimpleOverview::paintEvent(QPaintEvent *e) {
     if (!isValid()) {
         QPainter p(this);
         p.fillRect(rect(), Qt::gray);
-        p.drawText(rect(), Qt::AlignCenter, tr("MSA is too big for current window size. Simple overview is unavailable."));
+
+        QFontMetrics metrics(p.font());
+        p.drawText(rect(), Qt::AlignCenter, metrics.elidedText(
+                       tr("Multiple sequence alignment is too big for current window size.\nSimple overview is unavailable."),
+                       Qt::ElideRight,
+                       rect().width()));
+
         QWidget::paintEvent(e);
         return;
     }

@@ -44,6 +44,7 @@ class U2VIEW_EXPORT MSAEditorOverviewArea : public QWidget {
 public:
     MSAEditorOverviewArea(MSAEditorUI* ui);
     void cancelRendering();
+    bool isOverviewWidget(QWidget* wgt) const;
 
     static const QString OVERVIEW_AREA_OBJECT_NAME;
 public slots:

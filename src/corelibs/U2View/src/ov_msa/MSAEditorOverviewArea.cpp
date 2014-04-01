@@ -45,8 +45,8 @@ MSAEditorOverviewArea::MSAEditorOverviewArea(MSAEditorUI *ui) {
     simpleOverview = new MSASimpleOverview(ui);
     graphOverview = new MSAGraphOverview(ui);
 
-    simpleOverview->setObjectName(OVERVIEW_AREA_OBJECT_NAME);
-    graphOverview->setObjectName(OVERVIEW_AREA_OBJECT_NAME);
+    simpleOverview->setObjectName(OVERVIEW_AREA_OBJECT_NAME + QString("_simple"));
+    graphOverview->setObjectName(OVERVIEW_AREA_OBJECT_NAME + QString("_graph"));
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->setMargin(0);
@@ -82,6 +82,13 @@ MSAEditorOverviewArea::MSAEditorOverviewArea(MSAEditorUI *ui) {
 
 void MSAEditorOverviewArea::cancelRendering() {
     graphOverview->cancelRendering();
+}
+
+bool MSAEditorOverviewArea::isOverviewWidget(QWidget *wgt) const {
+    if (wgt == simpleOverview || wgt == graphOverview) {
+        return true;
+    }
+    return false;
 }
 
 void MSAEditorOverviewArea::sl_onContextMenuRequested(const QPoint &p) {

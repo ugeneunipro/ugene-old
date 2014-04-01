@@ -22,6 +22,7 @@
 #include "MSAGraphOverview.h"
 #include "MSAGraphCalculationTask.h"
 
+#include <U2Core/Settings.h>
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorConsensusArea.h>
 #include <U2View/MSAEditorConsensusCache.h>
@@ -44,6 +45,20 @@ MSAGraphOverview::MSAGraphOverview(MSAEditorUI *ui)
     setFixedHeight(FIXED_HEIGHT);
 
     displaySettings = new MSAGraphOverviewDisplaySettings();
+
+    Settings *s = AppContext::getSettings();
+    CHECK(s != NULL, );
+    if (s->contains(MSA_GRAPH_OVERVIEW_COLOR_KEY)) {
+        displaySettings->color = s->getValue(MSA_GRAPH_OVERVIEW_COLOR_KEY).value<QColor>( );
+    }
+
+    if (s->contains(MSA_GRAPH_OVERVIEW_TYPE_KEY)) {
+        displaySettings->type = (MSAGraphOverviewDisplaySettings::GraphType)s->getValue(MSA_GRAPH_OVERVIEW_TYPE_KEY).toInt();
+    }
+
+    if (s->contains(MSA_GRAPH_OVERVIEW_ORIENTAION_KEY)) {
+        displaySettings->orientation = (MSAGraphOverviewDisplaySettings::OrientationMode)s->getValue(MSA_GRAPH_OVERVIEW_ORIENTAION_KEY).toInt();
+    }
 
     connect(&graphCalculationTaskRunner, SIGNAL(si_finished()), SLOT(sl_redraw()));
     connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(MAlignment,MAlignmentModInfo)),
@@ -198,6 +213,10 @@ void MSAGraphOverview::sl_highlightingChanged() {
 void MSAGraphOverview::sl_graphOrientationChanged(MSAGraphOverviewDisplaySettings::OrientationMode orientation) {
     if (orientation != displaySettings->orientation) {
         displaySettings->orientation = orientation;
+
+        Settings *s = AppContext::getSettings();
+        s->setValue(MSA_GRAPH_OVERVIEW_ORIENTAION_KEY, orientation);
+
         update();
     }
 }
@@ -205,6 +224,10 @@ void MSAGraphOverview::sl_graphOrientationChanged(MSAGraphOverviewDisplaySetting
 void MSAGraphOverview::sl_graphTypeChanged(MSAGraphOverviewDisplaySettings::GraphType type) {
     if (type != displaySettings->type) {
         displaySettings->type = type;
+
+        Settings *s = AppContext::getSettings();
+        s->setValue(MSA_GRAPH_OVERVIEW_TYPE_KEY, type);
+
         update();
     }
 }
@@ -212,6 +235,10 @@ void MSAGraphOverview::sl_graphTypeChanged(MSAGraphOverviewDisplaySettings::Grap
 void MSAGraphOverview::sl_graphColorChanged(QColor color) {
     if (color != displaySettings->color) {
         displaySettings->color = color;
+
+        Settings *s = AppContext::getSettings();
+        s->setValue(MSA_GRAPH_OVERVIEW_COLOR_KEY, color);
+
         update();
     }
 }

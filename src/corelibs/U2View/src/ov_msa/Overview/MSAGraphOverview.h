@@ -35,18 +35,18 @@ class MSAGraphCalculationTask;
 class MSAGraphOverviewDisplaySettings {
 public:
     enum GraphType {
-        Hystogram,
-        Line,
-        Area
+        Hystogram = 0,
+        Line = 1,
+        Area = 2
     };
 
     enum OrientationMode {
-        FromTopToBottom,
-        FromBottomToTop
+        FromTopToBottom = 0,
+        FromBottomToTop = 1
     };
 
     MSAGraphOverviewDisplaySettings()
-        : color(Qt::blue),
+        : color( Qt::gray ),
           type(Area),
           orientation(FromBottomToTop) {}
 
@@ -62,12 +62,15 @@ enum MSAGraphCalculationMethod {
     Highlighting    // count only highlighted cells
 };
 
+#define MSA_GRAPH_OVERVIEW_COLOR_KEY "msa_graph_overview_color"
+#define MSA_GRAPH_OVERVIEW_TYPE_KEY "msa_graph_overview_type"
+#define MSA_GRAPH_OVERVIEW_ORIENTAION_KEY "msa_graph_overview_orientation_key"
 
 class U2VIEW_EXPORT MSAGraphOverview : public MSAOverview {
     Q_OBJECT
 public:
     MSAGraphOverview(MSAEditorUI* ui);
-    bool isValid() { return true; }
+    bool isValid() const { return true; }
     const static int FIXED_HEIGHT = 70;
 
     void cancelRendering();

@@ -106,7 +106,7 @@ void MSAOverviewContextMenu::sl_caclulationMethodActionTriggered(QAction *action
 
 void MSAOverviewContextMenu::initSimpleOverviewAction() {
     showSimpleOverviewAction = createCheckableAction(tr("Show simple overview"));
-    showSimpleOverviewAction->setChecked( simpleOverview->isValid() );
+    showSimpleOverviewAction->setChecked( simpleOverview->isVisible() );
     addAction(showSimpleOverviewAction);
 }
 

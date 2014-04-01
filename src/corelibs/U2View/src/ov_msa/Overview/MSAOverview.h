@@ -47,7 +47,7 @@ class U2VIEW_EXPORT MSAOverview : public QWidget {
     Q_OBJECT
 public:
     MSAOverview(MSAEditorUI *_ui);
-    virtual bool isValid() { return true; }
+    virtual bool isValid() const { return false; }
 
 public slots:
     virtual void sl_visibleRangeChanged(){}
