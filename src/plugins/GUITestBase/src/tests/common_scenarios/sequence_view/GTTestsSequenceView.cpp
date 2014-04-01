@@ -162,6 +162,11 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep();
 
+    QWidget* ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button", GTWidget::findWidget(os, "mwtoolbar_activemdi"));
+    if(ext_button != NULL){
+        GTWidget::click(os, ext_button);
+    }
+
     QWidget *toggleViewButton = GTWidget::findWidget(os, "toggleViewButton");
     Runnable *chooser = new PopupChooser(os, QStringList() << "toggleAllSequenceViews");
     GTUtilsDialog::waitForDialog(os, chooser);

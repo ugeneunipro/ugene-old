@@ -162,6 +162,14 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os,"workflow_scripting_test_0004"));
     GTMouseDriver::click(os);
+//<table cellspacing=5><tr><td><b>Length: </b></td><td>199 950 </td></tr><tr><td><b>GC Content: </b></td><td>38.84%</td></tr><tr><td><b>Molar Weight: </b></td><td>61730585.82 Da</td></tr><tr><td><b>Molat Ext. Coef: </b></td><td>2223359500 I/mol</td></tr><tr><td><b>Melting TM: </b></td><td>80.82 C</td></tr><tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>0.00</td></tr><tr><td><b>g/OD<sub>260</sub> : </b></td><td>27.76</td></tr></table>
+//<table cellspacing=5><tr><td><b>Length: </b></td><td>199 950 </td></tr><tr><td><b>GC Content: </b></td><td>38.84%</td></tr><tr><td><b>Molar Weight: </b></td><td>61730585.82 </td></tr><tr><td><b>Molat Ext. Coef: </b></td><td>2223359500 I</td></tr><tr><td><b>Melting TM: </b></td><td>80.82 C</td></tr><tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>0.00</td></tr><tr><td><b>g/OD<sub>260</sub> : </b></td><td>27.76</td></tr></table>
+    QString scriptText;
+#ifdef  Q_OS_MAC
+    scriptText = "if(size(in_seq) >= 10000) {out_seq = in_seq;}";
+#else
+    scriptText = "if(size(in_seq) >= 10000) \{out_seq = in_seq;\}";
+#endif
 
     GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogFiller(os, "",
         "if(size(in_seq) >= 10000) \{out_seq = in_seq;\}"));
