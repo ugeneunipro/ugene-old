@@ -66,7 +66,7 @@ QMap<QString, QString> JasparInfo::getProperties() const {
 }
 
 PFMatrix::PFMatrix(const MAlignment &align, PFMatrixType _type): type(_type) {
-    assert(!align.hasEqualLength());
+    assert(align.hasEqualLength());
     const int sequenceLength = align.getRows().first().getUngappedLength();
     length = (type == PFM_MONONUCLEOTIDE) ? sequenceLength : sequenceLength - 1;
     assert (length > 0);

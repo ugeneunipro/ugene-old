@@ -171,7 +171,7 @@ MatrixAndLogoController::MatrixAndLogoController( PWMatrix matrix, QWidget *p):Q
 ViewMatrixDialogController::ViewMatrixDialogController(PFMatrix matrix, QWidget *w): QDialog(w){
     setupUi(this);
     new HelpButton(this, buttonBox, "4227731");
-    buttonBox->button(QDialogButtonBox::Close)->setText(tr("Ñlose"));
+    buttonBox->button(QDialogButtonBox::Close)->setText(tr("Close"));
 
     ml = new MatrixAndLogoController(matrix, this);
     MLLayout->addWidget(ml);
@@ -185,7 +185,7 @@ ViewMatrixDialogController::ViewMatrixDialogController(PFMatrix matrix, QWidget 
 ViewMatrixDialogController::ViewMatrixDialogController(PWMatrix matrix, QWidget *w): QDialog(w){
     setupUi(this);
     new HelpButton(this, buttonBox, "4227731");
-    buttonBox->button(QDialogButtonBox::Close)->setText(tr("Ñlose"));
+    buttonBox->button(QDialogButtonBox::Close)->setText(tr("Close"));
     
     ml = new MatrixAndLogoController(matrix, this);
     MLLayout->addWidget(ml);
