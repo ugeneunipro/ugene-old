@@ -133,6 +133,7 @@ void MSAHighlightingTab::initColorCB(){
     colorScheme->clear();
     colorScheme->addItems(seqArea->getAvailableColorSchemes());
 
+    highlightingScheme->clear();
     highlightingScheme->addItems(seqArea->getAvailableHighlightingSchemes());
 }
 
