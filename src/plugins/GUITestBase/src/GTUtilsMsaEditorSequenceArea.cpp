@@ -76,7 +76,7 @@ void GTUtilsMSAEditorSequenceArea::selectArea(U2OpStatus &os, QPoint p1, QPoint 
     GTMouseDriver::press(os);
     GTMouseDriver::moveTo(os,convertCoordinates(os,p2));
     GTMouseDriver::release(os);
-    GTGlobals::sleep();
+    GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
 

@@ -43,6 +43,7 @@
 #include "tests/common_scenarios/msa_editor/colors/GTTestsMSAEditorColors.h"
 #include "tests/common_scenarios/msa_editor/consensus/GTTestsMSAEditorConsensus.h"
 #include "tests/common_scenarios/msa_editor/edit/GTTestsMSAEditorEdit.h"
+#include "tests/common_scenarios/msa_editor/overview/GTTestsMSAEditorOverview.h"
 #include "tests/common_scenarios/annotations/GTTestsAnnotations.h"
 #include "tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h"
 #include "tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h"
@@ -715,6 +716,26 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0015);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_edit::test_0016);
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/msa_editor/overview
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0008);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0009);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0010);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0011);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0012);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0013);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0014);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0015);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0017);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_overview::test_0019);
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/document_from_text/
 //////////////////////////////////////////////////////////////////////////
