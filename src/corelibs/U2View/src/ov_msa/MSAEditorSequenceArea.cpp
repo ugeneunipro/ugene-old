@@ -341,7 +341,11 @@ void MSAEditorSequenceArea::sl_customColorSettingsChanged(){
     DNAAlphabetType atype = editor->getMSAObject()->getAlphabet()->getType();
     QAction* a = GUIUtils::getCheckedAction(customColorSchemeMenuActions);
     initCustomSchemeActions(a == NULL ? "" :a->data().toString(), atype);
-    
+    if(a != NULL && !customColorSchemeMenuActions.contains(a) && !colorSchemeMenuActions.contains(a)){
+        colorSchemeMenuActions.first()->setChecked(true);
+        colorSchemeMenuActions.first()->trigger();
+        return;
+    }
     if(!a){
         QAction* a = GUIUtils::findActionByData(QList<QAction*>() << colorSchemeMenuActions << customColorSchemeMenuActions, atype == DNAAlphabet_AMINO ? MSAColorScheme::UGENE_AMINO : MSAColorScheme::UGENE_NUCL);
         if(a){a->setChecked(true);}
