@@ -1281,9 +1281,8 @@ GUI_TEST_CLASS_DEFINITION(test_1708){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseKey));
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os,10));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-#ifdef Q_OS_MAC
-    GTGlobals::sleep(10000);
-#endif
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+
     GTWidget::click(os, GTUtilsMdi::activeWindow(os));
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(9,1));
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
@@ -2923,11 +2922,7 @@ GUI_TEST_CLASS_DEFINITION( test_2165 ) {
     GTGlobals::sleep(500);
 
     //4. Press the "Search" button
-    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox"));
-    CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
-    QPushButton* button = box->button(QDialogButtonBox::Ok);
-    CHECK_SET_ERR(button !=NULL, "ok button is NULL");
-    GTWidget::click(os, button);
+    GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
 
     GTGlobals::sleep(500);
     GTUtilsTaskTreeView::waitTaskFinidhed(os);
