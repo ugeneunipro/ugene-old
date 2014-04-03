@@ -6,10 +6,14 @@
 /* Average Prediction Module */
 
 #include <QtGlobal>
+#include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -215,8 +219,8 @@ void PsiPassOne::predict()
         else
             predsst[winpos] = 'H';
     }
-    
-    FILE* pFile = fopen("output.ss", "w");
+    QString pFilePath = U2::AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath() + QDir::separator() + "output.ss";
+    FILE* pFile = fopen(pFilePath.toLatin1().constData(), "w");
     if (!pFile) {
         fail("failed opening file for writing");
     }

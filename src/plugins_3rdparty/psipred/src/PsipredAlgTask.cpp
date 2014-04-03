@@ -26,6 +26,9 @@
 #include <U2View/SecStructPredictUtils.h>
 #include <U2Core/BioStruct3D.h>
 #include <U2Core/Counter.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
 #include "PsipredAlgTask.h"
 #include "sspred_avpred.h"
 #include "sspred_hmulti.h"
@@ -85,14 +88,12 @@ void PsipredAlgTask::run()
     { 
         "empty", 
         ":psipred/datafiles/weights_p2.dat", "1", "1.0", "1.0", 
-        "output.ss2", 
-        "output.ss"
     };
     
     {
         PsiPassTwo pass2;
         try{
-            pass2.runPsiPass(7, psipass2_args, output);
+            pass2.runPsiPass(5, psipass2_args, output);
         }catch(const char* msg){
             stateInfo.setError(QString("psipred error: %1").arg(msg));
             return;
@@ -101,9 +102,11 @@ void PsipredAlgTask::run()
 
     results = SecStructPredictUtils::saveAlgorithmResultsAsAnnotations(output, PSIPRED_ANNOTATION_NAME);
     
+    QString outputFileName=AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath() + QDir::separator() + "output.ss"; //File created at sspred_avpred.cpp in method predict
+    QString outputFileName2=AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath() + QDir::separator() + "output.ss2"; //File created at sspred_hmulti.cpp in method runPsiPass
     QDir curDir;
-    curDir.remove("output.ss");
-    curDir.remove("output.ss2");
+    curDir.remove(outputFileName);
+    curDir.remove(outputFileName2);
 }
 
 

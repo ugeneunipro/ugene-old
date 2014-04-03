@@ -9,6 +9,11 @@
 #include <QtCore/QByteArray>
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
+#include <QtCore/QString>
+#include <QtCore/QDir>
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -367,16 +372,20 @@ int PsiPassTwo::runPsiPass( int argc, const char *argv[], QByteArray& result )
     int             i;
     FILE           *ifp;
 
+
+
+
     /* malloc_debug(3); */
-    if (argc < 7)
+    if (argc < 5)
 	fail("usage : psipass2 weight-file itercount DCA DCB outputfile ss-infile ...");
 
     init();
     load_wts(wtfnm = argv[1]);
-
-    ifp = fopen(argv[6], "r");
+    QString outputFileName=U2::AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath() + QDir::separator() + "output.ss"; //File created at sspred_avpred.cpp in method predict
+    ifp = fopen(outputFileName.toLatin1().constData(), "r");
     if (!ifp) {
-	    exit(1);
+        fail("failed opening file for reading");
+//	    exit(1);
     }
     seqlen = getss(ifp);
     fclose(ifp);
@@ -389,7 +398,8 @@ int PsiPassTwo::runPsiPass( int argc, const char *argv[], QByteArray& result )
     }
     
     //puts("# PSIPRED HFORMAT (PSIPRED V2.6 by David Jones)");
-    result = predict(atoi(argv[2]), (float)atof(argv[3]), (float)atof(argv[4]), argv[5]);
+    QString outputFileName2=U2::AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath() + QDir::separator() + "output.ss2";
+    result = predict(atoi(argv[2]), (float)atof(argv[3]), (float)atof(argv[4]), outputFileName2.toLatin1().constData());
 
     return 0;
 }
