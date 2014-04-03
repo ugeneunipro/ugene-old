@@ -23,6 +23,7 @@
 #include <QtCore/QSet>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/PluginModel.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/MultiTask.h>
 
@@ -41,6 +42,16 @@ ExternalToolManagerImpl::~ExternalToolManagerImpl() {
 }
 
 void ExternalToolManagerImpl::start() {
+    if (AppContext::getPluginSupport()->isAllPluginsLoaded()) {
+        sl_pluginsLoaded();
+    } else {
+        connect(AppContext::getPluginSupport(),
+                SIGNAL(si_allStartUpPluginsLoaded()),
+                SLOT(sl_pluginsLoaded()));
+    }
+}
+
+void ExternalToolManagerImpl::innerStart() {
     SAFE_POINT(etRegistry, "The external tool registry is NULL", );
 
     dependencies.clear();
@@ -187,7 +198,7 @@ QString ExternalToolManagerImpl::addTool(ExternalTool* tool) {
         }
     }
 
-    if (!validateList.contains(tool->getName()) && !tool->isModule()) {
+    if (!validateList.contains(tool->getName()) && !tool->isModule() && !tool->isValid()) {
         searchList << tool->getName();
     }
 
@@ -293,6 +304,10 @@ void ExternalToolManagerImpl::sl_toolValidationStatusChanged(bool isValid) {
     }
 
     validateTools(toolPaths);
+}
+
+void ExternalToolManagerImpl::sl_pluginsLoaded() {
+    innerStart();
 }
 
 bool ExternalToolManagerImpl::dependenciesAreOk(const QString& toolName) {

@@ -53,7 +53,7 @@ void ExternalToolSearchTask::run() {
 
     foreach (const QString& dirName, entryList) {
         if (dirName == TOOLS) {
-            toolsDir = appDir.absolutePath()+ QDir::separator() + dirName;
+            toolsDir = appDir.absolutePath() + QDir::separator() + dirName;
             break;
         }
     }
@@ -87,6 +87,7 @@ void ExternalToolSearchTask::run() {
 #ifdef Q_OS_WIN
         QStringList paths = pathEnv.split("=").at(1).split(";");
 #else
+        Q_UNUSED(pathEnv);
         QStringList paths;
 #endif
 #endif

@@ -65,8 +65,10 @@ private slots:
     void sl_validationTaskStateChanged();
     void sl_searchTaskStateChanged();
     void sl_toolValidationStatusChanged(bool isValid);
+    void sl_pluginsLoaded();
 
 private:
+    void innerStart();
     QString addTool(ExternalTool* tool);
     bool dependenciesAreOk(const QString& toolName);
     void validateTools(const QStrStrMap& toolPaths = QStrStrMap(), ExternalToolValidationListener* listener = NULL);
