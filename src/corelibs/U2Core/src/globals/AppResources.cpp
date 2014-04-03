@@ -172,7 +172,6 @@ size_t AppResourcePool::getCurrentAppMemory() {
     bool ok = false;
     size_t output_mem = outputString.toULong(&ok);
     if (ok) {
-        coreLog.error(QString::number(  output_mem));
         return output_mem * 1024 * 1024;
     }
 #endif
