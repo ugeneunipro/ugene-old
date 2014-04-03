@@ -51,10 +51,10 @@ void ConservationPlotSupport::initialize() {
     dependencies << ET_PYTHON
                  << ET_R;
 
-    validMessage = "conservation_plot.py";
+    validMessage = "conservation_plot.py ";
     validationArguments << "--version";
 
-    versionRegExp=QRegExp(executableFileName + "\\d+\\.\\d+");
+    versionRegExp=QRegExp(executableFileName + " (\\d+\\.\\d+)");
 
     ExternalToolUtils::addDefaultCistromeDirToSettings();
     ExternalToolUtils::addCistromeDataPath(CONSERVATION_DATA_NAME, CONSERVATION_DIR_NAME, true);

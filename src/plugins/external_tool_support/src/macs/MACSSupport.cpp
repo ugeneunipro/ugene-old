@@ -52,7 +52,7 @@ void MACSSupport::initialize() {
     toolRunnerProgramm = ET_PYTHON;
     dependencies << ET_PYTHON;
 
-    validMessage = "macs14";
+    validMessage = "macs14.py 1.4.2 20120305";
     validationArguments << "--version";
 
     versionRegExp=QRegExp(executableFileName + " (\\d+\\.\\d+\\.\\d+)");

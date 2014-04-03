@@ -49,10 +49,10 @@ void Peak2GeneSupport::initialize() {
     toolRunnerProgramm = ET_PYTHON;
     dependencies << ET_PYTHON;
 
-    validMessage = "peak2gene";
+    validMessage = "peak2gene.py v";
     validationArguments << "--version";
 
-    versionRegExp=QRegExp(executableFileName + "v\\d+\\.\\d+");
+    versionRegExp=QRegExp(executableFileName + " v(\\d+\\.\\d+)");
 
     ExternalToolUtils::addDefaultCistromeDirToSettings();
     ExternalToolUtils::addCistromeDataPath(REF_GENES_DATA_NAME, REFGENE_DIR_NAME);

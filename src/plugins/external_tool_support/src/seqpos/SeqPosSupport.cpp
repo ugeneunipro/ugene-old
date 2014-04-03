@@ -54,10 +54,10 @@ void SeqPosSupport::initialize() {
                  << ET_R
                  << ET_R_SEQLOGO;
 
-    validMessage = "mdseqpos";
-    validationArguments << "--version";
+    validMessage = "mdseqpos (official trunk):";
+    validationArguments << "-v";
 
-    versionRegExp=QRegExp("Version \\d+\\.\\d+");
+    versionRegExp=QRegExp("Version (\\d+\\.\\d+)");
 
     ExternalToolUtils::addDefaultCistromeDirToSettings();
     ExternalToolUtils::addCistromeDataPath(ASSEMBLY_DIR, ASSEMBLY_DIR_NAME, true);

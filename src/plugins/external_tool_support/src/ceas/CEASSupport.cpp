@@ -56,7 +56,7 @@ void CEASSupport::initialize() {
     dependencies << ET_PYTHON
                  << ET_R;
 
-    validMessage = "package version";
+    validMessage = "ceas.py -- 0.9.9.7 (package version 1.0.2)";
     validationArguments << "--version";
 
     versionRegExp=QRegExp(executableFileName + " -- (\\d+\\.\\d+\\.\\d+.\\d+) \\(package version (\\d+\\.\\d+\\.\\d+)\\)");
