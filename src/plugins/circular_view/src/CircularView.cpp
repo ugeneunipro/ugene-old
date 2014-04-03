@@ -25,6 +25,7 @@
 #include <U2Core/SelectionModel.h>
 #include <U2Core/Timer.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
@@ -638,6 +639,7 @@ void CircularViewRenderArea::drawRulerNotches(QPainter& p, int start, int span, 
     int N = QString::number(start+span).length()*cw*3/2.0 + 0.5f;
     int rulerLen = span / (float)seqLen * PI * rulerEllipseSize;
     int chunk = GraphUtils::findChunk(rulerLen, span, N);
+    CHECK(chunk != 0, );
     start-=start%chunk;
     float halfChar = 180 / (float)seqLen;
     for (int currentNotch=start+chunk; currentNotch < start + span + chunk; currentNotch+=chunk) {
