@@ -19,9 +19,17 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtGui/QMessageBox>
+
+#include <U2Algorithm/SecStructPredictAlgRegistry.h>
+
+#include <U2Core/AppContext.h>
 #include <U2Core/BioStruct3D.h>
 #include <U2Core/GAutoDeleteList.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Gui/GUIUtils.h>
+
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -43,19 +51,30 @@ SecStructPredictViewAction::SecStructPredictViewAction(AnnotatedDNAView* v) :
 
 
 void SecStructPredictViewAction::sl_execute() {
-    QAction* a = (QAction*)sender();
-    GObjectViewAction* viewAction = qobject_cast<GObjectViewAction*>(a);
-    AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
-    Q_ASSERT(av);
+    QAction *a = dynamic_cast<QAction*>(sender());
+    GObjectViewAction *viewAction = dynamic_cast<GObjectViewAction*>(a);
+    SAFE_POINT(NULL != viewAction, "NULL action", );
 
-    ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
-    Q_ASSERT(seqCtx->getAlphabet()->isAmino());
-    
-    //TODO: if no analysis algorithm is available?
+    AnnotatedDNAView *av = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
+    SAFE_POINT(NULL != av, "NULL dna view", );
+
+    SecStructPredictAlgRegistry *sspar = AppContext::getSecStructPredictAlgRegistry();
+    SAFE_POINT(NULL != sspar, "NULL SecStructPredictAlgRegistry", );
+
+    if (sspar->getAlgNameList().isEmpty()) {
+        QMessageBox::information(av->getWidget(),
+            tr("Secondary Structure Prediction"),
+            tr("No algorithms for secondary structure prediction are available.\nPlease, load the corresponding plugins."));
+        return;
+    }
+
+    ADVSequenceObjectContext *seqCtx = av->getSequenceInFocus();
+    SAFE_POINT(NULL != seqCtx, "NULL sequence context", );
+    SAFE_POINT(NULL != seqCtx->getAlphabet(), "NULL alphabet", );
+    SAFE_POINT(seqCtx->getAlphabet()->isAmino(), "Wrong alphabet", );
 
     SecStructDialog secStructDialog(seqCtx, av->getWidget());
     secStructDialog.exec();
-
 }
 
 ADVGlobalAction* SecStructPredictViewAction::createAction( AnnotatedDNAView* av )

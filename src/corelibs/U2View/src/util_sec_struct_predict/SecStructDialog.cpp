@@ -133,6 +133,7 @@ void SecStructDialog::sl_onStartPredictionClicked() {
     SAFE_POINT(task == NULL, "Found pending prediction task!", );
 
     SecStructPredictTaskFactory* factory = sspr->getAlgorithm(algorithmComboBox->currentText());
+    SAFE_POINT(NULL != factory, "Unregistered factory name", );
 
     //Check license
     QString algorithm=algorithmComboBox->currentText();
