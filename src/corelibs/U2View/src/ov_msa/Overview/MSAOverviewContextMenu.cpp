@@ -43,6 +43,7 @@ MSAOverviewContextMenu::MSAOverviewContextMenu(MSASimpleOverview *sOverview, MSA
     initCalculationMethodMenu();
 
     colorAction = new QAction(tr("Set color..."), this);
+    colorAction->setObjectName("Set color");
     displaySettingsMenu->addAction(colorAction);
 
     connectSlots();
@@ -106,12 +107,14 @@ void MSAOverviewContextMenu::sl_caclulationMethodActionTriggered(QAction *action
 
 void MSAOverviewContextMenu::initSimpleOverviewAction() {
     showSimpleOverviewAction = createCheckableAction(tr("Show simple overview"));
+    showSimpleOverviewAction->setObjectName("Show simple overview");
     showSimpleOverviewAction->setChecked( simpleOverview->isVisible() );
     addAction(showSimpleOverviewAction);
 }
 
 void MSAOverviewContextMenu::initDisplaySettingsMenu() {
     displaySettingsMenu = addMenu(tr("Display settings..."));
+    displaySettingsMenu->menuAction()->setObjectName("Display settings");
     initGraphTypeSubmenu();
     initOrientationSubmenu();
 }
@@ -124,6 +127,13 @@ void MSAOverviewContextMenu::initCalculationMethodMenu() {
     gapMethodAction = createCheckableAction(tr("Gaps"), calculationMethodActionGroup);
     clustalMethodAction = createCheckableAction(tr("Clustal"), calculationMethodActionGroup);
     highlightingMethodAction = createCheckableAction(tr("Highlighting"), calculationMethodActionGroup);
+
+    calculationMethodMenu->menuAction()->setObjectName("Calculation method");
+    strictMethodAction->setObjectName("Strict");
+    gapMethodAction->setObjectName("Gaps");
+    clustalMethodAction->setObjectName("Clustal");
+    highlightingMethodAction->setObjectName("Highlighting");
+
 
     switch (graphOverview->getCurrentCalculationMethod()) {
     case Strict:
@@ -145,11 +155,16 @@ void MSAOverviewContextMenu::initCalculationMethodMenu() {
 
 void MSAOverviewContextMenu::initGraphTypeSubmenu() {
     graphTypeMenu = displaySettingsMenu->addMenu(tr("Graph type"));
+    graphTypeMenu->menuAction()->setObjectName("Graph type");
 
     graphTypeActionGroup = new QActionGroup(graphTypeMenu);
     histogramGraphAction = createCheckableAction(tr("Histogram"), graphTypeActionGroup);
     lineGraphAction = createCheckableAction(tr("Line graph"), graphTypeActionGroup);
     areaGraphAction = createCheckableAction(tr("Area graph"), graphTypeActionGroup);
+
+    histogramGraphAction->setObjectName("Histogram");
+    lineGraphAction->setObjectName("Line graph");
+    areaGraphAction->setObjectName("Area graph");
 
     switch (graphOverview->getCurrentGraphType()) {
     case MSAGraphOverviewDisplaySettings::Hystogram:
@@ -167,11 +182,15 @@ void MSAOverviewContextMenu::initGraphTypeSubmenu() {
 
 void MSAOverviewContextMenu::initOrientationSubmenu() {
     orientationMenu = displaySettingsMenu->addMenu(tr("Orientation"));
+    orientationMenu->menuAction()->setObjectName("Orientation");
 
     orientationActionGroup = new QActionGroup(orientationMenu);
     topToBottomOrientationAction = createCheckableAction(tr("Top to bottom"), orientationActionGroup);
     bottomToTopOrientationAction = createCheckableAction(tr("Bottom to top"), orientationActionGroup);
     orientationMenu->addActions(orientationActionGroup->actions());
+
+    topToBottomOrientationAction->setObjectName("Top to bottom");
+    bottomToTopOrientationAction->setObjectName("Bottom to top");
 
     if (graphOverview->getCurrentOrientationMode() == MSAGraphOverviewDisplaySettings::FromBottomToTop) {
         bottomToTopOrientationAction->setChecked(true);
