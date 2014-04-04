@@ -531,7 +531,7 @@ Document* LoadDocumentTask::createCopyRestructuredWithHints(Document* doc, U2OpS
         objTypeConstraints.supportedObjectTypes << GObjectTypes::MULTIPLE_ALIGNMENT;
         bool makeReadOnly = !doc->getDocumentFormat()->checkConstraints(objTypeConstraints);
 
-        resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), U2DbiRef(), objects, hints, 
+        resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), doc->getDbiRef(), objects, hints,
             makeReadOnly ? tr("Format does not support writing of alignments") : QString());
 
         doc->propagateModLocks(resultDoc);
@@ -541,11 +541,9 @@ Document* LoadDocumentTask::createCopyRestructuredWithHints(Document* doc, U2OpS
             return NULL;
         }
         //resultDoc = U1SequenceUtils::mergeSequences(doc, mergeGap, os);
-        const U2DbiRef dbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
-        CHECK_OP(os, NULL);
-        QList<GObject*> objects = U1SequenceUtils::mergeSequences(doc, dbiRef, hints, os);
+        QList<GObject*> objects = U1SequenceUtils::mergeSequences(doc, doc->getDbiRef(), hints, os);
         Document* resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), 
-            dbiRef, objects, hints, tr("File content was merged"));
+            doc->getDbiRef(), objects, hints, tr("File content was merged"));
         doc->propagateModLocks(resultDoc);
 
         if (os.hasError()) {

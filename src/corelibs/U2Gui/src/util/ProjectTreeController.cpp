@@ -1200,8 +1200,10 @@ void ProjectTreeController::sl_onAddObjectToSelectedDocument() {
             if (obj->isUnloaded()) {
                 continue;
             }
-            doc->addObject(obj->clone(doc->getDbiRef(), os));
+
+            GObject* newObj = obj->clone(doc->getDbiRef(), os);
             CHECK_OP(os, );
+            doc->addObject(newObj);
         }
     }
 }

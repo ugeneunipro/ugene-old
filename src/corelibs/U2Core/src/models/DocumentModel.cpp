@@ -69,8 +69,8 @@ Document* DocumentFormat::createNewUnloadedDocument(IOAdapterFactory* iof, const
                                                     const QString& instanceModLockDesc)
 {
     Q_UNUSED(os);
-    U2DbiRef emptyDbiRef;
-    Document* doc = new Document(this, iof, url, emptyDbiRef, info, hints, instanceModLockDesc);
+    U2DbiRef dbiRef = (hints[DocumentFormat::DBI_REF_HINT]).value<U2DbiRef>();
+    Document* doc = new Document(this, iof, url, dbiRef, info, hints, instanceModLockDesc);
     return doc;
 }
 
@@ -299,11 +299,11 @@ Document::~Document() {
 }
 
 void Document::addObject(GObject* obj){
-    assert(obj != NULL && obj->getDocument()==NULL);
-    assert(df->isObjectOpSupported(this, DocumentFormat::DocObjectOp_Add, obj->getGObjectType()));
-    assert(isLoaded());
-    assert(obj->getGObjectType()!=GObjectTypes::UNLOADED);
-    //assert(!obj->isTreeItemModified());
+    SAFE_POINT(obj != NULL, "Object is NULL", );
+    SAFE_POINT(obj->getDocument() == NULL, "Object already belongs to some document", );
+    SAFE_POINT(df->isObjectOpSupported(this, DocumentFormat::DocObjectOp_Add, obj->getGObjectType()), "Document format doesn't support new objects adding", );
+    SAFE_POINT(isLoaded(), "The destination document is not loaded", );
+    SAFE_POINT(obj->getGObjectType() !=GObjectTypes::UNLOADED, "Object is not loaded", );
 
     _addObject(obj);
 }
