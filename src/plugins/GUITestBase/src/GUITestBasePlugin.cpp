@@ -1013,7 +1013,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0001);
     REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_workflow_parameters_validation::test_0002, "qt dialog can't be shown");
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0003);
-    REGISTER_TEST_WINDOWS(GUITest_common_scenarios_workflow_parameters_validation::test_0005, "Test should run not under admin user on WIN");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_parameters_validation::test_0005, "Test should run not under admin user on WIN");
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0006);
 
 /////////////////////////////////////////////////////////////////////////

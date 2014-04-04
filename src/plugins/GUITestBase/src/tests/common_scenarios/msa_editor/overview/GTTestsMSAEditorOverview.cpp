@@ -43,6 +43,9 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     //1. Open "_common_data/fasta/empty.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta", "empty.fa");
 
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show simple overview"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area"));
+
     //Expected state: msa is empty, overview is pure white.
     QWidget* simple = GTWidget::findWidget(os, "msa_overview_area_simple");
 
@@ -60,7 +63,6 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     c = QColor(rgb);
 
     CHECK_SET_ERR(c.name()=="#ffffff","graph overview has wrong color. Expected: #ffffff, Found: " + c.name());
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002){
@@ -228,11 +230,17 @@ GUI_TEST_CLASS_DEFINITION(test_0008){
 
     QPixmap pixmapGraph = QPixmap::grabWidget(overviewGraph, overviewGraph->rect());
     QImage img = pixmapGraph.toImage();
+#ifdef Q_OS_WIN
+    QRgb rgb = img.pixel(QPoint(6,6));
+    QColor c(rgb);
+
+    CHECK_SET_ERR(c.name()=="#a0a0a4","simple overview has wrong color. Expected: #a0a0a4, Found: " + c.name());
+#else
     QRgb rgb = img.pixel(overviewGraph->rect().center());
     QColor c(rgb);
 
     CHECK_SET_ERR(c.name()=="#4c4c4c","simple overview has wrong color. Expected: #4c4c4c, Found: " + c.name());
-
+#endif
     GTMouseDriver::release(os);
 }
 
