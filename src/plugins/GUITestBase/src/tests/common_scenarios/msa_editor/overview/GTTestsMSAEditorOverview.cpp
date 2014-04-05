@@ -125,7 +125,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     QMainWindow* window = AppContext::getMainWindow()->getQMainWindow();
     window->showNormal();
     window->resize(550,550);
-    GTGlobals::sleep(200);
+    GTGlobals::sleep(1000);
 //    Expected state: at some moment simple overview is not displayed -
 //    there is a gray area with "MSA is too big for current window size. Simple overview is unavailable." text.
 
@@ -135,7 +135,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     QRgb rgb = img.pixel(simple->rect().center());
     QColor c(rgb);
 
-    CHECK_SET_ERR(c.name()=="#7f7f81","simple overview has wrong color. Expected: #7f7f81, Found: " + c.name());
+    CHECK_SET_ERR(c.name()=="#a0a0a4","simple overview has wrong color. Expected: #a0a0a4, Found: " + c.name());
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006){
@@ -230,16 +230,17 @@ GUI_TEST_CLASS_DEFINITION(test_0008){
 
     QPixmap pixmapGraph = QPixmap::grabWidget(overviewGraph, overviewGraph->rect());
     QImage img = pixmapGraph.toImage();
+
 #ifdef Q_OS_WIN
     QRgb rgb = img.pixel(QPoint(6,6));
     QColor c(rgb);
 
     CHECK_SET_ERR(c.name()=="#a0a0a4","simple overview has wrong color. Expected: #a0a0a4, Found: " + c.name());
 #else
-    QRgb rgb = img.pixel(overviewGraph->rect().center());
+    QRgb rgb = img.pixel(overviewGraph->rect().center() - QPoint(0,20));
     QColor c(rgb);
 
-    CHECK_SET_ERR(c.name()=="#4c4c4c","simple overview has wrong color. Expected: #4c4c4c, Found: " + c.name());
+    CHECK_SET_ERR(c.name()=="#a0a0a4","simple overview has wrong color. Expected: #a0a0a4, Found: " + c.name());
 #endif
     GTMouseDriver::release(os);
 }
@@ -273,10 +274,10 @@ GUI_TEST_CLASS_DEFINITION(test_0009){
 
     QPixmap pixmapGraph = QPixmap::grabWidget(overviewGraph, overviewGraph->rect());
     QImage img = pixmapGraph.toImage();
-    QRgb rgb = img.pixel(overviewGraph->rect().center());
+    QRgb rgb = img.pixel(overviewGraph->rect().center() - QPoint(0,20));
     QColor c(rgb);
 
-    CHECK_SET_ERR(c.name()=="#4c4c4c","simple overview has wrong color. Expected: #4c4c4c, Found: " + c.name());
+    CHECK_SET_ERR(c.name()=="#a0a0a4","simple overview has wrong color. Expected: #a0a0a4, Found: " + c.name());
 
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["delete"]);
 }
