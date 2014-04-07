@@ -161,19 +161,19 @@ size_t AppResourcePool::getCurrentAppMemory() {
          return output_mem / 1024;
      }
 #elif defined(Q_OS_MAC)
-    qint64 pid = QCoreApplication::applicationPid();
+//    qint64 pid = QCoreApplication::applicationPid();
 
-    QProcess p;
-    // Virtual private memory size in megabytes
-    p.start("sh", QStringList() << "-c" << "top -l 1 -pid " + QString::number(pid) + " -e -stats vprvt | tail -1 | sed 's/M+//g'");
-    p.waitForFinished();
-    const QString outputString = p.readAllStandardOutput();
-    p.close();
-    bool ok = false;
-    size_t output_mem = outputString.toULong(&ok);
-    if (ok) {
-        return output_mem * 1024 * 1024;
-    }
+//    QProcess p;
+//    // Virtual private memory size in megabytes
+//    p.start("sh", QStringList() << "-c" << "top -l 1 -pid " + QString::number(pid) + " -e -stats vprvt | tail -1 | sed 's/M+//g'");
+//    p.waitForFinished();
+//    const QString outputString = p.readAllStandardOutput();
+//    p.close();
+//    bool ok = false;
+//    size_t output_mem = outputString.toULong(&ok);
+//    if (ok) {
+//        return output_mem * 1024 * 1024;
+//    }
 #endif
     return -1;
 }
