@@ -85,6 +85,11 @@ void MSAOverviewContextMenu::sl_graphOrientationActionTriggered(QAction *action)
 
 void MSAOverviewContextMenu::sl_colorActionTriggered() {
     QColorDialog colorDialog( graphOverview->getCurrentColor(), this);
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        colorDialog.setOption(QColorDialog::DontUseNativeDialog);
+    }
+#endif
     if ( colorDialog.exec() ) {
         emit si_colorSelected( colorDialog.selectedColor() );
     }

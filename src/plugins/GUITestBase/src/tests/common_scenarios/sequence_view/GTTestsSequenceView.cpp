@@ -163,7 +163,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     GTGlobals::sleep();
 
     QWidget* ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button", GTWidget::findWidget(os, "mwtoolbar_activemdi"));
-    if(ext_button != NULL){
+    if(ext_button != NULL && ext_button->isVisible()){
         GTWidget::click(os, ext_button);
     }
 

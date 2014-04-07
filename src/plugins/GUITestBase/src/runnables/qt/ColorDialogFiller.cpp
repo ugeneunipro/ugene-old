@@ -21,6 +21,7 @@
 
 #include <api/GTKeyboardDriver.h>
 #include <api/GTSpinBox.h>
+#include "api/GTWidget.h"
 #include "ColorDialogFiller.h"
 #include <QColor>
 #include <QColorDialog>
@@ -44,11 +45,12 @@ void ColorDialogFiller::run(){
     GTSpinBox::setValue(os,spinList.at(4),g,GTGlobals::UseKeyBoard);
     GTSpinBox::setValue(os,spinList.at(5),b,GTGlobals::UseKeyBoard);
 
-
     GTGlobals::sleep();
-
+#ifdef Q_OS_MAC
+    GTWidget::click(os, GTWidget::findButtonByText(os, "OK",dialog));
+#else
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-
+#endif
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

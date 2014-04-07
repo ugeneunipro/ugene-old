@@ -311,11 +311,14 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 
     QPixmap pixmapGraph = QPixmap::grabWidget(overviewGraph, overviewGraph->rect());
     QImage img = pixmapGraph.toImage();
-    QRgb rgb = img.pixel(overviewGraph->rect().center());
+    QRgb rgb = img.pixel(overviewGraph->rect().topLeft() + QPoint(5,5));
     QColor c(rgb);
 
+#ifdef Q_OS_MAC
+    CHECK_SET_ERR(c.name()=="#a0a0a4","simple overview has wrong color. Expected: #a0a0a4, Found: " + c.name());
+#else
     CHECK_SET_ERR(c.name()=="#4c4c4c","simple overview has wrong color. Expected: #4c4c4c, Found: " + c.name());
-
+#endif
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["space"]);
 }
 
