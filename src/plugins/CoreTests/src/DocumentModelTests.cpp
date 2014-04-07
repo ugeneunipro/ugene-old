@@ -657,6 +657,7 @@ static const QString TMP_ATTR_SPLITTER = ",";
 static const QString BY_LINES_ATTR_ID = "by_lines";
 static const QString COMMENTS_START_WITH = "comments_start_with";
 static const QString COMPARE_LINE_NUMBER_ONLY = "line_num_only";
+static const QString COMPARE_MIXED_LINES = "mixed-lines";
 
 void GTest_CompareFiles::replacePrefix(QString &path) {
     QString result;
@@ -695,6 +696,8 @@ void GTest_CompareFiles::replacePrefix(QString &path) {
     path = result.mid(0, result.size() - 1); // without the last ';'
 }
 
+
+
 void GTest_CompareFiles::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
 
@@ -717,6 +720,12 @@ void GTest_CompareFiles::init(XMLTestFormat *tf, const QDomElement& el) {
         line_num_only = true;
     }else{
         line_num_only = false;
+    }
+
+    if(!el.attribute(COMPARE_MIXED_LINES).isEmpty()){
+        mixed_lines = true;
+    }else{
+        mixed_lines = false;
     }
 
     // Get the full documents paths
@@ -745,6 +754,11 @@ void GTest_CompareFiles::init(XMLTestFormat *tf, const QDomElement& el) {
 static const qint64 READ_LINE_MAX_SZ = 2048;
 
 Task::ReportResult GTest_CompareFiles::report() {
+    if(mixed_lines){
+        compareMixed();
+        return ReportResult_Finished;
+    }
+
     QFile f1(doc1Path);
     if(!f1.open(QIODevice::ReadOnly)) {
         setError(QString("Cannot open file '%1'!").arg(doc1Path));
@@ -813,6 +827,54 @@ Task::ReportResult GTest_CompareFiles::report() {
     }
     
     return ReportResult_Finished;
+}
+
+void GTest_CompareFiles::compareMixed(){
+
+    QFile f1(doc1Path);
+    if(!f1.open(QIODevice::ReadOnly)) {
+        setError(QString("Cannot open file '%1'!").arg(doc1Path));
+        return;
+    }
+
+    QFile f2(doc2Path);
+    if(!f2.open(QIODevice::ReadOnly)) {
+        setError(QString("Cannot open file '%1'!").arg(doc2Path));
+        return;
+    }
+
+    if(f1.size() != f2.size()){
+        setError(QString("The files %1 and %2 are of different sizes!").arg(f1.fileName()).arg(f2.fileName()));
+        return;
+    }
+    f2.close();
+
+    while(true){
+        QByteArray bytes1 = f1.readLine(READ_LINE_MAX_SZ);
+        if(bytes1.isEmpty()){
+            return;
+        }
+
+        if(!f2.open(QIODevice::ReadOnly)) {
+            setError(QString("Cannot open file '%1'!").arg(doc2Path));
+            f1.close();
+            return;
+        }
+
+        while(true){
+            QByteArray bytes2 = f2.readLine(READ_LINE_MAX_SZ);
+            if(bytes2.isEmpty()){
+                setError(QString("line %1 not found in file %2").arg(QString(bytes1)).arg(f2.fileName()));
+                break;
+            }
+
+            if(bytes1 == bytes2){
+                break;
+            }
+        }
+        f2.close();
+    }
+
 }
 
 /*******************************

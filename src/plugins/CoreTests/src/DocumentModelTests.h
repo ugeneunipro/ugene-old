@@ -207,12 +207,14 @@ class GTest_CompareFiles : public GTest {
     
 private:
     void replacePrefix(QString &path);
+    void compareMixed();
 
     QString doc1Path;
     QString doc2Path;
     bool byLines;
     QStringList commentsStartWith;
     bool line_num_only;
+    bool mixed_lines;
     
 };
 
