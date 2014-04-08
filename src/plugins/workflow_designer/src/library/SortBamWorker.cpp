@@ -33,6 +33,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Formats/BAMUtils.h>
+#include <U2Formats/FileAndDirectoryUtils.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/BaseTypes.h>
@@ -41,8 +42,6 @@
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
-
-#include "util/SamtoolsWorkersUtils.h"
 
 #include "SortBamWorker.h"
 
@@ -114,7 +113,7 @@ void SortBamWorkerFactory::init() {
         Descriptor index(INDEX_ID, SortBamWorker::tr("Build index"),
             SortBamWorker::tr("Build index for the sorted file with SAMTools index."));
 
-        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(SamtoolsWorkerUtils::FILE_DIRECTORY));
+        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
         customDirAttr->addRelation(new VisibilityRelation(OUT_MODE_ID, SortBamWorker::tr("Custom")));
         a << customDirAttr;
@@ -128,9 +127,9 @@ void SortBamWorkerFactory::init() {
         QString fileDir = SortBamWorker::tr("Input file");
         QString workflowDir = SortBamWorker::tr("Workflow");
         QString customD = SortBamWorker::tr("Custom");
-        directoryMap[fileDir] = SamtoolsWorkerUtils::FILE_DIRECTORY;
-        directoryMap[workflowDir] = SamtoolsWorkerUtils::WORKFLOW_INTERNAL;
-        directoryMap[customD] = SamtoolsWorkerUtils::CUSTOM;
+        directoryMap[fileDir] = FileAndDirectoryUtils::FILE_DIRECTORY;
+        directoryMap[workflowDir] = FileAndDirectoryUtils::WORKFLOW_INTERNAL;
+        directoryMap[customD] = FileAndDirectoryUtils::CUSTOM;
         delegates[OUT_MODE_ID] = new ComboBoxDelegate(directoryMap);
 
         delegates[CUSTOM_DIR_ID] = new URLDelegate("", "", false, true);
@@ -167,14 +166,14 @@ Task * SortBamWorker::tick() {
         const QString url = takeUrl();
         CHECK(!url.isEmpty(), NULL);
 
-        const QString detectedFormat = SamtoolsWorkerUtils::detectFormat(url);
+        const QString detectedFormat = FileAndDirectoryUtils::detectFormat(url);
         if(detectedFormat.isEmpty()){
             monitor()->addError(tr("Unknown file format: ") + url, getActorId());
             return NULL;
         }
 
         if(detectedFormat == BaseDocumentFormats::BAM){
-            const QString outputDir = SamtoolsWorkerUtils::createWorkingDir(url, getValue<int>(OUT_MODE_ID), getValue<QString>(CUSTOM_DIR_ID), context->workingDir());
+            const QString outputDir = FileAndDirectoryUtils::createWorkingDir(url, getValue<int>(OUT_MODE_ID), getValue<QString>(CUSTOM_DIR_ID), context->workingDir());
 
             BamSortSetting setting;
             setting.outDir = outputDir;

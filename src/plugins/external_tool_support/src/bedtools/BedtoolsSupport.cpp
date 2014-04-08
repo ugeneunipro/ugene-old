@@ -22,8 +22,10 @@
 #include "BedtoolsSupport.h"
 #include "BedtoolsSupportTask.h"
 
+
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/DataPathRegistry.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatusUtils.h>
 
@@ -54,6 +56,12 @@ BedtoolsSupport::BedtoolsSupport(const QString& name, const QString& path) : Ext
     toolKitName="bedtools";
 
     connect(this, SIGNAL(si_toolValidationStatusChanged(bool)), SLOT(sl_validationStatusChanged(bool))); 
+
+    U2DataPathRegistry* dpr = AppContext::getDataPathRegistry();
+    if (dpr){
+        U2DataPath* dp = new U2DataPath(GENOMES_DATA_NAME, QString(PATH_PREFIX_DATA)+QString(":")+GENOMES_DIR_NAME, false);
+        dpr->registerEntry(dp);
+    }
 }
 
 void BedtoolsSupport::sl_validationStatusChanged( bool newStatus ){

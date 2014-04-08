@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_SAMTOOLS_WORKERS_UTILS_H_
-#define _U2_SAMTOOLS_WORKERS_UTILS_H_
+#ifndef _U2_FILE_AND_DIRECTORY_UTILS_H_
+#define _U2_FILE_AND_DIRECTORY_UTILS_H_
 
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentImport.h>
@@ -28,9 +28,8 @@
 #include <U2Core/DocumentUtils.h>
 
 namespace U2 {
-namespace Workflow {
 
-class SamtoolsWorkerUtils  {
+class FileAndDirectoryUtils  {
 public:
     enum OutDirectory{
         FILE_DIRECTORY = 0,
@@ -45,7 +44,6 @@ private:
     static QString getFormatId(const FormatDetectionResult &r);
 };
 
-} // Workflow
 } // U2
 
-#endif // _U2_WRITESEQUENCEVALIDATOR_H_
+#endif // _U2_FILE_AND_DIRECTORY_UTILS_H_

@@ -21,13 +21,12 @@
 
 #include <U2Core/Log.h>
 
-#include "SamtoolsWorkersUtils.h"
+#include "FileAndDirectoryUtils.h"
 
 #define OUTPUT_SUBDIR "run"
 namespace U2 {
-namespace Workflow {
 
-QString SamtoolsWorkerUtils::getFormatId(const FormatDetectionResult &r) {
+QString FileAndDirectoryUtils::getFormatId(const FormatDetectionResult &r) {
     if (NULL != r.format) {
         return r.format->getFormatId();
     }
@@ -37,7 +36,7 @@ QString SamtoolsWorkerUtils::getFormatId(const FormatDetectionResult &r) {
     return "";
 }
 
-QString SamtoolsWorkerUtils::createWorkingDir(const QString &fileUrl, int dirMode, const QString &customDir, const QString &workingDir){
+QString FileAndDirectoryUtils::createWorkingDir(const QString &fileUrl, int dirMode, const QString &customDir, const QString &workingDir){
     QString result;
 
     bool useInternal = false;
@@ -74,7 +73,7 @@ QString SamtoolsWorkerUtils::createWorkingDir(const QString &fileUrl, int dirMod
 
 }
 
-QString SamtoolsWorkerUtils::detectFormat(const QString &url){
+QString FileAndDirectoryUtils::detectFormat(const QString &url){
     FormatDetectionConfig cfg;
     cfg.bestMatchesOnly = false;
     cfg.useImporters = true;
@@ -89,5 +88,4 @@ QString SamtoolsWorkerUtils::detectFormat(const QString &url){
 }
 
 
-} // Workflow
 } // U2

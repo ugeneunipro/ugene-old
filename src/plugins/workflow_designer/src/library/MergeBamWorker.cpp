@@ -33,6 +33,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Formats/BAMUtils.h>
+#include <U2Formats/FileAndDirectoryUtils.h>
 #include <U2Formats/MergeBamTask.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseAttributes.h>
@@ -42,8 +43,6 @@
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
-
-#include "util/SamtoolsWorkersUtils.h"
 
 #include "MergeBamWorker.h"
 
@@ -112,7 +111,7 @@ void MergeBamWorkerFactory::init() {
             MergeBamWorker::tr("A name of an output BAM file. If default of empty value is provided the output name is the name of the first BAM file with .merged.bam extention."));
 
 
-        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(SamtoolsWorkerUtils::FILE_DIRECTORY));
+        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
         customDirAttr->addRelation(new VisibilityRelation(OUT_MODE_ID, MergeBamWorker::tr("Custom")));
         a << customDirAttr;
@@ -125,9 +124,9 @@ void MergeBamWorkerFactory::init() {
         QString fileDir = MergeBamWorker::tr("Input file");
         QString workflowDir = MergeBamWorker::tr("Workflow");
         QString customD = MergeBamWorker::tr("Custom");
-        directoryMap[fileDir] = SamtoolsWorkerUtils::FILE_DIRECTORY;
-        directoryMap[workflowDir] = SamtoolsWorkerUtils::WORKFLOW_INTERNAL;
-        directoryMap[customD] = SamtoolsWorkerUtils::CUSTOM;
+        directoryMap[fileDir] = FileAndDirectoryUtils::FILE_DIRECTORY;
+        directoryMap[workflowDir] = FileAndDirectoryUtils::WORKFLOW_INTERNAL;
+        directoryMap[customD] = FileAndDirectoryUtils::CUSTOM;
         delegates[OUT_MODE_ID] = new ComboBoxDelegate(directoryMap);
 
         delegates[CUSTOM_DIR_ID] = new URLDelegate("", "", false, true);
@@ -164,7 +163,7 @@ Task * MergeBamWorker::tick() {
         const QString url = takeUrl();
         CHECK(!url.isEmpty(), NULL);
 
-        const QString detectedFormat = SamtoolsWorkerUtils::detectFormat(url);
+        const QString detectedFormat = FileAndDirectoryUtils::detectFormat(url);
         if(detectedFormat.isEmpty()){
             monitor()->addError(tr("Unknown file format: ") + url, getActorId());
             return NULL;
@@ -172,7 +171,7 @@ Task * MergeBamWorker::tick() {
 
         if(detectedFormat == BaseDocumentFormats::BAM){
             if(outputDir.isEmpty()){
-                outputDir = SamtoolsWorkerUtils::createWorkingDir(url, getValue<int>(OUT_MODE_ID), getValue<QString>(CUSTOM_DIR_ID), context->workingDir());
+                outputDir = FileAndDirectoryUtils::createWorkingDir(url, getValue<int>(OUT_MODE_ID), getValue<QString>(CUSTOM_DIR_ID), context->workingDir());
             }
             urls.append(url);
         }

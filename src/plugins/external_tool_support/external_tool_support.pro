@@ -9,6 +9,8 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/ExternalToolSupportSettingsController.h \
            src/RnaSeqCommon.h \
            src/TaskLocalStorage.h \
+           src/bedtools/BaseBedToolsWorker.h \
+           src/bedtools/BedToolsWorkersLibrary.h \
            src/bedtools/BedtoolsSupport.h \
            src/bedtools/BedtoolsSupportTask.h \
            src/blast/BlastAllSupport.h \
@@ -151,6 +153,8 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/ExternalToolSupportSettingsController.cpp \
            src/RnaSeqCommon.cpp \
            src/TaskLocalStorage.cpp \
+           src/bedtools/BaseBedToolsWorker.cpp \
+           src/bedtools/BedToolsWorkersLibrary.cpp \
            src/bedtools/BedtoolsSupport.cpp \
            src/bedtools/BedtoolsSupportTask.cpp \
            src/blast/BlastAllSupport.cpp \

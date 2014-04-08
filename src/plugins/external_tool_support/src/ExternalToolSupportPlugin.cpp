@@ -126,6 +126,7 @@
 #include "R/RSupport.h"
 #include "bwa/BwaWorker.h"
 #include "bedtools/BedtoolsSupport.h"
+#include "bedtools/BedToolsWorkersLibrary.h"
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -565,6 +566,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     LocalWorkflow::CAP3WorkerFactory::init();
     LocalWorkflow::VcfConsensusWorkerFactory::init();
     LocalWorkflow::BWAMEMWorkerFactory::init();
+    LocalWorkflow::SlopbedWorkerFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service

@@ -25,6 +25,8 @@
 #include <U2Core/ExternalToolRegistry.h>
 
 #define ET_BEDTOOLS "bedtools"
+#define GENOMES_DIR_NAME "genome_lengths"
+#define GENOMES_DATA_NAME "Genome files"
 
 namespace U2 {
 
