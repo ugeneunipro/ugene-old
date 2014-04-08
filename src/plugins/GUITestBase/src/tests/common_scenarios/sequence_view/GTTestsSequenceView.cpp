@@ -483,7 +483,7 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
 
     QString mergedFileName = testDir + "_common_data/fasta/merged_document.gb";
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
-    GTGlobals::sleep();
+    GTGlobals::sleep(10000);
     QFile::remove(mergedFileName);
     GTGlobals::sleep();
 }
