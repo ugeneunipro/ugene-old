@@ -132,7 +132,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     // text can not be cheched, check color
     QPixmap pixmap = QPixmap::grabWidget(simple, simple->rect());
     QImage img = pixmap.toImage();
-    QRgb rgb = img.pixel(simple->rect().center());
+    QRgb rgb = img.pixel(simple->rect().topLeft() + QPoint(5,5));
     QColor c(rgb);
 
     CHECK_SET_ERR(c.name()=="#a0a0a4","simple overview has wrong color. Expected: #a0a0a4, Found: " + c.name());
@@ -314,12 +314,13 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
     QRgb rgb = img.pixel(overviewGraph->rect().topLeft() + QPoint(5,5));
     QColor c(rgb);
 
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["space"]);
 #ifdef Q_OS_MAC
     CHECK_SET_ERR(c.name()=="#a0a0a4","simple overview has wrong color. Expected: #a0a0a4, Found: " + c.name());
 #else
-    CHECK_SET_ERR(c.name()=="#4c4c4c","simple overview has wrong color. Expected: #4c4c4c, Found: " + c.name());
+    CHECK_SET_ERR(c.name()=="#a0a0a4","simple overview has wrong color. Expected: #a0a0a4, Found: " + c.name());
 #endif
-    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["space"]);
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0011){
