@@ -82,9 +82,9 @@ BlastRunCommonDialog::BlastRunCommonDialog(QWidget* _parent) :
     sl_onMatchScoresChanged(0);
     connect(megablastCheckBox,SIGNAL(toggled(bool)),SLOT(sl_megablastChecked()));
 
-    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
-    QPushButton* cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
-    QPushButton* restoreButton = buttonBox->button(QDialogButtonBox::Yes);
+    okButton = buttonBox->button(QDialogButtonBox::Ok);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
+    restoreButton = buttonBox->button(QDialogButtonBox::Yes);
     connect(okButton,SIGNAL(clicked()),SLOT(sl_runQuery()));
     connect(restoreButton,SIGNAL(clicked()),SLOT(sl_restoreDefault()));
     sl_onProgNameChange(0);

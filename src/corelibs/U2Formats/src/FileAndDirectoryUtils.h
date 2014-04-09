@@ -29,9 +29,9 @@
 
 namespace U2 {
 
-class FileAndDirectoryUtils  {
+class U2FORMATS_EXPORT FileAndDirectoryUtils  {
 public:
-    enum OutDirectory{
+    enum U2FORMATS_EXPORT OutDirectory{
         FILE_DIRECTORY = 0,
         WORKFLOW_INTERNAL,
         CUSTOM
