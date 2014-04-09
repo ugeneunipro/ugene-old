@@ -2360,6 +2360,7 @@ GUI_TEST_CLASS_DEFINITION( test_2124 ) {
     GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "ty3.aln.gz" );
 
     // 2. Call the context menu on the sequence area.
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 1));
     const QString colorSchemeName = "Scheme";
     GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
         << "Custom schemes" << "Create new color scheme" ) );
@@ -2368,6 +2369,7 @@ GUI_TEST_CLASS_DEFINITION( test_2124 ) {
     GTMouseDriver::click( os, Qt::RightButton );
 
     // 3. Create a new color scheme for the amino alphabet.
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 1));
     GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
         << "Custom schemes" << colorSchemeName ) );
     GTMouseDriver::click( os, Qt::RightButton );
@@ -4706,6 +4708,37 @@ GUI_TEST_CLASS_DEFINITION( test_2667 ) {
     options.failIfNull = false;
     QTreeWidgetItem* annotationsItem = GTUtilsProjectTreeView::findItem(os, GTUtilsProjectTreeView::getTreeWidget(os), "NC_001363 features", options);
     CHECK_SET_ERR(NULL == annotationsItem, "item was not deleted");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2897) {
+    //    1. Open {data/samples/CLUSTALW/COI.aln}.
+    GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
+
+    //    2. Open options panel 'Highlighting' tab.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+
+    QComboBox* combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
+    CHECK_SET_ERR(combo != NULL, "highlightingScheme not found!");
+    int oldItemsNumber = combo->count();
+
+    //    3. Create a new custom nucleotide color scheme.
+    const QString colorSchemeName = "NewScheme";
+    GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
+        << "Custom schemes" << "Create new color scheme" ) );
+    GTUtilsDialog::waitForDialog( os, new NewColorSchemeCreator( os, colorSchemeName,
+        NewColorSchemeCreator::nucl ) );
+    GTMouseDriver::click( os, Qt::RightButton );
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 1));
+    GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
+        << "Custom schemes" << colorSchemeName ) );
+    GTMouseDriver::click( os, Qt::RightButton );
+
+    combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
+    CHECK_SET_ERR(combo != NULL, "highlightingScheme not found!");
+    int newItemsNumber = combo->count();
+
+    CHECK_SET_ERR(newItemsNumber == oldItemsNumber, "exportButton is disabled unexpectedly");
 }
 
 } // GUITest_regression_scenarios namespace
