@@ -567,6 +567,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     LocalWorkflow::VcfConsensusWorkerFactory::init();
     LocalWorkflow::BWAMEMWorkerFactory::init();
     LocalWorkflow::SlopbedWorkerFactory::init();
+    LocalWorkflow::GenomecovWorkerFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service

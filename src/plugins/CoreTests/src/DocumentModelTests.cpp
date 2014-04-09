@@ -664,6 +664,7 @@ void GTest_CompareFiles::replacePrefix(QString &path) {
 
     const QString EXPECTED_OUTPUT_DIR_PREFIX = "!expected!";
     const QString TMP_DATA_DIR_PREFIX = "!tmp_data_dir!";
+    const QString COMMON_DATA_DIR_PREFIX = "!common_data_dir!";
 
     // Determine which environment variable is required
     QString envVarName;
@@ -675,6 +676,10 @@ void GTest_CompareFiles::replacePrefix(QString &path) {
     else if (path.startsWith(TMP_DATA_DIR_PREFIX)) {
         envVarName = "TEMP_DATA_DIR";
         prefix = TMP_DATA_DIR_PREFIX;
+    }
+    else if (path.startsWith(COMMON_DATA_DIR_PREFIX)) {
+        envVarName = "COMMON_DATA_DIR";
+        prefix = COMMON_DATA_DIR_PREFIX;
     }
     else {
         FAIL(QString("Unexpected 'prefix' value in the path: '%1'!").arg(path), );

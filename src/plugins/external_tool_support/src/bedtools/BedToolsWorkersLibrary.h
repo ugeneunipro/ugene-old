@@ -31,6 +31,7 @@
 namespace U2 {
 namespace LocalWorkflow {
 
+//////////////////////////////////////////////////
 //Slopbed
 class SlopbedPrompter;
 typedef PrompterBase<SlopbedPrompter> SlopbedBase;
@@ -64,6 +65,45 @@ class SlopbedTask : public BaseBedToolsTask{
     Q_OBJECT
 public:
     SlopbedTask (const BedToolsSetting &settings);
+
+protected:
+    QStringList getParameters(U2OpStatus& os);
+};
+
+//////////////////////////////////////////////////
+//genomecov
+class GenomecovPrompter;
+typedef PrompterBase<GenomecovPrompter> GenomecovBase;
+class GenomecovPrompter : public GenomecovBase {
+    Q_OBJECT
+public:
+    GenomecovPrompter(Actor* p = 0) : GenomecovBase(p) {}
+protected:
+    QString composeRichDoc();
+}; //GenomecovPrompter
+
+class GenomecovWorker: public BaseBedToolsWorker {
+    Q_OBJECT
+public:
+    GenomecovWorker(Actor *a);
+protected:
+    QVariantMap getCustomParameters() const;
+    QString getDefaultFileName() const;
+    Task *getTask(const BedToolsSetting &settings) const;
+}; //GenomecovWorker
+
+class GenomecovWorkerFactory : public DomainFactory {
+    static const QString ACTOR_ID;
+public:
+    static void init();
+    GenomecovWorkerFactory() : DomainFactory(ACTOR_ID) {}
+    Worker* createWorker(Actor* a) { return new GenomecovWorker(a); }
+}; //GenomecovWorkerFactory
+
+class GenomecovTask : public BaseBedToolsTask{
+    Q_OBJECT
+public:
+    GenomecovTask (const BedToolsSetting &settings);
 
 protected:
     QStringList getParameters(U2OpStatus& os);
