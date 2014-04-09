@@ -21,8 +21,10 @@
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2View/ADVSequenceObjectContext.h>
+#include <U2Core/U2SequenceDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2DbiUtils.h>
+
 #include <math.h>
 
 #include "DNAStatisticsTask.h"
@@ -114,20 +116,19 @@ QMap<char,double> DNAStatisticsTask::pMWMap = createProteinMWMap();
 QMap<char,double> DNAStatisticsTask::pKaMap = createPKAMap();
 QMap<char,int> DNAStatisticsTask::pChargeMap = createChargeMap();
 
-DNAStatisticsTask::DNAStatisticsTask(ADVSequenceObjectContext *context, const U2Region& _region)
+DNAStatisticsTask::DNAStatisticsTask(const DNAAlphabet* alphabet,
+                                     const U2EntityRef seqRef,
+                                     const U2Region& _region)
     : BackgroundTask< DNAStatistics > (tr("Calculate sequence statistics"), TaskFlag_None),
-      ctx(context),
+      alphabet(alphabet),
+      seqRef(seqRef),
       region(_region),
       nA(0),
       nC(0),
       nG(0),
       nT(0)
 {
-    SAFE_POINT_EXT(ctx != NULL, setError(tr("Sequence context is NULL")), );
-    if (region.isEmpty()) {
-        region.startPos = 0;
-        region.length = ctx->getSequenceLength();
-    }
+    SAFE_POINT_EXT(alphabet != NULL, setError(tr("Alphabet is NULL")), );
 }
 
 void DNAStatisticsTask::run() {
@@ -135,17 +136,29 @@ void DNAStatisticsTask::run() {
 }
 
 void DNAStatisticsTask::computeStats(){
-    result.clear();
+    U2OpStatus2Log os;
+    DbiConnection dbiConnection(seqRef.dbiRef, os);
+    CHECK_OP(os, );
 
-    SAFE_POINT_EXT(region.endPos() <= ctx->getSequenceLength(), setError(tr("Statistics sequence region is not valid")), );
+    U2SequenceDbi* sequenceDbi = dbiConnection.dbi->getSequenceDbi();
+    CHECK(sequenceDbi != NULL, );
+    int seqLen = sequenceDbi->getSequenceObject(seqRef.entityId, os).length;
+    CHECK_OP(os, );
+
+    result.clear();
+    if (region.isEmpty()) {
+        region.startPos = 0;
+        region.length = seqLen;
+    }
+
+    SAFE_POINT_EXT(alphabet != NULL, setError(tr("Alphabet is NULL")), );
+    SAFE_POINT_EXT(region.endPos() <= seqLen, setError(tr("Statistics sequence region is not valid")), );
+
     CHECK(region.length != 0, );
     result.length = region.length;
 
     qint64 blockSize = 1024*1024;
     qint64 prevEnd = 0;
-
-    const DNAAlphabet* al = ctx->getAlphabet();
-    SAFE_POINT_EXT(al != NULL, setError(tr("Alphabet is NULL")), );
 
     do {
         if (isCanceled() || hasError()) {
@@ -153,7 +166,8 @@ void DNAStatisticsTask::computeStats(){
         }
         U2Region r = region.intersect(U2Region(prevEnd, blockSize));
         prevEnd += blockSize;
-        QByteArray seqBlock = ctx->getSequenceData(r);
+        QByteArray seqBlock = sequenceDbi->getSequenceData(seqRef.entityId, r, os);
+        CHECK_OP(os, );
         foreach(char c, seqBlock){
             if (c == 'A') {
                 nA++;
@@ -165,7 +179,7 @@ void DNAStatisticsTask::computeStats(){
                 nC++;
             }
 
-            if (al->isAmino()) {
+            if (alphabet->isAmino()) {
                 result.molecularWeight += pMWMap.value( c );
             }
         }
@@ -173,12 +187,12 @@ void DNAStatisticsTask::computeStats(){
     } while (prevEnd < region.endPos());
 
     // get alphabet type
-    if (al->isNucleic()) {       
+    if (alphabet->isNucleic()) {
         result.gcContent = 100.0 * (nG + nC) / (double) region.length;
 
         // Calculating molar weight
         // Source: http://www.basic.northwestern.edu/biotools/oligocalc.html
-        if (al->isRNA()) {
+        if (alphabet->isRNA()) {
             result.molarWeight = nA * 329.21 + nT * 306.17 + nC * 305.18 + nG * 345.21 + 159.0;
         } else {
             result.molarWeight = nA * 313.21 + nT * 304.2 + nC * 289.18 + nG * 329.21 + 79;
@@ -200,15 +214,16 @@ void DNAStatisticsTask::computeStats(){
 
         result.mgOD260 = result.nmoleOD260 * result.molarWeight * 0.001;
 
-    } else if (al->isAmino()) {
+    } else if (alphabet->isAmino()) {
         static const double MWH2O = 18.0;
         result.molecularWeight = result.molecularWeight - (region.length - 1)*MWH2O;
-        result.isoelectricPoint = calcPi();
+        result.isoelectricPoint = calcPi(sequenceDbi);
     }
 }
 
-double DNAStatisticsTask::calcPi()
+double DNAStatisticsTask::calcPi(U2SequenceDbi* sequenceDbi)
 {
+    U2OpStatus2Log os;
     QMap<char,int> countMap;
 
     qint64 blockSize = 1024*1024;
@@ -219,7 +234,8 @@ double DNAStatisticsTask::calcPi()
         }
         U2Region r = region.intersect(U2Region(prevEnd, blockSize));
         prevEnd += blockSize;
-        QByteArray seqBlock = ctx->getSequenceData(r);
+        QByteArray seqBlock = sequenceDbi->getSequenceData(seqRef.entityId, r, os);
+        CHECK_OP(os, 0);
         foreach(char c, seqBlock){
             if ( pKaMap.contains( c ) ) {
                 countMap[c]++;

@@ -70,7 +70,6 @@ SequenceInfo::SequenceInfo(AnnotatedDNAView* _annotatedDnaView)
     launchCalculations();
 }
 
-
 void SequenceInfo::initLayout()
 {
     QVBoxLayout* mainLayout = new QVBoxLayout();
@@ -348,7 +347,7 @@ void SequenceInfo::launchCalculations(QString subgroupId)
         {
             statsWidget->showProgress();
 
-            dnaStatisticsTaskRunner.run(new DNAStatisticsTask(activeContext, currentRegion));
+            dnaStatisticsTaskRunner.run(new DNAStatisticsTask(alphabet, seqRef, currentRegion));
         }
     }
 }
@@ -400,7 +399,7 @@ void SequenceInfo::sl_updateStatData() {
     DNAStatistics stats = dnaStatisticsTaskRunner.getResult();
 
     ADVSequenceWidget *wgt = annotatedDnaView->getSequenceWidgetInFocus();
-    SAFE_POINT(wgt != NULL, tr("Sequence widget is NULL"), );
+    CHECK(wgt != NULL, );
     ADVSequenceObjectContext *ctx = wgt->getActiveSequenceContext();
     SAFE_POINT(ctx != NULL, tr("Sequence context is NULL"), );
     SAFE_POINT(ctx->getAlphabet() != NULL, tr("Sequence alphbet is NULL"), );

@@ -24,12 +24,14 @@
 
 #include <U2Core/BackgroundTaskRunner.h>
 #include <U2Core/U2Region.h>
+#include <U2Core/U2Type.h>
 #include <QtCore/QVector>
 #include <QtCore/QMap>
 
 namespace U2 {
 
-class ADVSequenceObjectContext;
+class DNAAlphabet;
+class U2SequenceDbi;
 
 struct DNAStatistics {
     DNAStatistics();
@@ -50,10 +52,11 @@ struct DNAStatistics {
 
 class U2VIEW_EXPORT DNAStatisticsTask : public BackgroundTask< DNAStatistics > {
 public:
-    DNAStatisticsTask(ADVSequenceObjectContext *context, const U2Region& region = U2Region());
+    DNAStatisticsTask(const DNAAlphabet* alphabet, const U2EntityRef seqRef, const U2Region& region = U2Region());
     virtual void run();
 private:
-    ADVSequenceObjectContext*   ctx;
+    const DNAAlphabet*          alphabet;
+    U2EntityRef                 seqRef;
     U2Region                    region;
 
     qint64 nA;
@@ -66,7 +69,7 @@ private:
     static QMap<char,int> pChargeMap; // protein charges
 
     void computeStats();
-    double calcPi();
+    double calcPi(U2SequenceDbi* sequenceDbi);
     double calcChargeState(const QMap<char,int>& countMap, double pH );
 };
 
