@@ -40,7 +40,7 @@ namespace U2 {
 
 AppSettingsDialogController::AppSettingsDialogController(const QString& pageId, QWidget *p):QDialog(p) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227376");
+    new HelpButton(this, buttonBox, "4227260");
 
     currentPage = NULL;
     
