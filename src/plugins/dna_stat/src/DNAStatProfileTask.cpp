@@ -48,7 +48,7 @@ DNAStatProfileTask::DNAStatProfileTask(ADVSequenceObjectContext* context)
 
     charTask = new CharOccurTask(ctx->getAlphabet(), ctx->getSequenceRef(), U2Region(0, ctx->getSequenceLength()));
     dinucTask = new DinuclOccurTask(ctx->getAlphabet(), ctx->getSequenceRef(), U2Region(0, ctx->getSequenceLength()));
-    statTask = new DNAStatisticsTask(ctx, U2Region(0, ctx->getSequenceLength()));
+    statTask = new DNAStatisticsTask(ctx->getAlphabet(), ctx->getSequenceRef(), U2Region(0, ctx->getSequenceLength()));
 
     addSubTask(charTask);
     addSubTask(dinucTask);
