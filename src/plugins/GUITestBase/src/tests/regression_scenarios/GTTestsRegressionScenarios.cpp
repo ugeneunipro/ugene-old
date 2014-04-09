@@ -693,7 +693,7 @@ GUI_TEST_CLASS_DEFINITION(test_1093) {
 
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
 
-    GTGlobals::sleep(5000);
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
 //The short reads can't be mapped to the reference sequence!
 }
 

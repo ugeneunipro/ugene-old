@@ -318,7 +318,6 @@ void GUITestService::runGUITest(GUITest* t) {
     }
 
     QString testResult = os.hasError() ? os.getError() : GUITestTeamcityLogger::successResult;
-    testResult.replace('\n','|n');
     writeTestResult(testResult);
 
     exit(0);

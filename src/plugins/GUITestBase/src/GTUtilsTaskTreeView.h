@@ -29,6 +29,7 @@ class QTreeWidgetItem;
 
 
 namespace U2 {
+class Task;
 
 class GTUtilsTaskTreeView {
 public:
@@ -48,6 +49,7 @@ public:
 private:
     static QTreeWidgetItem* getTreeWidgetItem(QTreeWidget* tree, const QString &itemName);
     static QList<QTreeWidgetItem*> getTaskTreeViewItems(QTreeWidgetItem* root);
+    static QString getTasksInfo(QList<U2::Task *> tasks, int level);
 
 };
 

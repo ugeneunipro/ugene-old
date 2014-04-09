@@ -205,14 +205,13 @@ QString GUITestLauncher::readTestResult(const QByteArray& output) {
         QString str = stream.readLine();
 
         if (str.contains(GUITESTING_REPORT_PREFIX)) {
-            msg =str.remove(0, str.indexOf(':')+1);// str.split(":").last();
+            msg =str.remove(0, str.indexOf(':')+1);
             if (!msg.isEmpty()) {
                 break;
             }
         }
     }
 
-    msg.replace('|n', '\n');
     return msg;
 }
 
