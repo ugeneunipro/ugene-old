@@ -184,6 +184,7 @@ inline QString Attribute::getAttributeValue(Workflow::WorkflowContext *ctx) cons
         }
     }
     if(tsi.hasError()) {
+        scriptLog.error(tsi.getError());
         return QString();
     }
     if( scriptResult.isString() ) {
@@ -207,8 +208,7 @@ inline int Attribute::getAttributeValue(Workflow::WorkflowContext *ctx) const {
     }
 
     TaskStateInfo tsi;
-
-
+    WorkflowScriptLibrary::initEngine(&engine);
     QScriptValue scriptResult = ScriptTask::runScript(&engine, scriptVars, scriptData.getScriptText(), tsi);
 
     if( tsi.cancelFlag ) {
@@ -217,6 +217,7 @@ inline int Attribute::getAttributeValue(Workflow::WorkflowContext *ctx) const {
         }
     }
     if(tsi.hasError()) {
+        scriptLog.error(tsi.getError());
         return 0;
     }
     if( scriptResult.isNumber() ) {
