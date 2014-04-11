@@ -24,8 +24,10 @@
 #include <QtCore/QEventLoop>
 #include <QtCore/QTimer>
 #include <QtTest/QSpontaneKeyEvent>
+#include <QtGui/QPixmap>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QDesktopWidget>
 #else
 #include <QtWidgets/QApplication>
 #endif
@@ -43,4 +45,11 @@ void GTGlobals::sendEvent(QObject *obj, QEvent *e) {
     qApp->notify(obj, e);
 }
 
+void GTGlobals::takeScreenShot(QString path){
+
+    QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
+    originalPixmap.save(path);
+}
+
 } //namespace
+

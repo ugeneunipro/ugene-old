@@ -38,6 +38,12 @@ QString getDataDir(){
 #endif
 }
 
+#ifdef Q_OS_MAC
+const QString GUITest::screenshotDir = "../../../../../../screenshotFol/";
+#else
+const QString GUITest::screenshotDir = "../../screenshotFol/";
+#endif
+
 const QString GUITest::testDir = getTestDir();
 const QString GUITest::dataDir = getDataDir();
 const QString GUITest::sandBoxDir = testDir + "_common_data/scenarios/sandbox/";

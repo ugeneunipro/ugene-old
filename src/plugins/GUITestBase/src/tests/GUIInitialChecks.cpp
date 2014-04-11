@@ -39,6 +39,7 @@
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QMainWindow>
+#include <QtCore/QDir>
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMainWindow>
@@ -96,6 +97,13 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005){
+    Q_UNUSED(os);
+    QDir dir(QDir().absoluteFilePath(screenshotDir));
+    if(!dir.exists(dir.absoluteFilePath(screenshotDir))){
+        dir.mkpath(dir.path());
+    }
+}
+GUI_TEST_CLASS_DEFINITION(test_0006){
     GTUtilsTaskTreeView::waitTaskFinidhed(os);
 }
 

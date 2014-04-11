@@ -188,6 +188,8 @@ QString GUITestLauncher::performTest(const QString& testName, bool isLong) {
         return readTestResult(process.readAllStandardOutput());
     }
 
+    QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
+    originalPixmap.save(GUITest::screenshotDir + testName + ".jpg");
     return tr("An error occurred while finishing UGENE: ") + process.errorString() + '\n' + readTestResult(process.readAllStandardOutput());
 }
 
