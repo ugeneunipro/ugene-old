@@ -104,9 +104,9 @@ void ConvertAssemblyToSamTask::run() {
     if (assemblyEntityRef.isValid()) {
         objectIds.append(assemblyEntityRef.entityId);
     }
-    // Otherwise convert all objects
+    // Otherwise convert all assembly objects
     else {
-        objectIds = odbi->getObjects("/", 0, U2_DBI_NO_LIMIT, stateInfo);
+        objectIds = odbi->getObjects(U2Type::Assembly, 0, U2_DBI_NO_LIMIT, stateInfo);
     }
 
     DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::SAM);
