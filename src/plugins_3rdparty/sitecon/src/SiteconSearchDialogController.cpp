@@ -295,6 +295,7 @@ void SiteconSearchDialogController::runTask() {
     assert(task == NULL);
     if (model == NULL) {
         QMessageBox::critical(this, tr("error"), tr("model not selected"));
+        return;
     }
     bool isRegionOk=false;
     U2Region reg=rs->getRegion(&isRegionOk);
