@@ -90,12 +90,13 @@ void AnnotationGroup::findAllAnnotationsInGroupSubTree( QList<Annotation> &set )
     }
 }
 
-QList<Annotation> AnnotationGroup::getAnnotations( ) const {
+QList<Annotation> AnnotationGroup::getAnnotations( bool recurcively ) const {
     QList<Annotation> resultAnnotations;
 
     U2OpStatusImpl os;
-    QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( id,
-        parentObject->getEntityRef( ).dbiRef, os, Nonrecursive, Nonroot );
+    const U2DbiRef dbiRef = parentObject->getEntityRef( ).dbiRef;
+    QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( id, dbiRef, os,
+        recurcively ? Recursive : Nonrecursive, Nonroot );
     SAFE_POINT_OP( os, resultAnnotations );
 
     foreach ( const U2Feature &feature, subfeatures ) {

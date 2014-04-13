@@ -51,7 +51,7 @@ Task::ReportResult RemoveAnnotationsTask::report( ) {
         return ReportResult_Finished;
     }
 
-    if ( subGroup.getAnnotations( ).isEmpty( ) ) {
+    if ( subGroup.getAnnotations( true ).isEmpty( ) ) {
         return ReportResult_Finished;
     }
 

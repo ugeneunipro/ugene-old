@@ -45,7 +45,7 @@ public:
      */
     void                    findAllAnnotationsInGroupSubTree( QList<Annotation> &set ) const;
 
-    QList<Annotation>       getAnnotations( ) const;
+    QList<Annotation>       getAnnotations( bool recurcively = false ) const;
 
     Annotation              addAnnotation( const AnnotationData &a );
 
