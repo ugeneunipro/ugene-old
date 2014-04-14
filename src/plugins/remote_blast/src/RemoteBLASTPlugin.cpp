@@ -100,6 +100,7 @@ RemoteBLASTViewContext::RemoteBLASTViewContext(QObject *p):GObjectViewWindowCont
 void RemoteBLASTViewContext::initViewContext(GObjectView * view) {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
     ADVGlobalAction * a = new ADVGlobalAction(av, QIcon(":/remote_blast/images/remote_db_request.png"), tr("Query NCBI BLAST database..."), 60);
+    a->setObjectName("Query NCBI BLAST database");
     connect( a, SIGNAL(triggered()), SLOT(sl_showDialog()) );
 }
 

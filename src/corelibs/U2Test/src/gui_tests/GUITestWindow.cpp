@@ -484,7 +484,7 @@ QString EventFilter::defaultVarValuesCode(QWidget* widget) const {
     }
 
     if(qobject_cast<QDoubleSpinBox*>(widget) != NULL){
-        return defaultVarValuesCode(qobject_cast<QSpinBox*>(widget));
+        return defaultVarValuesCode(qobject_cast<QDoubleSpinBox*>(widget));
     }
 
     if(qobject_cast<QGroupBox*>(widget) != NULL){
@@ -582,7 +582,7 @@ QString EventFilter::widgetVariableCode(QWidget* widget) const {
     }
 
     if(qobject_cast<QDoubleSpinBox*>(widget) != NULL){
-        return widgetVariableCode(qobject_cast<QSpinBox*>(widget));
+        return widgetVariableCode(qobject_cast<QDoubleSpinBox*>(widget));
     }
 
     if(qobject_cast<QGroupBox*>(widget) != NULL){
@@ -677,7 +677,7 @@ QString EventFilter::widgetsProcessingCode(QWidget* widget) const {
     }
 
     if(qobject_cast<QDoubleSpinBox*>(widget) != NULL){
-        return widgetsProcessingCode(qobject_cast<QSpinBox*>(widget));
+        return widgetsProcessingCode(qobject_cast<QDoubleSpinBox*>(widget));
     }
 
     if(qobject_cast<QGroupBox*>(widget) != NULL){

@@ -70,6 +70,12 @@
 #include "tests/crazy_user/GUICrazyUserTest.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
+#define REGISTER_TEST_WITH_TIMEOUT(X, TIMEOUT) \
+    if (guiTestBase) { \
+        GUITest *test = new X(); \
+        test->setTimeout(TIMEOUT); \
+        guiTestBase->registerTest(test); \
+    }
 #define REGISTER_TEST_IGNORED_BY(X, BY, MESSAGE) \
     if (guiTestBase) { \
         GUITest *test = new X(); \
@@ -298,6 +304,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2612);
     REGISTER_TEST(GUITest_regression_scenarios::test_2667);
     REGISTER_TEST(GUITest_regression_scenarios::test_2897);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2903);
 
 
 //////////////////////////////////////////////////////////////////////////

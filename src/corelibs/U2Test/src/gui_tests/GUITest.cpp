@@ -1,4 +1,7 @@
 #include "GUITest.h"
+#include <QtGui/QPixmap>
+#include <QtGui/QApplication>
+#include <QtGui/QDesktopWidget>
 
 namespace U2 {
 
@@ -47,6 +50,13 @@ const QString GUITest::screenshotDir = "../../screenshotFol/";
 const QString GUITest::testDir = getTestDir();
 const QString GUITest::dataDir = getDataDir();
 const QString GUITest::sandBoxDir = testDir + "_common_data/scenarios/sandbox/";
+
+void GUITest::sl_fail(){
+    QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
+    originalPixmap.save(GUITest::screenshotDir + name + ".jpg");
+    uiLog.error("GUItest timed out");
+    exit(0);
+}
 
 
 

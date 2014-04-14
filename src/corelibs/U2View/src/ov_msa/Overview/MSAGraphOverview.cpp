@@ -350,6 +350,7 @@ void MSAGraphOverview::moveVisibleRange(QPoint _pos) {
     }
 
     int pos = newVisibleRange.x() / stepX;
+    CHECK(editor->getAlignmentLen() > pos, );
     sequenceArea->setFirstVisibleBase(pos);
     update();
 }

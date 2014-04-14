@@ -41,6 +41,7 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/Log.h>
 
+
 /**************************************************** to use qt file dialog *************************************************************/
 #ifdef Q_OS_LINUX
 typedef QStringList(*_qt_filedialog_open_filenames_hook)(QWidget * parent, const QString &caption, const QString &dir,
@@ -311,6 +312,7 @@ void GUITestService::runGUITest(GUITest* t) {
     tests.append(postChecks());
 
     clearSandbox();
+    QTimer::singleShot(t->getTimeout(), t, SLOT(sl_fail()));
     foreach(GUITest* t, tests) {
         if (t) {
             t->run(os);

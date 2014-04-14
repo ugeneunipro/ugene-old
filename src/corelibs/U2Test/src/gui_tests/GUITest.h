@@ -45,12 +45,13 @@ private:
 class U2TEST_EXPORT GUITest: public QObject, public GUITestIgnorable {
     Q_OBJECT
 public:
-    GUITest(const QString &_name = "", bool _longTest=false) : name(_name), longTest(_longTest) {}
+    GUITest(const QString &_name = "", int _timeout=240000) : name(_name), timeout(_timeout) {}
     virtual ~GUITest(){}
 
     QString getName() const { return name; }
-    bool isLong(){return longTest;}
+    int getTimeout() const { return timeout; }
     void setName(const QString &n) { name = n; }
+    void setTimeout(int _timeout) { timeout = _timeout; }
 
     static const QString testDir;
     static const QString dataDir;
@@ -63,7 +64,9 @@ private:
     GUITest& operator=(const GUITest&);
 
     QString name;
-    bool longTest;
+    int timeout;
+public slots:
+    void sl_fail();
 };
 
 typedef QList<GUITest*> GUITests;

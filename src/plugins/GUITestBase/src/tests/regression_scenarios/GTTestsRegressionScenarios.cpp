@@ -90,6 +90,7 @@
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
+#include "runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
@@ -4739,6 +4740,24 @@ GUI_TEST_CLASS_DEFINITION(test_2897) {
     int newItemsNumber = combo->count();
 
     CHECK_SET_ERR(newItemsNumber == oldItemsNumber, "exportButton is disabled unexpectedly");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2903) {
+//    1. Open the attached file
+    GTLogTracer();
+    GTFileDialog::openFile( os, testDir + "_common_data/regression/2903", "unknown_virus.fa" );
+
+    RemoteBLASTDialogFiller::Parameters* par= new RemoteBLASTDialogFiller::Parameters();
+    GTUtilsDialog::waitForDialog(os, new RemoteBLASTDialogFiller(os, par));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE"
+                                                      << "Query NCBI BLAST database"));
+    QMenu* menu = GTMenu::showContextMenu(os, GTWidget::findWidget(os, "render_area_virus_X"));
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+//    2. Click on the Analyze->Query NCBI BLAST database context menu
+//    3. Click on the Search button
+//    Expected state: the task has been finished without errors and blast result appears
+//    Current state: the following error appears: 'RemoteBLASTTask' task failed: Database couldn't prepare the response
+
 }
 
 } // GUITest_regression_scenarios namespace

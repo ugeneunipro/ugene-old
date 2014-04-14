@@ -19,6 +19,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h \
             src/runnables/ugene/ugeneui/NCBISearchDialogFiller.h \
             src/runnables/ugene/ugeneui/SaveProjectDialogFiller.h \
+            src/runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h \
 #   Runnables / UGENE / corelibs
 #   Runnables / UGENE / corelibs / U2Gui
             src/runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h \
@@ -59,6 +60,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h \
             src/runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.h \
 #   Runnables / UGENE / plugins
+#   Runnables / UGENE / plugins / annotator
+            src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h \
 #   Runnables / UGENE / plugins / dotplot
             src/runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h \
             src/runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h \
@@ -70,10 +73,17 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromliAnmentDialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h \
+#   Runnables / UGENE / plugins / external_tools
+            src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h \
+            src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h \
 #   Runnables / UGENE / plugins / workflow_designer
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.h \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h \
             src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h \
+            src/runnables/ugene/plugins/workflow_designer/workflowmetadialogFiller.h \
+            src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h \
+            src/runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h \
+            src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h \
 #   Utils classes
             src/GTUtilsApp.h \
             src/GTUtilsDialog.h \
@@ -92,6 +102,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsOptionsPanel.h \
             src/GTUtilsQueryDesigner.h \
             src/GTUtilsWorkflowDesigner.h \
+            src/GTUtilsPhyTree.h \
 #   Tests
             src/tests/GUIInitialChecks.h \
 #   Tests/Regression Scenarios
@@ -114,6 +125,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/msa_editor/colors/GTTestsMSAEditorColors.h \
             src/tests/common_scenarios/msa_editor/consensus/GTTestsMSAEditorConsensus.h \
             src/tests/common_scenarios/msa_editor/edit/GTTestsMSAEditorEdit.h \
+            src/tests/common_scenarios/msa_editor/overview/GTTestsMSAEditorOverview.h \
             src/tests/common_scenarios/annotations/GTTestsAnnotations.h \
             src/tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.h \
             src/tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h \
@@ -171,15 +183,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTDoubleSpinBox.h \
             src/api/GTTableView.h  \
             src/api/GTGraphicsItem.h \
-    src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h \
-    src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h \
-    src/runnables/ugene/plugins/workflow_designer/workflowmetadialogFiller.h \
-    src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h \
-    src/runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h \
-    src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h \
-    src/runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h \
-    src/GTUtilsPhyTree.h \
-    src/tests/common_scenarios/msa_editor/overview/GTTestsMSAEditorOverview.h
+
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -199,6 +203,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.cpp \
             src/runnables/ugene/ugeneui/NCBISearchDialogFiller.cpp \
             src/runnables/ugene/ugeneui/SaveProjectDialogFiller.cpp \
+            src/runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.cpp \
 #   Runnables / UGENE / corelibs
 #   Runnables / UGENE / corelibs / U2Gui
             src/runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.cpp \
@@ -238,6 +243,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.cpp \
             src/runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.cpp \
 #   Runnables / UGENE / plugins
+#   Runnables / UGENE / plugins / annotator
+            src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.cpp \
 #   Runnables / UGENE / plugins / dotplot
             src/runnables/ugene/plugins/dotplot/DotPlotDialogFiller.cpp \
             src/runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.cpp \
@@ -249,10 +256,16 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromliAnmentDialogFiller.cpp \
+#   Runnables / UGENE / plugins / external_tools
+            src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp \
+            src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.cpp \
 #   Runnables / UGENE / plugins / workflow_designer
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.cpp \
+            src/runnables/ugene/plugins/workflow_designer/workflowmetadialogFiller.cpp \
+            src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.cpp \
+            src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.cpp \
 #   Utils classes
             src/GTUtilsApp.cpp \
             src/GTUtilsDialog.cpp \
@@ -271,6 +284,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsOptionsPanel.cpp \
             src/GTUtilsQueryDesigner.cpp \
             src/GTUtilsWorkflowDesigner.cpp \
+            src/GTUtilsPhyTree.cpp \
 #   Tests
             src/tests/GUIInitialChecks.cpp \
 #   Tests/Regression Scenarios
@@ -293,6 +307,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/msa_editor/consensus/GTTestsMSAEditorConsensus.cpp \
             src/tests/common_scenarios/msa_editor/colors/GTTestsMSAEditorColors.cpp \
             src/tests/common_scenarios/msa_editor/edit/GTTestsMSAEditorEdit.cpp  \
+            src/tests/common_scenarios/msa_editor/overview/GTTestsMSAEditorOverview.cpp \
             src/tests/common_scenarios/annotations/GTTestsAnnotations.cpp \
             src/tests/common_scenarios/annotations/edit/GTTestsAnnotationsEdit.cpp \
             src/tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.cpp \
@@ -355,13 +370,5 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTAction.cpp \
             src/api/GTDoubleSpinBox.cpp \
             src/api/GTTableView.cpp \
-            src/api/GTGraphicsItem.cpp \
-    src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp \
-    src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.cpp \
-    src/runnables/ugene/plugins/workflow_designer/workflowmetadialogFiller.cpp \
-    src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.cpp \
-    src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.cpp \
-    src/runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.cpp \
-    src/GTUtilsPhyTree.cpp \
-    src/tests/common_scenarios/msa_editor/overview/GTTestsMSAEditorOverview.cpp
+            src/api/GTGraphicsItem.cpp
 
