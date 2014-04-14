@@ -254,8 +254,7 @@ void U2SequenceObject::setCircular(bool isCircular) {
     con.dbi->getSequenceDbi()->updateSequenceObject(u2seq,os);
     CHECK_OP(os, );
     cachedCircular = newVal;
-
-
+    emit si_sequenceCircularStateChanged();
 }
 
 void U2SequenceObject::setQuality(const DNAQuality& q) {

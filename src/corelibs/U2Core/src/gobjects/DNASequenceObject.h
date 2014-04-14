@@ -100,6 +100,7 @@ public:
 
 signals:
     void si_sequenceChanged();
+    void si_sequenceCircularStateChanged();
 
 protected:
     mutable const DNAAlphabet*    cachedAlphabet;

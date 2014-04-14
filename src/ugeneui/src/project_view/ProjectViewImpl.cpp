@@ -416,6 +416,7 @@ ProjectViewImpl::ProjectViewImpl()
 //    addNewDocumentAction = NULL;
     saveSelectedDocsAction = NULL;
     relocateDocumentAction = NULL;
+    toggleCircularAction = NULL;
     saveProjectOnClose = false;
 
     //todo: move it somewhere else -> object views could be openend without project view service active
@@ -453,6 +454,10 @@ void ProjectViewImpl::enable() {
 
     saveSelectedDocsAction = new QAction(QIcon(":ugene/images/save_selected_documents.png"), tr("save_selected_modified_docs_action"), w);
     connect(saveSelectedDocsAction, SIGNAL(triggered()), SLOT(sl_onSaveSelectedDocs()));
+
+    toggleCircularAction = new QAction(tr("Mark this sequence as circular"), w);
+    toggleCircularAction->setCheckable(true);
+    connect(toggleCircularAction, SIGNAL(triggered()), SLOT(sl_onToggleCircular()));
 
     relocateDocumentAction = new QAction(tr("Relocate.."), w);
     relocateDocumentAction->setIcon(QIcon(":ugene/images/relocate.png"));
@@ -950,6 +955,28 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
 
     saveSelectedDocsAction->setEnabled(hasModifiedDocs);
     m.addAction(saveSelectedDocsAction);
+
+    if (!getGObjectSelection()->isEmpty()) {
+        const GObjectSelection* objSelection = getGObjectSelection();
+        bool seqobjFound = false;
+        bool allCirc = false;
+        foreach(GObject *obj, objSelection->getSelectedObjects()){
+            if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
+                seqobjFound = true;
+                U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(obj);
+                if (!casted->isCircular()) {
+                    allCirc = false;
+                    break;
+                }else{
+                    allCirc = true;
+                }
+            }
+        }
+        if (seqobjFound){
+            toggleCircularAction->setChecked(allCirc);
+            m.addAction(toggleCircularAction);
+        }
+    }
 }
 
 void ProjectViewImpl::sl_activateView() {
@@ -1052,6 +1079,17 @@ void ProjectViewImpl::highlightItem(Document* doc){
     assert(doc);
     projectTreeController->highlightItem(doc);
 }
+
+void ProjectViewImpl::sl_onToggleCircular() {
+    const GObjectSelection* objSelection = getGObjectSelection();
+    foreach(GObject *obj, objSelection->getSelectedObjects()){
+        if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
+            U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(obj);
+            casted->setCircular(toggleCircularAction->isChecked());
+        }
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Tasks
 

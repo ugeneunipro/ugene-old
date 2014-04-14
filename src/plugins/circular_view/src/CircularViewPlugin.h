@@ -27,6 +27,7 @@
 #include <U2Gui/ObjectViewModel.h>
 
 #include <QtCore/QMap>
+#include <QtCore/QSet>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #else
@@ -50,6 +51,15 @@ private:
     GObjectViewWindowContext* viewCtx;
 };
 
+class CircularViewAction : public ADVSequenceWidgetAction {
+    Q_OBJECT
+public:
+    CircularViewAction();
+    ~CircularViewAction();
+    CircularView* view;
+    RestrctionMapWidget* rmapWidget;
+};
+
 class CircularViewContext: public GObjectViewWindowContext {
     Q_OBJECT
 public:
@@ -60,6 +70,7 @@ protected slots:
     void sl_sequenceWidgetRemoved(ADVSequenceWidget* w);
     void sl_toggleViews();
     void sl_setSequenceOrigin();
+    void sl_circularStateChanged();
 protected:
     virtual void initViewContext(GObjectView* view);
     void buildMenu(GObjectView* v, QMenu* m);
@@ -68,16 +79,8 @@ protected:
 private:
     GObjectViewAction* exportAction;
     GObjectViewAction* setSequenceOriginAction;
+    QSet<CircularViewAction*> actions;
 };    
-
-class CircularViewAction : public ADVSequenceWidgetAction {
-    Q_OBJECT
-public:
-    CircularViewAction();
-    ~CircularViewAction();
-    CircularView* view;
-    RestrctionMapWidget* rmapWidget;
-};
 
 } //namespace
 

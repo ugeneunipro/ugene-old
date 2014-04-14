@@ -132,6 +132,8 @@ void CircularViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
         }
     }
 
+    connect(sw->getSequenceObject(), SIGNAL(si_sequenceCircularStateChanged()), SLOT(sl_circularStateChanged()));
+    actions.insert(action);
 }
 
 void CircularViewContext::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
@@ -145,14 +147,14 @@ void CircularViewContext::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
     if(splitter != NULL) {
         CircularViewAction* a = qobject_cast<CircularViewAction*>(sw->getADVSequenceWidgetAction(CIRCULAR_ACTION_NAME));
         SAFE_POINT(a != NULL, "Circular view action is not found", );
+        actions.remove(a);
         splitter->removeView(a->view,a->rmapWidget);
         delete a->view;
-        delete a->rmapWidget;
+        delete a->rmapWidget;        
         if(splitter->isEmpty()) {
             removeCircularView(sw->getAnnotatedDNAView());
         }
     }
-
 }
 
 
@@ -273,8 +275,6 @@ void CircularViewContext::sl_toggleViews()
             a->trigger();
         }
     }
-
-
 }
 
 void CircularViewContext::sl_setSequenceOrigin()
@@ -304,6 +304,19 @@ void CircularViewContext::sl_setSequenceOrigin()
         }
     }
 
+}
+
+void CircularViewContext::sl_circularStateChanged(){
+    U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(sender());
+    foreach(CircularViewAction *action, actions){
+        if(action->seqWidget->getSequenceObjects().contains(seqObj)) {
+            if(seqObj->isCircular() && !action->isChecked() ||
+                !seqObj->isCircular() && action->isChecked()){
+                    action->trigger();
+                    return;
+            }
+        }
+    }
 }
 
 CircularViewAction::CircularViewAction() : ADVSequenceWidgetAction(CIRCULAR_ACTION_NAME, tr("Show circular view")), view(NULL), rmapWidget(NULL)

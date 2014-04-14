@@ -134,6 +134,7 @@ private slots:
     void sl_filterTextChanged(const QString& t);
     void sl_relocate();
     void sl_exportDocument();
+    void sl_onToggleCircular();
 
 private:
     void saveWidgetState(ProjectViewWidget* w);
@@ -155,6 +156,7 @@ private:
     QAction*    saveSelectedDocsAction;
     QAction*    relocateDocumentAction;
     QAction*    exportDocumentAction;
+    QAction*    toggleCircularAction;
     bool saveProjectOnClose;
 
     ProjectViewWidget* w;
