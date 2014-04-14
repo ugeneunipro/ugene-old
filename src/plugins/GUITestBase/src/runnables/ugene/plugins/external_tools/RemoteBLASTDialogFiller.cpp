@@ -1,6 +1,4 @@
 #include "RemoteBLASTDialogFiller.h"
-
-#include "RemoteBLASTDialogFiller.h"
 #include "api/GTWidget.h"
 #include "api/GTSpinBox.h"
 #include "api/GTDoubleSpinBox.h"

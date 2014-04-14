@@ -4747,8 +4747,7 @@ GUI_TEST_CLASS_DEFINITION(test_2903) {
     GTLogTracer();
     GTFileDialog::openFile( os, testDir + "_common_data/regression/2903", "unknown_virus.fa" );
 
-    RemoteBLASTDialogFiller::Parameters* par= new RemoteBLASTDialogFiller::Parameters();
-    GTUtilsDialog::waitForDialog(os, new RemoteBLASTDialogFiller(os, par));
+    GTUtilsDialog::waitForDialog(os, new RemoteBLASTDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE"
                                                       << "Query NCBI BLAST database"));
     QMenu* menu = GTMenu::showContextMenu(os, GTWidget::findWidget(os, "render_area_virus_X"));
