@@ -76,21 +76,32 @@
         test->setTimeout(TIMEOUT); \
         guiTestBase->registerTest(test); \
     }
-#define REGISTER_TEST_IGNORED_BY(X, BY, MESSAGE) \
+#define REGISTER_TEST_IGNORED_BY(X, BY, MESSAGE, reason) \
     if (guiTestBase) { \
         GUITest *test = new X(); \
         test->setIgnored(BY, MESSAGE); \
+        test->setReason(reason); \
         guiTestBase->registerTest(test); \
     }
 
-#define REGISTER_TEST_IGNORED(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::Ignored, MESSAGE)
-#define REGISTER_TEST_IGNORED_LINUX(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredLinux, MESSAGE)
-#define REGISTER_TEST_IGNORED_WINDOWS(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows, MESSAGE)
-#define REGISTER_TEST_IGNORED_MAC(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredMac, MESSAGE)
+#define REGISTER_TEST_IGNORED(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::Ignored, MESSAGE, GUITest::Bug)
+#define REGISTER_TEST_IGNORED_LINUX(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredLinux, MESSAGE, GUITest::Bug)
+#define REGISTER_TEST_IGNORED_WINDOWS(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows, MESSAGE, GUITest::Bug)
+#define REGISTER_TEST_IGNORED_MAC(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredMac, MESSAGE, GUITest::Bug)
 
-#define REGISTER_TEST_LINUX(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows|GUITest::IgnoredMac, MESSAGE)
-#define REGISTER_TEST_WINDOWS(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredMac|GUITest::IgnoredLinux, MESSAGE)
-#define REGISTER_TEST_MAC(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows|GUITest::IgnoredLinux, MESSAGE)
+#define REGISTER_TEST_NOT_FOR_LINUX(X) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredLinux, "not for Linux", GUITest::System)
+#define REGISTER_TEST_NOT_FOR_WINDOWS(X) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows, "not for Windows", GUITest::System)
+#define REGISTER_TEST_NOT_FOR_MAC(X) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredMac, "not for Mac", GUITest::System)
+
+#define REGISTER_TEST_LINUX(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows|GUITest::IgnoredMac, MESSAGE, GUITest::Bug)
+#define REGISTER_TEST_WINDOWS(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredMac|GUITest::IgnoredLinux, MESSAGE, GUITest::Bug)
+#define REGISTER_TEST_MAC(X, MESSAGE) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows|GUITest::IgnoredLinux, MESSAGE, GUITest::Bug)
+
+#define REGISTER_TEST_ONLY_LINUX(X) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows|GUITest::IgnoredMac, "only for Linux", GUITest::System)
+#define REGISTER_TEST_ONLY_WINDOWS(X) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredMac|GUITest::IgnoredLinux, "only for Windows", GUITest::System)
+#define REGISTER_TEST_ONLY_MAC(X) REGISTER_TEST_IGNORED_BY(X, GUITest::IgnoredWindows|GUITest::IgnoredLinux, "only for Mac", GUITest::System)
+
+
 namespace U2 {
 
 extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
@@ -144,7 +155,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1199);
     REGISTER_TEST(GUITest_regression_scenarios::test_1083);
-    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_1093,"not for mac");
+    REGISTER_TEST_NOT_FOR_MAC(GUITest_regression_scenarios::test_1093);
     REGISTER_TEST(GUITest_regression_scenarios::test_1113);
     REGISTER_TEST(GUITest_regression_scenarios::test_1113_1);
 
@@ -155,7 +166,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1189);
     REGISTER_TEST(GUITest_regression_scenarios::test_1189_1);
 
-    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_1190,"not for mac");
+    REGISTER_TEST_NOT_FOR_MAC(GUITest_regression_scenarios::test_1190);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1212);
     REGISTER_TEST(GUITest_regression_scenarios::test_1212_1);
@@ -191,8 +202,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1865);
     REGISTER_TEST(GUITest_regression_scenarios::test_1883);
     REGISTER_TEST(GUITest_regression_scenarios::test_1884);
-    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_1886_1, "not for mac");
-    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_1886_2, "not for mac");
+    REGISTER_TEST_NOT_FOR_MAC(GUITest_regression_scenarios::test_1886_1);
+    REGISTER_TEST_NOT_FOR_MAC(GUITest_regression_scenarios::test_1886_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_1897);
 
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1919, "incomplete(source url can not be set), incorrect until UGENE-2405 fixed");
@@ -220,7 +231,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2070, "https://ugene.unipro.ru/tracker/browse/UGENE-2855");
     REGISTER_TEST_WINDOWS(GUITest_regression_scenarios::test_2089, "no forbidden folder characters on linux and mac");
     REGISTER_TEST(GUITest_regression_scenarios::test_2077);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2093_1,"dashboards");
+    //REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2093_1,"dashboards");
     REGISTER_TEST(GUITest_regression_scenarios::test_2093_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2100_2);
@@ -231,8 +242,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2128_1, "https://ugene.unipro.ru/tracker/browse/UGENE-2718");
     REGISTER_TEST(GUITest_regression_scenarios::test_2138);
     REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2140, "fix for mac");
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2150, "task tree view cant be tested");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2152, "external tools unreacheble out of the box");
+    //REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2150, "task tree view cant be tested");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2152, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
     REGISTER_TEST(GUITest_regression_scenarios::test_2156);
     REGISTER_TEST(GUITest_regression_scenarios::test_2157);
     REGISTER_TEST(GUITest_regression_scenarios::test_2160);
@@ -253,10 +264,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2225_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2225_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_2259);
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2266_1, "external tools unreacheble out of the box");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2266_1, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
-    REGISTER_TEST_LINUX(GUITest_regression_scenarios::test_2268, "fix for mac, win external tools unreacheble out of the box");
+    REGISTER_TEST_LINUX(GUITest_regression_scenarios::test_2268, "fix for mac, https://ugene.unipro.ru/tracker/browse/UGENE-2958");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2282, "https://ugene.unipro.ru/tracker/browse/UGENE-2454");
     REGISTER_TEST(GUITest_regression_scenarios::test_2284);
     REGISTER_TEST(GUITest_regression_scenarios::test_2316);
@@ -279,7 +290,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2382_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2392);
     REGISTER_TEST(GUITest_regression_scenarios::test_2401);
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2402, "win external tools unreacheble out of the box");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2402, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
     REGISTER_TEST(GUITest_regression_scenarios::test_2406);
     REGISTER_TEST(GUITest_regression_scenarios::test_2407);
     REGISTER_TEST(GUITest_regression_scenarios::test_2410);
@@ -593,20 +604,20 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0023);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0024);
 
-    REGISTER_TEST_LINUX(GUITest_common_scenarios_msa_editor::test_0025, "Linux font test");
-    REGISTER_TEST_WINDOWS(GUITest_common_scenarios_msa_editor::test_0025_1, "Windows font test");
+    REGISTER_TEST_ONLY_LINUX(GUITest_common_scenarios_msa_editor::test_0025);
+    REGISTER_TEST_ONLY_WINDOWS(GUITest_common_scenarios_msa_editor::test_0025_1);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0026);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0026_1);
 
-    REGISTER_TEST_LINUX(GUITest_common_scenarios_msa_editor::test_0026_2_linux, "Linux version of test");
-    REGISTER_TEST_WINDOWS(GUITest_common_scenarios_msa_editor::test_0026_2_windows, "Windows version of test");
+    REGISTER_TEST_ONLY_LINUX(GUITest_common_scenarios_msa_editor::test_0026_2_linux);
+    REGISTER_TEST_ONLY_WINDOWS(GUITest_common_scenarios_msa_editor::test_0026_2_windows);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0027);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0027_1);
 
-    REGISTER_TEST_LINUX(GUITest_common_scenarios_msa_editor::test_0028_linux, "Linux version of test");
-    REGISTER_TEST_WINDOWS(GUITest_common_scenarios_msa_editor::test_0028_windows, "Windows version of test");
+    REGISTER_TEST_ONLY_LINUX(GUITest_common_scenarios_msa_editor::test_0028_linux);
+    REGISTER_TEST_ONLY_WINDOWS(GUITest_common_scenarios_msa_editor::test_0028_windows);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0029);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0029_1);
@@ -966,8 +977,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/bowtie2
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0001, "Restore when this tool becomes available");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Bowtie2::test_0002, "Restore when this tool becomes available");
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0001);
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0002);//"Restore when this tool becomes available");
     REGISTER_TEST_LINUX(GUITest_Bowtie2::test_0003, "Restore when this tool becomes available, https://ugene.unipro.ru/tracker/browse/UGENE-2893");
     REGISTER_TEST_LINUX(GUITest_Bowtie2::test_0004, "Restore when this tool becomes available, https://ugene.unipro.ru/tracker/browse/UGENE-2893");
     REGISTER_TEST_LINUX(GUITest_Bowtie2::test_0005, "Restore when this tool becomes available, https://ugene.unipro.ru/tracker/browse/UGENE-2893");
@@ -980,7 +991,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     /////////////////////////////////////////////////////////////////////////
     // Common scenarios/Assembling/dna_assembly/conversions
     /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_dna_assembly_conversions::test_0001, "external tools unreacheble out of the box");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_dna_assembly_conversions::test_0001, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
     REGISTER_TEST_IGNORED(GUITest_dna_assembly_conversions::test_0002, "https://ugene.unipro.ru/tracker/browse/UGENE-2866");
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0003);
     REGISTER_TEST_IGNORED(GUITest_dna_assembly_conversions::test_0004, "https://ugene.unipro.ru/tracker/browse/UGENE-2760");
@@ -1002,16 +1013,16 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0001,"out of date");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002,"no such scheme on windows");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002_1,"no such scheme on windows");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0003,"no such scheme on windows");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0005,"no such scheme on windows");
-    REGISTER_TEST_LINUX(GUITest_common_scenarios_workflow_designer::test_0006,"no such scheme on windows, https://ugene.unipro.ru/tracker/browse/UGENE-2738 on mac");
-    REGISTER_TEST_LINUX(GUITest_common_scenarios_workflow_designer::test_0006_1,"no such scheme on windows, https://ugene.unipro.ru/tracker/browse/UGENE-2738 on mac");
-    REGISTER_TEST_LINUX(GUITest_common_scenarios_workflow_designer::test_0007,"no such scheme on windows, https://ugene.unipro.ru/tracker/browse/UGENE-2738 on mac");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0009,"no such scheme on windows");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0010,"no such scheme on windows");
+    //REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0001,"out of date");
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002)//,"no such scheme on windows");
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002_1)//,"no such scheme on windows");
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0003)//,"no such scheme on windows");
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0005)//,"no such scheme on windows");
+    REGISTER_TEST_ONLY_LINUX(GUITest_common_scenarios_workflow_designer::test_0006);//"no such scheme on windows, https://ugene.unipro.ru/tracker/browse/UGENE-2738 on mac");
+    REGISTER_TEST_ONLY_LINUX(GUITest_common_scenarios_workflow_designer::test_0006_1);//"no such scheme on windows, https://ugene.unipro.ru/tracker/browse/UGENE-2738 on mac");
+    REGISTER_TEST_ONLY_LINUX(GUITest_common_scenarios_workflow_designer::test_0007);//"no such scheme on windows, https://ugene.unipro.ru/tracker/browse/UGENE-2738 on mac");
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0009)//*,"no such scheme on windows");
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0010)//,"no such scheme on windows");
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0013);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0015);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0017);
@@ -1020,16 +1031,16 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/Workflow designer/Workflow parameters validation
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0001);
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_workflow_parameters_validation::test_0002, "qt dialog can't be shown");
+    REGISTER_TEST_NOT_FOR_MAC(GUITest_common_scenarios_workflow_parameters_validation::test_0002);//, "qt dialog can't be shown");
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0003);
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_parameters_validation::test_0005, "Test should run not under admin user on WIN");
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_common_scenarios_workflow_parameters_validation::test_0005);//, "Test should run not under admin user on WIN");
     REGISTER_TEST(GUITest_common_scenarios_workflow_parameters_validation::test_0006);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer/Estimating
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_workflow_estimating::test_0001);
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_estimating::test_0002, "external tools unreacheble out of the box");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_workflow_estimating::test_0002, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer/Name filter
@@ -1048,7 +1059,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/NIAID_pipelines
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_NIAID_pipelines::test_0001,"outdated");
+    //REGISTER_TEST_IGNORED(GUITest_common_scenarios_NIAID_pipelines::test_0001,"outdated");
     REGISTER_TEST(GUITest_common_scenarios_NIAID_pipelines::test_0002);
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Tree viewer
@@ -1104,7 +1115,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0011_1);
 
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_undo_redo::test_0012, "external tools unreacheble out of the box");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_undo_redo::test_0012, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

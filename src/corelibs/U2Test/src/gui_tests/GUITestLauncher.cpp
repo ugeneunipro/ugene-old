@@ -83,7 +83,7 @@ void GUITestLauncher::run() {
                 qint64 finishTime = GTimer::currentTimeMicros();
                 GUITestTeamcityLogger::teamCityLogResult(testName, testResult, GTimer::millisBetween(startTime, finishTime));
             }
-            else {
+            else if(t->getReason() == GUITest::Bug){
                 GUITestTeamcityLogger::testIgnored(testName, t->getIgnoreMessage());
             }
         }

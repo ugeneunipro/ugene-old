@@ -11,10 +11,12 @@ class GUITestIgnorable {
 public:
     // not ignored test, ignored by all, ignored on windows platforms, ignored on linux platforms
     enum IgnoreStatus {NotIgnored=0x0, Ignored=0x1, IgnoredWindows=0x2, IgnoredLinux=0x4, IgnoredMac=0x8};
+    enum IgnoreReason {Bug, System};
 
-    GUITestIgnorable() : ignoreStatus(NotIgnored), ignoreMessage("") {}
+    GUITestIgnorable() : ignoreStatus(NotIgnored), ignoreMessage(""), ignoreReason(Bug) {}
 
-    void setIgnored(int status, const QString& message = "") { ignoreStatus = status; ignoreMessage = message; }
+    void setIgnored(int status, const QString& message = "") { ignoreStatus = status; ignoreMessage = message; ignoreReason = Bug;}
+    void setReason(IgnoreReason _reason){ ignoreReason = _reason; }
     int getIgnoreStatus() const {return ignoreStatus; }
     QString getIgnoreMessage() const {return ignoreMessage; }
 
@@ -36,10 +38,12 @@ public:
 
         return ignored || platformIgnore;
     }
+    IgnoreReason getReason(){return ignoreReason;}
 
 private:
     int ignoreStatus;
     QString ignoreMessage;
+    IgnoreReason ignoreReason;
 };
 
 class U2TEST_EXPORT GUITest: public QObject, public GUITestIgnorable {
