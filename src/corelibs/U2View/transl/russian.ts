@@ -49,7 +49,7 @@
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="20"/>
-        <source>Align sequencing reads</source>
+        <source>Align Sequencing Reads</source>
         <translation>Выравнивание ридов</translation>
     </message>
     <message>

@@ -64,8 +64,8 @@
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="20"/>
-        <source>Align sequencing reads</source>
-        <translation>Align sequencing reads</translation>
+        <source>Align Sequencing Reads</source>
+        <translation>Align Sequencing Reads</translation>
     </message>
     <message>
         <location filename="../src/util_dna_assembly/ui/AssemblyToRefDialog.ui" line="28"/>
