@@ -127,6 +127,9 @@
 #include "bwa/BwaWorker.h"
 #include "bedtools/BedtoolsSupport.h"
 #include "bedtools/BedToolsWorkersLibrary.h"
+#include "bigWigTools/BigWigSupport.h"
+#include "bigWigTools/BedGraphToBigWigWorker.h"
+
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -372,6 +375,11 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     BedtoolsSupport* bedtoolsSupport = new BedtoolsSupport(ET_BEDTOOLS);
     etRegistry->registerEntry(bedtoolsSupport);
 
+    //bigwig
+    BigWigSupport* bigwigSupport = new BigWigSupport(ET_BIGWIG);
+    etRegistry->registerEntry(bigwigSupport);
+
+
     // TopHat
     TopHatSupport* tophatTool = new TopHatSupport(ET_TOPHAT);
     etRegistry->registerEntry(tophatTool);
@@ -568,6 +576,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     LocalWorkflow::BWAMEMWorkerFactory::init();
     LocalWorkflow::SlopbedWorkerFactory::init();
     LocalWorkflow::GenomecovWorkerFactory::init();
+    LocalWorkflow::BedGraphToBigWigFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service

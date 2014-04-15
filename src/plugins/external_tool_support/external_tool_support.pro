@@ -13,6 +13,9 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/bedtools/BedToolsWorkersLibrary.h \
            src/bedtools/BedtoolsSupport.h \
            src/bedtools/BedtoolsSupportTask.h \
+           src/bigWigTools/BigWigSupport.h \
+           src/bigWigTools/BedGraphToBigWigTask.h \
+           src/bigWigTools/BedGraphToBigWigWorker.h \
            src/blast/BlastAllSupport.h \
            src/blast/BlastAllSupportRunDialog.h \
            src/blast/BlastAllSupportTask.h \
@@ -157,6 +160,9 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/bedtools/BedToolsWorkersLibrary.cpp \
            src/bedtools/BedtoolsSupport.cpp \
            src/bedtools/BedtoolsSupportTask.cpp \
+           src/bigWigTools/BigWigSupport.cpp \
+           src/bigWigTools/BedGraphToBigWigTask.cpp \
+           src/bigWigTools/BedGraphToBigWigWorker.cpp \
            src/blast/BlastAllSupport.cpp \
            src/blast/BlastAllSupportRunDialog.cpp \
            src/blast/BlastAllSupportTask.cpp \
