@@ -75,8 +75,8 @@ uriRetrieved(false)
 {
     Project * prj = AppContext::getProject();
     if (prj != NULL) {
-        connect(prj, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_referenceDocRemoved(Document*)));
-        connect(prj, SIGNAL(si_documentAdded(Document*)), SLOT(sl_referenceDocAdded(Document*)));
+        connect(prj, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_docRemoved(Document*)));
+        connect(prj, SIGNAL(si_documentAdded(Document*)), SLOT(sl_docAdded(Document*)));
     }
 }
 
@@ -358,10 +358,12 @@ namespace {
 }
 
 // when reference doc removed from project
-void AssemblyModel::sl_referenceDocRemoved(Document* d) {
+void AssemblyModel::sl_docRemoved(Document* d) {
     if (d != NULL && refObj != NULL && refObj->getDocument() == d) {
         if (!isAssemblyDoc(d, assembly)) {
             onReferenceRemoved();
+        }else{
+            unsetReference();
         }
     }
 
@@ -381,7 +383,7 @@ void AssemblyModel::sl_referenceObjRemoved(GObject* o) {
 }
 
 // when reference doc added to project
-void AssemblyModel::sl_referenceDocAdded(Document * d) {
+void AssemblyModel::sl_docAdded(Document * d) {
     SAFE_POINT(d, "Reference document is NULL!", );
 
     if (refObj == NULL && !assembly.referenceId.isEmpty()) {

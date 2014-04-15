@@ -116,8 +116,8 @@ private slots:
     void sl_referenceLoaded();
     void sl_referenceLoadingFailed();
     void sl_referenceDocLoadedStateChanged();
-    void sl_referenceDocRemoved(Document*);
-    void sl_referenceDocAdded(Document *);
+    void sl_docRemoved(Document*);
+    void sl_docAdded(Document *);
     void sl_referenceObjRemoved(GObject* o);
     void sl_unassociateReference();
     
