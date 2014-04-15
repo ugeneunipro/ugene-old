@@ -19,7 +19,13 @@
  * MA 02110-1301, USA.
  */
 
+#include <qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
+
 
 #include <U2Algorithm/SecStructPredictAlgRegistry.h>
 

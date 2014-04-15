@@ -27,9 +27,10 @@
 #include <QtGui/QPixmap>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QDesktopWidget>
+#include <QtGui/QDesktopWidget>
 #else
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QDesktopWidget>
 #endif
 
 namespace U2 {

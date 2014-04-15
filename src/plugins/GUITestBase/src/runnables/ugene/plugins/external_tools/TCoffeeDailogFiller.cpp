@@ -26,6 +26,7 @@
 #include <QtGui/QDialogButtonBox>
 #else
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QDialogButtonBox>
 #endif
 
 #include "api/GTWidget.h"

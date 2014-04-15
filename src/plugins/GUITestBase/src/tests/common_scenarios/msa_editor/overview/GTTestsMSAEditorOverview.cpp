@@ -33,7 +33,11 @@
 #include "GTUtilsMsaEditorSequenceArea.h"
 
 #include <U2Core/AppContext.h>
-
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMainWindow>
+#else
+#include <QtWidgets/QMainWindow>
+#endif
 
 namespace U2 {
 
