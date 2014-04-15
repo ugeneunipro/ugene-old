@@ -4728,12 +4728,12 @@ GUI_TEST_CLASS_DEFINITION(test_2897) {
         << "Custom schemes" << "Create new color scheme" ) );
     GTUtilsDialog::waitForDialog( os, new NewColorSchemeCreator( os, colorSchemeName,
         NewColorSchemeCreator::nucl ) );
-    GTMouseDriver::click( os, Qt::RightButton );
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 
-    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 1));
+    GTGlobals::sleep(500);
     GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
         << "Custom schemes" << colorSchemeName ) );
-    GTMouseDriver::click( os, Qt::RightButton );
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 
     combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
     CHECK_SET_ERR(combo != NULL, "highlightingScheme not found!");
@@ -4744,19 +4744,19 @@ GUI_TEST_CLASS_DEFINITION(test_2897) {
 
 GUI_TEST_CLASS_DEFINITION(test_2903) {
 //    1. Open the attached file
-    GTLogTracer();
+    GTLogTracer l;
     GTFileDialog::openFile( os, testDir + "_common_data/regression/2903", "unknown_virus.fa" );
 
     GTUtilsDialog::waitForDialog(os, new RemoteBLASTDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE"
                                                       << "Query NCBI BLAST database"));
-    QMenu* menu = GTMenu::showContextMenu(os, GTWidget::findWidget(os, "render_area_virus_X"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "render_area_virus_X"));
     GTUtilsTaskTreeView::waitTaskFinidhed(os);
 //    2. Click on the Analyze->Query NCBI BLAST database context menu
 //    3. Click on the Search button
 //    Expected state: the task has been finished without errors and blast result appears
 //    Current state: the following error appears: 'RemoteBLASTTask' task failed: Database couldn't prepare the response
-
+    GTUtilsLog::check(os, l);
 }
 
 } // GUITest_regression_scenarios namespace
