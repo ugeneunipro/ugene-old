@@ -69,6 +69,7 @@ void MWMDIManagerImpl::prepareGUI() {
 	closeAct = new QAction(tr("close_active_view"), this);
     closeAct->setObjectName("Close active view");
     closeAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
+    closeAct->setShortcutContext(Qt::WidgetWithChildrenShortcut);
 	closeAct->setStatusTip(tr("close_active_view_statustip"));
 	connect(closeAct, SIGNAL(triggered()), mdiArea, SLOT(closeActiveSubWindow()));
 
