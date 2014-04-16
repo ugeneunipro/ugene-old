@@ -120,8 +120,6 @@ GUITestBasePlugin::GUITestBasePlugin() : Plugin(tr("GUITestBase"), tr("GUI Test 
 
 void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
-    REGISTER_TEST_IGNORED(GUITest_crazy_user::simple_crazy_user, "This is special crazy-user mode test, ignored by default");
-
 //////////////////////////////////////////////////////////////////////////
 // Regression scenarios/
 //////////////////////////////////////////////////////////////////////////
@@ -229,7 +227,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2032);
     REGISTER_TEST(GUITest_regression_scenarios::test_2049);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2070, "https://ugene.unipro.ru/tracker/browse/UGENE-2855");
-    REGISTER_TEST_WINDOWS(GUITest_regression_scenarios::test_2089, "no forbidden folder characters on linux and mac");
+    REGISTER_TEST_ONLY_WINDOWS(GUITest_regression_scenarios::test_2089);//, "no forbidden folder characters on linux and mac");
     REGISTER_TEST(GUITest_regression_scenarios::test_2077);
     //REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2093_1,"dashboards");
     REGISTER_TEST(GUITest_regression_scenarios::test_2093_2);
@@ -241,7 +239,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2128, "https://ugene.unipro.ru/tracker/browse/UGENE-2718");
     REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2128_1, "https://ugene.unipro.ru/tracker/browse/UGENE-2718");
     REGISTER_TEST(GUITest_regression_scenarios::test_2138);
-    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2140, "fix for mac");
+    REGISTER_TEST_NOT_FOR_MAC(GUITest_regression_scenarios::test_2140);
     //REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2150, "task tree view cant be tested");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2152, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
     REGISTER_TEST(GUITest_regression_scenarios::test_2156);
@@ -267,11 +265,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2266_1, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
-    REGISTER_TEST_LINUX(GUITest_regression_scenarios::test_2268, "fix for mac, https://ugene.unipro.ru/tracker/browse/UGENE-2958");
+    REGISTER_TEST_LINUX(GUITest_regression_scenarios::test_2268, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2282, "https://ugene.unipro.ru/tracker/browse/UGENE-2454");
     REGISTER_TEST(GUITest_regression_scenarios::test_2284);
     REGISTER_TEST(GUITest_regression_scenarios::test_2316);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2269, "impossible to catch expected error in opStatus without stopping test");
+    //REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2269, "impossible to catch expected error in opStatus without stopping test");
     REGISTER_TEST(GUITest_regression_scenarios::test_2270);
     REGISTER_TEST(GUITest_regression_scenarios::test_2292);
     REGISTER_TEST(GUITest_regression_scenarios::test_2306);
@@ -400,7 +398,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_view::test_0006, "bad performance when counting restricred sites and orfs. jira");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_view::test_0006_1, "bad performance when counting restricred sites and orfs. jira");
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0006_2);
-    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0018);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_view::test_0018, "https://ugene.unipro.ru/tracker/browse/UGENE-2961");
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/sequence edit/
