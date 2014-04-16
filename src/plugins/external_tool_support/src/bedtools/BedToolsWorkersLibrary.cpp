@@ -54,7 +54,7 @@ static const QString HEADER_ID( "header-id" );
 /* SlopbedPrompter */
 /************************************************************************/
 QString SlopbedPrompter::composeRichDoc() {
-    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BaseBedToolsWorker::INPUT_PORT));
+    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BaseNGSWorker::INPUT_PORT));
     const Actor* producer = input->getProducer(BaseSlots::URL_SLOT().getId());
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
@@ -81,9 +81,9 @@ void SlopbedWorkerFactory::init() {
 
     QList<PortDescriptor*> p;
     {
-        Descriptor inD(BaseBedToolsWorker::INPUT_PORT, SlopbedWorker::tr("Input File"),
+        Descriptor inD(BaseNGSWorker::INPUT_PORT, SlopbedWorker::tr("Input File"),
             SlopbedWorker::tr("Set of files to bedtools slop"));
-        Descriptor outD(BaseBedToolsWorker::OUTPUT_PORT, SlopbedWorker::tr("Output File"),
+        Descriptor outD(BaseNGSWorker::OUTPUT_PORT, SlopbedWorker::tr("Output File"),
             SlopbedWorker::tr("Output file"));
 
         QMap<Descriptor, DataTypePtr> inM;
@@ -97,15 +97,15 @@ void SlopbedWorkerFactory::init() {
 
     QList<Attribute*> a;
     {
-        Descriptor outDir(BaseBedToolsWorker::OUT_MODE_ID, SlopbedWorker::tr("Output directory"),
+        Descriptor outDir(BaseNGSWorker::OUT_MODE_ID, SlopbedWorker::tr("Output directory"),
             SlopbedWorker::tr("Select an output directory. <b>Custom</b> - specify the output directory in the 'Custom directory' parameter. "
             "<b>Workflow</b> - internal workflow directory. "
             "<b>Input file</b> - the directory of the input file."));
 
-        Descriptor customDir(BaseBedToolsWorker::CUSTOM_DIR_ID, SlopbedWorker::tr("Custom directory"),
+        Descriptor customDir(BaseNGSWorker::CUSTOM_DIR_ID, SlopbedWorker::tr("Custom directory"),
             SlopbedWorker::tr("Select the custom output directory."));
 
-        Descriptor outName(BaseBedToolsWorker::OUT_NAME_ID, SlopbedWorker::tr("Output file name"),
+        Descriptor outName(BaseNGSWorker::OUT_NAME_ID, SlopbedWorker::tr("Output file name"),
             SlopbedWorker::tr("A name of an output file. If default of empty value is provided the output name is the name of the first file with additional extention."));
 
         Descriptor genomeAttrDesc(GENOME_ID, SlopbedWorker::tr("Genome"),
@@ -131,9 +131,9 @@ void SlopbedWorkerFactory::init() {
 
         a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
-        customDirAttr->addRelation(new VisibilityRelation(BaseBedToolsWorker::OUT_MODE_ID, SlopbedWorker::tr("Custom")));
+        customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, SlopbedWorker::tr("Custom")));
         a << customDirAttr;
-        a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(BaseBedToolsWorker::DEFAULT_NAME));
+        a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(BaseNGSWorker::DEFAULT_NAME));
 
         Attribute* genomeAttr = NULL;
         if (dataPath){
@@ -165,9 +165,9 @@ void SlopbedWorkerFactory::init() {
         directoryMap[fileDir] = FileAndDirectoryUtils::FILE_DIRECTORY;
         directoryMap[workflowDir] = FileAndDirectoryUtils::WORKFLOW_INTERNAL;
         directoryMap[customD] = FileAndDirectoryUtils::CUSTOM;
-        delegates[BaseBedToolsWorker::OUT_MODE_ID] = new ComboBoxDelegate(directoryMap);
+        delegates[BaseNGSWorker::OUT_MODE_ID] = new ComboBoxDelegate(directoryMap);
 
-        delegates[BaseBedToolsWorker::CUSTOM_DIR_ID] = new URLDelegate("", "", false, true);
+        delegates[BaseNGSWorker::CUSTOM_DIR_ID] = new URLDelegate("", "", false, true);
 
         QVariantMap vm;
         if (dataPath){
@@ -195,7 +195,7 @@ void SlopbedWorkerFactory::init() {
 /* SlopbedWorker */
 /************************************************************************/
 SlopbedWorker::SlopbedWorker(Actor *a)
-:BaseBedToolsWorker(a)
+:BaseNGSWorker(a)
 {
 
 }
@@ -234,15 +234,22 @@ QString SlopbedWorker::getDefaultFileName() const{
     return ".sb.bed";
 }
 
-Task *SlopbedWorker::getTask(const BedToolsSetting &settings) const{
+Task *SlopbedWorker::getTask(const BaseNGSSetting &settings) const{
     return new SlopbedTask(settings);
 }
 
 //////////////////////////////////////////////////////
 //SlopbedTask
-SlopbedTask::SlopbedTask(const BedToolsSetting &settings)
-    :BaseBedToolsTask(settings){
+SlopbedTask::SlopbedTask(const BaseNGSSetting &settings)
+    :BaseNGSTask(settings){
 
+}
+
+void SlopbedTask::prepareStep(){
+    Task* etTask = getExternalToolTask(ET_BEDTOOLS);
+    CHECK(etTask != NULL, );
+
+    addSubTask(etTask);
 }
 
 QStringList SlopbedTask::getParameters(U2OpStatus &os){
@@ -388,7 +395,7 @@ QString getParameterByMode(GenomecovMode mode){
 /* GenomecovPrompter */
 /************************************************************************/
 QString GenomecovPrompter::composeRichDoc() {
-    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BaseBedToolsWorker::INPUT_PORT));
+    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BaseNGSWorker::INPUT_PORT));
     const Actor* producer = input->getProducer(BaseSlots::URL_SLOT().getId());
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
@@ -416,9 +423,9 @@ void GenomecovWorkerFactory::init() {
 
     QList<PortDescriptor*> p;
     {
-        Descriptor inD(BaseBedToolsWorker::INPUT_PORT, GenomecovWorker::tr("Input File"),
-            GenomecovWorker::tr("Set of files to bedtools slop"));
-        Descriptor outD(BaseBedToolsWorker::OUTPUT_PORT, GenomecovWorker::tr("Output File"),
+        Descriptor inD(BaseNGSWorker::INPUT_PORT, GenomecovWorker::tr("Input File"),
+            GenomecovWorker::tr("Set of files to NGS slop"));
+        Descriptor outD(BaseNGSWorker::OUTPUT_PORT, GenomecovWorker::tr("Output File"),
             GenomecovWorker::tr("Output file"));
 
         QMap<Descriptor, DataTypePtr> inM;
@@ -432,15 +439,15 @@ void GenomecovWorkerFactory::init() {
 
     QList<Attribute*> a;
     {
-        Descriptor outDir(BaseBedToolsWorker::OUT_MODE_ID, GenomecovWorker::tr("Output directory"),
+        Descriptor outDir(BaseNGSWorker::OUT_MODE_ID, GenomecovWorker::tr("Output directory"),
             GenomecovWorker::tr("Select an output directory. <b>Custom</b> - specify the output directory in the 'Custom directory' parameter. "
             "<b>Workflow</b> - internal workflow directory. "
             "<b>Input file</b> - the directory of the input file."));
 
-        Descriptor customDir(BaseBedToolsWorker::CUSTOM_DIR_ID, GenomecovWorker::tr("Custom directory"),
+        Descriptor customDir(BaseNGSWorker::CUSTOM_DIR_ID, GenomecovWorker::tr("Custom directory"),
             GenomecovWorker::tr("Select the custom output directory."));
 
-        Descriptor outName(BaseBedToolsWorker::OUT_NAME_ID, GenomecovWorker::tr("Output file name"),
+        Descriptor outName(BaseNGSWorker::OUT_NAME_ID, GenomecovWorker::tr("Output file name"),
             GenomecovWorker::tr("A name of an output file. If default of empty value is provided the output name is the name of the first file with additional extention."));
 
         Descriptor genomeAttrDesc(GENOME_ID, GenomecovWorker::tr("Genome"),
@@ -485,9 +492,9 @@ void GenomecovWorkerFactory::init() {
 
         a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
-        customDirAttr->addRelation(new VisibilityRelation(BaseBedToolsWorker::OUT_MODE_ID, GenomecovWorker::tr("Custom")));
+        customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, GenomecovWorker::tr("Custom")));
         a << customDirAttr;
-        a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(BaseBedToolsWorker::DEFAULT_NAME));
+        a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(BaseNGSWorker::DEFAULT_NAME));
 
         Attribute* genomeAttr = NULL;
         if (dataPath){
@@ -522,9 +529,9 @@ void GenomecovWorkerFactory::init() {
         directoryMap[fileDir] = FileAndDirectoryUtils::FILE_DIRECTORY;
         directoryMap[workflowDir] = FileAndDirectoryUtils::WORKFLOW_INTERNAL;
         directoryMap[customD] = FileAndDirectoryUtils::CUSTOM;
-        delegates[BaseBedToolsWorker::OUT_MODE_ID] = new ComboBoxDelegate(directoryMap);
+        delegates[BaseNGSWorker::OUT_MODE_ID] = new ComboBoxDelegate(directoryMap);
 
-        delegates[BaseBedToolsWorker::CUSTOM_DIR_ID] = new URLDelegate("", "", false, true);
+        delegates[BaseNGSWorker::CUSTOM_DIR_ID] = new URLDelegate("", "", false, true);
 
         QVariantMap vm;
         if (dataPath){
@@ -561,7 +568,7 @@ void GenomecovWorkerFactory::init() {
 /* GenomecovWorker */
 /************************************************************************/
 GenomecovWorker::GenomecovWorker(Actor *a)
-:BaseBedToolsWorker(a)
+:BaseNGSWorker(a)
 {
 
 }
@@ -612,15 +619,22 @@ QString GenomecovWorker::getDefaultFileName() const{
     return ".gc";
 }
 
-Task *GenomecovWorker::getTask(const BedToolsSetting &settings) const{
+Task *GenomecovWorker::getTask(const BaseNGSSetting &settings) const{
     return new GenomecovTask(settings);
 }
 
 //////////////////////////////////////////////////////
 //GenomecovTask
-GenomecovTask::GenomecovTask(const BedToolsSetting &settings)
-    :BaseBedToolsTask(settings){
+GenomecovTask::GenomecovTask(const BaseNGSSetting &settings)
+    :BaseNGSTask(settings){
 
+}
+
+void GenomecovTask::prepareStep(){
+    Task* etTask = getExternalToolTask(ET_BEDTOOLS);
+    CHECK(etTask != NULL, );
+
+    addSubTask(etTask);
 }
 
 QStringList GenomecovTask::getParameters(U2OpStatus &os){

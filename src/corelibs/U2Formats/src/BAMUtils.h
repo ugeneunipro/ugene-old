@@ -21,9 +21,11 @@
 
 #include <U2Core/GUrl.h>
 #include <U2Core/U2OpStatus.h>
+#include <U2Core/DNASequence.h>
 
 #ifndef _U2_BAM_UTILS_H_
 #define _U2_BAM_UTILS_H_
+
 
 namespace U2 {
 
@@ -68,6 +70,30 @@ public:
     static bool isEquelByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpStatus &os, bool isBAM = false );
 
 };
+/*
+//struct gzFile;
+//struct kseq_t;
+//KSEQ_INIT(gzFile, gzread)
+//iterates over a FASTQ file (including zipped) with kseq from samtools
+class U2FORMATS_EXPORT FASTQIterator : public QObject{
+    Q_OBJECT
+public:
+    FASTQIterator(const QString& fileUrl);
+    virtual ~FASTQIterator();
+
+    DNASequence next();
+    bool hasNext();
+
+ private:
+    void fetchNext();
+
+private:
+    gzFile fp;
+    kseq_t *seq;
+
+
+};
+*/
 
 } // U2
 

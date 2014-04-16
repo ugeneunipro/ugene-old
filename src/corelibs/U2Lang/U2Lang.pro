@@ -46,6 +46,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/run/WorkflowMonitor.h \
            src/support/AttributeInfo.h \
            src/support/BaseBreakpointHitCounter.h \
+           src/support/BaseNGSWorker.h \
            src/support/BreakpointConditionChecker.h \
            src/support/BreakpointEqualHitCounter.h \
            src/support/BreakpointGreaterOrEqualHitCounter.h \
@@ -147,6 +148,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/run/WorkflowMonitor.cpp \
            src/support/AttributeInfo.cpp \
            src/support/BaseBreakpointHitCounter.cpp \
+           src/support/BaseNGSWorker.cpp \
            src/support/BreakpointConditionChecker.cpp \
            src/support/BreakpointEqualHitCounter.cpp \
            src/support/BreakpointGreaterOrEqualHitCounter.cpp \

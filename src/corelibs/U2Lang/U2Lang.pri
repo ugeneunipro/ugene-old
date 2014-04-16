@@ -13,8 +13,8 @@ LIBS += -L../../_release -lU2Core
 
     CONFIG(debug, debug|release) {
         DESTDIR=../../_debug
-        LIBS += -L../../_debug -lU2Cored
-        LIBS -= -L../../_release -lU2Core
+        LIBS += -L../../_debug -lU2Cored -lU2Formatsd 
+        LIBS -= -L../../_release -lU2Core -lU2Formats
     }
 
     CONFIG(release, debug|release) {

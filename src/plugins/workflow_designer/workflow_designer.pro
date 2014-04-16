@@ -59,6 +59,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/GroupWorker.h \
            src/library/ImportAnnotationsWorker.h \
            src/library/IncludedProtoFactoryImpl.h \
+           src/library/FASTQWorkersLibrary.h \
            src/library/FilterBamWorker.h \
            src/library/MarkSequenceWorker.h \
            src/library/MergeBamWorker.h \
@@ -151,6 +152,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/DocWorkers.cpp \
            src/library/ExternalProcessWorker.cpp \
            src/library/ExtractConsensusWorker.cpp \
+           src/library/FASTQWorkersLibrary.cpp \
            src/library/FilterAnnotationsWorker.cpp \
            src/library/FilterAnnotationsByQualifierWorker.cpp \
            src/library/FilterBamWorker.cpp \

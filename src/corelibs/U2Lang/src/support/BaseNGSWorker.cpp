@@ -43,23 +43,22 @@
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
 
-#include "BedtoolsSupport.h"
-#include "BaseBedToolsWorker.h"
+#include "BaseNGSWorker.h"
 
 namespace U2 {
 namespace LocalWorkflow {
 
-const QString BaseBedToolsWorker::INPUT_PORT = "in-file";
-const QString BaseBedToolsWorker::OUTPUT_PORT = "out-file";
-const QString BaseBedToolsWorker::OUT_MODE_ID = "out-mode";
-const QString BaseBedToolsWorker::CUSTOM_DIR_ID = "custom-dir";
-const QString BaseBedToolsWorker::OUT_NAME_ID = "out-name";
-const QString BaseBedToolsWorker::DEFAULT_NAME = "Default";
+const QString BaseNGSWorker::INPUT_PORT = "in-file";
+const QString BaseNGSWorker::OUTPUT_PORT = "out-file";
+const QString BaseNGSWorker::OUT_MODE_ID = "out-mode";
+const QString BaseNGSWorker::CUSTOM_DIR_ID = "custom-dir";
+const QString BaseNGSWorker::OUT_NAME_ID = "out-name";
+const QString BaseNGSWorker::DEFAULT_NAME = "Default";
 
 
 //////////////////////////////////////////////////////////////////////////
-//BaseBedToolsWorker
-BaseBedToolsWorker::BaseBedToolsWorker(Actor *a)
+//BaseNGSWorker
+BaseNGSWorker::BaseNGSWorker(Actor *a)
 :BaseWorker(a)
 ,inputUrlPort(NULL)
 ,outputUrlPort(NULL)
@@ -68,19 +67,19 @@ BaseBedToolsWorker::BaseBedToolsWorker(Actor *a)
 
 }
 
-void BaseBedToolsWorker::init() {
+void BaseNGSWorker::init() {
     inputUrlPort = ports.value(INPUT_PORT);
     outputUrlPort = ports.value(OUTPUT_PORT);
 }
 
-Task * BaseBedToolsWorker::tick() {
+Task * BaseNGSWorker::tick() {
     if (inputUrlPort->hasMessage()) {
         const QString url = takeUrl();
         CHECK(!url.isEmpty(), NULL);
 
         const QString outputDir = FileAndDirectoryUtils::createWorkingDir(url, getValue<int>(OUT_MODE_ID), getValue<QString>(CUSTOM_DIR_ID), context->workingDir());
 
-        BedToolsSetting setting;
+        BaseNGSSetting setting;
         setting.outDir = outputDir;
         setting.outName = getTargetName(url, outputDir);
         setting.inputUrl = url;
@@ -98,23 +97,23 @@ Task * BaseBedToolsWorker::tick() {
     return NULL;
 }
 
-void BaseBedToolsWorker::cleanup() {
+void BaseNGSWorker::cleanup() {
     outUrls.clear();
 }
 
 namespace {
     QString getTargetUrl(Task *task) {
 
-        BaseBedToolsTask *bedToolsTask = dynamic_cast<BaseBedToolsTask*>(task);
+        BaseNGSTask *NGSTask = dynamic_cast<BaseNGSTask*>(task);
 
-        if (NULL != bedToolsTask) {
-            return bedToolsTask->getResult();
+        if (NULL != NGSTask) {
+            return NGSTask->getResult();
         }
         return "";
     }
 }
 
-void BaseBedToolsWorker::sl_taskFinished(Task *task) {
+void BaseNGSWorker::sl_taskFinished(Task *task) {
     CHECK(!task->hasError(), );
     CHECK(!task->isCanceled(), );
 
@@ -125,7 +124,7 @@ void BaseBedToolsWorker::sl_taskFinished(Task *task) {
     monitor()->addOutputFile(url, getActorId());
 }
 
-QString BaseBedToolsWorker::getTargetName (const QString &fileUrl, const QString &outDir){
+QString BaseNGSWorker::getTargetName (const QString &fileUrl, const QString &outDir){
     QString name = getValue<QString>(OUT_NAME_ID);
 
     if(name == DEFAULT_NAME || name.isEmpty()){
@@ -140,7 +139,7 @@ QString BaseBedToolsWorker::getTargetName (const QString &fileUrl, const QString
 }
 
 
-QString BaseBedToolsWorker::takeUrl() {
+QString BaseNGSWorker::takeUrl() {
     const Message inputMessage = getMessageAndSetupScriptValues(inputUrlPort);
     if (inputMessage.isEmpty()) {
         outputUrlPort->transit();
@@ -151,44 +150,44 @@ QString BaseBedToolsWorker::takeUrl() {
     return data[BaseSlots::URL_SLOT().getId()].toString();
 }
 
-void BaseBedToolsWorker::sendResult(const QString &url) {
+void BaseNGSWorker::sendResult(const QString &url) {
     const Message message(BaseTypes::STRING_TYPE(), url);
     outputUrlPort->put(message);
 }
 
 //////////////////////////////////////////////////////////////////////////
-//BaseBedToolsParser
-BaseBedToolsParser::BaseBedToolsParser()
+//BaseNGSParser
+BaseNGSParser::BaseNGSParser()
     :ExternalToolLogParser() {
 
 }
 
-void BaseBedToolsParser::parseOutput( const QString& partOfLog ){
+void BaseNGSParser::parseOutput( const QString& partOfLog ){
     ExternalToolLogParser::parseOutput(partOfLog);
 }
 
-void BaseBedToolsParser::parseErrOutput( const QString& partOfLog ){
+void BaseNGSParser::parseErrOutput( const QString& partOfLog ){
     lastPartOfLog=partOfLog.split(QRegExp("(\n|\r)"));
     lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
     lastErrLine=lastPartOfLog.takeLast();
     foreach(QString buf, lastPartOfLog){
             if(buf.contains("ERROR", Qt::CaseInsensitive)){
-                    coreLog.error("Bedtools: " + buf);
+                    coreLog.error("NGS: " + buf);
             }
     }
 }
 
 
 //////////////////////////////////////////////////////////////////////////
-//BaseBedToolsTask
-BaseBedToolsTask::BaseBedToolsTask(const BedToolsSetting &settings)
-:Task(QString("Bedtools for %1").arg(settings.inputUrl), TaskFlags_FOSE_COSC)
+//BaseNGSTask
+BaseNGSTask::BaseNGSTask(const BaseNGSSetting &settings)
+:Task(QString("NGS for %1").arg(settings.inputUrl), TaskFlags_FOSE_COSC)
 ,settings(settings)
 {
 
 }
 
-void BaseBedToolsTask::prepare(){
+void BaseNGSTask::prepare(){
     if (settings.inputUrl.isEmpty()){
         setError(tr("No input URL"));
         return ;
@@ -200,19 +199,25 @@ void BaseBedToolsTask::prepare(){
         return ;
     }
 
-    const QStringList args = getParameters(stateInfo);
-    CHECK_OP(stateInfo, );
-
-    ExternalToolLogParser* logParser = new BaseBedToolsParser();
-    ExternalToolRunTask* etTask = new ExternalToolRunTask(ET_BEDTOOLS, args, logParser, settings.outDir);
-    etTask->setStandartOutputFile(settings.outDir + settings.outName);
-    addSubTask(etTask);
+    prepareStep();
 }
 
-void BaseBedToolsTask::run(){
+void BaseNGSTask::run(){
     CHECK_OP(stateInfo, );
 
+    runStep();
+
     resultUrl = settings.outDir + settings.outName;
+}
+
+Task *BaseNGSTask::getExternalToolTask(const QString &toolName){
+    const QStringList args = getParameters(stateInfo);
+    CHECK_OP(stateInfo, NULL);
+
+    ExternalToolLogParser* logParser = new BaseNGSParser();
+    ExternalToolRunTask* etTask = new ExternalToolRunTask(toolName, args, logParser, settings.outDir);
+    etTask->setStandartOutputFile(settings.outDir + settings.outName);
+    return etTask;
 }
 
 } //LocalWorkflow

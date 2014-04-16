@@ -24,9 +24,8 @@
 
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
+#include <U2Lang/BaseNGSWorker.h>
 #include <U2Core/GUrl.h>
-
-#include "BaseBedToolsWorker.h"
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -43,14 +42,14 @@ protected:
     QString composeRichDoc();
 }; //SlopbedPrompter
 
-class SlopbedWorker: public BaseBedToolsWorker {
+class SlopbedWorker: public BaseNGSWorker {
     Q_OBJECT
 public:
     SlopbedWorker(Actor *a);
 protected:
     QVariantMap getCustomParameters() const;
     QString getDefaultFileName() const;
-    Task *getTask(const BedToolsSetting &settings) const;
+    Task *getTask(const BaseNGSSetting &settings) const;
 }; //SlopbedWorker
 
 class SlopbedWorkerFactory : public DomainFactory {
@@ -61,12 +60,13 @@ public:
     Worker* createWorker(Actor* a) { return new SlopbedWorker(a); }
 }; //SlopbedWorkerFactory
 
-class SlopbedTask : public BaseBedToolsTask{
+class SlopbedTask : public BaseNGSTask{
     Q_OBJECT
 public:
-    SlopbedTask (const BedToolsSetting &settings);
+    SlopbedTask (const BaseNGSSetting &settings);
 
 protected:
+    void prepareStep();
     QStringList getParameters(U2OpStatus& os);
 };
 
@@ -82,14 +82,14 @@ protected:
     QString composeRichDoc();
 }; //GenomecovPrompter
 
-class GenomecovWorker: public BaseBedToolsWorker {
+class GenomecovWorker: public BaseNGSWorker {
     Q_OBJECT
 public:
     GenomecovWorker(Actor *a);
 protected:
     QVariantMap getCustomParameters() const;
     QString getDefaultFileName() const;
-    Task *getTask(const BedToolsSetting &settings) const;
+    Task *getTask(const BaseNGSSetting &settings) const;
 }; //GenomecovWorker
 
 class GenomecovWorkerFactory : public DomainFactory {
@@ -100,12 +100,13 @@ public:
     Worker* createWorker(Actor* a) { return new GenomecovWorker(a); }
 }; //GenomecovWorkerFactory
 
-class GenomecovTask : public BaseBedToolsTask{
+class GenomecovTask : public BaseNGSTask{
     Q_OBJECT
 public:
-    GenomecovTask (const BedToolsSetting &settings);
+    GenomecovTask (const BaseNGSSetting &settings);
 
 protected:
+    void prepareStep();
     QStringList getParameters(U2OpStatus& os);
 };
 

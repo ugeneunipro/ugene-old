@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_BASE_BED_TOOL_WORKER_H_
-#define _U2_BASE_BED_TOOL_WORKER_H_
+#ifndef _U2_BASE_NGS_WORKER_H_
+#define _U2_BASE_NGS_WORKER_H_
 
 #include <U2Lang/LocalDomain.h>
 #include <U2Lang/WorkflowUtils.h>
@@ -29,9 +29,9 @@
 namespace U2 {
 namespace LocalWorkflow {
 
-class BedToolsSetting{
+class U2LANG_EXPORT BaseNGSSetting{
 public:
-    BedToolsSetting(): outDir(""), outName(""),inputUrl(""){}
+    BaseNGSSetting(): outDir(""), outName(""),inputUrl(""){}
 
     QString outDir;
     QString outName;
@@ -39,10 +39,10 @@ public:
     QVariantMap customParameters;
 };
 
-class BaseBedToolsWorker: public BaseWorker {
+class U2LANG_EXPORT BaseNGSWorker: public BaseWorker {
     Q_OBJECT
 public:
-    BaseBedToolsWorker(Actor *a);
+    BaseNGSWorker(Actor *a);
     void init();
     Task * tick();
     void cleanup();
@@ -56,8 +56,8 @@ public:
 
 protected:
     virtual QVariantMap getCustomParameters() const {return QVariantMap();}
-    virtual QString getDefaultFileName() const {return QString(".bed");}
-    virtual Task* getTask(const BedToolsSetting& settings) const = 0;
+    virtual QString getDefaultFileName() const = 0;
+    virtual Task* getTask(const BaseNGSSetting& settings) const = 0;
 
 private:
     IntegralBus *inputUrlPort;
@@ -71,12 +71,12 @@ private:
     QString takeUrl();
     QString getTargetName(const QString& fileUrl, const QString& outDir);
     void sendResult(const QString &url);
-}; //BaseBedToolsWorker
+}; //BaseNGSWorker
 
 
-class BaseBedToolsParser : public ExternalToolLogParser {
+class U2LANG_EXPORT BaseNGSParser : public ExternalToolLogParser {
 public:
-    BaseBedToolsParser();
+    BaseNGSParser();
 
     void parseOutput(const QString& partOfLog);
     void parseErrOutput(const QString& partOfLog);
@@ -85,10 +85,10 @@ private:
     QString lastErrLine;
 };
 
-class BaseBedToolsTask : public Task {
+class U2LANG_EXPORT BaseNGSTask : public Task {
     Q_OBJECT
 public:
-    BaseBedToolsTask(const BedToolsSetting &settings);
+    BaseNGSTask(const BaseNGSSetting &settings);
 
     void prepare();
     void run();
@@ -96,10 +96,13 @@ public:
     QString getResult(){return resultUrl;}
 
 protected:
+    virtual void prepareStep() {};
+    virtual void runStep() {};
+    virtual Task* getExternalToolTask (const QString& toolName);
     virtual QStringList getParameters(U2OpStatus& os) = 0;
 
 protected:
-    BedToolsSetting settings;
+    BaseNGSSetting settings;
     QString resultUrl;
 };
 
@@ -107,4 +110,4 @@ protected:
 } //LocalWorkflow
 } //U2
 
-#endif //_U2_BASE_BED_TOOL_WORKER_H_
+#endif //_U2_BASE_NGS_WORKER_H_

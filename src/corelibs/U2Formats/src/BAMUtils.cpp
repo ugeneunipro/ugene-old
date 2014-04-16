@@ -43,6 +43,12 @@ extern "C" {
 #include <bgzf.h>
 }
 
+extern "C" {
+#include <kseq.h>
+}
+#include <zlib.h>
+
+
 #include <QFileInfo>
 
 #include "BAMUtils.h"
@@ -616,4 +622,83 @@ bool BAMUtils::isEquelByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpS
     return true;
 }
 
+/////////////////////////////////////////////////
+//FASTQIterator
+
+/*
+#include <zlib.h>
+#include <stdio.h>
+#include "kseq.h"
+// STEP 1: declare the type of file handler and the read() function
+KSEQ_INIT(gzFile, gzread)
+
+int main(int argc, char *argv[])
+{
+gzFile fp;
+kseq_t *seq;
+int l;
+if (argc == 1) {
+    fprintf(stderr, "Usage: %s <in.seq>\n", argv[0]);
+    return 1;
+}
+fp = gzopen(argv[1], "r"); // STEP 2: open the file handler
+seq = kseq_init(fp); // STEP 3: initialize seq
+while ((l = kseq_read(seq)) >= 0) { // STEP 4: read sequence
+    printf("name: %s\n", seq->name.s);
+    if (seq->comment.l) printf("comment: %s\n", seq->comment.s);
+    printf("seq: %s\n", seq->seq.s);
+    if (seq->qual.l) printf("qual: %s\n", seq->qual.s);
+}
+printf("return value: %d\n", l);
+kseq_destroy(seq); // STEP 5: destroy seq
+gzclose(fp); // STEP 6: close the file handler
+return 0;
+}
+*/
+//KSEQ_INIT(gzFile, gzread)
+/*
+FASTQIterator::FASTQIterator(const QString &fileUrl)
+    :seq(NULL)
+{
+    fp = gzopen(fileUrl.toLatin1().constData(), "r"); // STEP 2: open the file handler
+    seq = kseq_init(fp);
+    fetchNext();
+}
+
+FASTQIterator::~FASTQIterator(){
+    kseq_destroy(seq);
+    gzclose(fp);
+
+}
+
+DNASequence FASTQIterator::next(){
+    if(hasNext()){
+        QString name = QString::fromLatin1(seq->name.s);
+        QString rseq = QString::fromLatin1(seq->seq.s);
+        DNAQuality quality = (seq->qual.l) ? QString::fromLatin1(seq->seq.s).toLatin1() : QByteArray("");
+        DNASequence res(name, rseq.toLatin1());
+        res.quality = quality;
+
+        fetchNext();
+
+        return res;
+    }
+    return DNASequence();
+}
+
+bool FASTQIterator::hasNext(){
+    if(seq != NULL){
+        return true;
+    }
+    return false;
+}
+
+void FASTQIterator::fetchNext(){
+    if(kseq_read(seq)){
+
+    }else{
+        seq = NULL;
+    }
+}
+*/
 } // U2
