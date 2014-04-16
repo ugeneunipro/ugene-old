@@ -341,10 +341,19 @@ void MSAEditorSequenceArea::sl_customColorSettingsChanged(){
     DNAAlphabetType atype = editor->getMSAObject()->getAlphabet()->getType();
     QAction* a = GUIUtils::getCheckedAction(customColorSchemeMenuActions);
     initCustomSchemeActions(a == NULL ? "" :a->data().toString(), atype);
-    if(a != NULL && !customColorSchemeMenuActions.contains(a) && !colorSchemeMenuActions.contains(a)){
-        colorSchemeMenuActions.first()->setChecked(true);
-        colorSchemeMenuActions.first()->trigger();
-        return;
+    if(a != NULL && !colorSchemeMenuActions.contains(a)){
+        bool containsActionByName = false;
+        foreach(QAction *customAction, customColorSchemeMenuActions){
+            if(customAction->objectName() != "" && customAction->objectName() == prevSchemeName){
+                containsActionByName = true;
+                break;
+            }
+        }
+        if (!containsActionByName){
+            colorSchemeMenuActions.first()->setChecked(true);
+            colorSchemeMenuActions.first()->trigger();
+            return;
+        }
     }
     if(!a){
         QAction* a = GUIUtils::findActionByData(QList<QAction*>() << colorSchemeMenuActions << customColorSchemeMenuActions, atype == DNAAlphabet_AMINO ? MSAColorScheme::UGENE_AMINO : MSAColorScheme::UGENE_NUCL);
@@ -399,6 +408,7 @@ void MSAEditorSequenceArea::sl_changeColorScheme() {
         AppContext::getSettings()->setValue(SETTINGS_ROOT + SETTINGS_COLOR_NUCL, id);
     }
 
+    prevSchemeName = a->objectName();
     completeRedraw = true;
     update();
     emit si_highlightingChanged();
