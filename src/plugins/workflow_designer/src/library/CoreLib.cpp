@@ -311,6 +311,7 @@ void CoreLib::init() {
     DASAnnotationWorkerFactory::init();
     ExtractConsensusWorkerFactory::init();
     CASAVAFilterWorkerFactory::init();
+    QualityTrimWorkerFactory::init();
 
     initUsersWorkers();
     initExternalToolsWorkers();

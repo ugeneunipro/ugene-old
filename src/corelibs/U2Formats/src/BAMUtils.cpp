@@ -668,7 +668,7 @@ DNASequence FASTQIterator::next(){
         QString name = QString::fromLatin1(seq->name.s);
         QString comment = QString::fromLatin1(seq->comment.s);
         QString rseq = QString::fromLatin1(seq->seq.s);
-        DNAQuality quality = (seq->qual.l) ? QString::fromLatin1(seq->seq.s).toLatin1() : QByteArray("");
+        DNAQuality quality = (seq->qual.l) ? QString::fromLatin1(seq->qual.s).toLatin1() : QByteArray("");
         DNASequence res(name, rseq.toLatin1());
         res.quality = quality;
         res.info.insert(DNAInfo::FASTQ_COMMENT, comment);

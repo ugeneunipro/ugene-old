@@ -195,5 +195,187 @@ QStringList CASAVAFilterTask::getParameters(U2OpStatus &os){
     return res;
 }
 
+
+///////////////////////////////////////////////////////////////
+//QualityTrim
+const QString QualityTrimWorkerFactory::ACTOR_ID("QualityTrim");
+
+static const QString QUALITY_ID("qual-id");
+static const QString LEN_ID("len-id");
+
+/************************************************************************/
+/* QualityTrimPrompter */
+/************************************************************************/
+QString QualityTrimPrompter::composeRichDoc() {
+    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BaseNGSWorker::INPUT_PORT));
+    const Actor* producer = input->getProducer(BaseSlots::URL_SLOT().getId());
+    QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
+    QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
+
+    QString doc = tr("Trim input sequence %1 from the end, using the quality threshold.").arg(producerName);
+    return doc;
+}
+
+/************************************************************************/
+/* QualityTrimWorkerFactory */
+/************************************************************************/
+void QualityTrimWorkerFactory::init() {
+    Descriptor desc( ACTOR_ID, QualityTrimWorker::tr("FASTQ quality trimmer"),
+        QualityTrimWorker::tr("The workflow scans each input sequence from the end to find the first position where the quality is greater or equal to the minimum quality threshold. "
+                              "Then it trims the sequence to that position. If a the whole sequence has quality less than the threshold or the length of the output sequence less than "
+                              "the minimum length threshold then the sequence is skipped.") );
+
+    QList<PortDescriptor*> p;
+    {
+        Descriptor inD(BaseNGSWorker::INPUT_PORT, QualityTrimWorker::tr("Input File"),
+            QualityTrimWorker::tr("Set of FASTQ reads files"));
+        Descriptor outD(BaseNGSWorker::OUTPUT_PORT, QualityTrimWorker::tr("Output File"),
+            QualityTrimWorker::tr("Output FASTQ files"));
+
+        QMap<Descriptor, DataTypePtr> inM;
+        inM[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
+        p << new PortDescriptor(inD, DataTypePtr(new MapDataType("cf.input-url", inM)), true);
+
+        QMap<Descriptor, DataTypePtr> outM;
+        outM[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
+        p << new PortDescriptor(outD, DataTypePtr(new MapDataType("cf.output-url", outM)), false, true);
+    }
+
+    QList<Attribute*> a;
+    {
+        Descriptor outDir(BaseNGSWorker::OUT_MODE_ID, QualityTrimWorker::tr("Output directory"),
+            QualityTrimWorker::tr("Select an output directory. <b>Custom</b> - specify the output directory in the 'Custom directory' parameter. "
+            "<b>Workflow</b> - internal workflow directory. "
+            "<b>Input file</b> - the directory of the input file."));
+
+        Descriptor customDir(BaseNGSWorker::CUSTOM_DIR_ID, QualityTrimWorker::tr("Custom directory"),
+            QualityTrimWorker::tr("Select the custom output directory."));
+
+        Descriptor outName(BaseNGSWorker::OUT_NAME_ID, QualityTrimWorker::tr("Output file name"),
+            QualityTrimWorker::tr("A name of an output file. If default of empty value is provided the output name is the name of the first file with additional extention."));
+
+        Descriptor qualT(QUALITY_ID, QualityTrimWorker::tr("Quality threshold"),
+            QualityTrimWorker::tr("Quality threshold for trimming."));
+
+        Descriptor lenT(LEN_ID, QualityTrimWorker::tr("Min Length"),
+            QualityTrimWorker::tr("Too short reads are discarded by the filter."));
+
+        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
+        Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
+        customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, QualityTrimWorker::tr("Custom")));
+        a << customDirAttr;
+        a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(BaseNGSWorker::DEFAULT_NAME));
+        a << new Attribute( qualT, BaseTypes:: NUM_TYPE(), false, QVariant(30));
+        a << new Attribute( lenT, BaseTypes::NUM_TYPE(), false, QVariant(0));
+    }
+
+    QMap<QString, PropertyDelegate*> delegates;
+    {
+        QVariantMap directoryMap;
+        QString fileDir = QualityTrimWorker::tr("Input file");
+        QString workflowDir = QualityTrimWorker::tr("Workflow");
+        QString customD = QualityTrimWorker::tr("Custom");
+        directoryMap[fileDir] = FileAndDirectoryUtils::FILE_DIRECTORY;
+        directoryMap[workflowDir] = FileAndDirectoryUtils::WORKFLOW_INTERNAL;
+        directoryMap[customD] = FileAndDirectoryUtils::CUSTOM;
+        delegates[BaseNGSWorker::OUT_MODE_ID] = new ComboBoxDelegate(directoryMap);
+
+        delegates[BaseNGSWorker::CUSTOM_DIR_ID] = new URLDelegate("", "", false, true);
+
+        QVariantMap len; len["minimum"] = 0; len["maximum"] = INT_MAX;
+        delegates[QUALITY_ID] = new SpinBoxDelegate(len);
+        delegates[LEN_ID] = new SpinBoxDelegate(len);
+    }
+
+    ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
+    proto->setEditor(new DelegateEditor(delegates));
+    proto->setPrompter(new QualityTrimPrompter());
+
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CONVERTERS(), proto);
+    DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
+    localDomain->registerEntry(new QualityTrimWorkerFactory());
+}
+
+/************************************************************************/
+/* QualityTrimWorker */
+/************************************************************************/
+QualityTrimWorker::QualityTrimWorker(Actor *a)
+:BaseNGSWorker(a)
+{
+
+}
+
+QVariantMap QualityTrimWorker::getCustomParameters() const{
+    QVariantMap res;
+    res.insert(QUALITY_ID, getValue<int>(QUALITY_ID));
+    res.insert(LEN_ID, getValue<int>(LEN_ID));
+    return res;
+}
+
+QString QualityTrimWorker::getDefaultFileName() const{
+    return ".trimmed.fastq";
+}
+
+Task *QualityTrimWorker::getTask(const BaseNGSSetting &settings) const{
+    return new QualityTrimTask(settings);
+}
+
+//////////////////////////////////////////////////////
+//QualityTrimTask
+QualityTrimTask::QualityTrimTask(const BaseNGSSetting &settings)
+    :BaseNGSTask(settings){
+
+}
+
+void QualityTrimTask::runStep(){
+    int ncount = 0;
+    int ycount = 0;
+
+    QScopedPointer<IOAdapter> io  (IOAdapterUtils::open(settings.outDir + settings.outName, stateInfo, IOAdapterMode_Append));
+
+    int quality = settings.customParameters.value(QUALITY_ID, 20).toInt();
+    int minLen = settings.customParameters.value(LEN_ID, 0).toInt();
+
+    FASTQIterator iter(settings.inputUrl);
+    while(iter.hasNext()){
+        if(stateInfo.isCoR()){
+            return;
+        }
+        DNASequence dna = iter.next();
+        QString comment = DNAInfo::getFastqComment(dna.info);
+        int seqLen = dna.length();
+        if(seqLen > dna.quality.qualCodes.length()){
+            ncount++;
+            continue;
+        }else{
+            int endPosition = seqLen-1;
+            for (; endPosition>=0; endPosition--){
+                if(dna.quality.getValue(endPosition) >= quality){
+                    break;
+                }
+            }
+            if(endPosition>=0 && endPosition+1 >= minLen){
+                DNASequence trimmed(dna.getName(), dna.seq.left(endPosition+1), dna.alphabet);
+                trimmed.quality = dna.quality;
+                trimmed.quality.qualCodes = trimmed.quality.qualCodes.left(endPosition+1);
+                FastqFormat::writeEntry(trimmed.getName(), trimmed, io.data(), "Writing error", stateInfo);
+                ycount++;
+            }else{
+                ncount++;
+                continue;
+            }
+        }
+    }
+
+    algoLog.info(QString("Discarded by trimmer %1").arg(ncount));
+    algoLog.info(QString("Accepted by trimmer %1").arg(ycount));
+    algoLog.info(QString("Total by trimmer %1").arg(ncount + ycount));
+}
+
+QStringList QualityTrimTask::getParameters(U2OpStatus &os){
+    QStringList res;
+    return res;
+}
+
 } //LocalWorkflow
 } //U2

@@ -71,6 +71,48 @@ protected:
     QStringList getParameters(U2OpStatus& os);
 };
 
+//////////////////////////////////////////////////
+//QualityTrim
+class QualityTrimPrompter;
+typedef PrompterBase<QualityTrimPrompter> QualityTrimBase;
+class QualityTrimPrompter : public QualityTrimBase {
+    Q_OBJECT
+public:
+    QualityTrimPrompter(Actor* p = 0) : QualityTrimBase(p) {}
+protected:
+    QString composeRichDoc();
+}; //QualityTrimPrompter
+
+class QualityTrimWorker: public BaseNGSWorker {
+    Q_OBJECT
+public:
+    QualityTrimWorker(Actor *a);
+protected:
+    QVariantMap getCustomParameters() const;
+    QString getDefaultFileName() const;
+    Task *getTask(const BaseNGSSetting &settings) const;
+
+}; //QualityTrimWorker
+
+class QualityTrimWorkerFactory : public DomainFactory {
+    static const QString ACTOR_ID;
+public:
+    static void init();
+    QualityTrimWorkerFactory() : DomainFactory(ACTOR_ID) {}
+    Worker* createWorker(Actor* a) { return new QualityTrimWorker(a); }
+}; //QualityTrimWorkerFactory
+
+class QualityTrimTask : public BaseNGSTask{
+    Q_OBJECT
+public:
+    QualityTrimTask (const BaseNGSSetting &settings);
+
+protected:
+    void runStep();
+    QStringList getParameters(U2OpStatus& os);
+};
+
+
 } //LocalWorkflow
 } //U2
 
