@@ -222,7 +222,6 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(1000);
 
-    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "Open New View", GTGlobals::UseMouse));
@@ -231,7 +230,6 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(1000);
 
-    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
     QWidget *activeWindow =  GTUtilsMdi::activeWindow(os);
@@ -261,7 +259,6 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(1000);
 
-    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "Open New View", GTGlobals::UseMouse));
@@ -270,7 +267,6 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(1000);
 
-    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
     QWidget *activeWindow =  GTUtilsMdi::activeWindow(os);
@@ -301,7 +297,6 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(1000);
 
-    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Open View" << "Open New View", GTGlobals::UseMouse));
@@ -310,7 +305,6 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(1000);
 
-    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(1000);
 
     QWidget *activeWindow =  GTUtilsMdi::activeWindow(os);
