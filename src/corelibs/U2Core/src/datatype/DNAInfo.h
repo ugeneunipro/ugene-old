@@ -131,10 +131,12 @@ static const QString FASTA_HDR;
 static const QString FASTQ_QUAL_CODES;
 static const QString FASTQ_QUAL_TYPE;
 static const QString GENBANK_HEADER;
+static const QString FASTQ_COMMENT;
 
 static QString getPrimaryAccession(const QVariantMap&);
 static QString getContig(const QVariantMap&);
 static QString getName(const QVariantMap&);
+static QString getFastqComment(const QVariantMap&);
 };
 
 class U2CORE_EXPORT DNALocusInfo {

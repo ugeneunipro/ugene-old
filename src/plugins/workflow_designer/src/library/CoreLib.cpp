@@ -59,6 +59,7 @@
 #include "library/FilterBamWorker.h"
 #include "library/RmdupBamWorker.h"
 #include "library/SortBamWorker.h"
+#include "library/FASTQWorkersLibrary.h"
 #include "util/WriteSequenceValidator.h"
 
 #include "RemoteDBFetcherWorker.h"
@@ -309,6 +310,7 @@ void CoreLib::init() {
     SortBamWorkerFactory::init();
     DASAnnotationWorkerFactory::init();
     ExtractConsensusWorkerFactory::init();
+    CASAVAFilterWorkerFactory::init();
 
     initUsersWorkers();
     initExternalToolsWorkers();

@@ -43,12 +43,6 @@ extern "C" {
 #include <bgzf.h>
 }
 
-extern "C" {
-#include <kseq.h>
-}
-#include <zlib.h>
-
-
 #include <QFileInfo>
 
 #include "BAMUtils.h"
@@ -624,7 +618,6 @@ bool BAMUtils::isEquelByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpS
 
 /////////////////////////////////////////////////
 //FASTQIterator
-
 /*
 #include <zlib.h>
 #include <stdio.h>
@@ -655,8 +648,7 @@ gzclose(fp); // STEP 6: close the file handler
 return 0;
 }
 */
-//KSEQ_INIT(gzFile, gzread)
-/*
+//
 FASTQIterator::FASTQIterator(const QString &fileUrl)
     :seq(NULL)
 {
@@ -674,10 +666,12 @@ FASTQIterator::~FASTQIterator(){
 DNASequence FASTQIterator::next(){
     if(hasNext()){
         QString name = QString::fromLatin1(seq->name.s);
+        QString comment = QString::fromLatin1(seq->comment.s);
         QString rseq = QString::fromLatin1(seq->seq.s);
         DNAQuality quality = (seq->qual.l) ? QString::fromLatin1(seq->seq.s).toLatin1() : QByteArray("");
         DNASequence res(name, rseq.toLatin1());
         res.quality = quality;
+        res.info.insert(DNAInfo::FASTQ_COMMENT, comment);
 
         fetchNext();
 
@@ -694,11 +688,11 @@ bool FASTQIterator::hasNext(){
 }
 
 void FASTQIterator::fetchNext(){
-    if(kseq_read(seq)){
+    if(kseq_read(seq) >=0 ){
 
     }else{
         seq = NULL;
     }
 }
-*/
+
 } // U2

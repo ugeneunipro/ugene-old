@@ -72,6 +72,7 @@ const QString DNAInfo::FASTQ_QUAL_TYPE = "FASTQ_QUAL_TYPE";
 const QString DNAInfo::EMBL_ID = "EMBL_ID";
 const QString DNAInfo::ID = "ID";
 const QString DNAInfo::GENBANK_HEADER = "GENBANK_HEADER";
+const QString DNAInfo::FASTQ_COMMENT = "FASTQ_COMMENT";
 
 
 QString DNAInfo::getPrimaryAccession( const QVariantMap& vm)
@@ -111,5 +112,13 @@ QString DNAInfo::getName( const QVariantMap& vm) {
         name = getPrimaryAccession(vm);
     }
     return name;
+}
+
+QString DNAInfo::getFastqComment(const QVariantMap & vm){
+    QString comment;
+    if (vm.contains(FASTQ_COMMENT)) {
+        comment = vm.value(FASTQ_COMMENT).toString();
+    }
+    return comment;
 }
 }//namespace

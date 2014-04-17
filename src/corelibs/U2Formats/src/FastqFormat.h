@@ -29,6 +29,7 @@
 namespace U2 {
 
 class IOAdapter;
+class DNASequence;
 
 class U2FORMATS_EXPORT FastqFormat : public DocumentFormat {
     Q_OBJECT
@@ -49,8 +50,11 @@ public:
 
     virtual void storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os);
 
+    static void writeEntry(const QString &seqName, const DNASequence &seq, IOAdapter *io, const QString &errorMessage, U2OpStatus &os);
+
 protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
+
 
 private:
     QString fn;

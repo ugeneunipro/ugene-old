@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
@@ -393,27 +394,15 @@ void writeSequence(U2OpStatus &os, IOAdapter *io, const char* seq, int len, cons
     }
 }
 
-void FastqFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os) {
-    SAFE_POINT(objectsMap.contains(GObjectTypes::SEQUENCE), "Fastq entry storing: no sequences", );
-    const QList<GObject*> &seqs = objectsMap[GObjectTypes::SEQUENCE];
-    SAFE_POINT(1 == seqs.size(), "Fastq entry storing: sequence objects count error", );
-    U2SequenceObject *seqObj = dynamic_cast<U2SequenceObject*>(seqs.first());
-    SAFE_POINT(NULL != seqObj, "Fastq entry storing: NULL sequence object", );
-
-    GUrl url = seqObj->getDocument() ? seqObj->getDocument()->getURL() : GUrl();
-    static QString errorMessage = L10N::errorWritingFile(url);
-
-    //write header;
+void FastqFormat::writeEntry(const QString& sequenceName, const DNASequence& wholeSeq, IOAdapter *io, const QString& errorMessage, U2OpStatus &os){
     QByteArray block;
 
-    QString sequenceName = seqObj->getGObjectName();
     block.append('@').append(sequenceName).append('\n');
 
     int writtenCount = io->writeBlock(block);
     CHECK_EXT(writtenCount == block.length(), os.setError(errorMessage),);
 
     // write sequence
-    DNASequence wholeSeq = seqObj->getWholeSequence();
     writeSequence(os, io, wholeSeq.constData(), wholeSeq.length(), errorMessage);
 
     //write transition
@@ -438,6 +427,22 @@ void FastqFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObje
     }
 
     writeSequence(os, io, qualityData, wholeSeq.length(), errorMessage);
+}
+
+void FastqFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os) {
+    SAFE_POINT(objectsMap.contains(GObjectTypes::SEQUENCE), "Fastq entry storing: no sequences", );
+    const QList<GObject*> &seqs = objectsMap[GObjectTypes::SEQUENCE];
+    SAFE_POINT(1 == seqs.size(), "Fastq entry storing: sequence objects count error", );
+    U2SequenceObject *seqObj = dynamic_cast<U2SequenceObject*>(seqs.first());
+    SAFE_POINT(NULL != seqObj, "Fastq entry storing: NULL sequence object", );
+
+    GUrl url = seqObj->getDocument() ? seqObj->getDocument()->getURL() : GUrl();
+    static QString errorMessage = L10N::errorWritingFile(url);
+
+    //write header;
+    QString sequenceName = seqObj->getGObjectName();
+    const DNASequence& seqData = seqObj->getWholeSequence();
+    writeEntry(sequenceName, seqData, io, errorMessage, os);
 }
 
 DNASequence *FastqFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {

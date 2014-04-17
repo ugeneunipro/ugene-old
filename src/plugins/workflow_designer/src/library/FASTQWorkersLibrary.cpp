@@ -20,9 +20,12 @@
  */
 
 #include <U2Core/AppContext.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Formats/FileAndDirectoryUtils.h>
 #include <U2Formats/BAMUtils.h>
+#include <U2Formats/FastqFormat.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
@@ -160,17 +163,31 @@ CASAVAFilterTask::CASAVAFilterTask(const BaseNGSSetting &settings)
 }
 
 void CASAVAFilterTask::runStep(){
-    //TODO
-/*
-    QRegExp pattern (".* [^:]*:N:[^:]*:");
+    int ncount = 0;
+    int ycount = 0;
+
+    QScopedPointer<IOAdapter> io  (IOAdapterUtils::open(settings.outDir + settings.outName, stateInfo, IOAdapterMode_Append));
+
+    //1:N:0:TAAGGG
+    QRegExp pattern (":N:[^:]:");
     FASTQIterator iter(settings.inputUrl);
     while(iter.hasNext()){
+        if(stateInfo.isCoR()){
+            return;
+        }
         DNASequence seq = iter.next();
-        if(pattern.exactMatch(seq.getName())){
-            coreLog.trace(QString("%1").arg(seq.getName()));
+        QString comment = DNAInfo::getFastqComment(seq.info);
+        if(pattern.indexIn(comment) != -1){
+            FastqFormat::writeEntry(seq.getName() + " " + comment, seq, io.data(), "Writing error", stateInfo);
+            ncount++;
+        }else{
+            ycount++;
         }
     }
-    */
+
+    algoLog.info(QString("Discarded by CASAVA filter %1").arg(ncount));
+    algoLog.info(QString("Accepted by CASAVA filter %1").arg(ycount));
+    algoLog.info(QString("Total by CASAVA FILTER: %1").arg(ncount + ycount));
 }
 
 QStringList CASAVAFilterTask::getParameters(U2OpStatus &os){
