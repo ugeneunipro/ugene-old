@@ -849,7 +849,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2){
     }
 
     CHECK_SET_ERR(!nodeList.isEmpty(), "nodeList is empty");
-    QGraphicsItem* node = nodeList.first();
+    QGraphicsItem* node = nodeList.at(1);
     QPointF sceneCoord = node->mapToScene(node->boundingRect().center());
     QPoint viewCord = treeView->mapFromScene(sceneCoord);
     QPoint globalCoord = treeView->mapToGlobal(viewCord);
@@ -860,7 +860,8 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2){
     QList<QGraphicsSimpleTextItem *> branchList;
     foreach(QGraphicsItem* item, list){
             QGraphicsSimpleTextItem * textItem = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);
-            if(textItem && !textItem->text().contains("0.011")){
+            if(textItem && !textItem->text().contains("0.106") && !textItem->text().contains("0.007") && !textItem->text().contains("0.103")
+                    && !textItem->text().contains("Phaneroptera_falcata") && !textItem->text().contains("Isophya_altaica_EF540820")){
                 branchList.append(textItem);
             }
         }
@@ -875,6 +876,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2){
     GTMouseDriver::doubleClick(os);
 
     foreach(QGraphicsSimpleTextItem* item, branchList){
+        if(item->text() == "0.011") continue;
         CHECK_SET_ERR(item->isVisible(), item->text() + " is not visiable");
     }
 //    Expected state: this node's branches has dissapered

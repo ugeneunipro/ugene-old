@@ -189,7 +189,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1703);
     REGISTER_TEST(GUITest_regression_scenarios::test_1708);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1720, "https://ugene.unipro.ru/tracker/browse/UGENE-2855");
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1786, "https://ugene.unipro.ru/tracker/browse/UGENE-2607");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1786);
     REGISTER_TEST(GUITest_regression_scenarios::test_1808);
     REGISTER_TEST(GUITest_regression_scenarios::test_1811);
     REGISTER_TEST(GUITest_regression_scenarios::test_1811_1);
@@ -207,7 +207,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1919, "incomplete(source url can not be set), incorrect until UGENE-2405 fixed");
     REGISTER_TEST(GUITest_regression_scenarios::test_1921);
     REGISTER_TEST(GUITest_regression_scenarios::test_1924);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1986, "https://ugene.unipro.ru/tracker/browse/UGENE-2856");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1986, "https://ugene.unipro.ru/tracker/browse/UGENE-2853");
 
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2006,"https://ugene.unipro.ru/tracker/browse/UGENE-2717");
     REGISTER_TEST(GUITest_regression_scenarios::test_2007);
@@ -654,7 +654,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_3);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_4);
 
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0039, "https://ugene.unipro.ru/tracker/browse/UGENE-2360");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0039, "https://ugene.unipro.ru/tracker/browse/UGENE-2968");
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0040);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0041);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_fake);

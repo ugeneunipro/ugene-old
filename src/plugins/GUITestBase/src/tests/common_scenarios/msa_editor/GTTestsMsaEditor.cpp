@@ -3455,7 +3455,9 @@ GUI_TEST_CLASS_DEFINITION(test_0039){
     extMap[2] = "msf";
     extMap[3] = "meg";
     extMap[4] = "nex";
-    extMap[5] = "sto";
+    extMap[5] = "phy";
+    extMap[6] = "phy";
+    extMap[7] = "sto";
 //1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 //2. Use project tree context menu->Export/Import->Export Nucleic Alignment to Amino Translation
