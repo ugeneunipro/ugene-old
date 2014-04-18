@@ -90,6 +90,7 @@ BlastAllSupportRunDialog::BlastAllSupportRunDialog(U2SequenceObject* _dnaso, QSt
     baseNameLineEdit->setText(lastDBName);
     connect(cancelButton,SIGNAL(clicked()),SLOT(reject()));
 
+    setMinimumHeight(460);
 }
 
 void BlastAllSupportRunDialog::sl_lineEditChanged(){
