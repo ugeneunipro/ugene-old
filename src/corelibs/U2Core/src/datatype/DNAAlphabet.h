@@ -74,6 +74,8 @@ public:
 
     bool isAmino() const {return type == DNAAlphabet_AMINO;}
 
+    bool isDNA() const {return id.contains("DNA");}
+
     bool isRNA() const {return id.contains("RNA");}
     
     // returns sorted array of all chars used in alphabet

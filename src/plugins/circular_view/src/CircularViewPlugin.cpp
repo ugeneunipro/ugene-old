@@ -110,7 +110,7 @@ void CircularViewContext::initViewContext(GObjectView* v) {
 
 void CircularViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
     ADVSingleSequenceWidget* sw = qobject_cast<ADVSingleSequenceWidget*>(w);
-    if (sw == NULL || sw->getSequenceObject() == NULL || !sw->getSequenceObject()->getAlphabet()->isNucleic()) {
+    if (sw == NULL || sw->getSequenceObject() == NULL || !sw->getSequenceObject()->getAlphabet()->isDNA()) {
         return;
     }
     
