@@ -104,6 +104,13 @@ protected:
     void adaptSizes();
     void updateZoomActions();
 
+    void setInverseSelection(const U2Region &r);
+    /**
+     * Used for region that covers the beginning of the sequence and the end of it.
+     * Usage: @startSeqRegion.startPos should be 0 and @endSeqRegion.endPos should be equal to sequence length.
+     */
+    void setInverseSelection(const U2Region &startSeqRegion, const U2Region &endSeqRegion);
+
     Direction getDirection(float a, float b) const;
 
     QVBoxLayout *layout;

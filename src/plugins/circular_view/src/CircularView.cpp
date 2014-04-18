@@ -208,11 +208,19 @@ void CircularView::mouseMoveEvent( QMouseEvent * e )
         lastMouseY = point.y();
 
         if (twoParts) {
-            setSelection(U2Region(selStart, seqLen-selStart));
-            addSelection(U2Region(0, selEnd));
+            if (e->modifiers() & Qt::ControlModifier ) {
+                setInverseSelection(U2Region(0, selEnd), U2Region(selStart, seqLen - selStart));
+            } else {
+                setSelection(U2Region(selStart, seqLen-selStart));
+                addSelection(U2Region(0, selEnd));
+            }
         }
         else {
-            setSelection(U2Region(selStart, selLen));
+            if (e->modifiers() & Qt::ControlModifier) {
+                setInverseSelection(U2Region(selStart, selLen));
+            } else {
+                setSelection(U2Region(selStart, selLen));
+            }
         }
     }
     renderArea->update();
@@ -356,6 +364,17 @@ void CircularView::updateZoomActions() {
         emit si_fitInViewDisabled(false);
         emit si_zoomOutDisabled(false);
     }
+}
+
+void CircularView::setInverseSelection(const U2Region &r) {
+    U2Region part1(0, r.startPos);
+    setSelection(part1);
+    addSelection(U2Region( r.endPos(), ctx->getSequenceLength() - r.endPos() ));
+}
+
+void CircularView::setInverseSelection(const U2Region &startSeqRegion, const U2Region &endSeqRegion) {
+    SAFE_POINT(startSeqRegion.startPos == 0 && endSeqRegion.endPos() == ctx->getSequenceLength(), "Invalid regions selection", );
+    setSelection(U2Region(startSeqRegion.endPos(), endSeqRegion.startPos - startSeqRegion.endPos()));
 }
 
 void CircularView::adaptSizes() {
