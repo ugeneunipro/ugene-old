@@ -23,7 +23,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/GUrlUtils.h>
-#include <U2Formats/FileAndDirectoryUtils.h>
+#include <U2Core/FileAndDirectoryUtils.h>
 #include <U2Formats/BAMUtils.h>
 #include <U2Formats/FastqFormat.h>
 #include <U2Designer/DelegateEditors.h>

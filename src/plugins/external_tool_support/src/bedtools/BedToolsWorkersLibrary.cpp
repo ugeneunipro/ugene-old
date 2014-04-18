@@ -22,7 +22,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DataPathRegistry.h>
-#include <U2Formats/FileAndDirectoryUtils.h>
+#include <U2Core/FileAndDirectoryUtils.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>

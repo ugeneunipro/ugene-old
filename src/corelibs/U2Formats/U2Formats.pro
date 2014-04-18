@@ -16,7 +16,6 @@ HEADERS += src/ABIFormat.h \
            src/EMBLPlainTextFormat.h \
            src/FastaFormat.h \
            src/FastqFormat.h \
-           src/FileAndDirectoryUtils.h \
            src/FpkmTrackingFormat.h \
            src/GenbankFeatures.h \
            src/GenbankLocationParser.h \
@@ -96,7 +95,6 @@ SOURCES += src/ABIFormat.cpp \
            src/EMBLPlainTextFormat.cpp \
            src/FastaFormat.cpp \
            src/FastqFormat.cpp \
-           src/FileAndDirectoryUtils.cpp \
            src/FpkmTrackingFormat.cpp \
            src/GenbankFeatures.cpp \
            src/GenbankLocationParser.cpp \

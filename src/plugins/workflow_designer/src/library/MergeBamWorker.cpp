@@ -33,7 +33,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Formats/BAMUtils.h>
-#include <U2Formats/FileAndDirectoryUtils.h>
+#include <U2Core/FileAndDirectoryUtils.h>
 #include <U2Formats/MergeBamTask.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseAttributes.h>

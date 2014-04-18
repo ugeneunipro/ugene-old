@@ -188,6 +188,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/UniprotBlastTask.h \
            src/util/DatatypeSerializeUtils.h \
            src/util/FeaturesQueryCache.h \
+           src/util/FileAndDirectoryUtils.h \
            src/util/FilesIterator.h \
            src/util/FileStorageUtils.h \
            src/util/FormatUtils.h \
@@ -354,6 +355,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/UniprotBlastTask.cpp \
            src/util/DatatypeSerializeUtils.cpp \
            src/util/FeaturesQueryCache.cpp \
+           src/util/FileAndDirectoryUtils.cpp \
            src/util/FilesIterator.cpp \
            src/util/FileStorageUtils.cpp \
            src/util/FormatUtils.cpp \
