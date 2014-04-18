@@ -251,7 +251,7 @@ void GTest_Bowtie::run() {
         return;
     }
     QFileInfo patternFile(env->getVar("COMMON_DATA_DIR")+"/"+patternFileName);
-    BAMUtils::isEquelByLength(config.resultFileName, patternFile.absoluteFilePath(), stateInfo);
+    BAMUtils::isEqualByLength(config.resultFileName, patternFile.absoluteFilePath(), stateInfo);
 }
 
 Task::ReportResult GTest_Bowtie::report() {

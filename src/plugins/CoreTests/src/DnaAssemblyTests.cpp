@@ -198,7 +198,7 @@ void GTest_AssemblycompareTwoSAMbyLength::init(XMLTestFormat *tf, const QDomElem
 }
 
 Task::ReportResult GTest_AssemblycompareTwoSAMbyLength::report() {
-    BAMUtils::isEquelByLength(file1Url, file2Url, stateInfo, isBam);
+    BAMUtils::isEqualByLength(file1Url, file2Url, stateInfo, isBam);
 
     return ReportResult_Finished;
 }

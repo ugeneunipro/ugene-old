@@ -19,6 +19,20 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QFileInfo>
+
+extern "C" {
+#include <bam.h>
+#include <bam_sort.c>
+#include <bam_rmdup.c>
+#include <kseq.h>
+#include <sam.h>
+#include <sam_header.h>
+#include <bgzf.h>
+}
+
+#include <SamtoolsAdapter.h>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/AppSettings.h>
@@ -31,19 +45,6 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SafePoints.h>
-
-#include <SamtoolsAdapter.h>
-
-extern "C" {
-#include <bam.h>
-#include <bam_sort.c>
-#include <bam_rmdup.c>
-#include <sam.h>
-#include <sam_header.h>
-#include <bgzf.h>
-}
-
-#include <QFileInfo>
 
 #include "BAMUtils.h"
 
@@ -552,8 +553,8 @@ void BAMUtils::writeObjects(const QList<GObject*> &objects, const GUrl &urlStr, 
     samclose(out);
 }
 
-//the function assumes the equel order of alignments in files
-bool BAMUtils::isEquelByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpStatus &os, bool isBAM){
+//the function assumes the equal order of alignments in files
+bool BAMUtils::isEqualByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpStatus &os, bool isBAM){
     const QByteArray& fileName1 = fileUrl1.getURLString().toLocal8Bit();
     const QByteArray& fileName2 = fileUrl2.getURLString().toLocal8Bit();
 
@@ -594,14 +595,14 @@ bool BAMUtils::isEquelByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpS
 
             }else{
                 samreadCheck(r2, os, fileName2);
-                os.setError("Differrent number of reads in files");
+                os.setError("Different number of reads in files");
                 break;
             }
         }
 
         samreadCheck(r1, os, fileName1);
         if(r2 = samread(out, b2) >= 0){
-            os.setError("Differrent number of reads in files");
+            os.setError("Different number of reads in files");
         }
         bam_destroy1(b1);
         bam_destroy1(b2);
@@ -618,39 +619,11 @@ bool BAMUtils::isEquelByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpS
 
 /////////////////////////////////////////////////
 //FASTQIterator
-/*
-#include <zlib.h>
-#include <stdio.h>
-#include "kseq.h"
-// STEP 1: declare the type of file handler and the read() function
+
 KSEQ_INIT(gzFile, gzread)
 
-int main(int argc, char *argv[])
-{
-gzFile fp;
-kseq_t *seq;
-int l;
-if (argc == 1) {
-    fprintf(stderr, "Usage: %s <in.seq>\n", argv[0]);
-    return 1;
-}
-fp = gzopen(argv[1], "r"); // STEP 2: open the file handler
-seq = kseq_init(fp); // STEP 3: initialize seq
-while ((l = kseq_read(seq)) >= 0) { // STEP 4: read sequence
-    printf("name: %s\n", seq->name.s);
-    if (seq->comment.l) printf("comment: %s\n", seq->comment.s);
-    printf("seq: %s\n", seq->seq.s);
-    if (seq->qual.l) printf("qual: %s\n", seq->qual.s);
-}
-printf("return value: %d\n", l);
-kseq_destroy(seq); // STEP 5: destroy seq
-gzclose(fp); // STEP 6: close the file handler
-return 0;
-}
-*/
-//
 FASTQIterator::FASTQIterator(const QString &fileUrl)
-    :seq(NULL)
+    : seq(NULL)
 {
     fp = gzopen(fileUrl.toLatin1().constData(), "r"); // STEP 2: open the file handler
     seq = kseq_init(fp);
@@ -658,17 +631,19 @@ FASTQIterator::FASTQIterator(const QString &fileUrl)
 }
 
 FASTQIterator::~FASTQIterator(){
-    kseq_destroy(seq);
+    kseq_destroy(static_cast<kseq_t *>(seq));
     gzclose(fp);
-
 }
 
 DNASequence FASTQIterator::next(){
-    if(hasNext()){
-        QString name = QString::fromLatin1(seq->name.s);
-        QString comment = QString::fromLatin1(seq->comment.s);
-        QString rseq = QString::fromLatin1(seq->seq.s);
-        DNAQuality quality = (seq->qual.l) ? QString::fromLatin1(seq->qual.s).toLatin1() : QByteArray("");
+    if (hasNext()) {
+        kseq_t *realSeq = static_cast<kseq_t *>(seq);
+
+        QString name = QString::fromLatin1(realSeq->name.s);
+        QString comment = QString::fromLatin1(realSeq->comment.s);
+        QString rseq = QString::fromLatin1(realSeq->seq.s);
+        DNAQuality quality = (realSeq->qual.l) ? QString::fromLatin1(realSeq->qual.s).toLatin1()
+            : QByteArray("");
         DNASequence res(name, rseq.toLatin1());
         res.quality = quality;
         res.info.insert(DNAInfo::FASTQ_COMMENT, comment);
@@ -681,16 +656,11 @@ DNASequence FASTQIterator::next(){
 }
 
 bool FASTQIterator::hasNext(){
-    if(seq != NULL){
-        return true;
-    }
-    return false;
+    return seq != NULL;
 }
 
 void FASTQIterator::fetchNext(){
-    if(kseq_read(seq) >=0 ){
-
-    }else{
+    if (kseq_read(static_cast<kseq_t *>(seq)) < 0 ) {
         seq = NULL;
     }
 }

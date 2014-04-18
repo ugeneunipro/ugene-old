@@ -19,18 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/GUrl.h>
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/DNASequence.h>
-extern "C" {
-#include <kseq.h>
-}
-#include <zlib.h>
-
-
 #ifndef _U2_BAM_UTILS_H_
 #define _U2_BAM_UTILS_H_
 
+#include <U2Core/GUrl.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/DNASequence.h>
 
 namespace U2 {
 
@@ -72,14 +66,11 @@ public:
 
     static void writeObjects(const QList<GObject*> &objects, const GUrl &url, const DocumentFormatId &formatId, U2OpStatus &os);
 
-    static bool isEquelByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpStatus &os, bool isBAM = false );
-
+    static bool isEqualByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpStatus &os, bool isBAM = false );
 };
 
-KSEQ_INIT(gzFile, gzread)
 //iterates over a FASTQ file (including zipped) with kseq from samtools
-class U2FORMATS_EXPORT FASTQIterator : public QObject{
-    Q_OBJECT
+class U2FORMATS_EXPORT FASTQIterator {
 public:
     FASTQIterator(const QString& fileUrl);
     virtual ~FASTQIterator();
@@ -87,14 +78,12 @@ public:
     DNASequence next();
     bool hasNext();
 
- private:
+private:
     void fetchNext();
 
-private:
-    gzFile fp;
-    kseq_t *seq;
+    void *fp;
+    void *seq;
 };
-
 
 } // U2
 
