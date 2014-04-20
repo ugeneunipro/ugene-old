@@ -192,7 +192,8 @@ GUI_TEST_CLASS_DEFINITION(test_0986) {
 #ifdef Q_OS_MAC
             GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
             GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
-            GTWidget::click(os,GTWidget::findWidget(os,"bttnCancel"));
+            //GTWidget::click(os,GTWidget::findWidget(os,"bttnCancel"));
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
 #else
             GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
 #endif

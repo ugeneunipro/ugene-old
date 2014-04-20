@@ -125,8 +125,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_regression_scenarios::test_0734);
     REGISTER_TEST(GUITest_regression_scenarios::test_0928);
-    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_0986, "https://ugene.unipro.ru/tracker/browse/UGENE-2796");
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_0986_1, "https://ugene.unipro.ru/tracker/browse/UGENE-2796");
+    REGISTER_TEST(GUITest_regression_scenarios::test_0986);
+    REGISTER_TEST(GUITest_regression_scenarios::test_0986_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_0986_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_0986_3);
     REGISTER_TEST(GUITest_regression_scenarios::test_0986_4);
@@ -153,7 +153,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1199);
     REGISTER_TEST(GUITest_regression_scenarios::test_1083);
-    REGISTER_TEST_NOT_FOR_MAC(GUITest_regression_scenarios::test_1093);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1093);
     REGISTER_TEST(GUITest_regression_scenarios::test_1113);
     REGISTER_TEST(GUITest_regression_scenarios::test_1113_1);
 
@@ -164,7 +164,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1189);
     REGISTER_TEST(GUITest_regression_scenarios::test_1189_1);
 
-    REGISTER_TEST_NOT_FOR_MAC(GUITest_regression_scenarios::test_1190);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1190);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1212);
     REGISTER_TEST(GUITest_regression_scenarios::test_1212_1);
@@ -200,8 +200,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1865);
     REGISTER_TEST(GUITest_regression_scenarios::test_1883);
     REGISTER_TEST(GUITest_regression_scenarios::test_1884);
-    REGISTER_TEST_NOT_FOR_MAC(GUITest_regression_scenarios::test_1886_1);
-    REGISTER_TEST_NOT_FOR_MAC(GUITest_regression_scenarios::test_1886_2);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1886_1);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1886_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_1897);
 
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1919, "incomplete(source url can not be set), incorrect until UGENE-2405 fixed");
