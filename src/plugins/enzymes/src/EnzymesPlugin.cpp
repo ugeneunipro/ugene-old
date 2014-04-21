@@ -246,11 +246,11 @@ void EnzymesADVContext::sl_search() {
 #define PRIMER_ANNOTATION_NAME			"primer"
 
 
-void EnzymesADVContext::buildMenu( GObjectView* v, QMenu* m )
-{
-    
+void EnzymesADVContext::buildMenu( GObjectView* v, QMenu* m ) {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(v);
-    assert(av!=NULL);
+    assert(NULL != av);
+    CHECK(NULL != av, );
+
     if (!av->getSequenceInFocus()->getAlphabet()->isNucleic()) {
         return;
     }
