@@ -184,23 +184,10 @@ GUI_TEST_CLASS_DEFINITION(test_0986) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep(3000);
 
-    class EscClicker : public Filler {
-    public:
-        EscClicker(U2OpStatus& _os) : Filler(_os, "SmithWatermanDialogBase"){}
-        virtual void run(){
-            GTGlobals::sleep();
-#ifdef Q_OS_MAC
-            GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
-            GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
-            //GTWidget::click(os,GTWidget::findWidget(os,"bttnCancel"));
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
-#else
-            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
-#endif
-        }
-    };
+    SmithWatermanDialogFiller *filler = new SmithWatermanDialogFiller(os);
+    filler->button = SmithWatermanDialogFiller::Cancel;
+    GTUtilsDialog::waitForDialog(os, filler);
 
-    GTUtilsDialog::waitForDialog(os, new EscClicker(os));
     GTGlobals::sleep(500);
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
