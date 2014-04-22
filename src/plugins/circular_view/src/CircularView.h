@@ -63,6 +63,10 @@ public:
     void mouseMoveEvent(QMouseEvent * e);
     void mouseReleaseEvent(QMouseEvent* e);
     void resizeEvent(QResizeEvent* e);
+
+    void keyPressEvent(QKeyEvent *e);
+    void keyReleaseEvent(QKeyEvent *e);
+
     void wheelEvent(QWheelEvent* we);
     virtual QSize sizeHint() const;
 
@@ -110,6 +114,11 @@ protected:
      * Usage: @startSeqRegion.startPos should be 0 and @endSeqRegion.endPos should be equal to sequence length.
      */
     void setInverseSelection(const U2Region &startSeqRegion, const U2Region &endSeqRegion);
+    /**
+     * Use for continuous region selection only.
+     * TODO: if inverse selection function would be fully available (for splitted kind of selection), rewrite it.
+     */
+    void invertCurrentSelection();
 
     Direction getDirection(float a, float b) const;
 

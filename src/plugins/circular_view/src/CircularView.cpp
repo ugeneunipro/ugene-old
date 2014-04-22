@@ -51,6 +51,7 @@
 
 #include "CircularItems.h"
 #include <U2Core/Log.h>
+#include <QtGui/QApplication>
 
 
 namespace U2 {
@@ -306,6 +307,19 @@ void CircularView::wheelEvent(QWheelEvent* we) {
     QWidget::wheelEvent(we);
 }
 
+void CircularView::keyPressEvent(QKeyEvent *e) {
+    if (e->key() == Qt::Key_Control && QApplication::mouseButtons() & Qt::LeftButton) {
+        invertCurrentSelection();
+    }
+}
+
+void CircularView::keyReleaseEvent(QKeyEvent *e) {
+    if (e->key() == Qt::Key_Control && QApplication::mouseButtons() & Qt::LeftButton) {
+        invertCurrentSelection();
+    }
+}
+
+
 void CircularView::resizeEvent( QResizeEvent* e ) {
     if (ra->fitsInView) {
         sl_fitInView();
@@ -372,6 +386,24 @@ void CircularView::setInverseSelection(const U2Region &r) {
 void CircularView::setInverseSelection(const U2Region &startSeqRegion, const U2Region &endSeqRegion) {
     SAFE_POINT(startSeqRegion.startPos == 0 && endSeqRegion.endPos() == ctx->getSequenceLength(), "Invalid regions selection", );
     setSelection(U2Region(startSeqRegion.endPos(), endSeqRegion.startPos - startSeqRegion.endPos()));
+}
+
+void CircularView::invertCurrentSelection() {
+    DNASequenceSelection* selection = ctx->getSequenceSelection();
+    SAFE_POINT(selection != NULL, "Sequence selection is NULL", );
+    CHECK(!selection->isEmpty(), );
+
+    QVector<U2Region> selRegions = selection->getSelectedRegions();
+    CHECK(selRegions.size() < 3, );
+    if (selRegions.size() == 1) {
+        setInverseSelection(selRegions.first());
+    } else {
+        if (selRegions.first().startPos == 0 && selRegions.last().endPos() == ctx->getSequenceLength()) {
+            setInverseSelection(selRegions.first(), selRegions.last());
+        } else {
+            setInverseSelection(selRegions.last(), selRegions.first());
+        }
+    }
 }
 
 void CircularView::adaptSizes() {
