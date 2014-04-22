@@ -77,9 +77,6 @@ CircularView::CircularView(QWidget* p, ADVSequenceObjectContext* ctx)
     connect(ctx->getSequenceGObject(), SIGNAL(si_sequenceChanged()), this, SLOT(sl_sequenceChanged()));
     connect(ctx->getSequenceGObject(), SIGNAL(si_nameChanged(const QString&)), this, SLOT(sl_onSequenceObjectRenamed(const QString&)));
     pack();
-    
-    //mark sequence as circular
-    ctx->getSequenceObject()->setCircular(true);
 }
 
 void CircularView::pack() {

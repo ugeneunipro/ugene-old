@@ -47,6 +47,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/RemoveDocumentTask.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/DNAAlphabet.h>
 
 #include <U2Gui/OpenViewTask.h>
 #include <U2Gui/UnloadDocumentTask.h>
@@ -959,20 +960,21 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
     if (!getGObjectSelection()->isEmpty()) {
         const GObjectSelection* objSelection = getGObjectSelection();
         bool seqobjFound = false;
-        bool allCirc = false;
+        bool allCirc = true;
+        bool allNucl = true;
         foreach(GObject *obj, objSelection->getSelectedObjects()){
             if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
                 seqobjFound = true;
                 U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(obj);
+                if (!casted->getAlphabet()->isNucleic()) {
+                    allNucl = false;
+                }
                 if (!casted->isCircular()) {
                     allCirc = false;
-                    break;
-                }else{
-                    allCirc = true;
                 }
             }
         }
-        if (seqobjFound){
+        if (seqobjFound && allNucl){
             toggleCircularAction->setChecked(allCirc);
             m.addAction(toggleCircularAction);
         }

@@ -100,10 +100,6 @@ void CircularViewContext::initViewContext(GObjectView* v) {
         tr("Toggle circular views"), 
         std::numeric_limits<int>::max()); // big enough to be the last one?
     connect(globalToggleViewAction, SIGNAL(triggered()), SLOT(sl_toggleViews()));
-
-
-
-
 }
 
 #define MIN_LENGTH_TO_AUTO_SHOW (1000*1000)
@@ -132,8 +128,8 @@ void CircularViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
         }
     }
 
-    connect(sw->getSequenceObject(), SIGNAL(si_sequenceCircularStateChanged()), SLOT(sl_circularStateChanged()));
-    actions.insert(action);
+    connect(sw->getSequenceObject(), SIGNAL(si_sequenceCircularStateChanged()),
+            action, SLOT(sl_circularStateChanged()));
 }
 
 void CircularViewContext::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
@@ -147,7 +143,6 @@ void CircularViewContext::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
     if(splitter != NULL) {
         CircularViewAction* a = qobject_cast<CircularViewAction*>(sw->getADVSequenceWidgetAction(CIRCULAR_ACTION_NAME));
         SAFE_POINT(a != NULL, "Circular view action is not found", );
-        actions.remove(a);
         splitter->removeView(a->view,a->rmapWidget);
         delete a->view;
         delete a->rmapWidget;        
@@ -236,7 +231,6 @@ void CircularViewContext::sl_showCircular() {
         CircularViewSplitter* splitter = getView(sw->getAnnotatedDNAView(), true);
         a->view = new CircularView(sw, sw->getSequenceContext());
         a->rmapWidget=new RestrctionMapWidget(sw->getSequenceContext(),splitter);
-        sw->getSequenceObject()->setCircular(true);
         splitter->addView(a->view,a->rmapWidget);
         sw->getAnnotatedDNAView()->insertWidgetIntoSplitter(splitter);
         splitter->adaptSize();
@@ -251,7 +245,6 @@ void CircularViewContext::sl_showCircular() {
             if(splitter->isEmpty()) {
                 removeCircularView(sw->getAnnotatedDNAView());
             }
-            sw->getSequenceObject()->setCircular(false);
         }
         a->view = NULL;
     }
@@ -306,27 +299,18 @@ void CircularViewContext::sl_setSequenceOrigin()
 
 }
 
-void CircularViewContext::sl_circularStateChanged(){
-    U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(sender());
-    foreach(CircularViewAction *action, actions){
-        if(action->seqWidget->getSequenceObjects().contains(seqObj)) {
-            if(seqObj->isCircular() && !action->isChecked() ||
-                !seqObj->isCircular() && action->isChecked()){
-                    action->trigger();
-                    return;
-            }
-        }
-    }
-}
-
 CircularViewAction::CircularViewAction() : ADVSequenceWidgetAction(CIRCULAR_ACTION_NAME, tr("Show circular view")), view(NULL), rmapWidget(NULL)
 {
 }
 
-CircularViewAction::~CircularViewAction() {
-    /*if (view!=NULL) {
-        delete view;
-    }*/
+void CircularViewAction::sl_circularStateChanged() {
+    U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(sender());
+    SAFE_POINT(seqObj != NULL, "Sequence Object is NULL", );
+
+    // if sequence is marked as circular and CV is hidden, show CV
+    if (seqObj->isCircular() && !isChecked()) {
+        trigger();
+    }
 }
 
 
