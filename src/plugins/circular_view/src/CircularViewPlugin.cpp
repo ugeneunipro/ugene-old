@@ -99,6 +99,7 @@ void CircularViewContext::initViewContext(GObjectView* v) {
         QIcon(":circular_view/images/circular.png"), 
         tr("Toggle circular views"), 
         std::numeric_limits<int>::max()); // big enough to be the last one?
+    globalToggleViewAction->addAlphabetFilter(DNAAlphabet_NUCL);
     connect(globalToggleViewAction, SIGNAL(triggered()), SLOT(sl_toggleViews()));
 }
 
@@ -106,7 +107,7 @@ void CircularViewContext::initViewContext(GObjectView* v) {
 
 void CircularViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
     ADVSingleSequenceWidget* sw = qobject_cast<ADVSingleSequenceWidget*>(w);
-    if (sw == NULL || sw->getSequenceObject() == NULL || !sw->getSequenceObject()->getAlphabet()->isDNA()) {
+    if (sw == NULL || sw->getSequenceObject() == NULL || !sw->getSequenceObject()->getAlphabet()->isNucleic()) {
         return;
     }
     
