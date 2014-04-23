@@ -138,7 +138,7 @@ class CircularViewRenderArea : public GSequenceLineViewAnnotatedRenderArea {
     friend class CircularView;
     friend class CircularAnnotationItem;
     friend class CircularAnnotationLabel;
-    friend class CircurlarAnnotationRegionItem;
+    friend class CircularAnnotationRegionItem;
     Q_OBJECT
 public:
     CircularViewRenderArea(CircularView* d);

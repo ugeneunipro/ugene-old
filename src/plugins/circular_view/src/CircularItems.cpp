@@ -118,10 +118,10 @@ const QList<CircularAnnotationRegionItem*>& CircularAnnotationItem::getRegions()
 }
 
 /************************************************************************/
-/* CircurlarAnnotationRegionItem                                        */
+/* CircularAnnotationRegionItem                                        */
 /************************************************************************/
 
-CircularAnnotationRegionItem::CircularAnnotationRegionItem(const QPainterPath& path, bool _isShort, int _number ) 
+CircularAnnotationRegionItem::CircularAnnotationRegionItem(const QPainterPath& path, bool _isShort, int _number )
     :QGraphicsPathItem(path), parent(NULL), label(NULL), number(_number), isShort(_isShort) {
 }
 
@@ -291,7 +291,7 @@ int CircularAnnotationLabel::findClosestPoint(const QPoint& targetPoint, const Q
     if(1==size) {
         return index;
     }
-    
+
     QPoint rectTopLeft = rects.at(index).topLeft();
     QPoint diff = rectTopLeft - targetPoint;
     int minDistance = diff.x() * diff.x() + diff.y() * diff.y();

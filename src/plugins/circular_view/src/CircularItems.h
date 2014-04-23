@@ -68,7 +68,7 @@ protected:
 };
 
 /************************************************************************/
-/* CircurlarAnnotationRegionItem                                        */
+/* CircularAnnotationRegionItem                                        */
 /************************************************************************/
 class CircularAnnotationRegionItem : public QGraphicsPathItem{
 friend class CircularAnnotationItem;
