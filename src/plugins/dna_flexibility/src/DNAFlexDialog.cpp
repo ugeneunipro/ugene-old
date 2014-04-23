@@ -63,10 +63,7 @@ DNAFlexDialog::DNAFlexDialog(ADVSequenceObjectContext* _ctx)
     // Initializing and adding the annotations widget
     annotController = new CreateAnnotationWidgetController(annotModel, this);
     QWidget* annotWidget = annotController->getWidget();
-    QVBoxLayout* annotWidgetLayout = new QVBoxLayout();
-    annotWidgetLayout->addWidget(annotWidget);
-    annotationsWidget->setLayout(annotWidgetLayout);
-    annotationsWidget->setMinimumSize(annotWidget->layout()->minimumSize());
+    annotationsWidget->layout()->addWidget(annotWidget);
 
     // Setting the dialog icon to the standard UGENE icon
     setWindowIcon(QIcon(":/ugene/images/ugene_16.png"));
