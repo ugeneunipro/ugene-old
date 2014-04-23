@@ -37,7 +37,7 @@ namespace U2 {
 /* CircularAnnotationItem                                               */
 /************************************************************************/
 
-CircularAnnotationItem::CircularAnnotationItem( const Annotation &ann, CircurlarAnnotationRegionItem* region, CircularViewRenderArea* _ra)
+CircularAnnotationItem::CircularAnnotationItem( const Annotation &ann, CircularAnnotationRegionItem* region, CircularViewRenderArea* _ra)
     : annotation( ann ), ra(_ra)
 {
     assert(region->parent == NULL);
@@ -47,12 +47,12 @@ CircularAnnotationItem::CircularAnnotationItem( const Annotation &ann, Circurlar
     isSelected = false;
 }
 
-CircularAnnotationItem::CircularAnnotationItem( const Annotation &ann, QList<CircurlarAnnotationRegionItem*>& _regions, CircularViewRenderArea* _ra)
+CircularAnnotationItem::CircularAnnotationItem( const Annotation &ann, QList<CircularAnnotationRegionItem*>& _regions, CircularViewRenderArea* _ra)
     : annotation( ann ), regions(_regions), ra(_ra)
 {
     isSelected = false;
     QPainterPath path;
-    foreach(CircurlarAnnotationRegionItem* item, regions) {
+    foreach(CircularAnnotationRegionItem* item, regions) {
         assert(item->parent == NULL);
         item->parent = this;
         path = path.united(item->path());
@@ -63,7 +63,7 @@ CircularAnnotationItem::CircularAnnotationItem( const Annotation &ann, QList<Cir
 
 CircularAnnotationItem::~CircularAnnotationItem()
 {
-    foreach(CircurlarAnnotationRegionItem* item, regions) {
+    foreach(CircularAnnotationRegionItem* item, regions) {
         delete item->label;
         delete item;
     }
@@ -75,7 +75,7 @@ void CircularAnnotationItem::paint( QPainter *p,const QStyleOptionGraphicsItem *
     AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
     AnnotationSettings *as = asr->getAnnotationSettings( annotation.getData( ) );
     this->color = as->color;
-    foreach ( CircurlarAnnotationRegionItem *item, regions ) {
+    foreach ( CircularAnnotationRegionItem *item, regions ) {
         item->paint( p, NULL, widget );
     }
 }
@@ -90,7 +90,7 @@ Annotation CircularAnnotationItem::getAnnotation() const {
 
 bool CircularAnnotationItem::contains(const QPointF &point) {
     if(_boundingRect.contains(point)) {
-        foreach(CircurlarAnnotationRegionItem* item, regions)
+        foreach(CircularAnnotationRegionItem* item, regions)
             if(item->contains(point)) {
                 return true;
             }
@@ -100,7 +100,7 @@ bool CircularAnnotationItem::contains(const QPointF &point) {
 
 int CircularAnnotationItem::containsRegion(const QPointF &point) {
     if(_boundingRect.contains(point)) {
-        foreach(CircurlarAnnotationRegionItem* item, regions) {
+        foreach(CircularAnnotationRegionItem* item, regions) {
             if(item->contains(point)) {
                 return item->number;
             }
@@ -113,7 +113,7 @@ void CircularAnnotationItem::setSelected( bool isSelected ) {
     this->isSelected = isSelected;
 }
 
-const QList<CircurlarAnnotationRegionItem*>& CircularAnnotationItem::getRegions() {
+const QList<CircularAnnotationRegionItem*>& CircularAnnotationItem::getRegions() {
     return regions;
 }
 
@@ -121,11 +121,11 @@ const QList<CircurlarAnnotationRegionItem*>& CircularAnnotationItem::getRegions(
 /* CircurlarAnnotationRegionItem                                        */
 /************************************************************************/
 
-CircurlarAnnotationRegionItem::CircurlarAnnotationRegionItem(const QPainterPath& path, bool _isShort, int _number ) 
+CircularAnnotationRegionItem::CircularAnnotationRegionItem(const QPainterPath& path, bool _isShort, int _number ) 
     :QGraphicsPathItem(path), parent(NULL), label(NULL), number(_number), isShort(_isShort) {
 }
 
-void CircurlarAnnotationRegionItem::paint( QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *widget /* = 0 */ ) {
+void CircularAnnotationRegionItem::paint( QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *widget /* = 0 */ ) {
     Q_UNUSED(widget);
     Q_UNUSED(option);
     assert(parent!=NULL);
@@ -155,11 +155,11 @@ void CircurlarAnnotationRegionItem::paint( QPainter *p, const QStyleOptionGraphi
     }
 }
 
-CircularAnnotationLabel* CircurlarAnnotationRegionItem::getLabel() const {
+CircularAnnotationLabel* CircularAnnotationRegionItem::getLabel() const {
     return label;
 }
 
-void CircurlarAnnotationRegionItem::setLabel( CircularAnnotationLabel* label ) {
+void CircularAnnotationRegionItem::setLabel( CircularAnnotationLabel* label ) {
     this->label = label;
 }
 

@@ -24,6 +24,7 @@
 
 #include <U2Gui/ExportImageDialog.h>
 
+class QCheckBox;
 namespace U2 {
 
 class CircularView;
@@ -36,9 +37,14 @@ public:
 
     virtual bool exportToSVG();
     virtual bool exportToPDF();
+    virtual bool exportToBitmap();
 
 private:
-    CircularView* cvWidget;
+    CircularView*   cvWidget;
+
+    QCheckBox*      includeMarkerCheckbox;
+    QCheckBox*      includeSelectionCheckbox;
+
 }; // class ExportImageCVDialog
 
 } // namespace

@@ -37,7 +37,7 @@ class AnnotationSettings;
 class CircularAnnotationItem;
 class CircularViewRenderArea;
 class CircularAnnotationLabel;
-class CircurlarAnnotationRegionItem;
+class CircularAnnotationRegionItem;
 
 /************************************************************************/
 /* CircularAnnotationItem                                               */
@@ -45,11 +45,11 @@ class CircurlarAnnotationRegionItem;
 
 class CircularAnnotationItem : public QGraphicsItem {
     Q_DISABLE_COPY(CircularAnnotationItem)
-friend class CircurlarAnnotationRegionItem;
+friend class CircularAnnotationRegionItem;
 friend class CircularAnnotationLabel;
 public:
-    CircularAnnotationItem( const Annotation &ann, CircurlarAnnotationRegionItem* region, CircularViewRenderArea* _ra);
-    CircularAnnotationItem( const Annotation &ann, QList<CircurlarAnnotationRegionItem*>& regions, CircularViewRenderArea* _ra);
+    CircularAnnotationItem( const Annotation &ann, CircularAnnotationRegionItem* region, CircularViewRenderArea* _ra);
+    CircularAnnotationItem( const Annotation &ann, QList<CircularAnnotationRegionItem*>& regions, CircularViewRenderArea* _ra);
     ~CircularAnnotationItem();
     virtual void paint(QPainter *p,const QStyleOptionGraphicsItem *item,QWidget *widget);
     Annotation getAnnotation() const;
@@ -57,12 +57,12 @@ public:
     virtual bool contains(const QPointF &point);
     int containsRegion(const QPointF &point);
     void setSelected(bool isSelected);
-    const QList<CircurlarAnnotationRegionItem*>& getRegions();
+    const QList<CircularAnnotationRegionItem*>& getRegions();
 protected:
     bool isSelected;
     QColor color;
     Annotation annotation;
-    QList<CircurlarAnnotationRegionItem*> regions;
+    QList<CircularAnnotationRegionItem*> regions;
     QRectF _boundingRect;
     CircularViewRenderArea* ra;
 };
@@ -70,10 +70,10 @@ protected:
 /************************************************************************/
 /* CircurlarAnnotationRegionItem                                        */
 /************************************************************************/
-class CircurlarAnnotationRegionItem : public QGraphicsPathItem{
+class CircularAnnotationRegionItem : public QGraphicsPathItem{
 friend class CircularAnnotationItem;
 public:
-    CircurlarAnnotationRegionItem(const QPainterPath& path, bool isShort, int number );
+    CircularAnnotationRegionItem(const QPainterPath& path, bool isShort, int number );
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = 0 */);
     CircularAnnotationLabel* getLabel() const;
     void setLabel(CircularAnnotationLabel* label);

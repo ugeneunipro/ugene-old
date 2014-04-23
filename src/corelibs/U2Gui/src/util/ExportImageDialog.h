@@ -34,6 +34,7 @@
 #endif
 
 class Ui_ImageExportForm;
+class QVBoxLayout;
 
 namespace U2 {
 
@@ -55,6 +56,7 @@ public:
     int getWidth();
     int getHeight();
     int getQuality();
+    QVBoxLayout* getAdditionalLayout();
 
 public slots:
     virtual void accept();

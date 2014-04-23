@@ -98,7 +98,7 @@ void ExportImageDialog::setupComponents() {
     }
     ui->widthSpinBox->setValue(widget->width());
     ui->heightSpinBox->setValue(widget->height());
-    
+
     foreach (const QString &format, supportedFormats) {
         ui->formatsBox->addItem(format);
     }
@@ -116,7 +116,7 @@ void ExportImageDialog::setupComponents() {
     setMaximumHeight(layout()->minimumSize().height());
 }
 
-void ExportImageDialog::accept() 
+void ExportImageDialog::accept()
 {
     filename = ui->fileNameEdit->text();
     if (filename.isEmpty()) {
@@ -236,6 +236,11 @@ bool ExportImageDialog::hasQuality(){
 int ExportImageDialog::getQuality(){
     return ui->qualitySpinBox->value();
 }
+
+QVBoxLayout* ExportImageDialog::getAdditionalLayout() {
+    return ui->additionalLayout;
+}
+
 void ExportImageDialog::sl_onBrowseButtonClick() {
     QString curFormat = ui->formatsBox->currentText();
     assert(supportedFormats.contains(curFormat));
@@ -247,7 +252,7 @@ void ExportImageDialog::sl_onBrowseButtonClick() {
         QString formatName = formats.at(i);
         fileFormats += formatName.toUpper() + " format (*." + formatName + ");;";
     }
-    
+
     QString fileName = ui->fileNameEdit->text();
     LastUsedDirHelper lod(IMAGE_DIR);
     lod.url = QFileDialog::getSaveFileName(this, tr("Save image to..."), fileName, fileFormats, 0, QFileDialog::DontConfirmOverwrite);

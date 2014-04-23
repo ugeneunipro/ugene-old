@@ -88,7 +88,7 @@ public:
     void updateMinHeight();
 
     //used by export to file function
-    void paint(QPainter& p);
+    void paint(QPainter &p, int w, int h, bool paintSelection, bool paintMarker);
 signals:
     void si_wheelMoved(int);
     void si_zoomInDisabled(bool);
@@ -100,7 +100,7 @@ public slots:
     void sl_fitInView();
     void sl_onSequenceObjectRenamed(const QString& oldName);
 
-protected slots: 
+protected slots:
     virtual void sl_onAnnotationSelectionChanged(AnnotationSelection*, const QList<Annotation>& added, const QList<Annotation>& removed);
     virtual void sl_onDNASelectionChanged(LRegionsSelection* thiz, const QVector<U2Region>& added, const QVector<U2Region>& removed);
 
@@ -157,7 +157,10 @@ protected:
     void buildAnnotationItem( DrawAnnotationPass pass, const Annotation &a,
         bool selected = false, const AnnotationSettings *as = NULL );
     virtual void drawAnnotations(QPainter& p);
-    void paintContent(QPainter& p);
+
+    void paintContent(QPainter& p, bool paintSelection = true, bool paintMarker = true);
+    void paintContent(QPainter &p, int w, int h, bool paintSelection, bool paintMarker);
+
     void buildAnnotationLabel( const QFont &font, const Annotation &a,
         const AnnotationSettings *as );
     void drawSequenceName(QPainter& p);

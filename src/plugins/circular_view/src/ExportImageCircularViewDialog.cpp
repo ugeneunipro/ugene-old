@@ -29,6 +29,8 @@
 #include <U2Gui/DialogUtils.h>
 
 #include <QtGui/QImageWriter>
+#include <QtGui/QCheckBox>
+#include <QtGui/QVBoxLayout>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPrinter>
 #else
@@ -39,8 +41,22 @@
 
 namespace U2 {
 
-ExportImageCVDialog::ExportImageCVDialog(CircularView * widget ) : ExportImageDialog(widget,true,true), cvWidget(widget)
+ExportImageCVDialog::ExportImageCVDialog(CircularView * widget )
+    : ExportImageDialog(widget,true,true),
+      cvWidget(widget),
+      includeMarkerCheckbox(NULL),
+      includeSelectionCheckbox(NULL)
 {
+    QVBoxLayout* layout = getAdditionalLayout();
+
+    includeMarkerCheckbox = new QCheckBox(tr("Include position marker"));
+    includeSelectionCheckbox = new QCheckBox(tr("Include selection marker"));
+
+    includeMarkerCheckbox->setChecked(true);
+    includeSelectionCheckbox->setChecked(true);
+
+    layout->addWidget(includeMarkerCheckbox);
+    layout->addWidget(includeSelectionCheckbox);
 }
 
 bool ExportImageCVDialog::exportToSVG(){
@@ -51,7 +67,9 @@ bool ExportImageCVDialog::exportToSVG(){
     generator.setViewBox(cvWidget->rect());
 
     painter.begin(&generator);
-    cvWidget->paint(painter);
+    cvWidget->paint(painter, getWidth(), getHeight(),
+                    includeSelectionCheckbox->isChecked(),
+                    includeMarkerCheckbox->isChecked());
     bool result = painter.end();
     //fix for UGENE-76
     QDomDocument doc("svg");
@@ -92,8 +110,26 @@ bool ExportImageCVDialog::exportToPDF(){
 
     painter.setRenderHint(QPainter::Antialiasing);
     painter.begin(&printer);
-    cvWidget->paint(painter);
+    cvWidget->paint(painter, getWidth(), getHeight(),
+                    includeSelectionCheckbox->isChecked(),
+                    includeMarkerCheckbox->isChecked());
+
     return painter.end();
+}
+
+bool ExportImageCVDialog::exportToBitmap() {
+    QPixmap *im = new QPixmap(getWidth(), getHeight());
+    im->fill(Qt::white);
+    QPainter *painter = new QPainter(im);
+    cvWidget->paint(*painter, getWidth(), getHeight(),
+                    includeSelectionCheckbox->isChecked(),
+                    includeMarkerCheckbox->isChecked());
+
+    if(hasQuality()){
+        return im->save(getFilename(), qPrintable(getFormat()),getQuality());
+    }else{
+        return im->save(getFilename(), qPrintable(getFormat()));
+    }
 }
 
 } // namespace
