@@ -1184,7 +1184,7 @@ You could also reset the dialog to the initial state.</source>
     <name>U2::LocalWorkflow::AssemblyToSequencesWorker</name>
     <message>
         <location filename="../src/library/AssemblyToSequenceWorker.cpp" line="165"/>
-        <source>Split assembly into sequences</source>
+        <source>Split Assembly into Sequences</source>
         <translation></translation>
     </message>
     <message>

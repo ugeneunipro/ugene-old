@@ -109,7 +109,7 @@ void SlopbedWorkerFactory::init() {
             SlopbedWorker::tr("A name of an output file. If default of empty value is provided the output name is the name of the first file with additional extention."));
 
         Descriptor genomeAttrDesc(GENOME_ID, SlopbedWorker::tr("Genome"),
-            SlopbedWorker::tr("In order to prevent the extension of intervals beyond chromosome boundaries, bedtools slop requires a genome file defining the length of each chromosome or contig. The format of the file is: <chromName><TAB><chromSize>. (-g)"));
+            SlopbedWorker::tr("In order to prevent the extension of intervals beyond chromosome boundaries, bedtools slop requires a genome file defining the length of each chromosome or contig. The format of the file is: <chromName><TAB><chromSize> (-g)."));
 
         Descriptor bAttr(B_ID, SlopbedWorker::tr("Each direction increase"),
             SlopbedWorker::tr("Increase the BED/GFF/VCF entry by the same number base pairs in each direction. If this parameter is used -l and -l are ignored. Enter 0 to disable. (-b)"));
@@ -330,19 +330,19 @@ enum GenomecovMode{
 QString getDescriptionByMode(GenomecovMode mode){
     QString res = "";
     if(mode == Histograms){
-        res = QString("Compute a histogram of coverage");
+        res = QString("Compute a histogram of coverage.");
 
     }else if(mode == EachPos0Based){
-        res = QString("Compute the depth of feature coverage for each base on each chromosome (0-based)");
+        res = QString("Compute the depth of feature coverage for each base on each chromosome (0-based).");
 
     }else if(mode == EachPos1Based){
-        res = QString("Compute the depth of feature coverage for each base on each chromosome (1-based)");
+        res = QString("Compute the depth of feature coverage for each base on each chromosome (1-based).");
 
     }else if(mode == BedGraph){
-        res = QString("Produces genome-wide coverage output in BEDGRAPH format");
+        res = QString("Produces genome-wide coverage output in BEDGRAPH format.");
 
     }else if(mode == BedGraphIncludeZero){
-        res = QString("Produces genome-wide coverage output in BEDGRAPH format (including uncoveded)");
+        res = QString("Produces genome-wide coverage output in BEDGRAPH format (including uncovered).");
     }
 
     return res;

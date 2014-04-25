@@ -78,8 +78,8 @@ namespace {
 }
 
 void SortBamWorkerFactory::init() {
-    Descriptor desc( ACTOR_ID, SortBamWorker::tr("Sort BAM files"),
-        SortBamWorker::tr("Sort BAM files using SAMTools Sort.") );
+    Descriptor desc( ACTOR_ID, SortBamWorker::tr("Sort BAM Files"),
+        SortBamWorker::tr("Sort BAM Files using SAMTools Sort.") );
 
     QList<PortDescriptor*> p;
     {

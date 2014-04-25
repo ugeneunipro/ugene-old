@@ -80,7 +80,7 @@ namespace {
 }
 
 void RmdupBamWorkerFactory::init() {
-    Descriptor desc( ACTOR_ID, RmdupBamWorker::tr("Remove duplicates in BAM files"),
+    Descriptor desc( ACTOR_ID, RmdupBamWorker::tr("Remove Duplicates in BAM Files"),
         RmdupBamWorker::tr("Remove PCR duplicates of BAM files using SAMTools rmdup.") );
 
     QList<PortDescriptor*> p;

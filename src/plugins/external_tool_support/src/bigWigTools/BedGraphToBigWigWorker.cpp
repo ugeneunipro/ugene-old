@@ -92,8 +92,8 @@ void BedGraphToBigWigFactory::init() {
             dataPath = dp;
         }
     }
-    Descriptor desc( ACTOR_ID, BedGraphToBigWigWorker::tr("Convert bedGraph files to bigWig"),
-        BedGraphToBigWigWorker::tr("Convert bedGraph files to bigWig.") );
+    Descriptor desc( ACTOR_ID, BedGraphToBigWigWorker::tr("Convert bedGraph Files to bigWig"),
+        BedGraphToBigWigWorker::tr("Convert bedGraph Files to bigWig.") );
 
     QList<PortDescriptor*> p;
     {
@@ -126,13 +126,13 @@ void BedGraphToBigWigFactory::init() {
             BedGraphToBigWigWorker::tr("A name of an output file. If default of empty value is provided the output name is the name of the first BAM file with an extention."));
 
         Descriptor blockSize(BedGraphToBigWigWorker::BLOCK_SIZE, BedGraphToBigWigWorker::tr("Block size"),
-            BedGraphToBigWigWorker::tr("Number of items to bundle in r-tree. (-blockSize)"));
+            BedGraphToBigWigWorker::tr("Number of items to bundle in r-tree (-blockSize)."));
 
         Descriptor itemsPerSlot(BedGraphToBigWigWorker::ITEMS_PER_SLOT, BedGraphToBigWigWorker::tr("Items per slot"),
-            BedGraphToBigWigWorker::tr("Number of data points bundled at lowest level. (-itemsPerSlot)"));
+            BedGraphToBigWigWorker::tr("Number of data points bundled at lowest level (-itemsPerSlot)."));
 
         Descriptor unc(BedGraphToBigWigWorker::UNCOMPRESSED, BedGraphToBigWigWorker::tr("Uncompressed"),
-            BedGraphToBigWigWorker::tr("If set, do not use compression. (-unc)"));
+            BedGraphToBigWigWorker::tr("If set, do not use compression (-unc)."));
 
         Descriptor genomeAttrDesc(BedGraphToBigWigWorker::GENOME, BedGraphToBigWigWorker::tr("Genome"),
             BedGraphToBigWigWorker::tr("File with genome length."));

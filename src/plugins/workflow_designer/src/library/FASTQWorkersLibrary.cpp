@@ -63,7 +63,7 @@ QString CASAVAFilterPrompter::composeRichDoc() {
 /************************************************************************/
 void CASAVAFilterWorkerFactory::init() {
     Descriptor desc( ACTOR_ID, CASAVAFilterWorker::tr("CASAVA FASTQ Filter"),
-        CASAVAFilterWorker::tr("#Reads in FASTQ file produced by CASAVA 1.8 contain 'N' or 'Y' as a part of an idetifier. 'Y' if a read if filtered, 'N' if the read if the read is not filtered. The workflow cleans up the filtered reads.\n"
+        CASAVAFilterWorker::tr("Reads in FASTQ file produced by CASAVA 1.8 contain 'N' or 'Y' as a part of an idetifier. 'Y' if a read if filtered, 'N' if the read if the read is not filtered. The workflow cleans up the filtered reads.\n"
                            "For example:\n"
                            "@HWI-ST880:181:D1WRUACXX:8:1102:4905:2125 1:N:0:TAAGGG\n"
                            "CTTACATAACTACTGACCATGCTCTCTCTTGTCTGTCTCTTATACACATCT\n"
@@ -72,7 +72,7 @@ void CASAVAFilterWorkerFactory::init() {
                            "@HWI-ST880:181:D1WRUACXX:8:1102:7303:2101 1:Y:0:TAAGGG\n"
                            "TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT\n"
                            "+\n"
-                           "11++4222322<CEE2<:3<3333333<A<CAFE:1?C??::C?00?BD90\n") );
+                           "11++4222322<CEE2<:3<3333333<A<CAFE:1?C??::C?00?BD90.\n") );
 
     QList<PortDescriptor*> p;
     {
@@ -220,7 +220,7 @@ QString QualityTrimPrompter::composeRichDoc() {
 /* QualityTrimWorkerFactory */
 /************************************************************************/
 void QualityTrimWorkerFactory::init() {
-    Descriptor desc( ACTOR_ID, QualityTrimWorker::tr("FASTQ quality trimmer"),
+    Descriptor desc( ACTOR_ID, QualityTrimWorker::tr("FASTQ Quality Trimmer"),
         QualityTrimWorker::tr("The workflow scans each input sequence from the end to find the first position where the quality is greater or equal to the minimum quality threshold. "
                               "Then it trims the sequence to that position. If a the whole sequence has quality less than the threshold or the length of the output sequence less than "
                               "the minimum length threshold then the sequence is skipped.") );

@@ -162,7 +162,7 @@ void AssemblyToSequencesWorkerFactory::init() {
     QList<Attribute*> attrs;
 
     Descriptor protoDesc(AssemblyToSequencesWorkerFactory::ACTOR_ID,
-        AssemblyToSequencesWorker::tr("Split assembly into sequences"),
+        AssemblyToSequencesWorker::tr("Split Assembly into Sequences"),
         AssemblyToSequencesWorker::tr("Splits assembly into sequences(reads)."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
