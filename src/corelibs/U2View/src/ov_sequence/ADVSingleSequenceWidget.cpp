@@ -580,9 +580,8 @@ void ADVSingleSequenceWidget::sl_onSelectRange() {
     ADVSequenceObjectContext* ctx = getSequenceContext();
     DNASequenceSelection* selection = ctx->getSequenceSelection();
 
-    qint64 wholeSeqLen = ctx->getSequenceLength();
     const QVector<U2Region>& seqRegions = selection->getSelectedRegions();
-    MultipleRangeSelector mrs(this, seqRegions, wholeSeqLen);
+    MultipleRangeSelector mrs(this, seqRegions, ctx->getSequenceLength(), ctx->getSequenceObject()->isCircular());
     
     if(mrs.exec() == QDialog::Accepted){
         QVector<U2Region> curRegions = mrs.getSelectedRegions();

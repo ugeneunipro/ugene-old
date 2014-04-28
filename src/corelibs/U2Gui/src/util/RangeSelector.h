@@ -97,7 +97,7 @@ private:
 class U2GUI_EXPORT MultipleRangeSelector :public QDialog{
     Q_OBJECT
 public:
-    MultipleRangeSelector(QWidget* parent, const QVector<U2Region>& _regions, int _seqLen);
+    MultipleRangeSelector(QWidget* parent, const QVector<U2Region>& _regions, int _seqLen, bool isCircular);
     ~MultipleRangeSelector();
 
     virtual void accept();
@@ -107,10 +107,12 @@ public:
 private:
     int                 seqLen;
     QVector<U2Region>   selectedRanges;
+    bool                isCircular;
 
     Ui_RangeSelectionDialog* ui;
 
 protected slots:
+    void sl_multipleButtonToggled(bool);
     void sl_buttonClicked(QAbstractButton* b);
     void sl_minButton();
     void sl_maxButton();

@@ -69,6 +69,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/TreeWidgetUtils.h \
            src/util/logview/LogView.h \
            src/util/ImportDialogs/AceImportDialog.h \
+		   src/util/GenbankLocationValidator.h \
 		   src/util/HelpButton.h 
 FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/AuthentificationDialog.ui \
@@ -154,6 +155,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/TreeWidgetUtils.cpp \
            src/util/logview/LogView.cpp \
            src/util/ImportDialogs/AceImportDialog.cpp \
+		   src/util/GenbankLocationValidator.cpp \
 		   src/util/HelpButton.cpp
 RESOURCES += U2Gui.qrc
 TRANSLATIONS += transl/chinese.ts \

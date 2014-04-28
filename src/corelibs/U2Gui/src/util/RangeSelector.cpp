@@ -20,9 +20,11 @@
  */
 
 #include "RangeSelector.h"
+#include "GenbankLocationValidator.h"
 #include "ui/ui_RangeSelectionDialog.h"
 
 #include <U2Formats/GenbankLocationParser.h>
+
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLabel>
@@ -233,10 +235,11 @@ int RangeSelector::getEnd() const {
 }
 
 
-MultipleRangeSelector::MultipleRangeSelector(QWidget* _parent, const QVector<U2Region>& _regions, int _seqLen)
+MultipleRangeSelector::MultipleRangeSelector(QWidget* _parent, const QVector<U2Region>& _regions, int _seqLen, bool _isCircular)
 :QDialog(_parent)
 ,seqLen(_seqLen)
 ,selectedRanges(_regions)
+,isCircular(_isCircular)
 {
 
     ui = new Ui_RangeSelectionDialog;
@@ -271,12 +274,13 @@ MultipleRangeSelector::MultipleRangeSelector(QWidget* _parent, const QVector<U2R
             loc = QString("1..%1").arg(seqLen);
         }else{
             loc = Genbank::LocationParser::buildLocationString(selectedRanges);
-        }
+        } 
         ui->multipleRegionEdit->setText(loc);
     }
     {
         ui->minButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_Z));
         ui->maxButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_X));
+        connect(ui->miltipleButton, SIGNAL(toggled(bool)), SLOT(sl_multipleButtonToggled(bool)));
 
         connect(ui->startEdit, SIGNAL(returnPressed()), SLOT(sl_returnPressed()));
         connect(ui->endEdit, SIGNAL(returnPressed()), SLOT(sl_returnPressed()));
@@ -309,7 +313,11 @@ void MultipleRangeSelector::accept(){
     }else{
         QByteArray locEditText = ui->multipleRegionEdit->text().toLatin1();
         U2Location currentLocation;
-        Genbank::LocationParser::parseLocation(	locEditText.constData(), ui->multipleRegionEdit->text().length(), currentLocation, seqLen);
+        if (isCircular){
+            Genbank::LocationParser::parseLocation(	locEditText.constData(), ui->multipleRegionEdit->text().length(), currentLocation, seqLen);
+        }else{
+            Genbank::LocationParser::parseLocation(	locEditText.constData(), ui->multipleRegionEdit->text().length(), currentLocation, -1);
+        }
         if(currentLocation->isEmpty()){
             return;
         }
@@ -348,7 +356,11 @@ QVector<U2Region> MultipleRangeSelector::getSelectedRegions(){
     }else{
         QByteArray locEditText = ui->multipleRegionEdit->text().toLatin1();
         U2Location currentLocation;
-        Genbank::LocationParser::parseLocation(	locEditText.constData(), ui->multipleRegionEdit->text().length(), currentLocation, seqLen);
+        if (isCircular){
+            Genbank::LocationParser::parseLocation(	locEditText.constData(), ui->multipleRegionEdit->text().length(), currentLocation, seqLen);
+        }else{
+            Genbank::LocationParser::parseLocation(	locEditText.constData(), ui->multipleRegionEdit->text().length(), currentLocation, -1);
+        }
 
         assert(!currentLocation->isEmpty());
 
@@ -367,6 +379,18 @@ void MultipleRangeSelector::sl_maxButton(){
 
 void MultipleRangeSelector::sl_returnPressed(){
     accept();
+}
+
+void MultipleRangeSelector::sl_multipleButtonToggled( bool toggleState){
+    if (toggleState){
+        QValidator *v = new GenbankLocationValidator(ui->buttonBox->button(QDialogButtonBox::Ok), seqLen, isCircular, ui->multipleRegionEdit);
+        ui->multipleRegionEdit->setValidator(v);
+        int size = ui->multipleRegionEdit->text().size();
+        v->validate(ui->multipleRegionEdit->text(), size);
+    }else{
+        delete ui->multipleRegionEdit->validator();
+        ui->multipleRegionEdit->setValidator(NULL);
+    }
 }
 
 } //namespace
