@@ -92,8 +92,13 @@ void WeightMatrixSingleSearchTask::onRegion(SequenceWalkerSubtask* t, TaskStateI
         WeightMatrixSearchResult r;
         r.score = 100*psum;
         if (r.score >= cfg.minPSUM) {//report result
-            r.strand = t->isDNAComplemented() ? U2Strand::Complementary : U2Strand::Direct;
             r.region.startPos = globalRegion.startPos +  i + resultsOffset;
+            if(t->isDNAComplemented()){
+                r.strand = U2Strand::Complementary;
+                r.region.startPos += 1;
+            }else{
+                r.strand = U2Strand::Direct;
+            }
             r.region.length = modelSize;
             r.qual = model.getProperties();
             r.modelInfo = cfg.modelName.split("/").last();
