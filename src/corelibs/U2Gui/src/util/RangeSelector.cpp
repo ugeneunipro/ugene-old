@@ -386,7 +386,8 @@ void MultipleRangeSelector::sl_multipleButtonToggled( bool toggleState){
         QValidator *v = new GenbankLocationValidator(ui->buttonBox->button(QDialogButtonBox::Ok), seqLen, isCircular, ui->multipleRegionEdit);
         ui->multipleRegionEdit->setValidator(v);
         int size = ui->multipleRegionEdit->text().size();
-        v->validate(ui->multipleRegionEdit->text(), size);
+        QString toValidate = ui->multipleRegionEdit->text();
+        v->validate(toValidate, size);
     }else{
         delete ui->multipleRegionEdit->validator();
         ui->multipleRegionEdit->setValidator(NULL);
