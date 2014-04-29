@@ -113,6 +113,8 @@ public:
 
     GTestSuite * getSuite() const {return suite;}
 
+    bool operator ==( const GTestRef& other) const {return (url == other.url) && (formatId == other.formatId);}
+
 private:
     QString             url;
     QString             shortName;
@@ -159,7 +161,7 @@ public:
     GTestEnvironment* getEnv() {return &env;}
 
     const QList<GTestRef*>& getTests() const {return tests;}
-    const QList<GTestRef*>& getExcludedTests() const {return excluded;}
+    const QMap<GTestRef*, QString>& getExcludedTests() const {return excluded;}
 
     const QString& getURL() const {return url;}
 
@@ -179,7 +181,7 @@ protected:
     QString name;
     
     QList<GTestRef*> tests;
-    QList<GTestRef*> excluded;
+    QMap<GTestRef*, QString> excluded;
 
     /** Maximum run time for single test in sutie.
         timeout = 0 means this parameter unused */

@@ -28,6 +28,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QFile>
+#include <QMap>
 
 
 namespace U2 {
@@ -74,7 +75,10 @@ void GTest::failMissingValue( const QString& name) {
 
 GTestSuite::~GTestSuite() {
     qDeleteAll(tests);
-    qDeleteAll(excluded);
+    QMap<GTestRef*, QString>::iterator iter;
+    for(iter = excluded.begin(); iter != excluded.end(); ++iter){
+        delete iter.key();
+    }
 }
 
 
@@ -195,8 +199,13 @@ GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
     QFileInfo suiteUrl(url);
     QString suiteDir = suiteUrl.absoluteDir().absolutePath();
     QList<GTestRef*> suiteTests;
-    QList<GTestRef*> excluded;
+    QMap<GTestRef*, QString> excluded;
+
+
+    QString dirPath = "";
+    QString testFormatName;
     QDomNodeList testDirEls = suiteEl.elementsByTagName("test-dir");
+
     for(int i=0;i<testDirEls.size(); i++) {
         QDomNode n = testDirEls.item(i);
         assert(n.isElement());
@@ -204,7 +213,7 @@ GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
             continue;
         }
         QDomElement testDirEl = n.toElement();
-        QString dirPath = testDirEl.attribute("path");
+        dirPath = testDirEl.attribute("path");
         if (dirPath.isEmpty()) {
             err = ("path_attribute_not_found");
             break;
@@ -236,7 +245,7 @@ GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
             }
         }
         
-        QString testFormatName = testDirEl.attribute("test-format");
+        testFormatName = testDirEl.attribute("test-format");
         bool recursive = testDirEl.attribute("recursive") != "false";
         QString testExt = testDirEl.attribute("test-ext");
         QStringList testURLs = findAllFiles(fullTestDirPath, testExt, recursive, 0);
@@ -245,16 +254,49 @@ GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
             assert(shortNameLen > 0);
             QString tShortName = tUrl.right(shortNameLen);
             GTestRef* tref = new GTestRef(tUrl, tShortName, testFormatName);
-            if (exclude(xlist, tUrl)) {
-                excluded << tref;
-            } else {
-                suiteTests << tref;
+            //all tests appended
+            suiteTests << tref;
+        }
+    }
+
+    //excluded
+    QDomNodeList excludedEls = suiteEl.elementsByTagName("excluded");
+    for(int i=0;i<excludedEls.size(); i++){
+        QDomNode n = excludedEls.item(i);
+        assert(n.isElement());
+        if (!n.isElement()) {
+            continue;
+        }
+        QDomElement excludedEl = n.toElement();
+        QString testName = excludedEl.attribute("test");
+
+        QString fullTestPath = suiteDir + "/" + dirPath + "/" + testName;
+
+        GTestRef* tref = new GTestRef(fullTestPath, testName, testFormatName);
+        QString reason = excludedEl.attribute("reason");
+
+        if(!excluded.contains(tref)){
+            excluded.insert(tref, reason);
+        }
+    }
+
+    //take excluded from all tests
+    foreach(GTestRef* test, suiteTests){
+        QMap<GTestRef*, QString>::iterator iter;
+        for(iter = excluded.begin(); iter != excluded.end(); ++iter){
+            GTestRef* ref = dynamic_cast<GTestRef*>(iter.key());
+            if(*test == *ref){
+                suiteTests.removeOne(test);
             }
         }
     }
+
     if (!err.isEmpty()) {
         qDeleteAll(suiteTests);
-        qDeleteAll(excluded);
+        QMap<GTestRef*, QString>::iterator iter;
+        for(iter = excluded.begin(); iter != excluded.end(); ++iter){
+            delete iter.key();
+        }
         return NULL;
     }
     
@@ -271,7 +313,7 @@ GTestSuite* GTestSuite::readTestSuite(const QString& url, QString& err) {
     foreach( GTestRef * r, suiteTests ) {
         r->setSuite( suite );
     }
-    foreach( GTestRef * r, excluded ) {
+    foreach( GTestRef * r, excluded.keys() ) {
         r->setSuite( suite );
     }
     

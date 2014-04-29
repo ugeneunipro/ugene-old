@@ -99,18 +99,18 @@ private:
     void addTestSuiteList(QString url);
     void addTestSuite(GTestSuite* ts);
     void addFolderTests(TVTSItem* tsi, GTestRef* testRef,const QString* curPath,bool haveExcludedTests);
-    void addTest(TVTSItem* tsi, GTestRef* t,bool haveExcludedTests);
+    void addTest(TVTSItem* tsi, GTestRef* t,QString excludeReason);
     TVTSItem* findTestSuiteItem(GTestSuite* ts) const;
     TVTestItem* findTestViewItem(GTestRef* tr) const;
     TVTestItem* findTestViewItemRecursive(GTestRef* testRef,TVItem* sItem) const;
     TVTSItem* getFolder(TVItem* element,const QString* folderName)const;
 
     QList<GTestState*> getSubTestToRun(TVItem* sItem,bool runAll)const;
-    QList<GTestRef*> getSubRefToExclude(TVItem* sItem,bool runAll)const;
+    QMap<GTestRef *, QString> getSubRefToExclude(TVItem* sItem,bool runAll)const;
     bool  allSuitesIsInRoot(const QList<TVTSItem*> suitesList) const;
     void setExcludedState(TVItem* sItem,bool allSelected, bool newState);
-    void setExcludedState(TVItem* sItem,bool allSelected);
-    void saveTestSuite(const QString& url, QList<GTestRef*> testsToEx, QString& err);
+    void setExcludedState(TVItem* sItem, bool allSelected, QString reason);
+    void saveTestSuite(const QString& url, QMap<GTestRef *, QString> testsToEx, QString& err);
     QStringList findAllTestFilesInDir(const QString& dirPath, const QString& ext, bool recursive, int rec);
 
     TestRunnerService* service;
@@ -156,6 +156,8 @@ public:
     const TVItemType type;
 
     bool excludedTests;
+
+    QString excludeReason;
     
     bool isSuite() const {return type == TVItem_TestSuite;}
     
