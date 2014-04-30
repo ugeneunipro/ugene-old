@@ -43,16 +43,15 @@ Primer3Dialog::Primer3Dialog(const Primer3TaskSettings &defaultSettings, ADVSequ
         defaultSettings(defaultSettings)
 {
     ui.setupUi(this);
-    new HelpButton(this, ui.buttonBox, "4227733");
+    new HelpButton(this, ui.helpButton, "4227733");
 
-    QPushButton* pbPick = ui.buttonBox->button(QDialogButtonBox::Cancel);
-    QPushButton* pbReset = ui.buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton* pbPick = ui.pickPrimersButton;
+    QPushButton* pbReset = ui.resetButton;
 
     connect(pbPick, SIGNAL(clicked()), SLOT(sl_pbPick_clicked()));
     connect(pbReset, SIGNAL(clicked()), SLOT(sl_pbReset_clicked()));
-
-    ui.buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Reset form"));
-    ui.buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Pick primers"));
+    connect(ui.saveSettingsButton, SIGNAL(clicked()), SLOT(sl_saveSettings()));
+    connect(ui.loadSettingsButton, SIGNAL(clicked()), SLOT(sl_loadSettings()));
 
     ui.tabWidget->setCurrentIndex(0);
 
@@ -640,6 +639,190 @@ void Primer3Dialog::sl_pbPick_clicked()
     {
         accept();
     }
+}
+
+
+void Primer3Dialog::sl_saveSettings()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save primer settings"),  QString(), "Text files (*.txt)");
+    if (!fileName.endsWith(".txt")) {
+        fileName += ".txt";
+    }
+
+    QSettings diagSettings(fileName, QSettings::IniFormat);
+
+    diagSettings.beginGroup("IntProperties");
+    foreach(const QString& key, settings.getIntPropertyList())
+    {
+        QSpinBox *spinBox = findChild<QSpinBox *>("edit_" + key);
+        if(NULL != spinBox)
+        {
+            diagSettings.setValue( key, spinBox->value() );
+        }
+    }
+    diagSettings.endGroup();
+
+    diagSettings.beginGroup("DoubleProperties");
+    foreach(const QString& key, settings.getDoublePropertyList())
+    {
+
+        QDoubleSpinBox *spinBox = findChild<QDoubleSpinBox *>("edit_" + key);
+        if(NULL != spinBox)
+        {
+            diagSettings.setValue(key, spinBox->value());
+
+        }
+    }
+    diagSettings.endGroup();
+
+
+    diagSettings.beginGroup("AlignProperties");
+    foreach(const QString& key, settings.getAlignPropertyList())
+    {
+        QDoubleSpinBox *spinBox = findChild<QDoubleSpinBox *>("edit_" + key);
+        if(NULL != spinBox)
+        {
+            diagSettings.setValue(key,  spinBox->value());
+        }
+    }
+    diagSettings.endGroup();
+
+    diagSettings.beginGroup("GeneralProperties");
+
+    diagSettings.setValue("PRIMER_START_CODON_POSITION", ui.edit_PRIMER_START_CODON_POSITION->text());
+    diagSettings.setValue("PRIMER_PRODUCT_MIN_TM", ui.edit_PRIMER_PRODUCT_MIN_TM->text());
+    diagSettings.setValue("PRIMER_PRODUCT_OPT_TM", ui.edit_PRIMER_PRODUCT_OPT_TM->text());
+    diagSettings.setValue("PRIMER_PRODUCT_MAX_TM", ui.edit_PRIMER_PRODUCT_MAX_TM->text());
+    diagSettings.setValue("PRIMER_OPT_GC_PERCENT", ui.edit_PRIMER_OPT_GC_PERCENT->text());
+    diagSettings.setValue("PRIMER_INSIDE_PENALTY", ui.edit_PRIMER_INSIDE_PENALTY->text());
+    diagSettings.setValue("PRIMER_INTERNAL_OLIGO_OPT_GC_PERCENT", ui.edit_PRIMER_INTERNAL_OLIGO_OPT_GC_PERCENT->text());
+
+    diagSettings.setValue("EXCLUDED_REGION", ui.edit_EXCLUDED_REGION->text());
+    diagSettings.setValue("PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION", ui.edit_PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION->text());
+    diagSettings.setValue("TARGET", ui.edit_TARGET->text());
+    diagSettings.setValue("PRIMER_PRODUCT_SIZE_RANGE", ui.edit_PRIMER_PRODUCT_SIZE_RANGE->text());
+    diagSettings.setValue("PRIMER_LEFT_INPUT", ui.edit_PRIMER_LEFT_INPUT->text());
+    diagSettings.setValue("PRIMER_RIGHT_INPUT", ui.edit_PRIMER_RIGHT_INPUT->text());
+    diagSettings.setValue("PRIMER_INTERNAL_OLIGO_INPUT", ui.edit_PRIMER_INTERNAL_OLIGO_INPUT->text());
+
+    diagSettings.setValue("PRIMER_TM_SANTALUCIA", ui.combobox_PRIMER_TM_SANTALUCIA->currentIndex());
+    diagSettings.setValue("PRIMER_SALT_CORRECTIONS", ui.combobox_PRIMER_SALT_CORRECTIONS->currentIndex());
+
+    diagSettings.setValue("PRIMER_LIBERAL_BASE", ui.checkbox_PRIMER_LIBERAL_BASE->isChecked());
+    diagSettings.setValue("PRIMER_LIB_AMBIGUITY_CODES_CONSENSUS", ui.checkbox_PRIMER_LIB_AMBIGUITY_CODES_CONSENSUS->isChecked());
+    diagSettings.setValue("PRIMER_LOWERCASE_MASKING", ui.checkbox_PRIMER_LOWERCASE_MASKING->isChecked());
+    diagSettings.setValue("PICK_HYBRO", ui.checkbox_PICK_HYBRO->isChecked() );
+    diagSettings.setValue("PICK_LEFT", ui.checkbox_PICK_LEFT->isChecked() );
+    diagSettings.setValue("PICK_RIGHT", ui.checkbox_PICK_RIGHT->isChecked() );
+
+    diagSettings.setValue("PRIMER_MISPRIMING_LIBRARY", ui.combobox_PRIMER_MISPRIMING_LIBRARY->currentIndex());
+    diagSettings.setValue("PRIMER_INTERNAL_OLIGO_MISHYB_LIBRARY", ui.combobox_PRIMER_INTERNAL_OLIGO_MISHYB_LIBRARY->currentIndex());
+
+    diagSettings.endGroup();
+
+
+}
+
+void Primer3Dialog::sl_loadSettings()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Load settings"), QString(), "Text files (*.txt)");
+
+    QSettings diagSettings(fileName, QSettings::IniFormat);
+
+    diagSettings.beginGroup("IntProperties");
+    QStringList groupKeys = diagSettings.childKeys();
+    foreach(const QString& key, settings.getIntPropertyList())
+    {
+
+        QSpinBox *spinBox = findChild<QSpinBox *>("edit_" + key);
+        if(NULL != spinBox && groupKeys.contains(key))
+        {
+            spinBox->setValue( diagSettings.value(key).toInt());
+        }
+    }
+    diagSettings.endGroup();
+
+    diagSettings.beginGroup("DoubleProperties");
+    groupKeys = diagSettings.childKeys();
+    foreach(const QString& key, settings.getDoublePropertyList())
+    {
+
+        QDoubleSpinBox *spinBox = findChild<QDoubleSpinBox *>("edit_" + key);
+        if(NULL != spinBox && groupKeys.contains(key))
+        {
+            spinBox->setValue(diagSettings.value(key).toDouble());
+
+        }
+    }
+    diagSettings.endGroup();
+
+
+    diagSettings.beginGroup("AlignProperties");
+    groupKeys = diagSettings.childKeys();
+    foreach(const QString& key, settings.getAlignPropertyList())
+    {
+        QDoubleSpinBox *spinBox = findChild<QDoubleSpinBox *>("edit_" + key);
+        if(NULL != spinBox && groupKeys.contains(key))
+        {
+            spinBox->setValue(diagSettings.value(key).toDouble());
+        }
+    }
+    diagSettings.endGroup();
+
+
+    diagSettings.beginGroup("GeneralProperties");
+    groupKeys = diagSettings.childKeys();
+    ui.edit_PRIMER_START_CODON_POSITION->setText(
+                diagSettings.value("PRIMER_START_CODON_POSITION").toString() );
+    ui.edit_PRIMER_PRODUCT_MIN_TM->setText(
+                diagSettings.value("PRIMER_PRODUCT_MIN_TM").toString() );
+    ui.edit_PRIMER_PRODUCT_OPT_TM->setText(
+                diagSettings.value("PRIMER_PRODUCT_OPT_TM").toString() );
+    ui.edit_PRIMER_PRODUCT_MAX_TM->setText(
+                diagSettings.value("PRIMER_PRODUCT_MAX_TM").toString() );
+    ui.edit_PRIMER_OPT_GC_PERCENT->setText(
+                diagSettings.value("PRIMER_OPT_GC_PERCENT").toString() );
+    ui.edit_PRIMER_INSIDE_PENALTY->setText(
+                diagSettings.value("PRIMER_INSIDE_PENALTY").toString() );
+    ui.edit_PRIMER_INTERNAL_OLIGO_OPT_GC_PERCENT->setText(
+                diagSettings.value("PRIMER_INTERNAL_OLIGO_OPT_GC_PERCENT").toString());
+    ui.edit_EXCLUDED_REGION->setText(
+                diagSettings.value("EXCLUDED_REGION").toString() );
+    ui.edit_PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION->setText(
+                diagSettings.value("PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION").toString() );
+    ui.edit_TARGET->setText( diagSettings.value("TARGET").toString() );
+    ui.edit_PRIMER_PRODUCT_SIZE_RANGE->setText(
+                diagSettings.value("PRIMER_PRODUCT_SIZE_RANGE").toString() );
+    ui.edit_PRIMER_LEFT_INPUT->setText( diagSettings.value("PRIMER_LEFT_INPUT").toString() );
+    ui.edit_PRIMER_RIGHT_INPUT->setText( diagSettings.value("PRIMER_RIGHT_INPUT").toString() );
+    ui.edit_PRIMER_INTERNAL_OLIGO_INPUT->setText(
+                diagSettings.value("PRIMER_INTERNAL_OLIGO_INPUT").toString() );
+
+    ui.combobox_PRIMER_TM_SANTALUCIA->setCurrentIndex(
+                diagSettings.value("PRIMER_TM_SANTALUCIA").toInt() );
+    ui.combobox_PRIMER_SALT_CORRECTIONS->setCurrentIndex(
+                diagSettings.value("PRIMER_SALT_CORRECTIONS").toInt() );
+
+    ui.checkbox_PRIMER_LIBERAL_BASE->setChecked(
+                diagSettings.value("PRIMER_LIBERAL_BASE").toBool() );
+    ui.checkbox_PRIMER_LIB_AMBIGUITY_CODES_CONSENSUS->setChecked(
+                diagSettings.value("PRIMER_LIB_AMBIGUITY_CODES_CONSENSUS").toBool() );
+    ui.checkbox_PRIMER_LOWERCASE_MASKING->setChecked(
+                diagSettings.value("PRIMER_LOWERCASE_MASKING").toBool() );
+    ui.checkbox_PICK_HYBRO->setChecked( diagSettings.value("PICK_HYBRO").toBool() );
+    ui.checkbox_PICK_LEFT->setChecked( diagSettings.value("PICK_LEFT").toBool() );
+    ui.checkbox_PICK_RIGHT->setChecked( diagSettings.value("PICK_RIGHT").toBool() );
+
+    ui.combobox_PRIMER_MISPRIMING_LIBRARY->setCurrentIndex(
+                diagSettings.value("PRIMER_MISPRIMING_LIBRARY").toInt() );
+    ui.combobox_PRIMER_INTERNAL_OLIGO_MISHYB_LIBRARY->setCurrentIndex(
+                diagSettings.value("PRIMER_INTERNAL_OLIGO_MISHYB_LIBRARY").toInt() );
+
+    diagSettings.endGroup();
+
+
+
+
 }
 
 void Primer3Dialog::sl_pbReset_clicked()

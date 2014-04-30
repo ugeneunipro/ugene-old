@@ -71,6 +71,8 @@ private:
 private slots:
     void sl_pbReset_clicked();
     void sl_pbPick_clicked();
+    void sl_saveSettings();
+    void sl_loadSettings();
 };
 
 } // namespace U2
