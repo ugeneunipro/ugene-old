@@ -37,9 +37,9 @@ SelectModelsDialog::SelectModelsDialog(const QList<int> &_modelIds, const QList<
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "4227131");
-    buttonBox->button(QDialogButtonBox::Reset)->setText(tr("All"));
-    buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Invert"));
-    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Ok"));
+    buttonBox_1->button(QDialogButtonBox::Cancel)->setText(tr("All"));
+    buttonBox_1->button(QDialogButtonBox::No)->setText(tr("Invert"));
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 
 
@@ -57,11 +57,11 @@ SelectModelsDialog::SelectModelsDialog(const QList<int> &_modelIds, const QList<
 
     connect(modelsList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(sl_onItemDoubleClicked(QListWidgetItem*)));
 
-    QPushButton* allButton = buttonBox->button(QDialogButtonBox::Reset);
-    QPushButton* inverButton = buttonBox->button(QDialogButtonBox::Yes);
+    QPushButton* allButton = buttonBox_1->button(QDialogButtonBox::Cancel);
+    QPushButton* invertButton = buttonBox_1->button(QDialogButtonBox::No);
 
     connect(allButton, SIGNAL(clicked()), this, SLOT(sl_onSlectAll()));
-    connect(inverButton, SIGNAL(clicked()), this, SLOT(sl_onInvertSelection()));
+    connect(invertButton, SIGNAL(clicked()), this, SLOT(sl_onInvertSelection()));
 }
 
 /** Toggle item by double click */
