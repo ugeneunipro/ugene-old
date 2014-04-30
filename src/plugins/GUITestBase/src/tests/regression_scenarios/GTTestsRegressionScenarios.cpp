@@ -912,7 +912,7 @@ GUI_TEST_CLASS_DEFINITION(test_1212_1){
 //    2. Do "Select->Sequence Region..."
 //    3. In single selection mode enter any region
 //    4. Press "Go" and UGENE hangs up/crashes
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os,"0..199950"));
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os,"1..199950"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
 //    Expected: region is selected
