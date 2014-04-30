@@ -57,7 +57,7 @@ const QString ConvertFilesFormatWorkerFactory::ACTOR_ID("files-conversion");
 static const QString SHORT_NAME( "cff" );
 static const QString INPUT_PORT( "in-file" );
 static const QString OUTPUT_PORT( "out-file" );
-static const QString OUTPUT_SUBDIR( "Converted files/" );
+static const QString OUTPUT_SUBDIR( "Converted_files/" );
 static const QString EXCLUDED_FORMATS_ID( "excluded-formats" );
 static const QString OUT_MODE_ID( "out-mode" );
 static const QString CUSTOM_DIR_ID( "custom-dir" );

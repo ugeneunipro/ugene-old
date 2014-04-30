@@ -169,7 +169,7 @@ void CASAVAFilterTask::runStep(){
     QScopedPointer<IOAdapter> io  (IOAdapterUtils::open(settings.outDir + settings.outName, stateInfo, IOAdapterMode_Append));
 
     //1:N:0:TAAGGG
-    QRegExp pattern (":N:[^:]:");
+    QRegExp pattern (":Y:[^:]:");
     FASTQIterator iter(settings.inputUrl);
     while(iter.hasNext()){
         if(stateInfo.isCoR()){
@@ -178,15 +178,15 @@ void CASAVAFilterTask::runStep(){
         DNASequence seq = iter.next();
         QString comment = DNAInfo::getFastqComment(seq.info);
         if(pattern.indexIn(comment) != -1){
+            ycount++;
+        }else{
             FastqFormat::writeEntry(seq.getName() + " " + comment, seq, io.data(), "Writing error", stateInfo);
             ncount++;
-        }else{
-            ycount++;
         }
     }
 
-    algoLog.info(QString("Discarded by CASAVA filter %1").arg(ncount));
-    algoLog.info(QString("Accepted by CASAVA filter %1").arg(ycount));
+    algoLog.info(QString("Discarded by CASAVA filter %1").arg(ycount));
+    algoLog.info(QString("Accepted by CASAVA filter %1").arg(ncount));
     algoLog.info(QString("Total by CASAVA FILTER: %1").arg(ncount + ycount));
 }
 

@@ -63,6 +63,9 @@ QString FileAndDirectoryUtils::createWorkingDir(const QString &fileUrl, int dirM
             result += "/";
         }
         result += OUTPUT_SUBDIR;
+        if (!result.endsWith("/")) {
+            result += "/";
+        }
     }
 
     QDir dir(result);
