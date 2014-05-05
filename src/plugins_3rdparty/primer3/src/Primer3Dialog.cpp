@@ -34,7 +34,7 @@
 #include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
 #include "Primer3Dialog.h"
 #include <U2Gui/HelpButton.h>
-
+#include <U2Gui/LastUsedDirHelper.h>
 
 namespace U2 {
 
@@ -644,7 +644,8 @@ void Primer3Dialog::sl_pbPick_clicked()
 
 void Primer3Dialog::sl_saveSettings()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save primer settings"),  QString(), "Text files (*.txt)");
+    LastUsedDirHelper lod;
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save primer settings"),  lod.dir, "Text files (*.txt)");
     if (!fileName.endsWith(".txt")) {
         fileName += ".txt";
     }
@@ -725,9 +726,20 @@ void Primer3Dialog::sl_saveSettings()
 
 void Primer3Dialog::sl_loadSettings()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Load settings"), QString(), "Text files (*.txt)");
+    LastUsedDirHelper lod;
+    lod.url = QFileDialog::getOpenFileName(this, tr("Load settings"), lod.dir, "Text files (*.txt)");
 
-    QSettings diagSettings(fileName, QSettings::IniFormat);
+    QSettings diagSettings(lod.url, QSettings::IniFormat);
+    
+    QStringList groups = diagSettings.childGroups();
+    bool validSettings = groups.contains("IntProperties") && groups.contains("DoubleProperties") 
+        && groups.contains("AlignProperties") && groups.contains("GeneralProperties");
+    
+    if (!validSettings) {
+        QMessageBox::warning(this, windowTitle(),
+            tr("Can not load settings file: invalid format.") );
+        return;
+    }
 
     diagSettings.beginGroup("IntProperties");
     QStringList groupKeys = diagSettings.childKeys();
