@@ -58,7 +58,8 @@ SearchGenbankSequenceDialogController::SearchGenbankSequenceDialogController(QWi
 
     queryBlockController = new QueryBuilderController(this);
 
-    QPushButton *downloadButton = ui->buttonBox->button(QDialogButtonBox::Ok);
+    downloadButton = ui->buttonBox->button(QDialogButtonBox::Ok);
+    downloadButton->setEnabled(false);
 
     connect( ui->searchButton, SIGNAL( clicked( ) ), SLOT( sl_searchButtonClicked( ) ) );
     connect( downloadButton, SIGNAL( clicked( ) ), SLOT( sl_downloadButtonClicked( ) ) );
