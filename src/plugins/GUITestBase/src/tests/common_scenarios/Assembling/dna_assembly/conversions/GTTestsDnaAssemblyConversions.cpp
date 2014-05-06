@@ -82,7 +82,7 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
     GTMenu::clickMenuItemByName( os, mainMenu, QStringList( ) << "Align to reference"
         << "Align short reads" );
     CHECK_OP( os, );
-    GTGlobals::sleep( 5000 );
+    GTUtilsTaskTreeView::waitTaskFinidhed(os);
 
     CHECK_SET_ERR( !l.hasError( ), "Error message expected in log" );
     GTFile::check( os, "_common_data/e_coli/NC_008253.gff.fasta" );

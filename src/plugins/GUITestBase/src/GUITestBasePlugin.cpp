@@ -207,9 +207,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1919, "incomplete(source url can not be set), incorrect until UGENE-2405 fixed");
     REGISTER_TEST(GUITest_regression_scenarios::test_1921);
     REGISTER_TEST(GUITest_regression_scenarios::test_1924);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1986, "https://ugene.unipro.ru/tracker/browse/UGENE-2853");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1986);
 
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2006,"https://ugene.unipro.ru/tracker/browse/UGENE-2717");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2006);
     REGISTER_TEST(GUITest_regression_scenarios::test_2007);
     REGISTER_TEST(GUITest_regression_scenarios::test_2012);
     REGISTER_TEST(GUITest_regression_scenarios::test_2021_1);
@@ -313,7 +313,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2612);
     REGISTER_TEST(GUITest_regression_scenarios::test_2667);
     REGISTER_TEST(GUITest_regression_scenarios::test_2897);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2903);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2903, "https://ugene.unipro.ru/tracker/browse/UGENE-2903; reopened");
 
 
 //////////////////////////////////////////////////////////////////////////
