@@ -23,7 +23,7 @@
 #include "TestRunnerPlugin.h"
 #include <U2Test/TestRunnerTask.h>
 #include "TestViewReporter.h"
-#include "ExcludeResaonDialog.h"
+#include "ExcludeReasonDialog.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
@@ -156,6 +156,8 @@ TestViewController::TestViewController(TestRunnerService* s, bool _cmd) : MWMDIW
     connect(tree, SIGNAL(customContextMenuRequested(const QPoint&)),SLOT(sl_treeCustomContextMenuRequested(const QPoint&)));
 
     connect(tree, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)) , SLOT(sl_treeDoubleClicked(QTreeWidgetItem*, int)));
+
+    connect(saveButton, SIGNAL(clicked()), SLOT(sl_saveTest()));
 
 
     const QList<GTestSuite*> suites =  s->getTestSuites();
@@ -427,6 +429,10 @@ void TestViewController::updateState() {
     if (tree->currentItem()!=NULL) {
         TVItem* i = static_cast<TVItem*>(tree->currentItem());
         contextInfoEdit->setText(i->getRichDesc());
+        TVTestItem* testItem = dynamic_cast<TVTestItem*>(i);
+        if(testItem != NULL){
+            testEdit->setText(testItem->getTestContent());
+        }
     }
 }
 
@@ -540,7 +546,7 @@ void TestViewController::sl_setTestsDisabledAction(){
 void TestViewController::sl_setTestsChangeExcludedAction(){
     assert(task==NULL);
 
-    ExcludeResaonDialog dlg;
+    ExcludeReasonDialog dlg;
     int rc = dlg.exec();
     if(!rc == QDialog::Accepted){
         return;
@@ -1004,6 +1010,24 @@ void TestViewController::sl_testStateChanged(GTestState* ts) {
     temp_parent->updateVisual();
 }
 
+void TestViewController::sl_saveTest(){
+    TVTestItem* i = dynamic_cast<TVTestItem*>(tree->currentItem());
+    QString url = i->testState->getTestRef()->getURL();
+    QFile f(url);
+    bool ok = f.open(QIODevice::WriteOnly);
+    if(!ok){
+        coreLog.error(QString("test file %1 can not be opened").arg(url));
+        return;
+    }
+    QString s =testEdit->toPlainText();
+    QString tempString = testEdit->toPlainText();
+    tempString.replace("&lt;","<");
+    tempString.replace("&gt;", ">");
+    f.write(tempString.toUtf8());
+
+    f.close();
+}
+
 //////////////////////////////////////////////////////////////////////////
 // tree items;
 
@@ -1174,12 +1198,17 @@ QString TVTestItem::getRichDesc() const {
     }
 
     text+="<b>"+TestViewController::tr("source_file:")+"</b>"+testState->getTestRef()->getURL()+"<br>";
-    text+="<hr>";
-    QFile myFile(testState->getTestRef()->getURL()); 
+    return text;
+}
+
+QString TVTestItem::getTestContent(){
+    QString text;
+
+    QFile myFile(testState->getTestRef()->getURL());
     QTextStream t( &myFile );
-    if (myFile.open(QIODevice::ReadOnly) ) {       
+    if (myFile.open(QIODevice::ReadOnly) ) {
         QTextStream t( &myFile );
-        while (!t.atEnd() ) {           
+        while (!t.atEnd() ) {
             QString tempString= t.readLine();
             tempString.replace("<","&lt;");
             tempString.replace(">","&gt;");
@@ -1188,6 +1217,7 @@ QString TVTestItem::getRichDesc() const {
         // Close the file
         myFile.close();
     }
+
     return text;
 }
 

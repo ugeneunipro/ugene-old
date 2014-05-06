@@ -8,13 +8,13 @@ class ExcludeResaonDialog;
 }
 namespace U2{
 
-class ExcludeResaonDialog : public QDialog
+class ExcludeReasonDialog : public QDialog
 {
     Q_OBJECT
     
 public:
-    ExcludeResaonDialog(QWidget *parent = 0);
-    ~ExcludeResaonDialog();
+    ExcludeReasonDialog(QWidget *parent = 0);
+    ~ExcludeReasonDialog();
     QString getReason();
 private:
     Ui::ExcludeResaonDialog *ui;

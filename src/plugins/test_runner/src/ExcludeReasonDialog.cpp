@@ -1,21 +1,21 @@
-#include "ExcludeResaonDialog.h"
+#include "ExcludeReasonDialog.h"
 #include "ui_ExcludeResaonDialog.h"
 
 namespace U2{
 
-ExcludeResaonDialog::ExcludeResaonDialog(QWidget *parent) :
+ExcludeReasonDialog::ExcludeReasonDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ExcludeResaonDialog)
 {
     ui->setupUi(this);
 }
 
-ExcludeResaonDialog::~ExcludeResaonDialog()
+ExcludeReasonDialog::~ExcludeReasonDialog()
 {
     delete ui;
 }
 
-QString ExcludeResaonDialog::getReason(){
+QString ExcludeReasonDialog::getReason(){
     return ui->lineEdit->text();
 }
 

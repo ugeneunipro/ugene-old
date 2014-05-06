@@ -82,6 +82,7 @@ private slots:
     void sl_setTestsDisabledAction();
     void sl_setTestsChangeExcludedAction();
     void sl_saveSelectedSuitesAction();
+    void sl_saveTest();
 
 
 protected:
@@ -142,7 +143,7 @@ private:
 
 enum TVItemType {
     TVItem_TestSuite,
-    TVItem_Test,
+    TVItem_Test
 };
 
 class TVItem : public QTreeWidgetItem {
@@ -195,6 +196,8 @@ public:
     virtual void updateVisual();
 
     virtual QString getRichDesc() const;
+
+    QString getTestContent();
 
     GTestState* testState;
 };
