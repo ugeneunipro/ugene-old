@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Weight matrix search</string>
+   <string>Weight Matrix Search</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>

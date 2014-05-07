@@ -13,7 +13,7 @@
     <name>PWMBuildDialog</name>
     <message>
         <location filename="../src/ui/PWMBuildDialog.ui" line="14"/>
-        <source>Build weight or frequency matrix</source>
+        <source>Build Weight or Frequency Matrix</source>
         <translation></translation>
     </message>
     <message>
@@ -101,7 +101,7 @@
     <name>PWMSearchDialog</name>
     <message>
         <location filename="../src/ui/PWMSearchDialog.ui" line="14"/>
-        <source>Weight matrix search</source>
+        <source>Weight Matrix Search</source>
         <translation></translation>
     </message>
     <message>

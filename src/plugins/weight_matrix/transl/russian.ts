@@ -13,7 +13,7 @@
     <name>PWMBuildDialog</name>
     <message>
         <location filename="../src/ui/PWMBuildDialog.ui" line="14"/>
-        <source>Build weight or frequency matrix</source>
+        <source>Build Weight or Frequency Matrix</source>
         <translation>Построить весовую или частотную матрицу</translation>
     </message>
     <message>
