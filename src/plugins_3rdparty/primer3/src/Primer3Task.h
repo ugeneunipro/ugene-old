@@ -32,6 +32,8 @@
 
 #include "primer3.h"
 
+struct primers_t;
+
 namespace U2 {
 
 class AnnotationTableObject;
@@ -111,6 +113,7 @@ public:
     void run();
     Task::ReportResult report();
     void sumStat(Primer3TaskSettings *st);
+    void selectPairsSpanningIntron(primers_t& primers, int toReturn);
 
     const QList<PrimerPair>& getBestPairs()const { return bestPairs; }
     const QList<Primer>& getSinglePrimers() const { return singlePrimers; }

@@ -24,6 +24,7 @@
 #include <U2Core/Counter.h>
 #include <U2Core/SequenceWalkerTask.h>
 #include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/DNASequenceObject.h>
 #include "primer3_main.h"
 #include "boulder_input.h"
 #include "Primer3Task.h"
@@ -417,13 +418,25 @@ void Primer3Task::run()
             return;
         }
     }
+
+    bool spanExonsEnabled = settings.getSpanIntronExonBoundarySettings().enabled;
+    int toReturn = settings.getPrimerArgs()->num_return;
+    if (spanExonsEnabled) {
+        settings.getPrimerArgs()->num_return = 5000; // not an optimal algorithm
+    }
     primers_t primers = runPrimer3(settings.getPrimerArgs(), settings.getSeqArgs(), &stateInfo.cancelFlag, &stateInfo.progress);
 
     bestPairs.clear();
-    for(int index = 0;index < primers.best_pairs.num_pairs;index++)
-    {
-        bestPairs.append(PrimerPair(primers.best_pairs.pairs[index], offset));
-    } 
+
+    if (settings.getSpanIntronExonBoundarySettings().enabled) {
+        selectPairsSpanningIntron(primers, toReturn);
+    } else {
+
+        for(int index = 0;index < primers.best_pairs.num_pairs;index++)
+        {
+            bestPairs.append(PrimerPair(primers.best_pairs.pairs[index], offset));
+        }
+    }
     
     int maxCount = 0;
     settings.getIntProperty("PRIMER_NUM_RETURN", &maxCount);
@@ -508,6 +521,56 @@ void Primer3Task::sumStat(Primer3TaskSettings *st) {
     st->getSeqArgs()->pair_expl.product += settings.getSeqArgs()->pair_expl.product;
     st->getSeqArgs()->pair_expl.compl_end += settings.getSeqArgs()->pair_expl.compl_end;
     st->getSeqArgs()->pair_expl.ok += settings.getSeqArgs()->pair_expl.ok;
+}
+
+// TODO: reuse functions from U2Region!
+static QList<int> findIntersectingRegions(const QList<U2Region>& regions, int start, int length) {
+    QList<int> indexes;
+
+    U2Region target(start,length);
+    for (int i = 0; i < regions.size(); ++i) {
+        const U2Region& r = regions.at(i);
+        if (r.intersects(target)) {
+            indexes.append(i);
+        }
+
+    }
+
+    return indexes;
+}
+
+void Primer3Task::selectPairsSpanningIntron(primers_t& primers, int toReturn)
+{
+    const QList<U2Region>& regions = settings.getExonRegions();
+
+    for(int index = 0;index < primers.best_pairs.num_pairs;index++)
+    {
+        const primer_pair& pair  = primers.best_pairs.pairs[index];
+        const primer_rec* left = pair.left;
+        const primer_rec* right = pair.right;
+
+        QList<int> regionIndexes = findIntersectingRegions(regions, left->start, left->length );
+
+
+        int numIntersecting = 0;
+        U2Region rightRegion(right->start, left->start);
+        foreach (int idx, regionIndexes) {
+            const U2Region& exonRegion = regions.at(idx);
+            if (exonRegion.intersects(rightRegion)) {
+                ++numIntersecting;
+            }
+
+        }
+
+        if (numIntersecting != regionIndexes.length()) {
+            bestPairs.append(PrimerPair(pair, offset));
+        }
+
+        if (bestPairs.size() == toReturn) {
+            break;
+        }
+
+    }
 }
 
 
@@ -614,22 +677,28 @@ QList<Task *> Primer3ToAnnotationsTask::onSubTaskFinished(Task *subTask)
     if (subTask == findExonsTask) {
         QList<U2Region> regions = findExonsTask->getRegions();
         if (regions.isEmpty()) {
-            setError(tr("No exons are found in the sequence. Please, make sure corresponding RNA sequence is selected correctly."));
+            setError( tr( "Failed to find any exon annotations associated with the sequence %1."
+                          "Make sure the provided sequence is cDNA and has exonic structure annotated")
+                      .arg(seqObj->getSequenceName()));
             return res;
+        } else {
+            settings.setExonRegions(regions);
         }
 
-        // TODO: think how to include other regions
 
-        if (regions.size() > 1) {
-            QList<QPair<int,int> > excluded; 
-            for (int i = 1; i < regions.size(); ++i) {
-                const U2Region& firstRegion = regions.at(i-1);
-                int intronStart = firstRegion.endPos() - settings.getSpanIntronExonBoundarySettings().minLeftOverlap;
-                const U2Region& secondRegion = regions.at(i);
-                int intronEnd = secondRegion.startPos + settings.getSpanIntronExonBoundarySettings().minRightOverlap;
-                excluded.append(QPair<int,int>(intronStart,intronEnd));
-            }
-            settings.setInternalOligoExcludedRegion(excluded);
+        if (settings.getSpanIntronExonBoundarySettings().overlapExonExonBoundary) {
+            // TODO: UGENE-955
+            /*if (regions.size() > 1) {
+                QList<QPair<int,int> > excluded;
+                for (int i = 1; i < regions.size(); ++i) {
+                    const U2Region& firstRegion = regions.at(i-1);
+                    int intronStart = firstRegion.endPos() - settings.getSpanIntronExonBoundarySettings().minLeftOverlap;
+                    const U2Region& secondRegion = regions.at(i);
+                    int intronEnd = secondRegion.startPos + settings.getSpanIntronExonBoundarySettings().minRightOverlap;
+                    excluded.append(QPair<int,int>(intronStart,intronEnd));
+                }
+                settings.setInternalOligoExcludedRegion(excluded);
+            }*/
         }
         
         searchTask = new Primer3SWTask(settings);

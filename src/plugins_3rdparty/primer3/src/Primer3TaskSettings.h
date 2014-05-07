@@ -28,6 +28,7 @@
 #include <QtCore/QByteArray>
 #include <QtCore/QVector>
 #include <QtCore/QPair>
+#include <U2Core/U2Region.h>
 #include "primer3.h"
 
 namespace U2 {
@@ -40,13 +41,16 @@ struct SpanIntronExonBoundarySettings {
         minLeftOverlap = 7;
         minRightOverlap = 7;
         spanIntron = false;
+        overlapExonExonBoundary = false;
 
     }
 
     bool enabled;
     QString mRnaSeqId;
+    bool overlapExonExonBoundary;
     int minLeftOverlap, minRightOverlap;
     bool spanIntron;
+    QList<U2Region> regionList;
 
 };
 
@@ -118,6 +122,17 @@ public:
     void setSpanIntronExonBoundarySettings(const SpanIntronExonBoundarySettings& settings) {
         spanIntronExonBoundarySettings = settings;
     }
+
+
+    const QList<U2Region>& getExonRegions() const {
+        return spanIntronExonBoundarySettings.regionList;
+    }
+
+    void setExonRegions(const QList<U2Region>& regions) {
+        spanIntronExonBoundarySettings.regionList = regions;
+    }
+
+
     bool spanIntronExonBoundaryIsEnabled() const { return spanIntronExonBoundarySettings.enabled; }
 
 

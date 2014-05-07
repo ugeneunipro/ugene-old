@@ -83,6 +83,7 @@ QList<Task *> FindExonRegionsTask::onSubTaskFinished(Task *subTask) {
 
         alignmentTask = sr->getAlgorithm( algList.first( ) )->createTaskInstance( cfg ) ;
         res.append( alignmentTask );
+        loadDocumentTask = NULL;
     } else if (subTask == alignmentTask) {
         QList<AnnotationData> results = alignmentTask->getAlignmentResult( );
         foreach ( const AnnotationData &ann, results ) {
@@ -94,14 +95,15 @@ QList<Task *> FindExonRegionsTask::onSubTaskFinished(Task *subTask) {
 }
 
 Task::ReportResult FindExonRegionsTask::report( ) {
-    if ( NULL != loadDocumentTask ) {
+    if ( NULL == loadDocumentTask) {
         QList<GObject *> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole( dnaObj,
             GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE,
             dnaObj->getDocument( )->getObjects( ), UOF_LoadedOnly );
+
         AnnotationTableObject *att = relAnns.isEmpty( ) ? NULL
             : qobject_cast<AnnotationTableObject *>( relAnns.first( ) );
         
-        if ( NULL != att ) {
+        if ( NULL == att ) {
             setError( tr( "Failed to search for exon annotations. "
                 "The sequence %1 doesn't have any related annotations." )
                 .arg( dnaObj->getSequenceName( ) ) );
@@ -117,6 +119,8 @@ Task::ReportResult FindExonRegionsTask::report( ) {
                 }
             }
         }
+
+
         qSort( exonRegions );
     }
 
