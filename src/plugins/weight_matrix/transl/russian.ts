@@ -101,7 +101,7 @@
     <name>PWMSearchDialog</name>
     <message>
         <location filename="../src/ui/PWMSearchDialog.ui" line="14"/>
-        <source>Weight matrix search</source>
+        <source>Weight Matrix Search</source>
         <translation>Поиск с весовыми матрицами</translation>
     </message>
     <message>
