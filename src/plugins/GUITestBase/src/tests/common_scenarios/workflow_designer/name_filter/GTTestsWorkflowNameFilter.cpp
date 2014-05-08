@@ -23,6 +23,7 @@
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTTabWidget.h"
 
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "GTTestsWorkflowNameFilter.h"
@@ -38,21 +39,24 @@ namespace U2 {
 namespace GUITest_common_scenarios_workflow_name_filter {
 
 GUI_TEST_CLASS_DEFINITION( test_0001 ) {
-    GTUtilsDialog::waitForDialog( os, new StartupDialogFiller( os ) );
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot( os, new StartupDialogFiller( os ) );
 
     // 1. Open WD.
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 
     // 2. Open the samples tab.
-    GTWidget::click(os, GTWidget::findWidget(os, "samples"));
+    QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os, "tabs"));
+    GTTabWidget::setCurrentIndex(os,tabs,1);
+    //GTWidget::click(os, GTWidget::findWidget(os, "samples"));
 
     // 3. Click the "Name filter" line edit.
     QLineEdit *nameFilter = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "nameFilterLineEdit"));
     CHECK(nameFilter, );
-
+    //hack. GTLineEdit can not set focus on widget. Don't know why
+    GTWidget::click(os, nameFilter);
+    GTKeyboardDriver::keySequence(os,"HMM");
     // 4. Write "HMM".
-    GTLineEdit::setText(os, nameFilter, QString("HMM"), true);
 
     // Expected: There are two samples after filtering.
     QTreeWidget *samples;
@@ -144,14 +148,17 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
 
     // 2. Open the samples tab.
-    GTWidget::click(os, GTWidget::findWidget(os, "samples"));
+    QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os, "tabs"));
+    GTTabWidget::setCurrentIndex(os,tabs,1);
 
     // 3. Click the "Name filter" line edit.
     QLineEdit *nameFilter = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "nameFilterLineEdit"));
     CHECK(nameFilter, );
 
     // 4. Write "NGS".
-    GTLineEdit::setText(os, nameFilter, QString("NGS"), true);
+    //hack. GTLineEdit can not set focus on widget. Don't know why
+    GTWidget::click(os,nameFilter);
+    GTKeyboardDriver::keySequence(os, "NGS");
 
     // Expected: There are two samples after filtering.
     QTreeWidget *samples;
@@ -171,7 +178,7 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
             }
         }
     }
-    CHECK_SET_ERR(count == 12, "Wrong number of visible items in sample tree");
+    CHECK_SET_ERR(count == 6, "Wrong number of visible items in sample tree");
 }
 
 }

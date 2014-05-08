@@ -204,7 +204,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1886_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_1897);
 
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1919, "incomplete(source url can not be set), incorrect until UGENE-2405 fixed");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1919);
     REGISTER_TEST(GUITest_regression_scenarios::test_1921);
     REGISTER_TEST(GUITest_regression_scenarios::test_1924);
     REGISTER_TEST(GUITest_regression_scenarios::test_1986);
@@ -273,7 +273,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2270);
     REGISTER_TEST(GUITest_regression_scenarios::test_2292);
     REGISTER_TEST(GUITest_regression_scenarios::test_2306);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2281, "This test can't found hints. Check it.");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2281);
     REGISTER_TEST(GUITest_regression_scenarios::test_2309);
     REGISTER_TEST(GUITest_regression_scenarios::test_2318);
     REGISTER_TEST(GUITest_regression_scenarios::test_2351);
@@ -304,7 +304,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2506_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2519);
     REGISTER_TEST(GUITest_regression_scenarios::test_2542);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2543, "Figure out the correct way of using PermissionSetter");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2543);
     REGISTER_TEST(GUITest_regression_scenarios::test_2565);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2566, "https://ugene.unipro.ru/tracker/browse/UGENE-2855");
     REGISTER_TEST(GUITest_regression_scenarios::test_2577);
@@ -1043,9 +1043,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer/Name filter
 /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_name_filter::test_0001,"can not set focus to name filter line edit");
+    REGISTER_TEST(GUITest_common_scenarios_workflow_name_filter::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_workflow_name_filter::test_0002);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_name_filter::test_0003,"can not set focus to name filter line edit");
+    REGISTER_TEST(GUITest_common_scenarios_workflow_name_filter::test_0003);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer/Scripting

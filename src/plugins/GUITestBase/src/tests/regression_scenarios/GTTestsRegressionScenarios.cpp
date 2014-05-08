@@ -38,6 +38,7 @@
 #include "api/GTToolbar.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
+#include "api/GTTabWidget.h"
 
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsBookmarksTreeView.h"
@@ -3458,31 +3459,55 @@ GUI_TEST_CLASS_DEFINITION( test_2270 ){
 
 GUI_TEST_CLASS_DEFINITION( test_2281 ){
     GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
-    // 1. Open WD sample "Align Sequences with MUSCLE
+    //1. Open WD
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
-   // GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+    QTabWidget* tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os,"tabs"));
+    CHECK_SET_ERR(tabs!=NULL, "tabs widget not found");
+
+    //2. Click the "samples" bar. The samples hint is shown
+    GTTabWidget::setCurrentIndex(os,tabs,1);
     GTGlobals::sleep(500);
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
-//    GT_CHECK_RESULT(sceneView, "sceneView not found", NULL);
-    QList<QGraphicsItem *> items = sceneView->items();
-    QString s;
-    foreach(QGraphicsItem* it, items) {
-        QGraphicsObject *itObj = it->toGraphicsObject();
-        QGraphicsTextItem* textItemO = qobject_cast<QGraphicsTextItem*>(itObj);
-        if (textItemO) {
-            QString text = textItemO->toPlainText();
-            s.append(text + "  ");
+
+    QPixmap pixmap = QPixmap::grabWidget(sceneView, sceneView->rect());
+    QImage img = pixmap.toImage();
+
+    bool found = false;
+    for(int i=sceneView->rect().left(); i< sceneView->rect().right(); i+=10){
+        for(int j=sceneView->rect().top(); j< sceneView->rect().bottom(); j+=10){
+            QRgb rgb = img.pixel(QPoint(i,j));
+            QColor c(rgb);
+            QColor yc = QColor(255,255,160);
+            if (c == yc){
+                found = true;
+                break;
+            }
         }
     }
-    /*QList<QWidget*> list = AppContext::getMainWindow()->getQMainWindow()->findChildren<QWidget*>();
+    CHECK_SET_ERR(found, "hint not found");
 
-    foreach(QWidget* w, list){
-        s.append(w->metaObject()->className()).append("  " + w->objectName()).append('\n');
+    //3. Click the "elements" bar.
+    GTTabWidget::setCurrentIndex(os,tabs,0);
+    GTGlobals::sleep(500);
 
+    //Expected: the samples hint is hidden
+    pixmap = QPixmap::grabWidget(sceneView, sceneView->rect());
+    img = pixmap.toImage();
+    bool notFound = true;
+    for(int i=sceneView->rect().left(); i< sceneView->rect().right(); i+=10){
+        for(int j=sceneView->rect().top(); j< sceneView->rect().bottom(); j+=10){
+            QRgb rgb = img.pixel(QPoint(i,j));
+            QColor c(rgb);
+            QColor yc = QColor(255,255,160);
+            if (c == yc){
+                notFound = false;
+                break;
+            }
+        }
+    }
 
-        }*/
-    CHECK_SET_ERR(false, s)
+    CHECK_SET_ERR(notFound, "hint is found");
     GTGlobals::sleep(1000);
 }
 
@@ -4517,6 +4542,38 @@ GUI_TEST_CLASS_DEFINITION( test_2542 ) {
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2543 ) {
+    class BuildTreeDialogFiller_test_2543 : public Filler {
+    public:
+        BuildTreeDialogFiller_test_2543(U2OpStatus &os, QString _saveTree="default") : Filler(os, "CreatePhyTree"),
+            saveTree(_saveTree){}
+        virtual void run(){
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            if(saveTree!="default"){
+                QLineEdit* saveLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os,"fileNameEdit"));
+                GTLineEdit::setText(os,saveLineEdit, saveTree);
+            }
+
+            GTUtilsDialog::waitForDialogWhichMayRunOrNot( os, new LicenseAgreemntDialogFiller( os ) );
+            //Expected state: UGENE does not allow to create tree, the message dialog appears
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller( os, QMessageBox::Ok ) );
+
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+            QPushButton* button = box->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(button !=NULL, "cancel button is NULL");
+            GTWidget::click(os, button);
+
+            GTGlobals::sleep(1000);
+            button = box->button(QDialogButtonBox::Cancel);
+            CHECK_SET_ERR(button !=NULL, "cancel button is NULL");
+            GTWidget::click(os, button);
+        }
+    private:
+        QString saveTree;
+    };
+
     //1. Open "samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
 
@@ -4533,11 +4590,8 @@ GUI_TEST_CLASS_DEFINITION( test_2543 ) {
     CHECK_SET_ERR( res, "Can't set permissions" );
     GTGlobals::sleep( 2000 );
 
-    GTUtilsDialog::waitForDialog( os, new BuildTreeDialogFiller( os, outputFilePath + "/test.nwk",
-        0, 0, true ) );
-    GTUtilsDialog::waitForDialogWhichMayRunOrNot( os, new LicenseAgreemntDialogFiller( os ) );
-    //Expected state: UGENE does not allow to create tree, the message dialog appears
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller( os, QMessageBox::Ok ) );
+    GTUtilsDialog::waitForDialog( os, new BuildTreeDialogFiller_test_2543( os, outputFilePath + "/test.nwk") );
+
 
     QAbstractButton *tree= GTAction::button( os, "Build Tree" );
     GTWidget::click( os, tree );
