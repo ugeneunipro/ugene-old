@@ -27,19 +27,13 @@ namespace U2 {
 
 const QString HttpRequestBLAST::host = "http://www.ncbi.nlm.nih.gov/blast/Blast.cgi?"; 
 
-
-void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
-    
-    QString request = host;
-    request.append(params);
-    addParametr(request,ReqParams::sequence,query);
-//    algoLog.trace("Request 1:"+request);
+QString HttpRequestBLAST::runHttpRequest(QString request){
     IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::HTTP_FILE );
     IOAdapter * io = iof->createIOAdapter();
     if(!io->open( request, IOAdapterMode_Read )) {
         connectionError = true; 
         error = QObject::tr("Cannot open the IO adapter");
-        return;
+        return "";
     }
     int offs = 0;
     int read = 0;
@@ -48,7 +42,7 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
     do {
         if(task->isCanceled()) {
             io->close();
-            return;
+            return "";
         }
         read = io->readBlock( response.data() + offs, CHUNK_SIZE );
         offs += read;
@@ -58,19 +52,34 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
     if(read<0) {
         connectionError = true; 
         error = QObject::tr("Cannot load a page. %1").arg(io->errorString());
-        return;
+        return "";
     }
+    response.truncate(offs);
+    QString ret(response);
 
-    if(response.isEmpty() || response.indexOf("<!--QBlastInfoBegin\n") == -1) {
+    return QString(response);
+}
+
+void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
+    QString request = host;
+    request.append(params);
+    request.append("&OLD_VIEW=true");
+    addParametr(request,ReqParams::sequence,query);
+    QString response = runHttpRequest(request);
+    if(response.indexOf("301 Moved Permanently") != -1) {
+        int start = response.indexOf("href=") + 6;
+        QString req2 = response.mid(start, response.lastIndexOf(">here</a>")-start - 1);
+        req2.remove("amp;");
+        response = runHttpRequest(req2);
+    }else{
         connectionError = true; 
-        error = QObject::tr("Empty response");
+        error = QObject::tr("Unacceptable response");
         return;
     }
-    
     ResponseBuffer buf;
-    buf.setBuffer(&response);
+    QByteArray qbResponse(response.toLatin1());
+    buf.setBuffer(&qbResponse);
     buf.open(QIODevice::ReadOnly);
-
     QByteArray b = buf.readLine();
     while(b!=QString("<!--QBlastInfoBegin\n").toLatin1()) {
         if(task->isCanceled()) {
@@ -117,40 +126,18 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
                 rTask->increaseProgress();
             }
         }
-
-        if(!io->open(request,IOAdapterMode_Read )) {
-            connectionError = true; 
-            error = QObject::tr("Cannot open the IO adapter");
-            return;
-        }
-        offs = 0;
-        read = 0;
-        response.resize(CHUNK_SIZE);
-        response.fill(0);
-        do {
-            if(rTask->isCanceled()) {
-                io->close();
-                return;
-            }
-            read = io->readBlock( response.data() + offs, CHUNK_SIZE );
-            offs += read;
-            response.resize( offs + CHUNK_SIZE );
-        } while( read == CHUNK_SIZE );
-        response.resize(offs);
-        io->close();
-
-        if(read<0) {
-            connectionError = true; 
-            error = QObject::tr("Cannot load a page. %1").arg(io->errorString());
-            return;
-        }
-        
+        response = runHttpRequest(request);
         if(response.isEmpty()){
             connectionError = true; 
             error = QObject::tr("The response is empty");
             return;
         } 
-
+        if(response.indexOf("301 Moved Permanently") != -1) {
+            int start = response.indexOf("href=") + 6;
+            QString req2 = response.mid(start, response.lastIndexOf(">here</a>")-start - 1);
+            req2.remove("amp;");
+            response = runHttpRequest(req2);
+        }
         if(slowdown < 32) {
             slowdown *= 2; //If attempt was unsuccessful, progress bar slows down
         }
@@ -162,9 +149,9 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
         error = QObject::tr("Database couldn't prepare the response. You can increase timeout and perform search again.");
         return;
     }
-    output = response;
-    
-    parseResult(response);
+
+    output = response.toLatin1();
+    parseResult(response.toLatin1());
 }
 
 QByteArray HttpRequestBLAST::getOutputFile() {

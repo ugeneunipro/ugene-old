@@ -65,6 +65,7 @@ private:
             msleep(mseconds);
         }
     };
+    QString runHttpRequest(QString request);
     static const QString host;
     QByteArray output;
     void parseHit(const QDomNode &xml);
