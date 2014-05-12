@@ -564,8 +564,11 @@ void AnnotatedDNAView::addRemoveMenu(QMenu* m) {
 
 void AnnotatedDNAView::addEditMenu(QMenu* m) {
     ADVSequenceObjectContext* seqCtx = getSequenceInFocus();
+    SAFE_POINT(NULL != seqCtx, "Sequence in focus is NULL", );
     U2SequenceObject *seqObj = seqCtx->getSequenceObject();
+    SAFE_POINT(NULL != seqObj, "Sequence object in focus is NULL", );
     Document *curDoc = seqObj->getDocument();
+    SAFE_POINT(NULL != curDoc, "Current document is NULL", );
     QMenu* rm = m->addMenu(tr("Edit sequence"));
     
     if(curDoc->findGObjectByType(GObjectTypes::SEQUENCE).isEmpty() || curDoc->isStateLocked()){
