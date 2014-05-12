@@ -25,7 +25,7 @@
 
 namespace U2 {
 
-const QString HttpRequestBLAST::host = "http://www.ncbi.nlm.nih.gov/blast/Blast.cgi?"; 
+const QString HttpRequestBLAST::host = "http://blast.ncbi.nlm.nih.gov/Blast.cgi?"; 
 
 QString HttpRequestBLAST::runHttpRequest(QString request){
     IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::HTTP_FILE );
@@ -64,6 +64,7 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
     QString request = host;
     request.append(params);
     request.append("&OLD_VIEW=true");
+    request.append("&TOOL=ugene&EMAIL=ugene-ncbi-blast@unipro.ru");
     addParametr(request,ReqParams::sequence,query);
     QString response = runHttpRequest(request);
     if(response.indexOf("301 Moved Permanently") != -1) {
