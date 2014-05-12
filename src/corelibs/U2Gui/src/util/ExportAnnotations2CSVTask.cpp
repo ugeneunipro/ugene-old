@@ -101,6 +101,7 @@ void ExportAnnotations2CSVTask::run( ) {
     if ( exportSequence ) {
         columnNames << tr( "Sequence" );
     }
+
     foreach ( const Annotation &annotation, annotations ) {
         foreach ( const U2Qualifier &qualifier, annotation.getQualifiers( ) ) {
             const QString &qName = qualifier.name;
@@ -113,6 +114,7 @@ void ExportAnnotations2CSVTask::run( ) {
     writeCSVLine( columnNames, ioAdapter.data( ), separator, stateInfo );
     CHECK_OP( stateInfo, );
 
+    bool noComplementarySequence = false;
     foreach ( const Annotation &annotation, annotations ) {
         foreach( const U2Region &region, annotation.getRegions( ) ) {
             QStringList values;
@@ -131,8 +133,13 @@ void ExportAnnotations2CSVTask::run( ) {
             if ( exportSequence ) {
                 QByteArray sequencePart = sequence.mid( region.startPos, region.length );
                 if ( isComplementary ) {
-                    complementTranslation->translate( sequencePart.data( ), sequencePart.size( ) );
-                    TextUtils::reverse( sequencePart.data( ), sequencePart.size( ) );
+                    if ( complementTranslation != NULL ) {
+                        complementTranslation->translate( sequencePart.data( ), sequencePart.size( ) );
+                        TextUtils::reverse( sequencePart.data( ), sequencePart.size( ) );
+                    } else {
+                        noComplementarySequence = true;
+                        sequencePart.clear();
+                    }
                 }
                 values << sequencePart;
             }
@@ -150,6 +157,9 @@ void ExportAnnotations2CSVTask::run( ) {
             writeCSVLine( values, ioAdapter.data( ), separator, stateInfo );
             CHECK_OP( stateInfo, );
         }
+    }
+    if (noComplementarySequence) {
+        taskLog.error(tr("Attaching a sequence to an annotation was ignored. The annotation is on the complementary strand. Can not generate a complementary sequence for a non-nucleic alphabet."));
     }
 }
 
