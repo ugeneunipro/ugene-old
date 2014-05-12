@@ -71,10 +71,6 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
         QString req2 = response.mid(start, response.lastIndexOf(">here</a>")-start - 1);
         req2.remove("amp;");
         response = runHttpRequest(req2);
-    }else{
-        connectionError = true; 
-        error = QObject::tr("Unacceptable response");
-        return;
     }
     ResponseBuffer buf;
     QByteArray qbResponse(response.toLatin1());
