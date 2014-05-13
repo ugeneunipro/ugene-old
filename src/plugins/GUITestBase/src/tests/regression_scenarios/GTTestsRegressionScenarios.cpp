@@ -1665,8 +1665,7 @@ GUI_TEST_CLASS_DEFINITION( test_1919 )
 
     GTLogTracer l;
 
-    QMenu *menu=GTMenu::showMainMenu( os, MWMENU_TOOLS );
-    GTMenu::clickMenuItemByName( os, menu, QStringList() << "Workflow Designer" );
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsWorkflowDesigner::addAlgorithm( os, "File List" );
     GTUtilsWorkflowDesigner::addAlgorithm( os, "File Format Conversion" );
