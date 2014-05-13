@@ -227,7 +227,7 @@ void CircularViewContext::sl_showCircular() {
     ADVSingleSequenceWidget* sw = qobject_cast<ADVSingleSequenceWidget*>(a->seqWidget);
     assert(a!=NULL);
     if (a->isChecked()) {
-        a->setText(tr("Remove circular view"));
+        a->setText(tr("Show circular view"));
         assert(a->view == NULL);
         CircularViewSplitter* splitter = getView(sw->getAnnotatedDNAView(), true);
         a->view = new CircularView(sw, sw->getSequenceContext());
@@ -236,7 +236,7 @@ void CircularViewContext::sl_showCircular() {
         sw->getAnnotatedDNAView()->insertWidgetIntoSplitter(splitter);
         splitter->adaptSize();
     } else {
-        a->setText(tr("Show circular view"));
+        a->setText(tr("Remove circular view"));
         assert(a->view!=NULL);
         CircularViewSplitter* splitter = getView(sw->getAnnotatedDNAView(), false);
         if(splitter != NULL) {

@@ -241,19 +241,17 @@ GObject* U2SequenceObject::clone(const U2DbiRef& dbiRef, U2OpStatus& os) const {
 void U2SequenceObject::setCircular(bool isCircular) {
 
     TriState newVal = isCircular ? TriState_Yes : TriState_No;
-    if ( newVal == cachedCircular ) {
-        return;
+    if ( newVal != cachedCircular ) {
+        U2OpStatus2Log os;
+        DbiConnection con(entityRef.dbiRef, os);
+        CHECK_OP(os, );
+        U2Sequence u2seq = con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os);
+        CHECK_OP(os, );
+        u2seq.circular = isCircular;
+        con.dbi->getSequenceDbi()->updateSequenceObject(u2seq,os);
+        CHECK_OP(os, );
+        cachedCircular = newVal;
     }
-
-    U2OpStatus2Log os;
-    DbiConnection con(entityRef.dbiRef, os);
-    CHECK_OP(os, );
-    U2Sequence u2seq = con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os);
-    CHECK_OP(os, );
-    u2seq.circular = isCircular;
-    con.dbi->getSequenceDbi()->updateSequenceObject(u2seq,os);
-    CHECK_OP(os, );
-    cachedCircular = newVal;
     emit si_sequenceCircularStateChanged();
 }
 
