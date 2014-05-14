@@ -46,6 +46,7 @@ ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName, Tas
 ExternalToolJustValidateTask::ExternalToolJustValidateTask(const QString& _toolName, const QString& path) :
     ExternalToolValidateTask(_toolName, TaskFlag_None),
     externalToolProcess(NULL),
+    isAlreadyFinished(false),
     startTime(0)
 {
     toolPath = path;
@@ -111,6 +112,7 @@ void ExternalToolJustValidateTask::run() {
         externalToolProcess = new QProcess();
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         externalToolProcess->setProcessEnvironment(env);
+        connect(externalToolProcess, SIGNAL(finished(int)), SLOT(sl_processFinish()));
 
         externalToolProcess->start(validation.executableFile, validation.arguments);
         bool started = externalToolProcess->waitForStarted(3000);
@@ -131,7 +133,13 @@ void ExternalToolJustValidateTask::run() {
             isValid = false;
             return;
         }
-        while (!externalToolProcess->waitForFinished(1000)) {
+
+
+        if (isAlreadyFinished) {
+            algoLog.trace("Great! That was the reason of external tools validation hanging");
+        }
+
+        while (!externalToolProcess->waitForFinished(1000) && !isAlreadyFinished) {
             if (isCanceled()) {
                 cancelProcess();
             }
@@ -173,6 +181,10 @@ Task::ReportResult ExternalToolJustValidateTask::report() {
 
 void ExternalToolJustValidateTask::cancelProcess() {
     externalToolProcess->kill();
+}
+
+void ExternalToolJustValidateTask::sl_processFinish() {
+    isAlreadyFinished = true;
 }
 
 bool ExternalToolJustValidateTask::parseLog(const ExternalToolValidation& validation) {

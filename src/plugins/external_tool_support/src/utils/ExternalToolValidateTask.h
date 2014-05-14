@@ -64,6 +64,9 @@ public:
 
     void cancelProcess();
 
+private slots:
+    void sl_processFinish();
+
 private:
     bool parseLog(const ExternalToolValidation& validation);
     void checkVersion(const QString& partOfLog);
@@ -78,6 +81,7 @@ private:
     QString     lastOutLine;
 
     QProcess*   externalToolProcess;
+    bool        isAlreadyFinished;
 
     qint64      startTime;
 };
