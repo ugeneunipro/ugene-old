@@ -42,7 +42,7 @@ const QString SslConfig::SSLV2 = "SslV2";
 const QString SslConfig::SSLV3 = "SslV3";
 
 const int RemoteRequestConfig::DEFAULT_REMOTE_REQUEST_TIMEOUT_SECONDS = 60;
-
+const QString RemoteRequestConfig::HTTP_BODY_SEPARATOR("HTTP_BODY_SEPARATOR");
 
 NetworkConfiguration::NetworkConfiguration() {
     Settings * s = AppContext::getSettings();

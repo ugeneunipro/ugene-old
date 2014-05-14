@@ -105,12 +105,24 @@ bool HttpFileAdapter::open( const QUrl& url, const QNetworkProxy & p)
     netManager->setProxy(p);
     connect(netManager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
     if(url.toString().length()>MAX_GET_LENGTH) {
-        QNetworkRequest netRequest(url);
-        reply=netManager->post(netRequest, url.toEncoded());
+        QStringList splittedStrings = url.toString().split(RemoteRequestConfig::HTTP_BODY_SEPARATOR);
+        if(splittedStrings.count() > 1) {
+            SAFE_POINT(2 == splittedStrings.count(), tr("Incorrect url string has been passed to HttpFileAdapter::open()"), false);
+            QString headerString = splittedStrings.at(0);
+            QString data = splittedStrings.at(1);
+            QNetworkRequest netRequest(headerString);
+            reply=netManager->post(netRequest, data.toLatin1());
+        }
+        else {
+            QNetworkRequest netRequest(url);
+            reply = netManager->post(netRequest, "");
+        }
     }
     else {
-        QNetworkRequest netRequest(url);
-        reply=netManager->get(netRequest);
+        QString urlString = url.toString();
+        urlString = urlString.replace(RemoteRequestConfig::HTTP_BODY_SEPARATOR, "&");
+        QNetworkRequest netRequest(urlString);
+        reply = netManager->get(netRequest);
     }
     connect( reply, SIGNAL(readyRead()), this, SLOT(add_data()), Qt::DirectConnection );
     connect( reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(progress(qint64,qint64)), Qt::DirectConnection );//+

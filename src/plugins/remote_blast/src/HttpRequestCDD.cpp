@@ -20,6 +20,7 @@
  */
 
 #include "HttpRequest.h"
+#include <U2Core/NetworkConfiguration.h>
 
 namespace U2 {
 
@@ -28,7 +29,8 @@ const QString HttpRequestCDD::host = "http://www.ncbi.nlm.nih.gov/Structure/cdd/
 void HttpRequestCDD::sendRequest(const QString &params,const QString &query) {
     QString request = host;
     request.append(params);
-    request.append("&seqinput=");
+    request.append(RemoteRequestConfig::HTTP_BODY_SEPARATOR);
+    request.append("seqinput=");
     request.append(query);
 
     IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( BaseIOAdapters::HTTP_FILE );

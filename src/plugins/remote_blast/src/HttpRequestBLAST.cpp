@@ -21,7 +21,7 @@
 
 #include "HttpRequest.h"
 #include "RemoteBLASTTask.h"
-
+#include <U2Core/NetworkConfiguration.h>
 
 namespace U2 {
 
@@ -65,7 +65,8 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
     request.append(params);
     request.append("&OLD_VIEW=true");
     request.append("&TOOL=ugene&EMAIL=ugene-ncbi-blast@unipro.ru");
-    addParametr(request,ReqParams::sequence,query);
+    request.append(RemoteRequestConfig::HTTP_BODY_SEPARATOR);
+    request.append(ReqParams::sequence + "=" + query);
     QString response = runHttpRequest(request);
     if(response.indexOf("301 Moved Permanently") != -1) {
         int start = response.indexOf("href=") + 6;
@@ -144,6 +145,11 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
     if(response.indexOf("Status=WAITING")!=-1 || response.indexOf("<BlastOutput>")==-1 || response.indexOf("</BlastOutput>")==-1){
         connectionError = true; 
         error = QObject::tr("Database couldn't prepare the response. You can increase timeout and perform search again.");
+        return;
+    }
+
+    if(response.contains("Error: CPU usage limit was exceeded")) {
+        error = QObject::tr("CPU usage limit in BLAST was exceeded, probably query sequence is too large");
         return;
     }
 

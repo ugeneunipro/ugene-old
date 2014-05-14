@@ -63,6 +63,7 @@ class U2CORE_EXPORT RemoteRequestConfig
 {
 public:
     static const int DEFAULT_REMOTE_REQUEST_TIMEOUT_SECONDS;
+    static const QString HTTP_BODY_SEPARATOR;
 
     RemoteRequestConfig() {}
     int remoteRequestTimeout;
