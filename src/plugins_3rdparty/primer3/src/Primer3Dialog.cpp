@@ -334,20 +334,12 @@ bool Primer3Dialog::doDataExchange()
     if (ui.spanIntronExonBox->isChecked()) {
         SpanIntronExonBoundarySettings s;
         s.enabled = true;
-        if (ui.downloadFeaturesButton->isChecked()){
-            if (!ui.rnaSeqIdEdit->text().isEmpty()) {
-                s.mRnaSeqId = ui.rnaSeqIdEdit->text();
-            } else {
-                showInvalidInputMessage(ui.rnaSeqIdEdit, "mRNA sequence ID");
-                return false;
-            }
-        } else {
-            s.mRnaSeqId.clear();
-        }
-
+        s.exonAnnotationName = ui.exonNameEdit->text();
+        s.maxPairsToQuery = ui.maxPairsBox->value();
         s.minLeftOverlap = ui.leftOverlapSizeSpinBox->value();
         s.minRightOverlap = ui.rightOverlapSizeSpinBox->value();
         s.spanIntron = ui.spanIntronCheckBox->isChecked();
+        s.overlapExonExonBoundary = ui.spanJunctionBox->isChecked();
 
         settings.setSpanIntronExonBoundarySettings(s);
 

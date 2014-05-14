@@ -40,14 +40,17 @@ struct SpanIntronExonBoundarySettings {
         enabled = false;
         minLeftOverlap = 7;
         minRightOverlap = 7;
+        maxPairsToQuery = 1000;
         spanIntron = false;
         overlapExonExonBoundary = false;
+        exonAnnotationName = "exon";
 
     }
 
     bool enabled;
-    QString mRnaSeqId;
+    QString exonAnnotationName;
     bool overlapExonExonBoundary;
+    int maxPairsToQuery;
     int minLeftOverlap, minRightOverlap;
     bool spanIntron;
     QList<U2Region> regionList;

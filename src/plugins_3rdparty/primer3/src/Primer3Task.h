@@ -113,6 +113,7 @@ public:
     void run();
     Task::ReportResult report();
     void sumStat(Primer3TaskSettings *st);
+    void selectPairsSpanningExonJunction(primers_t& primers, int toReturn);
     void selectPairsSpanningIntron(primers_t& primers, int toReturn);
 
     const QList<PrimerPair>& getBestPairs()const { return bestPairs; }

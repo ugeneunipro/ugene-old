@@ -35,22 +35,15 @@ namespace U2 {
 
 extern Logger log( "Span Exon/Intron Regions" );
 
-FindExonRegionsTask::FindExonRegionsTask( U2SequenceObject *dObj, const QString &rnaSeqId )
-    : Task( "FindExonRegionsTask", TaskFlags_NR_FOSCOE ), dnaObj( dObj )
+FindExonRegionsTask::FindExonRegionsTask( U2SequenceObject *dObj, const QString &annName )
+    : Task( "FindExonRegionsTask", TaskFlags_NR_FOSCOE ), dnaObj( dObj ), exonAnnName(annName)
 {
-    if ( !rnaSeqId.isEmpty( ) ) {
-        loadDocumentTask = new LoadRemoteDocumentTask( rnaSeqId, "genbank" );
-    } else {
-        loadDocumentTask = NULL;
-    }
 
-    alignmentTask = NULL;
+
 }
 
 void FindExonRegionsTask::prepare( ) {
-    if ( loadDocumentTask ) {
-        addSubTask( loadDocumentTask );
-    }
+
 }
 
 QList<Task *> FindExonRegionsTask::onSubTaskFinished(Task *subTask) {
@@ -60,7 +53,10 @@ QList<Task *> FindExonRegionsTask::onSubTaskFinished(Task *subTask) {
         return res;
     }
 
-    if ( subTask == loadDocumentTask ) {
+    // K.O.(14.05.2014):
+    // This code is not required anymore, but it's a nice example on how to call SplicedAlignment
+
+    /*if ( subTask == loadDocumentTask ) {
         Document *doc = loadDocumentTask->getDocument( );
         QList<GObject *> objects = doc->findGObjectByType( GObjectTypes::SEQUENCE );
         if ( objects.isEmpty( ) ) {
@@ -89,40 +85,39 @@ QList<Task *> FindExonRegionsTask::onSubTaskFinished(Task *subTask) {
         foreach ( const AnnotationData &ann, results ) {
             exonRegions.append( ann.location->regions.toList( ) );
         }
-    }
+    }*/
 
     return res;
 }
 
 Task::ReportResult FindExonRegionsTask::report( ) {
-    if ( NULL == loadDocumentTask) {
-        QList<GObject *> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole( dnaObj,
-            GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE,
-            dnaObj->getDocument( )->getObjects( ), UOF_LoadedOnly );
+    QList<GObject *> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole( dnaObj,
+                                                                               GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE,
+                                                                               dnaObj->getDocument( )->getObjects( ), UOF_LoadedOnly );
 
-        AnnotationTableObject *att = relAnns.isEmpty( ) ? NULL
-            : qobject_cast<AnnotationTableObject *>( relAnns.first( ) );
-        
-        if ( NULL == att ) {
-            setError( tr( "Failed to search for exon annotations. "
-                "The sequence %1 doesn't have any related annotations." )
-                .arg( dnaObj->getSequenceName( ) ) );
-            return ReportResult_Finished;
-        }
+    AnnotationTableObject *att = relAnns.isEmpty( ) ? NULL
+                                                    : qobject_cast<AnnotationTableObject *>( relAnns.first( ) );
 
-        const QList<Annotation> anns = att->getAnnotations( );
+    if ( NULL == att ) {
+        setError( tr( "Failed to search for exon annotations. "
+                      "The sequence %1 doesn't have any related annotations." )
+                  .arg( dnaObj->getSequenceName( ) ) );
+        return ReportResult_Finished;
+    }
 
-        foreach ( const Annotation &ann, anns ) {
-            if ( ann.getName( ) == "exon" ) {
-                foreach ( const U2Region &r, ann.getRegions( ) ) {
-                    exonRegions.append( r );
-                }
+    const QList<Annotation> anns = att->getAnnotations( );
+
+    foreach ( const Annotation &ann, anns ) {
+        if ( ann.getName( ) == exonAnnName ) {
+            foreach ( const U2Region &r, ann.getRegions( ) ) {
+                exonRegions.append( r );
             }
         }
-
-
-        qSort( exonRegions );
     }
+
+
+    qSort( exonRegions );
+
 
     return ReportResult_Finished;
 }

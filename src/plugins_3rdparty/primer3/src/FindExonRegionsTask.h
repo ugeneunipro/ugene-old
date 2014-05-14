@@ -36,7 +36,7 @@ class FindExonRegionsTask : public Task
     Q_OBJECT
 public:
                                 FindExonRegionsTask( U2SequenceObject *dnaObj,
-                                    const QString &rnaSeqId );
+                                    const QString &exonAnnotaitonName );
     QList<U2Region>             getRegions( ) { return exonRegions; }
 
     void                        prepare( );
@@ -45,9 +45,8 @@ public:
 
 private:
     QList<U2Region>             exonRegions;
-    U2SequenceObject *          dnaObj;
-    LoadRemoteDocumentTask *    loadDocumentTask;
-    SplicedAlignmentTask *      alignmentTask;
+    U2SequenceObject *          dnaObj;    
+    QString                     exonAnnName;
 };
 
 } // namespace U2

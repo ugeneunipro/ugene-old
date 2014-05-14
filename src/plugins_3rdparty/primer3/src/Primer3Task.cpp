@@ -422,14 +422,18 @@ void Primer3Task::run()
     bool spanExonsEnabled = settings.getSpanIntronExonBoundarySettings().enabled;
     int toReturn = settings.getPrimerArgs()->num_return;
     if (spanExonsEnabled) {
-        settings.getPrimerArgs()->num_return = 5000; // not an optimal algorithm
+        settings.getPrimerArgs()->num_return = settings.getSpanIntronExonBoundarySettings().maxPairsToQuery; // not an optimal algorithm
     }
     primers_t primers = runPrimer3(settings.getPrimerArgs(), settings.getSeqArgs(), &stateInfo.cancelFlag, &stateInfo.progress);
 
     bestPairs.clear();
 
     if (settings.getSpanIntronExonBoundarySettings().enabled) {
-        selectPairsSpanningIntron(primers, toReturn);
+        if (settings.getSpanIntronExonBoundarySettings().overlapExonExonBoundary) {
+            selectPairsSpanningExonJunction(primers, toReturn);
+        } else {
+            selectPairsSpanningIntron(primers, toReturn);
+        }
     } else {
 
         for(int index = 0;index < primers.best_pairs.num_pairs;index++)
@@ -523,6 +527,7 @@ void Primer3Task::sumStat(Primer3TaskSettings *st) {
     st->getSeqArgs()->pair_expl.ok += settings.getSeqArgs()->pair_expl.ok;
 }
 
+
 // TODO: reuse functions from U2Region!
 static QList<int> findIntersectingRegions(const QList<U2Region>& regions, int start, int length) {
     QList<int> indexes;
@@ -539,6 +544,56 @@ static QList<int> findIntersectingRegions(const QList<U2Region>& regions, int st
     return indexes;
 }
 
+
+static bool pairIntersectsJunction(const primer_rec* primerRec, const QVector<qint64>& junctions, int minLeftOverlap, int minRightOverlap) {
+
+    U2Region primerRegion(primerRec->start, primerRec->length);
+
+    foreach (qint64 junctionPos, junctions) {
+        U2Region testRegion(junctionPos - minLeftOverlap, minLeftOverlap + minRightOverlap);
+        if (primerRegion.contains(testRegion)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void Primer3Task::selectPairsSpanningExonJunction(primers_t &primers, int toReturn)
+{
+    int minLeftOverlap = settings.getSpanIntronExonBoundarySettings().minLeftOverlap;
+    int minRightOverlap = settings.getSpanIntronExonBoundarySettings().minRightOverlap;
+
+    QVector<qint64> junctionPositions;
+    const QList<U2Region>& regions = settings.getExonRegions();
+    for (int i = 0; i < regions.size() - 1; ++i) {
+        qint64 end = regions.at(i).endPos();
+        junctionPositions.push_back( end );
+    }
+
+    for(int index = 0;index < primers.best_pairs.num_pairs;index++)
+    {
+        const primer_pair& pair  = primers.best_pairs.pairs[index];
+        const primer_rec* left = pair.left;
+        const primer_rec* right = pair.right;
+
+
+        if (pairIntersectsJunction(left, junctionPositions, minLeftOverlap, minRightOverlap )
+                || pairIntersectsJunction(right, junctionPositions, minLeftOverlap, minRightOverlap)) {
+            bestPairs.append(PrimerPair(pair,offset));
+        }
+
+        if (bestPairs.size() == toReturn) {
+            break;
+        }
+
+    }
+
+
+
+}
+
+
 void Primer3Task::selectPairsSpanningIntron(primers_t& primers, int toReturn)
 {
     const QList<U2Region>& regions = settings.getExonRegions();
@@ -553,7 +608,7 @@ void Primer3Task::selectPairsSpanningIntron(primers_t& primers, int toReturn)
 
 
         int numIntersecting = 0;
-        U2Region rightRegion(right->start, left->start);
+        U2Region rightRegion(right->start, right->length);
         foreach (int idx, regionIndexes) {
             const U2Region& exonRegion = regions.at(idx);
             if (exonRegion.intersects(rightRegion)) {
@@ -654,7 +709,7 @@ Task(tr("Search primers to annotations"), /*TaskFlags_NR_FOSCOE*/TaskFlags(TaskF
 void Primer3ToAnnotationsTask::prepare()
 {
     if (settings.getSpanIntronExonBoundarySettings().enabled) {
-        findExonsTask = new FindExonRegionsTask(seqObj,settings.getSpanIntronExonBoundarySettings().mRnaSeqId);
+        findExonsTask = new FindExonRegionsTask(seqObj,settings.getSpanIntronExonBoundarySettings().exonAnnotationName);
         addSubTask(findExonsTask);
     } else {
         searchTask = new Primer3SWTask(settings);
@@ -683,24 +738,13 @@ QList<Task *> Primer3ToAnnotationsTask::onSubTaskFinished(Task *subTask)
             return res;
         } else {
             settings.setExonRegions(regions);
+            // reset target and excluded regions regions
+            QList<QPair<int,int> > emptyList;
+            settings.setExcludedRegion(emptyList);
+            settings.setTarget(emptyList);
+
         }
 
-
-        if (settings.getSpanIntronExonBoundarySettings().overlapExonExonBoundary) {
-            // TODO: UGENE-955
-            /*if (regions.size() > 1) {
-                QList<QPair<int,int> > excluded;
-                for (int i = 1; i < regions.size(); ++i) {
-                    const U2Region& firstRegion = regions.at(i-1);
-                    int intronStart = firstRegion.endPos() - settings.getSpanIntronExonBoundarySettings().minLeftOverlap;
-                    const U2Region& secondRegion = regions.at(i);
-                    int intronEnd = secondRegion.startPos + settings.getSpanIntronExonBoundarySettings().minRightOverlap;
-                    excluded.append(QPair<int,int>(intronStart,intronEnd));
-                }
-                settings.setInternalOligoExcludedRegion(excluded);
-            }*/
-        }
-        
         searchTask = new Primer3SWTask(settings);
         res.append(searchTask);
 
