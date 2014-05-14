@@ -43,9 +43,9 @@ QValidator::State GenbankLocationValidator::validate( QString &str, int &ii ) co
     U2Location loc;
     QString parseError;
     if(isCircular){
-        parseError = Genbank::LocationParser::parseLocation(str.toLatin1().constData(), ii, loc, seqLen );
+        parseError = Genbank::LocationParser::parseLocation(str.toLatin1().constData(), str.length(), loc, seqLen );
     }else{
-        parseError = Genbank::LocationParser::parseLocation(str.toLatin1().constData(), ii, loc, -1 );
+        parseError = Genbank::LocationParser::parseLocation(str.toLatin1().constData(), str.length(), loc, -1 );
     }
     if(parseError.isEmpty()){
         if (loc.data()->isEmpty()){
