@@ -626,13 +626,13 @@ FASTQIterator::FASTQIterator(const QString &fileUrl)
     : seq(NULL)
 {
     fp = gzopen(fileUrl.toLatin1().constData(), "r"); // STEP 2: open the file handler
-    seq = kseq_init(fp);
+    seq = kseq_init(static_cast<gzFile>(fp));
     fetchNext();
 }
 
 FASTQIterator::~FASTQIterator(){
     kseq_destroy(static_cast<kseq_t *>(seq));
-    gzclose(fp);
+    gzclose(static_cast<gzFile>(fp));
 }
 
 DNASequence FASTQIterator::next(){
