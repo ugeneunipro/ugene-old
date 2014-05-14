@@ -6,7 +6,6 @@ BUILD_DIR=./debug_bundle
 DEBUG_DIR=../../src/_debug
 TARGET_APP_DIR="$BUILD_DIR/${PRODUCT_NAME}.app/"
 TARGET_EXE_DIR="${TARGET_APP_DIR}/Contents/MacOS"
-PATH_TO_QT="/usr/local/Trolltech/Qt-4.8.5/lib"
 
 source bundle_common_debug.sh
 
@@ -53,22 +52,6 @@ cp "$DEBUG_DIR/ugenem.app/Contents/MacOS/ugenem" "$TARGET_EXE_DIR"
 echo copying console binary
 cp "$DEBUG_DIR/ugenecld.app/Contents/MacOS/ugenecld" "$TARGET_EXE_DIR"
 changeCoreInstallNames ugenecld
-changeQtInstallNames ugenecld
-
-#echo copying qt libraries - plugin dependencies
-#cp $PATH_TO_QT/libQtOpenGL_debug.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtOpenGL_debug.4.dylib"
-#install_name_tool -id @executable_path/../Frameworks/libQtOpenGL_debug.4.dylib ${TARGET_EXE_DIR}/../Frameworks/libQtOpenGL_debug.4.dylib
-#changeQtInstallNames ../Frameworks/libQtOpenGL_debug.4.dylib
-#cp $PATH_TO_QT/libQtSvg_debug.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtSvg_debug.4.dylib"
-#install_name_tool -id @executable_path/../Frameworks/libQtSvg_debug.4.dylib ${TARGET_EXE_DIR}/../Frameworks/libQtSvg_debug.4.dylib
-#changeQtInstallNames ../Frameworks/libQtSvg_debug.4.dylib
-#if [ "$1" == "-test" ]
-    #then
-        #cp $PATH_TO_QT/libQtTest_debug.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtTest_debug.4.dylib"
-        #install_name_tool -id @executable_path/../Frameworks/libQtTest_debug.4.dylib ${TARGET_EXE_DIR}/../Frameworks/libQtTest_debug.4.dylib
-        #changeQtInstallNames ../Frameworks/libQtTest_debug.4.dylib
-#fi
-
 
 echo Copying core shared libs
 
@@ -137,19 +120,3 @@ if [ "$1" == "-test" ]
       add-plugin test_runner
       add-plugin GUITestBase
 fi
-
-#echo
-#echo macdeployqt running...
-#macdeployqt "$TARGET_APP_DIR" -verbose=2 -use-debug-libs
-
-# Do not make dmg from debug build
-#if [ ! "$1" ] 
-   #then
-      #echo
-      #echo pkg-dmg running...
-      #./pkg-dmg --source $BUILD_DIR --target ugene-${VERSION}-mac-x86-r${BUILD_VCS_NUMBER_new_trunk} --license ./LICENSE.with_3rd_party --volname "Unipro UGENE $VERSION" --symlink /Applications
-    
-#fi
-
-
- 

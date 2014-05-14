@@ -9,10 +9,6 @@ TARGET_APP_DIR="$BUILD_DIR/${PRODUCT_NAME}.app/"
 TARGET_APP_DIR_RENAMED="$BUILD_DIR/${PRODUCT_DISPLAY_NAME}.app/"
 TARGET_EXE_DIR="${TARGET_APP_DIR}/Contents/MacOS"
 
-if [ -z "$PATH_TO_QT" ]; then 
-    PATH_TO_QT="/usr/local/Trolltech/Qt-4.8.5/lib"
-fi
-
 source bundle_common.sh
 
 echo cleaning previous bundle
@@ -56,33 +52,7 @@ echo copying console binary
 cp "$RELEASE_DIR/ugenecl.app/Contents/MacOS/ugenecl" "$TARGET_EXE_DIR"
 changeCoreInstallNames ugenecl
 
-#if macdeployqt has argument -executable, use it, otherwise set qt libraries manually;
-MDQ_SUPPORT_EXE=`macdeployqt --help 2>&1 | grep "executable"`
-if [ -n "$MDQ_SUPPORT_EXE" ]; then
-    MAC_DEPLOY_QT_ARGS='-executable='$TARGET_EXE_DIR'/ugenecl -executable='$TARGET_EXE_DIR'/ugenem'
-    echo $MAC_DEPLOY_QT_ARGS
-else
-    changeQtInstallNames ugenecl
-    changeQtInstallNames ugenem
-
-    echo copying qt libraries - plugin dependencies
-    cp $PATH_TO_QT/libQtOpenGL.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtOpenGL.4.dylib"
-    install_name_tool -id @executable_path/../Frameworks/libQtOpenGL.4.dylib ${TARGET_EXE_DIR}/../Frameworks/libQtOpenGL.4.dylib
-    changeQtInstallNames ../Frameworks/libQtOpenGL.4.dylib
-    cp $PATH_TO_QT/libQtSvg.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtSvg.4.dylib"
-    install_name_tool -id @executable_path/../Frameworks/libQtSvg.4.dylib ${TARGET_EXE_DIR}/../Frameworks/libQtSvg.4.dylib
-    changeQtInstallNames ../Frameworks/libQtSvg.4.dylib
-    if [ "$1" == "-test" ]
-        then
-            cp $PATH_TO_QT/libQtTest.4.dylib "${TARGET_EXE_DIR}/../Frameworks/libQtTest.4.dylib"
-            install_name_tool -id @executable_path/../Frameworks/libQtTest.4.dylib ${TARGET_EXE_DIR}/../Frameworks/libQtTest.4.dylib
-            changeQtInstallNames ../Frameworks/libQtTest.4.dylib
-    fi
-fi
-
 cp ./ugene "$TARGET_EXE_DIR"
-#deprecated:
-#cp ./install.sh "$TARGET_EXE_DIR"
 
 echo Copying core shared libs
 
@@ -105,56 +75,73 @@ fi
 
 echo Copying plugins
 
-add-plugin annotator
-add-plugin ball
-add-plugin biostruct3d_view
-add-plugin browser_support
-add-plugin chroma_view
-add-plugin circular_view
-add-plugin dbi_bam
-add-plugin dna_export
-add-plugin dna_flexibility
-add-plugin dna_graphpack
-add-plugin dna_stat
-add-plugin dotplot
-add-plugin enzymes
-add-plugin expert_discovery
-add-plugin external_tool_support
-add-plugin genome_aligner
-add-plugin gor4
-add-plugin hmm2
-add-plugin hmm3
-add-plugin kalign
-add-plugin linkdata_support
-add-plugin opencl_support
-add-plugin orf_marker
-#add-plugin perf_monitor
-add-plugin phylip
-add-plugin primer3
-add-plugin psipred
-add-plugin ptools
-add-plugin query_designer
-add-plugin remote_blast
-add-plugin remote_service
-add-plugin repeat_finder
-add-plugin sitecon
-add-plugin smith_waterman
-add-plugin umuscle
-add-plugin variants
-add-plugin weight_matrix
-add-plugin workflow_designer
+# plugins to copy to the bundle
+# to ignore plugin remove it
+PLUGIN_LIST="annotator \
+            ball \
+            biostruct3d_view \
+            browser_support \
+            chroma_view \
+            circular_view \
+            dbi_bam \
+            dna_export \
+            dna_flexibility \
+            dna_graphpack \
+            dna_stat \
+            dotplot \
+            enzymes \
+            expert_discovery \
+            external_tool_support \
+            genome_aligner \
+            gor4 \
+            hmm2 \
+            hmm3 \
+            kalign \
+            linkdata_support \
+            opencl_support \
+            orf_marker \
+            phylip \
+            primer3 \
+            psipred \
+            ptools \
+            query_designer \
+            remote_blast \
+            remote_service \
+            repeat_finder \
+            sitecon \
+            smith_waterman \
+            umuscle \
+            variants \
+            weight_matrix \
+            workflow_designer"
+#perf_monitor - removed plugin
 
 if [ "$1" == "-test" ]
    then
-      add-plugin CoreTests
-      add-plugin GUITestBase
-      add-plugin test_runner
-      add-plugin api_tests
+   PLUGIN_LIST="$PLUGIN_LIST CoreTests \
+                             GUITestBase \
+                             test_runner \
+                             api_tests"
 fi
+
+for PLUGIN in $PLUGIN_LIST
+do
+    add-plugin $PLUGIN
+done
 
 echo
 echo macdeployqt running...
-macdeployqt "$TARGET_APP_DIR" $MAC_DEPLOY_QT_ARGS
+macdeployqt "$TARGET_APP_DIR" -executable="$TARGET_EXE_DIR"/ugenecl -executable="$TARGET_EXE_DIR"/ugenem
+
+# Do not use @loader_path that produced by macdeployqt with "-executable" argument,
+# it cause a crash with plugins loading (UGENE-2994)
+# Restore @executable_path:
+echo
+echo @executable_path restoring...
+for PLUGIN in $PLUGIN_LIST
+do
+    restorePluginsQtInstallNames $PLUGIN
+done
 
 mv "$TARGET_APP_DIR" "$TARGET_APP_DIR_RENAMED"
 

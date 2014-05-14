@@ -27,7 +27,6 @@ function add-plugin {
     cp "${RELEASE_DIR}/plugins/${PLUGIN_LIB}"  "${TARGET_EXE_DIR}/plugins/"
     cp "${RELEASE_DIR}/plugins/${PLUGIN_DESC}" "${TARGET_EXE_DIR}/plugins/"
     cp "${RELEASE_DIR}/plugins/${PLUGIN_LICENSE}" "${TARGET_EXE_DIR}/plugins/"
-    changeQtInstallNames "plugins/${PLUGIN_LIB}"
     changeCoreInstallNames "plugins/${PLUGIN_LIB}"
 }
 
@@ -44,7 +43,6 @@ function add-library {
     fi
 
     cp "${RELEASE_DIR}/${LIB_FILE}"  "${TARGET_EXE_DIR}/"
-    changeQtInstallNames "${LIB_FILE}"
     changeCoreInstallNames "${LIB_FILE}"		
 }
 
@@ -77,32 +75,45 @@ changeCoreInstallNames () {
 }
 
 
+# This function replaces @loader_path with @executable_path for UGENE plugins
+# for the specified Qt library
+# Supposed that Qt is build as frameworks
+restorePluginsQtInstallName () {
+    if [ "$1" ] && [ "$2" ]
+    then
+        install_name_tool -change @loader_path/../../Frameworks/$1.framework/Versions/4/$1 @executable_path/../Frameworks/$1.framework/Versions/4/$1 "$TARGET_EXE_DIR"/plugins/$2
+    else
+        echo "restorePluginsQtInstallName: not enough parameters"
+    fi
 
-#This function sets correct relative pathes for linking qt libraries
-changeQtInstallNames () {
-   if [ ! -e "$PATH_TO_QT/libQtCore.4.dylib" ]; then
-        return 0;
-   fi
+    return 0;
+}
+
+# This function replaces @loader_path with @executable_path for UGENE plugins
+# Supposed that Qt is build as frameworks
+restorePluginsQtInstallNames () {
    if [ "$1" ]
    then
-        echo "Changing qt install names for $1"
+        # TODO: it is better to get Qt library names to change from otool output
 
-       install_name_tool -change $PATH_TO_QT/libQtCore.4.dylib  @executable_path/../Frameworks/libQtCore.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtScript.4.dylib  @executable_path/../Frameworks/libQtScript.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtXml.4.dylib  @executable_path/../Frameworks/libQtXml.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtXmlPatterns.4.dylib  @executable_path/../Frameworks/libQtXmlPatterns.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtGui.4.dylib  @executable_path/../Frameworks/libQtGui.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtNetwork.4.dylib  @executable_path/../Frameworks/libQtNetwork.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtWebKit.4.dylib  @executable_path/../Frameworks/libQtWebKit.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libphonon.4.dylib  @executable_path/../Frameworks/libphonon.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtTest.4.dylib  @executable_path/../Frameworks/libQtTest.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtOpenGL.4.dylib @executable_path/../Frameworks/libQtOpenGL.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtSvg.4.dylib  @executable_path/../Frameworks/libQtSvg.4.dylib "$TARGET_EXE_DIR"/$1
+        echo "Restore qt install names for plugin $1"
+        PLUGIN_LIB="lib$1.dylib"
+
+        restorePluginsQtInstallName QtCore $PLUGIN_LIB
+        restorePluginsQtInstallName QtGui $PLUGIN_LIB
+        restorePluginsQtInstallName QtNetwork $PLUGIN_LIB
+        restorePluginsQtInstallName QtOpenGL $PLUGIN_LIB
+        restorePluginsQtInstallName QtScript $PLUGIN_LIB
+        restorePluginsQtInstallName QtScriptTools $PLUGIN_LIB
+        restorePluginsQtInstallName QtSvg $PLUGIN_LIB
+        restorePluginsQtInstallName QtTest $PLUGIN_LIB
+        restorePluginsQtInstallName QtWebKit $PLUGIN_LIB
+        restorePluginsQtInstallName QtXml $PLUGIN_LIB
+        restorePluginsQtInstallName QtXmlPatterns $PLUGIN_LIB
 
    else
-       echo "changeQtInstallNames: no parameter passed."
+       echo "restorePluginsQtInstallNames: no parameter passed."
    fi
 
    return 0
 }
-
