@@ -27,7 +27,6 @@ function add-plugin {
     cp "${DEBUG_DIR}/plugins/${PLUGIN_LIB}"  "${TARGET_EXE_DIR}/plugins/"
     cp "${DEBUG_DIR}/plugins/${PLUGIN_DESC}" "${TARGET_EXE_DIR}/plugins/"
     cp "${DEBUG_DIR}/plugins/${PLUGIN_LICENSE}" "${TARGET_EXE_DIR}/plugins/"
-    #changeQtInstallNames "plugins/${PLUGIN_LIB}"
     changeCoreInstallNames "plugins/${PLUGIN_LIB}"
 }
 
@@ -44,7 +43,6 @@ function add-library {
     fi
 
     cp "${DEBUG_DIR}/${LIB_FILE}"  "${TARGET_EXE_DIR}/"
-    #changeQtInstallNames "${LIB_FILE}"
     changeCoreInstallNames "${LIB_FILE}"		
 }
 
@@ -75,31 +73,3 @@ changeCoreInstallNames () {
 
    return 0
 }
-
-
-
-#This function sets correct relative pathes for linking qt libraries
-changeQtInstallNames () {
-   if [ "$1" ]
-   then
-        echo "Changing qt install names for $1"
-
-       install_name_tool -change $PATH_TO_QT/libQtCore_debug.4.dylib  @executable_path/../Frameworks/libQtCore_debug.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtScript_debug.4.dylib  @executable_path/../Frameworks/libQtScript_debug.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtXml_debug.4.dylib  @executable_path/../Frameworks/libQtXml_debug.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtXmlPatterns_debug.4.dylib  @executable_path/../Frameworks/libQtXmlPatterns_debug.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtGui_debug.4.dylib  @executable_path/../Frameworks/libQtGui_debug.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtNetwork_debug.4.dylib  @executable_path/../Frameworks/libQtNetwork_debug.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtWebKit_debug.4.dylib  @executable_path/../Frameworks/libQtWebKit_debug.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libphonon_debug.4.dylib  @executable_path/../Frameworks/libphonon_debug.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtTest_debug.4.dylib  @executable_path/../Frameworks/libQtTest_debug.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtOpenGL_debug.4.dylib @executable_path/../Frameworks/libQtOpenGL_debug.4.dylib "$TARGET_EXE_DIR"/$1
-       install_name_tool -change $PATH_TO_QT/libQtSvg_debug.4.dylib  @executable_path/../Frameworks/libQtSvg_debug.4.dylib "$TARGET_EXE_DIR"/$1
-
-   else
-       echo "changeQtInstallNames: no parameter passed."
-   fi
-
-   return 0
-}
-
