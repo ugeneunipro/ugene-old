@@ -59,7 +59,7 @@ void SendSelectionDialog::setUpSettings() {
     repeatsCheckBox->setChecked(s->getValue(SETTINGS_ROOT + REPEATS_SETTINGS, false).toBool());
     lookupMaskCheckBox->setChecked(s->getValue(SETTINGS_ROOT + LOOKUP_SETTINGS, false).toBool());
     lowerCaseCheckBox->setChecked(s->getValue(SETTINGS_ROOT + LOWCASE_SETTINGS, false).toBool());
-    retrySpinBox->setValue(s->getValue(SETTINGS_ROOT + RETRY_SETTINGS, 2).toInt());
+    retrySpinBox->setValue(s->getValue(SETTINGS_ROOT + RETRY_SETTINGS, 10).toInt());
     evalueRadioButton->setChecked(s->getValue(SETTINGS_ROOT + FILTER_SETTINGS, true).toBool());
     scoreRadioButton->setChecked(!s->getValue(SETTINGS_ROOT + FILTER_SETTINGS, true).toBool());
 }

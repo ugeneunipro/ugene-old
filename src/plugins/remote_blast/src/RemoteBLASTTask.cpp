@@ -26,6 +26,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/Timer.h>
 
 #include <U2Core/BaseDocumentFormats.h>
 
@@ -149,6 +150,16 @@ void RemoteBLASTTask::prepare() {
     timer.start(cfg.retries*1000*60*mult);
 }
 
+void RemoteBLASTTask::updateProgress() { 
+    if(stateInfo.progress >= 99) {
+        return;
+    }
+    int timeoutInSecs = timer.interval() / 1000;
+    int elapsedTime = GTimer::secsBetween(timeInfo.startTime, GTimer::currentTimeMicros());
+    int taskProgress = elapsedTime * 99 / timeoutInSecs;
+    stateInfo.progress = qMin(taskProgress, 99); 
+    emit si_progressChanged();
+}
 
 void RemoteBLASTTask::run() {	
     for( int i = 0;i < queries.count();i++ ) {

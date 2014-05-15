@@ -111,7 +111,7 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
     RemoteBLASTTask *rTask = qobject_cast<RemoteBLASTTask*>(task);
     int progr,timeout;
     progr = 50;
-    timeout = (rtoe + 5) * 20;
+    timeout = (rtoe + 5) * 10;
     int slowdown = 1;
     rTask->resetProgress();
 
@@ -120,9 +120,7 @@ void HttpRequestBLAST::sendRequest(const QString &params,const QString &query) {
             if(rTask->isCanceled())
                 return;
             Waiter::await(timeout*slowdown);
-            if(rTask->getProgress() < 99) {
-                rTask->increaseProgress();
-            }
+            rTask->updateProgress();
         }
         response = runHttpRequest(request);
         if(response.isEmpty()){
@@ -178,7 +176,7 @@ void HttpRequestBLAST::parseResult(const QByteArray &buf) {
 
     RemoteBLASTTask *rTask = qobject_cast<RemoteBLASTTask*>(task);
     for(int i = rTask->getProgress() ; i < 100 ; i++) {
-        rTask->increaseProgress();
+        rTask->updateProgress();
     }
 }
 

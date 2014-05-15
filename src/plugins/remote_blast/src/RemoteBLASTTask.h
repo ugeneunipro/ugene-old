@@ -82,7 +82,7 @@ public:
     void run();
     void prepare();
     bool isTranslated() const {return ( cfg.aminoT != NULL); }
-    void increaseProgress() { stateInfo.progress++; emit si_progressChanged();}
+    void updateProgress();
     void resetProgress() {stateInfo.progress = 0; emit si_progressChanged();}
     QByteArray getOutputFile() const {return httpRequest.first()->getOutputFile();}
 
