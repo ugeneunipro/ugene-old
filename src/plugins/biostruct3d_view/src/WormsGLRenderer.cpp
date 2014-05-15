@@ -28,7 +28,7 @@
 #include "WormsGLRenderer.h"
 
 
-namespace U2 { 
+namespace U2 {
 
 const QString WormsGLRenderer::ID(QObject::tr("Worms"));
 
@@ -71,14 +71,12 @@ void WormsGLRenderer::create() {
     const char* phosophorTag = "P";
     const char* carbonylOxygenTag = "O";
 
-    int numModels = bioStruct.modelMap.count();
-
     QMapIterator<int, SharedMolecule> i(bioStruct.moleculeMap);
     while (i.hasNext()) {
         i.next();
         const SharedMolecule mol = i.value();
         BioPolymer bioPolymer;
-        bioPolymer.bpModels.resize(numModels);
+        bioPolymer.bpModels.resize( mol->models.size() );
         int modelId = 0;
         foreach (const Molecule3DModel& model, mol->models) {
             BioPolymerModel& bpModel = bioPolymer.bpModels[modelId];
@@ -115,7 +113,7 @@ void WormsGLRenderer::drawWorms(  )
         foreach (int index, shownModels) {
             const WormModel& model = worm.models.at(index);
             //Draw worm bodies (let the bodies set the scene!!!)
-            const AtomsVector wormCoords = model.atoms; 
+            const AtomsVector wormCoords = model.atoms;
             int size = wormCoords.size();
             Color4f atomColor;
             for (int i = 0; i + 3 < size; ++i) {
@@ -152,7 +150,7 @@ void WormsGLRenderer::drawWorms(  )
                 glDrawHalfWorm(atomCoordLast, aN1->coord3d, aN2->coord3d, aN3->coord3d, ribbonThickness, true, false, tension, settings->detailLevel);
                 glDrawHalfWorm(aN3->coord3d, aN2->coord3d, aN1->coord3d, atomCoordLast, ribbonThickness, false, false, tension, settings->detailLevel);
             }
-            
+
             //Draw 3d objects
             if (shownModels.count() == 1) {
                 foreach( Object3D* obj, model.objects) {
@@ -183,7 +181,7 @@ void WormsGLRenderer::updateColorScheme()
              model.objects.clear();
          }
      }
-    
+
     //TODO: optimization -> don't have to create everything again
     createObjects3D();
 }
@@ -213,7 +211,7 @@ void WormsGLRenderer::createObjects3D()
                         obj = createHelix3D(startId, endId, bpModel);
                     } else if (ss->type == SecondaryStructure::Type_BetaStrand) {
                         obj = createStrand3D(startId, endId, bpModel);
-                    } 
+                    }
                     if (obj != NULL) {
                         wormMap[chainId].models[modelId].objects.append(obj);
                     }
@@ -240,7 +238,7 @@ void WormsGLRenderer::createWorms()
             Vector3D r1( iter.value().alphaCarbon.constData()->coord3d );
             Vector3D r2( ( atLeast2MonomersExist ? ++iter : iter ).value().alphaCarbon.constData()
                 ->coord3d );
-            
+
             Vector3D a( r1 );
             Vector3D b( (r2 - r1) / 100.f );
 
@@ -253,7 +251,7 @@ void WormsGLRenderer::createWorms()
             a = r1;
             b = (r2 - r1) / 100.f;
             wormModel.closingAtom = a + b * (-10.f);
-            // Add worm-building atom coords 
+            // Add worm-building atom coords
             foreach (const Monomer& monomer, monomers) {
                 const SharedAtom& atom = monomer.alphaCarbon;
                 wormModel.atoms.append(atom);
@@ -263,7 +261,7 @@ void WormsGLRenderer::createWorms()
         const int chainID = i.key();
         wormMap.insert(chainID, worm);
     }
-    
+
     createObjects3D();
 
 }
@@ -334,7 +332,7 @@ Object3D* WormsGLRenderer::createStrand3D( int startId, int endId, const BioPoly
         color[i] /= (endId - startId + 1);
     }
 
-    return new Strand3D(color, axis.first, axis.second); 
+    return new Strand3D(color, axis.first, axis.second);
 }
 
 } //namespace
