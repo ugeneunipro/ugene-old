@@ -45,6 +45,25 @@ MSASimpleOverview::MSASimpleOverview(MSAEditorUI *_ui)
     setVisible(false);
 }
 
+bool MSASimpleOverview::isValid() const {
+    if (width() < editor->getAlignmentLen() || height() < editor->getNumSequences()) {
+        return false;
+    }
+    return true;
+}
+
+
+QPixmap MSASimpleOverview::getView() {
+    resize(ui->width(), FIXED_HEIGTH);
+    if (cachedMSAOverview.isNull()) {
+        cachedMSAOverview = QPixmap(size());
+        QPainter pOverview(&cachedMSAOverview);
+        drawOverview(pOverview);
+        redrawMSAOverview = false;
+    }
+    return cachedMSAOverview;
+}
+
 void MSASimpleOverview::sl_visibleRangeChanged() {
     if (!isValid()) {
         return;
@@ -225,11 +244,5 @@ void MSASimpleOverview::moveVisibleRange(QPoint _pos) {
     sequenceArea->setFirstVisibleSequence(pos);
 }
 
-bool MSASimpleOverview::isValid() const {
-    if (width() < editor->getAlignmentLen() || height() < editor->getNumSequences()) {
-        return false;
-    }
-    return true;
-}
 
 } // namespace

@@ -22,7 +22,7 @@
 #include "CircularViewSplitter.h"
 #include "CircularView.h"
 #include "RestrictionMapWidget.h"
-#include "ExportImageCircularViewDialog.h"
+#include "CircularViewImageExporter.h"
 
 #include <U2Core/L10n.h>
 #include <U2Core/GObject.h>
@@ -31,6 +31,7 @@
 
 #include <U2Gui/HBar.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/ExportImageDialog.h>
 
 #include <QtGui/QPixmap>
 #include <QtGui/QPainter>
@@ -146,10 +147,10 @@ void CircularViewSplitter::addView(CircularView* view, RestrctionMapWidget* rmap
 
     splitter->addWidget(view);
     splitter->addWidget(rmapWidget);
-    
+
     splitter->setStretchFactor(splitter->indexOf(view), 10);
     splitter->setStretchFactor(splitter->indexOf(rmapWidget), 1);
-    
+
     connect(view, SIGNAL(si_wheelMoved(int)), SLOT(sl_moveSlider(int)));
 }
 
@@ -193,7 +194,9 @@ bool noValidExtension(const QString& url) {
 
 void CircularViewSplitter::sl_export() {
     CircularView* cv = circularViewList.last();
-    ExportImageCVDialog dialog(cv);
+
+    CircularViewImageExporter exporter(cv);
+    ExportImageDialog dialog(&exporter);
     dialog.exec();
     tbExport->setDown(false);
 }
@@ -207,7 +210,7 @@ void CircularViewSplitter::sl_horSliderMoved(int newVal) {
 void CircularViewSplitter::adaptSize() {
 
     QWidget* widget = parentWidget();
-    
+
     Q_ASSERT(widget != NULL);
     QSplitter* parentSplitter = qobject_cast<QSplitter* > (widget);
 

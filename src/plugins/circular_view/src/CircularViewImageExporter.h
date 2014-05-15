@@ -19,34 +19,39 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_EXPORT_IMAGE_CV_DIALOG_H_
-#define _U2_EXPORT_IMAGE_CV_DIALOG_H_
+#ifndef _U2_CIRCULAR_VIEW_IMAGE_EXPORTER_H_
+#define _U2_CIRCULAR_VIEW_IMAGE_EXPORTER_H_
 
-#include <U2Gui/ExportImageDialog.h>
+#include <U2Gui/ImageExporter.h>
 
 class QCheckBox;
 namespace U2 {
 
 class CircularView;
-class ExportImageCVDialog : public ExportImageDialog
+
+class CircularViewImageExporter : public ImageExporter
 {
     Q_OBJECT
-
 public:
-    ExportImageCVDialog(CircularView* widget);
+    CircularViewImageExporter(CircularView* cv);
 
-    virtual bool exportToSVG();
-    virtual bool exportToPDF();
-    virtual bool exportToBitmap();
+    virtual bool exportToSVG(const QString &filename) const;
+    virtual bool exportToPDF(const QString &filename, const QString &format) const;
+    virtual bool exportToBitmap(const QString &filename, const QString &format, const QSize &size, int quality) const;
+
+    int getImageWidth() const;
+    int getImageHeight() const;
+
+protected:
+    virtual void initSettingsWidget();
 
 private:
     CircularView*   cvWidget;
 
     QCheckBox*      includeMarkerCheckbox;
     QCheckBox*      includeSelectionCheckbox;
-
-}; // class ExportImageCVDialog
+}; // class CircularViewImageExporter
 
 } // namespace
 
-#endif
+#endif // _U2_CIRCULAR_VIEW_IMAGE_EXPORTER_H_

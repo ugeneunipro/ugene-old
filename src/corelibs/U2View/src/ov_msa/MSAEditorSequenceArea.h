@@ -115,32 +115,32 @@ private:
 class U2VIEW_EXPORT MSAEditorSelection {
 public:
     MSAEditorSelection() { }
-    MSAEditorSelection(int left, int top, int width, int height) : selArea(left,top,width,height) { } 
+    MSAEditorSelection(int left, int top, int width, int height) : selArea(left,top,width,height) { }
     MSAEditorSelection(const QPoint& topLeft, const QPoint& bottomRight) : selArea(topLeft, bottomRight) { }
     MSAEditorSelection(const QPoint& topLeft, int width, int height) : selArea(topLeft, QSize(width,height)) { }
-    
+
     // consider that selection may consist of several unconnected areas
     bool isContiniuous() const { return true; }
 
     bool isNull() const {return selArea.isNull(); }
-    
+
     QPoint topLeft() const { return selArea.topLeft(); }
-    
+
     const QRect& getRect() const {return selArea; }
 
     int x() const { return selArea.x(); }
-    
+
     int y() const { return selArea.y(); }
-    
+
     int width() const { return selArea.width(); }
-    
+
     int height() const { return selArea.height(); }
 
     bool operator==(const MSAEditorSelection& other) const {
         return selArea == other.selArea;
     }
-    
-    MSAEditorSelection translated (int dx, int dy) const; 
+
+    MSAEditorSelection translated (int dx, int dy) const;
 
     MSAEditorSelection intersected (const MSAEditorSelection& selection) const {
         QRect r = selArea.intersected(selection.selArea);
@@ -148,7 +148,7 @@ public:
     }
 
 private:
-    explicit MSAEditorSelection(QRect& rect) : selArea(rect) { } 
+    explicit MSAEditorSelection(QRect& rect) : selArea(rect) { }
     QRect selArea;
 };
 
@@ -161,15 +161,15 @@ public:
 
     // x dimension -> positions
     int countWidthForBases(bool countClipped, bool forOffset = false) const;
-    
+
     int getFirstVisibleBase() const {return startPos;}
 
     int getLastVisibleBase(bool countClipped, bool forOffset = false) const;
 
-    int getNumVisibleBases(bool countClipped, bool forOffset = false) const; 
+    int getNumVisibleBases(bool countClipped, bool forOffset = false) const;
 
     U2Region getBaseXRange(int pos, bool useVirtualCoords) const;
-    
+
     int getColumnNumByX(int x, bool selecting = false) const;
     int getXByColumnNum(int columnNum) const;
 
@@ -179,8 +179,8 @@ public:
     // y dimension -> sequences
     int countHeightForSequences(bool countClipped) const;
 
-    int getFirstVisibleSequence() const {return startSeq;} 
-    
+    int getFirstVisibleSequence() const {return startSeq;}
+
     int getLastVisibleSequence(bool countClipped) const;
     /*
      * Returns count of sequences that are visible on a screen.
@@ -203,15 +203,15 @@ public:
     bool isAlignmentEmpty() const { return editor->isAlignmentEmpty(); }
 
     bool isPosInRange(int p) const;
-    
+
     bool isSeqInRange(int s) const;
-    
+
     bool isInRange(const QPoint& p) const {return isPosInRange(p.x()) && isSeqInRange(p.y());}
 
     bool isVisible(const QPoint& p, bool countClipped) const {return isPosVisible(p.x(), countClipped) && isSeqVisible(p.y(), countClipped);}
-    
+
     bool isPosVisible(int pos, bool countClipped) const;
-    
+
     bool isSeqVisible(int seq, bool countClipped) const;
 
     int coordToPos(int x) const;
@@ -266,23 +266,27 @@ public:
     QStringList getAvailableHighlightingSchemes() const;
 
     bool hasAminoAlphabet();
+
+    void paintSelectedRegionToPixmap(QPixmap& pixmap);
+    void paintWholeAlignmentToPixmap(QPixmap& pixmap);
+
 private:
     // emulating cursor mode with
 
     void setCursorPos(const QPoint& p);
 
     void setCursorPos(int x, int y) { setCursorPos(QPoint(x, y)); }
-    
+
     void setCursorPos(int pos) { setCursorPos(QPoint(pos, cursorPos.y())); }
 
     void moveCursor(int dx, int dy);
 
     void highlightCurrentCursorPos()  { highlightSelection = true; update();}
 
-    
-public:    
+
+public:
     void centerPos(const QPoint& pos);
-    
+
     void centerPos(int pos);
 
     void setFont(const QFont& f);
@@ -294,8 +298,10 @@ public:
     void updateHBarPosition(int base);
 
     void updateVBarPosition(int seq);
-    
+
     void drawContent(QPainter& p);
+    void drawContent(QPainter &p, const QRect &area);
+    void drawContentToPixmap(QPixmap &pixmap, const QRect &area);
 
     QString exportHighligtning(int startPos, int endPos, int startingIndex, bool keepGaps, bool dots);
 
@@ -322,11 +328,11 @@ protected:
     void resizeEvent(QResizeEvent *);
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *);
-    void mouseReleaseEvent(QMouseEvent*); 
+    void mouseReleaseEvent(QMouseEvent*);
     void mouseMoveEvent(QMouseEvent*);
     void keyPressEvent(QKeyEvent *);
     void keyReleaseEvent(QKeyEvent *);
-    void focusOutEvent(QFocusEvent* fe); 
+    void focusOutEvent(QFocusEvent* fe);
     void focusInEvent(QFocusEvent* fe);
 
 private slots:
@@ -340,7 +346,7 @@ private slots:
     void sl_lockedStateChanged();
     void sl_addSeqFromFile();
     void sl_addSeqFromProject();
-    
+
     void sl_delCurrentSelection();
     void sl_copyCurrentSelection();
     void sl_fillCurrentSelectionWithGaps();
@@ -387,10 +393,10 @@ private:
     void initCustomSchemeActions(const QString& id, DNAAlphabetType type);
 
     void updateActions();
-    
+
     void updateHScrollBar();
     void updateVScrollBar();
-    
+
     void drawAll();
     void drawCursor(QPainter& p);
     void drawFocus(QPainter& p);
@@ -419,7 +425,7 @@ private:
      * the selection width. If 1 > @countOfGaps and -1 != @countOfGaps then nothing happens.
      */
     void removeGapsPrecedingSelection( int countOfGaps = -1 );
-  
+
     void deleteOldCustomSchemes();
 
     bool checkState() const;
@@ -439,7 +445,7 @@ private:
     GScrollBar*     svBar;
     QRubberBand*    rubberBand;
 
-    int             startPos; //first visible x pos 
+    int             startPos; //first visible x pos
     int             startSeq; //first visible y pos
 
     bool                shifting;
@@ -470,7 +476,7 @@ private:
     QAction*        complementAction;
     QAction*        lookMSASchemesSettingsAction;
     QAction*        useDotsAction;
-    
+
     QPixmap*        cachedView;
     bool            completeRedraw;
 

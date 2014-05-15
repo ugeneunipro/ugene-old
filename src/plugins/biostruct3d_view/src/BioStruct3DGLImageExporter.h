@@ -19,30 +19,33 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_EXPORT_IMAGE_3DGL_DIALOG_H_
-#define _U2_EXPORT_IMAGE_3DGL_DIALOG_H_
+#ifndef _U2_BIO_STRUCT_3DGL_IMAGE_EXPORTER_H_
+#define _U2_BIO_STRUCT_3DGL_IMAGE_EXPORTER_H_
 
-#include <U2Gui/ExportImageDialog.h>
+#include <U2Gui/ImageExporter.h>
 
 namespace U2 {
 
 class BioStruct3DGLWidget;
 
-class ExportImage3DGLDialog : public ExportImageDialog
-{
+class BioStruct3DGLImageExporter : public ImageExporter {
     Q_OBJECT
-
 public:
-    ExportImage3DGLDialog(BioStruct3DGLWidget* widget);
+    BioStruct3DGLImageExporter(BioStruct3DGLWidget* widget);
 
-    virtual bool exportToSVG();
-    virtual bool exportToPDF();
-    virtual bool exportToBitmap();
+    bool exportToSVG(const QString &filename) const;
+    bool exportToPDF(const QString &filename, const QString &format) const;
+    bool exportToBitmap(const QString &filename, const QString &format, const QSize &size, int quality) const;
 
+    int getImageWidth() const;
+    int getImageHeight() const;
+
+protected:
+    virtual void initSettingsWidget() {}
 private:
     BioStruct3DGLWidget* glWidget;
-}; // class ExportImage3DGLDialog
+}; // class BioStruct3DGLImageExporter
 
 } // namespace
 
-#endif
+#endif // _U2_BIO_STRUCT_3DGL_IMAGE_EXPORTER_H_

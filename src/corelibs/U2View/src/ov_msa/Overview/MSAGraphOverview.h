@@ -71,6 +71,8 @@ class U2VIEW_EXPORT MSAGraphOverview : public MSAOverview {
 public:
     MSAGraphOverview(MSAEditorUI* ui);
     bool isValid() const { return true; }
+    QPixmap getView() { return cachedConsensus; }
+
     const static int FIXED_HEIGHT = 70;
 
     void cancelRendering();

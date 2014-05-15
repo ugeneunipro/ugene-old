@@ -95,6 +95,7 @@
 #include <QtSvg/QSvgGenerator>
 
 
+#include "Export/MSAExporter.h"
 #include "phyltree/CreatePhyTreeDialogController.h"
 #include "ov_phyltree/TreeViewer.h"
 #include "PhyTrees/MSAEditorMultiTreeViewer.h"
@@ -119,11 +120,11 @@ namespace U2 {
 #define SETTINGS_FONT_BOLD      "font_bold"
 #define SETTINGS_ZOOM_FACTOR    "zoom_factor"
 
-#define DEFAULT_FONT_FAMILY "Verdana" 
+#define DEFAULT_FONT_FAMILY "Verdana"
 #define DEFAULT_FONT_SIZE 10
 #define DEFAULT_ZOOM_FACTOR 1.0f
 
-/* TRANSLATOR U2::MSAEditor */ 
+/* TRANSLATOR U2::MSAEditor */
 
 const float MSAEditor::zoomMult = 1.25;
 
@@ -190,7 +191,7 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     } else {
         resizeMode = ResizeMode_FontAndContent;
     }
-    
+
     pairwiseAlignmentWidgetsSettings = new PairwiseAlignmentWidgetsSettings;
     pairwiseAlignmentWidgetsSettings->customSettings.insert("alphabet", msaObject->getAlphabet()->getId());
 
@@ -199,7 +200,7 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     connect(exportHighlightedAction, SIGNAL(triggered()), this, SLOT(sl_exportHighlighted()));
     exportHighlightedAction->setDisabled(true);
 
-    updateActions();    
+    updateActions();
 }
 
 int MSAEditor::getRowHeight() const {
@@ -210,12 +211,12 @@ int MSAEditor::getRowHeight() const {
 int MSAEditor::getColumnWidth() const {
     QFontMetrics fm(font);
     int width =  fm.width('W') * zoomMult;
-    
+
     width = (int)(width * zoomFactor);
     width = qMax(width, MIN_COLUMN_WIDTH);
-    
+
     return width;
-    
+
 }
 
 void MSAEditor::sl_saveAlignment(){
@@ -241,7 +242,7 @@ void MSAEditor::sl_saveAlignmentAs(){
 void MSAEditor::sl_zoomIn() {
 
     int pSize = font.pointSize();
-    
+
     if (resizeMode == ResizeMode_OnlyContent) {
         zoomFactor *= zoomMult;
     } else if ( (pSize < MAX_FONT_SIZE) && (resizeMode == ResizeMode_FontAndContent) ) {
@@ -258,7 +259,7 @@ void MSAEditor::sl_zoomIn() {
         zoomFactor = 1;
     }
     updateActions();
-    
+
     emit si_zoomOperationPerformed(resizeModeChanged);
 }
 
@@ -306,7 +307,7 @@ void MSAEditor::sl_zoomToSelection()
             font.setPointSize(MIN_FONT_SIZE);
             setFont(font);
         }
-        zoomFactor = pixelsPerBase / (MIN_FONT_SIZE * fontPixelToPointSize); 
+        zoomFactor = pixelsPerBase / (MIN_FONT_SIZE * fontPixelToPointSize);
         resizeMode = ResizeMode_OnlyContent;
     }
     ui->seqArea->setFirstVisibleBase(selection.x());
@@ -380,7 +381,7 @@ void MSAEditor::sl_resetZoom() {
     ResizeMode oldMode = resizeMode;
     resizeMode = ResizeMode_FontAndContent;
     emit si_zoomOperationPerformed(resizeMode != oldMode);
-    
+
     updateActions();
 }
 
@@ -504,7 +505,7 @@ QWidget* MSAEditor::createWidget() {
     saveScreenshotAction = new QAction(QIcon(":/core/images/cam2.png"), tr("Export as image"), this);
     saveScreenshotAction->setObjectName("Export as image");
     connect(saveScreenshotAction, SIGNAL(triggered()), ui, SLOT(sl_saveScreenshot()));
-    
+
     saveSvgAction = new QAction(tr("Export as SVG"), this);
     saveSvgAction->setObjectName("Export as SVG");
     connect(saveSvgAction, SIGNAL(triggered()), ui, SLOT(sl_saveSvgImage()));
@@ -622,7 +623,7 @@ void MSAEditor::updateActions() {
 void MSAEditor::calcFontPixelToPointSizeCoef() {
     QFontInfo info(font);
     fontPixelToPointSize = (float) info.pixelSize() / (float) info.pointSize();
-    
+
 }
 
 void MSAEditor::copyRowFromSequence(U2SequenceObject *seqObj, U2OpStatus &os) {
@@ -641,7 +642,7 @@ void MSAEditor::sl_showTreeOP() {
     if(NULL == opWidget) {
         return;
     }
-    
+
     QWidget* addTreeGroupWidget = opWidget->findOptionsWidgetByGroupId("OP_MSA_ADD_TREE_WIDGET");
     if(NULL != addTreeGroupWidget) {
         addTreeGroupWidget->hide();
@@ -670,7 +671,7 @@ void MSAEditor::sl_hideTreeOP() {
     if(openAddTreeGroup) {
         //header->changeState();
     }
-    
+
     header->hide();
 
     GroupHeaderImageWidget* addTreeHeader = opWidget->findHeaderWidgetByGroupId("OP_MSA_ADD_TREE_WIDGET");
@@ -707,7 +708,7 @@ bool MSAEditor::eventFilter(QObject*, QEvent* e) {
         }
     }
 
-    return false;    
+    return false;
 }
 
 void MSAEditor::initDragAndDropSupport()
@@ -912,10 +913,15 @@ QAction* MSAEditorUI::getRedoAction() const {
 }
 
 void MSAEditorUI::sl_saveScreenshot(){
-    QRect screenRect = view.getSpliter()->geometry();
-    screenRect.setBottom(seqArea->geometry().bottom());
-    ExportImageDialog dialog(this, screenRect);
-    dialog.exec();
+    MSAExporter msaExp(this);
+    MSASelectionExporter selExp(this);
+    MSAOverviewExporter overviewExp(overviewArea);
+
+    QList<ImageExporter*> exporters;
+    exporters << &msaExp << &overviewExp << &selExp;
+
+    ExportImageDialog dlg(exporters, &msaExp, this);
+    dlg.exec();
 }
 
 void MSAEditorUI::sl_saveSvgImage() {
@@ -930,7 +936,7 @@ void MSAEditorUI::sl_saveSvgImage() {
     generator.setViewBox(QRect(0, 0, width(), height()));
     generator.setTitle(tr("SVG %1").arg(editor->getMSAObject()->getGObjectName()));
     generator.setDescription(tr("An SVG image of multiple alignment created by Unipro UGENE"));
-    
+
     QPainter painter;
     painter.begin(&generator);
     painter.translate(nameList->width(), 0);
@@ -1019,7 +1025,7 @@ MSAEditorTreeViewer* MSAEditorUI::getCurrentTree() const
     return qobject_cast<MSAEditorTreeViewer*>(page->getObjectView());
 }
 
-MSAWidget::MSAWidget(MSAEditorUI* _ui) 
+MSAWidget::MSAWidget(MSAEditorUI* _ui)
 : ui(_ui), heightMargin(0) {
     connect(ui->getEditor(), SIGNAL(si_zoomOperationPerformed(bool)), SLOT(sl_fontChanged()));
     setMinimumHeight(ui->consArea->height() + heightMargin);
@@ -1043,7 +1049,7 @@ void MSAWidget::paintEvent(QPaintEvent *) {
     p.fillRect(rect(), Qt::white);
 }
 
-MSALabelWidget::MSALabelWidget(MSAEditorUI* _ui, const QString & _t, Qt::Alignment _a) 
+MSALabelWidget::MSALabelWidget(MSAEditorUI* _ui, const QString & _t, Qt::Alignment _a)
 : MSAWidget(_ui), text(_t), ali(_a)
 {
 }
@@ -1058,7 +1064,7 @@ void MSALabelWidget::paintEvent(QPaintEvent * e) {
     }
 }
 
-SinchronizedObjectView::SinchronizedObjectView() 
+SinchronizedObjectView::SinchronizedObjectView()
     : seqArea(NULL)
 {
     spliter = new QSplitter(Qt::Horizontal);

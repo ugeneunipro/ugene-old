@@ -317,7 +317,7 @@ void WorkflowView::openWD(WorkflowGObject *go) {
     }
 }
 
-WorkflowView::WorkflowView(WorkflowGObject* go) 
+WorkflowView::WorkflowView(WorkflowGObject* go)
 : MWMDIWindow(tr("Workflow Designer")), running(false), sceneRecreation(false), go(go), currentProto(NULL), currentActor(NULL),
 pasteCount(0), debugInfo(new WorkflowDebugStatus(this)), debugActions()
 {
@@ -495,7 +495,7 @@ void WorkflowView::setupMainSplitter() {
     layout->setMargin(0);
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
-    
+
     connect(debugInfo, SIGNAL(si_pauseStateChanged(bool)), scene, SLOT(update()));
     connect(debugInfo, SIGNAL(si_pauseStateChanged(bool)), SLOT(sl_pause(bool)));
     connect(investigationWidgets,
@@ -554,7 +554,7 @@ void WorkflowView::addBottomWidgetsToInfoSplitter() {
     }
 
     investigationWidgets = new WorkflowInvestigationWidgetsController(bottomTabs);
-    
+
     infoSplitter->addWidget(bottomTabs);
     bottomTabs->hide();
 }
@@ -636,7 +636,7 @@ void WorkflowView::createActions() {
     pauseAction->setEnabled(false);
     connect(pauseAction, SIGNAL(triggered()), debugInfo, SLOT(sl_pauseTriggerActivated()));
     debugActions.append(pauseAction);
-    
+
     nextStepAction = new QAction(tr("&Next step"), this);
     nextStepAction->setIcon(QIcon(":workflow_designer/images/next_step.png"));
     nextStepAction->setShortcut(QKeySequence("F10"));
@@ -668,7 +668,7 @@ void WorkflowView::createActions() {
     saveAction->setShortcut(QKeySequence::Save);
     saveAction->setShortcutContext(Qt::WindowShortcut);
     connect(saveAction, SIGNAL(triggered()), SLOT(sl_saveScene()));
-    
+
     saveAsAction = new QAction(tr("&Save workflow as..."), this);
     saveAsAction->setIcon(QIcon(":workflow_designer/images/filesaveas.png"));
     connect(saveAsAction, SIGNAL(triggered()), SLOT(sl_saveSceneAs()));
@@ -683,7 +683,7 @@ void WorkflowView::createActions() {
     toggleBreakpointManager = new QAction("Show or hide breakpoint manager", this);
     toggleBreakpointManager->setIcon(QIcon(":workflow_designer/images/show_breakpoint_manager.png"));
     connect(toggleBreakpointManager, SIGNAL(triggered()), SLOT(sl_toggleBreakpointManager()));
-    
+
 
     { // toggle dashboard action
         toggleDashboard = new QAction(this);
@@ -849,7 +849,7 @@ void WorkflowView::sl_findPrototype(){
     if(sizes.at(idx) < MIN_SIZE_FIND / 2){
         sizes[idx] = MIN_SIZE_FIND;
         splitter->setSizes(sizes);
-    }    
+    }
 }
 
 void WorkflowView::sl_createScript() {
@@ -987,7 +987,7 @@ void WorkflowView::sl_editExternalTool() {
 
 void WorkflowView::sl_protoDeleted(const QString &id) {
     QList<WorkflowProcessItem*> deleteList;
-    foreach(QGraphicsItem *i, scene->items()) {        
+    foreach(QGraphicsItem *i, scene->items()) {
         if(i->type() == WorkflowProcessItemType) {
             WorkflowProcessItem *wItem = static_cast<WorkflowProcessItem *>(i);
             if(wItem->getProcess()->getProto()->getId() == id) {
@@ -1296,7 +1296,7 @@ void WorkflowView::setupViewMenu(QMenu* m) {
         scriptMenu->addAction(a);
     }
     m->addMenu(scriptMenu);
-    
+
     if (!unlockAction->isChecked()) {
         m->addSeparator();
         m->addAction(unlockAction);
@@ -1394,7 +1394,7 @@ bool WorkflowView::sl_validate(bool notify) {
         QMessageBox::warning(this, tr("Empty workflow!"), tr("Nothing to run: empty workflow"));
         return false;
     }
-    
+
     propertyEditor->commit();
     infoList->clear();
     QList<QListWidgetItem*> lst;
@@ -1416,7 +1416,7 @@ bool WorkflowView::sl_validate(bool notify) {
         bottomTabs->hide();
     }
     if (!good) {
-        QMessageBox::warning(this, tr("Workflow cannot be executed"), 
+        QMessageBox::warning(this, tr("Workflow cannot be executed"),
             tr("Please fix issues listed in the error list (located under workflow)."));
     } else {
         if (notify) {
@@ -1997,10 +1997,10 @@ void WorkflowView::sl_editItem() {
             return;
         }
         Port* p = NULL;
-        
+
         if (it->type() == WorkflowBusItemType) {
             WorkflowBusItem *busItem = qgraphicsitem_cast<WorkflowBusItem *>(it);
-            
+
             if(debugInfo->isPaused()) {
                 investigationWidgets->setCurrentInvestigation(busItem->getBus());
             }
@@ -2009,7 +2009,7 @@ void WorkflowView::sl_editItem() {
             p = qgraphicsitem_cast<WorkflowPortItem*>(it)->getPort();
         }
         if (p) {
-            if (qobject_cast<IntegralBusPort*>(p)) 
+            if (qobject_cast<IntegralBusPort*>(p))
             {
                 BusPortEditor* ed = new BusPortEditor(qobject_cast<IntegralBusPort*>(p));
                 ed->setParent(p);
@@ -2041,8 +2041,7 @@ void WorkflowView::sl_onSelectionChanged() {
 
 void WorkflowView::sl_exportScene() {
     propertyEditor->commit();
-
-    ExportImageDialog dialog(sceneView->viewport(),sceneView->viewport()->rect(),true,true);
+    ExportImageDialog dialog(sceneView->viewport(), ImageExporter::Resizable, ImageExporter::SupportVectorFormats, sceneView->viewport());
     dialog.exec();
 }
 
@@ -2057,7 +2056,7 @@ void WorkflowView::sl_saveScene() {
         sl_updateTitle();
     }
     propertyEditor->commit();
-    Task* t = new SaveWorkflowSceneTask(getSchema(), getMeta()); 
+    Task* t = new SaveWorkflowSceneTask(getSchema(), getMeta());
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_onSceneSaved()));
 }
@@ -2266,7 +2265,7 @@ void WorkflowView::sl_onSceneSaved() {
 }
 
 void WorkflowView::sl_updateTitle() {
-    setWindowTitle(tr("Workflow Designer - %1").arg(meta.name));    
+    setWindowTitle(tr("Workflow Designer - %1").arg(meta.name));
 }
 
 void WorkflowView::sl_updateUi() {
@@ -2615,7 +2614,7 @@ void WorkflowScene::dropEvent(QGraphicsSceneDragDropEvent * event) {
                 event->setDropAction(Qt::CopyAction);
             }
         }
-    } 
+    }
     QGraphicsScene::dropEvent(event);
 }
 
@@ -2779,7 +2778,7 @@ WorkflowBusItem * WorkflowScene::addFlow(WorkflowPortItem *from, WorkflowPortIte
 }
 
 void WorkflowScene::connectConfigurationEditors() {
-    foreach(QGraphicsItem *i, items()) {        
+    foreach(QGraphicsItem *i, items()) {
         if(i->type() == WorkflowProcessItemType) {
             Actor *proc = static_cast<WorkflowProcessItem *>(i)->getProcess();
             ConfigurationEditor *editor = proc->getEditor();

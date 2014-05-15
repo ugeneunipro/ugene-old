@@ -133,19 +133,19 @@ public:
     virtual QVariantMap saveState();
 
     virtual OptionsPanel* getOptionsPanel(){return optionsPanel;}
-    
+
     MAlignmentObject* getMSAObject() const {return msaObject;}
 
     MSAEditorUI* getUI() const {return ui;}
 
     int getAlignmentLen() const;
-    
+
     int getNumSequences() const;
 
     bool isAlignmentEmpty() const;
 
     const QRect& getCurrentSelection() const;
-    
+
     const QFont& getFont() const {return font;}
     int getFirstVisibleBase() const;
     float getZoomFactor() const {return zoomFactor;}
@@ -162,7 +162,7 @@ public:
 
     void copyRowFromSequence(U2SequenceObject *seqObj, U2OpStatus &os);
     void createDistanceColumn(MSADistanceMatrix* algo);
-    
+
     static const float zoomMult;
 
     void setReference(qint64 sequenceId);
@@ -170,7 +170,7 @@ public:
     QString getReferenceRowName() const;
 
     PairwiseAlignmentWidgetsSettings* getPairwiseAlignmentWidgetsSettings() const { return pairwiseAlignmentWidgetsSettings; }
-   
+
     MSAEditorTreeManager* getTreeManager() {return &treeManager;}
 
     void buildTree();
@@ -189,11 +189,11 @@ protected slots:
     void sl_saveAlignment();
     void sl_saveAlignmentAs();
     void sl_onContextMenuRequested(const QPoint & pos);
-    void sl_zoomIn(); 
-    void sl_zoomOut(); 
+    void sl_zoomIn();
+    void sl_zoomOut();
     void sl_zoomToSelection();
-    void sl_changeFont(); 
-    void sl_resetZoom(); 
+    void sl_changeFont();
+    void sl_resetZoom();
     void sl_buildTree();
     void sl_align();
     void sl_setSeqAsReference();
@@ -203,7 +203,7 @@ protected slots:
     void sl_onSeqOrderChanged(QStringList* order);
     void sl_showTreeOP();
     void sl_hideTreeOP();
-    
+
 protected:
     virtual QWidget* createWidget();
     bool eventFilter(QObject* o, QEvent* e);
@@ -232,7 +232,7 @@ private:
     QFont             font;
     ResizeMode        resizeMode;
     float             zoomFactor;
-    float             fontPixelToPointSize;  
+    float             fontPixelToPointSize;
 
     QAction*          saveAlignmentAction;
     QAction*          saveAlignmentAsAction;
@@ -317,7 +317,7 @@ public:
 
     void showSimilarity();
     void hideSimilarity();
-    
+
     const MSAEditorAlignmentDependentWidget* getSimilarityWidget(){return similarityStatistics;}
 
     MSAEditorTreeViewer* getCurrentTree() const;
@@ -386,7 +386,7 @@ class MSALabelWidget : public MSAWidget {
     Q_OBJECT
 public:
     MSALabelWidget(MSAEditorUI* _ui, const QString & _t, Qt::Alignment _a);
-    
+
     QString             text;
     Qt::Alignment       ali;
 

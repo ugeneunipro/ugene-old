@@ -59,6 +59,7 @@ HEADERS += src/Init.h \
            src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.h \
            src/ov_msa/Display/MSADisplayTab.h \
            src/ov_msa/Display/MSADisplayTabFactory.h \
+           src/ov_msa/Export/MSAExporter.h \
            src/ov_msa/General/MSAGeneralTab.h \
            src/ov_msa/General/MSAGeneralTabFactory.h \
            src/ov_msa/Highlighting/MSAHighlightingTab.h \
@@ -261,6 +262,7 @@ SOURCES += src/Init.cpp \
            src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.cpp \
            src/ov_msa/Display/MSADisplayTab.cpp \
            src/ov_msa/Display/MSADisplayTabFactory.cpp \
+           src/ov_msa/Export/MSAExporter.cpp \
            src/ov_msa/General/MSAGeneralTab.cpp \
            src/ov_msa/General/MSAGeneralTabFactory.cpp \
            src/ov_msa/Highlighting/MSAHighlightingTab.cpp \

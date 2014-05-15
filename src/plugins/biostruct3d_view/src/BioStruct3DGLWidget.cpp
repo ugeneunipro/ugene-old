@@ -22,8 +22,8 @@
 #include "BioStruct3DGLWidget.h"
 #include "BioStruct3DGLRender.h"
 #include "BioStruct3DColorScheme.h"
+#include "BioStruct3DGLImageExporter.h"
 #include "GLFrameManager.h"
-#include "ExportImage3DGLDialog.h"
 #include "SettingsDialog.h"
 #include "MolecularSurfaceRenderer.h"
 #include "SelectModelsDialog.h"
@@ -54,6 +54,7 @@
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
 
+#include <U2Gui/ExportImageDialog.h>
 
 #include <QtGui/QMouseEvent>
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -218,7 +219,7 @@ void BioStruct3DGLWidget::initializeGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     updateAllRenderers();
-    
+
     if (!imageRenderingMode) {
         anaglyph->init();
         if (!anaglyph->isAvailable()) {
@@ -327,7 +328,7 @@ Vector3D BioStruct3DGLWidget::getTrackballMapping(int x, int y)
     pos.normalize();
 
     return pos;
-} 
+}
 
 void BioStruct3DGLWidget::contextMenuEvent(QContextMenuEvent *event) {
     QMenu menu;
@@ -496,7 +497,7 @@ void BioStruct3DGLWidget::zoom( float delta )
         frame->performZoom(delta);
         frame->updateViewPort();
         frame->updateGL();
-    } 
+    }
 }
 
 void BioStruct3DGLWidget::shift( float deltaX, float deltaY)
@@ -508,7 +509,7 @@ void BioStruct3DGLWidget::shift( float deltaX, float deltaY)
         frame->performShift(deltaX, deltaY);
         frame->updateViewPort();
         frame->updateGL();
-    } 
+    }
 }
 
 void BioStruct3DGLWidget::saveDefaultSettings()
@@ -519,7 +520,7 @@ void BioStruct3DGLWidget::saveDefaultSettings()
 }
 
 void BioStruct3DGLWidget::restoreDefaultSettigns()
-{   
+{
     assert(!defaultsSettings.isEmpty());
     bool syncLock = isSyncModeOn();
     QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.get(), syncLock);
@@ -528,7 +529,7 @@ void BioStruct3DGLWidget::restoreDefaultSettigns()
         frame->setState(defaultsSettings);
         frame->updateViewPort();
         frame->updateGL();
-    } 
+    }
 }
 
 void BioStruct3DGLWidget::showModel(int modelId, bool show) {
@@ -582,16 +583,16 @@ void BioStruct3DGLWidget::writeImage2DToFile( int format, int options, int nbcol
     int state = GL2PS_OVERFLOW, buffsize = 0;
     GLint viewport[4];
     int sort = GL2PS_SIMPLE_SORT;
-        
+
     fp = fopen(fileName, FOPEN_ARGS);
 
     if(!fp){
         QMessageBox::warning(this, tr("Error"),tr("Unable to open file %1 for writing").arg(fileName));
         return;
     }
-    
+
     glGetIntegerv(GL_VIEWPORT,viewport);
-    
+
     if (format == GL2PS_EPS) {
         // hack -> make widget aspect ratio 1:1
         if (width() > height()) {
@@ -609,12 +610,12 @@ void BioStruct3DGLWidget::writeImage2DToFile( int format, int options, int nbcol
     }
 
     fclose(fp);
-    
+
     if (format == GL2PS_EPS) {
-        // restore sizes 
+        // restore sizes
         updateGeometry();
     }
-  
+
 }
 
 void BioStruct3DGLWidget::loadColorSchemes()
@@ -630,7 +631,7 @@ void BioStruct3DGLWidget::loadColorSchemes()
             break;
         }
     }
-    assert(iter != schemeActions.end());    
+    assert(iter != schemeActions.end());
 }
 
 void BioStruct3DGLWidget::loadGLRenderers(const QList<QString> &availableRenderers)
@@ -978,7 +979,8 @@ void BioStruct3DGLWidget::sl_settings()
 
 void BioStruct3DGLWidget::sl_exportImage()
 {
-    ExportImage3DGLDialog dialog(this);
+    BioStruct3DGLImageExporter exporter(this);
+    ExportImageDialog dialog(&exporter);
     dialog.exec();
 }
 
@@ -1021,7 +1023,7 @@ void BioStruct3DGLWidget::sl_onTaskFinished( Task* task )
 
     molSurface.reset();
     molSurface = surfaceCalcTask->getCalculatedSurface();
-    
+
     makeCurrent();
     updateGL();
 }

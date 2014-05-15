@@ -48,6 +48,7 @@ class U2VIEW_EXPORT MSAOverview : public QWidget {
 public:
     MSAOverview(MSAEditorUI *_ui);
     virtual bool isValid() const { return false; }
+    virtual QPixmap getView() { return QPixmap(); }
 
 public slots:
     virtual void sl_visibleRangeChanged(){}

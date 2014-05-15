@@ -47,6 +47,7 @@ public:
     MSASimpleOverview(MSAEditorUI *ui);
     const static int FIXED_HEIGTH = 70;
     bool isValid() const;
+    QPixmap getView();
 
 public slots:
     void sl_visibleRangeChanged();
@@ -69,9 +70,9 @@ private:
     MSAColorScheme*         colorScheme;
     MSAHighlightingScheme*  highlightingScheme;
 
-    QPixmap cachedMSAOverview;
+    mutable QPixmap cachedMSAOverview;
 
-    bool    redrawMSAOverview;
+    mutable bool    redrawMSAOverview;
 };
 
 } // namespace

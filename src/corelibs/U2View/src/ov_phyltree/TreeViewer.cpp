@@ -240,7 +240,7 @@ void TreeViewer::setupCameraMenu(QMenu* m)
     m->addAction(exportAction);
 }
 
-void TreeViewer::buildStaticToolbar(QToolBar* tb) 
+void TreeViewer::buildStaticToolbar(QToolBar* tb)
 {
     // Tree Settings
     tb->addAction(treeSettingsAction);
@@ -383,7 +383,7 @@ void TreeViewer::sl_onPhyTreeChanged() {
 
 const qreal TreeViewerUI::ZOOM_COEF = 1.2;
 const qreal TreeViewerUI::MINIMUM_ZOOM = 0.1;
-const qreal TreeViewerUI::MAXIMUM_ZOOM = 100.0; 
+const qreal TreeViewerUI::MAXIMUM_ZOOM = 100.0;
 const int TreeViewerUI::MARGIN = 10;
 const qreal TreeViewerUI::SIZE_COEF = 0.1;
 
@@ -604,7 +604,7 @@ void TreeViewerUI::updateSettings() {
 
         scene()->update();
     }
-    
+
 }
 void TreeViewerUI::updateTextSettings(){
     QList<QGraphicsItem*> updatingItems = scene()->selectedItems();
@@ -631,7 +631,7 @@ void TreeViewerUI::updateTextSettings(){
         }
 
         //scene()->update();
-    }    
+    }
 
     updateLayout();
     updateTreeSettings();
@@ -640,7 +640,7 @@ void TreeViewerUI::updateTreeSettings(bool setDefautZoom){
 
     qreal avgW = 0;
     if(treeSettings.type != TreeSettings::PHYLOGRAM){
-        avgW = avgWidth(); 
+        avgW = avgWidth();
         legend->setVisible(false);
     }else{
         legend->setVisible(true);
@@ -649,7 +649,7 @@ void TreeViewerUI::updateTreeSettings(bool setDefautZoom){
     if(treeSettings.type == TreeSettings::DEFAULT) {
         determineBranchLengths();
     }
-    
+
     QStack<GraphicsBranchItem*> stack;
     stack.push(rectRoot);
     while (!stack.empty()) {
@@ -664,7 +664,7 @@ void TreeViewerUI::updateTreeSettings(bool setDefautZoom){
         }
 
         if(item!=rectRoot){
-         
+
             if(layout == TreeLayout_Rectangular){
                 GraphicsRectangularBranchItem *rectItem = dynamic_cast<GraphicsRectangularBranchItem*>(item);
                 if(rectItem){
@@ -745,7 +745,7 @@ void TreeViewerUI::determineBranchLengths() {
             }
         }
 
-        if(item == rectRoot) { 
+        if(item == rectRoot) {
             continue;
         }
 
@@ -846,7 +846,7 @@ void TreeViewerUI::zooming(qreal horizontalZoom, qreal verticalZoom) {
     }
     verticalZoom = verticalScale * verticalZoom;
     horizontalZoom = horizontalScale * horizontalZoom;
-    
+
     verticalZoom = qMax(MINIMUM_ZOOM, verticalZoom);
     verticalZoom  = qMin(MAXIMUM_ZOOM * qMax(treeSettings.height_coef*TreeViewerUI::SIZE_COEF, 1.0), verticalZoom);
     horizontalZoom = qMax(MINIMUM_ZOOM, horizontalZoom);
@@ -874,13 +874,13 @@ void TreeViewerUI::mousePressEvent(QMouseEvent *e) {
 
     if (e->button() == Qt::RightButton) {
         updateActionsState();
-                       
+
         buttonPopup->popup(e->globalPos());
-     
+
         e->accept();
         return;
     }
-    
+
     QGraphicsView::mousePressEvent(e);
 }
 
@@ -934,7 +934,7 @@ void TreeViewerUI::sl_swapTriggered() {
     QTransform curTransform = viewportTransform();
     setTransformationAnchor(NoAnchor);
 
-    redrawRectangularLayout(); 
+    redrawRectangularLayout();
     updateLayout();
     updateTreeSettings();
 
@@ -986,7 +986,8 @@ void TreeViewerUI::sl_captureTreeTriggered() {
     Document* doc = phyObject->getDocument();
     const GUrl& url = doc->getURL();
     const QString& fileName = url.baseFileName();
-    ExportImageDialog dialog(viewport(), viewport()->rect(), false, true, fileName);
+
+    ExportImageDialog dialog(viewport(), ImageExporter::Constant, ImageExporter::SupportVectorFormats, this, fileName);
     dialog.exec();
 }
 
@@ -1141,7 +1142,7 @@ void TreeViewerUI::sl_onBranchCollapsed(GraphicsRectangularBranchItem*) {
     setTransformationAnchor(NoAnchor);
 
     qreal curScale = getScale();
-    redrawRectangularLayout(); 
+    redrawRectangularLayout();
     setScale(curScale);
     updateTreeSettings(false);
 
@@ -1172,7 +1173,7 @@ void TreeViewerUI::sl_layoutRecomputed() {
         showLabels(lt);
     }
     show();
-    
+
     fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 }
 
@@ -1287,7 +1288,7 @@ void TreeViewerUI::sl_treeSettingsTriggered(){
 void TreeViewerUI::sl_zoomToSel(){
     QList<QGraphicsItem*> selectedItems = scene()->selectedItems();
     if(selectedItems.isEmpty()){
-         zooming(ZOOM_COEF); 
+         zooming(ZOOM_COEF);
     }else{
         GraphicsButtonItem *topButton = NULL;
         foreach (QGraphicsItem *graphItem, selectedItems) {
@@ -1369,7 +1370,7 @@ void TreeViewerUI::updateActionsState(){
 
     zoomToAction->setEnabled(horizontalScale < MAXIMUM_ZOOM* qMax(treeSettings.width_coef*TreeViewerUI::SIZE_COEF, 1.0));
     zoomOutAction->setEnabled(horizontalScale > MINIMUM_ZOOM);
-    
+
     if(isSelectedCollapsed()){
         collapseAction->setText(QObject::tr("Expand"));
     }else{

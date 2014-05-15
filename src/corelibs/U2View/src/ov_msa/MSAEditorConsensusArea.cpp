@@ -69,12 +69,12 @@ MSAEditorConsensusArea::MSAEditorConsensusArea(MSAEditorUI* _ui) : editor(_ui->e
     connect(ui->editor, SIGNAL(si_zoomOperationPerformed(bool)), SLOT(sl_zoomOperationPerformed(bool)));
     connect(ui->seqArea->getHBar(), SIGNAL(actionTriggered(int)), SLOT(sl_onScrollBarActionTriggered(int)));
 
-    connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), 
+    connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
                                     SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
 
     connect(editor, SIGNAL(si_buildStaticMenu(GObjectView*, QMenu*)), SLOT(sl_buildStaticMenu(GObjectView*, QMenu*)));
     connect(editor, SIGNAL(si_buildPopupMenu(GObjectView* , QMenu*)), SLOT(sl_buildContextMenu(GObjectView*, QMenu*)));
-    
+
     copyConsensusAction = new QAction(tr("Copy consensus"), this);
     copyConsensusAction->setObjectName("Copy consensus");
     connect(copyConsensusAction, SIGNAL(triggered()), SLOT(sl_copyConsensusSequence()));
@@ -88,13 +88,13 @@ MSAEditorConsensusArea::MSAEditorConsensusArea(MSAEditorUI* _ui) : editor(_ui->e
     connect(configureConsensusAction, SIGNAL(triggered()), SLOT(sl_configureConsensusAction()));
 
     setupFontAndHeight();
-   
+
     setMouseTracking(true);
 
     QString lastUsedAlgoKey = getLastUsedAlgoSettingsKey();
     QString lastUsedAlgo = AppContext::getSettings()->getValue(lastUsedAlgoKey).toString();
     MSAConsensusAlgorithmFactory* algo = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(lastUsedAlgo);
-    
+
     const DNAAlphabet* al = editor->getMSAObject()->getAlphabet();
     ConsensusAlgorithmFlags alphaFlags = MSAConsensusAlgorithmFactory::getAphabetFlags(al);
     if (algo == NULL || (algo->getFlags() & alphaFlags) != alphaFlags) {
@@ -117,8 +117,28 @@ MSAEditorConsensusArea::~MSAEditorConsensusArea() {
     delete childObject;
 }
 
-QSharedPointer <MSAEditorConsensusCache> MSAEditorConsensusArea::getConsensusCache() { 
-    return consensusCache; 
+QSharedPointer <MSAEditorConsensusCache> MSAEditorConsensusArea::getConsensusCache() {
+    return consensusCache;
+}
+
+void MSAEditorConsensusArea::paintFullConsensusToPixmap(QPixmap &pixmap) {
+    pixmap = QPixmap(ui->seqArea->getXByColumnNum(ui->editor->getAlignmentLen()),
+                     getYRange(MSAEditorConsElement_RULER).startPos);
+    pixmap.fill(Qt::white);
+    QPainter p(&pixmap);
+    drawConsensus(p, 0, ui->editor->getAlignmentLen() - 1, true);
+    drawHistogram(p, 0, ui->editor->getAlignmentLen() - 1);
+    p.end();
+}
+
+void MSAEditorConsensusArea::paintFullRulerToPixmap(QPixmap &pixmap) {
+    pixmap = QPixmap(ui->seqArea->getXByColumnNum(ui->editor->getAlignmentLen()),
+                     getYRange(MSAEditorConsElement_RULER).length);
+    pixmap.fill(Qt::white);
+    QPainter p(&pixmap);
+    p.translate(0, -getYRange(MSAEditorConsElement_RULER).startPos);
+    drawRuler(p, true);
+    p.end();
 }
 
 bool MSAEditorConsensusArea::event(QEvent* e) {
@@ -209,28 +229,34 @@ void MSAEditorConsensusArea::drawConsensus(QPainter& p) {
     if (ui->seqArea->isAlignmentEmpty()) {
         return;
     }
+    int startPos = ui->seqArea->getFirstVisibleBase();
+    int lastPos = ui->seqArea->getLastVisibleBase(true);
+    drawConsensus(p, startPos, lastPos);
+}
+
+void MSAEditorConsensusArea::drawConsensus(QPainter &p, int startPos, int lastPos, bool useVirtualCoords) {
+    if (ui->seqArea->isAlignmentEmpty()) {
+        return;
+    }
 
     //draw consensus
     p.setPen(Qt::black);
-    
+
     QFont f = ui->editor->getFont();
     f.setWeight(QFont::DemiBold);
     p.setFont(f);
 
     childObject->setObjectName("");
-    int startPos = ui->seqArea->getFirstVisibleBase();
-    int lastPos = ui->seqArea->getLastVisibleBase(true);
     for (int pos = startPos; pos <= lastPos; pos++) {
-        drawConsensusChar(p, pos, false);
+        drawConsensusChar(p, pos, false, useVirtualCoords);
     }
 }
 
-void MSAEditorConsensusArea::drawConsensusChar(QPainter& p, int pos, bool selected) {
+void MSAEditorConsensusArea::drawConsensusChar(QPainter& p, int pos, bool selected, bool useVirtualCoords) {
     U2Region yRange = getYRange(MSAEditorConsElement_CONSENSUS_TEXT);
-    U2Region xRange= ui->seqArea->getBaseXRange(pos, false);
+    U2Region xRange= ui->seqArea->getBaseXRange(pos, useVirtualCoords);
     QRect cr(xRange.startPos, yRange.startPos, xRange.length + 1, yRange.length);
-    int w = width(), h = height();
-    assert(xRange.endPos() <= w && yRange.endPos() <= h); Q_UNUSED(w); Q_UNUSED(h);
+
     if (selected) {
         QColor color(Qt::lightGray);
         color = color.lighter(115);
@@ -245,7 +271,7 @@ void MSAEditorConsensusArea::drawConsensusChar(QPainter& p, int pos, bool select
 
 #define RULER_NOTCH_SIZE 3
 
-void MSAEditorConsensusArea::drawRuler(QPainter& p) {
+void MSAEditorConsensusArea::drawRuler(QPainter& p, bool drawFull) {
     if (ui->seqArea->isAlignmentEmpty()) {
         return;
     }
@@ -254,8 +280,10 @@ void MSAEditorConsensusArea::drawRuler(QPainter& p) {
     p.setPen(Qt::darkGray);
 
     int w = width();
-    int startPos = ui->seqArea->getFirstVisibleBase();
-    int lastPos = ui->seqArea->getLastVisibleBase(true);
+    int startPos = drawFull ? 0
+                            : ui->seqArea->getFirstVisibleBase();
+    int lastPos = drawFull ? ui->editor->getAlignmentLen() - 1
+                           : ui->seqArea->getLastVisibleBase(true);
 
     QFontMetrics rfm(rulerFont);
     U2Region rr = getYRange(MSAEditorConsElement_RULER);
@@ -263,18 +291,19 @@ void MSAEditorConsensusArea::drawRuler(QPainter& p) {
     int dy = rr.startPos - rrP.endPos();
     rr.length+=dy;
     rr.startPos-=dy;
-    U2Region firstBaseXReg = ui->seqArea->getBaseXRange(startPos, false);
-    U2Region lastBaseXReg = ui->seqArea->getBaseXRange(lastPos, false);
+    U2Region firstBaseXReg = ui->seqArea->getBaseXRange(startPos, drawFull);
+    U2Region lastBaseXReg = ui->seqArea->getBaseXRange(lastPos, drawFull);
     int firstLastLen = lastBaseXReg.startPos - firstBaseXReg.startPos;
     int firstXCenter = firstBaseXReg.startPos + firstBaseXReg.length / 2;
     QPoint startPoint(firstXCenter, rr.startPos);
-    
+
     GraphUtils::RulerConfig c;
     c.singleSideNotches = true;
     c.notchSize = RULER_NOTCH_SIZE;
     c.textOffset = (rr.length - rfm.ascent()) /2;
     c.extraAxisLenBefore = startPoint.x();
-    c.extraAxisLenAfter = w - (startPoint.x() + firstLastLen);
+    c.extraAxisLenAfter = (drawFull ? lastBaseXReg.endPos() : w)
+            - (startPoint.x() + firstLastLen);
     c.textBorderStart = -firstBaseXReg.length / 2;
     c.textBorderEnd = -firstBaseXReg.length / 2;
     GraphUtils::drawRuler(p, startPoint, firstLastLen, startPos + 1, lastPos + 1, rulerFont, c);
@@ -290,13 +319,23 @@ void MSAEditorConsensusArea::drawHistogram(QPainter& p) {
         return;
     }
 
+    int firstBase = ui->seqArea->getFirstVisibleBase();
+    int lastBase = ui->seqArea->getLastVisibleBase(true);
+    drawHistogram(p, firstBase, lastBase);
+}
+
+void MSAEditorConsensusArea::drawHistogram(QPainter &p, int firstBase, int lastBase) {
+    if (ui->seqArea->isAlignmentEmpty()) {
+        return;
+    }
+
     QColor c("#255060");
     p.setPen(c);
     U2Region yr = getYRange(MSAEditorConsElement_HISTOGRAM);
     yr.startPos++; yr.length-=2; //keep borders
     QBrush brush(c, Qt::Dense4Pattern);
 
-    for (int pos = ui->seqArea->getFirstVisibleBase(), lastPos = ui->seqArea->getLastVisibleBase(true); pos <= lastPos; pos++) {
+    for (int pos = firstBase, lastPos = lastBase; pos <= lastPos; pos++) {
         U2Region xr = ui->seqArea->getBaseXRange(pos, true);
         int percent = consensusCache->getConsensusCharPercent(pos);
         assert(percent >= 0 && percent <= 100);
@@ -305,19 +344,20 @@ void MSAEditorConsensusArea::drawHistogram(QPainter& p) {
         p.drawRect(hr);
         p.fillRect(hr, brush);
     }
+
 }
 
 U2Region MSAEditorConsensusArea::getYRange(MSAEditorConsElement e) const {
     U2Region res;
     switch(e) {
-        case MSAEditorConsElement_HISTOGRAM: 
+        case MSAEditorConsElement_HISTOGRAM:
                                 res = U2Region(0, 50);
                                 break;
-        case MSAEditorConsElement_CONSENSUS_TEXT: 
+        case MSAEditorConsElement_CONSENSUS_TEXT:
                                 res = U2Region(0, editor->getRowHeight());
                                 res.startPos += getYRange(MSAEditorConsElement(e-1)).endPos();
                                 break;
-        case MSAEditorConsElement_RULER: 
+        case MSAEditorConsElement_RULER:
                                 res = U2Region(0, rulerFontHeight + 2 * RULER_NOTCH_SIZE + 4);
                                 res.startPos += getYRange(MSAEditorConsElement(e-1)).endPos();
                                 break;
@@ -343,7 +383,7 @@ void MSAEditorConsensusArea::setupFontAndHeight() {
     rulerFont.setPointSize(qMax(8, int(ui->editor->getFont().pointSize() * 0.7)));
     rulerFontHeight = QFontMetrics(rulerFont).height();
     setFixedHeight( getYRange(MSAEditorConsElement_RULER).endPos() + 1);
-    
+
 }
 
 void MSAEditorConsensusArea::sl_zoomOperationPerformed( bool resizeModeChanged )
@@ -404,7 +444,7 @@ void MSAEditorConsensusArea::sl_changeConsensusAlgorithm(const QString& algoId) 
     if (getConsensusAlgorithm()->getFactory() != algoFactory) {
         assert(algoFactory!=NULL);
         setConsensusAlgorithm(algoFactory);
-    } 
+    }
     emit si_consensusAlgorithmChanged(algoId);
 }
 
@@ -423,7 +463,7 @@ void MSAEditorConsensusArea::setConsensusAlgorithm(MSAConsensusAlgorithmFactory*
     if (oldAlgo!=NULL && algoFactory == oldAlgo->getFactory()) {
         return;
     }
-    
+
     //store threshold for the active algo
     if (oldAlgo!=NULL && oldAlgo->supportsThreshold()) {
         AppContext::getSettings()->setValue(getThresholdSettingsKey(oldAlgo->getId()), oldAlgo->getThreshold());
@@ -444,7 +484,7 @@ void MSAEditorConsensusArea::setConsensusAlgorithmConsensusThreshold(int val) {
     if (algo->getThreshold() == val) {
         return;
     }
-    //store threshold as the last value 
+    //store threshold as the last value
     AppContext::getSettings()->setValue(getThresholdSettingsKey(algo->getId()), val);
     algo->setThreshold(val);
 }
@@ -513,7 +553,7 @@ void MSAEditorConsensusArea::mouseReleaseEvent( QMouseEvent *e ) {
         scribbling = false;
         selecting = false;
     }
-    
+
     ui->seqArea->getHBar()->setupRepeatAction(QAbstractSlider::SliderNoAction);
     QWidget::mouseReleaseEvent(e);
 }

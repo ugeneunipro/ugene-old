@@ -19,53 +19,54 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportImage3DGLDialog.h"
+#include "BioStruct3DGLImageExporter.h"
 #include "BioStruct3DGLWidget.h"
 #include "gl2ps/gl2ps.h"
 
-#include <U2Core/Log.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/L10n.h>
-#include <U2Core/TextUtils.h>
-#include <U2Gui/DialogUtils.h>
-
-#include <QtGui/QImageWriter>
 
 namespace U2 {
 
-ExportImage3DGLDialog::ExportImage3DGLDialog( BioStruct3DGLWidget* widget ) : ExportImageDialog(widget, true, true), glWidget(widget)
-{
-}
+BioStruct3DGLImageExporter::BioStruct3DGLImageExporter(BioStruct3DGLWidget *widget)
+    : ImageExporter(ImageExporter::Resizable, ImageExporter::SupportVectorFormats),
+      glWidget(widget)
+{}
 
-bool ExportImage3DGLDialog::exportToSVG(){
+bool BioStruct3DGLImageExporter::exportToSVG(const QString &filename) const {
     int opt = GL2PS_NONE;
-    glWidget->writeImage2DToFile(GL2PS_SVG, opt, 2, qPrintable(getFilename()));
+    glWidget->writeImage2DToFile(GL2PS_SVG, opt, 2, qPrintable(filename));
     return true; //TODO: need check on error
 }
-bool ExportImage3DGLDialog::exportToPDF(){
+
+bool BioStruct3DGLImageExporter::exportToPDF(const QString &filename, const QString &format) const {
     int opt = GL2PS_NONE;
-    if(getFormat() == "ps"){
-        glWidget->writeImage2DToFile(GL2PS_PS, opt, 2, qPrintable(getFilename()));
+
+    if (format == "ps"){
+        glWidget->writeImage2DToFile(GL2PS_PS, opt, 2, qPrintable(filename));
         return true; //TODO: need check on error
-    }else if(getFormat() == "pdf"){
-        glWidget->writeImage2DToFile(GL2PS_PDF, opt, 2, qPrintable(getFilename()));
+    } else if (format == "pdf"){
+        glWidget->writeImage2DToFile(GL2PS_PDF, opt, 2, qPrintable(filename));
         return true; //TODO: need check on error
     }
     return false;
+
 }
-bool ExportImage3DGLDialog::exportToBitmap(){
-    
+
+bool BioStruct3DGLImageExporter::exportToBitmap(const QString &filename, const QString &format, const QSize &size, int quality) const {
     glWidget->setImageRenderingMode(true);
-    QPixmap image = glWidget->renderPixmap().scaled(getWidth(), getHeight(), Qt::KeepAspectRatio);
+    QPixmap image = glWidget->renderPixmap().scaled( size, Qt::KeepAspectRatio);
     glWidget->setImageRenderingMode(false);
 
-    if(hasQuality()){
-        return image.save(getFilename(), qPrintable(getFormat()), getQuality());
-    }else{
-        return image.save(getFilename(), qPrintable(getFormat()));
-    }
-
+    return image.save(filename, qPrintable(format), quality);
 }
+
+int BioStruct3DGLImageExporter::getImageWidth() const {
+    return glWidget->width();
+}
+
+int BioStruct3DGLImageExporter::getImageHeight() const {
+    return glWidget->height();
+}
+
 
 } // namespace
 

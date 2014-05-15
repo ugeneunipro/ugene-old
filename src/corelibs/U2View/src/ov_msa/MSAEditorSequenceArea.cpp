@@ -109,7 +109,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     shiftingWasPerformed = false;
 
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
-   
+
     delSelectionAction = new QAction(tr("Remove selection"), this);
     delSelectionAction->setObjectName("Remove selection");
     delSelectionAction->setShortcutContext(Qt::WidgetShortcut);
@@ -123,7 +123,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     delColAction->setShortcut(QKeySequence(Qt::SHIFT| Qt::Key_Delete));
     delColAction->setShortcutContext(Qt::WidgetShortcut);
     connect(delColAction, SIGNAL(triggered()), SLOT(sl_delCol()));
-    
+
     insSymAction = new QAction(tr("Fill selection with gaps"), this);
     insSymAction->setObjectName("fill_selection_with_gaps");
     insSymAction->setShortcutContext(Qt::WidgetShortcut);
@@ -140,7 +140,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     saveSequence->setObjectName("Save sequence");
     saveSequence->setShortcutContext(Qt::WidgetShortcut);
     connect(saveSequence, SIGNAL(triggered()), SLOT(sl_saveSequence()));
-    
+
     gotoAction = new QAction(QIcon(":core/images/goto.png"), tr("Go to position..."), this);
     gotoAction->setObjectName("action_go_to_position");
     gotoAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_G));
@@ -197,7 +197,7 @@ MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, G
     connect(editor, SIGNAL(si_fontChanged(QFont)), SLOT(sl_fontChanged(QFont)));
     connect(ui->getCollapseModel(), SIGNAL(toggled()), SLOT(sl_modelChanged()));
     connect(editor, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_referenceSeqChanged(qint64)));
-    
+
     QAction* undoAction = ui->getUndoAction();
     QAction* redoAction = ui->getRedoAction();
     addAction(undoAction);
@@ -233,7 +233,7 @@ void MSAEditorSequenceArea::prepareColorSchemeMenuActions() {
     MSAColorSchemeRegistry* csr = AppContext::getMSAColorSchemeRegistry();
     connect(csr, SIGNAL(si_customSettingsChanged()), SLOT(sl_customColorSettingsChanged()));
 
-    QString csid = atype == DNAAlphabet_AMINO ? 
+    QString csid = atype == DNAAlphabet_AMINO ?
             s->getValue(SETTINGS_ROOT + SETTINGS_COLOR_AMINO, MSAColorScheme::UGENE_AMINO).toString()
           : s->getValue(SETTINGS_ROOT + SETTINGS_COLOR_NUCL, MSAColorScheme::UGENE_NUCL).toString();
 
@@ -265,8 +265,8 @@ void MSAEditorSequenceArea::prepareHighlightingMenuActions() {
 
     DNAAlphabetType atype = maObj->getAlphabet()->getType();
     MSAHighlightingSchemeRegistry* hsr = AppContext::getMSAHighlightingSchemeRegistry();
-    
-    QString hsid = atype == DNAAlphabet_AMINO ? 
+
+    QString hsid = atype == DNAAlphabet_AMINO ?
         s->getValue(SETTINGS_ROOT + SETTINGS_HIGHGHLIGHT_AMINO, MSAHighlightingScheme::EMPTY_AMINO).toString()
         : s->getValue(SETTINGS_ROOT + SETTINGS_HIGHGHLIGHT_NUCL, MSAHighlightingScheme::EMPTY_NUCL).toString();
     MSAHighlightingSchemeFactory* hsf = hsr->getMSAHighlightingSchemeFactoryById(hsid);
@@ -296,7 +296,7 @@ void MSAEditorSequenceArea::initCustomSchemeActions(const QString& id, DNAAlphab
     deleteOldCustomSchemes();
 
     MSAColorSchemeRegistry* csr = AppContext::getMSAColorSchemeRegistry();
-    
+
     QList<MSAColorSchemeFactory*> customFactories = csr->getMSACustomColorSchemes(atype);
     foreach(MSAColorSchemeFactory* f, customFactories) {
         QAction* action = new QAction(f->getName(), NULL);
@@ -314,7 +314,7 @@ QStringList MSAEditorSequenceArea::getAvailableColorSchemes() const{
     foreach(QAction *a, colorSchemeMenuActions){
         allSchemas.append(a->text());
     }
-    
+
     foreach(QAction *a, customColorSchemeMenuActions){
         allSchemas.append(a->text());
     }
@@ -337,7 +337,15 @@ bool MSAEditorSequenceArea::hasAminoAlphabet() {
     return DNAAlphabet_AMINO == alphabet->getType();
 }
 
-void MSAEditorSequenceArea::sl_customColorSettingsChanged(){    
+void MSAEditorSequenceArea::paintSelectedRegionToPixmap(QPixmap &pixmap) {
+    drawContentToPixmap(pixmap, selection.getRect());
+}
+
+void MSAEditorSequenceArea::paintWholeAlignmentToPixmap(QPixmap &pixmap) {
+    drawContentToPixmap(pixmap, QRect(0, 0, editor->getAlignmentLen(), editor->getNumSequences()));
+}
+
+void MSAEditorSequenceArea::sl_customColorSettingsChanged(){
     DNAAlphabetType atype = editor->getMSAObject()->getAlphabet()->getType();
     QAction* a = GUIUtils::getCheckedAction(customColorSchemeMenuActions);
     initCustomSchemeActions(a == NULL ? "" :a->data().toString(), atype);
@@ -359,7 +367,7 @@ void MSAEditorSequenceArea::sl_customColorSettingsChanged(){
         QAction* a = GUIUtils::findActionByData(QList<QAction*>() << colorSchemeMenuActions << customColorSchemeMenuActions, atype == DNAAlphabet_AMINO ? MSAColorScheme::UGENE_AMINO : MSAColorScheme::UGENE_NUCL);
         if(a){a->setChecked(true);}
     }
-    
+
     emit si_highlightingChanged();
     sl_changeColorScheme();
 }
@@ -444,7 +452,7 @@ void MSAEditorSequenceArea::updateActions() {
     MAlignmentObject* maObj = editor->getMSAObject();
     assert(maObj != NULL);
     bool readOnly = maObj->isStateLocked();
-    
+
     delSelectionAction->setEnabled(!readOnly && !isAlignmentEmpty());
     delColAction->setEnabled(!readOnly && !isAlignmentEmpty());
     insSymAction->setEnabled(!readOnly && !isAlignmentEmpty());
@@ -487,6 +495,27 @@ void MSAEditorSequenceArea::drawAll() {
 }
 
 void MSAEditorSequenceArea::drawContent(QPainter& p) {
+    drawContent(p, QRect(startPos, getFirstVisibleSequence(), getNumVisibleBases(false), getNumDisplayedSequences()));
+}
+
+void MSAEditorSequenceArea::drawContentToPixmap(QPixmap &pixmap, const QRect &area) {
+    int buffer = startPos;
+    startPos = 0;
+
+    U2Region xRange = getBaseXRange(area.x(), true);
+    U2Region yRange = getSequenceYRange(area.y(), true);
+
+    pixmap = QPixmap( xRange.length * area.width(), yRange.length * area.height());
+    pixmap.fill(Qt::white);
+    QPainter p(&pixmap);
+    p.translate( - area.x() * xRange.length, - area.y() * yRange.length);
+    drawContent(p, area);
+
+    startPos = buffer;
+}
+
+void MSAEditorSequenceArea::drawContent(QPainter &p, const QRect &area) {
+
     MAlignmentObject* maObj = editor->getMSAObject();
     SAFE_POINT( NULL != maObj, "Invalid MSA object occurred!", );
 
@@ -496,22 +525,15 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
     if (isAlignmentEmpty()) {
         return;
     }
-    
-    //for every sequence in msa starting from first visible
-    //draw it starting from startPos
-    int firstVisibleSeq = getFirstVisibleSequence();
-    int lastVisibleSeq  = getLastVisibleSequence(true);
-    int lastPos = getLastVisibleBase(true);
-    int w = width();
-    int h = height();
+
     const MAlignment msa = maObj->getMAlignment();
-    U2Region baseYRange = getSequenceYRange(firstVisibleSeq, true);
+    U2Region baseYRange = getSequenceYRange(area.y(), true);
 
     QVector<U2Region> range;
     if (ui->isCollapsibleMode()) {
-        ui->getCollapseModel()->getVisibleRows(firstVisibleSeq, lastVisibleSeq, range);
+        ui->getCollapseModel()->getVisibleRows(area.y(), area.bottom(), range);
     } else {
-        range.append(U2Region(firstVisibleSeq, lastVisibleSeq - firstVisibleSeq + 1));
+        range.append(U2Region(area.y(), area.height()));
     }
 
     U2OpStatusImpl os;
@@ -526,18 +548,17 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
         int start = region.startPos;
         int end = qMin(region.endPos(), (qint64)msa.getNumRows());
         for (int seq = start; seq < end; seq++) {
-            for (int pos = startPos; pos <= lastPos; pos++) {
+            for (int pos = startPos; pos <= area.right(); pos++) {
                 U2Region baseXRange = getBaseXRange(pos, true);
                 QRect cr(baseXRange.startPos, baseYRange.startPos, baseXRange.length+1, baseYRange.length);
-                assert(cr.left() < w && cr.top() < h); Q_UNUSED(w); Q_UNUSED(h);
                 char c = msa.charAt(seq, pos);
-                
+
                 QColor color = colorScheme->getColor(seq, pos);
 
                 QString cname = highlightingScheme->metaObject()->className();
 
                 if(cname == "U2::MSAHighlightingSchemeGaps"){
-                    const char refChar = 'z';              
+                    const char refChar = 'z';
                     bool drawColor = false;
                     highlightingScheme->setUseDots(useDotsAction->isChecked());
                     highlightingScheme->process(refChar, c, drawColor);
@@ -558,7 +579,7 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
                         p.drawText(cr, Qt::AlignCenter, QString(c));
                     }
                 }else{
-                    const char refChar = r->charAt(pos);              
+                    const char refChar = r->charAt(pos);
                     bool drawColor = false;
                     highlightingScheme->setUseDots(useDotsAction->isChecked());
                     highlightingScheme->process(refChar, c, drawColor);
@@ -574,7 +595,6 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
                 }
             }
             baseYRange.startPos += editor->getRowHeight();
-            //curSeq++;
         }
     }
     emit si_visibleRangeChanged();
@@ -584,10 +604,10 @@ void MSAEditorSequenceArea::drawSelection( QPainter &p )
 {
     int x = selection.x();
     int y = selection.y();
-    
+
     U2Region xRange = getBaseXRange(x, true);
     U2Region yRange = getSequenceYRange(y, true);
- 
+
     QPen pen(highlightSelection || hasFocus()? Qt::black : Qt::gray);
     pen.setStyle(Qt::DashLine);
     pen.setWidth(highlightSelection ? 2 : 1);
@@ -988,7 +1008,7 @@ void MSAEditorSequenceArea::updateSelection( const QPoint& newPos) {
     int height = qAbs(newPos.y() - cursorPos.y()) + 1;
     int left = qMin(newPos.x(), cursorPos.x());
     int top = qMin(newPos.y(), cursorPos.y());
-    
+
     MSAEditorSelection s(left, top, width, height);
     if (newPos.x()!=-1 && newPos.y()!=-1) {
         setSelection(s);
@@ -1393,9 +1413,9 @@ void MSAEditorSequenceArea::moveSelection( int dx, int dy )
 
      if (!isVisible(newTopLeft, false)) {
          if (isVisible(newTopLeft, true)) {
-             if (dx != 0) { 
+             if (dx != 0) {
                  setFirstVisibleBase(startPos + dx);
-             } 
+             }
              if (dy!=0) {
                  setFirstVisibleSequence(getFirstVisibleSequence()+dy);
              }
@@ -1418,20 +1438,20 @@ void MSAEditorSequenceArea::moveCursor(int dx, int dy) {
     QPoint p = cursorPos + QPoint(dx, dy);
     if (!isInRange(p)) {
         return;
-    }   
-    
+    }
+
     // Move only one cell selection?
     // TODO: consider selection movement
     int sz = selection.width()*selection.height();
     if (sz != 1) {
         return;
     }
-    
+
     if (!isVisible(p, false)) {
         if (isVisible(cursorPos, true)) {
-            if (dx != 0) { 
+            if (dx != 0) {
                 setFirstVisibleBase(startPos + dx);
-            } 
+            }
             if (dy!=0) {
                 setFirstVisibleSequence(getFirstVisibleSequence()+dy);
             }
@@ -1479,7 +1499,7 @@ QPoint MSAEditorSequenceArea::coordToPos(const QPoint& coord) const {
             break;
         }
     }
-    
+
     //X: position in sequence
     for (int i=getFirstVisibleBase(), n = getLastVisibleBase(true); i<=n; i++) {
         U2Region r = getBaseXRange(i, false);
@@ -1499,7 +1519,7 @@ void MSAEditorSequenceArea::setSelection(const MSAEditorSelection& s) {
 
     MSAEditorSelection prevSelection = selection;
     selection = s;
-    
+
     int selEndPos = s.x() + s.width() - 1;
     int ofRange = selEndPos - editor->getAlignmentLen();
     if(ofRange>=0) {
@@ -1528,9 +1548,9 @@ void MSAEditorSequenceArea::setCursorPos(const QPoint& p) {
     if (p == cursorPos) {
         return;
     }
-    
+
     cursorPos = p;
-    
+
     highlightSelection = false;
     updateActions();
 }
@@ -1593,7 +1613,7 @@ void MSAEditorSequenceArea::sl_alignmentChanged(const MAlignment&, const MAlignm
     if (ui->isCollapsibleMode()) {
         nSeq = ui->getCollapseModel()->getLastPos() + 1;
     }
-    
+
     //todo: set in one method!
     setFirstVisibleBase(qBound(0, startPos, aliLen-countWidthForBases(false)));
     setFirstVisibleSequence(qBound(0, startSeq, nSeq - countHeightForSequences(false)));
@@ -1636,13 +1656,13 @@ void MSAEditorSequenceArea::sl_buildStaticMenu(GObjectView*, QMenu* m) {
 
 void MSAEditorSequenceArea::sl_buildContextMenu(GObjectView*, QMenu* m) {
     buildMenu(m);
-    
+
     QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
     SAFE_POINT(editMenu != NULL, "editMenu", );
 
-    QList<QAction*> actions; 
+    QList<QAction*> actions;
     actions << delSelectionAction << insSymAction << reverseComplementAction << reverseAction << complementAction << delColAction << removeAllGapsAction;
-    
+
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
     SAFE_POINT(copyMenu != NULL, "copyMenu", );
 
@@ -1661,7 +1681,7 @@ void MSAEditorSequenceArea::sl_showCustomSettings(){
 void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     QAction* copyMenuAction = GUIUtils::findAction(m->actions(), MSAE_MENU_LOAD);
     m->insertAction(copyMenuAction, gotoAction);
-    
+
     QMenu* loadSeqMenu = GUIUtils::findSubMenu(m, MSAE_MENU_LOAD);
     SAFE_POINT(loadSeqMenu != NULL, "loadSeqMenu", );
     loadSeqMenu->addAction(addSeqFromProjectAction);
@@ -1669,7 +1689,7 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
 
     QMenu* editMenu = GUIUtils::findSubMenu(m, MSAE_MENU_EDIT);
     SAFE_POINT(editMenu != NULL, "editMenu", );
-    QList<QAction*> actions; 
+    QList<QAction*> actions;
     actions << reverseComplementAction  << reverseAction << complementAction << removeAllGapsAction;
     editMenu->insertActions(editMenu->isEmpty() ? NULL : editMenu->actions().first(), actions);
 
@@ -1677,7 +1697,7 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     SAFE_POINT(exportMenu != NULL, "exportMenu", );
     exportMenu->addAction(createSubaligniment);
     exportMenu->addAction(saveSequence);
-    
+
     QMenu* copyMenu = GUIUtils::findSubMenu(m, MSAE_MENU_COPY);
     SAFE_POINT(copyMenu != NULL, "copyMenu", );
     ui->getCopySelectionAction()->setDisabled(selection.isNull());
@@ -1722,7 +1742,7 @@ void MSAEditorSequenceArea::buildMenu(QMenu* m) {
     }
     highlightSchemeMenu->addSeparator();
     highlightSchemeMenu->addAction(useDotsAction);
-    m->insertMenu(GUIUtils::findAction(m->actions(), MSAE_MENU_EDIT), highlightSchemeMenu);   
+    m->insertMenu(GUIUtils::findAction(m->actions(), MSAE_MENU_EDIT), highlightSchemeMenu);
 }
 
 void MSAEditorSequenceArea::sl_fontChanged(QFont font) {
@@ -1854,12 +1874,12 @@ bool MSAEditorSequenceArea::checkState() const {
     MAlignmentObject* maObj = editor->getMSAObject();
     int aliLen = maObj->getLength();
     int nSeqs = maObj->getNumRows();
-    
+
     assert((startPos >=0 && startSeq >=0) || isAlignmentEmpty());
     int lastPos = getLastVisibleBase(true);
     int lastSeq = getLastVisibleSequence(true);
     assert((lastPos < aliLen && lastSeq < nSeqs) || isAlignmentEmpty());
-    
+
     // TODO: check selection is valid
     //int cx = cursorPos.x();
     //int cy = cursorPos.y();
@@ -1917,7 +1937,7 @@ void MSAEditorSequenceArea::sl_createSubaligniment(){
         bool addToProject = dialog.getAddToProjFlag();
         QString path = dialog.getSavePath();
         QStringList seqNames = dialog.getSelectedSeqNames();
-        Task* csTask = new CreateSubalignmentAndOpenViewTask(editor->getMSAObject(), 
+        Task* csTask = new CreateSubalignmentAndOpenViewTask(editor->getMSAObject(),
             CreateSubalignmentSettings(window, seqNames, path, true, addToProject, dialog.getFormatId()) );
         AppContext::getTaskScheduler()->registerTopLevelTask(csTask);
     }
@@ -1950,7 +1970,7 @@ void MSAEditorSequenceArea::sl_saveSequence(){
     QString fullPath = GUrlUtils::prepareFileLocation(d.url, os);
     CHECK_OP(os, );
     GUrl url(fullPath);
-    
+
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(d.url));
     DocumentFormat *df = AppContext::getDocumentFormatRegistry()->getFormatById(d.format);
     Document *doc;
@@ -1961,7 +1981,7 @@ void MSAEditorSequenceArea::sl_saveSequence(){
     CHECK_OP_EXT(os, delete doc, );
     doc->addObject(seqObj);
     SaveDocumentTask *t = new SaveDocumentTask(doc, doc->getIOAdapterFactory(), doc->getURL());
-   
+
     if (d.addToProjectFlag){
         Project *p = AppContext::getProject();
         Document *loadedDoc=p->findDocumentByURL(url);
@@ -1971,7 +1991,7 @@ void MSAEditorSequenceArea::sl_saveSequence(){
             return;
         }
         p->addDocument(doc);
-        
+
         // Open view for created document
         DocumentSelection ds;
         ds.setSelection(QList<Document*>() <<doc);
@@ -2050,13 +2070,13 @@ U2Region MSAEditorSequenceArea::getSelectedRows() const {
     }
 
     MSACollapsibleItemModel* m = ui->getCollapseModel();
-    
+
     int startPos = selection.y();
     int endPos = startPos + selection.height() - 1;
 
     int startSeq = 0;
     int endSeq = 0;
-    
+
     int startItemIdx = m->itemAt(startPos);
 
     if (startItemIdx >= 0) {
@@ -2067,7 +2087,7 @@ U2Region MSAEditorSequenceArea::getSelectedRows() const {
     }
 
     int endItemIdx = m->itemAt(endPos);
-    
+
     if (endItemIdx >= 0) {
         const MSACollapsableItem& endItem = m->getItem(endItemIdx);
         endSeq = endItem.row + endItem.numRows;
@@ -2098,7 +2118,7 @@ void MSAEditorSequenceArea::sl_copyCurrentSelection()
 
     assert(isInRange(selection.topLeft()));
     assert(isInRange( QPoint(selection.x() + selection.width() - 1, selection.y() + selection.height() - 1) ) );
-    
+
     MAlignmentObject* maObj = editor->getMSAObject();
     if ( selection.isNull() ) {
         return;
@@ -2115,7 +2135,7 @@ void MSAEditorSequenceArea::sl_copyCurrentSelection()
         if (i + 1 != sel.endPos()) { // do not add line break into the last line
             selText.append("\n");
         }
-    }    
+    }
     QApplication::clipboard()->setText(selText);
 }
 
@@ -2143,7 +2163,7 @@ bool MSAEditorSequenceArea::shiftSelectedRegion( int shift ) {
                 ? cursorPos.x( ) + resultShift : 0;
             setCursorPos( newCursorPosX );
 
-            const MSAEditorSelection newSelection( selectionBackup.x( ) + resultShift, 
+            const MSAEditorSelection newSelection( selectionBackup.x( ) + resultShift,
                 selectionBackup.y( ), selectionBackup.width( ), selectionBackup.height( ) );
             setSelection( newSelection );
             if ( ( selectionBackup.getRect( ).right( ) == getLastVisibleBase( false )
@@ -2209,9 +2229,9 @@ void MSAEditorSequenceArea::sl_addSeqFromFile()
     if (msaObject->isStateLocked()) {
         return;
     }
-    
+
     QString filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
-    
+
     LastUsedDirHelper lod;
     QStringList urls;
 #ifdef Q_OS_MAC
@@ -2227,7 +2247,7 @@ void MSAEditorSequenceArea::sl_addSeqFromFile()
         AddSequencesToAlignmentTask * task = new AddSequencesToAlignmentTask(msaObject, urls);
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
     }
-    
+
 }
 
 void MSAEditorSequenceArea::sl_addSeqFromProject()
@@ -2477,7 +2497,7 @@ QPair<QString, int> MSAEditorSequenceArea::getGappedColumnInfo() const{
     QChar current = row.charAt(selection.topLeft().x());
     if(current == MAlignment_GapChar){
         return QPair<QString, int>(QString("gap"),len);
-    }else{ 
+    }else{
         int pos = row.getUngappedPosition(selection.topLeft().x());
         return QPair<QString, int>(QString::number(pos + 1),len);
     }
@@ -2518,7 +2538,7 @@ void MSAEditorSequenceArea::sl_setCollapsingRegions(const QList<QStringList>& co
         }
         return;
     }
-    
+
     ui->setCollapsibleMode(true);
 
     m->reset(collapsedRegions);
@@ -2586,9 +2606,9 @@ QString MSAEditorSequenceArea::exportHighligtning( int startPos, int endPos, int
                 informative = true;
             }else{
                 if (dots){
-                    rowStr.append("."); 
+                    rowStr.append(".");
                 }else{
-                    rowStr.append(" "); 
+                    rowStr.append(" ");
                 }
             }
             rowStr.append("\t");

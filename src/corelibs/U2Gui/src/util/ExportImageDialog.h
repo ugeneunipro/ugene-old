@@ -22,69 +22,79 @@
 #ifndef _U2_EXPORT_IMAGE_DIALOG_H_
 #define _U2_EXPORT_IMAGE_DIALOG_H_
 
+
+#include "ImageExporter.h"
 #include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtCore/QList>
 #include <QtCore/QString>
-
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
 #else
 #include <QtWidgets/QDialog>
 #endif
 
+
 class Ui_ImageExportForm;
-class QVBoxLayout;
+class QRadioButton;
+class QAbstractButton;
+class QButtonGroup;
 
 namespace U2 {
 
-class U2GUI_EXPORT ExportImageDialog : public QDialog
-{
+class U2GUI_EXPORT ExportImageDialog : public QDialog {
     Q_OBJECT
-
 public:
-    ExportImageDialog(QWidget* widget, bool showSizeRuler=false, bool useVectorFormats=false, const QString& file = QString("untitled"));
-    ExportImageDialog(QWidget* widget, QRect rect, bool showSizeRuler=false, bool useVectorFormats=false, const QString& file = QString("untitled"));
+    ExportImageDialog(ImageExporter* exporter,
+                      QWidget* parent = NULL,
+                      const QString& file = QString("untitled"));
+    ExportImageDialog(const QList<ImageExporter*> &exporters,
+                      ImageExporter* defaultExporter,
+                      QWidget* parent = NULL, const QString& file = QString("untitled"));
+    ExportImageDialog(QWidget* screenShotWidget,
+                      ImageExporter::ImageScalingPolicy scalingPolicy = ImageExporter::Constant,
+                      ImageExporter::FormatPolicy formatPolicy = ImageExporter::IgnoreVectorFormats,
+                      QWidget* parent = NULL, const QString& file = QString("untitled"));
 
-    virtual bool exportToSVG();
-    virtual bool exportToPDF();
-    virtual bool exportToBitmap();
+    const QString& getFilename() const { return filename; }
+    const QString& getFormat() const { return format; }
+    int getWidth() const;
+    int getHeight() const;
 
-    const QString& getFilename(){return filename;}
-    const QString& getFormat(){return format;}
-    bool hasQuality();
-    int getWidth();
-    int getHeight();
-    int getQuality();
-    QVBoxLayout* getAdditionalLayout();
+    bool hasQuality() const;
+    int getQuality() const;
 
 public slots:
-    virtual void accept();
+    void accept();
 
 private slots:
     void sl_onBrowseButtonClick();
     void sl_onFormatsBoxItemChanged(const QString& text);
+    void sl_onExporterSelected(QAbstractButton*);
 
 private:
     void setupComponents();
+    void setupExporters();
     void setSizeControlsEnabled(bool enabled);
+    void setVectorFormats();
 
     static bool isVectorGraphicFormat(const QString &formatName);
-    static int getVectorFormatIdByName(const QString &formatName);
     static bool isLossyFormat(const QString &formatName);
+    static int getVectorFormatIdByName(const QString &formatName);
 
 private:
-    QList<QString> supportedFormats;
-    QWidget* widget;
+    QList <ImageExporter*>                  exporters;
+    ImageExporter*                          currentExporter;
+    QMap <QRadioButton*, ImageExporter*>    exportersButtons;
+    QButtonGroup*    exportersGroup;
+
+    QList<QString>      supportedFormats;
     QString filename;
     QString origFilename;
     QString format;
 
     LastUsedDirHelper lod;
     Ui_ImageExportForm* ui;
-    QRect rect;
-    bool showSizeRuler;
-    bool useVectorFormats;
 }; // class ExportImageDialog
 
 } // namespace

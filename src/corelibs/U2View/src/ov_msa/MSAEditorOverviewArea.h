@@ -46,6 +46,9 @@ public:
     void cancelRendering();
     bool isOverviewWidget(QWidget* wgt) const;
 
+    MSASimpleOverview* getSimpleOverview() const { return simpleOverview; }
+    MSAGraphOverview* getGraphOverview() const { return graphOverview; }
+
     static const QString OVERVIEW_AREA_OBJECT_NAME;
 public slots:
     void sl_onContextMenuRequested(const QPoint& p);

@@ -56,6 +56,8 @@ public:
     MSAEditorNameList(MSAEditorUI* ui, QScrollBar* nhBar);
     virtual ~MSAEditorNameList();
 
+    QPixmap getView() { return *cachedView; }
+
 private slots:
     virtual void sl_buildStaticMenu(GObjectView* v, QMenu* m);
     virtual void sl_buildContextMenu(GObjectView* v, QMenu* m);
@@ -67,7 +69,7 @@ private slots:
     void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&);
     void sl_onScrollBarActionTriggered( int scrollAction );
     void sl_referenceSeqChanged(qint64);
-    
+
     void sl_startChanged(const QPoint& p, const QPoint& prev);
     void sl_selectionChanged(const MSAEditorSelection& current, const MSAEditorSelection& prev);
 
@@ -121,7 +123,7 @@ private:
     QFont getFont(bool selected) const;
     QRect calculateTextRect(const U2Region& yRange, bool selected) const;
     QRect calculateButtonRect(const QRect& itemRect) const;
-    
+
     QObject*            labels; // used in GUI tests
     MSAEditorUI*        ui;
     QScrollBar*         nhBar;

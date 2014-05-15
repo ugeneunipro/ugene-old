@@ -500,7 +500,7 @@ void DotPlotWidget::sl_onSequenceSelectionChanged(LRegionsSelection* s, const QV
     }
     DNASequenceSelection *dnaSelection = qobject_cast<DNASequenceSelection*>(sen);
     if (dnaSelection) {
-       
+
         const U2SequenceObject *selectedSequence = dnaSelection->getSequenceObject();
             if (selectedSequence == sequenceX->getSequenceGObject()) {
                 if(!nearestSelecting)
@@ -524,7 +524,7 @@ void DotPlotWidget::sl_onSequenceSelectionChanged(LRegionsSelection* s, const QV
 void DotPlotWidget::sl_showSaveImageDialog() {
     exitButton->hide();
 
-    ExportImageDialog dialog(this, this->rect());
+    ExportImageDialog dialog(this);
     dialog.exec();
 
     exitButton->show();
@@ -714,7 +714,7 @@ bool DotPlotWidget::sl_showSettingsDialog(bool disableLoad) {
         return false;
     }
 
-    
+
     if ((sequenceX->getAlphabet()->getType() != sequenceY->getAlphabet()->getType())){
 
         sequenceX = NULL;
@@ -1876,21 +1876,21 @@ void DotPlotWidget::sl_filter(){
 
         QList<Task*> tasks;
 
-        Task* directT = new DotPlotFilterTask(sequenceX, 
-            sequenceY, 
-            d.getFeatureNames(), 
-            dpDirectResultListener->dotPlotList, 
-            dpFilteredResults, 
+        Task* directT = new DotPlotFilterTask(sequenceX,
+            sequenceY,
+            d.getFeatureNames(),
+            dpDirectResultListener->dotPlotList,
+            dpFilteredResults,
             d.getFilterType());
         tasks << directT;
 
         //inverted
         if(inverted){
-            Task* recComplT = new DotPlotFilterTask(sequenceX, 
-                sequenceY, 
-                d.getFeatureNames(), 
-                dpRevComplResultsListener->dotPlotList, 
-                dpFilteredResultsRevCompl, 
+            Task* recComplT = new DotPlotFilterTask(sequenceX,
+                sequenceY,
+                d.getFeatureNames(),
+                dpRevComplResultsListener->dotPlotList,
+                dpFilteredResultsRevCompl,
                 d.getFilterType());
             tasks << recComplT;
         }
@@ -1926,7 +1926,7 @@ void DotPlotWidget::mouseReleaseEvent(QMouseEvent *e) {
                 sequenceClearSelection();
                 clearedByRepitSel = true;
                 selectNearestRepeat(clickedFirst);
-                
+
             }
         }
         shifting = false;
@@ -1997,7 +1997,7 @@ void DotPlotWidget::updateCursor(){
 }
 
 void DotPlotWidget::clearRepeatSelection(){
-    nearestRepeat = NULL; 
+    nearestRepeat = NULL;
     clearedByRepitSel = true;
     update();
 }

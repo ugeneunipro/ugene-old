@@ -70,6 +70,9 @@ public:
 
     QSharedPointer <MSAEditorConsensusCache> getConsensusCache();
 
+    void paintFullConsensusToPixmap(QPixmap &pixmap);
+    void paintFullRulerToPixmap(QPixmap &pixmap);
+
 protected:
     virtual bool event(QEvent* e);
     void paintEvent(QPaintEvent*);
@@ -90,7 +93,7 @@ private slots:
     void sl_changeConsensusThreshold(int val);
     void sl_onScrollBarActionTriggered( int scrollAction );
     void sl_onConsensusThresholdChanged(int newValue);
-    
+
     void sl_buildStaticMenu(GObjectView* v, QMenu* m);
     void sl_buildContextMenu(GObjectView* v, QMenu* m);
     void sl_copyConsensusSequence();
@@ -112,9 +115,15 @@ private:
     void updateSelection(int newPos);
 
     void drawConsensus(QPainter& p);
-    void drawConsensusChar(QPainter& p, int pos, bool selected);
-    void drawRuler(QPainter& p);
+    void drawConsensus(QPainter& p, int startPos, int lastPos, bool useVirtualCoords = false);
+
+    void drawConsensusChar(QPainter& p, int pos, bool selected, bool useVirtualCoords = false);
+
+    void drawRuler(QPainter& p, bool drawFull = false);
+
     void drawHistogram(QPainter& p);
+    void drawHistogram(QPainter& p, int firstBase, int lastBase);
+
     void drawSelection(QPainter& p);
 
 
@@ -131,7 +140,7 @@ private:
     bool                scribbling, selecting;
 
     QSharedPointer<MSAEditorConsensusCache>    consensusCache;
-    
+
     bool                completeRedraw;
     QPixmap*            cachedView;
 

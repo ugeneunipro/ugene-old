@@ -19,16 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportImageCircularViewDialog.h"
+#include "CircularViewImageExporter.h"
 #include "CircularView.h"
 
-#include <U2Core/Log.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/L10n.h>
-#include <U2Core/TextUtils.h>
-#include <U2Gui/DialogUtils.h>
-
-#include <QtGui/QImageWriter>
 #include <QtGui/QCheckBox>
 #include <QtGui/QVBoxLayout>
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -36,44 +29,59 @@
 #else
 #include <QtPrintSupport/QPrinter>
 #endif
-#include <QDomDocument>
+#include <QtXml/QDomDocument>
 #include <QtSvg/QSvgGenerator>
+#include <iostream>
 
 namespace U2 {
 
-ExportImageCVDialog::ExportImageCVDialog(CircularView * widget )
-    : ExportImageDialog(widget,true,true),
-      cvWidget(widget),
-      includeMarkerCheckbox(NULL),
-      includeSelectionCheckbox(NULL)
+CircularViewImageExporter::CircularViewImageExporter(CircularView *cv)
+    : ImageExporter(ImageExporter::Resizable, ImageExporter::SupportVectorFormats),
+      cvWidget(cv)
 {
-    QVBoxLayout* layout = getAdditionalLayout();
-
-    includeMarkerCheckbox = new QCheckBox(tr("Include position marker"));
-    includeSelectionCheckbox = new QCheckBox(tr("Include selection marker"));
-
-    includeMarkerCheckbox->setChecked(true);
-    includeSelectionCheckbox->setChecked(true);
-
-    layout->addWidget(includeMarkerCheckbox);
-    layout->addWidget(includeSelectionCheckbox);
+    initSettingsWidget();
 }
 
-bool ExportImageCVDialog::exportToSVG(){
+bool CircularViewImageExporter::exportToBitmap(const QString &filename, const QString &format, const QSize &size, int quality) const {
+    QPixmap *im = new QPixmap(size);
+    im->fill(Qt::white);
+    QPainter *painter = new QPainter(im);
+    cvWidget->paint(*painter, size.width(), size.height(),
+                    includeSelectionCheckbox->isChecked(),
+                    includeMarkerCheckbox->isChecked());
+
+    return im->save(filename, qPrintable(format), quality);
+}
+
+bool CircularViewImageExporter::exportToPDF(const QString &filename, const QString &) const {
+    QPainter painter;
+    QPrinter printer;
+    printer.setOutputFileName(filename);
+
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.begin(&printer);
+    cvWidget->paint(painter, cvWidget->width(), cvWidget->height(),
+                    includeSelectionCheckbox->isChecked(),
+                    includeMarkerCheckbox->isChecked());
+
+    return painter.end();
+}
+
+bool CircularViewImageExporter::exportToSVG(const QString &filename) const {
     QPainter painter;
     QSvgGenerator generator;
-    generator.setFileName(getFilename());
+    generator.setFileName(filename);
     generator.setSize(cvWidget->size());
     generator.setViewBox(cvWidget->rect());
 
     painter.begin(&generator);
-    cvWidget->paint(painter, getWidth(), getHeight(),
+    cvWidget->paint(painter, cvWidget->width(), cvWidget->height(),
                     includeSelectionCheckbox->isChecked(),
                     includeMarkerCheckbox->isChecked());
     bool result = painter.end();
     //fix for UGENE-76
     QDomDocument doc("svg");
-    QFile file(getFilename());
+    QFile file(filename);
     bool ok=file.open(QIODevice::ReadOnly);
     if (!ok && !result){
        result=false;
@@ -103,33 +111,29 @@ bool ExportImageCVDialog::exportToSVG(){
 
     return result;
 }
-bool ExportImageCVDialog::exportToPDF(){
-    QPainter painter;
-    QPrinter printer;
-    printer.setOutputFileName(getFilename());
 
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.begin(&printer);
-    cvWidget->paint(painter, getWidth(), getHeight(),
-                    includeSelectionCheckbox->isChecked(),
-                    includeMarkerCheckbox->isChecked());
-
-    return painter.end();
+int CircularViewImageExporter::getImageWidth() const {
+    return cvWidget->width();
 }
 
-bool ExportImageCVDialog::exportToBitmap() {
-    QPixmap *im = new QPixmap(getWidth(), getHeight());
-    im->fill(Qt::white);
-    QPainter *painter = new QPainter(im);
-    cvWidget->paint(*painter, getWidth(), getHeight(),
-                    includeSelectionCheckbox->isChecked(),
-                    includeMarkerCheckbox->isChecked());
+int CircularViewImageExporter::getImageHeight() const {
+    return cvWidget->height();
+}
 
-    if(hasQuality()){
-        return im->save(getFilename(), qPrintable(getFormat()),getQuality());
-    }else{
-        return im->save(getFilename(), qPrintable(getFormat()));
-    }
+void CircularViewImageExporter::initSettingsWidget() {
+    QVBoxLayout* layout = new QVBoxLayout();
+
+    includeMarkerCheckbox = new QCheckBox(tr("Include position marker"));
+    includeSelectionCheckbox = new QCheckBox(tr("Include selection marker"));
+
+    includeMarkerCheckbox->setChecked(true);
+    includeSelectionCheckbox->setChecked(true);
+
+    layout->addWidget(includeMarkerCheckbox);
+    layout->addWidget(includeSelectionCheckbox);
+
+    settingsWidget = new QWidget();
+    settingsWidget->setLayout(layout);
 }
 
 } // namespace
