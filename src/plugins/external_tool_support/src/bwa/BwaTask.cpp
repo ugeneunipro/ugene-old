@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -80,7 +80,7 @@ BwaAlignTask::BwaAlignTask(const QString &indexPath, const QList<ShortReadSet>& 
 QString BwaAlignTask::getSAIPath(const QString& shortReadsUrl) {
     return QFileInfo(resultPath).absoluteDir().absolutePath() + "/" + QFileInfo(shortReadsUrl).fileName() + ".sai";
 }
- 
+
 
 void BwaAlignTask::prepare() {
 
@@ -214,9 +214,11 @@ void BwaAlignTask::LogParser::parseErrOutput(const QString &partOfLog) {
     for (; i!=log.end(); i++) {
         if(i->contains("This application has requested the Runtime to terminate")) {
             QStringList errors;
-            for (int strings=0; i!=log.end() && strings<2; i++, strings++) {
+            for (int strings = 0; strings < 2; i++, strings++) {
+                SAFE_POINT(i != log.end(), tr("Log is incomplete"), );
                 errors << *i;
             }
+            SAFE_POINT(i == log.end(), tr("Log is incorrect"), );
             setLastError(errors.join(" "));
         } else if (i->contains("Abort!")) {
             setLastError(*i);
@@ -304,14 +306,14 @@ void BwaMemAlignTask::prepare() {
 
     arguments.append("-T");
     arguments.append(settings.getCustomValue(BwaTask::OPTION_SCORE_THRESHOLD, 30).toString());
-    
+
     arguments.append( indexPath );
     arguments.append( readSet.url.getURLString() );
     if(settings.pairedReads && settings.shortReadSets.size() == 2){
         const ShortReadSet& readSetPaired = settings.shortReadSets.at(1);
         arguments.append( readSetPaired.url.getURLString() );
     }
-    
+
     ExternalToolRunTask* alignTask = new ExternalToolRunTask(ET_BWA, arguments, &logParser, NULL);
     alignTask->setStandartOutputFile(settings.resultFileName.getURLString() );
     addSubTask(alignTask);
@@ -335,7 +337,7 @@ void BwaSwAlignTask::prepare() {
 
     const ShortReadSet& readSet = settings.shortReadSets.at(0);
 
-    
+
     settings.pairedReads = readSet.type == ShortReadSet::PairedEndReads;
 
     if (settings.pairedReads ) {
@@ -346,7 +348,7 @@ void BwaSwAlignTask::prepare() {
     QStringList arguments;
 
     arguments.append("bwasw");
-    
+
     arguments.append("-f");
     arguments.append( settings.resultFileName.getURLString() );
 
@@ -379,7 +381,7 @@ void BwaSwAlignTask::prepare() {
 
     arguments.append("-z");
     arguments.append(settings.getCustomValue(BwaTask::OPTION_Z_BEST, 1).toString());
-    
+
     arguments.append("-N");
     arguments.append(settings.getCustomValue(BwaTask::OPTION_REV_ALGN_THRESHOLD, 5).toString());
 
@@ -389,11 +391,11 @@ void BwaSwAlignTask::prepare() {
 
     arguments.append( indexPath );
     arguments.append( readSet.url.getURLString() );
-    
-    
+
+
     Task* alignTask = new ExternalToolRunTask(ET_BWA, arguments, &logParser, NULL);
     addSubTask(alignTask);
-   
+
 }
 
 
