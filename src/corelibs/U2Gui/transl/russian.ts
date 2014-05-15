@@ -1603,7 +1603,7 @@ Do you wish to create this directory?</source>
     <name>U2::EditSequenceDialogController</name>
     <message>
         <location filename="../src/util/EditSequenceDialogController.cpp" line="87"/>
-        <source>Insert sequence</source>
+        <source>Insert Sequence</source>
         <translation type="unfinished">Вставить последовательность</translation>
     </message>
     <message>

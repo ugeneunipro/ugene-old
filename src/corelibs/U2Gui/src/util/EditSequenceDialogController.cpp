@@ -95,7 +95,7 @@ SeqPasterEventFilter::SeqPasterEventFilter( QObject* parent )
     }
 
     if (cfg.mode == EditSequenceMode_Insert) { 
-        setWindowTitle(tr("Insert sequence"));
+        setWindowTitle(tr("Insert Sequence"));
         if (!cfg.selectionRegions.isEmpty()){
             ui->selectionGroupBox->setEnabled(true);
             sl_beforeSlectionClicked();

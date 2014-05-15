@@ -1240,7 +1240,7 @@ complement(5..15)</source>
     <name>U2::EditSequenceDialogController</name>
     <message>
         <location filename="../src/util/EditSequenceDialogController.cpp" line="87"/>
-        <source>Insert sequence</source>
+        <source>Insert Sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

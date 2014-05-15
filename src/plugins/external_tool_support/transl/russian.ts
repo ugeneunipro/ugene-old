@@ -5,7 +5,7 @@
     <name>BlastAllSupportDialog</name>
     <message>
         <location filename="../src/ui/BlastAllSupportDialog.ui" line="20"/>
-        <source>Request to local BLAST database</source>
+        <source>Request to Local BLAST Database</source>
         <translation>Запрос к локальной БД BLAST</translation>
     </message>
     <message>

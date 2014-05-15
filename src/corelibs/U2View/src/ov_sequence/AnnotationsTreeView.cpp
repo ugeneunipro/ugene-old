@@ -1848,7 +1848,7 @@ void AnnotationsTreeView::sl_exportAutoAnnotationsGroup()
     m.sequenceObjectRef = GObjectReference(seqCtx->getSequenceObject());
 
     CreateAnnotationDialog dlg(this, m);
-    dlg.setWindowTitle(tr("Create permanent annotation"));
+    dlg.setWindowTitle(tr("Create Permanent Annotation"));
     if (dlg.exec() == QDialog::Accepted) {
         ExportAutoAnnotationsGroupTask* task = new ExportAutoAnnotationsGroupTask(ag, m.annotationObjectRef, seqCtx);
         AppContext::getTaskScheduler()->registerTopLevelTask(task);

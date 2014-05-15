@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Request to local BLAST database</string>
+   <string>Request to Local BLAST Database</string>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>

@@ -2575,7 +2575,7 @@ annotations.</source>
     </message>
     <message>
         <location filename="../src/ov_sequence/AnnotationsTreeView.cpp" line="1924"/>
-        <source>Create permanent annotation</source>
+        <source>Create Permanent Annotation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
