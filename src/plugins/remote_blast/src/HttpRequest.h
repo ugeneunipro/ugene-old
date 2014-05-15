@@ -89,6 +89,9 @@ private:
     void parseHit(QByteArray &b,ResponseBuffer &buf);
     QString extractText(const QByteArray &b);
     bool getLocations(QByteArray &b,int &from, int &to);
+
+    static const QByteArray SERVER_CONTACTING_MESSAGE;
+    static const QByteArray PAGE_REFRESHING_MESSAGE;
 };
 
 }

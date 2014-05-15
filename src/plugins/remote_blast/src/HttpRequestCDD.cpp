@@ -21,10 +21,13 @@
 
 #include "HttpRequest.h"
 #include <U2Core/NetworkConfiguration.h>
+#include "RemoteBLASTTask.h"
 
 namespace U2 {
 
 const QString HttpRequestCDD::host = "http://www.ncbi.nlm.nih.gov/Structure/cdd/wrpsb.cgi?"; 
+const QByteArray HttpRequestCDD::SERVER_CONTACTING_MESSAGE("Contacting server...");
+const QByteArray HttpRequestCDD::PAGE_REFRESHING_MESSAGE("Page is refreshing in");
 
 void HttpRequestCDD::sendRequest(const QString &params,const QString &query) {
     QString request = host;
@@ -66,28 +69,35 @@ void HttpRequestCDD::sendRequest(const QString &params,const QString &query) {
     int queEnd = response.indexOf('"', queStart);
     QString queStr = response.mid(queStart, queEnd-queStart);
 
-    Waiter::await(10000);
-
-    offs = 0;
-    read = 0;
-    if(!io->open( host + "dhandle=" + queStr, IOAdapterMode_Read )) {
-        connectionError = true; 
-        error = QObject::tr("Cannot open the IO adapter");
-        return;
-    }
-    response.clear();
-    response.resize(CHUNK_SIZE);
+    RemoteBLASTTask *rTask = qobject_cast<RemoteBLASTTask*>(task);
     do {
-        if(task->isCanceled()) {
-            io->close();
+        Waiter::await(4000);
+        if(NULL != rTask) {
+            rTask->updateProgress();
+        }
+
+        offs = 0;
+        read = 0;
+        if(!io->open( host + "dhandle=" + queStr, IOAdapterMode_Read )) {
+            connectionError = true; 
+            error = QObject::tr("Cannot open the IO adapter");
             return;
         }
-        read = io->readBlock( response.data() + offs, CHUNK_SIZE );
-        offs += read;
-        response.resize( offs + read );
-    } while( read == CHUNK_SIZE );
-    response.resize(offs);
-    io->close();
+        response.clear();
+        response.resize(CHUNK_SIZE);
+        do {
+            if(task->isCanceled()) {
+                io->close();
+                return;
+            }
+            read = io->readBlock( response.data() + offs, CHUNK_SIZE );
+            offs += read;
+            response.resize( offs + read );
+        } while( read == CHUNK_SIZE );
+        response.resize(offs);
+        io->close();
+    } while(response.contains(PAGE_REFRESHING_MESSAGE) || response.contains(SERVER_CONTACTING_MESSAGE));
+
     if(read<0){
         connectionError = true;
         error = QObject::tr("Cannot load page. %1").arg(io->errorString());
