@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Export selected sequence from alignment</string>
+   <string>Export Selected Sequence from Alignment</string>
   </property>
   <property name="modal">
    <bool>true</bool>

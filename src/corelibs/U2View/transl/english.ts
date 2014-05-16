@@ -5240,7 +5240,7 @@ Please select file to align.</source>
     <name>U2::SaveSelectedSequenceFromMSADialog</name>
     <message>
         <location filename="../src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui" line="14"/>
-        <source>Export selected sequence from alignment</source>
+        <source>Export Selected Sequence from Alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

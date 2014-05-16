@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>View matrix</string>
+   <string>View Matrix</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

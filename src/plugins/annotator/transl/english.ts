@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/ui/FindAnnotationCollocationsDialog.ui" line="14"/>
         <source>dialog_tittle</source>
-        <translation>Find groups of annotated regions</translation>
+        <translation>Find Groups of Annotated Regions</translation>
     </message>
     <message>
         <source>region_size_label</source>

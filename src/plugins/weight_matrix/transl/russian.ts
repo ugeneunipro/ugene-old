@@ -142,7 +142,7 @@
     </message>
     <message>
         <location filename="../src/ui/PWMSearchDialog.ui" line="116"/>
-        <source>View matrix</source>
+        <source>View Matrix</source>
         <translation>Просмотр матрицы</translation>
     </message>
     <message>
@@ -1434,7 +1434,7 @@ Maybe model data is not enough for selected algorithm</source>
     <name>ViewMatrixDialog</name>
     <message>
         <location filename="../src/ui/ViewMatrixDialog.ui" line="20"/>
-        <source>View matrix</source>
+        <source>View Matrix</source>
         <translation>Просмотр матрицы</translation>
     </message>
     <message>
