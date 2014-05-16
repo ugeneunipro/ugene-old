@@ -100,6 +100,7 @@ void CircularViewContext::initViewContext(GObjectView* v) {
         tr("Toggle circular views"), 
         std::numeric_limits<int>::max()); // big enough to be the last one?
     globalToggleViewAction->addAlphabetFilter(DNAAlphabet_NUCL);
+    globalToggleViewAction->setObjectName("globalToggleViewAction");
     connect(globalToggleViewAction, SIGNAL(triggered()), SLOT(sl_toggleViews()));
 }
 
@@ -231,6 +232,7 @@ void CircularViewContext::sl_showCircular() {
         assert(a->view == NULL);
         CircularViewSplitter* splitter = getView(sw->getAnnotatedDNAView(), true);
         a->view = new CircularView(sw, sw->getSequenceContext());
+        a->view->setObjectName("CV_" + sw->objectName());
         a->rmapWidget=new RestrctionMapWidget(sw->getSequenceContext(),splitter);
         splitter->addView(a->view,a->rmapWidget);
         sw->getAnnotatedDNAView()->insertWidgetIntoSplitter(splitter);
