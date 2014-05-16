@@ -3463,10 +3463,19 @@ GUI_TEST_CLASS_DEFINITION(test_0039){
 //2. Use project tree context menu->Export/Import->Export Nucleic Alignment to Amino Translation
     for (int i=0; i<extMap.size(); i++){
         GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI"));
-        GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os,i, testDir + "_common_data/scenarios/sandbox/COI_transl.aln"));
+        if(i == 6){
+            GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os,i, testDir + "_common_data/scenarios/sandbox/COI_transl1.aln"));
+        }else{
+            GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os,i, testDir + "_common_data/scenarios/sandbox/COI_transl.aln"));
+        }
         GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION<<ACTION_PROJECT__EXPORT_TO_AMINO_ACTION));
         GTMouseDriver::click(os,Qt::RightButton);
-        GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI_transl." + extMap[i]));
+
+        if(i == 6){
+            GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI_transl1." + extMap[i]));
+        }else{
+            GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI_transl." + extMap[i]));
+        }
     }
 //Expected state: Export Nucleic Alignment to Amino Translation dialog appeared
 
