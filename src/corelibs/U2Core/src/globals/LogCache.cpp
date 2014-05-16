@@ -131,7 +131,7 @@ bool LogCacheExt::setFileOutputEnabled(const QString& fileName) {
     }
 
     file.setFileName(fileName);
-    if (!file.open(QIODevice::WriteOnly  | QIODevice::Truncate)) {
+    if (!file.open(QIODevice::WriteOnly  | QIODevice::Append)) {
         return false;
     }
     fileEnabled = true;
