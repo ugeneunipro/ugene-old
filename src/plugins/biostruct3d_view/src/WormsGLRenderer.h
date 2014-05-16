@@ -34,7 +34,7 @@
 class Object3D;
 class AtomData;
 
-namespace U2 { 
+namespace U2 {
 
 class WormsGLRenderer : public BioStruct3DGLRenderer {
 
@@ -56,7 +56,7 @@ class WormsGLRenderer : public BioStruct3DGLRenderer {
     struct BioPolymer
     {
         // multiple models
-        QVector<BioPolymerModel> bpModels;
+        QMap<int, BioPolymerModel> bpModels;
     };
 
     QMap<int, BioPolymer > bioPolymerMap;

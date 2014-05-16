@@ -233,7 +233,7 @@ namespace {
  Single quote characters in a quoted label are represented by two single quotes.
  Blanks or tabs may appear anywhere except within unquoted labels or branch_lengths.
  Newlines may appear anywhere except within labels or branch_lengths.
- Comments are enclosed in square brackets and may appear anywhere newlines are permitted. 
+ Comments are enclosed in square brackets and may appear anywhere newlines are permitted.
 */
 QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si) {
     QList<PhyTree> result;
@@ -276,7 +276,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                     if (!ok) {
                         si.setError(QObject::tr("Error parsing weight: %1").arg(lastStr));
                         break;
-                    }           
+                    }
                 }
             }
 
@@ -327,7 +327,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                 result << tree;
                 nodeStack.push(rd = new PhyNode());
                 done = true;
-            } 
+            }
             lastStr.clear();
         }
         if (si.isCoR()) {
@@ -670,7 +670,7 @@ namespace {
     inline QByteArray pack(const MoleculeData &data, PackContext &ctx) {
         QByteArray result;
         result += packMap<ResidueIndex, SharedResidue>(data.residueMap, ctx);
-        result += packList<Molecule3DModel>(data.models, ctx);
+        result += packMap<int, Molecule3DModel>(data.models, ctx);
         result += pack(data.name);
         result += packBool(data.engineered);
         return result;
@@ -683,7 +683,7 @@ namespace {
         SharedMolecule result(new MoleculeData());
         result->residueMap = unpackMap<ResidueIndex, SharedResidue>(data, length, offset, os, ctx);
         CHECK_OP(os, result);
-        result->models = unpackList<Molecule3DModel>(data, length, offset, os, ctx);
+        result->models = unpackMap<int, Molecule3DModel>(data, length, offset, os, ctx);
         CHECK_OP(os, result);
         result->name = unpack<QString>(data, length, offset, os);
         CHECK_OP(os, result);

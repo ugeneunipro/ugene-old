@@ -24,7 +24,7 @@
 #include <U2Core/U2Region.h>
 #include <U2Core/Log.h>
 
-namespace U2 { 
+namespace U2 {
 
 /* class BioStruct3D */
 
@@ -68,7 +68,7 @@ void BioStruct3D::calcCenterAndMaxDistance() {
     // find max distance from this center
     for (int i = 0; i < 2; ++i) {
         foreach (SharedMolecule molecule, moleculeMap) {
-            foreach(Molecule3DModel model3d, molecule->models) {
+            foreach(Molecule3DModel model3d, molecule->models.values()) {
                 foreach (const AtomData* atom, model3d.atoms) {
                     Vector3D site = atom->coord3d;
                     if (i==0) {
@@ -84,7 +84,7 @@ void BioStruct3D::calcCenterAndMaxDistance() {
                 }
             }
         }
-        
+
         if (i == 0) {
             if (numberOfAtoms == 0) {
                 algoLog.trace("Number of atoms is 0!");
@@ -98,7 +98,7 @@ void BioStruct3D::calcCenterAndMaxDistance() {
 
     rotationCenter = center;
 
-} 
+}
 
 int BioStruct3D::getNumberOfAtoms() const
 {
@@ -119,7 +119,7 @@ QMap<int, QList<SharedAnnotationData> > BioStruct3D::generateChainAnnotations() 
     QMap<int, QList<SharedAnnotationData> > result;
     const char* molNameQualifier = "molecule_name";
     //const char* pdbChainIdQualifier = "pdb_id";
-    
+
     QMap<int, SharedMolecule>::ConstIterator iter = moleculeMap.constBegin();
     while (iter != moleculeMap.end()) {
         int length = iter.value()->residueMap.size();
@@ -128,7 +128,7 @@ QMap<int, QList<SharedAnnotationData> > BioStruct3D::generateChainAnnotations() 
         sd->name = BioStruct3D::MoleculeAnnotationTag;
         sd->qualifiers.append(U2Qualifier(ChainIdQualifierName, QString("%1").arg(iter.key()) ));
         sd->qualifiers.append(U2Qualifier(molNameQualifier, (*iter)->name));
-        
+
         result[iter.key()].append(sd);
         ++iter;
     }
@@ -153,8 +153,8 @@ const SharedAtom BioStruct3D::getAtomById( int atomIndex, int modelIndex ) const
         if (coordSet.contains(atomIndex)) {
             return coordSet.value(atomIndex);
         }
-    }   
-       
+    }
+
     return SharedAtom(NULL);
 }
 
@@ -167,7 +167,7 @@ const SharedResidue BioStruct3D::getResidueById( int chainIndex, ResidueIndex re
         }
     }
 
-    return SharedResidue(NULL);   
+    return SharedResidue(NULL);
 }
 
 
@@ -199,13 +199,13 @@ void BioStruct3D::generateSecStructureAnnotations(QMap<int, QList<SharedAnnotati
     // TODO: issue 0000637
     if (moleculeMap.isEmpty())
         return;
-    
-    
+
+
     foreach (const SharedSecondaryStructure& struc, secondaryStructures) {
         SharedAnnotationData sd(NULL);
         int chainId = struc->chainIndex;
         assert(chainId != 0);
-        int initResidueId = moleculeMap.value(chainId)->residueMap.constBegin().key().toInt();    
+        int initResidueId = moleculeMap.value(chainId)->residueMap.constBegin().key().toInt();
         sd = new AnnotationData;
         sd->name = BioStruct3D::SecStructAnnotationTag;
         U2Qualifier qual(SecStructTypeQualifierName, getSecStructTypeName(struc->type));
@@ -230,7 +230,7 @@ QByteArray BioStruct3D::getRawSequenceByChainId( int id ) const
        QChar c = residue->acronym;
        sequence.append(c);
     }
-    
+
     return sequence;
 }
 
@@ -324,7 +324,7 @@ bool ResidueIndex::operator< ( const ResidueIndex& other ) const
 
 bool ResidueIndex::operator==( const ResidueIndex& other ) const
 {
-    return (other.insCode == insCode) && (other.resId == resId); 
+    return (other.insCode == insCode) && (other.resId == resId);
 }
 
 bool ResidueIndex::operator!=( const ResidueIndex& other ) const

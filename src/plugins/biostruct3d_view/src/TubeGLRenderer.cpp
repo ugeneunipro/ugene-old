@@ -27,7 +27,7 @@
 #include "TubeGLRenderer.h"
 
 
-namespace U2 { 
+namespace U2 {
 
 const QString TubeGLRenderer::ID(QObject::tr("Tubes"));
 
@@ -40,7 +40,7 @@ void TubeGLRenderer::drawTubes( const BioStruct3DColorScheme* colorScheme )
     bool firstPass = true;
     static float ribbonThickness = 0.3f;
     SharedAtom bufAtom;
-    
+
     foreach (Tube tube, tubeMap) {
         foreach (int index, shownModels) {
             const AtomsVector& tubeAtoms = tube.modelsMap.value(index);
@@ -54,7 +54,7 @@ void TubeGLRenderer::drawTubes( const BioStruct3DColorScheme* colorScheme )
                     // Draw bonds only between atoms of the same molecular chain
                     if (atom.constData()->chainIndex == bufAtom.constData()->chainIndex) {
                         // ... and when they are sequential
-                        if (atom.constData()->residueIndex.toInt() - bufAtom.constData()->residueIndex.toInt() == 1) { 
+                        if (atom.constData()->residueIndex.toInt() - bufAtom.constData()->residueIndex.toInt() == 1) {
                             Vector3D bufPos = bufAtom.constData()->coord3d;
                             Color4f bufAtomColor = colorScheme->getAtomColor(bufAtom);
                             glDrawHalfBond(pObj, bufPos, pos, ribbonThickness, settings->detailLevel);
@@ -67,7 +67,7 @@ void TubeGLRenderer::drawTubes( const BioStruct3DColorScheme* colorScheme )
                 }
 
                 bufAtom = atom;
-            } 
+            }
         }
     }
 
@@ -95,14 +95,12 @@ bool TubeGLRenderer::isAvailableFor(const BioStruct3D &bioStruct) {
     const char* phosporTag = "P";
 
     foreach (const SharedMolecule mol, bioStruct.moleculeMap) {
-        int modelId = 0;
-        foreach (const Molecule3DModel& model, mol->models) {
+        foreach (const Molecule3DModel& model, mol->models.values()) {
             foreach (const SharedAtom atom, model.atoms) {
                 if ( (atom->name.trimmed() == alphaCarbonTag) || (atom->name.trimmed() == phosporTag)) {
                     available = true;
                 }
             }
-            ++modelId;
         }
     }
 
@@ -118,14 +116,13 @@ void TubeGLRenderer::create() {
     const char* phosporTag = "P";
 
     foreach (const SharedMolecule mol, bioStruct.moleculeMap) {
-        int modelId = 0;
-        foreach (const Molecule3DModel& model, mol->models) {
+        foreach (int modelId, mol->models.keys()) {
+            const Molecule3DModel& model = mol->models.value(modelId);
             foreach (const SharedAtom atom, model.atoms) {
                 if ( (atom->name.trimmed() == alphaCarbonTag) || (atom->name.trimmed() == phosporTag)) {
                     tubeMap[atom->chainIndex].modelsMap[modelId].append(atom);
                 }
             }
-            ++modelId;
         }
     }
 }

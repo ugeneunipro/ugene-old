@@ -989,7 +989,7 @@ void BioStruct3DGLWidget::sl_showSurface()
     QList<SharedAtom> atoms;
     int index = contexts.first().renderer->getShownModelsIndexes().first();
     foreach (const SharedMolecule &mol, contexts.first().biostruct->moleculeMap) {
-        const Molecule3DModel& model = mol->models.at(index);
+        const Molecule3DModel& model = mol->models.value(index);
         atoms += model.atoms;
     }
 

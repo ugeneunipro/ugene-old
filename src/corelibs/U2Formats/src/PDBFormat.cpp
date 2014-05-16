@@ -381,11 +381,6 @@ void PDBFormat::PDBParser::parseAtom( BioStruct3D& biostruct, U2OpStatus&)
 
     if (atomIsInChain) {
         SharedMolecule& mol = biostruct.moleculeMap[chainIndex];
-        int numModels = mol->models.count();
-        if (currentModelIndex + 1 >= numModels) {
-            Molecule3DModel model;
-            mol->models.append(model);
-        }
         Molecule3DModel& model3D = mol->models[currentModelIndex];
         model3D.atoms.insert(id, a);
     }
@@ -599,12 +594,11 @@ void PDBFormat::calculateBonds( BioStruct3D& bioStruct )
     //quint64 num_comps = 0, firstFilter = 0, secondFilter = 0;
     clock_t t1 =  clock();
     QMap<int, SharedMolecule>::iterator molIter;
-    QList<Molecule3DModel>::iterator modelIter;
+    QMap<int, Molecule3DModel>::iterator modelIter;
     for (molIter = bioStruct.moleculeMap.begin(); molIter != bioStruct.moleculeMap.end(); ++molIter) {
         SharedMolecule& mol = molIter.value();
-        int numModels = mol->models.count();
-        for( int i = 0; i < numModels; ++i) {
-            Molecule3DModel& model = mol->models[i];
+        for (modelIter = mol->models.begin(); modelIter != mol->models.end(); modelIter++) {
+            Molecule3DModel& model = modelIter.value();
             QList<SharedAtom>::const_iterator i1,i2;
             QList<SharedAtom>::const_iterator constEnd = model.atoms.constEnd();
             for (i1 = model.atoms.constBegin(); i1 != constEnd; ++i1) {

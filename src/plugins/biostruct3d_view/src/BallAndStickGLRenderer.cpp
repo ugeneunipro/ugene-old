@@ -32,7 +32,7 @@
 
 #include <U2Core/Log.h>
 
-namespace U2 { 
+namespace U2 {
 
 
 const QString BallAndStickGLRenderer::ID(QObject::tr("Ball-and-Stick"));
@@ -54,9 +54,9 @@ BallAndStickGLRenderer::BallAndStickGLRenderer(const BioStruct3D& struc, const B
         } else {
             dl = dlIndexStorage.takeFirst();
         }
-        
+
     }
-    
+
     create();
 }
 
@@ -165,7 +165,7 @@ void BallAndStickGLRenderer::createDisplayList()
 
     foreach (const SharedMolecule mol, bioStruct.moleculeMap) {
         foreach (int index, shownModels) {
-            const Molecule3DModel& model = mol->models.at(index);
+            const Molecule3DModel& model = mol->models.value(index);
 
             colors.clear();
 

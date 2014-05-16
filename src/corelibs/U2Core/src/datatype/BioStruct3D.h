@@ -57,8 +57,8 @@ public:
 
 
 //! Represents biopolimer residue
-class ResidueData : public QSharedData    
-{ 
+class ResidueData : public QSharedData
+{
 public:
     enum Type {
         TYPE_UNKNOWN, TYPE_PROTEIN, TYPE_DNA, TYPE_RNA
@@ -156,14 +156,14 @@ public:
 
     // this list used by biostrct renderers
     // its indexes are NOT model ids taken from PDB
-    QList<Molecule3DModel> models;
+    QMap <int, Molecule3DModel> models;
 
     QString name;
     bool engineered;
 };
 
 typedef QSharedDataPointer<MoleculeData> SharedMolecule;
-typedef QHash<int, SharedAtom> AtomCoordSet; 
+typedef QHash<int, SharedAtom> AtomCoordSet;
 
 //! Biological 3D structure
 class U2CORE_EXPORT BioStruct3D {

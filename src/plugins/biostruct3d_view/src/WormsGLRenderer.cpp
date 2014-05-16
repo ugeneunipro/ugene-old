@@ -47,8 +47,7 @@ bool WormsGLRenderer::isAvailableFor(const BioStruct3D &bioStruct) {
     const char* carbonylOxygenTag = "O";
 
     foreach (const SharedMolecule &mol, bioStruct.moleculeMap) {
-        int modelId = 0;
-        foreach (const Molecule3DModel& model, mol->models) {
+        foreach (const Molecule3DModel& model, mol->models.values()) {
             foreach (const SharedAtom atom, model.atoms) {
                 if (    (atom->name.trimmed() == alphaCarbonTag)
                         || (atom->name.trimmed() == phosophorTag)
@@ -56,7 +55,6 @@ bool WormsGLRenderer::isAvailableFor(const BioStruct3D &bioStruct) {
                     available = true;
                 }
             }
-            ++modelId;
         }
     }
 
@@ -76,9 +74,8 @@ void WormsGLRenderer::create() {
         i.next();
         const SharedMolecule mol = i.value();
         BioPolymer bioPolymer;
-        bioPolymer.bpModels.resize( mol->models.size() );
-        int modelId = 0;
-        foreach (const Molecule3DModel& model, mol->models) {
+        foreach (int modelId, mol->models.keys()) {
+            const Molecule3DModel& model = mol->models.value(modelId);
             BioPolymerModel& bpModel = bioPolymer.bpModels[modelId];
             foreach (const SharedAtom atom, model.atoms) {
                 if ((atom->name.trimmed() == alphaCarbonTag) || (atom->name.trimmed() == phosophorTag)) {
@@ -88,8 +85,6 @@ void WormsGLRenderer::create() {
                     bpModel.monomerMap[atom->residueIndex.toInt()].carbonylOxygen = atom;
                 }
             }
-            ++modelId;
-
         }
         bioPolymerMap.insert(i.key(), bioPolymer);
     }
@@ -204,7 +199,7 @@ void WormsGLRenderer::createObjects3D()
         if (bioPolymerMap.contains(chainId)) {
             const BioPolymer& bpolymer = bioPolymerMap.value(chainId);
             int modelId = 0;
-            foreach (const BioPolymerModel& bpModel, bpolymer.bpModels ) {
+            foreach (const BioPolymerModel& bpModel, bpolymer.bpModels.values() ) {
                 if (bpModel.monomerMap.contains(startId) && bpModel.monomerMap.contains(endId)) {
                     Object3D* obj = NULL;
                     if (ss->type == SecondaryStructure::Type_AlphaHelix ) {
@@ -230,7 +225,7 @@ void WormsGLRenderer::createWorms()
         i.next();
         Worm worm;
         const BioPolymer& bioPolymer = i.value();
-        foreach (const BioPolymerModel& bpModel, bioPolymer.bpModels) {
+        foreach (const BioPolymerModel& bpModel, bioPolymer.bpModels.values()) {
             const QMap<int,Monomer> monomers = bpModel.monomerMap;
             const bool atLeast2MonomersExist = ( 1 < monomers.size( ) );
             QMap<int,Monomer>::const_iterator iter(monomers.constBegin());
