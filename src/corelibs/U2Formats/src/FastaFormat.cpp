@@ -126,6 +126,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
 {
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, );
+    Q_UNUSED(opBlock);
+
     static char fastaCommentStartChar = FastaFormat::FASTA_COMMENT_START_SYMBOL;
     static QBitArray fastaHeaderStart = TextUtils::createBitMap(FastaFormat::FASTA_HEADER_START_SYMBOL);
 
@@ -243,6 +245,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
         }
         sequenceStart += sequenceLen;
         sequenceNumber++;
+        ioLog.trace(QString("Sequence #%1 is processed").arg(sequenceNumber));
     }
     if (os.hasError()) {
         foreach (GObject* o, objects) {
@@ -254,6 +257,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     CHECK_OP(os, );
     CHECK_EXT(!objects.isEmpty() || merge, os.setError(Document::tr("Document is empty.")), );
     SAFE_POINT(headers.size() == mergedMapping.size(), "headers <-> regions mapping failed!", );
+    ioLog.trace("All sequences are processed");
 
     if (!merge) {
         return;
