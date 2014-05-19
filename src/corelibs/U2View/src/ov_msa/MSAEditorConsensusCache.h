@@ -24,6 +24,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QVector>
+#include <QtCore/QBitArray>
 
 namespace U2 {
 
@@ -35,6 +36,7 @@ class MSAConsensusAlgorithmFactory;
 
 class MSAEditorConsensusCache : public QObject {
     Q_OBJECT
+    Q_DISABLE_COPY(MSAEditorConsensusCache)
 public:
     MSAEditorConsensusCache(QObject* p, MAlignmentObject* aliObj, MSAConsensusAlgorithmFactory* algo);
     ~MSAEditorConsensusCache();
@@ -57,16 +59,17 @@ private slots:
 
 private:
     struct CacheItem {
-        CacheItem(int v = 0, char c = '-', int tc = 0) : version(v), topChar(c), topPercent(tc){}
-        int     version;
+        CacheItem(char c = '-', int tc = 0) : topChar(c), topPercent(tc){}
         char    topChar;
         char    topPercent;
     };
 
+
     void updateCacheItem(int pos);
 
-    int                     currentVersion;
+    int                     curCacheSize;
     QVector<CacheItem>      cache;
+    QBitArray               updateMap;
     MAlignmentObject*       aliObj;
     MSAConsensusAlgorithm*  algorithm;
 };
