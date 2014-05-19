@@ -28,14 +28,14 @@ namespace U2 {
 
     class ExportImage : public Filler {
     public:
-        ExportImage(U2OpStatus &_os, QString _filePath, int _comdoValue = 0,int _spinValue=0) : Filler(_os, "ImageExportForm"),
+        ExportImage(U2OpStatus &_os, QString _filePath, QString _comdoValue = "",int _spinValue=0) : Filler(_os, "ImageExportForm"),
             filePath(_filePath),
             comboValue(_comdoValue),
             spinValue(_spinValue){}
         virtual void run();
     private:
-        QString filePath;
-        int comboValue, spinValue;
+        QString filePath, comboValue;
+        int spinValue;
     };
 }
 

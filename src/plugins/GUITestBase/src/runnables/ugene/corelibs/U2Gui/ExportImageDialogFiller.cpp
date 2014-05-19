@@ -49,8 +49,10 @@ void ExportImage::run() {
     QLineEdit* fileEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
     GTLineEdit::setText(os,fileEdit, filePath);
 
-    QComboBox* formatsBox = dialog->findChild<QComboBox*>("formatsBox");
-    GTComboBox::setCurrentIndex(os, formatsBox,comboValue);
+    if(comboValue != ""){
+        QComboBox* formatsBox = dialog->findChild<QComboBox*>("formatsBox");
+        GTComboBox::setIndexWithText(os, formatsBox,comboValue);
+    }
 
     if(spinValue){
         QSpinBox* spin = dialog->findChild<QSpinBox*>("qualitySpinBox");

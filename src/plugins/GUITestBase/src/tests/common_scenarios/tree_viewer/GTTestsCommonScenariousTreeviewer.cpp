@@ -86,7 +86,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 
 //4. Use "Capture tree" button on toolbar to make screenshots
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Screen Capture"));
-    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.svg", 4,50));
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.svg", "jpeg",50));
     GTWidget::click(os,GTWidget::findWidget(os,"cameraMenu"));
 
     GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/image.jpeg");
@@ -112,7 +112,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1){
 
 //4. Use "Capture tree" button on toolbar to make screenshots
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Export Tree Image"<<"Screen Capture"));
-    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.svg", 4,50));
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.svg", "jpeg",50));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"treeView"));
 
     GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/image.jpeg");
@@ -138,7 +138,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2){
 
 //4. Use "Capture tree" button on toolbar to make screenshots
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Export Tree Image"<<"Screen Capture"));
-    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.svg", 4,50));
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.svg", "jpeg",50));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 
     GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/image.jpeg");
