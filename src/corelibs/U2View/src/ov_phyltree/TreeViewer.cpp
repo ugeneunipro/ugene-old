@@ -557,12 +557,18 @@ void TreeViewerUI::updateSettings(const TreeLabelsSettings &settings) {
     QAction* showNamesAction = curTreeViewer->getNameLabelsAction();
     QAction* showDistancesAction = curTreeViewer->getDistanceLabelsAction();
 
-    changeNamesDisplay(settings.showNames);
-    showNamesAction->setChecked(settings.showNames);
-    changeDistancesDisplay(settings.showDistances);
-    showDistancesAction->setChecked(settings.showDistances);
-    changeAlignmentSettings(settings.alignLabels);
-    contAction->setChecked(settings.alignLabels);
+    if(labelsSettings.showNames != settings.showNames) {
+        changeNamesDisplay(settings.showNames);
+        showNamesAction->setChecked(settings.showNames);
+    }
+    if(labelsSettings.showDistances != settings.showDistances) {
+        changeDistancesDisplay(settings.showDistances);
+        showDistancesAction->setChecked(settings.showDistances);
+    }
+    if(labelsSettings.alignLabels != settings.alignLabels) {
+        changeAlignmentSettings(settings.alignLabels);
+        contAction->setChecked(settings.alignLabels);
+    }
 }
 
 void TreeViewerUI::sl_setSettingsTriggered() {
@@ -1420,7 +1426,7 @@ void TreeViewerUI::updateLabelsAlignment(bool on)
     qreal sceneRightPos = scene()->sceneRect().right();
     while (!stack.empty()) {
         GraphicsBranchItem* item = stack.pop();
-        QGraphicsSimpleTextItem* nameText = item->getNameText();
+        QGraphicsTextItem* nameText = item->getNameText();
         if (nameText == NULL) {
             foreach (QGraphicsItem* citem, item->childItems()) {
                 GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(citem);
