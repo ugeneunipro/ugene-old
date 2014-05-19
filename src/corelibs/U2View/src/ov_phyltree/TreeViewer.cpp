@@ -1426,7 +1426,7 @@ void TreeViewerUI::updateLabelsAlignment(bool on)
     qreal sceneRightPos = scene()->sceneRect().right();
     while (!stack.empty()) {
         GraphicsBranchItem* item = stack.pop();
-        QGraphicsTextItem* nameText = item->getNameText();
+        QGraphicsSimpleTextItem* nameText = item->getNameText();
         if (nameText == NULL) {
             foreach (QGraphicsItem* citem, item->childItems()) {
                 GraphicsBranchItem* gbi = dynamic_cast<GraphicsBranchItem*>(citem);
