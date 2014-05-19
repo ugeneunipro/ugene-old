@@ -1111,7 +1111,7 @@ void MAlignment::sortRowsByName(bool asc) {
 bool MAlignment::sortRowsBySimilarity(QVector<U2Region>& united) {
     QList<MAlignmentRow> oldRows = rows;
     QList<MAlignmentRow> sortedRows;
-    while (!rows.isEmpty()) {
+    while (!oldRows.isEmpty()) {
         const MAlignmentRow& r = oldRows.takeFirst();
         sortedRows.append(r);
         int start = sortedRows.size() - 1;
