@@ -871,6 +871,10 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2){
     }
 //    Expected state: this node's branches has dissapered
 
+
+    sceneCoord = node->mapToScene(node->boundingRect().center());
+    viewCord = treeView->mapFromScene(sceneCoord);
+    globalCoord = treeView->mapToGlobal(viewCord);
 //    3. Do context menu {Expand} for same
     GTMouseDriver::moveTo(os, globalCoord);
     GTMouseDriver::doubleClick(os);
