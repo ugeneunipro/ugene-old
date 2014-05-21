@@ -186,7 +186,7 @@ void SlopbedWorkerFactory::init() {
     proto->setPrompter(new SlopbedPrompter());
     proto->addExternalTool(ET_BEDTOOLS);
 
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CONVERTERS(), proto);
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_NGS_BASIC(), proto);
     DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
     localDomain->registerEntry(new SlopbedWorkerFactory());
 }
@@ -559,7 +559,7 @@ void GenomecovWorkerFactory::init() {
     proto->setPrompter(new GenomecovPrompter());
     proto->addExternalTool(ET_BEDTOOLS);
 
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CONVERTERS(), proto);
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_NGS_BASIC(), proto);
     DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
     localDomain->registerEntry(new GenomecovWorkerFactory());
 }

@@ -78,9 +78,11 @@ public:
     QString inputUrl;
     bool    removeSingleEnd;
     bool    treatReads;
+
+    QStringList getSamtoolsArguments() const;
 };
 
-class SamtoolsRmdupTask : public Task {
+class SamtoolsRmdupTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
     SamtoolsRmdupTask(const BamRmdupSetting &settings);
@@ -89,6 +91,10 @@ public:
     void run();
 
     QString getResult(){return resultUrl;}
+
+private:
+    void start(const ProcessRun &pRun, const QString &toolName);
+    void checkExitCode(QProcess *process, const QString &toolName);
 
 private:
     BamRmdupSetting settings;

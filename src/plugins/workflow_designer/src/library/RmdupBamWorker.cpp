@@ -145,7 +145,7 @@ void RmdupBamWorkerFactory::init() {
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new RmdupBamPrompter());
 
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_CONVERTERS(), proto);
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_BASIC(), proto);
     DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
     localDomain->registerEntry(new RmdupBamWorkerFactory());
 }
@@ -259,10 +259,34 @@ void RmdupBamWorker::sendResult(const QString &url) {
     outputUrlPort->put(message);
 }
 
+////////////////////////////////////////////////////////
+//BamRmdupSetting
+QStringList BamRmdupSetting::getSamtoolsArguments() const{
+    QStringList result;
+
+    result << "rmdup";
+
+    if(removeSingleEnd){
+        result << "-s";
+    }
+
+    if(treatReads){
+        result << "-S";
+    }
+
+
+    result << inputUrl;
+
+    result << outDir + outName;
+
+    return result;
+}
+
+
+////////////////////////////////////////////////////////
+//SamtoolsRmdupTask
 SamtoolsRmdupTask::SamtoolsRmdupTask(const BamRmdupSetting &settings)
-:Task(QString("Samtools rmdup for %1").arg(settings.inputUrl), TaskFlag_None)
-,settings(settings)
-{
+:ExternalToolSupportTask(tr("Samtool rmdup for %1 ").arg(settings.inputUrl), TaskFlags(TaskFlag_None)),settings(settings),resultUrl(""){
 
 }
 
@@ -277,14 +301,49 @@ void SamtoolsRmdupTask::prepare(){
         setError(tr("Directory does not exist: ") + outDir.absolutePath());
         return ;
     }
+
 }
 
 void SamtoolsRmdupTask::run(){
-    BAMUtils::rmdupBam(settings.inputUrl, settings.outDir + settings.outName, stateInfo, settings.removeSingleEnd, settings.treatReads);
     CHECK_OP(stateInfo, );
 
-    resultUrl = settings.outDir + settings.outName;
+    ProcessRun samtools = ExternalToolSupportUtils::prepareProcess("SAMtools", settings.getSamtoolsArguments(), "", QStringList(), stateInfo, getListener(0));
+    CHECK_OP(stateInfo, );
+    QScopedPointer<QProcess> sp(samtools.process);
+    QScopedPointer<ExternalToolRunTaskHelper> sh(new ExternalToolRunTaskHelper(samtools.process, new ExternalToolLogParser(), stateInfo));
+    setListenerForHelper(sh.data(), 0);
+
+    start(samtools, "SAMtools");
+    CHECK_OP(stateInfo, );
+
+    while(!samtools.process->waitForFinished(1000)){
+        if (isCanceled()) {
+            samtools.process->kill();
+            return;
+        }
+    }
+    checkExitCode(samtools.process, "SAMtools");
+
+    if(!hasError()){
+        resultUrl = settings.outDir + settings.outName;
+    }
 }
+
+void SamtoolsRmdupTask::start(const ProcessRun &pRun, const QString &toolName){
+    pRun.process->start(pRun.program, pRun.arguments);
+    bool started = pRun.process->waitForStarted();
+    CHECK_EXT(started, setError(tr("Can not run %1 tool").arg(toolName)), );
+}
+
+void SamtoolsRmdupTask::checkExitCode(QProcess *process, const QString &toolName){
+    int exitCode = process->exitCode();
+    if (exitCode != EXIT_SUCCESS && !hasError()) {
+        setError(tr("%1 tool exited with code %2").arg(toolName).arg(exitCode));
+    } else {
+        algoLog.details(tr("Tool %1 finished successfully").arg(toolName));
+    }
+}
+
 
 } //LocalWorkflow
 } //U2
