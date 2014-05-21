@@ -36,6 +36,7 @@ class PairwiseAlignmentAlgorithm;
 class PairwiseAlignmentTaskFactory;
 class PairwiseAlignmentGUIExtensionFactory;
 class AlgorithmRealization;
+class DNAAlphabet;
 
 class U2ALGORITHM_EXPORT PairwiseAlignmentRegistry : public QObject
 {
@@ -60,7 +61,9 @@ class U2ALGORITHM_EXPORT PairwiseAlignmentAlgorithm {
     Q_DISABLE_COPY(PairwiseAlignmentAlgorithm)
 
 public:
-    PairwiseAlignmentAlgorithm(const QString& _id, PairwiseAlignmentTaskFactory* tf, PairwiseAlignmentGUIExtensionFactory* guif, const QString& _realizationId = QString("default"));
+    PairwiseAlignmentAlgorithm(const QString& _id, PairwiseAlignmentTaskFactory* tf,
+                               PairwiseAlignmentGUIExtensionFactory* guif,
+                               const QString& _realizationId = QString("default"));
     virtual ~PairwiseAlignmentAlgorithm();
     virtual PairwiseAlignmentTaskFactory* getFactory(const QString& _realizationId = QString("default")) const;
     virtual PairwiseAlignmentGUIExtensionFactory* getGUIExtFactory(const QString& realizationId = QString("default")) const;
@@ -69,6 +72,8 @@ public:
     QStringList getRealizationsList() const;
     bool addAlgorithmRealization(PairwiseAlignmentTaskFactory* tf, PairwiseAlignmentGUIExtensionFactory* guif, const QString& _realizationId);
     AlgorithmRealization* getAlgorithmRealization(QString _realizationId) const;
+
+    virtual bool checkAlphabet(const DNAAlphabet*) { return true; }
 protected:
     mutable QMutex mutex;
     QString id;

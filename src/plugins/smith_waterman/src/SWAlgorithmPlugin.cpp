@@ -47,6 +47,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Algorithm/CudaGpuRegistry.h>
 #include <U2Algorithm/OpenCLGpuRegistry.h>
 
@@ -89,27 +90,23 @@ SWAlgorithmPlugin::SWAlgorithmPlugin()
     //Smith-Waterman algorithm tests
     GTestFormatRegistry * tfr = AppContext::getTestFramework()->getTestFormatRegistry();
     XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat*>(tfr->findFormat("XML"));
-    assert(xmlTestFormat!=NULL);    
+    assert(xmlTestFormat!=NULL);
 
     U2::GAutoDeleteList<U2::XMLTestFactory>* l = new U2::GAutoDeleteList<U2::XMLTestFactory>(this);
     l->qlist = SWAlgorithmTests::createTestFactories();
 
-    foreach(XMLTestFactory* f, l->qlist) { 
+    foreach(XMLTestFactory* f, l->qlist) {
         bool res = xmlTestFormat->registerTestFactory(f);
         Q_UNUSED(res);
         assert(res);
-    }    
+    }
 
     PairwiseAlignmentRegistry* par = AppContext::getPairwiseAlignmentRegistry();
     SmithWatermanTaskFactoryRegistry* swar = AppContext::getSmithWatermanTaskFactoryRegistry();
 
     coreLog.trace("Registering classic SW implementation");
     swar->registerFactory(new SWTaskFactory(SW_classic), QString("Classic 2"));     //ADV search register
-    PairwiseAlignmentAlgorithm* swAlgClassic = new PairwiseAlignmentAlgorithm("Smith-Waterman",
-                                                                              new PairwiseAlignmentSmithWatermanTaskFactory(SW_classic),
-                                                                              new PairwiseAlignmentSmithWatermanGUIExtensionFactory(SW_classic),
-                                                                              "SW_classic");
-    par->registerAlgorithm(swAlgClassic);                                           //pairwise alignment register
+    par->registerAlgorithm(new SWPairwiseAlignmentAlgorithm());
     regDependedIMPLFromOtherPlugins();
 
 #ifdef SW2_BUILD_WITH_SSE2
@@ -118,7 +115,7 @@ SWAlgorithmPlugin::SWAlgorithmPlugin()
     par->getAlgorithm("Smith-Waterman")->addAlgorithmRealization(new PairwiseAlignmentSmithWatermanTaskFactory(SW_sse2),
                                                                  new PairwiseAlignmentSmithWatermanGUIExtensionFactory(SW_sse2),
                                                                  "SSE2");
-#endif    
+#endif
 
     this->connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(regDependedIMPLFromOtherPlugins()));
 }
@@ -138,7 +135,7 @@ void SWAlgorithmPlugin::regDependedIMPLFromOtherPlugins() {
 
 #ifdef SW2_BUILD_WITH_CUDA
     if ( !AppContext::getCudaGpuRegistry()->empty() ) {
-        coreLog.trace("Registering CUDA SW implementation");        
+        coreLog.trace("Registering CUDA SW implementation");
         swar->registerFactory(new SWTaskFactory(SW_cuda), QString("CUDA"));
         par->getAlgorithm("Smith-Waterman")->addAlgorithmRealization(new PairwiseAlignmentSmithWatermanTaskFactory(SW_cuda),
                                                                      new PairwiseAlignmentSmithWatermanGUIExtensionFactory(SW_cuda),
@@ -148,7 +145,7 @@ void SWAlgorithmPlugin::regDependedIMPLFromOtherPlugins() {
 
 #ifdef SW2_BUILD_WITH_OPENCL
     if ( !AppContext::getOpenCLGpuRegistry()->empty() ) {
-        coreLog.trace("Registering OpenCL SW implementation");        
+        coreLog.trace("Registering OpenCL SW implementation");
         swar->registerFactory(new SWTaskFactory(SW_opencl), QString("OPENCL"));
         par->getAlgorithm("Smith-Waterman")->addAlgorithmRealization(new PairwiseAlignmentSmithWatermanTaskFactory(SW_opencl),
                                                                      new PairwiseAlignmentSmithWatermanGUIExtensionFactory(SW_opencl),
@@ -157,7 +154,7 @@ void SWAlgorithmPlugin::regDependedIMPLFromOtherPlugins() {
 #endif
 }
 
-SWAlgorithmADVContext::SWAlgorithmADVContext(QObject* p) : 
+SWAlgorithmADVContext::SWAlgorithmADVContext(QObject* p) :
 GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID), dialogConfig()
 {
 }
@@ -185,6 +182,23 @@ void SWAlgorithmADVContext::sl_search() {
 
     ADVSequenceObjectContext* seqCtx = av->getSequenceInFocus();
     SmithWatermanDialogController::run(av->getWidget(), seqCtx, &dialogConfig);
+}
+
+SWPairwiseAlignmentAlgorithm::SWPairwiseAlignmentAlgorithm()
+    : PairwiseAlignmentAlgorithm("Smith-Waterman",
+                                 new PairwiseAlignmentSmithWatermanTaskFactory(SW_classic),
+                                 new PairwiseAlignmentSmithWatermanGUIExtensionFactory(SW_classic),
+                                 "SW_classic")
+{
+}
+
+bool SWPairwiseAlignmentAlgorithm::checkAlphabet(const DNAAlphabet *alphabet) {
+    SAFE_POINT(NULL != alphabet, "Alphabet is NULL.", false);
+    SubstMatrixRegistry* matrixReg = AppContext::getSubstMatrixRegistry();
+    SAFE_POINT(matrixReg, "SubstMatrixRegistry is NULL.", false);
+    QStringList matrixList = matrixReg->selectMatrixNamesByAlphabet(alphabet);
+    return !matrixList.isEmpty();
+
 }
 
 } //namespace

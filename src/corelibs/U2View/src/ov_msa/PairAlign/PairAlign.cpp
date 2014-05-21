@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -132,7 +132,6 @@ void PairAlign::initParameters() {
     outputFileLineEdit->setEnabled(inNewWindowCheckBox->isChecked());
     outputFileSelectButton->setEnabled(inNewWindowCheckBox->isChecked());
 
-    alphabetIsOk = (msa->getMSAObject()->getAlphabet()->isRNA() == false);
     canDoAlign = false;
 
     PairwiseAlignmentRegistry* par = AppContext::getPairwiseAlignmentRegistry();
@@ -144,6 +143,11 @@ void PairAlign::initParameters() {
         algorithmListComboBox->setCurrentIndex(index);
     }
 
+    lblMessage->setStyleSheet(
+        "color: " + L10N::errorColorLabelStr() + ";"
+        "font: bold;");
+    lblMessage->setText( tr("Warning: Current alphabet does not correspond the requirements."));
+
     sl_outputFileChanged("");
 }
 
@@ -153,8 +157,7 @@ void PairAlign::connectSignals() {
     connect(showHideOutputWidget,       SIGNAL(si_subgroupStateChanged(QString)),   SLOT(sl_subwidgetStateChanged(QString)));
     connect(algorithmListComboBox,      SIGNAL(currentIndexChanged(QString)),       SLOT(sl_algorithmSelected(QString)));
     connect(inNewWindowCheckBox,        SIGNAL(clicked(bool)),                      SLOT(sl_inNewWindowCheckBoxChangeState(bool)));
-    connect(alignButton, SIGNAL(clicked()), this, SLOT(sl_alignButtonPressed()));
-    //connect(alignButton,                SIGNAL(clicked()),                          SLOT(sl_alignButtonPressed()));
+    connect(alignButton,                SIGNAL(clicked()),                          SLOT(sl_alignButtonPressed()));
     connect(outputFileSelectButton,     SIGNAL(clicked()),                          SLOT(sl_selectFileButtonClicked()));
     connect(outputFileLineEdit,         SIGNAL(textChanged(QString)),               SLOT(sl_outputFileChanged(QString)));
 
@@ -180,7 +183,11 @@ void PairAlign::checkState() {
     if (true == sequencesChanged) {
         updatePercentOfSimilarity();
     }
-    
+
+    lblMessage->setVisible(!alphabetIsOk);
+    showHideSettingsWidget->setEnabled(alphabetIsOk);
+    showHideOutputWidget->setEnabled(alphabetIsOk);
+
     bool readOnly = msa->getMSAObject()->isStateLocked();
     canDoAlign = ((MAlignmentRow::invalidRowId() != firstSeqSelectorWC->sequenceId())
                   && (MAlignmentRow::invalidRowId() != secondSeqSelectorWC->sequenceId())
@@ -245,6 +252,7 @@ void PairAlign::sl_algorithmSelected(const QString& algorithmName) {
     PairwiseAlignmentAlgorithm* alg = par->getAlgorithm(algorithmName);
     SAFE_POINT(NULL != alg, QString("Algorithm %1 not found.").arg(algorithmName), );
     QString firstAlgorithmRealization = alg->getRealizationsList().first();
+    alphabetIsOk = alg->checkAlphabet(msa->getMSAObject()->getAlphabet());
 
     PairwiseAlignmentGUIExtensionFactory* algGUIFactory = alg->getGUIExtFactory(firstAlgorithmRealization);
     SAFE_POINT(NULL != algGUIFactory, QString("Algorithm %1 GUI factory not found.").arg(firstAlgorithmRealization), );

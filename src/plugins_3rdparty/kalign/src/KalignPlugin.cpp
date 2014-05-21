@@ -40,6 +40,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DNAAlphabet.h>
 
 #include <U2Algorithm/MSAAlignAlgRegistry.h>
 #include <U2Algorithm/PairwiseAlignmentRegistry.h>
@@ -75,8 +76,8 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
-KalignPlugin::KalignPlugin() 
-    : Plugin(tr("Kalign"), 
+KalignPlugin::KalignPlugin()
+    : Plugin(tr("Kalign"),
     tr("A port of Kalign package for multiple sequence alignment. Check http://msa.sbc.su.se for the original version")),
     ctx(NULL)
 {
@@ -99,7 +100,7 @@ KalignPlugin::KalignPlugin()
         toolsSubmenu->addAction(kalignAction);
         connect(kalignAction,SIGNAL(triggered()),SLOT(sl_runWithExtFileSpecify()));
     }
-    
+
     LocalWorkflow::KalignWorkerFactory::init(); //TODO
     //TODO:
     //Kalign Test
@@ -111,21 +112,17 @@ KalignPlugin::KalignPlugin()
     GAutoDeleteList<XMLTestFactory>* l = new GAutoDeleteList<XMLTestFactory>(this);
     l->qlist = KalignTests ::createTestFactories();
 
-    foreach(XMLTestFactory* f, l->qlist) { 
+    foreach(XMLTestFactory* f, l->qlist) {
         bool res = xmlTestFormat->registerTestFactory(f);
         Q_UNUSED(res);
         assert(res);
     }
 
-    PairwiseAlignmentAlgorithm* hirschbergAlgorithm = new PairwiseAlignmentAlgorithm("Hirschberg (KAlign)",
-                                                         new PairwiseAlignmentHirschbergTaskFactory(),
-                                                         new PairwiseAlignmentHirschbergGUIExtensionFactory(),
-                                                         "KAlign");
-    AppContext::getPairwiseAlignmentRegistry()->registerAlgorithm(hirschbergAlgorithm);
+    AppContext::getPairwiseAlignmentRegistry()->registerAlgorithm(new KalignPairwiseAligmnentAlgorithm());
 }
 
 void KalignPlugin::sl_runWithExtFileSpecify() {
-    
+
     //Call select input file and setup settings dialog
 
     KalignTaskSettings settings;
@@ -180,23 +177,23 @@ void KalignMSAEditorContext::buildMenu(GObjectView* v, QMenu* m) {
     assert(alignMenu!=NULL);
     foreach(GObjectViewAction* a, actions) {
         a->addToMenuWithOrder(alignMenu);
-    }    
+    }
 }
 
 void KalignMSAEditorContext::sl_align() {
     KalignAction* action = qobject_cast<KalignAction*>(sender());
     assert(action!=NULL);
     MSAEditor* ed = action->getMSAEditor();
-    MAlignmentObject* obj = ed->getMSAObject(); 
-    
+    MAlignmentObject* obj = ed->getMSAObject();
+
     KalignTaskSettings s;
     KalignDialogController dlg(ed->getWidget(), obj->getMAlignment(), s);
-    
+
     int rc = dlg.exec();
     if (rc != QDialog::Accepted) {
         return;
     }
-    
+
     AlignGObjectTask * kalignTask = NULL;
     kalignTask = new KalignGObjectRunFromSchemaTask(obj, s);
 
@@ -208,6 +205,18 @@ void KalignMSAEditorContext::sl_align() {
 
     // Turn off rows collapsing
     ed->resetCollapsibleModel();
+}
+
+KalignPairwiseAligmnentAlgorithm::KalignPairwiseAligmnentAlgorithm()
+    : PairwiseAlignmentAlgorithm("Hirschberg (KAlign)",
+                                 new PairwiseAlignmentHirschbergTaskFactory(),
+                                 new PairwiseAlignmentHirschbergGUIExtensionFactory(),
+                                 "KAlign")
+{
+}
+
+bool KalignPairwiseAligmnentAlgorithm::checkAlphabet(const DNAAlphabet *al) {
+    return !(al->isRaw() || (al->isAmino() && al->isExtended()));
 }
 
 }//namespace

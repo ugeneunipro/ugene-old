@@ -40,7 +40,7 @@ SWTaskFactory::SWTaskFactory(SW_AlgType _algType) {
 SWTaskFactory::~SWTaskFactory() {
 }
 
-Task* SWTaskFactory::getTaskInstance( const SmithWatermanSettings& config, const QString& taskName) const {            
+Task* SWTaskFactory::getTaskInstance( const SmithWatermanSettings& config, const QString& taskName) const {
     return new SWAlgorithmTask(config, taskName, algType);
 }
 
@@ -68,18 +68,22 @@ PairwiseAlignmentTask* PairwiseAlignmentSmithWatermanTaskFactory::getTaskInstanc
                                                                          settings->secondSequenceRef,
                                                                          settings->msaRef);
     } else {
-        if (settings->msaRef.isValid())
-        settings->reportCallback = new SmithWatermanReportCallbackMAImpl(settings->firstSequenceRef,
-                                                                         settings->secondSequenceRef,
-                                                                         settings->msaRef);
+        if (settings->msaRef.isValid()) {
+            settings->reportCallback = new SmithWatermanReportCallbackMAImpl(settings->firstSequenceRef,
+                                                                             settings->secondSequenceRef,
+                                                                             settings->msaRef);
+        }
     }
+
     settings->resultListener = new SmithWatermanResultListener;
     SWResultFilterRegistry* resFilterReg = AppContext::getSWResultFilterRegistry();
     SAFE_POINT(NULL != resFilterReg, "SWResultFilterRegistry is NULL.", NULL);
     settings->resultFilter = resFilterReg->getFilter(PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_DEFAULT_RESULT_FILTER);
     settings->percentOfScore = PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_DEFAULT_PERCENT_OF_SCORE;
-    settings->convertCustomSettings();
-    return new PairwiseAlignmentSmithWatermanTask(settings, algType);
+    if (settings->convertCustomSettings()) {
+        return new PairwiseAlignmentSmithWatermanTask(settings, algType);
+    }
+    return NULL;
 }
 
 } // namespace

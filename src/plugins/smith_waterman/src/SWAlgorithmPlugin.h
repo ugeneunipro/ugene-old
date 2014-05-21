@@ -69,6 +69,12 @@ private:
     SWDialogConfig dialogConfig;
 };
 
+class SWPairwiseAlignmentAlgorithm : public PairwiseAlignmentAlgorithm {
+public:
+    SWPairwiseAlignmentAlgorithm();
+    bool checkAlphabet(const DNAAlphabet *alphabet);
+};
+
 } //namespace
 
 #endif  //_U2_SW_ALGORITHM_PLUGIN_H_

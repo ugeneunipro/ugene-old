@@ -342,6 +342,16 @@
     </layout>
    </item>
    <item>
+    <widget class="QLabel" name="lblMessage">
+     <property name="text">
+      <string>Error</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="globaSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>

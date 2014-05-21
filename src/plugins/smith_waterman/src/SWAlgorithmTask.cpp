@@ -65,21 +65,21 @@ const QString PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_DEFAULT_RESULT_F
 const QString PairwiseAlignmentSmithWatermanTaskSettings::PA_SW_DEFAULT_RESULT_FILE_NAME("SW_Alignment_Result");
 
 SWAlgorithmTask::SWAlgorithmTask(const SmithWatermanSettings& s,
-                                 const QString& taskName, SW_AlgType _algType):Task (taskName, TaskFlag_NoRun), 
+                                 const QString& taskName, SW_AlgType _algType):Task (taskName, TaskFlag_NoRun),
                                  sWatermanConfig(s)
-{    
+{
     GCOUNTER( cvar, tvar, "SWAlgorithmTask" );
-    
+
     algType = _algType;
     if (algType == SW_sse2) {
         if (sWatermanConfig.ptrn.length() < 8) {
-            algType = SW_classic;    
+            algType = SW_classic;
         }
     }
 
-    int maxScore = calculateMaxScore(s.ptrn, s.pSm);    
+    int maxScore = calculateMaxScore(s.ptrn, s.pSm);
 
-    minScore = (maxScore * s.percentOfScore) / 100;        
+    minScore = (maxScore * s.percentOfScore) / 100;
     if ( (maxScore * (int)s.percentOfScore) % 100 != 0) minScore += 1;
 
     //acquiring resources for GPU computations
@@ -87,7 +87,7 @@ SWAlgorithmTask::SWAlgorithmTask(const SmithWatermanSettings& s,
         addTaskResource(TaskResourceUsage( RESOURCE_CUDA_GPU, 1, true /*prepareStage*/));
     } else if( SW_opencl == algType ) {
         addTaskResource(TaskResourceUsage( RESOURCE_OPENCL_GPU, 1, true /*prepareStage*/));
-    }  
+    }
 
     setupTask(maxScore);
 }
@@ -98,7 +98,7 @@ SWAlgorithmTask::~SWAlgorithmTask() {
     // we do not delete resultFilter here, because filters are stored in special registry
 }
 
-void SWAlgorithmTask::setupTask(int maxScore) {    
+void SWAlgorithmTask::setupTask(int maxScore) {
 
     SequenceWalkerConfig c;
     c.seq = sWatermanConfig.sqnc.constData();
@@ -108,12 +108,12 @@ void SWAlgorithmTask::setupTask(int maxScore) {
     c.aminoTrans = sWatermanConfig.aminoTT;
     c.strandToWalk = sWatermanConfig.strand;
     algoLog.details(QString("Strand: %1 ").arg(c.strandToWalk));
-    
-    quint64 overlapSize = calculateMatrixLength(sWatermanConfig.sqnc, 
-        sWatermanConfig.ptrn, 
-        sWatermanConfig.gapModel.scoreGapOpen, 
-        sWatermanConfig.gapModel.scoreGapExtd, 
-        maxScore, 
+
+    quint64 overlapSize = calculateMatrixLength(sWatermanConfig.sqnc,
+        sWatermanConfig.ptrn,
+        sWatermanConfig.gapModel.scoreGapOpen,
+        sWatermanConfig.gapModel.scoreGapExtd,
+        maxScore,
         minScore);
 
     // divide sequence by PARTS_NUMBER parts
@@ -151,8 +151,8 @@ void SWAlgorithmTask::setupTask(int maxScore) {
     }
     c.overlapSize = overlapSize;
 
-    c.lastChunkExtraLen = partsNumber - 1;    
-    
+    c.lastChunkExtraLen = partsNumber - 1;
+
     //acquiring memory resources for computations
     switch(algType) {
         case SW_cuda:
@@ -220,8 +220,8 @@ void SWAlgorithmTask::prepare() {
 
         cudaSetDevice( cudaGpu->getId() );
 #else
-        assert(false);  
-#endif 
+        assert(false);
+#endif
     }
     else if(SW_opencl == algType) {
         openClGpu = AppContext::getOpenCLGpuRegistry()->acquireAnyReadyGpu();
@@ -230,7 +230,7 @@ void SWAlgorithmTask::prepare() {
         const quint64 needMemBytes = SmithWatermanAlgorithmOPENCL::estimateNeededGpuMemory(
             sWatermanConfig.pSm, sWatermanConfig.ptrn, sWatermanConfig.sqnc.left(config.chunkSize * config.nThreads));
         const quint64 gpuMemBytes = openClGpu->getGlobalMemorySizeBytes();
-        
+
         if(gpuMemBytes < needMemBytes) {
             stateInfo.setError(QString("Not enough memory on OpenCL-enabled device. "
                 "The space required is %1 bytes, but only %2 bytes are available. Device id: %3, device name: %4").
@@ -255,7 +255,7 @@ QList<PairAlignSequences> &  SWAlgorithmTask::getResult() {
     return pairAlignSequences;
 }
 
-void SWAlgorithmTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {                
+void SWAlgorithmTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
     Q_UNUSED(ti);
 
     int regionLen = t->getRegionSequenceLen();
@@ -275,7 +275,7 @@ void SWAlgorithmTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
 #else
         coreLog.error( "CUDA was not enabled in this build" );
         return;
-#endif //SW2_BUILD_WITH_CUDA    
+#endif //SW2_BUILD_WITH_CUDA
     } else if (algType == SW_opencl) {
 #ifdef SW2_BUILD_WITH_OPENCL
         sw = new SmithWatermanAlgorithmOPENCL;
@@ -296,7 +296,7 @@ void SWAlgorithmTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
         ? SmithWatermanSettings::MULTIPLE_ALIGNMENT : sWatermanConfig.resultView;
 
     quint64 t1 = GTimer::currentTimeMicros();
-    sw->launch(sWatermanConfig.pSm, sWatermanConfig.ptrn, localSeq, 
+    sw->launch(sWatermanConfig.pSm, sWatermanConfig.ptrn, localSeq,
         sWatermanConfig.gapModel.scoreGapOpen + sWatermanConfig.gapModel.scoreGapExtd,
         sWatermanConfig.gapModel.scoreGapExtd, minScore, resultView);
     QString algName;
@@ -305,14 +305,14 @@ void SWAlgorithmTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
     } else {
         algName = "Classic";
     }
-    QString testName; 
+    QString testName;
     if (getParentTask() != NULL) {
         testName = getParentTask()->getTaskName();
     } else {
         testName = "SW alg";
     }
     perfLog.details(QString("\n%1 %2 run time is %3\n").arg(testName).arg(algName).arg(GTimer::secsBetween(t1, GTimer::currentTimeMicros())));
-    
+
     QList<PairAlignSequences> res = sw->getResults();
 
     for (int i = 0; i < res.size(); i++) {
@@ -324,18 +324,18 @@ void SWAlgorithmTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
             res[i].refSubseqInterval.length *= 3;
         }
 
-        
+
         if (t->isDNAComplemented()) {
             const U2Region& wr = t->getGlobalRegion();
             res[i].refSubseqInterval.startPos =
                 wr.endPos() - res[i].refSubseqInterval.endPos() - sWatermanConfig.globalRegion.startPos;
         }
         else {
-            res[i].refSubseqInterval.startPos += 
+            res[i].refSubseqInterval.startPos +=
                 (t->getGlobalRegion().startPos - sWatermanConfig.globalRegion.startPos);
-        }        
+        }
     }
-    
+
     addResult(res);
 
 /////////////////////
@@ -362,8 +362,8 @@ void SWAlgorithmTask::removeResultFromOverlap(QList<PairAlignSequences> & res) {
 
 
 void SWAlgorithmTask::addResult(QList<PairAlignSequences> & res) {
-    QMutexLocker ml(&lock);    
-    pairAlignSequences += res;    
+    QMutexLocker ml(&lock);
+    pairAlignSequences += res;
     pairAlignSequences += res;
 }
 
@@ -374,32 +374,32 @@ int SWAlgorithmTask::calculateMatrixLength(const QByteArray & searchSeq, const Q
     int gap = gapOpen;
     if (gapOpen < gapExtension) gap = gapExtension;
 
-    matrixLength = patternSeq.length() + (maxScore - minScore)/gap * (-1) + 1;    
+    matrixLength = patternSeq.length() + (maxScore - minScore)/gap * (-1) + 1;
 
     if (searchSeq.length() + 1 < matrixLength) matrixLength = searchSeq.length() + 1;
 
     matrixLength += 1;
 
-    return matrixLength;    
+    return matrixLength;
 }
 
 int SWAlgorithmTask::calculateMaxScore(const QByteArray & seq, const SMatrix& substitutionMatrix) {
     int maxScore = 0;
-    int max;    
-    int substValue = 0;    
+    int max;
+    int substValue = 0;
 
     QByteArray alphaChars = substitutionMatrix.getAlphabet()->getAlphabetChars();
-    for (int i = 0; i < seq.length(); i++) {        
-        max = 0;        
-        for (int j = 0; j < alphaChars.size(); j++) {            
+    for (int i = 0; i < seq.length(); i++) {
+        max = 0;
+        for (int j = 0; j < alphaChars.size(); j++) {
             //TODO: use raw pointers!
             char c1 = seq.at(i);
             char c2 = alphaChars.at(j);
             substValue = substitutionMatrix.getScore(c1, c2);
-            if (max < substValue) max = substValue;                                
+            if (max < substValue) max = substValue;
         }
         maxScore += max;
-    }    
+    }
     return maxScore;
 }
 
@@ -413,7 +413,7 @@ Task::ReportResult SWAlgorithmTask::report() {
 
     SmithWatermanResultListener* rl = sWatermanConfig.resultListener;
     QList<SmithWatermanResult> resultList = rl->getResults();
-     
+
     int resultsNum = resultList.size();
     algoLog.details(tr("%1 results found").arg(resultsNum));
 
@@ -423,8 +423,8 @@ Task::ReportResult SWAlgorithmTask::report() {
         if (!res.isEmpty()) {
             stateInfo.setError(res);
         }
-    }        
-    
+    }
+
     return ReportResult_Finished;
 }
 
@@ -492,6 +492,7 @@ bool PairwiseAlignmentSmithWatermanTaskSettings::convertCustomSettings() {
     gapExtd = customSettings.value(PA_SW_GAP_EXTD).toInt();
     sMatrixName = customSettings.value(PA_SW_SCORING_MATRIX_NAME).toString();
     sMatrix = AppContext::getSubstMatrixRegistry()->getMatrix(sMatrixName);
+    SAFE_POINT(!sMatrix.isEmpty(), "No matrix found", false);
 
     PairwiseAlignmentTaskSettings::convertCustomSettings();
     return true;
@@ -538,7 +539,7 @@ PairwiseAlignmentSmithWatermanTask::PairwiseAlignmentSmithWatermanTask(PairwiseA
             settings->realizationName = SW_classic;
         }
     }
-
+    SAFE_POINT(!settings->sMatrix.isEmpty(), tr("Substitution matrix is empty"), );
     maxScore = calculateMaxScore(*ptrn, settings->sMatrix);
 
     minScore = (maxScore * settings->percentOfScore) / 100;
