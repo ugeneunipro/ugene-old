@@ -37,6 +37,7 @@ namespace U2 {
 
 class GUITest;
 class Document;
+class ADVSingleSequenceWidget;
 
 class GTUtilsProject {
 public:
@@ -53,6 +54,26 @@ public:
 
     enum CheckType {Exists, Empty, NotExists};
     static void checkProject(U2OpStatus &os, CheckType checkType = Exists);
+
+
+    /**
+     * Opens file @path\@fileName.
+     * Verifies that a Sequence View was opened with one sequence.
+     * Verifies that the sequence name is @seqName.
+     * Returns the sequence widget.
+     */
+    static ADVSingleSequenceWidget * openFileExpectSequence(U2OpStatus &os, const QString &path, const QString &fileName,
+        const QString &seqName);
+
+    /**
+     * Opens file @path\@fileName.
+     * Verifies that a Sequence View was opened and contains sequences with the specified name @seqNames (in
+     * the order specified in the list).
+     * Returns the sequences widgets (in the same order).
+     */
+    static QList<ADVSingleSequenceWidget *> openFileExpectSequences(U2OpStatus &os, const QString &path, const QString &fileName,
+        const QList<QString> &seqNames);
+
 
 protected:
     static void openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls);

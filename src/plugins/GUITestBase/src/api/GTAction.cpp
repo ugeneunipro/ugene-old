@@ -39,13 +39,17 @@ namespace U2 {
 #define GT_CLASS_NAME "GTAction"
 
 #define GT_METHOD_NAME "button"
-QAbstractButton* GTAction::button(U2OpStatus &os, const QString &actionName, QObject *parent) {
+QAbstractButton* GTAction::button(U2OpStatus &os, const QString &actionName, QObject *parent, const GTGlobals::FindOptions& options) {
 
     QAction* a = findAction(os, actionName, parent);
     if (!a) {
         a = findAction(os, actionName);
     }
-    GT_CHECK_RESULT(a != NULL, "action is NULL", NULL);
+    if (options.failIfNull) {
+        GT_CHECK_RESULT(NULL != a, "Action is NULL!", NULL);
+    } else if (NULL == a) {
+            return NULL;
+    }
 
     QList<QWidget*> associated = a->associatedWidgets();
     foreach(QWidget* w, associated) {

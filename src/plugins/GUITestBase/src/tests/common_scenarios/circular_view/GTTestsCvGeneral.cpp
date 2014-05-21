@@ -19,26 +19,42 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_GTACTION_H_
-#define _U2_GUI_GTACTION_H_
+#include "GTTestsCvGeneral.h"
 
-#include "api/GTGlobals.h"
+#include "GTUtilsCircularView.h"
 
-class QAbstractButton;
+#include "api/GTFileDialog.h"
+#include "api/GTWidget.h"
+
+
 namespace U2 {
+namespace GUITest_common_scenarios_circular_view {
 
-class GTAction {
-public:
-    // returns first QAbstractButton associated with an action with a given name
-    static QAbstractButton* button(U2OpStatus &os, const QString &actionName, QObject *parent = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
-    static QAbstractButton* button(U2OpStatus &os, const QAction* a, QObject *parent = NULL);
+GUI_TEST_CLASS_DEFINITION(general_avail_1) {
+}
 
-    static QAction* findAction(U2OpStatus &os, const QString &actionName, QObject *parent = NULL);
+GUI_TEST_CLASS_DEFINITION(general_avail_2) {
+}
 
-    static QAction* findActionByText(U2OpStatus &os, const QString &text, QObject *parent = NULL);
-};
+GUI_TEST_CLASS_DEFINITION(general_avail_3) {
+}
 
-} //namespace
+GUI_TEST_CLASS_DEFINITION(general_avail_4) {
+}
 
-#endif
+GUI_TEST_CLASS_DEFINITION(general_avail_5) {
+}
+
+GUI_TEST_CLASS_DEFINITION(general_avail_6) {
+}
+
+GUI_TEST_CLASS_DEFINITION(general_avail_7) {
+}
+
+GUI_TEST_CLASS_DEFINITION(general_avail_8) {
+}
+
+
+} // namespace GUITest_common_scenarios_circular_view
+} // namespace U2

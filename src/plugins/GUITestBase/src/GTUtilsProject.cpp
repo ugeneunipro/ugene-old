@@ -20,23 +20,31 @@
  */
 
 #include "GTUtilsProject.h"
+
+#include "api/GTFileDialog.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTLineEdit.h"
+#include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTSequenceReadingModeDialogUtils.h"
-#include "api/GTMenu.h"
-#include "api/GTLineEdit.h"
 #include "api/GTWidget.h"
-#include "GTUtilsTaskTreeView.h"
-#include "GTUtilsProjectTreeView.h"
 
 #include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsProjectTreeView.h"
+#include "GTUtilsSequenceView.h"
+#include "GTUtilsTaskTreeView.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
-#include <U2View/ADVConstants.h>
+
 #include <U2Gui/ObjectViewModel.h>
+
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSingleSequenceWidget.h>
+
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/QDropEvent>
+
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
@@ -103,6 +111,71 @@ void GTUtilsProject::openFilesDrop(U2OpStatus &os, const QList<QUrl>& urls) {
     QDropEvent* dropEvent = new QDropEvent(widgetPos, dropActions, mimeData, mouseButtons, 0);
     GTGlobals::sendEvent(widget, dropEvent);
 }
+
+
+#define GT_METHOD_NAME "openFileExpectSequence"
+ADVSingleSequenceWidget * GTUtilsProject::openFileExpectSequence(U2OpStatus &os,
+                                                                const QString &path,
+                                                                const QString &fileName,
+                                                                const QString &seqName)
+{
+    GTFileDialog::openFile(os, path, fileName);
+    GT_CHECK_OP_RESULT(os, "Error opening file!", NULL);
+
+    GTGlobals::sleep(200);
+
+    int seqWidgetNum = GTUtilsSequenceView::getSeqWidgetsNumber(os);
+    GT_CHECK_OP_RESULT(os, "Error getting the number of sequence widgets!", NULL);
+    GT_CHECK_RESULT(1 == seqWidgetNum, QString("Number of sequences is %1").arg(seqWidgetNum), NULL);
+
+
+    ADVSingleSequenceWidget *seqWidget = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+    GT_CHECK_OP_RESULT(os, "Error grtting sequence widget!", NULL);
+
+    QString actualName = GTUtilsSequenceView::getSeqName(os, seqWidget);
+    GT_CHECK_OP_RESULT(os, "Error getting sequence widget name!", NULL);
+    GT_CHECK_RESULT(actualName == seqName, QString("Expected sequence name: %1, actual: %2!").
+                    arg(seqName).arg(actualName), NULL);
+
+    return seqWidget;
+}
+#undef GT_METHOD_NAME
+
+
+#define GT_METHOD_NAME "openFileExpectSequences"
+QList<ADVSingleSequenceWidget*> GTUtilsProject::openFileExpectSequences(U2OpStatus &os,
+                                                                        const QString &path,
+                                                                        const QString &fileName,
+                                                                        const QList<QString> &seqNames)
+{
+    QList<ADVSingleSequenceWidget*> result;
+    GTFileDialog::openFile(os, path, fileName);
+    GT_CHECK_OP_RESULT(os, "Error opening file!", QList<ADVSingleSequenceWidget*>());
+
+    GTGlobals::sleep(200);
+
+    int seqWidgetNum = GTUtilsSequenceView::getSeqWidgetsNumber(os);
+    GT_CHECK_OP_RESULT(os, "Error getting the number of sequence widgets!", QList<ADVSingleSequenceWidget*>());
+    GT_CHECK_RESULT(seqWidgetNum == seqNames.size(), QString("Expected number of sequences: %1, actual: %2!").
+                    arg(seqNames.size()).arg(seqWidgetNum),
+                    QList<ADVSingleSequenceWidget*>());
+
+    for (int i = 0; i < seqNames.size(); ++i) {
+        ADVSingleSequenceWidget *seqWidget = GTUtilsSequenceView::getSeqWidgetByNumber(os, i);
+        GT_CHECK_OP_RESULT(os, QString("Error grtting sequence widget: %1!").arg(i), QList<ADVSingleSequenceWidget*>());
+
+        QString actualName = GTUtilsSequenceView::getSeqName(os, seqWidget);
+        GT_CHECK_RESULT(seqNames.at(i) == actualName,
+                        QString("Unexpected sequence widget at position %1. Expected sequence name: %2, actual: %3!").
+                        arg(i).arg(seqNames.at(i)).arg(actualName),
+                        QList<ADVSingleSequenceWidget*>());
+        result << seqWidget;
+    }
+
+    return result;
+}
+#undef GT_METHOD_NAME
+
 
 #undef GT_CLASS_NAME
 

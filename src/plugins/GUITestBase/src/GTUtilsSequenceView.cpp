@@ -20,21 +20,28 @@
  */
 
 #include "GTUtilsSequenceView.h"
+
 #include "api/GTGlobals.h"
-#include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
 #include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
+
 #include "GTUtilsMdi.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsProjectTreeView.h"
+
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/qt/PopupChooser.h"
 
 #include <U2Core/AppContext.h>
-#include <U2View/ADVConstants.h>
-#include <U2View/DetView.h>
+
 #include <U2Gui/MainWindow.h>
+
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSingleSequenceWidget.h>
+#include <U2View/DetView.h>
+
 #include <QtGui/QClipboard>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -50,7 +57,6 @@
 #include <QtWidgets/QMainWindow>
 #endif
 
-#include <U2View/ADVSingleSequenceWidget.h>
 
 namespace U2 {
 
@@ -238,6 +244,42 @@ void GTUtilsSequenceView::addSequenceView(U2OpStatus &os, const QString &sequenc
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, sequenceName);
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
+}
+#undef GT_METHOD_NAME
+
+
+#define GT_METHOD_NAME "getSeqWidgetByNumber"
+ADVSingleSequenceWidget* GTUtilsSequenceView::getSeqWidgetByNumber(U2OpStatus &os, int number, const GTGlobals::FindOptions &options){
+    QWidget *widget = GTWidget::findWidget(os,
+        QString("ADV_single_sequence_widget_%1").arg(number),
+        NULL, options);
+
+    ADVSingleSequenceWidget *seqWidget = qobject_cast<ADVSingleSequenceWidget*>(widget);
+
+    if(options.failIfNull){
+        GT_CHECK_RESULT(NULL != widget, QString("Sequence widget %1 was not found!").arg(number), NULL);
+    }
+
+    return seqWidget;
+}
+#undef GT_METHOD_NAME
+
+
+#define GT_METHOD_NAME "getSeqWidgetsNumber"
+int GTUtilsSequenceView::getSeqWidgetsNumber(U2OpStatus &os) {
+    QList<ADVSingleSequenceWidget*> seqWidgets = GTUtilsMdi::activeWindow(os)->findChildren<ADVSingleSequenceWidget*>();
+    return seqWidgets.size();
+}
+#undef GT_METHOD_NAME
+
+
+#define GT_METHOD_NAME "getSeqName"
+QString GTUtilsSequenceView::getSeqName(U2OpStatus &os, ADVSingleSequenceWidget* seqWidget){
+    GT_CHECK_RESULT(NULL != seqWidget, "Sequence widget is NULL!", "");
+    QLabel *nameLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "nameLabel", seqWidget));
+    GT_CHECK_RESULT(NULL != nameLabel, "Name label is NULL!", "");
+
+    return nameLabel->text();
 }
 #undef GT_METHOD_NAME
 

@@ -19,26 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_GTACTION_H_
-#define _U2_GUI_GTACTION_H_
+#ifndef _GT_TESTS_CV_GENERAL_H_
+#define _GT_TESTS_CV_GENERAL_H_
 
-#include "api/GTGlobals.h"
+#include <U2Test/GUITestBase.h>
 
-class QAbstractButton;
 namespace U2 {
+namespace GUITest_common_scenarios_circular_view {
 
-class GTAction {
-public:
-    // returns first QAbstractButton associated with an action with a given name
-    static QAbstractButton* button(U2OpStatus &os, const QString &actionName, QObject *parent = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+#undef GUI_TEST_PREFIX
+#define GUI_TEST_PREFIX "GUITest_common_scenraios_circular_view"
 
-    static QAbstractButton* button(U2OpStatus &os, const QAction* a, QObject *parent = NULL);
+GUI_TEST_CLASS_DECLARATION(general_avail_1)
+GUI_TEST_CLASS_DECLARATION(general_avail_2)
+GUI_TEST_CLASS_DECLARATION(general_avail_3)
+GUI_TEST_CLASS_DECLARATION(general_avail_4)
+GUI_TEST_CLASS_DECLARATION(general_avail_5)
+GUI_TEST_CLASS_DECLARATION(general_avail_6)
+GUI_TEST_CLASS_DECLARATION(general_avail_7)
+GUI_TEST_CLASS_DECLARATION(general_avail_8)
 
-    static QAction* findAction(U2OpStatus &os, const QString &actionName, QObject *parent = NULL);
+#undef GUI_TEST_PREFIX
 
-    static QAction* findActionByText(U2OpStatus &os, const QString &text, QObject *parent = NULL);
-};
-
+} // namespace U2
 } //namespace
 
-#endif
+#endif // _GT_TESTS_CV_GENERAL_H_

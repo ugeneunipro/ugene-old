@@ -52,8 +52,12 @@ namespace U2 {
     uiLog.trace("------------\n"); \
 }
 
+/** Used in tests */
 #define CHECK_SET_ERR(condition, errorMessage) \
     CHECK_SET_ERR_RESULT(condition, errorMessage, )
+
+#define CHECK_OP_SET_ERR(os, errorMessage) \
+    CHECK_SET_ERR(!os.isCoR(), errorMessage)
 
 #define CHECK_SET_ERR_RESULT(condition, errorMessage, result) \
 { \
@@ -62,11 +66,22 @@ namespace U2 {
     CHECK_EXT(condition, if (!os.hasError()) { GTGlobals::GUITestFail(); os.setError(errorMessage);}, result) \
 }
 
+#define CHECK_OP_SET_ERR_RESULT(os, errorMessage, result) \
+    CHECK_SET_ERR_RESULT(!os.isCoR(), errorMessage, result)
+
+/** Used in util methods */
 #define GT_CHECK(condition, errorMessage) \
     GT_CHECK_RESULT(condition, errorMessage, )
 
 #define GT_CHECK_RESULT(condition, errorMessage, result) \
     CHECK_SET_ERR_RESULT(condition, GT_CLASS_NAME " __ " GT_METHOD_NAME " _  " + QString(errorMessage), result)
+
+#define GT_CHECK_OP(os, errorMessage) \
+    GT_CHECK(!os.isCoR(), errorMessage)
+
+#define GT_CHECK_OP_RESULT(os, errorMessage, result) \
+    GT_CHECK_RESULT(!os.isCoR(), errorMessage, result)
+
 
 class GTGlobals {
 public:

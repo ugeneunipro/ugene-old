@@ -23,10 +23,12 @@
 #define _U2_GT_UTILS_SEQUENCE_VIEW_H
 
 #include <QString>
+#include <api/GTGlobals.h>
 
 namespace U2 {
 
 class U2OpStatus;
+class ADVSingleSequenceWidget;
 
 class GTUtilsSequenceView {
 public:
@@ -39,6 +41,10 @@ public:
 
   	static void openSequenceView(U2OpStatus &os, const QString &sequenceName);
     static void addSequenceView(U2OpStatus &os, const QString &sequenceName);
+
+    static ADVSingleSequenceWidget * getSeqWidgetByNumber(U2OpStatus &os, int number = 0, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static int getSeqWidgetsNumber(U2OpStatus &os);
+    static QString getSeqName(U2OpStatus &os, ADVSingleSequenceWidget*);
 };
 
 } // namespace U2

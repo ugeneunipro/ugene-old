@@ -86,6 +86,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h \
 #   Utils classes
             src/GTUtilsApp.h \
+            src/GTUtilsCircularView.h \
             src/GTUtilsDialog.h \
             src/GTUtilsDocument.h \
             src/GTUtilsEscClicker.h \
@@ -149,6 +150,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h \
             src/tests/common_scenarios/undo_redo/GTTestsUndoRedo.h \
             src/tests/common_scenarios/NIAID_pipelines/GTTestsNiaidPipelines.h \
+            src/tests/common_scenarios/circular_view/GTTestsCvGeneral.h \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.h \
             src/api/GTRegionSelector.h \
@@ -182,7 +184,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTAction.h \
             src/api/GTDoubleSpinBox.h \
             src/api/GTTableView.h  \
-            src/api/GTGraphicsItem.h \
+            src/api/GTGraphicsItem.h
 
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
@@ -268,6 +270,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.cpp \
 #   Utils classes
             src/GTUtilsApp.cpp \
+            src/GTUtilsCircularView.cpp \
             src/GTUtilsDialog.cpp \
             src/GTUtilsDocument.cpp \
             src/GTUtilsEscClicker.cpp \
@@ -331,6 +334,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.cpp \
             src/tests/common_scenarios/undo_redo/GTTestsUndoRedo.cpp \
             src/tests/common_scenarios/NIAID_pipelines/GTTestsNiaidPipelines.cpp \
+            src/tests/common_scenarios/circular_view/GTTestsCvGeneral.cpp \
 #   UGENE primitives
             src/api/GTMSAEditorStatusWidget.cpp \
             src/api/GTRegionSelector.cpp \

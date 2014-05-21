@@ -67,7 +67,7 @@
 #include "tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h"
 #include "tests/common_scenarios/undo_redo/GTTestsUndoRedo.h"
 #include "tests/common_scenarios/NIAID_pipelines/GTTestsNiaidPipelines.h"
-
+#include "tests/common_scenarios/circular_view/GTTestsCvGeneral.h"
 #include "tests/crazy_user/GUICrazyUserTest.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
@@ -1117,16 +1117,16 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_undo_redo::test_0012, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
 
 /////////////////////////////////////////////////////////////////////////
-// Common scenarios/Circular view
+// common_scenarios/circular_view
 /////////////////////////////////////////////////////////////////////////
-//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_1);
-//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_2);
-//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_3);
-//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_4);
-//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_5);
-//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_6);
-//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_7);
-//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_8);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_1);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_2);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_3);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_4);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_5);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_6);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_7);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_8);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
