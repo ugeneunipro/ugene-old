@@ -67,6 +67,7 @@
 #include "tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h"
 #include "tests/common_scenarios/undo_redo/GTTestsUndoRedo.h"
 #include "tests/common_scenarios/NIAID_pipelines/GTTestsNiaidPipelines.h"
+
 #include "tests/crazy_user/GUICrazyUserTest.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
@@ -1082,7 +1083,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011_2);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0012);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0023, "tree view is added to project, but view is not opened. jira is disabled");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0024,"https://ugene.unipro.ru/tracker/browse/UGENE-2644");
+    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0024);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Repeat Finder
@@ -1114,6 +1115,18 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0011_1);
 
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_undo_redo::test_0012, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/Circular view
+/////////////////////////////////////////////////////////////////////////
+//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_1);
+//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_2);
+//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_3);
+//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_4);
+//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_5);
+//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_6);
+//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_7);
+//    REGISTER_TEST(GUITest_common_scenarios_circular_view::avail_8);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
