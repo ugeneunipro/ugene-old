@@ -606,7 +606,6 @@ void Primer3Task::selectPairsSpanningIntron(primers_t& primers, int toReturn)
 
         QList<int> regionIndexes = findIntersectingRegions(regions, left->start, left->length );
 
-
         int numIntersecting = 0;
         U2Region rightRegion(right->start, right->length);
         foreach (int idx, regionIndexes) {
@@ -737,6 +736,33 @@ QList<Task *> Primer3ToAnnotationsTask::onSubTaskFinished(Task *subTask)
                       .arg(seqObj->getSequenceName()));
             return res;
         } else {
+            const U2Range<int>& exonRange = settings.getSpanIntronExonBoundarySettings().exonRange;
+
+            if (exonRange.minValue != 0 && exonRange.maxValue != 0) {
+                int firstExonIdx = exonRange.minValue;
+                int lastExonIdx = exonRange.maxValue;
+                if (firstExonIdx > regions.size()) {
+                    setError(tr("The first exon from the selected range [%1,%2] is larger the number of exons (%2)."
+                                " Please set correct exon range.")
+                             .arg(firstExonIdx).arg(lastExonIdx).arg(regions.size()) );
+                }
+
+                if (lastExonIdx > regions.size()) {
+                    setError(tr("The the selected exon range [%1,%2] is larger the number of exons (%2)."
+                                " Please set correct exon range.")
+                             .arg(firstExonIdx).arg(lastExonIdx).arg(regions.size()) );
+                }
+
+                regions = regions.mid(firstExonIdx - 1, lastExonIdx - firstExonIdx + 1);
+                int totalLen = 0;
+                foreach (const U2Region& r, regions ) {
+                    totalLen += r.length;
+                }
+                QPair<int,int> exonsRegion(regions.first().startPos + settings.getFirstBaseIndex(), totalLen);
+                settings.setIncludedRegion( exonsRegion  );
+
+
+            }
             settings.setExonRegions(regions);
             // reset target and excluded regions regions
             QList<QPair<int,int> > emptyList;

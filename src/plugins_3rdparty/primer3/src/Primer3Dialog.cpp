@@ -328,6 +328,39 @@ void Primer3Dialog::reset()
     }
 }
 
+
+static U2Range<int> parseExonRange(const QString& text, bool& ok) {
+    U2Range<int> res;
+    ok = true;
+
+    if (text.size() > 0) {
+
+        QStringList items = text.split("-");
+        if (items.size() != 2) {
+            ok = false;
+            return res;
+        }
+
+        int startExon = items[0].toInt(&ok);
+        if (!ok) {
+            return res;
+        }
+
+        int endExon = items[1].toInt(&ok);
+        if (!ok ) {
+            return res;
+        }
+
+        res.minValue = startExon;
+        res.maxValue = endExon;
+        ok = startExon <= endExon && startExon > 0;
+
+    }
+
+
+    return res;
+}
+
 bool Primer3Dialog::doDataExchange()
 {
     settings = defaultSettings;
@@ -340,6 +373,14 @@ bool Primer3Dialog::doDataExchange()
         s.minRightOverlap = ui.rightOverlapSizeSpinBox->value();
         s.spanIntron = ui.spanIntronCheckBox->isChecked();
         s.overlapExonExonBoundary = ui.spanJunctionBox->isChecked();
+
+        bool ok = false;
+        s.exonRange = parseExonRange(ui.exonRangeEdit->text().trimmed(), ok);
+        if (!ok) {
+            showInvalidInputMessage(ui.exonRangeEdit, "Exon range");
+            return false;
+        }
+
 
         settings.setSpanIntronExonBoundarySettings(s);
 

@@ -29,6 +29,7 @@
 #include <QtCore/QVector>
 #include <QtCore/QPair>
 #include <U2Core/U2Region.h>
+#include <U2Core/U2Range.h>
 #include "primer3.h"
 
 namespace U2 {
@@ -54,6 +55,7 @@ struct SpanIntronExonBoundarySettings {
     int minLeftOverlap, minRightOverlap;
     bool spanIntron;
     QList<U2Region> regionList;
+    U2Range<int> exonRange;
 
 };
 
