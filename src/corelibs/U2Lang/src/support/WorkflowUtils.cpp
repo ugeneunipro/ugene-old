@@ -1111,6 +1111,16 @@ QScriptValue WorkflowUtils::datasetsToScript(const QList<Dataset> &sets, QScript
     return setsArray;
 }
 
+QString WorkflowUtils::getDatasetSplitter(const QString& filePaths){
+    static const QString defaultSplitter = ";";
+    static const QString additionalSplitter = ",";
+
+    if(filePaths.contains(defaultSplitter)){
+        return defaultSplitter;
+    }
+    return additionalSplitter;
+}
+
 QString WorkflowUtils::packSamples(const QList<TophatSample> &samples) {
     QStringList result;
     foreach (const TophatSample &sample, samples) {

@@ -56,7 +56,7 @@ int QDCDDActor::getMinResultLen() const {
 }
 
 QString QDCDDActor::getText() const {
-    return tr("Searches through the NCBI CDD database for annotations.");;
+    return tr("Searches through the NCBI CDD database for annotations.");
 }
 
 Task* QDCDDActor::getAlgorithmTask(const QVector<U2Region>& location) {

@@ -315,7 +315,7 @@ QString ConvertFilesFormatWorker::detectFormat(const QString &url) {
 
     const QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url, cfg);
     if (formats.empty()) {
-        monitor()->addError(tr("Unknown file format: ") + url, getActorId());
+        coreLog.info(tr("Unknown file format: ") + url);
         return "";
     }
 

@@ -165,7 +165,7 @@ Task * MergeBamWorker::tick() {
 
         const QString detectedFormat = FileAndDirectoryUtils::detectFormat(url);
         if(detectedFormat.isEmpty()){
-            monitor()->addError(tr("Unknown file format: ") + url, getActorId());
+            coreLog.info(tr("Unknown file format: ") + url);
             return NULL;
         }
 

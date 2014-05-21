@@ -164,7 +164,7 @@ ConvertFileTask * getConvertTask(const GUrl &url, const QStringList &targetForma
     QString detectedFormat;
     Result r = isCorrectFormat(url, targetFormats, detectedFormat);
     if (UNKNOWN == r) {
-        os.setError(QString("Unknown file format: %1").arg(url.getURLString()));
+        coreLog.info("Unknown file format: " + url.getURLString());
         return NULL;
     }
 

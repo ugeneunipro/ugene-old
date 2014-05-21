@@ -107,7 +107,7 @@ QList<Task*> ImportAnnotationsFromCSVTask::onSubTaskFinished(Task* subTask) {
     bool inProject = projDoc!=NULL;
 
     if (doc.isNull() && projDoc != NULL) {
-        doc = projDoc;;
+        doc = projDoc;
     }
     if (doc.isNull()) { //document is null -> save it and add to the project
         assert(subTask == readTask);

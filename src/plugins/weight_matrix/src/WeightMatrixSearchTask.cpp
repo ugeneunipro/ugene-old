@@ -77,7 +77,7 @@ void WeightMatrixSingleSearchTask::onRegion(SequenceWalkerSubtask* t, TaskStateI
     }
     U2Region globalRegion = t->getGlobalRegion();
     int seqLen = globalRegion.length;
-    const char* seq = t->getGlobalConfig().seq + globalRegion.startPos;;
+    const char* seq = t->getGlobalConfig().seq + globalRegion.startPos;
     int modelSize = model.getLength();
     ti.progress =0;
     int lenPerPercent = seqLen / 100;

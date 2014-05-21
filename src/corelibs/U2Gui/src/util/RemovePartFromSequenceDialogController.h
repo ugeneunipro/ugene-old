@@ -42,12 +42,12 @@ public:
     ~RemovePartFromSequenceDialogController();
     virtual void accept();
 
-    bool modifyCurrentDocument() const;;
-    QString getNewDocumentPath() const;;
+    bool modifyCurrentDocument() const;
+    QString getNewDocumentPath() const;
     U1AnnotationUtils::AnnotationStrategyForResize getStrategy();
     U2Region getRegionToDelete() const {return toDelete;};
-    bool mergeAnnotations() const;;
-    DocumentFormatId getDocumentFormatId() const;;
+    bool mergeAnnotations() const;
+    DocumentFormatId getDocumentFormatId() const;
 
 private slots:
     void sl_browseButtonClicked();

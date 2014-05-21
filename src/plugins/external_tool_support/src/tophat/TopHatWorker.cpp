@@ -545,7 +545,7 @@ void TopHatWorker::initInputData() {
 }
 
 void TopHatWorker::initPairedReads() {
-    QList<Actor*> pairedProducers;;
+    QList<Actor*> pairedProducers;
     if (settings.data.fromFiles) {
         pairedProducers = getProducers(PAIRED_IN_URL_SLOT_ID);
     } else {

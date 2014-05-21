@@ -90,5 +90,16 @@ QString FileAndDirectoryUtils::detectFormat(const QString &url){
     return getFormatId(formats.first());
 }
 
+bool FileAndDirectoryUtils::isFileEmpty(const QString& url){
+   QFile file(url);
+   if(!file.exists()){
+       return true;
+   }
+   if(file.size() == 0){
+       return true;
+   }
+   return false;
+}
+
 
 } // U2

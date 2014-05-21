@@ -41,7 +41,7 @@ const QByteArray& GSequenceGraphAlgorithm::getSequenceData(U2SequenceObject* seq
 
 GSequenceGraphData::GSequenceGraphData(const QString& _graphName) : graphName(_graphName), ga(NULL)
 {
-    cachedFrom = cachedLen = cachedW = cachedS = 0;;
+    cachedFrom = cachedLen = cachedW = cachedS = 0;
 }
 
 GSequenceGraphData::~GSequenceGraphData() {

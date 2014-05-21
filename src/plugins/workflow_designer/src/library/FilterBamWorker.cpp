@@ -232,7 +232,7 @@ Task * FilterBamWorker::tick() {
 
         const QString detectedFormat = FileAndDirectoryUtils::detectFormat(url);
         if(detectedFormat.isEmpty()){
-            monitor()->addError(tr("Unknown file format: ") + url, getActorId());
+            coreLog.info(tr("Unknown file format: ") + url);
             return NULL;
         }
         if(detectedFormat == BaseDocumentFormats::BAM || detectedFormat == BaseDocumentFormats::SAM){

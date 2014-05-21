@@ -774,7 +774,7 @@ P7_HMM * UHMMFormatReader::readHMMER2ASCII() {
                                 throw UHMMFormatReaderException(tr("Unknown alphabet"));
                             } else {
                                 int abcT = al->getId() == BaseDNAAlphabetIds::NUCL_DNA_DEFAULT() ||
-                                    al->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() ? eslDNA : eslRNA;;
+                                    al->getId() == BaseDNAAlphabetIds::NUCL_DNA_EXTENDED() ? eslDNA : eslRNA;
                                 abc = esl_alphabet_Create(abcT);
                             }
                         }

@@ -77,7 +77,7 @@ void DinuclOccurTask::run()
         }
     }
 
-    int seqLength = sequenceDbi->getSequenceObject(seqRef.entityId, os).length;;
+    int seqLength = sequenceDbi->getSequenceObject(seqRef.entityId, os).length;
     CHECK_OP(os, );
 
     if (seqLength < 2) {

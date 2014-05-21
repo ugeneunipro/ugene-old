@@ -31,6 +31,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/CMDLineCoreOptions.h>
 #include <U2Lang/WorkflowSettings.h>
+#include <U2Lang/WorkflowUtils.h>
 
 #include "CMDLineTests.h"
 
@@ -122,10 +123,11 @@ void GTest_RunCMDLine::setArgs(const QDomElement & el) {
 
 QString GTest_RunCMDLine::splitVal(const QString & val, QString prefValue, const QString & prefix, bool isTmp) {
     int midSize = prefValue.size();
-    QStringList dsVals = val.split(";;");
+    const QString splitter = WorkflowUtils::getDatasetSplitter(val);
+    QStringList dsVals = val.split(splitter + splitter);
     QStringList result;
     foreach (const QString &dsVal, dsVals) {
-        QStringList realVals = dsVal.split(";");
+        QStringList realVals = dsVal.split(splitter);
         QStringList dsResult;
         foreach(QString s, realVals) {
             if(s.startsWith(prefValue)){

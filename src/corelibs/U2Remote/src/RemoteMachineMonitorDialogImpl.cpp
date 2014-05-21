@@ -132,7 +132,7 @@ void RemoteMachineMonitorDialogImpl::initMachineActionsMenu() {
     QAction * pingMachineAction = machineActionsMenu->addAction(pingPushButton->text());
     connect(pingMachineAction, SIGNAL(triggered()), SLOT(sl_pingPushButtonClicked()));
 
-    QAction * saveMachineAction = machineActionsMenu->addAction(tr("Save machine..."));;
+    QAction * saveMachineAction = machineActionsMenu->addAction(tr("Save machine..."));
     connect(saveMachineAction, SIGNAL(triggered()), SLOT(sl_saveMachine()));
 }
 

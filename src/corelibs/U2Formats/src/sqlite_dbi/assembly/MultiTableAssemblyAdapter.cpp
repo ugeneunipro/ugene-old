@@ -820,7 +820,7 @@ U2AssemblyRead MTAReadsIterator::next() {
                 if (it->hasNext()) {
                     res = it->next();
                     SAFE_POINT(NULL != res.data(), "NULL assembly read", res);
-                    const QByteArray& idExtra = idExtras.at(currentRange);;
+                    const QByteArray& idExtra = idExtras.at(currentRange);
                     res->id = addTable2Id(res->id, idExtra);
                     break;
                 }
@@ -861,7 +861,7 @@ U2AssemblyRead MTAReadsIterator::peek() {
                 if (it->hasNext()) {
                     res = it->peek();
                     SAFE_POINT(NULL != res.data(), "NULL assembly read", res);
-                    const QByteArray& idExtra = idExtras.at(currentRange);;
+                    const QByteArray& idExtra = idExtras.at(currentRange);
                     res->id = addTable2Id(res->id, idExtra);
                     break;
                 }

@@ -193,6 +193,11 @@ void BaseNGSTask::prepare(){
         return ;
     }
 
+    if(FileAndDirectoryUtils::isFileEmpty(settings.inputUrl)){
+        coreLog.info("File is empty: " + settings.inputUrl);
+        return;
+    }
+
     const QDir outDir = QFileInfo(settings.outDir).absoluteDir();
     if (!outDir.exists()) {
         setError(tr("Directory does not exist: ") + outDir.absolutePath());
@@ -204,6 +209,9 @@ void BaseNGSTask::prepare(){
 
 void BaseNGSTask::run(){
     CHECK_OP(stateInfo, );
+    if(FileAndDirectoryUtils::isFileEmpty(settings.inputUrl)){
+        return;
+    }
 
     runStep();
 

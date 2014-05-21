@@ -112,7 +112,7 @@ bool Configuration::validate(ProblemList &problemList) const {
 }
 
 QList<Attribute*> Configuration::getAttributes() const {
-    return /*params.values()*/attrs;;
+    return /*params.values()*/attrs;
 }
 
 } // U2

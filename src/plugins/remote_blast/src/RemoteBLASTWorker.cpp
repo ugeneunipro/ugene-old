@@ -143,7 +143,7 @@ void RemoteBLASTWorkerFactory::init() {
         for (int i = 0; i < matchValues.size(); i++) {
             m[matchValues.at(i)] = matchValues.at(i);
         }
-        delegates[MATCH_SCORES] = new ComboBoxDelegate(m);;
+        delegates[MATCH_SCORES] = new ComboBoxDelegate(m);
     }
 
     {

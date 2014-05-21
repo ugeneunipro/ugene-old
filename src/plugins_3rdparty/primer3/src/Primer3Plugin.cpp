@@ -140,7 +140,7 @@ void Primer3ADVContext::sl_showDialog() {
                 QMessageBox::warning(QApplication::activeWindow(), dialog.windowTitle(), err);
                 return;
             }
-            bool objectPrepared = dialog.prepareAnnotationObject();;
+            bool objectPrepared = dialog.prepareAnnotationObject();
             if (!objectPrepared){
                 QMessageBox::warning(QApplication::activeWindow(), tr("Error"), tr("Cannot create an annotation object. Please check settings"));
                 return;

@@ -150,6 +150,8 @@ public:
 
     static QScriptValue datasetsToScript(const QList<Dataset> &sets, QScriptEngine &engine);
 
+    static QString getDatasetSplitter(const QString& filePaths);
+
     static QString packSamples(const QList<TophatSample> &samples);
     static QList<TophatSample> unpackSamples(const QString &samplesStr, U2OpStatus &os);
 

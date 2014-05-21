@@ -625,7 +625,7 @@ KSEQ_INIT(gzFile, gzread)
 FASTQIterator::FASTQIterator(const QString &fileUrl)
     : seq(NULL)
 {
-    fp = gzopen(fileUrl.toLatin1().constData(), "r"); // STEP 2: open the file handler
+    fp = gzopen(fileUrl.toLatin1().constData(), "r");
     seq = kseq_init(static_cast<gzFile>(fp));
     fetchNext();
 }

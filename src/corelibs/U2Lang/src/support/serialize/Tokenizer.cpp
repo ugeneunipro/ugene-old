@@ -354,7 +354,7 @@ QString ParsedPairs::skipBlock(Tokenizer &tokenizer) {
     QString skipped;
     while(tokenizer.look() != Constants::BLOCK_END) {
         QString tok = tokenizer.take();
-        skipped += "\n" + HRSchemaSerializer::valueString(tok);;
+        skipped += "\n" + HRSchemaSerializer::valueString(tok);
         if( tok == Constants::BLOCK_START ) {
             skipped += skipBlock(tokenizer);
             skipped += "\n" + Constants::BLOCK_END;

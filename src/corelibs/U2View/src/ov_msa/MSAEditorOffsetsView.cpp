@@ -190,7 +190,7 @@ void MSAEditorOffsetsViewWidget::drawAll(QPainter& p) {
 
     qint64 numRows = (qint64)cache->getMSAObject()->getNumRows();
     foreach(const U2Region& r, visibleRows) {
-        int end = qMin(r.endPos(), numRows);;
+        int end = qMin(r.endPos(), numRows);
         for (int row=r.startPos; row < end; row++) {
             U2Region yRange = seqArea->getSequenceYRange(startSeq + i, true);
             int offs = cache->getBaseCounts(row, pos, !showStartPos);

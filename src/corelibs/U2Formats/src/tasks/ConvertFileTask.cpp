@@ -67,6 +67,10 @@ QString ConvertFileTask::getResult() const {
     return targetUrl;
 }
 
+void ConvertFileTask::run(){
+
+}
+
 //////////////////////////////////////////////////////////////////////////
 //DefaultConvertFileTask
 DefaultConvertFileTask::DefaultConvertFileTask( const GUrl &sourceURL, const QString &detectedFormat, const QString &targetFormat, const QString &dir )
@@ -79,7 +83,7 @@ DefaultConvertFileTask::DefaultConvertFileTask( const GUrl &sourceURL, const QSt
 void DefaultConvertFileTask::prepare() {
     loadTask = LoadDocumentTask::getDefaultLoadDocTask(sourceURL);
     if (NULL == loadTask) {
-        setError(tr("Can not load document from url: %1").arg(sourceURL.getURLString()));
+        coreLog.info( QString("Cannot load file %1").arg(sourceURL.getURLString()) );
         return;
     }
     addSubTask(loadTask);

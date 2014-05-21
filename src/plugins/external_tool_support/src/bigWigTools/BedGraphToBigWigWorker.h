@@ -61,7 +61,7 @@ public:
     static const QString GENOME;
 
 protected:
-    QString getDefaultFileName() const {return QString(".bw");}
+    QString getDefaultFileName() const {return QString(".bigWig");}
 
 private:
     IntegralBus *inputUrlPort;

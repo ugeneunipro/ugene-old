@@ -37,6 +37,8 @@ public:
     
     GUrl getSourceURL() const;
     QString getResult() const;
+
+    void run();
 protected:
     GUrl sourceURL;
     QString detectedFormat;

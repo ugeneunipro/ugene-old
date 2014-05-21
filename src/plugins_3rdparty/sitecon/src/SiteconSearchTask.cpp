@@ -52,7 +52,7 @@ void SiteconSearchTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
     }
     U2Region globalRegion = t->getGlobalRegion();
     qint64 seqLen = globalRegion.length;
-    const char* seq = t->getGlobalConfig().seq + globalRegion.startPos;;
+    const char* seq = t->getGlobalConfig().seq + globalRegion.startPos;
     int modelSize = model->settings.windowSize;
     ti.progress =0;
     qint64 lenPerPercent = seqLen / 100;

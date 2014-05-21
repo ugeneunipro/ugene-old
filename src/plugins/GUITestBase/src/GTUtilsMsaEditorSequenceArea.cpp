@@ -125,7 +125,7 @@ QStringList GTUtilsMSAEditorSequenceArea::getNameList(U2OpStatus &os) {
     CHECK_SET_ERR_RESULT(namesObject != NULL, "names QObject is NULL", QStringList());
 
     QString allNames = namesObject->objectName();
-    return allNames.split('|', QString::SkipEmptyParts);;
+    return allNames.split('|', QString::SkipEmptyParts);
 }
 #undef GT_METHOD_NAME
 

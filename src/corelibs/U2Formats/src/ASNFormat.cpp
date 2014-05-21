@@ -147,7 +147,7 @@ QString ASNFormat::getAsnNodeTypeName( const AsnNode* node ) {
 
 void ASNFormat::BioStructLoader::loadBioStructPdbId( AsnNode* rootNode, BioStruct3D& struc) {
     AsnNode* nameNode = ASNFormat::findFirstNodeByName(rootNode, "name");
-    SAFE_POINT(nameNode != NULL, "nameNode == NULL?", );;
+    SAFE_POINT(nameNode != NULL, "nameNode == NULL?", );
     struc.pdbId = nameNode->value;
 
 }

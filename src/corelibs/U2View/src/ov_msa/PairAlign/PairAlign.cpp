@@ -93,7 +93,7 @@ PairAlign::PairAlign(MSAEditor* _msa) : msa(_msa), pairwiseAlignmentWidgetsSetti
     secondSeqSelectorWC = new SequenceSelectorWidgetController(msa);
 
     firstSequenceLayout->addWidget(firstSeqSelectorWC);
-    secondSequenceLayout->addWidget(secondSeqSelectorWC);;
+    secondSequenceLayout->addWidget(secondSeqSelectorWC);
 
     initLayout();
     connectSignals();

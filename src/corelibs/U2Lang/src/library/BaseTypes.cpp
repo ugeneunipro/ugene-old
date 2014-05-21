@@ -22,6 +22,7 @@
 #include <U2Lang/Dataset.h>
 #include <U2Lang/URLContainer.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowUtils.h>
 
 #include "BaseTypes.h"
 
@@ -245,11 +246,12 @@ QVariant NumTypeValueFactory::getValueFromString( const QString & str, bool * ok
 /* UrlTypeValueFactory */
 /************************************************************************/
 QVariant UrlTypeValueFactory::getValueFromString(const QString &str, bool *ok) const {
-    QStringList datasetStrs = str.split(";;", QString::SkipEmptyParts);
+    const QString splitter = WorkflowUtils::getDatasetSplitter(str);
+    QStringList datasetStrs = str.split(splitter+splitter, QString::SkipEmptyParts);
     QList<Dataset> sets;
     int count = 0;
     foreach (const QString &datasetStr, datasetStrs) {
-        QStringList urls = datasetStr.split(";", QString::SkipEmptyParts);
+        QStringList urls = datasetStr.split(splitter, QString::SkipEmptyParts);
         count++;
         Dataset dSet(QString("Dataset %1").arg(count));
         foreach (const QString url, urls) {
