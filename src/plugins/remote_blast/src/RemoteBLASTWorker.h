@@ -63,7 +63,8 @@ public:
     static void init();
     RemoteBLASTWorkerFactory() : DomainFactory(ACTOR_ID) {}
     virtual Worker* createWorker(Actor* a) {return new RemoteBLASTWorker(a);}
-
+private:
+    static void addParametersSetToMap(QVariantMap& map, const QString& attrValue, const QStringList& paremetersSet);
 };
 
 }

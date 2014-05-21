@@ -43,15 +43,19 @@ workflow remote-request{
                 alias:blast-output;
                 description:"Location of BLAST output file";
             }
+            blast-ncbi.alg {
+                alias:alg;
+                description:"The database to search through (using 'ncbi-blastn' by default)";
+            }
             blast-ncbi.db {
                 alias:db;
                 description:"The database to search through (using 'ncbi-blastn' by default)";
             }
-            blast-ncbi.e-val {
+            blast-ncbi.e-value {
                 alias:eval;
                 description:"The statistical significance threshold of reporting matches against the database sequences (using '10.0' by default)";
             }
-            blast-ncbi.max-hits {
+            blast-ncbi.hits {
                 alias:hits;
                 description:"Maximum number of hits (using '10' by default)";
             }
@@ -59,7 +63,7 @@ workflow remote-request{
                 alias:name;
                 description:"Name of the result annotations";
             }
-            blast-ncbi.short-sequence {
+            blast-ncbi.short_seq {
                 alias:short;
                 description:"Optimize search for short sequences (using 'False' by default)";
             }
