@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/U2Region.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/FormatUtils.h>
 #include <QDataStream>
 
@@ -39,6 +40,26 @@ QString U2Region::toString(Format format) const {
     case FormatBrackets:
     default:
         return QString("[%1, %2)").arg(start, end);
+    }
+}
+
+QVector<U2Region> U2Region::circularContainingRegion(QVector<U2Region> &_regions, int seqLen) {
+    CHECK(_regions.size() >= 2, _regions);
+
+    QVector<U2Region> regions = join(_regions);
+    U2Region maxInterval(regions[0].endPos(), regions[1].startPos - regions[0].endPos());
+    for (int i = 1; i < regions.size() - 1; i++) {
+        const U2Region& r0 = regions[i];
+        const U2Region& r1 = regions[i+1];
+        if (maxInterval.length < r1.startPos - r0.endPos()) {
+            maxInterval = U2Region(r0.endPos(), r1.startPos - r0.endPos());
+        }
+    }
+    if (maxInterval.length > regions.first().startPos + seqLen - regions.last().endPos()) {
+        return QVector<U2Region>() << U2Region(0, maxInterval.startPos)
+                                   << U2Region(maxInterval.endPos(), seqLen - maxInterval.endPos());
+    } else {
+        return QVector<U2Region>() << U2Region(regions.first().startPos, regions.last().endPos() - regions.first().startPos);
     }
 }
 

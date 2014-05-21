@@ -71,7 +71,7 @@ GSequenceLineViewAnnotated::DrawSettings::DrawSettings( )
 
 }
 
-GSequenceLineViewAnnotated::GSequenceLineViewAnnotated(QWidget* p, ADVSequenceObjectContext* ctx) 
+GSequenceLineViewAnnotated::GSequenceLineViewAnnotated(QWidget* p, ADVSequenceObjectContext* ctx)
 : GSequenceLineView(p, ctx)
 {
     const QSet<AnnotationTableObject*> aObjs = ctx->getAnnotationObjects(true);
@@ -86,7 +86,7 @@ GSequenceLineViewAnnotated::GSequenceLineViewAnnotated(QWidget* p, ADVSequenceOb
         SLOT( sl_onAnnotationObjectAdded( AnnotationTableObject * ) ) );
     connect( ctx, SIGNAL( si_annotationObjectRemoved( AnnotationTableObject * ) ),
         SLOT( sl_onAnnotationObjectRemoved( AnnotationTableObject * ) ) );
-    
+
     connect(AppContext::getAnnotationsSettingsRegistry(),
         SIGNAL(si_annotationSettingsChanged(const QStringList&)),
         SLOT(sl_onAnnotationSettingsChanged(const QStringList&)));
@@ -308,23 +308,23 @@ void GSequenceLineViewAnnotated::mousePressEvent( QMouseEvent *me ) {
                 }
                 //select region
                 if ( expandAnnotationSelectionToSequence ) {
-                    U2Region regionToSelect;
+                    QVector<U2Region> regionsToSelect;
                     foreach ( const AnnotationSelectionData &asd, asel->getSelection( ) ) {
                         AnnotationTableObject *aobj = asd.annotation.getGObject( );
                         const QSet<AnnotationTableObject *> aObjs = ctx->getAnnotationObjects( true );
                         if ( !aObjs.contains( aobj ) ) {
                             continue;
                         }
-                        U2Region aregion;
-                        if ( -1 == asd.locationIdx ) {
-                            aregion = U2Region::containingRegion( asd.annotation.getRegions( ) );
-                        } else {
-                            aregion = asd.annotation.getRegions( ).at( asd.locationIdx );
-                        }
-                        regionToSelect = ( 0 == regionToSelect.length ) ? aregion
-                            : U2Region::containingRegion( regionToSelect, aregion );
+                        regionsToSelect << asd.annotation.getRegions();
                     }
-                    ctx->getSequenceSelection( )->setRegion( regionToSelect );
+                    if (!ctx->getSequenceObject()->isCircular()) {
+                        ctx->getSequenceSelection( )->setRegion( U2Region::containingRegion(regionsToSelect));
+                    } else {
+                        QVector<U2Region> regSelection = U2Region::circularContainingRegion(regionsToSelect, ctx->getSequenceLength());
+                        foreach (const U2Region reg, regSelection) {
+                            ctx->getSequenceSelection()->addRegion(reg);
+                        }
+                    }
                 }
             }
         }
@@ -415,7 +415,7 @@ void static addArrowPath(QPainterPath& path, const QRect& rect, bool leftArrow) 
     }
     int x = leftArrow ? rect.left() : rect.right();
     int dx = leftArrow ? -FEATURE_ARROW_HLEN : FEATURE_ARROW_HLEN;
-    
+
     QPolygon arr;
     arr << QPoint(x - dx, rect.top()    - FEATURE_ARROW_VLEN);
     arr << QPoint(x + dx, rect.top()    + rect.height() / 2);
@@ -587,7 +587,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawBoundedText( QPainter &p, const Q
         }
         textWidth += cw;
     } while ( ++prefixLen < len );
-    
+
     if ( 0 == prefixLen ) {
         return;
     }
@@ -601,7 +601,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawCutSite(QPainter& p, const QRect&
     int xRight= xCenter + CUT_SITE_HALF_WIDTH;
     int yFlat = direct ? rect.top() - CUT_SITE_HALF_HEIGHT : rect.bottom() + CUT_SITE_HALF_HEIGHT;
     int yPeak = direct ? rect.top() + CUT_SITE_HALF_HEIGHT : rect.bottom() - CUT_SITE_HALF_HEIGHT;
-    
+
     QPolygon triangle;
     triangle << QPoint(xLeft, yFlat) << QPoint(xCenter, yPeak) << QPoint(xRight,yFlat) << QPoint(xLeft,yFlat);
 
@@ -739,7 +739,7 @@ QString GSequenceLineViewAnnotated::createToolTip( QHelpEvent *e ) {
         const QColor acl = registry->getAnnotationSettings( ad.name )->color;
         tip += "<tr><td bgcolor=" + acl.name( ) + " bordercolor=black width=15></td><td><big>"
             + ad.name + "</big></td></tr>";
-        
+
         if ( skipDetails ) {
             tip += "<tr><td/><td>...</td>";
             rows++;

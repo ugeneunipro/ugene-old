@@ -36,8 +36,8 @@ namespace U2 {
 /** Predefined region - acts as hint for a function that all possible range must be processed */
 #define U2_REGION_MAX U2Region(0, LLONG_MAX)
 
-/** 
-    Linear 64bit region 
+/**
+    Linear 64bit region
 */
 class U2CORE_EXPORT U2Region {
 public:
@@ -73,20 +73,20 @@ public:
     /** Returns the intersection between 2 regions, or empty value if regions do not intersect. */
     U2Region intersect(const U2Region& r) const;
 
-    /** 
-        Checks whether this region has common points with any region in the specified list. 
+    /**
+        Checks whether this region has common points with any region in the specified list.
         Returns the index of the first region found or -1 if no matches found
     */
     int findIntersectedRegion(const QVector<U2Region>& rs) const;
 
-    /** 
-        Checks whether this region has common points with any region in the specified list. 
+    /**
+        Checks whether this region has common points with any region in the specified list.
         Returns the index of the first region found or -1 if no matches found
     */
     bool intersects(const QVector<U2Region>& rs) const {return findIntersectedRegion(rs) != -1;}
 
-    /** 
-        Checks whether this region is located inside of any region in the specified list. 
+    /**
+        Checks whether this region is located inside of any region in the specified list.
         Returns the index of the first region found or -1 if no matches found
     */
     int findOverlappingRegion(const QVector<U2Region>& regions) const;
@@ -97,11 +97,11 @@ public:
     /** Checks whether the specified region is not equal to this region. */
     bool operator!= ( const U2Region & r ) const { return r.startPos != startPos || r.length != length; }
 
-    /** Compares 2 regions by start position. 
+    /** Compares 2 regions by start position.
     Returns true if this region starts strictly earlier than the specified one. */
     bool operator<(const U2Region &r) const {return startPos < r.startPos;}
 
-/** Compares 2 regions by start position. 
+/** Compares 2 regions by start position.
     Returns true if this region starts strictly later than the specified one. */
     bool operator>(const U2Region &r) const {return startPos > r.startPos;}
 
@@ -128,13 +128,16 @@ public:
     /** Returns least common region which contains all of the specified regions. */
     static U2Region containingRegion(const QVector<U2Region>& regions);
 
-    /** Normalizes the specified list by joining overlapping regions. 
-    This function sorts regions by starting position then 
+    /** Returns least coverage of the regions. Sequence is considered to be circular. */
+    static QVector<U2Region> circularContainingRegion(QVector<U2Region>& regions, int seqLen);
+
+    /** Normalizes the specified list by joining overlapping regions.
+    This function sorts regions by starting position then
     iterates through them and replaces all groups of intersecting regions by containing regions.
     */
     static QVector<U2Region> join(QVector<U2Region>& regions);
 
-    /** Fixes start & len for all regions to ensure that the result region 
+    /** Fixes start & len for all regions to ensure that the result region
         has startPos >= minPos & endPos <= maxPos
      */
     static void bound(qint64 minPos, qint64 maxPos, QVector<U2Region>& regions);
