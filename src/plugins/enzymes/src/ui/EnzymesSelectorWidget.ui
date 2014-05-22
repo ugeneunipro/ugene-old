@@ -148,7 +148,7 @@ p, li { white-space: pre-wrap; }
         <string>Load enzymes database</string>
        </property>
        <property name="text">
-        <string>Open enzymes... </string>
+        <string>Open enzymes </string>
        </property>
       </widget>
      </item>
@@ -158,7 +158,7 @@ p, li { white-space: pre-wrap; }
         <string>Export current selection as new database</string>
        </property>
        <property name="text">
-        <string>Export enzymes...</string>
+        <string>Export enzymes</string>
        </property>
       </widget>
      </item>
@@ -215,7 +215,7 @@ p, li { white-space: pre-wrap; }
         <string>Hint: selection file should contain enzymes' names separtated by whitespaces or commas</string>
        </property>
        <property name="text">
-        <string>Load selection...</string>
+        <string>Load selection</string>
        </property>
       </widget>
      </item>
@@ -225,7 +225,7 @@ p, li { white-space: pre-wrap; }
         <string>Save selected enzymes list to a text file</string>
        </property>
        <property name="text">
-        <string>Save selection...</string>
+        <string>Save selection</string>
        </property>
       </widget>
      </item>

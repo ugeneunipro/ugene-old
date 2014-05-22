@@ -868,7 +868,7 @@
     <name>ExportHighlightedDialog</name>
     <message>
         <location filename="../src/ov_msa/ui/ExportHighlightedDialog.ui" line="14"/>
-        <source>Export highlighted to file</source>
+        <source>Export Highlighted to File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

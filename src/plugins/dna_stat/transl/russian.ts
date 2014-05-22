@@ -83,7 +83,7 @@
     <name>DistanceMatrixMSAProfileDialog</name>
     <message>
         <location filename="../src/ui/DistanceMatrixMSAProfileDialog.ui" line="14"/>
-        <source>Generate Distance matrix</source>
+        <source>Generate Distance Matrix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
