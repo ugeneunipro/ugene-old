@@ -26,13 +26,15 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
-
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Gui/RegionSelector.h>
-
+#include <QtGui/QPushButton>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
 #else
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QMessageBox>
 #endif
 
@@ -42,6 +44,9 @@ ExportConsensusVariationsDialog::ExportConsensusVariationsDialog(QWidget *p, con
     : QDialog(p), settings(settings_)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227548");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     //hide for this dialog
     sequenceNameLabel->hide();
     sequenceNameLineEdit->hide();
@@ -62,8 +67,8 @@ ExportConsensusVariationsDialog::ExportConsensusVariationsDialog(QWidget *p, con
     QList<RegionPreset> presets = QList<RegionPreset>() << RegionPreset(tr("Visible"), visibleRegion);
     regionSelector = new RegionSelector(this, settings.model->getModelLength(os), false, NULL, presets);
 
-//    int insertPos = verticalLayout->count() - 1;
-//    verticalLayout->insertWidget(insertPos, regionSelector);
+    int insertPos = verticalLayout->count() - 3;
+    verticalLayout->insertWidget(insertPos, regionSelector);
 
     filepathLineEdit->setText(settings.fileName);
     saveController->setSelectedFormatId(settings.formatId);
@@ -80,8 +85,11 @@ ExportConsensusVariationsDialog::ExportConsensusVariationsDialog(QWidget *p, con
     variationModeComboBox->addItem(tr("Similar"), Mode_Similar);
     variationModeComboBox->addItem(tr("All"), Mode_All);
 
-//    connect(okPushButton, SIGNAL(clicked()), SLOT(accept()));
-//    connect(cancelPushButton, SIGNAL(clicked()), SLOT(reject()));
+    QPushButton *okPushButton = buttonBox->button(QDialogButtonBox::Ok);
+    QPushButton *cancelPushButton = buttonBox->button(QDialogButtonBox::Cancel);
+
+    connect(okPushButton, SIGNAL(clicked()), SLOT(accept()));
+    connect(cancelPushButton, SIGNAL(clicked()), SLOT(reject()));
     setMaximumHeight(layout()->minimumSize().height());
 }
 
