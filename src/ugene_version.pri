@@ -3,6 +3,11 @@
 # product version
 UGENE_VERSION=1.14.0-dev
 
+# distribution info
+isEmpty( U2_DISTRIBUTION_INFO ) {
+U2_DISTRIBUTION_INFO=sources
+}
+
 # int version levels for executables
 UGENE_VER_MAJOR=1
 UGENE_VER_MINOR=14

@@ -25,6 +25,10 @@
 #error U2_APP_VERSION is not set!
 #endif
 
+#ifndef U2_DISTRIBUTION_INFO
+#define U2_DISTRIBUTION_INFO "sources"
+#endif
+
 namespace U2 {
 
 #define STRINGIFY(x) #x
@@ -35,6 +39,7 @@ namespace U2 {
 
 const QString Version::buildDate = __DATE__;
 const int Version::appArchitecture = QT_POINTER_SIZE * 8;
+const QString Version::distributionInfo = QString(TOSTRING(U2_DISTRIBUTION_INFO));
 
 Version::Version() {
     major = minor = patch = 0;

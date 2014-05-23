@@ -56,6 +56,7 @@ public:
     bool        isDevVersion;
     const static int         appArchitecture;
     const static QString     buildDate;
+    const static QString     distributionInfo;
 };
 
 } //namespace
