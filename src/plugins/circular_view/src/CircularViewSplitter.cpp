@@ -196,7 +196,7 @@ void CircularViewSplitter::sl_export() {
     CircularView* cv = circularViewList.last();
 
     CircularViewImageExporter exporter(cv);
-    ExportImageDialog dialog(&exporter);
+    ExportImageDialog dialog(&exporter, ExportImageDialog::CircularView);
     dialog.exec();
     tbExport->setDown(false);
 }

@@ -45,13 +45,16 @@ namespace U2 {
 class U2GUI_EXPORT ExportImageDialog : public QDialog {
     Q_OBJECT
 public:
-    ExportImageDialog(ImageExporter* exporter,
+    enum InvokedFrom{ WD, CircularView, MSA, SequenceView, AssemblyView, PHYTreeView, DotPlot, MolView};
+    ExportImageDialog(ImageExporter* exporter, InvokedFrom invoSource,
                       QWidget* parent = NULL,
                       const QString& file = QString("untitled"));
     ExportImageDialog(const QList<ImageExporter*> &exporters,
                       ImageExporter* defaultExporter,
+                      InvokedFrom invoSource,
                       QWidget* parent = NULL, const QString& file = QString("untitled"));
     ExportImageDialog(QWidget* screenShotWidget,
+                      InvokedFrom invoSource,
                       ImageExporter::ImageScalingPolicy scalingPolicy = ImageExporter::Constant,
                       ImageExporter::FormatPolicy formatPolicy = ImageExporter::IgnoreVectorFormats,
                       QWidget* parent = NULL, const QString& file = QString("untitled"));
@@ -95,6 +98,7 @@ private:
 
     LastUsedDirHelper lod;
     Ui_ImageExportForm* ui;
+    InvokedFrom source;
 }; // class ExportImageDialog
 
 } // namespace

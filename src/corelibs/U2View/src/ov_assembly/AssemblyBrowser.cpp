@@ -683,7 +683,7 @@ void AssemblyBrowser::sl_showAssemblyInfo() {
 }
 
 void AssemblyBrowser::sl_saveScreenshot() {
-    ExportImageDialog dialog(ui);
+    ExportImageDialog dialog(ui, ExportImageDialog::AssemblyView);
     dialog.exec();
 }
 

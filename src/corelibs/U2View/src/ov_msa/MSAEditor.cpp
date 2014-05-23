@@ -920,7 +920,7 @@ void MSAEditorUI::sl_saveScreenshot(){
     QList<ImageExporter*> exporters;
     exporters << &msaExp << &overviewExp << &selExp;
 
-    ExportImageDialog dlg(exporters, &msaExp, this);
+    ExportImageDialog dlg(exporters, &msaExp, ExportImageDialog::MSA, this);
     dlg.exec();
 }
 

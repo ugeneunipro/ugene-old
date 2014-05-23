@@ -52,13 +52,15 @@ static const QString PDF_FORMAT = "pdf";
 
 
 ExportImageDialog::ExportImageDialog(ImageExporter *exporter,
+                                     InvokedFrom invoSource,
                                      QWidget *parent,
                                      const QString &filename)
     : QDialog(parent),
       currentExporter(exporter),
       filename(filename),
       origFilename(filename),
-      lod(IMAGE_DIR, QDir::homePath())
+      lod(IMAGE_DIR, QDir::homePath()),
+      source(invoSource)
 {
     SAFE_POINT(exporter != NULL, tr("Default image exporter is NULL"), );
     exporters << exporter;
@@ -68,13 +70,15 @@ ExportImageDialog::ExportImageDialog(ImageExporter *exporter,
 
 ExportImageDialog::ExportImageDialog(const QList<ImageExporter*> &exporters,
                                      ImageExporter* defaultExporter,
+                                     InvokedFrom invoSource,
                                      QWidget *parent, const QString &filename)
     : QDialog(parent),
       exporters(exporters),
       currentExporter(defaultExporter),
       filename(filename),
       origFilename(filename),
-      lod(IMAGE_DIR, QDir::homePath())
+      lod(IMAGE_DIR, QDir::homePath()),
+      source(invoSource)
 {
     SAFE_POINT( !exporters.isEmpty(), tr("Image exporters list is emptry"), );
     if (defaultExporter == NULL) {
@@ -86,13 +90,15 @@ ExportImageDialog::ExportImageDialog(const QList<ImageExporter*> &exporters,
 }
 
 ExportImageDialog::ExportImageDialog(QWidget *screenShotWidget,
+                                     InvokedFrom invoSource,
                                      ImageExporter::ImageScalingPolicy scalingPolicy,
                                      ImageExporter::FormatPolicy formatPolicy,
                                      QWidget *parent, const QString &file)
     : QDialog(parent),
       filename(file),
       origFilename(file),
-      lod(IMAGE_DIR, QDir::homePath())
+      lod(IMAGE_DIR, QDir::homePath()),
+      source(invoSource)
 {
     WidgetScreenshotImageExporter* exporter = new WidgetScreenshotImageExporter(screenShotWidget, scalingPolicy, formatPolicy);
     exporter->setParent(this);
@@ -240,7 +246,35 @@ void ExportImageDialog::sl_onExporterSelected(QAbstractButton *b) {
 void ExportImageDialog::setupComponents() {
     ui = new Ui_ImageExportForm;
     ui->setupUi(this);
-    new HelpButton(this, ui->buttonBox, "4227400");
+    switch (source) {
+    case WD:
+        new HelpButton(this, ui->buttonBox, "4227400");
+        break;
+    case CircularView:
+        new HelpButton(this, ui->buttonBox, "4227400");
+        break;
+    case MSA: 
+        new HelpButton(this, ui->buttonBox, "4227400");
+        break;
+    case SequenceView:
+        new HelpButton(this, ui->buttonBox, "4227400");
+        break;
+    case AssemblyView:
+        new HelpButton(this, ui->buttonBox, "4227400");
+        break;
+    case PHYTreeView:
+        new HelpButton(this, ui->buttonBox, "4227400");
+        break;
+    case DotPlot:
+        new HelpButton(this, ui->buttonBox, "4227400");
+        break;
+    case MolView:
+        new HelpButton(this, ui->buttonBox, "4227400");
+        break;
+    default:
+        FAIL("Can't find help Id",);
+        break;
+    }
 
     QList<QByteArray> list = QImageWriter::supportedImageFormats();
     foreach (QByteArray format,list){

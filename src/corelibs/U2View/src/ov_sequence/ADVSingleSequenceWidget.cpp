@@ -788,7 +788,7 @@ void ADVSingleSequenceWidget::sl_saveScreenshot() {
     if (linesLayout->count() < 2) {
         return;
     }
-    ExportImageDialog dialog(this);
+    ExportImageDialog dialog(this, ExportImageDialog::SequenceView);
     dialog.exec();
 }
 

@@ -524,7 +524,7 @@ void DotPlotWidget::sl_onSequenceSelectionChanged(LRegionsSelection* s, const QV
 void DotPlotWidget::sl_showSaveImageDialog() {
     exitButton->hide();
 
-    ExportImageDialog dialog(this);
+    ExportImageDialog dialog(this, ExportImageDialog::DotPlot);
     dialog.exec();
 
     exitButton->show();

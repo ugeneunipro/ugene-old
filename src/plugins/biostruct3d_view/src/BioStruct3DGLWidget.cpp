@@ -980,7 +980,7 @@ void BioStruct3DGLWidget::sl_settings()
 void BioStruct3DGLWidget::sl_exportImage()
 {
     BioStruct3DGLImageExporter exporter(this);
-    ExportImageDialog dialog(&exporter);
+    ExportImageDialog dialog(&exporter, ExportImageDialog::MolView);
     dialog.exec();
 }
 
