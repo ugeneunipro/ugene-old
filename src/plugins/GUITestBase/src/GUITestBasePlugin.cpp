@@ -1119,7 +1119,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
 // common_scenarios/circular_view
 /////////////////////////////////////////////////////////////////////////
-    //REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_1);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_1);
     //REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_2);
     //REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_3);
     //REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_4);

@@ -43,7 +43,7 @@ GUI_TEST_CLASS_DEFINITION(general_avail_1) {
     // @expected: CV is opened
     GTUtilsCv::cvBtn::click(os, seqWidget);
     CHECK_SET_ERR(GTUtilsCv::cvBtn::isChecked(os, seqWidget), "Unexpected state of CV button!");
-    CHECK_SET_ERR(!GTUtilsCv::isCvPresent(os, seqWidget), "Unexpected state of CV widget!");
+    CHECK_SET_ERR(GTUtilsCv::isCvPresent(os, seqWidget), "Unexpected state of CV widget!");
 
     // @@step3: Click the CV button
     // @expected: CV button it is not toggled

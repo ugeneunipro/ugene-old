@@ -279,7 +279,9 @@ QString GTUtilsSequenceView::getSeqName(U2OpStatus &os, ADVSingleSequenceWidget*
     QLabel *nameLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "nameLabel", seqWidget));
     GT_CHECK_RESULT(NULL != nameLabel, "Name label is NULL!", "");
 
-    return nameLabel->text();
+    QString labelText = nameLabel->text();
+    QString result = labelText.left(labelText.indexOf("[")-1);//detachment of name from label text
+    return result;
 }
 #undef GT_METHOD_NAME
 

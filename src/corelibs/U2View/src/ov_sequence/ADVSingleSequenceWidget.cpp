@@ -950,6 +950,7 @@ ADVSingleSequenceHeaderWidget::ADVSingleSequenceHeaderWidget(ADVSingleSequenceWi
     nameLabel->setFont(f);
     nameLabel->setToolTip(objInfoTip);
     nameLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    nameLabel->setObjectName("nameLabel");
 
     toolBar = new HBar(this);
     toolBar->setObjectName("tool_bar_" + ctx->getSequenceObject()->getGObjectName());
