@@ -96,14 +96,14 @@ void GTUtilsCv::commonCvBtn::click(U2OpStatus& os){
 // Helper methods
 ////////////////////////////////////////////////////////////////////////
 
+#define GT_METHOD_NAME "GTUtilsCv::getCvButton"
 QAbstractButton * GTUtilsCv::getCvButton(U2OpStatus& os, ADVSingleSequenceWidget* seqWidget, bool setFailedIfNotFound) {
-    if (NULL == seqWidget) {
-        os.setError("NULL sequence widget!");
-        return NULL;
-    }
+    GT_CHECK_RESULT(NULL == seqWidget, "NULL sequence widget!", NULL)
+
     QAbstractButton* cvButton = GTAction::button(os, actionName, seqWidget, GTGlobals::FindOptions(setFailedIfNotFound));
     return cvButton;
 }
+#undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
 }
