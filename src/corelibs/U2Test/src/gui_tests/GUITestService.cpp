@@ -387,7 +387,7 @@ void GUITestService::sl_taskStateChanged(Task* t) {
 }
 
 void GUITestService::writeTestResult(const QString& result) {
-    printf("%s\n", (QString(GUITESTING_REPORT_PREFIX) + ":" + result).toUtf8().data());
+    printf("%s\n", (QString(GUITESTING_REPORT_PREFIX) + ": " + result).toUtf8().data());
 }
 
 void GUITestService::setQtFileDialogView()
