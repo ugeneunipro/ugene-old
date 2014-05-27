@@ -23,6 +23,7 @@
 
 #include "MAlignment.h"
 
+#include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceUtils.h>
 #include <U2Core/Log.h>
@@ -670,6 +671,10 @@ MAlignment::MAlignment(const QString& _name, const DNAAlphabet* al, const QList<
 : alphabet(al), rows(r)
 {
     MAStateCheck check(this);
+
+    if(NULL == al){
+        alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::RAW());
+    }
 
     SAFE_POINT(al==NULL || !_name.isEmpty(), "Incorrect parameters in MAlignment ctor!", );
 
