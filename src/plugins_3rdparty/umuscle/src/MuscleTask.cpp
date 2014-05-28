@@ -378,7 +378,16 @@ MuscleGObjectTask::MuscleGObjectTask(MAlignmentObject* _obj, const MuscleTaskSet
 }
 
 MuscleGObjectTask::~MuscleGObjectTask() {
-    SAFE_POINT(lock.isNull(), "Incorrect lock state",);
+    //Unlock the alignment object if the task has been failed
+    if(!lock.isNull()) {
+        if (!obj.isNull()) {
+            if(obj->isStateLocked()) {
+                obj->unlockState(lock);
+            }
+            delete lock;
+            lock = NULL;
+        }
+    }
 }
 
 void MuscleGObjectTask::prepare() {

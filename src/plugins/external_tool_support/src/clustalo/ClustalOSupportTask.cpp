@@ -74,6 +74,21 @@ ClustalOSupportTask::~ClustalOSupportTask() {
     if (NULL != tmpDoc) {
         delete tmpDoc;
     }
+    //Unlock the alignment object if the task has been failed
+    if(!lock.isNull()) {
+        if (objRef.isValid()) {
+            GObject* obj = GObjectUtils::selectObjectByReference(objRef, UOF_LoadedOnly);
+            if (NULL != obj) {
+                MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
+                CHECK(NULL != alObj, );
+                if(alObj->isStateLocked()) {
+                    alObj->unlockState(lock);
+                }
+                delete lock;
+                lock = NULL;
+            }
+        }
+    }
 }
 
 void ClustalOSupportTask::prepare(){
