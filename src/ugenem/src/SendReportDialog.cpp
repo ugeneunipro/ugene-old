@@ -147,12 +147,10 @@ bool ReportSender::send(const QString &additionalInfo) {
     report.replace("?", "-");
     report.replace("~", "%7E");
     report.replace("&", "<amp>");
-    QString fullPath = reportsPath;
-    fullPath += "?data=";
-    fullPath += report.toUtf8();
+
     //send report
-    QUrl url=QUrl(fullPath);
-    reply = netManager->post(QNetworkRequest(url),url.toEncoded());
+    QString data = "data=" + report.toUtf8();
+    reply = netManager->post(QNetworkRequest(reportsPath), data.toUtf8());
     loop.exec();
     if( reply->error() != QNetworkReply::NoError ) {
         return false;
