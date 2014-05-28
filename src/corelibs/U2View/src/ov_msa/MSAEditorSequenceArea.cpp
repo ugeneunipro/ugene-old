@@ -612,8 +612,16 @@ void MSAEditorSequenceArea::drawSelection( QPainter &p )
     pen.setStyle(Qt::DashLine);
     pen.setWidth(highlightSelection ? 2 : 1);
     p.setPen(pen);
-    p.drawRect(xRange.startPos, yRange.startPos, xRange.length*selection.width(), yRange.length*selection.height());
-
+    if(yRange.startPos > 0) {
+        p.drawRect(xRange.startPos, yRange.startPos, xRange.length*selection.width(), yRange.length*selection.height());
+    }
+    else {
+        qint64 regionHeight = yRange.length*selection.height() + yRange.startPos + 1;
+        if(regionHeight <= 0) {
+            return;
+        }
+        p.drawRect(xRange.startPos, -1, xRange.length*selection.width(), regionHeight);
+    }
 }
 
 void MSAEditorSequenceArea::drawCursor(QPainter& p) {
