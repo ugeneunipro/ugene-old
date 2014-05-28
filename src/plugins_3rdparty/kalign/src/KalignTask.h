@@ -90,7 +90,7 @@ public:
     virtual void prepare();
     ReportResult report();
 
-    StateLock*                  lock;
+    QPointer<StateLock>         lock;
     KalignTask*                 kalignTask;
     KalignTaskSettings          config;
     LoadDocumentTask*   loadDocumentTask;

@@ -57,7 +57,8 @@ ClustalOSupportTask::ClustalOSupportTask(const MAlignment& _inputMsa, const GObj
     : ExternalToolSupportTask("Run ClustalO alignment task", TaskFlags_NR_FOSCOE),
       inputMsa(_inputMsa),
       objRef(_objRef),
-      settings(_settings)
+      settings(_settings),
+      lock(NULL)
 {
     GCOUNTER( cvar, tvar, "ClustalOSupportTask" );
     saveTemporaryDocumentTask=NULL;
@@ -77,6 +78,16 @@ ClustalOSupportTask::~ClustalOSupportTask() {
 
 void ClustalOSupportTask::prepare(){
     algoLog.info(tr("ClustalO alignment started"));
+
+    if (objRef.isValid()) {
+        GObject* obj = GObjectUtils::selectObjectByReference(objRef, UOF_LoadedOnly);
+        if (NULL != obj) {
+            MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
+            SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying ClustalW results!",);
+            lock = new StateLock("ClustalWAligment");
+            alObj->lockState(lock);
+        }
+    }
 
     //Add new subdir for temporary files
     //Directory name is ExternalToolName + CurrentDate + CurrentTime
@@ -188,6 +199,18 @@ QList<Task*> ClustalOSupportTask::onSubTaskFinished(Task* subTask) {
             if (NULL != obj) {
                 MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
                 SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying ClustalO results!", res);
+
+                if(!lock.isNull()) {
+                    if(alObj->isStateLocked()) {
+                        alObj->unlockState(lock);
+                    }
+                    delete lock;
+                    lock = NULL;
+                }
+                else {
+                    stateInfo.setError("MAlignment object has been changed");
+                    return res;
+                }
 
                 QList<qint64> rowsOrder = MSAUtils::compareRowsAfterAlignment(inputMsa, resultMA, stateInfo);
                 CHECK_OP(stateInfo, res);
@@ -373,22 +396,22 @@ int ClustalOLogParser::getProgress(){
         //0..10% progresss
         if(lastMessage.contains(QRegExp("Pairwise distance calculation progress: \\d+ %"))){
             QRegExp rx("Pairwise distance calculation progress: (\\d+) %");
-            assert(rx.indexIn(lastMessage)>-1);
             rx.indexIn(lastMessage);
+            CHECK(rx.captureCount() > 0, 0);
             return rx.cap(1).toInt()/10;
         }
         //10..20% progresss
         if(lastMessage.contains(QRegExp("Distance calculation within sub-clusters: \\d+ %"))){
             QRegExp rx("Distance calculation within sub-clusters: (\\d+) %");
-            assert(rx.indexIn(lastMessage)>-1);
             rx.indexIn(lastMessage);
+            CHECK(rx.captureCount() > 0, 0);
             return rx.cap(1).toInt()/10+10;
         }
         //20..100% progresss
         if(lastMessage.contains(QRegExp("Progressive alignment progress: (\\d+) %"))){
             QRegExp rx("Progressive alignment progress: (\\d+) %");
-            assert(rx.indexIn(lastMessage)>-1);
             rx.indexIn(lastMessage);
+            CHECK(rx.captureCount() > 0, 0);
             return rx.cap(1).toInt()*0.8+20;
         }
 

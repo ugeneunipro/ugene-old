@@ -75,6 +75,7 @@ private:
     ExternalToolRunTask*        tCoffeeTask;
     LoadDocumentTask*           loadTmpDocumentTask;
     TCoffeeSupportTaskSettings  settings;
+    QPointer<StateLock>         lock;
 };
 
 class MAlignmentObject;

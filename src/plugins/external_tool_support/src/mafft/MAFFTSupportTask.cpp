@@ -60,7 +60,8 @@ MAFFTSupportTask::MAFFTSupportTask(const MAlignment& _inputMsa, const GObjectRef
       saveTemporaryDocumentTask(NULL),
       mAFFTTask(NULL),
       loadTmpDocumentTask(NULL),
-      settings(_settings)
+      settings(_settings),
+      lock(NULL)
 {
     GCOUNTER( cvar, tvar, "MAFFTSupportTask" );
     resultMA.setAlphabet(inputMsa.getAlphabet());
@@ -76,6 +77,16 @@ MAFFTSupportTask::~MAFFTSupportTask() {
 
 void MAFFTSupportTask::prepare(){
     algoLog.info(tr("MAFFT alignment started"));
+
+    if (objRef.isValid()) {
+        GObject* obj = GObjectUtils::selectObjectByReference(objRef, UOF_LoadedOnly);
+        if (NULL != obj) {
+            MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
+            SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying ClustalW results!",);
+            lock = new StateLock("ClustalWAligment");
+            alObj->lockState(lock);
+        }
+    }
 
     //Add new subdir for temporary files
     //Directory name is ExternalToolName + CurrentDate + CurrentTime
@@ -187,6 +198,18 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
             if (NULL != obj) {
                 MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
                 SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying MAFFT results!", res);
+
+                if(!lock.isNull()) {
+                    if(alObj->isStateLocked()) {
+                        alObj->unlockState(lock);
+                    }
+                    delete lock;
+                    lock = NULL;
+                }
+                else {
+                    stateInfo.setError("MAlignment object has been changed");
+                    return res;
+                }
 
                 QList<qint64> rowsOrder = MSAUtils::compareRowsAfterAlignment(inputMsa, resultMA, stateInfo);
                 CHECK_OP(stateInfo, res);
@@ -429,8 +452,8 @@ int MAFFTLogParser::getProgress(){
             QString lastMessage = lastPartOfLog.last();
             if (lastMessage.contains(QRegExp("STEP +\\d+ /"))) {
                 QRegExp rx("STEP +(\\d+) /");
-                assert(rx.indexIn(lastMessage) > -1);
                 rx.indexIn(lastMessage);
+                CHECK(rx.captureCount() > 0, progress);
                 if (!(secondProAlign && secondUPGMATree && secondDistanceMatrix)) {
                     progress = rx.cap(1).toInt() * 25 / countSequencesInMSA + 15;
                 } else {
@@ -438,7 +461,7 @@ int MAFFTLogParser::getProgress(){
                 }
             } else if (lastMessage.contains(QRegExp("STEP +\\d+-"))) {
                 QRegExp rx("STEP +(\\d+)-");
-                assert(rx.indexIn(lastMessage) > -1);
+                CHECK(rx.captureCount() > 0, progress);
                 rx.indexIn(lastMessage);
                 progress = rx.cap(1).toInt() * 20 / countRefinementIter + 80;
             }

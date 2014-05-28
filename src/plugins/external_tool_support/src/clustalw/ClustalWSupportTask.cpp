@@ -61,7 +61,8 @@ ClustalWSupportTask::ClustalWSupportTask(const MAlignment& _inputMsa, const GObj
     : ExternalToolSupportTask("Run ClustalW alignment task", TaskFlags_NR_FOSCOE),
       inputMsa(_inputMsa),
       objRef(_objRef),
-      settings(_settings)
+      settings(_settings),
+      lock(NULL)
 {
     GCOUNTER( cvar, tvar, "ClustalWSupportTask" );
     saveTemporaryDocumentTask=NULL;
@@ -80,12 +81,24 @@ ClustalWSupportTask::~ClustalWSupportTask() {
 }
 
 void ClustalWSupportTask::prepare(){
+    SAFE_POINT_EXT(NULL != inputMsa.getAlphabet(), "The alphabet is NULL",);
     if (inputMsa.getAlphabet()->getId() == BaseDNAAlphabetIds::RAW() ||
             inputMsa.getAlphabet()->getId() == BaseDNAAlphabetIds::AMINO_EXTENDED()) {
         setError(tr("Unsupported alphabet: %1").arg(inputMsa.getAlphabet()->getName()));
         return;
     }
     algoLog.info(tr("ClustalW alignment started"));
+
+    if (objRef.isValid()) {
+        GObject* obj = GObjectUtils::selectObjectByReference(objRef, UOF_LoadedOnly);
+        if (NULL != obj) {
+            MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
+            SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying ClustalW results!",);
+            lock = new StateLock("ClustalWAligment");
+            alObj->lockState(lock);
+        }
+    }
+
 
     //Add new subdir for temporary files
     //Directory name is ExternalToolName + CurrentDate + CurrentTime
@@ -105,12 +118,12 @@ void ClustalWSupportTask::prepare(){
             tmpDir.remove(file);
         }
         if(!tmpDir.rmdir(tmpDir.absolutePath())){
-            stateInfo.setError(tr("Subdirectory for temporary files exists. Can not remove this directory."));
+            stateInfo.setError("Subdirectory for temporary files exists. Can not remove this directory.");
             return;
         }
     }
     if(!tmpDir.mkpath(tmpDirPath)){
-        stateInfo.setError(tr("Can not create directory for temporary files."));
+        stateInfo.setError("Can not create directory for temporary files.");
         return;
     }
 
@@ -211,6 +224,18 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
                 MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
                 SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying ClustalW results!", res);
 
+                if(!lock.isNull()) {
+                    if(alObj->isStateLocked()) {
+                        alObj->unlockState(lock);
+                    }
+                    delete lock;
+                    lock = NULL;
+                }
+                else {
+                    stateInfo.setError("MAlignment object has been changed");
+                    return res;
+                }
+                
                 QList<qint64> rowsOrder = MSAUtils::compareRowsAfterAlignment(inputMsa, resultMA, stateInfo);
                 CHECK_OP(stateInfo, res);
 
@@ -374,22 +399,22 @@ int ClustalWLogParser::getProgress(){
         //0..10% progresss
         if(lastMessage.contains(QRegExp("Sequence \\d+:"))){
             QRegExp rx("Sequence (\\d+):");
-            assert(rx.indexIn(lastMessage)>-1);
             rx.indexIn(lastMessage);
+            CHECK(rx.captureCount() > 0, 0);
             return rx.cap(1).toInt()*10/countSequencesInMSA;
         }
         //10..90% progresss
         if(lastMessage.contains(QRegExp("Sequences \\(\\d+:\\d+\\)"))){
             QRegExp rx("Sequences \\((\\d+):\\d+\\)");
-            assert(rx.indexIn(lastMessage)>-1);
             rx.indexIn(lastMessage);
+            CHECK(rx.captureCount() > 0, 0);
             return rx.cap(1).toInt()*80/countSequencesInMSA+10;
         }
         //90..100% progresss
         if(lastMessage.contains(QRegExp("Group \\d+:"))){
             QRegExp rx("Group (\\d+):");
-            assert(rx.indexIn(lastMessage)>-1);
             rx.indexIn(lastMessage);
+            CHECK(rx.captureCount() > 0, 0);
             return rx.cap(1).toInt()*10/countSequencesInMSA+90;
         }
 

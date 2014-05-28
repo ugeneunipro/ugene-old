@@ -38,7 +38,8 @@ enum StateLockFlag {
 
 typedef QFlags<StateLockFlag> StateLockFlags;
 
-class U2CORE_EXPORT StateLock {
+class U2CORE_EXPORT StateLock : public QObject {
+    Q_OBJECT
 public:
     StateLock() : flags(StateLockFlag_NoFlags){}
     StateLock(const QString& _userDesc, StateLockFlags _flags = StateLockFlag_NoFlags) : userDesc(_userDesc), flags(_flags){}

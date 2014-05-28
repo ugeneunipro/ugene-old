@@ -84,6 +84,7 @@ private:
     ExternalToolRunTask*        mAFFTTask;
     LoadDocumentTask*           loadTmpDocumentTask;
     MAFFTSupportTaskSettings    settings;
+    QPointer<StateLock>         lock;
 };
 
 class MAlignmentObject;

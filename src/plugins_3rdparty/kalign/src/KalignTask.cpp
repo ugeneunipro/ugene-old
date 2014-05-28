@@ -86,22 +86,23 @@ KalignTask::KalignTask(const MAlignment& ma, const KalignTaskSettings& _config)
 }
 
 void KalignTask::_run() {
+    SAFE_POINT_EXT(NULL != inputMA.getAlphabet(), stateInfo.setError("The alphabet is NULL"),);
     if (inputMA.getAlphabet()->getId() == BaseDNAAlphabetIds::RAW() ||
             inputMA.getAlphabet()->getId() == BaseDNAAlphabetIds::AMINO_EXTENDED()) {
         setError(tr("Unsupported alphabet: %1").arg(inputMA.getAlphabet()->getName()));
         return;
     }
     algoLog.info(tr("Kalign alignment started"));
-    assert(!hasError());
+    CHECK(!hasError(),);
     doAlign(); 
     if (!hasError() && !isCanceled()) {
-        assert(resultMA.getAlphabet()!=NULL);
+        SAFE_POINT_EXT(NULL != resultMA.getAlphabet(), "The alphabet is NULL",);
         algoLog.info(tr("Kalign alignment successfully finished"));
     }
 }
 
 void KalignTask::doAlign() {
-    assert(resultSubMA.isEmpty());
+    SAFE_POINT_EXT(resultSubMA.isEmpty(), stateInfo.setError("Incorrect result state"),);
     KalignAdapter::align(inputSubMA, resultSubMA, stateInfo);
     if (hasError()) {
         return;
@@ -150,12 +151,12 @@ KalignGObjectTask::KalignGObjectTask(MAlignmentObject* _obj, const KalignTaskSet
 }
 
 KalignGObjectTask::~KalignGObjectTask() {
-    assert(lock == NULL);
+    SAFE_POINT(lock.isNull(), "Incorrect lock state",);
 }
 
 void KalignGObjectTask::prepare() {
-    CHECK_EXT(!obj.isNull(), stateInfo.setError(tr("Object is removed!")), );
-    CHECK_EXT(!obj->isStateLocked(), stateInfo.setError(tr("Object is state-locked!")), );
+    CHECK_EXT(!obj.isNull(), stateInfo.setError("Object is removed!"), );
+    CHECK_EXT(!obj->isStateLocked(), stateInfo.setError("Object is state-locked!"), );
 
     lock = new StateLock(KALIGN_LOCK_REASON, StateLockFlag_LiveLock);
     obj->lockState(lock);
@@ -164,16 +165,20 @@ void KalignGObjectTask::prepare() {
 }
 
 Task::ReportResult KalignGObjectTask::report() {
-    if (lock != NULL) {
+    if (!lock.isNull()) {
         obj->unlockState(lock);
         delete lock;
         lock = NULL;
+    }
+    else {
+        stateInfo.setError("MAlignment object has been changed");
+        return ReportResult_Finished;
     }
     propagateSubtaskError();
     CHECK_OP(stateInfo, ReportResult_Finished);
     
     SAFE_POINT(!obj.isNull(), "Object was removed?!", ReportResult_Finished);
-    CHECK_EXT(!obj->isStateLocked(), stateInfo.setError(tr("object_is_state_locked")), ReportResult_Finished);
+    CHECK_EXT(!obj->isStateLocked(), stateInfo.setError("object_is_state_locked"), ReportResult_Finished);
     
     // Apply the result
     const MAlignment& inputMA = kalignTask->inputMA;
@@ -241,9 +246,9 @@ void KalignGObjectRunFromSchemaTask::prepare() {
 }
 
 void KalignGObjectRunFromSchemaTask::setMAObject(MAlignmentObject* maobj) {
-    SAFE_POINT_EXT(maobj != NULL, setError(tr("Invalid MSA object detected")),);
+    SAFE_POINT_EXT(maobj != NULL, setError("Invalid MSA object detected"),);
     const Document* maDoc = maobj->getDocument();
-    SAFE_POINT_EXT(NULL != maDoc, setError(tr("Invalid MSA document detected")),);
+    SAFE_POINT_EXT(NULL != maDoc, setError("Invalid MSA document detected"),);
     const QString objName = maDoc->getName();
 
     AlignGObjectTask::setMAObject(maobj);
@@ -279,7 +284,7 @@ void KalignWithExtFileSpecifySupportTask::prepare() {
     c.rawData = IOAdapterUtils::readFileHeader(config.inputFilePath);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
-        stateInfo.setError(  tr("input_format_error") );
+        stateInfo.setError("input_format_error");
         return;
         }
     DocumentFormatId alnFormat = formats.first();

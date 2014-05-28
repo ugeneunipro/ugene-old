@@ -117,6 +117,7 @@ private:
     ExternalToolRunTask*        clustalOTask;
     LoadDocumentTask*           loadTemporyDocumentTask;
     ClustalOSupportTaskSettings settings;
+    QPointer<StateLock>         lock;
 };
 
 class ClustalOWithExtFileSpecifySupportTask : public Task {

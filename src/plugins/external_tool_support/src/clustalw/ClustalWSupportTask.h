@@ -102,7 +102,7 @@ private:
     ExternalToolRunTask*        clustalWTask;
     LoadDocumentTask*           loadTemporyDocumentTask;
     ClustalWSupportTaskSettings settings;
-
+    QPointer<StateLock>         lock;
 };
 
 class MAlignmentObject;

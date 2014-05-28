@@ -55,7 +55,8 @@ TCoffeeSupportTask::TCoffeeSupportTask(const MAlignment& _inputMsa, const GObjec
     : ExternalToolSupportTask("Run T-Coffee alignment task", TaskFlags_NR_FOSCOE),
       inputMsa(_inputMsa),
       objRef(_objRef),
-      settings(_settings)
+      settings(_settings),
+      lock(NULL)
 {
     GCOUNTER( cvar, tvar, "TCoffeeSupportTask" );
     saveTemporaryDocumentTask=NULL;
@@ -81,6 +82,16 @@ void TCoffeeSupportTask::prepare(){
     }
 
     algoLog.info(tr("T-Coffee alignment started"));
+
+    if (objRef.isValid()) {
+        GObject* obj = GObjectUtils::selectObjectByReference(objRef, UOF_LoadedOnly);
+        if (NULL != obj) {
+            MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
+            SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying ClustalW results!",);
+            lock = new StateLock("ClustalWAligment");
+            alObj->lockState(lock);
+        }
+    }
 
     //Add new subdir for temporary files
     //Directory name is ExternalToolName + CurrentDate + CurrentTime
@@ -193,6 +204,18 @@ QList<Task*> TCoffeeSupportTask::onSubTaskFinished(Task* subTask) {
             if (NULL != obj) {
                 MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
                 SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying TCoffee results!", res);
+
+                if(!lock.isNull()) {
+                    if(alObj->isStateLocked()) {
+                        alObj->unlockState(lock);
+                    }
+                    delete lock;
+                    lock = NULL;
+                }
+                else {
+                    stateInfo.setError("MAlignment object has been changed");
+                    return res;
+                }
 
                 QList<qint64> rowsOrder = MSAUtils::compareRowsAfterAlignment(inputMsa, resultMA, stateInfo);
                 CHECK_OP(stateInfo, res);
@@ -372,8 +395,8 @@ int TCoffeeLogParser::getProgress(){
         QString lastMessage=lastPartOfLog.last();
         if(lastMessage.contains(QRegExp("\\[Submit +Job\\]\\[TOT="))){
             QRegExp rx("(.*)\\[ +(\\d+) %\\](.*)");
-            assert(rx.indexIn(lastMessage)>-1);
             rx.indexIn(lastMessage);
+            CHECK(rx.captureCount() > 1, 0);
             return rx.cap(2).toInt();
         }
     }
