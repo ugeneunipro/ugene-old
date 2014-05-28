@@ -158,7 +158,7 @@ Task::ReportResult ProjectServiceEnableTask::report() {
     connect(psi->saveAction, SIGNAL(triggered()), psi, SLOT(sl_save()));
 
     psi->saveAsAction = new QAction(tr("Save project &as..."), psi);
-	psi->saveAsAction->setObjectName(ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
+    psi->saveAsAction->setObjectName(ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
     connect(psi->saveAsAction, SIGNAL(triggered()), psi, SLOT(sl_saveAs()));
 
     psi->closeProjectAction = new QAction(tr("&Close project"), psi);
@@ -177,8 +177,8 @@ Task::ReportResult ProjectServiceEnableTask::report() {
     fileMenu->insertAction(beforeAction,  psi->saveAction);
     fileMenu->insertAction(beforeAction,  psi->saveAsAction);
     fileMenu->insertAction(beforeAction,  psi->exportProjectAction);
-        fileMenu->insertAction(beforeAction,  psi->closeProjectAction);
-    
+    fileMenu->insertAction(beforeAction,  psi->closeProjectAction);
+
     QToolBar* tb = mw->getToolbar(MWTOOLBAR_MAIN);
     beforeAction= GUIUtils::findActionAfter(tb->actions(), ACTION_PROJECTSUPPORT__OPEN_PROJECT);
     tb->insertAction(beforeAction,  psi->saveAction);
@@ -186,10 +186,11 @@ Task::ReportResult ProjectServiceEnableTask::report() {
     return ReportResult_Finished;
 }
 
-
 ProjectServiceDisableTask::ProjectServiceDisableTask(ProjectServiceImpl* _psi) 
-: Task(tr("project_disable_task"), TaskFlag_NoRun), psi(_psi)
-{}
+    : Task(tr("project_disable_task"), TaskFlag_NoRun), psi(_psi)
+{
+
+}
 
 Task::ReportResult ProjectServiceDisableTask::report() {
     AppContextImpl::getApplicationContext()->setProject(NULL);

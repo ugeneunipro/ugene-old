@@ -31,23 +31,26 @@
 #include <U2Gui/MainWindow.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QLineEdit>
-#include <QtGui/QTreeView>
-#include <QtGui/QHeaderView>
+#include <QtGui/QComboBox>
 #include <QtGui/QFileDialog>
 #include <QtGui/QFileSystemModel>
+#include <QtGui/QHeaderView>
+#include <QtGui/QLineEdit>
+#include <QtGui/QPushButton>
+#include <QtGui/QTreeView>
 #else
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QTreeView>
-#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QFileSystemModel>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTreeView>
 #endif
 
 #define FILE_NAME_LINE_EDIT "fileNameEdit"
+#define CURRENT_FODLER_COMBO_BOX "lookInCombo"
 
 namespace U2 {
 
@@ -89,15 +92,17 @@ void GTFileDialogUtils::run()
 
     fileDialog = dialog;
     GTGlobals::sleep(300);
-    setPath();
+    const bool dirWasChanged = setPath();
     GTGlobals::sleep(300);
     if(button == Choose){
         clickButton(button);
         return;
     }
 
-    clickButton(Open);
-    GTGlobals::sleep(300);
+    if (dirWasChanged) {
+        clickButton(Open);
+        GTGlobals::sleep(300);
+    }
 
     if(button == Save){//saving file
         setName();
@@ -192,14 +197,21 @@ void GTFileDialogUtils::openFileDialog()
 }
 
 #define GT_METHOD_NAME "setPath"
-void GTFileDialogUtils::setPath()
+bool GTFileDialogUtils::setPath()
 {
+    QComboBox* comboBox = fileDialog->findChild<QComboBox*>(CURRENT_FODLER_COMBO_BOX);
+    if (NULL != comboBox && comboBox->currentText() + QDir::separator() == path) {
+        // already there
+        return false;
+    }
+
     QLineEdit* lineEdit = fileDialog->findChild<QLineEdit*>(FILE_NAME_LINE_EDIT);
-    GT_CHECK(lineEdit != 0, QString("line edit \"1\" not found").arg(FILE_NAME_LINE_EDIT));
+    GT_CHECK_RESULT(lineEdit != 0, QString("line edit \"1\" not found").arg(FILE_NAME_LINE_EDIT), false);
     lineEdit->setCompleter(NULL);
     GTLineEdit::setText(os,lineEdit,path);
 
-    GT_CHECK(lineEdit->text() == path, "Can't open file \"" + lineEdit->text() + "\"");
+    GT_CHECK_RESULT(lineEdit->text() == path, "Can't open file \"" + lineEdit->text() + "\"", false);
+    return true;
 }
 #undef GT_METHOD_NAME
 

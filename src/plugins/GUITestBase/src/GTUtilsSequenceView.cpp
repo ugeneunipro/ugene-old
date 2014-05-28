@@ -19,30 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTUtilsSequenceView.h"
-
-#include "api/GTGlobals.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTKeyboardUtils.h"
-#include "api/GTMenu.h"
-#include "api/GTMouseDriver.h"
-
-#include "GTUtilsMdi.h"
-#include "GTUtilsDialog.h"
-#include "GTUtilsProjectTreeView.h"
-
-#include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
-#include "runnables/qt/PopupChooser.h"
-
-#include <U2Core/AppContext.h>
-
-#include <U2Gui/MainWindow.h>
-
-#include <U2View/ADVConstants.h>
-#include <U2View/ADVSingleSequenceWidget.h>
-#include <U2View/DetView.h>
-
 #include <QtGui/QClipboard>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
@@ -57,6 +35,28 @@
 #include <QtWidgets/QMainWindow>
 #endif
 
+#include <U2Core/AppContext.h>
+
+#include <U2Gui/MainWindow.h>
+
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSingleSequenceWidget.h>
+#include <U2View/DetView.h>
+
+#include "GTUtilsDialog.h"
+#include "GTUtilsMdi.h"
+#include "GTUtilsProjectTreeView.h"
+#include "GTUtilsSequenceView.h"
+
+#include "api/GTGlobals.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTKeyboardUtils.h"
+#include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTToolbar.h"
+
+#include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 
 namespace U2 {
 
@@ -247,6 +247,19 @@ void GTUtilsSequenceView::addSequenceView(U2OpStatus &os, const QString &sequenc
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "goToPosition"
+void GTUtilsSequenceView::goToPosition(U2OpStatus &os, int position) {
+    QToolBar* toolbar = GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI);
+    GT_CHECK(NULL != toolbar, "Can't find the toolbar");
+
+    QWidget* positionLineEdit = GTWidget::findWidget(os, "go_to_pos_line_edit", toolbar);
+    GT_CHECK(NULL != positionLineEdit, "Can't find the position line edit");
+
+    GTWidget::click(os, positionLineEdit);
+    GTKeyboardDriver::keySequence(os, QString::number(position));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+}
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getSeqWidgetByNumber"
 ADVSingleSequenceWidget* GTUtilsSequenceView::getSeqWidgetByNumber(U2OpStatus &os, int number, const GTGlobals::FindOptions &options){
@@ -264,14 +277,12 @@ ADVSingleSequenceWidget* GTUtilsSequenceView::getSeqWidgetByNumber(U2OpStatus &o
 }
 #undef GT_METHOD_NAME
 
-
 #define GT_METHOD_NAME "getSeqWidgetsNumber"
 int GTUtilsSequenceView::getSeqWidgetsNumber(U2OpStatus &os) {
     QList<ADVSingleSequenceWidget*> seqWidgets = GTUtilsMdi::activeWindow(os)->findChildren<ADVSingleSequenceWidget*>();
     return seqWidgets.size();
 }
 #undef GT_METHOD_NAME
-
 
 #define GT_METHOD_NAME "getSeqName"
 QString GTUtilsSequenceView::getSeqName(U2OpStatus &os, ADVSingleSequenceWidget* seqWidget){

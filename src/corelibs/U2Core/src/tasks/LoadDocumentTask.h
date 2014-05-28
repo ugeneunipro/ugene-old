@@ -113,6 +113,8 @@ public:
 private:
     void init();
     void processObjRef();
+    int calculateMemory() const;
+    void checkAccess();
 
     /** Creates new document that contains data from original one restructured to new form according to document hints
         For example: combines all sequences to alignment, merge sequences, etc

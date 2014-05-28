@@ -18,12 +18,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-#ifndef _U2_HELP_BUTTON_H
-#define _U2_HELP_BUTTON_H
-
-#include "U2Core/global.h"
+#ifndef _U2_HELP_BUTTON_H_
+#define _U2_HELP_BUTTON_H_
 
 #include <QtCore/QString>
+
+#include <U2Core/global.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>

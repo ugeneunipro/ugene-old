@@ -42,6 +42,7 @@
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.h"
 
+#include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/MSAEditorFactory.h>

@@ -19,6 +19,11 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QDir>
+#include <QtCore/QEventLoop>
+#include <QtCore/QTimer>
+#include <QtCore/QUrl>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
@@ -38,12 +43,6 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
-
-#include <QtCore/QFileInfo>
-#include <QtCore/QFile>
-#include <QtCore/QEventLoop>
-#include <QtCore/QTimer>
-#include <QtCore/QUrl>
 
 #include "LoadRemoteDocumentTask.h"
 

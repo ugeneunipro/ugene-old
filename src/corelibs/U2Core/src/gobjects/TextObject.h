@@ -23,18 +23,29 @@
 #define _U2_TEXT_OBJECT_H_
 
 #include <U2Core/GObject.h>
+#include <U2Core/U2RawData.h>
 #include <U2Core/UdrRecord.h>
 
 #include "GObjectTypes.h"
 
 namespace U2 {
 
+class U2CORE_EXPORT U2Text : public U2RawData {
+public:
+    U2Text();
+    U2Text(const U2DbiRef &dbiRef);
+
+    U2DataType getType();
+};
+
 class U2CORE_EXPORT TextObject: public GObject {
     Q_OBJECT
 public:
-    static TextObject * createInstance(const QString &text, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap = QVariantMap());
+    static TextObject * createInstance(const QString &text, const QString &objectName,
+        const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap = QVariantMap());
 
-    TextObject(const QString &objectName, const U2EntityRef &textRef, const QVariantMap &hintsMap = QVariantMap());
+    TextObject(const QString &objectName, const U2EntityRef &textRef,
+        const QVariantMap &hintsMap = QVariantMap());
 
     QString getText() const;
 

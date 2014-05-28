@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QDir>
+
 #include "IOException.h"
 #include "CancelledException.h"
 #include "BAMDbiPlugin.h"
@@ -51,7 +53,7 @@ void Dbi::init(const QHash<QString, QString> &properties, const QVariantMap & /*
         if(properties.value("url").isEmpty()) {
             throw Exception(BAMDbiPlugin::tr("URL is not specified"));
         }
-        url = GUrl(properties.value(U2_DBI_OPTION_URL));
+        url = GUrl(properties.value(U2DbiOptions::U2_DBI_OPTION_URL));
         if(!url.isLocalFile()) {
             throw Exception(BAMDbiPlugin::tr("Non-local files are not supported"));
         }
@@ -166,7 +168,7 @@ U2DataType Dbi::getEntityTypeById(const U2DataId& id) const {
 
 U2ObjectDbi *Dbi::getObjectDbi() {
     if(U2DbiState_Ready == state) {
-        return objectDbi.get();
+        return objectDbi.data();
     } else {
         return NULL;
     }
@@ -174,7 +176,7 @@ U2ObjectDbi *Dbi::getObjectDbi() {
 
 U2AssemblyDbi *Dbi::getAssemblyDbi() {
     if(U2DbiState_Ready == state) {
-        return assemblyDbi.get();
+        return assemblyDbi.data();
     } else {
         return NULL;
     }
@@ -333,7 +335,7 @@ U2DbiFactoryId DbiFactory::getId()const {
 
 FormatCheckResult DbiFactory::isValidDbi(const QHash<QString, QString> &properties, const QByteArray &rawData, U2OpStatus & /*os*/) const {
     BAMFormatUtils f;
-    FormatCheckResult res = f.checkRawData(rawData, properties.value(U2_DBI_OPTION_URL));
+    FormatCheckResult res = f.checkRawData(rawData, properties.value(U2DbiOptions::U2_DBI_OPTION_URL));
     return res;
 }
 
@@ -371,6 +373,30 @@ qint64 ObjectDbi::countObjects(U2DataType type, U2OpStatus &os) {
     } catch(const Exception &e) {
         os.setError(e.getMessage());
         return 0;
+    }
+}
+
+QHash<U2DataId, QString> ObjectDbi::getObjectNames(qint64 offset, qint64 count, U2OpStatus &os) {
+    QHash<U2DataId, QString> result;
+
+    try {
+        if(U2DbiState_Ready != dbi.getState()) {
+            throw Exception(BAMDbiPlugin::tr("Invalid DBI state"));
+        }
+
+        U2OpStatusImpl opStatus;
+        SQLiteQuery q("SELECT id, name FROM Object WHERE type = ?1;", offset, count, &dbRef, opStatus);
+        q.bindType(1, U2Type::Assembly);
+
+        while (q.step()) {
+            const U2DataId id = q.getDataId(0, U2Type::Assembly);
+            const QString name = q.getString(1);
+            result.insert(id, name);
+        }
+        return result;
+    } catch(const Exception &e) {
+        os.setError(e.getMessage());
+        return result;
     }
 }
 
@@ -419,6 +445,10 @@ QStringList ObjectDbi::getFolders(U2OpStatus &os) {
         os.setError(e.getMessage());
         return QStringList();
     }
+}
+
+void ObjectDbi::renameFolder(const QString &/*oldPath*/, const QString &/*newPath*/, U2OpStatus &os) {
+    os.setError("Not supported");
 }
 
 qint64 ObjectDbi::countObjects(const QString &folder, U2OpStatus &os) {
@@ -512,6 +542,10 @@ qint64 ObjectDbi::getFolderGlobalVersion(const QString &folder, U2OpStatus &os) 
 U2DbiIterator<U2DataId>* ObjectDbi::getObjectsByVisualName(const QString& , U2DataType , U2OpStatus& ) {
     //todo:
     return NULL;
+}
+
+void ObjectDbi::renameObject(const U2DataId & /*id*/, const QString & /*newName*/, U2OpStatus &os) {
+    os.setError("Not implemented!");
 }
 
 // AssemblyDbi

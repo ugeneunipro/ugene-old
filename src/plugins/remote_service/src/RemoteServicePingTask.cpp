@@ -60,7 +60,7 @@ void RemoteServicePingTask::prepare() {
 
 void RemoteServicePingTask::run()
 {
-    assert(machine.get() != NULL);
+    SAFE_POINT(!machine.isNull(), "Invalid remote machine detected!", );
     if (isCanceled() || hasError()) {
         return;
     }

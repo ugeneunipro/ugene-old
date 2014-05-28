@@ -22,7 +22,6 @@
 #ifndef _REMOTE_SERVICE_PLUGIN_H_
 #define _REMOTE_SERVICE_PLUGIN_H_
 
-#include <memory>
 #include <U2Core/PluginModel.h>
 #include <U2Remote/ProtocolInfo.h>
 
@@ -40,7 +39,7 @@ public:
     virtual ~RemoteServicePlugin();
 
 private:
-    std::auto_ptr<RemoteServiceSettingsUI> protocolUI;
+    QScopedPointer<RemoteServiceSettingsUI> protocolUI;
     RemoteServiceMachineFactory remoteMachineFactory;
     ProtocolInfo protocolInfo;
 private:

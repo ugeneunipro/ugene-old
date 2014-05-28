@@ -211,6 +211,10 @@ void BioStruct3D::generateSecStructureAnnotations(QMap<int, QList<SharedAnnotati
         U2Qualifier qual(SecStructTypeQualifierName, getSecStructTypeName(struc->type));
         sd->qualifiers.append(qual);
         int numResidues = struc->endSequenceNumber - struc->startSequenceNumber + 1;
+        // TODO: determine why can it happen and fix if it's a bug
+        if (numResidues < 0) {
+            continue;
+        }
         int startIndex = struc->startSequenceNumber - initResidueId;
         U2Region chainRegion(startIndex, numResidues);
         sd->location->regions << chainRegion;

@@ -54,6 +54,11 @@ public:
     void                            renameAnnotationTableObject( const U2DataId &tableId,
                                         const QString &name, U2OpStatus &os );
     /**
+     * Removes a DB representation of AnnotationTableObject having supplied @tableId.
+     */
+    void                            removeAnnotationTableData( const U2DataId &tableId,
+                                        U2OpStatus &os );
+    /**
      * Reads feature data by id
      */
     U2Feature                       getFeature( const U2DataId &featureId, U2OpStatus &os );
@@ -151,7 +156,7 @@ public:
      * Returns features that matched the query. Returns NULL if error occurs
      */
     U2DbiIterator<U2Feature> *      getFeaturesByRegion( const U2Region &reg,
-                                        const U2DataId &parentId, const QString &featureName,
+                                        const U2DataId &rootId, const QString &featureName,
                                         const U2DataId &seqId, U2OpStatus &os, bool contains );
 
     U2DbiIterator<U2Feature> *      getFeaturesByParent( const U2DataId &parentId,

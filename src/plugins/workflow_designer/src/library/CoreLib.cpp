@@ -204,6 +204,7 @@ void CoreLib::init() {
         DocumentFormatConstraints constr;
         constr.supportedObjectTypes.insert( GObjectTypes::MULTIPLE_ALIGNMENT );
         constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+        constr.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
         QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats( constr );
 
         if( !supportedFormats.isEmpty() ) {
@@ -232,6 +233,7 @@ void CoreLib::init() {
         DocumentFormatConstraints constr;
         constr.supportedObjectTypes.insert( GObjectTypes::SEQUENCE );
         constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+        constr.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
         QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats( constr );
         
         if( !supportedFormats.isEmpty() ) {

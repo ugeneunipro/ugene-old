@@ -48,6 +48,7 @@
 #include <U2Formats/SAMFormat.h>
 #include <U2Formats/NEXUSFormat.h>
 #include <U2Formats/MegaFormat.h>
+#include <U2Formats/MysqlDbi.h>
 #include <U2Formats/PDWFormat.h>
 #include <U2Formats/SwissProtPlainTextFormat.h>
 #include <U2Formats/SQLiteDbi.h>
@@ -56,6 +57,7 @@
 #include <U2Formats/DifferentialFormat.h>
 #include <U2Formats/AceImporter.h>
 #include <U2Formats/PhylipFormat.h>
+#include <U2Formats/DatabaseConnectionFormat.h>
 
 namespace U2 {
 
@@ -86,7 +88,8 @@ DocumentFormat* DocumentFormatRegistryImpl::selectFormatByFileExtension(const QS
     return NULL;
 }
 
-QList<DocumentFormatId> DocumentFormatRegistryImpl::selectFormats(const DocumentFormatConstraints& c) const {
+QList<DocumentFormatId> DocumentFormatRegistryImpl::selectFormats(const DocumentFormatConstraints& c) const
+{
     QList<DocumentFormatId> ids;
     foreach(DocumentFormat* df, formats) {
         if (df->checkConstraints(c)) {
@@ -206,7 +209,11 @@ void DocumentFormatRegistryImpl::init() {
     PhylipInterleavedFormat *phIn = new PhylipInterleavedFormat(this);
     registerFormat(phIn);
 
+    registerFormat(new DatabaseConnectionFormat(this));
+
     AppContext::getDbiRegistry()->registerDbiFactory(new SQLiteDbiFactory());
+    AppContext::getDbiRegistry()->registerDbiFactory(new MysqlDbiFactory());
+
     DocumentFormatFlags flags(DocumentFormatFlag_SupportWriting);
     DbiDocumentFormat* sdbi = new DbiDocumentFormat(SQLiteDbiFactory::ID, BaseDocumentFormats::UGENEDB, tr("UGENE Database"), QStringList()<<"ugenedb", flags);
     registerFormat(sdbi);

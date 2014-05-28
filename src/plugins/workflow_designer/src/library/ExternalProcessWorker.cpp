@@ -49,7 +49,6 @@
 #include <U2Designer/DelegateEditors.h>
 
 #include <QtCore/QDateTime>
-#include <memory>
 
 namespace U2 {
 namespace LocalWorkflow {
@@ -197,7 +196,7 @@ namespace {
             d->addObject(annsObj);
 
             QList<GObjectRelation> rel;
-            rel << GObjectRelation(GObjectReference(seqObj), GObjectRelationRole::SEQUENCE);
+            rel << GObjectRelation(GObjectReference(seqObj), ObjectRole_Sequence);
             annsObj->setObjectRelations(rel);
         } else if (dataCfg.isText()) {
             TextObject *textObj = toText(data, context, os);
@@ -437,9 +436,9 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
             const QList<U2EntityRef> &refs= seqsForMergingBySlotId.value(slotId);
             bool first = true;
             foreach(const U2EntityRef &eRef, refs) {
-                std::auto_ptr<U2SequenceObject> obj(new U2SequenceObject("tmp_name", eRef));
+                QScopedPointer<U2SequenceObject> obj(new U2SequenceObject("tmp_name", eRef));
                 if (first) {
-                    seqImporter.startSequence(context->getDataStorage()->getDbiRef(), slotId, false, os);
+                    seqImporter.startSequence(context->getDataStorage()->getDbiRef(), U2ObjectDbi::ROOT_FOLDER, slotId, false, os);
                     first = false;
                 }
                 U2Region wholeSeq(0, obj->getSequenceLength());

@@ -62,7 +62,7 @@ bool AnnotatedDNAViewFactory::canCreateView(const MultiGSelection& multiSelectio
     
     //2.
     QList<GObject*> objectsWithSeqRelation = GObjectUtils::selectObjectsWithRelation(selectedObjects, GObjectTypes::SEQUENCE, 
-                                                            GObjectRelationRole::SEQUENCE, UOF_LoadedAndUnloaded, true);
+                                                            ObjectRole_Sequence, UOF_LoadedAndUnloaded, true);
     if (!objectsWithSeqRelation.isEmpty()) {
         return true;
     }
@@ -77,7 +77,7 @@ bool AnnotatedDNAViewFactory::canCreateView(const MultiGSelection& multiSelectio
             return true;
         }    
         objectsWithSeqRelation = GObjectUtils::selectObjectsWithRelation(doc->getObjects(), 
-            GObjectTypes::SEQUENCE, GObjectRelationRole::SEQUENCE, UOF_LoadedAndUnloaded, true);
+            GObjectTypes::SEQUENCE, ObjectRole_Sequence, UOF_LoadedAndUnloaded, true);
         
         if (!objectsWithSeqRelation.isEmpty()) {
             return true;
@@ -94,7 +94,7 @@ Task* AnnotatedDNAViewFactory::createViewTask(const MultiGSelection& multiSelect
 
     QList<GObject*> selectedObjects = SelectionUtils::findObjects("", &multiSelection, UOF_LoadedAndUnloaded);
     QList<GObject*> objectsWithSequenceRelation = GObjectUtils::selectObjectsWithRelation(selectedObjects, 
-                                                    GObjectTypes::SEQUENCE, GObjectRelationRole::SEQUENCE, UOF_LoadedAndUnloaded, true);
+                                                    GObjectTypes::SEQUENCE, ObjectRole_Sequence, UOF_LoadedAndUnloaded, true);
 
     foreach(GObject* obj, objectsWithSequenceRelation) {
         if(!objectsToOpen.contains(obj)) {
@@ -111,7 +111,7 @@ Task* AnnotatedDNAViewFactory::createViewTask(const MultiGSelection& multiSelect
                 }
             }
             foreach(GObject* obj, GObjectUtils::selectObjectsWithRelation(doc->getObjects(), GObjectTypes::SEQUENCE, 
-                GObjectRelationRole::SEQUENCE, UOF_LoadedAndUnloaded, true)) {
+                ObjectRole_Sequence, UOF_LoadedAndUnloaded, true)) {
                 if(!objectsToOpen.contains(obj)) {
                     objectsToOpen.append(obj);
                 }

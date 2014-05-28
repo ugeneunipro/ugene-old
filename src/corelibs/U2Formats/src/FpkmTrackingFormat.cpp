@@ -21,8 +21,8 @@
 
 #include <QtCore/QScopedArrayPointer>
 
-#include <U2Core/AppContext.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/IOAdapter.h>
@@ -97,12 +97,12 @@ FpkmTrackingFormat::FpkmTrackingFormat(QObject* parent)
 }
 
 
-Document* FpkmTrackingFormat::loadDocument(IOAdapter* io, const U2DbiRef&  dbiRef, const QVariantMap& /* hints */, U2OpStatus& os)
+Document* FpkmTrackingFormat::loadDocument(IOAdapter* io, const U2DbiRef&  dbiRef, const QVariantMap& hints, U2OpStatus& os)
 {
     CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
     QList<GObject*> objects;
 
-    load(io, objects, dbiRef, os);
+    load(io, objects, dbiRef, hints, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
 
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects);
@@ -255,8 +255,7 @@ QList<AnnotationData> FpkmTrackingFormat::parseDocument(IOAdapter* io, QString& 
     return result;
 }
 
-void FpkmTrackingFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef,
-    U2OpStatus& os)
+void FpkmTrackingFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, const QVariantMap &hints, U2OpStatus& os)
 {
     QString sequenceName;
     QString annotName = "misc_feature";
@@ -271,7 +270,7 @@ void FpkmTrackingFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2D
             }
         }
         if (!annotTable) {
-            annotTable = new AnnotationTableObject( annotTableName, dbiRef );
+            annotTable = new AnnotationTableObject( annotTableName, dbiRef, hints );
             objects.append(annotTable);
         }
 
@@ -561,7 +560,7 @@ void FpkmTrackingFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus&
     foreach (GObject* annotTable, annotTables) {
         // Get the associated sequence name (to restore or verify locus)
         QString seqName;
-        QList<GObjectRelation> rels = annotTable->findRelatedObjectsByRole(GObjectRelationRole::SEQUENCE);
+        QList<GObjectRelation> rels = annotTable->findRelatedObjectsByRole(ObjectRole_Sequence);
         if (!rels.isEmpty()) {
             const GObjectRelation& rel = rels.first();
             seqName = rel.ref.objName;

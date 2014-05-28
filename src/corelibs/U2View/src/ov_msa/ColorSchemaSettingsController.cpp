@@ -35,13 +35,10 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Gui/HelpButton.h>
 
-
-#include <QFileDialog>
 #include <QtCore/QDir>
 
+#include <QtGui/QFileDialog>
 #include <QtGui/QColor>
-
-#include <memory>
 
 const QString SETTINGS_ROOT = "/color_schema_settings/";
 const QString SETTINGS_SUB_DIRECTORY = "MSA_schemes";
@@ -86,7 +83,7 @@ static void setSchemaColors(const CustomColorSchema& customSchema){
 
     IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
 
-    std::auto_ptr<IOAdapter> io(factory->createIOAdapter());
+    QScopedPointer<IOAdapter> io(factory->createIOAdapter());
 
     const QMap<char, QColor> & alphColors = customSchema.alpColors;
     const QString& file  = customSchema.name + NAME_FILTERS;
@@ -205,7 +202,7 @@ static bool getSchemaColors(CustomColorSchema& customSchema){
 
     IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
 
-    std::auto_ptr<IOAdapter> io(factory->createIOAdapter());
+    QScopedPointer<IOAdapter> io(factory->createIOAdapter());
     if(!io->open(dir.filePath(file), IOAdapterMode_Read)){
         coreLog.info(QString("%1: no such scheme").arg(customSchema.name));
         return false;

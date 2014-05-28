@@ -34,8 +34,6 @@
 #include <U2Core/ScriptingToolRegistry.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <QtCore/QString>
-#include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QCoreApplication>
 

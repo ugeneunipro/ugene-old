@@ -29,24 +29,32 @@
 #include <QtWidgets/QDialog>
 #endif
 
-class Ui_AuthentificationDialog;
+class Ui_AuthenticationDialog;
 
 namespace U2 {
 
-class U2GUI_EXPORT AuthDialog : public QDialog {
+class AuthenticationWidget;
+
+class U2GUI_EXPORT AuthenticationDialog : public QDialog {
     Q_OBJECT
 public:
-    AuthDialog(QWidget* parent);
-    ~AuthDialog();
-    QString getUserName() const;
-    QString getPasswd() const;
-    bool    rememberAuthData() const;
+    AuthenticationDialog(const QString& text, QWidget* parent);
+    ~AuthenticationDialog();
+
+    void setLogin(const QString& login);
+    void setPassword(const QString& password);
+    void setRemembered(bool isChecked);
+
+    QString getLogin() const;
+    QString getPassword() const;
+    bool isRemembered() const;
 
 private slots:
-    void sl_onOkButtonClicked();
+    void accept();
 
 private:
-    Ui_AuthentificationDialog* ui;
+    Ui_AuthenticationDialog* ui;
+    AuthenticationWidget* authenticationWidget;
 };
 
 } // namespace

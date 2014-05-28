@@ -448,7 +448,7 @@ bool ExpertDiscoveryLoadPosNegMrkTask::loadAnnotationFromUgeneDocument(MarkingBa
            }catch(...){}
        
             QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj, 
-                GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, 
+                GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence, 
                 allSeqAnnotations, UOF_LoadedOnly);
 
             foreach(GObject* ao, annotations) {
@@ -675,7 +675,7 @@ ExpertDiscoveryCreateViewTask::ExpertDiscoveryCreateViewTask(const QList<GObject
 
         //look for sequence object using relations
         QList<GObject*> objWithSeqRelation = GObjectUtils::selectRelations(obj, GObjectTypes::SEQUENCE, 
-            GObjectRelationRole::SEQUENCE, allSequenceObjects, UOF_LoadedAndUnloaded);
+            ObjectRole_Sequence, allSequenceObjects, UOF_LoadedAndUnloaded);
 
         foreach(GObject* robj, objWithSeqRelation) {
             if (!GObjectUtils::hasType(robj, GObjectTypes::SEQUENCE)) {

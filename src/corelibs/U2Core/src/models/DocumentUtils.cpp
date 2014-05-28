@@ -195,24 +195,24 @@ bool DocumentUtils::canAddGObjectsToDocument( Document* doc, const GObjectType& 
     return df->isObjectOpSupported(doc, DocumentFormat::DocObjectOp_Add, type);
 }
 
-bool DocumentUtils::canRemoveGObjectFromDocument( GObject* obj )
+bool DocumentUtils::canRemoveGObjectFromDocument(GObject *obj)
 {
     Document* doc = obj->getDocument();
 
-    if (!doc->isLoaded() || doc->isStateLocked()) {
+    if (NULL == doc || !doc->isLoaded() || doc->isStateLocked()) {
         return false;
     }
 
-    if (doc->getObjects().size() < 2) {
+    if (doc->getObjects().size() < 2 && !doc->isDatabaseConnection()) {
         // cannot remove the only object in the document
         return false;
     }
 
     DocumentFormat* df = doc->getDocumentFormat();
-    if (!df->isObjectOpSupported(doc, DocumentFormat::DocObjectOp_Remove, obj->getGObjectType() )) {
+    if (!df->isObjectOpSupported(doc, DocumentFormat::DocObjectOp_Remove, obj->getGObjectType())) {
         return false;
     }
-    
+
     return true;
 }
 

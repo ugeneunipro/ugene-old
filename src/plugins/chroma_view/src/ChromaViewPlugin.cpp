@@ -25,10 +25,13 @@
 #include <U2Core/GObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNAChromatogramObject.h>
-#include <U2Gui/MainWindow.h>
 #include <U2Core/DocumentSelection.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/MainWindow.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSingleSequenceWidget.h>
@@ -76,17 +79,17 @@ void ChromaViewContext::initViewContext(GObjectView* v) {
         sl_sequenceWidgetAdded(w);
     }
     connect(av, SIGNAL(si_sequenceWidgetAdded(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetAdded(ADVSequenceWidget*)));
-    
 }
 
 static DNAChromatogramObject* findChromaObj(ADVSingleSequenceWidget* sw) {
-    QList<GObject*> chromaObjs = sw->getSequenceObject()->getDocument()->findGObjectByType(GObjectTypes::CHROMATOGRAM);
-    if (chromaObjs.isEmpty()) {
-        return NULL;
-    }
-    DNAChromatogramObject* chromaObj = qobject_cast<DNAChromatogramObject*>(chromaObjs.first());
-    assert(chromaObj->getChromatogram().seqLength == sw->getSequenceLength());
-    return chromaObj;
+    U2SequenceObject *seqObj = sw->getSequenceObject();
+
+    QList<GObject *> allChromas = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::CHROMATOGRAM);
+    QList<GObject *> targetChromas = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj,
+        GObjectTypes::CHROMATOGRAM, ObjectRole_Sequence, allChromas, UOF_LoadedOnly);
+    CHECK(!targetChromas.isEmpty(), NULL);
+
+    return qobject_cast<DNAChromatogramObject *>(targetChromas.first());
 }
 
 void ChromaViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {

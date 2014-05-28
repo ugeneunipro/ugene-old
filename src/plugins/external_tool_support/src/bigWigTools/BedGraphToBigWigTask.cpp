@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QDir>
+
 #include "BigWigSupport.h"
 #include "BedGraphToBigWigTask.h"
 
@@ -28,7 +30,6 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/ExternalToolRunTask.h>
 
- 
 namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////

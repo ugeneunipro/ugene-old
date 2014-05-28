@@ -28,14 +28,19 @@ class QWidget;
 
 namespace U2 {
 
-class ProjectTreeControllerModeSettings;
 class Document;
 class GObject;
+class ProjectTreeControllerModeSettings;
+class StateLockableTreeItem;
 
 class U2GUI_EXPORT ProjectTreeItemSelectorDialog {
 public:
     static QList<Document*> selectDocuments(const ProjectTreeControllerModeSettings& s, QWidget* p);
     static QList<GObject*> selectObjects(const ProjectTreeControllerModeSettings& s, QWidget* p);
+    static void selectObjectsAndDocuments(const ProjectTreeControllerModeSettings& s,
+                                          QWidget* p,
+                                          QList<Document*>& docList,
+                                          QList<GObject*>& objList);
 };
 
 

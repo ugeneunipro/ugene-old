@@ -25,7 +25,6 @@
 #else
 #include <QtWidgets/QMessageBox>
 #endif
-#include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 
 #include <U2Core/AppContext.h>
@@ -78,7 +77,7 @@ CreateFragmentDialog::CreateFragmentDialog( U2SequenceObject* obj, const U2Regio
 
     QList<GObject*> aObjects = GObjectUtils::findAllObjects(UOF_LoadedOnly,GObjectTypes::ANNOTATION_TABLE);
     QList<GObject*> related = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj, GObjectTypes::ANNOTATION_TABLE, 
-        GObjectRelationRole::SEQUENCE, aObjects, UOF_LoadedOnly);
+        ObjectRole_Sequence, aObjects, UOF_LoadedOnly);
     
     foreach (GObject* obj, related) {
         AnnotationTableObject *aObj = qobject_cast<AnnotationTableObject *>(obj);

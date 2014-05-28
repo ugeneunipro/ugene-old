@@ -26,52 +26,64 @@
 #include <QtWidgets/QMessageBox>
 #endif
 
-#include "ui/ui_AuthentificationDialog.h"
 #include "AuthenticationDialog.h"
-
+#include "AuthenticationWidget.h"
+#include "ui/ui_AuthenticationDialog.h"
 
 namespace U2 {
 
-AuthDialog::AuthDialog( QWidget* parent )
-: QDialog(parent)        
+AuthenticationDialog::AuthenticationDialog(const QString &text, QWidget* parent) :
+    QDialog(parent),
+    ui(new Ui_AuthenticationDialog),
+    authenticationWidget(new AuthenticationWidget)
 {
-    ui = new Ui_AuthentificationDialog();
     ui->setupUi(this);
-    connect(ui->OKButton, SIGNAL(clicked()), SLOT(sl_onOkButtonClicked()));
+    ui->mainLayout->insertWidget(1, authenticationWidget);
 
-}
-
-QString AuthDialog::getUserName() const
-{
-    return ui->nameEdit->text();
-}
-
-QString AuthDialog::getPasswd() const
-{
-    return ui->passEdit->text();
-}
-
-bool AuthDialog::rememberAuthData() const
-{
-    return ui->rememberBox->isChecked();
-}
-
-void AuthDialog::sl_onOkButtonClicked()
-{
-    if (ui->nameEdit->text().isEmpty() ) {
-        QMessageBox::critical( this, tr( "Error!" ), tr("User name is not set.") );
-        return; 
-    } else  if (ui->passEdit->text().isEmpty()) {
-        QMessageBox::critical( this, tr("Error!"), tr("Password is not set.") );
-        return; 
+    if (text.isEmpty()) {
+        ui->lblText->hide();
     } else {
-        accept();
+        ui->lblText->setText(text);
     }
+
+    adjustSize();
 }
 
-AuthDialog::~AuthDialog() 
-{
+AuthenticationDialog::~AuthenticationDialog() {
     delete ui;
+}
+
+void AuthenticationDialog::setLogin(const QString& login) {
+    authenticationWidget->setLogin(login);
+}
+
+void AuthenticationDialog::setPassword(const QString& password) {
+    authenticationWidget->setPassword(password);
+}
+
+void AuthenticationDialog::setRemembered(bool isChecked) {
+    authenticationWidget->setRemembered(isChecked);
+}
+
+QString AuthenticationDialog::getLogin() const {
+    return authenticationWidget->getLogin();
+}
+
+QString AuthenticationDialog::getPassword() const {
+    return authenticationWidget->getPassword();
+}
+
+bool AuthenticationDialog::isRemembered() const {
+    return authenticationWidget->isRemembered();
+}
+
+void AuthenticationDialog::accept() {
+    if (authenticationWidget->getLogin().isEmpty()) {
+        QMessageBox::critical(this, tr("Error!"), tr("Login is not set"));
+        return;
+    }
+
+    QDialog::accept();
 }
 
 } // namespace

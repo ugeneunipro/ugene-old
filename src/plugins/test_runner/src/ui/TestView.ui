@@ -31,8 +31,11 @@
        </property>
       </column>
      </widget>
-     <widget class="QWidget" name="layoutWidget">
+     <widget class="QWidget" name="infoWidget" native="true">
       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
@@ -71,8 +74,11 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="layoutWidget">
+     <widget class="QWidget" name="testEditWidget" native="true">
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QPushButton" name="saveButton">
          <property name="sizePolicy">

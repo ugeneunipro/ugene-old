@@ -144,6 +144,7 @@ public:
     static const IOAdapterId GZIPPED_HTTP_FILE;
     static const IOAdapterId VFS_FILE;
     static const IOAdapterId STRING;
+    static const IOAdapterId DATABASE_CONNECTION;
 };
 
 

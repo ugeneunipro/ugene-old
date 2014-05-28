@@ -43,10 +43,11 @@ Warning: in the current state GUrl canonical form can contain symlinks.
 
 /** Type of the URL */
 enum GUrlType {
-    GUrl_File, //local file or default URL type for unknown files
-    GUrl_Http, //both http and https protocols
+    GUrl_File,      // local file or default URL type for unknown files
+    GUrl_Http,      // both http and https protocols
     GUrl_Ftp,
-    GUrl_VFSFile //memory block
+    GUrl_VFSFile,   // memory block
+    GUrl_Network    // an abstract network url (e.g. shared database url)
 };
 
 

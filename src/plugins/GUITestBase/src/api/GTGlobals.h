@@ -91,8 +91,12 @@ public:
     // if failIfNull is set to true, fails if object wasn't found
     class FindOptions {
     public:
-        FindOptions(bool fail = true) : failIfNull(fail){}
+        FindOptions(bool fail = true);
+
+        int depth;
         bool failIfNull;
+
+        static const int INFINITE_DEPTH = 0;
     };
 
     static void sleep(int msec = 2000);

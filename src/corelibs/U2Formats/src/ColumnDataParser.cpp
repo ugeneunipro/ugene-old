@@ -40,7 +40,7 @@ ColumnDataParser::Column::Column(const QString &_name)
 
 bool ColumnDataParser::Column::operator == (const ColumnDataParser::Column &other) const {
     return name == other.name;
-};
+}
 
 ColumnDataParser::Iterator::Iterator(const QList<Column> &_columns, const QStringList &_values)
 : columns(_columns), values(_values)

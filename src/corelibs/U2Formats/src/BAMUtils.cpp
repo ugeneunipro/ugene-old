@@ -31,8 +31,6 @@ extern "C" {
 #include <bgzf.h>
 }
 
-#include <SamtoolsAdapter.h>
-
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/AppSettings.h>
@@ -45,6 +43,8 @@ extern "C" {
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SafePoints.h>
+
+#include <SamtoolsAdapter.h>
 
 #include "BAMUtils.h"
 
@@ -308,7 +308,7 @@ GUrl BAMUtils::sortBam(const GUrl &bamUrl, const QString &sortedBamBaseName, U2O
     return QString(sortedFileName);
 }
 
-GUrl BAMUtils::mergeBam(const QStringList &bamUrls, const QString &mergetBamTargetUrl, U2OpStatus &os){
+GUrl BAMUtils::mergeBam(const QStringList &bamUrls, const QString &mergetBamTargetUrl, U2OpStatus &/*os*/){
     coreLog.details(BAMUtils::tr("Merging BAM files: \"%1\". Resulting merged file is: \"%2\"")
         .arg(QString(bamUrls.join(","))).arg(QString(mergetBamTargetUrl)));
 
@@ -601,7 +601,7 @@ bool BAMUtils::isEqualByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpS
         }
 
         samreadCheck(r1, os, fileName1);
-        if(r2 = samread(out, b2) >= 0){
+        if((r2 = samread(out, b2)) >= 0){
             os.setError("Different number of reads in files");
         }
         bam_destroy1(b1);

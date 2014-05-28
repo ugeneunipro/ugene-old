@@ -35,9 +35,6 @@
 #include "AssemblyCellRenderer.h"
 #include "AssemblyModel.h"
 
-#include <memory>
-using std::auto_ptr;
-
 namespace U2 {
 
 class AssemblyBrowserUi;
@@ -86,7 +83,7 @@ private:
 
     QPixmap cachedView;
     bool redraw;
-    auto_ptr<AssemblyCellRenderer> cellRenderer;
+    QScopedPointer<AssemblyCellRenderer> cellRenderer;
     bool needsReference;
     char skipChar;
 

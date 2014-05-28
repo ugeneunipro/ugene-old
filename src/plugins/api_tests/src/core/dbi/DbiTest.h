@@ -2,7 +2,6 @@
 #define DBITEST_H
 
 #include <U2Core/U2Dbi.h>
-#include <memory>
 #include <unittest.h>
 
 namespace U2 {

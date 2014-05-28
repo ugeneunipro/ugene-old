@@ -55,7 +55,7 @@ GUI_TEST_CLASS_DEFINITION( test_0001 ) {
     GTMenu::clickMenuItemByName( os, mainMenu, QStringList( ) << "Align to reference"
         << "Align short reads" );
     CHECK_OP( os, );
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     CHECK_SET_ERR( !l.hasError( ), "Error message expected in log" );
     GTFile::check( os, "_common_data/e_coli/NC_008253.gb.fasta" );
@@ -82,7 +82,7 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
     GTMenu::clickMenuItemByName( os, mainMenu, QStringList( ) << "Align to reference"
         << "Align short reads" );
     CHECK_OP( os, );
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     CHECK_SET_ERR( !l.hasError( ), "Error message expected in log" );
     GTFile::check( os, "_common_data/e_coli/NC_008253.gff.fasta" );
@@ -141,7 +141,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os,sandBoxDir + "resule.ugenedb"));
 //UGENE can hang up here
     GTGlobals::sleep();
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     CHECK_SET_ERR(!l.hasError( ), QString("Log has error: %1").arg(l.getError()));
     GTFile::check(os, "_common_data/e_coli/e_coli_1000.gff.fasta");

@@ -59,7 +59,7 @@ RemoteServicePlugin::RemoteServicePlugin():
     Plugin(tr("UGENE Remote Service Support"),
         tr("Launching remote tasks via UGENE Remote Service")),
     protocolUI((NULL == AppContext::getMainWindow())? NULL:(new RemoteServiceSettingsUI())),
-    protocolInfo( RemoteServiceCommon::WEB_TRANSPORT_PROTOCOL_ID , protocolUI.get(),
+    protocolInfo( RemoteServiceCommon::WEB_TRANSPORT_PROTOCOL_ID , protocolUI.data(),
                   &remoteMachineFactory )
 {
     AppContext::getProtocolInfoRegistry()->registerProtocolInfo(&protocolInfo);

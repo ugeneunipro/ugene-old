@@ -19,16 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportConsensusTask.h"
+#include <QtCore/QFileInfo>
+
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SafePoints.h>
+
 #include <U2Formats/DocumentFormatUtils.h>
+
 #include <U2Gui/OpenViewTask.h>
+
+#include "ExportConsensusTask.h"
 
 namespace U2 {
 
@@ -83,7 +89,7 @@ void ExportConsensusTask::prepare() {
     consensusTask->setSubtaskProgressWeight(100);
     addSubTask(consensusTask);
 
-    seqImporter.startSequence(dbiRef, settings.seqObjName, false, stateInfo);
+    seqImporter.startSequence(dbiRef, U2ObjectDbi::ROOT_FOLDER, settings.seqObjName, false, stateInfo);
     CHECK_OP(stateInfo, );
 
     if (settings.saveToFile) {

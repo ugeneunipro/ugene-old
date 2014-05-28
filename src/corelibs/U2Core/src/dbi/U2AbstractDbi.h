@@ -35,6 +35,7 @@
 #include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2CrossDatabaseReferenceDbi.h>
 #include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2ObjectRelationsDbi.h>
 #include <U2Core/U2VariantDbi.h>
 #include <U2Core/U2ModDbi.h>
 #include <U2Core/UdrDbi.h>
@@ -53,7 +54,7 @@ protected:
         factoryId = fid;
     }
 
-public:    
+public:
     virtual bool flush(U2OpStatus&) {return true;}
 
     virtual U2DbiState getState() const {return state;}
@@ -79,6 +80,8 @@ public:
     virtual U2AttributeDbi* getAttributeDbi()  {return NULL;}
     
     virtual U2ObjectDbi* getObjectDbi()  {return NULL;}
+
+    virtual U2ObjectRelationsDbi* getObjectRelationsDbi() {return NULL;}
 
     virtual U2VariantDbi* getVariantDbi()  {return NULL;}
 
@@ -118,28 +121,45 @@ protected:
     U2SimpleObjectDbi(U2Dbi* rootDbi) : U2ObjectDbi(rootDbi) {}
 
 public:
-    virtual void removeObject(const U2DataId&, const QString&, U2OpStatus& os) {
+    virtual void getObject(U2Object&, const U2DataId&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_RemoveObjects, getRootDbi(), os);
     }
 
-    virtual void removeObjects(const QList<U2DataId>&, const QString&, U2OpStatus& os) {
+    virtual QHash<U2Object, QString> getObjectFolders(U2OpStatus &os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_RemoveObjects, getRootDbi(), os);
+        return QHash<U2Object, QString>();
+    }
+
+    virtual bool removeObject(const U2DataId&, const QString&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_RemoveObjects, getRootDbi(), os);
+        return false;
+    }
+
+    virtual bool removeObjects(const QList<U2DataId>&, const QString&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_RemoveObjects, getRootDbi(), os);
+        return false;
     }
 
     virtual void createFolder(const QString&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_ChangeFolders, getRootDbi(), os);
     }
 
-    virtual void removeFolder(const QString&, U2OpStatus& os) {
+    virtual bool removeFolder(const QString&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_ChangeFolders, getRootDbi(), os);
+        return false;
     }
 
     virtual void addObjectsToFolder(const QList<U2DataId>&, const QString&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_ChangeFolders, getRootDbi(), os);
     }
 
-    virtual void moveObjects(const QList<U2DataId>&, const QString&, const QString&, U2OpStatus& os) {
+    virtual void moveObjects(const QList<U2DataId>&, const QString&, const QString&, U2OpStatus& os, bool) {
         U2DbiUtils::logNotSupported(U2DbiFeature_ChangeFolders, getRootDbi(), os);
+    }
+
+    virtual QStringList restoreObjects(const QList<U2DataId> &, U2OpStatus &os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_ChangeFolders, getRootDbi(), os);
+        return QStringList();
     }
 
     virtual U2TrackModType getTrackModType(const U2DataId&, U2OpStatus& os) {
@@ -180,6 +200,10 @@ public:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
     }
 
+    virtual void removeAssemblyData(const U2DataId&, U2OpStatus& os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
+    }
+
     virtual void updateAssemblyObject(U2Assembly&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAssembly, getRootDbi(), os);
     }
@@ -206,7 +230,7 @@ class U2SimpleAttributeDbi: public U2AttributeDbi {
 protected:
     U2SimpleAttributeDbi(U2Dbi* rootDbi) : U2AttributeDbi(rootDbi) {}
 
-public:    
+public:
     virtual void removeAttributes(const QList<U2DataId>&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteAttributes, getRootDbi(), os);
     }

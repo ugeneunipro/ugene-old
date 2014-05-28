@@ -18,15 +18,12 @@
 #endif
 #include <U2Gui/HelpButton.h>
 
-#include <memory>
-
 namespace U2{
 
-struct GUrlLess{     
-        bool operator()(GUrl a, GUrl b) const     
-        {
+struct GUrlLess {
+        bool operator()(GUrl a, GUrl b) const {
             return a.getURLString() < b.getURLString();
-        } 
+        }
 }; 
 
 bool MultipleDocumentsReadingModeSelectorController::adjustReadingMode(QVariantMap& props, QList<GUrl>& urls, const QMap<QString, qint64>& headerSequenceLengths){	
@@ -60,8 +57,8 @@ bool MultipleDocumentsReadingModeSelectorController::mergeDocumentOption(const F
             static const int MAX_LINE = 8192;
             char buff[MAX_LINE + 1] = {0};
 
-            std::auto_ptr<LocalFileAdapterFactory> factory( new LocalFileAdapterFactory());
-            std::auto_ptr<IOAdapter> io(factory->createIOAdapter());
+            QScopedPointer<LocalFileAdapterFactory> factory( new LocalFileAdapterFactory());
+            QScopedPointer<IOAdapter> io(factory->createIOAdapter());
             if(!io->open(formatResult.url, IOAdapterMode_Read)){
                 return false;
             }

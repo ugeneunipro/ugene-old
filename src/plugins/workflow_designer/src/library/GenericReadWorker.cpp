@@ -55,8 +55,6 @@
 
 #include <U2Formats/DocumentFormatUtils.h>
 
-#include <memory>
-
 namespace U2 {
 using namespace Workflow;
 namespace LocalWorkflow {
@@ -309,7 +307,7 @@ void LoadSeqTask::run() {
             SharedDbiDataHandler handler = storage->getDataHandler( go->getEntityRef( ) );
             m[BaseSlots::DNA_SEQUENCE_SLOT( ).getId( )] = qVariantFromValue<SharedDbiDataHandler>( handler );
             QList<GObject *> annotations = GObjectUtils::findObjectsRelatedToObjectByRole( go,
-                GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE,
+                GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence,
                 allLoadedAnnotations, UOF_LoadedOnly );
             if ( !annotations.isEmpty( ) ) {
                 QList<AnnotationData> l;
@@ -330,7 +328,7 @@ void LoadSeqTask::run() {
         // if there are annotations that are not connected to a sequence -> put them  independently
         foreach ( GObject *annObj, annObjs ) {
             AnnotationTableObject *att = qobject_cast<AnnotationTableObject *>( annObj );
-            if ( att->findRelatedObjectsByRole( GObjectRelationRole::SEQUENCE ).isEmpty( ) ) {
+            if ( att->findRelatedObjectsByRole( ObjectRole_Sequence ).isEmpty( ) ) {
                 SAFE_POINT( NULL != att, "Invalid annotation table object encountered!", );
                 QVariantMap m;
                 m.insert( BaseSlots::URL_SLOT( ).getId( ), url );

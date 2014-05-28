@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/RawDataUdrSchema.h>
 #include <U2Core/TextObject.h>
 #include <U2Core/U2ObjectDbi.h>
@@ -29,16 +31,15 @@
 
 namespace U2 {
 
+U2Dbi *TextObjectTestData::dbi = NULL;
 bool TextObjectTestData::inited = false;
-const QString TextObjectTestData::UDR_DB_URL = "TextObjectUnitTests.ugenedb";
-TestDbiProvider TextObjectTestData::dbiProvider = TestDbiProvider();
 U2EntityRef TextObjectTestData::objRef = U2EntityRef();
 
 U2DbiRef TextObjectTestData::getDbiRef() {
     if (!inited) {
         init();
     }
-    return dbiProvider.getDbi()->getDbiRef();
+    return dbi->getDbiRef();
 }
 
 U2EntityRef TextObjectTestData::getObjRef() {
@@ -52,28 +53,32 @@ U2ObjectDbi * TextObjectTestData::getObjDbi() {
     if (!inited) {
         init();
     }
-    return dbiProvider.getDbi()->getObjectDbi();
+    return dbi->getObjectDbi();
 }
 
 UdrDbi * TextObjectTestData::getUdrDbi() {
     if (!inited) {
         init();
     }
-    return dbiProvider.getDbi()->getUdrDbi();
+    return dbi->getUdrDbi();
 }
 
 void TextObjectTestData::init() {
-    bool ok = dbiProvider.init(UDR_DB_URL, true);
-    SAFE_POINT(ok, "dbi provider failed to initialize",);
+    U2OpStatusImpl os;
+    U2DbiRef ref;
+    ref.dbiFactoryId = MYSQL_DBI_ID;
+    ref.dbiId = "ugene:@192.168.15.143:6666/ugene";
+    dbi = AppContext::getDbiRegistry()->getGlobalDbiPool()->openDbi(ref, false, os);
+    SAFE_POINT_OP(os, );
+    inited = true;
 
     initData();
-
-    inited = true;
 }
 
 void TextObjectTestData::initData() {
-    U2DbiRef dbiRef = dbiProvider.getDbi()->getDbiRef();
+    U2DbiRef dbiRef = TextObjectTestData::getDbiRef();
     U2RawData object(dbiRef);
+    object.visualName = "Text";
 
     U2OpStatusImpl os;
     RawDataUdrSchema::createObject(dbiRef, object, os);
@@ -89,7 +94,6 @@ void TextObjectTestData::shutdown() {
     if (inited) {
         inited = false;
         U2OpStatusImpl os;
-        dbiProvider.close();
         SAFE_POINT_OP(os, );
     }
 }
@@ -149,6 +153,7 @@ IMPLEMENT_TEST(TextObjectUnitTests, clone_NullDbi) {
 
     U2OpStatusImpl os;
     GObject *clonedGObj = object.clone(U2DbiRef(), os);
+    Q_UNUSED(clonedGObj);
     CHECK_TRUE(os.hasError(), "no error");
 }
 
@@ -159,6 +164,7 @@ IMPLEMENT_TEST(TextObjectUnitTests, clone_NullObj) {
 
     U2OpStatusImpl os;
     GObject *clonedGObj = object.clone(TextObjectTestData::getDbiRef(), os);
+    Q_UNUSED(clonedGObj);
     CHECK_TRUE(os.hasError(), "no error");
 }
 

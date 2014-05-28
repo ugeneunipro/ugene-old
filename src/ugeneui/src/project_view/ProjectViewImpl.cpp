@@ -50,6 +50,7 @@
 #include <U2Core/DNAAlphabet.h>
 
 #include <U2Gui/OpenViewTask.h>
+#include <U2Gui/ProjectViewModel.h>
 #include <U2Gui/UnloadDocumentTask.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/GUIUtils.h>
@@ -57,6 +58,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportDocumentDialogController.h>
 #include <U2Gui/ExportObjectUtils.h>
+#include <U2Gui/ProjectUtils.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceWidget.h>
@@ -67,7 +69,6 @@
 #else
 #include <QtWidgets/QtWidgets>
 #endif
-#include <memory>
 
 namespace U2 {
 
@@ -130,6 +131,11 @@ void DocumentUpdater::update() {
             continue;
         }
 
+        if (GUrl_Network == doc->getURL().getType()) {
+            // It is something like a network connection, skip it
+            continue;
+        }
+
         QFileInfo fi(doc->getURLString());
         if (!doc->isModified() && !fi.exists()) { // file was removed from its directory
             removedDocs.append(doc);
@@ -156,7 +162,7 @@ void DocumentUpdater::update() {
             outdatedDocs.append(doc);
         }
     }
-    
+
     if(!outdatedDocs.isEmpty())
         notifyUserAndReloadDocuments(outdatedDocs);
     if(!removedDocs.isEmpty())
@@ -382,12 +388,6 @@ void DocumentUpdater::reloadDocuments( QList<Document*> docs2Reload ){
 
 ProjectViewWidget::ProjectViewWidget() {
     setupUi(this);
-    groupModeMenu = new QMenu(tr("Group mode"), this);
-    groupModeMenu->setObjectName("group_Mode_Menu");
-    groupModeButton->setMenu(groupModeMenu);
-    groupModeButton->setPopupMode(QToolButton::InstantPopup);
-    groupModeButton->setIcon(QIcon(":ugene/images/project_filter.png"));
-    
     setObjectName(DOCK_PROJECT_VIEW);
     setWindowTitle(tr("Project"));
     setWindowIcon(QIcon(":ugene/images/project.png"));
@@ -497,7 +497,7 @@ void ProjectViewImpl::disable() {
     if (w!=NULL) {
         saveWidgetState(w);
         saveGroupMode(projectTreeController->getModeSettings().groupMode);
-    }    
+    }
 
     Project* pr = AppContext::getProject();
     pr->disconnect(this);
@@ -540,17 +540,13 @@ void ProjectViewImpl::initView() {
     s.loadTaskProvider = this;
     s.markActive = true;
     s.activeFont.setWeight(QFont::Bold);
-    projectTreeController = new ProjectTreeController(w, w->documentTreeWidget, s);
-    projectTreeController->setObjectName("document_Filter_Tree_Controller");
-    connect(projectTreeController, SIGNAL(si_onPopupMenuRequested(QMenu&)), SLOT(sl_onDocTreePopupMenuRequested(QMenu&)));
+    projectTreeController = new ProjectTreeController(w->documentTreeWidget, s, w);
     connect(projectTreeController, SIGNAL(si_doubleClicked(GObject*)), SLOT(sl_onActivated(GObject*)));
-    connect(projectTreeController, SIGNAL(si_returnPressed(GObject*)), SLOT(sl_onActivated(GObject*)));
     connect(projectTreeController, SIGNAL(si_doubleClicked(Document*)), SLOT(sl_onActivated(Document*)));
+    connect(projectTreeController, SIGNAL(si_onPopupMenuRequested(QMenu&)), SLOT(sl_onDocTreePopupMenuRequested(QMenu&)));
+    projectTreeController->setObjectName("document_Filter_Tree_Controller");
+    connect(projectTreeController, SIGNAL(si_returnPressed(GObject*)), SLOT(sl_onActivated(GObject*)));
     connect(projectTreeController, SIGNAL(si_returnPressed(Document*)), SLOT(sl_onActivated(Document*)));
-    
-    w->groupModeMenu->addAction(projectTreeController->getGroupByDocumentAction());
-    w->groupModeMenu->addAction(projectTreeController->getGroupByTypeAction());
-    w->groupModeMenu->addAction(projectTreeController->getGroupFlatAction());
 
     connect(w->nameFilterEdit, SIGNAL(textChanged(const QString&)), SLOT(sl_filterTextChanged(const QString&)));
     w->nameFilterEdit->installEventFilter(this);
@@ -662,7 +658,7 @@ QList<Task*> ProjectViewImpl::createLoadDocumentTasks(const QList<Document*>& do
     QList<Task*> res;
     foreach(Document* doc, docs) {
         Task* t = NULL;
-        if (openViews) {
+        if (openViews && !ProjectUtils::isDatabaseDoc(doc)) {
             t = new LoadUnloadedDocumentAndOpenViewTask(doc);
         } else {
             t = new LoadUnloadedDocumentTask(doc);
@@ -700,6 +696,8 @@ public:
 void ProjectViewImpl::sl_onActivated(GObject* o) {
     SAFE_POINT(o != NULL, "No double-clicked object found", );
 
+    CHECK(!projectTreeController->isObjectInRecycleBin(o), );
+
     GObjectSelection os; os.addToSelection(o);
     MultiGSelection ms; ms.addSelection(&os);
 
@@ -729,13 +727,14 @@ void ProjectViewImpl::sl_onActivated(GObject* o) {
 
 void ProjectViewImpl::sl_onActivated( Document* d){
     SAFE_POINT(d != NULL, "No double-clicked document found", );
+    CHECK(!ProjectUtils::isDatabaseDoc(d), );
 
     MultiGSelection ms;
     GObjectSelection gs;
     DocumentSelection ds; 
 
     if (d->isLoaded()){
-        //find view for loaded objects in document    
+        //find view for loaded objects in document
         gs.addToSelection(d->getObjects());
         ms.addSelection(&gs);
     }else{
@@ -775,9 +774,23 @@ QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, co
     //check if object is already displayed in some view.
     QList<GObjectViewWindow*> views;
     QList<MWMDIWindow*> windows = AppContext::getMainWindow()->getMDIManager()->getWindows();
-    GObjectSelection* objectsSelection = (GObjectSelection*)ms.findSelectionByType(GSelectionTypes::GOBJECTS);
-    if (objectsSelection!=NULL) {
-        QSet<GObject*> objectsInSelection = objectsSelection->getSelectedObjects().toSet();
+    const GObjectSelection *objectsSelection = static_cast<const GObjectSelection *>(ms.findSelectionByType(GSelectionTypes::GOBJECTS));
+    const DocumentSelection *docSelection = static_cast<const DocumentSelection *>(ms.findSelectionByType(GSelectionTypes::DOCUMENTS));
+    if (NULL != docSelection) {
+        foreach (Document *selectedDoc, docSelection->getSelectedDocuments()) {
+            if (ProjectUtils::isDatabaseDoc(selectedDoc)) {
+                return res;
+            }
+        }
+    }
+    if (NULL != objectsSelection) {
+        QSet<GObject *> objectsInSelection = objectsSelection->getSelectedObjects().toSet();
+        foreach (GObject *obj, objectsInSelection) {
+            if (projectTreeController->isObjectInRecycleBin(obj)) {
+                return res;
+            }
+        }
+
         foreach(MWMDIWindow* w, windows) {
             GObjectViewWindow* ov = qobject_cast<GObjectViewWindow*>(w);
             if (ov==NULL) {
@@ -789,7 +802,7 @@ QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, co
             const QList<GObject*>& viewObjects = ov->getObjects();
             bool contains = false;
             foreach(GObject* o, viewObjects) {
-                if (objectsInSelection.contains(o)) {
+                if (objectsInSelection.contains(o) && !projectTreeController->isObjectInRecycleBin(o)) {
                     contains = true;
                     break;
                 }
@@ -797,7 +810,7 @@ QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, co
             if (!contains) {
                 continue;
             }
-            QAction* action = new QAction(tr("activate_view_action_%1").arg(ov->getViewName()), actionsParent);        
+            QAction* action = new QAction(tr("activate_view_action_%1").arg(ov->getViewName()), actionsParent);
             OpenViewContext* c = new OpenViewContext(action, ov->getViewName());
             action->setData(QVariant::fromValue((void*)c));
             connect(action, SIGNAL(triggered()), SLOT(sl_activateView()));
@@ -819,14 +832,14 @@ QList<QAction*> ProjectViewImpl::selectOpenViewActions(GObjectViewFactory* f, co
         res.append(action);
     }
 
-    if (tryActivate && res.size() == 1){
+    if (tryActivate && res.size() == 1) {
         return res;
     }
 
     //check saved state can be activated
     QList<GObjectViewState*> viewStates = GObjectViewUtils::selectStates(f, ms, AppContext::getProject()->getGObjectViewStates());
     foreach(GObjectViewState* s, viewStates) {
-        QAction* action = new QAction(tr("open_state_%1_%2").arg(s->getViewName()).arg(s->getStateName()), actionsParent);        
+        QAction* action = new QAction(tr("open_state_%1_%2").arg(s->getViewName()).arg(s->getStateName()), actionsParent);
         OpenViewContext* c = new OpenViewContext(action, s, f);
         action->setData(QVariant::fromValue((void*)c));
         connect(action, SIGNAL(triggered()), SLOT(sl_openStateView()));
@@ -869,12 +882,12 @@ void ProjectViewImpl::buildAddToViewMenu(const MultiGSelection& ms, QMenu* m) {
         return;
     }
     foreach(GObject* obj, objects) {
-        bool canBeAdded = ow->getObjectView()->canAddObject(obj);
+        bool canBeAdded = ow->getObjectView()->canAddObject(obj) && !projectTreeController->isObjectInRecycleBin(obj);
         if (!canBeAdded) {
             return;
         }
     }
-    QAction* action = new QAction(tr("add_to_view_action_%1").arg(ow->getViewName()), m);        
+    QAction* action = new QAction(tr("add_to_view_action_%1").arg(ow->getViewName()), m);
     AddToViewContext* ac = new AddToViewContext(action, ow->getObjectView(), objects);
     action->setData(QVariant::fromValue((void*)ac));
     action->setObjectName("action_add_view");
@@ -885,7 +898,7 @@ void ProjectViewImpl::buildAddToViewMenu(const MultiGSelection& ms, QMenu* m) {
 void ProjectViewImpl::buildRelocateMenu(QMenu* m) {
     const DocumentSelection* docSelection = getDocumentSelection();
     const GObjectSelection* objSelection = getGObjectSelection();
-    if (!objSelection->isEmpty() || docSelection->getSelectedDocuments().size()!=1) {
+    if (!objSelection->isEmpty() || docSelection->getSelectedDocuments().size() != 1) {
         return;
     }
     Document* doc = docSelection->getSelectedDocuments().first();
@@ -895,7 +908,9 @@ void ProjectViewImpl::buildRelocateMenu(QMenu* m) {
         QList<DocumentFormat*> allWritableFormats;
         foreach(DocumentFormatId id, ids){
             DocumentFormat *format = dfr->getFormatById(id);
-            if (format->checkFlags(DocumentFormatFlag_SupportWriting)){
+            if (format->checkFlags(DocumentFormatFlag_SupportWriting)
+                && !format->checkFlags(DocumentFormatFlag_CannotBeCreated))
+            {
                 allWritableFormats.append(format);
             }
         }
@@ -912,7 +927,7 @@ void ProjectViewImpl::buildRelocateMenu(QMenu* m) {
                 return;
             }
         }
-    } else {
+    } else if (!ProjectUtils::isDatabaseDoc(doc)) {
         m->addAction(relocateDocumentAction);
     }
 }
@@ -936,13 +951,22 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
     buildAddToViewMenu(multiSelection, addToViewMenu);
     addToViewMenu->menuAction()->setObjectName("submenu_add_view");
 
+    bool submenusWereAdded = false;
+
     addToViewMenu->setDisabled(addToViewMenu->isEmpty());
-    m.insertMenu(m.actions().first(), addToViewMenu);
+    if (addToViewMenu->isEnabled()) {
+        m.insertMenu(m.actions().first(), addToViewMenu);
+        submenusWereAdded = true;
+    }
 
     openViewMenu->setDisabled(openViewMenu->isEmpty());
-    m.insertMenu(m.actions().first(), openViewMenu);
-
-    m.addSeparator();
+    if (openViewMenu->isEnabled()) {
+        m.insertMenu(m.actions().first(), openViewMenu);
+        submenusWereAdded = true;
+    }
+    if (submenusWereAdded) {
+        m.addSeparator();
+    }
 
     bool hasModifiedDocs = false;
     foreach(Document* doc, docSelection->getSelectedDocuments()) {
@@ -955,7 +979,32 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
     buildRelocateMenu(&m);
 
     saveSelectedDocsAction->setEnabled(hasModifiedDocs);
-    m.addAction(saveSelectedDocsAction);
+    if (hasModifiedDocs) {
+        m.addAction(saveSelectedDocsAction);
+    }
+
+    if (!getGObjectSelection()->isEmpty()) {
+        const GObjectSelection* objSelection = getGObjectSelection();
+        bool seqobjFound = false;
+        bool allCirc = true;
+        bool allNucl = true;
+        foreach(GObject *obj, objSelection->getSelectedObjects()){
+            if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
+                seqobjFound = true;
+                U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(obj);
+                if (!casted->getAlphabet()->isNucleic()) {
+                    allNucl = false;
+                }
+                if (!casted->isCircular()) {
+                    allCirc = false;
+                }
+            }
+        }
+        if (seqobjFound && allNucl){
+            toggleCircularAction->setChecked(allCirc);
+            m.addAction(toggleCircularAction);
+        }
+    }
 
     if (!getGObjectSelection()->isEmpty()) {
         const GObjectSelection* objSelection = getGObjectSelection();
@@ -995,7 +1044,7 @@ void ProjectViewImpl::sl_activateView() {
 void ProjectViewImpl::sl_openNewView() {
     QAction* action  = (QAction*)sender();
     OpenViewContext* c = static_cast<OpenViewContext*>(action->data().value<void*>());
-    assert(c->factory->canCreateView(c->selection));
+    SAFE_POINT(c->factory->canCreateView(c->selection), "Invalid object view factory!", );
     AppContext::getTaskScheduler()->registerTopLevelTask(c->factory->createViewTask(c->selection));
 }
 
@@ -1040,10 +1089,10 @@ void ProjectViewImpl::sl_onDocumentAdded(Document* /*d*/) {
 //    connect(d, SIGNAL(si_loadedStateChanged()), SLOT(sl_onDocumentLoadedStateChanged()));
 }
 
-void ProjectViewImpl::sl_filterTextChanged(const QString& t) {
-    assert(projectTreeController!=NULL);
+void ProjectViewImpl::sl_filterTextChanged(const QString &str) {
+    SAFE_POINT(NULL != projectTreeController, "NULL controller", );
     ProjectTreeControllerModeSettings settings = projectTreeController->getModeSettings();
-    settings.tokensToShow = t.split(' ', QString::SkipEmptyParts);
+    settings.tokensToShow = str.split(" ", QString::SkipEmptyParts);
     projectTreeController->updateSettings(settings);
 }
 

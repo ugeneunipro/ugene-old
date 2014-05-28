@@ -23,7 +23,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapterUtils.h>
 
-#include <memory>
 #include "Reader.h"
 #include "Index.h"
 #include "BaiReader.h"
@@ -44,9 +43,9 @@ const GUrl& LoadInfoTask::getSourceUrl() const {
     return sourceUrl;
 }
 
-void LoadInfoTask::run() {        
+void LoadInfoTask::run() {
     try {
-        std::auto_ptr<IOAdapter> ioAdapter;
+        QScopedPointer<IOAdapter> ioAdapter;
         {
             IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(sourceUrl));
             ioAdapter.reset(factory->createIOAdapter());
@@ -54,7 +53,7 @@ void LoadInfoTask::run() {
 
         GUrl baiUrl(sourceUrl.getURLString() + ".bai");
         bool hasIndex = true;
-        std::auto_ptr<IOAdapter> ioIndexAdapter;
+        QScopedPointer<IOAdapter> ioIndexAdapter;
         IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(baiUrl));
         ioIndexAdapter.reset(factory->createIOAdapter());
 
@@ -71,7 +70,7 @@ void LoadInfoTask::run() {
             }
         }
 
-        std::auto_ptr<Reader> reader(NULL);
+        QScopedPointer<Reader> reader(NULL);
         if (sam) {
             reader.reset(new SamReader(*ioAdapter));
         } else {
@@ -80,7 +79,7 @@ void LoadInfoTask::run() {
         bamInfo.setHeader(reader->getHeader());
 
         if (!sam) {
-            std::auto_ptr<BaiReader> baiReader(new BaiReader(*ioIndexAdapter));
+            QScopedPointer<BaiReader> baiReader(new BaiReader(*ioIndexAdapter));
             Index index;
             if(hasIndex) {
                 index = baiReader->readIndex();

@@ -664,7 +664,7 @@ void LigateFragmentsTask::createDocument( const QByteArray& seq, const QList<Ann
     aObj->addAnnotations(annotations);
     resultDoc->addObject(aObj);
 
-    aObj->addObjectRelation(dnaObj,GObjectRelationRole::SEQUENCE);
+    aObj->addObjectRelation(dnaObj,ObjectRole_Sequence);
 }
 
 } // U2

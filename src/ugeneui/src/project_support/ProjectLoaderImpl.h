@@ -57,14 +57,14 @@ public:
     
     virtual Project* createProject(const QString& name, const QString& url, QList<Document*>& documents, QList<GObjectViewState*>& states);
 
-    virtual QAction* getAddExistingDocumentAction(){return addExistingDocumentAction;};
+    virtual QAction* getAddExistingDocumentAction() { return addExistingDocumentAction; }
     
     static QString getLastProjectURL();
 
 private:
 
     void updateState();
-	void updateRecentProjectsMenu();
+    void updateRecentProjectsMenu();
     void prependToRecentProjects(const QString& pFile);
     void updateRecentItemsMenu();
     void prependToRecentItems(const QString& url);
@@ -75,15 +75,16 @@ private slots:
     void sl_newProject();
     void sl_newDocumentFromText();
     void sl_openProject();
-	void sl_openRecentFile();
+    void sl_openRecentFile();
     void sl_openRecentProject();
     void sl_serviceStateChanged(Service* s, ServiceState prevState);
     void sl_documentAdded(Document* doc);
     void sl_documentStateChanged();
     void sl_projectURLChanged(const QString& oldURL);
     void sl_onAddExistingDocument();
-    
-	void sl_downloadRemoteFile();
+
+    void sl_downloadRemoteFile();
+    void sl_accessSharedDatabase();
     void sl_searchGenbankEntry();
 
 
@@ -92,15 +93,16 @@ private slots:
     
 private:
     QAction* addExistingDocumentAction;
-	QAction* newProjectAction;
-	QAction* openProjectAction;
+    QAction* newProjectAction;
+    QAction* openProjectAction;
     QAction* downloadRemoteFileAction;
+    QAction* accessSharedDatabaseAction;
     QAction* searchGenbankEntryAction;
     QAction* newDocumentFromtext;
     QAction* separatorAction1;
-	QAction* separatorAction2;
+    QAction* separatorAction2;
 
-	QMenu* recentProjectsMenu;
+    QMenu* recentProjectsMenu;
     QMenu* recentItemsMenu;
 };
 

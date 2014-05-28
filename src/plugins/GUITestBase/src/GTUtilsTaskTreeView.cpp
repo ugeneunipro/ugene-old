@@ -43,7 +43,7 @@ namespace U2 {
 const QString GTUtilsTaskTreeView::widgetName = DOCK_TASK_TREE_VIEW;
 
 
-void GTUtilsTaskTreeView::waitTaskFinidhed(U2OpStatus &os, long timeout){
+void GTUtilsTaskTreeView::waitTaskFinished(U2OpStatus &os, long timeout){
 
 
     TaskScheduler* scheduller = AppContext::getTaskScheduler();

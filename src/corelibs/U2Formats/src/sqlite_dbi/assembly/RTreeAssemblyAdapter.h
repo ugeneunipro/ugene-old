@@ -23,14 +23,14 @@
 #define _U2_SQLITE_ASSEMBLY_RTREE_DBI_H_
 
 #include "../SQLiteAssemblyDbi.h"
-#include "AssemblyPackAlgorithm.h"
+#include "util/AssemblyPackAlgorithm.h"
 
 #include <U2Core/U2SqlHelpers.h>
 
 namespace U2 {
 
 
-class RTreeAssemblyAdapter : public AssemblyAdapter {
+class RTreeAssemblyAdapter : public SQLiteAssemblyAdapter {
 public:
     RTreeAssemblyAdapter(SQLiteDbi* dbi, const U2DataId& assemblyId, const AssemblyCompressor* compressor, DbRef* ref, U2OpStatus& os);
 
@@ -48,6 +48,7 @@ public:
 
     virtual void addReads(U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os);
     virtual void removeReads(const QList<U2DataId>& readIds, U2OpStatus& os);
+    virtual void dropReadsTables(U2OpStatus& os);
 
     virtual void pack(U2AssemblyPackStat& stat, U2OpStatus& os);
     virtual void calculateCoverage(const U2Region& region, U2AssemblyCoverageStat& c, U2OpStatus& os);

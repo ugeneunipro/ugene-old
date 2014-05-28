@@ -22,6 +22,7 @@
 #include <QtGui/QTextDocument>
 
 #include <U2Core/AnnotationModification.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/AnnotationTableObject.h>
@@ -39,7 +40,7 @@ namespace U2 {
 Annotation::Annotation( const U2DataId &featureId,AnnotationTableObject *_parentObject )
     : U2Entity( featureId ), parentObject( _parentObject )
 {
-    //SAFE_POINT( NULL != parentObject && hasValidId( ), "Invalid feature table detected!", );
+
 }
 
 Annotation::~Annotation( ) {
@@ -355,6 +356,14 @@ bool Annotation::isValidQualifierName( const QString &n ) {
 bool Annotation::isValidQualifierValue( const QString & /*v*/ ) {
     // todo: check whitespaces!
     return true;
+}
+
+bool Annotation::operator ==( const Annotation &other ) const {
+    return id == other.id && parentObject == other.getGObject( );
+}
+
+bool Annotation::operator <( const Annotation &other ) const {
+    return ( U2DbiUtils::toDbiId( id ) + parentObject ) < ( U2DbiUtils::toDbiId( other.id ) + other.getGObject( ) );
 }
 
 bool Annotation::isValidAnnotationName( const QString &n ) {

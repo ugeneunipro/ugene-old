@@ -21,24 +21,25 @@
 
 #include "ProjectTreeItemSelectorDialog.h"
 #include "ProjectTreeItemSelectorDialogImpl.h"
-#include "ProjectTreeController.h"
 
 #include <U2Core/DocumentModel.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
-#include <QtGui/QTreeWidget>
+#include <QtGui/QTreeView>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QSpacerItem>
 #else
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QTreeView>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QSpacerItem>
 #endif
+
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/ProjectTreeController.h>
 
 namespace U2 {
 
@@ -47,7 +48,7 @@ ProjectTreeItemSelectorDialogImpl::ProjectTreeItemSelectorDialogImpl(QWidget* p,
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "4227206");
-    controller = new ProjectTreeController(this, treeWidget, s);
+    controller = new ProjectTreeController(treeView, s, this);
     connect(controller, SIGNAL(si_doubleClicked(GObject*)), this, SLOT(sl_objectClicked(GObject*)));
     acceptByDoubleClick = false;
 
@@ -92,6 +93,25 @@ QList<GObject*> ProjectTreeItemSelectorDialog::selectObjects(const ProjectTreeCo
         res << os->getSelectedObjects();
     }
     return res;
+}
+
+void ProjectTreeItemSelectorDialog::selectObjectsAndDocuments(const ProjectTreeControllerModeSettings& s,
+                                                              QWidget* p,
+                                                              QList<Document*>& docList,
+                                                              QList<GObject*>& objList) {
+    ProjectTreeItemSelectorDialogImpl d(p, s);
+    int rc = d.exec();
+    if (rc == QDialog::Accepted) {
+        const GObjectSelection* os = d.controller->getGObjectSelection();
+        const DocumentSelection* ds = d.controller->getDocumentSelection();
+
+        docList << ds->getSelectedDocuments();
+        foreach (GObject* obj, os->getSelectedObjects()) {
+            if (!docList.contains(obj->getDocument())) {
+                objList << obj;
+            }
+        }
+    }
 }
 
 }//namespace

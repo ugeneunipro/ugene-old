@@ -1,4 +1,3 @@
-
 /**
  * UGENE - Integrated Bioinformatics Tools.
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
@@ -22,8 +21,12 @@
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QScopedPointer>
+#include <QtScript/QScriptEngine>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DeleteObjectsTask.h>
+#include <U2Core/DocumentUtils.h>
 #include <U2Core/GHints.h>
 #include <U2Core/GObject.h>
 #include <U2Core/GObjectUtils.h>
@@ -39,7 +42,6 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UnloadedObject.h>
-#include <U2Core/DocumentUtils.h>
 
 #include "DocumentModel.h"
 
@@ -48,6 +50,7 @@ namespace U2 {
 const QString DocumentFormat::CREATED_NOT_BY_UGENE = DocumentFormat::tr( "The document is created not by UGENE" );
 const QString DocumentFormat::MERGED_SEQ_LOCK = DocumentFormat::tr( "Document sequences were merged" );
 const QString DocumentFormat::DBI_REF_HINT("dbi_alias");
+const QString DocumentFormat::DBI_FOLDER_HINT("dbi_folder");
 const QString DocumentMimeData::MIME_TYPE("application/x-ugene-document-mime");
 
 Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const GUrl& url,
@@ -89,6 +92,7 @@ Document* DocumentFormat::loadDocument(IOAdapterFactory* iof, const GUrl& url, c
     if ( dbiRef.isValid( ) ) {
         DbiConnection con(dbiRef, os);
         CHECK_OP(os, NULL);
+        Q_UNUSED(con);
 
         res = loadDocument(io.data(), dbiRef, hints, os);
         CHECK_OP(os, NULL);
@@ -159,15 +163,18 @@ bool DocumentFormat::checkConstraints(const DocumentFormatConstraints& c) const 
         return false; //raw data is not matched
     }
 
-    foreach (GObjectType objType, c.supportedObjectTypes) {
-        if (!supportedObjectTypes.contains(objType)) { // the object type is not in the supported list
-            return false;
-        } else if ( c.allowPartialTypeMapping ) { // at least one type is supported
-            return true;
+    bool areTypesSatisfied = !c.allowPartialTypeMapping;
+    foreach (const GObjectType &objType, c.supportedObjectTypes) {
+        if (c.allowPartialTypeMapping && supportedObjectTypes.contains(objType)) { // at least one type is supported
+            areTypesSatisfied = true;
+            break;
+        } else if (!c.allowPartialTypeMapping && !supportedObjectTypes.contains(objType)) { // the object type is not in the supported list
+            areTypesSatisfied = false;
+            break;
         }
     }
     
-    return true;
+    return areTypesSatisfied;
 }
 
 void DocumentFormat::storeEntry(IOAdapter *, const QMap< GObjectType, QList<GObject*> > &, U2OpStatus &os) {
@@ -251,23 +258,6 @@ Document *Document::getSimpleCopy(DocumentFormat *df, IOAdapterFactory *io, cons
     return result;
 }
 
-static void deallocateDbiResources(GObject* obj, DbiConnection &con, U2OpStatus &os) {
-    SAFE_POINT(obj != NULL, "NULL object was provided!",);
-    U2EntityRef objRef = obj->getEntityRef();
-
-    if (objRef.isValid()) {
-        U2DbiRef dbiRef = objRef.dbiRef;
-
-        if (dbiRef.isValid()) {
-            SAFE_POINT(NULL != con.dbi, "NULL Dbi during deallocating dbi resources!", );
-            if (con.dbi->getFeatures().contains(U2DbiFeature_RemoveObjects)) {
-                con.dbi->getObjectDbi()->removeObject(objRef.entityId, os);
-            }
-        }
-    }
-}
-
-
 Document::~Document() {
     for (int i=0;i<DocumentModLock_NUM_LOCKS; i++) {
         StateLock* sl = modLocks[i];
@@ -280,14 +270,8 @@ Document::~Document() {
 
     if (isDocumentOwnsDbiResources()) {
         if (dbiRef.isValid()) {
-            U2OpStatus2Log os;
-            DbiConnection con(dbiRef, os);
-            CHECK_OP(os, );
-            DbiOperationsBlock opBlock(dbiRef, os);
-            CHECK_OP(os, );
-            foreach (GObject* obj, objects) {
-                deallocateDbiResources(obj, con, os);
-            }
+            DeleteObjectsTask *deleteTask = new DeleteObjectsTask(objects);
+            AppContext::getTaskScheduler()->registerTopLevelTask(deleteTask);
         }
 
         foreach (GObject* obj, objects) {
@@ -296,6 +280,10 @@ Document::~Document() {
     }
 
     delete ctxState;
+}
+
+GObject * Document::getObjectById(const U2DataId &id) const {
+    return id2Object.value(id, NULL);
 }
 
 void Document::addObject(GObject* obj){
@@ -313,6 +301,7 @@ void Document::_addObjectToHierarchy(GObject* obj) {
     obj->setGHints(new ModTrackHints(this, obj->getGHintsMap(), true));
     obj->setModified(false);
     objects.append(obj);
+    id2Object.insert(obj->getEntityRef().entityId, obj);
 }
 
 void Document::_addObject(GObject* obj) {
@@ -320,36 +309,55 @@ void Document::_addObject(GObject* obj) {
     assert(objects.size() == getChildItems().size());
     emit si_objectAdded(obj);
 }
-void Document::removeObject(GObject* obj) {
+
+bool Document::removeObject(GObject* obj, DocumentObjectRemovalMode removalMode) {
     assert(df->isObjectOpSupported(this, DocumentFormat::DocObjectOp_Remove, obj->getGObjectType()));
     assert(!obj->isTreeItemModified());
-    _removeObject(obj);
+
+    switch (removalMode) {
+    case DocumentObjectRemovalMode_Deallocate:
+        return _removeObject(obj, true);
+    case DocumentObjectRemovalMode_OnlyNotify:
+        emit si_objectRemoved(obj);
+        break;
+    case DocumentObjectRemovalMode_Release:
+        return _removeObject(obj, false);
+    }
+
+    return true;
 }
 
-void Document::_removeObject(GObject* obj, bool deleteObjects) {
-    assert(obj->getParentStateLockItem() == this);
+bool Document::_removeObject(GObject* obj, bool deleteObjects) {
+    SAFE_POINT(obj->getParentStateLockItem() == this, "Invalid parent document!", false);
+
+    if (obj->entityRef.isValid()) {
+        U2OpStatus2Log os;
+        DbiConnection con(obj->entityRef.dbiRef, os);
+        if (con.dbi->getObjectDbi()->isObjectInUse(obj->entityRef.entityId, os)) {
+            return false;
+        }
+    }
+
     obj->setModified(false);
 
     obj->setParentStateLockItem(NULL);
     objects.removeOne(obj);
+    id2Object.remove(obj->getEntityRef().entityId);
     obj->setGHints(new GHintsDefaultImpl(obj->getGHintsMap()));
 
-    assert(objects.size() == getChildItems().size());
+    SAFE_POINT(objects.size() == getChildItems().size(), "Invalid child object count!", false);
 
     emit si_objectRemoved(obj);
-    
+
     if (deleteObjects) {
-        if (obj->entityRef.isValid()) {
-            U2OpStatus2Log os;
-            DbiConnection con(obj->getEntityRef().dbiRef, os);
-            deallocateDbiResources(obj, con, os);
-        }
+        DeleteObjectsTask *deleteTask = new DeleteObjectsTask(QList<GObject *>() << obj);
+        AppContext::getTaskScheduler()->registerTopLevelTask(deleteTask);
         delete obj;
     }
+    return true;
 }
 
-
-void Document::makeClean()  {
+void Document::makeClean() {
     if (!isTreeItemModified()) {
         return;
     }
@@ -358,8 +366,6 @@ void Document::makeClean()  {
         obj->setModified(false);
     }
 }
-
-
 
 GObject* Document::findGObjectByName(const QString& name) const {
     foreach(GObject* obj, objects) {
@@ -380,7 +386,9 @@ void Document::checkUnloadedState() const {
     assert(!isLoaded());
     bool hasNoLoadedObjects = findGObjectByType(GObjectTypes::UNLOADED, UOF_LoadedAndUnloaded).count() == objects.count();
     assert(hasNoLoadedObjects);
-    checkUniqueObjectNames();
+    if (!df->checkFlags(DocumentFormatFlag_AllowDuplicateNames)) {
+        checkUniqueObjectNames();
+    }
 #endif
 }
 
@@ -399,7 +407,9 @@ void Document::checkLoadedState() const {
     assert(isLoaded());
     bool hasNoUnloadedObjects = findGObjectByType(GObjectTypes::UNLOADED, UOF_LoadedAndUnloaded).isEmpty();
     assert(hasNoUnloadedObjects);
-    checkUniqueObjectNames();
+    if (!df->checkFlags(DocumentFormatFlag_AllowDuplicateNames)) {
+        checkUniqueObjectNames();
+    }
 #endif
 }
 
@@ -437,11 +447,11 @@ void Document::loadFrom(Document* sourceDoc) {
     
     foreach(GObject* obj, objects) { //remove all unloaded objects but save hints
         unloadedInfo.insert(obj->getGObjectName(), UnloadedObjectInfo(obj));
-        _removeObject(obj);
+        _removeObject(obj, documentOwnsDbiResources);
     }
 
     ctxState->setAll(sourceDoc->getGHints()->getMap());
-    
+
     lastUpdateTime = sourceDoc->getLastUpdateTime();
 
     //copy instance mod-locks if any
@@ -481,10 +491,10 @@ void Document::loadFrom(Document* sourceDoc) {
         }
         _addObject(obj);
     }
-    setLoaded(true); 
-    
+    setLoaded(true);
+
     //TODO: rebind local objects relations if url!=d.url
-    
+
     loadStateChangeMode = false;
 
     checkLoadedState();
@@ -610,7 +620,8 @@ void Document::setUserModLock(bool v) {
 bool Document::unload(bool deleteObjects) {
     assert(isLoaded());
     DocumentChildEventsHelper eventsHelper(this);
-    
+    Q_UNUSED(eventsHelper);
+
     bool liveLocked = hasLocks(StateLockableTreeFlags_ItemAndChildren, StateLockFlag_LiveLock);
     if (liveLocked) {
         assert(0);
@@ -620,7 +631,7 @@ bool Document::unload(bool deleteObjects) {
     loadStateChangeMode = true;
 
     QList<UnloadedObjectInfo> unloadedInfo;
-    foreach(GObject* obj, objects) { //Note: foreach copies object list
+    foreach(GObject* obj, objects) {
         unloadedInfo.append(UnloadedObjectInfo(obj));
         _removeObject(obj, deleteObjects);
     }
@@ -646,9 +657,14 @@ const U2DbiRef& Document::getDbiRef() const {
     return dbiRef;
 }
 
+bool Document::isDatabaseConnection() const {
+    return BaseDocumentFormats::DATABASE_CONNECTION == df->getFormatId();
+}
+
 void Document::setModified(bool modified, const QString& modType) {
+    CHECK(!isDatabaseConnection(), );
     if (loadStateChangeMode && modified && modType == StateLockModType_AddChild) { //ignore modification events during loading/unloading
-        return;    
+        return;
     }
     StateLockableTreeItem::setModified(modified, modType);
 }
@@ -687,25 +703,28 @@ void Document::addUnloadedObjects(const QList<UnloadedObjectInfo>& info) {
         UnloadedObject* obj = new UnloadedObject(oi);
         _addObjectToHierarchy(obj);
         assert(obj->getDocument() == this);
-        emit si_objectAdded(obj);    
+        emit si_objectAdded(obj);
     }
 }
 
 QVariantMap Document::getGHintsMap() const {
     return ctxState->getMap();
 }
+
 void Document::setupToEngine(QScriptEngine *engine)
 {
     qScriptRegisterMetaType(engine, toScriptValue, fromScriptValue);
-};
+}
+
 QScriptValue Document::toScriptValue(QScriptEngine *engine, Document* const &in)
 {
-    return engine->newQObject(in); 
-};
+    return engine->newQObject(in);
+}
+
 void Document::fromScriptValue(const QScriptValue &object, Document* &out) 
 {
     out = qobject_cast<Document*>(object.toQObject()); 
-};
+}
 
 void Document::setLastUpdateTime() {
     QFileInfo fi(getURLString());
@@ -728,7 +747,7 @@ void Document::propagateModLocks(Document* doc)  const {
 DocumentMimeData::DocumentMimeData( Document* obj ) 
     : objPtr(obj){
     setUrls(QList<QUrl>() << QUrl(GUrlUtils::gUrl2qUrl(obj->getURL())));
-};
+}
 
 }//namespace
 

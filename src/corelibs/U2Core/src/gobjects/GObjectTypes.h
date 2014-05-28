@@ -31,14 +31,16 @@ namespace U2 {
 class U2CORE_EXPORT GObjectTypeInfo {
 public:
     GObjectTypeInfo(){}
-    GObjectTypeInfo(const GObjectType& _type, const QString& _name, const QString& _pluralName, const QString& treeSign, const QString iconURL);
+    GObjectTypeInfo(const GObjectType& _type, const QString& _name, const QString& _pluralName, const QString& treeSign, const QString iconURL, const QString& lockedIconUrl);
 
     GObjectType type;
     QString     name;
     QString     pluralName;
     QString     treeSign;
     QString     iconURL;
+    QString     lockedIconUrl;
     QIcon       icon;
+    QIcon       lockedIcon;
 };
 
 class U2CORE_EXPORT GObjectTypes {

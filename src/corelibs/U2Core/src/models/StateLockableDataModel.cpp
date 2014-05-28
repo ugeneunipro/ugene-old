@@ -53,9 +53,9 @@ static void checkThread(const StateLockableItem* i) {
         assert(appThread == thisThread);
         assert(appThread == itemThread);
     }
-#else 
+#else
     Q_UNUSED(i);
-#endif    
+#endif
 }
 
 
@@ -114,7 +114,8 @@ bool StateLockableTreeItem::isStateLocked() const {
 }
 
 bool StateLockableTreeItem::isMainThreadModificationOnly() const {
-    return StateLockableItem::isMainThreadModificationOnly() || (parentStateLockItem != NULL && parentStateLockItem->isMainThreadModificationOnly()); 
+    return StateLockableItem::isMainThreadModificationOnly() ||
+            (NULL != parentStateLockItem && parentStateLockItem->isMainThreadModificationOnly());
 }
 
 void StateLockableTreeItem::lockState(StateLock* lock) {
@@ -190,7 +191,7 @@ void StateLockableTreeItem::setParentStateLockItem(StateLockableTreeItem* newPar
     SAFE_POINT(parentStateLockItem == NULL || parentStateLockItem->isModificationAllowed(StateLockModType_AddChild), 
         "Add-child modification is not allowed for old parent item!",);
 
-    StateLockableTreeItem* oldParent = parentStateLockItem; 
+    StateLockableTreeItem* oldParent = parentStateLockItem.data();
     parentStateLockItem = newParent;
     setParent(newParent);
     
@@ -225,7 +226,7 @@ void StateLockableTreeItem::setModified(bool newModifiedState, const QString& mo
     }
     itemIsModified = newModifiedState;
 
-    bool parentUpdate = parentStateLockItem && numModifiedChildren == 0;
+    bool parentUpdate = (NULL != parentStateLockItem && numModifiedChildren == 0);
     
     if (itemIsModified && parentUpdate) { // let parent become modified first
         parentStateLockItem->increaseNumModifiedChilds(1);
@@ -248,7 +249,7 @@ void StateLockableTreeItem::increaseNumModifiedChilds(int n) {
     numModifiedChildren+=n;
 
     bool becomeModified = numModifiedChildren == n && !itemIsModified;
-    if (parentStateLockItem) {
+    if (NULL != parentStateLockItem) {
         parentStateLockItem->increaseNumModifiedChilds(n + (becomeModified  ? 1 : 0) );
     }
     if (becomeModified) {
@@ -265,7 +266,7 @@ void StateLockableTreeItem::decreaseNumModifiedChilds(int n) {
 
     bool becomeClean = numModifiedChildren == 0 && !itemIsModified;
 
-    if (parentStateLockItem) {
+    if (NULL != parentStateLockItem) {
         parentStateLockItem->decreaseNumModifiedChilds(n + (becomeClean ? 1 : 0));
     }
 

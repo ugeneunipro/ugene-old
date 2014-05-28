@@ -104,11 +104,10 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
         label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         label->setSizePolicy(QSizePolicy::Expanding, label->sizePolicy().verticalPolicy());
         d.userSelectedFormat = new QComboBox();
-        foreach(DocumentFormatId id, AppContext::getDocumentFormatRegistry()->getRegisteredFormats()){
-            QString formatName = AppContext::getDocumentFormatRegistry()->getFormatById(id)->getFormatName();
-            if(!detectedIds.contains(id)){
-                d.userSelectedFormat->insertItem(0, formatName, id);
-            }
+        const DocumentFormatRegistry *formatRegistry = AppContext::getDocumentFormatRegistry();
+        foreach ( const DocumentFormatId &id, detectedIds) {
+            const QString formatName = formatRegistry->getFormatById(id)->getFormatName();
+            d.userSelectedFormat->insertItem(0, formatName, id);
         }
 
         hbox->addWidget(rb);

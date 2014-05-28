@@ -107,7 +107,7 @@ void SQLiteSNPTablesDbi::initSqlSchema(U2OpStatus& os){
 }
 void SQLiteSNPTablesDbi::createDamageEffect( DamageEffect& effect, U2OpStatus& os ){
     if (effect.variant.isEmpty()) {
-        os.setError(SQLiteL10N::tr("Variant is not set!"));
+        os.setError(U2DbiL10n::tr("Variant is not set!"));
         return;
     }
 
@@ -245,7 +245,7 @@ void SQLiteSNPTablesDbi::removeAllRegulatoryEffectForVariant(const U2Variant& va
 void SQLiteSNPTablesDbi::createFilterTable( FilterTable& table, const QString& filterName, U2OpStatus& os )
 {
     if (filterName.isEmpty()) {
-        os.setError(SQLiteL10N::tr("Filter name is not set!"));
+        os.setError(U2DbiL10n::tr("Filter name is not set!"));
         return;
     }
 
@@ -294,7 +294,7 @@ void SQLiteSNPTablesDbi::removeFilterTable( const FilterTable& table, U2OpStatus
 void SQLiteSNPTablesDbi::renameFilterTable (const U2DataId& fTable, const QString& newName, U2OpStatus& os)
 {
     if (newName.isEmpty()) {
-        os.setError(SQLiteL10N::tr("New filter name is not set!"));
+        os.setError(U2DbiL10n::tr("New filter name is not set!"));
         return;
     }
 

@@ -22,7 +22,7 @@
 #ifndef _U2_MAFFT_SUPPORT_TASK_H
 #define _U2_MAFFT_SUPPORT_TASK_H
 
-#include "utils/ExportTasks.h"
+#include <QtCore/QFile>
 
 #include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/IOAdapter.h>
@@ -32,6 +32,7 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/Task.h>
 
+#include "utils/ExportTasks.h"
 
 namespace U2 {
 

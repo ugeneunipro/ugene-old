@@ -58,7 +58,7 @@ void SQLiteObjectDbiTestData::init() {
     // Init DBI
     sqliteDbi = new SQLiteDbi();
     QHash<QString, QString> initProperties;
-    initProperties[U2_DBI_OPTION_URL] = url;
+    initProperties[U2DbiOptions::U2_DBI_OPTION_URL] = url;
     U2OpStatusImpl os;
     sqliteDbi->init(initProperties, QVariantMap(), os);
     SAFE_POINT_OP(os, );
@@ -144,7 +144,7 @@ void SQLiteObjectDbiTestData::addTestRow(const U2DataId& msaId, U2OpStatus& os) 
     seq.circular = false;
     seq.trackModType = NoTrack;
     seq.visualName = "Test sequence";
-    sqliteDbi->getSQLiteSequenceDbi()->createSequenceObject(seq, "", os);
+    sqliteDbi->getSQLiteSequenceDbi()->createSequenceObject(seq, "", os, U2DbiObjectRank_TopLevel);
     SAFE_POINT_OP(os, );
 
     U2MsaRow row;
@@ -1006,7 +1006,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, commonUndoRedo_user3Single6) {
     seq.circular = false;
     seq.trackModType = NoTrack;
     seq.visualName = "Test sequence";
-    sqliteDbi->getSQLiteSequenceDbi()->createSequenceObject(seq, "", os);
+    sqliteDbi->getSQLiteSequenceDbi()->createSequenceObject(seq, "", os, U2DbiObjectRank_TopLevel);
     CHECK_NO_ERROR(os);
 
     U2MsaRow row;

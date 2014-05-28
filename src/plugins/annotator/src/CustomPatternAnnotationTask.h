@@ -24,11 +24,13 @@
 
 #include <QtCore/QSharedPointer>
 
-#include <U2Core/Task.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Algorithm/SArrayBasedFindTask.h>
+#include <U2Algorithm/SArrayIndex.h>
+
 #include <U2Core/AnnotationData.h>
+#include <U2Core/AutoAnnotationsSupport.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/Task.h>
 
 namespace U2 {
    

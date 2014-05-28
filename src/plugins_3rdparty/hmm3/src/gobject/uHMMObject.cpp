@@ -30,8 +30,9 @@ const QString UHMMObject::OT_NAME  = "Hidden Markov model";
 const QString UHMMObject::OT_PNAME = "Hidden Markov models";
 const QString UHMMObject::OT_SIGN  = "hmm";
 const QString UHMMObject::OT_ICON  = "";
+const QString UHMMObject::OT_LOCKED_ICON  = "";
 const GObjectType UHMMObject::UHMM_OT = 
-    GObjectTypes::registerTypeInfo( GObjectTypeInfo( OT_ID, OT_NAME, OT_PNAME, OT_SIGN, OT_ICON ) );
+    GObjectTypes::registerTypeInfo( GObjectTypeInfo( OT_ID, OT_NAME, OT_PNAME, OT_SIGN, OT_ICON, OT_LOCKED_ICON ) );
 
 
 UHMMObject::UHMMObject( P7_HMM* ahmm, const QString& name ) : GObject( UHMM_OT, name ), hmm( ahmm ) {

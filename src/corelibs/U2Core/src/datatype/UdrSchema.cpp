@@ -33,8 +33,8 @@ const QByteArray UdrSchema::RECORD_ID_FIELD_NAME("record_id");
 const QByteArray UdrSchema::OBJECT_FIELD_NAME("object");
 const int UdrSchema::OBJECT_FIELD_NUM = 0;
 
-UdrSchema::FieldDesc::FieldDesc(const QByteArray &name, UdrSchema::DataType dataType, UdrSchema::IndexType indexType, U2DataType objectType)
-: name(name), dataType(dataType), indexType(indexType), objectType(objectType)
+UdrSchema::FieldDesc::FieldDesc(const QByteArray &name, UdrSchema::DataType dataType, UdrSchema::IndexType indexType)
+: name(name), dataType(dataType), indexType(indexType)
 {
 
 }
@@ -51,22 +51,11 @@ UdrSchema::IndexType UdrSchema::FieldDesc::getIndexType() const {
     return indexType;
 }
 
-U2DataType UdrSchema::FieldDesc::getObjectType() const {
-    SAFE_POINT(ID == dataType, "Not ID datatype", objectType);
-    return objectType;
-}
-
-UdrSchema::UdrSchema(const UdrSchemaId &id)
-: id(id), withObjectReference(false)
-{
-
-}
-
-UdrSchema::UdrSchema(const UdrSchemaId &id, U2DataType objectType)
-: id(id), withObjectReference(true)
+UdrSchema::UdrSchema(const UdrSchemaId &id, bool useObjectReference)
+: id(id), withObjectReference(useObjectReference)
 {
     U2OpStatusImpl os;
-    addField(FieldDesc(OBJECT_FIELD_NAME, ID, INDEXED, objectType), os);
+    addField(FieldDesc(OBJECT_FIELD_NAME, ID, INDEXED), os);
     SAFE_POINT_OP(os, );
 }
 
@@ -116,6 +105,44 @@ int UdrSchema::size() const {
 UdrSchema::FieldDesc UdrSchema::getField(int fieldNum, U2OpStatus &os) const {
     CHECK_EXT(0 <= fieldNum && fieldNum < size(), os.setError("Out of range"), FieldDesc("", INTEGER));
     return fields[fieldNum];
+}
+
+QStringList UdrSchema::fieldNames(const UdrSchema *schema, U2OpStatus &os, const QList<int> &nums) {
+    QStringList result;
+    QList<int> target = nums;
+    if (nums.isEmpty()) {
+        for (int i=0; i<schema->size(); i++) {
+            target << i;
+        }
+    }
+    foreach (int fieldNum, target) {
+        UdrSchema::FieldDesc field = schema->getField(fieldNum, os);
+        CHECK_OP(os, result);
+        result << field.getName();
+    }
+    return result;
+}
+
+QList<int> UdrSchema::notBinary(const UdrSchema *schema, U2OpStatus &os) {
+    QList<int> result;
+    for (int i=0; i<schema->size(); i++) {
+        UdrSchema::FieldDesc field = schema->getField(i, os);
+        CHECK_OP(os, result);
+        if (UdrSchema::BLOB != field.getDataType()) {
+            result << i;
+        }
+    }
+    return result;
+}
+
+UdrSchema::FieldDesc UdrSchema::getBlobField(const UdrSchema *schema, int fieldNum, U2OpStatus &os) {
+    UdrSchema::FieldDesc field = schema->getField(fieldNum, os);
+    CHECK_OP(os, field);
+
+    if (UdrSchema::BLOB != field.getDataType()) {
+        os.setError("Only BLOB fields can be used");
+    }
+    return field;
 }
 
 bool UdrSchema::hasObjectReference() const {

@@ -28,8 +28,8 @@
 #include <QtWidgets/QMessageBox>
 #endif
 
-
 #include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GObjectUtils.h>
@@ -75,11 +75,9 @@ Task::ReportResult UnloadDocumentTask::report() {
         coreLog.error(stateInfo.getError());
         return Task::ReportResult_Finished;
     }
-    bool ok = doc->unload();
-    if (!ok) {
-        stateInfo.setError(errPrefix + tr("unexpected error"));
-        coreLog.error(stateInfo.getError());
-    }
+    bool ok = doc->unload(doc->isDocumentOwnsDbiResources());
+    CHECK_EXT(ok, stateInfo.setError(errPrefix + tr("unexpected error")),
+        Task::ReportResult_Finished);
     return Task::ReportResult_Finished;
 }
 

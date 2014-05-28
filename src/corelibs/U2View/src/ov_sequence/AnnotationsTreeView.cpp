@@ -1440,6 +1440,9 @@ void AnnotationsTreeView::finishDragAndDrop(Qt::DropAction dndAction) {
         case Qt::CopyAction :
             g.addAnnotation(dndAdded.at(i).getData());
             break;
+        default: {
+            // do nothing
+            }
         }
         i++;
     }
@@ -2125,14 +2128,14 @@ bool AVAnnotationItem::operator<(const QTreeWidgetItem & other) const {
     }
     const AVAnnotationItem& ai = (const AVAnnotationItem&)other;
     if (col == 0) {
-        QString name1 = annotation.getName();
-        QString name2 = ai.annotation.getName();
-        if (name1 == name2) { 
+        const AnnotationData aData1 = annotation.getData();
+        const AnnotationData aData2 = ai.annotation.getData();
+        if (aData1.name == aData2.name) {
             // for annotations with equal names we compare locations
             // this allows to avoid resorting on lazy qualifier loading
-            return annotation.getLocation()->regions[0] < ai.annotation.getLocation()->regions[0];
+            return aData1.location->regions[0] < aData2.location->regions[0];
         }
-        return name1 < name2;
+        return aData1.name < aData2.name;
     }
     if (col == 1 || (isColumnNumeric(col) && ai.isColumnNumeric(col))) {
         double oval = ai.getNumericVal(col);

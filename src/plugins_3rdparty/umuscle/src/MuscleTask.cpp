@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <memory>
-
 #include "MuscleTask.h"
 #include "MuscleParallel.h"
 #include "MuscleAdapter.h"
@@ -511,6 +509,7 @@ void MuscleWithExtFileSpecifySupportTask::prepare(){
     c.checkRawData = true;
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
     c.rawData = IOAdapterUtils::readFileHeader(config.inputFilePath);
+    c.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
         stateInfo.setError("input_format_error");

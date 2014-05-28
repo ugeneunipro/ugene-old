@@ -95,8 +95,8 @@ Task* RCWorker::tick() {
         }
         QVariantMap qm = inputMessage.getData().toMap();
         SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
-        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-        if (NULL == seqObj.get()) {
+        QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (seqObj.isNull()) {
             return new FailTask(tr("Null sequence object supplied to FindWorker"));
         }
         DNASequence seq = seqObj->getWholeSequence();

@@ -54,6 +54,9 @@ public :
     void                        renameAnnotationTableObject( const U2DataId &tableId,
                                     const QString &name, U2OpStatus &os );
 
+    void                        removeAnnotationTableData( const U2DataId &tableId,
+                                    U2OpStatus &os );
+
     U2Feature                   getFeature( const U2DataId &featureId, U2OpStatus &os );
 
     qint64                      countFeatures( const FeatureQuery &q, U2OpStatus &os );

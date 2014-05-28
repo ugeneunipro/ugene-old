@@ -116,10 +116,10 @@ void CufflinksSupportTask::prepare()
     tmpDoc = docFormat->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), GUrl(settings.url), stateInfo);
     CHECK_OP(stateInfo, );
 
-    std::auto_ptr<AssemblyObject> assObj(
+    QScopedPointer<AssemblyObject> assObj(
         Workflow::StorageUtils::getAssemblyObject(settings.storage, settings.assemblyId));
 
-    if (NULL == assObj.get()) {
+    if (assObj.isNull()) {
         stateInfo.setError(tr("Unable to get an assembly object."));
         return;
     }

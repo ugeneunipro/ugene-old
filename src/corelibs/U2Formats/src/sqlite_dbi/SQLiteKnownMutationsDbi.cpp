@@ -48,11 +48,11 @@ void SQLiteKnownMutationsDbi::initSqlSchema( U2OpStatus& os ){
 
 void SQLiteKnownMutationsDbi::createKnownMutationsTrack( KnownMutationsTrack& mutationsTrack, U2OpStatus& os ){
     if (mutationsTrack.chrNumber == 0) {
-        os.setError(SQLiteL10N::tr("chrNumber is not set!"));
+        os.setError(U2DbiL10n::tr("chrNumber is not set!"));
         return;
     }
 
-    dbi->getSQLiteObjectDbi()->createObject(mutationsTrack, "", SQLiteDbiObjectRank_TopLevel, os);
+    dbi->getSQLiteObjectDbi()->createObject(mutationsTrack, "", U2DbiObjectRank_TopLevel, os);
     SAFE_POINT_OP(os,);
 
     SQLiteQuery q1("INSERT INTO KnownMutationsTrack(object, chromosome) VALUES(?1, ?2)", db, os);

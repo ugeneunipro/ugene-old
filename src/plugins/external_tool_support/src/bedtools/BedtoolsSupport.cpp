@@ -64,7 +64,7 @@ BedtoolsSupport::BedtoolsSupport(const QString& name, const QString& path) : Ext
     }
 }
 
-void BedtoolsSupport::sl_validationStatusChanged( bool newStatus ){
+void BedtoolsSupport::sl_validationStatusChanged( bool /*newStatus*/ ){
     ConvertFactoryRegistry* registry = AppContext::getConvertFactoryRegistry();
     if (isValid()){
         registry->registerConvertFactory(new BAMBEDConvertFactory());

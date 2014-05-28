@@ -72,7 +72,7 @@ DbiDataStorage::~DbiDataStorage() {
 
 bool DbiDataStorage::init() {
     U2OpStatusImpl os;
-    dbiHandle = new TmpDbiHandle(WORKFLOW_SESSION_TMP_DBI_ALIAS, os);
+    dbiHandle = new TmpDbiHandle(WORKFLOW_SESSION_TMP_DBI_ALIAS, os, MYSQL_DBI_ID);
     CHECK_OP(os, false);
 
     QScopedPointer<DbiConnection> connection(new DbiConnection(dbiHandle->getDbiRef(), os));
@@ -124,7 +124,7 @@ U2Object *DbiDataStorage::getObject(const SharedDbiDataHandler &handler, const U
         SAFE_POINT_OP(os, NULL);
 
         return new U2AnnotationTable(annTable);
-    } else if (U2Type::RawData == type) {
+    } else if (U2Type::Text == type) {
         U2RawData rawData = RawDataUdrSchema::getObject(handler->entRef, os);
         SAFE_POINT_OP(os, NULL);
 
@@ -274,8 +274,7 @@ AssemblyObject *StorageUtils::getAssemblyObject(DbiDataStorage *storage, const S
     U2EntityRef assemblyRef(handler->getDbiRef(), assembly->id);
     QString objName = assembly->visualName;
 
-    QVariantMap hints;
-    return new AssemblyObject(assemblyRef, objName, hints);
+    return new AssemblyObject(objName, assemblyRef);
 }
 
 MAlignmentObject *StorageUtils::getMsaObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
@@ -330,11 +329,11 @@ QString StorageUtils::getText(DbiDataStorage *storage, const QVariant &data) {
     if (data.canConvert<SharedDbiDataHandler>()) {
         SharedDbiDataHandler handler = data.value<SharedDbiDataHandler>();
         //QScopedPointer<U2RawData> rawData(dynamic_cast<U2RawData*>(storage->getObject(handler, RawData)));
-        QScopedPointer<U2RawData> rawData(dynamic_cast<U2RawData*>(storage->getObject(handler, 101)));
+        QScopedPointer<U2RawData> rawData(dynamic_cast<U2RawData*>(storage->getObject(handler, 102)));
         CHECK(NULL != rawData.data(), "");
 
         U2EntityRef objRef(storage->getDbiRef(), rawData->id);
-        TextObject textObj("", objRef);
+        TextObject textObj(rawData->visualName, objRef);
         return textObj.getText();
     } else if (data.canConvert<QString>()) {
         return data.toString();

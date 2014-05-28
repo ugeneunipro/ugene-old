@@ -58,8 +58,8 @@ public:
 
         Requires: U2DbiFeature_WriteSequence feature support
     */
-    virtual void createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os) = 0;
-
+    virtual void createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os,
+        U2DbiObjectRank rank = U2DbiObjectRank_TopLevel) = 0;
 
     /** 
         Updates sequence object fields.

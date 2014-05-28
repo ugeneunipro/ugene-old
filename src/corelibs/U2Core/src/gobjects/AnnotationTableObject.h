@@ -136,6 +136,9 @@ signals:
                                 const AnnotationGroup &removed );
     void                    si_onGroupRenamed( const AnnotationGroup & );
 
+protected:
+    void                    loadDataCore( U2OpStatus &os );
+
 private:
     void                    removeAnnotationFromDb( const Annotation &a );
     void                    copyFeaturesToObject( const U2Feature &feature,

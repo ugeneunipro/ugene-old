@@ -71,8 +71,8 @@ public:
     static bool getMemoryHint(int& currentMemory, int &maxMemory, int resetMax);
 };
 
-/** Common localization messages for SQLiteDBI*/
-class U2CORE_EXPORT SQLiteL10n : public QObject {
+/** Common localization messages for U2Dbi*/
+class U2CORE_EXPORT U2DbiL10n : public QObject {
     Q_OBJECT
 public:
     static QString queryError(const QString& err);
@@ -85,8 +85,6 @@ public:
     An optimized and simplified interface for U2DBI needs.
 */
 class U2CORE_EXPORT SQLiteQuery  {
-private:
-    
 public:
     /** 
         Constructs prepared statement for SQLiteDB
@@ -121,6 +119,9 @@ public:
     
     //////////////////////////////////////////////////////////////////////////
     // param binding methods
+
+    /** Binds NULL value  */
+    void bindNull(int idx);
 
     /** Binds U2DataId  */
     void bindDataId(int idx, const U2DataId& val);
@@ -195,9 +196,6 @@ public:
 
     /** Selects a single int64 value, if no results found returns default value */
     qint64 selectInt64(qint64 defaultValue);
-
-    /** Selects a single U2DataId value */
-    U2DataId selectDataId(U2DataType type, const QByteArray& dbExtra = QByteArray());
 
     /** Select list of ids and adds 'type' parameter to construct U2DataId */
     QList<U2DataId> selectDataIds(U2DataType type, const QByteArray& dbExtra = QByteArray());
@@ -280,7 +278,7 @@ public:
 /** SQL query result set iterator */
 template<class T> class SqlRSIterator : public U2DbiIterator<T> {
 public:
-    SqlRSIterator(QSharedPointer<SQLiteQuery> q, SqlRSLoader<T>* l, SqlRSFilter<T>* f, const T& d, U2OpStatus& o) 
+    SqlRSIterator(QSharedPointer<SQLiteQuery> q, SqlRSLoader<T>* l, SqlRSFilter<T>* f, const T& d, U2OpStatus& o)
         : query(q), loader(l), filter(f), defaultValue(d), os(o), endOfStream(false)
     {
         fetchNext();
@@ -341,7 +339,7 @@ public:
     SqlDataIdRSLoader(U2DataType _type, const QByteArray& _dbExra = QByteArray()) : type(_type), dbExtra(_dbExra){}
     U2DataId load(SQLiteQuery* q) { return q->getDataId(0, type, dbExtra);}
 
-protected:    
+protected:
     U2DataType type;
     QByteArray dbExtra;
 };
@@ -351,11 +349,10 @@ public:
     SqlDataIdRSLoaderEx(const QByteArray& _dbExra = QByteArray()) : dbExtra(_dbExra){}
     U2DataId load(SQLiteQuery* q) { return q->getDataId(0, q->getDataType(1), dbExtra);}
 
-protected:    
+protected:
     U2DataType type;
     QByteArray dbExtra;
 };
-
 
 #define DBI_TYPE_CHECK(dataId,  expectedType, os, res)\
     if (!dataId.isEmpty()) {\
@@ -365,8 +362,7 @@ protected:
             return res;\
         }\
     }\
-    
 
-} //namespace
+} // namespace U2
 
-#endif
+#endif // _U2_SQL_HELPERS_H_

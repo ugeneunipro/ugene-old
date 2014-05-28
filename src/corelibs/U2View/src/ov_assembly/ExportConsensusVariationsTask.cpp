@@ -19,7 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportConsensusVariationsTask.h"
+#include <QtCore/QFileInfo>
+
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/DocumentModel.h>
@@ -31,6 +32,8 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Formats/DocumentFormatUtils.h>
 #include <U2Gui/OpenViewTask.h>
+
+#include "ExportConsensusVariationsTask.h"
 
 namespace U2 {
 

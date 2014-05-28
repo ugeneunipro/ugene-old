@@ -60,8 +60,6 @@
 
 #include <U2Gui/DialogUtils.h>
 
-#include <memory>
-
 namespace U2 {
 namespace LocalWorkflow {
 
@@ -351,8 +349,8 @@ bool SWWorker::isReady() {
 Task* SWWorker::tick() {
     while (patternPort->hasMessage()) {
         SharedDbiDataHandler ptrnId = patternPort->get().getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
-        std::auto_ptr<U2SequenceObject> ptrnObj(StorageUtils::getSequenceObject(context->getDataStorage(), ptrnId));
-        if (NULL == ptrnObj.get()) {
+        QScopedPointer<U2SequenceObject> ptrnObj(StorageUtils::getSequenceObject(context->getDataStorage(), ptrnId));
+        if (NULL == ptrnObj.data()) {
             return NULL;
         }
         DNASequence ptrn = ptrnObj->getWholeSequence();
@@ -377,8 +375,8 @@ Task* SWWorker::tick() {
         
         // sequence
         SharedDbiDataHandler seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
-        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-        if (NULL == seqObj.get()) {
+        QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (NULL == seqObj.data()) {
             return NULL;
         }
         DNASequence seq = seqObj->getWholeSequence();

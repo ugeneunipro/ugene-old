@@ -37,6 +37,12 @@ public:
     // Current QT version
     static Version qtVersion();
 
+    // Minimum UGENE version whose SQLite databases are compatible with this version
+    static Version minVersionForSQLite();
+
+    // minimum UGENE version whose MySQL databases are compatible with this version
+    static Version minVersionForMySQL();
+
     static Version parseVersion(const QString& text);
 
     bool operator  >  (const Version& v) const;

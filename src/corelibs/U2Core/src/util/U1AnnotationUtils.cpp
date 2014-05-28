@@ -284,7 +284,7 @@ void U1AnnotationUtils::addAnnotations( QList<GObject *> &objects,
             SAFE_POINT_OP( os, );
             annotationsObject = new AnnotationTableObject( sequenceRef.objName + " features", dbiRef );
             annotationsObject->addObjectRelation(
-                GObjectRelation( sequenceRef, GObjectRelationRole::SEQUENCE ) );
+                GObjectRelation( sequenceRef, ObjectRole_Sequence ) );
         }
         annotationsObject->addAnnotations( annList );
         if ( !objects.contains( annotationsObject ) ) {
@@ -299,7 +299,7 @@ QList<U2Region> U1AnnotationUtils::getRelatedLowerCaseRegions( const U2SequenceO
     QList<GObject *> aos;
     if ( NULL != so->getDocument( ) ) {
         aos = GObjectUtils::findObjectsRelatedToObjectByRole( so, GObjectTypes::ANNOTATION_TABLE,
-            GObjectRelationRole::SEQUENCE, anns, UOF_LoadedOnly );
+            ObjectRole_Sequence, anns, UOF_LoadedOnly );
     } else {
         aos = anns;
     }

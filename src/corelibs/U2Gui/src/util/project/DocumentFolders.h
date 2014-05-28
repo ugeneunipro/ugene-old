@@ -1,0 +1,133 @@
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
+
+#ifndef _U2_DOCUMENTFOLDERS_H_
+#define _U2_DOCUMENTFOLDERS_H_
+
+#include <QtCore/QStringList>
+
+#include <U2Core/Folder.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2Type.h>
+
+namespace U2 {
+
+class GObject;
+
+class DocumentFoldersUpdate {
+public:
+    DocumentFoldersUpdate();
+    DocumentFoldersUpdate(const U2DbiRef &dbiRef, U2OpStatus &os);
+    QStringList folders; // all folders
+    QHash<U2DataId, QString> objectIdFolders; // objectId -> path
+    QHash<U2Object, QString> u2objectFolders; // U2Object -> path
+};
+
+/**
+ * The auxiliary class for encapsulating object <-> folder info
+ */
+class FolderObjectTreeStorage {
+public:
+    bool hasObject(const U2DataId &id) const;
+    GObject * getObject(const U2DataId &id) const;
+    void addObject(GObject *obj, const QString &path);
+    void removeObject(GObject *obj, const QString &path);
+    void moveObject(GObject *obj, const QString &oldPath, const QString &newPath);
+    QString getObjectFolder(GObject *obj) const;
+
+    QList<GObject*> getObjectsNatural(const QString &path) const;
+
+    const DocumentFoldersUpdate & getLastUpdate() const;
+
+protected:
+    void setLastUpdate(const DocumentFoldersUpdate &value);
+    const QStringList & allFolders() const;
+    void addFolderToStorage(const QString &path); // insert sorted
+    void removeFolderFromStorage(const QString &path);
+    bool hasFolderInfo(const U2DataId &id) const;
+    bool hasFolderInfo(GObject *obj) const;
+    QString getFolderByObjectId(const U2DataId &id) const;
+
+    /** Returns the insertion pos */
+    static int insertSorted(const QString &value, QStringList &list);
+
+private:
+    /**
+     * Four structures:
+     *    1) lastUpdate.objectIdFolders
+     *    2) objectsIds
+     *    3) objectFolders
+     *    4) folderObjects
+     * can be only simultaneously modified! Support the consistency for them!
+     */
+    DocumentFoldersUpdate lastUpdate;
+    QHash<U2DataId, GObject*> objectsIds; // objectId -> GObject
+    QHash<GObject*, QString> objectFolders; // GObject -> path
+    QHash<QString, QList<GObject *> > folderObjects; // path -> GObject
+};
+
+class DocumentFolders : public FolderObjectTreeStorage {
+public:
+    DocumentFolders();
+    void init(Document *doc, U2OpStatus &os);
+
+    bool hasFolder(const QString &path) const;
+    Folder * getFolder(const QString &path) const;
+    void addFolder(const QString &path);
+    void removeFolder(const QString &path);
+    void renameFolder(const QString &oldPath, const QString &newPath);
+
+    int getNewFolderRowInParent(const QString &path) const;
+    int getNewFolderRowInRecycleBin(const QString &path) const;
+    int getNewObjectRowInParent(GObject *obj, const QString &parentPath) const;
+    QList<Folder*> getSubFolders(const QString &path) const;
+    QList<GObject*> getObjects(const QString &path) const;
+    bool isRootRecycleBinFolder(const QString &path) const;
+    QStringList getAllSubFolders(const QString &path) const;
+
+    static QString getParentFolder(const QString &path);
+
+private:
+    QStringList calculateSubFoldersNames(const QString &parentPath) const;
+    QStringList calculateRecycleBinSubFoldersPaths() const;
+    QList<Folder*> & cacheSubFoldersNames(const QString &parentPath, const QStringList &subFoldersNames) const;
+    QList<Folder*> & cacheRecycleBinSubFoldersPaths(const QStringList &subFoldersPaths) const;
+    void onFolderAdded(const QString &path); // updates caches
+    void onFolderAddedToRecycleBin(const QString &path); // updates caches
+    void onFolderRemoved(Folder *folder); // updates caches
+    void onFolderRenamed(const QString &oldPath, const QString &newPath); // updates caches
+    QList<Folder*> getSubFoldersNatural(const QString &path) const; // without recycle bin rules
+    void addFolderToCache(const QString &path);
+
+private:
+    Document *doc;
+
+    mutable QHash<QString, Folder *> foldersMap; // path -> Folder
+
+    mutable QHash<QString, bool> hasCachedSubFolders;
+    mutable QHash<QString, QStringList> cachedSubFoldersNames; // sorted
+    mutable QHash<QString, QList<Folder *> > cachedSubFolders;
+    mutable QStringList cachedRecycleBinFolders;
+};
+
+} // U2
+
+#endif // _U2_DOCUMENTFOLDERS_H_

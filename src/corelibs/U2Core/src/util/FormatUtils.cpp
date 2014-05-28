@@ -162,6 +162,9 @@ QString FormatUtils::prepareDocumentsFileFilter(bool any, const QStringList& ext
     QStringList result;
     foreach(DocumentFormatId id , ids) {
         DocumentFormat* df = fr->getFormatById(id);
+        if (df->checkFlags(DocumentFormatFlag_CannotBeCreated)) {
+            continue;
+        }
         QStringList effectiveExtra = getExtra(df, extra);
         result << prepareFileFilter(df->getFormatName(), df->getSupportedDocumentFileExtensions(), false, effectiveExtra);
     }
@@ -180,10 +183,12 @@ QString FormatUtils::prepareDocumentsFileFilter(bool any, const QStringList& ext
 QString FormatUtils::prepareDocumentsFileFilter(const DocumentFormatConstraints& c, bool any) {
     QStringList result;
 
+    DocumentFormatConstraints internalConstraints(c);
+    internalConstraints.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> ids = AppContext::getDocumentFormatRegistry()->getRegisteredFormats();
     foreach(const DocumentFormatId& id, ids) {
         DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(id);
-        if (df->checkConstraints(c)) {
+        if (df->checkConstraints(internalConstraints)) {
             result.append(prepareDocumentsFileFilter(id, false));
         }
     }

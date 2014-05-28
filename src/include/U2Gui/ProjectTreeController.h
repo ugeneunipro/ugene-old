@@ -1,1 +1,1 @@
-#include "../../corelibs/U2Gui/src/util/ProjectTreeController.h"
+#include "../../corelibs/U2Gui/src/util/project/ProjectTreeController.h"

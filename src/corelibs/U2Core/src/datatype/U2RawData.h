@@ -35,14 +35,8 @@ public:
     U2RawData() : U2Object() {}
     U2RawData(const U2DbiRef &dbiRef) : U2Object(U2DataId(), dbiRef.dbiId, 0) {}
 
-    /** The url which the data is taken from */
-    QString url;
-
     /** The identifier of a serializer which the data is packed by */
     QString serializer;
-
-    // implement U2Object
-    virtual U2DataType getType() { return U2Type::RawData; }
 };
 
 } // U2

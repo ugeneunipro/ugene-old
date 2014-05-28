@@ -31,9 +31,9 @@ namespace U2 {
 class U2CORE_EXPORT AssemblyObject : public GObject {
     Q_OBJECT
 public:
-    AssemblyObject(const U2EntityRef& ref, const QString& objectName, const QVariantMap& hints);
+    AssemblyObject(const QString& objectName, const U2EntityRef& ref, const QVariantMap& hints = QVariantMap());
 
-    virtual GObject* clone(const U2DbiRef&, U2OpStatus& ) const;
+    GObject * clone(const U2DbiRef &, U2OpStatus &) const;
 
     static U2EntityRef dbi2dbiClone(const AssemblyObject *const srcObj, const U2DbiRef &dstDbiRef, U2OpStatus &os);
 };

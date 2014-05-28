@@ -19,32 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QStringList>
+#include <time.h>
 
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/Log.h>
-#include <U2Core/L10n.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/BioStruct3DObject.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/TextUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2AlphabetUtils.h>
-#include <U2Core/U2DbiUtils.h>
+#include <QtCore/QStringList>
 
 #include <U2Algorithm/MolecularSurface.h>
 
-#include <time.h>
-#include <memory>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/BioStruct3DObject.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
+#include <U2Core/Log.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "DocumentFormatUtils.h"
 #include "PDBFormat.h"
-
 
 namespace U2 {
 
@@ -749,9 +748,12 @@ Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, Bio
 {
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, NULL);
+    Q_UNUSED(opBlock);
+
     QList<GObject*> objects;
     QMap<AnnotationTableObject *, U2SequenceObject *> relationsMap;
     QString objectName = bioStruct.pdbId.isEmpty() ? url.baseFileName() : bioStruct.pdbId;
+    const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
 
     BioStruct3DObject* biostrucObj = BioStruct3DObject::createInstance(bioStruct, objectName, dbiRef, os, fs);
     CHECK_OP(os, NULL);
@@ -766,7 +768,7 @@ Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, Bio
         dnaSeq.info.insert(DNAInfo::DEFINITION, sequenceName);
         dnaSeq.info.insert(DNAInfo::COMMENT, bioStruct.descr);
         dnaSeq.info.insert(DNAInfo::CHAIN_ID, key);
-        U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, sequenceName, objects, dnaSeq, os);
+        U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, folder, sequenceName, objects, dnaSeq, os);
         SAFE_POINT(seqObj, QString("Got NULL object from DocumentFormatUtils addSequenceObjectDeprecated, os.error = %1").arg(os.getError()), NULL);
         dbiObjects.objects << seqObj->getSequenceRef().entityId;
         if (os.isCoR()) {
@@ -775,7 +777,7 @@ Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, Bio
 
         // create AnnnotationTableObject
         AnnotationTableObject *aObj = new AnnotationTableObject( QString( bioStruct.pdbId )
-            + QString( " chain %1 annotation" ).arg( key ), dbiRef );
+            + QString( " chain %1 annotation" ).arg( key ), dbiRef, fs );
         foreach ( SharedAnnotationData sd, anns.value( key ) ) {
             aObj->addAnnotation( *sd );
         }
@@ -792,9 +794,9 @@ Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, Bio
     for (i = relationsMap.constBegin(); i != relationsMap.constEnd(); ++i) {
         U2SequenceObject* dnao = i.value();
         AnnotationTableObject *ao = i.key();
-        ao->addObjectRelation(dnao, GObjectRelationRole::SEQUENCE);
-        biostrucObj->addObjectRelation(dnao, GObjectRelationRole::SEQUENCE);
-        biostrucObj->addObjectRelation(ao, GObjectRelationRole::ANNOTATION_TABLE);
+        ao->addObjectRelation(dnao, ObjectRole_Sequence);
+        biostrucObj->addObjectRelation(dnao, ObjectRole_Sequence);
+        biostrucObj->addObjectRelation(ao, ObjectRole_AnnotationTable);
     }
 
     return doc;

@@ -47,8 +47,6 @@
 #include <QtWidgets/QFileDialog>
 #endif
 
-#include <memory>
-
 namespace U2 {
 
 bool isNoWritePermission(GUrl &url) {
@@ -128,11 +126,11 @@ void SaveDocumentTask::run() {
             CHECK_EXT(copied == true, stateInfo.setError(tr("Can't copy file to tmp file while trying to save document by append")), );
         }
 
-        // save document to tmp file, auto_ptr will release file in destructor
+        // save document to tmp file, QScopedPointer will release file in destructor
         {
-            std::auto_ptr<IOAdapter> io(IOAdapterUtils::open(GUrl(tmpFileName), stateInfo, flags.testFlag(SaveDoc_Append)? IOAdapterMode_Append: IOAdapterMode_Write));
+            QScopedPointer<IOAdapter> io(IOAdapterUtils::open(GUrl(tmpFileName), stateInfo, flags.testFlag(SaveDoc_Append)? IOAdapterMode_Append: IOAdapterMode_Write));
             CHECK_OP(stateInfo, );
-            df->storeDocument(doc, io.get(), stateInfo);
+            df->storeDocument(doc, io.data(), stateInfo);
         }
 
         // remove old file and rename tmp file
@@ -148,9 +146,9 @@ void SaveDocumentTask::run() {
         CHECK_EXT(renamed == true, stateInfo.setError(tr("Can't rename saved tmp file to original file")), );
     }
     else {
-        std::auto_ptr<IOAdapter> io(IOAdapterUtils::open(url, stateInfo, flags.testFlag(SaveDoc_Append)? IOAdapterMode_Append: IOAdapterMode_Write));
+        QScopedPointer<IOAdapter> io(IOAdapterUtils::open(url, stateInfo, flags.testFlag(SaveDoc_Append)? IOAdapterMode_Append: IOAdapterMode_Write));
         CHECK_OP(stateInfo, );
-        df->storeDocument(doc, io.get(), stateInfo);
+        df->storeDocument(doc, io.data(), stateInfo);
     }
 }
 

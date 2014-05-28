@@ -25,9 +25,6 @@
 #include <U2Core/L10n.h>
 
 #include <QtCore/QString>
-#include <QtCore/QByteArray>
-
-#include <memory>
 
 namespace U2 {
 
@@ -41,8 +38,8 @@ urlFrom(_urlFrom), urlTo(_urlTo)
 }
 
 void CopyDataTask::run() {
-    std::auto_ptr<IOAdapter> from( ioFrom->createIOAdapter() );
-    std::auto_ptr<IOAdapter> where( ioTo->createIOAdapter() );
+    QScopedPointer<IOAdapter> from( ioFrom->createIOAdapter() );
+    QScopedPointer<IOAdapter> where( ioTo->createIOAdapter() );
     from->open( urlFrom, IOAdapterMode_Read );
     if (!from->isOpen()) {
         stateInfo.setError(L10N::errorOpeningFileRead(urlFrom));

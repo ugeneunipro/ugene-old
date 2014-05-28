@@ -45,13 +45,10 @@
 #include <QtWidgets/QFileDialog>
 #endif
 
-#include <memory>
-
 namespace U2 {
 
 const QString RemoteMachineMonitorDialogImpl::OK_BUTTON_RUN = RemoteMachineMonitorDialogImpl::tr( "Run" );
 const QString RemoteMachineMonitorDialogImpl::SAVE_SETTINGS_FILE_DOMAIN = "rservice";
-
 
 static LogFilter prepareLogFilter() {
     LogFilter res;
@@ -265,7 +262,7 @@ void RemoteMachineMonitorDialogImpl::sl_removePushButtonClicked() {
 bool RemoteMachineMonitorDialogImpl::removeDialogItemAt( int row ) {
     assert( 0 <= row && row < machinesItemsByOrder.size() );
     RemoteMachineItemInfo & itemToRemove = machinesItemsByOrder[row];
-    std::auto_ptr<QTreeWidgetItem> treeItemToRemove ( machinesTreeWidget->takeTopLevelItem( row ) );
+    QScopedPointer<QTreeWidgetItem> treeItemToRemove ( machinesTreeWidget->takeTopLevelItem( row ) );
     rmm->removeMachineConfiguration(itemToRemove.settings);
     machinesItemsByOrder.removeAt( row );
     
@@ -485,19 +482,19 @@ void RemoteMachineMonitorDialogImpl::sl_showUserTasksButtonClicked() {
         return;
     }
 
-    std::auto_ptr<QDialog> dlg(pi->getProtocolUI()->createUserTasksDialog(settings, this));
+    QScopedPointer<QDialog> dlg(pi->getProtocolUI()->createUserTasksDialog(settings, this));
     dlg->exec();
 }
 
 bool RemoteMachineMonitorDialogImpl::checkCredentials( const RemoteMachineSettingsPtr& settings ) {
     const UserCredentials& credentials = settings->getUserCredentials();
     if (!credentials.valid) {
-        AuthDialog dlg(this);
+        AuthenticationDialog dlg("", this);
         int rc = dlg.exec();
         if ( QDialog::Rejected == rc ) {
             return false;
         }  
-        settings->setupCredentials(dlg.getUserName(), dlg.getPasswd(), dlg.rememberAuthData());
+        settings->setupCredentials(dlg.getLogin(), dlg.getPassword(), dlg.isRemembered());
     }
     return true;
 }

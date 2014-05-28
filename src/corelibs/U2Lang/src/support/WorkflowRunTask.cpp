@@ -40,8 +40,7 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/U2SafePoints.h>
-#include <QtCore/QFile>
-#include <QtCore/QFileInfo>
+
 #include <QtCore/QDir>
 #include <QCoreApplication>
 

@@ -76,7 +76,7 @@ MSAEditorTreeManager::MSAEditorTreeManager(MSAEditor* _editor )
 
 void MSAEditorTreeManager::loadRelatedTrees() {
     msaObject = editor->getMSAObject();
-    QList<GObjectRelation> relatedTrees = editor->getMSAObject()->findRelatedObjectsByRole(GObjectRelationRole::PHYLOGENETIC_TREE); 
+    QList<GObjectRelation> relatedTrees = editor->getMSAObject()->findRelatedObjectsByRole(ObjectRole_PhylogeneticTree); 
     CHECK(!relatedTrees.isEmpty(),);
 
     foreach(const GObjectRelation rel, relatedTrees) {
@@ -221,7 +221,7 @@ void MSAEditorTreeManager::sl_openTree(Task* treeBuildTask) {
     if(isNewDocument) {
         GObjectReference treeRef(treeFileName, "", GObjectTypes::PHYLOGENETIC_TREE);
         treeRef.objName = newObj->getGObjectName();
-        msaObject->addObjectRelation(GObjectRelation(treeRef, GObjectRelationRole::PHYLOGENETIC_TREE));
+        msaObject->addObjectRelation(GObjectRelation(treeRef, ObjectRole_PhylogeneticTree));
     }
 
     Task* saveTask = new SaveDocumentTask(d);

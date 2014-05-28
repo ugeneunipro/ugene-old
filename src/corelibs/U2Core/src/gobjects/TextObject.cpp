@@ -20,7 +20,9 @@
  */
 
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/RawDataUdrSchema.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -28,11 +30,28 @@
 
 namespace U2 {
 
-TextObject * TextObject::createInstance(const QString &text, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap) {
-    U2RawData object(dbiRef);
-    object.url = objectName;
+/////// U2Text Implementation ///////////////////////////////////////////////////////////////////
 
-    RawDataUdrSchema::createObject(dbiRef, object, os);
+U2Text::U2Text() : U2RawData() {
+
+}
+
+U2Text::U2Text(const U2DbiRef &dbiRef) : U2RawData(dbiRef) {
+
+}
+
+U2DataType U2Text::getType() {
+    return U2Type::Text;
+}
+
+/////// TextObject Implementation ///////////////////////////////////////////////////////////////////
+
+TextObject * TextObject::createInstance(const QString &text, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap) {
+    U2Text object(dbiRef);
+    object.visualName = objectName;
+
+    const QString folder = hintsMap.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+    RawDataUdrSchema::createObject(dbiRef, folder, object, os);
     CHECK_OP(os, NULL);
 
     U2EntityRef entRef(dbiRef, object.id);
@@ -51,6 +70,7 @@ TextObject::TextObject(const QString &objectName, const U2EntityRef &textRef, co
 QString TextObject::getText() const {
     U2OpStatus2Log os;
     QByteArray content = RawDataUdrSchema::readAllContent(entityRef, os);
+    SAFE_POINT_OP(os, QString());
     return QString::fromUtf8(content);
 }
 
@@ -60,7 +80,8 @@ void TextObject::setText(const QString &newText) {
 }
 
 GObject * TextObject::clone(const U2DbiRef &dstRef, U2OpStatus &os) const {
-    U2RawData dstObject = RawDataUdrSchema::cloneObject(entityRef, dstRef, os);
+    U2Text dstObject;
+    RawDataUdrSchema::cloneObject(entityRef, dstRef, dstObject, os);
     CHECK_OP(os, NULL);
 
     U2EntityRef dstEntRef(dstRef, dstObject.id);

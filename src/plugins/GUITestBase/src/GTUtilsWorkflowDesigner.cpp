@@ -347,7 +347,6 @@ void GTUtilsWorkflowDesigner::connect(U2OpStatus &os, WorkflowProcessItem * from
 
 QList<WorkflowProcessItem*> GTUtilsWorkflowDesigner::getWorkers(U2OpStatus &os){
     QList<WorkflowProcessItem*> result;
-    QWidget* w = GTWidget::findWidget(os,"sceneView");
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
     QList<QGraphicsItem *> items = sceneView->items();
     foreach(QGraphicsItem* it, items){

@@ -179,7 +179,7 @@ SearchQuery *GenomeAlignerDbiReader::read() {
         return NULL;
     }
     reads.clear();
-    if (dbiIterator.get() == NULL) {
+    if (dbiIterator.data() == NULL) {
         dbiIterator.reset(rDbi->getReads(assembly.id, wholeAssembly, status));
     }
     if (dbiIterator->hasNext()) {

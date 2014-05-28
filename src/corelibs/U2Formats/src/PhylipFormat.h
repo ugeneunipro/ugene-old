@@ -38,7 +38,7 @@ public:
     virtual void storeDocument(Document* d, IOAdapter* io, U2OpStatus& os);
 
 protected:
-    MAlignmentObject* load(IOAdapter* io, const U2DbiRef& dbiRef, U2OpStatus& os);
+    MAlignmentObject* load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap &fs, U2OpStatus& os);
     bool parseHeader(QByteArray data, int &species, int &characters) const;
     void removeSpaces(QByteArray &data) const;
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);

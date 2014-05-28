@@ -270,7 +270,7 @@ void ADVSequenceObjectContext::addSequenceWidget(ADVSequenceWidget* w) {
 
 void ADVSequenceObjectContext::addAnnotationObject( AnnotationTableObject *obj ) {
     SAFE_POINT( !annotations.contains( obj ), "Unexpected annotation table!", );
-    SAFE_POINT( obj->hasObjectRelation( seqObj, GObjectRelationRole::SEQUENCE ),
+    SAFE_POINT( obj->hasObjectRelation( seqObj, ObjectRole_Sequence ),
         "Annotation table relates to unexpected sequence!", );
     annotations.insert( obj );
     emit si_annotationObjectAdded( obj );

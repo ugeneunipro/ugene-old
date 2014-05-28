@@ -19,26 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#include "SCFFormat.h"
-#include "IOLibUtils.h"
-#include "DocumentFormatUtils.h"
+#include <QtCore/QFile>
+#include <QtCore/QVarLengthArray>
 
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/IOAdapter.h>
 #include <U2Core/DNAAlphabet.h>
-#include <U2Core/GObjectReference.h>
-#include <U2Core/L10n.h>
-
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/DNAChromatogramObject.h>
-#include <U2Core/U2OpStatus.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObjectReference.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
 #include <U2Core/TextUtils.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2SafePoints.h>
 
-/* TRANSLATOR U2::SCFFormat */    
+#include "DocumentFormatUtils.h"
+#include "IOLibUtils.h"
+#include "SCFFormat.h"
+
+/* TRANSLATOR U2::SCFFormat */
 
 namespace U2 {
 
@@ -59,7 +61,6 @@ FormatCheckResult SCFFormat::checkRawData(const QByteArray& rawData, const GUrl&
     return hasBinaryData ? FormatDetection_Matched: FormatDetection_NotMatched;
 }
 
-
 Document* SCFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
     
     Document* doc = parseSCF(dbiRef, io, fs, os);
@@ -69,7 +70,6 @@ Document* SCFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     return doc;
 }
 
-
 template <class T> void dumpVector(const QVector<T>& v) {
     printf("Tha vector\n");
     for (int i = 0; i < v.count(); ++i ){
@@ -77,7 +77,6 @@ template <class T> void dumpVector(const QVector<T>& v) {
     }
     printf("\n\n");
 }
-
 
 /*
 * Copyright (c) Medical Research Council 1994. All rights reserved.
@@ -517,6 +516,8 @@ static uchar getMaxProb(uchar probA, uchar probC, uchar probG, uchar probT ) {
 Document* SCFFormat::parseSCF(const U2DbiRef& dbiRef, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os) {    
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, NULL);
+    Q_UNUSED(opBlock);
+
     DNASequence dna;
     DNAChromatogram cd;
     if ( !loadSCFObjects(io, dna, cd, os ) ) {
@@ -524,14 +525,17 @@ Document* SCFFormat::parseSCF(const U2DbiRef& dbiRef, IOAdapter* io, const QVari
     }
 
     QList<GObject*> objects;
-    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, dna.getName() + " sequence", objects, dna, os);
+    const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, folder, dna.getName() + " sequence", objects, dna, os);
     CHECK_OP(os, NULL);
     SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
-    DNAChromatogramObject* chromObj = DNAChromatogramObject::createInstance(cd, dna.getName() + " chromatogram", dbiRef, os);
+
+    DNAChromatogramObject* chromObj = DNAChromatogramObject::createInstance(cd, dna.getName() + " chromatogram", dbiRef, os, fs);
     CHECK_OP(os, NULL);
     objects.append(chromObj);
+
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
-    chromObj->addObjectRelation(GObjectRelation(GObjectReference(seqObj), GObjectRelationRole::SEQUENCE));
+    chromObj->addObjectRelation(GObjectRelation(GObjectReference(seqObj), ObjectRole_Sequence));
     return doc;
 }
 

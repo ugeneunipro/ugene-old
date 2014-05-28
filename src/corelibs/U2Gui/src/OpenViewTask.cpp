@@ -165,7 +165,7 @@ void OpenViewTask::prepare()
         // no view can be opened -> check special case: loaded object contains annotations associated with sequence
         // -> load sequence and open view for it;
         foreach(GObject* obj, doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE)) {
-            QList<GObjectRelation> rels = obj->findRelatedObjectsByRole(GObjectRelationRole::SEQUENCE);
+            QList<GObjectRelation> rels = obj->findRelatedObjectsByRole(ObjectRole_Sequence);
             if (rels.isEmpty()) {
                 continue;
             }

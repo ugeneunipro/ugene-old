@@ -19,9 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QFileInfo>
+
 #include "RPSBlastSupportTask.h"
 #include "BlastPlusSupport.h"
-
 
 namespace U2 {
 

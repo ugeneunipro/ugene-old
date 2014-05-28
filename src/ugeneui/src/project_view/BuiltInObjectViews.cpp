@@ -19,7 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include "ProjectViewImpl.h"
+#include <U2Core/AppContext.h>
+
 #include <U2Gui/ObjectViewModel.h>
 
 #include <U2View/SimpleTextObjectView.h>
@@ -28,16 +29,18 @@
 #include <U2View/TreeViewerFactory.h>
 #include <U2View/AssemblyBrowserFactory.h>
 
+#include "ProjectViewImpl.h"
+
 namespace U2 {
 
 void ProjectViewImpl::registerBuiltInObjectViews() {
-	GObjectViewFactoryRegistry* reg = AppContext::getObjectViewFactoryRegistry();
-	
-	GObjectViewFactory* f = new SimpleTextObjectViewFactory();
-	reg->registerGObjectViewFactory(f);
+    GObjectViewFactoryRegistry* reg = AppContext::getObjectViewFactoryRegistry();
 
-	f =  new AnnotatedDNAViewFactory();
-	reg->registerGObjectViewFactory(f);
+    GObjectViewFactory* f = new SimpleTextObjectViewFactory();
+    reg->registerGObjectViewFactory(f);
+
+    f =  new AnnotatedDNAViewFactory();
+    reg->registerGObjectViewFactory(f);
 
     f = new MSAEditorFactory();
     reg->registerGObjectViewFactory(f);
@@ -50,17 +53,17 @@ void ProjectViewImpl::registerBuiltInObjectViews() {
 }
 
 void ProjectViewImpl::unregisterBuiltInObjectViews() {
-	GObjectViewFactoryRegistry* reg = AppContext::getObjectViewFactoryRegistry();
-	
-	GObjectViewFactory* f = reg->getFactoryById(SimpleTextObjectViewFactory::ID);
-	assert(f!=NULL);
-	reg->unregisterGObjectViewFactory(f);
-	delete f;
+    GObjectViewFactoryRegistry* reg = AppContext::getObjectViewFactoryRegistry();
 
-	f = reg->getFactoryById(AnnotatedDNAViewFactory::ID);
-	assert(f!=NULL);
-	reg->unregisterGObjectViewFactory(f);
-	delete f;
+    GObjectViewFactory* f = reg->getFactoryById(SimpleTextObjectViewFactory::ID);
+    assert(f!=NULL);
+    reg->unregisterGObjectViewFactory(f);
+    delete f;
+
+    f = reg->getFactoryById(AnnotatedDNAViewFactory::ID);
+    assert(f!=NULL);
+    reg->unregisterGObjectViewFactory(f);
+    delete f;
 
     f = reg->getFactoryById(MSAEditorFactory::ID);
     assert(f!=NULL);

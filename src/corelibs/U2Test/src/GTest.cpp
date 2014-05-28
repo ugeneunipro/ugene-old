@@ -110,15 +110,6 @@ static QStringList findAllFiles(const QString& dirPath, const QString& ext, bool
     return res;
 }
 
-static bool exclude(const QList<QRegExp>& xlist, const QString& url) {
-    foreach(const QRegExp& r, xlist) {
-        if (r.exactMatch(url)) {
-            return true;
-        }
-    }
-    return false;
-}
-
 static QString addExcludeTests(const QString & fullTestDirPath, const QString & str, QList<QRegExp> & xList) {
     QString err;
 

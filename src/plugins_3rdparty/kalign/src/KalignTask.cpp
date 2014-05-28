@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <memory>
-
 #include "KalignTask.h"
 #include "KalignAdapter.h"
 #include "KalignConstants.h"
@@ -291,6 +289,7 @@ void KalignWithExtFileSpecifySupportTask::prepare() {
     c.checkRawData = true;
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
     c.rawData = IOAdapterUtils::readFileHeader(config.inputFilePath);
+    c.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
         stateInfo.setError("input_format_error");

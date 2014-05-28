@@ -28,7 +28,6 @@
 #include <U2Core/Settings.h>
 
 #include <QtCore/QDir>
-#include <QtCore/QFile>
 #include <QtCore/QTextStream>
 
 #include <QtCore/QXmlStreamReader>

@@ -20,22 +20,42 @@
  */
 
 #include <U2Core/DatatypeSerializeUtils.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/RawDataUdrSchema.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include "GObjectTypes.h"
-
 #include "DNAChromatogramObject.h"
+#include "GObjectTypes.h"
 
 namespace U2 {
 
-DNAChromatogramObject * DNAChromatogramObject::createInstance(const DNAChromatogram &chroma, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap) {
-    U2RawData object(dbiRef);
-    object.url = objectName;
+/////// U2Chromatogram Implementation /////////////////////////////////////////////////////////////
+
+U2Chromatogram::U2Chromatogram() : U2RawData() {
+
+}
+
+U2Chromatogram::U2Chromatogram(const U2DbiRef &dbiRef) : U2RawData(dbiRef) {
+
+}
+
+U2DataType U2Chromatogram::getType() {
+    return U2Type::Chromatogram;
+}
+
+/////// DNAChromatogramObject Implementation //////////////////////////////////////////////////////
+
+DNAChromatogramObject * DNAChromatogramObject::createInstance(const DNAChromatogram &chroma,
+    const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap)
+{
+    U2Chromatogram object(dbiRef);
+    object.visualName = objectName;
     object.serializer = DNAChromatogramSerializer::ID;
 
-    RawDataUdrSchema::createObject(dbiRef, object, os);
+    const QString folder = hintsMap.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+    RawDataUdrSchema::createObject(dbiRef, folder, object, os);
     CHECK_OP(os, NULL);
 
     U2EntityRef entRef(dbiRef, object.id);
@@ -53,23 +73,22 @@ DNAChromatogramObject::DNAChromatogramObject(const QString &objectName, const U2
 }
 
 const DNAChromatogram & DNAChromatogramObject::getChromatogram() const {
-    QMutexLocker lock(&mutex);
-    if (!cached) {
-        U2OpStatus2Log os;
-        QString serializer = RawDataUdrSchema::getObject(entityRef, os).serializer;
-        CHECK_OP(os, cache);
-        SAFE_POINT(DNAChromatogramSerializer::ID == serializer, "Unknown serializer id", cache);
-        QByteArray data = RawDataUdrSchema::readAllContent(entityRef, os);
-        CHECK_OP(os, cache);
-        cache = DNAChromatogramSerializer::deserialize(data, os);
-        cached = true;
-    }
-
+    ensureDataLoaded();
     return cache;
 }
 
+void DNAChromatogramObject::loadDataCore(U2OpStatus &os) {
+    const QString serializer = RawDataUdrSchema::getObject(entityRef, os).serializer;
+    SAFE_POINT_OP(os, );
+    SAFE_POINT(DNAChromatogramSerializer::ID == serializer, "Unknown serializer id", );
+    const QByteArray data = RawDataUdrSchema::readAllContent(entityRef, os);
+    CHECK_OP(os, );
+    cache = DNAChromatogramSerializer::deserialize(data, os);
+}
+
 GObject * DNAChromatogramObject::clone(const U2DbiRef &dstRef, U2OpStatus &os) const {
-    U2RawData dstObject = RawDataUdrSchema::cloneObject(entityRef, dstRef, os);
+    U2Chromatogram dstObject;
+    RawDataUdrSchema::cloneObject(entityRef, dstRef, dstObject, os);
     CHECK_OP(os, NULL);
 
     U2EntityRef dstEntRef(dstRef, dstObject.id);

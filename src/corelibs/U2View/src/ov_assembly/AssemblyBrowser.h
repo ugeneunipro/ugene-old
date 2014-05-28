@@ -220,7 +220,7 @@ class AssemblyRuler;
 class AssemblyReadsArea;
 class AssemblyAnnotationsArea;
 
-class AssemblyBrowserUi : public QWidget {
+class U2VIEW_EXPORT AssemblyBrowserUi : public QWidget {
     Q_OBJECT
 public:
     AssemblyBrowserUi(AssemblyBrowser * browser);

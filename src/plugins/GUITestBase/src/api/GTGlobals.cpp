@@ -52,5 +52,11 @@ void GTGlobals::takeScreenShot(QString path){
     originalPixmap.save(path);
 }
 
+GTGlobals::FindOptions::FindOptions(bool fail) :
+    depth(INFINITE_DEPTH),
+    failIfNull(fail)
+{
+}
+
 } //namespace
 

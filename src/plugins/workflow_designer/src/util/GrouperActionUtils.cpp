@@ -233,7 +233,7 @@ bool MergeSequencePerformer::applyAction(const QVariant &newData) {
         } else {
             name = "Merged sequence";
         }
-        importer.startSequence(context->getDataStorage()->getDbiRef(), name, false, os);
+        importer.startSequence(context->getDataStorage()->getDbiRef(), U2ObjectDbi::ROOT_FOLDER, name, false, os);
         CHECK_OP(os, false);
         started = true;
     } else {

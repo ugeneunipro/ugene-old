@@ -25,7 +25,6 @@
 #include "RemoteServiceMachine.h"
 
 #include <U2Core/Task.h>
-#include <memory>
 
 namespace U2 {
 
@@ -37,8 +36,8 @@ public:
     virtual void run();
 private:
     QString machinePath;
-    std::auto_ptr<RemoteServiceMachine> machine;
-    std::auto_ptr<RemoteServiceMachineFactory> machineFactory;
+    QScopedPointer<RemoteServiceMachine> machine;
+    QScopedPointer<RemoteServiceMachineFactory> machineFactory;
 };
   
 

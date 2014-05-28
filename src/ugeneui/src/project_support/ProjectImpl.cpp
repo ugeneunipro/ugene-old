@@ -56,21 +56,11 @@ ProjectImpl::ProjectImpl(const QString& _name, const QString& _url, const QList<
         connect(mdi, SIGNAL(si_windowAdded(MWMDIWindow*)), SLOT(sl_onMdiWindowAdded(MWMDIWindow*)));
         connect(mdi, SIGNAL(si_windowClosing(MWMDIWindow*)), SLOT(sl_onMdiWindowClosing(MWMDIWindow*)));
     }
-        
 }
 
 ProjectImpl::~ProjectImpl() {
-    //delete all docs
-    while (!docs.isEmpty()) {
-        Document* d = docs.takeLast();
-        delete d;
-    }
-
-    //delete all views
-    while (!objectViewStates.isEmpty()) {
-        GObjectViewState* s = objectViewStates.takeLast();
-        delete s;
-    }
+    //delete all views. Documents are to be removed by a Shutdown task instance
+    qDeleteAll(objectViewStates);
 }
 
 void ProjectImpl::makeClean() {
@@ -156,13 +146,13 @@ void ProjectImpl::removeDocument(Document* d, bool autodelete) {
     coreLog.details(tr("Removing document from the project: %1").arg(d->getURLString()));
 
     setParentStateLockItem_static(d, NULL);
-    docs.removeOne(d);
+    if (docs.contains(d)) {
+        docs.removeOne(d);
+        d->disconnect(this);
+        d->setGHints(new GHintsDefaultImpl(d->getGHints()->getMap()));
+        emit si_documentRemoved(d);
+    }
 
-    d->disconnect(this);
-
-    d->setGHints(new GHintsDefaultImpl(d->getGHints()->getMap()));
-
-    emit si_documentRemoved(d);
     if (autodelete) {
         if(resourceUsage.contains(d->getName())) {
             resourceTracker->release(resourceUsage[d->getName()]);

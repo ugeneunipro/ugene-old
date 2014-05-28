@@ -1,6 +1,8 @@
 #ifndef _U2_IO_LIB_UTILS_H_
 #define _U2_IO_LIB_UTILS_H_
 
+#include <stdio.h>
+
 namespace U2 {
 
 #define BUFF_SIZE 8196

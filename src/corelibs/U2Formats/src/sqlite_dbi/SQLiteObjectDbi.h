@@ -38,6 +38,14 @@ public:
     /**  Returns number of top-level U2Objects with the specified type in database */
     virtual qint64 countObjects(U2DataType type, U2OpStatus& os);
 
+    /**
+     Retrieves U2Object fields from database entry with 'id'
+     and sets these fields for 'object'
+    */
+    virtual void getObject(U2Object& object, const U2DataId& id, U2OpStatus& os);
+
+    virtual QHash<U2DataId, QString> getObjectNames(qint64 offset, qint64 count, U2OpStatus& os);
+
     /** Lists database top-level objects, starts with 'offset' and limits by 'count' */
     virtual QList<U2DataId> getObjects(qint64 offset, qint64 count, U2OpStatus& os);
 
@@ -61,6 +69,8 @@ public:
         At least one root folder is required. 
     */
     virtual QStringList getFolders(U2OpStatus& os);
+    virtual QHash<U2Object, QString> getObjectFolders(U2OpStatus &os);
+    virtual void renameFolder(const QString &oldPath, const QString &newPath, U2OpStatus &os);
 
     /** Returns number of top-level U2Objects in folder */
     virtual qint64 countObjects(const QString& folder, U2OpStatus& os);
@@ -80,14 +90,16 @@ public:
         Note: the object & all related data is automatically removed from database when
         object is not placed in any folder or is not a part of any other more complex object (ex: sequence in msa)
     */
-    virtual void removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os);
+    virtual bool removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os);
     
     /** 
         Removes collection of objects from the specified folder. If folder is empty - removes object from all folders.
         Note: the object & all related data is automatically removed from database when
         object is not placed in any folder or is not a part of any other more complex object (ex: sequence in msa)
     */
-    virtual void removeObjects(const QList<U2DataId>& dataIds, const QString& folder, U2OpStatus& os);
+    virtual bool removeObjects(const QList<U2DataId>& dataIds, const QString& folder, U2OpStatus& os);
+
+    virtual void renameObject(const U2DataId &id, const QString &newName, U2OpStatus &os);
 
 
     // Write methods for folders
@@ -99,7 +111,7 @@ public:
     virtual void createFolder(const QString& path, U2OpStatus& os);
 
     /** Removes folder. The folder must be existing path. Runs GC check for all objects in the folder */
-    virtual void removeFolder(const QString& folder, U2OpStatus& os);
+    virtual bool removeFolder(const QString& folder, U2OpStatus& os);
 
     /** Returns version of the folder. 
         The folder version increases if new object(s)/subfolder(s) are added into this folder
@@ -124,7 +136,10 @@ public:
     deletes non-top-level objects without parents, if any appear in the specified list.
     Otherwise, moves the specified objects between the specified folders, omitting duplicates.
     */
-    virtual void moveObjects(const QList<U2DataId>& objectIds, const QString& fromFolder, const QString& toFolder, U2OpStatus& os);
+    virtual void moveObjects(const QList<U2DataId>& objectIds, const QString& fromFolder,
+        const QString& toFolder, U2OpStatus& os, bool saveFromFolder = false);
+
+    virtual QStringList restoreObjects(const QList<U2DataId> &objectIds, U2OpStatus &os);
 
      /** Undo the last update operation for the object. */
     virtual void undo(const U2DataId& objId, U2OpStatus& os);
@@ -146,13 +161,7 @@ public:
 
         Returns result object data id
     */
-    U2DataId createObject(U2Object & object, const QString& folder, SQLiteDbiObjectRank rank, U2OpStatus& os);
-
-    /**
-        Retrieves U2Object fields from database entry with 'id'
-        and sets these fields for 'object'
-    */
-    void getObject(U2Object& object, const U2DataId& id, U2OpStatus& os);
+    U2DataId createObject(U2Object & object, const QString& folder, U2DbiObjectRank rank, U2OpStatus& os);
 
     /**
         Updates database entry for 'obj'.
@@ -185,8 +194,8 @@ public:
     */
     void removeParent(const U2DataId& parentId, const U2DataId& childId, bool removeDeadChild, U2OpStatus& os);
 
-    /** Ensures that corresponding parent record exists in db. Adds record if not exists */
-    void ensureParent(const U2DataId& parentId, const U2DataId& childId, U2OpStatus& os);
+    /** Adds a record, representing parent-child relationship between entities, to a DB */
+    void setParent(const U2DataId& parentId, const U2DataId& childId, U2OpStatus& os);
 
     virtual void initSqlSchema(U2OpStatus& os);
     void upgrade(U2OpStatus &os);
@@ -219,6 +228,10 @@ private:
     // Redo methods parse the modification details and call the corresponding method
     // (i.e. change version, save further modSteps, etc.)
     void redoUpdateObjectName(const U2DataId& id, const QByteArray& modDetails, U2OpStatus& os);
+
+    void removeObjectFromFolder(const U2DataId &id, const QString &folder, U2OpStatus &os);
+
+    void removeObjectFromAllFolders(const U2DataId &id, U2OpStatus &os);
 };
 
 
@@ -231,7 +244,12 @@ public:
         Sets local object id assigned to the new value
         Requires: U2DbiFeature_WriteCrossDatabaseReferences
     */
-    virtual void createCrossReference(U2CrossDatabaseReference& reference, U2OpStatus& os);
+    virtual void createCrossReference(U2CrossDatabaseReference& reference, const QString &folder, U2OpStatus& os);
+
+    /**
+        Removes a DB representation of CrossDatabaseReference
+    */
+    virtual void removeCrossReferenceData(const U2DataId& referenceId, U2OpStatus& os);
 
     /**
         Loads remote object information from DB

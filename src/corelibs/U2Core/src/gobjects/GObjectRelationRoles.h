@@ -26,11 +26,10 @@
 
 namespace U2 {
 
-class U2CORE_EXPORT GObjectRelationRole {
-public:
-    static const QString SEQUENCE;
-    static const QString ANNOTATION_TABLE;
-    static const QString PHYLOGENETIC_TREE;
+enum GObjectRelationRole {
+    ObjectRole_Sequence = 1,
+    ObjectRole_AnnotationTable,
+    ObjectRole_PhylogeneticTree
 };
 
 }//namespace

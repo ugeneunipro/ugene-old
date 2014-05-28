@@ -812,7 +812,7 @@ void ADVSingleSequenceWidget::sl_createCustomRuler() {
     foreach(const AnnotationSelectionData & selectionData, annSelection->getSelection()) {
         const Annotation &ann = selectionData.annotation;
         AnnotationTableObject *annObj = ann.getGObject();
-        if( !annObj->hasObjectRelation(seqObj, GObjectRelationRole::SEQUENCE) ) {
+        if( !annObj->hasObjectRelation(seqObj, ObjectRole_Sequence) ) {
             continue;
         }
 

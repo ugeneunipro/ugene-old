@@ -22,6 +22,7 @@
 #include "ShutdownTask.h"
 #include "MainWindowImpl.h"
 
+#include <U2Core/DocumentModel.h>
 #include <U2Core/Log.h>
 #include <U2Core/ServiceModel.h>
 #include <U2Core/PluginModel.h>
@@ -38,35 +39,37 @@
 
 namespace U2 {
 
-ShutdownTask::ShutdownTask(MainWindowImpl* _mw) : Task(tr("shutdown_task_name"), TaskFlags(TaskFlag_NoRun)), mw(_mw) 
+ShutdownTask::ShutdownTask(MainWindowImpl* _mw)
+    : Task(tr("shutdown_task_name"), TaskFlags(TaskFlag_NoRun)), mw(_mw), docsToRemoveAreFetched(false)
 {
+
 }
 
 static bool isReadyToBeDisabled(Service* s, ServiceRegistry* sr) {
-	ServiceType st = s->getType();
-	int nServicesOfTheSameType = sr->findServices(st).size();
-	assert(nServicesOfTheSameType >= 1);
-	foreach(Service* child, sr->getServices()) {
-		if (!child->getParentServiceTypes().contains(st) || !child->isEnabled()) {
-			continue;
-		}
-		if (nServicesOfTheSameType == 1) {
-			return false;
-		}
-	}
-	return true;
+    ServiceType st = s->getType();
+    int nServicesOfTheSameType = sr->findServices(st).size();
+    assert(nServicesOfTheSameType >= 1);
+    foreach(Service* child, sr->getServices()) {
+        if (!child->getParentServiceTypes().contains(st) || !child->isEnabled()) {
+            continue;
+        }
+        if (nServicesOfTheSameType == 1) {
+            return false;
+        }
+    }
+    return true;
 }
 
 static Service* findServiceToDisable(ServiceRegistry* sr) {
-	int nEnabled = 0;
-	foreach(Service* s, sr->getServices()) {
-		nEnabled+= s->isEnabled() ? 1 : 0;
-		if (s->isEnabled() && isReadyToBeDisabled(s, sr)) {
-			return s;
-		}
-	}
-	assert(nEnabled == 0);
-	return NULL;
+    int nEnabled = 0;
+    foreach(Service* s, sr->getServices()) {
+        nEnabled+= s->isEnabled() ? 1 : 0;
+        if (s->isEnabled() && isReadyToBeDisabled(s, sr)) {
+            return s;
+        }
+    }
+    assert(nEnabled == 0);
+return NULL;
 }
 
 static bool closeViews() {
@@ -90,7 +93,7 @@ static bool closeViews() {
 
 class CloseWindowsTask : public Task {
 public:
-    CloseWindowsTask() : Task(U2::ShutdownTask::tr("Close windows"), TaskFlags(TaskFlag_NoRun)) {}
+    CloseWindowsTask() : Task(QObject::tr("Close windows"), TaskFlags(TaskFlag_NoRun)) {}
     void prepare() {
         Project* proj = AppContext::getProject();
         if (proj == NULL) {
@@ -127,7 +130,7 @@ public:
 
 class CancelAllTask : public Task {
 public:
-    CancelAllTask() : Task(U2::ShutdownTask::tr("Cancel active tasks"), TaskFlag_NoRun) {}
+    CancelAllTask() : Task(QObject::tr("Cancel active tasks"), TaskFlag_NoRun) {}
     void prepare() {
         // cancel all tasks but ShutdownTask
         QList<Task*> activeTopTasks = AppContext::getTaskScheduler()->getTopLevelTasks();
@@ -200,12 +203,26 @@ QList<Task*> ShutdownTask::onSubTaskFinished(Task* subTask) {
         return res; //stop shutdown process
     }
 
-	ServiceRegistry* sr = AppContext::getServiceRegistry();
-	Service* s = findServiceToDisable(sr);
-	if (s!=NULL) {
-		res.append(sr->disableServiceTask(s));
-	}
-	return res;
+    ServiceRegistry* sr = AppContext::getServiceRegistry();
+    Service* s = findServiceToDisable(sr);
+    if (s!=NULL) {
+        res.append(sr->disableServiceTask(s));
+    }
+
+    // fetch documents from project while it's not released
+    if (!docsToRemoveAreFetched) {
+        Project *proj = AppContext::getProject();
+        if (NULL != proj) {
+            docsToRemove = proj->getDocuments();
+        }
+        docsToRemoveAreFetched = true;
+    }
+
+    if (res.isEmpty()) { // all services has stopped
+        qDeleteAll(docsToRemove);
+    }
+
+    return res;
 }
 
 Task::ReportResult ShutdownTask::report() {
@@ -214,15 +231,19 @@ Task::ReportResult ShutdownTask::report() {
         return Task::ReportResult_Finished;
     }
 
+    if (AppContext::getTaskScheduler()->getTopLevelTasks().size() > 1) { // some documents are being deleted
+        return Task::ReportResult_CallMeAgain;
+    }
+
 #ifdef _DEBUG
-	const QList<Service*>& services = AppContext::getServiceRegistry()->getServices();
-	foreach(Service* s, services) {
-		assert(s->isDisabled());
-	}
+    const QList<Service*>& services = AppContext::getServiceRegistry()->getServices();
+    foreach(Service* s, services) {
+        assert(s->isDisabled());
+    }
 #endif
     mw->close();
     QCoreApplication::exit(0);
-	return Task::ReportResult_Finished;
+    return Task::ReportResult_Finished;
 }
 
 

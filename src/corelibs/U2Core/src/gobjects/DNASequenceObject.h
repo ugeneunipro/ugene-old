@@ -96,7 +96,7 @@ public:
 
     void setByteArrayAttribute(const QByteArray& newByteArrayAttributeValue, const QString& type);
 
-    static bool lessThan( const U2SequenceObject *one, const U2SequenceObject *two){return one->name < two->name;};
+    static bool lessThan( const U2SequenceObject *one, const U2SequenceObject *two){return one->name < two->name;}
 
 signals:
     void si_sequenceChanged();

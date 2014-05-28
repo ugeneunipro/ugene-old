@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QFile>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/AppSettings.h>
@@ -69,10 +71,10 @@ void SamtoolsBasedDbi::init(const QHash<QString, QString> &properties, const QVa
             throw Exception(BAMDbiPlugin::tr("Invalid DBI state"));
         }
         state = U2DbiState_Starting;
-        if(properties.value(U2_DBI_OPTION_URL).isEmpty()) {
+        if(properties.value(U2DbiOptions::U2_DBI_OPTION_URL).isEmpty()) {
             throw Exception(BAMDbiPlugin::tr("URL is not specified"));
         }
-        url = GUrl(properties.value(U2_DBI_OPTION_URL));
+        url = GUrl(properties.value(U2DbiOptions::U2_DBI_OPTION_URL));
         if(!url.isLocalFile()) {
             throw Exception(BAMDbiPlugin::tr("Non-local files are not supported"));
         }
@@ -187,7 +189,7 @@ const bam_index_t *SamtoolsBasedDbi::getIndex() const {
 
 U2AssemblyDbi *SamtoolsBasedDbi::getAssemblyDbi() {
     if(U2DbiState_Ready == state) {
-        return assemblyDbi.get();
+        return assemblyDbi.data();
     } else {
         return NULL;
     }
@@ -195,7 +197,7 @@ U2AssemblyDbi *SamtoolsBasedDbi::getAssemblyDbi() {
 
 U2ObjectDbi *SamtoolsBasedDbi::getObjectDbi() {
     if(U2DbiState_Ready == state) {
-        return objectDbi.get();
+        return objectDbi.data();
     } else {
         return NULL;
     }
@@ -203,7 +205,7 @@ U2ObjectDbi *SamtoolsBasedDbi::getObjectDbi() {
 
 U2AttributeDbi *SamtoolsBasedDbi::getAttributeDbi() {
     if(U2DbiState_Ready == state) {
-        return attributeDbi.get();
+        return attributeDbi.data();
     } else {
         return NULL;
     }
@@ -233,6 +235,14 @@ qint64 SamtoolsBasedObjectDbi::countObjects(U2DataType type, U2OpStatus &os) {
     }
 }
 
+QHash<U2DataId, QString> SamtoolsBasedObjectDbi::getObjectNames(qint64 /*offset*/, qint64 /*count*/, U2OpStatus &os) {
+    QHash<U2DataId, QString> result;
+    CHECK_EXT(U2DbiState_Ready == dbi.getState(),
+              os.setError(BAMDbiPlugin::tr("Invalid samtools DBI state")), result);
+
+    return result;
+}
+
 QList<U2DataId> SamtoolsBasedObjectDbi::getObjects(qint64 offset, qint64 count, U2OpStatus &os) {
     return getObjects(U2Type::Assembly, offset, count, os);
 }
@@ -243,7 +253,7 @@ QList<U2DataId> SamtoolsBasedObjectDbi::getObjects(U2DataType type, qint64 offse
 
     if(U2Type::Assembly == type) {
         qint64 lastExc = offset + count;
-        if (U2_DBI_NO_LIMIT == count) {
+        if (U2DbiOptions::U2_DBI_NO_LIMIT == count) {
             lastExc = assemblyObjectIds.size();
         }
         QList<U2DataId> result = assemblyObjectIds.mid(offset, lastExc);
@@ -262,14 +272,18 @@ QList<U2DataId> SamtoolsBasedObjectDbi::getParents(const U2DataId& /*entityId*/,
 QStringList SamtoolsBasedObjectDbi::getFolders(U2OpStatus &os) {
     CHECK_EXT(U2DbiState_Ready == dbi.getState(),
         os.setError(BAMDbiPlugin::tr("Invalid samtools DBI state")), QStringList());
-    return QStringList("/");
+    return QStringList(U2ObjectDbi::ROOT_FOLDER);
+}
+
+void SamtoolsBasedObjectDbi::renameFolder(const QString &/*oldPath*/, const QString &/*newPath*/, U2OpStatus &os) {
+    os.setError("Not supported");
 }
 
 qint64 SamtoolsBasedObjectDbi::countObjects(const QString &folder, U2OpStatus &os) {
     CHECK_EXT(U2DbiState_Ready == dbi.getState(),
         os.setError(BAMDbiPlugin::tr("Invalid samtools DBI state")), 0);
 
-    CHECK_EXT("/" == folder,
+    CHECK_EXT(U2ObjectDbi::ROOT_FOLDER == folder,
         os.setError(BAMDbiPlugin::tr("No such folder: %1").arg(folder)), 0);
 
     return countObjects(os);
@@ -279,7 +293,7 @@ QList<U2DataId> SamtoolsBasedObjectDbi::getObjects(const QString &folder, qint64
     CHECK_EXT(U2DbiState_Ready == dbi.getState(),
         os.setError(BAMDbiPlugin::tr("Invalid samtools DBI state")), QList<U2DataId>());
 
-    CHECK_EXT("/" == folder,
+    CHECK_EXT(U2ObjectDbi::ROOT_FOLDER == folder,
         os.setError(BAMDbiPlugin::tr("No such folder: %1").arg(folder)), QList<U2DataId>());
 
     return getObjects(offset, count, os);
@@ -290,7 +304,7 @@ QStringList SamtoolsBasedObjectDbi::getObjectFolders(const U2DataId& objectId, U
         os.setError(BAMDbiPlugin::tr("Invalid samtools DBI state")), QStringList());
 
     if(U2Type::Assembly == dbi.getEntityTypeById(objectId)) {
-        return QStringList("/");
+        return QStringList(U2ObjectDbi::ROOT_FOLDER);
     } else {
         return QStringList();
     }
@@ -307,7 +321,7 @@ qint64 SamtoolsBasedObjectDbi::getFolderLocalVersion(const QString &folder, U2Op
     CHECK_EXT(U2DbiState_Ready == dbi.getState(),
         os.setError(BAMDbiPlugin::tr("Invalid samtools DBI state")), 0);
 
-    CHECK_EXT("/" == folder,
+    CHECK_EXT(U2ObjectDbi::ROOT_FOLDER == folder,
         os.setError(BAMDbiPlugin::tr("No such folder: %1").arg(folder)), 0);
 
     return 0;
@@ -317,7 +331,7 @@ qint64 SamtoolsBasedObjectDbi::getFolderGlobalVersion(const QString &folder, U2O
     CHECK_EXT(U2DbiState_Ready == dbi.getState(),
         os.setError(BAMDbiPlugin::tr("Invalid samtools DBI state")), 0);
 
-    CHECK_EXT("/" == folder,
+    CHECK_EXT(U2ObjectDbi::ROOT_FOLDER == folder,
         os.setError(BAMDbiPlugin::tr("No such folder: %1").arg(folder)), 0);
 
     return 0;
@@ -326,6 +340,10 @@ qint64 SamtoolsBasedObjectDbi::getFolderGlobalVersion(const QString &folder, U2O
 U2DbiIterator<U2DataId>* SamtoolsBasedObjectDbi::getObjectsByVisualName(const QString& , U2DataType , U2OpStatus& ) {
     // TODO:
     return NULL;
+}
+
+void SamtoolsBasedObjectDbi::renameObject(const U2DataId & /*id*/, const QString & /*newName*/, U2OpStatus &os) {
+    os.setError("Not implemented!");
 }
 
 /************************************************************************/
@@ -720,7 +738,7 @@ U2DbiFactoryId SamtoolsBasedDbiFactory::getId()const {
 
 FormatCheckResult SamtoolsBasedDbiFactory::isValidDbi(const QHash<QString, QString> &properties, const QByteArray &rawData, U2OpStatus & /*os*/) const {
     BAMFormatUtils f;
-    FormatCheckResult res = f.checkRawData(rawData, properties.value(U2_DBI_OPTION_URL));
+    FormatCheckResult res = f.checkRawData(rawData, properties.value(U2DbiOptions::U2_DBI_OPTION_URL));
     return res;
 }
 

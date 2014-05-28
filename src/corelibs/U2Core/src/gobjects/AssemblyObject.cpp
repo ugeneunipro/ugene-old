@@ -24,6 +24,7 @@
 #include <U2Core/U2AttributeUtils.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2OpStatus.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -31,8 +32,8 @@
 
 namespace U2 {
 
-AssemblyObject::AssemblyObject(const U2EntityRef& ref, const QString& objectName, const QVariantMap& hints) 
-: GObject(GObjectTypes::ASSEMBLY, objectName, hints)
+AssemblyObject::AssemblyObject(const QString& objectName, const U2EntityRef& ref, const QVariantMap& hints) 
+    : GObject(GObjectTypes::ASSEMBLY, objectName, hints)
 {
     this->entityRef = ref;
 }
@@ -40,7 +41,7 @@ AssemblyObject::AssemblyObject(const U2EntityRef& ref, const QString& objectName
 GObject* AssemblyObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os) const {
     U2EntityRef dstEntityRef = AssemblyObject::dbi2dbiClone(this, dstDbiRef, os);
     CHECK_OP(os, NULL);
-    AssemblyObject *dstObj = new AssemblyObject(dstEntityRef, this->getGObjectName(), this->getGHintsMap());
+    AssemblyObject *dstObj = new AssemblyObject(this->getGObjectName(), dstEntityRef, this->getGHintsMap());
 
     return dstObj;
 }
@@ -63,35 +64,16 @@ U2EntityRef AssemblyObject::dbi2dbiClone(const AssemblyObject *const srcObj, con
     SAFE_POINT_EXT(NULL != dstAssemblyDbi, os.setError("NULL destination assembly dbi"), U2EntityRef());
     SAFE_POINT_EXT(NULL != srcAssemblyDbi, os.setError("NULL source assembly dbi"), U2EntityRef());
 
-    // copy object folders
-    QStringList dstFolders = dstObjectDbi->getFolders(os);
-    CHECK_OP(os, U2EntityRef());
-    QStringList srcFolders = srcObjectDbi->getObjectFolders(srcObjId, os);
-    CHECK_OP(os, U2EntityRef());
-    foreach (const QString &folder, srcFolders) {
-        if (!dstFolders.contains(folder)) {
-            dstObjectDbi->createFolder(folder, os);
-            CHECK_OP(os, U2EntityRef());
-        }
-    }
-
     // copy object
     U2Assembly assembly;
     assembly.visualName = srcObj->getGObjectName();
     U2AssemblyReadsImportInfo info;
-    dstAssemblyDbi->createAssemblyObject(assembly, srcFolders.first(), NULL, info, os);
+    dstAssemblyDbi->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, NULL, info, os);
     CHECK_OP(os, U2EntityRef());
-    QList<U2DataId> objList;
-    objList << assembly.id;
-    foreach (const QString &folder, srcFolders) {
-        dstObjectDbi->addObjectsToFolder(objList, folder, os);
-        CHECK_OP(os, U2EntityRef());
-    }
 
     // copy reads
-    qint64 assemblyLength = srcAssemblyDbi->getMaxEndPos(srcObjId, os) + 1;
     CHECK_OP(os, U2EntityRef());
-    U2DbiIterator<U2AssemblyRead> *iter = srcAssemblyDbi->getReads(srcObjId, U2Region(0, assemblyLength), os);
+    U2DbiIterator<U2AssemblyRead> *iter = srcAssemblyDbi->getReads(srcObjId, U2_REGION_MAX, os, true);
     QScopedPointer< U2DbiIterator<U2AssemblyRead> > iterPtr(iter);
     CHECK_OP(os, U2EntityRef());
     Q_UNUSED(iterPtr);

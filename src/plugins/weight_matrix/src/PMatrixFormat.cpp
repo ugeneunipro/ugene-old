@@ -19,13 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include "PMatrixFormat.h"
-#include "WeightMatrixIO.h"
-#include "ViewMatrixDialogController.h"
+#include <QtCore/QFileInfo>
 
 #include <U2Core/DatatypeSerializeUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
+#include <U2Core/PFMatrixObject.h>
+#include <U2Core/PWMatrixObject.h>
 #include <U2Core/RawDataUdrSchema.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -37,11 +37,13 @@
 #include <U2Core/SelectionUtils.h>
 #include <U2Core/IOAdapterUtils.h>
 
+#include "ViewMatrixDialogController.h"
+#include "WeightMatrixIO.h"
+#include "PMatrixFormat.h"
+
 namespace U2{
 
 const DocumentFormatId PFMatrixFormat::FORMAT_ID = "PFMatrix";
-
-const GObjectType PFMatrixObject::TYPE("pfm-obj");
 
 PFMatrixFormat::PFMatrixFormat(QObject* p): DocumentFormat(p, DocumentFormatFlag_SingleObjectFormat, QStringList("pfm")) {
     formatName = tr("Position frequency matrix");
@@ -102,70 +104,6 @@ Document* PFMatrixFormat::loadDocument( IOAdapter* io, const U2DbiRef& dbiRef, c
     CHECK_OP(os, NULL);
     objs.append(mObj);
     return new Document(this, io->getFactory(), io->getURL(), dbiRef, objs, fs);
-}
-
-namespace {
-    template<class Serializer, class Matrix>
-    U2EntityRef commit(const Matrix &matrix, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os) {
-        U2RawData object(dbiRef);
-        object.url = objectName;
-        object.serializer = Serializer::ID;
-
-        RawDataUdrSchema::createObject(dbiRef, object, os);
-        CHECK_OP(os, U2EntityRef());
-
-        const U2EntityRef entRef(dbiRef, object.id);
-        const QByteArray data = Serializer::serialize(matrix);
-        RawDataUdrSchema::writeContent(data, entRef, os);
-        return entRef;
-    }
-
-    template<class Serializer, class Matrix>
-    void retrieve(const U2EntityRef &entityRef, Matrix &matrix) {
-        U2OpStatus2Log os;
-        const QString serializer = RawDataUdrSchema::getObject(entityRef, os).serializer;
-        CHECK_OP(os, );
-        SAFE_POINT(Serializer::ID == serializer, "Unknown serializer id", );
-
-        const QByteArray data = RawDataUdrSchema::readAllContent(entityRef, os);
-        CHECK_OP(os, );
-        matrix = Serializer::deserialize(data, os);
-    }
-}
-
-//PFMatrixObject
-//////////////////////////////////////////////////////////////////////////
-PFMatrixObject * PFMatrixObject::createInstance(const PFMatrix &matrix, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap) {
-    const U2EntityRef entRef = commit<FMatrixSerializer>(matrix, objectName, dbiRef, os);
-    CHECK_OP(os, NULL);
-    return new PFMatrixObject(matrix, objectName, entRef, hintsMap);
-}
-
-PFMatrixObject::PFMatrixObject(const QString &objectName, const U2EntityRef &matrixRef, const QVariantMap &hintsMap)
-: GObject(TYPE, objectName, hintsMap)
-{
-    entityRef = matrixRef;
-    retrieve<FMatrixSerializer>(entityRef, m);
-}
-
-PFMatrixObject::PFMatrixObject(const PFMatrix &matrix, const QString &objectName, const U2EntityRef &matrixRef, const QVariantMap &hintsMap)
-: GObject(TYPE, objectName, hintsMap), m(matrix)
-{
-    entityRef = matrixRef;
-}
-
-const PFMatrix & PFMatrixObject::getMatrix() const {
-    return m;
-}
-
-GObject * PFMatrixObject::clone(const U2DbiRef &dstRef, U2OpStatus &os) const{
-    const U2RawData dstObject = RawDataUdrSchema::cloneObject(entityRef, dstRef, os);
-    CHECK_OP(os, NULL);
-
-    const U2EntityRef dstEntRef(dstRef, dstObject.id);
-    PFMatrixObject *dst = new PFMatrixObject(getGObjectName(), dstEntRef, getGHintsMap());
-    dst->setIndexInfo(getIndexInfo());
-    return dst;
 }
 
 //Factory
@@ -231,8 +169,6 @@ void OpenPFMatrixViewTask::open(){
 ///PWM
 
 const DocumentFormatId PWMatrixFormat::FORMAT_ID = "PWMatrix";
-
-const GObjectType PWMatrixObject::TYPE("pwm-obj");
 
 PWMatrixFormat::PWMatrixFormat( QObject* p ): DocumentFormat(p, DocumentFormatFlag_SingleObjectFormat, QStringList("pwm")) {
     formatName = tr("Position weight matrix");
@@ -301,41 +237,6 @@ Document* PWMatrixFormat::loadDocument( IOAdapter* io, const U2DbiRef& dbiRef, c
     CHECK_OP(os, NULL);
     objs.append(mObj);
     return new Document(this, io->getFactory(), io->getURL(), dbiRef, objs, fs);
-}
-
-//PWMatrixObject
-//////////////////////////////////////////////////////////////////////////
-PWMatrixObject * PWMatrixObject::createInstance(const PWMatrix &matrix, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap) {
-    const U2EntityRef entRef = commit<WMatrixSerializer>(matrix, objectName, dbiRef, os);
-    CHECK_OP(os, NULL);
-    return new PWMatrixObject(matrix, objectName, entRef, hintsMap);
-}
-
-PWMatrixObject::PWMatrixObject(const QString &objectName, const U2EntityRef &matrixRef, const QVariantMap &hintsMap)
-: GObject(TYPE, objectName, hintsMap)
-{
-    entityRef = matrixRef;
-    retrieve<WMatrixSerializer>(entityRef, m);
-}
-
-PWMatrixObject::PWMatrixObject(const PWMatrix &matrix, const QString &objectName, const U2EntityRef &matrixRef, const QVariantMap &hintsMap)
-: GObject(TYPE, objectName, hintsMap), m(matrix)
-{
-    entityRef = matrixRef;
-}
-
-const PWMatrix & PWMatrixObject::getMatrix() const {
-    return m;
-}
-
-GObject * PWMatrixObject::clone(const U2DbiRef &dstRef, U2OpStatus &os) const {
-    const U2RawData dstObject = RawDataUdrSchema::cloneObject(entityRef, dstRef, os);
-    CHECK_OP(os, NULL);
-
-    const U2EntityRef dstEntRef(dstRef, dstObject.id);
-    PWMatrixObject *dst = new PWMatrixObject(getGObjectName(), dstEntRef, getGHintsMap());
-    dst->setIndexInfo(getIndexInfo());
-    return dst;
 }
 
 //Factory

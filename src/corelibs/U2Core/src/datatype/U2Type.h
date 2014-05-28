@@ -66,7 +66,6 @@ public:
     /** Object types */
     static const U2DataType Sequence                    = 1;
     static const U2DataType Msa                         = 2;
-    static const U2DataType PhyTree                     = 3;
     static const U2DataType Assembly                    = 4;
     static const U2DataType VariantTrack                = 5;
     static const U2DataType VariantType                 = 6;
@@ -74,7 +73,12 @@ public:
     static const U2DataType KnownMutationsTrackType     = 8;
     static const U2DataType AnnotationTable             = 10;
     /** UDR object types 101..199 */
-    static const U2DataType RawData                     = 101;
+    static const U2DataType Text                        = 101;
+    static const U2DataType PhyTree                     = 102;
+    static const U2DataType Chromatogram                = 103;
+    static const U2DataType BioStruct3D                 = 104;
+    static const U2DataType PFMatrix                    = 105;
+    static const U2DataType PWMatrix                    = 106;
 
     static const U2DataType CrossDatabaseReference      = 999;
 
@@ -96,7 +100,7 @@ public:
     static const U2DataType AttributeString             = 2003;
     static const U2DataType AttributeByteArray          = 2004;
 
-    static bool isObjectType(U2DataType type) {return type > 0 && type < 999;}
+    static bool isObjectType(U2DataType type) {return type > 0 && type <= 999;}
     static bool isUdrObjectType(U2DataType type) {return type > 100 && type < 200;}
 
     static bool isAttributeType(U2DataType type) {return type >=2000 && type < 2100;}
@@ -117,12 +121,16 @@ public:
     
     bool isValid() const {return !dbiFactoryId.isEmpty() && !dbiId.isEmpty();}
 
-    U2DbiFactoryId  dbiFactoryId;
-    U2DbiId         dbiId;
-
     bool operator==(const U2DbiRef& r2) const {
         return dbiFactoryId == r2.dbiFactoryId && dbiId == r2.dbiId;
     }
+
+    bool operator <(const U2DbiRef &r2) const {
+        return dbiFactoryId < r2.dbiFactoryId && dbiId < r2.dbiId;
+    }
+
+    U2DbiFactoryId  dbiFactoryId;
+    U2DbiId         dbiId;
 };
 
 
@@ -196,6 +204,9 @@ public:
     virtual U2DataType getType() { return U2Type::Unknown; }
 };
 
+inline uint qHash(const U2Object &obj) {
+    return qHash(QPair<U2DataId, U2DbiId>(obj.id, obj.dbiId));
+}
 
 /** 
     If database keeps annotations/attributes for data entity stored in another database

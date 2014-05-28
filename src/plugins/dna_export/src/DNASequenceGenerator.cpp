@@ -19,23 +19,22 @@
 * MA 02110-1301, USA.
 */
 
-#include "DNASequenceGenerator.h"
-
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/DNASequenceObject.h>
+#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MAlignmentImporter.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/SaveDocumentTask.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/SaveDocumentTask.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2SequenceUtils.h>
@@ -43,6 +42,8 @@
 #include <U2Gui/OpenViewTask.h>
 
 #include <U2Gui/DialogUtils.h>
+
+#include "DNASequenceGenerator.h"
 
 static const int MBYTE_TO_BYTE = 1048576;
 
@@ -428,7 +429,7 @@ void GenerateDNASequenceTask::run( ) {
             window = length;
         }
 
-        seqImporter.startSequence( dbiRef, QString( "default" ), false, stateInfo );
+        seqImporter.startSequence( dbiRef, U2ObjectDbi::ROOT_FOLDER, QString( "default" ), false, stateInfo );
         CHECK_OP_BREAK( stateInfo );
 
         for( int chunkCount = 0; chunkCount < length / window && !isCanceled( );

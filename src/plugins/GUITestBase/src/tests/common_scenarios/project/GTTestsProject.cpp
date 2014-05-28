@@ -166,7 +166,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
     GTUtilsProjectTreeView::rename(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)", "qqq");
-    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "qqq") != NULL, "Item qqq not found in tree widget");
+    GTUtilsProjectTreeView::findIndex(os, "qqq");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0011) {
@@ -284,7 +284,7 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
     GTUtilsDocument::removeDocument(os, "human_T1.fa");
 
     GTUtilsProject::openFiles(os, dataDir + "samples/FASTA/human_T1.fa");
-    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "human_T1.fa") != NULL, "Item human_T1.fa not found in tree widget");
+    GTUtilsProjectTreeView::findIndex(os, "human_T1.fa");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0019) {
@@ -293,20 +293,21 @@ GUI_TEST_CLASS_DEFINITION(test_0019) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep(1000);
 
-    QTreeWidgetItem* se1 = GTUtilsProjectTreeView::findItem(os, "se1");
-    QTreeWidgetItem* se2 = GTUtilsProjectTreeView::findItem(os, "se2");
+    QModelIndex se1 = GTUtilsProjectTreeView::findIndex(os, "se1");
+    QModelIndex se2 = GTUtilsProjectTreeView::findIndex(os, "se2");
+    QFont fse1 = GTUtilsProjectTreeView::getFont(os, se1);
+    QFont fse2 = GTUtilsProjectTreeView::getFont(os, se2);
 
-    CHECK_SET_ERR(se1->font(0).bold(), "se1 are not marked with bold text");
-    CHECK_SET_ERR(se2->font(0).bold(), "se2 are not marked with bold text");
+    CHECK_SET_ERR(fse1.bold(), "se1 are not marked with bold text");
+    CHECK_SET_ERR(fse2.bold(), "se2 are not marked with bold text");
 
     QWidget *w = GTWidget::findWidget(os, "render_area_se1");
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_REMOVE" << ACTION_EDIT_SELECT_SEQUENCE_FROM_VIEW));
     GTMenu::showContextMenu(os, w);
     GTGlobals::sleep(1000);
-    GTGlobals::sleep(1000);
 
-    CHECK_SET_ERR(!se1->font(0).bold(), "se1 are not marked with regular text");
+    CHECK_SET_ERR(!fse1.bold(), "se1 are not marked with regular text");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0020) {
@@ -314,10 +315,10 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep(1000);
 
-    QTreeWidgetItem* se1 = GTUtilsProjectTreeView::findItem(os, "se1");
+    QModelIndex se1 = GTUtilsProjectTreeView::findIndex(os, "se1");
     GTUtilsProjectTreeView::itemActiveCheck(os, se1);
 
-    QTreeWidgetItem* se2 = GTUtilsProjectTreeView::findItem(os, "se2");
+    QModelIndex se2 = GTUtilsProjectTreeView::findIndex(os, "se2");
     GTUtilsProjectTreeView::itemActiveCheck(os, se2);
 
     GTUtilsMdi::click(os, GTGlobals::Close);
@@ -336,27 +337,27 @@ GUI_TEST_CLASS_DEFINITION(test_0021) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/multiple.fa");
     GTGlobals::sleep(1000);
 
-    QTreeWidgetItem* item = GTUtilsProjectTreeView::findItem(os, "se1");
-    QFont font = item->font(0);
+    QModelIndex item = GTUtilsProjectTreeView::findIndex(os, "se1");
+    QFont font = GTUtilsProjectTreeView::getFont(os, item);
     CHECK_SET_ERR(font.bold(), "se1 item font is not a bold");
-    item = GTUtilsProjectTreeView::findItem(os, "se2");
-    font = item->font(0);
+    item = GTUtilsProjectTreeView::findIndex(os, "se2");
+    font = GTUtilsProjectTreeView::getFont(os, item);
     CHECK_SET_ERR(font.bold(), "se2 item font is not a bold");
 
     GTUtilsMdi::click(os, GTGlobals::Close);
     GTGlobals::sleep(1000);
-    item = GTUtilsProjectTreeView::findItem(os, "se1");
-    font = item->font(0);
+    item = GTUtilsProjectTreeView::findIndex(os, "se1");
+    font = GTUtilsProjectTreeView::getFont(os, item);
     CHECK_SET_ERR(!font.bold(), "se1 item font is not a bold");
 
     GTUtilsSequenceView::openSequenceView(os, "se1");	
-    item = GTUtilsProjectTreeView::findItem(os, "se1");
-    font = item->font(0);
+    item = GTUtilsProjectTreeView::findIndex(os, "se1");
+    font = GTUtilsProjectTreeView::getFont(os, item);
     CHECK_SET_ERR(font.bold(), "se1 item font is not a bold");
 
     GTUtilsSequenceView::openSequenceView(os, "se2");	
-    item = GTUtilsProjectTreeView::findItem(os, "se2");
-    font = item->font(0);
+    item = GTUtilsProjectTreeView::findIndex(os, "se1");
+    font = GTUtilsProjectTreeView::getFont(os, item);
     CHECK_SET_ERR(font.bold(), "se2 item font is not a bold");	 
 }
 

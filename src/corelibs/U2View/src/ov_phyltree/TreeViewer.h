@@ -73,7 +73,7 @@ public:
 
     virtual QVariantMap saveState();
     virtual Task* updateViewTask(const QString& stateName, const QVariantMap& stateData);
-    virtual OptionsPanel* getOptionsPanel(){return optionsPanel;};
+    virtual OptionsPanel* getOptionsPanel(){return optionsPanel;}
 
 
     QAction* getPrintAction() const { return printAction; }

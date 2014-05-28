@@ -23,7 +23,6 @@
 #define _REMOTE_SERVICE_UTIL_TASKS_H_
 
 #include <U2Core/Task.h>
-#include <memory>
 
 namespace U2 {
 

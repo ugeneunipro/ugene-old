@@ -138,7 +138,7 @@ void NeighborJoinCalculateTreeTask::run(){
             setBootstr(true);
             stateInfo.setDescription("Generating sequences");
 
-            std::auto_ptr<SeqBoot> seqBoot(new SeqBoot);
+            QScopedPointer<SeqBoot> seqBoot(new SeqBoot);
 
             QTemporaryFile tmpFile;
             QString path = seqBoot->getTmpFileTemplate();
@@ -160,7 +160,7 @@ void NeighborJoinCalculateTreeTask::run(){
                 stateInfo.progress = (int)(i/(float)settings.replicates * 100);
 
                 const MAlignment& curMSA = seqBoot->getMSA(i);
-                std::auto_ptr<DistanceMatrix> distanceMatrix(new DistanceMatrix);
+                QScopedPointer<DistanceMatrix> distanceMatrix(new DistanceMatrix);
                 distanceMatrix->calculateOutOfAlignment(curMSA,settings);
 
                 if (!distanceMatrix->isValid()) {
@@ -236,7 +236,7 @@ void NeighborJoinCalculateTreeTask::run(){
             setTaskInfo(&stateInfo);
             setBootstr(false);
 
-            std::auto_ptr<DistanceMatrix> distanceMatrix(new DistanceMatrix);
+            QScopedPointer<DistanceMatrix> distanceMatrix(new DistanceMatrix);
             distanceMatrix->calculateOutOfAlignment(inputMA,settings);
 
             if (!distanceMatrix->isValid()) {

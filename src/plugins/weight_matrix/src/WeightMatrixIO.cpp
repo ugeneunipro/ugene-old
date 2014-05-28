@@ -45,8 +45,6 @@
 #include <QtWidgets/QMessageBox>
 #endif
 
-#include <memory>
-
 /* TRANSLATOR U2::IOAdapter */
 
 namespace U2 {
@@ -76,7 +74,7 @@ PFMatrix WeightMatrixIO::readPFMatrix(IOAdapterFactory* iof, const QString& url,
     QVarLengthArray<int> res;
     int len = -1, msize = 0;
 
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Read)) {
         si.setError(  L10N::errorOpeningFileRead(url) );
         return matrix;
@@ -178,7 +176,7 @@ PWMatrix WeightMatrixIO::readPWMatrix(IOAdapterFactory* iof, const QString& url,
     QVarLengthArray<float> res;
     int len = -1, msize = 0;
 
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Read)) {
         si.setError(  L10N::errorOpeningFileRead(url) );
         return matrix;
@@ -266,7 +264,7 @@ void WeightMatrixIO::writePFMatrix(IOAdapterFactory* iof, const QString& url, Ta
         res.append("\n");
     }
 
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Write)) {
         si.setError(  L10N::errorOpeningFileWrite(url) );
         return;
@@ -299,7 +297,7 @@ void WeightMatrixIO::writePWMatrix(IOAdapterFactory* iof, const QString& url, Ta
         res.append("\n");
     }
 
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Write)) {
         si.setError(  L10N::errorOpeningFileWrite(url) );
         return;

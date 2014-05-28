@@ -19,9 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include <memory>
+#include <math.h>
 
 #include <QtCore/QList>
+#include <QtCore/QTextStream>
 #include <QtCore/QtAlgorithms>
 
 #include <U2Core/U2SafePoints.h>

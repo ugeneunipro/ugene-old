@@ -29,13 +29,15 @@
 
 namespace U2 {
 
-class U2DbiPool;
 class DbiConnection;
+class U2DbiPool;
 
 #define SQLITE_DBI_ID "SQLiteDbi"
+#define MYSQL_DBI_ID "MysqlDbi"
 #define BAM_DBI_ID "SamtoolsBasedDbi"
 #define DEFAULT_DBI_ID SQLITE_DBI_ID
 #define WORKFLOW_SESSION_TMP_DBI_ALIAS "workflow_session"
+
 
 /** 
     Keep all DBI types registered in the system
@@ -67,7 +69,7 @@ public:
     * Increases the "number of users"-counter for the dbi, if it exists.
     * Otherwise, allocates the dbi and sets the counter to 1.
     */
-    U2DbiRef attachTmpDbi(const QString& alias, U2OpStatus& os);
+    U2DbiRef attachTmpDbi(const QString &alias, U2OpStatus &os, const U2DbiFactoryId &factoryId);
 
     /**
     * Decreases the "number of users"-counter.
@@ -89,12 +91,11 @@ public:
     */
     QString shutdownSessionDbi(U2OpStatus &os);
 
-
 private:
     /** Creates the session connection and increases the counter for the dbi */
     void initSessionDbi(TmpDbiRef& tmpDbiRef);
 
-    U2DbiRef allocateTmpDbi(const QString& alias, U2OpStatus& os);
+    U2DbiRef allocateTmpDbi(const QString& alias, U2OpStatus& os, const U2DbiFactoryId &factoryId);
 
     void deallocateTmpDbi(const TmpDbiRef& ref, U2OpStatus& os);
 
@@ -123,11 +124,15 @@ public:
     U2Dbi* openDbi(const U2DbiRef& ref, bool create, U2OpStatus& os);
     void addRef(U2Dbi * dbi, U2OpStatus & os);
     void releaseDbi(U2Dbi* dbi, U2OpStatus& os);
-    void closeAllConnections(const QString& url, U2OpStatus& os);
+    void closeAllConnections(const U2DbiRef& ref, U2OpStatus& os);
 
 private:
-    QHash<QString, U2Dbi*> dbiByUrl;
-    QHash<QString, int> dbiCountersByUrl;
+    static QHash<QString, QString> getInitProperties(const QString& url, bool create);
+    QString getId(const U2DbiRef& ref, U2OpStatus &os) const;
+    QStringList getIds(const U2DbiRef& ref, U2OpStatus &os) const;
+
+    QHash<QString, U2Dbi*> dbiById;
+    QHash<QString, int> dbiCountersById;
     QMutex lock;
 };
 

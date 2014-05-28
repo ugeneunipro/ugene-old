@@ -130,10 +130,9 @@ GUI_TEST_CLASS_DEFINITION(test_0734) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/clustal/test_alignment.aln");
 
     //Expected state: two documents are opened in the project view; MSA Editor are shown with test_alignment.
-    QTreeWidgetItem *seqDoc = GTUtilsProjectTreeView::findItem(os, "test.TXT");
-    QTreeWidgetItem *msaDoc = GTUtilsProjectTreeView::findItem(os, "test_alignment.aln");
+    GTUtilsProjectTreeView::findIndex(os, "test.TXT");//checks are inside
+    GTUtilsProjectTreeView::findIndex(os, "test_alignment.aln");//checks are inside
     QWidget *msaView = GTUtilsMdi::activeWindow(os);
-    CHECK(NULL != seqDoc && NULL != msaDoc, );
     CHECK(NULL != msaView, );
 
     //3. Drag'n'drop "Sequence4" object of "test.TXT" document from the project tree to the MSA Editor.
@@ -683,7 +682,7 @@ GUI_TEST_CLASS_DEFINITION(test_1093) {
 
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
 
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //The short reads can't be mapped to the reference sequence!
 }
 
@@ -928,7 +927,7 @@ GUI_TEST_CLASS_DEFINITION(test_1252){
 //    2. Find any pattern. A new annotation document is created
     GTUtilsOptionsPanel::runFindPatternWithHotKey("TTTTTAAAAA", os);
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[a] Annotations"));
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
 //    3. Delete found annotations from human_t1 annotations tree
@@ -941,7 +940,7 @@ GUI_TEST_CLASS_DEFINITION(test_1252){
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(500);
 //check delition of annotation document
-   CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "Annotations", GTGlobals::FindOptions(false))==NULL, "Annotations document not deleted");
+    GTUtilsProjectTreeView::findIndex(os, "Annotations", GTGlobals::FindOptions(false));
 //    5. Click search again
 
     GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
@@ -978,7 +977,7 @@ GUI_TEST_CLASS_DEFINITION(test_1252_1){
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep(500);
 //check delition of annotation document
-    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "Annotations", GTGlobals::FindOptions(false))==NULL, "Annotations document not deleted");
+    GTUtilsProjectTreeView::findIndex(os, "Annotations", GTGlobals::FindOptions(false));//checks inside
 //    5. Click search again
     GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
 
@@ -1060,6 +1059,7 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
 
@@ -1069,8 +1069,6 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
-
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1475) {
@@ -1176,7 +1174,7 @@ GUI_TEST_CLASS_DEFINITION( test_1700 )
 
     // 2. In context menu of 3d view: {Render style -> Ball-and-Stick}
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< "Render Style"<< "Ball-and-Stick"));
-    QMenu* menu = GTMenu::showContextMenu(os, GTWidget::findWidget(os, "1-1A07"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "1-1A07"));
 
     //3) In context menu of 3d view: {Coloring scheme -> <Any different from current scheme>}
     //Repeat step 3) many times
@@ -1271,7 +1269,7 @@ GUI_TEST_CLASS_DEFINITION(test_1708){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseKey));
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os,10));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTWidget::click(os, GTUtilsMdi::activeWindow(os));
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(9,1));
@@ -1321,10 +1319,7 @@ GUI_TEST_CLASS_DEFINITION(test_1786){
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTGlobals::sleep(8000);
     // Expected state: document P01542_das.gb appeared in project
-    GTUtilsProjectTreeView::findItemByText(os,
-        GTUtilsProjectTreeView::getTreeWidget(os),
-        "P01542_das.gb",
-        GTGlobals::FindOptions(true));
+    GTUtilsProjectTreeView::findIndex(os, "P01542_das.gb");
     }
 
 GUI_TEST_CLASS_DEFINITION(test_1808) {
@@ -1382,7 +1377,7 @@ GUI_TEST_CLASS_DEFINITION( test_1813 )
 
     // Expected: the sequence view with I7G8J3 sequence is opened. UGENE does not crash.
     GTGlobals::sleep(5000);
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsDocument::isDocumentLoaded(os, "I7G8J3_das.gb");
     GTUtilsDocument::checkDocument(os, "I7G8J3_das.gb", AnnotatedDNAViewFactory::ID);
 }
@@ -2165,17 +2160,12 @@ GUI_TEST_CLASS_DEFINITION( test_2032 ) {
     GTGlobals::sleep(500);
 
     // Expected result: order of sequences in the project view is {d, a, c, b}
-    QTreeWidgetItem *documentItem = GTUtilsProjectTreeView::findItemByText(os,
-        GTUtilsProjectTreeView::getTreeWidget(os),
-        "abcd.fa",
-        GTGlobals::FindOptions(true));
+    QModelIndex documentItem = GTUtilsProjectTreeView::findIndex(os,"abcd.fa");
 
-    CHECK_SET_ERR(NULL != documentItem, "No document in the project view!");
-    CHECK_SET_ERR(4 == documentItem->childCount(), "Unexpected number of objects in the document!");
-    CHECK_SET_ERR("[s] d" == documentItem->child(0)->text(0), "Unexpected name of the object in the project view!");
-    CHECK_SET_ERR("[s] a" == documentItem->child(1)->text(0), "Unexpected name of the object in the project view!");
-    CHECK_SET_ERR("[s] c" == documentItem->child(2)->text(0), "Unexpected name of the object in the project view!");
-    CHECK_SET_ERR("[s] b" == documentItem->child(3)->text(0), "Unexpected name of the object in the project view!");
+    CHECK_SET_ERR("[s] d" == documentItem.child(0,0).data(), "Unexpected name of the object in the project view!");
+    CHECK_SET_ERR("[s] a" == documentItem.child(1,0).data(), "Unexpected name of the object in the project view!");
+    CHECK_SET_ERR("[s] c" == documentItem.child(2,0).data(), "Unexpected name of the object in the project view!");
+    CHECK_SET_ERR("[s] b" == documentItem.child(3,0).data(), "Unexpected name of the object in the project view!");
 
     // Expected result: order of sequences in the sequences view is {d, a, c, b}
     ADVSingleSequenceWidget *seq0 = dynamic_cast<ADVSingleSequenceWidget*>(GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
@@ -2218,7 +2208,7 @@ GUI_TEST_CLASS_DEFINITION( test_2070 ){
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "Q9IGQ6", 7));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTGlobals::sleep();
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDocument::isDocumentLoaded(os, "Q9IGQ6_das.gb");
     GTUtilsDocument::checkDocument(os, "Q9IGQ6_das.gb", AnnotatedDNAViewFactory::ID);
@@ -2369,9 +2359,8 @@ GUI_TEST_CLASS_DEFINITION(test_2091) {
     GTFileDialog::openFile(os, dataDir+"samples/CLUSTALW/", "COI.aln");
 
     //Expected state: document are opened in the project view; MSA Editor are shown with test_alignment.
-    QTreeWidgetItem *msaDoc = GTUtilsProjectTreeView::findItem(os, "COI.aln");
+    GTUtilsProjectTreeView::findIndex(os, "COI.aln");
     QWidget *msaView = GTUtilsMdi::activeWindow(os);
-    CHECK(NULL != msaDoc, );
     CHECK(NULL != msaView, );
 
     //2. Select any sequence.
@@ -2658,7 +2647,7 @@ GUI_TEST_CLASS_DEFINITION( test_2150 ){
     // 5. Run the workflow.
     GTWidget::click(os,GTAction::button(os,"Run workflow"));
     GTGlobals::sleep(5000);
-    //GTUtilsTaskTreeView::waitTaskFinidhed(os,1000);
+    //GTUtilsTaskTreeView::waitTaskFinished(os,1000);
 
     // 6. During the workflow execution open the "Tasks" panel in the bottom, find in the task tree the "MUSCLE alignment" subtask and cancel it.
     GTUtilsTaskTreeView::cancelTask(os, "MUSCLE alignment");
@@ -2697,7 +2686,7 @@ GUI_TEST_CLASS_DEFINITION( test_2152 ){
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/cap3", "region4.fa");
 
     GTWidget::click(os,GTAction::button(os,"Run workflow"));
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsLog::check(os, l);
 }
@@ -2809,10 +2798,11 @@ GUI_TEST_CLASS_DEFINITION(test_1986){
 //8. Select "fasta" output format
 
 //9. Press "OK"
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
-    QTreeWidget* treeWidget = GTUtilsProjectTreeView::getTreeWidget(os);
-    QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
-    QString text = treeItems.takeFirst()->text(0);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    QTreeView* treeView = GTUtilsProjectTreeView::getTreeView(os);
+    ProjectViewModel* model = qobject_cast<ProjectViewModel*>(treeView->model());
+    QString text = model->data(model->index(0,0, QModelIndex()), Qt::DisplayRole).toString();
+
     CHECK_SET_ERR(text.contains(".fasta"),text);
 
 //Expected state: the chosen sequence has been downloaded, saved in FASTA format and displayed in sequence view
@@ -2833,7 +2823,7 @@ GUI_TEST_CLASS_DEFINITION( test_2163 ) {
     GTGlobals::sleep(500);
    
    //4. Double click on the results table.
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     QTableWidget *idList = qobject_cast<QTableWidget*>(GTWidget::findWidget(os, "idList"));
 
     GTGlobals::sleep();
@@ -2850,7 +2840,7 @@ GUI_TEST_CLASS_DEFINITION( test_2163 ) {
     //Expected state: value not deleted
     QString value2 = idList->itemAt(p1)->text();
     CHECK_SET_ERR(value1 == value2, "Results differ!");
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2164 ) {
@@ -2916,7 +2906,7 @@ GUI_TEST_CLASS_DEFINITION( test_2165 ) {
     GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
 
     GTGlobals::sleep(500);
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //Expected: UGENE finds the sequence or shows a error message
     CHECK_SET_ERR(l.hasError() == true, "Error message expected in log");
@@ -2937,7 +2927,7 @@ GUI_TEST_CLASS_DEFINITION( test_2167 ) {
     GTWidget::click(os, searchIdsButton);
     GTGlobals::sleep(500);
 
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // 4. Select a result id in the table.
     QTableWidget* resultsView = qobject_cast<QTableWidget*>(GTWidget::findWidget(os, "idList"));
@@ -2952,7 +2942,7 @@ GUI_TEST_CLASS_DEFINITION( test_2167 ) {
     GTWidget::click(os, searchIdsButton);
     GTGlobals::sleep(500);
 
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // Expected: the table contains only the last results. There are no previous items and additional empty lines.
     QPoint p2 = resultsView->mapFromGlobal(GTTableView::getCellPosition(os, resultsView, 0, 3));
@@ -3317,17 +3307,13 @@ GUI_TEST_CLASS_DEFINITION( test_2266_1 ){
     QString baseDirName = QDateTime::currentDateTime().toString("yyyy.MM.dd_hh-mm");
     GTWidget::click(os,GTAction::button(os,"Run workflow"));
 
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" + baseDirName + "/", "variations.vcf");
 
-    QTreeWidgetItem *seqDoc = GTUtilsProjectTreeView::findItem(os, "pkF70_variations");
-    QTreeWidgetItem *seqDoc1 = GTUtilsProjectTreeView::findItem(os, "pkf140_variations");
-
-    CHECK_SET_ERR(NULL != seqDoc, "Document not found!");
-    CHECK_SET_ERR(NULL != seqDoc1, "Document not found!");
-
-    }
+    GTUtilsProjectTreeView::findIndex(os, "pkF70_variations");
+    GTUtilsProjectTreeView::findIndex(os, "pkf140_variations");
+}
 GUI_TEST_CLASS_DEFINITION( test_2267_1 ){
 //     1. Open human_T1.fa
 // 
@@ -3537,8 +3523,7 @@ GUI_TEST_CLASS_DEFINITION( test_2282 ) {
     GTGlobals::sleep(5000);
 
     //      3) The Project View with document "chrM.sorted.bam.ugenedb" has been opened.
-    QTreeWidgetItem *assDoc = GTUtilsProjectTreeView::findItem(os, assDocName);
-    CHECK(NULL != assDoc, );
+    GTUtilsProjectTreeView::findIndex(os, assDocName);
 
     // 3. Delete "chrM.sorted.bam.ugenedb" from the file system (i.e. not from UGENE).
     bool deleteResult = QFile::remove(assFileName);
@@ -3646,7 +3631,7 @@ GUI_TEST_CLASS_DEFINITION( test_2309 ) {
     key = GTKeyboardDriver::key["ctrl"];
 #endif
         GTGlobals::sleep();
-        GTWidget::click(os, GTUtilsProjectTreeView::getTreeWidget(os));
+        GTWidget::click(os, GTUtilsProjectTreeView::getTreeView(os));
         GTKeyboardDriver::keyClick(os, 'a', key);
         GTGlobals::sleep(100);
 
@@ -4035,8 +4020,7 @@ GUI_TEST_CLASS_DEFINITION( test_2382 ) {
     GTGlobals::sleep();
     CHECK_SET_ERR( !l.hasError( ), "There must be no errors!" );
 
-    QTreeWidgetItem *assDoc = GTUtilsProjectTreeView::findItem(os, assDocName);
-    CHECK_SET_ERR(NULL != assDoc, "Result document was not found!");
+    GTUtilsProjectTreeView::findIndex(os, assDocName);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2382_1 ) {
@@ -4053,8 +4037,7 @@ GUI_TEST_CLASS_DEFINITION( test_2382_1 ) {
     GTGlobals::sleep();
     CHECK_SET_ERR( !l.hasError( ), "There must be no errors!" );
 
-    QTreeWidgetItem *assDoc = GTUtilsProjectTreeView::findItem(os, assDocName);
-    CHECK_SET_ERR(NULL != assDoc, "Result document was not found!");
+    GTUtilsProjectTreeView::findIndex(os, assDocName);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2392 ) {
@@ -4104,8 +4087,7 @@ GUI_TEST_CLASS_DEFINITION( test_2401 ) {
     // 9. Open the file "2401.ugenedb".
     GTFileDialog::openFile(os, sandbox, fileName);
     // Expected: assembly is opened without errors.
-    QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, fileName);
-    CHECK_SET_ERR(NULL != item, "No assembly");
+    GTUtilsProjectTreeView::findIndex(os, fileName);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2402) {
@@ -4184,18 +4166,18 @@ GUI_TEST_CLASS_DEFINITION(test_2407) {
     GTLogTracer l;
     GTFileDialog::openFile(os, testDir+"_common_data/clustal/", "10000_sequences.aln");
 
-    GTGlobals::sleep(20000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, "10000_sequences.aln");
-    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "10000_sequences.aln"));
         
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__UNLOAD_SELECTED));
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep(5000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[unloaded]10000_sequences.aln"));
     GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep(500);
 
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
@@ -4257,8 +4239,7 @@ GUI_TEST_CLASS_DEFINITION( test_2415 ) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
 
     // Expected state: the sequence is renamed.
-    QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, "name");
-    CHECK_SET_ERR(NULL != item, "Object is not renamed");
+    GTUtilsProjectTreeView::findIndex(os, "name");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2424 ) {
@@ -4748,8 +4729,7 @@ GUI_TEST_CLASS_DEFINITION( test_2667 ) {
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::FindOptions options;
     options.failIfNull = false;
-    QTreeWidgetItem* annotationsItem = GTUtilsProjectTreeView::findItem(os, GTUtilsProjectTreeView::getTreeWidget(os), "NC_001363 features", options);
-    CHECK_SET_ERR(NULL == annotationsItem, "item was not deleted");
+    GTUtilsProjectTreeView::findIndex(os, "NC_001363 features", options);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2897) {
@@ -4792,7 +4772,7 @@ GUI_TEST_CLASS_DEFINITION(test_2903) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE"
                                                       << "Query NCBI BLAST database"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os, "render_area_virus_X"));
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 //    2. Click on the Analyze->Query NCBI BLAST database context menu
 //    3. Click on the Search button
 //    Expected state: the task has been finished without errors and blast result appears

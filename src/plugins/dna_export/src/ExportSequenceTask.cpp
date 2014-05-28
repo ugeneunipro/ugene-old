@@ -19,8 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportSequenceTask.h"
-#include "ExportUtils.h"
+#include <QtCore/QFileInfo>
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DocumentModel.h>
@@ -37,6 +36,9 @@
 #include <U2Core/SequenceUtils.h>
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U2SafePoints.h>
+
+#include "ExportUtils.h"
+#include "ExportSequenceTask.h"
 
 namespace U2 {
 
@@ -233,7 +235,7 @@ void ExportSequenceTask::run() {
                 annotations.append( *ad );
             }
             annObj->addAnnotations(annotations);
-            annObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
+            annObj->addObjectRelation(seqObj, ObjectRole_Sequence);
             annObj->setModified(false);
             resultDocument->addObject(annObj);
         }

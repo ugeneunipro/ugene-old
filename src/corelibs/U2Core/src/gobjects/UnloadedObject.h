@@ -33,14 +33,16 @@ public:
     QString         name;
     GObjectType     type;
     QVariantMap     hints;
-    
+    U2EntityRef     entityRef;
+
     bool isValid() const {return !name.isEmpty() && !type.isEmpty() && type != GObjectTypes::UNLOADED;}
 };
 
 class U2CORE_EXPORT UnloadedObject: public GObject {
     Q_OBJECT
 public:
-    UnloadedObject(const QString& objectName, const GObjectType& loadedObjectType, const QVariantMap& hintsMap = QVariantMap());
+    UnloadedObject(const QString& objectName, const GObjectType& loadedObjectType,
+        const U2EntityRef &entityRef, const QVariantMap& hintsMap = QVariantMap());
     UnloadedObject(const UnloadedObjectInfo& info);
 
     virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const;

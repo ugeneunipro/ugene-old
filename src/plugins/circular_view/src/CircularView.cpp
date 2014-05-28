@@ -19,39 +19,41 @@
  * MA 02110-1301, USA.
  */
 
-#include "CircularView.h"
+#include <math.h>
 
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/SelectionModel.h>
-#include <U2Core/Timer.h>
-#include <U2Core/AppContext.h>
+#include <QtGui/QApplication>
+#include <QtGui/QFontMetrics>
+#include <QtGui/QPainter>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/AnnotationSettings.h>
-#include <U2Core/U1AnnotationUtils.h>
-#include <U2View/ADVSequenceWidget.h>
-
-#include <U2Core/DNASequenceSelection.h>
-#include <U2Gui/GScrollBar.h>
-#include <U2Core/FormatUtils.h>
-#include <U2Gui/GraphUtils.h>
-#include <QtGui/QPainter>
-#include <QtGui/QFontMetrics>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTextEdit>
-#include <QtGui/QGridLayout>
 #include <QtGui/QDialog>
+#include <QtGui/QGridLayout>
+#include <QtGui/QTextEdit>
 #else
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QDialog>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QTextEdit>
 #endif
 
-#include "CircularItems.h"
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AnnotationSettings.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/FormatUtils.h>
 #include <U2Core/Log.h>
-#include <QtGui/QApplication>
+#include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/GraphUtils.h>
+#include <U2Gui/GScrollBar.h>
+
+#include <U2View/ADVSequenceWidget.h>
+
+#include "CircularItems.h"
+#include "CircularView.h"
 
 
 namespace U2 {

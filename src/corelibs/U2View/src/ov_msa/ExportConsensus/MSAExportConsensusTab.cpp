@@ -37,14 +37,18 @@ static const int ITEMS_SPACING = 6;
 static const int TITLE_SPACING = 1;
 
 QWidget* MSAExportConsensusTab::createPathGroup(){
-    foreach(DocumentFormatId dfid, dfr->getRegisteredFormats()){
-        DocumentFormat *df = dfr->getFormatById(dfid);
-        foreach (GObjectType type, df->getSupportedObjectTypes()){
-            if ((type == GObjectTypes::TEXT || type == GObjectTypes::SEQUENCE) && df->checkFlags(DocumentFormatFlag_SupportWriting)){
-                formatCb->addItem(df->getFormatName(), dfid);
-            }
-        }
+    DocumentFormatConstraints constraints;
+    constraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    constraints.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
+    constraints.supportedObjectTypes << GObjectTypes::TEXT << GObjectTypes::SEQUENCE;
+    constraints.allowPartialTypeMapping = true;
+    const DocumentFormatRegistry *formatRegistry = AppContext::getDocumentFormatRegistry();
+    const QList<DocumentFormatId> formatIds = formatRegistry->selectFormats(constraints);
+
+    foreach (const DocumentFormatId &formatId, formatIds) {
+        formatCb->addItem(formatRegistry->getFormatById(formatId)->getFormatName(), formatId);
     }
+
     pathLe->setText(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath() +
         QDir::separator() + "consensus");
     return savePathGroup;

@@ -58,6 +58,7 @@ const DocumentFormatId BaseDocumentFormats::UGENEDB("usqlite");
 const DocumentFormatId BaseDocumentFormats::DIFF("diff");
 const DocumentFormatId BaseDocumentFormats::PHYLIP_SEQUENTIAL("phylip-sequential");
 const DocumentFormatId BaseDocumentFormats::PHYLIP_INTERLEAVED("phylip-interleaved");
+const DocumentFormatId BaseDocumentFormats::DATABASE_CONNECTION("database_connection");
 
 DocumentFormat* BaseDocumentFormats::get(const DocumentFormatId& formatId) {
     return AppContext::getDocumentFormatRegistry()->getFormatById(formatId);

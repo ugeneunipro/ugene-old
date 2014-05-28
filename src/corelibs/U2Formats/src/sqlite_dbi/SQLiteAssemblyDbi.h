@@ -22,10 +22,11 @@
 #ifndef _U2_SQLITE_ASSEMBLY_DBI_H_
 #define _U2_SQLITE_ASSEMBLY_DBI_H_
 
-#include "SQLiteDbi.h"
 #include <U2Core/U2SqlHelpers.h>
 
-#include "assembly/AssemblyPackAlgorithm.h"
+#include "SQLiteDbi.h"
+#include "util/AssemblyAdapter.h"
+#include "util/AssemblyPackAlgorithm.h"
 
 namespace U2 {
 
@@ -82,6 +83,13 @@ public:
     */
     virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder,  U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os);
 
+    /**
+        Removes all assembly data and tables.
+        Does not remove entry from the 'Object' table.
+        Requires: U2DbiFeature_WriteAssembly feature support
+    */
+    virtual void removeAssemblyData(const U2DataId &assemblyId, U2OpStatus& os);
+
     /** 
         Updates assembly object fields 
         Requires: U2DbiFeature_WriteAssembly feature support
@@ -123,6 +131,10 @@ public:
 private:
     virtual void addReads(AssemblyAdapter* a, U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os);
 
+    void removeAttributes(const U2DataId &assemblyId, U2OpStatus& os);
+    void removeTables(const U2DataId &assemblyId, U2OpStatus& os);
+    void removeAssemblyEntry(const U2DataId &assemblyId, U2OpStatus& os);
+
     /** Return assembly storage adapter for the given assembly */
     AssemblyAdapter* getAdapter(const U2DataId& assemblyId, U2OpStatus& os);
     
@@ -130,39 +142,13 @@ private:
     QHash<qint64, AssemblyAdapter*> adaptersById;
 };
 
-// reserved for future use;
-class AssemblyCompressor {
-};
 
-
-class AssemblyAdapter {
+class SQLiteAssemblyAdapter : public AssemblyAdapter {
 public:
-    AssemblyAdapter(const U2DataId& assemblyId, const AssemblyCompressor* compressor, DbRef* ref);
-    
-    virtual void createReadsTables(U2OpStatus& ) {};
-    virtual void createReadsIndexes(U2OpStatus& ) {};
-    virtual void shutdown(U2OpStatus& ) {};
+    SQLiteAssemblyAdapter(const U2DataId& assemblyId, const AssemblyCompressor* compressor, DbRef* ref) :
+        AssemblyAdapter(assemblyId, compressor), db(ref) {}
 
-    virtual qint64 countReads(const U2Region& r, U2OpStatus& os) = 0;
-
-    virtual qint64 getMaxPackedRow(const U2Region& r, U2OpStatus& os) = 0;
-    virtual qint64 getMaxEndPos(U2OpStatus& os) = 0;
-
-    virtual U2DbiIterator<U2AssemblyRead>* getReads(const U2Region& r, U2OpStatus& os, bool sortedHint = false) = 0;
-    virtual U2DbiIterator<U2AssemblyRead>* getReadsByRow(const U2Region& r, qint64 minRow, qint64 maxRow, U2OpStatus& os) = 0;
-    virtual U2DbiIterator<U2AssemblyRead>* getReadsByName(const QByteArray& name, U2OpStatus& os) = 0;
-    
-    virtual void addReads(U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os) = 0;
-    
-    virtual void removeReads(const QList<U2DataId>& rowIds, U2OpStatus& os) = 0;
-
-    virtual void pack(U2AssemblyPackStat& stat, U2OpStatus& os) = 0;
-
-    virtual void calculateCoverage(const U2Region& region, U2AssemblyCoverageStat& c, U2OpStatus& os) = 0;
-    virtual ~AssemblyAdapter(){}
 protected:
-    U2DataId                    assemblyId;
-    const AssemblyCompressor*   compressor;
     DbRef*                      db;
 };
 
@@ -181,7 +167,7 @@ public:
 
     static void calculateCoverage(SQLiteQuery& q, const U2Region& r, U2AssemblyCoverageStat& c, U2OpStatus& os);
 
-    static void addToCoverage(U2AssemblyCovereageImportInfo& cii, const U2AssemblyRead& read);
+    static void addToCoverage(U2AssemblyCoverageImportInfo& cii, const U2AssemblyRead& read);
 };
 
 class SQLiteAssemblyNameFilter : public SqlRSFilter<U2AssemblyRead> {

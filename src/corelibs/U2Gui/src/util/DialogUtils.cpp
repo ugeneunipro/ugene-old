@@ -30,9 +30,7 @@
 
 #include <U2Gui/LastUsedDirHelper.h>
 
-#include <QtCore/QFileInfo>
 #include <QtCore/QDir>
-#include <QtCore/QCoreApplication>
 #include <QtCore/QCoreApplication>
 
 #if (QT_VERSION < 0x050000) //Qt 5

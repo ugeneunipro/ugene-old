@@ -22,6 +22,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/CMDLineCoreOptions.h>
 #include <U2Core/CMDLineRegistry.h>
+#include <U2Core/CredentialsStorage.h>
 #include <U2Core/Log.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -31,8 +32,11 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiUtils.h>
 
-#include <QtCore/QFile>
+#include <U2Formats/MysqlDbiUtils.h>
+
 #include <QtCore/QCoreApplication>
+#include <QtCore/QFile>
+#include <QtCore/QThread>
 
 namespace U2 {
 
@@ -82,7 +86,7 @@ QList<U2DbiRef> U2DbiRegistry::listTmpDbis() const {
     return res;
 }
 
-U2DbiRef U2DbiRegistry::attachTmpDbi(const QString& alias, U2OpStatus& os) {
+U2DbiRef U2DbiRegistry::attachTmpDbi(const QString& alias, U2OpStatus& os, const U2DbiFactoryId &factoryId) {
     QMutexLocker m(&lock);
 
     for (int i = 0; i < tmpDbis.size(); i++) {
@@ -94,11 +98,11 @@ U2DbiRef U2DbiRegistry::attachTmpDbi(const QString& alias, U2OpStatus& os) {
     }
 
     coreLog.trace("Allocating a tmp dbi with alias: " + alias);
-    U2DbiRef dbiRef = allocateTmpDbi(alias, os);
+    U2DbiRef dbiRef = allocateTmpDbi(alias, os, factoryId);
     CHECK_OP(os, U2DbiRef());
 
     coreLog.trace("Allocated tmp dbi: " + dbiRef.dbiId);
-    TmpDbiRef tmpDbiRef= TmpDbiRef(alias, dbiRef, 1);
+    TmpDbiRef tmpDbiRef = TmpDbiRef(alias, dbiRef, 1);
 
     if (alias == SESSION_TMP_DBI_ALIAS && !sessionDbiInitDone) { //once used -> cache connection
         initSessionDbi(tmpDbiRef);
@@ -160,7 +164,7 @@ QString U2DbiRegistry::shutdownSessionDbi(U2OpStatus &os) {
 void U2DbiRegistry::deallocateTmpDbi(const TmpDbiRef& ref, U2OpStatus& os) {
     QMutexLocker l(&lock);
 
-    pool->closeAllConnections(ref.dbiRef.dbiId, os);
+    pool->closeAllConnections(ref.dbiRef, os);
     if (QFile::exists(ref.dbiRef.dbiId)) {
         QFile::remove(ref.dbiRef.dbiId);
     }
@@ -204,17 +208,22 @@ namespace {
         // Check if the connection can be established
         U2OpStatus2Log os;
         DbiConnection con(ref, true, os);
+        Q_UNUSED(con);
         if (os.hasError()) {
             return false;
         }
         return true;
     }
 
-    U2DbiRef getDbiRef(const QString &alias, U2OpStatus &os) {
+    U2DbiRef getDbiRef(const QString &alias, U2OpStatus &os,
+        const U2DbiFactoryId &factoryId)
+    {
         U2DbiRef res;
-        res.dbiFactoryId = DEFAULT_DBI_ID;
+        res.dbiFactoryId = factoryId;
         if (useDatabaseFromCMDLine(alias)) {
             res.dbiId = getDatabaseFromCMDLine(os);
+        } else if (MYSQL_DBI_ID == factoryId) {
+            res.dbiId = "ugene:@192.168.15.143:6666/ugene";
         } else {
             res.dbiId = createNewDatabase(alias, os);
         }
@@ -222,17 +231,20 @@ namespace {
     }
 }
 
-U2DbiRef U2DbiRegistry::allocateTmpDbi(const QString& alias, U2OpStatus& os) {
+U2DbiRef U2DbiRegistry::allocateTmpDbi(const QString& alias, U2OpStatus& os,
+    const U2DbiFactoryId &factoryId)
+{
     QMutexLocker m(&lock);
 
-    U2DbiRef res = getDbiRef(alias, os);
+    U2DbiRef res = getDbiRef(alias, os, factoryId);
     CHECK_OP(os, res);
 
-    {
+    if ( SQLITE_DBI_ID == factoryId ) {
         // Create a tmp dbi file (the DbiConnection is opened with "bool create = true", and released)
         DbiConnection con(res, true, os);
-        CHECK_OP(os, U2DbiRef());
+        Q_UNUSED(con);
     }
+    CHECK_OP(os, U2DbiRef());
 
     return res;
 }
@@ -254,47 +266,40 @@ U2DbiFactory *U2DbiRegistry::getDbiFactoryById(U2DbiFactoryId id) const {
     return factories.value(id, NULL);
 }
 
-
 //////////////////////////////////////////////////////////////////////////
 // U2DbiPool
 
 U2DbiPool::U2DbiPool(QObject* p) : QObject(p) {
 }
 
-U2Dbi* U2DbiPool::openDbi(const U2DbiRef& ref, bool create, U2OpStatus& os) {
+U2Dbi* U2DbiPool::openDbi(const U2DbiRef& ref, bool createDatabase, U2OpStatus& os) {
+    CHECK_EXT(!ref.dbiId.isEmpty(), os.setError(tr("Invalid database id")), NULL);
     QMutexLocker m(&lock);
+    Q_UNUSED(m);
 
+    const QString id = getId(ref, os);
+    CHECK_OP(os, NULL);
     U2Dbi* dbi = NULL;
-    QString url = ref.dbiId;
 
-    if (url.isEmpty()) {
-        os.setError(tr("No URL provided!"));
-        return NULL;
-    }
-    if (dbiByUrl.contains(url)) {
-        dbi = dbiByUrl[url];
-        int cnt = dbiCountersByUrl[url];
-        dbiCountersByUrl[url] = cnt + 1;
+    if (dbiById.contains(id)) {
+        dbi = dbiById[id];
+        int cnt = dbiCountersById[id];
+        dbiCountersById[id] = cnt + 1;
     } else {
-        U2DbiFactory* f = AppContext::getDbiRegistry()->getDbiFactoryById(ref.dbiFactoryId);
-        if (f == NULL) {
-            os.setError(tr("Invalid database type: %1").arg(ref.dbiFactoryId));
-            return NULL;
-        }
-        dbi = f->createDbi();
-        QHash<QString, QString> initProperties;
-        initProperties[U2_DBI_OPTION_URL] = url;
-        if (create) {
-            initProperties[U2_DBI_OPTION_CREATE] = U2_DBI_VALUE_ON;
-        }
+        U2DbiFactory* dbiFactory = AppContext::getDbiRegistry()->getDbiFactoryById(ref.dbiFactoryId);
+        CHECK_EXT(NULL != dbiFactory, os.setError(tr("Invalid database type: %1").arg(ref.dbiFactoryId)), NULL);
+        dbi = dbiFactory->createDbi();
+
+        const QString url = dbiFactory->id2Url(ref.dbiId).getURLString();
+
+        QHash<QString, QString> initProperties = getInitProperties(url, createDatabase);
         dbi->init(initProperties, QVariantMap(), os);
         if (os.hasError()) {
-            dbi->shutdown(os);
             delete dbi;
             return NULL;
         }
-        dbiByUrl[url] = dbi;
-        dbiCountersByUrl[url] = 1;
+        dbiById[id] = dbi;
+        dbiCountersById[id] = 1;
     }
     return dbi;
 }
@@ -302,51 +307,110 @@ U2Dbi* U2DbiPool::openDbi(const U2DbiRef& ref, bool create, U2OpStatus& os) {
 void U2DbiPool::addRef(U2Dbi * dbi, U2OpStatus & os) {
     QMutexLocker m(&lock);
 
-    QString url = dbi->getInitProperties().value(U2_DBI_OPTION_URL);
-    if (!dbiByUrl.contains(url)) {    
-        os.setError(tr("DbiPool: DBI not found! URL: %1").arg(url));
+    const QString id = getId(dbi->getDbiRef(), os);
+    SAFE_POINT_OP(os, );
+    if (!dbiById.contains(id)) {
+        os.setError(tr("DbiPool: DBI not found! Dbi ID: %1").arg(dbi->getDbiId()));
         return;
     }
-    assert(dbiCountersByUrl[url] > 0);
-    int cnt = ++dbiCountersByUrl[url];
-    ioLog.trace(QString("DbiPool: Increasing reference count. Url: %1, ref-count: %2").arg(url).arg(cnt));
+
+    assert(dbiCountersById[id] > 0);
+    ++dbiCountersById[id];
 }
 
 void U2DbiPool::releaseDbi(U2Dbi* dbi, U2OpStatus& os) {
     QMutexLocker m(&lock);
 
-    QString url = dbi->getInitProperties().value(U2_DBI_OPTION_URL);
-    if (!dbiByUrl.contains(url)) {    
-        os.setError(tr("DbiPool: DBI not found! URL: %1").arg(url));
+    const QString id = getId(dbi->getDbiRef(), os);
+    SAFE_POINT_OP(os, );
+
+    if (!dbiById.contains(id)) {
+        os.setError(tr("DbiPool: DBI not found! Dbi ID: %1").arg(dbi->getDbiId()));
         return;
     }
-    int cnt = --dbiCountersByUrl[url];
+    int cnt = --dbiCountersById[id];
     if (cnt > 0) {
         return;
     }
     dbi->shutdown(os);
     delete dbi;
 
-    dbiByUrl.remove(url);
-    dbiCountersByUrl.remove(url);
-    ioLog.trace(QString("DBIPool: resource is released. Url: %1").arg(url));
+    dbiById.remove(id);
+    dbiCountersById.remove(id);
 }
 
-
-void U2DbiPool::closeAllConnections(const QString& url, U2OpStatus& os) {
+void U2DbiPool::closeAllConnections(const U2DbiRef& ref, U2OpStatus& os) {
     QMutexLocker m(&lock);
+    int nActive = 0;
 
-    if (!dbiByUrl.contains(url)) {
-        return;
+    const QStringList allConnectionsIds = getIds(ref, os);
+    SAFE_POINT_OP(os, );
+
+    foreach (const QString& id, allConnectionsIds) {
+        U2Dbi* dbi = dbiById[id];
+        dbi->shutdown(os);
+        delete dbi;
+
+        dbiById.remove(id);
+        nActive += dbiCountersById.value(id, 0);
+        dbiCountersById.remove(id);
     }
-    U2Dbi* dbi = dbiByUrl[url];
-    dbi->shutdown(os);
-    delete dbi;
 
-    dbiByUrl.remove(url);
-    int nActive  = dbiCountersByUrl.value(url, 0);
-    dbiCountersByUrl.remove(url);
-    ioLog.trace(QString("DBIPool: closing all connections. Url: %1, active references: %2 ").arg(url).arg(nActive));
+    ioLog.trace(QString("DBIPool: closing all connections. Id: %1, active references: %2 ").arg(ref.dbiId).arg(nActive));
+}
+
+QHash<QString, QString> U2DbiPool::getInitProperties(const QString &url, bool create) {
+    QHash<QString, QString> initProperties;
+
+    initProperties[U2DbiOptions::U2_DBI_OPTION_URL] = url;
+
+    if (create) {
+        initProperties[U2DbiOptions::U2_DBI_OPTION_CREATE] = U2DbiOptions::U2_DBI_VALUE_ON;
+    }
+
+    Credentials credentials = AppContext::getCredentialsStorage()->getEntry(url);
+
+    if (!credentials.login.isNull()) {
+        initProperties[U2DbiOptions::U2_DBI_OPTION_LOGIN] = credentials.login;
+    }
+
+    if (!credentials.password.isNull()) {
+        initProperties[U2DbiOptions::U2_DBI_OPTION_PASSWORD] = credentials.password;
+    }
+
+    return initProperties;
+}
+
+QString U2DbiPool::getId(const U2DbiRef& ref, U2OpStatus& os) const {
+    const QString url = U2DbiUtils::ref2Url(ref);
+    SAFE_POINT_EXT(!url.isEmpty(), os.setError(tr("Invalid dbi reference")), "");
+
+    if (ref.dbiFactoryId == MYSQL_DBI_ID) {
+        return url + "|" + QString::number((qint64)QThread::currentThread());
+    } else {
+        return url;
+    }
+}
+
+QStringList U2DbiPool::getIds(const U2DbiRef& ref, U2OpStatus &os) const {
+    U2DbiFactory* dbiFactory = AppContext::getDbiRegistry()->getDbiFactoryById(ref.dbiFactoryId);
+    SAFE_POINT_EXT(NULL != dbiFactory, os.setError(tr("Invalid database type: %1").arg(ref.dbiFactoryId)), QStringList());
+    const QString url = dbiFactory->id2Url(ref.dbiId).getURLString();
+    QStringList result;
+
+    if (ref.dbiFactoryId == MYSQL_DBI_ID) {
+        foreach (const QString& id, dbiById.keys()) {
+            if (id.left(id.length() - 1 - sizeof(qint64)) == url) {
+                result << id;
+            }
+        }
+    } else {
+        if (dbiById.contains(url)) {
+            result << url;
+        }
+    }
+
+    return result;
 }
 
 } // namespace U2

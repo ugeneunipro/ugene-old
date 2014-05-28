@@ -19,26 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#include "SwissProtPlainTextFormat.h"
-#include "GenbankLocationParser.h"
-#include "GenbankFeatures.h"
-#include "DocumentFormatUtils.h"
+#include <QtCore/QBuffer>
 
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectUtils.h>
-
-#include <U2Core/IOAdapter.h>
-#include <U2Core/U2OpStatus.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNAInfo.h>
-#include <U2Core/QVariantUtils.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/IOAdapter.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/QVariantUtils.h>
+
+#include "DocumentFormatUtils.h"
+#include "GenbankFeatures.h"
+#include "GenbankLocationParser.h"
+#include "SwissProtPlainTextFormat.h"
 
 namespace U2 {
 
-/* TRANSLATOR U2::EMBLPlainTextFormat */    
-/* TRANSLATOR U2::EMBLGenbankAbstractDocument */ 
+/* TRANSLATOR U2::EMBLPlainTextFormat */
+/* TRANSLATOR U2::EMBLGenbankAbstractDocument */
 
 SwissProtPlainTextFormat::SwissProtPlainTextFormat(QObject* p)
 : EMBLGenbankAbstractDocument(BaseDocumentFormats::PLAIN_SWISS_PROT, tr("Swiss-Prot"), 80, DocumentFormatFlag_SupportStreaming, p)

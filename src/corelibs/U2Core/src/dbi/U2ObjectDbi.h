@@ -32,21 +32,41 @@ namespace U2 {
     Folders have unique string IDs - constructed similar to full folders names on Unix systems
     The root folder "/" is required for any DBI
 */
-class U2ObjectDbi : public U2ChildDbi {
+
+enum DbFolderFlag {
+    DbFolderFlag_None = 0,
+
+    DbFolderFlag_Undeletable = 1 << 0,
+
+    DbFolderFlag_Unchangeable = 1 << 1,
+
+    DbFolderFlag_RestrictObjectView = 1 << 2
+};
+
+class U2CORE_EXPORT U2ObjectDbi : public U2ChildDbi {
 protected:
     U2ObjectDbi(U2Dbi* rootDbi) : U2ChildDbi(rootDbi) {}
 
 public:
-    
     /**  Returns number of top-level U2Objects in database */
     virtual qint64 countObjects(U2OpStatus& os) = 0;
 
     /**  Returns number of top-level U2Objects with the specified type in database */
     virtual qint64 countObjects(U2DataType type, U2OpStatus& os) = 0;
 
+    /**
+     Retrieves U2Object fields from database entry with 'id'
+     and sets these fields for 'object'
+    */
+    virtual void getObject(U2Object& object, const U2DataId& id, U2OpStatus& os) = 0;
+
     /** Lists database top-level objects, starts with 'offset' and limits by 'count'. 
     The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
     virtual QList<U2DataId> getObjects(qint64 offset, qint64 count, U2OpStatus& os) = 0;
+
+    /** Lists database top-level objects, starts with 'offset' and limits by 'count'.
+    The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
+    virtual QHash<U2DataId, QString> getObjectNames(qint64 offset, qint64 count, U2OpStatus& os) = 0;
 
     /** Lists database top-level objects of the specified type, starts with 'offset' and limits by 'count'. 
     The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
@@ -68,6 +88,9 @@ public:
         At least one root folder is required. 
     */
     virtual QStringList getFolders(U2OpStatus& os) = 0;
+
+    /** Returns the map: object -> folder path. */
+    virtual QHash<U2Object, QString> getObjectFolders(U2OpStatus& os) = 0;
 
     /** Returns version of the folder. 
         The folder version increases if new object(s)/subfolder(s) are added into this folder
@@ -105,8 +128,8 @@ public:
         object is not placed in any folder or is not a part of any other more complex object (ex: sequence in msa)
         Requires: U2DbiFeature_RemoveObjects feature support
     */
-    virtual void removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os) = 0;
-    virtual void removeObject(const U2DataId& dataId, U2OpStatus& os) { removeObject(dataId, QString(), os); }
+    virtual bool removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os) = 0;
+    virtual bool removeObject(const U2DataId& dataId, U2OpStatus& os) { return removeObject(dataId, QString(), os); }
     
     /** 
         Removes collection of objects from the specified folder. If folder is empty - removes object from all folders.
@@ -114,8 +137,8 @@ public:
         object is not placed in any folder or is not a part of any other more complex object (ex: sequence in msa)
         Requires: U2DbiFeature_RemoveObjects feature support
     */
-    virtual void removeObjects(const QList<U2DataId>& dataIds, const QString& folder, U2OpStatus& os) = 0;
-    virtual void removeObjects(const QList<U2DataId>& dataIds, U2OpStatus& os) { removeObjects(dataIds, QString(), os); }
+    virtual bool removeObjects(const QList<U2DataId>& dataIds, const QString& folder, U2OpStatus& os) = 0;
+    virtual bool removeObjects(const QList<U2DataId>& dataIds, U2OpStatus& os) { return removeObjects(dataIds, QString(), os); }
 
 
     /** Creates folder in the database.
@@ -129,7 +152,14 @@ public:
         Removes folder. The folder must be existing path. Runs GC check for all objects in the folder 
         Requires: U2DbiFeature_ChangeFolders feature support
     */
-    virtual void removeFolder(const QString& folder, U2OpStatus& os) = 0;
+    virtual bool removeFolder(const QString& folder, U2OpStatus& os) = 0;
+
+    /** Renames the folder. Replaces all inner folders into the new one.
+        The specified new path must be a valid unique path, not existing in the database.
+        It is not required that parent folders must exist, they are created automatically.
+        Requires: U2DbiFeature_ChangeFolders feature support
+    */
+    virtual void renameFolder(const QString &oldPath, const QString &newPath, U2OpStatus &os) = 0;
 
     /** Adds objects to the specified folder.
         All objects must exist and have a top-level type.
@@ -143,9 +173,35 @@ public:
         If 'toFolder' is empty, removes the objects from 'fromFolder' and 
         deletes non-top-level objects without parents, if any appear in the specified list.
         Otherwise, moves the specified objects between the specified folders, omitting duplicates.
+
+        'saveFromFolder' parameter specifies whether the 'fromFolder' path has to be stored
+        for further usage. For instance, when the object is moved to the recycle bin its previous directory
+        is needed in order to restore the object afterwards.
+
         Requires: U2DbiFeature_ChangeFolders feature support
     */
-    virtual void moveObjects(const QList<U2DataId>& objectIds, const QString& fromFolder, const QString& toFolder, U2OpStatus& os) = 0;
+    virtual void moveObjects(const QList<U2DataId>& objectIds, const QString& fromFolder,
+        const QString& toFolder, U2OpStatus& os, bool saveFromFolder = false) = 0;
+
+    /**
+     Sets the new name @newName for the object with the given @id.
+    */
+    virtual void renameObject(const U2DataId &id, const QString &newName, U2OpStatus &os) = 0;
+
+    /** Moves objects to the folder whose path was previously stored by the 'moveObjects' method
+        Returns the new path
+    */
+    virtual QStringList restoreObjects(const QList<U2DataId> &objectIds, U2OpStatus &os) = 0;
+
+    /** Method for databases allowing multiple clients. Updates timestamp of last access time
+        to the object having `objectId`
+    */
+    virtual void updateObjectAccessTime(const U2DataId &objectId, U2OpStatus &os);
+
+    /** Returns whether the object is used by some client of the DB.
+        The method should be overridden for DBIs with multiple clients
+    */
+    virtual bool isObjectInUse(const U2DataId& id, U2OpStatus& os);
 
      /** Undo the last update operation for the object. */
     virtual void undo(const U2DataId& objId, U2OpStatus& os) = 0;
@@ -159,6 +215,15 @@ public:
     /** Returns "true" if there are modifications of the object that can be redone */
     virtual bool canRedo(const U2DataId& objId, U2OpStatus& os) = 0;
 
+    static const QString ROOT_FOLDER;
+    static const QString RECYCLE_BIN_FOLDER;
+    static const QString PATH_SEP;
+
+    /** Time interval in milliseconds during which timestamps are updated in DB for active objects */
+    static const int OBJECT_ACCESS_UPDATE_INTERVAL;
+
+protected:
+    static const QString PREV_OBJ_PATH_ATTR_NAME;
 };
 
 } //namespace

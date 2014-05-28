@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <memory>
-
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -367,8 +365,8 @@ Task::ReportResult GTest_CompareHmmFiles::report() {
     }
 
     IOAdapterFactory* iof1 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filename1));
-    std::auto_ptr<IOAdapter> io1(iof1->createIOAdapter());
-    if( io1.get() == NULL ) {
+    QScopedPointer<IOAdapter> io1(iof1->createIOAdapter());
+    if (io1.isNull()) {
         stateInfo.setError( tr( "cannot_create_io_adapter_for_1_file" ) );
         return ReportResult_Finished;
     }
@@ -378,8 +376,8 @@ Task::ReportResult GTest_CompareHmmFiles::report() {
     }
 
     IOAdapterFactory* iof2 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filename2));
-    std::auto_ptr<IOAdapter> io2(iof2->createIOAdapter());
-    if( io2.get() == NULL ) {
+    QScopedPointer<IOAdapter> io2(iof2->createIOAdapter());
+    if (io2.isNull()) {
         stateInfo.setError( tr( "cannot_create_io_adapter_for_2_file" ) );
         return ReportResult_Finished;
     }

@@ -80,6 +80,24 @@ void SQLiteModDbi::initSqlSchema(U2OpStatus &os) {
         return;
     }
 
+    // UserModStep - user modification steps
+    //   id                     - id of the user modifications step
+    //   object, otype, oextra  - data id of the master object (i.e. object for which "undo/redo" was initiated)
+    //   version                - master object was modified from this version
+    SQLiteQuery("CREATE TABLE UserModStep (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+        " object INTEGER NOT NULL,"
+        " otype INTEGER NOT NULL,"
+        " oextra BLOB NOT NULL,"
+        " version INTEGER NOT NULL, "
+        " FOREIGN KEY(object) REFERENCES Object(id) ON DELETE CASCADE)", db, os).execute();
+
+    // MultiModStep - multiple modifications step with reference to a user modifications step
+    //   id          - id of the multiple modifications step
+    //   userStepId  - id of the user modifications step
+    SQLiteQuery("CREATE TABLE MultiModStep (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+        " userStepId INTEGER NOT NULL,"
+        " FOREIGN KEY(userStepId) REFERENCES UserModStep(id) ON DELETE CASCADE)", db, os).execute();
+
     // SingleModStep - single modification of a dbi object
     //   id                    - id of the modification
     //   object, otype, oextra - data id of the object that was modified
@@ -95,27 +113,10 @@ void SQLiteModDbi::initSqlSchema(U2OpStatus &os) {
         " modType INTEGER NOT NULL,"
         " details TEXT NOT NULL,"
         " multiStepId INTEGER NOT NULL, "
-        " FOREIGN KEY(object) REFERENCES Object(id), "
-        " FOREIGN KEY(multiStepId) REFERENCES MultiModStep(id) )", db, os).execute();
+        " FOREIGN KEY(object) REFERENCES Object(id) ON DELETE CASCADE, "
+        " FOREIGN KEY(multiStepId) REFERENCES MultiModStep(id) ON DELETE CASCADE)", db, os).execute();
     SQLiteQuery("CREATE INDEX SingleModStep_object ON SingleModStep(object)", db, os).execute();
     SQLiteQuery("CREATE INDEX SingleModStep_object_version ON SingleModStep(object, version)", db, os).execute();
-
-    // MultiModStep - multiple modifications step with reference to a user modifications step
-    //   id          - id of the multiple modifications step
-    //   userStepId  - id of the user modifications step
-    SQLiteQuery("CREATE TABLE MultiModStep (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-        " userStepId INTEGER NOT NULL,"
-        " FOREIGN KEY(userStepId) REFERENCES UserModStep(id) )", db, os).execute();
-
-    // UserModStep - user modification steps
-    //   id                     - id of the user modifications step
-    //   object, otype, oextra  - data id of the master object (i.e. object for which "undo/redo" was initiated)
-    //   version                - master object was modified from this version
-    SQLiteQuery("CREATE TABLE UserModStep (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-        " object INTEGER NOT NULL,"
-        " otype INTEGER NOT NULL,"
-        " oextra BLOB NOT NULL,"
-        " version INTEGER NOT NULL)", db, os).execute();
 }
 
 U2SingleModStep SQLiteModDbi::getModStep(const U2DataId &objectId, qint64 trackVersion, U2OpStatus &os) {
@@ -135,7 +136,7 @@ U2SingleModStep SQLiteModDbi::getModStep(const U2DataId &objectId, qint64 trackV
         q.ensureDone();
     }
     else if (!os.hasError()) {
-        os.setError(SQLiteL10N::tr("An object single modification step not found!"));
+        os.setError(U2DbiL10n::tr("An object single modification step not found!"));
     }
 
     return res;
@@ -496,11 +497,12 @@ void SQLiteModDbi::createMultiModStep(const U2DataId &masterObjId, U2OpStatus &o
     qMulti.bindInt64(1, modStepsByObject[masterObjId].userModStepId);
 
     qint64 curMultiModStepId = qMulti.insert();
-    modStepsByObject[masterObjId].multiModStepId = curMultiModStepId;
 
     if (-1 == curMultiModStepId) {
         os.setError("Failed to create a common multiple modifications step!");
         return;
+    } else {
+        modStepsByObject[masterObjId].multiModStepId = curMultiModStepId;
     }
 }
 

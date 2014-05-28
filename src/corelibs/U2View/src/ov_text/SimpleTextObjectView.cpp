@@ -71,19 +71,21 @@ bool SimpleTextObjectViewFactory::isStateInSelection(const MultiGSelection& mult
 }
 
 Task* SimpleTextObjectViewFactory::createViewTask(const MultiGSelection& multiSelection, bool single) {
-    QSet<Document*> documents = SelectionUtils::findDocumentsWithObjects(GObjectTypes::TEXT, &multiSelection, UOF_LoadedAndUnloaded, true);
-    if (documents.size() == 0) {
+    const QList<GObject *> objects = SelectionUtils::findObjects(GObjectTypes::TEXT, &multiSelection, UOF_LoadedAndUnloaded);
+    if (objects.isEmpty()) {
         return NULL;
     }
-    Task* result = (single || documents.size() == 1) ? NULL : new Task(tr("Open multiple views task"), TaskFlag_NoRun);
-    foreach(Document* d, documents) {
-        Task* t = new OpenSimpleTextObjectViewTask(d);
-        if (result == NULL) {
-            return t;
-        }
+
+    Task *result = (single || objects.size() == 1) ? NULL : new Task(tr("Open multiple views task"), TaskFlag_NoRun);
+    Task *t = new OpenSimpleTextObjectViewTask(objects);
+
+    if (result == NULL) {
+        return t;
+    } else {
         //todo: limit number of views?
         result->addSubTask(t);
     }
+
     return result;
 }
 

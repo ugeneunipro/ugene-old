@@ -34,13 +34,12 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Gui/DialogUtils.h>
 
-#include <memory>
 #include <QtCore/QtAlgorithms>
 #include <QtCore/QFileInfo>
 
 namespace U2 {
 
-/* TRANSLATOR U2::IOAdapter */    
+/* TRANSLATOR U2::IOAdapter */
 
 static const char * prob2ascii(float p, float null) {
   HMMERTaskLocalData *tld = getHMMERTaskLocalData();
@@ -174,7 +173,7 @@ void HMMIO::writeHMM2(IOAdapterFactory* iof, const QString& url, TaskStateInfo& 
         res+="\n";
     }
     res+="//\n";
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Write)) {
         si.setError(L10N::errorOpeningFileWrite(url));
         return;
@@ -202,7 +201,7 @@ void HMMIO::readHMM2(IOAdapterFactory* iof, const QString& url, TaskStateInfo& s
 	alphabet_s &al = tld->al;
     
     struct plan7_s *hmm = NULL;
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Read)) {
         si.setError(L10N::errorOpeningFileRead(url));
         return;

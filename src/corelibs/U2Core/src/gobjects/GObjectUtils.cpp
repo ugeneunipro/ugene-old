@@ -33,6 +33,9 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/UnloadedObject.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectRelationsDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 namespace U2 {
@@ -76,8 +79,9 @@ QList<GObject*> GObjectUtils::findAllObjects(UnloadedObjectFilter f, GObjectType
 }
 
 
-QList<GObject*> GObjectUtils::selectRelations(GObject* obj, GObjectType type, const QString& relationRole, 
-                                             const QList<GObject*>& fromObjects, UnloadedObjectFilter f)
+QList<GObject*> GObjectUtils::selectRelations(GObject* obj, GObjectType type,
+    GObjectRelationRole relationRole, const QList<GObject*>& fromObjects,
+    UnloadedObjectFilter f)
 {
     QList<GObject*> res;
     QList<GObjectRelation> relations = obj->getObjectRelations();
@@ -93,13 +97,44 @@ QList<GObject*> GObjectUtils::selectRelations(GObject* obj, GObjectType type, co
     return res;
 }
 
-QList<GObject*> GObjectUtils::findObjectsRelatedToObjectByRole(const GObject* obj, GObjectType resultObjType, 
-                                                               const QString& role, const QList<GObject*>& fromObjects, 
-                                                               UnloadedObjectFilter f) 
-{
-    QList<GObject*> res;
-    QList<GObject*> objects  = select(fromObjects, resultObjType, f);
-    foreach(GObject* o, objects) {
+QList<GObject *> GObjectUtils::selectRelationsFromParentDoc(const GObject* obj, const GObjectType &type, GObjectRelationRole relationRole) {
+    QList<GObject *> result;
+
+    Document *parentDoc = obj->getDocument();
+    SAFE_POINT(NULL != parentDoc, "Invalid parent document detected", result);
+
+    U2OpStatus2Log os;
+    DbiConnection con(parentDoc->getDbiRef(), os);
+    U2ObjectRelationsDbi *relationsDbi = con.dbi->getObjectRelationsDbi();
+    SAFE_POINT(NULL != relationsDbi, "Invalid object relations DBI", result);
+
+    const QList<U2ObjectRelation> relations = relationsDbi->getObjectRelations(obj->getEntityRef().entityId, os);
+    CHECK_OP(os, result);
+    foreach (const U2ObjectRelation &relation, relations) {
+        if (type == relation.referencedType && relationRole == relation.relationRole) {
+            GObject *referenceObj = parentDoc->getObjectById(relation.referencedObject);
+            if (NULL != referenceObj) {
+                result.append(referenceObj);
+            } else {
+                os.setError(QString("Reference object with ID '%1' and name '%2' not found in the document")
+                    .arg(QString(relation.referencedObject)).arg(relation.referencedName));
+            }
+        }
+    }
+    return result;
+}
+
+namespace {
+
+QList<GObject *> findRelatedObjectsForUnloadedObjects(const GObject *obj, GObjectRelationRole role, const QSet<GObject*> &fromObjects) {
+    QList<GObject *> res;
+    SAFE_POINT(obj->isUnloaded(), "Invalid object loaded state detected", res);
+
+    foreach(GObject* o, fromObjects) {
+        if (!o->isUnloaded()) {
+            coreLog.error("Invalid object loaded state detected");
+            continue;
+        }
         if (o->hasObjectRelation(obj, role)) {
             res.append(o);
         }
@@ -107,13 +142,66 @@ QList<GObject*> GObjectUtils::findObjectsRelatedToObjectByRole(const GObject* ob
     return res;
 }
 
-QList<GObject*> GObjectUtils::selectObjectsWithRelation(const QList<GObject*>& objs, GObjectType type, 
-                                                        const QString& relationRole, UnloadedObjectFilter f, bool availableObjectsOnly) 
-{
-    QSet<GObject*> availableObjects;
-    if (availableObjectsOnly) {
-        availableObjects = findAllObjects(f).toSet();
+QList<GObject *> findRelatedObjectsForLoadedObjects(const GObject *obj, GObjectRelationRole role, const QSet<GObject*> &fromObjects) {
+    QList<GObject *> res;
+
+    const U2EntityRef &entityRef = obj->getEntityRef();
+    QHash<Document *, U2DbiRef> doc2DbiRef;
+    foreach (GObject *object, fromObjects) {
+        Document *doc = object->getDocument();
+        SAFE_POINT(NULL != doc, "Invalid parent document detected", res);
+        const U2DbiRef dbiRef = object->getEntityRef().dbiRef;
+        if (entityRef.dbiRef == dbiRef) {
+            doc2DbiRef.insert(doc, entityRef.dbiRef);
+        }
     }
+
+    U2OpStatusImpl os;
+    foreach (Document *doc, doc2DbiRef.keys()) {
+        const U2DbiRef dbiRef = doc2DbiRef.value(doc);
+        if (!dbiRef.isValid()) {
+            coreLog.error("Invalid DBI reference detected");
+            continue;
+        }
+        DbiConnection con(dbiRef, os);
+        U2ObjectRelationsDbi *relationsDbi = con.dbi->getObjectRelationsDbi();
+        SAFE_POINT(NULL != relationsDbi, "Invalid object relations DBI", res);
+
+        const QList<U2DataId> relatedIds = relationsDbi->getReferenceRelatedObjects(entityRef.entityId, role, os);
+        SAFE_POINT_OP(os, res);
+
+        foreach (const U2DataId &objId, relatedIds) {
+            GObject *object = doc->getObjectById(objId);
+            if (fromObjects.contains(object)) {
+                res.append(object);
+            }
+        }
+    }
+
+    return res;
+}
+
+}
+
+QList<GObject*> GObjectUtils::findObjectsRelatedToObjectByRole(const GObject* obj,
+    GObjectType resultObjType, GObjectRelationRole role, const QList<GObject*>& fromObjects,
+    UnloadedObjectFilter f)
+{
+    QList<GObject *> res;
+    QSet<GObject *> objects = select(fromObjects, resultObjType, f).toSet();
+
+    if (obj->isUnloaded()) { // suppose that `objects` are also unloaded
+        res = findRelatedObjectsForUnloadedObjects(obj, role, objects);
+    } else {
+        res = findRelatedObjectsForLoadedObjects(obj, role, objects);
+    }
+    return res;
+}
+
+QList<GObject*> GObjectUtils::selectObjectsWithRelation(const QList<GObject*>& objs,
+    GObjectType type, GObjectRelationRole relationRole, UnloadedObjectFilter f,
+    bool availableObjectsOnly)
+{
     QList<GObject*> res;
     foreach(GObject* obj, objs) {
         QList<GObjectRelation> relations = obj->getObjectRelations();
@@ -140,11 +228,14 @@ GObject* GObjectUtils::selectObjectByReference(const GObjectReference& r, Unload
 
 GObject* GObjectUtils::selectObjectByReference(const GObjectReference& r, const QList<GObject*>& fromObjects, UnloadedObjectFilter f) {
     foreach(GObject* o, fromObjects) {
+        if (r.entityRef.isValid() && !(r.entityRef == o->getEntityRef())) {
+            continue;
+        }
         if (o->getGObjectName() != r.objName) {
             continue;
         }
         if ((o->getDocument() == NULL && !r.docUrl.isEmpty())
-            || (o->getDocument()->getURL() != r.docUrl)) 
+            || (o->getDocument()->getURL().getURLString() != r.docUrl))
         {
             continue;
         }

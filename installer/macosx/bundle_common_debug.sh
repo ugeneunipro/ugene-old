@@ -9,19 +9,22 @@ function add-plugin {
     if [ ! -f ${DEBUG_DIR}/plugins/${PLUGIN_LIB} ] ;  
     then  
         echo "Plugin library file not found: ${PLUGIN_LIB} !"
-        exit 1
+        echo "Plugin is skipped"
+        return
     fi
 
     if [ ! -f ${DEBUG_DIR}/plugins/${PLUGIN_DESC} ] ; 
     then
         echo "Plugin descriptor file not found: ${PLUGIN_DESC} !"
-        exit 1
+        echo "Plugin is skipped"
+        return
     fi
 
     if [ ! -f ${DEBUG_DIR}/plugins/${PLUGIN_LICENSE} ] ; 
     then
         echo "Plugin descriptor file not found: ${PLUGIN_LICENSE} !"
-        exit 1
+        echo "Plugin is skipped"
+        return
     fi
 
     cp "${DEBUG_DIR}/plugins/${PLUGIN_LIB}"  "${TARGET_EXE_DIR}/plugins/"

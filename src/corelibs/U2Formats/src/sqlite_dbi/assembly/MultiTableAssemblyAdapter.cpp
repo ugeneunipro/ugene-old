@@ -37,7 +37,7 @@ namespace U2 {
 MultiTableAssemblyAdapter::MultiTableAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& assemblyId, 
                                                        const AssemblyCompressor* compressor, 
                                                        DbRef* db, U2OpStatus& os)
-                                                       : AssemblyAdapter(assemblyId, compressor, db)
+                                                       : SQLiteAssemblyAdapter(assemblyId, compressor, db)
 {
     dbi = _dbi;
     version = -1;
@@ -124,7 +124,7 @@ void MultiTableAssemblyAdapter::rereadTables(const QByteArray& idata, U2OpStatus
     }
     QList<QByteArray> elements = idata.split('|');
     if (elements.size() < 2) {
-        os.setError(SQLiteL10n::tr("Failed to detect assembly storage format: %1").arg(idata.constData()));
+        os.setError(U2DbiL10n::tr("Failed to detect assembly storage format: %1").arg(idata.constData()));
         return;
     }
     QByteArray elenData = elements.at(0);
@@ -149,16 +149,16 @@ void MultiTableAssemblyAdapter::rereadTables(const QByteArray& idata, U2OpStatus
     QList<QByteArray> prowTokens = prowData.split(',');
     int prange = prowTokens.at(0).toInt(&parseOk);
     if (prange < 1 || !parseOk) {
-        os.setError(SQLiteL10n::tr("Failed to parse packed row range info %1").arg(idata.constData()));
+        os.setError(U2DbiL10n::tr("Failed to parse packed row range info %1").arg(idata.constData()));
         return;
     }
     if (prowTokens.size() != 2) {
-        os.setError(SQLiteL10n::tr("Failed to parse packed row range info %1").arg(idata.constData()));     
+        os.setError(U2DbiL10n::tr("Failed to parse packed row range info %1").arg(idata.constData()));     
         return;
     }
     int nRows = prowTokens.at(1).toInt(&parseOk);
     if (nRows < 0 || !parseOk) {
-        os.setError(SQLiteL10n::tr("Failed to parse packed row range info %1").arg(idata.constData()));
+        os.setError(U2DbiL10n::tr("Failed to parse packed row range info %1").arg(idata.constData()));
         return;
     }
     
@@ -534,6 +534,16 @@ void MultiTableAssemblyAdapter::removeReads(const QList<U2DataId>& readIds, U2Op
     }
 }
 
+void MultiTableAssemblyAdapter::dropReadsTables(U2OpStatus &os) {
+    foreach (QVector<MTASingleTableAdapter*> adaptersVector, adaptersGrid) {
+        foreach (MTASingleTableAdapter* adapter, adaptersVector) {
+            if (NULL != adapter) {
+                adapter->singleTableAdapter->dropReadsTables(os);
+            }
+        }
+    }
+}
+
 void MultiTableAssemblyAdapter::pack(U2AssemblyPackStat& stat, U2OpStatus& os) {
     MultiTablePackAlgorithmAdapter packAdapter(this);
 
@@ -625,8 +635,8 @@ void MultiTablePackAlgorithmAdapter::assignProw(const U2DataId& readId, qint64 p
         packAdaptersGrid[newRowPos][elenPos] = sa;
     }
 
-    QVector<ReadTableMigrationData>& newTableData = migrations[newA];
-    newTableData.append(ReadTableMigrationData(U2DbiUtils::toDbiId(readId), oldA, prow));
+    QVector<SQLiteReadTableMigrationData>& newTableData = migrations[newA];
+    newTableData.append(SQLiteReadTableMigrationData(U2DbiUtils::toDbiId(readId), oldA, prow));
     //TODO: add mem check here!
 }
 
@@ -636,17 +646,17 @@ void MultiTablePackAlgorithmAdapter::releaseDbResources() {
     }
 }
 
-void MultiTablePackAlgorithmAdapter::migrate(MTASingleTableAdapter* newA, const QVector<ReadTableMigrationData>& data, qint64 migratedBefore, qint64 totalMigrationCount, U2OpStatus& os) {
+void MultiTablePackAlgorithmAdapter::migrate(MTASingleTableAdapter* newA, const QVector<SQLiteReadTableMigrationData>& data, qint64 migratedBefore, qint64 totalMigrationCount, U2OpStatus& os) {
     SAFE_POINT_OP(os,);
     //delete reads from old tables, and insert into new one
-    QHash<MTASingleTableAdapter*, QVector<ReadTableMigrationData> > readsByOldTable;
-    foreach(const ReadTableMigrationData& d, data) {
+    QHash<MTASingleTableAdapter*, QVector<SQLiteReadTableMigrationData> > readsByOldTable;
+    foreach(const SQLiteReadTableMigrationData& d, data) {
         readsByOldTable[d.oldTable].append(d);
     }
     DbRef* db = multiTableAdapter->getDbRef();
     foreach(MTASingleTableAdapter* oldA, readsByOldTable.keys()) {
 
-        const QVector<ReadTableMigrationData>& migData  = readsByOldTable[oldA];
+        const QVector<SQLiteReadTableMigrationData>& migData  = readsByOldTable[oldA];
         if (migData.isEmpty()) {
             continue;
         }
@@ -669,7 +679,7 @@ void MultiTablePackAlgorithmAdapter::migrate(MTASingleTableAdapter* newA, const 
 
             SQLiteQuery(QString("CREATE TEMPORARY TABLE %1(id INTEGER PRIMARY KEY, prow INTEGER NOT NULL)").arg(idsTable), db, os).execute();
             SQLiteQuery insertIds(QString("INSERT INTO %1(id, prow) VALUES(?1, ?2)").arg(idsTable), db, os);
-            foreach(const ReadTableMigrationData& d, migData) {
+            foreach(const SQLiteReadTableMigrationData& d, migData) {
                 insertIds.reset(false);
                 insertIds.bindInt64(1, d.readId);
                 insertIds.bindInt32(2, d.newProw);
@@ -710,7 +720,7 @@ void MultiTablePackAlgorithmAdapter::migrateAll(U2OpStatus& os) {
     
     qint64 nReadsToMigrate = 0;
     foreach(MTASingleTableAdapter* newTable, migrations.keys()) {
-        const QVector<ReadTableMigrationData>& data = migrations[newTable];
+        const QVector<SQLiteReadTableMigrationData>& data = migrations[newTable];
         nReadsToMigrate+=data.size();
     }
     if (nReadsToMigrate == 0) {
@@ -733,7 +743,7 @@ void MultiTablePackAlgorithmAdapter::migrateAll(U2OpStatus& os) {
     SAFE_POINT_OP(os, );
     int nMigrated = 0;
     foreach(MTASingleTableAdapter* newTable, migrations.keys()) {
-        const QVector<ReadTableMigrationData>& data = migrations[newTable];
+        const QVector<SQLiteReadTableMigrationData>& data = migrations[newTable];
         migrate(newTable, data, nMigrated, nReadsToMigrate, os);
         nMigrated+=data.size();
     }

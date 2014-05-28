@@ -19,51 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include "MSAEditorSequenceArea.h"
-#include "MSAEditor.h"
-#include "MSAColorScheme.h"
-#include "MSAEditorNameList.h"
-#include "CreateSubalignimentDialogController.h"
-#include "ColorSchemaSettingsController.h"
+#include <QtCore/QTextStream>
 
-#include <U2Algorithm/CreateSubalignmentTask.h>
-
-#include <U2Core/SaveDocumentTask.h>
-#include <U2Core/AddSequencesToAlignmentTask.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
-#include <U2Core/Task.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/MAlignment.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/TextUtils.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/MsaDbiUtils.h>
-#include <U2Core/MSAUtils.h>
-#include <U2Core/U2AlphabetUtils.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2SequenceUtils.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/IOAdapterUtils.h>
-
-#include <U2Formats/DocumentFormatUtils.h>
-
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/PositionSelector.h>
-#include <U2Gui/ProjectTreeController.h>
-#include <U2Gui/ProjectTreeItemSelectorDialog.h>
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Gui/AppSettingsGUI.h>
-
-#include <QtGui/QPainter>
-#include <QtGui/QMouseEvent>
 #include <QtGui/QClipboard>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QPainter>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QDialog>
@@ -76,7 +37,48 @@
 #include <QtWidgets/QMessageBox>
 #endif
 
-#include <memory>
+#include <U2Algorithm/CreateSubalignmentTask.h>
+
+#include <U2Core/AddSequencesToAlignmentTask.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/MAlignment.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/MsaDbiUtils.h>
+#include <U2Core/MSAUtils.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/Settings.h>
+#include <U2Core/Task.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
+
+#include <U2Formats/DocumentFormatUtils.h>
+
+#include <U2Gui/AppSettingsGUI.h>
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/PositionSelector.h>
+#include <U2Gui/ProjectTreeController.h>
+#include <U2Gui/ProjectTreeItemSelectorDialog.h>
+
+#include "ColorSchemaSettingsController.h"
+#include "CreateSubalignimentDialogController.h"
+#include "MSAColorScheme.h"
+#include "MSAEditor.h"
+#include "MSAEditorNameList.h"
+#include "MSAEditorSequenceArea.h"
 
 namespace U2 {
 
@@ -1985,7 +1987,7 @@ void MSAEditorSequenceArea::sl_saveSequence(){
     QList<GObject*> objs;
     doc = df->createNewLoadedDocument(iof, fullPath, os);
     CHECK_OP_EXT(os, delete doc, );
-    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), seq.getName(), objs, seq, os);
+    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), U2ObjectDbi::ROOT_FOLDER, seq.getName(), objs, seq, os);
     CHECK_OP_EXT(os, delete doc, );
     doc->addObject(seqObj);
     SaveDocumentTask *t = new SaveDocumentTask(doc, doc->getIOAdapterFactory(), doc->getURL());
@@ -2267,9 +2269,9 @@ void MSAEditorSequenceArea::sl_addSeqFromProject()
 
     ProjectTreeControllerModeSettings settings;
     settings.objectTypesToShow.append(GObjectTypes::SEQUENCE);
-    std::auto_ptr<U2SequenceObjectConstraints> seqConstraints(new U2SequenceObjectConstraints());
+    QScopedPointer<U2SequenceObjectConstraints> seqConstraints(new U2SequenceObjectConstraints());
     seqConstraints->alphabetType = msaObject->getAlphabet()->getType();
-    settings.objectConstraints.append(seqConstraints.get());
+    settings.objectConstraints.append(seqConstraints.data());
 
     QList<GObject*> objects = ProjectTreeItemSelectorDialog::selectObjects(settings,this);
 

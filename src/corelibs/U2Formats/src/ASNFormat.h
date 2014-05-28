@@ -176,7 +176,7 @@ private:
 
     private:
         const StdResidueDictionary *standardDictionary;
-        std::auto_ptr<StdResidueDictionary> localDictionary;
+        QScopedPointer<StdResidueDictionary> localDictionary;
         QHash<quint64, StdResidue> stdResidueCache;
         QMap<quint64, AtomCoordSet> atomSetCache;
     };

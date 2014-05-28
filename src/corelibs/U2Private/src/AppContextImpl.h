@@ -95,6 +95,8 @@ public:
         workingDirectoryPath = "";
         dsr = NULL;
         str = NULL;
+        credentialsAsker = NULL;
+        credentialsStorage = NULL;
         cfr = NULL;
     }
 
@@ -281,6 +283,16 @@ public:
         workflowScriptRegistry = _wsr;
     }
 
+    void setCredentialsAsker(CredentialsAsker* _credentialsAsker) {
+        assert(credentialsAsker == NULL || _credentialsAsker == NULL);
+        credentialsAsker = _credentialsAsker;
+    }
+
+    void setCredentialsStorage(CredentialsStorage *_credentialsStorage) {
+        assert(credentialsStorage == NULL || _credentialsStorage == NULL);
+        credentialsStorage = _credentialsStorage;
+    }
+
     void setAppFileStorage(AppFileStorage *afs) {
         assert(appFileStorage == NULL || afs == NULL);
         appFileStorage = afs;
@@ -324,8 +336,8 @@ protected:
     virtual PluginViewer*   _getPluginViewer() const {return plv;}
     virtual Settings*       _getSettings() const {return ss;}
     virtual Settings*       _getGlobalSettings() const {return gs;}
-    virtual AppSettings*    _getAppSettings() const{return as;};
-    virtual AppSettingsGUI* _getAppSettingsGUI() const{return asg;};
+    virtual AppSettings*    _getAppSettings() const{return as;}
+    virtual AppSettingsGUI* _getAppSettingsGUI() const{return asg;}
 
     virtual DocumentFormatRegistry*         _getDocumentFormatRegistry() const {return dfr;}
     virtual IOAdapterRegistry*              _getIOAdapterRegistry() const  {return io;}
@@ -380,6 +392,8 @@ protected:
     virtual U2DataPathRegistry*             _getDataPathRegistry() const { return dpr; }
     virtual DASSourceRegistry*              _getDASSourceRegistry() const { return dsr; }
     virtual ScriptingToolRegistry*          _getScriptingToolRegistry() const { return str; }
+    virtual CredentialsAsker*               _getCredentialsAsker() const { return credentialsAsker; }
+    virtual CredentialsStorage*             _getCredentialsStorage() const { return credentialsStorage; }
     virtual ConvertFactoryRegistry*         _getConvertFactoryRegistry() const { return cfr; }
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
@@ -453,6 +467,8 @@ private:
     U2DataPathRegistry *dpr;
     DASSourceRegistry *dsr;
     ScriptingToolRegistry *str;
+    CredentialsAsker* credentialsAsker;
+    CredentialsStorage* credentialsStorage;
     ConvertFactoryRegistry *cfr;
     bool guiMode;
     QString activeWindow;

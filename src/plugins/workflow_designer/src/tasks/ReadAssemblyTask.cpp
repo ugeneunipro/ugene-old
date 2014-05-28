@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QFileInfo>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentImport.h>
@@ -224,7 +226,7 @@ void ReadAssemblyTask::run() {
         return;
     }
 
-    std::auto_ptr<Document> docPtr(NULL);
+    QScopedPointer<Document> docPtr(NULL);
     bool useGC = true;
     if (NULL == doc) {
         useGC = false;
@@ -258,7 +260,7 @@ void ReadAssemblyTask::run() {
         docPtr.reset(doc);
         doc = NULL;
     }
-    CHECK(NULL != docPtr.get(), );
+    CHECK(!docPtr.isNull(), );
     docPtr->setDocumentOwnsDbiResources(false);
 
     QList<GObject*> assemblies = docPtr->findGObjectByType(GObjectTypes::ASSEMBLY);

@@ -41,6 +41,7 @@ namespace U2 {
 
 // For the classes below, see description in class definition
 class U2ObjectDbi;
+class U2ObjectRelationsDbi;
 class U2SequenceDbi;
 class U2FeatureDbi;
 class U2CrossDatabaseReferenceDbi;
@@ -54,19 +55,34 @@ class KnownMutationsDbi;
 class U2OpStatus;
 class U2Dbi;
 class UdrDbi;
+class Version;
 
-/** A constant to retrieve all available data. */
-#define U2_DBI_NO_LIMIT -1
+class U2CORE_EXPORT U2DbiOptions {
+public :
+    /** Application version number that created the database */
+    static const QString APP_CREATOR_VERSION;
 
-/** Init time DBI parameter name to specify URL of the database */
-#define U2_DBI_OPTION_URL       "url"
+    /** Application version number that is supposed to be minimum version required to make use of the database */
+    static const QString APP_MIN_COMPATIBLE_VERSION;
 
-/** Init time DBI parameter name to specify that database must be created if not exists */
-#define U2_DBI_OPTION_CREATE    "create"
+    /** A constant to retrieve all available data. */
+    static const int U2_DBI_NO_LIMIT;
 
-/** Init time DBI parameter value. Indicates boolean 'Yes' or 'true'. */
-#define U2_DBI_VALUE_ON "1"
+    /** Init time DBI parameter name to specify URL of the database */
+    static const QString U2_DBI_OPTION_URL;
 
+    /** Init time DBI parameter name to specify that database must be created if not exists */
+    static const QString U2_DBI_OPTION_CREATE;
+
+    /** Init time DBI parameter name to specify user login for the database. */
+    static const QString U2_DBI_OPTION_LOGIN;
+
+    /** Init time DBI parameter name to specify user password for the database. */
+    static const QString U2_DBI_OPTION_PASSWORD;
+
+    /** Init time DBI parameter value. Indicates boolean 'Yes' or 'true'. */
+    static const QString U2_DBI_VALUE_ON;
+};
 
 /**
     Operational state of the database.
@@ -102,7 +118,9 @@ enum U2DbiFeature {
     /** DBI supports reading of objects modification tracks */
     U2DbiFeature_ReadModifications              = 9,
     /** DBI supports UDR reading methods */
-    U2DbiFeature_ReadUdr                        =10,
+    U2DbiFeature_ReadUdr                        = 10,
+    /** DBI supports reading of object relations */
+    U2DbiFeature_ReadRelations                  = 11,
 
     /** DBI supports changing/storing sequences */
     U2DbiFeature_WriteSequence                  = 101,
@@ -124,6 +142,8 @@ enum U2DbiFeature {
     U2DbiFeature_WriteModifications            = 109,
     /** DBI supports changing/storing UDR */
     U2DbiFeature_WriteUdr                      = 110,
+    /** DBI supports writing of object relations */
+    U2DbiFeature_WriteRelations                = 111,
 
     /** DBI supports removal of objects */
     U2DbiFeature_RemoveObjects                  = 200,
@@ -144,14 +164,24 @@ enum U2DbiFeature {
     U2DbiFeature_CacheFeatures                  = 600
 };
 
+/** Indicates object life-cycle and storage location */
+enum U2DbiObjectRank {
+    /** Object  is stored in this database and is top-level (included into some folder) */
+    U2DbiObjectRank_TopLevel = 1,
+    /** Object  is stored in this database and is not top-level, it is a child of another object */
+    U2DbiObjectRank_Child = 2,
+    /** Object  is stored in another database, see CrossDbiReference table for details */
+    U2DbiObjectRank_Remote = 3
+};
+
 /** 
     DBI factory provides functions to create new DBI instances
     and check file content to ensure that file is a valid database file
 */
 class U2CORE_EXPORT U2DbiFactory {
 public:
-    U2DbiFactory() {}
-    virtual ~U2DbiFactory(){}
+    U2DbiFactory();
+    virtual ~U2DbiFactory();
 
     /** Creates new DBI instance */
     virtual U2Dbi *createDbi() = 0;
@@ -176,9 +206,9 @@ public:
     Database access interface. 
     Database examples: fasta file, genbank file, BAM file, SQLite file
 */
-class U2Dbi {
+class U2CORE_EXPORT U2Dbi {
 public:
-    virtual ~U2Dbi(){}
+    virtual ~U2Dbi();
     //////////////////////////////////////////////////////////////////////////
     // base methods that any DBI must support
 
@@ -217,7 +247,17 @@ public:
     /** Return factory instance for this DBI */
     virtual U2DbiFactoryId getFactoryId() const  = 0;
 
-    virtual U2DbiRef getDbiRef() const {return U2DbiRef(getFactoryId(), getDbiId());}
+    virtual U2DbiRef getDbiRef() const;
+
+    /** Returning result specifies whether the database internal structure is ready for work,
+        namely, the database schema is created correctly.
+    */
+    virtual bool isInitialized(U2OpStatus &);
+
+    /** Performs initialization of the database schema. The database is supposed to be available
+        for use after this function returns if @os has no error.
+    */
+    virtual void populateDefaultSchema(U2OpStatus &os);
 
     /** Returns all features supported by this DBI instance */
     virtual const QSet<U2DbiFeature>& getFeatures() const = 0;
@@ -239,6 +279,11 @@ public:
         All dbi implementations must support a subset of this interface
     */
     virtual U2ObjectDbi* getObjectDbi() = 0;
+
+    /** 
+        Database interface to access object relations. 
+    */
+    virtual U2ObjectRelationsDbi* getObjectRelationsDbi();
 
     /**  
         U2Sequence related DBI routines 
@@ -318,25 +363,33 @@ public:
     /**
         Initializes execution of the block of operation through the one transaction
     */
-    virtual void startOperationsBlock(U2OpStatus & /* os */) {}
+    virtual void startOperationsBlock(U2OpStatus &os);
 
-    virtual void stopOperationBlock() {}
+    virtual void stopOperationBlock();
 
-    virtual QMutex * getDbMutex( ) const { return NULL; }
+    /** Returns a mutex that synchronizes access to internal database handler.
+        This method is supposed to be used by caching DBIs 
+        in order to prevent cache inconsistency. */
+    virtual QMutex * getDbMutex( ) const;
+
+protected:
+    /** Stores to database the following properties: U2DbiOptions::APP_CREATOR_VERSION
+        U2DbiOptions::APP_MIN_COMPATIBLE_VERSION */
+    void setVersionProperties(const Version &minVersion, U2OpStatus &os);
 };
 
 /** 
     Base class for all *Dbi classes provided by U2Dbi
     Contains reference to root-level dbi
 */
-class U2ChildDbi {
+class U2CORE_EXPORT U2ChildDbi {
 protected:
-    U2ChildDbi(U2Dbi* _rootDbi) : rootDbi (_rootDbi){}
+    U2ChildDbi(U2Dbi* _rootDbi);
 
 public:
-    virtual ~U2ChildDbi(){}
+    virtual ~U2ChildDbi();
 
-    U2Dbi* getRootDbi() const { return rootDbi; }
+    U2Dbi* getRootDbi() const;
 
 private:
     U2Dbi* rootDbi;

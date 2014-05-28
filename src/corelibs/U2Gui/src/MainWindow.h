@@ -75,6 +75,7 @@ class QMainWindow;
 #define ACTION_PROJECTSUPPORT__RECENT_PROJECTS_MENU     "action_projectsupport__recent_projects_menu"
 #define ACTION_PROJECTSUPPORT__EXPORT_PROJECT           "action_projectsupport__export_project"
 #define ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB         "action_projectsupport__access_remote_db"
+#define ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB         "action_projectsupport__access_shared_db"
 #define ACTION_PROJECTSUPPORT__SEARCH_GENBANK           "action_projectsupport__search_genbank"
 
 #define ACTION_PROJECT__ADD_MENU                    "action_project__add_menu"
@@ -83,6 +84,7 @@ class QMainWindow;
 #define ACTION_PROJECT__ADD_NEW_DOCUMENT            "action_project__add_new_document"
 #define ACTION_PROJECT__ADD_EXISTING_DOCUMENT       "action_project__add_existing_document"
 #define ACTION_PROJECT__UNLOAD_SELECTED             "action_project__unload_selected_action"
+#define ACTION_PROJECT__CREATE_FOLDER               "action_project__create_folder"
 
 #define ACTION_PROJECT__EDIT_MENU                   "action_project__edit_menu"
 
@@ -97,6 +99,8 @@ class QMainWindow;
 #define ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT         "export sequences as alignment"
 #define ACTION_EXPORT_ANNOTATIONS                   "action_export_annotations"
 #define ACTION_EXPORT_CHROMATOGRAM                  "action_export_chromatogram"
+
+#define ACTION_EXPORT_OBJECT                        "export object"
 
 #define ACTION_EDIT_SEQUENCE                        "edit sequences"
 #define ACTION_EDIT_INSERT_SUBSEQUENCE              "action_edit_insert_sub_sequences"

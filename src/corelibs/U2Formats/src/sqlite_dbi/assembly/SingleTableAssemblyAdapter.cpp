@@ -24,6 +24,7 @@
 #include "../SQLiteObjectDbi.h"
 
 #include <U2Core/U2AssemblyUtils.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SqlHelpers.h>
 
 namespace U2 {
@@ -42,7 +43,7 @@ SingleTableAssemblyAdapter::SingleTableAssemblyAdapter(SQLiteDbi* _dbi, const U2
                                                        char tablePrefix, const QString& tableSuffix, 
                                                        const AssemblyCompressor* compressor, 
                                                        DbRef* db, U2OpStatus& )
-                                                       : AssemblyAdapter(assemblyId, compressor, db)
+                                                       : SQLiteAssemblyAdapter(assemblyId, compressor, db)
 {
     dbi = _dbi;
     rangeConditionCheck  = DEFAULT_RANGE_CONDITION_CHECK;
@@ -220,6 +221,13 @@ void SingleTableAssemblyAdapter::removeReads(const QList<U2DataId>& readIds, U2O
             break;
         }
     }
+    SQLiteObjectDbi::incrementVersion(assemblyId, db, os);
+}
+
+void SingleTableAssemblyAdapter::dropReadsTables(U2OpStatus &os) {
+    QString queryString = "DROP TABLE IF EXISTS %1";
+    SQLiteQuery(queryString.arg(readsTable), db, os).execute();
+    CHECK_OP(os, );
     SQLiteObjectDbi::incrementVersion(assemblyId, db, os);
 }
 

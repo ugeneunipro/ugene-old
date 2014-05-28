@@ -31,12 +31,10 @@ namespace U2 {
 
 DNASequence* StreamSequenceReader::getNextSequenceObject() {
     if (hasNext()) {
-        DNASequence* result = currentSeq.get();
+        DNASequence* result = currentSeq.data();
         lookupPerformed = false;
-
         return result;
-    }   
-    
+    }
     return NULL;
 }
 
@@ -69,11 +67,10 @@ bool StreamSequenceReader::hasNext() {
         }
     
     }
-    
-    if (currentSeq.get() == NULL) {
+
+    if (currentSeq.isNull()) {
         return false;
     }
-
 
     return true;
 }

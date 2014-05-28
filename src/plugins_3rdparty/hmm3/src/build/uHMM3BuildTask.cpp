@@ -171,9 +171,10 @@ settings( set ), inFile( _inFile ), loadTask( NULL ), saveHmmFileTask( NULL ), s
     }
 
     DocumentFormatConstraints constr;
-	constr.supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
-	constr.checkRawData = true;
+    constr.supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
+    constr.checkRawData = true;
     constr.rawData = IOAdapterUtils::readFileHeader( inFile );
+    constr.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats( constr );
     if( formats.isEmpty() ) {
         stateInfo.setError( tr( "input_format_error" ) );

@@ -50,7 +50,6 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return plug;
 }
 
-    
 WeightMatrixPlugin::WeightMatrixPlugin() : Plugin(tr("Weight matrix"), tr("Search for TFBS with weight matrices"))
 {
     if (AppContext::getMainWindow()) {

@@ -92,8 +92,6 @@
 
 #include <U2View/ConvertAssemblyToSamDialog.h>
 
-#include <memory>
-
 namespace U2 {
 
 //==============================================================================
@@ -147,6 +145,10 @@ bool AssemblyBrowser::checkValid(U2OpStatus &os) {
 QWidget * AssemblyBrowser::createWidget() {
     optionsPanel = new OptionsPanel(this);
     ui = new AssemblyBrowserUi(this);
+
+    const QString objectName = "assembly_browser_" + getName();
+    ui->setObjectName(objectName);
+
     U2OpStatusImpl os;
     if(model->hasReads(os)) {
         updateOverviewTypeActions();
@@ -233,17 +235,34 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
         }
         if(setRef) {
             model->setReference(seqObj);
-            U2CrossDatabaseReferenceDbi * crossDbi = model->getDbiConnection().dbi->getCrossDatabaseReferenceDbi();
-            U2CrossDatabaseReference crossDbRef;
-            // Cannot simply use seqObj->getSequenceRef(), since it points to a temporary dbi
-            // TODO: make similar method seqObj->getPersistentSequenctRef()
-            crossDbRef.dataRef.dbiRef.dbiId = objDoc->getURLString();
-            crossDbRef.dataRef.dbiRef.dbiFactoryId = "document";
-            crossDbRef.dataRef.entityId = seqObj->getGObjectName().toUtf8();
-            crossDbRef.dataRef.version = 1;
-            crossDbi->createCrossReference(crossDbRef, os);
-            LOG_OP(os);
-            model->associateWithReference(crossDbRef);
+
+            U2Assembly assembly = model->getAssembly();
+            U2DataId refId;
+            QString folder;
+            const QStringList folders = model->getDbiConnection().dbi->getObjectDbi()->getObjectFolders(assembly.id, os);
+            if (folders.isEmpty() || os.isCoR()) {
+                folder = U2ObjectDbi::ROOT_FOLDER;
+            } else {
+                folder = folders.first();
+            }
+
+            if (seqObj->getEntityRef().dbiRef == model->getDbiConnection().dbi->getDbiRef()) {
+                refId = seqObj->getEntityRef().entityId;
+            } else {
+                U2CrossDatabaseReferenceDbi * crossDbi = model->getDbiConnection().dbi->getCrossDatabaseReferenceDbi();
+                U2CrossDatabaseReference crossDbRef;
+                // Cannot simply use seqObj->getSequenceRef(), since it points to a temporary dbi
+                // TODO: make similar method seqObj->getPersistentSequenctRef()
+                crossDbRef.dataRef.dbiRef.dbiId = objDoc->getURLString();
+                crossDbRef.dataRef.dbiRef.dbiFactoryId = "document";
+                crossDbRef.dataRef.entityId = seqObj->getGObjectName().toUtf8();
+                crossDbRef.visualName = "cross_database_reference: " + seqObj->getGObjectName();
+                crossDbRef.dataRef.version = 1;
+                crossDbi->createCrossReference(crossDbRef, folder, os);
+                LOG_OP(os);
+                refId = crossDbRef.id;
+            }
+            model->associateWithReference(refId);
         }
     } else if (GObjectTypes::VARIANT_TRACK == obj->getGObjectType()) {
         VariantTrackObject *trackObj = qobject_cast<VariantTrackObject*>(obj);
@@ -691,7 +710,7 @@ void AssemblyBrowser::sl_exportToSam() {
     U2OpStatusImpl os;
     QHash<QString, QString> metaInfo = model->getDbiConnection().dbi->getDbiMetaInfo(os);
 
-    ConvertAssemblyToSamDialog dialog(ui, metaInfo[U2_DBI_OPTION_URL]);
+    ConvertAssemblyToSamDialog dialog(ui, metaInfo[U2DbiOptions::U2_DBI_OPTION_URL]);
 
     if (dialog.exec()) {
         ConvertAssemblyToSamTask *convertTask = new ConvertAssemblyToSamTask(&(model->getDbiConnection()), dialog.getSamFileUrl());

@@ -37,14 +37,14 @@ public:
      * Creates an alignment in the db.
      * The alignment is completely removed in case of an error.
      */
-    static U2EntityRef createAlignment(const U2DbiRef&, const MAlignment&, U2OpStatus&);
+    static U2EntityRef createAlignment(const U2DbiRef& dbiRef, const MAlignment& al, U2OpStatus& os);
+    static U2EntityRef createAlignment(const U2DbiRef& dbiRef, const QString& folder, const MAlignment&, U2OpStatus&);
 
 private:
-    static U2Msa importMsaObject(const DbiConnection&, const MAlignment&, U2OpStatus&);
-    static void importMsaInfo(const DbiConnection&, const U2DataId& msaId, const MAlignment&, U2OpStatus&);
-    static QList<U2Sequence> importSequences(const DbiConnection&, const MAlignment&, U2OpStatus&);
-    static QList<U2MsaRow> importRows(const DbiConnection&, const MAlignment&, U2Msa&, QList<U2Sequence>, U2OpStatus&);
-    static void makeSequencesChildObjects(const DbiConnection&, QList<U2Sequence>, U2OpStatus&);
+    static U2Msa importMsaObject(const DbiConnection& con, const QString &folder, const MAlignment& al, U2OpStatus& os);
+    static void importMsaInfo(const DbiConnection& con, const U2DataId& msaId, const MAlignment& al, U2OpStatus& os);
+    static QList<U2Sequence> importSequences(const DbiConnection& con, const QString &folder, const MAlignment& al, U2OpStatus& os);
+    static QList<U2MsaRow> importRows(const DbiConnection& con, const MAlignment& al, U2Msa& msa, const QList<U2Sequence>& rows, U2OpStatus& os);
 };
 
 } // namespace

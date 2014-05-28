@@ -22,15 +22,14 @@
 #include <QtAlgorithms>
 #include "GeomUtils.h"
 
-
 namespace U2 {
 
-std::auto_ptr< QVector<Vector3D> > GeodesicSphere::elementarySphere(NULL);
+QScopedPointer< QVector<Vector3D> > GeodesicSphere::elementarySphere(NULL);
 int GeodesicSphere::currentDetailLevel = 1;
 
 GeodesicSphere::GeodesicSphere( const Vector3D& center, float radius, int detaillevel)
 {
-    if (elementarySphere.get() == NULL || currentDetailLevel != detaillevel) {
+    if (elementarySphere.isNull() || currentDetailLevel != detaillevel) {
         elementarySphere.reset(createGeodesicSphere(detaillevel));
         currentDetailLevel = detaillevel;
     }

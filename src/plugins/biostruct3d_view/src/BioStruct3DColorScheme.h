@@ -81,7 +81,7 @@ public: \
     static const QString schemeName; \
     class Factory : public BioStruct3DColorSchemeFactory { \
     public: \
-        BioStruct3DColorScheme* createInstance(const BioStruct3DObject *biostrucObj) const { return new c(biostrucObj); } \
+        BioStruct3DColorScheme* createInstance(const BioStruct3DObject *biostructObj) const { return new c(biostructObj); } \
     };
 
 //! Abstract BioStruct3DColorScheme

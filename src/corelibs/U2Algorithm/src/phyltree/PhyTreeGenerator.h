@@ -22,15 +22,10 @@
 #ifndef _PHYTREEGENERATOR
 #define _PHYTREEGENERATOR
 
-
 #include <U2Core/Task.h>
 #include <U2Core/PhyTree.h>
 #include <U2Core/MAlignment.h>
 #include "CreatePhyTreeSettings.h"
-
-#include <memory>
-
-
 
 namespace U2{
 
@@ -43,8 +38,6 @@ public:
     virtual Task* createCalculatePhyTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s) = 0;
     virtual void setupCreatePhyTreeUI(CreatePhyTreeDialogController* c, const MAlignment& ma) = 0;
 };
-
-
 
 }
 #endif

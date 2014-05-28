@@ -19,23 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#include "PDWFormat.h"
-
-#include "DocumentFormatUtils.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/L10n.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/U2AlphabetUtils.h>
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SequenceUtils.h>
+
+#include "DocumentFormatUtils.h"
+#include "PDWFormat.h"
 
 namespace U2 {
 
@@ -78,6 +78,8 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
 {
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, );
+    Q_UNUSED(opBlock);
+
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
     char* buff = readBuff.data();
     qint64 len = 0;
@@ -88,6 +90,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
     QList<AnnotationData> annotations;
 
     U2SequenceImporter seqImporter(fs, true);
+    const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
 
     while (!os.isCoR()) {
         //read header
@@ -112,7 +115,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
                 dnaSeq.info.insert(DNAInfo::LOCUS, qVariantFromValue<DNALocusInfo>(loi));
             }
 
-            seqImporter.startSequence(dbiRef, dnaSeq.getName(), dnaSeq.circular, os);
+            seqImporter.startSequence(dbiRef, folder, dnaSeq.getName(), dnaSeq.circular, os);
             seqImporter.addBlock(seq.constData(), seq.length(), os);
             U2Sequence u2seq = seqImporter.finalizeSequence(os);
             TmpDbiObjects dbiObjects(dbiRef, os);
@@ -139,7 +142,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
     }
     
     if ( !annotations.isEmpty( ) ) {
-        annObj = new AnnotationTableObject( QString("%1 annotations").arg(seqName), dbiRef );
+        annObj = new AnnotationTableObject( QString("%1 annotations").arg(seqName), dbiRef, fs );
         annObj->addAnnotations( annotations );
         objects.append( annObj );
     }
@@ -168,7 +171,7 @@ Document * PDWFormat::loadDocument( IOAdapter *io, const U2DbiRef &dbiRef, const
         lockReason );
 
     if ( NULL != seqObj && NULL != annObj ) {
-        annObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
+        annObj->addObjectRelation(seqObj, ObjectRole_Sequence);
     }
     return doc;
 }

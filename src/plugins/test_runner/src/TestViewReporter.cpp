@@ -38,10 +38,8 @@
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QToolBar>
 #endif
-#include <memory>
+
 //todo: remember splitter geom
-
-
 
 namespace U2 {
 
@@ -440,7 +438,7 @@ bool TestViewReporter::saveAs(const QString url,const QString data){
     if(url.isEmpty())return false;
     if(data.isEmpty())return false;
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Write)) {
         return false;
         //ti.setError(  IOAdapter::tr("error_opening_url_for_write '%1'").arg(url) );

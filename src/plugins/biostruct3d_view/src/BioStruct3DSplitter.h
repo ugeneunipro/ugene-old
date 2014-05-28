@@ -35,7 +35,6 @@
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QComboBox>
 #endif
-#include <memory>
 
 namespace U2 {
 
@@ -143,7 +142,7 @@ protected:
 private:
     QSplitter* getParentSplitter();
     QMultiMap<BioStruct3DObject*, BioStruct3DGLWidget*> biostrucViewMap;
-    std::auto_ptr<GLFrameManager> glFrameManager;
+    QScopedPointer<GLFrameManager> glFrameManager;
     QSplitter*  splitter;
     QSplitter*  parentSplitter;
     QAction*    closeAction;

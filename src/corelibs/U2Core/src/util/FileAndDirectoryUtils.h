@@ -29,7 +29,7 @@
 
 namespace U2 {
 
-class U2FORMATS_EXPORT FileAndDirectoryUtils  {
+class U2CORE_EXPORT FileAndDirectoryUtils {
 public:
     enum OutDirectory {
         FILE_DIRECTORY = 0,

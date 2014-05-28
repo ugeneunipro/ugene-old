@@ -171,8 +171,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 
     GTGlobals::sleep(500);
 
-    QTreeWidgetItem* item = GTUtilsProjectTreeView::findItem(os,GTUtilsProjectTreeView::getTreeWidget(os),"COI.nwk",GTGlobals::FindOptions(false));
-    CHECK_SET_ERR(item==NULL,"COI.nkw is not deleted");
+    GTUtilsProjectTreeView::findIndex(os,"COI.nwk",GTGlobals::FindOptions(false));
 //Expected state: document "COI.nwk" not presents at project tree, tree editor view window closes
 
 //5. Double click on COI object.
@@ -223,8 +222,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1){
     QWidget* w = GTWidget::findWidget(os, "treeView",NULL,GTGlobals::FindOptions(false));
     CHECK_SET_ERR(w==0, "treeView not deleted")
 
-    QTreeWidgetItem* item = GTUtilsProjectTreeView::findItem(os,GTUtilsProjectTreeView::getTreeWidget(os),"COI.nwk",GTGlobals::FindOptions(false));
-    CHECK_SET_ERR(item==NULL,"COI.nkw is not deleted");
+    GTUtilsProjectTreeView::findIndex(os,"COI.nwk",GTGlobals::FindOptions(false));
 //Expected state: document "COI.nwk" not presents at project tree, tree editor view window closes
 
 //5. Double click on COI object.
@@ -277,8 +275,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2){
     QWidget* w = GTWidget::findWidget(os, "treeView",NULL,GTGlobals::FindOptions(false));
     CHECK_SET_ERR(w==0, "treeView not deleted")
 
-    QTreeWidgetItem* item = GTUtilsProjectTreeView::findItem(os,GTUtilsProjectTreeView::getTreeWidget(os),"COI.nwk",GTGlobals::FindOptions(false));
-    CHECK_SET_ERR(item==NULL,"COI.nkw is not deleted");
+    GTUtilsProjectTreeView::findIndex(os,"COI.nwk",GTGlobals::FindOptions(false));
 //Expected state: document "COI.nwk" not presents at project tree, tree editor view window closes
 
 //5. Double click on COI object.

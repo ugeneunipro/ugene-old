@@ -29,7 +29,6 @@
 #include <QtCore/QFile>
 
 #include <cassert>
-#include <memory>
 
 namespace U2 {
 
@@ -58,7 +57,7 @@ bool VirtualFileSystem::mapFile( const QString & filename, const QString & fileP
     IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( filePath ) );
     SAFE_POINT(iof != NULL, QString("Failed to find IO adapter factory: %1").arg(filePath), false);
     
-    std::auto_ptr<IOAdapter> io( iof->createIOAdapter() );
+    QScopedPointer<IOAdapter> io( iof->createIOAdapter() );
     if( !io->open( filePath, IOAdapterMode_Read ) ) {
         return false;
     }
@@ -88,7 +87,7 @@ bool VirtualFileSystem::mapBack( const QString & filename, const QString & fileP
     IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( filePath ) );
     SAFE_POINT(iof != NULL, QString("Failed to find IO adapter factory: %1").arg(filePath), false);
 
-    std::auto_ptr<IOAdapter> io( iof->createIOAdapter() );
+    QScopedPointer<IOAdapter> io( iof->createIOAdapter() );
     if( !io->open( filePath, IOAdapterMode_Write ) ) {
         return false;
     }

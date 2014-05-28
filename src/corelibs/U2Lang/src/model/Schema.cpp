@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <memory>
-
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 

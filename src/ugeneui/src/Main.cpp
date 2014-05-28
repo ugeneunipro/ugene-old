@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/CredentialsStorage.h>
 #include <U2Core/Log.h>
 #include <U2Core/Timer.h>
 #include <U2Core/GUrlUtils.h>
@@ -72,6 +73,7 @@
 #include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
 #include <U2Algorithm/PairwiseAlignmentRegistry.h>
 
+#include <U2Gui/CredentialsAskerGui.h>
 #include <U2Gui/ImportDialogsFactories.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
@@ -546,6 +548,12 @@ int main(int argc, char **argv)
     DASSourceRegistry* dsr = new DASSourceRegistry();
     appContext->setDASSourceRegistry(dsr);
 
+    CredentialsAsker* credentialsAsker = new CredentialsAskerGui();
+    appContext->setCredentialsAsker(credentialsAsker);
+
+    CredentialsStorage* credentialsStorage = new CredentialsStorage();
+    appContext->setCredentialsStorage(credentialsStorage);
+
     ConvertFactoryRegistry* convertFactoryRegistry = new ConvertFactoryRegistry();
     appContext->setConvertFactoryRegistry(convertFactoryRegistry);
 
@@ -664,6 +672,12 @@ int main(int argc, char **argv)
     delete sreg;
 
     Workflow::WorkflowEnv::shutdown();
+
+    appContext->setCredentialsAsker(NULL);
+    delete credentialsAsker;
+
+    appContext->setCredentialsStorage(NULL);
+    delete credentialsStorage;
 
     appContext->setDASSourceRegistry( NULL );
     delete dsr;

@@ -474,7 +474,7 @@ void MSAEditorTabWidgetArea::deleteTab(QWidget *page) {
     Document* doc = obj->getDocument();
     GObjectReference treeRef(doc->getURLString(), "", GObjectTypes::PHYLOGENETIC_TREE);
     treeRef.objName = obj->getGObjectName();
-    msa->getMSAObject()->removeObjectRelation(GObjectRelation(treeRef, GObjectRelationRole::PHYLOGENETIC_TREE));
+    msa->getMSAObject()->removeObjectRelation(GObjectRelation(treeRef, ObjectRole_PhylogeneticTree));
 
     TabWidgetArea::deleteTab(page);
 }

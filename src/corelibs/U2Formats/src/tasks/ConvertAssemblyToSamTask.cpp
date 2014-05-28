@@ -37,11 +37,9 @@
 #include <U2Formats/BAMUtils.h>
 #include <U2Formats/SAMFormat.h>
 
-#include <QSharedPointer>
+#include <QtCore/QSharedPointer>
 
 #include "ConvertAssemblyToSamTask.h"
-
-#include <memory>
 
 namespace U2 {
 
@@ -106,7 +104,7 @@ void ConvertAssemblyToSamTask::run() {
     }
     // Otherwise convert all assembly objects
     else {
-        objectIds = odbi->getObjects(U2Type::Assembly, 0, U2_DBI_NO_LIMIT, stateInfo);
+        objectIds = odbi->getObjects(U2Type::Assembly, 0, U2DbiOptions::U2_DBI_NO_LIMIT, stateInfo);
     }
 
     DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::SAM);
@@ -119,7 +117,7 @@ void ConvertAssemblyToSamTask::run() {
         CHECK_OP(stateInfo, );
         U2EntityRef ref(handle->dbi->getDbiRef(), id);
         QString name = assembly.visualName.replace(QRegExp("\\s|\\t"), "_").toLatin1();
-        doc->addObject(new AssemblyObject(ref, name, QVariantMap()));
+        doc->addObject(new AssemblyObject(name, ref));
     }
 
     BAMUtils::writeDocument(doc.data(), stateInfo);

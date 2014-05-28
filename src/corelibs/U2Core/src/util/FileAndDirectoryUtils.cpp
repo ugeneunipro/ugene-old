@@ -19,11 +19,14 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QDir>
+
 #include <U2Core/Log.h>
 
 #include "FileAndDirectoryUtils.h"
 
-#define OUTPUT_SUBDIR "run"
+static const QString OUTPUT_SUBDIR = "run";
+
 namespace U2 {
 
 QString FileAndDirectoryUtils::getFormatId(const FormatDetectionResult &r) {
@@ -41,23 +44,23 @@ QString FileAndDirectoryUtils::createWorkingDir(const QString &fileUrl, int dirM
 
     bool useInternal = false;
 
-    if(dirMode == FILE_DIRECTORY){
+    if (dirMode == FILE_DIRECTORY) {
         result = GUrl(fileUrl).dirPath() + "/";
-    }else if (dirMode == CUSTOM){
-        if (!customDir.isEmpty()){
+    } else if (dirMode == CUSTOM) {
+        if (!customDir.isEmpty()) {
             result = customDir;
             if (!result.endsWith("/")) {
                 result += "/";
             }
-        }else{
+        } else {
             algoLog.error("Result directory is empty, default workflow directory is used");
             useInternal = true;
         }
-    }else{
+    } else {
         useInternal = true;
     }
 
-    if (useInternal){
+    if (useInternal) {
         result = workingDir;
         if (!result.endsWith("/")) {
             result += "/";
@@ -92,10 +95,10 @@ QString FileAndDirectoryUtils::detectFormat(const QString &url){
 
 bool FileAndDirectoryUtils::isFileEmpty(const QString& url){
    QFile file(url);
-   if(!file.exists()){
+   if (!file.exists()) {
        return true;
    }
-   if(file.size() == 0){
+   if (file.size() == 0) {
        return true;
    }
    return false;

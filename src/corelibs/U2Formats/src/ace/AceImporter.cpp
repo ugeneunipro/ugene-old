@@ -22,6 +22,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Timer.h>
+#include <U2Core/AssemblyObject.h>
 
 #include <U2Formats/AceFormat.h>
 
@@ -62,7 +63,7 @@ void AceImporterTask::prepare() {
         }
     }
 
-    convertTask = new ConvertAceToSqliteTask(srcUrl, destUrl);
+    convertTask = new ConvertAceToSqliteTask(srcUrl, destUrl, QVariantMap());
     addSubTask(convertTask);
 }
 

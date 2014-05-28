@@ -104,19 +104,19 @@ BedFormat::BedFormat(QObject* p)
 }
 
 
-Document* BedFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& /* fs */, U2OpStatus& os)
+Document* BedFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os)
 {
     CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
     QList<GObject*> objects;
 
-    load(io, objects, dbiRef, os);
+    load(io, objects, dbiRef, os, fs);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
 
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects);
     return doc;
 }
 
-void BedFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, U2OpStatus& os) {
+void BedFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, U2OpStatus& os, const QVariantMap& fs) {
     QString defaultAnnotName = "misc_feature";
     const QHash<QString, QList<SharedAnnotationData> >& annotationsHash = parseDocument(io, defaultAnnotName, os);
 
@@ -129,7 +129,7 @@ void BedFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& db
             }
         }
         if (!annotTable) {
-            annotTable = new AnnotationTableObject( annotTableName, dbiRef );
+            annotTable = new AnnotationTableObject( annotTableName, dbiRef, fs);
             objects.append(annotTable);
         }
 

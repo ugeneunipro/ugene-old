@@ -36,8 +36,7 @@
 namespace U2 {
 
 QMutex StdResidueDictionary::standardDictionaryLock;
-std::auto_ptr<StdResidueDictionary> StdResidueDictionary::standardDictionary(NULL);
-
+QScopedPointer<StdResidueDictionary> StdResidueDictionary::standardDictionary(NULL);
 
 bool StdResidueDictionary::load( const QString& fileName ) {
     
@@ -47,7 +46,7 @@ bool StdResidueDictionary::load( const QString& fileName ) {
         return false;
     } 
     
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
 
     bool ok = io->open(fileName, IOAdapterMode_Read);
     if (!ok) {
@@ -55,7 +54,7 @@ bool StdResidueDictionary::load( const QString& fileName ) {
     }
 
     U2OpStatus2Log ti;
-    ASNFormat::AsnParser asnParser(io.get(),ti);
+    ASNFormat::AsnParser asnParser(io.data(),ti);
     AsnNode* rootElem = asnParser.loadAsnTree(); 
     if (ti.hasError()) {
        return false;
@@ -234,11 +233,11 @@ bool StdResidueDictionary::validate() const
 const StdResidueDictionary* StdResidueDictionary::getStandardDictionary()
 {
     QMutexLocker locker( &standardDictionaryLock );
-    if (standardDictionary.get() == NULL) {
+    if (standardDictionary.isNull()) {
         standardDictionary.reset( createStandardDictionary() );
     }
     
-    return standardDictionary.get();
+    return standardDictionary.data();
 }
 
 StdResidueDictionary::~StdResidueDictionary()

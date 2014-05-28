@@ -19,14 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include "TaskViewController.h"
-
-#include <U2Core/Task.h>
-#include <U2Core/Settings.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/Log.h>
-#include <U2Core/Timer.h>
-#include <U2Core/U2SafePoints.h>
+#include <QtCore/QDir>
+#include <QtCore/QUrl>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QVBoxLayout>
@@ -38,6 +32,15 @@
 #include <QtWidgets/QMenu>
 #endif
 #include <QtGui/QDesktopServices>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/Log.h>
+#include <U2Core/Settings.h>
+#include <U2Core/Task.h>
+#include <U2Core/Timer.h>
+#include <U2Core/U2SafePoints.h>
+
+#include "TaskViewController.h"
 
 /* TRANSLATOR U2::TaskViewDockWidget */
 

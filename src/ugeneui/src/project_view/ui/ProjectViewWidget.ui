@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>ProjectViewWidget</class>
- <widget class="QWidget" name="ProjectViewWidget" >
-  <property name="geometry" >
+ <widget class="QWidget" name="ProjectViewWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,97 +10,84 @@
     <height>790</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2" >
-   <property name="spacing" >
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin" >
+   <property name="leftMargin">
     <number>0</number>
    </property>
-   <property name="topMargin" >
+   <property name="topMargin">
     <number>5</number>
    </property>
-   <property name="rightMargin" >
+   <property name="rightMargin">
     <number>1</number>
    </property>
-   <property name="bottomMargin" >
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
-    <widget class="QSplitter" name="splitter" >
-     <property name="orientation" >
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QWidget" name="layoutWidget1" >
-      <layout class="QVBoxLayout" name="verticalLayout" >
-       <property name="spacing" >
+     <widget class="QWidget" name="layoutWidget1">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
         <number>0</number>
        </property>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout" >
-         <property name="spacing" >
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
           <number>3</number>
          </property>
-         <property name="leftMargin" >
+         <property name="leftMargin">
           <number>0</number>
          </property>
-         <property name="bottomMargin" >
+         <property name="bottomMargin">
           <number>5</number>
          </property>
          <item>
-          <widget class="QLabel" name="label" >
-           <property name="text" >
+          <widget class="QLabel" name="label">
+           <property name="text">
             <string>Name filter</string>
            </property>
-           <property name="indent" >
+           <property name="indent">
             <number>3</number>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="nameFilterEdit" />
-         </item>
-         <item>
-          <widget class="QToolButton" name="groupModeButton" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text" >
-            <string/>
-           </property>
-          </widget>
+          <widget class="QLineEdit" name="nameFilterEdit"/>
          </item>
         </layout>
        </item>
        <item>
-        <widget class="QLabel" name="objectsLabel" >
-         <property name="text" >
+        <widget class="QLabel" name="objectsLabel">
+         <property name="text">
           <string>Objects</string>
          </property>
-         <property name="alignment" >
+         <property name="alignment">
           <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
          </property>
-         <property name="indent" >
+         <property name="indent">
           <number>3</number>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="U2::ProjectViewDocTree" name="documentTreeWidget" >
-         <property name="uniformRowHeights" >
+        <widget class="U2::ProjectViewDocTree" name="documentTreeWidget">
+         <property name="uniformRowHeights">
           <bool>true</bool>
          </property>
-         <property name="headerHidden" >
+         <property name="headerHidden">
           <bool>true</bool>
          </property>
          <column>
-          <property name="text" >
+          <property name="text">
            <string/>
           </property>
          </column>
@@ -107,34 +95,34 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="layoutWidget2" >
-      <layout class="QVBoxLayout" name="bookmarksLayout" >
-       <property name="spacing" >
+     <widget class="QWidget" name="layoutWidget2">
+      <layout class="QVBoxLayout" name="bookmarksLayout">
+       <property name="spacing">
         <number>0</number>
        </property>
        <item>
-        <widget class="QLabel" name="bookmarksLabel" >
-         <property name="text" >
+        <widget class="QLabel" name="bookmarksLabel">
+         <property name="text">
           <string>Bookmarks</string>
          </property>
-         <property name="alignment" >
+         <property name="alignment">
           <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
          </property>
-         <property name="indent" >
+         <property name="indent">
           <number>3</number>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QTreeWidget" name="viewTreeWidget" >
-         <property name="uniformRowHeights" >
+        <widget class="QTreeWidget" name="viewTreeWidget">
+         <property name="uniformRowHeights">
           <bool>true</bool>
          </property>
-         <property name="headerHidden" >
+         <property name="headerHidden">
           <bool>true</bool>
          </property>
          <column>
-          <property name="text" >
+          <property name="text">
            <string/>
           </property>
          </column>
@@ -150,7 +138,7 @@
   <customwidget>
    <class>U2::ProjectViewDocTree</class>
    <extends>QTreeWidget</extends>
-   <header location="global" >project_view/ProjectViewDocTree.h</header>
+   <header location="global">project_view/ProjectViewDocTree.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

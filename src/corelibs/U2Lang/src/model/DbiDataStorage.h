@@ -32,8 +32,6 @@
 
 #include <U2Lang/DbiDataHandler.h>
 
-#include <memory>
-
 namespace U2 {
 
 namespace Workflow {

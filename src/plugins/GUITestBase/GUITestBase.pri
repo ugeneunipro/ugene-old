@@ -4,6 +4,7 @@ PLUGIN_ID=GUITestBase
 PLUGIN_NAME=GUI Test Base
 PLUGIN_VENDOR=Unipro
 
+QT += testlib
 INCLUDEPATH += ../../corelibs/U2View/_tmp/
 
 unix {

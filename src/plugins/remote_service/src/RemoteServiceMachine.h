@@ -30,15 +30,12 @@
 
 #ifndef QT_NO_OPENSSL
 #include <QtNetwork/QSslError>
-#endif 
-
-#include <memory>
+#endif
 
 #include <U2Remote/RemoteMachine.h>
 #include "WebTransportProtocol.h"
 
 namespace U2 {
-
 
 class RemoteServiceMachineSettings : public RemoteMachineSettings {
 public:
@@ -134,8 +131,8 @@ private:
     QSsl::SslProtocol                   sslProtocol;
 #endif    
     QNetworkProxy                       proxy;
-    std::auto_ptr<Uctp>                 protocolHandler;
-    std::auto_ptr<UctpSession>          session;
+    QScopedPointer<Uctp>                 protocolHandler;
+    QScopedPointer<UctpSession>          session;
     QString                             remoteServiceUrl;
     qlonglong                           parentThreadId;
 };

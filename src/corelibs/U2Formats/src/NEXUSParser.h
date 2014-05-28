@@ -22,6 +22,8 @@
 #ifndef _U2_NEXUS_PARSER_H_
 #define _U2_NEXUS_PARSER_H_
 
+#include <QtCore/QTextStream>
+
 #include <U2Core/IOAdapter.h>
 #include <U2Core/Task.h>
 
@@ -67,8 +69,8 @@ class NEXUSParser
 // NEXUS File format parser
 {
 public:
-    NEXUSParser (IOAdapter *io_, const U2DbiRef& dbiRef_, U2OpStatus &ti_)
-        : io(io_), dbiRef(dbiRef_), ti(ti_), tz(io)
+    NEXUSParser (IOAdapter *io_, const U2DbiRef& dbiRef_, const QString& folder, U2OpStatus &ti_)
+        : io(io_), dbiRef(dbiRef_), folder(folder), ti(ti_), tz(io)
     {
         assert(io_ && "IO must exist");
     }
@@ -115,6 +117,7 @@ private:
 private:
     IOAdapter *io;
     const U2DbiRef& dbiRef;
+    QString folder;
     U2OpStatus &ti;
     Tokenizer tz;
 
@@ -123,7 +126,8 @@ private:
 
     Context global;
 
-    QStringList errors, warnings;
+    QStringList errors;
+    QStringList warnings;
 };
 
 } // namespace U2

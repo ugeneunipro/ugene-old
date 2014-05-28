@@ -19,14 +19,16 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/Settings.h>
 #include <U2Core/RemoveAnnotationsTask.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/U2FeatureUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -102,15 +104,23 @@ AutoAnnotationObject::AutoAnnotationObject( U2SequenceObject *obj, QObject *pare
     hints.insert(AUTO_ANNOTATION_HINT, true);
     const QString tableName = AutoAnnotationsSupport::tr( "Auto-annotations [%1 | %2]" )
         .arg( obj->getDocument( )->getName( ) ).arg( obj->getGObjectName( ) );
-    aobj = new AnnotationTableObject( tableName, obj->getEntityRef( ).dbiRef, hints );
-    aobj->addObjectRelation( dnaObj, GObjectRelationRole::SEQUENCE );
+
+    U2OpStatusImpl os;
+    const U2DbiRef localDbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
+    SAFE_POINT_OP(os, );
+
+    aobj = new AnnotationTableObject( tableName, localDbiRef, hints );
+    aobj->addObjectRelation( dnaObj, ObjectRole_Sequence );
     aaSupport = AppContext::getAutoAnnotationsSupport( );
 }
 
 AutoAnnotationObject::~AutoAnnotationObject( ) {
     U2OpStatusImpl os;
-    U2FeatureUtils::removeFeaturesByRoot(aobj->getRootFeatureId( ),
-        aobj->getEntityRef( ).dbiRef, os);
+
+    const U2EntityRef &entity = aobj->getEntityRef();
+
+    DbiConnection con(entity.dbiRef, os);
+    con.dbi->getObjectDbi()->removeObject(entity.entityId, os);
     delete aobj;
     SAFE_POINT_OP( os, );
 }

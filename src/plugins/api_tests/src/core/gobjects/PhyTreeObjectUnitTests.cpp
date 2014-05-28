@@ -169,6 +169,7 @@ IMPLEMENT_TEST(PhyTreeObjectUnitTests, clone_NullDbi) {
 
     U2OpStatusImpl os;
     GObject *clonedGObj = object.clone(U2DbiRef(), os);
+    Q_UNUSED(clonedGObj);
     CHECK_TRUE(os.hasError(), "no error");
 }
 
@@ -179,6 +180,7 @@ IMPLEMENT_TEST(PhyTreeObjectUnitTests, clone_NullObj) {
 
     U2OpStatusImpl os;
     GObject *clonedGObj = object.clone(PhyTreeObjectTestData::getDbiRef(), os);
+    Q_UNUSED(clonedGObj);
     CHECK_TRUE(os.hasError(), "no error");
 }
 

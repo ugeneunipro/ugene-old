@@ -60,7 +60,7 @@ public:
      */
     class U2CORE_EXPORT FieldDesc {
     public:
-        FieldDesc(const QByteArray &name, DataType dataType, IndexType indexType = NOT_INDEXED, U2DataType objectType = U2Type::Unknown);
+        FieldDesc(const QByteArray &name, DataType dataType, IndexType indexType = NOT_INDEXED);
 
         /**
          * The name of the field.
@@ -75,30 +75,22 @@ public:
          * Indexed field or not.
          */
         IndexType getIndexType() const;
-        /**
-         * The type of objects if the field describes the ID datatype.
-         */
-        U2DataType getObjectType() const;
 
     private:
         QByteArray name;
         DataType dataType;
         IndexType indexType;
-        U2DataType objectType;
     };
 
 public:
     /**
      * The schema identifier is unique within UGENE.
      * It must consist of Latin letters, digits (not first character) and "_" only.
+     * A schema can be used to describe data of some Object. This is specified by
+     * @useObjectReference parameter.
+     * If it's 'true' the additional field "object" is created. Its fieldNum is 0 (OBJECT_FIELD_NUM).
      */
-    UdrSchema(const UdrSchemaId &id);
-
-    /**
-     * A schema can be used to describe data of some Object.
-     * In this case the additional field "object" is created. Its fieldNum is 0 (OBJECT_FIELD_NUM).
-     */
-    UdrSchema(const UdrSchemaId &id, U2DataType objectType);
+    UdrSchema(const UdrSchemaId &id, bool useObjectReference = false);
 
     /**
      * The name of a new field must be unique within the schema.
@@ -137,6 +129,10 @@ public:
      * Returns true if the schema is created for describing data of some object type.
      */
     bool hasObjectReference() const;
+
+    static QStringList fieldNames(const UdrSchema *schema, U2OpStatus &os, const QList<int> &nums = QList<int>());
+    static QList<int> notBinary(const UdrSchema *schema, U2OpStatus &os);
+    static FieldDesc getBlobField(const UdrSchema *schema, int fieldNum, U2OpStatus &os);
 
     /**
      * Reserved name of the field for record identifier.

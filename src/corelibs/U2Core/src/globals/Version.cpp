@@ -25,6 +25,18 @@
 #error U2_APP_VERSION is not set!
 #endif
 
+#ifndef UGENE_MIN_VERSION_SQLITE
+#error UGENE_MIN_VERSION_SQLITE is not set!
+#else
+#define U2_APP_MIN_VERSION_SQLITE_STRING TOSTRING(UGENE_MIN_VERSION_SQLITE)
+#endif
+
+#ifndef UGENE_MIN_VERSION_MYSQL
+#error UGENE_MIN_VERSION_MYSQL is not set!
+#else
+#define U2_APP_MIN_VERSION_MYSQL_STRING TOSTRING(UGENE_MIN_VERSION_MYSQL)
+#endif
+
 #ifndef U2_DISTRIBUTION_INFO
 #define U2_DISTRIBUTION_INFO "sources"
 #endif
@@ -102,6 +114,14 @@ Version Version::appVersion() {
 
 Version Version::qtVersion() {
     return parseVersion(QT_VERSION_STR);
+}
+
+Version Version::minVersionForSQLite() {
+    return parseVersion(U2_APP_MIN_VERSION_SQLITE_STRING);
+}
+
+Version Version::minVersionForMySQL() {
+    return parseVersion(U2_APP_MIN_VERSION_MYSQL_STRING);
 }
 
 

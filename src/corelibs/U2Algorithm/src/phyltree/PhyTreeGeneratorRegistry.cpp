@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include  <U2Algorithm/PhyTreeGeneratorRegistry.h>
+#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 
 namespace U2 {
 

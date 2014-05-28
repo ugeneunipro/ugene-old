@@ -19,29 +19,32 @@
  * MA 02110-1301, USA.
  */
 
-#include "ClustalWAlnFormat.h"
+#include <math.h>
+
+#include <QtCore/QTextStream>
+
+#include <U2Algorithm/BuiltInConsensusAlgorithms.h>
+#include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
+#include <U2Algorithm/MSAConsensusUtils.h>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
+#include <U2Core/MAlignmentImporter.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/MSAUtils.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
-#include <U2Core/AppContext.h>
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/L10n.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/TextUtils.h>
-#include <U2Core/MSAUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2AlphabetUtils.h>
-#include <U2Core/U2DbiUtils.h>
-#include <U2Core/MAlignmentImporter.h>
-#include <U2Core/U2OpStatusUtils.h>
-
-#include <U2Algorithm/MSAConsensusUtils.h>
-#include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
-#include <U2Algorithm/BuiltInConsensusAlgorithms.h>
-
-#include <memory>
+#include "ClustalWAlnFormat.h"
 
 namespace U2 {
 
@@ -57,7 +60,7 @@ ClustalWAlnFormat::ClustalWAlnFormat(QObject* p) : DocumentFormat(p, DocumentFor
     supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
 }
 
-void ClustalWAlnFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap&, U2OpStatus& os) {
+void ClustalWAlnFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& fs, U2OpStatus& os) {
     static int READ_BUFF_SIZE = 1024;
     QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     char* buff  = readBuffer.data();
@@ -180,7 +183,8 @@ void ClustalWAlnFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObjec
     U2AlphabetUtils::assignAlphabet(al);
     CHECK_EXT(al.getAlphabet()!=NULL, os.setError( ClustalWAlnFormat::tr("Alphabet is unknown")), );
 
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, al, os);
+    const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, folder, al, os);
     CHECK_OP(os, );
     
     MAlignmentObject* obj = new MAlignmentObject(al.getName(), msaRef);
@@ -228,8 +232,8 @@ void ClustalWAlnFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList
     QByteArray consensus(aliLen, MAlignment_GapChar);
 
     MSAConsensusAlgorithmFactory* algoFactory = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(BuiltInConsensusAlgorithms::CLUSTAL_ALGO);
-    std::auto_ptr<MSAConsensusAlgorithm> algo(algoFactory->createAlgorithm(ma));
-    MSAConsensusUtils::updateConsensus(ma, consensus, algo.get());
+    QScopedPointer<MSAConsensusAlgorithm> algo(algoFactory->createAlgorithm(ma));
+    MSAConsensusUtils::updateConsensus(ma, consensus, algo.data());
     
     int maxNumLength  = 1 + (aliLen < 10 ? 1 : (int)log10((double)aliLen));
 

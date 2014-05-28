@@ -24,8 +24,17 @@
 
 #include <U2Core/GObject.h>
 #include <U2Core/PhyTree.h>
+#include <U2Core/U2RawData.h>
 
 namespace U2 {
+
+class U2CORE_EXPORT U2PhyTree : public U2RawData {
+public:
+    U2PhyTree();
+    U2PhyTree(const U2DbiRef &dbiRef);
+
+    U2DataType getType();
+};
 
 class U2CORE_EXPORT PhyTreeObject : public GObject {
     Q_OBJECT
@@ -34,7 +43,7 @@ public:
 
     PhyTreeObject(const QString &objectName, const U2EntityRef &treeRef, const QVariantMap &hintsMap = QVariantMap());
 
-    virtual const PhyTree& getTree() const {return tree;}
+    virtual const PhyTree& getTree() const;
     void setTree(const PhyTree& _tree);
 
     void onTreeChanged();
@@ -50,17 +59,20 @@ public:
     // Utility functions
     // Compares number of nodes and nodes with names (how many nodes etc.)
     static bool treesAreAlike(const PhyTree& tree1, const PhyTree& tree2);
+
 signals:
     void si_phyTreeChanged();
-private:
-    PhyTree tree;
+
+protected:
+    void loadDataCore(U2OpStatus &os);
 
 private:
     PhyTreeObject(const PhyTree &tree, const QString &objectName, const U2EntityRef &treeRef, const QVariantMap &hintsMap);
-    void retrieve();
     void commit();
     static void commit(const PhyTree &tree, const U2EntityRef &treeRef, U2OpStatus &os);
     static void commit(const PhyTree &tree, const U2EntityRef &treeRef);
+
+    PhyTree tree;
 };
 
 

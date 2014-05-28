@@ -72,7 +72,7 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef,
     CHECK_OP(os, NULL);
     
     U2ObjectDbi* odbi = handle.dbi->getObjectDbi();
-    QList<U2DataId> objectIds = odbi->getObjects("/", 0, U2_DBI_NO_LIMIT, os);
+    QList<U2DataId> objectIds = odbi->getObjects(U2ObjectDbi::ROOT_FOLDER, 0, U2DbiOptions::U2_DBI_NO_LIMIT, os);
     CHECK_OP(os, NULL);
     
     QList<GObject*> objects;
@@ -95,7 +95,7 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef,
                 assert(false);
                 name = "Assembly";
             }
-            objects.append(new AssemblyObject(ref, name, QVariantMap()));
+            objects.append(new AssemblyObject(name, ref));
             documentRef = srcDbiRef;
         } else if (U2Type::Sequence == objectType) {
             ref.entityId = id;
@@ -116,6 +116,7 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef,
     renameObjectsIfNamesEqual(objects);
     
     Document* d = new Document(this, io->getFactory(), io->getURL(), documentRef, objects, fs);
+    d->setDocumentOwnsDbiResources(false);
     return d;
 }
 
@@ -146,7 +147,7 @@ FormatCheckResult DbiDocumentFormat::checkRawData(const QByteArray& rawData, con
     U2DbiFactory* f = AppContext::getDbiRegistry()->getDbiFactoryById(id);
     if (f != NULL) {
         QHash<QString, QString> props;
-        props[U2_DBI_OPTION_URL] = url.getURLString();
+        props[U2DbiOptions::U2_DBI_OPTION_URL] = url.getURLString();
         U2OpStatusImpl os;
         FormatCheckResult r = f->isValidDbi(props, rawData, os);
         if (!os.hasError()) {

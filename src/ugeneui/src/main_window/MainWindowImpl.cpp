@@ -87,13 +87,13 @@ public:
     }
     virtual QMenu * createPopupMenu () {return NULL;} //todo: decide if we do really need this menu and fix it if yes?
 protected:
-	virtual void closeEvent(QCloseEvent* e); 
+    virtual void closeEvent(QCloseEvent* e); 
     virtual void dragEnterEvent(QDragEnterEvent *event);
     virtual void dropEvent ( QDropEvent * event );
     virtual void dragMoveEvent ( QDragMoveEvent * event );
     virtual bool focusNextPrevChild ( bool next );
 protected:
-	MainWindowImpl* owner;
+    MainWindowImpl* owner;
 };
 
 void MWStub::closeEvent(QCloseEvent* e) {
@@ -170,13 +170,13 @@ void MWStub::dragMoveEvent( QDragMoveEvent * event ){
 // MainWindowController
 //////////////////////////////////////////////////////////////////////////
 MainWindowImpl::MainWindowImpl() {
-	mw = NULL;
-	mdi = NULL;
-	menuManager = NULL;
-	toolbarManager = NULL;
-	mdiManager = NULL;
-	dockManager = NULL;
-	exitAction = NULL;
+    mw = NULL;
+    mdi = NULL;
+    menuManager = NULL;
+    toolbarManager = NULL;
+    mdiManager = NULL;
+    dockManager = NULL;
+    exitAction = NULL;
     visitWebAction = NULL;
     viewOnlineDocumentation = NULL;
     checkUpdateAction = NULL;
@@ -192,39 +192,39 @@ MainWindowImpl::MainWindowImpl() {
 }
 
 MainWindowImpl::~MainWindowImpl() {
-	assert(mw == NULL);
+    assert(mw == NULL);
 }
 
 void MainWindowImpl::show() {
-	nStack = new NotificationStack();
+    nStack = new NotificationStack();
     createActions();
     prepareGUI();
 
-	bool maximized =AppContext::getSettings()->getValue(SETTINGS_DIR + "maximized", false).toBool();
-	QRect geom =AppContext::getSettings()->getValue(SETTINGS_DIR + "geometry", QRect()).toRect();
+    bool maximized =AppContext::getSettings()->getValue(SETTINGS_DIR + "maximized", false).toBool();
+    QRect geom =AppContext::getSettings()->getValue(SETTINGS_DIR + "geometry", QRect()).toRect();
 
-	if (maximized) {
-		mw->showMaximized();
-	} else {
-		if (!geom.isNull()) {
-			mw->setGeometry(geom);
-		}
-	    mw->show();
-	}
+    if (maximized) {
+        mw->showMaximized();
+    } else {
+        if (!geom.isNull()) {
+            mw->setGeometry(geom);
+        }
+        mw->show();
+    }
 }
 
 void MainWindowImpl::close() {
-	AppContext::getSettings()->setValue(SETTINGS_DIR + "maximized", mw->isMaximized());
-	AppContext::getSettings()->setValue(SETTINGS_DIR + "geometry", mw->geometry());
+    AppContext::getSettings()->setValue(SETTINGS_DIR + "maximized", mw->isMaximized());
+    AppContext::getSettings()->setValue(SETTINGS_DIR + "geometry", mw->geometry());
 
-    delete dockManager;	dockManager = NULL;
-    delete menuManager;	menuManager = NULL;
-	delete toolbarManager; toolbarManager = NULL;
-    delete mdiManager;	mdiManager = NULL;
-	delete nStack; nStack = NULL;
-    delete mdi;	mdi = NULL;
+    delete dockManager;    dockManager = NULL;
+    delete menuManager;    menuManager = NULL;
+    delete toolbarManager; toolbarManager = NULL;
+    delete mdiManager;    mdiManager = NULL;
+    delete nStack; nStack = NULL;
+    delete mdi;    mdi = NULL;
     mw->close();
-	delete mw;	mw = NULL;
+    delete mw;    mw = NULL;
 }
 
 
@@ -270,7 +270,7 @@ void MainWindowImpl::createActions() {
 }
 
 void MainWindowImpl::sl_exitAction() {
-	runClosingTask();
+    runClosingTask();
 }
 
 void MainWindowImpl::sl_aboutAction() {
@@ -289,27 +289,27 @@ void MainWindowImpl::setWindowTitle(const QString& title) {
     if (title.isEmpty()) {
         mw->setWindowTitle(U2_APP_TITLE);
     } else {
-	    mw->setWindowTitle(title + " " + U2_APP_TITLE);
+        mw->setWindowTitle(title + " " + U2_APP_TITLE);
     }
 }
 
 void MainWindowImpl::prepareGUI() {
-	mw = new MWStub(this); //todo: parents?
+    mw = new MWStub(this); //todo: parents?
     mw->setObjectName("main_window");
     setWindowTitle("");
 
     mdi = new FixedMdiArea(mw);
     mdi->setObjectName("MDI_Area");
 
-	mw->setCentralWidget(mdi);
-	mw->setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
-	mw->setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
-    
-	toolbarManager = new MWToolBarManagerImpl(mw);
+    mw->setCentralWidget(mdi);
+    mw->setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+    mw->setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
-	menuManager = new MWMenuManagerImpl(this, mw->menuBar());
+    toolbarManager = new MWToolBarManagerImpl(mw);
 
-	exitAction->setObjectName(ACTION__EXIT);
+    menuManager = new MWMenuManagerImpl(this, mw->menuBar());
+
+    exitAction->setObjectName(ACTION__EXIT);
     exitAction->setParent(mw);
     menuManager->getTopLevelMenu(MWMENU_FILE)->addAction(exitAction);
 #ifdef _INSTALL_TO_PATH_ACTION
@@ -327,15 +327,15 @@ void MainWindowImpl::prepareGUI() {
     menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(checkUpdateAction);
     menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(aboutAction);
 
-	mdiManager = new MWMDIManagerImpl(this, mdi);
+    mdiManager = new MWMDIManagerImpl(this, mdi);
 
-	dockManager = new MWDockManagerImpl(this);
+    dockManager = new MWDockManagerImpl(this);
 }
 
 
 void MainWindowImpl::runClosingTask() {
     if(!shutDownInProcess) {
-	    AppContext::getTaskScheduler()->registerTopLevelTask(new ShutdownTask(this));
+        AppContext::getTaskScheduler()->registerTopLevelTask(new ShutdownTask(this));
         shutDownInProcess = true;
     } else {
         QMessageBox *msgBox = new QMessageBox(getQMainWindow());

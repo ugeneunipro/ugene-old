@@ -32,7 +32,7 @@
 #include <U2Test/GTestFrameworkComponents.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/CMDLineCoreOptions.h>
-#include <memory>
+#include <QMap>
 #include <QMap>
 
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -691,7 +691,7 @@ void TestViewController::saveTestSuite(const QString& url, QMap<GTestRef*, QStri
     }
     //time to save 
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Write)) {
         err=("error save suite file");
         return;

@@ -21,7 +21,6 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
-#include <QtCore/QFileInfo>
 #include <QtCore/QProcessEnvironment>
 
 #include <U2Core/AppContext.h>

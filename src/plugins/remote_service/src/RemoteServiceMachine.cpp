@@ -44,7 +44,6 @@
 
 namespace U2 {
 
-
 const QString RemoteServiceMachineSettings::GUEST_ACCOUNT("guest");
 
 #ifndef QT_NO_OPENSSL
@@ -108,7 +107,7 @@ qint64 RemoteServiceMachine::runTask(TaskStateInfo& si, const QString & taskFact
     const QByteArray schema = settingsMap.value(Workflow::CoreLibConstants::WORKFLOW_SCHEMA_ATTR).toByteArray();
     const QStringList inUrls =  settingsMap.value(Workflow::CoreLibConstants::DATA_IN_ATTR).toStringList();
     
-    RunRemoteTaskRequest request(session.get(), schema, inUrls);
+    RunRemoteTaskRequest request(session.data(), schema, inUrls);
     QMap<QString,UctpElementData> replyData = sendRequest(si, request);
     if (si.hasError()) {
         return taskId;
@@ -126,7 +125,7 @@ qint64 RemoteServiceMachine::runTask(TaskStateInfo& si, const QString & taskFact
 
 
 void RemoteServiceMachine::cancelTask(TaskStateInfo& si, qint64 taskId) {
-    UpdateRemoteTaskRequest request(UctpCommands::CANCEL_TASK, session.get(), taskId);
+    UpdateRemoteTaskRequest request(UctpCommands::CANCEL_TASK, session.data(), taskId);
     sendRequest(si, request);
 }
 
@@ -148,7 +147,7 @@ static QString getElementValueByNameAttr(const QString& name, const QList<UctpEl
     QStringList properties;
     properties.append(UctpElements::TASK_STATE);
     properties.append(UctpElements::TASK_ERROR);
-    GetRemoteTaskPropertyRequest request(session.get(), taskId, properties);
+    GetRemoteTaskPropertyRequest request(session.data(), taskId, properties);
 
     QMap<QString,UctpElementData> replyData = sendRequest(si, request);
     if (si.hasError()) {
@@ -173,7 +172,7 @@ int RemoteServiceMachine::getTaskProgress(TaskStateInfo& si, qint64 taskId) {
     int res = 0;
     QStringList properties;
     properties.append(UctpElements::TASK_PROGRESS);
-    GetRemoteTaskPropertyRequest request(session.get(), taskId, properties);
+    GetRemoteTaskPropertyRequest request(session.data(), taskId, properties);
     
     QMap<QString,UctpElementData> replyData = sendRequest(si, request);
     
@@ -198,7 +197,7 @@ void RemoteServiceMachine::getTaskResult(TaskStateInfo& si, qint64 taskId, const
             return;
         }
         
-        GetRemoteTaskResultRequst request(session.get(), taskId);
+        GetRemoteTaskResultRequst request(session.data(), taskId);
 
         QMap<QString,UctpElementData> replyData = sendRequest(si, request);
         if (si.hasError()) {
@@ -229,7 +228,7 @@ QString RemoteServiceMachine::getTaskErrorMessage(TaskStateInfo& si, qint64 task
     
     QStringList properties;
     properties.append(UctpElements::TASK_ERROR);
-    GetRemoteTaskPropertyRequest request(session.get(), taskId, properties);
+    GetRemoteTaskPropertyRequest request(session.data(), taskId, properties);
 
     QMap<QString,UctpElementData> replyData = sendRequest(si, request);
     if (si.hasError()) {
@@ -255,7 +254,7 @@ QString RemoteServiceMachine::getServerName(TaskStateInfo& si) {
         return res;
     }
      
-    GetGlobalPropertyRequest request(session.get(), BaseGlobalProperties::HOST_NAME);
+    GetGlobalPropertyRequest request(session.data(), BaseGlobalProperties::HOST_NAME);
     QMap<QString,UctpElementData> replyData = sendRequest(si, request);
     if (si.hasError()) {
         return res;
@@ -348,7 +347,7 @@ QMap<QString,UctpElementData> RemoteServiceMachine::sendRequest(TaskStateInfo& s
 
     QNetworkReply *reply = networkManager.post(request, dataSource );
     QTimer timer;
-    RemoteServiceMachineReplyHandler handler(protocolHandler.get(), &eventLoop, &replyData, command, &si, reply, AppContext::getAppSettings()->getNetworkConfiguration()->remoteRequestTimeout() * 1000);
+    RemoteServiceMachineReplyHandler handler(protocolHandler.data(), &eventLoop, &replyData, command, &si, reply, AppContext::getAppSettings()->getNetworkConfiguration()->remoteRequestTimeout() * 1000);
 
     connect(&networkManager, SIGNAL(finished(QNetworkReply*)), &handler, SLOT(sl_onReplyFinished(QNetworkReply*)));
     connect(&networkManager, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)), &handler, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
@@ -380,7 +379,7 @@ void RemoteServiceMachine::initSession(TaskStateInfo& si) {
         return;
     }
     
-    if (session.get() != NULL) {
+    if (!session.isNull()) {
         return;
     }
     QByteArray userName = settings->getUserName().toLatin1();
@@ -438,7 +437,7 @@ void RemoteServiceMachine::sl_onSslErrors(QNetworkReply * reply, const QList<QSs
 
 
 void RemoteServiceMachine::getTaskProperties( TaskStateInfo& si, qint64 taskId, QMap<QString,QString>& properties) {
-    GetRemoteTaskPropertyRequest request( session.get(), taskId, properties.keys());
+    GetRemoteTaskPropertyRequest request( session.data(), taskId, properties.keys());
 
     QMap<QString,UctpElementData> replyData = sendRequest(si, request);
     if (si.hasError()) {
@@ -468,7 +467,7 @@ QList<qint64> RemoteServiceMachine::getTasksList( TaskStateInfo& si, const QByte
         return res;
     }   
 
-    GetGlobalPropertyRequest request( session.get(), taskState);
+    GetGlobalPropertyRequest request( session.data(), taskState);
 
     QMap<QString,UctpElementData> replyData = sendRequest(si, request);
     if (si.hasError()) {
@@ -487,7 +486,7 @@ QList<qint64> RemoteServiceMachine::getTasksList( TaskStateInfo& si, const QByte
 }
 
 void RemoteServiceMachine::deleteRemoteTask(TaskStateInfo& si,  qint64 taskId) {
-    UpdateRemoteTaskRequest request(UctpCommands::DELETE_TASK, session.get(), taskId);
+    UpdateRemoteTaskRequest request(UctpCommands::DELETE_TASK, session.data(), taskId);
     sendRequest( si, request );
 }
 

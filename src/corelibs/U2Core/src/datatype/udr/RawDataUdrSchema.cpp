@@ -21,6 +21,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UdrDbi.h>
 #include <U2Core/UdrSchemaRegistry.h>
@@ -33,9 +34,8 @@ const UdrSchemaId RawDataUdrSchema::ID("RawData");
 
 namespace {
     // Fields numbers
-    const int URL = 1;
-    const int CONTENT = 2;
-    const int SERIALIZER = 3;
+    const int CONTENT = 1;
+    const int SERIALIZER = 2;
 
     const int BUFFER_SIZE = 4*1024*1024;
 
@@ -73,7 +73,12 @@ namespace {
         UdrRecord record = dbi->getRecord(recId, os);
         CHECK_OP(os, recId);
 
-        object.url = record.getString(URL, os);
+        U2Object obj;
+        dbi->getRootDbi()->getObjectDbi()->getObject(obj, object.id, os);
+        CHECK_OP(os, recId);
+
+        object.visualName = obj.visualName;
+        object.version = obj.version;
         CHECK_OP(os, recId);
 
         object.serializer = record.getString(SERIALIZER, os);
@@ -82,13 +87,12 @@ namespace {
         return recId;
     }
 
-    UdrRecordId createObjectCore(UdrDbi *dbi, U2RawData &object, U2OpStatus &os) {
-        dbi->createObject(RawDataUdrSchema::ID, object, "", os);
+    UdrRecordId createObjectCore(UdrDbi *dbi, const QString& folder, U2RawData &object, U2OpStatus &os) {
+        dbi->createObject(RawDataUdrSchema::ID, object, folder, os);
         CHECK_OP(os, UdrRecordId("", ""));
 
         QList<UdrValue> data;
         data << UdrValue(object.id);
-        data << UdrValue(object.url);
         data << UdrValue();
         data << UdrValue(object.serializer);
 
@@ -97,13 +101,10 @@ namespace {
 }
 
 void RawDataUdrSchema::init(U2OpStatus &os) {
-    UdrSchema::FieldDesc name("url", UdrSchema::STRING);
     UdrSchema::FieldDesc content("content", UdrSchema::BLOB);
     UdrSchema::FieldDesc serializer("serializer", UdrSchema::STRING);
 
-    QScopedPointer<UdrSchema> fileSchema(new UdrSchema(ID, U2Type::RawData));
-    fileSchema->addField(name, os);
-    CHECK_OP(os, );
+    QScopedPointer<UdrSchema> fileSchema(new UdrSchema(ID, true));
     fileSchema->addField(content, os);
     CHECK_OP(os, );
     fileSchema->addField(serializer, os);
@@ -126,10 +127,14 @@ U2RawData RawDataUdrSchema::getObject(const U2EntityRef &objRef, U2OpStatus &os)
 }
 
 void RawDataUdrSchema::createObject(const U2DbiRef &dbiRef, U2RawData &object, U2OpStatus &os) {
+    createObject(dbiRef, U2ObjectDbi::ROOT_FOLDER, object, os);
+}
+
+void RawDataUdrSchema::createObject(const U2DbiRef &dbiRef, const QString& folder, U2RawData &object, U2OpStatus &os) {
     DbiHelper con(dbiRef, os);
     CHECK_OP(os, );
 
-    createObjectCore(con.dbi, object, os);
+    createObjectCore(con.dbi, folder, object, os);
 }
 
 void RawDataUdrSchema::writeContent(const QByteArray &data, const U2EntityRef &objRef, U2OpStatus &os) {
@@ -161,38 +166,37 @@ QByteArray RawDataUdrSchema::readAllContent(const U2EntityRef &objRef, U2OpStatu
     return result;
 }
 
-U2RawData RawDataUdrSchema::cloneObject(const U2EntityRef &srcObjRef, const U2DbiRef &dstDbiRef, U2OpStatus &os) {
-    U2RawData error;
-
+void RawDataUdrSchema::cloneObject(const U2EntityRef &srcObjRef, const U2DbiRef &dstDbiRef,
+    U2RawData &dstObject, U2OpStatus &os)
+{
     // Prepare dbi connection
     DbiHelper src(srcObjRef.dbiRef, os);
-    CHECK_OP(os, error);
+    CHECK_OP(os, );
     DbiHelper dst(dstDbiRef, os);
-    CHECK_OP(os, error);
+    CHECK_OP(os, );
 
     // Copy object
-    U2RawData dstObject(dstDbiRef);
+    dstObject.dbiId = dstDbiRef.dbiId;
     dstObject.id = srcObjRef.entityId;
     const UdrRecordId srcId = retrieveObject(src.dbi, dstObject, os);
-    CHECK_OP(os, error);
-    const UdrRecordId dstId = createObjectCore(dst.dbi, dstObject, os);
-    CHECK_OP(os, error);
+    CHECK_OP(os, );
+    dstObject.version = 0;
+    const UdrRecordId dstId = createObjectCore(dst.dbi, U2ObjectDbi::ROOT_FOLDER, dstObject, os);
+    CHECK_OP(os, );
 
     // Copy content
     QScopedPointer<InputStream> iStream(src.dbi->createInputStream(srcId, CONTENT, os));
-    CHECK_OP(os, error);
+    CHECK_OP(os, );
     QScopedPointer<OutputStream> oStream(dst.dbi->createOutputStream(dstId, CONTENT, iStream->available(), os));
-    CHECK_OP(os, error);
+    CHECK_OP(os, );
     QByteArray buffer(BUFFER_SIZE, 0);
     char *bytes = buffer.data();
     while (iStream->available() > 0) {
         int read = iStream->read(bytes, BUFFER_SIZE, os);
-        CHECK_OP(os, error);
+        CHECK_OP(os, );
         oStream->write(bytes, read, os);
-        CHECK_OP(os, error);
+        CHECK_OP(os, );
     }
-
-    return dstObject;
 }
 
 } // U2

@@ -21,11 +21,12 @@
 
 #include <QtCore/QScopedPointer>
 
-#include <U2Core/AnnotationGroup.h>
 #include <U2Core/AnnotationData.h>
+#include <U2Core/AnnotationGroup.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2FeatureDbi.h>
 #include <U2Core/U2FeatureKeys.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -33,7 +34,7 @@
 
 namespace U2 {
 
-U2AnnotationTable U2FeatureUtils::createAnnotationTable( const QString &tableName, const U2DbiRef &dbiRef, U2OpStatus &os )
+U2AnnotationTable U2FeatureUtils::createAnnotationTable( const QString &tableName, const U2DbiRef &dbiRef, const QString& folder, U2OpStatus &os )
 {
     U2AnnotationTable result;
 
@@ -50,7 +51,7 @@ U2AnnotationTable U2FeatureUtils::createAnnotationTable( const QString &tableNam
 
     result.visualName = tableName;
     result.rootFeature = rootFeature.id;
-    dbi->createAnnotationTableObject( result, QString( ), os );
+    dbi->createAnnotationTableObject( result, folder, os );
 
     return result;
 }
@@ -260,6 +261,7 @@ void U2FeatureUtils::removeFeaturesByRoot( const U2DataId &rootId, const U2DbiRe
     DbiConnection connection;
     connection.open( dbiRef, op );
     CHECK_OP( op, );
+
     U2FeatureDbi *dbi = connection.dbi->getFeatureDbi( );
     SAFE_POINT( NULL != dbi, "Invalid DBI pointer encountered!", );
 

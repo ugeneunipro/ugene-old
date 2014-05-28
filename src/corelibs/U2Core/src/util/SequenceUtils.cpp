@@ -19,23 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#include "SequenceUtils.h"
-
-#include <U2Core/DNATranslation.h>
-#include <U2Core/TextUtils.h>
 #include <U2Core/AnnotationTableObject.h>
-#include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/U2AlphabetUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2SequenceUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2DbiUtils.h>
-#include <U2Core/U2SequenceDbi.h>
-#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceDbi.h>
+#include <U2Core/U2SequenceUtils.h>
+
+#include "SequenceUtils.h"
 
 namespace U2 {
 
@@ -153,8 +153,10 @@ static U2SequenceObject* storeSequenceUseGenbankHeader(const QVariantMap& hints,
     const U2DbiRef dbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
     CHECK_OP(os, NULL);
 
+    const QString folder = hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+
     U2SequenceImporter seqImport;
-    seqImport.startSequence(dbiRef, seqName, false, os);
+    seqImport.startSequence(dbiRef, folder, seqName, false, os);
     CHECK_OP(os, NULL);
 
     QByteArray symbolsOfNotExistingSequence(sequenceLength, 'N');
@@ -236,13 +238,13 @@ void processOldObjects( const QList<GObject *> &objs,
             U2SequenceObject *seqObj = storeSequenceUseGenbankHeader( hints, url, fileName, os );
             GObjectReference sequenceRef( GObjectReference( url, "", GObjectTypes::SEQUENCE ) );
             sequenceRef.objName = seqObj->getGObjectName( );
-            annObj->addObjectRelation( GObjectRelation( sequenceRef, GObjectRelationRole::SEQUENCE ) );
+            annObj->addObjectRelation( GObjectRelation( sequenceRef, ObjectRole_Sequence ) );
 
             const DNAAlphabet *seqAl = seqObj->getAlphabet( );
             mapObjects2Alphabets[seqAl->getType( )].append( seqObj );
         }
 
-        QList<GObjectRelation> seqRelations = annObj->findRelatedObjectsByRole( GObjectRelationRole::SEQUENCE );
+        QList<GObjectRelation> seqRelations = annObj->findRelatedObjectsByRole( ObjectRole_Sequence );
         foreach ( const GObjectRelation &rel, seqRelations ) {
             const QString &relDocUrl = rel.getDocURL( );
             if ( relDocUrl == url ) {
@@ -256,9 +258,14 @@ void processOldObjects( const QList<GObject *> &objs,
 }
 
 static QList<GObject *> createNewObjects(
-    const QHash< U2SequenceObject *, QList<AnnotationTableObject *> > &annotationsBySequenceObjectName,
-    const QMap<DNAAlphabetType, QList<U2SequenceObject *> > &mapObjects2Alpabets, const U2DbiRef &ref,
-    const GUrl &newUrl, QVariantMap &hints, int mergeGap, U2OpStatus &os )
+        const QHash< U2SequenceObject *, QList<AnnotationTableObject *> > &annotationsBySequenceObjectName,
+        const QMap<DNAAlphabetType,
+        QList<U2SequenceObject *> > &mapObjects2Alpabets,
+        const U2DbiRef &ref,
+        const GUrl &newUrl,
+        QVariantMap &hints,
+        int mergeGap,
+        U2OpStatus &os )
 {
     QList<GObject *> objects;
     // Creating sequence object for group sequence with the same alphabets. Amount of different alphabets = amount of sequence objects
@@ -267,6 +274,7 @@ static QList<GObject *> createNewObjects(
         = mapObjects2Alpabets.begin( ); it != mapObjects2Alpabets.end( ); ++it )
     {
         U2SequenceImporter seqImport;
+        const QString folder = hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
         QString seqName = newUrl.fileName( );
         if ( mapObjects2Alpabets.size() > 1 ) {
             seqName += getSuffixByAlphabet( it.key( ) );
@@ -277,7 +285,7 @@ static QList<GObject *> createNewObjects(
                 init = true;
             }
         }
-        seqImport.startSequence( ref, seqName, false, os );
+        seqImport.startSequence( ref, folder, seqName, false, os );
         CHECK_OP( os, QList<GObject*>( ) );
 
         AnnotationTableObject *newAnnObj = new AnnotationTableObject( seqName + " annotations", ref );
@@ -290,7 +298,7 @@ static QList<GObject *> createNewObjects(
 
         if ( !newUrl.getURLString( ).isEmpty( ) ) {
             GObjectReference r( newUrl.getURLString( ), u2seq.visualName, GObjectTypes::SEQUENCE );
-            newAnnObj->addObjectRelation( GObjectRelation( r, GObjectRelationRole::SEQUENCE ) );
+            newAnnObj->addObjectRelation( GObjectRelation( r, ObjectRole_Sequence ) );
         }
 
         U2SequenceObject *seqObj = new U2SequenceObject( u2seq.visualName,

@@ -62,18 +62,17 @@ RemoteTasksDialog::RemoteTasksDialog(const RemoteServiceSettingsPtr& settings,QW
 }
 
 void RemoteTasksDialog::updateState() {
-    bool enable = getInfoTask == NULL && machine.get() != NULL && fetchResultTask == NULL;
-    bool itemSelected = tasksTreeWidget->selectedItems().size() > 0;    
+    bool enable = getInfoTask == NULL && !machine.isNull() && fetchResultTask == NULL;
+    bool itemSelected = tasksTreeWidget->selectedItems().size() > 0;
 
     refreshPushButton->setEnabled(enable);
     removePushButton->setEnabled(enable && itemSelected);
     fetchPushButton->setEnabled(enable && itemSelected);
-
 }
 
 void RemoteTasksDialog::refresh() {
     tasksTreeWidget->clear();
-    getInfoTask = new GetUserTasksInfoTask(machine.get());
+    getInfoTask = new GetUserTasksInfoTask(machine.data());
     getInfoTask->setErrorNotificationSuppression(true);
     connect(getInfoTask, SIGNAL(si_stateChanged()), SLOT(sl_onRefreshFinished()));
     AppContext::getTaskScheduler()->registerTopLevelTask(getInfoTask);
@@ -154,7 +153,7 @@ void RemoteTasksDialog::sl_onFetchButtonClicked() {
         str.prepend(folder + "/");
     }
 
-    fetchResultTask = new FetchRemoteTaskResultTask(machine.get(), urls, taskId);
+    fetchResultTask = new FetchRemoteTaskResultTask(machine.data(), urls, taskId);
     fetchResultTask->setErrorNotificationSuppression(true);
     connect(fetchResultTask, SIGNAL(si_stateChanged()), SLOT(sl_onFetchFinished()));
     AppContext::getTaskScheduler()->registerTopLevelTask(fetchResultTask);
@@ -189,7 +188,7 @@ void RemoteTasksDialog::sl_onRemoveButtonClicked() {
         return;
     }
        
-    deleteRemoteDataTask = new DeleteRemoteDataTask(machine.get(), taskId);
+    deleteRemoteDataTask = new DeleteRemoteDataTask(machine.data(), taskId);
     deleteRemoteDataTask->setErrorNotificationSuppression(true);
     connect(deleteRemoteDataTask, SIGNAL(si_stateChanged()), SLOT(sl_onRemoveTaskFinished()));
     AppContext::getTaskScheduler()->registerTopLevelTask(deleteRemoteDataTask);

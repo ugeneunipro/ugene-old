@@ -35,7 +35,6 @@
 #include "SerializeUtils.h"
 
 #include <cassert>
-#include <memory>
 
 namespace U2 {
 

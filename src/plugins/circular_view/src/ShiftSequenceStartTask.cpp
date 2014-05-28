@@ -93,7 +93,7 @@ void ShiftSequenceStartTask::fixAnnotations( int shiftSize ) {
         QList<GObject *> annotationTablesList = d->findGObjectByType( GObjectTypes::ANNOTATION_TABLE );
         foreach ( GObject *table, annotationTablesList ) {
             AnnotationTableObject *ato = qobject_cast<AnnotationTableObject *>( table );
-            if ( ato->hasObjectRelation( seqObj, GObjectRelationRole::SEQUENCE ) ){
+            if ( ato->hasObjectRelation( seqObj, ObjectRole_Sequence ) ){
                 foreach ( Annotation an, ato->getAnnotations( ) ) {
                     const U2Location& location = an.getLocation();
                     U2Location newLocation = shiftLocation(location, shiftSize, seqObj->getSequenceLength() );

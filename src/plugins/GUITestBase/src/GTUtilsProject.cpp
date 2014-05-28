@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QUrl>
+
 #include "GTUtilsProject.h"
 
 #include "api/GTFileDialog.h"

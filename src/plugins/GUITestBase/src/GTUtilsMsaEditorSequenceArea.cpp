@@ -19,16 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTUtilsMsaEditorSequenceArea.h"
-#include "api/GTWidget.h"
-#include "api/GTMSAEditorStatusWidget.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTMouseDriver.h"
-#include "GTUtilsMdi.h"
-
 #include <U2View/MSAEditor.h>
 
+#include "GTUtilsMdi.h"
+#include "GTUtilsMsaEditorSequenceArea.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTMSAEditorStatusWidget.h"
+#include "api/GTWidget.h"
+
 namespace U2 {
+
 #define GT_CLASS_NAME "GTUtilsMSAEditorSequenceArea"
 
 #define GT_METHOD_NAME "moveTo"
@@ -86,6 +87,58 @@ void GTUtilsMSAEditorSequenceArea::click(U2OpStatus &os, QPoint p) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "scrollToPosition"
+void GTUtilsMSAEditorSequenceArea::scrollToPosition(U2OpStatus &os, const QPoint &position) {
+    MSAEditorSequenceArea *msaSeqArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", GTUtilsMdi::activeWindow(os)));
+    GT_CHECK(NULL != msaSeqArea, "MSA Editor sequence area is not found");
+    GT_CHECK(msaSeqArea->isInRange(position), "Position is out of range");
+
+    // scroll down
+    GScrollBar* vBar = msaSeqArea->getVBar();
+    GT_CHECK(NULL != vBar, "Vertical scroll bar is not found");
+
+    QStyleOptionSlider vScrollBarOptions;
+    vScrollBarOptions.initFrom(vBar);
+
+    while (!msaSeqArea->isSeqVisible(position.y(), false)) {
+        const QRect sliderSpaceRect = vBar->style()->subControlRect(QStyle::CC_ScrollBar, &vScrollBarOptions, QStyle::SC_ScrollBarGroove, vBar);
+        const QPoint bottomEdge(sliderSpaceRect.width() / 2, sliderSpaceRect.y() + sliderSpaceRect.height());
+
+        GTMouseDriver::moveTo(os, vBar->mapToGlobal(bottomEdge) - QPoint(0, 1));
+        GTMouseDriver::click(os);
+    }
+
+    // scroll right
+    GScrollBar* hBar = msaSeqArea->getHBar();
+    GT_CHECK(NULL != hBar, "Horisontal scroll bar is not found");
+
+    QStyleOptionSlider hScrollBarOptions;
+    hScrollBarOptions.initFrom(hBar);
+
+    while (!msaSeqArea->isPosVisible(position.x(), false)) {
+        const QRect sliderSpaceRect = hBar->style()->subControlRect(QStyle::CC_ScrollBar, &hScrollBarOptions, QStyle::SC_ScrollBarGroove, hBar);
+        const QPoint rightEdge(sliderSpaceRect.x() + sliderSpaceRect.width(), sliderSpaceRect.height() / 2);
+
+        GTMouseDriver::moveTo(os, hBar->mapToGlobal(rightEdge) - QPoint(1, 0));
+        GTMouseDriver::click(os);
+    }
+
+    SAFE_POINT(msaSeqArea->isVisible(position, false), "The position is still invisible after scrolling", );
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clickToPosition"
+void GTUtilsMSAEditorSequenceArea::clickToPosition(U2OpStatus &os, const QPoint &position) {
+    MSAEditorSequenceArea *msaSeqArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", GTUtilsMdi::activeWindow(os)));
+    GT_CHECK(NULL != msaSeqArea, "MSA Editor sequence area is not found");
+    GT_CHECK(msaSeqArea->isInRange(position), "Position is out of range");
+
+    scrollToPosition(os, position);
+    const QPoint visibleStart(msaSeqArea->getFirstVisibleBase(), msaSeqArea->getFirstVisibleSequence());
+    click(os, position - visibleStart);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "checkSelectedRect"
 void GTUtilsMSAEditorSequenceArea::checkSelectedRect(U2OpStatus &os, const QRect &expectedRect)
 {
@@ -93,8 +146,6 @@ void GTUtilsMSAEditorSequenceArea::checkSelectedRect(U2OpStatus &os, const QRect
     CHECK_SET_ERR(msaEditArea != NULL, "MsaEditorSequenceArea not found");
 
     QRect msaEditRegion = msaEditArea->getSelection().getRect();
-    qDebug() << "Expected rect: " << expectedRect;
-    qDebug() << "msaEditRegion: " << msaEditRegion;
     CHECK_SET_ERR(expectedRect == msaEditRegion, "Unexpected selection region");
 }
 #undef GT_METHOD_NAME

@@ -201,7 +201,7 @@ void DASFetcherWorker::sl_taskFinished() {
         QList<GObject*> allLoadedAnnotations = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
         QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(gobj,
                                                                                      GObjectTypes::ANNOTATION_TABLE,
-                                                                                     GObjectRelationRole::SEQUENCE,
+                                                                                     ObjectRole_Sequence,
                                                                                      allLoadedAnnotations,
                                                                                      UOF_LoadedOnly);
 

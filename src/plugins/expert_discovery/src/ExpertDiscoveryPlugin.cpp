@@ -139,7 +139,7 @@ bool ExpertDiscoveryViewFactory::canCreateView(const MultiGSelection& multiSelec
 
     //2.
     QList<GObject*> objectsWithSeqRelation = GObjectUtils::selectObjectsWithRelation(selectedObjects, GObjectTypes::SEQUENCE, 
-        GObjectRelationRole::SEQUENCE, UOF_LoadedAndUnloaded, true);
+        ObjectRole_Sequence, UOF_LoadedAndUnloaded, true);
     if (!objectsWithSeqRelation.isEmpty()) {
         return true;
     }
@@ -154,7 +154,7 @@ bool ExpertDiscoveryViewFactory::canCreateView(const MultiGSelection& multiSelec
             return true;
         }    
         objectsWithSeqRelation = GObjectUtils::selectObjectsWithRelation(doc->getObjects(), 
-            GObjectTypes::SEQUENCE, GObjectRelationRole::SEQUENCE, UOF_LoadedAndUnloaded, true);
+            GObjectTypes::SEQUENCE, ObjectRole_Sequence, UOF_LoadedAndUnloaded, true);
 
         if (!objectsWithSeqRelation.isEmpty()) {
             return true;
@@ -171,7 +171,7 @@ Task* ExpertDiscoveryViewFactory::createViewTask(const MultiGSelection& multiSel
 
     QList<GObject*> selectedObjects = SelectionUtils::findObjects("", &multiSelection, UOF_LoadedAndUnloaded);
     QList<GObject*> objectsWithSequenceRelation = GObjectUtils::selectObjectsWithRelation(selectedObjects, 
-        GObjectTypes::SEQUENCE, GObjectRelationRole::SEQUENCE, UOF_LoadedAndUnloaded, true);
+        GObjectTypes::SEQUENCE, ObjectRole_Sequence, UOF_LoadedAndUnloaded, true);
 
     objectsToOpen.append(objectsWithSequenceRelation);
 
@@ -180,7 +180,7 @@ Task* ExpertDiscoveryViewFactory::createViewTask(const MultiGSelection& multiSel
         foreach(Document* doc, ds->getSelectedDocuments()) {
             objectsToOpen.append(doc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedAndUnloaded));
             objectsToOpen.append(GObjectUtils::selectObjectsWithRelation(doc->getObjects(), GObjectTypes::SEQUENCE, 
-                GObjectRelationRole::SEQUENCE, UOF_LoadedAndUnloaded, true));
+                ObjectRole_Sequence, UOF_LoadedAndUnloaded, true));
         }
     }
 

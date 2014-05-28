@@ -178,6 +178,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
     GTUtilsDialog::waitForDialog(os, filler2);
 
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
+    GTGlobals::sleep(500);
     GTUtilsProjectTreeView::openView(os);
 
 //6. Call dotplot context menu
@@ -208,6 +209,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014_1){
     GTUtilsDialog::waitForDialog(os, filler2);
 
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
+    GTGlobals::sleep(500);
     GTUtilsProjectTreeView::openView(os);
 
     for(int i=0;i<4;i++){
@@ -230,6 +232,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014_2){
     GTUtilsDialog::waitForDialog(os, filler2);
 
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
+    GTGlobals::sleep(500);
     GTUtilsProjectTreeView::openView(os);
 
     for(int i=0;i<4;i++){
@@ -264,18 +267,11 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
 
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
     GTUtilsProjectTreeView::openView(os);
+    GTGlobals::sleep(500);
 //6. Click on the Dotplot view
-    QPoint mouse_pos;
-    QRect ground_widget;
 
-    mouse_pos = QCursor::pos();
-    QWidget *ground;
-    ground=GTWidget::findWidget(os,"dotplot widget");
-    ground_widget = ground->geometry();
-    ground_widget = QRect(ground->mapToGlobal(ground_widget.topLeft()), ground->mapToGlobal(ground_widget.bottomRight()));
+    GTWidget::click(os,GTWidget::findWidget(os,"dotplot widget"));
 
-    GTMouseDriver::moveTo(os, ground_widget.center());
-    GTMouseDriver::click(os);
 //Expected state: Dotplot view has been selected, UGENE didn't crash
 }
 } // namespace GUITest_Assembly_browser_

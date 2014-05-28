@@ -40,6 +40,8 @@ SaveDocumentGroupController::SaveDocumentGroupController(const SaveDocumentGroup
 : QObject(_parent)
 {
     conf = _conf;
+    conf.dfc.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
+
     if (conf.saveTitle.isEmpty()) {
         conf.saveTitle = tr("Select file location");
     }

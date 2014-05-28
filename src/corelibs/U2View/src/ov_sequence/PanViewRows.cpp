@@ -92,17 +92,17 @@ PVRowsManager::PVRowsManager( ) {
 }
 
 
-void PVRowsManager::addAnnotation( const Annotation &a, const QString &key ) {
+void PVRowsManager::addAnnotation( const Annotation &a, const AnnotationData &data ) {
     SAFE_POINT( !rowByAnnotation.contains( a ), "Annotation has been already added", );
-    const QVector<U2Region> location = a.getRegions( );
+    const QVector<U2Region> location = data.getRegions( );
     foreach ( PVRowData *row, rows ) {
-        if ( key == row->key && row->fitToRow( location ) ) {
+        if ( data.name == row->key && row->fitToRow( location ) ) {
             row->annotations.append( a );
             rowByAnnotation[a] = row;
             return;
         }
     }
-    PVRowData *row = new PVRowData( key );
+    PVRowData *row = new PVRowData( data.name );
     row->ranges << location;
     row->annotations.append( a );
 

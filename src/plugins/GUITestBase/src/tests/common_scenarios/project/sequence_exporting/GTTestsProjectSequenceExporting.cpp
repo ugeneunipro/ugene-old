@@ -165,9 +165,8 @@ GUI_TEST_CLASS_DEFINITION(test_0003)
 
 // Expected state: 
 //     1) Project view with document "1.gb" and "2.gb" is opened
-    QTreeWidgetItem *item1 = GTUtilsProjectTreeView::findItem(os, doc1);
-    QTreeWidgetItem *item2 = GTUtilsProjectTreeView::findItem(os, doc2);
-    CHECK_SET_ERR(item1 != NULL && item2 != NULL, "Project view with document \"1.gb\" and \"2.gb\" is not opened");
+    GTUtilsProjectTreeView::findIndex(os, doc1);//checks inside
+    GTUtilsProjectTreeView::findIndex(os, doc2);
 //     2) UGENE window titled with text "proj4 UGENE"
     GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
 
@@ -232,7 +231,8 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj4.uprj");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
+    QModelIndex nc_001363 = GTUtilsProjectTreeView::findIndex(os,"NC_001363 sequence", GTUtilsProjectTreeView::findIndex(os, "1.gb"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, nc_001363));
     GTMouseDriver::doubleClick(os);
     GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
     GTGlobals::sleep(100);
@@ -300,7 +300,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 
     GTGlobals::sleep();
 
-    GTWidget::click(os, GTUtilsProjectTreeView::getTreeWidget(os));
+    GTWidget::click(os, GTUtilsProjectTreeView::getTreeView(os));
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(100);
 

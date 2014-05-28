@@ -20,6 +20,7 @@
  */
 
 #include <QtCore/QBitArray>
+#include <QtCore/QHash>
 #include <QtCore/QStack>
 #include <QtCore/QtEndian>
 
@@ -382,7 +383,8 @@ PhyTree NewickPhyTreeSerializer::deserialize(const QByteArray &binary, U2OpStatu
 namespace {
     class PackContext {
     public:
-        QList<SharedAtom> atoms;
+        QHash<const AtomData*, SharedAtom> atoms;
+        QHash<const AtomData*, int> atomPositions;
     };
 
     template<class T>
@@ -521,14 +523,18 @@ namespace {
         return result;
     }
     inline QByteArray pack(const SharedAtom &data, PackContext &ctx) {
-        if (ctx.atoms.contains(data)) {
-            int num = ctx.atoms.indexOf(data);
+        int num = ctx.atomPositions.value(data.constData(), -1);
+        if (-1 != num) {
             return packNum<int>(num);
         }
+
         QByteArray result;
         result += packNum<int>(ctx.atoms.size());
         result += pack(*data.data());
-        ctx.atoms << data;
+
+        ctx.atoms.insert(data.constData(), data);
+        ctx.atomPositions.insert(data.constData(), ctx.atomPositions.size());
+
         return result;
     }
     template<>
@@ -554,13 +560,16 @@ namespace {
         int num = unpackNum<int>(data, length, offset, os);
         CHECK_OP(os, SharedAtom());
         if (num < ctx.atoms.size()) {
-            return ctx.atoms[num];
+            return ctx.atoms.value(ctx.atomPositions.key(num, NULL));
         }
         SAFE_POINT_EXT(num == ctx.atoms.size(), os.setError("Unexpected atom number"), SharedAtom());
         AtomData atom = unpack<AtomData>(data, length, offset, os);
         CHECK_OP(os, SharedAtom());
         SharedAtom result(new AtomData(atom));
-        ctx.atoms << result;
+
+        ctx.atoms.insert(result.constData(), result);
+        ctx.atomPositions.insert(result.constData(), ctx.atomPositions.size());
+
         return result;
     }
 

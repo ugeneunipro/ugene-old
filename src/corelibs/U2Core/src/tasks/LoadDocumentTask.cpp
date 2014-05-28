@@ -19,8 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "LoadDocumentTask.h"
-
+#include <U2Core/CredentialsAsker.h>
 #include <U2Core/FormatSettings.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -64,13 +63,13 @@
 #include <QtWidgets/QApplication>
 #endif
 
-#include <memory>
+#include "LoadDocumentTask.h"
 
 #define GObjectHint_NamesList  "gobject-hint-names-list"
 
 namespace U2 {
 
-/* TRANSLATOR U2::LoadUnloadedDocumentTask */    
+/* TRANSLATOR U2::LoadUnloadedDocumentTask */
 
 //////////////////////////////////////////////////////////////////////////
 // LoadUnloadedDocumentTask
@@ -319,29 +318,12 @@ void LoadDocumentTask::prepare() {
         return;
     }
     
-    int memUseMB = 0;
-
-    if(!format->getFlags().testFlag(DocumentFormatFlag_NoFullMemoryLoad) && isLoadToMem(format->getFormatId())) { // document is fully loaded to memory
-        QFileInfo file(url.getURLString());
-        memUseMB = file.size() / (1000*1000);
-
-        double DEFAULT_COMPRESS_RATIO = 2.5;
-        if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE) {
-            qint64 fileSizeInBytes = ZlibAdapter::getUncompressedFileSizeInBytes(url);
-            if (fileSizeInBytes < 0) {
-                memUseMB *= DEFAULT_COMPRESS_RATIO; //Need to calculate compress level
-            } else {
-                memUseMB = fileSizeInBytes / (1000*1000);
-            }
-        } else if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
-            memUseMB *= DEFAULT_COMPRESS_RATIO; //Need to calculate compress level  
-        }
-        coreLog.trace(QString("load document:Memory resource %1").arg(memUseMB));
-    }
-
+    int memUseMB = calculateMemory();
     if (memUseMB > 0) {
         addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, false));
     }
+
+    checkAccess();
 }
 
 static QList<Document*> loadMulti(IOAdapterFactory* iof, const QVariantMap& fs, U2OpStatus& os){
@@ -377,17 +359,16 @@ static QList<Document*> loadMulti(IOAdapterFactory* iof, const QVariantMap& fs, 
 
 void loadHintsNewDocument(bool saveDoc, IOAdapterFactory* iof, Document* doc, U2OpStatus& os){
     if(saveDoc){
-        std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+        QScopedPointer<IOAdapter> io(iof->createIOAdapter());
         QString url = doc->getURLString();
-        if(!io->open(url ,IOAdapterMode_Write)){
+        if (!io->open(url ,IOAdapterMode_Write)) {
             os.setError(L10N::errorOpeningFileWrite(url));
-        }
-        else{
+        } else {
             //TODO remove after genbank can storing without getWholeSequence
-            try{
-                doc->getDocumentFormat()->storeDocument(doc, io.get(), os);
+            try {
+                doc->getDocumentFormat()->storeDocument(doc, io.data(), os);
             }
-            catch(std::bad_alloc&){
+            catch (const std::bad_alloc &) {
                 os.setError(QString("Not enough memory to storing %1 file").arg(doc->getURLString()));
             }
         }
@@ -511,6 +492,50 @@ void LoadDocumentTask::processObjRef() {
                 resultDocument->addObject(obj);
             }
         }
+    }
+}
+
+int LoadDocumentTask::calculateMemory() const {
+    int memUseMB = 0;
+
+    if(!format->getFlags().testFlag(DocumentFormatFlag_NoFullMemoryLoad) && isLoadToMem(format->getFormatId())) { // document is fully loaded to memory
+        QFileInfo file(url.getURLString());
+        memUseMB = file.size() / (1000*1000);
+
+        double DEFAULT_COMPRESS_RATIO = 2.5;
+        if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_LOCAL_FILE) {
+            qint64 fileSizeInBytes = ZlibAdapter::getUncompressedFileSizeInBytes(url);
+            if (fileSizeInBytes < 0) {
+                memUseMB *= DEFAULT_COMPRESS_RATIO; //Need to calculate compress level
+            } else {
+                memUseMB = fileSizeInBytes / (1000*1000);
+            }
+        } else if (iof->getAdapterId() == BaseIOAdapters::GZIPPED_HTTP_FILE) {
+            memUseMB *= DEFAULT_COMPRESS_RATIO; //Need to calculate compress level
+        }
+        coreLog.trace(QString("load document:Memory resource %1").arg(memUseMB));
+    }
+
+    return memUseMB;
+}
+
+void LoadDocumentTask::checkAccess() {
+    if (GUrl_Network != url.getType()) {
+        return;
+    }
+
+    CredentialsStorage* storage = AppContext::getCredentialsStorage();
+    CHECK(NULL != storage, );
+
+    if (storage->contains(url.getURLString())) {
+        return;
+    }
+
+    CredentialsAsker* asker = AppContext::getCredentialsAsker();
+    CHECK(NULL != asker, );
+
+    if (!asker->ask(url.getURLString())) {
+        cancel();
     }
 }
 

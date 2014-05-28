@@ -35,10 +35,14 @@ namespace U2 {
 */
 
 enum VariantTrackType{
-    TrackType_All = 1,
-    TrackType_Perspective,
-    TrackType_Discarded,
-    TrackType_UnknownEffect
+    TrackType_All           = 1,
+    TrackType_Perspective   = 2,
+    TrackType_Discarded     = 3,
+    TrackType_UnknownEffect = 4,
+
+    // To check that int can be casted to the enum
+    TrackType_FIRST         = TrackType_All,
+    TrackType_LAST          = TrackType_UnknownEffect
 };
 
 class U2CORE_EXPORT U2VariantTrack : public U2Object {

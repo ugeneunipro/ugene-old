@@ -19,11 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include "MSFFormat.h"
-
 #include <U2Core/DNAAlphabet.h>
-#include <U2Core/IOAdapter.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
@@ -31,12 +29,14 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiUtils.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
+#include "MSFFormat.h"
 
 namespace U2 {
 
@@ -114,7 +114,7 @@ int MSFFormat::getCheckSum(const QByteArray& seq) {
     return sum;
 }
 
-void MSFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, U2OpStatus& ti) {
+void MSFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& ti) {
     MAlignment al(io->getURL().baseFileName());
 
     //skip comments
@@ -217,7 +217,8 @@ void MSFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     CHECK_EXT(al.getAlphabet() != NULL, ti.setError(MSFFormat::tr("Alphabet unknown")), );
     
     U2OpStatus2Log os;
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, al, os);
+    const QString folder = hints.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, folder, al, os);
     CHECK_OP(os, );
 
     MAlignmentObject* obj = new MAlignmentObject(al.getName(), msaRef);
@@ -226,7 +227,7 @@ void MSFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
 
 Document* MSFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
     QList<GObject*> objs;
-    load(io, dbiRef, objs, os);
+    load(io, dbiRef, objs, fs, os);
 
     CHECK_OP_EXT(os, qDeleteAll(objs), NULL);
     return new Document(this, io->getFactory(), io->getURL(), dbiRef, objs, fs);

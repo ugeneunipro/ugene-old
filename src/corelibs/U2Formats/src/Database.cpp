@@ -44,7 +44,7 @@ Database* Database::loadDatabase(const QString& url, U2OpStatus& os) {
     QString val = dbHandle.dbi->getProperty(S3_DATABASE_KEY, "", os);
     SAFE_POINT_OP(os, NULL);
 
-    if (val != U2_DBI_VALUE_ON) {
+    if (val != U2DbiOptions::U2_DBI_VALUE_ON) {
         os.setError(tr("Not a valid S3-database file: %1").arg(url));
         return NULL;
     }
@@ -63,7 +63,7 @@ DbiConnection Database::createEmptyDbi(const QString& url, U2OpStatus& os) {
     DbiConnection databaseDbi (dbiRef, true, os);
     SAFE_POINT_OP(os, DbiConnection());
 
-    databaseDbi.dbi->setProperty(S3_DATABASE_KEY, U2_DBI_VALUE_ON, os);
+    databaseDbi.dbi->setProperty(S3_DATABASE_KEY, U2DbiOptions::U2_DBI_VALUE_ON, os);
     SAFE_POINT_OP(os, DbiConnection());
     
     return databaseDbi;

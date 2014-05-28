@@ -60,13 +60,13 @@ public:
         Creates new VariantTrack instance
         Requires U2DbiFeature_WriteVariants feature support
     */
-    virtual void createVariantTrack(U2VariantTrack& track, VariantTrackType trackType, U2OpStatus& os);
+    virtual void createVariantTrack(U2VariantTrack& track, VariantTrackType trackType, const QString& folder, U2OpStatus& os);
 
     /** 
         Updates VariantTrack instance 
         Requires U2DbiFeature_WriteVariants feature support
     */
-    virtual void updateVariantTrack(const U2VariantTrack& track, U2OpStatus& os);
+    virtual void updateVariantTrack(U2VariantTrack& track, U2OpStatus& os);
 
     /** Returns all Variants from the given region 
     U2_REGION_MAX to get all variants*/

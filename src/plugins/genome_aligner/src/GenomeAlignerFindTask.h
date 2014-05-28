@@ -32,10 +32,9 @@
 #include <U2Core/U2AssemblyUtils.h>
 
 #include <QtCore/QMutex>
-#include <QVector>
-#include <QMutex>
-#include <QSemaphore>
-#include <memory>
+#include <QtCore/QVector>
+#include <QtCore/QMutex>
+#include <QtCore/QSemaphore>
 
 #define BinarySearchResult qint64
 

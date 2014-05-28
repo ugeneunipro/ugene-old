@@ -19,8 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "NEXUSFormat.h"
-#include "NEXUSParser.h"
+#include <QtCore/QStack>
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/GObjectTypes.h>
@@ -31,12 +30,15 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiUtils.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
+#include "NEXUSFormat.h"
+#include "NEXUSParser.h"
 
 namespace U2 
 {
@@ -460,7 +462,7 @@ bool NEXUSParser::readDataContents(Context &ctx) {
                 return false;
             }
 
-            U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, ma, ti);
+            U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, folder, ma, ti);
             CHECK_OP(ti, false);
 
             MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
@@ -654,7 +656,10 @@ bool NEXUSParser::readTreesContents(Context&, const U2DbiRef &dbiRef) {
                 // build tree object
                 PhyTree tree(new PhyTreeData());
                 tree->setRootNode(nodeStack.pop());
-                PhyTreeObject *obj = PhyTreeObject::createInstance(tree, treeName, dbiRef, ti);
+
+                QVariantMap hints;
+                hints.insert(DocumentFormat::DBI_FOLDER_HINT, folder);
+                PhyTreeObject *obj = PhyTreeObject::createInstance(tree, treeName, dbiRef, ti, hints);
                 CHECK_OP_EXT(ti, errors << ti.getError(), false);
                 addObject(obj);
             }
@@ -677,10 +682,11 @@ void NEXUSParser::addObject(GObject *obj) {
     objects.append(obj);
 }
 
-QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, const U2DbiRef& dbiRef, U2OpStatus &ti) {
+QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus &ti) {
     assert(io && "io must exist");
     DbiOperationsBlock opBlock(dbiRef, ti);
     CHECK_OP(ti, QList<GObject*>());
+    Q_UNUSED(opBlock);
 
     const int HEADER_LEN = 6;
     QByteArray header(HEADER_LEN, 0);
@@ -691,7 +697,8 @@ QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, const U2DbiRef& dbiRef, 
         return QList<GObject*>();
     }
 
-    NEXUSParser parser(io, dbiRef, ti);
+    const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+    NEXUSParser parser(io, dbiRef, folder, ti);
     QList<GObject*> objects = parser.loadObjects(dbiRef);
     
     if (parser.hasError()) {
@@ -706,7 +713,7 @@ QList<GObject*> NEXUSFormat::loadObjects(IOAdapter *io, const U2DbiRef& dbiRef, 
 Document* NEXUSFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
     assert(io && "IO must exist");
 
-    QList<GObject*> objects = loadObjects(io, dbiRef, os);
+    QList<GObject*> objects = loadObjects(io, dbiRef, fs, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     
     Document *d = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);

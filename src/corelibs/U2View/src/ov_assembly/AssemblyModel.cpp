@@ -19,37 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "AssemblyModel.h"
-#include "AssemblyBrowser.h"
-
-#include <U2Core/U2AssemblyDbi.h>
-#include <U2Core/U2AssemblyUtils.h>
-#include <U2Core/U2CoreAttributes.h>
-#include <U2Core/U2SequenceDbi.h>
-#include <U2Core/U2AttributeDbi.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2CrossDatabaseReferenceDbi.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/U2DbiRegistry.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/AddDocumentTask.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/TaskSignalMapper.h>
-#include <U2Core/U2AttributeUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2AssemblyUtils.h>
-#include <U2Core/U2DbiUtils.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/VariantTrackObject.h>
-#include <U2Core/U2SqlHelpers.h>
-
-
-#include <U2Gui/ObjectViewTasks.h>
-
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QMessageBox>
@@ -58,7 +27,35 @@
 #include <QtWidgets/QMessageBox>
 #endif
 
-#include <memory>
+#include <U2Core/AddDocumentTask.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2AssemblyDbi.h>
+#include <U2Core/U2AssemblyUtils.h>
+#include <U2Core/U2AttributeDbi.h>
+#include <U2Core/U2AttributeUtils.h>
+#include <U2Core/U2CoreAttributes.h>
+#include <U2Core/U2CrossDatabaseReferenceDbi.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceDbi.h>
+#include <U2Core/U2SqlHelpers.h>
+#include <U2Core/VariantTrackObject.h>
+
+#include <U2Gui/ObjectViewTasks.h>
+
+#include "AssemblyBrowser.h"
+#include "AssemblyModel.h"
 
 namespace U2 {
 
@@ -93,8 +90,8 @@ bool AssemblyModel::isEmpty() const {
 }
 
 QList<U2AssemblyRead> AssemblyModel::getReadsFromAssembly(const U2Region & r, qint64 minRow, qint64 maxRow, U2OpStatus & os) {
-    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > it(assemblyDbi->getReadsByRow(assembly.id, r, minRow, maxRow, os));
-    return U2DbiUtils::toList(it.get());
+    QScopedPointer< U2DbiIterator<U2AssemblyRead> > it(assemblyDbi->getReadsByRow(assembly.id, r, minRow, maxRow, os));
+    return U2DbiUtils::toList(it.data());
 }
 
 U2DbiIterator<U2AssemblyRead>* AssemblyModel::getReads(const U2Region & r, U2OpStatus & os) {
@@ -259,44 +256,69 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
     
     // check if have reference
     if(!assembly.referenceId.isEmpty()) {
-        // 1. get cross reference by ref id
-        U2CrossDatabaseReferenceDbi * crossDbi = dbiHandle.dbi->getCrossDatabaseReferenceDbi();
-        U2OpStatusImpl status;
-        U2CrossDatabaseReference crossRef = crossDbi->getCrossReference(assembly.referenceId, status);
-        SAFE_POINT_OP(status,); 
-        
-        // 2. find project and load reference doc to project
-        Project * prj = AppContext::getProject();
-        SAFE_POINT(prj!=NULL, tr("No active project found!"), );
+        switch (U2DbiUtils::toType(assembly.referenceId)) {
+            case U2Type::Sequence: {
+                Project * prj = AppContext::getProject();
+                SAFE_POINT(prj != NULL, tr("No active project found!"), );
 
-        Document* refDoc = prj->findDocumentByURL(crossRef.dataRef.dbiRef.dbiId);
-        Task * t = NULL;
-        if( refDoc != NULL ) { // document already in project, load if it is not loaded
-            if (refDoc->isLoaded()) {
-                sl_referenceLoaded();
-            } else {
-                t = new LoadUnloadedDocumentTask(refDoc);
+                Document* refDoc = prj->findDocumentByURL(U2DbiUtils::ref2Url(dbiHandle.dbi->getDbiRef()));
+                SAFE_POINT(refDoc != NULL, tr("No reference document found in the project"), );
+
+                U2SequenceObject* refObj = qobject_cast<U2SequenceObject*>(refDoc->getObjectById(assembly.referenceId));
+                SAFE_POINT(refObj != NULL, tr("No reference object found in the project"), );
+
+                setReference(refObj);
+                break;
             }
 
-            connect(refDoc, SIGNAL(si_loadedStateChanged()), SLOT(sl_referenceDocLoadedStateChanged()));
-        } else { // no document at project -> create doc, add it to project and load it
-            t = createLoadReferenceAndAddToProjectTask(crossRef);
-            if (NULL == t) {
-                QString refUrl = crossRef.dataRef.dbiRef.dbiId;
-                QString refName = crossRef.dataRef.entityId;
+            case U2Type::CrossDatabaseReference: {
+                // 1. get cross reference by ref id
+                U2CrossDatabaseReferenceDbi * crossDbi = dbiHandle.dbi->getCrossDatabaseReferenceDbi();
+                U2OpStatusImpl status;
+                U2CrossDatabaseReference crossRef = crossDbi->getCrossReference(assembly.referenceId, status);
+                SAFE_POINT_OP(status,);
 
-                QMessageBox::warning(QApplication::activeWindow(), tr("Warning"),
-                    tr("A file '%1' with the reference sequence '%2' not found!\n"
-                    "Try to open another file with a reference sequence and associate it with the assembly.").arg(refUrl).arg(refName),
-                    QMessageBox::Ok, QMessageBox::Ok);
-                if (checkPermissions(QFile::WriteUser,false))
-                    sl_unassociateReference();
+                // 2. find project and load reference doc to project
+                Project * prj = AppContext::getProject();
+                SAFE_POINT(prj!=NULL, tr("No active project found!"), );
+
+                Document* refDoc = prj->findDocumentByURL(crossRef.dataRef.dbiRef.dbiId);
+                Task * t = NULL;
+                if( refDoc != NULL ) { // document already in project, load if it is not loaded
+                    if (refDoc->isLoaded()) {
+                        sl_referenceLoaded();
+                    } else {
+                        t = new LoadUnloadedDocumentTask(refDoc);
+                    }
+
+                    connect(refDoc, SIGNAL(si_loadedStateChanged()), SLOT(sl_referenceDocLoadedStateChanged()));
+                } else { // no document at project -> create doc, add it to project and load it
+                    t = createLoadReferenceAndAddToProjectTask(crossRef);
+                    if (NULL == t) {
+                        QString refUrl = crossRef.dataRef.dbiRef.dbiId;
+                        QString refName = crossRef.dataRef.entityId;
+
+                        QMessageBox::warning(QApplication::activeWindow(), tr("Warning"),
+                                             tr("A file '%1' with the reference sequence '%2' not found!\n"
+                                                "Try to open another file with a reference sequence and associate it with the assembly.").arg(refUrl).arg(refName),
+                                             QMessageBox::Ok, QMessageBox::Ok);
+                        if (checkPermissions(QFile::WriteUser,false))
+                            sl_unassociateReference();
+                    }
+                }
+
+                // 4. run task and wait for finished in referenceLoaded()
+                if(t != NULL) {
+                    startLoadReferenceTask(t);
+                }
+
+                break;
             }
-        }
-        
-        // 4. run task and wait for finished in referenceLoaded()
-        if(t != NULL) {
-            startLoadReferenceTask(t);
+
+            default: {
+                sl_unassociateReference();
+                FAIL(tr("Unexected object is set as reference"), );
+            }
         }
     }
 }
@@ -339,6 +361,14 @@ void AssemblyModel::onReferenceRemoved() {
         unsetReference();
         emit si_referenceChanged();
     }
+}
+
+void AssemblyModel::removeCrossDatabaseReference(const U2DataId &refId) {
+    CHECK(!refId.isEmpty(), );
+    CHECK(U2Type::CrossDatabaseReference == U2DbiUtils::toType(refId), );
+
+    U2OpStatus2Log status;
+    dbiHandle.dbi->getObjectDbi()->removeObject(refId, status);
 }
 
 namespace {
@@ -435,8 +465,6 @@ bool AssemblyModel::referenceAssociated() const {
 }
 
 void AssemblyModel::setReference(U2SequenceObject* seqObj) {
-
-
     refObj = seqObj;
     if(seqObj != NULL) {
         connect(seqObj->getDocument(), SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_referenceObjRemoved(GObject*)));
@@ -463,12 +491,12 @@ QByteArray AssemblyModel::getReferenceRegionOrEmpty(const U2Region& region) {
     return QByteArray();
 }
 
-void AssemblyModel::associateWithReference(const U2CrossDatabaseReference & ref) {
+void AssemblyModel::associateWithReference(const U2DataId& refId) {
     assert(hasReference());
     assert(assemblyDbi != NULL);
     // save cross reference id to assembly
 
-    assembly.referenceId = ref.id;
+    assembly.referenceId = refId;
     U2OpStatusImpl status;
     assemblyDbi->updateAssemblyObject(assembly, status);
     LOG_OP(status);
@@ -526,7 +554,7 @@ QList<U2AssemblyRead> AssemblyModel::findMateReads(U2AssemblyRead read, U2OpStat
         return result;
     }
 
-    std::auto_ptr<U2DbiIterator<U2AssemblyRead> > it(assemblyDbi->getReadsByName(assembly.id, read->name, os));
+    QScopedPointer<U2DbiIterator<U2AssemblyRead> > it(assemblyDbi->getReadsByName(assembly.id, read->name, os));
     CHECK_OP(os, result);
 
     while (it->hasNext()) {
@@ -593,11 +621,16 @@ void AssemblyModel::sl_unassociateReference() {
         if(!checkPermissions(QFile::WriteUser))
             return;
 
+        const U2DataId refId = assembly.referenceId;
+
         U2OpStatusImpl status;
         assembly.referenceId.clear();
         assemblyDbi->updateAssemblyObject(assembly, status);
         LOG_OP(status);
         unsetReference();
+
+        removeCrossDatabaseReference(refId);
+
         emit si_referenceChanged();
     }
 }
@@ -607,7 +640,7 @@ bool AssemblyModel::checkPermissions(QFile::Permission permission, bool showDial
     QFile f(assembly.dbiId);
     QFile::Permissions perm = f.permissions();
 
-    if(!perm.testFlag(permission)){
+    if (f.exists() && !perm.testFlag(permission)) {
         if(showDialog){
             QMessageBox::warning(QApplication::activeWindow(), tr("Warning"),
                                  tr("This action requires changing file:\n%1\nYou don't have enough rights to change file").arg(assembly.dbiId),

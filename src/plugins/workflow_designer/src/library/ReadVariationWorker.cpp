@@ -141,7 +141,7 @@ void ReadVariationTask::run() {
         hints[DocumentReadingMode_SplitVariationAlleles] = true;
     }
     hints.insert(DocumentFormat::DBI_REF_HINT, qVariantFromValue(storage->getDbiRef()));
-    std::auto_ptr<Document> doc(format->loadDocument(iof, url, hints, stateInfo));
+    QScopedPointer<Document> doc(format->loadDocument(iof, url, hints, stateInfo));
     CHECK_OP(stateInfo, );
     doc->setDocumentOwnsDbiResources(false);
 

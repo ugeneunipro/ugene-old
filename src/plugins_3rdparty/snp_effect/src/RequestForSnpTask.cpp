@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QDebug>
+
 #include "RequestForSnpTask.h"
 #include "SnpRequestKeys.h"
 

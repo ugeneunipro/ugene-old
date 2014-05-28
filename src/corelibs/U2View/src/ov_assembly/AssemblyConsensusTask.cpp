@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <memory>
-
 #include "AssemblyConsensusTask.h"
 
 #include <U2Core/Log.h>
@@ -39,7 +37,7 @@ AssemblyConsensusTask::AssemblyConsensusTask(const AssemblyConsensusTaskSettings
 static void doCalculation(const AssemblyConsensusTaskSettings & settings, U2OpStatus & os, ConsensusInfo & result) {
     CHECK_EXT(!settings.consensusAlgorithm.isNull(), os.setError(AssemblyConsensusTask::tr("No consensus algorithm given")),);
 
-    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > reads(settings.model->getReads(settings.region, os));
+    QScopedPointer< U2DbiIterator<U2AssemblyRead> > reads(settings.model->getReads(settings.region, os));
     QByteArray referenceFragment;
     if(settings.model->hasReference()) {
         referenceFragment = settings.model->getReferenceRegion(settings.region, os);
@@ -48,7 +46,7 @@ static void doCalculation(const AssemblyConsensusTaskSettings & settings, U2OpSt
 
     result.region = settings.region;
     result.algorithmId = settings.consensusAlgorithm->getId();
-    result.consensus = settings.consensusAlgorithm->getConsensusRegion(settings.region, reads.get(), referenceFragment, os);
+    result.consensus = settings.consensusAlgorithm->getConsensusRegion(settings.region, reads.data(), referenceFragment, os);
 
     os.setProgress(100);
 }

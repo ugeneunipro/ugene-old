@@ -21,7 +21,6 @@
 
 #include <QtCore/QScopedPointer>
 #include <QtCore/QDir>
-#include <QtCore/QFileInfo>
 #include <QtCore/QUrl>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QListWidgetItem>

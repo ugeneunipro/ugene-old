@@ -21,19 +21,20 @@
 
 #include <QtCore/QScopedArrayPointer>
 
-#include <U2Core/IOAdapter.h>
-#include <U2Core/U2OpStatus.h>
 #include <U2Core/AnnotationTableObject.h>
-#include <U2Core/TextUtils.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObjectReference.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/IOAdapter.h>
 #include <U2Core/Log.h>
 #include <U2Core/L10n.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/GObjectReference.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/TextUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
-#include <U2Core/DNASequenceObject.h>
 
 #include "DocumentFormatUtils.h"
 #include "GFFFormat.h"
@@ -121,10 +122,15 @@ static QString fromEscapedString( const QString & val ) {
     return ret;
 }
 
-U2SequenceObject *importSequence(DNASequence &sequence, const QString &objName,
-    QList<GObject*>& objects, U2SequenceImporter &seqImporter, const U2DbiRef& dbiRef, U2OpStatus& os)
+U2SequenceObject *importSequence(DNASequence &sequence,
+                                 const QString &objName,
+                                 QList<GObject*>& objects,
+                                 U2SequenceImporter &seqImporter,
+                                 const U2DbiRef& dbiRef,
+                                 const QString& folder,
+                                 U2OpStatus& os)
 {
-    seqImporter.startSequence(dbiRef, sequence.getName(), sequence.circular, os);
+    seqImporter.startSequence(dbiRef, folder, sequence.getName(), sequence.circular, os);
     CHECK_OP(os, NULL);
     seqImporter.addBlock(sequence.seq.constData(), sequence.seq.length(), os);
     CHECK_OP(os, NULL);
@@ -141,7 +147,7 @@ U2SequenceObject *importSequence(DNASequence &sequence, const QString &objName,
 }
 
 void addAnnotations( QList<AnnotationData> &annList, QList<GObject *> &objects,
-    QSet<AnnotationTableObject *> &atoSet, const QString &seqName, const U2DbiRef &dbiRef )
+    QSet<AnnotationTableObject *> &atoSet, const QString &seqName, const U2DbiRef &dbiRef, const QVariantMap& hints )
 {
     if ( !annList.isEmpty( ) ) {
         QString atoName = seqName + FEATURES_TAG;
@@ -152,7 +158,7 @@ void addAnnotations( QList<AnnotationData> &annList, QList<GObject *> &objects,
             }
         }
         if ( NULL == ato ) {
-            ato = new AnnotationTableObject( atoName, dbiRef );
+            ato = new AnnotationTableObject( atoName, dbiRef, hints );
             objects.append(ato);
             atoSet.insert(ato);
         }
@@ -197,9 +203,10 @@ static QStringList splitGffAttributes(const QString& line, char sep) {
 
 
 void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os){
-    Q_UNUSED(hints);
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, );
+    Q_UNUSED(opBlock);
+
     QScopedArrayPointer<char> buff( new char[READ_BUFF_SIZE] );
     int len = io->readLine( buff.data( ), READ_BUFF_SIZE );
     buff.data( )[len] = '\0';
@@ -212,6 +219,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     validateHeader(words);
 
     U2SequenceImporter seqImporter(hints, true);
+    const QString folder = hints.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
 
     int lineNumber = 2;//because first line checked in method validateHeader above
     QMap<QString, AnnotationData *> joinedAnnotations;
@@ -241,13 +249,13 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                 objName = headerName + SEQUENCE_TAG;
                 DNASequence sequence(objName, seq);
                 sequence.info.insert(DNAInfo::FASTA_HDR, objName);
-                U2SequenceObject *seqObj = importSequence(sequence, objName, objects, seqImporter, dbiRef, os);
+                U2SequenceObject *seqObj = importSequence(sequence, objName, objects, seqImporter, dbiRef, folder, os);
                 CHECK_OP(os, );
 
                 SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
                 dbiObjects.objects << seqObj->getSequenceRef().entityId;
                 seqMap.insert(objName, seqObj);
-                addAnnotations( seqImporter.getCaseAnnotations( ), objects, atoSet, headerName, dbiRef );
+                addAnnotations( seqImporter.getCaseAnnotations( ), objects, atoSet, headerName, dbiRef, hints );
                 headerName = words.join(" ").remove(">");
                 seq = "";
             } else {
@@ -343,7 +351,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                     }
                 }
                 if(!ato){
-                    ato = new AnnotationTableObject( atoName, dbiRef );
+                    ato = new AnnotationTableObject( atoName, dbiRef, hints );
                     objects.append( ato );
                     atoSet.insert( ato );
                 }
@@ -394,7 +402,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         DNASequence sequence(objName, seq);
         sequence.info.insert(DNAInfo::FASTA_HDR, objName);
         sequence.info.insert(DNAInfo::ID, objName);
-        U2SequenceObject *seqObj = importSequence(sequence, objName, objects, seqImporter, dbiRef, os);
+        U2SequenceObject *seqObj = importSequence(sequence, objName, objects, seqImporter, dbiRef, folder, os);
         if (os.hasError()) {
             qDeleteAll(seqMap.values());
             seqMap.clear();
@@ -403,7 +411,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
         seqMap.insert(objName, seqObj);
         dbiObjects.objects << seqObj->getSequenceRef().entityId;
-        addAnnotations( seqImporter.getCaseAnnotations( ), objects, atoSet, headerName, dbiRef );
+        addAnnotations( seqImporter.getCaseAnnotations( ), objects, atoSet, headerName, dbiRef, hints );
     }
     
     //linking annotation tables with corresponding sequences
@@ -413,7 +421,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         if(seqMap.contains(objName)){
             GObjectReference sequenceRef(GObjectReference(io->getURL().getURLString(), "", GObjectTypes::SEQUENCE));
             sequenceRef.objName = objName;
-            ob->addObjectRelation(GObjectRelation(sequenceRef, GObjectRelationRole::SEQUENCE));
+            ob->addObjectRelation(GObjectRelation(sequenceRef, ObjectRole_Sequence));
         }
     }
 }
@@ -606,4 +614,3 @@ void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os){
 }
 
 } //namespace
-

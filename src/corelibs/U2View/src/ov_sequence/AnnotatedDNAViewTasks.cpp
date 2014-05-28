@@ -42,12 +42,13 @@
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QMessageBox>
 #else
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QMessageBox>
 #endif
 
 #include <QtCore/QSet>
-#include <QMessageBox>
 
 static const int SEQ_OBJS_PER_VIEW = 10;
 
@@ -100,14 +101,15 @@ void OpenAnnotatedDNAViewTask::populateSeqObjectRefs( GObject *object, QList<Doc
         QList<GObject *> allAnnotations = GObjectUtils::findAllObjects( UOF_LoadedAndUnloaded,
             GObjectTypes::ANNOTATION_TABLE );
         QList<GObject *> annotations = GObjectUtils::findObjectsRelatedToObjectByRole( object,
-            GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, allAnnotations,
+            GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence, allAnnotations,
             UOF_LoadedAndUnloaded );
         foreach ( GObject* ao, annotations ) {
             objWithSeqRelation.append( ao );
         }
 
-        sequenceObjectRefs.append( GObjectReference( doc->getURLString( ),
-            object->getGObjectName( ), GObjectTypes::SEQUENCE ) );
+        GObjectReference reference( doc->getURLString( ), object->getGObjectName( ), GObjectTypes::SEQUENCE );
+        reference.entityRef = object->getEntityRef( );
+        sequenceObjectRefs.append( reference );
         refsAdded.insert( object );
         if ( objWithSeqRelation.isEmpty( ) ) {
             return;
@@ -115,11 +117,10 @@ void OpenAnnotatedDNAViewTask::populateSeqObjectRefs( GObject *object, QList<Doc
     }
     //look for sequence object using relations
     objWithSeqRelation.append( GObjectUtils::selectRelations( object, GObjectTypes::SEQUENCE,
-        GObjectRelationRole::SEQUENCE, allSequenceObjects, UOF_LoadedAndUnloaded ) );
+        ObjectRole_Sequence, allSequenceObjects, UOF_LoadedAndUnloaded ) );
 
     foreach ( GObject *robj, objWithSeqRelation ) {
-        if ( ( !GObjectUtils::hasType( robj, GObjectTypes::SEQUENCE )
-            && !GObjectUtils::hasType(robj, GObjectTypes::ANNOTATION_TABLE ) )
+        if ( ( !GObjectUtils::hasType( robj, GObjectTypes::SEQUENCE ) && !GObjectUtils::hasType(robj, GObjectTypes::ANNOTATION_TABLE ) )
             || refsAdded.contains( robj ) )
         {
             continue;
@@ -129,8 +130,9 @@ void OpenAnnotatedDNAViewTask::populateSeqObjectRefs( GObject *object, QList<Doc
             docsToLoad.append( rdoc );
         }
         refsAdded.insert( robj );
-        sequenceObjectRefs.append( GObjectReference( rdoc->getURLString( ),
-            robj->getGObjectName( ), GObjectTypes::SEQUENCE ) );
+        GObjectReference reference( rdoc->getURLString( ), robj->getGObjectName( ), GObjectTypes::SEQUENCE );
+        reference.entityRef = robj->getEntityRef( );
+        sequenceObjectRefs.append( reference );
     }
 }
 
@@ -180,15 +182,9 @@ static void showAlphabetWarning(const QList<U2SequenceObject*> &seqObjects) {
         if (seqCount < rawSeqs.size()) {
             warning.append(QObject::tr("and others...\n"));
         }
-        warning.append("\n");
 
         warning.append(QObject::tr("Some algorithms will not work for these sequences."));
-        QMessageBox *msgBox = new QMessageBox(QApplication::activeWindow());
-        msgBox->setIcon(QMessageBox::Warning);
-        msgBox->setWindowTitle(QObject::tr("Warning"));
-        msgBox->setText(warning);
-        msgBox->setButtonText(QMessageBox::Ok, "Ok");
-        msgBox->setVisible(true);
+        QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Warning"), warning);
     }
 
     QSet<Document*> docs;
@@ -197,12 +193,8 @@ static void showAlphabetWarning(const QList<U2SequenceObject*> &seqObjects) {
     }
     foreach(const Document* doc, docs){
         if(!doc->getGHintsMap()[ProjectLoaderHint_MergeMode_DifferentAlphabets].toString().isEmpty()){
-            QMessageBox *msgBox = new QMessageBox(QApplication::activeWindow());
-            msgBox->setIcon(QMessageBox::Warning);
-            msgBox->setWindowTitle(QObject::tr("Warning"));
-            msgBox->setText(doc->getGHintsMap()[ProjectLoaderHint_MergeMode_DifferentAlphabets].toString());
-            msgBox->setButtonText(QMessageBox::Ok, "Ok");
-            msgBox->setVisible(true);
+            QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Warning"),
+               doc->getGHintsMap()[ProjectLoaderHint_MergeMode_DifferentAlphabets].toString());
         }
     }
 }
@@ -243,7 +235,6 @@ void OpenAnnotatedDNAViewTask::open() {
     mdiManager->addMDIWindow(w);
 
     showAlphabetWarning(seqObjects);
-
 }
 
 void OpenAnnotatedDNAViewTask::updateTitle(AnnotatedDNAView* v) {

@@ -124,7 +124,7 @@ protected:
     QHash<QString, QList<SharedAnnotationData> > parseDocument(IOAdapter* io, const QString& defaultAnnotName, U2OpStatus& os);
 
 private:
-    void load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, U2OpStatus& os);
+    void load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, U2OpStatus& os, const QVariantMap& fs = QVariantMap());
     inline void addToResults(QHash<QString, QList<SharedAnnotationData> > & resHash, QList<SharedAnnotationData>& result, const QString& seqName );
 
     static const QString FORMAT_NAME;

@@ -138,8 +138,8 @@ Task* PWMatrixBuildWorker::tick() {
 
         QVariantMap qm = inputMessage.getData().toMap();
         SharedDbiDataHandler msaId = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<SharedDbiDataHandler>();
-        std::auto_ptr<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
-        SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", NULL);
+        QScopedPointer<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
+        SAFE_POINT(!msaObj.isNull(), "NULL MSA Object!", NULL);
         MAlignment msa = msaObj->getMAlignment();
 
         Task* t = new PWMatrixBuildTask(cfg, msa);
@@ -228,8 +228,8 @@ Task* PFMatrixBuildWorker::tick() {
 
         QVariantMap qm = inputMessage.getData().toMap();
         SharedDbiDataHandler msaId = qm.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<SharedDbiDataHandler>();
-        std::auto_ptr<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
-        SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", NULL);
+        QScopedPointer<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
+        SAFE_POINT(!msaObj.isNull(), "NULL MSA Object!", NULL);
         MAlignment msa = msaObj->getMAlignment();
 
         Task* t = new PFMatrixBuildTask(cfg, msa);

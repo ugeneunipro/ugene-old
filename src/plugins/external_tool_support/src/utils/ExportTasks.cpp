@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportTasks.h"
+#include <QtCore/QFileInfo>
 
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DocumentModel.h>
@@ -43,6 +43,8 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
+
+#include "ExportTasks.h"
 
 namespace U2 {
 
@@ -80,7 +82,7 @@ void SaveAlignmentTask::run() {
 
     MAlignmentObject* obj = new MAlignmentObject(ma.getName(), msaRef);
     doc->addObject(obj);
-    f->storeDocument(doc.get(), stateInfo);
+    f->storeDocument(doc.data(), stateInfo);
 }
 
 
@@ -115,7 +117,7 @@ void SaveMSA2SequencesTask::run() {
         doc->addObject(new U2SequenceObject(name, seqRef));
         usedNames.insert(name);
     }
-    f->storeDocument(doc.get(), stateInfo);
+    f->storeDocument(doc.data(), stateInfo);
 }
 
 }//namespace

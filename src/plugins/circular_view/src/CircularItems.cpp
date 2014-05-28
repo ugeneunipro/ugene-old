@@ -19,17 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#include "CircularItems.h"
-#include "CircularView.h"
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationSettings.h>
-#include <U2Gui/GraphUtils.h>
-#include <U2Core/AppContext.h>
+#include <math.h>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QGraphicsLineItem>
 #else
 #include <QtWidgets/QGraphicsLineItem>
 #endif
+
+#include <U2Core/AnnotationSettings.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceObject.h>
+
+#include <U2Gui/GraphUtils.h>
+
+#include "CircularItems.h"
+#include "CircularView.h"
 
 namespace U2 {
 

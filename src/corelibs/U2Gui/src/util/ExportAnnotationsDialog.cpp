@@ -54,6 +54,7 @@ ExportAnnotationsDialog::ExportAnnotationsDialog( const QString &filename, QWidg
     QList<DocumentFormatId> supportedFormats;
     constr.supportedObjectTypes.insert( GObjectTypes::ANNOTATION_TABLE );
     constr.addFlagToSupport( DocumentFormatFlag_SupportWriting );
+    constr.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     DocumentFormatRegistry *formatRegistry = AppContext::getDocumentFormatRegistry( );
     SAFE_POINT( NULL != formatRegistry, "Invalid document format registry!", );
     supportedFormats = formatRegistry->selectFormats( constr );

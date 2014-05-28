@@ -43,30 +43,29 @@ void SQLiteAttributeDbi::initSqlSchema(U2OpStatus& os) {
     // version -> object version is attribute is valid for
     // name -> name of the attribute
     SQLiteQuery("CREATE TABLE Attribute (id INTEGER PRIMARY KEY AUTOINCREMENT, type INTEGER NOT NULL, "
-        " object INTEGER, child INTEGER, otype INTEGER NOT NULL, ctype INTEGER, oextra BLOB NOT NULL, cextra BLOB, "
-        " version INTEGER NOT NULL, name TEXT NOT NULL, "
-        " FOREIGN KEY(object) REFERENCES Object(id), FOREIGN KEY(child) REFERENCES Object(id) )" , db, os).execute();
+        "object INTEGER, child INTEGER, otype INTEGER NOT NULL, ctype INTEGER, oextra BLOB NOT NULL, cextra BLOB, "
+        "version INTEGER NOT NULL, name TEXT NOT NULL, "
+        "FOREIGN KEY(object) REFERENCES Object(id) ON DELETE CASCADE)" , db, os).execute();
 
     //TODO: check if index is efficient for gettting attribute for specific object
     SQLiteQuery("CREATE INDEX Attribute_name on Attribute(name)" , db, os).execute();
     SQLiteQuery("CREATE INDEX Attribute_object on Attribute(object)" , db, os).execute();
     
     SQLiteQuery("CREATE TABLE IntegerAttribute (attribute INTEGER, value INTEGER NOT NULL, "
-        " FOREIGN KEY(attribute) REFERENCES Attribute(id) )" , db, os).execute();
+        "FOREIGN KEY(attribute) REFERENCES Attribute(id) ON DELETE CASCADE)" , db, os).execute();
     SQLiteQuery("CREATE INDEX IntegerAttribute_attribute on IntegerAttribute(attribute)" , db, os).execute();
 
     SQLiteQuery("CREATE TABLE RealAttribute (attribute INTEGER, value REAL NOT NULL, "
-        " FOREIGN KEY(attribute) REFERENCES Attribute(id) )" , db, os).execute();
+        "FOREIGN KEY(attribute) REFERENCES Attribute(id) ON DELETE CASCADE)" , db, os).execute();
     SQLiteQuery("CREATE INDEX RealAttribute_attribute on RealAttribute(attribute)" , db, os).execute();
 
     SQLiteQuery("CREATE TABLE StringAttribute (attribute INTEGER, value TEXT NOT NULL, "
-        " FOREIGN KEY(attribute) REFERENCES Attribute(id) )" , db, os).execute();
+        "FOREIGN KEY(attribute) REFERENCES Attribute(id) ON DELETE CASCADE)" , db, os).execute();
     SQLiteQuery("CREATE INDEX StringAttribute_attribute on StringAttribute(attribute)" , db, os).execute();
 
     SQLiteQuery("CREATE TABLE ByteArrayAttribute (attribute INTEGER, value BLOB NOT NULL, "
-        " FOREIGN KEY(attribute) REFERENCES Attribute(id) )" , db, os).execute();
+        "FOREIGN KEY(attribute) REFERENCES Attribute(id) ON DELETE CASCADE)" , db, os).execute();
     SQLiteQuery("CREATE INDEX ByteArrayAttribute_attribute on ByteArrayAttribute(attribute)" , db, os).execute();
-
 }
 
 /** Returns all attribute names available in the database */
@@ -206,9 +205,6 @@ void SQLiteAttributeDbi::removeAttributes(const QList<U2DataId>& attributeIds, U
     QSharedPointer<SQLiteQuery> qs = t.getPreparedQuery(qsString, db, os);
     QSharedPointer<SQLiteQuery> qb = t.getPreparedQuery(qbString, db, os);
     foreach(const U2DataId& id, attributeIds) {
-        q->reset();
-        q->bindDataId(1, id);
-        q->execute();
         U2DataType type = U2DbiUtils::toType(id);
         switch (type) {
             case U2Type::AttributeInteger:
@@ -224,12 +220,15 @@ void SQLiteAttributeDbi::removeAttributes(const QList<U2DataId>& attributeIds, U
                 removeAttribute(qb.data(), id);
                 break;
             default:
-                os.setError(SQLiteL10n::tr("Unsupported attribute type: %1").arg(type));
+                os.setError(U2DbiL10n::tr("Unsupported attribute type: %1").arg(type));
                 break;
         }
-        if (os.hasError()) {
-            break;
-        }
+        CHECK_OP(os, );
+
+        q->bindDataId(1, id);
+        q->execute();
+        q->reset();
+        CHECK_OP(os, );
     }
 }
 
@@ -240,7 +239,6 @@ void SQLiteAttributeDbi::removeObjectAttributes(const U2DataId& objectId, U2OpSt
         removeAttributes(attributes, os);
     }
 }
-    
 
 qint64 SQLiteAttributeDbi::createAttribute(U2Attribute& attr, U2DataType type, SQLiteTransaction& t, U2OpStatus& os) {
     static const QString queryString("INSERT INTO Attribute(type, object, child, otype, ctype, oextra, cextra, version, name) "

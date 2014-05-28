@@ -33,7 +33,6 @@
 #include <U2Lang/WorkflowSettings.h>
 
 #include <QtCore/QDir>
-#include <QtCore/QFile>
 #include <QtCore/QUrl>
 #include <QtCore/QTextStream>
 #if (QT_VERSION < 0x050000) //Qt 5

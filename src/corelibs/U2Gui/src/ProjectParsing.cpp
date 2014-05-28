@@ -19,8 +19,11 @@
  * MA 02110-1301, USA.
  */
 
-#include "ProjectParsing.h"
+#include <QtCore/QDir>
 
+#include <QtXml/qdom.h>
+
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/L10n.h>
@@ -29,8 +32,9 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/ProjectUtils.h>
 
-#include <QtXml/qdom.h>
+#include "ProjectParsing.h"
 
 namespace U2 {
 
@@ -163,22 +167,25 @@ void ProjectFileUtils::saveProjectFile(U2OpStatus& ts, Project* project,
             docElement.appendChild(hintsNode);
         }
 
-        //now save unloaded objects info for all document objects 
-        foreach(GObject* obj, gbDoc->getObjects()) {
-            QDomElement objElement = xmlDoc.createElement("object");
-            UnloadedObjectInfo info(obj);
-            objElement.setAttribute("name", info.name);
-            objElement.setAttribute("type", info.type);
+        //now save unloaded objects info for all document objects except shared database connections
+        if (!ProjectUtils::isDatabaseDoc(gbDoc)) {
+            foreach(GObject* obj, gbDoc->getObjects()) {
+                QDomElement objElement = xmlDoc.createElement("object");
+                UnloadedObjectInfo info(obj);
+                objElement.setAttribute("name", info.name);
+                objElement.setAttribute("type", info.type);
 
-            if (!info.hints.isEmpty()) {
-                //for all object relations make path relative
-                info.hints[GObjectHint_RelatedObjects] = toRelativeRelations(obj->getObjectRelations(), projectDir, docUrlRemap);
-                QString hintsStr = map2String(info.hints);
-                QDomText hintsNode = xmlDoc.createCDATASection(hintsStr);
-                objElement.appendChild(hintsNode);
+                if (!info.hints.isEmpty()) {
+                    //for all object relations make path relative
+                    info.hints[GObjectHint_RelatedObjects] = toRelativeRelations(obj->getObjectRelations(), projectDir, docUrlRemap);
+                    QString hintsStr = map2String(info.hints);
+                    QDomText hintsNode = xmlDoc.createCDATASection(hintsStr);
+                    objElement.appendChild(hintsNode);
+                }
+                docElement.appendChild(objElement);
             }
-            docElement.appendChild(objElement);
         }
+
         projectElement.appendChild(docElement);
     }
 
@@ -290,6 +297,16 @@ ProjectParserRegistry * ProjectParserRegistry::instance(){
 //////////////////////////////////////////////////////////////////////////
 // Parser for v1.0 format
 
+namespace {
+    GUrl getUrl(const QString &docUrl, const DocumentFormatId &format) {
+        if (BaseDocumentFormats::DATABASE_CONNECTION == format) {
+            return GUrl(docUrl, GUrl_Network);
+        } else {
+            return docUrl;
+        }
+    }
+}
+
 Project* ProjectParser10::createProjectFromXMLModel( const QString& pURL, const QDomDocument& xmlDoc, U2OpStatus& os) {
     QDomElement projectElement = xmlDoc.documentElement();
     QString name = projectElement.attribute("name");
@@ -382,7 +399,7 @@ Project* ProjectParser10::createProjectFromXMLModel( const QString& pURL, const 
         
         }
         QString lockReason = instanceLock ? tr("The last loaded state was locked by format") : QString();
-        Document* d = df->createNewUnloadedDocument(iof, docUrl, os, fs, unloadedObjects, lockReason);
+        Document* d = df->createNewUnloadedDocument(iof, getUrl(docUrl, format), os, fs, unloadedObjects, lockReason);
         CHECK_OP_EXT(os, qDeleteAll(documents), NULL);
         d->setUserModLock(readonly);
         documents.append(d);

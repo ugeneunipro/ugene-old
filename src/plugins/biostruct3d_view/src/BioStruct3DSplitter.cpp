@@ -353,7 +353,7 @@ void BioStruct3DSplitter::addModelFromObject( BioStruct3DObject* obj )
 
 GLFrameManager* BioStruct3DSplitter::getGLFrameManager()
 {
-    return glFrameManager.get();
+    return glFrameManager.data();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////

@@ -48,7 +48,7 @@ void AttributeTestData::init() {
     U2ObjectDbi* objDbi = dbi->getObjectDbi();
     U2OpStatusImpl opStatus;
 
-    objects = new QList<U2DataId>(objDbi->getObjects("/", 0, U2_DBI_NO_LIMIT, opStatus));
+    objects = new QList<U2DataId>(objDbi->getObjects("/", 0, U2DbiOptions::U2_DBI_NO_LIMIT, opStatus));
     SAFE_POINT_OP(opStatus, );
 
     attributeDbi = dbi->getAttributeDbi();

@@ -88,8 +88,6 @@ DECLARE_TEST(UdrSchemaUnitTests, isCorrectName_FirstUnderscore);
 DECLARE_TEST(UdrSchemaUnitTests, isCorrectName_HasSpaces);
 /* Schema and field name checker 5 */
 DECLARE_TEST(UdrSchemaUnitTests, registerSchema_IncorrectName);
-/* Datatype */
-DECLARE_TEST(UdrSchemaUnitTests, registerSchema_DuplicateDatatype);
 /* Schema with object reference */
 DECLARE_TEST(UdrSchemaUnitTests, UdrSchema_ObjectReference);
 /* Schema without object reference */
@@ -127,7 +125,6 @@ DECLARE_METATYPE(UdrSchemaUnitTests, isCorrectName_CorrectName);
 DECLARE_METATYPE(UdrSchemaUnitTests, isCorrectName_FirstDigit);
 DECLARE_METATYPE(UdrSchemaUnitTests, isCorrectName_FirstUnderscore);
 DECLARE_METATYPE(UdrSchemaUnitTests, isCorrectName_HasSpaces);
-DECLARE_METATYPE(UdrSchemaUnitTests, registerSchema_DuplicateDatatype);
 DECLARE_METATYPE(UdrSchemaUnitTests, registerSchema_IncorrectName);
 DECLARE_METATYPE(UdrSchemaUnitTests, UdrSchema_ObjectReference);
 DECLARE_METATYPE(UdrSchemaUnitTests, UdrSchema_NoObjectReference);

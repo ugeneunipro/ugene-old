@@ -41,4 +41,6 @@ const GSelectionType GSelectionTypes::ANNOTATIONS("selection_annotations");
 
 const GSelectionType GSelectionTypes::ANNOTATION_GROUPS("selection_annotation_groups");
 
+const GSelectionType GSelectionTypes::FOLDERS("selection_folders");
+
 }//namespace

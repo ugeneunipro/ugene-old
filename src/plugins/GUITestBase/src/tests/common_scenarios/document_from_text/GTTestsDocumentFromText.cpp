@@ -202,6 +202,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
     Runnable *filler = new CreateDocumentFiller(os,
         "FKMDNYTRVEPPG,DD.JFUYBVYERHGK", true, 
         CreateDocumentFiller::AllSymbols, true, false, "",
@@ -215,16 +216,14 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
-    GTGlobals::sleep(3000);
-
     GTUtilsDocument::checkDocument(os, "result");
     GTGlobals::sleep();
 
     GTUtilsSequenceView::checkSequence(os, "FKMDNYTRVEPPG,DD.JFUYBVYERHGK");
     }
 
-GUI_TEST_CLASS_DEFINITION(test_0003_1) {
+GUI_TEST_CLASS_DEFINITION(test_0003_1) {    
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
     Runnable *filler = new CreateDocumentFiller(os,
         "FKMDNYTRVEPPG,DD.JFUYBVYERHGK", true, 
         CreateDocumentFiller::AllSymbols, true, false, "",
@@ -238,8 +237,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<"NewDocumentFromText", GTGlobals::UseKey);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
-    GTGlobals::sleep(3000);
 
     GTUtilsDocument::checkDocument(os, "result.gb");
     GTGlobals::sleep();
@@ -959,7 +956,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "result_new") != NULL, "Item result_new not found in tree widget");
+    GTUtilsProjectTreeView::findIndex(os, "result_new");//checks inside
 
     }
 GUI_TEST_CLASS_DEFINITION(test_0013_1) {
@@ -983,7 +980,8 @@ GUI_TEST_CLASS_DEFINITION(test_0013_1) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "result_new") != NULL, "Item result_new not found in tree widget");
+    GTUtilsProjectTreeView::findIndex(os, "result_new");//checks inside
+
     }
 GUI_TEST_CLASS_DEFINITION(test_0013_2) {
     Runnable *filler = new CreateDocumentFiller(os,
@@ -1006,7 +1004,8 @@ GUI_TEST_CLASS_DEFINITION(test_0013_2) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsProjectTreeView::findItem(os, "result_new") != NULL, "Item result_new not found in tree widget");
+    GTUtilsProjectTreeView::findIndex(os, "result_new");//checks inside
+
     }
 
 GUI_TEST_CLASS_DEFINITION(test_0014) {

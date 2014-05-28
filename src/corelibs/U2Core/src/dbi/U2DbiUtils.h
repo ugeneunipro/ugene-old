@@ -23,6 +23,7 @@
 #define _U2_DBI_UTILS_H_
 
 #include <U2Core/U2Dbi.h>
+#include <U2Core/U2DbiRegistry.h>
 
 namespace U2 {
 
@@ -58,12 +59,15 @@ public:
     
     void close(U2OpStatus& os);
 
-    bool isOpen() const {return dbi != NULL;}
+    bool isOpen() const;
+
+    DbiConnection& operator=(DbiConnection const& dbiConnection);
     
     U2Dbi*          dbi;
 
 private: //TODO
-    DbiConnection & operator=(const DbiConnection & dbiHandle);
+    void copy(const DbiConnection & dbiConnection);
+
 };
 
 
@@ -74,7 +78,8 @@ class U2CORE_EXPORT TmpDbiHandle {
 public:
     TmpDbiHandle();
 
-    TmpDbiHandle(const QString& alias, U2OpStatus& os);
+    TmpDbiHandle(const QString& alias, U2OpStatus& os,
+        const U2DbiFactoryId &factoryId = DEFAULT_DBI_ID);
 
     TmpDbiHandle(const TmpDbiHandle& dbiHandle);
 
@@ -174,6 +179,14 @@ public:
 
     /** Return textual representation of the id */
     static QString text(const U2DataId& id);
+
+    static QString ref2Url(const U2DbiRef& dbiRef);
+
+    static U2DbiId createDbiUrl(const QString &host, int port, const QString &dbName);
+
+    static bool parseDbiUrl(const U2DbiId& dbiId, QString& host, int& port, QString& dbName);
+
+    static QString makeFolderCanonical(const QString& folder);
 };
 
 /**
@@ -197,6 +210,6 @@ template<class T> QList<T> U2DbiUtils::toList(U2DbiIterator<T>* it) {
     return result;
 }
 
-}// namespace
+}   // namespace U2
 
 #endif

@@ -21,8 +21,6 @@
 
 #include "GTFile.h"
 #include <QtCore/QDir>
-#include <QtCore/QFileInfo>
-#include <QtCore/QDir>
 
 #ifdef Q_OS_WIN
 

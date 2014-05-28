@@ -19,15 +19,16 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QFileInfo>
+
 #include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/U2SafePoints.h>
-
-#include <U2Core/BaseDocumentFormats.h>
 
 #include <U2Formats/BAMUtils.h>
 
@@ -75,8 +76,8 @@ void ConvertFileTask::run(){
 //DefaultConvertFileTask
 DefaultConvertFileTask::DefaultConvertFileTask( const GUrl &sourceURL, const QString &detectedFormat, const QString &targetFormat, const QString &dir )
 :ConvertFileTask(sourceURL, detectedFormat, targetFormat, dir)
-,saveTask(NULL)
 ,loadTask(NULL)
+,saveTask(NULL)
 {
 
 }
@@ -218,6 +219,10 @@ void ConvertFactoryRegistry::unregisterConvertFactory( ConvertFileFactory* f ){
         delete fdel;
     }
 
+}
+
+bool ConvertFileFactory::isCustomFormatTask(const QString & /*detectedFormat*/, const QString & /*targetFormat*/) {
+    return true;
 }
 
 

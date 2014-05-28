@@ -29,11 +29,11 @@ namespace U2 {
 class OpenSimpleTextObjectViewTask : public ObjectViewTask {
     Q_OBJECT
 public:
-    OpenSimpleTextObjectViewTask(Document* doc);
+    OpenSimpleTextObjectViewTask(const QList<GObject *> &objects);
     virtual void open();
 
 private:
-    QPointer<Document> doc;
+    QList<GObject *> objects;
 };
 
 class OpenSavedTextObjectViewTask : public ObjectViewTask {

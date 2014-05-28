@@ -27,17 +27,20 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/BioStruct3DObject.h>
-#include <U2Gui/MainWindow.h>
 #include <U2Core/DocumentSelection.h>
+#include <U2Core/LoadRemoteDocumentTask.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/GUIUtils.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSingleSequenceWidget.h>
-#include <U2Gui/GUIUtils.h>
-#include <U2Core/LoadRemoteDocumentTask.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
@@ -81,7 +84,7 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
 }
 
 BioStruct3DViewPlugin::BioStruct3DViewPlugin()
-        : Plugin(tr("3D Structure Viewer"), tr("Visualizes 3D structures of biological molecules."))
+    : Plugin(tr("3D Structure Viewer"), tr("Visualizes 3D structures of biological molecules."))
 {
     // Init plugin view context
     viewContext = new BioStruct3DViewContext(this);
@@ -93,20 +96,20 @@ BioStruct3DViewPlugin::~BioStruct3DViewPlugin()
 
 }
 BioStruct3DViewContext::BioStruct3DViewContext(QObject* p)
-: GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID)
+    : GObjectViewWindowContext(p, ANNOTATED_DNA_VIEW_FACTORY_ID)
 {
-    
+
 }
 
-void BioStruct3DViewContext::initViewContext(GObjectView* v)  {
+void BioStruct3DViewContext::initViewContext(GObjectView* v) {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(v);
+    U2SequenceObject* dna = av->getSequenceInFocus()->getSequenceObject();
 
-    U2SequenceObject* dna=av->getSequenceInFocus()->getSequenceObject();
-    Document* doc = dna->getDocument();
-    QList<GObject*> biostructObjs = doc->findGObjectByType(GObjectTypes::BIOSTRUCTURE_3D);
-    if (biostructObjs.isEmpty()) {
-        return;
-    }
+    QList<GObject *> allBiostructs = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::BIOSTRUCTURE_3D);
+    QList<GObject *> targetBiostructs = GObjectUtils::findObjectsRelatedToObjectByRole(dna,
+        GObjectTypes::BIOSTRUCTURE_3D, ObjectRole_Sequence, allBiostructs, UOF_LoadedOnly);
+    CHECK(!targetBiostructs.isEmpty(), );
+
     QList<ADVSequenceWidget*> seqWidgets = av->getSequenceWidgets();
     foreach(ADVSequenceWidget* w, seqWidgets) {
         ADVSingleSequenceWidget* aw = qobject_cast<ADVSingleSequenceWidget*>(w);
@@ -115,7 +118,7 @@ void BioStruct3DViewContext::initViewContext(GObjectView* v)  {
             aw->setOverviewCollapsed(true);
         }
     }
-    foreach(GObject* obj, biostructObjs) {
+    foreach(GObject* obj, targetBiostructs) {
         v->addObject(obj);
     }
 }

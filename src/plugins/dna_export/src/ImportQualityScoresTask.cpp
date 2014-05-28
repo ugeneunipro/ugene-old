@@ -31,10 +31,8 @@
 
 #include "ImportQualityScoresTask.h"
 #include <time.h>
-#include <memory>
 
 namespace U2 {
-
 
 ReadQualityScoresTask::ReadQualityScoresTask( const QString& file, DNAQualityType t, const DNAQualityFormat& f)
 : Task("ReadPhredQuality", TaskFlag_None), fileName(file), type(t), format(f)
@@ -51,7 +49,7 @@ void ReadQualityScoresTask::run() {
     }
     
     IOAdapterFactory* f = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-    std::auto_ptr<IOAdapter> io( f->createIOAdapter() );
+    QScopedPointer<IOAdapter> io( f->createIOAdapter() );
     
     if (!io->open(fileName, IOAdapterMode_Read) ) {
         stateInfo.setError("Can not open quality file");
@@ -128,7 +126,7 @@ void ReadQualityScoresTask::recordQuality( int headerCounter )
 bool ReadQualityScoresTask::checkRawData()
 {
     IOAdapterFactory* f = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-    std::auto_ptr<IOAdapter> io( f->createIOAdapter() );
+    QScopedPointer<IOAdapter> io( f->createIOAdapter() );
 
     QByteArray buf;
     buf.reserve(RAW_BUF_SIZE);

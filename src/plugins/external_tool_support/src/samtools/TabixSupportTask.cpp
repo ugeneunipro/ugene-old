@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QFile>
+
 #include "TabixSupportTask.h"
 #include "TabixSupport.h"
 
@@ -27,7 +29,6 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/GUrlUtils.h>
-
 
 namespace U2 {
 

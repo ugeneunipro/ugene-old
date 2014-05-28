@@ -25,7 +25,6 @@
 #include <QtCore/QObject>
 #include <QtCore/QVector>
 #include <QtCore/QString>
-#include <memory>
 #include <limits>
 
 #include <U2Core/Task.h>
@@ -75,7 +74,7 @@ class U2ALGORITHM_EXPORT MolecularSurfaceCalcTask : public Task
     const QList<SharedAtom> atoms;
 public: 
     MolecularSurfaceCalcTask(const QString& surfaceTypeName, const QList<SharedAtom>& atoms);
-    std::auto_ptr<MolecularSurface> getCalculatedSurface();
+    MolecularSurface * getCalculatedSurface();
     virtual void run();
     virtual ReportResult report();
 };

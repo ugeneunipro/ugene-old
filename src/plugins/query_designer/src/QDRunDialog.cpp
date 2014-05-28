@@ -228,7 +228,7 @@ void QDRunDialogTask::setupQuery( ) {
     settings.dnaSequence = sequence;
     settings.annotationsObj = new AnnotationTableObject(
         GObjectTypes::getTypeInfo( GObjectTypes::ANNOTATION_TABLE ).name, docWithSequence->getDbiRef( ) );
-    settings.annotationsObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
+    settings.annotationsObj->addObjectRelation(seqObj, ObjectRole_Sequence);
     scheduler = new QDScheduler(settings);
     connect(scheduler, SIGNAL(si_progressChanged()), SLOT(sl_updateProgress()));
 }

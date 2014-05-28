@@ -249,8 +249,8 @@ Task* RepeatWorker::tick() {
         }
         QVariantMap map = inputMessage.getData().toMap();
         SharedDbiDataHandler seqId = map.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
-        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-        if (NULL == seqObj.get()) {
+        QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (seqObj.isNull()) {
             return NULL;
         }
         DNASequence seq = seqObj->getWholeSequence();

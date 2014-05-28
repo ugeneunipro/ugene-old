@@ -23,7 +23,7 @@
 #define _U2_SQLITE_ASSEMBLY_MULTI_TABLE_DBI_H_
 
 #include "SingleTableAssemblyAdapter.h"
-#include "AssemblyPackAlgorithm.h"
+#include "util/AssemblyPackAlgorithm.h"
 
 #include <U2Core/U2SqlHelpers.h>
 
@@ -43,7 +43,7 @@ public:
     QByteArray                  idExtra;
 };
 
-class MultiTableAssemblyAdapter : public AssemblyAdapter {
+class MultiTableAssemblyAdapter : public SQLiteAssemblyAdapter {
 public:
     MultiTableAssemblyAdapter(SQLiteDbi* dbi, const U2DataId& assemblyId, const AssemblyCompressor* compressor, DbRef* ref, U2OpStatus& os);
 
@@ -60,6 +60,7 @@ public:
 
     virtual void addReads(U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os);
     virtual void removeReads(const QList<U2DataId>& readIds, U2OpStatus& os);
+    virtual void dropReadsTables(U2OpStatus& os);
 
     virtual void pack(U2AssemblyPackStat& stat, U2OpStatus& os);
     virtual void calculateCoverage(const U2Region& region, U2AssemblyCoverageStat& c, U2OpStatus& os);
@@ -130,10 +131,10 @@ protected:
     QReadWriteLock                              tablesSyncLock;
 };
 
-class ReadTableMigrationData {
+class SQLiteReadTableMigrationData {
 public:
-    ReadTableMigrationData() : readId (-1), oldTable(NULL), newProw(-1){}
-    ReadTableMigrationData(qint64 oldId, MTASingleTableAdapter* oldT, int newP) 
+    SQLiteReadTableMigrationData() : readId (-1), oldTable(NULL), newProw(-1){}
+    SQLiteReadTableMigrationData(qint64 oldId, MTASingleTableAdapter* oldT, int newP) 
         : readId(oldId), oldTable(oldT), newProw(newP) {}
     
     qint64                  readId;
@@ -154,12 +155,12 @@ public:
 
 private:
     void ensureGridSize(int nRows);
-    void migrate(MTASingleTableAdapter* newA, const QVector<ReadTableMigrationData>& data, qint64 migratedBefore, qint64 totalMigrationCount, U2OpStatus& os);
+    void migrate(MTASingleTableAdapter* newA, const QVector<SQLiteReadTableMigrationData>& data, qint64 migratedBefore, qint64 totalMigrationCount, U2OpStatus& os);
 
     MultiTableAssemblyAdapter*                              multiTableAdapter;
     QVector<SingleTablePackAlgorithmAdapter*>               packAdapters;
     QVector< QVector<SingleTablePackAlgorithmAdapter*> >    packAdaptersGrid;
-    QHash<MTASingleTableAdapter*, QVector<ReadTableMigrationData> > migrations;
+    QHash<MTASingleTableAdapter*, QVector<SQLiteReadTableMigrationData> > migrations;
 };
 
 // Class that multiplexes multiple read iterators into 1

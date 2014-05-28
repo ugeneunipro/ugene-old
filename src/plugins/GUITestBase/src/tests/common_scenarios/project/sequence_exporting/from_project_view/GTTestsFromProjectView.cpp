@@ -327,12 +327,8 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
 // Expected state: 
 //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
-    QTreeWidgetItem *item1 = GTUtilsProjectTreeView::findItem(os, doc1);
-    QTreeWidgetItem *item2 = GTUtilsProjectTreeView::findItem(os, doc2);
-    if (item1 == NULL || item2 == NULL) {
-        os.setError("Project view with document \"1.gb\" and \"2.gb\" is not opened");
-        return;
-    }
+    GTUtilsProjectTreeView::findIndex(os, doc1);//checks inside
+    GTUtilsProjectTreeView::findIndex(os, doc2);
     if (GTUtilsDocument::isDocumentLoaded(os, doc1) || GTUtilsDocument::isDocumentLoaded(os, doc2)) {
         os.setError("Documents is not unload");
         return;
@@ -389,12 +385,8 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 
     // Expected state: 
     //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
-    QTreeWidgetItem *item1 = GTUtilsProjectTreeView::findItem(os, doc1);
-    QTreeWidgetItem *item2 = GTUtilsProjectTreeView::findItem(os, doc2);
-    if (item1 == NULL || item2 == NULL) {
-        os.setError("Project view with document \"1.gb\" and \"2.gb\" is not opened");
-        return;
-        }
+    GTUtilsProjectTreeView::findIndex(os, doc1);//checks inside
+    GTUtilsProjectTreeView::findIndex(os, doc2);
     if (GTUtilsDocument::isDocumentLoaded(os, doc1) || GTUtilsDocument::isDocumentLoaded(os, doc2)) {
         os.setError("Documents is not unload");
         return;
@@ -451,12 +443,8 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
 
     // Expected state: 
     //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
-    QTreeWidgetItem *item1 = GTUtilsProjectTreeView::findItem(os, doc1);
-    QTreeWidgetItem *item2 = GTUtilsProjectTreeView::findItem(os, doc2);
-    if (item1 == NULL || item2 == NULL) {
-        os.setError("Project view with document \"1.gb\" and \"2.gb\" is not opened");
-        return;
-        }
+    GTUtilsProjectTreeView::findIndex(os, doc1);//checks inside
+    GTUtilsProjectTreeView::findIndex(os, doc2);
     if (GTUtilsDocument::isDocumentLoaded(os, doc1) || GTUtilsDocument::isDocumentLoaded(os, doc2)) {
         os.setError("Documents is not unload");
         return;
@@ -513,12 +501,8 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
 
     // Expected state: 
     //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
-    QTreeWidgetItem *item1 = GTUtilsProjectTreeView::findItem(os, doc1);
-    QTreeWidgetItem *item2 = GTUtilsProjectTreeView::findItem(os, doc2);
-    if (item1 == NULL || item2 == NULL) {
-        os.setError("Project view with document \"1.gb\" and \"2.gb\" is not opened");
-        return;
-        }
+    GTUtilsProjectTreeView::findIndex(os, doc1);//checks inside
+    GTUtilsProjectTreeView::findIndex(os, doc2);
     if (GTUtilsDocument::isDocumentLoaded(os, doc1) || GTUtilsDocument::isDocumentLoaded(os, doc2)) {
         os.setError("Documents is not unload");
         return;

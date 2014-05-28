@@ -46,7 +46,6 @@
 #endif
 
 #include <cassert>
-#include <memory>
 
 namespace U2 {
 

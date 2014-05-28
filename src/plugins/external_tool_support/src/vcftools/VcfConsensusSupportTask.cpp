@@ -29,10 +29,10 @@
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <QtCore/QDir>
 #include <QtCore/QProcess>
 #include <QtCore/QProcessEnvironment>
 #include <QtCore/QtGlobal>
-#include <QtCore/QFileInfo>
 
 namespace U2 {
 

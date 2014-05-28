@@ -49,8 +49,6 @@
 
 #include <QtCore/QFileInfo>
 
-#include <memory>
-
 //TODO: add complement token configuration
 //TODO: autodetect numeric columns, propose using them as start/end/length positions
 //TODO: option for negative len -> complement
@@ -216,7 +214,7 @@ void ImportAnnotationsFromCSVDialog::toTaskConfig(ImportAnnotationsFromCSVTaskCo
 QString ImportAnnotationsFromCSVDialog::readFileHeader(const QString& fileName, bool silentFail) {
     IOAdapterId ioId = IOAdapterUtils::url2io(fileName);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     bool ok = io->open(fileName, IOAdapterMode_Read);
     if (!ok) {
         if (!silentFail) {

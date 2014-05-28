@@ -26,6 +26,8 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/PFMatrix.h>
 #include <U2Core/PWMatrix.h>
+#include <U2Core/U2RawData.h>
+
 #include <U2Gui/ObjectViewTasks.h>
 
 namespace U2 {
@@ -50,24 +52,6 @@ protected:
 
 private:
     QString formatName;
-};
-
-class PFMatrixObject: public GObject {
-    Q_OBJECT
-public:
-    static const GObjectType TYPE;
-
-    static PFMatrixObject * createInstance(const PFMatrix &matrix, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap = QVariantMap());
-    PFMatrixObject(const QString &objectName, const U2EntityRef &matrixRef, const QVariantMap &hintsMap = QVariantMap());
-
-    const PFMatrix & getMatrix() const;
-    GObject * clone(const U2DbiRef&, U2OpStatus&) const;
-
-private:
-    PFMatrixObject(const PFMatrix &matrix, const QString &objectName, const U2EntityRef &matrixRef, const QVariantMap &hintsMap);
-
-private:
-    PFMatrix m;
 };
 
 class PFMatrixViewFactory : public GObjectViewFactory {
@@ -109,24 +93,6 @@ protected:
 
 private:
     QString formatName;
-};
-
-class PWMatrixObject: public GObject {
-    Q_OBJECT
-public:
-    static const GObjectType TYPE;
-
-    static PWMatrixObject * createInstance(const PWMatrix &matrix, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap = QVariantMap());
-    PWMatrixObject(const QString &objectName, const U2EntityRef &matrixRef, const QVariantMap &hintsMap = QVariantMap());
-
-    const PWMatrix & getMatrix() const;
-    GObject * clone(const U2DbiRef&, U2OpStatus&) const;
-
-private:
-    PWMatrixObject(const PWMatrix &matrix, const QString &objectName, const U2EntityRef &matrixRef, const QVariantMap &hintsMap);
-
-private:
-    PWMatrix m;
 };
 
 class PWMatrixViewFactory : public GObjectViewFactory {

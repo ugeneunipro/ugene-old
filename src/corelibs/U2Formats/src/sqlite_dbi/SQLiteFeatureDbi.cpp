@@ -36,42 +36,36 @@ static QString getQueryForFeatureDeletionTrigger( ) {
     return "CREATE TRIGGER FeatureDeletion BEFORE DELETE ON Feature "
                "FOR EACH ROW "
                "BEGIN "
-                   "DELETE FROM FeatureKey WHERE feature = OLD.id;"
                    "DELETE FROM FeatureLocationRTreeIndex WHERE id = OLD.id;"
                    "DELETE FROM Feature WHERE parent = OLD.id;"
                "END";
 }
 
 void SQLiteFeatureDbi::initSqlSchema(U2OpStatus& os) {
-    if (os.hasError()) {
-        return;
-    }
-    // annotation table object
-    SQLiteQuery( "CREATE TABLE AnnotationTable (object INTEGER UNIQUE, rootId INTEGER NOT NULL DEFAULT 0, "
-        "FOREIGN KEY(object) REFERENCES Object(id), "
-        "FOREIGN KEY(rootId) REFERENCES Feature(id) )", db, os ).execute( );
-
     //nameHash is used for better indexing
-    SQLiteQuery("CREATE TABLE Feature (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, type INTEGER NOT NULL, "
-        "parent INTEGER, root INTEGER, nameHash INTEGER, name TEXT, sequence INTEGER NOT NULL, "
-        "strand INTEGER NOT NULL DEFAULT 0, start INTEGER NOT NULL DEFAULT 0, len INTEGER NOT NULL DEFAULT 0, "
-        "FOREIGN KEY(sequence) REFERENCES Object(id))",
-        db, os).execute();
+    SQLiteQuery("CREATE TABLE Feature (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+        "type INTEGER NOT NULL, parent INTEGER, root INTEGER, nameHash INTEGER, name TEXT, "
+        "sequence INTEGER, strand INTEGER NOT NULL, "
+        "start INTEGER NOT NULL DEFAULT 0, len INTEGER NOT NULL DEFAULT 0)", db, os).execute();
 
-    SQLiteQuery("CREATE TABLE FeatureKey (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, feature INTEGER NOT NULL, "
-        " name TEXT NOT NULL, value TEXT NOT NULL, "
-        " FOREIGN KEY(feature) REFERENCES Feature(id))", db, os).execute();
+    SQLiteQuery("CREATE TABLE FeatureKey (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "
+        "feature INTEGER NOT NULL, name TEXT NOT NULL, value TEXT NOT NULL, "
+        "FOREIGN KEY(feature) REFERENCES Feature(id) ON DELETE CASCADE)", db, os).execute();
+
+    // annotation table object
+    SQLiteQuery( "CREATE TABLE AnnotationTable (object INTEGER PRIMARY KEY, rootId INTEGER NOT NULL, "
+        "FOREIGN KEY(object) REFERENCES Object(id) ON DELETE CASCADE, "
+        "FOREIGN KEY(rootId) REFERENCES Feature(id) ON DELETE CASCADE)", db, os ).execute( );
 
     //Feature index
-    SQLiteQuery("CREATE VIRTUAL TABLE FeatureLocationRTreeIndex USING rtree_i32(id, start, end)", db, os).execute();
+    SQLiteQuery("CREATE VIRTUAL TABLE FeatureLocationRTreeIndex USING rtree_i32(id, start, end)",
+        db, os).execute();
 
     SQLiteQuery("CREATE INDEX IF NOT EXISTS FeatureRootIndex ON Feature(root)" ,db, os).execute();
-    SQLiteQuery("CREATE INDEX IF NOT EXISTS FeatureParentIndex ON Feature(parent, sequence)" ,db, os).execute();
-    SQLiteQuery("CREATE INDEX IF NOT EXISTS FeatureSequenceNameIndex ON Feature(sequence, name)" ,db, os).execute();
-    SQLiteQuery("CREATE INDEX IF NOT EXISTS FeatureSequenceNameIndex ON Feature(start)" ,db, os).execute();
+    SQLiteQuery("CREATE INDEX IF NOT EXISTS FeatureParentIndex ON Feature(parent)", db, os).execute();
 
     //FeatureKey index
-    SQLiteQuery("CREATE INDEX IF NOT EXISTS FeatureKeyIndex ON FeatureKey(feature)" ,db, os).execute();
+    SQLiteQuery("CREATE INDEX IF NOT EXISTS FeatureKeyIndex ON FeatureKey(feature)", db, os).execute();
     SQLiteQuery("CREATE INDEX IF NOT EXISTS FeatureKeyIndex ON FeatureKey(feature, name)", db, os).execute();
 
     //Deletion triggers
@@ -122,7 +116,7 @@ private:
 void SQLiteFeatureDbi::createAnnotationTableObject( U2AnnotationTable &table,
     const QString &folder, U2OpStatus &os )
 {
-    dbi->getSQLiteObjectDbi( )->createObject( table, folder, SQLiteDbiObjectRank_TopLevel, os );
+    dbi->getSQLiteObjectDbi( )->createObject( table, folder, U2DbiObjectRank_TopLevel, os );
     CHECK_OP( os, );
 
     static const QString queryString( "INSERT INTO AnnotationTable (object, rootId) VALUES(?1, ?2)" );
@@ -131,7 +125,6 @@ void SQLiteFeatureDbi::createAnnotationTableObject( U2AnnotationTable &table,
     q.bindDataId( 1, table.id );
     q.bindDataId( 2, table.rootFeature );
     q.insert( );
-    SAFE_POINT( !os.hasError( ), "Error on Feature DB insertion!", );
 }
 
 U2AnnotationTable SQLiteFeatureDbi::getAnnotationTableObject( const U2DataId &tableId,
@@ -140,17 +133,18 @@ U2AnnotationTable SQLiteFeatureDbi::getAnnotationTableObject( const U2DataId &ta
     U2AnnotationTable result;
 
     DBI_TYPE_CHECK( tableId, U2Type::AnnotationTable, os, result );
-    dbi->getSQLiteObjectDbi( )->getObject( result, tableId, os );
-    CHECK_OP( os, result );
 
-    SQLiteQuery q( "SELECT rootId FROM AnnotationTable WHERE object = ?1", db, os );
+    SQLiteQuery q( "SELECT rootId, name FROM AnnotationTable, Object WHERE object = ?1 AND id = ?1", db, os );
     q.bindDataId( 1, tableId );
     if ( q.step( ) ) {
         result.rootFeature = q.getDataId( 0, U2Type::Feature );
+        result.visualName = q.getString( 1 );
         q.ensureDone( );
     } else if ( !os.hasError( ) ) {
-        os.setError( SQLiteL10N::tr( "Annotation table object not found." ) );
+        os.setError( U2DbiL10n::tr( "Annotation table object not found." ) );
     }
+    result.id = tableId;
+
     return result;
 }
 
@@ -162,6 +156,15 @@ void SQLiteFeatureDbi::renameAnnotationTableObject( const U2DataId &tableId,
     CHECK_OP( os, );
 
     SQLiteObjectDbiUtils::renameObject( dbi, tableObj, name, os );
+}
+
+void SQLiteFeatureDbi::removeAnnotationTableData( const U2DataId &tableId, U2OpStatus &os ) {
+    DBI_TYPE_CHECK( tableId, U2Type::AnnotationTable, os, );
+    static const QString rootQueryStr = "(SELECT rootId FROM AnnotationTable WHERE object = ?1)";
+
+    SQLiteQuery removeAnnTableQuery( QString( "DELETE FROM Feature WHERE root IN %1 OR id IN %1" ).arg(rootQueryStr), db, os );
+    removeAnnTableQuery.bindDataId( 1, tableId );
+    removeAnnTableQuery.execute();
 }
 
 U2Feature SQLiteFeatureDbi::getFeature(const U2DataId& featureId, U2OpStatus& os) {
@@ -625,6 +628,7 @@ void SQLiteFeatureDbi::removeFeaturesByRoot( const U2DataId &rootId, U2OpStatus 
     SQLiteTransaction t( db, os );
 
     SQLiteQuery( "DROP TRIGGER FeatureDeletion", db, os ).execute( );
+    CHECK_OP( os, );
 
     SQLiteQuery qf("DELETE FROM Feature WHERE root = ?1"
         + ( includeParent ? QString( " OR id = ?2" ) : "" ), db, os);
@@ -633,6 +637,7 @@ void SQLiteFeatureDbi::removeFeaturesByRoot( const U2DataId &rootId, U2OpStatus 
         qf.bindDataId( 2, rootId );
     }
     qf.execute( );
+    CHECK_OP( os, );
 
     SQLiteQuery( getQueryForFeatureDeletionTrigger( ), db, os ).execute( );
 }
@@ -650,11 +655,11 @@ U2DbiIterator<U2Feature> * SQLiteFeatureDbi::getFeaturesByRegion( const U2Region
     const QString queryByRegion = "SELECT " + FDBI_FIELDS + " FROM Feature AS f "
         + queryByRegionJoinPart + " AND " + queryByRegionWherePart;
 
-    const QString queryStringk = "SELECT * FROM ("
+    const QString queryStringk = "SELECT " + FDBI_FIELDS + " FROM ("
         + queryByRegion + " AND f.name != ''" + " UNION "
         + "SELECT " + FDBI_FIELDS + " FROM Feature AS f WHERE f.id IN ("
         + "SELECT f.parent FROM Feature AS f " + queryByRegionJoinPart + " AND "
-        + queryByRegionWherePart + " AND f.name = '') )";
+        + queryByRegionWherePart + " AND f.name = '') ) AS f";
     QSharedPointer<SQLiteQuery> q = t.getPreparedQuery( queryStringk, db, os );
 
     q->bindInt64( 1, reg.startPos );

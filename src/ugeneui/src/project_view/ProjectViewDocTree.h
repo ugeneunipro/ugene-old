@@ -24,18 +24,16 @@
 
 #include <QtCore/QMimeData>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTreeWidget>
+#include <QtGui/QTreeView>
 #else
-#include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QTreeView>
 #endif
 
 namespace U2 {
 
-class ProjectViewDocTree : public QTreeWidget {
+class ProjectViewDocTree : public QTreeView {
 public:
     ProjectViewDocTree(QWidget* w);
-protected:
-    virtual QMimeData * mimeData ( const QList<QTreeWidgetItem *> items ) const;
 };
 
 }//namespace

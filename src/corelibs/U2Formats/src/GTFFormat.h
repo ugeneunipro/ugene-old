@@ -143,7 +143,7 @@ private:
     */
     QMap<QString, QList<AnnotationData> > parseDocument(IOAdapter* io, U2OpStatus& os);
 
-    void load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, U2OpStatus& os);
+    void load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, const QVariantMap &hints, U2OpStatus& os);
 
     static const QString FORMAT_NAME;
 

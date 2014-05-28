@@ -57,6 +57,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/UdrSchema.h \
            src/datatype/UdrSchemaRegistry.h \
            src/datatype/Vector3D.h \
+           src/datatype/udr/RawDataUdrSchema.h \
            src/dbi/DbiDocumentFormat.h \
            src/dbi/KnownMutationsDbi.h \
            src/dbi/SNPTablesDbi.h \
@@ -74,6 +75,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/dbi/U2ModDbi.h \
            src/dbi/U2MsaDbi.h \
            src/dbi/U2ObjectDbi.h \
+           src/dbi/U2ObjectRelationsDbi.h \
            src/dbi/U2SequenceDbi.h \
            src/dbi/U2SqlHelpers.h \
            src/dbi/U2SQLiteTripleStore.h \
@@ -87,6 +89,8 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/globals/AutoAnnotationsSupport.h \
            src/globals/BaseDocumentFormats.h \
            src/globals/Counter.h \
+           src/globals/CredentialsAsker.h \
+           src/globals/CredentialsStorage.h \
            src/globals/DataBaseRegistry.h \
            src/globals/DataPathRegistry.h \
            src/globals/DBXRefRegistry.h \
@@ -124,10 +128,13 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/gobjects/GObjectTypes.h \
            src/gobjects/GObjectUtils.h \
            src/gobjects/MAlignmentObject.h \
+           src/gobjects/PFMatrixObject.h \
            src/gobjects/PhyTreeObject.h \
+           src/gobjects/PWMatrixObject.h \
            src/gobjects/TextObject.h \
            src/gobjects/UnloadedObject.h \
            src/gobjects/VariantTrackObject.h \
+           src/io/DatabaseConnectionAdapter.h \
            src/io/HttpFileAdapter.h \
            src/io/InputStream.h \
            src/io/IOAdapter.h \
@@ -138,17 +145,21 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/io/VFSAdapter.h \
            src/io/VirtualFileSystem.h \
            src/io/ZlibAdapter.h \
+           src/models/BunchMimeData.h \
            src/models/DocumentImport.h \
            src/models/DocumentModel.h \
            src/models/DocumentUtils.h \
+           src/models/Folder.h \
            src/models/GHints.h \
            src/models/GObject.h \
            src/models/GObjectReference.h \
+           src/models/MimeDataIterator.h \
            src/models/ProjectModel.h \
            src/models/StateLockableDataModel.h \
            src/selection/AnnotationSelection.h \
            src/selection/DNASequenceSelection.h \
            src/selection/DocumentSelection.h \
+           src/selection/FolderSelection.h \
            src/selection/GObjectSelection.h \
            src/selection/LRegionsSelection.h \
            src/selection/SelectionModel.h \
@@ -159,10 +170,13 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/AddSequencesToAlignmentTask.h \
            src/tasks/BackgroundTaskRunner.h \
            src/tasks/CleanupFileStorageTask.h \
+           src/tasks/CloneObjectTask.h \
+           src/tasks/ConnectSharedDatabaseTask.h \
            src/tasks/ConsoleShutdownTask.h \
            src/tasks/CopyDataTask.h \
            src/tasks/CopyDocumentTask.h \
            src/tasks/CreateAnnotationTask.h \
+           src/tasks/DeleteObjectsTask.h \
            src/tasks/DocumentProviderTask.h \
            src/tasks/ExternalToolRunTask.h \
            src/tasks/ExtractAnnotatedRegionTask.h \
@@ -186,6 +200,11 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/TLSTask.h \
            src/tasks/TmpDirChecker.h \
            src/tasks/UniprotBlastTask.h \
+           src/tasks/shared_db/ImportDirToDatabaseTask.h \
+           src/tasks/shared_db/ImportDocumentToDatabaseTask.h \
+           src/tasks/shared_db/ImportFileToDatabaseTask.h \
+           src/tasks/shared_db/ImportObjectToDatabaseTask.h \
+           src/tasks/shared_db/ImportToDatabaseTask.h \
            src/util/DatatypeSerializeUtils.h \
            src/util/FeaturesQueryCache.h \
            src/util/FileAndDirectoryUtils.h \
@@ -194,6 +213,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/FormatUtils.h \
            src/util/GAutoDeleteList.h \
            src/util/GUrlUtils.h \
+           src/util/ImportToDatabaseOptions.h \
            src/util/IOAdapterUtils.h \
            src/util/KnownMutationsUtils.h \
            src/util/MAlignmentExporter.h \
@@ -201,6 +221,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/MsaDbiUtils.h \
            src/util/MsaRowUtils.h \
            src/util/MSAUtils.h \
+           src/util/PMatrixSerializeUtils.h \
            src/util/QVariantUtils.h \
            src/util/SequenceUtils.h \
            src/util/SNPTablesUtils.h \
@@ -215,8 +236,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/U2OpStatusUtils.h \
            src/util/U2SequenceUtils.h \
            src/util/U2VariationUtils.h \
-           src/util/VariationPropertiesUtils.h \
-           src/datatype/udr/RawDataUdrSchema.h
+           src/util/VariationPropertiesUtils.h
 SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/cmdline/CMDLineRegistry.cpp \
            src/cmdline/CMDLineUtils.cpp \
@@ -255,10 +275,14 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/UdrSchema.cpp \
            src/datatype/UdrSchemaRegistry.cpp \
            src/datatype/Vector3D.cpp \
+           src/datatype/udr/RawDataUdrSchema.cpp \
            src/dbi/DbiDocumentFormat.cpp \
+           src/dbi/U2Dbi.cpp \
            src/dbi/U2DbiPackUtils.cpp \
            src/dbi/U2DbiRegistry.cpp \
            src/dbi/U2DbiUtils.cpp \
+           src/dbi/U2ObjectDbi.cpp \
+           src/dbi/U2ObjectRelationsDbi.cpp \
            src/dbi/U2SqlHelpers.cpp \
            src/dbi/U2SQLiteTripleStore.cpp \
            src/dbi/UdrDbi.cpp \
@@ -269,6 +293,8 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/globals/AutoAnnotationsSupport.cpp \
            src/globals/BaseDocumentFormats.cpp \
            src/globals/Counter.cpp \
+           src/globals/CredentialsAsker.cpp \
+           src/globals/CredentialsStorage.cpp \
            src/globals/DataBaseRegistry.cpp \
            src/globals/DataPathRegistry.cpp \
            src/globals/DBXRefRegistry.cpp \
@@ -294,14 +320,16 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/gobjects/BioStruct3DObject.cpp \
            src/gobjects/DNAChromatogramObject.cpp \
            src/gobjects/DNASequenceObject.cpp \
-           src/gobjects/GObjectRelationRoles.cpp \
            src/gobjects/GObjectTypes.cpp \
            src/gobjects/GObjectUtils.cpp \
            src/gobjects/MAlignmentObject.cpp \
+           src/gobjects/PFMatrixObject.cpp \
            src/gobjects/PhyTreeObject.cpp \
+           src/gobjects/PWMatrixObject.cpp \
            src/gobjects/TextObject.cpp \
            src/gobjects/UnloadedObject.cpp \
            src/gobjects/VariantTrackObject.cpp \
+           src/io/DatabaseConnectionAdapter.cpp \
            src/io/HttpFileAdapter.cpp \
            src/io/IOAdapter.cpp \
            src/io/LocalFileAdapter.cpp \
@@ -309,15 +337,19 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/io/VFSAdapter.cpp \
            src/io/VirtualFileSystem.cpp \
            src/io/ZlibAdapter.cpp \
+           src/models/BunchMimeData.cpp \
            src/models/DocumentImport.cpp \
            src/models/DocumentModel.cpp \
            src/models/DocumentUtils.cpp \
+           src/models/Folder.cpp \
            src/models/GHints.cpp \
            src/models/GObject.cpp \
+           src/models/MimeDataIterator.cpp \
            src/models/ProjectModel.cpp \
            src/models/StateLockableDataModel.cpp \
            src/selection/AnnotationSelection.cpp \
            src/selection/DocumentSelection.cpp \
+           src/selection/FolderSelection.cpp \
            src/selection/GObjectSelection.cpp \
            src/selection/LRegionsSelection.cpp \
            src/selection/SelectionModel.cpp \
@@ -327,10 +359,13 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/AddSequencesToAlignmentTask.cpp \
            src/tasks/BackgroundTaskRunner.cpp \
            src/tasks/CleanupFileStorageTask.cpp \
+           src/tasks/CloneObjectTask.cpp \
+           src/tasks/ConnectSharedDatabaseTask.cpp \
            src/tasks/ConsoleShutdownTask.cpp \
            src/tasks/CopyDataTask.cpp \
            src/tasks/CopyDocumentTask.cpp \
            src/tasks/CreateAnnotationTask.cpp \
+           src/tasks/DeleteObjectsTask.cpp \
            src/tasks/DocumentProviderTask.cpp \
            src/tasks/ExternalToolRunTask.cpp \
            src/tasks/ExtractAnnotatedRegionTask.cpp \
@@ -353,6 +388,11 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/TLSTask.cpp \
            src/tasks/TmpDirChecker.cpp \
            src/tasks/UniprotBlastTask.cpp \
+           src/tasks/shared_db/ImportDirToDatabaseTask.cpp \
+           src/tasks/shared_db/ImportDocumentToDatabaseTask.cpp \
+           src/tasks/shared_db/ImportFileToDatabaseTask.cpp \
+           src/tasks/shared_db/ImportObjectToDatabaseTask.cpp \
+           src/tasks/shared_db/ImportToDatabaseTask.cpp \
            src/util/DatatypeSerializeUtils.cpp \
            src/util/FeaturesQueryCache.cpp \
            src/util/FileAndDirectoryUtils.cpp \
@@ -361,6 +401,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/FormatUtils.cpp \
            src/util/GAutoDeleteList.cpp \
            src/util/GUrlUtils.cpp \
+           src/util/ImportToDatabaseOptions.cpp \
            src/util/IOAdapterUtils.cpp \
            src/util/KnownMutationsUtils.cpp \
            src/util/MAlignmentExporter.cpp \
@@ -381,8 +422,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/U2FeatureUtils.cpp \
            src/util/U2SequenceUtils.cpp \
            src/util/U2VariationUtils.cpp \
-           src/util/VariationPropertiesUtils.cpp \
-           src/datatype/udr/RawDataUdrSchema.cpp
+           src/util/VariationPropertiesUtils.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \

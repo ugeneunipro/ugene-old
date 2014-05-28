@@ -93,10 +93,10 @@ namespace {
         QVariantMap result;
         foreach (const DocumentFormatId &fid, allFormats) {
             const DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fid);
-            if (NULL == format) {
+            if (NULL == format || format->checkFlags(DocumentFormatFlag_CannotBeCreated)) {
                 continue;
             }
-            if (format->getFlags().testFlag(DocumentFormatFlag_SupportWriting) || (BOOLEANS == mapType)) {
+            if (format->checkFlags(DocumentFormatFlag_SupportWriting) || (BOOLEANS == mapType)) {
                 if (BOOLEANS == mapType) {
                     result[fid] = false;
                 } else {

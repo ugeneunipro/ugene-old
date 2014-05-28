@@ -53,9 +53,7 @@
 #include <QtWidgets/QMenu>
 #endif
 #include <QtCore/QCoreApplication>
-#include <QtCore/QDir>
 #include <QtCore/QDirIterator>
-#include <QtCore/QFileInfo>
 
 #include "ExternalToolSupportPlugin.h"
 #include "ExternalToolSupportSettings.h"

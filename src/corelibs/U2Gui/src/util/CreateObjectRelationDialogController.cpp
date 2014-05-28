@@ -39,12 +39,11 @@
 
 namespace U2 {
 
-CreateObjectRelationDialogController::CreateObjectRelationDialogController(GObject* _assObj, const QList<GObject*>& _objects, 
-                                                                           const QString& _role, bool rd, const QString& relationHint, QWidget* p)
-: QDialog(p), selectedObject(NULL), assObj(_assObj), objects(_objects), role(_role), removeDuplicates(rd)
+CreateObjectRelationDialogController::CreateObjectRelationDialogController(GObject* _assObj,
+    const QList<GObject*>& _objects, GObjectRelationRole _role, bool rd, const QString& relationHint, QWidget* p)
+    : QDialog(p), selectedObject(NULL), assObj(_assObj), objects(_objects), role(_role), removeDuplicates(rd)
 {
     assert(!objects.isEmpty());
-    assert(!role.isEmpty());
     assert(assObj!=NULL);
     ui = new Ui_CreateObjectRelationDialog;
 
@@ -64,7 +63,7 @@ void CreateObjectRelationDialogController::accept() {
     assert(idx>=0 && idx < objects.size());
     
     GObject* selObj = objects[idx];
-    if (role == GObjectRelationRole::SEQUENCE && assObj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE) {
+    if (role == ObjectRole_Sequence && assObj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE) {
         U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(selObj);
         AnnotationTableObject *ao = qobject_cast<AnnotationTableObject *>(assObj);
         AnnotationTableObjectConstraints c;

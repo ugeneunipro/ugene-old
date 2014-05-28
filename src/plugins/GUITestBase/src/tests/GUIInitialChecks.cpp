@@ -104,7 +104,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     }
 }
 GUI_TEST_CLASS_DEFINITION(test_0006){
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0000) {
@@ -124,7 +124,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0001) {
 #endif
 
         GTGlobals::sleep();
-        GTWidget::click(os, GTUtilsProjectTreeView::getTreeWidget(os));
+        GTWidget::click(os, GTUtilsProjectTreeView::getTreeView(os));
         GTKeyboardDriver::keyClick(os, 'a', key);
         GTGlobals::sleep(100);
 

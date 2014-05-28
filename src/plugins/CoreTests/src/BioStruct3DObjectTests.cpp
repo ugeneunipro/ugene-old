@@ -20,8 +20,6 @@
  */
 
 #include <QtCore/QDir>
-#include <QtCore/QFileInfoList>
-
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>

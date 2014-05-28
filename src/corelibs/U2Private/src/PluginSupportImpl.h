@@ -30,7 +30,6 @@
 #include <QtCore/QDir>
 
 #include "PluginDescriptor.h"
-#include <memory>
 
 namespace U2 {
 

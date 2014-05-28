@@ -27,10 +27,7 @@
 #include <U2Core/TextObject.h>
 #include <U2Test/GTestFrameworkComponents.h>
 
-#include <memory>
-
 namespace U2 {
-
 
 #define HMM_FILE_ATTR "hmmfile"
 #define SEQ_DB_DOC "seqdoc"
@@ -392,12 +389,12 @@ Task::ReportResult GTest_hmmCompare::report() {
     QFileInfo fi1(env->getVar("COMMON_DATA_DIR")+"/"+file1Name);
     QString url1 = fi1.absoluteFilePath();
     IOAdapterFactory* iof1 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url1));
-    std::auto_ptr<IOAdapter> io1(iof1->createIOAdapter());
+    QScopedPointer<IOAdapter> io1(iof1->createIOAdapter());
     //QFile file1(fi1.absoluteFilePath());
     QFileInfo fi2(env->getVar("TEMP_DATA_DIR")+"/"+file2Name);
     QString url2 = fi2.absoluteFilePath();
     IOAdapterFactory* iof2 = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url2));
-    std::auto_ptr<IOAdapter> io2(iof2->createIOAdapter());
+    QScopedPointer<IOAdapter> io2(iof2->createIOAdapter());
     fi2.absoluteDir().mkdir(fi2.absoluteDir().absolutePath()); // ???
     //QFile file2(fi2.absoluteFilePath());
 

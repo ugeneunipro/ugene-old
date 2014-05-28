@@ -7,12 +7,14 @@ HEADERS += resource.h \
            src/TestViewController.h \
            src/TestViewReporter.h \
            src/ExcludeReasonDialog.h
-FORMS += src/ui/Reporter.ui src/ui/TestView.ui \
-         src/ui/ExcludeResaonDialog.ui
+FORMS += src/ui/Reporter.ui \
+         src/ui/TestView.ui \
+         src/ui/ExcludeReasonDialog.ui
 SOURCES += src/GTestScriptWrapper.cpp \
            src/TestRunnerPlugin.cpp \
            src/TestViewController.cpp \
            src/TestViewReporter.cpp \
            src/ExcludeReasonDialog.cpp
 RESOURCES += test_runner.qrc
-TRANSLATIONS += transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/english.ts \
+                transl/russian.ts

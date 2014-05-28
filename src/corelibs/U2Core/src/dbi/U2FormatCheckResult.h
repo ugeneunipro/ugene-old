@@ -42,7 +42,7 @@ enum FormatDetectionScore {
 class FormatCheckResult {
 
 public:
-    FormatCheckResult() : score(FormatDetection_NotMatched){};
+    FormatCheckResult() : score(FormatDetection_NotMatched){}
     FormatCheckResult(FormatDetectionScore _score) : score(_score){}
 
     /** Score of the detection */

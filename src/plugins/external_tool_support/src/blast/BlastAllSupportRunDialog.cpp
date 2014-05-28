@@ -122,7 +122,7 @@ void BlastAllSupportRunDialog::sl_runQuery(){
         const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
         SAFE_POINT_OP( os, );
         settings.aobj = new AnnotationTableObject( "Annotations", dbiRef );
-        settings.aobj->addObjectRelation(GObjectRelation(ca_c->getModel().sequenceObjectRef, GObjectRelationRole::SEQUENCE));
+        settings.aobj->addObjectRelation(GObjectRelation(ca_c->getModel().sequenceObjectRef, ObjectRole_Sequence));
     }
     else {
         bool objectPrepared = ca_c->prepareAnnotationObject();
@@ -217,6 +217,7 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_inputFileLineEditChanged(con
             c.checkRawData = true;
             c.supportedObjectTypes += GObjectTypes::SEQUENCE;
             c.rawData = IOAdapterUtils::readFileHeader(str);
+            c.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
             QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
             if (formats.isEmpty()) {
                 return;
@@ -298,7 +299,7 @@ void BlastAllWithExtFileSpecifySupportRunDialog::sl_runQuery(){
             const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
             SAFE_POINT_OP( os, );
             settingsList[i].aobj = new AnnotationTableObject( sequencesRefList[i].objName+" annotations", dbiRef );
-            settingsList[i].aobj->addObjectRelation(GObjectRelation(sequencesRefList[i], GObjectRelationRole::SEQUENCE));
+            settingsList[i].aobj->addObjectRelation(GObjectRelation(sequencesRefList[i], ObjectRole_Sequence));
         }
         else {
             assert(NULL);//allways created new document for annotations

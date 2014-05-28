@@ -38,9 +38,9 @@ public:
     virtual U2AssemblyRead next(U2OpStatus& os) = 0;
 };
 
-class U2AssemblyCovereageImportInfo {
+class U2AssemblyCoverageImportInfo {
 public:
-    U2AssemblyCovereageImportInfo() : computeCoverage(false), coverageBasesPerPoint(1) {}
+    U2AssemblyCoverageImportInfo() : computeCoverage(false), coverageBasesPerPoint(1) {}
 
     /** Specifies if assembly coverage is needed to be computed at import time*/
     bool computeCoverage;
@@ -66,7 +66,7 @@ public:
     /* Place where to save pack statistics */
     U2AssemblyPackStat packStat;
 
-    U2AssemblyCovereageImportInfo coverageInfo;
+    U2AssemblyCoverageImportInfo coverageInfo;
 };
 
 /**
@@ -146,6 +146,13 @@ public:
     */
     virtual void createAssemblyObject(U2Assembly& assembly, const QString& folder,  
         U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& importInfo, U2OpStatus& os) = 0;
+
+    /**
+        Removes all assembly data and tables.
+        Does not remove entry from the 'Object' table.
+        Requires: U2DbiFeature_WriteAssembly feature support
+    */
+    virtual void removeAssemblyData(const U2DataId &assemblyId, U2OpStatus& os) = 0;
 
     /** 
         Updates assembly object fields.

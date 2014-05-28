@@ -182,8 +182,6 @@ void GObjectView::onObjectAdded(GObject* obj) {
     }
 }
 
-
-
 void GObjectView::sl_onDocumentAdded(Document* d) {
     connect(d, SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_onObjectRemovedFromDocument(GObject*)));
     connect(d, SIGNAL(si_loadedStateChanged()), SLOT(sl_onDocumentLoadedStateChanged()));
@@ -216,7 +214,7 @@ void GObjectView::sl_onObjectNameChanged(const QString& oldName) {
     onObjectRenamed(obj, oldName);
 }
 
-QWidget* GObjectView::getWidget()  {
+QWidget* GObjectView::getWidget() {
     if (widget == NULL) {
         assert(closeInterface!=NULL);
         widget = createWidget();
@@ -363,7 +361,7 @@ GObjectViewWindow* GObjectViewUtils::findViewByName(const QString& name) {
 
 QString GObjectViewUtils::genUniqueViewName(const QString& name) {
     assert(!name.isEmpty());
-    QSet<QString> usedNames; //set of names is derived from acttive views & saved states
+    QSet<QString> usedNames; //set of names is derived from active views & saved states
     QList<MWMDIWindow*> windows = AppContext::getMainWindow()->getMDIManager()->getWindows();
     foreach(MWMDIWindow* w, windows) {
         usedNames.insert(w->windowTitle());

@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include "TCoffeeSupportTask.h"
-#include "TCoffeeSupport.h"
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -41,6 +41,9 @@
 #include <U2Core/DNAAlphabet.h>
 
 #include <U2Gui/OpenViewTask.h>
+
+#include "TCoffeeSupportTask.h"
+#include "TCoffeeSupport.h"
 
 namespace U2 {
 
@@ -319,6 +322,7 @@ void TCoffeeWithExtFileSpecifySupportTask::prepare(){
     c.checkRawData = true;
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
     c.rawData = IOAdapterUtils::readFileHeader(settings.inputFilePath);
+    c.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
         stateInfo.setError(  tr("input_format_error") );

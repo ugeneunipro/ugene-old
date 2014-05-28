@@ -40,7 +40,7 @@ public:
 
 private:
 
-    void setPath();
+    bool setPath();
     void setName();
     void selectFile();
     void clickButton(Button);

@@ -30,11 +30,9 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QLibrary>
 #include <QtCore/QDir>
-#include <QtCore/QFileInfo>
 #include <QtCore/QSet>
 
 #include <algorithm>
-#include <memory>
 
 namespace U2 {
 
@@ -407,7 +405,7 @@ Task::ReportResult AddPluginTask::report() {
 
     //load library
     QString libUrl = desc.libraryUrl.getURLString();
-    std::auto_ptr<QLibrary> lib(new QLibrary(libUrl));
+    QScopedPointer<QLibrary> lib(new QLibrary(libUrl));
     bool loadOk = lib->load();
 
     if (!loadOk) {
@@ -444,7 +442,7 @@ Task::ReportResult AddPluginTask::report() {
         }
     }
 
-    ref = new PluginRef(p, lib.release(), desc);
+    ref = new PluginRef(p, lib.take(), desc);
     ps->registerPlugin(ref);
 
     return ReportResult_Finished;

@@ -28,8 +28,6 @@
 #include <U2Core/BioStruct3D.h>
 #include <U2Core/BioStruct3DObject.h>
 
-#include <memory>
-
 namespace U2 {
 
 /** Reference to a subset of BioStruct3D */
@@ -105,7 +103,7 @@ public:
     StructuralAlignmentTaskSettings getSettings() const { return settings; }
 
 private:
-    std::auto_ptr<StructuralAlignmentAlgorithm> algorithm;
+    QScopedPointer<StructuralAlignmentAlgorithm> algorithm;
     StructuralAlignmentTaskSettings settings;
 
     StructuralAlignment result;

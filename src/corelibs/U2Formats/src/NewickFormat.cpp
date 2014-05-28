@@ -19,15 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "NewickFormat.h"
-
 #include <U2Core/DatatypeSerializeUtils.h>
-#include <U2Core/U2OpStatus.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/PhyTreeObject.h>
 #include <U2Core/TextUtils.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2SafePoints.h>
+
+#include "NewickFormat.h"
 
 namespace U2 {
 
@@ -45,10 +45,10 @@ NewickFormat::NewickFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags_W
 
 #define BUFF_SIZE 1024
 
-static QList<GObject*> parseTrees(IOAdapter* io, const U2DbiRef& dbiRef, U2OpStatus& si);
+static QList<GObject*> parseTrees(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap &fs, U2OpStatus& si);
 
 Document* NewickFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
-    QList<GObject*> objects = parseTrees(io, dbiRef, os);
+    QList<GObject*> objects = parseTrees(io, dbiRef, fs, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     Document* d = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
     return d;
@@ -126,17 +126,18 @@ FormatCheckResult NewickFormat::checkRawData(const QByteArray& rawData, const GU
     return FormatDetection_HighSimilarity;
 }
 
-static QList<GObject*> parseTrees(IOAdapter *io, const U2DbiRef& dbiRef, U2OpStatus& si) {
+static QList<GObject*> parseTrees(IOAdapter *io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& si) {
     QList<GObject*> objects;
     DbiOperationsBlock opBlock(dbiRef, si);
     CHECK_OP(si, objects);
+    Q_UNUSED(opBlock);
     QList<PhyTree> trees = NewickPhyTreeSerializer::parseTrees(io, si);
     CHECK_OP(si, objects);
 
     for (int i=0; i<trees.size(); i++) {
         PhyTree tree = trees[i];
         QString objName = (0 == i) ? QString("Tree") : QString("Tree%1").arg(i + 1);
-        PhyTreeObject *obj = PhyTreeObject::createInstance(tree, objName, dbiRef, si);
+        PhyTreeObject *obj = PhyTreeObject::createInstance(tree, objName, dbiRef, si, fs);
         CHECK_OP(si, objects);
         objects.append(obj);
     }

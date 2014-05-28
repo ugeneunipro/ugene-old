@@ -57,7 +57,8 @@ public:
     static U2Sequence copySequence(const DNASequence& srcSeq, const U2DbiRef& dstDbi, U2OpStatus& os);
     static U2Sequence copySequence(const U2EntityRef& srcSeq, const U2DbiRef& dstDbi, U2OpStatus& os);
 
-    static U2EntityRef import(const U2DbiRef& dbiRef, const DNASequence& seq, U2OpStatus& os);
+    static U2EntityRef import(const U2DbiRef &dbiRef, const DNASequence &seq, U2OpStatus &os);
+    static U2EntityRef import(const U2DbiRef& dbiRef, const QString &folder, const DNASequence& seq, U2OpStatus& os);
 
     static void setQuality(const U2EntityRef& entityRef, const DNAQuality& quality);
 };
@@ -70,7 +71,7 @@ public:
         bool lazyMode = false, bool singleThread = true);
     virtual ~U2SequenceImporter();
     
-    void startSequence(const U2DbiRef& dbiRef, const QString& visualName, bool circular, U2OpStatus& os);
+    void startSequence(const U2DbiRef& dbiRef, const QString &folder, const QString& visualName, bool circular, U2OpStatus& os);
     virtual void addBlock(const char* data, qint64 len, U2OpStatus& os);
     void addSequenceBlock(const U2EntityRef& seqId, const U2Region& r, U2OpStatus& os);
     virtual void addDefaultSymbolsBlock(int n, U2OpStatus& os);
@@ -89,6 +90,7 @@ protected:
     void _addBuffer2Db(U2OpStatus& os);
 
     DbiConnection           con;
+    QString                 folder;
     qint64                  insertBlockSize;
 
     U2Sequence              sequence;
@@ -122,7 +124,7 @@ public:
     virtual qint64 getCurrentLength() const;
 
 private:
-    void startSequence(const U2DbiRef& dbiRef, const QString& visualName, bool circular, U2OpStatus& os);
+    void startSequence(const U2DbiRef& dbiRef, const QString& folder, const QString& visualName, bool circular, U2OpStatus& os);
     void addSequenceBlock(const U2EntityRef& seqId, const U2Region& r, U2OpStatus& os);
     U2Sequence finalizeSequence(U2OpStatus& os);
     void setCaseAnnotationsMode(CaseAnnotationsMode mode);

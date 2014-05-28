@@ -167,33 +167,21 @@ ChemicalElemColorScheme::ChemicalElemColorScheme(const BioStruct3DObject *biostr
 
 /* class ChainsColorScheme : public BioStruct3DColorScheme */
 
-const QMap<int, QColor> ChainsColorScheme::getChainColors(const BioStruct3DObject *biostrucObj) {
+const QMap<int, QColor> ChainsColorScheme::getChainColors(const BioStruct3DObject *biostructObj) {
     QMap<int, QColor> colorMap;
-    //AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
-    
-    Document *doc = biostrucObj->getDocument();
-    QList<GObjectRelation> relations = biostrucObj->findRelatedObjectsByRole(GObjectRelationRole::ANNOTATION_TABLE);
-    
-    if (doc) {
-        
-        QList<GObject*> aObjs;
-        foreach(GObjectRelation r, relations) {
-             aObjs += GObjectUtils::selectObjectByReference(r.ref, doc->getObjects(), UOF_LoadedOnly );
-        } 
 
+    if (NULL != biostructObj->getDocument()) {
+        QList<GObject *> aObjs = GObjectUtils::selectRelationsFromParentDoc(biostructObj, GObjectTypes::ANNOTATION_TABLE, ObjectRole_AnnotationTable);
         foreach (GObject* obj, aObjs ) {
             AnnotationTableObject* ao = qobject_cast<AnnotationTableObject *>(obj);
-            SAFE_POINT( NULL != ao, "Invalid annotation table!", colorMap );
+            SAFE_POINT(NULL != ao, "Invalid annotation table!", colorMap);
 
-            foreach ( const Annotation &a, ao->getAnnotations( ) ) {
-                const QString name = a.getName();
-                if (name.startsWith(BioStruct3D::MoleculeAnnotationTag)) {
-                    bool ok = false;
-                    int chainId = a.findFirstQualifierValue(BioStruct3D::ChainIdQualifierName).toInt(&ok);
-                    assert(ok && chainId != 0);
-                    QColor color = FeatureColors::genLightColor(QString("chain_%1").arg(chainId));
-                    colorMap.insert(chainId, color);
-                }
+            foreach (const Annotation &a, ao->getAnnotationsByName(BioStruct3D::MoleculeAnnotationTag)) {
+                bool ok = false;
+                const int chainId = a.findFirstQualifierValue(BioStruct3D::ChainIdQualifierName).toInt(&ok);
+                SAFE_POINT(ok && chainId != 0, "Invalid type conversion", colorMap);
+                const QColor color = FeatureColors::genLightColor(QString("chain_%1").arg(chainId));
+                colorMap.insert(chainId, color);
             }
         }
     }
@@ -224,23 +212,20 @@ Color4f ChainsColorScheme::getSchemeAtomColor(const SharedAtom& atom) const
     }
 }
 
-
 /* class SecStructColorScheme : public BioStruct3DColorScheme */
 
 const QMap<QString, QColor> SecStructColorScheme::getSecStructAnnotationColors(const BioStruct3DObject *biostruct) {
     QMap<QString, QColor> colors;
     AnnotationSettingsRegistry* asr = AppContext::getAnnotationsSettingsRegistry();
 
-    // bug-2857: GObject relations shoud be used
     Document *doc = biostruct->getDocument();
     if (doc) {
-        foreach (GObject* obj, doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE) ) {
+        QList<GObject *> targetAnnotations = GObjectUtils::selectRelationsFromParentDoc(biostruct, GObjectTypes::ANNOTATION_TABLE, ObjectRole_AnnotationTable);
+        foreach (GObject* obj, targetAnnotations) {
             AnnotationTableObject *ao = qobject_cast<AnnotationTableObject *>(obj);
-            SAFE_POINT( NULL != ao, "Invalid annotation table!", colors );
+            SAFE_POINT(NULL != ao, "Invalid annotation table!", colors);
 
-            foreach ( const Annotation &a,
-                ao->getAnnotationsByName( BioStruct3D::SecStructAnnotationTag ) )
-            {
+            foreach (const Annotation &a, ao->getAnnotationsByName(BioStruct3D::SecStructAnnotationTag)) {
                 QString ssName = a.getQualifiers().first().value;
                 AnnotationSettings* as = asr->getAnnotationSettings(ssName);
                 colors.insert(ssName, as->color);

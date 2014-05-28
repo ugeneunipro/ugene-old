@@ -196,7 +196,7 @@ Document * DifferentialFormat::loadDocument( IOAdapter *io, const U2DbiRef &targ
     QList<AnnotationData> anns = parseAnnotations(io, os);
     CHECK_OP(os, NULL);
 
-    AnnotationTableObject *obj = new AnnotationTableObject( getAnnotationName( ), targetDb );
+    AnnotationTableObject *obj = new AnnotationTableObject( getAnnotationName( ), targetDb, hints );
     foreach ( const AnnotationData &data, anns ) {
         obj->addAnnotation( data );
     }

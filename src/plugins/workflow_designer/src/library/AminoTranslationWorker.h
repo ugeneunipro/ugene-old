@@ -29,65 +29,66 @@
 
 namespace U2 {
 
-    namespace LocalWorkflow {
+namespace LocalWorkflow {
 
-        class AminoTranslationSettings{
-        public:
-            QString resultName;
-            QVector<U2Region> regionsDirect;
-            QVector<U2Region> regionsComplementary;
-            QSharedPointer<U2SequenceObject> seqObj;
-            DNATranslation* aminoTT;
-        };
+class AminoTranslationSettings{
+public:
+    QString resultName;
+    QVector<U2Region> regionsDirect;
+    QVector<U2Region> regionsComplementary;
+    QSharedPointer<U2SequenceObject> seqObj;
+    DNATranslation* aminoTT;
+};
 
-        class TranslateSequence2AminoTask : public Task{
-            Q_OBJECT    
-        public:
-            TranslateSequence2AminoTask(const AminoTranslationSettings& _configs):
-                    Task("Translate sequence to amino", TaskFlag_None),configs(_configs){}
-            virtual void run();
-            QList<U2SequenceObject*> popResults(){return results;}
-        private:
-            QList<U2SequenceObject*> results; 
-            AminoTranslationSettings configs;           
-        };  
+class TranslateSequence2AminoTask : public Task{
+    Q_OBJECT
+public:
+    TranslateSequence2AminoTask(const AminoTranslationSettings &configs, const U2DbiRef &dbiRef);
+    virtual void run();
+    QList<U2SequenceObject*> popResults(){return results;}
+private:
+    QList<U2SequenceObject*> results;
+    AminoTranslationSettings configs;
+    const U2DbiRef dbiRef;
+};
 
-        class AminoTranslationPrompter;
-        typedef PrompterBase<AminoTranslationPrompter> AminoTranslationPrompterBase;
+class AminoTranslationPrompter;
+typedef PrompterBase<AminoTranslationPrompter> AminoTranslationPrompterBase;
 
-        class AminoTranslationPrompter : public AminoTranslationPrompterBase {
-            Q_OBJECT
-        public:
-            AminoTranslationPrompter(Actor* p = 0) : AminoTranslationPrompterBase(p) {}
-        protected:
-            QString composeRichDoc();
-        };
+class AminoTranslationPrompter : public AminoTranslationPrompterBase {
+    Q_OBJECT
+public:
+    AminoTranslationPrompter(Actor* p = 0) : AminoTranslationPrompterBase(p) {}
+protected:
+    QString composeRichDoc();
+};
 
-        class AminoTranslationWorker : public BaseWorker {
-            Q_OBJECT
-        public:
-            AminoTranslationWorker(Actor* a);
+class AminoTranslationWorker : public BaseWorker {
+    Q_OBJECT
+public:
+    AminoTranslationWorker(Actor* a);
 
-            virtual void init();
-            virtual Task* tick();
-            virtual void cleanup();
+    virtual void init();
+    virtual Task* tick();
+    virtual void cleanup();
 
-            private slots:
-                void sl_taskFinished();
+    private slots:
+        void sl_taskFinished();
 
-        protected:
-            IntegralBus *input, *output;
-        }; 
+protected:
+    IntegralBus *input, *output;
+}; 
 
-        class AminoTranslationWorkerFactory : public DomainFactory {
-        public:
-            static const QString ACTOR_ID;
-            static void init();
-            AminoTranslationWorkerFactory() : DomainFactory(ACTOR_ID) {}
-            virtual Worker* createWorker(Actor* a) {return new AminoTranslationWorker(a);}
-        };
+class AminoTranslationWorkerFactory : public DomainFactory {
+public:
+    static const QString ACTOR_ID;
+    static void init();
+    AminoTranslationWorkerFactory() : DomainFactory(ACTOR_ID) {}
+    virtual Worker* createWorker(Actor* a) {return new AminoTranslationWorker(a);}
+};
 
-    }// Workflow namespace
+}// Workflow namespace
+
 }// U2 namespace
 
 #endif

@@ -65,7 +65,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
     GTGlobals::sleep();
 // Expected state: in project view 1.gb document has marked as modified (with blue color)
-    QTreeWidgetItem *d = GTUtilsProjectTreeView::findItem(os, "1.gb");
+    QModelIndex d = GTUtilsProjectTreeView::findIndex(os, "1.gb");
     GTUtilsProjectTreeView::itemModificationCheck(os, d, true);
 }
 
@@ -92,7 +92,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) { //CHANGES another annotation created
 
     GTGlobals::sleep();
     // Expected state: in project view 1.gb document has marked as modified (with blue color)
-    QTreeWidgetItem *d = GTUtilsProjectTreeView::findItem(os, "1.gb");
+    QModelIndex d = GTUtilsProjectTreeView::findIndex(os, "1.gb");
     GTUtilsProjectTreeView::itemModificationCheck(os, d, true);
 }
 
@@ -141,7 +141,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
 // Expected state: in project view 1.gb document has marked as modified (with blue color)
     GTGlobals::sleep();
-    QTreeWidgetItem *d = GTUtilsProjectTreeView::findItem(os, "1.gb");
+    QModelIndex d = GTUtilsProjectTreeView::findIndex(os, "1.gb");
     GTUtilsProjectTreeView::itemModificationCheck(os, d, true);
 
 // 7. Use menu {File->Close Project}

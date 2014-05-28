@@ -19,7 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QTemporaryFile>
 

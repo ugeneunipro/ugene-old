@@ -69,13 +69,13 @@ Task * ProfileToProfileWorker::tick() {
 
         QVariantMap qm = m.getData().toMap();
         SharedDbiDataHandler masterMsaId = qm.value(MASTER_PROFILE_SLOT_ID).value<SharedDbiDataHandler>();
-        std::auto_ptr<MAlignmentObject> masterMsaObj(StorageUtils::getMsaObject(context->getDataStorage(), masterMsaId));
-        SAFE_POINT(NULL != masterMsaObj.get(), "NULL MSA Object!", NULL);
+        QScopedPointer<MAlignmentObject> masterMsaObj(StorageUtils::getMsaObject(context->getDataStorage(), masterMsaId));
+        SAFE_POINT(!masterMsaObj.isNull(), "NULL MSA Object!", NULL);
         MAlignment masterMsa = masterMsaObj->getMAlignment();
 
         SharedDbiDataHandler secondMsaId = qm.value(SECOND_PROFILE_SLOT_ID).value<SharedDbiDataHandler>();
-        std::auto_ptr<MAlignmentObject> secondMsaObj(StorageUtils::getMsaObject(context->getDataStorage(), secondMsaId));
-        SAFE_POINT(NULL != secondMsaObj.get(), "NULL MSA Object!", NULL);
+        QScopedPointer<MAlignmentObject> secondMsaObj(StorageUtils::getMsaObject(context->getDataStorage(), secondMsaId));
+        SAFE_POINT(!secondMsaObj.isNull(), "NULL MSA Object!", NULL);
         MAlignment secondMsa = secondMsaObj->getMAlignment();
 
         Task *t = new ProfileToProfileTask(masterMsa, secondMsa);

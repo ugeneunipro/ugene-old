@@ -98,6 +98,7 @@ void WriteVariationWorkerFactory::init() {
     DocumentFormatConstraints constr;
     constr.supportedObjectTypes.insert(GObjectTypes::VARIANT_TRACK);
     constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    constr.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats(constr);
 
     if(!supportedFormats.isEmpty()) {

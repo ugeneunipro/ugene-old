@@ -26,6 +26,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5

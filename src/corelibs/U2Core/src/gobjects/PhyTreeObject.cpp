@@ -20,7 +20,9 @@
  */
 
 #include <U2Core/DatatypeSerializeUtils.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/RawDataUdrSchema.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -30,12 +32,29 @@
 
 namespace U2 {
 
+/////// U2PhyTree Implementation ///////////////////////////////////////////////////////////////////
+
+U2PhyTree::U2PhyTree() : U2RawData() {
+
+}
+
+U2PhyTree::U2PhyTree(const U2DbiRef &dbiRef) : U2RawData(dbiRef) {
+
+}
+
+U2DataType U2PhyTree::getType() {
+    return U2Type::PhyTree;
+}
+
+/////// PhyTreeObject Implementation ///////////////////////////////////////////////////////////////////
+
 PhyTreeObject * PhyTreeObject::createInstance(const PhyTree &tree, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap) {
-    U2RawData object(dbiRef);
-    object.url = objectName;
+    U2PhyTree object(dbiRef);
+    object.visualName = objectName;
     object.serializer = NewickPhyTreeSerializer::ID;
 
-    RawDataUdrSchema::createObject(dbiRef, object, os);
+    const QString folder = hintsMap.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+    RawDataUdrSchema::createObject(dbiRef, folder, object, os);
     CHECK_OP(os, NULL);
 
     U2EntityRef entRef(dbiRef, object.id);
@@ -57,11 +76,11 @@ void PhyTreeObject::commit(const PhyTree &tree, const U2EntityRef &treeRef) {
 }
 
 void PhyTreeObject::commit() {
+    ensureDataLoaded();
     commit(tree, entityRef);
 }
 
-void PhyTreeObject::retrieve() {
-    U2OpStatus2Log os;
+void PhyTreeObject::loadDataCore(U2OpStatus &os) {
     QString serializer = RawDataUdrSchema::getObject(entityRef, os).serializer;
     CHECK_OP(os, );
     SAFE_POINT(NewickPhyTreeSerializer::ID == serializer, "Unknown serializer id", );
@@ -76,7 +95,6 @@ PhyTreeObject::PhyTreeObject(const QString &objectName, const U2EntityRef &treeR
 : GObject(GObjectTypes::PHYLOGENETIC_TREE, objectName, hintsMap)
 {
     entityRef = treeRef;
-    retrieve();
 }
 
 PhyTreeObject::PhyTreeObject(const PhyTree &tree, const QString &objectName, const U2EntityRef &treeRef, const QVariantMap &hintsMap)
@@ -90,7 +108,13 @@ void PhyTreeObject::onTreeChanged() {
     setModified(true);
 }
 
+const PhyTree& PhyTreeObject::getTree() const {
+    ensureDataLoaded();
+    return tree;
+}
+
 GObject* PhyTreeObject::clone(const U2DbiRef &dstDbi, U2OpStatus &os) const {
+    ensureDataLoaded();
     PhyTreeObject* cln = createInstance(tree, getGObjectName(), dstDbi, os, getGHintsMap());
     CHECK_OP(os, NULL);
     cln->setIndexInfo(getIndexInfo());
@@ -104,6 +128,7 @@ void PhyTreeObject::setTree(const PhyTree& _tree) {
 }
 
 void PhyTreeObject::rerootPhyTree(PhyNode* node) {
+    ensureDataLoaded();
     PhyTreeUtils::rerootPhyTree(tree, node);
     onTreeChanged();
     emit si_phyTreeChanged();
@@ -137,8 +162,8 @@ bool PhyTreeObject::treesAreAlike( const PhyTree& tree1, const PhyTree& tree2 )
     return true;
 }
 
-const PhyNode* PhyTreeObject::findPhyNodeByName( const QString& name )
-{
+const PhyNode* PhyTreeObject::findPhyNodeByName( const QString& name ) {
+    ensureDataLoaded();
     QList<const PhyNode*> nodes = tree.constData()->collectNodes();
     foreach (const PhyNode* node, nodes) {
         if (node->getName() == name) {

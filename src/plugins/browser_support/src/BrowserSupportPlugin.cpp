@@ -19,13 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include "BrowserSupportPlugin.h"
-#include <U2Core/AppContext.h>
-#include <U2Gui/OpenViewTask.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/Counter.h>
+#include <QtCore/QDir>
+#include <QtCore/QUrl>
 
+#include <QtNetwork/QNetworkProxy>
 
 #include <QtGui/QClipboard>
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -34,7 +31,11 @@
 #include <QtWidgets/QApplication>
 #endif
 
-
+#include <U2Core/AppContext.h>
+#include <U2Gui/OpenViewTask.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/Counter.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -56,17 +57,10 @@
 
 #include <U2Core/LoadRemoteDocumentTask.h>
 
-#include <QtCore/QFileInfo>
-#include <QtCore/QFile>
-#include <QtCore/QUrl>
-
-#include <QtNetwork/QNetworkProxy>
-
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/GUrlUtils.h>
 
-
-#include <iostream>
+#include "BrowserSupportPlugin.h"
 
 using namespace std;
 
@@ -122,7 +116,6 @@ void BrowserSupportPlugin::sl_clipboardCheck() {
 
             QList<GUrl> urls; urls << GUrl(file, GUrl_File);
             QVariantMap hints;
-//            hints[ProjectLoaderHint_ForceFormatOptions] = true;
             Task* openTask = AppContext::getProjectLoader()->openWithProjectTask(urls, hints);
             if (openTask != NULL) {
                 AppContext::getTaskScheduler()->registerTopLevelTask(openTask);	

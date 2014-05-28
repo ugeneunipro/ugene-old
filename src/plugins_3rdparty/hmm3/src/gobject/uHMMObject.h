@@ -39,6 +39,7 @@ public:
     static const QString        OT_PNAME;
     static const QString        OT_SIGN;
     static const QString        OT_ICON;
+    static const QString        OT_LOCKED_ICON;
     static const GObjectType    UHMM_OT;
     
     UHMMObject( P7_HMM* hmm, const QString& name );

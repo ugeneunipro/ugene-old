@@ -193,17 +193,19 @@ void ZoomableAssemblyOverview::drawBackground(QPainter & p) {
     for(int i = 0 ; i < widgetWidth; ++i) {
         quint64 columnPixels = 0;
         double grayCoeffD = 0.;
-        switch(scaleType) {
-        case AssemblyBrowserSettings::Scale_Linear:
-            grayCoeffD = double(ci.coverageInfo[i]) / ci.maxCoverage;
-            columnPixels = qint64(double(ci.coverageInfo[i]) / readsPerYPixel + 0.5);
-            //grayCoeff = 255 - int(double(255) / ci.maxCoverage * ci.coverageInfo[i] + 0.5);
-            break;
-        case AssemblyBrowserSettings::Scale_Logarithmic:
-            grayCoeffD = log((double)ci.coverageInfo[i]) / logMax;
-            columnPixels = qint64(double(log((double)ci.coverageInfo[i])) / readsPerYPixel + 0.5);
-            //grayCoeff = 255 - int(double(255) / logMax * log((double)ci.coverageInfo[i]) + 0.5);
-            break;
+        if (!ci.coverageInfo.isEmpty()) {
+            switch(scaleType) {
+            case AssemblyBrowserSettings::Scale_Linear:
+                grayCoeffD = double(ci.coverageInfo[i]) / ci.maxCoverage;
+                columnPixels = qint64(double(ci.coverageInfo[i]) / readsPerYPixel + 0.5);
+                //grayCoeff = 255 - int(double(255) / ci.maxCoverage * ci.coverageInfo[i] + 0.5);
+                break;
+            case AssemblyBrowserSettings::Scale_Logarithmic:
+                grayCoeffD = log((double)ci.coverageInfo[i]) / logMax;
+                columnPixels = qint64(double(log((double)ci.coverageInfo[i])) / readsPerYPixel + 0.5);
+                //grayCoeff = 255 - int(double(255) / logMax * log((double)ci.coverageInfo[i]) + 0.5);
+                break;
+            }
         }
 
         //UGENE-style colors

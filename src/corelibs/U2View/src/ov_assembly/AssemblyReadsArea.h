@@ -43,9 +43,6 @@
 #include "AssemblyModel.h"
 #include "AssemblyNavigationWidget.h"
 
-#include <memory>
-using std::auto_ptr;
-
 namespace U2 {
 
 class AssemblyBrowser;
@@ -162,7 +159,7 @@ private:
     bool redraw;
     QPixmap cachedView;
 
-    auto_ptr<AssemblyCellRenderer> cellRenderer;
+    QScopedPointer<AssemblyCellRenderer> cellRenderer;
     
     CoveredRegionsLabel coveredRegionsLabel;
     QScrollBar * hBar;

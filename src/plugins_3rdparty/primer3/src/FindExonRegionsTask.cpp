@@ -91,12 +91,12 @@ QList<Task *> FindExonRegionsTask::onSubTaskFinished(Task *subTask) {
 }
 
 Task::ReportResult FindExonRegionsTask::report( ) {
-    QList<GObject *> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole( dnaObj,
-                                                                               GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE,
-                                                                               dnaObj->getDocument( )->getObjects( ), UOF_LoadedOnly );
+    QList<GObject *> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole( dnaObj, GObjectTypes::ANNOTATION_TABLE,
+        ObjectRole_Sequence, dnaObj->getDocument( )->getObjects( ), UOF_LoadedOnly );
 
-    AnnotationTableObject *att = relAnns.isEmpty( ) ? NULL
-                                                    : qobject_cast<AnnotationTableObject *>( relAnns.first( ) );
+    AnnotationTableObject *att = relAnns.isEmpty( )
+        ? NULL
+        : qobject_cast<AnnotationTableObject *>( relAnns.first( ) );
 
     if ( NULL == att ) {
         setError( tr( "Failed to search for exon annotations. "
@@ -115,10 +115,7 @@ Task::ReportResult FindExonRegionsTask::report( ) {
         }
     }
 
-
     qSort( exonRegions );
-
-
     return ReportResult_Finished;
 }
 

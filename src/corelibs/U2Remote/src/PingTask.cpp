@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-
-#include <memory>
 #include <cstdio>
 
 #include <U2Core/Log.h>
@@ -29,16 +27,14 @@
 
 #include <U2Remote/RemoteMachine.h>
 
-
 #include "PingTask.h"
 
 namespace U2 {
 
- 
 /************************************
 * PingTask
 ***********************************/
- 
+
 PingTask::PingTask(RemoteMachine* m)
  : Task( tr( "PingTask" ), TaskFlag_None), machine(m) 
 {

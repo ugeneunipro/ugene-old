@@ -184,6 +184,7 @@ HMMBuildToFileTask::HMMBuildToFileTask(const QString& inFile, const QString& _ou
     c.checkRawData = true;
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
     c.rawData = IOAdapterUtils::readFileHeader(inFile);
+    c.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
         stateInfo.setError(  tr("input_format_error") );

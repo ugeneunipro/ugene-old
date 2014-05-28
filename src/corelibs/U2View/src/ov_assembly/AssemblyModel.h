@@ -81,7 +81,7 @@ public:
 
     const DbiConnection& getDbiConnection() const {return dbiHandle;}
     
-    void associateWithReference(const U2CrossDatabaseReference & ref);
+    void associateWithReference(const U2DataId &refId);
     
     bool isLoadingReference()const { return loadingReference; }
     
@@ -103,6 +103,7 @@ private:
     void startLoadReferenceTask(Task * t);
     Task * createLoadReferenceAndAddToProjectTask(const U2CrossDatabaseReference& ref);
     void onReferenceRemoved();
+    void removeCrossDatabaseReference(const U2DataId& refId);
     
 signals:
     void si_referenceChanged();

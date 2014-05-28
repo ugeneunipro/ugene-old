@@ -566,7 +566,7 @@ void HRSchemaSerializer::parseGrouperOutSlots(Actor *proc, const QStringList &ou
         tokenizer.tokenizeSchema(slotDef);
         QString name;
         QString inSlot;
-        std::auto_ptr<GrouperSlotAction> action(NULL);
+        QScopedPointer<GrouperSlotAction> action(NULL);
 
         while (tokenizer.notEmpty()) {
             QString tok = tokenizer.take();
@@ -601,8 +601,8 @@ void HRSchemaSerializer::parseGrouperOutSlots(Actor *proc, const QStringList &ou
         }
 
         GrouperOutSlot slot(name, inSlot);
-        if (NULL != action.get()) {
-            slot.setAction(*action.get());
+        if (!action.isNull()) {
+            slot.setAction(*action.data());
         }
         attr->addOutSlot(slot);
 
@@ -610,7 +610,7 @@ void HRSchemaSerializer::parseGrouperOutSlots(Actor *proc, const QStringList &ou
         assert(outPort->getOutputType()->isMap());
         QMap<Descriptor, DataTypePtr> outTypeMap = outPort->getOutputType()->getDatatypesMap();
         Descriptor newTmpSlot = Descriptor(name, name, name);
-        outTypeMap[newTmpSlot] = ActionTypes::getDataTypeByAction(action.get() ? action->getType() : "");
+        outTypeMap[newTmpSlot] = ActionTypes::getDataTypeByAction(!action.isNull() ? action->getType() : "");
         DataTypePtr newType(new MapDataType(dynamic_cast<Descriptor&>(*(outPort->getType())), outTypeMap));
         outPort->setNewType(newType);
     }

@@ -50,6 +50,7 @@ public:
      * Assigns the id of @object.
      */
     static void createObject(const U2DbiRef &dbiRef, U2RawData &object, U2OpStatus &os);
+    static void createObject(const U2DbiRef &dbiRef, const QString &folder, U2RawData &object, U2OpStatus &os);
 
     /**
      * Returns the retrieved object from a database by provided @objRef.
@@ -61,7 +62,8 @@ public:
      * and creates its copy on the database with @dstDbiRef.
      * Returns the cloned object.
      */
-    static U2RawData cloneObject(const U2EntityRef &srcObjRef, const U2DbiRef &dstDbiRef, U2OpStatus &os);
+    static void cloneObject(const U2EntityRef &srcObjRef, const U2DbiRef &dstDbiRef,
+        U2RawData &dstObject, U2OpStatus &os);
 
     /**
      * Updates the data of the object by provided @objRef.

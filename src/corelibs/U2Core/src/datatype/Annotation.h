@@ -102,6 +102,10 @@ public:
 
     void                    setCaseAnnotation( bool caseAnnotation );
 
+    bool                    operator ==( const Annotation &other ) const;
+
+    bool                    operator <( const Annotation &other ) const;
+
     static bool             annotationLessThan( const Annotation &first,
                                 const Annotation &second );
 

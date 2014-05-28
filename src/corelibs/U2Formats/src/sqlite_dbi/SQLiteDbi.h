@@ -32,6 +32,7 @@ namespace U2 {
 
 class CachingFeatureDbi;
 class SQLiteObjectDbi;
+class SQLiteObjectRelationsDbi;
 class SQLiteSequenceDbi;
 class SQLiteMsaDbi;
 class SQLiteAssemblyDbi;
@@ -44,11 +45,6 @@ class SQLiteSNPTablesDbi;
 class SQLiteKnownMutationsDbi;
 class SQLiteUdrDbi;
 class DbRef;
-
-
-// Names of SQLiteDbi flags
-#define SQLITE_DBI_OPTION_APP_VERSION    (U2_PRODUCT_KEY + QString("-version"))
-
 
 /** Name of the init property used to indicate assembly reads storage method for all new assemblies */
 #define SQLITE_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY "sqlite-assembly-reads-elen-method"
@@ -66,20 +62,8 @@ class DbRef;
 /** CIGAR and sequence are packed using bits compression and stored as a single BLOB */
 #define SQLITE_DBI_ASSEMBLY_READ_COMPRESSION_METHOD_BITS_1 "compress-bits-1"
 
-
-/** Indicates object life-cycle and storage location */
-enum SQLiteDbiObjectRank {
-    /** Object  is stored in this database and is top-level (included into some folder) */
-    SQLiteDbiObjectRank_TopLevel = 1,
-    /** Object  is stored in this database and is not top-level, it is a child of another object */
-    SQLiteDbiObjectRank_Child = 2,
-    /** Object  is stored in another database, see CrossDbiReference table for details */
-    SQLiteDbiObjectRank_Remote = 3
-};
-
 // Values of SQLiteDbi flags
 #define SQLITE_DBI_VALUE_MEMORY_DB_URL ":memory:"
-
 
 class U2FORMATS_EXPORT SQLiteDbi : public U2AbstractDbi {
 public:
@@ -106,6 +90,10 @@ public:
     /** Unique database id. Used for cross-database references. */
     virtual QString getDbiId() const;
 
+    virtual bool isInitialized(U2OpStatus &os);
+
+    virtual void populateDefaultSchema(U2OpStatus& os);
+
     /** Returns database meta-info. Any set of properties to be shown to user */
     virtual QHash<QString, QString> getDbiMetaInfo(U2OpStatus& os) ;
 
@@ -114,6 +102,8 @@ public:
 
 
     virtual U2ObjectDbi* getObjectDbi();
+
+    virtual U2ObjectRelationsDbi* getObjectRelationsDbi();
 
     virtual U2SequenceDbi* getSequenceDbi();
 
@@ -150,6 +140,8 @@ public:
 
     SQLiteUdrDbi* getSQLiteUdrDbi() const;
 
+    SQLiteFeatureDbi* getSQLiteFeatureDbi() const;
+
     /** Returns properties used to initialized the database */
     virtual QHash<QString, QString> getInitProperties() const {return initProperties;}
 
@@ -168,7 +160,6 @@ private:
 
     void setState(U2DbiState state);
 
-    void populateDefaultSchema(U2OpStatus& os);
     void internalInit(const QHash<QString, QString>& props, U2OpStatus& os);
     /**
      * If the database was created by a previous version of UGENE
@@ -190,6 +181,7 @@ private:
     CachingFeatureDbi *                 cachingFeatureDbi;
 
     SQLiteObjectDbi*                    objectDbi;
+    SQLiteObjectRelationsDbi *          objectRelationsDbi;
     SQLiteSequenceDbi*                  sequenceDbi;
     SQLiteMsaDbi*                       msaDbi;
     SQLiteAssemblyDbi*                  assemblyDbi;
@@ -240,15 +232,11 @@ public:
     virtual ~SQLiteChildDBICommon(){}
 
     virtual void initSqlSchema(U2OpStatus& os) = 0;
-    virtual void shutdown(U2OpStatus&) {};
+    virtual void shutdown(U2OpStatus&) {}
 
 protected:
     SQLiteDbi*  dbi;
     DbRef*      db;
-};
-
-class SQLiteL10N : public QObject {
-    Q_OBJECT
 };
 
 } //namespace

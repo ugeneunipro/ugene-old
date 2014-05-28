@@ -258,6 +258,7 @@ SiteconBuildToFileTask::SiteconBuildToFileTask(const QString& inFile, const QStr
     c.checkRawData = true;
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
     c.rawData = IOAdapterUtils::readFileHeader(inFile);
+    c.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
         stateInfo.setError(  tr("input_format_error") );

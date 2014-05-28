@@ -19,10 +19,11 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QCoreApplication>
+
 #include <U2Core/DocumentModel.h>
 
 #include "DocumentProviderTask.h"
-
 
 namespace U2 {
 

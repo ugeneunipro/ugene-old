@@ -216,7 +216,7 @@ void PanView::registerAnnotations( const QList<Annotation> &l ) {
         const AnnotationData aData = a.getData( );
         AnnotationSettings* as = asr->getAnnotationSettings( aData );
         if ( as->visible ) {
-            rowsManager->addAnnotation( a, aData.name );
+            rowsManager->addAnnotation( a, aData );
         }
     }
     updateRows( );
@@ -316,7 +316,7 @@ void PanView::sl_onAnnotationSettingsChanged(const QStringList& changedSettings)
         }
         foreach ( const Annotation &a, changed ) {
             if (as->visible) {
-                rowsManager->addAnnotation(a, a.getName());
+                rowsManager->addAnnotation(a, a.getData());
             } else  {
                 rowsManager->removeAnnotation(a);
             }

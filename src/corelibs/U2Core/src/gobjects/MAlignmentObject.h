@@ -63,7 +63,7 @@ class U2CORE_EXPORT MAlignmentObject : public GObject {
     Q_OBJECT
 
 public:
-    explicit MAlignmentObject(const QString& name, const U2EntityRef& msaRef, const QVariantMap& hintsMap = QVariantMap());
+    MAlignmentObject(const QString& name, const U2EntityRef& msaRef, const QVariantMap& hintsMap = QVariantMap());
     ~MAlignmentObject();
 
     /** Sets type of modifications tracking for the alignment */
@@ -139,7 +139,7 @@ public:
      */
     int shiftRegion(int startPos, int startRow, int nBases, int nRows, int shift);
     void deleteColumnWithGaps(int requiredGapCount = GAP_COLUMN_ONLY);
-    void updateCachedMAlignment(MAlignmentModInfo mi = MAlignmentModInfo(),
+    void updateCachedMAlignment(const MAlignmentModInfo &mi = MAlignmentModInfo(),
         const QList<qint64> &modifiedRowIds = QList<qint64>(),
         const QList<qint64> &removedRowIds = QList<qint64>());
     void sortRowsByList(const QStringList& order);
@@ -150,7 +150,11 @@ public:
 signals:
     void si_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);
     void si_completeStateChanged(bool complete);
-    
+
+protected:
+    void loadDataCore(U2OpStatus &os);
+    void loadAlignment(U2OpStatus &os);
+
 private:
     /**
      * Returns maximum count of subsequent gap columns in the region that starts from column
@@ -161,7 +165,7 @@ private:
      */
     int getMaxWidthOfGapRegion( const U2Region &rows, int pos, int maxGaps, U2OpStatus &os );
 
-    MAlignment cachedMAlignment;
+    MAlignment      cachedMAlignment;
     MSAMemento*     memento;
 };
 

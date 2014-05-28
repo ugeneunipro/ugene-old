@@ -44,6 +44,7 @@
 
 #include <U2Gui/LastUsedDirHelper.h>
 
+#include <U2Gui/SharedConnectionsDialog.h>
 #include <U2Gui/CreateDocumentFromTextDialogController.h>
 #include <U2Gui/SearchGenbankSequenceDialogController.h>
 #include <U2Gui/DownloadRemoteFileDialog.h>
@@ -110,6 +111,12 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     downloadRemoteFileAction->setIcon(QIcon(":ugene/images/world_go.png"));
     connect(downloadRemoteFileAction, SIGNAL(triggered()), SLOT(sl_downloadRemoteFile()));
 
+    accessSharedDatabaseAction = new QAction(tr("Connect to shared database..."), this);
+    accessSharedDatabaseAction->setObjectName(ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    accessSharedDatabaseAction->setIcon(QIcon(":ugene/images/world_go.png"));
+    accessSharedDatabaseAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_L));
+    connect(accessSharedDatabaseAction, SIGNAL(triggered()), SLOT(sl_accessSharedDatabase()));
+
     searchGenbankEntryAction = new QAction(tr("Search NCBI Genbank..."), this);
     searchGenbankEntryAction->setObjectName(ACTION_PROJECTSUPPORT__SEARCH_GENBANK);
     searchGenbankEntryAction->setIcon(QIcon(":ugene/images/world_go.png"));
@@ -135,10 +142,18 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     updateRecentItemsMenu();
 
     QList<QAction*> actions;
-    actions << newProjectAction << newDocumentFromtext << downloadRemoteFileAction << searchGenbankEntryAction
-        << openProjectAction << addExistingDocumentAction << separatorAction1 <<  recentItemsMenu->menuAction() 
-        << recentProjectsMenu->menuAction() << separatorAction2;
-    
+    actions << newProjectAction
+            << newDocumentFromtext
+            << downloadRemoteFileAction
+            << accessSharedDatabaseAction
+            << searchGenbankEntryAction
+            << openProjectAction
+            << addExistingDocumentAction
+            << separatorAction1
+            <<  recentItemsMenu->menuAction()
+            << recentProjectsMenu->menuAction()
+            << separatorAction2;
+
     fileMenu->insertActions(fileMenu->actions().first(), actions);
 
     QToolBar* tb = mw->getToolbar(MWTOOLBAR_MAIN);
@@ -154,7 +169,6 @@ void ProjectLoaderImpl::updateState() {
 }
 
 #define MAX_RECENT_FILES 7
-
 
 void ProjectLoaderImpl::sl_newProject() {
     QWidget *p = (QWidget*)AppContext::getMainWindow()->getQMainWindow();
@@ -558,7 +572,7 @@ QString ProjectLoaderImpl::getLastProjectURL() {
 
 void ProjectLoaderImpl::prependToRecentItems( const QString& url )
 {
-    assert(!url.isEmpty());
+    SAFE_POINT( !url.isEmpty( ), "Invalid URL string!", );
     QStringList recentFiles =AppContext::getSettings()->getValue(SETTINGS_DIR + RECENT_ITEMS_SETTINGS_NAME, QStringList(), true).toStringList();
     recentFiles.removeAll(url);
     recentFiles.prepend(url);
@@ -623,6 +637,13 @@ void ProjectLoaderImpl::sl_downloadRemoteFile()
 {
     QWidget *p = (QWidget*)(AppContext::getMainWindow()->getQMainWindow());
     DownloadRemoteFileDialog dlg(p);
+    dlg.exec();
+}
+
+void ProjectLoaderImpl::sl_accessSharedDatabase()
+{
+    QWidget *p = (QWidget*)(AppContext::getMainWindow()->getQMainWindow());
+    SharedConnectionsDialog dlg(p);
     dlg.exec();
 }
 

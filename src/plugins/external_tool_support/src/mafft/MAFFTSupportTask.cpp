@@ -19,6 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
+
 #include "MAFFTSupportTask.h"
 #include "MAFFTSupport.h"
 
@@ -314,6 +317,7 @@ void MAFFTWithExtFileSpecifySupportTask::prepare(){
     c.checkRawData = true;
     c.supportedObjectTypes += GObjectTypes::MULTIPLE_ALIGNMENT;
     c.rawData = IOAdapterUtils::readFileHeader(settings.inputFilePath);
+    c.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
     if (formats.isEmpty()) {
         stateInfo.setError(  tr("input_format_error") );

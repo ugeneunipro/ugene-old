@@ -24,6 +24,7 @@
 
 #include <U2Core/global.h>
 #include <U2Core/BackgroundTaskRunner.h>
+#include <U2View/MSAEditorConsensusCache.h>
 
 #include <U2View/MSAEditorConsensusCache.h>
 

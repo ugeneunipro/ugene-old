@@ -94,6 +94,8 @@ public:
      */
     bool                    isTopLevelGroup( ) const;
 
+    bool                    operator ==( const AnnotationGroup &other ) const;
+
     static const QString    ROOT_GROUP_NAME;
     static const QChar      GROUP_PATH_SEPARATOR;
 

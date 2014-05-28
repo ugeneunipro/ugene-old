@@ -23,12 +23,14 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/AddNewDocumentDialogController.h \
            src/util/AddNewDocumentDialogImpl.h \
            src/util/AuthenticationDialog.h \
+           src/util/AuthenticationWidget.h \
            src/util/BaseDocumentFormatConfigurators.h \
            src/util/BreakpointConditionEditDialog.h \
            src/util/CreateAnnotationDialog.h \
            src/util/CreateAnnotationWidgetController.h \
            src/util/CreateDocumentFromTextDialogController.h \
            src/util/CreateObjectRelationDialogController.h \
+           src/util/CredentialsAskerGui.h \
            src/util/DialogUtils.h \
            src/util/DocumentFormatComboboxController.h \
            src/util/DownloadRemoteFileDialog.h \
@@ -46,12 +48,12 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/GUIUtils.h \
            src/util/HBar.h \
            src/util/ImageExporter.h \
+           src/util/HelpButton.h \
            src/util/ImportDialogsFactories.h \
            src/util/LastUsedDirHelper.h \
            src/util/ObjectViewTreeController.h \
            src/util/PositionSelector.h \
            src/util/ProjectDocumentComboBoxController.h \
-           src/util/ProjectTreeController.h \
            src/util/ProjectTreeItemSelectorDialog.h \
            src/util/ProjectTreeItemSelectorDialogImpl.h \
            src/util/RangeSelector.h \
@@ -68,12 +70,27 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/SuggestCompleter.h \
            src/util/TextEditorDialog.h \
            src/util/TreeWidgetUtils.h \
-           src/util/logview/LogView.h \
            src/util/ImportDialogs/AceImportDialog.h \
+           src/util/logview/LogView.h \
            src/util/GenbankLocationValidator.h \
-           src/util/HelpButton.h
+           src/util/project/ConnectionHelper.h \
+           src/util/project/DocumentFolders.h \
+           src/util/project/FolderNameDialog.h \
+           src/util/project/LoadDocumentTaskProvider.h \
+           src/util/project/ProjectTreeController.h \
+           src/util/project/ProjectTreeControllerModeSettings.h \
+           src/util/project/ProjectUpdater.h \
+           src/util/project/ProjectUtils.h \
+           src/util/project/ProjectViewModel.h \
+           src/util/shared_db/CommonImportOptionsDialog.h \
+           src/util/shared_db/EditConnectionDialog.h \
+           src/util/shared_db/ImportOptionsWidget.h \
+           src/util/shared_db/ImportToDatabaseDialog.h \
+           src/util/shared_db/ItemToImportEditDialog.h \
+           src/util/shared_db/SharedConnectionsDialog.h
 FORMS += src/util/ui/AddNewDocumentDialog.ui \
-         src/util/ui/AuthentificationDialog.ui \
+         src/util/ui/AuthenticationDialog.ui \
+         src/util/ui/AuthenticationWidget.ui \
          src/util/ui/BreakpointConditionEditDialog.ui \
          src/util/ui/CreateDocumentFromTextDialog.ui \
          src/util/ui/CreateObjectRelationDialog.ui \
@@ -83,6 +100,7 @@ FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/ExportAnnotationsDialog.ui \
          src/util/ui/ExportDocumentDialog.ui \
          src/util/ui/ExportImageDialog.ui \
+         src/util/ui/FolderNameDialog.ui \
          src/util/ui/FormatSettingsDialog.ui \
          src/util/ui/MultipartDocFormatConfiguratorWidget.ui \
          src/util/ui/ProjectTreeItemSelectorDialogBase.ui \
@@ -92,7 +110,13 @@ FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/SearchGenbankSequenceDialog.ui \
          src/util/ui/SeqPasterWidget.ui \
          src/util/ui/TextEditorDialog.ui \
-         src/util/ImportDialogs/ui/AceImportDialog.ui
+         src/util/ImportDialogs/ui/AceImportDialog.ui \
+         src/util/shared_db/ui/CommonImportOptionsDialog.ui \
+         src/util/shared_db/ui/EditConnectionDialog.ui \
+         src/util/shared_db/ui/ImportOptionsWidget.ui \
+         src/util/shared_db/ui/ImportToDatabaseDialog.ui \
+         src/util/shared_db/ui/ItemToImportEditDialog.ui \
+         src/util/shared_db/ui/SharedConnectionsDialog.ui
 SOURCES += src/MainWindow.cpp \
            src/Notification.cpp \
            src/NotificationWidget.cpp \
@@ -111,12 +135,14 @@ SOURCES += src/MainWindow.cpp \
            src/options_panel/ShowHideSubgroupWidget.cpp \
            src/util/AddNewDocumentDialogImpl.cpp \
            src/util/AuthenticationDialog.cpp \
+           src/util/AuthenticationWidget.cpp \
            src/util/BaseDocumentFormatConfigurators.cpp \
            src/util/BreakpointConditionEditDialog.cpp \
            src/util/CreateAnnotationDialog.cpp \
            src/util/CreateAnnotationWidgetController.cpp \
            src/util/CreateDocumentFromTextDialogController.cpp \
            src/util/CreateObjectRelationDialogController.cpp \
+           src/util/CredentialsAskerGui.cpp \
            src/util/DialogUtils.cpp \
            src/util/DocumentFormatComboboxController.cpp \
            src/util/DownloadRemoteFileDialog.cpp \
@@ -134,12 +160,12 @@ SOURCES += src/MainWindow.cpp \
            src/util/GUIUtils.cpp \
            src/util/HBar.cpp \
            src/util/ImageExporter.cpp \
+           src/util/HelpButton.cpp \
            src/util/ImportDialogsFactories.cpp \
            src/util/LastUsedDirHelper.cpp \
            src/util/ObjectViewTreeController.cpp \
            src/util/PositionSelector.cpp \
            src/util/ProjectDocumentComboBoxController.cpp \
-           src/util/ProjectTreeController.cpp \
            src/util/ProjectTreeItemSelectorDialog.cpp \
            src/util/RangeSelector.cpp \
            src/util/RegionSelector.cpp \
@@ -155,10 +181,23 @@ SOURCES += src/MainWindow.cpp \
            src/util/SuggestCompleter.cpp \
            src/util/TextEditorDialog.cpp \
            src/util/TreeWidgetUtils.cpp \
-           src/util/logview/LogView.cpp \
            src/util/ImportDialogs/AceImportDialog.cpp \
+           src/util/logview/LogView.cpp \
            src/util/GenbankLocationValidator.cpp \
-           src/util/HelpButton.cpp
+           src/util/project/ConnectionHelper.cpp \
+           src/util/project/DocumentFolders.cpp \
+           src/util/project/FolderNameDialog.cpp \
+           src/util/project/ProjectTreeController.cpp \
+           src/util/project/ProjectTreeControllerModeSettings.cpp \
+           src/util/project/ProjectUpdater.cpp \
+           src/util/project/ProjectUtils.cpp \
+           src/util/project/ProjectViewModel.cpp \
+           src/util/shared_db/CommonImportOptionsDialog.cpp \
+           src/util/shared_db/EditConnectionDialog.cpp \
+           src/util/shared_db/ImportOptionsWidget.cpp \
+           src/util/shared_db/ImportToDatabaseDialog.cpp \
+           src/util/shared_db/ItemToImportEditDialog.cpp \
+           src/util/shared_db/SharedConnectionsDialog.cpp
 RESOURCES += U2Gui.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \

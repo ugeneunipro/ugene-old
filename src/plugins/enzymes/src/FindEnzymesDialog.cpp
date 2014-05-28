@@ -44,7 +44,6 @@
 #include <U2Formats/GenbankLocationParser.h>
 
 #include <QtCore/QCoreApplication>
-#include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QVBoxLayout>

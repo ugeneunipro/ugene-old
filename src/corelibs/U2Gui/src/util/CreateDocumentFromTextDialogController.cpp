@@ -19,35 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/IOAdapter.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/Task.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/DocumentSelection.h>
-#include <U2Core/SelectionModel.h>
-#include <U2Core/TaskSignalMapper.h>
-#include <U2Core/ProjectService.h>
-#include <U2Core/SaveDocumentTask.h>
-#include <U2Core/Log.h>
-#include <U2Core/L10n.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2SafePoints.h>
-
-#include <U2Formats/DocumentFormatUtils.h>
-#include <U2Formats/FastaFormat.h>
-#include <U2Formats/GenbankPlainTextFormat.h>
-
-#include <U2Gui/ObjectViewModel.h>
-#include <U2Gui/MainWindow.h>
-#include <U2Gui/LastUsedDirHelper.h>
-
-#include "ui/ui_CreateDocumentFromTextDialog.h"
-#include "CreateDocumentFromTextDialogController.h"
-#include <U2Gui/HelpButton.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
 #include <QtGui/QFileDialog>
@@ -57,6 +28,37 @@
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #endif
+
+#include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DocumentSelection.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/L10n.h>
+#include <U2Core/Log.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/ProjectService.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/SelectionModel.h>
+#include <U2Core/Task.h>
+#include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Formats/DocumentFormatUtils.h>
+#include <U2Formats/FastaFormat.h>
+#include <U2Formats/GenbankPlainTextFormat.h>
+
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/ObjectViewModel.h>
+
+#include "CreateDocumentFromTextDialogController.h"
+#include "ui/ui_CreateDocumentFromTextDialog.h"
 
 namespace U2{
 
@@ -168,7 +170,7 @@ void CreateDocumentFromTextDialogController::acceptWithExistingProject() {
     DNASequence seq = w->getSequence();
     seq.setName(ui->nameEdit->text());
     QList<GObject*> objs;
-    U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), seq.getName(), objs, seq, os);
+    U2SequenceObject *seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(doc->getDbiRef(), U2ObjectDbi::ROOT_FOLDER, seq.getName(), objs, seq, os);
     CHECK_OP_EXT(os, delete doc, );
     doc->addObject( seqObj );
 

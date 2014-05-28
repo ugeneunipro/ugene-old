@@ -166,7 +166,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 #ifdef  Q_OS_MAC
     scriptText = "if(size(in_seq) >= 10000) {out_seq = in_seq;}";
 #else
-    scriptText = "if(size(in_seq) >= 10000) \{out_seq = in_seq;\}";
+    scriptText = "if(size(in_seq) >= 10000) {out_seq = in_seq;}";
 #endif
 
     GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogFiller(os, "",

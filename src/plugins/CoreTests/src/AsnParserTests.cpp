@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <memory>
-
 #include <U2Core/IOAdapter.h>
 #include <U2Core/AppContext.h>
 #include <U2Formats/ASNFormat.h>
@@ -65,7 +63,7 @@ void GTest_LoadAsnTree::init(XMLTestFormat*, const QDomElement& el)
         return;
     } 
     
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
 
     bool ok = io->open(url, IOAdapterMode_Read);
     if (!ok) {
@@ -73,10 +71,8 @@ void GTest_LoadAsnTree::init(XMLTestFormat*, const QDomElement& el)
         return;
     }
     
-    ASNFormat::AsnParser asnParser(io.get(), stateInfo);
+    ASNFormat::AsnParser asnParser(io.data(), stateInfo);
     rootElem = asnParser.loadAsnTree(); 
-    
-    
 }
 
 void GTest_LoadAsnTree::cleanup()

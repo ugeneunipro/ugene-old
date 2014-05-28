@@ -51,6 +51,10 @@ public:
     static QPoint convertCoordinates(U2OpStatus &os, const QPoint p);
     static void click(U2OpStatus &os, QPoint p = QPoint(0, 0));
 
+    // scrolls to the position (in the MSA zero-based coordinates)
+    static void scrollToPosition(U2OpStatus &os, const QPoint& position);
+    static void clickToPosition(U2OpStatus &os, const QPoint& position);
+
     static void selectSequence(U2OpStatus &os, QString seqName);
     static bool isSequenceSelected(U2OpStatus &os, QString seqName);
     static int getSelectedSequencesNum(U2OpStatus &os);

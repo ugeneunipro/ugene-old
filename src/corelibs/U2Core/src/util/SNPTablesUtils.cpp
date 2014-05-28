@@ -19,19 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2DbiUtils.h>
-#include <U2Core/U2AttributeDbi.h>
-#include <U2Core/U2AttributeUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
-
 #include <U2Core/FeaturesQueryCache.h>
-#include <U2Core/VariationPropertiesUtils.h>
-
+#include <U2Core/U2AttributeDbi.h>
+#include <U2Core/U2AttributeUtils.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2FeatureKeys.h>
-
-#include <memory>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/VariationPropertiesUtils.h>
 
 #include "SNPTablesUtils.h"
 
@@ -56,7 +52,7 @@ QList<Gene> SNPTablesUtils::findGenes(const U2DataId& seqId, const U2Region &reg
     //qint64 nTime = GTimer::currentTimeMicros();
     QList<Gene> result;
     {
-        std::auto_ptr<U2DbiIterator<U2Feature> > featureIterator(dbi->getFeaturesByRegion(region, U2DataId( ), U2FeatureGeneName, seqId, opStatus));
+        QScopedPointer<U2DbiIterator<U2Feature> > featureIterator(dbi->getFeaturesByRegion(region, U2DataId( ), U2FeatureGeneName, seqId, opStatus));
         if(opStatus.isCoR()) {
             return QList<Gene>();
         }
@@ -84,7 +80,7 @@ Gene SNPTablesUtils::findGenesStep( const U2Feature &parentFeature, U2FeatureDbi
     bool excludeExons = excludeList.contains(SNPTablesUtils::ExcludeSubfeatures);
     bool excludeCDS = excludeList.contains(SNPTablesUtils::ExcludeCDS);
     if(!excludeCDS || !excludeExons){
-        std::auto_ptr<U2DbiIterator<U2Feature> > subFeatureIterator(dbi->getFeaturesByParent(parentFeature.id, QString( ), parentFeature.sequenceId, opStatus));
+        QScopedPointer<U2DbiIterator<U2Feature> > subFeatureIterator(dbi->getFeaturesByParent(parentFeature.id, QString( ), parentFeature.sequenceId, opStatus));
         while(subFeatureIterator->hasNext()){
             U2Feature subFeature = subFeatureIterator->next();
             if(subFeature.name == U2FeatureExonName && !excludeExons){
@@ -150,7 +146,7 @@ static QList<Gene> getGenesAround( const U2DataId& seqId, const U2Region &region
         query.startPosOrderOp = OrderOp_Desc;
     }
     
-    std::auto_ptr<U2DbiIterator<U2Feature> > featureIterator(dbi->getFeatures(query, opStatus));
+    QScopedPointer<U2DbiIterator<U2Feature> > featureIterator(dbi->getFeatures(query, opStatus));
     if(opStatus.isCoR()) {
         return QList<Gene>();
     }

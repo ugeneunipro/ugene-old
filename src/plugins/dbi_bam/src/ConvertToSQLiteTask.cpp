@@ -19,6 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QFile>
+#include <QtCore/QScopedPointer>
+
 #include "IOException.h"
 #include "CancelledException.h"
 #include "Reader.h"
@@ -40,7 +43,6 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <limits>
-#include <memory>
 #include <time.h>
 
 namespace U2 {
@@ -71,7 +73,7 @@ static void flushReads(U2Dbi* sqliteDbi, QMap<int, U2Assembly>& assemblies, QMap
     reads.clear();
 }
 
-static void enableCoverageOnImport(U2AssemblyCovereageImportInfo &cii, int referenceLength) {
+static void enableCoverageOnImport(U2AssemblyCoverageImportInfo &cii, int referenceLength) {
     cii.computeCoverage = true;
     int coverageInfoSize = qMin(U2AssemblyUtils::MAX_COVERAGE_VECTOR_SIZE, referenceLength);
     cii.coverageBasesPerPoint = qMax(1.0, ((double)referenceLength)/coverageInfoSize);
@@ -361,7 +363,7 @@ public:
     SequentialDbiIterator(int referenceId, bool skipUnmapped, Iterator &inputIterator, TaskStateInfo &stateInfo, const IOAdapter &ioAdapter):
         referenceIterator(referenceId, inputIterator),
         skipUnmappedIterator(skipUnmapped? new SkipUnmappedIterator(referenceIterator):NULL),
-        iterator(skipUnmapped? (Iterator *)skipUnmappedIterator.get():(Iterator *)&referenceIterator),
+        iterator(skipUnmapped? (Iterator *)skipUnmappedIterator.data():(Iterator *)&referenceIterator),
         readsImported(0),
         stateInfo(stateInfo),
         ioAdapter(ioAdapter)
@@ -397,7 +399,7 @@ public:
 
 private:
     ReferenceIterator referenceIterator;
-    std::auto_ptr<SkipUnmappedIterator> skipUnmappedIterator;
+    QScopedPointer<SkipUnmappedIterator> skipUnmappedIterator;
     Iterator *iterator;
     qint64 readsImported;
     TaskStateInfo &stateInfo;
@@ -471,7 +473,7 @@ void ConvertToSQLiteTask::run() {
         if(!destinationUrl.isLocalFile()) {
             throw Exception(BAMDbiPlugin::tr("Non-local files are not supported"));
         }
-        std::auto_ptr<IOAdapter> ioAdapter;
+        QScopedPointer<IOAdapter> ioAdapter;
         {
             IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(sourceUrl));
             ioAdapter.reset(factory->createIOAdapter());
@@ -482,7 +484,7 @@ void ConvertToSQLiteTask::run() {
 
         BamReader *bamReader = NULL;
         SamReader *samReader = NULL;
-        std::auto_ptr<Reader> reader(NULL);
+        QScopedPointer<Reader> reader(NULL);
         if (sam) {
             samReader = new SamReader(*ioAdapter);
             reader.reset(samReader);
@@ -492,8 +494,6 @@ void ConvertToSQLiteTask::run() {
         }
 
         assert(destinationUrl.isLocalFile());
-        bool append = QFile::exists(destinationUrl.getURLString());
-
         U2OpStatusImpl opStatus;
 
         DbiConnection dbiHandle(U2DbiRef(SQLITE_DBI_ID, destinationUrl.getURLString()), true, opStatus);
@@ -503,8 +503,8 @@ void ConvertToSQLiteTask::run() {
         U2Dbi* sqliteDbi = dbiHandle.dbi;
         QStringList folders = sqliteDbi->getObjectDbi()->getFolders(opStatus);
         CHECK_OP_EXT(opStatus, throw Exception(opStatus.getError()), );
-        if(!append || !folders.contains("/")) {
-            sqliteDbi->getObjectDbi()->createFolder("/", opStatus);
+        if(!folders.contains(U2ObjectDbi::ROOT_FOLDER)) {
+            sqliteDbi->getObjectDbi()->createFolder(U2ObjectDbi::ROOT_FOLDER, opStatus);
             if(opStatus.hasError()) {
                 throw Exception(opStatus.getError());
             }
@@ -521,7 +521,7 @@ void ConvertToSQLiteTask::run() {
            (Header::Coordinate == reader->getHeader().getSortingOrder()) ||
            (Header::QueryName == reader->getHeader().getSortingOrder())) {
 
-            std::auto_ptr<Iterator> iterator;
+            QScopedPointer<Iterator> iterator;
             if(!bamInfo.hasIndex()) {
                 if(sam) {
                     iterator.reset(new SamIterator(*samReader));
@@ -543,13 +543,13 @@ void ConvertToSQLiteTask::run() {
                     U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
                     enableCoverageOnImport(importInfo.coverageInfo, references[referenceId].getLength());
                     U2OpStatusImpl opStatus;
-                    std::auto_ptr<DbiIterator> dbiIterator;
+                    QScopedPointer<DbiIterator> dbiIterator;
                     if(bamInfo.hasIndex()) {
                         dbiIterator.reset(new IndexedBamDbiIterator(referenceId, !bamInfo.isUnmappedSelected(), *bamReader, bamInfo.getIndex(), stateInfo, *ioAdapter));
                     } else {
                         dbiIterator.reset(new SequentialDbiIterator(referenceId, !bamInfo.isUnmappedSelected(), *iterator, stateInfo, *ioAdapter));
                     }
-                    sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", dbiIterator.get(), importInfo, opStatus);
+                    sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, dbiIterator.data(), importInfo, opStatus);
                     if(opStatus.hasError()) {
                         throw Exception(opStatus.getError());
                     }
@@ -558,7 +558,7 @@ void ConvertToSQLiteTask::run() {
                     }
                     totalReadsImported += dbiIterator->getReadsImported();
                     assemblies.insert(referenceId, assembly);
-                    taskLog.details(tr("Succesfully imported %1 reads for assembly '%2' (total %3 reads imported)")
+                    taskLog.details(tr("Successfully imported %1 reads for assembly '%2' (total %3 reads imported)")
                                     .arg(dbiIterator->getReadsImported())
                                     .arg(assembly.visualName)
                                     .arg(totalReadsImported));
@@ -603,7 +603,7 @@ void ConvertToSQLiteTask::run() {
                 assembly.visualName = "Unmapped";
                 U2AssemblyReadsImportInfo & importInfo = importInfos[-1];
                 U2OpStatusImpl opStatus;
-                sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", &dbiIterator, importInfo, opStatus);
+                sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, &dbiIterator, importInfo, opStatus);
                 if(opStatus.hasError()) {
                     throw Exception(opStatus.getError());
                 }
@@ -614,19 +614,19 @@ void ConvertToSQLiteTask::run() {
                 assemblies.insert(-1, assembly);
             }
         } else {
-            std::auto_ptr<Iterator> inputIterator;
+            QScopedPointer<Iterator> inputIterator;
             if(sam) {
                 inputIterator.reset(new SamIterator(*samReader));
             } else {
                 inputIterator.reset(new BamIterator(*bamReader));
             }
-            std::auto_ptr<SkipUnmappedIterator> skipUnmappedIterator;
+            QScopedPointer<SkipUnmappedIterator> skipUnmappedIterator;
             Iterator *iterator;
             if(!bamInfo.isUnmappedSelected()) {
                 skipUnmappedIterator.reset(new SkipUnmappedIterator(*inputIterator));
-                iterator = skipUnmappedIterator.get();
+                iterator = skipUnmappedIterator.data();
             } else {
-                iterator = inputIterator.get();
+                iterator = inputIterator.data();
             }
 
             taskLog.details(tr("No bam index given, preparing sequential import"));
@@ -637,7 +637,7 @@ void ConvertToSQLiteTask::run() {
 
                     U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
                     U2OpStatusImpl opStatus;
-                    sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, importInfo, opStatus);
+                    sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, NULL, importInfo, opStatus);
                     if(opStatus.hasError()) {
                         throw Exception(opStatus.getError());
                     }
@@ -654,7 +654,7 @@ void ConvertToSQLiteTask::run() {
                 assembly.visualName = "Unmapped";
                 U2AssemblyReadsImportInfo & importInfo = importInfos[-1];
                 U2OpStatusImpl opStatus;
-                sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, "/", NULL, importInfo, opStatus);
+                sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, NULL, importInfo, opStatus);
                 if(opStatus.hasError()) {
                     throw Exception(opStatus.getError());
                 }

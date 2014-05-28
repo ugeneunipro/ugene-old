@@ -30,8 +30,6 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequence.h>
 
-#include <memory>
-
 namespace U2 {
 
 class Document;
@@ -57,7 +55,7 @@ class U2FORMATS_EXPORT StreamSequenceReader {
     };
     QList<ReaderContext> readers;
     int currentReaderIndex;
-    std::auto_ptr<DNASequence> currentSeq;
+    QScopedPointer<DNASequence> currentSeq;
     bool errorOccured;
     bool lookupPerformed;
     QString errorMessage;

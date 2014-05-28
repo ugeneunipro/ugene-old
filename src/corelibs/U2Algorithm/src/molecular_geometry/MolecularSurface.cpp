@@ -23,7 +23,6 @@
 #include <U2Core/AppResources.h>
 #include <U2Core/Log.h>
 
-
 #include "MolecularSurface.h"
 #include "MolecularSurfaceFactoryRegistry.h"
 
@@ -140,12 +139,12 @@ void MolecularSurfaceCalcTask::run() {
    molSurface->calculate(atoms, stateInfo.progress);
 }
 
-std::auto_ptr<MolecularSurface> MolecularSurfaceCalcTask::getCalculatedSurface() {
-    assert(molSurface != NULL);
-    MolecularSurface* returnValue = molSurface;
+MolecularSurface * MolecularSurfaceCalcTask::getCalculatedSurface() {
+    SAFE_POINT(molSurface != NULL, "Invalid molecular surface object detected!", NULL);
+    MolecularSurface *returnValue = molSurface;
     molSurface = NULL;
-       
-    return std::auto_ptr<MolecularSurface>(returnValue);
+
+    return returnValue;
 }
 
 Task::ReportResult MolecularSurfaceCalcTask::report() {

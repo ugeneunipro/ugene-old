@@ -19,20 +19,23 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/qmath.h>
+
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppResources.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObjectTypes.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/GObjectTypes.h>
 #include <U2Core/TextUtils.h>
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
-#include <U2Core/U1AnnotationUtils.h>
-#include <U2Core/AppResources.h>
 
 #include "DocumentFormatUtils.h"
 #include "FastqFormat.h"
@@ -214,6 +217,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
                  int gapSize, int predictedSize, QString& writeLockReason) {
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, );
+    Q_UNUSED(opBlock);
     writeLockReason.clear();
 
     bool merge = gapSize!=-1;
@@ -234,10 +238,13 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
     qint64 sequenceStart = 0;
 
     U2SequenceImporter seqImporter(hints, true);
+    const QString folder = hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
     int seqNumber = 0;
     int progressUpNum = 0;
 
     MemoryLocker memoryLocker(os);
+    Q_UNUSED(memoryLocker);
+
     const bool settingsMakeUniqueName = !hints.value(DocumentReadingMode_DontMakeUniqueNames, false).toBool();
     while (!os.isCoR()) {
         //read header
@@ -256,7 +263,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
                 objName.squeeze();
                 uniqueNames.insert(objName);
             }
-            seqImporter.startSequence(dbiRef,objName,false,os);
+            seqImporter.startSequence(dbiRef, folder, objName, false, os);
             CHECK_OP_BREAK(os);
             sequenceRef = GObjectReference(io->getURL().getURLString(), objName, GObjectTypes::SEQUENCE);
         }
@@ -269,10 +276,11 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
             CHECK_OP_BREAK(os);
         }
 
-        sequence.clear();  
+        sequence.clear();
         readSequence(os, io, sequence);
         MemoryLocker lSequence(os, qCeil(sequence.size()/(1000*1000)));
         CHECK_OP_BREAK(os);
+        Q_UNUSED(lSequence);
 
         seqImporter.addBlock(sequence.data(),sequence.length(),os);
         CHECK_OP_BREAK(os);

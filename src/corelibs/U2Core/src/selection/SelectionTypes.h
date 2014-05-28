@@ -35,6 +35,7 @@ public:
     static const GSelectionType DNASEQUENCE;
     static const GSelectionType ANNOTATIONS;
     static const GSelectionType ANNOTATION_GROUPS;
+    static const GSelectionType FOLDERS;
 };
 
 }//namespace

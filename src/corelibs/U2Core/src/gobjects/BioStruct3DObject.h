@@ -25,23 +25,33 @@
 #include <U2Core/GObject.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/BioStruct3D.h>
+#include <U2Core/U2RawData.h>
 
 namespace U2 {
 
-class  U2CORE_EXPORT BioStruct3DObject: public GObject {
+class U2CORE_EXPORT U2BioStruct3D : public U2RawData {
+public:
+    U2BioStruct3D();
+    U2BioStruct3D(const U2DbiRef &dbiRef);
+
+    U2DataType getType();
+};
+
+class U2CORE_EXPORT BioStruct3DObject: public GObject {
     Q_OBJECT
 public:
     static BioStruct3DObject * createInstance(const BioStruct3D &bioStruct3D, const QString &objectName, const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap = QVariantMap());
     BioStruct3DObject(const QString &objectName, const U2EntityRef &structRef, const QVariantMap &hintsMap = QVariantMap());
 
-    const BioStruct3D & getBioStruct3D() const { return bioStruct3D;}
+    const BioStruct3D & getBioStruct3D() const;
     GObject * clone(const U2DbiRef&, U2OpStatus&) const;
+
+protected:
+    void loadDataCore(U2OpStatus &os);
 
 private:
     BioStruct3DObject(const BioStruct3D &bioStruct3D, const QString &objectName, const U2EntityRef &structRef, const QVariantMap &hintsMap);
-    void retrieve();
 
-private:
     BioStruct3D     bioStruct3D;
 };
 

@@ -35,7 +35,7 @@ namespace U2 {
 class ConvertAceToSqliteTask : public Task {
     Q_OBJECT
 public:
-    ConvertAceToSqliteTask(const GUrl &sourceUrl, const GUrl &destinationUrl);
+    ConvertAceToSqliteTask(const GUrl &sourceUrl, const GUrl &destinationUrl, const QVariantMap& hints);
     virtual void run();
     virtual ReportResult report();
 
@@ -52,6 +52,7 @@ private:
     const GUrl destinationUrl;
     U2Dbi* dbi;
     U2Assembly corruptedAssembly;
+    QVariantMap hints;
 
     QMap<int, Assembly::Sequence> references;
     QMap<int, U2Assembly> assemblies;

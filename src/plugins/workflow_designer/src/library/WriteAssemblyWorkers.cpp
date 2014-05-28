@@ -61,8 +61,8 @@ BaseWriteAssemblyWorker::BaseWriteAssemblyWorker(Actor *a)
 void BaseWriteAssemblyWorker::data2doc(Document *doc, const QVariantMap &data) {
     CHECK(hasDataToWrite(data), );
     SharedDbiDataHandler assemblyId = data[BaseSlots::ASSEMBLY_SLOT().getId()].value<SharedDbiDataHandler>();
-    std::auto_ptr<AssemblyObject> assemblyObj(StorageUtils::getAssemblyObject(context->getDataStorage(), assemblyId));
-    SAFE_POINT(NULL != assemblyObj.get(), tr("Assembly writer: NULL assembly object"), );
+    QScopedPointer<AssemblyObject> assemblyObj(StorageUtils::getAssemblyObject(context->getDataStorage(), assemblyId));
+    SAFE_POINT(!assemblyObj.isNull(), tr("Assembly writer: NULL assembly object"), );
 
     QString objName = assemblyObj->getGObjectName();
     if (doc->findGObjectByName(objName)) {
@@ -74,8 +74,7 @@ void BaseWriteAssemblyWorker::data2doc(Document *doc, const QVariantMap &data) {
     DocumentFormat *docFormat = doc->getDocumentFormat();
     DocumentFormatId formatId = docFormat->getFormatId();
     if (docFormat->isObjectOpSupported(doc, DocumentFormat::DocObjectOp_Add, GObjectTypes::ASSEMBLY)) {
-        doc->addObject(assemblyObj.get());
-        assemblyObj.release();
+        doc->addObject(assemblyObj.take());
     } else {
         algoLog.trace("Failed to add assembly object to document: op is not supported!");
     }
@@ -146,6 +145,7 @@ void WriteAssemblyWorkerFactory::init() {
     DocumentFormatConstraints constr;
     constr.supportedObjectTypes.insert(GObjectTypes::ASSEMBLY);
     constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    constr.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats(constr);
     CHECK(!supportedFormats.isEmpty(), );
     DocumentFormatId format = supportedFormats.contains(BaseDocumentFormats::BAM) ? BaseDocumentFormats::BAM : supportedFormats.first();

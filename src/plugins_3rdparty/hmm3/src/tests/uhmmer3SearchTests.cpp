@@ -31,7 +31,6 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QList>
-#include <memory>
 
 namespace U2 {
 
@@ -628,8 +627,8 @@ UHMM3SearchResult GTest_UHMM3SearchCompare::getOriginalSearchResult( const QStri
     assert( !filename.isEmpty() );
     
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io( filename ) );
-    std::auto_ptr< IOAdapter > io( iof->createIOAdapter() );
-    if( NULL == io.get() ) {
+    QScopedPointer< IOAdapter > io( iof->createIOAdapter() );
+    if (io.isNull()) {
         throw QString( "cannot_create_io_adapter_for_'%1'_file" ).arg( filename );
     }
     if( !io->open( filename, IOAdapterMode_Read ) ) {
@@ -641,9 +640,9 @@ UHMM3SearchResult GTest_UHMM3SearchCompare::getOriginalSearchResult( const QStri
     QStringList tokens;
     bool wasHeader = false;
     bool wasFullSeqResult = false;
-    readLine( io.get(), buf ); /* the first line. starts with # search or # phmmer */
+    readLine( io.data(), buf ); /* the first line. starts with # search or # phmmer */
     do {
-        readLine( io.get(), buf );
+        readLine( io.data(), buf );
         if( buf.isEmpty() ) { /* but no error - empty line here */
             continue;
         }
@@ -656,10 +655,10 @@ UHMM3SearchResult GTest_UHMM3SearchCompare::getOriginalSearchResult( const QStri
                 throw QString( "hmmer_output_header_is_missing" );
             }
             UHMM3SearchCompleteSeqResult& fullSeqRes = res.fullSeqResult;
-            readLine( io.get(), buf );
-            readLine( io.get(), buf );
-            readLine( io.get(), buf );
-            readLine( io.get(), buf, &tokens );
+            readLine( io.data(), buf );
+            readLine( io.data(), buf );
+            readLine( io.data(), buf );
+            readLine( io.data(), buf, &tokens );
             if( buf.startsWith( "[No hits detected" ) ) {
                 fullSeqRes.isReported = false;
                 break;
@@ -680,16 +679,16 @@ UHMM3SearchResult GTest_UHMM3SearchCompare::getOriginalSearchResult( const QStri
             if( !wasFullSeqResult ) {
                 throw QString( "full_seq_result_is_missing" );
             }
-            readLine( io.get(), buf );
-            readLine( io.get(), buf );
-            readLine( io.get(), buf );
+            readLine( io.data(), buf );
+            readLine( io.data(), buf );
+            readLine( io.data(), buf );
             QList< UHMM3SearchSeqDomainResult >& domainResList = res.domainResList;
             assert( domainResList.isEmpty() );
 
             int nDomains = res.fullSeqResult.reportedDomainsNum;
             int i = 0;
             for( i = 0; i < nDomains; ++i ) {
-                readLine( io.get(), buf, &tokens );
+                readLine( io.data(), buf, &tokens );
                 domainResList << getDomainRes( tokens );
             }
             break;
@@ -724,7 +723,7 @@ Task::ReportResult GTest_UHMM3SearchCompare::report() {
         QList<UHMM3SearchResult> res = generalTask->getResult();
         if(res.size() < 1){
             stateInfo.setError("no result");
-            return ReportResult_Finished;    
+            return ReportResult_Finished;
         }
         generalCompareResults(res.first() , trueRes, stateInfo );
         break;

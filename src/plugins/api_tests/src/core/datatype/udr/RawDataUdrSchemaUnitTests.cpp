@@ -57,7 +57,7 @@ void RawDataUdrSchemaTestData::init() {
 void RawDataUdrSchemaTestData::initData() {
     U2DbiRef dbiRef = dbiProvider.getDbi()->getDbiRef();
     U2RawData object(dbiRef);
-    object.url = "test url";
+    object.visualName = "test url";
     object.serializer = "test serializer";
 
     U2OpStatusImpl os;
@@ -83,7 +83,7 @@ IMPLEMENT_TEST(RawDataUdrSchemaUnitTests, getObject) {
     U2OpStatusImpl os;
     U2RawData object = RawDataUdrSchema::getObject(RawDataUdrSchemaTestData::getObjRef(), os);
     CHECK_NO_ERROR(os);
-    CHECK_TRUE("test url" == object.url, "url");
+    CHECK_TRUE("test url" == object.visualName, "url");
     CHECK_TRUE("test serializer" == object.serializer, "serializer");
 }
 
@@ -113,7 +113,7 @@ IMPLEMENT_TEST(RawDataUdrSchemaUnitTests, readAllContent_Null) {
 
 IMPLEMENT_TEST(RawDataUdrSchemaUnitTests, createObject) {
     U2RawData object(RawDataUdrSchemaTestData::getDbiRef());
-    object.url = "test url 1";
+    object.visualName = "test url 1";
     object.serializer = "test serializer 1";
 
     U2OpStatusImpl os;
@@ -123,7 +123,7 @@ IMPLEMENT_TEST(RawDataUdrSchemaUnitTests, createObject) {
 
     U2RawData objectDb = RawDataUdrSchema::getObject(entRef, os);
     CHECK_NO_ERROR(os);
-    CHECK_TRUE(objectDb.url == object.url, "url");
+    CHECK_TRUE(objectDb.visualName == object.visualName, "name");
     CHECK_TRUE(objectDb.serializer == object.serializer, "serializer");
 }
 

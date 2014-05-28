@@ -56,7 +56,7 @@ public:
 /** 64 bit signed integer attribute */
 class U2CORE_EXPORT U2IntegerAttribute : public U2Attribute {
 public:
-    U2IntegerAttribute(const U2DataId& o = U2DataId(), const QString& n = QString(), int val = 0) : U2Attribute(o, n), value(val) {}
+    U2IntegerAttribute(const U2DataId& o = U2DataId(), const QString& n = QString(), qint64 val = 0) : U2Attribute(o, n), value(val) {}
     qint64 value;
 };
 

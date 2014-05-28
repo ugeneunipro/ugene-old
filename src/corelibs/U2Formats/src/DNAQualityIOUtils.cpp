@@ -29,8 +29,6 @@
 #include <U2Core/IOAdapterUtils.h>
 
 #include <time.h>
-#include <memory>
-
 
 namespace U2  {
 
@@ -40,10 +38,7 @@ void DNAQualityIOUtils::writeDNAQuality(const U2SequenceObject* seqObj, const QS
     const DNAQuality& seqQuality = seqObj->getQuality();
     const QString& seqName = seqObj->getSequenceName();
     writeDNAQuality(seqName, seqQuality,dstFilePath, appendData, decode, stateInfo );
-
-   
 }
-
 
 static QByteArray getDecodedQuality(const DNAQuality& quality) {
     QByteArray res;
@@ -65,7 +60,7 @@ void DNAQualityIOUtils::writeDNAQuality( const QString& seqName, const DNAQualit
         return;
     }
 
-    std::auto_ptr<IOAdapter> ioAdapter;
+    QScopedPointer<IOAdapter> ioAdapter;
 
     IOAdapterId ioAdapterId = IOAdapterUtils::url2io(dstFilePath);
     IOAdapterFactory *ioAdapterFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioAdapterId);
@@ -90,7 +85,6 @@ void DNAQualityIOUtils::writeDNAQuality( const QString& seqName, const DNAQualit
 
     ioAdapter->close();
 }
-
 
 } // namespace
 

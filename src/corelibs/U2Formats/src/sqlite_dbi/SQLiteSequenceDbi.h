@@ -47,7 +47,7 @@ public:
 
         //TODO do we need to allow empty folder??
     */
-    virtual void createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os);
+    virtual void createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os, U2DbiObjectRank rank);
 
 
     /** 

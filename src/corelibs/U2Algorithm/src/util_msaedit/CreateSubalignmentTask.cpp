@@ -67,7 +67,7 @@ void CreateSubalignmentTask::prepare() {
 
         resultDocument->addObject(resultMAObj);
         GObjectUtils::updateRelationsURL(resultMAObj, origDoc->getURL(), cfg.url);
-        QList<GObjectRelation> phyTreeRelations = resultMAObj->findRelatedObjectsByRole(GObjectRelationRole::PHYLOGENETIC_TREE); 
+        QList<GObjectRelation> phyTreeRelations = resultMAObj->findRelatedObjectsByRole(ObjectRole_PhylogeneticTree); 
         foreach(GObjectRelation phyTreeRel, phyTreeRelations) {
             resultMAObj->removeObjectRelation(phyTreeRel);
         }

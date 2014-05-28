@@ -22,6 +22,7 @@
 #include <U2Core/AnnotationModification.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2FeatureUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -223,7 +224,7 @@ AnnotationGroup AnnotationGroup::getParentGroup( ) const {
         parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, *this );
 
-    if ( feature.parentFeatureId.isEmpty( ) ) {
+    if ( 0 == U2DbiUtils::toDbiId( feature.parentFeatureId ) ) {
         return *this;
     }
 
@@ -317,6 +318,10 @@ bool AnnotationGroup::isTopLevelGroup( ) const {
     const AnnotationGroup parentGroup = getParentGroup( );
     return ( parentGroup.id != id
         && parentGroup.getParentGroup( ).id == parentGroup.id );
+}
+
+bool AnnotationGroup::operator ==( const AnnotationGroup &other ) const {
+    return id == other.id && parentObject == other.getGObject();
 }
 
 } // namespace U2

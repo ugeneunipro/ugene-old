@@ -19,16 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include "AssemblyConsensusArea.h"
-#include "AssemblyConsensusTask.h"
-#include "AssemblyBrowser.h"
-#include "ExportConsensusTask.h"
-#include "ExportConsensusDialog.h"
-#include "ExportConsensusVariationsTask.h"
-#include "ExportConsensusVariationsDialog.h"
+#include <QtCore/QFileInfo>
 
-#include <QtGui/QPainter>
 #include <QtGui/QMouseEvent>
+#include <QtGui/QPainter>
 
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
@@ -37,6 +31,14 @@
 
 #include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
 #include <U2Algorithm/BuiltInAssemblyConsensusAlgorithms.h>
+
+#include "AssemblyBrowser.h"
+#include "ExportConsensusTask.h"
+#include "ExportConsensusDialog.h"
+#include "ExportConsensusVariationsTask.h"
+#include "ExportConsensusVariationsDialog.h"
+#include "AssemblyConsensusTask.h"
+#include "AssemblyConsensusArea.h"
 
 namespace U2 {
 

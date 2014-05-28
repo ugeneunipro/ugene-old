@@ -27,8 +27,6 @@
 #include <U2Core/Task.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/MAlignment.h>
-#include <memory>
-
 
 namespace U2 {
 
@@ -40,7 +38,7 @@ public:
 
     void run();
 
-    virtual Document* getDocument() const {return doc.get();}
+    virtual Document* getDocument() const {return doc.data();}
 
     MAlignment& getMAlignment() {return ma;}
 
@@ -49,7 +47,7 @@ private:
     QString                 fileName;
     QVariantMap             hints;
     DocumentFormatId        format;
-    std::auto_ptr<Document> doc;
+    QScopedPointer<Document> doc;
 };
 
 
@@ -61,14 +59,14 @@ public:
 
     void run();
 
-    virtual Document* getDocument() const {return doc.get();}
+    virtual Document* getDocument() const {return doc.data();}
 
 private:
     MAlignment              ma;
     QString                 url;
     bool                    trimAli;
     QString                 format;
-    std::auto_ptr<Document> doc;
+    QScopedPointer<Document> doc;
 };
 
 }//namespace

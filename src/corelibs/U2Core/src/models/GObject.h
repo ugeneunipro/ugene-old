@@ -22,13 +22,14 @@
 #ifndef _U2_GOBJECT_H_
 #define _U2_GOBJECT_H_
 
+#include <QtCore/QMimeData>
+#include <QtCore/QMutex>
+#include <QtCore/QPointer>
+
 #include <U2Core/global.h>
 #include "StateLockableDataModel.h"
 #include "GObjectReference.h"
 #include <U2Core/U2Type.h>
-
-#include <QtCore/QMimeData>
-#include <QtCore/QPointer>
 
 /** List of object relations */
 #define GObjectHint_RelatedObjects          "gobject-hint-related-objects"
@@ -52,6 +53,10 @@ class GObjectConstraints;
 class GHints;
 class U2DbiRef;
 class U2OpStatus;
+
+enum GObjectModLock {
+    GObjectModLock_IO       // locked by IO reasons, e.g. object is stored in a remote database
+};
 
 class U2CORE_EXPORT GObject : public StateLockableTreeItem {
     friend class DocumentFormat;
@@ -82,13 +87,13 @@ public:
 
     void setObjectRelations(const QList<GObjectRelation>& obj);
 
-    QList<GObjectRelation> findRelatedObjectsByRole(const QString& role) const;
+    QList<GObjectRelation> findRelatedObjectsByRole(const GObjectRelationRole& role) const;
     
     QList<GObjectRelation> findRelatedObjectsByType(const GObjectType& objType) const;
     
     void addObjectRelation(const GObjectRelation& ref);
     
-    void addObjectRelation(const GObject* obj, const QString& role);
+    void addObjectRelation(const GObject* obj, const GObjectRelationRole& role);
     
     void removeObjectRelation(const GObjectRelation& ref);
     
@@ -98,7 +103,7 @@ public:
 
     void updateDocInRelations(const QString& oldDocUrl, const QString& newDocUrl);
 
-    bool hasObjectRelation(const GObject* obj, const QString& role) const;
+    bool hasObjectRelation(const GObject* obj, const GObjectRelationRole& role) const;
     
     bool hasObjectRelation(const GObjectRelation& r) const;
 
@@ -112,15 +117,34 @@ public:
 
     virtual GObject* clone(const U2DbiRef& dbiRef, U2OpStatus& os) const = 0;
 
+    StateLock* getGObjectModLock(GObjectModLock type) const;
+
 signals:
     void si_nameChanged(const QString& oldName);
 
 protected:
+    void ensureDataLoaded() const;
+    void ensureDataLoaded(U2OpStatus &os) const;
+    virtual void loadDataCore(U2OpStatus &os);
+
+protected:
+    mutable QMutex              dataGuard;
+    mutable bool                dataLoaded;
     GObjectType                 type;
     QString                     name;
     GHints*                     hints;
     QHash<QString, QString>     indexInfo;
     U2EntityRef                 entityRef;
+
+private:
+    virtual void setParentStateLockItem(StateLockableTreeItem* p);
+    void checkIfBelongToSharedDatabase(StateLockableTreeItem *parent);
+    void setRelationsInDb(QList<GObjectRelation>& list) const;
+
+    void removeAllLocks();
+
+    bool                             arePermanentRelationsFetched;
+    QMap<GObjectModLock, StateLock*> modLocks;
 };
 
 class GObjectConstraints : public QObject {
@@ -134,10 +158,15 @@ public:
 class U2CORE_EXPORT GObjectMimeData : public QMimeData {
     Q_OBJECT
 public:
-    static const QString MIME_TYPE;
-    GObjectMimeData(GObject* obj) : objPtr(obj){};
-    ~GObjectMimeData();
+    GObjectMimeData(GObject* obj) : objPtr(obj){}
+
     QPointer<GObject> objPtr;
+
+    // QMimeData
+    bool hasFormat(const QString &mimeType) const;
+    QStringList formats() const;
+
+    static const QString MIME_TYPE;
 };
 
 }//namespace

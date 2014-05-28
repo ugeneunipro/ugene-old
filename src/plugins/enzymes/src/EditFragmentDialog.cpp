@@ -25,7 +25,6 @@
 #else
 #include <QtWidgets/QMessageBox>
 #endif
-#include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 
 #include <U2Core/AppContext.h>

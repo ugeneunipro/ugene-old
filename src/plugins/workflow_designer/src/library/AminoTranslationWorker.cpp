@@ -30,6 +30,13 @@ static const QString AUTO_TRANSLATION_ATTR("auto-translation");
 static const QString ID_ATTR("genetic-code");
 static const QString POS_2_TRANSLATE_ATTR("pos-2-translate");
 
+TranslateSequence2AminoTask::TranslateSequence2AminoTask(const AminoTranslationSettings& _configs,
+    const U2DbiRef &dbiRef)
+    : Task("Translate sequence to amino", TaskFlag_None),configs(_configs), dbiRef(dbiRef)
+{
+    SAFE_POINT_EXT( dbiRef.isValid( ), stateInfo.setError("Invalid DBI reference supplied!"), );
+}
+
 void TranslateSequence2AminoTask::run(){
     assert(configs.seqObj != NULL);
 
@@ -37,7 +44,7 @@ void TranslateSequence2AminoTask::run(){
     qint64 seqLen = seqObj->getSequenceLength();
     QVector<U2Region> regionsDirect = configs.regionsDirect;
     QVector<U2Region> regionsComplementary = configs.regionsComplementary;
-    QString resultName = configs.resultName;    
+    QString resultName = configs.resultName;
 
     DNATranslation* aminoTT = configs.aminoTT;
     SAFE_POINT(aminoTT != NULL, QString("Can't produce amino translation"),);
@@ -74,12 +81,8 @@ void TranslateSequence2AminoTask::run(){
         seq.clear();
         translatedSeq.clear();
 
-        TmpDbiHandle dbiHandle(WORKFLOW_SESSION_TMP_DBI_ALIAS, stateInfo);
-        U2DbiRef dbRef = dbiHandle.getDbiRef();
-        CHECK_OP(stateInfo, );
-
         U2SequenceImporter importer;
-        importer.startSequence(dbRef, seqObj->getSequenceName()+ " " + resultName + QString(" %1").arg(currentSeq) + " direct", false, stateInfo);
+        importer.startSequence(dbiRef, U2ObjectDbi::ROOT_FOLDER, seqObj->getSequenceName() + " " + resultName + QString(" %1").arg(currentSeq) + " direct", false, stateInfo);
         
         int blockCounter = 0;
         qint64 end = directRegion.startPos +  directRegion.length / 3 * 3;
@@ -98,7 +101,7 @@ void TranslateSequence2AminoTask::run(){
         U2Sequence u2Seq = importer.finalizeSequence(stateInfo);
           
         CHECK_OP(stateInfo, );
-        results << new U2SequenceObject(u2Seq.visualName, U2EntityRef(dbRef, u2Seq.id));
+        results << new U2SequenceObject(u2Seq.visualName, U2EntityRef(dbiRef, u2Seq.id));
         currentSeq++;
     }
     currentSeq = 0;
@@ -106,12 +109,8 @@ void TranslateSequence2AminoTask::run(){
     foreach(U2Region complementaryRegion, regionsComplementary){
         translatedSeq.clear();
 
-        TmpDbiHandle dbiHandle(WORKFLOW_SESSION_TMP_DBI_ALIAS, stateInfo);
-        U2DbiRef dbRef = dbiHandle.getDbiRef();
-        CHECK_OP(stateInfo, );
-
         U2SequenceImporter importer;
-        importer.startSequence(dbRef, seqObj->getSequenceName()+ " " + resultName + QString(" %1").arg(currentSeq) + " complementary", false, stateInfo);
+        importer.startSequence(dbiRef, U2ObjectDbi::ROOT_FOLDER, seqObj->getSequenceName()+ " " + resultName + QString(" %1").arg(currentSeq) + " complementary", false, stateInfo);
 
         QByteArray complementarySeq;
         char* complSeq = NULL;
@@ -141,7 +140,7 @@ void TranslateSequence2AminoTask::run(){
         U2Sequence u2Seq = importer.finalizeSequence(stateInfo);
 
         CHECK_OP(stateInfo, );
-        results << new U2SequenceObject(u2Seq.visualName, U2EntityRef(dbRef, u2Seq.id));
+        results << new U2SequenceObject(u2Seq.visualName, U2EntityRef(dbiRef, u2Seq.id));
         currentSeq++;
     }
 }
@@ -341,7 +340,10 @@ Task* AminoTranslationWorker::tick(){
         config.seqObj = seqObj;
         config.aminoTT = aminoTT;
 
-        TranslateSequence2AminoTask* transTask = new TranslateSequence2AminoTask(config);
+        DbiDataStorage *storage = context->getDataStorage();
+        SAFE_POINT( NULL != storage, "Invalid workflow data storage!", NULL );
+        TranslateSequence2AminoTask *transTask = new TranslateSequence2AminoTask(config,
+            storage->getDbiRef());
 
         connect(transTask ,SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return transTask;

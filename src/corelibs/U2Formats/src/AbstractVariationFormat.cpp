@@ -184,13 +184,14 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
 
     QList<GObject*> objects;
     QSet<QString> names;
+    const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
 
     //create empty track
     if (snpsMap.isEmpty()){
         U2VariantTrack track;
         track.sequenceName = "unknown";
         track.fileHeader = headerText;
-        dbi->getVariantDbi()->createVariantTrack(track, TrackType_All, os);
+        dbi->getVariantDbi()->createVariantTrack(track, TrackType_All, folder, os);
 
         U2EntityRef trackRef(dbiRef, track.id);
         QString objName = TextUtils::variate(track.sequenceName, "_", names);
@@ -201,9 +202,10 @@ Document *AbstractVariationFormat::loadDocument(IOAdapter *io, const U2DbiRef &d
 
     foreach (const QString &seqName, snpsMap.keys().toSet()) {
         U2VariantTrack track;
+        track.visualName = "Variant track";
         track.sequenceName = seqName;
         track.fileHeader = headerText;
-        dbi->getVariantDbi()->createVariantTrack(track, TrackType_All, os);
+        dbi->getVariantDbi()->createVariantTrack(track, TrackType_All, folder, os);
 
         const QList<U2Variant>& vars = snpsMap.value(seqName);
         BufferedDbiIterator<U2Variant> bufIter(vars);

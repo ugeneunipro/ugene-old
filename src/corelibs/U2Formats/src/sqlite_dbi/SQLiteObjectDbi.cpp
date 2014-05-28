@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include "SQLiteFeatureDbi.h"
 #include "SQLiteMsaDbi.h"
 #include "SQLiteObjectDbi.h"
 #include "SQLiteUdrDbi.h"
@@ -31,7 +32,6 @@
 
 #include <U2Formats/SQLiteModDbi.h>
 #include <U2Formats/SQLiteSequenceDbi.h>
-
 
 namespace U2 {
 
@@ -59,37 +59,41 @@ void SQLiteObjectDbi::upgrade(U2OpStatus &os) {
 }
 
 void SQLiteObjectDbi::initSqlSchema(U2OpStatus& os) {
-    if (os.hasError()) {
-        return;
-    }
-
     // objects table - stores IDs and types for all objects. It also stores 'top_level' flag to simplify queries
-    // rank: see SQLiteDbiObjectRank
+    // rank: see U2DbiObjectRank
     // name is a visual name of the object shown to user.
     SQLiteQuery("CREATE TABLE Object (id INTEGER PRIMARY KEY AUTOINCREMENT, type INTEGER NOT NULL, "
                                     "version INTEGER NOT NULL DEFAULT 1, rank INTEGER NOT NULL, "
                                     "name TEXT NOT NULL, trackMod INTEGER NOT NULL DEFAULT 0)", db, os).execute();
+    CHECK_OP(os, );
 
     // parent-child object relation
     SQLiteQuery("CREATE TABLE Parent (parent INTEGER, child INTEGER, "
-                       "FOREIGN KEY(parent) REFERENCES Object(id), "
-                       "FOREIGN KEY(child) REFERENCES Object(id) )", db, os).execute();
+                       "PRIMARY KEY (parent, child), "
+                       "FOREIGN KEY(parent) REFERENCES Object(id) ON DELETE CASCADE, "
+                       "FOREIGN KEY(child) REFERENCES Object(id) ON DELETE CASCADE)", db, os).execute();
     SQLiteQuery("CREATE INDEX Parent_parent_child on Parent(parent, child)" , db, os).execute();
     SQLiteQuery("CREATE INDEX Parent_child on Parent(child)" , db, os).execute();
+    CHECK_OP(os, );
 
     // folders 
-    SQLiteQuery("CREATE TABLE Folder (id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT UNIQUE NOT NULL,  "
+    SQLiteQuery("CREATE TABLE Folder (id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT UNIQUE NOT NULL, "
                                     "vlocal INTEGER NOT NULL DEFAULT 1, vglobal INTEGER NOT NULL DEFAULT 1 )", db, os).execute();
+    CHECK_OP(os, );
 
     // folder-object relation
     SQLiteQuery("CREATE TABLE FolderContent (folder INTEGER, object INTEGER, "
-                        "FOREIGN KEY(folder) REFERENCES Folder(id),"
-                        "FOREIGN KEY(object) REFERENCES Object(id) )", db, os).execute();
+                        "PRIMARY KEY (folder, object), "
+                        "FOREIGN KEY(folder) REFERENCES Folder(id) ON DELETE CASCADE,"
+                        "FOREIGN KEY(object) REFERENCES Object(id) ON DELETE CASCADE)", db, os).execute();
+    CHECK_OP(os, );
+
+    createFolder(U2ObjectDbi::ROOT_FOLDER, os);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // Read methods for objects
-#define TOP_LEVEL_FILTER  ("rank = " + QString::number(SQLiteDbiObjectRank_TopLevel))
+#define TOP_LEVEL_FILTER  ("rank = " + QString::number(U2DbiObjectRank_TopLevel))
 
 qint64 SQLiteObjectDbi::countObjects(U2OpStatus& os) {
     return SQLiteQuery("COUNT (*) FROM Object WHERE " + TOP_LEVEL_FILTER, db, os).selectInt64();
@@ -121,7 +125,7 @@ U2DbiIterator<U2DataId>* SQLiteObjectDbi::getObjectsByVisualName(const QString& 
     SQLiteTransaction t(db, os);
     bool checkType = (type != U2Type::Unknown);
     QString query = "SELECT id, type FROM Object WHERE " + TOP_LEVEL_FILTER 
-            + " AND name = ?1 " + (checkType ? "AND type = ?2" : "");
+            + " AND name = ?1 " + (checkType ? "AND type = ?2" : "" + QString(" ORDER BY id"));
     QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(query, db, os);
     q->bindString(1, visualName);
     if (checkType) {
@@ -133,20 +137,43 @@ U2DbiIterator<U2DataId>* SQLiteObjectDbi::getObjectsByVisualName(const QString& 
 //////////////////////////////////////////////////////////////////////////
 // Write methods for objects
 
-void SQLiteObjectDbi::removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os) {
-    removeObjectImpl(dataId, folder, os);
-    CHECK_OP(os, );
-    onFolderUpdated(folder);
+bool SQLiteObjectDbi::removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os) {
+    const QString canonicalFolder = folder.isEmpty() ? folder : U2DbiUtils::makeFolderCanonical(folder);
+
+    bool result = removeObjectImpl(dataId, canonicalFolder, os);
+    CHECK_OP(os, result);
+    if (result) {
+        onFolderUpdated(canonicalFolder);
+    }
+    return result;
 }
 
-void SQLiteObjectDbi::removeObjects(const QList<U2DataId>& dataIds, const QString& folder, U2OpStatus& os) {
+bool SQLiteObjectDbi::removeObjects(const QList<U2DataId>& dataIds, const QString& folder, U2OpStatus& os) {
+    const QString canonicalFolder = folder.isEmpty() ? folder : U2DbiUtils::makeFolderCanonical(folder);
+
+    bool globalResult = true;
     foreach (U2DataId id, dataIds) {
-        removeObjectImpl(id, folder, os);
-        if (os.hasError()) {
-            break;
+        bool localResult = removeObjectImpl(id, folder, os);
+        if (globalResult && !localResult) {
+            globalResult = false;
         }
-    }        
+        CHECK_OP_BREAK(os);
+    }
     onFolderUpdated(folder);
+    return globalResult;
+}
+
+void SQLiteObjectDbi::renameObject(const U2DataId &id, const QString &newName, U2OpStatus &os) {
+    SQLiteTransaction t(db, os);
+    static const QString queryString("UPDATE Object SET name = ?1 WHERE id = ?2");
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery(queryString, db, os);
+    SAFE_POINT_OP(os, );
+    q->bindString(1, newName);
+    q->bindDataId(2, id);
+    q->execute();
+    CHECK_OP(os, );
+
+    incrementVersion(id, os);
 }
 
 void SQLiteObjectDbi::updateObjectCore(U2Object &obj, U2OpStatus &os) {
@@ -159,114 +186,58 @@ void SQLiteObjectDbi::updateObjectCore(U2Object &obj, U2OpStatus &os) {
     q->execute();
 }
 
-bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& folder, U2OpStatus& os) {
+void SQLiteObjectDbi::removeObjectFromFolder(const U2DataId &id, const QString &folder, U2OpStatus &os) {
+    const qint64 folderId = getFolderId(folder, true, db, os);
+    CHECK_OP(os, );
+
+    static const QString deleteString = "DELETE FROM FolderContent WHERE folder = ?1 AND object = ?2";
+    SQLiteQuery deleteQ(deleteString, db, os);
+    CHECK_OP(os, );
+    deleteQ.bindInt64(1, folderId);
+    deleteQ.bindDataId(2, id);
+    deleteQ.execute();
+}
+
+void SQLiteObjectDbi::removeObjectFromAllFolders(const U2DataId &id, U2OpStatus &os) {
+    static const QString deleteString("DELETE FROM FolderContent WHERE object = ?1");
+    SQLiteQuery deleteQ(deleteString, db, os);
+    CHECK_OP(os, );
+    deleteQ.bindDataId(1, id);
+    deleteQ.update();
+}
+
+bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& /*folder*/, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
+    Q_UNUSED(t);
 
     U2DataType type = getRootDbi()->getEntityTypeById(objectId);
     if (!U2Type::isObjectType(type)) {
-        os.setError(SQLiteL10N::tr("Not an object! Id: %1, type: %2").arg(U2DbiUtils::text(objectId)).arg(type));
+        os.setError(U2DbiL10n::tr("Not an object! Id: %1, type: %2").arg(U2DbiUtils::text(objectId)).arg(type));
         return false;
     }
-    if (folder.isEmpty()) {
-        static const QString deleteString("DELETE FROM FolderContent WHERE object = ?1");
-        QSharedPointer<SQLiteQuery> deleteQ = t.getPreparedQuery(deleteString, db, os);
-        CHECK_OP(os, false);
-        deleteQ->bindDataId(1, objectId);
-    } else {
-        static const QString selectString("SELECT id FROM Folder WHERE path = ?1");
-        QSharedPointer<SQLiteQuery> selectQ = t.getPreparedQuery(selectString, db, os);
-        CHECK_OP(os, false);
-        selectQ->bindString(1, folder);
-        qint64 folderId = selectQ->selectInt64();
-
-        static const QString deleteString("DELETE FROM FolderContent WHERE folder = ?1 AND object = ?2");
-        QSharedPointer<SQLiteQuery> deleteQ = t.getPreparedQuery(deleteString, db, os);
-        CHECK_OP(os, false);
-        deleteQ->bindInt64(1, folderId);
-        deleteQ->bindDataId(2, objectId);
-        deleteQ->update();
-    }
-    
-    QStringList folders = getObjectFolders(objectId, os);
-    CHECK_OP(os, false);
-
-    if (!folders.isEmpty()) { // object is a part of another folder ->  do not erase
-        return false;
-    }    
-    QList<U2DataId> parents = getParents(objectId, os);
-    CHECK_OP(os, false);
-
-    if (!parents.isEmpty()) { // object is a part of another object ->  do not erase
-        //update top_level flag!
-        static const QString toplevelString("UPDATE Object SET rank = ?1 WHERE id = ?2");
-        QSharedPointer<SQLiteQuery> toplevelQ = t.getPreparedQuery(toplevelString, db, os);
-        CHECK_OP(os, false);
-        toplevelQ->bindInt32(1, SQLiteDbiObjectRank_Child);
-        toplevelQ->bindDataId(2, objectId);
-        toplevelQ->execute();
-        return false;
-    }
-
-    // now erase object
-
-    // remove all attributes first
-
-    removeObjectAttributes(objectId, os);
-
-    CHECK_OP(os, false);
 
     switch (type) {
         case U2Type::Sequence:
-            SQLiteUtils::remove("Sequence", "object", objectId, 1, db, os);
-            SQLiteUtils::remove("SequenceData", "sequence", objectId, -1, db, os);
-            break;
         case U2Type::VariantTrack:
-            SQLiteUtils::remove("VariantTrack", "object", objectId, 1, db, os);
-            SQLiteUtils::remove("Variant", "track", objectId, -1, db, os);
+            // nothing has to be done for objects of these types
             break;
         case U2Type::Msa:
-            {
-                // Remove rows
-                SQLiteMsaDbi* sqliteMsaDbi = dbi->getSQLiteMsaDbi();
-                if (NULL != sqliteMsaDbi) {
-                    sqliteMsaDbi->removeAllRows(objectId, os);
-                }
-                else {
-                    os.setError("SQLiteMsaDbi is NULL during removing an MSA object!");
-                }
-                // Remove the MSA record
-                SQLiteUtils::remove("Msa", "object", objectId, 1, db, os);
-            }
+            dbi->getSQLiteMsaDbi()->deleteRowsData(objectId, os);
             break;
-        case U2Type::AnnotationTable :
-            {
-                U2EntityRef tableRef( dbi->getDbiRef( ), objectId );
-                U2AnnotationTable table = U2FeatureUtils::getAnnotationTable( tableRef, os );
-                CHECK_OP( os, false );
-                U2FeatureUtils::removeFeaturesByRoot( table.rootFeature, tableRef.dbiRef, os );
-            }
-            break;
-        case U2Type::PhyTree:
-            //TODO: removePhyTreeObject(objectId);
+        case U2Type::AnnotationTable:
+            dbi->getSQLiteFeatureDbi()->removeAnnotationTableData(objectId, os);
             break;
         case U2Type::Assembly:
-            //TODO: removeAssemblyObject(objectId);
+            dbi->getAssemblyDbi()->removeAssemblyData(objectId, os);
             break;
         case U2Type::CrossDatabaseReference:
-            //TODO: removeCrossDatabaseReferenceObject(objectId.id);
+            dbi->getCrossDatabaseReferenceDbi()->removeCrossReferenceData(objectId, os);
             break;
         default:
-            if (U2Type::isUdrObjectType(type)) {
-                SQLiteUdrDbiUtils::removeObjectRecords(objectId, type, db, os);
-            } else {
-                os.setError(SQLiteL10N::tr("Unknown object type! Id: %1, type: %2").arg(U2DbiUtils::text(objectId)).arg(type));
+            if (!U2Type::isUdrObjectType(type)) {
+                os.setError(U2DbiL10n::tr("Unknown object type! Id: %1, type: %2").arg(U2DbiUtils::text(objectId)).arg(type));
             }
     }
-    CHECK_OP(os, false);
-
-    // Remove modifications history
-    // Note: affected modification steps of child objects are also removed
-    removeObjectModHistory(objectId, os);
     CHECK_OP(os, false);
 
     SQLiteUtils::remove("Object", "id", objectId, 1, db, os);
@@ -289,7 +260,64 @@ void SQLiteObjectDbi::removeObjectModHistory(const U2DataId& id, U2OpStatus& os)
 // Read methods for folders
 
 QStringList SQLiteObjectDbi::getFolders(U2OpStatus& os) {
+    // Comparison is case sensitive by default
     return SQLiteQuery("SELECT path FROM Folder ORDER BY path", db, os).selectStrings();
+}
+
+QHash<U2Object, QString> SQLiteObjectDbi::getObjectFolders(U2OpStatus &os) {
+    QHash<U2Object, QString> result;
+
+    static const QString queryString =
+        "SELECT o.id, o.type, o.version, o.name, o.trackMod, f.path "
+        "FROM Object AS o, FolderContent AS fc, Folder AS f WHERE fc.object=o.id AND "
+        "fc.folder=f.id AND " + TOP_LEVEL_FILTER;
+    SQLiteQuery q(queryString, db, os);
+    CHECK_OP(os, result);
+
+    const QString dbId = dbi->getDbiId();
+
+    while (q.step()) {
+        U2Object object;
+        const U2DataType type = q.getDataType(1);
+        object.id = q.getDataId(0, type);
+        object.version = q.getInt64(2);
+        object.visualName = q.getString(3);
+        object.trackModType = static_cast<U2TrackModType>(q.getInt32(4));
+        const QString path = q.getString(5);
+        object.dbiId = dbId;
+        result[object] = path;
+    }
+    return result;
+}
+
+void SQLiteObjectDbi::renameFolder(const QString &oldPath, const QString &newPath, U2OpStatus &os) {
+    const QString oldCPath = U2DbiUtils::makeFolderCanonical(oldPath);
+    const QString newCPath = U2DbiUtils::makeFolderCanonical(newPath);
+
+    const QStringList allFolders = getFolders(os);
+    CHECK_OP(os, );
+
+    static const QString renameFolderQueryStr = "UPDATE Folder SET path = ?1 where path = ?2";
+    if (allFolders.contains(oldCPath)) {
+        SQLiteQuery q(renameFolderQueryStr, db, os);
+        q.bindString(1, newCPath);
+        q.bindString(2, oldPath);
+        q.update();
+        CHECK_OP(os, );
+    }
+
+    QString parent = oldCPath + PATH_SEP;
+    QString newParent = newCPath + PATH_SEP;
+    foreach (const QString &path, allFolders) {
+        if (path.startsWith(parent)) {
+            QString newPath = newParent + path.mid(parent.size());
+            SQLiteQuery q(renameFolderQueryStr, db, os);
+            q.bindString(1, newPath);
+            q.bindString(2, path);
+            q.update();
+            CHECK_OP(os, );
+        }
+    }
 }
 
 qint64 SQLiteObjectDbi::countObjects(const QString& folder, U2OpStatus& os) {
@@ -324,52 +352,48 @@ void SQLiteObjectDbi::createFolder(const QString& path, U2OpStatus& os) {
     }
 }
 
-void SQLiteObjectDbi::removeFolder(const QString& folder, U2OpStatus& os) {
+bool SQLiteObjectDbi::removeFolder(const QString& folder, U2OpStatus& os) {
     // remove subfolders first
-    SQLiteQuery q("SELECT path FROM Folder WHERE path LIKE ?1", db, os);
+    SQLiteQuery q("SELECT path FROM Folder WHERE path LIKE ?1 ORDER BY LENGTH(path) DESC", db, os);
     q.bindString(1, folder + "/%");
     QStringList subfolders = q.selectStrings();
-    if (os.hasError()) {
-        return;
-    }
-    subfolders.sort(); //remove innermost folders first
-    for (int i = subfolders.length(); --i >= 0 && !os.hasError();) {
-        const QString& subfolder = subfolders.at(i);
-        removeFolder(subfolder, os);
-    }
-    if (os.hasError()) {
-        return;
+    CHECK_OP(os, false);
+
+    bool result = true;
+    foreach (const QString &subfolder, subfolders) {
+        result = removeFolder(subfolder, os);
+        CHECK_OP(os, false);
     }
 
     // remove all objects from folder
     qint64 nObjects = countObjects(folder, os);
-    if (os.hasError()) {
-        return;
-    }
+    CHECK_OP(os, false);
+
     int nObjectsPerIteration = 1000;
     for (int i = 0; i < nObjects; i += nObjectsPerIteration) {
         QList<U2DataId> objects = getObjects(folder, i, nObjectsPerIteration, os);
-        if (os.hasError()) {
-            return;
-        }
+        CHECK_OP(os, false);
 
         // Remove all objects in the folder
         if (!objects.isEmpty()) {
-            removeObjects(objects, folder, os);
-            if (os.hasError()) {
-                return;
+            bool deleted = removeObjects(objects, folder, os);
+            CHECK_OP(os, false);
+            if (result && !deleted) {
+                result = false;
             }
         }
     }
 
-    // remove folder record
-    SQLiteQuery dq("DELETE FROM Folder WHERE path = ?1", db, os);
-    dq.bindString(1, folder);
-    dq.execute();
-    if (os.hasError()) {
-        return;
+    if (result) {
+        // remove folder record
+        SQLiteQuery dq("DELETE FROM Folder WHERE path = ?1", db, os);
+        dq.bindString(1, folder);
+        dq.execute();
+        CHECK_OP(os, false);
+
+        onFolderUpdated(folder);
     }
-    onFolderUpdated(folder);
+    return result;
 }
 
 void SQLiteObjectDbi::addObjectsToFolder(const QList<U2DataId>& objectIds, const QString& folder, U2OpStatus& os) {
@@ -380,7 +404,7 @@ void SQLiteObjectDbi::addObjectsToFolder(const QList<U2DataId>& objectIds, const
     QList<U2DataId> addedObjects;
     SQLiteQuery countQ("SELECT count(object) FROM FolderContent WHERE folder = ?1", db, os);
     SQLiteQuery insertQ("INSERT INTO FolderContent(folder, object) VALUES(?1, ?2)", db, os);
-    SQLiteQuery toplevelQ("UPDATE Object SET rank = " + QString::number(SQLiteDbiObjectRank_TopLevel) + " WHERE id = ?1", db, os);
+    SQLiteQuery toplevelQ("UPDATE Object SET rank = " + QString::number(U2DbiObjectRank_TopLevel) + " WHERE id = ?1", db, os);
 
     foreach(const U2DataId& objectId, objectIds) {
         countQ.reset();
@@ -407,17 +431,70 @@ void SQLiteObjectDbi::addObjectsToFolder(const QList<U2DataId>& objectIds, const
     onFolderUpdated(folder);
 }
 
-void SQLiteObjectDbi::moveObjects(const QList<U2DataId>& objectIds, const QString& fromFolder, const QString& toFolder, U2OpStatus& os)  {
-    if (fromFolder == toFolder) {
-        return;
-    }
-    if (!toFolder.isEmpty()) {
-        addObjectsToFolder(objectIds, toFolder, os);
-        if (os.hasError()) {
-            return;
+void SQLiteObjectDbi::moveObjects(const QList<U2DataId>& objectIds, const QString& fromFolder,
+    const QString& toFolder, U2OpStatus& os, bool saveFromFolder)
+{
+    const QString canonicalFromFolder = U2DbiUtils::makeFolderCanonical(fromFolder);
+    const QString canonicalToFolder = U2DbiUtils::makeFolderCanonical(toFolder);
+
+    CHECK(canonicalFromFolder != canonicalToFolder, );
+
+    addObjectsToFolder(objectIds, toFolder, os);
+    CHECK_OP(os, );
+
+    removeObjects(objectIds, fromFolder, os);
+
+    if (saveFromFolder) {
+        CHECK_OP(os, );
+
+        U2AttributeDbi *attrDbi = dbi->getAttributeDbi();
+        foreach (const U2DataId &id, objectIds) {
+            const QList<U2DataId> attributes = attrDbi->getObjectAttributes(id,
+                PREV_OBJ_PATH_ATTR_NAME, os);
+            CHECK_OP(os, );
+
+            CHECK_EXT(attributes.size() <= 1,
+                os.setError("Multiple attribute definition detected!"), );
+
+            if (!attributes.isEmpty()) {
+                attrDbi->removeAttributes(attributes, os);
+                CHECK_OP(os, );
+            }
+
+            U2StringAttribute prevPath(id, PREV_OBJ_PATH_ATTR_NAME, fromFolder);
+            attrDbi->createStringAttribute(prevPath, os);
         }
     }
-    removeObjects(objectIds, fromFolder, os);
+}
+
+QStringList SQLiteObjectDbi::restoreObjects(const QList<U2DataId> &objectIds, U2OpStatus &os) {
+    U2AttributeDbi *attrDbi = dbi->getAttributeDbi();
+    QList<U2DataId> attributesWithStoredPath;
+    QStringList result;
+    foreach (const U2DataId &objId, objectIds) {
+        const QList<U2DataId> attributes = attrDbi->getObjectAttributes(objId,
+            PREV_OBJ_PATH_ATTR_NAME, os);
+        CHECK_OP(os, result);
+
+        CHECK_EXT(attributes.size() == 1,
+            os.setError("Stored folder path not found!"), result);
+
+        const U2DataId attrId = attributes.first();
+
+        const U2StringAttribute storedPath = attrDbi->getStringAttribute(attrId, os);
+        CHECK_OP(os, result);
+        attributesWithStoredPath.append(attrId);
+        result.append(storedPath.value);
+
+        const QStringList folders = getObjectFolders(objId, os);
+        CHECK_EXT(1 == folders.size(),
+            os.setError("Multiple reference to object from folders found!"), result);
+        moveObjects(QList<U2DataId>() << objId, folders.first(), storedPath.value, os);
+        CHECK_OP(os, result);
+    }
+
+    attrDbi->removeAttributes(attributesWithStoredPath, os);
+    return result;
 }
 
 void SQLiteObjectDbi::incrementVersion(const U2DataId& id, U2OpStatus& os) {
@@ -449,7 +526,7 @@ void SQLiteObjectDbi::undo(const U2DataId& objId, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     Q_UNUSED(t);
 
-    QString errorDescr = SQLiteL10N::tr("Can't undo an operation for the object!");
+    QString errorDescr = U2DbiL10n::tr("Can't undo an operation for the object!");
 
     // Get the object
     U2Object obj;
@@ -534,7 +611,7 @@ void SQLiteObjectDbi::redo(const U2DataId& objId, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     Q_UNUSED(t);
 
-    QString errorDescr = SQLiteL10N::tr("Can't redo an operation for the object!");
+    QString errorDescr = U2DbiL10n::tr("Can't redo an operation for the object!");
 
     // Get the object
     U2Object obj;
@@ -657,18 +734,11 @@ void SQLiteObjectDbi::removeParent(const U2DataId& parentId, const U2DataId& chi
 }
 
 
-void SQLiteObjectDbi::ensureParent(const U2DataId& parentId, const U2DataId& childId, U2OpStatus& os) {
-    SQLiteQuery checkQ("SELECT COUNT(*) FROM Parent WHERE parent = ?1 AND child = ?2", db, os);
-    checkQ.bindDataId(1, parentId);
-    checkQ.bindDataId(2, childId);
-    if (checkQ.selectInt64() == 1) {
-        return;
-    }
-    SQLiteQuery insertQ("INSERT INTO Parent (parent, child) VALUES (?1, ?2)", db, os);
+void SQLiteObjectDbi::setParent(const U2DataId& parentId, const U2DataId& childId, U2OpStatus& os) {
+    SQLiteQuery insertQ("INSERT OR IGNORE INTO Parent (parent, child) VALUES (?1, ?2)", db, os);
     insertQ.bindDataId(1, parentId); 
     insertQ.bindDataId(2, childId);
     insertQ.execute();
-
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -693,22 +763,12 @@ qint64 SQLiteObjectDbi::getObjectVersion(const U2DataId& objectId, U2OpStatus& o
 }
 
 void SQLiteObjectDbi::setTrackModType(const U2DataId& objectId, U2TrackModType trackModType, U2OpStatus& os) {
-    SQLiteQuery q("UPDATE Object SET trackMod = ?1 WHERE id = ?2", db, os);
+    SQLiteQuery q("UPDATE Object SET trackMod = ?1 WHERE id IN "
+                    "(SELECT o.id FROM Object o, Parent p WHERE p.parent = ?2 AND p.child = o.id) OR id = ?2", db, os);
     CHECK_OP(os, );
-
     q.bindInt32(1, trackModType);
     q.bindDataId(2, objectId);
     q.update(1);
-    CHECK_OP(os, );
-
-    { // update child objects
-        SQLiteQuery q("UPDATE Object SET trackMod = ?1 WHERE id IN "
-                      "(SELECT o.id FROM Object o, Parent p WHERE p.parent = ?2 AND p.child = o.id)", db, os);
-        CHECK_OP(os, );
-        q.bindInt32(1, trackModType);
-        q.bindDataId(2, objectId);
-        q.update(1);
-    }
 }
 
 U2TrackModType SQLiteObjectDbi::getTrackModType(const U2DataId& objectId, U2OpStatus& os) {
@@ -723,14 +783,14 @@ U2TrackModType SQLiteObjectDbi::getTrackModType(const U2DataId& objectId, U2OpSt
         return (U2TrackModType)res;
     }
     else if (!os.hasError()) {
-        os.setError(SQLiteL10N::tr("Object not found!"));
+        os.setError(U2DbiL10n::tr("Object not found!"));
         return NoTrack;
     }
 
     return NoTrack;
 }
 
-U2DataId SQLiteObjectDbi::createObject(U2Object & object, const QString& folder, SQLiteDbiObjectRank rank, U2OpStatus& os) {
+U2DataId SQLiteObjectDbi::createObject(U2Object & object, const QString& folder, U2DbiObjectRank rank, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     U2DataType type = object.getType();
     const QString &vname = object.visualName;
@@ -743,27 +803,26 @@ U2DataId SQLiteObjectDbi::createObject(U2Object & object, const QString& folder,
     i1->bindString(3, vname);
     i1->bindInt32(4, trackMod);
     U2DataId res = i1->insert(type);
-    if (os.hasError()) {
-        return res;
-    }
-    if (!folder.isEmpty()) {
-        assert(rank == SQLiteDbiObjectRank_TopLevel);
-        qint64 folderId = getFolderId(folder, true, db, os);
-        if (os.hasError()) {
-            return res;
-        }
+    CHECK_OP(os, res);
+
+    if (U2DbiObjectRank_TopLevel == rank) {
+        const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(folder);
+        qint64 folderId = getFolderId(canonicalFolder, true, db, os);
+        CHECK_OP(os, res);
 
         static const QString i2String("INSERT INTO FolderContent(folder, object) VALUES(?1, ?2)");
         QSharedPointer<SQLiteQuery> i2 = t.getPreparedQuery(i2String, db, os);
         CHECK_OP(os, res);
         i2->bindInt64(1, folderId);
-        i2->bindDataId(2, res);    
+        i2->bindDataId(2, res);
         i2->execute();
+        CHECK_OP(os, res);
     }
 
     object.id = res;
     object.dbiId = dbi->getDbiId();
     object.version = getObjectVersion(object.id, os);
+    SAFE_POINT_OP(os, res);
     return res;
 }
 
@@ -785,8 +844,24 @@ void SQLiteObjectDbi::getObject(U2Object& object, const U2DataId& id, U2OpStatus
         }
         q.ensureDone();
     } else if (!os.hasError()) {
-        os.setError(SQLiteL10N::tr("Object not found."));
+        os.setError(U2DbiL10n::tr("Object not found."));
     }
+}
+
+QHash<U2DataId, QString> SQLiteObjectDbi::getObjectNames(qint64 offset, qint64 count, U2OpStatus &os) {
+    QHash<U2DataId, QString> result;
+
+    static const QString queryString = "SELECT id, type, name FROM Object WHERE " + TOP_LEVEL_FILTER;
+
+    SQLiteQuery q(queryString, offset, count, db, os);
+    CHECK_OP(os, result);
+    while (q.step()) {
+        const U2DataType type = q.getDataType(1);
+        const U2DataId id = q.getDataId(0, type);
+        const QString name = q.getString(2);
+        result.insert(id, name);
+    }
+    return result;
 }
 
 void SQLiteObjectDbi::updateObject(U2Object& obj, U2OpStatus& os) {
@@ -805,7 +880,7 @@ qint64 SQLiteObjectDbi::getFolderId(const QString& path, bool mustExist, DbRef* 
         return -1;
     }
     if (mustExist && res == -1) {
-        os.setError(SQLiteL10N::tr("Folder not found :%1").arg(path));
+        os.setError(U2DbiL10n::tr("Folder not found :%1").arg(path));
     }
     return res;
 }
@@ -850,8 +925,8 @@ void SQLiteCrossDatabaseReferenceDbi::initSqlSchema(U2OpStatus& os) {
 }
 
 
-void SQLiteCrossDatabaseReferenceDbi::createCrossReference(U2CrossDatabaseReference& reference, U2OpStatus& os) {
-    dbi->getSQLiteObjectDbi()->createObject(reference, QString(), SQLiteDbiObjectRank_TopLevel, os);
+void SQLiteCrossDatabaseReferenceDbi::createCrossReference(U2CrossDatabaseReference& reference, const QString& folder, U2OpStatus& os) {
+    dbi->getSQLiteObjectDbi()->createObject(reference, folder, U2DbiObjectRank_TopLevel, os);
     if (os.hasError()) {
         return;
     }
@@ -862,6 +937,13 @@ void SQLiteCrossDatabaseReferenceDbi::createCrossReference(U2CrossDatabaseRefere
     q.bindString(3, reference.dataRef.dbiRef.dbiId);
     q.bindBlob(4, reference.dataRef.entityId);
     q.bindInt64(5, reference.dataRef.version);
+    q.execute();
+}
+
+void SQLiteCrossDatabaseReferenceDbi::removeCrossReferenceData(const U2DataId &referenceId, U2OpStatus &os) {
+    static const QString queryString = "DELETE FROM CrossDatabaseReference WHERE object = ?1";
+    SQLiteQuery q(queryString, db, os);
+    q.bindDataId(1, referenceId);
     q.execute();
 }
 

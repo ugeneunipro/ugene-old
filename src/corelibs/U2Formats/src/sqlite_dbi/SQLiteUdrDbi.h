@@ -56,13 +56,7 @@ private:
     static QList< QStringList > indexes(const UdrSchema *schema, U2OpStatus &os);
     static void bindData(const QList<UdrValue> &data, const UdrSchema *schema, SQLiteQuery &q, U2OpStatus &os);
     static void retreiveData(QList<UdrValue> &data, const UdrSchema *schema, SQLiteQuery &q, U2OpStatus &os);
-    static QList<int> notBinary(const UdrSchema *schema, U2OpStatus &os);
     static UdrSchema::FieldDesc getBlobField(const UdrSchemaId &schemaId, int fieldNum, U2OpStatus &os);
-};
-
-class SQLiteUdrDbiUtils {
-public:
-    static void removeObjectRecords(const U2DataId &objectId, U2DataType type, DbRef *db, U2OpStatus &os);
 };
 
 } // U2

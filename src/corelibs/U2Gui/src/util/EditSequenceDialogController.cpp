@@ -31,7 +31,6 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/HelpButton.h>
 
-#include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 
 #if (QT_VERSION < 0x050000) //Qt 5

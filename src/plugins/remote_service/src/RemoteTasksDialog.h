@@ -22,8 +22,6 @@
 #ifndef _REMOTE_TASKS_DIALOG_H_
 #define _REMOTE_TASKS_DIALOG_H_
 
-#include <memory>
-
 #include <qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
@@ -65,7 +63,7 @@ private:
     GetUserTasksInfoTask* getInfoTask;
     FetchRemoteTaskResultTask* fetchResultTask;
     DeleteRemoteDataTask* deleteRemoteDataTask;
-    std::auto_ptr<RemoteServiceMachine> machine;
+    QScopedPointer<RemoteServiceMachine> machine;
 
 };
 

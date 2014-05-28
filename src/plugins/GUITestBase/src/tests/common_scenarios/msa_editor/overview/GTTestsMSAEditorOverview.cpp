@@ -72,7 +72,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 GUI_TEST_CLASS_DEFINITION(test_0002){
     //1. Open "_common_data/clustal/10000_sequences.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "10000_sequences.aln");
-    GTUtilsTaskTreeView::waitTaskFinidhed(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     //Expected state: simple overview is disabled, graph overview is displayed.
     QWidget* simple = GTWidget::findWidget(os, "msa_overview_area_simple");
     CHECK_SET_ERR(!simple->isVisible(), "simple overveiw is visiable");

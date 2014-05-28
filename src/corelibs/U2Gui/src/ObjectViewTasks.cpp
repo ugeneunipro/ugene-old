@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "ObjectViewTasks.h"
+#include <QtCore/QFileInfo>
 
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Log.h>
@@ -33,6 +33,8 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/L10n.h>
+
+#include "ObjectViewTasks.h"
 
 namespace U2 {
 

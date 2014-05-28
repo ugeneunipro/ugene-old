@@ -142,7 +142,7 @@ void GTest_FindEnzymes::prepare() {
         return;
     }
 
-    aObj->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
+    aObj->addObjectRelation(seqObj, ObjectRole_Sequence);
 
     loadTask = new LoadEnzymeFileTask(enzymesUrl);
     addSubTask(loadTask);

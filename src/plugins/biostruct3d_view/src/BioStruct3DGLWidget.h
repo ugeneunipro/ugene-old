@@ -29,7 +29,6 @@
 #include <U2Core/Vector3D.h>
 #include <U2Core/BioStruct3DObject.h>
 
-
 #include <QtCore/QTimer>
 #include <QtCore/QSharedPointer>
 
@@ -46,9 +45,7 @@
 
 #include <QtOpenGL/QGLWidget>
 
-#include <memory>
-
-namespace U2 { 
+namespace U2 {
 
 class Document;
 class BioStruct3D;
@@ -155,7 +152,7 @@ public:
     void setBackgroundColor(QColor backgroundColor);
 
     /** @returns This widget GLFrame */
-    GLFrame *getGLFrame() { return glFrame.get(); }
+    GLFrame *getGLFrame() { return glFrame.data(); }
 
     /** Draws scene without setting camera */
     void draw();
@@ -273,15 +270,15 @@ private:
     BioStruct3DRendererSettings rendererSettings;
 
     GLFrameManager* frameManager;
-    std::auto_ptr<GLFrame> glFrame;
+    QScopedPointer<GLFrame> glFrame;
 
-    std::auto_ptr<MolecularSurface> molSurface;
-    std::auto_ptr<MolecularSurfaceRenderer> surfaceRenderer;
+    QScopedPointer<MolecularSurface> molSurface;
+    QScopedPointer<MolecularSurfaceRenderer> surfaceRenderer;
 
     MolecularSurfaceCalcTask* surfaceCalcTask;
 
     AnaglyphStatus anaglyphStatus;
-    std::auto_ptr<AnaglyphRenderer> anaglyph;
+    QScopedPointer<AnaglyphRenderer> anaglyph;
 
     QVariantMap defaultsSettings;
 

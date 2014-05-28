@@ -22,7 +22,6 @@
 #include "GUrl.h"
 
 #include <QtCore/QDir>
-#include <QtCore/QFileInfo>
 
 namespace U2 {
 

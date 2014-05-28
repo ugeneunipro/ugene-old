@@ -501,6 +501,7 @@ void GalaxyConfigTask::writeFormatAttribute( const QString &resultType ) {
 
     DocumentFormatConstraints constraint;
     constraint.supportedObjectTypes.insert( resultType );
+    constraint.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList <QString> selectedFormats = docFormatRegistry->selectFormats( constraint );
 
     QString resultFormatString = QString(); 
@@ -757,6 +758,7 @@ void GalaxyConfigTask::writeFormatAttributeForOutputElement( const QString &resu
 
     DocumentFormatConstraints constraint;
     constraint.supportedObjectTypes.insert( resultType );
+    constraint.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     const QList <QString> selectedFormats = docFormatRegistry->selectFormats( constraint );
     galaxyConfigOutput.writeAttribute( FORMAT, selectedFormats.first() );
 }

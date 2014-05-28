@@ -19,6 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QFileInfo>
+#include <QtXml/QDomDocument>
+
 #include "BlastXPlusSupportTask.h"
 #include "BlastPlusSupport.h"
 
@@ -31,10 +34,7 @@
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
 
-#include <QtXml/QDomDocument>
-
 #include <U2Core/CreateAnnotationTask.h>
-//#include <U2Core/AddDocumentTask.h>
 
 namespace U2 {
 

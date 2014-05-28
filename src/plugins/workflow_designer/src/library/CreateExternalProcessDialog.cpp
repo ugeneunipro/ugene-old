@@ -255,35 +255,28 @@ public:
     void initFormats() {
         QList<DocumentFormatId> ids = AppContext::getDocumentFormatRegistry()->getRegisteredFormats();
 
-        DocumentFormatConstraints seqWrite;
+        DocumentFormatConstraints commonConstraints;
+        commonConstraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+        commonConstraints.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
+        commonConstraints.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
+
+        DocumentFormatConstraints seqWrite(commonConstraints);
         seqWrite.supportedObjectTypes+=GObjectTypes::SEQUENCE;
-        seqWrite.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-        seqWrite.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
 
-        DocumentFormatConstraints seqRead;
+        DocumentFormatConstraints seqRead(commonConstraints);
         seqRead.supportedObjectTypes+=GObjectTypes::SEQUENCE;
-        seqRead.addFlagToSupport(DocumentFormatFlag_SupportStreaming);
-        seqRead.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
 
-        DocumentFormatConstraints msaWrite;
+        DocumentFormatConstraints msaWrite(commonConstraints);
         msaWrite.supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
-        msaWrite.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-        msaWrite.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
 
-        DocumentFormatConstraints msaRead;
+        DocumentFormatConstraints msaRead(commonConstraints);
         msaRead.supportedObjectTypes+=GObjectTypes::MULTIPLE_ALIGNMENT;
-        msaRead.addFlagToSupport(DocumentFormatFlag_SupportStreaming);
-        msaRead.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
 
-        DocumentFormatConstraints annWrite;
+        DocumentFormatConstraints annWrite(commonConstraints);
         annWrite.supportedObjectTypes+=GObjectTypes::ANNOTATION_TABLE;
-        annWrite.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-        annWrite.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
 
-        DocumentFormatConstraints annRead;
+        DocumentFormatConstraints annRead(commonConstraints);
         annRead.supportedObjectTypes+=GObjectTypes::ANNOTATION_TABLE;
-        annRead.addFlagToSupport(DocumentFormatFlag_SupportStreaming);
-        annRead.addFlagToExclude(DocumentFormatFlag_SingleObjectFormat);
 
         foreach(const DocumentFormatId& id, ids) {
             DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(id);
@@ -302,7 +295,7 @@ public:
 
             if (df->checkConstraints(msaRead)) {
                 msaFormatsR[df->getFormatName()] = df->getFormatId();
-            } 
+            }
 
             if (df->checkConstraints(annWrite)) {
                 annFormatsW[df->getFormatName()] = df->getFormatId();

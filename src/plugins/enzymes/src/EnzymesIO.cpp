@@ -34,9 +34,6 @@
 #include <U2Core/Settings.h>
 
 #include <QtCore/QDir>
-#include <QtCore/QFile>
-
-#include <memory>
 
 namespace U2 {
 
@@ -138,7 +135,7 @@ EnzymeFileFormat EnzymesIO::detectFileFormat(const QString& url) {
 QList<SEnzymeData> EnzymesIO::readBairochFile(const QString& url, IOAdapterFactory* iof, TaskStateInfo& ti) {
     QList<SEnzymeData> res;
     
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Read)) {
         ti.setError(L10N::errorOpeningFileRead(url));
         return res;
@@ -227,13 +224,13 @@ QList<SEnzymeData> EnzymesIO::readBairochFile(const QString& url, IOAdapterFacto
 
 void EnzymesIO::writeBairochFile(const QString& url, IOAdapterFactory* iof, const QString& source, IOAdapterFactory* srciof, const QSet<QString>& enzymes, TaskStateInfo& ti) {
     
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Write)) {
         ti.setError(L10N::errorOpeningFileWrite(url));
         return;
     }
 
-    std::auto_ptr<IOAdapter> srcio(srciof->createIOAdapter());
+    QScopedPointer<IOAdapter> srcio(srciof->createIOAdapter());
     if (!srcio->open(source, IOAdapterMode_Read)) {
         ti.setError(L10N::errorOpeningFileRead(source));
         return;

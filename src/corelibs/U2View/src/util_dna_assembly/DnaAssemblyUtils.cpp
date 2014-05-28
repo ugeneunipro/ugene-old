@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QDir>
+
 #include <qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
@@ -160,7 +162,7 @@ static Result isCorrectFormat(const GUrl &url, const QStringList &targetFormats,
     return INCORRECT;
 }
 
-ConvertFileTask * getConvertTask(const GUrl &url, const QStringList &targetFormats, U2OpStatus &os) {
+ConvertFileTask * getConvertTask(const GUrl &url, const QStringList &targetFormats) {
     QString detectedFormat;
     Result r = isCorrectFormat(url, targetFormats, detectedFormat);
     if (UNKNOWN == r) {
@@ -187,8 +189,7 @@ ConvertFileTask * getConvertTask(const GUrl &url, const QStringList &targetForma
 
 #define PREPARE_FILE(url, targetFormats) \
     if (!toConvert.contains(url.getURLString())) { \
-        ConvertFileTask *task = getConvertTask(url, targetFormats, stateInfo); \
-        CHECK_OP(stateInfo, ); \
+        ConvertFileTask *task = getConvertTask(url, targetFormats); \
         if (NULL != task) { \
             addSubTask(task); \
             conversionTasksCount++; \
@@ -246,6 +247,7 @@ void DnaAssemblyTaskWithConversions::prepare() {
     }
 
     QSet<QString> toConvert;
+    Q_UNUSED(toConvert);
     foreach (const GUrl &url, settings.getShortReadUrls()) {
         PREPARE_FILE(url, env->getReadsFormats());
     }

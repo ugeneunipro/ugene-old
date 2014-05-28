@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "FindAlgorithmTask.h"
+#include <QtCore/QTextStream>
 
 #include <U2Core/TextUtils.h>
 #include <U2Core/DNATranslation.h>
@@ -27,13 +27,14 @@
 #include <U2Core/AppResources.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/DNASequenceObject.h>
-
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/IOAdapterUtils.h>
+
+#include "FindAlgorithmTask.h"
 
 namespace U2 {
 

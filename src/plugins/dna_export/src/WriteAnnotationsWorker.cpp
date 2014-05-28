@@ -201,6 +201,7 @@ void WriteAnnotationsWorkerFactory::init() {
     DocumentFormatConstraints constr;
     constr.supportedObjectTypes.insert( GObjectTypes::ANNOTATION_TABLE );
     constr.addFlagToSupport(DocumentFormatFlag_SupportWriting);
+    constr.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
     QList<DocumentFormatId> supportedFormats = AppContext::getDocumentFormatRegistry()->selectFormats( constr );
     supportedFormats.append(CSV_FORMAT_ID);
     DocumentFormatId format = supportedFormats.contains(BaseDocumentFormats::PLAIN_GENBANK) ? BaseDocumentFormats::PLAIN_GENBANK : supportedFormats.first();

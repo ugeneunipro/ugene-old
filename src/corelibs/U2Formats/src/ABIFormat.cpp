@@ -19,26 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#include "ABIFormat.h"
-#include "IOLibUtils.h"
-#include "DocumentFormatUtils.h"
+#include <time.h>
 
-#include <U2Core/IOAdapter.h>
 #include <U2Core/DNAAlphabet.h>
-#include <U2Core/GObjectReference.h>
-#include <U2Core/L10n.h>
+#include <U2Core/DNAChromatogramObject.h>
 #include <U2Core/DNAInfo.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/DNAChromatogramObject.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
 #include <U2Core/TextObject.h>
-#include <U2Core/U2OpStatus.h>
 #include <U2Core/TextUtils.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2SafePoints.h>
 
-#include <time.h>
+#include "ABIFormat.h"
+#include "DocumentFormatUtils.h"
+#include "IOLibUtils.h"
 
 /* TRANSLATOR U2::ABIFormat */    
 
@@ -428,6 +429,7 @@ static void replace_nl(char *string) {
 Document* ABIFormat::parseABI(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapter* io, const QVariantMap& fs, U2OpStatus& os) {
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, NULL);
+    Q_UNUSED(opBlock);
     DNASequence dna;
     DNAChromatogram cd;
 
@@ -436,18 +438,24 @@ Document* ABIFormat::parseABI(const U2DbiRef& dbiRef, SeekableBuf* fp, IOAdapter
     }
 
     QList<GObject*> objects;
-    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, dna.getName(), objects, dna, os);
+    const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+    U2SequenceObject* seqObj = DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, folder, dna.getName(), objects, dna, os);
     CHECK_OP(os, NULL);
     SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
-    DNAChromatogramObject* chromObj = DNAChromatogramObject::createInstance(cd, "Chromatogram", dbiRef, os);
+
+    QVariantMap hints;
+    hints.insert(DBI_FOLDER_HINT, fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+    DNAChromatogramObject* chromObj = DNAChromatogramObject::createInstance(cd, "Chromatogram", dbiRef, os, hints);
     CHECK_OP(os, NULL);
     objects.append(chromObj);
+
     QString seqComment = dna.info.value(DNAInfo::COMMENT).toStringList().join("\n");
-    TextObject *textObj = TextObject::createInstance(seqComment, "Info", dbiRef, os);
+    TextObject *textObj = TextObject::createInstance(seqComment, "Info", dbiRef, os, hints);
     CHECK_OP(os, NULL);
     objects.append(textObj);
+
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);
-    chromObj->addObjectRelation(GObjectRelation(GObjectReference(seqObj), GObjectRelationRole::SEQUENCE));
+    chromObj->addObjectRelation(GObjectRelation(GObjectReference(seqObj), ObjectRole_Sequence));
     return doc;
 }
 

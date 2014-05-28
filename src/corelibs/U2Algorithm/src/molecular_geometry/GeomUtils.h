@@ -24,7 +24,6 @@
 
 #include <QtCore/QVector>
 #include <U2Core/Vector3D.h>
-#include <memory>
 
 namespace U2 { 
 
@@ -43,7 +42,7 @@ struct U2ALGORITHM_EXPORT Face {
 class U2ALGORITHM_EXPORT GeodesicSphere {
     QVector<Vector3D> vertices;
     QVector<Face> faces;
-    static std::auto_ptr< QVector<Vector3D> > elementarySphere;
+    static QScopedPointer< QVector<Vector3D> > elementarySphere;
     static int currentDetailLevel;
     static void interpolate(const Vector3D& v1, const Vector3D& v2, const Vector3D& v3, QVector<Vector3D>* v, int detailLevel);
 public:

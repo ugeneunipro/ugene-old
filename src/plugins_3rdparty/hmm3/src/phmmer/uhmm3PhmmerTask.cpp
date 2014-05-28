@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QFileInfo>
 #include <QtCore/QMutexLocker>
 
 #include <U2Core/DNASequenceObject.h>

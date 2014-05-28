@@ -21,7 +21,6 @@
 
 #include "KalignException.h"
 #include <assert.h>
-#include <memory>
 #include <string.h>
 
 extern "C" void throwKalignException(char *message) {

@@ -93,7 +93,7 @@ QList<DNAFragment> DNAFragment::findAvailableFragments( const QList<GObject*>& a
                 U2SequenceObject* dnaObj = NULL;
                 QList<GObjectRelation> relations = aObj->getObjectRelations();
                 foreach (const GObjectRelation& relation, relations ) {
-                    if (relation.role != GObjectRelationRole::SEQUENCE) {
+                    if (relation.role != ObjectRole_Sequence) {
                         continue;
                     }
                     GObject* relatedObj = GObjectUtils::selectObjectByReference(relation.ref, sObjects, UOF_LoadedOnly);
@@ -104,7 +104,7 @@ QList<DNAFragment> DNAFragment::findAvailableFragments( const QList<GObject*>& a
                 }
                 // Find related annotation tables 
                 QList<GObject*> relatedAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dnaObj,
-                    GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, aObjects, UOF_LoadedOnly);
+                    GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence, aObjects, UOF_LoadedOnly);
                 // Add fragment
                 DNAFragment fragment;
                 fragment.annotatedFragment = a.getData( );

@@ -49,7 +49,7 @@ public:
                                         ~PVRowsManager( );
     void                                clear( );
 
-    void                                addAnnotation( const Annotation &f, const QString &key );
+    void                                addAnnotation( const Annotation &f, const AnnotationData &data );
     void                                removeAnnotation( const Annotation &f );
 
     bool                                contains( const QString &key ) const;

@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QDebug>
 #include <QtCore/QStringList>
 
 #include <U2Core/U2OpStatus.h>
@@ -35,7 +36,6 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/TextUtils.h>
 #include <time.h>
-#include <memory>
 
 #include "DocumentFormatUtils.h"
 #include "ASNFormat.h"
@@ -76,14 +76,14 @@ Document* ASNFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     AsnParser asnParser(io, os);
     ioLog.trace("ASN: Parsing: " +io->toString());
 
-    std::auto_ptr<AsnNode> rootElem(asnParser.loadAsnTree());
+    QScopedPointer<AsnNode> rootElem(asnParser.loadAsnTree());
     ioLog.trace(QString("ASN tree for %1 was built").arg(io->toString()));
     os.setProgress(30);
 
-    if (rootElem.get() != NULL) {
+    if (!rootElem.isNull()) {
         BioStructLoader ldr;
         ldr.setStandardDictionary( stdResidueDict );
-        ldr.loadBioStructFromAsnTree(rootElem.get(), bioStruct, os);
+        ldr.loadBioStructFromAsnTree(rootElem.data(), bioStruct, os);
     }
     os.setProgress(80);
 
@@ -316,7 +316,7 @@ const StdResidue ASNFormat::BioStructLoader::loadResidueFromNode(AsnNode* resNod
     int stdResidueId = 0;
     bool ok = false;
     if ( (resGraphPntrNode->kind == ASN_VALUE) && (resGraphPntrNode->value.contains("local")) ) {
-        dictionary = localDictionary.get();
+        dictionary = localDictionary.data();
         stdResidueId = resGraphPntrNode->value.split(' ').at(1).toInt(&ok);
     } else if (resGraphPntrNode->name.contains("standard")) {
         dictionary = standardDictionary;

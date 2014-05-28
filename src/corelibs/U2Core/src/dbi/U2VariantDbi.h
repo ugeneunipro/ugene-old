@@ -63,7 +63,7 @@ public:
         Creates new VariantTrack instance
         Requires U2DbiFeature_WriteVariants feature support
     */
-    virtual void createVariantTrack(U2VariantTrack& track, VariantTrackType trackType, U2OpStatus& os) = 0;
+    virtual void createVariantTrack(U2VariantTrack& track, VariantTrackType trackType, const QString& folder, U2OpStatus& os) = 0;
 
     /** 
         Creates new index for variations.
@@ -74,7 +74,7 @@ public:
         Updates VariantTrack instance 
         Requires U2DbiFeature_WriteVariants feature support
     */
-    virtual void updateVariantTrack(const U2VariantTrack& track, U2OpStatus& os) = 0;
+    virtual void updateVariantTrack(U2VariantTrack& track, U2OpStatus& os) = 0;
 
     /** Returns all Variants from the given sequence region 
     U2_REGION_MAX to get all variants*/

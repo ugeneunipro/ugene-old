@@ -30,10 +30,10 @@
 
 #include "StateLockableDataModel.h"
 
-
+#include <QtCore/QDateTime>
 #include <QtCore/QMimeData>
 #include <QtCore/QPointer>
-#include <QtScript>
+#include <QtScript/QScriptValue>
 
 namespace U2 {
 
@@ -65,6 +65,11 @@ enum DocumentFormatFlag {
     DocumentFormatFlag_Hidden               = 1<<5,
     // Document contains only one object of each supported type
     DocumentFormatFlag_OnlyOneObject        = 1<<6,
+    // UGENE is unable to create a new document of this format
+    // although it can modify existing documents
+    DocumentFormatFlag_CannotBeCreated      = 1<<7,
+    // Document can contain objects with duplicate names
+    DocumentFormatFlag_AllowDuplicateNames  = 1<<8
 };
 
 
@@ -114,6 +119,7 @@ public:
     static const QString CREATED_NOT_BY_UGENE;
     static const QString MERGED_SEQ_LOCK;
     static const QString DBI_REF_HINT;
+    static const QString DBI_FOLDER_HINT;
 
     enum DocObjectOp {
         DocObjectOp_Add,
@@ -286,6 +292,12 @@ enum DocumentModLock {
     DocumentModLock_NUM_LOCKS
 };
 
+enum DocumentObjectRemovalMode {
+    DocumentObjectRemovalMode_Deallocate,
+    DocumentObjectRemovalMode_OnlyNotify,
+    DocumentObjectRemovalMode_Release
+};
+
 class DocumentChildEventsHelper;
 
 class U2CORE_EXPORT Document : public  StateLockableTreeItem {
@@ -330,9 +342,11 @@ public:
 
     const QList<GObject*>& getObjects() const {return objects;}
 
+    GObject * getObjectById(const U2DataId &id) const;
+
     void addObject(GObject* ref);
 
-    void removeObject(GObject* o);
+    bool removeObject(GObject* o, DocumentObjectRemovalMode removalMode = DocumentObjectRemovalMode_Deallocate);
 
     const QString& getName() const {return name;}
     
@@ -392,14 +406,18 @@ public:
 
     inline void setDocumentOwnsDbiResources(bool value) { documentOwnsDbiResources = value; }
 
+    virtual bool isDatabaseConnection() const;
+
     static void setupToEngine(QScriptEngine *engine);
 
     Document *getSimpleCopy(DocumentFormat *df, IOAdapterFactory *io, const GUrl &url) const;
+
 private:
     static QScriptValue toScriptValue(QScriptEngine *engine, Document* const &in);
     static void fromScriptValue(const QScriptValue &object, Document* &out);
+
 protected:
-    void _removeObject(GObject* o, bool deleteObjects = true);
+    bool _removeObject(GObject* o, bool deleteObjects = true);
     void _addObject(GObject* obj);
     void _addObjectToHierarchy(GObject* obj);
 
@@ -415,14 +433,15 @@ protected:
     GUrl                        url;
     U2DbiRef                    dbiRef; // Default dbi ref for the document
 
-    QString             name; /* display name == short pathname, excluding the path */
-    QList<GObject*>     objects;
-    GHints*             ctxState;
-    QDateTime           lastUpdateTime;
-    bool                documentOwnsDbiResources;
+    QString                     name; /* display name == short pathname, excluding the path */
+    QList<GObject*>             objects;
+    QHash<U2DataId, GObject *>  id2Object;
+    GHints*                     ctxState;
+    QDateTime                   lastUpdateTime;
+    bool                        documentOwnsDbiResources;
 
-    StateLock*          modLocks[DocumentModLock_NUM_LOCKS];
-    bool                loadStateChangeMode;
+    StateLock*                  modLocks[DocumentModLock_NUM_LOCKS];
+    bool                        loadStateChangeMode;
 
 signals:
     void si_urlChanged();
@@ -436,7 +455,7 @@ signals:
 
 class U2CORE_EXPORT DocumentFilter {
 public:
-    virtual ~DocumentFilter(){};
+    virtual ~DocumentFilter(){}
     virtual bool matches(Document* doc) const = 0;
 };
 

@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportTasks.h"
+#include <QtCore/QFileInfo>
 
 #include <U2Core/DocumentModel.h>
 #include <U2Core/IOAdapter.h>
@@ -44,6 +44,8 @@
 #include <U2Formats/SCFFormat.h>
 
 #include <U2Gui/OpenViewTask.h>
+
+#include "ExportTasks.h"
 
 namespace U2 {
 
@@ -220,7 +222,7 @@ void ExportDNAChromatogramTask::prepare() {
         return;
     }
 
-    QList<GObjectRelation> relatedObjs = cObj->findRelatedObjectsByRole(GObjectRelationRole::SEQUENCE);
+    QList<GObjectRelation> relatedObjs = cObj->findRelatedObjectsByRole(ObjectRole_Sequence);
     assert(relatedObjs.count() == 1);
     if (relatedObjs.count() != 1) {
         stateInfo.setError("Sequence related to chromatogram is not found!");

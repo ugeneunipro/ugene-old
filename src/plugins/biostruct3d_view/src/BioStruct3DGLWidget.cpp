@@ -72,7 +72,6 @@
 
 #include "gl2ps/gl2ps.h"
 #include <time.h>
-#include <memory>
 
 // disable "unsafe functions" deprecation warnings on MS VS
 #ifdef Q_OS_WIN
@@ -146,7 +145,7 @@ BioStruct3DGLWidget::BioStruct3DGLWidget(BioStruct3DObject* obj, const Annotated
     loadColorSchemes();
     loadGLRenderers(availableRenders);
 
-    frameManager->addGLFrame(glFrame.get());
+    frameManager->addGLFrame(glFrame.data());
     saveDefaultSettings();
 }
 
@@ -296,8 +295,7 @@ void BioStruct3DGLWidget::draw() {
         glPopMatrix();
     }
 
-    if(NULL != molSurface.get())
-    {
+    if(!molSurface.isNull()) {
         glEnable(GL_CULL_FACE);
 
         glCullFace(GL_FRONT);
@@ -491,7 +489,7 @@ void BioStruct3DGLWidget::setBackgroundColor(QColor backgroundColor)
 void BioStruct3DGLWidget::zoom( float delta )
 {
     bool syncLock = isSyncModeOn();
-    QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.get(), syncLock);
+    QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.data(), syncLock);
     foreach( GLFrame* frame, frames) {
         frame->makeCurrent();
         frame->performZoom(delta);
@@ -503,7 +501,7 @@ void BioStruct3DGLWidget::zoom( float delta )
 void BioStruct3DGLWidget::shift( float deltaX, float deltaY)
 {
     bool syncLock = isSyncModeOn();
-    QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.get(), syncLock);
+    QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.data(), syncLock);
     foreach( GLFrame* frame, frames) {
         frame->makeCurrent();
         frame->performShift(deltaX, deltaY);
@@ -523,7 +521,7 @@ void BioStruct3DGLWidget::restoreDefaultSettigns()
 {
     assert(!defaultsSettings.isEmpty());
     bool syncLock = isSyncModeOn();
-    QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.get(), syncLock);
+    QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.data(), syncLock);
     foreach( GLFrame* frame, frames) {
         frame->makeCurrent();
         frame->setState(defaultsSettings);
@@ -690,7 +688,7 @@ void BioStruct3DGLWidget::mouseMoveEvent(QMouseEvent *event)
             rotAxis =  vector_cross(lastPos,curPos);
 
             bool syncLock = isSyncModeOn();
-            QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.get(), syncLock);
+            QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.data(), syncLock);
             foreach( GLFrame* frame, frames) {
                 frame->makeCurrent();
 
@@ -912,7 +910,7 @@ void BioStruct3DGLWidget::sl_updateAnnimation()
     spinAngle = velocity* animationTimer->interval();
     Vector3D rotAxis(0,1,0);
     bool syncLock = isSyncModeOn();
-    QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.get(), syncLock);
+    QList<GLFrame*> frames = frameManager->getActiveGLFrameList(glFrame.data(), syncLock);
 
     foreach( GLFrame* frame, frames) {
         frame->makeCurrent();
@@ -1021,8 +1019,7 @@ void BioStruct3DGLWidget::sl_onTaskFinished( Task* task )
         return;
     }
 
-    molSurface.reset();
-    molSurface = surfaceCalcTask->getCalculatedSurface();
+    molSurface.reset(surfaceCalcTask->getCalculatedSurface());
 
     makeCurrent();
     updateGL();

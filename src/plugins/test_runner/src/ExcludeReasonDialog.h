@@ -4,7 +4,7 @@
 #include <QDialog>
 
 namespace Ui {
-class ExcludeResaonDialog;
+class ExcludeReasonDialog;
 }
 namespace U2{
 
@@ -17,7 +17,7 @@ public:
     ~ExcludeReasonDialog();
     QString getReason();
 private:
-    Ui::ExcludeResaonDialog *ui;
+    Ui::ExcludeReasonDialog *ui;
 };
 
 }

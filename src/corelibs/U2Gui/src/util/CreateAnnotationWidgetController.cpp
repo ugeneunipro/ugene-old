@@ -50,8 +50,6 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Core/TextUtils.h>
 
-#include <memory>
-
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QVBoxLayout>
@@ -97,7 +95,7 @@ CreateAnnotationWidgetController::CreateAnnotationWidgetController(
 
     GObjectComboBoxControllerConstraints occc;
     occc.relationFilter.ref = model.sequenceObjectRef;
-    occc.relationFilter.role = GObjectRelationRole::SEQUENCE;
+    occc.relationFilter.role = ObjectRole_Sequence;
     occc.typeFilter = GObjectTypes::ANNOTATION_TABLE;
     occc.onlyWritable = true;
     occc.uof = model.useUnloadedObjects ? UOF_LoadedAndUnloaded : UOF_LoadedOnly;
@@ -123,7 +121,7 @@ void CreateAnnotationWidgetController::updateWidgetForAnnotationModel(const Crea
 
     GObjectComboBoxControllerConstraints occc;
     occc.relationFilter.ref = newModel.sequenceObjectRef;
-    occc.relationFilter.role = GObjectRelationRole::SEQUENCE;
+    occc.relationFilter.role = ObjectRole_Sequence;
     occc.typeFilter = GObjectTypes::ANNOTATION_TABLE;
     occc.onlyWritable = true;
     occc.uof = newModel.useUnloadedObjects ? UOF_LoadedAndUnloaded : UOF_LoadedOnly;
@@ -482,9 +480,9 @@ void CreateAnnotationWidgetController::sl_onLoadObjectsClicked() {
     s.allowMultipleSelection = false;
     s.objectTypesToShow.append(GObjectTypes::ANNOTATION_TABLE);
     s.groupMode = ProjectTreeGroupMode_Flat;
-    GObjectRelation rel(model.sequenceObjectRef, GObjectRelationRole::SEQUENCE);
-    std::auto_ptr<PTCAnnotationObjectFilter> filter(new PTCAnnotationObjectFilter(rel, model.useUnloadedObjects));
-    s.objectFilter = filter.get();
+    GObjectRelation rel(model.sequenceObjectRef, ObjectRole_Sequence);
+    QScopedPointer<PTCAnnotationObjectFilter> filter(new PTCAnnotationObjectFilter(rel, model.useUnloadedObjects));
+    s.objectFilter = filter.data();
     QList<GObject*> objs = ProjectTreeItemSelectorDialog::selectObjects(s, w);
     if (objs.isEmpty()) {
         return;
@@ -600,7 +598,7 @@ bool CreateAnnotationWidgetController::prepareAnnotationObject() {
         const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
         SAFE_POINT_OP( os, false );
         AnnotationTableObject *aobj = new AnnotationTableObject( "Annotations", dbiRef );
-        aobj->addObjectRelation(GObjectRelation(model.sequenceObjectRef, GObjectRelationRole::SEQUENCE));
+        aobj->addObjectRelation(GObjectRelation(model.sequenceObjectRef, ObjectRole_Sequence));
         d->addObject(aobj);
         AppContext::getProject()->addDocument(d);
         model.annotationObjectRef = aobj;

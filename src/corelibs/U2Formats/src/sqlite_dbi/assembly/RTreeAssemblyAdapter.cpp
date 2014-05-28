@@ -25,6 +25,7 @@
 
 
 #include <U2Core/U2AssemblyUtils.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SqlHelpers.h>
 #include <U2Core/Log.h>
 
@@ -40,7 +41,7 @@ namespace U2 {
 RTreeAssemblyAdapter::RTreeAssemblyAdapter(SQLiteDbi* _dbi, const U2DataId& assemblyId, 
                                             const AssemblyCompressor* compressor,
                                             DbRef* db, U2OpStatus& )
-: AssemblyAdapter(assemblyId, compressor, db)
+: SQLiteAssemblyAdapter(assemblyId, compressor, db)
 {
     dbi = _dbi;
     readsTable = QString("AssemblyRead_R%1").arg(U2DbiUtils::toDbiId(assemblyId));
@@ -64,7 +65,7 @@ void RTreeAssemblyAdapter::createReadsTables(U2OpStatus& os) {
     }
     SQLiteQuery(q2.arg(indexTable), db, os).execute();
     if (os.hasError()) {
-        coreLog.error(SQLiteL10N::tr("Error during RTree index creation: %1! Check if SQLite library has RTree index support!").arg(os.getError()));
+        coreLog.error(U2DbiL10n::tr("Error during RTree index creation: %1! Check if SQLite library has RTree index support!").arg(os.getError()));
     }
 }
 
@@ -193,6 +194,13 @@ void RTreeAssemblyAdapter::removeReads(const QList<U2DataId>& readIds, U2OpStatu
         SQLiteUtils::remove(readsTable, "id", readId, 1, db, os);
         SQLiteUtils::remove(indexTable, "id", readId, 1, db, os);
     }
+    SQLiteObjectDbi::incrementVersion(assemblyId, db, os);
+}
+
+void RTreeAssemblyAdapter::dropReadsTables(U2OpStatus &os) {
+    QString queryString = "DROP TABLE IF EXISTS %1";
+    SQLiteQuery(queryString.arg(readsTable), db, os).execute();
+    CHECK_OP(os, );
     SQLiteObjectDbi::incrementVersion(assemblyId, db, os);
 }
 

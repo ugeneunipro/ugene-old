@@ -19,20 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#include "RawDNASequenceFormat.h"
+#include <QtCore/QBuffer>
+
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
 
 #include "DocumentFormatUtils.h"
 #include "PlainTextFormat.h"
-
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/U1AnnotationUtils.h>
-#include <U2Core/U2SequenceUtils.h>
-
-#include <U2Core/TextUtils.h>
+#include "RawDNASequenceFormat.h"
 
 namespace U2 {
 
@@ -51,9 +52,11 @@ RawDNASequenceFormat::RawDNASequenceFormat(QObject* p) : DocumentFormat(p, Docum
 static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& objects, const QVariantMap& fs, U2OpStatus& os) {
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, );
+    Q_UNUSED(opBlock);
     static const int READ_BUFF_SIZE = 4096;
 
-    U2SequenceImporter  seqImporter(fs, true);
+    U2SequenceImporter seqImporter(fs, true);
+    const QString folder = fs.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
 
     QByteArray readBuffer(READ_BUFF_SIZE, '\0');
     char* buff  = readBuffer.data();
@@ -85,7 +88,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef,  QList<GObject*>& object
         }
         if(seq.size()>0 && isStarted == false ){
             isStarted = true;
-            seqImporter.startSequence(dbiRef,seqName,false,os);
+            seqImporter.startSequence(dbiRef, folder, seqName, false, os);
         }
         if(isStarted){
             seqImporter.addBlock(seq.data(),seq.size(),os);

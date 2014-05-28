@@ -40,7 +40,8 @@ public:
     static UdrDbi * getUdrDbi();
 
 private:
-    static TestDbiProvider dbiProvider;
+    //static TestDbiProvider dbiProvider;
+    static U2Dbi *dbi;
     static const QString UDR_DB_URL;
     static bool inited;
     static U2EntityRef objRef;

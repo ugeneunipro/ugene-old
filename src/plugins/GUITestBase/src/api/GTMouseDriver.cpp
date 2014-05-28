@@ -31,6 +31,14 @@ void GTMouseDriver::click(U2::U2OpStatus &os, Qt::MouseButton button)
     GTGlobals::sleep(100);
 }
 
+void GTMouseDriver::dragAndDrop(U2OpStatus &os, const QPoint& start, const QPoint& end) {
+    moveTo(os, start);
+    press(os);
+
+    moveTo(os, end);
+    release(os);
+}
+
 #ifndef Q_OS_MAC
 void GTMouseDriver::doubleClick(U2OpStatus &os)
 {

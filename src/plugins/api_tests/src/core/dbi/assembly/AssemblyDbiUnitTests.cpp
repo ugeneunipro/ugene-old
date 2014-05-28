@@ -77,7 +77,7 @@ void AssemblyTestData::init() {
     U2ObjectDbi* objDbi = dbi->getObjectDbi();
     U2OpStatusImpl opStatus;
 
-    assemblyIds = new QList<U2DataId>(objDbi->getObjects(U2Type::Assembly, 0, U2_DBI_NO_LIMIT, opStatus));
+    assemblyIds = new QList<U2DataId>(objDbi->getObjects(U2Type::Assembly, 0, U2DbiOptions::U2_DBI_NO_LIMIT, opStatus));
     SAFE_POINT_OP(opStatus,);
 
     assemblyDbi = dbi->getAssemblyDbi();
@@ -204,14 +204,14 @@ void AssemblyDbiUnitTests_getReads::Test() {
     const U2Region& region = testData.getValue<U2Region>(GET_READS_IN);
     U2OpStatusImpl os;
 
-    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+    QScopedPointer< U2DbiIterator<U2AssemblyRead> > iter;
     iter.reset(assemblyDbi->getReads(id, region, os));
     CHECK_NO_ERROR(os);
 
     QVariantList expectedVar = testData.getValue<QVariantList>(GET_READS_OUT);
     QList<U2AssemblyRead> expectedReads;
     AssemblyDbiTestUtil::var2readList(expectedVar, expectedReads);
-    CHECK_TRUE(AssemblyDbiTestUtil::compareReadLists(iter.get(), expectedReads), "incorrect expected reads");
+    CHECK_TRUE(AssemblyDbiTestUtil::compareReadLists(iter.data(), expectedReads), "incorrect expected reads");
 }
 
 void AssemblyDbiUnitTests_getReadsInvalid::Test() {
@@ -222,9 +222,9 @@ void AssemblyDbiUnitTests_getReadsInvalid::Test() {
 
     const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
     U2OpStatusImpl os;
-    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+    QScopedPointer< U2DbiIterator<U2AssemblyRead> > iter;
     iter.reset(assemblyDbi->getReads(id, U2_REGION_MAX, os));
-    CHECK_TRUE(iter.get() == NULL, "expected reads should be NULL");
+    CHECK_TRUE(iter.isNull(), "expected reads should be NULL");
 }
 
 void AssemblyDbiUnitTests_getReadsByRow::Test() {
@@ -267,14 +267,14 @@ void AssemblyDbiUnitTests_getReadsByRow::Test() {
     qint64 begin = testData.getValue<qint64>(GET_READS_BY_ROW_BEGIN);
     qint64 end = testData.getValue<qint64>(GET_READS_BY_ROW_END);
 
-    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+    QScopedPointer< U2DbiIterator<U2AssemblyRead> > iter;
     iter.reset(assemblyDbi->getReadsByRow(id, region, begin, end, os));
     CHECK_NO_ERROR(os);
 
     QVariantList expectedVar = testData.getValue<QVariantList>(GET_READS_BY_ROW_OUT);
     QList<U2AssemblyRead> expectedReads;
     AssemblyDbiTestUtil::var2readList(expectedVar, expectedReads);
-    CHECK_TRUE(AssemblyDbiTestUtil::compareReadLists(iter.get(), expectedReads), "incorrect expected reads");
+    CHECK_TRUE(AssemblyDbiTestUtil::compareReadLists(iter.data(), expectedReads), "incorrect expected reads");
 }
 
 void AssemblyDbiUnitTests_getReadsByRowInvalid::Test() {
@@ -294,9 +294,9 @@ void AssemblyDbiUnitTests_getReadsByRowInvalid::Test() {
     const U2Region& region = testData.getValue<U2Region>(GET_READS_BY_ROW_REGION);    
     U2OpStatusImpl os;
 
-    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+    QScopedPointer< U2DbiIterator<U2AssemblyRead> > iter;
     iter.reset(assemblyDbi->getReadsByRow(id, region, begin, end, os));
-    CHECK_TRUE(iter.get() == NULL, "expected reads by row should be NULL");
+    CHECK_TRUE(iter.isNull(), "expected reads by row should be NULL");
 }
 
 void AssemblyDbiUnitTests_getReadsByName::Test() {
@@ -334,10 +334,10 @@ void AssemblyDbiUnitTests_getReadsByName::Test() {
     }
 
     U2OpStatusImpl os;
-    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+    QScopedPointer< U2DbiIterator<U2AssemblyRead> > iter;
     iter.reset(assemblyDbi->getReadsByName(id, name, os));
     CHECK_NO_ERROR(os);
-    CHECK_TRUE(AssemblyDbiTestUtil::compareReadLists(iter.get(), reads), "incorrect expected read list");
+    CHECK_TRUE(AssemblyDbiTestUtil::compareReadLists(iter.data(), reads), "incorrect expected read list");
 }
 
 void AssemblyDbiUnitTests_getReadsByNameInvalid::Test() {
@@ -349,9 +349,9 @@ void AssemblyDbiUnitTests_getReadsByNameInvalid::Test() {
     const U2DataId& id = testData.getValue<U2DataId>(INVALID_ASSEMBLY_ID);
 
     U2OpStatusImpl os;
-    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+    QScopedPointer< U2DbiIterator<U2AssemblyRead> > iter;
     iter.reset(assemblyDbi->getReadsByName(id, "", os));
-    CHECK_TRUE(iter.get() == NULL, "reads by name should be NULL");
+    CHECK_TRUE(iter.isNull(), "reads by name should be NULL");
 }
 
 void AssemblyDbiUnitTests_getMaxPackedRow::Test() {
@@ -430,7 +430,7 @@ void AssemblyDbiUnitTests_removeReads::Test() {
 
     QList<U2DataId> readIds;
     {
-        std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+        QScopedPointer< U2DbiIterator<U2AssemblyRead> > iter;
         iter.reset(assemblyDbi->getReads(id, region, os));
         CHECK_NO_ERROR(os);
 
@@ -443,7 +443,7 @@ void AssemblyDbiUnitTests_removeReads::Test() {
     assemblyDbi->removeReads(id, readIds, os);
     CHECK_NO_ERROR(os);
 
-    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+    QScopedPointer< U2DbiIterator<U2AssemblyRead> > iter;
     iter.reset(assemblyDbi->getReads(id, region, os));
     CHECK_TRUE(!iter->hasNext(), "reads list should be empty");
 
@@ -492,7 +492,7 @@ void AssemblyDbiUnitTests_addReads::Test() {
     CHECK_NO_ERROR(os);
 
     foreach(U2AssemblyRead read, reads) {
-        std::auto_ptr< U2DbiIterator<U2AssemblyRead> > iter;
+        QScopedPointer< U2DbiIterator<U2AssemblyRead> > iter;
         iter.reset(assemblyDbi->getReads(id, U2_REGION_MAX, os));
         CHECK_NO_ERROR(os);
 

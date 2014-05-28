@@ -41,8 +41,6 @@
 #include <QtCore/QTextStream>
 #include <QtCore/qmath.h>
 
-#include <memory>
-
 /* TRANSLATOR U2::IOAdapter */
 
 namespace U2 {
@@ -77,7 +75,7 @@ SiteconModel SiteconIO::readModel(IOAdapterFactory* iof, const QString& url, Tas
     model.err1.fill(defaultVal, 100);
     model.err2.fill(defaultVal, 100);
 
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Read)) {
         si.setError(  L10N::errorOpeningFileRead(url) );
         return model;
@@ -461,7 +459,7 @@ void SiteconIO::writeModel(IOAdapterFactory* iof, const QString& url, TaskStateI
 
     res.append('\n').append(END_MARKER);
 
-    std::auto_ptr<IOAdapter> io(iof->createIOAdapter());
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Write)) {
         si.setError(  L10N::errorOpeningFileWrite(url) );
         return;

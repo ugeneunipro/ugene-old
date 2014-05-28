@@ -40,8 +40,6 @@
 #include <QtCore/QString>
 #include <QtCore/QSharedPointer>
 
-#include <memory>
-
 namespace U2 {
 
 /************************************************************************/
@@ -163,7 +161,7 @@ private:
     qint64 readNumber;
     qint64 maxRow;
     qint64 readsInAssembly;
-    std::auto_ptr< U2DbiIterator<U2AssemblyRead> > dbiIterator;
+    QScopedPointer< U2DbiIterator<U2AssemblyRead> > dbiIterator;
 
     static const qint64 readBunchSize;
 };
@@ -173,7 +171,7 @@ public:
     GenomeAlignerDbiWriter(QString dbiFilePath, QString refName, int refLength);
     inline void write(SearchQuery *seq, SAType offset);
     void close();
-    void setReferenceName(const QString &) {};
+    void setReferenceName(const QString &) {}
 private:
     U2OpStatusImpl status;
     QSharedPointer<DbiConnection> dbiHandle;

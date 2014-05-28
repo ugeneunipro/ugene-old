@@ -169,8 +169,9 @@ FormatCheckResult GenbankPlainTextFormat::checkRawData(const QByteArray& rawData
     if (!textOnly || size < 100) {
         return FormatDetection_NotMatched;
     }
-    bool startsWithLocus = TextUtils::equals("LOCUS ", data, 6);
-    if (!startsWithLocus) {
+
+    bool hasLocus = rawData.contains("\nLOCUS ") || rawData.startsWith("LOCUS ");
+    if (!hasLocus) {
         return FormatDetection_NotMatched;
     }
     FormatCheckResult res(FormatDetection_VeryHighSimilarity);
@@ -188,8 +189,14 @@ FormatCheckResult GenbankPlainTextFormat::checkRawData(const QByteArray& rawData
 
 bool GenbankPlainTextFormat::readIdLine(ParserState* st) {
     if (!st->hasKey("LOCUS")) {
-        st->si.setError(tr("LOCUS is not the first line"));
-        return false;
+        QByteArray rawData(st->buff);
+        const int locusStartPos = rawData.indexOf("\nLOCUS");
+        if (-1 == locusStartPos) {
+            st->si.setError(tr("LOCUS is not the first line"));
+            return false;
+        } else {
+            st->buff = st->buff + locusStartPos;
+        }
     }
 
     QString locusStr = st->value();
@@ -424,7 +431,8 @@ void GenbankPlainTextFormat::storeDocument(Document* doc, IOAdapter* io, U2OpSta
         QList<GObject*> aos;
         if (so) {
             if (!anns.isEmpty()) {
-                aos = GObjectUtils::findObjectsRelatedToObjectByRole(so, GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, anns, UOF_LoadedOnly);
+                aos = GObjectUtils::findObjectsRelatedToObjectByRole(so,
+                    GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence, anns, UOF_LoadedOnly);
                 foreach(GObject* o, aos) {
                     anns.removeAll(o);
                 }

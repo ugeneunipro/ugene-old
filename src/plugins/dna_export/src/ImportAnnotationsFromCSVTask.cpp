@@ -21,6 +21,9 @@
 
 #include <QtCore/QScopedPointer>
 
+#include <QtScript/QScriptEngine>
+#include <QtScript/QScriptValueIterator>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DNASequenceObject.h>
@@ -61,7 +64,7 @@ config(_config), readTask(NULL), writeTask(NULL), addTask(NULL)
 
 
 static void adjustRelations(AnnotationTableObject *ao) {
-    if (!ao->findRelatedObjectsByType(GObjectRelationRole::SEQUENCE).isEmpty()) {
+    if (!ao->findRelatedObjectsByType(GObjectTypes::SEQUENCE).isEmpty()) {
         return; //nothing to adjust -> already has relation
     }
 
@@ -86,7 +89,7 @@ static void adjustRelations(AnnotationTableObject *ao) {
             }
         }
         if (!outOfRange) {
-            ao->addObjectRelation(seqObj, GObjectRelationRole::SEQUENCE);
+            ao->addObjectRelation(seqObj, ObjectRole_Sequence);
             seqView->addObject(ao);
             break;
         } else {

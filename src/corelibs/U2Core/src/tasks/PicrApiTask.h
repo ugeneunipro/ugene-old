@@ -22,13 +22,13 @@
 #ifndef _U2_PICR_API_TASK_H_
 #define _U2_PICR_API_TASK_H_
 
-#include <U2Core/global.h>
+#include <QtNetwork/QNetworkReply>
+
 #include <U2Core/Task.h>
 
-#include <QtCore/QEventLoop>
-#include <QtCore/QUrl>
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QAuthenticator>
+class QEventLoop;
+class QNetworkReply;
+class QAuthenticator;
 
 namespace U2 {
 

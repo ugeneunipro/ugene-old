@@ -14,6 +14,8 @@ DEFINES+= QT_FATAL_ASSERT BUILDING_U2FORMATS_DLL
 LIBS += -L../../_release -lU2Core -lU2Algorithm
 LIBS += -lugenedb -lsamtools
 
+QT += sql
+
 # Force re-linking when lib changes
 unix:POST_TARGETDEPS += ../../_release/libsamtools.a
 # Same options which samtools is built with

@@ -24,7 +24,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 
-#include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 
 namespace U2 {

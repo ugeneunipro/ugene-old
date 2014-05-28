@@ -19,26 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "StockholmFormat.h"
-
-#include "DocumentFormatUtils.h"
+#include <QtCore/QFileInfo>
+#include <QtCore/QTextStream>
 
 #include <U2Core/DNAAlphabet.h>
-#include <U2Core/U2OpStatus.h>
+#include <U2Core/GObjectTypes.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/GObjectTypes.h>
 #include <U2Core/MAlignmentImporter.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/MAlignmentInfo.h>
-#include <U2Core/U2DbiUtils.h>
-#include <U2Core/U2OpStatusUtils.h>
-
+#include <U2Core/MAlignmentObject.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
-#include <QtCore/QFileInfo>
+#include "DocumentFormatUtils.h"
+#include "StockholmFormat.h"
 
 /* TRANSLATOR U2::StockholmFormat */
 namespace U2 {
@@ -573,7 +572,7 @@ static void setMsaInfo( const QHash< QString, QString>& annMap, MAlignment& ma )
     ma.setInfo(info);
 }
 
-static void load( IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& l, U2OpStatus& tsi, bool& uni_file) {
+static void load( IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& l, const QVariantMap& fs, U2OpStatus& tsi, bool& uni_file) {
     QStringList names_list;
     QString filename = io->getURL().baseFileName();
     while( !io->isEof() ) {
@@ -599,7 +598,8 @@ static void load( IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& l, U2O
         setMsaInfo( annMap, msa );
 
         U2OpStatus2Log os;
-        U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, msa, os);
+        const QString folder = fs.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+        U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, folder, msa, os);
         CHECK_OP(os, );
 
         MAlignmentObject* obj = new MAlignmentObject(msa.getName(), msaRef);
@@ -691,7 +691,7 @@ Document* StockholmFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, c
     try {
         bool uniFile = false;
         QString lockReason;
-        load( io, dbiRef, objects, os, uniFile);
+        load( io, dbiRef, objects, fs, os, uniFile);
         if ( !uniFile ) {
             lockReason = DocumentFormat::CREATED_NOT_BY_UGENE;
         }

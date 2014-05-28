@@ -22,7 +22,8 @@
 #ifndef _U2_GOBJECT_REFERENCE_H_
 #define _U2_GOBJECT_REFERENCE_H_
 
-#include <U2Core/global.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/U2Type.h>
 
 #include <QtCore/QDataStream>
 
@@ -47,13 +48,16 @@ public:
         This must be enough to find document in the project
         while allows not to keep a complete url data here (for example username/password, etc...)
     */
-    QString        docUrl;
+    QString         docUrl;
 
     /** The name of the object */
-    QString     objName;
+    QString         objName;
+
+    /** Object reference to DB */
+    U2EntityRef     entityRef;
 
     /** The type of the object */
-    GObjectType objType;
+    GObjectType     objType;
 
 private:
     static bool registerMeta;
@@ -69,24 +73,25 @@ class U2CORE_EXPORT GObjectRelation {
 public:
     GObjectRelation(){}
 
-    GObjectRelation(const GObjectReference& _ref, const QString& _role, const QString& _data = QString()) 
-        : ref(_ref), role(_role), data(_data){}
+    GObjectRelation(const GObjectReference& _ref, const GObjectRelationRole& _role)
+        : ref(_ref), role(_role) {}
 
-    bool isValid() const {return ref.isValid() && !role.isEmpty();}
+    bool isValid() const {return ref.isValid();}
 
     bool operator ==(const GObjectRelation& o) const;
 
     const QString& getDocURL() const {return ref.docUrl;}
 
     GObjectReference ref;
-    QString         role;
-    QString         data;
+    GObjectRelationRole role;
 private:
     static bool registerMeta;
 };
 
 inline uint qHash(const GObjectRelation& key) {
-    return qHash(key.ref) + ::qHash(key.role) + ::qHash(key.data);
+    const uint h1 = qHash(key.ref);
+    const uint h2 = ::qHash(static_cast<int>(key.role));
+    return ((h1 << 16) | (h1 >> 16)) ^ h2;
 }
 
 

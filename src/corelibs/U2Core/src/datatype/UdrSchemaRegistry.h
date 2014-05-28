@@ -37,7 +37,6 @@ public:
     void registerSchema(const UdrSchema *schema, U2OpStatus &os);
     QList<UdrSchemaId> getRegisteredSchemas() const;
     const UdrSchema * getSchemaById(const UdrSchemaId &id) const;
-    const UdrSchema * getSchemaByObjectType(const U2DataType &type) const;
 
     /**
      * Check the names of schemas and fields that they consist of

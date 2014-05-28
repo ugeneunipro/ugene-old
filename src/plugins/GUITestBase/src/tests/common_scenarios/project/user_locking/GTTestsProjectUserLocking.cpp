@@ -37,8 +37,8 @@
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
 
-#include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2Core/DocumentModel.h>
+#include <U2View/AnnotatedDNAViewFactory.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QComboBox>
@@ -99,7 +99,9 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTGlobals::sleep(200);
     GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep(200);
     GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
 
     GTGlobals::sleep(2000);
@@ -153,7 +155,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     GTUtilsDocument::checkDocument(os, "1.gb");
     GTUtilsApp::checkUGENETitle(os, "proj3 UGENE");
 
-    QTreeWidgetItem *item = GTUtilsProjectTreeView::findItem(os, "1.gb");
+    QModelIndex item = GTUtilsProjectTreeView::findIndex(os, "1.gb");
 
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "1.gb");
     GTGlobals::sleep(100);
@@ -163,13 +165,13 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
-    QIcon itemIconBefore = item->icon(0);
+    QIcon itemIconBefore = qvariant_cast<QIcon>(item.data(Qt::DecorationRole));
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EDIT_MENU<<ACTION_DOCUMENT__UNLOCK));
     GTMouseDriver::moveTo(os, itemPos);
     GTMouseDriver::click(os, Qt::RightButton);
 
-    QIcon itemIconAfter = item->icon(0);
+    QIcon itemIconAfter = qvariant_cast<QIcon>(item.data(Qt::DecorationRole));
     if (itemIconBefore.cacheKey() == itemIconAfter.cacheKey() && !os.hasError()) {
         os.setError("Lock icon has not disappear");
     }
@@ -190,6 +192,8 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
+    QIcon roDocumentIcon(":/core/images/ro_document.png");
+    QIcon documentIcon(":/core/images/document.png");
 
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
@@ -199,17 +203,16 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTMouseDriver::doubleClick(os);
     GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
 
-    ProjViewItem* item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
-    CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
-    CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->documentIcon.cacheKey(), "Icon is locked");
+    QModelIndex item = GTUtilsProjectTreeView::findIndex(os, "1.gb");
+    QIcon icon = qvariant_cast<QIcon>(item.data(Qt::DecorationRole));
+    CHECK_SET_ERR(icon.cacheKey() == documentIcon.cacheKey(), "Icon is locked");
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< ACTION_PROJECT__EDIT_MENU << ACTION_DOCUMENT__LOCK));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
 
-    item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
-    CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
-    CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->roDocumentIcon.cacheKey(), "Icon is unlocked");
+    icon = qvariant_cast<QIcon>(item.data(Qt::DecorationRole));
+    CHECK_SET_ERR(icon.cacheKey() == roDocumentIcon.cacheKey(), "Icon is unlocked");
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2"));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
@@ -221,9 +224,9 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/sandbox/proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-    item = (ProjViewItem*)GTUtilsProjectTreeView::findItem(os, "1.gb");
-    CHECK_SET_ERR(item->controller != NULL, "Item controller is NULL");
-    CHECK_SET_ERR(item->icon(0).cacheKey() == item->controller->roDocumentIcon.cacheKey(), "Icon is unlocked");
+    item = GTUtilsProjectTreeView::findIndex(os, "1.gb");
+    icon = qvariant_cast<QIcon>(item.data(Qt::DecorationRole));
+    CHECK_SET_ERR(icon.cacheKey() == roDocumentIcon.cacheKey(), "Icon is unlocked");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {

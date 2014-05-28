@@ -29,8 +29,6 @@ extern "C" {
 #include <U2Core/U2AbstractDbi.h>
 #include <U2Core/U2SqlHelpers.h>
 
-#include <memory>
-
 #include "Reader.h"
 
 namespace U2 {
@@ -44,10 +42,12 @@ public:
 
     virtual qint64 countObjects(U2OpStatus &os);
     virtual qint64 countObjects(U2DataType type, U2OpStatus &os);
+    virtual QHash<U2DataId, QString> getObjectNames(qint64 offset, qint64 count, U2OpStatus &os);
     virtual QList<U2DataId> getObjects(qint64 offset, qint64 count, U2OpStatus &os);
     virtual QList<U2DataId> getObjects(U2DataType type, qint64 offset, qint64 count, U2OpStatus &os);
     virtual QList<U2DataId> getParents(const U2DataId& entityId, U2OpStatus &os);
     virtual QStringList getFolders(U2OpStatus &os);
+    virtual void renameFolder(const QString &oldPath, const QString &newPath, U2OpStatus &os);
     virtual qint64 countObjects(const QString &folder, U2OpStatus &os);
     virtual QList<U2DataId> getObjects(const QString &folder, qint64 offset, qint64 count, U2OpStatus &os);
     virtual QStringList getObjectFolders(const U2DataId& objectId, U2OpStatus &os);
@@ -55,6 +55,7 @@ public:
     virtual qint64 getFolderLocalVersion(const QString &folder, U2OpStatus &os);
     virtual qint64 getFolderGlobalVersion(const QString &folder, U2OpStatus &os);
     virtual U2DbiIterator<U2DataId>* getObjectsByVisualName(const QString& visualName, U2DataType type, U2OpStatus& os);
+    virtual void renameObject(const U2DataId &id, const QString &newName, U2OpStatus &os);
 
 private:
     SamtoolsBasedDbi &dbi;
@@ -163,9 +164,9 @@ private:
     bamFile bamHandler;
     bam_header_t *header;
     bam_index_t *index;
-    std::auto_ptr<SamtoolsBasedObjectDbi> objectDbi;
-    std::auto_ptr<SamtoolsBasedAssemblyDbi> assemblyDbi;
-    std::auto_ptr<SamtoolsBasedAttributeDbi> attributeDbi;
+    QScopedPointer<SamtoolsBasedObjectDbi> objectDbi;
+    QScopedPointer<SamtoolsBasedAssemblyDbi> assemblyDbi;
+    QScopedPointer<SamtoolsBasedAttributeDbi> attributeDbi;
 
     void createObjectDbi();
     void cleanup();

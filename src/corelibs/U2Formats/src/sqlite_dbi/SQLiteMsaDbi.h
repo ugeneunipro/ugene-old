@@ -122,11 +122,11 @@ public:
 
     /**
      * Removes all rows from the alignment with the specified id.
-     * Updates the alignment length.
-     * Increments the alignment version.
-     * DO NOT USE if modifications tracking is required!
+     * Does not update the alignment length.
+     * Does not increment the alignment version.
+     * USE this method only on MSA deletion
      */
-    void removeAllRows(const U2DataId& msaId, U2OpStatus& os);
+    void deleteRowsData(const U2DataId& msaId, U2OpStatus& os);
 
     /**
      * Updates name of the sequence of the row.
@@ -221,9 +221,6 @@ private:
 
     /** Required for store modification track of removed rows  */
     QByteArray getRemovedRowDetails(const U2MsaRow& row);
-
-    /** Gets maximum rowId for the MSA */
-    qint64 getMaximumRowId(const U2DataId& msaId, U2OpStatus& os);
 
     /** Gets position of the row in the msa */
     qint64 getPosInMsa(const U2DataId &msaId, qint64 rowId, U2OpStatus &os);

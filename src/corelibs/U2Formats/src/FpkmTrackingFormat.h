@@ -125,7 +125,7 @@ protected:
 
     QList<AnnotationData> parseDocument(IOAdapter* io, QString& seqName, QString annotName, U2OpStatus& os);
 
-    void load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, U2OpStatus& os);
+    void load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& dbiRef, const QVariantMap& hints, U2OpStatus& os);
 
 private:
     FpkmTrackingLineData parseAndValidateLine(QString line, QStringList columns, FpkmTrackingLineValidateFlags& status) const;

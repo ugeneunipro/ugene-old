@@ -23,9 +23,11 @@
 #include "GObjectTypes.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/U2VariantDbi.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2VariantDbi.h>
 
 namespace U2 {
 
@@ -33,7 +35,7 @@ namespace U2 {
 //VariantTrackObject
 
 VariantTrackObject::VariantTrackObject( const QString& objectName, const U2EntityRef& trackRef, const QVariantMap& hintsMap )
-: GObject(GObjectTypes::VARIANT_TRACK, objectName+"_variations", hintsMap) {
+: GObject(GObjectTypes::VARIANT_TRACK, objectName, hintsMap) {
 
     entityRef = trackRef;
 }
@@ -43,8 +45,7 @@ VariantTrackObject::~VariantTrackObject(){
 }
 
 U2DbiIterator<U2Variant>* VariantTrackObject::getVariants( const U2Region& reg, U2OpStatus& os ) const {
-    DbiConnection con;
-    con.open(entityRef.dbiRef, os);
+    DbiConnection con(entityRef.dbiRef, os);
     CHECK_OP(os, NULL);
 
     U2VariantDbi* vdbi = con.dbi->getVariantDbi();
@@ -64,6 +65,8 @@ U2VariantTrack VariantTrackObject::getVariantTrack(U2OpStatus &os) const {
 }
 
 GObject* VariantTrackObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os) const{
+    DbiConnection srcCon(entityRef.dbiRef, true, os);
+    CHECK_OP(os, NULL);
     DbiConnection dstCon(dstDbiRef, true, os);
     CHECK_OP(os, NULL);
 
@@ -73,7 +76,7 @@ GObject* VariantTrackObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os) co
     U2VariantTrack track = this->getVariantTrack(os);
     CHECK_OP(os, NULL);
     U2VariantTrack clonedTrack = track;
-    dstVDbi->createVariantTrack(clonedTrack, TrackType_All, os);
+    dstVDbi->createVariantTrack(clonedTrack, TrackType_All, U2ObjectDbi::ROOT_FOLDER, os);
     CHECK_OP(os, NULL);
 
     QScopedPointer< U2DbiIterator<U2Variant> > varsIter(this->getVariants(U2_REGION_MAX, os));

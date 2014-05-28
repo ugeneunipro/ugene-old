@@ -65,12 +65,22 @@ public:
         const U2DbiRef& dbiRef, const QStringList& contigs, const U2Sequence& mergedSequence,
         const QVector<U2Region>& mergedMapping, U2OpStatus& os );
 
-    static U2SequenceObject* addSequenceObjectDeprecated(const U2DbiRef& dbiRef, const QString& seqObjName, 
-        QList<GObject*>& objects, DNASequence& seq, U2OpStatus& os);
+    static U2SequenceObject* addSequenceObjectDeprecated(const U2DbiRef& dbiRef,
+                                                         const QString &folder,
+                                                         const QString& seqObjName,
+                                                         QList<GObject*>& objects,
+                                                         DNASequence& seq,
+                                                         U2OpStatus& os);
 
     /** if no docURL provided -> relations are not set*/
-    static U2SequenceObject* addMergedSequenceObjectDeprecated(const U2DbiRef& dbiRef, QList<GObject*>& objects, const GUrl& docUrl, const QStringList& contigs, 
-        QByteArray& mergedSequence, const QVector<U2Region>& mergedMapping, U2OpStatus& os);
+    static U2SequenceObject* addMergedSequenceObjectDeprecated(const U2DbiRef& dbiRef,
+                                                               const QString &folder,
+                                                               QList<GObject*>& objects,
+                                                               const GUrl& docUrl,
+                                                               const QStringList& contigs,
+                                                               QByteArray& mergedSequence,
+                                                               const QVector<U2Region>& mergedMapping,
+                                                               U2OpStatus& os);
 };
 
 }//namespace

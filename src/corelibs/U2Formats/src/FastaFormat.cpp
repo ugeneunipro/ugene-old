@@ -19,26 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/Task.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/L10n.h>
+#include <QtCore/QTextStream>
 
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/MAlignmentObject.h>
 #include <U2Core/AnnotationTableObject.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/TextUtils.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2DbiUtils.h>
-#include <U2Core/U2SequenceUtils.h>
-#include <U2Core/U2AttributeDbi.h>
-#include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/AppResources.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/Task.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2AttributeDbi.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
 
 #include "DocumentFormatUtils.h"
-
 #include "FastaFormat.h"
 
 namespace U2 {
@@ -155,6 +156,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     io->readUntil(buff, READ_BUFF_SIZE, nonWhites, IOAdapter::Term_Exclude, &lineOk);
 
     U2SequenceImporter seqImporter(fs, true);
+    const QString folder = fs.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
 
     qint64 sequenceStart = 0;
     int sequenceNumber = 0;
@@ -187,7 +189,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
                 memoryLocker.tryAcquire(2*objName.size());
                 uniqueNames.insert(objName);
             }
-            seqImporter.startSequence(dbiRef, objName, false, os);
+            seqImporter.startSequence(dbiRef, folder, objName, false, os);
             CHECK_OP_BREAK(os);
 
             sequenceRef = GObjectReference(io->getURL().getURLString(), objName, GObjectTypes::SEQUENCE);

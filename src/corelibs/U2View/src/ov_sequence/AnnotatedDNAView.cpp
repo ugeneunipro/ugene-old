@@ -88,9 +88,6 @@
 #include <QtWidgets/QVBoxLayout>
 #endif
 
-#include <memory>
-
-
 namespace U2 {
 
 AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2SequenceObject*>& dnaObjects) 
@@ -146,28 +143,27 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
 
     addSequencePart = new QAction(tr("Insert subsequence..."), this);
     addSequencePart->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_I));
-  	addSequencePart->setObjectName(ACTION_EDIT_INSERT_SUBSEQUENCE);
+    addSequencePart->setObjectName(ACTION_EDIT_INSERT_SUBSEQUENCE);
     connect(addSequencePart, SIGNAL(triggered()), this, SLOT(sl_addSequencePart()));
 
     removeSequencePart = new QAction(tr("Remove subsequence..."), this);
-  	removeSequencePart->setObjectName(ACTION_EDIT_REMOVE_SUBSEQUENCE);
+    removeSequencePart->setObjectName(ACTION_EDIT_REMOVE_SUBSEQUENCE);
     connect(removeSequencePart, SIGNAL(triggered()), this, SLOT(sl_removeSequencePart()));
 
     replaceSequencePart = new QAction(tr("Replace subsequence..."), this);
     replaceSequencePart ->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
-  	replaceSequencePart->setObjectName(ACTION_EDIT_REPLACE_SUBSEQUENCE);
+    replaceSequencePart->setObjectName(ACTION_EDIT_REPLACE_SUBSEQUENCE);
     connect(replaceSequencePart, SIGNAL(triggered()), this, SLOT(sl_replaceSequencePart()));
 
     removeSequenceObjectAction = new QAction(tr("Selected sequence from view"), this);
-  	removeSequenceObjectAction->setObjectName(ACTION_EDIT_SELECT_SEQUENCE_FROM_VIEW);
+    removeSequenceObjectAction->setObjectName(ACTION_EDIT_SELECT_SEQUENCE_FROM_VIEW);
     connect(removeSequenceObjectAction, SIGNAL(triggered()), SLOT(sl_removeSelectedSequenceObject()));
     
     reverseSequenceAction = new QAction(tr("Reverse complement sequence"), this);
-  	reverseSequenceAction->setObjectName(ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE);
+    reverseSequenceAction->setObjectName(ACTION_EDIT_RESERVE_COMPLEMENT_SEQUENCE);
     connect(reverseSequenceAction, SIGNAL(triggered()), SLOT(sl_reverseSequence()));
 
     SecStructPredictViewAction::createAction(this);
-
 }
 
 QWidget* AnnotatedDNAView::createWidget() {
@@ -176,7 +172,6 @@ QWidget* AnnotatedDNAView::createWidget() {
     
     mainSplitter = new QSplitter(Qt::Vertical);
     mainSplitter->setObjectName("annotated_DNA_splitter");
-    //mainSplitter->setOpaqueResize(false);
     mainSplitter->setMaximumHeight(200);
     connect(mainSplitter, SIGNAL(splitterMoved(int, int)), SLOT(sl_splitterMoved(int, int)));
 
@@ -247,9 +242,6 @@ QWidget* AnnotatedDNAView::createWidget() {
     optionsPanel = new OptionsPanel(this);
     OPWidgetFactoryRegistry* opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
 
-
-   
-
     QList<OPFactoryFilterVisitorInterface*> filters;
 
     ADVSequenceObjectContext* ctx;
@@ -288,11 +280,6 @@ void AnnotatedDNAView::sl_splitterMoved(int, int) {
     // to reproduce it open any complex (like 3d structure) view and pull the splitter handle upward slowly
     // -> workaround: update geometry for scrollArea or repaint main splitter's ares (todo: recheck effect)
     mainSplitter->repaint(scrollArea->geometry());
-
-    /*if (timerId!=0) {
-        killTimer(timerId);
-    }
-    timerId = startTimer(100);*/
 }
 
 void AnnotatedDNAView::sl_onSequenceWidgetTitleClicked(ADVSequenceWidget* seqWidget) {
@@ -571,7 +558,7 @@ void AnnotatedDNAView::addEditMenu(QMenu* m) {
     SAFE_POINT(NULL != curDoc, "Current document is NULL", );
     QMenu* rm = m->addMenu(tr("Edit sequence"));
     
-    if(curDoc->findGObjectByType(GObjectTypes::SEQUENCE).isEmpty() || curDoc->isStateLocked()){
+    if(curDoc->findGObjectByType(GObjectTypes::SEQUENCE).isEmpty() || seqObj->isStateLocked()) {
         rm->setDisabled(true);
     }else{
         rm->setEnabled(true);
@@ -623,7 +610,7 @@ bool AnnotatedDNAView::canAddObject(GObject* obj) {
         return true;
     }
     if (isChildWidgetObject(obj)) {
-            return true;
+        return true;
     }
     if (obj->getGObjectType() == GObjectTypes::SEQUENCE) {
         return true;
@@ -634,7 +621,7 @@ bool AnnotatedDNAView::canAddObject(GObject* obj) {
     //todo: add annotations related to sequence object not in view (sobj) and add 'sobj' too the view ?
     bool hasRelation = false;
     foreach(ADVSequenceObjectContext* soc, seqContexts) {
-        if (obj->hasObjectRelation(soc->getSequenceObject(), GObjectRelationRole::SEQUENCE)) {
+        if (obj->hasObjectRelation(soc->getSequenceObject(), ObjectRole_Sequence)) {
             hasRelation = true;
             break;
         }
@@ -786,7 +773,7 @@ QString AnnotatedDNAView::tryAddObject(GObject* o) {
         if (rCtx.isEmpty()) {
             //ask user if to create new association
             CreateObjectRelationDialogController d(o, getSequenceGObjectsWithContexts(), 
-                GObjectRelationRole::SEQUENCE, true,
+                ObjectRole_Sequence, true,
                 tr("Select sequence to associate annotations with:"));
             d.exec();
             rCtx = findRelatedSequenceContexts(o);
@@ -849,7 +836,7 @@ QString AnnotatedDNAView::addObject( GObject *o ) {
 
 QList<ADVSequenceObjectContext *> AnnotatedDNAView::findRelatedSequenceContexts( GObject *obj ) const {
     QList<GObject *> relatedObjects = GObjectUtils::selectRelations( obj, GObjectTypes::SEQUENCE,
-        GObjectRelationRole::SEQUENCE, objects, UOF_LoadedOnly );
+        ObjectRole_Sequence, objects, UOF_LoadedOnly );
     QList<ADVSequenceObjectContext *> res;
     foreach ( GObject *seqObj, relatedObjects ) {
         U2SequenceObject *dnaObj = qobject_cast<U2SequenceObject *>( seqObj );
@@ -872,8 +859,8 @@ void AnnotatedDNAView::sl_onShowPosSelectorRequest() {
     QDialog dlg(getWidget());
     dlg.setModal(true);
     dlg.setWindowTitle(tr("Go To"));
-    std::auto_ptr<PositionSelector> ps(new PositionSelector(&dlg, 1, seqCtx->getSequenceLength(), true));
-    connect(ps.get(), SIGNAL(si_positionChanged(int)), SLOT(sl_onPosChangeRequest(int)));
+    QScopedPointer<PositionSelector> ps(new PositionSelector(&dlg, 1, seqCtx->getSequenceLength(), true));
+    connect(ps.data(), SIGNAL(si_positionChanged(int)), SLOT(sl_onPosChangeRequest(int)));
     dlg.exec();
 }
 
@@ -935,7 +922,7 @@ void AnnotatedDNAView::addRelatedAnnotations( ADVSequenceObjectContext *seqCtx )
     QList<GObject *> allLoadedAnnotations = GObjectUtils::findAllObjects( UOF_LoadedOnly,
         GObjectTypes::ANNOTATION_TABLE );
     QList<GObject *> annotations = GObjectUtils::findObjectsRelatedToObjectByRole( seqCtx->getSequenceObject( ),
-                                    GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE,
+                                    GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence,
                                     allLoadedAnnotations, UOF_LoadedOnly );
 
     foreach ( GObject *ao, annotations ) {

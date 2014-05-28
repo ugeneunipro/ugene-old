@@ -19,7 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include "LoadDASDocumentTask.h"
+#include <QtCore/QTimer>
+
+#include <QtXml/QDomDocument>
 
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2DbiRegistry.h>
@@ -34,7 +36,7 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/PicrApiTask.h>
 
-#include <QtXml/QDomDocument>
+#include "LoadDASDocumentTask.h"
 
 namespace U2 {
 
@@ -189,7 +191,7 @@ QList<Task*> LoadDasDocumentTask::onSubTaskFinished( Task *subTask ){
 
                 if ( NULL != annotationTableObject ) {
                     annotationTableObject->addObjectRelation( GObjectRelation( danseqob,
-                        GObjectRelationRole::SEQUENCE ) );
+                        ObjectRole_Sequence ) );
                     resultDocument->addObject( annotationTableObject );
                     
                 }

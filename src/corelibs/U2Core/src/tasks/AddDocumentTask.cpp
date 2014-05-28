@@ -76,8 +76,10 @@ QList<Task*> AddDocumentTask::onSubTaskFinished(Task* subTask) {
 
 Task::ReportResult AddDocumentTask::report() {
     Project * p = AppContext::getProject();
-    if( p == NULL ) { // no project is opened
-        setError(tr("No project is opened"));
+    if( p == NULL) { // no project is opened
+        if (!hasError()) {
+            setError(tr("No project is opened"));
+        }
         return ReportResult_Finished;
     }
     

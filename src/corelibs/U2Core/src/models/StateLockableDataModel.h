@@ -24,6 +24,7 @@
 
 #include <U2Core/global.h>
 
+#include <QtCore/QPointer>
 #include <QtCore/QSet>
 
 namespace U2 {
@@ -115,7 +116,7 @@ typedef QFlags<StateLockableTreeItemBranchFlag> StateLockableTreeItemBranchFlags
 class U2CORE_EXPORT StateLockableTreeItem : public StateLockableItem {
     Q_OBJECT
 public:
-    StateLockableTreeItem() : StateLockableItem(), parentStateLockItem(NULL), childLocksCount(0), numModifiedChildren(0){}
+    StateLockableTreeItem() : StateLockableItem(), childLocksCount(0), numModifiedChildren(0){}
 
     virtual ~StateLockableTreeItem();
 
@@ -131,7 +132,7 @@ public:
 
     virtual bool hasModifiedChildren() const {return numModifiedChildren != 0;}
 
-    StateLockableTreeItem* getParentStateLockItem() const { return parentStateLockItem; }
+    StateLockableTreeItem* getParentStateLockItem() const { return parentStateLockItem.data(); }
 
     bool hasLocks(StateLockableTreeItemBranchFlags treeFlags, StateLockFlag lockFlag = StateLockFlag_AnyFlags) const {
         return !findLocks(treeFlags, lockFlag).isEmpty();
@@ -146,13 +147,11 @@ public:
     virtual bool isMainThreadModificationOnly() const;
 
 protected:
-    
     static void setParentStateLockItem_static(StateLockableTreeItem* child, StateLockableTreeItem* newParent) {
         child->setParentStateLockItem(newParent);
     }
 
-    void setParentStateLockItem(StateLockableTreeItem* p);
-    
+    virtual void setParentStateLockItem(StateLockableTreeItem* p);
 
     void increaseNumModifiedChilds(int n);
     void decreaseNumModifiedChilds(int n);
@@ -163,7 +162,7 @@ protected:
     const QSet<StateLockableTreeItem*>& getChildItems() const {return childItems;}
 
 private:
-    StateLockableTreeItem*          parentStateLockItem;
+    QPointer<StateLockableTreeItem> parentStateLockItem;
     QSet<StateLockableTreeItem*>    childItems;
     int                             childLocksCount;
     int                             numModifiedChildren;

@@ -22,10 +22,13 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h \
 #   Runnables / UGENE / corelibs
 #   Runnables / UGENE / corelibs / U2Gui
+            src/runnables/ugene/corelibs/U2Gui/AddFolderDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h \
             src/runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/EditConnectionDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h \
@@ -45,6 +48,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h \
@@ -85,7 +89,9 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h \
             src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h \
 #   Utils classes
+            src/GTDatabaseConfig.h \
             src/GTUtilsApp.h \
+            src/GTUtilsAssemblyBrowser.h \
             src/GTUtilsCircularView.h \
             src/GTUtilsDialog.h \
             src/GTUtilsDocument.h \
@@ -101,7 +107,9 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsTaskTreeView.h \
             src/GTUtilsMsaEditorSequenceArea.h \
             src/GTUtilsOptionsPanel.h \
+            src/GTUtilsPhyTree.h \
             src/GTUtilsQueryDesigner.h \
+            src/GTUtilsSharedDatabaseDocument.h \
             src/GTUtilsWorkflowDesigner.h \
             src/GTUtilsPhyTree.h \
 #   Tests
@@ -132,6 +140,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.h \
             src/tests/common_scenarios/document_from_text/GTTestsDocumentFromText.h \
             src/tests/common_scenarios/annotations_import/GTTestsAnnotationsImport.h \
+            src/tests/common_scenarios/shared_database/GTTestsSharedDatabase.h \
             src/tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.h \
             src/tests/common_scenarios/options_panel/GTTestsOptionPanel.h \
             src/tests/common_scenarios/dp_view/GTTestsDpView.h \
@@ -208,10 +217,13 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.cpp \
 #   Runnables / UGENE / corelibs
 #   Runnables / UGENE / corelibs / U2Gui
+            src/runnables/ugene/corelibs/U2Gui/AddFolderDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/EditConnectionDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.cpp \
@@ -231,6 +243,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.cpp \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.cpp \
@@ -269,7 +282,9 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.cpp \
 #   Utils classes
+            src/GTDatabaseConfig.cpp \
             src/GTUtilsApp.cpp \
+            src/GTUtilsAssemblyBrowser.cpp \
             src/GTUtilsCircularView.cpp \
             src/GTUtilsDialog.cpp \
             src/GTUtilsDocument.cpp \
@@ -285,7 +300,9 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsTaskTreeView.cpp \
             src/GTUtilsMsaEditorSequenceArea.cpp \
             src/GTUtilsOptionsPanel.cpp \
+            src/GTUtilsPhyTree.cpp \
             src/GTUtilsQueryDesigner.cpp \
+            src/GTUtilsSharedDatabaseDocument.cpp \
             src/GTUtilsWorkflowDesigner.cpp \
             src/GTUtilsPhyTree.cpp \
 #   Tests
@@ -316,6 +333,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/annotations/qualifiers/GTTestsAnnotationsQualifiers.cpp \
             src/tests/common_scenarios/document_from_text/GTTestsDocumentFromText.cpp \
             src/tests/common_scenarios/annotations_import/GTTestsAnnotationsImport.cpp \
+            src/tests/common_scenarios/shared_database/GTTestsSharedDatabase.cpp \
             src/tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.cpp \
             src/tests/common_scenarios/options_panel/GTTestsOptionPanel.cpp \
             src/tests/common_scenarios/dp_view/GTTestsDpView.cpp \
@@ -375,4 +393,3 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTDoubleSpinBox.cpp \
             src/api/GTTableView.cpp \
             src/api/GTGraphicsItem.cpp
-

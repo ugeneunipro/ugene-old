@@ -19,25 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#include "BlastAllSupportTask.h"
-#include "BlastAllSupport.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
-#include <U2Core/Counter.h>
-#include <U2Core/UserApplicationsSettings.h>
-#include <U2Core/AppResources.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/ExternalToolRegistry.h>
-#include <U2Core/Log.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/U2SequenceUtils.h>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
 
 #include <QtXml/QDomDocument>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/AppResources.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/Counter.h>
 #include <U2Core/CreateAnnotationTask.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/Log.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
+#include <U2Core/UserApplicationsSettings.h>
+
+#include "BlastAllSupportTask.h"
+#include "BlastAllSupport.h"
 
 namespace U2 {
 

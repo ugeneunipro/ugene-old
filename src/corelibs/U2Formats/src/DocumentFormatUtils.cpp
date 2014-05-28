@@ -34,11 +34,12 @@
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
-#include <U2Core/U2AlphabetUtils.h>
-#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/GenbankFeatures.h>
 
@@ -53,12 +54,16 @@ static int getIntSettings(const QVariantMap& fs, const char* sName, int defVal) 
 }
 
 U2SequenceObject * DocumentFormatUtils::addSequenceObject(const U2DbiRef& dbiRef,
-    const QString& name, const QByteArray& seq,  bool circular, const QVariantMap& hints,
-    U2OpStatus& os)
+                                                          const QString& name,
+                                                          const QByteArray& seq,
+                                                          bool circular,
+                                                          const QVariantMap& hints,
+                                                          U2OpStatus& os)
 {
     U2SequenceImporter importer;
     
-    importer.startSequence(dbiRef, name, circular, os);
+    const QString folder = hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+    importer.startSequence(dbiRef, folder, name, circular, os);
     CHECK_OP(os, NULL);
     
     importer.addBlock(seq.constData(), seq.length(), os);
@@ -84,7 +89,7 @@ AnnotationTableObject * DocumentFormatUtils::addAnnotationsForMergedU2Sequence( 
     //save relation if docUrl is not empty
     if ( !docUrl.isEmpty( ) ) {
         GObjectReference r( docUrl.getURLString( ), mergedSequence.visualName, GObjectTypes::SEQUENCE );
-        ao->addObjectRelation( GObjectRelation( r, GObjectRelationRole::SEQUENCE ) );
+        ao->addObjectRelation( GObjectRelation( r, ObjectRole_Sequence ) );
     }
 
     //save mapping info as annotations
@@ -202,8 +207,12 @@ void DocumentFormatUtils::updateFormatHints(QList<GObject*>& objects, QVariantMa
 }
 
 
-U2SequenceObject* DocumentFormatUtils::addSequenceObjectDeprecated(const U2DbiRef& dbiRef, const QString& seqObjName,
-                                                                   QList<GObject*>& objects, DNASequence& sequence, U2OpStatus& os)
+U2SequenceObject* DocumentFormatUtils::addSequenceObjectDeprecated(const U2DbiRef& dbiRef,
+                                                                   const QString& folder,
+                                                                   const QString& seqObjName,
+                                                                   QList<GObject*>& objects,
+                                                                   DNASequence& sequence,
+                                                                   U2OpStatus& os)
 {
 #ifdef _DEBUG
     foreach(GObject* obj, objects) {
@@ -222,7 +231,7 @@ U2SequenceObject* DocumentFormatUtils::addSequenceObjectDeprecated(const U2DbiRe
     }
 
     U2SequenceImporter importer;
-    importer.startSequence(dbiRef, sequence.getName(), sequence.circular, os);
+    importer.startSequence(dbiRef, folder, sequence.getName(), sequence.circular, os);
     CHECK_OP(os, NULL);
     importer.addBlock(sequence.seq.constData(), sequence.seq.length(), os);
     CHECK_OP(os, NULL);
@@ -239,16 +248,19 @@ U2SequenceObject* DocumentFormatUtils::addSequenceObjectDeprecated(const U2DbiRe
 
 
 U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U2DbiRef& dbiRef, 
-                                                                QList<GObject*>& objects, const GUrl& docUrl, 
-                                                                const QStringList& contigNames, QByteArray& mergedSequence, 
-                                                                const QVector<U2Region>& mergedMapping,
-                                                                U2OpStatus& os)
+                                                                         const QString& folder,
+                                                                         QList<GObject*>& objects,
+                                                                         const GUrl& docUrl,
+                                                                         const QStringList& contigNames,
+                                                                         QByteArray& mergedSequence,
+                                                                         const QVector<U2Region>& mergedMapping,
+                                                                         U2OpStatus& os)
 {
     if (contigNames.size() == 1) {
         const DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(mergedSequence);
         const QString& name = contigNames.first();
         DNASequence seq(name, mergedSequence, al );
-        return DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, name, objects, seq, os);
+        return DocumentFormatUtils::addSequenceObjectDeprecated(dbiRef, folder, name, objects, seq, os);
     }
 
     assert(contigNames.size() >= 2);
@@ -268,7 +280,7 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
     }
     ;
     DNASequence seq("Sequence", mergedSequence, al);
-    U2SequenceObject* so = addSequenceObjectDeprecated(dbiRef, "Sequence", objects, seq, os);
+    U2SequenceObject* so = addSequenceObjectDeprecated(dbiRef, folder, "Sequence", objects, seq, os);
     CHECK_OP(os, NULL);
     SAFE_POINT(so != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
     
@@ -278,7 +290,7 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
     //save relation if docUrl is not empty
     if ( !docUrl.isEmpty( ) ) {
         GObjectReference r( docUrl.getURLString( ), so->getGObjectName( ), GObjectTypes::SEQUENCE );
-        ao->addObjectRelation( GObjectRelation( r, GObjectRelationRole::SEQUENCE ) );
+        ao->addObjectRelation( GObjectRelation( r, ObjectRole_Sequence ) );
     }
 
     //save mapping info as annotations

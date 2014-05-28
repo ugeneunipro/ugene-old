@@ -40,12 +40,22 @@
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ExportAnnotationsFiller"
+ExportAnnotationsFiller::ExportAnnotationsFiller(const QString &exportToFile, fileFormat format, U2OpStatus &os)
+: Filler(os, "U2__ExportAnnotationsDialog"), softMode(true), format(format), saveSequencesUnderAnnotations(false), saveSequenceNames(false), useMethod(GTGlobals::UseMouse)
+{
+    init(exportToFile);
+}
+
+
 ExportAnnotationsFiller::ExportAnnotationsFiller(U2OpStatus &_os, const QString &_exportToFile, fileFormat _format, bool _saveSequencesUnderAnnotations,
     bool _saveSequenceNames, GTGlobals::UseMethod method):
-Filler(_os, "U2__ExportAnnotationsDialog"), format(_format), saveSequencesUnderAnnotations(_saveSequencesUnderAnnotations), saveSequenceNames(_saveSequenceNames), useMethod(method)
+Filler(_os, "U2__ExportAnnotationsDialog"), softMode(false), format(_format), saveSequencesUnderAnnotations(_saveSequencesUnderAnnotations), saveSequenceNames(_saveSequenceNames), useMethod(method)
 {
-    QString __exportToFile = QDir::cleanPath(QDir::currentPath() + "/" + _exportToFile);
-    exportToFile = __exportToFile;
+    init(_exportToFile);
+}
+
+void ExportAnnotationsFiller::init(const QString &exportToFile) {
+    this->exportToFile = QDir::cleanPath(QDir::currentPath() + "/" + exportToFile);
 
     comboBoxItems[genbank] = "genbank";
     comboBoxItems[gff] = "gff";
@@ -71,13 +81,15 @@ void ExportAnnotationsFiller::run()
         GTComboBox::setCurrentIndex(os, comboBox, index);
     }
 
-    QCheckBox *checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("exportSequenceCheck"));
-    GT_CHECK(checkButton != NULL, "Check box not found");
-    GTCheckBox::setChecked(os, checkButton, saveSequencesUnderAnnotations);
+    if (!softMode) {
+        QCheckBox *checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("exportSequenceCheck"));
+        GT_CHECK(checkButton != NULL, "Check box not found");
+        GTCheckBox::setChecked(os, checkButton, saveSequencesUnderAnnotations);
 
-    checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("exportSequenceNameCheck"));
-    GT_CHECK(checkButton != NULL, "Check box not found");
-    GTCheckBox::setChecked(os, checkButton, saveSequenceNames);
+        checkButton = dialog->findChild<QCheckBox*>(QString::fromUtf8("exportSequenceNameCheck"));
+        GT_CHECK(checkButton != NULL, "Check box not found");
+        GTCheckBox::setChecked(os, checkButton, saveSequenceNames);
+    }
 
     QDialogButtonBox* buttonBox = dialog->findChild<QDialogButtonBox*>("buttonBox");
 

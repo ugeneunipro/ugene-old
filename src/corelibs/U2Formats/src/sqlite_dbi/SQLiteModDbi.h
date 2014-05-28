@@ -41,7 +41,7 @@ public:
 private:
     SQLiteDbi *sqliteDbi;
     bool valid;
-    const U2DataId &masterObjId;
+    U2DataId masterObjId;
 };
 
 struct ModStepsDescriptor {

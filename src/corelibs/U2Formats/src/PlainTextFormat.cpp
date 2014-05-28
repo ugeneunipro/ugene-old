@@ -55,6 +55,8 @@ Document* PlainTextFormat::createNewLoadedDocument(IOAdapterFactory* io, const Q
 Document* PlainTextFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, NULL);
+    Q_UNUSED(opBlock);
+
     QString text;
     int size = io->left();
     if (size > 0) {
@@ -77,7 +79,7 @@ Document* PlainTextFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, c
     
     //todo: check file-readonly status?
 
-    TextObject* to = TextObject::createInstance(text, "Text", dbiRef, os);
+    TextObject* to = TextObject::createInstance(text, "Text", dbiRef, os, fs);
     CHECK_OP(os, NULL);
     QList<GObject*> objects;
     objects.append(to);

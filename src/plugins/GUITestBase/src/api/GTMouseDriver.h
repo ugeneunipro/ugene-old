@@ -43,6 +43,8 @@ public:
     static void press(U2OpStatus &os, Qt::MouseButton = Qt::LeftButton);
     static void release(U2OpStatus &os, Qt::MouseButton = Qt::LeftButton); //release method should check if this key has been already pressed. Do nothing otherwise
 
+    static void dragAndDrop(U2OpStatus &os, const QPoint& start, const QPoint& end);
+
     // Linux: fails if there is an opening X display error
     static void scroll(U2OpStatus &os, int value); //positive values for scrolling up, negative for scrolling down
 

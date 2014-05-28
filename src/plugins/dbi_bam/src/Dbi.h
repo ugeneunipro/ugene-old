@@ -27,8 +27,6 @@
 
 #include "Reader.h"
 
-#include <memory>
-
 namespace U2 {
 namespace BAM {
 
@@ -61,10 +59,10 @@ private:
     GUrl sqliteUrl;
     DbRef dbRef;
     int assembliesCount;
-    std::auto_ptr<IOAdapter> ioAdapter;
-    std::auto_ptr<BamReader> reader;
-    std::auto_ptr<ObjectDbi> objectDbi;
-    std::auto_ptr<AssemblyDbi> assemblyDbi;
+    QScopedPointer<IOAdapter> ioAdapter;
+    QScopedPointer<BamReader> reader;
+    QScopedPointer<ObjectDbi> objectDbi;
+    QScopedPointer<AssemblyDbi> assemblyDbi;
 };
 
 class DbiFactory : public U2DbiFactory {
@@ -93,6 +91,8 @@ public:
 
     virtual qint64 countObjects(U2DataType type, U2OpStatus &os);
 
+    virtual QHash<U2DataId, QString> getObjectNames(qint64 offset, qint64 count, U2OpStatus &os);
+
     virtual QList<U2DataId> getObjects(qint64 offset, qint64 count, U2OpStatus &os);
 
     virtual QList<U2DataId> getObjects(U2DataType type, qint64 offset, qint64 count, U2OpStatus &os);
@@ -100,6 +100,8 @@ public:
     virtual QList<U2DataId> getParents(const U2DataId& entityId, U2OpStatus &os);
 
     virtual QStringList getFolders(U2OpStatus &os);
+
+    virtual void renameFolder(const QString &oldPath, const QString &newPath, U2OpStatus &os);
 
     virtual qint64 countObjects(const QString &folder, U2OpStatus &os);
 
@@ -114,6 +116,8 @@ public:
     virtual qint64 getFolderGlobalVersion(const QString &folder, U2OpStatus &os);
 
     virtual U2DbiIterator<U2DataId>* getObjectsByVisualName(const QString& visualName, U2DataType type, U2OpStatus& os);
+
+    virtual void renameObject(const U2DataId &id, const QString &newName, U2OpStatus &os);
 
 
 private:

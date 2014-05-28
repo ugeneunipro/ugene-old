@@ -179,13 +179,15 @@ QList<QByteArray> U2SequenceUtils::extractRegions(const U2EntityRef& seqRef, con
     return res;
 }
 
-
 U2EntityRef U2SequenceUtils::import(const U2DbiRef& dbiRef, const DNASequence& seq, U2OpStatus& os) {
+    return import(dbiRef, U2ObjectDbi::ROOT_FOLDER, seq, os);
+}
 
+U2EntityRef U2SequenceUtils::import(const U2DbiRef& dbiRef, const QString& folder, const DNASequence& seq, U2OpStatus& os) {
     U2EntityRef res;
     U2SequenceImporter i;
     
-    i.startSequence(dbiRef, seq.getName(), seq.circular, os);
+    i.startSequence(dbiRef, folder, seq.getName(), seq.circular, os);
     CHECK_OP(os, res);
     
     i.addBlock(seq.constData(), seq.length(), os);
@@ -282,7 +284,7 @@ U2SequenceImporter::U2SequenceImporter(qint64 _insertBlockSize, const QVariantMa
 }
 
 U2SequenceImporter::~U2SequenceImporter() {
-    if (con.isOpen()) {
+    if (con.isOpen() && sequenceCreated) {
         coreLog.trace(QString("Removing sequence from unfinished import: %1").arg(sequence.visualName));
         U2OpStatus2Log os;
         con.dbi->getObjectDbi()->removeObject(sequence.id, os);
@@ -290,21 +292,28 @@ U2SequenceImporter::~U2SequenceImporter() {
 }
 
 
-void U2SequenceImporter::startSequence(const U2DbiRef& dbiRef, const QString& visualName, bool circular, U2OpStatus& os) {
+void U2SequenceImporter::startSequence(const U2DbiRef& dbiRef,
+                                       const QString& dstFolder,
+                                       const QString& visualName,
+                                       bool circular,
+                                       U2OpStatus& os) {
     SAFE_POINT(!con.isOpen(), "Connection is already opened!", );
     con.open(dbiRef, true, os);
     CHECK_OP(os, );
 
+    folder = dstFolder;
+
     sequence = U2Sequence();
     sequence.visualName = visualName;
     sequence.circular = circular;
+    sequence.alphabet.id = DNAAlphabet_NUCL;
 
     currentLength = 0;
     isUnfinishedRegion = false;
     annList.clear();
     
     if (!lazyMode) {
-        con.dbi->getSequenceDbi()->createSequenceObject(sequence, "", os);
+        con.dbi->getSequenceDbi()->createSequenceObject(sequence, folder, os);
         CHECK_OP(os, );
         sequenceCreated = true;
     }
@@ -396,7 +405,7 @@ void U2SequenceImporter::_addBlock2Db(const char* data, qint64 len, U2OpStatus& 
             sequence.length = len;
             updateLength = false;
         }
-        con.dbi->getSequenceDbi()->createSequenceObject(sequence, "", os);
+        con.dbi->getSequenceDbi()->createSequenceObject(sequence, folder, os);
         CHECK_OP(os, );
         sequenceCreated = true;
         justCreated = true;

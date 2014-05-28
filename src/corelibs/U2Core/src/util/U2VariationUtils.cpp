@@ -19,15 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2DbiUtils.h>
-#include <U2Core/U2VariantDbi.h>
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/AppContext.h>
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2VariantDbi.h>
 
 #include "U2VariationUtils.h"
 
@@ -56,7 +56,7 @@ U2VariantTrack U2VariationUtils::createVariantTrack( const U2DbiRef &dbiRef, con
 
     U2VariantTrack track;
     track.sequenceName = seqName;
-    vdbi->createVariantTrack(track, TrackType_All, os);
+    vdbi->createVariantTrack(track, TrackType_All, U2ObjectDbi::ROOT_FOLDER, os);
 
     return track;
 }

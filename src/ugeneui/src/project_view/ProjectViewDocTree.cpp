@@ -21,32 +21,23 @@
 
 #include "ProjectViewDocTree.h"
 
-#include <U2Core/GObject.h>
+#include <U2Core/BunchMimeData.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/GObject.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Gui/ProjectTreeController.h>
 
 namespace U2 {
 
-ProjectViewDocTree::ProjectViewDocTree(QWidget* w) : QTreeWidget(w) 
+ProjectViewDocTree::ProjectViewDocTree(QWidget* w) : QTreeView(w) 
 {
     setDragDropMode(QAbstractItemView::DragDrop);
+    setContextMenuPolicy(Qt::CustomContextMenu);
+    setDragEnabled(true);
+    setAcceptDrops(true);
+    setDropIndicatorShown(true);
+    setDragDropOverwriteMode(true);
 }
 
-QMimeData * ProjectViewDocTree::mimeData( const QList<QTreeWidgetItem *> items ) const {
-    if (items.size() != 1) {
-        return NULL;
-    }
-    QMimeData * mime = NULL;
-    ProjViewItem* item = (ProjViewItem*)items.first();
-    if (item->isObjectItem()) {
-        ProjViewObjectItem* objItem = (ProjViewObjectItem*)item;
-        mime = new GObjectMimeData(objItem->obj);
-    } else if (item->isDocumentItem()) {
-        mime = new DocumentMimeData(static_cast<ProjViewDocumentItem*>(item)->doc);
-
-    }
-    return mime;
-}
-
-
-}//namespace
+} //namespace

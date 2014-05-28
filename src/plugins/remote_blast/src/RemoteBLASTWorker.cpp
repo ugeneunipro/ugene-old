@@ -276,8 +276,8 @@ Task* RemoteBLASTWorker::tick() {
             addParametr(cfg.params, ReqParams::hits, maxHits);
         }
         SharedDbiDataHandler seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
-        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-        if (NULL == seqObj.get()) {
+        QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (seqObj.isNull()) {
             return NULL;
         }
         DNASequence seq = seqObj->getWholeSequence();

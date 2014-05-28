@@ -208,7 +208,7 @@ AnnotationTableObject * SendSelectionDialog::getAnnotationObject() const {
         const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
         SAFE_POINT_OP( os, NULL );
         AnnotationTableObject *aobj = new AnnotationTableObject( "Annotations", dbiRef );
-        aobj->addObjectRelation(GObjectRelation(ca_c->getModel().sequenceObjectRef, GObjectRelationRole::SEQUENCE));
+        aobj->addObjectRelation(GObjectRelation(ca_c->getModel().sequenceObjectRef, ObjectRole_Sequence));
         return aobj;
     }
     else {

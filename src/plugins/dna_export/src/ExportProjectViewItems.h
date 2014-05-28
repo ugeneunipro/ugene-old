@@ -54,6 +54,7 @@ private slots:
     void sl_exportChromatogramToSCF();
     void sl_exportAnnotations();
     void sl_exportSequenceQuality();
+    void sl_exportObject();
 
 private:
     void addExportImportMenu(QMenu& m);
@@ -66,6 +67,7 @@ private:
     QAction* exportDNAChromatogramAction;
     QAction* exportAnnotations2CSV;
     QAction* exportSequenceQuality;
+    QAction* exportObjectAction;
 };
 
 } // namespace U2

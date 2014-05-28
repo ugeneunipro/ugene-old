@@ -25,9 +25,13 @@
 
 #include "../_tmp/ui/ui_ProjectViewWidget.h"
 
+#include <U2Core/DocumentSelection.h>
+#include <U2Core/GObjectSelection.h>
+#include <U2Core/Task.h>
+
+#include <U2Gui/LoadDocumentTaskProvider.h>
 #include <U2Gui/ProjectView.h>
 #include <U2Gui/MainWindow.h>
-#include <U2Core/Task.h>
 
 #include <assert.h>
 #include <U2Gui/ProjectTreeController.h>
@@ -71,7 +75,6 @@ class ProjectViewWidget : public QWidget, public Ui_ProjectViewWidget {
     Q_OBJECT
 public:
     ProjectViewWidget();
-    QMenu*      groupModeMenu;
 private:
     DocumentUpdater* updater;
 };
@@ -85,10 +88,10 @@ class ProjectViewImpl: public ProjectView , public LoadDocumentTaskProvider {
 public:
     ProjectViewImpl();
     ~ProjectViewImpl();
-    
+
     virtual const DocumentSelection* getDocumentSelection() const {return projectTreeController->getDocumentSelection();}
-    
-    virtual const GObjectSelection* getGObjectSelection() const  {return projectTreeController->getGObjectSelection();};
+
+    virtual const GObjectSelection* getGObjectSelection() const  {return projectTreeController->getGObjectSelection();}
     
     void initView();
 
@@ -116,9 +119,9 @@ protected:
 
     bool eventFilter(QObject *obj, QEvent *event);
 
-private slots: 
+private slots:
     void sl_onDocumentAdded(Document* d);
-    
+
     void sl_onProjectModifiedStateChanged();
     void sl_onDocumentRemoved(Document* d);
     void sl_onSaveSelectedDocs();

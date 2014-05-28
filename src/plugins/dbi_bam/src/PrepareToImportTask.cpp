@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QFileInfo>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -29,7 +30,6 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/BAMUtils.h>
-
 
 #include "PrepareToImportTask.h"
 

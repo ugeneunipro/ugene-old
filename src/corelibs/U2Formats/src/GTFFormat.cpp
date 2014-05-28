@@ -116,7 +116,7 @@ Document* GTFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const Q
     CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
     QList<GObject*> objects;
 
-    load( io, objects, dbiRef, os );
+    load( io, objects, dbiRef, hints, os );
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
 
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects);
@@ -284,7 +284,7 @@ QMap<QString, QList<AnnotationData> > GTFFormat::parseDocument( IOAdapter *io, U
 
 
 void GTFFormat::load( IOAdapter *io, QList<GObject *> &objects, const U2DbiRef &dbiRef,
-    U2OpStatus &os )
+    const QVariantMap& hints, U2OpStatus &os )
 {
     QMultiMap<QString, QList<AnnotationData> > annotationsMap = parseDocument( io, os );
 
@@ -302,7 +302,7 @@ void GTFFormat::load( IOAdapter *io, QList<GObject *> &objects, const U2DbiRef &
             }
         }
         if (!annotTable) {
-            annotTable = new AnnotationTableObject( annotTableName, dbiRef );
+            annotTable = new AnnotationTableObject( annotTableName, dbiRef, hints );
             objects.append(annotTable);
         }
 

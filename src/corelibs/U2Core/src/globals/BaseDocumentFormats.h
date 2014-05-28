@@ -66,6 +66,7 @@ public:
     static const DocumentFormatId DIFF;
     static const DocumentFormatId PHYLIP_SEQUENTIAL;
     static const DocumentFormatId PHYLIP_INTERLEAVED;
+    static const DocumentFormatId DATABASE_CONNECTION;
 
     static DocumentFormat* get(const DocumentFormatId& formatId);
 };

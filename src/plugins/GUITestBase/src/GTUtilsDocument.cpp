@@ -28,6 +28,7 @@
 #include "runnables/qt/PopupChooser.h"
 
 #include <U2Gui/ObjectViewModel.h>
+#include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>

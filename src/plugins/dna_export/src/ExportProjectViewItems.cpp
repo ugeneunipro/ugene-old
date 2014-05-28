@@ -46,7 +46,6 @@
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNAChromatogramObject.h>
 #include <U2Core/GObjectRelationRoles.h>
-
 #include <U2Core/DocumentSelection.h>
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/SelectionUtils.h>
@@ -54,9 +53,9 @@
 #include <U2Core/MSAUtils.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/AppResources.h>
+#include <U2Core/U2DbiRegistry.h>
 
 #include <U2Gui/DialogUtils.h>
-#include <U2Gui/ExportAnnotationsDialog.h>
 #include <U2Gui/ExportAnnotations2CSVTask.h>
 #include <U2Gui/ExportObjectUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
@@ -82,7 +81,9 @@ const char *NO_ANNOTATIONS_MESSAGE = "Selected object doesn't have annotations";
 
 namespace U2 {
 
-ExportProjectViewItemsContoller::ExportProjectViewItemsContoller(QObject* p) : QObject(p) {
+ExportProjectViewItemsContoller::ExportProjectViewItemsContoller(QObject* p)
+    : QObject(p)
+{
     exportSequencesToSequenceFormatAction = new QAction(tr("Export sequences..."), this);
     exportSequencesToSequenceFormatAction->setObjectName(ACTION_EXPORT_SEQUENCE);
     connect(exportSequencesToSequenceFormatAction, SIGNAL(triggered()), SLOT(sl_saveSequencesToSequenceFormat()));
@@ -92,9 +93,11 @@ ExportProjectViewItemsContoller::ExportProjectViewItemsContoller(QObject* p) : Q
     connect(exportSequencesAsAlignmentAction, SIGNAL(triggered()), SLOT(sl_saveSequencesAsAlignment()));
 
     exportAlignmentAsSequencesAction = new QAction(tr("Export alignment to sequence format..."), this);
+    exportAlignmentAsSequencesAction->setObjectName(ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION);
     connect(exportAlignmentAsSequencesAction, SIGNAL(triggered()), SLOT(sl_saveAlignmentAsSequences()));
 
     exportNucleicAlignmentToAminoAction = new QAction(tr("Export nucleic alignment to amino translation..."), this);
+    exportNucleicAlignmentToAminoAction->setObjectName(ACTION_PROJECT__EXPORT_TO_AMINO_ACTION);
     connect(exportNucleicAlignmentToAminoAction, SIGNAL(triggered()), SLOT(sl_exportNucleicAlignmentToAmino()));
 
     importAnnotationsFromCSVAction = new QAction(tr("Import annotations from CSV file..."), this);
@@ -107,15 +110,19 @@ ExportProjectViewItemsContoller::ExportProjectViewItemsContoller(QObject* p) : Q
 
     exportAnnotations2CSV = new QAction(tr("Export annotations..."), this);
     connect(exportAnnotations2CSV, SIGNAL(triggered()), SLOT(sl_exportAnnotations()));
-    
+    exportAnnotations2CSV->setObjectName("ep_exportAnnotations2CSV");
+
     exportSequenceQuality = new QAction(tr("Export sequence quality..."), this);
     connect(exportSequenceQuality, SIGNAL(triggered()), SLOT(sl_exportSequenceQuality()));
-    
+
+    exportObjectAction = new QAction(tr("Export object..."), this);
+    exportObjectAction->setObjectName(ACTION_EXPORT_OBJECT);
+    connect(exportObjectAction, SIGNAL(triggered()), SLOT(sl_exportObject()));
+
     ProjectView* pv = AppContext::getProjectView();
     assert(pv!=NULL);
     connect(pv, SIGNAL(si_onDocTreePopupMenuRequested(QMenu&)), SLOT(sl_addToProjectViewMenu(QMenu&)));
 }
-
 
 void ExportProjectViewItemsContoller::sl_addToProjectViewMenu(QMenu& m) {
     addExportImportMenu(m);
@@ -143,12 +150,10 @@ void ExportProjectViewItemsContoller::addExportImportMenu(QMenu& m) {
         set = SelectionUtils::findObjects(GObjectTypes::MULTIPLE_ALIGNMENT, &ms, UOF_LoadedOnly);
         if (set.size() == 1) {
             sub = new QMenu(tr("Export/Import"));
-            exportAlignmentAsSequencesAction->setObjectName(ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION);
             sub->addAction(exportAlignmentAsSequencesAction);
             GObject* obj = set.first();
             MAlignment ma = qobject_cast<MAlignmentObject*>(obj)->getMAlignment();
             if (ma.getAlphabet()->isNucleic()) {
-                exportNucleicAlignmentToAminoAction->setObjectName(ACTION_PROJECT__EXPORT_TO_AMINO_ACTION);
                 sub->addAction(exportNucleicAlignmentToAminoAction);
             }
         }
@@ -179,14 +184,29 @@ void ExportProjectViewItemsContoller::addExportImportMenu(QMenu& m) {
         }
         sub->addAction(importAnnotationsFromCSVAction);
     }
-    
+
+    const GSelection *s = ms.findSelectionByType(GSelectionTypes::GOBJECTS);
+    const GObjectSelection* os = qobject_cast<const GObjectSelection*>(s);
+
+    const bool exportedObjectsFound = (1 == os->getSelectedObjects().size()) &&
+        (  1 == SelectionUtils::findObjects(GObjectTypes::TEXT, &ms, UOF_LoadedOnly).size()
+        || 1 == SelectionUtils::findObjects(GObjectTypes::VARIANT_TRACK, &ms, UOF_LoadedOnly).size()
+        || 1 == SelectionUtils::findObjects(GObjectTypes::MULTIPLE_ALIGNMENT, &ms, UOF_LoadedOnly).size()
+        || 1 == SelectionUtils::findObjects(GObjectTypes::PHYLOGENETIC_TREE, &ms, UOF_LoadedOnly).size()
+        || 1 == SelectionUtils::findObjects(GObjectTypes::ASSEMBLY, &ms, UOF_LoadedOnly).size());
+    if (exportedObjectsFound) {
+        if (NULL == sub) {
+            sub = new QMenu(tr("Export/Import"));
+        }
+        sub->addAction(exportObjectAction);
+    }
+
     if (sub != NULL) {
         sub->setObjectName(ACTION_PROJECT__EXPORT_MENU);
         sub->menuAction()->setObjectName(ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION);
         QAction* beforeAction = GUIUtils::findActionAfter(m.actions(), ACTION_PROJECT__EDIT_MENU);
         m.insertMenu(beforeAction, sub);
     }
-    
 }
 
 static bool hasComplementForAll(const QList<GObject*>& set) {
@@ -247,7 +267,7 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
     if (rc == QDialog::Rejected) {
         return;
     }
-    assert(d.file.length() > 0);
+    SAFE_POINT(!d.file.isEmpty(), "Invalid file name detected", );
 
     ExportSequenceTaskSettings s;
     ExportUtils::loadDNAExportSettingsFromDlg(s,d);
@@ -261,7 +281,7 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
         QList<SharedAnnotationData> anns;
         if (s.saveAnnotations) {
             foreach(GObject* aObj, allAnnotationTables) {
-                if (aObj->hasObjectRelation(so, GObjectRelationRole::SEQUENCE)) {
+                if (aObj->hasObjectRelation(so, ObjectRole_Sequence)) {
                     AnnotationTableObject *annObj = qobject_cast<AnnotationTableObject *>(aObj);
                     foreach ( const Annotation &ann, annObj->getAnnotations( ) ) {
                         anns.append( SharedAnnotationData( new AnnotationData( ann.getData( ) ) ) );
@@ -439,7 +459,7 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations() {
     assert(pv!=NULL);
     
     MultiGSelection ms; 
-    ms.addSelection(pv->getGObjectSelection()); 
+    ms.addSelection(pv->getGObjectSelection());
     ms.addSelection(pv->getDocumentSelection());
     
     QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::ANNOTATION_TABLE, &ms, UOF_LoadedOnly);
@@ -497,5 +517,25 @@ void ExportProjectViewItemsContoller::sl_exportSequenceQuality() {
     
 }
 
+void ExportProjectViewItemsContoller::sl_exportObject() {
+    ProjectView *pv = AppContext::getProjectView();
+    SAFE_POINT(NULL != pv, "Invalid project view detected!", );
+
+    const GObjectSelection *selection = pv->getGObjectSelection();
+    CHECK(!selection->isEmpty(), );
+
+    LastUsedDirHelper dirHelper;
+    const GObject *original = selection->getSelectedObjects().first();
+    U2OpStatusImpl os;
+    const U2DbiRef dbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
+    SAFE_POINT_OP(os, );
+    GObject *copied = original->clone(dbiRef, os);
+    SAFE_POINT_OP(os, );
+
+    const QString savePath = dirHelper.getLastUsedDir(QString(), QDir::homePath())
+        + "/" + copied->getGObjectName();
+
+    ExportObjectUtils::exportObject2Document(copied, savePath);
+}
 
 } //namespace

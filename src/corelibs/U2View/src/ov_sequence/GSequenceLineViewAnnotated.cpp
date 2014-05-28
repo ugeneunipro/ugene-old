@@ -119,7 +119,6 @@ void GSequenceLineViewAnnotated::sl_onAnnotationObjectRemoved( AnnotationTableOb
     sl_onAnnotationsRemoved(o->getAnnotations());
 }
 
-
 void GSequenceLineViewAnnotated::sl_onAnnotationsAdded(const QList<Annotation> &l) {
     GTIMER(c2,t2,"GSequenceLineViewAnnotated::sl_onAnnotationsAdded");
     registerAnnotations(l);

@@ -69,6 +69,10 @@ void CachingFeatureDbi::renameAnnotationTableObject( const U2DataId &tableId, co
     getWrappedDbi( )->renameAnnotationTableObject( tableId, name, os );
 }
 
+void CachingFeatureDbi::removeAnnotationTableData( const U2DataId &tableId, U2OpStatus &os ) {
+    getWrappedDbi( )->removeAnnotationTableData( tableId, os );
+}
+
 U2Feature CachingFeatureDbi::getFeature( const U2DataId &featureId, U2OpStatus &os ) {
     const FeatureWithKeys &data = getData( featureId, os );
     CHECK_OP( os, U2Feature( ) );
@@ -219,14 +223,14 @@ void CachingFeatureDbi::removeFeature( const U2DataId &featureId, U2OpStatus &os
     removeData( featureId, os );
 }
 
-void CachingFeatureDbi::removeFeaturesByParent( const U2DataId &parentId,
-    U2OpStatus &os, SubfeatureSelectionMode mode )
+void CachingFeatureDbi::removeFeaturesByParent( const U2DataId &/*parentId*/,
+    U2OpStatus &/*os*/, SubfeatureSelectionMode /*mode*/ )
 {
     /*TODO: implement*/
 }
 
-void CachingFeatureDbi::removeFeaturesByRoot( const U2DataId &rootId,
-    U2OpStatus &os, SubfeatureSelectionMode mode )
+void CachingFeatureDbi::removeFeaturesByRoot( const U2DataId &/*rootId*/,
+    U2OpStatus &/*os*/, SubfeatureSelectionMode /*mode*/ )
 {
     /*TODO: implement*/
 }

@@ -28,7 +28,6 @@
 #include "GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsLog.h"
-#include <QFile>
 #include <QtCore/QDir>
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"

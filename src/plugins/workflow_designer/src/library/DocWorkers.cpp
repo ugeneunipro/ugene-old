@@ -474,7 +474,7 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
             AnnotationTableObject *att = NULL;
             if (dna) {
                 QList<GObject*> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dna,
-                    GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, doc->getObjects(), UOF_LoadedOnly);
+                    GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence, doc->getObjects(), UOF_LoadedOnly);
                 att = relAnns.isEmpty() ? NULL : qobject_cast<AnnotationTableObject *>(relAnns.first());
             }
             if (!att) {
@@ -487,7 +487,7 @@ void GenbankWriter::data2document(Document* doc, const QVariantMap& data, Workfl
                     doc->addObject( att = new AnnotationTableObject( annotationName,
                         context->getDataStorage( )->getDbiRef( ) ) );
                     if (dna) {
-                        att->addObjectRelation(dna, GObjectRelationRole::SEQUENCE);
+                        att->addObjectRelation(dna, ObjectRole_Sequence);
                     }
                 }
                 algoLog.trace(QString("Adding features [%1] to GB doc %2").arg(annotationName).arg(doc->getURLString()));
@@ -567,13 +567,13 @@ bool GFFWriter::hasDataToWrite(const QVariantMap &data) const {
 }
 
 void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext *context) {
-    std::auto_ptr<U2SequenceObject> seqObj(NULL);
+    QScopedPointer<U2SequenceObject> seqObj(NULL);
     U2SequenceObject *dna = NULL;
     QString annotationName;
     if (data.contains(BaseSlots::DNA_SEQUENCE_SLOT().getId())) {
         SharedDbiDataHandler seqId = data[BaseSlots::DNA_SEQUENCE_SLOT().getId()].value<SharedDbiDataHandler>();
         seqObj.reset(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-        SAFE_POINT(NULL != seqObj.get(), tr("GFF writer: NULL sequence object"), );
+        SAFE_POINT(!seqObj.isNull(), tr("GFF writer: NULL sequence object"), );
 
         DNASequence seq = seqObj->getWholeSequence();
         if (seq.getName().isEmpty()) {
@@ -597,7 +597,7 @@ void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowCo
         if (!atl.isEmpty()) {
             AnnotationTableObject *att = NULL;
             if (dna) {
-                QList<GObject*> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dna, GObjectTypes::ANNOTATION_TABLE, GObjectRelationRole::SEQUENCE, doc->getObjects(), UOF_LoadedOnly);
+                QList<GObject*> relAnns = GObjectUtils::findObjectsRelatedToObjectByRole(dna, GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence, doc->getObjects(), UOF_LoadedOnly);
                 att = relAnns.isEmpty() ? NULL : qobject_cast<AnnotationTableObject *>(relAnns.first());
             }
             if (!att) {
@@ -610,7 +610,7 @@ void GFFWriter::data2document(Document* doc, const QVariantMap& data, WorkflowCo
                     doc->addObject( att = new AnnotationTableObject( annotationName,
                         context->getDataStorage( )->getDbiRef( ) ) );
                     if (dna) {
-                        att->addObjectRelation(dna, GObjectRelationRole::SEQUENCE);
+                        att->addObjectRelation(dna, ObjectRole_Sequence);
                     }
                 }
                 algoLog.trace(QString("Adding features [%1] to GFF doc %2").arg(annotationName).arg(doc->getURLString()));
@@ -761,8 +761,8 @@ void MSAWriter::data2doc(Document* doc, const QVariantMap& data) {
 
 void MSAWriter::data2document(Document* doc, const QVariantMap& data, WorkflowContext* context) {
     SharedDbiDataHandler msaId = data.value(BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()).value<SharedDbiDataHandler>();
-    std::auto_ptr<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
-    SAFE_POINT(NULL != msaObj.get(), "NULL MSA Object!", );
+    QScopedPointer<MAlignmentObject> msaObj(StorageUtils::getMsaObject(context->getDataStorage(), msaId));
+    SAFE_POINT(!msaObj.isNull(), "NULL MSA Object!", );
     MAlignment ma = msaObj->getMAlignment();
 
     SAFE_POINT(!ma.isEmpty(), tr("Empty alignment passed for writing to %1").arg(doc->getURLString()), )

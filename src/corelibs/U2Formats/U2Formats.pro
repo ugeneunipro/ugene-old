@@ -9,6 +9,7 @@ HEADERS += src/ABIFormat.h \
            src/ClustalWAlnFormat.h \
            src/ColumnDataParser.h \
            src/Database.h \
+           src/DatabaseConnectionFormat.h \
            src/DifferentialFormat.h \
            src/DNAQualityIOUtils.h \
            src/DocumentFormatUtils.h \
@@ -57,6 +58,27 @@ HEADERS += src/ABIFormat.h \
            src/caching_dbi/CachingFeatureDbi.h \
            src/caching_dbi/FeatureDataCache.h \
            src/caching_dbi/U2CachingDbi.h \
+           src/mysql_dbi/MysqlAssemblyDbi.h \
+           src/mysql_dbi/MysqlAttributeDbi.h \
+           src/mysql_dbi/MysqlBlobInputStream.h \
+           src/mysql_dbi/MysqlBlobOutputStream.h \
+           src/mysql_dbi/MysqlCrossDatabaseReferenceDbi.h \
+           src/mysql_dbi/MysqlDbi.h \
+           src/mysql_dbi/MysqlFeatureDbi.h \
+           src/mysql_dbi/MysqlModDbi.h \
+           src/mysql_dbi/MysqlMsaDbi.h \
+           src/mysql_dbi/MysqlObjectDbi.h \
+           src/mysql_dbi/MysqlObjectRelationsDbi.h \
+           src/mysql_dbi/MysqlSequenceDbi.h \
+           src/mysql_dbi/MysqlUdrDbi.h \
+           src/mysql_dbi/MysqlVariantDbi.h \
+           src/mysql_dbi/util/MysqlAssemblyAdapter.h \
+           src/mysql_dbi/util/MysqlAssemblyUtils.h \
+           src/mysql_dbi/util/MysqlDbiUtils.h \
+           src/mysql_dbi/util/MysqlHelpers.h \
+           src/mysql_dbi/util/MysqlModificationAction.h \
+           src/mysql_dbi/util/MysqlMultiTableAssemblyAdapter.h \
+           src/mysql_dbi/util/MysqlSingleTableAssemblyAdapter.h \
            src/sqlite_dbi/SQLiteAssemblyDbi.h \
            src/sqlite_dbi/SQLiteAttributeDbi.h \
            src/sqlite_dbi/SQLiteBlobInputStream.h \
@@ -67,18 +89,20 @@ HEADERS += src/ABIFormat.h \
            src/sqlite_dbi/SQLiteModDbi.h \
            src/sqlite_dbi/SQLiteMsaDbi.h \
            src/sqlite_dbi/SQLiteObjectDbi.h \
+           src/sqlite_dbi/SQLiteObjectRelationsDbi.h \
            src/sqlite_dbi/SQLiteSequenceDbi.h \
            src/sqlite_dbi/SQLiteSNPTablesDbi.h \
            src/sqlite_dbi/SQLiteUdrDbi.h \
            src/sqlite_dbi/SQLiteVariantDbi.h \
+           src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.h \
+           src/sqlite_dbi/assembly/RTreeAssemblyAdapter.h \
+           src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.h \
            src/tasks/BgzipTask.h \
            src/tasks/ConvertAssemblyToSamTask.h \
            src/tasks/ConvertFileTask.h \
            src/tasks/MergeBamTask.h \
-           src/sqlite_dbi/assembly/AssemblyPackAlgorithm.h \
-           src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.h \
-           src/sqlite_dbi/assembly/RTreeAssemblyAdapter.h \
-           src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.h
+           src/util/AssemblyAdapter.h \
+           src/util/AssemblyPackAlgorithm.h
 FORMS += src/ace/ui/ConvertAceToSqliteDialog.ui
 SOURCES += src/ABIFormat.cpp \
            src/AbstractVariationFormat.cpp \
@@ -88,6 +112,7 @@ SOURCES += src/ABIFormat.cpp \
            src/ClustalWAlnFormat.cpp \
            src/ColumnDataParser.cpp \
            src/Database.cpp \
+           src/DatabaseConnectionFormat.cpp \
            src/DifferentialFormat.cpp \
            src/DNAQualityIOUtils.cpp \
            src/DocumentFormatUtils.cpp \
@@ -129,6 +154,27 @@ SOURCES += src/ABIFormat.cpp \
            src/caching_dbi/DbiFeatureSelectionByParentCache.cpp \
            src/caching_dbi/DbiFeatureSelectionByRegionCache.cpp \
            src/caching_dbi/FeatureDataCache.cpp \
+           src/mysql_dbi/MysqlAssemblyDbi.cpp \
+           src/mysql_dbi/MysqlAttributeDbi.cpp \
+           src/mysql_dbi/MysqlBlobInputStream.cpp \
+           src/mysql_dbi/MysqlBlobOutputStream.cpp \
+           src/mysql_dbi/MysqlCrossDatabaseReferenceDbi.cpp \
+           src/mysql_dbi/MysqlDbi.cpp \
+           src/mysql_dbi/MysqlFeatureDbi.cpp \
+           src/mysql_dbi/MysqlModDbi.cpp \
+           src/mysql_dbi/MysqlMsaDbi.cpp \
+           src/mysql_dbi/MysqlObjectDbi.cpp \
+           src/mysql_dbi/MysqlObjectRelationsDbi.cpp \
+           src/mysql_dbi/MysqlSequenceDbi.cpp \
+           src/mysql_dbi/MysqlUdrDbi.cpp \
+           src/mysql_dbi/MysqlVariantDbi.cpp \
+           src/mysql_dbi/util/MysqlAssemblyAdapter.cpp \
+           src/mysql_dbi/util/MysqlAssemblyUtils.cpp \
+           src/mysql_dbi/util/MysqlDbiUtils.cpp \
+           src/mysql_dbi/util/MysqlHelpers.cpp \
+           src/mysql_dbi/util/MysqlModificationAction.cpp \
+           src/mysql_dbi/util/MysqlMultiTableAssemblyAdapter.cpp \
+           src/mysql_dbi/util/MysqlSingleTableAssemblyAdapter.cpp \
            src/sqlite_dbi/SQLiteAssemblyDbi.cpp \
            src/sqlite_dbi/SQLiteAttributeDbi.cpp \
            src/sqlite_dbi/SQLiteBlobInputStream.cpp \
@@ -139,18 +185,19 @@ SOURCES += src/ABIFormat.cpp \
            src/sqlite_dbi/SQLiteModDbi.cpp \
            src/sqlite_dbi/SQLiteMsaDbi.cpp \
            src/sqlite_dbi/SQLiteObjectDbi.cpp \
+           src/sqlite_dbi/SQLiteObjectRelationsDbi.cpp \
            src/sqlite_dbi/SQLiteSequenceDbi.cpp \
            src/sqlite_dbi/SQLiteSNPTablesDbi.cpp \
            src/sqlite_dbi/SQLiteUdrDbi.cpp \
            src/sqlite_dbi/SQLiteVariantDbi.cpp \
+           src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp \
+           src/sqlite_dbi/assembly/RTreeAssemblyAdapter.cpp \
+           src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.cpp \
            src/tasks/BgzipTask.cpp \
            src/tasks/ConvertAssemblyToSamTask.cpp \
            src/tasks/ConvertFileTask.cpp \
            src/tasks/MergeBamTask.cpp \
-           src/sqlite_dbi/assembly/AssemblyPackAlgorithm.cpp \
-           src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp \
-           src/sqlite_dbi/assembly/RTreeAssemblyAdapter.cpp \
-           src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.cpp
+           src/util/AssemblyPackAlgorithm.cpp
 RESOURCES += U2Formats.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \

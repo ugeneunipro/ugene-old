@@ -62,6 +62,9 @@ static const char GAP_CHAR = '-';
 ChromatogramView::ChromatogramView(QWidget* p, ADVSequenceObjectContext* v, GSequenceLineView* cv, const DNAChromatogram& chroma) 
 : GSequenceLineView(p, v), editDNASeq(NULL)
 {
+    const QString objectName = "chromatogram_view_" + (NULL == v ? "" : v->getSequenceGObject()->getGObjectName());
+    setObjectName(objectName);
+
     showQVAction = new QAction(tr("Show quality bars"), this);
     showQVAction->setCheckable(true);
     showQVAction->setChecked(chroma.hasQV);

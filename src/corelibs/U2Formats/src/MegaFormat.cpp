@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "MegaFormat.h"
-
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
@@ -31,11 +29,13 @@
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
+#include "MegaFormat.h"
 
 namespace U2 {
 
@@ -56,7 +56,7 @@ MegaFormat::MegaFormat(QObject* p) : DocumentFormat(p, DocumentFormatFlags(Docum
 
 Document* MegaFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
     QList<GObject*> objs;
-    load(io, dbiRef, objs, os);
+    load(io, dbiRef, objs, fs, os);
     CHECK_OP_EXT(os, qDeleteAll(objs), NULL);
     return new Document(this, io->getFactory(), io->getURL(), dbiRef, objs, fs);
 }
@@ -253,7 +253,7 @@ void MegaFormat::workUpIndels(MAlignment& al) {
     }
 }
 
-void MegaFormat::load(U2::IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*> &objects, U2::U2OpStatus &os) {
+void MegaFormat::load(U2::IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*> &objects, const QVariantMap& fs, U2::U2OpStatus &os) {
     MAlignment al(io->getURL().baseFileName());
     QByteArray line;
     bool eof=false;
@@ -335,7 +335,8 @@ void MegaFormat::load(U2::IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*>
     
     workUpIndels(al); //replace '.' by symbols from the first sequence
 
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, al, os);
+    const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, folder, al, os);
     CHECK_OP(os, );
 
     MAlignmentObject* obj = new MAlignmentObject(al.getName(), msaRef);

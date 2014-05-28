@@ -41,12 +41,13 @@
 
 namespace U2 {
 
-ConvertAceToSqliteTask::ConvertAceToSqliteTask(const GUrl &_sourceUrl, const GUrl &_destinationUrl) :
+ConvertAceToSqliteTask::ConvertAceToSqliteTask(const GUrl &_sourceUrl, const GUrl &_destinationUrl, const QVariantMap &hints) :
     Task(tr("Convert ACE to UGENE database (%1)").arg(_destinationUrl.fileName()), TaskFlag_None),
     append(false),
     sourceUrl(_sourceUrl),
     destinationUrl(_destinationUrl),
-    dbi(NULL)
+    dbi(NULL),
+    hints(hints)
 {
     GCOUNTER(cvar, tvar, "ConvertAceToUgenedb");
     tpm = Progress_Manual;
@@ -84,8 +85,8 @@ void ConvertAceToSqliteTask::run() {
     QStringList folders = objDbi->getFolders(stateInfo);
     CHECK_OP(stateInfo, );
 
-    if (!append || !folders.contains("/")) {
-        objDbi->createFolder("/", stateInfo);
+    if (!append || !folders.contains(U2ObjectDbi::ROOT_FOLDER)) {
+        objDbi->createFolder(U2ObjectDbi::ROOT_FOLDER, stateInfo);
         CHECK_OP(stateInfo, );
     }
 
@@ -104,7 +105,7 @@ void ConvertAceToSqliteTask::run() {
     CHECK_OP(stateInfo, );
 
     qint64 totalTime = TimeCounter::getCounter() - startTime;
-    taskLog.info(QString("Converting assembly from %1 to %2 succesfully finished: imported %3 reads, total time %4 s, pack time %5 s")
+    taskLog.info(QString("Converting assembly from %1 to %2 successfully finished: imported %3 reads, total time %4 s, pack time %5 s")
                  .arg(sourceUrl.fileName())
                  .arg(destinationUrl.fileName())
                  .arg(totalReadsImported)
@@ -171,14 +172,14 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
         crossDbRef.dataRef.dbiRef.dbiFactoryId = dbi->getFactoryId();
         crossDbRef.dataRef.entityId = reference.visualName.toLatin1();
         crossDbRef.dataRef.version = 1;
-        crossDbi->createCrossReference(crossDbRef, stateInfo);
+        crossDbi->createCrossReference(crossDbRef, "", stateInfo);
         CHECK_OP(stateInfo, totalReadsImported);
         assembly.referenceId = crossDbRef.id;
 
         corruptedAssembly = assembly;
 
         U2AssemblyReadsImportInfo & importInfo = importInfos[assemblyNum];
-        assDbi->createAssemblyObject(assembly, "/", NULL, importInfo, stateInfo);
+        assDbi->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, NULL, importInfo, stateInfo);
         CHECK_OP(stateInfo, totalReadsImported);
 
         importInfo.packed = false;
@@ -191,7 +192,7 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
         assDbi->addReads(assembly.id, &readsIterator, stateInfo);
         CHECK_OP(stateInfo, totalReadsImported);
 
-        seqDbi->createSequenceObject(reference, "/", stateInfo);
+        seqDbi->createSequenceObject(reference, U2ObjectDbi::ROOT_FOLDER, stateInfo);
         CHECK_OP(stateInfo, totalReadsImported);
 
         QVariantMap hints;

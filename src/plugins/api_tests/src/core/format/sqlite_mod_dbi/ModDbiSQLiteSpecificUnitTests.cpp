@@ -62,13 +62,14 @@ void ModSQLiteSpecificTestData::init() {
     // Init DBI
     sqliteDbi = new SQLiteDbi();
     QHash<QString, QString> initProperties;
-    initProperties[U2_DBI_OPTION_URL] = url;
+    initProperties[U2DbiOptions::U2_DBI_OPTION_URL] = url;
     U2OpStatusImpl os;
     sqliteDbi->init(initProperties, QVariantMap(), os);
     SAFE_POINT_OP(os, );
 
     // Get msa IDs
-    QList<U2DataId> ids = sqliteDbi->getObjectDbi()->getObjects(U2Type::Msa, 0, U2_DBI_NO_LIMIT, os);
+    QList<U2DataId> ids = sqliteDbi->getObjectDbi()->getObjects(U2Type::Msa, 0,
+        U2DbiOptions::U2_DBI_NO_LIMIT, os);
     SAFE_POINT_OP(os,);
 }
 
@@ -162,7 +163,7 @@ U2DataId ModSQLiteSpecificTestData::createObject(U2OpStatus& os) {
     obj.dbiId = sqliteDbi->getDbiId();
     obj.visualName = "Test object";
 
-    sqliteDbi->getSQLiteObjectDbi()->createObject(obj, "", SQLiteDbiObjectRank_TopLevel, os);
+    sqliteDbi->getSQLiteObjectDbi()->createObject(obj, "", U2DbiObjectRank_TopLevel, os);
     SAFE_POINT_OP(os, U2DataId());
 
     return obj.id;

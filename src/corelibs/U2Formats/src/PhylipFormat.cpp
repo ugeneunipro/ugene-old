@@ -19,24 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "PhylipFormat.h"
+#include <QtCore/QTextStream>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/L10n.h>
 #include <U2Core/MAlignment.h>
-#include <U2Core/MAlignmentObject.h>
 #include <U2Core/MAlignmentImporter.h>
+#include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/TextUtils.h>
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/L10n.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
 
-#include <U2Algorithm/MSAConsensusUtils.h>
-#include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
 #include <U2Algorithm/BuiltInConsensusAlgorithms.h>
+#include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
+#include <U2Algorithm/MSAConsensusUtils.h>
 
+#include "PhylipFormat.h"
 
 namespace U2 {
 
@@ -64,7 +65,7 @@ void PhylipFormat::storeDocument(Document *d, IOAdapter *io, U2OpStatus &os) {
     CHECK_EXT(!os.isCoR(), os.setError(L10N::errorWritingFile(d->getURL())), );
 }
 
-MAlignmentObject* PhylipFormat::load(IOAdapter *io, const U2DbiRef &dbiRef, U2OpStatus &os) {
+MAlignmentObject* PhylipFormat::load(IOAdapter *io, const U2DbiRef &dbiRef, const QVariantMap& fs, U2OpStatus &os) {
     SAFE_POINT(io != NULL, "IO adapter is NULL!", NULL);
 
     MAlignment al = parse(io, os);
@@ -75,7 +76,8 @@ MAlignmentObject* PhylipFormat::load(IOAdapter *io, const U2DbiRef &dbiRef, U2Op
     U2AlphabetUtils::assignAlphabet(al);
     CHECK_EXT(al.getAlphabet()!=NULL, os.setError( PhylipFormat::tr("Alphabet is unknown")), NULL);
 
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, al, os);
+    const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, folder, al, os);
     CHECK_OP(os, NULL);
 
     MAlignmentObject* obj = new MAlignmentObject(al.getName(), msaRef);
@@ -100,7 +102,7 @@ void PhylipFormat::removeSpaces(QByteArray &data) const {
 Document* PhylipFormat::loadDocument(IOAdapter *io, const U2DbiRef &dbiRef, const QVariantMap &fs, U2OpStatus &os) {
     SAFE_POINT(io != NULL, "IO adapter is NULL!", NULL);
     QList<GObject*> objects;
-    objects.append( load(io, dbiRef, os) );
+    objects.append( load(io, dbiRef, fs, os) );
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
     assert(objects.size() == 1);
     return new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs);

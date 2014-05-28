@@ -81,7 +81,7 @@ private:
 class U2FORMATS_EXPORT ConvertFileFactory: public QObject{
 public:
     //return true if it is a custom conversion for given formats
-    virtual bool isCustomFormatTask (const QString& detectedFormat, const QString& targetFormat){return true;}
+    virtual bool isCustomFormatTask (const QString& detectedFormat, const QString& targetFormat);
     virtual ConvertFileTask* getTask(const GUrl &sourceURL, const QString &detectedFormat, const QString &targetFormat, const QString &dir) {return new DefaultConvertFileTask(sourceURL, detectedFormat, targetFormat, dir);}
 };
 

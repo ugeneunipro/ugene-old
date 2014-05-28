@@ -155,8 +155,8 @@ Task* ImportPhredQualityWorker::tick() {
 
         Message inputMessage = getMessageAndSetupScriptValues(input);
         SharedDbiDataHandler seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
-        std::auto_ptr<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-        if (NULL == seqObj.get()) {
+        QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+        if (seqObj.isNull()) {
             return NULL;
         }
         const QMap<QString,DNAQuality>& qualities = readTask->getResult();
