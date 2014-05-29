@@ -96,7 +96,7 @@ void ImportToDatabaseDialog::sl_customContextMenuRequested(const QPoint &positio
 
     if (privateOptions.contains(item)) {
         m.addSeparator();
-        m.addAction(tr("Reset to common options"), this, SLOT(sl_resetOptions()));
+        m.addAction(tr("Reset to general options"), this, SLOT(sl_resetOptions()));
     }
 
     m.exec(ui->twOrders->mapToGlobal(position));
@@ -190,6 +190,9 @@ void ImportToDatabaseDialog::accept() {
 void ImportToDatabaseDialog::init() {
     ui->twOrders->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Import"));
+
+    ui->buttonBox->button(QDialogButtonBox::Cancel)->setObjectName("cancel_button");
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setObjectName("import_button");
 }
 
 void ImportToDatabaseDialog::connectSignals() {
@@ -239,12 +242,20 @@ bool ImportToDatabaseDialog::isEssential(QTreeWidgetItem *item) const {
 QStringList ImportToDatabaseDialog::getFilesToImport() {
     LastUsedDirHelper dirHelper(DIR_HELPER_NAME);
 
+    QFileDialog::Options additionalOptions;
+    Q_UNUSED(additionalOptions);
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        additionalOptions = QFileDialog::DontUseNativeDialog;
+    }
+#endif
+
     const QStringList fileList = QFileDialog::getOpenFileNames(this,
                                                                tr("Select files to import"),
                                                                dirHelper.dir,
                                                                "",
                                                                NULL,
-                                                               QFileDialog::DontConfirmOverwrite | QFileDialog::ReadOnly);
+                                                               QFileDialog::DontConfirmOverwrite | QFileDialog::ReadOnly | additionalOptions);
     CHECK(!fileList.isEmpty(), fileList);
     dirHelper.url = QFileInfo(fileList.last()).absoluteFilePath();
 
@@ -254,9 +265,18 @@ QStringList ImportToDatabaseDialog::getFilesToImport() {
 QString ImportToDatabaseDialog::getFolderToImport() {
     LastUsedDirHelper dirHelper(DIR_HELPER_NAME);
 
+    QFileDialog::Options additionalOptions;
+    Q_UNUSED(additionalOptions);
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        additionalOptions = QFileDialog::DontUseNativeDialog;
+    }
+#endif
+
     const QString dir = QFileDialog::getExistingDirectory(this,
-                                                               tr("Select a folder to import"),
-                                                               dirHelper.dir);
+                                                          tr("Select a folder to import"),
+                                                          dirHelper.dir,
+                                                          QFileDialog::ShowDirsOnly | additionalOptions);
     CHECK(!dir.isEmpty(), dir);
     dirHelper.url = QFileInfo(dir).absoluteFilePath() + "/";
 

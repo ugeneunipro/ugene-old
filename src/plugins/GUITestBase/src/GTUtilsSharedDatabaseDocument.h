@@ -51,6 +51,9 @@ public:
 
     static void openView(U2OpStatus &os, Document* databaseDoc, const QString& itemPath);
     static void openView(U2OpStatus &os, Document* databaseDoc, const QModelIndex& itemIndex);
+
+    static void callImportDialog(U2OpStatus &os, Document* databaseDoc, const QString& itemPath);
+    static void callImportDialog(U2OpStatus &os, Document* databaseDoc, const QModelIndex& itemIndex);
 };
 
 }   // namespace U2

@@ -84,6 +84,7 @@ class QMainWindow;
 #define ACTION_PROJECT__ADD_NEW_DOCUMENT            "action_project__add_new_document"
 #define ACTION_PROJECT__ADD_EXISTING_DOCUMENT       "action_project__add_existing_document"
 #define ACTION_PROJECT__UNLOAD_SELECTED             "action_project__unload_selected_action"
+#define ACTION_PROJECT__IMPORT_TO_DATABASE          "action_project__import_to_database"
 #define ACTION_PROJECT__CREATE_FOLDER               "action_project__create_folder"
 
 #define ACTION_PROJECT__EDIT_MENU                   "action_project__edit_menu"

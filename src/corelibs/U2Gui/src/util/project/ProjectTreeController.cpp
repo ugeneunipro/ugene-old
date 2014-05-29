@@ -813,6 +813,7 @@ void ProjectTreeController::setupActions() {
     connect(addObjectToDocumentAction, SIGNAL(triggered()), SLOT(sl_onAddObjectToSelectedDocument()));
 
     importToDatabaseAction = new QAction(QIcon(":core/images/add_gobject.png"), tr("Import..."), this);
+    importToDatabaseAction->setObjectName(ACTION_PROJECT__IMPORT_TO_DATABASE);
     tree->addAction(importToDatabaseAction);
     connect(importToDatabaseAction, SIGNAL(triggered()), SLOT(sl_onImportToDatabase()));
 

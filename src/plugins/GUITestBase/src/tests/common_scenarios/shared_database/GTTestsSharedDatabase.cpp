@@ -47,6 +47,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
@@ -848,6 +849,118 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
 
     QTreeWidgetItem* annotationTable = GTUtilsAnnotationsTreeView::findItem(os, annotationTableName.arg(connectionName));
     CHECK_SET_ERR(NULL != annotationTable, "Annotation table is NULL");
+
+    CHECK_SET_ERR(!lt.hasError(), "errors in log");
+}
+
+GUI_TEST_CLASS_DEFINITION(import_test_0004) {
+//    Import a file via the import dialog, destination path is changed in the dialog
+
+//    1. Connect to the "ugene_gui_test" database.
+
+//    2. Create a folder in the database: {import_test_0004}.
+
+//    3. Call context menu on the database connection document, select {Add -> Import to the database...} item.
+//    Expected state: an import dialog appears.
+
+//    4. Click the "Add files" button, select {data/samples/FASTA/human_T1.fa}.
+//    Expected state: the file is added to the orders list, it will be imported into the {/} folder.
+
+//    5. Click twice to the item on the destination folder column and change the folder, set {/import_test_0004}.
+//    Expected state: the file is present in the orders list, it will be imported into the {/import_test_0004} folder.
+
+//    6. Click the "Import" button.
+//    Expected state: an import task is started, after it finishes a sequence object appears in the {/import_test_0004} folder.
+
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString folderName = "import_test_0004";
+    const QString folderPath = U2ObjectDbi::ROOT_FOLDER + folderName;
+    const QString filePath = QFileInfo(dataDir + "samples/FASTA/human_T1.fa").absoluteFilePath();
+    const QString sequenceObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
+    const QString databaseSequenceObjectPath = folderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+
+
+    QList<ImportToDatabaseDialogFiller::Action> actions;
+
+    QVariantMap addFilesAction;
+    addFilesAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__PATHS_LIST, QStringList() << filePath);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_FILES, addFilesAction);
+
+    QVariantMap changeDestinationAction;
+    changeDestinationAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__ITEM, filePath);
+    changeDestinationAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__DESTINATION_FOLDER, folderPath);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::EDIT_DESTINATION_FOLDER, changeDestinationAction);
+
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
+
+    GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
+
+
+    QString connectionName = connectToTestDatabase(os);
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
+
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, parentFolderPath, folderName);
+
+    GTUtilsSharedDatabaseDocument::callImportDialog(os, databaseDoc, parentFolderPath);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(15000);
+
+    const QModelIndex sequenceObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
+    CHECK_SET_ERR(sequenceObjectIndex.isValid(), "Result item wasn't found");
+
+    CHECK_SET_ERR(!lt.hasError(), "errors in log");
+}
+
+GUI_TEST_CLASS_DEFINITION(import_test_0005) {
+//    Import a file via the import dialog, file is imported to the inner folder
+
+//    1. Connect to the "ugene_gui_test" database.
+
+//    2. Call context menu on the {import_test_0005} folder in the database connection document, select {Add -> Import to the folder...} item.
+//    Expected state: an import dialog appears.
+
+//    3. Click the "Add files" button, select {data/samples/FASTA/human_T1.fa}.
+//    Expected state: the file is added to the orders list, it will be imported into the {/import_test_0005} folder.
+
+//    4. Click the "Import" button.
+//    Expected state: an import task is started, after it finishes a sequence object appears in the {/import_test_0005} folder.
+
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString folderName = "import_test_0005";
+    const QString folderPath = U2ObjectDbi::ROOT_FOLDER + folderName;
+    const QString filePath = QFileInfo(dataDir + "samples/FASTA/human_T1.fa").absoluteFilePath();
+    const QString sequenceObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
+    const QString databaseSequenceObjectPath = folderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+
+
+    QList<ImportToDatabaseDialogFiller::Action> actions;
+
+    QVariantMap addFilesAction;
+    addFilesAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__PATHS_LIST, QStringList() << filePath);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_FILES, addFilesAction);
+
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
+
+    GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
+
+
+    QString connectionName = connectToTestDatabase(os);
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
+
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, parentFolderPath, folderName);
+
+    GTUtilsSharedDatabaseDocument::callImportDialog(os, databaseDoc, folderPath);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(15000);
+
+    const QModelIndex sequenceObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
+    CHECK_SET_ERR(sequenceObjectIndex.isValid(), "Result item wasn't found");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }

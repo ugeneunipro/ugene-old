@@ -235,6 +235,33 @@ void GTUtilsSharedDatabaseDocument::openView(U2OpStatus &os, Document *databaseD
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "callImportDialog"
+void GTUtilsSharedDatabaseDocument::callImportDialog(U2OpStatus &os, Document *databaseDoc, const QString &itemPath) {
+    Q_UNUSED(os);
+    GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
+    GT_CHECK(!itemPath.isEmpty(), "Item path is empty");
+
+    const QModelIndex itemIndex = getItemIndex(os, databaseDoc, itemPath);
+    callImportDialog(os, databaseDoc, itemIndex);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "callImportDialog"
+void GTUtilsSharedDatabaseDocument::callImportDialog(U2OpStatus &os, Document *databaseDoc, const QModelIndex &itemIndex) {
+    Q_UNUSED(os);
+    GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
+    GT_CHECK(itemIndex.isValid(), "Item index is invalid");
+
+    expantToItem(os, databaseDoc, itemIndex);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__ADD_MENU << ACTION_PROJECT__IMPORT_TO_DATABASE, GTGlobals::UseMouse));
+
+    const QPoint itemCenter = GTUtilsProjectTreeView::getItemCenter(os, itemIndex);
+    GTMouseDriver::moveTo(os, itemCenter);
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }   // namespace U2

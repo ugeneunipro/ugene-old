@@ -99,7 +99,7 @@ QVariantMap ImportFileToDatabaseTask::prepareHints() const {
     hints[DocumentReadingMode_DontMakeUniqueNames] = 1;
     hints[DocumentFormat::DBI_REF_HINT] = qVariantFromValue(dstDbiRef);
     hints[DocumentFormat::DBI_FOLDER_HINT] = dstFolder + (options.createSubfolderForEachFile ?
-                                                              U2ObjectDbi::PATH_SEP + QFileInfo(srcUrl).baseName() :
+                                                              U2ObjectDbi::PATH_SEP + QFileInfo(srcUrl).fileName() :
                                                               "");
 
     switch (options.multiSequencePolicy) {
