@@ -111,7 +111,6 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsQueryDesigner.h \
             src/GTUtilsSharedDatabaseDocument.h \
             src/GTUtilsWorkflowDesigner.h \
-            src/GTUtilsPhyTree.h \
 #   Tests
             src/tests/GUIInitialChecks.h \
 #   Tests/Regression Scenarios
@@ -300,7 +299,6 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsTaskTreeView.cpp \
             src/GTUtilsMsaEditorSequenceArea.cpp \
             src/GTUtilsOptionsPanel.cpp \
-            src/GTUtilsPhyTree.cpp \
             src/GTUtilsQueryDesigner.cpp \
             src/GTUtilsSharedDatabaseDocument.cpp \
             src/GTUtilsWorkflowDesigner.cpp \
