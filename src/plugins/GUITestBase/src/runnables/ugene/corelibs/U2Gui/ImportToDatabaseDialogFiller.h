@@ -30,8 +30,6 @@ class QTreeWidgetItem;
 
 namespace U2 {
 
-class U2OpStatus;
-
 class ImportToDatabaseDialogFiller : public Filler {
 public:
     class Action {

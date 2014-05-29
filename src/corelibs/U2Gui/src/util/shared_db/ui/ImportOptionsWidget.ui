@@ -42,7 +42,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="cbCreateSubfoledsForFiles">
+       <widget class="QCheckBox" name="cbCreateSubfoldersForFiles">
         <property name="text">
          <string>Create a subfolder for each file</string>
         </property>

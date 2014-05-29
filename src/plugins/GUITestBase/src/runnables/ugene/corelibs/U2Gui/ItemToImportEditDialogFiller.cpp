@@ -19,35 +19,36 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_IMPORT_OPTIONS_WIDGET_H_
-#define _U2_IMPORT_OPTIONS_WIDGET_H_
+#include <QtGui/QApplication>
 
-#include <QtGui/QWidget>
+#include <U2Gui/ImportOptionsWidget.h>
 
-#include "U2Core/ImportToDatabaseOptions.h"
-
-namespace Ui {
-class ImportOptionsWidget;
-}
+#include "ImportOptionsWidgetFiller.h"
+#include "ItemToImportEditDialogFiller.h"
+#include "api/GTWidget.h"
 
 namespace U2 {
 
-class U2GUI_EXPORT ImportOptionsWidget : public QWidget {
-    Q_OBJECT
-    
-public:
-    ImportOptionsWidget(QWidget *parent = 0);
-    ~ImportOptionsWidget();
+#define GT_CLASS_NAME "GTUtilsDialog::ItemToImportEditDialogFiller"
 
-    void init(const QString& baseFolder, const ImportToDatabaseOptions& options);
+ItemToImportEditDialogFiller::ItemToImportEditDialogFiller(U2OpStatus& os, const QVariantMap& data) :
+    Filler(os, "ItemToImportEditDialog"),
+    data(data)
+{
+}
 
-    QString getFolder() const;
-    ImportToDatabaseOptions getOptions() const;
+#define GT_METHOD_NAME "run"
+void ItemToImportEditDialogFiller::run() {
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(NULL != dialog, "activeModalWidget is NULL");
 
-private:
-    Ui::ImportOptionsWidget* ui;
-};
+    ImportOptionsWidget* optionsWidget = qobject_cast<ImportOptionsWidget*>(GTWidget::findWidget(os, "optionsWidget", dialog));
+    GT_CHECK(NULL != optionsWidget, "optionsWidget is NULL");
+
+    ImportOptionsWidgetFiller::fill(os, optionsWidget, data);
+}
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
 
 }   // namespace U2
-
-#endif // _U2_IMPORT_OPTIONS_WIDGET_H_

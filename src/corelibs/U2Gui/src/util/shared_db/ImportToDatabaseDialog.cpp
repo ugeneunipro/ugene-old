@@ -530,7 +530,7 @@ void ImportToDatabaseDialog::setFileTooltip(QTreeWidgetItem *item) {
             tooltip += "\n" + tr("If file contains more than one sequence, they will imported as single sequence with several 'Unknown' bases as separator") +
                        "\n" + tr("Size of separator: %1").arg(currentOptions.mergeMultiSequencePolicySeparatorSize);
             break;
-        case ImportToDatabaseOptions::MALIGNEMNT:
+        case ImportToDatabaseOptions::MALIGNMENT:
             tooltip += "\n" + tr("If file contains more than one sequence, they will be joined into the multiple alignment");
             break;
     }
@@ -574,7 +574,7 @@ void ImportToDatabaseDialog::setFolderTooltip(QTreeWidgetItem *item) {
             tooltip += "\n" + tr("If file contains more than one sequence, they will imported as single sequence with several 'Unknown' bases as separator") +
                        "\n" + tr("Size of separator: %1").arg(currentOptions.mergeMultiSequencePolicySeparatorSize);
             break;
-        case ImportToDatabaseOptions::MALIGNEMNT:
+        case ImportToDatabaseOptions::MALIGNMENT:
             tooltip += "\n" + tr("If file contains more than one sequence, they will be joined into the multiple alignment");
             break;
     }

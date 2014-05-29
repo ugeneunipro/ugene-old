@@ -109,7 +109,7 @@ QVariantMap ImportFileToDatabaseTask::prepareHints() const {
         case ImportToDatabaseOptions::MERGE:
             hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
             break;
-        case ImportToDatabaseOptions::MALIGNEMNT:
+        case ImportToDatabaseOptions::MALIGNMENT:
             hints[DocumentReadingMode_SequenceMergeGapSize] = options.mergeMultiSequencePolicySeparatorSize;
             break;
     };

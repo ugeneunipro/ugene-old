@@ -19,35 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_IMPORT_OPTIONS_WIDGET_H_
-#define _U2_IMPORT_OPTIONS_WIDGET_H_
+#ifndef _U2_ITEM_TO_IMPORT_EDIT_DIALOG_FILLER_H_
+#define _U2_ITEM_TO_IMPORT_EDIT_DIALOG_FILLER_H_
 
-#include <QtGui/QWidget>
-
-#include "U2Core/ImportToDatabaseOptions.h"
-
-namespace Ui {
-class ImportOptionsWidget;
-}
+#include "GTUtilsDialog.h"
 
 namespace U2 {
 
-class U2GUI_EXPORT ImportOptionsWidget : public QWidget {
-    Q_OBJECT
-    
+class ItemToImportEditDialogFiller : public Filler {
 public:
-    ImportOptionsWidget(QWidget *parent = 0);
-    ~ImportOptionsWidget();
+    ItemToImportEditDialogFiller(U2OpStatus& os, const QVariantMap& data);
 
-    void init(const QString& baseFolder, const ImportToDatabaseOptions& options);
-
-    QString getFolder() const;
-    ImportToDatabaseOptions getOptions() const;
+    void run();
 
 private:
-    Ui::ImportOptionsWidget* ui;
+    QVariantMap data;
 };
 
 }   // namespace U2
 
-#endif // _U2_IMPORT_OPTIONS_WIDGET_H_
+#endif // _U2_ITEM_TO_IMPORT_EDIT_DIALOG_FILLER_H_

@@ -22,56 +22,62 @@
 #include <U2Core/U2DbiUtils.h>
 
 #include "ImportOptionsWidget.h"
+#include "ui/ui_ImportOptionsWidget.h"
 
 namespace U2 {
 
 ImportOptionsWidget::ImportOptionsWidget(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),
+    ui(new Ui::ImportOptionsWidget)
 {
-    setupUi(this);
+    ui->setupUi(this);
+}
+
+ImportOptionsWidget::~ImportOptionsWidget() {
+    delete ui;
 }
 
 void ImportOptionsWidget::init(const QString& baseFolder, const ImportToDatabaseOptions& options) {
-    leBaseFolder->setText(baseFolder);
+    ui->leBaseFolder->setText(baseFolder);
 
-    cbRecursively->setChecked(options.processFoldersRecursively);
-    cbCreateSubfoledsForFiles->setChecked(options.createSubfolderForEachFile);
-    cbImportUnrecognized->setChecked(options.importUnknownAsUdr);
-    cbCreateSubfoldersforDocs->setChecked(options.createSubfolderForEachDocument);
+    ui->cbRecursively->setChecked(options.processFoldersRecursively);
+    ui->cbCreateSubfoldersForFiles->setChecked(options.createSubfolderForEachFile);
+    ui->cbImportUnrecognized->setChecked(options.importUnknownAsUdr);
+    ui->cbCreateSubfoldersforDocs->setChecked(options.createSubfolderForEachDocument);
 
     switch (options.multiSequencePolicy) {
         case ImportToDatabaseOptions::SEPARATE:
-            rbSeparate->setChecked(true);
+            ui->rbSeparate->setChecked(true);
             break;
         case ImportToDatabaseOptions::MERGE:
-            rbMerge->setChecked(true);
-            sbMerge->setValue(options.mergeMultiSequencePolicySeparatorSize);
+            ui->rbMerge->setChecked(true);
+            ui->sbMerge->setValue(options.mergeMultiSequencePolicySeparatorSize);
             break;
-        case ImportToDatabaseOptions::MALIGNEMNT:
-            rbMalignment->setChecked(true);
+        case ImportToDatabaseOptions::MALIGNMENT:
+            ui->rbMalignment->setChecked(true);
             break;
     }
 }
 
 QString ImportOptionsWidget::getFolder() const {
-    return U2DbiUtils::makeFolderCanonical(leBaseFolder->text());
+    return U2DbiUtils::makeFolderCanonical(ui->leBaseFolder->text());
 }
 
 ImportToDatabaseOptions ImportOptionsWidget::getOptions() const {
     ImportToDatabaseOptions options;
 
-    options.processFoldersRecursively = cbRecursively->isChecked();
-    options.createSubfolderForEachFile = cbCreateSubfoledsForFiles->isChecked();
-    options.importUnknownAsUdr = cbImportUnrecognized->isChecked();
-    options.createSubfolderForEachDocument = cbCreateSubfoldersforDocs->isChecked();
+    options.processFoldersRecursively = ui->cbRecursively->isChecked();
+    options.createSubfolderForEachFile = ui->cbCreateSubfoldersForFiles->isChecked();
+    options.importUnknownAsUdr = ui->cbImportUnrecognized->isChecked();
+    options.createSubfolderForEachDocument = ui->cbCreateSubfoldersforDocs->isChecked();
 
-    if (rbSeparate->isChecked()) {
+    if (ui->rbSeparate->isChecked()) {
         options.multiSequencePolicy = ImportToDatabaseOptions::SEPARATE;
-    } else if (rbMerge->isChecked()) {
+    } else if (ui->rbMerge->isChecked()) {
         options.multiSequencePolicy = ImportToDatabaseOptions::MERGE;
-        options.mergeMultiSequencePolicySeparatorSize = sbMerge->value();
-    } else if (rbMalignment->isChecked()) {
-        options.multiSequencePolicy = ImportToDatabaseOptions::MALIGNEMNT;
+        options.mergeMultiSequencePolicySeparatorSize = ui->sbMerge->value();
+    } else if (ui->rbMalignment->isChecked()) {
+        options.multiSequencePolicy = ImportToDatabaseOptions::MALIGNMENT;
     }
 
     return options;

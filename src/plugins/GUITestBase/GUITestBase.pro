@@ -23,32 +23,37 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #   Runnables / UGENE / corelibs
 #   Runnables / UGENE / corelibs / U2Gui
             src/runnables/ugene/corelibs/U2Gui/AddFolderDialogFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/CommonImportOptionsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h \
             src/runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/EditConnectionDialogFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h \
             src/runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/EditConnectionDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/ImportOptionsWidgetFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/ItemToImportEditDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h \
+
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h \
@@ -192,8 +197,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTAction.h \
             src/api/GTDoubleSpinBox.h \
             src/api/GTTableView.h  \
-            src/api/GTGraphicsItem.h \
-    src/runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h
+            src/api/GTGraphicsItem.h
 
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
@@ -218,32 +222,36 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Runnables / UGENE / corelibs
 #   Runnables / UGENE / corelibs / U2Gui
             src/runnables/ugene/corelibs/U2Gui/AddFolderDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/CommonImportOptionsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/CreateDocumentFromTextDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/EditConnectionDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/EditConnectionDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/ImportOptionsWidgetFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/ItemToImportEditDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.cpp \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.cpp \
@@ -391,5 +399,4 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTAction.cpp \
             src/api/GTDoubleSpinBox.cpp \
             src/api/GTTableView.cpp \
-            src/api/GTGraphicsItem.cpp \
-    src/runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.cpp
+            src/api/GTGraphicsItem.cpp

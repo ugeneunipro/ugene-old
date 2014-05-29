@@ -33,7 +33,7 @@ public:
     enum MultiSequencePolicy {
         SEPARATE,
         MERGE,
-        MALIGNEMNT
+        MALIGNMENT
     };
 
     bool keepFoldersStructure;

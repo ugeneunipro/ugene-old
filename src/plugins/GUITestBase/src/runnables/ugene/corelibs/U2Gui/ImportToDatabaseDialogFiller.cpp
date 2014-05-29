@@ -27,17 +27,18 @@
 #include <QtGui/QTreeWidget>
 
 #include "ImportToDatabaseDialogFiller.h"
-#include "GTUtilsDialog.h"
 #include "api/GTFileDialog.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/CommonImportOptionsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ItemToImportEditDialogFiller.h"
 
 namespace U2 {
 
-#define GT_CLASS_NAME "GTUtilsDialog::GoToDialogFiller"
+#define GT_CLASS_NAME "GTUtilsDialog::ImportToDatabaseDialogFiller"
 
 const QString ImportToDatabaseDialogFiller::Action::ACTION_DATA__ITEM = "ACTION_DATA__ITEM";
 const QString ImportToDatabaseDialogFiller::Action::ACTION_DATA__ITEMS_LIST = "ACTION_DATA__ITEMS_LIST";
@@ -194,7 +195,13 @@ void ImportToDatabaseDialogFiller::editDestinationFolder(const Action &action) {
 
 #define GT_METHOD_NAME "editGeneralOptions"
 void ImportToDatabaseDialogFiller::editGeneralOptions(const Action &action) {
-    // TODO
+    GT_CHECK(Action::EDIT_GENERAL_OPTIONS == action.type, "Invalid action type");
+
+    GTUtilsDialog::waitForDialog(os, new CommonImportOptionsDialogFiller(os, action.data));
+
+    QWidget* importButton = GTWidget::findWidget(os, "import_button");
+    GT_CHECK(NULL != importButton, "importButton is NULL");
+    GTWidget::click(os, importButton);
 }
 #undef GT_METHOD_NAME
 
@@ -203,7 +210,9 @@ void ImportToDatabaseDialogFiller::editPrivateOptions(const Action &action) {
     GT_CHECK(Action::EDIT_PRIVATE_OPTIONS == action.type, "Invalid action type");
     GT_CHECK(action.data.contains(Action::ACTION_DATA__ITEM), "Not enough parameters to perform the action");
 
+    GTUtilsDialog::waitForDialog(os, new ItemToImportEditDialogFiller(os, action.data));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Override options"));
+
     const QPoint itemCenter = getItemCenter(action.data.value(Action::ACTION_DATA__ITEM).toString());
     GTMouseDriver::moveTo(os, itemCenter);
     GTMouseDriver::click(os, Qt::RightButton);
