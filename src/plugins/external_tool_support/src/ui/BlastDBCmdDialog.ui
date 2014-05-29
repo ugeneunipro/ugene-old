@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Fetch sequence from BLAST database</string>
+   <string>Fetch Sequence from BLAST Database</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

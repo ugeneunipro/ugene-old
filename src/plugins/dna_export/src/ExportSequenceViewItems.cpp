@@ -150,7 +150,7 @@ ADVExportContext::ADVExportContext(AnnotatedDNAView* v) : view(v) {
     sequenceByDBXref = new QAction(tr("Export sequences by 'db_xref'"), this);
     connect(sequenceByDBXref, SIGNAL(triggered()), SLOT(sl_getSequenceByDBXref()));
 
-    blastResultToAlignmentAction = new QAction(tr("Export BLAST result to alignment..."), this);
+    blastResultToAlignmentAction = new QAction(tr("Export BLAST result to alignment"), this);
     connect(blastResultToAlignmentAction, SIGNAL(triggered()), SLOT(sl_exportBlastResultToAlignment()));
 
     connect( view->getAnnotationsSelection( ),

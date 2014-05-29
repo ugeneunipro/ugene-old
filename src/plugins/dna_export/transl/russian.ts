@@ -239,7 +239,7 @@
     <name>ExportBlastResultDialog</name>
     <message>
         <location filename="../src/ui/ExportBlastResultDialog.ui" line="14"/>
-        <source>Export BLAST result to multiple alignment</source>
+        <source>Export BLAST Result to Multiple Alignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

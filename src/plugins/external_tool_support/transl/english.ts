@@ -315,7 +315,7 @@ a database file</source>
     <name>BlastDBCmdDialog</name>
     <message>
         <location filename="../src/ui/BlastDBCmdDialog.ui" line="20"/>
-        <source>Fetch sequence from BLAST database</source>
+        <source>Fetch Sequence from BLAST Database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
