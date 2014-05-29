@@ -29,7 +29,7 @@ namespace U2 {
 
 class BedGraphToBigWigSetting{
 public:
-    BedGraphToBigWigSetting(): outDir(""), outName(""),inputUrl(""),blockSize(256), itemsPerSlot(1024), uncompressed(false), genomePath(""){}
+    BedGraphToBigWigSetting(): outDir(""), outName(""),inputUrl(""), genomePath(""),blockSize(256), itemsPerSlot(1024), uncompressed(false){}
 
     QString outDir;
     QString outName;

@@ -355,7 +355,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012){
     GTUtilsDialog::waitForDialog(os, new ColorDialogFiller(os, 255,0,0));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Display settings"
                                                       << "Set color"));
-    QMenu* menu = GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area_graph"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_overview_area_graph"));
 
 //    3. Go to {Display settings -> Color}.
 //    Expected state: color dialog appears.

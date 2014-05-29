@@ -59,9 +59,9 @@ void ImportFileToDatabaseTask::run() {
     CHECK_EXT(!formats.isEmpty(), setError(tr("File is not recognized")), );
 
     // TODO: use objects relations
-    DocumentProviderTask* task = NULL;
+//    DocumentProviderTask* task = NULL;
     DocumentFormat* format = formats.first().format;
-    DocumentImporter* importer = formats.first().importer;
+//    DocumentImporter* importer = formats.first().importer;
 
     const QVariantMap hints = prepareHints();
 

@@ -76,9 +76,6 @@
     </widget>
    </item>
   </layout>
-  <zorder>buttonBox</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>addToProjCheck</zorder>
  </widget>
  <resources/>
  <connections>

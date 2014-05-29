@@ -190,7 +190,7 @@ void CASAVAFilterTask::runStep(){
     algoLog.info(QString("Total by CASAVA FILTER: %1").arg(ncount + ycount));
 }
 
-QStringList CASAVAFilterTask::getParameters(U2OpStatus &os){
+QStringList CASAVAFilterTask::getParameters(U2OpStatus &/*os*/){
     QStringList res;
     return res;
 }
@@ -372,7 +372,7 @@ void QualityTrimTask::runStep(){
     algoLog.info(QString("Total by trimmer %1").arg(ncount + ycount));
 }
 
-QStringList QualityTrimTask::getParameters(U2OpStatus &os){
+QStringList QualityTrimTask::getParameters(U2OpStatus &/*os*/){
     QStringList res;
     return res;
 }

@@ -68,7 +68,6 @@ void MSAEditorConsensusCache::updateCacheItem(int pos) {
         QString errorMessage = tr("Can not update consensus chache item");
         SAFE_POINT(pos >= 0 && pos < curCacheSize, errorMessage,);
         SAFE_POINT(curCacheSize == ma.getLength(), errorMessage,);
-        const CacheItem& cci = cache[pos];
 
         CacheItem& ci = cache[pos];
         int count = 0;

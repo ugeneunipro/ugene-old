@@ -95,7 +95,7 @@ void BedGraphToBigWigTask::run(){
     resultUrl = settings.outDir + settings.outName;
 }
 
-QStringList BedGraphToBigWigTask::getParameters(U2OpStatus &os){
+QStringList BedGraphToBigWigTask::getParameters(U2OpStatus &/*os*/){
     QStringList res;
 
     res << GUrlUtils::getQuotedString(settings.inputUrl);

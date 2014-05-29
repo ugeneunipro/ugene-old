@@ -99,7 +99,7 @@ ClustalWSupportTask::~ClustalWSupportTask() {
 }
 
 void ClustalWSupportTask::prepare(){
-    SAFE_POINT_EXT(NULL != inputMsa.getAlphabet(), "The alphabet is NULL",);
+    SAFE_POINT_EXT(NULL != inputMsa.getAlphabet(), setError("The alphabet is NULL"),);
     if (inputMsa.getAlphabet()->getId() == BaseDNAAlphabetIds::RAW() ||
             inputMsa.getAlphabet()->getId() == BaseDNAAlphabetIds::AMINO_EXTENDED()) {
         setError(tr("Unsupported alphabet: %1").arg(inputMsa.getAlphabet()->getName()));

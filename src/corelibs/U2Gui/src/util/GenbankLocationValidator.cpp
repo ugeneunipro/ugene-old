@@ -39,7 +39,7 @@ seqLen(length),
 le(_le)
 {}
 
-QValidator::State GenbankLocationValidator::validate( QString &str, int &ii ) const {
+QValidator::State GenbankLocationValidator::validate( QString &str, int &/*ii*/ ) const {
     U2Location loc;
     QString parseError;
     if(isCircular){
