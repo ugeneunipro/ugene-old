@@ -65,6 +65,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -91,6 +92,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -117,6 +119,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -143,6 +146,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -169,6 +173,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -195,6 +200,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -221,6 +227,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -247,6 +254,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -273,6 +281,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -299,6 +308,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -325,6 +335,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -352,6 +363,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -379,6 +391,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -406,6 +419,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -433,6 +447,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -460,6 +475,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -486,6 +502,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -512,6 +529,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -538,6 +556,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -564,6 +583,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -590,6 +610,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -616,6 +637,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -642,6 +664,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -668,6 +691,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_2) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -694,6 +718,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -720,6 +745,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009_1) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 
@@ -746,6 +772,7 @@ GUI_TEST_CLASS_DEFINITION(test_0009_2) {
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "se1.fa"));
     GTMouseDriver::click(os, Qt::RightButton);
 
+    GTGlobals::sleep(1000);
     GTUtilsProjectTreeView::findIndex(os, "result.gb");
     GTGlobals::sleep();
 

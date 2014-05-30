@@ -39,6 +39,8 @@
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
 
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 
@@ -165,6 +167,7 @@ QList<ADVSingleSequenceWidget*> GTUtilsProject::openFileExpectSequences(U2OpStat
                                                                         const QString &fileName,
                                                                         const QList<QString> &seqNames)
 {
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
     QList<ADVSingleSequenceWidget*> result;
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
     GTFileDialog::openFile(os, path, fileName);

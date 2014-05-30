@@ -927,7 +927,7 @@ GUI_TEST_CLASS_DEFINITION(test_1252){
 //    2. Find any pattern. A new annotation document is created
     GTUtilsOptionsPanel::runFindPatternWithHotKey("TTTTTAAAAA", os);
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[a] Annotations"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
 //    3. Delete found annotations from human_t1 annotations tree
@@ -4175,7 +4175,7 @@ GUI_TEST_CLASS_DEFINITION(test_2407) {
     GTMouseDriver::click(os, Qt::RightButton);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[unloaded]10000_sequences.aln"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "10000_sequences.aln"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep(500);
 

@@ -49,10 +49,10 @@ void GTUtilsTaskTreeView::waitTaskFinished(U2OpStatus &os, long timeout){
     TaskScheduler* scheduller = AppContext::getTaskScheduler();
     int i = 0;
     while(!scheduller->getTopLevelTasks().isEmpty()){
-       GTGlobals::sleep(100);
+       GTGlobals::sleep(1000);
        i++;
-       if(i > (timeout/100)){
-           os.setError(getTasksInfo(scheduller->getTopLevelTasks(),0));
+       if(i > (timeout/1000)){
+           os.setError(os.getError() + getTasksInfo(scheduller->getTopLevelTasks(),0));
            break;
        }
     }

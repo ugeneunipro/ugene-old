@@ -185,7 +185,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1527);
     REGISTER_TEST(GUITest_regression_scenarios::test_1527_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1622);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1688);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1688, "https://ugene.unipro.ru/tracker/browse/UGENE-3047");
     REGISTER_TEST(GUITest_regression_scenarios::test_1700);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1701, "https://ugene.unipro.ru/tracker/browse/UGENE-2684");
     REGISTER_TEST(GUITest_regression_scenarios::test_1703);
@@ -197,7 +197,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1811_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1813);
     REGISTER_TEST(GUITest_regression_scenarios::test_1821);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1859);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1859, "https://ugene.unipro.ru/tracker/browse/UGENE-3023");
     REGISTER_TEST(GUITest_regression_scenarios::test_1860);
     REGISTER_TEST(GUITest_regression_scenarios::test_1865);
     REGISTER_TEST(GUITest_regression_scenarios::test_1883);
@@ -286,8 +286,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2378, "https://ugene.unipro.ru/tracker/browse/UGENE-3026");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2378_1, "https://ugene.unipro.ru/tracker/browse/UGENE-3026");
     REGISTER_TEST(GUITest_regression_scenarios::test_2379);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2382);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2382_1);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2382, "https://ugene.unipro.ru/tracker/browse/UGENE-3026");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2382_1, "https://ugene.unipro.ru/tracker/browse/UGENE-3026");
     REGISTER_TEST(GUITest_regression_scenarios::test_2392);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2401, "https://ugene.unipro.ru/tracker/browse/UGENE-3026");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2402, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
@@ -1067,9 +1067,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0001_1);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0001_2);
-    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0002);
-    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0002_1);
-    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0002_2);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0002, "https://ugene.unipro.ru/tracker/browse/UGENE-3046");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0002_1, "https://ugene.unipro.ru/tracker/browse/UGENE-3046");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0002_2, "https://ugene.unipro.ru/tracker/browse/UGENE-3046");
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0005);
@@ -1112,7 +1112,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_undo_redo::test_0009, "https://ugene.unipro.ru/tracker/browse/UGENE-3030");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_undo_redo::test_0010, "https://ugene.unipro.ru/tracker/browse/UGENE-3023");
 
-    REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0011);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_undo_redo::test_0011, "https://ugene.unipro.ru/tracker/browse/UGENE-3023");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_undo_redo::test_0011_1, "https://ugene.unipro.ru/tracker/browse/UGENE-3023");
 
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_undo_redo::test_0012, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
@@ -1168,6 +1168,15 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // common_scenarios/circular_view
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_1);
+<<<<<<< .mine
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_2);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_3);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_4);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_5);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_6);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_7);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_8);
+=======
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_2);
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_3);
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_4);
@@ -1175,6 +1184,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_6);
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_7);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_circular_view::general_avail_8, "https://ugene.unipro.ru/tracker/browse/UGENE-3041");
+>>>>>>> .r6768
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
