@@ -1168,13 +1168,13 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // common_scenarios/circular_view
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_1);
-    //REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_2);
-    //REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_3);
-    //REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_4);
-    //REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_5);
-    //REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_6);
-    //REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_7);
-    //REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_8);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_2);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_3);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_4);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_5);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_6);
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_7);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_circular_view::general_avail_8, "https://ugene.unipro.ru/tracker/browse/UGENE-3041");
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

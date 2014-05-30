@@ -65,6 +65,15 @@ public:
     static ADVSingleSequenceWidget * openFileExpectSequence(U2OpStatus &os, const QString &path, const QString &fileName,
         const QString &seqName);
 
+     /**
+     * Opens file @path\@fileName and expects a sequence with raw alphabet to be opened.
+     * Verifies that a Sequence View was opened with one sequence.
+     * Verifies that the sequence name is @seqName.
+     * Returns the sequence widget.
+     */
+    static ADVSingleSequenceWidget * openFileExpectRawSequence(U2OpStatus &os, const QString &path, const QString &fileName,
+        const QString &seqName);
+
     /**
      * Opens file @path\@fileName.
      * Verifies that a Sequence View was opened and contains sequences with the specified name @seqNames (in

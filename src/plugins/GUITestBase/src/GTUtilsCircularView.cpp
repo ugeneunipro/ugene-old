@@ -87,6 +87,13 @@ void GTUtilsCv::commonCvBtn::click(U2OpStatus& os){
     QWidget* button = GTWidget::findWidget(os, "globalToggleViewAction_widget");
     CHECK_OP_SET_ERR(os, "Error getting global CV button!");
 
+    if(!button->isVisible()){
+        QWidget* ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button", GTWidget::findWidget(os, "mwtoolbar_activemdi"), GTGlobals::FindOptions(false));
+        if(ext_button != NULL){
+            GTWidget::click(os, ext_button);
+        }
+        GTGlobals::sleep(500);
+    }
     GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
@@ -96,10 +103,11 @@ void GTUtilsCv::commonCvBtn::click(U2OpStatus& os){
 // Helper methods
 ////////////////////////////////////////////////////////////////////////
 
-#define GT_METHOD_NAME "GTUtilsCv::getCvButton"
-QAbstractButton * GTUtilsCv::getCvButton(U2OpStatus& os, ADVSingleSequenceWidget* seqWidget, bool setFailedIfNotFound) {
-    GT_CHECK_RESULT(NULL == seqWidget, "NULL sequence widget!", NULL)
-
+QAbstractButton * GTUtilsCv::getCvButton(U2OpStatus &os, ADVSingleSequenceWidget *seqWidget, bool setFailedIfNotFound) {
+    if ((NULL == seqWidget) && (!os.isCoR())) {
+        os.setError("NULL sequence widget!");
+        return NULL;
+    }
     QAbstractButton* cvButton = GTAction::button(os, actionName, seqWidget, GTGlobals::FindOptions(setFailedIfNotFound));
     return cvButton;
 }

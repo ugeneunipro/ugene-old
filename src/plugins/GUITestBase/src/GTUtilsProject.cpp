@@ -31,6 +31,9 @@
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "api/GTWidget.h"
 
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
+
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
@@ -144,6 +147,18 @@ ADVSingleSequenceWidget * GTUtilsProject::openFileExpectSequence(U2OpStatus &os,
 #undef GT_METHOD_NAME
 
 
+#define GT_METHOD_NAME "openFileExpectRawSequence"
+ADVSingleSequenceWidget * GTUtilsProject::openFileExpectRawSequence(U2OpStatus &os,
+                                                                 const QString &path,
+                                                                 const QString &fileName,
+                                                                 const QString &seqName)
+{
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    return openFileExpectSequence(os, path, fileName, seqName);
+}
+#undef GT_METHOD_NAME
+
+
 #define GT_METHOD_NAME "openFileExpectSequences"
 QList<ADVSingleSequenceWidget*> GTUtilsProject::openFileExpectSequences(U2OpStatus &os,
                                                                         const QString &path,
@@ -151,6 +166,7 @@ QList<ADVSingleSequenceWidget*> GTUtilsProject::openFileExpectSequences(U2OpStat
                                                                         const QList<QString> &seqNames)
 {
     QList<ADVSingleSequenceWidget*> result;
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
     GTFileDialog::openFile(os, path, fileName);
     GT_CHECK_OP_RESULT(os, "Error opening file!", QList<ADVSingleSequenceWidget*>());
 

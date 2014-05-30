@@ -31,13 +31,13 @@ namespace GUITest_common_scenarios_circular_view {
 #define GUI_TEST_PREFIX "GUITest_common_scenarios_circular_view_"
 
 GUI_TEST_CLASS_DECLARATION(general_avail_1)
-//GUI_TEST_CLASS_DECLARATION(general_avail_2)
-//GUI_TEST_CLASS_DECLARATION(general_avail_3)
-//GUI_TEST_CLASS_DECLARATION(general_avail_4)
-//GUI_TEST_CLASS_DECLARATION(general_avail_5)
-//GUI_TEST_CLASS_DECLARATION(general_avail_6)
-//GUI_TEST_CLASS_DECLARATION(general_avail_7)
-//GUI_TEST_CLASS_DECLARATION(general_avail_8)
+GUI_TEST_CLASS_DECLARATION(general_avail_2)
+GUI_TEST_CLASS_DECLARATION(general_avail_3)
+GUI_TEST_CLASS_DECLARATION(general_avail_4)
+GUI_TEST_CLASS_DECLARATION(general_avail_5)
+GUI_TEST_CLASS_DECLARATION(general_avail_6)
+GUI_TEST_CLASS_DECLARATION(general_avail_7)
+GUI_TEST_CLASS_DECLARATION(general_avail_8)
 
 #undef GUI_TEST_PREFIX
 
