@@ -320,6 +320,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/gobjects/BioStruct3DObject.cpp \
            src/gobjects/DNAChromatogramObject.cpp \
            src/gobjects/DNASequenceObject.cpp \
+           src/gobjects/GObjectRelationRoles.cpp \
            src/gobjects/GObjectTypes.cpp \
            src/gobjects/GObjectUtils.cpp \
            src/gobjects/MAlignmentObject.cpp \

@@ -373,15 +373,18 @@ QDataStream &operator>>(QDataStream &in, GObjectReference &myObj) {
 }
 
 QDataStream &operator<<(QDataStream &out, const GObjectRelation &myObj) {
-    out << myObj.ref << myObj.role;
+    QString data; // for compatibility
+    out << myObj.ref << GObjectRelationRoleCompatibility::toString(myObj.role) << data;
     return out;
 }
 
 QDataStream &operator>>(QDataStream &in, GObjectRelation &myObj) {
+    QString roleString;
+    QString data; // for compatibility
     in >> myObj.ref;
-    int role = 0;
-    in >> role;
-    myObj.role = static_cast<GObjectRelationRole>(role);
+    in >> roleString;
+    in >> data;
+    myObj.role = GObjectRelationRoleCompatibility::fromString(roleString);
     return in;
 }
 
