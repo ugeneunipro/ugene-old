@@ -47,7 +47,7 @@ public:
     QStringList getSkippedObjectNames() const;
 
 private:
-    QList<GObject*> getImportedObjects() const;
+    QMap<GObject*, GObject*> getImportedObjects() const;
     void propagateObjectsRelations(QStringList &errors) const;
     static GObject* getAppropriateObject(const QList<GObject*> objects, const GObject* pattern);
 

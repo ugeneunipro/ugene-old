@@ -35,8 +35,8 @@ class U2CORE_EXPORT GObjectReference {
 public:
     GObjectReference(){}
 
-    GObjectReference(const QString& _docUrl, const QString& _objName, const GObjectType& _type) 
-        : docUrl(_docUrl), objName(_objName), objType(_type){}
+    GObjectReference(const QString& _docUrl, const QString& _objName, const GObjectType& _type, const U2EntityRef& _entityRef = U2EntityRef())
+        : docUrl(_docUrl), objName(_objName), entityRef(_entityRef), objType(_type) {}
 
     GObjectReference(const GObject* obj, bool deriveLoadedType = true);
 
@@ -53,7 +53,9 @@ public:
     /** The name of the object */
     QString         objName;
 
-    /** Object reference to DB */
+    /** Object reference to DB
+     *  It can be empty
+     */
     U2EntityRef     entityRef;
 
     /** The type of the object */

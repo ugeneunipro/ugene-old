@@ -71,7 +71,7 @@ Document *ImportDocumentToDatabaseTask::getSourceDocument() const {
 
 QStringList ImportDocumentToDatabaseTask::getImportedObjectNames() const {
     QStringList result;
-    const QList<GObject*> objects = getImportedObjects();
+    const QMap<GObject *, GObject *> objects = getImportedObjects();
     foreach (GObject* object, objects) {
         result << object->getGObjectName();
     }
@@ -96,15 +96,16 @@ QStringList ImportDocumentToDatabaseTask::getSkippedObjectNames() const {
     return result;
 }
 
-QList<GObject *> ImportDocumentToDatabaseTask::getImportedObjects() const {
-    QList<GObject*> objects;
+QMap<GObject *, GObject *> ImportDocumentToDatabaseTask::getImportedObjects() const {
+    QMap<GObject *, GObject *> objects;
     foreach (Task* subtask, getSubtasks()) {
         if (!subtask->isCanceled() && !subtask->hasError()) {
             ImportObjectToDatabaseTask* importObjectTask = qobject_cast<ImportObjectToDatabaseTask*>(subtask);
             if (NULL != importObjectTask) {
-                GObject* object = importObjectTask->getDestinationObject();
-                if (NULL != object) {
-                    objects << object;
+                GObject* srcObject = importObjectTask->getSourceObject();
+                GObject* dstObject = importObjectTask->getDestinationObject();
+                if (NULL != srcObject && NULL != dstObject) {
+                    objects.insert(srcObject, dstObject);
                 }
             }
         }
@@ -114,16 +115,11 @@ QList<GObject *> ImportDocumentToDatabaseTask::getImportedObjects() const {
 }
 
 void ImportDocumentToDatabaseTask::propagateObjectsRelations(QStringList& errors) const {
-    const QList<GObject*> srcObjects = document->getObjects();
-    const QList<GObject*> dstObjects = getImportedObjects();
+    const QMap<GObject *, GObject *> objects = getImportedObjects();
     const QString srcDocUrl = document->getURLString();
 
-    foreach(GObject* srcObject, srcObjects) {
-        GObject* dstObject = getAppropriateObject(dstObjects, srcObject);
-        if (NULL == dstObject) {
-            errors << tr("Can't find the appropriate imported object: %1; relation won't be set").arg(srcObject->getGObjectName());
-            continue;
-        }
+    foreach(GObject* srcObject, objects.keys()) {
+        GObject* dstObject = objects.value(srcObject);
 
         QList<GObjectRelation> relations = srcObject->getObjectRelations();
         foreach (const GObjectRelation& relation, relations) {
@@ -132,13 +128,21 @@ void ImportDocumentToDatabaseTask::propagateObjectsRelations(QStringList& errors
                 continue;
             }
 
-            GObject* srcRelationTargetObject = document->findGObjectByName(relation.ref.objName);
+            GObject* srcRelationTargetObject = document->getObjectById(relation.ref.entityRef.entityId);
             if (NULL == srcRelationTargetObject) {
                 errors << tr("Can't set object relation: target object is not found in the source document (%1)").arg(relation.ref.objName);
                 continue;
             }
+            if (!objects.keys().contains(srcRelationTargetObject)) {
+                errors << tr("Can't set object relation: target object is not imported (%1)").arg(srcRelationTargetObject->getGObjectName());
+                continue;
+            }
 
-            GObjectReference dstReference(U2DbiUtils::ref2Url(dstDbiRef), srcRelationTargetObject->getGObjectName(), srcRelationTargetObject->getGObjectType());
+            GObject* dstRelationTargetObject = objects.value(srcRelationTargetObject);
+            GObjectReference dstReference(U2DbiUtils::ref2Url(dstDbiRef),
+                                          dstRelationTargetObject->getGObjectName(),
+                                          dstRelationTargetObject->getGObjectType(),
+                                          dstRelationTargetObject->getEntityRef());
             GObjectRelation dstRelation(dstReference, relation.role);
             dstObject->addObjectRelation(dstRelation);
         }
