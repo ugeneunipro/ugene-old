@@ -310,6 +310,8 @@ public:
     bool getUseDotsCheckedState(){return useDotsAction->isChecked();}
 
     void onVisibleRangeChanged();
+
+    bool isAlignmentLocked();
 signals:
     void si_startChanged(const QPoint& p, const QPoint& prev);
     void si_selectionChanged(const MSAEditorSelection& current, const MSAEditorSelection& prev);

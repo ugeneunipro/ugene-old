@@ -242,18 +242,6 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
                 MAlignmentObject* alObj = dynamic_cast<MAlignmentObject*>(obj);
                 SAFE_POINT(NULL != alObj, "Failed to convert GObject to MAlignmentObject during applying ClustalW results!", res);
 
-                if(!lock.isNull()) {
-                    if(alObj->isStateLocked()) {
-                        alObj->unlockState(lock);
-                    }
-                    delete lock;
-                    lock = NULL;
-                }
-                else {
-                    stateInfo.setError("MAlignment object has been changed");
-                    return res;
-                }
-                
                 QList<qint64> rowsOrder = MSAUtils::compareRowsAfterAlignment(inputMsa, resultMA, stateInfo);
                 CHECK_OP(stateInfo, res);
 
@@ -271,6 +259,18 @@ QList<Task*> ClustalWSupportTask::onSubTaskFinished(Task* subTask) {
 
                 // Save data to the database
                 {
+                    if(!lock.isNull()) {
+                        if(alObj->isStateLocked()) {
+                            alObj->unlockState(lock);
+                        }
+                        delete lock;
+                        lock = NULL;
+                    }
+                    else {
+                        stateInfo.setError("MAlignment object has been changed");
+                        return res;
+                    }
+
                     U2OpStatus2Log os;
                     U2UseCommonUserModStep userModStep(alObj->getEntityRef(), os);
                     if (os.hasError()) {

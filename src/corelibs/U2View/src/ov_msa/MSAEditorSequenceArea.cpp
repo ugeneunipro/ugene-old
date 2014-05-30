@@ -868,6 +868,11 @@ void MSAEditorSequenceArea::onVisibleRangeChanged() {
     emit si_visibleRangeChanged(visibleSeqs, getHeight());
 }
 
+bool MSAEditorSequenceArea::isAlignmentLocked() {
+    MAlignmentObject* obj = editor->getMSAObject();
+    SAFE_POINT(NULL != obj, "Alignment object is not available", true);
+    return obj->isStateLocked();
+}
 
 int MSAEditorSequenceArea::countWidthForBases(bool countClipped, bool forOffset) const {
     int seqAreaWidth = width();
@@ -1108,11 +1113,11 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
         const int shift = ( !shiftingWasPerformed )
             ? newCurPos.x( ) - ui->seqArea->getSelection( ).getRect( ).center( ).x( )
             : newCurPos.x( ) - cursorPos.x( );
-        if ( 0 != shift ) {
+        if ( 0 != shift && !isAlignmentLocked()) {
             U2OpStatus2Log os;
             U2UseCommonUserModStep userModStep( editor->getMSAObject( )->getEntityRef( ), os );
             Q_UNUSED(userModStep);
-            shiftSelectedRegion( shift );
+            shiftSelectedRegion(shift);
         }
         emit si_stopMSAChanging(true);
     } else if ( Qt::LeftButton == e->button( ) ) {
@@ -1144,13 +1149,12 @@ void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
             setCursorPos(p);
 
             const MSAEditorSelection &s = ui->seqArea->getSelection( );
-            if ( s.getRect().contains(cursorPos) ) {
+            if ( s.getRect().contains(cursorPos) && !isAlignmentLocked()) {
                 shifting = true;
                 U2OpStatus2Log os;
                 changeTracker.startTracking( os );
                 CHECK_OP( os, );
                 editor->getMSAObject()->saveState();
-
                 emit si_startMSAChanging();
             }
         }
@@ -1357,11 +1361,13 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
             }
             break;
         case Qt::Key_Delete:
-            if (shift) {
-                sl_delCol();
-            } else {
-                deleteCurrentSelection();
-                emit si_startMSAChanging();
+            if(!isAlignmentLocked()) {
+                if (shift) {
+                    sl_delCol();
+                } else {
+                    deleteCurrentSelection();
+                    emit si_startMSAChanging();
+                }
             }
             break;
         case Qt::Key_Backspace:
@@ -1370,8 +1376,10 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
         case Qt::Key_Insert:
         case Qt::Key_Space:
             // We can't use Command+Space on Mac OS X - it is reserved
-            insertGapsBeforeSelection( genuineCtrl ? 1 : -1 );
-            emit si_startMSAChanging();
+            if(!isAlignmentLocked()) {
+                insertGapsBeforeSelection( genuineCtrl ? 1 : -1 );
+                emit si_startMSAChanging();
+            }
             break;
         case Qt::Key_Shift:
             if (!selection.isNull()) {
@@ -1387,7 +1395,7 @@ void MSAEditorSequenceArea::keyPressEvent(QKeyEvent *e) {
 }
 
 void MSAEditorSequenceArea::keyReleaseEvent(QKeyEvent *ke) {
-    if ( (ke->key() == Qt::Key_Space || ke->key() == Qt::Key_Delete )
+    if ( ((ke->key() == Qt::Key_Space || ke->key() == Qt::Key_Delete) && !isAlignmentLocked() )
             && (!ke->isAutoRepeat()) ){
         emit si_stopMSAChanging(true);
     }
@@ -1802,9 +1810,11 @@ void MSAEditorSequenceArea::sl_delCol() {
 }
 
 void MSAEditorSequenceArea::sl_fillCurrentSelectionWithGaps() {
-    emit si_startMSAChanging();
-    insertGapsBeforeSelection();
-    emit si_stopMSAChanging(true);
+    if(!isAlignmentLocked()) {
+        emit si_startMSAChanging();
+        insertGapsBeforeSelection();
+        emit si_stopMSAChanging(true);
+    }
 }
 
 void MSAEditorSequenceArea::sl_goto() {

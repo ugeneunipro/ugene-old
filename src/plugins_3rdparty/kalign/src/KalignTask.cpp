@@ -172,15 +172,6 @@ void KalignGObjectTask::prepare() {
 }
 
 Task::ReportResult KalignGObjectTask::report() {
-    if (!lock.isNull()) {
-        obj->unlockState(lock);
-        delete lock;
-        lock = NULL;
-    }
-    else {
-        stateInfo.setError("MAlignment object has been changed");
-        return ReportResult_Finished;
-    }
     propagateSubtaskError();
     CHECK_OP(stateInfo, ReportResult_Finished);
     
@@ -208,6 +199,16 @@ Task::ReportResult KalignGObjectTask::report() {
 
     // Save data to the database
     {
+        if (!lock.isNull()) {
+            obj->unlockState(lock);
+            delete lock;
+            lock = NULL;
+        }
+        else {
+            stateInfo.setError("MAlignment object has been changed");
+            return ReportResult_Finished;
+        }
+
         U2OpStatus2Log os;
         U2UseCommonUserModStep userModStep(obj->getEntityRef(), os);
         if (os.hasError()) {
