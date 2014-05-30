@@ -44,6 +44,7 @@ ExportConsensusVariationsDialog::ExportConsensusVariationsDialog(QWidget *p, con
     : QDialog(p), settings(settings_)
 {
     setupUi(this);
+    setWindowTitle(tr("Export Consensus Variations"));
     new HelpButton(this, buttonBox, "4227548");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
@@ -59,7 +60,7 @@ ExportConsensusVariationsDialog::ExportConsensusVariationsDialog(QWidget *p, con
     conf.fileNameEdit = filepathLineEdit;
     conf.formatCombo = documentFormatComboBox;
     conf.parentWidget = this;
-    conf.saveTitle = tr("Export consensus variations");
+    conf.saveTitle = tr("Export Consensus Variations");
     conf.defaultFileName = settings.fileName;
     saveController = new SaveDocumentGroupController(conf, this);
 
