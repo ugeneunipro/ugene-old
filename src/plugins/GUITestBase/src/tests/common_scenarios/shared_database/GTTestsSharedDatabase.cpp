@@ -463,7 +463,7 @@ GUI_TEST_CLASS_DEFINITION(proj_test_0001) {
     CHECK_OP(os, );
     CHECK_SET_ERR(1 == model->rowCount(dir2Item), "Wrong child count");
 
-    QModelIndex obj = GTUtilsProjectTreeView::findIndex(os, "[s] pt0001_human_T1");
+    QModelIndex obj = GTUtilsProjectTreeView::findIndex(os, "pt0001_human_T1");
     CHECK_OP(os, );
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
@@ -553,7 +553,7 @@ GUI_TEST_CLASS_DEFINITION(proj_test_0004) {
 
     const QModelIndex dirItem1 = GTUtilsProjectTreeView::findIndex(os, "pt0004_dir1");
     const QModelIndex dirItem2 = GTUtilsProjectTreeView::findIndex(os, "pt0004_dir2");
-    const QModelIndex objItem = GTUtilsProjectTreeView::findIndex(os, "[s] pt0004_human_T1");
+    const QModelIndex objItem = GTUtilsProjectTreeView::findIndex(os, "pt0004_human_T1");
     CHECK_SET_ERR(treeView->isExpanded(dirItem2), "The folder item has not expanded after double click");
 
     GTUtilsProjectTreeView::dragAndDrop(os, objItem, dirItem1);
@@ -584,8 +584,8 @@ GUI_TEST_CLASS_DEFINITION(proj_test_0005) {
         const QModelIndex dirItem1 = GTUtilsProjectTreeView::findIndex(os, "pt0005_dir1");
         const QModelIndex dirItem2 = GTUtilsProjectTreeView::findIndex(os, "pt0005_dir2");
         const QModelIndex dirItem3 = GTUtilsProjectTreeView::findIndex(os, "pt0005_dir3");
-        const QModelIndex objItem1 = GTUtilsProjectTreeView::findIndex(os, "[s] pt0005_human_T1");
-        const QModelIndex objItem2 = GTUtilsProjectTreeView::findIndex(os, "[m] pt0005_COI");
+        const QModelIndex objItem1 = GTUtilsProjectTreeView::findIndex(os, "pt0005_human_T1");
+        const QModelIndex objItem2 = GTUtilsProjectTreeView::findIndex(os, "pt0005_COI");
 
         CHECK_SET_ERR(treeView->isExpanded(dirItem2), "The folder 2 item has not expanded after double click");
         CHECK_SET_ERR(treeView->isExpanded(dirItem3), "The folder 3 item has not expanded after double click");
@@ -596,8 +596,8 @@ GUI_TEST_CLASS_DEFINITION(proj_test_0005) {
     const QModelIndex dirItem1 = GTUtilsProjectTreeView::findIndex(os, "pt0005_dir1");
     const QModelIndex dirItem2 = GTUtilsProjectTreeView::findIndex(os, "pt0005_dir2");
     const QModelIndex dirItem3 = GTUtilsProjectTreeView::findIndex(os, "pt0005_dir3");
-    const QModelIndex objItem1 = GTUtilsProjectTreeView::findIndex(os, "[s] pt0005_human_T1");
-    const QModelIndex objItem2 = GTUtilsProjectTreeView::findIndex(os, "[m] pt0005_COI");
+    const QModelIndex objItem1 = GTUtilsProjectTreeView::findIndex(os, "pt0005_human_T1");
+    const QModelIndex objItem2 = GTUtilsProjectTreeView::findIndex(os, "pt0005_COI");
     CHECK_SET_ERR(4 == model->rowCount(dirItem1), "Invalid child item count 1");
     CHECK_SET_ERR(0 == model->rowCount(dirItem2), "Invalid child item count 2");
     CHECK_SET_ERR(0 == model->rowCount(dirItem3), "Invalid child item count 3");
@@ -638,7 +638,7 @@ GUI_TEST_CLASS_DEFINITION(proj_test_0006) {
     const QModelIndex dirItem = GTUtilsProjectTreeView::findIndex(os, "proj_test_0006");
     const QModelIndex dirItem1 = GTUtilsProjectTreeView::findIndex(os, "pt0006_dir1");
     const QModelIndex dirItem2 = GTUtilsProjectTreeView::findIndex(os, "pt0006_dir2");
-    const QModelIndex objItem = GTUtilsProjectTreeView::findIndex(os, "[s] pt0006_human_T1");
+    const QModelIndex objItem = GTUtilsProjectTreeView::findIndex(os, "pt0006_human_T1");
     CHECK_SET_ERR(2 == model->rowCount(dirItem), "Invalid child item count 1");
     CHECK_SET_ERR(0 == model->rowCount(dirItem1), "Invalid child item count 2");
     CHECK_SET_ERR(1 == model->rowCount(dirItem2), "Invalid child item count 3");
@@ -697,7 +697,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0001) {
     const QString newFolderName = "import_test_0001";
     const QString newFolderPath = parentFolderPath + U2ObjectDbi::PATH_SEP + newFolderName;
     const QString fileDocName = "human_T1.fa";
-    const QString fileObjectName = "[s] human_T1 (UCSC April 2002 chr7:115977709-117855134)";
+    const QString fileObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
     const QString importedObjectPath = newFolderPath + U2ObjectDbi::PATH_SEP + fileObjectName;
 
     const QString connectionName = connectToTestDatabase(os);
@@ -739,7 +739,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0002) {
     const QString newFolderName = "import_test_0002";
     const QString newFolderPath = parentFolderPath + U2ObjectDbi::PATH_SEP + newFolderName;
     const QString fileDocName = "human_T1.fa";
-    const QString fileObjectName = "[s] human_T1 (UCSC April 2002 chr7:115977709-117855134)";
+    const QString fileObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
     const QString importedDocFolderPath = newFolderPath + U2ObjectDbi::PATH_SEP + fileDocName;
     const QString importedObjectPath = importedDocFolderPath + U2ObjectDbi::PATH_SEP + fileObjectName;
 
@@ -795,7 +795,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
     const QString folderPath = parentFolderPath + U2ObjectDbi::PATH_SEP + folderName;
     const QString fileDocName = "murine.gb";
     const QString sequenceObjectName = "[s] NC_001363";
-    const QString annotationObjectName = "[a] NC_001363 features";
+    const QString annotationObjectName = "NC_001363 features";
     const QString annotationTableName = "NC_001363 features [%1]";
     const QString databaseSequenceObjectPath = folderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
     const QString databaseAnnotationObjectPath = folderPath + U2ObjectDbi::PATH_SEP + annotationObjectName;
@@ -1165,8 +1165,8 @@ GUI_TEST_CLASS_DEFINITION(del_test_0001) {
     const QModelIndex rbItem = GTUtilsProjectTreeView::findIndex(os, "Recycle bin");
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, rbItem));
     GTMouseDriver::doubleClick(os);
-    GTUtilsProjectTreeView::findIndex(os, "[s] dt0001_human_T1", GTGlobals::FindOptions(false));
-    const QModelIndex objItem = GTUtilsProjectTreeView::findIndex(os, "[s] dt0001_human_T1");
+    GTUtilsProjectTreeView::findIndex(os, "dt0001_human_T1", GTGlobals::FindOptions(false));
+    const QModelIndex objItem = GTUtilsProjectTreeView::findIndex(os, "dt0001_human_T1");
     CHECK_SET_ERR(rbItem == objItem.parent(), "Object is not in Recycle bin");
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
