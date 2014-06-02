@@ -314,7 +314,7 @@ QString GTUtilsProjectTreeView::getSelectedItem(U2OpStatus &os)
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "getSelectedItem"
+#define GT_METHOD_NAME "getFont"
 QFont GTUtilsProjectTreeView::getFont(U2OpStatus &os, QModelIndex index){
     QTreeView* treeView = getTreeView(os);
     QAbstractItemModel* model = treeView->model();
@@ -322,6 +322,16 @@ QFont GTUtilsProjectTreeView::getFont(U2OpStatus &os, QModelIndex index){
     return result;
 }
 #undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getIcon"
+QIcon GTUtilsProjectTreeView::getIcon(U2OpStatus &os, QModelIndex index){
+    QTreeView* treeView = getTreeView(os);
+    QAbstractItemModel* model = treeView->model();
+    QIcon result = qvariant_cast<QIcon>(model->data(index, Qt::DecorationRole));
+    return result;
+}
+#undef GT_METHOD_NAME
+
 
 #define GT_METHOD_NAME "itemModificationCheck"
 void GTUtilsProjectTreeView::itemModificationCheck(U2OpStatus &os, QModelIndex index, bool modified ){

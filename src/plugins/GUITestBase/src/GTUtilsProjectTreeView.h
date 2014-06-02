@@ -75,6 +75,7 @@ public:
     static QString getSelectedItem(U2OpStatus &os);
 
     static QFont getFont(U2OpStatus &os, QModelIndex index);
+    static QIcon getIcon(U2OpStatus &os, QModelIndex index);
 
     //TODO: rewrite
     static QString getProjectTreeItemName(/*ProjViewItem* projViewItem*/);

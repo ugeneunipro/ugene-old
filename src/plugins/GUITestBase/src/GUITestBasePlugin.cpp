@@ -240,7 +240,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2124);
     REGISTER_TEST(GUITest_regression_scenarios::test_2128);
     REGISTER_TEST(GUITest_regression_scenarios::test_2128_1);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2138);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2138, "https://ugene.unipro.ru/tracker/browse/UGENE-2975");
     REGISTER_TEST_NOT_FOR_MAC(GUITest_regression_scenarios::test_2140);
     //REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2150, "task tree view cant be tested");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2152, "https://ugene.unipro.ru/tracker/browse/UGENE-3023 https://ugene.unipro.ru/tracker/browse/UGENE-2958");

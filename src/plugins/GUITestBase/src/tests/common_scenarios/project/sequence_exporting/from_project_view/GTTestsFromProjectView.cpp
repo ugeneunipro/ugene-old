@@ -94,8 +94,11 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
     GTGlobals::sleep(5000);
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
+    QModelIndex parent = GTUtilsProjectTreeView::findIndex(os, "1.gb");
+    QModelIndex child = GTUtilsProjectTreeView::findIndex(os, "NC_001363 sequence", parent);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os,child));
     GTMouseDriver::click(os, Qt::RightButton);
+
 
     GTGlobals::sleep(3000);
 // Expected state: sequence view NC_001363 sequence has been opened, with sequence same as in 1.gb document

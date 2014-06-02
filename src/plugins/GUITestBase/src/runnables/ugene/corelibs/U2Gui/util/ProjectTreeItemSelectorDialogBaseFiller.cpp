@@ -21,7 +21,7 @@
 
 #include "ProjectTreeItemSelectorDialogBaseFiller.h"
 #include "api/GTWidget.h"
-#include "api/GTTreeWidget.h"
+#include "api/GTTreeView.h"
 #include "api/GTMouseDriver.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -45,14 +45,13 @@ void ProjectTreeItemSelectorDialogBaseChecker::run(){
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL, "dialog not found");
 
-    QTreeWidget* treeWidget = dialog->findChild<QTreeWidget*>("treeWidget");
-    GT_CHECK(treeWidget != NULL, "treeWidget is NULL");
+    QTreeView* treeView = dialog->findChild<QTreeView*>();
+    GT_CHECK(treeView != NULL, "treeWidget is NULL");
 
-    QList<QTreeWidgetItem*> foundItems = treeWidget->findItems(checkName, Qt::MatchRecursive);
-    GT_CHECK(foundItems.size() > 0, "Can't find item <" + checkName + "> in tree widget");
-
-    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, foundItems[0]));
+    QModelIndex index = GTTreeView::findIndex(os, treeView, checkName);
+    GTMouseDriver::moveTo(os, GTTreeView::getItemCenter(os, treeView, index));
     GTMouseDriver::click(os);
+
 
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
     GT_CHECK(box != NULL, "buttonBox is NULL");

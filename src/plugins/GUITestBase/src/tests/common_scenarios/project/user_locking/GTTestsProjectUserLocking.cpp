@@ -204,15 +204,21 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTUtilsDocument::checkDocument(os, "1.gb", AnnotatedDNAViewFactory::ID);
 
     QModelIndex item = GTUtilsProjectTreeView::findIndex(os, "1.gb");
-    QIcon icon = qvariant_cast<QIcon>(item.data(Qt::DecorationRole));
-    CHECK_SET_ERR(icon.cacheKey() == documentIcon.cacheKey(), "Icon is locked");
+    QIcon icon = GTUtilsProjectTreeView::getIcon(os, item);
+
+
+    QImage foundImage = icon.pixmap(32,32).toImage();
+    QImage expectedImage = documentIcon.pixmap(32,32).toImage();
+    CHECK_SET_ERR(expectedImage == foundImage, "Icon is locked");
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< ACTION_PROJECT__EDIT_MENU << ACTION_DOCUMENT__LOCK));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
 
-    icon = qvariant_cast<QIcon>(item.data(Qt::DecorationRole));
-    CHECK_SET_ERR(icon.cacheKey() == roDocumentIcon.cacheKey(), "Icon is unlocked");
+    icon = GTUtilsProjectTreeView::getIcon(os, item);
+    foundImage = icon.pixmap(32,32).toImage();
+    expectedImage = roDocumentIcon.pixmap(32,32).toImage();
+    CHECK_SET_ERR(expectedImage == foundImage, "Icon is unlocked");
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2"));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
@@ -225,8 +231,10 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     item = GTUtilsProjectTreeView::findIndex(os, "1.gb");
-    icon = qvariant_cast<QIcon>(item.data(Qt::DecorationRole));
-    CHECK_SET_ERR(icon.cacheKey() == roDocumentIcon.cacheKey(), "Icon is unlocked");
+    icon = GTUtilsProjectTreeView::getIcon(os, item);
+    foundImage = icon.pixmap(32,32).toImage();
+    expectedImage = roDocumentIcon.pixmap(32,32).toImage();
+    CHECK_SET_ERR(expectedImage == foundImage, "Icon is unlocked");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {

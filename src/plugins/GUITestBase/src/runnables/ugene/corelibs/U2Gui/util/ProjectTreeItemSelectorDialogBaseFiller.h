@@ -23,10 +23,11 @@
 #define _U2_GT_RUNNABLES_ProjectTreeItemSelectorDialogBase_FILLER_H_
 
 #include "GTUtilsDialog.h"
+#include "GTUtilsProjectTreeView.h"
 
 namespace U2 {
 
-class ProjectTreeItemSelectorDialogBaseChecker : public Filler {
+class ProjectTreeItemSelectorDialogBaseChecker : public Filler{
 public:
     ProjectTreeItemSelectorDialogBaseChecker(U2OpStatus &_os, const QString& _checkName) : Filler(_os, "ProjectTreeItemSelectorDialogBase"), checkName(_checkName){}
     virtual void run();
