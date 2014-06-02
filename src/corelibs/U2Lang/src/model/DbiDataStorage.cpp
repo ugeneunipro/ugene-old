@@ -33,6 +33,7 @@
 #include <U2Core/TextObject.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2FeatureDbi.h>
+#include <U2Core/U2FeatureUtils.h>
 #include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2RawData.h>
@@ -57,6 +58,7 @@ DbiDataStorage::DbiDataStorage()
 DbiDataStorage::~DbiDataStorage() {
     foreach (const U2DbiId &id, connections.keys()) {
         DbiConnection *connection = connections[id];
+        U2FeatureUtils::cleanupAnnotationCache(connection->dbi->getDbiRef());
         delete connection;
     }
     foreach (const U2DbiId &dbiId, dbiList.keys()) {
@@ -72,7 +74,7 @@ DbiDataStorage::~DbiDataStorage() {
 
 bool DbiDataStorage::init() {
     U2OpStatusImpl os;
-    dbiHandle = new TmpDbiHandle(WORKFLOW_SESSION_TMP_DBI_ALIAS, os, MYSQL_DBI_ID);
+    dbiHandle = new TmpDbiHandle(WORKFLOW_SESSION_TMP_DBI_ALIAS, os);
     CHECK_OP(os, false);
 
     QScopedPointer<DbiConnection> connection(new DbiConnection(dbiHandle->getDbiRef(), os));
@@ -170,6 +172,7 @@ SharedDbiDataHandler DbiDataStorage::putAnnotationTable( const QList<AnnotationD
 
     AnnotationTableObject obj( "Annotations", dbiHandle->getDbiRef( ) );
     obj.addAnnotations( anns );
+    obj.ref( );
 
     U2EntityRef ent = obj.getEntityRef( );
 

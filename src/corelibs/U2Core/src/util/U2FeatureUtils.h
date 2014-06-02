@@ -24,6 +24,7 @@
 
 #include <U2Core/Annotation.h>
 #include <U2Core/AnnotationData.h>
+#include <U2Core/AnnotationDataCache.h>
 #include <U2Core/U2Feature.h>
 #include <U2Core/U2Location.h>
 
@@ -214,6 +215,18 @@ public:
     static void                     updateFeatureKeys( const U2DataId &featureId,
                                         U2FeatureDbi *dbi, const QList<U2FeatureKey> &newKeys,
                                         U2OpStatus &op );
+    /**
+     * Increments reference count for an annotation table object
+     */
+    static void                     refAnnotationTable( const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus &op );
+    /**
+     * Decrements reference count for an annotation table object
+     */
+    static void                     derefAnnotationTable( const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus &op );
+    /**
+     * Releases annotation cache associated with the database identified by @dbiRef
+     */
+    static void                     cleanupAnnotationCache( const U2DbiRef &dbiRef );
 
 private:
     /**
@@ -239,6 +252,12 @@ private:
 
     static bool                     keyExists( const U2DataId &featureId, const QString &keyName,
                                         const U2DbiRef &dbiRef, U2OpStatus &os );
+    /**
+     * Fetches all annotations according to passed @rootId and puts them into cache
+     */
+    static void                     loadAnnotationTable( const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus &op );
+
+    static DbiAnnotationCache       dbiAnnotationCache;
 };
 
 } // namespace U2

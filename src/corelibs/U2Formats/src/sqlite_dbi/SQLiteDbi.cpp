@@ -32,7 +32,6 @@
 #include "SQLiteSNPTablesDbi.h"
 #include "SQLiteKnownMutationsDbi.h"
 #include "SQLiteUdrDbi.h"
-#include "../caching_dbi/CachingFeatureDbi.h"
 
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SqlHelpers.h>
@@ -47,7 +46,7 @@
 namespace U2 {
 
 SQLiteDbi::SQLiteDbi()
-    : U2AbstractDbi (SQLiteDbiFactory::ID), cachingFeatureDbi( NULL )
+    : U2AbstractDbi (SQLiteDbiFactory::ID)
 {
     db = new DbRef();
     objectDbi = new SQLiteObjectDbi(this);
@@ -68,8 +67,6 @@ SQLiteDbi::SQLiteDbi()
 
 SQLiteDbi::~SQLiteDbi() {
     SAFE_POINT( NULL == db->handle, "Invalid DB handle detected!", );
-
-    disableCaching( );
 
     delete udrDbi;
     delete objectDbi;
@@ -120,9 +117,7 @@ U2VariantDbi* SQLiteDbi::getVariantDbi() {
 }
 
 U2FeatureDbi * SQLiteDbi::getFeatureDbi( ) {
-    return features.contains( U2DbiFeature_CacheFeatures )
-        ? static_cast<U2FeatureDbi *>( cachingFeatureDbi )
-        : featureDbi;
+    return featureDbi;
 }
 
 U2ModDbi* SQLiteDbi::getModDbi() {
@@ -282,20 +277,6 @@ void SQLiteDbi::upgrade(U2OpStatus &os) {
     setVersionProperties(Version::minVersionForSQLite(), os);
 }
 
-void SQLiteDbi::enableCaching( ) {
-    if ( features.contains( U2DbiFeature_CacheFeatures ) ) {
-        SAFE_POINT(NULL == cachingFeatureDbi, "Attempting to recreate Caching Feature DBI!", );
-        cachingFeatureDbi = new CachingFeatureDbi( featureDbi );
-    }
-}
-
-void SQLiteDbi::disableCaching( ) {
-    if ( features.contains( U2DbiFeature_CacheFeatures ) ) {
-        delete cachingFeatureDbi;
-        cachingFeatureDbi = NULL;
-    }
-}
-
 void SQLiteDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& os) {
     if (isInitialized(os)) {
         const QString appVersionText = getProperty(U2DbiOptions::APP_MIN_COMPATIBLE_VERSION, "", os);
@@ -418,7 +399,6 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
         if (!os.hasError()) {
             ioLog.trace(QString("SQLite: initialized: %1\n").arg(url));
         }
-        enableCaching( );
     } while (0);
     
     if (os.hasError()) {

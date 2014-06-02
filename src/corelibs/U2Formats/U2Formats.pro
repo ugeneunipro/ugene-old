@@ -49,15 +49,6 @@ HEADERS += src/ABIFormat.h \
            src/ace/AceImportUtils.h \
            src/ace/ConvertAceToSqliteDialog.h \
            src/ace/ConvertAceToSqliteTask.h \
-           src/caching_dbi/DbiCustomSelectionCache.h \
-           src/caching_dbi/DbiFeatureSelectionByParentCache.h \
-           src/caching_dbi/DbiFeatureSelectionByRegionCache.h \
-           src/caching_dbi/DbiIteratorCache.h \
-           src/caching_dbi/DbiIteratorCacheListener.h \
-           src/caching_dbi/CachingDbiIterator.h \
-           src/caching_dbi/CachingFeatureDbi.h \
-           src/caching_dbi/FeatureDataCache.h \
-           src/caching_dbi/U2CachingDbi.h \
            src/mysql_dbi/MysqlAssemblyDbi.h \
            src/mysql_dbi/MysqlAttributeDbi.h \
            src/mysql_dbi/MysqlBlobInputStream.h \
@@ -150,10 +141,6 @@ SOURCES += src/ABIFormat.cpp \
            src/ace/AceImportUtils.cpp \
            src/ace/ConvertAceToSqliteDialog.cpp \
            src/ace/ConvertAceToSqliteTask.cpp \
-           src/caching_dbi/CachingFeatureDbi.cpp \
-           src/caching_dbi/DbiFeatureSelectionByParentCache.cpp \
-           src/caching_dbi/DbiFeatureSelectionByRegionCache.cpp \
-           src/caching_dbi/FeatureDataCache.cpp \
            src/mysql_dbi/MysqlAssemblyDbi.cpp \
            src/mysql_dbi/MysqlAttributeDbi.cpp \
            src/mysql_dbi/MysqlBlobInputStream.cpp \

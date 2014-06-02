@@ -30,7 +30,6 @@ struct sqlite3;
 
 namespace U2 {
 
-class CachingFeatureDbi;
 class SQLiteObjectDbi;
 class SQLiteObjectRelationsDbi;
 class SQLiteSequenceDbi;
@@ -166,19 +165,9 @@ private:
      * then it must be upgraded up to the current version.
      */
     void upgrade(U2OpStatus &os);
-    /**
-     * The method creates caching wrappers for the DBIs according to root DBI's features
-     */
-    void enableCaching( );
-    /**
-     * The method releases caching wrappers for the DBIs according to root DBI's features
-     */
-    void disableCaching( );
 
     QString                             url;
     DbRef*                              db;
-
-    CachingFeatureDbi *                 cachingFeatureDbi;
 
     SQLiteObjectDbi*                    objectDbi;
     SQLiteObjectRelationsDbi *          objectRelationsDbi;

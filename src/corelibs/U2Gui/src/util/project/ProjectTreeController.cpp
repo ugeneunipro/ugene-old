@@ -172,6 +172,12 @@ void ProjectTreeController::sl_onDocumentAdded(Document *doc) {
     tree->setSortingEnabled(true);
     connectDocument(doc);
     sl_updateActions();
+
+    if (ProjectUtils::isConnectedDatabaseDoc(doc)) {
+        const QModelIndex idx = model->getIndexForDoc(doc);
+        CHECK(idx.isValid(), );
+        tree->expand(idx);
+    }
 }
 
 void ProjectTreeController::sl_onDocumentRemoved(Document *doc) {
@@ -511,11 +517,10 @@ void ProjectTreeController::sl_onDocumentLoadedStateChanged() {
         connect(doc, SIGNAL(si_loadedStateChanged()), SLOT(sl_onDocumentLoadedStateChanged()));
     }
 
-    if (doc->getObjects().size() < MAX_OBJECTS_TO_AUTOEXPAND &&
-        AppContext::getProject()->getDocuments().size() < MAX_DOCUMENTS_TO_AUTOEXPAND) {
-            QModelIndex idx = model->getIndexForDoc(doc);
-            CHECK(idx.isValid(), );
-            tree->setExpanded(idx, doc->isLoaded());
+    if (AppContext::getProject()->getDocuments().size() < MAX_DOCUMENTS_TO_AUTOEXPAND) {
+        QModelIndex idx = model->getIndexForDoc(doc);
+        CHECK(idx.isValid(), );
+        tree->setExpanded(idx, doc->isLoaded());
     }
 }
 
@@ -861,7 +866,7 @@ void ProjectTreeController::setupActions() {
 }
 
 void ProjectTreeController::connectDocument(Document *doc) {
-    connect(doc, SIGNAL(si_loadedStateChanged()), SLOT(sl_onDocumentLoadedStateChanged()), Qt::UniqueConnection);
+    connect(doc, SIGNAL(si_loadedStateChanged()), SLOT(sl_onDocumentLoadedStateChanged()));
     connect(doc, SIGNAL(si_lockedStateChanged()), SLOT(sl_onLockedStateChanged()));
 }
 

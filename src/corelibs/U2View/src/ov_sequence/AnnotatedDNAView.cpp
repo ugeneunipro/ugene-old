@@ -395,7 +395,9 @@ bool AnnotatedDNAView::onCloseEvent() {
             return false;
         }
     }
-    
+    foreach (AnnotationTableObject *ao, annotations) {
+        ao->deref();
+    }
     return true;
 }
 
@@ -410,6 +412,7 @@ bool AnnotatedDNAView::onObjectRemoved(GObject* o) {
             }
         }
         annotations.removeOne( ao );
+        ao->deref();
         emit si_annotationObjectRemoved( ao );
     } else if ( o->getGObjectType( ) == GObjectTypes::SEQUENCE ) {
         U2SequenceObject *seqObj = qobject_cast<U2SequenceObject *>( o );
@@ -825,6 +828,7 @@ QString AnnotatedDNAView::addObject( GObject *o ) {
     } else if ( o->getGObjectType( ) == GObjectTypes::ANNOTATION_TABLE ) {
         AnnotationTableObject *ao = qobject_cast<AnnotationTableObject *>( o );
         SAFE_POINT( NULL != ao, "Invalid annotation table!", QString::null );
+        ao->ref();
         annotations.append( ao );
         foreach ( ADVSequenceObjectContext *sc, rCtx ) {
             sc->addAnnotationObject( ao );

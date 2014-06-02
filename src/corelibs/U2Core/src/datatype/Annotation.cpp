@@ -214,20 +214,10 @@ void Annotation::addLocationRegion( const U2Region &reg ) {
 
 QVector<U2Qualifier> Annotation::getQualifiers( ) const {
     U2OpStatusImpl os;
-    QList<U2FeatureKey> keys = U2FeatureUtils::getFeatureKeys( id,
+    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( id,
         parentObject->getEntityRef( ).dbiRef, os );
-
-    for ( int i = 0; i < keys.size( ); ++i ) {
-        if ( U2FeatureKeyOperation == keys[i].name ) {
-            keys.removeAt( i );
-        }
-    }
-
-    QVector<U2Qualifier> result;
-    foreach ( const U2FeatureKey &key, keys ) {
-        result << U2Qualifier( key.name, key.value );
-    }
-    return result;
+    SAFE_POINT_OP( os, QVector<U2Qualifier>( ) );
+    return data.qualifiers;
 }
 
 void Annotation::addQualifier( const U2Qualifier &q ) {

@@ -79,6 +79,7 @@ void OutputDirectoryWidget::sl_browse() {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Select a directory"), pathEdit->text());
 
     if(!dir.isEmpty()) {
+        dir = QDir::toNativeSeparators(dir);
         if (!dir.endsWith(QDir::separator())) {
             dir += QDir::separator();
         }

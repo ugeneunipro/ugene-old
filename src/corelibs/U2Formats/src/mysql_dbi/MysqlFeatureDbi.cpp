@@ -54,9 +54,10 @@ void MysqlFeatureDbi::initSqlSchema(U2OpStatus& os) {
         "FOREIGN KEY(object) REFERENCES Object(id) ON DELETE CASCADE, "
         "FOREIGN KEY(rootId) REFERENCES Feature(id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8", db, os).execute();
 
-    U2SqlQuery("CREATE INDEX FeatureRootIndex ON Feature(root)", db, os).execute();
+    U2SqlQuery("CREATE INDEX FeatureRootIndex ON Feature(root, type)", db, os).execute();
     U2SqlQuery("CREATE INDEX FeatureParentIndex ON Feature(parent)", db, os).execute();
     U2SqlQuery("CREATE INDEX FeatureLocationIndex ON Feature(start, end)", db, os).execute();
+    U2SqlQuery("CREATE INDEX FeatureNameIndex ON Feature(root, nameHash)", db, os).execute();
 
     //FeatureKey index
     U2SqlQuery("CREATE INDEX FeatureKeyIndex ON FeatureKey(feature)", db, os).execute();
@@ -66,7 +67,7 @@ namespace {
 
 inline QString getFeatureFields(const QString &featureAlias = "f") {
     return QString("%1.id, %1.type, %1.parent, %1.root, %1.name, %1.sequence, "
-        "%1.strand, %1.start, %1.len, %1.end, %1.nameHash ").arg(featureAlias);
+        "%1.strand, %1.start, %1.len ").arg(featureAlias);
 }
 
 }
@@ -184,10 +185,8 @@ U2Feature MysqlFeatureDbi::getFeature(const U2DataId& featureId, U2OpStatus& os)
     q.bindDataId("id", featureId);
     if (q.step()) {
         res = MysqlFeatureRSLoader::loadStatic(&q);
-    } else {
-        if (!os.hasError()) {
-            os.setError(U2DbiL10n::tr( "Feature is not found." ));
-        }
+    } else if (!os.hasError()) {
+        os.setError(U2DbiL10n::tr( "Feature is not found." ));
     }
 
     return res;
@@ -770,16 +769,45 @@ U2DbiIterator<U2Feature> * MysqlFeatureDbi::getFeaturesByParent( const U2DataId 
         new MysqlFeatureFilter( featureName, seqId ), U2Feature( ), os );
 }
 
-U2DbiIterator<U2Feature> * MysqlFeatureDbi::getFeaturesByRoot( const U2DataId &rootId,
-    const FeatureFlags &types, const QString &featureName, U2OpStatus &os )
-{
+U2DbiIterator<U2Feature> * MysqlFeatureDbi::getFeaturesByRoot( const U2DataId &rootId, const FeatureFlags &types, U2OpStatus &os ) {
     static const QString queryStringk( "SELECT " + getFeatureFields() + " FROM Feature AS f "
         "WHERE f.root = :root" + getWhereQueryPartFromType( "f", types ) +  "ORDER BY f.start" );
     QSharedPointer<U2SqlQuery> q(new U2SqlQuery( queryStringk, db, os ));
 
     q->bindDataId( "root", rootId );
     return new MysqlRSIterator<U2Feature>( q, new MysqlFeatureRSLoader( ),
-        new MysqlFeatureFilter( featureName, U2DataId( ) ), U2Feature( ), os );
+        new MysqlFeatureFilter( QString( ), U2DataId( ) ), U2Feature( ), os );
+}
+
+U2DbiIterator<U2Feature> * MysqlFeatureDbi::getFeaturesByName( const U2DataId &rootId, const QString &name, const FeatureFlags &types, U2OpStatus &os ) {
+    static const QString queryStringk( "SELECT " + getFeatureFields() + " FROM Feature AS f "
+        "WHERE f.root = :root" + getWhereQueryPartFromType( "f", types ) +  " AND nameHash = :nameHash ORDER BY f.start" );
+    QSharedPointer<U2SqlQuery> q(new U2SqlQuery( queryStringk, db, os ));
+
+    q->bindDataId( "root", rootId );
+    q->bindInt32( "nameHash", qHash( name ) );
+    CHECK_OP( os, NULL );
+    return new MysqlRSIterator<U2Feature>( q, new MysqlFeatureRSLoader( ), new MysqlFeatureFilter( QString( ), U2DataId( ) ), U2Feature( ), os );
+}
+
+QList<FeatureAndKey> MysqlFeatureDbi::getFeatureTable( const U2DataId &rootFeatureId, const FeatureFlags &types, U2OpStatus &os ) {
+    static const QString queryStringk( "SELECT " + getFeatureFields() + ", fk.name, fk.value FROM Feature AS f "
+        "LEFT OUTER JOIN FeatureKey AS fk on f.id = fk.feature "
+        "WHERE f.root = :root" + getWhereQueryPartFromType( "f", types ) + "ORDER BY f.start" );
+    U2SqlQuery q( queryStringk, db, os );
+
+    q.bindDataId( "root", rootFeatureId );
+
+    QList<FeatureAndKey> result;
+    while (q.step()) {
+        FeatureAndKey fnk;
+        fnk.feature = MysqlFeatureRSLoader::loadStatic(&q);
+        fnk.key.name = q.getCString(9);
+        fnk.key.value = q.getCString(10);
+        result.append(fnk);
+    }
+
+    return result;
 }
 
 }   // namespace U2

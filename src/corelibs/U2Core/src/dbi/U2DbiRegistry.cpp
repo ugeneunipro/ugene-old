@@ -222,8 +222,6 @@ namespace {
         res.dbiFactoryId = factoryId;
         if (useDatabaseFromCMDLine(alias)) {
             res.dbiId = getDatabaseFromCMDLine(os);
-        } else if (MYSQL_DBI_ID == factoryId) {
-            res.dbiId = "ugene:@192.168.15.143:6666/ugene";
         } else {
             res.dbiId = createNewDatabase(alias, os);
         }

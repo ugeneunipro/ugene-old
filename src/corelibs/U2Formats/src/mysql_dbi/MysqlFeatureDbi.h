@@ -75,6 +75,10 @@ public:
      */
     QList<U2FeatureKey>             getFeatureKeys( const U2DataId &featureId, U2OpStatus &os );
     /**
+     * Returns all the features and keys belonging to the same annotation table with @rootFeatureId as a root feature
+     */
+    QList<FeatureAndKey>            getFeatureTable( const U2DataId &rootFeatureId, const FeatureFlags &types, U2OpStatus &os );
+    /**
      * Creates new feature in database. Uses all fields in 'feature' param
      * and assign database id to it as the result
      * Requires: U2DbiFeature_WriteFeature feature support
@@ -164,11 +168,12 @@ public:
                                         U2OpStatus &os, SubfeatureSelectionMode includeParent );
 
     U2DbiIterator<U2Feature> *      getFeaturesByRoot( const U2DataId &rootId,
-                                        const FeatureFlags &types, const QString &featureName,
-                                        U2OpStatus &os );
+                                        const FeatureFlags &types, U2OpStatus &os );
 
     U2DbiIterator<U2Feature> *      getFeaturesBySequence( const QString &featureName,
                                         const U2DataId& seqId, U2OpStatus &os );
+
+    U2DbiIterator<U2Feature> *      getFeaturesByName( const U2DataId &rootId, const QString &name, const FeatureFlags &types, U2OpStatus &os );
 
 private:
     QSharedPointer<U2SqlQuery>      createFeatureQuery(const QString &selectPart,

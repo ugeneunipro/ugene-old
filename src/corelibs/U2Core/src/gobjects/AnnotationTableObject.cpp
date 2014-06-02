@@ -44,6 +44,7 @@ AnnotationTableObject::AnnotationTableObject( const QString &objectName, const U
     SAFE_POINT_OP( os, );
     entityRef = U2EntityRef( dbiRef, table.id );
     rootFeatureId = table.rootFeature;
+    dataLoaded = true;
 }
 
 AnnotationTableObject::AnnotationTableObject( const QString &objectName,
@@ -255,6 +256,21 @@ void AnnotationTableObject::setGObjectName( const QString &newName ) {
     SAFE_POINT_OP( os, );
 
     GObject::setGObjectName( newName );
+}
+
+void AnnotationTableObject::ref( ) const {
+    U2OpStatusImpl os;
+    ensureDataLoaded(os);
+    SAFE_POINT_OP(os, );
+
+    U2FeatureUtils::refAnnotationTable(rootFeatureId, entityRef.dbiRef, os);
+    SAFE_POINT_OP(os, );
+}
+
+void AnnotationTableObject::deref( ) const {
+    U2OpStatusImpl os;
+    U2FeatureUtils::derefAnnotationTable(rootFeatureId, entityRef.dbiRef, os);
+    SAFE_POINT_OP(os, );
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -7,6 +7,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/cmdline/CMDLineUtils.h \
            src/datatype/Annotation.h \
            src/datatype/AnnotationData.h \
+           src/datatype/AnnotationDataCache.h \
            src/datatype/AnnotationGroup.h \
            src/datatype/AnnotationModification.h \
            src/datatype/AnnotationSettings.h \
@@ -66,7 +67,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/dbi/U2AttributeDbi.h \
            src/dbi/U2CrossDatabaseReferenceDbi.h \
            src/dbi/U2Dbi.h \
-           src/dbi/U2DbiDataCache.h \
            src/dbi/U2DbiPackUtils.h \
            src/dbi/U2DbiRegistry.h \
            src/dbi/U2DbiUtils.h \
@@ -242,6 +242,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/cmdline/CMDLineUtils.cpp \
            src/datatype/Annotation.cpp \
            src/datatype/AnnotationData.cpp \
+           src/datatype/AnnotationDataCache.cpp \
            src/datatype/AnnotationGroup.cpp \
            src/datatype/AnnotationModification.cpp \
            src/datatype/AnnotationSettings.cpp \

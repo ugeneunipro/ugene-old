@@ -119,6 +119,11 @@ public:
     U2Feature::FeatureType featureType;
 };
 
+struct FeatureAndKey {
+    U2Feature feature;
+    U2FeatureKey key;
+};
+
 /**
  * An interface to obtain 'read' access to sequence features
  */
@@ -157,6 +162,10 @@ public:
      * Returns all keys of a specified feature
      */
     virtual QList<U2FeatureKey>         getFeatureKeys( const U2DataId &featureId, U2OpStatus &os ) = 0;
+    /**
+     * Returns all the features and keys belonging to the same annotation table with @rootFeatureId as a root feature
+     */
+    virtual QList<FeatureAndKey>        getFeatureTable( const U2DataId &rootFeatureId, const FeatureFlags &types, U2OpStatus &os ) = 0;
     /**
      * Creates new feature in database. Uses all fields in 'feature' param
      * and assign database id to it as the result
@@ -234,10 +243,11 @@ public:
     virtual U2DbiIterator<U2Feature> *  getFeaturesByParent( const U2DataId &parentId, const QString &featureName, const U2DataId &seqId,
                                             U2OpStatus &os, SubfeatureSelectionMode mode = NotSelectParentFeature ) = 0;
 
-    virtual U2DbiIterator<U2Feature> *  getFeaturesByRoot( const U2DataId &rootId, const FeatureFlags &types, const QString &featureName,
-                                            U2OpStatus &os ) = 0;
+    virtual U2DbiIterator<U2Feature> *  getFeaturesByRoot( const U2DataId &rootId, const FeatureFlags &types, U2OpStatus &os ) = 0;
 
     virtual U2DbiIterator<U2Feature> *  getFeaturesBySequence( const QString &featureName, const U2DataId &seqId, U2OpStatus &os ) = 0;
+
+    virtual U2DbiIterator<U2Feature> *  getFeaturesByName( const U2DataId &rootId, const QString &name, const FeatureFlags &types, U2OpStatus &os ) = 0;
 
 protected:
     U2FeatureDbi( U2Dbi *rootDbi )

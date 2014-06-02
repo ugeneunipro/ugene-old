@@ -112,6 +112,11 @@ public:
      * to the feature. If not specified otherwise, parentFeatureId is set to the root feature.
      */
     void                    addFeature( U2Feature &f, QList<U2FeatureKey> keys, U2OpStatus &os );
+    /**
+     * Increases reference count for this object
+     */
+    void                    ref( ) const;
+    void                    deref( ) const;
 
     //////////////////////////////////////////////////////////////////////////
     // Access to signals that drive GUI //////////////////////////////////////

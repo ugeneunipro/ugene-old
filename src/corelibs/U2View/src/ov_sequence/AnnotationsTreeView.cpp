@@ -31,7 +31,6 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
-#include <U2Core/Timer.h>
 #include <U2Core/DBXRefRegistry.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -257,7 +256,6 @@ void AnnotationsTreeView::saveWidgetState( ) {
 
 
 AVGroupItem * AnnotationsTreeView::findGroupItem( const AnnotationGroup &g ) const {
-    GTIMER( c2, t2, "AnnotationsTreeView::findGroupItem" );
     if ( g.getParentGroup( ) == g ) {
         const int n = tree->topLevelItemCount( );
         for ( int i = 0; i < n; i++ ) {
@@ -290,7 +288,6 @@ AVGroupItem * AnnotationsTreeView::findGroupItem( const AnnotationGroup &g ) con
 AVAnnotationItem * AnnotationsTreeView::findAnnotationItem(const AVGroupItem* groupItem,
     const Annotation &a) const
 {
-    GTIMER( c2, t2, "AnnotationsTreeView::findAnnotationItem" );
     for(int i = 0, n = groupItem->childCount(); i < n; i++ ) {
         AVItem* item = static_cast<AVItem*>(groupItem->child(i));
         if (item->type != AVItemType_Annotation) {
@@ -444,7 +441,6 @@ void AnnotationsTreeView::sl_onAnnotationGroupSelectionChanged( AnnotationGroupS
 }
 
 void AnnotationsTreeView::sl_onAnnotationObjectAdded( AnnotationTableObject *obj ) {
-    GTIMER( c2, t2, "AnnotationsTreeView::sl_onAnnotationObjectAdded" );
     TreeSorter ts( this );
     
     SAFE_POINT( findGroupItem( obj->getRootGroup( ) ) == NULL, "Invalid annotation group!", );
@@ -490,7 +486,6 @@ void AnnotationsTreeView::sl_onAnnotationObjectRenamed( const QString & ) {
 }
 
 void AnnotationsTreeView::sl_onAnnotationsAdded( const QList<Annotation> &as ) {
-    GTIMER(c1,t1,"AnnotationsTreeView::sl_onAnnotationsAdded");
     TreeSorter ts(this);
 
     QSet<AVGroupItem*> toUpdate;
@@ -498,7 +493,6 @@ void AnnotationsTreeView::sl_onAnnotationsAdded( const QList<Annotation> &as ) {
         const AnnotationGroup &ag = a.getGroup( );
         AVGroupItem* gi = findGroupItem(ag);
         if (gi!=NULL) {
-            GTIMER(c11,t11,"AnnotationsTreeView::sl_onAnnotationsAdded loop if");
             buildAnnotationTree(gi, a);
         } else {
             AnnotationGroup childGroup = ag;
@@ -526,7 +520,6 @@ void AnnotationsTreeView::sl_onAnnotationsAdded( const QList<Annotation> &as ) {
             }
         }
     }
-    GTIMER(c2,t2,"AnnotationsTreeView::sl_onAnnotationsAdded [updateVisual]");
     while (!toUpdate.isEmpty()) {
         AVGroupItem* i= *toUpdate.begin();
         toUpdate.remove(i);
