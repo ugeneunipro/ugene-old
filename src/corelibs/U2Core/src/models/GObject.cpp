@@ -97,7 +97,7 @@ QList<GObjectRelation> GObject::getObjectRelations() const {
     if (!arePermanentRelationsFetched && !isUnloaded()) {
         Document *parentDoc = getDocument();
         // take into account the case when the object was not added to document
-        CHECK(NULL != parentDoc, res);
+        CHECK(NULL != parentDoc && entityRef.dbiRef.isValid(), res);
 
         U2OpStatusImpl os;
         DbiConnection con(entityRef.dbiRef, os);

@@ -206,7 +206,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1886_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_1897);
 
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1919, "https://ugene.unipro.ru/tracker/browse/UGENE-3023");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1919);
     REGISTER_TEST(GUITest_regression_scenarios::test_1921);
     REGISTER_TEST(GUITest_regression_scenarios::test_1924);
     REGISTER_TEST(GUITest_regression_scenarios::test_1986);
@@ -243,7 +243,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2138, "https://ugene.unipro.ru/tracker/browse/UGENE-2975");
     REGISTER_TEST_NOT_FOR_MAC(GUITest_regression_scenarios::test_2140);
     //REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2150, "task tree view cant be tested");
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2152, "https://ugene.unipro.ru/tracker/browse/UGENE-3023 https://ugene.unipro.ru/tracker/browse/UGENE-2958");
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2152, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
     REGISTER_TEST(GUITest_regression_scenarios::test_2156);
     REGISTER_TEST(GUITest_regression_scenarios::test_2157);
     REGISTER_TEST(GUITest_regression_scenarios::test_2160);
@@ -1016,7 +1016,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     //REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0001,"out of date");
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002)//,"no such scheme on windows");
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0002_1)//,"no such scheme on windows");
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_designer::test_0003, "https://ugene.unipro.ru/tracker/browse/UGENE-3025")//,"no such scheme on windows");
+    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0003);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_common_scenarios_workflow_designer::test_0005)//,"no such scheme on windows");
     REGISTER_TEST_ONLY_LINUX(GUITest_common_scenarios_workflow_designer::test_0006);//"no such scheme on windows, https://ugene.unipro.ru/tracker/browse/UGENE-2738 on mac");
     REGISTER_TEST_ONLY_LINUX(GUITest_common_scenarios_workflow_designer::test_0006_1);//"no such scheme on windows, https://ugene.unipro.ru/tracker/browse/UGENE-2738 on mac");
