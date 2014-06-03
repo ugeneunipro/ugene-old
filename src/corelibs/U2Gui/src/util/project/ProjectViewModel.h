@@ -42,6 +42,7 @@ public:
     ProjectViewModel(const ProjectTreeControllerModeSettings &settings, QObject *parent);
 
     void updateSettings(const ProjectTreeControllerModeSettings &settings);
+    void updateData(const QModelIndex &index);
 
     // QAbstractItemModel
     int columnCount(const QModelIndex &parent) const;

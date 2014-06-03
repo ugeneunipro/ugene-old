@@ -90,6 +90,7 @@ private:
 
 	MDIItem* getCurrentMDIItem() const ;
 
+    void onWindowsSwitched(QMdiSubWindow *deactivated, MWMDIWindow *activated);
 
 	MainWindow* mw;
 	FixedMdiArea*	mdiArea;

@@ -66,6 +66,10 @@ void ProjectViewModel::updateSettings(const ProjectTreeControllerModeSettings &n
     onFilterChanged(newSettings);
 }
 
+void ProjectViewModel::updateData(const QModelIndex &index) {
+    emit dataChanged(index, index);
+}
+
 int ProjectViewModel::columnCount(const QModelIndex &/*parent*/) const {
     return 1;
 }

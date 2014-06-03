@@ -74,6 +74,7 @@ private slots:
     void sl_onLockedStateChanged();
     void sl_onImportToDatabase();
     void sl_windowActivated(MWMDIWindow *w);
+    void sl_windowDeactivated(MWMDIWindow *w);
     void sl_objectAddedToActiveView(GObjectView *w, GObject *obj);
     void sl_objectRemovedFromActiveView(GObjectView *w, GObject *obj);
     void sl_onResourceUserRegistered(const QString &res, Task *t);

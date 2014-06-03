@@ -336,6 +336,13 @@ void MWMDIManagerImpl::clearMDIContent(bool addCloseAction) {
     }
 }
 
+void MWMDIManagerImpl::onWindowsSwitched(QMdiSubWindow *deactivated, MWMDIWindow *activated) {
+    MDIItem *deItem = getMDIItem(deactivated);
+    if ((NULL != deItem) && (NULL != deItem->w)) {
+        emit si_windowDeactivated(deItem->w);
+    }
+    emit si_windowActivated(activated);
+}
 
 void MWMDIManagerImpl::sl_onSubWindowActivated(QMdiSubWindow *w) {
     //Details: sub-window is activated and deactivated 
@@ -375,8 +382,7 @@ void MWMDIManagerImpl::sl_onSubWindowActivated(QMdiSubWindow *w) {
 	QMenu* m = mw->getTopLevelMenu(MWMENU_ACTIONS);
 	mdiContentOwner->w->setupViewMenu(m);
 	m->addAction(closeAct);
-    
-    emit si_windowActivated(mdiItem->w);
+    onWindowsSwitched(w, mdiItem->w);
 }
 
 

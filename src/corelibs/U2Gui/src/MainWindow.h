@@ -189,6 +189,7 @@ signals:
     void si_windowAdded(MWMDIWindow* w);
     void si_windowClosing(MWMDIWindow* w);
     void si_windowActivated(MWMDIWindow* w);
+    void si_windowDeactivated(MWMDIWindow* w);
 
 protected: 
     /* returns true if the window agreed to close, false otherwise */

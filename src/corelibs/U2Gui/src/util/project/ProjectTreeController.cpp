@@ -98,6 +98,8 @@ ProjectTreeController::ProjectTreeController(QTreeView *tree, const ProjectTreeC
 
     MWMDIManager* mdi = AppContext::getMainWindow()->getMDIManager();
     connect(mdi, SIGNAL(si_windowActivated(MWMDIWindow*)), SLOT(sl_windowActivated(MWMDIWindow*)));
+    connect(mdi, SIGNAL(si_windowDeactivated(MWMDIWindow*)), SLOT(sl_windowDeactivated(MWMDIWindow*)));
+    connect(mdi, SIGNAL(si_windowClosing(MWMDIWindow*)), SLOT(sl_windowDeactivated(MWMDIWindow*)));
     sl_windowActivated(mdi->getActiveWindow()); // if any window is active - check it content
 
     sl_updateSelection();
@@ -741,6 +743,17 @@ void ProjectTreeController::sl_windowActivated(MWMDIWindow *w) {
     markActiveView = ow->getObjectView();
     connect(markActiveView, SIGNAL(si_objectAdded(GObjectView*, GObject*)), SLOT(sl_objectAddedToActiveView(GObjectView*, GObject*)));
     connect(markActiveView, SIGNAL(si_objectRemoved(GObjectView*, GObject*)), SLOT(sl_objectRemovedFromActiveView(GObjectView*, GObject*)));
+    foreach (GObject *obj, ow->getObjects()) {
+        updateObjectActiveStateVisual(obj);
+    }
+}
+
+void ProjectTreeController::sl_windowDeactivated(MWMDIWindow *w) {
+    GObjectViewWindow *ow = qobject_cast<GObjectViewWindow*>(w); 
+    CHECK(NULL != ow, );
+    foreach (GObject *obj, ow->getObjects()) {
+        updateObjectActiveStateVisual(obj);
+    }
 }
 
 void ProjectTreeController::sl_objectAddedToActiveView(GObjectView *, GObject *obj) {
@@ -897,7 +910,7 @@ void ProjectTreeController::updateLoadingState(Document *doc) {
     if (settings.isDocumentShown(doc)) {
         QModelIndex idx = model->getIndexForDoc(doc);
         if (idx.isValid()) {
-            tree->update(idx);
+            model->updateData(idx);
         }
     }
     if (doc->getObjects().size() < ProjectUtils::MAX_OBJS_TO_SHOW_LOAD_PROGRESS) {
@@ -907,7 +920,7 @@ void ProjectTreeController::updateLoadingState(Document *doc) {
                 if (!idx.isValid()) {
                     continue;
                 }
-                tree->update(idx);
+                model->updateData(idx);
             }
         }
     }
@@ -1099,13 +1112,16 @@ void ProjectTreeController::updateObjectActiveStateVisual(GObject *obj) {
     if (ProjectTreeGroupMode_ByDocument == settings.groupMode) {
         Document *parentDoc = obj->getDocument();
         CHECK(model->hasDocument(parentDoc), );
-        QModelIndex idx = model->getIndexForDoc(parentDoc);
-        CHECK(idx.isValid(), );
-        tree->update(idx);
+        QModelIndex docIdx = model->getIndexForDoc(parentDoc);
+        CHECK(docIdx.isValid(), );
+        model->updateData(docIdx);
+        QModelIndex objIdx = model->getIndexForObject(obj);
+        CHECK(objIdx.isValid(), );
+        model->updateData(objIdx);
     } else {
         QModelIndex idx = model->getIndexForObject(obj);
         CHECK(idx.isValid(), );
-        tree->update(idx);
+        model->updateData(idx);
     }
 }
 

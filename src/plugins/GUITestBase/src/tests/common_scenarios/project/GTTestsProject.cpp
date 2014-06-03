@@ -307,7 +307,8 @@ GUI_TEST_CLASS_DEFINITION(test_0019) {
     GTMenu::showContextMenu(os, w);
     GTGlobals::sleep(1000);
 
-    CHECK_SET_ERR(!fse1.bold(), "se1 are not marked with regular text");
+    QFont fse1_2 = GTUtilsProjectTreeView::getFont(os, se1);
+    CHECK_SET_ERR(!fse1_2.bold(), "se1 is not marked with regular text");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0020) {
