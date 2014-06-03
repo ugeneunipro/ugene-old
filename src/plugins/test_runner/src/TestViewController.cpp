@@ -33,7 +33,6 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/CMDLineCoreOptions.h>
 #include <QMap>
-#include <QMap>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLineEdit>
@@ -926,7 +925,8 @@ void TestViewController::sl_taskStateChanged(Task* t) {
             reporterForm->saveAs(repDir,reporterForm->getReportText());
         }
         AppContext::getTaskScheduler()->cancelAllTasks();
-        AppContext::getMainWindow()->getQMainWindow()->close();
+        //AppContext::getMainWindow()->getQMainWindow()->close();
+        exit(0);
     }
 }
 
