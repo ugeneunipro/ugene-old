@@ -225,6 +225,8 @@ private:
     /** Gets position of the row in the msa */
     qint64 getPosInMsa(const U2DataId &msaId, qint64 rowId, U2OpStatus &os);
 
+    qint64 getMaximumRowId(const U2DataId& msaId, U2OpStatus& os);
+
     ///////////////////////////////////////////////////////////
     // Core methods
     void updateGapModelCore(const U2DataId &msaId, qint64 msaRowId, const QList<U2MsaGap> &gapModel, U2OpStatus &os);
