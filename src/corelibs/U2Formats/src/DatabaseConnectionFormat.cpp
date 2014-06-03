@@ -95,7 +95,10 @@ Document* DatabaseConnectionFormat::loadDocument(IOAdapter* io, const U2DbiRef&,
     QList<GObject*> objects = getObjects(dbi, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
 
-    Document* resultDocument = new Document(this, io->getFactory(), io->getURL(), dbi->getDbiRef(), objects, hints);
+    const QString modLockDesc = dbi->getFeatures().contains(U2DbiFeature_GlobalReadOnly)
+        ? tr("You have no permissions to modify the content of this database")
+        : QString();
+    Document* resultDocument = new Document(this, io->getFactory(), io->getURL(), dbi->getDbiRef(), objects, hints, modLockDesc);
     resultDocument->setDocumentOwnsDbiResources(false);
     return resultDocument;
 }

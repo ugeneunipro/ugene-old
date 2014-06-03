@@ -234,11 +234,10 @@ void ProjectTreeController::sl_updateSelection() {
     sl_updateActions();
 }
 
-void ProjectTreeController::sl_updateActions() {
+void ProjectTreeController::updateAddObjectAction() {
     QSet<Document*> docsItemsInSelection = getDocsInSelection(false);
     const bool singleDocumentIsChosen = (1 == docsItemsInSelection.size());
     const bool isDatabaseDocument = (docsItemsInSelection.size() > 0 && ProjectUtils::isConnectedDatabaseDoc(docsItemsInSelection.values().first()));
-    const bool selectedDocsExist = !docsItemsInSelection.isEmpty();
     bool canAddObjectToDocument = true;
     foreach(Document* d, docsItemsInSelection) {
         if (!DocumentUtils::canAddGObjectsToDocument(d, GObjectTypes::SEQUENCE)) {
@@ -247,10 +246,12 @@ void ProjectTreeController::sl_updateActions() {
         }
     }
     addObjectToDocumentAction->setEnabled(canAddObjectToDocument && singleDocumentIsChosen && !isDatabaseDocument);
+}
 
+void ProjectTreeController::updateImportToDbAction() {
     bool isImportActionEnabled = false;
     QList<Folder> folders = getSelectedFolders();
-    if (1 == folders.size()) {
+    if (1 == folders.size() && !folders.first().getDocument()->isStateLocked()) {
         const QString actionText = (U2ObjectDbi::ROOT_FOLDER == folders.first().getFolderPath())
             ? tr("Import to the database...")
             : tr("Import to the folder...");
@@ -258,44 +259,67 @@ void ProjectTreeController::sl_updateActions() {
         isImportActionEnabled = true;
     }
     importToDatabaseAction->setEnabled(isImportActionEnabled);
+}
+
+void ProjectTreeController::sl_updateActions() {
+    updateAddObjectAction();
+    updateImportToDbAction();
 
     bool canRemoveObjectFromDocument = true;
     bool allObjectsAreInRecycleBin = true;
     QList<GObject*> selectedObjects = objectSelection.getSelectedObjects();
-    const bool selectedObjectsExist = !selectedObjects.isEmpty();
-    foreach(GObject *obj, selectedObjects ) {
+    bool selectedModifiableObjectsExist = !selectedObjects.isEmpty();
+    foreach (GObject *obj, selectedObjects) {
         if (!DocumentUtils::canRemoveGObjectFromDocument(obj) && canRemoveObjectFromDocument) {
             canRemoveObjectFromDocument = false;
         }
         if (!isObjectInRecycleBin(obj) && allObjectsAreInRecycleBin) {
             allObjectsAreInRecycleBin = false;
         }
-        if (!canRemoveObjectFromDocument && !allObjectsAreInRecycleBin) {
+        selectedModifiableObjectsExist &= !obj->getDocument()->isStateLocked();
+        if (!canRemoveObjectFromDocument && !allObjectsAreInRecycleBin && !selectedModifiableObjectsExist) {
             break;
         }
     }
 
     bool allSelectedFoldersAreInRecycleBin = true;
     const QList<Folder> selectedFolders = getSelectedFolders();
-    const bool selectedFoldersExist = !selectedFolders.isEmpty();
-    bool recycleBinSelected = false;
+    bool selectedModifiableFoldersExist = !selectedFolders.isEmpty();
+    bool modifiableRecycleBinSelected = false;
     foreach (const Folder &f, selectedFolders) {
         allSelectedFoldersAreInRecycleBin = ProjectUtils::isFolderInRecycleBin(f.getFolderPath(), false);
-        recycleBinSelected = ProjectUtils::RECYCLE_BIN_FOLDER_PATH == f.getFolderPath();
+        modifiableRecycleBinSelected = ProjectUtils::RECYCLE_BIN_FOLDER_PATH == f.getFolderPath() && !f.getDocument()->isStateLocked();
+        selectedModifiableFoldersExist &= !f.getDocument()->isStateLocked();
 
-        if (!allSelectedFoldersAreInRecycleBin || recycleBinSelected) {
+        if (!allSelectedFoldersAreInRecycleBin && modifiableRecycleBinSelected && !selectedModifiableFoldersExist) {
             break;
         }
     }
 
-     const bool canRestore = selectedFoldersExist && allSelectedFoldersAreInRecycleBin
-         || selectedObjectsExist && allObjectsAreInRecycleBin;
-     restoreSelectedItemsAction->setEnabled(canRestore);
-     createFolderAction->setEnabled(canCreateSubFolder());
+    const bool canRestore = selectedModifiableFoldersExist && allSelectedFoldersAreInRecycleBin
+        || selectedModifiableObjectsExist && allObjectsAreInRecycleBin;
+    restoreSelectedItemsAction->setEnabled(canRestore);
+    createFolderAction->setEnabled(canCreateSubFolder());
 
+    const bool selectedDocsExist = !getDocsInSelection(false).isEmpty();
+
+    const bool canRemoveItems = selectedModifiableObjectsExist && canRemoveObjectFromDocument
+        || selectedDocsExist || selectedModifiableFoldersExist && !modifiableRecycleBinSelected;
+    removeSelectedItemsAction->setEnabled(canRemoveItems);
+
+    const bool canEmptyRecycleBin = modifiableRecycleBinSelected && 1 == selectedFolders.size()
+        && !selectedModifiableObjectsExist && !selectedDocsExist;
+    emptyRecycleBinAction->setEnabled(canEmptyRecycleBin);
+
+    updateLoadDocumentActions();
+    updateReadOnlyFlagActions();
+    updateRenameAction();
+}
+
+void ProjectTreeController::updateLoadDocumentActions() {
     bool hasUnloadedDocumentInSelection = false;
     bool hasLoadedDocumentInSelection = false;
-    foreach(Document *doc, docsItemsInSelection) {
+    foreach(Document *doc, getDocsInSelection(false)) {
         if (!doc->isLoaded()) {
             hasUnloadedDocumentInSelection = true;
             break;
@@ -305,16 +329,13 @@ void ProjectTreeController::sl_updateActions() {
         }
     }
 
-    const bool canRemoveItems = selectedObjectsExist && canRemoveObjectFromDocument
-        || selectedDocsExist || selectedFoldersExist && !recycleBinSelected;
-    removeSelectedItemsAction->setEnabled(canRemoveItems);
-
-    const bool canEmptyRecycleBin = recycleBinSelected && 1 == selectedFolders.size()
-        && !selectedObjectsExist && !selectedDocsExist;
-    emptyRecycleBinAction->setEnabled(canEmptyRecycleBin);
-
     loadSelectedDocumentsAction->setEnabled(hasUnloadedDocumentInSelection);
     unloadSelectedDocumentsAction->setEnabled(hasLoadedDocumentInSelection);
+}
+
+void ProjectTreeController::updateReadOnlyFlagActions() {
+    const QSet<Document *> docsItemsInSelection = getDocsInSelection(false);
+    const bool singleDocumentIsChosen = (1 == docsItemsInSelection.size());
 
     if (singleDocumentIsChosen) {
         Document *doc = docsItemsInSelection.toList().first();
@@ -325,17 +346,21 @@ void ProjectTreeController::sl_updateActions() {
         addReadonlyFlagAction->setEnabled(false);
         removeReadonlyFlagAction->setEnabled(false);
     }
+}
 
-     const QModelIndexList selItems = tree->selectionModel()->selectedIndexes();
-     bool renameIsOk = false;
-     if (selItems.size() == 1 && !AppContext::getProject()->isStateLocked()) {
-         if (!objectSelection.isEmpty()) {
-             renameIsOk = !isObjectInRecycleBin(objectSelection.getSelectedObjects().first());
-         } else {
-             renameIsOk = canRenameFolder();
-         }
-     }
-     renameAction->setEnabled(renameIsOk);
+void ProjectTreeController::updateRenameAction() {
+    const QModelIndexList selItems = tree->selectionModel()->selectedIndexes();
+    bool renameIsOk = false;
+    if (selItems.size() == 1 && !AppContext::getProject()->isStateLocked()) {
+        if (!objectSelection.isEmpty()) {
+            GObject *selectedObj = objectSelection.getSelectedObjects().first();
+            const bool parentDocLocked = NULL != selectedObj->getDocument() && selectedObj->getDocument()->isStateLocked();
+            renameIsOk = !isObjectInRecycleBin(selectedObj) && !parentDocLocked;
+        } else {
+            renameIsOk = canRenameFolder();
+        }
+    }
+    renameAction->setEnabled(renameIsOk);
 }
 
 void ProjectTreeController::sl_doubleClicked(const QModelIndex &index) {
@@ -375,7 +400,8 @@ bool ProjectTreeController::canCreateSubFolder() const {
 
     const QList<Folder> selection = getSelectedFolders();
     CHECK(1 == selection.size(), false);
-    return !ProjectUtils::isFolderInRecycleBin(selection.first().getFolderPath());
+    const Folder &selectedFolder = selection.first();
+    return !ProjectUtils::isFolderInRecycleBin(selectedFolder.getFolderPath()) && !selectedFolder.getDocument()->isStateLocked();
 }
 
 void ProjectTreeController::sl_onAddObjectToSelectedDocument() {
@@ -609,7 +635,8 @@ bool ProjectTreeController::canRenameFolder() const {
     CHECK(documentSelection.isEmpty(), false);
     const QList<Folder> selection = getSelectedFolders();
     CHECK(1 == selection.size(), false);
-    return !ProjectUtils::isFolderInRecycleBin(selection.first().getFolderPath());
+    const Folder &selectedFolder = selection.first();
+    return !ProjectUtils::isFolderInRecycleBin(selectedFolder.getFolderPath()) && !selectedFolder.getDocument()->isStateLocked();
 }
 
 void ProjectTreeController::restoreSelectedObjects() {
@@ -802,7 +829,9 @@ bool ProjectTreeController::eventFilter(QObject *o, QEvent *e) {
         int key = kEvent->key();
         bool hasSelection = !documentSelection.isEmpty() || !objectSelection.isEmpty() || !folderSelection.isEmpty();
         if (key == Qt::Key_F2 && hasSelection) {
-            sl_onRename();
+            if (renameAction->isEnabled()) {
+                sl_onRename();
+            }
             return true;
         } else if ((key == Qt::Key_Return || key == Qt::Key_Enter) && hasSelection) {
             if (!objectSelection.isEmpty()) {

@@ -343,6 +343,8 @@ void MysqlDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& os
     }
 
     setupFeatures();
+    checkUserPermissions(os);
+    CHECK_OP(os, );
     setupTransactions(os);
     CHECK_OP(os, );
 }
@@ -403,6 +405,61 @@ void MysqlDbi::setupFeatures() {
     features.insert(U2DbiFeature_AssemblyCoverageStat);
     features.insert(U2DbiFeature_AssemblyReadsPacking);
     features.insert(U2DbiFeature_RemoveObjects);
+}
+
+void MysqlDbi::checkUserPermissions(U2OpStatus& os) {
+    const QString databaseName = db->handle.databaseName();
+    const QString userName = db->handle.userName();
+    CHECK_EXT(!databaseName.isEmpty() && !userName.isEmpty(), os.setError("Unable to check user permissions, database is not connected"), );
+
+    const QString selectPrivilegeStr = "SELECT";
+    const QString updatePrivilegeStr = "UPDATE";
+    const QString deletePrivilegeStr = "DELETE";
+    const QString insertPrivilegeStr = "INSERT";
+
+    bool selectEnabled = false;
+    bool updateEnabled = false;
+    bool deleteEnabled = false;
+    bool insertEnabled = false;
+
+    const QString userQueryString = "SELECT DISTINCT PRIVILEGE_TYPE FROM information_schema.user_privileges "
+        "WHERE GRANTEE LIKE \"'" + userName + "'%\"";
+    U2SqlQuery uq(userQueryString, db, os);
+
+    while (uq.step() && !(selectEnabled && updateEnabled && deleteEnabled && insertEnabled)) {
+        const QString grantString = uq.getString(0);
+        CHECK_OP(os, );
+
+        selectEnabled |= grantString == selectPrivilegeStr;
+        updateEnabled |= grantString == updatePrivilegeStr;
+        deleteEnabled |= grantString == deletePrivilegeStr;
+        insertEnabled |= grantString == insertPrivilegeStr;
+    }
+
+    const QString schemaQueryString = "SELECT PRIVILEGE_TYPE FROM information_schema.schema_privileges "
+        "WHERE GRANTEE LIKE \"'" + userName + "'%\" AND TABLE_SCHEMA = :tableSchema";
+    U2SqlQuery sq(schemaQueryString, db, os);
+
+    sq.bindString("tableSchema", databaseName);
+
+    while (!(selectEnabled && updateEnabled && deleteEnabled && insertEnabled) && sq.step()) {
+        const QString grantString = sq.getString(0);
+        CHECK_OP(os, );
+
+        selectEnabled |= grantString == selectPrivilegeStr;
+        updateEnabled |= grantString == updatePrivilegeStr;
+        deleteEnabled |= grantString == deletePrivilegeStr;
+        insertEnabled |= grantString == insertPrivilegeStr;
+    }
+
+    if (!updateEnabled || !deleteEnabled || !insertEnabled) {
+        if (selectEnabled) {
+            features.insert(U2DbiFeature_GlobalReadOnly);
+        } else {
+            os.setError(QObject::tr("Invalid database user permissions set, so UGENE unable to use this database. "
+                "Connect to your system administrator to fix the issue."));
+        }
+    }
 }
 
 void MysqlDbi::setupTransactions(U2OpStatus &os) {

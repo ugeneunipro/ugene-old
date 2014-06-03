@@ -114,9 +114,14 @@ private:
     void restoreSelectedObjects();
     void restoreSelectedFolders();
 
+    void updateAddObjectAction();
+    void updateImportToDbAction();
+    void updateReadOnlyFlagActions();
+    void updateRenameAction();
+    void updateLoadDocumentActions();
+
     static bool isSubFolder(const QList<Folder> &folders, const Folder &expectedSubFolder, bool trueIfSamePath);
 
-private:
     QTreeView *tree;
     ProjectTreeControllerModeSettings settings;
     ProjectUpdater *updater;

@@ -160,6 +160,8 @@ enum U2DbiFeature {
 
     /** DBI supports undo/redo of changing operations */
     U2DbiFeature_UndoRedo                       = 500,
+
+    U2DbiFeature_GlobalReadOnly                 = 600
 };
 
 /** Indicates object life-cycle and storage location */

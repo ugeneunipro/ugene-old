@@ -989,30 +989,9 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
         bool allCirc = true;
         bool allNucl = true;
         foreach(GObject *obj, objSelection->getSelectedObjects()){
-            if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
-                seqobjFound = true;
-                U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(obj);
-                if (!casted->getAlphabet()->isNucleic()) {
-                    allNucl = false;
-                }
-                if (!casted->isCircular()) {
-                    allCirc = false;
-                }
-            }
-        }
-        if (seqobjFound && allNucl){
-            toggleCircularAction->setChecked(allCirc);
-            m.addAction(toggleCircularAction);
-        }
-    }
-
-    if (!getGObjectSelection()->isEmpty()) {
-        const GObjectSelection* objSelection = getGObjectSelection();
-        bool seqobjFound = false;
-        bool allCirc = true;
-        bool allNucl = true;
-        foreach(GObject *obj, objSelection->getSelectedObjects()){
-            if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
+            Document *doc = obj->getDocument();
+            const bool objectIsModifiable = NULL != doc && !doc->isStateLocked() && !projectTreeController->isObjectInRecycleBin(obj);
+            if(obj->getGObjectType() == GObjectTypes::SEQUENCE && objectIsModifiable){
                 seqobjFound = true;
                 U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(obj);
                 if (!casted->getAlphabet()->isNucleic()) {

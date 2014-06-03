@@ -395,7 +395,7 @@ static Document* loadFromMultipleFiles(IOAdapterFactory* iof, QVariantMap& fs, U
         ref = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
         newObjects << U1SequenceUtils::mergeSequences(docs, ref, newStringUrl, fs, os);
     }
-    else if(fs.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()){                
+    else if(fs.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()){
         newObjects << MSAUtils::seqDocs2msaObj(docs, os);
         ref = U2DbiRef();
     }    
@@ -408,7 +408,7 @@ static Document* loadFromMultipleFiles(IOAdapterFactory* iof, QVariantMap& fs, U
     bool saveDoc = fs.value(ProjectLoaderHint_MultipleFilesMode_SaveDocumentFlag, false).toBool();
     loadHintsNewDocument(saveDoc, iof, doc, os);
 
-    return doc;    
+    return doc;
 }
 
 void LoadDocumentTask::run() {

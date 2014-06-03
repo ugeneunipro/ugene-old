@@ -123,6 +123,10 @@ void ProjectUpdater::updateAccessedObjects() {
     U2OpStatus2Log os;
     foreach (GObjectViewWindow *view, activeViews) {
         foreach (GObject *object, view->getObjects()) {
+            Document *doc = object->getDocument();
+            if (NULL != doc && doc->isStateLocked()) {
+                continue;
+            }
             const U2EntityRef ref = object->getEntityRef();
             if (!dbiRef2Connections.contains(ref.dbiRef)) {
                 dbiRef2Connections.insert(ref.dbiRef, new DbiConnection(ref.dbiRef, os));

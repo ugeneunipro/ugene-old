@@ -350,6 +350,7 @@ bool ProjectViewModel::dropMimeData(const QMimeData *data, Qt::DropAction /*acti
     Folder target = getDropFolder(parent);
     Document *targetDoc = target.getDocument();
     SAFE_POINT(NULL != targetDoc, "NULL document", false);
+    CHECK(!targetDoc->isStateLocked(), false);
 
     MimeDataIterator iter(data);
 
