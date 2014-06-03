@@ -81,6 +81,10 @@ void GObject::setGObjectName(const QString& newName) {
         CHECK_OP(os, );
     }
 
+    setGObjectNameNotDbi(newName);
+}
+
+void GObject::setGObjectNameNotDbi(const QString &newName) {
     QString oldName = name;
     name = newName;
     hints->set(GObjectHint_LastUsedObjectName, name);

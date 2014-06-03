@@ -123,6 +123,7 @@ signals:
     void si_nameChanged(const QString& oldName);
 
 protected:
+    void setGObjectNameNotDbi(const QString &newName);
     void ensureDataLoaded() const;
     void ensureDataLoaded(U2OpStatus &os) const;
     virtual void loadDataCore(U2OpStatus &os);

@@ -114,7 +114,7 @@ void MAlignmentObject::updateCachedMAlignment(const MAlignmentModInfo &mi, const
 
         QString newName = cachedMAlignment.getName();
         if (newName != oldName) {
-            GObject::setGObjectName(cachedMAlignment.getName());
+            setGObjectNameNotDbi(cachedMAlignment.getName());
         }
     }
 }
@@ -342,8 +342,13 @@ void MAlignmentObject::updateRow(int rowIdx, const QString& name, const QByteArr
 void MAlignmentObject::setGObjectName(const QString& newName) {
     ensureDataLoaded();
 
-    GObject::setGObjectName(newName);
-    cachedMAlignment.setName(GObject::getGObjectName());
+    U2OpStatus2Log os;
+    MsaDbiUtils::renameMsa(entityRef, newName, os);
+    CHECK_OP(os, );
+
+    updateCachedMAlignment();
+
+    setGObjectNameNotDbi(newName);
 }
 
 QList<qint64> getRowsAffectedByDeletion( const MAlignment &msa,

@@ -1109,7 +1109,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0007_2);
 
     REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0008);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_undo_redo::test_0009, "https://ugene.unipro.ru/tracker/browse/UGENE-3030");
+    REGISTER_TEST(GUITest_common_scenarios_undo_redo::test_0009);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_undo_redo::test_0010, "https://ugene.unipro.ru/tracker/browse/UGENE-3023");
 
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_undo_redo::test_0011, "https://ugene.unipro.ru/tracker/browse/UGENE-3023");
