@@ -22,27 +22,30 @@
 #ifndef _U2_BAM_CONVERT_TO_SQLITE_TASK_H_
 #define _U2_BAM_CONVERT_TO_SQLITE_TASK_H_
 
+#include <U2Core/GUrl.h>
+#include <U2Core/Task.h>
+#include <U2Core/U2Type.h>
+
 #include "LoadBamInfoTask.h"
 
-#include <U2Core/Task.h>
-#include <U2Core/GUrl.h>
-
-
 namespace U2 {
+
+class U2DbiRef;
 
 namespace BAM {
 
 class ConvertToSQLiteTask : public Task {
     Q_OBJECT
 public:
-    ConvertToSQLiteTask(const GUrl &sourceUrl, const GUrl &destinationUrl, BAMInfo& bamInfo, bool sam);
+    ConvertToSQLiteTask(const GUrl &sourceUrl, const U2DbiRef &dstDbiRef, BAMInfo& bamInfo, bool sam, const QVariantMap& hints);
     virtual void run();
     
-    const GUrl &getDestinationUrl() const;
+    GUrl getDestinationUrl() const;
     
 private:    
     const GUrl sourceUrl;
-    const GUrl destinationUrl;
+    const U2DbiRef dstDbiRef;
+    const QVariantMap hints;
     BAMInfo bamInfo;
 
     bool sam;

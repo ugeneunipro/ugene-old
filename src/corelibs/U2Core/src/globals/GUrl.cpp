@@ -97,6 +97,8 @@ GUrlType GUrl::getURLType(const QString& rawUrl) {
         result = GUrl_Http;
     } else if (rawUrl.startsWith("ftp://")) {
         result = GUrl_Ftp;
+    } else if (rawUrl.contains(QRegExp(".+:.*(/.*)?"))) {
+        return GUrl_Network;
     } else if( rawUrl.startsWith( U2_VFS_URL_PREFIX ) ) {
         result = GUrl_VFSFile;
     }

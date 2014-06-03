@@ -19,39 +19,40 @@
  * MA 02110-1301, USA.
  */
 
+#include <limits>
+#include <time.h>
+
 #include <QtCore/QFile>
 #include <QtCore/QScopedPointer>
 
-#include "IOException.h"
-#include "CancelledException.h"
-#include "Reader.h"
-#include "SamReader.h"
-#include "Index.h"
-#include "Dbi.h"
-#include "BAMDbiPlugin.h"
-#include "ConvertToSQLiteTask.h"
-#include "LoadBamInfoTask.h"
-
-#include <U2Core/U2CoreAttributes.h>
-#include <U2Core/U2Dbi.h>
-#include <U2Core/U2DbiRegistry.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2AssemblyUtils.h>
+#include <U2Core/U2CoreAttributes.h>
+#include <U2Core/U2Dbi.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <limits>
-#include <time.h>
+#include "BAMDbiPlugin.h"
+#include "CancelledException.h"
+#include "ConvertToSQLiteTask.h"
+#include "Dbi.h"
+#include "Index.h"
+#include "IOException.h"
+#include "LoadBamInfoTask.h"
+#include "Reader.h"
+#include "SamReader.h"
 
 namespace U2 {
 namespace BAM {
 
-ConvertToSQLiteTask::ConvertToSQLiteTask(const GUrl &_sourceUrl, const GUrl &_destinationUrl, BAMInfo& _bamInfo, bool _sam):
-    Task(tr("Convert BAM to UGENE database (%1)").arg(_destinationUrl.fileName()), TaskFlag_None),
+ConvertToSQLiteTask::ConvertToSQLiteTask(const GUrl &_sourceUrl, const U2DbiRef &dstDbiRef, BAMInfo& _bamInfo, bool _sam, const QVariantMap &hints):
+    Task(tr("Convert BAM to UGENE database (%1)").arg(_sourceUrl.fileName()), TaskFlag_None),
     sourceUrl(_sourceUrl),
-    destinationUrl(_destinationUrl),
+    dstDbiRef(dstDbiRef),
+    hints(hints),
     bamInfo(_bamInfo),
     sam(_sam)
 {
@@ -59,12 +60,12 @@ ConvertToSQLiteTask::ConvertToSQLiteTask(const GUrl &_sourceUrl, const GUrl &_de
     tpm = Progress_Manual;
 }
 
-static void flushReads(U2Dbi* sqliteDbi, QMap<int, U2Assembly>& assemblies, QMap<int, QList<U2AssemblyRead> >& reads) {
+static void flushReads(U2Dbi* dbi, QMap<int, U2Assembly>& assemblies, QMap<int, QList<U2AssemblyRead> >& reads) {
     foreach(int index, assemblies.keys()) {
         if(!reads[index].isEmpty()) {
             U2OpStatusImpl opStatus;
             BufferedDbiIterator<U2AssemblyRead> readsIterator(reads[index]);
-            sqliteDbi->getAssemblyDbi()->addReads(assemblies[index].id, &readsIterator, opStatus);
+            dbi->getAssemblyDbi()->addReads(assemblies[index].id, &readsIterator, opStatus);
             if(opStatus.hasError()) {
                 throw Exception(opStatus.getError());
             }
@@ -466,13 +467,10 @@ void ConvertToSQLiteTask::run() {
 
         taskLog.info(tr("Converting assembly from %1 to %2 started")
                      .arg(sourceUrl.fileName())
-                     .arg(destinationUrl.fileName()));
+                     .arg(getDestinationUrl().fileName()));
 
         time_t startTime = time(0);
 
-        if(!destinationUrl.isLocalFile()) {
-            throw Exception(BAMDbiPlugin::tr("Non-local files are not supported"));
-        }
         QScopedPointer<IOAdapter> ioAdapter;
         {
             IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(sourceUrl));
@@ -493,27 +491,23 @@ void ConvertToSQLiteTask::run() {
             reader.reset(bamReader);
         }
 
-        assert(destinationUrl.isLocalFile());
         U2OpStatusImpl opStatus;
 
-        DbiConnection dbiHandle(U2DbiRef(SQLITE_DBI_ID, destinationUrl.getURLString()), true, opStatus);
+        DbiConnection dbiHandle(dstDbiRef, true, opStatus);
         if (opStatus.hasError()) {
             throw Exception(opStatus.getError());
         }
-        U2Dbi* sqliteDbi = dbiHandle.dbi;
-        QStringList folders = sqliteDbi->getObjectDbi()->getFolders(opStatus);
-        CHECK_OP_EXT(opStatus, throw Exception(opStatus.getError()), );
-        if(!folders.contains(U2ObjectDbi::ROOT_FOLDER)) {
-            sqliteDbi->getObjectDbi()->createFolder(U2ObjectDbi::ROOT_FOLDER, opStatus);
-            if(opStatus.hasError()) {
-                throw Exception(opStatus.getError());
-            }
-        }
+        U2Dbi* dbi = dbiHandle.dbi;
+
+        DbiOperationsBlock opBlock(dstDbiRef, stateInfo);
+        Q_UNUSED(opBlock);
+        CHECK_OP(stateInfo, );
 
         QMap<int, U2Assembly> assemblies;
         QMap<int, U2AssemblyReadsImportInfo> importInfos;
 
         qint64 totalReadsImported = 0;
+        const QString dstFolder = hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
 
         stateInfo.setDescription("Importing reads");
 
@@ -532,6 +526,7 @@ void ConvertToSQLiteTask::run() {
 
             const QList<Header::Reference> &references = reader->getHeader().getReferences();
             for(int referenceId = 0;referenceId < references.size(); referenceId++) {
+
                 if(bamInfo.isReferenceSelected(referenceId)) {
                     U2Assembly assembly;
                     assembly.visualName = references[referenceId].getName();
@@ -549,7 +544,7 @@ void ConvertToSQLiteTask::run() {
                     } else {
                         dbiIterator.reset(new SequentialDbiIterator(referenceId, !bamInfo.isUnmappedSelected(), *iterator, stateInfo, *ioAdapter));
                     }
-                    sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, dbiIterator.data(), importInfo, opStatus);
+                    dbi->getAssemblyDbi()->createAssemblyObject(assembly, dstFolder, dbiIterator.data(), importInfo, opStatus);
                     if(opStatus.hasError()) {
                         throw Exception(opStatus.getError());
                     }
@@ -603,7 +598,7 @@ void ConvertToSQLiteTask::run() {
                 assembly.visualName = "Unmapped";
                 U2AssemblyReadsImportInfo & importInfo = importInfos[-1];
                 U2OpStatusImpl opStatus;
-                sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, &dbiIterator, importInfo, opStatus);
+                dbi->getAssemblyDbi()->createAssemblyObject(assembly, dstFolder, &dbiIterator, importInfo, opStatus);
                 if(opStatus.hasError()) {
                     throw Exception(opStatus.getError());
                 }
@@ -637,7 +632,7 @@ void ConvertToSQLiteTask::run() {
 
                     U2AssemblyReadsImportInfo & importInfo = importInfos[referenceId];
                     U2OpStatusImpl opStatus;
-                    sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, NULL, importInfo, opStatus);
+                    dbi->getAssemblyDbi()->createAssemblyObject(assembly, dstFolder, NULL, importInfo, opStatus);
                     if(opStatus.hasError()) {
                         throw Exception(opStatus.getError());
                     }
@@ -654,7 +649,7 @@ void ConvertToSQLiteTask::run() {
                 assembly.visualName = "Unmapped";
                 U2AssemblyReadsImportInfo & importInfo = importInfos[-1];
                 U2OpStatusImpl opStatus;
-                sqliteDbi->getAssemblyDbi()->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, NULL, importInfo, opStatus);
+                dbi->getAssemblyDbi()->createAssemblyObject(assembly, dstFolder, NULL, importInfo, opStatus);
                 if(opStatus.hasError()) {
                     throw Exception(opStatus.getError());
                 }
@@ -683,7 +678,7 @@ void ConvertToSQLiteTask::run() {
                 if(isCanceled()) {
                     throw CancelledException(BAMDbiPlugin::tr("Task was cancelled"));
                 }
-                flushReads(sqliteDbi, assemblies, reads);
+                flushReads(dbi, assemblies, reads);
                 totalReadsImported += readCount;
             }
         }
@@ -702,7 +697,7 @@ void ConvertToSQLiteTask::run() {
 
                 U2OpStatusImpl opStatus;
                 U2AssemblyPackStat stat;
-                sqliteDbi->getAssemblyDbi()->pack(assemblies[referenceId].id, stat, opStatus);
+                dbi->getAssemblyDbi()->pack(assemblies[referenceId].id, stat, opStatus);
                 if(opStatus.hasError()) {
                     throw Exception(opStatus.getError());
                 }
@@ -711,7 +706,7 @@ void ConvertToSQLiteTask::run() {
         }
         time_t packTime = time(0) - packStart;
 
-        U2AttributeDbi *attributeDbi = sqliteDbi->getAttributeDbi();
+        U2AttributeDbi *attributeDbi = dbi->getAttributeDbi();
 
         if(NULL != attributeDbi) {
             foreach(int referenceId, assemblies.keys()) {
@@ -817,29 +812,31 @@ void ConvertToSQLiteTask::run() {
         
         taskLog.info(QString("Converting assembly from %1 to %2 succesfully finished: imported %3 reads, total time %4 s, pack time %5 s")
                      .arg(sourceUrl.fileName())
-                     .arg(destinationUrl.fileName())
+                     .arg(getDestinationUrl().fileName())
                      .arg(totalReadsImported)
                      .arg(totalTime)
                      .arg(packTime));
 
     } catch(const CancelledException & /*e*/) {
-        assert(destinationUrl.isLocalFile());
-        QFile::remove(destinationUrl.getURLString());
+        if (getDestinationUrl().isLocalFile()) {
+            QFile::remove(getDestinationUrl().getURLString());
+        }
         taskLog.info(tr("Converting assembly from %1 to %2 cancelled")
                      .arg(sourceUrl.fileName())
-                     .arg(destinationUrl.fileName()));
+                     .arg(getDestinationUrl().fileName()));
     } catch(const Exception &e) {
         setError(tr("Converting assembly from %1 to %2 failed: %3")
                  .arg(sourceUrl.fileName())
-                 .arg(destinationUrl.fileName())
+                 .arg(getDestinationUrl().fileName())
                  .arg(e.getMessage()));
-        assert(destinationUrl.isLocalFile());
-        QFile::remove(destinationUrl.getURLString());
+        if (getDestinationUrl().isLocalFile()) {
+            QFile::remove(getDestinationUrl().getURLString());
+        }
     }
 }
 
-const GUrl &ConvertToSQLiteTask::getDestinationUrl() const {
-    return destinationUrl;
+GUrl ConvertToSQLiteTask::getDestinationUrl() const {
+    return GUrl(U2DbiUtils::ref2Url(dstDbiRef));
 }
 
 } // namespace BAM

@@ -56,10 +56,10 @@ void SQLiteAssemblyDbi::initSqlSchema(U2OpStatus& os) {
     // cmethod - method used to handle compression of reads data
     // idata - additional indexing method data
     // cdata - additional compression method data
-    SQLiteQuery("CREATE TABLE Assembly (object INTEGER, reference INTEGER, imethod TEXT NOT NULL, cmethod TEXT NOT NULL, "
+    SQLiteQuery("CREATE TABLE Assembly (object INTEGER PRIMARY KEY, reference INTEGER, imethod TEXT NOT NULL, cmethod TEXT NOT NULL, "
         "idata BLOB, cdata BLOB, " 
         " FOREIGN KEY(object) REFERENCES Object(id), "
-        " FOREIGN KEY(reference) REFERENCES Object(id) )", db, os).execute();
+        " FOREIGN KEY(reference) REFERENCES Object(id) ON DELETE SET NULL)", db, os).execute();
 }
 
 void SQLiteAssemblyDbi::shutdown(U2OpStatus& os) {
@@ -242,8 +242,6 @@ void SQLiteAssemblyDbi::removeAssemblyData(const U2DataId &assemblyId, U2OpStatu
     Q_UNUSED(t);
     CHECK_OP(os, );
 
-    removeAttributes(assemblyId, os);
-    CHECK_OP(os, );
     removeTables(assemblyId, os);
     CHECK_OP(os, );
     removeAssemblyEntry(assemblyId, os);
@@ -288,10 +286,6 @@ void SQLiteAssemblyDbi::addReads(AssemblyAdapter* a, U2DbiIterator<U2AssemblyRea
     t2.stop();
     perfLog.trace(QString("Assembly: %1 reads added in %2 seconds. Auto-packing: %3")
                   .arg(ii.nReads).arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)).arg(ii.packStat.readsCount > 0 ? "yes" : "no"));
-}
-
-void SQLiteAssemblyDbi::removeAttributes(const U2DataId &assemblyId, U2OpStatus &os) {
-    dbi->getAttributeDbi()->removeObjectAttributes(assemblyId, os);
 }
 
 void SQLiteAssemblyDbi::removeTables(const U2DataId &assemblyId, U2OpStatus &os) {

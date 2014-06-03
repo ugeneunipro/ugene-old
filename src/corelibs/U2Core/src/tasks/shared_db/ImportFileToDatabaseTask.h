@@ -28,13 +28,16 @@
 
 namespace U2 {
 
+class DocumentFormat;
+class DocumentProviderTask;
+
 class U2CORE_EXPORT ImportFileToDatabaseTask : public Task {
     Q_OBJECT
 public:
     ImportFileToDatabaseTask(const QString &srcUrl, const U2DbiRef& dstDbiRef, const QString &dstFolder, const ImportToDatabaseOptions& options);
 
+    void prepare();
     void run();
-    ReportResult report();
 
     const QString& getFilePath() const;
 
@@ -45,6 +48,8 @@ private:
     U2DbiRef dstDbiRef;
     QString dstFolder;
     ImportToDatabaseOptions options;
+
+    DocumentFormat* format;
 };
 
 }   // namespace U2

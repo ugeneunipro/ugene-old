@@ -35,25 +35,26 @@ namespace U2 {
 class ConvertAceToSqliteTask : public Task {
     Q_OBJECT
 public:
-    ConvertAceToSqliteTask(const GUrl &sourceUrl, const GUrl &destinationUrl, const QVariantMap& hints);
+    ConvertAceToSqliteTask(const GUrl &sourceUrl, const U2DbiRef &dstDbiRef, const QVariantMap& hints);
+
     virtual void run();
     virtual ReportResult report();
 
-    const GUrl &getDestinationUrl() const;
+    GUrl getDestinationUrl() const;
 
 private:
     qint64 importAssemblies(IOAdapter &ioAdapter);
     qint64 packReads();
     void updateAttributeDbi();
-    void removeCorruptedAssembly();
 
-    bool append;        // if it is appended, it won't be removed on error
     const GUrl sourceUrl;
-    const GUrl destinationUrl;
-    U2Dbi* dbi;
-    U2Assembly corruptedAssembly;
     QVariantMap hints;
 
+    U2DbiRef dstDbiRef;
+    U2Dbi* dbi;
+
+    bool databaseWasCreated;
+    int countImportedAssembly;
     QMap<int, Assembly::Sequence> references;
     QMap<int, U2Assembly> assemblies;
     QMap<int, U2AssemblyReadsImportInfo> importInfos;

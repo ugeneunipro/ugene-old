@@ -311,6 +311,9 @@ void MysqlObjectDbi::createFolder(const QString& path, U2OpStatus& os) {
     QString parentFolder = canonicalPath;
     if (U2ObjectDbi::ROOT_FOLDER != parentFolder) {
         parentFolder.truncate(parentFolder.lastIndexOf(U2ObjectDbi::PATH_SEP));
+        if (parentFolder.isEmpty()) {
+            parentFolder = U2ObjectDbi::ROOT_FOLDER;
+        }
         createFolder(parentFolder, os);
     }
 

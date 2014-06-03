@@ -105,8 +105,8 @@ public:
     // Write methods for folders
     
     /** Creates folder in the database.
-    The specified path must be a valid unique path, not existing in the database.
-    It is not required that parent folders must exist, they are created automatically.
+        If the specified path is already presented in the database, nothing will be done.
+        It is not required that parent folders must exist, they are created automatically.
     */
     virtual void createFolder(const QString& path, U2OpStatus& os);
 

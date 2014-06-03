@@ -342,9 +342,27 @@ QStringList SQLiteObjectDbi::getObjectFolders(const U2DataId& objectId, U2OpStat
 // Write methods for  folders
 
 void SQLiteObjectDbi::createFolder(const QString& path, U2OpStatus& os) {
-    //TODO: validate folder name
+    SQLiteTransaction t(db, os);
+    Q_UNUSED(t);
+    CHECK_OP(os, );
+
+    const QString canonicalPath = U2DbiUtils::makeFolderCanonical(path);
+
+    qint64 folderId = getFolderId(canonicalPath, false, db, os);
+    CHECK_OP(os, );
+    CHECK(-1 == folderId, );
+
+    QString parentFolder = canonicalPath;
+    if (U2ObjectDbi::ROOT_FOLDER != parentFolder) {
+        parentFolder.truncate(parentFolder.lastIndexOf(U2ObjectDbi::PATH_SEP));
+        if (parentFolder.isEmpty()) {
+            parentFolder = U2ObjectDbi::ROOT_FOLDER;
+        }
+        createFolder(parentFolder, os);
+    }
+
     SQLiteQuery q("INSERT INTO Folder(path) VALUES(?1)", db, os);
-    q.bindString(1, path);
+    q.bindString(1, canonicalPath);
     q.execute();
     
     if (!os.hasError()) {

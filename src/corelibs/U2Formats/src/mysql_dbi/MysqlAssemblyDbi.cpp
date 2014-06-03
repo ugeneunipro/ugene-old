@@ -53,10 +53,11 @@ void MysqlAssemblyDbi::initSqlSchema(U2OpStatus& os) {
     // cmethod - method used to handle compression of reads data
     // idata - additional indexing method data
     // cdata - additional compression method data
-    U2SqlQuery("CREATE TABLE Assembly (object BIGINT, reference BIGINT, imethod LONGTEXT NOT NULL,"
+    U2SqlQuery("CREATE TABLE Assembly (object BIGINT PRIMARY KEY, reference BIGINT, imethod LONGTEXT NOT NULL,"
         " cmethod LONGTEXT NOT NULL, idata LONGBLOB, cdata LONGBLOB, "
         " FOREIGN KEY(object) REFERENCES Object(id), "
-        " FOREIGN KEY(reference) REFERENCES Object(id) ) ENGINE=InnoDB DEFAULT CHARSET=utf8", db, os).execute();
+        " FOREIGN KEY(reference) REFERENCES Object(id) ON DELETE SET NULL ) "
+        " ENGINE=InnoDB DEFAULT CHARSET=utf8", db, os).execute();
 }
 
 void MysqlAssemblyDbi::shutdown(U2OpStatus& os) {
@@ -241,8 +242,6 @@ void MysqlAssemblyDbi::removeAssemblyData(const U2DataId &assemblyId, U2OpStatus
     Q_UNUSED(t);
     CHECK_OP(os, );
 
-    removeAttributes(assemblyId, os);
-    CHECK_OP(os, );
     removeTables(assemblyId, os);
     CHECK_OP(os, );
     removeAssemblyEntry(assemblyId, os);
@@ -289,14 +288,6 @@ void MysqlAssemblyDbi::addReads(MysqlAssemblyAdapter* a, U2DbiIterator<U2Assembl
     t2.stop();
     perfLog.trace(QString("Assembly: %1 reads added in %2 seconds. Auto-packing: %3")
                   .arg(ii.nReads).arg((GTimer::currentTimeMicros() - t0) / float(1000*1000)).arg(ii.packStat.readsCount > 0 ? "yes" : "no"));
-}
-
-void MysqlAssemblyDbi::removeAttributes(const U2DataId &assemblyId, U2OpStatus &os) {
-    MysqlTransaction t(db, os);
-    Q_UNUSED(t);
-    CHECK_OP(os, );
-
-    dbi->getAttributeDbi()->removeObjectAttributes(assemblyId, os);
 }
 
 void MysqlAssemblyDbi::removeTables(const U2DataId &assemblyId, U2OpStatus &os) {

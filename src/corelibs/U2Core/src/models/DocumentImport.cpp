@@ -45,6 +45,8 @@ void DocumentImportersRegistry::addDocumentImporter(DocumentImporter* i) {
     }
 }
 
+const QString DocumentImporter::LOAD_RESULT_DOCUMENT = "load_result_document";
+
 void DocumentImporter::setDialogFactory(ImportDialogFactory* factory) {
     if (dialogFactory) {
         delete dialogFactory;

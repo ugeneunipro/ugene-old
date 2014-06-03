@@ -43,7 +43,8 @@ private:
     ConvertAceToSqliteTask* convertTask;
     LoadDocumentTask*       loadDocTask;
     bool                    useGui;
-    QString                 hintedDbiUrl;
+    QVariantMap             settings;
+    QVariantMap             hints;
     GUrl                    srcUrl;
     GUrl                    destUrl;
     qint64                  startTime;

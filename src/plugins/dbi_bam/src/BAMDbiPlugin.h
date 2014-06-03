@@ -41,10 +41,6 @@ class BAMDbiPlugin : public Plugin {
     Q_OBJECT
 public:
     BAMDbiPlugin();
-private slots:
-    void sl_converter();
-    void sl_infoLoaded(Task*);
-    void sl_addDbFileToProject(Task*);
     
 };
 
@@ -56,7 +52,6 @@ public:
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& url);
 
     virtual DocumentProviderTask* createImportTask(const FormatDetectionResult& res, bool showWizard, const QVariantMap &hints);
-
 };
 
 class LoadInfoTask;
@@ -77,7 +72,9 @@ private:
     LoadDocumentTask*       loadDocTask;
     bool                    useGui;
     bool                    sam;
-    QString                 hintedDbiUrl;
+    QVariantMap             hints;
+    U2DbiRef                hintedDbiRef;
+    U2DbiRef                dstDbiRef;
     GUrl                    destUrl;
     time_t                  startTime;
 };

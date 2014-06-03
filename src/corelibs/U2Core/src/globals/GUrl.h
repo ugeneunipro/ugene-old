@@ -79,6 +79,8 @@ public:
 
     bool isHyperLink() const {return type == GUrl_Http;}
 
+    bool isNetworkSource() const {return type == GUrl_Network;}
+
     bool isVFSFile() const {return type == GUrl_VFSFile;}
 
     QString dirPath() const;

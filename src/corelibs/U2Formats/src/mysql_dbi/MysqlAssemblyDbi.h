@@ -130,7 +130,6 @@ public:
 private:
     virtual void addReads(MysqlAssemblyAdapter* a, U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os);
 
-    void removeAttributes(const U2DataId &assemblyId, U2OpStatus& os);
     void removeTables(const U2DataId &assemblyId, U2OpStatus& os);
     void removeAssemblyEntry(const U2DataId &assemblyId, U2OpStatus& os);
 

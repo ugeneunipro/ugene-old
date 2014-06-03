@@ -45,49 +45,44 @@ ImportFileToDatabaseTask::ImportFileToDatabaseTask(const QString& srcUrl, const 
     srcUrl(srcUrl),
     dstDbiRef(dstDbiRef),
     dstFolder(dstFolder),
-    options(options)
+    options(options),
+    format(NULL)
 {
+    GCOUNTER(cvar, tvar, "ImportFileToDatabaseTask");
     CHECK_EXT(QFileInfo(srcUrl).isFile(), setError(tr("It is not a file: ") + srcUrl), );
     CHECK_EXT(dstDbiRef.isValid(), setError(tr("Invalid database reference")), );
 }
 
-void ImportFileToDatabaseTask::run() {
-    GCOUNTER(cvar, tvar, "ImportFileToDatabaseTask");
+void ImportFileToDatabaseTask::prepare() {
     FormatDetectionConfig detectionConfig;
     detectionConfig.useImporters = true;
     QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(GUrl(srcUrl), detectionConfig);
     CHECK_EXT(!formats.isEmpty(), setError(tr("File is not recognized")), );
 
-    // TODO: use objects relations
-//    DocumentProviderTask* task = NULL;
-    DocumentFormat* format = formats.first().format;
-//    DocumentImporter* importer = formats.first().importer;
+    format = formats.first().format;
+    CHECK(NULL == format, );
+
+    DocumentImporter* importer = formats.first().importer;
+    CHECK(NULL != importer, );  // do something with unrecognized files here
+
+    QVariantMap hints = prepareHints();
+    DocumentProviderTask* importTask = importer->createImportTask(formats.first(), false, hints);
+    addSubTask(importTask);
+}
+
+void ImportFileToDatabaseTask::run() {
+    CHECK(NULL != format, );
 
     const QVariantMap hints = prepareHints();
 
-    if (NULL != format) {
-        IOAdapterFactory* ioFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(GUrl(srcUrl)));
-        CHECK_EXT(NULL != ioFactory, setError(tr("Unrecognized url: ") + srcUrl), );
+    IOAdapterFactory* ioFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(GUrl(srcUrl)));
+    CHECK_EXT(NULL != ioFactory, setError(tr("Unrecognized url: ") + srcUrl), );
 
-        CHECK_OP(stateInfo, );
-        Document* loadedDoc = format->loadDocument(ioFactory, srcUrl, hints, stateInfo);
-        CHECK_OP(stateInfo, );
-        loadedDoc->setDocumentOwnsDbiResources(false);
-        delete loadedDoc;
-    }
-
-    // TODO: do something if format is not recognized
-    // options.importUnknownAsUdr
-
-    // TODO: do something with import
-//    else {
-//        CHECK_EXT(NULL != importer, setError(tr("File can't be neither loaded nor imported")), );
-//        task = importer->createImportTask(formats.first(), true, hints);
-//    }
-}
-
-Task::ReportResult ImportFileToDatabaseTask::report() {
-    return ReportResult_Finished;
+    CHECK_OP(stateInfo, );
+    Document* loadedDoc = format->loadDocument(ioFactory, srcUrl, hints, stateInfo);
+    CHECK_OP(stateInfo, );
+    loadedDoc->setDocumentOwnsDbiResources(false);
+    delete loadedDoc;
 }
 
 const QString &ImportFileToDatabaseTask::getFilePath() const {
@@ -97,6 +92,7 @@ const QString &ImportFileToDatabaseTask::getFilePath() const {
 QVariantMap ImportFileToDatabaseTask::prepareHints() const {
     QVariantMap hints;
     hints[DocumentReadingMode_DontMakeUniqueNames] = 1;
+    hints[DocumentImporter::LOAD_RESULT_DOCUMENT] = false;
     hints[DocumentFormat::DBI_REF_HINT] = qVariantFromValue(dstDbiRef);
     hints[DocumentFormat::DBI_FOLDER_HINT] = dstFolder + (options.createSubfolderForEachFile ?
                                                               U2ObjectDbi::PATH_SEP + QFileInfo(srcUrl).fileName() :

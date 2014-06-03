@@ -19,10 +19,13 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QDir>
+
+#include <U2Core/AssemblyObject.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Timer.h>
-#include <U2Core/AssemblyObject.h>
+#include <U2Core/U2DbiRegistry.h>
 
 #include <U2Formats/AceFormat.h>
 
@@ -39,14 +42,12 @@ AceImporterTask::AceImporterTask(const GUrl& url, const QVariantMap& settings, c
     DocumentProviderTask(tr("ACE file import: %1").arg(url.fileName()), TaskFlags_NR_FOSE_COSC),
     convertTask(NULL),
     loadDocTask(NULL),
-    srcUrl(url) {
+    settings(settings),
+    hints(hints),
+    srcUrl(url)
+{
     if (settings.contains(AceImporter::DEST_URL)) {
         destUrl = GUrl(settings.value(AceImporter::DEST_URL).toString());
-    }
-
-    if (hints.contains(DocumentFormat::DBI_REF_HINT)) {
-        U2DbiRef ref = hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>();
-        hintedDbiUrl = ref.dbiId;
     }
 
     documentDescription = srcUrl.fileName();
@@ -54,16 +55,20 @@ AceImporterTask::AceImporterTask(const GUrl& url, const QVariantMap& settings, c
 
 void AceImporterTask::prepare() {
     startTime = TimeCounter::getCounter();
+    U2DbiRef hintedDbiRef = hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>();
+    U2DbiRef dstDbiRef;
 
     if (destUrl.isEmpty()) {
-        if (hintedDbiUrl.isEmpty()) {
-            destUrl = srcUrl.dirPath() + "/" + srcUrl.fileName() + ".ugenedb";
+        if (!hintedDbiRef.isValid()) {
+            dstDbiRef = U2DbiRef(SQLITE_DBI_ID, srcUrl.dirPath() + QDir::separator() + srcUrl.fileName() + ".ugenedb");
         } else {
-            destUrl = hintedDbiUrl;
+            dstDbiRef = hintedDbiRef;
         }
+    } else {
+        dstDbiRef = U2DbiRef(SQLITE_DBI_ID, destUrl.getURLString());
     }
 
-    convertTask = new ConvertAceToSqliteTask(srcUrl, destUrl, QVariantMap());
+    convertTask = new ConvertAceToSqliteTask(srcUrl, dstDbiRef, hints);
     addSubTask(convertTask);
 }
 
@@ -73,12 +78,15 @@ QList<Task*> AceImporterTask::onSubTaskFinished(Task* subTask) {
     CHECK_EXT(!subTask->isCanceled(), stateInfo.setCanceled(true), res);
 
     if (convertTask == subTask) {
-        loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(convertTask->getDestinationUrl());
-        if (loadDocTask == NULL) {
-            setError(tr("Failed to get load task for : %1").arg(convertTask->getDestinationUrl().getURLString()));
-            return res;
+        if (hints.value(AceImporter::LOAD_RESULT_DOCUMENT, true).toBool())  {
+            loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(convertTask->getDestinationUrl());
+            if (loadDocTask == NULL) {
+                setError(tr("Failed to get load task for : %1").arg(convertTask->getDestinationUrl().getURLString()));
+                return res;
+            }
+
+            res << loadDocTask;
         }
-        res << loadDocTask;
     }
 
     if (loadDocTask == subTask) {
@@ -123,7 +131,7 @@ DocumentProviderTask* AceImporter::createImportTask(const FormatDetectionResult&
     AceImporterTask* task = NULL;
     settings.insert(SRC_URL, res.url.getURLString());
 
-    if (showWizard && dialogFactory) {
+    if (showWizard && NULL != dialogFactory) {
         ImportDialog* dialog = dialogFactory->getDialog(settings);
         int result = dialog->exec();
         settings = dialog->getSettings();

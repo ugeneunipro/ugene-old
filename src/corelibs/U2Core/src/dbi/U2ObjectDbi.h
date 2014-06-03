@@ -142,7 +142,7 @@ public:
 
 
     /** Creates folder in the database.
-        The specified path must be a valid unique path, not existing in the database.
+        If the specified path is already presented in the database, nothing will be done.
         It is not required that parent folders must exist, they are created automatically.
         Requires: U2DbiFeature_ChangeFolders feature support
     */

@@ -105,6 +105,9 @@ public:
     const QList<QString>& getSupportedFileExtensions() const {return extensions;}
 
     void setDialogFactory(ImportDialogFactory* factory);
+
+    // NOTE: it is hint, it should be true by default
+    static const QString LOAD_RESULT_DOCUMENT;
     
 protected:
     QString                 id;

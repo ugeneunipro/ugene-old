@@ -420,9 +420,6 @@ qint64 SQLiteQuery::selectInt64() {
     if (step()) {
         return getInt64(0);
     }
-    if (!hasError()) {
-        setError(U2DbiL10n::tr("Query produced no results: %1").arg(sql));
-    }
     return -1;
 }
 

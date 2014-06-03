@@ -19,7 +19,11 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QDir>
+
 #include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/DbiDocumentFormat.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/TaskSignalMapper.h>
@@ -82,98 +86,10 @@ BAMDbiPlugin::BAMDbiPlugin() : Plugin(tr("BAM format support"), tr("Interface fo
     DocumentFormat *bamDbi = new BAMFormat();
     AppContext::getDocumentFormatRegistry()->registerFormat(bamDbi);
     AppContext::getDbiRegistry()->registerDbiFactory(new SamtoolsBasedDbiFactory());
-    //AppContext::getDbiRegistry()->registerDbiFactory(new DbiFactory());
 
     AppContext::getDocumentFormatRegistry()->getImportSupport()->addDocumentImporter(new BAMImporter());
 }
 
-void BAMDbiPlugin::sl_converter() {
-    try {
-        if(!AppContext::getDbiRegistry()->getRegisteredDbiFactories().contains(SQLITE_DBI_ID)) {
-            throw Exception(tr("SQLite DBI plugin is not loaded"));
-        }
-        LastUsedDirHelper lod;
-        QString fileName = QFileDialog::getOpenFileName(AppContext::getMainWindow()->getQMainWindow(), tr("Open BAM/SAM file"), lod.dir, tr("Assembly Files (*.bam *.sam)"));
-        if (!fileName.isEmpty()) {
-            lod.url = fileName;
-            GUrl sourceUrl(fileName);
-            QList<FormatDetectionResult> detectedFormats = DocumentUtils::detectFormat(sourceUrl);
-            bool sam = false;
-            if (!detectedFormats.isEmpty()) {
-                if (detectedFormats.first().format->getFormatId() == BaseDocumentFormats::SAM) {
-                    sam = true;
-                }
-            }
-            LoadInfoTask* task = new LoadInfoTask(sourceUrl, sam);
-            connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_infoLoaded(Task*)));
-            AppContext::getTaskScheduler()->registerTopLevelTask(task);
-        }
-    } catch(const Exception &e) {
-        QMessageBox::critical(NULL, tr("Error"), e.getMessage());
-    }
-}
-
-void BAMDbiPlugin::sl_infoLoaded(Task* task) {
-    LoadInfoTask* loadInfoTask = qobject_cast<LoadInfoTask*>(task);
-    bool sam = loadInfoTask->isSam();
-    if(!loadInfoTask->hasError()) {
-        const GUrl& sourceUrl = loadInfoTask->getSourceUrl();
-        BAMInfo& bamInfo = loadInfoTask->getInfo();
-        ConvertToSQLiteDialog convertDialog(sourceUrl, bamInfo, sam);
-        if(QDialog::Accepted == convertDialog.exec()) {
-            GUrl destUrl = convertDialog.getDestinationUrl();
-            ConvertToSQLiteTask *task = new ConvertToSQLiteTask(sourceUrl, destUrl, loadInfoTask->getInfo(), sam);
-            if(convertDialog.addToProject()) {
-                connect(new TaskSignalMapper(task), SIGNAL(si_taskFinished(Task*)), SLOT(sl_addDbFileToProject(Task*)));
-            }
-            AppContext::getTaskScheduler()->registerTopLevelTask(task);
-        }
-    }
-}
-
-void BAMDbiPlugin::sl_addDbFileToProject(Task * task) {
-    ConvertToSQLiteTask * convertToBAMTask = qobject_cast<ConvertToSQLiteTask*>(task);
-    if(convertToBAMTask == NULL) {
-        assert(false);
-        return;
-    }
-    if(convertToBAMTask->hasError() || convertToBAMTask->isCanceled()) {
-        return;
-    }
-    GUrl url = convertToBAMTask->getDestinationUrl();
-    assert(!url.isEmpty());
-    Project * prj = AppContext::getProject();
-    if(prj == NULL) {
-        QList<GUrl> list;
-        list.append(url);
-        Task * t = AppContext::getProjectLoader()->openWithProjectTask(list);
-        if (t != NULL) {
-            AppContext::getTaskScheduler()->registerTopLevelTask(t);
-        }
-        return;
-    }
-    Document * doc = prj->findDocumentByURL(url);
-    if(doc != NULL && doc->isLoaded()) {
-        return;
-    }
-    AddDocumentTask * addTask = NULL;
-    if(doc == NULL) {
-        IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url.getURLString()));
-        CHECK(NULL != iof, );
-        DocumentFormat * df = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::UGENEDB);
-        CHECK(NULL != df, );
-        U2OpStatus2Log os;
-        doc = df->createNewUnloadedDocument(iof, url, os);
-        CHECK_OP(os, );
-        addTask = new AddDocumentTask(doc);
-    }
-    LoadUnloadedDocumentAndOpenViewTask * openViewTask = new LoadUnloadedDocumentAndOpenViewTask(doc);
-    if(addTask != NULL) {
-        openViewTask->addSubTask(addTask);
-        openViewTask->setMaxParallelSubtasks(1);    
-    }
-    AppContext::getTaskScheduler()->registerTopLevelTask(openViewTask);
-}
 
 //////////////////////////////////////////////////////////////////////////
 // BAM importer
@@ -215,14 +131,15 @@ DocumentProviderTask* BAMImporter::createImportTask(const FormatDetectionResult&
 }
 
 
-BAMImporterTask::BAMImporterTask(const GUrl& url, bool _useGui, const QVariantMap &hints) 
-: DocumentProviderTask(tr("BAM/SAM file import: %1").arg(url.fileName()), TaskFlags_NR_FOSCOE), destUrl(NULL)
+BAMImporterTask::BAMImporterTask(const GUrl& url, bool _useGui, const QVariantMap &hints)
+    : DocumentProviderTask(tr("BAM/SAM file import: %1").arg(url.fileName()), TaskFlags_NR_FOSCOE),
+      hints(hints),
+      destUrl(NULL)
 {
     useGui = _useGui;
     sam = hints.value(SAM_HINT, false).toBool();
     if (hints.contains(DocumentFormat::DBI_REF_HINT)) {
-        U2DbiRef ref = hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>();
-        hintedDbiUrl = ref.dbiId;
+        hintedDbiRef = hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>();
     }
     convertTask = NULL;
     loadDocTask = NULL;
@@ -254,10 +171,10 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
     if( loadInfoTask == subTask ) {
         GUrl srcUrl = loadInfoTask->getSourceUrl();
         QString refUrl;
-        if (hintedDbiUrl.isEmpty()) {
-            destUrl = srcUrl.dirPath() + "/" + srcUrl.fileName() + ".ugenedb";
+        if (!hintedDbiRef.isValid()) {
+            dstDbiRef = U2DbiRef(SQLITE_DBI_ID, srcUrl.dirPath() + QDir::separator() + srcUrl.fileName() + ".ugenedb");
         } else {
-            destUrl = hintedDbiUrl;
+            dstDbiRef = hintedDbiRef;
         }
         bool convert = true;
         if (useGui) {
@@ -265,7 +182,7 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
             convertDialog.hideAddToProjectOption();
             int rc = convertDialog.exec();
             if (rc == QDialog::Accepted) {
-                destUrl = convertDialog.getDestinationUrl();
+                dstDbiRef = U2DbiRef(SQLITE_DBI_ID, convertDialog.getDestinationUrl().getURLString());
                 refUrl = convertDialog.getReferenceUrl();
                 convert = true;
             } else {
@@ -276,7 +193,12 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
         if (convert) {
             QString dirUrl = getDirUrl(loadInfoTask->getSourceUrl());
             if (!TmpDirChecker::checkWritePermissions(dirUrl)) {
-                dirUrl = getDirUrl(destUrl);
+                const GUrl url(U2DbiUtils::ref2Url(dstDbiRef));
+                if (url.isLocalFile()) {
+                    dirUrl = getDirUrl(url);
+                } else {
+                    dirUrl = getDirUrl(AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath());
+                }
             }
             prepareToImportTask = new PrepareToImportTask( loadInfoTask->getSourceUrl(), loadInfoTask->isSam(), refUrl, dirUrl );
             res << prepareToImportTask;
@@ -297,19 +219,20 @@ QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
             sourceURL = prepareToImportTask->getSourceUrl();
             bamInfo = loadInfoTask->getInfo();
         }
-        convertTask = new ConvertToSQLiteTask( sourceURL, destUrl, bamInfo, samFormat );
+        convertTask = new ConvertToSQLiteTask( sourceURL, dstDbiRef, bamInfo, samFormat, hints );
         res << convertTask;
         return res;
     }
     else if ( convertTask == subTask ) {
-        loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(convertTask->getDestinationUrl());
-        if (loadDocTask == NULL) {
-            setError(tr("Failed to get load task for : %1").arg(convertTask->getDestinationUrl().getURLString()));
-            return res;
+        if (hints.value(BAMImporter::LOAD_RESULT_DOCUMENT, true).toBool()) {
+            loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(convertTask->getDestinationUrl());
+            if (loadDocTask == NULL) {
+                setError(tr("Failed to get load task for : %1").arg(convertTask->getDestinationUrl().getURLString()));
+                return res;
+            }
+            res << loadDocTask;
         }
-        res << loadDocTask;
-    } else {
-        assert(subTask == loadDocTask);
+    } else if (subTask == loadDocTask) {
         resultDocument = loadDocTask->takeDocument();
     }
     return res;
