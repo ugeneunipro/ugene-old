@@ -794,7 +794,8 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
     const QString folderName = "import_test_0003";
     const QString folderPath = parentFolderPath + U2ObjectDbi::PATH_SEP + folderName;
     const QString fileDocName = "murine.gb";
-    const QString sequenceObjectName = "[s] NC_001363";
+    const QString sequenceObjectName = "NC_001363";
+    const QString sequenceWidgetName = "[s] NC_001363";
     const QString annotationObjectName = "NC_001363 features";
     const QString annotationTableName = "NC_001363 features [%1]";
     const QString databaseSequenceObjectPath = folderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
@@ -813,7 +814,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
     GTGlobals::sleep(200);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    QWidget* sequenceView = GTWidget::findWidget(os, connectionName + " " + sequenceObjectName);
+    QWidget* sequenceView = GTWidget::findWidget(os, connectionName + " " + sequenceWidgetName);
     CHECK_SET_ERR(NULL != sequenceView, "Sequence view wasn't opened");
 
     GTUtilsProjectTreeView::dragAndDrop(os, fileAnnotationObjectIndex, folderItemIndex);
@@ -821,7 +822,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     // Wait until project updater shows the item (something about 10 seconds)
-    GTGlobals::sleep(20000);
+    GTGlobals::sleep(10000);
 
     const QModelIndex databaseAnnotaionObjectItemIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseAnnotationObjectPath);
     CHECK_SET_ERR(databaseAnnotaionObjectItemIndex.isValid(), "Can't find the imported annotation object");
@@ -830,7 +831,8 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
 
     QTreeWidget *annotationTableWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
     CHECK_SET_ERR(NULL != annotationTableWidget, "Annotations tree widget is NULL");
-    GTUtilsProjectTreeView::dragAndDrop(os, databaseAnnotaionObjectItemIndex, annotationTableWidget);
+    QWidget* viewPort = annotationTableWidget->findChild<QWidget*>("qt_scrollarea_viewport");
+    GTUtilsProjectTreeView::dragAndDrop(os, databaseAnnotaionObjectItemIndex, viewPort);
 
     GTUtilsSharedDatabaseDocument::disconnectDatabase(os, databaseDoc);
     connectionName = connectToTestDatabase(os);
@@ -1149,7 +1151,7 @@ GUI_TEST_CLASS_DEFINITION(del_test_0001) {
     QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
     CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[s] dt0001_human_T1"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "dt0001_human_T1"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep(3000);
     GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
@@ -1188,13 +1190,13 @@ GUI_TEST_CLASS_DEFINITION(del_test_0002) {
     CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
     QAbstractItemModel *model = treeView->model();
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[s] dt0002_human_T1"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "dt0002_human_T1"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep(3000);
     GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
     CHECK_OP(os, );
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[m] dt0002_COI"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "dt0002_COI"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep(3000);
     GTWidget::findWidget(os, "msa_editor_dt0002_COI");
@@ -1232,7 +1234,7 @@ GUI_TEST_CLASS_DEFINITION(del_test_0003) {
     QAbstractItemModel *model = treeView->model();
 
     const QModelIndex rbItem = GTUtilsProjectTreeView::findIndex(os, "Recycle bin");
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[s] dt0003_human_T1"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "dt0003_human_T1"));
     GTMouseDriver::doubleClick(os);
     GTGlobals::sleep(3000);
     QWidget *seqView = GTWidget::findWidget(os, "ADV_single_sequence_widget_0", NULL, GTGlobals::FindOptions(false));
@@ -1262,7 +1264,7 @@ GUI_TEST_CLASS_DEFINITION(export_test_0001) {
     QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
     CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[s] et0001_sequence"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "et0001_sequence"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
     GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0001_export.fasta", GTGlobals::UseMouse));
     GTMouseDriver::click(os, Qt::RightButton);
@@ -1287,7 +1289,7 @@ GUI_TEST_CLASS_DEFINITION(export_test_0002) {
     QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
     CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[a] et0002_features"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "et0002_features"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << "ep_exportAnnotations2CSV"));
     GTUtilsDialog::waitForDialog(os, new ExportAnnotationsFiller(testDir + "_common_data/scenarios/sandbox/et0002_features.gb", ExportAnnotationsFiller::genbank, os));
     GTMouseDriver::click(os, Qt::RightButton);
@@ -1311,7 +1313,7 @@ GUI_TEST_CLASS_DEFINITION(export_test_0003) {
     QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
     CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[m] et0003_alignment"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "et0003_alignment"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_OBJECT));
     GTUtilsDialog::waitForDialog(os, new ExportDocumentDialogFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0003_alignment.aln", 
         ExportDocumentDialogFiller::CLUSTALW, false, true));
@@ -1336,7 +1338,7 @@ GUI_TEST_CLASS_DEFINITION(export_test_0004) {
     QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
     CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[as] et0004_assembly"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "et0004_assembly"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_OBJECT));
     GTUtilsDialog::waitForDialog(os, new ExportDocumentDialogFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0004_assembly.bam", 
         ExportDocumentDialogFiller::BAM, false, true));
@@ -1362,7 +1364,7 @@ GUI_TEST_CLASS_DEFINITION(export_test_0005) {
     QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
     CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[v] et0005_variations"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "et0005_variations"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_OBJECT));
     GTUtilsDialog::waitForDialog(os, new ExportDocumentDialogFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0005_variations.vcf", 
         ExportDocumentDialogFiller::VCF, false, true));
@@ -1387,7 +1389,7 @@ GUI_TEST_CLASS_DEFINITION(export_test_0006) {
     QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
     CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[t] et0006_text"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "et0006_text"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_OBJECT));
     GTUtilsDialog::waitForDialog(os, new ExportDocumentDialogFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0006_text.txt", 
         ExportDocumentDialogFiller::TEXT, false, true));
@@ -1413,7 +1415,7 @@ GUI_TEST_CLASS_DEFINITION(export_test_0007) {
     QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
     CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[c] et0007_chroma"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "et0007_chroma"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_CHROMATOGRAM));
     GTUtilsDialog::waitForDialog(os, new ExportChromatogramFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0007_chroma.scf",
         ExportChromatogramFiller::SCF, false, false, true));
@@ -1438,7 +1440,7 @@ GUI_TEST_CLASS_DEFINITION(export_test_0008) {
     QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
     CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "[tr] et0008_tree"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "et0008_tree"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_OBJECT));
     GTUtilsDialog::waitForDialog(os, new ExportDocumentDialogFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0008_tree.nwk", 
         ExportDocumentDialogFiller::NWK, false, true));
