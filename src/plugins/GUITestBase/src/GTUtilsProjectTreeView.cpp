@@ -19,19 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QDebug>
-
 #include "GTUtilsProjectTreeView.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
-#include "api/GTTreeWidget.h"
-#include "GTUtilsTaskTreeView.h"
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/MainWindow.h>
-#include <QTreeView>
 #include <QtGui/QDropEvent>
+#include <QtGui/QTreeView>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
 #else
@@ -152,37 +148,6 @@ QTreeView* GTUtilsProjectTreeView::getTreeView(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "getProjectTreeItemName"
-//QString GTUtilsProjectTreeView::getProjectTreeItemName(/*ProjViewItem* projViewItem*/) {
-
-    /*if (ProjViewItem::DOCUMENT == projViewItem->type()) {
-        ProjViewDocumentItem *documentItem = (ProjViewDocumentItem*)projViewItem;
-        CHECK_EXT((documentItem != NULL) && (documentItem->doc != NULL),,"");
-        return documentItem->doc->getName();
-    }
-
-    if (ProjViewItem::OBJECT == projViewItem->type()) {
-        ProjViewObjectItem *objectItem = (ProjViewObjectItem*)projViewItem;
-        CHECK_EXT((objectItem!=NULL) && (objectItem->obj != NULL),,"");
-        return objectItem->obj->getGObjectName();
-    }
-
-    if (ProjViewItem::TYPE == projViewItem->type()) {
-        ProjViewTypeItem *typeItem = (ProjViewTypeItem*)projViewItem;
-        CHECK_EXT(typeItem != NULL,,"");
-        return typeItem->typePName;
-    }
-
-    if (ProjViewItem::FOLDER == projViewItem->type()) {
-        ProjViewFolderItem *folderItem = (ProjViewFolderItem*)projViewItem;
-        CHECK_EXT(folderItem != NULL,,"");
-        return folderItem->name();
-    }*/
-
-    //return "";
-//}
-#undef GT_METHOD_NAME
-
 #define GT_METHOD_NAME "findItem"
 QModelIndex GTUtilsProjectTreeView::findIndex(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions &options) {
     return findIndex(os, itemName, QModelIndex(), options);
@@ -255,46 +220,6 @@ QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os,
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "findChildItem"
-QTreeWidgetItem* GTUtilsProjectTreeView::findChildItem(U2OpStatus &os, const QTreeWidgetItem *parent, const QString &itemName,
-                                                  const GTGlobals::FindOptions &options, QModelIndex /*index*/) {
-    GT_CHECK_RESULT(itemName.isEmpty() == false, "Item name is empty", NULL);
-    GT_CHECK_RESULT(parent != NULL, "Parent item is NULL", NULL);
-
-    /*for (int i=0; i<parent->childCount(); i++) {
-        QTreeWidgetItem *item = parent->child(i);
-        QString treeItemName = getProjectTreeItemName((ProjViewItem*)item);
-        qDebug() << treeItemName << " ";
-        if (treeItemName == itemName) {
-            return item;
-        }
-    }*/
-    GT_CHECK_RESULT(options.failIfNull == false, "Item " + itemName + " not found in tree widget", NULL);
-
-    return NULL;
-}
-#undef GT_METHOD_NAME
-
-#define GT_METHOD_NAME "findItemByText("
-QTreeWidgetItem* GTUtilsProjectTreeView::findItemByText(U2OpStatus &os, const QTreeWidget *treeWidget, const QString &itemName,
-                                                  const GTGlobals::FindOptions &options) {
-
-    GT_CHECK_RESULT(itemName.isEmpty() == false, "Item name is empty", NULL);
-    GT_CHECK_RESULT(treeWidget != NULL, "Tree widget is NULL", NULL);
-
-    /*QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
-    foreach (QTreeWidgetItem* item, treeItems) {
-        qDebug() << "Found = " << itemName << " has = " << item->text(0) ;
-        if (item->text(0) == itemName) {
-            return item;
-        }
-    }*/
-    GT_CHECK_RESULT(options.failIfNull == false, "Item " + itemName + " not found in tree widget", NULL);
-
-    return NULL;
-}
-#undef GT_METHOD_NAME
-
 #define GT_METHOD_NAME "getSelectedItem"
 QString GTUtilsProjectTreeView::getSelectedItem(U2OpStatus &os)
 {
@@ -306,7 +231,6 @@ QString GTUtilsProjectTreeView::getSelectedItem(U2OpStatus &os)
     GT_CHECK_RESULT(list.size() == 1, QString("there are %1 selected items").arg(list.size()), "");
 
     QModelIndex index = list.at(0);
-    //treeView->model()->data(index, Qt::DisplayRole);
     QString result = index.data(Qt::DisplayRole).toString();
 
     return result;
@@ -381,9 +305,8 @@ void GTUtilsProjectTreeView::dragAndDrop(U2OpStatus &os, QModelIndex from, QWidg
     QMimeData *mimeData = model->mimeData(QModelIndexList()<<from);
 
     QPoint enterPos = getItemCenter(os, from);
-    QPoint dropPos = to->mapToGlobal(to->geometry().center());
 
-    sendDragAndDrop(os, mimeData, enterPos, dropPos);
+    sendDragAndDrop(os, mimeData, enterPos, to);
 }
 
 void GTUtilsProjectTreeView::dragAndDropSeveralElements(U2OpStatus &os, QModelIndexList from, QModelIndex to){
@@ -429,6 +352,35 @@ void GTUtilsProjectTreeView::sendDragAndDrop(U2OpStatus &os, QMimeData *mimeData
 
     QDropEvent* dropEvent = new QDropEvent(localDropPos, dropActions, mimeData, Qt::LeftButton, 0);
     GTGlobals::sendEvent(veiwPort, dropEvent);
+}
+
+void GTUtilsProjectTreeView::sendDragAndDrop(U2OpStatus &os, QMimeData *mimeData, QPoint enterPos, QWidget *dropWidget){
+    QTreeView *treeView = getTreeView(os);
+    QAbstractItemModel *model = treeView->model();
+    QWidget* veiwPort = treeView->findChild<QWidget*>("qt_scrollarea_viewport");
+
+    QPoint localEnterPos = treeView->mapFromGlobal(enterPos);
+
+    GTMouseDriver::moveTo(os, enterPos);
+    Qt::DropActions dropActions = model->supportedDropActions();
+
+    QDragEnterEvent* dragEnterEvent = new QDragEnterEvent(localEnterPos, dropActions, mimeData, Qt::LeftButton, 0);
+    GTGlobals::sendEvent(veiwPort, dragEnterEvent);
+
+
+    GTMouseDriver::moveTo(os, dropWidget->mapToGlobal(dropWidget->geometry().center()));
+    QString s = dropWidget->objectName();
+    QString s1 = dropWidget->metaObject()->className();
+
+    QString sp = dropWidget->parent()->objectName();
+    QString sp1 = dropWidget->parent()->metaObject()->className();
+
+
+    QDragMoveEvent* dragmoveEvent = new QDragMoveEvent(dropWidget->geometry().center(), dropActions, mimeData, Qt::LeftButton, 0);
+    GTGlobals::sendEvent(dropWidget, dragmoveEvent );
+
+    QDropEvent* dropEvent = new QDropEvent(dropWidget->geometry().center(), dropActions, mimeData, Qt::LeftButton, 0);
+    GTGlobals::sendEvent(dropWidget, dropEvent);
 }
 
 #undef GT_CLASS_NAME
