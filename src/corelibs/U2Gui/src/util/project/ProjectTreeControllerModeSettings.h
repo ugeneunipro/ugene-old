@@ -35,10 +35,9 @@ class LoadDocumentTaskProvider;
 enum ProjectTreeGroupMode {
     ProjectTreeGroupMode_Flat,         //objects are not grouped, only unloaded documents are shown
     ProjectTreeGroupMode_ByDocument,   //objects are grouped by document
-    ProjectTreeGroupMode_ByType,       //objects are grouped by type
 
     ProjectTreeGroupMode_Min = ProjectTreeGroupMode_Flat,
-    ProjectTreeGroupMode_Max = ProjectTreeGroupMode_ByType
+    ProjectTreeGroupMode_Max = ProjectTreeGroupMode_ByDocument
 };
 
 //filtered objects and documents are not shown in project tree

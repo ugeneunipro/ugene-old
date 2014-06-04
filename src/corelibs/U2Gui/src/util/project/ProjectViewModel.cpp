@@ -238,7 +238,13 @@ int ProjectViewModel::rowCount(const QModelIndex &parent) const {
 
     switch (itemType(parent)) {
         case DOCUMENT: {
-            return getChildrenCount(toDocument(parent), U2ObjectDbi::ROOT_FOLDER);
+            Document *doc = toDocument(parent);
+            SAFE_POINT(NULL != doc, "NULL document", 0);
+            if (settings.isDocumentShown(doc)) { // a trick for easy hiding of a document and its content
+                return getChildrenCount(doc, U2ObjectDbi::ROOT_FOLDER);
+            } else {
+                return 0;
+            }
         }
         case FOLDER: {
             Folder *folder = toFolder(parent);
@@ -262,6 +268,9 @@ Qt::ItemFlags ProjectViewModel::flags(const QModelIndex &index) const {
         case DOCUMENT: {
             Document *doc = toDocument(index);
             SAFE_POINT(NULL != doc, "NULL document", result);
+            if (!settings.isDocumentShown(doc)) {
+                return Qt::NoItemFlags;
+            }
             if (isDropEnabled(doc)) {
                 result |= Qt::ItemIsDropEnabled;
             }
@@ -285,6 +294,9 @@ Qt::ItemFlags ProjectViewModel::flags(const QModelIndex &index) const {
         case OBJECT: {
             GObject *obj = toObject(index);
             SAFE_POINT(NULL != obj, "NULL object", result);
+            if (!settings.isObjectShown(obj)) {
+                return Qt::NoItemFlags;
+            }
             if ((GObjectTypes::UNLOADED == obj->getGObjectType()) && !settings.allowSelectUnloaded) {
                 result &= ~QFlags<Qt::ItemFlag>(Qt::ItemIsEnabled);
             } else {
@@ -674,7 +686,7 @@ bool ProjectViewModel::renameFolderInDb(Document *doc, const QString &oldPath, Q
 }
 
 bool ProjectViewModel::isFilterActive() const {
-    return !settings.tokensToShow.isEmpty();
+    return !settings.tokensToShow.isEmpty() || (settings.groupMode == ProjectTreeGroupMode_Flat);
 }
 
 bool ProjectViewModel::isFolderVisible(Document *doc, const QString &path) const {
@@ -1094,6 +1106,10 @@ QVariant ProjectViewModel::data(Document *doc, int role) const {
         return getDocumentDecorationData(doc);
     case Qt::ToolTipRole :
         return getDocumentToolTipData(doc);
+    case Qt::SizeHintRole :
+        if (!settings.isDocumentShown(doc)) {
+            return 0;
+        }
     default:
         return QVariant();
     }
@@ -1202,6 +1218,10 @@ QVariant ProjectViewModel::data(GObject *obj, int role) const {
         return obj->getGObjectName();
     case Qt::DecorationRole :
         return getObjectDecorationData(obj, itemIsEnabled);
+    case Qt::SizeHintRole :
+        if (!settings.isObjectShown(obj)) {
+            return 0;
+        }
     default:
         return QVariant();
     }
@@ -1227,7 +1247,7 @@ QVariant ProjectViewModel::getObjectDisplayData(GObject *obj, Document *parentDo
     text += obj->getGObjectName();
 
     ProjectTreeGroupMode groupMode = settings.groupMode;
-    if (groupMode == ProjectTreeGroupMode_ByType || groupMode == ProjectTreeGroupMode_Flat) {
+    if (groupMode == ProjectTreeGroupMode_Flat) {
         text += " [" + parentDoc->getName() + "]";
     }
     return text;
