@@ -118,7 +118,7 @@ void MysqlModDbi::initSqlSchema(U2OpStatus &os) {
 U2SingleModStep MysqlModDbi::getModStep(const U2DataId &objectId, qint64 trackVersion, U2OpStatus &os) {
     U2SingleModStep res;
 
-    static const QString queryString = "SELECT id, object, otype, oextra, version, modType, details FROM SingleModStep WHERE object = :object AND version = :version ORDER BY id";
+    static const QString queryString = "SELECT id, object, otype, oextra, version, modType, details FROM SingleModStep WHERE object = :object AND version = :version LIMIT 1";
     U2SqlQuery q(queryString, db, os);
     q.bindDataId("object", objectId);
     q.bindInt64("version", trackVersion);
@@ -158,7 +158,7 @@ QList< QList<U2SingleModStep> > MysqlModDbi::getModSteps(const U2DataId &masterO
     Q_UNUSED(t);
 
     qint64 userStepId = -1;
-    static const QString qUserStepIdString = "SELECT id FROM UserModStep WHERE object = :object AND version = :version";
+    static const QString qUserStepIdString = "SELECT id FROM UserModStep WHERE object = :object AND version = :version LIMIT 1";
     U2SqlQuery qGetUserStepId(qUserStepIdString, db, os);
     qGetUserStepId.bindDataId("object", masterObjId);
     qGetUserStepId.bindInt64("version", version);
@@ -416,7 +416,7 @@ void MysqlModDbi::endCommonUserModStep(const U2DataId &userMasterObjId, U2OpStat
         Q_UNUSED(t);
 
         // Get multiple steps IDs
-        static const QString qSelectMultiStepsString = "SELECT id FROM MultiModStep WHERE userStepId = :userStepId";
+        static const QString qSelectMultiStepsString = "SELECT id FROM MultiModStep WHERE userStepId = :userStepId LIMIT 1";
         U2SqlQuery qSelectMultiSteps(qSelectMultiStepsString, db, os);
         qSelectMultiSteps.bindInt64("userStepId", userModStepId);
 
@@ -539,7 +539,7 @@ bool MysqlModDbi::canUndo(const U2DataId &objectId, U2OpStatus &os) {
     CHECK_OP(os, false);
 
     // Verify if there are steps
-    static const QString qString = "SELECT id FROM UserModStep WHERE object = :object AND version < :version";
+    static const QString qString = "SELECT id FROM UserModStep WHERE object = :object AND version < :version LIMIT 1";
     U2SqlQuery q(qString, db, os);
     q.bindDataId("object", objectId);
     q.bindInt64("version", objVersion);
@@ -556,7 +556,7 @@ bool MysqlModDbi::canRedo(const U2DataId &objectId, U2OpStatus &os) {
     CHECK_OP(os, false);
 
     // Verify if there are steps
-    static const QString qString = "SELECT id FROM UserModStep WHERE object = :object AND version >= :version";
+    static const QString qString = "SELECT id FROM UserModStep WHERE object = :object AND version >= :version LIMIT 1";
     U2SqlQuery q(qString, db, os);
     q.bindDataId("object", objectId);
     q.bindInt64("version", objVersion);

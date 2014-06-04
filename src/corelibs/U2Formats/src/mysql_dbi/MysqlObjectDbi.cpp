@@ -53,8 +53,16 @@ void MysqlObjectDbi::initSqlSchema(U2OpStatus& os) {
     // name is a visual name of the object shown to user.
     U2SqlQuery("CREATE TABLE Object (id BIGINT PRIMARY KEY AUTO_INCREMENT, type INTEGER NOT NULL, "
                                     "version BIGINT NOT NULL DEFAULT 1, rank INTEGER NOT NULL, "
-                                    "name TEXT NOT NULL, trackMod INTEGER NOT NULL DEFAULT 0, "
-                                    "lastAccessTime TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8", db, os).execute();
+                                    "name TEXT NOT NULL, trackMod INTEGER NOT NULL DEFAULT 0) ENGINE=InnoDB DEFAULT CHARSET=utf8", db, os).execute();
+    CHECK_OP(os, );
+
+    U2SqlQuery("CREATE TABLE ObjectAccessTrack (object BIGINT PRIMARY KEY, lastAccessTime TIMESTAMP, "
+                "FOREIGN KEY(object) REFERENCES Object(id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8", db, os).execute();
+    CHECK_OP(os, );
+
+    U2SqlQuery("CREATE TRIGGER ObjectCreation AFTER INSERT ON Object "
+                "FOR EACH ROW BEGIN "
+                "INSERT INTO ObjectAccessTrack(object) VALUES(NEW.id); END;", db, os).execute();
     CHECK_OP(os, );
 
     // parent-child object relation
@@ -230,7 +238,7 @@ QStringList MysqlObjectDbi::getObjectFolders(const U2DataId& objectId, U2OpStatu
 qint64 MysqlObjectDbi::getFolderLocalVersion(const QString& folder, U2OpStatus& os) {
     const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(folder);
 
-    static const QString queryString = "SELECT vlocal FROM Folder WHERE path = :path";
+    static const QString queryString = "SELECT vlocal FROM Folder WHERE path = :path LIMIT 1";
     U2SqlQuery q(queryString, db, os);
     q.bindString("path", canonicalFolder);
     return q.selectInt64();
@@ -239,7 +247,7 @@ qint64 MysqlObjectDbi::getFolderLocalVersion(const QString& folder, U2OpStatus& 
 qint64 MysqlObjectDbi::getFolderGlobalVersion(const QString& folder, U2OpStatus& os) {
     const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(folder);
 
-    static const QString queryString = "SELECT vglobal FROM Folder WHERE path = :path";
+    static const QString queryString = "SELECT vglobal FROM Folder WHERE path = :path LIMIT 1";
     U2SqlQuery q(queryString, db, os);
     q.bindString("path", canonicalFolder);
     return q.selectInt64();
@@ -500,9 +508,9 @@ void MysqlObjectDbi::updateObjectAccessTime(const U2DataId &objectId, U2OpStatus
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
 
-    static const QString queryString = "UPDATE Object SET lastAccessTime = NOW() WHERE id = :id";
+    static const QString queryString = "UPDATE ObjectAccessTrack SET lastAccessTime = NOW() WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("id", objectId);
+    q.bindDataId("object", objectId);
     const int affectedRows = q.update();
     if (1 != affectedRows) {
         os.setError(QString("Invalid affected rows count for the object access time update. Object ID: %1, affected rows: %2")
@@ -737,7 +745,7 @@ void MysqlObjectDbi::updateObject(U2Object& obj, U2OpStatus& os) {
 qint64 MysqlObjectDbi::getFolderId(const QString& path, bool mustExist, MysqlDbRef* db, U2OpStatus& os) {
     const QString canonicalPath = U2DbiUtils::makeFolderCanonical(path);
 
-    static const QString queryString = "SELECT id FROM Folder WHERE path = :path";
+    static const QString queryString = "SELECT id FROM Folder WHERE path = :path LIMIT 1";
     U2SqlQuery q(queryString, db, os);
     q.bindString("path", canonicalPath);
     qint64 res = q.selectInt64();
@@ -855,11 +863,11 @@ void MysqlObjectDbi::updateObjectCore(U2Object &obj, U2OpStatus &os) {
 }
 
 bool MysqlObjectDbi::isObjectInUse(const U2DataId& id, U2OpStatus& os) {
-    static const QString queryString = "SELECT COUNT(*) FROM Object WHERE id = :id "
+    static const QString queryString = "SELECT COUNT(*) FROM ObjectAccessTrack WHERE object = :object "
         "AND lastAccessTime + INTERVAL " + QString::number(OBJ_USAGE_CHECK_INTERVAL)
         + " SECOND > NOW()";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("id", id);
+    q.bindDataId("object", id);
     return 1 == q.selectInt64();
 }
 
