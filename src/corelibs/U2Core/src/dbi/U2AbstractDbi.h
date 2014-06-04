@@ -130,12 +130,12 @@ public:
         return QHash<U2Object, QString>();
     }
 
-    virtual bool removeObject(const U2DataId&, const QString&, U2OpStatus& os) {
+    virtual bool removeObject(const U2DataId&, bool, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_RemoveObjects, getRootDbi(), os);
         return false;
     }
 
-    virtual bool removeObjects(const QList<U2DataId>&, const QString&, U2OpStatus& os) {
+    virtual bool removeObjects(const QList<U2DataId>&, bool, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_RemoveObjects, getRootDbi(), os);
         return false;
     }

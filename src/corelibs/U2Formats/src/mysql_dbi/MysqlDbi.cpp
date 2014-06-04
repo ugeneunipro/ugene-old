@@ -58,8 +58,6 @@ MysqlDbi::MysqlDbi()
     sequenceDbi =           new MysqlSequenceDbi(this);
     udrDbi =                new MysqlUdrDbi(this);
     variantDbi =            new MysqlVariantDbi(this);
-
-    operationsBlockTransaction = NULL;
 }
 
 MysqlDbi::~MysqlDbi() {
@@ -210,16 +208,12 @@ void MysqlDbi::setProperty(const QString& name, const QString& value, U2OpStatus
 }
 
 void MysqlDbi::startOperationsBlock(U2OpStatus& os) {
-    SAFE_POINT(NULL == operationsBlockTransaction, "Operations block initializing error", );
-
-    MysqlTransaction *newTransaction = new MysqlTransaction(db, os);
-    operationsBlockTransaction = newTransaction;
+    operationsBlockTransactions.push(new MysqlTransaction(db, os));
 }
 
-void MysqlDbi::stopOperationBlock() {
-    MysqlTransaction *transactionToDelete = operationsBlockTransaction;
-    operationsBlockTransaction = NULL;
-    delete transactionToDelete;
+void MysqlDbi::stopOperationBlock(U2OpStatus& os) {
+    SAFE_POINT_EXT(!operationsBlockTransactions.isEmpty(), os.setError("There is no transaction to delete"), );
+    delete operationsBlockTransactions.pop();
 }
 
 QMutex * MysqlDbi::getDbMutex( ) const {

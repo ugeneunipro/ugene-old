@@ -150,7 +150,7 @@ public:
 
     virtual void startOperationsBlock(U2OpStatus &os);
 
-    virtual void stopOperationBlock();
+    virtual void stopOperationBlock(U2OpStatus& os);
 
     QMutex * getDbMutex( ) const;
 

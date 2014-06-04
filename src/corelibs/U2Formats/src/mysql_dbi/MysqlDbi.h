@@ -22,6 +22,8 @@
 #ifndef _U2_MYSQL_DBI_H_
 #define _U2_MYSQL_DBI_H_
 
+#include <QtCore/QStack>
+
 #include <U2Core/U2AbstractDbi.h>
 #include <U2Core/U2DbiRegistry.h>
 
@@ -110,7 +112,7 @@ public:
 
     virtual void startOperationsBlock(U2OpStatus& os);
 
-    virtual void stopOperationBlock();
+    virtual void stopOperationBlock(U2OpStatus &os);
 
     virtual QMutex * getDbMutex( ) const;
 
@@ -150,7 +152,7 @@ private:
     MysqlUdrDbi*                       udrDbi;
     MysqlVariantDbi*                   variantDbi;
 
-    MysqlTransaction*                  operationsBlockTransaction;
+    QStack<MysqlTransaction*>          operationsBlockTransactions;
 };
 
 class U2FORMATS_EXPORT MysqlDbiFactory : public U2DbiFactory {

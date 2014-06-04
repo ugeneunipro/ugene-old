@@ -308,7 +308,8 @@ TmpDbiObjects::~TmpDbiObjects() {
 }
 
 DbiOperationsBlock::DbiOperationsBlock(const U2DbiRef &_dbiRef, U2OpStatus &os) :
-    dbiRef(_dbiRef)
+    dbiRef(_dbiRef),
+    os(os)
 {
     connection = new DbiConnection(dbiRef, os);
     CHECK_OP(os, );
@@ -316,7 +317,7 @@ DbiOperationsBlock::DbiOperationsBlock(const U2DbiRef &_dbiRef, U2OpStatus &os) 
 }
 
 DbiOperationsBlock::~DbiOperationsBlock() {
-    connection->dbi->stopOperationBlock();
+    connection->dbi->stopOperationBlock(os);
     delete connection;
 }
 

@@ -79,7 +79,7 @@ void U2Dbi::startOperationsBlock(U2OpStatus &) {
 
 }
 
-void U2Dbi::stopOperationBlock() {
+void U2Dbi::stopOperationBlock(U2OpStatus&) {
 
 }
 

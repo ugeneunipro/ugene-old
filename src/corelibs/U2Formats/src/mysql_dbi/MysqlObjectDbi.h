@@ -95,18 +95,18 @@ public:
     // Write methods for objects
 
     /**
-            Removes object from the specified folder. If folder is empty - removes object from all folders.
-            Note: the object & all related data is automatically removed from database when
-            object is not placed in any folder or is not a part of any other more complex object (ex: sequence in msa)
-        */
-    virtual bool removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os);
+        Removes the object from the database.
+        If @force is false, object won't be removed if it was changed recently
+    */
+    virtual bool removeObject(const U2DataId& dataId, bool force, U2OpStatus& os);
+    virtual bool removeObject(const U2DataId& dataId, U2OpStatus& os);
 
     /**
-            Removes collection of objects from the specified folder. If folder is empty - removes object from all folders.
-            Note: the object & all related data is automatically removed from database when
-            object is not placed in any folder or is not a part of any other more complex object (ex: sequence in msa)
-        */
-    virtual bool removeObjects(const QList<U2DataId>& dataIds, const QString& folder, U2OpStatus& os);
+        Removes collection of objects from the database.
+        If @force is false, object won't be removed if it was changed recently
+    */
+    virtual bool removeObjects(const QList<U2DataId>& dataIds, bool force, U2OpStatus& os);
+    virtual bool removeObjects(const QList<U2DataId>& dataIds, U2OpStatus& os);
 
     virtual void renameObject(const U2DataId &id, const QString &newName, U2OpStatus &os);
 
@@ -212,7 +212,7 @@ private:
     void updateObjectCore(U2Object& obj, U2OpStatus& os);
 
     /** Removes object from database, returns 'true' if object is completely erased */
-    bool removeObjectImpl(const U2DataId& id, const QString& folder, U2OpStatus& os);
+    bool removeObjectImpl(const U2DataId& id, bool force, U2OpStatus& os);
 
     /** Creates folder, parent folder must exists */
     void createFolderCore(const QString& folder, U2OpStatus& os);

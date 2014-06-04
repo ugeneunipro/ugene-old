@@ -112,6 +112,9 @@ typedef QFlags<DocumentFormatFlag> DocumentFormatFlags;
 /** Hint for splitting variations*/
 #define DocumentReadingMode_SplitVariationAlleles        "split-alleles"
 
+/** Set of hints that can be processed during objects convertion */
+#define ObjectConvertion_UseGenbankHeader                   "use-genbank-header"
+
 
 class U2CORE_EXPORT DocumentFormat: public QObject {
     Q_OBJECT
@@ -417,6 +420,7 @@ private:
     static void fromScriptValue(const QScriptValue &object, Document* &out);
 
 protected:
+    void removeObjectsDataFromDbi(QList<GObject*>objects);
     bool _removeObject(GObject* o, bool deleteObjects = true);
     void _addObject(GObject* obj);
     void _addObjectToHierarchy(GObject* obj);

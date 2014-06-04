@@ -249,35 +249,39 @@ qint64 MysqlObjectDbi::getFolderGlobalVersion(const QString& folder, U2OpStatus&
 //////////////////////////////////////////////////////////////////////////
 // Write methods for objects
 
-bool MysqlObjectDbi::removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os) {
-    const QString canonicalFolder = folder.isEmpty() ? folder : U2DbiUtils::makeFolderCanonical(folder);
-
-    bool result = removeObjectImpl(dataId, canonicalFolder, os);
+bool MysqlObjectDbi::removeObject(const U2DataId& dataId, bool force, U2OpStatus& os) {
+    bool result = removeObjectImpl(dataId, force, os);
     CHECK_OP(os, result);
 
     if (result) {
-        onFolderUpdated(canonicalFolder);
+        onFolderUpdated("");
     }
     return result;
 }
 
-bool MysqlObjectDbi::removeObjects(const QList<U2DataId>& dataIds, const QString& folder, U2OpStatus& os) {
+bool MysqlObjectDbi::removeObject(const U2DataId &dataId, U2OpStatus &os) {
+    return removeObject(dataId, false, os);
+}
+
+bool MysqlObjectDbi::removeObjects(const QList<U2DataId>& dataIds, bool force, U2OpStatus& os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
 
-    const QString canonicalFolder = folder.isEmpty() ? folder : U2DbiUtils::makeFolderCanonical(folder);
-
     bool globalResult = true;
     foreach (const U2DataId &id, dataIds) {
-        bool localResult = removeObjectImpl(id, canonicalFolder, os);
+        bool localResult = removeObjectImpl(id, force, os);
         if (globalResult && !localResult) {
             globalResult = false;
         }
         CHECK_OP_BREAK(os);
     }
 
-    onFolderUpdated(canonicalFolder);
+    onFolderUpdated("");
     return globalResult;
+}
+
+bool MysqlObjectDbi::removeObjects(const QList<U2DataId> &dataIds, U2OpStatus &os) {
+    return removeObjects(dataIds, false, os);
 }
 
 void MysqlObjectDbi::renameObject(const U2DataId &id, const QString &newName, U2OpStatus &os) {
@@ -357,7 +361,7 @@ bool MysqlObjectDbi::removeFolder(const QString& folder, U2OpStatus& os) {
 
         // Remove all objects in the folder
         if (!objects.isEmpty()) {
-            bool deleted = removeObjects(objects, canonicalFolder, os);
+            bool deleted = removeObjects(objects, false, os);
             CHECK_OP(os, false);
             if (result && !deleted) {
                 result = false;
@@ -822,7 +826,7 @@ void MysqlObjectDbi::removeParent(const U2DataId& parentId, const U2DataId& chil
     if (!folders.isEmpty() || os.hasError()) {
         return;
     }
-    removeObject(childId, "", os);
+    removeObject(childId, false, os);
 }
 
 void MysqlObjectDbi::setParent(const U2DataId& parentId, const U2DataId& childId, U2OpStatus& os) {
@@ -885,11 +889,11 @@ void MysqlObjectDbi::removeObjectFromAllFolders(const U2DataId &id, U2OpStatus &
     deleteQ.execute();
 }
 
-bool MysqlObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& /*folder*/, U2OpStatus& os) {
+bool MysqlObjectDbi::removeObjectImpl(const U2DataId& objectId, bool force, U2OpStatus& os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
 
-    if (isObjectInUse(objectId, os)) {
+    if (!force && isObjectInUse(objectId, os)) {
         return false;
     }
 
@@ -924,6 +928,7 @@ bool MysqlObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& /
     CHECK_OP(os, false);
 
     MysqlUtils::remove("Object", "id", objectId, 1, db, os);
+
     return !os.hasError();
 }
 

@@ -137,30 +137,34 @@ U2DbiIterator<U2DataId>* SQLiteObjectDbi::getObjectsByVisualName(const QString& 
 //////////////////////////////////////////////////////////////////////////
 // Write methods for objects
 
-bool SQLiteObjectDbi::removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os) {
-    const QString canonicalFolder = folder.isEmpty() ? folder : U2DbiUtils::makeFolderCanonical(folder);
-
-    bool result = removeObjectImpl(dataId, canonicalFolder, os);
+bool SQLiteObjectDbi::removeObject(const U2DataId& dataId, bool /*force*/, U2OpStatus& os) {
+    bool result = removeObjectImpl(dataId, os);
     CHECK_OP(os, result);
     if (result) {
-        onFolderUpdated(canonicalFolder);
+        onFolderUpdated("");
     }
     return result;
 }
 
-bool SQLiteObjectDbi::removeObjects(const QList<U2DataId>& dataIds, const QString& folder, U2OpStatus& os) {
-    const QString canonicalFolder = folder.isEmpty() ? folder : U2DbiUtils::makeFolderCanonical(folder);
+bool SQLiteObjectDbi::removeObject(const U2DataId &dataId, U2OpStatus &os) {
+    return removeObject(dataId, false, os);
+}
 
+bool SQLiteObjectDbi::removeObjects(const QList<U2DataId>& dataIds, bool /*force*/, U2OpStatus& os) {
     bool globalResult = true;
     foreach (U2DataId id, dataIds) {
-        bool localResult = removeObjectImpl(id, folder, os);
+        bool localResult = removeObjectImpl(id, os);
         if (globalResult && !localResult) {
             globalResult = false;
         }
         CHECK_OP_BREAK(os);
     }
-    onFolderUpdated(folder);
+    onFolderUpdated("");
     return globalResult;
+}
+
+bool SQLiteObjectDbi::removeObjects(const QList<U2DataId> &dataIds, U2OpStatus &os) {
+    return removeObjects(dataIds, false, os);
 }
 
 void SQLiteObjectDbi::renameObject(const U2DataId &id, const QString &newName, U2OpStatus &os) {
@@ -206,7 +210,7 @@ void SQLiteObjectDbi::removeObjectFromAllFolders(const U2DataId &id, U2OpStatus 
     deleteQ.update();
 }
 
-bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, const QString& /*folder*/, U2OpStatus& os) {
+bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, U2OpStatus& os) {
     SQLiteTransaction t(db, os);
     Q_UNUSED(t);
 
@@ -394,7 +398,7 @@ bool SQLiteObjectDbi::removeFolder(const QString& folder, U2OpStatus& os) {
 
         // Remove all objects in the folder
         if (!objects.isEmpty()) {
-            bool deleted = removeObjects(objects, folder, os);
+            bool deleted = removeObjects(objects, false, os);
             CHECK_OP(os, false);
             if (result && !deleted) {
                 result = false;
@@ -460,7 +464,7 @@ void SQLiteObjectDbi::moveObjects(const QList<U2DataId>& objectIds, const QStrin
     addObjectsToFolder(objectIds, toFolder, os);
     CHECK_OP(os, );
 
-    removeObjects(objectIds, fromFolder, os);
+    removeObjects(objectIds, false, os);
 
     if (saveFromFolder) {
         CHECK_OP(os, );

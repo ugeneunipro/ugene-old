@@ -19,8 +19,11 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QCoreApplication>
 #include <QtCore/QFileInfo>
 #include <QtCore/QScopedPointer>
+#include <QtCore/QThread>
+
 #include <QtScript/QScriptEngine>
 
 #include <U2Core/AppContext.h>
@@ -267,11 +270,9 @@ Document::~Document() {
         }
     }
 
-
     if (isDocumentOwnsDbiResources()) {
         if (dbiRef.isValid()) {
-            DeleteObjectsTask *deleteTask = new DeleteObjectsTask(objects);
-            AppContext::getTaskScheduler()->registerTopLevelTask(deleteTask);
+            removeObjectsDataFromDbi(objects);
         }
 
         foreach (GObject* obj, objects) {
@@ -279,6 +280,7 @@ Document::~Document() {
         }
     }
 
+    qDeleteAll(objects);
     delete ctxState;
 }
 
@@ -350,8 +352,7 @@ bool Document::_removeObject(GObject* obj, bool deleteObjects) {
     emit si_objectRemoved(obj);
 
     if (deleteObjects) {
-        DeleteObjectsTask *deleteTask = new DeleteObjectsTask(QList<GObject *>() << obj);
-        AppContext::getTaskScheduler()->registerTopLevelTask(deleteTask);
+        removeObjectsDataFromDbi(QList<GObject *>() << obj);
         delete obj;
     }
     return true;
@@ -723,7 +724,30 @@ QScriptValue Document::toScriptValue(QScriptEngine *engine, Document* const &in)
 
 void Document::fromScriptValue(const QScriptValue &object, Document* &out) 
 {
-    out = qobject_cast<Document*>(object.toQObject()); 
+    out = qobject_cast<Document*>(object.toQObject());
+}
+
+void Document::removeObjectsDataFromDbi(QList<GObject *> objects) {
+    if (QCoreApplication::instance()->thread() == QThread::currentThread()) {
+        // Do not remove objects in the main thread to prevent GUI hanging
+        DeleteObjectsTask *deleteTask = new DeleteObjectsTask(objects);
+        AppContext::getTaskScheduler()->registerTopLevelTask(deleteTask);
+    } else {
+        U2OpStatus2Log os;
+        DbiOperationsBlock opBlock(dbiRef, os);
+        CHECK_OP(os, );
+        Q_UNUSED(opBlock);
+
+        DbiConnection con(dbiRef, os);
+        CHECK_OP(os, );
+        CHECK(con.dbi->getFeatures().contains(U2DbiFeature_RemoveObjects), );
+
+        foreach (GObject* object, objects) {
+            U2OpStatus2Log osLog;
+            SAFE_POINT(object != NULL, "NULL object was provided",);
+            con.dbi->getObjectDbi()->removeObject(object->getEntityRef().entityId, true, osLog);
+        }
+    }
 }
 
 void Document::setLastUpdateTime() {

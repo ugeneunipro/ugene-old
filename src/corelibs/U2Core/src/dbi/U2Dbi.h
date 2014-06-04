@@ -365,7 +365,7 @@ public:
     */
     virtual void startOperationsBlock(U2OpStatus &os);
 
-    virtual void stopOperationBlock();
+    virtual void stopOperationBlock(U2OpStatus &os);
 
     /** Returns a mutex that synchronizes access to internal database handler.
         This method is supposed to be used by caching DBIs 

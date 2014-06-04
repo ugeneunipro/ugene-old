@@ -200,6 +200,7 @@ public:
 private:
     U2DbiRef dbiRef;
     DbiConnection *connection;
+    U2OpStatus& os;
 };
 
 template<class T> QList<T> U2DbiUtils::toList(U2DbiIterator<T>* it) {

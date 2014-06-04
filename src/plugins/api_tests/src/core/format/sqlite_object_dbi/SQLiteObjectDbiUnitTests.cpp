@@ -251,7 +251,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, removeMsaObject) {
 
     // REMOVE THE FIRST ALIGNMENT OBJECT
     SQLiteObjectDbi* sqliteObjectDbi = SQLiteObjectDbiTestData::getSQLiteObjectDbi();
-    sqliteObjectDbi->removeObject(msaId, "", os);
+    sqliteObjectDbi->removeObject(msaId, os);
 
     // VERIFY THAT THERE IS ONLY THE SECOND ALIGNMENT'S RECORDS LEFT IN TABLES
     SQLiteDbi* sqliteDbi = SQLiteObjectDbiTestData::getSQLiteDbi();
@@ -339,7 +339,7 @@ IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, removeMsaObject) {
     CHECK_EQUAL(1, msa2objects, "number of MSA2 objects");
 
     // Remove the second alignment
-    sqliteObjectDbi->removeObject(msaId2, "", os);
+    sqliteObjectDbi->removeObject(msaId2, os);
 }
 
 IMPLEMENT_TEST(SQLiteObjectDbiUnitTests, setTrackModType) {

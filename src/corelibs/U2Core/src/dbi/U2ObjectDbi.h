@@ -123,22 +123,22 @@ public:
     virtual U2TrackModType getTrackModType(const U2DataId& objectId, U2OpStatus& os) = 0;
 
     /** 
-        Removes object from the specified folder. If folder is empty - removes object from all folders.
-        Note: the object & all related data is automatically removed from database when
-        object is not placed in any folder or is not a part of any other more complex object (ex: sequence in msa)
+        Removes object from the database.
+        If @force is true, the object will be removed if it is possible,
+        else dbi implementation can refuse to remove it.
         Requires: U2DbiFeature_RemoveObjects feature support
     */
-    virtual bool removeObject(const U2DataId& dataId, const QString& folder, U2OpStatus& os) = 0;
-    virtual bool removeObject(const U2DataId& dataId, U2OpStatus& os) { return removeObject(dataId, QString(), os); }
+    virtual bool removeObject(const U2DataId& dataId, bool force, U2OpStatus& os) = 0;
+    virtual bool removeObject(const U2DataId& dataId, U2OpStatus& os) { return removeObject(dataId, false, os); }
     
     /** 
-        Removes collection of objects from the specified folder. If folder is empty - removes object from all folders.
-        Note: the object & all related data is automatically removed from database when
-        object is not placed in any folder or is not a part of any other more complex object (ex: sequence in msa)
+        Removes collection of objects from the database.
+        If @force is true, the object will be removed if it is possible,
+        else dbi implementation can refuse to remove it.
         Requires: U2DbiFeature_RemoveObjects feature support
     */
-    virtual bool removeObjects(const QList<U2DataId>& dataIds, const QString& folder, U2OpStatus& os) = 0;
-    virtual bool removeObjects(const QList<U2DataId>& dataIds, U2OpStatus& os) { return removeObjects(dataIds, QString(), os); }
+    virtual bool removeObjects(const QList<U2DataId>& dataIds, bool force, U2OpStatus& os) = 0;
+    virtual bool removeObjects(const QList<U2DataId>& dataIds, U2OpStatus& os) { return removeObjects(dataIds, false, os); }
 
 
     /** Creates folder in the database.

@@ -194,7 +194,7 @@ void SQLiteDbi::startOperationsBlock(U2OpStatus &os) {
     operationsBlockTransaction = newTransaction;
 }
 
-void SQLiteDbi::stopOperationBlock() {
+void SQLiteDbi::stopOperationBlock(U2OpStatus& /*os*/) {
     SQLiteTransaction *transactionToDelete = operationsBlockTransaction;
     this->db->useCache = false;
     operationsBlockTransaction = NULL;
