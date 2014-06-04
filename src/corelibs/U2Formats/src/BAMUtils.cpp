@@ -620,7 +620,16 @@ bool BAMUtils::isEqualByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpS
 /////////////////////////////////////////////////
 //FASTQIterator
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4018 )
+#endif
+
 KSEQ_INIT(gzFile, gzread)
+
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 FASTQIterator::FASTQIterator(const QString &fileUrl)
     : seq(NULL)

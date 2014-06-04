@@ -36,10 +36,10 @@
 
 namespace U2 {
 
-GObject::GObject(QString _type, const QString& _name, const QVariantMap& hintsMap) 
+GObject::GObject(QString _type, const QString& _name, const QVariantMap& hintsMap)
     : dataLoaded(false), type (_type), name(_name), arePermanentRelationsFetched(false)
 {
-    assert(name.length() > 0);
+    SAFE_POINT(!name.isEmpty(), "Invalid object name detected", );
     hints = new GHintsDefaultImpl(hintsMap);
     hints->set(GObjectHint_LastUsedObjectName, name);
 }
@@ -163,7 +163,9 @@ void GObject::setRelationsInDb(QList<GObjectRelation>& list) const {
         GObjectRelation &relation = list[i];
         const U2DataType refType = U2ObjectRelationsDbi::toDataType(relation.ref.objType);
         const bool relatedObjectDbReferenceValid = relation.ref.entityRef.dbiRef.isValid();
-        if (U2Type::Unknown == refType || relatedObjectDbReferenceValid && !(relation.ref.entityRef.dbiRef == entityRef.dbiRef)) {
+        if (U2Type::Unknown == refType
+            || (relatedObjectDbReferenceValid && !(relation.ref.entityRef.dbiRef == entityRef.dbiRef)))
+        {
             continue;
         }
 

@@ -83,7 +83,7 @@ QModelIndexList GTTreeView::findIndexes(U2OpStatus &os, QTreeView* treeView, QVa
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getItemCenter"
-QPoint GTTreeView::getItemCenter(U2OpStatus &os, QTreeView *treeView, const QModelIndex &itemIndex) {
+QPoint GTTreeView::getItemCenter(U2OpStatus &, QTreeView *treeView, const QModelIndex &itemIndex) {
     QRect r = treeView->visualRect(itemIndex);
 
     return treeView->mapToGlobal(r.center());

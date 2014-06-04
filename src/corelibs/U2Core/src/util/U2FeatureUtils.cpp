@@ -579,7 +579,7 @@ void U2FeatureUtils::refAnnotationTable( const U2DataId &rootFeatureId, const U2
     }
 }
 
-void U2FeatureUtils::derefAnnotationTable( const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus &op ) {
+void U2FeatureUtils::derefAnnotationTable( const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus & ) {
     dbiAnnotationCache.derefAnnotationTable( dbiRef, rootFeatureId );
 }
 
