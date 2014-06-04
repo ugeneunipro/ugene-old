@@ -831,8 +831,8 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
 
     QTreeWidget *annotationTableWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
     CHECK_SET_ERR(NULL != annotationTableWidget, "Annotations tree widget is NULL");
-    QWidget* viewPort = annotationTableWidget->findChild<QWidget*>("qt_scrollarea_viewport");
-    GTUtilsProjectTreeView::dragAndDrop(os, databaseAnnotaionObjectItemIndex, viewPort);
+    //QWidget* viewPort = annotationTableWidget->findChild<QWidget*>("qt_scrollarea_viewport");
+    GTUtilsProjectTreeView::dragAndDrop(os, databaseAnnotaionObjectItemIndex, annotationTableWidget);
 
     GTUtilsSharedDatabaseDocument::disconnectDatabase(os, databaseDoc);
     connectionName = connectToTestDatabase(os);
@@ -979,8 +979,9 @@ GUI_TEST_CLASS_DEFINITION(view_test_0001) {
 
     const QString folderName = "view_test_0001";
     const QString folderPath = U2ObjectDbi::PATH_SEP + folderName;
-    const QString sequenceVisibleName = "[s] NC_001363";
-    const QString annotationVisibleName = "[a] NC_001363 features";
+    const QString sequenceVisibleName = "NC_001363";
+    const QString sequenceVisibleWidgetName = "[s] NC_001363";
+    const QString annotationVisibleName = "NC_001363 features";
     const QString someFeatureName = "CDS";
     const QString databaseSequenceObjectPath = folderPath + U2ObjectDbi::PATH_SEP + sequenceVisibleName;
     const QString databaseAnnotationObjectPath = folderPath + U2ObjectDbi::PATH_SEP + annotationVisibleName;
@@ -990,7 +991,7 @@ GUI_TEST_CLASS_DEFINITION(view_test_0001) {
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseSequenceObjectPath);
-    QWidget* seqView = GTWidget::findWidget(os, connectionName + " " + sequenceVisibleName);
+    QWidget* seqView = GTWidget::findWidget(os, connectionName + " " + sequenceVisibleWidgetName);
     CHECK_SET_ERR(NULL != seqView, "View wasn't opened");
 
     QTreeWidget* annotationTableWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
@@ -1016,7 +1017,8 @@ GUI_TEST_CLASS_DEFINITION(view_test_0002) {
 
     const QString folderName = "view_test_0002";
     const QString folderPath = U2ObjectDbi::PATH_SEP + folderName;
-    const QString malignmentVisibleName = "[m] COI";
+    const QString malignmentVisibleName = "COI";
+    const QString malignmentVisibleNameWidget = "[m] COI";
     const QString databaseMalignmentObjectPath = folderPath + U2ObjectDbi::PATH_SEP + malignmentVisibleName;
     const QPoint position(300, 6);
 
@@ -1024,7 +1026,7 @@ GUI_TEST_CLASS_DEFINITION(view_test_0002) {
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseMalignmentObjectPath);
-    QWidget* msaView = GTWidget::findWidget(os, connectionName + " " + malignmentVisibleName);
+    QWidget* msaView = GTWidget::findWidget(os, connectionName + " " + malignmentVisibleNameWidget);
     CHECK_SET_ERR(NULL != msaView, "View wasn't opened");
 
     GTUtilsMSAEditorSequenceArea::clickToPosition(os, position);
@@ -1044,14 +1046,15 @@ GUI_TEST_CLASS_DEFINITION(view_test_0003) {
 
     const QString folderName = "view_test_0003";
     const QString folderPath = U2ObjectDbi::PATH_SEP + folderName;
-    const QString assemblyVisibleName = "[as] chrM";
+    const QString assemblyVisibleName = "chrM";
+    const QString assemblyVisibleNameWidget = "[as] chrM";
     const QString databaseAssemblyObjectPath = folderPath + U2ObjectDbi::PATH_SEP + assemblyVisibleName;
 
     const QString connectionName = connectToTestDatabase(os);
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblyObjectPath);
-    QWidget* assemblyView = GTWidget::findWidget(os, connectionName + " " + assemblyVisibleName);
+    QWidget* assemblyView = GTWidget::findWidget(os, connectionName + " " + assemblyVisibleNameWidget);
     CHECK_SET_ERR(NULL != assemblyView, "View wasn't opened");
 
     bool hasReference = GTUtilsAssemblyBrowser::hasReference(os, assemblyView);
@@ -1072,14 +1075,15 @@ GUI_TEST_CLASS_DEFINITION(view_test_0004) {
 
     const QString folderName = "view_test_0004";
     const QString folderPath = U2ObjectDbi::PATH_SEP + folderName;
-    const QString textVisibleName = "[t] Text";
+    const QString textVisibleName = "Text";
+    const QString textVisibleNameWidget = "[t] Text";
     const QString databaseTextObjectPath = folderPath + U2ObjectDbi::PATH_SEP + textVisibleName;
 
     const QString connectionName = connectToTestDatabase(os);
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseTextObjectPath);
-    QWidget* textView = GTWidget::findWidget(os, connectionName + " " + textVisibleName);
+    QWidget* textView = GTWidget::findWidget(os, connectionName + " " + textVisibleNameWidget);
     CHECK_SET_ERR(NULL != textView, "View wasn't opened");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
@@ -1097,7 +1101,7 @@ GUI_TEST_CLASS_DEFINITION(view_test_0005) {
     const QString folderPath = U2ObjectDbi::PATH_SEP + folderName;
     const QString sequenceObjectName = "A1#berezikov";
     const QString sequenceVisibleName = "[s] " + sequenceObjectName;
-    const QString chromatogramVisibleName = "[c] Chromatogram";
+    const QString chromatogramVisibleName = "Chromatogram";
     const QString databaseChromatogramObjectPath = folderPath + U2ObjectDbi::PATH_SEP + chromatogramVisibleName;
 
     const QString connectionName = connectToTestDatabase(os);
@@ -1124,14 +1128,15 @@ GUI_TEST_CLASS_DEFINITION(view_test_0006) {
 
     const QString folderName = "view_test_0006";
     const QString folderPath = U2ObjectDbi::PATH_SEP + folderName;
-    const QString treeVisibleName = "[tr] COI";
+    const QString treeVisibleName = "COI";
+    const QString treeVisibleNameWidget = "[tr] COI";
     const QString databaseTreeObjectPath = folderPath + U2ObjectDbi::PATH_SEP + treeVisibleName;
 
     const QString connectionName = connectToTestDatabase(os);
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseTreeObjectPath);
-    QWidget* treeView = GTWidget::findWidget(os, connectionName + " " + treeVisibleName);
+    QWidget* treeView = GTWidget::findWidget(os, connectionName + " " + treeVisibleNameWidget);
     CHECK_SET_ERR(NULL != treeView, "View wasn't opened");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");

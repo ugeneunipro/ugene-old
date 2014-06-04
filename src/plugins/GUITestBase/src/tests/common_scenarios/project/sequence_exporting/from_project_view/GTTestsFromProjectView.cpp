@@ -363,7 +363,9 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
         "exp2.msf", ExportSequenceAsAlignmentFiller::Msf);
     GTUtilsDialog::waitForDialog(os, filler);
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
+    QModelIndex parent = GTUtilsProjectTreeView::findIndex(os, "1.gb");
+    QModelIndex child = GTUtilsProjectTreeView::findIndex(os, "NC_001363 sequence", parent);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, child));
     GTMouseDriver::click(os, Qt::RightButton);
 
 // 5. Open file _common_data/scenarios/sandbox/exp2.msf
@@ -372,7 +374,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     GTGlobals::sleep(1000);
 
 // Expected state: multiple aligniment view with NC_001363 sequence has been opened
-    if (GTUtilsProjectTreeView::getSelectedItem(os) != "NC_001363 sequence") {
+    if (GTUtilsProjectTreeView::getSelectedItem(os) != "[s] NC_001363 sequence") {
         os.setError("multiple alignment view with NC_001363 sequence has been not opened");
     }
 }
@@ -421,7 +423,9 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
         "exp2.sto", ExportSequenceAsAlignmentFiller::Stockholm);
     GTUtilsDialog::waitForDialog(os, filler);
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
+    QModelIndex parent = GTUtilsProjectTreeView::findIndex(os, "1.gb");
+    QModelIndex child = GTUtilsProjectTreeView::findIndex(os, "NC_001363 sequence", parent);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, child));
     GTMouseDriver::click(os, Qt::RightButton);
 
     // 5. Open file _common_data/scenarios/sandbox/exp2.msf
@@ -430,7 +434,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTGlobals::sleep(1000);
 
     // Expected state: multiple alignment view with NC_001363 sequence has been opened
-    if (GTUtilsProjectTreeView::getSelectedItem(os) != "NC_001363 sequence") {
+    if (GTUtilsProjectTreeView::getSelectedItem(os) != "[s] NC_001363 sequence") {
         os.setError("multiple alignment view with NC_001363 sequence has been not opened");
         }
     }
@@ -479,7 +483,9 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
         "exp2.fa", ExportSequenceAsAlignmentFiller::Fasta);
     GTUtilsDialog::waitForDialog(os, filler);
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
+    QModelIndex parent = GTUtilsProjectTreeView::findIndex(os, "1.gb");
+    QModelIndex child = GTUtilsProjectTreeView::findIndex(os, "NC_001363 sequence", parent);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, child));
     GTMouseDriver::click(os, Qt::RightButton);
 
     // 5. Open file _common_data/scenarios/sandbox/exp2.msf
@@ -488,7 +494,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
     GTGlobals::sleep(1000);
 
     // Expected state: multiple alignment view with NC_001363 sequence has been opened
-    if (GTUtilsProjectTreeView::getSelectedItem(os) != "NC_001363 sequence") {
+    if (GTUtilsProjectTreeView::getSelectedItem(os) != "[s] NC_001363 sequence") {
         os.setError("multiple alignment view with NC_001363 sequence has been not opened");
         }
     }
@@ -537,7 +543,9 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
         "exp2.meg", ExportSequenceAsAlignmentFiller::Mega);
     GTUtilsDialog::waitForDialog(os, filler);
 
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 sequence"));
+    QModelIndex parent = GTUtilsProjectTreeView::findIndex(os, "1.gb");
+    QModelIndex child = GTUtilsProjectTreeView::findIndex(os, "NC_001363 sequence", parent);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, child));
     GTMouseDriver::click(os, Qt::RightButton);
 
     // 5. Open file _common_data/scenarios/sandbox/exp2.msf
@@ -546,7 +554,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     GTGlobals::sleep(1000);
 
     // Expected state: multiple alignment view with NC_001363 sequence has been opened
-    if (GTUtilsProjectTreeView::getSelectedItem(os) != "NC_001363 sequence") {
+    if (GTUtilsProjectTreeView::getSelectedItem(os) != "[s] NC_001363 sequence") {
         os.setError("multiple alignment view with NC_001363 sequence has been not opened");
         }
     }

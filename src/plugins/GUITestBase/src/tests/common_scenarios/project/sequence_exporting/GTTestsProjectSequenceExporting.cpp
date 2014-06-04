@@ -177,7 +177,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003)
     GTGlobals::sleep(1000);
 
 // Expected result: NC_001363 sequence has been opened in sequence view
-    GTUtilsDocument::checkDocument(os, doc2, AnnotatedDNAViewFactory::ID);
+    GTUtilsDocument::checkDocument(os, doc1, AnnotatedDNAViewFactory::ID);
 
 // 3. Select joined annotation B. Use context menu item {Export->Export Sequence of Selected Annotations}
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "B_joined"));
