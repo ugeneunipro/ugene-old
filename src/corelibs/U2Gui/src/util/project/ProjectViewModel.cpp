@@ -1279,6 +1279,7 @@ bool ProjectViewModel::isActive(GObject *obj) {
 
 QIcon ProjectViewModel::getIcon(const QIcon &icon, bool enabled) {
     const QList<QSize> sizes = icon.availableSizes();
+    CHECK(sizes.size() > 0, icon);
     const QPixmap newPic = icon.pixmap(sizes.first(), enabled ? QIcon::Normal : QIcon::Disabled);
     return QIcon(newPic);
 }
