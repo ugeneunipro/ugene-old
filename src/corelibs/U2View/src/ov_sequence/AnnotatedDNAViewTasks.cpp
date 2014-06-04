@@ -312,7 +312,12 @@ void OpenSavedAnnotatedDNAViewTask::open() {
             stateInfo.setError(L10N::errorDocumentNotFound(ref.docUrl));
             return;
         }
-        GObject* obj = doc->findGObjectByName(ref.objName);
+        GObject* obj = NULL;
+        if (doc->isDatabaseConnection() && ref.entityRef.isValid()) {
+            obj = doc->getObjectById(ref.entityRef.entityId);
+        } else {
+            obj = doc->findGObjectByName(ref.objName);
+        }
         if (obj == NULL || obj->getGObjectType() != GObjectTypes::SEQUENCE) {
             stateIsIllegal = true;
             stateInfo.setError(tr("DNA sequence object not found: %1").arg(ref.objName));

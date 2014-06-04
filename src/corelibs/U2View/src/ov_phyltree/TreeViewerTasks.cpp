@@ -149,14 +149,19 @@ void OpenSavedTreeViewerTask::open() {
         stateInfo.setError(L10N::errorDocumentNotFound(ref.docUrl));
         return;
     }
-    GObject* obj = doc->findGObjectByName(ref.objName);
+    GObject* obj = NULL;
+    if (doc->isDatabaseConnection() && ref.entityRef.isValid()) {
+        obj = doc->getObjectById(ref.entityRef.entityId);
+    } else {
+        obj = doc->findGObjectByName(ref.objName);
+    }
     if (obj == NULL || obj->getGObjectType() != GObjectTypes::PHYLOGENETIC_TREE) {
         stateIsIllegal = true;
-        stateInfo.setError(tr("DNA sequence object not found: %1").arg(ref.objName));
+        stateInfo.setError(tr("Phylogeny tree object not found: %1").arg(ref.objName));
         return;
     }
     PhyTreeObject* phyObject = qobject_cast<PhyTreeObject*>(obj);
-    assert(phyObject != NULL);
+    SAFE_POINT(phyObject != NULL, "Invalid tree object detected", );
 
     Task* createTask = new CreateTreeViewerTask(viewName, phyObject, stateData);
     TaskScheduler* scheduler = AppContext::getTaskScheduler();

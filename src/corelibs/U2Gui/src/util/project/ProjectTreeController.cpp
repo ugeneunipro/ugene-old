@@ -59,7 +59,7 @@
 namespace U2 {
 
 ProjectTreeController::ProjectTreeController(QTreeView *tree, const ProjectTreeControllerModeSettings &settings, QObject *parent)
-    : QObject(parent), tree(tree), settings(settings), updater(NULL), model(NULL), markActiveView(NULL)
+    : QObject(parent), tree(tree), settings(settings), updater(NULL), model(NULL), markActiveView(NULL), objectIsBeingRecycled(NULL)
 {
     Project *project = AppContext::getProject();
     SAFE_POINT(NULL != project, "NULL project", );
@@ -192,7 +192,7 @@ void ProjectTreeController::sl_onDocumentRemoved(Document *doc) {
 void ProjectTreeController::sl_mergeData() {
     const QList<Document*> &docs = AppContext::getProject()->getDocuments();
     foreach(Document *doc, docs) {
-        if (!ProjectUtils::isConnectedDatabaseDoc(doc)) {
+        if (!ProjectUtils::isConnectedDatabaseDoc(doc) || doc->isStateLocked()) {
             continue;
         }
         DocumentFoldersUpdate update;
@@ -1074,8 +1074,10 @@ bool ProjectTreeController::removeObjects(const QList<GObject*> &objs, const QLi
                 deletedSuccessfully = false;
             }
         } else if (!isObjectInRecycleBin(obj)) {
+            objectIsBeingRecycled = obj;
             model->moveObject(doc, obj, ProjectUtils::RECYCLE_BIN_FOLDER_PATH);
             QCoreApplication::processEvents();
+            objectIsBeingRecycled = NULL;
         }
         updater->invalidate(doc);
     }
@@ -1138,6 +1140,7 @@ void ProjectTreeController::removeDocuments(const QList<Document*> &docs) {
 
 void ProjectTreeController::updateObjectActiveStateVisual(GObject *obj) {
     SAFE_POINT(NULL != obj, "ProjectTreeController::updateObjectActiveStateVisual. Object is NULL", );
+    CHECK(objectIsBeingRecycled != obj, );
     if (ProjectTreeGroupMode_ByDocument == settings.groupMode) {
         Document *parentDoc = obj->getDocument();
         CHECK(model->hasDocument(parentDoc), );

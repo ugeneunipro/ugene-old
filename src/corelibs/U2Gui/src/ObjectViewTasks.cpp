@@ -21,6 +21,8 @@
 
 #include <QtCore/QFileInfo>
 
+#include <U2Core/DocumentModel.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Log.h>
 #include <U2Core/DocumentModel.h>
@@ -30,7 +32,9 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2Type.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/L10n.h>
 
@@ -102,15 +106,31 @@ Task::ReportResult ObjectViewTask::report() {
 Document* ObjectViewTask::createDocumentAndAddToProject( const QString& docUrl, Project* p, U2OpStatus& os) {
     SAFE_POINT(p != NULL, "Project is NULL!", NULL);
 
-    QFileInfo fi(docUrl);
-    CHECK_EXT(fi.exists(), os.setError(L10N::errorFileNotFound(docUrl)),  NULL);
+    GUrl url(docUrl);
+    Document* doc = NULL;
+    if (GUrl_File == url.getType()) {
+        QFileInfo fi(docUrl);
+        CHECK_EXT(fi.exists(), os.setError(L10N::errorFileNotFound(docUrl)),  NULL);
 
-    IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(docUrl));
-    QList<FormatDetectionResult> dfs = DocumentUtils::detectFormat(docUrl);
-    CHECK_EXT(!dfs.isEmpty(), os.setError(L10N::notSupportedFileFormat(docUrl)), NULL);
+        IOAdapterFactory * iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(docUrl));
+        QList<FormatDetectionResult> dfs = DocumentUtils::detectFormat(docUrl);
+        CHECK_EXT(!dfs.isEmpty(), os.setError(L10N::notSupportedFileFormat(docUrl)), NULL);
 
-    DocumentFormat* df = dfs.first().format;
-    Document* doc = df->createNewUnloadedDocument(iof, GUrl(docUrl), os);
+        DocumentFormat* df = dfs.first().format;
+        doc = df->createNewUnloadedDocument(iof, GUrl(docUrl), os);
+    } else if (GUrl_Network == url.getType()) {
+        IOAdapterFactory* ioAdapterFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::DATABASE_CONNECTION);
+        SAFE_POINT_EXT(NULL != ioAdapterFactory, os.setError("Database connection IO adapter factory is NULL"), NULL);
+
+        DocumentFormat* format = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::DATABASE_CONNECTION);
+        SAFE_POINT_EXT(NULL != format, os.setError("Database connection format is NULL"), NULL);
+
+        QVariantMap hints;
+        hints.insert(DocumentFormat::DBI_REF_HINT, QVariant::fromValue<U2DbiRef>(U2DbiRef(MYSQL_DBI_ID, url.getURLString())));
+        doc = format->loadDocument(ioAdapterFactory, url, hints, os);
+    } else {
+        FAIL("Unexpected parent document location", NULL);
+    }
     p->addDocument(doc);
     return doc;
 }

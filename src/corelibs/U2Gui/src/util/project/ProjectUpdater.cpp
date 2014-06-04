@@ -79,7 +79,7 @@ QList<U2DbiRef> ProjectUpdater::getDbiRefs() {
     QMutexLocker lock(&mutex);
     QList<U2DbiRef> result;
     foreach (Document *doc, docs) {
-        if (!ProjectUtils::isConnectedDatabaseDoc(doc)) {
+        if (!ProjectUtils::isConnectedDatabaseDoc(doc) || doc->isStateLocked()) {
             continue;
         }
         result << doc->getDbiRef();

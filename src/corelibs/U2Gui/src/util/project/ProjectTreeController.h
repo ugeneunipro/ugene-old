@@ -144,6 +144,7 @@ private:
     FolderSelection folderSelection;
     GObjectSelection objectSelection;
     GObjectView *markActiveView;
+    GObject *objectIsBeingRecycled;
 };
 
 } // U2
