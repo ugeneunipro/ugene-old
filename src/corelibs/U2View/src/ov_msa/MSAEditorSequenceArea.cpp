@@ -2311,6 +2311,9 @@ void MSAEditorSequenceArea::sl_sortByName() {
         msaObject->updateRowsOrder(ma.getRowsIds(), os);
         SAFE_POINT_OP(os, );
     }
+    if (ui->isCollapsibleMode()) {
+        sl_updateCollapsingMode();
+    }
 }
 
 void MSAEditorSequenceArea::sl_setCollapsingMode(bool enabled) {
