@@ -220,8 +220,8 @@ void PDBFormat::PDBParser::parseBioStruct3D( BioStruct3D& biostruct, U2OpStatus&
         }
 
         if (currentPDBLine.startsWith("SPLIT ")) {
-            ti.setError(U2::PDBFormat::tr("SPLIT recored is not supported"));
-            break;
+            parseSplitSection(ti);
+            continue;
         }
 
         if (currentPDBLine.startsWith("MODEL")) {
@@ -525,6 +525,20 @@ QByteArray PDBFormat::PDBParser::getNextSpecLine()
 
 }
 
+void PDBFormat::PDBParser::parseSplitSection( U2OpStatus& ti )
+{
+   /* COLUMNS DATA TYPE FIELD DEFINITION 
+    1 - 6 Record name "SPLIT " 
+    9 - 10 Continuation continuation Allows concatenation of multiple records. 
+    12 - 15 IDcode idCode ID code of related entry. 
+    .. every 2 spaces IDcode*/
+    QStringList ids = currentPDBLine.mid(11).split(QRegExp("\\s+"), QString::SkipEmptyParts);
+    ioLog.trace(QString("The list of SPLIT ids is %1").arg(ids.join(",")));
+    
+
+}
+
+
 void PDBFormat::PDBParser::parseModel( BioStruct3D& biostruct, U2OpStatus& ti )
 {
     /*
@@ -564,6 +578,7 @@ void PDBFormat::PDBParser::createMolecule( char chainIdentifier, BioStruct3D &bi
 void PDBFormat::PDBParser::updateResidueIndexes( BioStruct3D& /*biostruc*/)
 {
 }
+
 
 char PDBFormat::getAcronymByName( const QByteArray& name )
 {
