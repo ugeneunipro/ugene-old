@@ -285,7 +285,7 @@ ExpertDiscovery построит комплексные сигналы, кото
         <translation>Отмена</translation>
     </message>
     <message>
-        <source>Positive and Negative sequences markup</source>
+        <source>Positive and Negative Sequences Markup</source>
         <translation>Разметка позитивных и негативных последовательностей</translation>
     </message>
     <message>
@@ -479,7 +479,7 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
         <translation type="obsolete">Выбор директории для сохранения комплексных сигналов</translation>
     </message>
     <message>
-        <source>Extractor Parameters setup</source>
+        <source>Extractor Parameters Setup</source>
         <translation>Установка параметров выделения сигналов</translation>
     </message>
     <message>

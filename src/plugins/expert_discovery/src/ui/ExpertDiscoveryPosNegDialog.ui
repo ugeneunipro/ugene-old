@@ -20,7 +20,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Load positive and negative sequence bases</string>
+   <string>Load Positive and Negative Sequence Bases</string>
   </property>
   <property name="windowIcon">
    <iconset>

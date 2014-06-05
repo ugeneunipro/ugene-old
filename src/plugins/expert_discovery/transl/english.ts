@@ -238,7 +238,7 @@ The more sequences you provide the better will be the result</source>
         <translation></translation>
     </message>
     <message>
-        <source>Positive and Negative sequences markup</source>
+        <source>Positive and Negative Sequences Markup</source>
         <translation></translation>
     </message>
     <message>
@@ -410,7 +410,7 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
         <translation></translation>
     </message>
     <message>
-        <source>Extractor Parameters setup</source>
+        <source>Extractor Parameters Setup</source>
         <translation></translation>
     </message>
     <message>
