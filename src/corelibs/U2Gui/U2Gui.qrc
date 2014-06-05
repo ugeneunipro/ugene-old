@@ -131,5 +131,28 @@
         <file>images/ro_tree.png</file>
         <file>images/ro_biostruct3d.png</file>
         <file>images/ro_gobject.png</file>
+        <file>images/db/database.png</file>
+        <file>images/db/database_add.png</file>
+        <file>images/db/database_connect.png</file>
+        <file>images/db/database_copy.png</file>
+        <file>images/db/database_delete.png</file>
+        <file>images/db/database_edit.png</file>
+        <file>images/db/database_error.png</file>
+        <file>images/db/database_gear.png</file>
+        <file>images/db/database_go.png</file>
+        <file>images/db/database_key.png</file>
+        <file>images/db/database_lightning.png</file>
+        <file>images/db/database_link.png</file>
+        <file>images/db/database_refresh.png</file>
+        <file>images/db/database_save.png</file>
+        <file>images/db/database_start.png</file>
+        <file>images/db/database_stop.png</file>
+        <file>images/db/database_table.png</file>
+        <file>images/db/database_wrench.png</file>
+        <file>images/db/database_yellow.png</file>
+        <file>images/db/database_yellow_start.png</file>
+        <file>images/db/database_yellow_stop.png</file>
+        <file>images/msa_save.png</file>
+        <file>images/msa_show_overview.png</file>
     </qresource>
 </RCC>

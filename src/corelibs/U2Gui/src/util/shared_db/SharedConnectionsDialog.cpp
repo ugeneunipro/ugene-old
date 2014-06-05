@@ -221,7 +221,7 @@ void SharedConnectionsDialog::updateConnectionsState() {
 }
 
 void SharedConnectionsDialog::updateItemIcon(QListWidgetItem* item, bool isConnected) {
-    QPixmap px(":/core/images/todo.png");
+    QPixmap px(":/core/images/db/database_lightning.png");
     if (!isConnected) {
         px.fill(Qt::transparent);
     }

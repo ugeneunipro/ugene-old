@@ -1148,14 +1148,22 @@ QVariant ProjectViewModel::getDocumentDisplayData(Document *doc) const {
 QVariant ProjectViewModel::getDocumentDecorationData(Document *doc) const {
     static const QIcon roDocumentIcon(":/core/images/ro_document.png");
     static const QIcon documentIcon(":/core/images/document.png");
+    static const QIcon databaseIcon(":/core/images/db/database.png");
+    static const QIcon roDatabaseIcon(":/core/images/db/database.png");
 
     bool showLockedIcon = doc->isStateLocked();
     if (!doc->isLoaded() && doc->getStateLocks().size() == 1 && doc->getDocumentModLock(DocumentModLock_UNLOADED_STATE)!=NULL) {
         showLockedIcon = false;
     }
     if (showLockedIcon) {
+        if (doc->isDatabaseConnection()) {
+            return roDatabaseIcon;
+        }
         return roDocumentIcon;
     } else {
+        if (doc->isDatabaseConnection()) {
+            return databaseIcon;
+        }
         return documentIcon;
     }
 }

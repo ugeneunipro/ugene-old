@@ -859,7 +859,7 @@ void ProjectTreeController::setupActions() {
     tree->addAction(addObjectToDocumentAction);
     connect(addObjectToDocumentAction, SIGNAL(triggered()), SLOT(sl_onAddObjectToSelectedDocument()));
 
-    importToDatabaseAction = new QAction(QIcon(":core/images/add_gobject.png"), tr("Import..."), this);
+    importToDatabaseAction = new QAction(QIcon(":core/images/db/database_copy.png"), tr("Import..."), this);
     importToDatabaseAction->setObjectName(ACTION_PROJECT__IMPORT_TO_DATABASE);
     tree->addAction(importToDatabaseAction);
     connect(importToDatabaseAction, SIGNAL(triggered()), SLOT(sl_onImportToDatabase()));
@@ -892,7 +892,7 @@ void ProjectTreeController::setupActions() {
     tree->addAction(removeSelectedItemsAction);
     connect(removeSelectedItemsAction, SIGNAL(triggered()), SLOT(sl_onRemoveSelectedItems()));
 
-    createFolderAction = new QAction(QIcon(":core/images/todo.png"), tr("Add folder..."), this);
+    createFolderAction = new QAction(QIcon(":U2Designer/images/add_directory.png"), tr("Add folder..."), this);
     createFolderAction->setObjectName(ACTION_PROJECT__CREATE_FOLDER);
     connect(createFolderAction, SIGNAL(triggered()), SLOT(sl_onCreateFolder()));
     tree->addAction(createFolderAction);

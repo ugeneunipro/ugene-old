@@ -146,7 +146,7 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     U2OpStatus2Log os;
     msaObject->setTrackMod(TrackOnUpdate, os);
 
-    saveAlignmentAction = new QAction(QIcon(":core/images/todo.png"), tr("Save alignment"), this);
+    saveAlignmentAction = new QAction(QIcon(":core/images/msa_save.png"), tr("Save alignment"), this);
     saveAlignmentAction->setObjectName("Save alignment");
     connect(saveAlignmentAction, SIGNAL(triggered()), SLOT(sl_saveAlignment()));
 
@@ -523,7 +523,7 @@ QWidget* MSAEditor::createWidget() {
     connect(unsetReferenceSequenceAction, SIGNAL(triggered()), SLOT(sl_unsetReferenceSeq()));
 
     //! TODO: set icon
-    showOverviewAction = new QAction("Overview", this);
+    showOverviewAction = new QAction(QIcon(":/core/images/msa_show_overview.png"), "Overview", this);
     showOverviewAction->setObjectName("Show overview");
     showOverviewAction->setCheckable(true);
     showOverviewAction->setChecked(true);

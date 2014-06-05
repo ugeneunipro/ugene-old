@@ -301,7 +301,7 @@ void ImportToDatabaseDialog::addFolder(const QString& url) {
     CHECK(!url.isEmpty(), );
 
     QTreeWidgetItem* newItem = new QTreeWidgetItem(QStringList() << url << baseFolder);
-    newItem->setIcon(COLUMN_ITEM_TEXT, QIcon(":/core/images/group_green_active.png"));
+    newItem->setIcon(COLUMN_ITEM_TEXT, QIcon(":U2Designer/images/directory.png"));
     newItem->setFlags(Qt::ItemIsEditable | newItem->flags());
     setFolderTooltip(newItem);
     folders << newItem;
@@ -315,7 +315,7 @@ void ImportToDatabaseDialog::addFile(const QString& url) {
     CHECK(!url.isEmpty(), );
 
     QTreeWidgetItem* newItem = new QTreeWidgetItem(QStringList() << url << baseFolder);
-    newItem->setIcon(COLUMN_ITEM_TEXT, QIcon(":/core/images/create_annotation.png"));
+    newItem->setIcon(COLUMN_ITEM_TEXT, QIcon(":/core/images/document.png"));
     newItem->setFlags(Qt::ItemIsEditable | newItem->flags());
     setFileTooltip(newItem);
     files << newItem;
