@@ -417,8 +417,9 @@ void MysqlDbi::checkUserPermissions(U2OpStatus& os) {
     bool insertEnabled = false;
 
     const QString userQueryString = "SELECT DISTINCT PRIVILEGE_TYPE FROM information_schema.user_privileges "
-        "WHERE GRANTEE LIKE \"'" + userName + "'%\"";
+        "WHERE GRANTEE LIKE :userName";
     U2SqlQuery uq(userQueryString, db, os);
+    uq.bindString("userName", QString("'%1'%").arg(userName));
 
     while (uq.step() && !(selectEnabled && updateEnabled && deleteEnabled && insertEnabled)) {
         const QString grantString = uq.getString(0);
@@ -431,9 +432,9 @@ void MysqlDbi::checkUserPermissions(U2OpStatus& os) {
     }
 
     const QString schemaQueryString = "SELECT PRIVILEGE_TYPE FROM information_schema.schema_privileges "
-        "WHERE GRANTEE LIKE \"'" + userName + "'%\" AND TABLE_SCHEMA = :tableSchema";
+        "WHERE GRANTEE LIKE :userName AND TABLE_SCHEMA = :tableSchema";
     U2SqlQuery sq(schemaQueryString, db, os);
-
+    sq.bindString("userName", QString("'%1'%").arg(userName));
     sq.bindString("tableSchema", databaseName);
 
     while (!(selectEnabled && updateEnabled && deleteEnabled && insertEnabled) && sq.step()) {
