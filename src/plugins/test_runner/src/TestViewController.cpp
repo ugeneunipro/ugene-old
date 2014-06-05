@@ -28,6 +28,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 #include <U2Core/Log.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Test/GTest.h>
 #include <U2Test/GTestFrameworkComponents.h>
 #include <U2Core/IOAdapter.h>
@@ -519,7 +520,7 @@ void TestViewController::sl_selectAllSuiteAction() {
 }
 
 void TestViewController::sl_setTestsEnabledAction(){
-    assert(task==NULL);
+    CHECK(task==NULL, );
 
     for (int i=0, n = tree->topLevelItemCount(); i<n; i++) {
         TVItem* item = static_cast<TVItem*>(tree->topLevelItem(i));
@@ -531,7 +532,7 @@ void TestViewController::sl_setTestsEnabledAction(){
     }
 }
 void TestViewController::sl_setTestsDisabledAction(){
-    assert(task==NULL);
+    CHECK(task==NULL, );
 
     for (int i=0, n = tree->topLevelItemCount(); i<n; i++) {
         TVItem* item = static_cast<TVItem*>(tree->topLevelItem(i));
@@ -543,7 +544,7 @@ void TestViewController::sl_setTestsDisabledAction(){
     }
 }
 void TestViewController::sl_setTestsChangeExcludedAction(){
-    assert(task==NULL);
+    CHECK(task==NULL, );
 
     ExcludeReasonDialog dlg;
     int rc = dlg.exec();
@@ -561,8 +562,7 @@ void TestViewController::sl_setTestsChangeExcludedAction(){
     }
 }
 void TestViewController::sl_saveSelectedSuitesAction(){
-
-    assert(task==NULL);
+    CHECK(task==NULL, );
     for (int i=0, n = tree->topLevelItemCount(); i<n; i++) {
         QList<GTestState*> testsToRun;
         QMap<GTestRef*, QString> testsToEx;
@@ -964,7 +964,7 @@ void TestViewController::sl_setEnvAction() {
     QHBoxLayout* hl = new QHBoxLayout();
     vl->addLayout(hl);
     QDialogButtonBox* dbb = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    d.connect(dbb, SIGNAL(accepted()), SLOT(accept()));        
+    d.connect(dbb, SIGNAL(accepted()), SLOT(accept()));
     d.connect(dbb, SIGNAL(rejected()), SLOT(reject()));
     vl->addWidget(dbb);
     int rc = d.exec();

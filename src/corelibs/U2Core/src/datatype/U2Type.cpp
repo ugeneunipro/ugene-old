@@ -23,6 +23,10 @@
 
 namespace U2 {
 
+//////////////////////////////////////////////////////////////////////////
+/// U2Entity implementation
+//////////////////////////////////////////////////////////////////////////
+
 U2Entity::U2Entity( U2DataId id )
     : id( id )
 {
@@ -58,6 +62,28 @@ bool U2Entity::operator !=( const U2Entity &other ) const {
 
 bool U2Entity::operator <( const U2Entity &other ) const {
     return id < other.id;
+}
+
+//////////////////////////////////////////////////////////////////////////
+/// U2DbiRef implementation
+//////////////////////////////////////////////////////////////////////////
+
+U2DbiRef::U2DbiRef(const U2DbiFactoryId &dbiFactoryId, const U2DbiId &dbiId)
+    : dbiFactoryId(dbiFactoryId), dbiId(dbiId)
+{
+
+}
+
+bool U2DbiRef::isValid() const {
+    return !dbiFactoryId.isEmpty() && !dbiId.isEmpty();
+}
+
+bool U2DbiRef::operator==(const U2DbiRef &r2) const {
+    return dbiFactoryId == r2.dbiFactoryId && dbiId == r2.dbiId;
+}
+
+bool U2DbiRef::operator <(const U2DbiRef &r2) const {
+    return dbiFactoryId + dbiId < r2.dbiFactoryId + r2.dbiId;
 }
 
 } // U2

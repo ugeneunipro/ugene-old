@@ -116,18 +116,12 @@ enum U2TrackModType {
 /** Dbi reference: dbiURL & DBI type */
 class U2CORE_EXPORT U2DbiRef {
 public:
-    U2DbiRef(const U2DbiFactoryId& _dbiFactoryId = U2DbiFactoryId(), const U2DbiId& _dbiId = U2DbiId()) 
-        : dbiFactoryId(_dbiFactoryId), dbiId(_dbiId) {}
-    
-    bool isValid() const {return !dbiFactoryId.isEmpty() && !dbiId.isEmpty();}
+    U2DbiRef(const U2DbiFactoryId &dbiFactoryId = U2DbiFactoryId(), const U2DbiId &dbiId = U2DbiId());
 
-    bool operator==(const U2DbiRef& r2) const {
-        return dbiFactoryId == r2.dbiFactoryId && dbiId == r2.dbiId;
-    }
+    bool isValid() const;
 
-    bool operator <(const U2DbiRef &r2) const {
-        return dbiFactoryId < r2.dbiFactoryId && dbiId < r2.dbiId;
-    }
+    bool operator==(const U2DbiRef &r2) const;
+    bool operator <(const U2DbiRef &r2) const;
 
     U2DbiFactoryId  dbiFactoryId;
     U2DbiId         dbiId;

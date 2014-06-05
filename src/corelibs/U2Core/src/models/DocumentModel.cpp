@@ -728,7 +728,7 @@ void Document::fromScriptValue(const QScriptValue &object, Document* &out)
 }
 
 void Document::removeObjectsDataFromDbi(QList<GObject *> objects) {
-    if (QCoreApplication::instance()->thread() == QThread::currentThread()) {
+    if (AppContext::isGUIMode() && QCoreApplication::instance()->thread() == QThread::currentThread()) {
         // Do not remove objects in the main thread to prevent GUI hanging
         DeleteObjectsTask *deleteTask = new DeleteObjectsTask(objects);
         AppContext::getTaskScheduler()->registerTopLevelTask(deleteTask);
