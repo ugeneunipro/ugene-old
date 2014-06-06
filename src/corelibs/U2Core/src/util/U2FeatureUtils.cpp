@@ -247,13 +247,9 @@ AnnotationData U2FeatureUtils::getAnnotationDataFromFeature( const U2DataId &fea
 QList<U2Feature> U2FeatureUtils::getSubAnnotations( const U2DataId &parentFeatureId,
     const U2DbiRef &dbiRef, U2OpStatus &os, OperationScope resursive, ParentFeatureStatus parent )
 {
-    if (Root == parent && dbiAnnotationCache.containsAnnotationTable(dbiRef, parentFeatureId)) {
-        return dbiAnnotationCache.getSubfeatures(dbiRef, parentFeatureId);
-    } else {
-        return ( Root == parent )
-            ? getFeaturesByRoot( parentFeatureId, dbiRef, os, U2Feature::Annotation )
-            : getFeaturesByParent( parentFeatureId, dbiRef, os, resursive, U2Feature::Annotation );
-    }
+    return ( Root == parent )
+        ? getFeaturesByRoot( parentFeatureId, dbiRef, os, U2Feature::Annotation )
+        : getFeaturesByParent( parentFeatureId, dbiRef, os, resursive, U2Feature::Annotation );
 }
 
 QList<U2Feature> U2FeatureUtils::getSubGroups( const U2DataId &parentFeatureId,
