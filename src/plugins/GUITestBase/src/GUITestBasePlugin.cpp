@@ -313,7 +313,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2578);
     REGISTER_TEST(GUITest_regression_scenarios::test_2605);
     REGISTER_TEST(GUITest_regression_scenarios::test_2612);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2667);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2667, "https://ugene.unipro.ru/tracker/browse/UGENE-3065");
     REGISTER_TEST(GUITest_regression_scenarios::test_2897);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2903, "https://ugene.unipro.ru/tracker/browse/UGENE-2903; reopened");
 
@@ -481,7 +481,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0004);
-    REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0005);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project_sequence_exporting::test_0005, "https://ugene.unipro.ru/tracker/browse/UGENE-3066");
     REGISTER_TEST(GUITest_common_scenarios_project_sequence_exporting::test_0007);
 
 //////////////////////////////////////////////////////////////////////////
@@ -1121,7 +1121,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/shared_database
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_shared_database::cm_test_0001);
-    REGISTER_TEST(GUITest_common_scenarios_shared_database::cm_test_0002);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_shared_database::cm_test_0002, "https://ugene.unipro.ru/tracker/browse/UGENE-3069");
     REGISTER_TEST(GUITest_common_scenarios_shared_database::cm_test_0003);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::cm_test_0004);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::cm_test_0005);

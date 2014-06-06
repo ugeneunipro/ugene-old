@@ -740,6 +740,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0002) {
     const QString newFolderPath = parentFolderPath + U2ObjectDbi::PATH_SEP + newFolderName;
     const QString fileDocName = "human_T1.fa";
     const QString fileObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
+    const QString fileObjectNameWidget = "[s] human_T1 (UCSC April 2002 chr7:115977709-117855134)";
     const QString importedDocFolderPath = newFolderPath + U2ObjectDbi::PATH_SEP + fileDocName;
     const QString importedObjectPath = importedDocFolderPath + U2ObjectDbi::PATH_SEP + fileObjectName;
 
@@ -769,7 +770,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0002) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(200);
 
-    QWidget* sequenceView = GTWidget::findWidget(os, connectionName + " " + fileObjectName);
+    QWidget* sequenceView = GTWidget::findWidget(os, connectionName + " " + fileObjectNameWidget);
     CHECK_SET_ERR(NULL != sequenceView, "Sequence view wasn't opened");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
@@ -830,10 +831,12 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
     GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
 
     QTreeWidget *annotationTableWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
+    QWidget* splitter = GTWidget::findWidget(os, "annotated_DNA_splitter");
     CHECK_SET_ERR(NULL != annotationTableWidget, "Annotations tree widget is NULL");
-    //QWidget* viewPort = annotationTableWidget->findChild<QWidget*>("qt_scrollarea_viewport");
+    QWidget* viewPort = annotationTableWidget->findChild<QWidget*>("qt_scrollarea_viewport");
     GTUtilsProjectTreeView::dragAndDrop(os, databaseAnnotaionObjectItemIndex, annotationTableWidget);
 
+    GTGlobals::sleep(5000);
     GTUtilsSharedDatabaseDocument::disconnectDatabase(os, databaseDoc);
     connectionName = connectToTestDatabase(os);
     databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
@@ -843,7 +846,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
     GTGlobals::sleep(200);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    sequenceView = GTWidget::findWidget(os, connectionName + " " + sequenceObjectName);
+    sequenceView = GTWidget::findWidget(os, connectionName + " " + sequenceWidgetName);
     CHECK_SET_ERR(NULL != sequenceView, "Sequence view wasn't opened again");
 
     annotationTableWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);

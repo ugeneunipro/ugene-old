@@ -364,17 +364,11 @@ void GTUtilsProjectTreeView::sendDragAndDrop(U2OpStatus &os, QMimeData *mimeData
     GTMouseDriver::moveTo(os, enterPos);
     Qt::DropActions dropActions = model->supportedDropActions();
 
-    QDragEnterEvent* dragEnterEvent = new QDragEnterEvent(localEnterPos, dropActions, mimeData, Qt::LeftButton, 0);
-    GTGlobals::sendEvent(veiwPort, dragEnterEvent);
+    QDragEnterEvent* dragEnterEvent = new QDragEnterEvent(dropWidget->geometry().center(), dropActions, mimeData, Qt::LeftButton, 0);
+    GTGlobals::sendEvent(dropWidget, dragEnterEvent);
 
 
     GTMouseDriver::moveTo(os, dropWidget->mapToGlobal(dropWidget->geometry().center()));
-    QString s = dropWidget->objectName();
-    QString s1 = dropWidget->metaObject()->className();
-
-    QString sp = dropWidget->parent()->objectName();
-    QString sp1 = dropWidget->parent()->metaObject()->className();
-
 
     QDragMoveEvent* dragmoveEvent = new QDragMoveEvent(dropWidget->geometry().center(), dropActions, mimeData, Qt::LeftButton, 0);
     GTGlobals::sendEvent(dropWidget, dragmoveEvent );

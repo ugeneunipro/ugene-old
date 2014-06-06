@@ -52,7 +52,7 @@ void AddFolderDialogFiller::run() {
         break;
     case GTGlobals::UseKey :
     case GTGlobals::UseKeyBoard :
-        GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["enter"]);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
         break;
     }
 }

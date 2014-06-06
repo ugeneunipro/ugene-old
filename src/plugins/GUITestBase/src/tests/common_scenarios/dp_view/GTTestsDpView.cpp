@@ -266,6 +266,7 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
     GTUtilsDialog::waitForDialog(os, filler2);
 
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Build dotplot");
+    GTGlobals::sleep(4000);
     GTUtilsProjectTreeView::openView(os);
     GTGlobals::sleep(500);
 //6. Click on the Dotplot view
