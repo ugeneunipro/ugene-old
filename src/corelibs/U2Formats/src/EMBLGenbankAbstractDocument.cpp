@@ -218,11 +218,10 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 
                     SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
 
+                    sequenceRef.objName = seqObj->getGObjectName();
+                    sequenceRef.entityRef = seqObj->getEntityRef();
                     if (annotationsObject!=NULL) {
-                        sequenceRef.objName = seqObj->getGObjectName();
                         annotationsObject->addObjectRelation(GObjectRelation(sequenceRef, ObjectRole_Sequence));
-                    } else {
-                        sequenceRef.objName = seqObj->getGObjectName();
                     }
                     U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, annotationsObject);
 
@@ -264,6 +263,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     AnnotationTableObject *mergedAnnotationsPtr = mergedAnnotations.take( );
     if ( NULL != mergedAnnotationsPtr ) {
         sequenceRef.objName = so->getGObjectName();
+        sequenceRef.entityRef = U2EntityRef(dbiRef, u2seq.id);
         mergedAnnotationsPtr->addObjectRelation(GObjectRelation(sequenceRef, ObjectRole_Sequence));
         objects.append(mergedAnnotationsPtr);
     }

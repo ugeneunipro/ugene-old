@@ -53,6 +53,7 @@ public:
 
     AnnotationData & getAnnotationData(const U2DataId &featureId);
     U2Feature & getFeature(const U2DataId &featureId);
+    QList<U2Feature> getSubfeatures(const U2DataId &rootId);
 
     void removeAnnotationData(const U2DataId &featureId);
     void removeAnnotationTableData(const U2DataId &rootId);
@@ -86,6 +87,7 @@ public:
 
     AnnotationData & getAnnotationData(const U2DbiRef &dbiRef, const U2DataId &featureId);
     U2Feature & getFeature(const U2DbiRef &dbiRef, const U2DataId &featureId);
+    QList<U2Feature> getSubfeatures(const U2DbiRef &dbiRef, const U2DataId &rootId);
 
     void removeAnnotationData(const U2DbiRef &dbiRef, const U2DataId &featureId);
     void removeAnnotationTableData(const U2DbiRef &dbiRef, const U2DataId &rootId);

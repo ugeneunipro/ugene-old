@@ -79,9 +79,23 @@ U2Feature & AnnotationDataCache::getFeature(const U2DataId &featureId) {
     return feature2Id[featureId];
 }
 
+QList<U2Feature> AnnotationDataCache::getSubfeatures(const U2DataId &rootId) {
+    QMutexLocker locker(&guard);
+
+    QList<U2Feature> result;
+    foreach (const U2DataId &featureId, rootSubfeatures.value(rootId)) {
+        result.append(feature2Id.value(featureId));
+    }
+    return result;
+}
+
 void AnnotationDataCache::removeAnnotationData(const U2DataId &featureId) {
     QMutexLocker locker(&guard);
 
+    SAFE_POINT(feature2Id.contains(featureId) && annotationDataId.contains(featureId)
+        && rootSubfeatures.contains(feature2Id[featureId].rootFeatureId), "Unexpected annotation requested", );
+
+    rootSubfeatures[feature2Id[featureId].rootFeatureId].remove(featureId);
     annotationDataId.remove(featureId);
     feature2Id.remove(featureId);
 }
@@ -149,6 +163,11 @@ AnnotationData & DbiAnnotationCache::getAnnotationData(const U2DbiRef &dbiRef, c
 U2Feature & DbiAnnotationCache::getFeature(const U2DbiRef &dbiRef, const U2DataId &featureId) {
     SAFE_POINT(contains(dbiRef, featureId), "Unexpected feature requested from cache", defaultFeatureReturnValue);
     return dbiDataCache[dbiRef]->getFeature(featureId);
+}
+
+QList<U2Feature> DbiAnnotationCache::getSubfeatures(const U2DbiRef &dbiRef, const U2DataId &rootId) {
+    SAFE_POINT(containsAnnotationTable(dbiRef, rootId), "Unexpected annotation table requested from cache", QList<U2Feature>());
+    return dbiDataCache[dbiRef]->getSubfeatures(rootId);
 }
 
 void DbiAnnotationCache::removeAnnotationData(const U2DbiRef &dbiRef, const U2DataId &featureId) {

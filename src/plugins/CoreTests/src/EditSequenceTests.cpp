@@ -284,7 +284,7 @@ Task::ReportResult GTest_RemovePartFromSequenceTask::report(){
 }
 
 
-GTest_RemovePartFromSequenceTask::~GTest_RemovePartFromSequenceTask() {      
+GTest_RemovePartFromSequenceTask::~GTest_RemovePartFromSequenceTask() {
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -374,8 +374,7 @@ Task::ReportResult GTest_ReplacePartOfSequenceTask::report(){
             .arg(expectedSequence));
         return ReportResult_Finished;
     }
-    if (annotationName.length()!=0)
-    {
+    if (!annotationName.isEmpty()) {
         Document* loadedDocument = getContext<Document>(this, docName);
         QList<GObject*> annotationTablesList = loadedDocument->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
         foreach(GObject *table, annotationTablesList){
@@ -385,6 +384,7 @@ Task::ReportResult GTest_ReplacePartOfSequenceTask::report(){
                     int i=0;
                     if(curentAnnotation.getRegions().size() != expectedRegions.size()){
                         stateInfo.setError(GTest::tr("Regions is incorrect. Expected size:%1 Actual size:%2").arg(expectedRegions.size()).arg(curentAnnotation.getRegions().size()));
+                        break;
                     }
                     foreach ( const U2Region& curRegion, curentAnnotation.getRegions()){
                         if (curRegion!=expectedRegions.at(i)) {
