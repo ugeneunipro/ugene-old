@@ -186,8 +186,8 @@ CircularAnnotationLabel::CircularAnnotationLabel( const Annotation &ann, int _re
     const AnnotationData aData = annotation.getData( );
     const U2Region &r = aData.getRegions( )[region];
     const qreal startAngle = renderArea->rotationDegree + (float)r.startPos / (float)sequenceLength * 360;
-    const qreal spanAngle = qMin( ( float ) r.length / ( float ) sequenceLength * 360,
-        float( 360 - startAngle ) );
+    const qreal spanAngle = ( float ) r.length / ( float ) sequenceLength * 360;
+
     const float middleAngle = 360 - ( startAngle + spanAngle / 2.0 );
     annotationAngle = middleAngle;
     if ( annotationAngle < 0 ) {
