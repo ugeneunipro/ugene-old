@@ -385,6 +385,7 @@ namespace {
     public:
         QHash<const AtomData*, SharedAtom> atoms;
         QHash<const AtomData*, int> atomPositions;
+        QHash<int, const AtomData*> atomByPosition;
     };
 
     template<class T>
@@ -532,8 +533,10 @@ namespace {
         result += packNum<int>(ctx.atoms.size());
         result += pack(*data.data());
 
+        int position = ctx.atomPositions.size();
         ctx.atoms.insert(data.constData(), data);
-        ctx.atomPositions.insert(data.constData(), ctx.atomPositions.size());
+        ctx.atomPositions.insert(data.constData(), position);
+        ctx.atomByPosition.insert(position, data.constData());
 
         return result;
     }
@@ -560,15 +563,17 @@ namespace {
         int num = unpackNum<int>(data, length, offset, os);
         CHECK_OP(os, SharedAtom());
         if (num < ctx.atoms.size()) {
-            return ctx.atoms.value(ctx.atomPositions.key(num, NULL));
+            return ctx.atoms.value(ctx.atomByPosition.value(num, NULL));
         }
         SAFE_POINT_EXT(num == ctx.atoms.size(), os.setError("Unexpected atom number"), SharedAtom());
         AtomData atom = unpack<AtomData>(data, length, offset, os);
         CHECK_OP(os, SharedAtom());
         SharedAtom result(new AtomData(atom));
 
+        int position = ctx.atomPositions.size();
         ctx.atoms.insert(result.constData(), result);
-        ctx.atomPositions.insert(result.constData(), ctx.atomPositions.size());
+        ctx.atomPositions.insert(result.constData(), position);
+        ctx.atomByPosition.insert(position, result.constData());
 
         return result;
     }
