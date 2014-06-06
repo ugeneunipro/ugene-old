@@ -210,12 +210,6 @@ public:
                                         const U2FeatureKey& key, const U2DbiRef &dbiRef,
                                         U2OpStatus &op );
     /**
-     * Updates all the keys of the feature having @featureId in @dbi with @newKeys.
-     */
-    static void                     updateFeatureKeys( const U2DataId &featureId,
-                                        U2FeatureDbi *dbi, const QList<U2FeatureKey> &newKeys,
-                                        U2OpStatus &op );
-    /**
      * Increments reference count for an annotation table object
      */
     static void                     refAnnotationTable( const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus &op );

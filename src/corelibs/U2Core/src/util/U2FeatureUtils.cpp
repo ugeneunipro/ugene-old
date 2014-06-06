@@ -274,7 +274,9 @@ void U2FeatureUtils::removeFeature( const U2DataId &featureId, const U2DbiRef &d
 
     dbi->removeFeaturesByParent( featureId, op, SelectParentFeature );
 
-    dbiAnnotationCache.removeAnnotationData(dbiRef, featureId);
+    if (dbiAnnotationCache.contains(dbiRef, featureId)) {
+        dbiAnnotationCache.removeAnnotationData(dbiRef, featureId);
+    }
 }
 
 void U2FeatureUtils::removeFeaturesByRoot( const U2DataId &rootId, const U2DbiRef &dbiRef,
@@ -293,7 +295,9 @@ void U2FeatureUtils::removeFeaturesByRoot( const U2DataId &rootId, const U2DbiRe
     //remove subfeatures
     dbi->removeFeaturesByRoot( rootId, op, SelectParentFeature );
 
-    dbiAnnotationCache.removeAnnotationTableData(dbiRef, rootId);
+    if (dbiAnnotationCache.containsAnnotationTable(dbiRef, rootId)) {
+        dbiAnnotationCache.removeAnnotationTableData(dbiRef, rootId);
+    }
 }
 
 void U2FeatureUtils::importFeatureToDb( U2Feature &feature, const QList<U2FeatureKey> &keys,
@@ -608,7 +612,9 @@ void U2FeatureUtils::updateFeatureParent( const U2DataId &featureId, const U2Dat
     fDbi->updateParentId( featureId, newParentId, os );
     CHECK_OP(os, );
 
-    dbiAnnotationCache.getFeature(dbiRef, featureId).parentFeatureId = newParentId;
+    if (dbiAnnotationCache.contains(dbiRef, featureId)) {
+        dbiAnnotationCache.getFeature(dbiRef, featureId).parentFeatureId = newParentId;
+    }
 }
 
 void U2FeatureUtils::updateFeatureSequence( const U2DataId &featureId, const U2DataId &newSeqId,
@@ -626,7 +632,9 @@ void U2FeatureUtils::updateFeatureSequence( const U2DataId &featureId, const U2D
 
     fDbi->updateSequenceId( featureId, newSeqId, os );
 
-    dbiAnnotationCache.getFeature(dbiRef, featureId).sequenceId = newSeqId;
+    if (dbiAnnotationCache.contains(dbiRef, featureId)) {
+        dbiAnnotationCache.getFeature(dbiRef, featureId).sequenceId = newSeqId;
+    }
 }
 
 void U2FeatureUtils::updateFeatureName( const U2DataId &featureId, const QString &newName,
@@ -643,8 +651,10 @@ void U2FeatureUtils::updateFeatureName( const U2DataId &featureId, const QString
 
     fDbi->updateName( featureId, newName, os );
 
-    dbiAnnotationCache.getAnnotationData(dbiRef, featureId).name = newName;
-    dbiAnnotationCache.getFeature(dbiRef, featureId).name = newName;
+    if (dbiAnnotationCache.contains(dbiRef, featureId)) {
+        dbiAnnotationCache.getAnnotationData(dbiRef, featureId).name = newName;
+        dbiAnnotationCache.getFeature(dbiRef, featureId).name = newName;
+    }
 }
 
 void U2FeatureUtils::updateFeatureLocation( const U2DataId &featureId,
@@ -688,10 +698,12 @@ void U2FeatureUtils::updateFeatureLocation( const U2DataId &featureId,
         CHECK_OP( op, );
     }
 
-    dbiAnnotationCache.getAnnotationData(dbiRef, featureId).location = location;
-    U2Feature &cachedFeature = dbiAnnotationCache.getFeature(dbiRef, featureId);
-    cachedFeature.location.region = location->regions.size() == 1 ? location->regions.first() : U2Region();
-    cachedFeature.location.strand = location->strand;
+    if (dbiAnnotationCache.contains(dbiRef, featureId)) {
+        dbiAnnotationCache.getAnnotationData(dbiRef, featureId).location = location;
+        U2Feature &cachedFeature = dbiAnnotationCache.getFeature(dbiRef, featureId);
+        cachedFeature.location.region = location->regions.size() == 1 ? location->regions.first() : U2Region();
+        cachedFeature.location.strand = location->strand;
+    }
 }
 
 void U2FeatureUtils::addFeatureKey( const U2DataId &featureId, const U2FeatureKey& key,
@@ -709,7 +721,7 @@ void U2FeatureUtils::addFeatureKey( const U2DataId &featureId, const U2FeatureKe
 
     dbi->addKey( featureId, key, op );
 
-    if (key.name != U2FeatureKeyCase && key.name != U2FeatureKeyOperation) {
+    if (key.name != U2FeatureKeyCase && key.name != U2FeatureKeyOperation && dbiAnnotationCache.contains(dbiRef, featureId)) {
         dbiAnnotationCache.getAnnotationData(dbiRef, featureId).qualifiers.append(U2Qualifier(key.name, key.value));
     }
 }
@@ -729,44 +741,9 @@ void U2FeatureUtils::removeFeatureKey( const U2DataId &featureId, const U2Featur
 
     dbi->removeAllKeys( featureId, key, op );
 
-    if (key.name != U2FeatureKeyCase && key.name != U2FeatureKeyOperation) {
+    if (key.name != U2FeatureKeyCase && key.name != U2FeatureKeyOperation && dbiAnnotationCache.contains(dbiRef, featureId)) {
         QStringList qualValues;
         dbiAnnotationCache.getAnnotationData(dbiRef, featureId).removeAllQualifiers(key.name, qualValues);
-    }
-}
-
-void U2FeatureUtils::updateFeatureKeys( const U2DataId &featureId, U2FeatureDbi *dbi,
-    const QList<U2FeatureKey> &newKeys, U2OpStatus &op )
-{
-    SAFE_POINT( !featureId.isEmpty( ), "Invalid feature ID detected!", );
-    SAFE_POINT( NULL != dbi, "Invalid DBI pointer encountered!", );
-    CHECK( !newKeys.isEmpty( ), );
-
-    const QList<U2FeatureKey> existingKeys = dbi->getFeatureKeys( featureId, op );
-    // after further iterations the list will contain removed keys
-    QList<U2FeatureKey> removedKeys = existingKeys;
-    foreach ( const U2FeatureKey &key, newKeys ) {
-        bool keyMatched = false;
-        foreach ( const U2FeatureKey &existingKey, existingKeys ) {
-            if ( key.name == existingKey.name ) {
-                if ( key.value != existingKey.value ) {
-                    dbi->updateKeyValue( featureId, key, op );
-                    CHECK_OP( op, );
-                }
-                keyMatched = true;
-                // exclude from removed keys the key that exists in updated feature
-                removedKeys.removeAll( existingKey );
-            }
-         }
-        if ( !keyMatched ) {
-            dbi->addKey( featureId, key, op );
-            CHECK_OP( op, );
-        }
-    }
-    // delete removed keys from db
-    foreach ( const U2FeatureKey &key, removedKeys ) {
-        dbi->removeAllKeys( featureId, key, op );
-        CHECK_OP( op, );
     }
 }
 
