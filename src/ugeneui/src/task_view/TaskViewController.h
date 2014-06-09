@@ -130,6 +130,7 @@ private slots:
     void sl_open();
 
 private:
+    static QString convertTime(int msecs);
     void showContextMenu(const QPoint &pos, const QString &url);
     QAction * createDirAction(const QString &url, QObject *parent);
     QAction * createFileAction(const QString &url, QObject *parent);

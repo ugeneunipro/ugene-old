@@ -467,9 +467,8 @@ QString TVReportWindow::prepareReportHTML(Task* t) {
     }
 
     int msecs = GTimer::millisBetween(t->getTimeInfo().startTime, t->getTimeInfo().finishTime);
-    QString time = QTime().addMSecs(msecs).toString("h.mm.ss.zzz");
 
-    report+="<tr><td><b>"+tr("time")+"</b></td><td>" +time+ "</td></tr>";
+    report+="<tr><td><b>"+tr("time")+"</b></td><td>" + convertTime(msecs) + "</td></tr>";
     report+="</td></tr>";
     report+="</table>";
 
@@ -545,6 +544,22 @@ void TVReportWindow::sl_open() {
 
     QString url = dirAction->data().toString();
     QDesktopServices::openUrl(QUrl("file:///" + url));
+}
+
+QString TVReportWindow::convertTime(int msecs) {
+    int microseconds = msecs % 1000;
+    msecs /= 1000;
+    int seconds = msecs % 60;
+    msecs /= 60;
+    int minutes = msecs % 60;
+    msecs /= 60;
+    int hours = msecs;
+
+    return QString("%1.%2.%3.%4").
+            arg(hours).
+            arg(minutes, 2, 10, QLatin1Char('0')).
+            arg(seconds, 2, 10, QLatin1Char('0')).
+            arg(microseconds, 3, 10, QLatin1Char('0'));
 }
 
 //////////////////////////////////////////////////////////////////////////
