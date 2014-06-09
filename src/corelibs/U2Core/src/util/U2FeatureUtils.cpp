@@ -557,9 +557,8 @@ void U2FeatureUtils::loadAnnotationTable( const U2DataId &rootFeatureId, const U
             dbiAnnotationCache.getAnnotationData(dbiRef, fnk.feature.parentFeatureId).location->regions.append(fnk.feature.location.region);
         } else if (dbiAnnotationCache.contains(dbiRef, fnk.feature.id)) {
             SAFE_POINT(fnk.key.isValid(), "Valid feature key expected", );
-            U2Qualifier qual(fnk.key.name, fnk.key.value);
             AnnotationData &data = dbiAnnotationCache.getAnnotationData(dbiRef, fnk.feature.id);
-            data.qualifiers.append(qual);
+            addFeatureKeyToAnnotation(fnk.key, data, op);
         } else {
             AnnotationData aData;
             aData.name = fnk.feature.name;
