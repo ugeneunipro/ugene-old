@@ -34,6 +34,7 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/GHints.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -359,6 +360,8 @@ Task* BaseDocWriter::processDocs()
         Document *doc = docs[io];
         ioLog.details(tr("Writing to %1 [%2]").arg(io->getURL().getURLString()).arg(format->getFormatName()));
         io->close();
+        GHints *hints = doc->getGHints();
+        hints->set(DocumentRemovalMode_Synchronous, QString());
         tlist << getWriteDocTask(doc, getDocFlags());
     }
     docs.clear();

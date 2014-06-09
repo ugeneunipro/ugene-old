@@ -107,14 +107,16 @@ typedef QFlags<DocumentFormatFlag> DocumentFormatFlags;
 #define DocumentReadingMode_DontMakeUniqueNames             "no-unique-names"
 
 /** Set of hints that can be processed during document storing */
-#define DocumentWritingMode_SimpleNames                 "simple-names"
+#define DocumentWritingMode_SimpleNames                     "simple-names"
+
+/** Set of hints that can affect a document's removal */
+#define DocumentRemovalMode_Synchronous                     "synchronous-delete"
 
 /** Hint for splitting variations*/
-#define DocumentReadingMode_SplitVariationAlleles        "split-alleles"
+#define DocumentReadingMode_SplitVariationAlleles           "split-alleles"
 
-/** Set of hints that can be processed during objects convertion */
+/** Set of hints that can be processed during objects conversion */
 #define ObjectConvertion_UseGenbankHeader                   "use-genbank-header"
-
 
 class U2CORE_EXPORT DocumentFormat: public QObject {
     Q_OBJECT
