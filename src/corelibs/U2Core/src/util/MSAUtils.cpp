@@ -29,6 +29,7 @@
 #include <U2Core/MsaDbiUtils.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SequenceUtils.h>
@@ -217,11 +218,12 @@ int MSAUtils::getRowIndexByName( const MAlignment& ma, const QString& name )
     return -1;
 }
 
-MAlignmentObject* MSAUtils::seqObjs2msaObj(const QList<GObject*>& objects, U2OpStatus& os, bool useGenbankHeader){
+MAlignmentObject* MSAUtils::seqObjs2msaObj(const QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os){
     if (objects.isEmpty()) {
         return NULL;
     }
-    
+
+    const bool useGenbankHeader = hints.value(ObjectConvertion_UseGenbankHeader, false).toBool();
     MAlignment ma = seq2ma(objects, os, useGenbankHeader);
 
     if (ma.isEmpty()) {
@@ -230,31 +232,32 @@ MAlignmentObject* MSAUtils::seqObjs2msaObj(const QList<GObject*>& objects, U2OpS
     ma.trim();
 
     int pos = 0;
-    bool breakedNice = false;
+    int sequenceObjectsNum = 0;
     foreach(GObject *o, objects){
         if(o->getGObjectType() == GObjectTypes::SEQUENCE){
-            breakedNice = true;
-            break;
+            sequenceObjectsNum++;
+            CHECK_BREAK(sequenceObjectsNum <= 1);
         }
         pos++;
     }
-    SAFE_POINT(breakedNice, tr("There is no sequence objects in given file, unable to convert it in multiple alignment"), NULL);
+    CHECK(sequenceObjectsNum > 1, NULL);
 
     const U2DbiRef& dbiRef = objects.at(pos)->getEntityRef().dbiRef;
     
-    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, ma, os);
+    const QString dstFolder = hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+    U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, dstFolder, ma, os);
     CHECK_OP(os, NULL);
 
     return new MAlignmentObject(ma.getName(), msaRef);
 }
 
-MAlignmentObject* MSAUtils::seqDocs2msaObj(QList<Document*> docs, U2OpStatus& os, bool useGenbankHeader){
+MAlignmentObject* MSAUtils::seqDocs2msaObj(QList<Document*> docs, const QVariantMap& hints, U2OpStatus& os){
     CHECK(!docs.isEmpty(), NULL);
     QList<GObject*> objects;
     foreach(Document* doc, docs){
         objects << doc->getObjects();
     }
-    return seqObjs2msaObj(objects, os, useGenbankHeader);
+    return seqObjs2msaObj(objects, hints, os);
 }
 
 QList<qint64> MSAUtils::compareRowsAfterAlignment(const MAlignment& origMsa, MAlignment& newMsa, U2OpStatus& os) {

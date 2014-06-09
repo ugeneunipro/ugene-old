@@ -22,11 +22,14 @@
 #include "DocumentUtils.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentImport.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/MSAUtils.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/SequenceUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 namespace U2 {
@@ -237,6 +240,48 @@ void DocumentUtils::removeDocumentsContainigGObjectFromProject(GObject *obj)
 
 QFile::Permissions DocumentUtils::getPermissions(Document *doc){
     return QFile(doc->getURLString()).permissions();
+}
+
+Document* DocumentUtils::createCopyRestructuredWithHints(Document* doc, U2OpStatus& os) {
+    Document *resultDoc = NULL;
+    QVariantMap hints = doc->getGHintsMap();
+
+    if (hints.value(ProjectLoaderHint_MultipleFilesMode_Flag, false).toBool()) {
+        return NULL;
+    }
+
+    if (hints.value(DocumentReadingMode_SequenceAsAlignmentHint, false).toBool()) {
+        MAlignmentObject* maObj = MSAUtils::seqObjs2msaObj(doc->getObjects(), hints, os);
+        CHECK(maObj != NULL, resultDoc);
+        QList<GObject*> objects;
+        objects << maObj;
+
+        DocumentFormatConstraints objTypeConstraints;
+        objTypeConstraints.supportedObjectTypes << GObjectTypes::MULTIPLE_ALIGNMENT;
+        bool makeReadOnly = !doc->getDocumentFormat()->checkConstraints(objTypeConstraints);
+
+        resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), doc->getDbiRef(), objects, hints,
+            makeReadOnly ? tr("Format does not support writing of alignments") : QString());
+
+        doc->propagateModLocks(resultDoc);
+    } else if (hints.contains(DocumentReadingMode_SequenceMergeGapSize)) {
+        int mergeGap = hints.value(DocumentReadingMode_SequenceMergeGapSize).toInt();
+        if (mergeGap < 0 || doc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedOnly).count() <= 1) {
+            return NULL;
+        }
+
+        QList<GObject*> objects = U1SequenceUtils::mergeSequences(doc, doc->getDbiRef(), hints, os);
+        resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(),
+            doc->getDbiRef(), objects, hints, tr("File content was merged"));
+        doc->propagateModLocks(resultDoc);
+
+        if (os.hasError()) {
+            delete resultDoc;
+            resultDoc = NULL;
+        }
+    }
+
+    return resultDoc;
 }
 
 QString FormatDetectionResult::getFormatDescriptionText() const {

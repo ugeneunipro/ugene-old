@@ -36,14 +36,15 @@ public:
         MALIGNMENT
     };
 
-    bool keepFoldersStructure;
-    bool processFoldersRecursively;
-    bool createSubfolderForTopLevelFolder;
-    bool createSubfolderForEachFile;
-    bool importUnknownAsUdr;
-    MultiSequencePolicy multiSequencePolicy;
-    bool createSubfolderForEachDocument;
-    int mergeMultiSequencePolicySeparatorSize;
+    bool                    createSubfolderForEachDocument;
+    bool                    createSubfolderForEachFile;
+    bool                    createSubfolderForTopLevelFolder;
+    bool                    importUnknownAsUdr;
+    bool                    keepFileExtension;
+    bool                    keepFoldersStructure;
+    int                     mergeMultiSequencePolicySeparatorSize;
+    MultiSequencePolicy     multiSequencePolicy;
+    bool                    processFoldersRecursively;
 
     bool operator == (const ImportToDatabaseOptions& other) const;
     bool operator != (const ImportToDatabaseOptions& other) const;

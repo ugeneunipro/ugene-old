@@ -265,7 +265,6 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
             }
             seqImporter.startSequence(dbiRef, folder, objName, false, os);
             CHECK_OP_BREAK(os);
-            sequenceRef = GObjectReference(io->getURL().getURLString(), objName, GObjectTypes::SEQUENCE);
         }
 
         //read sequence
@@ -310,13 +309,14 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
             U2Sequence u2seq = seqImporter.finalizeSequence(os);
             dbiObjects.objects << u2seq.id;
             CHECK_OP_BREAK(os);
+            sequenceRef = GObjectReference(io->getURL().getURLString(), u2seq.visualName, GObjectTypes::SEQUENCE, U2EntityRef(dbiRef, u2seq.id));
 
             U2SequenceObject* seqObj = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
             CHECK_EXT_BREAK(seqObj != NULL, os.setError("U2SequenceObject is NULL"));
             seqObj->setQuality(DNAQuality(qualityScores));
             objects << seqObj;
 
-            U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
+            U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL, hints);
         }
         if (PROGRESS_UPDATE_STEP == progressUpNum) {
             progressUpNum = 0;
@@ -343,10 +343,11 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
     dbiObjects.objects << u2seq.id;
     CHECK_OP(os,);
 
-    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
+    sequenceRef = GObjectReference(io->getURL().getURLString(), u2seq.visualName, GObjectTypes::SEQUENCE, U2EntityRef(dbiRef, u2seq.id));
+
+    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL, hints);
     objects << new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
-    objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence( docUrl, dbiRef, headers,
-        u2seq, mergedMapping, os );
+    objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence(sequenceRef, dbiRef, headers, mergedMapping, hints);
     if (headers.size() > 1) {
         writeLockReason = DocumentFormat::MERGED_SEQ_LOCK;
     }

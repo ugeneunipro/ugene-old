@@ -236,8 +236,7 @@ void processOldObjects( const QList<GObject *> &objs,
         // GENBANK without sequence but header have sequence length - made sequence with 'N' characters
         if ( 0 == currentObject && isGenbankHeaderUsed( hints, url ) ) {
             U2SequenceObject *seqObj = storeSequenceUseGenbankHeader( hints, url, fileName, os );
-            GObjectReference sequenceRef( GObjectReference( url, "", GObjectTypes::SEQUENCE ) );
-            sequenceRef.objName = seqObj->getGObjectName( );
+            GObjectReference sequenceRef( GObjectReference( url, seqObj->getGObjectName( ), GObjectTypes::SEQUENCE, seqObj->getEntityRef() ) );
             annObj->addObjectRelation( GObjectRelation( sequenceRef, ObjectRole_Sequence ) );
 
             const DNAAlphabet *seqAl = seqObj->getAlphabet( );
@@ -288,7 +287,7 @@ static QList<GObject *> createNewObjects(
         seqImport.startSequence( ref, folder, seqName, false, os );
         CHECK_OP( os, QList<GObject*>( ) );
 
-        AnnotationTableObject *newAnnObj = new AnnotationTableObject( seqName + " annotations", ref );
+        AnnotationTableObject *newAnnObj = new AnnotationTableObject( seqName + " annotations", ref, hints );
         QList<U2SequenceObject *> seqObjects = it.value( );
         importGroupSequences2newObject( seqObjects, newAnnObj, mergeGap, seqImport,
             annotationsBySequenceObjectName, os );
@@ -297,7 +296,7 @@ static QList<GObject *> createNewObjects(
         CHECK_OP( os, QList<GObject *>( ) );
 
         if ( !newUrl.getURLString( ).isEmpty( ) ) {
-            GObjectReference r( newUrl.getURLString( ), u2seq.visualName, GObjectTypes::SEQUENCE );
+            GObjectReference r( newUrl.getURLString( ), u2seq.visualName, GObjectTypes::SEQUENCE, U2EntityRef( ref, u2seq.id ) );
             newAnnObj->addObjectRelation( GObjectRelation( r, ObjectRole_Sequence ) );
         }
 

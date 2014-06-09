@@ -28,19 +28,20 @@
 
 namespace U2 {
 
+class AnnotationSettings;
+class AnnotationTableObject;
+class DNAAlphabet;
+class DNASequence;
 class Document;
 class DocumentFormat;
-class DNAAlphabet;
-class U2SequenceObject;
 class GObject;
-class MAlignment;
-class DNASequence;
-class U2Sequence;
+class GObjectReference;
 class GUrl;
-class AnnotationSettings;
-class U2OpStatus;
-class AnnotationTableObject;
+class MAlignment;
 class U2DbiRef;
+class U2OpStatus;
+class U2Sequence;
+class U2SequenceObject;
 
 class U2FORMATS_EXPORT DocumentFormatUtils : public QObject {
     Q_OBJECT
@@ -61,9 +62,11 @@ public:
     static U2SequenceObject* addSequenceObject(const U2DbiRef& dbiRef, const QString& name, const QByteArray& seq, bool circular, const QVariantMap& hints, U2OpStatus& os);
 
     /** Doc URL here is used to set up sequence<->annotation relations */
-    static AnnotationTableObject * addAnnotationsForMergedU2Sequence( const GUrl& docUrl,
-        const U2DbiRef& dbiRef, const QStringList& contigs, const U2Sequence& mergedSequence,
-        const QVector<U2Region>& mergedMapping, U2OpStatus& os );
+    static AnnotationTableObject * addAnnotationsForMergedU2Sequence(const GObjectReference& mergedSequenceRef,
+                                                                     const U2DbiRef& dbiRef,
+                                                                     const QStringList& contigs,
+                                                                     const QVector<U2Region>& mergedMapping,
+                                                                     const QVariantMap &hints);
 
     static U2SequenceObject* addSequenceObjectDeprecated(const U2DbiRef& dbiRef,
                                                          const QString &folder,

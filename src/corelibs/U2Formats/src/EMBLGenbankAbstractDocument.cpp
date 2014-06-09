@@ -223,7 +223,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
                     if (annotationsObject!=NULL) {
                         annotationsObject->addObjectRelation(GObjectRelation(sequenceRef, ObjectRole_Sequence));
                     }
-                    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, annotationsObject);
+                    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, annotationsObject, fs);
 
                     readHeaderAttributes(data.tags, con, seqObj);
                     toolMark = data.tags.contains(UGENE_MARK); //the mark might be added in the readHeaderAttributes method
@@ -255,19 +255,20 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
     DbiConnection con(dbiRef, os);
     con.dbi->getSequenceDbi()->updateSequenceObject(u2seq,os);
 
+    sequenceRef.objName = u2seq.visualName;
+    sequenceRef.entityRef = U2EntityRef(dbiRef, u2seq.id);
+
     CHECK_OP(os,);
     U2SequenceObject* so = new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
     objects << so;
-    objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence( io->getURL( ), dbiRef,
-        contigs, u2seq, mergedMapping, os );
+    objects << DocumentFormatUtils::addAnnotationsForMergedU2Sequence(sequenceRef, dbiRef, contigs, mergedMapping, fs);
     AnnotationTableObject *mergedAnnotationsPtr = mergedAnnotations.take( );
     if ( NULL != mergedAnnotationsPtr ) {
-        sequenceRef.objName = so->getGObjectName();
         sequenceRef.entityRef = U2EntityRef(dbiRef, u2seq.id);
         mergedAnnotationsPtr->addObjectRelation(GObjectRelation(sequenceRef, ObjectRole_Sequence));
         objects.append(mergedAnnotationsPtr);
     }
-    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, mergedAnnotationsPtr);
+    U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, mergedAnnotationsPtr, fs);
 }
 
 DNASequence* EMBLGenbankAbstractDocument::loadSequence(IOAdapter* io, U2OpStatus& os) {

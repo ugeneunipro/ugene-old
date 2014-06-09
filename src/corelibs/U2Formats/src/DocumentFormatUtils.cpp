@@ -79,17 +79,17 @@ U2SequenceObject * DocumentFormatUtils::addSequenceObject(const U2DbiRef& dbiRef
 }
 
 
-AnnotationTableObject * DocumentFormatUtils::addAnnotationsForMergedU2Sequence( const GUrl &docUrl,
-    const U2DbiRef& dbiRef, const QStringList &contigNames, const U2Sequence &mergedSequence,
-    const QVector<U2Region> &mergedMapping, U2OpStatus &os )
+AnnotationTableObject * DocumentFormatUtils::addAnnotationsForMergedU2Sequence(const GObjectReference& mergedSequenceRef,
+                                                                               const U2DbiRef& dbiRef,
+                                                                               const QStringList &contigNames,
+                                                                               const QVector<U2Region> &mergedMapping,
+                                                                               const QVariantMap& hints)
 {
-    Q_UNUSED( os );
-    AnnotationTableObject *ao = new AnnotationTableObject( "Contigs", dbiRef );
+    AnnotationTableObject *ao = new AnnotationTableObject( "Contigs", dbiRef, hints );
 
-    //save relation if docUrl is not empty
-    if ( !docUrl.isEmpty( ) ) {
-        GObjectReference r( docUrl.getURLString( ), mergedSequence.visualName, GObjectTypes::SEQUENCE );
-        ao->addObjectRelation( GObjectRelation( r, ObjectRole_Sequence ) );
+    // save relation if mergedSequenceRef is valid
+    if (mergedSequenceRef.isValid()) {
+        ao->addObjectRelation( GObjectRelation( mergedSequenceRef, ObjectRole_Sequence ) );
     }
 
     //save mapping info as annotations

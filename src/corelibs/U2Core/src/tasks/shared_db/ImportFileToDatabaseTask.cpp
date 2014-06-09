@@ -32,6 +32,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ProjectView.h>
@@ -73,15 +74,29 @@ void ImportFileToDatabaseTask::prepare() {
 void ImportFileToDatabaseTask::run() {
     CHECK(NULL != format, );
 
+    DbiOperationsBlock opBlock(dstDbiRef, stateInfo);
+    CHECK_OP(stateInfo, );
+    Q_UNUSED(opBlock);
+
     const QVariantMap hints = prepareHints();
 
     IOAdapterFactory* ioFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(GUrl(srcUrl)));
     CHECK_EXT(NULL != ioFactory, setError(tr("Unrecognized url: ") + srcUrl), );
-
     CHECK_OP(stateInfo, );
+
     Document* loadedDoc = format->loadDocument(ioFactory, srcUrl, hints, stateInfo);
     CHECK_OP(stateInfo, );
-    loadedDoc->setDocumentOwnsDbiResources(false);
+
+    U2OpStatusImpl os;
+    Document* restructuredDoc = DocumentUtils::createCopyRestructuredWithHints(loadedDoc, os);
+    if (NULL != restructuredDoc) {
+        restructuredDoc->setDocumentOwnsDbiResources(false);
+        loadedDoc->setDocumentOwnsDbiResources(true);
+    } else {
+        loadedDoc->setDocumentOwnsDbiResources(false);
+    }
+
+    delete restructuredDoc;
     delete loadedDoc;
 }
 
@@ -91,26 +106,44 @@ const QString &ImportFileToDatabaseTask::getFilePath() const {
 
 QVariantMap ImportFileToDatabaseTask::prepareHints() const {
     QVariantMap hints;
+
     hints[DocumentReadingMode_DontMakeUniqueNames] = 1;
     hints[DocumentImporter::LOAD_RESULT_DOCUMENT] = false;
     hints[DocumentFormat::DBI_REF_HINT] = qVariantFromValue(dstDbiRef);
-    hints[DocumentFormat::DBI_FOLDER_HINT] = dstFolder + (options.createSubfolderForEachFile ?
-                                                              U2ObjectDbi::PATH_SEP + QFileInfo(srcUrl).fileName() :
-                                                              "");
+    hints[DocumentFormat::DBI_FOLDER_HINT] = getFolderName();
 
     switch (options.multiSequencePolicy) {
         case ImportToDatabaseOptions::SEPARATE:
-            // do nothing, it is normal behavior
+            // do nothing, it is standard behavior
             break;
         case ImportToDatabaseOptions::MERGE:
-            hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+            hints[DocumentReadingMode_SequenceMergeGapSize] = options.mergeMultiSequencePolicySeparatorSize;
             break;
         case ImportToDatabaseOptions::MALIGNMENT:
-            hints[DocumentReadingMode_SequenceMergeGapSize] = options.mergeMultiSequencePolicySeparatorSize;
+            hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
             break;
     };
 
     return hints;
+}
+
+QString ImportFileToDatabaseTask::getFolderName() const {
+    QString result = dstFolder;
+
+    if (options.createSubfolderForEachFile) {
+        QString fileName = QFileInfo(srcUrl).fileName();
+        if (!options.keepFileExtension) {
+            if (QFileInfo(fileName).suffix() == "gz") {
+                fileName = QFileInfo(fileName).completeBaseName();
+            }
+
+            fileName = QFileInfo(fileName).completeBaseName();
+        }
+
+        result += U2ObjectDbi::PATH_SEP + fileName;
+    }
+
+    return result;
 }
 
 }   // namespace U2

@@ -58,8 +58,8 @@ public:
     //checks that alignment is not empty and all packed sequence parts has equal length
     static bool checkPackedModelSymmetry(MAlignment& ali, U2OpStatus& ti);
 
-    static MAlignmentObject* seqDocs2msaObj(QList<Document*> doc, U2OpStatus& os, bool useGenbankHeader = false);
-    static MAlignmentObject* seqObjs2msaObj(const QList<GObject*>& objects, U2OpStatus& os, bool useGenbankHeader = false);
+    static MAlignmentObject* seqDocs2msaObj(QList<Document*> doc, const QVariantMap& hints, U2OpStatus& os);
+    static MAlignmentObject* seqObjs2msaObj(const QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& os);
 
     /**
      * Compares rows in the 'origMsa' and 'newMsa' by names of the sequences.

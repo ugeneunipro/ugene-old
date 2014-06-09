@@ -525,7 +525,7 @@ QByteArray PDBFormat::PDBParser::getNextSpecLine()
 
 }
 
-void PDBFormat::PDBParser::parseSplitSection( U2OpStatus& ti )
+void PDBFormat::PDBParser::parseSplitSection( U2OpStatus& /*ti*/ )
 {
    /* COLUMNS DATA TYPE FIELD DEFINITION 
     1 - 6 Record name "SPLIT " 

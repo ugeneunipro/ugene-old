@@ -396,7 +396,7 @@ static Document* loadFromMultipleFiles(IOAdapterFactory* iof, QVariantMap& fs, U
         newObjects << U1SequenceUtils::mergeSequences(docs, ref, newStringUrl, fs, os);
     }
     else if(fs.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()){
-        newObjects << MSAUtils::seqDocs2msaObj(docs, os);
+        newObjects << MSAUtils::seqDocs2msaObj(docs, fs, os);
         ref = U2DbiRef();
     }    
     else{
@@ -441,7 +441,7 @@ void LoadDocumentTask::run() {
         if (!renameList.isEmpty()) {
             renameObjects(resultDocument, renameList);
         }
-        Document* convertedDoc = createCopyRestructuredWithHints(resultDocument, stateInfo);
+        Document* convertedDoc = DocumentUtils::createCopyRestructuredWithHints(resultDocument, stateInfo);
         if (convertedDoc != NULL) {
             delete resultDocument;
             resultDocument = convertedDoc;
@@ -539,45 +539,6 @@ void LoadDocumentTask::checkAccess() {
     }
 }
 
-
-Document* LoadDocumentTask::createCopyRestructuredWithHints(Document* doc, U2OpStatus& os) {
-    Document *resultDoc = NULL;
-    QVariantMap hints = doc->getGHintsMap();
-    if(hints.value(ProjectLoaderHint_MultipleFilesMode_Flag).toBool()){return NULL;}
-    if (hints.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()) {
-        QList<U2SequenceObject*> seqObjects;
-
-        MAlignmentObject* maObj = MSAUtils::seqObjs2msaObj(doc->getObjects(), os);
-        CHECK(maObj != NULL, resultDoc);
-        QList<GObject*> objects;
-        objects << maObj;
-
-        DocumentFormatConstraints objTypeConstraints;
-        objTypeConstraints.supportedObjectTypes << GObjectTypes::MULTIPLE_ALIGNMENT;
-        bool makeReadOnly = !doc->getDocumentFormat()->checkConstraints(objTypeConstraints);
-
-        resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), doc->getDbiRef(), objects, hints,
-            makeReadOnly ? tr("Format does not support writing of alignments") : QString());
-
-        doc->propagateModLocks(resultDoc);
-    } else if (hints.contains(DocumentReadingMode_SequenceMergeGapSize)) {
-        int mergeGap = hints.value(DocumentReadingMode_SequenceMergeGapSize).toInt();
-        if (mergeGap < 0 || doc->findGObjectByType(GObjectTypes::SEQUENCE, UOF_LoadedOnly).count() <= 1) {
-            return NULL;
-        }
-        //resultDoc = U1SequenceUtils::mergeSequences(doc, mergeGap, os);
-        QList<GObject*> objects = U1SequenceUtils::mergeSequences(doc, doc->getDbiRef(), hints, os);
-        Document* resultDoc = new Document(doc->getDocumentFormat(), doc->getIOAdapterFactory(), doc->getURL(), 
-            doc->getDbiRef(), objects, hints, tr("File content was merged"));
-        doc->propagateModLocks(resultDoc);
-
-        if (os.hasError()) {
-            delete resultDoc;
-            resultDoc = NULL;
-        }
-    }
-    return resultDoc;
-}
 
 void LoadDocumentTask::renameObjects(Document* doc, const QStringList& names) {
     if (doc->getObjects().size() != names.size()) {

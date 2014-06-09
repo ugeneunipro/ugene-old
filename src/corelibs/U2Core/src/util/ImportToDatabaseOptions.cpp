@@ -28,26 +28,28 @@
 namespace U2 {
 
 ImportToDatabaseOptions::ImportToDatabaseOptions() :
-    keepFoldersStructure(true),
-    processFoldersRecursively(true),
-    createSubfolderForTopLevelFolder(false),
-    createSubfolderForEachFile(true),
-    importUnknownAsUdr(false),
-    multiSequencePolicy(SEPARATE),
     createSubfolderForEachDocument(true),
-    mergeMultiSequencePolicySeparatorSize(10)
+    createSubfolderForEachFile(true),
+    createSubfolderForTopLevelFolder(false),
+    importUnknownAsUdr(false),
+    keepFileExtension(false),
+    keepFoldersStructure(true),
+    mergeMultiSequencePolicySeparatorSize(10),
+    multiSequencePolicy(SEPARATE),
+    processFoldersRecursively(true)
 {
 }
 
 bool ImportToDatabaseOptions::operator == (const ImportToDatabaseOptions &other) const {
-    return keepFoldersStructure == other.keepFoldersStructure &&
-            processFoldersRecursively == other.processFoldersRecursively &&
-            createSubfolderForTopLevelFolder == other.createSubfolderForTopLevelFolder &&
+    return  createSubfolderForEachDocument == other.createSubfolderForEachDocument &&
             createSubfolderForEachFile == other.createSubfolderForEachFile &&
+            createSubfolderForTopLevelFolder == other.createSubfolderForTopLevelFolder &&
             importUnknownAsUdr == other.importUnknownAsUdr &&
+            keepFileExtension == other.keepFileExtension &&
+            keepFoldersStructure == other.keepFoldersStructure &&
+            mergeMultiSequencePolicySeparatorSize == other.mergeMultiSequencePolicySeparatorSize &&
             multiSequencePolicy == other.multiSequencePolicy &&
-            createSubfolderForEachDocument == other.createSubfolderForEachDocument &&
-            mergeMultiSequencePolicySeparatorSize == other.mergeMultiSequencePolicySeparatorSize;
+            processFoldersRecursively == other.processFoldersRecursively;
 }
 
 bool ImportToDatabaseOptions::operator !=(const ImportToDatabaseOptions &other) const {

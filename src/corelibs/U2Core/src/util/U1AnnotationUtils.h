@@ -86,8 +86,8 @@ public:
     /**
      * If @annotationsObject is NULL then it creates a new annotation object
      */
-    static void addAnnotations( QList<GObject *> &objects, const QList<AnnotationData> &annList,
-        const GObjectReference &sequenceRef, AnnotationTableObject *annotationsObject );
+    static void addAnnotations(QList<GObject *> &objects, const QList<AnnotationData> &annList,
+        const GObjectReference &sequenceRef, AnnotationTableObject *annotationsObject , const QVariantMap &hints);
 
     static QList<U2Region> getRelatedLowerCaseRegions( const U2SequenceObject *so,
         const QList<GObject *> &anns );

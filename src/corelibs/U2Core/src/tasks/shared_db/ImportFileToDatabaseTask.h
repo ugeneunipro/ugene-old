@@ -43,6 +43,7 @@ public:
 
 private:
     QVariantMap prepareHints() const;
+    QString getFolderName() const;
 
     QString srcUrl;
     U2DbiRef dstDbiRef;

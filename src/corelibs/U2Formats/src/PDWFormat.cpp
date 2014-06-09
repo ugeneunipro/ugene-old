@@ -127,7 +127,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
             objects << seqObj;
 
             GObjectReference sequenceRef(io->getURL().getURLString(), seqName, GObjectTypes::SEQUENCE);
-            U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL);
+            U1AnnotationUtils::addAnnotations(objects, seqImporter.getCaseAnnotations(), sequenceRef, NULL, fs);
 
             break;
         } else if (readBuff.startsWith(PDW_CIRCULAR_TAG)) {

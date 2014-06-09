@@ -19,14 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AppContext.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/GObjectUtils.h>
 #include <U2Core/AnnotationTableObject.h>
-#include <U2Core/TextUtils.h>
+#include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNATranslation.h>
-#include <U2Core/AppContext.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -275,14 +275,20 @@ QList<AnnotationData> U1AnnotationUtils::finalizeUnfinishedRegion( bool isUnfini
 
 void U1AnnotationUtils::addAnnotations( QList<GObject *> &objects,
     const QList<AnnotationData> &annList, const GObjectReference &sequenceRef,
-    AnnotationTableObject *annotationsObject )
+    AnnotationTableObject *annotationsObject, const QVariantMap& hints )
 {
     if ( !annList.isEmpty( ) ) {
         if ( NULL == annotationsObject ) {
             U2OpStatusImpl os;
-            const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
+            U2DbiRef dbiRef;
+            if (hints.contains(DocumentFormat::DBI_REF_HINT)) {
+                dbiRef = hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>();
+            } else {
+                dbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
+            }
+
             SAFE_POINT_OP( os, );
-            annotationsObject = new AnnotationTableObject( sequenceRef.objName + " features", dbiRef );
+            annotationsObject = new AnnotationTableObject( sequenceRef.objName + " features", dbiRef, hints );
             annotationsObject->addObjectRelation(
                 GObjectRelation( sequenceRef, ObjectRole_Sequence ) );
         }
