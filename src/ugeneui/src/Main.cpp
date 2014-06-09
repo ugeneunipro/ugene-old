@@ -116,6 +116,7 @@
 #include "project_support/ProjectLoaderImpl.h"
 #include "main_window/MainWindowImpl.h"
 #include "main_window/CheckUpdatesTask.h"
+#include "main_window/SplashScreen.h"
 #include "project_view/ProjectViewImpl.h"
 
 #include "task_view/TaskViewController.h"
@@ -285,6 +286,9 @@ int main(int argc, char **argv)
     //QApplication app(argc, argv);
     GApplication app(argc, argv);
 
+    SplashScreen *ss = new SplashScreen(NULL);
+    ss->show();
+
     AppContextImpl* appContext = AppContextImpl::getApplicationContext();
     appContext->setGUIMode(true);
     appContext->setWorkingDirectoryPath(QCoreApplication::applicationDirPath());
@@ -409,8 +413,8 @@ int main(int argc, char **argv)
 
     MainWindowImpl* mw = new MainWindowImpl();
     appContext->setMainWindow(mw);
-    mw->show();
-   
+    mw->prepare();
+  
     AppSettingsGUI* appSettingsGUI = new AppSettingsGUIImpl();
     appContext->setAppSettingsGUI(appSettingsGUI);
 
@@ -634,16 +638,23 @@ int main(int argc, char **argv)
     //3 run QT GUI
     t1.stop();
 
-    coreLog.info(AppContextImpl::tr("%1-bit version of UGENE started").arg(Version::appArchitecture));
+    //coreLog.info(AppContextImpl::tr("%1-bit version of UGENE started").arg(Version::appArchitecture));
+    Version v = Version::appVersion();
+    coreLog.info( QObject::tr( "UGENE started" ));
+    coreLog.info( QObject::tr( "UGENE version: %1 %2-bit").arg( v.text ).arg( Version::appArchitecture ) );
+    coreLog.info( QObject::tr( "UGENE distribution: %1").arg( v.distributionInfo ));
     if(AppContext::getSettings()->getValue(ASK_VESRION_SETTING, true).toBool()) {
-		tasks << new CheckUpdatesTask(true);
+        tasks << new CheckUpdatesTask(true);
     }
 
     TmpDirChecker* tempDirChecker = new TmpDirChecker;
     QObject::connect(tempDirChecker, SIGNAL(si_checkFailed(QString)), mw, SLOT(sl_tempDirPathCheckFailed(QString)));
-	tasks << tempDirChecker;
+    tasks << tempDirChecker;
 
-	ts->registerTopLevelTask(new SequentialMultiTask(QObject::tr("Startup checks"), tasks, TaskFlag_NoRun));
+    ts->registerTopLevelTask(new SequentialMultiTask(QObject::tr("Startup checks"), tasks, TaskFlag_NoRun));
+
+    QObject::connect(ts, SIGNAL(si_noTasksInScheduler()), ss, SLOT(close()));
+    QObject::connect(ts, SIGNAL(si_noTasksInScheduler()), mw, SLOT(sl_show()));
 
     MemoryLocker l(160, AppResource::SystemMemory); // 100Mb on UGENE start, ~60Mb SQLite cache
     int rc = app.exec();

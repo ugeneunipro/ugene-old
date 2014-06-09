@@ -80,7 +80,7 @@ public:
 
 	virtual void setWindowTitle(const QString& title);
     
-    void show();
+    void prepare();
     void close();
 
     void runClosingTask();
@@ -97,6 +97,7 @@ private slots:
     void sl_openManualAction();
     void sl_openWDManualAction();
     void sl_openQDManualAction();
+    void sl_show();
 #ifdef _INSTALL_TO_PATH_ACTION
     void sl_installToPathAction();
 #endif
@@ -106,19 +107,19 @@ private:
     void prepareGUI();
     void openManual(const QString& name);
 
-    QMainWindow*			mw;
-    FixedMdiArea*			mdi;
+    QMainWindow*            mw;
+    FixedMdiArea*           mdi;
     
-    MWMenuManagerImpl*  	menuManager;
-	MWToolBarManagerImpl*	toolbarManager;
-    MWMDIManager*			mdiManager;
-    MWDockManager*			dockManager;
+    MWMenuManagerImpl*      menuManager;
+	MWToolBarManagerImpl*   toolbarManager;
+    MWMDIManager*           mdiManager;
+    MWDockManager*          dockManager;
 
-	NotificationStack*		nStack;
+	NotificationStack*      nStack;
 
-    QAction*				exitAction;
-    QAction*				aboutAction;
-    QAction*				checkUpdateAction;
+    QAction*                exitAction;
+    QAction*                aboutAction;
+    QAction*                checkUpdateAction;
     QAction*                visitWebAction;
     QAction*                viewOnlineDocumentation;
     QAction*                openManualAction;

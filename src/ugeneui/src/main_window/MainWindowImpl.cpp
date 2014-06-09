@@ -195,22 +195,10 @@ MainWindowImpl::~MainWindowImpl() {
     assert(mw == NULL);
 }
 
-void MainWindowImpl::show() {
+void MainWindowImpl::prepare() {
     nStack = new NotificationStack();
     createActions();
     prepareGUI();
-
-    bool maximized =AppContext::getSettings()->getValue(SETTINGS_DIR + "maximized", false).toBool();
-    QRect geom =AppContext::getSettings()->getValue(SETTINGS_DIR + "geometry", QRect()).toRect();
-
-    if (maximized) {
-        mw->showMaximized();
-    } else {
-        if (!geom.isNull()) {
-            mw->setGeometry(geom);
-        }
-        mw->show();
-    }
 }
 
 void MainWindowImpl::close() {
@@ -532,6 +520,23 @@ QMdiSubWindow* FixedMdiArea::addSubWindow(QWidget* widget)
     //Workaround for QTBUG-17428
     connect(subWindow->systemMenu(), SIGNAL(triggered(QAction*)), SLOT(sysContextMenuAction(QAction*)));
     return subWindow;
+}
+
+void MainWindowImpl::sl_show(){
+    if(qobject_cast<TaskScheduler*> (sender()) == qobject_cast<TaskScheduler*> (AppContext::getTaskScheduler())){
+        QObject::disconnect(AppContext::getTaskScheduler(), SIGNAL(si_noTasksInScheduler()), this, SLOT(sl_show()));
+    }
+    bool maximized =AppContext::getSettings()->getValue(SETTINGS_DIR + "maximized", false).toBool();
+    QRect geom =AppContext::getSettings()->getValue(SETTINGS_DIR + "geometry", QRect()).toRect();
+
+    if (maximized) {
+        mw->showMaximized();
+    } else {
+        if (!geom.isNull()) {
+            mw->setGeometry(geom);
+        }
+        mw->show();
+    }
 }
 
 }//namespace

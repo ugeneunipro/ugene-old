@@ -5,6 +5,7 @@ HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/app_settings/AppSettingsDialogTree.h \
            src/app_settings/AppSettingsGUIImpl.h \
            src/main_window/AboutDialogController.h \
+           src/main_window/SplashScreen.h \
            src/main_window/CheckUpdatesTask.h \
            src/main_window/DockManagerImpl.h \
            src/main_window/MainWindowImpl.h \
@@ -54,6 +55,7 @@ SOURCES += src/Main.cpp \
            src/app_settings/AppSettingsDialogController.cpp \
            src/app_settings/AppSettingsGUIImpl.cpp \
            src/main_window/AboutDialogController.cpp \
+           src/main_window/SplashScreen.cpp \
            src/main_window/CheckUpdatesTask.cpp \
            src/main_window/DockManagerImpl.cpp \
            src/main_window/MainWindowImpl.cpp \
