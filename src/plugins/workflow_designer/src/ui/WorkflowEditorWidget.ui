@@ -192,7 +192,7 @@ QGroupBox::indicator:checked {
            <number>0</number>
           </property>
           <property name="topMargin">
-           <number>1</number>
+           <number>3</number>
           </property>
           <property name="rightMargin">
            <number>0</number>
@@ -289,7 +289,7 @@ QGroupBox::indicator:checked {
            <number>0</number>
           </property>
           <property name="topMargin">
-           <number>0</number>
+           <number>3</number>
           </property>
           <property name="rightMargin">
            <number>0</number>
@@ -336,7 +336,7 @@ QGroupBox::indicator:checked {
            <number>0</number>
           </property>
           <property name="topMargin">
-           <number>0</number>
+           <number>3</number>
           </property>
           <property name="rightMargin">
            <number>0</number>
