@@ -24,7 +24,18 @@
 extern "C" {
 #include <bam.h>
 #include <bam_sort.c>
+
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4018 )
+#endif
+
 #include <bam_rmdup.c>
+
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
+
 #include <kseq.h>
 #include <sam.h>
 #include <sam_header.h>
