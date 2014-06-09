@@ -158,6 +158,7 @@ FindPatternListTask::FindPatternListTask(const FindAlgorithmTaskSettings &_setti
         FindAlgorithmTaskSettings subTaskSettings = settings;
         subTaskSettings.pattern = pattern.second.toLocal8Bit().toUpper();
         QString subAnnotName = annotName;
+        subTaskSettings.maxErr = getMaxError( subTaskSettings.pattern );
         if (useAnnotName) {
             QString newPatternName = pattern.first;
             if (newPatternName.length() >= GBFeatureUtils::MAX_KEY_LEN){
