@@ -270,17 +270,10 @@ Document::~Document() {
         }
     }
 
-    if (isDocumentOwnsDbiResources()) {
-        if (dbiRef.isValid()) {
-            removeObjectsDataFromDbi(objects);
-        }
-
-        foreach (GObject* obj, objects) {
-            obj->setGHints(NULL);
-        }
+    if (isDocumentOwnsDbiResources() && dbiRef.isValid()) {
+        removeObjectsDataFromDbi(objects);
     }
 
-    qDeleteAll(objects);
     delete ctxState;
 }
 
