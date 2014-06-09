@@ -70,7 +70,7 @@ TextObject::TextObject(const QString &objectName, const U2EntityRef &textRef, co
 QString TextObject::getText() const {
     U2OpStatus2Log os;
     QByteArray content = RawDataUdrSchema::readAllContent(entityRef, os);
-    SAFE_POINT_OP(os, QString());
+    CHECK_OP(os, QString());
     return QString::fromUtf8(content);
 }
 

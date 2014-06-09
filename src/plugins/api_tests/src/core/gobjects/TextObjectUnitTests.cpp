@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AppContext.h>
-#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/RawDataUdrSchema.h>
 #include <U2Core/TextObject.h>
 #include <U2Core/U2ObjectDbi.h>
@@ -31,15 +29,16 @@
 
 namespace U2 {
 
-U2Dbi *TextObjectTestData::dbi = NULL;
 bool TextObjectTestData::inited = false;
+const QString TextObjectTestData::UDR_DB_URL = "TextObjectUnitTests.ugenedb";
+TestDbiProvider TextObjectTestData::dbiProvider = TestDbiProvider();
 U2EntityRef TextObjectTestData::objRef = U2EntityRef();
 
 U2DbiRef TextObjectTestData::getDbiRef() {
     if (!inited) {
         init();
     }
-    return dbi->getDbiRef();
+    return dbiProvider.getDbi()->getDbiRef();
 }
 
 U2EntityRef TextObjectTestData::getObjRef() {
@@ -53,23 +52,20 @@ U2ObjectDbi * TextObjectTestData::getObjDbi() {
     if (!inited) {
         init();
     }
-    return dbi->getObjectDbi();
+    return dbiProvider.getDbi()->getObjectDbi();
 }
 
 UdrDbi * TextObjectTestData::getUdrDbi() {
     if (!inited) {
         init();
     }
-    return dbi->getUdrDbi();
+    return dbiProvider.getDbi()->getUdrDbi();
 }
 
 void TextObjectTestData::init() {
-    U2OpStatusImpl os;
-    U2DbiRef ref;
-    ref.dbiFactoryId = MYSQL_DBI_ID;
-    ref.dbiId = "ugene:@192.168.15.143:6666/ugene";
-    dbi = AppContext::getDbiRegistry()->getGlobalDbiPool()->openDbi(ref, false, os);
-    SAFE_POINT_OP(os, );
+    bool ok = dbiProvider.init(UDR_DB_URL, true);
+    SAFE_POINT(ok, "dbi provider failed to initialize",);
+
     inited = true;
 
     initData();
@@ -93,8 +89,7 @@ void TextObjectTestData::initData() {
 void TextObjectTestData::shutdown() {
     if (inited) {
         inited = false;
-        U2OpStatusImpl os;
-        SAFE_POINT_OP(os, );
+        dbiProvider.close();
     }
 }
 
