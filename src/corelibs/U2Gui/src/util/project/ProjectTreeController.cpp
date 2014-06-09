@@ -1147,6 +1147,8 @@ void ProjectTreeController::updateObjectActiveStateVisual(GObject *obj) {
         QModelIndex docIdx = model->getIndexForDoc(parentDoc);
         CHECK(docIdx.isValid(), );
         model->updateData(docIdx);
+
+        CHECK(model->hasObject(parentDoc, obj), );
         QModelIndex objIdx = model->getIndexForObject(obj);
         CHECK(objIdx.isValid(), );
         model->updateData(objIdx);

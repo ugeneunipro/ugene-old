@@ -61,6 +61,7 @@ public:
     void removeDocument(Document *doc);
     void merge(Document *doc, const DocumentFoldersUpdate &update);
     bool hasDocument(Document *doc) const;
+    bool hasObject(Document *doc, GObject *obj) const;
 
     void moveObject(Document *doc, GObject *obj, const QString &newFolder);
     void restoreObjectItemFromRecycleBin(Document *doc, GObject *obj);

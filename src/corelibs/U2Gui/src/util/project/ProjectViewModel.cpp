@@ -1064,6 +1064,11 @@ bool ProjectViewModel::hasDocument(Document *doc) const {
     return -1 != docRow(doc);
 }
 
+bool ProjectViewModel::hasObject(Document *doc, GObject *obj) const {
+    CHECK(hasDocument(doc), false);
+    return folders[doc]->hasObject(obj->getEntityRef().entityId);
+}
+
 int ProjectViewModel::folderRow(Folder *subFolder) const {
     SAFE_POINT(U2ObjectDbi::ROOT_FOLDER != subFolder->getFolderPath(), "Unexpected folder path", -1);
     Document *doc = subFolder->getDocument();
