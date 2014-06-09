@@ -355,7 +355,7 @@ void SQLiteUdrDbi::retreiveData(QList<UdrValue> &data, const UdrSchema *schema, 
                 data << UdrValue();
                 break;
             case UdrSchema::ID:
-                const U2DataType objectType = q.getInt32(schema->size());
+                const U2DataType objectType = q.getInt32(schema->size() + 1); // type is selected in the additional column
                 data << UdrValue(q.getDataId(colNum, objectType));
                 break;
         }

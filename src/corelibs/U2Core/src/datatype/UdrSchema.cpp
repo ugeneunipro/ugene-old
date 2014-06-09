@@ -54,9 +54,11 @@ UdrSchema::IndexType UdrSchema::FieldDesc::getIndexType() const {
 UdrSchema::UdrSchema(const UdrSchemaId &id, bool useObjectReference)
 : id(id), withObjectReference(useObjectReference)
 {
-    U2OpStatusImpl os;
-    addField(FieldDesc(OBJECT_FIELD_NAME, ID, INDEXED), os);
-    SAFE_POINT_OP(os, );
+    if (useObjectReference) {
+        U2OpStatusImpl os;
+        addField(FieldDesc(OBJECT_FIELD_NAME, ID, INDEXED), os);
+        SAFE_POINT_OP(os, );
+    }
 }
 
 bool UdrSchema::contains(const QByteArray &name) const {
