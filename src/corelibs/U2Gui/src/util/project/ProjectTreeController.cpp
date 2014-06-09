@@ -175,11 +175,9 @@ void ProjectTreeController::sl_onDocumentAdded(Document *doc) {
     connectDocument(doc);
     sl_updateActions();
 
-    if (ProjectUtils::isConnectedDatabaseDoc(doc)) {
-        const QModelIndex idx = model->getIndexForDoc(doc);
-        CHECK(idx.isValid(), );
-        tree->expand(idx);
-    }
+    const QModelIndex idx = model->getIndexForDoc(doc);
+    CHECK(idx.isValid(), );
+    tree->setExpanded(idx, true);
 }
 
 void ProjectTreeController::sl_onDocumentRemoved(Document *doc) {
