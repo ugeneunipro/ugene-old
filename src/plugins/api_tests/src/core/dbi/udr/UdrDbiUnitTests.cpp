@@ -170,7 +170,7 @@ void UdrTestData::initTestUdr() {
         SAFE_POINT_OP(os, );
     }
     { // init test schema 3
-        UdrSchema *schema = new UdrSchema(TEST_SCHEMA_ID_3, TEST_SCHEMA_TYPE_3);
+        UdrSchema *schema = new UdrSchema(TEST_SCHEMA_ID_3, true);
         schema->addField(UdrSchema::FieldDesc("data", UdrSchema::STRING), os);
         SAFE_POINT_OP(os, );
 

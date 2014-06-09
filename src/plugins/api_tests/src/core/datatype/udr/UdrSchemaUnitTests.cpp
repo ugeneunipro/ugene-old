@@ -61,7 +61,7 @@ IMPLEMENT_TEST(UdrSchemaUnitTests, addField_RecordId) {
 
 IMPLEMENT_TEST(UdrSchemaUnitTests, addField_Object) {
     U2OpStatusImpl os;
-    UdrSchema schema("id", U2Type::Unknown);
+    UdrSchema schema("id", true);
     schema.addField(UdrSchema::FieldDesc(UdrSchema::OBJECT_FIELD_NAME, UdrSchema::INTEGER), os);
     CHECK_TRUE(os.hasError(), "duplicate name");
 }
