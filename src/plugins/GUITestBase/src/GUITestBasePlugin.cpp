@@ -328,10 +328,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_project::test_0009);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0010);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0011);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0012, "https://ugene.unipro.ru/tracker/browse/UGENE-3063");
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0012);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0013);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0014);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_project::test_0016, "https://ugene.unipro.ru/tracker/browse/UGENE-3063");
+    REGISTER_TEST(GUITest_common_scenarios_project::test_0016);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0018);
     REGISTER_TEST(GUITest_common_scenarios_project::test_0019);
