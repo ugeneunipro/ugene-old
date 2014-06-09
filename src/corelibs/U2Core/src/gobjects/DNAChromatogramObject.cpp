@@ -79,7 +79,7 @@ const DNAChromatogram & DNAChromatogramObject::getChromatogram() const {
 
 void DNAChromatogramObject::loadDataCore(U2OpStatus &os) {
     const QString serializer = RawDataUdrSchema::getObject(entityRef, os).serializer;
-    SAFE_POINT_OP(os, );
+    CHECK_OP(os, );
     SAFE_POINT(DNAChromatogramSerializer::ID == serializer, "Unknown serializer id", );
     const QByteArray data = RawDataUdrSchema::readAllContent(entityRef, os);
     CHECK_OP(os, );

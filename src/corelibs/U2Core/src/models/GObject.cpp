@@ -296,7 +296,6 @@ void GObject::updateDocInRelations(const QString& oldDocUrl, const QString& newD
 void GObject::ensureDataLoaded() const {
     U2OpStatusImpl os;
     ensureDataLoaded(os);
-    SAFE_POINT_OP(os, );
 }
 
 void GObject::ensureDataLoaded(U2OpStatus &os) const {
