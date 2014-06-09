@@ -138,5 +138,9 @@ Task::ReportResult CheckUpdatesTask::report() {
     return ReportResult_Finished;    
 }
 
+void CheckUpdatesTask::sl_registerInTaskScheduler(){
+    AppContext::getTaskScheduler()->registerTopLevelTask(this);
+}
+
 
 } //namespace

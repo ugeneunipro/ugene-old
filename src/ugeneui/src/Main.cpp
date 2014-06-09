@@ -644,7 +644,9 @@ int main(int argc, char **argv)
     coreLog.info( QObject::tr( "UGENE version: %1 %2-bit").arg( v.text ).arg( Version::appArchitecture ) );
     coreLog.info( QObject::tr( "UGENE distribution: %1").arg( v.distributionInfo ));
     if(AppContext::getSettings()->getValue(ASK_VESRION_SETTING, true).toBool()) {
-        tasks << new CheckUpdatesTask(true);
+        CheckUpdatesTask *updateTask = new CheckUpdatesTask(true);
+        QObject::connect(ts, SIGNAL(si_noTasksInScheduler()),
+            updateTask, SLOT(sl_registerInTaskScheduler()));
     }
 
     TmpDirChecker* tempDirChecker = new TmpDirChecker;
