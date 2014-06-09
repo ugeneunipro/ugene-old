@@ -1064,6 +1064,7 @@ bool ProjectTreeController::removeObjects(const QList<GObject*> &objs, const QLi
         if (parentDocSelected || parentFolderSelected) {
             continue;
         } else if (!ProjectUtils::isDatabaseDoc(doc) || isObjectInRecycleBin(obj)) {
+            objectSelection.removeFromSelection(obj);
             if (doc->removeObject(obj, DocumentObjectRemovalMode_Release)) {
                 objects2Delete.append(obj);
                 if (!docs2Invalidate.contains(doc)) {
