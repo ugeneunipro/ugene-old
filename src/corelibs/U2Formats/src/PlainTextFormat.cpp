@@ -79,7 +79,7 @@ Document* PlainTextFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, c
     
     //todo: check file-readonly status?
 
-    TextObject* to = TextObject::createInstance(text, "Text", dbiRef, os, fs);
+    TextObject* to = TextObject::createInstance(text, io->getURL().baseFileName(), dbiRef, os, fs);
     CHECK_OP(os, NULL);
     QList<GObject*> objects;
     objects.append(to);
