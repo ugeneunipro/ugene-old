@@ -101,6 +101,7 @@ PhyTreeObject::PhyTreeObject(const PhyTree &tree, const QString &objectName, con
 : GObject(GObjectTypes::PHYLOGENETIC_TREE, objectName, hintsMap), tree(tree)
 {
     entityRef = treeRef;
+    dataLoaded = true;
 }
 
 void PhyTreeObject::onTreeChanged() {
