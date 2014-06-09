@@ -39,6 +39,7 @@ void SQLiteSequenceDbi::initSqlSchema(U2OpStatus& os) {
 
     // part of the sequence, starting with 'sstart'(inclusive) and ending at 'send'(not inclusive)
     SQLiteQuery("CREATE TABLE SequenceData (sequence INTEGER, sstart INTEGER NOT NULL, send INTEGER NOT NULL, data BLOB NOT NULL, "
+                "PRIMARY KEY (sequence, sstart, send), "
                 "FOREIGN KEY(sequence) REFERENCES Sequence(object) ON DELETE CASCADE)", db, os).execute();
 
     SQLiteQuery("CREATE INDEX SequenceData_sequence_send on SequenceData(sequence, send)", db, os).execute();
@@ -107,8 +108,6 @@ QByteArray SQLiteSequenceDbi::getSequenceData(const U2DataId& sequenceId, const 
         return QByteArray();
     }
 }
-
-
 
 void SQLiteSequenceDbi::createSequenceObject(U2Sequence& sequence, const QString& folder, U2OpStatus& os, U2DbiObjectRank rank) {
     SQLiteTransaction t(db, os);
