@@ -20,6 +20,7 @@
  */
 
 #include "GTUtilsDialog.h"
+#include "api/GTMouseDriver.h"
 
 #include <QtCore/QTimer>
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -97,6 +98,18 @@ void GUIDialogWaiter::checkDialog() {
         uiLog.trace("-------------------------");
         uiLog.trace("GUIDialogWaiter::wait Id = " + QString::number(waiterId) + ", going to RUN");
         uiLog.trace("-------------------------");
+
+        Qt::MouseButtons buttons = QApplication::mouseButtons();
+        GTGlobals::sleep(100);
+
+        if(buttons.testFlag(Qt::LeftButton)){
+            GTMouseDriver::release(os, Qt::LeftButton);
+        }
+
+        if(buttons.testFlag(Qt::RightButton)){
+            GTMouseDriver::release(os, Qt::RightButton);
+        }
+        GTGlobals::sleep(100);
 
         hadRun = true;
         runnable->run();
