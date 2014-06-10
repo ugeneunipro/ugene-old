@@ -107,6 +107,7 @@ Document* ProjectImpl::findDocumentByURL(const QString & url) const {
 }
 
 void ProjectImpl::addDocument(Document* d) {
+    SAFE_POINT(NULL != d, "NULL document", );
     coreLog.details(tr("Adding document to the project: %1").arg(d->getURLString()));
 
     assert(findDocumentByURL(d->getURL())==NULL);

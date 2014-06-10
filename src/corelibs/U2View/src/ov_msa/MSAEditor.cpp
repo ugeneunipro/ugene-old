@@ -322,6 +322,15 @@ void MSAEditor::sl_buildTree() {
     treeManager.buildTreeWithDialog();
 }
 
+bool MSAEditor::onObjectRemoved(GObject* obj) {
+    bool result = GObjectView::onObjectRemoved(obj);
+
+    obj->disconnect(ui->getSequenceArea());
+    obj->disconnect(ui->getConsensusArea());
+    obj->disconnect(ui->getEditorNameList());
+    return result;
+}
+
 void MSAEditor::onObjectRenamed(GObject*, const QString&) {
     // update title
     OpenMSAEditorTask::updateTitle(this);

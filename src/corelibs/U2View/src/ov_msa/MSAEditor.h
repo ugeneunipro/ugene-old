@@ -207,6 +207,7 @@ protected slots:
 protected:
     virtual QWidget* createWidget();
     bool eventFilter(QObject* o, QEvent* e);
+    virtual bool onObjectRemoved(GObject* obj);
     virtual void onObjectRenamed(GObject* obj, const QString& oldName);
     virtual bool onCloseEvent();
 
