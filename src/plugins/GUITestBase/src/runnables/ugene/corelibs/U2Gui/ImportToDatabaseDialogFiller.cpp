@@ -44,6 +44,7 @@ const QString ImportToDatabaseDialogFiller::Action::ACTION_DATA__ITEM = "ACTION_
 const QString ImportToDatabaseDialogFiller::Action::ACTION_DATA__ITEMS_LIST = "ACTION_DATA__ITEMS_LIST";
 const QString ImportToDatabaseDialogFiller::Action::ACTION_DATA__DESTINATION_FOLDER = "ACTION_DATA__DESTINATION_FOLDER";
 const QString ImportToDatabaseDialogFiller::Action::ACTION_DATA__PATHS_LIST = "ACTION_DATA__PATHS_LIST";
+const QString ImportToDatabaseDialogFiller::Action::ACTION_DATA__PROJECT_ITEMS_LIST = "ACTION_DATA__PROJECT_ITEMS_LIST";
 
 ImportToDatabaseDialogFiller::Action::Action(ImportToDatabaseDialogFiller::Action::Type type, const QVariantMap &data) :
     type(type),
@@ -146,11 +147,17 @@ void ImportToDatabaseDialogFiller::addDirs(const Action& action) {
 #define GT_METHOD_NAME "addProjectItems"
 void ImportToDatabaseDialogFiller::addProjectItems(const Action &action) {
     GT_CHECK(Action::ADD_PROJECT_ITEMS == action.type, "Invalid action type");
+    GT_CHECK(action.data.contains(Action::ACTION_DATA__PROJECT_ITEMS_LIST), "Not enough parameters to perform the action");
 
     QWidget* addProjectItemsButton = GTWidget::findWidget(os, "pbAddObjects");
     GT_CHECK(NULL != addProjectItemsButton, "addProjectItemsButton is NULL");
     GTWidget::click(os, addProjectItemsButton);
 
+    /*const QMap<QString, QVariant> projectItems = action.data.value(Action::ACTION_DATA__PROJECT_ITEMS_LIST).toMap();
+    foreach (const QString& docName, projectItems.keys) {
+    const QStringList objectsList = projectItems.value(docName).toStringList();
+    foreach ()
+    }*/
     // TODO: fill the dialog
 }
 #undef GT_METHOD_NAME

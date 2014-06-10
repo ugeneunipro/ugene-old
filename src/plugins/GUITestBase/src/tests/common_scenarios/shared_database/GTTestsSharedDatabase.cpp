@@ -47,6 +47,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ImportOptionsWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
@@ -880,11 +881,13 @@ GUI_TEST_CLASS_DEFINITION(import_test_0004) {
     GTLogTracer lt;
 
     const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
-    const QString folderName = "import_test_0004";
-    const QString folderPath = U2ObjectDbi::ROOT_FOLDER + folderName;
+    const QString dstFolderName = "import_test_0004";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString resultFolderName = "human_T1";
+    const QString resultFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + resultFolderName;
     const QString filePath = QFileInfo(dataDir + "samples/FASTA/human_T1.fa").absoluteFilePath();
     const QString sequenceObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
-    const QString databaseSequenceObjectPath = folderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+    const QString databaseSequenceObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
 
 
     QList<ImportToDatabaseDialogFiller::Action> actions;
@@ -895,7 +898,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0004) {
 
     QVariantMap changeDestinationAction;
     changeDestinationAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__ITEM, filePath);
-    changeDestinationAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__DESTINATION_FOLDER, folderPath);
+    changeDestinationAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__DESTINATION_FOLDER, dstFolderPath);
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::EDIT_DESTINATION_FOLDER, changeDestinationAction);
 
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
@@ -906,7 +909,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0004) {
     QString connectionName = connectToTestDatabase(os);
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
 
-    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, parentFolderPath, folderName);
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, parentFolderPath, dstFolderName);
 
     GTUtilsSharedDatabaseDocument::callImportDialog(os, databaseDoc, parentFolderPath);
 
@@ -936,11 +939,13 @@ GUI_TEST_CLASS_DEFINITION(import_test_0005) {
     GTLogTracer lt;
 
     const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
-    const QString folderName = "import_test_0005";
-    const QString folderPath = U2ObjectDbi::ROOT_FOLDER + folderName;
+    const QString dstFolderName = "import_test_0005";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString resultFolderName = "human_T1";
+    const QString resultFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + resultFolderName;
     const QString filePath = QFileInfo(dataDir + "samples/FASTA/human_T1.fa").absoluteFilePath();
     const QString sequenceObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
-    const QString databaseSequenceObjectPath = folderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+    const QString databaseSequenceObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
 
 
     QList<ImportToDatabaseDialogFiller::Action> actions;
@@ -957,9 +962,9 @@ GUI_TEST_CLASS_DEFINITION(import_test_0005) {
     QString connectionName = connectToTestDatabase(os);
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
 
-    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, parentFolderPath, folderName);
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, parentFolderPath, dstFolderName);
 
-    GTUtilsSharedDatabaseDocument::callImportDialog(os, databaseDoc, folderPath);
+    GTUtilsSharedDatabaseDocument::callImportDialog(os, databaseDoc, dstFolderPath);
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(15000);
@@ -968,6 +973,314 @@ GUI_TEST_CLASS_DEFINITION(import_test_0005) {
     CHECK_SET_ERR(sequenceObjectIndex.isValid(), "Result item wasn't found");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
+}
+
+GUI_TEST_CLASS_DEFINITION(import_test_0006) {
+    //Import a folder via import dialog, the folder is imported non-recursively, a subfolder for the imported folder is not created.
+
+    //1. Connect to the "ugene_gui_test" database.
+
+    //2. Call context menu on the {import_test_0006} folder in the database connection document, select {Add -> Import to the folder...} item.
+    //Expected state: an import dialog appears.
+
+    //3. Click the "Add folder" button, select {_common_data/scenarios/shared_database/import/first}.
+    //Expected state: the folder is added to the orders list, it will be imported into the {/import_test_0006} folder.
+
+    //4. Click the "General options" button.
+    //Expected state: the options dialog appears.
+
+    //5. Fill the dialog:
+    //{Process folders recursuvely} : false;
+    //{Create a subfolder for the top level folder} : false;
+    //click the "Ok" button.
+
+    //6. Click the "Import" button.
+    //Expected state: an import task is started, after it finishes a sequence object "SEQUENCE_WITH_A_ENTRY" appears in the {/import_test_0006/seq1} folder.
+
+
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString dstFolderName = "import_test_0006";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString resultFolderName = "seq1";
+    const QString resultFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + resultFolderName;
+    const QString folderPath = testDir + "_common_data/scenarios/shared_database/import/first";
+    const QString sequenceObjectName = "SEQUENCE_WITH_A_ENTRY";
+    const QString databaseSequenceObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+
+
+    QList<ImportToDatabaseDialogFiller::Action> actions;
+
+    QVariantMap addFolderAction;
+    addFolderAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__PATHS_LIST, QStringList() << folderPath);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_DIRS, addFolderAction);
+
+    QVariantMap editOptionsAction;
+    editOptionsAction.insert(ImportOptionsWidgetFiller::PROCESS_FOLDERS_RECUSIVELY, false);
+    editOptionsAction.insert(ImportOptionsWidgetFiller::CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER, false);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::EDIT_GENERAL_OPTIONS, editOptionsAction);
+
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
+
+    GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
+
+
+    QString connectionName = connectToTestDatabase(os);
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
+
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, parentFolderPath, dstFolderName);
+
+    GTUtilsSharedDatabaseDocument::callImportDialog(os, databaseDoc, dstFolderPath);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(15000);
+
+    const QModelIndex sequenceObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
+    CHECK_SET_ERR(sequenceObjectIndex.isValid(), "Result item wasn't found");
+
+    CHECK_SET_ERR(!lt.hasError(), "errors in log");
+}
+
+GUI_TEST_CLASS_DEFINITION(import_test_0007) {
+    //Import a folder via import dialog, the folder is imported non-recursively, a subfolder for the imported folder is created.
+
+    //1. Connect to the "ugene_gui_test" database.
+
+    //2. Call context menu on the {import_test_0007} folder in the database connection document, select {Add -> Import to the folder...} item.
+    //Expected state: an import dialog appears.
+
+    //3. Click the "Add folder" button, select {_common_data/scenarios/shared_database/import/first/second}.
+    //Expected state: the folder is added to the orders list, it will be imported into the {/import_test_0007} folder.
+
+    //4. Click the "General options" button.
+    //Expected state: the options dialog appears.
+
+    //5. Fill the dialog:
+    //{Process folders recursuvely} : false;
+    //{Create a subfolder for the top level folder} : true
+    //click the "Ok" button.
+
+    //6. Click the "Import" button.
+    //Expected state: an import task is started, after it finishes a sequence object "human_T1 (UCSC April 2002 chr7:115977709-117855134)" appears in the {/import_test_0007/second/human_T1_cutted} folder.
+
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString dstFolderName = "import_test_0007";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString importedTopLevelFolderName = "second";
+    const QString resultFolderName = "human_T1_cutted";
+    const QString resultFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + importedTopLevelFolderName + U2ObjectDbi::ROOT_FOLDER + resultFolderName;
+    const QString folderPath = testDir + "_common_data/scenarios/shared_database/import/first/second";
+    const QString sequenceObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
+    const QString databaseSequenceObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+
+
+    QList<ImportToDatabaseDialogFiller::Action> actions;
+
+    QVariantMap addFolderAction;
+    addFolderAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__PATHS_LIST, QStringList() << folderPath);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_DIRS, addFolderAction);
+
+    QVariantMap editOptionsAction;
+    editOptionsAction.insert(ImportOptionsWidgetFiller::PROCESS_FOLDERS_RECUSIVELY, false);
+    editOptionsAction.insert(ImportOptionsWidgetFiller::CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER, true);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::EDIT_GENERAL_OPTIONS, editOptionsAction);
+
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
+
+    GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
+
+
+    QString connectionName = connectToTestDatabase(os);
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
+
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, parentFolderPath, dstFolderName);
+
+    GTUtilsSharedDatabaseDocument::callImportDialog(os, databaseDoc, dstFolderPath);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(15000);
+
+    const QModelIndex sequenceObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
+    CHECK_SET_ERR(sequenceObjectIndex.isValid(), "Result item wasn't found");
+
+    CHECK_SET_ERR(!lt.hasError(), "errors in log");
+}
+
+GUI_TEST_CLASS_DEFINITION(import_test_0008) {
+    //Import a folder via import dialog, the folder is imported recursively, a subfolder for the imported folder is not created, folders structure is kept.
+
+    //1. Connect to the "ugene_gui_test" database.
+
+    //2. Call context menu on the {import_test_0008} folder in the database connection document, select {Add -> Import to the folder...} item.
+    //Expected state: an import dialog appears.
+
+    //3. Click the "Add folder" button, select {_common_data/scenarios/shared_database/import/first}.
+    //Expected state: the folder is added to the orders list, it will be imported into the {/import_test_0008} folder.
+
+    //4. Click the "General options" button.
+    //Expected state: the options dialog appears.
+
+    //5. Fill the dialog:
+    //{Process folders recursuvely} : true;
+    //{Create a subfolder for the top level folder} : false
+    //{Keep folders structure} : true;
+    //click the "Ok" button.
+
+    //6. Click the "Import" button.
+    //Expected state: an import task is started, there are two sequence objects: "human_T1 (UCSC April 2002 chr7:115977709-117855134)" in the {/import_test_0008/second/human_T1_cutted} folder and "SEQUENCE_WITH_A_ENTRY" in the {/import_test_0008/seq1} folder after the task finishes.
+
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString dstFolderName = "import_test_0008";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString innerFolderName = "second";
+    const QString resultFirstFolderName = "seq1";
+    const QString resultSecondFolderName = "human_T1_cutted";
+    const QString resultFirstFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + resultFirstFolderName;
+    const QString resultSecondFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + innerFolderName + U2ObjectDbi::ROOT_FOLDER + resultSecondFolderName;
+    const QString folderPath = testDir + "_common_data/scenarios/shared_database/import/first";
+    const QString sequenceFirstObjectName = "SEQUENCE_WITH_A_ENTRY";
+    const QString sequenceSecondObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
+    const QString databaseSequenceFirstObjectPath = resultFirstFolderPath + U2ObjectDbi::PATH_SEP + sequenceFirstObjectName;
+    const QString databaseSequenceSecondObjectPath = resultSecondFolderPath + U2ObjectDbi::PATH_SEP + sequenceSecondObjectName;
+
+
+    QList<ImportToDatabaseDialogFiller::Action> actions;
+
+    QVariantMap addFolderAction;
+    addFolderAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__PATHS_LIST, QStringList() << folderPath);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_DIRS, addFolderAction);
+
+    QVariantMap editOptionsAction;
+    editOptionsAction.insert(ImportOptionsWidgetFiller::PROCESS_FOLDERS_RECUSIVELY, true);
+    editOptionsAction.insert(ImportOptionsWidgetFiller::CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER, false);
+    editOptionsAction.insert(ImportOptionsWidgetFiller::KEEP_FOLDERS_STRUCTURE, true);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::EDIT_GENERAL_OPTIONS, editOptionsAction);
+
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
+
+    GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
+
+
+    QString connectionName = connectToTestDatabase(os);
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
+
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, parentFolderPath, dstFolderName);
+
+    GTUtilsSharedDatabaseDocument::callImportDialog(os, databaseDoc, dstFolderPath);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(15000);
+
+    const QModelIndex sequenceFirstObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceFirstObjectPath);
+    CHECK_SET_ERR(sequenceFirstObjectIndex.isValid(), "Result item wasn't found");
+
+    const QModelIndex sequenceSecondObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceSecondObjectPath);
+    CHECK_SET_ERR(sequenceSecondObjectIndex.isValid(), "Result item wasn't found");
+
+    CHECK_SET_ERR(!lt.hasError(), "errors in log");
+}
+
+GUI_TEST_CLASS_DEFINITION(import_test_0009) {
+    //Import a folder via import dialog, the folder is imported recursively, a subfolder for the imported folder is not created, folders structure is not kept.
+
+    //1. Connect to the "ugene_gui_test" database.
+
+    //2. Call context menu on the {import_test_0009} folder in the database connection document, select {Add -> Import to the folder...} item.
+    //Expected state: an import dialog appears.
+
+    //3. Click the "Add folder" button, select {_common_data/scenarios/shared_database/import/first}.
+    //Expected state: the folder is added to the orders list, it will be imported into the {/import_test_0009} folder.
+
+    //4. Click the "General options" button.
+    //Expected state: the options dialog appears.
+
+    //5. Fill the dialog:
+    //{Process folders recursuvely} : true;
+    //{Create a subfolder for the top level folder} : false
+    //{Keep folders structure} : false;
+    //click the "Ok" button.
+
+    //6. Click the "Import" button.
+    //Expected state: an import task is started, there are two sequence objects: "human_T1 (UCSC April 2002 chr7:115977709-117855134)" in the {/import_test_0009/human_T1_cutted} folder and "SEQUENCE_WITH_A_ENTRY" in the {/import_test_0009/seq1} folder after the task finishes.
+
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString dstFolderName = "import_test_0009";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString resultFirstFolderName = "seq1";
+    const QString resultSecondFolderName = "human_T1_cutted";
+    const QString resultFirstFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + resultFirstFolderName;
+    const QString resultSecondFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + resultSecondFolderName;
+    const QString folderPath = testDir + "_common_data/scenarios/shared_database/import/first";
+    const QString sequenceFirstObjectName = "SEQUENCE_WITH_A_ENTRY";
+    const QString sequenceSecondObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
+    const QString databaseSequenceFirstObjectPath = resultFirstFolderPath + U2ObjectDbi::PATH_SEP + sequenceFirstObjectName;
+    const QString databaseSequenceSecondObjectPath = resultSecondFolderPath + U2ObjectDbi::PATH_SEP + sequenceSecondObjectName;
+
+
+    QList<ImportToDatabaseDialogFiller::Action> actions;
+
+    QVariantMap addFolderAction;
+    addFolderAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__PATHS_LIST, QStringList() << folderPath);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_DIRS, addFolderAction);
+
+    QVariantMap editOptionsAction;
+    editOptionsAction.insert(ImportOptionsWidgetFiller::PROCESS_FOLDERS_RECUSIVELY, true);
+    editOptionsAction.insert(ImportOptionsWidgetFiller::CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER, false);
+    editOptionsAction.insert(ImportOptionsWidgetFiller::KEEP_FOLDERS_STRUCTURE, false);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::EDIT_GENERAL_OPTIONS, editOptionsAction);
+
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
+
+    GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
+
+
+    QString connectionName = connectToTestDatabase(os);
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
+
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, parentFolderPath, dstFolderName);
+
+    GTUtilsSharedDatabaseDocument::callImportDialog(os, databaseDoc, dstFolderPath);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(15000);
+
+    const QModelIndex sequenceFirstObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceFirstObjectPath);
+    CHECK_SET_ERR(sequenceFirstObjectIndex.isValid(), "Result item wasn't found");
+
+    const QModelIndex sequenceSecondObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceSecondObjectPath);
+    CHECK_SET_ERR(sequenceSecondObjectIndex.isValid(), "Result item wasn't found");
+
+    CHECK_SET_ERR(!lt.hasError(), "errors in log");
+}
+
+GUI_TEST_CLASS_DEFINITION(import_test_0010) {
+    //Import an object via import dialog.
+
+    //1. Open file {data/samples/FASTA/human_T1.fa}.
+
+    //2. Connect to the "ugene_gui_test" database.
+
+    //3. Call context menu on the {import_test_0010} folder in the database connection document, select {Add -> Import to the folder...} item.
+    //Expected state: an import dialog appears.
+
+    //4. Click the "Add objects" button, select the "human_T1 (UCSC April 2002 chr7:115977709-117855134)" object in the "human_T1.fa" document.
+    //Expected state: the object is added to the orders list, it will be imported into the {/import_test_0010} folder.
+
+    //5. Click the "Import" button.
+    //Expected state: an import task is started, there is a sequence object "human_T1 (UCSC April 2002 chr7:115977709-117855134)" in the {/import_test_0010} folder after the task has finished.
+    
+    os.setError("Test is not implemented jet");
+}
+
+GUI_TEST_CLASS_DEFINITION(import_test_0011) {
+    os.setError("Test is not implemented jet");
 }
 
 GUI_TEST_CLASS_DEFINITION(view_test_0001) {

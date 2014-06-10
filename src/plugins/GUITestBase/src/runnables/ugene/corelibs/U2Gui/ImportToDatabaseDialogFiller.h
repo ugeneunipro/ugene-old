@@ -56,6 +56,7 @@ public:
         static const QString ACTION_DATA__ITEMS_LIST;
         static const QString ACTION_DATA__DESTINATION_FOLDER;
         static const QString ACTION_DATA__PATHS_LIST;
+        static const QString ACTION_DATA__PROJECT_ITEMS_LIST;
     };
 
     ImportToDatabaseDialogFiller(U2OpStatus& os, const QList<Action>& actions);
