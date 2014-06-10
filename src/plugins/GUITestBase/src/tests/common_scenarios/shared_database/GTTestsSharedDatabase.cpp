@@ -1405,7 +1405,7 @@ GUI_TEST_CLASS_DEFINITION(export_test_0006) {
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(5000);
 
-    GTWidget::findWidget(os, "et0006_text [t] Text");
+    GTWidget::findWidget(os, "et0006_text [t] et0006_text");
     CHECK_OP(os, );
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }

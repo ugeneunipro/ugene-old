@@ -103,13 +103,14 @@ void GUIDialogWaiter::checkDialog() {
         GTGlobals::sleep(100);
 
         if(buttons.testFlag(Qt::LeftButton)){
+            uiLog.trace("releasing left button");
             GTMouseDriver::release(os, Qt::LeftButton);
         }
 
         if(buttons.testFlag(Qt::RightButton)){
+            uiLog.trace("releasing right button");
             GTMouseDriver::release(os, Qt::RightButton);
         }
-        GTGlobals::sleep(100);
 
         hadRun = true;
         runnable->run();

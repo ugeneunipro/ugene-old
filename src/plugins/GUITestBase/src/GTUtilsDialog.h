@@ -65,7 +65,7 @@ public:
     virtual ~GUIDialogWaiter();
 
     WaitSettings getSettings(){return settings;}
-    static const int timerPeriod = 100;
+    static const int timerPeriod = 200;
 
     bool hadRun;
     int waiterId;

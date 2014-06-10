@@ -58,5 +58,9 @@ GTGlobals::FindOptions::FindOptions(bool fail) :
 {
 }
 
+void GTGlobals::GUITestFail(){
+    uiLog.trace("\nGT_DEBUG_MESSAGE !!!FIRST FAIL");
+}
+
 } //namespace
 
