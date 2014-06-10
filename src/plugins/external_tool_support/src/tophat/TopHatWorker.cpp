@@ -888,6 +888,7 @@ BowtieFilesRelation::BowtieFilesRelation(const QString &indexNameAttrId)
 }
 
 QVariant BowtieFilesRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue, DelegateTags *infTags, DelegateTags *) const {
+    CHECK(NULL != infTags, dependentValue);
     QString bwtDir = influencingValue.toString();
     QString bwtFile = infTags->get(FILE_TAG).toString();
 
@@ -939,6 +940,7 @@ BowtieVersionRelation::BowtieVersionRelation(const QString &bwtVersionAttrId)
 }
 
 QVariant BowtieVersionRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue, DelegateTags *infTags, DelegateTags *) const {
+    CHECK(NULL != infTags, dependentValue);
     QString bwtDir = influencingValue.toString();
     QString bwtFile = infTags->get(FILE_TAG).toString();
 

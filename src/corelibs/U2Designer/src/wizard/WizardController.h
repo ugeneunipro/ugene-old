@@ -124,6 +124,7 @@ private:
 
 private slots:
     void sl_customButtonClicked(int num);
+    void sl_pageChanged(int num);
 };
 
 /************************************************************************/

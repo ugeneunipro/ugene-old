@@ -102,6 +102,7 @@ QWizard * WizardController::createGui() {
     result->setOption(QWizard::NoBackButtonOnStartPage);
 
     result->installEventFilter(this);
+    connect(result, SIGNAL(currentIdChanged(int)), SLOT(sl_pageChanged(int)));
     return result;
 }
 
@@ -231,6 +232,19 @@ void WizardController::sl_customButtonClicked(int which) {
         CHECK(NULL != w, );
         defaults(w->currentPage());
     }
+}
+
+void WizardController::sl_pageChanged(int num) {
+    CHECK(-1 != num, );
+
+    QWizard *wizard = dynamic_cast<QWizard*>(sender());
+    CHECK(NULL != wizard, );
+
+    QWizardPage *page = wizard->currentPage();
+    CHECK(NULL != page, );
+
+    page->cleanupPage();
+    page->initializePage();
 }
 
 bool WizardController::eventFilter(QObject *watched, QEvent *event) {
