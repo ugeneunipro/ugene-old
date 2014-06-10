@@ -1121,7 +1121,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/shared_database
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_shared_database::cm_test_0001);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_shared_database::cm_test_0002, "https://ugene.unipro.ru/tracker/browse/UGENE-3069");
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::cm_test_0002);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::cm_test_0003);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::cm_test_0004);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::cm_test_0005);
