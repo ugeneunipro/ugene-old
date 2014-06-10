@@ -177,7 +177,7 @@ void ProjectTreeController::sl_onDocumentAdded(Document *doc) {
 
     const QModelIndex idx = model->getIndexForDoc(doc);
     CHECK(idx.isValid(), );
-    tree->setExpanded(idx, true);
+    tree->setExpanded(idx, doc->isLoaded());
 }
 
 void ProjectTreeController::sl_onDocumentRemoved(Document *doc) {
