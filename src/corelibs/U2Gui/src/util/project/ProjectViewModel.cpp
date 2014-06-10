@@ -1066,7 +1066,10 @@ bool ProjectViewModel::hasDocument(Document *doc) const {
 
 bool ProjectViewModel::hasObject(Document *doc, GObject *obj) const {
     CHECK(hasDocument(doc), false);
-    return folders[doc]->hasObject(obj->getEntityRef().entityId);
+    CHECK(folders[doc]->hasObject(obj->getEntityRef().entityId), false);
+
+    const QString objectFolder = getObjectFolder(doc, obj);
+    return !ProjectUtils::isFolderInRecycleBin(objectFolder, false);
 }
 
 int ProjectViewModel::folderRow(Folder *subFolder) const {
