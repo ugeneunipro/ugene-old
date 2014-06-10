@@ -195,13 +195,22 @@ void ConvertFilesFormatWorker::init() {
     excludedFormats = getValue<QString>(EXCLUDED_FORMATS_ID).split(",", QString::SkipEmptyParts);
 }
 
+bool ConvertFilesFormatWorker::ensureFileExists(const QString &url) {
+    if (!QFile::exists(url)) {
+        reportError(tr("The file does not exist: %1").arg(url));
+        return false;
+    }
+    return true;
+}
+
 Task * ConvertFilesFormatWorker::tick() {
     if (inputUrlPort->hasMessage()) {
         const QString url = takeUrl();
         CHECK(!url.isEmpty(), NULL);
+        CHECK(ensureFileExists(url), NULL);
 
         const QString detectedFormat = detectFormat(url);
-        CHECK(!url.isEmpty(), NULL);
+        CHECK(!detectedFormat.isEmpty(), NULL);
 
         // without conversion
         if ((targetFormat == detectedFormat) || (excludedFormats.contains(detectedFormat))) {
@@ -315,7 +324,7 @@ QString ConvertFilesFormatWorker::detectFormat(const QString &url) {
 
     const QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url, cfg);
     if (formats.empty()) {
-        coreLog.info(tr("Unknown file format: ") + url);
+        reportError(tr("Unknown file format: ") + url);
         return "";
     }
 

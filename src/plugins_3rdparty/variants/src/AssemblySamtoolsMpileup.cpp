@@ -54,7 +54,31 @@ CallVariantsTask::CallVariantsTask( const CallVariantsTaskSettings& _settings, D
     setMaxParallelSubtasks(1);
 }
 
+QString CallVariantsTask::toString(FileType type) {
+    switch (type) {
+        case Reference:
+            return tr("reference");
+        case Assembly:
+            return tr("assembly");
+        default:
+            FAIL("Unknown file type", "");
+    }
+}
+
+bool CallVariantsTask::ensureFileExists(const QString &url, FileType type) {
+    if (!QFile::exists(url)) {
+        setError(tr("The %1 file does not exist: %2").arg(toString(type)).arg(url));
+        return false;
+    }
+    return true;
+}
+
 void CallVariantsTask::prepare(){
+    CHECK(ensureFileExists(settings.refSeqUrl, Reference), );
+    foreach (const QString &url, settings.assemblyUrls) {
+        CHECK(ensureFileExists(url, Assembly), );
+    }
+
     if (settings.assemblyUrls.size() < 1){
         stateInfo.setError(tr("No assembly files"));
         return;

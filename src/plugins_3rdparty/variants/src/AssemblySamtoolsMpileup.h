@@ -126,6 +126,11 @@ public:
     static QString tmpFilePath(const QString &baseName, const QString &ext, U2OpStatus &os);
 
 private:
+    enum FileType {Reference, Assembly};
+    static QString toString(FileType type);
+    bool ensureFileExists(const QString &url, FileType type);
+
+private:
     CallVariantsTaskSettings    settings;
     LoadDocumentTask*       loadTask;
     SamtoolsMpileupTask*    mpileupTask;

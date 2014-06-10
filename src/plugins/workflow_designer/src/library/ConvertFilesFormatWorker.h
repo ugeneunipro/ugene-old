@@ -49,8 +49,6 @@ public:
     void cleanup();
 
 private:
-   
-
     IntegralBus *inputUrlPort;
     IntegralBus *outputUrlPort;
     QString targetFormat;
@@ -61,6 +59,7 @@ public slots:
     void sl_taskFinished( Task *task );
 
 private:
+    bool ensureFileExists(const QString &url);
     QString takeUrl();
     QString detectFormat(const QString &url);
     QString createWorkingDir(const QString& fileUrl);

@@ -668,7 +668,21 @@ CallVariantsWorker::CallVariantsWorker(Actor* a)
     : BaseWorker(a, false),
       refSeqPort(NULL),
       assemblyPort(NULL),
-      output(NULL) {
+      output(NULL),
+      useDatasets(false)
+{
+
+}
+
+void CallVariantsWorker::initDatasetMode() {
+    Port *port = actor->getPort(BasePorts::IN_ASSEMBLY_PORT_ID());
+    SAFE_POINT(NULL != port,"Internal error during CallVariantsWorker initializing: assembly port is NULL!", );
+
+    IntegralBusPort *bus = dynamic_cast<IntegralBusPort*>(port);
+    SAFE_POINT(NULL != bus, "Internal error during CallVariantsWorker initializing: assembly bus is NULL!", );
+
+    QList<Actor*> producers = bus->getProducers(BaseSlots::DATASET_SLOT().getId());
+    useDatasets = !producers.isEmpty();
 }
 
 void CallVariantsWorker::init() {
@@ -680,6 +694,7 @@ void CallVariantsWorker::init() {
 
     output->addComplement(refSeqPort);
     refSeqPort->addComplement(output);
+    initDatasetMode();
 }
 
 bool CallVariantsWorker::isReady(){
@@ -687,8 +702,14 @@ bool CallVariantsWorker::isReady(){
         return false;
     }
     bool seqEnded = refSeqPort->isEnded();
-    int seqHasMes = refSeqPort->hasMessage();
-    return  (seqHasMes || seqEnded);
+    bool seqHasMes = (refSeqPort->hasMessage() > 0);
+    bool assemblyEnded = assemblyPort->isEnded();
+    bool assemblyHasMes = (assemblyPort->hasMessage() > 0);
+
+    if (seqHasMes || assemblyHasMes) {
+        return true;
+    }
+    return seqEnded && assemblyEnded;
 }
 
 Task* CallVariantsWorker::tick() {
@@ -852,8 +873,8 @@ void CallVariantsWorker::checkState(U2OpStatus& os) {
         processError(os);
         setDone();
     } else if (!hasAssembly() && hasReference()) {
-        if (currentDatasetName.isEmpty()) {
-            os.setError(tr("The dataset slot is not binded, only the first reference sequence"
+        if (!useDatasets) {
+            os.setError(tr("The dataset slot is not binded, only the first reference sequence "
                            "against all assemblies was processed."));
         } else {
             os.setError(tr("Not enough assemblies"));
