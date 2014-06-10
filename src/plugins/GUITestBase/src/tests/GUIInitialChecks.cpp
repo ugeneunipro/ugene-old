@@ -54,24 +54,13 @@ GUI_TEST_CLASS_DEFINITION(test_0000) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
-    Q_UNUSED(os);
-// fail on MacOS
-#ifndef Q_OS_MAC
-//    QString activeWindowName = AppContext::getActiveWindowName();
-//    CHECK_SET_ERR(activeWindowName.isEmpty(), "Active window name is not empty, it is " + activeWindowName);
-
-    QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
-    CHECK_SET_ERR(mainWindow->isActiveWindow(), "MainWindow is not active");
-#endif
-}
-
-GUI_TEST_CLASS_DEFINITION(test_0002) {
     CHECK_SET_ERR(AppContext::getProjectView() == NULL && AppContext::getProject() == NULL, "There is a project");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0003) {
+GUI_TEST_CLASS_DEFINITION(test_0002) {
     Q_UNUSED(os);
     QMainWindow *mainWindow = AppContext::getMainWindow()->getQMainWindow();
+    CHECK_SET_ERR(mainWindow != NULL, "main window is NULL");
     mainWindow->showMaximized();
 
 #ifdef Q_OS_MAC
@@ -83,7 +72,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTGlobals::sleep(1000);
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0004) {
+GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj1.uprj");
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj2-1.uprj");
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj2.uprj");
@@ -96,15 +85,37 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 #endif
 }
 
-GUI_TEST_CLASS_DEFINITION(test_0005){
+GUI_TEST_CLASS_DEFINITION(test_0004){
     Q_UNUSED(os);
     QDir dir(QDir().absoluteFilePath(screenshotDir));
     if(!dir.exists(dir.absoluteFilePath(screenshotDir))){
         dir.mkpath(dir.path());
     }
 }
-GUI_TEST_CLASS_DEFINITION(test_0006){
+GUI_TEST_CLASS_DEFINITION(test_0005){
     GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0006) {
+    QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    CHECK_SET_ERR(mw != NULL, "main window is NULL");
+    GTWidget::click(os, mw);
+    Qt::KeyboardModifiers mods = QApplication::keyboardModifiers();
+    if(mods.testFlag(Qt::ShiftModifier)){
+        uiLog.trace("shift pressed");
+        GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+    }
+    if(mods.testFlag(Qt::ControlModifier)){
+        uiLog.trace("control pressed");
+        GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+    }
+    if(mods.testFlag(Qt::MetaModifier)){
+        uiLog.trace("meta pressed");
+    }
+    if(mods.testFlag(Qt::AltModifier)){
+        uiLog.trace("alt pressed");
+        GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["alt"]);
+    }
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0000) {
