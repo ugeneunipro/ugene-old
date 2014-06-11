@@ -252,10 +252,10 @@ public:
         PluginSupport * pluginSupport = AppContext::getPluginSupport();
 
         TaskStarter* taskStarter = new TaskStarter(task, condition);
-        if (pluginSupport->isAllPluginsLoaded()) {
+        if (AppContext::getMainWindow()->getQMainWindow()->isVisible()) {
             taskStarter->registerTask();
         } else {
-            connect(pluginSupport, SIGNAL(si_allStartUpPluginsLoaded()), taskStarter, SLOT(registerTask()));
+            connect(AppContext::getMainWindow(), SIGNAL(si_show()), taskStarter, SLOT(registerTask()));
         }
     }
 };
@@ -286,8 +286,8 @@ int main(int argc, char **argv)
     //QApplication app(argc, argv);
     GApplication app(argc, argv);
 
-    SplashScreen *ss = new SplashScreen(NULL);
-    ss->show();
+    SplashScreen *splashScreen = new SplashScreen(NULL);
+    splashScreen->show();
 
     AppContextImpl* appContext = AppContextImpl::getApplicationContext();
     appContext->setGUIMode(true);
@@ -627,11 +627,6 @@ int main(int argc, char **argv)
         Q_UNUSED(guiTestService);
     }
 
-    QList<Task*> tasks;
-    if ( !envList.contains(ENV_UGENE_DEV+QString("=1")) ) {
-        tasks << Shtirlitz::wakeup();
-    }
-
     GReportableCounter launchCounter("ugeneui launch", "", 1);
     ++launchCounter.totalCount;
 
@@ -643,20 +638,23 @@ int main(int argc, char **argv)
     coreLog.info( QObject::tr( "UGENE started" ));
     coreLog.info( QObject::tr( "UGENE version: %1 %2-bit").arg( v.text ).arg( Version::appArchitecture ) );
     coreLog.info( QObject::tr( "UGENE distribution: %1").arg( v.distributionInfo ));
-    if(AppContext::getSettings()->getValue(ASK_VESRION_SETTING, true).toBool()) {
-        CheckUpdatesTask *updateTask = new CheckUpdatesTask(true);
-        QObject::connect(ts, SIGNAL(si_noTasksInScheduler()),
-            updateTask, SLOT(sl_registerInTaskScheduler()));
-    }
-
-    TmpDirChecker* tempDirChecker = new TmpDirChecker;
-    QObject::connect(tempDirChecker, SIGNAL(si_checkFailed(QString)), mw, SLOT(sl_tempDirPathCheckFailed(QString)));
-    tasks << tempDirChecker;
-
-    ts->registerTopLevelTask(new SequentialMultiTask(QObject::tr("Startup checks"), tasks, TaskFlag_NoRun));
-
-    QObject::connect(ts, SIGNAL(si_noTasksInScheduler()), ss, SLOT(close()));
+    
+    QObject::connect(ts, SIGNAL(si_noTasksInScheduler()), splashScreen, SLOT(close()));
     QObject::connect(ts, SIGNAL(si_noTasksInScheduler()), mw, SLOT(sl_show()));
+
+    QList<Task*> tasks;
+
+    if(AppContext::getSettings()->getValue(ASK_VESRION_SETTING, true).toBool()) {
+        tasks << new CheckUpdatesTask(true);
+    }
+    if ( !envList.contains(ENV_UGENE_DEV+QString("=1")) ) {
+        tasks << new ShtirlitzStartupTask();
+    }
+    TmpDirChecker* tempDirChecker = new TmpDirChecker;
+    tasks << tempDirChecker;
+    QObject::connect(tempDirChecker, SIGNAL(si_checkFailed(QString)), mw, SLOT(sl_tempDirPathCheckFailed(QString)));
+
+    mw->registerStartupChecks(tasks);
 
     MemoryLocker l(160, AppResource::SystemMemory); // 100Mb on UGENE start, ~60Mb SQLite cache
     int rc = app.exec();

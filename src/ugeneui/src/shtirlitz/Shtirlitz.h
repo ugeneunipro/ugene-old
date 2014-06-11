@@ -64,12 +64,18 @@ private:
 
 //Task which performs sending of data
 class ShtirlitzTask : public Task {
-    Q_OBJECT
 public:
     ShtirlitzTask( const QString & _report );
     void run();
 private:
     QString report;
+};
+
+class ShtirlitzStartupTask : public Task {
+    Q_OBJECT
+public:
+    ShtirlitzStartupTask();
+    void prepare();
 };
 
 } // U2

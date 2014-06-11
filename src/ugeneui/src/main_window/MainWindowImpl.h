@@ -85,6 +85,9 @@ public:
 
     void runClosingTask();
     void setShutDownInProcess(bool flag) {shutDownInProcess = flag;}
+    void registerStartupChecks(QList<Task*> tasks);
+signals:
+    void si_show();
 public slots:
     void sl_tempDirPathCheckFailed(QString  path);
 
@@ -129,6 +132,8 @@ private:
     QAction*                installToPathAction;
 #endif
     bool                    shutDownInProcess;
+
+    QList<Task*>            startupTasklist;
 };
 
 }//namespace

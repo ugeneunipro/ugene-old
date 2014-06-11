@@ -322,4 +322,13 @@ void ShtirlitzTask::run() {
     }
 }
 
+ShtirlitzStartupTask::ShtirlitzStartupTask():
+Task(tr("Shtirlitz Startup Task"), TaskFlag_NoRun){}
+
+void ShtirlitzStartupTask::prepare(){
+    foreach(Task *t, Shtirlitz::wakeup()){
+        addSubTask(t);
+    }
+}
+
 }// U2

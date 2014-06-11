@@ -29,6 +29,7 @@
 #include "TmpDirChangeDialogController.h"
 #include "AboutDialogController.h"
 #include "CheckUpdatesTask.h"
+#include "shtirlitz/Shtirlitz.h"
 
 
 #include <U2Core/TmpDirChecker.h>
@@ -537,6 +538,15 @@ void MainWindowImpl::sl_show(){
         }
         mw->show();
     }
+    foreach(Task *t, startupTasklist){
+        AppContext::getTaskScheduler()->registerTopLevelTask(t);
+    }
+    startupTasklist.clear();
+    emit si_show();
+}
+
+void MainWindowImpl::registerStartupChecks( QList<Task*> tasks ){
+    startupTasklist << tasks;
 }
 
 }//namespace
