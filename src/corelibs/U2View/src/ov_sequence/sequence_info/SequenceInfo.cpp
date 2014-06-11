@@ -44,7 +44,7 @@ const QString SequenceInfo::CAPTION_SEQ_REGION_LENGTH = "Length: ";
 //nucl
 const QString SequenceInfo::CAPTION_SEQ_GC_CONTENT = "GC Content: ";
 const QString SequenceInfo::CAPTION_SEQ_MOLAR_WEIGHT = "Molar Weight: ";
-const QString SequenceInfo::CAPTION_SEQ_MOLAR_EXT_COEF = "Molat Ext. Coef: ";
+const QString SequenceInfo::CAPTION_SEQ_MOLAR_EXT_COEF = "Molar Ext. Coef: ";
 const QString SequenceInfo::CAPTION_SEQ_MELTING_TM = "Melting TM: ";
 
 const QString SequenceInfo::CAPTION_SEQ_NMOLE_OD = "nmole/OD<sub>260</sub> : ";

@@ -348,7 +348,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
                         "<tr><td><b>Length: </b></td><td>200 </td></tr>"
                         "<tr><td><b>GC Content: </b></td><td>44.50%</td></tr>"
                         "<tr><td><b>Molar Weight: </b></td><td>62050.31 Da</td></tr>"
-                        "<tr><td><b>Molat Ext. Coef: </b></td><td>2312900 I/mol</td></tr>"
+                        "<tr><td><b>Molar Ext. Coef: </b></td><td>2312900 I/mol</td></tr>"
                         "<tr><td><b>Melting TM: </b></td><td>79.78 C</td></tr>"
                         "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>0.43</td></tr>"
                         "<tr><td><b>") + QChar(0x3BC) + QString("g/OD<sub>260</sub> : </b></td><td>26.83</td></tr></table>");
@@ -373,7 +373,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
                       "<tr><td><b>Length: </b></td><td>199 950 </td></tr>"
                       "<tr><td><b>GC Content: </b></td><td>38.84%</td></tr>"
                       "<tr><td><b>Molar Weight: </b></td><td>61730585.82 </td></tr>"
-                      "<tr><td><b>Molat Ext. Coef: </b></td><td>2223359500 I")
+                      "<tr><td><b>Molar Ext. Coef: </b></td><td>2223359500 I")
             + QString("</td></tr>"
                       "<tr><td><b>Melting TM: </b></td><td>80.82 C</td></tr>"
                       "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>0.00</td></tr>"
@@ -422,7 +422,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
                       "<tr><td><b>Length: </b></td><td>199 950 </td></tr>"
                       "<tr><td><b>GC Content: </b></td><td>38.84%</td></tr>"
                       "<tr><td><b>Molar Weight: </b></td><td>61730585.82 </td></tr>"
-                      "<tr><td><b>Molat Ext. Coef: </b></td><td>2223359500 I")
+                      "<tr><td><b>Molar Ext. Coef: </b></td><td>2223359500 I")
             + QString("</td></tr>"
                       "<tr><td><b>Melting TM: </b></td><td>80.82 C</td></tr>"
                       "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>0.00</td></tr>"
@@ -443,7 +443,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
                 "<tr><td><b>Length: </b></td><td>40 </td></tr>"
                 "<tr><td><b>GC Content: </b></td><td>32.50%</td></tr>"
                 "<tr><td><b>Molar Weight: </b></td><td>12525.15 Da</td></tr>"
-                "<tr><td><b>Molat Ext. Coef: </b></td><td>479900 I/mol</td></tr>"
+                "<tr><td><b>Molar Ext. Coef: </b></td><td>479900 I/mol</td></tr>"
                 "<tr><td><b>Melting TM: </b></td><td>61.42 C</td></tr>"
                 "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>2.08</td></tr>"
                 "<tr><td><b>") + QChar(0x3BC) + QString("g/OD<sub>260</sub> : </b></td><td>26.10</td></tr></table>");
@@ -504,7 +504,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
                 "<tr><td><b>Length: </b></td><td>70 </td></tr>"
                 "<tr><td><b>GC Content: </b></td><td>48.57%</td></tr>"
                 "<tr><td><b>Molar Weight: </b></td><td>21391.80 Da</td></tr>"
-                "<tr><td><b>Molat Ext. Coef: </b></td><td>743200 I/mol</td></tr>"
+                "<tr><td><b>Molar Ext. Coef: </b></td><td>743200 I/mol</td></tr>"
                 "<tr><td><b>Melting TM: </b></td><td>75.36 C</td></tr>"
                 "<tr><td><b>nmole/OD<sub>260</sub> : </b></td><td>1.35</td></tr>"
                 "<tr><td><b>") + QChar(0x3BC) + QString("g/OD<sub>260</sub> : </b></td><td>28.78</td></tr></table>");
