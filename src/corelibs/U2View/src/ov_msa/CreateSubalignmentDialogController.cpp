@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "CreateSubalignimentDialogController.h"
+#include "CreateSubalignmentDialogController.h"
 
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
@@ -55,7 +55,7 @@
 
 namespace U2{
 
-CreateSubalignimentDialogController::CreateSubalignimentDialogController(MAlignmentObject *_mobj, const QRect& selection, QWidget *p)
+CreateSubalignmentDialogController::CreateSubalignmentDialogController(MAlignmentObject *_mobj, const QRect& selection, QWidget *p)
 : QDialog(p), mobj(_mobj), saveContoller(NULL){
     setupUi(this);
     new HelpButton(this, buttonBox, "4227464");
@@ -111,13 +111,13 @@ CreateSubalignimentDialogController::CreateSubalignimentDialogController(MAlignm
         startPos = selection.x() + 1;
         endPos = selection.x() + selection.width();
     }
-    
+
     startPosBox->setMaximum(alignLength);
     endPosBox->setMaximum(alignLength);
-    
+
     startPosBox->setValue(startPos);
     endPosBox->setValue(endPos);
-    
+
     for (int i=0; i<rowNumber; i++) {
         QCheckBox *cb = new QCheckBox(mobj->getMAlignment().getRow(i).getName(), this);
         cb->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -130,41 +130,41 @@ CreateSubalignimentDialogController::CreateSubalignimentDialogController(MAlignm
 
 }
 
-QString CreateSubalignimentDialogController::getSavePath(){ 
+QString CreateSubalignmentDialogController::getSavePath(){
     if(NULL == saveContoller) {
         return QString();
     }
-    return saveContoller->getSaveFileName(); 
+    return saveContoller->getSaveFileName();
 };
-DocumentFormatId CreateSubalignimentDialogController::getFormatId() {
+DocumentFormatId CreateSubalignmentDialogController::getFormatId() {
     if(NULL == saveContoller) {
         return DocumentFormatId();
     }
     return saveContoller->getFormatIdToSave();
 }
 
-void CreateSubalignimentDialogController::sl_allButtonClicked(){
+void CreateSubalignmentDialogController::sl_allButtonClicked(){
     for (int i=0; i<sequencesTableWidget->rowCount(); i++) {
         QCheckBox *cb = qobject_cast<QCheckBox*>(sequencesTableWidget->cellWidget(i, 0));
         cb->setChecked(true);
     }
 }
 
-void CreateSubalignimentDialogController::sl_invertButtonClicked(){
+void CreateSubalignmentDialogController::sl_invertButtonClicked(){
     for (int i=0; i<sequencesTableWidget->rowCount(); i++) {
         QCheckBox *cb = qobject_cast<QCheckBox*>(sequencesTableWidget->cellWidget(i, 0));
         cb->setChecked(!cb->isChecked());
     }
 }
 
-void CreateSubalignimentDialogController::sl_noneButtonClicked(){
+void CreateSubalignmentDialogController::sl_noneButtonClicked(){
     for (int i=0; i<sequencesTableWidget->rowCount(); i++) {
         QCheckBox *cb = qobject_cast<QCheckBox*>(sequencesTableWidget->cellWidget(i, 0));
         cb->setChecked(false);
     }
 }
 
-void CreateSubalignimentDialogController::accept(){
+void CreateSubalignmentDialogController::accept(){
     QFileInfo fi(filepathEdit->text());
     QDir dirToSave(fi.dir());
     if (!dirToSave.exists()){
@@ -187,17 +187,17 @@ void CreateSubalignimentDialogController::accept(){
         QMessageBox::critical(this, this->windowTitle(), tr("No write permission to '%1' file").arg(fi.fileName()));
         return;
     }
-    
+
     // '-1' because in memory positions start from 0 not 1
     int start = startPosBox->value() - 1;
     int end = endPosBox->value() - 1;
     int seqLen = mobj->getLength();
-    
+
     if( start > end ) {
         QMessageBox::critical(this, windowTitle(), tr("Start position must be less than end position!"));
         return;
     }
-    
+
     U2Region region(start, end - start + 1), sequence(0, seqLen);
     if(!sequence.contains(region)){
         QMessageBox::critical(this, this->windowTitle(), tr("Entered region not contained in current sequence"));
@@ -217,7 +217,7 @@ void CreateSubalignimentDialogController::accept(){
     QDialog::accept();
 }
 
-void CreateSubalignimentDialogController::selectSeqNames(){
+void CreateSubalignmentDialogController::selectSeqNames(){
     QStringList names;
     for (int i=0; i<sequencesTableWidget->rowCount(); i++) {
         QCheckBox *cb = qobject_cast<QCheckBox*>(sequencesTableWidget->cellWidget(i, 0));
@@ -240,7 +240,7 @@ CreateSubalignmentAndOpenViewTask::CreateSubalignmentAndOpenViewTask( MAlignment
 QList<Task*> CreateSubalignmentAndOpenViewTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
     CHECK_OP(stateInfo, res);
-    
+
     if ((subTask == csTask) && csTask->getSettings().addToProject) {
         Document* doc = csTask->takeDocument();
         assert(doc != NULL);

@@ -35,6 +35,7 @@
 namespace U2 {
 
 class MSASimpleOverview;
+class MSAEditorOverviewArea;
 
 class MSAOverviewContextMenu : public QMenu {
     Q_OBJECT
@@ -49,6 +50,7 @@ signals:
     void si_calculationMethodSelected(MSAGraphCalculationMethod method);
 
 public slots:
+    void sl_exportAsImageTriggered();
     void sl_graphTypeActionTriggered(QAction*);
     void sl_graphOrientationActionTriggered(QAction*);
     void sl_colorActionTriggered();
@@ -56,6 +58,7 @@ public slots:
 
 private:
     void initSimpleOverviewAction();
+    void initExportAsImageAction();
     void initDisplaySettingsMenu();
     void initCalculationMethodMenu();
 
@@ -68,6 +71,7 @@ private:
     MSAGraphOverview*   graphOverview;
 
     QAction*            showSimpleOverviewAction;
+    QAction*            exportAsImage;
 
     QMenu*              displaySettingsMenu;
     QMenu*              graphTypeMenu;

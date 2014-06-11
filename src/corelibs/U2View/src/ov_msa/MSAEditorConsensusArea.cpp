@@ -48,6 +48,7 @@
 #endif
 #include <QtGui/QClipboard>
 
+
 namespace U2 {
 
 #define SETTINGS_ROOT QString("msaeditor/")
@@ -131,14 +132,63 @@ void MSAEditorConsensusArea::paintFullConsensusToPixmap(QPixmap &pixmap) {
     p.end();
 }
 
-void MSAEditorConsensusArea::paintFullRulerToPixmap(QPixmap &pixmap) {
-    pixmap = QPixmap(ui->seqArea->getXByColumnNum(ui->editor->getAlignmentLen()),
+void MSAEditorConsensusArea::paintParsialConsenusToPixmap(QPixmap &pixmap, const U2Region &region, const QList<qint64> &seqIdx) {
+    CHECK( !region.isEmpty(), );
+    CHECK( !seqIdx.isEmpty(), );
+    CHECK( !ui->seqArea->isAlignmentEmpty(), );
+
+    CHECK( editor->getColumnWidth() * region.length < 32768, );
+    pixmap = QPixmap( editor->getColumnWidth() * region.length,
+                      getYRange(MSAEditorConsElement_RULER).startPos);
+    pixmap.fill(Qt::white);
+
+    QPainter p(&pixmap);
+    p.translate( -editor->getColumnWidth() * region.startPos, 0);
+
+    //draw consensus
+    p.setPen(Qt::black);
+    QFont f = ui->editor->getFont();
+    f.setWeight(QFont::DemiBold);
+    p.setFont(f);
+
+    MSAConsensusAlgorithm *alg = getConsensusAlgorithm();
+    SAFE_POINT(alg != NULL, tr("MSA consensus algorothm is NULL"), );
+    SAFE_POINT(editor->getMSAObject() != NULL, tr("MSA object is NULL"), );
+    MAlignment msa = editor->getMSAObject()->getMAlignment();
+    for (int pos = region.startPos; pos < region.endPos(); pos++) {
+        char c = alg->getConsensusChar(msa, pos, seqIdx.toVector());
+        drawConsensusChar(p, pos, c, false, true);
+    }
+
+    QColor c("#255060");
+    p.setPen(c);
+    U2Region yr = getYRange(MSAEditorConsElement_HISTOGRAM);
+    yr.startPos++;
+    yr.length-=2; //keep borders
+    QBrush brush(c, Qt::Dense4Pattern);
+    for (int pos = region.startPos, lastPos = region.endPos() - 1; pos <= lastPos; pos++) {
+        U2Region xr = ui->seqArea->getBaseXRange(pos, true);
+        int percent;
+        alg->getConsensusCharAndScore(msa, pos, percent, seqIdx.toVector());
+        percent = qRound(percent * 100. / seqIdx.size() );
+        SAFE_POINT(percent >= 0 && percent <= 100, tr("Percent value is out of [0..100] interval"), );
+        int h = qRound(percent * yr.length / 100.0);
+        QRect hr(xr.startPos + 1, yr.endPos() - h, xr.length - 2, h);
+        p.drawRect(hr);
+        p.fillRect(hr, brush);
+    }
+}
+
+void MSAEditorConsensusArea::paintPartOfARuler(QPixmap &pixmap, const U2Region &region) {
+    CHECK( editor->getColumnWidth() * region.length < 32768, );
+    CHECK( getYRange(MSAEditorConsElement_RULER).length < 32768, );
+    pixmap = QPixmap(editor->getColumnWidth() * region.length,
                      getYRange(MSAEditorConsElement_RULER).length);
     pixmap.fill(Qt::white);
     QPainter p(&pixmap);
-    p.translate(0, -getYRange(MSAEditorConsElement_RULER).startPos);
-    drawRuler(p, true);
-    p.end();
+    p.translate( -ui->seqArea->getBaseXRange(region.startPos, true).startPos,
+                 -getYRange(MSAEditorConsElement_RULER).startPos);
+    drawRuler(p, region.startPos, region.endPos(), true);
 }
 
 bool MSAEditorConsensusArea::event(QEvent* e) {
@@ -269,9 +319,24 @@ void MSAEditorConsensusArea::drawConsensusChar(QPainter& p, int pos, bool select
     }
 }
 
+void MSAEditorConsensusArea::drawConsensusChar(QPainter &p, int pos, char consChar, bool selected, bool useVirtualCoords) {
+    U2Region yRange = getYRange(MSAEditorConsElement_CONSENSUS_TEXT);
+    U2Region xRange= ui->seqArea->getBaseXRange(pos, useVirtualCoords);
+    QRect cr(xRange.startPos, yRange.startPos, xRange.length + 1, yRange.length);
+
+    if (selected) {
+        QColor color(Qt::lightGray);
+        color = color.lighter(115);
+        p.fillRect(cr, color);
+    }
+    if (editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent) {
+        p.drawText(cr, Qt::AlignVCenter | Qt::AlignHCenter, QString(consChar));
+    }
+}
+
 #define RULER_NOTCH_SIZE 3
 
-void MSAEditorConsensusArea::drawRuler(QPainter& p, bool drawFull) {
+void MSAEditorConsensusArea::drawRuler(QPainter& p, int start, int end, bool drawFull) {
     if (ui->seqArea->isAlignmentEmpty()) {
         return;
     }
@@ -279,11 +344,11 @@ void MSAEditorConsensusArea::drawRuler(QPainter& p, bool drawFull) {
     //draw ruler
     p.setPen(Qt::darkGray);
 
-    int w = width();
-    int startPos = drawFull ? 0
-                            : ui->seqArea->getFirstVisibleBase();
-    int lastPos = drawFull ? ui->editor->getAlignmentLen() - 1
-                           : ui->seqArea->getLastVisibleBase(true);
+    int w = (start == -1 && end == -1) ? width() : (end - start)*ui->getEditor()->getColumnWidth();
+    int startPos = (start != -1) ? start
+                                 : ui->seqArea->getFirstVisibleBase();
+    int lastPos = (end != - 1) ? end - 1
+                               : ui->seqArea->getLastVisibleBase(true);
 
     QFontMetrics rfm(rulerFont);
     U2Region rr = getYRange(MSAEditorConsElement_RULER);
@@ -302,10 +367,10 @@ void MSAEditorConsensusArea::drawRuler(QPainter& p, bool drawFull) {
     c.notchSize = RULER_NOTCH_SIZE;
     c.textOffset = (rr.length - rfm.ascent()) /2;
     c.extraAxisLenBefore = startPoint.x();
-    c.extraAxisLenAfter = (drawFull ? lastBaseXReg.endPos() : w)
-            - (startPoint.x() + firstLastLen);
+    c.extraAxisLenAfter = w - (startPoint.x() + firstLastLen);
     c.textBorderStart = -firstBaseXReg.length / 2;
     c.textBorderEnd = -firstBaseXReg.length / 2;
+
     GraphUtils::drawRuler(p, startPoint, firstLastLen, startPos + 1, lastPos + 1, rulerFont, c);
 
     startPoint.setY(rr.endPos());

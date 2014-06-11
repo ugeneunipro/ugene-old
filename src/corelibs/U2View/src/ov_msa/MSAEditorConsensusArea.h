@@ -71,7 +71,8 @@ public:
     QSharedPointer <MSAEditorConsensusCache> getConsensusCache();
 
     void paintFullConsensusToPixmap(QPixmap &pixmap);
-    void paintFullRulerToPixmap(QPixmap &pixmap);
+    void paintParsialConsenusToPixmap(QPixmap & pixmap, const U2Region &region, const QList<qint64> &seqIdx);
+    void paintPartOfARuler(QPixmap &pixmap, const U2Region &region);
 
 protected:
     virtual bool event(QEvent* e);
@@ -118,8 +119,10 @@ private:
     void drawConsensus(QPainter& p, int startPos, int lastPos, bool useVirtualCoords = false);
 
     void drawConsensusChar(QPainter& p, int pos, bool selected, bool useVirtualCoords = false);
+    void drawConsensusChar(QPainter& p, int pos, char consChar,
+                           bool selected, bool useVirtualCoords = false);
 
-    void drawRuler(QPainter& p, bool drawFull = false);
+    void drawRuler(QPainter& p, int start = -1, int end = -1, bool drawFull = false);
 
     void drawHistogram(QPainter& p);
     void drawHistogram(QPainter& p, int firstBase, int lastBase);

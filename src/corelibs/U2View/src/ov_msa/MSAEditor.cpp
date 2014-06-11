@@ -95,7 +95,7 @@
 #include <QtSvg/QSvgGenerator>
 
 
-#include "Export/MSAExporter.h"
+#include "Export/MSAImageExportTask.h"
 #include "phyltree/CreatePhyTreeDialogController.h"
 #include "ov_phyltree/TreeViewer.h"
 #include "PhyTrees/MSAEditorMultiTreeViewer.h"
@@ -922,14 +922,8 @@ QAction* MSAEditorUI::getRedoAction() const {
 }
 
 void MSAEditorUI::sl_saveScreenshot(){
-    MSAExporter msaExp(this);
-    MSASelectionExporter selExp(this);
-    MSAOverviewExporter overviewExp(overviewArea);
-
-    QList<ImageExporter*> exporters;
-    exporters << &msaExp << &overviewExp << &selExp;
-
-    ExportImageDialog dlg(exporters, &msaExp, ExportImageDialog::MSA, this);
+    MSAImageExportTaskFactory factory(this);
+    ExportImageDialog dlg(&factory, ExportImageDialog::MSA);
     dlg.exec();
 }
 

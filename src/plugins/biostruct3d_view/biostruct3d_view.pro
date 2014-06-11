@@ -3,7 +3,7 @@ include (biostruct3d_view.pri)
 # Input
 HEADERS += src/BallAndStickGLRenderer.h \
            src/BioStruct3DColorScheme.h \
-           src/BioStruct3DGLImageExporter.h \
+           src/BioStruct3DGLImageExportTask.h \
            src/BioStruct3DGLRender.h \
            src/BioStruct3DGLWidget.h \
            src/BioStruct3DSplitter.h \
@@ -28,7 +28,7 @@ FORMS +=   src/ui/SettingsDialog.ui \
 
 SOURCES += src/BallAndStickGLRenderer.cpp \
            src/BioStruct3DColorScheme.cpp \
-           src/BioStruct3DGLImageExporter.cpp \
+           src/BioStruct3DGLImageExportTask.cpp \
            src/BioStruct3DGLRender.cpp \
            src/BioStruct3DGLWidget.cpp \
            src/BioStruct3DSplitter.cpp \

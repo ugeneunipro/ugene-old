@@ -33,7 +33,7 @@ HEADERS += src/Init.h \
            src/ov_assembly/ExportConsensusVariationsTask.h \
            src/ov_assembly/ZoomableAssemblyOverview.h \
            src/ov_msa/AlignmentLogo.h \
-           src/ov_msa/CreateSubalignimentDialogController.h \
+           src/ov_msa/CreateSubalignmentDialogController.h \
            src/ov_msa/DeleteGapsDialog.h \
            src/ov_msa/MSACollapsibleModel.h \
            src/ov_msa/MSAColorScheme.h \
@@ -51,6 +51,7 @@ HEADERS += src/Init.h \
            src/ov_msa/MSAEditorStatusBar.h \
            src/ov_msa/MSAEditorTasks.h \
            src/ov_msa/MSAEditorUndoFramework.h \
+           src/ov_msa/MSASelectSubalignmentDialog.h \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.h \
            src/ov_msa/ColorSchemaDialogController.h \
            src/ov_msa/ColorSchemaSettingsController.h \
@@ -59,7 +60,7 @@ HEADERS += src/Init.h \
            src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.h \
            src/ov_msa/Display/MSADisplayTab.h \
            src/ov_msa/Display/MSADisplayTabFactory.h \
-           src/ov_msa/Export/MSAExporter.h \
+           src/ov_msa/Export/MSAImageExportTask.h \
            src/ov_msa/General/MSAGeneralTab.h \
            src/ov_msa/General/MSAGeneralTabFactory.h \
            src/ov_msa/Highlighting/MSAHighlightingTab.h \
@@ -68,6 +69,7 @@ HEADERS += src/Init.h \
            src/ov_msa/Overview/MSAGraphOverview.h \
            src/ov_msa/Overview/MSAOverview.h \
            src/ov_msa/Overview/MSAOverviewContextMenu.h \
+           src/ov_msa/Overview/MSAOverviewImageExportTask.h \
            src/ov_msa/Overview/MSASimpleOverview.h \
            src/ov_msa/TreeOptions/TreeOptionsWidget.h \
            src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.h \
@@ -170,7 +172,7 @@ HEADERS += src/Init.h \
            src/ov_msa/ExportConsensus/MSAExportConsensusTab.h
 FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_assembly/ui/ExportReadsDialog.ui \
-         src/ov_msa/ui/CreateSubalignimentDialog.ui \
+         src/ov_msa/ui/CreateSubalignmentDialog.ui \
          src/ov_msa/ui/DeleteGapsDialog.ui \
          src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui \
          src/ov_msa/ui/ColorSchemaDialog.ui \
@@ -178,6 +180,8 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_msa/ui/CreateMSAScheme.ui \
          src/ov_msa/ui/TreeOptionsWidget.ui \
          src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui \
+         src/ov_msa/ui/MSAExportSettings.ui \
+         src/ov_msa/ui/SelectSubalignmentDialog.ui \
          src/ov_msa/ui/SequenceSelectorWidget.ui \
          src/ov_msa/ui/ExportHighlightedDialog.ui \
          src/ov_msa/ui/ExportConsensusWidget.ui \
@@ -236,7 +240,7 @@ SOURCES += src/Init.cpp \
            src/ov_assembly/ExportReadsDialog.cpp \
            src/ov_assembly/ZoomableAssemblyOverview.cpp \
            src/ov_msa/AlignmentLogo.cpp \
-           src/ov_msa/CreateSubalignimentDialogController.cpp \
+           src/ov_msa/CreateSubalignmentDialogController.cpp \
            src/ov_msa/DeleteGapsDialog.cpp \
            src/ov_msa/MSACollapsibleModel.cpp \
            src/ov_msa/MSAColorScheme.cpp \
@@ -254,6 +258,7 @@ SOURCES += src/Init.cpp \
            src/ov_msa/MSAEditorStatusBar.cpp \
            src/ov_msa/MSAEditorTasks.cpp \
            src/ov_msa/MSAEditorUndoFramework.cpp \
+           src/ov_msa/MSASelectSubalignmentDialog.cpp \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.cpp \
            src/ov_msa/ColorSchemaDialogController.cpp \
            src/ov_msa/ColorSchemaSettingsController.cpp \
@@ -262,7 +267,7 @@ SOURCES += src/Init.cpp \
            src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.cpp \
            src/ov_msa/Display/MSADisplayTab.cpp \
            src/ov_msa/Display/MSADisplayTabFactory.cpp \
-           src/ov_msa/Export/MSAExporter.cpp \
+           src/ov_msa/Export/MSAImageExportTask.cpp \
            src/ov_msa/General/MSAGeneralTab.cpp \
            src/ov_msa/General/MSAGeneralTabFactory.cpp \
            src/ov_msa/Highlighting/MSAHighlightingTab.cpp \
@@ -271,6 +276,7 @@ SOURCES += src/Init.cpp \
            src/ov_msa/Overview/MSAGraphOverview.cpp \
            src/ov_msa/Overview/MSAOverview.cpp \
            src/ov_msa/Overview/MSAOverviewContextMenu.cpp \
+           src/ov_msa/Overview/MSAOverviewImageExportTask.cpp \
            src/ov_msa/Overview/MSASimpleOverview.cpp \
            src/ov_msa/TreeOptions/TreeOptionsWidget.cpp \
            src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.cpp \

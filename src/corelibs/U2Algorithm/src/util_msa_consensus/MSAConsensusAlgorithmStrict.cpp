@@ -29,7 +29,7 @@
 namespace U2 {
 
 
-MSAConsensusAlgorithmFactoryStrict::MSAConsensusAlgorithmFactoryStrict(QObject* p) 
+MSAConsensusAlgorithmFactoryStrict::MSAConsensusAlgorithmFactoryStrict(QObject* p)
 : MSAConsensusAlgorithmFactory(BuiltInConsensusAlgorithms::STRICT_ALGO, ConsensusAlgorithmFlags_AllAlphabets | ConsensusAlgorithmFlag_SupportThreshold, p)
 {
 }
@@ -50,13 +50,13 @@ MSAConsensusAlgorithm* MSAConsensusAlgorithmFactoryStrict::createAlgorithm(const
 //////////////////////////////////////////////////////////////////////////
 // Algorithm
 
-char MSAConsensusAlgorithmStrict::getConsensusChar(const MAlignment& msa, int column) const {
+char MSAConsensusAlgorithmStrict::getConsensusChar(const MAlignment& msa, int column, const QVector<qint64> &seqIdx) const {
     QVector<int> freqsByChar(256, 0);
     int nonGaps = 0;
-    uchar topChar = MSAConsensusUtils::getColumnFreqs(msa, column, freqsByChar, nonGaps);
+    uchar topChar = MSAConsensusUtils::getColumnFreqs(msa, column, freqsByChar, nonGaps, seqIdx);
 
     //use gap is top char frequency is lower than threshold
-    int nSeq = msa.getNumRows();
+    int nSeq =( seqIdx.isEmpty() ? msa.getNumRows() : seqIdx.size());
     int currentThreshold = getThreshold();
     int cntToUseGap = int(currentThreshold / 100.0 * nSeq);
     int topFreq = freqsByChar[topChar];

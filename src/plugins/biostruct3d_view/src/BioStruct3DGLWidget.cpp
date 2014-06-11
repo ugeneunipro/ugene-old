@@ -22,7 +22,7 @@
 #include "BioStruct3DGLWidget.h"
 #include "BioStruct3DGLRender.h"
 #include "BioStruct3DColorScheme.h"
-#include "BioStruct3DGLImageExporter.h"
+#include "BioStruct3DGLImageExportTask.h"
 #include "GLFrameManager.h"
 #include "SettingsDialog.h"
 #include "MolecularSurfaceRenderer.h"
@@ -977,8 +977,10 @@ void BioStruct3DGLWidget::sl_settings()
 
 void BioStruct3DGLWidget::sl_exportImage()
 {
-    BioStruct3DGLImageExporter exporter(this);
-    ExportImageDialog dialog(&exporter, ExportImageDialog::MolView);
+    BioStruct3DImageExportTaskFactory factory(this);
+    ExportImageDialog dialog(&factory, ExportImageDialog::MolView,
+                             ExportImageDialog::Resizable,
+                             ExportImageDialog::SupportVectorFormats);
     dialog.exec();
 }
 

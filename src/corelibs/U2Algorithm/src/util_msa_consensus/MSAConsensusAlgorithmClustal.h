@@ -30,7 +30,7 @@ namespace U2 {
 class U2ALGORITHM_EXPORT MSAConsensusAlgorithmFactoryClustal : public MSAConsensusAlgorithmFactory {
     Q_OBJECT
 public:
-    MSAConsensusAlgorithmFactoryClustal(QObject* p = NULL) 
+    MSAConsensusAlgorithmFactoryClustal(QObject* p = NULL)
             : MSAConsensusAlgorithmFactory(BuiltInConsensusAlgorithms::CLUSTAL_ALGO, ConsensusAlgorithmFlags_AllAlphabets, p){}
 
     virtual MSAConsensusAlgorithm* createAlgorithm(const MAlignment& ma, QObject* parent);
@@ -51,7 +51,7 @@ class U2ALGORITHM_EXPORT MSAConsensusAlgorithmClustal : public MSAConsensusAlgor
 public:
     MSAConsensusAlgorithmClustal(MSAConsensusAlgorithmFactoryClustal* f, QObject* p = NULL) : MSAConsensusAlgorithm(f, p){}
 
-    virtual char getConsensusChar(const MAlignment& ma, int column) const;
+    virtual char getConsensusChar(const MAlignment& ma, int column, const QVector<qint64> &seqIdx = QVector<qint64>()) const;
 };
 
 }//namespace

@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-MSAConsensusAlgorithmFactoryDefault::MSAConsensusAlgorithmFactoryDefault(QObject* p) 
+MSAConsensusAlgorithmFactoryDefault::MSAConsensusAlgorithmFactoryDefault(QObject* p)
 : MSAConsensusAlgorithmFactory(BuiltInConsensusAlgorithms::DEFAULT_ALGO, ConsensusAlgorithmFlags_NuclAmino | ConsensusAlgorithmFlag_SupportThreshold, p)
 {
 
@@ -49,13 +49,14 @@ MSAConsensusAlgorithm* MSAConsensusAlgorithmFactoryDefault::createAlgorithm(cons
 //////////////////////////////////////////////////////////////////////////
 // Algorithm
 
-char MSAConsensusAlgorithmDefault::getConsensusCharAndScore(const MAlignment& msa, int pos, int& cnt) const {
+char MSAConsensusAlgorithmDefault::getConsensusCharAndScore(const MAlignment& msa, int pos, int& cnt, const QVector<qint64> &seqIdx) const {
     //TODO: use var-length array!
     QVector<QPair<int, char> > freqs(32);
     int ch = MAlignment_GapChar;
-    int nSeq = msa.getNumRows();
+    int nSeq = seqIdx.isEmpty() ? msa.getNumRows() : seqIdx.size();
     for (int seq = 0; seq < nSeq; seq++) {
-        uchar c = (uchar)msa.charAt(seq, pos);
+        uchar c = (uchar)msa.charAt( seqIdx.isEmpty() ? seq : seqIdx[ seq ],
+                                     pos);
         if (c >= 'A' && c <= 'Z') {
             int idx = c - 'A';
             assert(idx >=0 && idx <= freqs.size());

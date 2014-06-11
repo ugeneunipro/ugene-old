@@ -267,8 +267,8 @@ public:
 
     bool hasAminoAlphabet();
 
-    void paintSelectedRegionToPixmap(QPixmap& pixmap);
-    void paintWholeAlignmentToPixmap(QPixmap& pixmap);
+    bool paintAllToPixmap(QPixmap& pixmap);
+    bool paintToPixmap(QPixmap& pixmap, const U2Region& region, const QList<qint64>& seqIdx);
 
 private:
     // emulating cursor mode with
@@ -301,7 +301,7 @@ public:
 
     void drawContent(QPainter& p);
     void drawContent(QPainter &p, const QRect &area);
-    void drawContentToPixmap(QPixmap &pixmap, const QRect &area);
+    void drawContent(QPainter &p, const U2Region& region, const QList<qint64> &seqIdx);
 
     QString exportHighligtning(int startPos, int endPos, int startingIndex, bool keepGaps, bool dots);
 

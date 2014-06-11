@@ -21,7 +21,11 @@
 
 #include "MSAOverviewContextMenu.h"
 
+#include "../MSAEditorOverviewArea.h"
 #include "MSASimpleOverview.h"
+#include "MSAOverviewImageExportTask.h"
+#include <U2Core/U2SafePoints.h>
+#include <U2Gui/ExportImageDialog.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QColorDialog>
@@ -35,9 +39,13 @@ MSAOverviewContextMenu::MSAOverviewContextMenu(MSASimpleOverview *sOverview, MSA
     : simpleOverview(sOverview),
       graphOverview(gOverview)
 {
+    SAFE_POINT(simpleOverview != NULL, tr("Overview is NULL"), );
+    SAFE_POINT(graphOverview != NULL, tr("Graph overview is NULL"), );
+
     setObjectName("msa_overview_context_menu");
 
     initSimpleOverviewAction();
+    initExportAsImageAction();
     addSeparator();
     initDisplaySettingsMenu();
     initCalculationMethodMenu();
@@ -53,6 +61,8 @@ void MSAOverviewContextMenu::connectSlots() {
 
     connect(showSimpleOverviewAction, SIGNAL(toggled(bool)), simpleOverview, SLOT(setVisible(bool)));
 
+    connect(exportAsImage, SIGNAL(triggered()), SLOT(sl_exportAsImageTriggered()));
+
     connect(graphTypeActionGroup, SIGNAL(triggered(QAction*)), SLOT(sl_graphTypeActionTriggered(QAction*)));
 
     connect(orientationActionGroup, SIGNAL(triggered(QAction*)), SLOT(sl_graphOrientationActionTriggered(QAction*)));
@@ -61,6 +71,12 @@ void MSAOverviewContextMenu::connectSlots() {
 
     connect(calculationMethodActionGroup, SIGNAL(triggered(QAction*)), SLOT(sl_caclulationMethodActionTriggered(QAction*)));
 
+}
+
+void MSAOverviewContextMenu::sl_exportAsImageTriggered() {
+    MSAOverviewImageExportTaskFactory factory(simpleOverview, graphOverview);
+    ExportImageDialog dialog(&factory, ExportImageDialog::MSA);
+    dialog.exec();
 }
 
 void MSAOverviewContextMenu::sl_graphTypeActionTriggered(QAction *action) {
@@ -115,6 +131,12 @@ void MSAOverviewContextMenu::initSimpleOverviewAction() {
     showSimpleOverviewAction->setObjectName("Show simple overview");
     showSimpleOverviewAction->setChecked( simpleOverview->isVisible() );
     addAction(showSimpleOverviewAction);
+}
+
+void MSAOverviewContextMenu::initExportAsImageAction() {
+    exportAsImage = new QAction(tr("Export as image"), this);
+    exportAsImage->setObjectName("Export as image");
+    addAction(exportAsImage);
 }
 
 void MSAOverviewContextMenu::initDisplaySettingsMenu() {

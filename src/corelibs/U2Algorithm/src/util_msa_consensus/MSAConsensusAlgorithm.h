@@ -46,9 +46,9 @@ class U2ALGORITHM_EXPORT MSAConsensusAlgorithmFactory : public QObject {
     Q_OBJECT
 public:
     MSAConsensusAlgorithmFactory(const QString& algoId, ConsensusAlgorithmFlags flags, QObject* p = NULL);
-    
+
     virtual MSAConsensusAlgorithm* createAlgorithm(const MAlignment& ma, QObject* parent = NULL) = 0;
-    
+
     QString getId() const {return algorithmId;}
 
     ConsensusAlgorithmFlags getFlags() const {return flags;}
@@ -60,7 +60,7 @@ public:
     virtual bool supportsThreshold() const {return flags.testFlag(ConsensusAlgorithmFlag_SupportThreshold);}
 
     virtual int getMinThreshold() const = 0;
-    
+
     virtual int getMaxThreshold() const = 0;
 
     virtual int getDefaultThreshold() const = 0;
@@ -86,22 +86,22 @@ public:
         Score is a number: [0, num] sequences. Usually is means count of the char in the row
         Note that consensus character may be out of the to MSA alphabet symbols range
     */
-    virtual char getConsensusCharAndScore(const MAlignment& ma, int column, int& score) const;
+    virtual char getConsensusCharAndScore(const MAlignment& ma, int column, int& score, const QVector<qint64> &seqIdx = QVector<qint64>()) const;
 
-    virtual char getConsensusChar(const MAlignment& ma, int column) const = 0;
-    
+    virtual char getConsensusChar(const MAlignment& ma, int column, const QVector<qint64> &seqIdx = QVector<qint64>()) const = 0;
+
     virtual QString getDescription() const {return factory->getDescription();}
 
     virtual QString getName() const {return factory->getName();}
 
     virtual void setThreshold(int val);
-    
+
     virtual int getThreshold() const {return threshold;}
 
     bool supportsThreshold() const {return factory->supportsThreshold();}
 
     virtual int getMinThreshold() const {return factory->getMinThreshold();}
-    
+
     virtual int getMaxThreshold() const {return factory->getMaxThreshold();}
 
     virtual int getDefaultThreshold() const {return factory->getDefaultThreshold();}

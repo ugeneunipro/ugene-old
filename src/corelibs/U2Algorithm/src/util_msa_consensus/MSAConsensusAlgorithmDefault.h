@@ -32,7 +32,7 @@ class U2ALGORITHM_EXPORT MSAConsensusAlgorithmFactoryDefault: public MSAConsensu
     Q_OBJECT
 public:
     MSAConsensusAlgorithmFactoryDefault(QObject* p = NULL);
-            
+
     virtual MSAConsensusAlgorithm* createAlgorithm(const MAlignment& ma, QObject* parent);
 
     virtual QString getDescription() const;
@@ -40,9 +40,9 @@ public:
     virtual QString getName() const;
 
     virtual int getMinThreshold() const {return 1;}
-    
+
     virtual int getMaxThreshold() const {return 100;}
-    
+
     virtual int getDefaultThreshold() const {return 100;}
 
     virtual QString getThresholdSuffix() const {return QString("%");}
@@ -56,12 +56,12 @@ public:
     MSAConsensusAlgorithmDefault(MSAConsensusAlgorithmFactoryDefault* f, QObject* p = NULL)
         : MSAConsensusAlgorithm(f, p){}
 
-    virtual char getConsensusChar(const MAlignment& ma, int column) const {
+    virtual char getConsensusChar(const MAlignment& ma, int column, const QVector<qint64> &seqIdx) const {
         int countStub = 0;
-        return getConsensusCharAndScore(ma, column, countStub);
+        return getConsensusCharAndScore(ma, column, countStub, seqIdx);
     }
 
-    virtual char getConsensusCharAndScore(const MAlignment& ma, int column, int& score) const;
+    virtual char getConsensusCharAndScore(const MAlignment& ma, int column, int& score, const QVector<qint64> &seqIdx = QVector<qint64>()) const;
 };
 
 }//namespace

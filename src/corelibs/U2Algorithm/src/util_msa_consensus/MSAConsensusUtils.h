@@ -58,7 +58,8 @@ public:
     // computes frequency by char. Returns the most frequent char that is not gap.
     // nonGapChars = sum of all non-gap characters
     // TODO: use var-length array instead of the vector!
-    static uchar getColumnFreqs(const MAlignment& ma, int pos, QVector<int>& freqsByChar, int& nonGapChars);
+    static uchar getColumnFreqs(const MAlignment& ma, int pos, QVector<int>& freqsByChar,
+                                int &nonGapChars, const QVector <qint64>& seqIdx = QVector<qint64>());
 
 };
 

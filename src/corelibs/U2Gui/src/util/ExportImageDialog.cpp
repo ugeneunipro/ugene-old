@@ -20,12 +20,13 @@
  */
 
 #include "ExportImageDialog.h"
-#include "ImageExporter.h"
+#include "imageExport/WidgetScreenshotExportTask.h"
 
 #include <ui/ui_ExportImageDialog.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/L10n.h>
+#include <U2Core/AppContext.h>
 #include <U2Gui/HelpButton.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -38,74 +39,51 @@
 #include <QtGui/QImageWriter>
 #include <QtGui/QRadioButton>
 #include <QtGui/QButtonGroup>
+#include <QtGui/QPushButton>
 
 
 namespace U2 {
 
 static const QString IMAGE_DIR = "image";
 
-static const QString SVG_FORMAT = "svg";
-static const int SVG_FORMAT_ID = 1;
-static const QString PS_FORMAT = "ps";
-static const int PS_FORMAT_ID = 2;
-static const QString PDF_FORMAT = "pdf";
-
-
-ExportImageDialog::ExportImageDialog(ImageExporter *exporter,
-                                     InvokedFrom invoSource,
-                                     QWidget *parent,
-                                     const QString &filename)
-    : QDialog(parent),
-      currentExporter(exporter),
-      filename(filename),
-      origFilename(filename),
-      lod(IMAGE_DIR, QDir::homePath()),
-      source(invoSource)
-{
-    SAFE_POINT(exporter != NULL, tr("Default image exporter is NULL"), );
-    exporters << exporter;
-    setupComponents();
-    setupExporters();
-}
-
-ExportImageDialog::ExportImageDialog(const QList<ImageExporter*> &exporters,
-                                     ImageExporter* defaultExporter,
-                                     InvokedFrom invoSource,
-                                     QWidget *parent, const QString &filename)
-    : QDialog(parent),
-      exporters(exporters),
-      currentExporter(defaultExporter),
-      filename(filename),
-      origFilename(filename),
-      lod(IMAGE_DIR, QDir::homePath()),
-      source(invoSource)
-{
-    SAFE_POINT( !exporters.isEmpty(), tr("Image exporters list is emptry"), );
-    if (defaultExporter == NULL) {
-        currentExporter = exporters.first();
-    }
-    SAFE_POINT( currentExporter != NULL, tr("Default image exporter is NULL"), );
-    setupComponents();
-    setupExporters();
-}
-
 ExportImageDialog::ExportImageDialog(QWidget *screenShotWidget,
                                      InvokedFrom invoSource,
-                                     ImageExporter::ImageScalingPolicy scalingPolicy,
-                                     ImageExporter::FormatPolicy formatPolicy,
+                                     ImageScalingPolicy scalingPolicy,
+                                     FormatPolicy formatPolicy,
                                      QWidget *parent, const QString &file)
     : QDialog(parent),
+      scalingPolicy(scalingPolicy),
+      formatPolicy(formatPolicy),
       filename(file),
       origFilename(file),
       lod(IMAGE_DIR, QDir::homePath()),
       source(invoSource)
 {
-    WidgetScreenshotImageExporter* exporter = new WidgetScreenshotImageExporter(screenShotWidget, scalingPolicy, formatPolicy);
-    exporter->setParent(this);
-    exporters << exporter;
-    currentExporter = exporter;
-    setupComponents();
-    setupExporters();
+    exportTaskFactory = new WidgetScreenshotImageExportTaskFactory(screenShotWidget);
+    init();
+}
+
+ExportImageDialog::ExportImageDialog(ImageExportTaskFactory *factory,
+                                     InvokedFrom invoSource,
+                                     ImageScalingPolicy scalingPolicy,
+                                     FormatPolicy formatPolicy,
+                                     QWidget *parent, const QString &file)
+    : QDialog(parent),
+      exportTaskFactory(factory),
+      scalingPolicy(scalingPolicy),
+      formatPolicy(formatPolicy),
+
+      filename(file),
+      origFilename(file),
+      lod(IMAGE_DIR, QDir::homePath()),
+      source(invoSource)
+{
+    SAFE_POINT( exportTaskFactory != NULL, tr("Image export task factory is NULL"), );
+    init();
+}
+
+ExportImageDialog::~ExportImageDialog() {
+    delete ui;
 }
 
 int ExportImageDialog::getWidth() const {
@@ -145,30 +123,12 @@ void ExportImageDialog::accept() {
     lod.url = filename;
     ioLog.info(tr("Saving image to '%1'...").arg(filename));
 
-    QCursor cursor = this->cursor();
-    setCursor(Qt::WaitCursor);
+    ImageExportTaskSettings settings(filename, format,
+                                     QSize(getWidth(), getHeight()),
+                                     (hasQuality() ? getQuality() : -1));
+    Task* task = exportTaskFactory->getTaskInstance(settings);
+    AppContext::getTaskScheduler()->registerTopLevelTask(task);
 
-    bool result=false;
-    if (isVectorGraphicFormat(format)) {
-        int formatId = getVectorFormatIdByName(format);
-        if (formatId == SVG_FORMAT_ID){
-            result = currentExporter->exportToSVG(filename);
-        }else if (formatId == PS_FORMAT_ID){
-            result = currentExporter->exportToPDF(filename, format);
-        }
-    }
-    else {
-        result = currentExporter->exportToBitmap(filename, format,
-                                                 QSize(getWidth(), getHeight()),
-                                                 (hasQuality() ? getQuality() : -1));
-    }
-    if (!result) {
-        QMessageBox::critical(this, L10N::errorTitle(), L10N::errorImageSave(filename, format));
-        return;
-    }
-    setCursor(cursor);
-
-    ioLog.info(tr("Done!"));
     QDialog::accept();
 }
 
@@ -233,19 +193,14 @@ void ExportImageDialog::sl_onFormatsBoxItemChanged(const QString &text)
     ui->qualitySpinBox->setVisible( areQualityWidgetsVisible );
 }
 
-void ExportImageDialog::sl_onExporterSelected(QAbstractButton *b) {
-    QRadioButton *button = qobject_cast<QRadioButton*>(b);
-
-    CHECK(button != NULL, );
-    CHECK(exportersButtons.contains(button), );
-
-    currentExporter = exportersButtons.value(button);
-    setVectorFormats();
+void ExportImageDialog::sl_hintMessageChanged(const QString &message) {
+    ui->hintLabel->setText(message);
 }
 
-void ExportImageDialog::setupComponents() {
+void ExportImageDialog::init() {
     ui = new Ui_ImageExportForm;
     ui->setupUi(this);
+
     switch (source) {
     case WD:
         new HelpButton(this, ui->buttonBox, "4227400");
@@ -253,7 +208,7 @@ void ExportImageDialog::setupComponents() {
     case CircularView:
         new HelpButton(this, ui->buttonBox, "4227400");
         break;
-    case MSA: 
+    case MSA:
         new HelpButton(this, ui->buttonBox, "4227400");
         break;
     case SequenceView:
@@ -286,15 +241,20 @@ void ExportImageDialog::setupComponents() {
         ui->formatsBox->addItem(format);
     }
     setVectorFormats();
+    if (ui->formatsBox->findText("png") != -1) {
+        ui->formatsBox->setCurrentIndex( ui->formatsBox->findText("png") );
+    }
 
-    if (currentExporter->getScalingPolicy() == ImageExporter::Constant){
+    if (scalingPolicy == Constant){
         ui->widthLabel->hide();
         ui->widthSpinBox->hide();
         ui->heightLabel->hide();
         ui->heightSpinBox->hide();
     }
-    ui->widthSpinBox->setValue(currentExporter->getImageWidth());
-    ui->heightSpinBox->setValue(currentExporter->getImageHeight());
+    ui->hintLabel->hide();
+
+    ui->widthSpinBox->setValue(exportTaskFactory->getImageWidth());
+    ui->heightSpinBox->setValue(exportTaskFactory->getImageHeight());
 
     filename = lod.dir + "/" + origFilename + "."  + ui->formatsBox->currentText();
     filename = GUrlUtils::rollFileName(filename, "_copy", QSet<QString>());
@@ -306,55 +266,15 @@ void ExportImageDialog::setupComponents() {
     connect(ui->formatsBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(sl_onFormatsBoxItemChanged(const QString&)));
 
     sl_onFormatsBoxItemChanged(ui->formatsBox->currentText());
-}
 
-void ExportImageDialog::setupExporters() {
-
-    if (exporters.size() == 1) {
-        ui->exportObjectGroupBox->hide();
-        if (exporters.first()->getSettingsWidget() == NULL) {
-            ui->settingsGroupBox->hide();
-            resize(width(), ui->gridLayout->minimumSize().height());
-            return;
-        }
+    QWidget* settingsWidget = exportTaskFactory->getSettingsWidget();
+    if (settingsWidget == NULL) {
+        ui->settingsGroupBox->hide();
+    } else {
+        ui->settingsGroupBox->setTitle( ui->settingsGroupBox->title().prepend(exportTaskFactory->getExportDescription()) );
+        ui->settingsLayout->addWidget(settingsWidget);
     }
-
-    exportersGroup = new QButtonGroup(this);
-    foreach (ImageExporter* exp, exporters) {
-        QRadioButton *button = new QRadioButton(exp->getExportDescription(), this);
-        button->setDisabled( !exp->isAvailable() );
-        connect(button, SIGNAL(toggled(bool)), exp, SLOT(sl_setSettingsWidgetVisible(bool)));
-
-        exportersGroup->addButton(button);
-        exportersButtons.insert(button, exp);
-        ui->exportersDescriptorsLayout->addWidget(button);
-
-        QWidget *settingsWidget = exp->getSettingsWidget();
-        if (settingsWidget == NULL) {
-            settingsWidget = new QLabel(tr("<i>No additional settings<br>for current export object.</i>"), this);
-            ((QLabel*)settingsWidget)->setMargin(9);
-            connect(button, SIGNAL(toggled(bool)), settingsWidget, SLOT(setVisible(bool)));
-        }
-        settingsWidget->setVisible(false);
-        ui->exporterSettingsLayout->addWidget(settingsWidget);
-
-        if (exp == currentExporter) {
-            settingsWidget->setVisible(true);
-            button->setChecked(true);
-        }
-
-    }
-    connect(exportersGroup, SIGNAL(buttonClicked(QAbstractButton*)),
-            SLOT(sl_onExporterSelected(QAbstractButton*)));
-
-    ui->exportersDescriptorsLayout->addSpacerItem(new QSpacerItem(1, 1,
-                                                                  QSizePolicy::MinimumExpanding,
-                                                                  QSizePolicy::Expanding));
-    ui->exporterSettingsLayout->addSpacerItem(new QSpacerItem(1, 1,
-                                                                  QSizePolicy::MinimumExpanding,
-                                                                  QSizePolicy::Expanding));
-
-    ui->horizontalLayout->setAlignment(ui->exporterSettingsLayout, Qt::AlignRight);
+    resize(width(), ui->dialogLayout->minimumSize().height());
 }
 
 void ExportImageDialog::setSizeControlsEnabled(bool enabled)
@@ -367,19 +287,18 @@ void ExportImageDialog::setSizeControlsEnabled(bool enabled)
 
 void ExportImageDialog::setVectorFormats()
 {
-    SAFE_POINT(currentExporter != NULL, tr("Current exporter is NULL"), );
-    if (currentExporter->getFormatPolicy() == ImageExporter::SupportVectorFormats && !supportedFormats.contains(SVG_FORMAT)) {
-        supportedFormats.append(SVG_FORMAT);
-        supportedFormats.append(PS_FORMAT);
-        supportedFormats.append(PDF_FORMAT);
-    } else if (currentExporter->getFormatPolicy() == ImageExporter::IgnoreVectorFormats && supportedFormats.contains(SVG_FORMAT)) {
-        supportedFormats.removeOne(SVG_FORMAT);
-        supportedFormats.removeOne(PS_FORMAT);
-        supportedFormats.removeOne(PDF_FORMAT);
+    if (formatPolicy == SupportVectorFormats && !supportedFormats.contains(ImageExportTaskSettings::SVG_FORMAT)) {
+        supportedFormats.append(ImageExportTaskSettings::SVG_FORMAT);
+        supportedFormats.append(ImageExportTaskSettings::PS_FORMAT);
+        supportedFormats.append(ImageExportTaskSettings::PDF_FORMAT);
+    } else if (formatPolicy == IgnoreVectorFormats && supportedFormats.contains(ImageExportTaskSettings::SVG_FORMAT)) {
+        supportedFormats.removeOne(ImageExportTaskSettings::SVG_FORMAT);
+        supportedFormats.removeOne(ImageExportTaskSettings::PS_FORMAT);
+        supportedFormats.removeOne(ImageExportTaskSettings::PDF_FORMAT);
 
         QString fileName = ui->fileNameEdit->text();
         QString ext = QFileInfo(fileName).suffix().toLower();
-        if (ext == SVG_FORMAT || ext == PS_FORMAT || ext == PDF_FORMAT) {
+        if (ext == ImageExportTaskSettings::SVG_FORMAT || ext == ImageExportTaskSettings::PS_FORMAT || ext == ImageExportTaskSettings::PDF_FORMAT) {
             fileName.chop(ext.size() + 1);
         }
         ui->fileNameEdit->setText(QDir::toNativeSeparators(fileName));
@@ -403,24 +322,12 @@ void ExportImageDialog::setVectorFormats()
 }
 
 bool ExportImageDialog::isVectorGraphicFormat( const QString &formatName ) {
-    return ( SVG_FORMAT == formatName ) || ( PS_FORMAT == formatName )
-        || ( PDF_FORMAT == formatName );
+    return ( ImageExportTaskSettings::SVG_FORMAT == formatName ) || ( ImageExportTaskSettings::PS_FORMAT == formatName )
+        || ( ImageExportTaskSettings::PDF_FORMAT == formatName );
 }
 
 bool ExportImageDialog::isLossyFormat(const QString &formatName) {
-    return ( "jpeg" == formatName ) || ( "jpg" == formatName ) || ( "png" == formatName );
-}
-
-int ExportImageDialog::getVectorFormatIdByName( const QString& formatName )
-{
-    if (formatName == SVG_FORMAT) {
-        return SVG_FORMAT_ID;
-    } else if ((formatName == PS_FORMAT) || (formatName == PDF_FORMAT)) {
-        return PS_FORMAT_ID;
-    } else
-        return -1;
-
-    return -1;
+    return ( "jpeg" == formatName ) || ( "jpg" == formatName );
 }
 
 } // namespace

@@ -56,7 +56,7 @@ public:
     MSAEditorNameList(MSAEditorUI* ui, QScrollBar* nhBar);
     virtual ~MSAEditorNameList();
 
-    QPixmap getView() { return *cachedView; }
+    QPixmap drawNames(const QList<qint64>& seqIdx, bool drawSelection = false);
 
 private slots:
     virtual void sl_buildStaticMenu(GObjectView* v, QMenu* m);
@@ -116,7 +116,8 @@ private:
     void moveSelectedRegion( int shift );
     void drawAll();
     void drawSelection(QPainter& p);
-    void drawSequenceItem(QPainter& p, int s, const QString& name, bool selected);
+    void drawSequenceItem(QPainter& p, int row, const QString& text, bool selected);
+    void drawSequenceItem(QPainter& p, int s, bool selected);
     void drawSequenceItem(QPainter& p, int s, const QString& name, bool selected, const U2Region& yRange, int pos);
     virtual void drawRefSequence(QPainter &p, QRect r);
     void drawFocus(QPainter& p);

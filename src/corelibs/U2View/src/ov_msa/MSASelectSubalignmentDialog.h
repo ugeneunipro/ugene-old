@@ -19,33 +19,43 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_BIO_STRUCT_3DGL_IMAGE_EXPORTER_H_
-#define _U2_BIO_STRUCT_3DGL_IMAGE_EXPORTER_H_
+#ifndef _U2_MSA_SELECT_SUBALIGNMENT_DIALOG_H_
+#define _U2_MSA_SELECT_SUBALIGNMENT_DIALOG_H_
 
-#include <U2Gui/ImageExporter.h>
+#include "ui/ui_SelectSubalignimentDialog.h"
+
+#include <U2Core/global.h>
+#include <U2Core/MAlignmentObject.h>
 
 namespace U2 {
 
-class BioStruct3DGLWidget;
+class MSAEditorUI;
 
-class BioStruct3DGLImageExporter : public ImageExporter {
+class SelectSubalignmentDialog : public QDialog, Ui_SelectSubalignimentDialog {
     Q_OBJECT
 public:
-    BioStruct3DGLImageExporter(BioStruct3DGLWidget* widget);
+    SelectSubalignmentDialog( MSAEditorUI *ui, QWidget *p = NULL );
 
-    bool exportToSVG(const QString &filename) const;
-    bool exportToPDF(const QString &filename, const QString &format) const;
-    bool exportToBitmap(const QString &filename, const QString &format, const QSize &size, int quality) const;
+    void accept();
 
-    int getImageWidth() const;
-    int getImageHeight() const;
+    const U2Region getRegion() const { return window; }
 
-protected:
-    virtual void initSettingsWidget() {}
+    const QStringList& getSelectedSeqNames() const { return selectedNames; }
+    const QList<qint64>& getSelectedSeqIndexes() const { return selectedIndexes; }
+
+public slots:
+    void sl_allButtonClicked();
+    void sl_noneButtonClicked();
+    void sl_invertButtonClicked();
+
 private:
-    BioStruct3DGLWidget* glWidget;
-}; // class BioStruct3DGLImageExporter
+    MSAEditorUI *ui;
+
+    U2Region window;
+    QStringList selectedNames;
+    QList<qint64> selectedIndexes;
+};
 
 } // namespace
 
-#endif // _U2_BIO_STRUCT_3DGL_IMAGE_EXPORTER_H_
+#endif // _U2_MSA_SELECT_SUBALIGNMENT_DIALOG_H_

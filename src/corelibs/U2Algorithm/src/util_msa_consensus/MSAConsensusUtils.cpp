@@ -102,7 +102,7 @@ QString MSAConsensusUtils::getConsensusPercentTip(const MAlignment& msa, int pos
     if (i == maxReportChars) {
         res+="<tr><td colspan=3>...</td></tr>";
     }
-    
+
     // adding gaps statstics
     if (gaps != 0) {
         double gapsPercent = gaps*percentK;
@@ -125,16 +125,18 @@ void MSAConsensusUtils::unpackConsensusCharsFromInt(quint32 val, char* charVal, 
     }
 }
 
-uchar MSAConsensusUtils::getColumnFreqs(const MAlignment& ma, int pos, QVector<int>& freqsByChar, int& nonGapChars) {
+uchar MSAConsensusUtils::getColumnFreqs(const MAlignment& ma, int pos, QVector<int>& freqsByChar,
+                                        int& nonGapChars, const QVector<qint64>& seqIdx) {
     assert(freqsByChar.size() == 256);
     freqsByChar.fill(0);
     nonGapChars = 0;
     uchar maxC = 0;
     int  maxCFreq = 0;
     int* freqs = freqsByChar.data();
-    int nSeq = ma.getNumRows();
-    for (int seq = 0; seq < nSeq; seq++) {
-        uchar c = (uchar)ma.charAt(seq, pos);
+    int nSeq = seqIdx.isEmpty() ? ma.getNumRows() : seqIdx.size();
+    for (qint64 seq = 0; seq < nSeq; seq++) {
+        uchar c = (uchar)ma.charAt( seqIdx.isEmpty() ? seq : seqIdx[ seq ],
+                                    pos);
         freqs[c]++;
         if (c!=MAlignment_GapChar && freqs[c] > maxCFreq) {
             maxCFreq = freqs[c];

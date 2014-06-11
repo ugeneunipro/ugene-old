@@ -3,7 +3,7 @@ include (circular_view.pri)
 # Input
 HEADERS += src/CircularItems.h \
            src/CircularView.h \
-           src/CircularViewImageExporter.h \
+           src/CircularViewImageExportTask.h \
            src/CircularViewPlugin.h \
            src/CircularViewSplitter.h \
            src/RestrictionMapWidget.h \
@@ -12,7 +12,7 @@ HEADERS += src/CircularItems.h \
 FORMS += src/ui/SetSequenceOriginDialog.ui
 SOURCES += src/CircularItems.cpp \
            src/CircularView.cpp \
-           src/CircularViewImageExporter.cpp \
+           src/CircularViewImageExportTask.cpp \
            src/CircularViewPlugin.cpp \
            src/CircularViewSplitter.cpp \
            src/RestrictionMapWidget.cpp \

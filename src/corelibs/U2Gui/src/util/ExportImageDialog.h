@@ -23,7 +23,7 @@
 #define _U2_EXPORT_IMAGE_DIALOG_H_
 
 
-#include "ImageExporter.h"
+#include "imageExport/ImageExportTask.h"
 #include <U2Gui/LastUsedDirHelper.h>
 
 #include <QtCore/QList>
@@ -46,18 +46,28 @@ class U2GUI_EXPORT ExportImageDialog : public QDialog {
     Q_OBJECT
 public:
     enum InvokedFrom{ WD, CircularView, MSA, SequenceView, AssemblyView, PHYTreeView, DotPlot, MolView};
-    ExportImageDialog(ImageExporter* exporter, InvokedFrom invoSource,
-                      QWidget* parent = NULL,
-                      const QString& file = QString("untitled"));
-    ExportImageDialog(const QList<ImageExporter*> &exporters,
-                      ImageExporter* defaultExporter,
-                      InvokedFrom invoSource,
-                      QWidget* parent = NULL, const QString& file = QString("untitled"));
+    enum ImageScalingPolicy {
+        Constant,
+        Resizable
+    };
+    enum FormatPolicy {
+        SupportVectorFormats,
+        IgnoreVectorFormats
+    };
+
     ExportImageDialog(QWidget* screenShotWidget,
                       InvokedFrom invoSource,
-                      ImageExporter::ImageScalingPolicy scalingPolicy = ImageExporter::Constant,
-                      ImageExporter::FormatPolicy formatPolicy = ImageExporter::IgnoreVectorFormats,
+                      ImageScalingPolicy scalingPolicy = Constant,
+                      FormatPolicy formatPolicy = IgnoreVectorFormats,
                       QWidget* parent = NULL, const QString& file = QString("untitled"));
+
+    ExportImageDialog(ImageExportTaskFactory *factory,
+                      InvokedFrom invoSource,
+                      ImageScalingPolicy scalingPolicy = Constant,
+                      FormatPolicy formatPolicy = IgnoreVectorFormats,
+                      QWidget* parent = NULL, const QString& file = QString("untitled"));
+
+    ~ExportImageDialog();
 
     const QString& getFilename() const { return filename; }
     const QString& getFormat() const { return format; }
@@ -73,23 +83,21 @@ public slots:
 private slots:
     void sl_onBrowseButtonClick();
     void sl_onFormatsBoxItemChanged(const QString& text);
-    void sl_onExporterSelected(QAbstractButton*);
+
+    void sl_hintMessageChanged(const QString& message);
 
 private:
-    void setupComponents();
-    void setupExporters();
+    void init();
     void setSizeControlsEnabled(bool enabled);
     void setVectorFormats();
 
     static bool isVectorGraphicFormat(const QString &formatName);
     static bool isLossyFormat(const QString &formatName);
-    static int getVectorFormatIdByName(const QString &formatName);
 
 private:
-    QList <ImageExporter*>                  exporters;
-    ImageExporter*                          currentExporter;
-    QMap <QRadioButton*, ImageExporter*>    exportersButtons;
-    QButtonGroup*    exportersGroup;
+    ImageExportTaskFactory* exportTaskFactory;
+    ImageScalingPolicy      scalingPolicy;
+    FormatPolicy            formatPolicy;
 
     QList<QString>      supportedFormats;
     QString filename;

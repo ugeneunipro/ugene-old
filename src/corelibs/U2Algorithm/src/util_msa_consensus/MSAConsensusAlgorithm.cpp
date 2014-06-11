@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "MSAConsensusAlgorithm.h" 
+#include "MSAConsensusAlgorithm.h"
 #include "MSAConsensusUtils.h"
 
 #include <U2Core/DNAAlphabet.h>
@@ -30,7 +30,7 @@
 namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////
-// Factory    
+// Factory
 
 MSAConsensusAlgorithmFactory::MSAConsensusAlgorithmFactory(const QString& algoId, ConsensusAlgorithmFlags _flags, QObject* p)
 : QObject(p), algorithmId(algoId), flags(_flags)
@@ -42,7 +42,7 @@ ConsensusAlgorithmFlags MSAConsensusAlgorithmFactory::getAphabetFlags(const DNAA
         return ConsensusAlgorithmFlag_Amino;
     } else if (al->getType() == DNAAlphabet_NUCL) {
         return ConsensusAlgorithmFlag_Nucleic;
-    } 
+    }
     assert(al->getType() ==  DNAAlphabet_RAW);
     return ConsensusAlgorithmFlag_Raw;
 }
@@ -55,13 +55,14 @@ MSAConsensusAlgorithm::MSAConsensusAlgorithm(MSAConsensusAlgorithmFactory* _fact
 {
 }
 
-char MSAConsensusAlgorithm::getConsensusCharAndScore(const MAlignment& ma, int column, int& score) const {
-    char consensusChar = getConsensusChar(ma, column);
+char MSAConsensusAlgorithm::getConsensusCharAndScore(const MAlignment& ma, int column, int& score,
+                                                     const QVector<qint64>& seqIdx) const {
+    char consensusChar = getConsensusChar(ma, column, seqIdx);
 
     //now compute score using most freq character
     int nonGaps = 0;
     QVector<int> freqsByChar(256);
-    uchar topChar = MSAConsensusUtils::getColumnFreqs(ma, column, freqsByChar, nonGaps);
+    uchar topChar = MSAConsensusUtils::getColumnFreqs(ma, column, freqsByChar, nonGaps, seqIdx);
     score = freqsByChar[topChar];
 
     return consensusChar;

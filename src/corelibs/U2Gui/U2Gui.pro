@@ -47,7 +47,6 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/GScrollBar.h \
            src/util/GUIUtils.h \
            src/util/HBar.h \
-           src/util/ImageExporter.h \
            src/util/HelpButton.h \
            src/util/ImportDialogsFactories.h \
            src/util/LastUsedDirHelper.h \
@@ -70,9 +69,11 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/SuggestCompleter.h \
            src/util/TextEditorDialog.h \
            src/util/TreeWidgetUtils.h \
+           src/util/imageExport/ImageExportTask.h \
+           src/util/imageExport/WidgetScreenshotExportTask.h \
            src/util/ImportDialogs/AceImportDialog.h \
-           src/util/logview/LogView.h \
            src/util/GenbankLocationValidator.h \
+           src/util/logview/LogView.h \
            src/util/project/ConnectionHelper.h \
            src/util/project/DocumentFolders.h \
            src/util/project/FolderNameDialog.h \
@@ -159,7 +160,6 @@ SOURCES += src/MainWindow.cpp \
            src/util/GScrollBar.cpp \
            src/util/GUIUtils.cpp \
            src/util/HBar.cpp \
-           src/util/ImageExporter.cpp \
            src/util/HelpButton.cpp \
            src/util/ImportDialogsFactories.cpp \
            src/util/LastUsedDirHelper.cpp \
@@ -181,9 +181,11 @@ SOURCES += src/MainWindow.cpp \
            src/util/SuggestCompleter.cpp \
            src/util/TextEditorDialog.cpp \
            src/util/TreeWidgetUtils.cpp \
+           src/util/GenbankLocationValidator.cpp \
+           src/util/imageExport/ImageExportTask.cpp \
+           src/util/imageExport/WidgetScreenshotExportTask.cpp \
            src/util/ImportDialogs/AceImportDialog.cpp \
            src/util/logview/LogView.cpp \
-           src/util/GenbankLocationValidator.cpp \
            src/util/project/ConnectionHelper.cpp \
            src/util/project/DocumentFolders.cpp \
            src/util/project/FolderNameDialog.cpp \

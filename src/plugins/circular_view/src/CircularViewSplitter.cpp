@@ -22,12 +22,14 @@
 #include "CircularViewSplitter.h"
 #include "CircularView.h"
 #include "RestrictionMapWidget.h"
-#include "CircularViewImageExporter.h"
+#include "CircularViewImageExportTask.h"
 
 #include <U2Core/L10n.h>
 #include <U2Core/GObject.h>
 #include <U2Core/Settings.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/DNASequenceObject.h>
 
 #include <U2Gui/HBar.h>
 #include <U2Gui/DialogUtils.h>
@@ -194,10 +196,18 @@ bool noValidExtension(const QString& url) {
 
 void CircularViewSplitter::sl_export() {
     CircularView* cv = circularViewList.last();
+    SAFE_POINT(cv->getSequenceContext() != NULL, tr("Sequence context is NULL"), );
+    U2SequenceObject* seqObj = cv->getSequenceContext()->getSequenceObject();
+    SAFE_POINT(seqObj != NULL, tr("Sequence obejct is NULL"), );
 
-    CircularViewImageExporter exporter(cv);
-    ExportImageDialog dialog(&exporter, ExportImageDialog::CircularView);
+    CircularViewImageExportTaskFactory factory(cv);
+    ExportImageDialog dialog(&factory, ExportImageDialog::CircularView,
+                             ExportImageDialog::Resizable,
+                             ExportImageDialog::SupportVectorFormats,
+                             NULL,
+                             "circular_" + seqObj->getSequenceName());
     dialog.exec();
+
     tbExport->setDown(false);
 }
 

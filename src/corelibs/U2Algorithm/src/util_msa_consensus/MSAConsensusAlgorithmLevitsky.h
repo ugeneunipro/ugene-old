@@ -36,7 +36,7 @@ class U2ALGORITHM_EXPORT MSAConsensusAlgorithmFactoryLevitsky: public MSAConsens
     Q_OBJECT
 public:
     MSAConsensusAlgorithmFactoryLevitsky(QObject* p = NULL);
-    
+
     virtual MSAConsensusAlgorithm* createAlgorithm(const MAlignment& ma, QObject* parent);
 
     virtual QString getDescription() const;
@@ -58,7 +58,7 @@ class U2ALGORITHM_EXPORT MSAConsensusAlgorithmLevitsky: public MSAConsensusAlgor
 public:
     MSAConsensusAlgorithmLevitsky(MSAConsensusAlgorithmFactoryLevitsky* f, const MAlignment& ma,  QObject* p = NULL);
 
-    virtual char getConsensusChar(const MAlignment& ma, int column) const;
+    virtual char getConsensusChar(const MAlignment& ma, int column, const QVector<qint64> &seqIdx = QVector<qint64>()) const;
 
 private:
     QVarLengthArray<int> globalFreqs;

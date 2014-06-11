@@ -25,8 +25,8 @@
 
 namespace U2 {
 
-MSAConsensusAlgorithmFactoryLevitsky::MSAConsensusAlgorithmFactoryLevitsky(QObject* p)  
-: MSAConsensusAlgorithmFactory(BuiltInConsensusAlgorithms::LEVITSKY_ALGO, 
+MSAConsensusAlgorithmFactoryLevitsky::MSAConsensusAlgorithmFactoryLevitsky(QObject* p)
+: MSAConsensusAlgorithmFactory(BuiltInConsensusAlgorithms::LEVITSKY_ALGO,
                                ConsensusAlgorithmFlags(ConsensusAlgorithmFlag_Nucleic ) | ConsensusAlgorithmFlag_SupportThreshold,
                                p)
 {
@@ -53,16 +53,16 @@ MSAConsensusAlgorithm* MSAConsensusAlgorithmFactoryLevitsky::createAlgorithm(con
 
 /*
 Code table from Victor Levitsky:
-A       A       1              
-T       T       1              
-G       G       1              
-C       C       1              
-W       A,T     2       WEAK   
-R       A,G     2       PURINE 
-M       A,C     2       AMINO- (+ charge)       
+A       A       1
+T       T       1
+G       G       1
+C       C       1
+W       A,T     2       WEAK
+R       A,G     2       PURINE
+M       A,C     2       AMINO- (+ charge)
 K       T,G     2       KETO- (- charge)
-Y       T,C     2       PYRIMIDINE     
-S       G,C     2       STRONG 
+Y       T,C     2       PYRIMIDINE
+S       G,C     2       STRONG
 B       T,G,C   3       not A (B is near with A in Latin alphabet)
 V       A,G,C   3       not T (---||---)
 H       A,T,C   3       not G (---||---)
@@ -115,7 +115,7 @@ static void registerHit(int* data, char c) {
     }
 }
 
-MSAConsensusAlgorithmLevitsky::MSAConsensusAlgorithmLevitsky(MSAConsensusAlgorithmFactoryLevitsky* f, const MAlignment& ma,  QObject* p) 
+MSAConsensusAlgorithmLevitsky::MSAConsensusAlgorithmLevitsky(MSAConsensusAlgorithmFactoryLevitsky* f, const MAlignment& ma,  QObject* p)
 : MSAConsensusAlgorithm(f, p)
 {
     globalFreqs.resize(256);
@@ -132,15 +132,15 @@ MSAConsensusAlgorithmLevitsky::MSAConsensusAlgorithmLevitsky(MSAConsensusAlgorit
 }
 
 
-char MSAConsensusAlgorithmLevitsky::getConsensusChar(const MAlignment& msa, int column) const {
+char MSAConsensusAlgorithmLevitsky::getConsensusChar(const MAlignment& msa, int column, const QVector<qint64> &seqIdx) const {
     // count local freqs first
     QVarLengthArray<int> localFreqs(256);
     memset(localFreqs.data(), 0, localFreqs.size() * 4);
 
     int* freqsData = localFreqs.data();
-    int nSeq = msa.getNumRows();
+    int nSeq =( seqIdx.isEmpty() ? msa.getNumRows() : seqIdx.size());
     for (int seq = 0; seq < nSeq; seq++) {
-        char c = msa.charAt(seq, column);
+        char c = msa.charAt( seqIdx.isEmpty() ? seq : seqIdx [seq] , column);
         registerHit(freqsData, c);
     }
 

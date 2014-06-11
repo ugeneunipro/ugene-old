@@ -22,7 +22,7 @@
 #ifndef _U2_CREATE_SUBALIGNIMENT_DIALOG_CONTROLLER_H_
 #define _U2_CREATE_SUBALIGNIMENT_DIALOG_CONTROLLER_H_
 
-#include "ui/ui_CreateSubalignimentDialog.h"
+#include "ui/ui_CreateSubalignmentDialog.h"
 
 #include <U2Core/global.h>
 #include <U2Core/Task.h>
@@ -32,10 +32,10 @@ namespace U2{
 
 class SaveDocumentGroupController;
 
-class U2VIEW_EXPORT CreateSubalignimentDialogController : public QDialog, Ui_CreateSubalignimentDialog {
+class U2VIEW_EXPORT CreateSubalignmentDialogController : public QDialog, Ui_CreateSubalignmentDialog {
     Q_OBJECT
 public:
-    CreateSubalignimentDialogController( MAlignmentObject *_mobj, const QRect& selection, QWidget *p = NULL);
+    CreateSubalignmentDialogController( MAlignmentObject *_mobj, const QRect& selection, QWidget *p = NULL);
 
     void accept();
 
