@@ -51,9 +51,9 @@ void SolventAccessibleSurface::calculate(const QList<SharedAtom>& atoms, int& pr
         reducedSurface.compute();
         BALL::SolventAccessibleSurface solventAccessibleSurface(&reducedSurface);
         solventAccessibleSurface.compute();
-        double density = 1000/atoms.size(); 
+        double density = 1000/atoms.size();
         BALL::TriangulatedSAS triangulatedSAS(&solventAccessibleSurface, density);
-        triangulatedSAS.compute(progress);
+        triangulatedSAS.compute();
         triangulatedSAS.exportSurface(surface);
     }
     for(unsigned int faceIndex=0;faceIndex < surface.getNumberOfTriangles();faceIndex++)

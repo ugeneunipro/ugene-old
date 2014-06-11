@@ -44,10 +44,9 @@ static void calcSES( BALL::Surface& surface, const QList<SharedAtom>& atoms, dou
     foreach(const SharedAtom a, atoms)
     {
         Vector3D coord=a->coord3d;
-        double radius = AtomConstants::getAtomCovalentRadius(a->atomicNumber)+TOLERANCE;
+        double radius = AtomConstants::getAtomCovalentRadius(a->atomicNumber) + TOLERANCE;
         spheres.push_back(BALL::TSphere3<double>(BALL::TVector3<double>(coord.x,coord.y,coord.z),radius));
     }
-
 
     double probeRadius=1.4;
     double density = 1000. / atoms.size();
@@ -58,7 +57,7 @@ static void calcSES( BALL::Surface& surface, const QList<SharedAtom>& atoms, dou
     {
         BALL::SolventExcludedSurface* ses = new BALL::SolventExcludedSurface(reduced_surface);
         ses->compute();
-        double diff = -0.01;
+        double diff = 0.01;
         uint i = 0;
         bool ok = false;
         while (!ok && (i < 10))
@@ -76,11 +75,10 @@ static void calcSES( BALL::Surface& surface, const QList<SharedAtom>& atoms, dou
                 ses->compute();
             }
         }
-        int progress = 0;
         if (ok)
         {
             BALL::TriangulatedSES* tSurface = new BALL::TriangulatedSES(ses, density);
-            tSurface->compute(progress);
+            tSurface->compute();
             tSurface->exportSurface(surface);
             delete tSurface;
         }
@@ -105,7 +103,7 @@ void SolventExcludedSurface::calculate(const QList<SharedAtom>& atoms, int& prog
 //         double density = 1000. / atoms.size();
 //         for(int attempt=0;attempt < 10;attempt++)
 //         {
-//             progress = 0;    
+//             progress = 0;
 //             BALL::ReducedSurface* reducedSurface = new BALL::ReducedSurface(spheres,probeRadius);
 //             reducedSurface->compute();
 //             BALL::SolventExcludedSurface solventExcludedSurface(&reducedSurface);
@@ -119,10 +117,9 @@ void SolventExcludedSurface::calculate(const QList<SharedAtom>& atoms, int& prog
 //             }
 //             probeRadius+=0.01;
 //         }
-//     
-//     
+//
+//
     BALL::Surface surface;
-
     calcSES(surface, atoms, TOLERANCE);
 
     progress = 100;
@@ -142,7 +139,7 @@ void SolventExcludedSurface::calculate(const QList<SharedAtom>& atoms, int& prog
         faces.append(face);
     }
 
-    
+
 }
 
 qint64 SolventExcludedSurface::estimateMemoryUsage( int )

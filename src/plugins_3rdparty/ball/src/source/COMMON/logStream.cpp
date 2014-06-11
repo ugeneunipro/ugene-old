@@ -1,13 +1,14 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: logStream.C,v 1.42.18.1 2007-03-25 22:00:03 oliver Exp $
+// $Id: logStream.C,v 1.42.18.1 2007/03/25 22:00:03 oliver Exp $
 //
 
 #include <limits>
 #include <string>
-#include <string.h>
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
+
 #include <BALL/COMMON/logStream.h>
 
 #define BUFFER_LENGTH 32768
@@ -25,9 +26,9 @@ namespace BALL
 	// at this point, it is not yet possible to
 	// include BALL/COMMON/limits.h (which were a 
 	// much nicer solution...). Ugly header dependencies...
-	const int LogStreamBuf::MIN_LEVEL = INT_MIN;
-	const int LogStreamBuf::MAX_LEVEL = INT_MAX;
-	const Time LogStreamBuf::MAX_TIME = INT_MAX;
+	const int LogStreamBuf::MIN_LEVEL = std::numeric_limits<int>::min();
+	const int LogStreamBuf::MAX_LEVEL = std::numeric_limits<int>::max();
+	const Time LogStreamBuf::MAX_TIME = std::numeric_limits<Time>::max();
 
 	LogStreamBuf::LogStreamBuf() 
 		: std::streambuf(),
@@ -60,8 +61,13 @@ namespace BALL
 						 << "]:" << loglines_[line - 1].text.c_str() << std::endl;
 		}
 	}
+
+	int LogStreamBuf::sync()
+	{
+		return sync(false);
+	}
  
-	int LogStreamBuf::sync() 
+	int LogStreamBuf::sync(bool force_flush)
 	{
 		static char buf[BUFFER_LENGTH];
 
@@ -71,19 +77,23 @@ namespace BALL
 				
 			char*	line_start = pbase();
 			char*	line_end = pbase();
-			
-			while (line_end <= pptr())
+
+			while (line_end < pptr())
 			{
 				// search for the first end of line
-				for (; line_end < pptr() && *line_end != '\n'; line_end++);
+				for (; line_end < pptr() && *line_end != '\n'; line_end++) {};
 
-				if (line_end >= pptr()) 
+				if (!force_flush && line_end >= pptr())
 				{
 					// Copy the incomplete line to the incomplete_line_ buffer
 					size_t length = line_end - line_start + 1;
-					length = std::max(length, (size_t)(BUFFER_LENGTH - 1));
+					length = std::min(length, (size_t)(BUFFER_LENGTH - 1));
 					strncpy(&(buf[0]), line_start, length);
-					buf[line_end - line_start] = '\0';
+
+					// if length was too large, we copied one byte less than BUFFER_LENGTH to have
+					// room for the final \0
+					buf[length] = '\0';
+
 					incomplete_line_ += &(buf[0]);
 
 					// mark everything as read
@@ -91,6 +101,7 @@ namespace BALL
 				} 
 				else 
 				{
+					// note: pptr() - pbase() should be bounded by BUFFER_LENGTH, so this should always work
 					memcpy(&(buf[0]), line_start, line_end - line_start + 1);
 					buf[line_end - line_start] = '\0';
 						
@@ -106,7 +117,7 @@ namespace BALL
 					for (; list_it != stream_list_.end(); ++list_it)
 					{
 						// if the stream is open for that level, write to it...
-						if ((list_it->min_level <= tmp_level_) && (list_it->max_level >= tmp_level_))
+						if ((list_it->min_level <= tmp_level_) && (list_it->max_level >= tmp_level_) && !list_it->disabled)
 						{
 							*(list_it->stream) << expandPrefix_(list_it->prefix, tmp_level_, time(0)).c_str()
 																 << outstring.c_str() << std::endl;
@@ -325,6 +336,7 @@ namespace BALL
 		LogStreamBuf::StreamStruct s_struct;
 		s_struct.min_level = min_level;
 		s_struct.max_level = max_level;
+		s_struct.disabled = false;
 		s_struct.stream = &stream;
 		rdbuf()->stream_list_.push_back(s_struct);
 	}
@@ -499,30 +511,39 @@ namespace BALL
 	}
 
 	void LogStream::disableOutput()
-		throw()
+		
 	{
 		disable_output_ = true;
+		for(list<LogStreamBuf::StreamStruct>::iterator it=rdbuf()->stream_list_.begin(); it!=rdbuf()->stream_list_.end(); it++)
+		{
+			it->disabled = true;
+		}
 	}
 
 	void LogStream::enableOutput()
-		throw()
+		
 	{
 		disable_output_ = false;
+		for(list<LogStreamBuf::StreamStruct>::iterator it=rdbuf()->stream_list_.begin(); it!=rdbuf()->stream_list_.end(); it++)
+		{
+			it->disabled = false;
+		}
 		std::ostream::flush();
 	}
 
 	bool LogStream::outputEnabled() const
-		throw()
+		
 	{
 		return disable_output_;
 	}
 
-	void LogStream::flush()
-		throw()
+	std::ostream& LogStream::flush()
 	{
-		if (disable_output_) return;
+		if (disable_output_) return *this;
 
+		rdbuf()->sync(true);
 		std::ostream::flush();
+		return *this;
 	}
 
 	bool LogStream::bound_() const

@@ -1,8 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: logStream.h,v 1.32 2005-12-23 17:01:39 amoll Exp $
-//
 
 #ifndef BALL_COMMON_LOGSTREAM_H
 #define BALL_COMMON_LOGSTREAM_H
@@ -155,6 +153,8 @@ namespace BALL
 		*/
 		virtual int sync();
 
+		int sync(bool force_flush);
+
 		/**	Overflow method.
 				This method calls sync and <tt>streambuf::overflow(c)</tt> to 
 				prevent a buffer overflow.
@@ -169,6 +169,7 @@ namespace BALL
 			int									min_level;
 			int									max_level;
 			LogStreamNotifier*	target;
+			bool disabled;
 		
 			StreamStruct()
 				:	stream(0),
@@ -459,18 +460,19 @@ namespace BALL
 		void setPrefix(const std::ostream& s, const string& prefix);
 
 		/// Disable all output
-		void disableOutput() throw();
+		void disableOutput() ;
 
 		/// Enable all output
-		void enableOutput() throw();
+		void enableOutput() ;
 
 		/// Is Output enabled?
 		bool outputEnabled() const
-			throw();
+			;
 
-		///
-		void flush()
-			throw();
+		/** Flush the LogStream.\n
+		This function overloads std::ostream::flush(). */
+		std::ostream& flush();
+
 		//@}		
 		
 		/**	@name	Message Buffer Management */

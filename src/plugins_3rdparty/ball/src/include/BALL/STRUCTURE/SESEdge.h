@@ -1,8 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: SESEdge.h,v 1.25 2005-12-23 17:02:02 amoll Exp $
-//
 
 #ifndef BALL_STRUCTURE_SESEDGE_H
 #define BALL_STRUCTURE_SESEDGE_H
@@ -83,7 +81,7 @@ namespace BALL
 				This method creates a new SESEdge object.
 		*/
 		SESEdge()
-			throw();
+			;
 
 		/**	Copy constructor.
 				Create a new SESEdge object from another.
@@ -93,7 +91,7 @@ namespace BALL
 												to the neighbours of the old SESEdge object.
 		*/
 		SESEdge(const SESEdge& sesedge, bool deep = false)
-			throw();
+			;
 
 		/**	Detailled constructor.
 				Create a new SESEdge object from some nice objects.
@@ -115,13 +113,13 @@ namespace BALL
 				 RSEdge*				rsedge,
 				 Type						type,
 				 Index					index)
-			throw();
+			;
 
 		/**	Destructor.
 				Destructs the SESEdge object.
 		*/
 		virtual ~SESEdge()
-			throw();
+			;
 
 		//@}
 		/**	@name	Assignment
@@ -135,7 +133,7 @@ namespace BALL
 												the neighbours of the SESEdge object to assign from.
 		*/
 		void set(const SESEdge& sesedge, bool deep = false)
-			throw();
+			;
 
 		/**	Assign from another SESEdge.
 				The SESEdge object is linked to the neighbours of the SESEdge object	
@@ -143,7 +141,7 @@ namespace BALL
 				@param	sesedge	the SESEdge object to assign from
 		*/
 		SESEdge& operator = (const SESEdge& sesedge)
-			throw();
+			;
 
 		/**	Assign from some nice objects.
 				@param	vertex0	assigned to the first vertex
@@ -163,7 +161,7 @@ namespace BALL
 				RSEdge*					rsedge,
 				Type						type,
 				Index						index)
-			throw();
+			;
 
 		//@}
 		/**	@name	Accessors
@@ -174,37 +172,37 @@ namespace BALL
 				@param	center	the new circle
 		*/
 		void setCircle(const TCircle3<double>& center)
-			throw();
+			;
 
 		/** Return the circle on wich the SESEdge lies.
 				@return	TCircle3<double>	the circle of The SESEdge
 		*/
 		TCircle3<double> getCircle() const
-			throw();
+			;
 
 		/** Set the corresponding RSEdge.
 				@param	rsedge	a pointer to the new RSEdge
 		*/
 		void setRSEdge(RSEdge* rsedge)
-			throw();
+			;
 
 		/** Return the corresponding RSEdge.
 				@return	RSEdge*	a pointer to th correwsponding RSEdge
 		*/
 		RSEdge* getRSEdge() const
-			throw();
+			;
 
 		/** Set the type of the SESEdge.
 				@param	type	the new type of the SESEdge
 		*/
 		void setType(Type type)
-			throw();
+			;
 
 		/** Get the type of the SESEdge.
 				@return	Type	the type of the SESEdge
 		*/
 		Type getType() const
-			throw();
+			;
 
 		//@}
 		/**	@name	Predicates
@@ -216,27 +214,27 @@ namespace BALL
 											<b>false</b> otherwise
 		*/
 		virtual bool operator == (const SESEdge& sesedge) const
-			throw();
+			;
 
 		/**	Inequality operator.
 				@return	bool	<b>false</b> if all vertices are equal modulo order,
 											<b>true</b> otherwise
 		*/
 		virtual bool operator != (const SESEdge& sesedge) const
-			throw();
+			;
 
 		/**	similarity operator.
 				@return	bool	<b>true</b>
 		*/
 		virtual bool operator *= (const SESEdge&) const
-			throw();
+			;
 
 		/** isFree.
 				@return	bool	<b>true</b> if the RSEdge of the SESEdge is free,
 											<b>false</b> otherwise
 		*/
 		bool isFree() const
-			throw();
+			;
 
 		//@}
 

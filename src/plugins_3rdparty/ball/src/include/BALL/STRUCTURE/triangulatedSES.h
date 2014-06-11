@@ -1,8 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: triangulatedSES.h,v 1.19.18.1 2007-03-25 21:25:34 oliver Exp $
-//
 
 #ifndef BALL_STRUCTURE_TRIANGULATEDSES_H
 #define BALL_STRUCTURE_TRIANGULATEDSES_H
@@ -75,7 +73,7 @@ namespace BALL
 				This method creates a new TriangulatedSES object.
 		*/
 		TriangulatedSES()
-			throw();
+			;
 
 		/**	Copy constructor.
 				Create a new TriangulatedSES object from another.
@@ -83,7 +81,7 @@ namespace BALL
 				@param	bool		ignored - just for interface consistency
 		*/
 		TriangulatedSES(const TriangulatedSES& surface, bool = true)
-			throw();
+			;
 
 		/** Detailed constructor.
 				Create a new empty TriangulatedSES object and set its SES.
@@ -91,13 +89,13 @@ namespace BALL
 				@param	density	the density to use by triangulation
 		*/
 		TriangulatedSES(SolventExcludedSurface* ses, const double& density)
-			throw();
+			;
 
 		/**	Destructor.
 				Destructs the TriangulatedSES object.
 		*/
 		virtual ~TriangulatedSES()
-			throw();
+			;
 		//@}
 
 		/**	@name	Assignment
@@ -109,23 +107,23 @@ namespace BALL
 				@param	bool		ignored - just for interface consistency
 		*/
 		void set(const TriangulatedSES& surface, bool = true)
-			throw();
+			;
 
 		/**	Assign from another TriangulatedSES.
 				@param	surface	the TriangulatedSES object to assign from
 		*/
 		TriangulatedSES& operator = (const TriangulatedSES& surface)
-			throw();
+			;
 
 		/** Set the density used by triangulation.
 		*/
 		void setDensity(const double& density)
-			throw();
+			;
 
 		/** Get the density used by triangulation.
 		*/
 		double getDensity() const
-			throw();
+			;
 
 		//@}
 
@@ -133,7 +131,8 @@ namespace BALL
 		*/
 		//@{
 
-        void compute(int& progress) throw(Exception::GeneralException,Exception::DivisionByZero);
+		void compute()
+			throw(Exception::GeneralException,Exception::DivisionByZero);
 
 		//@}
 
@@ -174,89 +173,90 @@ namespace BALL
 				This method creates a new SESTriangulator object.
 		*/
 		SESTriangulator()
-			throw();
+			;
 
 		/** Detailed constructor.
 				@param	tses			a pointer to the TriangulatedSES to compute
 		*/
 		SESTriangulator(TriangulatedSES* tses)
-			throw();
+			;
 
 		/**	Destructor.
 				Destructs the SESTriangulator object.
 		*/
 		virtual ~SESTriangulator()
-			throw();
+			;
 		//@}
 
 		/** @name Accessors
 		*/
 		//@{
 
-        void run(int& progress) throw(Exception::GeneralException,Exception::DivisionByZero);
+		void run()
+			throw(Exception::GeneralException,Exception::DivisionByZero);
 
 		private:
 
 		void preProcessing()
-			throw();
+			;
 
 		void triangulateToricFaces()
-			throw();
+			;
 
 		void partitionSingularEdges()
-			throw();
+			;
 
 		void triangulateContactFaces()
-			throw();
+			;
 
 		void triangulateSphericFaces()
-			throw();
+			;
 
 		void triangulateToricFace
 				(SESFace*	face,
 				 const double&			probe_radius)
-			throw();
+			;
 
 		void triangulateFreeToricFace
 				(SESFace*	face,
 				 const double& probe_radius)
-			throw();
+			;
 
 		void triangulateSingularToricFace
 				(SESFace*	face,
 				 const double& probe_radius)
-			throw();
+			;
 
 		void triangulateNonSingularToricFace
 				(SESFace*	face,
 				 const double& probe_radius)
-			throw();
+			;
 
 		void partitionSingularEdge(SESEdge* singular_edge)
-			throw();
+			;
 
 		void partitionFreeSingularEdge(SESEdge* singular_edge)
-			throw();
+			;
 
 		void partitionNonFreeSingularEdge(SESEdge* singular_edge)
-			throw();
+			;
 
 		void triangulateContactFace
 				(SESFace*				face,
 				 const TSphere3<double>& sphere)
-			throw();
+			;
 
 		bool triangulateSphericFace
 				(SESFace* 			face,
 				 const TSphere3<double>&	sphere)
-			throw();
+			;
 
 		bool buildSphericTriangles
 				(SESFace*					face,
 				 TriangulatedSES&	part,
 				 const TSphere3<double>&		sphere,
 			 	 bool							convex = true)
-			throw();
+			;
 
 		bool buildFirstTriangle
 				(SESFace*												face,
@@ -265,10 +265,10 @@ namespace BALL
 				 const TSphere3<double>&									sphere,
 				 const HashSet<TrianglePoint*>&	points,
 			 	 bool														convex)
-			throw();
+			;
 
 		SESEdge* firstSESEdge(const std::list<SESEdge*>& sesedge)
-			throw();
+			;
 
 		void buildUnambiguousTriangle
 				(TriangleEdge*						 edge,
@@ -278,7 +278,7 @@ namespace BALL
 				 TriangulatedSES&					 part,
 			 	 bool													 convex
 				)
-			throw();
+			;
 
 		void buildAmbiguousTriangles
 				(TriangleEdge*						 edge,
@@ -288,7 +288,7 @@ namespace BALL
 				 TriangulatedSES&					 part,
 			 	 bool													 convex
 				)
-			throw();
+			;
 
 		void createTriangleAndEdges
 				(TriangleEdge*	edge,
@@ -301,7 +301,7 @@ namespace BALL
 				 Triangle*&			triangle,
 			 	 bool								convex
 				)
-			throw();
+			;
 
 		void partitionOfCircle
 				(const TCircle3<double>&			circle,
@@ -310,13 +310,13 @@ namespace BALL
 				 Size								number_of_segments,
 				 vector< TVector3<double> >&	partition,
 				 bool								on_surface = true)
-			throw();
+			;
 
 		Size numberOfRefinements(const double& density, const double& radius)
-			throw();
+			;
 
 		void buildTemplateSpheres()
-			throw();
+			;
 
 		void buildTriangles
 			 (SESEdge*											edge0,
@@ -327,7 +327,7 @@ namespace BALL
 				const std::vector< TVector3<double> >&	edge1_points,
 				const std::vector< TVector3<double> >& edge3_points,
 				const double&									probe_radius)
-			throw();
+			;
 
 		//@}
 

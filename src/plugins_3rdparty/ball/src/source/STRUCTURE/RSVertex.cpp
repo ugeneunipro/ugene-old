@@ -1,7 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: RSVertex.C,v 1.4 2002-12-17 14:13:19 anker Exp $
 
 #include <BALL/STRUCTURE/RSEdge.h>
 #include <BALL/STRUCTURE/RSFace.h>
@@ -11,7 +10,7 @@ namespace BALL
 {
 
 	RSVertex::RSVertex()
-		throw()
+		
 		:	GraphVertex< RSVertex,RSEdge,RSFace >(),
 			atom_(-1)
 	{
@@ -19,7 +18,7 @@ namespace BALL
 
 
 	RSVertex::RSVertex(const RSVertex& rsvertex, bool deep)
-		throw()
+		
 		:	GraphVertex< RSVertex,RSEdge,RSFace >(rsvertex,deep),
 			atom_(rsvertex.atom_)
 	{
@@ -27,7 +26,7 @@ namespace BALL
 
 
 	RSVertex::RSVertex(Index atom)
-		throw()
+		
 		:	GraphVertex< RSVertex,RSEdge,RSFace >(),
 			atom_(atom)
 	{
@@ -35,13 +34,13 @@ namespace BALL
 
 
 	RSVertex::~RSVertex()
-		throw()
+		
 	{
 	}
 
 
 	void RSVertex::set(const RSVertex& rsvertex, bool deep)
-		throw()
+		
 	{
 		if (this != &rsvertex)
 		{
@@ -52,7 +51,7 @@ namespace BALL
 
 
 	RSVertex& RSVertex::operator = (const RSVertex& rsvertex)
-		throw()
+		
 	{
 		if (this != &rsvertex)
 		{
@@ -64,21 +63,21 @@ namespace BALL
 
 
 	void RSVertex::setAtom(Index atom)
-		throw()
+		
 	{
 		atom_ = atom;
 	}
 
 
 	Index RSVertex::getAtom() const
-		throw()
+		
 	{
 		return atom_;
 	}
 
 
 	bool RSVertex::operator == (const RSVertex& rsvertex) const
-		throw()
+		
 	{
 		if (atom_ != rsvertex.atom_)
 		{
@@ -119,14 +118,14 @@ namespace BALL
 
 
 	bool RSVertex::operator != (const RSVertex& rsvertex) const
-		throw()
+		
 	{
 		return ( ! (*this == rsvertex) );
 	}
 
 
 	bool RSVertex::operator *= (const RSVertex& rsvertex) const
-		throw()
+		
 	{
 		return (atom_ == rsvertex.atom_);
 	}

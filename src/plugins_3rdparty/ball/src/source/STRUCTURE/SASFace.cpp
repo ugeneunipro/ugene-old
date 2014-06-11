@@ -1,7 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: SASFace.C,v 1.1 2002-12-17 17:14:22 anker Exp $
 
 #include <BALL/STRUCTURE/SASEdge.h>
 #include <BALL/STRUCTURE/SASFace.h>
@@ -14,7 +13,6 @@ namespace BALL
 {
 
 	SASFace::SASFace()
-		throw()
 		: GraphFace< SASVertex,SASEdge,SASFace >(),
 			orientation_(),
 			sphere_()
@@ -23,7 +21,6 @@ namespace BALL
 
 
 	SASFace::SASFace(const SASFace& sasface, bool deep)
-		throw()
 		: GraphFace< SASVertex,SASEdge,SASFace >(sasface,deep),
 			orientation_(),
 			sphere_(sasface.sphere_)
@@ -36,13 +33,11 @@ namespace BALL
 
 
 	SASFace::~SASFace()
-		throw()
 	{
 	}
 
 
 	void SASFace::set(const SASFace& sasface, bool deep)
-		throw()
 	{
 		if (this != &sasface)
 		{
@@ -57,7 +52,6 @@ namespace BALL
 
 
 	SASFace& SASFace::operator = (const SASFace& sasface)
-		throw()
 	{
 		if (this != &sasface)
 		{
@@ -70,63 +64,54 @@ namespace BALL
 
 
 	void SASFace::setSphere(const TSphere3<double>& sphere)
-		throw()
 	{
 		sphere_ = sphere;
 	}
 
 
 	TSphere3<double> SASFace::getSphere() const
-		throw()
 	{
 		return sphere_;
 	}
 
 
 	bool SASFace::operator == (const SASFace&) const
-		throw()
 	{
 		return true;
 	}
 
 
 	bool SASFace::operator != (const SASFace&) const
-		throw()
 	{
 		return false;
 	}
 
 
 	bool SASFace::operator *= (const SASFace&) const
-		throw()
 	{
 		return true;
 	}
 
 
 	SASFace::OrientationIterator SASFace::beginOrientation()
-		throw()
 	{
 		return orientation_.begin();
 	}
 
 
 	SASFace::ConstOrientationIterator SASFace::beginOrientation() const
-		throw()
 	{
 		return orientation_.begin();
 	}
 
 
 	SASFace::OrientationIterator SASFace::endOrientation()
-		throw()
 	{
 		return orientation_.end();
 	}
 
 
 	SASFace::ConstOrientationIterator SASFace::endOrientation() const
-		throw()
 	{
 		return orientation_.end();
 	}

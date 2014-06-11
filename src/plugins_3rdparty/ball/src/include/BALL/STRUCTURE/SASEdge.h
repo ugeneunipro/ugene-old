@@ -1,8 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: SASEdge.h,v 1.9 2005-12-23 17:02:01 amoll Exp $
-//
 
 #ifndef BALL_STRUCTURE_SASEDGE_H
 #define BALL_STRUCTURE_SASEDGE_H
@@ -61,7 +59,7 @@ namespace BALL
 				This method creates a new SASEdge object.
 		*/
 		SASEdge()
-			throw();
+			;
 
 		/**	Copy constructor.
 				Create a new SASEdge object from another.
@@ -71,7 +69,7 @@ namespace BALL
 												to the neighbours of the old SASEdge object.
 		*/
 		SASEdge(const SASEdge& sasedge, bool deep = false)
-			throw();
+			;
 
 		/**	Detailled constructor.
 				Create a new SASEdge object from some nice objects.
@@ -90,13 +88,13 @@ namespace BALL
 				const TCircle3<double>& circle,
 				const TAngle<double>& angle,
 				Index index)
-			throw();
+			;
 
 		/**	Destructor.
 				Destructs the SASEdge object.
 		*/
 		virtual ~SASEdge()
-			throw();
+			;
 
 		//@}
 		/**	@name	Assignment
@@ -110,7 +108,7 @@ namespace BALL
 												the neighbours of the SASEdge object to assign from.
 		*/
 		void set(const SASEdge& sasedge, bool deep = false)
-			throw();
+			;
 
 		/**	Assign from another SASEdge object.
 				The SASEdge object is linked to the neighbours of the SASEdge object	
@@ -118,7 +116,7 @@ namespace BALL
 				@param	sasedge	the SASEdge object to assign from
 		*/
 		SASEdge& operator = (const SASEdge& sasedge)
-			throw();
+			;
 
 		/**	Assign from some nice objects.
 				@param	vertex0	assigned to the first vertex
@@ -136,7 +134,7 @@ namespace BALL
 				const TCircle3<double>& circle,
 				const TAngle<double>& angle,
 				Index index)
-			throw();
+			;
 
 		//@}
 		/**	@name	Accessors
@@ -147,25 +145,25 @@ namespace BALL
 				@param	center	the new circle
 		*/
 		void setCircle(const TCircle3<double>& center)
-			throw();
+			;
 
 		/** Return the circle on which the SASEdge lies.
 				@return	TCircle3<double>	the circle of the SASEdge
 		*/
 		TCircle3<double> getCircle() const
-			throw();
+			;
 
 		/** Set the angle of the SASEdge.
 				@param	angle	the new angle
 		*/
 		void setAngle(const TAngle<double>& angle)
-			throw();
+			;
 
 		/** Return the angle of the SASEdge.
 				@return	TAngle<double>	the angle of the SASEdge
 		*/
 		TAngle<double> getAngle() const
-			throw();
+			;
 
 		//@}
 		/**	@name	Predicates
@@ -176,26 +174,26 @@ namespace BALL
 				@return	bool	<b>true</b>
 		*/
 		virtual bool operator == (const SASEdge&) const
-			throw();
+			;
 
 		/**	Inequality operator.
 				@return	bool	<b>false</b>
 		*/
 		virtual bool operator != (const SASEdge&) const
-			throw();
+			;
 
 		/**	Similarity operator.
 				@return	bool	<b>true</b>
 		*/
 		virtual bool operator *= (const SASEdge&) const
-			throw();
+			;
 
 		/** isFree.
 				@return	bool	<b>true</b> if the RSEdge of the SASEdge is free,	
 											<b>false</b> otherwise
 		*/
 		bool isFree() const
-			throw();
+			;
 
 		//@}
 		

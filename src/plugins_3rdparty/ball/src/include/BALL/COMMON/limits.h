@@ -1,8 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: limits.h,v 1.19 2005-12-23 17:01:39 amoll Exp $
-//
 
 #ifndef BALL_COMMON_LIMITS_H
 #define BALL_COMMON_LIMITS_H
@@ -24,10 +22,11 @@
 #	ifdef BALL_HAS_VALUES_H
 #		include <limits.h>
 #	endif
+#endif
+
 #	ifdef BALL_HAS_FLOAT_H
 #		include <float.h>
 #	endif
-#endif
 
 namespace BALL 
 {
@@ -49,13 +48,13 @@ namespace BALL
 	{
 		public:
 
-#ifdef BALL_HAVE_NUMERIC_LIMITS
+#ifdef BALL_HAS_NUMERIC_LIMITS
 
 
 		/**	Return the minimum value.
 				@return T the minimum value for this datatype
 		*/
-		static T min() throw() 
+		static T min()  
 		{ 
 			return std::numeric_limits<T>::min(); 
 		}
@@ -63,35 +62,35 @@ namespace BALL
 		/**	Return the maximum value.
 				@return T the maximum value for this datatype
 		*/
-		static T max() throw() 
+		static T max()  
 		{ 
 			return std::numeric_limits<T>::max(); 
 		}
 #else
-		static T min() throw() 
+		static T min()  
 		{ 
 			return (T)0; 
 		}
-		static T max() throw() 
+		static T max()  
 		{ 
 			return (T)0; 
 		}
 #endif
 	};
 
-#ifndef BALL_HAVE_NUMERIC_LIMITS
+#ifndef BALL_HAS_NUMERIC_LIMITS
 	
 	template <> 
 	class BALL_EXPORT Limits<float>
 	{
 		public:
 			
-		static float min() throw()
+		static float min() 
 		{
 			return FLT_MIN;
 		}
 
-		static float max() throw()
+		static float max() 
 		{
 			return FLT_MAX;
 		}
@@ -102,12 +101,12 @@ namespace BALL
 	{
 		public:
 			
-		static double min() throw()
+		static double min() 
 		{
 			return DBL_MIN;
 		}
 
-		static double max() throw()
+		static double max() 
 		{
 			return DBL_MAX;
 		}
@@ -118,12 +117,12 @@ namespace BALL
 	{
 		public:
 			
-		static bool min() throw()
+		static bool min() 
 		{
 			return false;
 		}
 
-		static bool max() throw()
+		static bool max() 
 		{
 			return true;
 		}
@@ -134,12 +133,12 @@ namespace BALL
 	{
 		public:
 			
-		static char min() throw()
+		static char min() 
 		{
 			return CHAR_MIN;
 		}
 
-		static char max() throw()
+		static char max() 
 		{
 			return CHAR_MAX;
 		}
@@ -150,12 +149,12 @@ namespace BALL
 	{
 		public:
 			
-		static signed char min() throw()
+		static signed char min() 
 		{
 			return SCHAR_MIN;
 		}
 
-		static signed char max() throw()
+		static signed char max() 
 		{
 			return SCHAR_MAX;
 		}
@@ -166,12 +165,12 @@ namespace BALL
 	{
 		public:
 			
-		static unsigned char min() throw()
+		static unsigned char min() 
 		{
 			return 0;
 		}
 
-		static unsigned char max() throw()
+		static unsigned char max() 
 		{
 			return UCHAR_MAX;
 		}
@@ -182,12 +181,12 @@ namespace BALL
 	{
 		public:
 			
-		static short min() throw()
+		static short min() 
 		{
 			return SHRT_MIN;
 		}
 
-		static short max() throw()
+		static short max() 
 		{
 			return SHRT_MAX;
 		}
@@ -198,12 +197,12 @@ namespace BALL
 	{
 		public:
 			
-		static unsigned short min() throw()
+		static unsigned short min() 
 		{
 			return 0;
 		}
 
-		static unsigned short max() throw()
+		static unsigned short max() 
 		{
 			return USHRT_MAX;
 		}
@@ -214,12 +213,12 @@ namespace BALL
 	{
 		public:
 			
-		static int min() throw()
+		static int min() 
 		{
 			return INT_MIN;
 		}
 
-		static int max() throw()
+		static int max() 
 		{
 			return INT_MAX;
 		}
@@ -230,12 +229,12 @@ namespace BALL
 	{
 		public:
 			
-		static unsigned int min() throw()
+		static unsigned int min() 
 		{
 			return 0;
 		}
 
-		static unsigned int max() throw()
+		static unsigned int max() 
 		{
 			return UINT_MAX;
 		}
@@ -246,12 +245,12 @@ namespace BALL
 	{
 		public:
 			
-		static long min() throw()
+		static long min() 
 		{
 			return LONG_MIN;
 		}
 
-		static long max() throw()
+		static long max() 
 		{
 			return LONG_MAX;
 		}
@@ -262,18 +261,18 @@ namespace BALL
 	{
 		public:
 			
-		static unsigned long min() throw()
+		static unsigned long min() 
 		{
 			return 0;
 		}
 
-		static unsigned long max() throw()
+		static unsigned long max() 
 		{
 			return ULONG_MAX;
 		}
 	};
 
-#endif // BALL_HAVE_NUMERIC_LIMITS
+#endif // BALL_HAS_NUMERIC_LIMITS
 
 }	// namespace BALL
 

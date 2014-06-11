@@ -1,8 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: solventExcludedSurface.h,v 1.39 2005-12-23 17:02:05 amoll Exp $
-//
 
 #ifndef BALL_STRUCTURE_SOLVENTEXCLUDEDSURFACE_H
 #define BALL_STRUCTURE_SOLVENTEXCLUDEDSURFACE_H
@@ -121,8 +119,7 @@ namespace BALL
 		/**	Default constructor.
 				This method creates a new SolventExcludedSurface object.
 		*/
-		SolventExcludedSurface()
-			throw();
+		SolventExcludedSurface();
 
 		/**	Copy constructor.
 				Create a new SolventExcludedSurface object from another.
@@ -130,19 +127,17 @@ namespace BALL
 				@param	bool	ignored - just for interface consistency
 		*/
 		SolventExcludedSurface
-				(const SolventExcludedSurface& ses, bool = false)
-			throw();
+				(const SolventExcludedSurface& ses, bool = false);
 
 		/** Detailed constructor
 		*/
-		SolventExcludedSurface(ReducedSurface* reduced_surface)
-			throw();
+		SolventExcludedSurface(ReducedSurface* reduced_surface);
 
 		/**	Destructor.
 				As there are no dynamic	data structures, nothing happens.
 		*/
 		virtual ~SolventExcludedSurface()
-			throw();
+			;
 
 		//@}
 		/**	@name	Accessors
@@ -159,10 +154,10 @@ namespace BALL
 			throw(Exception::GeneralException);
 
 		void splitSphericFaces()
-			throw();
+			;
 
 		bool check()
-			throw();
+			;
 
 		//@}
 		/**	@name	External Iterators
@@ -170,92 +165,92 @@ namespace BALL
 		//@{
 
 		VertexIterator beginVertex()
-			throw();
+			;
 		ConstVertexIterator beginVertex() const
-			throw();
+			;
 		VertexIterator endVertex()
-			throw();
+			;
 		ConstVertexIterator endVertex() const
-			throw();
+			;
 
 		EdgeIterator beginEdge()
-			throw();
+			;
 		ConstEdgeIterator beginEdge() const
-			throw();
+			;
 		EdgeIterator endEdge()
-			throw();
+			;
 		ConstEdgeIterator endEdge() const
-			throw();
+			;
 
 		SingularEdgeIterator beginSingularEdge()
-			throw();
+			;
 		ConstSingularEdgeIterator beginSingularEdge() const
-			throw();
+			;
 		SingularEdgeIterator endSingularEdge()
-			throw();
+			;
 		ConstSingularEdgeIterator endSingularEdge() const
-			throw();
+			;
 
 		ContactFaceIterator beginContactFace()
-			throw();
+			;
 		ConstContactFaceIterator beginContactFace() const
-			throw();
+			;
 		ContactFaceIterator endContactFace()
-			throw();
+			;
 		ConstContactFaceIterator endContactFace() const
-			throw();
+			;
 
 		SphericFaceIterator beginSphericFace()
-			throw();
+			;
 		ConstSphericFaceIterator beginSphericFace() const
-			throw();
+			;
 		SphericFaceIterator endSphericFace()
-			throw();
+			;
 		ConstSphericFaceIterator endSphericFace() const
-			throw();
+			;
 
 		ToricFaceIterator beginToricFace()
-			throw();
+			;
 		ConstToricFaceIterator beginToricFace() const
-			throw();
+			;
 		ToricFaceIterator endToricFace()
-			throw();
+			;
 		ConstToricFaceIterator endToricFace() const
-			throw();
+			;
 
 		//@}
 
 		private:
 
 		void splitSphericFace(Position i)
-			throw();
+			;
 
 		void deleteSmallToricFace(SESFace* face)
-			throw();
+			;
 
 		void deleteSmallSingularToricFace(SESFace* face)
-			throw();
+			;
 
 		bool cleanToricFace(SESFace* face, const double& sqrt_density)
-			throw();
+			;
 
 		bool cleanSingularToricFace(SESFace* face, const double& sqrt_density)
-			throw();
+			;
 
 		void cleanVertices()
-			throw();
+			;
 
 		void cleanEdges()
-			throw();
+			;
 
 		void cleanContactFaces()
-			throw();
+			;
 
 		void cleanToricFaces()
-			throw();
+			;
 
 		void cleanSphericFaces()
-			throw();
+			;
 
 
 		protected:
@@ -333,18 +328,18 @@ namespace BALL
 				This method creates a new SESComputer object.
 		*/
 		SESComputer()
-			throw();
+			;
 
 		/** Detailed constructor
 		*/
 		SESComputer(SolventExcludedSurface* ses)
-			throw();
+			;
 
 		/**	Destructor.
 				As there are no dynamic	data structures, nothing happens.
 		*/
 		virtual ~SESComputer()
-			throw();
+			;
 
 		//@}
 		/**	@name	Accessors
@@ -365,24 +360,24 @@ namespace BALL
 		//@{
 
 		void preProcessing()
-			throw();
+			;
 
 		void get()
-			throw();
+			;
 
 		void createSphericFace(Position j)
-			throw();
+			;
 
 		SESVertex* createVertex
 			(const TVector3<double>& probe_center,
 			 Index index)
-			throw();
+			;
 
 		void pushVertex
 			(SESFace* face,
 			 const TSphere3<double>& probe,
 			 RSVertex* rsvertex)
-			throw();
+			;
 
 		SESEdge* createConcaveEdge
 			(SESFace* spheric_face,
@@ -390,28 +385,28 @@ namespace BALL
 			 Position p2,
 			 Index index,
 			 const double& radius_of_probe)
-			throw();
+			;
 
 		void pushConcaveEdge
 			(SESFace* face,
 			 Position p1,
 			 Position p2,
 			 const double& radius_of_probe)
-			throw();
+			;
 
 		SESEdge* createConvexEdge
 			(SESFace* toric_face,
 			 RSVertex* rsvertex)
-			throw();
+			;
 
 		void createToricFace(Position i)
-			throw();
+			;
 
 		void treatSingularToricFace(Position i)
-			throw();
+			;
 
 		void createFreeToricFace(Position i)
-			throw();
+			;
 
 		SESVertex* createSingularVertex
 				(Position ip,
@@ -422,24 +417,22 @@ namespace BALL
 				 SESEdge* edge0,
 				 SESEdge* edge1,
 				 SESEdge* edge2)
-			throw();
+			;
 
 		void updateEdge
 				(SESEdge*		edge,
 				 SESVertex*	vertex1,
 				 SESVertex*	vertex2,
 				 bool						is_new)
-			throw();
+			;
 
 		void getPoint
 			(const TVector3<double>& p1,
 			 const TVector3<double>& p2,
 			 const double&						dist,
-			 TVector3<double>&				result)
-			throw();
+			 TVector3<double>&				result);
 
-		Index vertexExists(const TVector3<double>& point)
-			throw();
+		Index vertexExists(const TVector3<double>& point);
 
 		//@}
 
@@ -452,7 +445,6 @@ namespace BALL
 		/*_ a HashGrid to store and find the vertices in an efficient way
 		*/
 		HashGrid3<Index> vertex_grid_;
-
 	};
 
 
@@ -484,20 +476,20 @@ namespace BALL
 				This method creates a new SESComputer object.
 		*/
 		SESSingularityCleaner()
-			throw();
+			;
 
 		/** Detailed constructor
 		*/
 		SESSingularityCleaner
 				(SolventExcludedSurface*	ses,
 				 HashGrid3<Index>*				vertex_grid_)
-			throw();
+			;
 
 		/**	Destructor.
 				As there are no dynamic	data structures, nothing happens.
 		*/
 		virtual ~SESSingularityCleaner()
-			throw();
+			;
 
 		//@}
 		/**	@name	Accessors
@@ -518,41 +510,41 @@ namespace BALL
 		//@{
 
 		Index vertexExists(TVector3<double> point)
-			throw();
+			;
 
 		void treatSingularities()
-			throw();
+			;
 
 		void getSingularFaces(std::list<SESFace*>& faces)
-			throw();
+			;
 
 		bool treatFirstCategory()
-			throw();
+			;
 
 		void treatSecondCategory()
-			throw();
+			;
 
 		void getFirstCategoryFaces(std::list<SESFace*>& first_category_faces)
-			throw();
+			;
 
 		void noCut(SESFace* face1, SESFace* face2)
-			throw();
+			;
 
 		void twoCuts(SESFace* face1, SESFace* face2)
-			throw();
+			;
 
 		void treatSingularEdge
 			(SESEdge*								edge,
 			 HashGrid3<Position>&		grid,
 			 ::std::list<SESEdge*>&	deletable_edges)
-			throw();
+			;
 
 		void getIntersectionsOfSingularEdge
 			(SESEdge*									edge,
 			 const TAngle<double>&							phi,
 			 HashGrid3<Position>&			grid,
 			 std::list<Intersection>& intersections)
-			throw();
+			;
 
 		bool getIntersectionPointsAndAngles
 			(const TCircle3<double>&	circle,
@@ -564,7 +556,7 @@ namespace BALL
 			 TVector3<double>&				point1,
 			 TAngle<double>&					phi2,
 			 TVector3<double>&				point2)
-			throw();
+			;
 
 		bool isIntersection
 			 (const TAngle<double>&	 min_phi,
@@ -572,7 +564,7 @@ namespace BALL
 				const TAngle<double>&	 phi,
 				const TVector3<double>& middle,
 				const TSphere3<double>& probe)
-			throw();
+			;
 
 		void buildEndEdges
 			(SESEdge*												edge,
@@ -582,7 +574,7 @@ namespace BALL
 			 SESVertex*&										vertex2,
 			 Index&													actual_min,
 			 Index&													actual_max)
-			throw();
+			;
 
 		void buildEdge
 			(SESEdge*								edge,
@@ -591,30 +583,26 @@ namespace BALL
 			 Index									end,
 			 SESVertex*&						vertex,
 			 const HashSet<Index>&	indices,
-			 bool										minimum)
-			throw();
+			 bool										minimum);
 
 		void getExtrema
 				(const std::list<Intersection>& intersections,
 				 std::list<Intersection>& min,
-				 std::list<Intersection>& max)
-			throw();
+				 std::list<Intersection>& max);
 
 		void buildEndEdge
 			(SESEdge*												edge,
 			 const std::list<Intersection>&	extrema,
 			 SESVertex*&										vertex,
 			 Index&													actual_extremum,
-			 bool														min)
-			throw();
+			 bool														min);
 
 		bool probeIntersection
 			 (Index		 face1,
 				Index		 face2,
 				Index		 face3,
 				TVector3<double>& point1,
-				TVector3<double>& point2)
-			throw();
+				TVector3<double>& point2);
 
 		void sort
 				(SESFace* face1,
@@ -622,13 +610,11 @@ namespace BALL
 				 std::vector<SESEdge*>& sesedge1,
 				 std::vector<SESEdge*>& sesedge2,
 				 std::vector<SESVertex*>& sesvertex1,
-				 std::vector<SESVertex*>& sesvertex2)
-			throw();
+				 std::vector<SESVertex*>& sesvertex2);
 
 		void sort
 			 (Index		u1, Index		u2, Index		u3,
-				Index&	s1,	Index&	s2, Index&	s3)
-			throw();
+				Index&	s1,	Index&	s2, Index&	s3);
 
 		//@}
 

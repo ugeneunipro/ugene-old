@@ -1,7 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: trianglePoint.C,v 1.3 2002-12-17 14:13:21 anker Exp $
 
 #include <BALL/STRUCTURE/triangleEdge.h>
 #include <BALL/STRUCTURE/triangle.h>
@@ -11,16 +10,22 @@ namespace BALL
 {
 
 	TrianglePoint::TrianglePoint()
-		throw()
+		
 		:	GraphVertex< TrianglePoint,TriangleEdge,Triangle >(),
 			point_(),
 			normal_()
 	{
 	}
 
+	TrianglePoint::TrianglePoint(const TVector3<double>& point, const TVector3<double>& normal)
+	 : GraphVertex<TrianglePoint,TriangleEdge,Triangle>(),
+		 point_(point),
+		 normal_(normal)
+	{
+	}
 
 	TrianglePoint::TrianglePoint(const TrianglePoint& point, bool deep)
-		throw()
+		
 		:	GraphVertex< TrianglePoint,TriangleEdge,Triangle >
 				(point,deep),
 			point_(point.point_),
@@ -30,13 +35,13 @@ namespace BALL
 
 
 	TrianglePoint::~TrianglePoint()
-		throw()
+		
 	{
 	}
 
 
 	void TrianglePoint::set(const TrianglePoint& point, bool deep)
-		throw()
+		
 	{
 		if (this != &point)
 		{
@@ -50,7 +55,7 @@ namespace BALL
 
 	TrianglePoint& TrianglePoint:: operator =
 			(const TrianglePoint& point)
-		throw()
+		
 	{
 		if (this != &point)
 		{
@@ -64,21 +69,21 @@ namespace BALL
 
 
 	TVector3<double> TrianglePoint::getPoint() const
-		throw()
+		
 	{
 		return point_;
 	}
 
 
 	void TrianglePoint::setPoint(const TVector3<double>& point)
-		throw()
+		
 	{
 		point_ = point;
 	}
 
 
 	TVector3<double> TrianglePoint::getNormal() const
-		throw()
+		
 	{
 		return normal_;
 	}
@@ -93,21 +98,21 @@ namespace BALL
 
 
 	bool TrianglePoint::operator == (const TrianglePoint& point) const
-		throw()
+		
 	{
 		return (point_ == point.point_);
 	}
 
 
 	bool TrianglePoint::operator != (const TrianglePoint& point) const
-		throw()
+		
 	{
 		return (point_ != point.point_);
 	}
 
 
 	bool TrianglePoint::operator *= (const TrianglePoint& point) const
-		throw()
+		
 	{
 		return (point_ == point.point_);
 	}

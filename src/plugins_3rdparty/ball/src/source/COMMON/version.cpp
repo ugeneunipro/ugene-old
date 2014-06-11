@@ -1,7 +1,7 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: version.C,v 1.14 2004-02-19 12:24:33 oliver Exp $
+// $Id: version.C,v 1.14 2004/02/19 12:24:33 oliver Exp $
 //
 
 #include <BALL/COMMON/version.h>
@@ -10,12 +10,12 @@
 
 namespace BALL
 {
-	const char* VersionInfo::getVersion() throw()
+	const char* VersionInfo::getVersion() 
 	{
-        return BALL_RELEASE_STRING " (" __DATE__ ", " __TIME__ ")";
+		return BALL_RELEASE_STRING " (" __DATE__", " __TIME__ ")";
 	}
 
-	int VersionInfo::getMinorRevision() throw(Exception::InvalidFormat)
+	int VersionInfo::getMinorRevision()
 	{
 		static String release(BALL_RELEASE_STRING);
 		String minor = release.getField(1, ".");
@@ -30,13 +30,13 @@ namespace BALL
 		return minor.toInt();
 	}
 	
-	int VersionInfo::getMajorRevision() throw(Exception::InvalidFormat)
+	int VersionInfo::getMajorRevision()
 	{
 		static String release(BALL_RELEASE_STRING);
 		return release.getField(0, ". ").toInt();
 	}
 	
-	VersionInfo::Type VersionInfo::getType() throw()
+	VersionInfo::Type VersionInfo::getType() 
 	{
 		StringHashMap<VersionInfo::Type> type_mapper;
 		type_mapper.insert(std::pair<String, VersionInfo::Type>("alpha", ALPHA));

@@ -1,8 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: SASVertex.h,v 1.8 2005-12-23 17:02:02 amoll Exp $
-//
 
 #ifndef BALL_STRUCTURE_SASVERTEX_H
 #define BALL_STRUCTURE_SASVERTEX_H
@@ -56,7 +54,7 @@ namespace BALL
 				This method creates a new SASVertex object.
 		*/
 		SASVertex()
-			throw();
+			;
 
 		/**	Copy constructor.
 				Create a new SASVertex object from another.
@@ -66,7 +64,7 @@ namespace BALL
 													linked to the neighbours of the old SASVertex object.
 		*/
 		SASVertex(const SASVertex& sasvertex, bool deep = false)
-			throw();
+			;
 
 		/**	Detailled constructor.
 				Create a new SASVertex object from some nice objects.
@@ -75,13 +73,13 @@ namespace BALL
 		*/
 		SASVertex(const TVector3<double>& point,
 				Index index)
-			throw();
+			;
 
 		/**	Destructor.
 				Destructs the RSVertex object.
 		*/
 		virtual ~SASVertex()
-			throw();
+			;
 
 		//@}
 		/**	@name	Assignment
@@ -96,7 +94,7 @@ namespace BALL
 													to assign from.
 		*/
 		void set(const SASVertex& sasvertex, bool deep = false)
-			throw();
+			;
 
 		/**	Assign from another SASVertex.
 				The new SASVertex object is linked to the neighbours of the SASVertex	
@@ -104,7 +102,7 @@ namespace BALL
 				@param	sasvertex	the SASVertex object to assign from
 		*/
 		SASVertex& operator = (const SASVertex& sasvertex)
-			throw();
+			;
 
 		/**	Assign to a TVector3<double> and an Index.
 				@param	point		assigned to the point represented by the vertex
@@ -112,19 +110,19 @@ namespace BALL
 		*/
 		void set(const TVector3<double> point,
 				Index index)
-			throw();
+			;
 
 		/**	Set the point represented by the SASVertex.
 				@param	point	the new point
 		*/
 		void setPoint(const TVector3<double>& point)
-			throw();
+			;
 
 		/**	Return the point represented by the SASVertex.
 				@return	TVector3<double>	the point represented by the vertex
 		*/
 		TVector3<double> getPoint() const
-			throw();
+			;
 
 		//@}
 		/**	@name	Predicates
@@ -135,20 +133,20 @@ namespace BALL
 				@return	bool	<b>true</b>
 		*/
 		virtual bool operator == (const SASVertex&) const
-			throw();
+			;
 
 		/**	Inequality operator.
 				@return	bool	<b>false</b>
 		*/
 		virtual bool operator != (const SASVertex&) const
-			throw();
+			;
 
 		/**	Similarity operator.
 				@return	bool	<b>true</b> if the points the SASVertices lie on are	
 											equal, <b>false</b> otherwise
 		*/
 		virtual bool operator *= (const SASVertex&) const
-			throw();
+			;
 
 		//@}
 

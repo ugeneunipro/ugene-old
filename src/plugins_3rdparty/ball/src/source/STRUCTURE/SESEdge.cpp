@@ -1,7 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: SESEdge.C,v 1.4 2002-12-17 14:13:20 anker Exp $
 
 #include <BALL/STRUCTURE/SESEdge.h>
 #include <BALL/STRUCTURE/SESFace.h>
@@ -13,7 +12,7 @@ namespace BALL
 {
 
 	SESEdge::SESEdge()
-		throw()
+		
 		: GraphEdge< SESVertex,SESEdge,SESFace >(),
 			circle_(),
 			rsedge_(NULL),
@@ -23,7 +22,7 @@ namespace BALL
 
 
 	SESEdge::SESEdge(const SESEdge& sesedge, bool deep)
-		throw()
+		
 		: GraphEdge< SESVertex,SESEdge,SESFace >(sesedge,deep),
 			circle_(sesedge.circle_),
 			rsedge_(NULL),
@@ -44,7 +43,7 @@ namespace BALL
 			RSEdge* rsedge,
 			Type type,
 			Index index)
-		throw()
+		
 		: GraphEdge< SESVertex,SESEdge,SESFace >
 					(vertex0,vertex1,face0,face1,index),
 			circle_(circle),
@@ -55,13 +54,13 @@ namespace BALL
 
 
 	SESEdge::~SESEdge()
-		throw()
+		
 	{
 	}
 
 
 	void SESEdge::set(const SESEdge& sesedge, bool deep)
-		throw()
+		
 	{
 		if (this != &sesedge)
 		{
@@ -81,7 +80,7 @@ namespace BALL
 
 
 	SESEdge& SESEdge::operator = (const SESEdge& sesedge)
-		throw()
+		
 	{
 		if (this != &sesedge)
 		{
@@ -103,7 +102,7 @@ namespace BALL
 			 RSEdge*				rsedge,
 			 Type								type,
 			 Index							index)
-		throw()
+		
 	{
 		GraphEdge< SESVertex,SESEdge,SESFace >::set
 				(vertex0,vertex1,face0,face1,index);
@@ -114,49 +113,49 @@ namespace BALL
 
 
 	void SESEdge::setCircle(const TCircle3<double>& circle)
-		throw()
+		
 	{
 		circle_ = circle;
 	}
 
 
 	TCircle3<double> SESEdge::getCircle() const
-		throw()
+		
 	{
 		return circle_;
 	}
 
 
 	void SESEdge::setRSEdge(RSEdge* rsedge)
-		throw()
+		
 	{
 		rsedge_ = rsedge;
 	}
 
 
 	RSEdge* SESEdge::getRSEdge() const
-		throw()
+		
 	{
 		return rsedge_;
 	}
 
 
 	void SESEdge::setType(SESEdge::Type type)
-		throw()
+		
 	{
 		type_ = type;
 	}
 
 
 	SESEdge::Type SESEdge::getType() const
-		throw()
+		
 	{
 		return type_;
 	}
 
 
 	bool SESEdge::operator == (const SESEdge& sesedge) const
-		throw()
+		
 	{
 		return (((vertex_[0] == sesedge.vertex_[0]) &&
 						 (vertex_[1] == sesedge.vertex_[1])		) ||
@@ -166,7 +165,7 @@ namespace BALL
 
 
 	bool SESEdge::operator != (const SESEdge& sesedge) const
-		throw()
+		
 	{
 		return (((vertex_[0] != sesedge.vertex_[0]) ||
 						 (vertex_[1] != sesedge.vertex_[1])		) &&
@@ -176,14 +175,14 @@ namespace BALL
 
 
 	bool SESEdge::operator *= (const SESEdge&) const
-		throw()
+		
 	{
 		return true;
 	}
 
 
 	bool SESEdge::isFree() const
-		throw()
+		
 	{
 		if (rsedge_ == NULL)
 		{

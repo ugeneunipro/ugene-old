@@ -1,7 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: SESFace.C,v 1.4.32.1 2007-04-03 13:29:39 bertsch Exp $
 
 #include <BALL/STRUCTURE/SESEdge.h>
 #include <BALL/STRUCTURE/SESFace.h>
@@ -15,7 +14,7 @@ namespace BALL
 {
 
 	SESFace::SESFace()
-		throw()
+		
 		: GraphFace< SESVertex,SESEdge,SESFace >(),
 			type_(SESFace::TYPE_SPHERIC),
 			rsvertex_(NULL),
@@ -26,7 +25,7 @@ namespace BALL
 
 
 	SESFace::SESFace(const SESFace& sesface, bool deep)
-		throw()
+		
 		: GraphFace< SESVertex,SESEdge,SESFace >(sesface,deep),
 			type_(sesface.type_),
 			rsvertex_(NULL),
@@ -46,7 +45,7 @@ namespace BALL
 			RSVertex* rsvertex,
 			RSEdge* rsedge,
 			RSFace* rsface)
-		throw()
+		
 		: GraphFace< SESVertex,SESEdge,SESFace >(),
 			type_(type),
 			rsvertex_(rsvertex),
@@ -57,13 +56,13 @@ namespace BALL
 
 
 	SESFace::~SESFace()
-		throw()
+		
 	{
 	}
 
 
 	void SESFace::set(const SESFace& sesface, bool deep)
-		throw()
+		
 	{
 		if (this != &sesface)
 		{
@@ -80,7 +79,7 @@ namespace BALL
 
 
 	SESFace& SESFace::operator = (const SESFace& sesface)
-		throw()
+		
 	{
 		if (this != &sesface)
 		{
@@ -95,63 +94,63 @@ namespace BALL
 
 
 	void SESFace::setType(SESFace::Type type)
-		throw()
+		
 	{
 		type_ = type;
 	}
 
 
 	SESFace::Type SESFace::getType() const
-		throw()
+		
 	{
 		return type_;
 	}
 
 
 	void SESFace::setRSVertex(RSVertex* rsvertex)
-		throw()
+		
 	{
 		rsvertex_ = rsvertex;
 	}
 
 
 	RSVertex* SESFace::getRSVertex() const
-		throw()
+		
 	{
 		return rsvertex_;
 	}
 
 
 	void SESFace::setRSEdge(RSEdge* rsedge)
-		throw()
+		
 	{
 		rsedge_ = rsedge;
 	}
 
 
 	RSEdge* SESFace::getRSEdge() const
-		throw()
+		
 	{
 		return rsedge_;
 	}
 
 
 	void SESFace::setRSFace(RSFace* rsface)
-		throw()
+		
 	{
 		rsface_ = rsface;
 	}
 
 
 	RSFace* SESFace::getRSFace() const
-		throw()
+		
 	{
 		return rsface_;
 	}
 
 
 	void SESFace::normalize(bool singular)
-		throw()
+		
 	{
 		if ((type_ != SESFace::TYPE_TORIC) &&
 				(type_ != SESFace::TYPE_TORIC_SINGULAR))
@@ -174,7 +173,7 @@ namespace BALL
 
 
 	void SESFace::normalizeNonSingularToricFace_()
-		throw()
+		
 	{
 		HashSet<SESVertex*> points;
 		std::list<SESVertex*>::iterator v;
@@ -249,7 +248,7 @@ namespace BALL
 
 
 	void SESFace::normalizeSingularToricFace_()
-		throw()
+		
 	{
 		SESEdge* edge0(0);
 		SESEdge* edge1(0);
@@ -299,7 +298,7 @@ namespace BALL
 				 SESVertex*& vertex0,
 				 SESVertex*& vertex1,
 				 SESVertex*& vertex2)
-			throw()
+			
 	{
 		std::list<SESEdge*>::iterator e;
 		if (first)
@@ -355,28 +354,28 @@ namespace BALL
 
 
 	bool SESFace::operator == (const SESFace&) const
-		throw()
+		
 	{
 		return true;
 	}
 
 
 	bool SESFace::operator != (const SESFace&) const
-		throw()
+		
 	{
 		return false;
 	}
 
 
 	bool SESFace::operator *= (const SESFace&) const
-		throw()
+		
 	{
 		return true;
 	}
 
 
 	bool SESFace::isNeighbouredTo(SESFace* face) const
-		throw()
+		
 	{
 		std::list<SESEdge*>::const_iterator e;
 		for (e = edge_.begin(); e != edge_.end(); e++)
@@ -395,7 +394,7 @@ namespace BALL
 
 
 	bool SESFace::isFree() const
-		throw()
+		
 	{
 		if (type_ != TYPE_TORIC)
 		{
@@ -406,7 +405,7 @@ namespace BALL
 
 
 	bool SESFace::hasSingularEdges() const
-		throw()
+		
 	{
 		SESFace::ConstEdgeIterator e;
 		for (e = beginEdge(); e != endEdge(); e++)

@@ -1,7 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: triangulatedSurface.h,v 1.40.18.1 2007-03-25 21:25:34 oliver Exp $
 
 #ifndef BALL_STRUCTURE_TRIANGULATEDSURFACE_H
 #define BALL_STRUCTURE_TRIANGULATEDSURFACE_H
@@ -71,7 +70,7 @@ namespace BALL
 				This method creates a new TriangulatedSurface object.
 		*/
 		TriangulatedSurface()
-			throw();
+			;
 
 		/**	Copy constructor.
 				Create a new TriangulatedSurface object from another.
@@ -79,13 +78,38 @@ namespace BALL
 				@param	bool		ignored - just for interface consistency
 		*/
 		TriangulatedSurface(const TriangulatedSurface& surface, bool = true)
-			throw();
+			;
 
 		/**	Destructor.
 				Destructs the TriangulatedSurface object.
 		*/
 		virtual ~TriangulatedSurface()
-			throw();
+			;
+		//@}
+
+		/** @name Static Members
+		 */
+		//@{
+
+		/**
+		 * A static function that constructs a triangulated tube. The tube is oriented along the
+		 * z-axis, starts at z=0, ends at z=1 and has radius 1
+		 *
+		 * @param num_vertices The amount of vertices of which the base of the tube is composed
+		 * @param subdiv Controls the amount of subdivisions along the z-axis. Default: 0
+		 * @param closed Should the tube have opend or closed ends? Default: false
+		 * @param out Controls whether the normals of the tube are pointing in or outwards. Default: true
+		 */
+		static TriangulatedSurface* createTube(unsigned int num_vertices, unsigned int subdiv = 0, bool closed = false, bool out = true);
+
+		/**
+		 * A static function that constructs a triangulated disk. The disk lies in the x-y plane
+		 * and has radius 1.
+		 *
+		 * @param num_vertices The amount of vertices of which the border of the disk is composed
+		 * @param out Controls whether the normals of the tube are pointing up or downwards. Default: true
+		 */
+		static TriangulatedSurface* createDisk(unsigned int num_vertices, bool out = true);
 		//@}
 
 		/**	@name	Assignment
@@ -95,20 +119,20 @@ namespace BALL
 		/** Delete all points, edges and triangles.
 		*/
 		void clear()
-			throw();
+			;
 
 		/**	Assign from another TriangulatedSurface.
 				@param	surface	the TriangulatedSurface object to assign from
 				@param	bool		ignored - just for interface consistency
 		*/
 		void set(const TriangulatedSurface& surface, bool = true)
-			throw();
+			;
 
 		/**	Assign from another TriangulatedSurface.
 				@param	surface	the TriangulatedSurface object to assign from
 		*/
 		TriangulatedSurface& operator = (const TriangulatedSurface& surface)
-			throw();
+			;
 
 		//@}
 
@@ -119,43 +143,53 @@ namespace BALL
 		/** Insert a new point to the TriangulatedSurface.
 				@param	point	a pointer to the new point
 		*/
-		void insert(TrianglePoint* point)
-			throw();
+		void insert(TrianglePoint* point);
 
 		/** Insert a new edge to the TriangulatedSurface.
 				@param	edge	a pointer to the new edge
 		*/
-		void insert(TriangleEdge* edge)
-			throw();
+		void insert(TriangleEdge* edge);
 
 		/** Insert a new triangle to the TriangulatedSurface.
 				@param	triangle	a pointer to the new triangle
 		*/
-		void insert(Triangle* triangle)
-			throw();
+		void insert(Triangle* triangle);
 
 		/** Get the number of points of the TriangulatedSurface.
+		 * 	@deprecated Use TriangulatedSurface::getNumberOfPoints() instead
 		*/
-		Size numberOfPoints() const
-			throw();
+		BALL_DEPRECATED Size numberOfPoints() const;
+
+		/** Get the number of points of the TriangulatedSurface.
+		 * 	@deprecated Use TriangulatedSurface::getNumberOfPoints() instead
+		*/
+		Size getNumberOfPoints() const;
+
+		/** Get the number of edges of the TriangulatedSurface.
+		 * 	@deprecated Use TriangulatedSurface::getNumberOfEdges() instead
+		*/
+		BALL_DEPRECATED Size numberOfEdges() const;
 
 		/** Get the number of edges of the TriangulatedSurface.
 		*/
-		Size numberOfEdges() const
-			throw();
+		Size getNumberOfEdges() const;
 
 		/** Get the number of triangles of the TriangulatedSurface.
+		 * 	@deprecated Use TriangulatedSurface::getNumberOfTriangles() instead
 		*/
-		Size numberOfTriangles() const
-			throw();
+		BALL_DEPRECATED Size numberOfTriangles() const;
+
+		/** Get the number of triangles of the TriangulatedSurface.
+		 * 	Use TriangulatedSurface::getNumberOfTriangles() instead
+		*/
+		Size getNumberOfTriangles() const;
 
 		/** Remove a point from the TriangulatedSurface.
 				If deep is true (default) the incidence-structure will be updated.
 				@param	point	a pointer to the point to delete
 				@param	deep	look above
 		*/
-		void remove(TrianglePoint* point, bool deep = true)
-			throw();
+		void remove(TrianglePoint* point, bool deep = true);
 
 		/** Remove a point from the TriangulatedSurface.
 				If deep is true (default) the incidence-structure will be updated.
@@ -163,16 +197,14 @@ namespace BALL
 											TriangulatedSurface which indicates the point to delete
 				@param	deep	look above
 		*/
-		void remove(PointIterator p, bool deep = true)
-			throw();
+		void remove(PointIterator p, bool deep = true);
 
 		/** Remove an edge from the TriangulatedSurface.
 				If deep is true (not default) the incidence-structure will be updated.
 				@param	edge	a pointer to the edge to delete
 				@param	deep	look above
 		*/
-		void remove(TriangleEdge* edge, bool deep = true)
-			throw();
+		void remove(TriangleEdge* edge, bool deep = true);
 
 		/** Remove an edge from the TriangulatedSurface.
 				If deep is true (not default) the incidence-structure will be updated.
@@ -180,16 +212,14 @@ namespace BALL
 											TriangulatedSurface which indicates the edge to delete
 				@param	deep	look above
 		*/
-		void remove(EdgeIterator e, bool deep = true)
-			throw();
+		void remove(EdgeIterator e, bool deep = true);
 
 		/** Remove a triangle from the TriangulatedSurface.
 				If deep is true (not default) the incidence-structure will be updated.
 				@param	triangle	a pointer to the triangle to delete
 				@param	deep			look above
 		*/
-		void remove(Triangle* triangle, bool deep = true)
-			throw();
+		void remove(Triangle* triangle, bool deep = true);
 
 		/** Remove a triangle from the TriangulatedSurface.
 				If deep is true (not default) the incidence-structure will be updated.
@@ -198,14 +228,12 @@ namespace BALL
 											delete
 				@param	deep	look above
 		*/
-		void remove(TriangleIterator t, bool deep = true)
-			throw();
+		void remove(TriangleIterator t, bool deep = true);
 
 		/** Create a Surface object from the TriangulatedeSurface.
 				@param	surface	the created Surface object
 		*/
-		void exportSurface(Surface& surface)
-			throw();
+		void exportSurface(Surface& surface);
 
 		/** Add a TriangulatedSurface object.
 				The lists of points, edges and triangles of the given
@@ -213,8 +241,7 @@ namespace BALL
 				objact will be unchanged.
 				@param	surface	the TriangulatedSurface object to add
 		*/
-		TriangulatedSurface& operator += (const TriangulatedSurface& surface)
-			throw();
+		TriangulatedSurface& operator += (const TriangulatedSurface& surface);
 
 		/** Add a TriangulatedSurface object.
 				The lists of points, edges and triangles of the given
@@ -222,8 +249,7 @@ namespace BALL
 				given TriangulatedSurface objact will be empty!
 				@param	source	the TriangulatedSurface object to add
 		*/
-		void join(TriangulatedSurface& source)
-			throw();
+		void join(TriangulatedSurface& source);
 
 		/** Shift the TriangulatedSurface.
 				All points are shifted by a vector c.
@@ -237,10 +263,18 @@ namespace BALL
 		*/
 		void blowUp(const double& r);
 
-		/** Set the indices of al points, edges and triangles.
+		/** Set the indices of all points, edges and triangles.
 		*/
 		void setIndices();
 
+		/** Set the density used by triangulation algorithms.
+		 */
+		void setDensity(const double& density);
+		
+		/** Get the density used by triangulation algorithms.
+		 */
+		double getDensity() const;
+		
 		/** Cut the TriangulatedSurface on a plane.
 				@param	plane	the plane to cut on
 				@param	fuzzy
@@ -253,13 +287,11 @@ namespace BALL
 
 		/** Delete all isolated edges of the TriangulatedSurface
 		*/
-		void deleteIsolatedEdges()
-			throw();
+		void deleteIsolatedEdges();
 
 		/** Delete all isolated points of the TriangulatedSurface
 		*/
-		void deleteIsolatedPoints()
-			throw();
+		void deleteIsolatedPoints();
 
 		/** Get the border edges of the TriangulatedSurface.
 				Border edges are the edges with only one triangle.
@@ -272,32 +304,29 @@ namespace BALL
 		*/
 		//@{
 
-		PointIterator beginPoint()
-			throw();
-		ConstPointIterator beginPoint() const
-			throw();
-		PointIterator endPoint()
-			throw();
-		ConstPointIterator endPoint() const
-			throw();
+		PointIterator beginPoint();
 
-		EdgeIterator beginEdge()
-			throw();
-		ConstEdgeIterator beginEdge() const
-			throw();
-		EdgeIterator endEdge()
-			throw();
-		ConstEdgeIterator endEdge() const
-			throw();
+		ConstPointIterator beginPoint() const;
 
-		TriangleIterator beginTriangle()
-			throw();
-		ConstTriangleIterator beginTriangle() const
-			throw();
-		TriangleIterator endTriangle()
-			throw();
-		ConstTriangleIterator endTriangle() const
-			throw();
+		PointIterator endPoint();
+
+		ConstPointIterator endPoint() const;
+
+		EdgeIterator beginEdge();
+
+		ConstEdgeIterator beginEdge() const;
+
+		EdgeIterator endEdge();
+
+		ConstEdgeIterator endEdge() const;
+
+		TriangleIterator beginTriangle();
+
+		ConstTriangleIterator beginTriangle() const;
+
+		TriangleIterator endTriangle();
+
+		ConstTriangleIterator endTriangle() const;
 
 		//@}
 		/*_	@name	protected help functions
@@ -308,13 +337,11 @@ namespace BALL
 
 		/*_ Test whether a TriangulatedSurface object can be copied
 		*/
-		bool canBeCopied() const
-			throw();
+		bool canBeCopied() const;
 
 		/*_ Copy a TriangulatedSurface object
 		*/
-		void copy(const TriangulatedSurface& surface)
-			throw();
+		void copy(const TriangulatedSurface& surface);
 
 		//@}
 
@@ -342,6 +369,10 @@ namespace BALL
 		/*_ the triangles of the surface.
 		*/
 		std::list<Triangle*> triangles_;
+
+		/*_ the density used by triangulation algorithms
+		*/
+		double density_;
 
 		//@}
 
@@ -391,7 +422,7 @@ namespace BALL
 				This method creates a new TriangulatedSphere object.
 		*/
 		TriangulatedSphere()
-			throw();
+			;
 
 		/**	Copy constructor.
 				Create a new TriangulatedSphere object from another.
@@ -399,13 +430,13 @@ namespace BALL
 				@param	bool		ignored - just for interface consistency
 		*/
 		TriangulatedSphere(const TriangulatedSphere& sphere, bool = true)
-			throw();
+			;
 
 		/**	Destructor.
 				Destructs the TriangulatedSphere object.
 		*/
 		virtual ~TriangulatedSphere()
-			throw();
+			;
 		//@}
 
 		/**	@name	Assignment
@@ -417,13 +448,13 @@ namespace BALL
 				@param	bool		ignored - just for interface consistency
 		*/
 		void set(const TriangulatedSphere& sphere, bool = true)
-			throw();
+			;
 
 		/**	Assign from another TriangulatedSphere.
 				@param	sphere	the TriangulatedSphere object to assign from
 		*/
 		TriangulatedSphere& operator = (const TriangulatedSphere& sphere)
-			throw();
+			;
 
 		//@}
 
@@ -438,6 +469,14 @@ namespace BALL
 										otherwise they will be oriented inside
 		*/
 		void icosaeder(bool out = true);
+
+		/** Build a pentakis dodecaeder.
+				If the TriangulatedSphere is not empty, it will be cleared first.
+				The center of the dodecaeder will be the origin, the radius will be 1.
+				@param	out	if out = true the normal vectors will be oriented outside,
+										otherwise they will be oriented inside
+		*/
+		void pentakisDodecaeder(bool out = true);
 
 		/** Refine a triangulated sphere.
 				The center of the sphere must be the origin, the radius must be 1.
@@ -459,7 +498,7 @@ namespace BALL
 				 Triangle* face1,
 				 Triangle* face2,
 				 Triangle* face3)
-			throw();
+			;
 
 		/*_ Set the incidences of a refined triangulated sphere.
 		*/

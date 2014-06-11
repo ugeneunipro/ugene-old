@@ -1,8 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: exception.C,v 1.39 2005-12-23 17:02:32 amoll Exp $
-//
 
 #include <BALL/COMMON/exception.h>
 #include <BALL/COMMON/logStream.h>
@@ -11,10 +9,10 @@
 #include <iostream>
 #include <typeinfo>
 #include <exception>
-#include <stdio.h>
-#include <stdlib.h>	// for getenv in terminate()
+#include <cstdio>
+#include <cstdlib>	// for getenv in terminate()
 #include <sys/types.h>
-#include <signal.h> // for SIGSEGV and kill
+#include <csignal> // for SIGSEGV and kill
 
 #ifdef BALL_HAS_UNISTD_H
 #	include <unistd.h> // fot getpid
@@ -26,7 +24,7 @@
 #define BALL_CORE_DUMP_ENVNAME "BALL_DUMP_CORE"
 
 #define DEF_EXCEPTION(a,b) \
-	a :: a (const char* file, int line) throw()\
+	a :: a (const char* file, int line) \
 		: GeneralException(file, line, #a, b)\
 	{\
 	}\
@@ -42,7 +40,6 @@ namespace BALL
 	{
 
 			GeneralException::GeneralException() 
-				throw()
 				:	file_("?"),
 					line_(-1),
 					name_("GeneralException"),
@@ -52,7 +49,6 @@ namespace BALL
 			}
 
 			GeneralException::GeneralException(const char* file, int line, const String& name, const String& message) 
-				throw()
 				:	file_(file),
 					line_(line),
 					name_(name),
@@ -62,7 +58,6 @@ namespace BALL
 			}
 
 			GeneralException::GeneralException(const char* file, int line) 
-				throw()
 				:	file_(file),
 					line_(line),
 					name_("GeneralException"),
@@ -72,7 +67,6 @@ namespace BALL
 			}
 
 			GeneralException::GeneralException(const GeneralException& exception)
-				throw()
 				:	std::exception(exception),
 					file_(exception.file_),
 					line_(exception.line_),
@@ -81,44 +75,36 @@ namespace BALL
 			{
 			}
 
-			GeneralException::~GeneralException()
-				throw()
+			GeneralException::~GeneralException() throw()
 			{
 			}
 		
-
 			const char* GeneralException::getName() const
-				throw()
 			{
 				return name_.c_str();
 			}
 
 			const char* GeneralException::getMessage() const
-				throw()
 			{
 				return message_.c_str();
 			}
 
 			void GeneralException::setMessage(const std::string& message)
-				throw()
 			{
 				message_ = message;
 			}
 
 			const char* GeneralException::getFile() const
-				throw()
 			{
 				return file_;
 			}
 			
 			int GeneralException::getLine() const
-				throw()
 			{
 				return line_;
 			}
 
 			IndexUnderflow::IndexUnderflow(const char* file, int line, Index index, Size size)
-				throw()
 				: GeneralException(file, line, "IndexUnderflow", ""),
 					size_(size),
 					index_(index)
@@ -138,7 +124,6 @@ namespace BALL
 			}
 
 			IndexOverflow::IndexOverflow(const char* file, int line, Index index, Size size)
-				throw()
 				:	GeneralException(file, line, "IndexOverflow", "an index was too large"),
 					size_(size),
 					index_(index)
@@ -158,7 +143,6 @@ namespace BALL
 			}
 
 			OutOfMemory::OutOfMemory(const char* file, int line, Size size)
-				throw()
 				:	GeneralException(file, line, "OutOfMemory", "a memory allocation failed"),
 					size_(size)
 			{
@@ -172,13 +156,11 @@ namespace BALL
 				globalHandler.setMessage(message_);
 			}
 
-			OutOfMemory::~OutOfMemory() 
-				throw()
+			OutOfMemory::~OutOfMemory() throw()
 			{
 			}
 
 			SizeUnderflow::SizeUnderflow(const char* file, int line, Size size)
-				throw()
 				:	GeneralException(file, line, "SizeUnderflow", ""),
 					size_(size)
 			{
@@ -190,8 +172,14 @@ namespace BALL
 				globalHandler.setMessage(message_);
 			}
 
+			InvalidArgument::InvalidArgument(const char* file, int line, const String& arg)
+				: GeneralException(file, line, "InvalidArgument",
+				                   "An invalid argument has been passed: ")
+			{
+				message_ += arg;
+			}
+
 			InvalidSize::InvalidSize(const char* file, int line, Size size)
-				throw()
 				:	GeneralException(file, line, "InvalidSize", ""),
 					size_(size)
 			{
@@ -204,7 +192,6 @@ namespace BALL
 			}
 
 			IllegalPosition::IllegalPosition(const char* file, int line, float x, float y, float z)
-				throw()
 				:	GeneralException(file, line, "IllegalPosition:", "")
 			{
 				char buf1[40];
@@ -226,7 +213,6 @@ namespace BALL
 
 			ParseError::ParseError(const char* file, int line, 
 					const String& expression, const String& message)
-				throw()
 				: GeneralException(file, line, "Parse Error", "")
 			{
 
@@ -237,7 +223,6 @@ namespace BALL
 			}
 
 			Precondition::Precondition(const char* file, int line, const char* condition)
-				throw()
 				: GeneralException(file, line, "Precondition failed", "")
 			{
 				message_ += std::string(condition);
@@ -245,7 +230,6 @@ namespace BALL
 			}
 
 			Postcondition::Postcondition(const char* file, int line, const char* condition)
-				throw()
 				: GeneralException(file, line, "Postcondition failed", "")
 			{
 				message_ += std::string(condition);
@@ -253,7 +237,6 @@ namespace BALL
 			}
 
 			FileNotFound::FileNotFound(const char* file, int line, const String& filename)
-				throw()
 				:	GeneralException(file, line, "FileNotFound", ""),
 					filename_(filename)
 			{
@@ -261,19 +244,16 @@ namespace BALL
 				globalHandler.setMessage(message_);
 			}
 
-			FileNotFound::~FileNotFound()
-				throw()
+			FileNotFound::~FileNotFound() throw()
 			{
 			}
 
 			String FileNotFound::getFilename() const
-				throw()
 			{
 				return filename_;
 			}
 
 			InvalidFormat::InvalidFormat(const char* file, int line, const String& s)
-				throw()
 				:	GeneralException(file, line, "InvalidFormat", ""),
 					format_(s)
 			{
@@ -283,25 +263,21 @@ namespace BALL
 				globalHandler.setMessage(message_);
 			}
 
-			InvalidFormat::~InvalidFormat()
-				throw()
+			InvalidFormat::~InvalidFormat() throw()
 			{
 			}
 		
 			InvalidOption::InvalidOption(const char* file, int line, String option)
-				throw()
 				: GeneralException(file, line, "Invalid option: ", option)
 			{
 			}
 
 			TooManyErrors::TooManyErrors(const char* file, int line)
-				throw()
 				: GeneralException(file, line, "Too many errors", "")
 			{
 			}
 
 			TooManyBonds::TooManyBonds(const char* file, int line, const String& error)
-				throw()
 				: GeneralException(file, line, 
 						String("Unable to create additional bond between ") + error, "")
 			{
@@ -309,11 +285,24 @@ namespace BALL
 
 
 			InvalidRange::InvalidRange(const char* file, int line, float value)
-				throw()
 				: GeneralException(file, line, "The argument was out of range: ", String(value))
 			{
 			}
 
+			CUDAError::CUDAError(const char *file, int line, const BALL::String &error)
+				: GeneralException(file, line, String("CUDA error: ") + error, "")
+			{
+			}
+			
+			NoBufferAvailable::NoBufferAvailable(const char* file, int line, const String& reason)
+				: GeneralException(file, line, "NoBufferAvailable", String("Unavailable because: ") + reason)
+			{
+			}
+
+			NotInitialized::NotInitialized(const char* file, int line, const String& reason)
+				: GeneralException(file, line, "NotInitialized", reason)
+			{
+			}
 
 			DEF_EXCEPTION(OutOfRange, "the range of the operation was invalid")
 
@@ -333,15 +322,16 @@ namespace BALL
 
 			DEF_EXCEPTION(BufferOverflow, "the maximum buffersize has been reached")
 
-			DEF_EXCEPTION(OutOfGrid, "a point was outside a grid")
+			DEF_EXCEPTION(OutOfGrid, "a point was outside a grid")	
+
+			DEF_EXCEPTION(FormatUnsupported, "given framebuffer format is not supported")
 
 		
 			GlobalExceptionHandler::GlobalExceptionHandler()
-				throw()
 			{
-                                //std::set_terminate(terminate);
-                                //std::set_unexpected(terminate);
-                                //std::set_new_handler(newHandler);
+				std::set_terminate(terminate);
+				std::set_unexpected(terminate);
+				std::set_new_handler(newHandler);
 			}
 
 			void GlobalExceptionHandler::newHandler()
@@ -351,7 +341,6 @@ namespace BALL
 			}
 				
 			void GlobalExceptionHandler::terminate()
-				throw()
 			{
 				// add cerr to the log stream
 				// and write all available information on
@@ -391,7 +380,6 @@ namespace BALL
 			void GlobalExceptionHandler::set
 				(const String& file, int line,
 				 const String& name, const String& message)
-				throw()
 			{
 				name_ = name;
 				line_ = line;
@@ -400,25 +388,21 @@ namespace BALL
 			}
 			
 			void GlobalExceptionHandler::setName(const String& name)
-				throw()
 			{
 				name_ = name;
 			}
 			
 			void GlobalExceptionHandler::setMessage(const String& message)
-				throw()
 			{
 				message_ = message;
 			}
 			
 			void GlobalExceptionHandler::setFile(const String& file)
-				throw()
 			{
 				file_ = file;
 			}
 			
 			void GlobalExceptionHandler::setLine(int line) 
-				throw()
 			{
 				line_ = line;
 			}

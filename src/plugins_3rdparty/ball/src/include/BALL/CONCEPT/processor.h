@@ -1,8 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: processor.h,v 1.18 2005-12-23 17:01:41 amoll Exp $
-//
 
 #ifndef BALL_CONCEPT_PROCESSOR_H
 #define BALL_CONCEPT_PROCESSOR_H
@@ -173,6 +171,11 @@ namespace BALL
 	};
 
 	//@}
+// required for visual studio
+#ifdef BALL_COMPILER_MSVC
+class Atom;
+template class BALL_EXPORT UnaryProcessor<Atom>;
+#endif
 
 } // namespace BALL
 

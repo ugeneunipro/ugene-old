@@ -1,8 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: version.h,v 1.32.20.2 2007-08-03 03:27:07 oliver Exp $
-//
 
 #ifndef BALL_COMMON_VERSION_H
 #define BALL_COMMON_VERSION_H
@@ -18,7 +16,7 @@
 //
 //  master data for all revisions is stored in this define!
 //
-#define BALL_RELEASE_STRING             "1.2"
+#define BALL_RELEASE_STRING             "1.4.2"
 
 namespace BALL
 {
@@ -37,43 +35,44 @@ namespace BALL
 	{
 		public:
 
-		/** Enumeration of all possible release types.
-		*/
-		enum Type
-		{
-			STABLE,
-			ALPHA,
-			BETA,
-			NONPUBLIC,
-			PRERELEASE,
-			PATCHLVL, // this can't be PATCHLEVEL due to a collision with historic Python versions (< 2.2).
-			UNKNOWN
-		};
+			/** Enumeration of all possible release types.
+			*/
+			enum Type
+			{
+				STABLE,
+				ALPHA,
+				BETA,
+				NONPUBLIC,
+				PRERELEASE,
+				PATCHLVL, // this can't be PATCHLEVEL due to a collision with historic Python versions (< 2.2).
+				UNKNOWN
+			};
 
-		/** Return the version number, which is defined in BALL_RELEASE_STRING
-		*/
-		static const char* getVersion() throw();
+			/** Return the version number, which is defined in BALL_RELEASE_STRING
+			*/
+			static const char* getVersion();
 
-		/** Return the major revision number.
-				(The part of the release number before the point)
-		*/
-		static int getMajorRevision() throw(Exception::InvalidFormat);
+			/** Return the major revision number.
+					(The part of the release number before the point)
+					\throws Exception::InvalidFormat
+			*/
+			static int getMajorRevision();
 
-		/** Return the minor revision number.
-				(The part of the release number after the point)
-		*/
-		static int getMinorRevision() throw(Exception::InvalidFormat);
+			/** Return the minor revision number.
+					(The part of the release number after the point)
+					\throws Exception::InvalidFormat
+			*/
+			static int getMinorRevision();
 
-		/** Return the type of release:
-				ALPHA, BETA, NONPUPLIC, STABLE, PRERELEASE, PATCHLVL, UNKNOWN.
-		*/
-		static Type getType() throw();
-		
+			/** Return the type of release:
+					ALPHA, BETA, NONPUPLIC, STABLE, PRERELEASE, PATCHLVL, UNKNOWN.
+			*/
+			static Type getType() ;
+			
 
 		protected:
-
-		static const char* RELEASE_DATE_AND_TIME;
-	    static const char* RELEASE_WHAT_STRING;
+			static const char* RELEASE_DATE_AND_TIME;
+			static const char* RELEASE_WHAT_STRING;
 	};
 	
 }

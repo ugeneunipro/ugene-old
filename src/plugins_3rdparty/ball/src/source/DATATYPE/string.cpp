@@ -1,14 +1,16 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: string.C,v 1.53 2005-02-15 19:18:41 oliver Exp $
-//
 
 #include <BALL/DATATYPE/string.h>
-#include <BALL/COMMON/limits.h>
 
-#include <stdio.h>
-#include <stdarg.h>
+#include <QtCore/QString>
+#include <QtCore/QByteArray>
+
+#include <cstdio>
+#include <cstdarg>
+#include <limits>
+
 #include <algorithm>
 
 using std::ostream;
@@ -49,7 +51,7 @@ namespace BALL
 	const char* String::CHARACTER_CLASS__WHITESPACE = " \n\t\r\f\v";
 	const char* String::CHARACTER_CLASS__QUOTES = "\"";
 
-	const Size String::EndPos = Limits<Size>::max();
+	const Size String::EndPos = std::numeric_limits<Size>::max();
 	
 	const String String::EMPTY("");
 
@@ -66,7 +68,6 @@ namespace BALL
 	}
 
 	Substring::Substring()
-		throw()
 		:	bound_(0),
 			from_((Index)String::EndPos),
 			to_((Index)String::EndPos)
@@ -74,7 +75,6 @@ namespace BALL
 	}
 
 	Substring::Substring(const Substring& substring, bool /* deep */)
-		throw()
 		:	bound_(substring.bound_),
 			from_(substring.from_),
 			to_(substring.to_)
@@ -82,7 +82,6 @@ namespace BALL
 	}
 
 	Substring::Substring(const String& s, Index from, Size len)
-		throw(Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		s.validateRange_(from, len);
 
@@ -92,12 +91,10 @@ namespace BALL
 	}
 
 	Substring::~Substring()
-		throw()
 	{
 	}
 
 	void Substring::dump(ostream& s, Size depth) const
-		throw(Substring::UnboundSubstring)
 	{
 		if (bound_ == 0)
 		{
@@ -129,7 +126,6 @@ namespace BALL
 	}
 
 	ostream& operator << (ostream &s, const Substring& substring)
-		throw()
 	{
 		if (substring.isBound() == false)
 		{
@@ -147,9 +143,17 @@ namespace BALL
 		return s;
 	}
 
+	String::String(const QString& string)
+	{
+		assign(string.toAscii().data());
+	}
+
+	String::String(const QByteArray& string)
+	{
+		assign(string.data());
+	}
+
 	String::String(const char* char_ptr, Index from, Size len)
- 	 throw(Exception::NullPointer, Exception::IndexUnderflow,
-	Exception::IndexOverflow)
  	 : string()
 	{
  	 validateCharPtrRange_(from, len, char_ptr);
@@ -161,7 +165,6 @@ namespace BALL
 
 	// hand-coded create method
 	void* String::create(bool /* deep */, bool empty) const
-		throw()
 	{
 		void* ptr;
 		if (empty == true)
@@ -177,7 +180,6 @@ namespace BALL
 	}
  
 	String::String(Size buffer_size, const char* format, ... )
-		throw(Exception::IndexUnderflow, Exception::NullPointer)
 		: string() 
 	{
 		if (buffer_size <= 0)
@@ -191,11 +193,15 @@ namespace BALL
 		}
  
 		char* buffer = new char[buffer_size];
+		memset(buffer, 0, buffer_size);
 
 		va_list var_arg_list;
 		va_start(var_arg_list, format);
 		vsnprintf(buffer, (Size)buffer_size, format, var_arg_list);
 		va_end(var_arg_list);
+
+		// this is a safeguard for strange vsnprintf implementations
+		buffer[buffer_size-1] = '\0';
 
 		assign(buffer);
 		
@@ -204,10 +210,8 @@ namespace BALL
 
 #ifdef BALL_HAS_SSTREAM
 	String::String(std::stringstream& s)
-			throw()
 #else
 	String::String(std::strstream& s)
-			throw()
 #endif
 		: string("")
 	{
@@ -215,8 +219,9 @@ namespace BALL
 	}
 
 #	define BALL_STRING_DEFINE_CONSTRUCTOR_METHOD(type, format_string) \
-	String::String(type t) 	throw()\
+	String::String(type t)\
 	{ \
+		setlocale(LC_NUMERIC, "C"); \
 		char buffer[128]; \
 	\
 		sprintf(buffer, format_string, t); \
@@ -229,14 +234,17 @@ namespace BALL
 	BALL_STRING_DEFINE_CONSTRUCTOR_METHOD(unsigned int, "%u")
 	BALL_STRING_DEFINE_CONSTRUCTOR_METHOD(long, "%ld")
 	BALL_STRING_DEFINE_CONSTRUCTOR_METHOD(unsigned long, "%lu")
+#ifdef BALL_ALLOW_LONG64_TYPE_OVERLOADS
+	BALL_STRING_DEFINE_CONSTRUCTOR_METHOD(LongIndex, "%lld")
+	BALL_STRING_DEFINE_CONSTRUCTOR_METHOD(LongSize, "%llu")
+#endif
 	BALL_STRING_DEFINE_CONSTRUCTOR_METHOD(float, "%f")
 	BALL_STRING_DEFINE_CONSTRUCTOR_METHOD(double, "%f")
 
 	#undef BALL_STRING_DEFINE_CONSTRUCTOR_METHOD
 
-	String::~String() throw()
+	String::~String()
 	{
-		erase();
 	}
 
 	void String::set(const String& s)
@@ -245,7 +253,6 @@ namespace BALL
 	}
 
 	void String::set(const String& s, Index from, Size len)
-		throw(Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		s.validateRange_(from, len);
 
@@ -260,7 +267,6 @@ namespace BALL
 	}
 
 	void String::set(const char* s, Index from, Size len)
-		throw(Exception::NullPointer, Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		validateCharPtrRange_(from, len, s);
 
@@ -275,7 +281,6 @@ namespace BALL
 	}
 
 	void String::set(Size buffer_size, const char *format, ... )
-		throw(Exception::IndexUnderflow, Exception::NullPointer)
 	{
 		if (buffer_size <= 0)
 		{
@@ -288,11 +293,15 @@ namespace BALL
 		}
  
 		char* buffer = new char[buffer_size];
+		memset(buffer, 0, buffer_size);
 
 		va_list var_arg_list;
 		va_start(var_arg_list, format);
 		vsnprintf(buffer, (Size)buffer_size, format, var_arg_list);
 		va_end(var_arg_list);
+
+		// this is a safeguard for strange vsnprintf implementations
+		buffer[buffer_size-1] = '\0';
 
 		assign(buffer);
 		
@@ -300,7 +309,7 @@ namespace BALL
 	}
 
 #	define BALL_STRING_DEFINE_SET_METHOD(type, format_string) \
-	void String::set(type t) 	throw()\
+	void String::set(type t)\
 	{ \
 		char buffer[128]; \
 	\
@@ -315,13 +324,16 @@ namespace BALL
 	BALL_STRING_DEFINE_SET_METHOD(unsigned int, "%u")
 	BALL_STRING_DEFINE_SET_METHOD(long, "%ld")
 	BALL_STRING_DEFINE_SET_METHOD(unsigned long, "%lu")
+#ifdef BALL_ALLOW_LONG64_TYPE_OVERLOADS
+	BALL_STRING_DEFINE_SET_METHOD(LongIndex, "%lld")
+	BALL_STRING_DEFINE_SET_METHOD(LongSize, "%llu")
+#endif
 	BALL_STRING_DEFINE_SET_METHOD(float, "%f")
 	BALL_STRING_DEFINE_SET_METHOD(double, "%f")
 
 	#undef BALL_STRING_DEFINE_SET_METHOD
 
   void String::get(char* char_ptr, Index from, Size max_len) const
-		throw(Exception::NullPointer, Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		validateIndex_(from);
 
@@ -347,7 +359,6 @@ namespace BALL
 	}
  
 	bool String::toBool() const
-		throw()
 	{
 		string::size_type str_index = find_first_not_of(CHARACTER_CLASS__WHITESPACE);
 		
@@ -375,7 +386,6 @@ namespace BALL
 	}
 	 
 	short String::toShort() const
-		throw(Exception::InvalidFormat)
 	{
 		if (!isFloat())
 		{
@@ -385,7 +395,7 @@ namespace BALL
 		errno = 0;
 		int i = atoi(c_str());
 
-		if ((errno == ERANGE) || (i < (int)Limits<short>::min()) || (i > (int)Limits<short>::max()))
+		if ((errno == ERANGE) || (i < (int)std::numeric_limits<short>::min()) || (i > (int)std::numeric_limits<short>::max()))
 		{
 			errno = 0;
 			throw Exception::InvalidFormat(__FILE__, __LINE__, string("out of range: ") + c_str());
@@ -396,7 +406,6 @@ namespace BALL
 	}
 	 
 	unsigned short String::toUnsignedShort() const
-		throw(Exception::InvalidFormat)
 	{
 		if (!isFloat())
 		{
@@ -406,7 +415,7 @@ namespace BALL
 		errno = 0;
 		int i = atoi(c_str());
 
-		if ((errno == ERANGE) || (i < (int)0) || (i > (int)Limits<unsigned short>::max()))
+		if ((errno == ERANGE) || (i < (int)0) || (i > (int)std::numeric_limits<unsigned short>::max()))
 		{
 			errno = 0;
 			throw Exception::InvalidFormat(__FILE__, __LINE__, string("out of range: ") + c_str());
@@ -418,7 +427,6 @@ namespace BALL
 
 	
 	int String::toInt() const
-		throw(Exception::InvalidFormat)
 	{
 		if (!isFloat())
 		{
@@ -438,7 +446,6 @@ namespace BALL
 
 	 
 	unsigned int String::toUnsignedInt() const
-		throw(Exception::InvalidFormat)
 	{
 		if (!isFloat())
 		{
@@ -458,7 +465,6 @@ namespace BALL
 
 	 
 	long String::toLong() const
-		throw(Exception::InvalidFormat)	
 	{
 		if (!isFloat())
 		{
@@ -478,7 +484,6 @@ namespace BALL
 
 	 
 	unsigned long String::toUnsignedLong() const
-		throw(Exception::InvalidFormat)
 	{
 		if (!isFloat())
 		{
@@ -498,7 +503,6 @@ namespace BALL
 
 	 
 	float String::toFloat() const
-		throw(Exception::InvalidFormat)
 	{
 		if (!isFloat())
 		{
@@ -518,7 +522,6 @@ namespace BALL
 
 	
 	double String::toDouble() const
-		throw(Exception::InvalidFormat)
 	{
 		if (!isFloat())
 		{
@@ -536,35 +539,20 @@ namespace BALL
 	}
 
 	void String::toLower(Index from, Size len)
-		throw(Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		validateRange_(from, len);
 
-		Index index = from;
-		char* char_ptr = const_cast<char*>(c_str()) + from;
-
-		for (; index < (Index)(from + len); index++, char_ptr++)
-		{
-			*char_ptr = tolower(*char_ptr);
-		}
+		std::transform(begin()+from, begin()+from+len, begin()+from, ::tolower); 
 	}
 
 	void String::toUpper(Index from, Size len)
-		throw(Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		validateRange_(from, len);
 
-		Index index = from;
-		char *char_ptr = const_cast<char*>(c_str()) + from;
-
-		for(; index < (Index)(from + len); index++, char_ptr++)
-		{
-			*char_ptr = toupper(*char_ptr);
-		}
+		std::transform(begin()+from, begin()+from+len, begin()+from, ::toupper); 
 	}
 
 	Size String::countFields(const char* delimiters) const
-		throw(Exception::NullPointer)
 	{
 		if (delimiters == 0)
 		{
@@ -610,7 +598,6 @@ namespace BALL
 	}
 
 	Size String::countFieldsQuoted(const char* delimiters, const char* quotes) const
-		throw(Exception::NullPointer)
 	{
 		if ((delimiters == 0) || (quotes == 0))
 		{
@@ -702,7 +689,6 @@ namespace BALL
 	}
 
 	String String::getField(Index index, const char* delimiters, Index* from_and_next_field) const
-		throw(Exception::IndexUnderflow, Exception::NullPointer)
 	{
 		if ((from_and_next_field != 0) && (*from_and_next_field < 0))
 		{
@@ -796,7 +782,6 @@ namespace BALL
 	}
 
 	const char* eatDelimiters_(const char* start, const char* end, const char* delimiters)
-		throw()
 	{
 		const char* current_delimiter = (char*)strchr(delimiters, *start);
 		while ((current_delimiter != 0) && (start < end))
@@ -810,7 +795,6 @@ namespace BALL
 
 	String String::getFieldQuoted(Index index, const char* delimiters, 
 																const char* quotes, Index* from_and_next_field) const
-		throw(Exception::IndexUnderflow, Exception::NullPointer)
 	{
 		if ((from_and_next_field != 0) && (*from_and_next_field < 0))
 		{
@@ -914,7 +898,6 @@ namespace BALL
 	}
 
 	Size String::split(String string_array[], Size array_size, const char* delimiters, Index from) const
-		throw(Exception::IndexUnderflow, Exception::NullPointer)
 	{
 		Size	array_index = 0;
 
@@ -942,7 +925,6 @@ namespace BALL
 	}
 
 	Size String::split(vector<String>& strings, const char* delimiters, Index from) const
-		throw(Exception::IndexUnderflow, Exception::NullPointer)
 	{
 		// clear the vector anyway
 		strings.clear();
@@ -961,7 +943,6 @@ namespace BALL
 	}
 
 	Size String::splitQuoted(vector<String>& strings, const char* delimiters, const char* quotes, Index from) const
-		throw(Exception::IndexUnderflow, Exception::NullPointer)
 	{
 		// clear the vector anyway
 		strings.clear();
@@ -980,7 +961,6 @@ namespace BALL
 	}
 
 	String& String::trimLeft(const char* trimmed_chars)
-		throw()
 	{
 		if ((trimmed_chars == 0) || (size() == 0))
 		{
@@ -1008,7 +988,6 @@ namespace BALL
 	}
 
 	String& String::trimRight(const char* trimmed_chars)
-		throw()
 	{
 		if (trimmed_chars == 0 ||
 				size() == 0)
@@ -1037,7 +1016,6 @@ namespace BALL
 	}
 
 	String operator + (const char* char_ptr, const String& s)
-		throw()
 	{
 		String result(char_ptr);
 		result.append(s);
@@ -1045,7 +1023,6 @@ namespace BALL
 	}
 
 	String operator + (char c, const String& s)
-		throw()
 	{
 		String result(c);
 		result.append(s);
@@ -1053,7 +1030,6 @@ namespace BALL
 	}
 
 	bool String::hasPrefix(const String& s) const
-		throw()
 	{
 		if (s.size() > size())
 		{
@@ -1068,7 +1044,6 @@ namespace BALL
 	}
 
 	bool String::hasSuffix(const String& s) const
-		throw()
 	{
 		if (s.size() > size())
 		{
@@ -1086,7 +1061,7 @@ namespace BALL
 
 
 	#define BALL_STRING_DEFINE_IS_CLASS_METHOD(func, isclass) \
-	bool func() const throw()\
+	bool func() const\
 	{ \
 		const char* end = &c_str()[size()]; \
 	 \
@@ -1106,29 +1081,14 @@ namespace BALL
 	#undef BALL_STRING_DEFINE_IS_CLASS_METHOD
 
 	String& String::reverse(Index from, Size len)
-		throw(Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		validateRange_(from, len);
 
-		if (len > 1)
-		{
-			char* forward_ptr = const_cast<char*>(c_str()) + from;
-			char* backward_ptr = const_cast<char*>(c_str()) + from + len - 1;
-			char temp = 0;
-
-			for (; forward_ptr < backward_ptr; ++forward_ptr, --backward_ptr)
-			{
-				temp = *forward_ptr;
-				*forward_ptr = *backward_ptr;
-				*backward_ptr = temp;
-			}
-		}
-
+		std::reverse(begin()+from, begin()+from+len);
 		return *this;
 	}
 
 	int String::compare(const String& s, Index from, Size len) const
-		throw(Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		validateRange_(from, len);
 
@@ -1169,7 +1129,6 @@ namespace BALL
 	}
 
 	int String::compare(const String& s, Index from) const
-		throw(Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		validateIndex_(from);
 
@@ -1212,7 +1171,6 @@ namespace BALL
 	}
 
 	int String::compare(const char* char_ptr, Index from, Size len) const
-		throw(Exception::NullPointer, Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		if (char_ptr == 0)
 		{
@@ -1262,7 +1220,6 @@ namespace BALL
 	}
 
 	int String::compare(const char* char_ptr, Index from) const
-		throw(Exception::NullPointer, Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		if (char_ptr == 0)
 		{
@@ -1333,7 +1290,6 @@ namespace BALL
 	}
 
 	istream& getline(istream& s, String& str, char delimiter)
-		throw()
 	{
 		char c;
 		
@@ -1352,7 +1308,6 @@ namespace BALL
 	}
 
 	void String::dump(ostream &s, Size depth) const
-		throw()
 	{
 		BALL_DUMP_STREAM_PREFIX(s);
 
@@ -1376,7 +1331,6 @@ namespace BALL
 	}
 
 	Size String::substitute(const String& to_replace, const String& replacing)
-		throw()
 	{
 		Size replaced_size = (Size)to_replace.size();
 
@@ -1396,7 +1350,6 @@ namespace BALL
  
 
 	void String::validateIndex_(Index& index) const
-		throw (Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		// indices may be given as negative arguments: start from the end
 		// -1 therefore means the last bit.
@@ -1420,7 +1373,6 @@ namespace BALL
 	}
 
 	void String::validateRange_(Index& from, Size& len) const
-		throw (Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		Size string_size = (Size)size();
 		
@@ -1455,7 +1407,6 @@ namespace BALL
  	}
 
 	void Substring::validateRange_(Index& from, Size& len) const
-		throw(Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		Size size = to_ - from_ + 1;
 
@@ -1490,7 +1441,6 @@ namespace BALL
  	}
 
 	void String::validateCharPtrRange_(Index& from, Size& len, const char* char_ptr)
-		throw(Exception::NullPointer, Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		if (char_ptr == 0)
 		{
@@ -1530,7 +1480,6 @@ namespace BALL
  	}
 
 	bool Substring::operator == (const char* char_ptr) const
-		throw(Substring::UnboundSubstring, Exception::NullPointer)
 	{
 		if (bound_ == 0)
 		{
@@ -1552,7 +1501,6 @@ namespace BALL
 
 
 	bool Substring::operator != (const char* char_ptr) const
-		throw(Substring::UnboundSubstring, Exception::NullPointer)
 	{
 		if (bound_ == 0)
 		{
@@ -1572,7 +1520,6 @@ namespace BALL
 
 
 	Substring& Substring::bind(const Substring& s, Index from, Size len)
-		throw(Exception::IndexUnderflow, Exception::IndexOverflow)
 	{
 		s.validateRange_(from, len);
 
@@ -1586,7 +1533,6 @@ namespace BALL
 
 
 	void Substring::set(const char* char_ptr, Size size)
-		throw(Substring::UnboundSubstring, Exception::NullPointer, Exception::SizeUnderflow)
 	{
 		if (bound_ == 0)
 		{
@@ -1613,7 +1559,6 @@ namespace BALL
 
 
 	bool Substring::operator == (const Substring& s) const
-		throw(Substring::UnboundSubstring)
 	{
 		if (bound_ == 0 || s.bound_ == 0)
 		{
@@ -1628,7 +1573,6 @@ namespace BALL
 
 
 	bool Substring::operator != (const Substring& s) const
-		throw(Substring::UnboundSubstring)
 	{
 		if (bound_ == 0 || s.bound_ == 0)
 		{
@@ -1643,7 +1587,6 @@ namespace BALL
 
 
 	Substring String::before(const String& s, Index from) const
-		throw()
 	{
 		Position found = EndPos;
 		if (s != "")
@@ -1661,7 +1604,6 @@ namespace BALL
 
 
 	Substring String::through (const String& s, Index from) const
-		throw()
 	{
 		Position found = EndPos;
 		if (s != "")
@@ -1679,7 +1621,6 @@ namespace BALL
 
 
 	Substring String::from(const String& s, Index from) const
-		throw()
 	{
 		if (s == "")
 		{
@@ -1698,7 +1639,7 @@ namespace BALL
 
 
 	Substring String::after(const String& s, Index from) const
-		throw()
+
 	{
 		if (s == "")
 		{
@@ -1717,7 +1658,6 @@ namespace BALL
 
 
 	Substring String::right(Size len) const
-		throw()
 	{
 		// to save calls to size()
 		Size s = (Size)size();
@@ -1772,7 +1712,6 @@ int String::Index_64_[128] = {
 #define base64val_(c) Index_64_[(unsigned int)(c)]
 
 String String::encodeBase64()
-	throw()
 {
 	Size in_length((Size)this->size());
 	const char* in = this->c_str();
@@ -1807,7 +1746,6 @@ String String::encodeBase64()
 }
 
 String String::decodeBase64()
-	throw()
 {
 	const char* in = this->c_str();
 	String out;

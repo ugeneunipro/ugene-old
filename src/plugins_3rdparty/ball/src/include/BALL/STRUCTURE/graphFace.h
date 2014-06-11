@@ -1,11 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: graphFace.h,v 1.14.26.2 2007-06-17 07:02:20 oliver Exp $
-//
-// Author:
-// 
-//
 
 #ifndef BALL_STRUCTURE_GRAPHFACE_H
 #define BALL_STRUCTURE_GRAPHFACE_H
@@ -62,8 +57,7 @@ namespace BALL
 		/**	Default constructor.
 				This method creates a new GraphFace object.
 		*/
-		GraphFace()
-			throw();
+		GraphFace();
 
 		/**	Copy constructor.
 				Create a new GraphFace object from another.
@@ -72,14 +66,12 @@ namespace BALL
 											Otherwise the new GraphFace object is linked to the
 											neighbours of the old GraphFace object.
 		*/
-		GraphFace(const GraphFace<Vertex,Edge,Face>& face, bool deep = false)
-			throw();
+		GraphFace(const GraphFace<Vertex,Edge,Face>& face, bool deep = false);
 
 		/**	Destructor.
 				Destructs the GraphFace object.
 		*/
-		virtual ~GraphFace()
-			throw();
+		virtual ~GraphFace();
 
 		//@}
 		/**	@name	Assignments
@@ -92,8 +84,7 @@ namespace BALL
 											(default). Otherwise the GraphFace object is linked to	
 											the neighbours of the GraphFace object to assign from.
 		*/
-		void set(const GraphFace<Vertex,Edge,Face>& face, bool deep = false)
-			throw();
+		void set(const GraphFace<Vertex,Edge,Face>& face, bool deep = false);
 
 		/**	Assign from another GraphFace.
 				The GraphFace object is linked to the neighbours of the GraphFace	
@@ -101,8 +92,7 @@ namespace BALL
 				@param	face	the GraphFace object to assign from
 		*/
 		GraphFace<Vertex,Edge,Face>& operator =
-				(const GraphFace<Vertex,Edge,Face>& face)
-			throw();
+				(const GraphFace<Vertex,Edge,Face>& face);
 
 		//@}
 		/**	@name	Accessors
@@ -112,51 +102,43 @@ namespace BALL
 		/** Insert a new vertex to the GraphFace.
 				@param	vertex	a pointer to the new vertex
 		*/
-		void insert(Vertex* vertex)
-			throw();
+		void insert(Vertex* vertex);
 
 		/** Insert a new edge to the GraphFace.
 				@param	edge	a pointer to the new edge
 		*/
-		void insert(Edge* edge)
-			throw();
+		void insert(Edge* edge);
 
 		/** Remove a vertex from the GraphFace.
 				@param	vertex	a pointer to the vertex to remove
 		*/
-		void remove(Vertex* vertex)
-			throw();
+		void remove(Vertex* vertex);
 
 		/** Remove an edge from the GraphFace.
 				@param	edge	a pointer to the edge to remove
 		*/
-		void remove(Edge* edge)
-			throw();
+		void remove(Edge* edge);
 
 		/** Return the number of vertices of the GraphFace.
 				@return	Position	the number of vertices of the GraphFace
 		*/
-		Position numberOfVertices() const
-			throw();
+		Position numberOfVertices() const;
 
 		/** Return the number of edges of the GraphFace.
 				@return	Position	the number of edges of the GraphFace
 		*/
-		Position numberOfEdges() const
-			throw();
+		Position numberOfEdges() const;
 
 
 		/** Set the index of the GraphFace.
 				@param	index	the new index
 		*/
-		void setIndex(Index index)
-			throw();
+		void setIndex(Index index);
 
 		/** Return the index of the GraphFace.
 				@return	Index	the index of the GraphFace
 		*/
-		Index getIndex() const
-			throw();
+		Index getIndex() const;
 
 		/** Find the two edges of the GraphFace that belong to the given vertex
 				@param	vertex	a pointer to the given vertex
@@ -165,8 +147,7 @@ namespace BALL
 				@return	bool		<b>true</b> if the edges can be found,
 												<b>false</b> otherwise
 		*/
-		bool getEdges(const Vertex* vertex, Edge*& edge1, Edge*& edge2) const
-			throw();
+		bool getEdges(const Vertex* vertex, Edge*& edge1, Edge*& edge2) const;
 
 		/** Find the edge of the GraphFace that belongs to the two given vertices
 				@param	vertex1	a pointer to the first given vertex
@@ -178,16 +159,14 @@ namespace BALL
 		bool getEdge
 				(const Vertex* vertex1,
 				 const Vertex* vertex2,
-				 Edge*& edge) const
-			throw();
+				 Edge*& edge) const;
 
 		/** Find the edge of the GraphFace that is similar to the given edge.
 				@param	edge	a pointer to the given edge
 				@return	Edge*	a pointer to the similar edge of te GraphFace if it can
 											be found, otherwise NULL
 		*/
-		Edge* getSimilarEdge(const Edge* edge) const
-			throw();
+		Edge* getSimilarEdge(const Edge* edge) const;
 
 		/** Substitute a vertex by an other one.
 				@param	old_vertex	the vertex that has to be substituted
@@ -195,8 +174,7 @@ namespace BALL
 				@return	bool				<b>true</b>, if the vertex can be substituted,
 														<b>false</b> otherwise
 		*/
-		bool substitute(const Vertex* old_vertex, Vertex* new_vertex)
-			throw();
+		bool substitute(const Vertex* old_vertex, Vertex* new_vertex);
 
 		/** Substitute an edge by an other one.
 				@param	old_edge	the edge that has to be substituted
@@ -204,8 +182,7 @@ namespace BALL
 				@return	bool			<b>true</b>, if the edge can be substituted,
 													<b>false</b> otherwise
 		*/
-		bool substitute(const Edge* old_edge, Edge* new_edge)
-			throw();
+		bool substitute(const Edge* old_edge, Edge* new_edge);
 
 		//@}
 		/**	@name	Predicates
@@ -215,57 +192,44 @@ namespace BALL
 		/**	Equality operator.
 				@return bool	<b>true</b>
 		*/
-		virtual bool operator == (const Face& face) const
-			throw();
+		virtual bool operator == (const Face& face) const;
 
 		/**	Inequality operator.
 				@return bool	<b>false</b>
 		*/
-		virtual bool operator != (const Face& face) const
-			throw();
+		virtual bool operator != (const Face& face) const;
 
 		/**	Similarity operator.
 				@return bool	<b>true</b>
 		*/
-		virtual bool operator *= (const Face& face) const
-			throw();
+		virtual bool operator *= (const Face& face) const;
 
 		/**	Test whether a vertex is meber of the face.
 				@param	vertex	a pointer to the the vertex to test
 				@return	Vertex*	a pointer to the vertex if it exists,	
 												otherwise <b>NULL</b>
 		*/
-		Vertex* has(Vertex* vertex) const
-			throw();
+		Vertex* has(Vertex* vertex) const;
 
 		/**	Test whether an edge is meber of the face.
 				@param	edge	a pointer to the edge to test
 				@return	Edge*	a pointer to the edge if it exists, otherwise <b>NULL</b>
 		*/
-		Edge* has(Edge* edge) const
-			throw();
+		Edge* has(Edge* edge) const;
 
 		//@}
 		/**	@name	External Iterators
 		*/
 		//@{
 
-		VertexIterator beginVertex()
-			throw();
-		ConstVertexIterator beginVertex() const
-			throw();
-		VertexIterator endVertex()
-			throw();
-		ConstVertexIterator endVertex() const
-			throw();
-		EdgeIterator beginEdge()
-			throw();
-		ConstEdgeIterator beginEdge() const
-			throw();
-		EdgeIterator endEdge()
-			throw();
-		ConstEdgeIterator endEdge() const
-			throw();
+		VertexIterator beginVertex();
+		ConstVertexIterator beginVertex() const;
+		VertexIterator endVertex();
+		ConstVertexIterator endVertex() const;
+		EdgeIterator beginEdge();
+		ConstEdgeIterator beginEdge() const;
+		EdgeIterator endEdge();
+		ConstEdgeIterator endEdge() const;
 
 		//@}
 
@@ -293,7 +257,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	GraphFace<Vertex,Edge,Face>::GraphFace()
-		throw()
 		: vertex_(),
 			edge_(),
 			index_(-1)
@@ -304,7 +267,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	GraphFace<Vertex,Edge,Face>::GraphFace
 			(const GraphFace<Vertex,Edge,Face>& face, bool deep)
-		throw()
 		: vertex_(),
 			edge_(),
 			index_(face.index_)
@@ -319,7 +281,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	GraphFace<Vertex,Edge,Face>::~GraphFace()
-		throw()
 	{
 	}
 
@@ -327,7 +288,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	void GraphFace<Vertex,Edge,Face>::set
 			(const GraphFace<Vertex,Edge,Face>& face, bool deep)
-		throw()
 	{
 		if (this != &face)
 		{
@@ -344,7 +304,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	GraphFace<Vertex,Edge,Face>& GraphFace<Vertex,Edge,Face>::operator =
 			(const GraphFace<Vertex,Edge,Face>& face)
-		throw()
 	{
 		if (this != &face)
 		{
@@ -358,7 +317,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	void GraphFace<Vertex,Edge,Face>::insert(Vertex* vertex)
-		throw()
 	{
 		typename std::list<Vertex*>::iterator v = vertex_.begin();
 		bool found = false;
@@ -376,7 +334,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	void GraphFace<Vertex,Edge,Face>::insert(Edge* edge)
-		throw()
 	{
 		typename std::list<Edge*>::iterator e = edge_.begin();
 		bool found = false;
@@ -394,7 +351,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	void GraphFace<Vertex,Edge,Face>::remove(Vertex* vertex)
-		throw()
 	{
 		vertex_.remove(vertex);
 	}
@@ -402,7 +358,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	void GraphFace<Vertex,Edge,Face>::remove(Edge* edge)
-		throw()
 	{
 		edge_.remove(edge);
 	}
@@ -410,7 +365,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	Position GraphFace<Vertex,Edge,Face>::numberOfVertices() const
-		throw()
 	{
 		return vertex_.size();
 	}
@@ -418,7 +372,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	Position GraphFace<Vertex,Edge,Face>::numberOfEdges() const
-		throw()
 	{
 		return edge_.size();
 	}
@@ -426,7 +379,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	void GraphFace<Vertex,Edge,Face>::setIndex(Index index)
-		throw()
 	{
 		index_ = index;
 	}
@@ -434,7 +386,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	Index GraphFace<Vertex,Edge,Face>::getIndex() const
-		throw()
 	{
 		return index_;
 	}
@@ -445,7 +396,6 @@ namespace BALL
 			(const Vertex*	vertex,
 			 Edge*&					edge1,
 			 Edge*&					edge2) const
-		throw()
 	{
 		bool found1 = false;
 		bool found2 = false;
@@ -480,7 +430,6 @@ namespace BALL
 			(const Vertex*	vertex1,
 			 const Vertex*	vertex2,
 			 Edge*&					edge) const
-		throw()
 	{
 		typename std::list<Edge*>::const_iterator e = edge_.begin();
 		bool found = false;
@@ -500,7 +449,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	Edge* GraphFace<Vertex,Edge,Face>::getSimilarEdge(const Edge* edge) const
-		throw()
 	{
 		typename std::list<Edge*>::const_iterator e = edge_.begin();
 		while (e != edge_.end())
@@ -518,7 +466,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	bool GraphFace<Vertex,Edge,Face>::substitute
 			(const Vertex* old_vertex, Vertex* new_vertex)
-		throw()
 	{
 		typename std::list<Vertex*>::iterator v = vertex_.begin();
 		while (v != vertex_.end())
@@ -537,7 +484,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	bool GraphFace<Vertex,Edge,Face>::substitute
 			(const Edge* old_edge, Edge* new_edge)
-		throw()
 	{
 		typename std::list<Edge*>::iterator e = edge_.begin();
 		while (e != edge_.end())
@@ -555,7 +501,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	bool GraphFace<Vertex,Edge,Face>::operator == (const Face&) const
-		throw()
 	{
 		return true;
 	}
@@ -563,7 +508,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	bool GraphFace<Vertex,Edge,Face>::operator != (const Face&) const
-		throw()
 	{
 		return false;
 	}
@@ -571,7 +515,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	bool GraphFace<Vertex,Edge,Face>::operator *= (const Face&) const
-		throw()
 	{
 		return true;
 	}
@@ -579,7 +522,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	Vertex* GraphFace<Vertex,Edge,Face>::has(Vertex* vertex) const
-		throw()
 	{
 		typename std::list<Vertex*>::const_iterator v = vertex_.begin();
 		while (v != vertex_.end())
@@ -596,7 +538,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	Edge* GraphFace<Vertex,Edge,Face>::has(Edge* edge) const
-		throw()
 	{
 		typename std::list<Edge*>::const_iterator e = edge_.begin();
 		while (e != edge_.end())
@@ -614,7 +555,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	typename GraphFace<Vertex,Edge,Face>::VertexIterator
 			GraphFace<Vertex,Edge,Face>::beginVertex()
-		throw()
 	{
 		return vertex_.begin();
 	}
@@ -623,7 +563,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	typename GraphFace<Vertex,Edge,Face>::ConstVertexIterator
 			GraphFace<Vertex,Edge,Face>::beginVertex() const
-		throw()
 	{
 		return vertex_.begin();
 	}
@@ -632,7 +571,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	typename GraphFace<Vertex,Edge,Face>::VertexIterator
 			GraphFace<Vertex,Edge,Face>::endVertex()
-		throw()
 	{
 		return vertex_.end();
 	}
@@ -641,7 +579,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	typename GraphFace<Vertex,Edge,Face>::ConstVertexIterator
 			GraphFace<Vertex,Edge,Face>::endVertex() const
-		throw()
 	{
 		return vertex_.end();
 	}
@@ -650,7 +587,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	typename GraphFace<Vertex,Edge,Face>::EdgeIterator
 			GraphFace<Vertex,Edge,Face>::beginEdge()
-		throw()
 	{
 		return edge_.begin();
 	}
@@ -659,7 +595,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	typename GraphFace<Vertex,Edge,Face>::ConstEdgeIterator
 			GraphFace<Vertex,Edge,Face>::beginEdge() const
-		throw()
 	{
 		return edge_.begin();
 	}
@@ -668,7 +603,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	typename GraphFace<Vertex,Edge,Face>::EdgeIterator
 			GraphFace<Vertex,Edge,Face>::endEdge()
-		throw()
 	{
 		return edge_.end();
 	}
@@ -677,7 +611,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	typename GraphFace<Vertex,Edge,Face>::ConstEdgeIterator
 			GraphFace<Vertex,Edge,Face>::endEdge() const
-		throw()
 	{
 		return edge_.end();
 	}
@@ -710,8 +643,7 @@ namespace BALL
 		/**	Default constructor.
 				This method creates a new GraphTriangle object.
 		*/
-		GraphTriangle()
-			throw();
+		GraphTriangle();
 
 		/**	Copy constructor.
 				Create a new GraphTriangle object from another.
@@ -721,8 +653,7 @@ namespace BALL
 											neighbours of the old GraphTriangle object.
 		*/
 		GraphTriangle
-				(const GraphTriangle<Vertex,Edge,Face>& face, bool deep = false)
-			throw();
+				(const GraphTriangle<Vertex,Edge,Face>& face, bool deep = false);
 
 		/**	Detailled constructor.
 				Create a new GraphTriangle object from some nice objects
@@ -737,14 +668,12 @@ namespace BALL
 		GraphTriangle
 				(Vertex*	vertex1,	Vertex*	vertex2,	Vertex*	vertex3,
 				 Edge*		edge1,		Edge*		edge2,		Edge*		edge3,
-				 Index		index)
-			throw();
+				 Index		index);
 
 		/**	Destructor.
 				Destructs the GraphTriangle object.
 		*/
-		virtual ~GraphTriangle()
-			throw();
+		virtual ~GraphTriangle();
 
 		//@}
 		/**	@name	Assignment
@@ -758,8 +687,7 @@ namespace BALL
 											to the neighbours of the GraphTriangle object to assign	
 											from.
 		*/
-		void set(const GraphTriangle<Vertex,Edge,Face>& face, bool deep = false)
-			throw();
+		void set(const GraphTriangle<Vertex,Edge,Face>& face, bool deep = false);
 
 		/**	Assign from another GraphTriangle.
 				The GraphTriangle object is linked to the neighbours of the	
@@ -767,8 +695,7 @@ namespace BALL
 				@param	face	the GraphTriangle object to assign from
 		*/
 		GraphTriangle<Vertex,Edge,Face>& operator =
-				(const GraphTriangle<Vertex,Edge,Face>& face)
-			throw();
+				(const GraphTriangle<Vertex,Edge,Face>& face);
 
 		/**	Assign to a lot of nice objects
 				@param	vertex1	assigned to the first vertex
@@ -782,8 +709,7 @@ namespace BALL
 		void set
 				(Vertex*	vertex1,	Vertex*	vertex2,	Vertex*	vertex3,
 				 Edge*		edge1,		Edge*		edge2,		Edge*		edge3,
-				 Index		index)
-			throw();
+				 Index		index);
 
 		//@}
 		/**	@name	Accessors
@@ -826,14 +752,12 @@ namespace BALL
 		/** Set the index of the GraphTriangle.
 				@param	index	the new index
 		*/
-		void setIndex(Index index)
-			throw();
+		void setIndex(Index index);
 
 		/** Return the index of the GraphTriangle.
 				@return	Index	the index of the GraphTriangle
 		*/
-		Index getIndex() const
-			throw();
+		Index getIndex() const;
 
 		/** Find the two edges of the GraphTriangle that belong to the given vertex.
 				@param	vertex	a pointer to the given vertex
@@ -842,8 +766,7 @@ namespace BALL
 				@return	bool		<b>true</b> if the edges can be found,
 												<b>false</b> otherwise
 		*/
-		bool getEdges(const Vertex* vertex, Edge*& edge1, Edge*& edge2) const
-			throw();
+		bool getEdges(const Vertex* vertex, Edge*& edge1, Edge*& edge2) const;
 
 		/** Find the edge of the GraphTriangle that belongs to the two given
 				vertices.
@@ -856,8 +779,7 @@ namespace BALL
 		bool getEdge
 				(const Vertex* vertex1,
 				 const Vertex* vertex2,
-				 Edge*& edge) const
-			throw();
+				 Edge*& edge) const;
 
 		/** Find the edge of the GraphFace that is similar to the given edge.
 				@param	edge					a pointer to the given edge
@@ -866,36 +788,31 @@ namespace BALL
 				@return	Index					the relative index of the similar edge if it
 															can be found, otherwise -1
 		*/
-		Index getSimilarEdge(const Edge* edge, Edge*& similar_edge) const
-			throw();
+		Index getSimilarEdge(const Edge* edge, Edge*& similar_edge) const;
 
 		/** Return the relative index of a vertex in the GraphTriangle.
 				@return	Index	the relative index of the vertex
 		*/
-		Index getRelativeIndex(const Vertex* vertex) const
-			throw();
+		Index getRelativeIndex(const Vertex* vertex) const;
 
 		/** Return the relative index of an edge in the GraphTriangle.
 				@return	Index	the relative index of the edge
 		*/
-		Index getRelativeIndex(const Edge* edge) const
-			throw();
+		Index getRelativeIndex(const Edge* edge) const;
 
 		/** Return a pointer to the third vertex of the GraphTriangle.
 				@param	v1			a pointer to the first vertex
 				@param	v2			a pointer to the second vertex
 				@return	Vertex*	a pointer to the third vertex
 		*/
-		Vertex* third(const Vertex* v1, const Vertex* v2) const
-			throw();
+		Vertex* third(const Vertex* v1, const Vertex* v2) const;
 
 		/** Return a pointer to the third edge of the GraphTriangle.
 				@param	e1		a pointer to the first edge
 				@param	e2		a pointer to the second edge
 				@return	Edge*	a pointer to the third edge
 		*/
-		Edge* third(const Edge* e1, const Edge* e2) const
-			throw();
+		Edge* third(const Edge* e1, const Edge* e2) const;
 
 
 		/** Get the edge of the GraphFace which lies on the opposite side of the
@@ -903,8 +820,7 @@ namespace BALL
 				@param	vertex	a pointer to a vertex of the GraphTriangle
 				@return	Edge*		a pointer to the opposite Edge
 		*/
-		Edge* getOppositeEdge(const Vertex* vertex) const
-			throw();
+		Edge* getOppositeEdge(const Vertex* vertex) const;
 
 
 		/** Get the vertex of the GraphFace which lies on the opposite side of the
@@ -912,8 +828,7 @@ namespace BALL
 				@param	edge		a pointer to an edge of the GraphTriangle
 				@return	Vertex*	a pointer to the opposite vertex
 		*/
-		Vertex* getOppositeVertex(const Edge* edge) const
-			throw();
+		Vertex* getOppositeVertex(const Edge* edge) const;
 
 		/** Substitute a vertex by an other one.
 				@param	old_vertex	the vertex that has to be substituted
@@ -921,8 +836,7 @@ namespace BALL
 				@return	bool				<b>true</b>, if the vertex can be substituted,
 														<b>false</b> otherwise
 		*/
-		bool substitute(const Vertex* old_vertex, Vertex* new_vertex)
-			throw();
+		bool substitute(const Vertex* old_vertex, Vertex* new_vertex);
 
 		/** Substitute an edge by an other one.
 				@param	old_edge	the edge that has to be substituted
@@ -930,8 +844,7 @@ namespace BALL
 				@return	bool			<b>true</b>, if the edge can be substituted,
 													<b>false</b> otherwise
 		*/
-		bool substitute(const Edge* old_edge, Edge* new_edge)
-			throw();
+		bool substitute(const Edge* old_edge, Edge* new_edge);
 
 		//@}
 		/**	@name	Predicates
@@ -941,35 +854,30 @@ namespace BALL
 		/**	Equality operator.
 				@return bool	<b>true</b>
 		*/
-		virtual bool operator == (const Face&) const
-			throw();
+		virtual bool operator == (const Face&) const;
 
 		/**	Inequality operator.
 				@return bool	<b>false</b>
 		*/
-		virtual bool operator != (const Face&) const
-			throw();
+		virtual bool operator != (const Face&) const;
 
 		/**	Similarity operator.
 				@return bool	<b>true</b>
 		*/
-		virtual bool operator *= (const Face&) const
-			throw();
+		virtual bool operator *= (const Face&) const;
 
 		/**	Test whether a vertex is meber of the face.
 				@param	vertex	a pointer to the the vertex to test
 				@return	Vertex*	a pointer to the vertex if it exists,	
 												otherwise <b>NULL</b>
 		*/
-		Vertex* has(Vertex* vertex) const
-			throw();
+		Vertex* has(Vertex* vertex) const;
 
 		/**	Test whether an edge is meber of the face.
 				@param	edge	a pointer to the edge to test
 				@return	Edge*	a pointer to the edge if it exists, otherwise <b>NULL</b>
 		*/
-		Edge* has(Edge* edge) const
-			throw();
+		Edge* has(Edge* edge) const;
 
 		//@}
 
@@ -991,7 +899,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	GraphTriangle<Vertex,Edge,Face>::GraphTriangle()
-		throw()
 		: index_(-1)
 	{
 		vertex_[0] = NULL;
@@ -1006,7 +913,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	GraphTriangle<Vertex,Edge,Face>::GraphTriangle
 			(const GraphTriangle<Vertex,Edge,Face>& face, bool deep)
-		throw()
 		: index_(face.index_)
 	{
 		if (deep)
@@ -1035,7 +941,6 @@ namespace BALL
 			(Vertex*	vertex1,	Vertex*	vertex2,	Vertex*	vertex3,
 			 Edge*		edge1,		Edge*		edge2,		Edge*		edge3,
 			 Index		index)
-		throw()
 		: index_(index)
 	{
 		vertex_[0] = vertex1;
@@ -1049,7 +954,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	GraphTriangle<Vertex,Edge,Face>::~GraphTriangle()
-		throw()
 	{
 	}
 
@@ -1057,7 +961,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	void GraphTriangle<Vertex,Edge,Face>::set
 			(const GraphTriangle<Vertex,Edge,Face>& face, bool deep)
-		throw()
 	{
 		if (this != &face)
 		{
@@ -1087,7 +990,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	GraphTriangle<Vertex,Edge,Face>& GraphTriangle<Vertex,Edge,Face>::operator =
 			(const GraphTriangle<Vertex,Edge,Face>& face)
-		throw()
 	{
 		if (this != &face)
 		{
@@ -1108,7 +1010,6 @@ namespace BALL
 			(Vertex*	vertex1,	Vertex*	vertex2, Vertex*	vertex3,
 			 Edge*		edge1,		Edge*		edge2,	 Edge*		edge3,
 			 Index		index)
-		throw()
 	{
 		vertex_[0] = vertex1;
 		vertex_[1] = vertex2;
@@ -1182,7 +1083,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	void GraphTriangle<Vertex,Edge,Face>::setIndex(Index index)
-		throw()
 	{
 		index_ = index;
 	}
@@ -1190,7 +1090,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	Index GraphTriangle<Vertex,Edge,Face>::getIndex() const
-		throw()
 	{
 		return index_;
 	}
@@ -1201,7 +1100,6 @@ namespace BALL
 			(const Vertex*	vertex,
 			 Edge*&					edge1,
 			 Edge*&					edge2) const
-		throw()
 	{
 		Position i = 0;
 		bool found1 = false;
@@ -1244,7 +1142,6 @@ namespace BALL
 			(const Vertex*	vertex1,
 			 const Vertex*	vertex2,
 			 Edge*&					edge) const
-		throw()
 	{
 		Position i = 0;
 		bool found = false;
@@ -1270,7 +1167,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	Index GraphTriangle<Vertex,Edge,Face>::getSimilarEdge
 			(const Edge* edge, Edge*& similar_edge) const
-		throw()
 	{
 		if (*edge_[0] *= *edge)
 		{
@@ -1295,7 +1191,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	Index GraphTriangle<Vertex,Edge,Face>::getRelativeIndex
 			(const Vertex* vertex) const
-		throw()
 	{
 		for (Position i = 0; i < 3; i++)
 		{
@@ -1311,7 +1206,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	Index GraphTriangle<Vertex,Edge,Face>::getRelativeIndex
 			(const Edge* edge) const
-		throw()
 	{
 		for (Position i = 0; i < 3; i++)
 		{
@@ -1327,7 +1221,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	Vertex* GraphTriangle<Vertex,Edge,Face>::third
 			(const Vertex* v1, const Vertex* v2) const
-		throw()
 	{
 		if ((vertex_[0] == v1) || (vertex_[0] == v2))
 		{
@@ -1350,7 +1243,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	Edge* GraphTriangle<Vertex,Edge,Face>::third
 			(const Edge* e1, const Edge* e2) const
-		throw()
 	{
 		if ((edge_[0] == e1) || (edge_[0] == e2))
 		{
@@ -1373,7 +1265,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	Edge* GraphTriangle<Vertex,Edge,Face>::getOppositeEdge
 			(const Vertex* vertex) const
-		throw()
 	{
 		for (Position i = 0; i < 3; i++)
 		{
@@ -1390,7 +1281,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	Vertex* GraphTriangle<Vertex,Edge,Face>::getOppositeVertex
 			(const Edge* edge) const
-		throw()
 	{
 		for (Position i = 0; i < 3; i++)
 		{
@@ -1407,7 +1297,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	bool GraphTriangle<Vertex,Edge,Face>::substitute
 			(const Vertex* old_vertex, Vertex* new_vertex)
-		throw()
 	{
 		for (Position i = 0; i < 3; i++)
 		{
@@ -1424,7 +1313,6 @@ namespace BALL
 	template <typename Vertex, typename Edge, typename Face>
 	bool GraphTriangle<Vertex,Edge,Face>::substitute
 			(const Edge* old_edge, Edge* new_edge)
-		throw()
 	{
 		for (Position i = 0; i < 3; i++)
 		{
@@ -1440,7 +1328,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	bool GraphTriangle<Vertex,Edge,Face>::operator == (const Face&) const
-		throw()
 	{
 		return true;
 	}
@@ -1448,7 +1335,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	bool GraphTriangle<Vertex,Edge,Face>::operator != (const Face&) const
-		throw()
 	{
 		return false;
 	}
@@ -1456,7 +1342,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	bool GraphTriangle<Vertex,Edge,Face>::operator *= (const Face&) const
-		throw()
 	{
 		return true;
 	}
@@ -1464,7 +1349,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	Vertex* GraphTriangle<Vertex,Edge,Face>::has(Vertex* vertex) const
-		throw()
 	{
 		if (vertex_[0] == vertex)
 		{
@@ -1484,7 +1368,6 @@ namespace BALL
 
 	template <typename Vertex, typename Edge, typename Face>
 	Edge* GraphTriangle<Vertex,Edge,Face>::has(Edge* edge) const
-		throw()
 	{
 		if (edge_[0] == edge)
 		{

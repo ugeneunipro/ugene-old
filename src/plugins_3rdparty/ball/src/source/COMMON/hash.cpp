@@ -1,7 +1,7 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: hash.C,v 1.13 2003-08-26 09:17:44 oliver Exp $
+// $Id: hash.C,v 1.13 2003/08/26 09:17:44 oliver Exp $
 //
 
 #include <BALL/COMMON/hash.h>
@@ -14,7 +14,6 @@ namespace BALL
 	 * [0..(number_of_slots-1)].
 	 */
 	HashIndex hashPointer(void *const void_ptr)
-		throw()
 	{
 		double d = ((double)((unsigned long)void_ptr)) * 0.6180339887;
 		Index index = (Index)(5832641097.37287 * (d - (double)((unsigned long)d)));
@@ -28,7 +27,6 @@ namespace BALL
 	 * Comm. ACM, 33:6(1990), 677
 	 */
 	HashIndex hashString(const char *s)
-		throw()
 	{
 		if (s == 0)
 		{
@@ -70,12 +68,11 @@ namespace BALL
 	 * Taken from: Dr. Dobb's Journal, April 1996, p.26
 	 */
 	HashIndex hashPJWString(const char *s)
-	 throw()
 	{
 		Index index = 0;
 		Index temp_index;
 
-#		define BALL_BITS_IN_HASHVALUE_   (sizeof(Index) * CHAR_BIT)
+#		define BALL_BITS_IN_HASHVALUE_   (sizeof(Index) * std::numeric_limits<unsigned char>::digits)
 #		define BALL_THREE_QUARTERS_      ((Index)((BALL_BITS_IN_HASHVALUE_ * 3) / 4))
 #		define BALL_ONE_EIGHTH_          ((Index)(BALL_BITS_IN_HASHVALUE_ / 8))
 #		define BALL_HIGH_BITS_           (~((Index)(~0) >> BALL_ONE_EIGHTH_))
@@ -103,7 +100,6 @@ namespace BALL
 	 * Taken from: Dr. Dobb's Journal, April 1996, p.26
 	 */
 	HashIndex hashElfString(const char *s)
-	 throw()
 	{
 		unsigned long l = 0;
 		unsigned long temp;
@@ -123,7 +119,6 @@ namespace BALL
 
 
   HashIndex getNextPrime(HashIndex l)
-	 throw()
   {
     if (l <= 3)
 		{
@@ -140,7 +135,7 @@ namespace BALL
 
     for (;;)
     {
-      for (div = 3; (div <= sqr) && ((l % div) != 0); div += 2);
+      for (div = 3; (div <= sqr) && ((l % div) != 0); div += 2) {};
 
       if (div > sqr)
 			{

@@ -1,7 +1,7 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: constants.C,v 1.6 2002-02-27 12:20:33 sturm Exp $
+// $Id: constants.C,v 1.6 2002/02/27 12:20:33 sturm Exp $
 
 #include <BALL/COMMON/constants.h>
 
@@ -9,7 +9,7 @@ namespace BALL
 {
 	namespace Constants
 	{
-		// EPSILON (used fr comparisons)
+		// EPSILON (used for comparisons)
 		double EPSILON = 1e-6;
 
 		// PI

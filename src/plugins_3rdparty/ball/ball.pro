@@ -94,19 +94,6 @@ HEADERS += src/BallPlugin.h \
     src/include/BALL/MATHS/circle3.h \
     src/include/BALL/MATHS/angle.h \
     src/include/BALL/MATHS/analyticalGeometry.h \
-    src/include/BALL/MATHS/vector4.h \
-    src/include/BALL/MATHS/vector3.h \
-    src/include/BALL/MATHS/surface.h \
-    src/include/BALL/MATHS/sphere3.h \
-    src/include/BALL/MATHS/simpleBox3.h \
-    src/include/BALL/MATHS/quaternion.h \
-    src/include/BALL/MATHS/plane3.h \
-    src/include/BALL/MATHS/matrix44.h \
-    src/include/BALL/MATHS/line3.h \
-    src/include/BALL/MATHS/common.h \
-    src/include/BALL/MATHS/circle3.h \
-    src/include/BALL/MATHS/angle.h \
-    src/include/BALL/MATHS/analyticalGeometry.h \
     src/include/BALL/STRUCTURE/triangulatedSurface.h \
     src/include/BALL/STRUCTURE/triangulatedSES.h \
     src/include/BALL/STRUCTURE/trianglePoint.h \

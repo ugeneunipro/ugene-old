@@ -1,8 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: forwardIterator.h,v 1.28 2004-02-26 15:04:02 sneumann Exp $
-//
 
 #ifndef BALL_CONCEPT_FORWARDITERATOR_H
 #define BALL_CONCEPT_FORWARDITERATOR_H
@@ -43,16 +41,16 @@ namespace BALL
 		//@{
 
 		/// Default constructor
-		BALL_INLINE ConstForwardIterator() throw() {}
+		BALL_INLINE ConstForwardIterator()  {}
 	
 		/// Copy constructor
-		BALL_INLINE ConstForwardIterator(const ConstForwardIterator& iterator) throw()
+		BALL_INLINE ConstForwardIterator(const ConstForwardIterator& iterator) 
 			:	BaseIterator<Container, DataType, Position, Traits>(iterator)
 		{
 		}
 			
 		///
-		BALL_INLINE ~ConstForwardIterator() throw() {}
+		BALL_INLINE ~ConstForwardIterator()  {}
 
 		//@}
 
@@ -60,50 +58,60 @@ namespace BALL
 		*/
 		//@{
 		///
-		BALL_INLINE ConstForwardIterator& operator = (const ConstForwardIterator& iterator) throw()
+		BALL_INLINE ConstForwardIterator& operator = (const ConstForwardIterator& iterator) 
 		{
 			BaseIterator<Container, DataType, Position, Traits>::operator = (iterator);
 			return *this;
 		}
 
 		///
-		BALL_INLINE void swap(ConstForwardIterator& iterator) throw() { std::swap(ConstForwardIterator<Container, DataType, Position, Traits>::getTraits(), iterator.getTraits()); }
+		BALL_INLINE void swap(ConstForwardIterator& iterator)  { std::swap(ConstForwardIterator<Container, DataType, Position, Traits>::getTraits(), iterator.getTraits()); }
 		//@}
 
 		/** @name Iterator methods
 		*/
 		//@{
 
-		/// Move the iterator to the item at the beginning of the container
-		BALL_INLINE void toBegin() throw(Exception::Precondition);
+		/** Move the iterator to the item at the beginning of the container
+		 *  \throws Exception::Precondition
+		 */
+		BALL_INLINE void toBegin();
 
 		/// Check whether the iterator points to the first item of the container
-		BALL_INLINE bool isBegin() const throw();
+		BALL_INLINE bool isBegin() const;
 
-		/// Move the iterator behind the last item of the container
-		BALL_INLINE void toEnd() throw(Exception::Precondition);
+		/** Move the iterator behind the last item of the container
+		 *  \throws Exception::Precondition
+		 */
+		BALL_INLINE void toEnd();
 
 		/// Check whether the iterator points behind the last item of the container
-		BALL_INLINE bool isEnd() const throw();
+		BALL_INLINE bool isEnd() const;
 
-		/// Return an iterator pointing to the beginning of the container
-		static ConstForwardIterator begin(const Container& container)
-			throw(Exception::Precondition);
+		/** Return an iterator pointing to the beginning of the container
+		 *  \throws Exception::Precondition
+		 */
+		static ConstForwardIterator begin(const Container& container);
 
-		/// Return an iterator pointing at the end of the container
-		static ConstForwardIterator end(const Container& container) 
-			throw(Exception::Precondition);
+		/** Return an iterator pointing at the end of the container
+		 *  \throws Exception::Precondition
+		 */
+		static ConstForwardIterator end(const Container& container);
 
-    /// Increment operator
-    BALL_INLINE ConstForwardIterator& operator ++ () throw(Exception::Precondition)
+    /** Increment operator
+		 *  \throws Exception::Precondition
+		 */
+    BALL_INLINE ConstForwardIterator& operator ++ ()
     {
       BALL_PRECONDITION_EXCEPTION(Base::isValid(), "cannot increment invalid iterator")
       Base::getTraits().forward();
       return *this;
 		}
 
-    /// Postfix increment operator
-    BALL_INLINE ConstForwardIterator operator ++ (int) throw(Exception::Precondition)
+    /** Postfix increment operator
+		 *  \throws Exception::Precondition
+		 */
+    BALL_INLINE ConstForwardIterator operator ++ (int)
     {
       BALL_PRECONDITION_EXCEPTION(Base::isValid(), "cannot increment invalid iterator")
       ConstForwardIterator tmp(*this);
@@ -116,7 +124,7 @@ namespace BALL
 		protected:
 
 		///
-		BALL_INLINE ConstForwardIterator(const Container& container) throw()
+		BALL_INLINE ConstForwardIterator(const Container& container) 
 			:	BaseIterator<Container, DataType, Position, Traits>(container)
 		{
 		}
@@ -126,7 +134,6 @@ namespace BALL
 	template <typename Container, typename DataType, typename Position, typename Traits>
 	BALL_INLINE
 	void ConstForwardIterator<Container, DataType, Position, Traits>::toBegin()
-		throw(Exception::Precondition)
 	{
     BALL_PRECONDITION_EXCEPTION(!Base::isSingular(),	"cannot move singular iterator to begin")
 		Base::getTraits().toBegin();
@@ -136,7 +143,6 @@ namespace BALL
 	BALL_INLINE
 	ConstForwardIterator<Container, DataType, Position, Traits> 
 		ConstForwardIterator<Container, DataType, Position, Traits>::begin(const Container& container)
-		throw(Exception::Precondition)
 	{
 		ConstForwardIterator<Container, DataType, Position, Traits> iterator(container);
 		iterator.toBegin();
@@ -146,7 +152,7 @@ namespace BALL
 	template <typename Container, typename DataType, typename Position, typename Traits>
 	BALL_INLINE
 	bool ConstForwardIterator<Container, DataType, Position, Traits>::isBegin() const
-		throw()
+		
 	{
 		if (Base::getTraits().isSingular())
 		{
@@ -158,7 +164,6 @@ namespace BALL
 	template <typename Container, typename DataType, typename Position, typename Traits>
 	BALL_INLINE
 	void ConstForwardIterator<Container, DataType, Position, Traits>::toEnd()
-		throw(Exception::Precondition)
 	{
     BALL_PRECONDITION_EXCEPTION(!Base::isSingular(), "cannot move singular iterator to end")
 		Base::getTraits().toEnd();
@@ -168,7 +173,6 @@ namespace BALL
 	BALL_INLINE
 	ConstForwardIterator<Container, DataType, Position, Traits> 
 		ConstForwardIterator<Container, DataType, Position, Traits>::end(const Container& container)
-		throw(Exception::Precondition)
 	{
 		ConstForwardIterator iterator(container);
 		iterator.toEnd();
@@ -178,7 +182,7 @@ namespace BALL
 	template <typename Container, typename DataType, typename Position, typename Traits>
 	BALL_INLINE
 	bool ConstForwardIterator<Container, DataType, Position, Traits>::isEnd() const
-		throw()
+		
 	{
 		if (Base::isSingular())
 		{
@@ -212,64 +216,72 @@ namespace BALL
 		//@{
 
 		///
-		BALL_INLINE ForwardIterator() throw() {}
+		BALL_INLINE ForwardIterator()  {}
 	
 		///
-		BALL_INLINE ForwardIterator(const ForwardIterator& iterator) throw()
+		BALL_INLINE ForwardIterator(const ForwardIterator& iterator) 
 			:	ConstForwardIterator<Container, DataType, Position, Traits>(iterator)
 		{
 		}
 
 		///
-		BALL_INLINE ~ForwardIterator() throw() {}			
+		BALL_INLINE ~ForwardIterator()  {}			
 		//@}
 
 		/** @name Assignemnt
 		*/
 		//@{
 		///
-		BALL_INLINE ForwardIterator& operator = (const ForwardIterator& iterator) throw()
+		BALL_INLINE ForwardIterator& operator = (const ForwardIterator& iterator) 
 		{
 			ConstForwardIterator<Container, DataType, Position, Traits>::operator = (iterator);
 			return *this;
 		}
 
 		///
-		BALL_INLINE void swap(ForwardIterator& iterator) throw() { std::swap(Base::getTraits(), iterator.getTraits()); }
+		BALL_INLINE void swap(ForwardIterator& iterator)  { std::swap(Base::getTraits(), iterator.getTraits()); }
 		//@}
 
 		/** @name Iterator methods
 		*/
 		//@{
 
-		/// Return an iterator pointing to the beginning of the container
-		static ForwardIterator begin(const Container& container) throw(Exception::Precondition);
+		/** Return an iterator pointing to the beginning of the container
+		 *  \throws Exception::Precondition
+		 */
+		static ForwardIterator begin(const Container& container);
 
-		/// Return an iterator pointing at the end of the container
-		static ForwardIterator end(const Container& container) throw(Exception::Precondition);
+		/** Return an iterator pointing at the end of the container
+		 *  \throws Exception::Precondition
+		 */
+		static ForwardIterator end(const Container& container);
 
 		///
-		BALL_INLINE reference operator * () const throw() 
+		BALL_INLINE reference operator * () const  
 		{ 
 			return (reference)Base::getTraits().getData(); 
 		}
 
 		///
-		BALL_INLINE pointer operator -> () const throw() 
+		BALL_INLINE pointer operator -> () const  
 		{ 
 			return (pointer)&Base::getTraits().getData(); 
 		}
 
-    /// Increment operator
-    BALL_INLINE ForwardIterator& operator ++ () throw(Exception::Precondition)
+    /** Increment operator
+		 *  \throws Exception::Precondition
+		 */
+    BALL_INLINE ForwardIterator& operator ++ ()
     {
 			BALL_PRECONDITION_EXCEPTION(Base::isValid(), "cannot increment invalid iterator")
 			Base::getTraits().forward();
       return *this;
 		}
 
-    /// Postfix increment operator
-    BALL_INLINE ForwardIterator operator ++ (int) throw(Exception::Precondition)
+    /** Postfix increment operator
+		 *  \throws Exception::Precondition
+		 */
+    BALL_INLINE ForwardIterator operator ++ (int)
     {
 			BALL_PRECONDITION_EXCEPTION(Base::isValid(), "cannot increment invalid iterator")
       ForwardIterator tmp(*this);
@@ -282,7 +294,7 @@ namespace BALL
 		protected:
 
 		///
-		BALL_INLINE ForwardIterator(const Container& container) throw()	
+		BALL_INLINE ForwardIterator(const Container& container) 	
 			:	Base(container)
 		{
 		}
@@ -293,7 +305,6 @@ namespace BALL
 	BALL_INLINE
 	ForwardIterator<Container, DataType, Position, Traits> 
 		ForwardIterator<Container, DataType, Position, Traits>::begin(const Container& container)
-		throw(Exception::Precondition)
 	{
 		ForwardIterator iterator(container);
 		iterator.toBegin();
@@ -304,7 +315,6 @@ namespace BALL
 	BALL_INLINE
 	ForwardIterator<Container, DataType, Position, Traits> 
 		ForwardIterator<Container, DataType, Position, Traits>::end(const Container& container)
-		throw(Exception::Precondition)
 	{
 		ForwardIterator iterator(container);
 		iterator.toEnd();

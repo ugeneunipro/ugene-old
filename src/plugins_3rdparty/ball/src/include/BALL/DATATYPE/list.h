@@ -1,8 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: list.h,v 1.23 2004-04-22 10:08:19 oliver Exp $
-//
 
 #ifndef BALL_DATATYPE_LIST_H
 #define BALL_DATATYPE_LIST_H
@@ -20,6 +18,10 @@
 #endif
 
 #include <list>
+
+#ifdef BALL_COMPILER_GXX
+#warning "This header file is deprecated and should not be used in new code! As a replacement for BALL::List the use of std::list is strongly suggested."
+#endif
 
 namespace BALL 
 {
@@ -59,7 +61,7 @@ namespace BALL
 		/**	Default constructor.
 				Create an empty list.
 		*/
-		List() throw()
+		List()
 			: std::list<Value>()
 		{
 		}
@@ -69,21 +71,21 @@ namespace BALL
 				@param	map the list to be copied
 				@param	deep ignored
 		*/
-		List(const List& new_list, bool /* deep = true */) throw()
+		List(const List& new_list, bool /* deep = true */)
 			: std::list<Value>(new_list)
 		{
 		}
 			
 		/** Clear the list
 		*/
- 		void destroy() throw()
+ 		void destroy()
 		{
 			std::list<Value>::clear();
 		}
 	
 		/** Destructor
 		*/
-		virtual ~List() throw()
+		virtual ~List()
 		{
 			std::list<Value>::clear();
 		}
@@ -96,7 +98,7 @@ namespace BALL
 				@param	list	the map to be copied
 				@param	deep ignored
 		*/
-    void set(const List& list, bool /* deep */ = true) throw()
+    void set(const List& list, bool /* deep */ = true)
 		{
 			std::list<Value>::clear();
 
@@ -109,20 +111,20 @@ namespace BALL
 
 		/** Assign a list from another.
 		*/
-		const List& operator = (const List& list) throw()
+		const List& operator = (const List& list)
 		{
 			set(list);
 			return *this;
 		}
 			
 		/// Assign the content of a list to another
-    void get(List& list, bool deep = true) const  throw()
+    void get(List& list, bool deep = true) const 
 		{
 			list.set(*this, deep);
 		}
 
 		/// Swaps the contents of two lists
-    void swap(List& list) throw()
+    void swap(List& list)
 		{
 			List<Value> temp;
 			temp.set(*this);
@@ -136,7 +138,7 @@ namespace BALL
 
 		/** Return the size of the list.
 		*/
-		Size getSize() const throw()
+		Size getSize() const
 		{
 			return (Size)std::list<Value>::size();
 		}
@@ -145,7 +147,7 @@ namespace BALL
 				@param 	item the item to be removed
 				@return bool <b>true</b> if the item was removed
 		 */
-		bool remove(const Value& item) throw()
+		bool remove(const Value& item)
 		{
 			Iterator it = std::list<Value>::begin();
 			for (; it != std::list<Value>::end(); ++it)
@@ -166,7 +168,7 @@ namespace BALL
 		/** Return true if the list is empty.
 				This method return <b>true</b> if the list does not contain any entries.
 		*/
-		bool isEmpty() const throw()
+		bool isEmpty() const
 		{
 			return (std::list<Value>::size() == 0);
 		}
@@ -179,8 +181,7 @@ namespace BALL
 				Lists may be visited.
 				@param	visitor	the visitor
 		*/
-		virtual void host(Visitor<List<Value> >& visitor) 
-			throw();
+		virtual void host(Visitor<List<Value> >& visitor);
 
 		//@}
 		/**	@name	Internal Iterators */
@@ -190,7 +191,7 @@ namespace BALL
 				Applies the processor to each entry of the list.
 				@param processor the processor to be applied
 		*/
-		bool apply(UnaryProcessor<Value>& processor) throw()
+		bool apply(UnaryProcessor<Value>& processor)
 		{
 			if (!processor.start()) return false;
 
@@ -211,7 +212,7 @@ namespace BALL
 		/** Equality operator.
 				Test if two instances have the same size and same items at the same positions.
 		*/
-		bool operator == (const List<Value>& list) const throw()
+		bool operator == (const List<Value>& list) const
 		{
 			if (std::list<Value>::size() != list.size())
 			{
@@ -235,7 +236,7 @@ namespace BALL
 		/** Inequality operator.
 				Test if two instances differ in at least one element.
 		*/
-		bool operator != (const List<Value>& list) const throw()
+		bool operator != (const List<Value>& list) const
 		{
 			return !(*this == list);
 		}
@@ -243,8 +244,7 @@ namespace BALL
 	};
 
 	template <typename Value>
-	void List<Value>::host(Visitor<List<Value> >& visitor) 
-		throw()
+	void List<Value>::host(Visitor<List<Value> >& visitor)
 	{
 		visitor.visit(*this);
 	}

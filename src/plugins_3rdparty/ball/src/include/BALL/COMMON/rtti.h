@@ -1,8 +1,6 @@
 // -*- Mode: C++; tab-width: 2; -*-
 // vi: set ts=2:
 //
-// $Id: rtti.h,v 1.27 2005-12-23 17:01:39 amoll Exp $
-//
 
 #ifndef BALL_COMMON_RTTI_H
 #define BALL_COMMON_RTTI_H
@@ -98,7 +96,7 @@ namespace BALL
 		template <typename T>
 		const char* getName()
 		{
-			return typeid(getDefault<T>()).name();
+			return typeid(T).name();
 		}
 
 		/**	Return a void pointer that is unique for each class.
@@ -174,7 +172,7 @@ namespace BALL
 			if (!is_set)
 			{
 				is_set = true;
-				s = streamClassName(typeid(getDefault<T>()));
+				s = streamClassName(typeid(T));
 			}
 
 			return s.c_str();
@@ -227,8 +225,7 @@ namespace BALL
 		template <typename T, typename U>
 		bool isInstanceOf(const U& u)
 		{
-			T		t;
-			return (typeid(u) == typeid(t));
+			return (typeid(u) == typeid(T));
 		}
 
 	} // namespace RTTI
