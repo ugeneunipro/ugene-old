@@ -22,7 +22,7 @@
 #ifndef _U2_MSA_SELECT_SUBALIGNMENT_DIALOG_H_
 #define _U2_MSA_SELECT_SUBALIGNMENT_DIALOG_H_
 
-#include "ui/ui_SelectSubalignimentDialog.h"
+#include "ui/ui_SelectSubalignmentDialog.h"
 
 #include <U2Core/global.h>
 #include <U2Core/MAlignmentObject.h>
@@ -31,7 +31,7 @@ namespace U2 {
 
 class MSAEditorUI;
 
-class SelectSubalignmentDialog : public QDialog, Ui_SelectSubalignimentDialog {
+class SelectSubalignmentDialog : public QDialog, Ui_SelectSubalignmentDialog {
     Q_OBJECT
 public:
     SelectSubalignmentDialog( MSAEditorUI *ui, QWidget *p = NULL );
