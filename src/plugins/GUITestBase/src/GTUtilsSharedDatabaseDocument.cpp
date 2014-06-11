@@ -79,7 +79,9 @@ QModelIndex GTUtilsSharedDatabaseDocument::getItemIndex(U2OpStatus &os, Document
     CHECK(!folders.isEmpty(), itemIndex);
 
     foreach (const QString& folder, folders) {
-        itemIndex = GTUtilsProjectTreeView::findIndex(os, folder, itemIndex);
+        GTGlobals::FindOptions options;
+        options.depth = 1;
+        itemIndex = GTUtilsProjectTreeView::findIndex(os, folder, itemIndex, options);
         CHECK_OP_BREAK(os);
     }
 

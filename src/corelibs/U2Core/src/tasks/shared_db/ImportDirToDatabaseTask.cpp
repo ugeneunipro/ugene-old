@@ -22,6 +22,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -40,14 +41,19 @@ ImportDirToDatabaseTask::ImportDirToDatabaseTask(const QString &srcUrl, const U2
     CHECK_EXT(QFileInfo(srcUrl).isDir(), setError(tr("It is not a directory: ") + srcUrl), );
     CHECK_EXT(dstDbiRef.isValid(), setError(tr("Invalid database reference")), );
 
-    setMaxParallelSubtasks(MAX_PARALLEL_SUBTASKS_AUTO);
+    setMaxParallelSubtasks(1);
 }
 
 void ImportDirToDatabaseTask::prepare() {
+    if (options.createSubfolderForTopLevelFolder) {
+        dstFolder = U2DbiUtils::makeFolderCanonical(dstFolder + U2ObjectDbi::ROOT_FOLDER + QFileInfo(srcUrl).fileName());
+    }
+
     const QFileInfoList subentriesInfo = QDir(srcUrl).entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
     foreach (QFileInfo subentryInfo, subentriesInfo) {
         if (options.processFoldersRecursively && subentryInfo.isDir()) {
-            ImportDirToDatabaseTask* importSubdirTask = new ImportDirToDatabaseTask(subentryInfo.filePath(), dstDbiRef, dstFolder + U2ObjectDbi::PATH_SEP + subentryInfo.fileName(), options);
+            const QString dstDirFolder = dstFolder + (options.keepFoldersStructure ? U2ObjectDbi::PATH_SEP + subentryInfo.fileName() : "");
+            ImportDirToDatabaseTask* importSubdirTask = new ImportDirToDatabaseTask(subentryInfo.filePath(), dstDbiRef, dstDirFolder, options);
             importSubdirsTasks << importSubdirTask;
             addSubTask(importSubdirTask);
         } else if (subentryInfo.isFile()) {

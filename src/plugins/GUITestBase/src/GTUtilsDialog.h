@@ -22,6 +22,8 @@
 #ifndef _U2_GUI_DIALOG_UTILS_H_
 #define _U2_GUI_DIALOG_UTILS_H_
 
+#include <QtGui/QDialogButtonBox>
+
 #include "api/GTGlobals.h"
 
 namespace U2 {
@@ -104,6 +106,8 @@ public:
     enum CleanupSettings {
         FailOnUnfinished, NoFailOnUnfinished
     };
+
+    static void clickButtonBox(U2OpStatus &os, QWidget *dialog, QDialogButtonBox::StandardButton button);
 
     // if objectName is not empty, waits for QWidget with a given name
     static void waitForDialog(U2OpStatus &os, Runnable *r, const GUIDialogWaiter::WaitSettings& settings);

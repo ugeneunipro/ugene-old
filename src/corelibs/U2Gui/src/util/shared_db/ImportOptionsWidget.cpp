@@ -41,6 +41,8 @@ void ImportOptionsWidget::init(const QString& baseFolder, const ImportToDatabase
     ui->leBaseFolder->setText(baseFolder);
 
     ui->cbRecursively->setChecked(options.processFoldersRecursively);
+    ui->cbKeepStructure->setChecked(options.keepFoldersStructure);
+    ui->cbCreateSubfoldersForTopLevelFolder->setChecked(options.createSubfolderForTopLevelFolder);
     ui->cbCreateSubfoldersForFiles->setChecked(options.createSubfolderForEachFile);
     ui->cbImportUnrecognized->setChecked(options.importUnknownAsUdr);
     ui->cbCreateSubfoldersforDocs->setChecked(options.createSubfolderForEachDocument);
@@ -67,9 +69,11 @@ ImportToDatabaseOptions ImportOptionsWidget::getOptions() const {
     ImportToDatabaseOptions options;
 
     options.processFoldersRecursively = ui->cbRecursively->isChecked();
+    options.keepFoldersStructure = ui->cbKeepStructure->isChecked();
     options.createSubfolderForEachFile = ui->cbCreateSubfoldersForFiles->isChecked();
     options.importUnknownAsUdr = ui->cbImportUnrecognized->isChecked();
     options.createSubfolderForEachDocument = ui->cbCreateSubfoldersforDocs->isChecked();
+    options.createSubfolderForTopLevelFolder = ui->cbCreateSubfoldersForTopLevelFolder->isChecked();
 
     if (ui->rbSeparate->isChecked()) {
         options.multiSequencePolicy = ImportToDatabaseOptions::SEPARATE;

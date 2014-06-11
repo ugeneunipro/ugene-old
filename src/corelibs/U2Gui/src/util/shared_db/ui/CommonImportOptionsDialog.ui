@@ -15,9 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="U2::ImportOptionsWidget" name="optionsWidget" native="true">
-     <layout class="QVBoxLayout" name="verticalLayout"/>
-    </widget>
+    <widget class="U2::ImportOptionsWidget" name="optionsWidget" native="true"/>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

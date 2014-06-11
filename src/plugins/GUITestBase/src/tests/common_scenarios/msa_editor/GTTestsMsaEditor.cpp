@@ -44,8 +44,8 @@
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h"
@@ -2196,7 +2196,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
 
 // 4. Select item dialog appeared
 // Expected state: loaded sequences present in list
-    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogBaseChecker(os, "[s] NC_001363"));
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "[s] NC_001363"));
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
@@ -2218,7 +2218,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017_1) {
 
 // 4. Select item dialog appeared
 // Expected state: loaded sequences present in list
-    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogBaseChecker(os, "[s] NC_001363"));
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "[s] NC_001363"));
 
 // CHANGES: using main menu instead of popup
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
@@ -2245,7 +2245,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017_2) {
 
 // 4. Select item dialog appeared
 // Expected state: loaded sequences present in list
-    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogBaseChecker(os, "[s] NC_001363"));
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "[s] NC_001363"));
 
 // CHANGES: using main menu instead of popup
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);

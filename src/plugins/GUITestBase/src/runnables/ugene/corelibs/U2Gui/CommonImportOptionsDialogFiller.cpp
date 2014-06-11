@@ -46,6 +46,8 @@ void CommonImportOptionsDialogFiller::run() {
     GT_CHECK(NULL != optionsWidget, "optionsWidget is NULL");
 
     ImportOptionsWidgetFiller::fill(os, optionsWidget, data);
+
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 
 #undef GT_METHOD_NAME

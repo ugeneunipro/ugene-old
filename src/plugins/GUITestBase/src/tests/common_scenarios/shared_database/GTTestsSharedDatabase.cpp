@@ -832,9 +832,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
     GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
 
     QTreeWidget *annotationTableWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
-    QWidget* splitter = GTWidget::findWidget(os, "annotated_DNA_splitter");
     CHECK_SET_ERR(NULL != annotationTableWidget, "Annotations tree widget is NULL");
-    QWidget* viewPort = annotationTableWidget->findChild<QWidget*>("qt_scrollarea_viewport");
     GTUtilsProjectTreeView::dragAndDrop(os, databaseAnnotaionObjectItemIndex, annotationTableWidget);
 
     GTGlobals::sleep(5000);
@@ -1005,7 +1003,9 @@ GUI_TEST_CLASS_DEFINITION(import_test_0006) {
     const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
     const QString resultFolderName = "seq1";
     const QString resultFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + resultFolderName;
-    const QString folderPath = testDir + "_common_data/scenarios/shared_database/import/first";
+    const QString folderPath = testDir + "_common_data/scenarios/shared_database/import/first/";
+    const QString notImportedFolderName = "second";
+    const QString notImportedObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
     const QString sequenceObjectName = "SEQUENCE_WITH_A_ENTRY";
     const QString databaseSequenceObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
 
@@ -1038,6 +1038,17 @@ GUI_TEST_CLASS_DEFINITION(import_test_0006) {
 
     const QModelIndex sequenceObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
     CHECK_SET_ERR(sequenceObjectIndex.isValid(), "Result item wasn't found");
+
+    const QModelIndex dstFolderIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, dstFolderPath);
+
+    GTGlobals::FindOptions options;
+    options.failIfNull = false;
+
+    const QModelIndex notImportedFolderIndexIndex = GTUtilsProjectTreeView::findIndex(os, notImportedFolderName, dstFolderIndex, options);
+    CHECK_SET_ERR(!notImportedFolderIndexIndex.isValid(), "The inner folder is unexpectedly imported");
+
+    const QModelIndex notImportedObjectIndexIndex = GTUtilsProjectTreeView::findIndex(os, notImportedObjectName, dstFolderIndex, options);
+    CHECK_SET_ERR(!notImportedObjectIndexIndex.isValid(), "The object from the inner folder is unexpectedly imported");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
@@ -1072,7 +1083,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0007) {
     const QString importedTopLevelFolderName = "second";
     const QString resultFolderName = "human_T1_cutted";
     const QString resultFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + importedTopLevelFolderName + U2ObjectDbi::ROOT_FOLDER + resultFolderName;
-    const QString folderPath = testDir + "_common_data/scenarios/shared_database/import/first/second";
+    const QString folderPath = testDir + "_common_data/scenarios/shared_database/import/first/second/";
     const QString sequenceObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
     const QString databaseSequenceObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
 
@@ -1105,6 +1116,10 @@ GUI_TEST_CLASS_DEFINITION(import_test_0007) {
 
     const QModelIndex sequenceObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
     CHECK_SET_ERR(sequenceObjectIndex.isValid(), "Result item wasn't found");
+
+    const QModelIndex dstFolderIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, dstFolderPath);
+    const QModelIndexList importedItemsList = GTUtilsProjectTreeView::findIndecies(os, "", dstFolderIndex);
+    CHECK_SET_ERR(3 == importedItemsList.size(), "Unexpected items were found");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
@@ -1142,7 +1157,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0008) {
     const QString resultSecondFolderName = "human_T1_cutted";
     const QString resultFirstFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + resultFirstFolderName;
     const QString resultSecondFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + innerFolderName + U2ObjectDbi::ROOT_FOLDER + resultSecondFolderName;
-    const QString folderPath = testDir + "_common_data/scenarios/shared_database/import/first";
+    const QString folderPath = testDir + "_common_data/scenarios/shared_database/import/first/";
     const QString sequenceFirstObjectName = "SEQUENCE_WITH_A_ENTRY";
     const QString sequenceSecondObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
     const QString databaseSequenceFirstObjectPath = resultFirstFolderPath + U2ObjectDbi::PATH_SEP + sequenceFirstObjectName;
@@ -1217,7 +1232,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0009) {
     const QString resultSecondFolderName = "human_T1_cutted";
     const QString resultFirstFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + resultFirstFolderName;
     const QString resultSecondFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + resultSecondFolderName;
-    const QString folderPath = testDir + "_common_data/scenarios/shared_database/import/first";
+    const QString folderPath = testDir + "_common_data/scenarios/shared_database/import/first/";
     const QString sequenceFirstObjectName = "SEQUENCE_WITH_A_ENTRY";
     const QString sequenceSecondObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
     const QString databaseSequenceFirstObjectPath = resultFirstFolderPath + U2ObjectDbi::PATH_SEP + sequenceFirstObjectName;
@@ -1276,11 +1291,122 @@ GUI_TEST_CLASS_DEFINITION(import_test_0010) {
     //5. Click the "Import" button.
     //Expected state: an import task is started, there is a sequence object "human_T1 (UCSC April 2002 chr7:115977709-117855134)" in the {/import_test_0010} folder after the task has finished.
     
-    os.setError("Test is not implemented jet");
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString dstFolderName = "import_test_0010";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString documentName = "human_T1.fa";
+    const QString sequenceObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
+    const QString databaseSequenceObjectPath = dstFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+
+
+    QList<ImportToDatabaseDialogFiller::Action> actions;
+
+    QVariantMap addObjectAction;
+    QMap<QString, QVariant> projectItemsToSelect;
+    projectItemsToSelect.insert(documentName, QStringList() << "[s] " + sequenceObjectName);
+    addObjectAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__PROJECT_ITEMS_LIST, projectItemsToSelect);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_PROJECT_ITEMS, addObjectAction);
+
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
+
+    GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
+
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", documentName);
+
+    QString connectionName = connectToTestDatabase(os);
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
+
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, parentFolderPath, dstFolderName);
+
+    GTUtilsSharedDatabaseDocument::callImportDialog(os, databaseDoc, dstFolderPath);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(15000);
+
+    const QModelIndex sequenceObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
+    CHECK_SET_ERR(sequenceObjectIndex.isValid(), "Result item wasn't found");
+
+    CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
 
 GUI_TEST_CLASS_DEFINITION(import_test_0011) {
-    os.setError("Test is not implemented jet");
+//    Import a document via import dialog.
+
+//    1. Open file {data/samples/Genbank/murine.gb}.
+
+//    2. Connect to the "ugene_gui_test" database.
+
+//    3. Call context menu on the {import_test_0011} folder in the database connection document, select {Add -> Import to the folder...} item.
+//    Expected state: an import dialog appears.
+
+//    4. Click the "Add objects" button, select the "murine.gb" document.
+//    Expected state: the document is added to the orders list, it will be imported into the {/import_test_0011} folder.
+
+//    5. Click the "Import" button.
+//    Expected state: an import task is started, there are two objects in the {/import_test_0010/murine} folder after the task has finished: a sequence "NC_001363" and an annotation table "NC_001363 features".
+
+//    6. Doubleclick the imported sequence object.
+//    Expected state: a sequence view is opened, the annotation table object is attached.
+
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString dstFolderName = "import_test_0011";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString documentName = "murine.gb";
+    const QString sequenceObjectName = "NC_001363";
+    const QString AnnotationTableObjectName = "NC_001363 features";
+    const QString sequenceVisibleWidgetName = "[s] " + sequenceObjectName;
+    const QString someFeatureName = "CDS";
+    const QString databaseSequenceObjectPath = dstFolderPath + U2ObjectDbi::PATH_SEP + documentName + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+    const QString databaseAnnotationTableObjectPath = dstFolderPath + U2ObjectDbi::PATH_SEP + documentName + U2ObjectDbi::PATH_SEP + AnnotationTableObjectName;
+
+
+    QList<ImportToDatabaseDialogFiller::Action> actions;
+
+    QVariantMap addDocumentAction;
+    QMap<QString, QVariant> projectItemsToSelect;
+    projectItemsToSelect.insert(documentName, QStringList());
+    addDocumentAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__PROJECT_ITEMS_LIST, projectItemsToSelect);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_PROJECT_ITEMS, addDocumentAction);
+
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
+
+    GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
+
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", documentName);
+
+    QString connectionName = connectToTestDatabase(os);
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
+
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, parentFolderPath, dstFolderName);
+
+    GTUtilsSharedDatabaseDocument::callImportDialog(os, databaseDoc, dstFolderPath);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(15000);
+
+    const QModelIndex sequenceObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
+    CHECK_SET_ERR(sequenceObjectIndex.isValid(), "Sequence item wasn't found");
+
+    const QModelIndex annotationTableObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseAnnotationTableObjectPath);
+    CHECK_SET_ERR(annotationTableObjectIndex.isValid(), "Annotation table item wasn't found");
+
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseSequenceObjectPath);
+    QWidget* seqView = GTWidget::findWidget(os, connectionName + " " + sequenceVisibleWidgetName);
+    CHECK_SET_ERR(NULL != seqView, "View wasn't opened");
+
+    QTreeWidget* annotationTableWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
+    CHECK_SET_ERR(NULL != annotationTableWidget, "Annotations tree widget is NULL");
+
+    QTreeWidgetItem* annotationTable = GTUtilsAnnotationsTreeView::findItem(os, someFeatureName);
+    CHECK_SET_ERR(NULL != annotationTable, "Annotation table is NULL");
+
+    CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
 
 GUI_TEST_CLASS_DEFINITION(view_test_0001) {

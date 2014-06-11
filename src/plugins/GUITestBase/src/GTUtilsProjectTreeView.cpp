@@ -177,7 +177,16 @@ QModelIndex GTUtilsProjectTreeView::findIndex(U2OpStatus &os, const QString &ite
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "findItem"
+#define GT_METHOD_NAME "findIndecies"
+QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os, const QString &itemName, const QModelIndex &parent, int parentDepth, const GTGlobals::FindOptions &options) {
+    QTreeView *treeView = getTreeView(os);
+    GT_CHECK_RESULT(treeView != NULL, "Tree widget is NULL", QModelIndexList());
+
+    return findIndecies(os, itemName, treeView, parent, parentDepth, options);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findIndecies"
 QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os,
                                                     const QString &itemName,
                                                     QTreeView* treeView,
@@ -209,10 +218,15 @@ QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os,
             }
         }
 
-        if (s == itemName) {
-            foundIndecies << index;
+        if (!itemName.isEmpty()) {
+            if (s == itemName) {
+                foundIndecies << index;
+            } else {
+                foundIndecies <<  findIndecies(os, itemName, treeView, index, parentDepth + 1, options);
+            }
         } else {
-            foundIndecies <<  findIndecies(os, itemName, treeView, index, parentDepth + 1, options);
+            foundIndecies << index;
+            foundIndecies << findIndecies(os, itemName, treeView, index, parentDepth + 1, options);
         }
     }
 
@@ -357,9 +371,9 @@ void GTUtilsProjectTreeView::sendDragAndDrop(U2OpStatus &os, QMimeData *mimeData
 void GTUtilsProjectTreeView::sendDragAndDrop(U2OpStatus &os, QMimeData *mimeData, QPoint enterPos, QWidget *dropWidget){
     QTreeView *treeView = getTreeView(os);
     QAbstractItemModel *model = treeView->model();
-    QWidget* veiwPort = treeView->findChild<QWidget*>("qt_scrollarea_viewport");
+    treeView->findChild<QWidget*>("qt_scrollarea_viewport");
 
-    QPoint localEnterPos = treeView->mapFromGlobal(enterPos);
+    treeView->mapFromGlobal(enterPos);
 
     GTMouseDriver::moveTo(os, enterPos);
     Qt::DropActions dropActions = model->supportedDropActions();

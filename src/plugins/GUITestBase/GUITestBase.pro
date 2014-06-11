@@ -47,11 +47,11 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ItemToImportEditDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.h \
             src/runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h \
-            src/runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.h \
             src/runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h \
@@ -246,11 +246,11 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ItemToImportEditDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/RangeSelectorFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.cpp \
-            src/runnables/ugene/corelibs/U2Gui/util/ProjectTreeItemSelectorDialogBaseFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.cpp \
 #   Runnables / UGENE / corelibs / U2View
             src/runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.cpp \

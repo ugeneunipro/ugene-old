@@ -19,20 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GT_RUNNABLES_ProjectTreeItemSelectorDialogBase_FILLER_H_
-#define _U2_GT_RUNNABLES_ProjectTreeItemSelectorDialogBase_FILLER_H_
+#ifndef _U2_GT_RUNNABLES_PROJECT_TREE_ITEM_SELECTOR_DIALOG_FILLER_H_
+#define _U2_GT_RUNNABLES_PROJECT_TREE_ITEM_SELECTOR_DIALOG_FILLER_H_
 
 #include "GTUtilsDialog.h"
 #include "GTUtilsProjectTreeView.h"
 
 namespace U2 {
 
-class ProjectTreeItemSelectorDialogBaseChecker : public Filler{
+class ProjectTreeItemSelectorDialogFiller : public Filler{
 public:
-    ProjectTreeItemSelectorDialogBaseChecker(U2OpStatus &_os, const QString& _checkName) : Filler(_os, "ProjectTreeItemSelectorDialogBase"), checkName(_checkName){}
+    ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, const QString &documentName, const QString &objectName);
+    ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, const QMap<QString, QStringList> &itemsToSelect);
     virtual void run();
 private:
-    QString checkName;
+    QMap<QString, QStringList> itemsToSelect;
 };
 
 }

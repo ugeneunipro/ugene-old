@@ -21,12 +21,15 @@
 
 #include "GTUtilsDialog.h"
 #include "api/GTMouseDriver.h"
+#include "api/GTWidget.h"
 
 #include <QtCore/QTimer>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QPushButton>
 #else
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
 #endif
 
 
@@ -135,6 +138,16 @@ void GUIDialogWaiter::checkDialog() {
 #define GT_CLASS_NAME "GTUtilsDialog"
 
 QList<GUIDialogWaiter*> GTUtilsDialog::pool = QList<GUIDialogWaiter*>();
+
+#define GT_METHOD_NAME "clickButtonBox"
+void GTUtilsDialog::clickButtonBox(U2OpStatus& os, QWidget* dialog, QDialogButtonBox::StandardButton button) {
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* pushButton = box->button(button);
+    GT_CHECK(pushButton != NULL, "pushButton is NULL");
+    GTWidget::click(os, pushButton);
+}
+#undef GT_METHOD_NAME
 
 void GTUtilsDialog::waitForDialog(U2OpStatus &os, Runnable *r, const GUIDialogWaiter::WaitSettings& settings)
 {

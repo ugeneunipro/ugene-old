@@ -35,8 +35,21 @@
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CommonImportOptionsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ItemToImportEditDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 
 namespace U2 {
+
+namespace {
+
+QMap<QString, QStringList> convertProjectItemsMap(const QMap<QString, QVariant>& map) {
+    QMap<QString, QStringList> result;
+    foreach (const QString& key, map.keys()) {
+        result.insert(key, map.value(key).toStringList());
+    }
+    return result;
+}
+
+}   // an unnamed namespace
 
 #define GT_CLASS_NAME "GTUtilsDialog::ImportToDatabaseDialogFiller"
 
@@ -133,7 +146,7 @@ void ImportToDatabaseDialogFiller::addDirs(const Action& action) {
     const QStringList dirPaths = action.data.value(Action::ACTION_DATA__PATHS_LIST).toStringList();
     foreach (const QString& dirPath, dirPaths) {
         QFileInfo fi(dirPath);
-        GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, fi.dir().path(), fi.fileName()));
+        GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, fi.dir().path(), fi.fileName(), GTFileDialogUtils::Choose));
 
         QWidget* addDirsButton = GTWidget::findWidget(os, "pbAddFolder");
         GT_CHECK(NULL != addDirsButton, "addDirsButton is NULL");
@@ -149,16 +162,12 @@ void ImportToDatabaseDialogFiller::addProjectItems(const Action &action) {
     GT_CHECK(Action::ADD_PROJECT_ITEMS == action.type, "Invalid action type");
     GT_CHECK(action.data.contains(Action::ACTION_DATA__PROJECT_ITEMS_LIST), "Not enough parameters to perform the action");
 
+    const QMap<QString, QStringList> projectItems = convertProjectItemsMap(action.data.value(Action::ACTION_DATA__PROJECT_ITEMS_LIST).toMap());
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, projectItems));
+
     QWidget* addProjectItemsButton = GTWidget::findWidget(os, "pbAddObjects");
     GT_CHECK(NULL != addProjectItemsButton, "addProjectItemsButton is NULL");
     GTWidget::click(os, addProjectItemsButton);
-
-    /*const QMap<QString, QVariant> projectItems = action.data.value(Action::ACTION_DATA__PROJECT_ITEMS_LIST).toMap();
-    foreach (const QString& docName, projectItems.keys) {
-    const QStringList objectsList = projectItems.value(docName).toStringList();
-    foreach ()
-    }*/
-    // TODO: fill the dialog
 }
 #undef GT_METHOD_NAME
 
@@ -206,9 +215,9 @@ void ImportToDatabaseDialogFiller::editGeneralOptions(const Action &action) {
 
     GTUtilsDialog::waitForDialog(os, new CommonImportOptionsDialogFiller(os, action.data));
 
-    QWidget* importButton = GTWidget::findWidget(os, "import_button");
-    GT_CHECK(NULL != importButton, "importButton is NULL");
-    GTWidget::click(os, importButton);
+    QWidget* optionsButton = GTWidget::findWidget(os, "pbOptions");
+    GT_CHECK(NULL != optionsButton, "optionsButton is NULL");
+    GTWidget::click(os, optionsButton);
 }
 #undef GT_METHOD_NAME
 

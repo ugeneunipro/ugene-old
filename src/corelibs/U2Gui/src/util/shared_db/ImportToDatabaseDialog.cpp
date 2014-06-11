@@ -180,7 +180,7 @@ void ImportToDatabaseDialog::accept() {
     importTasks << createImportDocumentsTasks();
 
     if (!importTasks.isEmpty()) {
-        ImportToDatabaseTask* importTask = new ImportToDatabaseTask(importTasks, MAX_PARALLEL_SUBTASKS_AUTO);
+        ImportToDatabaseTask* importTask = new ImportToDatabaseTask(importTasks, 1);
         AppContext::getTaskScheduler()->registerTopLevelTask(importTask);
     }
 

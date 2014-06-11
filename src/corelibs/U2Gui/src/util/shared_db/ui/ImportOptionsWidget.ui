@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>541</width>
-    <height>377</height>
+    <height>419</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,6 +38,20 @@
        <widget class="QCheckBox" name="cbRecursively">
         <property name="text">
          <string>Process directories recursively</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cbKeepStructure">
+        <property name="text">
+         <string>Keep folders structure</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cbCreateSubfoldersForTopLevelFolder">
+        <property name="text">
+         <string>Create a subfolder for the top level folder</string>
         </property>
        </widget>
       </item>
