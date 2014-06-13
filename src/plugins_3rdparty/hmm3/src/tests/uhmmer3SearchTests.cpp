@@ -414,7 +414,7 @@ static UHMM3SearchSeqDomainResult getDomainRes( QStringList& tokens ) {
     return res;
 }
 
-const double COMPARE_PERCENT_BORDER = 0.01; // 1 percent
+const double COMPARE_PERCENT_BORDER = 0.1; // 10 percent
 
 template<class T>
 static bool compareNumbers( T f1, T f2 ) {
@@ -424,7 +424,7 @@ static bool compareNumbers( T f1, T f2 ) {
     } else if( 0 == f2 ) {
         ret = f1 < COMPARE_PERCENT_BORDER;
     } else {
-        ret = ( qAbs( f1 - f2 ) ) / f1 < COMPARE_PERCENT_BORDER;
+        ret = ( qAbs( f1 - f2 ) )  < COMPARE_PERCENT_BORDER;
     }
 
     if( !ret ) {

@@ -66,6 +66,8 @@ namespace U2 {
 
 #define SETTINGS_ROOT QString("test_runner/view/")
 
+#define NO_REASON QString("no")
+
 #define ICON_FAILD_DIR QIcon(":/plugins/test_runner/images/folder_faild.png")           
 #define ICON_SUCCES_DIR QIcon(":/plugins/test_runner/images/folder_ok.png")
 #define ICON_NOTRUN_DIR QIcon(":/plugins/test_runner/images/folder.png")
@@ -337,10 +339,6 @@ void TestViewController::addTest(TVTSItem* tsi, GTestRef* testRef, QString exclu
     GTestState* testState = new GTestState(testRef);
     connect(testState, SIGNAL(si_stateChanged(GTestState*)), SLOT(sl_testStateChanged(GTestState*)));
     TVTestItem* ti = new TVTestItem(testState);
-    //if tests is not escluded excludeReason is empty
-    if(!excludeReason.isEmpty()){
-        ti->excludedTests = true;
-    }
     ti->excludeReason=excludeReason;
     ti->updateVisual();
     tsi->addChild(ti);
@@ -546,19 +544,12 @@ void TestViewController::sl_setTestsDisabledAction(){
 void TestViewController::sl_setTestsChangeExcludedAction(){
     CHECK(task==NULL, );
 
-    ExcludeReasonDialog dlg;
-    int rc = dlg.exec();
-    if(!rc == QDialog::Accepted){
-        return;
-    }
-    QString reason = dlg.getReason();
-
     for (int i=0, n = tree->topLevelItemCount(); i<n; i++) {
         TVItem* item = static_cast<TVItem*>(tree->topLevelItem(i));
         assert(item->isSuite());
         bool allSelected=false;
         if(item->isSelected())allSelected=true;
-        setExcludedState(item,allSelected, reason);
+        setExcludedState(item,allSelected, NO_REASON);
     }
 }
 void TestViewController::sl_saveSelectedSuitesAction(){
@@ -749,6 +740,15 @@ void TestViewController::setExcludedState(TVItem* sItem,bool allSelected, bool n
     }
 }
 void TestViewController::setExcludedState(TVItem* sItem, bool allSelected, QString reason){
+    if(allSelected && reason == NO_REASON){
+        ExcludeReasonDialog dlg;
+        int rc = dlg.exec();
+        if(rc != QDialog::Accepted){
+            return;
+        }
+        reason = dlg.getReason();
+    }
+
     for(int j = 0, m = sItem->childCount(); j<m; j++) {
         TVItem* item = static_cast<TVItem*>(sItem->child(j));
         if (item->isTest()){
@@ -756,6 +756,14 @@ void TestViewController::setExcludedState(TVItem* sItem, bool allSelected, QStri
             if(tItem->isSelected()||allSelected){
                 tItem->excludedTests=!tItem->excludedTests;
                 if(tItem->excludedTests){
+                    if(!allSelected && reason == NO_REASON){
+                        ExcludeReasonDialog dlg;
+                        int rc = dlg.exec();
+                        if(rc != QDialog::Accepted){
+                            return;
+                        }
+                        reason = dlg.getReason();
+                    }
                     tItem->excludeReason = reason;
                 }
                 tItem->updateVisual();
