@@ -37,6 +37,7 @@ public:
     QString outName;
     QString inputUrl;
     QVariantMap customParameters;
+    QList<ExternalToolListener*> listeners;
 };
 
 class U2LANG_EXPORT BaseNGSWorker: public BaseWorker {

@@ -84,7 +84,7 @@ Task * BaseNGSWorker::tick() {
         setting.outName = getTargetName(url, outputDir);
         setting.inputUrl = url;
         setting.customParameters = getCustomParameters();
-
+        setting.listeners = createLogListeners();
         Task *t = getTask(setting);
         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
         return t;
@@ -225,6 +225,9 @@ Task *BaseNGSTask::getExternalToolTask(const QString &toolName){
     ExternalToolLogParser* logParser = new BaseNGSParser();
     ExternalToolRunTask* etTask = new ExternalToolRunTask(toolName, args, logParser, settings.outDir);
     etTask->setStandartOutputFile(settings.outDir + settings.outName);
+    if(!settings.listeners.isEmpty()){
+        etTask->addOutputListener(settings.listeners.at(0));
+    }
     return etTask;
 }
 
