@@ -99,7 +99,9 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 GUI_TEST_CLASS_DEFINITION(test_0006) {
     QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
     CHECK_SET_ERR(mw != NULL, "main window is NULL");
-    GTWidget::click(os, mw);
+#ifdef Q_OS_MAC
+    GTWidget::click(os, mw, Qt::LeftButton, QPoint(1500,300));
+#endif
     Qt::KeyboardModifiers mods = QApplication::keyboardModifiers();
     if(mods.testFlag(Qt::ShiftModifier)){
         uiLog.trace("shift pressed");
@@ -116,6 +118,8 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
         uiLog.trace("alt pressed");
         GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["alt"]);
     }
+
+    //GTKeyboardDriver::releaseAllKeys(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0000) {
