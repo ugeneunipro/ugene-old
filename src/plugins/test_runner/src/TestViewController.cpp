@@ -340,6 +340,9 @@ void TestViewController::addTest(TVTSItem* tsi, GTestRef* testRef, QString exclu
     connect(testState, SIGNAL(si_stateChanged(GTestState*)), SLOT(sl_testStateChanged(GTestState*)));
     TVTestItem* ti = new TVTestItem(testState);
     ti->excludeReason=excludeReason;
+    if(!excludeReason.isEmpty()){
+        ti->excludedTests = true;
+    }
     ti->updateVisual();
     tsi->addChild(ti);
 }
