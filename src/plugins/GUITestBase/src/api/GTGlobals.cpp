@@ -24,6 +24,7 @@
 #include <QtCore/QEventLoop>
 #include <QtCore/QTimer>
 #include <QtTest/QSpontaneKeyEvent>
+#include <QtTest>
 #include <QtGui/QPixmap>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -36,9 +37,7 @@
 namespace U2 {
 
 void GTGlobals::sleep(int msec) {
-    QEventLoop l;
-    QTimer::singleShot(msec, &l, SLOT(quit()));
-    l.exec();
+    QTest::qWait((msec + 9) / 10);
 }
 
 void GTGlobals::sendEvent(QObject *obj, QEvent *e) {
