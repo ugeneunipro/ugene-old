@@ -102,19 +102,6 @@ void GUIDialogWaiter::checkDialog() {
         uiLog.trace("GUIDialogWaiter::wait Id = " + QString::number(waiterId) + ", going to RUN");
         uiLog.trace("-------------------------");
 
-        Qt::MouseButtons buttons = QApplication::mouseButtons();
-        GTGlobals::sleep(100);
-
-        if(buttons.testFlag(Qt::LeftButton)){
-            uiLog.trace("releasing left button");
-            GTMouseDriver::release(os, Qt::LeftButton);
-        }
-
-        if(buttons.testFlag(Qt::RightButton)){
-            uiLog.trace("releasing right button");
-            GTMouseDriver::release(os, Qt::RightButton);
-        }
-
         hadRun = true;
         runnable->run();
     }

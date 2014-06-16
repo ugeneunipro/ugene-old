@@ -755,6 +755,8 @@ GUI_TEST_CLASS_DEFINITION(test_0011){
     GTMouseDriver::click(os);
     GTMouseDriver::click(os,Qt::RightButton);
 
+    GTGlobals::sleep(500);
+
     QList<QGraphicsSimpleTextItem *> branchList;
     foreach(QGraphicsItem* item, list){
             QGraphicsSimpleTextItem * textItem = qgraphicsitem_cast<QGraphicsSimpleTextItem *>(item);

@@ -782,7 +782,6 @@ GUI_TEST_CLASS_DEFINITION(test_0014){
 //    {Selected sequences:} set checked: Montana_montana, Zychia_baranovi
 //    {Path:} _common_data/sandbox/result.aln
 //    {Add to project:} set checked
-
 //4. Click OK
     GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"result.aln"));
     GTMouseDriver::doubleClick(os);
@@ -802,7 +801,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014){
 }
 class SpecialExtractSelectedAsMSADialogFiller : public Filler {
 public:
-    SpecialExtractSelectedAsMSADialogFiller(U2OpStatus &os) : Filler(os, "CreateSubalignimentDialog"){}
+    SpecialExtractSelectedAsMSADialogFiller(U2OpStatus &os) : Filler(os, "CreateSubalignmentDialog"){}
     virtual void run(){
         QWidget* dialog = QApplication::activeModalWidget();
         CHECK_SET_ERR(dialog, "activeModalWidget is NULL");

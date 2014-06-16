@@ -20,6 +20,7 @@
  */
 
 #include <U2View/MSAEditor.h>
+#include <U2Core/AppContext.h>
 
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
@@ -27,6 +28,8 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTMSAEditorStatusWidget.h"
 #include "api/GTWidget.h"
+#include <QMainWindow>
+
 
 namespace U2 {
 
@@ -165,18 +168,13 @@ void GTUtilsMSAEditorSequenceArea::checkSorted(U2OpStatus &os, bool sortedState)
 #define GT_METHOD_NAME "getNameList"
 QStringList GTUtilsMSAEditorSequenceArea::getNameList(U2OpStatus &os) {
 
-    QWidget *msaEditorNameList = GTWidget::findWidget(os, "msa_editor_name_list");
-    CHECK_SET_ERR_RESULT(msaEditorNameList != NULL, "MsaEditorSequenceArea not found", QStringList());
+    QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    MSAEditor* editor = mw->findChild<MSAEditor*>();
+    CHECK_SET_ERR_RESULT(editor != NULL, "MsaEditor not found", QStringList());
 
-    QObject *labelsParent = msaEditorNameList->findChild<QObject*>("labels_parent");
-    CHECK_SET_ERR_RESULT(labelsParent != NULL, "labelsParent is NULL", QStringList());
-    CHECK_SET_ERR_RESULT(labelsParent->children().size() == 1, "labelsParent is NULL", QStringList());
+    QStringList result = editor->getMSAObject()->getMAlignment().getRowNames();
 
-    QObject *namesObject = labelsParent->findChild<QObject*>();
-    CHECK_SET_ERR_RESULT(namesObject != NULL, "names QObject is NULL", QStringList());
-
-    QString allNames = namesObject->objectName();
-    return allNames.split('|', QString::SkipEmptyParts);
+    return result;
 }
 #undef GT_METHOD_NAME
 

@@ -102,7 +102,9 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 #ifdef Q_OS_MAC
     GTWidget::click(os, mw, Qt::LeftButton, QPoint(1500,300));
 #endif
+    GTGlobals::sleep(200);
     Qt::KeyboardModifiers mods = QApplication::keyboardModifiers();
+    uiLog.trace(QString("modifiers: %1").arg(mods));
     if(mods.testFlag(Qt::ShiftModifier)){
         uiLog.trace("shift pressed");
         GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);

@@ -30,7 +30,7 @@ class ExtractSelectedAsMSADialogFiller : public Filler {
 public:
     ExtractSelectedAsMSADialogFiller(U2OpStatus &os,QString _filepath, QStringList _list, int _from=0, int _to=0,bool _addToProj=true,
                                      bool _invertButtonPress=false,bool _allButtonPress=false,
-                                     bool _noneButtonPress=false) : Filler(os, "CreateSubalignimentDialog"),
+                                     bool _noneButtonPress=false) : Filler(os, "CreateSubalignmentDialog"),
         filepath(_filepath),
         list(_list),
         from(_from),
