@@ -125,8 +125,13 @@ public:
 
     U2DbiFactoryId  dbiFactoryId;
     U2DbiId         dbiId;
+
+private:
+    static bool metaInfoRegistered;
 };
 
+QDataStream & operator <<(QDataStream &out, const U2DbiRef &dbiRef);
+QDataStream & operator >>(QDataStream &in, U2DbiRef &dbiRef);
 
 /** 
     Cross database data reference

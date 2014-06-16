@@ -246,12 +246,12 @@ void SaveOnlyProjectTask::prepare(){
                 if (pathToDoc.exists()){
                     continue;
                 }
-                phantomDocs.append(d);                
+                phantomDocs.append(d);
             }
         }
         else{ // merged document
             foreach(QString url, urls){
-                QFile pathToDoc(url);                
+                QFile pathToDoc(url);
                 if (!pathToDoc.exists()){
                     phantomDocs.append(d);
                     break;
@@ -259,7 +259,7 @@ void SaveOnlyProjectTask::prepare(){
             }
         }
     }
-    if (!phantomDocs.isEmpty()){   
+    if (!phantomDocs.isEmpty()){
         sub = new RemoveMultipleDocumentsTask(proj, phantomDocs, false, false);
         addSubTask(sub);
     } else {

@@ -86,4 +86,27 @@ bool U2DbiRef::operator <(const U2DbiRef &r2) const {
     return dbiFactoryId + dbiId < r2.dbiFactoryId + r2.dbiId;
 }
 
+QDataStream & operator <<(QDataStream &out, const U2DbiRef &dbiRef) {
+    out << dbiRef.dbiFactoryId << dbiRef.dbiId;
+    return out;
+}
+
+QDataStream & operator >>(QDataStream &in, U2DbiRef &dbiRef) {
+    in >> dbiRef.dbiFactoryId;
+    in >> dbiRef.dbiId;
+    return in;
+}
+
+namespace {
+
+bool registerMetaInfo() {
+    qRegisterMetaType<U2DbiRef>("U2::U2DbiRef");
+    qRegisterMetaTypeStreamOperators<U2DbiRef>("U2::U2DbiRef");
+    return true;
+}
+
+}
+
+bool U2DbiRef::metaInfoRegistered = registerMetaInfo();
+
 } // U2
