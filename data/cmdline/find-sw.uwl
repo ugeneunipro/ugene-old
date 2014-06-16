@@ -87,7 +87,7 @@ workflow find-sw{
                 description:"Scoring matrix (using 'Auto' by default)";
             }
             ssearch.min-score {
-                alias:min-score;
+                alias:score;
                 description:"Minimal percent similarity between a sequence and a pattern (using '90' percents by default)";
             }
             ssearch.result-name {
