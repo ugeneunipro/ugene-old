@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>555</width>
-    <height>492</height>
+    <width>641</width>
+    <height>595</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Search Through a Remote Database</string>
@@ -22,21 +28,42 @@
   <property name="modal">
    <bool>false</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
    <item>
     <widget class="QTabWidget" name="optionsTab">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tabGeneralOptions">
       <attribute name="title">
        <string>General options</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0,0,1">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinAndMaxSize</enum>
+       </property>
        <item>
-        <layout class="QGridLayout" name="gridLayout_2">
+        <layout class="QGridLayout" name="layoutSearchOptions">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinAndMaxSize</enum>
+         </property>
+         <property name="leftMargin">
+          <number>3</number>
+         </property>
+         <property name="horizontalSpacing">
+          <number>15</number>
+         </property>
          <item row="0" column="0">
-          <widget class="QLabel" name="label_2">
+          <widget class="QLabel" name="lblDatabase">
            <property name="text">
             <string>Select the search type:</string>
            </property>
@@ -69,9 +96,9 @@
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="label">
+          <widget class="QLabel" name="lblEvalue">
            <property name="text">
-            <string>Expectation value</string>
+            <string>Expectation value:</string>
            </property>
           </widget>
          </item>
@@ -83,9 +110,9 @@
           </widget>
          </item>
          <item row="3" column="0">
-          <widget class="QLabel" name="label_3">
+          <widget class="QLabel" name="lblQuantity">
            <property name="text">
-            <string>Max hits</string>
+            <string>Max hits:</string>
            </property>
           </widget>
          </item>
@@ -127,127 +154,181 @@
         </layout>
        </item>
        <item>
-        <widget class="QLabel" name="label_14">
-         <property name="text">
-          <string>The database:</string>
+        <layout class="QVBoxLayout" name="layoutDb">
+         <property name="spacing">
+          <number>3</number>
          </property>
-        </widget>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinAndMaxSize</enum>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="lblDb">
+           <property name="text">
+            <string>The database:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="dbComboBox">
+           <property name="currentIndex">
+            <number>2</number>
+           </property>
+           <item>
+            <property name="text">
+             <string>Human genomic plus transcript - est_human</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Mouse genomic plus transcript - est_mouse</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Nucleotide collection - nr</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Reference nRNA sequences - refseq_rna</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Reference genomic seqence - refseq_genomic</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>NCBI genomes - chromosome</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Express sequence tags - est</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Non-human, non-mouse ESTs - est_other</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Genomic survey sequences - gss</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>High throughput genomic sequences - HTGS</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Patent sequences - pat</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Protein data bank - pdb</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Human ALU repeat elements - alu_repeats</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Sequence tagged sites - dbsts</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Whole-genome shotgun reads - wgs</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Environmental samples - env_nt</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
-        <widget class="QComboBox" name="dbComboBox">
-         <property name="currentIndex">
-          <number>2</number>
+        <layout class="QVBoxLayout" name="layoutDbDescription">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinAndMaxSize</enum>
+         </property>
+         <property name="leftMargin">
+          <number>3</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
          </property>
          <item>
-          <property name="text">
-           <string>Human genomic plus transcript - est_human</string>
-          </property>
+          <widget class="QLabel" name="lblDbDescription">
+           <property name="text">
+            <string>The database description:</string>
+           </property>
+          </widget>
          </item>
          <item>
-          <property name="text">
-           <string>Mouse genomic plus transcript - est_mouse</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Nucleotide collection - nr</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Reference nRNA sequences - refseq_rna</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Reference genomic seqence - refseq_genomic</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>NCBI genomes - chromosome</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Express sequence tags - est</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Non-human, non-mouse ESTs - est_other</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Genomic survey sequences - gss</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>High throughput genomic sequences - HTGS</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Patent sequences - pat</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Protein data bank - pdb</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Human ALU repeat elements - alu_repeats</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Sequence tagged sites - dbsts</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Whole-genome shotgun reads - wgs</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Environmental samples - env_nt</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_9">
-         <property name="text">
-          <string>The database description:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QTextEdit" name="textEdit">
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-         <property name="html">
-          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+          <widget class="QTextEdit" name="teDbDescription">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>100</height>
+            </size>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="html">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="layoutAnnotations">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinAndMaxSize</enum>
          </property>
-        </widget>
+        </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_4"/>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
+        <layout class="QHBoxLayout" name="layoutTimeout">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinAndMaxSize</enum>
+         </property>
          <item>
-          <spacer name="horizontalSpacer_2">
+          <spacer name="spacerTimeout">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -260,7 +341,7 @@ p, li { white-space: pre-wrap; }
           </spacer>
          </item>
          <item>
-          <widget class="QLabel" name="label_15">
+          <widget class="QLabel" name="lblTimeout">
            <property name="text">
             <string>Search timeout</string>
            </property>
@@ -296,15 +377,34 @@ p, li { white-space: pre-wrap; }
          </item>
         </layout>
        </item>
+       <item>
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="tabAdvancedOptions">
       <attribute name="title">
        <string>Advanced options</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_8">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinAndMaxSize</enum>
+       </property>
        <item>
-        <layout class="QGridLayout" name="gridLayout">
+        <layout class="QGridLayout" name="layoutAdvancedOptions">
          <item row="0" column="1">
           <widget class="QComboBox" name="wordSizeComboBox">
            <property name="sizePolicy">
@@ -339,7 +439,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item row="0" column="0">
-          <widget class="QLabel" name="label_4">
+          <widget class="QLabel" name="lblWordSize">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -352,7 +452,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item row="0" column="3">
-          <widget class="QLabel" name="label_6">
+          <widget class="QLabel" name="lblCosts">
            <property name="text">
             <string>Gap costs</string>
            </property>
@@ -412,7 +512,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="label_5">
+          <widget class="QLabel" name="lblScores">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -462,7 +562,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item row="3" column="0">
-          <widget class="QLabel" name="label_10">
+          <widget class="QLabel" name="lblMatrix">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -481,14 +581,14 @@ p, li { white-space: pre-wrap; }
           <widget class="QLineEdit" name="phiPatternEdit"/>
          </item>
          <item row="5" column="0">
-          <widget class="QLabel" name="label_12">
+          <widget class="QLabel" name="lblPhiPattern">
            <property name="text">
             <string>PHI pattern</string>
            </property>
           </widget>
          </item>
          <item row="0" column="2">
-          <spacer name="horizontalSpacer_3">
+          <spacer name="spacerAdvancedOptions1">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -501,7 +601,7 @@ p, li { white-space: pre-wrap; }
           </spacer>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="label_19">
+          <widget class="QLabel" name="lblEntrezQuery">
            <property name="text">
             <string>Entrez query</string>
            </property>
@@ -511,14 +611,14 @@ p, li { white-space: pre-wrap; }
           <widget class="QLineEdit" name="entrezQueryEdit"/>
          </item>
          <item row="3" column="3">
-          <widget class="QLabel" name="label_7">
+          <widget class="QLabel" name="lblService">
            <property name="text">
             <string>Service</string>
            </property>
           </widget>
          </item>
          <item row="3" column="2">
-          <spacer name="horizontalSpacer_4">
+          <spacer name="spacerAdvancedOptions2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -552,9 +652,9 @@ p, li { white-space: pre-wrap; }
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <layout class="QHBoxLayout" name="layoutFiltersAndMasks">
          <item>
-          <widget class="QGroupBox" name="groupBox">
+          <widget class="QGroupBox" name="gbFilters">
            <property name="title">
             <string>Filters</string>
            </property>
@@ -577,7 +677,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_2">
+          <widget class="QGroupBox" name="gbMasks">
            <property name="title">
             <string>Masks</string>
            </property>
@@ -602,65 +702,13 @@ p, li { white-space: pre-wrap; }
         </layout>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_3">
+        <widget class="QGroupBox" name="gbFilterResults">
          <property name="title">
           <string>Filter results</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
-           <layout class="QGridLayout" name="gridLayout_3">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>Filter by</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QCheckBox" name="accessionCheckBox">
-              <property name="text">
-               <string>accession</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QCheckBox" name="defCheckBox">
-              <property name="text">
-               <string>def (filter by definition of annotations)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QCheckBox" name="idCheckBox">
-              <property name="text">
-               <string>id</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="label_11">
-              <property name="text">
-               <string>Select result by</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QRadioButton" name="evalueRadioButton">
-              <property name="text">
-               <string>EValue</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QRadioButton" name="scoreRadioButton">
-              <property name="text">
-               <string>Score</string>
-              </property>
-             </widget>
-            </item>
+           <layout class="QGridLayout" name="layoutFilterResults">
             <item row="4" column="0">
              <spacer name="verticalSpacer">
               <property name="orientation">
@@ -686,6 +734,58 @@ p, li { white-space: pre-wrap; }
                </size>
               </property>
              </spacer>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Filter by</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Select result by</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="accessionCheckBox">
+              <property name="text">
+               <string>accession</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QRadioButton" name="evalueRadioButton">
+              <property name="text">
+               <string>EValue</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QCheckBox" name="defCheckBox">
+              <property name="text">
+               <string>def (filter by definition of annotations)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QCheckBox" name="idCheckBox">
+              <property name="text">
+               <string>id</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QRadioButton" name="scoreRadioButton">
+              <property name="text">
+               <string>Score</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -727,7 +827,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>quantitySpinBox</tabstop>
   <tabstop>evalueSpinBox</tabstop>
   <tabstop>dbComboBox</tabstop>
-  <tabstop>textEdit</tabstop>
+  <tabstop>teDbDescription</tabstop>
   <tabstop>retrySpinBox</tabstop>
   <tabstop>wordSizeComboBox</tabstop>
   <tabstop>scoresComboBox</tabstop>

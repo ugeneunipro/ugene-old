@@ -295,8 +295,8 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     useAutoAnnotationsRB->setText(tr("Use auto-annotations table"));
 
     if (layoutMode == normal) {
-        mainLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
-        gridLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+        mainLayout->setSizeConstraint(QLayout::SetMinimumSize);
+        gridLayout->setSizeConstraint(QLayout::SetMinimumSize);
 
         gridLayout->addWidget(existingObjectRB, 1, 0, 1, 1);
         gridLayout->addWidget(existingObjectCombo, 1, 1, 1, 1);

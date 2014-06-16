@@ -144,16 +144,9 @@ SendSelectionDialog::SendSelectionDialog(const U2SequenceObject* dnaso, bool _is
     int idx = 2;
     QWidget *wdgt;
     wdgt = ca_c->getWidget();
-    wdgt->setMinimumHeight(150);
-    verticalLayout_4->insertWidget(idx, wdgt);
+    layoutAnnotations->insertWidget(idx, wdgt);
 
     matrixComboBox->addItems(ParametersLists::blastp_matrix);
-    matrixComboBox->hide();
-    label_10->hide();
-    label_12->hide();
-    phiPatternEdit->hide();
-    label_7->hide();
-    textEdit->setMaximumHeight(100);
 
     setupDataBaseList();
     setUpSettings();
@@ -173,11 +166,11 @@ SendSelectionDialog::SendSelectionDialog(const U2SequenceObject* dnaso, bool _is
 
 void SendSelectionDialog::sl_serviceChanged(int) {
     if(serviceComboBox->currentText()=="phi") {
-        label_12->show();
+        lblPhiPattern->show();
         phiPatternEdit->show();
     }
     else {
-        label_12->hide();
+        lblPhiPattern->hide();
         phiPatternEdit->hide();
     }
 }
@@ -242,7 +235,7 @@ void SendSelectionDialog::sl_scriptSelected( int index ) {
         shortSequenceCheckBox->setEnabled(false);
         megablastCheckBox->setEnabled(false);
         matrixComboBox->hide();
-        label_10->hide();
+        lblMatrix->hide();
         dbComboBox->clear();
         dbComboBox->addItems(ParametersLists::cdd_dataBase);
     }
@@ -254,7 +247,7 @@ void SendSelectionDialog::sl_scriptSelected( int index ) {
         if(dataBase->currentText()=="blastn") {
 
             phiPatternEdit->hide();
-            label_12->hide();
+            lblPhiPattern->hide();
 
             megablastCheckBox->setEnabled(true);
 
@@ -270,17 +263,17 @@ void SendSelectionDialog::sl_scriptSelected( int index ) {
             scoresComboBox->addItems(ParametersLists::blastn_scores);
             scoresComboBox->setCurrentIndex(3);
             scoresComboBox->show();
-            label_5->show();
+            lblScores->show();
 
             dbComboBox->clear();
             dbComboBox->addItems(ParametersLists::blastn_dataBase);
             dbComboBox->setCurrentIndex(2);
 
             matrixComboBox->hide();
-            label_10->hide();
+            lblMatrix->hide();
 
             serviceComboBox->hide();
-            label_7->hide();
+            lblService->hide();
         }
         else {
             megablastCheckBox->setEnabled(false);
@@ -298,16 +291,16 @@ void SendSelectionDialog::sl_scriptSelected( int index ) {
             
             matrixComboBox->show();
             matrixComboBox->setCurrentIndex(3);
-            label_10->show();
+            lblMatrix->show();
             
             scoresComboBox->hide();
-            label_5->hide();
+            lblScores->hide();
             
             serviceComboBox->show();
-            label_7->show();
+            lblService->show();
         }
     }
-    textEdit->setPlainText(descr);
+    teDbDescription->setPlainText(descr);
     alignComboBoxes();
 }
 
