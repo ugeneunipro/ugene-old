@@ -218,9 +218,9 @@ QString ImportToDatabaseTask::sayAboutSkippedDirs() const {
     QString result;
 
     foreach (ImportDirToDatabaseTask* dirSubtask, dirSubtasks) {
-        const QStringList skippedFiles = dirSubtask->getSkippedFiles();
-        foreach (const QString& skippedFile, skippedFiles) {
-            result += skippedFile + "<br>";
+        const QStrStrMap skippedFiles = dirSubtask->getSkippedFiles();
+        foreach (const QString& skippedFile, skippedFiles.keys()) {
+            result += skippedFile + ": " + skippedFiles[skippedFile] + "<br>";
         }
     }
 
@@ -231,11 +231,11 @@ QString ImportToDatabaseTask::sayAboutSkippedFiles() const {
     QString result;
 
     foreach (ImportFileToDatabaseTask* fileSubtask, fileSubtasks) {
-        if (!fileSubtask->isCanceled() && !fileSubtask->hasError()) {
-            continue;
+        if (fileSubtask->isCanceled()) {
+            result += fileSubtask->getFilePath() + ": " + tr("Import was cancelled") + "<br>";
+        } else if (fileSubtask->hasError()) {
+            result += fileSubtask->getFilePath() + ": " + fileSubtask->getError() + "<br>";
         }
-
-        result += fileSubtask->getFilePath() + "<br>";
     }
 
     return result;

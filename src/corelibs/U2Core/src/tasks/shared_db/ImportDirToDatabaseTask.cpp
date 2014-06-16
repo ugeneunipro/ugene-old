@@ -81,17 +81,19 @@ QStringList ImportDirToDatabaseTask::getImportedFiles() const {
     return importedFiles;
 }
 
-QStringList ImportDirToDatabaseTask::getSkippedFiles() const {
-    QStringList skippedFiles;
+QStrStrMap ImportDirToDatabaseTask::getSkippedFiles() const {
+    QStrStrMap skippedFiles;
     CHECK(isFinished(), skippedFiles);
 
     foreach (ImportDirToDatabaseTask* importSubdirTask, importSubdirsTasks) {
-        skippedFiles << importSubdirTask->getSkippedFiles();
+        skippedFiles.unite(importSubdirTask->getSkippedFiles());
     }
 
     foreach (ImportFileToDatabaseTask* importSubfileTask, importSubfilesTasks) {
-        if (importSubfileTask->hasError() || importSubfileTask->isCanceled()) {
-            skippedFiles << importSubfileTask->getFilePath();
+        if (importSubfileTask->isCanceled()) {
+            skippedFiles.insert(importSubfileTask->getFilePath(), tr("Import was cancelled"));
+        } else if (importSubfileTask->hasError()) {
+            skippedFiles.insert(importSubfileTask->getFilePath(), importSubfileTask->getError());
         }
     }
 

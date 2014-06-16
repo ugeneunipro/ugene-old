@@ -58,7 +58,7 @@ void ImportFileToDatabaseTask::prepare() {
     FormatDetectionConfig detectionConfig;
     detectionConfig.useImporters = true;
     QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(GUrl(srcUrl), detectionConfig);
-    CHECK_EXT(!formats.isEmpty(), setError(tr("File is not recognized")), );
+    CHECK_EXT(!formats.isEmpty(), setError(tr("File format is not recognized")), );
 
     format = formats.first().format;
     CHECK(NULL == format, );

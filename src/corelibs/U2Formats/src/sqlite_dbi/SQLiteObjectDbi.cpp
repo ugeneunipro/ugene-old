@@ -902,7 +902,7 @@ qint64 SQLiteObjectDbi::getFolderId(const QString& path, bool mustExist, DbRef* 
         return -1;
     }
     if (mustExist && res == -1) {
-        os.setError(U2DbiL10n::tr("Folder not found :%1").arg(path));
+        os.setError(U2DbiL10n::tr("Folder not found: %1").arg(path));
     }
     return res;
 }
