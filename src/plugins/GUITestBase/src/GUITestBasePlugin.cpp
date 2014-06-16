@@ -1132,7 +1132,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_shared_database::cm_test_0013);
 
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0001);
-    REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0002);
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::proj_test_0002, "these tests hang mac testing");
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0003);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0004);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0005);
