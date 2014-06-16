@@ -185,7 +185,7 @@ void MysqlObjectDbi::renameFolder(const QString &oldPath, const QString &newPath
     const QStringList allFolders = getFolders(os);
     CHECK_OP(os, );
 
-    static const QString queryString = "UPDATE Folder SET path = :newPath where path = :oldPath";
+    static const QString queryString = "UPDATE Folder SET path = :newPath WHERE BINARY path = :oldPath";
     if (allFolders.contains(oldCPath)) {
         U2SqlQuery q(queryString, db, os);
         q.bindString("newPath", newCPath);
@@ -212,7 +212,7 @@ qint64 MysqlObjectDbi::countObjects(const QString& folder, U2OpStatus& os) {
     const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(folder);
 
     static const QString queryString = "SELECT COUNT(*) FROM FolderContent AS fc, Folder AS f "
-        "WHERE f.path = :path AND fc.folder = f.id";
+        "WHERE BINARY f.path = :path AND fc.folder = f.id";
     U2SqlQuery q(queryString, db, os);
     q.bindString("path", canonicalFolder);
     return q.selectInt64();
@@ -221,7 +221,7 @@ qint64 MysqlObjectDbi::countObjects(const QString& folder, U2OpStatus& os) {
 QList<U2DataId> MysqlObjectDbi::getObjects(const QString& folder, qint64 , qint64 , U2OpStatus& os) {
     const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(folder);
 
-    static const QString queryString = "SELECT o.id, o.type FROM Object AS o, FolderContent AS fc, Folder AS f WHERE f.path = :path AND fc.folder = f.id AND fc.object = o.id";
+    static const QString queryString = "SELECT o.id, o.type FROM Object AS o, FolderContent AS fc, Folder AS f WHERE BINARY f.path = :path AND fc.folder = f.id AND fc.object = o.id";
     U2SqlQuery q(queryString, db, os);
     q.bindString("path", canonicalFolder);
     return q.selectDataIdsExt();
@@ -238,7 +238,7 @@ QStringList MysqlObjectDbi::getObjectFolders(const U2DataId& objectId, U2OpStatu
 qint64 MysqlObjectDbi::getFolderLocalVersion(const QString& folder, U2OpStatus& os) {
     const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(folder);
 
-    static const QString queryString = "SELECT vlocal FROM Folder WHERE path = :path LIMIT 1";
+    static const QString queryString = "SELECT vlocal FROM Folder WHERE BINARY path = :path LIMIT 1";
     U2SqlQuery q(queryString, db, os);
     q.bindString("path", canonicalFolder);
     return q.selectInt64();
@@ -247,7 +247,7 @@ qint64 MysqlObjectDbi::getFolderLocalVersion(const QString& folder, U2OpStatus& 
 qint64 MysqlObjectDbi::getFolderGlobalVersion(const QString& folder, U2OpStatus& os) {
     const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(folder);
 
-    static const QString queryString = "SELECT vglobal FROM Folder WHERE path = :path LIMIT 1";
+    static const QString queryString = "SELECT vglobal FROM Folder WHERE BINARY path = :path LIMIT 1";
     U2SqlQuery q(queryString, db, os);
     q.bindString("path", canonicalFolder);
     return q.selectInt64();
@@ -345,7 +345,7 @@ bool MysqlObjectDbi::removeFolder(const QString& folder, U2OpStatus& os) {
     const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(folder);
 
     // remove subfolders first
-    static const QString selectSubfoldersString = "SELECT path FROM Folder WHERE path LIKE :path "
+    static const QString selectSubfoldersString = "SELECT path FROM Folder WHERE path LIKE BINARY :path "
         "ORDER BY LENGTH(path) DESC";
     U2SqlQuery selectSubfoldersQuery(selectSubfoldersString, db, os);
     selectSubfoldersQuery.bindString("path", canonicalFolder + U2ObjectDbi::PATH_SEP + "%");
@@ -379,7 +379,7 @@ bool MysqlObjectDbi::removeFolder(const QString& folder, U2OpStatus& os) {
 
     if (result) {
         // remove folder record
-        static const QString deleteFolderString = "DELETE FROM Folder WHERE path = :path";
+        static const QString deleteFolderString = "DELETE FROM Folder WHERE BINARY path = :path";
         U2SqlQuery deleteFolderQuery(deleteFolderString, db, os);
         deleteFolderQuery.bindString("path", canonicalFolder);
         deleteFolderQuery.execute();
@@ -745,7 +745,7 @@ void MysqlObjectDbi::updateObject(U2Object& obj, U2OpStatus& os) {
 qint64 MysqlObjectDbi::getFolderId(const QString& path, bool mustExist, MysqlDbRef* db, U2OpStatus& os) {
     const QString canonicalPath = U2DbiUtils::makeFolderCanonical(path);
 
-    static const QString queryString = "SELECT id FROM Folder WHERE path = :path LIMIT 1";
+    static const QString queryString = "SELECT id FROM Folder WHERE BINARY path = :path LIMIT 1";
     U2SqlQuery q(queryString, db, os);
     q.bindString("path", canonicalPath);
     qint64 res = q.selectInt64();
