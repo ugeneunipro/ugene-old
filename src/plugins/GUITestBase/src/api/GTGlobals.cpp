@@ -37,7 +37,7 @@
 namespace U2 {
 
 void GTGlobals::sleep(int msec) {
-    QTest::qWait((msec + 9) / 10);
+    QTest::qWait((msec));
 }
 
 void GTGlobals::sendEvent(QObject *obj, QEvent *e) {
