@@ -20,6 +20,9 @@
    <string>Construct Molecule</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
@@ -30,6 +33,9 @@
        <string>Construction</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinAndMaxSize</enum>
+       </property>
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
@@ -42,6 +48,9 @@
        </item>
        <item>
         <layout class="QGridLayout" name="gridLayout">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinAndMaxSize</enum>
+         </property>
          <item row="0" column="0" rowspan="5">
           <widget class="QListWidget" name="fragmentListWidget">
            <property name="toolTip">
