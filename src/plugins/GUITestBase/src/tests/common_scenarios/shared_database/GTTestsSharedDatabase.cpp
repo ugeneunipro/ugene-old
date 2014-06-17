@@ -486,7 +486,7 @@ GUI_TEST_CLASS_DEFINITION(proj_test_0002) {
     CHECK_SET_ERR(0 == model->rowCount(parentDir), "Invalid child item count");
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__ADD_MENU << ACTION_PROJECT__CREATE_FOLDER));
-    GTUtilsDialog::waitForDialog(os, new AddFolderDialogFiller(os, "pt0002_dir", GTGlobals::UseKeyBoard));
+    GTUtilsDialog::waitForDialog(os, new AddFolderDialogFiller(os, "pt0002_dir", GTGlobals::UseMouse));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "proj_test_0002"));
     GTMouseDriver::click(os, Qt::RightButton);
 

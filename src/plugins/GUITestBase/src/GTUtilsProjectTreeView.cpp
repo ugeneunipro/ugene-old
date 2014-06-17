@@ -325,14 +325,18 @@ void GTUtilsProjectTreeView::dragAndDrop(U2OpStatus &os, QModelIndex from, QWidg
 
 void GTUtilsProjectTreeView::dragAndDropSeveralElements(U2OpStatus &os, QModelIndexList from, QModelIndex to){
     QTreeView *treeView = getTreeView(os);
-
-    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+#ifdef Q_OS_MAC
+    int key = GTKeyboardDriver::key["cmd"];
+#else
+    int key = GTKeyboardDriver::key["ctrl"];
+#endif
+    GTKeyboardDriver::keyPress(os, key);
     foreach (QModelIndex index, from){
         treeView->scrollTo(index);
         GTMouseDriver::moveTo(os, getItemCenter(os, index));
         GTMouseDriver::click(os);
     }
-    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keyRelease(os, key);
 
     QModelIndexList selected = treeView->selectionModel()->selectedIndexes();
     QMimeData* mimeData = treeView->model()->mimeData(selected);
