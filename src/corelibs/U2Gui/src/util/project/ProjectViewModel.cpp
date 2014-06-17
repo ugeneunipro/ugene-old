@@ -358,8 +358,9 @@ QStringList ProjectViewModel::mimeTypes() const {
 }
 
 bool ProjectViewModel::dropMimeData(const QMimeData *data, Qt::DropAction /*action*/, int row, int /*column*/, const QModelIndex &parent) {
-    SAFE_POINT(-1 == row, "Wrong insertion row", false);
     Folder target = getDropFolder(parent);
+    const QString folderPath = target.getFolderPath();
+    SAFE_POINT(-1 == row || ProjectUtils::isFolderInRecycleBin(folderPath), "Wrong insertion row", false);
     Document *targetDoc = target.getDocument();
     SAFE_POINT(NULL != targetDoc, "NULL document", false);
     CHECK(!targetDoc->isStateLocked(), false);
@@ -367,15 +368,15 @@ bool ProjectViewModel::dropMimeData(const QMimeData *data, Qt::DropAction /*acti
     MimeDataIterator iter(data);
 
     while (iter.hasNextObject()) {
-        dropObject(iter.nextObject(), targetDoc, target.getFolderPath());
+        dropObject(iter.nextObject(), targetDoc, folderPath);
     }
 
     while (iter.hasNextFolder()) {
-        dropFolder(iter.nextFolder(), targetDoc, target.getFolderPath());
+        dropFolder(iter.nextFolder(), targetDoc, folderPath);
     }
 
     while (iter.hasNextDocument()) {
-        dropDocument(iter.nextDocument(), targetDoc, target.getFolderPath());
+        dropDocument(iter.nextDocument(), targetDoc, folderPath);
     }
 
     return true;
@@ -1412,21 +1413,32 @@ Folder ProjectViewModel::getDropFolder(const QModelIndex &index) const {
     return Folder(doc, path);
 }
 
+namespace {
+
+QString changeDropPathIfInRecycleBin(const QString &path) {
+    return ProjectUtils::isFolderInRecycleBin(path, false) ? ProjectUtils::RECYCLE_BIN_FOLDER_PATH : path;
+}
+
+}
+
 void ProjectViewModel::dropObject(GObject *obj, Document *targetDoc, const QString &targetFolderPath) {
+    const QString actualDstPath = changeDropPathIfInRecycleBin(targetFolderPath); // we can drop only to the 'Recycle Bin' folder but not to its subfolder
+
     if (obj->getDocument() == targetDoc) {
-        moveObject(targetDoc, obj, targetFolderPath);
+        moveObject(targetDoc, obj, actualDstPath);
         emit si_documentContentChanged(targetDoc);
     } else {
-        ImportObjectToDatabaseTask *task = new ImportObjectToDatabaseTask(obj, targetDoc->getDbiRef(), targetFolderPath);
+        ImportObjectToDatabaseTask *task = new ImportObjectToDatabaseTask(obj, targetDoc->getDbiRef(), actualDstPath);
         connect(task, SIGNAL(si_stateChanged()), SLOT(sl_objectImported()));
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
     }
 }
 
 void ProjectViewModel::dropFolder(const Folder &folder, Document *targetDoc, const QString &targetFolderPath) {
-    CHECK(isAcceptableFolder(targetDoc, targetFolderPath, folder), );
+    const QString actualDstPath = changeDropPathIfInRecycleBin(targetFolderPath); // we can drop only to the 'Recycle Bin' folder but not to its subfolder
+    CHECK(isAcceptableFolder(targetDoc, actualDstPath, folder), );
 
-    QString newPath = Folder::createPath(targetFolderPath, folder.getFolderName());
+    QString newPath = Folder::createPath(actualDstPath, folder.getFolderName());
     renameFolder(targetDoc, folder.getFolderPath(), newPath);
     emit si_documentContentChanged(targetDoc);
 }

@@ -43,11 +43,11 @@
 #include "ui/ui_SharedConnectionsDialog.h"
 
 
-static const char * NON_INITED_DB_MB_TITLE = "UGENE shared database setup";
+static const char * NON_INITED_DB_MB_TITLE = "UGENE Shared Database Setup";
 static const char * NON_INITED_DB_MB_TEXT = "UGENE has detected that the database "
     "you are connecting to is not initialized. Do you want to set it up now for use with UGENE?";
 
-static const char * UNABLE_TO_CONNECT_TITLE = "Could not connect";
+static const char * UNABLE_TO_CONNECT_TITLE = "Could Not Connect";
 static const char * UNABLE_TO_CONNECT_TEXT = "The database has been set up "
     "for a more recent version of UGENE, this means that this version of UGENE is not compatible "
     "with the database and will not connect to it. Upgrade UGENE to at least %1 version "
