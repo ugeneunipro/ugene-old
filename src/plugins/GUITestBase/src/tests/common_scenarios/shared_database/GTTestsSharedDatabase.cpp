@@ -1531,6 +1531,47 @@ GUI_TEST_CLASS_DEFINITION(import_test_0013) {
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
 
+GUI_TEST_CLASS_DEFINITION(import_test_0014) {
+//    Import a multi-sequence file via import dialog as separate sequences.
+
+//    1. Connect to the "ugene_gui_test" database.
+
+//    2. Call context menu on the {import_test_0014} folder in the database connection document, select {Add -> Import to the folder...} item.
+//    Expected state: an import dialog appears.
+
+//    3. Click the "Add files" button, select the {_common_data/fasta/multy_fa.fa} file.
+//    Expected state: the document is added to the orders list, it will be imported into the {/import_test_0014} folder.
+
+//    4. Click the "Import" button.
+//    Expected state: an import task is started, there are two sequence objects in the {/import_test_0014/multy_fa.fa} folder after the task has finished.
+
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString dstFolderName = "import_test_0014";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString objectFolderName = "multy_fa";
+    const QString objectFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + objectFolderName;
+    const QString sequenceFirstObjectName = "SEQUENCE_1";
+    const QString sequenceSecondObjectName = "SEQUENCE_2";
+    const QString databaseSequenceFirstObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + sequenceFirstObjectName;
+    const QString databaseSequenceSecondObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + sequenceSecondObjectName;
+
+
+    const QString connectionName = connectToTestDatabase(os);
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
+
+    GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, dstFolderPath, QStringList() << testDir + "_common_data/fasta/multy_fa.fa");
+
+    const QStringList expectedItems = QStringList() << objectFolderPath
+                                                    << databaseSequenceFirstObjectPath
+                                                    << databaseSequenceSecondObjectPath;
+    GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(os, databaseDoc, dstFolderPath, expectedItems);
+
+    CHECK_SET_ERR(!lt.hasError(), "errors in log");
+}
+
+
 GUI_TEST_CLASS_DEFINITION(view_test_0001) {
 //    View annotated sequence
 //    1. Connect to the "ugene_gui_test" database.
