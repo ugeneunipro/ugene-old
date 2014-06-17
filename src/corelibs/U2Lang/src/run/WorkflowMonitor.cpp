@@ -90,7 +90,7 @@ const QMap<QString, Monitor::WorkerLogInfo> & WorkflowMonitor::getWorkersLog() c
 }
 
 QString WorkflowMonitor::actorName(const QString &id) const {
-    SAFE_POINT(procMap.contains(id), "Unknown actor id", "");
+    SAFE_POINT(procMap.contains(id), QString("Unknown actor id %1").arg(id), "");
     return procMap[id]->getLabel();
 }
 

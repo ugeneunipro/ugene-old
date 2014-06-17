@@ -20,8 +20,10 @@
  */
 
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/L10n.h>
 
 #include <U2Lang/ActorPrototype.h>
+#include <U2Lang/BaseTypes.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/GrouperOutSlot.h>
 #include <U2Lang/GrouperSlotAttribute.h>
@@ -41,7 +43,7 @@ Actor::Actor(const ActorId &actorId, ActorPrototype* proto, AttributeScript * _s
     if(script == NULL) {
         if(proto->isScriptFlagSet()) {
             script = new AttributeScript();
-            script->setScriptText("");   
+            script->setScriptText("");
         }
         else {
             script = NULL;
@@ -61,7 +63,7 @@ Actor::Actor(const Actor&) : QObject(), Configuration(), Peer() {
 }
 
 Actor::~Actor() {
-    qDeleteAll(ports.values()); 
+    qDeleteAll(ports.values());
     delete doc;
     delete script;
     delete condition;
@@ -112,7 +114,7 @@ void Actor::setupVariablesForAttribute(AttributeScript *_script) {
 
 AttributeScript * Actor::getScript() const {
     return script;
-} 
+}
 
 void Actor::setScript(AttributeScript* _script) {
     script->setScriptText(_script->getScriptText());
@@ -161,7 +163,7 @@ QString Actor::getLabel() const {
 }
 
 void Actor::setLabel(const QString& l) {
-    label = l; 
+    label = l;
     emit si_labelChanged();
 }
 
@@ -174,12 +176,12 @@ QList<Port*> Actor::getPorts() const {
 }
 
 QList<Port*> Actor::getInputPorts() const {
-    QList<Port*> l; foreach (Port* p, ports.values()) if (p->isInput()) l<<p; 
+    QList<Port*> l; foreach (Port* p, ports.values()) if (p->isInput()) l<<p;
     return l;
 }
 
 QList<Port*> Actor::getOutputPorts() const {
-    QList<Port*> l; foreach (Port* p, ports.values()) if (p->isOutput()) l<<p; 
+    QList<Port*> l; foreach (Port* p, ports.values()) if (p->isOutput()) l<<p;
     return l;
 }
 
@@ -412,7 +414,7 @@ bool Actor::validate(ProblemList &problemList) const {
         }
     }
 
-    // Validate URL parameters
+    // Validate URL and Numeric parameters
     bool urlsRes = true;
     foreach (Attribute *attr, getParameters()) {
         SAFE_POINT(NULL != attr, "NULL attribute!", false);
@@ -421,6 +423,15 @@ bool Actor::validate(ProblemList &problemList) const {
         if (urlType != NotAnUrl) {
             bool urlAttrValid = validateUrlAttribute(attr, urlType, problemList);
             urlsRes = urlsRes && urlAttrValid;
+        }
+
+        if (attr->getAttributeType() == BaseTypes::NUM_TYPE()) {
+            bool ok;
+            attr->getAttributePureValue().toString().toInt((&ok));
+            result &= ok;
+            if (!ok) {
+                problemList << Problem(L10N::badArgument(attr->getAttributePureValue().toString()));
+            }
         }
     }
     result = result && urlsRes;
