@@ -358,7 +358,8 @@ GObjectReference::GObjectReference(const GObject* obj, bool deriveLoadedType) {
 }
 
 bool GObjectReference::operator ==(const GObjectReference& r) const {
-    return objName == r.objName && docUrl == r.docUrl && objType == r.objType && r.entityRef == entityRef;
+    return objName == r.objName && docUrl == r.docUrl && objType == r.objType
+        && (!r.entityRef.isValid() || !entityRef.isValid() || r.entityRef == entityRef);
 }
 
 bool GObjectRelation::operator ==(const GObjectRelation& r) const {

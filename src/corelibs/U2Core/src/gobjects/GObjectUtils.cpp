@@ -128,8 +128,6 @@ namespace {
 
 QList<GObject *> findRelatedObjectsForUnloadedObjects(const GObject *obj, GObjectRelationRole role, const QSet<GObject*> &fromObjects) {
     QList<GObject *> res;
-    SAFE_POINT(obj->isUnloaded(), "Invalid object loaded state detected", res);
-
     foreach(GObject* o, fromObjects) {
         if (!o->isUnloaded()) {
             coreLog.error("Invalid object loaded state detected");
@@ -153,6 +151,9 @@ QList<GObject *> findRelatedObjectsForLoadedObjects(const GObject *obj, GObjectR
         const U2DbiRef dbiRef = object->getEntityRef().dbiRef;
         if (entityRef.dbiRef == dbiRef) {
             doc2DbiRef.insert(doc, entityRef.dbiRef);
+        }
+        if (!doc->isDatabaseConnection()) {
+            object->getObjectRelations(); // this is hack to ensure that relations are stored into DB for local files
         }
     }
 
@@ -188,12 +189,32 @@ QList<GObject*> GObjectUtils::findObjectsRelatedToObjectByRole(const GObject* ob
     UnloadedObjectFilter f)
 {
     QList<GObject *> res;
-    QSet<GObject *> objects = select(fromObjects, resultObjType, f).toSet();
+    QSet<GObject *> loadedObjs;
+    QSet<GObject *> unloadedObjs;
 
-    if (obj->isUnloaded()) { // suppose that `objects` are also unloaded
-        res = findRelatedObjectsForUnloadedObjects(obj, role, objects);
+    if (UOF_LoadedAndUnloaded == f) {
+        foreach(GObject* o, fromObjects) {
+            bool isUnloaded = o->getGObjectType() == GObjectTypes::UNLOADED;
+            if ((resultObjType.isEmpty() && (f == UOF_LoadedAndUnloaded || !isUnloaded)) || o->getGObjectType() == resultObjType) {
+                loadedObjs.insert(o);
+            } else if (f == UOF_LoadedAndUnloaded && isUnloaded) {
+                UnloadedObject* uo = qobject_cast<UnloadedObject*>(o);
+                if (uo->getLoadedObjectType() == resultObjType) {
+                    unloadedObjs.insert(o);
+                }
+            }
+        }
+    } else if (UOF_LoadedOnly == f) {
+        loadedObjs = select(fromObjects, resultObjType, f).toSet();
     } else {
-        res = findRelatedObjectsForLoadedObjects(obj, role, objects);
+        FAIL("Unexpected unloaded object filter detected", res);
+    }
+
+    if (!unloadedObjs.isEmpty()) {
+        res.append(findRelatedObjectsForUnloadedObjects(obj, role, unloadedObjs));
+    }
+    if (!loadedObjs.isEmpty()) {
+        res.append(findRelatedObjectsForLoadedObjects(obj, role, loadedObjs));
     }
     return res;
 }
