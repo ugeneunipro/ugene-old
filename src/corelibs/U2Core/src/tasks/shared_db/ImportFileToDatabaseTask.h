@@ -42,6 +42,8 @@ public:
     const QString& getFilePath() const;
 
 private:
+    DocumentProviderTask *detectFormat();
+    void prepareFolder();
     QVariantMap prepareHints() const;
     QString getFolderName() const;
 

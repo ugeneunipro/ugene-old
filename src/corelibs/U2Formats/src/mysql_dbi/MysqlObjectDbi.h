@@ -115,6 +115,9 @@ public:
     /** Creates folder in the database.
         If the specified path is already presented in the database, nothing will be done.
         It is not required that parent folders must exist, they are created automatically.
+        WARNING: beware of multi-threading folder creation: every thread can have its own transaction,
+        so other threads may not notice that the folder is already created and they create a duplicate folder.
+        It is better to create folders in the main thread.
     */
     virtual void createFolder(const QString& path, U2OpStatus& os);
 

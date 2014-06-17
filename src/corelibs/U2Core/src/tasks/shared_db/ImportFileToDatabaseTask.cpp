@@ -55,20 +55,16 @@ ImportFileToDatabaseTask::ImportFileToDatabaseTask(const QString& srcUrl, const 
 }
 
 void ImportFileToDatabaseTask::prepare() {
-    FormatDetectionConfig detectionConfig;
-    detectionConfig.useImporters = true;
-    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(GUrl(srcUrl), detectionConfig);
-    CHECK_EXT(!formats.isEmpty(), setError(tr("File format is not recognized")), );
+    DocumentProviderTask* importTask = detectFormat();
+    CHECK_EXT(NULL != format || NULL != importTask, setError(tr("File format is not recognized")), );
+    CHECK_OP(stateInfo, );
 
-    format = formats.first().format;
-    CHECK(NULL == format, );
+    prepareFolder();
+    CHECK_OP(stateInfo, );
 
-    DocumentImporter* importer = formats.first().importer;
-    CHECK(NULL != importer, );  // do something with unrecognized files here
-
-    QVariantMap hints = prepareHints();
-    DocumentProviderTask* importTask = importer->createImportTask(formats.first(), false, hints);
-    addSubTask(importTask);
+    if (NULL != importTask) {
+        addSubTask(importTask);
+    }
 }
 
 void ImportFileToDatabaseTask::run() {
@@ -104,6 +100,27 @@ const QString &ImportFileToDatabaseTask::getFilePath() const {
     return srcUrl;
 }
 
+DocumentProviderTask* ImportFileToDatabaseTask::detectFormat() {
+    FormatDetectionConfig detectionConfig;
+    detectionConfig.useImporters = true;
+    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(GUrl(srcUrl), detectionConfig);
+    CHECK_EXT(!formats.isEmpty(), setError(tr("File format is not recognized")), NULL);
+
+    format = formats.first().format;
+    CHECK(NULL == format, NULL);
+
+    DocumentImporter* importer = formats.first().importer;
+    CHECK(NULL != importer, NULL);  // do something with unrecognized files here
+
+    QVariantMap hints = prepareHints();
+    return importer->createImportTask(formats.first(), false, hints);
+}
+
+void ImportFileToDatabaseTask::prepareFolder() {
+    DbiConnection con(dstDbiRef, stateInfo);
+    con.dbi->getObjectDbi()->createFolder(getFolderName(), stateInfo);
+}
+
 QVariantMap ImportFileToDatabaseTask::prepareHints() const {
     QVariantMap hints;
 
@@ -114,7 +131,7 @@ QVariantMap ImportFileToDatabaseTask::prepareHints() const {
 
     switch (options.multiSequencePolicy) {
         case ImportToDatabaseOptions::SEPARATE:
-            // do nothing, it is standard behavior
+            // do nothing, it is a standard behavior
             break;
         case ImportToDatabaseOptions::MERGE:
             hints[DocumentReadingMode_SequenceMergeGapSize] = options.mergeMultiSequencePolicySeparatorSize;
