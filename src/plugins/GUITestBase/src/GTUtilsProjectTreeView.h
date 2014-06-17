@@ -41,6 +41,7 @@ public:
     // returns center or item's rect
     // fails if the item wasn't found
     static QPoint getItemCenter(U2OpStatus &os, const QModelIndex& itemIndex);
+    static QPoint getItemCenter(U2OpStatus &os, QTreeView *treeView, const QModelIndex& itemIndex);
     static QPoint getItemCenter(U2OpStatus &os, const QString &itemName);
 
     // if item is not visible, scroll until item is not visible
@@ -49,19 +50,21 @@ public:
     static void doubleClickItem(U2OpStatus &os, const QModelIndex& itemIndex);
 
     static QTreeView* getTreeView(U2OpStatus &os);
-    static QModelIndex findIndex(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
-    static QModelIndex findIndex(U2OpStatus &os, const QString &itemName, const QModelIndex& parent, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QModelIndex findIndex(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
+    static QModelIndex findIndex(U2OpStatus &os, QTreeView *treeView, const QString &itemName, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
+    static QModelIndex findIndex(U2OpStatus &os, const QString &itemName, const QModelIndex& parent, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
+    static QModelIndex findIndex(U2OpStatus &os, QTreeView *treeView, const QString &itemName, const QModelIndex& parent, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
     static QModelIndexList findIndecies(U2OpStatus &os,
                                         const QString &itemName,
                                         const QModelIndex &parent = QModelIndex(),
                                         int parentDepth = 0,
                                         const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
     static QModelIndexList findIndecies(U2OpStatus &os,
-                                       const QString &itemName,
-                                       QTreeView *treeView,
-                                       const QModelIndex &parent = QModelIndex(),
-                                       int parentDepth = 0,
-                                       const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
+                                        QTreeView *treeView,
+                                        const QString &itemName,
+                                        const QModelIndex &parent = QModelIndex(),
+                                        int parentDepth = 0,
+                                        const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
 
     static QString getSelectedItem(U2OpStatus &os);
 

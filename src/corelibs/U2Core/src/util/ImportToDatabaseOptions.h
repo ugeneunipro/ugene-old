@@ -48,6 +48,16 @@ public:
 
     bool operator == (const ImportToDatabaseOptions& other) const;
     bool operator != (const ImportToDatabaseOptions& other) const;
+
+    static const QString    DESTINATION_FOLDER;
+    static const QString    KEEP_FOLDERS_STRUCTURE;
+    static const QString    PROCESS_FOLDERS_RECUSIVELY;
+    static const QString    CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER;
+    static const QString    CREATE_SUBFOLDER_FOR_EACH_FILE;
+    static const QString    IMPORT_UNKNOWN_AS_UDR;
+    static const QString    MULTI_SEQUENCE_POLICY;
+    static const QString    CREATE_SUBFOLDER_FOR_DOCUMENT;
+    static const QString    MERGE_MULTI_SEQUENCE_POLICY_SEPARATOR_SIZE;
 };
 
 }   // namespace U2

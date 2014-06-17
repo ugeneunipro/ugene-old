@@ -19,6 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtGui/QTreeWidgetItem>
+
+#include <U2Core/ImportToDatabaseOptions.h>
 #include <U2Core/U2ObjectDbi.h>
 
 #include <U2Test/GUITest.h>
@@ -47,7 +50,6 @@
 #include "runnables/ugene/corelibs/U2Gui/ExportChromatogramFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/ImportOptionsWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
@@ -1017,8 +1019,8 @@ GUI_TEST_CLASS_DEFINITION(import_test_0006) {
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_DIRS, addFolderAction);
 
     QVariantMap editOptionsAction;
-    editOptionsAction.insert(ImportOptionsWidgetFiller::PROCESS_FOLDERS_RECUSIVELY, false);
-    editOptionsAction.insert(ImportOptionsWidgetFiller::CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER, false);
+    editOptionsAction.insert(ImportToDatabaseOptions::PROCESS_FOLDERS_RECUSIVELY, false);
+    editOptionsAction.insert(ImportToDatabaseOptions::CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER, false);
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::EDIT_GENERAL_OPTIONS, editOptionsAction);
 
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
@@ -1096,8 +1098,8 @@ GUI_TEST_CLASS_DEFINITION(import_test_0007) {
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_DIRS, addFolderAction);
 
     QVariantMap editOptionsAction;
-    editOptionsAction.insert(ImportOptionsWidgetFiller::PROCESS_FOLDERS_RECUSIVELY, false);
-    editOptionsAction.insert(ImportOptionsWidgetFiller::CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER, true);
+    editOptionsAction.insert(ImportToDatabaseOptions::PROCESS_FOLDERS_RECUSIVELY, false);
+    editOptionsAction.insert(ImportToDatabaseOptions::CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER, true);
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::EDIT_GENERAL_OPTIONS, editOptionsAction);
 
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
@@ -1172,9 +1174,9 @@ GUI_TEST_CLASS_DEFINITION(import_test_0008) {
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_DIRS, addFolderAction);
 
     QVariantMap editOptionsAction;
-    editOptionsAction.insert(ImportOptionsWidgetFiller::PROCESS_FOLDERS_RECUSIVELY, true);
-    editOptionsAction.insert(ImportOptionsWidgetFiller::CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER, false);
-    editOptionsAction.insert(ImportOptionsWidgetFiller::KEEP_FOLDERS_STRUCTURE, true);
+    editOptionsAction.insert(ImportToDatabaseOptions::PROCESS_FOLDERS_RECUSIVELY, true);
+    editOptionsAction.insert(ImportToDatabaseOptions::CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER, false);
+    editOptionsAction.insert(ImportToDatabaseOptions::KEEP_FOLDERS_STRUCTURE, true);
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::EDIT_GENERAL_OPTIONS, editOptionsAction);
 
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
@@ -1247,9 +1249,9 @@ GUI_TEST_CLASS_DEFINITION(import_test_0009) {
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_DIRS, addFolderAction);
 
     QVariantMap editOptionsAction;
-    editOptionsAction.insert(ImportOptionsWidgetFiller::PROCESS_FOLDERS_RECUSIVELY, true);
-    editOptionsAction.insert(ImportOptionsWidgetFiller::CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER, false);
-    editOptionsAction.insert(ImportOptionsWidgetFiller::KEEP_FOLDERS_STRUCTURE, false);
+    editOptionsAction.insert(ImportToDatabaseOptions::PROCESS_FOLDERS_RECUSIVELY, true);
+    editOptionsAction.insert(ImportToDatabaseOptions::CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER, false);
+    editOptionsAction.insert(ImportToDatabaseOptions::KEEP_FOLDERS_STRUCTURE, false);
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::EDIT_GENERAL_OPTIONS, editOptionsAction);
 
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
@@ -1306,7 +1308,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0010) {
 
     QVariantMap addObjectAction;
     QMap<QString, QVariant> projectItemsToSelect;
-    projectItemsToSelect.insert(documentName, QStringList() << "[s] " + sequenceObjectName);
+    projectItemsToSelect.insert(documentName, QStringList() << sequenceObjectName);
     addObjectAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__PROJECT_ITEMS_LIST, projectItemsToSelect);
     actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_PROJECT_ITEMS, addObjectAction);
 
@@ -1406,6 +1408,125 @@ GUI_TEST_CLASS_DEFINITION(import_test_0011) {
 
     QTreeWidgetItem* annotationTable = GTUtilsAnnotationsTreeView::findItem(os, someFeatureName);
     CHECK_SET_ERR(NULL != annotationTable, "Annotation table is NULL");
+
+    CHECK_SET_ERR(!lt.hasError(), "errors in log");
+}
+
+GUI_TEST_CLASS_DEFINITION(import_test_0012) {
+//    Import a multi-sequence file via import dialog as msa.
+
+//    1. Connect to the "ugene_gui_test" database.
+
+//    2. Call context menu on the {import_test_0012} folder in the database connection document, select {Add -> Import to the folder...} item.
+//    Expected state: an import dialog appears.
+
+//    3. Click the "Add files" button, select the {_common_data/fasta/multy_fa.fa} file.
+//    Expected state: the document is added to the orders list, it will be imported into the {/import_test_0012} folder.
+
+//    4. Click the "General options" button.
+//    Expected state: an options dialog appears.
+
+//    5. Set options:
+//    {Join into alignment} : checked
+//    and click the "Ok" button.
+
+//    6. Click the "Import" button.
+//    Expected state: an import task is started, there is a msa object in the {/import_test_0012/multy_fa.fa} folder after the task has finished.
+
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString dstFolderName = "import_test_0012";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString objectFolderName = "multy_fa";
+    const QString objectFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + objectFolderName;
+    const QString malignmentObjectName = "Multiple alignment";
+    const QString databaseMalignmentObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + malignmentObjectName;
+
+
+    const QString connectionName = connectToTestDatabase(os);
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
+
+    QVariantMap options;
+    options.insert(ImportToDatabaseOptions::MULTI_SEQUENCE_POLICY, ImportToDatabaseOptions::MALIGNMENT);
+    GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, dstFolderPath, QStringList() << testDir + "_common_data/fasta/multy_fa.fa", options);
+
+    const QStringList expectedItems = QStringList() << objectFolderPath
+                                                << databaseMalignmentObjectPath;
+    GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(os, databaseDoc, dstFolderPath, expectedItems);
+
+    CHECK_SET_ERR(!lt.hasError(), "errors in log");
+}
+
+GUI_TEST_CLASS_DEFINITION(import_test_0013) {
+//    Import a multi-sequence file via import dialog and merge them into a single sequence.
+
+//    1. Connect to the "ugene_gui_test" database.
+
+//    2. Call context menu on the {import_test_0013} folder in the database connection document, select {Add -> Import to the folder...} item.
+//    Expected state: an import dialog appears.
+
+//    3. Click the "Add files" button, select the {_common_data/fasta/multy_fa.fa} file.
+//    Expected state: the document is added to the orders list, it will be imported into the {/import_test_0013} folder.
+
+//    4. Click the "General options" button.
+//    Expected state: an options dialog appears.
+
+//    5. Set options:
+//    {Merge into a single sequence} : checked
+//    {Number of 'unknown' symbols} : 5
+//    and click the "Ok" button.
+
+//    6. Click the "Import" button.
+//    Expected state: an import task is started, there are a sequence object and an annotation table object in the {/import_test_0013/multy_fa.fa} folder after the task has finished.
+
+//    7. Double click the sequence object.
+//    Expected state: a sequence view opens, there is the annotation table object in the annotation tree widget.
+
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString dstFolderName = "import_test_0013";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString objectFolderName = "multy_fa";
+    const QString objectFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + objectFolderName;
+    const QString sequenceObjectName = "SEQUENCE_1";
+    const QString annotationTableObjectName = "Contigs";
+    const QString sequenceVisibleWidgetName = "[s] " + sequenceObjectName;
+    const QString databaseAnnotationTableObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + annotationTableObjectName;
+    const QString databaseSequenceObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+    const QString contigFeatureName = "contig";
+    const QString expectedSecondContigRegion = "243..362";
+
+
+    const QString connectionName = connectToTestDatabase(os);
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
+
+    QVariantMap options;
+    options.insert(ImportToDatabaseOptions::MULTI_SEQUENCE_POLICY, ImportToDatabaseOptions::MERGE);
+    options.insert(ImportToDatabaseOptions::MERGE_MULTI_SEQUENCE_POLICY_SEPARATOR_SIZE, 5);
+    GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, dstFolderPath, QStringList() << testDir + "_common_data/fasta/multy_fa.fa", options);
+
+    const QStringList expectedItems = QStringList() << objectFolderPath
+                                                    << databaseSequenceObjectPath
+                                                    << databaseAnnotationTableObjectPath;
+    GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(os, databaseDoc, dstFolderPath, expectedItems);
+
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseSequenceObjectPath);
+    QWidget* seqView = GTWidget::findWidget(os, connectionName + " " + sequenceVisibleWidgetName);
+    CHECK_SET_ERR(NULL != seqView, "View wasn't opened");
+
+    QTreeWidget* annotationTableWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
+    CHECK_SET_ERR(NULL != annotationTableWidget, "Annotations tree widget is NULL");
+
+    QTreeWidgetItem* contigGroup = GTUtilsAnnotationsTreeView::findItem(os, contigFeatureName);
+    CHECK_SET_ERR(NULL != contigGroup, "Contig group is NULL");
+
+    QTreeWidgetItem* secondContig = contigGroup->child(1);
+    CHECK_SET_ERR(NULL != contigGroup, "Second contig annotation is NULL");
+
+    const QString seconContigRegion = secondContig->data(1, Qt::DisplayRole).toString();
+    CHECK_SET_ERR(expectedSecondContigRegion == seconContigRegion, QString("Invalid contig region: expected %1, got %1").arg(expectedSecondContigRegion).arg(seconContigRegion));
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }

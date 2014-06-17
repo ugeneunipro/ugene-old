@@ -79,6 +79,15 @@ QPoint GTUtilsProjectTreeView::getItemCenter(U2OpStatus &os, const QModelIndex &
     GT_CHECK_RESULT(itemIndex.isValid(), "Item index is invalid", QPoint());
 
     QTreeView *treeView = getTreeView(os);
+    return getItemCenter(os, treeView, itemIndex);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getItemCenter"
+QPoint GTUtilsProjectTreeView::getItemCenter(U2OpStatus &os, QTreeView *treeView, const QModelIndex &itemIndex) {
+    GT_CHECK_RESULT(itemIndex.isValid(), "Item index is invalid", QPoint());
+    GT_CHECK_RESULT(NULL != treeView, "treeView is NULL", QPoint());
+
     QRect r = treeView->visualRect(itemIndex);
 
     return treeView->mapToGlobal(r.center());
@@ -150,18 +159,32 @@ QTreeView* GTUtilsProjectTreeView::getTreeView(U2OpStatus &os) {
 
 #define GT_METHOD_NAME "findItem"
 QModelIndex GTUtilsProjectTreeView::findIndex(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions &options) {
-    return findIndex(os, itemName, QModelIndex(), options);
+    QTreeView *treeView = getTreeView(os);
+    GT_CHECK_RESULT(treeView != NULL, "Tree view is NULL", QModelIndex());
+    return findIndex(os, treeView, itemName, QModelIndex(), options);
 }
 
 #define GT_METHOD_NAME "findItem"
+QModelIndex GTUtilsProjectTreeView::findIndex(U2OpStatus &os, QTreeView *treeView, const QString &itemName, const GTGlobals::FindOptions &options) {
+    GT_CHECK_RESULT(treeView != NULL, "Tree view is NULL", QModelIndex());
+    return findIndex(os, treeView, itemName, QModelIndex(), options);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findItem"
 QModelIndex GTUtilsProjectTreeView::findIndex(U2OpStatus &os, const QString &itemName, const QModelIndex& parent, const GTGlobals::FindOptions &options) {
+    QTreeView *treeView = getTreeView(os);
+    GT_CHECK_RESULT(treeView != NULL, "Tree view is NULL", QModelIndex());
+    return findIndex(os, treeView, itemName, parent, options);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "findItem"
+QModelIndex GTUtilsProjectTreeView::findIndex(U2OpStatus &os, QTreeView *treeView, const QString &itemName, const QModelIndex &parent, const GTGlobals::FindOptions &options) {
+    GT_CHECK_RESULT(treeView != NULL, "Tree view is NULL", QModelIndex());
     GT_CHECK_RESULT(itemName.isEmpty() == false, "Item name is empty", QModelIndex());
 
-
-    QTreeView *treeView = getTreeView(os);
-    GT_CHECK_RESULT(treeView != NULL, "Tree widget is NULL", QModelIndex());
-
-    QModelIndexList foundIndexes = findIndecies(os,  itemName, treeView, parent, 0, options);
+    QModelIndexList foundIndexes = findIndecies(os, treeView, itemName, parent, 0, options);
     if (foundIndexes.isEmpty()) {
         if(options.failIfNull){
             GT_CHECK_RESULT(foundIndexes.size() != 0, QString("Item with name %1 not found").arg(itemName), QModelIndex());
@@ -182,14 +205,14 @@ QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os, const QStri
     QTreeView *treeView = getTreeView(os);
     GT_CHECK_RESULT(treeView != NULL, "Tree widget is NULL", QModelIndexList());
 
-    return findIndecies(os, itemName, treeView, parent, parentDepth, options);
+    return findIndecies(os, treeView, itemName, parent, parentDepth, options);
 }
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findIndecies"
 QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os,
+                                                     QTreeView* treeView,
                                                     const QString &itemName,
-                                                    QTreeView* treeView,
                                                     const QModelIndex& parent,
                                                     int parentDepth,
                                                     const GTGlobals::FindOptions &options) {
@@ -222,11 +245,11 @@ QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os,
             if (s == itemName) {
                 foundIndecies << index;
             } else {
-                foundIndecies <<  findIndecies(os, itemName, treeView, index, parentDepth + 1, options);
+                foundIndecies <<  findIndecies(os, treeView, itemName, index, parentDepth + 1, options);
             }
         } else {
             foundIndecies << index;
-            foundIndecies << findIndecies(os, itemName, treeView, index, parentDepth + 1, options);
+            foundIndecies << findIndecies(os, treeView, itemName, index, parentDepth + 1, options);
         }
     }
 

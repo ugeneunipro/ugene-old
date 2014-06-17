@@ -27,6 +27,16 @@
 
 namespace U2 {
 
+const QString ImportToDatabaseOptions::DESTINATION_FOLDER = "destination_folder";
+const QString ImportToDatabaseOptions::KEEP_FOLDERS_STRUCTURE = "keep_folders_structure";
+const QString ImportToDatabaseOptions::PROCESS_FOLDERS_RECUSIVELY = "process_folders_recusively";
+const QString ImportToDatabaseOptions::CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER = "create_subfolder_for_top_level_folder";
+const QString ImportToDatabaseOptions::CREATE_SUBFOLDER_FOR_EACH_FILE = "create_subfolder_for_each_file";
+const QString ImportToDatabaseOptions::IMPORT_UNKNOWN_AS_UDR = "import_unknown_as_udr";
+const QString ImportToDatabaseOptions::MULTI_SEQUENCE_POLICY = "multi_sequence_policy";
+const QString ImportToDatabaseOptions::CREATE_SUBFOLDER_FOR_DOCUMENT = "create_subfolder_for_document";
+const QString ImportToDatabaseOptions::MERGE_MULTI_SEQUENCE_POLICY_SEPARATOR_SIZE = "merge_multi_sequence_policy_separator_size";
+
 ImportToDatabaseOptions::ImportToDatabaseOptions() :
     createSubfolderForEachDocument(true),
     createSubfolderForEachFile(true),

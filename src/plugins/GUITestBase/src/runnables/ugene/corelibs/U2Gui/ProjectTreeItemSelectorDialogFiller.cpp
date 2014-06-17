@@ -19,9 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include "GTUtilsProjectTreeView.h"
 #include "ProjectTreeItemSelectorDialogFiller.h"
 #include "api/GTWidget.h"
-#include "api/GTTreeView.h"
 #include "api/GTMouseDriver.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -64,17 +64,17 @@ void ProjectTreeItemSelectorDialogFiller::run(){
     options.depth = 1;
 
     foreach (const QString& documentName, itemsToSelect.keys()) {
-        const QModelIndex documentIndex = GTTreeView::findIndex(os, treeView, documentName, Qt::DisplayRole, options);
+        const QModelIndex documentIndex = GTUtilsProjectTreeView::findIndex(os, treeView, documentName, options);
 
         const QStringList objects = itemsToSelect.value(documentName);
         if (!objects.isEmpty()) {
             foreach (const QString& objectName, itemsToSelect.value(documentName)) {
-                const QModelIndex objectIndex = GTTreeView::findIndex(os, treeView, objectName, documentIndex, Qt::DisplayRole, options);
-                GTMouseDriver::moveTo(os, GTTreeView::getItemCenter(os, treeView, objectIndex));
+                const QModelIndex objectIndex = GTUtilsProjectTreeView::findIndex(os, treeView, objectName, documentIndex, options);
+                GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, treeView, objectIndex));
                 GTMouseDriver::click(os);
             }
         } else {
-            GTMouseDriver::moveTo(os, GTTreeView::getItemCenter(os, treeView, documentIndex));
+            GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, treeView, documentIndex));
             GTMouseDriver::click(os);
         }
     }

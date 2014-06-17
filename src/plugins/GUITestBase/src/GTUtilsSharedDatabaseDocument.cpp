@@ -35,6 +35,7 @@
 #include "api/GTWidget.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AddFolderDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h"
 
 namespace U2 {
 
@@ -68,7 +69,7 @@ void GTUtilsSharedDatabaseDocument::disconnectDatabase(U2OpStatus &os, const QSt
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getFolderItem"
-QModelIndex GTUtilsSharedDatabaseDocument::getItemIndex(U2OpStatus &os, Document *databaseDoc, const QString &itemPath) {
+QModelIndex GTUtilsSharedDatabaseDocument::getItemIndex(U2OpStatus &os, Document *databaseDoc, const QString &itemPath, bool mustExist) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(NULL != databaseDoc, "databaseDoc is NULL", QModelIndex());
     GT_CHECK_RESULT(!itemPath.isEmpty(), "Folder path is empty", QModelIndex());
@@ -78,11 +79,13 @@ QModelIndex GTUtilsSharedDatabaseDocument::getItemIndex(U2OpStatus &os, Document
     QModelIndex itemIndex = GTUtilsProjectTreeView::findIndex(os, databaseDoc->getName());
     CHECK(!folders.isEmpty(), itemIndex);
 
+    GTGlobals::FindOptions options;
+    options.depth = 1;
+    options.failIfNull = mustExist;
     foreach (const QString& folder, folders) {
-        GTGlobals::FindOptions options;
-        options.depth = 1;
         itemIndex = GTUtilsProjectTreeView::findIndex(os, folder, itemIndex, options);
         CHECK_OP_BREAK(os);
+        CHECK_BREAK(itemIndex.isValid());
     }
 
     return itemIndex;
@@ -104,6 +107,24 @@ void GTUtilsSharedDatabaseDocument::createFolder(U2OpStatus &os, Document *datab
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, parentFolderIndex));
     GTMouseDriver::click(os, Qt::RightButton);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "createPath"
+void GTUtilsSharedDatabaseDocument::createPath(U2OpStatus &os, Document *databaseDoc, const QString &path) {
+    Q_UNUSED(os);
+    GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
+    GT_CHECK(path.startsWith(U2ObjectDbi::ROOT_FOLDER), "Path is not in the canonical form");
+
+    QString parentFolder = U2ObjectDbi::ROOT_FOLDER;
+    const QStringList folders = path.split(U2ObjectDbi::PATH_SEP, QString::SkipEmptyParts);
+    foreach (const QString& folder, folders) {
+        bool alreadyExist = getItemIndex(os, databaseDoc, parentFolder + U2ObjectDbi::PATH_SEP + folder, false).isValid();
+        if (!alreadyExist) {
+            createFolder(os, databaseDoc, parentFolder, folder);
+        }
+        parentFolder += U2ObjectDbi::PATH_SEP + folder;
+    }
 }
 #undef GT_METHOD_NAME
 
@@ -267,6 +288,7 @@ void GTUtilsSharedDatabaseDocument::callImportDialog(U2OpStatus &os, Document *d
 #define GT_METHOD_NAME "ensureItemExists"
 void GTUtilsSharedDatabaseDocument::ensureItemExists(U2OpStatus &os, Document *databaseDoc, const QString &itemPath) {
     Q_UNUSED(os);
+    GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
 
     const QModelIndex itemIndex = getItemIndex(os, databaseDoc, itemPath);
     GT_CHECK(itemIndex.isValid(), QString("Item is invalid, item's path: '%1'").arg(itemPath));
@@ -276,6 +298,7 @@ void GTUtilsSharedDatabaseDocument::ensureItemExists(U2OpStatus &os, Document *d
 #define GT_METHOD_NAME "ensureItemsExist"
 void GTUtilsSharedDatabaseDocument::ensureItemsExist(U2OpStatus &os, Document *databaseDoc, const QStringList &itemsPaths) {
     Q_UNUSED(os);
+    GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
 
     foreach (const QString& itemPath, itemsPaths) {
         ensureItemExists(os, databaseDoc, itemPath);
@@ -287,6 +310,7 @@ void GTUtilsSharedDatabaseDocument::ensureItemsExist(U2OpStatus &os, Document *d
 #define GT_METHOD_NAME "ensureThereAraNoItemsExceptListed"
 void GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(U2OpStatus &os, Document *databaseDoc, const QString& parentPath, const QStringList &itemsPaths) {
     Q_UNUSED(os);
+    GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
 
     ensureItemsExist(os, databaseDoc, itemsPaths);
     CHECK_OP(os, );
@@ -294,6 +318,100 @@ void GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(U2OpStatus
     const QModelIndex parentIndex = getItemIndex(os, databaseDoc, parentPath);
     const QModelIndexList subIndecies = GTUtilsProjectTreeView::findIndecies(os, "", parentIndex);
     GT_CHECK(subIndecies.size() == itemsPaths.size(), QString("Parent item contains %1 subitems, expected % subitems").arg(subIndecies.size()).arg(itemsPaths.size()));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "importFiles"
+void GTUtilsSharedDatabaseDocument::importFiles(U2OpStatus &os, Document *databaseDoc, const QString &dstFolderPath, const QStringList &filesPaths, const QVariantMap& options) {
+    Q_UNUSED(os);
+    GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
+    GT_CHECK(!filesPaths.isEmpty(), "Files paths are not provided");
+
+    QList<ImportToDatabaseDialogFiller::Action> actions;
+
+    QVariantMap addFileAction;
+    addFileAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__PATHS_LIST, filesPaths);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_FILES, addFileAction);
+
+    if (!options.isEmpty()) {
+        actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::EDIT_GENERAL_OPTIONS, options);
+    }
+
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
+
+    GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
+
+    createPath(os, databaseDoc, dstFolderPath);
+    callImportDialog(os, databaseDoc, dstFolderPath);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(15000);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "importDirs"
+void GTUtilsSharedDatabaseDocument::importDirs(U2OpStatus &os, Document *databaseDoc, const QString &dstFolderPath, const QStringList &dirsPaths, const QVariantMap& options) {
+    Q_UNUSED(os);
+    GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
+    GT_CHECK(!dirsPaths.isEmpty(), "Dirs paths are not provided");
+
+    QList<ImportToDatabaseDialogFiller::Action> actions;
+
+    QVariantMap addDirAction;
+    addDirAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__PATHS_LIST, dirsPaths);
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_DIRS, addDirAction);
+
+    if (!options.isEmpty()) {
+        actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::EDIT_GENERAL_OPTIONS, options);
+    }
+
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
+
+    GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
+
+    createPath(os, databaseDoc, dstFolderPath);
+    callImportDialog(os, databaseDoc, dstFolderPath);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(15000);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "importProjectItems"
+void GTUtilsSharedDatabaseDocument::importProjectItems(U2OpStatus &os, Document *databaseDoc, const QString &dstFolderPath, const QMap<QString, QStringList> &projectItems, const QVariantMap &options) {
+    Q_UNUSED(os);
+    GT_CHECK(NULL != databaseDoc, "databaseDoc is NULL");
+    GT_CHECK(!projectItems.isEmpty(), "Project items are not provided");
+
+    QList<ImportToDatabaseDialogFiller::Action> actions;
+
+    QVariantMap addProjectItemAction;
+    addProjectItemAction.insert(ImportToDatabaseDialogFiller::Action::ACTION_DATA__PROJECT_ITEMS_LIST, convertProjectItemsPaths(projectItems));
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::ADD_PROJECT_ITEMS, addProjectItemAction);
+
+    if (!options.isEmpty()) {
+        actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::EDIT_GENERAL_OPTIONS, options);
+    }
+
+    actions << ImportToDatabaseDialogFiller::Action(ImportToDatabaseDialogFiller::Action::IMPORT, QVariantMap());
+
+    GTUtilsDialog::waitForDialog(os, new ImportToDatabaseDialogFiller(os, actions));
+
+    createPath(os, databaseDoc, dstFolderPath);
+    callImportDialog(os, databaseDoc, dstFolderPath);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep(15000);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "convertProjectItemsPaths"
+const QVariant GTUtilsSharedDatabaseDocument::convertProjectItemsPaths(const QMap<QString, QStringList> &projectItems) {
+    QMap<QString, QVariant> result;
+    foreach (const QString& documentName, projectItems.keys()) {
+        result.insert(documentName, projectItems[documentName]);
+    }
+    return result;
 }
 #undef GT_METHOD_NAME
 
