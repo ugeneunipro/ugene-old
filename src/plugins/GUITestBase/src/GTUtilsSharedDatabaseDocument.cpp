@@ -264,6 +264,39 @@ void GTUtilsSharedDatabaseDocument::callImportDialog(U2OpStatus &os, Document *d
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "ensureItemExists"
+void GTUtilsSharedDatabaseDocument::ensureItemExists(U2OpStatus &os, Document *databaseDoc, const QString &itemPath) {
+    Q_UNUSED(os);
+
+    const QModelIndex itemIndex = getItemIndex(os, databaseDoc, itemPath);
+    GT_CHECK(itemIndex.isValid(), QString("Item is invalid, item's path: '%1'").arg(itemPath));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "ensureItemsExist"
+void GTUtilsSharedDatabaseDocument::ensureItemsExist(U2OpStatus &os, Document *databaseDoc, const QStringList &itemsPaths) {
+    Q_UNUSED(os);
+
+    foreach (const QString& itemPath, itemsPaths) {
+        ensureItemExists(os, databaseDoc, itemPath);
+        CHECK_OP(os, );
+    }
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "ensureThereAraNoItemsExceptListed"
+void GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(U2OpStatus &os, Document *databaseDoc, const QString& parentPath, const QStringList &itemsPaths) {
+    Q_UNUSED(os);
+
+    ensureItemsExist(os, databaseDoc, itemsPaths);
+    CHECK_OP(os, );
+
+    const QModelIndex parentIndex = getItemIndex(os, databaseDoc, parentPath);
+    const QModelIndexList subIndecies = GTUtilsProjectTreeView::findIndecies(os, "", parentIndex);
+    GT_CHECK(subIndecies.size() == itemsPaths.size(), QString("Parent item contains %1 subitems, expected % subitems").arg(subIndecies.size()).arg(itemsPaths.size()));
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }   // namespace U2

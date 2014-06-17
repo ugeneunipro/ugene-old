@@ -1081,8 +1081,9 @@ GUI_TEST_CLASS_DEFINITION(import_test_0007) {
     const QString dstFolderName = "import_test_0007";
     const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
     const QString importedTopLevelFolderName = "second";
+    const QString importedTopLevelFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + importedTopLevelFolderName;
     const QString resultFolderName = "human_T1_cutted";
-    const QString resultFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + importedTopLevelFolderName + U2ObjectDbi::ROOT_FOLDER + resultFolderName;
+    const QString resultFolderPath = importedTopLevelFolderPath + U2ObjectDbi::ROOT_FOLDER + resultFolderName;
     const QString folderPath = testDir + "_common_data/scenarios/shared_database/import/first/second/";
     const QString sequenceObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
     const QString databaseSequenceObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
@@ -1114,12 +1115,12 @@ GUI_TEST_CLASS_DEFINITION(import_test_0007) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(15000);
 
-    const QModelIndex sequenceObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
-    CHECK_SET_ERR(sequenceObjectIndex.isValid(), "Result item wasn't found");
+    GTUtilsSharedDatabaseDocument::ensureItemExists(os, databaseDoc, databaseSequenceObjectPath);
 
-    const QModelIndex dstFolderIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, dstFolderPath);
-    const QModelIndexList importedItemsList = GTUtilsProjectTreeView::findIndecies(os, "", dstFolderIndex);
-    CHECK_SET_ERR(3 == importedItemsList.size(), "Unexpected items were found");
+    const QStringList expectedItems = QStringList() << importedTopLevelFolderPath
+                                                    << resultFolderPath
+                                                    << databaseSequenceObjectPath;
+    GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(os, databaseDoc, dstFolderPath, expectedItems);
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }

@@ -164,7 +164,7 @@ QModelIndex GTUtilsProjectTreeView::findIndex(U2OpStatus &os, const QString &ite
     QModelIndexList foundIndexes = findIndecies(os,  itemName, treeView, parent, 0, options);
     if (foundIndexes.isEmpty()) {
         if(options.failIfNull){
-            GT_CHECK_RESULT(foundIndexes.size() != 0, QString("Item whith name %1 not found").arg(itemName), QModelIndex());
+            GT_CHECK_RESULT(foundIndexes.size() != 0, QString("Item with name %1 not found").arg(itemName), QModelIndex());
         } else {
             return QModelIndex();
         }
