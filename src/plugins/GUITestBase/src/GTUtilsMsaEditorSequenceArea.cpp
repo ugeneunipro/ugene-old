@@ -178,6 +178,31 @@ QStringList GTUtilsMSAEditorSequenceArea::getNameList(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getNameList"
+QStringList GTUtilsMSAEditorSequenceArea::getVisibaleNames(U2OpStatus &os){
+    QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    MSAEditor* editor = mw->findChild<MSAEditor*>();
+    CHECK_SET_ERR_RESULT(editor != NULL, "MsaEditor not found", QStringList());
+
+    MSAEditorSequenceArea* seqArea = editor->getUI()->getSequenceArea();
+    CHECK_SET_ERR_RESULT(NULL != seqArea, "MSA Editor sequence area is NULL", QStringList());
+
+
+    int startSeq = seqArea->getFirstVisibleSequence();
+    int lastSeq = seqArea->getLastVisibleSequence(true);
+    QVector<U2Region> rows;
+    editor->getUI()->getCollapseModel()->getVisibleRows(startSeq, lastSeq, rows);
+
+    QStringList visiableRowNames;
+    foreach(U2Region region, rows){
+        for(int x = region.startPos; x < region.endPos(); x++)
+            visiableRowNames.append(editor->getMSAObject()->getRow(x).getName());
+    }
+
+    return visiableRowNames;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getLeftOffset"
 int GTUtilsMSAEditorSequenceArea::getLeftOffset(U2OpStatus &os)
 {
@@ -240,7 +265,7 @@ void GTUtilsMSAEditorSequenceArea::selectSequence(U2OpStatus &os, QString seqNam
             (GTWidget::findWidget(os, "msa_editor_sequence_area"));
     CHECK_SET_ERR(msaEditArea != NULL, "MsaEditorSequenceArea not found");
 
-    QStringList names = getNameList(os);
+    QStringList names = getVisibaleNames(os);
     int row = 0;
     while (names[row] != seqName) {
         row++;
@@ -255,12 +280,16 @@ bool GTUtilsMSAEditorSequenceArea::isSequenceSelected(U2OpStatus &os, QString se
             (GTWidget::findWidget(os, "msa_editor_sequence_area"));
     CHECK_SET_ERR_RESULT(msaEditArea != NULL, "MsaEditorSequenceArea not found", false);
 
-    QStringList names = getNameList(os);
-    int row = 0;
-    while ((names[row] != seqName) && (row < names.size())) {
-        row++;
-    }
-    if (msaEditArea->getSelectedRows().contains(msaEditArea->getRowsAt(row))) {
+    QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    MSAEditor* editor = mw->findChild<MSAEditor*>();
+    CHECK_SET_ERR_RESULT(editor != NULL, "MsaEditor not found", false);
+//Seq names are drawn on widget, so this hack is needed
+    U2Region selectedRowsRegion = msaEditArea->getSelectedRows();
+    QStringList selectedRowNames;
+    for(int x = selectedRowsRegion.startPos; x < selectedRowsRegion.endPos(); x++)
+        selectedRowNames.append(editor->getMSAObject()->getRow(x).getName());
+
+    if (selectedRowNames.contains(seqName)) {
         return true;
     }
     return false;
@@ -278,13 +307,9 @@ int GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "isSequenceVisible"
-bool GTUtilsMSAEditorSequenceArea::isSequenceVisible(U2OpStatus &os, QString seqName) {
-    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>
-            (GTWidget::findWidget(os, "msa_editor_sequence_area"));
-    CHECK_SET_ERR_RESULT(msaEditArea != NULL, "MsaEditorSequenceArea not found", false);
-
-    QStringList names = getNameList(os);
-    return names.contains(seqName);
+bool GTUtilsMSAEditorSequenceArea::isSequenceVisible(U2OpStatus &os, QString seqName) {    
+    QStringList visiableRowNames = getVisibaleNames(os);
+    return visiableRowNames.contains(seqName);
 }
 #undef GT_METHOD_NAME
 

@@ -3586,12 +3586,12 @@ GUI_TEST_CLASS_DEFINITION( test_2306 ) {
     GTGlobals::sleep( 200 );
     
     // 4. Call context menu
-        GTMouseDriver::press( os );
     GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 5, 10 ), QPoint( 7, 15 ) );
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
     GTGlobals::sleep( 200 );
     const QString finalMsaContent = GTClipboard::text( os );
     CHECK_SET_ERR("---\n---\n---\n---\n---\n---\n---" == finalMsaContent, "Unexpected MSA content has occurred" );
+
 
 
     }

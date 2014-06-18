@@ -262,9 +262,9 @@ GUI_TEST_CLASS_DEFINITION(test_0006){//undo replace_selected_rows_with_reverse-c
 //  sequence name changed from L -> L|revcompl
     QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR( nameList.size( ) >= 6, "nameList doesn't contain enough strings" );
-    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "revcompl" )
-        && ( nameList[2] == "S" ) && ( nameList[3] == "revcompl" )
-        && ( nameList[4] == "D" ) && ( nameList[5] == "revcompl" ), "Unexpected sequence names" );
+    CHECK_SET_ERR( ( nameList[0] == "L|revcompl" )
+        && ( nameList[1] == "S|revcompl" )
+        && ( nameList[2] == "D|revcompl" ), "Unexpected sequence names" );
 
 // 3. Undo
     QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
@@ -303,9 +303,9 @@ GUI_TEST_CLASS_DEFINITION(test_0006){//undo replace_selected_rows_with_reverse-c
 //  sequence name changed from L -> L|revcompl
     nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR( nameList.size( ) >= 6, "nameList doesn't contain enough strings" );
-    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "revcompl" )
-        && ( nameList[2] == "S" ) && ( nameList[3] == "revcompl" )
-        && ( nameList[4] == "D" ) && ( nameList[5] == "revcompl" ), "Unexpected sequence names" );
+    CHECK_SET_ERR( ( nameList[0] == "L|revcompl" )
+        && ( nameList[1] == "S|revcompl" )
+        && ( nameList[2] == "D|revcompl" ), "Unexpected sequence names" );
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006_1){//undo replace_selected_rows_with_reverse
@@ -331,9 +331,9 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1){//undo replace_selected_rows_with_reverse
 // sequence name  changed from L -> L|revcompl
     QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR( nameList.size( ) >= 6, "nameList doesn't contain enough strings" );
-    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "rev" )
-        && ( nameList[2] == "S" ) && ( nameList[3] == "rev" )
-        && ( nameList[4] == "D" ) && ( nameList[5] == "rev" ), "Unexpected sequence names" );
+    CHECK_SET_ERR( ( nameList[0] == "L|rev" )
+        && ( nameList[1] == "S|rev" )
+        && ( nameList[2] == "D|rev" ), "Unexpected sequence names" );
 
 // 3. Undo
     QAbstractButton *undo= GTAction::button(os,"msa_action_undo");
@@ -372,9 +372,9 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1){//undo replace_selected_rows_with_reverse
 //  sequence name changed from L -> L|revcompl
     nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR( nameList.size( ) >= 6, "nameList doesn't contain enough strings" );
-    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "rev" )
-        && ( nameList[2] == "S" ) && ( nameList[3] == "rev" )
-        && ( nameList[4] == "D" ) && ( nameList[5] == "rev" ), "Unexpected sequence names" );
+    CHECK_SET_ERR( ( nameList[0] == "L|rev" )
+        && ( nameList[1] == "S|rev" )
+        && ( nameList[2] == "D|rev" ), "Unexpected sequence names" );
 }
 
 GUI_TEST_CLASS_DEFINITION( test_0006_2 )
@@ -404,9 +404,9 @@ GUI_TEST_CLASS_DEFINITION( test_0006_2 )
 //  sequence name  changed from L -> L|compl
     QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList( os );
     CHECK_SET_ERR( nameList.size( ) >= 6, "nameList doesn't contain enough strings" );
-    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "compl" )
-        && ( nameList[2] == "S" ) && ( nameList[3] == "compl" )
-        && ( nameList[4] == "D" ) && ( nameList[5] == "compl" ), "Unexpected sequence names" );
+    CHECK_SET_ERR( ( nameList[0] == "L|compl" )
+        && ( nameList[1] == "S|compl" )
+        && ( nameList[2] == "D|compl" ), "Unexpected sequence names" );
 
 // 3. Undo
     QAbstractButton *undo = GTAction::button( os, "msa_action_undo" );
@@ -445,9 +445,9 @@ GUI_TEST_CLASS_DEFINITION( test_0006_2 )
 //  sequence name  changed from L -> L|revcompl
     nameList = GTUtilsMSAEditorSequenceArea::getNameList( os );
     CHECK_SET_ERR( nameList.size( ) >= 6, "nameList doesn't contain enough strings" );
-    CHECK_SET_ERR( ( nameList[0] == "L" ) && ( nameList[1] == "compl" )
-        && ( nameList[2] == "S" ) && ( nameList[3] == "compl" )
-        && ( nameList[4] == "D" ) && ( nameList[5] == "compl" ),
+    CHECK_SET_ERR( ( nameList[0] == "L|compl" )
+        && ( nameList[1] == "S|compl" )
+        && ( nameList[2] == "D|compl" ),
        "There are unexpected names in nameList" );
 }
 
