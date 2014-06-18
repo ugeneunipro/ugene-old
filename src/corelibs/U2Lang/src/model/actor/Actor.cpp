@@ -427,7 +427,7 @@ bool Actor::validate(ProblemList &problemList) const {
 
         if (attr->getAttributeType() == BaseTypes::NUM_TYPE()) {
             bool ok;
-            attr->getAttributePureValue().toString().toInt((&ok));
+            attr->getAttributePureValue().toString().toDouble((&ok));
             result &= ok;
             if (!ok) {
                 problemList << Problem(L10N::badArgument(attr->getAttributePureValue().toString()));
