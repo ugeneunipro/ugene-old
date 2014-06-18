@@ -684,6 +684,42 @@ GUI_TEST_CLASS_DEFINITION(proj_test_0007) {
     CHECK_SET_ERR(GTDatabaseConfig::database() == docName, "Wrong doc name");
 }
 
+GUI_TEST_CLASS_DEFINITION(proj_test_0008) {
+//    Folders creation with names in different register.
+
+//    1. Connect to the "ugene_gui_test" database.
+
+//    2. Create folder "proj_test_0008" in the root folder;
+
+//    3. Create folder "abcdefgh" in the "/proj_test_0004/" folder;
+
+//    4. Create folder "ABCDEFGH" in the "/proj_test_0004/" folder;
+
+//    5. Create folder "AbCdEfGh" in the "/proj_test_0004/" folder;
+
+//    6. Wait until project updater refreshes the document (something about 10 second).
+//    Expected state: there tree folders in the "/proj_test_0004/" folder.
+
+    GTLogTracer lt;
+
+    const QString connectionName = connectToTestDatabase(os);
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, connectionName);
+
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, "/", "proj_test_0008");
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, "/proj_test_0008", "abcdefgh");
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, "/proj_test_0008", "ABCDEFGH");
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, "/proj_test_0008", "AbCdEfGh");
+
+    GTGlobals::sleep(10000);
+
+    const QStringList expectedItems = QStringList() << "/proj_test_0008/abcdefgh"
+                                                    << "/proj_test_0008/ABCDEFGH"
+                                                    << "/proj_test_0008/AbCdEfGh";
+    GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(os, databaseDoc, "/proj_test_0008", expectedItems);
+
+    CHECK_SET_ERR(!lt.hasError(), "errors in log");
+}
+
 GUI_TEST_CLASS_DEFINITION(import_test_0001) {
 //    Object drag'n'drop
 //    1. Connect to the "ugene_gui_test" database.
