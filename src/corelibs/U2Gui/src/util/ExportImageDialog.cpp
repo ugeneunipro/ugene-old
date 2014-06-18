@@ -146,7 +146,7 @@ void ExportImageDialog::sl_onBrowseButtonClick() {
 
     QString fileName = ui->fileNameEdit->text();
     LastUsedDirHelper lod(IMAGE_DIR);
-    lod.url = QFileDialog::getSaveFileName(this, tr("Save image to..."), fileName, fileFormats, 0, QFileDialog::DontConfirmOverwrite);
+    lod.url = QFileDialog::getSaveFileName(this, tr("Save Image As"), fileName, fileFormats, 0, QFileDialog::DontConfirmOverwrite);
     if (lod.url.isEmpty()) {
         return;
     }

@@ -1146,7 +1146,7 @@ complement(5..15)</translation>
     </message>
     <message>
         <location filename="../src/util/ExportImageDialog.cpp" line="248"/>
-        <source>Save image to...</source>
+        <source>Save Image As</source>
         <translation>将图片保存到...</translation>
     </message>
 </context>

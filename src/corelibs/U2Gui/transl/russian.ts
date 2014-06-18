@@ -1661,8 +1661,8 @@ Do you wish to create this directory?</source>
     </message>
     <message>
         <location filename="../src/util/ExportImageDialog.cpp" line="250"/>
-        <source>Save image to...</source>
-        <translation type="unfinished"></translation>
+        <source>Save Image As</source>
+        <translation>Сохранение изображения</translation>
     </message>
 </context>
 <context>

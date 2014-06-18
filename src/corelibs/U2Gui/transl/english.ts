@@ -1298,8 +1298,8 @@ complement(5..15)</source>
     </message>
     <message>
         <location filename="../src/util/ExportImageDialog.cpp" line="250"/>
-        <source>Save image to...</source>
-        <translation type="unfinished"></translation>
+        <source>Save Image As</source>
+        <translation></translation>
     </message>
 </context>
 <context>
