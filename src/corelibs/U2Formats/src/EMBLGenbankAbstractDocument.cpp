@@ -174,7 +174,21 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
                 } else {
                     foreach(const QString& gName, groupNames) {
                         annotationsObject->addAnnotation( *d, gName );
+                    } 
+                }
+            }
+
+            if (data.tags.contains(DNAInfo::COMMENT) && getFormatId() == BaseDocumentFormats::PLAIN_GENBANK) {
+                QStringList commentSection = data.tags.value(DNAInfo::COMMENT).toStringList();
+                if (commentSection.size() > 0) {
+                    AnnotationData* a = new AnnotationData();
+                    SharedAnnotationData f(a);
+                    f->name = "comment";
+                    f->location->regions.append(U2Region(0,st.entry->seqLen));
+                    for(int i = 0; i < commentSection.size(); ++i) {
+                        f->qualifiers.append( U2Qualifier(QString("%1").arg(i + 1,2,10,QChar('0')), commentSection[i]));
                     }
+                    annotationsObject->addAnnotation( *f, "comment");
                 }
             }
 

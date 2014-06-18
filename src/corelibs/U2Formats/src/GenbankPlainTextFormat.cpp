@@ -289,19 +289,14 @@ bool GenbankPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqI
             continue;
         }
         if (st->hasKey("COMMENT")) {
-            QString commentSection;
+            QStringList commentSection;
             while (st->readNextLine() && st->hasContinuation()) {
                 commentSection.append(st->value());
             }
-            st->entry->tags.insert(DNAInfo::COMMENT, commentSection);
+            if (commentSection.size() > 0) {
+                st->entry->tags.insert(DNAInfo::COMMENT, commentSection);
+            }            
             hasLine = true;
-            /*TODO: create annotation
-            AnnotationData* a = new AnnotationData();
-            SharedAnnotationData f(a);
-            f->name = "comment";
-            f->location->regions.append(U2Region(0,sequenceLen));
-            f->qualifiers.append( U2Qualifier("Comment", commentSection));
-            st->entry->features.push_back(f);*/
             continue;
         }
         if (st->hasKey("ACCESSION") || (st->hasContinuation() && lastTagName == "ACCESSION")) {
@@ -392,7 +387,7 @@ void GenbankPlainTextFormat::readHeaderAttributes(QVariantMap& tags, DbiConnecti
     }
 
     if (tags.keys().contains(DNAInfo::COMMENT)) {
-        QString comment = tags.value(DNAInfo::COMMENT).toString();
+        QString comment = tags.value(DNAInfo::COMMENT).toStringList().join("\n");
         U2StringAttribute commentAttr(so->getSequenceRef().entityId, DNAInfo::COMMENT, comment);
         con.dbi->getAttributeDbi()->createStringAttribute(commentAttr, os);
         CHECK_OP(os, );
@@ -686,7 +681,7 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si)
         QString aName = a.getName( );
 
         if (aName == U1AnnotationUtils::lowerCaseAnnotationName
-            || aName == U1AnnotationUtils::upperCaseAnnotationName) {
+            || aName == U1AnnotationUtils::upperCaseAnnotationName || aName == "comment") {
                 continue;
         }
         

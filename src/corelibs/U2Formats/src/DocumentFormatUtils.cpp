@@ -147,6 +147,7 @@ QList<AnnotationSettings*> DocumentFormatUtils::predefinedSettings() {
     predefined.append(new AnnotationSettings(BioStruct3D::BetaStrandAnnotationTag, true, QColor(255,255,153), true));
     predefined.append(new AnnotationSettings(BioStruct3D::TurnAnnotationTag, true, QColor(255,85,127), true));
     predefined.append(new AnnotationSettings(BioStruct3D::MoleculeAnnotationTag, false, QColor(0,255,0), false));
+    predefined.append(new AnnotationSettings(DNAInfo::COMMENT.toLower(), false, QColor(255,85,127),false));
     return predefined;
 }
 
