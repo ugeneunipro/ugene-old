@@ -574,6 +574,10 @@ static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so, QString
             loc = padToLen(loc.append(mol), 43);
             loc = padToLen(loc.append(loi.topology), 52);
             loc = loc.append(loi.division);
+            if (so->isCircular()) {
+                loc = loc.append(" ");
+                loc = loc.append(EMBLGenbankAbstractDocument::LOCUS_TAG_CIRCULAR);
+            }
             date = loi.date;
         } else if (!locusStrFromAttr.isEmpty()){
             
@@ -582,9 +586,9 @@ static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so, QString
             loc = padToLen(loc.append(tokens[2]), 43);
             loc = padToLen(loc.append(tokens[4]), 52);
             loc = loc.append(tokens[3]);
-        }else{
             if (so->isCircular()) {
-                loc = padToLen(loc.append(EMBLGenbankAbstractDocument::LOCUS_TAG_CIRCULAR), 52);
+                loc = loc.append(" ");
+                loc = loc.append(EMBLGenbankAbstractDocument::LOCUS_TAG_CIRCULAR);
             }
         }
     } else {

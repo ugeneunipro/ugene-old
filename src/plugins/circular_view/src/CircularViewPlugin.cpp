@@ -310,10 +310,8 @@ void CircularViewAction::sl_circularStateChanged() {
     U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(sender());
     SAFE_POINT(seqObj != NULL, "Sequence Object is NULL", );
 
-    // if sequence is marked as circular and CV is hidden, show CV
-    if (seqObj->isCircular() && !isChecked()) {
-        trigger();
-    }
+    // if sequence is marked as circular and CV is hidden, show CV, and hide it if unmarked
+    trigger();
 }
 
 

@@ -251,6 +251,7 @@ void U2SequenceObject::setCircular(bool isCircular) {
         con.dbi->getSequenceDbi()->updateSequenceObject(u2seq,os);
         CHECK_OP(os, );
         cachedCircular = newVal;
+        setModified(true);
     }
     emit si_sequenceCircularStateChanged();
 }

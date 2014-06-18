@@ -456,7 +456,7 @@ void ProjectViewImpl::enable() {
     saveSelectedDocsAction = new QAction(QIcon(":ugene/images/save_selected_documents.png"), tr("save_selected_modified_docs_action"), w);
     connect(saveSelectedDocsAction, SIGNAL(triggered()), SLOT(sl_onSaveSelectedDocs()));
 
-    toggleCircularAction = new QAction(tr("Mark this sequence as circular"), w);
+    toggleCircularAction = new QAction(tr("Mark as circular"), w);
     toggleCircularAction->setCheckable(true);
     connect(toggleCircularAction, SIGNAL(triggered()), SLOT(sl_onToggleCircular()));
 
