@@ -4,6 +4,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QVector>
 
+#include <U2Core/global.h>
 
 namespace U2 {
 
@@ -25,7 +26,7 @@ class MSAEditorUI;
 class MAlignment;
 class MAlignmentModInfo;
 
-class MSACollapsibleItemModel : public QObject {
+class U2VIEW_EXPORT MSACollapsibleItemModel : public QObject {
     Q_OBJECT
 public:
     MSACollapsibleItemModel(MSAEditorUI* p);
