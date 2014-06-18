@@ -186,7 +186,7 @@ void DbiAnnotationCache::refAnnotationTable(const U2DbiRef &dbiRef, const U2Data
 }
 
 void DbiAnnotationCache::derefAnnotationTable(const U2DbiRef &dbiRef, const U2DataId &rootId) {
-    SAFE_POINT(containsAnnotationTable(dbiRef, rootId), "Unexpected annotation table requested from cache", );
+    CHECK(containsAnnotationTable(dbiRef, rootId), ); // this is not safe point because empty annotation tables does not have entries in cache
     dbiDataCache[dbiRef]->derefAnnotationTable(rootId);
 }
 

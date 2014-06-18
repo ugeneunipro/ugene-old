@@ -542,7 +542,8 @@ void QDResultLinker::createAnnotations(const QString& groupPrefix) {
                 ad.setStrand(res->strand);
                 ad.location->regions.append(res->region);
                 ad.qualifiers = res->quals;
-                result2annotation[res] = ad;
+                a = ad;
+                result2annotation[res] = a;
             }
             groupAnns.append(a);
         }
