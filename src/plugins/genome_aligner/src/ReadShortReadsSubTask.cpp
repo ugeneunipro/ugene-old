@@ -102,7 +102,7 @@ void ReadShortReadsSubTask::readingFinishedWakeAll() {
     assert(dataBunch->bitValuesV.size() == 0);
     delete dataBunch; dataBunch = NULL;
 
-    QMutexLocker(&alignContext.readingStatusMutex);
+    QMutexLocker lock(&alignContext.readingStatusMutex);
     alignContext.isReadingFinished = true;
     alignContext.readShortReadsWait.wakeAll();
 }

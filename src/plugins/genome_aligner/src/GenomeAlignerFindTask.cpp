@@ -78,7 +78,6 @@ void GenomeAlignerFindTask::run() {
         if (isReadingStarted && isReadingFinished) {
             break;
         }
-
         alignContext->readShortReadsWait.wait(&(alignContext->readingStatusMutex));
     }
 
@@ -145,7 +144,7 @@ DataBunch* GenomeAlignerFindTask::waitForDataBunch() {
     int lastDataBunchesIndex = -1;
     bool needToWait = false;
     do {
-        QMutexLocker(&alignContext->readingStatusMutex);
+        QMutexLocker readingLock(&alignContext->readingStatusMutex);
         bool isReadingFinished = alignContext->isReadingFinished;
         if (isReadingFinished) {
             break;
@@ -299,7 +298,7 @@ void ShortReadAlignerOpenCL::run() {
             int length = dataBunch->bitValuesV.size();
             GA_CHECK_BREAK(length);
 
-            BinarySearchResult* binarySearchResults = index->bitMaskBinarySearchOpenCL(dataBunch->bitValuesV.constData(), dataBunch->bitValuesV.size(), 
+            BinarySearchResult* binarySearchResults = index->bitMaskBinarySearchOpenCL(dataBunch->bitValuesV.constData(), dataBunch->bitValuesV.size(),
                 dataBunch->windowSizes.constData());
             SAFE_POINT_EXT (NULL != binarySearchResults, {alignContext->listM.unlock(); setError("OpenCL binary find error");},);
 
