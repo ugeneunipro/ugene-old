@@ -143,10 +143,12 @@ void GTFileDialogUtils_list::run(){
 
     fileDialog = dialog;
     GTGlobals::sleep(200);
-    setPath();
+    const bool dirWasChanged = setPath();
     GTGlobals::sleep(200);
-    clickButton(Open);
-    GTGlobals::sleep(200);
+    if(dirWasChanged){
+        clickButton(Open);
+        GTGlobals::sleep(200);
+    }
     setViewMode(Detail);
     GTGlobals::sleep(200);
     setNameList(os,fileNameList);

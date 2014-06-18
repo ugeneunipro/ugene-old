@@ -1554,7 +1554,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 //                 sequence name  changed from L -> L|revcompl
     QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] == "revcompl"), "There are no 'L|revcompl' in nameList");
+    CHECK_SET_ERR(nameList[0] == "L|revcompl", "There are no 'L|revcompl' in nameList");
 
 // 3. Do step 2 again
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement"));
@@ -1571,7 +1571,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 //                 sequence name changed from L|revcompl ->    
     nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] != "revcompl"), "There are 'L|revcompl' in nameList");
+    CHECK_SET_ERR(!nameList.contains("L|revcompl"), "There are 'L|revcompl' in nameList");
 
     GTGlobals::sleep();
 }
@@ -1600,7 +1600,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1) {
 //                 sequence name  changed from L -> L|revcompl
     QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] == "revcompl"), "There are no 'L|revcompl' in nameList");
+    CHECK_SET_ERR(nameList[0] == "L|revcompl" , "There are no 'L|revcompl' in nameList");
 
 // 3. Do step 2 again
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement"));
@@ -1620,7 +1620,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1) {
 //                 sequence name changed from L|revcompl ->    
     nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] != "revcompl"), "There are 'L|revcompl' in nameList");
+    CHECK_SET_ERR(!nameList.contains("L|revcompl"), "There are 'L|revcompl' in nameList");
 
     GTGlobals::sleep();
 }
@@ -1651,7 +1651,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
 //                 sequence name  changed from L -> L|revcompl
     QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] == "revcompl"), "There are no 'L|revcompl' in nameList");
+    CHECK_SET_ERR(nameList[0] == "L|revcompl" , "There are no 'L|revcompl' in nameList");
 
 // 3. Do step 2 again
 // CHANGES: using main menu
@@ -1671,7 +1671,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
 //                 sequence name changed from L|revcompl ->    
     nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
-    CHECK_SET_ERR((nameList[0] == "L") && (nameList[1] != "revcompl"), "There are 'L|revcompl' in nameList");
+    CHECK_SET_ERR(!nameList.contains("L|revcompl"), "There are 'L|revcompl' in nameList");
 
     GTGlobals::sleep();
 }
@@ -2196,7 +2196,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
 
 // 4. Select item dialog appeared
 // Expected state: loaded sequences present in list
-    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "[s] NC_001363"));
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "NC_001363"));
 
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep();
@@ -2218,7 +2218,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017_1) {
 
 // 4. Select item dialog appeared
 // Expected state: loaded sequences present in list
-    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "[s] NC_001363"));
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "NC_001363"));
 
 // CHANGES: using main menu instead of popup
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
@@ -2245,7 +2245,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017_2) {
 
 // 4. Select item dialog appeared
 // Expected state: loaded sequences present in list
-    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "[s] NC_001363"));
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "murine.gb", "NC_001363"));
 
 // CHANGES: using main menu instead of popup
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
@@ -3498,8 +3498,9 @@ GUI_TEST_CLASS_DEFINITION(test_0040){//UGENE crashes when opening several files
     GTUtilsProjectTreeView::findIndex(os,"COI.aln");
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTGlobals::sleep(500);
     QFile(dataDir + "/samples/CLUSTALW/human_T1.fa").remove();
-    GTGlobals::sleep();
+    GTGlobals::sleep(5000);
 
 }
 
