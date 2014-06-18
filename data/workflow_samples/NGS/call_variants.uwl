@@ -51,6 +51,44 @@ workflow "Call variants with SAMtools"{
     read-assembly.url->files-conversion-2.in-file.url
 
     .meta {
+        parameter-aliases {
+            read-assembly.url-in {
+                alias:assembly_in;
+            }
+            read-sequence.url-in {
+                alias:seq_in;
+            }
+            call_variants.acgt_only {
+                alias:a_c_g_t;
+            }
+            call_variants.bcf_bed {
+                alias:bcf_bed;
+            }
+            call_variants.bed {
+                alias:bed_pos_list_file;
+            }
+            call_variants.disable_baq {
+                alias:BAQ;
+            }
+            call_variants.keepalt {
+                alias:retain_all_pos_alt;
+            }
+            call_variants.max_depth {
+                alias:max_reads_num;
+            }
+            call_variants.no_indel {
+                alias:no_indels;
+            }
+            call_variants.ptype {
+                alias:allele_freq_spect;
+            }
+            call_variants.theta {
+                alias:theta;
+            }
+            call_variants.variants-url {
+                alias:out_file;
+            }
+        }
         visual {
             call_variants {
                 pos:"-460 -495";
