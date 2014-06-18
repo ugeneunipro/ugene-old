@@ -288,6 +288,22 @@ bool GenbankPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqI
             hasLine = true;
             continue;
         }
+        if (st->hasKey("COMMENT")) {
+            QString commentSection;
+            while (st->readNextLine() && st->hasContinuation()) {
+                commentSection.append(st->value());
+            }
+            st->entry->tags.insert(DNAInfo::COMMENT, commentSection);
+            hasLine = true;
+            /*TODO: create annotation
+            AnnotationData* a = new AnnotationData();
+            SharedAnnotationData f(a);
+            f->name = "comment";
+            f->location->regions.append(U2Region(0,sequenceLen));
+            f->qualifiers.append( U2Qualifier("Comment", commentSection));
+            st->entry->features.push_back(f);*/
+            continue;
+        }
         if (st->hasKey("ACCESSION") || (st->hasContinuation() && lastTagName == "ACCESSION")) {
             QVariant v = st->entry->tags.value(DNAInfo::ACCESSION);
             st->entry->tags[DNAInfo::ACCESSION] = QVariantUtils::addStr2List(v, st->value().split(" "));
@@ -374,6 +390,14 @@ void GenbankPlainTextFormat::readHeaderAttributes(QVariantMap& tags, DbiConnecti
         con.dbi->getAttributeDbi()->createStringAttribute(accAttr, os);
         CHECK_OP(os, );
     }
+
+    if (tags.keys().contains(DNAInfo::COMMENT)) {
+        QString comment = tags.value(DNAInfo::COMMENT).toString();
+        U2StringAttribute commentAttr(so->getSequenceRef().entityId, DNAInfo::COMMENT, comment);
+        con.dbi->getAttributeDbi()->createStringAttribute(commentAttr, os);
+        CHECK_OP(os, );
+    }
+
 
     tags.insert(UGENE_MARK, ""); //to allow writing
 }
