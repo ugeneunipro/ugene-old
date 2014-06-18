@@ -35,7 +35,7 @@ ImportToDatabaseTask::ImportToDatabaseTask(QList<U2::Task *> tasks, int maxParal
     MultiTask(tr("Import to the database"), tasks, false, TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled | TaskFlag_PropagateSubtaskDesc)
 {
     setMaxParallelSubtasks(maxParallelSubtasks);
-    startTime = TimeCounter::getCounter();
+    startTime = GTimer::currentTimeMicros();
 }
 
 void ImportToDatabaseTask::run() {
@@ -47,7 +47,7 @@ QString ImportToDatabaseTask::generateReport() const {
 }
 
 Task::ReportResult ImportToDatabaseTask::report() {
-    qint64 endTime = TimeCounter::getCounter();
+    qint64 endTime = GTimer::currentTimeMicros();
     ioLog.details(tr("Import complete: %1 seconds").arg((endTime - startTime) / 1000000.0));
     return ReportResult_Finished;
 }
