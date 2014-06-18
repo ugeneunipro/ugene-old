@@ -32,6 +32,7 @@ class Document;
 
 class GTUtilsSharedDatabaseDocument {
 public:
+    static U2::Document *connectToTestDatabase(U2OpStatus &os);
     static Document* getDatabaseDocumentByName(U2OpStatus &os, const QString& name);
 
     static void disconnectDatabase(U2OpStatus& os, Document* databaseDoc);

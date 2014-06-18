@@ -25,21 +25,43 @@
 
 #include <U2Gui/MainWindow.h>
 
+#include "GTDatabaseConfig.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsDocument.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSharedDatabaseDocument.h"
 #include "GTUtilsTaskTreeView.h"
+#include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AddFolderDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
 
 namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsSharedDatabaseDocument"
+
+#define GT_METHOD_NAME "connectToTestDatabase"
+Document* GTUtilsSharedDatabaseDocument::connectToTestDatabase(U2OpStatus &os) {
+    GTLogTracer lt;
+    QString conName = "ugene_gui_test";
+    GTDatabaseConfig::initTestConnectionInfo(conName);
+    {
+        QList<SharedConnectionsDialogFiller::Action> actions;
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, conName);
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, conName);
+        GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
+    }
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+
+    CHECK_SET_ERR_RESULT(!lt.hasError(), "errors in log", NULL);
+
+    return GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, GTDatabaseConfig::database());
+}
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getDatabaseDocumentByName"
 Document *GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(U2OpStatus &os, const QString &name) {
