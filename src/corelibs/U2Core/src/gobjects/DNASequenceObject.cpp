@@ -75,20 +75,14 @@ bool U2SequenceObject::checkConstraints(const GObjectConstraints* c) const {
 
 qint64 U2SequenceObject::getSequenceLength() const {
     if (cachedLength == -1) {
-        U2OpStatus2Log os;
-        DbiConnection con(entityRef.dbiRef, os);
-        CHECK_OP(os, -1);
-        cachedLength = con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os).length;
+        updateCachedValues();
     }
     return cachedLength;
 }
 
 QString U2SequenceObject::getSequenceName() const  {
     if (cachedName.isEmpty()) {
-        U2OpStatus2Log os;
-        DbiConnection con(entityRef.dbiRef, os);
-        CHECK_OP(os, "");
-        cachedName = con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os).visualName;
+        updateCachedValues();
     }
     return cachedName;
 }
@@ -142,23 +136,14 @@ QByteArray U2SequenceObject::getWholeSequenceData() const {
 
 bool U2SequenceObject::isCircular() const {
     if (cachedCircular == TriState_Unknown) {
-        U2OpStatus2Log os;
-        DbiConnection con(entityRef.dbiRef, os);
-        CHECK_OP(os, false);
-        cachedCircular = con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os).circular ? TriState_Yes : TriState_No;
+        updateCachedValues();
     }
     return cachedCircular == TriState_Yes;
 }
 
 const DNAAlphabet* U2SequenceObject::getAlphabet() const {
     if (cachedAlphabet == NULL) {
-        U2OpStatus2Log os;
-        DbiConnection con(entityRef.dbiRef, os);
-        SAFE_POINT(!os.isCoR(), "U2SequenceObject::getAlphabet() :: Connection error", NULL);
-        U2AlphabetId alphaId = con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os).alphabet;
-        SAFE_POINT(!os.isCoR(), "U2SequenceObject::getAlphabet() :: getSequenceObject error", NULL);
-        cachedAlphabet = U2AlphabetUtils::getById(alphaId);
-        SAFE_POINT(cachedAlphabet != NULL, "U2SequenceObject::getAlphabet() :: getById error", NULL);
+        updateCachedValues();
     }
     return cachedAlphabet;
 }
@@ -449,6 +434,22 @@ void U2SequenceObject::setByteArrayAttribute(const QByteArray& newByteArrayAttri
     }
     U2ByteArrayAttribute newByteArrayAttribute(entityRef.entityId, type, newByteArrayAttributeValue);
     con.dbi->getAttributeDbi()->createByteArrayAttribute(newByteArrayAttribute, os);
+}
+
+void U2SequenceObject::updateCachedValues() const {
+    U2OpStatus2Log os;
+    DbiConnection con(entityRef.dbiRef, os);
+    CHECK_OP(os, );
+
+    U2Sequence seq = con.dbi->getSequenceDbi()->getSequenceObject(entityRef.entityId, os);
+    CHECK_OP(os, );
+
+    cachedLength = seq.length;
+    cachedName = seq.visualName;
+    cachedAlphabet = U2AlphabetUtils::getById(seq.alphabet);
+    cachedCircular = seq.circular ? TriState_Yes : TriState_No;
+
+    SAFE_POINT(cachedAlphabet != NULL, "Invalid sequence alphabet", );
 }
 
 void U2SequenceObject::setGObjectName( const QString& newName ){

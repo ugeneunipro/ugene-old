@@ -103,6 +103,8 @@ signals:
     void si_sequenceCircularStateChanged();
 
 protected:
+    void updateCachedValues() const;
+
     mutable const DNAAlphabet*    cachedAlphabet;
     mutable qint64          cachedLength;
     mutable QString         cachedName;
