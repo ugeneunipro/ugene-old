@@ -55,19 +55,31 @@ void GTRadioButton::click(U2OpStatus& os, QRadioButton *radioButton) {
 
 #define GT_METHOD_NAME "getRadioButtonByText"
 QRadioButton* GTRadioButton::getRadioButtonByText(U2OpStatus &os, QString text, QWidget *parent){
-    QRadioButton* result=NULL;
+    if(parent==NULL){
+        parent=AppContext::getMainWindow()->getQMainWindow();
+    }
+    QList<QRadioButton*> radioList = getAllButtonsByText(os, text, parent);
+    GT_CHECK_RESULT(radioList.size() > 1, "Several radioButtons contain this text", NULL);
+    GT_CHECK_RESULT(radioList.size() == 0, "No radioButtons with this text found", NULL);
+
+    return radioList[0];
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getAllButtonsByText"
+QList<QRadioButton*> GTRadioButton::getAllButtonsByText(U2OpStatus &os, QString text, QWidget *parent){
+    Q_UNUSED(os);
+    QList<QRadioButton*> result;
     if(parent==NULL){
         parent=AppContext::getMainWindow()->getQMainWindow();
     }
     QList<QRadioButton*> radioList = parent->findChildren<QRadioButton*>();
     foreach(QRadioButton* but, radioList){
         if(but->text().toLower().contains(text.toLower())){
-            GT_CHECK_RESULT(result==NULL, "Several radioButtons contain this text.",result)
-            result=but;
+            result<<but;
         }
     }
 
-    GT_CHECK_RESULT(result,"No radioButtons with this text found",NULL);
     return result;
 }
 #undef GT_METHOD_NAME

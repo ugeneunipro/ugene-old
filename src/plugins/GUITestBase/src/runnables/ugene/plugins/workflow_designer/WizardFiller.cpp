@@ -270,8 +270,11 @@ void ConfigureTuxedoWizardFiller::run() {
     rMap[singleReads] = "Single-end reads";
     rMap[pairedReads] = "Paired-end reads";
 
-    GTRadioButton::click(os,GTRadioButton::getRadioButtonByText(os,anMap[analys],dialog));
-    GTRadioButton::click(os,GTRadioButton::getRadioButtonByText(os,rMap[reads],dialog));
+    //hack. wizard conteans 2 radio buttons with same text, 1 is invisiable
+    QList<QRadioButton*> analysRadioList = GTRadioButton::getAllButtonsByText(os, anMap[analys], dialog);
+    QList<QRadioButton*> readsRadioList = GTRadioButton::getAllButtonsByText(os, rMap[reads], dialog);
+    GTRadioButton::click(os, analysRadioList[0]);
+    GTRadioButton::click(os, readsRadioList[0]);
 
     GTWidget::click(os, getSetupButton(os));
 

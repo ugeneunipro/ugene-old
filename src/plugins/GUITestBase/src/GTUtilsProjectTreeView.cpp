@@ -142,7 +142,9 @@ void GTUtilsProjectTreeView::scrollTo(U2OpStatus &os, const QString &itemName)
 #define GT_METHOD_NAME "doubleClickItem"
 void GTUtilsProjectTreeView::doubleClickItem(U2OpStatus &os, const QModelIndex &itemIndex) {
     GT_CHECK(itemIndex.isValid(), "Item index is invalid");
-    GTMouseDriver::moveTo(os, getItemCenter(os, itemIndex));
+    getTreeView(os)->scrollTo(itemIndex);
+
+    GTMouseDriver::moveTo(os, getItemCenter(os, itemIndex));    
     GTMouseDriver::doubleClick(os);
 }
 #undef GT_METHOD_NAME

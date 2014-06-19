@@ -1654,7 +1654,9 @@ GUI_TEST_CLASS_DEFINITION(view_test_0003) {
 
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
 
-    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblyObjectPath);
+    QModelIndexList list = GTUtilsProjectTreeView::findIndecies(os, assemblyVisibleName,
+                                                                GTUtilsProjectTreeView::findIndex(os, folderName));
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, list[0]);
     QWidget* assemblyView = GTWidget::findWidget(os, databaseDoc->getName() + " " + assemblyVisibleNameWidget);
     CHECK_SET_ERR(NULL != assemblyView, "View wasn't opened");
 
