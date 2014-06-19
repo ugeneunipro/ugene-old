@@ -56,6 +56,9 @@ static const char * UNABLE_TO_CONNECT_TEXT = "The database has been set up "
 namespace U2 {
 
 const QString SharedConnectionsDialog::SETTINGS_RECENT = "/shared_database/recent_connections/";
+const QString SharedConnectionsDialog::PUBLIC_DATABASE_URL = U2DbiUtils::createDbiUrl("46.4.79.114", 3306, "public_ugene");
+const QString SharedConnectionsDialog::PUBLIC_DATABASE_LOGIN = "public";
+const QString SharedConnectionsDialog::PUBLIC_DATABASE_PASSWORD = "public";
 
 SharedConnectionsDialog::SharedConnectionsDialog(QWidget *parent) :
     QDialog(parent),
@@ -144,6 +147,7 @@ void SharedConnectionsDialog::sl_addClicked() {
 
     if (QDialog::Accepted == editDialog.exec()) {
         QListWidgetItem* item = insertConnection(editDialog.getName(), editDialog.getDbUrl());
+        CHECK(NULL != item, );
         ui->lwConnections->setCurrentItem(item);
         saveRecentConnection(item);
         updateState();
@@ -182,6 +186,7 @@ void SharedConnectionsDialog::sl_connectionComplete() {
 
 void SharedConnectionsDialog::init() {
     restoreRecentConnections();
+    addPredefinedConnection();
     addConnectionsFromProject();
     saveRecentConnections();
 }
@@ -278,6 +283,14 @@ void SharedConnectionsDialog::addConnectionsFromProject() {
     }
 }
 
+void SharedConnectionsDialog::addPredefinedConnection() {
+    if (!getDbUrls().contains(PUBLIC_DATABASE_URL)) {
+        insertConnection(tr("Popular genomes"), PUBLIC_DATABASE_URL);
+        Credentials credentials(PUBLIC_DATABASE_LOGIN, PUBLIC_DATABASE_PASSWORD);
+        AppContext::getCredentialsStorage()->addEntry(PUBLIC_DATABASE_URL, credentials, true);
+    }
+}
+
 bool SharedConnectionsDialog::checkDatabaseAvailability(const U2DbiRef &ref, bool &initializationRequired) {
     U2OpStatusImpl os;
     const bool dbInitialized = MysqlDbiUtils::isDbInitialized(ref, os);
@@ -338,7 +351,10 @@ QStringList SharedConnectionsDialog::getDbUrls() const{
     return result;
 }
 
-QListWidgetItem* SharedConnectionsDialog::insertConnection(const QString& name, const QString& dbUrl) {
+QListWidgetItem* SharedConnectionsDialog::insertConnection(const QString& preferredName, const QString& dbUrl) {
+    CHECK(!getDbUrls().contains(dbUrl), NULL);
+    const QString name = rollName(preferredName);
+
     QListWidgetItem* item = new QListWidgetItem(name);
     item->setData(Qt::UserRole, dbUrl);
     ui->lwConnections->addItem(item);
@@ -351,6 +367,16 @@ void SharedConnectionsDialog::cancelConnection(QListWidgetItem* item) {
         connectionTask->cancel();
         connectionTasks.remove(item);
     }
+}
+
+QString SharedConnectionsDialog::rollName(const QString &preferredName) const {
+    QString name = preferredName;
+    int i = 0;
+    while (!ui->lwConnections->findItems(name, Qt::MatchExactly).isEmpty()) {
+        i++;
+        name = preferredName + " (" + QString::number(i) + ")";
+    }
+    return name;
 }
 
 }   // namespace U2

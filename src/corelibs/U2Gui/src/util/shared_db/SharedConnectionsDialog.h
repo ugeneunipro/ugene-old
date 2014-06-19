@@ -70,17 +70,23 @@ private:
     void saveRecentConnection(const QListWidgetItem *item) const;
     void saveRecentConnections() const;
     void addConnectionsFromProject();
+    void addPredefinedConnection();
 
     bool checkDatabaseAvailability(const U2DbiRef &ref, bool &initializationRequired);
     bool isConnected(QListWidgetItem *item) const;
     QStringList getDbUrls() const;
-    QListWidgetItem* insertConnection(const QString& name, const QString& dbUrl);
+    QListWidgetItem* insertConnection(const QString& preferredName, const QString& dbUrl);
     void cancelConnection(QListWidgetItem* item);
+    QString rollName(const QString& preferredName) const;
 
     Ui::SharedConnectionsDialog *ui;
     QMap<QListWidgetItem*, Task*> connectionTasks;
 
     static const QString SETTINGS_RECENT;
+
+    static const QString PUBLIC_DATABASE_URL;
+    static const QString PUBLIC_DATABASE_LOGIN;
+    static const QString PUBLIC_DATABASE_PASSWORD;
 };
 
 }   // namespace U2
