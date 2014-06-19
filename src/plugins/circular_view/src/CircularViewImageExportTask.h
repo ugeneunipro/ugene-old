@@ -31,7 +31,7 @@ class CircularView;
 
 class CircularViewImageExportSettings {
 public:
-    CircularViewImageExportSettings(bool includeMarker = false, bool inlcudeSelection = true)
+    CircularViewImageExportSettings(bool includeMarker = false, bool includeSelection = true)
         : includeMarker(includeMarker),
           includeSelection(includeSelection) {}
 

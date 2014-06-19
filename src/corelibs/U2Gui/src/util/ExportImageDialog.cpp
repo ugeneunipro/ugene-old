@@ -200,6 +200,7 @@ void ExportImageDialog::sl_hintMessageChanged(const QString &message) {
 void ExportImageDialog::init() {
     ui = new Ui_ImageExportForm;
     ui->setupUi(this);
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
 
     switch (source) {
     case WD:
