@@ -55,6 +55,8 @@ private:
     bool checkFields();
 
     Ui::EditConnectionDialog *ui;
+
+    static const QString DEFAULT_PORT;
 };
 
 }   // namespace U2
