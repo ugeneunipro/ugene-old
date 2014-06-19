@@ -1133,7 +1133,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_shared_database::cm_test_0013);
 
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0001);
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::proj_test_0002, "these tests hang mac testing");
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0002);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0003);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0004);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0005);
@@ -1141,20 +1141,20 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0007);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::proj_test_0008);
 
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::import_test_0001, "these tests hang mac testing");
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::import_test_0002, "these tests hang mac testing");
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::import_test_0003, "these tests hang mac testing");
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::import_test_0004, "these tests hang mac testing");
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::import_test_0005, "these tests hang mac testing");
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::import_test_0006, "these tests hang mac testing");
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::import_test_0007, "these tests hang mac testing");
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::import_test_0008, "these tests hang mac testing");
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::import_test_0009, "these tests hang mac testing");
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::import_test_0010, "these tests hang mac testing");
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::import_test_0011, "these tests hang mac testing");
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::import_test_0012, "these tests hang mac testing");
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::import_test_0013, "these tests hang mac testing");
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_shared_database::import_test_0014, "these tests hang mac testing");
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0008);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0009);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0010);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0011);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0012);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0013);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0014);
 
     REGISTER_TEST(GUITest_common_scenarios_shared_database::view_test_0001);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::view_test_0002);
