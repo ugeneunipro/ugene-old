@@ -160,10 +160,9 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
             QString annotationName = genObjectName(usedNames, data.name, data.tags, i+1, GObjectTypes::ANNOTATION_TABLE);
             SAFE_POINT( NULL == mergedAnnotations.data( ), "Unexpected annotation table!", )
             if ( merge ) {
-                mergedAnnotations.reset( new AnnotationTableObject( annotationName, dbiRef, fs ) );
+                mergedAnnotations.reset( new AnnotationTableObject( annotationName, dbiRef ) );
             }
-            annotationsObject = merge ? mergedAnnotations.data( )
-                : new AnnotationTableObject( annotationName, dbiRef, fs );
+            annotationsObject = merge ? mergedAnnotations.data( ) : new AnnotationTableObject( annotationName, dbiRef );
 
             QStringList groupNames;
             foreach ( SharedAnnotationData d, data.features ) {
