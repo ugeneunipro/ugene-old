@@ -93,7 +93,7 @@ void HMM3SearchWorkerFactory::init() {
          a << new Attribute(nd, BaseTypes::STRING_TYPE(), true, QVariant("hmm_signal"));
          a << new Attribute(nsd, BaseTypes::NUM_TYPE(), false, QVariant(0));
          a << new Attribute(ded, BaseTypes::NUM_TYPE(), false, QVariant(-1));
-         a << new Attribute(dtd, BaseTypes::NUM_TYPE(), false, QVariant((double)0.01));
+         a << new Attribute(dtd, BaseTypes::NUM_TYPE(), false, QVariant((double)0.0));
     }
  
     Descriptor desc(HMM3SearchWorkerFactory::ACTOR, HMM3SearchWorker::tr("HMM3 Search"), 
