@@ -249,7 +249,6 @@ public:
 
     void openAfterPluginsLoaded(const QStringList& urls, TaskStarter::StartCondition condition = TaskStarter::NoCondition) {
         OpenWithProjectTask * task = new OpenWithProjectTask(urls);
-        PluginSupport * pluginSupport = AppContext::getPluginSupport();
 
         TaskStarter* taskStarter = new TaskStarter(task, condition);
         if (AppContext::getMainWindow()->getQMainWindow()->isVisible()) {
