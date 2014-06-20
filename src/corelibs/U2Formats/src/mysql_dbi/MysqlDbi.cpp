@@ -170,8 +170,8 @@ MysqlDbRef* MysqlDbi::getDbRef() {
 }
 
 bool MysqlDbi::isInitialized(U2OpStatus &os) {
-    U2SqlQuery("SHOW TABLES", db, os).execute();
-    U2SqlQuery q("SELECT FOUND_ROWS()", db, os);
+    U2SqlQuery q("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = :name and TABLE_TYPE='BASE TABLE'", db, os);
+    q.bindString("name", db->handle.databaseName());
 
     const int countOfTables = q.selectInt64();
     CHECK_OP(os, false);
@@ -270,10 +270,10 @@ void MysqlDbi::open(const QHash<QString, QString> &props, U2OpStatus &os) {
     }
     db->handle.setDatabaseName(dbName);
 
-    db->handle.setConnectOptions("CLIENT_COMPRESS=1;CLIENT_FOUND_ROWS=1;MYSQL_OPT_RECONNECT=1");
+    db->handle.setConnectOptions("CLIENT_COMPRESS=1;CLIENT_FOUND_ROWS=1;MYSQL_OPT_RECONNECT=1;");
 
     if (!db->handle.open() ) {
-        os.setError(U2DbiL10n::tr("Error opening Mysql database: %1").arg(db->handle.lastError().text()));
+        os.setError(U2DbiL10n::tr("Error opening MySQL database: %1").arg(db->handle.lastError().text()));
         setState(U2DbiState_Void);
         return;
     }
@@ -340,7 +340,6 @@ void MysqlDbi::internalInit(const QHash<QString, QString>& props, U2OpStatus& os
     checkUserPermissions(os);
     CHECK_OP(os, );
     setupTransactions(os);
-    CHECK_OP(os, );
 }
 
 void MysqlDbi::setupProperties(const QHash<QString, QString> &props, U2OpStatus &os) {
@@ -416,13 +415,14 @@ void MysqlDbi::checkUserPermissions(U2OpStatus& os) {
     bool deleteEnabled = false;
     bool insertEnabled = false;
 
-    const QString userQueryString = "SELECT DISTINCT PRIVILEGE_TYPE FROM information_schema.user_privileges "
-        "WHERE GRANTEE LIKE :userName";
-    U2SqlQuery uq(userQueryString, db, os);
-    uq.bindString("userName", QString("'%1'%").arg(userName));
+    const QString schemaQueryString = "SELECT DISTINCT PRIVILEGE_TYPE FROM information_schema.schema_privileges "
+        "WHERE GRANTEE LIKE :userName AND TABLE_SCHEMA = :tableSchema";
+    U2SqlQuery sq(schemaQueryString, db, os);
+    sq.bindString("userName", QString("'%1'%").arg(userName));
+    sq.bindString("tableSchema", databaseName);
 
-    while (uq.step() && !(selectEnabled && updateEnabled && deleteEnabled && insertEnabled)) {
-        const QString grantString = uq.getString(0);
+    while (sq.step() && !(selectEnabled && updateEnabled && deleteEnabled && insertEnabled)) {
+        const QString grantString = sq.getString(0);
         CHECK_OP(os, );
 
         selectEnabled |= grantString == selectPrivilegeStr;
@@ -431,14 +431,13 @@ void MysqlDbi::checkUserPermissions(U2OpStatus& os) {
         insertEnabled |= grantString == insertPrivilegeStr;
     }
 
-    const QString schemaQueryString = "SELECT PRIVILEGE_TYPE FROM information_schema.schema_privileges "
-        "WHERE GRANTEE LIKE :userName AND TABLE_SCHEMA = :tableSchema";
-    U2SqlQuery sq(schemaQueryString, db, os);
-    sq.bindString("userName", QString("'%1'%").arg(userName));
-    sq.bindString("tableSchema", databaseName);
+    const QString userQueryString = "SELECT DISTINCT PRIVILEGE_TYPE FROM information_schema.user_privileges "
+        "WHERE GRANTEE LIKE :userName";
+    U2SqlQuery uq(userQueryString, db, os);
+    uq.bindString("userName", QString("'%1'%").arg(userName));
 
-    while (!(selectEnabled && updateEnabled && deleteEnabled && insertEnabled) && sq.step()) {
-        const QString grantString = sq.getString(0);
+    while (!(selectEnabled && updateEnabled && deleteEnabled && insertEnabled) && uq.step()) {
+        const QString grantString = uq.getString(0);
         CHECK_OP(os, );
 
         selectEnabled |= grantString == selectPrivilegeStr;

@@ -101,7 +101,7 @@ void MSAEditorTreeManager::loadRelatedTrees() {
     QList<GObjectRelation> relatedTrees = msaObject->findRelatedObjectsByRole(ObjectRole_PhylogeneticTree);
     CHECK(!relatedTrees.isEmpty(),);
 
-    foreach(const GObjectRelation rel, relatedTrees) {
+    foreach(const GObjectRelation &rel, relatedTrees) {
         const QString& treeFileName = rel.getDocURL();
         loadTreeFromFile(treeFileName);
     }
