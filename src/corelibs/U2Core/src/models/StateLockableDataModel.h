@@ -116,7 +116,7 @@ typedef QFlags<StateLockableTreeItemBranchFlag> StateLockableTreeItemBranchFlags
 class U2CORE_EXPORT StateLockableTreeItem : public StateLockableItem {
     Q_OBJECT
 public:
-    StateLockableTreeItem() : StateLockableItem(), childLocksCount(0), numModifiedChildren(0){}
+    StateLockableTreeItem() : StateLockableItem(), childLocksCount(0), numModifiedChildren(0) {}
 
     virtual ~StateLockableTreeItem();
 
@@ -132,7 +132,7 @@ public:
 
     virtual bool hasModifiedChildren() const {return numModifiedChildren != 0;}
 
-    StateLockableTreeItem* getParentStateLockItem() const { return parentStateLockItem.data(); }
+    StateLockableTreeItem* getParentStateLockItem() const { return qobject_cast<StateLockableTreeItem*>(parent()); }
 
     bool hasLocks(StateLockableTreeItemBranchFlags treeFlags, StateLockFlag lockFlag = StateLockFlag_AnyFlags) const {
         return !findLocks(treeFlags, lockFlag).isEmpty();
@@ -162,7 +162,6 @@ protected:
     const QSet<StateLockableTreeItem*>& getChildItems() const {return childItems;}
 
 private:
-    QPointer<StateLockableTreeItem> parentStateLockItem;
     QSet<StateLockableTreeItem*>    childItems;
     int                             childLocksCount;
     int                             numModifiedChildren;
