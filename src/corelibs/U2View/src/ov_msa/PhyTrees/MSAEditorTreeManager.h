@@ -57,6 +57,7 @@ private slots:
     void sl_treeRebuildingFinished(Task* treeBuildTask);
     void sl_refreshTree(MSAEditorTreeViewer* treeViewer);
     void sl_onPhyTreeDocLoaded(Task*);
+    void sl_onDocumentRemovedFromProject(Document *doc);
 
 private:
     void buildTree(const CreatePhyTreeSettings& buildSettings);

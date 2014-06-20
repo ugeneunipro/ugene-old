@@ -69,14 +69,32 @@
 #include "ov_phyltree/TreeViewerTasks.h"
 
 namespace U2 {
-MSAEditorTreeManager::MSAEditorTreeManager(MSAEditor* _editor )
- : QObject(_editor), editor(_editor), msaObject(NULL), addExistingTree(false) {
-     SAFE_POINT(NULL != editor, "Invlalid parameter were passed into constructor MSAEditorTreeManager",);
+MSAEditorTreeManager::MSAEditorTreeManager(MSAEditor* _editor)
+    : QObject(_editor), editor(_editor), msaObject(NULL), addExistingTree(false)
+{
+     SAFE_POINT(NULL != editor, "Invalid parameter were passed into constructor MSAEditorTreeManager", );
+
+     Project *project = AppContext::getProject();
+     SAFE_POINT(NULL != project, "Invalid project detected", );
+
+     connect(project, SIGNAL(si_documentRemoved(Document *)), SLOT(sl_onDocumentRemovedFromProject(Document*)));
+}
+
+void MSAEditorTreeManager::sl_onDocumentRemovedFromProject(Document *doc) {
+    SAFE_POINT(NULL != msaObject, "Invalid MAlignment object", );
+    QList<GObjectRelation> relatedTrees = msaObject->findRelatedObjectsByRole(ObjectRole_PhylogeneticTree); 
+    CHECK(!relatedTrees.isEmpty(), );
+
+    foreach (const GObjectRelation &r, relatedTrees) {
+        if (r.ref.entityRef.isValid() && NULL != doc->getObjectById(r.ref.entityRef.entityId)) {
+            msaObject->removeObjectRelation(r);
+        }
+    }
 }
 
 void MSAEditorTreeManager::loadRelatedTrees() {
     msaObject = editor->getMSAObject();
-    QList<GObjectRelation> relatedTrees = editor->getMSAObject()->findRelatedObjectsByRole(ObjectRole_PhylogeneticTree); 
+    QList<GObjectRelation> relatedTrees = msaObject->findRelatedObjectsByRole(ObjectRole_PhylogeneticTree);
     CHECK(!relatedTrees.isEmpty(),);
 
     foreach(const GObjectRelation rel, relatedTrees) {
@@ -162,7 +180,7 @@ void MSAEditorTreeManager::sl_openTree(Task* treeBuildTask) {
 
     Project* p = AppContext::getProject();
     d = NULL;
-    PhyTreeObject *newObj = NULL;
+    PhyTreeObject *newTreeObj = NULL;
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
     QString treeFileName = settings.fileUrl.getURLString();
     if (treeFileName.isEmpty()) {
@@ -190,9 +208,9 @@ void MSAEditorTreeManager::sl_openTree(Task* treeBuildTask) {
 
     if(isNewDocument) {
         U2OpStatus2Log os;
-        newObj = PhyTreeObject::createInstance(treeGeneratorTask->getResult(), "Tree", d->getDbiRef(), os);
+        newTreeObj = PhyTreeObject::createInstance(treeGeneratorTask->getResult(), "Tree", d->getDbiRef(), os);
         CHECK_OP(os, );
-        d->addObject(newObj);
+        d->addObject(newTreeObj);
     }
     else {
         if(!d->isLoaded()) {
@@ -208,7 +226,7 @@ void MSAEditorTreeManager::sl_openTree(Task* treeBuildTask) {
                 PhyTreeObject* treeObj = qobject_cast<PhyTreeObject*>(obj);
                 if(treeObj) {
                     treeObj->setTree(treeGeneratorTask->getResult());
-                    newObj = treeObj;
+                    newTreeObj = treeObj;
                 }
             }
         }
@@ -219,15 +237,13 @@ void MSAEditorTreeManager::sl_openTree(Task* treeBuildTask) {
     }
 
     if(isNewDocument) {
-        GObjectReference treeRef(treeFileName, "", GObjectTypes::PHYLOGENETIC_TREE);
-        treeRef.objName = newObj->getGObjectName();
-        msaObject->addObjectRelation(GObjectRelation(treeRef, ObjectRole_PhylogeneticTree));
+        msaObject->addObjectRelation(GObjectRelation(GObjectReference(newTreeObj), ObjectRole_PhylogeneticTree));
     }
 
     Task* saveTask = new SaveDocumentTask(d);
     scheduler->registerTopLevelTask(saveTask);
 
-    openTreeViewer(newObj);
+    openTreeViewer(newTreeObj);
 }
 
 void MSAEditorTreeManager::sl_onPhyTreeDocLoaded(Task* task) {

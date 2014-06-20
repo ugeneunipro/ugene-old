@@ -156,7 +156,7 @@ void GObject::setRelationsInDb(QList<GObjectRelation>& list) const {
     U2ObjectRelationsDbi *rDbi = con.dbi->getObjectRelationsDbi();
     SAFE_POINT(rDbi != NULL, "Invalid object relations DBI detected!", );
     rDbi->removeReferencesForObject(entityRef.entityId, os);
-    CHECK_OP(os, );
+    SAFE_POINT_OP(os, );
     U2ObjectDbi *oDbi = con.dbi->getObjectDbi();
 
     for (int i = 0, n = list.size(); i < n; ++i ) {
@@ -185,6 +185,7 @@ void GObject::setRelationsInDb(QList<GObjectRelation>& list) const {
         dbRelation.relationRole = relation.role;
 
         rDbi->createObjectRelation(dbRelation, os);
+        SAFE_POINT_OP(os, );
     }
 }
 
