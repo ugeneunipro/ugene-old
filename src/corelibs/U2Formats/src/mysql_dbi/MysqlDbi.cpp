@@ -472,6 +472,7 @@ void MysqlDbi::setupStoredFunctions(U2OpStatus &os) {
                                 "given_index    VARCHAR(64), "
                                 "given_columns  VARCHAR(64) "
                                 ") "
+                                "SQL SECURITY INVOKER "
                                 "BEGIN "
                                 "DECLARE IndexIsThere INTEGER; "
                                 "SELECT COUNT(1) INTO IndexIsThere "
