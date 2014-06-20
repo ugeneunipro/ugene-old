@@ -81,7 +81,11 @@ MSAEditorTreeManager::MSAEditorTreeManager(MSAEditor* _editor)
 }
 
 void MSAEditorTreeManager::sl_onDocumentRemovedFromProject(Document *doc) {
-    SAFE_POINT(NULL != msaObject, "Invalid MAlignment object", );
+    CHECK(NULL != msaObject, );
+    if (doc == msaObject->getDocument()) {
+        msaObject = NULL;
+        return;
+    }
     QList<GObjectRelation> relatedTrees = msaObject->findRelatedObjectsByRole(ObjectRole_PhylogeneticTree); 
     CHECK(!relatedTrees.isEmpty(), );
 
