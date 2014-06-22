@@ -183,6 +183,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
     GTUtilsDialog::waitForDialog(os,new ConfigureTuxedoWizardFiller(os,ConfigureTuxedoWizardFiller::full
                                                                     ,ConfigureTuxedoWizardFiller::singleReads));
     GTUtilsWorkflowDesigner::addSample(os,"Tuxedo tools");
+    GTGlobals::sleep();
 //    3. Open wizard
 
 

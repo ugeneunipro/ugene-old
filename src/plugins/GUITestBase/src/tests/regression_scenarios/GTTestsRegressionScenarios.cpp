@@ -4704,8 +4704,10 @@ GUI_TEST_CLASS_DEFINITION( test_2612 ) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
     // 2. Search for 20 first nucleotides (TTGTCAGATTCACCAAAGTT) using Find Pattern.
     GTUtilsOptionsPanel::runFindPatternWithHotKey("TTGTCAGATTCACCAAAGTT", os);
+    GTGlobals::sleep(1000);
     // Expected state: the annotation with pattern created and shown in sequence view.
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
+    GTGlobals::sleep(1000);
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
     // 3. Delete annotation from annotation editor.
