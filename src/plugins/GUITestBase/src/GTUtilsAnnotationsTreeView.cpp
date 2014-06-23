@@ -26,6 +26,7 @@
 #include "api/GTWidget.h"
 #include "api/GTTreeWidget.h"
 #include "GTUtilsTaskTreeView.h"
+#include "GTUtilsMdi.h"
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/MainWindow.h>
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -45,7 +46,7 @@ const QString GTUtilsAnnotationsTreeView::widgetName = "annotations_tree_widget"
 
 QTreeWidget* GTUtilsAnnotationsTreeView::getTreeWidget(U2OpStatus &os) {
 
-    QTreeWidget *treeWidget = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os, widgetName));
+    QTreeWidget *treeWidget = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os, widgetName, GTUtilsMdi::activeWindow(os)));
     return treeWidget;
 }
 
@@ -101,7 +102,7 @@ QTreeWidgetItem* GTUtilsAnnotationsTreeView::findItem(U2OpStatus &os, const QStr
 
     QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
     foreach (QTreeWidgetItem* item, treeItems) {
-        QString treeItemName = getAVItemName(os, (AVItem*)item);
+        QString treeItemName = item->text(0);
         if (treeItemName == itemName) {
             return item;
         }

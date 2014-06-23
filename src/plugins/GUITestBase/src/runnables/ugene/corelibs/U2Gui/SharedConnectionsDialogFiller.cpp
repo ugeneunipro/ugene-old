@@ -175,6 +175,7 @@ void SharedConnectionsDialogFiller::run() {
     GT_CHECK(dialog, "activeModalWidget is NULL");
     QListWidget *list = dynamic_cast<QListWidget*>(GTWidget::findWidget(os, "lwConnections"));
     CHECK_SET_ERR(NULL != list, "NULL list");
+    GTGlobals::sleep(200);
 
     bool connected = false;
     foreach (const Action &action, actions) {
