@@ -25,38 +25,38 @@
 #include <QtCore/QList>
 #include <QtCore/QMutex>
 
-#include <U2Core/Task.h>
+#include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/LoadDocumentTask.h>
-#include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/SequenceWalkerTask.h>
+#include <U2Core/Task.h>
 
-#include <search/uHMM3SearchTask.h>
 #include "uhmm3phmmer.h"
+#include "search/uHMM3SearchTask.h"
 
 namespace U2 {
 
 class AnnotationTableObject;
 
 /**************************************
- * General hmmer3 phmmer task.
+  *General hmmer3 phmmer task.
  **************************************/
 class UHMM3PhmmerTask : public Task {
     Q_OBJECT
 public:
-    static DNASequence getSequenceFromDocument( Document * doc, TaskStateInfo & ti );
+    static DNASequence getSequenceFromDocument(Document *doc, TaskStateInfo &ti);
     
 public:
-    UHMM3PhmmerTask( const DNASequence & query, const DNASequence & db, const UHMM3PhmmerSettings & settings );
-    UHMM3PhmmerTask( const QString & queryFilename, const QString & dbFilename, const UHMM3PhmmerSettings & settings );
-    UHMM3PhmmerTask( const QString & queryFilename, const DNASequence & db, const UHMM3PhmmerSettings & settings );
+    UHMM3PhmmerTask(const DNASequence &query, const DNASequence &db, const UHMM3PhmmerSettings &settings);
+    UHMM3PhmmerTask(const QString &queryFilename, const QString &dbFilename, const UHMM3PhmmerSettings &settings);
+    UHMM3PhmmerTask(const QString &queryFilename, const DNASequence &db, const UHMM3PhmmerSettings &settings);
     
     void run();
     
-    QList< Task* > onSubTaskFinished( Task* subTask );
+    QList<Task *> onSubTaskFinished(Task* subTask);
     
     UHMM3SearchResult getResult() const;
-    QList< SharedAnnotationData > getResultsAsAnnotations( const QString & name ) const;
+    QList<SharedAnnotationData> getResultsAsAnnotations(const QString &name) const;
     
 private:
     void addMemResource();
@@ -74,30 +74,30 @@ private:
 }; // UHMM3PhmmerTask
 
 /******************************
- * Sequence walker phmmer
+  *Sequence walker phmmer
  ******************************/
-class UHMM3SWPhmmerTask : public Task, SequenceWalkerCallback {
+class UHMM3SWPhmmerTask : public Task, public SequenceWalkerCallback {
     Q_OBJECT
 public:
     static const int DEFAULT_CHUNK_SIZE = 1000000; // 1mb
     
 public:
-    UHMM3SWPhmmerTask(const QString & queryFilename, const DNASequence & db, 
-                      const UHMM3PhmmerSettings & settings, int chunk = DEFAULT_CHUNK_SIZE);
+    UHMM3SWPhmmerTask(const QString &queryFilename, const DNASequence &db,
+                      const UHMM3PhmmerSettings &settings, int chunk = DEFAULT_CHUNK_SIZE);
     
-    QList<SharedAnnotationData> getResultsAsAnnotations(const QString & name) const;
+    QList<SharedAnnotationData> getResultsAsAnnotations(const QString &name) const;
     QList<UHMM3SWSearchTaskDomainResult> getResult()const;
     
-    QList<Task*> onSubTaskFinished(Task* subTask);
+    QList<Task *> onSubTaskFinished(Task *subTask);
 
-    virtual void onRegion(SequenceWalkerSubtask * t, TaskStateInfo & ti);
+    virtual void onRegion(SequenceWalkerSubtask *t, TaskStateInfo &ti);
     
-    virtual QList<TaskResourceUsage> getResources(SequenceWalkerSubtask * t);
+    virtual QList<TaskResourceUsage> getResources(SequenceWalkerSubtask *t);
     
     ReportResult report();
 
 private:
-    SequenceWalkerTask* getSWSubtask();
+    SequenceWalkerTask *getSWSubtask();
     void checkAlphabets();
     void setTranslations();
     
@@ -106,9 +106,9 @@ private:
     DNASequence         dbSeq;
     UHMM3PhmmerSettings settings;
     int                 searchChunkSize;
-    LoadDocumentTask*   loadQueryTask;
+    LoadDocumentTask *  loadQueryTask;
     DNASequence         querySeq;
-    SequenceWalkerTask* swTask;
+    SequenceWalkerTask *swTask;
     DNATranslation *    complTranslation;
     DNATranslation *    aminoTranslation;
     QMutex              writeResultsMtx;
@@ -124,10 +124,10 @@ private:
 class UHMM3PhmmerToAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    UHMM3PhmmerToAnnotationsTask( const QString & querySeqfile, const DNASequence & dbSeq, AnnotationTableObject *obj,
-        const QString & group, const QString & name, const UHMM3PhmmerSettings & setings );
+    UHMM3PhmmerToAnnotationsTask(const QString &querySeqfile, const DNASequence &dbSeq, AnnotationTableObject *obj,
+        const QString &group, const QString &name, const UHMM3PhmmerSettings &setings);
     
-    QList< Task* > onSubTaskFinished( Task * subTask );
+    QList<Task *> onSubTaskFinished(Task *subTask);
     
     QString generateReport() const;
     
@@ -140,7 +140,7 @@ private:
     QString                             annGroup;
     QString                             annName;
     UHMM3PhmmerSettings                 settings;
-    QPointer<AnnotationTableObject>       annotationObj;
+    QPointer<AnnotationTableObject>     annotationObj;
     UHMM3SWPhmmerTask *                 phmmerTask;
     CreateAnnotationsTask *             createAnnotationsTask;
     
