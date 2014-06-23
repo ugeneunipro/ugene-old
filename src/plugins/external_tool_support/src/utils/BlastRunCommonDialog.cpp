@@ -84,6 +84,7 @@ BlastRunCommonDialog::BlastRunCommonDialog(QWidget* _parent) :
 
     okButton = buttonBox->button(QDialogButtonBox::Ok);
     restoreButton = buttonBox->button(QDialogButtonBox::Yes);
+    cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
     connect(okButton,SIGNAL(clicked()),SLOT(sl_runQuery()));
     connect(restoreButton,SIGNAL(clicked()),SLOT(sl_restoreDefault()));
     sl_onProgNameChange(0);
