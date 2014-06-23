@@ -32,10 +32,14 @@ class U2OpStatus;
 
 class GTUtilsAssemblyBrowser {
 public:
-    static AssemblyBrowserUi* getView(U2OpStatus &os, const QString& viewTitle);
+    static AssemblyBrowserUi *getView(U2OpStatus &os, const QString& viewTitle);
 
     static bool hasReference(U2OpStatus &os, const QString &viewTitle);
     static bool hasReference(U2OpStatus &os, QWidget *view);
+    static bool hasReference(U2OpStatus &os, AssemblyBrowserUi *assemblyBrowser);
+
+    static qint64 getLength(U2OpStatus &os, const QString& viewTitle);
+    static qint64 getReadsCount(U2OpStatus &os, const QString& viewTitle);
 
     static void zoomToMax(U2OpStatus& os);
 

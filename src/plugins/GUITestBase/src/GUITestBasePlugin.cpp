@@ -1155,6 +1155,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0012);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0013);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0014);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0015);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0016);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0017);
 
     REGISTER_TEST(GUITest_common_scenarios_shared_database::view_test_0001);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::view_test_0002);

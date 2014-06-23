@@ -21,10 +21,13 @@
 
 #include <QtCore/QSharedPointer>
 
+#include <QtGui/QLineEdit>
+
 #include <U2View/AssemblyBrowser.h>
 #include <U2View/AssemblyModel.h>
 
 #include "GTUtilsAssemblyBrowser.h"
+#include "GTUtilsOptionsPanel.h"
 #include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTToolbar.h"
@@ -64,10 +67,76 @@ bool GTUtilsAssemblyBrowser::hasReference(U2OpStatus& os, QWidget* view) {
     AssemblyBrowserUi* assemblyBrowser = view->findChild<AssemblyBrowserUi*>("assembly_browser_" + view->objectName());
     GT_CHECK_RESULT(NULL != assemblyBrowser, "Assembly browser wasn't found", false);
 
+    return hasReference(os, assemblyBrowser);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "hasReference"
+bool GTUtilsAssemblyBrowser::hasReference(U2OpStatus &os, AssemblyBrowserUi *assemblyBrowser) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(NULL != assemblyBrowser, "Assembly browser is NULL", false);
+
     QSharedPointer<AssemblyModel> model = assemblyBrowser->getModel();
     GT_CHECK_RESULT(!model.isNull(), "Assembly model is NULL", false);
 
     return model->hasReference();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getLength"
+qint64 GTUtilsAssemblyBrowser::getLength(U2OpStatus &os, const QString& viewTitle) {
+    AssemblyBrowserUi* assemblyBrowser = getView(os, viewTitle);
+    GT_CHECK_RESULT(NULL != assemblyBrowser, "Assembly browser wasn't found", 0);
+
+    QWidget* optionsPanel = GTWidget::findWidget(os, "OP_MAIN_WIDGET", assemblyBrowser->parentWidget());
+    GT_CHECK_RESULT(NULL != optionsPanel, "Options panel wasn't found", 0);
+
+    QWidget* infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", optionsPanel);
+    if (!infoOptionsPanel->isVisible()) {
+        GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_INFO", assemblyBrowser->parentWidget()));
+        infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", optionsPanel);
+    }
+    GT_CHECK_RESULT(NULL != infoOptionsPanel, "Information options panel wasn't found", 0);
+
+    QWidget* b = GTWidget::findWidget(os, "leLength", infoOptionsPanel);
+    QLineEdit* leLength = qobject_cast<QLineEdit*>(b);
+    GT_CHECK_RESULT(NULL != leLength, "Length line edit wasn't found", 0);
+
+    bool isConverted = false;
+    QString lengthString = leLength->text();
+    lengthString.replace(" ", "");
+    qint64 value = lengthString.toLongLong(&isConverted);
+    GT_CHECK_RESULT(isConverted, QString("Can't convert length to number: '%1'").arg(lengthString), 0);
+
+    return value;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getReadsCount"
+qint64 GTUtilsAssemblyBrowser::getReadsCount(U2OpStatus &os, const QString &viewTitle) {
+    AssemblyBrowserUi* assemblyBrowser = getView(os, viewTitle);
+    GT_CHECK_RESULT(NULL != assemblyBrowser, "Assembly browser wasn't found", 0);
+
+    QWidget* optionsPanel = GTWidget::findWidget(os, "OP_MAIN_WIDGET", assemblyBrowser->parentWidget());
+    GT_CHECK_RESULT(NULL != optionsPanel, "Options panel wasn't found", 0);
+
+    QWidget* infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", optionsPanel);
+    if (!infoOptionsPanel->isVisible()) {
+        GTWidget::click(os, GTWidget::findWidget(os, "OP_ASS_INFO", assemblyBrowser->parentWidget()));
+        infoOptionsPanel = GTWidget::findWidget(os, "OP_OPTIONS_WIDGET", optionsPanel);
+    }
+    GT_CHECK_RESULT(NULL != infoOptionsPanel, "Information options panel wasn't found", 0);
+
+    QLineEdit* leReads = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "leReads", infoOptionsPanel));
+    GT_CHECK_RESULT(NULL != leReads, "Length line edit wasn't found", 0);
+
+    bool isConverted = false;
+    QString readsString = leReads->text();
+    readsString.replace(" ", "");
+    qint64 value = readsString.toLongLong(&isConverted);
+    GT_CHECK_RESULT(isConverted, QString("Can't convert reads count to number: '%1'").arg(readsString), 0);
+
+    return value;
 }
 #undef GT_METHOD_NAME
 

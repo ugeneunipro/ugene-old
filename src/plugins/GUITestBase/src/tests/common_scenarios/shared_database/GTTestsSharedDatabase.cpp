@@ -35,6 +35,7 @@
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsSharedDatabaseDocument.h"
 #include "GTUtilsTaskTreeView.h"
+#include "api/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
@@ -1570,6 +1571,172 @@ GUI_TEST_CLASS_DEFINITION(import_test_0014) {
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
 
+GUI_TEST_CLASS_DEFINITION(import_test_0015) {
+//    Import a BAM file via import dialog.
+
+//    1. Connect to the "ugene_gui_test" database.
+
+//    2. Call context menu on the {/import_test_0015} folder in the database connection document, select {Add -> Import to the folder...} item.
+//    Expected state: an import dialog appears.
+
+//    3. Click the "Add files" button, select the {_common_data/bam/chrM.sorted.bam} file.
+//    Expected state: the document is added to the orders list, it will be imported into the {/import_test_0015} folder.
+
+//    4. Click the "Import" button.
+//    Expected state: an import task is started, there is an assembly object in the {/import_test_0015/chrM.sorted/} folder after the task has finished.
+
+//    5. Check the assembly object length and count of reads.
+//    Expected state: the length is 16571, there are 38461 reads.
+
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString dstFolderName = "import_test_0015";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString objectFolderName = "chrM.sorted";
+    const QString objectFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + objectFolderName;
+    const QString assemblyObjectName = "chrM";
+    const QString databaseAssemblyObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + assemblyObjectName;
+    const qint64 expectedLength = 16571;
+    const qint64 expectedReadsCount = 38461;
+
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    QDir(sandBoxDir).mkdir(getName());
+    GTFile::copy(os, testDir + "_common_data/bam/chrM.sorted.bam", sandBoxDir + getName() + "/chrM.sorted.bam");
+    GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, dstFolderPath, QStringList() << sandBoxDir + getName() + "/chrM.sorted.bam");
+
+    const QStringList expectedItems = QStringList() << objectFolderPath
+                                                    << databaseAssemblyObjectPath;
+    GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(os, databaseDoc, dstFolderPath, expectedItems);
+
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblyObjectPath);
+
+    qint64 length = GTUtilsAssemblyBrowser::getLength(os, databaseDoc->getName() + " [as] " + assemblyObjectName);
+    qint64 readsCount = GTUtilsAssemblyBrowser::getReadsCount(os, databaseDoc->getName() + " [as] " + assemblyObjectName);
+    CHECK_SET_ERR(expectedLength == length, QString("The assembly length is incorrect: expect %1, got %1").arg(expectedLength).arg(length));
+    CHECK_SET_ERR(expectedReadsCount == readsCount, QString("The assembly reads count is incorrect: expect %1, got %1").arg(expectedReadsCount).arg(readsCount));
+
+    GTUtilsLog::check(os, lt);
+}
+
+GUI_TEST_CLASS_DEFINITION(import_test_0016) {
+//    Import a SAM file via import dialog.
+
+//    1. Connect to the "ugene_gui_test" database.
+
+//    2. Call context menu on the {/import_test_0016} folder in the database connection document, select {Add -> Import to the folder...} item.
+//    Expected state: an import dialog appears.
+
+//    3. Click the "Add files" button, select the {_common_data/sam/scerevisiae.sam} file.
+//    Expected state: the document is added to the orders list, it will be imported into the {/import_test_0016} folder.
+
+//    4. Click the "Import" button.
+//    Expected state: an import task is started, there is an assembly object in the {/import_test_0016/scerevisiae/} folder after the task has finished.
+
+//    5. Check the assembly object length and count of reads.
+//    Expected state: the length is 85779, there are 2 reads.
+
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString dstFolderName = "import_test_0016";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString objectFolderName = "scerevisiae";
+    const QString objectFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + objectFolderName;
+    const QString assemblyObjectName = "Scmito";
+    const QString databaseAssemblyObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + assemblyObjectName;
+    const qint64 expectedLength = 85779;
+    const qint64 expectedReadsCount = 2;
+
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    QDir(sandBoxDir).mkdir(getName());
+    GTFile::copy(os, testDir + "_common_data/sam/scerevisiae.sam", sandBoxDir + getName() + "/scerevisiae.sam");
+    GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, dstFolderPath, QStringList() << sandBoxDir + getName() + "/scerevisiae.sam");
+
+    const QStringList expectedItems = QStringList() << objectFolderPath
+                                                    << databaseAssemblyObjectPath;
+    GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(os, databaseDoc, dstFolderPath, expectedItems);
+
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblyObjectPath);
+
+    qint64 length = GTUtilsAssemblyBrowser::getLength(os, databaseDoc->getName() + " [as] " + assemblyObjectName);
+    qint64 readsCount = GTUtilsAssemblyBrowser::getReadsCount(os, databaseDoc->getName() + " [as] " + assemblyObjectName);
+    CHECK_SET_ERR(expectedLength == length, QString("The assembly length is incorrect: expect %1, got %1").arg(expectedLength).arg(length));
+    CHECK_SET_ERR(expectedReadsCount == readsCount, QString("The assembly reads count is incorrect: expect %1, got %1").arg(expectedReadsCount).arg(readsCount));
+
+    GTUtilsLog::check(os, lt);
+}
+
+GUI_TEST_CLASS_DEFINITION(import_test_0017) {
+//    Import an ACE file via import dialog.
+
+//    1. Connect to the "ugene_gui_test" database.
+
+//    2. Call context menu on the {/import_test_0017} folder in the database connection document, select {Add -> Import to the folder...} item.
+//    Expected state: an import dialog appears.
+
+//    3. Click the "Add files" button, select the {_common_data/ace/ace_test_2.ace} file.
+//    Expected state: the document is added to the orders list, it will be imported into the {/import_test_0017} folder.
+
+//    4. Click the "Import" button.
+//    Expected state: an import task is started, there are two assembly objects and two sequence objects in the {/import_test_0017/ace_test_2/} folder after the task has finished.
+
+//    5. Check the assembly object length, count of reads and check the reference is set.
+//    Expected state: the length is 16871, there are 38000 reads, reference is shown.
+
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString dstFolderName = "import_test_0017";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString objectFolderName = "ace_test_2";
+    const QString objectFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + objectFolderName;
+    const QString assemblyFirstObjectName = "Contig1";
+    const QString assemblySecondObjectName = "Contig2";
+    const QString sequenceFirstObjectName = "Contig1_ref";
+    const QString sequenceSecondObjectName = "Contig2_ref";
+    const QString databaseAssemblyFirstObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + assemblyFirstObjectName;
+    const QString databaseAssemblySecondObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + assemblySecondObjectName;
+    const QString databaseSequenceFirstObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + sequenceFirstObjectName;
+    const QString databaseSequenceSecondObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + sequenceSecondObjectName;
+    const qint64 expectedLengthFirst = 871;
+    const qint64 expectedReadsCountFirst = 2;
+    const qint64 expectedLengthSecond = 3296;
+    const qint64 expectedReadsCountSecond = 14;
+
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, dstFolderPath, QStringList() << testDir + "_common_data/ace/ace_test_2.ace");
+
+    const QStringList expectedItems = QStringList() << objectFolderPath
+                                                    << databaseAssemblyFirstObjectPath
+                                                    << databaseAssemblySecondObjectPath
+                                                    << databaseSequenceFirstObjectPath
+                                                    << databaseSequenceSecondObjectPath;
+    GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(os, databaseDoc, dstFolderPath, expectedItems);
+
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblyFirstObjectPath);
+
+    qint64 lengthFirst = GTUtilsAssemblyBrowser::getLength(os, databaseDoc->getName() + " [as] " + assemblyFirstObjectName);
+    qint64 readsCountFirst = GTUtilsAssemblyBrowser::getReadsCount(os, databaseDoc->getName() + " [as] " + assemblyFirstObjectName);
+    bool hasReferenceFirst = GTUtilsAssemblyBrowser::hasReference(os, databaseDoc->getName() + " [as] " + assemblyFirstObjectName);
+    CHECK_SET_ERR(expectedLengthFirst == lengthFirst, QString("The assembly length is incorrect: expect %1, got %1").arg(expectedLengthFirst).arg(lengthFirst));
+    CHECK_SET_ERR(expectedReadsCountFirst == readsCountFirst, QString("The assembly reads count is incorrect: expect %1, got %1").arg(expectedReadsCountFirst).arg(readsCountFirst));
+    CHECK_SET_ERR(hasReferenceFirst, "The assembly reference is not set");
+
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblySecondObjectPath);
+
+    qint64 lengthSecond = GTUtilsAssemblyBrowser::getLength(os, databaseDoc->getName() + " [as] " + assemblySecondObjectName);
+    qint64 readsCountSecond = GTUtilsAssemblyBrowser::getReadsCount(os, databaseDoc->getName() + " [as] " + assemblySecondObjectName);
+    bool hasReferenceSecond = GTUtilsAssemblyBrowser::hasReference(os, databaseDoc->getName() + " [as] " + assemblySecondObjectName);
+    CHECK_SET_ERR(expectedLengthSecond == lengthSecond, QString("The assembly length is incorrect: expect %1, got %1").arg(expectedLengthSecond).arg(lengthSecond));
+    CHECK_SET_ERR(expectedReadsCountSecond == readsCountSecond, QString("The assembly reads count is incorrect: expect %1, got %1").arg(expectedReadsCountSecond).arg(readsCountSecond));
+    CHECK_SET_ERR(hasReferenceSecond, "The assembly reference is not set");
+
+    GTUtilsLog::check(os, lt);
+}
 
 GUI_TEST_CLASS_DEFINITION(view_test_0001) {
 //    View annotated sequence

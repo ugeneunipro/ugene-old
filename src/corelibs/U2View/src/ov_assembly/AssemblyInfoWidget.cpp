@@ -59,11 +59,14 @@ namespace {
         return label;
     }
 
-    QLineEdit * buildLineEdit(QString text, QWidget *p = NULL) {
+    QLineEdit * buildLineEdit(QString text, QWidget *p = NULL, const QString& objectName = QString()) {
         QLineEdit * lineEdit = new QLineEdit(text, p);
         lineEdit->setStyleSheet("border: none; background-color: transparent;");
         lineEdit->setReadOnly(true);
         lineEdit->home(false);
+        if (!objectName.isEmpty()) {
+            lineEdit->setObjectName(objectName);
+        }
         return lineEdit;
     }
 }
@@ -88,9 +91,9 @@ AssemblyInfoWidget::AssemblyInfoWidget(AssemblyBrowser *browser, QWidget *p)
         QString length = FormatUtils::insertSeparators(model->getModelLength(st));
         QString reads = FormatUtils::insertSeparators(model->getReadsNumber(st));
 
-        layout->addRow(buildLabel(tr("Name"),   asmWidget), buildLineEdit(name,   asmWidget));
-        layout->addRow(buildLabel(tr("Length"), asmWidget), buildLineEdit(length, asmWidget));
-        layout->addRow(buildLabel(tr("Reads"),  asmWidget), buildLineEdit(reads,  asmWidget));
+        layout->addRow(buildLabel(tr("Name"),   asmWidget), buildLineEdit(name,   asmWidget, "leName"));
+        layout->addRow(buildLabel(tr("Length"), asmWidget), buildLineEdit(length, asmWidget, "leLength"));
+        layout->addRow(buildLabel(tr("Reads"),  asmWidget), buildLineEdit(reads,  asmWidget, "leReads"));
     }
     QWidget * infoGroup = new ShowHideSubgroupWidget("INFO", tr("Assembly Information"), asmWidget, true);
     mainLayout->addWidget(infoGroup);

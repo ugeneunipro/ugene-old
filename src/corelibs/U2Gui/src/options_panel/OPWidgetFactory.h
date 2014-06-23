@@ -66,20 +66,20 @@ public:
     OPFactoryFilterVisitor(ObjectViewType _objectViewType)
         :OPFactoryFilterVisitorInterface()
         ,objectViewType(_objectViewType)
-        ,objectAlphabetType(DNAAlphabet_RAW){};
+        ,objectAlphabetType(DNAAlphabet_RAW){}
     OPFactoryFilterVisitor(DNAAlphabetType _objectAlphabetType)
         :OPFactoryFilterVisitorInterface()
         ,objectViewType(ObjViewType_SequenceView)
-        ,objectAlphabetType(_objectAlphabetType){};
+        ,objectAlphabetType(_objectAlphabetType){}
     OPFactoryFilterVisitor(ObjectViewType _objectViewType, DNAAlphabetType _objectAlphabetType)
         :OPFactoryFilterVisitorInterface()
         ,objectViewType(_objectViewType)
-        ,objectAlphabetType(_objectAlphabetType){};
+        ,objectAlphabetType(_objectAlphabetType){}
     OPFactoryFilterVisitor(ObjectViewType _objectViewType, QList<DNAAlphabetType> _objectListAlphabet)
         :OPFactoryFilterVisitorInterface()
         ,objectViewType(_objectViewType)
         ,objectAlphabetType(DNAAlphabet_RAW)
-        ,objectAlphabets(_objectListAlphabet){};
+        ,objectAlphabets(_objectListAlphabet){}
 
     virtual bool typePass(ObjectViewType factoryViewType){ return factoryViewType == objectViewType;}
     virtual bool alphabetPass(DNAAlphabetType factoryAlphabetType) { return factoryAlphabetType == objectAlphabetType;}
