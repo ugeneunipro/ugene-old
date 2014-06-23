@@ -1106,8 +1106,7 @@ bool AnnotationsTreeView::eventFilter(QObject* o, QEvent* e) {
                 const AVItem *avi = static_cast<const AVItem *>( item );
                 if ( AVItemType_Annotation == avi->type ) {
                     const AVAnnotationItem *ai = static_cast<const AVAnnotationItem *>( avi );
-                    const AnnotationTableObject *table = ai->getAnnotationTableObject( );
-                    const ADVSequenceObjectContext *sc = ctx->getSequenceContext( table );
+                    const ADVSequenceObjectContext *sc = ctx->getSequenceContext( ai->getAnnotationTableObject( ) );
                     const bool seqObjectContextValid = ( NULL != sc );
                     const QString tip = Annotation::getQualifiersTip( ai->annotation.getData( ), 15,
                         seqObjectContextValid ? sc->getSequenceObject( ) : NULL,
