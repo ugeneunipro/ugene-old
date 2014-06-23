@@ -21,6 +21,7 @@
 
 #include <QtCore/QDir>
 
+#include <U2Core/Counter.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/AppResources.h>
@@ -456,6 +457,7 @@ const QString BwaTask::ALGORITHM_BWA_MEM = "BWA-MEM";
 BwaTask::BwaTask(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex):
     DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSCOE, justBuildIndex)
 {
+    GCOUNTER(cvar, tvar, "NGS:BWATask");
 }
 
 void BwaTask::prepare() {

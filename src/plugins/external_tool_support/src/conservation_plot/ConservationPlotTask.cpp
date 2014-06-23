@@ -25,6 +25,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/Counter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
@@ -57,7 +58,7 @@ ConservationPlotTask::ConservationPlotTask(const ConservationPlotSettings& _sett
 , etTask(NULL)
 , logParser(NULL)
 {
-
+    GCOUNTER(cvar, tvar, "NGS:ConservationPlotTask");
 }
 
 ConservationPlotTask::~ConservationPlotTask() {

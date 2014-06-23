@@ -26,6 +26,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/Counter.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
@@ -56,7 +57,7 @@ CufflinksSupportTask::CufflinksSupportTask(const CufflinksSettings& _settings)
       convertAssToSamTask(NULL),
       cufflinksExtToolTask(NULL)
 {
-
+    GCOUNTER(cvar, tvar, "NGS:CufflinksTask");
 }
 
 CufflinksSupportTask::~CufflinksSupportTask()

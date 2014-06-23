@@ -25,6 +25,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/Counter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrlUtils.h>
@@ -58,7 +59,7 @@ ConductGOTask::ConductGOTask(const ConductGOSettings& _settings, const QList<Ann
 , etTask(NULL)
 , logParser(NULL)
 {
-
+    GCOUNTER(cvar, tvar, "NGS:ConductGOTask");
 }
 
 ConductGOTask::~ConductGOTask() {

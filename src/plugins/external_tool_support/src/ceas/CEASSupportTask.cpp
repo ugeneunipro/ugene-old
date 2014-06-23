@@ -24,6 +24,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/Counter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ExternalToolRunTask.h>
@@ -87,7 +88,7 @@ CEASSupportTask::CEASSupportTask(const CEASTaskSettings &_settings)
 settings(_settings), bedDoc(NULL),
 bedTask(NULL), wigTask(NULL), etTask(NULL), activeSubtasks(0), logParser(NULL)
 {
-
+    GCOUNTER(cvar, tvar, "NGS:CEASTask");
 }
 
 CEASSupportTask::~CEASSupportTask() {

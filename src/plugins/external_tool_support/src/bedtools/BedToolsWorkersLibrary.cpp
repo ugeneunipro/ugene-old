@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DataPathRegistry.h>
 #include <U2Core/FileAndDirectoryUtils.h>
@@ -242,7 +243,7 @@ Task *SlopbedWorker::getTask(const BaseNGSSetting &settings) const{
 //SlopbedTask
 SlopbedTask::SlopbedTask(const BaseNGSSetting &settings)
     :BaseNGSTask(settings){
-
+    GCOUNTER(cvar, tvar, "NGS:SlopBedTask");
 }
 
 void SlopbedTask::prepareStep(){
@@ -627,7 +628,7 @@ Task *GenomecovWorker::getTask(const BaseNGSSetting &settings) const{
 //GenomecovTask
 GenomecovTask::GenomecovTask(const BaseNGSSetting &settings)
     :BaseNGSTask(settings){
-
+    GCOUNTER(cvar, tvar, "NGS:GenomeCovTask");
 }
 
 void GenomecovTask::prepareStep(){

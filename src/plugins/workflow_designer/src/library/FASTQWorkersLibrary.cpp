@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/GUrlUtils.h>
@@ -159,7 +160,7 @@ Task *CASAVAFilterWorker::getTask(const BaseNGSSetting &settings) const{
 //CASAVAFilterTask
 CASAVAFilterTask::CASAVAFilterTask(const BaseNGSSetting &settings)
     :BaseNGSTask(settings){
-
+    GCOUNTER(cvar, tvar, "NGS:CASAVAFilterTask");
 }
 
 void CASAVAFilterTask::runStep(){
@@ -325,6 +326,7 @@ Task *QualityTrimWorker::getTask(const BaseNGSSetting &settings) const{
 QualityTrimTask::QualityTrimTask(const BaseNGSSetting &settings)
     :BaseNGSTask(settings){
 
+    GCOUNTER(cvar, tvar, "NGS:FASTQQualityTrimmerTask");
 }
 
 void QualityTrimTask::runStep(){

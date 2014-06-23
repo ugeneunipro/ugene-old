@@ -22,6 +22,7 @@
 #include "AssemblySamtoolsMpileup.h"
 
 #include <U2Core/Timer.h>
+#include <U2Core/Counter.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -51,6 +52,7 @@ CallVariantsTask::CallVariantsTask( const CallVariantsTaskSettings& _settings, D
 ,mpileupTask(NULL)
 ,storage(_store)
 {
+    GCOUNTER(cvar, tvar, "NGS:CallVariantsTask");
     setMaxParallelSubtasks(1);
 }
 
