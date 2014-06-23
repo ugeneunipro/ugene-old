@@ -84,6 +84,7 @@ private:
 
     static const QString SETTINGS_RECENT;
 
+    static const QString PUBLIC_DATABASE_NAME;
     static const QString PUBLIC_DATABASE_URL;
     static const QString PUBLIC_DATABASE_LOGIN;
     static const QString PUBLIC_DATABASE_PASSWORD;

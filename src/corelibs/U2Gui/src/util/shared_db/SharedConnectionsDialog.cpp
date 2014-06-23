@@ -56,6 +56,7 @@ static const char * UNABLE_TO_CONNECT_TEXT = "The database has been set up "
 namespace U2 {
 
 const QString SharedConnectionsDialog::SETTINGS_RECENT = "/shared_database/recent_connections/";
+const QString SharedConnectionsDialog::PUBLIC_DATABASE_NAME = tr("UGENE public database");
 const QString SharedConnectionsDialog::PUBLIC_DATABASE_URL = U2DbiUtils::createDbiUrl("46.4.79.114", 3306, "public_ugene");
 const QString SharedConnectionsDialog::PUBLIC_DATABASE_LOGIN = "public";
 const QString SharedConnectionsDialog::PUBLIC_DATABASE_PASSWORD = "public";
@@ -87,7 +88,11 @@ void SharedConnectionsDialog::sl_itemDoubleClicked(const QModelIndex& index) {
 }
 
 void SharedConnectionsDialog::sl_connectClicked() {
-    const QString dbUrl = ui->lwConnections->currentItem()->data(Qt::UserRole).toString();
+    QListWidgetItem *selectedItem = ui->lwConnections->currentItem();
+    SAFE_POINT(NULL != selectedItem, "Invalid list item detected", );
+    const QString dbUrl = selectedItem->data(Qt::UserRole).toString();
+    const QString connectionName = selectedItem->data(Qt::DisplayRole).toString();
+
     // TODO: don't forget to change this when new DB providers will be introduced
     const U2DbiRef dbiRef(MYSQL_DBI_ID, dbUrl);
 
@@ -102,7 +107,7 @@ void SharedConnectionsDialog::sl_connectClicked() {
         return;
     }
     
-    Task *dbLoadTask = new AddDocumentTask(new ConnectSharedDatabaseTask(dbiRef, initializeDb));
+    Task *dbLoadTask = new AddDocumentTask(new ConnectSharedDatabaseTask(dbiRef, connectionName, initializeDb));
     connect(dbLoadTask, SIGNAL(si_stateChanged()), SLOT(sl_connectionComplete()));
     connectionTasks.insert(ui->lwConnections->currentItem(), dbLoadTask);
     AppContext::getTaskScheduler()->registerTopLevelTask(dbLoadTask);
@@ -285,7 +290,7 @@ void SharedConnectionsDialog::addConnectionsFromProject() {
 
 void SharedConnectionsDialog::addPredefinedConnection() {
     if (!getDbUrls().contains(PUBLIC_DATABASE_URL)) {
-        insertConnection(tr("Popular genomes"), PUBLIC_DATABASE_URL);
+        insertConnection(PUBLIC_DATABASE_NAME, PUBLIC_DATABASE_URL);
         Credentials credentials(PUBLIC_DATABASE_LOGIN, PUBLIC_DATABASE_PASSWORD);
         AppContext::getCredentialsStorage()->addEntry(PUBLIC_DATABASE_URL, credentials, true);
     }

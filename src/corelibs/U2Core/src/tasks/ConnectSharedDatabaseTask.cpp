@@ -24,18 +24,17 @@
 #include <U2Core/DatabaseConnectionAdapter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2DbiRegistry.h>
-#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "ConnectSharedDatabaseTask.h"
 
 namespace U2 {
 
-ConnectSharedDatabaseTask::ConnectSharedDatabaseTask(const U2DbiRef& dbiRef, bool initializeDb)
-    : DocumentProviderTask(tr("Connecting to database: ") + getUrlFromRef(dbiRef).getURLString(),
-    TaskFlag_None), dbiRef(dbiRef), initializeDb(initializeDb)
+ConnectSharedDatabaseTask::ConnectSharedDatabaseTask(const U2DbiRef &dbiRef, const QString &_documentName, bool initializeDb)
+    : DocumentProviderTask(tr("Connecting to database: ") + getUrlFromRef(dbiRef).getURLString(), TaskFlag_None),
+    dbiRef(dbiRef), initializeDb(initializeDb), documentName(_documentName)
 {
-
+    documentDescription = documentName;
 }
 
 void ConnectSharedDatabaseTask::run() {
@@ -52,6 +51,7 @@ void ConnectSharedDatabaseTask::run() {
     SAFE_POINT_EXT(NULL != format, setError("Database connection format is NULL"), );
 
     resultDocument = format->loadDocument(ioAdapterFactory, getUrlFromRef(dbiRef), QVariantMap(), stateInfo);
+    resultDocument->setName(documentName);
 }
 
 GUrl ConnectSharedDatabaseTask::getUrlFromRef(const U2DbiRef& dbiRef) {

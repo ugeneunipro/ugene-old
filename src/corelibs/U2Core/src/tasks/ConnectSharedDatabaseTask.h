@@ -32,14 +32,15 @@ class U2CORE_EXPORT ConnectSharedDatabaseTask : public DocumentProviderTask
 {
     Q_OBJECT
 public:
-    ConnectSharedDatabaseTask(const U2DbiRef& dbiRef, bool initializeDb);
+    ConnectSharedDatabaseTask(const U2DbiRef &dbiRef, const QString &documentName, bool initializeDb);
 
     void run();
-    
-private:
-    static GUrl getUrlFromRef(const U2DbiRef& dbiRef);
 
-    U2DbiRef dbiRef;
+private:
+    static GUrl getUrlFromRef(const U2DbiRef &dbiRef);
+
+    const QString documentName;
+    const U2DbiRef dbiRef;
     bool initializeDb;
 };
 
