@@ -106,7 +106,8 @@ void ImportToDatabaseDialog::sl_resetOptions() {
     QTreeWidgetItem* item = ui->twOrders->currentItem();
     CHECK(NULL != item, );
 
-    privateOptions.remove(item);
+    const ImportToDatabaseOptions oldOptions = privateOptions.take(item);
+    updateItemsState(oldOptions, commonOptions);
     markItem(item, false);
 }
 
@@ -139,8 +140,10 @@ void ImportToDatabaseDialog::sl_addObjectClicked() {
 void ImportToDatabaseDialog::sl_optionsClicked() {
     CommonImportOptionsDialog optionsDialog(baseFolder, commonOptions, this);
     if (QDialog::Accepted == optionsDialog.exec()) {
+        const ImportToDatabaseOptions oldOptions = commonOptions;
         commonOptions = optionsDialog.getOptions();
         baseFolder = optionsDialog.getBaseFolder();
+        updateItemsState(oldOptions, commonOptions);
     }
 }
 
@@ -155,6 +158,7 @@ void ImportToDatabaseDialog::sl_editOptions() {
         privateOptions.insert(item, newOptions);
 
         item->setText(COLUMN_FOLDER, editDialog.getFolder());
+        updateItemState(item, currentOptions, newOptions);
         markItem(item, true);
     }
 }
@@ -216,6 +220,32 @@ void ImportToDatabaseDialog::updateState() {
     ui->pbRemove->setEnabled(isSomethingSelected);
 
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(isOrdersFilled);
+}
+
+void ImportToDatabaseDialog::updateItemsState(const ImportToDatabaseOptions &oldOptions, const ImportToDatabaseOptions &newOptions) {
+    foreach (QTreeWidgetItem* item, folders) {
+        if (privateOptions.contains(item)) {
+            continue;
+        }
+        updateItemState(item, oldOptions, newOptions);
+    }
+}
+
+void ImportToDatabaseDialog::updateItemState(QTreeWidgetItem *item, const ImportToDatabaseOptions &oldOptions, const ImportToDatabaseOptions &newOptions) {
+    if (folders.contains(item)) {
+        if (oldOptions.createSubfolderForTopLevelFolder && !newOptions.createSubfolderForTopLevelFolder) {
+            QString dstFolder = item->text(COLUMN_FOLDER);
+            const QString srcFolderName = QFileInfo(item->text(COLUMN_ITEM_TEXT)).fileName();
+            if (dstFolder.endsWith(srcFolderName)) {
+                dstFolder.chop(srcFolderName.size());
+            }
+            item->setText(COLUMN_FOLDER, U2DbiUtils::makeFolderCanonical(dstFolder));
+        } else if (!oldOptions.createSubfolderForTopLevelFolder && newOptions.createSubfolderForTopLevelFolder) {
+            const QString dstFolder = item->text(COLUMN_FOLDER);
+            const QString srcFolderName = QFileInfo(item->text(COLUMN_ITEM_TEXT)).fileName();
+            item->setText(COLUMN_FOLDER, U2DbiUtils::makeFolderCanonical(dstFolder) + U2ObjectDbi::PATH_SEP + srcFolderName);
+        }
+    }
 }
 
 void ImportToDatabaseDialog::markItem(QTreeWidgetItem *item, bool mark) {
@@ -300,7 +330,11 @@ void ImportToDatabaseDialog::getProjectItemsToImport(QList<Document*>& docList, 
 void ImportToDatabaseDialog::addFolder(const QString& url) {
     CHECK(!url.isEmpty(), );
 
-    QTreeWidgetItem* newItem = new QTreeWidgetItem(QStringList() << url << baseFolder);
+    const QString dstFolder = commonOptions.createSubfolderForTopLevelFolder
+            ? U2DbiUtils::makeFolderCanonical(baseFolder + U2ObjectDbi::PATH_SEP + QFileInfo(url).fileName())
+            : baseFolder;
+
+    QTreeWidgetItem* newItem = new QTreeWidgetItem(QStringList() << url << dstFolder);
     newItem->setIcon(COLUMN_ITEM_TEXT, QIcon(":U2Designer/images/directory.png"));
     newItem->setFlags(Qt::ItemIsEditable | newItem->flags());
     setFolderTooltip(newItem);

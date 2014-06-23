@@ -72,6 +72,8 @@ private:
     void init();
     void connectSignals();
     void updateState();
+    void updateItemsState(const ImportToDatabaseOptions& oldOptions, const ImportToDatabaseOptions& newOptions);
+    void updateItemState(QTreeWidgetItem* item, const ImportToDatabaseOptions& oldOptions, const ImportToDatabaseOptions& newOptions);
     void markItem(QTreeWidgetItem* item, bool mark);
     bool isEssential(QTreeWidgetItem* item) const;
 

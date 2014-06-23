@@ -45,10 +45,6 @@ ImportDirToDatabaseTask::ImportDirToDatabaseTask(const QString &srcUrl, const U2
 }
 
 void ImportDirToDatabaseTask::prepare() {
-    if (options.createSubfolderForTopLevelFolder) {
-        dstFolder = U2DbiUtils::makeFolderCanonical(dstFolder + U2ObjectDbi::ROOT_FOLDER + QFileInfo(srcUrl).fileName());
-    }
-
     const QFileInfoList subentriesInfo = QDir(srcUrl).entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
     foreach (QFileInfo subentryInfo, subentriesInfo) {
         if (options.processFoldersRecursively && subentryInfo.isDir()) {
