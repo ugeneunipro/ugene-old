@@ -1684,7 +1684,8 @@ GUI_TEST_CLASS_DEFINITION(import_test_0017) {
 //    Expected state: an import task is started, there are two assembly objects and two sequence objects in the {/import_test_0017/ace_test_2/} folder after the task has finished.
 
 //    5. Check the assembly object length, count of reads and check the reference is set.
-//    Expected state: the length is 16871, there are 38000 reads, reference is shown.
+//    Expected state: the first assembly: the length is 871, there are 2 reads, reference is shown;
+//                    the second assembly: the length is 3296, there are 14 reads, reference is shown.
 
     GTLogTracer lt;
 
