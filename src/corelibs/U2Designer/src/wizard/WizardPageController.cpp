@@ -89,16 +89,34 @@ void WizardPageController::setError(WDWizardPage *wPage) {
     wPage->setLayout(l);
 }
 
-void WizardPageController::removeLayout(QLayout *l) {
-    if (NULL != l) {
-        QLayoutItem* item;
+namespace {
+    QList<QLayout*> removeOneLayout(QLayout *l) {
+        QList<QLayout*> result;
+
+        QLayoutItem *item;
         while (NULL != (item = l->takeAt(0))) {
-            if (item->widget()) {
+            if (NULL != item->widget()) {
                 item->widget()->setParent(NULL);
+                delete item;
+            } else if (NULL != item->layout()) {
+                result << item->layout();
+            } else {
+                delete item;
             }
-            delete item;
         }
         delete l;
+        return result;
+    }
+}
+
+void WizardPageController::removeLayout(QLayout *l) {
+    CHECK(NULL != l, );
+    QList<QLayout*> layouts;
+    layouts << l;
+
+    while (!layouts.isEmpty()) {
+        QLayout *current = layouts.takeFirst();
+        layouts << removeOneLayout(current);
     }
 }
 
