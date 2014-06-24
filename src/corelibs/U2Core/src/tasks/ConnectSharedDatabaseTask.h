@@ -39,8 +39,8 @@ public:
 private:
     static GUrl getUrlFromRef(const U2DbiRef &dbiRef);
 
-    const QString documentName;
     const U2DbiRef dbiRef;
+    const QString documentName;
     bool initializeDb;
 };
 

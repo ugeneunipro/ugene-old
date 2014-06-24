@@ -229,7 +229,7 @@ QList<Task *> UHMM3SWPhmmerTask::onSubTaskFinished(Task *subTask) {
         CHECK_OP_EXT(stateInfo, setError(getError() + tr(" querySeq sequence")), res);
         swTask = getSWSubtask();
         res << swTask;
-    } else {
+    } else if (swTask != subTask) {
         setError("Undefined behavior: an unexpected task has finished");
         FAIL("", res);
     }
