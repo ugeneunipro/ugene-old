@@ -21,6 +21,7 @@
 
 #include "GTTestsMsaEditor.h"
 #include "api/GTAction.h"
+#include "api/GTComboBox.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
@@ -29,6 +30,7 @@
 #include "api/GTClipboard.h"
 #include "api/GTToolbar.h"
 #include "api/GTLineEdit.h"
+#include "api/GTSpinBox.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
@@ -57,6 +59,7 @@
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorNameList.h>
 #include <U2View/ADVConstants.h>
+
 
 namespace U2 {
 
@@ -744,7 +747,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 
     QWidget *mdiWindow = GTUtilsMdi::activeWindow(os);
     CHECK_SET_ERR(mdiWindow != NULL, "MDI window == NULL");
-    
+
     //Expected state: Aligniment length 14, left offset 1, right offset 14
 
     //2. Do double click on Tettigonia_viridissima sequence name.
@@ -767,12 +770,12 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTWidget::click(os,undo);
     //GTKeyboardDriver::keyClick(os, 'z', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
-    
+
     //Expected state: Tettigonia_viridissima renamed back
     GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "Tettigonia_viridissima", "Tettigonia_viridissima"));
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
     GTMouseDriver::doubleClick(os);
-    GTGlobals::sleep();    
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007_1) {
@@ -795,7 +798,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
     GTGlobals::sleep();
 
     //Expected state: Tettigonia_viridissima renamed to Sequence_a
-    
+
     GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "Sequence_a", "Sequence_a"));
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,3));
     GTMouseDriver::doubleClick(os);
@@ -881,7 +884,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_3) {
     GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "Phaneroptera_falcata", "Phaneroptera_falcata"));
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,0));
     GTMouseDriver::doubleClick(os);
-    GTGlobals::sleep();    
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007_4) {
@@ -917,7 +920,7 @@ GUI_TEST_CLASS_DEFINITION(test_0007_4) {
     GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, "Conocephalus_sp.", "Conocephalus_sp."));
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-10,5));
     GTMouseDriver::doubleClick(os);
-    GTGlobals::sleep();    
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0008) {
@@ -971,7 +974,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
 
     int midRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
     int midLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
-// 
+//
 //     5. Scroll msa to the end.
     GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 550));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_go_to_position"));
@@ -1019,7 +1022,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008) {
     GTGlobals::sleep();
 
     RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
-    CHECK_SET_ERR(endRO == RO && endLO == LO, "end bookmark offsets doesnt equal");   
+    CHECK_SET_ERR(endRO == RO && endLO == LO, "end bookmark offsets doesnt equal");
 
 //     7. Delete Start bookmark
     p = GTUtilsBookmarksTreeView::getItemCenter(os, "start bookmark");
@@ -1072,7 +1075,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_1) {  //CHANGES: default names used
 
     int midRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
     int midLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
-    // 
+    //
     //     5. Scroll msa to the end.
     GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 550));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_go_to_position"));
@@ -1179,7 +1182,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_2) { //CHANGES: mid and end coordinates chan
 
     int midRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
     int midLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
-    // 
+    //
     //     5. Scroll msa to the end.
     GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 510));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_go_to_position"));
@@ -1227,7 +1230,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_2) { //CHANGES: mid and end coordinates chan
     GTGlobals::sleep();
 
     RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
-    CHECK_SET_ERR(endRO == RO && endLO == LO, "end bookmark offsets doesnt equal");   
+    CHECK_SET_ERR(endRO == RO && endLO == LO, "end bookmark offsets doesnt equal");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0008_3) { //CHANGES: mid and end coordinates changed, used another file
@@ -1281,7 +1284,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_3) { //CHANGES: mid and end coordinates chan
 
     int midRO = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
     int midLO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
-    // 
+    //
     //     5. Scroll msa to the end.
     GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 1000));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_go_to_position"));
@@ -1329,7 +1332,7 @@ GUI_TEST_CLASS_DEFINITION(test_0008_3) { //CHANGES: mid and end coordinates chan
     GTGlobals::sleep();
 
     RO = GTUtilsMSAEditorSequenceArea::getRightOffset(os), LO = GTUtilsMSAEditorSequenceArea::getLeftOffset(os);
-    CHECK_SET_ERR(endRO == RO && endLO == LO, "end bookmark offsets doesnt equal");   
+    CHECK_SET_ERR(endRO == RO && endLO == LO, "end bookmark offsets doesnt equal");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0009) {
@@ -1543,7 +1546,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
     GTMouseDriver::click(os, Qt::RightButton);
 
-// Expected state: sequence changed from TTG -> CAA 
+// Expected state: sequence changed from TTG -> CAA
     GTGlobals::sleep();
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
 
@@ -1560,7 +1563,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement"));
     GTMouseDriver::click(os, Qt::RightButton);
 
-// Expected state: sequence changed from CAA -> TTG 
+// Expected state: sequence changed from CAA -> TTG
     GTGlobals::sleep();
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
 
@@ -1568,7 +1571,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
     clipboardText = GTClipboard::text(os);
     CHECK_SET_ERR(clipboardText == "TTG", "Clipboard string and expected MSA string differs");
 
-//                 sequence name changed from L|revcompl ->    
+//                 sequence name changed from L|revcompl ->
     nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
     CHECK_SET_ERR(!nameList.contains("L|revcompl"), "There are 'L|revcompl' in nameList");
@@ -1587,7 +1590,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1) {
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
     GTMouseDriver::click(os, Qt::RightButton);
 
-// Expected state: sequence changed from TTG -> CAA 
+// Expected state: sequence changed from TTG -> CAA
 // CHANGES: copy by context menu
     GTGlobals::sleep();
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection"));
@@ -1606,7 +1609,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "replace_selected_rows_with_reverse-complement"));
     GTMouseDriver::click(os, Qt::RightButton);
 
-// Expected state: sequence changed from CAA -> TTG 
+// Expected state: sequence changed from CAA -> TTG
     GTGlobals::sleep();
 // CHANGES: copy by context menu
     GTGlobals::sleep();
@@ -1617,7 +1620,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1) {
     clipboardText = GTClipboard::text(os);
     CHECK_SET_ERR(clipboardText == "TTG", "Clipboard string and expected MSA string differs");
 
-//                 sequence name changed from L|revcompl ->    
+//                 sequence name changed from L|revcompl ->
     nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
     CHECK_SET_ERR(!nameList.contains("L|revcompl"), "There are 'L|revcompl' in nameList");
@@ -1638,7 +1641,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
     //GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
-// Expected state: sequence changed from TTG -> CAA 
+// Expected state: sequence changed from TTG -> CAA
     GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_COPY << "copy_selection"));
@@ -1659,7 +1662,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
 
-// Expected state: sequence changed from CAA -> TTG 
+// Expected state: sequence changed from CAA -> TTG
     //GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(-1, 0));
     GTGlobals::sleep();
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
@@ -1668,7 +1671,7 @@ GUI_TEST_CLASS_DEFINITION(test_0011_2) {
     clipboardText = GTClipboard::text(os);
     CHECK_SET_ERR(clipboardText == "TTG", "Clipboard string and expected MSA string differs");
 
-//                 sequence name changed from L|revcompl ->    
+//                 sequence name changed from L|revcompl ->
     nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
     CHECK_SET_ERR(nameList.size() >= 2, "nameList doesn't contain enough strings");
     CHECK_SET_ERR(!nameList.contains("L|revcompl"), "There are 'L|revcompl' in nameList");
@@ -1971,7 +1974,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_0015) {
 // ugene crashes when removing document after kalign (UGENE-36)
-// 
+//
 // 1. create empty project
 // 2. do menu {tools->multiple alignment->kalign}, set aligned document samples/CLUSTALW/COI.aln
 
@@ -1996,7 +1999,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015) {
 
 GUI_TEST_CLASS_DEFINITION(test_0015_1) {
 // ugene crashes when removing document after kalign (UGENE-36)
-// 
+//
 // 1. create empty project
 // 2. do menu {tools->multiple alignment->kalign}, set aligned document samples/CLUSTALW/COI.aln
 
@@ -2026,7 +2029,7 @@ GUI_TEST_CLASS_DEFINITION(test_0015_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0015_2) {
 // ugene crashes when removing document after kalign (UGENE-36)
-// 
+//
 // 1. create empty project
 // 2. do menu {tools->multiple alignment->kalign}, set aligned document samples/CLUSTALW/COI.aln
 
@@ -2182,7 +2185,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_0017) {
 // Add a molecule from project  (UGENE-288)
-// 
+//
 // 1. Open file data/samples/Genbank/murine.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
     GTGlobals::sleep();
@@ -2204,7 +2207,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017) {
 
 GUI_TEST_CLASS_DEFINITION(test_0017_1) {
 // Add a molecule from project  (UGENE-288)
-// 
+//
 // 1. Open file data/samples/Genbank/murine.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
     GTGlobals::sleep();
@@ -2227,7 +2230,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0017_2) {
 // Add a molecule from project  (UGENE-288)
-// 
+//
 // 1. Open file data/samples/Genbank/murine.gb
     GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
     GTGlobals::sleep();
@@ -2254,7 +2257,7 @@ GUI_TEST_CLASS_DEFINITION(test_0017_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_0018) {
 // Shifting sequences in the Alignment Editor (UGENE-238)
-// 
+//
 // 1. Open file data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
@@ -2289,7 +2292,7 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
 
 GUI_TEST_CLASS_DEFINITION(test_0018_1) {
 // Shifting sequences in the Alignment Editor (UGENE-238)
-// 
+//
 // 1. Open file data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
@@ -2324,7 +2327,7 @@ GUI_TEST_CLASS_DEFINITION(test_0018_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0018_2) {
 // Shifting sequences in the Alignment Editor (UGENE-238)
-// 
+//
 // 1. Open file data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
@@ -2359,7 +2362,7 @@ GUI_TEST_CLASS_DEFINITION(test_0018_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_0019) {
 // UGENE-79 In MSA editor support rows collapsing mode
-// 
+//
 // 1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
@@ -2374,7 +2377,7 @@ GUI_TEST_CLASS_DEFINITION(test_0019) {
 
 GUI_TEST_CLASS_DEFINITION(test_0019_1) {
 // UGENE-79 In MSA editor support rows collapsing mode
-// 
+//
 // 1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
@@ -2389,7 +2392,7 @@ GUI_TEST_CLASS_DEFINITION(test_0019_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0019_2) {
 // UGENE-79 In MSA editor support rows collapsing mode
-// 
+//
 // 1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
@@ -2404,7 +2407,7 @@ GUI_TEST_CLASS_DEFINITION(test_0019_2) {
 
 GUI_TEST_CLASS_DEFINITION(test_0020) {
 // UGENE crashes when all columns in MSAEditor are deleted (UGENE-329)
-// 
+//
 // 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
 // 2. Select Edit -> remove columns of gaps -> remove columns with number of gaps 1.
@@ -2426,7 +2429,7 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
 
 GUI_TEST_CLASS_DEFINITION(test_0020_1) {
 // UGENE crashes when all columns in MSAEditor are deleted (UGENE-329)
-// 
+//
 // 1. Open document _common_data\scenarios\msa\ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
 
@@ -2462,7 +2465,7 @@ GUI_TEST_CLASS_DEFINITION(test_0020_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0021) {
 // MSA editor zoom bug (UGENE-520)
-// 
+//
 // 1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
     GTGlobals::sleep();
@@ -2482,7 +2485,7 @@ GUI_TEST_CLASS_DEFINITION(test_0021) {
 
 GUI_TEST_CLASS_DEFINITION(test_0021_1) {
 // MSA editor zoom bug (UGENE-520)
-// 
+//
 // 1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
     GTGlobals::sleep();
@@ -2502,7 +2505,7 @@ GUI_TEST_CLASS_DEFINITION(test_0021_1) {
 
 GUI_TEST_CLASS_DEFINITION(test_0021_2) {
 // MSA editor zoom bug (UGENE-520)
-// 
+//
 // 1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
     GTGlobals::sleep();
@@ -3506,7 +3509,7 @@ GUI_TEST_CLASS_DEFINITION(test_0040){//UGENE crashes when opening several files
 
 GUI_TEST_CLASS_DEFINITION(test_0041) {
     // Shifting region in the Alignment Editor (UGENE-2127)
-    // 
+    //
     // 1. Open file data/samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
     int oldLength = GTUtilsMSAEditorSequenceArea::getLength(os);
@@ -3531,6 +3534,275 @@ GUI_TEST_CLASS_DEFINITION(test_0041) {
     // Check results
     int newLength = GTUtilsMSAEditorSequenceArea::getLength(os);
     CHECK_SET_ERR(4 == newLength - oldLength, QString("Wrong length of changed alignment"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0042) {
+    // default msa export
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< MSAE_MENU_EXPORT << "Export as image"));
+    GTUtilsDialog::waitForDialog(os, new ExportMsaImage(os, testDir + "_common_data/scenarios/sandbox/test_0042.png"));
+
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0042_1) {
+    // "all included" export
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Export as image"));
+    GTUtilsDialog::waitForDialog(os, new ExportMsaImage(os,
+                                                        testDir + "_common_data/scenarios/sandbox/test_0042_1.png",
+                                                        ExportMsaImage::Settings(true, true, true)/*include all*/));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_editor_sequence_area"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0042_2) {
+    // slightly modified export
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Export as image"));
+    GTUtilsDialog::waitForDialog(os, new ExportMsaImage(os,
+                                                        testDir + "_common_data/scenarios/sandbox/test_0042_1",
+                                                        ExportMsaImage::Settings(true, false, true)/*include all*/,
+                                                        true,
+                                                        false, RegionMsa(),
+                                                        "bmp"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_editor_sequence_area"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0043) {
+    // select a few sequences
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    QStringList sequences;
+    sequences << "Montana_montana"
+              << "Conocephalus_percaudata"
+              << "Podisma_sapporensis";
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< MSAE_MENU_EXPORT << "Export as image"));
+    GTUtilsDialog::waitForDialog(os, new ExportMsaImage(os, testDir + "_common_data/scenarios/sandbox/test_0043.png",
+                                                        ExportMsaImage::Settings(), false, false,
+                                                        RegionMsa(U2Region(1, 594), sequences)));
+
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0044) {
+    // export selected region
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(5, 2), QPoint(25, 8));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< MSAE_MENU_EXPORT << "Export as image"));
+    GTUtilsDialog::waitForDialog(os, new ExportMsaImage(os, testDir + "_common_data/scenarios/sandbox/test_0044.png",
+                                                        ExportMsaImage::Settings(true, true, true),
+                                                        false, true));
+
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0045) {
+    // check the connection between export comboBox and selectRegion dialog
+    // there should be no selection
+
+    class CancelClicker : public Filler {
+    public:
+        CancelClicker(U2OpStatus &os) : Filler(os, "SelectSubalignmentDialog") {}
+        virtual void run(){
+            GTGlobals::sleep();
+#ifdef Q_OS_MAC
+            GTWidget::click(os, WizardFiller::getCancelButton(os));
+#else
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+#endif
+        }
+    };
+
+    class ExportDialogChecker : public Filler {
+    public:
+        ExportDialogChecker(U2OpStatus &os)
+            : Filler(os, "ImageExportForm") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "activeModalWidget is NULL");
+
+            GTUtilsDialog::waitForDialog(os, new CancelClicker(os));
+            QComboBox* exportType = dialog->findChild<QComboBox*>("comboBox");
+            GTComboBox::setIndexWithText(os, exportType, "Custom region", false);
+
+            GTGlobals::sleep();
+            CHECK_SET_ERR(exportType->currentText() == "Whole alignment", "Wrong combo box text!");
+
+#ifdef Q_OS_MAC
+            GTWidget::click(os, WizardFiller::getCancelButton(os));
+#else
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+#endif
+        }
+    };
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Export as image"));
+    GTUtilsDialog::waitForDialog(os, new ExportDialogChecker(os));
+
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0045_1) {
+    // check the connection between export comboBox and selectRegion dialog
+    // there should be no selection
+
+    class ExportChecker : public Filler {
+    public:
+        ExportChecker(U2OpStatus &os)
+            : Filler(os, "ImageExportForm") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "activeModalWidget is NULL");
+
+            QComboBox* exportType = dialog->findChild<QComboBox*>("comboBox");
+            CHECK_SET_ERR(exportType->currentText() == "Whole alignment", "Wrong combo box text!");
+
+            GTUtilsDialog::waitForDialog(os,
+                                         new SelectSubalignmentFiller(os,
+                                                                      RegionMsa(U2Region(1, 593),
+                                                                                QStringList() << "Montana_montana"
+                                                                                << "Conocephalus_percaudata")));
+            QPushButton* select = dialog->findChild<QPushButton*>("selectRegionButton");
+            GTWidget::click(os, select);
+
+            GTGlobals::sleep();
+            CHECK_SET_ERR(exportType->currentText() == "Custom region", "Wrong combo box text!");
+
+#ifdef Q_OS_MAC
+            GTWidget::click(os, WizardFiller::getCancelButton(os));
+#else
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+#endif
+        }
+    };
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Export as image"));
+    GTUtilsDialog::waitForDialog(os, new ExportChecker(os));
+
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0046) {
+    // check quality
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTWidget::click(os, GTWidget::findWidget(os, "msa_editor_sequence_area"));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Export as image"));
+    GTUtilsDialog::waitForDialog(os, new ExportMsaImage(os,
+                                                        testDir + "_common_data/scenarios/sandbox/test_0046",
+                                                        "jpg", 50));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_editor_sequence_area"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0047) {
+    // check select subalignment dialog
+
+    class SelectSubalignmentChecker : public Filler {
+    public:
+        SelectSubalignmentChecker(U2OpStatus &os)
+            : Filler(os, "SelectSubalignmentDialog") {}
+
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "activeModalWidget is NULL");
+            QDialogButtonBox* box = dialog->findChild<QDialogButtonBox*>("buttonBox");
+            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+            QPushButton* ok = box->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(ok !=NULL, "ok button is NULL");
+
+            QSpinBox* startPosBox = dialog->findChild<QSpinBox*>("startPosBox");
+            CHECK_SET_ERR(startPosBox != NULL, "startPosBox is NULL");
+            GTSpinBox::setValue(os, startPosBox, 10);
+
+            QSpinBox* endPosBox = dialog->findChild<QSpinBox*>("endPosBox");
+            CHECK_SET_ERR(endPosBox != NULL, "endPoxBox is NULL");
+            GTSpinBox::setValue(os, endPosBox, 5);
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+            GTWidget::click(os, ok);
+
+            GTSpinBox::setValue(os, endPosBox, 15);
+
+            QWidget *noneButton = dialog->findChild<QWidget*>("noneButton");
+            CHECK_SET_ERR(noneButton != NULL, "noneButton is NULL");
+            GTWidget::click(os, noneButton);
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+            GTWidget::click(os, ok);
+
+            GTGlobals::sleep();
+#ifdef Q_OS_MAC
+            GTWidget::click(os, WizardFiller::getCancelButton(os));
+#else
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+#endif
+        }
+    };
+
+    class ExportChecker : public Filler {
+    public:
+        ExportChecker(U2OpStatus &os)
+            : Filler(os, "ImageExportForm") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog != NULL, "activeModalWidget is NULL");
+
+            GTUtilsDialog::waitForDialog(os, new SelectSubalignmentChecker(os));
+            QPushButton* select = dialog->findChild<QPushButton*>("selectRegionButton");
+            GTWidget::click(os, select);
+
+            GTGlobals::sleep();
+#ifdef Q_OS_MAC
+            GTWidget::click(os, WizardFiller::getCancelButton(os));
+#else
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+#endif
+        }
+    };
+
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal", "align.aln");
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(1,1), QPoint(1,1));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT << "Export as image"));
+    GTUtilsDialog::waitForDialog(os, new ExportChecker(os));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_editor_sequence_area"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0048) {
+    // fail to export big alignment
+    GTLogTracer l;
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "HIV-1.aln");
+
+    QWidget* zoomIn = GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Zoom In");
+    int counter = 0;
+    while (zoomIn->isEnabled()) {
+        GTWidget::click(os, zoomIn);
+        counter++;
+    }
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< MSAE_MENU_EXPORT << "Export as image"));
+    GTUtilsDialog::waitForDialog(os, new ExportMsaImage(os, testDir + "_common_data/scenarios/sandbox/test_0043.png"));
+
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
+
+    // restore zoom state
+    QWidget* zoomOut = GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Zoom Out");
+    while (counter != 0) {
+        GTWidget::click(os, zoomOut);
+        counter--;
+    }
+
+    CHECK_SET_ERR(l.hasError(), "There is no error in the log!");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_fake) {
