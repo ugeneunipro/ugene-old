@@ -379,11 +379,18 @@ bool BAMUtils::hasValidBamIndex(const GUrl &bamUrl) {
     const QByteArray bamFileName = bamUrl.getURLString().toLocal8Bit();
 
     bam_index_t *index = bam_index_load(bamFileName.constData());
-    
+
     if (NULL == index) {
         return false;
     } else {
         bam_index_destroy(index);
+
+        QFileInfo idxFileInfo(bamUrl.getURLString() + ".bai");
+        QFileInfo bamFileInfo(bamUrl.getURLString());
+        if (idxFileInfo.created() < bamFileInfo.created()) {
+            return false;
+        }
+
         return true;
     }
 }
@@ -397,6 +404,13 @@ bool BAMUtils::hasValidFastaIndex(const GUrl &fastaUrl) {
         return false;
     } else {
         free(index);
+
+        QFileInfo idxFileInfo(fastaUrl.getURLString() + ".fai");
+        QFileInfo fastaFileInfo(fastaUrl.getURLString());
+        if (idxFileInfo.created() < fastaFileInfo.created()) {
+            return false;
+        }
+
         return true;
     }
 }
