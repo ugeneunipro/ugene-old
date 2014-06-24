@@ -85,7 +85,7 @@ public:
     static const int CV_REGION_ITEM_WIDTH;
 
     void setAngle(int angle);
-    void updateMinHeight();
+    void updateMinSize();
 
     //used by export to file function
     void paint(QPainter &p, int w, int h, bool paintSelection, bool paintMarker);

@@ -83,7 +83,7 @@ CircularView::CircularView(QWidget* p, ADVSequenceObjectContext* ctx)
 }
 
 void CircularView::pack() {
-    updateMinHeight();
+    updateMinSize();
     layout = new QVBoxLayout();
     layout->setContentsMargins(0,0,0,0);
     layout->addWidget(renderArea);
@@ -91,9 +91,9 @@ void CircularView::pack() {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 }
 
-void CircularView::updateMinHeight() {
-    int minH = (ra->regionY.count() - 1)*ra->ellipseDelta + MIN_OUTER_SIZE;
-    setMinimumHeight(minH);
+void CircularView::updateMinSize() {
+    int min = (ra->regionY.count() - 1)*ra->ellipseDelta + MIN_OUTER_SIZE;
+    setMinimumSize( min, min);
 }
 
 
@@ -412,7 +412,7 @@ void CircularView::adaptSizes() {
     ra->innerEllipseSize=ra->outerEllipseSize-CV_REGION_ITEM_WIDTH;
     ra->rulerEllipseSize=ra->outerEllipseSize-CV_REGION_ITEM_WIDTH;
     ra->middleEllipseSize = (ra->outerEllipseSize + ra->innerEllipseSize)/2;
-    updateMinHeight();
+    updateMinSize();
     addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
     ra->update();
 }

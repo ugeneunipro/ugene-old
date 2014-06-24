@@ -46,6 +46,7 @@
 #include <QtGui/QPrinter>
 #include <QtGui/QMessageBox>
 #include <QtGui/QTreeWidget>
+#include <QtGui/QScrollArea>
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFileDialog>
@@ -54,6 +55,7 @@
 #include <QtPrintSupport/QPrinter>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QTreeWidget>
+#include <QtWidgets/QScrollArea>
 #endif
 
 namespace U2 {
@@ -147,10 +149,15 @@ void CircularViewSplitter::addView(CircularView* view, RestrctionMapWidget* rmap
     circularViewList.append(view);
     restrictionMapWidgets.append(rmapWidget);
 
-    splitter->addWidget(view);
+    QScrollArea *scrollArea = new QScrollArea(this);
+    scrollArea->setWidget(view);
+    scrollArea->setFrameStyle(QFrame::NoFrame);
+    scrollArea->setWidgetResizable(true);
+    view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    splitter->addWidget(scrollArea);
     splitter->addWidget(rmapWidget);
 
-    splitter->setStretchFactor(splitter->indexOf(view), 10);
+    splitter->setStretchFactor(splitter->indexOf(scrollArea), 10);
     splitter->setStretchFactor(splitter->indexOf(rmapWidget), 1);
 
     connect(view, SIGNAL(si_wheelMoved(int)), SLOT(sl_moveSlider(int)));
