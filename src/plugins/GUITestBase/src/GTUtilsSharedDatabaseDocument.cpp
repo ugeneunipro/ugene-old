@@ -59,7 +59,7 @@ Document* GTUtilsSharedDatabaseDocument::connectToTestDatabase(U2OpStatus &os) {
 
     CHECK_SET_ERR_RESULT(!lt.hasError(), "errors in log", NULL);
 
-    return GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, GTDatabaseConfig::database());
+    return GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, conName);
 }
 #undef GT_METHOD_NAME
 
