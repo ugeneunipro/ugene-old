@@ -155,6 +155,7 @@ void U2SequenceObject::setWholeSequence(const DNASequence& seq) {
     QVariantMap hints;
     con.dbi->getSequenceDbi()->updateSequenceData(entityRef.entityId, U2_REGION_MAX, seq.seq, hints, os);
     CHECK_OP(os, );
+    cachedLastAccessedRegion = QPair<U2Region, QByteArray>();
     if (!seq.quality.isEmpty()) {
         setQuality(seq.quality);
     }
@@ -165,18 +166,23 @@ void U2SequenceObject::setWholeSequence(const DNASequence& seq) {
 
 QByteArray U2SequenceObject::getSequenceData(const U2Region& r) const {
     U2OpStatus2Log os;
-    DbiConnection con(entityRef.dbiRef, os);
-    CHECK_OP(os, QByteArray());
-    QByteArray res = con.dbi->getSequenceDbi()->getSequenceData(entityRef.entityId, r, os);
+    const QByteArray res = getSequenceData(r, os);
+    SAFE_POINT_OP(os, QByteArray());
     return res;
 }
 
 QByteArray U2SequenceObject::getSequenceData(const U2Region& r, U2OpStatus& os) const {
-    DbiConnection con(entityRef.dbiRef, os);
-    CHECK_OP(os, QByteArray());
+    if (!cachedLastAccessedRegion.first.contains(r)) {
+        DbiConnection con(entityRef.dbiRef, os);
+        CHECK_OP(os, QByteArray());
+        const qint64 requestedRegionLength = r.startPos + r.length < cachedLength - 1 ? r.length + 1 : r.length;
+        const U2Region requestingRegion(r.startPos, requestedRegionLength);
+        const QByteArray res = con.dbi->getSequenceDbi()->getSequenceData(entityRef.entityId, requestingRegion, os);
 
-    QByteArray res = con.dbi->getSequenceDbi()->getSequenceData(entityRef.entityId, r, os);
-    return res;
+        cachedLastAccessedRegion.first = requestingRegion;
+        cachedLastAccessedRegion.second = res;
+    }
+    return cachedLastAccessedRegion.second.mid(r.startPos - cachedLastAccessedRegion.first.startPos, r.length);
 }
 
 bool U2SequenceObject::isValidDbiObject(U2OpStatus &os) {
@@ -201,6 +207,9 @@ void U2SequenceObject::replaceRegion(const U2Region& region, const DNASequence& 
     QVariantMap hints;
     con.dbi->getSequenceDbi()->updateSequenceData(entityRef.entityId, region, seq.seq, hints, os);
     cachedLength = -1;
+    if (region.intersects(cachedLastAccessedRegion.first)) {
+        cachedLastAccessedRegion = QPair<U2Region, QByteArray>();
+    }
     setModified(true);
     emit si_sequenceChanged();
 }
@@ -461,8 +470,4 @@ void U2SequenceObject::setGObjectName( const QString& newName ){
     cachedName = GObject::getGObjectName();
 }
 
-
-
-}//namespace
-
-
+} //namespace

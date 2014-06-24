@@ -24,6 +24,7 @@
 #include <U2Core/CMDLineRegistry.h>
 #include <U2Core/CredentialsStorage.h>
 #include <U2Core/Log.h>
+#include <U2Core/ProjectModel.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AppSettings.h>
@@ -267,10 +268,57 @@ U2DbiFactory *U2DbiRegistry::getDbiFactoryById(U2DbiFactoryId id) const {
 //////////////////////////////////////////////////////////////////////////
 // U2DbiPool
 
-U2DbiPool::U2DbiPool(QObject* p) : QObject(p) {
+const int U2DbiPool::DBI_POOL_EXPIRATION_TIME_MSEC = 1800000;
+
+U2DbiPool::U2DbiPool(QObject* p)
+    : QObject(p)
+{
+    connect(&expirationTimer, SIGNAL(timeout()), SLOT(sl_checkDbiPoolExpiration()));
+    expirationTimer.start(DBI_POOL_EXPIRATION_TIME_MSEC);
 }
 
-U2Dbi* U2DbiPool::openDbi(const U2DbiRef& ref, bool createDatabase, U2OpStatus& os) {
+U2DbiPool::~U2DbiPool() {
+    expirationTimer.stop();
+    foreach (U2Dbi *dbi, suspendedDbis.values()) {
+        U2OpStatus2Log os;
+        deallocateDbi(dbi, os);
+    }
+}
+
+U2Dbi * U2DbiPool::createDbi(const U2DbiRef &ref, bool create, U2OpStatus &os) {
+    U2DbiFactory* dbiFactory = AppContext::getDbiRegistry()->getDbiFactoryById(ref.dbiFactoryId);
+    CHECK_EXT(NULL != dbiFactory, os.setError(tr("Invalid database type: %1").arg(ref.dbiFactoryId)), NULL);
+    U2Dbi *result = dbiFactory->createDbi();
+
+    const QString url = dbiFactory->id2Url(ref.dbiId).getURLString();
+
+    QHash<QString, QString> initProperties = getInitProperties(url, create);
+    result->init(initProperties, QVariantMap(), os);
+    CHECK_EXT(!os.hasError(), delete result, NULL);
+    return result;
+}
+
+void U2DbiPool::deallocateDbi(U2Dbi *dbi, U2OpStatus &os) {
+    SAFE_POINT(NULL != dbi, "Invalid DBI reference detected!", );
+    dbi->shutdown(os);
+    delete dbi;
+    SAFE_POINT_OP(os, );
+}
+
+U2Dbi * U2DbiPool::getDbiFromPool(const U2DbiRef &ref) {
+    U2Dbi *dbi = suspendedDbis.values(ref).first();
+    suspendedDbis.remove(ref, dbi);
+
+    if (dbiSuspendStartTime.contains(dbi)) {
+        dbiSuspendStartTime.remove(dbi);
+    } else {
+        coreLog.error("Invalid DBI expiration time");
+    }
+
+    return dbi;
+}
+
+U2Dbi * U2DbiPool::openDbi(const U2DbiRef &ref, bool createDatabase, U2OpStatus &os) {
     CHECK_EXT(!ref.dbiId.isEmpty(), os.setError(tr("Invalid database id")), NULL);
     QMutexLocker m(&lock);
     Q_UNUSED(m);
@@ -284,17 +332,12 @@ U2Dbi* U2DbiPool::openDbi(const U2DbiRef& ref, bool createDatabase, U2OpStatus& 
         int cnt = dbiCountersById[id];
         dbiCountersById[id] = cnt + 1;
     } else {
-        U2DbiFactory* dbiFactory = AppContext::getDbiRegistry()->getDbiFactoryById(ref.dbiFactoryId);
-        CHECK_EXT(NULL != dbiFactory, os.setError(tr("Invalid database type: %1").arg(ref.dbiFactoryId)), NULL);
-        dbi = dbiFactory->createDbi();
-
-        const QString url = dbiFactory->id2Url(ref.dbiId).getURLString();
-
-        QHash<QString, QString> initProperties = getInitProperties(url, createDatabase);
-        dbi->init(initProperties, QVariantMap(), os);
-        if (os.hasError()) {
-            delete dbi;
-            return NULL;
+        if (suspendedDbis.contains(ref)) {
+            // take initialized DBI from pool
+            dbi = getDbiFromPool(ref);
+        } else {
+            // create new DBI
+            dbi = createDbi(ref, createDatabase, os);
         }
         dbiById[id] = dbi;
         dbiCountersById[id] = 1;
@@ -302,7 +345,7 @@ U2Dbi* U2DbiPool::openDbi(const U2DbiRef& ref, bool createDatabase, U2OpStatus& 
     return dbi;
 }
 
-void U2DbiPool::addRef(U2Dbi * dbi, U2OpStatus & os) {
+void U2DbiPool::addRef(U2Dbi *dbi, U2OpStatus &os) {
     QMutexLocker m(&lock);
 
     const QString id = getId(dbi->getDbiRef(), os);
@@ -312,7 +355,7 @@ void U2DbiPool::addRef(U2Dbi * dbi, U2OpStatus & os) {
         return;
     }
 
-    assert(dbiCountersById[id] > 0);
+    SAFE_POINT(dbiCountersById[id] > 0, "Invalid DBI reference counter value", );
     ++dbiCountersById[id];
 }
 
@@ -329,12 +372,47 @@ void U2DbiPool::releaseDbi(U2Dbi* dbi, U2OpStatus& os) {
     int cnt = --dbiCountersById[id];
     if (cnt > 0) {
         return;
-    }
-    dbi->shutdown(os);
-    delete dbi;
+    } else if (SQLITE_DBI_ID != dbi->getDbiRef().dbiFactoryId) {
+        dbiById.remove(id);
+        dbiCountersById.remove(id);
 
-    dbiById.remove(id);
-    dbiCountersById.remove(id);
+        suspendedDbis.insert(dbi->getDbiRef(), dbi);
+        dbiSuspendStartTime.insert(dbi, QDateTime::currentMSecsSinceEpoch());
+    }
+}
+
+void U2DbiPool::sl_checkDbiPoolExpiration() {
+    Project *proj = AppContext::getProject();
+
+    // collect DBI references from all used documents
+    QList<U2DbiRef> dbiRefsInUse;
+    if (NULL != proj) {
+        foreach (Document *doc, proj->getDocuments()) {
+            const U2DbiRef ref = doc->getDbiRef();
+            if (!dbiRefsInUse.contains(ref)) {
+                dbiRefsInUse.append(ref);
+            }
+        }
+    }
+
+    const qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
+    foreach (U2Dbi *dbi, dbiSuspendStartTime.keys()) {
+        SAFE_POINT(suspendedDbis.contains(dbi->getDbiRef(), dbi), "Unexpected DBI detected in pool", );
+
+        if (suspendedDbis.count(dbi->getDbiRef()) == 1) {
+            // hold at least one connection per database
+            continue;
+        }
+
+        // destroy connection if it has lived too long or no documents use that database
+        if (currentTime - dbiSuspendStartTime[dbi] >= DBI_POOL_EXPIRATION_TIME_MSEC || !dbiRefsInUse.contains(dbi->getDbiRef())) {
+            suspendedDbis.remove(dbi->getDbiRef(), dbi);
+            dbiSuspendStartTime.remove(dbi);
+
+            U2OpStatus2Log os;
+            deallocateDbi(dbi, os);
+        }
+    }
 }
 
 void U2DbiPool::closeAllConnections(const U2DbiRef& ref, U2OpStatus& os) {
@@ -346,8 +424,7 @@ void U2DbiPool::closeAllConnections(const U2DbiRef& ref, U2OpStatus& os) {
 
     foreach (const QString& id, allConnectionsIds) {
         U2Dbi* dbi = dbiById[id];
-        dbi->shutdown(os);
-        delete dbi;
+        deallocateDbi(dbi, os);
 
         dbiById.remove(id);
         nActive += dbiCountersById.value(id, 0);

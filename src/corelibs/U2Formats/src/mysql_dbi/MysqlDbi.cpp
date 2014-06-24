@@ -43,7 +43,7 @@
 namespace U2 {
 
 MysqlDbi::MysqlDbi()
-    : U2AbstractDbi(MysqlDbiFactory::ID)
+    : U2AbstractDbi(MysqlDbiFactory::ID), tablesAreCreated(false)
 {
     db = new MysqlDbRef;
 
@@ -170,22 +170,35 @@ MysqlDbRef* MysqlDbi::getDbRef() {
 }
 
 bool MysqlDbi::isInitialized(U2OpStatus &os) {
-    U2SqlQuery q("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = :name and TABLE_TYPE='BASE TABLE'", db, os);
-    q.bindString("name", db->handle.databaseName());
+    if (!tablesAreCreated) {
+        U2SqlQuery q("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = :name and TABLE_TYPE='BASE TABLE'", db, os);
+        q.bindString("name", db->handle.databaseName());
 
-    const int countOfTables = q.selectInt64();
-    CHECK_OP(os, false);
+        const int countOfTables = q.selectInt64();
+        CHECK_OP(os, false);
 
-    return 0 != countOfTables;
+        tablesAreCreated = 0 != countOfTables;
+    }
+    return tablesAreCreated;
 }
 
 QString MysqlDbi::getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) {
+    const bool appVersionRequested = U2DbiOptions::APP_MIN_COMPATIBLE_VERSION == name;
+
+    if (appVersionRequested && !minCompatibleAppVersion.isEmpty()) {
+        return minCompatibleAppVersion;
+    }
+
     U2SqlQuery q("SELECT value FROM Meta WHERE name = :name", db, os);
     q.bindString("name", name);
     QStringList res = q.selectStrings();
     CHECK_OP(os, defaultValue);
 
     if (!res.isEmpty()) {
+        if (U2DbiOptions::APP_MIN_COMPATIBLE_VERSION == name) {
+            CHECK_EXT(minCompatibleAppVersion.isEmpty(), os.setError("Unexpected value of minimum application version"), QString());
+            minCompatibleAppVersion = res.first();
+        }
         return res.first();
     }
 

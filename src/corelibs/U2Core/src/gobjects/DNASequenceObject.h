@@ -22,14 +22,14 @@
 #ifndef _U2_DNA_SEQUENCE_OBJECT_H_
 #define _U2_DNA_SEQUENCE_OBJECT_H_
 
-#include <U2Core/GObject.h>
-#include <U2Core/U2Type.h>
 #include <U2Core/DNASequence.h>
+#include <U2Core/GObject.h>
+#include <U2Core/U2Region.h>
+#include <U2Core/U2Type.h>
 
 namespace U2 {
 
 class DNAAlphabet;
-class U2Region;
 class U2OpStatus;
 
 class U2CORE_EXPORT U2SequenceObject : public GObject {
@@ -105,11 +105,11 @@ signals:
 protected:
     void updateCachedValues() const;
 
-    mutable const DNAAlphabet*    cachedAlphabet;
-    mutable qint64          cachedLength;
-    mutable QString         cachedName;
-    mutable TriState        cachedCircular;
-
+    mutable const DNAAlphabet*          cachedAlphabet;
+    mutable qint64                      cachedLength;
+    mutable QString                     cachedName;
+    mutable TriState                    cachedCircular;
+    mutable QPair<U2Region, QByteArray> cachedLastAccessedRegion;
 };
 
 

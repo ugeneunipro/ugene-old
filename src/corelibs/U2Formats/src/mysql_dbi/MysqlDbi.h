@@ -153,6 +153,9 @@ private:
     MysqlVariantDbi*                   variantDbi;
 
     QStack<MysqlTransaction*>          operationsBlockTransactions;
+
+    bool                               tablesAreCreated;
+    QString                            minCompatibleAppVersion;
 };
 
 class U2FORMATS_EXPORT MysqlDbiFactory : public U2DbiFactory {

@@ -123,8 +123,7 @@ bool MysqlDbiUtils::dbSatisfiesAppVersion(const U2DbiRef &dbiRef, QString &minRe
 {
     DbiConnection con(dbiRef, os);
     CHECK_OP(os, false);
-    minRequiredVersion = con.dbi->getProperty(U2DbiOptions::APP_MIN_COMPATIBLE_VERSION,
-        QString(), os);
+    minRequiredVersion = con.dbi->getProperty(U2DbiOptions::APP_MIN_COMPATIBLE_VERSION, QString(), os);
     CHECK_OP(os, false);
 
     return Version::appVersion() >= Version::parseVersion(minRequiredVersion);

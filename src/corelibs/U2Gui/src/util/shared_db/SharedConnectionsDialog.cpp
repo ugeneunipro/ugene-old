@@ -57,7 +57,7 @@ namespace U2 {
 
 const QString SharedConnectionsDialog::SETTINGS_RECENT = "/shared_database/recent_connections/";
 const QString SharedConnectionsDialog::PUBLIC_DATABASE_NAME = tr("UGENE public database");
-const QString SharedConnectionsDialog::PUBLIC_DATABASE_URL = U2DbiUtils::createDbiUrl("46.4.79.114", 3306, "public_ugene");
+const QString SharedConnectionsDialog::PUBLIC_DATABASE_URL = U2DbiUtils::createDbiUrl("5.9.139.103", 3306, "public_ugene");
 const QString SharedConnectionsDialog::PUBLIC_DATABASE_LOGIN = "public";
 const QString SharedConnectionsDialog::PUBLIC_DATABASE_PASSWORD = "public";
 

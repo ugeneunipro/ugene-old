@@ -26,6 +26,7 @@
 
 #include <QtCore/QHash>
 #include <QtCore/QMutex>
+#include <QtCore/QTimer>
 
 namespace U2 {
 
@@ -120,19 +121,31 @@ class U2CORE_EXPORT U2DbiPool : public QObject {
     Q_OBJECT
 public:
     U2DbiPool(QObject* p = NULL);
-    
+    virtual ~U2DbiPool();
+
     U2Dbi* openDbi(const U2DbiRef& ref, bool create, U2OpStatus& os);
     void addRef(U2Dbi * dbi, U2OpStatus & os);
     void releaseDbi(U2Dbi* dbi, U2OpStatus& os);
     void closeAllConnections(const U2DbiRef& ref, U2OpStatus& os);
 
+private slots:
+    void sl_checkDbiPoolExpiration();
+
 private:
     static QHash<QString, QString> getInitProperties(const QString& url, bool create);
     QString getId(const U2DbiRef& ref, U2OpStatus &os) const;
     QStringList getIds(const U2DbiRef& ref, U2OpStatus &os) const;
+    U2Dbi * getDbiFromPool(const U2DbiRef &ref);
+    static U2Dbi * createDbi(const U2DbiRef &ref, bool create, U2OpStatus &os);
+    static void deallocateDbi(U2Dbi *dbi, U2OpStatus &os);
 
-    QHash<QString, U2Dbi*> dbiById;
+    static const int DBI_POOL_EXPIRATION_TIME_MSEC;
+
+    QHash<QString, U2Dbi *> dbiById;
     QHash<QString, int> dbiCountersById;
+    QMultiMap<U2DbiRef, U2Dbi *> suspendedDbis;
+    QMap<U2Dbi *, qint64> dbiSuspendStartTime;
+    QTimer expirationTimer;
     QMutex lock;
 };
 
