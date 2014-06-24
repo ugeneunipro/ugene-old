@@ -42,6 +42,11 @@ public:
     virtual void saveState(AppSettingsGUIPageState* s);
 
     virtual AppSettingsGUIPageWidget* createWidget(AppSettingsGUIPageState* data);
+
+    const QString& getHelpPageId() const {return helpPageId;};
+
+private:
+    static const QString helpPageId;
 };
 
 

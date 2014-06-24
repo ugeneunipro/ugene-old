@@ -79,6 +79,8 @@ AppSettingsGUIPageWidget* WorkflowSettingsPageController::createWidget(AppSettin
     return r;
 }
 
+const QString WorkflowSettingsPageController::helpPageId = QString("555");
+
 WorkflowSettingsPageWidget::WorkflowSettingsPageWidget(WorkflowSettingsPageController* ) {
     setupUi(this);
     styleCombo->addItem(U2::WorkflowView::tr("Minimal"), ItemStyles::SIMPLE);

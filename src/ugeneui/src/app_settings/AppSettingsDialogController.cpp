@@ -40,9 +40,9 @@ namespace U2 {
 
 AppSettingsDialogController::AppSettingsDialogController(const QString& pageId, QWidget *p):QDialog(p) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227260");
 
     currentPage = NULL;
+    helpButton = new HelpButton(this, buttonBox, QString());
     
     QHBoxLayout *pageLayout = new QHBoxLayout();
     settingsBox->setLayout(pageLayout);
@@ -120,6 +120,7 @@ bool AppSettingsDialogController::turnPage(AppSettingsTreeItem* page) {
         page->pageState = NULL;
 
         currentPage = page;
+        helpButton->updatePageId(currentPage->pageController->getHelpPageId()) ;
     }
     return true;
 }

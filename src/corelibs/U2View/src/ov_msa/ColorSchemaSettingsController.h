@@ -55,8 +55,12 @@ public:
 
     virtual AppSettingsGUIPageWidget* createWidget(AppSettingsGUIPageState* data);
 
+    const QString& getHelpPageId() const {return helpPageId;};
+
 signals:
     void si_customSettingsChanged();
+private:
+    static const QString helpPageId;
 };
 
     

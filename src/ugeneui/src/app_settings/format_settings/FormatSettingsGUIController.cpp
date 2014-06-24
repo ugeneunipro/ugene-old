@@ -73,6 +73,8 @@ AppSettingsGUIPageWidget* FormatSettingsGUIPageController::createWidget(AppSetti
     return r;
 }
 
+const QString FormatSettingsGUIPageController::helpPageId = QString("666");
+
 FormatSettingsGUIPageWidget::FormatSettingsGUIPageWidget(FormatSettingsGUIPageController*) {
     setupUi(this);
     caseAnnsModeNames.insert(NO_CASE_ANNS, tr("Don't use case annotations"));

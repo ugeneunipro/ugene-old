@@ -20,6 +20,9 @@
  */
 
 #include "HelpButton.h"
+
+#include <QtGui/QComboBox>
+
 #include <U2Gui/GUIUtils.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -30,17 +33,35 @@
 
 namespace U2{
 
-HelpButton::HelpButton(QObject *parent, QDialogButtonBox *b, const QString& _pageId) : QObject(parent), pageId(_pageId){
-    QPushButton *hb = new QPushButton(tr("Help"));
-    connect(hb, SIGNAL(clicked()), SLOT(sl_buttonClicked()));
-    b->addButton(hb, QDialogButtonBox::HelpRole);
+HelpButton::HelpButton(QObject *parent, QDialogButtonBox *b, const QString& _pageId) 
+: QObject(parent), pageId(_pageId), dialogBox(b)
+{
+    helpButton = new QPushButton(tr("Help"));
+    connect(helpButton, SIGNAL(clicked()), SLOT(sl_buttonClicked()));
+    dialogBox->addButton(helpButton, QDialogButtonBox::HelpRole);
 }
 
-HelpButton::HelpButton(QObject *parent, QAbstractButton *hb, const QString& _pageId) : QObject(parent), pageId(_pageId){
+HelpButton::HelpButton(QObject *parent, QAbstractButton *hb, const QString& _pageId) 
+: QObject(parent), pageId(_pageId), helpButton(NULL), dialogBox(NULL)
+{
     connect(hb, SIGNAL(clicked()), SLOT(sl_buttonClicked()));
 }
 
 void HelpButton::sl_buttonClicked(){
+    GUIUtils::runWebBrowser("https://ugene.unipro.ru/wiki/pages/viewpage.action?pageId="+pageId);
+}
+
+void HelpButton::updatePageId( const QString &newPageId ){
+    pageId = newPageId;
+}
+
+ComboboxDependentHelpButton::ComboboxDependentHelpButton( QObject *parent, QDialogButtonBox *b, QComboBox *_cb, const QMap<QString, QString> &_pageMap )
+: HelpButton(parent, b, "")
+, cb(_cb)
+, pageMap(_pageMap){}
+
+void ComboboxDependentHelpButton::sl_buttonClicked(){
+    QString pageId = pageMap[cb->currentText()];
     GUIUtils::runWebBrowser("https://ugene.unipro.ru/wiki/pages/viewpage.action?pageId="+pageId);
 }
 

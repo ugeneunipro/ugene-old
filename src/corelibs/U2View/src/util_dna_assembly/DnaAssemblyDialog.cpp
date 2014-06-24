@@ -70,7 +70,15 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
   customGUI(NULL)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227707");
+    //TODO: replace pageindexes with valid numbers
+    QMap<QString,QString> helpPagesMap;
+    helpPagesMap.insert("BWA","111");
+    helpPagesMap.insert("BWA-MEM","222");
+    helpPagesMap.insert("BWA-SW","333");
+    helpPagesMap.insert("Bowtie","444");
+    helpPagesMap.insert("Bowtie2","555");
+    helpPagesMap.insert("UGENE Genome Aligner","666");
+    new ComboboxDependentHelpButton(this, buttonBox, methodNamesBox, helpPagesMap);
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Start"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

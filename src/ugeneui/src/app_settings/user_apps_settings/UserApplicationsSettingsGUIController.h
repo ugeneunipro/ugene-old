@@ -44,6 +44,11 @@ public:
     virtual AppSettingsGUIPageWidget* createWidget(AppSettingsGUIPageState* data);
     
     QMap<QString, QString> translations;
+
+    const QString& getHelpPageId() const {return helpPageId;};
+
+private:
+    static const QString helpPageId;
 };
 
 

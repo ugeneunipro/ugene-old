@@ -35,20 +35,33 @@
 #include <QtWidgets/QAbstractButton>
 #endif
 
+class QComboBox;
+
 namespace U2 {
 
 class U2GUI_EXPORT HelpButton: public QObject {
     Q_OBJECT
-
 public:
     HelpButton(QObject *parent, QDialogButtonBox *b, const QString& pageId);
     HelpButton(QObject *parent, QAbstractButton *b, const QString& pageId);
-
-private slots:
-    void sl_buttonClicked();
-
-private:
+    void updatePageId(const QString &pageId);
+protected slots:
+    virtual void sl_buttonClicked();
+protected:
     QString pageId;
+    QPushButton *helpButton;
+    QDialogButtonBox *dialogBox;
+};
+
+class U2GUI_EXPORT ComboboxDependentHelpButton: public HelpButton {
+    Q_OBJECT
+public:
+    ComboboxDependentHelpButton(QObject *parent, QDialogButtonBox *b, QComboBox *cb, const QMap<QString, QString> &pageMap);
+protected slots:
+    void sl_buttonClicked();
+private:
+    const QMap<QString, QString> pageMap;
+    const QComboBox *cb;
 };
 
 }

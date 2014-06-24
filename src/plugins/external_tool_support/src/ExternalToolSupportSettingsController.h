@@ -52,6 +52,9 @@ public:
     AppSettingsGUIPageState* getSavedState();
     void saveState(AppSettingsGUIPageState* s);
     AppSettingsGUIPageWidget* createWidget(AppSettingsGUIPageState* state);
+    const QString& getHelpPageId() const {return helpPageId;};
+private:
+    static const QString helpPageId;
 };
 
 class ExternalToolSupportSettingsPageState : public AppSettingsGUIPageState {

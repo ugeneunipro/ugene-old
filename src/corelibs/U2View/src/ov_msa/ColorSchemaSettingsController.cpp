@@ -281,6 +281,7 @@ QList<CustomColorSchema> ColorSchemaSettingsUtils::getSchemas(){
     return customSchemas;
 }
 
+const QString ColorSchemaSettingsPageController::helpPageId = QString("111");
 
 ColorSchemaSettingsPageController::ColorSchemaSettingsPageController(QObject* p) 
 : AppSettingsGUIPageController(tr("Alignment Color Scheme"), ColorSchemaSettingsPageId, p) {}

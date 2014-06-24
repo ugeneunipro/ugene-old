@@ -35,6 +35,7 @@ class AppSettingsDialogTree;
 
 namespace U2 {
 
+class HelpButton;
 class AppSettingsGUIPageController;
 class AppSettingsGUIPageState;
 class AppSettingsGUIPageWidget;
@@ -63,6 +64,7 @@ private:
 
 private:
     AppSettingsTreeItem*    currentPage;
+    HelpButton*             helpButton;
 };
 
 class AppSettingsTreeItem : public QTreeWidgetItem {

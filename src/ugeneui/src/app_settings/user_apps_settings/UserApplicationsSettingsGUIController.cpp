@@ -134,6 +134,8 @@ AppSettingsGUIPageWidget* UserApplicationsSettingsPageController::createWidget(A
     return r;
 }
 
+const QString UserApplicationsSettingsPageController::helpPageId = QString("101010");
+
 UserApplicationsSettingsPageWidget::UserApplicationsSettingsPageWidget(UserApplicationsSettingsPageController* ctrl) {
     setupUi(this);
     connect(webBrowserButton, SIGNAL(clicked()), SLOT(sl_wbURLClicked()));

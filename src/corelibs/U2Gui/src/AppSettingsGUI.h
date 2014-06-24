@@ -80,6 +80,9 @@ public:
 
     const QString& getPageId() const {return id;}
 
+    //should be pure virtual, because every page should have own help page index
+    virtual const QString& getHelpPageId() const = 0;
+
     virtual AppSettingsGUIPageState* getSavedState() = 0;
 
     virtual void saveState(AppSettingsGUIPageState* s) = 0;

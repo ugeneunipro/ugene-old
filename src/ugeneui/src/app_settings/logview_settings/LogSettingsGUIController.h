@@ -49,8 +49,11 @@ public:
 
     virtual AppSettingsGUIPageWidget* createWidget(AppSettingsGUIPageState* data);
 
+    const QString& getHelpPageId() const {return helpPageId;};
+
 private:
     LogSettingsHolder* target;
+    static const QString helpPageId;
 };
 
 
