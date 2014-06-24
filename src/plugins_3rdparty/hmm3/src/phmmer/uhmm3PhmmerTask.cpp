@@ -45,7 +45,7 @@ using namespace U2;
 namespace U2 {
 
 static int countPhmmerMemInMB(qint64 dbLen, int queryLen) {
-    SAFE_POINT(0 < dbLen && 0 < queryLen, "Invalid sequence length", INT32_MAX);
+    SAFE_POINT(0 < dbLen && 0 < queryLen, "Invalid sequence length", 0x7fffffff); //INT32_MAX = INT32_MAX
     return qMax(((double)dbLen * queryLen / (1024 * 1024)) * 10, 2.0);
 }
 
