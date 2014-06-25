@@ -51,6 +51,7 @@ void ConnectSharedDatabaseTask::run() {
     SAFE_POINT_EXT(NULL != format, setError("Database connection format is NULL"), );
 
     resultDocument = format->loadDocument(ioAdapterFactory, getUrlFromRef(dbiRef), QVariantMap(), stateInfo);
+    CHECK_OP(stateInfo, );
     resultDocument->setName(documentName);
 }
 
