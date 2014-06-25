@@ -60,11 +60,6 @@ void MysqlObjectDbi::initSqlSchema(U2OpStatus& os) {
                 "FOREIGN KEY(object) REFERENCES Object(id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8", db, os).execute();
     CHECK_OP(os, );
 
-    U2SqlQuery("CREATE TRIGGER ObjectCreation AFTER INSERT ON Object "
-                "FOR EACH ROW BEGIN "
-                "INSERT INTO ObjectAccessTrack(object) VALUES(NEW.id); END;", db, os).execute();
-    CHECK_OP(os, );
-
     // parent-child object relation
     U2SqlQuery("CREATE TABLE Parent (parent BIGINT, child BIGINT, "
                        "PRIMARY KEY (parent, child), "
@@ -662,6 +657,12 @@ U2DataId MysqlObjectDbi::createObject(U2Object& object, const QString& folder, U
     objectInsertQuery.bindString("name", vname);
     objectInsertQuery.bindInt32("trackMod", trackMod);
     const U2DataId res = objectInsertQuery.insert(type);
+    CHECK_OP(os, res);
+
+    static const QString objectAccessTrackString = "INSERT INTO ObjectAccessTrack(object) VALUES(:object)";
+    U2SqlQuery objectAccessTrackQuery(objectAccessTrackString, db, os);
+    objectAccessTrackQuery.bindDataId("object", res);
+    objectAccessTrackQuery.execute();
     CHECK_OP(os, res);
 
     if (U2DbiObjectRank_TopLevel == rank) {
