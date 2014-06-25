@@ -19,10 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "GUITestService.h"
-#include "GUITestBase.h"
-#include "GUITestTeamcityLogger.h"
-#include "GUITestWindow.h"
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
 #include <QtGui/QMainWindow>
@@ -32,15 +28,20 @@
 #endif
 
 #include <U2Core/AppContext.h>
-#include <U2Core/CMDLineRegistry.h>
-#include <U2Core/TaskStarter.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/GObject.h>
 #include <U2Core/CMDLineCoreOptions.h>
+#include <U2Core/CMDLineRegistry.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/GObject.h>
+#include <U2Core/Log.h>
+#include <U2Core/TaskStarter.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/Log.h>
 
+#include "GUITestBase.h"
+#include "GUITestService.h"
+#include "GUITestTeamcityLogger.h"
+#include "GUITestWindow.h"
 
 /**************************************************** to use qt file dialog *************************************************************/
 #ifdef Q_OS_LINUX
@@ -70,14 +71,11 @@ static Logger log(ULOG_CAT_TEAMCITY);
 
 GUITestService::GUITestService(QObject *) : Service(Service_GUITesting, tr("GUI test viewer"), tr("Service to support UGENE GUI testing")),
 runTestsAction(NULL), testLauncher(NULL) {
-    connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(sl_registerService()));
-
+    connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), SLOT(sl_allStartUpPluginsLoaded()));
     setQtFileDialogView();
-
 }
 
 GUITestService::~GUITestService() {
-
     delete runTestsAction;
 }
 
@@ -223,6 +221,13 @@ GUITests GUITestService::postChecks() {
     SAFE_POINT(additionalChecks.size()>0,"",GUITests());
 
     return additionalChecks;
+}
+
+void GUITestService::sl_allStartUpPluginsLoaded() {
+    if (!connect(AppContext::getExternalToolRegistry()->getManager(), SIGNAL(si_startupChecksFinish()), SLOT(sl_registerService()))) {
+        coreLog.error(tr("Can't connect external tool manager signal"));
+        sl_registerService();
+    }
 }
 
 void GUITestService::runAllGUITests() {

@@ -147,12 +147,14 @@ private:
 };
 
 class U2CORE_EXPORT ExternalToolManager : public QObject {
+    Q_OBJECT
 public:
     enum ExternalToolState {
         NotDefined,
         NotValid,
         Valid,
         ValidationIsInProcess,
+        SearchingIsInProcess,
         NotValidByDependency,
         NotValidByCyclicDependency
     };
@@ -173,6 +175,9 @@ public:
 
     virtual bool isValid(const QString& toolName) const = 0;
     virtual ExternalToolState getToolState(const QString& toolName) const = 0;
+
+signals:
+    void si_startupChecksFinish();
 };
 
 //this register keeps order of items added

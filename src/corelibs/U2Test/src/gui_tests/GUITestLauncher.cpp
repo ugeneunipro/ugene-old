@@ -179,7 +179,11 @@ QString GUITestLauncher::performTest(const QString& testName) {
         return readTestResult(process.readAllStandardOutput());
     }
 
-    return tr("An error occurred while finishing UGENE: ") + process.errorString() + '\n' + readTestResult(process.readAllStandardOutput());
+    if (finished) {
+        return tr("An error occurred while finishing UGENE: ") + process.errorString() + '\n' + readTestResult(process.readAllStandardOutput());
+    } else {
+        return tr("Test fails because of timeout: ") + testName;
+    }
 }
 
 QStringList GUITestLauncher::getTestProcessArguments(const QString &testName) {

@@ -63,6 +63,7 @@ protected:
     static GUITests postChecks();
 
 protected slots:
+    void sl_allStartUpPluginsLoaded();
     void sl_registerService();
     void sl_registerTestLauncherTask();
     void sl_taskStateChanged(Task*);

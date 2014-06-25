@@ -69,6 +69,7 @@ private slots:
 
 private:
     void innerStart();
+    void checkStartupTasksState();
     QString addTool(ExternalTool* tool);
     bool dependenciesAreOk(const QString& toolName);
     void validateTools(const QStrStrMap& toolPaths = QStrStrMap(), ExternalToolValidationListener* listener = NULL);
@@ -82,6 +83,7 @@ private:
     QStrStrMap dependencies;    // master - vassal
     QMap<QString, ExternalToolState> toolStates;
     QMap<ExternalToolsValidateTask*, ExternalToolValidationListener*> listeners;
+    bool startupChecks;
 
     static const int MAX_PARALLEL_SUBTASKS = 5;
 };

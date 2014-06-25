@@ -34,7 +34,9 @@
 
 namespace U2 {
 
-ExternalToolManagerImpl::ExternalToolManagerImpl() {
+ExternalToolManagerImpl::ExternalToolManagerImpl() :
+    startupChecks(true)
+{
     etRegistry = AppContext::getExternalToolRegistry();
 }
 
@@ -73,6 +75,13 @@ void ExternalToolManagerImpl::innerStart() {
     }
 
     validateTools(toolPaths);
+}
+
+void ExternalToolManagerImpl::checkStartupTasksState() {
+    CHECK(startupChecks, );
+    CHECK(!toolStates.values().contains(ValidationIsInProcess) && !toolStates.values().contains(SearchingIsInProcess), );
+    startupChecks = false;
+    emit si_startupChecksFinish();
 }
 
 void ExternalToolManagerImpl::stop() {
@@ -256,6 +265,8 @@ void ExternalToolManagerImpl::sl_validationTaskStateChanged() {
 
         searchTools();
     }
+
+    checkStartupTasksState();
 }
 
 void ExternalToolManagerImpl::sl_searchTaskStateChanged() {
@@ -267,8 +278,13 @@ void ExternalToolManagerImpl::sl_searchTaskStateChanged() {
         QStringList toolPaths = task->getPaths();
         if (!task->getPaths().isEmpty()) {
             setToolPath(task->getToolName(), toolPaths.first());
+            toolStates.insert(task->getToolName(), dependenciesAreOk(task->getToolName()) ? NotValidByDependency : NotValid);
+        } else {
+            toolStates.insert(task->getToolName(), NotValid);
         }
     }
+
+    checkStartupTasksState();
 }
 
 void ExternalToolManagerImpl::sl_toolValidationStatusChanged(bool isValid) {
@@ -362,8 +378,10 @@ void ExternalToolManagerImpl::validateTools(const QStrStrMap& toolPaths, Externa
         TaskScheduler* scheduler = AppContext::getTaskScheduler();
         SAFE_POINT(scheduler, "Task scheduler is NULL", );
         scheduler->registerTopLevelTask(validationTask);
-    } else if (listener) {
-        listener->validationFinished();
+    } else  {
+        if (listener) {
+            listener->validationFinished();
+        }
     }
 }
 
@@ -372,6 +390,7 @@ void ExternalToolManagerImpl::searchTools() {
 
     foreach (const QString& toolName, searchList) {
         searchList.removeAll(toolName);
+        toolStates.insert(toolName, SearchingIsInProcess);
         ExternalToolSearchTask* task = new ExternalToolSearchTask(toolName);
         connect(task,
                 SIGNAL(si_stateChanged()),
