@@ -63,6 +63,9 @@ public:
     void setAdditionalEnvVariables(const  QMap<QString, QString> &envVariable) {additionalEnvVariables = envVariable; }
 
 private:
+    void killProcess() const;
+    QList<long> getChildPidsRecursive(long parentPid) const;
+
     QStringList             arguments;
     ExternalToolLogParser*  logParser;
     QString                 toolName;
@@ -73,7 +76,7 @@ private:
     QMap <QString, QString> additionalEnvVariables;
     QProcess*               externalToolProcess;
     QScopedPointer<ExternalToolRunTaskHelper> helper;
-    ExternalToolListener*       listener;
+    ExternalToolListener*   listener;
 };
 
 class U2CORE_EXPORT ExternalToolSupportTask: public Task{

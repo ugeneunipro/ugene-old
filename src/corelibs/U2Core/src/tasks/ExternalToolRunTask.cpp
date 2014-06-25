@@ -41,6 +41,11 @@
 #include <windows.h>
 #endif
 
+#ifdef Q_OS_UNIX
+#include <signal.h>
+#include <unistd.h>
+#endif
+
 
 namespace U2 {
 
@@ -109,18 +114,7 @@ void ExternalToolRunTask::run(){
     }
     while(!externalToolProcess->waitForFinished(1000)){
         if (isCanceled()) {
-#if (!defined(Q_OS_WIN32) && !defined(Q_OS_WINCE)) || defined(qdoc)
-            long numPid = externalToolProcess->pid();
-#else
-            Q_PID pid = externalToolProcess->pid();
-            long numPid = pid->dwProcessId;
-#endif
-#ifdef Q_OS_WIN
-            QProcess::execute(QString("taskkill /PID %1 /T /F").arg(numPid));
-#endif
-#ifdef Q_OS_UNIX
-            QProcess::execute(QString("kill -15 -- %1").arg(numPid));
-#endif
+            killProcess();
         }
     }
 
@@ -133,6 +127,56 @@ void ExternalToolRunTask::run(){
         }
     }
 }
+
+void ExternalToolRunTask::killProcess() const{
+#if (!defined(Q_OS_WIN32) && !defined(Q_OS_WINCE)) || defined(qdoc)
+            long numPid = externalToolProcess->pid();
+#else
+            Q_PID pid = externalToolProcess->pid();
+            long numPid = pid->dwProcessId;
+#endif
+#ifdef Q_OS_WIN
+            QProcess::execute(QString("taskkill /PID %1 /T /F").arg(numPid));
+#endif
+#ifdef Q_OS_UNIX
+            QList<long> pids = getChildPidsRecursive(numPid);
+            pids << numPid;
+            foreach (const long pid, pids) {
+                taskLog.trace(QString("Kill process: %1").arg(pid));
+                kill(pid, SIGTERM);
+            }
+#endif
+}
+
+QList<long> ExternalToolRunTask::getChildPidsRecursive(long parentPid) const{
+    QList<long> res;
+
+    QProcess p;
+    p.start("ps", QStringList() << QString("-axo pid,ppid").arg(parentPid));
+    p.waitForFinished();
+    const QStringList lines = QString(p.readAllStandardOutput()).split('\n');
+    p.close();
+
+    foreach (const QString& line, lines) {
+        CHECK_OPERATION(line.contains(QString::number(parentPid)), continue);
+
+        const QStringList pidStrings = line.split(QRegExp("\\s"), QString::SkipEmptyParts);
+        CHECK_OPERATION(2 == pidStrings.size(), continue);
+        CHECK_OPERATION(pidStrings.last() == QString::number(parentPid), continue);
+
+        bool ok = false;
+        long pid = pidStrings.first().toLong(&ok);
+        CHECK_OPERATIONS(ok,
+                         taskLog.trace(QString("Fail to convert process' PID to number: '%1'").arg(pidStrings.first())),
+                         continue);
+
+        res << getChildPidsRecursive(pid);
+        res << pid;
+    }
+
+    return res;
+}
+
 void ExternalToolRunTask::addOutputListener(ExternalToolListener* outputListener) {
     if(helper) {
         helper->addOutputListener(outputListener);
