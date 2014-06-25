@@ -425,7 +425,8 @@ bool Actor::validate(ProblemList &problemList) const {
             urlsRes = urlsRes && urlAttrValid;
         }
 
-        if (attr->getAttributeType() == BaseTypes::NUM_TYPE()) {
+        if (attr->getAttributeType() == BaseTypes::NUM_TYPE()
+                && !attr->getAttributePureValue().toString().isEmpty()) {
             bool ok;
             attr->getAttributePureValue().toString().toDouble((&ok));
             result &= ok;
