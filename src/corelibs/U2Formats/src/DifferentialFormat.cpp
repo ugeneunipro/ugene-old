@@ -22,6 +22,7 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -196,7 +197,9 @@ Document * DifferentialFormat::loadDocument( IOAdapter *io, const U2DbiRef &targ
     QList<AnnotationData> anns = parseAnnotations(io, os);
     CHECK_OP(os, NULL);
 
-    AnnotationTableObject *obj = new AnnotationTableObject( getAnnotationName( ), targetDb, hints );
+    QVariantMap objectHints;
+    objectHints.insert(DBI_FOLDER_HINT, hints.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+    AnnotationTableObject *obj = new AnnotationTableObject( getAnnotationName( ), targetDb, objectHints );
     foreach ( const AnnotationData &data, anns ) {
         obj->addAnnotation( data );
     }

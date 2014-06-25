@@ -130,12 +130,10 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     Q_UNUSED(opBlock);
 
     static char fastaCommentStartChar = FastaFormat::FASTA_COMMENT_START_SYMBOL;
-    static QBitArray fastaHeaderStart = TextUtils::createBitMap(FastaFormat::FASTA_HEADER_START_SYMBOL);
 
     MemoryLocker memoryLocker(os, 1);
 
     writeLockReason.clear();
-    GUrl docUrl = io->getURL();
     QByteArray readBuff(READ_BUFF_SIZE + 1, 0);
     char* buff = readBuff.data();
     qint64 len = 0;
@@ -280,16 +278,15 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
 }
 
 
-Document* FastaFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& _fs, U2OpStatus& os) {
+Document* FastaFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
     CHECK_EXT(io!=NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
 
-    QVariantMap fs = _fs;
     QList<GObject*> objects;
 
     int gapSize = qBound(-1, DocumentFormatUtils::getMergeGap(fs), 1000 * 1000);
     
     QString lockReason;
-    load(io, dbiRef, _fs, objects, gapSize, lockReason, os);
+    load(io, dbiRef, fs, objects, gapSize, lockReason, os);
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
 
     Document* doc = new Document(this, io->getFactory(), io->getURL(), dbiRef, objects, fs, lockReason);

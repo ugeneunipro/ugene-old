@@ -40,8 +40,7 @@ GObject::GObject(QString _type, const QString& _name, const QVariantMap& hintsMa
     : dataLoaded(false), type (_type), name(_name), arePermanentRelationsFetched(false)
 {
     SAFE_POINT(!name.isEmpty(), "Invalid object name detected", );
-    hints = new GHintsDefaultImpl(hintsMap);
-    hints->set(GObjectHint_LastUsedObjectName, name);
+    setupHints(hintsMap);
 }
 
 GObject::~GObject() {
@@ -187,6 +186,15 @@ void GObject::setRelationsInDb(QList<GObjectRelation>& list) const {
         rDbi->createObjectRelation(dbRelation, os);
         SAFE_POINT_OP(os, );
     }
+}
+
+void GObject::setupHints(QVariantMap hintsMap) {
+    hintsMap.remove(DocumentFormat::DBI_REF_HINT);
+    hintsMap.remove(DocumentFormat::DBI_FOLDER_HINT);
+
+    hintsMap.insert(GObjectHint_LastUsedObjectName, name);
+
+    hints = new GHintsDefaultImpl(hintsMap);
 }
 
 QList<GObjectRelation> GObject::findRelatedObjectsByRole(const GObjectRelationRole& role) const {

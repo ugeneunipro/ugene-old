@@ -142,7 +142,9 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
     }
     
     if ( !annotations.isEmpty( ) ) {
-        annObj = new AnnotationTableObject( QString("%1 annotations").arg(seqName), dbiRef, fs );
+        QVariantMap hints;
+        hints.insert(DBI_FOLDER_HINT, fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+        annObj = new AnnotationTableObject( QString("%1 annotations").arg(seqName), dbiRef, hints );
         annObj->addAnnotations( annotations );
         objects.append( annObj );
     }
@@ -152,17 +154,16 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
 }
 
 
-Document * PDWFormat::loadDocument( IOAdapter *io, const U2DbiRef &dbiRef, const QVariantMap &_fs,
+Document * PDWFormat::loadDocument( IOAdapter *io, const U2DbiRef &dbiRef, const QVariantMap &fs,
     U2OpStatus &os )
 {
     U2SequenceObject* seqObj = NULL;
     AnnotationTableObject *annObj = NULL;
     CHECK_EXT( NULL != io && io->isOpen( ), os.setError( L10N::badArgument( "IO adapter" ) ),
         NULL );
-    QVariantMap fs = _fs;
     QList<GObject *> objects;
     
-    load( io, dbiRef, _fs, io->getURL( ), objects, os, seqObj, annObj );
+    load( io, dbiRef, fs, io->getURL( ), objects, os, seqObj, annObj );
 
     CHECK_OP_EXT( os, qDeleteAll( objects ), NULL );
     

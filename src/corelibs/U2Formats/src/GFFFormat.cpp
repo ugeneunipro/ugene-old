@@ -158,7 +158,9 @@ void addAnnotations( QList<AnnotationData> &annList, QList<GObject *> &objects,
             }
         }
         if ( NULL == ato ) {
-            ato = new AnnotationTableObject( atoName, dbiRef, hints );
+            QVariantMap objectHints;
+            objectHints.insert(DocumentFormat::DBI_FOLDER_HINT, hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+            ato = new AnnotationTableObject( atoName, dbiRef, objectHints );
             objects.append(ato);
             atoSet.insert(ato);
         }
@@ -351,7 +353,9 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                     }
                 }
                 if(!ato){
-                    ato = new AnnotationTableObject( atoName, dbiRef, hints );
+                    QVariantMap objectHints;
+                    objectHints.insert(DBI_FOLDER_HINT, hints.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+                    ato = new AnnotationTableObject( atoName, dbiRef, objectHints );
                     objects.append( ato );
                     atoSet.insert( ato );
                 }

@@ -24,6 +24,7 @@
 #include <U2Core/PhyTreeObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -137,7 +138,9 @@ static QList<GObject*> parseTrees(IOAdapter *io, const U2DbiRef& dbiRef, const Q
     for (int i=0; i<trees.size(); i++) {
         PhyTree tree = trees[i];
         QString objName = (0 == i) ? QString("Tree") : QString("Tree%1").arg(i + 1);
-        PhyTreeObject *obj = PhyTreeObject::createInstance(tree, objName, dbiRef, si, fs);
+        QVariantMap hints;
+        hints.insert(DocumentFormat::DBI_FOLDER_HINT, fs.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+        PhyTreeObject *obj = PhyTreeObject::createInstance(tree, objName, dbiRef, si, hints);
         CHECK_OP(si, objects);
         objects.append(obj);
     }

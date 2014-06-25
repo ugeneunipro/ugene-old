@@ -74,7 +74,7 @@ U2SequenceObject * DocumentFormatUtils::addSequenceObject(const U2DbiRef& dbiRef
     dbiObjects.objects << sequence.id;
     CHECK_OP(os, NULL);
 
-    U2SequenceObject* so = new U2SequenceObject(name, U2EntityRef(dbiRef, sequence.id), hints);
+    U2SequenceObject* so = new U2SequenceObject(name, U2EntityRef(dbiRef, sequence.id));
     return so;
 }
 
@@ -85,7 +85,9 @@ AnnotationTableObject * DocumentFormatUtils::addAnnotationsForMergedU2Sequence(c
                                                                                const QVector<U2Region> &mergedMapping,
                                                                                const QVariantMap& hints)
 {
-    AnnotationTableObject *ao = new AnnotationTableObject( "Contigs", dbiRef, hints );
+    QVariantMap objectHints;
+    objectHints.insert(DocumentFormat::DBI_FOLDER_HINT, hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+    AnnotationTableObject *ao = new AnnotationTableObject( "Contigs", dbiRef, objectHints );
 
     // save relation if mergedSequenceRef is valid
     if (mergedSequenceRef.isValid()) {
@@ -285,8 +287,9 @@ U2SequenceObject* DocumentFormatUtils::addMergedSequenceObjectDeprecated(const U
     CHECK_OP(os, NULL);
     SAFE_POINT(so != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
     
-
-    AnnotationTableObject *ao = new AnnotationTableObject( "Annotations", dbiRef );
+    QVariantMap hints;
+    hints.insert(DocumentFormat::DBI_FOLDER_HINT, folder);
+    AnnotationTableObject *ao = new AnnotationTableObject( "Annotations", dbiRef, hints );
 
     //save relation if docUrl is not empty
     if ( !docUrl.isEmpty( ) ) {

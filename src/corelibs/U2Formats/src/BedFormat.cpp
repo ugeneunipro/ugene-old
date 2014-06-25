@@ -34,6 +34,7 @@
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
@@ -129,7 +130,9 @@ void BedFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2DbiRef& db
             }
         }
         if (!annotTable) {
-            annotTable = new AnnotationTableObject( annotTableName, dbiRef, fs);
+            QVariantMap hints;
+            hints.insert(DBI_FOLDER_HINT, fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+            annotTable = new AnnotationTableObject( annotTableName, dbiRef, hints);
             objects.append(annotTable);
         }
 

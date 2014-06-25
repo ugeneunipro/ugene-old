@@ -29,6 +29,7 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
@@ -110,9 +111,6 @@ GTFFormat::GTFFormat(QObject* parent)
 
 Document* GTFFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints, U2OpStatus& os)
 {
-    Q_UNUSED(dbiRef);
-    Q_UNUSED(hints);
-
     CHECK_EXT(io != NULL && io->isOpen(), os.setError(L10N::badArgument("IO adapter")), NULL);
     QList<GObject*> objects;
 
@@ -302,7 +300,9 @@ void GTFFormat::load( IOAdapter *io, QList<GObject *> &objects, const U2DbiRef &
             }
         }
         if (!annotTable) {
-            annotTable = new AnnotationTableObject( annotTableName, dbiRef, hints );
+            QVariantMap objectHints;
+            objectHints.insert(DBI_FOLDER_HINT, hints.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+            annotTable = new AnnotationTableObject( annotTableName, dbiRef, objectHints );
             objects.append(annotTable);
         }
 

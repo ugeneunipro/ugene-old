@@ -29,6 +29,7 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 
 #include "U1AnnotationUtils.h"
@@ -285,10 +286,13 @@ void U1AnnotationUtils::addAnnotations( QList<GObject *> &objects,
                 dbiRef = hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>();
             } else {
                 dbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
+                SAFE_POINT_OP(os, );
             }
 
-            SAFE_POINT_OP( os, );
-            annotationsObject = new AnnotationTableObject( sequenceRef.objName + " features", dbiRef, hints );
+            QVariantMap objectHints;
+            objectHints.insert(DocumentFormat::DBI_FOLDER_HINT, hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+
+            annotationsObject = new AnnotationTableObject( sequenceRef.objName + " features", dbiRef, objectHints );
             annotationsObject->addObjectRelation(
                 GObjectRelation( sequenceRef, ObjectRole_Sequence ) );
         }

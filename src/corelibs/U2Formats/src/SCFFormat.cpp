@@ -530,7 +530,10 @@ Document* SCFFormat::parseSCF(const U2DbiRef& dbiRef, IOAdapter* io, const QVari
     CHECK_OP(os, NULL);
     SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error", NULL);
 
-    DNAChromatogramObject* chromObj = DNAChromatogramObject::createInstance(cd, dna.getName() + " chromatogram", dbiRef, os, fs);
+    QVariantMap hints;
+    hints.insert(DBI_FOLDER_HINT, fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+
+    DNAChromatogramObject* chromObj = DNAChromatogramObject::createInstance(cd, dna.getName() + " chromatogram", dbiRef, os, hints);
     CHECK_OP(os, NULL);
     objects.append(chromObj);
 

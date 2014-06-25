@@ -30,6 +30,7 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -270,7 +271,9 @@ void FpkmTrackingFormat::load(IOAdapter* io, QList<GObject*>& objects, const U2D
             }
         }
         if (!annotTable) {
-            annotTable = new AnnotationTableObject( annotTableName, dbiRef, hints );
+            QVariantMap objectHints;
+            objectHints.insert(DBI_FOLDER_HINT, hints.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+            annotTable = new AnnotationTableObject( annotTableName, dbiRef, objectHints );
             objects.append(annotTable);
         }
 

@@ -770,7 +770,9 @@ Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, Bio
     QString objectName = bioStruct.pdbId.isEmpty() ? url.baseFileName() : bioStruct.pdbId;
     const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
 
-    BioStruct3DObject* biostrucObj = BioStruct3DObject::createInstance(bioStruct, objectName, dbiRef, os, fs);
+    QVariantMap hints;
+    hints.insert(DBI_FOLDER_HINT, fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+    BioStruct3DObject* biostrucObj = BioStruct3DObject::createInstance(bioStruct, objectName, dbiRef, os, hints);
     CHECK_OP(os, NULL);
     QMap<int, QList<SharedAnnotationData> > anns = bioStruct.generateAnnotations();
     TmpDbiObjects dbiObjects(dbiRef, os);
@@ -792,7 +794,7 @@ Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, Bio
 
         // create AnnnotationTableObject
         AnnotationTableObject *aObj = new AnnotationTableObject( QString( bioStruct.pdbId )
-            + QString( " chain %1 annotation" ).arg( key ), dbiRef, fs );
+            + QString( " chain %1 annotation" ).arg( key ), dbiRef, hints );
         foreach ( SharedAnnotationData sd, anns.value( key ) ) {
             aObj->addAnnotation( *sd );
         }

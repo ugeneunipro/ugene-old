@@ -19,15 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#include "PlainTextFormat.h"
-
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/TextObject.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
+#include "PlainTextFormat.h"
 
 namespace U2 {
 
@@ -79,7 +80,10 @@ Document* PlainTextFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, c
     
     //todo: check file-readonly status?
 
-    TextObject* to = TextObject::createInstance(text, io->getURL().baseFileName(), dbiRef, os, fs);
+    QVariantMap hints;
+    hints.insert(DBI_FOLDER_HINT, fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
+
+    TextObject* to = TextObject::createInstance(text, io->getURL().baseFileName(), dbiRef, os, hints);
     CHECK_OP(os, NULL);
     QList<GObject*> objects;
     objects.append(to);
