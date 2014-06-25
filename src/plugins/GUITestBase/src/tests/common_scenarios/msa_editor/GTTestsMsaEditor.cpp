@@ -54,6 +54,7 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 
 
 #include <U2View/MSAEditor.h>
