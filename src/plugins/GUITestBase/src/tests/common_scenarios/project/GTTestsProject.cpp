@@ -357,7 +357,7 @@ GUI_TEST_CLASS_DEFINITION(test_0021) {
     CHECK_SET_ERR(font.bold(), "se1 item font is not a bold");
 
     GTUtilsSequenceView::openSequenceView(os, "se2");	
-    item = GTUtilsProjectTreeView::findIndex(os, "se1");
+    item = GTUtilsProjectTreeView::findIndex(os, "se2");
     font = GTUtilsProjectTreeView::getFont(os, item);
     CHECK_SET_ERR(font.bold(), "se2 item font is not a bold");	 
 }
