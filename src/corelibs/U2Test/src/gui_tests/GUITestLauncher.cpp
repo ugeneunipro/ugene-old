@@ -211,6 +211,8 @@ QString getAdditionalInfo() {
     foreach (ExternalTool* tool, AppContext::getExternalToolRegistry()->getAllEntries()) {
         result += QString("%1: state '%1'").arg(tool->getName()).arg(getToolState(tool->getName()));
     }
+
+    return result;
 }
 
 }
