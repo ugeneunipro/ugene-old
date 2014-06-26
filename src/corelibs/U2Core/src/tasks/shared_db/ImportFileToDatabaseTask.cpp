@@ -59,7 +59,6 @@ void ImportFileToDatabaseTask::prepare() {
     CHECK_EXT(NULL != format || NULL != importTask, setError(tr("File format is not recognized")), );
     CHECK_OP(stateInfo, );
 
-    prepareFolder();
     CHECK_OP(stateInfo, );
 
     if (NULL != importTask) {
@@ -114,11 +113,6 @@ DocumentProviderTask* ImportFileToDatabaseTask::detectFormat() {
 
     QVariantMap hints = prepareHints();
     return importer->createImportTask(formats.first(), false, hints);
-}
-
-void ImportFileToDatabaseTask::prepareFolder() {
-    DbiConnection con(dstDbiRef, stateInfo);
-    con.dbi->getObjectDbi()->createFolder(getFolderName(), stateInfo);
 }
 
 QVariantMap ImportFileToDatabaseTask::prepareHints() const {

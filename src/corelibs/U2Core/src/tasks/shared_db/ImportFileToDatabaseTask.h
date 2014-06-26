@@ -43,7 +43,6 @@ public:
 
 private:
     DocumentProviderTask *detectFormat();
-    void prepareFolder();
     QVariantMap prepareHints() const;
     QString getFolderName() const;
 

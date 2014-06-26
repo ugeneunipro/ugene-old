@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QCryptographicHash>
+
 #include <U2Core/U2DbiPackUtils.h>
 #include <U2Core/U2FeatureUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -72,7 +74,7 @@ void MysqlObjectDbi::initSqlSchema(U2OpStatus& os) {
     CHECK_OP(os, );
 
     // folders
-    U2SqlQuery("CREATE TABLE Folder (id BIGINT PRIMARY KEY AUTO_INCREMENT, path LONGTEXT NOT NULL, "
+    U2SqlQuery("CREATE TABLE Folder (id BIGINT PRIMARY KEY AUTO_INCREMENT, path LONGTEXT NOT NULL, hash VARCHAR(32) UNIQUE NOT NULL, "
                "vlocal BIGINT NOT NULL DEFAULT 1, vglobal BIGINT NOT NULL DEFAULT 1) ENGINE=InnoDB DEFAULT CHARSET=utf8", db, os).execute();
     CHECK_OP(os, );
 
@@ -173,18 +175,22 @@ QHash<U2Object, QString> MysqlObjectDbi::getObjectFolders(U2OpStatus &os) {
 void MysqlObjectDbi::renameFolder(const QString &oldPath, const QString &newPath, U2OpStatus &os) {
     MysqlTransaction t(db, os);
     CHECK_OP(os, );
+    Q_UNUSED(t);
 
     const QString oldCPath = U2DbiUtils::makeFolderCanonical(oldPath);
     const QString newCPath = U2DbiUtils::makeFolderCanonical(newPath);
+    const QByteArray oldHash = QCryptographicHash::hash(oldCPath.toLatin1(), QCryptographicHash::Md5).toHex();
+    const QByteArray newHash = QCryptographicHash::hash(newCPath.toLatin1(), QCryptographicHash::Md5).toHex();
 
     const QStringList allFolders = getFolders(os);
     CHECK_OP(os, );
 
-    static const QString queryString = "UPDATE Folder SET path = :newPath WHERE BINARY path = :oldPath";
+    static const QString queryString = "UPDATE Folder SET path = :newPath, hash = :newHash WHERE hash = :oldHash";
     if (allFolders.contains(oldCPath)) {
         U2SqlQuery q(queryString, db, os);
         q.bindString("newPath", newCPath);
-        q.bindString("oldCPath", oldCPath);
+        q.bindBlob("newHash", newHash);
+        q.bindBlob("oldHash", oldHash);
         q.update();
         CHECK_OP(os, );
     }
@@ -196,7 +202,8 @@ void MysqlObjectDbi::renameFolder(const QString &oldPath, const QString &newPath
             QString newPath = newParent + path.mid(parent.size());
             U2SqlQuery q(queryString, db, os);
             q.bindString("newPath", newPath);
-            q.bindString("oldCPath", path);
+            q.bindBlob("newHash", newHash);
+            q.bindBlob("oldHash", oldHash);
             q.update();
             CHECK_OP(os, );
         }
@@ -310,6 +317,7 @@ void MysqlObjectDbi::createFolder(const QString& path, U2OpStatus& os) {
     CHECK_OP(os, );
 
     const QString canonicalPath = U2DbiUtils::makeFolderCanonical(path);
+    const QByteArray hash = QCryptographicHash::hash(canonicalPath.toLatin1(), QCryptographicHash::Md5).toHex();
 
     qint64 folderId = getFolderId(canonicalPath, false, db, os);
     CHECK_OP(os, );
@@ -324,9 +332,10 @@ void MysqlObjectDbi::createFolder(const QString& path, U2OpStatus& os) {
         createFolder(parentFolder, os);
     }
 
-    static const QString queryString = "INSERT INTO Folder(path) VALUES(:path)";
+    static const QString queryString = "INSERT INTO Folder(path, hash) VALUES(:path, :hash) ON DUPLICATE KEY UPDATE path = VALUES(path), hash = VALUES(hash)";
     U2SqlQuery q(queryString, db, os);
     q.bindString("path", canonicalPath);
+    q.bindBlob("hash", hash);
     q.execute();
     CHECK_OP(os, );
 
