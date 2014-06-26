@@ -57,8 +57,8 @@ void HelpButton::updatePageId( const QString &newPageId ){
 
 ComboboxDependentHelpButton::ComboboxDependentHelpButton( QObject *parent, QDialogButtonBox *b, QComboBox *_cb, const QMap<QString, QString> &_pageMap )
 : HelpButton(parent, b, "")
-, cb(_cb)
-, pageMap(_pageMap){}
+, pageMap(_pageMap)
+, cb(_cb){}
 
 void ComboboxDependentHelpButton::sl_buttonClicked(){
     QString pageId = pageMap[cb->currentText()];

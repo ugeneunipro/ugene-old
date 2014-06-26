@@ -91,9 +91,9 @@ namespace U2 {
 
     private:
         Settings    settings;
-        RegionMsa   region;
         bool        exportWholeAlignment;
         bool        exportCurrentSelection;
+        RegionMsa   region;
     };
 
     class SelectSubalignmentFiller : public Filler {
