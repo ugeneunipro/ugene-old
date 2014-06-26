@@ -284,8 +284,9 @@ int main(int argc, char **argv)
     
     //QApplication app(argc, argv);
     GApplication app(argc, argv);
-
-    SplashScreen *splashScreen = new SplashScreen(NULL);
+    
+    QMainWindow window;
+    SplashScreen *splashScreen = new SplashScreen(&window);
     splashScreen->show();
 
     AppContextImpl* appContext = AppContextImpl::getApplicationContext();
