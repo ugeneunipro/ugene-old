@@ -41,7 +41,7 @@ namespace U2 {
 CudaSupportSettingsPageController::CudaSupportSettingsPageController( const QString & _displayMsg, QObject * p /* = 0 */ ) :
 AppSettingsGUIPageController( tr("CUDA"), CudaSupportSettingsPageId, p ), displayMsg(_displayMsg) {}
 
-const QString OpenCLSupportSettingsPageController::helpPageId = QString("444");
+const QString CudaSupportSettingsPageController::helpPageId = QString("444");
 
 AppSettingsGUIPageState * CudaSupportSettingsPageController::getSavedState() {
     QList<CudaGpuModel *> registeredGpus = AppContext::getCudaGpuRegistry()->getRegisteredGpus();
