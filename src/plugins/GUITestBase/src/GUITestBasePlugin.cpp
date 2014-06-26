@@ -286,10 +286,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2378);
     REGISTER_TEST(GUITest_regression_scenarios::test_2378_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2379);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2382);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2382_1);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2382, "https://ugene.unipro.ru/tracker/browse/UGENE-3126");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2382_1, "https://ugene.unipro.ru/tracker/browse/UGENE-3126");
     REGISTER_TEST(GUITest_regression_scenarios::test_2392);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2401);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2401, "https://ugene.unipro.ru/tracker/browse/UGENE-3126");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2402, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
     REGISTER_TEST(GUITest_regression_scenarios::test_2406);
     REGISTER_TEST(GUITest_regression_scenarios::test_2407);
@@ -298,7 +298,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2424);
     REGISTER_TEST(GUITest_regression_scenarios::test_2449);
     REGISTER_TEST(GUITest_regression_scenarios::test_2460);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2475);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2475, "https://ugene.unipro.ru/tracker/browse/UGENE-3131");
     REGISTER_TEST(GUITest_regression_scenarios::test_2482);
     REGISTER_TEST(GUITest_regression_scenarios::test_2487);
     REGISTER_TEST(GUITest_regression_scenarios::test_2496);
@@ -1073,7 +1073,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Common scenarios/NIAID_pipelines
 /////////////////////////////////////////////////////////////////////////
     //REGISTER_TEST_IGNORED(GUITest_common_scenarios_NIAID_pipelines::test_0001,"outdated");
-    REGISTER_TEST(GUITest_common_scenarios_NIAID_pipelines::test_0002);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_NIAID_pipelines::test_0002, "https://ugene.unipro.ru/tracker/browse/UGENE-3131");
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Tree viewer
 /////////////////////////////////////////////////////////////////////////

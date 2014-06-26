@@ -66,7 +66,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     QTreeWidget *treeWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
     CHECK_SET_ERR(treeWidget != NULL, "Tree widget is NULL");
     
-    QTreeWidgetItem *annotationsRoot = GTUtilsAnnotationsTreeView::findItem(os, "repeat_unit");
+    QTreeWidgetItem *annotationsRoot = GTUtilsAnnotationsTreeView::findItem(os, "repeat_unit  (0, 325)");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, annotationsRoot->child(0)));
     GTMouseDriver::doubleClick(os);
     GTUtilsAnnotationsTreeView::findItem(os, "repeat_homology(%)");

@@ -172,10 +172,12 @@ GUI_TEST_CLASS_DEFINITION(test_0928) {
     // 3. Click "Ok" button and wait for the end of the task.
     GTUtilsDialog::waitForDialog(os, new OkClicker(os));
     GTWidget::click(os, GTAction::button(os, "Find ORFs"));
-    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //GTGlobals::sleep(20000);
 
     // Expected state: 837 orfs are found.
-    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "orf");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "orf  (0, 837)");
     CHECK(NULL != item, );
     CHECK_SET_ERR(item->childCount() == 837, QString("ORFs count mismatch. Expected: %1. Actual: %2").arg(837).arg(item->childCount()));
 }
@@ -3149,12 +3151,13 @@ GUI_TEST_CLASS_DEFINITION( test_2187 ) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE
         << "find_tandems_action", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
-    GTGlobals::sleep();
+    GTGlobals::sleep(200);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QTreeWidget *treeWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
     CHECK_SET_ERR(treeWidget != NULL, "Tree widget is NULL");
 
-    QTreeWidgetItem *annotationsRoot = GTUtilsAnnotationsTreeView::findItem(os, "repeat_unit");
+    QTreeWidgetItem *annotationsRoot = GTUtilsAnnotationsTreeView::findItem(os, "repeat_unit  (0, 5)");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, annotationsRoot->child(0)));
     GTMouseDriver::doubleClick(os);
 

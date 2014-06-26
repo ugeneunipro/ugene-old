@@ -63,7 +63,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to BB.
 
-    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group  (0, 2)");
 
     Runnable *filler = new EditGroupAnnotationsFiller(os, "BB");
     GTUtilsDialog::waitForDialog(os, filler);
@@ -74,7 +74,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB") != NULL, "Item BB not found in tree widget");
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB  (0, 2)") != NULL, "Item BB not found in tree widget");
 
 
 }
@@ -99,7 +99,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
 
 // 3. Select annotation B in annotation tree. Click F2. Change name to BB.
 
-    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group  (0, 2)");
 
     Runnable *filler = new EditGroupAnnotationsFiller(os, "BB");
     GTUtilsDialog::waitForDialog(os, filler);
@@ -110,9 +110,9 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB") != NULL, "Item BB not found in tree widget");
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB  (0, 2)") != NULL, "Item BB not found in tree widget");
 
-    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "BB");
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "BB  (0, 2)");
 
     Runnable *filler1 = new EditGroupAnnotationsFiller(os, "B_group");
     GTUtilsDialog::waitForDialog(os, filler1);
@@ -123,7 +123,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "B_group") != NULL, "Item B_group not found in tree widget");
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "B_group  (0, 2)") != NULL, "Item B_group not found in tree widget");
 
 }
 
@@ -148,7 +148,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
 
 // 3. Select annotation C in annotation tree. Click F2. Change name to BB.
 
-    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group");
+    QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "B_group  (0, 2)");
 
     Runnable *filler = new EditGroupAnnotationsFiller(os, "BB");
     GTUtilsDialog::waitForDialog(os, filler);
@@ -159,10 +159,10 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB") != NULL, "Item BB not found in tree widget");
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "BB  (0, 2)") != NULL, "Item BB not found in tree widget");
 
 
-    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "C_group");
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "C_group  (0, 1)");
 
     Runnable *filler1 = new EditGroupAnnotationsFiller(os, "CC");
     GTUtilsDialog::waitForDialog(os, filler1);
@@ -173,7 +173,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC") != NULL, "Item BB not found in tree widget");
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "CC  (0, 1)") != NULL, "Item BB not found in tree widget");
 
 }
 
@@ -545,7 +545,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
         //4.1 CHECK if it contains group "group" with annotation "misc_feature" in it
         //TODO: 4.2 CHECK if "group" subgroups/annotations counter displays (0,1)
     GTGlobals::sleep();
-    GTUtilsAnnotationsTreeView::findItem(os, "group");
+    GTUtilsAnnotationsTreeView::findItem(os, "group  (0, 1)");
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
 
     //5. Select misc_feature annotation and press <DEL>
@@ -582,7 +582,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
         //4.1 CHECK if it contains group "group" with annotation "misc_feature" in it
         //TODO: 4.2 CHECK if "group" subgroups/annotations counter displays (0,1)
     GTGlobals::sleep();
-    GTUtilsAnnotationsTreeView::findItem(os, "group");
+    GTUtilsAnnotationsTreeView::findItem(os, "group  (0, 1)");
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
 
     //5. Select misc_feature annotation and press <DEL>
@@ -600,8 +600,8 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     GTGlobals::sleep();
 
     GTGlobals::sleep();
-    GTUtilsAnnotationsTreeView::findItem(os, "group_new");
-    GTUtilsAnnotationsTreeView::findItem(os, "group");
+    GTUtilsAnnotationsTreeView::findItem(os, "group_new  (0, 1)");
+    GTUtilsAnnotationsTreeView::findItem(os, "group  (0, 0)");
     QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature_1");
 
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item1));
@@ -640,11 +640,11 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
         //4.1 CHECK if it contains group "group" with annotation "misc_feature" in it
         //TODO: 4.2 CHECK if "group" subgroups/annotations counter displays (0,1)
     GTGlobals::sleep();
-    GTUtilsAnnotationsTreeView::findItem(os, "group");
+    GTUtilsAnnotationsTreeView::findItem(os, "group  (0, 1)");
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
 
     GTGlobals::sleep();
-    GTUtilsAnnotationsTreeView::findItem(os, "group_new");
+    GTUtilsAnnotationsTreeView::findItem(os, "group_new  (0, 1)");
     QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature_1");
 
     //5. Select misc_feature annotation and press <DEL>
