@@ -112,6 +112,8 @@ public:
     // Creates the directory with a rolled path: @path + @suffix + "num". Returns the new path
     static QString createDirectory(const QString &path, const QString &suffix, U2OpStatus &os);
 
+    // If url is local returns values from it, else returns default values: default data dir path from settings and @defaultBaseFileName
+    static void getLocalPathFromUrl(const GUrl& url, const QString& defaultBaseFileName, QString& dirPath, QString& baseFileName);
 };
 
 } //namespace

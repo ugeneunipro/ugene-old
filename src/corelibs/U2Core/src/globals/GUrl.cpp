@@ -19,9 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include "GUrl.h"
-
 #include <QtCore/QDir>
+
+#include "GUrl.h"
+#include "U2SafePoints.h"
 
 namespace U2 {
 
@@ -152,6 +153,8 @@ QString GUrl::dirPath() const {
     if( isVFSFile() ) {
         return result;
     }
+    CHECK(!isNetworkSource(), result);
+
     result = QFileInfo(path(this)).absoluteDir().absolutePath();
     return result;
 }
@@ -161,12 +164,16 @@ QString GUrl::fileName() const {
     if( isVFSFile() ) {
         return result;
     }
+    CHECK(!isNetworkSource(), result);
+
     result = QFileInfo(path(this)).fileName();
     return result;
 }
 
 QString GUrl::baseFileName() const {
     QString result;
+    CHECK(!isNetworkSource(), result);
+
     if( isVFSFile() ) {
         QStringList args = urlString.split(U2_VFS_FILE_SEPARATOR, QString::SkipEmptyParts, Qt::CaseSensitive );
         if( 2 == args.size() ) {
@@ -189,6 +196,8 @@ QString GUrl::lastFileSuffix() const {
     if( isVFSFile() ) {
         return result;
     }
+    CHECK(!isNetworkSource(), result);
+
     result = QFileInfo(path(this)).suffix();
     return result;
 }
@@ -198,6 +207,8 @@ QString GUrl::completeFileSuffix() const {
     if( isVFSFile() ) {
         return result;
     }
+    CHECK(!isNetworkSource(), result);
+
     result = QFileInfo(path(this)).completeSuffix();
     return result;
 }

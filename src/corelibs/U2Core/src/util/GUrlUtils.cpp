@@ -19,17 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include "GUrlUtils.h"
+#include <QtCore/QDir>
 
-#include <U2Core/Log.h>
-#include <U2Core/Task.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2OpStatus.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/Log.h>
+#include <U2Core/Task.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
 
-#include <QtCore/QDir>
+#include "GUrlUtils.h"
 
 namespace U2 {
 
@@ -326,5 +326,14 @@ QString GUrlUtils::createDirectory(const QString &path, const QString &suffix, U
     return newPath;
 }
 
+void GUrlUtils::getLocalPathFromUrl(const GUrl &url, const QString &defaultBaseFileName, QString &dirPath, QString &baseFileName) {
+    if (url.isLocalFile()) {
+        dirPath = url.dirPath();
+        baseFileName = url.baseFileName();
+    } else {
+        dirPath = getDefaultDataPath();
+        baseFileName = defaultBaseFileName;
+    }
+}
 
 }//namespace

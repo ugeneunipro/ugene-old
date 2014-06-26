@@ -19,27 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportChromatogramDialog.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
 
 #include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
 #include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/L10n.h>
+#include <U2Core/Settings.h>
 
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/SaveDocumentGroupController.h>
-#include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
-#endif
+
+#include "ExportChromatogramDialog.h"
+#include "ExportUtils.h"
 
 #define SETTINGS_ROOT QString("dna_export/")
 
@@ -54,7 +56,11 @@ ExportChromatogramDialog::ExportChromatogramDialog(QWidget* p, const GUrl& fileU
     addToProjectFlag = true;
 
     //SaveDocumentGroupControllerConfig conf;
-    GUrl newUrl = GUrlUtils::rollFileName(fileUrl.dirPath() + "/" + fileUrl.baseFileName() + "_copy.scf", DocumentUtils::getNewDocFileNameExcludesHint());
+    QString dirPath;
+    QString baseFileName;
+    GUrlUtils::getLocalPathFromUrl(fileUrl, "chromatogram", dirPath, baseFileName);
+
+    GUrl newUrl = GUrlUtils::rollFileName(dirPath + QDir::separator() + baseFileName + "_copy.scf", DocumentUtils::getNewDocFileNameExcludesHint());
     fileNameEdit->setText( newUrl.getURLString() );
     formatCombo->addItem( BaseDocumentFormats::SCF.toUpper() );
     connect(fileButton, SIGNAL(clicked()),SLOT(sl_onBrowseClicked()) );

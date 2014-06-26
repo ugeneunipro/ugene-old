@@ -26,12 +26,12 @@
 
 namespace U2 {
 
-class Task;
-class ExportSequencesDialog;
-class ExportSequenceTaskSettings;
 class AbstractExportTask;
 class Annotation;
 class DocumentProviderTask;
+class ExportSequenceTaskSettings;
+class ExportSequencesDialog;
+class Task;
 
 class ExportUtils: public QObject {
     Q_OBJECT

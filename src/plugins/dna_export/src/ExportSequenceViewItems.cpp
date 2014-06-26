@@ -19,48 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportSequenceViewItems.h"
-#include "ExportUtils.h"
-#include "ExportSequenceTask.h"
-#include "ExportSequencesDialog.h"
-#include "ExportSequences2MSADialog.h"
-#include "ExportBlastResultDialog.h"
-#include "GetSequenceByIdDialog.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/L10n.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2OpStatusUtils.h>
-
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/GObjectSelection.h>
-#include <U2Core/DocumentSelection.h>
-#include <U2Core/SelectionUtils.h>
-#include <U2Core/AnnotationSelection.h>
-#include <U2Core/DNASequenceSelection.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/TextUtils.h>
-#include <U2Core/LoadRemoteDocumentTask.h>
-
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVSequenceObjectContext.h>
-#include <U2View/ADVConstants.h>
-
-#include <U2Gui/DialogUtils.h>
-#include <U2Gui/ExportAnnotationsDialog.h>
-#include <U2Gui/ExportAnnotations2CSVTask.h>
-#include <U2Gui/ExportObjectUtils.h>
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/OpenViewTask.h>
+#include <QtCore/QDir>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
@@ -69,6 +28,48 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QMainWindow>
 #endif
+
+#include <U2Core/AnnotationSelection.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/DocumentSelection.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectSelection.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/L10n.h>
+#include <U2Core/LoadRemoteDocumentTask.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/SelectionUtils.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/ExportAnnotations2CSVTask.h>
+#include <U2Gui/ExportAnnotationsDialog.h>
+#include <U2Gui/ExportObjectUtils.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/OpenViewTask.h>
+
+#include <U2View/ADVConstants.h>
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/AnnotatedDNAView.h>
+
+#include "ExportBlastResultDialog.h"
+#include "ExportSequenceTask.h"
+#include "ExportSequenceViewItems.h"
+#include "ExportSequences2MSADialog.h"
+#include "ExportSequencesDialog.h"
+#include "ExportUtils.h"
+#include "GetSequenceByIdDialog.h"
 
 namespace U2 {
 
@@ -330,9 +331,12 @@ void ADVExportContext::sl_saveSelectedAnnotationsSequence() {
     }
 
     QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA)->getSupportedDocumentFileExtensions().first();
+    QString dirPath;
+    QString fileBaseName;
+
     GUrl seqUrl = view->getSequenceInFocus()->getSequenceGObject()->getDocument()->getURL();
-    const QString fileBaseName = seqUrl.baseFileName( );
-    GUrl defaultUrl = GUrlUtils::rollFileName(seqUrl.dirPath() + "/" + fileBaseName + "_annotation." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
+    GUrlUtils::getLocalPathFromUrl(seqUrl, view->getSequenceInFocus()->getSequenceGObject()->getGObjectName(), dirPath, fileBaseName);
+    GUrl defaultUrl = GUrlUtils::rollFileName(dirPath + QDir::separator() + fileBaseName + "_annotation." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
 
     ExportSequencesDialog d(true, allowComplement, allowTranslation, allowBackTranslation,
         defaultUrl.getURLString(), fileBaseName, BaseDocumentFormats::FASTA,
@@ -421,9 +425,13 @@ void ADVExportContext::sl_saveSelectedSequences() {
     bool nucleic = GObjectUtils::findBackTranslationTT(seqCtx->getSequenceObject())!=NULL;
 
     QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::FASTA)->getSupportedDocumentFileExtensions().first();
+    QString dirPath;
+    QString fileBaseName;
+
     GUrl seqUrl = seqCtx->getSequenceGObject()->getDocument()->getURL();
-    const QString fileBaseName = seqUrl.baseFileName();
-    GUrl defaultUrl = GUrlUtils::rollFileName(seqUrl.dirPath() + "/" + fileBaseName + "_region." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
+    GUrlUtils::getLocalPathFromUrl(seqUrl, seqCtx->getSequenceGObject()->getGObjectName(), dirPath, fileBaseName);
+
+    GUrl defaultUrl = GUrlUtils::rollFileName(dirPath + QDir::separator() + fileBaseName + "_region." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
 
     ExportSequencesDialog d(merge, complement, amino, nucleic, defaultUrl.getURLString(),
         fileBaseName, BaseDocumentFormats::FASTA, AppContext::getMainWindow()->getQMainWindow());
@@ -493,8 +501,12 @@ void ADVExportContext::sl_saveSelectedAnnotations() {
     } else {
         url = GUrl("newfile");
     }
+
+    QString dirPath;
+    QString baseFileName;
+    GUrlUtils::getLocalPathFromUrl(url, "newfile", dirPath, baseFileName);
     
-    QString fileName = GUrlUtils::rollFileName(url.dirPath() + "/" + url.baseFileName() + "_annotations.csv", 
+    QString fileName = GUrlUtils::rollFileName(dirPath + QDir::separator() + baseFileName + "_annotations.csv",
         DocumentUtils::getNewDocFileNameExcludesHint());
     ExportAnnotationsDialog d(fileName, AppContext::getMainWindow()->getQMainWindow());
     

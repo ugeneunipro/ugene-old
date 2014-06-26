@@ -19,33 +19,34 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportAlignmentViewItems.h"
-#include "ExportUtils.h"
-#include "ExportTasks.h"
-
-#include "ExportMSA2MSADialog.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/MAlignmentObject.h>
-
-#include <U2View/MSAEditorFactory.h>
-#include <U2View/MSAEditor.h>
-
-#include <U2Gui/DialogUtils.h>
-#include <U2Gui/GUIUtils.h>
+#include <QtCore/QDir>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
 #else
 #include <QtWidgets/QMainWindow>
 #endif
+
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/MAlignmentObject.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
+
+#include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorFactory.h>
+
+#include "ExportAlignmentViewItems.h"
+#include "ExportMSA2MSADialog.h"
+#include "ExportTasks.h"
+#include "ExportUtils.h"
 
 namespace U2 {
 
@@ -105,8 +106,12 @@ void MSAExportContext::sl_exportNucleicMsaToAmino() {
     assert(ma.getAlphabet()->isNucleic());
 
     QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::CLUSTAL_ALN)->getSupportedDocumentFileExtensions().first();
+    QString dirPath;
+    QString baseFileName;
+
     GUrl msaUrl = editor->getMSAObject()->getDocument()->getURL();
-    GUrl defaultUrl = GUrlUtils::rollFileName(msaUrl.dirPath() + "/" + msaUrl.baseFileName() + "_transl." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
+    GUrlUtils::getLocalPathFromUrl(msaUrl, editor->getMSAObject()->getGObjectName(), dirPath, baseFileName);
+    GUrl defaultUrl = GUrlUtils::rollFileName(dirPath + QDir::separator() + baseFileName + "_transl." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
 
     ExportMSA2MSADialog d(defaultUrl.getURLString(), BaseDocumentFormats::CLUSTAL_ALN, editor->getCurrentSelection().height() < 1, AppContext::getMainWindow()->getQMainWindow());
 

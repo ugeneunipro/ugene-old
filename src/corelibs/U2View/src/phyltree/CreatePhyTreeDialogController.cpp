@@ -51,7 +51,10 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
         ui->algorithmBox->addItem(item);
     }
     const GUrl& msaURL = mobj->getDocument()->getURL();
-    GUrl url = GUrlUtils::rollFileName(msaURL.dirPath() + "/" + msaURL.baseFileName() + ".nwk", DocumentUtils::getNewDocFileNameExcludesHint());
+    QString dirPath;
+    QString baseFileName;
+    GUrlUtils::getLocalPathFromUrl(msaURL, mobj->getGObjectName(), dirPath, baseFileName);
+    GUrl url = GUrlUtils::rollFileName(dirPath + QDir::separator() + baseFileName + ".nwk", DocumentUtils::getNewDocFileNameExcludesHint());
 
     QPushButton *okButton = ui->buttonBox->button(QDialogButtonBox::Ok);
 

@@ -26,6 +26,7 @@
 
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -33,12 +34,12 @@
 #include <U2Algorithm/BuiltInAssemblyConsensusAlgorithms.h>
 
 #include "AssemblyBrowser.h"
-#include "ExportConsensusTask.h"
-#include "ExportConsensusDialog.h"
-#include "ExportConsensusVariationsTask.h"
-#include "ExportConsensusVariationsDialog.h"
-#include "AssemblyConsensusTask.h"
 #include "AssemblyConsensusArea.h"
+#include "AssemblyConsensusTask.h"
+#include "ExportConsensusDialog.h"
+#include "ExportConsensusTask.h"
+#include "ExportConsensusVariationsDialog.h"
+#include "ExportConsensusVariationsTask.h"
 
 namespace U2 {
 
@@ -243,9 +244,12 @@ void AssemblyConsensusArea::sl_exportConsensus() {
     settings.addToProject = true;
     settings.keepGaps = true;
 
-    QFileInfo db(getModel()->getAssembly().dbiId);
+    GUrl url(U2DbiUtils::ref2Url(getModel()->getDbiConnection().dbi->getDbiRef()));
+    QString dirPath;
+    QString baseFileName;
+    GUrlUtils::getLocalPathFromUrl(url, getModel()->getAssembly().visualName, dirPath, baseFileName);
     QString ext = defaultFormat->getSupportedDocumentFileExtensions().first();
-    settings.fileName = QString("%1/%2_consensus.%3").arg(db.path()).arg(db.baseName()).arg(ext);
+    settings.fileName = QString("%1/%2_consensus.%3").arg(dirPath).arg(baseFileName).arg(ext);
 
     ExportConsensusDialog dlg(this, settings, getVisibleRegion());
     if(dlg.exec() == QDialog::Accepted) {
@@ -268,16 +272,19 @@ void AssemblyConsensusArea::sl_exportConsensusVariations(){
     settings.mode = Mode_Variations;
     settings.refSeq = getModel()->getRefereneceEntityRef();
 
-    QFileInfo db(getModel()->getAssembly().dbiId);
+
+    GUrl url(U2DbiUtils::ref2Url(getModel()->getDbiConnection().dbi->getDbiRef()));
+    QString dirPath;
+    QString baseFileName;
+    GUrlUtils::getLocalPathFromUrl(url, getModel()->getAssembly().visualName, dirPath, baseFileName);
     QString ext = defaultFormat->getSupportedDocumentFileExtensions().first();
-    settings.fileName = QString("%1/%2.%3").arg(db.path()).arg(db.baseName()).arg(ext);
+    settings.fileName = QString("%1/%2.%3").arg(dirPath).arg(baseFileName).arg(ext);
 
     ExportConsensusVariationsDialog dlg(this, settings, getVisibleRegion());
     if(dlg.exec() == QDialog::Accepted) {
         settings = dlg.getSettings();
         AppContext::getTaskScheduler()->registerTopLevelTask(new ExportConsensusVariationsTask(settings));
     }
-
 }
 
 void AssemblyConsensusArea::updateActions(){

@@ -19,8 +19,48 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportProjectViewItems.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QFileDialog>
+#include <QtGui/QMainWindow>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMessageBox>
+#endif
 
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/AppResources.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNAChromatogramObject.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/DocumentSelection.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectSelection.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/L10n.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/MSAUtils.h>
+#include <U2Core/MultiTask.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/SelectionModel.h>
+#include <U2Core/SelectionUtils.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2OpStatusUtils.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/ExportAnnotations2CSVTask.h>
+#include <U2Gui/ExportObjectUtils.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/ProjectView.h>
+
+#include "ExportProjectViewItems.h"
 #include "ExportSequenceTask.h"
 #include "ExportSequencesDialog.h"
 #include "ExportSequences2MSADialog.h"
@@ -31,47 +71,6 @@
 #include "ExportQualityScoresTask.h"
 #include "ImportAnnotationsFromCSVDialog.h"
 #include "ImportAnnotationsFromCSVTask.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Core/SelectionModel.h>
-#include <U2Core/L10n.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/DNAChromatogramObject.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/DocumentSelection.h>
-#include <U2Core/GObjectSelection.h>
-#include <U2Core/SelectionUtils.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/MSAUtils.h>
-#include <U2Core/MultiTask.h>
-#include <U2Core/AppResources.h>
-#include <U2Core/U2DbiRegistry.h>
-
-#include <U2Gui/DialogUtils.h>
-#include <U2Gui/ExportAnnotations2CSVTask.h>
-#include <U2Gui/ExportObjectUtils.h>
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/MainWindow.h>
-#include <U2Gui/ProjectView.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMainWindow>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMainWindow>
-#endif
 
 #define ACTION_EXPORT_SEQUENCE "export sequences"
 #define ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT "export sequences as alignment"
@@ -242,23 +241,29 @@ static bool hasNucleicForAll(const QList<GObject*>& set) {
 
 void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
     ProjectView* pv = AppContext::getProjectView();
-    assert(pv!=NULL);
+    SAFE_POINT(NULL != pv, "Project view is NULL", );
 
-    MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
+    MultiGSelection ms;
+    ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
     QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
     if (set.isEmpty()) {
         QMessageBox::critical(NULL, L10N::errorTitle(), tr("No sequence objects selected!"));
         return;
     }
+
     bool allowMerge = set.size() > 1;
     bool allowComplement = hasComplementForAll(set);
     bool allowTranslate = hasAminoForAll(set);
     bool allowBackTranslate = hasNucleicForAll(set);
     
-    QFileInfo fi((*set.constBegin())->getDocument()->getURLString());
-    QString defaultFileNameDir = fi.absoluteDir().absolutePath();
-    const QString fileBaseName = fi.baseName();
-    QString defaultFileName = defaultFileNameDir + "/" + fileBaseName + "_new.fa";
+    QString defaultFileNameDir;
+    QString fileBaseName;
+    GUrlUtils::getLocalPathFromUrl((*set.constBegin())->getDocument()->getURL(),
+                                     (*set.constBegin())->getGObjectName(),
+                                     defaultFileNameDir,
+                                     fileBaseName);
+
+    QString defaultFileName = defaultFileNameDir + QDir::separator() + fileBaseName + "_new.fa";
     ExportSequencesDialog d(allowMerge, allowComplement, allowTranslate, allowBackTranslate,
         defaultFileName, fileBaseName, BaseDocumentFormats::FASTA,
         AppContext::getMainWindow()->getQMainWindow());
@@ -270,14 +275,12 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
     SAFE_POINT(!d.file.isEmpty(), "Invalid file name detected", );
 
     ExportSequenceTaskSettings s;
-    ExportUtils::loadDNAExportSettingsFromDlg(s,d);
+    ExportUtils::loadDNAExportSettingsFromDlg(s, d);
 
     QList<GObject*> allAnnotationTables = s.saveAnnotations ? GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::ANNOTATION_TABLE) 
                                                             : QList<GObject*>();
-    QStringList objectNames;
     foreach(GObject* o, set) {
         U2SequenceObject* so = qobject_cast<U2SequenceObject*>(o);
-        QString docUrl = so->getDocument()->getURLString();
         QList<SharedAnnotationData> anns;
         if (s.saveAnnotations) {
             foreach(GObject* aObj, allAnnotationTables) {
@@ -314,8 +317,12 @@ void ExportProjectViewItemsContoller::sl_saveSequencesAsAlignment() {
     }
     
     QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::CLUSTAL_ALN)->getSupportedDocumentFileExtensions().first();
+    QString dirPath;
+    QString baseFileName;
+
     GUrl seqUrl = sequenceObjects.first()->getDocument()->getURL();
-    GUrl defaultUrl = GUrlUtils::rollFileName(seqUrl.dirPath() + "/" + seqUrl.baseFileName() + "." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
+    GUrlUtils::getLocalPathFromUrl(seqUrl, sequenceObjects.first()->getGObjectName(), dirPath, baseFileName);
+    GUrl defaultUrl = GUrlUtils::rollFileName(dirPath + QDir::separator() + baseFileName + "." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
     
     ExportSequences2MSADialog d(AppContext::getMainWindow()->getQMainWindow(), defaultUrl.getURLString());
 
@@ -392,8 +399,13 @@ void ExportProjectViewItemsContoller::sl_exportNucleicAlignmentToAmino() {
     Document* doc = firstObject->getDocument();
 
     QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::CLUSTAL_ALN)->getSupportedDocumentFileExtensions().first();
-    GUrl msaUrl = doc->getURLString();
-    GUrl defaultUrl = GUrlUtils::rollFileName(msaUrl.dirPath() + "/" + msaUrl.baseFileName() + "_transl." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
+    QString dirPath;
+    QString baseFileName;
+
+    GUrl msaUrl = doc->getURL();
+    GUrlUtils::getLocalPathFromUrl(msaUrl, ma.getName(), dirPath, baseFileName);
+
+    GUrl defaultUrl = GUrlUtils::rollFileName(dirPath + QDir::separator() + baseFileName + "_transl." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
 
     ExportMSA2MSADialog d(defaultUrl.getURLString(), BaseDocumentFormats::CLUSTAL_ALN, true, AppContext::getMainWindow()->getQMainWindow());
 
@@ -434,8 +446,6 @@ void ExportProjectViewItemsContoller::sl_exportChromatogramToSCF() {
     GObject* obj = set.first();
     DNAChromatogramObject* chromaObj = qobject_cast<DNAChromatogramObject*>(obj);
     assert(chromaObj != NULL);
-    
-    
     
     ExportChromatogramDialog d(QApplication::activeWindow(), chromaObj->getDocument()->getURL());
     int rc = d.exec();
@@ -492,7 +502,6 @@ void ExportProjectViewItemsContoller::sl_exportSequenceQuality() {
         QMessageBox::critical(NULL, L10N::errorTitle(), tr("No sequence objects selected!"));
         return;
     }
-
     
     LastUsedDirHelper lod;
     lod.url = QFileDialog::getSaveFileName(QApplication::activeWindow(), tr("Set output quality file"), lod.dir,".qual");
@@ -533,7 +542,7 @@ void ExportProjectViewItemsContoller::sl_exportObject() {
     SAFE_POINT_OP(os, );
 
     const QString savePath = dirHelper.getLastUsedDir(QString(), QDir::homePath())
-        + "/" + copied->getGObjectName();
+        + QDir::separator() + copied->getGObjectName();
 
     ExportObjectUtils::exportObject2Document(copied, savePath);
 }
