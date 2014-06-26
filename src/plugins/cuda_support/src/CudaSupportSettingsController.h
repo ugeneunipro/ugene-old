@@ -48,8 +48,11 @@ public:
 
     virtual AppSettingsGUIPageWidget * createWidget( AppSettingsGUIPageState* state );
 
+    const QString& getHelpPageId() const {return helpPageId;};
+
 private:
     QString displayMsg;
+    static const QString helpPageId;
 };
 
 class CudaSupportSettingsPageState : public AppSettingsGUIPageState {
