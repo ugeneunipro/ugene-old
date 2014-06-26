@@ -245,21 +245,7 @@ QString GUITestLauncher::performTest(const QString& testName) {
     if (finished) {
         return tr("An error occurred while finishing UGENE: ") + process.errorString() + '\n' + readTestResult(process.readAllStandardOutput());
     } else {
-        bool areThereExternalToolsTasks = false;
-        QString tasksState = getAdditionalInfo();
-        QList<Task *> taskList = AppContext::getTaskScheduler()->getTopLevelTasks();
-        foreach (Task *task, taskList) {
-            tasksState += QString("%1: progress = '%2'\n").arg(task->getTaskName()).arg(task->getProgress());
-            QList<Task *> subtaskList = task->getSubtasks();
-            if (!subtaskList.isEmpty()) {
-                tasksState += "  Subtasks:\n";
-                foreach (Task *subtask, subtaskList) {
-                    tasksState += QString("    %1: progress = '%2'\n").arg(subtask->getTaskName()).arg(subtask->getProgress());
-                }
-            }
-        }
-
-        return tr("Test fails because of timeout.") + tasksState;
+        return tr("Test fails because of timeout.") + getAdditionalInfo();
     }
 }
 
