@@ -338,7 +338,9 @@ U2Dbi * U2DbiPool::openDbi(const U2DbiRef &ref, bool createDatabase, U2OpStatus 
         } else {
             // create new DBI
             dbi = createDbi(ref, createDatabase, os);
+            CHECK_OP(os, NULL);
         }
+        SAFE_POINT_EXT(NULL != dbi, "NULL dbi in the DbiPool detected", NULL);
         dbiById[id] = dbi;
         dbiCountersById[id] = 1;
     }
