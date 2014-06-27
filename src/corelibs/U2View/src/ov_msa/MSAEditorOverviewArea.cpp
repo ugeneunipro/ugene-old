@@ -100,7 +100,9 @@ void MSAEditorOverviewArea::sl_onContextMenuRequested(const QPoint &p) {
 void MSAEditorOverviewArea::sl_show() {
     setVisible( !isVisible() );
     if (graphOverview->isVisible()) {
-        graphOverview->sl_drawGraph();
+        graphOverview->sl_unblockRendering(true);
+    } else {
+        graphOverview->sl_blockRendering();
     }
 }
 
