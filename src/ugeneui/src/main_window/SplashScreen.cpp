@@ -21,6 +21,10 @@
 
 #include "SplashScreen.h"
 
+#include <U2Core/AppContext.h>
+#include <U2Core/Task.h>
+
+#include <QtCore/qcoreevent.h>
 #include <QtGui/QMovie>
 #include <QtGui/QLayout>
 #include <QtGui/QLabel>
@@ -54,6 +58,22 @@ SplashScreen::SplashScreen( QWidget *parent /*= NULL*/ ):QDialog(parent) {
 
     QVBoxLayout* aWLayout = (QVBoxLayout*)frame->layout();
     aWLayout->insertWidget(0, processLabel);
+    installEventFilter(this);
+}
+
+void SplashScreen::sl_close(){
+    if(AppContext::getTaskScheduler() == qobject_cast<TaskScheduler*>(sender())){
+        removeEventFilter(this);
+        close();
+    }
+}
+
+bool SplashScreen::eventFilter(QObject *obj, QEvent *ev){
+    if(ev->type() == QEvent::Close){
+        ev->ignore();
+        return true;    
+    }
+    return false;
 }
 
 }

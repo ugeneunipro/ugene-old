@@ -27,8 +27,13 @@
 namespace U2{
 
 class SplashScreen : public QDialog{
+    Q_OBJECT
 public:
     SplashScreen(QWidget *parent = NULL);
+public slots:
+    void sl_close();
+protected:
+    bool eventFilter(QObject *obj, QEvent *ev);
 };
 
 } //namespace
