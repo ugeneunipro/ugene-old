@@ -186,7 +186,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
                     AnnotationData* a = new AnnotationData();
                     SharedAnnotationData f(a);
                     f->name = "comment";
-                    f->location->regions.append(U2Region(0,st.entry->seqLen));
+                    f->location->regions.append(U2Region(0, sequenceSize));
                     for(int i = 0; i < commentSection.size(); ++i) {
                         f->qualifiers.append( U2Qualifier(QString("%1").arg(i + 1,2,10,QChar('0')), commentSection[i]));
                     }
