@@ -209,7 +209,7 @@ QString getAdditionalInfo() {
     CHECK(NULL != etManager, result);
 
     foreach (ExternalTool* tool, AppContext::getExternalToolRegistry()->getAllEntries()) {
-        result += QString("%1: state '%1'").arg(tool->getName()).arg(getToolState(tool->getName()));
+        result += QString("%1: state '%2'").arg(tool->getName()).arg(getToolState(tool->getName())) + "\n";
     }
 
     return result;
