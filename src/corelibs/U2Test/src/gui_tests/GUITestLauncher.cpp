@@ -235,13 +235,15 @@ QString GUITestLauncher::performTest(const QString& testName) {
     QProcess::ExitStatus exitStatus = process.exitStatus();
 
 #ifdef Q_OS_WIN
-    QProcess::execute("closeErrorReport.exe"); //this exe file, compiled Autoit script with next code WinClose("ugeneui: ugeneui.exe - Application Error")
+    QProcess::execute("closeErrorReport.exe"); //this exe file, compiled Autoit script
 #endif
 
     if (finished && (exitStatus == QProcess::NormalExit)) {
         return readTestResult(process.readAllStandardOutput());
     }
-
+#ifdef Q_OS_WIN
+    process.kill();
+#endif
     if (finished) {
         return tr("An error occurred while finishing UGENE: ") + process.errorString() + '\n' + readTestResult(process.readAllStandardOutput());
     } else {
