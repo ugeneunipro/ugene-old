@@ -3315,8 +3315,8 @@ GUI_TEST_CLASS_DEFINITION( test_2266_1 ){
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" + baseDirName + "/", "variations.vcf");
 
-    GTUtilsProjectTreeView::findIndex(os, "pkF70_variations");
-    GTUtilsProjectTreeView::findIndex(os, "pkf140_variations");
+    GTUtilsProjectTreeView::findIndex(os, "pkF70");
+    GTUtilsProjectTreeView::findIndex(os, "pkf140");
 }
 GUI_TEST_CLASS_DEFINITION( test_2267_1 ){
 //     1. Open human_T1.fa
