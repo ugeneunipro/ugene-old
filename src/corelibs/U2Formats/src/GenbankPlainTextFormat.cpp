@@ -605,14 +605,14 @@ static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so, QString
             loc = padToLen(loc.append(tokens[2]), 43);
             loc = padToLen(loc.append(tokens[4]), 52);
             loc = loc.append(tokens[3]);
-            if (so->isCircular()) {
-                loc = loc.append(" ");
-                loc = loc.append(EMBLGenbankAbstractDocument::LOCUS_TAG_CIRCULAR);
-            }
         }
     } else {
         assert(!aos.isEmpty());
         loc = !aos.isEmpty() ? aos.takeFirst()->getGObjectName() : "unknown"; //FIXME ???
+    }
+    if (so->isCircular()) {
+        loc = loc.append(" ");
+        loc = loc.append(EMBLGenbankAbstractDocument::LOCUS_TAG_CIRCULAR);
     }
     assert(!loc.isEmpty());
     if (date.isEmpty()) {
