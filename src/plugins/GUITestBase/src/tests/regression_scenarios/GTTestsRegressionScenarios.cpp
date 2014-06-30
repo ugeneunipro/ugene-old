@@ -4803,7 +4803,7 @@ GUI_TEST_CLASS_DEFINITION(test_3074) {
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, "/view_test_0002/COI");
 
-    QWidget* msaView = GTWidget::findWidget(os, databaseDoc->getName() + " [m] COI");
+    QWidget* msaView = GTWidget::findWidget(os, " [m] COI");
     CHECK_SET_ERR(NULL != msaView, "View wasn't opened");
 
     GTUtilsSharedDatabaseDocument::disconnectDatabase(os, databaseDoc);

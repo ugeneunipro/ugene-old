@@ -786,7 +786,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0002) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(200);
 
-    QWidget* sequenceView = GTWidget::findWidget(os, databaseDoc->getName() + " " + fileObjectNameWidget);
+    QWidget* sequenceView = GTWidget::findWidget(os," " + fileObjectNameWidget);
     CHECK_SET_ERR(NULL != sequenceView, "Sequence view wasn't opened");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
@@ -830,7 +830,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
     GTGlobals::sleep(200);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    QWidget* sequenceView = GTWidget::findWidget(os, databaseDoc->getName() + " " + sequenceWidgetName);
+    QWidget* sequenceView = GTWidget::findWidget(os, " " + sequenceWidgetName);
     CHECK_SET_ERR(NULL != sequenceView, "Sequence view wasn't opened");
 
     GTUtilsProjectTreeView::dragAndDrop(os, fileAnnotationObjectIndex, folderItemIndex);
@@ -858,7 +858,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
     GTGlobals::sleep(200);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
-    sequenceView = GTWidget::findWidget(os, databaseDoc->getName() + " " + sequenceWidgetName);
+    sequenceView = GTWidget::findWidget(os, " " + sequenceWidgetName);
     CHECK_SET_ERR(NULL != sequenceView, "Sequence view wasn't opened again");
 
     annotationTableWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
@@ -1403,7 +1403,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0011) {
     CHECK_SET_ERR(annotationTableObjectIndex.isValid(), "Annotation table item wasn't found");
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseSequenceObjectPath);
-    QWidget* seqView = GTWidget::findWidget(os, databaseDoc->getName() + " " + sequenceVisibleWidgetName);
+    QWidget* seqView = GTWidget::findWidget(os, " " + sequenceVisibleWidgetName);
     CHECK_SET_ERR(NULL != seqView, "View wasn't opened");
 
     QTreeWidget* annotationTableWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
@@ -1497,7 +1497,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0013) {
     const QString sequenceVisibleWidgetName = "[s] " + sequenceObjectName;
     const QString databaseAnnotationTableObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + annotationTableObjectName;
     const QString databaseSequenceObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
-    const QString contigFeatureName = "contig";
+    const QString contigFeatureName = "contig  (0, 2)";
     const QString expectedSecondContigRegion = "243..362";
 
 
@@ -1526,10 +1526,10 @@ GUI_TEST_CLASS_DEFINITION(import_test_0013) {
     QTreeWidgetItem* secondContig = contigGroup->child(1);
     CHECK_SET_ERR(NULL != contigGroup, "Second contig annotation is NULL");
 
-    const QString seconContigRegion = secondContig->data(1, Qt::DisplayRole).toString();
+    const QString seconContigRegion = secondContig->text(1);
     CHECK_SET_ERR(expectedSecondContigRegion == seconContigRegion, QString("Invalid contig region: expected %1, got %1").arg(expectedSecondContigRegion).arg(seconContigRegion));
 
-    CHECK_SET_ERR(!lt.hasError(), "errors in log");
+    CHECK_SET_ERR(!lt.hasError(), "errors in log: " + lt.getError());
 }
 
 GUI_TEST_CLASS_DEFINITION(import_test_0014) {
@@ -1720,18 +1720,18 @@ GUI_TEST_CLASS_DEFINITION(import_test_0017) {
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblyFirstObjectPath);
 
-    qint64 lengthFirst = GTUtilsAssemblyBrowser::getLength(os, databaseDoc->getName() + " [as] " + assemblyFirstObjectName);
-    qint64 readsCountFirst = GTUtilsAssemblyBrowser::getReadsCount(os, databaseDoc->getName() + " [as] " + assemblyFirstObjectName);
-    bool hasReferenceFirst = GTUtilsAssemblyBrowser::hasReference(os, databaseDoc->getName() + " [as] " + assemblyFirstObjectName);
+    qint64 lengthFirst = GTUtilsAssemblyBrowser::getLength(os, " [as] " + assemblyFirstObjectName);
+    qint64 readsCountFirst = GTUtilsAssemblyBrowser::getReadsCount(os, " [as] " + assemblyFirstObjectName);
+    bool hasReferenceFirst = GTUtilsAssemblyBrowser::hasReference(os, " [as] " + assemblyFirstObjectName);
     CHECK_SET_ERR(expectedLengthFirst == lengthFirst, QString("The assembly length is incorrect: expect %1, got %1").arg(expectedLengthFirst).arg(lengthFirst));
     CHECK_SET_ERR(expectedReadsCountFirst == readsCountFirst, QString("The assembly reads count is incorrect: expect %1, got %1").arg(expectedReadsCountFirst).arg(readsCountFirst));
     CHECK_SET_ERR(hasReferenceFirst, "The assembly reference is not set");
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblySecondObjectPath);
 
-    qint64 lengthSecond = GTUtilsAssemblyBrowser::getLength(os, databaseDoc->getName() + " [as] " + assemblySecondObjectName);
-    qint64 readsCountSecond = GTUtilsAssemblyBrowser::getReadsCount(os, databaseDoc->getName() + " [as] " + assemblySecondObjectName);
-    bool hasReferenceSecond = GTUtilsAssemblyBrowser::hasReference(os, databaseDoc->getName() + " [as] " + assemblySecondObjectName);
+    qint64 lengthSecond = GTUtilsAssemblyBrowser::getLength(os, " [as] " + assemblySecondObjectName);
+    qint64 readsCountSecond = GTUtilsAssemblyBrowser::getReadsCount(os, " [as] " + assemblySecondObjectName);
+    bool hasReferenceSecond = GTUtilsAssemblyBrowser::hasReference(os, " [as] " + assemblySecondObjectName);
     CHECK_SET_ERR(expectedLengthSecond == lengthSecond, QString("The assembly length is incorrect: expect %1, got %1").arg(expectedLengthSecond).arg(lengthSecond));
     CHECK_SET_ERR(expectedReadsCountSecond == readsCountSecond, QString("The assembly reads count is incorrect: expect %1, got %1").arg(expectedReadsCountSecond).arg(readsCountSecond));
     CHECK_SET_ERR(hasReferenceSecond, "The assembly reference is not set");
