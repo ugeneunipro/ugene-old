@@ -7,7 +7,7 @@ DATA_DIR=../../../data
 TARGET_APP_DIR="${PRODUCT_NAME}-${VERSION}"
 PACKAGE_TYPE="linux"
 
-#PATH_TO_QT_LIBS="$HOME/qtsdk-2010.01/qt/lib"
+PATH_TO_QT_LIBS="/home/ugene/tools/qt-4.8.6/lib"
 
 if [ -z "$PATH_TO_QT_LIBS" ]; then 
    echo PATH_TO_QT_LIBS environment variable is not set!
@@ -122,6 +122,9 @@ if [ ! -z "$PATH_TO_LIBPNG12" ]; then
    cp -v "$PATH_TO_LIBPNG12/libpng12.so.0" "${TARGET_APP_DIR}"
    strip -v "${TARGET_APP_DIR}/libpng12.so.0"
 fi
+mkdir "${TARGET_APP_DIR}/sqldrivers"
+cp -v "$PATH_TO_QT_LIBS/../plugins/sqldrivers/libqsqlmysql.so" "${TARGET_APP_DIR}/sqldrivers"
+strip -v "${TARGET_APP_DIR}//sqldrivers/libqsqlmysql.so"
 
 if [ "$1" == "-test" ]
     then
