@@ -123,10 +123,10 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     connect(searchGenbankEntryAction, SIGNAL(triggered()), SLOT(sl_searchGenbankEntry()));
 
 
-    separatorAction1  = new QAction("-", this);
+    separatorAction1  = new QAction("", this);
     separatorAction1->setSeparator(true);
 
-    separatorAction2 = new QAction("-", this);
+    separatorAction2 = new QAction("", this);
     separatorAction2->setSeparator(true);
 
     //add load/close actions to menu and toolbar
