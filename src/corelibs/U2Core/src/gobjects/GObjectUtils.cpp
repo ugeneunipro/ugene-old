@@ -148,12 +148,15 @@ QList<GObject *> findRelatedObjectsForLoadedObjects(const GObject *obj, GObjectR
     foreach (GObject *object, fromObjects) {
         Document *doc = object->getDocument();
         SAFE_POINT(NULL != doc, "Invalid parent document detected", res);
-        const U2DbiRef dbiRef = object->getEntityRef().dbiRef;
-        if (entityRef.dbiRef == dbiRef) {
-            doc2DbiRef.insert(doc, entityRef.dbiRef);
-        }
         if (!doc->isDatabaseConnection()) {
-            object->getObjectRelations(); // this is hack to ensure that relations are stored into DB for local files
+            if (object->hasObjectRelation(obj, role)) { // this 'if' branch has to be distinctive from the enclosing one
+                res.append(object);
+            }
+        } else {
+            const U2DbiRef dbiRef = object->getEntityRef().dbiRef;
+            if (entityRef.dbiRef == dbiRef) {
+                doc2DbiRef.insert(doc, entityRef.dbiRef);
+            }
         }
     }
 

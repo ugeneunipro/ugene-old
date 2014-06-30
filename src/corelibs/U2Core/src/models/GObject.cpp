@@ -158,13 +158,12 @@ void GObject::setRelationsInDb(QList<GObjectRelation>& list) const {
     SAFE_POINT_OP(os, );
     U2ObjectDbi *oDbi = con.dbi->getObjectDbi();
 
+    QList<U2ObjectRelation> dbRelations;
     for (int i = 0, n = list.size(); i < n; ++i ) {
         GObjectRelation &relation = list[i];
         const U2DataType refType = U2ObjectRelationsDbi::toDataType(relation.ref.objType);
         const bool relatedObjectDbReferenceValid = relation.ref.entityRef.dbiRef.isValid();
-        if (U2Type::Unknown == refType
-            || (relatedObjectDbReferenceValid && !(relation.ref.entityRef.dbiRef == entityRef.dbiRef)))
-        {
+        if (U2Type::Unknown == refType || (relatedObjectDbReferenceValid && !(relation.ref.entityRef.dbiRef == entityRef.dbiRef))) {
             continue;
         }
 
@@ -183,8 +182,13 @@ void GObject::setRelationsInDb(QList<GObjectRelation>& list) const {
         dbRelation.referencedType = refType;
         dbRelation.relationRole = relation.role;
 
-        rDbi->createObjectRelation(dbRelation, os);
-        SAFE_POINT_OP(os, );
+        // after a project has loaded relations can duplicate, but we don't have to create copies in the DBI
+        if (!dbRelations.contains(dbRelation)) {
+            rDbi->createObjectRelation(dbRelation, os);
+            SAFE_POINT_OP(os, );
+
+            dbRelations << dbRelation;
+        }
     }
 }
 
