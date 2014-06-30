@@ -193,6 +193,8 @@ void StateLockableTreeItem::setParentStateLockItem(StateLockableTreeItem* newPar
         "Add-child modification is not allowed for new parent item!",);
     SAFE_POINT(parentStateLockItem == NULL || parentStateLockItem->isModificationAllowed(StateLockModType_AddChild), 
         "Add-child modification is not allowed for old parent item!",);
+    SAFE_POINT((NULL == newParent) || (newParent->thread() == thread()), 
+        "Parent item has a different thread",);
 
     StateLockableTreeItem* oldParent = parentStateLockItem;
     parentStateLockItem = newParent;

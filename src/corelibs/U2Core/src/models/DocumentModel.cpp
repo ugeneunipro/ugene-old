@@ -695,6 +695,7 @@ void Document::setGHints(GHints* newHints) {
 void Document::addUnloadedObjects(const QList<UnloadedObjectInfo>& info) {
     foreach(const UnloadedObjectInfo& oi, info) {
         UnloadedObject* obj = new UnloadedObject(oi);
+        obj->moveToThread(thread());
         _addObjectToHierarchy(obj);
         assert(obj->getDocument() == this);
         emit si_objectAdded(obj);
