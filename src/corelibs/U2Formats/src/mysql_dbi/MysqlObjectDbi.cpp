@@ -200,12 +200,12 @@ void MysqlObjectDbi::renameFolder(const QString &oldPath, const QString &newPath
     foreach (const QString &path, allFolders) {
         if (path.startsWith(parent)) {
             QString newSubfolderPath = newParent + path.mid(parent.size());
-            const QByteArray oldSubfodlerHash = QCryptographicHash::hash(path.toLatin1(), QCryptographicHash::Md5).toHex();
+            const QByteArray oldSubfolderHash = QCryptographicHash::hash(path.toLatin1(), QCryptographicHash::Md5).toHex();
             const QByteArray newSubfolderHash = QCryptographicHash::hash(newSubfolderPath.toLatin1(), QCryptographicHash::Md5).toHex();
             U2SqlQuery q(queryString, db, os);
             q.bindString("newPath", newSubfolderPath);
             q.bindBlob("newHash", newSubfolderHash);
-            q.bindBlob("oldHash", oldSubfodlerHash);
+            q.bindBlob("oldHash", oldSubfolderHash);
             q.update();
             CHECK_OP(os, );
         }
@@ -214,20 +214,22 @@ void MysqlObjectDbi::renameFolder(const QString &oldPath, const QString &newPath
 
 qint64 MysqlObjectDbi::countObjects(const QString& folder, U2OpStatus& os) {
     const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(folder);
+    const QByteArray hash = QCryptographicHash::hash(canonicalFolder.toLatin1(), QCryptographicHash::Md5).toHex();
 
     static const QString queryString = "SELECT COUNT(*) FROM FolderContent AS fc, Folder AS f "
-        "WHERE BINARY f.path = :path AND fc.folder = f.id";
+        "WHERE f.hash = :hash AND fc.folder = f.id";
     U2SqlQuery q(queryString, db, os);
-    q.bindString("path", canonicalFolder);
+    q.bindBlob("hash", hash);
     return q.selectInt64();
 }
 
 QList<U2DataId> MysqlObjectDbi::getObjects(const QString& folder, qint64 , qint64 , U2OpStatus& os) {
     const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(folder);
+    const QByteArray hash = QCryptographicHash::hash(canonicalFolder.toLatin1(), QCryptographicHash::Md5).toHex();
 
-    static const QString queryString = "SELECT o.id, o.type FROM Object AS o, FolderContent AS fc, Folder AS f WHERE BINARY f.path = :path AND fc.folder = f.id AND fc.object = o.id";
+    static const QString queryString = "SELECT o.id, o.type FROM Object AS o, FolderContent AS fc, Folder AS f WHERE f.hash = :hash AND fc.folder = f.id AND fc.object = o.id";
     U2SqlQuery q(queryString, db, os);
-    q.bindString("path", canonicalFolder);
+    q.bindString("hash", hash);
     return q.selectDataIdsExt();
 }
 
@@ -241,19 +243,21 @@ QStringList MysqlObjectDbi::getObjectFolders(const U2DataId& objectId, U2OpStatu
 
 qint64 MysqlObjectDbi::getFolderLocalVersion(const QString& folder, U2OpStatus& os) {
     const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(folder);
+    const QByteArray hash = QCryptographicHash::hash(canonicalFolder.toLatin1(), QCryptographicHash::Md5).toHex();
 
-    static const QString queryString = "SELECT vlocal FROM Folder WHERE BINARY path = :path LIMIT 1";
+    static const QString queryString = "SELECT vlocal FROM Folder WHERE hash = :hash LIMIT 1";
     U2SqlQuery q(queryString, db, os);
-    q.bindString("path", canonicalFolder);
+    q.bindString("hash", hash);
     return q.selectInt64();
 }
 
 qint64 MysqlObjectDbi::getFolderGlobalVersion(const QString& folder, U2OpStatus& os) {
     const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(folder);
+    const QByteArray hash = QCryptographicHash::hash(canonicalFolder.toLatin1(), QCryptographicHash::Md5).toHex();
 
-    static const QString queryString = "SELECT vglobal FROM Folder WHERE BINARY path = :path LIMIT 1";
+    static const QString queryString = "SELECT vglobal FROM Folder WHERE hash = :hash LIMIT 1";
     U2SqlQuery q(queryString, db, os);
-    q.bindString("path", canonicalFolder);
+    q.bindString("hash", hash);
     return q.selectInt64();
 }
 
@@ -321,9 +325,13 @@ void MysqlObjectDbi::createFolder(const QString& path, U2OpStatus& os) {
     const QString canonicalPath = U2DbiUtils::makeFolderCanonical(path);
     const QByteArray hash = QCryptographicHash::hash(canonicalPath.toLatin1(), QCryptographicHash::Md5).toHex();
 
-    qint64 folderId = getFolderId(canonicalPath, false, db, os);
+    static const QString queryString = "INSERT INTO Folder(path, hash) VALUES(:path, :hash) ON DUPLICATE KEY UPDATE path = VALUES(path), hash = VALUES(hash)";
+    U2SqlQuery q(queryString, db, os);
+    q.bindString("path", canonicalPath);
+    q.bindBlob("hash", hash);
+    qint64 affected = q.update();
     CHECK_OP(os, );
-    CHECK(-1 == folderId, );
+    CHECK(affected != 0, );
 
     QString parentFolder = canonicalPath;
     if (U2ObjectDbi::ROOT_FOLDER != parentFolder) {
@@ -334,13 +342,6 @@ void MysqlObjectDbi::createFolder(const QString& path, U2OpStatus& os) {
         createFolder(parentFolder, os);
     }
 
-    static const QString queryString = "INSERT INTO Folder(path, hash) VALUES(:path, :hash) ON DUPLICATE KEY UPDATE path = VALUES(path), hash = VALUES(hash)";
-    U2SqlQuery q(queryString, db, os);
-    q.bindString("path", canonicalPath);
-    q.bindBlob("hash", hash);
-    q.execute();
-    CHECK_OP(os, );
-
     onFolderUpdated(canonicalPath);
 }
 
@@ -349,6 +350,7 @@ bool MysqlObjectDbi::removeFolder(const QString& folder, U2OpStatus& os) {
     Q_UNUSED(t);
 
     const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(folder);
+    const QByteArray hash = QCryptographicHash::hash(canonicalFolder.toLatin1(), QCryptographicHash::Md5).toHex();
 
     // remove subfolders first
     static const QString selectSubfoldersString = "SELECT path FROM Folder WHERE path LIKE BINARY :path "
@@ -385,9 +387,9 @@ bool MysqlObjectDbi::removeFolder(const QString& folder, U2OpStatus& os) {
 
     if (result) {
         // remove folder record
-        static const QString deleteFolderString = "DELETE FROM Folder WHERE BINARY path = :path";
+        static const QString deleteFolderString = "DELETE FROM Folder WHERE hash = :hash";
         U2SqlQuery deleteFolderQuery(deleteFolderString, db, os);
-        deleteFolderQuery.bindString("path", canonicalFolder);
+        deleteFolderQuery.bindString("hash", hash);
         deleteFolderQuery.execute();
         CHECK_OP(os, false);
 
@@ -756,10 +758,11 @@ void MysqlObjectDbi::updateObject(U2Object& obj, U2OpStatus& os) {
 
 qint64 MysqlObjectDbi::getFolderId(const QString& path, bool mustExist, MysqlDbRef* db, U2OpStatus& os) {
     const QString canonicalPath = U2DbiUtils::makeFolderCanonical(path);
+    const QByteArray hash = QCryptographicHash::hash(canonicalPath.toLatin1(), QCryptographicHash::Md5).toHex();
 
-    static const QString queryString = "SELECT id FROM Folder WHERE BINARY path = :path LIMIT 1";
+    static const QString queryString = "SELECT id FROM Folder WHERE hash = :hash LIMIT 1";
     U2SqlQuery q(queryString, db, os);
-    q.bindString("path", canonicalPath);
+    q.bindString("hash", hash);
     qint64 res = q.selectInt64();
     CHECK_OP(os, -1);
 
@@ -1062,8 +1065,7 @@ void MysqlObjectDbi::redoUpdateObjectName(const U2DataId& id, const QByteArray& 
 }
 
 void MysqlObjectDbi::onFolderUpdated(const QString& ) {
-    // Do nothing. In the current state folders don't work properly.
-    // The best idea - to remove folders.
+    // Do nothing.
 }
 
 }   // namespace U2

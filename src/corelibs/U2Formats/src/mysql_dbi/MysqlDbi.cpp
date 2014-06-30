@@ -283,7 +283,7 @@ void MysqlDbi::open(const QHash<QString, QString> &props, U2OpStatus &os) {
     }
     db->handle.setDatabaseName(dbName);
 
-    db->handle.setConnectOptions("CLIENT_COMPRESS=1;CLIENT_FOUND_ROWS=1;MYSQL_OPT_RECONNECT=1;");
+    db->handle.setConnectOptions("CLIENT_COMPRESS=1;MYSQL_OPT_RECONNECT=1;");
 
     if (!db->handle.open() ) {
         os.setError(U2DbiL10n::tr("Error opening MySQL database: %1").arg(db->handle.lastError().text()));
