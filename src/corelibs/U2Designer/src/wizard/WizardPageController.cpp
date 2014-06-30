@@ -90,11 +90,11 @@ void WizardPageController::setError(WDWizardPage *wPage) {
 }
 
 namespace {
-    QList<QLayout*> removeOneLayout(QLayout *l) {
+    QList<QLayout*> removeOneLayoutContent(QLayout *l) {
         QList<QLayout*> result;
 
-        QLayoutItem *item;
-        while (NULL != (item = l->takeAt(0))) {
+        while (l->count() > 0) {
+            QLayoutItem *item = l->takeAt(0);
             if (NULL != item->widget()) {
                 item->widget()->setParent(NULL);
                 delete item;
@@ -104,7 +104,6 @@ namespace {
                 delete item;
             }
         }
-        delete l;
         return result;
     }
 }
@@ -112,11 +111,20 @@ namespace {
 void WizardPageController::removeLayout(QLayout *l) {
     CHECK(NULL != l, );
     QList<QLayout*> layouts;
+    QList<QLayout*> layoutStack;
     layouts << l;
+    layoutStack << l;
 
     while (!layouts.isEmpty()) {
         QLayout *current = layouts.takeFirst();
-        layouts << removeOneLayout(current);
+        QList<QLayout*> innerLayouts = removeOneLayoutContent(current);
+        layouts << innerLayouts;
+        layoutStack << innerLayouts;
+    }
+
+    while (!layoutStack.isEmpty()) {
+        QLayout *l = layoutStack.takeLast();
+        delete l;
     }
 }
 
