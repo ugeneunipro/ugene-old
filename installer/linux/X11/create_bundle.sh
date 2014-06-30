@@ -124,7 +124,10 @@ if [ ! -z "$PATH_TO_LIBPNG12" ]; then
 fi
 mkdir "${TARGET_APP_DIR}/sqldrivers"
 cp -v "$PATH_TO_QT_LIBS/../plugins/sqldrivers/libqsqlmysql.so" "${TARGET_APP_DIR}/sqldrivers"
-strip -v "${TARGET_APP_DIR}//sqldrivers/libqsqlmysql.so"
+strip -v "${TARGET_APP_DIR}/sqldrivers/libqsqlmysql.so"
+
+PATH_TO_MYSQL_CLIENT_LIB=`ldd "${TARGET_APP_DIR}/sqldrivers/libqsqlmysql.so" |grep libmysqlclient_r.so |cut -d " " -f3`
+cp -v "$PATH_TO_MYSQL_CLIENT_LIB" "${TARGET_APP_DIR}"
 
 if [ "$1" == "-test" ]
     then
