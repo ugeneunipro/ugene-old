@@ -199,11 +199,13 @@ void MysqlObjectDbi::renameFolder(const QString &oldPath, const QString &newPath
     QString newParent = newCPath + PATH_SEP;
     foreach (const QString &path, allFolders) {
         if (path.startsWith(parent)) {
-            QString newPath = newParent + path.mid(parent.size());
+            QString newSubfolderPath = newParent + path.mid(parent.size());
+            const QByteArray oldSubfodlerHash = QCryptographicHash::hash(path.toLatin1(), QCryptographicHash::Md5).toHex();
+            const QByteArray newSubfolderHash = QCryptographicHash::hash(newSubfolderPath.toLatin1(), QCryptographicHash::Md5).toHex();
             U2SqlQuery q(queryString, db, os);
-            q.bindString("newPath", newPath);
-            q.bindBlob("newHash", newHash);
-            q.bindBlob("oldHash", oldHash);
+            q.bindString("newPath", newSubfolderPath);
+            q.bindBlob("newHash", newSubfolderHash);
+            q.bindBlob("oldHash", oldSubfodlerHash);
             q.update();
             CHECK_OP(os, );
         }
