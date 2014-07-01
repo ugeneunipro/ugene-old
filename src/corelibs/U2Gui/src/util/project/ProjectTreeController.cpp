@@ -681,8 +681,8 @@ void ProjectTreeController::sl_onToggleReadonly() {
     }
     Document *doc = docsInSelection.toList().first();
     if (!DocumentUtils::getPermissions(doc).testFlag(QFile::WriteUser)){
-        QMessageBox::warning(QApplication::activeWindow(), tr("Warning"),
-            tr("This action requires changing file:\n%1\nYou don't have enough rights to change file").arg(doc->getURLString()),
+        QMessageBox::warning(QApplication::activeWindow(), tr("Unable to Change Access Mode"),
+            tr("This action requires the modification of the file:\n%1\nYou do not have enough permissions to do this").arg(doc->getURLString()),
             QMessageBox::Ok);
         return;
     }

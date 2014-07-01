@@ -603,7 +603,6 @@ void ProjectViewModel::restoreObjectItemFromRecycleBin(Document *doc, GObject *o
 
 void ProjectViewModel::restoreFolderItemFromRecycleBin(Document *doc, const QString &oldPath) {
     const QString orginPath = recoverRemovedFolderPath(oldPath);
-
     renameFolder(doc, oldPath, orginPath);
 }
 
@@ -838,6 +837,22 @@ bool ProjectViewModel::renameFolder(Document *doc, const QString &oldPath, const
     int row = beforeRemovePath(doc, oldPath);
     docFolders->removeFolder(oldPath);
     afterRemove(row);
+
+    // if some subfolders of the removed folder are already in Recycle Bin
+    // then they have to disappear, since they are hidden in the parent folder
+    if (ProjectUtils::isFolderInRecycleBin(newPath)) {
+        const QStringList removedSubfolders = docFolders->getAllSubFolders(newPath);
+        foreach (const QString &subpath, removedSubfolders) {
+            Folder *folder = folders[doc]->getFolder(subpath);
+            SAFE_POINT(NULL != folder, "Invalid folder detected", false);
+            int subfolderRow = folderRow(folder);
+            if (-1 != subfolderRow) {
+                subfolderRow = beforeRemovePath(doc, subpath);
+                docFolders->removeFolder(subpath);
+                afterRemove(subfolderRow);
+            }
+        }
+    }
 
     return true;
 }

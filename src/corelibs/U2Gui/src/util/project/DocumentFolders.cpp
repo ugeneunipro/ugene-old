@@ -103,7 +103,7 @@ Folder * DocumentFolders::getFolder(const QString &path) const {
 void DocumentFolders::addFolder(const QString &path) {
     SAFE_POINT(!hasFolder(path), "The folder already exists", );
 
-    { // add all folders from @path if they don't exist
+    if (!ProjectUtils::isFolderInRecycleBin(path)) { // add all folders from @path if they don't exist
         const QStringList pathList = path.split(U2ObjectDbi::PATH_SEP, QString::SkipEmptyParts);
         QString fullPath;
         foreach (const QString &folder, pathList) {
@@ -116,6 +116,10 @@ void DocumentFolders::addFolder(const QString &path) {
             // There is a new folder in the model -> update caches
             onFolderAdded(fullPath);
         }
+    } else { // if some folder is being removed to Recycle Bin, then all its parent folders do not have to be created,
+        // since actual parent folders exist and they can produce name conflicts if they are removed.
+        foldersMap[path] = new Folder(doc, path);
+        onFolderAdded(path);
     }
 
     addFolderToStorage(path);
