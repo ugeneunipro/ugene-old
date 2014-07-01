@@ -1824,7 +1824,12 @@ GUI_TEST_CLASS_DEFINITION(view_test_0003) {
 
     QModelIndexList list = GTUtilsProjectTreeView::findIndecies(os, assemblyVisibleName,
                                                                 GTUtilsProjectTreeView::findIndex(os, folderName));
-    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, list[1]);
+    foreach (QModelIndex index, list) {
+        if(index.data() == "[as] chrM"){
+            GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, index);
+        }
+    }
+    GTGlobals::sleep(5000);
     QWidget* assemblyView = GTWidget::findWidget(os, assemblyVisibleNameWidget);
     CHECK_SET_ERR(NULL != assemblyView, "View wasn't opened");
 
@@ -2117,9 +2122,9 @@ GUI_TEST_CLASS_DEFINITION(export_test_0004) {
         ExportDocumentDialogFiller::BAM, false, true));
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, testDir + "_common_data/scenarios/sandbox/et0004_assembly.bam.ugenedb"));
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep(20000);
+    GTGlobals::sleep(40000);
 
-    GTWidget::findWidget(os, "et0004_assembly.bam [as] et0004_assembly");
+    GTWidget::findWidget(os, "assembly_browser_et0004_assembly.bam [as] et0004_assembly");
     CHECK_OP(os, );
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }

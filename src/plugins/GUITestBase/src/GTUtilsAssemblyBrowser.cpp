@@ -35,7 +35,7 @@
 
 namespace U2 {
 
-#define GT_CLASS_NAME "GTUtilsAnnotationsTreeView"
+#define GT_CLASS_NAME "GTUtilsAssemblyBrowser"
 
 #define GT_METHOD_NAME "getView"
 AssemblyBrowserUi *GTUtilsAssemblyBrowser::getView(U2OpStatus& os, const QString &viewTitle) {

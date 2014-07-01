@@ -49,9 +49,9 @@ void GTUtilsMdi::click(U2OpStatus &os, GTGlobals::WindowAction action) {
     GT_CHECK(mainWindow != NULL, "QMainWindow == NULL");
 
     // TODO: batch tests run fails because of not maximized window by default from settings
-    if ((action == GTGlobals::Maximize) || (action == GTGlobals::Minimize)) {
-        return;
-    }
+//    if ((action == GTGlobals::Maximize) || (action == GTGlobals::Minimize)) {
+//        return;
+//    }
 
 #ifndef Q_OS_MAC
     GTMenuBar::clickCornerMenu(os, mainWindow->menuBar(), action);

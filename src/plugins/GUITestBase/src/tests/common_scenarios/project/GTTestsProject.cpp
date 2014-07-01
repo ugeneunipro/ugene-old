@@ -364,6 +364,7 @@ GUI_TEST_CLASS_DEFINITION(test_0021) {
 
 GUI_TEST_CLASS_DEFINITION(test_0023) {
     GTUtilsProject::openFiles(os, testDir + "_common_data/scenarios/project/1m.fa");
+    GTGlobals::sleep();
     GTUtilsMdi::click(os, GTGlobals::Minimize);
 
     QWidget* w = GTUtilsMdi::findWindow(os, "1m [m] Multiple alignment");

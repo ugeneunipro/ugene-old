@@ -37,6 +37,7 @@
 #include "GTUtilsLog.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsProject.h"
+#include "GTUtilsTaskTreeView.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/FontDialogFiller.h"
@@ -3782,26 +3783,13 @@ GUI_TEST_CLASS_DEFINITION(test_0047) {
 GUI_TEST_CLASS_DEFINITION(test_0048) {
     // fail to export big alignment
     GTLogTracer l;
-    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "HIV-1.aln");
-
-    QWidget* zoomIn = GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Zoom In");
-    int counter = 0;
-    while (zoomIn->isEnabled()) {
-        GTWidget::click(os, zoomIn);
-        counter++;
-    }
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "big.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< MSAE_MENU_EXPORT << "Export as image"));
     GTUtilsDialog::waitForDialog(os, new ExportMsaImage(os, testDir + "_common_data/scenarios/sandbox/test_0043.png"));
 
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
-
-    // restore zoom state
-    QWidget* zoomOut = GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Zoom Out");
-    while (counter != 0) {
-        GTWidget::click(os, zoomOut);
-        counter--;
-    }
 
     CHECK_SET_ERR(l.hasError(), "There is no error in the log!");
 }
