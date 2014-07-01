@@ -380,10 +380,17 @@ void GenbankPlainTextFormat::readHeaderAttributes(QVariantMap& tags, DbiConnecti
     }
 
     if (tags.keys().contains(DNAInfo::ACCESSION)) {
-        QString acc = tags.value(DNAInfo::ACCESSION).toString();
-        U2StringAttribute accAttr(so->getSequenceRef().entityId, DNAInfo::ACCESSION, acc);
-        con.dbi->getAttributeDbi()->createStringAttribute(accAttr, os);
-        CHECK_OP(os, );
+        QString acc;
+        if (tags.value(DNAInfo::ACCESSION).canConvert<QString>()) {
+            acc = tags.value(DNAInfo::ACCESSION).toString();
+        } else if (tags.value(DNAInfo::ACCESSION).canConvert<QStringList>()) {
+            acc = tags.value(DNAInfo::ACCESSION).toStringList().join(", ");
+        }
+        if (!acc.isEmpty()) {
+            U2StringAttribute accAttr(so->getSequenceRef().entityId, DNAInfo::ACCESSION, acc);
+            con.dbi->getAttributeDbi()->createStringAttribute(accAttr, os);
+            CHECK_OP(os, );
+        }
     }
 
     if (tags.keys().contains(DNAInfo::COMMENT)) {
