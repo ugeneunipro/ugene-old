@@ -34,10 +34,10 @@ namespace U2 {
         virtual void run(U2OpStatus &os); \
     };
 
-#define GUI_LONG_TEST_CLASS_DECLARATION(className) \
+#define GUI_TEST_CLASS_DECLARATION_SET_TIMEOUT(className, timeout) \
     class className : public GUITest { \
     public: \
-        className () : GUITest(TESTNAME(className),true){} \
+        className () : GUITest(TESTNAME(className), timeout){} \
     protected: \
         virtual void run(U2OpStatus &os); \
     };
