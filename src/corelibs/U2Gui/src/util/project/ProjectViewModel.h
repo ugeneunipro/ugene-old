@@ -64,8 +64,8 @@ public:
     bool hasObject(Document *doc, GObject *obj) const;
 
     void moveObject(Document *doc, GObject *obj, const QString &newFolder);
-    void restoreObjectItemFromRecycleBin(Document *doc, GObject *obj);
-    void restoreFolderItemFromRecycleBin(Document *doc, const QString &oldPath);
+    bool restoreObjectItemFromRecycleBin(Document *doc, GObject *obj);
+    bool restoreFolderItemFromRecycleBin(Document *doc, const QString &oldPath);
     QList<GObject*> getFolderContent(Document *doc, const QString &path) const;
     void removeFolder(Document *doc, const QString &path);
 

@@ -177,7 +177,7 @@ void DocumentFolders::removeFolder(const QString &path) {
         const QString folderPath = folder->getFolderPath();
 
         // remove objects of the folder
-        QList<GObject*> objs = getObjects(folderPath);
+        QList<GObject*> objs = getObjectsNatural(folderPath);
         foreach (GObject *obj, objs) {
             removeObject(obj, folderPath);
         }

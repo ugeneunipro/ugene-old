@@ -640,22 +640,35 @@ bool ProjectTreeController::canRenameFolder() const {
 void ProjectTreeController::restoreSelectedObjects() {
     const QList<GObject*> objs = objectSelection.getSelectedObjects();
 
+    bool restoreFailed = false;
+
     QSet<Document *> docs;
     foreach (GObject *obj, objs) {
         Document *doc = obj->getDocument();
         SAFE_POINT(NULL != doc, "Invalid parent document detected!", );
         SAFE_POINT(isObjectInRecycleBin(obj), "Restoring is requested for non removed object!", );
-        model->restoreObjectItemFromRecycleBin(doc, obj);
-        docs.insert(doc);
+        if (model->restoreObjectItemFromRecycleBin(doc, obj)) {
+            docs.insert(doc);
+        } else {
+            restoreFailed = true;
+        }
     }
 
     foreach (Document *doc, docs) {
         updater->invalidate(doc);
     }
+
+    if (restoreFailed) {
+        QMessageBox::warning(QApplication::activeWindow(), tr("Unable to Restore"),
+            tr("UGENE is unable to restore some object from Recycle Bin because its original location does not exist. "
+            "You can still restore the objects by dragging them with mouse from Recycle Bin."), QMessageBox::Ok);
+    }
 }
 
 void ProjectTreeController::restoreSelectedFolders() {
     const QList<Folder> folders = folderSelection.getSelection();
+
+    bool restoreFailed = false;
 
     QSet<Document *> docs;
     foreach (const Folder &folder, folders) {
@@ -665,12 +678,21 @@ void ProjectTreeController::restoreSelectedFolders() {
         const QString oldFolderPath = folder.getFolderPath();
         SAFE_POINT(ProjectUtils::isFolderInRecycleBin(oldFolderPath), "Restoring is requested for non removed folder!", );
 
-        model->restoreFolderItemFromRecycleBin(doc, oldFolderPath);
-        docs.insert(doc);
+        if (model->restoreFolderItemFromRecycleBin(doc, oldFolderPath)) {
+            docs.insert(doc);
+        } else {
+            restoreFailed = true;
+        }
     }
 
     foreach (Document *doc, docs) {
         updater->invalidate(doc);
+    }
+
+    if (restoreFailed) {
+        QMessageBox::warning(QApplication::activeWindow(), tr("Unable to Restore"),
+            tr("UGENE is unable to restore some folder from Recycle Bin because its original location does not exist. "
+            "You can still restore the folders by dragging them with mouse from Recycle Bin."), QMessageBox::Ok);
     }
 }
 

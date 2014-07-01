@@ -571,26 +571,26 @@ void ProjectViewModel::moveObject(Document *doc, GObject *obj, const QString &ne
     insertObject(doc, obj, newFolderPath);
 }
 
-void ProjectViewModel::restoreObjectItemFromRecycleBin(Document *doc, GObject *obj) {
-    SAFE_POINT(NULL != doc, "NULL document", );
-    SAFE_POINT(folders.contains(doc), "Unknown document", );
+bool ProjectViewModel::restoreObjectItemFromRecycleBin(Document *doc, GObject *obj) {
+    SAFE_POINT(NULL != doc, "NULL document", false);
+    SAFE_POINT(folders.contains(doc), "Unknown document", false);
 
     U2OpStatus2Log os;
     DbiOperationsBlock opBlock(doc->getDbiRef(), os);
-    CHECK_OP(os, );
+    CHECK_OP(os, false);
 
     const QString oldFolder = folders[doc]->getObjectFolder(obj);
-    SAFE_POINT(ProjectUtils::isFolderInRecycleBin(oldFolder), "Attempting to restore the non-removed object", );
+    SAFE_POINT(ProjectUtils::isFolderInRecycleBin(oldFolder), "Attempting to restore the non-removed object", false);
 
     ConnectionHelper con(doc->getDbiRef(), os);
-    CHECK_OP(os, );
+    CHECK_OP(os, false);
 
     // move object in model
     QList<U2DataId> objList;
     objList << obj->getEntityRef().entityId;
     const QStringList newPaths = con.oDbi->restoreObjects(objList, os);
-    CHECK_OP(os, );
-    SAFE_POINT(1 == newPaths.size(), "Invalid path count!", );
+    CHECK_OP(os, false);
+    SAFE_POINT(1 == newPaths.size(), "Invalid path count!", false);
 
     // move object in view
     QString newPath = newPaths.first();
@@ -599,11 +599,16 @@ void ProjectViewModel::restoreObjectItemFromRecycleBin(Document *doc, GObject *o
     }
     removeObject(doc, obj);
     insertObject(doc, obj, newPaths.first());
+
+    return true;
 }
 
-void ProjectViewModel::restoreFolderItemFromRecycleBin(Document *doc, const QString &oldPath) {
+bool ProjectViewModel::restoreFolderItemFromRecycleBin(Document *doc, const QString &oldPath) {
     const QString orginPath = recoverRemovedFolderPath(oldPath);
-    renameFolder(doc, oldPath, orginPath);
+    if (!folders[doc]->hasFolder(Folder::getFolderParentPath(orginPath))) {
+        return false;
+    }
+    return renameFolder(doc, oldPath, orginPath);
 }
 
 QList<GObject*> ProjectViewModel::getFolderContent(Document *doc, const QString &path) const {
@@ -843,13 +848,15 @@ bool ProjectViewModel::renameFolder(Document *doc, const QString &oldPath, const
     if (ProjectUtils::isFolderInRecycleBin(newPath)) {
         const QStringList removedSubfolders = docFolders->getAllSubFolders(newPath);
         foreach (const QString &subpath, removedSubfolders) {
-            Folder *folder = folders[doc]->getFolder(subpath);
-            SAFE_POINT(NULL != folder, "Invalid folder detected", false);
-            int subfolderRow = folderRow(folder);
-            if (-1 != subfolderRow) {
-                subfolderRow = beforeRemovePath(doc, subpath);
-                docFolders->removeFolder(subpath);
-                afterRemove(subfolderRow);
+            if (docFolders->hasFolder(subpath)) {
+                Folder *folder = docFolders->getFolder(subpath);
+                SAFE_POINT(NULL != folder, "Invalid folder detected", false);
+                int subfolderRow = folderRow(folder);
+                if (-1 != subfolderRow) {
+                    subfolderRow = beforeRemovePath(doc, subpath);
+                    docFolders->removeFolder(subpath);
+                    afterRemove(subfolderRow);
+                }
             }
         }
     }
