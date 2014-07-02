@@ -305,9 +305,9 @@ void U2DbiPool::deallocateDbi(U2Dbi *dbi, U2OpStatus &os) {
     SAFE_POINT_OP(os, );
 }
 
-U2Dbi * U2DbiPool::getDbiFromPool(const U2DbiRef &ref) {
-    U2Dbi *dbi = suspendedDbis.values(ref).first();
-    suspendedDbis.remove(ref, dbi);
+U2Dbi * U2DbiPool::getDbiFromPool(const QString &id) {
+    U2Dbi *dbi = suspendedDbis.values(id).first();
+    suspendedDbis.remove(id, dbi);
 
     if (dbiSuspendStartTime.contains(dbi)) {
         dbiSuspendStartTime.remove(dbi);
@@ -332,9 +332,9 @@ U2Dbi * U2DbiPool::openDbi(const U2DbiRef &ref, bool createDatabase, U2OpStatus 
         int cnt = dbiCountersById[id];
         dbiCountersById[id] = cnt + 1;
     } else {
-        if (suspendedDbis.contains(ref)) {
+        if (suspendedDbis.contains(id)) {
             // take initialized DBI from pool
-            dbi = getDbiFromPool(ref);
+            dbi = getDbiFromPool(id);
         } else {
             // create new DBI
             dbi = createDbi(ref, createDatabase, os);
@@ -378,7 +378,7 @@ void U2DbiPool::releaseDbi(U2Dbi* dbi, U2OpStatus& os) {
         dbiById.remove(id);
         dbiCountersById.remove(id);
 
-        suspendedDbis.insert(dbi->getDbiRef(), dbi);
+        suspendedDbis.insert(id, dbi);
         dbiSuspendStartTime.insert(dbi, QDateTime::currentMSecsSinceEpoch());
     }
 }
@@ -397,18 +397,30 @@ void U2DbiPool::sl_checkDbiPoolExpiration() {
         }
     }
 
-    const qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
-    foreach (U2Dbi *dbi, dbiSuspendStartTime.keys()) {
-        SAFE_POINT(suspendedDbis.contains(dbi->getDbiRef(), dbi), "Unexpected DBI detected in pool", );
+    QMutexLocker m(&lock);
 
-        if (suspendedDbis.count(dbi->getDbiRef()) == 1) {
+    U2OpStatusImpl os;
+    const qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
+    QMap<QString, int> dbUrl2DbiCount; // count how many connections are in pool that refers to the same DB instance
+    foreach (U2Dbi *dbi, dbiSuspendStartTime.keys()) {
+        const QString id = suspendedDbis.key(dbi, QString());
+        SAFE_POINT(!id.isEmpty(), "Unexpected DBI detected in pool", );
+
+        const QString url = U2DbiUtils::ref2Url(dbi->getDbiRef());
+        if (!dbUrl2DbiCount.contains(url)) {
+            dbUrl2DbiCount.insert(url, 1);
+        } else {
+            ++dbUrl2DbiCount[url];
+        }
+
+        if (isDbiFromMainThread(id) || dbUrl2DbiCount[url] == 1) {
             // hold at least one connection per database
             continue;
         }
 
         // destroy connection if it has lived too long or no documents use that database
         if (currentTime - dbiSuspendStartTime[dbi] >= DBI_POOL_EXPIRATION_TIME_MSEC || !dbiRefsInUse.contains(dbi->getDbiRef())) {
-            suspendedDbis.remove(dbi->getDbiRef(), dbi);
+            suspendedDbis.remove(id, dbi);
             dbiSuspendStartTime.remove(dbi);
 
             U2OpStatus2Log os;
@@ -458,32 +470,46 @@ QHash<QString, QString> U2DbiPool::getInitProperties(const QString &url, bool cr
     return initProperties;
 }
 
-QString U2DbiPool::getId(const U2DbiRef& ref, U2OpStatus& os) const {
+QString U2DbiPool::getId(const U2DbiRef& ref, U2OpStatus& os) {
     const QString url = U2DbiUtils::ref2Url(ref);
     SAFE_POINT_EXT(!url.isEmpty(), os.setError(tr("Invalid dbi reference")), "");
 
-    if (ref.dbiFactoryId == MYSQL_DBI_ID) {
-        return url + "|" + QString::number((qint64)QThread::currentThread());
-    } else {
+    if (ref.dbiFactoryId == SQLITE_DBI_ID) {
         return url;
+    } else {
+        return url + "|" + QString::number((qint64)QThread::currentThread());
     }
 }
 
-QStringList U2DbiPool::getIds(const U2DbiRef& ref, U2OpStatus &os) const {
+namespace {
+
+QString getDbiUrlById(const U2DbiRef &ref, U2OpStatus &os) {
     U2DbiFactory* dbiFactory = AppContext::getDbiRegistry()->getDbiFactoryById(ref.dbiFactoryId);
-    SAFE_POINT_EXT(NULL != dbiFactory, os.setError(tr("Invalid database type: %1").arg(ref.dbiFactoryId)), QStringList());
-    const QString url = dbiFactory->id2Url(ref.dbiId).getURLString();
+    SAFE_POINT_EXT(NULL != dbiFactory, os.setError(QObject::tr("Invalid database type: %1").arg(ref.dbiFactoryId)), QString());
+    return dbiFactory->id2Url(ref.dbiId).getURLString();
+}
+
+}
+
+bool U2DbiPool::isDbiFromMainThread(const QString &dbiId) {
+    const QString mainThreadId = QString::number((qint64)QCoreApplication::instance()->thread());
+    return dbiId.right(sizeof(qint64)) == mainThreadId;
+}
+
+QStringList U2DbiPool::getIds(const U2DbiRef& ref, U2OpStatus &os) const {
+    const QString url = getDbiUrlById(ref, os);
+    CHECK_OP(os, QStringList());
     QStringList result;
 
-    if (ref.dbiFactoryId == MYSQL_DBI_ID) {
+    if (ref.dbiFactoryId == SQLITE_DBI_ID) {
+        if (dbiById.contains(url)) {
+            result << url;
+        }
+    } else {
         foreach (const QString& id, dbiById.keys()) {
             if (id.left(id.length() - 1 - sizeof(qint64)) == url) {
                 result << id;
             }
-        }
-    } else {
-        if (dbiById.contains(url)) {
-            result << url;
         }
     }
 

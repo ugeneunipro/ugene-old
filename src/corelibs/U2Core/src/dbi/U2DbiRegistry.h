@@ -133,9 +133,10 @@ private slots:
 
 private:
     static QHash<QString, QString> getInitProperties(const QString& url, bool create);
-    QString getId(const U2DbiRef& ref, U2OpStatus &os) const;
+    static QString getId(const U2DbiRef& ref, U2OpStatus &os);
+    static bool isDbiFromMainThread(const QString &dbiId);
     QStringList getIds(const U2DbiRef& ref, U2OpStatus &os) const;
-    U2Dbi * getDbiFromPool(const U2DbiRef &ref);
+    U2Dbi * getDbiFromPool(const QString &id);
     static U2Dbi * createDbi(const U2DbiRef &ref, bool create, U2OpStatus &os);
     static void deallocateDbi(U2Dbi *dbi, U2OpStatus &os);
 
@@ -143,7 +144,7 @@ private:
 
     QHash<QString, U2Dbi *> dbiById;
     QHash<QString, int> dbiCountersById;
-    QMultiMap<U2DbiRef, U2Dbi *> suspendedDbis;
+    QMultiMap<QString, U2Dbi *> suspendedDbis;
     QMap<U2Dbi *, qint64> dbiSuspendStartTime;
     QTimer expirationTimer;
     QMutex lock;
