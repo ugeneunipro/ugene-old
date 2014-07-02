@@ -131,6 +131,9 @@ void ProjectFileUtils::saveProjectFile(U2OpStatus& ts, Project* project,
 
     //save documents
     foreach(Document* gbDoc, project->getDocuments()) {
+        if (ProjectUtils::isDatabaseDoc(gbDoc)) {
+            continue;
+        }
         gbDoc->getDocumentFormat()->updateFormatSettings(gbDoc);
 
         QString docUrl = gbDoc->getURLString();
@@ -167,23 +170,21 @@ void ProjectFileUtils::saveProjectFile(U2OpStatus& ts, Project* project,
             docElement.appendChild(hintsNode);
         }
 
-        //now save unloaded objects info for all document objects except shared database connections
-        if (!ProjectUtils::isDatabaseDoc(gbDoc)) {
-            foreach(GObject* obj, gbDoc->getObjects()) {
-                QDomElement objElement = xmlDoc.createElement("object");
-                UnloadedObjectInfo info(obj);
-                objElement.setAttribute("name", info.name);
-                objElement.setAttribute("type", info.type);
+        //now save unloaded objects info for all document objects
+        foreach(GObject* obj, gbDoc->getObjects()) {
+            QDomElement objElement = xmlDoc.createElement("object");
+            UnloadedObjectInfo info(obj);
+            objElement.setAttribute("name", info.name);
+            objElement.setAttribute("type", info.type);
 
-                if (!info.hints.isEmpty()) {
-                    //for all object relations make path relative
-                    info.hints[GObjectHint_RelatedObjects] = toRelativeRelations(obj->getObjectRelations(), projectDir, docUrlRemap);
-                    QString hintsStr = map2String(info.hints);
-                    QDomText hintsNode = xmlDoc.createCDATASection(hintsStr);
-                    objElement.appendChild(hintsNode);
-                }
-                docElement.appendChild(objElement);
+            if (!info.hints.isEmpty()) {
+                //for all object relations make path relative
+                info.hints[GObjectHint_RelatedObjects] = toRelativeRelations(obj->getObjectRelations(), projectDir, docUrlRemap);
+                QString hintsStr = map2String(info.hints);
+                QDomText hintsNode = xmlDoc.createCDATASection(hintsStr);
+                objElement.appendChild(hintsNode);
             }
+            docElement.appendChild(objElement);
         }
 
         projectElement.appendChild(docElement);
@@ -354,9 +355,13 @@ Project* ProjectParser10::createProjectFromXMLModel( const QString& pURL, const 
             ioLog.info(tr("Duplicate document found: %1, ignoring").arg(docUrl));
             continue;
         }
+        DocumentFormatId format = docElement.attribute("format");
+        if (BaseDocumentFormats::DATABASE_CONNECTION == format) {
+            ioLog.info(tr("Database document: %1, ignoring").arg(docUrl));
+            continue;
+        }
         docUrls.insert(docUrl);
 
-        DocumentFormatId format = docElement.attribute("format");
         bool readonly = docElement.attribute("readonly").toInt() != 0;
         bool instanceLock = docElement.attribute("format-lock").toInt() != 0;
         IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioAdapterId);
