@@ -23,6 +23,8 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentUtils.h>
 #include <U2Core/Log.h>
 #include <U2Core/Task.h>
 #include <U2Core/U2OpStatus.h>
@@ -334,6 +336,38 @@ void GUrlUtils::getLocalPathFromUrl(const GUrl &url, const QString &defaultBaseF
         dirPath = getDefaultDataPath();
         baseFileName = defaultBaseFileName;
     }
+}
+
+namespace {
+    QString getDotExtension(const DocumentFormatId &formatId) {
+        DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
+        SAFE_POINT(NULL != dfr, "NULL document format registry", "");
+
+        DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
+        CHECK(NULL != format, "");
+
+        QStringList results = format->getSupportedDocumentFileExtensions();
+        CHECK(!results.isEmpty(), "");
+
+        return "." + results.first();
+    }
+}
+
+QString GUrlUtils::getLocalUrlFromUrl(const GUrl &url, const QString &defaultBaseFileName, const QString &dotExtention, const QString &suffix) {
+    QString dirPath;
+    QString baseFileName;
+    GUrlUtils::getLocalPathFromUrl(url, defaultBaseFileName, dirPath, baseFileName);
+    QString result = dirPath + QDir::separator() + baseFileName + suffix + dotExtention;
+    return QDir::toNativeSeparators(result);
+}
+
+QString GUrlUtils::getNewLocalUrlByFormat(const GUrl &url, const QString &defaultBaseFileName, const DocumentFormatId &format, const QString &suffix) {
+    return getNewLocalUrlByExtention(url, defaultBaseFileName, getDotExtension(format), suffix);
+}
+
+QString GUrlUtils::getNewLocalUrlByExtention(const GUrl &url, const QString &defaultBaseFileName, const QString &dotExtention, const QString &suffix) {
+    QString result = getLocalUrlFromUrl(url, defaultBaseFileName, dotExtention, suffix);
+    return rollFileName(result, DocumentUtils::getNewDocFileNameExcludesHint());
 }
 
 }//namespace

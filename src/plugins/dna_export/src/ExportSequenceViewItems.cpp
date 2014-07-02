@@ -502,12 +502,7 @@ void ADVExportContext::sl_saveSelectedAnnotations() {
         url = GUrl("newfile");
     }
 
-    QString dirPath;
-    QString baseFileName;
-    GUrlUtils::getLocalPathFromUrl(url, "newfile", dirPath, baseFileName);
-    
-    QString fileName = GUrlUtils::rollFileName(dirPath + QDir::separator() + baseFileName + "_annotations.csv",
-        DocumentUtils::getNewDocFileNameExcludesHint());
+    QString fileName = GUrlUtils::getNewLocalUrlByExtention(url, "newfile", ".csv", "_annotations");
     ExportAnnotationsDialog d(fileName, AppContext::getMainWindow()->getQMainWindow());
     
     if (QDialog::Accepted != d.exec()) {

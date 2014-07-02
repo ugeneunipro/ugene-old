@@ -55,16 +55,10 @@ ExportChromatogramDialog::ExportChromatogramDialog(QWidget* p, const GUrl& fileU
 
     addToProjectFlag = true;
 
-    //SaveDocumentGroupControllerConfig conf;
-    QString dirPath;
-    QString baseFileName;
-    GUrlUtils::getLocalPathFromUrl(fileUrl, "chromatogram", dirPath, baseFileName);
-
-    GUrl newUrl = GUrlUtils::rollFileName(dirPath + QDir::separator() + baseFileName + "_copy.scf", DocumentUtils::getNewDocFileNameExcludesHint());
-    fileNameEdit->setText( newUrl.getURLString() );
-    formatCombo->addItem( BaseDocumentFormats::SCF.toUpper() );
-    connect(fileButton, SIGNAL(clicked()),SLOT(sl_onBrowseClicked()) );
-    
+    QString newUrl = GUrlUtils::getNewLocalUrlByExtention(fileUrl, "chromatogram", ".scf", "_copy");
+    fileNameEdit->setText(newUrl);
+    formatCombo->addItem(BaseDocumentFormats::SCF.toUpper());
+    connect(fileButton, SIGNAL(clicked()), SLOT(sl_onBrowseClicked()));
 }
 
 void ExportChromatogramDialog::sl_onBrowseClicked() {

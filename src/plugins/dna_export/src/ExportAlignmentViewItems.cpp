@@ -105,15 +105,10 @@ void MSAExportContext::sl_exportNucleicMsaToAmino() {
     const MAlignment& ma = editor->getMSAObject()->getMAlignment();
     assert(ma.getAlphabet()->isNucleic());
 
-    QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::CLUSTAL_ALN)->getSupportedDocumentFileExtensions().first();
-    QString dirPath;
-    QString baseFileName;
-
     GUrl msaUrl = editor->getMSAObject()->getDocument()->getURL();
-    GUrlUtils::getLocalPathFromUrl(msaUrl, editor->getMSAObject()->getGObjectName(), dirPath, baseFileName);
-    GUrl defaultUrl = GUrlUtils::rollFileName(dirPath + QDir::separator() + baseFileName + "_transl." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
+    QString defaultUrl = GUrlUtils::getNewLocalUrlByFormat(msaUrl, editor->getMSAObject()->getGObjectName(), BaseDocumentFormats::CLUSTAL_ALN, "_transl");
 
-    ExportMSA2MSADialog d(defaultUrl.getURLString(), BaseDocumentFormats::CLUSTAL_ALN, editor->getCurrentSelection().height() < 1, AppContext::getMainWindow()->getQMainWindow());
+    ExportMSA2MSADialog d(defaultUrl, BaseDocumentFormats::CLUSTAL_ALN, editor->getCurrentSelection().height() < 1, AppContext::getMainWindow()->getQMainWindow());
 
     d.setWindowTitle(tr("Export Amino Translation"));
     int rc = d.exec();

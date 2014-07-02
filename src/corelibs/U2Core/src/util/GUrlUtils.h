@@ -114,6 +114,13 @@ public:
 
     // If url is local returns values from it, else returns default values: default data dir path from settings and @defaultBaseFileName
     static void getLocalPathFromUrl(const GUrl& url, const QString& defaultBaseFileName, QString& dirPath, QString& baseFileName);
+
+    // If url is local returns values from it, else returns default values
+    static QString getLocalUrlFromUrl(const GUrl &url, const QString &defaultBaseFileName, const QString &dotExtention, const QString &suffix);
+
+    // Rolls the result of getLocalUrlFromUrl()
+    static QString getNewLocalUrlByFormat(const GUrl &url, const QString &defaultBaseFileName, const DocumentFormatId &format, const QString &suffix);
+    static QString getNewLocalUrlByExtention(const GUrl &url, const QString &defaultBaseFileName, const QString &dotExtention, const QString &suffix);
 };
 
 } //namespace

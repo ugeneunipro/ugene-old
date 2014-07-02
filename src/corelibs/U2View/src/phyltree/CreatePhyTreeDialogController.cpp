@@ -50,11 +50,8 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
         QString item = nameList[i];
         ui->algorithmBox->addItem(item);
     }
-    const GUrl& msaURL = mobj->getDocument()->getURL();
-    QString dirPath;
-    QString baseFileName;
-    GUrlUtils::getLocalPathFromUrl(msaURL, mobj->getGObjectName(), dirPath, baseFileName);
-    GUrl url = GUrlUtils::rollFileName(dirPath + QDir::separator() + baseFileName + ".nwk", DocumentUtils::getNewDocFileNameExcludesHint());
+
+    QString url = GUrlUtils::getNewLocalUrlByExtention(mobj->getDocument()->getURLString(), mobj->getGObjectName(), ".nwk", "");
 
     QPushButton *okButton = ui->buttonBox->button(QDialogButtonBox::Ok);
 
@@ -65,7 +62,7 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
     connect(ui->restoreSettings, SIGNAL(clicked()), SLOT(sl_onRestoreDefault()));
     connect(ui->displayWithAlignmentEditor, SIGNAL(toggled(bool)), SLOT(sl_onDispayWithMSAClicked(bool)));
     
-    ui->fileNameEdit->setText(url.getURLString());
+    ui->fileNameEdit->setText(url);
     
     int itemIndex = ui->algorithmBox->count()-1;
     assert(itemIndex >= 0);

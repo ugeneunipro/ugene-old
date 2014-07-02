@@ -245,11 +245,7 @@ void AssemblyConsensusArea::sl_exportConsensus() {
     settings.keepGaps = true;
 
     GUrl url(U2DbiUtils::ref2Url(getModel()->getDbiConnection().dbi->getDbiRef()));
-    QString dirPath;
-    QString baseFileName;
-    GUrlUtils::getLocalPathFromUrl(url, getModel()->getAssembly().visualName, dirPath, baseFileName);
-    QString ext = defaultFormat->getSupportedDocumentFileExtensions().first();
-    settings.fileName = QString("%1/%2_consensus.%3").arg(dirPath).arg(baseFileName).arg(ext);
+    settings.fileName = GUrlUtils::getNewLocalUrlByFormat(url, getModel()->getAssembly().visualName, settings.formatId, "_consensus");
 
     ExportConsensusDialog dlg(this, settings, getVisibleRegion());
     if(dlg.exec() == QDialog::Accepted) {
@@ -272,13 +268,8 @@ void AssemblyConsensusArea::sl_exportConsensusVariations(){
     settings.mode = Mode_Variations;
     settings.refSeq = getModel()->getRefereneceEntityRef();
 
-
     GUrl url(U2DbiUtils::ref2Url(getModel()->getDbiConnection().dbi->getDbiRef()));
-    QString dirPath;
-    QString baseFileName;
-    GUrlUtils::getLocalPathFromUrl(url, getModel()->getAssembly().visualName, dirPath, baseFileName);
-    QString ext = defaultFormat->getSupportedDocumentFileExtensions().first();
-    settings.fileName = QString("%1/%2.%3").arg(dirPath).arg(baseFileName).arg(ext);
+    settings.fileName = GUrlUtils::getNewLocalUrlByFormat(url, getModel()->getAssembly().visualName, settings.formatId, "");
 
     ExportConsensusVariationsDialog dlg(this, settings, getVisibleRegion());
     if(dlg.exec() == QDialog::Accepted) {

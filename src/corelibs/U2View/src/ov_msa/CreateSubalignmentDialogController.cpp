@@ -91,8 +91,7 @@ CreateSubalignmentDialogController::CreateSubalignmentDialogController(MAlignmen
     conf.fileNameEdit = filepathEdit;
     conf.parentWidget = this;
     conf.defaultFormatId = BaseDocumentFormats::CLUSTAL_ALN;
-    QString fileName = GUrlUtils::rollFileName(_mobj->getDocument()->getURLString(), "_subalign", DocumentUtils::getNewDocFileNameExcludesHint());
-    conf.defaultFileName = fileName;
+    conf.defaultFileName = GUrlUtils::getNewLocalUrlByFormat(_mobj->getDocument()->getURLString(), _mobj->getGObjectName(), conf.defaultFormatId, "_subalign");
 
     saveContoller = new SaveDocumentGroupController(conf, this);
 

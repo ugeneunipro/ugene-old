@@ -477,8 +477,8 @@ void MSAEditorSequenceArea::updateActions() {
     delSelectionAction->setEnabled(!readOnly && !isAlignmentEmpty());
     delColAction->setEnabled(!readOnly && !isAlignmentEmpty());
     insSymAction->setEnabled(!readOnly && !isAlignmentEmpty());
-    createSubaligniment->setEnabled(!readOnly && !isAlignmentEmpty());
-    saveSequence->setEnabled(!readOnly && !isAlignmentEmpty());
+    createSubaligniment->setEnabled(!isAlignmentEmpty());
+    saveSequence->setEnabled(!isAlignmentEmpty());
     removeAllGapsAction->setEnabled(!readOnly && !isAlignmentEmpty());
     addSeqFromProjectAction->setEnabled(!readOnly);
     addSeqFromFileAction->setEnabled(!readOnly);

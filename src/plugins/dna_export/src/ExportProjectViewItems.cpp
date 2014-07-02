@@ -255,7 +255,7 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
     bool allowComplement = hasComplementForAll(set);
     bool allowTranslate = hasAminoForAll(set);
     bool allowBackTranslate = hasNucleicForAll(set);
-    
+
     QString defaultFileNameDir;
     QString fileBaseName;
     GUrlUtils::getLocalPathFromUrl((*set.constBegin())->getDocument()->getURL(),
@@ -315,16 +315,11 @@ void ExportProjectViewItemsContoller::sl_saveSequencesAsAlignment() {
         QMessageBox::critical(NULL, L10N::errorTitle(), tr("No sequence objects selected!"));
         return;
     }
-    
-    QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::CLUSTAL_ALN)->getSupportedDocumentFileExtensions().first();
-    QString dirPath;
-    QString baseFileName;
 
     GUrl seqUrl = sequenceObjects.first()->getDocument()->getURL();
-    GUrlUtils::getLocalPathFromUrl(seqUrl, sequenceObjects.first()->getGObjectName(), dirPath, baseFileName);
-    GUrl defaultUrl = GUrlUtils::rollFileName(dirPath + QDir::separator() + baseFileName + "." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
-    
-    ExportSequences2MSADialog d(AppContext::getMainWindow()->getQMainWindow(), defaultUrl.getURLString());
+    QString defaultUrl = GUrlUtils::getNewLocalUrlByFormat(seqUrl, sequenceObjects.first()->getGObjectName(), BaseDocumentFormats::CLUSTAL_ALN, "");
+
+    ExportSequences2MSADialog d(AppContext::getMainWindow()->getQMainWindow(), defaultUrl);
 
     int rc = d.exec();
     if (rc != QDialog::Accepted) {
@@ -397,17 +392,9 @@ void ExportProjectViewItemsContoller::sl_exportNucleicAlignmentToAmino() {
 
     GObject* firstObject = set.first();
     Document* doc = firstObject->getDocument();
+    QString defaultUrl = GUrlUtils::getNewLocalUrlByFormat(doc->getURL(), ma.getName(), BaseDocumentFormats::CLUSTAL_ALN, "_transl");
 
-    QString fileExt = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::CLUSTAL_ALN)->getSupportedDocumentFileExtensions().first();
-    QString dirPath;
-    QString baseFileName;
-
-    GUrl msaUrl = doc->getURL();
-    GUrlUtils::getLocalPathFromUrl(msaUrl, ma.getName(), dirPath, baseFileName);
-
-    GUrl defaultUrl = GUrlUtils::rollFileName(dirPath + QDir::separator() + baseFileName + "_transl." + fileExt, DocumentUtils::getNewDocFileNameExcludesHint());
-
-    ExportMSA2MSADialog d(defaultUrl.getURLString(), BaseDocumentFormats::CLUSTAL_ALN, true, AppContext::getMainWindow()->getQMainWindow());
+    ExportMSA2MSADialog d(defaultUrl, BaseDocumentFormats::CLUSTAL_ALN, true, AppContext::getMainWindow()->getQMainWindow());
 
     int rc = d.exec();
     if (rc == QDialog::Rejected) {
