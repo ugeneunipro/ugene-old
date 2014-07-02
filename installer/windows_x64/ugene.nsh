@@ -190,6 +190,9 @@ SetRegView 64
     SetOutPath $INSTDIR\styles
     File "includes\styles\qtdotnet2.dll"
 
+    SetOutPath $INSTDIR\sqldrivers
+    File "includes\sqldrivers\qsqlmysql4.dll"
+
     SetOutPath $INSTDIR\plugins
     File /r /x .svn "includes\plugins\*.*"
 	
