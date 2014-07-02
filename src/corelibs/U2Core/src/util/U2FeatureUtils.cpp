@@ -131,6 +131,8 @@ U2Feature U2FeatureUtils::exportAnnotationDataToFeatures( const AnnotationData &
     dbi->createFeature( feature, fKeys, op );
     CHECK_OP( op, feature );
 
+    dbiAnnotationCache.addData(dbiRef, feature, a);
+
     //add subfeatures
     if ( isMultyRegion ) {
         U2FeatureUtils::addSubFeatures( a.location->regions, a.location->strand, feature.id,
@@ -534,6 +536,10 @@ QList<U2Feature> U2FeatureUtils::getAnnotatingFeaturesByRegion( const U2DataId &
         CHECK_OP( os, result );
 
         if ( U2Feature::Annotation == feature.type ) {
+            if (result.contains(feature)) { // this can happen if the @range starts with "0"
+                continue;
+            }
+
             if ( !feature.name.isEmpty( ) ) {
                 result << feature;
             } else if ( dbiAnnotationCache.contains( dbiRef, feature.parentFeatureId ) ) {
@@ -584,9 +590,8 @@ void U2FeatureUtils::loadAnnotationTable( const U2DataId &rootFeatureId, const U
 void U2FeatureUtils::refAnnotationTable( const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus &op ) {
     if ( !dbiAnnotationCache.containsAnnotationTable( dbiRef, rootFeatureId ) ) {
         loadAnnotationTable( rootFeatureId, dbiRef, op );
-    } else {
-        dbiAnnotationCache.refAnnotationTable( dbiRef, rootFeatureId );
     }
+    dbiAnnotationCache.refAnnotationTable( dbiRef, rootFeatureId );
 }
 
 void U2FeatureUtils::derefAnnotationTable( const U2DataId &rootFeatureId, const U2DbiRef &dbiRef, U2OpStatus & ) {
