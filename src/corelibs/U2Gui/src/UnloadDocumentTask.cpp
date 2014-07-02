@@ -36,11 +36,13 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
-#include <U2Gui/ObjectViewModel.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/RemoveDocumentTask.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/OpenViewTask.h>
 
 #include "UnloadDocumentTask.h"
 
@@ -142,7 +144,7 @@ void UnloadDocumentTask::runUnloadTaskHelper(const QList<Document*>& docs, Unloa
             coreLog.error(tr("Failed to unload document: %1, error: %2").arg(doc->getName()).arg(err));
         }
         QMessageBox::warning(QApplication::activeWindow(), tr("Warning"), text);
-    } 
+    }
 }
 
 QString UnloadDocumentTask::checkSafeUnload(Document* doc) {
@@ -190,6 +192,11 @@ QList<Task *> ReloadDocumentTask::onSubTaskFinished( Task* subTask ) {
         SAFE_POINT( !doc->isStateLocked( ) && doc->isLoaded( ),
             "Unable to restore relations between external objects!", res );
         restoreObjectRelationsForDoc( );
+
+        // annotation files without seq.reference can be opened after adding relations
+        if (GObjectViewUtils::findViewsWithAnyOfObjects(doc->getObjects()).isEmpty()) {
+            res.append(new OpenViewTask(doc));
+        }
     }
 
     return res;
