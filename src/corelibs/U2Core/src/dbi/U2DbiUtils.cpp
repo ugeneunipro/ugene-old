@@ -317,7 +317,9 @@ DbiOperationsBlock::DbiOperationsBlock(const U2DbiRef &_dbiRef, U2OpStatus &os) 
 }
 
 DbiOperationsBlock::~DbiOperationsBlock() {
-    connection->dbi->stopOperationBlock(os);
+    if (NULL != connection->dbi) {
+        connection->dbi->stopOperationBlock(os);
+    }
     delete connection;
 }
 
