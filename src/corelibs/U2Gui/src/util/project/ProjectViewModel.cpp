@@ -743,7 +743,7 @@ int ProjectViewModel::beforeInsertObject(Document *doc, GObject *obj, const QStr
     if (ProjectUtils::RECYCLE_BIN_FOLDER_PATH != parentPath) { // the object is visible
         int newRow = folders[doc]->getNewObjectRowInParent(obj, path);
         CHECK(-1 != newRow, -1);
-        beginInsertRows(getIndexForPath(doc, parentPath), newRow, newRow);
+        beginInsertRows(getIndexForPath(doc, path), newRow, newRow);
         return newRow;
     }
     return -1;
