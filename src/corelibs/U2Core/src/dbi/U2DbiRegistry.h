@@ -132,20 +132,26 @@ private slots:
     void sl_checkDbiPoolExpiration();
 
 private:
+    QStringList getIds(const U2DbiRef& ref, U2OpStatus &os) const;
+    int getCountOfConnectionsInPool(const QString &url) const;
+    U2Dbi * getDbiFromPool(const QString &id);
+    void removeDbiRecordFromPool(const QString &id);
+    void flushPool(const QString &url = QString(), bool removeAll = false);
+
     static QHash<QString, QString> getInitProperties(const QString& url, bool create);
     static QString getId(const U2DbiRef& ref, U2OpStatus &os);
     static bool isDbiFromMainThread(const QString &dbiId);
-    QStringList getIds(const U2DbiRef& ref, U2OpStatus &os) const;
-    U2Dbi * getDbiFromPool(const QString &id);
     static U2Dbi * createDbi(const U2DbiRef &ref, bool create, U2OpStatus &os);
     static void deallocateDbi(U2Dbi *dbi, U2OpStatus &os);
+    static QString id2Url(const QString &id);
 
     static const int DBI_POOL_EXPIRATION_TIME_MSEC;
+    static const int MAX_CONNECTIONS_PER_DBI;
 
     QHash<QString, U2Dbi *> dbiById;
     QHash<QString, int> dbiCountersById;
-    QMultiMap<QString, U2Dbi *> suspendedDbis;
-    QMap<U2Dbi *, qint64> dbiSuspendStartTime;
+    QHash<QString, U2Dbi *> suspendedDbis;
+    QHash<U2Dbi *, qint64> dbiSuspendStartTime;
     QTimer expirationTimer;
     QMutex lock;
 };
