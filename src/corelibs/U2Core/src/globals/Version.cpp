@@ -51,7 +51,7 @@ namespace U2 {
 
 const QString Version::buildDate = __DATE__;
 const int Version::appArchitecture = QT_POINTER_SIZE * 8;
-const QString Version::distributionInfo = QString(TOSTRING(U2_DISTRIBUTION_INFO));
+const QString Version::distributionInfo = QString(TOSTRING(U2_DISTRIBUTION_INFO)).replace("_"," ");
 
 Version::Version() {
     major = minor = patch = 0;
