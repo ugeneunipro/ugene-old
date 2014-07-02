@@ -917,11 +917,11 @@ void ProjectTreeController::setupActions() {
     connect(createFolderAction, SIGNAL(triggered()), SLOT(sl_onCreateFolder()));
     tree->addAction(createFolderAction);
 
-    restoreSelectedItemsAction = new QAction(QIcon(":core/images/todo.png"), tr("Restore selected items"), this);
+    restoreSelectedItemsAction = new QAction(QIcon(":core/images/bin_restore2.png"), tr("Restore selected items"), this);
     connect(restoreSelectedItemsAction, SIGNAL(triggered()), SLOT(sl_onRestoreSelectedItems()));
     tree->addAction(restoreSelectedItemsAction);
 
-    emptyRecycleBinAction = new QAction(QIcon(":core/images/todo.png"), tr("Empty recycle bin"), this);
+    emptyRecycleBinAction = new QAction(QIcon(":core/images/clean_full_bin.png"), tr("Empty recycle bin"), this);
     tree->addAction(emptyRecycleBinAction);
     connect(emptyRecycleBinAction, SIGNAL(triggered()), SLOT(sl_onEmptyRecycleBin()));
     emptyRecycleBinAction->setObjectName("empty_rb");

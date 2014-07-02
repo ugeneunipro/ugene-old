@@ -1180,7 +1180,7 @@ QVariant ProjectViewModel::getDocumentDecorationData(Document *doc) const {
     static const QIcon roDocumentIcon(":/core/images/ro_document.png");
     static const QIcon documentIcon(":/core/images/document.png");
     static const QIcon databaseIcon(":/core/images/db/database.png");
-    static const QIcon roDatabaseIcon(":/core/images/db/database.png");
+    static const QIcon roDatabaseIcon(":/core/images/db/database_lock.png");
 
     bool showLockedIcon = doc->isStateLocked();
     if (!doc->isLoaded() && doc->getStateLocks().size() == 1 && doc->getDocumentModLock(DocumentModLock_UNLOADED_STATE)!=NULL) {

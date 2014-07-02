@@ -143,6 +143,8 @@
         <file>images/db/database_key.png</file>
         <file>images/db/database_lightning.png</file>
         <file>images/db/database_link.png</file>
+        <file>images/db/database_lock.png</file>
+        <file>images/db/database_lock_yellow.png</file>
         <file>images/db/database_refresh.png</file>
         <file>images/db/database_save.png</file>
         <file>images/db/database_start.png</file>
@@ -154,5 +156,9 @@
         <file>images/db/database_yellow_stop.png</file>
         <file>images/msa_save.png</file>
         <file>images/msa_show_overview.png</file>
+        <file>images/bin_restore1.png</file>
+        <file>images/bin_restore2.png</file>
+        <file>images/clean_empty_bin.png</file>
+        <file>images/clean_full_bin.png</file>
     </qresource>
 </RCC>
