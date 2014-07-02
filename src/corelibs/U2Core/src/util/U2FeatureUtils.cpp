@@ -531,9 +531,16 @@ QList<U2Feature> U2FeatureUtils::getAnnotatingFeaturesByRegion( const U2DataId &
 
     while ( regionFeatureIter->hasNext( ) ) {
         const U2Feature feature = regionFeatureIter->next( );
-        if ( U2Feature::Annotation == feature.type && !feature.name.isEmpty( ) ) {
-            CHECK_OP( os, result );
-            result << feature;
+        CHECK_OP( os, result );
+
+        if ( U2Feature::Annotation == feature.type ) {
+            if ( !feature.name.isEmpty( ) ) {
+                result << feature;
+            } else if ( dbiAnnotationCache.contains( dbiRef, feature.parentFeatureId ) ) {
+                result << dbiAnnotationCache.getFeature( dbiRef, feature.parentFeatureId );
+            } else {
+                coreLog.error("Annotation not found in cache");
+            }
         }
     }
 

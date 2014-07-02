@@ -697,41 +697,20 @@ void MysqlFeatureDbi::removeFeaturesByRoot( const U2DataId &rootId, U2OpStatus &
     qf.execute( );
 }
 
-namespace {
-
-QString getWherePartForSelectionByRegion( bool selectByRoot, bool regionContains,
-    const QString &featureAlias,  const QString &rootPlaceholder, const U2Region &reg )
-{
-    const QString regStart = QString::number(reg.startPos);
-    const QString regEnd = QString::number(reg.endPos());
-    return ( selectByRoot ? QString("%1.root = :%2 AND ").arg(featureAlias).arg(rootPlaceholder) : QString( ) )
-        + ( regionContains ? QString("%1.start >= %2 AND %1.end <= %3")
-            .arg(featureAlias).arg(regStart).arg(regEnd)
-        : QString("%1.start <= %2 AND %1.end >= %3")
-            .arg(featureAlias).arg(regEnd).arg(regStart));
-}
-
-}
-
 U2DbiIterator<U2Feature>* MysqlFeatureDbi::getFeaturesByRegion( const U2Region& reg,
     const U2DataId& rootId, const QString& featureName, const U2DataId& seqId, U2OpStatus& os,
     bool contains )
 {
-    const QString queryByRegion = "SELECT " + getFeatureFields( ) + " FROM Feature AS f "
-        + "WHERE " + getWherePartForSelectionByRegion( !rootId.isEmpty( ), contains, "f", "root", reg );
+    const bool selectByRoot = !rootId.isEmpty( );
+    const QString queryByRegion = "SELECT " + getFeatureFields( ) + " FROM Feature AS f WHERE "
+        + ( selectByRoot ? QString("f.root = :root AND ") : QString( ) )
+        + ( contains ? QString("f.start >= %1 AND f.end <= %2").arg(reg.startPos).arg(reg.endPos())
+        : QString("f.start <= %1 AND f.end >= %2").arg(reg.endPos()).arg(reg.startPos));
 
-    QString queryStringk = "SELECT " + getFeatureFields( "s" ) + " FROM ( ("
-        + queryByRegion + " AND f.name IS NOT NULL AND f.name != '' ) UNION ("
-        "SELECT " + getFeatureFields("f1") + " FROM Feature AS f1 WHERE f1.id IN ("
-        "SELECT f2.parent FROM Feature AS f2 "
-        + " WHERE " + getWherePartForSelectionByRegion( !rootId.isEmpty( ), contains, "f2", "root1", reg )
-        + " AND ( f2.name IS NULL OR f2.name = '' ) ) ) ) AS s";
+    QSharedPointer<U2SqlQuery> q( new U2SqlQuery( queryByRegion, db, os ) );
 
-    QSharedPointer<U2SqlQuery> q( new U2SqlQuery( queryStringk, db, os ) );
-
-    if ( !rootId.isEmpty( ) ) {
+    if ( selectByRoot ) {
         q->bindDataId( "root", rootId );
-        q->bindDataId( "root1", rootId );
     }
 
     return new MysqlRSIterator<U2Feature>( q, new MysqlFeatureRSLoader( ),

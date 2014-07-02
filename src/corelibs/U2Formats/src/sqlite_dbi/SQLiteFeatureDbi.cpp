@@ -648,23 +648,17 @@ U2DbiIterator<U2Feature> * SQLiteFeatureDbi::getFeaturesByRegion( const U2Region
 {
     SQLiteTransaction t( db, os );
 
-    const QString queryByRegionWherePart = ( rootId.isEmpty( ) ? QString( ) : "f.root = ?3 AND " )
-        + ( contains ? "fr.start >= ?1 AND fr.end <= ?2" : "fr.start <= ?2 AND fr.end >= ?1" );
-    const QString queryByRegionJoinPart = "INNER JOIN FeatureLocationRTreeIndex AS fr ON "
-        "f.id = fr.id";
+    const bool selectByRoot = !rootId.isEmpty( );
     const QString queryByRegion = "SELECT " + FDBI_FIELDS + " FROM Feature AS f "
-        + queryByRegionJoinPart + " AND " + queryByRegionWherePart;
+        "INNER JOIN FeatureLocationRTreeIndex AS fr ON f.id = fr.id WHERE "
+        + ( selectByRoot ? QString("f.root = ?3 AND ") : QString( ) )
+        + ( contains ? "fr.start >= ?1 AND fr.end <= ?2" : "fr.start <= ?2 AND fr.end >= ?1");
 
-    const QString queryStringk = "SELECT " + FDBI_FIELDS + " FROM ("
-        + queryByRegion + " AND f.name != ''" + " UNION "
-        + "SELECT " + FDBI_FIELDS + " FROM Feature AS f WHERE f.id IN ("
-        + "SELECT f.parent FROM Feature AS f " + queryByRegionJoinPart + " AND "
-        + queryByRegionWherePart + " AND f.name = '') ) AS f";
-    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery( queryStringk, db, os );
+    QSharedPointer<SQLiteQuery> q = t.getPreparedQuery( queryByRegion, db, os );
 
     q->bindInt64( 1, reg.startPos );
     q->bindInt64( 2, reg.endPos( ) );
-    if ( !rootId.isEmpty( ) ) {
+    if ( selectByRoot ) {
         q->bindDataId( 3, rootId );
     }
 

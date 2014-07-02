@@ -45,7 +45,7 @@ void AnnotationDataCache::addData(const U2Feature &feature, const AnnotationData
     }
     rootSubfeatures[feature.rootFeatureId].insert(feature.id);
     if (!rootReferenceCount.contains(feature.rootFeatureId)) {
-        rootReferenceCount.insert(feature.rootFeatureId, 1);
+        rootReferenceCount.insert(feature.rootFeatureId, 0);
     }
     annotationDataId.insert(feature.id, data);
     feature2Id.insert(feature.id, feature);
@@ -113,7 +113,7 @@ void AnnotationDataCache::removeAnnotationTableData(const U2DataId &rootId) {
 void AnnotationDataCache::refAnnotationTable(const U2DataId &rootId) {
     QMutexLocker locker(&guard);
     const int curRefCount = rootReferenceCount[rootId];
-    SAFE_POINT(curRefCount > 0, "Invalid annotation table ref count", );
+    SAFE_POINT(curRefCount >= 0, "Invalid annotation table ref count", );
     rootReferenceCount[rootId] = curRefCount + 1;
 }
 
