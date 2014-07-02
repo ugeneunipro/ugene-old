@@ -732,8 +732,12 @@ void U2FeatureUtils::addFeatureKey( const U2DataId &featureId, const U2FeatureKe
 
     dbi->addKey( featureId, key, op );
 
-    if (key.name != U2FeatureKeyCase && key.name != U2FeatureKeyOperation && dbiAnnotationCache.contains(dbiRef, featureId)) {
-        dbiAnnotationCache.getAnnotationData(dbiRef, featureId).qualifiers.append(U2Qualifier(key.name, key.value));
+    if (dbiAnnotationCache.contains(dbiRef, featureId)) {
+        if (key.name == U2FeatureKeyCase) {
+            dbiAnnotationCache.getAnnotationData(dbiRef, featureId).caseAnnotation = true;
+        } else if (key.name != U2FeatureKeyOperation) {
+            dbiAnnotationCache.getAnnotationData(dbiRef, featureId).qualifiers.append(U2Qualifier(key.name, key.value));
+        }
     }
 }
 
@@ -752,9 +756,13 @@ void U2FeatureUtils::removeFeatureKey( const U2DataId &featureId, const U2Featur
 
     dbi->removeAllKeys( featureId, key, op );
 
-    if (key.name != U2FeatureKeyCase && key.name != U2FeatureKeyOperation && dbiAnnotationCache.contains(dbiRef, featureId)) {
-        QStringList qualValues;
-        dbiAnnotationCache.getAnnotationData(dbiRef, featureId).removeAllQualifiers(key.name, qualValues);
+    if (dbiAnnotationCache.contains(dbiRef, featureId)) {
+        if (key.name == U2FeatureKeyCase) {
+            dbiAnnotationCache.getAnnotationData(dbiRef, featureId).caseAnnotation = false;
+        } else if (key.name != U2FeatureKeyOperation) {
+            QStringList qualValues;
+            dbiAnnotationCache.getAnnotationData(dbiRef, featureId).removeAllQualifiers(key.name, qualValues);
+        }
     }
 }
 
