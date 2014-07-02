@@ -67,6 +67,8 @@ public:
 
     virtual QString getThresholdSuffix() const {return QString();}
 
+    virtual bool isSequenceLikeResult() const = 0;
+
     // utility method
     static ConsensusAlgorithmFlags getAphabetFlags(const DNAAlphabet* al);
 

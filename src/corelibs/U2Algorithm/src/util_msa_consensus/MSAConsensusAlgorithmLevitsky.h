@@ -51,6 +51,8 @@ public:
 
     virtual QString getThresholdSuffix() const {return QString("%");}
 
+    virtual bool isSequenceLikeResult() const {return true;}
+
 };
 
 class U2ALGORITHM_EXPORT MSAConsensusAlgorithmLevitsky: public MSAConsensusAlgorithm {

@@ -47,6 +47,7 @@ public:
 
     virtual QString getThresholdSuffix() const {return QString("%");}
 
+    virtual bool isSequenceLikeResult() const {return false;}
 };
 
 

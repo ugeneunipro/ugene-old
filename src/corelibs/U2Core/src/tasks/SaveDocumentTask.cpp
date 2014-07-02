@@ -290,7 +290,7 @@ GUrl SaveMultipleDocuments::chooseAnotherUrl(Document* doc) {
 //////////////////////////////////////////////////////////////////////////
 // save a copy and add to project
 SaveCopyAndAddToProjectTask::SaveCopyAndAddToProjectTask(Document* doc, IOAdapterFactory* iof, const GUrl& _url)
-: Task (tr("Save a copy %1").arg(url.getURLString()), TaskFlags_NR_FOSCOE), url(_url)
+: Task (tr("Save a copy %1").arg(_url.getURLString()), TaskFlags_NR_FOSCOE), url(_url)
 {
     origURL = doc->getURL();
     df = doc->getDocumentFormat();

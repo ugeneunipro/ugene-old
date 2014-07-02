@@ -35,18 +35,14 @@ class U2VIEW_EXPORT MSAExportConsensusTab : public QWidget, public Ui_ExportCons
 public:
     MSAExportConsensusTab(MSAEditor* msa_);
 
+    void showHint(bool showHint);
 private slots:
     void sl_browseClicked();
     void sl_exportClicked();
     void sl_formatChanged();
+    void sl_consensusChanged(const QString& algoId);
 private:
-    QWidget* createPathGroup();
-    QWidget* createSettingsGroup();
-
-    ShowHideSubgroupWidget *savePath;
-    ShowHideSubgroupWidget *settings;
-
-    DocumentFormatRegistry *dfr;
+    const DocumentFormatRegistry *dfr;
 
     MSAEditor *msa;
 };

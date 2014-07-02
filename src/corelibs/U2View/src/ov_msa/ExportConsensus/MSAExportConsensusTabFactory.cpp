@@ -30,7 +30,7 @@ namespace U2 {
 
 const QString MSAExportConsensusFactoryTab::GROUP_ID = "OP_EXPORT_CONSENSUS";
 const QString MSAExportConsensusFactoryTab::GROUP_ICON_STR = ":core/images/todo.png";
-const QString MSAExportConsensusFactoryTab::GROUP_TITLE = QString(MSAExportConsensusFactoryTab::tr("Export consensus"));
+const QString MSAExportConsensusFactoryTab::GROUP_TITLE = MSAExportConsensusFactoryTab::tr("Export Consensus");
 const QString MSAExportConsensusFactoryTab::GROUP_DOC_PAGE = "4227131";
 
 

@@ -44,6 +44,8 @@ public:
     virtual int getMaxThreshold() const {return 0;}
 
     virtual int getDefaultThreshold() const {return 0;}
+
+    virtual bool isSequenceLikeResult() const {return false;}
 };
 
 class U2ALGORITHM_EXPORT MSAConsensusAlgorithmClustal : public MSAConsensusAlgorithm {

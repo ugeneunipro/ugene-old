@@ -65,34 +65,24 @@ public:
     virtual void update();
 };
 
-enum NonAlphabetSymbolsPolicy {
-    Skip,
-    ReplaceWithDefault,
-    ReplaceWithGap,
-    AllowAllSymbols
-};
-
 class ExportMSAConsensusTaskSettings {
 public:
     ExportMSAConsensusTaskSettings();
 
     bool keepGaps;
-    NonAlphabetSymbolsPolicy policy;
     MSAEditor* msa;
     QString url;
     DocumentFormatId format;
     QString name;
-    bool addToProjectFlag;
 };
 
 class ExtractConsensusTask : public Task {
 public:
-    ExtractConsensusTask( bool keepGaps, NonAlphabetSymbolsPolicy policy, MSAEditor* msa);
+    ExtractConsensusTask( bool keepGaps, MSAEditor* msa);
     void run();
     const QByteArray& getExtractedConsensus() const;
 private:
     bool keepGaps;
-    NonAlphabetSymbolsPolicy policy;
     MSAEditor* msa;
     QByteArray filteredConsensus;
 };

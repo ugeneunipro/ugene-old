@@ -221,7 +221,7 @@ ExportMSAConsensusTask::ExportMSAConsensusTask(const ExportMSAConsensusTaskSetti
 }
 
 void ExportMSAConsensusTask::prepare(){
-    extractConsensus = new ExtractConsensusTask(settings.keepGaps, settings.policy, settings.msa);
+    extractConsensus = new ExtractConsensusTask(settings.keepGaps, settings.msa);
     addSubTask(extractConsensus);
 }
 
@@ -230,13 +230,17 @@ QList<Task*> ExportMSAConsensusTask::onSubTaskFinished( Task* subTask ){
     if(subTask == extractConsensus && !isCanceled() && !hasError()) {
         Document *takenDoc = createDocument();
         CHECK_OP(stateInfo, result);
-        SaveDocumentTask *t = new SaveDocumentTask(takenDoc, takenDoc->getIOAdapterFactory(), takenDoc->getURL());
-        if (settings.addToProjectFlag){
-            AppContext::getTaskScheduler()->registerTopLevelTask(new AddDocumentAndOpenViewTask(takenDoc));
-        }else{
-            t->addFlag(SaveDoc_DestroyAfter);
+        SaveDocumentTask *saveTask = new SaveDocumentTask(takenDoc, takenDoc->getIOAdapterFactory(), takenDoc->getURL());
+        saveTask->addFlag(SaveDoc_Overwrite);
+        Project *proj = AppContext::getProject();
+        if(proj != NULL){
+            if(proj->findDocumentByURL(takenDoc->getURL()) != NULL){
+                result.append(saveTask);
+                return result;
+            }
         }
-        AppContext::getTaskScheduler()->registerTopLevelTask(t);
+        saveTask->addFlag(SaveDoc_OpenAfter);
+        result.append(saveTask);
     }
     return result;
 }
@@ -264,9 +268,9 @@ Document *ExportMSAConsensusTask::createDocument(){
     return doc.take();
 }
 
-ExtractConsensusTask::ExtractConsensusTask( bool keepGaps_, NonAlphabetSymbolsPolicy policy_, MSAEditor* msa_ )
+ExtractConsensusTask::ExtractConsensusTask( bool keepGaps_, MSAEditor* msa_ )
 : Task(tr("Export consensus to MSA"), TaskFlags(TaskFlag_None)), 
-keepGaps(keepGaps_), policy(policy_), msa(msa_){
+keepGaps(keepGaps_), msa(msa_){
     setVerboseLogMode(true);
     SAFE_POINT_EXT(msa != NULL, setError("Given msa pointer is NULL"), );
 }
@@ -280,28 +284,7 @@ void ExtractConsensusTask::run() {
         if(c == '-' && !keepGaps){
             continue;
         }
-        if (policy == AllowAllSymbols){
-            filteredConsensus.append(c);
-        }else{
-            if(!alphabet->getAlphabetChars(true).contains(c.toLatin1())){
-                switch (policy)
-                {
-                case Skip:
-                    break;
-                case ReplaceWithGap:
-                    filteredConsensus.append('-');
-                    break;
-                case ReplaceWithDefault:
-                    filteredConsensus.append(alphabet->getDefaultSymbol());
-                    break;
-                default:
-                    setError("Got unknown policy in settings");
-                    break;
-                }
-            }else{
-                filteredConsensus.append(c);
-            }            
-        }
+        filteredConsensus.append(c);
     }
 }
 
@@ -310,8 +293,8 @@ const QByteArray& ExtractConsensusTask::getExtractedConsensus() const {
 }
 
 
-ExportMSAConsensusTaskSettings::ExportMSAConsensusTaskSettings(): keepGaps(true), policy(Skip), msa(NULL), 
-format(BaseDocumentFormats::PLAIN_TEXT), addToProjectFlag(false)
+ExportMSAConsensusTaskSettings::ExportMSAConsensusTaskSettings(): keepGaps(true), msa(NULL), 
+format(BaseDocumentFormats::PLAIN_TEXT)
 {}
 
 } // namespace

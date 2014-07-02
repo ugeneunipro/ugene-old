@@ -23,52 +23,47 @@
 
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
-#include <U2View/MSAColorScheme.h>
+
+#include <U2View/MSAEditorConsensusArea.h>
 #include <U2View/MSAEditorSequenceArea.h>
 #include <U2View/MSAEditorTasks.h>
+
+#include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/L10n.h>
+#include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/U2IdTypes.h>
 
 namespace U2 {
 
 static const int ITEMS_SPACING = 6;
 static const int TITLE_SPACING = 1;
 
-QWidget* MSAExportConsensusTab::createPathGroup(){
-    DocumentFormatConstraints constraints;
-    constraints.addFlagToSupport(DocumentFormatFlag_SupportWriting);
-    constraints.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
-    constraints.supportedObjectTypes << GObjectTypes::TEXT << GObjectTypes::SEQUENCE;
-    constraints.allowPartialTypeMapping = true;
-    const DocumentFormatRegistry *formatRegistry = AppContext::getDocumentFormatRegistry();
-    const QList<DocumentFormatId> formatIds = formatRegistry->selectFormats(constraints);
-
-    foreach (const DocumentFormatId &formatId, formatIds) {
-        formatCb->addItem(formatRegistry->getFormatById(formatId)->getFormatName(), formatId);
-    }
-
-    pathLe->setText(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath() +
-        QDir::separator() + "consensus");
-    return savePathGroup;
-}
-
 MSAExportConsensusTab::MSAExportConsensusTab(MSAEditor* msa_)
 :msa(msa_){
     setupUi(this);
-    dfr = AppContext::getDocumentFormatRegistry();
-    savePath = new ShowHideSubgroupWidget("PATH", tr("Save path"), createPathGroup(), true);
-    settings = new ShowHideSubgroupWidget("SETTINGS", tr("Settings"), settingsGroup, true);
-    savePathLayout->addWidget(savePath);
-    settingsLayout->addWidget(settings);
-    skipRb->setChecked(true);
 
-    sl_formatChanged();
+    hintLabel->setStyleSheet("color: green; font: bold;");
     
+    dfr = AppContext::getDocumentFormatRegistry();
+    pathLe->setText(QDir::toNativeSeparators(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/" + msa->getMSAObject()->getGObjectName() + "_consensus.txt"));
+
+    formatCb->addItem(dfr->getFormatById(BaseDocumentFormats::PLAIN_TEXT)->getFormatName(), BaseDocumentFormats::PLAIN_TEXT);
+
+    MSAEditorConsensusArea *consensusArea = msa->getUI()->getConsensusArea();
+    showHint(true);
+    
+    sl_consensusChanged(consensusArea->getConsensusAlgorithm()->getId());
+
     connect(browseBtn, SIGNAL(clicked()), SLOT(sl_browseClicked()));
     connect(exportBtn, SIGNAL(clicked()), SLOT(sl_exportClicked()));
     connect(formatCb, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_formatChanged()));
+    connect(consensusArea, SIGNAL(si_consensusAlgorithmChanged(const QString&))
+        , SLOT(sl_consensusChanged(const QString&)) );
 };
 
 void MSAExportConsensusTab::sl_browseClicked(){
@@ -83,19 +78,10 @@ void MSAExportConsensusTab::sl_browseClicked(){
 void MSAExportConsensusTab::sl_exportClicked(){
     ExportMSAConsensusTaskSettings settings;
     settings.format = formatCb->itemData(formatCb->currentIndex()).toString();
-    settings.addToProjectFlag = addToProjectChb->isChecked();
     settings.keepGaps = keepGapsChb->isChecked();
     settings.msa = msa;
     settings.name = msa->getMSAObject()->getGObjectName() + "_consensus";
-    if(skipRb->isChecked()){
-        settings.policy = Skip;
-    }else if (gapRb->isChecked()){
-        settings.policy = ReplaceWithGap;
-    }else if(defaultSymbolRb->isChecked()){
-        settings.policy = ReplaceWithDefault;
-    }else if(keepAllSymbolsRb->isChecked()){
-        settings.policy = AllowAllSymbols;
-    }
+
     settings.url = pathLe->text();
     AppContext::getTaskScheduler()->registerTopLevelTask(new ExportMSAConsensusTask(settings));
 }
@@ -110,14 +96,40 @@ void MSAExportConsensusTab::sl_formatChanged(){
     SAFE_POINT(df, "Cant get document format by id", );
     QString fileExt = df->getSupportedDocumentFileExtensions().first();
     GUrl url =  pathLe->text();
-    pathLe->setText(QString("%1/%2.%3").arg(url.dirPath()).arg(url.baseFileName()).arg(fileExt));
+    pathLe->setText(QDir::toNativeSeparators(QString( QString("%1") + QDir::separator() + QString("%2.%3") )
+        .arg(url.dirPath()).arg(url.baseFileName()).arg(fileExt)));
+}
 
-    bool textSupported = df->getSupportedObjectTypes().contains(GObjectTypes::TEXT);
-    keepAllSymbolsRb->setEnabled(textSupported);
+void MSAExportConsensusTab::showHint( bool showHint ){
+    if (showHint){
+        hintLabel->show();
+        keepGapsChb->hide();
+    }else{
+        hintLabel->hide();
+        keepGapsChb->show();
+    }
+}
 
-    if(keepAllSymbolsRb->isChecked() && !textSupported){
-        keepAllSymbolsRb->setChecked(false);
-        skipRb->setChecked(true);
+void MSAExportConsensusTab::sl_consensusChanged(const QString& algoId) {
+    MSAConsensusAlgorithmFactory *consAlgorithmFactory = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(algoId);
+    SAFE_POINT(consAlgorithmFactory != NULL, "Fetched consensus algorithm factory is NULL", );
+    if(consAlgorithmFactory->isSequenceLikeResult()){
+        if(formatCb->count() == 1 ){ //only text
+            formatCb->addItem(dfr->getFormatById(BaseDocumentFormats::PLAIN_GENBANK)->getFormatName(), BaseDocumentFormats::PLAIN_GENBANK);
+            formatCb->addItem(dfr->getFormatById(BaseDocumentFormats::FASTA)->getFormatName(), BaseDocumentFormats::FASTA);
+            showHint(false);
+        }else{
+            SAFE_POINT(formatCb->count() == 3, "Count of supported 'text' formats is not equal three", );
+        }        
+    }else{
+        if(formatCb->count() == 3 ){ //all possible formats
+            formatCb->setCurrentIndex(formatCb->findText(BaseDocumentFormats::PLAIN_TEXT));
+            formatCb->removeItem(formatCb->findText(BaseDocumentFormats::FASTA));
+            formatCb->removeItem(formatCb->findText(BaseDocumentFormats::PLAIN_GENBANK));
+            showHint(true);
+        }else{
+            SAFE_POINT(formatCb->count() == 1, "Count of supported 'text' formats is not equal one", );
+        }
     }
 }
 
