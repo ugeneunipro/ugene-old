@@ -370,10 +370,12 @@ void U2DbiPool::releaseDbi(U2Dbi* dbi, U2OpStatus& os) {
     int cnt = --dbiCountersById[id];
     if (cnt > 0) {
         return;
-    } else if (SQLITE_DBI_ID != dbi->getDbiRef().dbiFactoryId) {
-        dbiById.remove(id);
-        dbiCountersById.remove(id);
+    }
 
+    dbiById.remove(id);
+    dbiCountersById.remove(id);
+
+    if (MYSQL_DBI_ID == dbi->getDbiRef().dbiFactoryId) {
         const QString dbiUrl = id2Url(id);
         if (MAX_CONNECTIONS_PER_DBI < getCountOfConnectionsInPool(dbiUrl)) {
             flushPool(dbiUrl);
@@ -381,6 +383,8 @@ void U2DbiPool::releaseDbi(U2Dbi* dbi, U2OpStatus& os) {
 
         suspendedDbis.insert(id, dbi);
         dbiSuspendStartTime.insert(dbi, QDateTime::currentMSecsSinceEpoch());
+    } else {
+        deallocateDbi(dbi, os);
     }
 }
 
@@ -520,10 +524,10 @@ QString U2DbiPool::getId(const U2DbiRef& ref, U2OpStatus& os) {
     const QString url = U2DbiUtils::ref2Url(ref);
     SAFE_POINT_EXT(!url.isEmpty(), os.setError(tr("Invalid dbi reference")), "");
 
-    if (ref.dbiFactoryId == SQLITE_DBI_ID) {
-        return url;
-    } else {
+    if (ref.dbiFactoryId == MYSQL_DBI_ID) {
         return url + DBI_ID_DELIMETER + QString::number((qint64)QThread::currentThread());
+    } else {
+        return url;
     }
 }
 
@@ -537,15 +541,15 @@ QStringList U2DbiPool::getIds(const U2DbiRef& ref, U2OpStatus &os) const {
     CHECK_OP(os, QStringList());
     QStringList result;
 
-    if (ref.dbiFactoryId == SQLITE_DBI_ID) {
-        if (dbiById.contains(url)) {
-            result << url;
-        }
-    } else {
+    if (ref.dbiFactoryId == MYSQL_DBI_ID) {
         foreach (const QString& id, dbiById.keys()) {
             if (id2Url(id) == url) {
                 result << id;
             }
+        }
+    } else {
+        if (dbiById.contains(url)) {
+            result << url;
         }
     }
 
