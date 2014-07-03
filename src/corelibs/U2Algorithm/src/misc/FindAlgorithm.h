@@ -24,6 +24,7 @@
 
 #include <U2Core/U2Region.h>
 #include <U2Core/AnnotationData.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QList>
 
@@ -37,40 +38,28 @@ public:
     FindAlgorithmResult() : err(0) {}
     FindAlgorithmResult(const int _err)
         : err(_err){}
-    FindAlgorithmResult(const U2Region& _r, bool t, U2Strand s, int _err) 
+    FindAlgorithmResult(const U2Region& _r, bool t, U2Strand s, int _err)
         : region(_r), translation(t), strand(s), err(_err){}
-    
-    void clear() {region.startPos = 0; region.length = 0; translation = false; strand = U2Strand::Direct; err = 0;}
-    
-    bool isEmpty() const {return region.startPos == 0 && region.length == 0;}
+
+    void clear();
+
+    bool isEmpty() const {
+        return region.startPos == 0 && region.length == 0;
+    }
 
     bool operator ==(const FindAlgorithmResult& o) const {
         return region == o.region && err == o.err && strand == o.strand && translation == o.translation;
     }
 
-    AnnotationData toAnnotation(const QString& name) const {
-        AnnotationData data;
-        data.name = name;
-        data.location->regions << region;
-        data.setStrand(strand);
-        data.qualifiers.append(U2Qualifier("mismatches", QString::number(err)));
-        return data;
-    }
+    AnnotationData toAnnotation(const QString& name, bool splitCircular = false, int seqLen = -1) const;
 
     U2Region    region;
     bool        translation;
     U2Strand    strand;
     int         err;
 
-    static QList<AnnotationData> toTable(const QList<FindAlgorithmResult>& res, const QString& name)
-    {
-        QList<AnnotationData> list;
-        foreach (const FindAlgorithmResult& f, res) {
-            list.append(f.toAnnotation(name));
-        }
-        return list;
-    }
-
+    static QList<AnnotationData> toTable(const QList<FindAlgorithmResult>& res, const QString& name,
+                                         bool splitCircular = false, int seqLen = -1);
 };
 
 class DNATranslation;
@@ -102,7 +91,7 @@ public:
         DNATranslation* proteinTT = NULL,
         const U2Region& searchRegion = U2Region(),
         int maxErr = 0,
-        FindAlgorithmPatternSettings _patternSettings = FindAlgorithmPatternSettings_Subst, 
+        FindAlgorithmPatternSettings _patternSettings = FindAlgorithmPatternSettings_Subst,
         bool ambBases = false,
         int _maxRegExpResult = 100,
         int _maxResult2Find = 5000);
@@ -122,9 +111,9 @@ public:
 class U2ALGORITHM_EXPORT FindAlgorithm {
 public:
     // Note: pattern is never affected by either aminoTT or complTT
-    
+
     static void find(
-        FindAlgorithmResultsListener* rl, 
+        FindAlgorithmResultsListener* rl,
         DNATranslation* aminoTT, // if aminoTT!=NULL -> pattern must contain amino data and sequence must contain DNA data
         DNATranslation* complTT, // if complTT!=NULL -> sequence is complemented before comparison with pattern
         FindAlgorithmStrand strand, // if not direct there complTT must not be NULL
@@ -132,6 +121,7 @@ public:
         bool supportAmbigiousBases,
         const char* sequence,
         int seqLen,
+        bool searchIsCircular,
         const U2Region& range,
         const char* pattern,
         int patternLen,
@@ -145,6 +135,7 @@ public:
         const FindAlgorithmSettings& config,
         const char* sequence,
         int seqLen,
+        bool searchIsCircular,
         int& stopFlag,
         int& percentsCompleted) {
             find(rl,
@@ -155,6 +146,7 @@ public:
                 config.useAmbiguousBases,
                 sequence,
                 seqLen,
+                searchIsCircular,
                 config.searchRegion,
                 config.pattern.constData(),
                 config.pattern.length(),

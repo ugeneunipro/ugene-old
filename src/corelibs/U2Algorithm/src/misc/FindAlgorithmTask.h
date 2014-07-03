@@ -35,9 +35,11 @@ class DNATranslation;
 
 class U2ALGORITHM_EXPORT FindAlgorithmTaskSettings : public FindAlgorithmSettings {
 public:
-    FindAlgorithmTaskSettings() {}
+    FindAlgorithmTaskSettings()
+        : searchIsCircular(false) {}
     FindAlgorithmTaskSettings(const FindAlgorithmSettings& f) : FindAlgorithmSettings(f) {}
     QByteArray          sequence;
+    bool                searchIsCircular;
 };
 
 class U2ALGORITHM_EXPORT FindAlgorithmTask : public Task, public FindAlgorithmResultsListener {

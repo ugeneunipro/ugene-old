@@ -57,7 +57,7 @@ void GTest_FindAlgorithmTest::init(XMLTestFormat *tf, const QDomElement& el){
         stateInfo.setError(GTest::tr("value for %1 is incorrect").arg(STRAND_ATTR));
         return;
     }
-    
+
     buf = el.attribute(PATTERN_ATTR);
     if(buf.isEmpty()){
         stateInfo.setError(GTest::tr("value not set %1").arg(PATTERN_ATTR));
@@ -183,8 +183,9 @@ void GTest_FindAlgorithmTest::prepare(){
            break;
        }
     }
-    
+
     settings.sequence = se->getWholeSequenceData();
+    settings.searchIsCircular = se->isCircular();
     settings.complementTT = GObjectUtils::findComplementTT(se->getAlphabet());
     if(translatetoAmino){
         settings.proteinTT = GObjectUtils::findAminoTT(se, false);

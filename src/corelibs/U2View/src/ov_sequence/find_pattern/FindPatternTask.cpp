@@ -74,7 +74,8 @@ QList<Task*> FindPatternTask::onSubTaskFinished(Task* subTask)
             removeOverlappedResults(results);
         }
 
-        QList<AnnotationData> annots = FindAlgorithmResult::toTable(results, annotName);
+        QList<AnnotationData> annots = FindAlgorithmResult::toTable(results, annotName,
+                                                                    settings.searchIsCircular, settings.sequence.size());
 
         if (!annots.isEmpty()) {
             resultsList.append(new CreateAnnotationsTask(annotObject, annotGroup, annots));

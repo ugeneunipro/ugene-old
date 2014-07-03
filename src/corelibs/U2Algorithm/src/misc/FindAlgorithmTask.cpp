@@ -40,7 +40,7 @@ namespace U2 {
 
 class StrandContext;
 
-FindAlgorithmTask::FindAlgorithmTask(const FindAlgorithmTaskSettings& s) 
+FindAlgorithmTask::FindAlgorithmTask(const FindAlgorithmTaskSettings& s)
 : Task (tr("Find in sequence task"), TaskFlag_None), config(s)
 {
     GCOUNTER(cvar, tvar, "FindAlgorithmTask");
@@ -62,6 +62,7 @@ void FindAlgorithmTask::run() {
         config.useAmbiguousBases,
         config.sequence.constData(),
         config.sequence.size(),
+        config.searchIsCircular,
         config.searchRegion,
         config.pattern.constData(),
         config.pattern.length(),

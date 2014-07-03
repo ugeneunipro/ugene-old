@@ -382,7 +382,7 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         connect(annotController, SIGNAL(si_annotationNamesEdited()), SLOT(sl_onAnotationNameEdited()));
 
         setContentsMargins(0, 0, 0, 0);
-        
+
         annotsWidget = annotController->getWidget();
         usePatternNamesCheckBox = annotController->getUsePatternNameCheckBox();
         annotController->setUsePatternNameCheckBoxVisible();
@@ -400,9 +400,9 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         textPattern->installEventFilter(findPatternEventFilter);
         connect(findPatternEventFilter, SIGNAL(si_tabPressed()), SLOT(sl_onTabInPatternFieldPressed()));
         connect(findPatternEventFilter, SIGNAL(si_enterPressed()), SLOT(sl_onEnterInPatternFieldPressed()));
-        
+
         setFocusProxy(textPattern);
-        
+
         currentSelection = NULL;
         showHideMessage(true, UseMultiplePatternsTip);
 
@@ -604,7 +604,7 @@ void FindPatternWidget::sl_onRegionOptionChanged(int index)
 
     }else if(boxRegion->itemData(index).toInt() == RegionSelectionIndex_CurrentSelectedRegion) {
         currentSelection = annotatedDnaView->getSequenceInFocus()->getSequenceSelection();
-        connect(currentSelection, SIGNAL(si_selectionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)), 
+        connect(currentSelection, SIGNAL(si_selectionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)),
             this, SLOT(sl_onSelectedRegionChanged()) );
         editStart->show();
         lblStartEndConnection->show();
@@ -693,10 +693,10 @@ void FindPatternWidget::sl_onFocusChanged(
         updateAnnotationsWidget();
 
         if(boxRegion->itemData(boxRegion->currentIndex()).toInt() == RegionSelectionIndex_CurrentSelectedRegion){
-            disconnect(currentSelection, SIGNAL(si_selectionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)), 
+            disconnect(currentSelection, SIGNAL(si_selectionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)),
                 this, SLOT(sl_onSelectedRegionChanged()) );
             currentSelection = annotatedDnaView->getSequenceInFocus()->getSequenceSelection();
-            connect(currentSelection, SIGNAL(si_selectionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)), 
+            connect(currentSelection, SIGNAL(si_selectionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)),
                 this, SLOT(sl_onSelectedRegionChanged()) );
              sl_onSelectedRegionChanged();
         }
@@ -956,7 +956,7 @@ void FindPatternWidget::setRegionToWholeSequence()
 void FindPatternWidget::verifyPatternAlphabet()
 {
     U2OpStatusImpl os;
-    
+
     QStringList patternNoNames;
     QList<NamePattern > patternsWithNames = getPatternsFromTextPatternField(os);
     foreach(const NamePattern& name_pattern, patternsWithNames ){
@@ -964,7 +964,7 @@ void FindPatternWidget::verifyPatternAlphabet()
     }
 
     QString patterns = patternNoNames.join("");
-    
+
     bool alphabetIsOk = checkAlphabet(patterns);
 
     if (!alphabetIsOk) {
@@ -1108,7 +1108,7 @@ void FindPatternWidget::sl_onEnterInPatternFieldPressed()
 void FindPatternWidget::sl_onSearchClicked()
 {
     SAFE_POINT(!textPattern->toPlainText().isEmpty() || loadFromFileGroupBox->isChecked(), "Internal error: can't search for an empty string!",);
-    
+
     if(loadFromFileGroupBox->isChecked()) {
         LoadPatternsFileTask* loadTask = new LoadPatternsFileTask(filePathLineEdit->text());
         connect(loadTask, SIGNAL(si_stateChanged()), SLOT(sl_loadPatternTaskStateChanged()));
@@ -1145,7 +1145,7 @@ void FindPatternWidget::updateAnnotationsWidget()
     SAFE_POINT(NULL != annotatedDnaView->getSequenceInFocus(),
         "There is no sequence in focus to update the annotations widget on the 'Search in Sequence' tab.",);
     CreateAnnotationModel newAnnotModel = annotController->getModel();
-    
+
     if(!newAnnotModel.newDocUrl.isEmpty())
         newAnnotModel.newDocUrl = "";
 
@@ -1180,6 +1180,7 @@ void FindPatternWidget::initFindPatternTask( const QList<NamePattern>& patterns)
 
     FindAlgorithmTaskSettings settings;
     settings.sequence = activeContext->getSequenceObject()->getWholeSequenceData();
+    settings.searchIsCircular = activeContext->getSequenceObject()->isCircular();
 
     // Strand
     if (isAminoSequenceSelected) {
@@ -1401,13 +1402,13 @@ void FindPatternWidget::updatePatternText(int previousAlgorithm) {
 
 void FindPatternWidget::validateCheckBoxSize(QCheckBox* checkBox, int requiredWidth) {
     QFont font = checkBox->font();
-    QFontMetrics checkBoxMetrics(font); 
+    QFontMetrics checkBoxMetrics(font);
     QString text = checkBox->text();
 
     if(text.contains('\n')) {
         return;
     }
-    
+
     int lastSpacePos = 0;
     QString wrappedText = "";
     int startPos = 0;

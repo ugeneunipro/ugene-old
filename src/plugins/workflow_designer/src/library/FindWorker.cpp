@@ -124,7 +124,7 @@ void FindWorkerFactory::init() {
     DataTypeRegistry* dr = WorkflowEnv::getDataTypeRegistry();
     assert(dr);
     dr->registerEntry(inSet);
-    
+
     QList<PortDescriptor*> p;
     {
         Descriptor ind(BasePorts::IN_SEQ_PORT_ID(),
@@ -185,18 +185,18 @@ void FindWorkerFactory::init() {
         a << new Attribute(amd, BaseTypes::BOOL_TYPE(), false, false);
         a << new Attribute(patternNameQualifier, BaseTypes::STRING_TYPE( ), false, "pattern_name");
     }
-    
+
     Descriptor desc(ACTOR_ID,
         FindWorker::tr("Find Pattern"),
         FindWorker::tr("Searches regions in a sequence similar to a pattern"
             " sequence. Outputs a set of annotations."));
 
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
-    
+
     QMap<QString, PropertyDelegate*> delegates;
     {
-        QVariantMap lenMap; 
-        lenMap["minimum"] = QVariant(0); 
+        QVariantMap lenMap;
+        lenMap["minimum"] = QVariant(0);
         lenMap["maximum"] = QVariant(INT_MAX);
         delegates[ERR_ATTR] = new SpinBoxDelegate(lenMap);
     }
@@ -207,14 +207,14 @@ void FindWorkerFactory::init() {
         delegates[BaseAttributes::STRAND_ATTRIBUTE().getId()] = new ComboBoxDelegate(BaseAttributes::STRAND_ATTRIBUTE_VALUES_MAP());
     }
     proto->setEditor(new DelegateEditor(delegates));
-    
+
     proto->setIconPath( ":core/images/find_dialog.png" );
     proto->setPrompter(new FindPrompter());
     proto->setValidator(new FindPatternsValidator());
     QList<Descriptor> reqSlots; reqSlots << BaseSlots::DNA_SEQUENCE_SLOT();
     proto->setPortValidator(BasePorts::IN_SEQ_PORT_ID(), new RequiredSlotsValidator(reqSlots));
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_BASIC(), proto);
-    
+
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
     localDomain->registerEntry(new FindWorkerFactory());
 }
@@ -300,7 +300,7 @@ QString FindPrompter::composeRichDoc() {
     QString filePathParam = getParameter(PATTERN_FILE_ATTR).toString();
     if (!filePathParam.isEmpty()) {
         QString pattern = getHyperlink(PATTERN_FILE_ATTR, filePathParam);
-        
+
         patternFileStr = tr(" and <u>%1</u>").arg(pattern);
 
         bool useNames = getParameter(USE_NAMES_ATTR).toBool();
@@ -360,7 +360,7 @@ Task* FindWorker::tick() {
             return NULL;
         }
         FindAlgorithmTaskSettings cfg;
-        
+
         // sequence
         QVariantMap qm = inputMessage.getData().toMap();
         SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
@@ -373,15 +373,16 @@ Task* FindWorker::tick() {
             return new FailTask(tr("Null sequence supplied to FindWorker: %1").arg(seq.getName()));
         }
         cfg.sequence = QByteArray(seq.constData(), seq.length());
+        cfg.searchIsCircular = seqObj->isCircular();
         cfg.searchRegion.length = seq.length();
-        
+
         // other parameters
         cfg.maxErr = actor->getParameter(ERR_ATTR)->getAttributeValue<int>(context);
         cfg.patternSettings = static_cast<FindAlgorithmPatternSettings> (actor->getParameter(ALGO_ATTR)->getAttributeValue<int>(context));
         cfg.useAmbiguousBases = actor->getParameter(AMBIGUOUS_ATTR)->getAttributeValue<bool>(context);
 
         resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
-        
+
         // translations
         cfg.strand = getStrand(actor->getParameter(BaseAttributes::STRAND_ATTRIBUTE().getId())->getAttributeValue<QString>(context));
         if(cfg.strand != FindAlgorithmStrand_Direct) {
@@ -438,7 +439,7 @@ Task* FindWorker::tick() {
         }
 
         assert(!subs.isEmpty());
-        
+
         MultiTask * multiFind = new MultiTask(tr("Find algorithm subtasks"), subs);
         connect(new TaskSignalMapper(multiFind), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
         return multiFind;
@@ -497,7 +498,7 @@ void FindWorker::sl_taskFinished( Task *t ) {
                         .arg( QString( filePatterns.value( findTask ).second ) ) );
                 }
             }
-            
+
         } else {
             LoadPatternsFileTask *loadTask = qobject_cast<LoadPatternsFileTask *>( sub );
             if ( NULL != loadTask ) {
