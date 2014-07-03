@@ -304,6 +304,7 @@ void GTest_Bwa::prepare() {
     config.shortReadSets.append(readsFileUrl);
     config.refSeqUrl = GUrl(env->getVar("COMMON_DATA_DIR") + "/" + indexName);
     config.prebuiltIndex = usePrebuildIndex;
+    config.pairedReads = false;
     config.resultFileName = GUrl(resultDirPath + "/result.sam");
     config.algName = BwaTask::taskName;
     config.openView = false;
