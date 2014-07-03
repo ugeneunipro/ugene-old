@@ -38,10 +38,10 @@ DocumentFoldersUpdate::DocumentFoldersUpdate(const U2DbiRef &dbiRef, U2OpStatus 
     ConnectionHelper con(dbiRef, os);
     CHECK_OP(os, );
 
-    folders = con.oDbi->getFolders(os);
+    u2objectFolders = con.oDbi->getObjectFolders(os);
     CHECK_OP(os, );
 
-    u2objectFolders = con.oDbi->getObjectFolders(os);
+    folders = con.oDbi->getFolders(os);
     CHECK_OP(os, );
 
     QHash<U2Object, QString>::ConstIterator i = u2objectFolders.constBegin();
