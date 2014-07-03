@@ -566,6 +566,7 @@ void MSAEditorTreeViewerUI::sl_rectLayoutRecomputed() {
 
 void MSAEditorTreeViewerUI::sl_onVisibleRangeChanged(QStringList visibleSeqs, int height) {
     SAFE_POINT(height > 0, QString("Argument 'height' in function 'MSAEditorTreeViewerUI::sl_onVisibleRangeChanged' less then 1"),);
+    CHECK(curLayoutIsRectangular,);
     QList<GraphicsBranchItem*> items = getListNodesOfTree();
     QRectF rect;
     zooming(1.0, 1.0/getVerticalZoom());
