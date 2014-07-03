@@ -276,7 +276,6 @@ keepGaps(keepGaps_), msa(msa_){
 }
 
 void ExtractConsensusTask::run() {
-    const DNAAlphabet *alphabet = msa->getMSAObject()->getAlphabet();
     CHECK(msa->getUI(), );
     CHECK(msa->getUI()->getConsensusArea(), );
     CHECK(msa->getUI()->getConsensusArea()->getConsensusCache(),)

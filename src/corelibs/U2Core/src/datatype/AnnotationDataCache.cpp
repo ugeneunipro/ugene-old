@@ -51,6 +51,14 @@ void AnnotationDataCache::addData(const U2Feature &feature, const AnnotationData
     feature2Id.insert(feature.id, feature);
 }
 
+void AnnotationDataCache::addAnnotationTable(const U2DataId &rootId) {
+    QMutexLocker locker(&guard);
+
+    SAFE_POINT(!rootSubfeatures.contains(rootId) && !rootReferenceCount.contains(rootId), "Annotation table is already cached", );
+    rootSubfeatures.insert(rootId, QSet<U2DataId>());
+    rootReferenceCount.insert(rootId, 0);
+}
+
 bool AnnotationDataCache::containsAnnotationTable(const U2DataId &rootId) {
     QMutexLocker locker(&guard);
     return rootReferenceCount.contains(rootId);
@@ -181,12 +189,17 @@ void DbiAnnotationCache::removeAnnotationTableData(const U2DbiRef &dbiRef, const
 }
 
 void DbiAnnotationCache::refAnnotationTable(const U2DbiRef &dbiRef, const U2DataId &rootId) {
-    SAFE_POINT(containsAnnotationTable(dbiRef, rootId), "Unexpected annotation table requested from cache", );
+    if (!containsAnnotationTable(dbiRef, rootId)) {
+        if (!dbiDataCache.contains(dbiRef)) {
+            dbiDataCache.insert(dbiRef, new AnnotationDataCache());
+        }
+        dbiDataCache[dbiRef]->addAnnotationTable(rootId);
+    }
     dbiDataCache[dbiRef]->refAnnotationTable(rootId);
 }
 
 void DbiAnnotationCache::derefAnnotationTable(const U2DbiRef &dbiRef, const U2DataId &rootId) {
-    CHECK(containsAnnotationTable(dbiRef, rootId), ); // this is not safe point because empty annotation tables does not have entries in cache
+    SAFE_POINT(containsAnnotationTable(dbiRef, rootId), "Unexpected annotation table", );
     dbiDataCache[dbiRef]->derefAnnotationTable(rootId);
 }
 

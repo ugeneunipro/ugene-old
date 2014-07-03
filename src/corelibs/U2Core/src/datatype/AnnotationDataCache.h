@@ -46,6 +46,7 @@ public:
     AnnotationDataCache();
 
     void addData(const U2Feature &feature, const AnnotationData &data);
+    void addAnnotationTable(const U2DataId &rootId);
 
     bool containsAnnotationTable(const U2DataId &rootId);
     bool contains(const U2DataId &featureId);
