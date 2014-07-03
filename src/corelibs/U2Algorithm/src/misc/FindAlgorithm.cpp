@@ -585,7 +585,7 @@ static void find_subst( FindAlgorithmResultsListener* rl,
                         FindAlgorithmStrand strand,
                         const char* seq,
                         bool searchIsCircular,
-                        const U2Region& _range,
+                        const U2Region& range,
                         const char* pattern,
                         int patternLen,
                         bool useAmbiguousBases,
@@ -596,17 +596,12 @@ static void find_subst( FindAlgorithmResultsListener* rl,
     SAFE_POINT( NULL == complTT || complTT->isOne2One( ), "Invalid translation supplied!", );
 
     if (aminoTT != NULL) {
-        findInAmino_subst( rl, aminoTT, complTT, strand, seq, _range, pattern, patternLen, maxErr,
+        findInAmino_subst( rl, aminoTT, complTT, strand, seq, range, pattern, patternLen, maxErr,
             stopFlag, percentsCompleted );
         return;
     }
-    if( _range.length - patternLen < 0 ) {
+    if( range.length - patternLen < 0 ) {
         return;
-    }
-
-    U2Region range = _range;
-    if (searchIsCircular) {
-        range.length += patternLen - 1;
     }
     char* complPattern = NULL;
     QByteArray tmp;
@@ -639,7 +634,8 @@ static void find_subst( FindAlgorithmResultsListener* rl,
     } else {
         sequence = seq;
     }
-    for (int i = range.startPos, end = range.endPos();
+    int end = (searchIsCircular ? range.endPos() + patternLen - 1 : range.endPos());
+    for (int i = range.startPos;
          i < end - patternLen + 1 && !stopFlag; i++, leftTillPercent--) {
         for (int ci = conStart; ci < conEnd; ci++) {
             StrandContext& ctx = context[ci];
@@ -648,11 +644,10 @@ static void find_subst( FindAlgorithmResultsListener* rl,
 
             bool match = true;
             int curErr = 0;
-            int start = (i >= range.length) ? i - range.length : i;
             if (useAmbiguousBases) {
-                match = match_pattern_ambiguous(sequence, p, start, patternLen, maxErr, curErr);
+                match = match_pattern_ambiguous(sequence, p, i, patternLen, maxErr, curErr);
             } else {
-                match = match_pattern(sequence, p, start, patternLen, maxErr, curErr);
+                match = match_pattern(sequence, p, i, patternLen, maxErr, curErr);
             }
             if( match ) {
                 res.region.startPos = i;
