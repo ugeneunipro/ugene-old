@@ -414,7 +414,7 @@ void BWAMEMWorkerFactory::init() {
          delegates[OUTPUT_DIR] = new URLDelegate("", "", false, true, false);
          delegates[REFERENCE_GENOME] = new URLDelegate("", "", false, false, false);
 
-         QVariantMap spinMap; spinMap["minimum"] = QVariant(1); spinMap["maximum"] = QVariant(INT_MAX);
+         QVariantMap spinMap; spinMap["minimum"] = QVariant(0); spinMap["maximum"] = QVariant(INT_MAX);
          delegates[THREADS]  = new SpinBoxDelegate(spinMap);
          delegates[MIN_SEED] = new SpinBoxDelegate(spinMap);
          delegates[BAND_WIDTH] = new SpinBoxDelegate(spinMap);

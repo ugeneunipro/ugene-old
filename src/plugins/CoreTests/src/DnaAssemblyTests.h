@@ -50,7 +50,7 @@ private:
     QString refSeqUrl;
     QString indexFileName;
     GUrl resultFileName;
-    QString pairedReads;
+    bool pairedReads;
 };
 
 class GTest_AssemblycompareTwoSAMbyLength : public GTest {

@@ -106,6 +106,7 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
         s.setCustomSettings( dlg.getCustomSettings() );
         s.shortReadSets = dlg.getShortReadSets();
         s.prebuiltIndex = dlg.isPrebuiltIndex();
+        s.pairedReads = dlg.isPaired();
         s.openView = true;
         Task* assemblyTask = new DnaAssemblyTaskWithConversions(s, true);
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
@@ -132,6 +133,7 @@ void DnaAssemblySupport::sl_showBuildIndexDialog()
         s.setCustomSettings( dlg.getCustomSettings() );
         s.openView = false;
         s.prebuiltIndex = false;
+        s.pairedReads = false;
         Task* assemblyTask = new DnaAssemblyTaskWithConversions(s, false, true);
         AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
     }

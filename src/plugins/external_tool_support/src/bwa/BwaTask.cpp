@@ -275,12 +275,15 @@ void BwaMemAlignTask::prepare() {
     arguments.append("-c");
     arguments.append(settings.getCustomValue(BwaTask::OPTION_SKIP_SEED_THRESHOLD, 10000).toString());
 
+    //TODO
+    //doesn't work for bwa mem 0.7.4
+    /*
     arguments.append("-D");
     arguments.append(settings.getCustomValue(BwaTask::OPTION_DROP_CHAINS_THRESHOLD, float(0.5)).toString());
 
     arguments.append("-m");
     arguments.append(settings.getCustomValue(BwaTask::OPTION_MAX_MATE_RESCUES, 100).toString());
-
+    */
     if(settings.getCustomValue(BwaTask::OPTION_SKIP_MATE_RESCUES, false).toBool()){
         arguments.append("-S");
     }

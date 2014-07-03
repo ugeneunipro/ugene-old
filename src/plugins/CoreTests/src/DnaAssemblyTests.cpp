@@ -78,7 +78,8 @@ void GTest_DnaAssemblyToReferenceTask::init(XMLTestFormat*, const QDomElement& e
     }
 
     objName = el.attribute(RES_OBJ_NAME);
-    pairedReads = el.attribute(PAIRED_READS_ATTR);
+    QString pr = el.attribute(PAIRED_READS_ATTR);
+    pairedReads = !pr.isEmpty();
 
     QString resName = el.attribute(RES_FILE_NAME);
     if (!resName.isEmpty()) {
@@ -138,7 +139,7 @@ void GTest_DnaAssemblyToReferenceTask::prepare()
     settings.refSeqUrl = refSeqUrl;
     settings.indexFileName = indexFileName;
     settings.resultFileName = resultFileName;
-    settings.pairedReads = pairedReads.toInt();
+    settings.pairedReads = pairedReads;
 
     foreach (const GUrl& url, shortReadUrls) {
         settings.shortReadSets.append( url );
