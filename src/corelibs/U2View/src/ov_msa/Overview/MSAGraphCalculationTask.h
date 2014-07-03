@@ -41,8 +41,9 @@ class MSAHighlightingScheme;
 class MSAGraphCalculationTask : public BackgroundTask<QPolygonF> {
     Q_OBJECT
 public:
-    MSAGraphCalculationTask(int msaLength, int width, int height)
+    MSAGraphCalculationTask(MAlignmentObject* msa, int msaLength, int width, int height)
         : BackgroundTask<QPolygonF>(tr("Render overview"), TaskFlag_None),
+          msa(msa),
           msaLength( msaLength ),
           width( width ),
           height( height ){}
@@ -55,6 +56,7 @@ protected:
     void constructPolygon(QPolygonF &polygon);
     virtual int getGraphValue(int) const { return height; }
 
+    MAlignmentObject*   msa;
     int msaLength;
     int width;
     int height;
@@ -63,15 +65,14 @@ protected:
 class MSAConsensusOverviewCalculationTask : public MSAGraphCalculationTask {
     Q_OBJECT
 public:
-    MSAConsensusOverviewCalculationTask(const QSharedPointer<MSAEditorConsensusCache> &consensus,
+    MSAConsensusOverviewCalculationTask(MAlignmentObject* msa,
                                         int msaLen,
-                                        int width, int height)
-        : MSAGraphCalculationTask(msaLen, width, height),
-          consensus(consensus){}
+                                        int width, int height);
 private:
     int getGraphValue(int pos) const;
 
-    QSharedPointer<MSAEditorConsensusCache>    consensus;
+    MSAConsensusAlgorithm*  algorithm;
+    int seqNumber;
 };
 
 class MSAGapOverviewCalculationTask : public MSAGraphCalculationTask {
@@ -84,8 +85,6 @@ private:
     int getGraphValue(int pos) const;
 
     int seqNumber;
-
-    MAlignmentObject*   msa;
 };
 
 class MSAClustalOverviewCalculationTask : public MSAGraphCalculationTask {
@@ -98,7 +97,6 @@ private:
     int getGraphValue(int pos) const;
 
     MSAConsensusAlgorithm*  algorithm;
-    MAlignmentObject*       msa;
 };
 
 class MSAHighlightingOverviewCalculationTask : public MSAGraphCalculationTask {
@@ -123,8 +121,6 @@ private:
     int getGraphValue(int pos) const;
 
     bool isCellHighlighted(int seq, int pos) const;
-
-    MAlignmentObject*       msa;
 
     int msaRowNumber;
     int refSequenceId;

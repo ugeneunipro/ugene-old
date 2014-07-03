@@ -95,15 +95,36 @@ void MSAGraphCalculationTask::constructPolygon(QPolygonF &polygon) {
     polygon = QPolygonF(points);
 }
 
+MSAConsensusOverviewCalculationTask::MSAConsensusOverviewCalculationTask(MAlignmentObject* msa,
+                                    int msaLen,
+                                    int width, int height)
+    : MSAGraphCalculationTask(msa, msaLen, width, height)
+{
+    SAFE_POINT_EXT(msa != NULL, setError(tr("MAlignmentObject is NULL")), );
+    SAFE_POINT_EXT(AppContext::getMSAConsensusAlgorithmRegistry() != NULL, setError(tr("MSAConsensusAlgorithmRegistry is NULL!")), );
+
+    MSAConsensusAlgorithmFactory* factory = AppContext::getMSAConsensusAlgorithmRegistry()->getAlgorithmFactory(BuiltInConsensusAlgorithms::STRICT_ALGO);
+    SAFE_POINT_EXT(factory != NULL, setError(tr("Strict consensus algorithm factory is NULL")), );
+
+    seqNumber = msa->getNumRows();
+    SAFE_POINT_EXT(seqNumber != 0, setError(tr("No sequences in MSA")), );
+
+    const MAlignment& ma = msa->getMAlignment();
+    algorithm = factory->createAlgorithm(ma);
+    algorithm->setParent(this);
+}
+
 int MSAConsensusOverviewCalculationTask::getGraphValue(int pos) const {
-    return consensus->getConsensusCharPercent(pos);
+    const MAlignment& ma = msa->getMAlignment();
+    int score;
+    algorithm->getConsensusCharAndScore(ma, pos, score);
+    return qRound(score * 100. / seqNumber);
 }
 
 MSAGapOverviewCalculationTask::MSAGapOverviewCalculationTask(MAlignmentObject* msa,
                               int msaLen,
                               int width, int height)
-    : MSAGraphCalculationTask(msaLen, width, height),
-      msa(msa)
+    : MSAGraphCalculationTask(msa, msaLen, width, height)
 {
     SAFE_POINT_EXT(msa != NULL, setError(tr("MSA is NULL")), );
     seqNumber = msa->getNumRows();
@@ -124,14 +145,13 @@ int MSAGapOverviewCalculationTask::getGraphValue(int pos) const {
         }
     }
 
-    return gapCounter * 100 / seqNumber;
+    return qRound(gapCounter * 100. / seqNumber);
 }
 
 MSAClustalOverviewCalculationTask::MSAClustalOverviewCalculationTask(MAlignmentObject *_msa,
                                                                      int msaLen,
                                                                      int width, int height)
-    : MSAGraphCalculationTask(msaLen, width, height),
-      msa(_msa)
+    : MSAGraphCalculationTask(msa, msaLen, width, height)
 {
 
     SAFE_POINT_EXT(msa != NULL, setError(tr("MAlignmentObject is NULL")), );
@@ -166,7 +186,7 @@ MSAHighlightingOverviewCalculationTask::MSAHighlightingOverviewCalculationTask(M
                                                                                const QString &highlightingSchemeId,
                                                                                int msaLen,
                                                                                int width, int height)
-    : MSAGraphCalculationTask(msaLen, width, height)
+    : MSAGraphCalculationTask(NULL, msaLen, width, height)
 {
     msa = editor->getMSAObject();
     msaRowNumber = msa->getNumRows();

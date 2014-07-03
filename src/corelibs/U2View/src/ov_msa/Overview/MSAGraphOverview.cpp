@@ -160,16 +160,10 @@ void MSAGraphOverview::sl_drawGraph() {
     }
     graphCalculationTaskRunner.cancel();
 
-
-    MSAEditorConsensusArea* ca = ui->getConsensusArea();
-    SAFE_POINT(ca != NULL, "Consensus area is NULL!", );
-
-    QSharedPointer<MSAEditorConsensusCache> cache = ca->getConsensusCache();
-    SAFE_POINT(cache != NULL, "Consensus is NULL!", );
-
     switch (method) {
     case Strict:
-        graphCalculationTask = new MSAConsensusOverviewCalculationTask(cache, editor->getAlignmentLen(),
+        graphCalculationTask = new MSAConsensusOverviewCalculationTask(editor->getMSAObject(),
+                                                                       editor->getAlignmentLen(),
                                                                        width(), FIXED_HEIGHT);
         break;
     case Gaps:
