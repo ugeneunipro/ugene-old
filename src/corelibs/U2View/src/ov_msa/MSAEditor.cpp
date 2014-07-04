@@ -150,7 +150,7 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     saveAlignmentAction->setObjectName("Save alignment");
     connect(saveAlignmentAction, SIGNAL(triggered()), SLOT(sl_saveAlignment()));
 
-    saveAlignmentAsAction = new QAction(QIcon(":core/images/save_as.png"), tr("Save alignment as"), this);
+    saveAlignmentAsAction = new QAction(QIcon(":core/images/msa_save_as.png"), tr("Save alignment as"), this);
     saveAlignmentAsAction->setObjectName("Save alignment as");
     connect(saveAlignmentAsAction, SIGNAL(triggered()), SLOT(sl_saveAlignmentAs()));
 
