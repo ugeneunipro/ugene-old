@@ -355,17 +355,17 @@ void MSAEditorTreeManager::loadTreeFromFile(const QString& treeFileName) {
     }
 
     const QList<GObject*>& objects = doc->getObjects();
-    const MSAEditorMultiTreeViewer* multiTreeViewer = getMultiTreeViewer();
-    CHECK(NULL != multiTreeViewer,);
     foreach(GObject* obj, objects) {
         if(GObjectTypes::PHYLOGENETIC_TREE == obj->getGObjectType()) {
             PhyTreeObject* treeObject = qobject_cast<PhyTreeObject*>(obj);
             if(NULL == treeObject) {
                 continue;
             }
-            CHECK(!multiTreeViewer->getTreeNames().contains(doc->getName()),);
-            Task* task = new MSAEditorOpenTreeViewerTask(treeObject, this);
-            scheduler->registerTopLevelTask(task);
+            const MSAEditorMultiTreeViewer* multiTreeViewer = getMultiTreeViewer();
+            if(NULL == multiTreeViewer || !multiTreeViewer->getTreeNames().contains(doc->getName())) {
+                Task* task = new MSAEditorOpenTreeViewerTask(treeObject, this);
+                scheduler->registerTopLevelTask(task);
+            }
         }
     }
 }
