@@ -530,13 +530,17 @@ void MainWindowImpl::sl_show(){
     bool maximized =AppContext::getSettings()->getValue(SETTINGS_DIR + "maximized", false).toBool();
     QRect geom =AppContext::getSettings()->getValue(SETTINGS_DIR + "geometry", QRect()).toRect();
 
-    if (maximized) {
-        mw->showMaximized();
-    } else {
-        if (!geom.isNull()) {
-            mw->setGeometry(geom);
+    if(mw != NULL){
+        if (maximized) {
+            mw->showMaximized();
+        } else {        
+            mw->show();
+            if (!geom.isNull()) {
+                mw->setGeometry(geom);
+            }
         }
-        mw->show();
+    }else{
+        return;
     }
     foreach(Task *t, startupTasklist){
         AppContext::getTaskScheduler()->registerTopLevelTask(t);
