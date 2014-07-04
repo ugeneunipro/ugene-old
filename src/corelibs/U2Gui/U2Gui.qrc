@@ -161,5 +161,6 @@
         <file>images/bin_restore2.png</file>
         <file>images/clean_empty_bin.png</file>
         <file>images/clean_full_bin.png</file>
+        <file>images/consensus.png</file>
     </qresource>
 </RCC>
