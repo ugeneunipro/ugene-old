@@ -151,7 +151,7 @@ int MSAGapOverviewCalculationTask::getGraphValue(int pos) const {
 MSAClustalOverviewCalculationTask::MSAClustalOverviewCalculationTask(MAlignmentObject *_msa,
                                                                      int msaLen,
                                                                      int width, int height)
-    : MSAGraphCalculationTask(msa, msaLen, width, height)
+    : MSAGraphCalculationTask(_msa, msaLen, width, height)
 {
 
     SAFE_POINT_EXT(msa != NULL, setError(tr("MAlignmentObject is NULL")), );
