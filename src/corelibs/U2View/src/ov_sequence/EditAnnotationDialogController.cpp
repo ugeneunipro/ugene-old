@@ -43,7 +43,7 @@
 namespace U2 {
 
 EditAnnotationDialogController::EditAnnotationDialogController( const AnnotationData &a, U2Region _seqRange, QWidget* p)
-: QDialog(p), seqRange(_seqRange)
+    : QDialog(p), seqRange(_seqRange)
 {
 
     setupUi(this);
@@ -61,19 +61,18 @@ EditAnnotationDialogController::EditAnnotationDialogController( const Annotation
     connect(complementButton, SIGNAL(clicked()), SLOT(sl_complementLocation()));
     connect(locationEdit, SIGNAL(returnPressed()), SLOT(accept()));
     connect(nameEdit, SIGNAL(returnPressed()), SLOT(accept()));
-
 }
 
-void EditAnnotationDialogController::sl_onTextChanged(const QString& changedText){
+void EditAnnotationDialogController::sl_onTextChanged(const QString& changedText) {
     QByteArray locEditText = changedText.toLatin1();
     Genbank::LocationParser::parseLocation(locEditText.constData(), changedText.length(), location);
     if (location->isEmpty()) {
-        if(changedText.isEmpty()){
-            statusLabel->setText("<font color=\"#FF0000\">" + tr("Location is empty!") + "</font>");
-        }else{
-            statusLabel->setText("<font color=\"#FF0000\">" + tr("Invalid location!") + "</font>");
+        if (changedText.isEmpty()) {
+            statusLabel->setText("<b><font color=\"#A6392E\">" + tr("Location is empty!") + "</font></b>");
+        } else{
+            statusLabel->setText("<b><font color=\"#A6392E\">" + tr("Invalid location!") + "</font><b>");
         }
-    }else{
+    } else {
         statusLabel->setText("");
     }
 }
