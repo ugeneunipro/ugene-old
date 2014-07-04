@@ -289,7 +289,7 @@ bool GenbankPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqI
             continue;
         }
         if (st->hasKey("COMMENT")) {
-            QStringList commentSection;
+            QStringList commentSection(st->value());
             while (st->readNextLine() && st->hasContinuation()) {
                 commentSection.append(st->value());
             }

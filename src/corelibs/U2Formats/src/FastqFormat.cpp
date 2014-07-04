@@ -132,22 +132,24 @@ FormatCheckResult FastqFormat::checkRawData(const QByteArray& rawData, const GUr
 #define BUFF_SIZE  4096
 
 static QString readSequenceName(U2OpStatus& os, IOAdapter *io, char beginWith = '@') {
-
-    QByteArray buffArray(BUFF_SIZE+1, 0);
-    char* buff = buffArray.data();
-
     static const QString errorMessage = U2::FastqFormat::tr("Error while trying to find sequence name start");
 
-    bool sequenceNameStartFound = false;
-    int readedCount = 0;
-    while ((readedCount == 0) && !io->isEof()) { // skip \ns
-        readedCount = io->readLine(buff, BUFF_SIZE, &sequenceNameStartFound);
-    }
-    CHECK_EXT(io->isEof() == false,,"");
-    CHECK_EXT(readedCount >= 0, os.setError(errorMessage), "");
+    QByteArray buffArray(BUFF_SIZE+1, 0);
+    { // read name string
+        char *buff = buffArray.data();
+        bool sequenceNameStartFound = false;
+        int readedCount = 0;
+        while ((readedCount == 0) && !io->isEof()) { // skip \ns
+            readedCount = io->readLine(buff, BUFF_SIZE, &sequenceNameStartFound);
+        }
+        CHECK_EXT(io->isEof() == false,,"");
+        CHECK_EXT(readedCount >= 0, os.setError(errorMessage), "");
 
-    buffArray.resize(readedCount);
-    buffArray = buffArray.trimmed();
+        buffArray.resize(readedCount);
+        buffArray = buffArray.trimmed();
+    }
+
+    const char *buff = buffArray.constData();
     CHECK_EXT((buffArray.size() > 0) && (buff[0] == beginWith), os.setError(errorMessage), "");
 
     QString sequenceName = QString::fromLatin1(buff+1, buffArray.size()-1);
