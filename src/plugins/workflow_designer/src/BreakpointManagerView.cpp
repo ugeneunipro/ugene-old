@@ -253,6 +253,12 @@ void BreakpointManagerView::sl_breakpointAdded(const ActorId &actorId) {
     }
 }
 
+void BreakpointManagerView::clear() {
+    foreach (const ActorId &id, actorConnections.values()) {
+        sl_breakpointRemoved(id);
+    }
+}
+
 void BreakpointManagerView::sl_breakpointRemoved(const ActorId &actorId) {
     removeBreakpointFromList(actorConnections.key(actorId));
 }

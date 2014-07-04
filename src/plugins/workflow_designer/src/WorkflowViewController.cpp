@@ -1868,6 +1868,7 @@ void WorkflowView::sl_pasteSample(const QString& s) {
         sl_refreshActorDocs();
         checkAutoRunWizard();
     } else {
+        breakpointView->clear();
         scene->clearScene();
         schema->reset();
         sl_pasteSample(s);
@@ -2106,6 +2107,7 @@ void WorkflowView::loadWizardResult(const QString &result) {
         coreLog.error(tr("File is not found: %1").arg(url));
         return;
     }
+    breakpointView->clear();
     schema->reset();
     meta.reset();
     U2OpStatus2Log os;
@@ -2232,6 +2234,7 @@ void WorkflowView::sl_newScene() {
     if (!confirmModified()) {
         return;
     }
+    breakpointView->clear();
     bottomTabs->hide();
     scene->sl_reset();
     meta.reset();
@@ -2245,6 +2248,7 @@ void WorkflowView::sl_newScene() {
 }
 
 void WorkflowView::sl_onSceneLoaded() {
+    breakpointView->clear();
     sl_updateTitle();
     sl_updateUi();
     scene->centerView();

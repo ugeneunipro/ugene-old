@@ -55,6 +55,7 @@ public:
     QAction* getNewBreakpointAction() { return newBreakpointAction; }
 
     bool eventFilter(QObject *object, QEvent *event);
+    void clear();
 
 signals:
     void si_highlightingRequested(const ActorId &actor);
