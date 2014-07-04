@@ -137,7 +137,7 @@ bool ProjectTreeControllerModeSettings::isObjectShown(GObject* o) const {
     
     //filter by name
     foreach(const QString& token, tokensToShow) {
-        if (!o->getGObjectName().contains(token)) {
+        if (!o->getGObjectName().contains(token, Qt::CaseInsensitive)) {
             return false;
         }
     }
