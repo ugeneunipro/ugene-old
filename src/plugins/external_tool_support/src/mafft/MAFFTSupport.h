@@ -55,16 +55,5 @@ protected:
     virtual void buildMenu(GObjectView* view, QMenu* m);
 };
 
-class MAFFTSupportAction : public ExternalToolSupportAction {
-        Q_OBJECT
-public:
-    MAFFTSupportAction(QObject* p, GObjectView* v, const QString& text, int order)
-        : ExternalToolSupportAction(p,v,text,order, QStringList(ET_MAFFT)) {}
-    MSAEditor*  getMSAEditor() const;
-
-private slots:
-    void sl_lockedStateChanged();
-};
-
 }//namespace
 #endif // _U2_MAFFT_SUPPORT_H

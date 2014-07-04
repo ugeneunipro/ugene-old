@@ -35,6 +35,7 @@
 
 #include "ov_phyltree/TreeViewerTasks.h"
 
+#include <U2Core/MsaDbiUtils.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AppContext.h>
@@ -143,8 +144,13 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     requiredObjects.append(msaObject);
     GCOUNTER(cvar,tvar,"MSAEditor");
 
-    U2OpStatus2Log os;
-    msaObject->setTrackMod(TrackOnUpdate, os);
+    if (!msaObject->isStateLocked()) {
+        U2OpStatus2Log os;
+        msaObject->setTrackMod(TrackOnUpdate, os);
+        MsaDbiUtils::trim(msaObject->getEntityRef(), os);
+        MsaDbiUtils::removeEmptyRows(msaObject->getEntityRef(), msaObject->getMAlignment().getRowsIds(), os);
+        msaObject->updateCachedMAlignment();
+    }
 
     saveAlignmentAction = new QAction(QIcon(":core/images/msa_save.png"), tr("Save alignment"), this);
     saveAlignmentAction->setObjectName("Save alignment");
@@ -176,6 +182,8 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
 
     buildTreeAction = new QAction(QIcon(":/core/images/phylip.png"), tr("Build Tree"), this);
     buildTreeAction->setObjectName("Build Tree");
+    buildTreeAction->setEnabled(!isAlignmentEmpty());
+    connect(msaObject, SIGNAL(si_alignmentBecomesEmpty(bool)), buildTreeAction, SLOT(setDisabled(bool)));
     connect(buildTreeAction, SIGNAL(triggered()), SLOT(sl_buildTree()));
 
     Settings* s = AppContext::getSettings();

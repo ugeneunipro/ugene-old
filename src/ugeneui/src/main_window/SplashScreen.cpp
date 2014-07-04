@@ -68,7 +68,7 @@ void SplashScreen::sl_close(){
     }
 }
 
-bool SplashScreen::eventFilter(QObject *obj, QEvent *ev){
+bool SplashScreen::eventFilter(QObject * /*obj*/, QEvent *ev){
     if(ev->type() == QEvent::Close){
         ev->ignore();
         return true;    

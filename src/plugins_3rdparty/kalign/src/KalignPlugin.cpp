@@ -141,14 +141,16 @@ KalignPlugin::~KalignPlugin() {
 
 MSAEditor* KalignAction::getMSAEditor() const {
     MSAEditor* e = qobject_cast<MSAEditor*>(getObjectView());
-    assert(e!=NULL);
+    SAFE_POINT(e != NULL, "Can't get an appropriate MSA Editor", NULL);
     return e;
 }
 
-void KalignAction::sl_lockedStateChanged() {
+void KalignAction::sl_updateState() {
     StateLockableItem* item = qobject_cast<StateLockableItem*>(sender());
-    assert(item!=NULL);
-    setEnabled(!item->isStateLocked());
+    SAFE_POINT(item != NULL, "Unexpected sender: expect StateLockableItem", );
+    MSAEditor* msaEditor = getMSAEditor();
+    CHECK(msaEditor != NULL, );
+    setEnabled(!item->isStateLocked() && !msaEditor->isAlignmentEmpty());
 }
 
 KalignMSAEditorContext::KalignMSAEditorContext(QObject* p) : GObjectViewWindowContext(p, MSAEditorFactory::ID) {
@@ -162,12 +164,16 @@ void KalignMSAEditorContext::initViewContext(GObjectView* view) {
     }
 
     bool objLocked = msaed->getMSAObject()->isStateLocked();
+    bool isMsaEmpty = msaed->isAlignmentEmpty();
+
     KalignAction* alignAction = new KalignAction(this, view, tr("Align with Kalign..."), 2000);
     alignAction->setObjectName("align_with_kalign");
     alignAction->setIcon(QIcon(":kalign/images/kalign_16.png"));
-    alignAction->setEnabled(!objLocked);
+    alignAction->setEnabled(!objLocked && !isMsaEmpty);
+
     connect(alignAction, SIGNAL(triggered()), SLOT(sl_align()));
-    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignAction, SLOT(sl_lockedStateChanged()));
+    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignAction, SLOT(sl_updateState()));
+    connect(msaed->getMSAObject(), SIGNAL(si_alignmentBecomesEmpty(bool)), alignAction, SLOT(sl_updateState()));
     addViewAction(alignAction);
 }
 

@@ -19,39 +19,38 @@
  * MA 02110-1301, USA.
  */
 
-#include "TCoffeeSupport.h"
-#include "TCoffeeSupportRunDialog.h"
-#include "TCoffeeSupportTask.h"
-#include "ExternalToolSupportSettingsController.h"
-#include "ExternalToolSupportSettings.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QFileDialog>
+#include <QtGui/QMainWindow>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/UserApplicationsSettings.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/MainWindow.h>
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
 
-
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Gui/MainWindow.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
-#endif
+#include "ExternalToolSupportSettings.h"
+#include "ExternalToolSupportSettingsController.h"
+#include "TCoffeeSupport.h"
+#include "TCoffeeSupportRunDialog.h"
+#include "TCoffeeSupportTask.h"
+#include "utils/AlignMsaAction.h"
 
 namespace U2 {
-
 
 TCoffeeSupport::TCoffeeSupport(const QString& name, const QString& path) : ExternalTool(name, path)
 {
@@ -118,19 +117,6 @@ void TCoffeeSupport::sl_runWithExtFileSpecify(){
 }
 
 ////////////////////////////////////////
-//TCoffeeSupportAction ???
-MSAEditor* TCoffeeSupportAction::getMSAEditor() const {
-        MSAEditor* e = qobject_cast<MSAEditor*>(getObjectView());
-        assert(e!=NULL);
-        return e;
-}
-
-void TCoffeeSupportAction::sl_lockedStateChanged() {
-        StateLockableItem* item = qobject_cast<StateLockableItem*>(sender());
-        assert(item!=NULL);
-        setEnabled(!item->isStateLocked());
-}
-////////////////////////////////////////
 //TCoffeeSupportContext
 TCoffeeSupportContext::TCoffeeSupportContext(QObject* p) : GObjectViewWindowContext(p, MSAEditorFactory::ID) {
 
@@ -142,25 +128,30 @@ void TCoffeeSupportContext::initViewContext(GObjectView* view) {
     if (msaed->getMSAObject() == NULL) {
             return;
     }
-    bool objLocked = msaed->getMSAObject()->isStateLocked();
 
-    TCoffeeSupportAction* alignAction = new TCoffeeSupportAction(this, view, tr("Align with T-Coffee..."), 2000);
+    bool objLocked = msaed->getMSAObject()->isStateLocked();
+    bool isMsaEmpty = msaed->isAlignmentEmpty();
+
+    AlignMsaAction* alignAction = new AlignMsaAction(this, ET_TCOFFEE, view, tr("Align with T-Coffee..."), 2000);
     alignAction->setObjectName("Align with T-Coffee");
 
     addViewAction(alignAction);
-    alignAction->setEnabled(!objLocked);
+    alignAction->setEnabled(!objLocked && !isMsaEmpty);
 
-    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignAction, SLOT(sl_lockedStateChanged()));
+    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignAction, SLOT(sl_updateState()));
+    connect(msaed->getMSAObject(), SIGNAL(si_alignmentBecomesEmpty(bool)), alignAction, SLOT(sl_updateState()));
     connect(alignAction, SIGNAL(triggered()), SLOT(sl_align_with_TCoffee()));
 }
+
 void TCoffeeSupportContext::buildMenu(GObjectView* view, QMenu* m) {
-        QList<GObjectViewAction *> actions = getViewActions(view);
-        QMenu* alignMenu = GUIUtils::findSubMenu(m, MSAE_MENU_ALIGN);
-        SAFE_POINT(alignMenu != NULL, "alignMenu", );
-        foreach(GObjectViewAction* a, actions) {
-                a->addToMenuWithOrder(alignMenu);
-        }
+    QList<GObjectViewAction *> actions = getViewActions(view);
+    QMenu* alignMenu = GUIUtils::findSubMenu(m, MSAE_MENU_ALIGN);
+    SAFE_POINT(alignMenu != NULL, "alignMenu", );
+    foreach(GObjectViewAction* a, actions) {
+        a->addToMenuWithOrder(alignMenu);
+    }
 }
+
 void TCoffeeSupportContext::sl_align_with_TCoffee() {
     //Check that T-Coffee and temporary directory path defined
     if (AppContext::getExternalToolRegistry()->getByName(ET_TCOFFEE)->getPath().isEmpty()){
@@ -191,9 +182,9 @@ void TCoffeeSupportContext::sl_align_with_TCoffee() {
     CHECK_OP(os, );
 
     //Call run T-Coffee align dialog
-    TCoffeeSupportAction* action = qobject_cast<TCoffeeSupportAction*>(sender());
+    AlignMsaAction* action = qobject_cast<AlignMsaAction*>(sender());
     assert(action!=NULL);
-    MSAEditor* ed = action->getMSAEditor();
+    MSAEditor* ed = action->getMsaEditor();
     MAlignmentObject* obj = ed->getMSAObject();
     if (obj == NULL)
             return;

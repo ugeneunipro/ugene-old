@@ -99,7 +99,6 @@ MusclePlugin::MusclePlugin()
         Q_UNUSED(res);
         assert(res);
     }
-    
 }
 
 void MusclePlugin::sl_runWithExtFileSpecify(){
@@ -121,14 +120,16 @@ MusclePlugin::~MusclePlugin() {
 
 MSAEditor* MuscleAction::getMSAEditor() const {
     MSAEditor* e = qobject_cast<MSAEditor*>(getObjectView());
-    assert(e!=NULL);
+    SAFE_POINT(e != NULL, "Can't get an appropriate MSA Editor", NULL);
     return e;
 }
 
-void MuscleAction::sl_lockedStateChanged() {
+void MuscleAction::sl_updateState() {
     StateLockableItem* item = qobject_cast<StateLockableItem*>(sender());
-    assert(item!=NULL);
-    setEnabled(!item->isStateLocked());
+    SAFE_POINT(item != NULL, "Unexpected sender: expect StateLockableItem", );
+    MSAEditor* msaEditor = getMSAEditor();
+    CHECK(msaEditor != NULL, );
+    setEnabled(!item->isStateLocked() && !msaEditor->isAlignmentEmpty());
 }
 
 MuscleMSAEditorContext::MuscleMSAEditorContext(QObject* p) : GObjectViewWindowContext(p, MSAEditorFactory::ID) {
@@ -143,28 +144,33 @@ void MuscleMSAEditorContext::initViewContext(GObjectView* view) {
     }
 
     bool objLocked = msaed->getMSAObject()->isStateLocked();
+    bool isMsaEmpty = msaed->isAlignmentEmpty();
+
     MuscleAction* alignAction = new MuscleAction(this, view, tr("Align with MUSCLE..."), 1000);
     alignAction->setIcon(QIcon(":umuscle/images/muscle_16.png"));
-    alignAction->setEnabled(!objLocked);
+    alignAction->setEnabled(!objLocked && !isMsaEmpty);
     alignAction->setObjectName("Align with muscle");
     connect(alignAction, SIGNAL(triggered()), SLOT(sl_align()));
-    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignAction, SLOT(sl_lockedStateChanged()));
+    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignAction, SLOT(sl_updateState()));
+    connect(msaed->getMSAObject(), SIGNAL(si_alignmentBecomesEmpty(bool)), alignAction, SLOT(sl_updateState()));
     addViewAction(alignAction);
 
     MuscleAction* addSequencesAction = new MuscleAction(this, view, tr("Align sequences to profile with MUSCLE..."), 1001);
     addSequencesAction->setIcon(QIcon(":umuscle/images/muscle_16.png"));
-    addSequencesAction->setEnabled(!objLocked);
+    addSequencesAction->setEnabled(!objLocked && !isMsaEmpty);
     addSequencesAction->setObjectName("Align sequences to profile with MUSCLE");
     connect(addSequencesAction, SIGNAL(triggered()), SLOT(sl_alignSequencesToProfile()));
-    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), addSequencesAction, SLOT(sl_lockedStateChanged()));
+    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), addSequencesAction, SLOT(sl_updateState()));
+    connect(msaed->getMSAObject(), SIGNAL(si_alignmentBecomesEmpty(bool)), addSequencesAction, SLOT(sl_updateState()));
     addViewAction(addSequencesAction);
 
     MuscleAction* alignProfilesAction = new MuscleAction(this, view, tr("Align profile to profile with MUSCLE..."), 1002);
     alignProfilesAction->setIcon(QIcon(":umuscle/images/muscle_16.png"));
-    alignProfilesAction->setEnabled(!objLocked);
+    alignProfilesAction->setEnabled(!objLocked && !isMsaEmpty);
     alignProfilesAction->setObjectName("Align profile to profile with MUSCLE");
     connect(alignProfilesAction, SIGNAL(triggered()), SLOT(sl_alignProfileToProfile()));
-    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignProfilesAction, SLOT(sl_lockedStateChanged()));
+    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignProfilesAction, SLOT(sl_updateState()));
+    connect(msaed->getMSAObject(), SIGNAL(si_alignmentBecomesEmpty(bool)), alignProfilesAction, SLOT(sl_updateState()));
     addViewAction(alignProfilesAction);
 }
 

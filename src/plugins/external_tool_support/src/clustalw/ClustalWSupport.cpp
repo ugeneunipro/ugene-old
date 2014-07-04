@@ -19,38 +19,39 @@
  * MA 02110-1301, USA.
  */
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QFileDialog>
+#include <QtGui/QMainWindow>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMessageBox>
+#endif
+
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/UserApplicationsSettings.h>
+
+#include <U2Gui/AppSettingsGUI.h>
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
+#include <U2Gui/MainWindow.h>
+
+#include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorFactory.h>
+
 #include "ClustalWSupport.h"
 #include "ClustalWSupportRunDialog.h"
 #include "ClustalWSupportTask.h"
 #include "ExternalToolSupportSettingsController.h"
 #include "ExternalToolSupportSettings.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Gui/AppSettingsGUI.h>
-#include <U2Core/UserApplicationsSettings.h>
-#include <U2Gui/MainWindow.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
-#endif
-#include <U2View/MSAEditor.h>
-#include <U2View/MSAEditorFactory.h>
-
-#include <U2Core/MAlignmentObject.h>
-
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/DialogUtils.h>
+#include "utils/AlignMsaAction.h"
 
 namespace U2 {
-
 
 ClustalWSupport::ClustalWSupport(const QString& name, const QString& path) : ExternalTool(name, path)
 {
@@ -116,19 +117,6 @@ void ClustalWSupport::sl_runWithExtFileSpecify(){
 }
 
 ////////////////////////////////////////
-//ClustalWSupportAction
-MSAEditor* ClustalWSupportAction::getMSAEditor() const {
-        MSAEditor* e = qobject_cast<MSAEditor*>(getObjectView());
-        assert(e!=NULL);
-        return e;
-}
-
-void ClustalWSupportAction::sl_lockedStateChanged() {
-        StateLockableItem* item = qobject_cast<StateLockableItem*>(sender());
-        assert(item!=NULL);
-        setEnabled(!item->isStateLocked());
-}
-////////////////////////////////////////
 //ExternalToolSupportMSAContext
 ClustalWSupportContext::ClustalWSupportContext(QObject* p) : GObjectViewWindowContext(p, MSAEditorFactory::ID) {
 
@@ -141,14 +129,16 @@ void ClustalWSupportContext::initViewContext(GObjectView* view) {
             return;
     }
     bool objLocked = msaed->getMSAObject()->isStateLocked();
+    bool isMsaEmpty = msaed->isAlignmentEmpty();
 
-    ClustalWSupportAction* alignAction = new ClustalWSupportAction(this, view, tr("Align with ClustalW..."), 2000);
+    AlignMsaAction *alignAction = new AlignMsaAction(this, ET_CLUSTAL, view, tr("Align with ClustalW..."), 2000);
     alignAction->setObjectName("Align with ClustalW");
 
     addViewAction(alignAction);
-    alignAction->setEnabled(!objLocked);
+    alignAction->setEnabled(!objLocked && !isMsaEmpty);
 
-    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignAction, SLOT(sl_lockedStateChanged()));
+    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignAction, SLOT(sl_updateState()));
+    connect(msaed->getMSAObject(), SIGNAL(si_alignmentBecomesEmpty(bool)), alignAction, SLOT(sl_updateState()));
     connect(alignAction, SIGNAL(triggered()), SLOT(sl_align_with_ClustalW()));
 }
 
@@ -191,9 +181,9 @@ void ClustalWSupportContext::sl_align_with_ClustalW() {
     CHECK_OP(os, );
     
     //Call run ClustalW align dialog
-    ClustalWSupportAction* action = qobject_cast<ClustalWSupportAction*>(sender());
+    AlignMsaAction* action = qobject_cast<AlignMsaAction *>(sender());
     assert(action!=NULL);
-    MSAEditor* ed = action->getMSAEditor();
+    MSAEditor* ed = action->getMsaEditor();
     MAlignmentObject* obj = ed->getMSAObject();
     if (obj == NULL) {
         return;

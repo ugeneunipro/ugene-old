@@ -19,12 +19,14 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CLUSTALO_SUPPORT_H
-#define _U2_CLUSTALO_SUPPORT_H
+#ifndef _U2_CLUSTALO_SUPPORT_H_
+#define _U2_CLUSTALO_SUPPORT_H_
 
 #include <U2Core/ExternalToolRegistry.h>
+
 #include <U2View/MSAEditor.h>
-#include "utils/ExternalToolSupportAction.h"
+
+#include "utils/AlignMsaAction.h"
 
 #define ET_CLUSTALO "ClustalO"
 #define CLUSTALO_TMP_DIR "clustalo"
@@ -49,22 +51,11 @@ public:
     ClustalOSupportContext(QObject* p);
 
 protected slots:
-    void sl_align_with_ClustalO ();
+    void sl_align_with_ClustalO();
 
 protected:
     virtual void initViewContext(GObjectView* view);
     virtual void buildMenu(GObjectView* view, QMenu* m);
-};
-
-class ClustalOSupportAction : public ExternalToolSupportAction {
-        Q_OBJECT
-public:
-    ClustalOSupportAction(QObject* p, GObjectView* v, const QString& text, int order)
-        : ExternalToolSupportAction(p,v,text,order, QStringList(ET_CLUSTALO)) {}
-    MSAEditor*  getMSAEditor() const;
-
-private slots:
-    void sl_lockedStateChanged();
 };
 
 }//namespace

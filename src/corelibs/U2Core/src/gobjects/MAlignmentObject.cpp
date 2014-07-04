@@ -112,6 +112,12 @@ void MAlignmentObject::updateCachedMAlignment(const MAlignmentModInfo &mi, const
     if (!mi.middleState) {
         emit si_alignmentChanged(maBefore, mi);
 
+        if (cachedMAlignment.isEmpty() && !maBefore.isEmpty()) {
+            emit si_alignmentBecomesEmpty(true);
+        } else if (!cachedMAlignment.isEmpty() && maBefore.isEmpty()) {
+            emit si_alignmentBecomesEmpty(false);
+        }
+
         QString newName = cachedMAlignment.getName();
         if (newName != oldName) {
             setGObjectNameNotDbi(cachedMAlignment.getName());
@@ -165,6 +171,12 @@ void MAlignmentObject::releaseState(){
         MAlignmentModInfo mi;
 
         emit si_alignmentChanged(maBefore, mi);
+
+        if (cachedMAlignment.isEmpty() && !maBefore.isEmpty()) {
+            emit si_alignmentBecomesEmpty(true);
+        } else if (!cachedMAlignment.isEmpty() && maBefore.isEmpty()) {
+            emit si_alignmentBecomesEmpty(false);
+        }
     }
 }
 

@@ -19,41 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_TCOFFEE_SUPPORT_H
-#define _U2_TCOFFEE_SUPPORT_H
+#ifndef _U2_ALIGN_MSA_ACTION_H_
+#define _U2_ALIGN_MSA_ACTION_H_
 
-#include <U2Core/ExternalToolRegistry.h>
-#include <U2View/MSAEditor.h>
-#include "utils/ExternalToolSupportAction.h"
-
-#define ET_TCOFFEE   "T-Coffee"
-#define TCOFFEE_TMP_DIR     "tcoffee"
+#include "ExternalToolSupportAction.h"
 
 namespace U2 {
 
-class TCoffeeSupport : public ExternalTool {
+class MSAEditor;
+
+class AlignMsaAction : public ExternalToolSupportAction {
     Q_OBJECT
 public:
-    TCoffeeSupport(const QString& name, const QString& path = "");
-    GObjectViewWindowContext* getViewContext(){ return viewCtx; }
-public slots:
-    void sl_runWithExtFileSpecify();
-private:
-    GObjectViewWindowContext* viewCtx;
+    AlignMsaAction(QObject *parent, const QString &toolName, GObjectView *view, const QString &text, int order) :
+        ExternalToolSupportAction(parent, view, text, order, QStringList(toolName)) {}
+
+    MSAEditor* getMsaEditor() const;
+
+private slots:
+    void sl_updateState();
 };
 
-class TCoffeeSupportContext: public GObjectViewWindowContext {
-    Q_OBJECT
-public:
-    TCoffeeSupportContext(QObject* p);
+}   // namespace U2
 
-protected slots:
-    void sl_align_with_TCoffee();
-
-protected:
-    virtual void initViewContext(GObjectView* view);
-    virtual void buildMenu(GObjectView* view, QMenu* m);
-};
-
-}//namespace
-#endif // _U2_TCOFFEE_SUPPORT_H
+#endif // _U2_ALIGN_MSA_ACTION_H_

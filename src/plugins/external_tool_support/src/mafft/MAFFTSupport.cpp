@@ -19,37 +19,38 @@
  * MA 02110-1301, USA.
  */
 
-#include "MAFFTSupport.h"
-#include "MAFFTSupportRunDialog.h"
-#include "MAFFTSupportTask.h"
-#include "ExternalToolSupportSettingsController.h"
-#include "ExternalToolSupportSettings.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QFileDialog>
+#include <QtGui/QMainWindow>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/UserApplicationsSettings.h>
-#include <U2Core/U2SafePoints.h>
+#include <U2Core/MAlignmentObject.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/UserApplicationsSettings.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
 #include <U2Gui/MainWindow.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
-#endif
+
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>
 
-#include <U2Core/MAlignmentObject.h>
-
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/DialogUtils.h>
+#include "ExternalToolSupportSettings.h"
+#include "ExternalToolSupportSettingsController.h"
+#include "MAFFTSupport.h"
+#include "MAFFTSupportRunDialog.h"
+#include "MAFFTSupportTask.h"
+#include "utils/AlignMsaAction.h"
 
 namespace U2 {
-
 
 MAFFTSupport::MAFFTSupport(const QString& name, const QString& path) : ExternalTool(name, path)
 {
@@ -59,6 +60,7 @@ MAFFTSupport::MAFFTSupport(const QString& name, const QString& path) : ExternalT
         grayIcon = QIcon(":external_tool_support/images/cmdline_gray.png");
         warnIcon = QIcon(":external_tool_support/images/cmdline_warn.png");
     }
+
     executableFileName="mafft.bat";
     validationArguments<<"-help";
     validMessage="MAFFT";
@@ -103,24 +105,11 @@ void MAFFTSupport::sl_runWithExtFileSpecify(){
         return;
     }
     assert(!settings.inputFilePath.isEmpty());
-    //
+
     MAFFTWithExtFileSpecifySupportTask* mAFFTSupportTask=new MAFFTWithExtFileSpecifySupportTask(settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(mAFFTSupportTask);
 }
 
-////////////////////////////////////////
-//ClustalWSupportAction ???    
-MSAEditor* MAFFTSupportAction::getMSAEditor() const {
-        MSAEditor* e = qobject_cast<MSAEditor*>(getObjectView());
-        assert(e!=NULL);
-        return e;
-}
-
-void MAFFTSupportAction::sl_lockedStateChanged() {
-        StateLockableItem* item = qobject_cast<StateLockableItem*>(sender());
-        assert(item!=NULL);
-        setEnabled(!item->isStateLocked());
-}
 ////////////////////////////////////////
 //ExternalToolSupportMSAContext
 MAFFTSupportContext::MAFFTSupportContext(QObject* p) : GObjectViewWindowContext(p, MSAEditorFactory::ID) {
@@ -133,17 +122,21 @@ void MAFFTSupportContext::initViewContext(GObjectView* view) {
     if (msaed->getMSAObject() == NULL) {
             return;
     }
-    bool objLocked = msaed->getMSAObject()->isStateLocked();
 
-    MAFFTSupportAction* alignAction = new MAFFTSupportAction(this, view, tr("Align with MAFFT..."), 2000);
+    bool objLocked = msaed->getMSAObject()->isStateLocked();
+    bool isMsaEmpty = msaed->isAlignmentEmpty();
+
+    AlignMsaAction* alignAction = new AlignMsaAction(this, ET_MAFFT, view, tr("Align with MAFFT..."), 2000);
     alignAction->setObjectName("Align with MAFFT");
 
     addViewAction(alignAction);
-    alignAction->setEnabled(!objLocked);
+    alignAction->setEnabled(!objLocked && !isMsaEmpty);
 
-    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignAction, SLOT(sl_lockedStateChanged()));
+    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignAction, SLOT(sl_updateState()));
+    connect(msaed->getMSAObject(), SIGNAL(si_alignmentBecomesEmpty(bool)), alignAction, SLOT(sl_updateState()));
     connect(alignAction, SIGNAL(triggered()), SLOT(sl_align_with_MAFFT()));
 }
+
 void MAFFTSupportContext::buildMenu(GObjectView* view, QMenu* m) {
         QList<GObjectViewAction *> actions = getViewActions(view);
         QMenu* alignMenu = GUIUtils::findSubMenu(m, MSAE_MENU_ALIGN);
@@ -152,6 +145,7 @@ void MAFFTSupportContext::buildMenu(GObjectView* view, QMenu* m) {
                 a->addToMenuWithOrder(alignMenu);
         }
 }
+
 void MAFFTSupportContext::sl_align_with_MAFFT() {
     //Check that MAFFT and tempory directory path defined
     if (AppContext::getExternalToolRegistry()->getByName(ET_MAFFT)->getPath().isEmpty()){
@@ -182,9 +176,9 @@ void MAFFTSupportContext::sl_align_with_MAFFT() {
     CHECK_OP(os, );
 
     //Call run MAFFT align dialog
-    MAFFTSupportAction* action = qobject_cast<MAFFTSupportAction*>(sender());
+    AlignMsaAction *action = qobject_cast<AlignMsaAction *>(sender());
     assert(action!=NULL);
-    MSAEditor* ed = action->getMSAEditor();
+    MSAEditor* ed = action->getMsaEditor();
     MAlignmentObject* alignmentObject = ed->getMSAObject();
     SAFE_POINT(NULL != alignmentObject, "Alignment object is NULL during aligning with MAFFT!",);
     SAFE_POINT(!alignmentObject->isStateLocked(), "Alignment object is locked during aligning with MAFFT!",);

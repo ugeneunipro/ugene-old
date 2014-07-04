@@ -56,16 +56,5 @@ protected:
     virtual void buildMenu(GObjectView* view, QMenu* m);
 };
 
-class ClustalWSupportAction : public ExternalToolSupportAction {
-        Q_OBJECT
-public:
-    ClustalWSupportAction(QObject* p, GObjectView* v, const QString& text, int order)
-        : ExternalToolSupportAction(p,v,text,order, QStringList(ET_CLUSTAL)) {}
-    MSAEditor*  getMSAEditor() const;
-
-private slots:
-    void sl_lockedStateChanged();
-};
-
 }//namespace
 #endif // _U2_CLUSTALW_SUPPORT_H

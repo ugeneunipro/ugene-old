@@ -102,8 +102,8 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/R/RSupport.h \
            src/samtools/BcfToolsSupport.h \
            src/samtools/SamToolsExtToolSupport.h \
-           src/samtools/TabixSupportTask.h \
            src/samtools/TabixSupport.h \
+           src/samtools/TabixSupportTask.h \
            src/seqpos/SeqPosSettings.h \
            src/seqpos/SeqPosSupport.h \
            src/seqpos/SeqPosTask.h \
@@ -118,17 +118,18 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/tophat/TopHatSupport.h \
            src/tophat/TopHatSupportTask.h \
            src/tophat/TopHatWorker.h \
+           src/utils/AlignMsaAction.h \
            src/utils/BlastRunCommonDialog.h \
            src/utils/BlastTaskSettings.h \
            src/utils/CistromeDelegate.h \
            src/utils/ExportTasks.h \
            src/utils/ExternalToolSearchTask.h \
            src/utils/ExternalToolSupportAction.h \
-           src/utils/ExternalToolValidateTask.h \
            src/utils/ExternalToolUtils.h \
-           src/vcftools/VcfConsensusWorker.h \
+           src/utils/ExternalToolValidateTask.h \
            src/vcftools/VcfConsensusSupport.h \
            src/vcftools/VcfConsensusSupportTask.h \
+           src/vcftools/VcfConsensusWorker.h \
            src/vcfutils/VcfutilsSupport.h
 FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/BlastDBCmdDialog.ui \
@@ -264,6 +265,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/tophat/TopHatSupport.cpp \
            src/tophat/TopHatSupportTask.cpp \
            src/tophat/TopHatWorker.cpp \
+           src/utils/AlignMsaAction.cpp \
            src/utils/BlastRunCommonDialog.cpp \
            src/utils/BlastTaskSettings.cpp \
            src/utils/CistromeDelegate.cpp \
@@ -272,16 +274,12 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/utils/ExternalToolSupportAction.cpp \
            src/utils/ExternalToolUtils.cpp \
            src/utils/ExternalToolValidateTask.cpp \
-           src/vcftools/VcfConsensusWorker.cpp \
            src/vcftools/VcfConsensusSupport.cpp \
            src/vcftools/VcfConsensusSupportTask.cpp \
+           src/vcftools/VcfConsensusWorker.cpp \
            src/vcfutils/VcfutilsSupport.cpp
 RESOURCES += external_tool_support.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \
                 transl/russian.ts
-
-
-
-

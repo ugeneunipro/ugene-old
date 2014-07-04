@@ -19,41 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_TCOFFEE_SUPPORT_H
-#define _U2_TCOFFEE_SUPPORT_H
-
-#include <U2Core/ExternalToolRegistry.h>
 #include <U2View/MSAEditor.h>
-#include "utils/ExternalToolSupportAction.h"
 
-#define ET_TCOFFEE   "T-Coffee"
-#define TCOFFEE_TMP_DIR     "tcoffee"
+#include "AlignMsaAction.h"
 
 namespace U2 {
 
-class TCoffeeSupport : public ExternalTool {
-    Q_OBJECT
-public:
-    TCoffeeSupport(const QString& name, const QString& path = "");
-    GObjectViewWindowContext* getViewContext(){ return viewCtx; }
-public slots:
-    void sl_runWithExtFileSpecify();
-private:
-    GObjectViewWindowContext* viewCtx;
-};
+MSAEditor* AlignMsaAction::getMsaEditor() const {
+    MSAEditor* e = qobject_cast<MSAEditor*>(getObjectView());
+    SAFE_POINT(e != NULL, "Can't get an appropriate MSA Editor", NULL);
+    return e;
+}
 
-class TCoffeeSupportContext: public GObjectViewWindowContext {
-    Q_OBJECT
-public:
-    TCoffeeSupportContext(QObject* p);
+void AlignMsaAction::sl_updateState() {
+    StateLockableItem* item = qobject_cast<StateLockableItem*>(sender());
+    SAFE_POINT(item != NULL, "Unexpected sender: expect StateLockableItem", );
+    MSAEditor* msaEditor = getMsaEditor();
+    CHECK(msaEditor != NULL, );
+    setEnabled(!item->isStateLocked() && !msaEditor->isAlignmentEmpty());
+}
 
-protected slots:
-    void sl_align_with_TCoffee();
-
-protected:
-    virtual void initViewContext(GObjectView* view);
-    virtual void buildMenu(GObjectView* view, QMenu* m);
-};
-
-}//namespace
-#endif // _U2_TCOFFEE_SUPPORT_H
+}   // namespace U2

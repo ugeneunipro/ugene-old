@@ -77,7 +77,7 @@ public:
     MSAEditor*  getMSAEditor() const;
 
 private slots:
-    void sl_lockedStateChanged();
+    void sl_updateState();
 };
 
 } //namespace

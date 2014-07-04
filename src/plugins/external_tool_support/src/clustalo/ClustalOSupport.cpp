@@ -117,19 +117,6 @@ void ClustalOSupport::sl_runWithExtFileSpecify(){
 }
 
 ////////////////////////////////////////
-//ClustalOSupportAction
-MSAEditor* ClustalOSupportAction::getMSAEditor() const {
-        MSAEditor* e = qobject_cast<MSAEditor*>(getObjectView());
-        assert(e!=NULL);
-        return e;
-}
-
-void ClustalOSupportAction::sl_lockedStateChanged() {
-        StateLockableItem* item = qobject_cast<StateLockableItem*>(sender());
-        assert(item!=NULL);
-        setEnabled(!item->isStateLocked());
-}
-////////////////////////////////////////
 //ExternalToolSupportMSAContext
 ClustalOSupportContext::ClustalOSupportContext(QObject* p) : GObjectViewWindowContext(p, MSAEditorFactory::ID) {
 
@@ -142,13 +129,15 @@ void ClustalOSupportContext::initViewContext(GObjectView* view) {
         return;
     }
     bool objLocked = msaed->getMSAObject()->isStateLocked();
+    bool isMsaEmpty = msaed->isAlignmentEmpty();
 
-    ClustalOSupportAction* alignAction = new ClustalOSupportAction(this, view, tr("Align with ClustalO..."), 2000);
+    AlignMsaAction* alignAction = new AlignMsaAction(this, ET_CLUSTALO, view, tr("Align with ClustalO..."), 2000);
 
     addViewAction(alignAction);
-    alignAction->setEnabled(!objLocked);
+    alignAction->setEnabled(!objLocked && !isMsaEmpty);
 
-    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignAction, SLOT(sl_lockedStateChanged()));
+    connect(msaed->getMSAObject(), SIGNAL(si_lockedStateChanged()), alignAction, SLOT(sl_updateState()));
+    connect(msaed->getMSAObject(), SIGNAL(si_alignmentBecomesEmpty(bool)), alignAction, SLOT(sl_updateState()));
     connect(alignAction, SIGNAL(triggered()), SLOT(sl_align_with_ClustalO()));
 }
 
@@ -191,9 +180,9 @@ void ClustalOSupportContext::sl_align_with_ClustalO() {
     CHECK_OP(os, );
     
     //Call run ClustalO align dialog
-    ClustalOSupportAction* action = qobject_cast<ClustalOSupportAction*>(sender());
+    AlignMsaAction* action = qobject_cast<AlignMsaAction *>(sender());
     assert(action!=NULL);
-    MSAEditor* ed = action->getMSAEditor();
+    MSAEditor* ed = action->getMsaEditor();
     MAlignmentObject* obj = ed->getMSAObject();
     if (obj == NULL) {
         return;
