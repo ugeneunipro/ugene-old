@@ -68,6 +68,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, get_IdObjectData ) {
 
     AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
+    ft.ref();
 
     const QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
@@ -82,6 +83,8 @@ IMPLEMENT_TEST( AnnotationUnitTest, get_IdObjectData ) {
     CHECK_TRUE( feature.location.strand.isDirect( ), "Annotation has to belong to direct strand" );
 
     CHECK_TRUE( anData == annotation.getData( ), "Unexpected value of annotation's data" );
+
+    ft.deref();
 }
 
 IMPLEMENT_TEST( AnnotationUnitTest, getSet_Name ) {
@@ -90,6 +93,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Name ) {
 
     AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
+    ft.ref();
 
     QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
@@ -101,6 +105,8 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Name ) {
     annotation.setName( newName );
 
     CHECK_EQUAL( annotation.getName( ), newName, "Annotation's name" );
+
+    ft.deref();
 }
 
 IMPLEMENT_TEST( AnnotationUnitTest, getSet_LocationOperator ) {
@@ -109,6 +115,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_LocationOperator ) {
 
     AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
+    ft.ref();
 
     QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
@@ -123,6 +130,8 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_LocationOperator ) {
 
     CHECK_EQUAL( newOp, annotation.getLocationOperator( ), "Annotation's location op" );
     CHECK_TRUE( annotation.isOrder( ), "Unexpected location op" );
+
+    ft.deref();
 }
 
 IMPLEMENT_TEST( AnnotationUnitTest, getSet_Strand ) {
@@ -131,6 +140,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Strand ) {
 
     AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
+    ft.ref();
 
     QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
@@ -146,6 +156,8 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Strand ) {
     CHECK_EQUAL( newStrand.getDirectionValue( ), annotation.getStrand( ).getDirectionValue( ),
         "Annotation's location op" );
     CHECK_TRUE( annotation.getStrand( ).isCompementary( ), "Unexpected location op" );
+
+    ft.deref();
 }
 
 IMPLEMENT_TEST( AnnotationUnitTest, getSet_Location ) {
@@ -154,6 +166,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Location ) {
 
     AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
+    ft.ref();
 
     QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
@@ -176,6 +189,8 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Location ) {
     CHECK_TRUE( resultLocation->op == newLocation->op, "Illegal annotation's location operator!" );
     CHECK_TRUE( resultLocation->regionType == newLocation->regionType, "Illegal annotation's region type!" );
     CHECK_TRUE( resultLocation->strand == newLocation->strand, "Illegal annotation's strand!" );
+
+    ft.deref();
 }
 
 IMPLEMENT_TEST( AnnotationUnitTest, getSet_Regions ) {
@@ -184,6 +199,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Regions ) {
 
     AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
+    ft.ref();
 
     QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
@@ -205,6 +221,8 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Regions ) {
     annotation.updateRegions( newRegions );
 
     CHECK_REGIONS_MATCH( annotation.getRegions( ), newRegions );
+
+    ft.deref();
 }
 
 IMPLEMENT_TEST( AnnotationUnitTest, getSet_Qualifiers ) {
@@ -213,6 +231,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Qualifiers ) {
 
     AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
+    ft.ref();
 
     QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
@@ -235,6 +254,8 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Qualifiers ) {
 
     annotation.removeQualifier( removedQual );
     CHECK_TRUE( annotation.getQualifiers( ) == changedQuals, "Unexpected annotation's qualifiers" );
+
+    ft.deref();
 }
 
 IMPLEMENT_TEST( AnnotationUnitTest, find_Qualifiers ) {
@@ -243,6 +264,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, find_Qualifiers ) {
 
     AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData );
+    ft.ref();
 
     QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
@@ -268,6 +290,8 @@ IMPLEMENT_TEST( AnnotationUnitTest, find_Qualifiers ) {
     CHECK_TRUE( !annotation.findFirstQualifierValue( "2" ).isEmpty( ), "Unexpected qualifier value" );
     CHECK_TRUE( !annotation.findFirstQualifierValue( "key" ).isEmpty( ), "Unexpected qualifier value" );
     CHECK_TRUE( annotation.findFirstQualifierValue( "gene" ).isEmpty( ), "Unexpected qualifier value" );
+
+    ft.deref();
 }
 
 IMPLEMENT_TEST( AnnotationUnitTest, get_Group ) {
@@ -279,6 +303,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, get_Group ) {
     AnnotationTableObject ft( "aname_table_multy", dbiRef );
     ft.addAnnotation( anData, firstGroupName );
     ft.addAnnotation( anData, secondGroupName );
+    ft.ref();
 
     QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 2, annotations.size( ), "count of annotations" );
@@ -298,6 +323,8 @@ IMPLEMENT_TEST( AnnotationUnitTest, get_Group ) {
 
     CHECK_TRUE( Annotation::annotationLessThan( annotations[1], annotations[0] ),
         "Unexpected annotations comparison result" );
+
+    ft.deref();
 }
 
 IMPLEMENT_TEST( AnnotationUnitTest, getSet_Case ) {
@@ -306,6 +333,7 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Case ) {
 
     AnnotationTableObject ft( "ftable", dbiRef );
     ft.addAnnotation( anData );
+    ft.ref();
 
     QList<Annotation> annotations = ft.getAnnotations( );
     CHECK_EQUAL( 1, annotations.size( ), "count of annotations" );
@@ -320,6 +348,8 @@ IMPLEMENT_TEST( AnnotationUnitTest, getSet_Case ) {
     CHECK_TRUE( annotation.isCaseAnnotation( ), "Unexpected annotation case!" );
     annotation.setCaseAnnotation( false );
     CHECK_FALSE( annotation.isCaseAnnotation( ), "Unexpected annotation case!" );
+
+    ft.deref();
 }
 
 } // namespace U2
