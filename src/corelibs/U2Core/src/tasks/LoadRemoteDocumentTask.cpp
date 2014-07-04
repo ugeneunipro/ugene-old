@@ -65,8 +65,8 @@ const QString RemoteDBRegistry::UNIPROTKB_TREMBL("UniProtKB/TrEMBL");
 
 ////////////////////////////////////////////////////////////////////////////
 //BaseLoadRemoteDocumentTask
-BaseLoadRemoteDocumentTask::BaseLoadRemoteDocumentTask(const QString& _downloadPath, TaskFlags flags )
-:DocumentProviderTask(tr("Load remote document"), flags)
+BaseLoadRemoteDocumentTask::BaseLoadRemoteDocumentTask(const QString& _downloadPath, const QVariantMap &hints, TaskFlags flags)
+:DocumentProviderTask(tr("Load remote document"), flags), hints(hints)
 {
     downloadPath = _downloadPath;
     sourceUrl = GUrl("");
@@ -146,7 +146,7 @@ bool BaseLoadRemoteDocumentTask::initLoadDocumentTask(){
             formatId = formats.first().format->getFormatId();
     }
     IOAdapterFactory * iow = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-    loadDocumentTask = new LoadDocumentTask(formatId, fullPath, iow);
+    loadDocumentTask = new LoadDocumentTask(formatId, fullPath, iow, hints);
 
     return true;
 }
@@ -188,8 +188,8 @@ LoadRemoteDocumentTask::LoadRemoteDocumentTask( const GUrl& url )
     GCOUNTER( cvar, tvar, "LoadRemoteDocumentTask" );
 }
 
-LoadRemoteDocumentTask::LoadRemoteDocumentTask( const QString & accId, const QString & dbName, const QString & fullPathDir, const QString& fileFormat)
-:BaseLoadRemoteDocumentTask(fullPathDir)
+LoadRemoteDocumentTask::LoadRemoteDocumentTask( const QString & accId, const QString & dbName, const QString & fullPathDir, const QString& fileFormat, const QVariantMap &hints)
+:BaseLoadRemoteDocumentTask(fullPathDir, hints)
 ,accNumber(accId)
 ,dbName(dbName)
 {

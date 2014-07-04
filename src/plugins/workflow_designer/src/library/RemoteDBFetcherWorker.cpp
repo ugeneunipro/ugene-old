@@ -130,7 +130,9 @@ Task* RemoteDBFetcherWorker::tick() {
         seqId = seqids.takeFirst().trimmed();
     }
 
-    ret = new LoadRemoteDocumentTask(seqId, dbid, fullPathDir);
+    QVariantMap hints;
+    hints[DocumentFormat::DBI_REF_HINT] = qVariantFromValue(context->getDataStorage()->getDbiRef());
+    ret = new LoadRemoteDocumentTask(seqId, dbid, fullPathDir, "", hints);
     connect(ret, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
 
     return ret;
@@ -158,12 +160,13 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
     }
 
     Document *doc = loadTask->getDocument();
-    assert(doc);
+    SAFE_POINT(NULL != doc, "NULL document", );
+    doc->setDocumentOwnsDbiResources(false);
 
     foreach(GObject *gobj, doc->findGObjectByType(GObjectTypes::SEQUENCE))
     {
         U2SequenceObject *dnao = qobject_cast<U2SequenceObject*>(gobj);
-        assert(dnao);
+        SAFE_POINT(NULL != dnao, "NULL sequence", );
 
         QList<GObject*> allLoadedAnnotations = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
         QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(gobj,
@@ -181,7 +184,7 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
         }
 
         QVariantMap messageData;
-        SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(dnao->getWholeSequence());
+        SharedDbiDataHandler seqId = context->getDataStorage()->getDataHandler(dnao->getEntityRef());
         messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(seqId);
         SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(ads);
         messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(tableId);
@@ -343,7 +346,9 @@ Task* FetchSequenceByIdFromAnnotationWorker::tick() {
             }
         }
 
-        Task* task = new LoadRemoteDocumentTask(accIds.join(","), dbId);
+        QVariantMap hints;
+        hints[DocumentFormat::DBI_REF_HINT] = qVariantFromValue(context->getDataStorage()->getDbiRef());
+        Task* task = new LoadRemoteDocumentTask(accIds.join(","), dbId, "", "", hints);
         connect(task, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return task;
     } else if (input->isEnded()) {
@@ -373,12 +378,13 @@ void FetchSequenceByIdFromAnnotationWorker::sl_taskFinished() {
     }
 
     Document *doc = loadTask->getDocument();
-    assert(doc);
+    SAFE_POINT(NULL != doc, "NULL document", );
+    doc->setDocumentOwnsDbiResources(false);
 
     foreach(GObject *gobj, doc->findGObjectByType(GObjectTypes::SEQUENCE))
     {
         U2SequenceObject *dnao = qobject_cast<U2SequenceObject*>(gobj);
-        assert(dnao);
+        SAFE_POINT(NULL != dnao, "NULL sequence", );
 
         QList<GObject*> allLoadedAnnotations = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
         QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(gobj,
@@ -396,7 +402,7 @@ void FetchSequenceByIdFromAnnotationWorker::sl_taskFinished() {
         }
 
         QVariantMap messageData;
-        SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(dnao->getWholeSequence());
+        SharedDbiDataHandler seqId = context->getDataStorage()->getDataHandler(dnao->getEntityRef());
         messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(seqId);
         SharedDbiDataHandler tableId = context->getDataStorage()->putAnnotationTable(ads);
         messageData[ BaseSlots::ANNOTATION_TABLE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(tableId);

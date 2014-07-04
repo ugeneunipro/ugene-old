@@ -41,7 +41,7 @@
 namespace U2 {
 
 LoadDasDocumentTask::LoadDasDocumentTask( const QString& accId, const QString& _fullPath, const DASSource& _referenceSource, const QList<DASSource>& _featureSources )
-: BaseLoadRemoteDocumentTask(_fullPath, TaskFlags(TaskFlag_FailOnSubtaskCancel | TaskFlag_MinimizeSubtaskErrorText | TaskFlag_NoRun))
+: BaseLoadRemoteDocumentTask(_fullPath, QVariantMap(), TaskFlags(TaskFlag_FailOnSubtaskCancel | TaskFlag_MinimizeSubtaskErrorText | TaskFlag_NoRun))
 ,accNumber(accId)
 ,featureSources(_featureSources)
 ,referenceSource(_referenceSource)

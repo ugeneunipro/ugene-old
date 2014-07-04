@@ -106,7 +106,7 @@ public:
 class U2CORE_EXPORT BaseLoadRemoteDocumentTask : public DocumentProviderTask {
     Q_OBJECT
 public:
-    BaseLoadRemoteDocumentTask(const QString& downloadPath = QString(), TaskFlags flags = TaskFlags(TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText));
+    BaseLoadRemoteDocumentTask(const QString& downloadPath = QString(), const QVariantMap &hints = QVariantMap(), TaskFlags flags = TaskFlags(TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText));
     virtual void prepare();
     QString getLocalUrl(){ return fullPath; }
     
@@ -132,6 +132,7 @@ protected:
     QString     fullPath;
     QString     downloadPath;
     QString     format;
+    QVariantMap hints;
 
     DocumentFormatId formatId;
     CopyDataTask* copyDataTask;
@@ -143,7 +144,7 @@ class U2CORE_EXPORT LoadRemoteDocumentTask : public BaseLoadRemoteDocumentTask {
     Q_OBJECT
 public:
     LoadRemoteDocumentTask(const GUrl& url);
-    LoadRemoteDocumentTask(const QString & accId, const QString & dbName, const QString & fullPathDir = QString(), const QString& fileFormat = QString());
+    LoadRemoteDocumentTask(const QString & accId, const QString & dbName, const QString & fullPathDir = "", const QString& fileFormat = "", const QVariantMap &hints = QVariantMap());
     virtual void prepare();
 
     QString getAccNumber() const { return accNumber; }
