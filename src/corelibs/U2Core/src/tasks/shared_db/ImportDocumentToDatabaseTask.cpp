@@ -53,6 +53,21 @@ void ImportDocumentToDatabaseTask::prepare() {
     }
 }
 
+QList<Task *> ImportDocumentToDatabaseTask::onSubTaskFinished(Task *subTask) {
+    QList<Task*> res;
+    CHECK(isTopLevelTask(), res);
+
+    if (subTask->hasError()) {
+        taskLog.error(QString("Subtask '%1' fails: %2").arg(subTask->getTaskName()).arg(subTask->getError()));
+    }
+
+    if (subTask->isCanceled()) {
+        taskLog.error(QString("Subtask '%1' was cancelled").arg(subTask->getTaskName()));
+    }
+
+    return res;
+}
+
 Task::ReportResult ImportDocumentToDatabaseTask::report() {
     CHECK_EXT(!document.isNull(), setError(tr("Source document was removed, can't set object relations")), ReportResult_Finished);
 

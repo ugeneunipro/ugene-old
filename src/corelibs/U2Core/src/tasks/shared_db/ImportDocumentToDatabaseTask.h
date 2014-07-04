@@ -39,6 +39,7 @@ public:
     ImportDocumentToDatabaseTask(Document* document, const U2DbiRef& dstDbiRef, const QString& dstFolder, const ImportToDatabaseOptions& options);
 
     void prepare();
+    QList<Task*> onSubTaskFinished(Task *subTask);
     ReportResult report();
 
     Document* getSourceDocument() const;

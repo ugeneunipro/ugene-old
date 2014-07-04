@@ -325,7 +325,7 @@ void MysqlObjectDbi::createFolder(const QString& path, U2OpStatus& os) {
     const QString canonicalPath = U2DbiUtils::makeFolderCanonical(path);
     const QByteArray hash = QCryptographicHash::hash(canonicalPath.toLatin1(), QCryptographicHash::Md5).toHex();
 
-    static const QString queryString = "INSERT INTO Folder(path, hash) VALUES(:path, :hash) ON DUPLICATE KEY UPDATE path = VALUES(path), hash = VALUES(hash)";
+    static const QString queryString = "INSERT IGNORE INTO Folder(path, hash) VALUES(:path, :hash)";
     U2SqlQuery q(queryString, db, os);
     q.bindString("path", canonicalPath);
     q.bindBlob("hash", hash);
