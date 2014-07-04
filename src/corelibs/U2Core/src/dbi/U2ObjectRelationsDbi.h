@@ -32,6 +32,8 @@ class U2CORE_EXPORT U2ObjectRelation : public U2Entity {
 public :
                             U2ObjectRelation( );
 
+    bool                    operator ==( const U2ObjectRelation &other ) const;
+
     U2DataId                referencedObject;
     QString                 referencedName;
     GObjectType             referencedType;
