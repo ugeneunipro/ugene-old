@@ -4619,16 +4619,19 @@ GUI_TEST_CLASS_DEFINITION( test_2566 ) {
 
      GTComboBox::setIndexWithText( os, algoBox, "Substitute" );
 
-//5. Enter the "Should match" value: 30%
+//5. Enter the "Should match" value: 97%
      QSpinBox *matchingBox = static_cast<QSpinBox *>( GTWidget::findWidget( os, "spinBoxMatch" ) );
      CHECK_SET_ERR( NULL != matchingBox, "Algorithm match spinbox not found!" );
 
-     GTSpinBox::setValue( os, matchingBox, 30, GTGlobals::UseKeyBoard );
+     GTSpinBox::setValue( os, matchingBox, 97, GTGlobals::UseKeyBoard );
 
 //6. Click "Search".
      QPushButton* button = qobject_cast<QPushButton*>(GTWidget::findWidget(os, "btnSearch"));
      CHECK_SET_ERR(button !=NULL, "ok button is NULL");
      GTWidget::click(os, button);
+
+//Expected: 97% is entered.
+     CHECK_SET_ERR(97 == matchingBox->value(), "Entered and actual values don't match");
 
 //Expected state: the task finished successfully.
     CHECK_SET_ERR( !l.hasError( ), "Unexpected error in log!: " + l.getError() );
