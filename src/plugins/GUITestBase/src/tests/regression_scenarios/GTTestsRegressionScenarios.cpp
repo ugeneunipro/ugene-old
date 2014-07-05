@@ -4626,8 +4626,7 @@ GUI_TEST_CLASS_DEFINITION( test_2566 ) {
      GTSpinBox::setValue( os, matchingBox, 30, GTGlobals::UseKeyBoard );
 
 //6. Click "Search".
-     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox"));
-     QPushButton* button = box->button(QDialogButtonBox::Ok);
+     QPushButton* button = qobject_cast<QPushButton*>(GTWidget::findWidget(os, "btnSearch"));
      CHECK_SET_ERR(button !=NULL, "ok button is NULL");
      GTWidget::click(os, button);
 
