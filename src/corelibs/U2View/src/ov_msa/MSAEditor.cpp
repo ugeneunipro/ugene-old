@@ -144,13 +144,8 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     requiredObjects.append(msaObject);
     GCOUNTER(cvar,tvar,"MSAEditor");
 
-    if (!msaObject->isStateLocked()) {
-        U2OpStatus2Log os;
-        msaObject->setTrackMod(TrackOnUpdate, os);
-        MsaDbiUtils::trim(msaObject->getEntityRef(), os);
-        MsaDbiUtils::removeEmptyRows(msaObject->getEntityRef(), msaObject->getMAlignment().getRowsIds(), os);
-        msaObject->updateCachedMAlignment();
-    }
+    U2OpStatus2Log os;
+    msaObject->setTrackMod(TrackOnUpdate, os);
 
     saveAlignmentAction = new QAction(QIcon(":core/images/msa_save.png"), tr("Save alignment"), this);
     saveAlignmentAction->setObjectName("Save alignment");
