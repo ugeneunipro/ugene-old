@@ -151,6 +151,7 @@ signals:
     void si_alignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);
     void si_alignmentBecomesEmpty(bool isEmpty);
     void si_completeStateChanged(bool complete);
+    void si_rowsRemoved(const QList<qint64> &rowIds);
 
 protected:
     void loadDataCore(U2OpStatus &os);

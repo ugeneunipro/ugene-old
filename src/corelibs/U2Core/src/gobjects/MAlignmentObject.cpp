@@ -123,6 +123,9 @@ void MAlignmentObject::updateCachedMAlignment(const MAlignmentModInfo &mi, const
             setGObjectNameNotDbi(cachedMAlignment.getName());
         }
     }
+    if (!removedRowIds.isEmpty()) {
+        emit si_rowsRemoved(removedRowIds);
+    }
 }
 
 void MAlignmentObject::setMAlignment(const MAlignment& newMa, MAlignmentModInfo mi, const QVariantMap& hints) {
@@ -452,6 +455,8 @@ void MAlignmentObject::removeRegion(int startPos, int startRow, int nBases, int 
     modifiedRowIds = mergeLists( modifiedRowIds, trimmedRowIds );
     if (track) {
         updateCachedMAlignment( MAlignmentModInfo( ), modifiedRowIds, removedRows );
+    } else if (!removedRows.isEmpty()) {
+        emit si_rowsRemoved(removedRows);
     }
 }
 

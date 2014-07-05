@@ -179,6 +179,7 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
     buildTreeAction->setObjectName("Build Tree");
     buildTreeAction->setEnabled(!isAlignmentEmpty());
     connect(msaObject, SIGNAL(si_alignmentBecomesEmpty(bool)), buildTreeAction, SLOT(setDisabled(bool)));
+    connect(msaObject, SIGNAL(si_rowsRemoved(const QList<qint64> &)), SLOT(sl_rowsRemoved(const QList<qint64> &)));
     connect(buildTreeAction, SIGNAL(triggered()), SLOT(sl_buildTree()));
 
     Settings* s = AppContext::getSettings();
@@ -771,6 +772,15 @@ void MSAEditor::sl_setSeqAsReference(){
 void MSAEditor::sl_unsetReferenceSeq( ) {
     if ( MAlignmentRow::invalidRowId( ) != getReferenceRowId( ) ) {
         setReference( MAlignmentRow::invalidRowId( ) );
+    }
+}
+
+void MSAEditor::sl_rowsRemoved(const QList<qint64> &rowIds) {
+    foreach (qint64 rowId, rowIds) {
+        if (getReferenceRowId() == rowId) {
+            sl_unsetReferenceSeq();
+            break;
+        }
     }
 }
 

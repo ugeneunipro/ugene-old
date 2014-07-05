@@ -203,6 +203,7 @@ protected slots:
     void sl_onSeqOrderChanged(QStringList* order);
     void sl_showTreeOP();
     void sl_hideTreeOP();
+    void sl_rowsRemoved(const QList<qint64> &rowIds);
 
 protected:
     virtual QWidget* createWidget();
