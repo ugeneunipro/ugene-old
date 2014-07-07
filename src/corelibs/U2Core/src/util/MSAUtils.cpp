@@ -159,7 +159,7 @@ void MSAUtils::updateAlignmentAlphabet(MAlignment& ma, const DNAAlphabet* alphab
             } else {
                 os.setError(tr("Sequences have different alphabets."));
                 return;
-            }                
+            }
         }
     }
     ma.setAlphabet(al);
@@ -207,10 +207,10 @@ bool MSAUtils::checkPackedModelSymmetry(MAlignment& ali, U2OpStatus& ti) {
 int MSAUtils::getRowIndexByName( const MAlignment& ma, const QString& name )
 {
     int idx = 0;
-    
+
     foreach(const MAlignmentRow& row, ma.getRows()) {
         if (row.getName() == name) {
-            return idx; 
+            return idx;
         }
         ++idx;
     }
@@ -236,14 +236,14 @@ MAlignmentObject* MSAUtils::seqObjs2msaObj(const QList<GObject*>& objects, const
     foreach(GObject *o, objects){
         if(o->getGObjectType() == GObjectTypes::SEQUENCE){
             sequenceObjectsNum++;
-            CHECK_BREAK(sequenceObjectsNum <= 1);
+            CHECK_BREAK(sequenceObjectsNum < 1);
         }
         pos++;
     }
-    CHECK(sequenceObjectsNum > 1, NULL);
+    CHECK(sequenceObjectsNum >= 1, NULL);
 
     const U2DbiRef& dbiRef = objects.at(pos)->getEntityRef().dbiRef;
-    
+
     const QString dstFolder = hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
     U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, dstFolder, ma, os);
     CHECK_OP(os, NULL);
