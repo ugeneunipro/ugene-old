@@ -344,6 +344,9 @@ public:
 
     QList<GObjectViewAction*> getViewActions(GObjectView* view) const;
 
+    // GObjectViewObjectHandler
+    virtual void onObjectRemoved(GObjectView* v, GObject* obj);
+
 protected:
     /// init context associated with 'view'
     virtual void initViewContext(GObjectView* view) = 0;

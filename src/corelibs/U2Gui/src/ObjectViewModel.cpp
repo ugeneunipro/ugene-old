@@ -601,6 +601,13 @@ QList<GObjectViewAction*> GObjectViewWindowContext::getViewActions(GObjectView* 
     return actions;
 }
 
+void GObjectViewWindowContext::onObjectRemoved(GObjectView* v, GObject* obj) {
+    GObjectViewObjectHandler::onObjectRemoved(v, obj);
+    foreach (GObjectViewAction *action, getViewActions(v)) {
+        obj->disconnect(action);
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 // GObjectViewAction
 void GObjectViewAction::addToMenuWithOrder(QMenu* menu) {
