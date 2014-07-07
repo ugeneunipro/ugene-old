@@ -32,6 +32,7 @@ const QByteArray HttpRequestCDD::PAGE_REFRESHING_MESSAGE("Page is refreshing in"
 void HttpRequestCDD::sendRequest(const QString &params,const QString &query) {
     QString request = host;
     request.append(params);
+    request.append("&TOOL=ugene&EMAIL=ugene-ncbi-blast@unipro.ru");
     request.append(RemoteRequestConfig::HTTP_BODY_SEPARATOR);
     request.append("seqinput=");
     request.append(query);
@@ -114,7 +115,7 @@ void HttpRequestCDD::sendRequest(const QString &params,const QString &query) {
 void HttpRequestCDD::parseResult(ResponseBuffer &buf) {
     QByteArray b = buf.readLine();
     int fl = 0;
-    while(b!= QString("</html>\n").toLatin1()&&fl<2) {
+    while(!b.isEmpty() && b != QString("</html>\n").toLatin1() && fl<2) {
         if(task->isCanceled()) {
             return;
         }
