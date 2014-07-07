@@ -229,7 +229,7 @@ QList<Marker*> & MarkerGroupListCfgModel::getMarkers() {
 }
 
 void MarkerGroupListCfgModel::addMarker(Marker *newMarker) {
-    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()) + 1);
+    beginInsertRows(QModelIndex(), markers.size(), markers.size());
     markers.insert(markers.size(), newMarker);
     endInsertRows();
 
@@ -240,14 +240,14 @@ void MarkerGroupListCfgModel::replaceMarker(int row, Marker *newMarker) {
     Marker *oldMarker = getMarker(row);
     CHECK(NULL != oldMarker, );
 
-    beginRemoveRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()) + 1);
+    beginRemoveRows(QModelIndex(), row, row);
     markers.removeAt(row);
     endRemoveRows();
 
     QString oldName = oldMarker->getName();
     delete oldMarker;
 
-    beginInsertRows(QModelIndex(), rowCount(QModelIndex()), rowCount(QModelIndex()) + 1);
+    beginInsertRows(QModelIndex(), row, row);
     markers.insert(row, newMarker);
     endInsertRows();
 

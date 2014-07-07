@@ -370,9 +370,11 @@ bool MarkerListCfgModel::removeRows(int row, int count, const QModelIndex &paren
 }
 
 void MarkerListCfgModel::addMarker(const QString &valueString, const QString &name) {
-    int rows = rowCount(QModelIndex());
-    rows = rows>0 ? rows-1 : 0;
-    beginInsertRows(QModelIndex(), 0, rows);
+    QMap<QString, QString> allValues = marker->getValues();
+    allValues[valueString] = name;
+    int newRow = allValues.keys().indexOf(valueString);
+
+    beginInsertRows(QModelIndex(), newRow, newRow);
     marker->getValues().insert(valueString, name);
     endInsertRows();
 }
