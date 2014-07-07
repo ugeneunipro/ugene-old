@@ -439,7 +439,7 @@ int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbu
             cbuff[len] = ' ';
             len++;
         }
-        memcpy(cbuff + len, lineBuf + A_COL, lineLen - A_COL);
+        memmove(cbuff + len, lineBuf + A_COL, lineLen - A_COL);
         len+=lineLen-A_COL;
         breakWords = breakWords || lineLen < maxAnnotationLineLen;
     } while (true);
