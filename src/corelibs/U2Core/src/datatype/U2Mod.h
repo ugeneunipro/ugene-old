@@ -97,7 +97,7 @@ private:
     U2Dbi* dbi;
     bool valid;
     QScopedPointer<DbiConnection> con;
-    const U2DataId& masterObjId;
+    const U2DataId masterObjId;
 
 private:
     void init(U2OpStatus &os);
