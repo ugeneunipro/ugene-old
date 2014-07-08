@@ -127,7 +127,7 @@ cp -v "$PATH_TO_QT_LIBS/../plugins/sqldrivers/libqsqlmysql.so" "${TARGET_APP_DIR
 strip -v "${TARGET_APP_DIR}/sqldrivers/libqsqlmysql.so"
 
 cp -r -v "$PATH_TO_QT_LIBS/../plugins/imageformats" "${TARGET_APP_DIR}"
-strip -v "${TARGET_APP_DIR}/imageformats/*.so"
+strip -v ${TARGET_APP_DIR}/imageformats/*.so
 
 PATH_TO_MYSQL_CLIENT_LIB=`ldd "${TARGET_APP_DIR}/sqldrivers/libqsqlmysql.so" |grep libmysqlclient_r.so |cut -d " " -f3`
 cp -v "$PATH_TO_MYSQL_CLIENT_LIB" "${TARGET_APP_DIR}"
