@@ -34,7 +34,6 @@ class U2FORMATS_EXPORT PhylipFormat : public DocumentFormat {
     Q_OBJECT
 public:
     PhylipFormat(QObject *p);
-    virtual const QString& getFormatName() const {return formatName;}
     virtual void storeDocument(Document* d, IOAdapter* io, U2OpStatus& os);
 
 protected:
@@ -53,6 +52,7 @@ class U2FORMATS_EXPORT PhylipSequentialFormat : public PhylipFormat {
 public:
     PhylipSequentialFormat(QObject* p);
     virtual DocumentFormatId getFormatId() const {return BaseDocumentFormats::PHYLIP_SEQUENTIAL;}
+    virtual const QString& getFormatName() const {return formatName;}
 
     virtual void storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os);
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
@@ -66,6 +66,7 @@ class U2FORMATS_EXPORT PhylipInterleavedFormat : public PhylipFormat {
 public:
     PhylipInterleavedFormat(QObject* p);
     virtual DocumentFormatId getFormatId() const {return BaseDocumentFormats::PHYLIP_INTERLEAVED;}
+    virtual const QString& getFormatName() const {return formatName;}
 
     virtual void storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os);
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;

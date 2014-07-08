@@ -203,11 +203,11 @@ void DocumentFormatRegistryImpl::init() {
     DifferentialFormat *diff = new DifferentialFormat(this);
     registerFormat(diff);
 
-    PhylipSequentialFormat *phSeq = new PhylipSequentialFormat(this);
-    registerFormat(phSeq);
-
     PhylipInterleavedFormat *phIn = new PhylipInterleavedFormat(this);
     registerFormat(phIn);
+
+    PhylipSequentialFormat *phSeq = new PhylipSequentialFormat(this);
+    registerFormat(phSeq);
 
     registerFormat(new DatabaseConnectionFormat(this));
 

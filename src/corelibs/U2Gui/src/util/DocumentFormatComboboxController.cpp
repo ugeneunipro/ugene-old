@@ -89,9 +89,8 @@ void DocumentFormatComboboxController::fill(QComboBox* combo, QList<DocumentForm
     combo->clear();
     DocumentFormatRegistry* fr = AppContext::getDocumentFormatRegistry();
     foreach(DocumentFormatId id, formatIds) {
-        DocumentFormat* f = fr->getFormatById(id);
-        combo->addItem(QIcon(), f->getFormatName(), f->getFormatId());
-        if (f->getFormatId () == active) {
+        combo->addItem(QIcon(), fr->getFormatById(id)->getFormatName(), id);
+        if (id == active) {
             combo->setCurrentIndex(combo->count()-1);
         }
     }
