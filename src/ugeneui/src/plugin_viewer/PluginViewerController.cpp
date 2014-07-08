@@ -78,6 +78,7 @@ void PluginViewerController::createWindow() {
     ui.licenseLabel->hide();
     ui.licenseView->hide();
     ui.acceptLicenseButton->hide();
+    ui.showLicenseButton->setDisabled(true);
 
     ui.treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     
@@ -374,6 +375,7 @@ void PluginViewerController::sl_treeCurrentItemChanged(QTreeWidgetItem * current
     if(current == previous){
         return;
     }
+    ui.showLicenseButton->setEnabled(true);
     PlugViewPluginItem* curentItem=dynamic_cast<PlugViewPluginItem*>(current);
     if(!curentItem->plugin->isFree()){
         if(!curentItem->plugin->isLicenseAccepted()){
