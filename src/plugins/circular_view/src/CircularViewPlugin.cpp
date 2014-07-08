@@ -311,7 +311,11 @@ void CircularViewAction::sl_circularStateChanged() {
     SAFE_POINT(seqObj != NULL, "Sequence Object is NULL", );
 
     // if sequence is marked as circular and CV is hidden, show CV, and hide it if unmarked
-    trigger();
+    if (seqObj->isCircular() && !isChecked()) {
+        trigger();
+    }else if (!seqObj->isCircular() && isChecked()) {
+        trigger();
+    }
 }
 
 
