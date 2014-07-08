@@ -41,7 +41,7 @@ ImportDirToDatabaseTask::ImportDirToDatabaseTask(const QString &srcUrl, const U2
     CHECK_EXT(QFileInfo(srcUrl).isDir(), setError(tr("It is not a directory: ") + srcUrl), );
     CHECK_EXT(dstDbiRef.isValid(), setError(tr("Invalid database reference")), );
 
-    setMaxParallelSubtasks(MAX_PARALLEL_SUBTASKS_AUTO);
+    setMaxParallelSubtasks(1);
 }
 
 void ImportDirToDatabaseTask::prepare() {
