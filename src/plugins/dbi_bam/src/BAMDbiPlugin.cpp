@@ -20,57 +20,55 @@
  */
 
 #include <QtCore/QDir>
-
-#include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
-#include <U2Core/UserApplicationsSettings.h>
-#include <U2Core/DbiDocumentFormat.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/TaskSignalMapper.h>
-#include <U2Core/AddDocumentTask.h>
-#include <U2Core/TextUtils.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/TmpDirChecker.h>
-#include <U2Core/U2DbiRegistry.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2SafePoints.h>
-
-#include <U2Formats/SAMFormat.h>
-
-#include <U2Gui/OpenViewTask.h>
-#include <U2Gui/MainWindow.h>
-
-#include <U2Gui/LastUsedDirHelper.h>
-
-#include "Dbi.h"
-#include "Exception.h"
-#include "ConvertToSQLiteDialog.h"
-#include "ConvertToSQLiteTask.h"
-#include "BAMDbiPlugin.h"
-#include "LoadBamInfoTask.h"
-#include "BAMFormat.h"
-#include "SamtoolsBasedDbi.h"
-
+#include <QtCore/QTemporaryFile>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMainWindow>
+#include <QtGui/QMenu>
+#include <QtGui/QMessageBox>
 #else
 #include <QtWidgets/QAction>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMessageBox>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
 #endif
 
-#include <time.h>
+#include <U2Core/AddDocumentTask.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/AssemblyObject.h>
+#include <U2Core/CloneObjectTask.h>
+#include <U2Core/DbiDocumentFormat.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/TaskSignalMapper.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/TmpDirChecker.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/UserApplicationsSettings.h>
 
+#include <U2Formats/SAMFormat.h>
+
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/OpenViewTask.h>
+
+#include "BAMDbiPlugin.h"
+#include "BAMFormat.h"
+#include "ConvertToSQLiteDialog.h"
+#include "ConvertToSQLiteTask.h"
+#include "Dbi.h"
+#include "Exception.h"
+#include "LoadBamInfoTask.h"
 #include "SamtoolsBasedDbi.h"
 
 namespace U2 {
@@ -131,25 +129,23 @@ DocumentProviderTask* BAMImporter::createImportTask(const FormatDetectionResult&
 }
 
 
-BAMImporterTask::BAMImporterTask(const GUrl& url, bool _useGui, const QVariantMap &hints)
-    : DocumentProviderTask(tr("BAM/SAM file import: %1").arg(url.fileName()), TaskFlags_NR_FOSCOE),
-      hints(hints),
-      destUrl(NULL)
+BAMImporterTask::BAMImporterTask(const GUrl& url, bool _useGui, const QVariantMap &hints) :
+    DocumentProviderTask(tr("BAM/SAM file import: %1").arg(url.fileName()), TaskFlags_NR_FOSCOE),
+    loadInfoTask(NULL),
+    loadBamInfoTask(NULL),
+    prepareToImportTask(NULL),
+    convertTask(NULL),
+    loadDocTask(NULL),
+    isSqliteDbTransit(false),
+    useGui(_useGui),
+    sam(hints.value(SAM_HINT, false).toBool()),
+    hints(hints),
+    hintedDbiRef(hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>()),
+    destUrl(NULL)
 {
-    useGui = _useGui;
-    sam = hints.value(SAM_HINT, false).toBool();
-    if (hints.contains(DocumentFormat::DBI_REF_HINT)) {
-        hintedDbiRef = hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>();
-    }
-    convertTask = NULL;
-    loadDocTask = NULL;
-    prepareToImportTask = NULL;
-    loadBamInfoTask = NULL;
-
+    documentDescription = url.fileName();
     loadInfoTask = new LoadInfoTask( url, sam );
     addSubTask(loadInfoTask);
-
-    documentDescription = url.fileName();
 }
 
 void BAMImporterTask::prepare() {
@@ -164,77 +160,59 @@ namespace {
 
 QList<Task*> BAMImporterTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
+
     if (subTask->hasError()) {
         propagateSubtaskError();
         return res;
     }
-    if( loadInfoTask == subTask ) {
-        GUrl srcUrl = loadInfoTask->getSourceUrl();
-        QString refUrl;
-        if (!hintedDbiRef.isValid()) {
-            dstDbiRef = U2DbiRef(SQLITE_DBI_ID, srcUrl.dirPath() + QDir::separator() + srcUrl.fileName() + ".ugenedb");
-        } else {
-            dstDbiRef = hintedDbiRef;
-        }
-        bool convert = true;
-        if (useGui) {
-            ConvertToSQLiteDialog convertDialog(loadInfoTask->getSourceUrl(), loadInfoTask->getInfo(), loadInfoTask->isSam());
-            convertDialog.hideAddToProjectOption();
-            int rc = convertDialog.exec();
-            if (rc == QDialog::Accepted) {
-                dstDbiRef = U2DbiRef(SQLITE_DBI_ID, convertDialog.getDestinationUrl().getURLString());
-                refUrl = convertDialog.getReferenceUrl();
-                convert = true;
-            } else {
-                convert = false;
-                stateInfo.setCanceled(true);
-            }
-        }
-        if (convert) {
-            QString dirUrl = getDirUrl(loadInfoTask->getSourceUrl());
-            if (!TmpDirChecker::checkWritePermissions(dirUrl)) {
-                const GUrl url(U2DbiUtils::ref2Url(dstDbiRef));
-                if (url.isLocalFile()) {
-                    dirUrl = getDirUrl(url);
-                } else {
-                    dirUrl = getDirUrl(AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath());
-                }
-            }
-            prepareToImportTask = new PrepareToImportTask( loadInfoTask->getSourceUrl(), loadInfoTask->isSam(), refUrl, dirUrl );
-            res << prepareToImportTask;
-        }
-   } else if ( prepareToImportTask == subTask && prepareToImportTask->isNewURL() ) {
-        bool samFormat = false;
-        loadBamInfoTask = new LoadInfoTask( prepareToImportTask->getSourceUrl(), samFormat );
+
+    if (loadInfoTask == subTask) {
+        initPrepareToImportTask();
+        CHECK(NULL != prepareToImportTask, res);
+        res << prepareToImportTask;
+    }
+
+    else if (prepareToImportTask == subTask && prepareToImportTask->isNewURL()) {
+        initLoadBamInfoTask();
+        CHECK(NULL != loadBamInfoTask, res);
         res << loadBamInfoTask;
     }
-    else if ( loadBamInfoTask == subTask || prepareToImportTask == subTask ) {
-        bool samFormat = false;
-        GUrl sourceURL;
-        BAMInfo bamInfo;
-        if( prepareToImportTask->isNewURL() ) {
-            sourceURL = loadBamInfoTask->getSourceUrl();
-            bamInfo = loadBamInfoTask->getInfo();
-        } else {
-            sourceURL = prepareToImportTask->getSourceUrl();
-            bamInfo = loadInfoTask->getInfo();
-        }
-        convertTask = new ConvertToSQLiteTask( sourceURL, dstDbiRef, bamInfo, samFormat, hints );
+
+    else if (loadBamInfoTask == subTask || prepareToImportTask == subTask) {
+        initConvertToSqliteTask();
+        CHECK(NULL != convertTask, res);
         res << convertTask;
-        return res;
     }
-    else if ( convertTask == subTask ) {
-        if (hints.value(BAMImporter::LOAD_RESULT_DOCUMENT, true).toBool()) {
-            loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(convertTask->getDestinationUrl());
-            if (loadDocTask == NULL) {
-                setError(tr("Failed to get load task for : %1").arg(convertTask->getDestinationUrl().getURLString()));
-                return res;
-            }
+
+    else if (isSqliteDbTransit && convertTask == subTask) {
+        initCloneObjectTasks();
+        CHECK(!cloneTasks.isEmpty(), res);
+        res << cloneTasks;
+    }
+
+    else if (!isSqliteDbTransit && convertTask == subTask) {
+        initLoadDocumentTask();
+        CHECK(NULL != loadDocTask, res);
+        res << loadDocTask;
+    }
+
+    else if ((isSqliteDbTransit && cloneTasks.contains(subTask))) {
+        cloneTasks.removeOne(subTask);
+        CloneObjectTask *cloneTask = qobject_cast<CloneObjectTask *>(subTask);
+        SAFE_POINT_EXT(NULL != cloneTask, setError("Unexpected task type: CloneObjectTask expected"), res);
+        delete cloneTask->getSourceObject();
+
+        if (cloneTasks.isEmpty()) {
+            initLoadDocumentTask();
+            CHECK(NULL != loadDocTask, res);
             res << loadDocTask;
         }
-    } else if (subTask == loadDocTask) {
+    }
+
+    else if (subTask == loadDocTask) {
         resultDocument = loadDocTask->takeDocument();
     }
+
     return res;
 }
 
@@ -242,6 +220,94 @@ Task::ReportResult BAMImporterTask::report() {
     time_t totalTime = time(0) - startTime;
     taskLog.info(QString("BAMImporter task total time is %1 sec").arg( totalTime ) );
     return ReportResult_Finished;
+}
+
+void BAMImporterTask::initPrepareToImportTask() {
+    GUrl srcUrl = loadInfoTask->getSourceUrl();
+
+    isSqliteDbTransit = hintedDbiRef.isValid() && SQLITE_DBI_ID != hintedDbiRef.dbiFactoryId;
+    if (!isSqliteDbTransit) {
+        localDbiRef = U2DbiRef(SQLITE_DBI_ID, srcUrl.dirPath() + QDir::separator() + srcUrl.fileName() + ".ugenedb");
+    } else {
+        const QString tmpDir = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("assembly_conversion") + QDir::separator();
+        QDir().mkpath(tmpDir);
+
+        const QString pattern = tmpDir + "XXXXXX.ugenedb";
+        QTemporaryFile *tempLocalDb = new QTemporaryFile(pattern, this);
+
+        tempLocalDb->open();
+        const QString filePath = tempLocalDb->fileName();
+        tempLocalDb->close();
+
+        SAFE_POINT_EXT(QFile::exists(filePath), setError(tr("Can't create a temporary database")), );
+
+        localDbiRef = U2DbiRef(SQLITE_DBI_ID, filePath);
+    }
+
+    QString refUrl;
+    bool convert = true;
+    if (useGui) {
+        ConvertToSQLiteDialog convertDialog(loadInfoTask->getSourceUrl(), loadInfoTask->getInfo(), loadInfoTask->isSam());
+        convertDialog.hideAddToProjectOption();
+        int rc = convertDialog.exec();
+        if (rc == QDialog::Accepted) {
+            localDbiRef = U2DbiRef(SQLITE_DBI_ID, convertDialog.getDestinationUrl().getURLString());
+            refUrl = convertDialog.getReferenceUrl();
+            convert = true;
+        } else {
+            convert = false;
+            stateInfo.setCanceled(true);
+        }
+    }
+
+    if (convert) {
+        QString dirUrl = getDirUrl(loadInfoTask->getSourceUrl());
+        if (!TmpDirChecker::checkWritePermissions(dirUrl)) {
+            const GUrl url(U2DbiUtils::ref2Url(localDbiRef));
+            if (url.isLocalFile()) {
+                dirUrl = getDirUrl(url);
+            } else {
+                dirUrl = getDirUrl(AppContext::getAppSettings()->getUserAppsSettings()->getUserTemporaryDirPath());
+            }
+        }
+        prepareToImportTask = new PrepareToImportTask( loadInfoTask->getSourceUrl(), loadInfoTask->isSam(), refUrl, dirUrl );
+    }
+}
+
+void BAMImporterTask::initLoadBamInfoTask() {
+    bool samFormat = false;
+    loadBamInfoTask = new LoadInfoTask( prepareToImportTask->getSourceUrl(), samFormat );
+}
+
+void BAMImporterTask::initConvertToSqliteTask() {
+    bool samFormat = false;
+    GUrl sourceURL;
+    BAMInfo bamInfo;
+    if( prepareToImportTask->isNewURL() ) {
+        sourceURL = loadBamInfoTask->getSourceUrl();
+        bamInfo = loadBamInfoTask->getInfo();
+    } else {
+        sourceURL = prepareToImportTask->getSourceUrl();
+        bamInfo = loadInfoTask->getInfo();
+    }
+    convertTask = new ConvertToSQLiteTask( sourceURL, localDbiRef, bamInfo, samFormat );
+}
+
+void BAMImporterTask::initCloneObjectTasks() {
+    QList<U2Assembly> assemblies = convertTask->getAssemblies();
+    foreach (const U2Assembly &assembly, assemblies) {
+        AssemblyObject *object = new AssemblyObject(assembly.visualName, U2EntityRef(localDbiRef, assembly.id));
+        cloneTasks << new CloneObjectTask(object, hintedDbiRef, hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString());
+    }
+}
+
+void BAMImporterTask::initLoadDocumentTask() {
+    if (hints.value(BAMImporter::LOAD_RESULT_DOCUMENT, true).toBool()) {
+        loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(convertTask->getDestinationUrl());
+        if (loadDocTask == NULL) {
+            setError(tr("Failed to get load task for : %1").arg(convertTask->getDestinationUrl().getURLString()));
+        }
+    }
 }
 
 } // namespace BAM

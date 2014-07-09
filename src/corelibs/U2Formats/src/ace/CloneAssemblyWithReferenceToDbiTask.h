@@ -19,40 +19,40 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CLONE_OBJECT_TASK_H_
-#define _U2_CLONE_OBJECT_TASK_H_
-
-#include <QtCore/QPointer>
+#ifndef _U2_CLONE_ASSEMBLY_WITH_REFERENCE_TO_DBI_TASK_H_
+#define _U2_CLONE_ASSEMBLY_WITH_REFERENCE_TO_DBI_TASK_H_
 
 #include <U2Core/Task.h>
 #include <U2Core/U2Type.h>
+#include <U2Core/U2Assembly.h>
 
 namespace U2 {
 
-class Document;
-class GObject;
+class CloneObjectTask;
 
-class U2CORE_EXPORT CloneObjectTask : public Task {
-    Q_OBJECT
+class CloneAssemblyWithReferenceToDbiTask : public Task {
 public:
-    CloneObjectTask(GObject *srcObj, Document *dstDoc, const QString &dstFolder);
-    CloneObjectTask(GObject *srcObj, const U2DbiRef &dstDbiRef, const QString &dstFolder);
-    ~CloneObjectTask();
+    CloneAssemblyWithReferenceToDbiTask(const U2Assembly &assembly,
+                                        const U2Sequence &reference,
+                                        const U2DbiRef &srcDbiRef,
+                                        const U2DbiRef &dstDbiRef,
+                                        const QVariantMap &hints);
+
+    void prepare();
     void run();
 
-    GObject * takeResult();
-    const QString & getFolder() const;
-    GObject * getSourceObject() const;
-    Document * getDocument() const;
-
 private:
-    QPointer<GObject> srcObj;
-    QPointer<Document> dstDoc;
-    U2DbiRef dstDbiRef;
-    QString dstFolder;
-    GObject *dstObj;
+    U2Assembly assembly;
+    U2Sequence reference;
+
+    const U2DbiRef srcDbiRef;
+    const U2DbiRef dstDbiRef;
+    const QString dstFolder;
+
+    CloneObjectTask *cloneAssemblyTask;
+    CloneObjectTask *cloneReferenceTask;
 };
 
-} // U2
+}   // namespace U2
 
-#endif // _U2_CLONE_OBJECT_TASK_H_
+#endif // _U2_CLONE_ASSEMBLY_WITH_REFERENCE_TO_DBI_TASK_H_

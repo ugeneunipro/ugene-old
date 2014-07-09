@@ -210,6 +210,9 @@ public:
     /** Updates versions */
     void onFolderUpdated(const QString& folder);
 
+    /** Updates object's type in the database. It does not increment object's version */
+    void updateObjectType(U2Object& obj, U2OpStatus& os);
+
 private:
     /** Updates database entry for 'obj'. It does not increment its version. */
     void updateObjectCore(U2Object& obj, U2OpStatus& os);

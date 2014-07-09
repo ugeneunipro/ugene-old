@@ -877,6 +877,17 @@ void MysqlObjectDbi::updateObjectCore(U2Object &obj, U2OpStatus &os) {
     q.execute();
 }
 
+void MysqlObjectDbi::updateObjectType(U2Object &obj, U2OpStatus &os) {
+    MysqlTransaction t(db, os);
+    Q_UNUSED(t);
+
+    static const QString queryString = "UPDATE Object SET type = :type WHERE id = :id";
+    U2SqlQuery q(queryString, db, os);
+    q.bindType("type", obj.getType());
+    q.bindDataId("id", obj.id);
+    q.execute();
+}
+
 bool MysqlObjectDbi::isObjectInUse(const U2DataId& id, U2OpStatus& os) {
     static const QString queryString = "SELECT COUNT(*) FROM ObjectAccessTrack WHERE object = :object "
         "AND lastAccessTime + INTERVAL " + QString::number(OBJ_USAGE_CHECK_INTERVAL)

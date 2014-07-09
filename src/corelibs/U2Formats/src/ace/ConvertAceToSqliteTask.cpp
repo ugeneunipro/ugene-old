@@ -42,10 +42,9 @@
 
 namespace U2 {
 
-ConvertAceToSqliteTask::ConvertAceToSqliteTask(const GUrl &_sourceUrl, const U2DbiRef &dstDbiRef, const QVariantMap &hints) :
+ConvertAceToSqliteTask::ConvertAceToSqliteTask(const GUrl &_sourceUrl, const U2DbiRef &dstDbiRef) :
     Task(tr("Convert ACE to UGENE database (%1)").arg(_sourceUrl.fileName()), TaskFlag_None),
     sourceUrl(_sourceUrl),
-    hints(hints),
     dstDbiRef(dstDbiRef),
     dbi(NULL),
     databaseWasCreated(false),
@@ -122,9 +121,16 @@ GUrl ConvertAceToSqliteTask::getDestinationUrl() const {
     return GUrl(U2DbiUtils::ref2Url(dstDbiRef));
 }
 
+QMap<U2Sequence, U2Assembly> ConvertAceToSqliteTask::getImportedObjects() const {
+    QMap<U2Sequence, U2Assembly> importedObjects;
+    foreach (int pairNum, importedReferences.keys()) {
+        importedObjects.insert(importedReferences[pairNum], assemblies[pairNum]);
+    }
+    return importedObjects;
+}
+
 qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
     qint64 totalReadsImported = 0;
-    const QString dstFolder = hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
 
     U2AssemblyDbi* assDbi = dbi->getAssemblyDbi();
     SAFE_POINT(assDbi, tr("Assembly DBI is NULL"), totalReadsImported);
@@ -154,21 +160,22 @@ qint64 ConvertAceToSqliteTask::importAssemblies(IOAdapter &ioAdapter) {
         CHECK_OP(stateInfo, totalReadsImported);
         CHECK_EXT(aceAssembly.isValid(), setError(tr("Invalid source file")), totalReadsImported);
         Assembly::Sequence aceReference = aceAssembly.getReference();
-        references.insert(countImportedAssembly, aceReference);
+        referencesData.insert(countImportedAssembly, aceReference);
 
         U2Sequence reference;
         reference.length = aceReference.data.length();
         reference.visualName = aceReference.name;
         reference.alphabet = U2AlphabetUtils::findBestAlphabet(aceReference.data)->getId();
 
-        seqDbi->createSequenceObject(reference, dstFolder, stateInfo);
+        seqDbi->createSequenceObject(reference, U2ObjectDbi::ROOT_FOLDER, stateInfo);
         CHECK_OP(stateInfo, totalReadsImported);
+        importedReferences.insert(countImportedAssembly, reference);
 
         assembly.visualName = aceAssembly.getName();
         assembly.referenceId = reference.id;
 
         U2AssemblyReadsImportInfo & importInfo = importInfos[countImportedAssembly];
-        assDbi->createAssemblyObject(assembly, dstFolder, NULL, importInfo, stateInfo);
+        assDbi->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, NULL, importInfo, stateInfo);
         CHECK_OP(stateInfo, totalReadsImported);
 
         importInfo.packed = false;
@@ -242,7 +249,7 @@ void ConvertAceToSqliteTask::updateAttributeDbi() {
 
     foreach (int assemblyNum, assemblies.keys()) {
         const U2Assembly &assembly = assemblies[assemblyNum];
-        const Assembly::Sequence &reference = references[assemblyNum];
+        const Assembly::Sequence &reference = referencesData[assemblyNum];
         {
             U2IntegerAttribute lenAttr;
             lenAttr.objectId = assembly.id;

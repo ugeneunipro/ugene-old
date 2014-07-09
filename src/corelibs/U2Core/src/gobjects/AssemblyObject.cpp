@@ -64,21 +64,18 @@ U2EntityRef AssemblyObject::dbi2dbiClone(const AssemblyObject *const srcObj, con
     SAFE_POINT_EXT(NULL != dstAssemblyDbi, os.setError("NULL destination assembly dbi"), U2EntityRef());
     SAFE_POINT_EXT(NULL != srcAssemblyDbi, os.setError("NULL source assembly dbi"), U2EntityRef());
 
-    // copy object
-    U2Assembly assembly;
-    assembly.visualName = srcObj->getGObjectName();
-    U2AssemblyReadsImportInfo info;
-    dstAssemblyDbi->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, NULL, info, os);
-    CHECK_OP(os, U2EntityRef());
-
-    // copy reads
+    // prepare reads
     CHECK_OP(os, U2EntityRef());
     U2DbiIterator<U2AssemblyRead> *iter = srcAssemblyDbi->getReads(srcObjId, U2_REGION_MAX, os, true);
     QScopedPointer< U2DbiIterator<U2AssemblyRead> > iterPtr(iter);
     CHECK_OP(os, U2EntityRef());
     Q_UNUSED(iterPtr);
 
-    dstAssemblyDbi->addReads(assembly.id, iter, os);
+    // copy object
+    U2Assembly assembly;
+    assembly.visualName = srcObj->getGObjectName();
+    U2AssemblyReadsImportInfo info;
+    dstAssemblyDbi->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, iter, info, os);
     CHECK_OP(os, U2EntityRef());
 
     // copy attributes
@@ -90,6 +87,5 @@ U2EntityRef AssemblyObject::dbi2dbiClone(const AssemblyObject *const srcObj, con
     U2EntityRef dstEntityRef(dstDbiRef, assembly.id);
     return dstEntityRef;
 }
-
 
 }//namespace

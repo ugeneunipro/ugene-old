@@ -177,7 +177,7 @@ GObject * DatabaseConnectionFormat::createObject(const U2DbiRef &ref, const U2Da
     case U2Type::CrossDatabaseReference:
         return NULL;
     default:
-        coreLog.error(tr("Unsupported object type: %1").arg(type));
+        coreLog.trace(tr("Unsupported object type: %1").arg(type));
         return NULL;
     }
     return NULL;

@@ -31,11 +31,26 @@
 namespace U2 {
 
 CloneObjectTask::CloneObjectTask(GObject *srcObj, Document *dstDoc, const QString &dstFolder)
-: Task(tr("Copy object"), TaskFlag_None), srcObj(srcObj), dstDoc(dstDoc), dstFolder(dstFolder), dstObj(NULL)
+    : Task(tr("Copy object"), TaskFlag_None),
+      srcObj(srcObj),
+      dstDoc(dstDoc),
+      dstDbiRef(NULL != dstDoc ? dstDoc->getDbiRef() : U2DbiRef()),
+      dstFolder(dstFolder),
+      dstObj(NULL)
 {
     CHECK_EXT(NULL != srcObj, setError(tr("Invalid source object")), );
     CHECK_EXT(NULL != dstDoc, setError(tr("Invalid destination document")), );
     setTaskName(getTaskName() + ": " + srcObj->getGObjectName());
+}
+
+CloneObjectTask::CloneObjectTask(GObject *srcObj, const U2DbiRef &dstDbiRef, const QString &dstFolder) :
+    Task(tr("Copy object %1").arg(NULL != srcObj ? srcObj->getGObjectName() : "") , TaskFlag_None),
+    srcObj(srcObj),
+    dstDbiRef(dstDbiRef),
+    dstFolder(dstFolder),
+    dstObj(NULL)
+{
+    CHECK_EXT(dstDbiRef.isValid(), setError(tr("Invalid destination database reference")), );
 }
 
 CloneObjectTask::~CloneObjectTask() {
@@ -43,21 +58,18 @@ CloneObjectTask::~CloneObjectTask() {
 }
 
 void CloneObjectTask::run() {
-    CHECK_EXT(!dstDoc.isNull(), setError(tr("The document has been removed")), );
-    U2DbiRef dstRef = dstDoc->getDbiRef();
-
-    DbiOperationsBlock opBlock(dstRef, stateInfo);
+    DbiOperationsBlock opBlock(dstDbiRef, stateInfo);
     Q_UNUSED(opBlock);
     CHECK_OP(stateInfo, );
 
-    DbiConnection con(dstRef, stateInfo);
+    DbiConnection con(dstDbiRef, stateInfo);
     CHECK_OP(stateInfo, );
     SAFE_POINT_EXT(NULL != con.dbi, setError(QObject::tr("Error! No DBI")), );
     U2ObjectDbi *oDbi = con.dbi->getObjectDbi();
     SAFE_POINT_EXT(NULL != oDbi, setError(QObject::tr("Error! No object DBI")), );
 
     CHECK_EXT(!srcObj.isNull(), setError(tr("The object has been removed")), );
-    dstObj = srcObj->clone(dstDoc->getDbiRef(), stateInfo);
+    dstObj = srcObj->clone(dstDbiRef, stateInfo);
     CHECK_OP(stateInfo, );
     dstObj->moveToThread(QCoreApplication::instance()->thread());
 
@@ -83,6 +95,10 @@ GObject * CloneObjectTask::takeResult() {
 
 const QString & CloneObjectTask::getFolder() const {
     return dstFolder;
+}
+
+GObject *CloneObjectTask::getSourceObject() const {
+    return srcObj.data();
 }
 
 Document * CloneObjectTask::getDocument() const {

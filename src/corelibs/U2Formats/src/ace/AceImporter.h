@@ -28,6 +28,7 @@
 namespace U2 {
 
 class ConvertAceToSqliteTask;
+class CloneObjectTask;
 class LoadDocumentTask;
 
 class AceImporterTask : public DocumentProviderTask {
@@ -35,19 +36,30 @@ class AceImporterTask : public DocumentProviderTask {
 public:
     AceImporterTask(const GUrl &url, const QVariantMap& settings, const QVariantMap &hints = QVariantMap());
 
-    virtual QList<Task*> onSubTaskFinished(Task* subTask);
     virtual void prepare();
+    virtual QList<Task*> onSubTaskFinished(Task* subTask);
     virtual ReportResult report();
 
 private:
-    ConvertAceToSqliteTask* convertTask;
-    LoadDocumentTask*       loadDocTask;
-    bool                    useGui;
-    QVariantMap             settings;
-    QVariantMap             hints;
-    GUrl                    srcUrl;
-    GUrl                    destUrl;
-    qint64                  startTime;
+    void initCloneObjectTasks();
+    void initLoadDocumentTask();
+    void processCloneObjectTask(U2::CloneObjectTask *cloneTask);
+
+    ConvertAceToSqliteTask * convertTask;
+    QList<Task *>            cloneTasks;
+    LoadDocumentTask *       loadDocTask;
+
+    bool                     isSqliteDbTransit;
+    bool                     useGui;
+
+    QVariantMap              settings;
+    QVariantMap              hints;
+
+    U2DbiRef                 localDbiRef;
+    U2DbiRef                 hintedDbiRef;
+    GUrl                     srcUrl;
+    GUrl                     destUrl;
+    qint64                   startTime;
 };
 
 ///////////////////////////////////

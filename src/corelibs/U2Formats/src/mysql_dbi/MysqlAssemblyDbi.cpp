@@ -36,6 +36,41 @@
 
 namespace U2 {
 
+class MysqlAssemblyConsistencyGuard {
+public:
+    MysqlAssemblyConsistencyGuard(MysqlDbi *dbi, U2Assembly &assembly, U2OpStatus &os) :
+        dbi(dbi),
+        assembly(assembly),
+        os(os)
+    {
+    }
+
+    ~MysqlAssemblyConsistencyGuard() {
+        if (os.hasError()) {
+            removeAssembly();
+        } else {
+            finalizeAssembly();
+        }
+    }
+
+private:
+    void removeAssembly() {
+        finalizeAssembly();
+        dbi->getMysqlObjectDbi()->removeObject(assembly.id, true, os);
+        SAFE_POINT_OP(os, );
+    }
+
+    void finalizeAssembly() {
+        dbi->getMysqlObjectDbi()->updateObjectType(assembly, os);
+        SAFE_POINT_OP(os, );
+        assembly.id = U2DbiUtils::toU2DataId(U2DbiUtils::toDbiId(assembly.id), U2Type::Assembly, U2DbiUtils::toDbExtra(assembly.id));
+    }
+
+    MysqlDbi *dbi;
+    U2Assembly &assembly;
+    U2OpStatus &os;
+};
+
 MysqlAssemblyDbi::MysqlAssemblyDbi(MysqlDbi* dbi) : U2AssemblyDbi(dbi), MysqlChildDbiCommon(dbi) {
 }
 
@@ -198,16 +233,28 @@ qint64 MysqlAssemblyDbi::getMaxEndPos(const U2DataId& assemblyId, U2OpStatus& os
 
 
 
-void MysqlAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString& folder,
-                                             U2DbiIterator<U2AssemblyRead>* it,
-                                             U2AssemblyReadsImportInfo& importInfo,
-                                             U2OpStatus& os)
+void MysqlAssemblyDbi::createAssemblyObject(U2Assembly& assembly,
+                                            const QString& folder,
+                                            U2DbiIterator<U2AssemblyRead>* it,
+                                            U2AssemblyReadsImportInfo& importInfo,
+                                            U2OpStatus& os)
 {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
 
-    dbi->getMysqlObjectDbi()->createObject(assembly, folder, U2DbiObjectRank_TopLevel, os);
-    SAFE_POINT_OP(os,);
+    MysqlAssemblyConsistencyGuard guard(dbi, assembly, os);
+    Q_UNUSED(guard);
+
+    U2Object fakeObject;
+    fakeObject.visualName = assembly.visualName;
+    fakeObject.trackModType = assembly.trackModType;
+
+    dbi->getMysqlObjectDbi()->createObject(fakeObject, folder, U2DbiObjectRank_TopLevel, os);
+    SAFE_POINT_OP(os, );
+
+    assembly.id = fakeObject.id;
+    assembly.dbiId = fakeObject.dbiId;
+    assembly.version = fakeObject.version;
 
     QString elenMethod = "multi-table-v1";
     //QString elenMethod = dbi->getProperty(Mysql_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, Mysql_DBI_ASSEMBLY_READ_ELEN_METHOD_RTREE, os);
@@ -234,7 +281,7 @@ void MysqlAssemblyDbi::createAssemblyObject(U2Assembly& assembly, const QString&
     }
 
     a->createReadsIndexes(os);
-    SAFE_POINT_OP(os,);
+    SAFE_POINT_OP(os, );
 }
 
 void MysqlAssemblyDbi::removeAssemblyData(const U2DataId &assemblyId, U2OpStatus &os) {

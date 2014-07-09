@@ -35,12 +35,13 @@ namespace U2 {
 class ConvertAceToSqliteTask : public Task {
     Q_OBJECT
 public:
-    ConvertAceToSqliteTask(const GUrl &sourceUrl, const U2DbiRef &dstDbiRef, const QVariantMap& hints);
+    ConvertAceToSqliteTask(const GUrl &sourceUrl, const U2DbiRef &dstDbiRef);
 
     virtual void run();
     virtual ReportResult report();
 
     GUrl getDestinationUrl() const;
+    QMap<U2Sequence, U2Assembly> getImportedObjects() const;
 
 private:
     qint64 importAssemblies(IOAdapter &ioAdapter);
@@ -48,16 +49,16 @@ private:
     void updateAttributeDbi();
 
     const GUrl sourceUrl;
-    QVariantMap hints;
 
     U2DbiRef dstDbiRef;
     U2Dbi* dbi;
 
     bool databaseWasCreated;
     int countImportedAssembly;
-    QMap<int, Assembly::Sequence> references;
+    QMap<int, Assembly::Sequence> referencesData;
     QMap<int, U2Assembly> assemblies;
     QMap<int, U2AssemblyReadsImportInfo> importInfos;
+    QMap<int, U2Sequence> importedReferences;
 };
 
 }   // namespace U2

@@ -36,8 +36,8 @@ HEADERS += src/ABIFormat.h \
            src/RawDNASequenceFormat.h \
            src/SAMFormat.h \
            src/SCFFormat.h \
-           src/SimpleSNPVariationFormat.h \
            src/SNPDatabaseUtils.h \
+           src/SimpleSNPVariationFormat.h \
            src/StdResidueDictionary.h \
            src/StockholmFormat.h \
            src/StreamSequenceReader.h \
@@ -45,8 +45,9 @@ HEADERS += src/ABIFormat.h \
            src/SwissProtPlainTextFormat.h \
            src/VCF4VariationFormat.h \
            src/ace/AceFormat.h \
-           src/ace/AceImporter.h \
            src/ace/AceImportUtils.h \
+           src/ace/AceImporter.h \
+           src/ace/CloneAssemblyWithReferenceToDbiTask.h \
            src/ace/ConvertAceToSqliteDialog.h \
            src/ace/ConvertAceToSqliteTask.h \
            src/mysql_dbi/MysqlAssemblyDbi.h \
@@ -81,8 +82,8 @@ HEADERS += src/ABIFormat.h \
            src/sqlite_dbi/SQLiteMsaDbi.h \
            src/sqlite_dbi/SQLiteObjectDbi.h \
            src/sqlite_dbi/SQLiteObjectRelationsDbi.h \
-           src/sqlite_dbi/SQLiteSequenceDbi.h \
            src/sqlite_dbi/SQLiteSNPTablesDbi.h \
+           src/sqlite_dbi/SQLiteSequenceDbi.h \
            src/sqlite_dbi/SQLiteUdrDbi.h \
            src/sqlite_dbi/SQLiteVariantDbi.h \
            src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.h \
@@ -139,6 +140,7 @@ SOURCES += src/ABIFormat.cpp \
            src/ace/AceFormat.cpp \
            src/ace/AceImporter.cpp \
            src/ace/AceImportUtils.cpp \
+           src/ace/CloneAssemblyWithReferenceToDbiTask.cpp \
            src/ace/ConvertAceToSqliteDialog.cpp \
            src/ace/ConvertAceToSqliteTask.cpp \
            src/mysql_dbi/MysqlAssemblyDbi.cpp \

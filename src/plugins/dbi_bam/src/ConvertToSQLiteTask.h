@@ -24,6 +24,7 @@
 
 #include <U2Core/GUrl.h>
 #include <U2Core/Task.h>
+#include <U2Core/U2Assembly.h>
 #include <U2Core/U2Type.h>
 
 #include "LoadBamInfoTask.h"
@@ -37,18 +38,20 @@ namespace BAM {
 class ConvertToSQLiteTask : public Task {
     Q_OBJECT
 public:
-    ConvertToSQLiteTask(const GUrl &sourceUrl, const U2DbiRef &dstDbiRef, BAMInfo& bamInfo, bool sam, const QVariantMap& hints);
+    ConvertToSQLiteTask(const GUrl &sourceUrl, const U2DbiRef &dstDbiRef, BAMInfo& bamInfo, bool sam);
     virtual void run();
     
     GUrl getDestinationUrl() const;
+    QList<U2Assembly> getAssemblies() const;
     
 private:    
     const GUrl sourceUrl;
     const U2DbiRef dstDbiRef;
-    const QVariantMap hints;
     BAMInfo bamInfo;
 
     bool sam;
+
+    QMap<int, U2Assembly> assemblies;
 };
 
 } // namespace BAM

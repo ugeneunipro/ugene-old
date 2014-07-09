@@ -20,16 +20,23 @@
  */
 
 #include <QtCore/QDir>
+#include <QtCore/QTemporaryFile>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
 #include <U2Core/AssemblyObject.h>
+#include <U2Core/CloneObjectTask.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Timer.h>
 #include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Formats/AceFormat.h>
 
 #include "AceImporter.h"
+#include "CloneAssemblyWithReferenceToDbiTask.h"
 #include "ConvertAceToSqliteTask.h"
 
 namespace U2 {
@@ -42,6 +49,7 @@ AceImporterTask::AceImporterTask(const GUrl& url, const QVariantMap& settings, c
     DocumentProviderTask(tr("ACE file import: %1").arg(url.fileName()), TaskFlags_NR_FOSE_COSC),
     convertTask(NULL),
     loadDocTask(NULL),
+    isSqliteDbTransit(false),
     settings(settings),
     hints(hints),
     srcUrl(url)
@@ -54,39 +62,58 @@ AceImporterTask::AceImporterTask(const GUrl& url, const QVariantMap& settings, c
 }
 
 void AceImporterTask::prepare() {
-    startTime = TimeCounter::getCounter();
-    U2DbiRef hintedDbiRef = hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>();
-    U2DbiRef dstDbiRef;
+    startTime = GTimer::currentTimeMicros();
+
+    hintedDbiRef = hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>();
+    isSqliteDbTransit = hintedDbiRef.isValid() && SQLITE_DBI_ID != hintedDbiRef.dbiFactoryId;
 
     if (destUrl.isEmpty()) {
-        if (!hintedDbiRef.isValid()) {
-            dstDbiRef = U2DbiRef(SQLITE_DBI_ID, srcUrl.dirPath() + QDir::separator() + srcUrl.fileName() + ".ugenedb");
+        if (!isSqliteDbTransit) {
+            localDbiRef = U2DbiRef(SQLITE_DBI_ID, srcUrl.dirPath() + QDir::separator() + srcUrl.fileName() + ".ugenedb");
         } else {
-            dstDbiRef = hintedDbiRef;
+            const QString tmpDir = AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath("assembly_conversion") + QDir::separator();
+            QDir().mkpath(tmpDir);
+
+            const QString pattern = tmpDir + "XXXXXX.ugenedb";
+            QTemporaryFile *tempLocalDb = new QTemporaryFile(pattern, this);
+
+            tempLocalDb->open();
+            const QString filePath = tempLocalDb->fileName();
+            tempLocalDb->close();
+
+            SAFE_POINT_EXT(QFile::exists(filePath), setError(tr("Can't create a temporary database")), );
+
+            localDbiRef = U2DbiRef(SQLITE_DBI_ID, filePath);
         }
     } else {
-        dstDbiRef = U2DbiRef(SQLITE_DBI_ID, destUrl.getURLString());
+        localDbiRef = U2DbiRef(SQLITE_DBI_ID, destUrl.getURLString());
     }
 
-    convertTask = new ConvertAceToSqliteTask(srcUrl, dstDbiRef, hints);
+    convertTask = new ConvertAceToSqliteTask(srcUrl, localDbiRef);
     addSubTask(convertTask);
 }
 
 QList<Task*> AceImporterTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
-    CHECK_EXT(!subTask->hasError(), propagateSubtaskError(), res);
-    CHECK_EXT(!subTask->isCanceled(), stateInfo.setCanceled(true), res);
 
-    if (convertTask == subTask) {
-        if (hints.value(AceImporter::LOAD_RESULT_DOCUMENT, true).toBool())  {
-            loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(convertTask->getDestinationUrl());
-            if (loadDocTask == NULL) {
-                setError(tr("Failed to get load task for : %1").arg(convertTask->getDestinationUrl().getURLString()));
-                return res;
-            }
+    if (isSqliteDbTransit && convertTask == subTask) {
+        initCloneObjectTasks();
+        res << cloneTasks;
+    }
 
+    else if (isSqliteDbTransit && cloneTasks.contains(subTask)) {
+        cloneTasks.removeOne(subTask);
+        if (cloneTasks.isEmpty()) {
+            initLoadDocumentTask();
+            CHECK(NULL != loadDocTask, res);
             res << loadDocTask;
         }
+    }
+
+    else if (!isSqliteDbTransit && convertTask == subTask) {
+        initLoadDocumentTask();
+        CHECK(NULL != loadDocTask, res);
+        res << loadDocTask;
     }
 
     if (loadDocTask == subTask) {
@@ -97,9 +124,25 @@ QList<Task*> AceImporterTask::onSubTaskFinished(Task* subTask) {
 }
 
 Task::ReportResult AceImporterTask::report() {
-    qint64 totalTime = TimeCounter::getCounter() - startTime;
-    taskLog.info(QString("AceImporter task total time is %1 sec").arg(totalTime));
+    qint64 totalTime = GTimer::currentTimeMicros() - startTime;
+    taskLog.info(QString("AceImporter task total time is %1 sec").arg((double)totalTime / 1000000));
     return ReportResult_Finished;
+}
+
+void AceImporterTask::initCloneObjectTasks() {
+    const QMap<U2Sequence, U2Assembly> importedObjects = convertTask->getImportedObjects();
+    foreach (const U2Sequence &reference, importedObjects.keys()) {
+        cloneTasks << new CloneAssemblyWithReferenceToDbiTask(importedObjects[reference], reference, localDbiRef, hintedDbiRef, hints);
+    }
+}
+
+void AceImporterTask::initLoadDocumentTask() {
+    if (hints.value(AceImporter::LOAD_RESULT_DOCUMENT, true).toBool()) {
+        loadDocTask = LoadDocumentTask::getDefaultLoadDocTask(convertTask->getDestinationUrl());
+        if (loadDocTask == NULL) {
+            setError(tr("Failed to get load task for : %1").arg(convertTask->getDestinationUrl().getURLString()));
+        }
+    }
 }
 
 

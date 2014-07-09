@@ -22,17 +22,19 @@
 #ifndef _U2_BAM_DBI_PLUGIN_H_
 #define _U2_BAM_DBI_PLUGIN_H_
 
-#include <U2Core/PluginModel.h>
-#include <U2Core/U2Dbi.h>
-#include <U2Core/Log.h>
+#include <time.h>
+
 #include <U2Core/DocumentImport.h>
 #include <U2Core/DocumentProviderTask.h>
-#include <time.h>
+#include <U2Core/Log.h>
+#include <U2Core/PluginModel.h>
+#include <U2Core/U2Dbi.h>
 
 #include "PrepareToImportTask.h"
 
 namespace U2 {
 
+class CloneObjectTask;
 class LoadDocumentTask;
 
 namespace BAM {
@@ -61,22 +63,34 @@ class BAMImporterTask : public DocumentProviderTask {
     Q_OBJECT
 public:
     BAMImporterTask(const GUrl& url, bool useGui, const QVariantMap &hints);
-    QList<Task*> onSubTaskFinished(Task* subTask);
+
     void prepare();
+    QList<Task*> onSubTaskFinished(Task* subTask);
     ReportResult report();
+
 private:
-    LoadInfoTask*           loadInfoTask;
-    LoadInfoTask*           loadBamInfoTask;
-    PrepareToImportTask*    prepareToImportTask;
-    ConvertToSQLiteTask*    convertTask;
-    LoadDocumentTask*       loadDocTask;
-    bool                    useGui;
-    bool                    sam;
-    QVariantMap             hints;
-    U2DbiRef                hintedDbiRef;
-    U2DbiRef                dstDbiRef;
-    GUrl                    destUrl;
-    time_t                  startTime;
+    void initPrepareToImportTask();
+    void initLoadBamInfoTask();
+    void initConvertToSqliteTask();
+    void initCloneObjectTasks();
+    void initLoadDocumentTask();
+
+    LoadInfoTask *           loadInfoTask;
+    LoadInfoTask *           loadBamInfoTask;
+    PrepareToImportTask *    prepareToImportTask;
+    ConvertToSQLiteTask *    convertTask;
+    QList<Task *>            cloneTasks;
+    LoadDocumentTask *       loadDocTask;
+
+    bool                     isSqliteDbTransit;
+    bool                     useGui;
+    bool                     sam;
+
+    QVariantMap              hints;
+    U2DbiRef                 hintedDbiRef;
+    U2DbiRef                 localDbiRef;
+    GUrl                     destUrl;
+    time_t                   startTime;
 };
 
 } // namespace BAM
