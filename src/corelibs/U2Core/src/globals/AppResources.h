@@ -281,6 +281,8 @@ public:
 
     static int getTotalPhysicalMemory();
 
+    static bool isSystem64bit();
+
     static const int x32MaxMemoryLimitMb = 3*512;       // 1536Mb
     static const int x64MaxMemoryLimitMb = 2*1024*1024; // 2Tb
 private:

@@ -19,12 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExternalToolSearchTask.h"
-#include "ExternalToolSupportSettings.h"
-#include "ExternalToolValidateTask.h"
-#include "python/PythonSupport.h"
+#include <QtCore/QString>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/AppResources.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/Log.h>
 #include <U2Core/ScriptingToolRegistry.h>
@@ -33,7 +31,10 @@
 
 #include <U2Lang/WorkflowUtils.h>
 
-#include <QtCore/QString>
+#include "ExternalToolSearchTask.h"
+#include "ExternalToolSupportSettings.h"
+#include "ExternalToolValidateTask.h"
+#include "python/PythonSupport.h"
 
 namespace U2 {
 
@@ -108,6 +109,9 @@ void ExternalToolJustValidateTask::run() {
             delete externalToolProcess;
             externalToolProcess = NULL;
         }
+
+        checkArchitecture(validation.executableFile);
+        CHECK_OP(stateInfo, );
         
         externalToolProcess = new QProcess();
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
@@ -235,6 +239,41 @@ void ExternalToolJustValidateTask::checkVersion(const QString &partOfLog) {
             return;
         }
     }
+}
+
+void ExternalToolJustValidateTask::checkArchitecture(const QString &toolPath) {
+    Q_UNUSED(toolPath);
+#ifdef Q_OS_MAC
+    QProcess archProcess;
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    archProcess.setProcessEnvironment(env);
+    archProcess.start("file", QStringList() << toolPath);
+
+    bool started = archProcess.waitForStarted(3000);
+    CHECK(started, );
+
+    int timeout = 10000;
+    int period = 1000;
+    int timer = 0;
+    while (!archProcess.waitForFinished(period)) {
+        timer += period;
+        CHECK(timer <= timeout, );
+
+        if (isCanceled()) {
+            cancelProcess();
+        }
+    }
+
+    const QString output = archProcess.readAllStandardOutput();
+    archProcess.close();
+
+    bool is_ppc = output.contains("Mach-O executable ppc");
+    bool is_i386 = output.contains("Mach-O executable i386");
+    bool is_x86_64 = output.contains("Mach-O 64-bit executable x86_64");
+    if (Q_UNLIKELY(AppResourcePool::isSystem64bit() && is_ppc && !is_i386 && !is_x86_64)) {
+        setError("This external tool has unsupported architecture");
+    }
+#endif
 }
 
 ExternalToolSearchAndValidateTask::ExternalToolSearchAndValidateTask(const QString& _toolName) :

@@ -101,7 +101,7 @@ int AppResourcePool::getTotalPhysicalMemory() {
 
 #elif defined(Q_OS_MAC)
      QProcess p;
-     p.start("sh", QStringList() << "-c" << "sysctl hw.memsize | awk -F ' ' '{print $2}'");
+     p.start("sysctl", QStringList() << "-n" << "hw.memsize");
      p.waitForFinished();
      QString system_info = p.readAllStandardOutput();
      p.close();
@@ -115,6 +115,19 @@ int AppResourcePool::getTotalPhysicalMemory() {
 #endif
 
     return totalPhysicalMemory;
+}
+
+bool AppResourcePool::isSystem64bit() {
+#ifdef Q_OS_MAC
+    QProcess p;
+    p.start("sysctl", QStringList() << "-n" << "hw.optional.x86_64");
+    p.waitForFinished();
+    const QString system_info = p.readAllStandardOutput();
+    p.close();
+    bool ok = false;
+    int is64bit = system_info.toInt(&ok);
+    return is64bit != 0;
+#endif
 }
 
 void AppResourcePool::setIdealThreadCount(int n) {
