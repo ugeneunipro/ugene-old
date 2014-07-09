@@ -351,7 +351,7 @@ void DASAnnotationWorker::sl_taskFinished( ) {
 
          const QStringList ids = t->getAccessionNumbers( );
          const int countOfAccessions = ids.size( );
-         const QString idsString = ( 0 == countOfAccessions ) ? tr( " IDs: " ).arg( idsString ) : "";
+         const QString idsString = ( 0 != countOfAccessions ) ? tr( " IDs: " ).arg( ids.join(",") ) : "";
          algoLog.trace( tr( "Number of similar sequences: %1." ).arg( countOfAccessions ) + idsString );
      }
 }
