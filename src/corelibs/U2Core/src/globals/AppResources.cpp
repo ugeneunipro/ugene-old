@@ -128,6 +128,8 @@ bool AppResourcePool::isSystem64bit() {
     int is64bit = system_info.toInt(&ok);
     return is64bit != 0;
 #endif
+
+    return false;
 }
 
 void AppResourcePool::setIdealThreadCount(int n) {
