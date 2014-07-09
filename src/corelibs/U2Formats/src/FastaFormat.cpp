@@ -66,6 +66,7 @@ static QVariantMap analyzeRawData(const QByteArray& data) {
     int maxLen = -1;
     int len = 0;
     int nSequences = 0;
+    
     QTextStream input(data, QIODevice::ReadOnly);
     QString line;
     do {
@@ -83,7 +84,7 @@ static QVariantMap analyzeRawData(const QByteArray& data) {
                 hasGaps = true;
             }
         }
-    } while (!line.isEmpty());
+    } while (!input.atEnd());
 
     QVariantMap res;
     res[RawDataCheckResult_Sequence] = true;
