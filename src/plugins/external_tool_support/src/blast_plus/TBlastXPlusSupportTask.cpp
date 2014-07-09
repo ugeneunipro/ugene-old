@@ -56,14 +56,9 @@ ExternalToolRunTask* TBlastXPlusSupportTask::createBlastPlusTask(){
         arguments << "-strand" << "minus";
     }
     
-    if(!settings.isDefaultCosts){
-        arguments <<"-gapopen"<< QString::number(settings.gapOpenCost);
-        arguments <<"-gapextend"<< QString::number(settings.gapExtendCost);
-    }
     if(settings.isNucleotideSeq && (!settings.isDefautScores)){
         assert(NULL);
-        arguments <<"-penalty"<< QString::number(settings.mismatchPenalty);
-        arguments <<"-reward"<< QString::number(settings.matchReward);
+        coreLog.error(tr("Unexpected settings combination"));
     }else{
         if(!settings.isDefaultMatrix){
             arguments <<"-matrix"<< settings.matrix;

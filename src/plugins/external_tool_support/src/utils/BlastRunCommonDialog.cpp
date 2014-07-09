@@ -293,6 +293,13 @@ void BlastRunCommonDialog::sl_onProgNameChange(int index){
     }
     enableStrandBox( (programName->currentText() == "blastn") || ( programName->currentText().contains("blastx") ) );
 
+    if (programName->currentText() == "tblastx") {
+        costsLabel->hide();
+        costsComboBox->hide();
+    } else {
+        costsLabel->show();
+        costsComboBox->show();
+    }
     if(programName->currentText() == "blastn"){
         megablastCheckBox->setEnabled(true);
         if(megablastCheckBox->isChecked()){
