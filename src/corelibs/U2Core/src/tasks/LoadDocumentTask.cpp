@@ -357,20 +357,18 @@ static QList<Document*> loadMulti(IOAdapterFactory* iof, const QVariantMap& fs, 
     return docs;
 }
 
-void loadHintsNewDocument(bool saveDoc, IOAdapterFactory* iof, Document* doc, U2OpStatus& os){
-    if(saveDoc){
-        QScopedPointer<IOAdapter> io(iof->createIOAdapter());
-        QString url = doc->getURLString();
-        if (!io->open(url ,IOAdapterMode_Write)) {
-            os.setError(L10N::errorOpeningFileWrite(url));
-        } else {
-            //TODO remove after genbank can storing without getWholeSequence
-            try {
-                doc->getDocumentFormat()->storeDocument(doc, io.data(), os);
-            }
-            catch (const std::bad_alloc &) {
-                os.setError(QString("Not enough memory to storing %1 file").arg(doc->getURLString()));
-            }
+void loadHintsNewDocument( IOAdapterFactory* iof, Document* doc, U2OpStatus& os){
+    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
+    QString url = doc->getURLString();
+    if (!io->open(url ,IOAdapterMode_Write)) {
+        os.setError(L10N::errorOpeningFileWrite(url));
+    } else {
+        //TODO remove after genbank can storing without getWholeSequence
+        try {
+            doc->getDocumentFormat()->storeDocument(doc, io.data(), os);
+        }
+        catch (const std::bad_alloc &) {
+            os.setError(QString("Not enough memory to storing %1 file").arg(doc->getURLString()));
         }
     }
 }
@@ -405,8 +403,7 @@ static Document* loadFromMultipleFiles(IOAdapterFactory* iof, QVariantMap& fs, U
     CHECK_OP(os, NULL);
     doc = new Document(df, iof, newUrl, ref, newObjects, fs);
 
-    bool saveDoc = fs.value(ProjectLoaderHint_MultipleFilesMode_SaveDocumentFlag, false).toBool();
-    loadHintsNewDocument(saveDoc, iof, doc, os);
+    loadHintsNewDocument(iof, doc, os);
 
     return doc;
 }
