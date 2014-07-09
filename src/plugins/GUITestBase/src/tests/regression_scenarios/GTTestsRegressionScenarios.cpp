@@ -34,11 +34,11 @@
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTSpinBox.h"
+#include "api/GTTabWidget.h"
 #include "api/GTTableView.h"
 #include "api/GTToolbar.h"
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
-#include "api/GTTabWidget.h"
 
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsBookmarksTreeView.h"
@@ -80,19 +80,20 @@
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
-#include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
+#include "runnables/ugene/plugins/external_tools/BlastAllSupportDialogFiller.h"
+#include "runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
 #include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
 #include "runnables/ugene/ugeneui/NCBISearchDialogFiller.h"
+#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
-#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
-#include "runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ExternalToolRegistry.h>
@@ -104,19 +105,19 @@
 #include <U2View/MSAEditor.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMenu>
-#include <QtGui/QMainWindow>
-#include <QtGui/QHeaderView>
-#include <QtGui/QTableWidget>
 #include <QtGui/QDialogButtonBox>
+#include <QtGui/QHeaderView>
+#include <QtGui/QMainWindow>
+#include <QtGui/QMenu>
 #include <QtGui/QPushButton>
+#include <QtGui/QTableWidget>
 #else
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QTableWidget>
 #endif
 
 namespace U2 {
@@ -4811,6 +4812,19 @@ GUI_TEST_CLASS_DEFINITION(test_3074) {
     GTUtilsSharedDatabaseDocument::disconnectDatabase(os, databaseDoc);
 
     GTUtilsLog::check(os, logTracer);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3092) {
+//    1. Open "data/samples/FASTA/human_T1.fa".
+
+//    2. Do {Actions -> Analyze -> Query with BLAST+...} in the main menu.
+//    Expected state: a dialog "Request to Local BLAST Database" appears, UGENE doesn't crash.
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "query_with_blast+", GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
 
 } // GUITest_regression_scenarios namespace

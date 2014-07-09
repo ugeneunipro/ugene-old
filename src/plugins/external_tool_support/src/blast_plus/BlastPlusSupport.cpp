@@ -243,6 +243,7 @@ void BlastPlusSupportContext::initViewContext(GObjectView* view) {
     Q_UNUSED(av);
 
     ExternalToolSupportAction* queryAction = new ExternalToolSupportAction(this, view, tr("Query with BLAST+..."), 2000, toolList);
+    queryAction->setObjectName("query_with_blast+");
 
     addViewAction(queryAction);
     connect(queryAction, SIGNAL(triggered()), SLOT(sl_showDialog()));

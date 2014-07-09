@@ -82,8 +82,9 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromliAnmentDialogFiller.h \
             src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.h \
 #   Runnables / UGENE / plugins / external_tools
-            src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h \
+            src/runnables/ugene/plugins/external_tools/BlastAllSupportDialogFiller.h \
             src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h \
+            src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h \
 #   Runnables / UGENE / plugins / workflow_designer
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.h \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h \
@@ -199,7 +200,6 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTGraphicsItem.h \
             src/api/GTTreeView.h
 
-
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
             src/tests/crazy_user/GTRandomGUIActionFactory.cpp \
@@ -280,8 +280,9 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/dna_export/ImportAnnotationsToCsvFiller.cpp \
             src/runnables/ugene/plugins/dna_export/ExportSelectedSequenceFromliAnmentDialogFiller.cpp \
 #   Runnables / UGENE / plugins / external_tools
-            src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp \
+            src/runnables/ugene/plugins/external_tools/BlastAllSupportDialogFiller.cpp \
             src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.cpp \
+            src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp \
 #   Runnables / UGENE / plugins / workflow_designer
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.cpp \

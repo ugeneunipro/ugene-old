@@ -19,25 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_TCOFFEE_DAILOG_FILLER_H_
-#define _U2_TCOFFEE_DAILOG_FILLER_H_
+#ifndef _U2_BLAST_ALL_SUPPORT_DIALOG_FILLER_H_
+#define _U2_BLAST_ALL_SUPPORT_DIALOG_FILLER_H_
 
 #include "GTUtilsDialog.h"
-#include <limits.h>
 
-namespace U2{
+namespace U2 {
 
-class TCoffeeDailogFiller : public Filler
-{
+/**
+ * @brief The BlastAllSupportDialogFiller class
+ * It is very simple filler. It can only click the "Cancel" button.
+ */
+class BlastAllSupportDialogFiller : public Filler {
 public:
-    TCoffeeDailogFiller(U2OpStatus& _os, int _gapOpen = INT_MAX, int _gapExt = INT_MAX, int _numOfIters = INT_MAX)
-        :Filler(_os,"TCoffeeSupportRunDialog"),
-          gapOpen(_gapOpen),
-          gapExt(_gapExt),
-          numOfIters(_numOfIters){}
-    virtual void run();
-private:
-    int gapOpen, gapExt, numOfIters;
+    BlastAllSupportDialogFiller(U2OpStatus &os);
+
+    void run();
 };
+
 }
-#endif // _U2_TCOFFEE_DAILOG_FILLER_H_
+
+#endif // _U2_BLAST_ALL_SUPPORT_DIALOG_FILLER_H_

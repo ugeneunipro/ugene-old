@@ -19,25 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_TCOFFEE_DAILOG_FILLER_H_
-#define _U2_TCOFFEE_DAILOG_FILLER_H_
+#include <QtGui/QApplication>
 
-#include "GTUtilsDialog.h"
-#include <limits.h>
+#include "BlastAllSupportDialogFiller.h"
 
-namespace U2{
+namespace U2 {
 
-class TCoffeeDailogFiller : public Filler
+#define GT_CLASS_NAME "GTUtilsDialog::BlastAllSupportDialogFiller"
+
+BlastAllSupportDialogFiller::BlastAllSupportDialogFiller(U2OpStatus &os) :
+    Filler(os, "BlastAllSupportDialog")
 {
-public:
-    TCoffeeDailogFiller(U2OpStatus& _os, int _gapOpen = INT_MAX, int _gapExt = INT_MAX, int _numOfIters = INT_MAX)
-        :Filler(_os,"TCoffeeSupportRunDialog"),
-          gapOpen(_gapOpen),
-          gapExt(_gapExt),
-          numOfIters(_numOfIters){}
-    virtual void run();
-private:
-    int gapOpen, gapExt, numOfIters;
-};
 }
-#endif // _U2_TCOFFEE_DAILOG_FILLER_H_
+
+#define GT_METHOD_NAME "run"
+void BlastAllSupportDialogFiller::run() {
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+}
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
+
+}   // namespace U2
