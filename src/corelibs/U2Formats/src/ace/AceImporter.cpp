@@ -95,6 +95,7 @@ void AceImporterTask::prepare() {
 
 QList<Task*> AceImporterTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> res;
+    CHECK_OP(stateInfo, res);
 
     if (isSqliteDbTransit && convertTask == subTask) {
         initCloneObjectTasks();
