@@ -19,7 +19,7 @@ ExpertDiscoveryControlDialog::ExpertDiscoveryControlDialog(QWidget *parent)
 : QDialog(parent){
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227131");
+    new HelpButton(this, buttonBox, "7668033");
 
     connect(openFirstButton, SIGNAL(clicked()), SLOT(sl_openFirstFile()));
 

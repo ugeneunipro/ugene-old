@@ -649,7 +649,7 @@ CreateExternalProcessDialog::CreateExternalProcessDialog( QWidget *p /* = NULL*/
 : QWizard(p), initialCfg(NULL), lastPage(false) {
     ui.setupUi(this);
     
-    new U2::HelpButton(this, button(QWizard::HelpButton), "4227131");
+    new U2::HelpButton(this, button(QWizard::HelpButton), "2097199");
 
     connect(ui.addInputButton, SIGNAL(clicked()), SLOT(sl_addInput()));
     connect(ui.addOutputButton, SIGNAL(clicked()), SLOT(sl_addOutput()));

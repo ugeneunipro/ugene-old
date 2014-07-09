@@ -40,7 +40,7 @@ namespace U2{
 SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController( GSequenceGraphDrawer *_d, GSequenceGraphData *_gd, QWidget *parent, ADVSequenceObjectContext* _ctx )
 :QDialog(parent), ctx(_ctx), d(_d), gd(_gd) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227410");
+    new HelpButton(this, buttonBox, "7667716");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Save"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

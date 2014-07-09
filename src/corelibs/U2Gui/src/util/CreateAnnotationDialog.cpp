@@ -60,7 +60,7 @@ CreateAnnotationDialog::CreateAnnotationDialog(QWidget* p, CreateAnnotationModel
     createButton = buttonBox->button(QDialogButtonBox::Ok);
     cancelButton = buttonBox->button(QDialogButtonBox::Cancel);
 
-    new HelpButton(this, buttonBox, "4227222");
+    new HelpButton(this, buttonBox, "4227346");
     createButton->setText(tr("Create"));
     cancelButton->setText(tr("Cancel"));
 
@@ -80,7 +80,7 @@ CreateAnnotationDialog::CreateAnnotationDialog(QWidget* p, CreateAnnotationModel
     connect(cancelButton, SIGNAL(clicked(bool)), SLOT(sl_onCancelClicked(bool)));
     
     annWidgetController->setFocusToNameEdit();
-    setWindowTitle(tr("Create annotation"));
+    setWindowTitle(tr("Create Annotation"));
 }
 
 void CreateAnnotationDialog::sl_onCreateClicked(bool) {

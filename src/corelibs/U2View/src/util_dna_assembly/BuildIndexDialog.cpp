@@ -54,7 +54,14 @@ BuildIndexDialog::BuildIndexDialog(const DnaAssemblyAlgRegistry* registry, QWidg
 : QDialog(p), assemblyRegistry(registry), customGUI(NULL)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227723");
+    QMap<QString,QString> helpPagesMap;
+    helpPagesMap.insert("BWA","4227717");
+    helpPagesMap.insert("BWA-MEM","222");
+    helpPagesMap.insert("BWA-SW","6062169");
+    helpPagesMap.insert("Bowtie","4227711");
+    helpPagesMap.insert("Bowtie2","6062137");
+    helpPagesMap.insert("UGENE Genome Aligner","4227723");
+    new ComboboxDependentHelpButton(this, buttonBox, methodNamesBox, helpPagesMap);
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Start"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

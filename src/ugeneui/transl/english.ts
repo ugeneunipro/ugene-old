@@ -69,7 +69,7 @@
     <message>
         <location filename="../src/project_support/ui/CreateNewProjectWidget.ui" line="20"/>
         <source>Dialog</source>
-        <translation>Create new project</translation>
+        <translation>Create New Project</translation>
     </message>
     <message>
         <location filename="../src/project_support/ui/CreateNewProjectWidget.ui" line="47"/>

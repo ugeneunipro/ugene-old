@@ -73,7 +73,7 @@ namespace U2 {
 QDRunDialog::QDRunDialog(QDScheme* _scheme, QWidget* parent, const QString& defaultIn, const QString& defaultOut)
 : QDialog(parent), scheme(_scheme) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227741");
+    new HelpButton(this, buttonBox, "4686244");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Run"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

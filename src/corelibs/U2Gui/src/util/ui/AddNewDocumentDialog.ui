@@ -6,82 +6,76 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>383</width>
-    <height>144</height>
+    <width>389</width>
+    <height>120</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>389</width>
+    <height>120</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>Add new document</string>
+   <string>Add New Document</string>
   </property>
   <property name="modal">
    <bool>false</bool>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>11</x>
-     <y>113</y>
-     <width>361</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>361</width>
-     <height>92</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_3">
-    <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="documentTypeLabel">
-        <property name="text">
-         <string>Document format</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="documentLocationLabel">
-        <property name="text">
-         <string>Document location</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="documentURLEdit"/>
-      </item>
-      <item row="1" column="2">
-       <widget class="QToolButton" name="documentURLButton">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QComboBox" name="documentTypeCombo"/>
-      </item>
-     </layout>
-    </item>
-    <item row="1" column="0">
-     <widget class="QCheckBox" name="gzipCheckBox">
-      <property name="layoutDirection">
-       <enum>Qt::LeftToRight</enum>
-      </property>
-      <property name="text">
-       <string>Compress file</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="documentTypeLabel">
+         <property name="text">
+          <string>Document format</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="documentLocationLabel">
+         <property name="text">
+          <string>Document location</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="documentURLEdit"/>
+       </item>
+       <item row="1" column="2">
+        <widget class="QToolButton" name="documentURLButton">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" colspan="2">
+        <widget class="QComboBox" name="documentTypeCombo"/>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QCheckBox" name="gzipCheckBox">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="text">
+        <string>Compress file</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources>
   <include location="../../../U2Gui.qrc"/>

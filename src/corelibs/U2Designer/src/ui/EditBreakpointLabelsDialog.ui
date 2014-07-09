@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Edit breakpoint labels</string>
+   <string>Edit Breakpoint Labels</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Select the role of the column</string>
+   <string>Select the Role of the Column</string>
   </property>
   <property name="modal">
    <bool>true</bool>

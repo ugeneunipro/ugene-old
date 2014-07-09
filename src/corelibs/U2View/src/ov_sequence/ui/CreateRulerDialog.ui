@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Create new ruler</string>
+   <string>Create New Ruler</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

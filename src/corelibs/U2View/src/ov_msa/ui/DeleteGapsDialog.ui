@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Remove columns of gaps</string>
+   <string>Remove Columns of Gaps</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

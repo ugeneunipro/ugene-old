@@ -21,7 +21,7 @@ ExpertDiscoverySetupRecBoundDialog::ExpertDiscoverySetupRecBoundDialog(double dR
 ,graphWidget(NULL){
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227131");
+    new HelpButton(this, buttonBox, "8093719");
     
     boundLabel->setStyleSheet(QString("color : %1;").arg(ExpertDiscoveryRecognitionErrorGraphWidget::BOUNDCOLOR.name()));
     er1Lable->setStyleSheet(QString("color : %1;").arg(ExpertDiscoveryRecognitionErrorGraphWidget::ER1COLOR.name()));

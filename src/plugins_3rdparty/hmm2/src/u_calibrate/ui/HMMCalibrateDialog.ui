@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>hmmcalibrate_dialog_title</string>
+   <string>HMM Calibrate</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Search JASPAR database</string>
+   <string>Search JASPAR Database</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="2,1,0">
    <item>

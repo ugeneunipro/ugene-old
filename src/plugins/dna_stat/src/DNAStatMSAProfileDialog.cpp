@@ -44,7 +44,7 @@ namespace U2 {
 
 DNAStatMSAProfileDialog::DNAStatMSAProfileDialog(QWidget* p, MSAEditor* _c) : QDialog(p), ctx(_c) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227438");
+    new HelpButton(this, buttonBox, "4227486");
 
     connect(fileButton, SIGNAL(clicked()), SLOT(sl_selectFile()));
     connect(htmlRB, SIGNAL(toggled(bool)), SLOT(sl_formatChanged(bool)));

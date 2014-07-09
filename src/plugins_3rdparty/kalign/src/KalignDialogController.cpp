@@ -66,7 +66,7 @@ KalignDialogController::KalignDialogController(QWidget* w, const MAlignment& _ma
 : QDialog(w), ma(_ma), settings(_settings)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227786");
+    new HelpButton(this, buttonBox, "7012361");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Align"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

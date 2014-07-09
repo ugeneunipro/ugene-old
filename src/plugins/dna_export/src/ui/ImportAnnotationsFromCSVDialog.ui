@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Import annotations from CSV</string>
+   <string>Import Annotations from CSV</string>
   </property>
   <property name="modal">
    <bool>true</bool>

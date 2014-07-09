@@ -52,8 +52,6 @@ OutputFileDialog::OutputFileDialog(RunFileSystem *_rfs, bool _saveDir, Completio
 : QDialog(parent), rfs(_rfs), saveDir(_saveDir), saveToFileSystem(false)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "1474787");
-
     addDirButton->setIcon(QIcon(":U2Designer/images/add_directory.png"));
     absolutePathButton->setIcon(QIcon(":U2Designer/images/outside.png"));
     settingsButton->setIcon(QIcon(":U2Designer/images/settings.png"));
@@ -210,7 +208,6 @@ CreateDirectoryDialog::CreateDirectoryDialog(RunFileSystem *_rfs, const QString 
 : QDialog(parent), rfs(_rfs), parentDir(_parentDir)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "1474787");
 
     if (parentDir.isEmpty()) {
         dirLabel->setText(OUT_DIR);

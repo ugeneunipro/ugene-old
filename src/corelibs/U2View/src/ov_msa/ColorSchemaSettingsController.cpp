@@ -281,7 +281,7 @@ QList<CustomColorSchema> ColorSchemaSettingsUtils::getSchemas(){
     return customSchemas;
 }
 
-const QString ColorSchemaSettingsPageController::helpPageId = QString("111");
+const QString ColorSchemaSettingsPageController::helpPageId = QString("8093975");
 
 ColorSchemaSettingsPageController::ColorSchemaSettingsPageController(QObject* p) 
 : AppSettingsGUIPageController(tr("Alignment Color Scheme"), ColorSchemaSettingsPageId, p) {}
@@ -431,7 +431,7 @@ void ColorSchemaSettingsPageWidget::sl_onDeleteColorSchema(){
 
 CreateColorSchemaDialog::CreateColorSchemaDialog(CustomColorSchema* _newSchema, QStringList _usedNames) : usedNames(_usedNames), newSchema(_newSchema) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227260");
+    new HelpButton(this, buttonBox, "7667798");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Create"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

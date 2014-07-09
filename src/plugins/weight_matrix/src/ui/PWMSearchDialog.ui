@@ -92,7 +92,7 @@
      <item>
       <widget class="QPushButton" name="jasparButton">
        <property name="text">
-        <string>Search JASPAR database</string>
+        <string>Search JASPAR Database</string>
        </property>
       </widget>
      </item>

@@ -30,7 +30,6 @@ namespace U2 {
 ChooseItemDialog::ChooseItemDialog(QWidget* p) : QDialog(p)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "1474787");
     connect(listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), SLOT(accept()));
 
 }

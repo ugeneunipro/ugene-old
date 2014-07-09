@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Edit qualifier</string>
+   <string>Edit Qualifier</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

@@ -22,7 +22,7 @@ ExpertDiscoveryPosNegDialog::ExpertDiscoveryPosNegDialog(QWidget *parent)
 : QDialog(parent), generateNeg(false), negativePerPositive(100){
 
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227131");
+    new HelpButton(this, buttonBox, "7668033");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Next"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

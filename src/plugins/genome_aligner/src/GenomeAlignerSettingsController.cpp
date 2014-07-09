@@ -73,7 +73,7 @@ AppSettingsGUIPageWidget* GenomeAlignerSettingsPageController::createWidget(AppS
     return r;
 }
 
-const QString GenomeAlignerSettingsPageController::helpPageId = QString("333");
+const QString GenomeAlignerSettingsPageController::helpPageId = QString("4227276");
 
 GenomeAlignerSettingsPageWidget::GenomeAlignerSettingsPageWidget(GenomeAlignerSettingsPageController* ) {
     setupUi(this);

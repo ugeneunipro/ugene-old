@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Configure port and slot aliases</string>
+   <string>Configure Port and Slot Aliases</string>
   </property>
   <property name="modal">
    <bool>true</bool>

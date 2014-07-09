@@ -14,7 +14,7 @@ ColorSchemaDialogController::ColorSchemaDialogController(QMap<char, QColor>& col
 
 int ColorSchemaDialogController::adjustAlphabetColors(){    
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227260");
+    new HelpButton(this, buttonBox, "7667798");
     alphabetColorsView = new QPixmap(alphabetColorsFrame->size());
     connect(clearButton, SIGNAL(clicked()), SLOT(sl_onClear()));
     connect(restoreButton, SIGNAL(clicked()), SLOT(sl_onRestore()));

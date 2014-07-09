@@ -1742,7 +1742,7 @@ void AnnotationsTreeView::renameItem(AVItem* item) {
         AVGroupItem* gi = static_cast<AVGroupItem*>(item);
         SAFE_POINT( gi->group.getParentGroup( ) != gi->group, "Attempting renaming of root group!", ); //not a root group
         QString oldName = gi->group.getName();
-        QString newName = renameDialogHelper(item, oldName, tr("Rename group"));
+        QString newName = renameDialogHelper(item, oldName, tr("Rename Group"));
         AnnotationGroup parentAnnotationGroup = gi->group.getParentGroup();
         if (newName != oldName && AnnotationGroup::isValidGroupName(newName, false)
             && parentAnnotationGroup.getSubgroup( newName, false ) == parentAnnotationGroup )
@@ -1784,7 +1784,7 @@ void AnnotationsTreeView::renameItem(AVItem* item) {
             "Unexpected annotation view item's qualifier!", );
         AVQualifierItem* qi = static_cast<AVQualifierItem*>(item);
         AVAnnotationItem* ai = static_cast<AVAnnotationItem*>(qi->parent());
-        QString newName = renameDialogHelper(item, qi->qName, tr("Rename qualifier"));
+        QString newName = renameDialogHelper(item, qi->qName, tr("Rename Qualifier"));
         if (newName != qi->qName) {
             Annotation a = (static_cast<AVAnnotationItem*>(qi->parent()))->annotation;
             QString val = qi->qValue;

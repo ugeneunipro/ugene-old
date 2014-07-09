@@ -51,7 +51,7 @@ namespace U2 {
 
 DistanceMatrixMSAProfileDialog::DistanceMatrixMSAProfileDialog(QWidget* p, MSAEditor* _c) : QDialog(p), ctx(_c) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227438");
+    new HelpButton(this, buttonBox, "7667753");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Generate"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
 

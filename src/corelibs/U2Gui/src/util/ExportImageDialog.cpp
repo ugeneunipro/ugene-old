@@ -204,25 +204,25 @@ void ExportImageDialog::init() {
 
     switch (source) {
     case WD:
-        new HelpButton(this, ui->buttonBox, "4227400");
+        new HelpButton(this, ui->buttonBox, "2097177");
         break;
     case CircularView:
-        new HelpButton(this, ui->buttonBox, "4227400");
+        new HelpButton(this, ui->buttonBox, "4227374");
         break;
     case MSA:
-        new HelpButton(this, ui->buttonBox, "4227400");
+        new HelpButton(this, ui->buttonBox, "4227488");
         break;
     case SequenceView:
-        new HelpButton(this, ui->buttonBox, "4227400");
+        new HelpButton(this, ui->buttonBox, "4227306");
         break;
     case AssemblyView:
-        new HelpButton(this, ui->buttonBox, "4227400");
+        new HelpButton(this, ui->buttonBox, "4227550");
         break;
     case PHYTreeView:
-        new HelpButton(this, ui->buttonBox, "4227400");
+        new HelpButton(this, ui->buttonBox, "4227597");
         break;
     case DotPlot:
-        new HelpButton(this, ui->buttonBox, "4227400");
+        new HelpButton(this, ui->buttonBox, "4227430");
         break;
     case MolView:
         new HelpButton(this, ui->buttonBox, "4227400");

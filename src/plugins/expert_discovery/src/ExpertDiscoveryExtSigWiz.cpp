@@ -18,7 +18,7 @@ ExpertDiscoveryExtSigWiz::ExpertDiscoveryExtSigWiz(QWidget *parent, CSFolder* f,
 ,folder(NULL){
 
     setupUi(this);
-    new U2::HelpButton(this, button(QWizard::HelpButton), "4227131");
+    new U2::HelpButton(this, button(QWizard::HelpButton), "7668033");
 
 //1 page
     connect(advancedButton, SIGNAL(clicked()), SLOT(sl_advButton()));

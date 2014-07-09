@@ -57,7 +57,7 @@ BlastRunCommonDialog::BlastRunCommonDialog(QWidget* _parent) :
             QDialog(_parent)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227766");
+    new HelpButton(this, buttonBox, "4228536");
     buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Restore to default"));
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));

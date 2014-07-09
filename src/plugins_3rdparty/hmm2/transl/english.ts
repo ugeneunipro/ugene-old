@@ -178,7 +178,7 @@ This is analogous to the standard Smith/Waterman algorithm or the hmmsw program 
     <message>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="13"/>
         <source>hmmcalibrate_dialog_title</source>
-        <translation>HMM calibrate</translation>
+        <translation>HMM Calibrate</translation>
     </message>
     <message>
         <location filename="../src/u_calibrate/ui/HMMCalibrateDialog.ui" line="52"/>

@@ -39,7 +39,7 @@ namespace Workflow {
 PortAliasesConfigurationDialog::PortAliasesConfigurationDialog( const Schema & schema, QWidget * p )
 : QDialog(p), portNameMaxSz(0), currentRow(-1) {
     setupUi(this);
-    new HelpButton(this, buttonBox, "1474787");
+    new HelpButton(this, buttonBox, "8094116");
 
     QPushButton* cancelPushButton = buttonBox->button(QDialogButtonBox::Cancel);
     QPushButton* okPushButton = buttonBox->button(QDialogButtonBox::Ok);

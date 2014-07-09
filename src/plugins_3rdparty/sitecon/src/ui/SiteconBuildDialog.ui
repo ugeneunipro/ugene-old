@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>SITECON build</string>
+   <string>SITECON Build</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

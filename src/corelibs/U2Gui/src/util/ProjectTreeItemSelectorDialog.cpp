@@ -47,7 +47,6 @@ ProjectTreeItemSelectorDialogImpl::ProjectTreeItemSelectorDialogImpl(QWidget* p,
 : QDialog(p)
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227206");
     controller = new ProjectTreeController(treeView, s, this);
     connect(controller, SIGNAL(si_doubleClicked(GObject*)), this, SLOT(sl_objectClicked(GObject*)));
     acceptByDoubleClick = false;

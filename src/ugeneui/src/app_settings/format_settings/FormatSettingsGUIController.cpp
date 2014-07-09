@@ -73,7 +73,7 @@ AppSettingsGUIPageWidget* FormatSettingsGUIPageController::createWidget(AppSetti
     return r;
 }
 
-const QString FormatSettingsGUIPageController::helpPageId = QString("666");
+const QString FormatSettingsGUIPageController::helpPageId = QString("4227268");
 
 FormatSettingsGUIPageWidget::FormatSettingsGUIPageWidget(FormatSettingsGUIPageController*) {
     setupUi(this);

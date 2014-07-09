@@ -56,7 +56,7 @@ DotPlotDialog::DotPlotDialog(QWidget *parent, AnnotatedDNAView* currentADV, int 
 ,openSequenceTask(NULL), curURL("")
 {
     setupUi(this);
-    new HelpButton(this, buttonBox, "4227416");
+    new HelpButton(this, buttonBox, "4227418");
     startButton = buttonBox->button(QDialogButtonBox::Ok);
 
     SAFE_POINT(adv != NULL, "DotPlotDialog called without view context!", );
