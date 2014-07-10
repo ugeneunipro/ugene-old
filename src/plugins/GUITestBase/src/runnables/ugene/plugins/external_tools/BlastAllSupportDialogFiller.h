@@ -32,9 +32,24 @@ namespace U2 {
  */
 class BlastAllSupportDialogFiller : public Filler {
 public:
-    BlastAllSupportDialogFiller(U2OpStatus &os);
+    class Parameters {
+    public:
+        Parameters():
+          runBlast(false),
+          programNameText("blastn") {}
+
+
+          bool runBlast;
+          QString programNameText;
+          QString dbPath;
+    };
+
+    BlastAllSupportDialogFiller(const Parameters &parameters, U2OpStatus &os);
 
     void run();
+
+private:
+    Parameters parameters;
 };
 
 }

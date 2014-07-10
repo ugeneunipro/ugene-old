@@ -4822,9 +4822,39 @@ GUI_TEST_CLASS_DEFINITION(test_3092) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
 
-    GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(BlastAllSupportDialogFiller::Parameters(), os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "query_with_blast+", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3170) {
+    // 1. Open human_T1.fa.
+    // 2. Select the region [301..350].
+    // 3. Context menu -> Analyze -> Query with BLAST+.
+    // 5. Select the database.
+    // 6. Run.
+    // Expected: the found annotations don't start from the position 1.
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 51, 102));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+
+    BlastAllSupportDialogFiller::Parameters blastParams;
+    blastParams.runBlast = true;
+    blastParams.programNameText = "blastn";
+    blastParams.dbPath = testDir + "_common_data/cmdline/external-tool-support/blastplus/human_T1/human_T1.nhr";
+    GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(blastParams, os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "query_with_blast+", GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    bool found1 = GTUtilsAnnotationsTreeView::findRegion(os, "blast result", U2Region(51, 51));
+    CHECK_OP(os, );
+    CHECK_SET_ERR(found1, "Can not find the blast result");
+    bool found2 = GTUtilsAnnotationsTreeView::findRegion(os, "blast result", U2Region(1, 52));
+    CHECK_OP(os, );
+    CHECK_SET_ERR(!found2, "Wrong blast result");
 }
 
 } // GUITest_regression_scenarios namespace
