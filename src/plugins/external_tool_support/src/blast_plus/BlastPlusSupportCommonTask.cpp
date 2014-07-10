@@ -172,7 +172,7 @@ QList<Task*> BlastPlusSupportCommonTask::onSubTaskFinished(Task* subTask) {
                 }
 
                 for(QMutableListIterator<AnnotationData> it_ad(result); it_ad.hasNext(); ) {
-                    AnnotationData ad = it_ad.next();
+                    AnnotationData &ad = it_ad.next();
                     U2Region::shift(settings.offsInGlobalSeq, ad.location->regions);
                 }
 
@@ -567,7 +567,7 @@ QList<Task*> BlastPlusSupportMultiTask::onSubTaskFinished(Task *subTask){
         if ( !result.isEmpty( ) ) {
             doc->addObject(settings.aobj);
             for(QMutableListIterator<AnnotationData> it_ad(result); it_ad.hasNext(); ) {
-                AnnotationData ad = it_ad.next();
+                AnnotationData &ad = it_ad.next();
                 U2Region::shift(settings.offsInGlobalSeq, ad.location->regions);
             }
             res.append(new CreateAnnotationsTask(settings.aobj, settings.groupName, result));
