@@ -2744,7 +2744,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026_2_windows){
 //    1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 //    2. press "export as image" on toolbar
-    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/bigImage.bmp","bmp",100));
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/bigImage.bmp","jpeg",100));
     //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
 
     QAbstractButton* saveImage = GTAction::button(os,"Export as image");
@@ -2752,7 +2752,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026_2_windows){
 
     GTWidget::click(os,saveImage);
 //    Expected state: export dialog appeared
-    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/smallImage.bmp","bmp",50));
+    GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/smallImage.bmp","jpeg",50));
     GTWidget::click(os,saveImage);
 //    3. fill dialog:
 //    file name: test/_common_data/scenarios/sandbox/image.bmp
