@@ -112,6 +112,51 @@ protected:
     QStringList getParameters(U2OpStatus& os);
 };
 
+//////////////////////////////////////////////////
+//MergeFastq
+class MergeFastqPrompter;
+typedef PrompterBase<MergeFastqPrompter> MergeFastqBase;
+class MergeFastqPrompter : public MergeFastqBase {
+    Q_OBJECT
+public:
+    MergeFastqPrompter(Actor* p = 0) : MergeFastqBase(p) {}
+protected:
+    QString composeRichDoc();
+}; //MergeFastqPrompter
+
+class MergeFastqWorker: public BaseNGSWorker {
+    Q_OBJECT
+public:
+    MergeFastqWorker(Actor *a);
+    Task * tick();
+protected:
+    QVariantMap getCustomParameters() const;
+    QString getDefaultFileName() const;
+    Task *getTask(const BaseNGSSetting &settings) const;
+
+    QStringList inputUrls;
+
+}; //MergeFastqWorker
+
+class MergeFastqWorkerFactory : public DomainFactory {
+    static const QString ACTOR_ID;
+public:
+    static void init();
+    MergeFastqWorkerFactory() : DomainFactory(ACTOR_ID) {}
+    Worker* createWorker(Actor* a) { return new MergeFastqWorker(a); }
+}; //MergeFastqWorkerFactory
+
+class MergeFastqTask : public BaseNGSTask{
+    Q_OBJECT
+public:
+    MergeFastqTask (const BaseNGSSetting &settings);
+
+protected:
+    void runStep();
+    QStringList getParameters(U2OpStatus& os);
+};
+
+
 
 } //LocalWorkflow
 } //U2

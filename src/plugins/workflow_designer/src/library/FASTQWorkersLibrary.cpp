@@ -25,6 +25,7 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/FileAndDirectoryUtils.h>
+#include <U2Core/TaskSignalMapper.h>
 #include <U2Formats/BAMUtils.h>
 #include <U2Formats/FastqFormat.h>
 #include <U2Designer/DelegateEditors.h>
@@ -375,6 +376,185 @@ void QualityTrimTask::runStep(){
 }
 
 QStringList QualityTrimTask::getParameters(U2OpStatus &/*os*/){
+    QStringList res;
+    return res;
+}
+
+///////////////////////////////////////////////////////////////
+//MergeFastq
+const QString MergeFastqWorkerFactory::ACTOR_ID("MergeFastq");
+
+static const QString INPUT_URLS_ID("input-urls");
+
+/************************************************************************/
+/* MergeFastqPrompter */
+/************************************************************************/
+QString MergeFastqPrompter::composeRichDoc() {
+    IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BaseNGSWorker::INPUT_PORT));
+    const Actor* producer = input->getProducer(BaseSlots::URL_SLOT().getId());
+    QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
+    QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
+
+    QString doc = tr("Merges input sequences from %1.").arg(producerName);
+    return doc;
+}
+
+/************************************************************************/
+/* MergeFastqWorkerFactory */
+/************************************************************************/
+void MergeFastqWorkerFactory::init() {
+    Descriptor desc( ACTOR_ID, MergeFastqWorker::tr("FASTQ Merger"),
+        MergeFastqWorker::tr("Merges input sequences to one output file") );
+
+    QList<PortDescriptor*> p;
+    {
+        Descriptor inD(BaseNGSWorker::INPUT_PORT, MergeFastqWorker::tr("Input File"),
+            MergeFastqWorker::tr("Set of FASTQ reads files"));
+        Descriptor outD(BaseNGSWorker::OUTPUT_PORT, MergeFastqWorker::tr("Output File"),
+            MergeFastqWorker::tr("Output FASTQ file"));
+
+        QMap<Descriptor, DataTypePtr> inM;
+        inM[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
+        p << new PortDescriptor(inD, DataTypePtr(new MapDataType("cf.input-url", inM)), true);
+
+        QMap<Descriptor, DataTypePtr> outM;
+        outM[BaseSlots::URL_SLOT()] = BaseTypes::STRING_TYPE();
+        p << new PortDescriptor(outD, DataTypePtr(new MapDataType("cf.output-url", outM)), false, true);
+    }
+
+    QList<Attribute*> a;
+    {
+        Descriptor outDir(BaseNGSWorker::OUT_MODE_ID, MergeFastqWorker::tr("Output directory"),
+            MergeFastqWorker::tr("Select an output directory. <b>Custom</b> - specify the output directory in the 'Custom directory' parameter. "
+            "<b>Workflow</b> - internal workflow directory. "
+            "<b>Input file</b> - the directory of the input file."));
+
+        Descriptor customDir(BaseNGSWorker::CUSTOM_DIR_ID, MergeFastqWorker::tr("Custom directory"),
+            MergeFastqWorker::tr("Select the custom output directory."));
+
+        Descriptor outName(BaseNGSWorker::OUT_NAME_ID, MergeFastqWorker::tr("Output file name"),
+            MergeFastqWorker::tr("A name of an output file. If default of empty value is provided the output name is the name of the first file with additional extention."));
+
+
+        a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
+        Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
+        customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, MergeFastqWorker::tr("Custom")));
+        a << customDirAttr;
+        a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(BaseNGSWorker::DEFAULT_NAME));
+    }
+
+    QMap<QString, PropertyDelegate*> delegates;
+    {
+        QVariantMap directoryMap;
+        QString fileDir = MergeFastqWorker::tr("Input file");
+        QString workflowDir = MergeFastqWorker::tr("Workflow");
+        QString customD = MergeFastqWorker::tr("Custom");
+        directoryMap[fileDir] = FileAndDirectoryUtils::FILE_DIRECTORY;
+        directoryMap[workflowDir] = FileAndDirectoryUtils::WORKFLOW_INTERNAL;
+        directoryMap[customD] = FileAndDirectoryUtils::CUSTOM;
+        delegates[BaseNGSWorker::OUT_MODE_ID] = new ComboBoxDelegate(directoryMap);
+
+        delegates[BaseNGSWorker::CUSTOM_DIR_ID] = new URLDelegate("", "", false, true);
+
+    }
+
+    ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
+    proto->setEditor(new DelegateEditor(delegates));
+    proto->setPrompter(new MergeFastqPrompter());
+
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_NGS_BASIC(), proto);
+    DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
+    localDomain->registerEntry(new MergeFastqWorkerFactory());
+}
+
+/************************************************************************/
+/* MergeFastqWorker */
+/************************************************************************/
+MergeFastqWorker::MergeFastqWorker(Actor *a)
+:BaseNGSWorker(a)
+{
+
+}
+
+Task * MergeFastqWorker::tick() {
+    while (inputUrlPort->hasMessage()) {
+        const QString url = takeUrl();
+        CHECK(!url.isEmpty(), NULL);
+        inputUrls.append(url);
+    }
+    if (!inputUrlPort->isEnded()) {
+        return NULL;
+    }
+
+    if(!inputUrls.isEmpty()){
+        const QString outputDir = FileAndDirectoryUtils::createWorkingDir(inputUrls.first(), getValue<int>(OUT_MODE_ID), getValue<QString>(CUSTOM_DIR_ID), context->workingDir());
+
+        BaseNGSSetting setting;
+        setting.outDir = outputDir;
+        setting.outName = getTargetName(inputUrls.first(), outputDir);
+        setting.inputUrl = inputUrls.first();
+        setting.customParameters = getCustomParameters();
+        setting.listeners = createLogListeners();
+        Task *t = getTask(setting);
+        connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_taskFinished(Task*)));
+        inputUrls.clear();;
+        return t;
+    }
+
+    if (inputUrlPort->isEnded()) {
+        setDone();
+        outputUrlPort->setEnded();
+    }
+    return NULL;
+}
+
+QVariantMap MergeFastqWorker::getCustomParameters() const{
+    QVariantMap res;
+    res.insert(INPUT_URLS_ID, inputUrls.join(","));
+    return res;
+}
+
+QString MergeFastqWorker::getDefaultFileName() const{
+    return ".merged.fastq";
+}
+
+Task *MergeFastqWorker::getTask(const BaseNGSSetting &settings) const{
+    return new MergeFastqTask(settings);
+}
+
+//////////////////////////////////////////////////////
+//MergeFastqTask
+MergeFastqTask::MergeFastqTask(const BaseNGSSetting &settings)
+    :BaseNGSTask(settings){
+
+    GCOUNTER(cvar, tvar, "NGS:FASTQMergeFastqmerTask");
+}
+
+void MergeFastqTask::runStep(){
+    QScopedPointer<IOAdapter> io  (IOAdapterUtils::open(settings.outDir + settings.outName, stateInfo, IOAdapterMode_Append));
+
+    QStringList urls = settings.customParameters.value(INPUT_URLS_ID, "").toString().split(",");
+    qint64 numberOfSeqs = 0;
+    qint64 numberOfFiles = 0;
+
+    foreach (QString url, urls){
+        FASTQIterator iter(url);
+        while(iter.hasNext()){
+            if(stateInfo.isCoR()){
+                return;
+            }
+            DNASequence dna = iter.next();
+            FastqFormat::writeEntry(dna.getName(), dna, io.data(), "Writing error", stateInfo);
+            numberOfSeqs++;
+        }
+        numberOfFiles++;
+
+    }
+    algoLog.info(QString("Sequences merged %1").arg(numberOfSeqs));
+    algoLog.info(QString("Files merged %1").arg(numberOfFiles));
+}
+
+QStringList MergeFastqTask::getParameters(U2OpStatus &/*os*/){
     QStringList res;
     return res;
 }

@@ -314,6 +314,7 @@ void CoreLib::init() {
     ExtractConsensusWorkerFactory::init();
     CASAVAFilterWorkerFactory::init();
     QualityTrimWorkerFactory::init();
+    MergeFastqWorkerFactory::init();
 
     initUsersWorkers();
     initExternalToolsWorkers();

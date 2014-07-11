@@ -60,7 +60,11 @@ protected:
     virtual QString getDefaultFileName() const = 0;
     virtual Task* getTask(const BaseNGSSetting& settings) const = 0;
 
-private:
+    QString takeUrl();
+    QString getTargetName(const QString& fileUrl, const QString& outDir);
+    void sendResult(const QString &url);
+
+protected:
     IntegralBus *inputUrlPort;
     IntegralBus *outputUrlPort;
     QStringList outUrls;
@@ -68,10 +72,7 @@ private:
 public slots:
     void sl_taskFinished( Task *task );
 
-private:
-    QString takeUrl();
-    QString getTargetName(const QString& fileUrl, const QString& outDir);
-    void sendResult(const QString &url);
+
 }; //BaseNGSWorker
 
 
