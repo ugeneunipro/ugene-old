@@ -1024,6 +1024,9 @@ QString ADVSingleSequenceHeaderWidget::getShortAlphabetName(const DNAAlphabet* a
         return tr("raw");
     }
     if (type == DNAAlphabet_AMINO) {
+        if (al->getId() == BaseDNAAlphabetIds::AMINO_EXTENDED()) {
+            return tr("amino ext");
+        }
         return tr("amino");
     }
     assert(type == DNAAlphabet_NUCL);
