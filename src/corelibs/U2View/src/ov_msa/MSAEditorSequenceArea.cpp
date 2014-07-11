@@ -554,7 +554,8 @@ void MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, con
     U2Region baseYRange = U2Region(0, editor->getRowHeight());
     for (qint64 iSeq = 0; iSeq < seqIdx.size(); iSeq++) {
         qint64 seq = seqIdx[iSeq];
-        for (int pos = region.startPos; pos <= region.endPos(); pos++) {
+        qint64 regionEnd = region.endPos() - (int)(region.endPos() == editor->getAlignmentLen());
+        for (int pos = region.startPos; pos <= regionEnd; pos++) {
             U2Region baseXRange = U2Region(editor->getColumnWidth() * (pos - region.startPos), editor->getColumnWidth());
             QRect cr(baseXRange.startPos, baseYRange.startPos, baseXRange.length + 1, baseYRange.length);
             char c = msa.charAt(seq, pos);
