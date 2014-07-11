@@ -86,15 +86,22 @@ QPair<QString, QString> DialogUtils::selectFileForScreenShot(QWidget * parent) {
 void FileLineEdit::sl_onBrowse() {
     LastUsedDirHelper lod(type);
 
+    QFileDialog::Options options = 0;
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        options |= QFileDialog::DontUseNativeDialog;
+    }
+#endif
+
     QString name;
     if (multi) {
-        QStringList lst = QFileDialog::getOpenFileNames(NULL, tr("Select file(s)"), lod.dir, FileFilter);
+        QStringList lst = QFileDialog::getOpenFileNames(NULL, tr("Select file(s)"), lod.dir, FileFilter, NULL, options);
         name = lst.join(";");
         if (!lst.isEmpty()) {
             lod.url = lst.first();
         }
     } else {
-        lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select file(s)"), lod.dir, FileFilter);
+        lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select file(s)"), lod.dir, FileFilter, NULL, options);
     }
     if (!name.isEmpty()) {
         setText(name);

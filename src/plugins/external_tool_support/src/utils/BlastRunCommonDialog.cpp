@@ -254,8 +254,15 @@ void BlastRunCommonDialog::sl_megablastChecked(){
 void BlastRunCommonDialog::sl_onBrowseDatabasePath(){
     LastUsedDirHelper lod("Database Directory");
 
+    QFileDialog::Options options = 0;
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        options |= QFileDialog::DontUseNativeDialog;
+    }
+#endif
+
     QString name;
-    lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a database file"), lod.dir);
+    lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a database file"), lod.dir, "", NULL, options);
     if (!name.isEmpty()) {
         QFileInfo fileInfo(name);
         baseNameLineEdit->setText(fileInfo.fileName().replace(QRegExp("(\\.\\d+)?(((formatDB|makeBlastDB)\\.log)|(\\.(phr|pin|psq|nhr|nin|nsq)))?$", Qt::CaseInsensitive), QString()));
