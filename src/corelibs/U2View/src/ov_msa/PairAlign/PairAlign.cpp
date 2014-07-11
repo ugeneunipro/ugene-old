@@ -345,8 +345,8 @@ void PairAlign::sl_alignButtonPressed() {
 
 void PairAlign::sl_outputFileChanged(const QString& newText) {
     if (newText.isEmpty()) {
-        outputFileLineEdit->setText(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath() +
-                                    "/" + PairwiseAlignmentTaskSettings::PA_DEFAULT_NAME);
+        outputFileLineEdit->setText(QDir::toNativeSeparators(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() 
+            + QDir::separator() + PairwiseAlignmentTaskSettings::PA_DEFAULT_NAME));        
     }
 }
 
