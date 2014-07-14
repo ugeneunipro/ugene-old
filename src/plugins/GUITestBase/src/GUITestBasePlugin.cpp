@@ -1169,7 +1169,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0012);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0013);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0014);
-    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0015);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_shared_database::import_test_0015, "https://ugene.unipro.ru/tracker/browse/UGENE-3198");
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0016);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0017);
 
