@@ -23,6 +23,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/AppResources.h>
+#include <U2Formats/BgzipTask.h>
 
 #include "BowtieSupport.h"
 #include "BowtieTask.h"
@@ -57,6 +58,7 @@ void BowtieBuildIndexTask::prepare() {
     if(colorspace) {
         arguments.append("--color");
     }
+
     ExternalToolRunTask *task = new ExternalToolRunTask(ET_BOWTIE_BUILD, arguments, &logParser);
     addSubTask(task);
 }
@@ -247,7 +249,7 @@ void BowtieAssembleTask::prepare() {
         // we assume that all datasets have same library type
         ShortReadSet::LibraryType libType = settings.shortReadSets.at(0).type;
         int setCount = settings.shortReadSets.size();
-        
+
         if (libType == ShortReadSet::SingleEndReads ) {
             QStringList readUrlsArgument;
             for(int index = 0;index < setCount;index++) {
@@ -255,9 +257,9 @@ void BowtieAssembleTask::prepare() {
             }
             arguments.append(readUrlsArgument.join(","));
         } else {
-            
+
             QStringList upstreamReads,downstreamReads;
-            
+
             for ( int i = 0; i<setCount; ++i) {
                 const ShortReadSet& set = settings.shortReadSets.at(i);
                 if (set.order == ShortReadSet::UpstreamMate) {
@@ -265,7 +267,7 @@ void BowtieAssembleTask::prepare() {
                 } else {
                     downstreamReads.append(set.url.getURLString());
                 }
-            } 
+            }
 
             if ( upstreamReads.count() != downstreamReads.count() ) {
                 setError("Unequal number of upstream and downstream reads!");
@@ -337,11 +339,21 @@ const QString BowtieTask::OPTION_COLORSPACE = "colorspace";
 const QString BowtieTask::OPTION_THREADS = "threads";
 
 BowtieTask::BowtieTask(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex):
-    DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSCOE, justBuildIndex)
+    DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSCOE, justBuildIndex),
+    buildIndexTask(NULL),
+    assembleTask(NULL),
+    unzipTask(NULL)
 {
 }
 
 void BowtieTask::prepare() {
+    if (GzipDecompressTask::checkZipped(settings.refSeqUrl)) {
+        temp.open(); //opening creates new temporary file
+        temp.close();
+        unzipTask = new GzipDecompressTask(settings.refSeqUrl, GUrl(QFileInfo(temp).absoluteFilePath()));
+        settings.refSeqUrl = GUrl(QFileInfo(temp).absoluteFilePath());
+    }
+
     if(!settings.prebuiltIndex) {
         QString indexFileName = settings.indexFileName;
         if(indexFileName.isEmpty()) {
@@ -358,7 +370,9 @@ void BowtieTask::prepare() {
         assembleTask = new BowtieAssembleTask(settings);
     }
 
-    if(!settings.prebuiltIndex) {
+    if (unzipTask != NULL) {
+        addSubTask(unzipTask);
+    } else if(!settings.prebuiltIndex) {
         addSubTask(buildIndexTask);
     } else if(!justBuildIndex) {
         addSubTask(assembleTask);
@@ -376,6 +390,15 @@ Task::ReportResult BowtieTask::report() {
 
 QList<Task *> BowtieTask::onSubTaskFinished(Task *subTask) {
     QList<Task *> result;
+
+    if (subTask == unzipTask) {
+        if(!settings.prebuiltIndex) {
+            result.append(buildIndexTask);
+        } else if(!justBuildIndex) {
+            result.append(assembleTask);
+        }
+    }
+
     if((subTask == buildIndexTask) && !justBuildIndex) {
         result.append(assembleTask);
     }

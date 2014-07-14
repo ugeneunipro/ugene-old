@@ -42,6 +42,20 @@ private:
     GUrl bgzfUrl;
 };
 
+class U2FORMATS_EXPORT GzipDecompressTask : public Task {
+    Q_OBJECT
+public:
+    GzipDecompressTask(const GUrl& zippedUrl, const GUrl& unzippedUrl = GUrl());
+    void run();
+    QString generateReport() const;
+    ReportResult report();
+
+    static bool checkZipped(const GUrl &fileUrl);
+private:
+    GUrl zippedUrl;
+    GUrl unzippedUrl;
+};
+
 } // namespace U2
 
 #endif // _U2_BGZIP_TASK_H_

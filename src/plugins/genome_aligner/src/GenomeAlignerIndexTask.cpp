@@ -145,7 +145,7 @@ void GenomeAlignerIndexTask::run() {
         }
     }
 
-    
+
     if (!index->openIndexFiles()) {
         setError("Can't open some of index files");
         return;

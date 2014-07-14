@@ -24,6 +24,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <QtCore/QDir>
 
@@ -71,7 +72,7 @@ void BgzipTask::run() {
         return;
     }
 
-    const int BUFFER_SIZE = 2048;
+    const int BUFFER_SIZE = 2097152;
     QByteArray readBuffer(BUFFER_SIZE, '\0');
     char* buffer = readBuffer.data();
 
@@ -113,6 +114,96 @@ Task::ReportResult BgzipTask::report() {
 
 bool BgzipTask::checkBgzf(const GUrl &fileUrl) {
     return bgzf_check_bgzf(fileUrl.getURLString().toLatin1().constData());
+}
+
+GzipDecompressTask::GzipDecompressTask(const GUrl& zipUrl, const GUrl& fileUrl)
+    : Task(tr("Decompression task"), (TaskFlag)(TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)),
+      zippedUrl(zipUrl),
+      unzippedUrl(fileUrl)
+{
+    if (!checkZipped(zippedUrl)) {
+        setError(tr("'%1' is not zipped file").arg(zippedUrl.getURLString()));
+    }
+}
+
+void GzipDecompressTask::run() {
+    taskLog.details(tr("Start decompression '%1'").arg(zippedUrl.getURLString()));
+
+    SAFE_POINT_EXT(AppContext::getIOAdapterRegistry() != NULL, setError(tr("IOAdapterRegistry is NULL!")), );
+
+    IOAdapterFactory* inFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::GZIPPED_LOCAL_FILE);
+    SAFE_POINT_EXT(inFactory != NULL, setError(tr("IOAdapterFactory is NULL!")), );
+    IOAdapterFactory* outFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+    SAFE_POINT_EXT(outFactory != NULL, setError(tr("IOAdapterFactory is NULL!")), );
+
+    QScopedPointer<IOAdapter> in(inFactory->createIOAdapter());
+    SAFE_POINT_EXT(!in.isNull(), setError(tr("Can not create IOAdapter!")), );
+
+    QScopedPointer<IOAdapter> out(outFactory->createIOAdapter());
+    SAFE_POINT_EXT(!out.isNull(), setError(tr("Can not create IOAdapter!")), );
+
+    if (unzippedUrl.isEmpty()) {
+        QString unzippedUrlString = zippedUrl.dirPath() + "/" + QFileInfo(zippedUrl.getURLString()).completeBaseName();
+        if (unzippedUrlString == zippedUrl.getURLString()) {
+            unzippedUrlString.append("_decompressed");
+        }
+        unzippedUrl = GUrl(unzippedUrlString);
+    }
+
+    bool res = out->open( unzippedUrl, IOAdapterMode_Write);
+    if (!res) {
+        Task::setError(tr("Can not open output file '%1'").arg(unzippedUrl.getURLString()));
+        return;
+    }
+
+    res = in->open( zippedUrl, IOAdapterMode_Read);
+    if (!res) {
+        Task::setError(tr("Can not open input file '%1'").arg(zippedUrl.getURLString()));
+        return;
+    }
+
+    const int BUFFER_SIZE = 2097152;
+    QByteArray readBuffer(BUFFER_SIZE, '\0');
+    char* buffer = readBuffer.data();
+
+    do {
+        if ( isCanceled() ) {
+            return;
+        }
+
+        int len = in->readBlock(buffer, BUFFER_SIZE);
+        if (len == -1) {
+            stateInfo.setError(tr("Error reading file"));
+            return;
+        }
+
+        int written = out->writeBlock(buffer, len);
+        if (written == -1) {
+            stateInfo.setError(tr("Error writing to file"));
+            return;
+        }
+    } while ( !in->isEof() );
+
+    taskLog.details(tr("Decompression finished"));
+}
+
+QString GzipDecompressTask::generateReport() const {
+    if (hasError() || isCanceled()) {
+        return tr("Decompression task was finished with an error: %1").arg(getError());
+    }
+    return tr("Decompression task was finished. A new decompressed file is: <a href=\"%1\">%1</a>").arg(unzippedUrl.getURLString());
+}
+
+Task::ReportResult GzipDecompressTask::report() {
+    if (hasError() || isCanceled()) {
+        QDir outputDir(unzippedUrl.dirPath());
+        outputDir.remove(unzippedUrl.getURLString());
+    }
+    return ReportResult_Finished;
+}
+
+bool GzipDecompressTask::checkZipped(const GUrl &fileUrl) {
+    return (IOAdapterUtils::url2io( fileUrl ) == BaseIOAdapters::GZIPPED_LOCAL_FILE);
 }
 
 } // namespace

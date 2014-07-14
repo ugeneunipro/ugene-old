@@ -36,6 +36,7 @@
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
+#include <U2Formats/BgzipTask.h>
 
 #include <U2Algorithm/FindAlgorithmTask.h>
 #include <U2Algorithm/SArrayIndex.h>
@@ -69,9 +70,19 @@ const QString GenomeAlignerTask::OPTION_SEQ_PART_SIZE("seq_part_size");
 
 GenomeAlignerTask::GenomeAlignerTask( const DnaAssemblyToRefTaskSettings& settings, bool _justBuildIndex )
 : DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled, _justBuildIndex),
-loadDbiTask(NULL), createIndexTask(NULL), readTask(NULL), findTask(NULL), writeTask(NULL), pWriteTask(NULL), seqReader(NULL),
-seqWriter(NULL),
-justBuildIndex(_justBuildIndex), bunchSize(0), index(NULL), lastQuery(NULL)
+  loadDbiTask(NULL),
+  createIndexTask(NULL),
+  readTask(NULL),
+  findTask(NULL),
+  writeTask(NULL),
+  pWriteTask(NULL),
+  unzipTask(NULL),
+  seqReader(NULL),
+  seqWriter(NULL),
+  justBuildIndex(_justBuildIndex),
+  bunchSize(0),
+  index(NULL),
+  lastQuery(NULL)
 {
     GCOUNTER(cvar,tvar, "GenomeAlignerTask");
     setMaxParallelSubtasks(4);
@@ -132,17 +143,37 @@ GenomeAlignerTask::~GenomeAlignerTask() {
 }
 
 void GenomeAlignerTask::prepare() {
+    if (GzipDecompressTask::checkZipped(settings.refSeqUrl)) {
+        temp.open(); // opening creates new temporary file
+        temp.close();
+        unzipTask = new GzipDecompressTask(settings.refSeqUrl, GUrl(QFileInfo(temp).absoluteFilePath()));
+        settings.refSeqUrl = GUrl(QFileInfo(temp).absoluteFilePath());
+    }
+
     setupCreateIndexTask();
-    addSubTask(createIndexTask);
-    if (!justBuildIndex && !alignContext.bestMode) {
-        pWriteTask = new GenomeAlignerWriteTask(seqWriter);
-        pWriteTask->setSubtaskProgressWeight(0.0f);
-        addSubTask(pWriteTask);
+    
+    if (unzipTask != NULL) {
+        addSubTask(unzipTask);
+    } else {
+        addSubTask(createIndexTask);
+        if (!justBuildIndex && !alignContext.bestMode) {
+            createGenomeAlignerWriteTask();
+            addSubTask(pWriteTask);
+        }
     }
 }
 
 QList<Task*> GenomeAlignerTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> subTasks;
+
+    if (subTask == unzipTask) {
+        subTasks.append(createIndexTask);
+        if (!justBuildIndex && !alignContext.bestMode) {
+            createGenomeAlignerWriteTask();
+            subTasks.append(pWriteTask);
+        }
+        return subTasks;
+    }
 
     if (subTask == createIndexTask) {
         SAFE_POINT(createIndexTask != NULL, "Create index task error", subTasks);
@@ -335,4 +366,10 @@ int GenomeAlignerTask::calculateWindowSize(bool absMismatches, int nMismatches, 
 QString GenomeAlignerTask::getIndexPath() {
     return indexFileName;
 }
+
+void GenomeAlignerTask::createGenomeAlignerWriteTask() {
+    pWriteTask = new GenomeAlignerWriteTask(seqWriter);
+    pWriteTask->setSubtaskProgressWeight(0.0f);
+}
+
 } // U2

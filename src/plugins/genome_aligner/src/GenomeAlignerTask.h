@@ -23,6 +23,7 @@
 #define _U2_GENOME_ALIGNER_TASK_H_
 
 #include <QtCore/QSharedPointer>
+#include <QtCore/QTemporaryFile>
 
 #include <U2Algorithm/DnaAssemblyTask.h>
 #include <U2Formats/StreamSequenceReader.h>
@@ -77,13 +78,17 @@ private:
     GenomeAlignerFindTask *findTask;
     WriteAlignedReadsSubTask *writeTask;
     GenomeAlignerWriteTask *pWriteTask;
+    Task* unzipTask;
+
     GenomeAlignerReader *seqReader;
     GenomeAlignerWriter *seqWriter;
     AlignContext alignContext;
 
+    QTemporaryFile temp;
+
     bool justBuildIndex;
     uint bunchSize;
-    
+
     bool alignReversed;
     bool dbiIO;
     QString indexFileName;
@@ -106,6 +111,7 @@ private:
     float currentProgress;
 
     void setupCreateIndexTask();
+    void createGenomeAlignerWriteTask();
 };
 
 } //namespace

@@ -22,8 +22,9 @@
 #define _U2_BOWTIE2_TASK_H
 
 #include <U2Algorithm/DnaAssemblyTask.h>
-
 #include <U2Core/ExternalToolRunTask.h>
+
+#include <QtCore/QTemporaryFile>
 
 namespace U2 {
 
@@ -79,6 +80,9 @@ public:
 private:
     Bowtie2BuildIndexTask *buildIndexTask;
     Bowtie2AlignTask *alignTask;
+
+    Task* unzipTask;
+    QTemporaryFile temp;
 };
 
 class Bowtie2TaskFactory : public DnaAssemblyToRefTaskFactory {

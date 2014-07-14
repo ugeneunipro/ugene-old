@@ -23,6 +23,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/AppResources.h>
+#include <U2Formats/BgzipTask.h>
 
 #include "Bowtie2Support.h"
 #include "Bowtie2Task.h"
@@ -225,11 +226,21 @@ const QString Bowtie2Task::OPTION_NOOVERLAP = "no-overlap";
 const QString Bowtie2Task::OPTION_NOCONTAIN = "no-contain";
 
 Bowtie2Task::Bowtie2Task(const DnaAssemblyToRefTaskSettings &settings, bool justBuildIndex):
-    DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSE_COSC, justBuildIndex)
+    DnaAssemblyToReferenceTask(settings, TaskFlags_NR_FOSE_COSC, justBuildIndex),
+    buildIndexTask(NULL),
+    alignTask(NULL),
+    unzipTask(NULL)
 {
 }
 
 void Bowtie2Task::prepare() {
+    if (GzipDecompressTask::checkZipped(settings.refSeqUrl)) {
+        temp.open(); //opening creates new temporary file
+        temp.close();
+        unzipTask = new GzipDecompressTask(settings.refSeqUrl, GUrl(QFileInfo(temp).absoluteFilePath()));
+        settings.refSeqUrl = GUrl(QFileInfo(temp).absoluteFilePath());
+    }
+
     if(!settings.prebuiltIndex) {
         QString indexFileName = settings.indexFileName;
         if(indexFileName.isEmpty()) {
@@ -245,7 +256,9 @@ void Bowtie2Task::prepare() {
         alignTask = new Bowtie2AlignTask(settings);
     }
 
-    if(!settings.prebuiltIndex) {
+    if (unzipTask != NULL) {
+        addSubTask(unzipTask);
+    } else if(!settings.prebuiltIndex) {
         addSubTask(buildIndexTask);
     } else if(!justBuildIndex) {
         addSubTask(alignTask);
@@ -263,6 +276,15 @@ Task::ReportResult Bowtie2Task::report() {
 
 QList<Task *> Bowtie2Task::onSubTaskFinished(Task *subTask) {
     QList<Task *> result;
+
+    if (subTask == unzipTask) {
+        if(!settings.prebuiltIndex) {
+            result.append(buildIndexTask);
+        } else if(!justBuildIndex) {
+            result.append(alignTask);
+        }
+    }
+
     if((subTask == buildIndexTask) && !justBuildIndex) {
         result.append(alignTask);
     }
