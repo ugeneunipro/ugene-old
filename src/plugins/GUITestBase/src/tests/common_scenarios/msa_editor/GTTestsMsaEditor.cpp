@@ -3475,6 +3475,7 @@ GUI_TEST_CLASS_DEFINITION(test_0039){
         }
         GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION<<ACTION_PROJECT__EXPORT_TO_AMINO_ACTION));
         GTMouseDriver::click(os,Qt::RightButton);
+        GTGlobals::sleep(500);
 
         if(i == 6){
             GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI_transl1." + extMap[i]));

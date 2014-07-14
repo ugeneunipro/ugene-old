@@ -659,7 +659,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_3);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_4);
 
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_msa_editor::test_0039, "https://ugene.unipro.ru/tracker/browse/UGENE-2968");
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0040);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0041);
 

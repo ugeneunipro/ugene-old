@@ -61,6 +61,7 @@ void SaveDocumentGroupController::sl_fileNameChanged(const QString& newName) {
     QString ext = GUrlUtils::getUncompressedExtension(url);
     DocumentFormatRegistry* formatRegistry = AppContext::getDocumentFormatRegistry();
     DocumentFormat* df = formatRegistry->selectFormatByFileExtension(ext);
+    if(formatRegistry->getFormatById(getFormatIdToSave())->getSupportedDocumentFileExtensions().contains(ext)) return;
     if (df!=NULL && df->checkConstraints(conf.dfc)) {
         comboController->setActiveFormatId(df->getFormatId());
     }
