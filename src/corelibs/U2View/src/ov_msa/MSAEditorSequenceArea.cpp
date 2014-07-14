@@ -2597,7 +2597,7 @@ void MSAEditorSequenceArea::sl_setCollapsingRegions(const QList<QStringList>& co
 }
 
 int MSAEditorSequenceArea::getHeight(){
-    return editor->getRowHeight() * (getNumDisplayedSequences() - 1);
+    return editor->getRowHeight() * (getNumVisibleSequences(true) - 1);
 }
 
 QString MSAEditorSequenceArea::exportHighligtning( int startPos, int endPos, int startingIndex, bool keepGaps, bool dots ){

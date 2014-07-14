@@ -593,16 +593,9 @@ void MSAEditorTreeViewerUI::sl_onVisibleRangeChanged(QStringList visibleSeqs, in
     CHECK(rect.height() > 0, );
     QRectF sceneRect = transform().mapRect(rect); 
 
-    MSAEditor* msa = curMSATreeViewer->getMsaEditor();
-    CHECK(NULL != msa, );
-
-    int viewportHeight = viewport()->rect().height(); 
     qreal zoom = qreal(height) / sceneRect.height();
-
-    rect.setHeight(rect.height() * (viewportHeight-35) / height);
-
-    zooming(1.0, zoom);
     centerOn(rect.center());
+    zooming(1.0, zoom);
 }
 
 void MSAEditorTreeViewerUI::sl_onBranchCollapsed(GraphicsRectangularBranchItem* branch) {
