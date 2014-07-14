@@ -120,6 +120,7 @@ public:
 
     bool isValid() const;
 
+    bool operator!=(const U2DbiRef &r2) const;
     bool operator==(const U2DbiRef &r2) const;
     bool operator <(const U2DbiRef &r2) const;
 

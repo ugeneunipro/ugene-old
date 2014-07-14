@@ -32,15 +32,18 @@
 
 namespace U2 {
 
+class MAlignmentObject;
+
 class MAlignmentObjectTestData {
 public:
     static void init();
+    static void shutdown();
 
     static U2DbiRef getDbiRef();
 
-    static MAlignment getTestAlignment();
-    static MAlignment getTestAlignment2();
-    static MAlignment getTestAlignmentWithTrailingGaps( );
+    static MAlignmentObject *getTestAlignmentObject(const U2DbiRef &dbiRef, const QString &name, U2OpStatus &os);
+    static U2EntityRef getTestAlignmentRef(const U2DbiRef &dbiRef, const QString &name, U2OpStatus &os);
+    static MAlignment getTestAlignment(const U2DbiRef &dbiRef, const QString &name, U2OpStatus &os);
 
 private:
     static TestDbiProvider dbiProvider;

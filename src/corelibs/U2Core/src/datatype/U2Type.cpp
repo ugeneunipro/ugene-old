@@ -78,6 +78,10 @@ bool U2DbiRef::isValid() const {
     return !dbiFactoryId.isEmpty() && !dbiId.isEmpty();
 }
 
+bool U2DbiRef::operator!=(const U2DbiRef &r2) const {
+    return !(operator ==(r2));
+}
+
 bool U2DbiRef::operator==(const U2DbiRef &r2) const {
     return dbiFactoryId == r2.dbiFactoryId && dbiId == r2.dbiId;
 }

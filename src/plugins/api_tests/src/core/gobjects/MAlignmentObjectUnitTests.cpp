@@ -21,17 +21,19 @@
 
 #include "MAlignmentObjectUnitTests.h"
 
+#include <U2Core/MAlignmentExporter.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/U2MsaDbi.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
-
 
 namespace U2 {
 
 TestDbiProvider MAlignmentObjectTestData::dbiProvider = TestDbiProvider();
-const QString& MAlignmentObjectTestData::MAL_OBJ_DB_URL("mal-obj-dbi.ugenedb");
+const QString& MAlignmentObjectTestData::MAL_OBJ_DB_URL("malignment-object-dbi.ugenedb");
 U2DbiRef MAlignmentObjectTestData::dbiRef =  U2DbiRef();
 
 void MAlignmentObjectTestData::init() {
@@ -43,6 +45,15 @@ void MAlignmentObjectTestData::init() {
     dbiProvider.close();
 }
 
+void MAlignmentObjectTestData::shutdown() {
+    if (dbiRef != U2DbiRef()) {
+        U2OpStatusImpl opStatus;
+        dbiRef = U2DbiRef();
+        dbiProvider.close();
+        SAFE_POINT_OP(opStatus, );
+    }
+}
+
 U2DbiRef MAlignmentObjectTestData::getDbiRef() {
     if (dbiRef == U2DbiRef()) {
         init();
@@ -50,182 +61,152 @@ U2DbiRef MAlignmentObjectTestData::getDbiRef() {
     return dbiRef;
 }
 
-MAlignment MAlignmentObjectTestData::getTestAlignment() {
-    U2OpStatusImpl os;
+MAlignmentObject *MAlignmentObjectTestData::getTestAlignmentObject(const U2DbiRef &dbiRef, const QString &name, U2OpStatus &os) {
+    const U2EntityRef entityRef = getTestAlignmentRef(dbiRef, name, os);
+    CHECK_OP(os, NULL);
 
-    QString alignmentName = "Test alignment";
-    DNAAlphabetRegistry* alphabetRegistry = AppContext::getDNAAlphabetRegistry();
-    const DNAAlphabet* alphabet = alphabetRegistry->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
-
-    QByteArray firstSequence("---AG-T");
-    QByteArray secondSequence("AG-CT-TAA");
-
-    MAlignment al(alignmentName, alphabet);
-
-    al.addRow("First row", firstSequence, os);
-    SAFE_POINT_OP(os, MAlignment());
-
-    al.addRow("Second row", secondSequence, os);
-    SAFE_POINT_OP(os, MAlignment());
-
-    return al;
+    return new MAlignmentObject(name, entityRef);
 }
 
-MAlignment MAlignmentObjectTestData::getTestAlignment2() {
-    U2OpStatusImpl os;
+U2EntityRef MAlignmentObjectTestData::getTestAlignmentRef(const U2DbiRef &dbiRef, const QString &name, U2OpStatus &os) {
+    DbiConnection con(dbiRef, os);
+    CHECK_OP(os, U2EntityRef());
 
-    QString alignmentName = "Test alignment";
-    DNAAlphabetRegistry* alphabetRegistry = AppContext::getDNAAlphabetRegistry();
-    const DNAAlphabet* alphabet = alphabetRegistry->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
+    QScopedPointer<U2DbiIterator<U2DataId> > it(con.dbi->getObjectDbi()->getObjectsByVisualName(name, U2Type::Msa, os));
+    CHECK_OP(os, U2EntityRef());
 
-    QByteArray firstSequence("AC-GT--AAA");
-    QByteArray secondSequence("-ACACA-GT");
+    CHECK_EXT(it->hasNext(), os.setError(QString("Malignment object '%1' wasn't found in the database").arg(name)), U2EntityRef());
+    const U2DataId msaId = it->next();
+    CHECK_EXT(!msaId.isEmpty(), os.setError(QString("Malignment object '%1' wasn't found in the database").arg(name)), U2EntityRef());
 
-    MAlignment al(alignmentName, alphabet);
-
-    al.addRow("First row", firstSequence, os);
-    SAFE_POINT_OP(os, MAlignment());
-
-    al.addRow("Second row", secondSequence, os);
-    SAFE_POINT_OP(os, MAlignment());
-
-    return al;
+    return U2EntityRef(dbiRef, msaId);
 }
 
-MAlignment MAlignmentObjectTestData::getTestAlignmentWithTrailingGaps( ) {
-    U2OpStatusImpl os;
+MAlignment MAlignmentObjectTestData::getTestAlignment(const U2DbiRef &dbiRef, const QString &name, U2OpStatus &os) {
+    U2EntityRef malignmentRef = getTestAlignmentRef(dbiRef, name, os);
+    CHECK_OP(os, MAlignment());
 
-    QString alignmentName = "Alignment with trailing gaps";
-    DNAAlphabetRegistry *alphabetRegistry = AppContext::getDNAAlphabetRegistry( );
-    const DNAAlphabet *alphabet = alphabetRegistry->findById( BaseDNAAlphabetIds::NUCL_DNA_DEFAULT( ) );
-    
-    QByteArray firstSequence(  "AC-GT--AAA----" );
-    QByteArray secondSequence( "-ACA---GTT----" );
-    QByteArray thirdSequence(  "-ACACA-G------" );
-
-    MAlignment al(alignmentName, alphabet);
-
-    al.addRow( "First", firstSequence, os );
-    SAFE_POINT_OP( os, MAlignment( ) );
-    al.addRow( "Second", secondSequence, os );
-    SAFE_POINT_OP( os, MAlignment( ) );
-    al.addRow( "Third", thirdSequence, os );
-    SAFE_POINT_OP( os, MAlignment( ) );
-
-    return al;
+    MAlignmentExporter exporter;
+    return exporter.getAlignment(dbiRef, malignmentRef.entityId, os);
 }
 
 IMPLEMENT_TEST(MAlignmentObjectUnitTests, getMAlignment) {
-    U2DbiRef dbiRef = MAlignmentObjectTestData::getDbiRef();
-    MAlignment al = MAlignmentObjectTestData::getTestAlignment();
+//  Test data:
+//  ---AG-T
+//  AG-CT-TAA
 
+    const QString alName = "Test alignment";
+    const U2DbiRef dbiRef = MAlignmentObjectTestData::getDbiRef();
     U2OpStatusImpl os;
 
-    // Import the alignment
-    U2EntityRef entityRef = MAlignmentImporter::createAlignment(dbiRef, al, os);
+    QScopedPointer<MAlignmentObject> alObj(MAlignmentObjectTestData::getTestAlignmentObject(dbiRef, alName, os));
     CHECK_NO_ERROR(os);
 
-    QString alName = al.getName();
-    MAlignmentObject alObj(alName, entityRef);
+    const MAlignment alActual = alObj->getMAlignment();
 
-    MAlignment alActual = alObj.getMAlignment();
-
-    bool alsEqual = (al == alActual);
+    const bool alsEqual = (alActual == MAlignmentObjectTestData::getTestAlignment(dbiRef, alName, os));
     CHECK_TRUE(alsEqual, "Actual alignment doesn't equal to the original!");
     CHECK_EQUAL(alName, alActual.getName(), "alignment name");
 }
 
 IMPLEMENT_TEST(MAlignmentObjectUnitTests, setMAlignment) {
-    U2DbiRef dbiRef = MAlignmentObjectTestData::getDbiRef();
-    MAlignment al = MAlignmentObjectTestData::getTestAlignment();
-    MAlignment al2 = MAlignmentObjectTestData::getTestAlignment2();
+//  Test data, alignment 1:
+//  ---AG-T
+//  AG-CT-TAA
 
+//  alignment 2:
+//  AC-GT--AAA
+//  -ACACA-GT
+
+    const QString firstAlignmentName = "Test alignment";
+    const QString secondAlignmentName = "Test alignment 2";
+    const U2DbiRef dbiRef = MAlignmentObjectTestData::getDbiRef();
     U2OpStatusImpl os;
 
-    // Import the alignment
-    U2EntityRef entityRef = MAlignmentImporter::createAlignment(dbiRef, al, os);
+    QScopedPointer<MAlignmentObject> alObj(MAlignmentObjectTestData::getTestAlignmentObject(dbiRef, firstAlignmentName, os));
     CHECK_NO_ERROR(os);
 
-    QString alName = al.getName();
-    QString al2Name = al2.getName();
-    MAlignmentObject alObj(alName, entityRef);
+    const MAlignment secondAlignment = MAlignmentObjectTestData::getTestAlignment(dbiRef, secondAlignmentName, os);
+    alObj->setMAlignment(secondAlignment);
+    const MAlignment actualAlignment = alObj->getMAlignment();
 
-    alObj.setMAlignment(al2);
-    MAlignment alActual = alObj.getMAlignment();
-
-    bool alsEqual = (al2 == alActual);
+    bool alsEqual = (secondAlignment == actualAlignment);
     CHECK_TRUE(alsEqual, "Actual alignment doesn't equal to the original!");
-    CHECK_EQUAL(al2Name, alActual.getName(), "alignment name");
+    CHECK_EQUAL(secondAlignmentName, actualAlignment.getName(), "alignment name");
 }
 
 IMPLEMENT_TEST( MAlignmentObjectUnitTests, deleteGap_trailingGaps ) {
-    U2DbiRef dbiRef = MAlignmentObjectTestData::getDbiRef( );
-    MAlignment aln = MAlignmentObjectTestData::getTestAlignmentWithTrailingGaps( );
+//  Test data:
+//  AC-GT--AAA----
+//  -ACA---GTT----
+//  -ACACA-G------
 
+//  Expected result: the same
+
+    const QString malignment = "Alignment with trailing gaps";
+    const U2DbiRef dbiRef = MAlignmentObjectTestData::getDbiRef();
     U2OpStatusImpl os;
 
-    // Import the alignment
-    U2EntityRef entityRef = MAlignmentImporter::createAlignment( dbiRef, aln, os );
-    CHECK_NO_ERROR( os );
+    QScopedPointer<MAlignmentObject> alnObj(MAlignmentObjectTestData::getTestAlignmentObject(dbiRef, malignment, os));
+    CHECK_NO_ERROR(os);
 
-    const QString alignmentName = aln.getName( );
-    MAlignmentObject alnObj( alignmentName, entityRef );
+    alnObj->deleteGap(U2Region(0, alnObj->getNumRows()), 10, 3, os);
+    SAFE_POINT_OP(os, );
 
-    alnObj.deleteGap( U2Region( 0, aln.getNumRows( ) ), 10, 3, os );
-    SAFE_POINT_OP( os, );
-    CHECK_TRUE( alnObj.getMAlignment( )
-        == MAlignmentObjectTestData::getTestAlignmentWithTrailingGaps( ),
-        "Alignment has changed!" );
+    CHECK_TRUE(alnObj->getMAlignment() == MAlignmentObjectTestData::getTestAlignment(dbiRef, malignment, os), "Alignment has changed!");
 }
 
 IMPLEMENT_TEST( MAlignmentObjectUnitTests, deleteGap_regionWithNonGapSymbols ) {
-    U2DbiRef dbiRef = MAlignmentObjectTestData::getDbiRef( );
-    MAlignment aln = MAlignmentObjectTestData::getTestAlignmentWithTrailingGaps( );
+//  Test data:
+//  AC-GT--AAA----
+//  -ACA---GTT----
+//  -ACACA-G------
 
+//  Expected result: the same
+
+    const QString alignmentName = "Alignment with trailing gaps";
+    const U2DbiRef dbiRef = MAlignmentObjectTestData::getDbiRef();
     U2OpStatusImpl os;
 
-    // Import the alignment
-    U2EntityRef entityRef = MAlignmentImporter::createAlignment( dbiRef, aln, os );
+    QScopedPointer<MAlignmentObject> alnObj(MAlignmentObjectTestData::getTestAlignmentObject(dbiRef, alignmentName, os));
     CHECK_NO_ERROR( os );
 
-    const QString alignmentName = aln.getName( );
-    MAlignmentObject alnObj( alignmentName, entityRef );
+    const int countOfDeleted = alnObj->deleteGap(U2Region(1, alnObj->getNumRows() - 1), 6, 2, os);
+    SAFE_POINT_OP(os, );
 
-    const int countOfDeleted = alnObj.deleteGap( U2Region( 1, aln.getNumRows( ) - 1 ), 6, 2, os );
-    SAFE_POINT_OP( os, );
-    CHECK_TRUE( 0 == countOfDeleted, "Unexpected count of removed symbols!" );
-    const MAlignment &resultAlignment = alnObj.getMAlignment( );
-    CHECK_TRUE( resultAlignment.getRow( 0 ).getCore( ) == "AC-GT--AAA----",
-        "First row content is unexpected!" );
-    CHECK_TRUE( resultAlignment.getRow( 1 ).getCore( ) == "-ACA---GTT----",
-        "Second row content is unexpected!" );
-    CHECK_TRUE( resultAlignment.getRow( 2 ).getCore( ) == "-ACACA-G------",
-        "Third row content is unexpected!" );
+    CHECK_TRUE(0 == countOfDeleted, "Unexpected count of removed symbols!");
+    const MAlignment resultAlignment = alnObj->getMAlignment();
+    CHECK_TRUE(resultAlignment.getRow(0).getCore() == "AC-GT--AAA----", "First row content is unexpected!");
+    CHECK_TRUE(resultAlignment.getRow(1).getCore() == "-ACA---GTT----", "Second row content is unexpected!");
+    CHECK_TRUE(resultAlignment.getRow(2).getCore() == "-ACACA-G------", "Third row content is unexpected!");
 }
 
 IMPLEMENT_TEST( MAlignmentObjectUnitTests, deleteGap_gapRegion ) {
-    U2DbiRef dbiRef = MAlignmentObjectTestData::getDbiRef( );
-    MAlignment aln = MAlignmentObjectTestData::getTestAlignmentWithTrailingGaps( );
+//  Test data:
+//  AC-GT--AAA----
+//  -ACA---GTT----
+//  -ACACA-G------
 
+//  Expected result:
+//  AC-GTAAA----
+//  -ACA-GTT----
+//  -ACACA-G------
+
+    const QString alignmentName = "Alignment with trailing gaps";
+    const U2DbiRef dbiRef = MAlignmentObjectTestData::getDbiRef();
     U2OpStatusImpl os;
 
-    // Import the alignment
-    U2EntityRef entityRef = MAlignmentImporter::createAlignment( dbiRef, aln, os );
-    CHECK_NO_ERROR( os );
+    QScopedPointer<MAlignmentObject> alnObj(MAlignmentObjectTestData::getTestAlignmentObject(dbiRef, alignmentName, os));
+    CHECK_NO_ERROR(os);
 
-    const QString alignmentName = aln.getName( );
-    MAlignmentObject alnObj( alignmentName, entityRef );
+    const int countOfDeleted = alnObj->deleteGap(U2Region(0, alnObj->getNumRows() - 1), 5, 2, os);
+    SAFE_POINT_OP(os, );
 
-    const int countOfDeleted = alnObj.deleteGap( U2Region( 0, aln.getNumRows( ) - 1 ), 5, 2, os );
-    SAFE_POINT_OP( os, );
-    CHECK_TRUE( 2 == countOfDeleted, "Unexpected count of removed symbols!" );
-    const MAlignment &resultAlignment = alnObj.getMAlignment( );
-    CHECK_TRUE( resultAlignment.getRow( 0 ).getCore( ) == "AC-GTAAA----",
-        "First row content is unexpected!" );
-    CHECK_TRUE( resultAlignment.getRow( 1 ).getCore( ) == "-ACA-GTT----",
-        "Second row content is unexpected!" );
-    CHECK_TRUE( resultAlignment.getRow( 2 ).getCore( ) == "-ACACA-G------",
-        "Third row content is unexpected!" );
+    CHECK_TRUE(2 == countOfDeleted, "Unexpected count of removed symbols!");
+    const MAlignment resultAlignment = alnObj->getMAlignment();
+    CHECK_TRUE(resultAlignment.getRow(0).getCore() == "AC-GTAAA----", "First row content is unexpected!");
+    CHECK_TRUE(resultAlignment.getRow(1).getCore() == "-ACA-GTT----", "Second row content is unexpected!");
+    CHECK_TRUE(resultAlignment.getRow(2).getCore() == "-ACACA-G------", "Third row content is unexpected!");
 }
 
 } // namespace
