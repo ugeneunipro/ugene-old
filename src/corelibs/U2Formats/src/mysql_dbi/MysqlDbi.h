@@ -116,6 +116,8 @@ public:
 
     virtual QMutex * getDbMutex( ) const;
 
+    virtual bool isReadOnly() const;
+
 private:
     void createHandle(const QHash<QString, QString>& props);
     void open(const QHash<QString, QString>& props, U2OpStatus& os);

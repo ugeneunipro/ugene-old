@@ -154,6 +154,8 @@ public:
 
     QMutex * getDbMutex( ) const;
 
+    virtual bool isReadOnly() const;
+
 private:
     QString getLastErrorMessage(int rc);
 

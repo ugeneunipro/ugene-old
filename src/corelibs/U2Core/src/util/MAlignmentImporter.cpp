@@ -19,8 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "MAlignmentImporter.h"
-
+#include <U2Core/MsaDbiUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2MsaDbi.h>
@@ -28,6 +27,8 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2SequenceUtils.h>
+
+#include "MAlignmentImporter.h"
 
 
 namespace U2 {
@@ -153,6 +154,17 @@ QList<U2MsaRow> MAlignmentImporter::importRows(const DbiConnection& con, const M
     SAFE_POINT(NULL != msaDbi, "NULL MSA Dbi during importing an alignment!", QList<U2MsaRow>());
 
     msaDbi->addRows(msa.id, rows, os);
+    CHECK_OP(os, QList<U2MsaRow>());
+
+    QList<qint64> rowsIds = msaDbi->getRowsOrder(msa.id, os);
+    CHECK_OP(os, QList<U2MsaRow>());
+
+    U2EntityRef msaRef(con.dbi->getDbiRef(), msa.id);
+
+    MsaDbiUtils::trim(msaRef, os);
+    CHECK_OP(os, QList<U2MsaRow>());
+
+    MsaDbiUtils::removeEmptyRows(msaRef, rowsIds, os);
     CHECK_OP(os, QList<U2MsaRow>());
 
     return rows;

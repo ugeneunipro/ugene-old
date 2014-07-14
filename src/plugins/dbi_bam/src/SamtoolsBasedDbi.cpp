@@ -211,6 +211,10 @@ U2AttributeDbi *SamtoolsBasedDbi::getAttributeDbi() {
     }
 }
 
+bool SamtoolsBasedDbi::isReadOnly() const {
+    FAIL(QObject::tr("Not implemented"), false);
+}
+
 /************************************************************************/
 /* SamtoolsBasedObjectDbi */
 /************************************************************************/
@@ -594,11 +598,6 @@ qint64 SamtoolsBasedAssemblyDbi::getMaxPackedRow(const U2DataId &, const U2Regio
 U2DbiIterator<U2AssemblyRead> * SamtoolsBasedAssemblyDbi::getReadsByRow(const U2DataId &, const U2Region &, qint64, qint64, U2OpStatus &os) {
     os.setError("Operation not supported: BAM::SamtoolsBasedAssemblyDbi::getReadsByRow");
     return NULL;
-}
-
-bool SamtoolsBasedAssemblyDbi::isDatabaseReadOnly() const{
-    //unsupported
-    return false;
 }
 
 U2DbiIterator<U2AssemblyRead> * SamtoolsBasedAssemblyDbi::getReadsByName(const U2DataId &assemblyId, const QByteArray &name, U2OpStatus &os) {

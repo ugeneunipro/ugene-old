@@ -636,7 +636,7 @@ void AssemblyModel::sl_unassociateReference() {
 }
 
 bool AssemblyModel::checkPermissions(QFile::Permission permission, bool showDialog){
-    bool res = assemblyDbi->isDatabaseReadOnly();
+    bool res = assemblyDbi->getRootDbi()->isReadOnly();
     QFile f(assembly.dbiId);
     QFile::Permissions perm = f.permissions();
 

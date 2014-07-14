@@ -182,6 +182,10 @@ U2AssemblyDbi *Dbi::getAssemblyDbi() {
     }
 }
 
+bool Dbi::isReadOnly() const {
+    return SQLiteUtils::isDatabaseReadOnly(&dbRef, "main") == 1;
+}
+
 
 void Dbi::buildIndex(U2OpStatus &os) {
     {

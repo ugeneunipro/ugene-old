@@ -97,14 +97,6 @@ public:
     virtual void updateAssemblyObject(U2Assembly&, U2OpStatus& os);
 
     /**
-        returns 1 if database is read-only
-        0 if database is read-write
-        -1 if dbName is wrong
-     */
-    virtual bool isDatabaseReadOnly() const;
-
-
-    /** 
         Removes sequences from assembly
         Automatically removes affected sequences that are not anymore accessible from folders
     */

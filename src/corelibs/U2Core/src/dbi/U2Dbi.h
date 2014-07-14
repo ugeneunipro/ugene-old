@@ -340,7 +340,7 @@ public:
         U2Mod related DBI routines
         Not NULL only if U2DbiFeature_ReadModifications supported
     */
-    virtual U2ModDbi* getModDbi()  = 0;
+    virtual U2ModDbi* getModDbi() = 0;
 
     /**
         UdrRecord related DBI routines 
@@ -371,6 +371,8 @@ public:
         This method is supposed to be used by caching DBIs 
         in order to prevent cache inconsistency. */
     virtual QMutex * getDbMutex( ) const;
+
+    virtual bool isReadOnly() const = 0;
 
 protected:
     /** Stores to database the following properties: U2DbiOptions::APP_CREATOR_VERSION

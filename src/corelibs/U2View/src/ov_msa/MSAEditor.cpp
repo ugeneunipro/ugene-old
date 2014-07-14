@@ -134,18 +134,16 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
 
     msaObject = qobject_cast<MAlignmentObject*>(obj);
 
-    if (0 == msaObject->getLength() || 0 == msaObject->getNumRows()) {
-        msaObject->crop(U2_REGION_MAX, QSet<QString>());
-    }
-
     objects.append(msaObject);
     onObjectAdded(msaObject);
 
     requiredObjects.append(msaObject);
     GCOUNTER(cvar,tvar,"MSAEditor");
 
-    U2OpStatus2Log os;
-    msaObject->setTrackMod(TrackOnUpdate, os);
+    if (!U2DbiUtils::isDbiReadOnly(msaObject->getEntityRef().dbiRef)) {
+        U2OpStatus2Log os;
+        msaObject->setTrackMod(TrackOnUpdate, os);
+    }
 
     saveAlignmentAction = new QAction(QIcon(":core/images/msa_save.png"), tr("Save alignment"), this);
     saveAlignmentAction->setObjectName("Save alignment");

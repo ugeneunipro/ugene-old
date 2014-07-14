@@ -155,7 +155,7 @@ void MSAGraphOverview::drawVisibleRange(QPainter &p) {
 }
 
 void MSAGraphOverview::sl_drawGraph() {
-    if (!isVisible() || isBlocked) {
+    if (!isVisible() || isBlocked || editor->isAlignmentEmpty()) {
         return;
     }
     graphCalculationTaskRunner.cancel();

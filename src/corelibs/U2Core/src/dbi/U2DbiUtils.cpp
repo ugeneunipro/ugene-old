@@ -171,6 +171,14 @@ QString U2DbiUtils::makeFolderCanonical(const QString& folder) {
     return result;
 }
 
+bool U2DbiUtils::isDbiReadOnly(const U2DbiRef &dbiRef) {
+    U2OpStatusImpl os;
+    DbiConnection con(dbiRef, os);
+    CHECK_OP(os, true);
+
+    return con.dbi->isReadOnly();
+}
+
 //////////////////////////////////////////////////////////////////////////
 // DbiConnection
 DbiConnection::DbiConnection(const U2DbiRef& ref,  U2OpStatus& os) : dbi(NULL) {

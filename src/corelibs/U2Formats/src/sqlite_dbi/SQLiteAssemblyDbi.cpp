@@ -265,10 +265,6 @@ void SQLiteAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& o
     SAFE_POINT_OP(os, );
 }
 
-bool SQLiteAssemblyDbi::isDatabaseReadOnly() const {
-    return (SQLiteUtils::isDatabaseReadOnly(db, "main")==1);
-}
-
 void SQLiteAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os){
     AssemblyAdapter* a = getAdapter(assemblyId, os);
     if ( a != NULL ) {

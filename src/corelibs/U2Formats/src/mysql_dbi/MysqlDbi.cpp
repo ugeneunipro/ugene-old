@@ -233,6 +233,10 @@ QMutex * MysqlDbi::getDbMutex( ) const {
     return &db->mutex;
 }
 
+bool MysqlDbi::isReadOnly() const {
+    return features.contains(U2DbiFeature_GlobalReadOnly);
+}
+
 void MysqlDbi::createHandle(const QHash<QString, QString> &props) {
     const QString url = props.value(U2DbiOptions::U2_DBI_OPTION_URL);
     const QString connectionName = url + "_" + QString::number((qint64)QThread::currentThread());

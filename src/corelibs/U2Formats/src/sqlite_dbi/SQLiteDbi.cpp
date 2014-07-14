@@ -205,6 +205,10 @@ QMutex * SQLiteDbi::getDbMutex( ) const {
     return &db->lock;
 }
 
+bool SQLiteDbi::isReadOnly() const {
+    return SQLiteUtils::isDatabaseReadOnly(db, "main") == 1;
+}
+
 static int isEmptyCallback(void *o, int argc, char ** /*argv*/, char ** /*column*/) {
     int* res = (int*)o;
     *res = argc;

@@ -187,6 +187,8 @@ public:
     static bool parseDbiUrl(const U2DbiId& dbiId, QString& host, int& port, QString& dbName);
 
     static QString makeFolderCanonical(const QString& folder);
+
+    static bool isDbiReadOnly(const U2DbiRef &dbiRef);
 };
 
 /**

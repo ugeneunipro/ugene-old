@@ -49,6 +49,8 @@ public:
 
     virtual U2AssemblyDbi *getAssemblyDbi();
 
+    virtual bool isReadOnly() const;
+
 private:
     void buildIndex(U2OpStatus &os);
 
@@ -143,8 +145,6 @@ public:
     virtual qint64 getMaxPackedRow(const U2DataId& assemblyId, const U2Region &r, U2OpStatus &os);
 
     virtual qint64 getMaxEndPos(const U2DataId& assemblyId, U2OpStatus &os);
-
-    virtual bool isDatabaseReadOnly() const {return SQLiteUtils::isDatabaseReadOnly(&dbRef,"main");}
 
     static U2AssemblyRead alignmentToRead(const Alignment &alignment);
 

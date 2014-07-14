@@ -313,11 +313,6 @@ void MysqlAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& os
     SAFE_POINT_OP(os, );
 }
 
-bool MysqlAssemblyDbi::isDatabaseReadOnly() const {
-    return false;
-//    return (MysqlUtils::isDatabaseReadOnly(db, "main")==1);
-}
-
 void MysqlAssemblyDbi::removeReads(const U2DataId& assemblyId, const QList<U2DataId>& rowIds, U2OpStatus& os){
     MysqlAssemblyAdapter* a = getAdapter(assemblyId, os);
     if ( a != NULL ) {
