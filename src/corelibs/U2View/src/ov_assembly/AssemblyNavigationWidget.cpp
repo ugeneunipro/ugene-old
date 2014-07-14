@@ -20,7 +20,7 @@
  */
 
 #include <U2Core/FormatUtils.h>
-#include <U2Core/L10N.h>
+#include <U2Core/L10n.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
