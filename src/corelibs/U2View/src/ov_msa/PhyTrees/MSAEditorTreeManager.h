@@ -23,6 +23,7 @@
 #define _U2_MSAEDITOR_TREE_MANAGER_H_
 
 #include <QtCore/QObject>
+#include <QtCore/QPointer>
 #include <U2Algorithm/CreatePhyTreeSettings.h>
 #include <U2Core/PhyTree.h>
 
@@ -68,7 +69,7 @@ private:
     MSAEditorMultiTreeViewer* getMultiTreeViewer() const;
 
     MSAEditor*                    editor;
-    MAlignmentObject*             msaObject;
+    QPointer<MAlignmentObject>   msaObject;
     CreatePhyTreeSettings         settings;
     bool                          addExistingTree;
     PhyTree                       phyTree;
