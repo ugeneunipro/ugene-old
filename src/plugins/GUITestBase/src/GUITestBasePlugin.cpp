@@ -188,7 +188,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1688);
     REGISTER_TEST(GUITest_regression_scenarios::test_1700);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1701, "https://ugene.unipro.ru/tracker/browse/UGENE-2684");
-    REGISTER_TEST(GUITest_regression_scenarios::test_1703);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_1703, "https://ugene.unipro.ru/tracker/browse/UGENE-3196");
     REGISTER_TEST(GUITest_regression_scenarios::test_1708);
     REGISTER_TEST(GUITest_regression_scenarios::test_1720);
     REGISTER_TEST(GUITest_regression_scenarios::test_1786);
@@ -201,7 +201,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1860);
     REGISTER_TEST(GUITest_regression_scenarios::test_1865);
     REGISTER_TEST(GUITest_regression_scenarios::test_1883);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1884);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_1884, "https://ugene.unipro.ru/tracker/browse/UGENE-3196");
     REGISTER_TEST(GUITest_regression_scenarios::test_1886_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1886_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_1897);
