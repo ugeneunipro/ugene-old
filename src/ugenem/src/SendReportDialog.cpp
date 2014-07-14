@@ -57,7 +57,17 @@
 
 #define HOST_URL "http://ugene.unipro.ru"
 //#define HOST_URL "http://127.0.0.1"
+#ifdef Q_OS_LINUX
+#define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest_lin.html"
+#elif defined(Q_OS_UNIX)
+#define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest_unx.html"
+#elif defined(Q_OS_WIN)
+#define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest_win.html"
+#elif defined(Q_OS_MAC)
+#define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest_mac.html"
+#else
 #define DESTINATION_URL_KEEPER_PAGE "/crash_reports_dest.html"
+#endif
 
 void ReportSender::parse(const QString &htmlReport) {
     report = "Exception with code ";
@@ -138,18 +148,8 @@ bool ReportSender::send(const QString &additionalInfo) {
         return false;
     }
 
-    //prepare report
-    report.replace(' ', "_");
-    report.replace('\n', "|");
-    report.replace('\t', "<t>");
-    report.replace("#", "");
-    report.replace("*", "<p>");
-    report.replace("?", "-");
-    report.replace("~", "%7E");
-    report.replace("&", "<amp>");
-
     //send report
-    QString data = "data=" + report.toUtf8();
+    QString data = "data=" + QUrl::toPercentEncoding(report);
     reply = netManager->post(QNetworkRequest(reportsPath), data.toUtf8());
     loop.exec();
     if( reply->error() != QNetworkReply::NoError ) {
