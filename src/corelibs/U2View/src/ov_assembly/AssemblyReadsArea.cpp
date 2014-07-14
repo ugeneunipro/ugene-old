@@ -46,6 +46,7 @@
 #include <U2Core/FormatUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/Timer.h>
@@ -299,7 +300,7 @@ void AssemblyReadsArea::showWelcomeScreen() {
     GTIMER(c1, t1, "AssemblyReadsArea::showWelcomeScreen");
 
     cachedReads.clear();
-    QString prefix = tr("<a href=\"%1\">Zoom in to see the reads</a>").arg(ZOOM_LINK);
+    QString prefix = tr("<a href=\"%1\" style=\"color: %2\">Zoom in to see the reads</a>").arg(ZOOM_LINK).arg(L10N::linkColorLabelStr());
 
     QList<CoveredRegion> coveredRegions = browser->getCoveredRegions();
     if(!browser->areCoveredRegionsReady()) {

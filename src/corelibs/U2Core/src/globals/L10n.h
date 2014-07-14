@@ -62,7 +62,7 @@ public:
 
     static QString errorColorTextFieldStr() { return "rgb(255, 152, 142)"; }
     static QString errorColorLabelStr() { return "rgb(166, 57, 46)"; }
-    static QString showMoreColorLabelStr() {
+    static QString linkColorLabelStr() {
 #ifdef Q_OS_MAC
         return "gray";
 #else

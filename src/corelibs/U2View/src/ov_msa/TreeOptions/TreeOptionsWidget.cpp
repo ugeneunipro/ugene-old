@@ -396,7 +396,7 @@ void TreeOptionsWidget::updateShowFontOpLabel(QString newText) {
 }
 
 void TreeOptionsWidget::updateShowPenOpLabel(QString newText) {
-    newText = QString("<a href=\"%1\" style=\"color: %2\">").arg(SHOW_PEN_OPTIONS_LINK).arg(L10N::showMoreColorLabelStr())
+    newText = QString("<a href=\"%1\" style=\"color: %2\">").arg(SHOW_PEN_OPTIONS_LINK).arg(L10N::linkColorLabelStr())
         + newText
         + QString("</a>");
 

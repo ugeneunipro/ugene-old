@@ -19,16 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#include "AssemblyNavigationWidget.h"
-#include "AssemblyBrowser.h"
-
 #include <U2Core/FormatUtils.h>
+#include <U2Core/L10N.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/PositionSelector.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
 
+#include "AssemblyNavigationWidget.h"
+#include "AssemblyBrowser.h"
 
 namespace U2 {
 
@@ -87,7 +87,7 @@ void CoveredRegionsLabel::setAdditionalText(QString prefix_, QString postfix_) {
 }
 
 void CoveredRegionsLabel::sl_updateContent() {
-    QString text = "<style>a:link { color: palette(shadow) }</style>";
+    QString text = "<style>a:link { color: " + L10N::linkColorLabelStr() + " }</style>";
     text += prefix;
 
     QList<CoveredRegion> coveredRegions = browser->getCoveredRegions();

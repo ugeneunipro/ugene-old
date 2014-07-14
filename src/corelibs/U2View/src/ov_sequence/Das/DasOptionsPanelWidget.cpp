@@ -592,7 +592,7 @@ void DasOptionsPanelWidget::updateRegionSelectorWidget(){
 void DasOptionsPanelWidget::updateShowOptions() {
     // Change the label
     QString linkText = showMore ? tr("Show more options") : tr("Show less options");
-    linkText = QString("<a href=\"%1\" style=\"color: %2\">").arg(SHOW_OPTIONS_LINK).arg(L10N::showMoreColorLabelStr())
+    linkText = QString("<a href=\"%1\" style=\"color: %2\">").arg(SHOW_OPTIONS_LINK).arg(L10N::linkColorLabelStr())
                + linkText
                + QString("</a>");
 
