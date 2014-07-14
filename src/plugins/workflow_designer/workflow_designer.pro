@@ -50,6 +50,7 @@ HEADERS += src/ActorCfgModel.h \
            src/library/DocWorkers.h \
            src/library/ExternalProcessWorker.h \
            src/library/ExtractConsensusWorker.h \
+           src/library/ExtractMSAConsensusWorker.h \
            src/library/FilterAnnotationsByQualifierWorker.h \
            src/library/FilterAnnotationsWorker.h \
            src/library/FindWorker.h \
@@ -152,6 +153,7 @@ SOURCES += src/ActorCfgModel.cpp \
            src/library/DocWorkers.cpp \
            src/library/ExternalProcessWorker.cpp \
            src/library/ExtractConsensusWorker.cpp \
+           src/library/ExtractMSAConsensusWorker.cpp \
            src/library/FASTQWorkersLibrary.cpp \
            src/library/FilterAnnotationsWorker.cpp \
            src/library/FilterAnnotationsByQualifierWorker.cpp \

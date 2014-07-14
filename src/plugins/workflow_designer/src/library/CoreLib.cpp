@@ -44,6 +44,7 @@
 #include "library/AssemblyToSequenceWorker.h"
 #include "library/ConvertFilesFormatWorker.h"
 #include "library/ExtractConsensusWorker.h"
+#include "library/ExtractMSAConsensusWorker.h"
 #include "library/GetFileListWorker.h"
 #include "library/GroupWorker.h"
 #include "library/PassFilterWorker.h"
@@ -312,6 +313,7 @@ void CoreLib::init() {
     SortBamWorkerFactory::init();
     DASAnnotationWorkerFactory::init();
     ExtractConsensusWorkerFactory::init();
+    ExtractMSAConsensusWorkerFactory::init();
     CASAVAFilterWorkerFactory::init();
     QualityTrimWorkerFactory::init();
     MergeFastqWorkerFactory::init();
