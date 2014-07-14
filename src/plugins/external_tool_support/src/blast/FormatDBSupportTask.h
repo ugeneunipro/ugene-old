@@ -97,8 +97,9 @@ public:
     Task::ReportResult report();
     QString generateReport() const;
 private:
+    QString                     prepareLink(const QString &path) const;
     ExternalToolLogParser*      logParser;
-
+    QString                     externalToolLog;
     ExternalToolRunTask*        formatDBTask;
     QString                     toolName;
     FormatDBSupportTaskSettings settings;

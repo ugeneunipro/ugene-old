@@ -63,15 +63,17 @@ void FormatDBSupportTask::prepare(){
             }
         }
         arguments <<"-i"<< settings.inputFilesPath.join(" ");
-        arguments <<"-l"<< settings.outputPath+"formatDB.log";
+        arguments <<"-l"<< settings.outputPath + "formatDB.log";
         arguments <<"-n"<< settings.outputPath;
         arguments <<"-p"<< (settings.isInputAmino ? "T" : "F");
+        externalToolLog = settings.outputPath + "formatDB.log";
     }else if (toolName == ET_MAKEBLASTDB){
         for(int i=0; i< settings.inputFilesPath.length(); i++){
             settings.inputFilesPath[i]="\""+settings.inputFilesPath[i]+"\"";
         }
         arguments <<"-in"<< settings.inputFilesPath.join(" ");
-        arguments <<"-logfile"<< settings.outputPath+"MakeBLASTDB.log";
+        arguments <<"-logfile"<< settings.outputPath + "MakeBLASTDB.log";
+        externalToolLog = settings.outputPath + "MakeBLASTDB.log";
         if(settings.outputPath.contains(" ")){
             stateInfo.setError(tr("Output database path contain space characters."));
             return;
@@ -92,14 +94,15 @@ Task::ReportResult FormatDBSupportTask::report(){
 QString FormatDBSupportTask::generateReport() const {
     QString res;
     if (isCanceled()) {
-        res += QString(tr("Blast database creation has been cancelled"));
+        res += QString(tr("Blast database creation has been cancelled")) + "<br>";
+        res += prepareLink(externalToolLog);
         return res;
     }
     if (!hasError()) {
         res += QString(tr("Blast database has been successfully created") + "<br><br>");
         res += QString(tr("Source sequences: "));
         foreach(const QString &filePath, settings.inputFilesPath){
-            res += QDir::toNativeSeparators(filePath);
+            res += prepareLink(filePath);
             if(filePath.size() > 1){
                 res += "<br>    ";
             }
@@ -108,12 +111,19 @@ QString FormatDBSupportTask::generateReport() const {
         res += QString(tr("Database file path: %1")).arg(QDir::toNativeSeparators(settings.outputPath)) + "<br>";
         QString type = settings.isInputAmino ? "protein" : "nucleotide";
         res += QString(tr("Type: %1")).arg(type) + "<br>";
-        res += QString(tr("Formatdb log file path: %1")).arg(QDir::toNativeSeparators(settings.outputPath+"MakeBLASTDB.log")) + "<br>";
+        res += QString(tr("Formatdb log file path: "));
+        res += prepareLink(externalToolLog);
     }else{
-        res += QString(tr("Blast database creation has failed")) + "<br><br>";
-        res += QString(tr("Formatdb log file path: %1")).arg(QDir::toNativeSeparators(settings.outputPath+"MakeBLASTDB.log")) + "<br>";
+        res += QString(tr("Blast database creation has been failed")) + "<br><br>";
+        res += QString(tr("Formatdb log file path: "));
+        res += prepareLink(externalToolLog);
     }
     return res;
+}
+
+QString FormatDBSupportTask::prepareLink( const QString &path ) const {
+    return "<a href=\"file:///" + QDir::toNativeSeparators(path) + "\">" + 
+        QDir::toNativeSeparators(path) + "</a><br>";
 }
 
 }//namespace
