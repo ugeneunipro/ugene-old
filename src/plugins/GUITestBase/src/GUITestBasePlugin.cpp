@@ -1069,7 +1069,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_workflow_scripting::test_0001, "https://ugene.unipro.ru/tracker/browse/UGENE-2739");
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_workflow_scripting::test_0003, "https://ugene.unipro.ru/tracker/browse/UGENE-2739 GUITest_common_scenarios_workflow_scripting_test_0003");
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_workflow_scripting::test_0004, "https://ugene.unipro.ru/tracker/browse/UGENE-2739");
+    REGISTER_TEST_ONLY_LINUX(GUITest_common_scenarios_workflow_scripting::test_0004);// Mac: https://ugene.unipro.ru/tracker/browse/UGENE-2739
+                                                                                    // Win: https://ugene.unipro.ru/tracker/browse/UGENE-3201
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/NIAID_pipelines
