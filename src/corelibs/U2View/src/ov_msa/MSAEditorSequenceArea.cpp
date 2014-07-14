@@ -520,13 +520,21 @@ void MSAEditorSequenceArea::drawContent(QPainter& p) {
 }
 
 void MSAEditorSequenceArea::drawContent(QPainter &p, const QRect &area) {
-    U2Region region = U2Region(area.x(), area.width());
+    QVector<U2Region> range;
+    if (ui->isCollapsibleMode()) {
+        ui->getCollapseModel()->getVisibleRows(area.y(), area.bottom(), range);
+    } else {
+        range.append(U2Region(area.y(), area.height()));
+    }
+
     QList <qint64> seqIdx;
-    for (qint64 i = area.y(); i < area.height(); i++) {
-        seqIdx.append(i);
+    foreach(U2Region region, range) {
+        for (qint64 i = region.startPos; i < region.endPos(); i++) {
+            seqIdx.append(i);
+        }
     }
     p.fillRect(cachedView->rect(), Qt::white);
-    drawContent(p, region, seqIdx);
+    drawContent(p, U2Region(area.x(), area.width()), seqIdx);
     emit si_visibleRangeChanged();
 }
 
