@@ -516,7 +516,7 @@ void MSAEditorSequenceArea::drawAll() {
 }
 
 void MSAEditorSequenceArea::drawContent(QPainter& p) {
-    drawContent(p, QRect(startPos, getFirstVisibleSequence(), getNumVisibleBases(false), getNumDisplayedSequences()));
+    drawContent(p, QRect(startPos, getFirstVisibleSequence(), getNumVisibleBases(false), getNumVisibleSequences(true)));
 }
 
 void MSAEditorSequenceArea::drawContent(QPainter &p, const QRect &area) {
@@ -948,8 +948,20 @@ int MSAEditorSequenceArea::getNumVisibleSequences(bool countClipped) const {
     int lastVisible =  getLastVisibleSequence(countClipped);
     SAFE_POINT(startSeq <= lastVisible, tr("Last visible sequence is less than startSeq"), 0);
     SAFE_POINT(lastVisible < editor->getNumSequences(), tr("Last visible sequence is out of range"), 0);
-    int res = lastVisible - startSeq + 1;
-    return res;
+
+    int sequencesNumber = 0;
+    if (ui->isCollapsibleMode()) {
+        QVector<U2Region> range;
+        ui->getCollapseModel()->getVisibleRows(startSeq, lastVisible, range);
+        foreach(U2Region region, range) {
+            sequencesNumber += region.length;
+        }
+        return sequencesNumber;
+    }
+    else {
+        sequencesNumber = lastVisible - startSeq + 1;
+        return sequencesNumber;
+    }
 }
 
 int MSAEditorSequenceArea::getNumDisplayedSequences( ) const {
