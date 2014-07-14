@@ -64,9 +64,6 @@ public:
 
     void cancelProcess();
 
-private slots:
-    void sl_processFinish();
-
 private:
     bool parseLog(const ExternalToolValidation& validation);
     void checkVersion(const QString& partOfLog);
@@ -82,9 +79,6 @@ private:
     QString     lastOutLine;
 
     QProcess*   externalToolProcess;
-    bool        isAlreadyFinished;
-
-    qint64      startTime;
 };
 
 class ExternalToolSearchAndValidateTask : public ExternalToolValidateTask {
@@ -102,8 +96,6 @@ private:
     bool        toolIsFound;
     ExternalToolSearchTask*     searchTask;
     ExternalToolJustValidateTask*   validateTask;
-
-    qint64      startTime;
 };
 
 class ExternalToolsValidateTask : public SequentialMultiTask {

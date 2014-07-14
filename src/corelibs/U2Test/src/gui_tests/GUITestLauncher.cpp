@@ -157,66 +157,6 @@ QProcessEnvironment GUITestLauncher::getProcessEnvironment(const QString &testNa
     return env;
 }
 
-namespace {
-
-QString getToolState(const QString& toolName) {
-    ExternalToolManager* etManager = AppContext::getExternalToolRegistry()->getManager();
-    CHECK(NULL != etManager, "manager is NULL");
-
-    ExternalToolManager::ExternalToolState state = etManager->getToolState(toolName);
-    switch (state) {
-    case ExternalToolManager::NotDefined:
-        return "NotDefined";
-    case ExternalToolManager::NotValid:
-        return "NotValid";
-    case ExternalToolManager::Valid:
-        return "Valid";
-    case ExternalToolManager::ValidationIsInProcess:
-        return "ValidationIsInProcess";
-    case ExternalToolManager::SearchingIsInProcess:
-        return "SearchingIsInProcess";
-    case ExternalToolManager::NotValidByDependency:
-        return "NotValidByDependency";
-    case ExternalToolManager::NotValidByCyclicDependency:
-        return "NotValidByCyclicDependency";
-    }
-
-    return "N/A";
-}
-
-QString getAdditionalInfo() {
-    QString result;
-
-    result += "\nCurrent TaskScheduler state:\n";
-    QList<Task *> taskList = AppContext::getTaskScheduler()->getTopLevelTasks();
-    if (!taskList.isEmpty()) {
-        foreach (Task *task, taskList) {
-            result += QString("%1: progress = '%2'\n").arg(task->getTaskName()).arg(task->getProgress());
-            QList<Task *> subtaskList = task->getSubtasks();
-            if (!subtaskList.isEmpty()) {
-                result += "  Subtasks:\n";
-                foreach (Task *subtask, subtaskList) {
-                    result += QString("    %1: progress = '%2'\n").arg(subtask->getTaskName()).arg(subtask->getProgress());
-                }
-            }
-        }
-    } else {
-        result += "No tasks\n";
-    }
-    result += "\n";
-
-    ExternalToolManager* etManager = AppContext::getExternalToolRegistry()->getManager();
-    CHECK(NULL != etManager, result);
-
-    foreach (ExternalTool* tool, AppContext::getExternalToolRegistry()->getAllEntries()) {
-        result += QString("%1: state '%2'").arg(tool->getName()).arg(getToolState(tool->getName())) + "\n";
-    }
-
-    return result;
-}
-
-}
-
 QString GUITestLauncher::performTest(const QString& testName) {
 
     QString path = QCoreApplication::applicationFilePath();
@@ -247,7 +187,7 @@ QString GUITestLauncher::performTest(const QString& testName) {
     if (finished) {
         return tr("An error occurred while finishing UGENE: ") + process.errorString() + '\n' + readTestResult(process.readAllStandardOutput());
     } else {
-        return tr("Test fails because of timeout.") + getAdditionalInfo();
+        return tr("Test fails because of timeout.");
     }
 }
 

@@ -26,7 +26,6 @@
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/Log.h>
 #include <U2Core/ScriptingToolRegistry.h>
-#include <U2Core/Timer.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Lang/WorkflowUtils.h>
@@ -46,9 +45,7 @@ ExternalToolValidateTask::ExternalToolValidateTask(const QString& _toolName, Tas
 
 ExternalToolJustValidateTask::ExternalToolJustValidateTask(const QString& _toolName, const QString& path) :
     ExternalToolValidateTask(_toolName, TaskFlag_None),
-    externalToolProcess(NULL),
-    isAlreadyFinished(false),
-    startTime(0)
+    externalToolProcess(NULL)
 {
     toolPath = path;
     SAFE_POINT_EXT(!toolPath.isEmpty(), setError(tr("Tool's path is empty")), );
@@ -60,8 +57,6 @@ ExternalToolJustValidateTask::~ExternalToolJustValidateTask() {
 }
 
 void ExternalToolJustValidateTask::run() {
-    startTime = TimeCounter::getCounter();
-
     ExternalToolRegistry* etRegistry = AppContext::getExternalToolRegistry();
     SAFE_POINT(etRegistry, "An external tool registry is NULL", );
     ExternalTool* tool = etRegistry->getByName(toolName);
@@ -116,7 +111,6 @@ void ExternalToolJustValidateTask::run() {
         externalToolProcess = new QProcess();
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         externalToolProcess->setProcessEnvironment(env);
-        connect(externalToolProcess, SIGNAL(finished(int)), SLOT(sl_processFinish()));
 
         externalToolProcess->start(validation.executableFile, validation.arguments);
         bool started = externalToolProcess->waitForStarted(3000);
@@ -138,12 +132,7 @@ void ExternalToolJustValidateTask::run() {
             return;
         }
 
-
-        if (isAlreadyFinished) {
-            algoLog.trace("Great! That was the reason of external tools validation hanging");
-        }
-
-        while (!externalToolProcess->waitForFinished(1000) && !isAlreadyFinished) {
+        while (!externalToolProcess->waitForFinished(1000)) {
             if (isCanceled()) {
                 cancelProcess();
             }
@@ -160,11 +149,6 @@ void ExternalToolJustValidateTask::run() {
 }
 
 Task::ReportResult ExternalToolJustValidateTask::report() {
-    qint64 endTime = TimeCounter::getCounter();
-    if (U2_UNLIKELY(qgetenv("UGENE_GUI_TEST").toInt() == 1)) {
-        coreLog.trace(QString("ExternalToolJustValidateTask: '%1', %2 micro seconds").arg(toolName).arg(endTime - startTime));
-    }
-
     if (!isValid && !stateInfo.hasError() && !toolPath.isEmpty()) {
         if (errorMsg.isEmpty()) {
             stateInfo.setError(tr("Can not find expected message.<br>"
@@ -187,9 +171,6 @@ void ExternalToolJustValidateTask::cancelProcess() {
     externalToolProcess->kill();
 }
 
-void ExternalToolJustValidateTask::sl_processFinish() {
-    isAlreadyFinished = true;
-}
 
 bool ExternalToolJustValidateTask::parseLog(const ExternalToolValidation& validation) {
     errorMsg = validation.possibleErrorsDescr.value(ExternalToolValidation::DEFAULT_DESCR_KEY, "");
@@ -280,13 +261,11 @@ ExternalToolSearchAndValidateTask::ExternalToolSearchAndValidateTask(const QStri
     ExternalToolValidateTask(_toolName, TaskFlags(TaskFlag_CancelOnSubtaskCancel | TaskFlag_NoRun)),
     toolIsFound(false),
     searchTask(NULL),
-    validateTask(NULL),
-    startTime(0)
+    validateTask(NULL)
 {
 }
 
 void ExternalToolSearchAndValidateTask::prepare() {
-    startTime = TimeCounter::getCounter();
     searchTask = new ExternalToolSearchTask(toolName);
     addSubTask(searchTask);
 }
@@ -331,11 +310,6 @@ QList<Task*> ExternalToolSearchAndValidateTask::onSubTaskFinished(Task *subTask)
 }
 
 Task::ReportResult ExternalToolSearchAndValidateTask::report() {
-    qint64 endTime = TimeCounter::getCounter();
-    if (U2_UNLIKELY(qgetenv("UGENE_GUI_TEST").toInt() == 1)) {
-        taskLog.trace(QString("ExternalToolSearchAndValidateTask: tool '%1', %2 micro seconds").arg(toolName).arg(endTime - startTime));
-    }
-
     ExternalToolRegistry* etRegistry = AppContext::getExternalToolRegistry();
     SAFE_POINT(etRegistry, "An external tool registry is NULL", ReportResult_Finished);
     ExternalTool* tool = etRegistry->getByName(toolName);
