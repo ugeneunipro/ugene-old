@@ -95,6 +95,7 @@ public:
     FormatDBSupportTask(const QString& name, const FormatDBSupportTaskSettings& settings);
     void prepare();
     Task::ReportResult report();
+    QString generateReport() const;
 private:
     ExternalToolLogParser*      logParser;
 

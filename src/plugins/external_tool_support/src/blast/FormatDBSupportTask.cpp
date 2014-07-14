@@ -22,6 +22,8 @@
 #include "FormatDBSupportTask.h"
 #include "FormatDBSupport.h"
 
+#include <QtCore/QDir>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DocumentModel.h>
@@ -42,7 +44,7 @@ void FormatDBSupportTaskSettings::reset() {
 }
 
 FormatDBSupportTask::FormatDBSupportTask(const QString& name, const FormatDBSupportTaskSettings& _settings) :
-        Task("Run NCBI FormatDB task", TaskFlags_NR_FOSCOE), toolName(name),
+        Task(tr("Run NCBI FormatDB task"), TaskFlags_NR_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled), toolName(name),
         settings(_settings)
 {
     GCOUNTER( cvar, tvar, "FormatDBSupportTask" );
@@ -85,6 +87,33 @@ void FormatDBSupportTask::prepare(){
 }
 Task::ReportResult FormatDBSupportTask::report(){
     return ReportResult_Finished;
+}
+
+QString FormatDBSupportTask::generateReport() const {
+    QString res;
+    if (isCanceled()) {
+        res += QString(tr("Blast database creation has been cancelled"));
+        return res;
+    }
+    if (!hasError()) {
+        res += QString(tr("Blast database has been successfully created") + "<br><br>");
+        res += QString(tr("Source sequences: "));
+        foreach(const QString &filePath, settings.inputFilesPath){
+            res += QDir::toNativeSeparators(filePath);
+            if(filePath.size() > 1){
+                res += "<br>    ";
+            }
+        }
+        res += "<br>";
+        res += QString(tr("Database file path: %1")).arg(QDir::toNativeSeparators(settings.outputPath)) + "<br>";
+        QString type = settings.isInputAmino ? "protein" : "nucleotide";
+        res += QString(tr("Type: %1")).arg(type) + "<br>";
+        res += QString(tr("Formatdb log file path: %1")).arg(QDir::toNativeSeparators(settings.outputPath+"MakeBLASTDB.log")) + "<br>";
+    }else{
+        res += QString(tr("Blast database creation has failed")) + "<br><br>";
+        res += QString(tr("Formatdb log file path: %1")).arg(QDir::toNativeSeparators(settings.outputPath+"MakeBLASTDB.log")) + "<br>";
+    }
+    return res;
 }
 
 }//namespace
