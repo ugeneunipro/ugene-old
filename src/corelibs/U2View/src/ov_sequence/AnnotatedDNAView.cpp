@@ -1001,15 +1001,15 @@ void AnnotatedDNAView::sl_onDocumentAdded(Document* d) {
 
 void AnnotatedDNAView::importDocAnnotations(Document* doc) {
     QList<GObject*> docObjects = doc->getObjects();
-    foreach(GObject* o, docObjects) {
-        if (o->getGObjectType() != GObjectTypes::ANNOTATION_TABLE) {
+
+    foreach (GObject *obj, objects) {
+        if (obj->getGObjectType() != GObjectTypes::SEQUENCE) {
             continue;
         }
-        QList<ADVSequenceObjectContext*> cList = findRelatedSequenceContexts(o);
-        if (cList.isEmpty()) {
-            continue;
+        QList<GObject*> relatedAnns = GObjectUtils::findObjectsRelatedToObjectByRole(obj, GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence, docObjects, UOF_LoadedOnly);
+        foreach (GObject *annObj, relatedAnns) {
+            addObject(annObj);
         }
-        addObject(o);
     }
 }
 
