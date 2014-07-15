@@ -1006,7 +1006,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     /////////////////////////////////////////////////////////////////////////
     // Common scenarios/Assembling/dna_assembly/conversions
     /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_dna_assembly_conversions::test_0001, "https://ugene.unipro.ru/tracker/browse/UGENE-2958");
+    REGISTER_TEST(GUITest_dna_assembly_conversions::test_0001);
     REGISTER_TEST_IGNORED(GUITest_dna_assembly_conversions::test_0002, "https://ugene.unipro.ru/tracker/browse/UGENE-2866");
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0003);
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
