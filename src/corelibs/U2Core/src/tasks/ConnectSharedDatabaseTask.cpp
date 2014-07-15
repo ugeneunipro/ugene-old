@@ -21,6 +21,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/Counter.h>
 #include <U2Core/DatabaseConnectionAdapter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/U2DbiRegistry.h>
@@ -34,6 +35,7 @@ ConnectSharedDatabaseTask::ConnectSharedDatabaseTask(const U2DbiRef &dbiRef, con
     : DocumentProviderTask(tr("Connecting to database: ") + getUrlFromRef(dbiRef).getURLString(), TaskFlag_None),
     dbiRef(dbiRef), documentName(_documentName), initializeDb(initializeDb)
 {
+    GCOUNTER(cvar, tvar, "ConnectSharedDatabaseTask");
     documentDescription = documentName;
 }
 

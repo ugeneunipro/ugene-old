@@ -27,6 +27,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/CredentialsStorage.h>
 #include <U2Core/ConnectSharedDatabaseTask.h>
+#include <U2Core/Counter.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Settings.h>
 #include <U2Core/U2DbiRegistry.h>
@@ -92,6 +93,8 @@ void SharedConnectionsDialog::sl_connectClicked() {
     SAFE_POINT(NULL != selectedItem, "Invalid list item detected", );
     const QString dbUrl = selectedItem->data(Qt::UserRole).toString();
     const QString connectionName = selectedItem->data(Qt::DisplayRole).toString();
+
+    countConnectionsToPublicDatabase(dbUrl);
 
     // TODO: don't forget to change this when new DB providers will be introduced
     const U2DbiRef dbiRef(MYSQL_DBI_ID, dbUrl);
@@ -382,6 +385,12 @@ QString SharedConnectionsDialog::rollName(const QString &preferredName) const {
         name = preferredName + " (" + QString::number(i) + ")";
     }
     return name;
+}
+
+void SharedConnectionsDialog::countConnectionsToPublicDatabase(const QString &dbUrl) {
+    if (PUBLIC_DATABASE_URL == dbUrl) {
+        GCOUNTER(cvar, tvar, "Connections to public database");
+    }
 }
 
 }   // namespace U2

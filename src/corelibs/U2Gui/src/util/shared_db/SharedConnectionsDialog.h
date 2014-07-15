@@ -78,6 +78,7 @@ private:
     QListWidgetItem* insertConnection(const QString& preferredName, const QString& dbUrl);
     void cancelConnection(QListWidgetItem* item);
     QString rollName(const QString& preferredName) const;
+    void countConnectionsToPublicDatabase(const QString &dbUrl);
 
     Ui::SharedConnectionsDialog *ui;
     QMap<QListWidgetItem*, Task*> connectionTasks;
