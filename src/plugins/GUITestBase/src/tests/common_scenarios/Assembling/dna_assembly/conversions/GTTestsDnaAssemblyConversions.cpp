@@ -76,6 +76,7 @@ GUI_TEST_CLASS_DEFINITION( test_0002 ) {
     CHECK_OP( os, );
     GTUtilsDialog::waitForDialog( os, new MessageBoxDialogFiller( os, QMessageBox::Yes ) );
     CHECK_OP( os, );
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "GUITest_dna_assembly_conversions/test_0002.ugenedb"));
 
     QMenu *mainMenu = GTMenu::showMainMenu( os, MWMENU_TOOLS );
     CHECK_OP( os, );

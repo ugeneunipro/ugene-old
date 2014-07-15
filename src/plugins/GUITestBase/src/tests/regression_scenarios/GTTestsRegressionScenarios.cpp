@@ -2917,6 +2917,8 @@ GUI_TEST_CLASS_DEFINITION( test_2165 ) {
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2167 ) {
+    GTLogTracer logTracer;
+
     // 1. Open "_common_data/fasta/AMINO.fa".
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "AMINO.fa");
 
@@ -2957,6 +2959,8 @@ GUI_TEST_CLASS_DEFINITION( test_2167 ) {
 
     CHECK_SET_ERR(count1 == count2, "There are empty rows!");
     CHECK_SET_ERR(value1 == value2, "Results differ!");
+
+    GTUtilsLog::check(os, logTracer);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2169 ) {
