@@ -75,6 +75,53 @@ workflow "Extract Consensus"{
                 text-pos:"-45 -50";
             }
         }
+        wizard {
+            name:"Extract alignment consensus";
+            page {
+                id:1;
+                next:2;
+                title:"Input alignment(s)";
+                parameters-area {
+                    read-msa.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Extract parameters";
+                parameters-area {
+                    group {
+                        title:"Consensus parameters";
+                        label-size:120;
+                        extract-msa-consensus.algorithm {
+                        }
+                        extract-msa-consensus.threshold {
+                        }
+                        extract-msa-consensus.keep-gaps {
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        label-size:120;
+                        title:"Output data";
+                        write-sequence.url-out {
+                            label:"Result file";
+                        }
+                        write-sequence.accumulate {
+                            label:"Accumulate results";
+                        }
+    
+                    }
+                }
+            }
+        }
     }
 }
 
