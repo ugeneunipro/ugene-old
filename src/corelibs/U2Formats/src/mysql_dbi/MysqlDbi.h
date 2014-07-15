@@ -114,8 +114,6 @@ public:
 
     virtual void stopOperationBlock(U2OpStatus &os);
 
-    virtual QMutex * getDbMutex( ) const;
-
     virtual bool isReadOnly() const;
 
 private:

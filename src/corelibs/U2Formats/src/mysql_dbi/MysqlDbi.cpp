@@ -229,10 +229,6 @@ void MysqlDbi::stopOperationBlock(U2OpStatus& os) {
     delete operationsBlockTransactions.pop();
 }
 
-QMutex * MysqlDbi::getDbMutex( ) const {
-    return &db->mutex;
-}
-
 bool MysqlDbi::isReadOnly() const {
     return features.contains(U2DbiFeature_GlobalReadOnly);
 }

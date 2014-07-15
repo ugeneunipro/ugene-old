@@ -436,7 +436,11 @@ MysqlTransaction::~MysqlTransaction() {
     db->transactionStack.pop_back();
 
     if (db->transactionStack.isEmpty()) {
-        CHECK_OP_EXT(os, db->handle.rollback(), );
+        if (os.hasError()) {
+            db->handle.rollback();
+            db->mutex.unlock();
+            return;
+        }
         if (!db->handle.commit()) {
             os.setError(db->handle.lastError().text());
         }
