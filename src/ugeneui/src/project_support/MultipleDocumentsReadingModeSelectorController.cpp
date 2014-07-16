@@ -151,6 +151,7 @@ bool MultipleDocumentsReadingModeDialog::setupGUI(QList<GUrl>& _urls, QVariantMa
         props[DocumentReadingMode_SequenceAsAlignmentHint] = true;
     }
     props[ProjectLoaderHint_MultipleFilesMode_URLDocument] = newDocUrl->text();
+    props[ProjectLoaderHint_MultipleFilesMode_SaveDocumentFlag] = saveBox->isChecked();
     props[ProjectLoaderHint_MultipleFilesMode_Flag] = true;
     
 
@@ -187,6 +188,7 @@ QString MultipleDocumentsReadingModeDialog::findUrlByFileName(const QString& fil
 void MultipleDocumentsReadingModeDialog::sl_optionChanged(bool ){
     bool isNewDocInfoAvailable = !separateMode->isChecked();
 
+    saveBox->setEnabled(isNewDocInfoAvailable);
     listDocuments->setEnabled(isNewDocInfoAvailable);
     upperButton->setEnabled(isNewDocInfoAvailable);
     bottomButton->setEnabled(isNewDocInfoAvailable);

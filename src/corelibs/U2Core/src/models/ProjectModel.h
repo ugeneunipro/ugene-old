@@ -54,9 +54,11 @@ class U2OpStatus;
 #define ProjectLoaderHint_UseImporters "use-importers"
 #define ProjectLoaderHint_MultipleFilesMode_URLDocument "multiple-files-mode-url-document"
 #define ProjectLoaderHint_MultipleFilesMode_URLsDocumentConsistOf "multiple-files-mode-urls-document-consist-of"
+#define ProjectLoaderHint_MultipleFilesMode_SaveDocumentFlag "multiple-files-mode-save-document-flag"
 #define ProjectLoaderHint_MultipleFilesMode_Flag "multiple-files-mode-flag"
 #define ProjectLoaderHint_MultipleFilesMode_RealDocumentFormat  "multiple-files-mode-real-document-format"
 #define ProjectLoaderHint_MergeMode_DifferentAlphabets "merge-sequences-different-alphabets"
+#define ProjectLoaderHint_DontCheckForExistence "dont-check-for-existence"
 
 /// Service responsible for project loading / unloading
 class U2CORE_EXPORT ProjectLoader  : public QObject {

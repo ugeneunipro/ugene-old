@@ -357,18 +357,20 @@ static QList<Document*> loadMulti(IOAdapterFactory* iof, const QVariantMap& fs, 
     return docs;
 }
 
-void loadHintsNewDocument( IOAdapterFactory* iof, Document* doc, U2OpStatus& os){
-    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
-    QString url = doc->getURLString();
-    if (!io->open(url ,IOAdapterMode_Write)) {
-        os.setError(L10N::errorOpeningFileWrite(url));
-    } else {
-        //TODO remove after genbank can storing without getWholeSequence
-        try {
-            doc->getDocumentFormat()->storeDocument(doc, io.data(), os);
-        }
-        catch (const std::bad_alloc &) {
-            os.setError(QString("Not enough memory to storing %1 file").arg(doc->getURLString()));
+void loadHintsNewDocument(bool saveDoc, IOAdapterFactory* iof, Document* doc, U2OpStatus& os){
+    if(saveDoc){
+        QScopedPointer<IOAdapter> io(iof->createIOAdapter());
+        QString url = doc->getURLString();
+        if (!io->open(url ,IOAdapterMode_Write)) {
+            os.setError(L10N::errorOpeningFileWrite(url));
+        } else {
+            //TODO remove after genbank can storing without getWholeSequence
+            try {
+                doc->getDocumentFormat()->storeDocument(doc, io.data(), os);
+            }
+            catch (const std::bad_alloc &) {
+                os.setError(QString("Not enough memory to storing %1 file").arg(doc->getURLString()));
+            }
         }
     }
 }
@@ -401,9 +403,14 @@ static Document* loadFromMultipleFiles(IOAdapterFactory* iof, QVariantMap& fs, U
         os.setError("Multiple files reading mode: unsupported flags");
     }
     CHECK_OP(os, NULL);
+
     doc = new Document(df, iof, newUrl, ref, newObjects, fs);
 
-    loadHintsNewDocument(iof, doc, os);
+    bool saveDoc = fs.value(ProjectLoaderHint_MultipleFilesMode_SaveDocumentFlag, false).toBool();
+    loadHintsNewDocument(saveDoc, iof, doc, os);
+    if (!saveDoc){
+        fs.insert(ProjectLoaderHint_DontCheckForExistence, true);
+    }
 
     return doc;
 }
@@ -455,6 +462,9 @@ void LoadDocumentTask::run() {
     }
     if (config.checkObjRef.isValid() && !hasError()) {
         processObjRef();
+    }
+    if(hints.value(ProjectLoaderHint_DontCheckForExistence, false).toBool()){
+        resultDocument->getGHints()->set(ProjectLoaderHint_DontCheckForExistence, true);
     }
     assert(stateInfo.isCoR() || resultDocument != NULL);
     assert(resultDocument == NULL || resultDocument->isLoaded());

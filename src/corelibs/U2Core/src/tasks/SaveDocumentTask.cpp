@@ -34,6 +34,7 @@
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/TmpDirChecker.h>
+#include <U2Core/GHints.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -187,6 +188,7 @@ Task::ReportResult SaveDocumentTask::report() {
             AppContext::getTaskScheduler()->registerTopLevelTask(openTask);
         }
     }
+    doc->getGHints()->remove(ProjectLoaderHint_DontCheckForExistence);
     return Task::ReportResult_Finished;
 }
 

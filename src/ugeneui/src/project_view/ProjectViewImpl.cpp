@@ -137,6 +137,14 @@ void DocumentUpdater::update() {
         }
 
         QFileInfo fi(doc->getURLString());
+        bool fileCheckAllowedByHints = !(doc->getGHintsMap().value(ProjectLoaderHint_DontCheckForExistence, false).toBool());
+        
+        if (!fileCheckAllowedByHints && !doc->isModified()) {
+            doc->setModified(true);
+        }
+        if (!fileCheckAllowedByHints) {
+            continue;
+        }
         if (!doc->isModified() && !fi.exists()) { // file was removed from its directory
             removedDocs.append(doc);
         }
