@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/DocumentModel.h>
+#include <U2Core/GHints.h>
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2AttributeUtils.h>
@@ -38,17 +40,22 @@ AssemblyObject::AssemblyObject(const QString& objectName, const U2EntityRef& ref
     this->entityRef = ref;
 }
 
-GObject* AssemblyObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os) const {
-    U2EntityRef dstEntityRef = AssemblyObject::dbi2dbiClone(this, dstDbiRef, os);
+GObject* AssemblyObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints) const {
+    GHintsDefaultImpl gHints(getGHintsMap());
+    gHints.setAll(hints);
+
+    U2EntityRef dstEntityRef = AssemblyObject::dbi2dbiClone(this, dstDbiRef, os, gHints.getMap());
     CHECK_OP(os, NULL);
-    AssemblyObject *dstObj = new AssemblyObject(this->getGObjectName(), dstEntityRef, this->getGHintsMap());
+    AssemblyObject *dstObj = new AssemblyObject(this->getGObjectName(), dstEntityRef, gHints.getMap());
 
     return dstObj;
 }
 
-U2EntityRef AssemblyObject::dbi2dbiClone(const AssemblyObject *const srcObj, const U2DbiRef &dstDbiRef, U2OpStatus &os) {
+U2EntityRef AssemblyObject::dbi2dbiClone(const AssemblyObject *const srcObj, const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints) {
     U2DbiRef srcDbiRef = srcObj->getEntityRef().dbiRef;
     U2DataId srcObjId = srcObj->getEntityRef().entityId;
+    const QString dstFolder = hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+
     DbiConnection dstCon(dstDbiRef, true, os);
     CHECK_OP(os, U2EntityRef());
     DbiConnection srcCon(srcDbiRef, os);
@@ -75,7 +82,7 @@ U2EntityRef AssemblyObject::dbi2dbiClone(const AssemblyObject *const srcObj, con
     U2Assembly assembly;
     assembly.visualName = srcObj->getGObjectName();
     U2AssemblyReadsImportInfo info;
-    dstAssemblyDbi->createAssemblyObject(assembly, U2ObjectDbi::ROOT_FOLDER, iter, info, os);
+    dstAssemblyDbi->createAssemblyObject(assembly, dstFolder, iter, info, os);
     CHECK_OP(os, U2EntityRef());
 
     // copy attributes

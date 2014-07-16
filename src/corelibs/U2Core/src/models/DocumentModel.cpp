@@ -54,6 +54,7 @@ const QString DocumentFormat::CREATED_NOT_BY_UGENE = DocumentFormat::tr( "The do
 const QString DocumentFormat::MERGED_SEQ_LOCK = DocumentFormat::tr( "Document sequences were merged" );
 const QString DocumentFormat::DBI_REF_HINT("dbi_alias");
 const QString DocumentFormat::DBI_FOLDER_HINT("dbi_folder");
+const QString DocumentFormat::DEEP_COPY_OBJECT("deep_copy_object");
 const QString DocumentMimeData::MIME_TYPE("application/x-ugene-document-mime");
 
 Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const GUrl& url,

@@ -89,6 +89,8 @@ U2::FormatCheckResult PFMatrixFormat::checkRawData( const QByteArray& rawData, c
 Document* PFMatrixFormat::loadDocument( IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os ){
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, NULL);
+    Q_UNUSED(opBlock);
+
     QList<GObject*> objs;
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(io->getAdapterId());
     TaskStateInfo siPFM;
@@ -100,7 +102,7 @@ Document* PFMatrixFormat::loadDocument( IOAdapter* io, const U2DbiRef& dbiRef, c
             os.setError("Zero length or corrupted model\nMaybe model data is not enough for selected algorithm");
         }
     }
-    PFMatrixObject *mObj = PFMatrixObject::createInstance(m, QFileInfo(io->getURL().getURLString()).baseName(), dbiRef, os);
+    PFMatrixObject *mObj = PFMatrixObject::createInstance(m, QFileInfo(io->getURL().getURLString()).baseName(), dbiRef, os, fs);
     CHECK_OP(os, NULL);
     objs.append(mObj);
     return new Document(this, io->getFactory(), io->getURL(), dbiRef, objs, fs);
@@ -222,6 +224,8 @@ U2::FormatCheckResult PWMatrixFormat::checkRawData( const QByteArray& rawData, c
 Document* PWMatrixFormat::loadDocument( IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os ){
     DbiOperationsBlock opBlock(dbiRef, os);
     CHECK_OP(os, NULL);
+    Q_UNUSED(opBlock);
+
     QList<GObject*> objs;
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(io->getAdapterId());
     TaskStateInfo siPWM;
@@ -233,7 +237,7 @@ Document* PWMatrixFormat::loadDocument( IOAdapter* io, const U2DbiRef& dbiRef, c
             os.setError("Zero length or corrupted model\nMaybe model data is not enough for selected algorithm");
         }
     }
-    PWMatrixObject *mObj = PWMatrixObject::createInstance(m, QFileInfo(io->getURL().getURLString()).baseName(), dbiRef, os);
+    PWMatrixObject *mObj = PWMatrixObject::createInstance(m, QFileInfo(io->getURL().getURLString()).baseName(), dbiRef, os, fs);
     CHECK_OP(os, NULL);
     objs.append(mObj);
     return new Document(this, io->getFactory(), io->getURL(), dbiRef, objs, fs);

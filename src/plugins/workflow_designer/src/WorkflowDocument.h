@@ -70,7 +70,7 @@ public:
 
     QString getSceneRawData() const {return serializedScene;}
     void setSceneRawData(const QString & data);
-    virtual GObject* clone(const U2DbiRef& dbiRef, U2OpStatus& os) const;
+    virtual GObject* clone(const U2DbiRef& dbiRef, U2OpStatus& os, const QVariantMap &hints = QVariantMap()) const;
     virtual bool isTreeItemModified () const;
     void setView(WorkflowView* view);
     WorkflowView* getView() const {return view;}

@@ -21,6 +21,7 @@
 
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/GHints.h>
 #include <U2Core/RawDataUdrSchema.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -79,13 +80,17 @@ void TextObject::setText(const QString &newText) {
     setModified(true);
 }
 
-GObject * TextObject::clone(const U2DbiRef &dstRef, U2OpStatus &os) const {
+GObject * TextObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints) const {
+    GHintsDefaultImpl gHints(getGHintsMap());
+    gHints.setAll(hints);
+    const QString &dstFolder = gHints.get(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+
     U2Text dstObject;
-    RawDataUdrSchema::cloneObject(entityRef, dstRef, dstObject, os);
+    RawDataUdrSchema::cloneObject(entityRef, dstDbiRef, dstFolder, dstObject, os);
     CHECK_OP(os, NULL);
 
-    U2EntityRef dstEntRef(dstRef, dstObject.id);
-    TextObject *dst = new TextObject(getGObjectName(), dstEntRef, getGHintsMap());
+    U2EntityRef dstEntRef(dstDbiRef, dstObject.id);
+    TextObject *dst = new TextObject(getGObjectName(), dstEntRef, gHints.getMap());
     dst->setIndexInfo(getIndexInfo());
     return dst;
 }
