@@ -39,6 +39,7 @@ ImportObjectToDatabaseTask::ImportObjectToDatabaseTask(GObject* object, const U2
 {
     CHECK_EXT(NULL != object, setError(tr("Invalid object to import")), );
     CHECK_EXT(dstDbiRef.isValid(), setError(tr("Invalid database reference")), );
+    tpm = Progress_Manual;
 }
 
 void ImportObjectToDatabaseTask::run() {

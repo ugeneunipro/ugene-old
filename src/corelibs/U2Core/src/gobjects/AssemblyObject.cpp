@@ -51,6 +51,31 @@ GObject* AssemblyObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const 
     return dstObj;
 }
 
+class CloneInfo : public U2AssemblyReadsImportInfo {
+public:
+    CloneInfo(qint64 readsCount, U2OpStatus &os)
+    : U2AssemblyReadsImportInfo(NULL), os(os), readsCount(readsCount), addedCount(0), currentChunkSize(0)
+    {
+        chunkSize = readsCount / 100;
+    }
+
+    void onReadImported() {
+        addedCount++;
+        currentChunkSize++;
+        if (currentChunkSize >= chunkSize) {
+            os.setProgress(100 * addedCount / readsCount);
+            currentChunkSize = 0;
+        }
+    }
+
+private:
+    U2OpStatus &os;
+    qint64 readsCount;
+    qint64 addedCount;
+    qint64 currentChunkSize;
+    qint64 chunkSize;
+};
+
 U2EntityRef AssemblyObject::dbi2dbiClone(const AssemblyObject *const srcObj, const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints) {
     U2DbiRef srcDbiRef = srcObj->getEntityRef().dbiRef;
     U2DataId srcObjId = srcObj->getEntityRef().entityId;
@@ -73,6 +98,8 @@ U2EntityRef AssemblyObject::dbi2dbiClone(const AssemblyObject *const srcObj, con
 
     // prepare reads
     CHECK_OP(os, U2EntityRef());
+    qint64 readsCount = srcAssemblyDbi->countReads(srcObjId, U2_REGION_MAX, os);
+    CHECK_OP(os, U2EntityRef());
     U2DbiIterator<U2AssemblyRead> *iter = srcAssemblyDbi->getReads(srcObjId, U2_REGION_MAX, os, true);
     QScopedPointer< U2DbiIterator<U2AssemblyRead> > iterPtr(iter);
     CHECK_OP(os, U2EntityRef());
@@ -81,7 +108,7 @@ U2EntityRef AssemblyObject::dbi2dbiClone(const AssemblyObject *const srcObj, con
     // copy object
     U2Assembly assembly;
     assembly.visualName = srcObj->getGObjectName();
-    U2AssemblyReadsImportInfo info;
+    CloneInfo info(readsCount, os);
     dstAssemblyDbi->createAssemblyObject(assembly, dstFolder, iter, info, os);
     CHECK_OP(os, U2EntityRef());
 

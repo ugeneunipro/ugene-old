@@ -187,6 +187,7 @@ void MysqlSingleTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it
         MysqlAssemblyUtils::addToCoverage(ii.coverageInfo, read);
 
         ii.nReads++;
+        ii.onReadImported();
     }
 }
 

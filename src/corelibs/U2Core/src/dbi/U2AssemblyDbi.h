@@ -55,7 +55,7 @@ public:
 /** Additional reads info used during reads import into assembly */
 class U2AssemblyReadsImportInfo {
 public:
-    U2AssemblyReadsImportInfo() : nReads(0), packed(false) {}
+    U2AssemblyReadsImportInfo(U2AssemblyReadsImportInfo *parentInfo = NULL) : nReads(0), packed(false), parentInfo(parentInfo) {}
     
     /** Number of reads added during import */
     qint64 nReads;
@@ -67,6 +67,15 @@ public:
     U2AssemblyPackStat packStat;
 
     U2AssemblyCoverageImportInfo coverageInfo;
+
+    virtual void onReadImported() {
+        if (NULL != parentInfo) {
+            parentInfo->onReadImported();
+        }
+    }
+
+private:
+    U2AssemblyReadsImportInfo *parentInfo;
 };
 
 /**

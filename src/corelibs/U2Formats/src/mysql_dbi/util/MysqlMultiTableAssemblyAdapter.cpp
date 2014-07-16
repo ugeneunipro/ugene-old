@@ -254,7 +254,7 @@ void MysqlMultiTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it,
                     }
 
                     MysqlMtaSingleTableAdapter* adapter = getAdapterByRowAndElenRange(rowPos, elenPos, true, os);
-                    U2AssemblyReadsImportInfo rangeReadsImportInfo;
+                    U2AssemblyReadsImportInfo rangeReadsImportInfo(&ii);
                     // pass the same coverage info through all adapters to accumulate coverage
                     rangeReadsImportInfo.coverageInfo = ii.coverageInfo;
                     BufferedDbiIterator<U2AssemblyRead> rangeReadsIterator(rangeReads);

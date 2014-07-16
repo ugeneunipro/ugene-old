@@ -436,7 +436,7 @@ MysqlTransaction::~MysqlTransaction() {
     db->transactionStack.pop_back();
 
     if (db->transactionStack.isEmpty()) {
-        if (os.hasError()) {
+        if (os.isCoR()) {
             db->handle.rollback();
             db->mutex.unlock();
             return;
