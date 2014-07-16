@@ -435,7 +435,7 @@ int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbu
         else{
             numQuotes += numQuotesInLine(lineBuf,lineLen);
         }
-        if (breakWords && lineLen-A_COL > 0 && lineBuf[A_COL]!=' ') { //add space to separate words
+        if (breakWords && lineLen - A_COL > 0 && lineBuf[A_COL] != ' ' && cbuff[len - 1] != ' ') { //add space to separate words
             cbuff[len] = ' ';
             len++;
         }
