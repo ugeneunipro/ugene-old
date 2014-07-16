@@ -267,11 +267,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2266_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2268, "Can't change folder access at windows");
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2268, "Can't change folder access at windows");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2282, "https://ugene.unipro.ru/tracker/browse/UGENE-2454");
     REGISTER_TEST(GUITest_regression_scenarios::test_2284);
     REGISTER_TEST(GUITest_regression_scenarios::test_2316);
-//    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2269, "impossible to catch expected error in opStatus without stopping test");
+    //REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2269, "impossible to catch expected error in opStatus without stopping test");
     REGISTER_TEST(GUITest_regression_scenarios::test_2270);
     REGISTER_TEST(GUITest_regression_scenarios::test_2292);
     REGISTER_TEST(GUITest_regression_scenarios::test_2306);
@@ -1006,7 +1006,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     /////////////////////////////////////////////////////////////////////////
     // Common scenarios/Assembling/dna_assembly/conversions
     /////////////////////////////////////////////////////////////////////////
-    REGISTER_TEST(GUITest_dna_assembly_conversions::test_0001);
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_dna_assembly_conversions::test_0001);
     REGISTER_TEST_IGNORED(GUITest_dna_assembly_conversions::test_0002, "https://ugene.unipro.ru/tracker/browse/UGENE-2866");
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0003);
     REGISTER_TEST(GUITest_dna_assembly_conversions::test_0004);
@@ -1094,12 +1094,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0008_1);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0009);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0010, "https://ugene.unipro.ru/tracker/browse/UGENE-3208");
+    //REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0010);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011_1);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011_2);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0012);
-    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0023);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0023, "tree view is added to project, but view is not opened. jira is disabled");
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0024);
 
 /////////////////////////////////////////////////////////////////////////
@@ -1204,7 +1204,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_5);
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_6);
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_7);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_circular_view::general_avail_8, "https://ugene.unipro.ru/tracker/browse/UGENE-3041");
+    REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_8);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
