@@ -100,6 +100,7 @@ public:
 protected:
     virtual void prepareStep() {};
     virtual void runStep() {};
+    virtual void finishStep() {};
     virtual Task* getExternalToolTask (const QString& toolName);
     virtual QStringList getParameters(U2OpStatus& os) = 0;
 

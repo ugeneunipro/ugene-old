@@ -50,6 +50,7 @@ static const QString R_ID( "r-id" );
 static const QString S_ID( "s-id" );
 static const QString PCT_ID( "pct-id" );
 static const QString HEADER_ID( "header-id" );
+static const QString FILTER_ID( "filter-id" );
 
 /************************************************************************/
 /* SlopbedPrompter */
@@ -130,6 +131,10 @@ void SlopbedWorkerFactory::init() {
         Descriptor headerAttr(HEADER_ID, SlopbedWorker::tr("Print header"),
             SlopbedWorker::tr("Print the header from the input file prior to results. (-header)"));
 
+        Descriptor filterAttr(FILTER_ID, SlopbedWorker::tr("Filter start>end fields"),
+            SlopbedWorker::tr("Remove lines with start postion greater than end position"));
+
+
         a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
         customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, SlopbedWorker::tr("Custom")));
@@ -155,6 +160,7 @@ void SlopbedWorkerFactory::init() {
         a << new Attribute( sAttr, BaseTypes::BOOL_TYPE(), false, QVariant(false));
         a << new Attribute( pctAttr, BaseTypes::BOOL_TYPE(), false, QVariant(false));
         a << new Attribute( headerAttr, BaseTypes::BOOL_TYPE(), false, QVariant(false));
+        a << new Attribute( filterAttr, BaseTypes::BOOL_TYPE(), false, QVariant(false));
     }
 
     QMap<QString, PropertyDelegate*> delegates;
@@ -224,9 +230,13 @@ QVariantMap SlopbedWorker::getCustomParameters() const{
     if(pct){
         res["-pct"] = "";
     }
-    const int header = getValue<bool>(HEADER_ID);
+    const bool header = getValue<bool>(HEADER_ID);
     if(header){
         res["-header"] = "";
+    }
+    const bool filter = getValue<bool>(FILTER_ID);
+    if(filter){
+        res["-filter"] = "";
     }
     return res;
 }
@@ -242,7 +252,9 @@ Task *SlopbedWorker::getTask(const BaseNGSSetting &settings) const{
 //////////////////////////////////////////////////////
 //SlopbedTask
 SlopbedTask::SlopbedTask(const BaseNGSSetting &settings)
-    :BaseNGSTask(settings){
+    :BaseNGSTask(settings)
+    ,filterLines(false)
+{
     GCOUNTER(cvar, tvar, "NGS:SlopBedTask");
 }
 
@@ -251,6 +263,36 @@ void SlopbedTask::prepareStep(){
     CHECK(etTask != NULL, );
 
     addSubTask(etTask);
+}
+
+void SlopbedTask::finishStep(){
+    if(filterLines){
+        QFile f(getResult());
+        if(f.open(QIODevice::ReadWrite | QIODevice::Text)){
+            QString s;
+            QTextStream t(&f);
+            while(!t.atEnd()){
+                QString line = t.readLine();
+                QStringList fields = line.split('\t');
+                if(fields.length() >= 3){
+                    bool parsed = true;
+                    qint64 start = fields.at(1).toInt(&parsed);
+                    if(parsed){
+                        qint64 end = fields.at(2).toInt(&parsed);
+                        if(parsed){
+                            if (start>end){
+                                continue;
+                            }
+                        }
+                    }
+                }
+                s.append(line + "\n");
+            }
+            f.resize(0);
+            t << s;
+            f.close();
+        }
+    }
 }
 
 QStringList SlopbedTask::getParameters(U2OpStatus &os){
@@ -300,6 +342,11 @@ QStringList SlopbedTask::getParameters(U2OpStatus &os){
     if(settings.customParameters.contains("-header")){
         res << "-header";
     }
+
+    if(settings.customParameters.contains("-filter")){
+        filterLines = true;
+    }
+
 
     return res;
 }

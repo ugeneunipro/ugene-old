@@ -222,6 +222,8 @@ void BaseNGSTask::run(){
     runStep();
 
     resultUrl = settings.outDir + settings.outName;
+
+    finishStep();
 }
 
 Task *BaseNGSTask::getExternalToolTask(const QString &toolName){

@@ -66,7 +66,9 @@ public:
     SlopbedTask (const BaseNGSSetting &settings);
 
 protected:
+    bool filterLines;
     void prepareStep();
+    void finishStep();
     QStringList getParameters(U2OpStatus& os);
 };
 
