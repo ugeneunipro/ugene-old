@@ -41,6 +41,7 @@ CloneObjectTask::CloneObjectTask(GObject *srcObj, Document *dstDoc, const QStrin
     CHECK_EXT(NULL != srcObj, setError(tr("Invalid source object")), );
     CHECK_EXT(NULL != dstDoc, setError(tr("Invalid destination document")), );
     setTaskName(getTaskName() + ": " + srcObj->getGObjectName());
+    tpm = Progress_Manual;
 }
 
 CloneObjectTask::CloneObjectTask(GObject *srcObj, const U2DbiRef &dstDbiRef, const QString &dstFolder) :
@@ -51,6 +52,7 @@ CloneObjectTask::CloneObjectTask(GObject *srcObj, const U2DbiRef &dstDbiRef, con
     dstObj(NULL)
 {
     CHECK_EXT(dstDbiRef.isValid(), setError(tr("Invalid destination database reference")), );
+    tpm = Progress_Manual;
 }
 
 CloneObjectTask::~CloneObjectTask() {
