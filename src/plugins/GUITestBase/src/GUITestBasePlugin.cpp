@@ -997,11 +997,17 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0003);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0004);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0005);
+    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_Bowtie2::test_0006);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/dna_assembly
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_dna_assembly::test_0001);
+    REGISTER_TEST(GUITest_dna_assembly::test_0002);
+    REGISTER_TEST(GUITest_dna_assembly::test_0003);
+    REGISTER_TEST(GUITest_dna_assembly::test_0004);
+    REGISTER_TEST(GUITest_dna_assembly::test_0005);
+    REGISTER_TEST(GUITest_dna_assembly::test_0006);
 
     /////////////////////////////////////////////////////////////////////////
     // Common scenarios/Assembling/dna_assembly/conversions

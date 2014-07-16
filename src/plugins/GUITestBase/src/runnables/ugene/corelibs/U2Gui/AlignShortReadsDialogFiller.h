@@ -36,6 +36,7 @@ public:
         enum AlignmentMethod {
             Bwa,
             BwaSw,
+            BwaMem,
             Bowtie,
             Bowtie2,
             UgeneGenomeAligner
@@ -61,7 +62,8 @@ public:
             samOutput(true),
             useDefaultResultPath(true) {
             alignmentMethodMap.insert(Bwa, "BWA");
-            alignmentMethodMap.insert(BwaSw, "BWA_SW");
+            alignmentMethodMap.insert(BwaSw, "BWA-SW");
+            alignmentMethodMap.insert(BwaMem, "BWA-MEM");
             alignmentMethodMap.insert(Bowtie, "Bowtie");
             alignmentMethodMap.insert(Bowtie2, "Bowtie2");
             alignmentMethodMap.insert(UgeneGenomeAligner, "UGENE Genome Aligner");

@@ -100,7 +100,7 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
         testDir + "_common_data/e_coli/",
         "NC_008253.gb",
         testDir + "_common_data/bam/",
-        "scerevisiae.bam.bai", 
+        "scerevisiae.bam.bai",
         AlignShortReadsFiller::Parameters::Bwa );
 
     AlignShortReadsFiller *alignShortReadsFiller = new AlignShortReadsFiller( os, &parameters );

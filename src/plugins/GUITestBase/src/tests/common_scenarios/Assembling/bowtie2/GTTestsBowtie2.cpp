@@ -280,5 +280,17 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTGlobals::sleep(20000);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0006) {
+    AlignShortReadsFiller::Bowtie2Parameters parameters(testDir + "_common_data/bowtie2/",
+                                                 "lambda_virus.fa.gz",
+                                                 testDir + "_common_data/bowtie2/",
+                                                 "reads_1.fq");
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
+    GTGlobals::sleep();
+}
+
 } // GUITest_Bowtie2
 } // U2

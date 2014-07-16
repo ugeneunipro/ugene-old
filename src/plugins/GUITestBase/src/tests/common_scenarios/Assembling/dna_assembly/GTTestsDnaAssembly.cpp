@@ -22,6 +22,7 @@
 #include "api/GTMenu.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 
 #include "GTTestsDnaAssembly.h"
 
@@ -49,6 +50,82 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 
     GTGlobals::sleep(5000);
 }
+
+GUI_TEST_CLASS_DEFINITION(test_0002) {
+    // UGENE Genome Aligner and gz input reference
+    AlignShortReadsFiller::Parameters parameters(testDir + "_common_data/e_coli/",
+                                                 "NC_008253.fa.gz",
+                                                 testDir + "_common_data/e_coli/",
+                                                 "e_coli_1000.fastq");
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0003) {
+    // Bowtie and gz input reference
+    AlignShortReadsFiller::Parameters parameters(testDir + "_common_data/e_coli/",
+                                                 "NC_008253.fa.gz",
+                                                 testDir + "_common_data/fastq/",
+                                                 "short_sample.fastq",
+                                                 AlignShortReadsFiller::Parameters::Bowtie);
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
+    GTGlobals::sleep(20000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0004) {
+    // BWA and gz input reference
+    AlignShortReadsFiller::Parameters parameters(testDir + "_common_data/e_coli/",
+                                                 "NC_008253.fa.gz",
+                                                 testDir + "_common_data/bowtie2/",
+                                                 "reads_1.fq",
+                                                 AlignShortReadsFiller::Parameters::Bwa);
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
+    GTGlobals::sleep(20000);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0005) {
+    // BWA-MEM and gz input reference
+    AlignShortReadsFiller::Parameters parameters(testDir + "_common_data/bowtie2/",
+                                                 "lambda_virus.fa.gz",
+                                                 testDir + "_common_data/bowtie2/",
+                                                 "reads_1.fq",
+                                                 AlignShortReadsFiller::Parameters::BwaMem);
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
+    GTGlobals::sleep(20000);
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0006) {
+    // BWA_SW and gz input reference
+    AlignShortReadsFiller::Parameters parameters(testDir + "_common_data/bowtie2/",
+                                                 "lambda_virus.fa.gz",
+                                                 testDir + "_common_data/bowtie2/",
+                                                 "reads_2.fq",
+                                                 AlignShortReadsFiller::Parameters::BwaSw);
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
+    GTGlobals::sleep(20000);
+}
+
 
 } // GUITest_dna_assembly
 } // U2
