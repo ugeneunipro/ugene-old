@@ -267,7 +267,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2266_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2267_2);
-    REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2268);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_2268, "Can't change folder access at windows");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2282, "https://ugene.unipro.ru/tracker/browse/UGENE-2454");
     REGISTER_TEST(GUITest_regression_scenarios::test_2284);
     REGISTER_TEST(GUITest_regression_scenarios::test_2316);
@@ -659,7 +659,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_3);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_4);
 
-    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039);
+    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_msa_editor::test_0039, "https://ugene.unipro.ru/tracker/browse/UGENE-3219");
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0040);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0041);
 
