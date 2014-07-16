@@ -135,7 +135,7 @@ QList<Task*> LoadDasDocumentTask::onSubTaskFinished( Task *subTask ){
                 loadFeaturesTasks.removeAt( idx );
 
                 if ( ftask->hasError( ) ) {
-                    ioLog.error( tr( "Cannot find DAS features for '%1' on %2" ).arg( accNumber ).arg( ftask->getSource( ).getName( ) ) );
+                    ioLog.info( tr( "Cannot find DAS features for '%1' on %2" ).arg( accNumber ).arg( ftask->getSource( ).getName( ) ) );
                 } else {
                     //merge features
                     if ( !isCanceled( ) ) {
