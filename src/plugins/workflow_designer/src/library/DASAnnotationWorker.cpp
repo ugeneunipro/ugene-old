@@ -30,6 +30,7 @@
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Lang/BaseAttributes.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNATranslation.h>
@@ -348,6 +349,13 @@ void DASAnnotationWorker::sl_taskFinished( ) {
          const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( results );
          output->put( Message( BaseTypes::ANNOTATION_TABLE_TYPE( ),
              qVariantFromValue<SharedDbiDataHandler>( tableId ) ) );
+
+         WorkflowMonitor* workflowMonitor = monitor();
+         if (NULL != workflowMonitor) {
+             foreach(const QString& message, t->getProblems()) {
+                 workflowMonitor->addError(message, actor->getId(), Problem::U2_WARNING);
+             }
+         }
 
          const QStringList ids = t->getAccessionNumbers( );
          const int countOfAccessions = ids.size( );

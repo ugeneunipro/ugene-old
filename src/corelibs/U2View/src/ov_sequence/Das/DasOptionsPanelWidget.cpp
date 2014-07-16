@@ -36,6 +36,8 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/L10n.h>
+#include <U2Core/TaskSignalMapper.h>
+
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -109,6 +111,7 @@ DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv)
 ,annotationsWidgetController(NULL)
 ,regionSelector(NULL)
 ,showMore(true)
+,loadDasFeaturesTask(NULL)
 ,fetchIdsAction(NULL)
 ,fetchAnnotationsAction(NULL)
 ,openInNewViewAction(NULL)
@@ -171,18 +174,11 @@ void DasOptionsPanelWidget::sl_loadAnnotations() {
     annotationData.clear();
     QList<DASSource> featureSources = getFeatureSources();
 
-    loadDasObjectTasks.clear();
-    foreach(const QString &accNumber, accessionNumbers){
-        foreach (DASSource featureSource, featureSources) {
-            LoadDasObjectTask * loadAnnotationsTask = new LoadDasObjectTask(accNumber, featureSource, DASFeatures);
-            connect(loadAnnotationsTask,
-                    SIGNAL(si_stateChanged()),
-                    SLOT(sl_onLoadAnnotationsFinish()));
-            loadDasObjectTasks << loadAnnotationsTask;
-        }
-    }
+    loadDasFeaturesTask = new LoadDasFeaturesTask(accessionNumbers, featureSources);
+    TaskSignalMapper *taskMapper = new TaskSignalMapper(loadDasFeaturesTask);
+    connect(taskMapper, SIGNAL(si_taskFinished(Task*)), this, SLOT(sl_onLoadAnnotationsFinish()));
 
-    AppContext::getTaskScheduler()->registerTopLevelTask(new MultiTask("Load DAS annotations for current sequence", loadDasObjectTasks));
+    AppContext::getTaskScheduler()->registerTopLevelTask(loadDasFeaturesTask);
 }
 
 void DasOptionsPanelWidget::sl_blastSearchFinish() {
@@ -232,16 +228,10 @@ void DasOptionsPanelWidget::sl_blastSearchFinish() {
 }
 
 void DasOptionsPanelWidget::sl_onLoadAnnotationsFinish() {
-    LoadDasObjectTask* loadDasObjectTask = qobject_cast<LoadDasObjectTask*>(sender());
-    SAFE_POINT(loadDasObjectTask, "Sender is not defined", );
-
-    if (loadDasObjectTask->isFinished() && loadDasObjectTasks.contains(loadDasObjectTask)) {
-        loadDasObjectTasks.removeAll(loadDasObjectTask);
-        mergeFeatures(loadDasObjectTask->getAnnotationData());
-    }
-
-    if (loadDasObjectTasks.isEmpty()) {
+    if(NULL != loadDasFeaturesTask) {
+        annotationData = loadDasFeaturesTask->getAnnotationData();
         addAnnotations();
+        loadDasFeaturesTask = NULL;
     }
 }
 
@@ -514,23 +504,6 @@ DASSource DasOptionsPanelWidget::getSequenceSource() {
     return refSource;
 }
 
-void DasOptionsPanelWidget::mergeFeatures(const QMap<QString, QList<AnnotationData> >& newAnnotations) {
-    const QStringList& keys =  newAnnotations.keys();
-    foreach (const QString& key, keys) {
-        if (annotationData.contains(key)) {
-            const QList<AnnotationData>& curList = annotationData[key];
-            const QList<AnnotationData>& tomergeList = newAnnotations[key];
-            foreach ( const AnnotationData &d, tomergeList ) {
-                if (!curList.contains(d)) {
-                    annotationData[key].append(d);
-                }
-            }
-        } else {
-            annotationData.insert(key, newAnnotations[key]);
-        }
-    }
-}
-
 void DasOptionsPanelWidget::addAnnotations() {
     if (annotationData.isEmpty()) {
         return;
@@ -630,12 +603,10 @@ DasOptionsPanelWidget::~DasOptionsPanelWidget(){
 void DasOptionsPanelWidget::clear(){
     clearTableContent();
 
-    foreach(Task* loadDASTask, loadDasObjectTasks){
-        if (loadDASTask != NULL && !loadDASTask->isFinished()){
-            loadDASTask->cancel();
-        }
+    if(NULL != loadDasFeaturesTask && !loadDasFeaturesTask->isFinished()) {
+        loadDasFeaturesTask->cancel();
+        loadDasFeaturesTask = NULL;
     }
-    loadDasObjectTasks.clear();
 
     annotationData.clear();
 

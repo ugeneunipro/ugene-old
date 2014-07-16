@@ -108,6 +108,32 @@ private:
     QMap<QString, QList<AnnotationData> > annotationData;
 };
 
+class U2CORE_EXPORT LoadDasFeaturesTask : public Task{
+    Q_OBJECT
+        Q_DISABLE_COPY(LoadDasFeaturesTask)
+public:
+    LoadDasFeaturesTask(const QStringList& accId, const QList<DASSource>& source);
+    LoadDasFeaturesTask();
+
+    const QMap<QString, QList<AnnotationData> >& getAnnotationData( ) const;
+
+    QString generateReport() const;
+
+protected:
+    virtual void prepare();
+
+    QList<Task*> onSubTaskFinished(Task* subTask);
+
+private:
+    void mergeFeatures(const QMap<QString, QList<AnnotationData> >& newAnnotations);
+    QMap<QString, QList<AnnotationData> > annotationData;
+
+    QList<DASSource>          featureSources;
+    QStringList               accessionNumbers;
+    QString                   reports;
+};
+
+
 class U2CORE_EXPORT LoadDasDocumentTask : public BaseLoadRemoteDocumentTask{
     Q_OBJECT
 public:

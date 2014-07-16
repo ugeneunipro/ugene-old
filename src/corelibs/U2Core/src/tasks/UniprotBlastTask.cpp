@@ -34,6 +34,7 @@ namespace U2 {
 
 bool ReplyHandler::isMetaRegistered = false;
 
+const int ReplyHandler::MAX_ATTEMPT_NUMBER = 5;
 const QByteArray ReplyHandler::LOCATION = "Location";
 const QByteArray ReplyHandler::RETRY = "Retry-After";
 const QByteArray ReplyHandler::CONTENT_TYPE = "Content-Type";
@@ -44,7 +45,7 @@ const QByteArray ReplyHandler::RUNNING = "RUNNING";
 ReplyHandler::ReplyHandler(const QString& _url, TaskStateInfo* _os) :
     url(_url),
     os(_os),
-    attemptNumber(0)
+    curAttemptNumber(0)
 {
     registerMetaType();
 
@@ -76,7 +77,7 @@ void ReplyHandler::sl_replyFinished(QNetworkReply *reply) {
     CHECK_EXT(!os->isCoR(), emit si_finish(), );
 
     timer.stop();
-    attemptNumber = 0;
+    curAttemptNumber = 0;
 
     replyData = reply->readAll();
     ioLog.trace(QString("Server reply received, request url=\'%1\'").arg(reply->url().toString()));
@@ -132,9 +133,25 @@ void ReplyHandler::sl_replyFinished(QNetworkReply *reply) {
     }
 
     else {
-        os->setError(tr("Unexpected server response"));
-        ioLog.trace("Reply data: " + replyData.left(200) + "...");
-        emit si_finish();
+        if (curAttemptNumber >= MAX_ATTEMPT_NUMBER) {
+            os->setError(tr("Unexpected server response"));
+            ioLog.trace("Reply data: " + replyData.left(200) + "...");
+            emit si_finish();
+        }
+        else {
+            emit si_stateChanged(Waiting);
+
+            QByteArray waitFor = reply->rawHeader(RETRY);
+            bool ok = false;
+            int interval = waitFor.toInt(&ok);
+            if (ok == false || interval <= 0) {
+                interval = 10;
+            }
+
+            ioLog.trace("Still running the blast job...");
+            QTimer::singleShot(interval, this, SLOT(sl_timerShouts()));
+            curAttemptNumber++;
+        }
     }
 }
 
@@ -151,14 +168,14 @@ void ReplyHandler::sl_timerShouts() {
 }
 
 void ReplyHandler::sl_timeout() {
-    if (attemptNumber >= 3) {
+    if (curAttemptNumber >= MAX_ATTEMPT_NUMBER) {
         ioLog.trace("Server doesn't respond: set error");
         os->setError(tr("Remote server doesn't respond"));
         emit si_finish();
     }
 
-    ioLog.trace(QString("Server doesn't respond: attempt number %1").arg(QString::number(attemptNumber)));
-    attemptNumber++;
+    ioLog.trace(QString("Server doesn't respond: attempt number %1").arg(QString::number(curAttemptNumber)));
+    curAttemptNumber++;
     sendRequest();
 }
 void ReplyHandler::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *auth){
@@ -525,7 +542,7 @@ QString UniprotBlastTask::generateUrl() {
 //UniprotBlastAndLoadDASAnnotations
 UniprotBlastAndLoadDASAnnotations::UniprotBlastAndLoadDASAnnotations(
     const DASAnnotationsSettings &_settings )
-    : Task( tr( "BLAST IDs and DAS annotations" ), TaskFlags_FOSE_COSC | TaskFlag_NoRun ),
+    : Task( tr( "BLAST IDs and DAS annotations" ), TaskFlags(TaskFlag_CancelOnSubtaskCancel) | TaskFlag_NoRun ),
     settings(_settings), blastTask( NULL ),
     dasData( _settings.sequence.length( ), _settings.identityThreshold )
 {
@@ -549,6 +566,10 @@ QList<Task *> UniprotBlastAndLoadDASAnnotations::onSubTaskFinished( Task *subTas
     }
 
     if ( subTask == blastTask ) {
+        if (subTask->hasError()) {
+            setError(subTask->getError());
+        }
+
         QList<UniprotResult> uniprotResults = blastTask->getResults( );
         //take first results with the highest identity
         qSort( uniprotResults.begin( ), uniprotResults.end( ), identityLessThan );
@@ -573,6 +594,10 @@ QList<Task *> UniprotBlastAndLoadDASAnnotations::onSubTaskFinished( Task *subTas
         LoadDasObjectTask *loadDasObjectTask = qobject_cast<LoadDasObjectTask *>( subTask );
         if ( !loadDasObjectTask ) {
             return subtasks;
+        }
+
+        if (loadDasObjectTask->hasError()) {
+            problems.append(tr("Server \"%1\" is not available!").arg(loadDasObjectTask->getSource().getName()));
         }
 
         dasTasks.removeAll( loadDasObjectTask );

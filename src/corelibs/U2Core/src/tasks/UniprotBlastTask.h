@@ -76,9 +76,9 @@ private:
     QByteArray             replyData;
     TaskStateInfo*         os;
     QTimer                 timer;
-    int                    attemptNumber;
+    int                    curAttemptNumber;
 
-
+    static const int        MAX_ATTEMPT_NUMBER;
     static const QByteArray LOCATION;
     static const QByteArray RETRY;
     static const QByteArray CONTENT_TYPE;
@@ -275,6 +275,7 @@ public:
     QList<Task *> onSubTaskFinished( Task *subTask );
     QList<AnnotationData> prepareResults( );
     QStringList getAccessionNumbers( ) { return dasData.getAccessionNumbers( ); }
+    QStringList getProblems() {return problems;}
 
 private:
     DASAnnotationsSettings  settings;
@@ -283,6 +284,7 @@ private:
     QList<Task*>            dasTasks;
 
     DASAnnotationData       dasData;
+    QStringList             problems;
 };
 
 }   // namespace U2

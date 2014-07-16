@@ -48,6 +48,7 @@ class CreateAnnotationWidgetController;
 class LRegionsSelection;
 class ShowHideSubgroupWidget;
 class UniprotBlastSettings;
+class LoadDasFeaturesTask;
 
 class DasBlastSettingsWidget : public QWidget, private Ui_DasBlastSettingsWidget {
     Q_OBJECT
@@ -92,7 +93,6 @@ private:
 
     QList<DASSource> getFeatureSources();
     DASSource getSequenceSource();
-    void mergeFeatures(const QMap<QString, QList<AnnotationData> >& newAnnotations);
     void addAnnotations();
     U2Region getRegion();
     bool regionIsOk() const;
@@ -107,7 +107,7 @@ private:
     RegionSelector* regionSelector;
     bool showMore;
 
-    QList<Task*> loadDasObjectTasks;
+    LoadDasFeaturesTask* loadDasFeaturesTask;
     QAction* fetchIdsAction;
     QAction* fetchAnnotationsAction;
     QAction* openInNewViewAction;

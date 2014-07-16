@@ -41,7 +41,7 @@
 namespace U2 {
 
 LoadDasDocumentTask::LoadDasDocumentTask( const QString& accId, const QString& _fullPath, const DASSource& _referenceSource, const QList<DASSource>& _featureSources )
-: BaseLoadRemoteDocumentTask(_fullPath, QVariantMap(), TaskFlags(TaskFlag_FailOnSubtaskCancel | TaskFlag_MinimizeSubtaskErrorText | TaskFlag_NoRun))
+: BaseLoadRemoteDocumentTask(_fullPath, QVariantMap(), TaskFlags(TaskFlag_NoRun | TaskFlag_MinimizeSubtaskErrorText))
 ,accNumber(accId)
 ,featureSources(_featureSources)
 ,referenceSource(_referenceSource)
@@ -368,6 +368,66 @@ void LoadDasObjectTask::onProxyAuthenticationRequired(const QNetworkProxy &proxy
     auth->setUser(proxy.user());
     auth->setPassword(proxy.password());
     disconnect(this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
+}
+
+//////////////////////////////////////////////////////////////////////////
+//LoadDasFeaturesTask
+LoadDasFeaturesTask::LoadDasFeaturesTask(const QStringList& accId, const QList<DASSource>& source) 
+: Task(tr("Load DAS annotations for current sequence"), TaskFlags(TaskFlag_NoRun) | TaskFlag_CancelOnSubtaskCancel | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ), featureSources(source), accessionNumbers(accId) {
+}
+
+const QMap<QString, QList<AnnotationData> >& LoadDasFeaturesTask::getAnnotationData( ) const {
+    return annotationData;
+}
+
+void LoadDasFeaturesTask::prepare() {
+    foreach(const QString &accNumber, accessionNumbers){
+        foreach (DASSource featureSource, featureSources) {
+            LoadDasObjectTask * loadAnnotationsTask = new LoadDasObjectTask(accNumber, featureSource, DASFeatures);
+            addSubTask(loadAnnotationsTask);
+        }
+    }
+}
+
+QList<Task*> LoadDasFeaturesTask::onSubTaskFinished(Task* subTask) {
+    QList<Task*> res;
+    LoadDasObjectTask* loadDasObjectTask = dynamic_cast<LoadDasObjectTask*>(subTask);
+    SAFE_POINT(NULL != loadDasObjectTask, "Incorrect subtask in LoadDasObjectsTask", res);
+    if(loadDasObjectTask->hasError()) {
+        reports += "<font size=\"5\" color=\"orange\">";
+        reports += tr("Can not receive response from the server \"") + loadDasObjectTask->getSource().getName() + "\"</font><br>";
+    }
+    else {
+        QMap<QString, QList<AnnotationData> > data = loadDasObjectTask->getAnnotationData();
+        int annotationsNumber = 0;
+        foreach(const QString& key, data.keys()) {
+            annotationsNumber += data[key].size();
+        }
+        reports += tr("<font size=\"5\" color=\"green\">Received %1 annotations from the server \"%2\"</font><br>").arg(annotationsNumber).arg(loadDasObjectTask->getSource().getName());
+        mergeFeatures(loadDasObjectTask->getAnnotationData());
+    }
+    return res;
+}
+
+void LoadDasFeaturesTask::mergeFeatures(const QMap<QString, QList<AnnotationData> >& newAnnotations) {
+    const QStringList& keys =  newAnnotations.keys();
+    foreach (const QString& key, keys) {
+        if (annotationData.contains(key)) {
+            const QList<AnnotationData>& curList = annotationData[key];
+            const QList<AnnotationData>& tomergeList = newAnnotations[key];
+            foreach ( const AnnotationData &d, tomergeList ) {
+                if (!curList.contains(d)) {
+                    annotationData[key].append(d);
+                }
+            }
+        } else {
+            annotationData.insert(key, newAnnotations[key]);
+        }
+    }
+}
+
+QString LoadDasFeaturesTask::generateReport() const {
+    return reports;
 }
 
 //////////////////////////////////////////////////////////////////////////
