@@ -44,6 +44,7 @@
 #include <U2Core/U2Region.h>
 #include <U2Core/PhyTree.h>
 #include <U2Core/Counter.h>
+#include <U2Core/TaskSignalMapper.h>
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
@@ -518,7 +519,9 @@ const TreeViewerUI::TreeLayout& TreeViewerUI::getTreeLayout() const {
 void TreeViewerUI::onPhyTreeChanged() {
     layoutTask = new CreateRectangularBranchesTask(phyObject->getTree()->getRootNode());
 
-    connect(layoutTask, SIGNAL(si_stateChanged()), SLOT(sl_rectLayoutRecomputed()));
+    TaskSignalMapper *taskMapper = new TaskSignalMapper(layoutTask);
+    connect(taskMapper, SIGNAL(si_taskFinished(Task*)), this, SLOT(sl_rectLayoutRecomputed()));
+
     TaskScheduler* scheduler = AppContext::getTaskScheduler();
     scheduler->registerTopLevelTask(layoutTask);
 
@@ -569,6 +572,7 @@ void TreeViewerUI::updateSettings(const TreeLabelsSettings &settings) {
         changeAlignmentSettings(settings.alignLabels);
         contAction->setChecked(settings.alignLabels);
     }
+    labelsSettings = settings;
 }
 
 void TreeViewerUI::sl_setSettingsTriggered() {
@@ -1424,6 +1428,8 @@ void TreeViewerUI::updateLabelsAlignment(bool on)
     }
 
     qreal sceneRightPos = scene()->sceneRect().right();
+    QList<GraphicsBranchItem*> branchItems;
+    qreal labelsShift = 0;
     while (!stack.empty()) {
         GraphicsBranchItem* item = stack.pop();
         QGraphicsSimpleTextItem* nameText = item->getNameText();
@@ -1435,6 +1441,7 @@ void TreeViewerUI::updateLabelsAlignment(bool on)
                 }
             }
         } else {
+            branchItems.append(item);
             qreal newWidth = 0;
             if(on){
                 QRectF textRect= nameText->sceneBoundingRect();
@@ -1445,8 +1452,14 @@ void TreeViewerUI::updateLabelsAlignment(bool on)
                     textRightPos = textRect.right();
                 }
                 newWidth = sceneRightPos - (textRightPos + GraphicsBranchItem::TextSpace);
+                labelsShift = qMin(newWidth, labelsShift);
             }
             item->setWidth(newWidth);
+        }
+    }
+    if(labelsShift < 0) {
+        foreach(GraphicsBranchItem* curItem,branchItems) {
+            curItem->setWidth(curItem->getWidth() - labelsShift);
         }
     }
     updateRect();

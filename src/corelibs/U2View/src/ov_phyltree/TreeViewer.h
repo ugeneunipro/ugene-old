@@ -314,10 +314,10 @@ private:
     BranchSettings      branchSettings;
     ButtonSettings      buttonSettings;
     TextSettings        textSettings;
-    TreeLabelsSettings  labelsSettings;
 protected:
     GraphicsRectangularBranchItem* rectRoot;
     TreeSettings        treeSettings;
+    TreeLabelsSettings  labelsSettings;
 };
 
 

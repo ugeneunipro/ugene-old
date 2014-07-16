@@ -562,6 +562,9 @@ void MSAEditorTreeViewerUI::sl_rectLayoutRecomputed() {
     TreeViewerUI::sl_rectLayoutRecomputed();
     curMSATreeViewer->setSynchronizationMode(syncMode);
     setMatrix(curMatrix);
+    TreeLabelsSettings tempSettings = labelsSettings;
+    TreeViewerUI::updateSettings(TreeLabelsSettings());
+    TreeViewerUI::updateSettings(tempSettings);
 }
 
 void MSAEditorTreeViewerUI::sl_onVisibleRangeChanged(QStringList visibleSeqs, int height) {

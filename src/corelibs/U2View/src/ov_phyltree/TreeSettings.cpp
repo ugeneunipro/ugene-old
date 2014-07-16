@@ -41,7 +41,7 @@ bool TreeSettings::operator ==(const TreeSettings &other) const {
 }
 
 //TextSettings
-QColor TextSettings::defaultColor = QColor(Qt::gray);
+QColor TextSettings::defaultColor = QColor(Qt::darkGray);
 QFont TextSettings::defaultFont = TreeViewerUtils::getFont();
 
 TextSettings::TextSettings() :
