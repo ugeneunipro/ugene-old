@@ -19,17 +19,15 @@
  * MA 02110-1301, USA.
  */
 
+#include "VariantTrackObject.h"
+#include "GObjectTypes.h"
+
 #include <U2Core/AppContext.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/GHints.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2VariantDbi.h>
-
-#include "GObjectTypes.h"
-#include "VariantTrackObject.h"
 
 namespace U2 {
 
@@ -66,16 +64,11 @@ U2VariantTrack VariantTrackObject::getVariantTrack(U2OpStatus &os) const {
     return vdbi->getVariantTrack(entityRef.entityId, os);
 }
 
-GObject* VariantTrackObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints) const{
+GObject* VariantTrackObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os) const{
     DbiConnection srcCon(entityRef.dbiRef, true, os);
     CHECK_OP(os, NULL);
     DbiConnection dstCon(dstDbiRef, true, os);
     CHECK_OP(os, NULL);
-    Q_UNUSED(srcCon);
-
-    GHintsDefaultImpl gHints(getGHintsMap());
-    gHints.setAll(hints);
-    const QString dstFolder = gHints.get(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
 
     U2VariantDbi *dstVDbi = dstCon.dbi->getVariantDbi();
     SAFE_POINT(dstVDbi != NULL, "NULL destination variant DBI", NULL);
@@ -83,7 +76,7 @@ GObject* VariantTrackObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, co
     U2VariantTrack track = this->getVariantTrack(os);
     CHECK_OP(os, NULL);
     U2VariantTrack clonedTrack = track;
-    dstVDbi->createVariantTrack(clonedTrack, TrackType_All, dstFolder, os);
+    dstVDbi->createVariantTrack(clonedTrack, TrackType_All, U2ObjectDbi::ROOT_FOLDER, os);
     CHECK_OP(os, NULL);
 
     QScopedPointer< U2DbiIterator<U2Variant> > varsIter(this->getVariants(U2_REGION_MAX, os));
@@ -92,7 +85,7 @@ GObject* VariantTrackObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, co
     CHECK_OP(os, NULL);
 
     U2EntityRef clonedTrackRef(dstDbiRef, clonedTrack.id);
-    VariantTrackObject *clonedObj = new VariantTrackObject(getGObjectName(), clonedTrackRef, gHints.getMap());
+    VariantTrackObject *clonedObj = new VariantTrackObject(getGObjectName(), clonedTrackRef, getGHintsMap());
     return clonedObj;
 }
 

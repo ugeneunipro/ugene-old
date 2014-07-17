@@ -195,7 +195,6 @@ void GObject::setRelationsInDb(QList<GObjectRelation>& list) const {
 void GObject::setupHints(QVariantMap hintsMap) {
     hintsMap.remove(DocumentFormat::DBI_REF_HINT);
     hintsMap.remove(DocumentFormat::DBI_FOLDER_HINT);
-    hintsMap.remove(DocumentFormat::DEEP_COPY_OBJECT);
 
     hintsMap.insert(GObjectHint_LastUsedObjectName, name);
 

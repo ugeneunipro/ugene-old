@@ -23,21 +23,19 @@
 #include <QtXml/qdom.h>
 
 #include <U2Core/AppContext.h>
-#include <U2Core/GHints.h>
+#include <U2Gui/MainWindow.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
-#include <U2Core/SelectionUtils.h>
 #include <U2Core/Task.h>
+#include <U2Core/SelectionUtils.h>
 #include <U2Core/U2DbiUtils.h>
-
-#include <U2Gui/MainWindow.h>
 
 #include <U2Lang/HRSchemaSerializer.h>
 #include <U2Lang/WorkflowIOTasks.h>
 #include <U2Lang/WorkflowUtils.h>
 
-#include "WorkflowDocument.h"
 #include "WorkflowViewController.h"
+#include "WorkflowDocument.h"
 
 /* TRANSLATOR U2::IOAdapter */
 
@@ -66,11 +64,8 @@ void WorkflowGObject::setSceneRawData(const QString & data) {
     serializedScene = data;
 }
 
-GObject* WorkflowGObject::clone(const U2DbiRef&, U2OpStatus&, const QVariantMap &hints) const {
-    GHintsDefaultImpl gHints(getGHintsMap());
-    gHints.setAll(hints);
-
-    WorkflowGObject* copy = new WorkflowGObject(getGObjectName(), serializedScene, gHints.getMap());
+GObject* WorkflowGObject::clone(const U2DbiRef&, U2OpStatus&) const {
+    WorkflowGObject* copy = new WorkflowGObject(getGObjectName(), serializedScene, getGHintsMap());
     assert(!view);
     return copy;
 }

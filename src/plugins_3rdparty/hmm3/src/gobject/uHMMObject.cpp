@@ -54,7 +54,7 @@ P7_HMM* UHMMObject::takeHMM() {
     return ret;
 }
 
-GObject* UHMMObject::clone(const U2DbiRef&, U2OpStatus&, const QVariantMap &) const {
+GObject* UHMMObject::clone(const U2DbiRef&, U2OpStatus&) const {
     P7_HMM* newHMM = p7_hmm_Clone( hmm );
     UHMMObject* cln = new UHMMObject( newHMM, getGObjectName() );
     cln->setIndexInfo( getIndexInfo() );

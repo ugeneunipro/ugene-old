@@ -35,6 +35,8 @@ public:
 
     FormatCheckResult checkRawData(QByteArray const &, GUrl const & = GUrl()) const;
 
+    static GObject * createObject(const U2DbiRef &ref, const U2DataId &id, const QString &name);
+
 private:
     // Ignore incoming U2DbiRef, use U2DbiRef from IOAdapter
     Document* loadDocument(IOAdapter* io, const U2DbiRef& unused, const QVariantMap& hints, U2OpStatus& os);

@@ -19,34 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AnnotationTableObject.h>
+#include "GObjectUtils.h"
+
 #include <U2Core/AppContext.h>
-#include <U2Core/AssemblyObject.h>
-#include <U2Core/BioStruct3DObject.h>
-#include <U2Core/BioStruct3DObject.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/DNAChromatogramObject.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/GHints.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/GUrl.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/PFMatrixObject.h>
-#include <U2Core/PWMatrixObject.h>
-#include <U2Core/PhyTreeObject.h>
 #include <U2Core/ProjectModel.h>
-#include <U2Core/TextObject.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/GHints.h>
+#include <U2Core/GUrl.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/UnloadedObject.h>
+#include <U2Core/GObjectTypes.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectRelationsDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/UnloadedObject.h>
-#include <U2Core/VariantTrackObject.h>
-
-#include "GObjectUtils.h"
 
 namespace U2 {
 
@@ -381,43 +371,6 @@ void GObjectUtils::replaceAnnotationQualfier( AnnotationData &a, const QString &
     if ( create || !quals.isEmpty( ) ) {
         a.qualifiers << U2Qualifier( name, newVal );
     }
-}
-
-GObject *GObjectUtils::createObject(const U2DbiRef &ref, const U2DataId &id, const QString &name) {
-    const U2EntityRef entityRef(ref, id);
-    const U2DataType type = U2DbiUtils::toType(id);
-
-    switch (type) {
-    case U2Type::Sequence:
-        return new U2SequenceObject(name, entityRef);
-    case U2Type::Msa:
-        return new MAlignmentObject(name, entityRef);
-    case U2Type::Assembly:
-        return new AssemblyObject(name, entityRef);
-    case U2Type::VariantTrack:
-        return new VariantTrackObject(name, entityRef);
-    case U2Type::AnnotationTable:
-        return new AnnotationTableObject(name, entityRef);
-    case U2Type::Text:
-        return new TextObject(name, entityRef);
-    case U2Type::PhyTree:
-        return new PhyTreeObject(name, entityRef);
-    case U2Type::BioStruct3D:
-        return new BioStruct3DObject(name, entityRef);
-    case U2Type::Chromatogram:
-        return new DNAChromatogramObject(name, entityRef);
-    case U2Type::PFMatrix:
-        return new PFMatrixObject(name, entityRef);
-    case U2Type::PWMatrix:
-        return new PWMatrixObject(name, entityRef);
-    case U2Type::CrossDatabaseReference:
-        return NULL;
-    default:
-        coreLog.trace(QObject::tr("Unsupported object type: %1").arg(type));
-        return NULL;
-    }
-
-    return NULL;
 }
 
 } // namespace U2

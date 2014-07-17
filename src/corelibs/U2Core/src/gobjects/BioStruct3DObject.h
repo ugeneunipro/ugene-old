@@ -44,7 +44,7 @@ public:
     BioStruct3DObject(const QString &objectName, const U2EntityRef &structRef, const QVariantMap &hintsMap = QVariantMap());
 
     const BioStruct3D & getBioStruct3D() const;
-    GObject * clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints = QVariantMap()) const;
+    GObject * clone(const U2DbiRef&, U2OpStatus&) const;
 
 protected:
     void loadDataCore(U2OpStatus &os);

@@ -20,10 +20,7 @@
  */
 
 #include <U2Core/DatatypeSerializeUtils.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/GHints.h>
 #include <U2Core/RawDataUdrSchema.h>
-#include <U2Core/U2ObjectDbi.h>
 
 #include "../util/PMatrixSerializeUtils.h"
 #include "PWMatrixObject.h"
@@ -53,9 +50,8 @@ PWMatrixObject * PWMatrixObject::createInstance(const PWMatrix &matrix, const QS
     const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hintsMap)
 {
     U2PWMatrix object(dbiRef);
-    const QString dstFolder = hintsMap.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
     const U2EntityRef entRef = PMatrixSerializeUtils<WMatrixSerializer, PWMatrix>::commit(matrix,
-        objectName, dbiRef, dstFolder, object, os);
+        objectName, dbiRef, object, os);
     CHECK_OP(os, NULL);
     return new PWMatrixObject(matrix, objectName, entRef, hintsMap);
 }
@@ -83,17 +79,13 @@ const PWMatrix & PWMatrixObject::getMatrix() const {
     return m;
 }
 
-GObject * PWMatrixObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints) const {
-    GHintsDefaultImpl gHints(getGHintsMap());
-    gHints.setAll(hints);
-    const QString dstFolder = gHints.get(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
-
+GObject * PWMatrixObject::clone(const U2DbiRef &dstRef, U2OpStatus &os) const {
     U2PWMatrix dstObject;
-    RawDataUdrSchema::cloneObject(entityRef, dstDbiRef, dstFolder, dstObject, os);
+    RawDataUdrSchema::cloneObject(entityRef, dstRef, dstObject, os);
     CHECK_OP(os, NULL);
 
-    const U2EntityRef dstEntRef(dstDbiRef, dstObject.id);
-    PWMatrixObject *dst = new PWMatrixObject(getGObjectName(), dstEntRef, gHints.getMap());
+    const U2EntityRef dstEntRef(dstRef, dstObject.id);
+    PWMatrixObject *dst = new PWMatrixObject(getGObjectName(), dstEntRef, getGHintsMap());
     dst->setIndexInfo(getIndexInfo());
     return dst;
 }

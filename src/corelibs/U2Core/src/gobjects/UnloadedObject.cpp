@@ -19,10 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include "UnloadedObject.h"
+
 #include <U2Core/GHints.h>
 #include <U2Core/U2SafePoints.h>
-
-#include "UnloadedObject.h"
 
 namespace U2 {
 
@@ -40,11 +40,8 @@ UnloadedObject::UnloadedObject(const UnloadedObjectInfo& info)
     entityRef = info.entityRef;
 }
 
-GObject* UnloadedObject::clone(const U2DbiRef &/*dstDbiRef*/, U2OpStatus &/*os*/, const QVariantMap &hints) const {
-    GHintsDefaultImpl gHints(getGHintsMap());
-    gHints.setAll(hints);
-
-    UnloadedObject* cln = new UnloadedObject(getGObjectName(), getLoadedObjectType(), getEntityRef(), gHints.getMap());
+GObject* UnloadedObject::clone(const U2DbiRef&, U2OpStatus&) const {
+    UnloadedObject* cln = new UnloadedObject(getGObjectName(), getLoadedObjectType(), getEntityRef(), getGHintsMap());
     cln->setIndexInfo(getIndexInfo());
     return cln;
 }

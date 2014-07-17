@@ -122,7 +122,6 @@ QVariantMap ImportFileToDatabaseTask::prepareHints() const {
     hints[DocumentImporter::LOAD_RESULT_DOCUMENT] = false;
     hints[DocumentFormat::DBI_REF_HINT] = qVariantFromValue(dstDbiRef);
     hints[DocumentFormat::DBI_FOLDER_HINT] = getFolderName();
-    hints[DocumentFormat::DEEP_COPY_OBJECT] = true;
 
     switch (options.multiSequencePolicy) {
         case ImportToDatabaseOptions::SEPARATE:

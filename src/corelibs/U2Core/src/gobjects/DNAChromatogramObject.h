@@ -51,7 +51,7 @@ public:
 
     const DNAChromatogram &         getChromatogram() const;
 
-    GObject *                       clone(const U2DbiRef &dstRef, U2OpStatus &os, const QVariantMap &hints = QVariantMap()) const;
+    GObject *                       clone(const U2DbiRef &dstRef, U2OpStatus &os) const;
 
 protected:
     void                            loadDataCore(U2OpStatus &os);

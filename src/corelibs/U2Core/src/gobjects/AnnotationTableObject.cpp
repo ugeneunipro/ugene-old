@@ -23,15 +23,14 @@
 
 #include <U2Core/AnnotationTableObjectConstraints.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/GHints.h>
 #include <U2Core/Timer.h>
-#include <U2Core/U2FeatureUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2FeatureUtils.h>
 
-#include "AnnotationTableObject.h"
 #include "GObjectTypes.h"
+#include "AnnotationTableObject.h"
 
 namespace U2 {
 
@@ -160,13 +159,10 @@ void AnnotationTableObject::removeAnnotations( const QList<Annotation> &annotati
     setModified( true );
 }
 
-GObject * AnnotationTableObject::clone(const U2DbiRef &ref, U2OpStatus &os, const QVariantMap &hints ) const {
+GObject * AnnotationTableObject::clone( const U2DbiRef &ref, U2OpStatus &os ) const {
     ensureDataLoaded();
 
-    GHintsDefaultImpl gHints(getGHintsMap());
-    gHints.setAll(hints);
-
-    AnnotationTableObject *cln = new AnnotationTableObject( getGObjectName( ), ref, gHints.getMap() );
+    AnnotationTableObject *cln = new AnnotationTableObject( getGObjectName( ), ref, getGHintsMap( ) );
     cln->setIndexInfo( getIndexInfo( ) );
 
     QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( rootFeatureId,
