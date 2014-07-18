@@ -89,7 +89,7 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
         key = asciiToVirtual(key);
     }
 
-    GTGlobals::sleep(10);
+    GTGlobals::sleep(1);
     keyPress(os, (int)key, modifiers);
 }
 #undef GT_METHOD_NAME
@@ -103,7 +103,7 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 
         CGEventPost(kCGSessionEventTap, event);
         CFRelease(event);
-        GTGlobals::sleep(10);
+        GTGlobals::sleep(1);
     }
 
     CGEventRef event = CGEventCreateKeyboardEvent(NULL, key, true);
@@ -111,7 +111,7 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, int key, int modifiers)
 
     CGEventPost(kCGSessionEventTap, event);
     CFRelease(event);
-    GTGlobals::sleep(10);
+    GTGlobals::sleep(1);
 }
 #undef GT_METHOD_NAME
 
@@ -170,7 +170,7 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, char key, int modifiers)
         CFRelease(event);
     }
 
-    GTGlobals::sleep(10);
+    GTGlobals::sleep(1);
     keyRelease(os, (int) key, modifiers);
 }
 #undef GT_METHOD_NAME
@@ -183,7 +183,7 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
 
     CGEventPost(kCGSessionEventTap, event);
     CFRelease(event);
-    GTGlobals::sleep(10);
+    GTGlobals::sleep(1);
 
     if (modifiers) {
         CGEventRef event = CGEventCreateKeyboardEvent(NULL, modifiers, false);
@@ -192,7 +192,7 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, int key, int modifiers)
         CGEventPost(kCGSessionEventTap, event);
         CFRelease(event);
     }
-    GTGlobals::sleep(10);
+    GTGlobals::sleep(1);
 }
 #undef GT_METHOD_NAME
 
@@ -239,9 +239,7 @@ void GTKeyboardDriver::keyClick(U2::U2OpStatus &os, char key, int modifiers)
     if (modifiers==GTKeyboardDriver::key["ctrl"])
         modifiers=GTKeyboardDriver::key["cmd"];
     keyPress(os, key, modifiers);
-    GTGlobals::sleep(10);
     keyRelease(os, key, modifiers);
-    GTGlobals::sleep(10);
 }
 #undef GT_METHOD_NAME
 
