@@ -278,6 +278,8 @@ void SQLiteDbi::upgrade(U2OpStatus &os) {
     CHECK_OP(os, );
     objectRelationsDbi->upgrade(os);
     CHECK_OP(os, );
+    assemblyDbi->upgrade(os);
+    CHECK_OP(os, );
     setVersionProperties(Version::minVersionForSQLite(), os);
 }
 

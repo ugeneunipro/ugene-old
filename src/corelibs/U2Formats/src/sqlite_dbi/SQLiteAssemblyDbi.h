@@ -120,6 +120,8 @@ public:
     virtual void initSqlSchema(U2OpStatus& os);
     virtual void shutdown(U2OpStatus& os);
 
+    void upgrade(U2OpStatus &os);
+
 private:
     virtual void addReads(AssemblyAdapter* a, U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os);
 

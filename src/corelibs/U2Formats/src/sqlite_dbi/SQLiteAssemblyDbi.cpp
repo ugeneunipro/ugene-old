@@ -46,6 +46,17 @@ SQLiteAssemblyDbi::~SQLiteAssemblyDbi() {
     assert(adaptersById.isEmpty());
 }
 
+namespace {
+
+QString getCreateAssemblyTableQuery(const QString &tableAlias = "Assembly") {
+    return QString("CREATE TABLE %1 (object INTEGER PRIMARY KEY, "
+        "reference INTEGER, imethod TEXT NOT NULL, cmethod TEXT NOT NULL, idata BLOB, cdata BLOB, "
+        "FOREIGN KEY(object) REFERENCES Object(id), "
+        "FOREIGN KEY(reference) REFERENCES Object(id) ON DELETE SET NULL)").arg(tableAlias);
+}
+
+}
+
 void SQLiteAssemblyDbi::initSqlSchema(U2OpStatus& os) {
     if (os.hasError()) {
         return;
@@ -56,10 +67,7 @@ void SQLiteAssemblyDbi::initSqlSchema(U2OpStatus& os) {
     // cmethod - method used to handle compression of reads data
     // idata - additional indexing method data
     // cdata - additional compression method data
-    SQLiteQuery("CREATE TABLE Assembly (object INTEGER PRIMARY KEY, reference INTEGER, imethod TEXT NOT NULL, cmethod TEXT NOT NULL, "
-        "idata BLOB, cdata BLOB, " 
-        " FOREIGN KEY(object) REFERENCES Object(id), "
-        " FOREIGN KEY(reference) REFERENCES Object(id) ON DELETE SET NULL)", db, os).execute();
+    SQLiteQuery(getCreateAssemblyTableQuery(), db, os).execute();
 }
 
 void SQLiteAssemblyDbi::shutdown(U2OpStatus& os) {
@@ -69,6 +77,57 @@ void SQLiteAssemblyDbi::shutdown(U2OpStatus& os) {
     }
     adaptersById.clear();
 }
+
+void SQLiteAssemblyDbi::upgrade(U2OpStatus &os) {
+    SQLiteQuery q("PRAGMA foreign_key_list(Assembly)", db, os);
+    SAFE_POINT_OP(os, );
+
+    bool referenceIsObject = false;
+    while (q.step()) {
+        const QString sourceColumn = q.getString(3);
+        if ("reference" == sourceColumn && "Object" == q.getString(2)) {
+            referenceIsObject = true;
+            break;
+        }
+    }
+    if (referenceIsObject) {
+        return;
+    }
+
+    const QString newTableName = "Assembly_new";
+
+    SQLiteQuery(getCreateAssemblyTableQuery(newTableName), db, os).execute();
+    SAFE_POINT_OP(os,);
+
+    SQLiteQuery assemblyFetch("SELECT object, reference, imethod, cmethod, idata, cdata FROM Assembly", db, os);
+    SAFE_POINT_OP(os, );
+
+    SQLiteQuery assemblyInsert(QString("INSERT INTO %1 (object, reference, imethod, cmethod, idata, cdata) VALUES(?1, ?2, ?3, ?4, ?5, ?6)")
+        .arg(newTableName), db, os);
+    SAFE_POINT_OP(os, );
+    while (assemblyFetch.step()) {
+        assemblyInsert.bindDataId(1, assemblyFetch.getDataId(0, U2Type::Assembly));
+        const U2DataId refId = assemblyFetch.getDataId(1, U2Type::CrossDatabaseReference);
+        const qint64 dbiRefId = U2DbiUtils::toDbiId(refId);
+        if (0 == dbiRefId) {
+            assemblyInsert.bindNull(2);
+        } else {
+            assemblyInsert.bindDataId(2, refId);
+        }
+        assemblyInsert.bindString(3, assemblyFetch.getString(2));
+        assemblyInsert.bindString(4, assemblyFetch.getString(3));
+        assemblyInsert.bindBlob(5, assemblyFetch.getBlob(4));
+        assemblyInsert.bindBlob(6, assemblyFetch.getBlob(5));
+        assemblyInsert.insert();
+        SAFE_POINT_OP(os, );
+        assemblyInsert.reset();
+    }
+
+    SQLiteQuery("DROP TABLE Assembly", db, os).execute();
+    SAFE_POINT_OP(os,);
+
+    SQLiteQuery(QString("ALTER TABLE %1 RENAME TO Assembly").arg(newTableName), db, os).execute();
+ }
 
 AssemblyAdapter* SQLiteAssemblyDbi::getAdapter(const U2DataId& assemblyId, U2OpStatus& os) {
     qint64 sqliteId = U2DbiUtils::toDbiId(assemblyId);
