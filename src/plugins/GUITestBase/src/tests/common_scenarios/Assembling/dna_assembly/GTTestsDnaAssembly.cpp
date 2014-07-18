@@ -19,12 +19,12 @@
  * MA 02110-1301, USA.
  */
 
+#include "GTTestsDnaAssembly.h"
+#include "GTUtilsTaskTreeView.h"
 #include "api/GTMenu.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
-
-#include "GTTestsDnaAssembly.h"
 
 namespace U2 {
 namespace GUITest_dna_assembly {
@@ -59,10 +59,10 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
                                                  "e_coli_1000.fastq");
 
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "GUITest_dna_assembly_test_0002.ugenedb"));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
 
-    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
-    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003) {
@@ -74,10 +74,10 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
                                                  AlignShortReadsFiller::Parameters::Bowtie);
 
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "GUITest_dna_assembly_test_0003.ugenedb"));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
 
-    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
-    GTGlobals::sleep(20000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0004) {
@@ -89,10 +89,10 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
                                                  AlignShortReadsFiller::Parameters::Bwa);
 
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "GUITest_dna_assembly_test_0004.ugenedb"));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
 
-    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
-    GTGlobals::sleep(20000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0005) {
@@ -104,11 +104,10 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
                                                  AlignShortReadsFiller::Parameters::BwaMem);
 
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "GUITest_dna_assembly_test_0005.ugenedb"));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
 
-    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
-    GTGlobals::sleep(20000);
-
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
@@ -120,10 +119,10 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
                                                  AlignShortReadsFiller::Parameters::BwaSw);
 
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "GUITest_dna_assembly_test_0006.ugenedb"));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
 
-    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
-    GTGlobals::sleep(20000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 

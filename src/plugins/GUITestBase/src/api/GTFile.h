@@ -58,7 +58,7 @@ public:
     static void copy(U2OpStatus &os, const QString& from, const QString& to);
 
     // copy directory removing target file if exist
-    static void copyDir(U2OpStatus &os, const QString& dirToCopy, const QString& diToPaste);
+    static void copyDir(U2OpStatus &os, const QString& dirToCopy, const QString& dirToPaste);
 
     // copy file removing target file if exist
     static void removeDir(QString dirName);

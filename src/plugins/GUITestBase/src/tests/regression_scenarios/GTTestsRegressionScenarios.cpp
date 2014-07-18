@@ -3369,8 +3369,9 @@ GUI_TEST_CLASS_DEFINITION( test_2267_2 ){
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2268 ) {
-//    1. Forbid write access to the t-coffee directory (chmod 555 %t-coffee-dir%).
-    // Permissions will be returned to the original state, if UGENE won't crash.
+//    0. Copy t-coffee tool to the place where UGENE has enough permissions to change file permissions;
+//    Set the copied t-coffee tool in preferences.
+
     GTGlobals::sleep();
     ExternalToolRegistry* etRegistry = AppContext::getExternalToolRegistry();
     CHECK_SET_ERR(etRegistry, "External tool registry is NULL");
@@ -3381,6 +3382,18 @@ GUI_TEST_CLASS_DEFINITION( test_2268 ) {
 
     QDir toolDir = toolPath.dir();
     toolDir.cdUp();
+    GTFile::copyDir(os, toolDir.absolutePath(), sandBoxDir + "GUITest_regression_scenarios_test_2268/");
+
+    // Hack, it is better to set the tool path via the preferences dialog
+    toolPath.setFile(sandBoxDir + "GUITest_regression_scenarios_test_2268/bin/t_coffee");
+    CHECK_SET_ERR(toolPath.exists(), "The copied T-coffee tool does not exist");
+    tCoffee->setPath(toolPath.absoluteFilePath());
+
+    toolDir = toolPath.dir();
+    toolDir.cdUp();
+
+//    1. Forbid write access to the t-coffee directory (chmod 555 %t-coffee-dir%).
+    // Permissions will be returned to the original state, if UGENE won't crash.
 
     PermissionsSetter permSetter;
     QFile::Permissions p = QFile::WriteOwner |
