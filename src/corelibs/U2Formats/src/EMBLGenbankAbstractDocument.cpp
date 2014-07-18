@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <limits.h>
+
 #include <QtCore/QBuffer>
 #include <QtCore/QScopedPointer>
 
@@ -167,6 +169,19 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
 
             QStringList groupNames;
             foreach ( SharedAnnotationData d, data.features ) {
+                if (!d->location->regions.isEmpty()) {
+                    bool annotationOversized = false;
+                    for (int i = 0, n = d->location->regions.size(); i < n; ++i) {
+                        // for some reason larger numbers cannot be stored within rtree SQLite tables
+                        if (d->location->regions[i].endPos() > 9223371036854775807) {
+                            annotationOversized = true;
+                            break;
+                        }
+                    }
+                    if (annotationOversized) {
+                        continue;
+                    }
+                }
                 groupNames.clear( );
                 d->removeAllQualifiers( GBFeatureUtils::QUALIFIER_GROUP, groupNames );
                 if (groupNames.isEmpty()) {
@@ -181,14 +196,13 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
             if (data.tags.contains(DNAInfo::COMMENT) && getFormatId() == BaseDocumentFormats::PLAIN_GENBANK) {
                 QStringList commentSection = data.tags.value(DNAInfo::COMMENT).toStringList();
                 if (commentSection.size() > 0) {
-                    AnnotationData* a = new AnnotationData();
-                    SharedAnnotationData f(a);
-                    f->name = "comment";
-                    f->location->regions.append(U2Region(0, sequenceSize));
+                    AnnotationData f;
+                    f.name = "comment";
+                    f.location->regions.append(U2Region(0, sequenceSize));
                     for(int i = 0; i < commentSection.size(); ++i) {
-                        f->qualifiers.append( U2Qualifier(QString("%1").arg(i + 1,2,10,QChar('0')), commentSection[i]));
+                        f.qualifiers.append( U2Qualifier(QString("%1").arg(i + 1,2,10,QChar('0')), commentSection[i]));
                     }
-                    annotationsObject->addAnnotation( *f, "comment");
+                    annotationsObject->addAnnotation( f, "comment" );
                 }
             }
 
