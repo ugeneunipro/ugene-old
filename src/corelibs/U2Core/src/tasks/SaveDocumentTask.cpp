@@ -167,6 +167,7 @@ Task::ReportResult SaveDocumentTask::report() {
     }
     if (doc) {
         doc->setLastUpdateTime();
+        doc->getGHints()->remove(ProjectLoaderHint_DontCheckForExistence);
     }
     bool dontUnload = flags.testFlag(SaveDoc_DestroyButDontUnload);
     if (flags.testFlag(SaveDoc_DestroyAfter) || dontUnload) {
@@ -188,7 +189,6 @@ Task::ReportResult SaveDocumentTask::report() {
             AppContext::getTaskScheduler()->registerTopLevelTask(openTask);
         }
     }
-    doc->getGHints()->remove(ProjectLoaderHint_DontCheckForExistence);
     return Task::ReportResult_Finished;
 }
 
