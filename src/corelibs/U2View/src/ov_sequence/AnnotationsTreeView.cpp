@@ -951,6 +951,10 @@ static QList<AVQualifierItem*> selectQualifierItems(const QList<QTreeWidgetItem*
 }
 
 void AnnotationsTreeView::sl_removeObjectFromView() {
+    if(isDragging) {
+        return;
+    }
+
     QList<AVGroupItem*> topLevelGroups = selectGroupItems(tree->selectedItems(), TriState_Unknown, TriState_Yes);
     QList<GObject*> objects;
     foreach(AVGroupItem* gItem, topLevelGroups) {
@@ -974,6 +978,10 @@ static bool groupDepthInverseComparator(const AVGroupItem* i1, const AVGroupItem
 
 void AnnotationsTreeView::sl_removeAnnsAndQs() {
     //remove selected qualifiers first (cache them, since different qualifier items with equal name/val are not distinguished)
+    if(isDragging) {
+       return;
+    }
+
     QList<AVQualifierItem*> qualifierItemsToRemove = selectQualifierItems(tree->selectedItems(), TriState_No);
     QList<U2Qualifier> qualsToRemove;
     qualsToRemove.reserve( qualifierItemsToRemove.size( ) );
@@ -1560,6 +1568,10 @@ void AnnotationsTreeView::sl_onToggleQualifierColumn() {
 }
 
 void AnnotationsTreeView::sl_onRemoveColumnByHeaderClick() {
+    if(isDragging) {
+        return;
+    }
+
     assert(lastClickedColumn >= 2);
     assert(lastClickedColumn-2 <= qColumns.size());
     removeQualifierColumn(qColumns[lastClickedColumn-2]);
