@@ -686,16 +686,17 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
 //1. Open file _common_data/scenario/tree_view/COI.nwk
     GTFileDialog::openFile(os,testDir + "_common_data/scenarios/tree_view/", "COI.nwk");
     GTGlobals::sleep(500);
-//Expected state: philogenetic tree appears
+//Expected state: phylogenetic tree appears
 
 //2. Open context menu on branch and  select {change settings} menu item
     QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
     QList<QGraphicsItem*> list = treeView->scene()->items();
-    QList<QGraphicsItem*> nodeList;
+    QList<GraphicsButtonItem*> nodeList;
 
     foreach(QGraphicsItem* item, list){
-        if(item->boundingRect().width()==10){
-            nodeList.append(item);
+        GraphicsButtonItem* buttonItem = dynamic_cast<GraphicsButtonItem*>(item);
+        if(NULL != buttonItem){
+            nodeList.append(buttonItem);
         }
     }
 
@@ -703,6 +704,11 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
     QPointF sceneCoord = node->mapToScene(node->boundingRect().center());
     QPoint viewCord = treeView->mapFromScene(sceneCoord);
     QPoint globalCoord = treeView->mapToGlobal(viewCord);
+
+    //Expected state: Branch settings dialog appears
+
+    //3. Change thickness and collor to differ than standard. Click OK
+    //Expected state: selected branch changed
 
     GTUtilsDialog::waitForDialog(os, new BranchSettingsDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Branch Settings"));
@@ -719,13 +725,6 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
     QColor color(rgb);
 
     CHECK_SET_ERR(color.name()=="#0000ff","Expected: #0000ff, found: " + color.name());
-
-//Expected state: Branch settings dialog appears
-
-//3. Change thickness and collor to differ than standard. Click OK
-//Expected state: selected branch changed
-
-//4. Select bunch of branches with holding shift button. Perform  steps 2,3 for it.
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0011){

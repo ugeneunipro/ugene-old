@@ -1100,7 +1100,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0008_1);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0009);
-    //REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0010);
+    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0010);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011_1);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011_2);
