@@ -36,12 +36,15 @@ public:
     public:
         Parameters():
           runBlast(false),
-          programNameText("blastn") {}
+          programNameText("blastn"),
+          withInputFile(false) {}
 
 
           bool runBlast;
           QString programNameText;
           QString dbPath;
+          bool withInputFile;
+          QString inputPath;
     };
 
     BlastAllSupportDialogFiller(const Parameters &parameters, U2OpStatus &os);

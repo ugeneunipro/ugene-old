@@ -26,6 +26,8 @@
 #include "api/GTFileDialog.h"
 #include "api/GTWidget.h"
 
+#include "GTUtilsTaskTreeView.h"
+
 #include "BlastAllSupportDialogFiller.h"
 
 namespace U2 {
@@ -54,7 +56,13 @@ void BlastAllSupportDialogFiller::run() {
 
     if (!parameters.dbPath.isEmpty()) {
         GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, parameters.dbPath));
-        GTWidget::click(os, GTWidget::findWidget(os,"selectDatabasePushButton"));
+        GTWidget::click(os, GTWidget::findWidget(os, "selectDatabasePushButton"));
+    }
+
+    if (parameters.withInputFile) {
+        GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, parameters.inputPath));
+        GTWidget::click(os, GTWidget::findWidget(os, "browseInput"));
+        GTUtilsTaskTreeView::waitTaskFinished(os);
     }
 
     GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);

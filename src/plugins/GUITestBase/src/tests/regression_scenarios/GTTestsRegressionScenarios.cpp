@@ -4859,7 +4859,6 @@ GUI_TEST_CLASS_DEFINITION(test_3170) {
 
     BlastAllSupportDialogFiller::Parameters blastParams;
     blastParams.runBlast = true;
-    blastParams.programNameText = "blastn";
     blastParams.dbPath = testDir + "_common_data/cmdline/external-tool-support/blastplus/human_T1/human_T1.nhr";
     GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(blastParams, os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "query_with_blast+", GTGlobals::UseMouse));
@@ -4872,6 +4871,40 @@ GUI_TEST_CLASS_DEFINITION(test_3170) {
     bool found2 = GTUtilsAnnotationsTreeView::findRegion(os, "blast result", U2Region(1, 52));
     CHECK_OP(os, );
     CHECK_SET_ERR(!found2, "Wrong blast result");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3209_1) {
+    // BLAST+ from file
+    BlastAllSupportDialogFiller::Parameters blastParams;
+    blastParams.runBlast = true;
+    blastParams.programNameText = "blastn";
+    blastParams.dbPath = testDir + "_common_data/cmdline/external-tool-support/blastplus/human_T1/human_T1.nhr";
+    blastParams.withInputFile = true;
+    blastParams.inputPath = dataDir + "samples/FASTA/human_T1.fa";
+    GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(blastParams, os));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "BLAST" << "BLAST+ Search");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    bool found = GTUtilsAnnotationsTreeView::findRegion(os, "blast result", U2Region(5061, 291));
+    CHECK_OP(os, );
+    CHECK_SET_ERR(found, "Can not find the blast result");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3209_2) {
+    // BLAST from file
+    BlastAllSupportDialogFiller::Parameters blastParams;
+    blastParams.runBlast = true;
+    blastParams.programNameText = "blastn";
+    blastParams.dbPath = testDir + "_common_data/cmdline/external-tool-support/blastplus/human_T1/human_T1.nhr";
+    blastParams.withInputFile = true;
+    blastParams.inputPath = dataDir + "samples/FASTA/human_T1.fa";
+    GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(blastParams, os));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "BLAST" << "BLAST Search");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    bool found = GTUtilsAnnotationsTreeView::findRegion(os, "blast result", U2Region(5061, 291));
+    CHECK_OP(os, );
+    CHECK_SET_ERR(found, "Can not find the blast result");
 }
 
 } // GUITest_regression_scenarios namespace

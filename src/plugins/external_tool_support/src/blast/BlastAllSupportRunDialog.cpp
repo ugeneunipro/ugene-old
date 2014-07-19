@@ -155,6 +155,7 @@ BlastAllWithExtFileSpecifySupportRunDialog::BlastAllWithExtFileSpecifySupportRun
     inputFileLineEdit->setReadOnly(true);
     inputFileLineEdit->setText("");
     QToolButton * selectToolPathButton = new QToolButton(widget);
+    selectToolPathButton->setObjectName("browseInput");
     selectToolPathButton->setVisible(true);
     selectToolPathButton->setText("...");
 

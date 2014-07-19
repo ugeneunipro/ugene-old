@@ -458,7 +458,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
         //Add to menu NCBI Toolkit
         QMenu* tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         QMenu* blastSubmenu = tools->addMenu(tr("BLAST"));
-        blastSubmenu->setObjectName("BLAST");
+        blastSubmenu->menuAction()->setObjectName("BLAST");
         blastSubmenu->setIcon(QIcon(":external_tool_support/images/ncbi.png"));
         blastSubmenu->addAction(formatDBAction);
         blastSubmenu->addAction(blastallAction);

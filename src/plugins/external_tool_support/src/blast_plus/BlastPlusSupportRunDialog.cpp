@@ -227,6 +227,7 @@ BlastPlusWithExtFileSpecifySupportRunDialog::BlastPlusWithExtFileSpecifySupportR
     inputFileLineEdit->setReadOnly(true);
     inputFileLineEdit->setText("");
     QToolButton * selectToolPathButton = new QToolButton(widget);
+    selectToolPathButton->setObjectName("browseInput");
     selectToolPathButton->setVisible(true);
     selectToolPathButton->setText("...");
     connect(selectToolPathButton, SIGNAL(clicked()), inputFileLineEdit, SLOT(sl_onBrowse()));
