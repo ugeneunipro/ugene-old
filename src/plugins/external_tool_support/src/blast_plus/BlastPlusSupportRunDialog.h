@@ -59,9 +59,12 @@ private slots:
     void sl_cancel();
 
     void sl_inputFileLineEditChanged(const QString& str);
-    void sl_inputFileLoadTaskStateChanged();
+    void sl_inputFileOpened();
 private:
     bool checkToolPath();
+    void tryApplyDoc(Document *doc);
+    void onFormatError();
+    void loadDoc(const QString &url);
 
     FileLineEdit*   inputFileLineEdit;
     bool            wasNoOpenProject;
@@ -70,6 +73,7 @@ private:
     QList<GObjectReference>     sequencesRefList;
     QString &lastDBPath;
     QString &lastDBName;
+    bool hasValidInput;
 };
 }//namespace
 #endif // _U2_BLAST_PLUS_SUPPORT_RUN_DIALOG_H

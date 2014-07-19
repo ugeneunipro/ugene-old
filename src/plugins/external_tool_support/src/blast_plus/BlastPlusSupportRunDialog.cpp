@@ -28,6 +28,7 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DocumentUtils.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/IOAdapter.h>
@@ -36,7 +37,6 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/LoadDocumentTask.h>
-#include <U2Core/MultiTask.h>
 #include <U2Core/ProjectService.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -45,6 +45,7 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/OpenViewTask.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
@@ -98,12 +99,12 @@ BlastPlusSupportRunDialog::BlastPlusSupportRunDialog(U2SequenceObject* _dnaso, Q
 
 void BlastPlusSupportRunDialog::sl_lineEditChanged(){
     bool pathWarning = databasePathLineEdit->text().contains(' ');
-    QString pathTooltip = pathWarning ? tr("Database path contain space characters.") : "";
+    QString pathTooltip = pathWarning ? tr("Database path contains space characters.") : "";
     GUIUtils::setWidgetWarning(databasePathLineEdit, pathWarning);
     databasePathLineEdit->setToolTip(pathTooltip);
 
     bool nameWarning = baseNameLineEdit->text().contains(' ');
-    QString nameTooltip = nameWarning ? tr("Database name contain space characters.") : "";
+    QString nameTooltip = nameWarning ? tr("Database name contains space characters.") : "";
     GUIUtils::setWidgetWarning(baseNameLineEdit, nameWarning);
     baseNameLineEdit->setToolTip(nameTooltip);
 
@@ -216,7 +217,7 @@ void BlastPlusSupportRunDialog::sl_runQuery(){
 ////////////////////////////////////////
 //BlastPlusWithExtFileSpecifySupportRunDialog
 BlastPlusWithExtFileSpecifySupportRunDialog::BlastPlusWithExtFileSpecifySupportRunDialog(QString &_lastDBPath, QString &_lastDBName, QWidget *_parent) :
-        BlastRunCommonDialog(_parent), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
+        BlastRunCommonDialog(_parent), lastDBPath(_lastDBPath), lastDBName(_lastDBName), hasValidInput(false)
 {
     ca_c=NULL;
     wasNoOpenProject=false;
@@ -262,7 +263,7 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_lineEditChanged(){
         QPalette p = databasePathLineEdit->palette();
         p.setColor(QPalette::Active, QPalette::Base, QColor(255,200,200));//pink color
         databasePathLineEdit->setPalette(p);
-        databasePathLineEdit->setToolTip(tr("Database path contain space characters."));
+        databasePathLineEdit->setToolTip(tr("Database path contains space characters."));
         hasSpacesInDBPath=true;
     }else{
         QPalette p = databasePathLineEdit->palette();
@@ -274,7 +275,7 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_lineEditChanged(){
         QPalette p = baseNameLineEdit->palette();
         p.setColor(QPalette::Active, QPalette::Base, QColor(255,200,200));//pink color
         baseNameLineEdit->setPalette(p);
-        baseNameLineEdit->setToolTip(tr("Database name contain space characters."));
+        baseNameLineEdit->setToolTip(tr("Database name contains space characters."));
         hasSpacesInDBPath=true;
     }else{
         QPalette p = baseNameLineEdit->palette();
@@ -282,94 +283,120 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_lineEditChanged(){
         baseNameLineEdit->setPalette(p);
         baseNameLineEdit->setToolTip("");
     }
-    okButton->setEnabled(isFilledBaseNameLineEdit && isFilledDatabasePathLineEdit && isInputFileLineEdit && !hasSpacesInDBPath);
+    okButton->setEnabled(isFilledBaseNameLineEdit && isFilledDatabasePathLineEdit && isInputFileLineEdit && !hasSpacesInDBPath && hasValidInput);
 }
 
-void BlastPlusWithExtFileSpecifySupportRunDialog::sl_inputFileLineEditChanged(const QString& str){
-    if(!str.isEmpty()){
-        QFileInfo fi(str);
-        if (fi.exists()){
-            QList<Task *> tasks;
-            Project* proj = AppContext::getProject();
-            if (proj == NULL) {
-                wasNoOpenProject=true;
-                tasks.append( AppContext::getProjectLoader()->createNewProjectTask());
-            }
+void BlastPlusWithExtFileSpecifySupportRunDialog::sl_inputFileLineEditChanged(const QString &url){
+    hasValidInput = false;
+    sl_lineEditChanged();
+    CHECK(!url.isEmpty(), );
 
-            DocumentFormatConstraints c;
-            c.checkRawData = true;
-            c.supportedObjectTypes += GObjectTypes::SEQUENCE;
-            c.rawData = IOAdapterUtils::readFileHeader(str);
-            c.addFlagToExclude(DocumentFormatFlag_CannotBeCreated);
-            QList<DocumentFormatId> formats = AppContext::getDocumentFormatRegistry()->selectFormats(c);
-            if (formats.isEmpty()) {
-                //stateInfo.setError(tr("input_format_error"));
-                //show error message
-                return;
-            }
-            DocumentFormatId df = formats.first();
-            LoadDocumentTask* loadDocumentTask=
-                    new LoadDocumentTask(df,
-                                 str,
-                                 AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(str)));
-            connect(loadDocumentTask,SIGNAL(si_stateChanged()),SLOT(sl_inputFileLoadTaskStateChanged()));
-            tasks.append(loadDocumentTask);
-            AppContext::getTaskScheduler()->registerTopLevelTask(new MultiTask("Load documents and open project",tasks));
-        }else{
+    Project *proj = AppContext::getProject();
+    if (NULL == proj) {
+        wasNoOpenProject = true;
+    } else {
+        Document *doc = proj->findDocumentByURL(url);
+        if (NULL != doc) {
+            tryApplyDoc(doc);
             return;
         }
     }
+
+    loadDoc(url);
 }
-void BlastPlusWithExtFileSpecifySupportRunDialog::sl_inputFileLoadTaskStateChanged(){
-    LoadDocumentTask* s=qobject_cast<LoadDocumentTask*>(sender());
-    if((s->isFinished())&&(!s->hasError())){
-        int numOfSequences=0;
-        foreach(GObject* gobj, s->getDocument()->getObjects()){
-            if(gobj->getGObjectType()==GObjectTypes::SEQUENCE){
-                numOfSequences++;
-            }
-        }
-        settingsList.clear();
-        sequencesRefList.clear();
-        if(numOfSequences ==0){
-            QMessageBox::critical(this, tr("Wrong input file"), tr("This file not contain any sequence."));
-            inputFileLineEdit->setText("");
-            return;
-        }
-        foreach(GObject* gobj, s->getDocument()->getObjects()){
-            if(gobj->getGObjectType()==GObjectTypes::SEQUENCE){
-                U2SequenceObject* seq=(U2SequenceObject*)gobj;
-                BlastTaskSettings localSettings;
-                localSettings.querySequence=seq->getWholeSequenceData();
-                localSettings.alphabet=seq->getAlphabet();
-                if(localSettings.alphabet->getType() != DNAAlphabet_AMINO){
-                    localSettings.isNucleotideSeq=true;
-                }
-                localSettings.queryFile=s->getURL().getURLString();
-                settingsList.append(localSettings);
-                sequencesRefList.append(GObjectReference(gobj));
-            }
-        }
-        settings = settingsList.first();
 
-        //U2SequenceObject* seq=(U2SequenceObject*)sequencesRefList[0];
-        CreateAnnotationModel ca_m;
-        ca_m.data.name = "misc_feature";
-        ca_m.hideAnnotationName = true;
-        ca_m.hideLocation = true;
-        ca_m.sequenceObjectRef = sequencesRefList[0];//GObjectReference(seq);//not needed, it unused
-        ca_m.sequenceLen = 10;//dnaso->getSequenceLen();
-        ca_m.defaultIsNewDoc = true;
-        if(ca_c != NULL){
-            verticalLayout_4->removeWidget(ca_c->getWidget());
-            delete ca_c;
-        }
-        ca_c = new CreateAnnotationWidgetController(ca_m, this);
+namespace {
+    const char *INPUT_URL_PROP = "input_url";
+}
 
-        QWidget *wdgt = ca_c->getWidget();
-        wdgt->setMinimumHeight(150);
-        verticalLayout_4->addWidget(wdgt);
+void BlastPlusWithExtFileSpecifySupportRunDialog::onFormatError() {
+    QMessageBox::critical(this, tr("Wrong input file"), tr("This file has the incompatible format for the BLAST+ search."));
+    inputFileLineEdit->setText("");
+}
+
+void BlastPlusWithExtFileSpecifySupportRunDialog::loadDoc(const QString &url) {
+    FormatDetectionConfig config;
+    config.useExtensionBonus = true;
+    QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(url, config);
+    CHECK_EXT(!formats.isEmpty() && (NULL != formats.first().format), onFormatError(), );
+
+    DocumentFormat *format = formats.first().format;
+    CHECK_EXT(format->getSupportedObjectTypes().contains(GObjectTypes::SEQUENCE), onFormatError(), );
+
+    LoadDocumentTask *loadTask= new LoadDocumentTask(format->getFormatId(), url, AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url)));
+    AddDocumentAndOpenViewTask *openTask = new AddDocumentAndOpenViewTask(loadTask);
+    openTask->setProperty(INPUT_URL_PROP, url);
+
+    connect(openTask, SIGNAL(si_stateChanged()), SLOT(sl_inputFileOpened()));
+    AppContext::getTaskScheduler()->registerTopLevelTask(openTask);
+}
+
+void BlastPlusWithExtFileSpecifySupportRunDialog::sl_inputFileOpened() {
+    Task *t = qobject_cast<Task*>(sender());
+    CHECK(NULL != t, );
+    CHECK(t->isFinished() && !t->hasError(), );
+
+    Project *proj = AppContext::getProject();
+    SAFE_POINT(NULL != proj, "No opened project", );
+
+    QString url = t->property(INPUT_URL_PROP).toString();
+    Document *doc = proj->findDocumentByURL(url);
+    SAFE_POINT(NULL != doc, "No loaded document", );
+
+    tryApplyDoc(doc);
+}
+
+void BlastPlusWithExtFileSpecifySupportRunDialog::tryApplyDoc(Document *doc) {
+    int numOfSequences = 0;
+    foreach (GObject *obj, doc->getObjects()) {
+        if (obj->getGObjectType() == GObjectTypes::SEQUENCE) {
+            numOfSequences++;
+        }
     }
+    settingsList.clear();
+    sequencesRefList.clear();
+    if (0 == numOfSequences) {
+        QMessageBox::critical(this, tr("Wrong input file"), tr("This file does not contain sequences."));
+        inputFileLineEdit->setText("");
+        return;
+    }
+
+    hasValidInput = true;
+    foreach (GObject *obj, doc->getObjects()) {
+        if (obj->getGObjectType() != GObjectTypes::SEQUENCE) {
+            continue;
+        }
+        U2SequenceObject *seq = dynamic_cast<U2SequenceObject*>(obj);
+        SAFE_POINT(NULL != seq, "NULL sequence object", );
+
+        BlastTaskSettings localSettings;
+        localSettings.querySequence = seq->getWholeSequenceData();
+        localSettings.alphabet = seq->getAlphabet();
+        if (localSettings.alphabet->getType() != DNAAlphabet_AMINO){
+            localSettings.isNucleotideSeq = true;
+        }
+        localSettings.queryFile = doc->getURLString();
+        settingsList.append(localSettings);
+        sequencesRefList.append(GObjectReference(obj));
+    }
+    settings = settingsList.first();
+
+    CreateAnnotationModel ca_m;
+    ca_m.data.name = "misc_feature";
+    ca_m.hideAnnotationName = true;
+    ca_m.hideLocation = true;
+    ca_m.sequenceObjectRef = sequencesRefList[0];
+    ca_m.sequenceLen = 10;
+    ca_m.defaultIsNewDoc = true;
+    if (ca_c != NULL) {
+        verticalLayout_4->removeWidget(ca_c->getWidget());
+        delete ca_c;
+    }
+    ca_c = new CreateAnnotationWidgetController(ca_m, this);
+
+    QWidget *wdgt = ca_c->getWidget();
+    wdgt->setMinimumHeight(150);
+    verticalLayout_4->addWidget(wdgt);
     sl_lineEditChanged();
 }
 
@@ -490,7 +517,9 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::sl_cancel(){
         return;
     }
     if(wasNoOpenProject){
-        AppContext::getTaskScheduler()->registerTopLevelTask(AppContext::getProjectService()->closeProjectTask());
+        ProjectService *projService = AppContext::getProjectService();
+        CHECK(NULL != projService, );
+        AppContext::getTaskScheduler()->registerTopLevelTask(projService->closeProjectTask());
     }
 }
 }//namespace

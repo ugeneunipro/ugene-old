@@ -60,8 +60,12 @@ private slots:
     void sl_cancel();
 
     void sl_inputFileLineEditChanged(const QString& str);
-    void sl_inputFileLoadTaskStateChanged();
+    void sl_inputFileOpened();
 private:
+    void tryApplyDoc(Document *doc);
+    void onFormatError();
+    void loadDoc(const QString &url);
+
     FileLineEdit*   inputFileLineEdit;
     bool            wasNoOpenProject;
 
@@ -71,6 +75,7 @@ private:
     QString &lastDBName;
     QPushButton* okButton;
     QPushButton* cancelButton;
+    bool hasValidInput;
 };
 }//namespace
 #endif // _U2_BLASTALL_SUPPORT_RUN_DIALOG_H
