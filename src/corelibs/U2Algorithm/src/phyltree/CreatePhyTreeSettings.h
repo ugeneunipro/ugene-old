@@ -50,6 +50,7 @@ public:
     QStringList rowsOrder;
 
     QString mrBayesSettingsScript;
+    QStringList extToolArguments;
 };
 
 }

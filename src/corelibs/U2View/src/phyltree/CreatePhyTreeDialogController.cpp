@@ -64,7 +64,10 @@ CreatePhyTreeDialogController::CreatePhyTreeDialogController(QWidget* parent, co
     
     ui->fileNameEdit->setText(url);
     
-    int itemIndex = ui->algorithmBox->count()-1;
+    int itemIndex = nameList.indexOf("PHYLIP Neighbor Joining");
+    if(itemIndex < 0) {
+        itemIndex = ui->algorithmBox->count()-1;
+    }
     assert(itemIndex >= 0);
     //QString algName = AppContext::getSettings()->getValue(CreatePhyTreeWidget::settingsPath + "/algorithm", ui->algorithmBox->itemText(itemIndex)).toString();
     QString algName = ui->algorithmBox->itemText(itemIndex);

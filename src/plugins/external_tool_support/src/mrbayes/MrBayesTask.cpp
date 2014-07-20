@@ -37,8 +37,8 @@ namespace U2 {
 #define TMPFILENAME "tmp.nex"
 #define TREEFILEEXT ".con.tre"
 
-MrBayesPrepareDataForCalculation::MrBayesPrepareDataForCalculation(const MAlignment& _ma, const CreatePhyTreeSettings& s, const QString& url, SeqNamesConvertor& _namesConvertor)
-:Task(tr("Generating input file for MrBayes"), TaskFlags_NR_FOSCOE), ma(_ma), settings(s), tmpDirUrl(url), namesConvertor(_namesConvertor){
+MrBayesPrepareDataForCalculation::MrBayesPrepareDataForCalculation(const MAlignment& _ma, const CreatePhyTreeSettings& s, const QString& url)
+:Task(tr("Generating input file for MrBayes"), TaskFlags_NR_FOSCOE), ma(_ma), settings(s), tmpDirUrl(url){
 
     saveDocumentTask = NULL;
 }
@@ -47,7 +47,6 @@ void MrBayesPrepareDataForCalculation::prepare(){
     QVariantMap hints;
     hints.insert(DocumentWritingMode_SimpleNames, DocumentWritingMode_SimpleNames);
     saveDocumentTask=new SaveAlignmentTask(ma, inputFileForMrBayes, BaseDocumentFormats::NEXUS, hints);
-    namesConvertor.replaceNamesWithAlphabeticIds(saveDocumentTask->getMAlignment());
     saveDocumentTask->setSubtaskProgressWeight(5);
     addSubTask(saveDocumentTask);
 }
@@ -105,7 +104,7 @@ void MrBayesSupportTask::prepare(){
     tmpDirUrl = ExternalToolSupportUtils::createTmpDir(MRBAYES_TMP_DIR, stateInfo);
     CHECK_OP(stateInfo, );
     
-    prepareDataTask = new MrBayesPrepareDataForCalculation(inputMA, settings, tmpDirUrl, namesConvertor);
+    prepareDataTask = new MrBayesPrepareDataForCalculation(inputMA, settings, tmpDirUrl);
     prepareDataTask->setSubtaskProgressWeight(5);
     addSubTask(prepareDataTask);
 }
@@ -142,7 +141,6 @@ QList<Task*> MrBayesSupportTask::onSubTaskFinished(Task* subTask){
         PhyTreeObject* phyObj = getTreeTask->getPhyObject();
         assert(phyObj);
         result = phyObj->getTree();
-        namesConvertor.restoreNames(result);
     }
 
     return res;
@@ -250,45 +248,6 @@ QList<Task*> MrBayesGetCalculatedTreeTask::onSubTaskFinished(Task* subTask){
     }
     
     return res;
-}
-
-void SeqNamesConvertor::replaceNamesWithAlphabeticIds(MAlignment& ma) {
-    QStringList rows = ma.getRowNames();
-
-    int rowsNum = ma.getNumRows();
-    for(int i = 0; i < rowsNum; i++) {
-        namesMap[generateNewAlphabeticId()] = rows.at(i);
-        ma.renameRow(i, lastIdStr);
-    }
-}
-void SeqNamesConvertor::restoreNames(const PhyTree& tree) {
-    QList<const PhyNode*> nodes = tree->collectNodes();
-    foreach(const PhyNode* node, nodes) {
-        QString restoredName = namesMap[node->getName()];
-        if(!restoredName.isEmpty()) {
-            PhyNode* renamedNode = const_cast<PhyNode*>(node);
-            renamedNode->setName(restoredName);
-        }
-    }
-}
-
-const QString& SeqNamesConvertor::generateNewAlphabeticId() {
-    int idSize = lastIdStr.size();
-    for(int i = idSize - 1; i >= 0; i--) {
-        char curChar = lastIdStr.at(i).toLatin1();
-        if(curChar < 'z') {
-            lastIdStr[i] = curChar + 1;
-            return lastIdStr;
-        }
-        else {
-            lastIdStr[i] = 'a';
-        }
-    }
-
-    lastIdStr.append('a');
-    lastIdStr.fill('a');
-
-    return lastIdStr;
 }
 
 }//namespace

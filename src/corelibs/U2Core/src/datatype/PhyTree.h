@@ -40,7 +40,6 @@ public:
     PhyTreeData(const PhyTreeData& other);
     ~PhyTreeData();
     QList<const PhyNode*> collectNodes() const;
-    void validate() const;
     void print() const;
 
     void setRootNode(PhyNode* _rootNode) {rootNode = _rootNode;}
@@ -49,6 +48,7 @@ public:
     static PhyBranch* addBranch(PhyNode* node1, PhyNode* node2, double distance);
     static void removeBranch(PhyNode* node1, PhyNode* node2);
 
+    void renameNodes(const QMap<QString, QString>& newNamesByOldNames);private:
 private:
     PhyTreeData & operator= (const PhyTreeData &) {return *this;}
     PhyNode* rootNode;
@@ -90,7 +90,7 @@ public:
     /* For distance matrix */
     const PhyNode * getParentNode() const;
     PhyNode * getParentNode();
-    void setBranchesDistance(int branchNumber, double _distance) { branches.at(branchNumber)->distance = _distance;}
+    void setBranchesDistance(int branchNumber, double distance) { branches.at(branchNumber)->distance = distance;}
     void print(QList<PhyNode*>& nodes, int distance, int tab);
 
     /* For reroot */

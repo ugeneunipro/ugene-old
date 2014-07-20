@@ -122,6 +122,9 @@
 #include "vcfutils/VcfutilsSupport.h"
 #include "samtools/BcfToolsSupport.h"
 #include "R/RSupport.h"
+#include "phyml/PhyMLSupport.h"
+#include "phyml/PhyMLTests.h"
+
 #include "bwa/BwaWorker.h"
 #include "bedtools/BedtoolsSupport.h"
 #include "bedtools/BedToolsWorkersLibrary.h"
@@ -247,6 +250,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     //MrBayes
     MrBayesSupport* mrBayesTool = new MrBayesSupport(ET_MRBAYES);
     AppContext::getExternalToolRegistry()->registerEntry(mrBayesTool);
+
+    //PhyML
+    PhyMLSupport* phyMlTool = new PhyMLSupport(PhyMLSupport::PhyMlRegistryId);
+    AppContext::getExternalToolRegistry()->registerEntry(phyMlTool);
 
     if (AppContext::getMainWindow()) {
         clustalWTool->getViewContext()->setParent(this);

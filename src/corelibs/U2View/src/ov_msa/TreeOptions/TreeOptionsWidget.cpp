@@ -57,8 +57,8 @@ const QString TreeOptionsWidget::COLOR_BOX_STYLE = "QPushButton {"
                                                         "min-height: 20px;"
                                                         "background-color : %1;}";
 
-TreeOptionsWidget::TreeOptionsWidget(MSAEditor* m, const TreeOpWidgetViewSettings& _viewSettings)
-    : msa(m), treeViewer(NULL), viewSettings(_viewSettings), settings(NULL), showFontSettings(false), showPenSettings(false)
+TreeOptionsWidget::TreeOptionsWidget(MSAEditor* m, const TreeOpWidgetViewSettings& viewSettings)
+    : msa(m), treeViewer(NULL), viewSettings(viewSettings), settings(NULL), showFontSettings(false), showPenSettings(false)
 {
     SAFE_POINT(NULL != msa, QString("Invalid parameter were passed into constructor TreeOptionsWidget"), );
 
@@ -69,8 +69,8 @@ TreeOptionsWidget::TreeOptionsWidget(MSAEditor* m, const TreeOpWidgetViewSetting
     createGroups();
 }
 
-TreeOptionsWidget::TreeOptionsWidget(TreeViewer* tree, const TreeOpWidgetViewSettings& _viewSettings)
-    : msa(NULL), treeViewer(tree->getTreeViewerUI()), viewSettings(_viewSettings), settings(NULL), showFontSettings(false), showPenSettings(false)
+TreeOptionsWidget::TreeOptionsWidget(TreeViewer* tree, const TreeOpWidgetViewSettings& viewSettings)
+    : msa(NULL), treeViewer(tree->getTreeViewerUI()), viewSettings(viewSettings), settings(NULL), showFontSettings(false), showPenSettings(false)
 {
     SAFE_POINT(NULL != treeViewer, QString("Invalid parameter were passed into constructor TreeOptionsWidget"), );
 

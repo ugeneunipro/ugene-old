@@ -56,7 +56,6 @@
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/MSAUtils.h>
 
-#include <U2Algorithm/PhyTreeGeneratorTask.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 #include <U2Algorithm/MSADistanceAlgorithm.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>

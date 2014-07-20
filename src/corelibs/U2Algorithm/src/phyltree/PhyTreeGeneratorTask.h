@@ -43,6 +43,20 @@ protected:
     CreatePhyTreeSettings       settings;
 };
 
+class SeqNamesConvertor {
+public:
+    SeqNamesConvertor() : lastIdStr("a") {}
+
+    void replaceNamesWithAlphabeticIds(MAlignment& ma);
+    void restoreNames(const PhyTree& tree);
+
+private:
+    const QString& generateNewAlphabeticId();
+
+    QString lastIdStr;
+    QMap<QString, QString> namesMap;
+};
+
 class U2ALGORITHM_EXPORT PhyTreeGeneratorLauncherTask: public Task{
     Q_OBJECT
 public:
@@ -59,7 +73,9 @@ private:
     PhyTree                     result;
     CreatePhyTreeSettings       settings;
     PhyTreeGeneratorTask*       task;
+    SeqNamesConvertor           namesConvertor;
 };
+
 
 } //namespace
 

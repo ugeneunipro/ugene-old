@@ -237,7 +237,7 @@ QList<Task*> HMMBuildToFileTask::onSubTaskFinished(Task* subTask) {
             stateInfo.setError(  tr("alignment_object_not_found") );
         } else {
             MAlignmentObject* msa = qobject_cast<MAlignmentObject*>(list.first());
-            const MAlignment& ma = msa->getMAlignment();
+            const MAlignment ma = msa->getMAlignment();
             if (settings.name.isEmpty()) {
                 settings.name = msa->getGObjectName() == MA_OBJECT_NAME ? doc->getName() : msa->getGObjectName();
             }

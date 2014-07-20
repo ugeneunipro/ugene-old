@@ -36,7 +36,7 @@ PhyTreeData::~PhyTreeData() {
     if (rootNode != NULL){
         delete rootNode;
         rootNode = NULL;
-    }    
+    }
 }
 
 PhyBranch* PhyTreeData::addBranch(PhyNode* node1, PhyNode* node2, double distance) {
@@ -65,6 +65,20 @@ void PhyTreeData::removeBranch(PhyNode* node1, PhyNode* node2) {
     assert(0);
 }
 
+void PhyTreeData::renameNodes(const QMap<QString, QString>& newNamesByOldNames) {
+    SAFE_POINT(NULL != rootNode, QObject::tr("UGENE internal error"),);
+
+    QList<PhyNode*> treeNodes = rootNode->getChildrenNodes();
+    treeNodes.append(rootNode);
+
+    foreach(PhyNode* currentNode, treeNodes) {
+        QString newName = newNamesByOldNames[currentNode->getName()];
+        if(!newName.isEmpty()) {
+            currentNode->setName(newName);
+        }
+    }
+}
+
 PhyNode::PhyNode() {
 }
 
@@ -78,15 +92,6 @@ void PhyTreeData::print() const{
     rootNode->print(nodes,distance, tab);
 }
 
-void PhyTreeData::validate() const {
-#ifdef _DEBUG
-    if (rootNode != NULL) {
-        QList<const PhyNode*> track;
-        rootNode->validate(track);
-    }
-#endif
-}
-
 QList<const PhyNode*> PhyTreeData::collectNodes() const
 {
     QList<const PhyNode*> track;
@@ -98,8 +103,9 @@ QList<const PhyNode*> PhyTreeData::collectNodes() const
 
 }
 void PhyNode::validate(QList<const PhyNode*>& track) const {
-    if ( track.contains(this) )
+    if (track.contains(this)) {
         return;
+    }
     track.append(this);
     foreach(PhyBranch* b, branches) {
         assert(b->node1 != NULL && b->node2!=NULL);
@@ -108,7 +114,7 @@ void PhyNode::validate(QList<const PhyNode*>& track) const {
         } else if (b->node2 != this) {
             b->node2->validate(track);
         }
-    }    
+    }
 }
 
 bool PhyNode::isConnected(const PhyNode* node) const {

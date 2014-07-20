@@ -58,6 +58,8 @@ void PhyTreeGeneratorLauncherTask::prepare(){
             inputMA.sortRowsByList(rowsOrder);
         }
 
+        namesConvertor.replaceNamesWithAlphabeticIds(inputMA);
+
         task = dynamic_cast<PhyTreeGeneratorTask*>(generator->createCalculatePhyTreeTask(inputMA,settings));
         addSubTask(task);
     }
@@ -66,6 +68,7 @@ void PhyTreeGeneratorLauncherTask::prepare(){
 Task::ReportResult PhyTreeGeneratorLauncherTask::report(){
     if(task){
         result = task->getResult();
+        namesConvertor.restoreNames(result);
     }
     return ReportResult_Finished;
 }
@@ -73,5 +76,48 @@ Task::ReportResult PhyTreeGeneratorLauncherTask::report(){
 void PhyTreeGeneratorLauncherTask::sl_onCalculationCanceled() {
     cancel();
 }
+
+void SeqNamesConvertor::replaceNamesWithAlphabeticIds(MAlignment& ma) {
+    QStringList rows = ma.getRowNames();
+
+    int rowsNum = ma.getNumRows();
+    for(int i = 0; i < rowsNum; i++) {
+        namesMap[generateNewAlphabeticId()] = rows.at(i);
+        ma.renameRow(i, lastIdStr);
+    }
+}
+void SeqNamesConvertor::restoreNames(const PhyTree& tree) {
+    if(!tree) {
+        return;
+    }
+    QList<const PhyNode*> nodes = tree->collectNodes();
+    foreach(const PhyNode* node, nodes) {
+        QString restoredName = namesMap[node->getName()];
+        if(!restoredName.isEmpty()) {
+            PhyNode* renamedNode = const_cast<PhyNode*>(node);
+            renamedNode->setName(restoredName);
+        }
+    }
+}
+
+const QString& SeqNamesConvertor::generateNewAlphabeticId() {
+    int idSize = lastIdStr.size();
+    for(int i = idSize - 1; i >= 0; i--) {
+        char curChar = lastIdStr.at(i).toLatin1();
+        if(curChar < 'z') {
+            lastIdStr[i] = curChar + 1;
+            return lastIdStr;
+        }
+        else {
+            lastIdStr[i] = 'a';
+        }
+    }
+
+    lastIdStr.append('a');
+    lastIdStr.fill('a');
+
+    return lastIdStr;
+}
+
 
 } //namespace

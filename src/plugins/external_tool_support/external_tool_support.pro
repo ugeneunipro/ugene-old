@@ -98,6 +98,10 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/peak2gene/Peak2GeneTask.h \
            src/peak2gene/Peak2GeneWorker.h \
            src/perl/PerlSupport.h \
+           src/phyml/PhyMLDialogWidget.h \
+           src/phyml/PhyMLSupport.h \
+           src/phyml/PhyMLTask.h \
+           src/phyml/PhyMLTests.h \
            src/python/PythonSupport.h \
            src/R/RSupport.h \
            src/samtools/BcfToolsSupport.h \
@@ -146,7 +150,8 @@ FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/ETSSettingsWidget.ui \
          src/ui/FormatDBSupportRunDialog.ui \
          src/ui/MAFFTSupportRunDialog.ui \
-         src/ui/MrBayesDialog.ui \
+         src/ui/MrBayesDialog.ui \ 
+         src/ui/PhyMLDialog.ui \
          src/ui/SelectPathDialog.ui \
          src/ui/TCoffeeSupportRunDialog.ui
 SOURCES += src/ETSProjectViewItemsContoller.cpp \
@@ -245,6 +250,10 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/peak2gene/Peak2GeneTask.cpp \
            src/peak2gene/Peak2GeneWorker.cpp \
            src/perl/PerlSupport.cpp \
+           src/phyml/PhyMLDialogWidget.cpp \
+           src/phyml/PhyMLSupport.cpp \
+           src/phyml/PhyMLTask.cpp \
+           src/phyml/PhyMLTests.cpp \
            src/python/PythonSupport.cpp \
            src/R/RSupport.cpp \
            src/samtools/BcfToolsSupport.cpp \

@@ -41,7 +41,6 @@
 #include <U2Core/PhyTreeObject.h>
 #include <U2Core/PhyTree.h>
 #include <U2Core/Task.h>
-#include <U2Algorithm/PhyTreeGeneratorTask.h>
 #include <U2Algorithm/CreatePhyTreeSettings.h>
 #include <U2Gui/ObjectViewModel.h>
 
