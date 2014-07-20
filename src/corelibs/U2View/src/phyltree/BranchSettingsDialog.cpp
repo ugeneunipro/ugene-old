@@ -50,7 +50,14 @@ void BranchSettingsDialog::updateColorButton() {
 }
 
 void BranchSettingsDialog::sl_colorButton() {
-    QColor newColor = QColorDialog::getColor(changedSettings.branchColor, this);
+    QColorDialog::ColorDialogOptions options;
+#ifdef Q_OS_MAC
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        options |= QColorDialog::DontUseNativeDialog;
+    }
+#endif
+
+    QColor newColor = QColorDialog::getColor(changedSettings.branchColor, this, tr("Select Color"), options);
     if (newColor.isValid()) {
         changedSettings.branchColor = newColor;
         updateColorButton();
