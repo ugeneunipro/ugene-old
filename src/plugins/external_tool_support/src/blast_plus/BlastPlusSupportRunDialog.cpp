@@ -93,8 +93,6 @@ BlastPlusSupportRunDialog::BlastPlusSupportRunDialog(U2SequenceObject* _dnaso, Q
     databasePathLineEdit->setText(lastDBPath);
     baseNameLineEdit->setText(lastDBName);
     connect(cancelButton,SIGNAL(clicked()),SLOT(reject()));
-
-    setMinimumHeight(460);
 }
 
 void BlastPlusSupportRunDialog::sl_lineEditChanged(){
