@@ -475,8 +475,34 @@ void Schema::renameProcess(const ActorId &oldId, const ActorId &newId) {
     update(m);
 }
 
-void Schema::merge(const Schema &other) {
-    procs << other.procs;
+namespace {
+    QStringList removeAliasesDupliucates(const QList<Actor*> &actors, Actor *newActor) {
+        QStringList removed;
+        QStringList allAliases;
+        foreach (Actor *actor, actors) {
+            allAliases << actor->getParamAliases().values();
+        }
+        QMap<QString, QString> newAliases = newActor->getParamAliases();
+        foreach (const QString &key, newAliases.keys()) {
+            QString alias = newAliases.value(key);
+            if (allAliases.contains(alias)) {
+                newActor->getParamAliases().remove(key);
+                newActor->getAliasHelp().remove(alias);
+                removed << alias;
+            }
+        }
+        return removed;
+    }
+}
+
+void Schema::merge(Schema &other) {
+    foreach (Actor *newActor, other.procs) {
+        QStringList removed = removeAliasesDupliucates(procs, newActor);
+        foreach (const QString &alias, removed) {
+            coreLog.error(QObject::tr("Duplicate alias '%1'. It has been removed").arg(alias));
+        }
+        procs << newActor;
+    }
     graph.getBindings().unite(other.graph.getBindings());
     portAliases << other.portAliases;
 }

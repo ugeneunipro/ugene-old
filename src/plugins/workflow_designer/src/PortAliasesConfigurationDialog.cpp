@@ -248,9 +248,7 @@ void PortAliasesConfigurationDialog::accept() {
             return;
         }
 
-        while (slotAliases.contains("")) {
-            slotAliases.removeOne("");
-        }
+        slotAliases.removeAll("");
         if (0 != slotAliases.removeDuplicates()) {
             QMessageBox::information(this, tr("Workflow Designer"),
                 tr("Slot aliases of one port must be different!"));

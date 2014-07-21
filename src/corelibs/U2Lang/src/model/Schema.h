@@ -83,7 +83,8 @@ public:
 
     void reset();
     void update();
-    void merge(const Schema &other);
+    /** The actors' aliases of @other can be removed in case of duplication */
+    void merge(Schema &other);
 
     Actor* actorById(ActorId) const;
     QList<Actor*> actorsByOwnerId(ActorId) const;
