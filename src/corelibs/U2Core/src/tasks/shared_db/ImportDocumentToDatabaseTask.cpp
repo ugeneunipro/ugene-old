@@ -40,7 +40,7 @@ ImportDocumentToDatabaseTask::ImportDocumentToDatabaseTask(Document* document, c
     CHECK_EXT(NULL != document, setError(tr("Invalid document to import")), );
     CHECK_EXT(dstDbiRef.isValid(), setError(tr("Invalid database reference")), );
 
-    setMaxParallelSubtasks(MAX_PARALLEL_SUBTASKS_AUTO);
+    setMaxParallelSubtasks(1);
 
     if (options.createSubfolderForEachDocument) {
         this->dstFolder = Folder::createPath(dstFolder, document->getName());
