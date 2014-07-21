@@ -95,7 +95,9 @@ QString FormatDBSupportTask::generateReport() const {
     QString res;
     if (isCanceled()) {
         res += QString(tr("Blast database creation has been cancelled")) + "<br>";
-        res += prepareLink(externalToolLog);
+        if (QFile::exists(externalToolLog)) {
+            res += prepareLink(externalToolLog);
+        }
         return res;
     }
     if (!hasError()) {
@@ -111,12 +113,16 @@ QString FormatDBSupportTask::generateReport() const {
         res += QString(tr("Database file path: %1")).arg(QDir::toNativeSeparators(settings.outputPath)) + "<br>";
         QString type = settings.isInputAmino ? "protein" : "nucleotide";
         res += QString(tr("Type: %1")).arg(type) + "<br>";
-        res += QString(tr("Formatdb log file path: "));
-        res += prepareLink(externalToolLog);
+        if (QFile::exists(externalToolLog)) {
+            res += QString(tr("Formatdb log file path: "));
+            res += prepareLink(externalToolLog);
+        }
     }else{
         res += QString(tr("Blast database creation has been failed")) + "<br><br>";
-        res += QString(tr("Formatdb log file path: "));
-        res += prepareLink(externalToolLog);
+        if (QFile::exists(externalToolLog)) {
+            res += QString(tr("Formatdb log file path: "));
+            res += prepareLink(externalToolLog);
+        }
     }
     return res;
 }
