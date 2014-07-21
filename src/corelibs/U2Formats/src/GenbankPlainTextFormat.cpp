@@ -175,7 +175,7 @@ FormatCheckResult GenbankPlainTextFormat::checkRawData(const QByteArray& rawData
         return FormatDetection_NotMatched;
     }
     FormatCheckResult res(FormatDetection_VeryHighSimilarity);
-    
+
     QByteArray seqStartPattern1 = "\n        1";
     QByteArray seqStartPattern2 = "\nORIGIN";
 
@@ -272,8 +272,8 @@ bool GenbankPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqI
         if (st->hasKey("REFERENCE")) {
             DNAReferenceInfo ri;
             ri.referencesRecord.append(st->value());
-            while (st->readNextLine() 
-                && (st->hasContinuation() 
+            while (st->readNextLine()
+                && (st->hasContinuation()
                     || st->hasKey("REFERENCE")
                     || st->hasKey("  AUTHORS")
                     || st->hasKey("  TITLE")
@@ -295,7 +295,7 @@ bool GenbankPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqI
             }
             if (commentSection.size() > 0) {
                 st->entry->tags.insert(DNAInfo::COMMENT, commentSection);
-            }            
+            }
             hasLine = true;
             continue;
         }
@@ -606,7 +606,7 @@ static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so, QString
             }
             date = loi.date;
         } else if (!locusStrFromAttr.isEmpty()){
-            
+
             QStringList tokens = locusStrFromAttr.split(" ", QString::SkipEmptyParts);
             assert(!tokens.isEmpty());
             loc = padToLen(loc.append(tokens[2]), 43);
@@ -636,7 +636,8 @@ static void writeQualifier(const QString& name, const QString& val, IOAdapter* i
         return;
     }
     QString qstr;
-    bool num; val.toInt(&num);
+    bool num;
+    val.toInt(&num);
     if (num) {
         qstr = "/"+name+ "="+val;
     } else {
@@ -691,14 +692,14 @@ static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& si)
             || aName == U1AnnotationUtils::upperCaseAnnotationName || aName == "comment") {
                 continue;
         }
-        
+
         //write name of the feature
         len = io->writeBlock(spaceLine, 5);
         if (len != 5) {
             si.setError(GenbankPlainTextFormat::tr("Error writing document"));
             return;
         }
-        
+
         GBFeatureKey key = GBFeatureUtils::getKey(aName);
         const QString& keyStr = key == GBFeatureKey_UNKNOWN ? defaultKey: aName;
         len = io->writeBlock(keyStr.toLocal8Bit());
@@ -842,17 +843,17 @@ static void prepareMultiline(QString& line, int spacesOnLineStart, bool newLineA
             }
             int pos2 =  pos + charsInLine - 1;
             if (pos2 < len) { //not the last line
-                while (pos2 > pos && !line[pos2].isSpace() && (line[pos2]!= ',')) {
+                while (pos2 > pos && !line[pos2].isSpace()) {
                     pos2--;
                 }
                 if (pos == pos2) { //we failed to find word end
                     pos2 = pos + charsInLine - 1;
                 }
-                newLine.append(line.mid(pos, pos2 + 1 - pos));
+                newLine.append(line.mid(pos, pos2 - pos));
             } else { //last line
-                newLine.append(line.mid(pos, len-pos));
+                newLine.append(line.mid(pos, len - pos));
             }
-            pos=pos2+1;
+            pos = pos2 + 1;
         } while (pos<len);
         line = newLine;
     }
