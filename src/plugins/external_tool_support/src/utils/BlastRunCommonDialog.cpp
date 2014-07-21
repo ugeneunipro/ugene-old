@@ -54,7 +54,7 @@ namespace U2 {
 ////////////////////////////////////////
 //BlastAllSupportRunCommonDialog
 BlastRunCommonDialog::BlastRunCommonDialog(QWidget* _parent) :
-            QDialog(_parent)
+            QDialog(_parent), ca_c(NULL)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "4228536");

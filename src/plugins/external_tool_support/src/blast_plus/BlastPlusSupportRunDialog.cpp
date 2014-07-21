@@ -389,15 +389,15 @@ void BlastPlusWithExtFileSpecifySupportRunDialog::tryApplyDoc(Document *doc) {
     ca_m.sequenceObjectRef = sequencesRefList[0];
     ca_m.sequenceLen = 10;
     ca_m.defaultIsNewDoc = true;
-    if (ca_c != NULL) {
-        verticalLayout_4->removeWidget(ca_c->getWidget());
-        delete ca_c;
+    if (NULL == ca_c) {
+        ca_c = new CreateAnnotationWidgetController(ca_m, this);
+        QWidget *wdgt = ca_c->getWidget();
+        wdgt->setMinimumHeight(150);
+        verticalLayout_4->addWidget(wdgt);
+    } else {
+        ca_c->updateWidgetForAnnotationModel(ca_m);
     }
-    ca_c = new CreateAnnotationWidgetController(ca_m, this);
 
-    QWidget *wdgt = ca_c->getWidget();
-    wdgt->setMinimumHeight(150);
-    verticalLayout_4->addWidget(wdgt);
     sl_lineEditChanged();
 }
 
