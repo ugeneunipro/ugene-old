@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QSharedPointer>
+
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
@@ -109,7 +111,7 @@ AutoAnnotationObject::AutoAnnotationObject( U2SequenceObject *obj, QObject *pare
     const U2DbiRef localDbiRef = AppContext::getDbiRegistry()->getSessionTmpDbiRef(os);
     SAFE_POINT_OP(os, );
 
-    aobj = new AnnotationTableObject( tableName, localDbiRef, hints );
+    aobj = QSharedPointer<AnnotationTableObject>(new AnnotationTableObject( tableName, localDbiRef, hints ));
     aobj->addObjectRelation( dnaObj, ObjectRole_Sequence );
     aaSupport = AppContext::getAutoAnnotationsSupport( );
 }
@@ -121,7 +123,6 @@ AutoAnnotationObject::~AutoAnnotationObject( ) {
 
     DbiConnection con(entity.dbiRef, os);
     con.dbi->getObjectDbi()->removeObject(entity.entityId, os);
-    delete aobj;
     SAFE_POINT_OP( os, );
 }
 
@@ -156,7 +157,7 @@ void AutoAnnotationObject::handleUpdate( QList<AutoAnnotationsUpdater *> updater
         AnnotationGroup root = aobj->getRootGroup( );
         AnnotationGroup sub = root.getSubgroup( updater->getGroupName( ), false );
         if ( sub != root ) {
-            Task *t = new RemoveAnnotationsTask( aobj, updater->getGroupName( ) );
+            Task *t = new RemoveAnnotationsTask( aobj.data(), updater->getGroupName( ) );
             subTasks.append( t );
         }
 

@@ -75,7 +75,7 @@ private:
 
     ADVSequenceObjectContext*           seqCtx;
     U2SequenceObject*                  dnaObj;
-    AnnotationTableObject *               sourceObj;
+    QSharedPointer<AnnotationTableObject>   sourceObj;
     EnzymesSelectorDialogHandler        enzymesSelectorHandler;
     CreateAnnotationWidgetController*   ac;
     QTimer*                             timer;

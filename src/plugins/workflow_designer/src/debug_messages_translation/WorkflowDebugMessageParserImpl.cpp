@@ -130,7 +130,8 @@ void WorkflowDebugMessageParserImpl::convertMessagesToDocuments( const QString &
 
             AnnotationTableObject *annsObj = new AnnotationTableObject( "Annotations",
                 context->getDataStorage( )->getDbiRef( ) );
-            annsObj->addAnnotations( annList );
+            U2OpStatusImpl os;
+            annsObj->addAnnotations( annList, os );
 
             ExportObjectUtils::exportAnnotations( annsObj->getAnnotations( ), baseFileUrl );
         } else {

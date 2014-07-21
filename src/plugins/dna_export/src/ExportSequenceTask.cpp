@@ -234,7 +234,7 @@ void ExportSequenceTask::run() {
             foreach ( const SharedAnnotationData &ad, ri.annotations ) {
                 annotations.append( *ad );
             }
-            annObj->addAnnotations(annotations);
+            annObj->addAnnotations(annotations, stateInfo);
             annObj->addObjectRelation(seqObj, ObjectRole_Sequence);
             annObj->setModified(false);
             resultDocument->addObject(annObj);

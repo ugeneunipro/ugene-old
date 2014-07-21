@@ -56,7 +56,7 @@ void GTest_FindEnzymes::init(XMLTestFormat *tf, const QDomElement& el) {
     U2OpStatusImpl os;
     const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
     SAFE_POINT_OP( os, );
-    aObj = new AnnotationTableObject( aObjName, dbiRef );
+    aObj = QSharedPointer<AnnotationTableObject>(new AnnotationTableObject( aObjName, dbiRef ));
 
     SAFE_POINT( AppContext::getIOAdapterRegistry() != NULL, "IOAdapter registry is NULL", );
     IOAdapterFactory *ioFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
@@ -215,18 +215,15 @@ Task::ReportResult GTest_FindEnzymes::report() {
         }
     }
 
-    addContext(aObjName, aObj);
+    addContext(aObjName, aObj.data());
     contextIsAdded = true;
 
     return Task::ReportResult_Finished;
 }
 
-void GTest_FindEnzymes::cleanup() {
-    if (aObj != NULL) {
-        if (contextIsAdded) {
-            removeContext(aObjName);
-        }
-        delete aObj;
+void GTest_FindEnzymes::cleanup(){
+    if (aObjName != NULL && contextIsAdded) {
+        removeContext(aObjName);
     }
 }
 
@@ -281,7 +278,7 @@ void GTest_DigestIntoFragments::prepare() {
         return;
     }
 
-    aObj = getContext<AnnotationTableObject>(this, aObjCtx);
+    aObj = QSharedPointer<AnnotationTableObject>(getContext<AnnotationTableObject>(this, aObjCtx));
     if (aObj == NULL) {
         stateInfo.setError(  QString("Annotation context not found %1").arg(aObjCtx) );
         return;
@@ -314,7 +311,7 @@ QList<Task*> GTest_DigestIntoFragments::onSubTaskFinished(Task* subTask) {
     cfg.searchForRestrictionSites = searchForEnzymes;
     cfg.enzymeData = enzymesToSearch;
 
-    DigestSequenceTask* t = new DigestSequenceTask(seqObj, aObj, aObj, cfg);
+    DigestSequenceTask* t = new DigestSequenceTask(seqObj, aObj, aObj.data(), cfg);
     res.append(t);
     return res;
 }

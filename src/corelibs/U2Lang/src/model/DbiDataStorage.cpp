@@ -171,12 +171,12 @@ SharedDbiDataHandler DbiDataStorage::putAnnotationTable( const QList<AnnotationD
     SAFE_POINT( NULL != dbiHandle, "Invalid DBI handle!", SharedDbiDataHandler( ) );
 
     AnnotationTableObject obj( "Annotations", dbiHandle->getDbiRef( ) );
-    obj.addAnnotations( anns );
+    U2OpStatusImpl os;
+    obj.addAnnotations( anns, os ) ;
     obj.ref( );
 
     U2EntityRef ent = obj.getEntityRef( );
 
-    U2OpStatusImpl os;
     DbiConnection *connection = this->getConnection( dbiHandle->getDbiRef( ), os );
     SAFE_POINT_OP( os, SharedDbiDataHandler( ) );
 

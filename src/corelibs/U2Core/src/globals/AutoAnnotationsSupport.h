@@ -48,14 +48,14 @@ class U2CORE_EXPORT AutoAnnotationObject : public QObject
 {
     Q_OBJECT
 public:
-                                AutoAnnotationObject( U2SequenceObject *obj, QObject *parent );
-                                ~AutoAnnotationObject( );
-    AnnotationTableObject *       getAnnotationObject( ) const { return aobj; }
-    U2SequenceObject *          getSeqObject( ) const { return dnaObj; }
-    void                        setGroupEnabled( const QString &groupName, bool enabled );
-    void                        update( );
-    void                        updateGroup( const QString &groupName );
-    void                        emitStateChange( bool started );
+    AutoAnnotationObject( U2SequenceObject *obj, QObject *parent );
+    ~AutoAnnotationObject( );
+    const QSharedPointer<AnnotationTableObject>&   getAnnotationObject( ) const { return aobj; }
+    U2SequenceObject *                      getSeqObject( ) const { return dnaObj; }
+    void                                    setGroupEnabled( const QString &groupName, bool enabled );
+    void                                    update( );
+    void                                    updateGroup( const QString &groupName );
+    void                                    emitStateChange( bool started );
 
     static const QString        AUTO_ANNOTATION_HINT;
 
@@ -66,10 +66,10 @@ signals:
 private:
     void                        handleUpdate( QList<AutoAnnotationsUpdater *> updaters );
 
-    U2SequenceObject *          dnaObj;
-    AnnotationTableObject *       aobj;
-    AutoAnnotationsSupport *    aaSupport;
-    QSet<QString>               enabledGroups;
+    U2SequenceObject *                      dnaObj;
+    QSharedPointer<AnnotationTableObject>   aobj;
+    AutoAnnotationsSupport *                aaSupport;
+    QSet<QString>                           enabledGroups;
 };
 
 #define AUTO_ANNOTATION_SETTINGS "auto-annotations/"

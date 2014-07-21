@@ -41,7 +41,7 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // enzymes -> annotations
 
-FindEnzymesToAnnotationsTask::FindEnzymesToAnnotationsTask(AnnotationTableObject* aobj, const U2EntityRef& seqRef, 
+FindEnzymesToAnnotationsTask::FindEnzymesToAnnotationsTask(const QSharedPointer<AnnotationTableObject> &aobj, const U2EntityRef& seqRef, 
                                                            const QList<SEnzymeData>& _enzymes, const FindEnzymesTaskConfig& config)
 : Task(tr("Find and store enzymes"), TaskFlags_FOSCOE), dnaSeqRef(seqRef), enzymes(_enzymes), aObj(aobj), cfg(config)
 {
@@ -114,7 +114,11 @@ Task::ReportResult FindEnzymesToAnnotationsTask::report()
 
     foreach (const QString& groupName, groupNames) {
         QList<AnnotationData> adata = resultMap.values(groupName);
-        aObj->addAnnotations( adata, groupName );
+        if (isCanceled()) {
+            return ReportResult_Finished;
+        }
+
+        aObj->addAnnotations( adata, stateInfo, groupName );
     }
 
     if (aObj->getAnnotations().isEmpty() && !cfg.isAutoAnnotationUpdateTask) {
@@ -124,7 +128,7 @@ Task::ReportResult FindEnzymesToAnnotationsTask::report()
             Document* toDelete = NULL;
             QList<Document*> docs = proj->getDocuments();
             foreach (Document* doc, docs) {
-                if (doc->getObjects().contains(aObj)) {
+                if (doc->getObjects().contains(aObj.data())) {
                     toDelete = doc;
                     break;
                 }
@@ -133,7 +137,7 @@ Task::ReportResult FindEnzymesToAnnotationsTask::report()
                 proj->removeDocument(toDelete);
             }
         }
-        aObj = NULL;
+        aObj.clear();
         stateInfo.setError("Enzymes selection is not found");
     }
 
@@ -279,22 +283,20 @@ dnaSeqRef(_seqRef), region(region), enzyme(_enzyme), maxResults(mr), resultListe
 }
 
 void FindSingleEnzymeTask::onResult(int pos, const SEnzymeData& enzyme, const U2Strand& strand) {
-    if (circular && pos >= region.length) {
+    if (circular && pos >= region.length || isCanceled()) {
         return;
     }
     QMutexLocker l(&resultsLock);
     if (results.size() > maxResults) {
-        if (!isCanceled()) {
-            stateInfo.setError(  FindEnzymesTask::tr("Number of results exceed %1, stopping").arg(maxResults) );
-            cancel();
-        }
+        stateInfo.setError(  FindEnzymesTask::tr("Number of results exceed %1, stopping").arg(maxResults) );
+        cancel();
         return;
     }
     results.append(FindEnzymesAlgResult(enzyme, pos, strand));
 }
 
 void FindSingleEnzymeTask::onRegion(SequenceDbiWalkerSubtask* t, TaskStateInfo& ti) {
-    if (enzyme->seq.isEmpty()) {
+    if (enzyme->seq.isEmpty() || isCanceled()) {
         return;
     }
     U2SequenceObject dnaSequenceObject("sequence", dnaSeqRef);
@@ -375,7 +377,7 @@ Task* FindEnzymesAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const A
         cfg.excludedRegions = excludedRegions;
     }
     
-    AnnotationTableObject *aObj = aa->getAnnotationObject();
+    QSharedPointer<AnnotationTableObject> aObj = aa->getAnnotationObject();
     const U2EntityRef& dnaRef = aa->getSeqObject()->getEntityRef();
     Task* task = new FindEnzymesToAnnotationsTask(aObj, dnaRef, selectedEnzymes, cfg );
 

@@ -145,7 +145,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
         QVariantMap hints;
         hints.insert(DBI_FOLDER_HINT, fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER));
         annObj = new AnnotationTableObject( QString("%1 annotations").arg(seqName), dbiRef, hints );
-        annObj->addAnnotations( annotations );
+        annObj->addAnnotations( annotations, os );
         objects.append( annObj );
     }
 

@@ -70,20 +70,20 @@ struct FindEnzymesTaskConfig {
 class FindEnzymesToAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    FindEnzymesToAnnotationsTask(AnnotationTableObject *aobj, const U2EntityRef& seqRef,
+    FindEnzymesToAnnotationsTask(const QSharedPointer<AnnotationTableObject> &aobj, const U2EntityRef& seqRef,
         const QList<SEnzymeData>& enzymes, const FindEnzymesTaskConfig& cfg);
     void prepare();
     void run();
     ReportResult report();
     
 private:
-    U2EntityRef                         dnaSeqRef;
-    QList<SEnzymeData>                  enzymes;
-    QMap<QString, AnnotationData>       resultMap;
-    U2Region                            seqRange;
-    QPointer<AnnotationTableObject>       aObj;
-    FindEnzymesTaskConfig               cfg;
-    FindEnzymesTask*                    fTask;
+    U2EntityRef                             dnaSeqRef;
+    QList<SEnzymeData>                      enzymes;
+    QMap<QString, AnnotationData>           resultMap;
+    U2Region                                seqRange;
+    QSharedPointer<AnnotationTableObject>   aObj;
+    FindEnzymesTaskConfig                   cfg;
+    FindEnzymesTask*                        fTask;
 };
 
 class FindEnzymesTask : public Task, public FindEnzymesAlgListener {

@@ -942,10 +942,10 @@ void AnnotatedDNAView::addRelatedAnnotations( ADVSequenceObjectContext *seqCtx )
 
 void AnnotatedDNAView::addAutoAnnotations( ADVSequenceObjectContext* seqCtx ) {
     AutoAnnotationObject *aa = new AutoAnnotationObject( seqCtx->getSequenceObject( ), seqCtx );
-    seqCtx->addAutoAnnotationObject( aa->getAnnotationObject( ) );
+    seqCtx->addAutoAnnotationObject( aa->getAnnotationObject() );
     autoAnnotationsMap.insert( seqCtx, aa );
 
-    emit si_annotationObjectAdded( aa->getAnnotationObject( ) );
+    emit si_annotationObjectAdded( aa->getAnnotationObject().data() );
 
     foreach ( ADVSequenceWidget *w, seqCtx->getSequenceWidgets( ) ) {
         AutoAnnotationsADVAction *aaAction = new AutoAnnotationsADVAction( w, aa );
@@ -957,7 +957,7 @@ void AnnotatedDNAView::removeAutoAnnotations(ADVSequenceObjectContext *seqCtx)
 {
     AutoAnnotationObject* aa = autoAnnotationsMap.take(seqCtx);
     cancelAutoAnnotationUpdates(aa);
-    emit si_annotationObjectRemoved(aa->getAnnotationObject());
+    emit si_annotationObjectRemoved(aa->getAnnotationObject().data());
     delete aa;
 }
 
@@ -1211,7 +1211,7 @@ QList<AnnotationTableObject *> AnnotatedDNAView::getAnnotationObjects( bool incl
     QList<AnnotationTableObject *> result = annotations;
     if ( includeAutoAnnotations ) {
         foreach ( AutoAnnotationObject *aa, autoAnnotationsMap.values( ) ) {
-            result += aa->getAnnotationObject( );
+            result += aa->getAnnotationObject().data();
         }
     }
     return result;

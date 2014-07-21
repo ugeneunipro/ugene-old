@@ -61,8 +61,8 @@ struct GenomicPosition {
 class DigestSequenceTask : public Task {
     Q_OBJECT
 public:
-    DigestSequenceTask(U2SequenceObject* dnaObj, AnnotationTableObject *destTable, 
-        AnnotationTableObject *sourceTable, const DigestSequenceTaskConfig& cfg);
+    DigestSequenceTask(U2SequenceObject* dnaObj, const QSharedPointer<AnnotationTableObject> &sourceTable, 
+        AnnotationTableObject *destTable, const DigestSequenceTaskConfig& cfg);
     virtual void prepare();
     virtual void run();
     virtual QString generateReport() const;
@@ -77,7 +77,8 @@ private:
     void checkForConservedAnnotations();
     bool isCircular;
     U2Region seqRange;
-    AnnotationTableObject *sourceObj, *destObj;
+    QSharedPointer<AnnotationTableObject> sourceObj;
+    AnnotationTableObject*  destObj;
     U2SequenceObject *dnaObj;
     DigestSequenceTaskConfig cfg;
     QMap<GenomicPosition, SEnzymeData> cutSiteMap;

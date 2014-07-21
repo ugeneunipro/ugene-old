@@ -774,7 +774,7 @@ Task* ExpertDiscoverySignalsAutoAnnotationUpdater::createAutoAnnotationsUpdateTa
         return NULL;
     }
 
-    AnnotationTableObject *aObj = aa->getAnnotationObject();
+    AnnotationTableObject *aObj = aa->getAnnotationObject().data();
     const DNASequence& dna = aa->getSeqObject()->getWholeSequence();
     Task* task = new ExpertDiscoveryToAnnotationTask(aObj, dna, edData, curPS, *mutex);
     return task;
@@ -867,7 +867,7 @@ Task::ReportResult ExpertDiscoveryToAnnotationTask::report(){
         return ReportResult_Finished;
     }
 
-    aObj->addAnnotations(resultList, "ExpertDiscover Signals");
+    aObj->addAnnotations(resultList, stateInfo, "ExpertDiscover Signals");
 
     return ReportResult_Finished;
 }

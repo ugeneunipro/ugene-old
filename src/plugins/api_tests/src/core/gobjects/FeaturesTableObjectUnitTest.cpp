@@ -367,7 +367,8 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToRootGroup ) {
     annotations << anData1 << anData2 << anData3;
 
     AnnotationTableObject ft( "ftable_name", dbiRef );
-    ft.addAnnotations( annotations );
+    U2OpStatusImpl os;
+    ft.addAnnotations( annotations, os );
     ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
@@ -422,7 +423,8 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, addAnnotationsToSubgroup ) {
     annotations << anData1 << anData2 << anData3;
 
     AnnotationTableObject ft( "ftable_name", dbiRef );
-    ft.addAnnotations( annotations, grname );
+    U2OpStatusImpl os;
+    ft.addAnnotations( annotations, os, grname );
     ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
@@ -467,7 +469,8 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotation ) {
     annotations << anData1 << anData2 << anData3;
 
     AnnotationTableObject ft( "ftable_name", dbiRef );
-    ft.addAnnotations( annotations, grname );
+    U2OpStatusImpl os;
+    ft.addAnnotations( annotations, os, grname );
     ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
@@ -485,7 +488,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotation ) {
         }
     }
 
-    U2OpStatusImpl os;
     const QList<U2Feature> featuresAfter = U2FeatureUtils::getSubAnnotations(
         subgroup.first( ).id, dbiRef, os, Recursive, Nonroot );
     CHECK_NO_ERROR( os );
@@ -518,7 +520,8 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotations ) {
     annotations << anData1 << anData2 << anData3;
 
     AnnotationTableObject ft( "ftable_name", dbiRef );
-    ft.addAnnotations( annotations, grname );
+    U2OpStatusImpl os;
+    ft.addAnnotations( annotations, os, grname );
     ft.ref();
 
     const AnnotationGroup rootGroup = ft.getRootGroup( );
@@ -532,7 +535,6 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, removeAnnotations ) {
 
     ft.removeAnnotations( annsBefore );
 
-    U2OpStatusImpl os;
     const QList<U2Feature> featuresAfter = U2FeatureUtils::getSubAnnotations(
         subgroup.first( ).id, dbiRef, os, Recursive, Nonroot );
     CHECK_NO_ERROR( os );
@@ -565,12 +567,12 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, clone ) {
     annotations << anData1 << anData2 << anData3;
 
     AnnotationTableObject ft( "ftable_name", dbiRef );
-    ft.addAnnotations( annotations );
+    U2OpStatusImpl os;
+    ft.addAnnotations( annotations, os );
     ft.ref();
 
     const AnnotationGroup sourceRootGroup = ft.getRootGroup( );
 
-    U2OpStatusImpl os;
     QScopedPointer<AnnotationTableObject> clonedTable(
         dynamic_cast<AnnotationTableObject *>( ft.clone( dbiRef, os ) ) );
 
@@ -624,13 +626,14 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByName ) {
     annotations << anData1 << anData2 << anData3;
 
     AnnotationTableObject ft( "ftable_name", dbiRef );
-    ft.addAnnotations( annotations );
+    U2OpStatusImpl os;
+    ft.addAnnotations( annotations, os );
     ft.ref();
 
     const QList<Annotation> anns1 = ft.getAnnotationsByName( aname2 );
     CHECK_EQUAL( 2, anns1.size( ), "annotation count" );
 
-    ft.addAnnotations( annotations, grname );
+    ft.addAnnotations( annotations, os, grname );
 
     const QList<Annotation> anns2 = ft.getAnnotationsByName( aname2 );
     CHECK_EQUAL( 4, anns2.size( ), "annotation count" );
@@ -661,7 +664,8 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotatedRegions ) {
     annotations << anData1 << anData2 << anData3;
 
     AnnotationTableObject ft( "ftable_name", dbiRef );
-    ft.addAnnotations( annotations );
+    U2OpStatusImpl os;
+    ft.addAnnotations( annotations, os );
     ft.ref();
 
     const QList<U2Region> regions = ft.getAnnotatedRegions( );
@@ -703,7 +707,8 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, getAnnotationsByRegion ) {
     annotations << anData1 << anData2 << anData3;
 
     AnnotationTableObject ft( "ftable_name", dbiRef );
-    ft.addAnnotations( annotations );
+    U2OpStatusImpl os;
+    ft.addAnnotations( annotations, os );
     ft.ref();
 
     const QList<Annotation> anns1 = ft.getAnnotationsByRegion( U2Region( 500, 500 ), false );
@@ -744,7 +749,8 @@ IMPLEMENT_TEST( FeatureTableObjectUnitTest, checkConstraints ) {
     annotations << anData1 << anData2 << anData3;
 
     AnnotationTableObject ft( "ftable_name", dbiRef );
-    ft.addAnnotations( annotations );
+    U2OpStatusImpl os;
+    ft.addAnnotations( annotations, os );
     ft.ref();
 
     AnnotationTableObjectConstraints constraints;
