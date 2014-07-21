@@ -21,7 +21,6 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/BunchMimeData.h>
-#include <U2Core/GObjectUtils.h>
 #include <U2Core/ImportDocumentToDatabaseTask.h>
 #include <U2Core/ImportObjectToDatabaseTask.h>
 #include <U2Core/LoadDocumentTask.h>
@@ -496,7 +495,7 @@ void ProjectViewModel::merge(Document *doc, const DocumentFoldersUpdate &update)
                 coreLog.error("Document is locked");
                 continue;
             }
-            GObject *obj = GObjectUtils::createObject(con.dbi->getDbiRef(), id, entity.visualName);
+            GObject *obj = DatabaseConnectionFormat::createObject(con.dbi->getDbiRef(), id, entity.visualName);
             if (NULL != obj) {
                 insertObject(doc, obj, path);
                 doc->addObject(obj);

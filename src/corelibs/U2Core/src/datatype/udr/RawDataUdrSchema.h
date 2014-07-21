@@ -62,7 +62,7 @@ public:
      * and creates its copy on the database with @dstDbiRef.
      * Returns the cloned object.
      */
-    static void cloneObject(const U2EntityRef &srcObjRef, const U2DbiRef &dstDbiRef, const QString &dstFolder,
+    static void cloneObject(const U2EntityRef &srcObjRef, const U2DbiRef &dstDbiRef,
         U2RawData &dstObject, U2OpStatus &os);
 
     /**

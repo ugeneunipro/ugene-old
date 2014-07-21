@@ -167,7 +167,7 @@ QByteArray RawDataUdrSchema::readAllContent(const U2EntityRef &objRef, U2OpStatu
 }
 
 void RawDataUdrSchema::cloneObject(const U2EntityRef &srcObjRef, const U2DbiRef &dstDbiRef,
-                                   const QString &dstFolder, U2RawData &dstObject, U2OpStatus &os)
+    U2RawData &dstObject, U2OpStatus &os)
 {
     // Prepare dbi connection
     DbiHelper src(srcObjRef.dbiRef, os);
@@ -181,7 +181,7 @@ void RawDataUdrSchema::cloneObject(const U2EntityRef &srcObjRef, const U2DbiRef 
     const UdrRecordId srcId = retrieveObject(src.dbi, dstObject, os);
     CHECK_OP(os, );
     dstObject.version = 0;
-    const UdrRecordId dstId = createObjectCore(dst.dbi, dstFolder, dstObject, os);
+    const UdrRecordId dstId = createObjectCore(dst.dbi, U2ObjectDbi::ROOT_FOLDER, dstObject, os);
     CHECK_OP(os, );
 
     // Copy content

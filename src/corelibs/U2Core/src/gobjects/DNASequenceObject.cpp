@@ -21,18 +21,17 @@
 
 
 #include <U2Core/DocumentModel.h>
-#include <U2Core/GHints.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2AttributeDbi.h>
 #include <U2Core/U2AttributeUtils.h>
-#include <U2Core/U2ObjectDbi.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2SequenceDbi.h>
-#include <U2Core/U2SequenceUtils.h>
+
+#include "GObjectTypes.h"
 
 #include "DNASequenceObject.h"
-#include "GObjectTypes.h"
 
 
 namespace U2 {
@@ -215,20 +214,16 @@ void U2SequenceObject::replaceRegion(const U2Region& region, const DNASequence& 
     emit si_sequenceChanged();
 }
 
-GObject* U2SequenceObject::clone(const U2DbiRef& dbiRef, U2OpStatus& os, const QVariantMap &hints) const {
+GObject* U2SequenceObject::clone(const U2DbiRef& dbiRef, U2OpStatus& os) const {
     DbiConnection srcCon(this->entityRef.dbiRef, os);
     CHECK_OP(os, NULL);
     DbiConnection dstCon(dbiRef, true, os);
     CHECK_OP(os, NULL);
 
-    GHintsDefaultImpl gHints(getGHintsMap());
-    gHints.setAll(hints);
-    const QString &dstFolder = gHints.get(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
-
-    U2Sequence seq = U2SequenceUtils::copySequence(entityRef, dbiRef, dstFolder, os);
+    U2Sequence seq = U2SequenceUtils::copySequence(entityRef, dbiRef, os);
     CHECK_OP(os, NULL);
 
-    U2SequenceObject* res = new U2SequenceObject(seq.visualName, U2EntityRef(dbiRef, seq.id), gHints.getMap());
+    U2SequenceObject* res = new U2SequenceObject(seq.visualName, U2EntityRef(dbiRef, seq.id), getGHintsMap());
 
     U2AttributeUtils::copyObjectAttributes(entityRef.entityId, seq.id,
         srcCon.dbi->getAttributeDbi(), dstCon.dbi->getAttributeDbi(), os);

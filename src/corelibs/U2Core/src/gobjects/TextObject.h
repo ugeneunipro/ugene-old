@@ -51,7 +51,7 @@ public:
 
     void setText(const QString &newText);
 
-    GObject * clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints = QVariantMap()) const;
+    GObject * clone(const U2DbiRef&, U2OpStatus&) const;
 
 private:
     void commitTextToDB(const QString &newText);

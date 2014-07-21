@@ -38,8 +38,6 @@ public:
 
     virtual QVariant get(const QString& key) const = 0;
 
-    virtual QVariant get(const QString& key, const QVariant &defaultValue) const = 0;
-
     virtual void set(const QString& key, const QVariant& val) = 0;
     
     virtual void setAll(const QVariantMap& map);
@@ -57,8 +55,6 @@ public:
     virtual void setMap(const QVariantMap& _map) {map = _map;}
 
     virtual QVariant get(const QString& key) const  {return map.value(key);}
-
-    virtual QVariant get(const QString& key, const QVariant &defaultValue) const  {return map.value(key, defaultValue);}
 
     virtual void set(const QString& key, const QVariant& val) {map[key] = val;}
     

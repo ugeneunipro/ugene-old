@@ -21,7 +21,6 @@
 
 #include <U2Core/DatatypeSerializeUtils.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/GHints.h>
 #include <U2Core/RawDataUdrSchema.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -87,17 +86,13 @@ void DNAChromatogramObject::loadDataCore(U2OpStatus &os) {
     cache = DNAChromatogramSerializer::deserialize(data, os);
 }
 
-GObject * DNAChromatogramObject::clone(const U2DbiRef &dstRef, U2OpStatus &os, const QVariantMap &hints) const {
-    GHintsDefaultImpl gHints(getGHintsMap());
-    gHints.setAll(hints);
-    const QString dstFolder = gHints.get(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
-
+GObject * DNAChromatogramObject::clone(const U2DbiRef &dstRef, U2OpStatus &os) const {
     U2Chromatogram dstObject;
-    RawDataUdrSchema::cloneObject(entityRef, dstRef, dstFolder, dstObject, os);
+    RawDataUdrSchema::cloneObject(entityRef, dstRef, dstObject, os);
     CHECK_OP(os, NULL);
 
     U2EntityRef dstEntRef(dstRef, dstObject.id);
-    DNAChromatogramObject *dst = new DNAChromatogramObject(getGObjectName(), dstEntRef, gHints.getMap());
+    DNAChromatogramObject *dst = new DNAChromatogramObject(getGObjectName(), dstEntRef, getGHintsMap());
     dst->setIndexInfo(getIndexInfo());
     return dst;
 }

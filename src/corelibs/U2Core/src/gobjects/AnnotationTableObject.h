@@ -79,7 +79,7 @@ public:
     /**
      * Reimplemented from GObject
      */
-    GObject *               clone(const U2DbiRef &ref, U2OpStatus &os, const QVariantMap &hints = QVariantMap()) const;
+    GObject *               clone( const U2DbiRef &ref, U2OpStatus &os ) const;
     /**
      * Returns list of annotations having @name
      */

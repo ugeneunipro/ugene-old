@@ -301,7 +301,7 @@ U2MsaRow MSAUtils::copyRowFromSequence(U2SequenceObject *seqObj, const U2DbiRef 
     QByteArray oldSeqData = dnaSeq.seq;
     dnaSeq.seq.clear();
     MsaDbiUtils::splitBytesToCharsAndGaps(oldSeqData, dnaSeq.seq, row.gaps);
-    U2Sequence seq = U2SequenceUtils::copySequence(dnaSeq, dstDbi, U2ObjectDbi::ROOT_FOLDER, os);
+    U2Sequence seq = U2SequenceUtils::copySequence(dnaSeq, dstDbi, os);
     CHECK_OP(os, row);
 
     row.sequenceId = seq.id;
