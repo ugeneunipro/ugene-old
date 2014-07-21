@@ -247,6 +247,14 @@ QHash<U2DataId, QString> SamtoolsBasedObjectDbi::getObjectNames(qint64 /*offset*
     return result;
 }
 
+void SamtoolsBasedObjectDbi::getObject(U2Object &object, const U2DataId &id, U2OpStatus &os) {
+    CHECK_EXT(U2DbiState_Ready == dbi.getState(),
+        os.setError(BAMDbiPlugin::tr("Invalid samtools DBI state")), );
+
+    CHECK_EXT(assemblyObjectIds.contains(id), os.setError(BAMDbiPlugin::tr("Object not found")), );
+    object = dbi.getAssemblyDbi()->getAssemblyObject(id, os);
+}
+
 QList<U2DataId> SamtoolsBasedObjectDbi::getObjects(qint64 offset, qint64 count, U2OpStatus &os) {
     return getObjects(U2Type::Assembly, offset, count, os);
 }

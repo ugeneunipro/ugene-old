@@ -64,7 +64,7 @@ public:
     QDGObject(const QString& objectName, const QString& data, const QVariantMap& map = QVariantMap())
         : GObject(TYPE, objectName), serializedScene(data), scene(NULL) { Q_UNUSED(map); }
 
-    virtual GObject* clone(const U2DbiRef& dbiRef, U2OpStatus& os) const;
+    virtual GObject* clone(const U2DbiRef& dbiRef, U2OpStatus& os, const QVariantMap &hints = QVariantMap()) const;
     QueryScene* getScene() const { return scene; }
     void setSceneRawData(const QString& d) { serializedScene=d; }
     QString getSceneRawData() const { return serializedScene; }

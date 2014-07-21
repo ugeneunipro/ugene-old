@@ -147,7 +147,7 @@ Workflow::SharedDbiDataHandler SequenceScriptClass::copySequence(const ScriptDbi
     SCRIPT_CHECK(!seqObj.isNull(), engine->currentContext(), "Invalid sequence id", result);
 
     U2OpStatusImpl os;
-    U2Sequence clonedSeq = U2SequenceUtils::copySequence(seqObj->getEntityRef(), seqObj->getEntityRef().dbiRef, os);
+    U2Sequence clonedSeq = U2SequenceUtils::copySequence(seqObj->getEntityRef(), seqObj->getEntityRef().dbiRef, U2ObjectDbi::ROOT_FOLDER, os);
     SCRIPT_CHECK(!os.isCoR(), engine->currentContext(), "Can not copy sequence", result);
 
     U2EntityRef newEnt(seqObj->getEntityRef().dbiRef, clonedSeq.id);

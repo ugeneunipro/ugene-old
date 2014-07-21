@@ -70,23 +70,13 @@ void CloneObjectTask::run() {
     U2ObjectDbi *oDbi = con.dbi->getObjectDbi();
     SAFE_POINT_EXT(NULL != oDbi, setError(QObject::tr("Error! No object DBI")), );
 
+    QVariantMap hints;
+    hints[DocumentFormat::DBI_FOLDER_HINT] = dstFolder;
+
     CHECK_EXT(!srcObj.isNull(), setError(tr("The object has been removed")), );
-    dstObj = srcObj->clone(dstDbiRef, stateInfo);
+    dstObj = srcObj->clone(dstDbiRef, stateInfo, hints);
     CHECK_OP(stateInfo, );
     dstObj->moveToThread(QCoreApplication::instance()->thread());
-
-    QStringList folders = oDbi->getFolders(stateInfo);
-    CHECK_OP(stateInfo, );
-
-    if (!folders.contains(dstFolder)) {
-        oDbi->createFolder(dstFolder, stateInfo);
-        CHECK_OP(stateInfo, );
-    }
-
-    QList<U2DataId> objList;
-    objList << dstObj->getEntityRef().entityId;
-    oDbi->moveObjects(objList, U2ObjectDbi::ROOT_FOLDER, dstFolder, stateInfo);
-    CHECK_OP(stateInfo, );
 }
 
 GObject * CloneObjectTask::takeResult() {

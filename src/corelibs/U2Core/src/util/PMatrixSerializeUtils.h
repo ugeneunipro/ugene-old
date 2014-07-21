@@ -31,7 +31,7 @@ template<class Serializer, class Matrix>
 class PMatrixSerializeUtils {
 public:
     static U2EntityRef      commit(const Matrix &matrix, const QString &objectName,
-                                const U2DbiRef &dbiRef, U2RawData &object, U2OpStatus &os);
+                                const U2DbiRef &dbiRef, const QString &dstFolder, U2RawData &object, U2OpStatus &os);
     static void             retrieve(const U2EntityRef &entityRef, Matrix &matrix, U2OpStatus &os);
 };
 
@@ -41,12 +41,12 @@ public:
 
 template<class Serializer, class Matrix>
 U2EntityRef PMatrixSerializeUtils<Serializer, Matrix>::commit(const Matrix &matrix,
-    const QString &objectName, const U2DbiRef &dbiRef, U2RawData &object, U2OpStatus &os)
+    const QString &objectName, const U2DbiRef &dbiRef, const QString &dstFolder, U2RawData &object, U2OpStatus &os)
 {
     object.visualName = objectName;
     object.serializer = Serializer::ID;
 
-    RawDataUdrSchema::createObject(dbiRef, object, os);
+    RawDataUdrSchema::createObject(dbiRef, dstFolder, object, os);
     CHECK_OP(os, U2EntityRef());
 
     const U2EntityRef entRef(dbiRef, object.id);

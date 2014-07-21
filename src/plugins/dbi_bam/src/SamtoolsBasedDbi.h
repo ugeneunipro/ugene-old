@@ -43,6 +43,7 @@ public:
     virtual qint64 countObjects(U2OpStatus &os);
     virtual qint64 countObjects(U2DataType type, U2OpStatus &os);
     virtual QHash<U2DataId, QString> getObjectNames(qint64 offset, qint64 count, U2OpStatus &os);
+    virtual void getObject(U2Object &object, const U2DataId &id, U2OpStatus &os);
     virtual QList<U2DataId> getObjects(qint64 offset, qint64 count, U2OpStatus &os);
     virtual QList<U2DataId> getObjects(U2DataType type, qint64 offset, qint64 count, U2OpStatus &os);
     virtual QList<U2DataId> getParents(const U2DataId& entityId, U2OpStatus &os);

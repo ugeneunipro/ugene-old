@@ -87,6 +87,8 @@ public:
     
     static void             replaceAnnotationQualfier( AnnotationData &a, const QString &name,
                                 const QString &newVal, bool create = false );
+
+    static GObject *        createObject(const U2DbiRef &ref, const U2DataId &id, const QString &name);
 };
 
 } // namespace

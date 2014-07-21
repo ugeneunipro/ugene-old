@@ -54,7 +54,7 @@ public:
     // TODO: move branches to private data, add getters and setters
     const PhyNode* findPhyNodeByName(const QString& name);
 
-    virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const;
+    virtual GObject* clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints = QVariantMap()) const;
 
     // Utility functions
     // Compares number of nodes and nodes with names (how many nodes etc.)

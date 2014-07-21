@@ -21,6 +21,7 @@
 
 #include <U2Core/DatatypeSerializeUtils.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/GHints.h>
 #include <U2Core/RawDataUdrSchema.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -114,9 +115,13 @@ const PhyTree& PhyTreeObject::getTree() const {
     return tree;
 }
 
-GObject* PhyTreeObject::clone(const U2DbiRef &dstDbi, U2OpStatus &os) const {
+GObject* PhyTreeObject::clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints) const {
     ensureDataLoaded();
-    PhyTreeObject* cln = createInstance(tree, getGObjectName(), dstDbi, os, getGHintsMap());
+
+    GHintsDefaultImpl gHints(getGHintsMap());
+    gHints.setAll(hints);
+
+    PhyTreeObject* cln = createInstance(tree, getGObjectName(), dstDbiRef, os, gHints.getMap());
     CHECK_OP(os, NULL);
     cln->setIndexInfo(getIndexInfo());
     return cln;

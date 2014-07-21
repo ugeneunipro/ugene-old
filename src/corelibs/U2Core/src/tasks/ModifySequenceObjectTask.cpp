@@ -19,27 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-
+#include <U2Core/AddDocumentTask.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/Log.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/GObject.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/U2SequenceUtils.h>
-#include <U2Core/MultiTask.h>
-#include <U2Core/AddDocumentTask.h>
-#include <U2Core/SaveDocumentTask.h>
-
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/GObject.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/Log.h>
+#include <U2Core/MultiTask.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/SaveDocumentTask.h>
 #include <U2Core/U1AnnotationUtils.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
 
 #include "ModifySequenceObjectTask.h"
 
@@ -150,7 +149,7 @@ void ModifySequenceContentTask::cloneSequenceAndAnnotations( ) {
     SAFE_POINT_EXT( df->isObjectOpSupported( newDoc, DocumentFormat::DocObjectOp_Add,
         GObjectTypes::SEQUENCE ), stateInfo.setError( "Failed to add sequence object to document!" ), );
     U2Sequence clonedSeq = U2SequenceUtils::copySequence( oldSeqObj->getSequenceRef( ),
-        newDoc->getDbiRef( ), stateInfo ); 
+        newDoc->getDbiRef( ), U2ObjectDbi::ROOT_FOLDER, stateInfo );
     CHECK_OP( stateInfo, );
     seqObj = new U2SequenceObject( oldSeqObj->getGObjectName( ),
         U2EntityRef( newDoc->getDbiRef( ), clonedSeq.id ), oldSeqObj->getGHintsMap( ) );

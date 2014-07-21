@@ -33,9 +33,9 @@ class U2CORE_EXPORT AssemblyObject : public GObject {
 public:
     AssemblyObject(const QString& objectName, const U2EntityRef& ref, const QVariantMap& hints = QVariantMap());
 
-    GObject * clone(const U2DbiRef &, U2OpStatus &) const;
+    GObject *clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints = QVariantMap()) const;
 
-    static U2EntityRef dbi2dbiClone(const AssemblyObject *const srcObj, const U2DbiRef &dstDbiRef, U2OpStatus &os);
+    static U2EntityRef dbi2dbiClone(const AssemblyObject *const srcObj, const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints = QVariantMap());
 };
 
 }//namespace

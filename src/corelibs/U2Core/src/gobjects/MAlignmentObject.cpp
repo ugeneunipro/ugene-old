@@ -22,13 +22,14 @@
 #include "MAlignmentObject.h"
 
 #include <U2Core/DNASequence.h>
+#include <U2Core/GHints.h>
 #include <U2Core/MAlignmentExporter.h>
 #include <U2Core/MAlignmentImporter.h>
-#include <U2Core/MsaDbiUtils.h>
 #include <U2Core/MSAUtils.h>
+#include <U2Core/MsaDbiUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
-#include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2Mod.h>
+#include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -184,12 +185,16 @@ void MAlignmentObject::releaseState(){
 }
 
 
-GObject* MAlignmentObject::clone(const U2DbiRef& dbiRef, U2OpStatus& os) const {
+GObject* MAlignmentObject::clone(const U2DbiRef& dstDbiRef, U2OpStatus& os, const QVariantMap &hints) const {
+    GHintsDefaultImpl gHints(getGHintsMap());
+    gHints.setAll(hints);
+    const QString dstFolder = gHints.get(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+
     MAlignment msa = getMAlignment();
-    U2EntityRef clonedMsaRef = MAlignmentImporter::createAlignment(dbiRef, msa, os);
+    U2EntityRef clonedMsaRef = MAlignmentImporter::createAlignment(dstDbiRef, dstFolder, msa, os);
     CHECK_OP(os, NULL);
 
-    MAlignmentObject* clonedObj = new MAlignmentObject(msa.getName(), clonedMsaRef, getGHintsMap());
+    MAlignmentObject* clonedObj = new MAlignmentObject(msa.getName(), clonedMsaRef, gHints.getMap());
     clonedObj->setIndexInfo(getIndexInfo());
     return clonedObj;
 }
