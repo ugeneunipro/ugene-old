@@ -50,7 +50,7 @@ public :
                                     const QVariantMap &hintsMap = QVariantMap());
 
     const PWMatrix &            getMatrix() const;
-    GObject *                   clone(const U2DbiRef&, U2OpStatus&) const;
+    GObject *                   clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints = QVariantMap()) const;
 
 protected :
     void                        loadDataCore(U2OpStatus &os);

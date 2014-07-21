@@ -74,7 +74,7 @@ public:
     void copyGapModel(const QList<MAlignmentRow> &copyRows);
 
     /** GObject methods */
-    virtual GObject* clone(const U2DbiRef&, U2OpStatus&) const;
+    virtual GObject* clone(const U2DbiRef &dstDbiRef, U2OpStatus &os, const QVariantMap &hints = QVariantMap()) const;
     virtual void setGObjectName(const QString& newName);
 
     /** Const getters */

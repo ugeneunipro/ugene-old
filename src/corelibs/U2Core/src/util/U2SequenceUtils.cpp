@@ -65,7 +65,7 @@ qint64 U2SequenceUtils::length(const U2EntityRef& ref, U2OpStatus& os) {
     return seq.length;
 }
 
-U2Sequence U2SequenceUtils::copySequence(const DNASequence& srcSeq, const U2DbiRef& dstDbi, U2OpStatus& os) {
+U2Sequence U2SequenceUtils::copySequence(const DNASequence& srcSeq, const U2DbiRef& dstDbi, const QString &dstFolder, U2OpStatus& os) {
     U2Sequence res;
     res.alphabet = srcSeq.alphabet->getId();
     res.circular = srcSeq.circular;
@@ -74,7 +74,7 @@ U2Sequence U2SequenceUtils::copySequence(const DNASequence& srcSeq, const U2DbiR
 
     DbiConnection dstCon(dstDbi, os);
     CHECK_OP(os, res);
-    dstCon.dbi->getSequenceDbi()->createSequenceObject(res, QString(), os);
+    dstCon.dbi->getSequenceDbi()->createSequenceObject(res, dstFolder, os);
     CHECK_OP(os, res);
 
     dstCon.dbi->getSequenceDbi()->updateSequenceData(res.id, U2Region(0, 0), srcSeq.seq, QVariantMap(), os);
@@ -83,7 +83,7 @@ U2Sequence U2SequenceUtils::copySequence(const DNASequence& srcSeq, const U2DbiR
     return res;
 }
 
-U2Sequence U2SequenceUtils::copySequence(const U2EntityRef& srcSeq, const U2DbiRef& dstDbi, U2OpStatus& os) {
+U2Sequence U2SequenceUtils::copySequence(const U2EntityRef& srcSeq, const U2DbiRef& dstDbi, const QString &dstFolder, U2OpStatus& os) {
     //TODO: use small blocks
     U2Sequence res;
     DbiConnection srcCon(srcSeq.dbiRef, os);
@@ -98,7 +98,7 @@ U2Sequence U2SequenceUtils::copySequence(const U2EntityRef& srcSeq, const U2DbiR
 
     DbiConnection dstCon(dstDbi, os);
     CHECK_OP(os, res);
-    dstCon.dbi->getSequenceDbi()->createSequenceObject(res, QString(), os);
+    dstCon.dbi->getSequenceDbi()->createSequenceObject(res, dstFolder, os);
     CHECK_OP(os, res);
 
     //TODO: optimize and insert by small chunks! ~2-4 mb

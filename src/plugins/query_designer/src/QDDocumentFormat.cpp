@@ -19,15 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "QDDocumentFormat.h"
-#include "QDSceneIOTasks.h"
-#include "QDDocument.h"
-#include "QueryViewController.h"
-
-#include <U2Core/IOAdapter.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/GHints.h>
+#include <U2Core/IOAdapter.h>
 #include <U2Core/SelectionUtils.h>
 
+#include "QDDocument.h"
+#include "QDDocumentFormat.h"
+#include "QDSceneIOTasks.h"
+#include "QueryViewController.h"
 
 namespace U2 {
 
@@ -35,8 +35,11 @@ namespace U2 {
  //////////////////////////////////////////////////////////////////////////
 const GObjectType QDGObject::TYPE("query-obj");
 
-GObject* QDGObject::clone(const U2DbiRef& , U2OpStatus& ) const {
-    QDGObject* copy = new QDGObject(getGObjectName(), serializedScene, getGHintsMap());
+GObject* QDGObject::clone(const U2DbiRef& , U2OpStatus& , const QVariantMap &hints) const {
+    GHintsDefaultImpl gHints(getGHintsMap());
+    gHints.setAll(hints);
+
+    QDGObject* copy = new QDGObject(getGObjectName(), serializedScene, gHints.getMap());
     return copy;
 }
 

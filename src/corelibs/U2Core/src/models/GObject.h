@@ -115,7 +115,7 @@ public:
 
     bool isUnloaded() const;
 
-    virtual GObject* clone(const U2DbiRef& dbiRef, U2OpStatus& os) const = 0;
+    virtual GObject* clone(const U2DbiRef& dbiRef, U2OpStatus& os, const QVariantMap &hints = QVariantMap()) const = 0;
 
     StateLock* getGObjectModLock(GObjectModLock type) const;
 
