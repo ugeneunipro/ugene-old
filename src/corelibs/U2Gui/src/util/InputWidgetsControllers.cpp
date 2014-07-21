@@ -28,11 +28,11 @@ namespace U2 {
 
 /*InputWidgetController*/
 InputWidgetController::InputWidgetController(QWidget* baseWidget, const QString& settingsPath, const QString& cmdLinePreffix, const QVariant& defaultValue) 
-  : baseWidget(baseWidget),
-    cmdLinePreffix(cmdLinePreffix),
+  : cmdLinePrefix(cmdLinePreffix),
     settingsPath(settingsPath),
     curValue(defaultValue),
-    defaultValue(defaultValue) 
+    defaultValue(defaultValue),
+    baseWidget(baseWidget)
 {
 }
 
@@ -55,12 +55,12 @@ void InputWidgetController::storeParameter() {
 }
 
 void InputWidgetController::addParameterToCmdLineSettings(QStringList& settings) {
-    if(cmdLinePreffix.isEmpty()) {
+    if(cmdLinePrefix.isEmpty()) {
         return;
     }
     curValue = getWidgetValue();
     if(!curValue.isNull() && curValue != defaultValue) {
-        settings << cmdLinePreffix;
+        settings << cmdLinePrefix;
         settings << curValue.toString();
     }
 }
@@ -239,10 +239,10 @@ void ComboBoxController::addParameterToCmdLineSettings(QStringList& settings) {
     if(!inputWidget->isEnabled()) {
         return;
     }
-    if(cmdLinePreffix.isEmpty()) {
+    if(cmdLinePrefix.isEmpty()) {
         return;
     }
-    settings << cmdLinePreffix;
+    settings << cmdLinePrefix;
     int curIndex = inputWidget->currentIndex();
     if(parameters.size() > curIndex) {
         settings << parameters.at(curIndex);
