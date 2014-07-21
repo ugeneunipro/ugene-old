@@ -63,7 +63,7 @@ void GTest_FindEnzymes::init(XMLTestFormat *tf, const QDomElement& el) {
     QTemporaryFile *t = new QTemporaryFile(this);
     Document *doc = new Document(new GenbankPlainTextFormat(this), ioFactory,
                                  GUrl(QFileInfo(*t).absoluteFilePath()), dbiRef,
-                                 QList<GObject*>() << aObj);
+                                 QList<GObject*>() << aObj.data());
     aObj->setParent( doc );
 
     QString buf = el.attribute("minHits");
