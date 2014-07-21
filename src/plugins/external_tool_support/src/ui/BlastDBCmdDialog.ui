@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>537</width>
-    <height>279</height>
+    <height>344</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -26,12 +26,18 @@
    <string>Fetch Sequence from BLAST Database</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
    <item>
     <widget class="QGroupBox" name="inputData">
      <property name="title">
       <string/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMinAndMaxSize</enum>
+      </property>
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
