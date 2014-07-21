@@ -523,15 +523,22 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotation( QPainter &p, DrawAnno
                             }
                         }
 
+                        U2Region y = aData.getStrand().isDirect() ? getMirroredYRange(U2Strand(U2Strand::Complementary)) 
+                            : getMirroredYRange(U2Strand(U2Strand::Direct));
+                        QRect mirroredAnnotationRect = annotationRect;
+                        mirroredAnnotationRect.setY(y.startPos);
+                        mirroredAnnotationRect.setHeight(y.length);
                         if ( hasD ) {
                             const int cutPosDirect = aData.getStrand( ).isDirect( ) ? r.startPos + cutD
                                 : r.startPos + cutC;
-                            drawCutSite( p, annotationRect, as->color, cutPosDirect , true );
+                            aData.getStrand().isDirect() ? drawCutSite( p, annotationRect, as->color, cutPosDirect , true )
+                                : drawCutSite( p, mirroredAnnotationRect, as->color, cutPosDirect , true );   
                         }
                         if ( hasC ) {
                             const int cutPosCompl = aData.getStrand( ).isDirect( ) ? r.endPos( ) - cutC
                                 : r.endPos( ) - cutD;
-                            drawCutSite( p, annotationRect, as->color, cutPosCompl, false );
+                            aData.getStrand().isCompementary() ? drawCutSite( p, annotationRect, as->color, cutPosCompl, false )
+                                : drawCutSite( p, mirroredAnnotationRect, as->color, cutPosCompl, false );
                         }
                     }
                 }

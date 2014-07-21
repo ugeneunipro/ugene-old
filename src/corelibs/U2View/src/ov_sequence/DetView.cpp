@@ -338,6 +338,12 @@ U2Region DetViewRenderArea::getAnnotationYRange( const Annotation &a, int region
     return U2Region( y, lineHeight );
 }
 
+U2Region DetViewRenderArea::getMirroredYRange( const U2Strand &mirroredStrand) const {
+    int line = mirroredStrand.isDirect() ? baseLine : complementLine;
+    int y = getLineY(line);
+    return U2Region(y, lineHeight);
+}
+
 bool DetViewRenderArea::isOnTranslationsLine(int y) const {
     if (firstDirectTransLine != -1) {
         U2Region dtr(getLineY(firstDirectTransLine), 3*lineHeight);

@@ -110,6 +110,7 @@ public:
 
     virtual U2Region                getAnnotationYRange( const Annotation &a, int region,
                                         const AnnotationSettings *as ) const = 0;
+    virtual U2Region                getMirroredYRange( const U2Strand &mirroredStrand) const = 0;
     GSequenceLineViewAnnotated *    getGSequenceLineViewAnnotated( ) const;
 
 protected:

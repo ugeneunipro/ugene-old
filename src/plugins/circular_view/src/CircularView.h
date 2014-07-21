@@ -154,6 +154,7 @@ protected:
     virtual void drawAll(QPaintDevice* pd);
     virtual U2Region getAnnotationYRange( const Annotation &a, int ri,
         const AnnotationSettings *as) const;
+    virtual U2Region getMirroredYRange(const U2Strand &mirroredStrand) const {return U2Region(-1,0);}
     void buildAnnotationItem( DrawAnnotationPass pass, const Annotation &a,
         bool selected = false, const AnnotationSettings *as = NULL );
     virtual void drawAnnotations(QPainter& p);

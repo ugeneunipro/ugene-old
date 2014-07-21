@@ -95,6 +95,7 @@ public:
 
     virtual U2Region getAnnotationYRange( const Annotation &a, int region,
         const AnnotationSettings *as ) const;
+    virtual U2Region getMirroredYRange( const U2Strand &mirroredStrand) const;
     
     void updateSize();
 

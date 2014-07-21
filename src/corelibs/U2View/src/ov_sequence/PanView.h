@@ -204,6 +204,7 @@ public:
 
     virtual U2Region getAnnotationYRange( const Annotation &a, int region,
         const AnnotationSettings *as ) const;
+    virtual U2Region getMirroredYRange( const U2Strand &mirroredStrand) const {return U2Region(-1,0);}
 
     bool updateNumVisibleRows();
     bool canIncreaseLines();
