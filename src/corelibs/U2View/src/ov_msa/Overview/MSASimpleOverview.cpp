@@ -155,6 +155,8 @@ void MSASimpleOverview::drawOverview(QPainter &p) {
 
     QString highlightingSchemeId = sequenceArea->getCurrentHighlightingScheme()->getFactory()->getId();
 
+    MAlignmentObject* mAlignmentObj = editor->getMSAObject();
+    SAFE_POINT(NULL != mAlignmentObj, tr("Incorrect multiple alignment object!"), );
     for (int seq = 0; seq < editor->getNumSequences(); seq++) {
         for (int pos = 0; pos < editor->getAlignmentLen(); pos++) {
             QRect rect;
@@ -169,14 +171,14 @@ void MSASimpleOverview::drawOverview(QPainter &p) {
             next = qRound( stepX * (double)(pos + 1) );
             rect.setWidth( next - prev );
 
-            QColor color = colorScheme->getColor(seq, pos);
+            QColor color = colorScheme->getColor(seq, pos, mAlignmentObj->charAt(seq, pos));
             if (MSAHighlightingOverviewCalculationTask::isGapScheme(highlightingSchemeId)) {
                 color = Qt::gray;
             }
 
             bool drawColor = true;
             drawColor = MSAHighlightingOverviewCalculationTask::isCellHighlighted(
-                        editor->getMSAObject(),
+                        mAlignmentObj,
                         highlightingScheme,
                         colorScheme,
                         seq, pos,

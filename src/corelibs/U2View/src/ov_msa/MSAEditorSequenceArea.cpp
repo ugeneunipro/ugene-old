@@ -516,7 +516,11 @@ void MSAEditorSequenceArea::drawAll() {
 }
 
 void MSAEditorSequenceArea::drawContent(QPainter& p) {
+    QTime myTimer;
+    myTimer.start();
     drawContent(p, QRect(startPos, getFirstVisibleSequence(), getNumVisibleBases(false), getNumVisibleSequences(true)));
+    int nMilliseconds = myTimer.elapsed();
+    coreLog.info(QString("%1").arg(nMilliseconds));
 }
 
 void MSAEditorSequenceArea::drawContent(QPainter &p, const QRect &area) {
@@ -559,52 +563,62 @@ void MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, con
         r = &(msa.getRow(refSeq));
     }
 
+    //Use dots to draw regions, which are similar to reference sequence
+    bool useDots = useDotsAction->isChecked();
+    highlightingScheme->setUseDots(useDots);
+    //Highlighting scheme's settings
+    QString schemeName = highlightingScheme->metaObject()->className();
+    bool isGapsScheme = schemeName == "U2::MSAHighlightingSchemeGaps";
+    bool isEmptyScheme = schemeName == "U2::MSAHighlightingSchemeEmpty";
+
     U2Region baseYRange = U2Region(0, editor->getRowHeight());
+    int columnWidth = editor->getColumnWidth();
+
+    bool isResizeMode = editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent;
     for (qint64 iSeq = 0; iSeq < seqIdx.size(); iSeq++) {
         qint64 seq = seqIdx[iSeq];
         qint64 regionEnd = region.endPos() - (int)(region.endPos() == editor->getAlignmentLen());
         for (int pos = region.startPos; pos <= regionEnd; pos++) {
-            U2Region baseXRange = U2Region(editor->getColumnWidth() * (pos - region.startPos), editor->getColumnWidth());
+            U2Region baseXRange = U2Region(columnWidth * (pos - region.startPos), columnWidth);
             QRect cr(baseXRange.startPos, baseYRange.startPos, baseXRange.length + 1, baseYRange.length);
             char c = msa.charAt(seq, pos);
 
-            QColor color = colorScheme->getColor(seq, pos);
-            QString cname = highlightingScheme->metaObject()->className();
+            QColor color = colorScheme->getColor(seq, pos, c);
 
-            if (cname == "U2::MSAHighlightingSchemeGaps"){
+            if (isGapsScheme){
                 const char refChar = 'z';
                 bool drawColor = false;
-                highlightingScheme->setUseDots(useDotsAction->isChecked());
-                highlightingScheme->process(refChar, c, drawColor);
-                if(cname == "U2::MSAHighlightingSchemeGaps"){
-                    color = QColor(192, 192, 192);
+                if(useDots) {
+                    highlightingScheme->process(refChar, c, drawColor);
                 }
+                color = QColor(192, 192, 192);
                 if (color.isValid() && drawColor) {
                     p.fillRect(cr, color);
                 }
                 if (editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent) {
                     p.drawText(cr, Qt::AlignCenter, QString(c));
                 }
-            }else if(seq == refSeq || cname == "U2::MSAHighlightingSchemeEmpty" || refSeqName.isEmpty()){
+            }else if(seq == refSeq || isEmptyScheme || refSeqName.isEmpty()){
                 if (color.isValid()) {
                     p.fillRect(cr, color);
                 }
-                if (editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent) {
+                if (isResizeMode) {
                     p.drawText(cr, Qt::AlignCenter, QString(c));
                 }
             }else{
                 const char refChar = r->charAt(pos);
                 bool drawColor = false;
-                highlightingScheme->setUseDots(useDotsAction->isChecked());
-                highlightingScheme->process(refChar, c, drawColor);
+                if(useDots) {
+                    highlightingScheme->process(refChar, c, drawColor);
+                }
 
-                if(cname == "U2::MSAHighlightingSchemeGaps"){
+                if(isGapsScheme){
                     color = QColor(192, 192, 192);
                 }
                 if (color.isValid()  &&  drawColor ) {
                     p.fillRect(cr, color);
                 }
-                if (editor->getResizeMode() == MSAEditor::ResizeMode_FontAndContent) {
+                if (isResizeMode) {
                     p.drawText(cr, Qt::AlignCenter, QString(c));
                 }
             }

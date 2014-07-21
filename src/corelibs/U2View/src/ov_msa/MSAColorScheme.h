@@ -100,7 +100,8 @@ class U2VIEW_EXPORT MSAColorScheme : public QObject {
     Q_OBJECT
 public:
     MSAColorScheme(QObject* p, MSAColorSchemeFactory* f, MAlignmentObject* o);
-    virtual QColor getColor(int seq, int pos) = 0;
+    //Get color for symbol "c" on position [seq, pos]. Variable "c" has been added for optimization.
+    virtual QColor getColor(int seq, int pos, char c) = 0;
     MSAColorSchemeFactory* getFactory() const {return factory;}
 
     static QString EMPTY_NUCL;
@@ -133,8 +134,7 @@ class U2VIEW_EXPORT MSAColorSchemeStatic : public MSAColorScheme {
     Q_OBJECT
 public:
     MSAColorSchemeStatic(QObject* p, MSAColorSchemeFactory* f, MAlignmentObject* o, const QVector<QColor>& colorsPerChar);
-    virtual QColor getColor(int seq, int pos);
-    const QColor& getColor(char c) const {return colorsPerChar[(quint8)c];}
+    virtual QColor getColor(int seq, int pos, char c);
 private:
 
     QVector<QColor> colorsPerChar;
@@ -146,7 +146,7 @@ class U2VIEW_EXPORT MSAColorSchemePercIdent : public MSAColorScheme {
     Q_OBJECT
 public:
     MSAColorSchemePercIdent(QObject* p, MSAColorSchemeFactory* f, MAlignmentObject* o);
-    virtual QColor getColor(int seq, int pos);
+    virtual QColor getColor(int seq, int pos, char c);
 
 private slots:
     void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&) {objVersion++;}
@@ -174,7 +174,7 @@ class U2VIEW_EXPORT MSAColorSchemeClustalX: public MSAColorScheme {
     Q_OBJECT
 public:
     MSAColorSchemeClustalX(QObject* p, MSAColorSchemeFactory* f, MAlignmentObject* o);
-    virtual QColor getColor(int seq, int pos);
+    virtual QColor getColor(int seq, int pos, char c);
 private slots:
     void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&) {objVersion++;}
 

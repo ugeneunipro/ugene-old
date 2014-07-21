@@ -220,7 +220,7 @@ bool MSAHighlightingOverviewCalculationTask::isCellHighlighted(MAlignmentObject 
 
     if (seq == refSeq || isEmptyScheme(schemeId) ||
             ((refSeq == MAlignmentRow::invalidRowId()) && !isGapScheme(schemeId))) {
-        if (colorScheme->getColor(seq, pos) != QColor()) {
+        if (colorScheme->getColor(seq, pos, msa->charAt(refSeq, pos)) != QColor()) {
             return true;
         }
     }
