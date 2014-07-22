@@ -48,7 +48,7 @@ HelpButton::HelpButton(QObject *parent, QAbstractButton *hb, const QString& _pag
 }
 
 void HelpButton::sl_buttonClicked(){
-    GUIUtils::runWebBrowser("https://ugene.unipro.ru/wiki/pages/viewpage.action?pageId="+pageId);
+    GUIUtils::runWebBrowser("https://ugene.unipro.ru/wiki/pages/viewpage.action?pageId="+pageId+"&from=ugene");
 }
 
 void HelpButton::updatePageId( const QString &newPageId ){
@@ -62,7 +62,7 @@ ComboboxDependentHelpButton::ComboboxDependentHelpButton( QObject *parent, QDial
 
 void ComboboxDependentHelpButton::sl_buttonClicked(){
     QString pageId = pageMap[cb->currentText()];
-    GUIUtils::runWebBrowser("https://ugene.unipro.ru/wiki/pages/viewpage.action?pageId="+pageId);
+    GUIUtils::runWebBrowser("https://ugene.unipro.ru/wiki/pages/viewpage.action?pageId="+pageId+"&from=ugene");
 }
 
 }
