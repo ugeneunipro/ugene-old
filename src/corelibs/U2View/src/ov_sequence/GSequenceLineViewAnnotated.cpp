@@ -528,23 +528,33 @@ void GSequenceLineViewAnnotatedRenderArea::drawAnnotation( QPainter &p, DrawAnno
                         QRect mirroredAnnotationRect = annotationRect;
                         mirroredAnnotationRect.setY(y.startPos);
                         mirroredAnnotationRect.setHeight(y.length);
+                        CutSiteDrawData toInsert;
+                        toInsert.color = as->color;
                         if ( hasD ) {
-                            const int cutPosDirect = aData.getStrand( ).isDirect( ) ? r.startPos + cutD
+                            toInsert.direct = true;
+                            toInsert.pos = aData.getStrand( ).isDirect( ) ? r.startPos + cutD
                                 : r.startPos + cutC;
-                            aData.getStrand().isDirect() ? drawCutSite( p, annotationRect, as->color, cutPosDirect , true )
-                                : drawCutSite( p, mirroredAnnotationRect, as->color, cutPosDirect , true );   
+                            aData.getStrand().isDirect() ? toInsert.r = annotationRect : toInsert.r = mirroredAnnotationRect;   
+                            cutsiteDataList.append(toInsert);
                         }
                         if ( hasC ) {
-                            const int cutPosCompl = aData.getStrand( ).isDirect( ) ? r.endPos( ) - cutC
+                            toInsert.direct = false;
+                            toInsert.pos = aData.getStrand( ).isDirect( ) ? r.endPos( ) - cutC
                                 : r.endPos( ) - cutD;
-                            aData.getStrand().isCompementary() ? drawCutSite( p, annotationRect, as->color, cutPosCompl, false )
-                                : drawCutSite( p, mirroredAnnotationRect, as->color, cutPosCompl, false );
+                            aData.getStrand().isCompementary() ? toInsert.r = annotationRect : toInsert.r = mirroredAnnotationRect;
+                            cutsiteDataList.append(toInsert);
                         }
                     }
                 }
             }
             drawAnnotationConnections( p, a, as );
         }
+    }
+}
+
+void GSequenceLineViewAnnotatedRenderArea::drawCutSites( QPainter &p ){
+    foreach(const CutSiteDrawData &data, cutsiteDataList) {
+        drawCutSite(p, data.r, data.color, data.pos, data.direct);
     }
 }
 
@@ -786,6 +796,5 @@ bool GSequenceLineViewAnnotatedRenderArea::isAnnotationSelectionInVisibleRange()
     }
     return false;
 }
-
 
 } // namespace

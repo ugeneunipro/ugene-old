@@ -376,6 +376,7 @@ void DetViewRenderArea::drawAll(QPaintDevice* pd) {
         drawDirect(pCached);
         drawComplement(pCached);
         drawTranslations(pCached);
+        drawCutSites(pCached);
 
         drawRuler(pCached);
 

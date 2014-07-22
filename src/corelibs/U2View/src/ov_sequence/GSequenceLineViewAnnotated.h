@@ -114,12 +114,20 @@ public:
     GSequenceLineViewAnnotated *    getGSequenceLineViewAnnotated( ) const;
 
 protected:
+    struct CutSiteDrawData {
+        CutSiteDrawData():direct(true), pos(0){}
+        QRect r; 
+        QColor color;
+        int pos;
+        bool direct;
+    };
     virtual void                    drawAnnotations( QPainter &p );
     virtual void                    drawBoundedText( QPainter &p, const QRect &r,
                                         const QString &text ) const;
     virtual void                    drawAnnotationConnections( QPainter &p, const Annotation &a,
                                         const AnnotationSettings *as );
     virtual void                    drawAnnotationsSelection( QPainter &p );
+    void                            drawCutSites(QPainter &p);
     virtual void                    drawCutSite( QPainter &p, const QRect &r, const QColor &color,
                                         int pos, bool direct );
 
@@ -135,7 +143,6 @@ protected:
                                         bool selected = false, const AnnotationSettings *as = NULL,
                                         U2Region y = U2Region( ) );
 
-protected:
     bool annotationsCanOverlap;
 
     //af* == annotation font
@@ -149,6 +156,7 @@ protected:
     int afSmallCharWidth;
 
     QBrush gradientMaskBrush;
+    QList<CutSiteDrawData>  cutsiteDataList;
 };
 
 class ClearAnnotationsTask : public Task {
