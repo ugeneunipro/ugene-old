@@ -136,7 +136,7 @@ RetrievePublicMachinesTask::~RetrievePublicMachinesTask() {
 void RetrievePublicMachinesTask::run() {
     rsLog.details(tr("Retrieving public machines..."));
 
-    SyncHTTP http(this);
+    SyncHTTP http(stateInfo, this);
     NetworkConfiguration * nc = AppContext::getAppSettings()->getNetworkConfiguration();
     assert( NULL != nc );
     bool proxyUsed = nc->isProxyUsed( QNetworkProxy::HttpProxy );

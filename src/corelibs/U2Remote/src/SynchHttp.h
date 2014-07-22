@@ -29,13 +29,14 @@
 #include <QtCore/QEventLoop>
 
 #include <U2Core/global.h>
+#include <U2Core/U2OpStatus.h>
 
 namespace U2 {
 
 class U2REMOTE_EXPORT SyncHTTP : public QNetworkAccessManager {
     Q_OBJECT
 public:
-    SyncHTTP(QObject* parent=0);
+    SyncHTTP(U2OpStatus &os, QObject* parent = 0);
     ~SyncHTTP();
     QString syncGet(const QUrl& url);
     QString syncPost(const QUrl & url, QIODevice * data);
@@ -44,11 +45,15 @@ public:
 protected slots:
     virtual void finished(QNetworkReply*);
     virtual void onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
+    void sl_taskCancellingCheck();
 
 private:
+    void    runTimer();
+    
     QEventLoop* loop;
     QNetworkReply::NetworkError err;
     QString errString;
+    U2OpStatus &os;
 };
 
 } // U2

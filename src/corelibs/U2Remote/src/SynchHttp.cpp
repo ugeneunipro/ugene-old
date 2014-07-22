@@ -22,13 +22,15 @@
 #include "SynchHttp.h"
 #include <U2Core/U2SafePoints.h>
 #include <QtNetwork/QNetworkRequest>
+#include <QtCore/QTimer>
 
 namespace U2 {
 
-SyncHTTP::SyncHTTP(QObject* parent)
+SyncHTTP::SyncHTTP(U2OpStatus &os, QObject* parent)
 : QNetworkAccessManager(parent)
 ,loop(NULL)
-,errString("")
+,errString(""),
+os(os)
 {
     connect(this,SIGNAL(finished(QNetworkReply*)),SLOT(finished(QNetworkReply*)));
 }
@@ -38,9 +40,11 @@ QString SyncHTTP::syncGet(const QUrl& url) {
     QNetworkRequest request(url);
     QNetworkReply *reply = get(request);
     SAFE_POINT(reply != NULL, "SyncHTTP::syncGet no reply is created", "");
+    runTimer();
     if (loop == NULL){
         loop = new QEventLoop();
     }
+    CHECK_OP(os, QString());
     loop->exec();
     err=reply->error();
     errString=reply->errorString();
@@ -52,9 +56,11 @@ QString SyncHTTP::syncPost(const QUrl & url, QIODevice * data) {
     QNetworkRequest request(url);
     QNetworkReply *reply = post(request, data);
     SAFE_POINT(reply != NULL, "SyncHTTP::syncGet no reply is created", "");
+    runTimer();
     if (loop == NULL){
         loop = new QEventLoop();
     }
+    CHECK_OP(os, QString());
     loop->exec();
     err=reply->error();
     errString=reply->errorString();
@@ -75,6 +81,17 @@ void SyncHTTP::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthen
 SyncHTTP::~SyncHTTP(){
     delete loop;
     loop = NULL;
+}
+void SyncHTTP::runTimer() {
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(sl_taskCancellingCheck()));
+    timer->start(500);
+}
+
+void SyncHTTP::sl_taskCancellingCheck() {
+    if (loop != NULL && os.isCanceled()) {
+        loop->exit();
+    }
 }
 
 }  // U2
