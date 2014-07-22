@@ -128,8 +128,15 @@ QString FormatDBSupportTask::generateReport() const {
 }
 
 QString FormatDBSupportTask::prepareLink( const QString &path ) const {
-    return "<a href=\"file:///" + QDir::toNativeSeparators(path) + "\">" + 
-        QDir::toNativeSeparators(path) + "</a><br>";
+    QString preparedPath = path;
+    if(preparedPath.startsWith("'") || preparedPath.startsWith("\"")) {
+        preparedPath.remove(0,1);
+    }
+    if (preparedPath.endsWith("'") || preparedPath.endsWith("\"")) {
+        preparedPath.chop(1);
+    }
+    return "<a href=\"file:///" + QDir::toNativeSeparators(preparedPath) + "\">" + 
+        QDir::toNativeSeparators(preparedPath) + "</a><br>";
 }
 
 }//namespace

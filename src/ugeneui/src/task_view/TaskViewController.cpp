@@ -22,6 +22,8 @@
 #include <QtCore/QDir>
 #include <QtCore/QUrl>
 
+#include <QtCore/QDebug>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHeaderView>
