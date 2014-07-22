@@ -25,6 +25,8 @@
 #include "MSAEditorState.h"
 #include "MSAEditorConsensusArea.h"
 
+#include <U2Algorithm/MSAConsensusAlgorithm.h>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DocumentModel.h>
@@ -278,8 +280,13 @@ keepGaps(keepGaps_), msa(msa_){
 void ExtractConsensusTask::run() {
     CHECK(msa->getUI(), );
     CHECK(msa->getUI()->getConsensusArea(), );
-    CHECK(msa->getUI()->getConsensusArea()->getConsensusCache(),)
-    foreach(QChar c, msa->getUI()->getConsensusArea()->getConsensusCache()->getConsensusLine(true)){
+    CHECK(msa->getUI()->getConsensusArea()->getConsensusCache(),);
+    
+    QSharedPointer <MSAEditorConsensusCache> cache(msa->getUI()->getConsensusArea()->getConsensusCache());
+    if(!cache->getConsensusAlgorithm()->getFactory()->isSequenceLikeResult()){
+        keepGaps = true;
+    }    
+    foreach(QChar c, cache->getConsensusLine(true)){
         if(c == '-' && !keepGaps){
             continue;
         }
