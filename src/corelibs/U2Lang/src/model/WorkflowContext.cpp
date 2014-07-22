@@ -58,7 +58,7 @@ WorkflowContext::WorkflowContext(const QList<Actor*> &procs, WorkflowMonitor *_m
     foreach (Actor *p, procs) {
         procMap.insert(p->getId(), p);
     }
-    
+
     { // register WD process
         AppFileStorage *fileStorage = AppContext::getAppFileStorage();
         CHECK(NULL != fileStorage, );
@@ -147,7 +147,11 @@ QString WorkflowContext::absolutePath(const QString &relative) const {
     CHECK(!relative.isEmpty(), "");
     QFileInfo info(relative);
     if (info.isAbsolute()) {
-        return relative;
+        return info.absoluteFilePath();
+    }
+
+    if (relative.startsWith(".") || relative.startsWith("..")) {
+        return info.absoluteFilePath();
     }
 
     return workingDir() + relative;
