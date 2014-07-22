@@ -27,6 +27,7 @@
 
 #include <limits>
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/Task.h>
 #include <U2Core/U2Region.h>
 #include <U2Core/GUrl.h>
@@ -38,7 +39,6 @@
 namespace U2 {
 
 class Document;
-class AnnotationTableObject;
 class U2SequenceObject;
 
 struct DigestSequenceTaskConfig {

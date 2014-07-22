@@ -22,6 +22,7 @@
 #ifndef _U2_ENZYMES_TESTS_H_
 #define _U2_ENZYMES_TESTS_H_
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObject.h>
 #include <U2Core/U2Region.h>
 #include <U2Test/XMLTestUtils.h>
@@ -34,7 +35,6 @@
 namespace U2 {
 
 class LoadEnzymeFileTask;
-class AnnotationTableObject;
 class U2SequenceObject;
 
 //cppcheck-suppress noConstructor

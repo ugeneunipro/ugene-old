@@ -22,15 +22,16 @@
 #ifndef _U2_AUTO_ANNOTATIONS_SUPPORT_H_
 #define _U2_AUTO_ANNOTATIONS_SUPPORT_H_
 
-#include <QtCore/QSet>
 #include <QtCore/QMutex>
+#include <QtCore/QSet>
+
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/Task.h>
 
 namespace U2 {
 
 class GObject;
 class GHints;
-class AnnotationTableObject;
 class U2SequenceObject;
 class DNAAlphabet;
 class StateLock;

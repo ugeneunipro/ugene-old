@@ -24,7 +24,6 @@
 #include "AnnotatedDNAView.h"
 
 #include <U2Core/AppContext.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNASequenceSelection.h>

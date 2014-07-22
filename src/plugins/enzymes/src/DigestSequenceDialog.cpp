@@ -35,7 +35,6 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/Settings.h>
 #include <U2View/ADVSequenceObjectContext.h>

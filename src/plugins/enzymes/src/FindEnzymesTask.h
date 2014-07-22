@@ -22,26 +22,25 @@
 #ifndef _U2_FIND_ENZYMES_TASK_H_
 #define _U2_FIND_ENZYMES_TASK_H_
 
-#include <U2Algorithm/EnzymeModel.h>
-#include "FindEnzymesAlgorithm.h"
-
 #include <limits>
+
+#include <QtCore/QList>
+#include <QtCore/QMutex>
+#include <QtCore/QObject>
+
+#include <U2Algorithm/EnzymeModel.h>
 
 #include <U2Core/AnnotationData.h>
 #include <U2Core/AnnotationTableObject.h>
-#include <U2Core/Task.h>
-#include <U2Core/U2Region.h>
+#include <U2Core/AutoAnnotationsSupport.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/SequenceDbiWalkerTask.h>
-#include <U2Core/AutoAnnotationsSupport.h>
+#include <U2Core/Task.h>
+#include <U2Core/U2Region.h>
 
-#include <QtCore/QObject>
-#include <QtCore/QList>
-#include <QtCore/QMutex>
+#include "FindEnzymesAlgorithm.h"
 
 namespace U2 {
-
-class AnnotationTableObject;
 
 class FindEnzymesAlgResult {
 public:
@@ -56,7 +55,7 @@ class FindEnzymesTask;
 
 struct FindEnzymesTaskConfig {
     FindEnzymesTaskConfig(): maxResults(0x7FFFFFFF), minHitCount(1),
-        maxHitCount(INT_MAX), circular(false), isAutoAnnotationUpdateTask(false) {}; 
+        maxHitCount(INT_MAX), circular(false), isAutoAnnotationUpdateTask(false) {}
     QVector<U2Region>   excludedRegions;
     QString             groupName;
     int                 maxResults;

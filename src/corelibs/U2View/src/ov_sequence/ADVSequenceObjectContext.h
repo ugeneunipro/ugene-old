@@ -23,6 +23,7 @@
 #define _U2_ADV_SEQUENCE_OBJECT_CONTEXT_H_
 
 #include <U2Core/Annotation.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/U2Type.h>
 
 #include <QtCore/QSet>
@@ -42,7 +43,6 @@ class DNAAlphabet;
 class DNATranslation;
 class DNASequenceSelection;
 class ADVSequenceWidget;
-class AnnotationTableObject;
 class AnnotationSelection;
 class GObject;
 class Annotation;

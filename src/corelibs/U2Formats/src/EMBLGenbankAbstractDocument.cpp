@@ -173,7 +173,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
                     bool annotationOversized = false;
                     for (int i = 0, n = d->location->regions.size(); i < n; ++i) {
                         // for some reason larger numbers cannot be stored within rtree SQLite tables
-                        if (d->location->regions[i].endPos() > 9223371036854775807) {
+                        if (d->location->regions[i].endPos() > 9223371036854775807LL) {
                             annotationOversized = true;
                             break;
                         }

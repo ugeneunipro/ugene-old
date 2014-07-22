@@ -22,13 +22,7 @@
 #ifndef _U2_DIGEST_SEQUENCE_DIALOG_H_
 #define _U2_DIGEST_SEQUENCE_DIALOG_H_
 
-#include <U2Core/U2Region.h>
-#include <U2Gui/MainWindow.h>
-
-#include <ui/ui_DigestSequenceDialog.h>
-
-#include <U2Algorithm/EnzymeModel.h>
-#include "EnzymesQuery.h"
+#include <QtCore/QTimer>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeWidget>
@@ -37,14 +31,22 @@
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QTreeWidgetItem>
 #endif
-#include <QtCore/QTimer>
+
+#include <U2Algorithm/EnzymeModel.h>
+
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/U2Region.h>
+
+#include <U2Gui/MainWindow.h>
+
+#include "EnzymesQuery.h"
+#include "ui/ui_DigestSequenceDialog.h"
 
 namespace U2 {
 
 class ADVSequenceObjectContext;
 class U2SequenceObject;
 class CreateAnnotationWidgetController;
-class AnnotationTableObject;
 
 class DigestSequenceDialog : public QDialog, public Ui_DigestSequenceDialog {
     Q_OBJECT
