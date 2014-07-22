@@ -119,7 +119,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
                                                  AlignShortReadsFiller::Parameters::BwaSw);
 
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
-    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "GUITest_dna_assembly_test_0006.ugenedb"));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "GUITest_dna_assembly_test_0006.ugenedb", "", "", 200000));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
 
     GTUtilsTaskTreeView::waitTaskFinished(os);

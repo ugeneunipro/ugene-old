@@ -28,11 +28,13 @@ namespace U2 {
 
     class ImportBAMFileFiller : public Filler {
     public:
-        ImportBAMFileFiller(U2OpStatus &_os, const QString _destinationUrl = "", const QString &_dbPath = "", const QString &_dbFileName = "") :
+        ImportBAMFileFiller(U2OpStatus &_os, const QString _destinationUrl = "", const QString &_dbPath = "", const QString &_dbFileName = "", int timeoutMs = 120000) :
           Filler(_os, "Import BAM File"),
               databasePath(_dbPath),
               databaseFileName(_dbFileName),
-              destinationUrl(_destinationUrl){}
+              destinationUrl(_destinationUrl){
+              settings.timeout = timeoutMs;
+          }
            virtual void run();
         private:
             const QString databasePath;
