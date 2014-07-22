@@ -65,8 +65,7 @@ SiteconBuildDialogController::SiteconBuildDialogController(SiteconPlugin* pl, QW
     new HelpButton(this, buttonBox, "8094111");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Build"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
-
-
+   
     weightAlgCombo->setCurrentIndex(AppContext::getSettings()->getValue(SETTINGS_ROOT + WEIGHT_ALG, 1).toInt());
     calibrationSeqLenBox->setCurrentIndex(AppContext::getSettings()->getValue(SETTINGS_ROOT + CALIBRATION_LEN).toInt());
 

@@ -25,6 +25,8 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 #include <U2Core/UserApplicationsSettings.h>
+#include <U2Gui/HelpButton.h>
+#include <QtGui/QPushButton>
 
 #include "CustomPatternAnnotationTask.h"
 #include "CustomAutoAnnotationDialog.h"
@@ -35,6 +37,9 @@ CustomAutoAnnotationDialog::CustomAutoAnnotationDialog(ADVSequenceObjectContext*
  : QDialog(ctx->getAnnotatedDNAView()->getWidget()), seqCtx(ctx) 
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "4686022");
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Annotate"));
+
     loadSettings();
 }
 
