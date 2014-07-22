@@ -2074,7 +2074,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
 
 //    Expected state: Dialog suggesting to reload modified document has appeared.
 // 3. Press 'Yes'.
-    GTGlobals::sleep(5000);
+    GTGlobals::sleep(10000);
 
 //    Expected state: document was reloaded, view activated.
 //    'Phaneroptera_falcata' starts with CTT.
@@ -2094,7 +2094,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     GTFile::copy(os, testDir + "_common_data/scenarios/msa/ma2_gapped_old.aln", testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
 //    GTFile::restore(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
-    GTGlobals::sleep(5000);
+    GTGlobals::sleep(10000);
     QFile(testDir + "_common_data/scenarios/msa/ma2_gapped_old.aln").remove();
 }
 
@@ -2121,7 +2121,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016_1) {
     GTFile::copy(os, testDir + "_common_data/scenarios/msa/ma2_gapped_edited.aln", testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
 //    Expected state: Dialog suggesting to reload modified document has appeared.
 // 3. Press 'Yes'.
-    GTGlobals::sleep(5000);
+    GTGlobals::sleep(10000);
 
 //    Expected state: document was reloaded, view activated.
 //    'Phaneroptera_falcata' starts with CTT.
@@ -2141,7 +2141,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016_1) {
     //GTFile::restore(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
     GTFile::copy(os, testDir + "_common_data/scenarios/msa/ma2_gapped_old.aln", testDir + "_common_data/scenarios/msa/ma2_gapped.aln");
-    GTGlobals::sleep(5000);
+    GTGlobals::sleep(10000);
     QFile(testDir + "_common_data/scenarios/msa/ma2_gapped_old.aln").remove();
 }
 
@@ -2159,7 +2159,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016_2) {
 
 //    Expected state: Dialog suggesting to reload modified document has appeared.
 // 3. Press 'Yes'.
-    GTGlobals::sleep(5000);
+    GTGlobals::sleep(10000);
 
 //    Expected state: document was reloaded, view activated.
 //    'Phaneroptera_falcata' starts with CTT.
