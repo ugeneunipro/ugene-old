@@ -853,7 +853,7 @@ static void prepareMultiline(QString& line, int spacesOnLineStart, bool newLineA
             } else { //last line
                 newLine.append(line.mid(pos, len - pos));
             }
-            pos = pos2 + 1;
+            pos = pos2;
         } while (pos<len);
         line = newLine;
     }
