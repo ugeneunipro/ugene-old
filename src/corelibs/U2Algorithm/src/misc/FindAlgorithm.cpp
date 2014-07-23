@@ -398,6 +398,9 @@ inline void prepareResultPosition( int regionStart, int regionLength, int &found
 static void sendResultToListener( int resultStartPos, int resultLength, U2Strand resultStrand,
     FindAlgorithmResultsListener *rl )
 {
+    SAFE_POINT(resultLength >= 0 && resultStartPos >= 0, "Invalid find algorithm results", );
+    CHECK(resultLength > 0, ); // zero-length regions may satisfy some regular expressions though they don't make sense
+
     FindAlgorithmResult res;
     res.region.startPos = resultStartPos;
     res.region.length = resultLength;
