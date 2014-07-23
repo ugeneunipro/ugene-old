@@ -516,11 +516,7 @@ void MSAEditorSequenceArea::drawAll() {
 }
 
 void MSAEditorSequenceArea::drawContent(QPainter& p) {
-    QTime myTimer;
-    myTimer.start();
     drawContent(p, QRect(startPos, getFirstVisibleSequence(), getNumVisibleBases(false), getNumVisibleSequences(true)));
-    int nMilliseconds = myTimer.elapsed();
-    coreLog.info(QString("%1").arg(nMilliseconds));
 }
 
 void MSAEditorSequenceArea::drawContent(QPainter &p, const QRect &area) {
