@@ -38,6 +38,7 @@
 #include <U2Formats/MysqlDbiUtils.h>
 
 #include <U2Gui/AuthenticationDialog.h>
+#include <U2Gui/HelpButton.h>
 
 #include "EditConnectionDialog.h"
 #include "SharedConnectionsDialog.h"
@@ -67,6 +68,7 @@ SharedConnectionsDialog::SharedConnectionsDialog(QWidget *parent) :
     ui(new Ui::SharedConnectionsDialog)
 {
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "8093779");
 
     init();
     connectSignals();

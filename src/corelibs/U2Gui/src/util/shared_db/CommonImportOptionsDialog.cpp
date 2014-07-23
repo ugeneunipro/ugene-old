@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Gui/HelpButton.h>
+
 #include "CommonImportOptionsDialog.h"
 #include "ImportOptionsWidget.h"
 
@@ -28,6 +30,7 @@ CommonImportOptionsDialog::CommonImportOptionsDialog(const QString& baseFolder, 
     QDialog(parent)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "8093784");
     init(baseFolder, options);
 }
 

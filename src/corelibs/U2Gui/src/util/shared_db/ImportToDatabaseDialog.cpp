@@ -36,6 +36,7 @@
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
@@ -59,6 +60,7 @@ ImportToDatabaseDialog::ImportToDatabaseDialog(Document *dbConnection, const QSt
     baseFolder(U2DbiUtils::makeFolderCanonical(defaultFolder))
 {
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "8093784");
     init();
     connectSignals();
     updateState();

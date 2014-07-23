@@ -25,6 +25,8 @@
 #include <U2Core/CredentialsStorage.h>
 #include <U2Core/Settings.h>
 
+#include <U2Gui/HelpButton.h>
+
 #include "util/AuthenticationWidget.h"
 #include "EditConnectionDialog.h"
 #include "ui_EditConnectionDialog.h"
@@ -38,6 +40,7 @@ EditConnectionDialog::EditConnectionDialog(QWidget *parent, const U2DbiId& dbiUr
     ui(new Ui::EditConnectionDialog)
 {
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "8093779");
     adjustSize();
     init(dbiUrl, name);
 }

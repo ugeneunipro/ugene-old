@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Gui/HelpButton.h>
+
 #include "ImportOptionsWidget.h"
 #include "ItemToImportEditDialog.h"
 #include "ui_ItemToImportEditDialog.h"
@@ -30,6 +32,7 @@ ItemToImportEditDialog::ItemToImportEditDialog(const QString &item, const QStrin
     ui(new Ui::ItemToImportEditDialog)
 {
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "8093784");
     init(item, folder, options);
 }
 
