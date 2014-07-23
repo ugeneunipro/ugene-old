@@ -849,11 +849,11 @@ static void prepareMultiline(QString& line, int spacesOnLineStart, bool newLineA
                 if (pos == pos2) { //we failed to find word end
                     pos2 = pos + charsInLine - 1;
                 }
-                newLine.append(line.mid(pos, pos2 - pos));
+                newLine.append(line.mid(pos, pos2 + 1 - pos));
             } else { //last line
                 newLine.append(line.mid(pos, len - pos));
             }
-            pos = pos2;
+            pos = pos2 + 1;
         } while (pos<len);
         line = newLine;
     }
