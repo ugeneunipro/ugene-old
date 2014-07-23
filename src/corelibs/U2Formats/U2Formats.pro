@@ -95,7 +95,6 @@ HEADERS += src/ABIFormat.h \
            src/tasks/MergeBamTask.h \
            src/util/AssemblyAdapter.h \
            src/util/AssemblyPackAlgorithm.h
-FORMS += src/ace/ui/ConvertAceToSqliteDialog.ui
 SOURCES += src/ABIFormat.cpp \
            src/AbstractVariationFormat.cpp \
            src/ASNFormat.cpp \
