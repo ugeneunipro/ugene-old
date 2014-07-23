@@ -36,7 +36,6 @@
 #include <U2Core/TextObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectTypes.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
 
@@ -113,8 +112,7 @@ Document* Peak2GeneTask::createDoc( const QList<AnnotationData>& annData, const 
     doc->setDocumentOwnsDbiResources(false);
 
     AnnotationTableObject *ato = new AnnotationTableObject( name, doc->getDbiRef( ) );
-    U2OpStatusImpl os;
-    ato->addAnnotations( annData, os );
+    ato->addAnnotations( annData );
     doc->addObject(ato);
 
     return doc;

@@ -79,8 +79,7 @@ QString SmithWatermanReportCallbackAnnotImpl::report(const QList<SmithWatermanRe
     }
 
     if (autoReport) {
-        U2OpStatusImpl os;
-        aObj->addAnnotations( anns, os, annotationGroup );
+        aObj->addAnnotations( anns, annotationGroup );
     }
     return QString();
 }

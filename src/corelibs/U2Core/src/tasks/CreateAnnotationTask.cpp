@@ -80,7 +80,7 @@ Task::ReportResult CreateAnnotationsTask::report( ) {
 
     const int brk = qMin( pos + 10000, aData.size( ) );
     GTIMER( c2, t2, "CreateAnnotationsTask::report [addAnnotations]" );
-    ao->addAnnotations( aData.mid( pos, brk ), stateInfo, groupName );
+    ao->addAnnotations( aData.mid( pos, brk ), groupName );
     stateInfo.progress = 100 * brk / aData.size( );
     if ( brk != aData.size( ) ) {
         pos = brk;

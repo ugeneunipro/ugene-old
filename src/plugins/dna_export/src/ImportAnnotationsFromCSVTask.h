@@ -76,7 +76,7 @@ public:
 private:
     QMap< QString, QList<AnnotationData> > prepareAnnotations() const;
 
-    Document* prepareNewDocument(const QMap< QString, QList<AnnotationData> > &annotations);
+    Document* prepareNewDocument(const QMap< QString, QList<AnnotationData> > &annotations) const;
 
     ImportAnnotationsFromCSVTaskConfig  config;
     ReadCSVAsAnnotationsTask*           readTask;

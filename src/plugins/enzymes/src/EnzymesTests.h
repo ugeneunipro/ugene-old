@@ -50,16 +50,16 @@ class GTest_FindEnzymes : public GTest {
 private:
     int minHits;
     int maxHits;
-    QString                                 enzymesUrl;
-    QString                                 seqObjCtx;
-    QString                                 aObjName;
-    U2SequenceObject*                       seqObj;
-    QVector<U2Region>                       excludedRegions;
-    QStringList                             enzymeNames;
-    QSharedPointer<AnnotationTableObject>   aObj;
-    LoadEnzymeFileTask*                     loadTask;
-    bool                                    contextIsAdded;
-    QMultiMap<QString, U2Region>            resultsPerEnzyme;
+    QString                 enzymesUrl;
+    QString                 seqObjCtx;
+    QString                 aObjName;
+    U2SequenceObject*       seqObj;
+    QVector<U2Region>       excludedRegions;
+    QStringList             enzymeNames;
+    AnnotationTableObject*    aObj;
+    LoadEnzymeFileTask*     loadTask;
+    bool                    contextIsAdded;
+    QMultiMap<QString, U2Region> resultsPerEnzyme;
 };
 
 //cppcheck-suppress noConstructor
@@ -71,14 +71,14 @@ class GTest_DigestIntoFragments : public GTest {
     QList<Task*> onSubTaskFinished(Task* subTask);
      
 private:
-    QString                                 seqObjCtx;
-    QString                                 aObjCtx;
-    QString                                 enzymesUrl;
-    QStringList                             enzymeNames;
-    bool                                    searchForEnzymes;
-    QSharedPointer<AnnotationTableObject>   aObj;
-    U2SequenceObject*                       seqObj;
-    LoadEnzymeFileTask*                     loadTask;
+    QString                 seqObjCtx;
+    QString                 aObjCtx;
+    QString                 enzymesUrl;
+    QStringList             enzymeNames;
+    bool                    searchForEnzymes;
+    AnnotationTableObject*    aObj;
+    U2SequenceObject*       seqObj;
+    LoadEnzymeFileTask*     loadTask;
 };
 
 class LigateFragmentsTask;

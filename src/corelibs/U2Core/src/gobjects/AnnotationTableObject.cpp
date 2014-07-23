@@ -101,7 +101,7 @@ void AnnotationTableObject::addAnnotation( const AnnotationData &a, const QStrin
     setModified( true );
 }
 
-void AnnotationTableObject::addAnnotations( const QList<AnnotationData> &annotations, U2OpStatus &os,
+void AnnotationTableObject::addAnnotations( const QList<AnnotationData> &annotations,
     const QString &groupName )
 {
     if ( annotations.isEmpty( ) ) {
@@ -114,6 +114,7 @@ void AnnotationTableObject::addAnnotations( const QList<AnnotationData> &annotat
     AnnotationGroup group( rootGroup );
     QList<Annotation> resultAnnotations;
 
+    U2OpStatusImpl os;
     const U2Feature rootFeature = U2FeatureUtils::getFeatureById( rootFeatureId, entityRef.dbiRef,
         os );
     SAFE_POINT_OP( os, );
@@ -121,9 +122,6 @@ void AnnotationTableObject::addAnnotations( const QList<AnnotationData> &annotat
     if ( groupName.isEmpty( ) ) {
         QString previousGroupName;
         foreach ( const AnnotationData &a, annotations ) {
-            if (os.isCanceled()) {
-                return;
-            }
             const QString groupName = a.name;
             if ( groupName != previousGroupName ) {
                 group = rootGroup.getSubgroup( groupName, true );
@@ -135,9 +133,6 @@ void AnnotationTableObject::addAnnotations( const QList<AnnotationData> &annotat
     } else {
         group = rootGroup.getSubgroup( groupName, true );
         foreach ( const AnnotationData &a, annotations ) {
-            if (os.isCanceled()) {
-                return;
-            }
             resultAnnotations << group.addAnnotation( a );
             QCoreApplication::processEvents( );
         }

@@ -277,15 +277,6 @@ void ADVSequenceObjectContext::addAnnotationObject( AnnotationTableObject *obj )
     }
 }
 
-bool isTableObjectPresentsInAutoAnnotations (const QSet<QSharedPointer<AnnotationTableObject> > &autoAnnotations, AnnotationTableObject* obj) {
-    foreach (const QSharedPointer<AnnotationTableObject> &aa, autoAnnotations){
-        if (aa.data() == obj) {
-            return true;
-        }
-    }
-    return false;
-}
-
 void ADVSequenceObjectContext::removeAnnotationObject( AnnotationTableObject *obj ) {
     SAFE_POINT( annotations.contains( obj ), "Unexpected annotation table!", );
     annotations.remove( obj );
@@ -298,7 +289,7 @@ QList<Annotation> ADVSequenceObjectContext::selectRelatedAnnotations(
     QList<Annotation> res;
     foreach ( const Annotation &a, alist) {
         AnnotationTableObject* o = a.getGObject( );
-        if ( annotations.contains( o ) || isTableObjectPresentsInAutoAnnotations(autoAnnotations, o)) {
+        if ( annotations.contains( o ) || autoAnnotations.contains( o ) ) {
             res.append( a );
         }
     }
@@ -309,9 +300,9 @@ GObject * ADVSequenceObjectContext::getSequenceGObject( ) const {
     return seqObj;
 }
 
-void ADVSequenceObjectContext::addAutoAnnotationObject(const QSharedPointer<AnnotationTableObject> &obj) {
+void ADVSequenceObjectContext::addAutoAnnotationObject( AnnotationTableObject *obj ) {
     autoAnnotations.insert( obj );
-    emit si_annotationObjectAdded( obj.data() );
+    emit si_annotationObjectAdded( obj );
 }
 
 QSet<AnnotationTableObject *> ADVSequenceObjectContext::getAnnotationObjects(
@@ -319,30 +310,11 @@ QSet<AnnotationTableObject *> ADVSequenceObjectContext::getAnnotationObjects(
 {
     QSet<AnnotationTableObject *> result = annotations;
     if ( includeAutoAnnotations ) {
-        foreach(const QSharedPointer<AnnotationTableObject> &aa, autoAnnotations){
-            result += aa.data();
-        }
+        result += autoAnnotations;
     }
 
     return result;
 }
-
-
-QSet<QSharedPointer<AnnotationTableObject> > ADVSequenceObjectContext::getSharedAnnotationObjects( 
-    bool includeAutoAnnotations /*= false*/ ) const {
-        QSet<QSharedPointer<AnnotationTableObject> > result;
-        foreach (AnnotationTableObject *ato, annotations) {
-            result.insert(QSharedPointer<AnnotationTableObject>(ato));
-        }
-        if ( includeAutoAnnotations ) {
-            foreach(const QSharedPointer<AnnotationTableObject> &aa, autoAnnotations){
-                result += aa;
-            }
-        }
-
-        return result;
-}
-
 
 void ADVSequenceObjectContext::sl_toggleTranslations(){
     translationRowsStatus.clear();

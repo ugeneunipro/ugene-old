@@ -52,7 +52,7 @@ bool operator<(const GenomicPosition& left, const GenomicPosition& right) {
 }
 
 
-DigestSequenceTask::DigestSequenceTask( U2SequenceObject* so, const QSharedPointer<AnnotationTableObject> &source, 
+DigestSequenceTask::DigestSequenceTask( U2SequenceObject* so, AnnotationTableObject *source, 
                                        AnnotationTableObject *dest, const DigestSequenceTaskConfig& config)
                                        :   Task("DigestSequenceTask", TaskFlags_FOSCOE | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled),
                                         sourceObj(source), destObj(dest), dnaObj(so), cfg(config)
@@ -660,7 +660,7 @@ void LigateFragmentsTask::createDocument( const QByteArray& seq, const QList<Ann
 
     AnnotationTableObject *aObj = new AnnotationTableObject( QString( "%1 annotations" ).arg( seqName ),
         resultDoc->getDbiRef( ) );
-    aObj->addAnnotations(annotations, stateInfo);
+    aObj->addAnnotations(annotations);
     resultDoc->addObject(aObj);
 
     aObj->addObjectRelation(dnaObj,ObjectRole_Sequence);

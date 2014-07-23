@@ -119,7 +119,7 @@ Task::ReportResult U2::FindORFsToAnnotationsTask::report()
     if (groupName.isEmpty()) {
         groupName = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
     }
-    aObj->addAnnotations( aData, stateInfo, groupName );
+    aObj->addAnnotations( aData, groupName );
 
     return ReportResult_Finished;
 }
@@ -135,7 +135,7 @@ ORFAutoAnnotationsUpdater::ORFAutoAnnotationsUpdater()
 
 Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnnotationObject* aa )
 {
-    AnnotationTableObject *aObj = aa->getAnnotationObject().data();
+    AnnotationTableObject *aObj = aa->getAnnotationObject();
     U2SequenceObject* dnaObj = aa->getSeqObject();
     
     ORFAlgorithmSettings cfg;

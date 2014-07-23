@@ -68,15 +68,14 @@ public:
     DNASequenceSelection*   getSequenceSelection() const {return selection;}
     
     QSet<AnnotationTableObject *> getAnnotationObjects(bool includeAutoAnnotations = false) const;
-    QSet<QSharedPointer<AnnotationTableObject> > getSharedAnnotationObjects(bool includeAutoAnnotations = false) const;
-    QSet<QSharedPointer<AnnotationTableObject> > getAutoAnnotationObjects() const { return autoAnnotations; }
+    QSet<AnnotationTableObject *> getAutoAnnotationObjects() const { return autoAnnotations; }
     QList<GObject*> getAnnotationGObjects() const;
     
     QMenu* createTranslationsMenu();
     void setAminoTranslation(const QString& tid);
 
     void addAnnotationObject(AnnotationTableObject *obj);
-    void addAutoAnnotationObject(const QSharedPointer<AnnotationTableObject> &obj);
+    void addAutoAnnotationObject(AnnotationTableObject *obj);
     void removeAnnotationObject(AnnotationTableObject *obj);
 
     AnnotationSelection * getAnnotationsSelection() const;
@@ -105,19 +104,19 @@ private:
     void guessAminoTT(const AnnotationTableObject *ao);
 
 
-    AnnotatedDNAView*                               view;
-    U2SequenceObject*                               seqObj;
-    DNATranslation*                                 aminoTT;
-    DNATranslation*                                 complTT;
-    DNASequenceSelection*                           selection;
-    QActionGroup*                                   translations;
-    QActionGroup*                                   visibleFrames;
-    QVector<QAction*>                               translationRowsStatus;
-    QList<ADVSequenceWidget*>                       seqWidgets;
-    QSet<AnnotationTableObject *>                   annotations;
-    QSet<QSharedPointer<AnnotationTableObject> >    autoAnnotations;
-    bool                                            clarifyAminoTT;
-    bool                                            rowChoosed;
+    AnnotatedDNAView*               view;
+    U2SequenceObject*               seqObj;
+    DNATranslation*                 aminoTT;
+    DNATranslation*                 complTT;
+    DNASequenceSelection*           selection;
+    QActionGroup*                   translations;
+    QActionGroup*                   visibleFrames;
+    QVector<QAction*>               translationRowsStatus;
+    QList<ADVSequenceWidget*>       seqWidgets;
+    QSet<AnnotationTableObject *>     annotations;
+    QSet<AnnotationTableObject *>     autoAnnotations;
+    bool                            clarifyAminoTT;
+    bool                            rowChoosed;
 };
 
 } //namespace

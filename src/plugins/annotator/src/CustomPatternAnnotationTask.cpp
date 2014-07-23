@@ -221,7 +221,7 @@ Task* CustomPatternAutoAnnotationUpdater::createAutoAnnotationsUpdateTask( const
     
     QStringList filteredFeatureTypes = AppContext::getSettings()->getValue(FILTERED_FEATURE_LIST, QStringList()).toStringList();
     
-    AnnotationTableObject *aObj = aa->getAnnotationObject().data();
+    AnnotationTableObject *aObj = aa->getAnnotationObject();
     const U2EntityRef& dnaRef = aa->getSeqObject()->getEntityRef();
     Task* task = new CustomPatternAnnotationTask(aObj, dnaRef, featureStore, filteredFeatureTypes );
 

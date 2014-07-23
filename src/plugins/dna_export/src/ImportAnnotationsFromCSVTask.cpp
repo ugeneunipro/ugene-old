@@ -146,7 +146,7 @@ QList<Task*> ImportAnnotationsFromCSVTask::onSubTaskFinished(Task* subTask) {
             SAFE_POINT(ao != NULL, "Invalid annotation table", result );
             QMap<QString, QList<AnnotationData> > groups = prepareAnnotations();
             foreach ( const QString &groupName, groups.keys( ) ) {
-                ao->addAnnotations( groups[groupName], stateInfo, groupName );
+                ao->addAnnotations( groups[groupName], groupName );
             }
         }
     }
@@ -167,7 +167,7 @@ QMap<QString, QList<AnnotationData> > ImportAnnotationsFromCSVTask::prepareAnnot
     return result;
 }
 
-Document * ImportAnnotationsFromCSVTask::prepareNewDocument(const QMap<QString, QList<AnnotationData> > &groups) {
+Document * ImportAnnotationsFromCSVTask::prepareNewDocument(const QMap<QString, QList<AnnotationData> > &groups) const {
     IOAdapterId ioId = IOAdapterUtils::url2io(config.dstFile);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(ioId);
     U2OpStatus2Log os;
@@ -175,7 +175,7 @@ Document * ImportAnnotationsFromCSVTask::prepareNewDocument(const QMap<QString, 
     CHECK_OP(os, NULL);
     AnnotationTableObject* ao = new AnnotationTableObject( "Annotations", result->getDbiRef( ) );
     foreach ( const QString &groupName, groups.keys( ) ) {
-        ao->addAnnotations(groups[groupName], stateInfo, groupName);
+        ao->addAnnotations(groups[groupName], groupName);
     }
     ao->setModified(false);
     result->addObject(ao);

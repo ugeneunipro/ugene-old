@@ -64,6 +64,7 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
     tabWidget->setCurrentIndex(0);
         
     dnaObj = qobject_cast<U2SequenceObject*>(ctx->getSequenceGObject());
+    sourceObj = NULL;
     assert(dnaObj != NULL);
     hintLabel->setText(QString());
     
@@ -194,9 +195,9 @@ void DigestSequenceDialog::addAnnotationWidget()
 
 void DigestSequenceDialog::searchForAnnotatedEnzymes(ADVSequenceObjectContext* ctx)
 {
-    QSet<QSharedPointer<AnnotationTableObject> > relatedAnns = ctx->getSharedAnnotationObjects(true);
+    QSet<AnnotationTableObject *> relatedAnns = ctx->getAnnotationObjects(true);
 
-    foreach (const QSharedPointer<AnnotationTableObject> &a, relatedAnns ) {
+    foreach (AnnotationTableObject *a, relatedAnns ) {
         const AnnotationGroup grp = a->getRootGroup().getSubgroup(ANNOTATION_GROUP_ENZYME, false);
         if ( grp == a->getRootGroup( ) ) {
             continue;

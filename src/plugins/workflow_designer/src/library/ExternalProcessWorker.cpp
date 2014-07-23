@@ -100,7 +100,7 @@ namespace {
 
         AnnotationTableObject *annsObj = new AnnotationTableObject( "Annotations",
             context->getDataStorage( )->getDbiRef( ) );
-        annsObj->addAnnotations( annList, os );
+        annsObj->addAnnotations( annList );
 
         return annsObj;
     }

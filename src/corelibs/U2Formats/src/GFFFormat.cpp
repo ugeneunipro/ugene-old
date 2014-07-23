@@ -32,7 +32,7 @@
 #include <U2Core/U1AnnotationUtils.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectDbi.h>
-#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
 
@@ -164,8 +164,7 @@ void addAnnotations( QList<AnnotationData> &annList, QList<GObject *> &objects,
             objects.append(ato);
             atoSet.insert(ato);
         }
-        U2OpStatusImpl os;
-        ato->addAnnotations(annList, os);
+        ato->addAnnotations(annList);
     }
 }
 
