@@ -302,7 +302,7 @@ void CallVariantsWorkerFactory::init() {
         CallVariantsWorker::tr("A site is considered to be a variant if P(ref|D)<FLOAT (bcf view)(-p)."));
 
     Descriptor ptype(PTYPE,
-        CallVariantsWorker::tr("Prior allele frequency spectrum."),
+        CallVariantsWorker::tr("Prior allele frequency spectrum"),
         CallVariantsWorker::tr("If STR can be full, cond2, flat or the file consisting of error output from a previous variant calling run (bcf view)(-P)."));
 
     Descriptor theta(THETA,
