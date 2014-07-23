@@ -72,19 +72,22 @@ const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
         return features;
     }
     inited = true;
+    FK(GBFeatureKey_assembly_gap,     "assemlby_gap",     cl("000000"), false, tr("Gap between two components of a genome or transcriptome assembly"));
     FK(GBFeatureKey_attenuator,       "attenuator",       cl("000000"), false, tr("Sequence related to transcription termination"));
     FK(GBFeatureKey_C_region,         "C_region",         cl("000000"), false, tr("Span of the C immunological feature"));
     FK(GBFeatureKey_CAAT_signal,      "CAAT_signal",      cl("000000"), false, tr("`CAAT box' in eukaryotic promoters"));
     FKE(GBFeatureKey_CDS,             "CDS",             cl("9bffff"), true,  tr("Sequence coding for amino acids in protein (includes stop codon)"),
         "protein_id,locus_tag,gene,function,product");
     FK(GBFeatureKey_conflict,         "conflict",         cl("000000"), false, tr("Independent sequence determinations differ"));
+    FK(GBFeatureKey_centromere,       "centromere",       cl("000000"), false, tr("Region of biological interest identified as a centromere and which has been experimentally characterized"));
     FK(GBFeatureKey_D_loop,           "D-loop",           cl("000000"), false, tr("Displacement loop"));
     FK(GBFeatureKey_D_segment,        "D_segment",        cl("000000"), false, tr("Span of the D immunological feature"));
     FK(GBFeatureKey_enhancer,         "enhancer",         cl("000000"), false, tr("Cis-acting enhancer of promoter function"));
     FK(GBFeatureKey_exon,             "exon",             cl("000000"), false, tr("Region that codes for part of spliced mRNA"));
+    FK(GBFeatureKey_gap,              "gap",              cl("000000"), false, tr("Gap in the sequence"));
     FKE(GBFeatureKey_gene,            "gene",             cl("00ffc8"), false, tr("Region that defines a functional gene, possibly including upstream (promotor, enhancer, etc) and downstream control elements, and for which a name has been assigned."),
         "gene,locus_tag,product,function");
-    FK(GBFeatureKey_GC_signal,        "signal",           cl("000000"), false, tr("`GC box' in eukaryotic promoters"));
+    FK(GBFeatureKey_GC_signal,        "GC_signal",        cl("000000"), false, tr("`GC box' in eukaryotic promoters"));
     FK(GBFeatureKey_iDNA,             "iDNA",             cl("000000"), false, tr("Intervening DNA eliminated by recombination"));
     FK(GBFeatureKey_intron,           "intron",           cl("000000"), false, tr("Transcribed region excised by mRNA splicing"));
     FK(GBFeatureKey_J_region,         "J_region",         cl("000000"), false, tr("Span of the J immunological feature"));
@@ -101,8 +104,11 @@ const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
     FK(GBFeatureKey_mobile_element,   "mobile_element",   cl("000000"), false, tr("Region of genome containing mobile elements"));
     FK(GBFeatureKey_modified_base,    "modified_base",    cl("000000"), false, tr("The indicated base is a modified nucleotide"));
     FK(GBFeatureKey_mRNA,             "mRNA",             cl("000000"), false, tr("Messenger RNA"));
+    FK(GBFeatureKey_ncRNA,            "ncRNA",            cl("000000"), false, tr("A non-protein-coding gene, other than ribosomal RNA and transfer RNA, the functional molecule of which is the RNA transcrip"))
     FK(GBFeatureKey_N_region,         "N_region",         cl("000000"), false, tr("Span of the N immunological feature"));
     FK(GBFeatureKey_old_sequence,     "old_sequence",     cl("000000"), false, tr("Presented sequence revises a previous version"));
+    FK(GBFeatureKey_operon,           "operon",           cl("000000"), false, tr("Region containing polycistronic transcript including a cluster of genes that are under the control of the same regulatory sequences/promotor and in the same biological pathway"));
+    FK(GBFeatureKey_oriT,             "oriT",             cl("000000"), false, tr("Origin of transfer; region of a DNA molecule where transfer is initiated during the process of conjugation or mobilization"));
     FK(GBFeatureKey_polyA_signal,     "polyA_signal",     cl("000000"), false, tr("Signal for cleavage & polyadenylation"));
     FK(GBFeatureKey_polyA_site,       "polyA_site",       cl("000000"), false, tr("Site at which polyadenine is added to mRNA"));
     FK(GBFeatureKey_precursor_RNA,    "precursor_RNA",    cl("000000"), false, tr("Any RNA species that is not yet the mature RNA product"));
@@ -125,12 +131,15 @@ const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
     FK(GBFeatureKey_stem_loop,        "stem_loop",        cl("000000"), false, tr("Hair-pin loop structure in DNA or RNA"));
     FK(GBFeatureKey_STS,              "STS",              cl("00dcdc"), false, tr("Sequence Tagged Site; operationally unique sequence that identifies the combination of primer spans used in a PCR assay"));
     FK(GBFeatureKey_TATA_signal,      "TATA_signal",      cl("000000"), false, tr("`TATA box' in eukaryotic promoters"));
+    FK(GBFeatureKey_telomere,         "telomere",         cl("000000"), false, tr("Region of biological interest identified as a telomere and which has been experimentally characterized"));
     FK(GBFeatureKey_terminator,       "terminator",       cl("000000"), false, tr("Sequence causing transcription termination"));
+    FK(GBFeatureKey_tmRNA,            "tmRNA",            cl("000000"), false, tr("Transfer messenger RNA; tmRNA acts as a tRNA first, and then as an mRNA that encodes a peptide tag; the ribosome translates this mRNA region of tmRNA and attaches the encoded peptide tag to the C-terminus of the unfinished protein; this attached tag targets the protein for destruction or proteolysis"));
     FK(GBFeatureKey_transit_peptide,  "transit_peptide",  cl("000000"), false, tr("Transit peptide coding region"));
     FK(GBFeatureKey_transposon,       "transposon",       cl("000000"), false, tr("Transposable element (TN)"));
     FK(GBFeatureKey_tRNA,             "tRNA",             cl("c8fac8"), false, tr("Transfer RNA"));
     FK(GBFeatureKey_unsure,           "unsure",           cl("000000"), false, tr("Authors are unsure about the sequence in this region"));
     FK(GBFeatureKey_V_region,         "V_region",         cl("000000"), false, tr("Span of the V immunological feature"));
+    FK(GBFeatureKey_V_segment,        "V_segment",        cl("000000"), false, tr("Variable segment of immunoglobulin light and heavy chains, and T-cell receptor alpha, beta, and gamma chains; codes for most of the variable region (V_region) and the last few amino acids of the leader peptide"));
     FK(GBFeatureKey_variation,        "variation",        cl("ffff9b"), false, tr("A related population contains stable mutation"));
     FK(GBFeatureKey__10_signal,       "-10_signal",       cl("000000"), false, tr("`Pribnow box' in prokaryotic promoters"));
     FK(GBFeatureKey__35_signal,       "-35_signal",       cl("000000"), false, tr("`-35 box' in prokaryotic promoters"));
@@ -141,7 +150,7 @@ const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
     FK(GBFeatureKey_Protein,          "Protein",          cl("000000"), false, tr("'Protein' feature key"));
     FK(GBFeatureKey_Region,           "Region",           cl("000000"), false, tr("'Region' feature key"));
     FK(GBFeatureKey_Site,             "Site",             cl("000000"), false, tr("'Site' feature key"));
-    
+
 #ifdef _DEBUG
     for (int i=0; i<features.size(); i++) {
         assert(features[i].id != GBFeatureKey_UNKNOWN && features[i].id == i);
@@ -149,7 +158,7 @@ const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
         assert(!features[i].desc.isEmpty());
     }
 #endif
-    
+
     return features;
 }
 
@@ -157,7 +166,7 @@ const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
 const QMultiMap<QString, GBFeatureKey>& GBFeatureUtils::getKeyGroups() {
     QMutexLocker locker(&getKeyGroups_mutex);
     static QMultiMap<QString, GBFeatureKey> groups;
-    
+
     if (groups.isEmpty()) {
         QString genes = tr("Genes");
         groups.insert(genes, GBFeatureKey_CDS);
@@ -181,6 +190,7 @@ const QMultiMap<QString, GBFeatureKey>& GBFeatureUtils::getKeyGroups() {
         groups.insert(signls, GBFeatureKey_enhancer);
         groups.insert(signls, GBFeatureKey_mat_peptide);
         groups.insert(signls, GBFeatureKey_misc_signal);
+        groups.insert(signls, GBFeatureKey_oriT);
         groups.insert(signls, GBFeatureKey_rep_origin);
         groups.insert(signls, GBFeatureKey_polyA_site);
         groups.insert(signls, GBFeatureKey_polyA_signal);
@@ -192,12 +202,12 @@ const QMultiMap<QString, GBFeatureKey>& GBFeatureUtils::getKeyGroups() {
         groups.insert(signls, GBFeatureKey_TATA_signal);
         groups.insert(signls, GBFeatureKey__35_signal);
         groups.insert(signls, GBFeatureKey__10_signal);
-        
+
         QString binding = tr("Binding");
         groups.insert(binding, GBFeatureKey_misc_binding);
         groups.insert(binding, GBFeatureKey_primer_bind);
         groups.insert(binding, GBFeatureKey_protein_bind);
-        
+
         QString variation = tr("Variation");
         groups.insert(variation, GBFeatureKey_conflict);
         groups.insert(variation, GBFeatureKey_misc_difference);
@@ -206,7 +216,7 @@ const QMultiMap<QString, GBFeatureKey>& GBFeatureUtils::getKeyGroups() {
         groups.insert(variation, GBFeatureKey_STS);
         groups.insert(variation, GBFeatureKey_unsure);
         groups.insert(variation, GBFeatureKey_variation);
-        
+
         QString repeats = tr("Repeats");
         groups.insert(repeats, GBFeatureKey_LTR);
         groups.insert(repeats, GBFeatureKey_repeat_region);
@@ -215,28 +225,35 @@ const QMultiMap<QString, GBFeatureKey>& GBFeatureUtils::getKeyGroups() {
         groups.insert(repeats, GBFeatureKey_transposon); //TODO: recheck grouping
 
         QString rna = tr("RNA");
+        groups.insert(rna, GBFeatureKey_ncRNA);
         groups.insert(rna, GBFeatureKey_misc_RNA);
         groups.insert(rna, GBFeatureKey_mRNA);
         groups.insert(rna, GBFeatureKey_rRNA);
         groups.insert(rna, GBFeatureKey_scRNA);
         groups.insert(rna, GBFeatureKey_snRNA);
         groups.insert(rna, GBFeatureKey_tRNA);
+        groups.insert(rna, GBFeatureKey_tmRNA);
 
         QString misc = tr("Misc");
+        groups.insert(misc, GBFeatureKey_assembly_gap);
+        groups.insert(misc, GBFeatureKey_centromere);
         groups.insert(misc, GBFeatureKey_D_loop);
+        groups.insert(misc, GBFeatureKey_gap);
         groups.insert(misc, GBFeatureKey_iDNA);
         groups.insert(misc, GBFeatureKey_misc_binding);
         groups.insert(misc, GBFeatureKey_misc_feature);
         groups.insert(misc, GBFeatureKey_misc_recomb);
         groups.insert(misc, GBFeatureKey_misc_structure);
         groups.insert(misc, GBFeatureKey_mobile_element);
+        groups.insert(misc, GBFeatureKey_operon);
         groups.insert(misc, GBFeatureKey_primer); //TODO: recheck grouping
         groups.insert(misc, GBFeatureKey_source);
         groups.insert(misc, GBFeatureKey_stem_loop);
+        groups.insert(misc, GBFeatureKey_telomere);
         groups.insert(misc, GBFeatureKey_Protein);
         groups.insert(misc, GBFeatureKey_Region);
         groups.insert(misc, GBFeatureKey_Site);
-        
+
         QString spans = tr("Spans");
         groups.insert(spans, GBFeatureKey_C_region);
         groups.insert(spans, GBFeatureKey_D_segment);
@@ -244,6 +261,7 @@ const QMultiMap<QString, GBFeatureKey>& GBFeatureUtils::getKeyGroups() {
         groups.insert(spans, GBFeatureKey_N_region);
         groups.insert(spans, GBFeatureKey_S_region);
         groups.insert(spans, GBFeatureKey_V_region);
+        groups.insert(spans, GBFeatureKey_V_segment);
 
 #ifdef _DEBUG
         //check that no feature lost
