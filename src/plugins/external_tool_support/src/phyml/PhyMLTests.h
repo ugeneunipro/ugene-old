@@ -46,20 +46,14 @@ public:
 private:
     QString inputDocCtxName;
     QString resultCtxName;
-
-    QString dataType;
-    int bootstrapReplicates;
-    QString subtitutionalModel;
-    int substitutionRatesNumber;
-    int ttRatio;
-    int gammaFactor;
-    double invSitesProportion;
+    QString negative;
 
     Document* maDoc;
     Document* treeDoc;
     PhyTreeGeneratorLauncherTask* task;
     MAlignmentObject* input;
     PhyTreeObject* treeObjFromDoc;
+    CreatePhyTreeSettings settings;
 };
 
 class  PhyMLToolTests {

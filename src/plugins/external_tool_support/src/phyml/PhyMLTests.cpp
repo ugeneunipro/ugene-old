@@ -51,11 +51,6 @@ void GTest_PhyML::init(XMLTestFormat *tf, const QDomElement& el) {
     treeObjFromDoc = NULL;
     task = NULL;
     input = NULL;
-    bootstrapReplicates = 0;
-    substitutionRatesNumber = -1;
-    gammaFactor = -1;
-    ttRatio = -1;
-    invSitesProportion = -1.0;
     maDoc = NULL;
     treeDoc = NULL;
 
@@ -65,38 +60,52 @@ void GTest_PhyML::init(XMLTestFormat *tf, const QDomElement& el) {
         return;
     }
     resultCtxName = el.attribute("sample");
-    dataType = el.attribute("datatype");
+    negative = el.attribute("negative");
+
+    QString dataType = el.attribute("datatype");
+    if(!dataType.isEmpty()) {
+        settings.extToolArguments << "-d";
+        settings.extToolArguments << dataType;
+    }
 
     QString bootstrapString = el.attribute("bootstrap");
     if(!bootstrapString.isEmpty()){
-        bootstrapReplicates = bootstrapString.toInt();
+        settings.extToolArguments << "-b";
+        settings.extToolArguments << bootstrapString;
     }
 
-    subtitutionalModel = el.attribute("model");
+    QString subtitutionalModel = el.attribute("model");
+    if(!subtitutionalModel.isEmpty()) {
+        settings.extToolArguments << "-m";
+        settings.extToolArguments << subtitutionalModel;
+    }
 
     QString ttRatioString = el.attribute("tt_ratio");
     if(!ttRatioString.isEmpty()) {
-        ttRatio = ttRatioString.toInt();
+        settings.extToolArguments << "-t";
+        settings.extToolArguments << ttRatioString;
     }
 
     QString subRatesString = el.attribute("substitution_rates");
     if(!subRatesString.isEmpty()) {
-        substitutionRatesNumber = subRatesString.toInt();
+        settings.extToolArguments << "-t";
+        settings.extToolArguments << subRatesString;
     }
 
     QString invSitesString = el.attribute("inv_sites");
     if(!invSitesString.isEmpty()) {
-        invSitesProportion = invSitesString.toDouble();
+        settings.extToolArguments << "-v";
+        settings.extToolArguments << invSitesString;
     }
 
     QString gammaFactorString = el.attribute("gamma");
     if(!gammaFactorString.isEmpty()) {
-        gammaFactor = gammaFactorString.toInt();
+        settings.extToolArguments << "-a";
+        settings.extToolArguments << gammaFactorString;
     }
 }
 
 void GTest_PhyML::prepare() {
-
     maDoc = getContext<Document>(this, inputDocCtxName);
     if (maDoc == NULL) {
         stateInfo.setError(  QString("context not found %1").arg(inputDocCtxName) );
@@ -149,21 +158,41 @@ void GTest_PhyML::prepare() {
     }
     assert( obj != NULL);
 
-    CreatePhyTreeSettings settings;
+    
     settings.algorithmId = PhyMLSupport::PhyMlRegistryId;
-    settings.extToolArguments;
 
     task = new PhyTreeGeneratorLauncherTask(input->getMAlignment(), settings);
     addSubTask(task);
 }
 
 Task::ReportResult GTest_PhyML::report() {
+    if(NULL == task) {
+        if(!stateInfo.hasError()) {
+            stateInfo.setError("PhyTreeGeneratorLauncherTask is not created");
+        }
+        return ReportResult_Finished;
+    }
     if (!task->hasError()) {
         const PhyTree computedTree = task->getResult();
         const PhyTree& treeFromDoc = treeObjFromDoc->getTree(); 
         bool same = PhyTreeObject::treesAreAlike(computedTree, treeFromDoc);
         if(!same){
-            stateInfo.setError("Trees are not equal");
+            if(negative.isEmpty()) {
+                stateInfo.setError("Trees are not equal");
+            }
+            else {
+                if(negative != "Trees are not equal") {
+                    stateInfo.setError(QString("Negative test failed: error string is empty, expected error \"%1\", but current error is \"Trees are not equal\"").arg(negative));
+                }
+            }
+        }
+    }
+    else if(!negative.isEmpty()) {
+        if(negative != task->getError()) {
+            stateInfo.setError(QString("Negative test failed: error string is empty, expected error \"%1\", but current error is \"%2\"").arg(negative).arg(task->getError()));
+        }
+        else {
+            stateInfo.setError("");
         }
     }
 

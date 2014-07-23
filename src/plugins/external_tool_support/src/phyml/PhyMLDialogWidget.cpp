@@ -136,7 +136,7 @@ void PhyMlWidget::createWidgetsControllers() {
     //Tree improvements
     QStringList treeImprovements;
     treeImprovements << "NNI" << "SPR" << "BEST";
-    InputWidgetController* treeImprovementController = widgetControllers.addWidgetController(treeImprovementsCombo, PhyMlSettingsPreffixes::TreeImprovementType, "-s", treeImprovements);
+    widgetControllers.addWidgetController(treeImprovementsCombo, PhyMlSettingsPreffixes::TreeImprovementType, "-s", treeImprovements);
 
     //Equilibrium frequencies
     widgetControllers.addWidgetController(freqOptimRadio, PhyMlSettingsPreffixes::OptimiseEquilibriumFreq, "");
