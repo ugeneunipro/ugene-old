@@ -113,8 +113,11 @@ Task::ReportResult FindEnzymesToAnnotationsTask::report()
     const QSet<QString> groupNames = resultMap.keys().toSet();
 
     foreach (const QString& groupName, groupNames) {
+        if (isCanceled()) {
+            return ReportResult_Finished;
+        }
         QList<AnnotationData> adata = resultMap.values(groupName);
-        aObj->addAnnotations( adata, groupName );
+        aObj->addAnnotations( adata, stateInfo, groupName );
     }
 
     if (aObj->getAnnotations().isEmpty() && !cfg.isAutoAnnotationUpdateTask) {

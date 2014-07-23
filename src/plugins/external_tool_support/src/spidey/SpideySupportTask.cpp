@@ -247,7 +247,7 @@ QList<Task *> SpideySupportTask::onSubTaskFinished( Task *subTask ) {
             DocumentUtils::removeDocumentsContainigGObjectFromProject( aObj );
             aObj = NULL;
         } else {
-            aObj->addAnnotations( results );
+            aObj->addAnnotations( results, stateInfo );
         }
     }
 

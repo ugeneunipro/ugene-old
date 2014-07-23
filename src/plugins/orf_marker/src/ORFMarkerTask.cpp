@@ -119,7 +119,7 @@ Task::ReportResult U2::FindORFsToAnnotationsTask::report()
     if (groupName.isEmpty()) {
         groupName = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
     }
-    aObj->addAnnotations( aData, groupName );
+    aObj->addAnnotations( aData, stateInfo, groupName );
 
     return ReportResult_Finished;
 }

@@ -364,7 +364,7 @@ Document * ExternalToolSupportUtils::createAnnotationsDocument( const QString &f
 
      { // add annotations object
          AnnotationTableObject *aobj = new AnnotationTableObject( "anns", doc->getDbiRef( ) );
-         aobj->addAnnotations( anns );
+         aobj->addAnnotations( anns, os );
          doc->addObject( aobj );
      }
      return doc;

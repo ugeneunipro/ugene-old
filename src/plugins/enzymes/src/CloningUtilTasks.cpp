@@ -660,7 +660,7 @@ void LigateFragmentsTask::createDocument( const QByteArray& seq, const QList<Ann
 
     AnnotationTableObject *aObj = new AnnotationTableObject( QString( "%1 annotations" ).arg( seqName ),
         resultDoc->getDbiRef( ) );
-    aObj->addAnnotations(annotations);
+    aObj->addAnnotations(annotations, stateInfo);
     resultDoc->addObject(aObj);
 
     aObj->addObjectRelation(dnaObj,ObjectRole_Sequence);

@@ -66,7 +66,7 @@ public:
     /**
      * Adds to DB a set of features based on @annotations
      */
-    void                    addAnnotations( const QList<AnnotationData> &annotations,
+    void                    addAnnotations( const QList<AnnotationData> &annotations, U2OpStatus &os,
                                 const QString &groupName = QString( ) );
     /**
      * Removes features corresponding to @a from DB

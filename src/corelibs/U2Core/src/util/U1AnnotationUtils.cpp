@@ -278,9 +278,9 @@ void U1AnnotationUtils::addAnnotations( QList<GObject *> &objects,
     const QList<AnnotationData> &annList, const GObjectReference &sequenceRef,
     AnnotationTableObject *annotationsObject, const QVariantMap& hints )
 {
+    U2OpStatusImpl os;
     if ( !annList.isEmpty( ) ) {
-        if ( NULL == annotationsObject ) {
-            U2OpStatusImpl os;
+        if ( NULL == annotationsObject ) {            
             U2DbiRef dbiRef;
             if (hints.contains(DocumentFormat::DBI_REF_HINT)) {
                 dbiRef = hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>();
@@ -296,7 +296,7 @@ void U1AnnotationUtils::addAnnotations( QList<GObject *> &objects,
             annotationsObject->addObjectRelation(
                 GObjectRelation( sequenceRef, ObjectRole_Sequence ) );
         }
-        annotationsObject->addAnnotations( annList );
+        annotationsObject->addAnnotations( annList, os );
         if ( !objects.contains( annotationsObject ) ) {
             objects.append( annotationsObject );
         }

@@ -867,7 +867,7 @@ Task::ReportResult ExpertDiscoveryToAnnotationTask::report(){
         return ReportResult_Finished;
     }
 
-    aObj->addAnnotations(resultList, "ExpertDiscover Signals");
+    aObj->addAnnotations(resultList, stateInfo, "ExpertDiscover Signals");
 
     return ReportResult_Finished;
 }
