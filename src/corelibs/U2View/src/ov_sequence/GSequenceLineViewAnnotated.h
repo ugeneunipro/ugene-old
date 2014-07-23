@@ -118,8 +118,8 @@ protected:
         CutSiteDrawData():direct(true), pos(0){}
         QRect r; 
         QColor color;
-        int pos;
         bool direct;
+        int pos;
     };
     virtual void                    drawAnnotations( QPainter &p );
     virtual void                    drawBoundedText( QPainter &p, const QRect &r,

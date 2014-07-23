@@ -22,7 +22,7 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Assembly data base:</string>
+        <string>Assembly database:</string>
        </property>
       </widget>
      </item>

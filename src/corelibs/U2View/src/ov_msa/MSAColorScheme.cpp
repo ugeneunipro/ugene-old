@@ -103,7 +103,7 @@ MSAColorSchemeStatic::MSAColorSchemeStatic(QObject* p, MSAColorSchemeFactory* f,
 {
 }
 
-QColor MSAColorSchemeStatic::getColor(int seq, int pos, char c) {
+QColor MSAColorSchemeStatic::getColor(int /*seq*/, int /*pos*/, char c) {
     return colorsPerChar[(quint8)c];
 }
 
@@ -128,7 +128,7 @@ MSAColorSchemePercIdent::MSAColorSchemePercIdent(QObject* p, MSAColorSchemeFacto
                   SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
 }
 
-QColor MSAColorSchemePercIdent::getColor(int seq, int pos, char c) {
+QColor MSAColorSchemePercIdent::getColor(int /*seq*/, int pos, char c) {
     updateCache();
     if (c == MAlignment_GapChar) {
         return QColor();

@@ -106,7 +106,7 @@ void ConvertAssemblyToSamDialog::sl_onSetDbPathButtonClicked() {
     LastUsedDirHelper lod;
     QString filter;
 
-    lod.url = QFileDialog::getOpenFileName(this, tr("Open an assembly data base file"), lod.dir, filter);
+    lod.url = QFileDialog::getOpenFileName(this, tr("Open an Assembly Database File"), lod.dir, filter);
     if (lod.url.isEmpty()) {
         return;
     }

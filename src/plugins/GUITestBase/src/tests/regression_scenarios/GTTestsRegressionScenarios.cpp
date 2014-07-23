@@ -2585,7 +2585,7 @@ GUI_TEST_CLASS_DEFINITION( test_2138 )
 
 GUI_TEST_CLASS_DEFINITION( test_2140 )
 {
-    //1. Use main menu {Tools->Dna assembly->convert UGENE assembly data base to SAM format}
+    //1. Use main menu {Tools->Dna assembly->convert UGENE assembly database to SAM format}
     //2. Select any .fasta file instead of .ugenedb file
     //3. Click "convert"
     //Expected state: UGENE not crashes. Error message is written to log
@@ -2593,7 +2593,7 @@ GUI_TEST_CLASS_DEFINITION( test_2140 )
     GTLogTracer l;
     GTUtilsDialog::waitForDialog(os, new ConvertAssemblyToSAMDialogFiller(os, dataDir + "samples/FASTA/", "human_T1.fa"));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS),
-                          QStringList() << "DNA assembly" << "Convert UGENE Assembly data base to SAM format");
+                          QStringList() << "DNA assembly" << "Convert UGENE Assembly database to SAM format");
 
     CHECK_SET_ERR(l.hasError() == true, "There is no error message in log");
 }

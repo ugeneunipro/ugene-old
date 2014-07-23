@@ -64,8 +64,8 @@ DnaAssemblySupport::DnaAssemblySupport()
     dnaAssemblySub->setObjectName(MWMENU_TOOLS_ASSEMBLY);
     dnaAssemblySub->menuAction()->setObjectName("DNA assembly");
 
-    QAction* convertAssemblyToSamAction = new QAction( tr("Convert UGENE Assembly data base to SAM format..."), this );
-    convertAssemblyToSamAction->setObjectName("Convert UGENE Assembly data base to SAM format");
+    QAction* convertAssemblyToSamAction = new QAction( tr("Convert UGENE Assembly database to SAM format..."), this );
+    convertAssemblyToSamAction->setObjectName("Convert UGENE Assembly Database to SAM format");
     convertAssemblyToSamAction->setIcon(QIcon(":core/images/align.png"));
     connect( convertAssemblyToSamAction, SIGNAL( triggered() ), SLOT( sl_showConvertToSamDialog() ) );
     dnaAssemblySub->addAction( convertAssemblyToSamAction );
