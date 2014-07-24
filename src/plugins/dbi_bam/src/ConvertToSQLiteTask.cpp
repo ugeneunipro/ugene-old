@@ -508,8 +508,7 @@ void ConvertToSQLiteTask::run() {
 
         stateInfo.setDescription("Importing reads");
 
-        if(bamInfo.hasIndex() ||
-           (Header::Coordinate == reader->getHeader().getSortingOrder()) ||
+        if((Header::Coordinate == reader->getHeader().getSortingOrder()) ||
            (Header::QueryName == reader->getHeader().getSortingOrder())) {
 
             QScopedPointer<Iterator> iterator;
