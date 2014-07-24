@@ -588,6 +588,8 @@ void ConvertToSQLiteTask::run() {
                         while(iterator->hasNext() && iterator->peekReferenceId() != -1) {
                             iterator->skip();
                         }
+                    }else{
+                        iterator.reset(new BamIterator(*bamReader));
                     }
                 }
                 SequentialDbiIterator dbiIterator(-1, false, *iterator, stateInfo, *ioAdapter);
