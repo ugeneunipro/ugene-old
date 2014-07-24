@@ -317,8 +317,6 @@ signals:
     void si_finished();
 
 private:
-    static QString createScriptHeader(const AttributeScript & attrScript);
-
     QComboBox *combobox;
 };
 
@@ -333,9 +331,12 @@ public:
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
     QVariant getDisplayValue(const QVariant&) const;
 
+    static QString createScriptHeader(const AttributeScript &attrScript);
+
     virtual PropertyDelegate *clone() {
         return new AttributeScriptDelegate(parent());
     }
+
 private slots:
     void sl_commit();
 }; // AttributeScriptDelegate

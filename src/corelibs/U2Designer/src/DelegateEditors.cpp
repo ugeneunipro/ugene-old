@@ -473,7 +473,7 @@ void ScriptSelectionWidget::sl_comboActivated(int itemId) {
         }
     case USER_SCRIPT_ITEM_ID: {
         AttributeScript attrScript = combobox->property(SCRIPT_PROPERTY.toLatin1().constData()).value<AttributeScript>();
-        ScriptEditorDialog dlg(combobox, createScriptHeader(attrScript));
+        ScriptEditorDialog dlg(combobox, AttributeScriptDelegate::createScriptHeader(attrScript));
         dlg.setScriptText(attrScript.getScriptText());
 
         int rc = dlg.exec();
@@ -491,14 +491,6 @@ void ScriptSelectionWidget::sl_comboActivated(int itemId) {
         FAIL("Unexpected item", );
     }
     }
-}
-
-QString ScriptSelectionWidget::createScriptHeader(const AttributeScript & attrScript) {
-    QString header;
-    foreach (const Descriptor & desc, attrScript.getScriptVars().keys()) {
-        header += QString("var %1; // %2\n").arg(desc.getId()).arg(desc.getDisplayName());
-    }
-    return header;
 }
 
 /********************************
@@ -537,6 +529,14 @@ QVariant AttributeScriptDelegate::getDisplayValue(const QVariant& val) const{
     AttributeScript attrScript = val.value<AttributeScript>();
     QString ret = attrScript.isEmpty() ? NO_SCRIPT_ITEM_STR.first : USER_SCRIPT_ITEM_STR.first;
     return QVariant(ret);
+}
+
+QString AttributeScriptDelegate::createScriptHeader(const AttributeScript &attrScript) {
+    QString header;
+    foreach (const Descriptor & desc, attrScript.getScriptVars().keys()) {
+        header += QString("var %1; // %2\n").arg(desc.getId()).arg(desc.getDisplayName());
+    }
+    return header;
 }
 
 /********************************
