@@ -258,10 +258,6 @@ void MysqlDbi::open(const QHash<QString, QString> &props, U2OpStatus &os) {
     }
 
     if (userName.isEmpty()) {
-        userName = props.value(U2DbiOptions::U2_DBI_OPTION_LOGIN);
-    }
-
-    if (userName.isEmpty()) {
         os.setError(U2DbiL10n::tr("User login is not specified"));
         setState(U2DbiState_Void);
         return;

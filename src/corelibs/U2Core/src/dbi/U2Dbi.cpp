@@ -35,8 +35,6 @@ const QString U2DbiOptions::U2_DBI_OPTION_URL("url");
 
 const QString U2DbiOptions::U2_DBI_OPTION_CREATE("create");
 
-const QString U2DbiOptions::U2_DBI_OPTION_LOGIN("login");
-
 const QString U2DbiOptions::U2_DBI_OPTION_PASSWORD("password");
 
 const QString U2DbiOptions::U2_DBI_VALUE_ON("1");
