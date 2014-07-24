@@ -96,7 +96,7 @@ public:
         dsr = NULL;
         str = NULL;
         credentialsAsker = NULL;
-        credentialsStorage = NULL;
+        passwordStorage = NULL;
         cfr = NULL;
     }
 
@@ -288,9 +288,9 @@ public:
         credentialsAsker = _credentialsAsker;
     }
 
-    void setCredentialsStorage(CredentialsStorage *_credentialsStorage) {
-        assert(credentialsStorage == NULL || _credentialsStorage == NULL);
-        credentialsStorage = _credentialsStorage;
+    void setPasswordStorage(PasswordStorage *_passwordStorage) {
+        assert(passwordStorage == NULL || _passwordStorage == NULL);
+        passwordStorage = _passwordStorage;
     }
 
     void setAppFileStorage(AppFileStorage *afs) {
@@ -393,7 +393,7 @@ protected:
     virtual DASSourceRegistry*              _getDASSourceRegistry() const { return dsr; }
     virtual ScriptingToolRegistry*          _getScriptingToolRegistry() const { return str; }
     virtual CredentialsAsker*               _getCredentialsAsker() const { return credentialsAsker; }
-    virtual CredentialsStorage*             _getCredentialsStorage() const { return credentialsStorage; }
+    virtual PasswordStorage*                _getPasswordStorage() const { return passwordStorage; }
     virtual ConvertFactoryRegistry*         _getConvertFactoryRegistry() const { return cfr; }
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
@@ -468,7 +468,7 @@ private:
     DASSourceRegistry *dsr;
     ScriptingToolRegistry *str;
     CredentialsAsker* credentialsAsker;
-    CredentialsStorage* credentialsStorage;
+    PasswordStorage* passwordStorage;
     ConvertFactoryRegistry *cfr;
     bool guiMode;
     QString activeWindow;

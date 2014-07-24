@@ -22,7 +22,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/CMDLineCoreOptions.h>
 #include <U2Core/CMDLineRegistry.h>
-#include <U2Core/CredentialsStorage.h>
+#include <U2Core/PasswordStorage.h>
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/U2DbiRegistry.h>
@@ -490,19 +490,10 @@ QHash<QString, QString> U2DbiPool::getInitProperties(const QString &url, bool cr
     QHash<QString, QString> initProperties;
 
     initProperties[U2DbiOptions::U2_DBI_OPTION_URL] = url;
+    initProperties[U2DbiOptions::U2_DBI_OPTION_PASSWORD] = AppContext::getPasswordStorage()->getEntry(url);
 
     if (create) {
         initProperties[U2DbiOptions::U2_DBI_OPTION_CREATE] = U2DbiOptions::U2_DBI_VALUE_ON;
-    }
-
-    Credentials credentials = AppContext::getCredentialsStorage()->getEntry(url);
-
-    if (!credentials.login.isNull()) {
-        initProperties[U2DbiOptions::U2_DBI_OPTION_LOGIN] = credentials.login;
-    }
-
-    if (!credentials.password.isNull()) {
-        initProperties[U2DbiOptions::U2_DBI_OPTION_PASSWORD] = credentials.password;
     }
 
     return initProperties;

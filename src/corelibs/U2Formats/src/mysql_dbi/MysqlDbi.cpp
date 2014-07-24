@@ -244,17 +244,21 @@ void MysqlDbi::createHandle(const QHash<QString, QString> &props) {
 }
 
 void MysqlDbi::open(const QHash<QString, QString> &props, U2OpStatus &os) {
-    const QString userName = props.value(U2DbiOptions::U2_DBI_OPTION_LOGIN);
+    QString userName;
     const QString password = props.value(U2DbiOptions::U2_DBI_OPTION_PASSWORD);
     QString host;
     int port = -1;
     QString dbName;
 
-    bool parseResult = MysqlDbiUtils::parseDbiUrl(props.value(U2DbiOptions::U2_DBI_OPTION_URL), host, port, dbName);
+    bool parseResult = U2DbiUtils::parseFullDbiUrl(props.value(U2DbiOptions::U2_DBI_OPTION_URL), userName, host, port, dbName);
     if (!parseResult) {
         os.setError(U2DbiL10n::tr("Database url is incorrect"));
         setState(U2DbiState_Void);
         return;
+    }
+
+    if (userName.isEmpty()) {
+        userName = props.value(U2DbiOptions::U2_DBI_OPTION_LOGIN);
     }
 
     if (userName.isEmpty()) {
@@ -522,7 +526,7 @@ void MysqlDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U2
 
     initProperties = props;
 
-    dbiId = MysqlDbiUtils::createDbiUrl(db->handle.hostName(), db->handle.port(), db->handle.databaseName());
+    dbiId = U2DbiUtils::createFullDbiUrl(db->handle.userName(), db->handle.hostName(), db->handle.port(), db->handle.databaseName());
     internalInit(props, os);
     if (os.hasError()) {
         db->handle.close();
@@ -570,8 +574,7 @@ QString MysqlDbi::getDbiId() const {
 
 QHash<QString, QString> MysqlDbi::getDbiMetaInfo(U2OpStatus& ) {
     QHash<QString, QString> res;
-    res[U2DbiOptions::U2_DBI_OPTION_URL] = MysqlDbiUtils::createAuthDbiUrl(db->handle.userName(),
-        db->handle.password(), db->handle.hostName(), db->handle.port(), db->handle.databaseName());
+    res[U2DbiOptions::U2_DBI_OPTION_URL] = U2DbiUtils::ref2Url(getDbiRef());
     return res;
 }
 

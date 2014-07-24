@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CREDENTIALS_STORAGE_H_
-#define _U2_CREDENTIALS_STORAGE_H_
+#ifndef _U2_PASSWORD_STORAGE_H_
+#define _U2_PASSWORD_STORAGE_H_
 
 #include <QtCore/QMap>
 #include <QtCore/QString>
@@ -29,42 +29,28 @@
 
 namespace U2 {
 
-class U2CORE_EXPORT Credentials {
+class U2CORE_EXPORT PasswordStorage {
 public:
-    Credentials();
-    Credentials(const QString& login, const QString& password);
+    PasswordStorage();
 
-    bool isValid() const;
-
-    QByteArray serialize() const;
-    static Credentials deserialize(const QByteArray& data);
-
-    QString login;
-    QString password;
+    void addEntry(const QString& fullUrl, const QString& password, bool remember);
+    void removeEntry(const QString& fullUrl);
+    QString getEntry(const QString& fullUrl) const;
+    bool contains(const QString& fullUrl) const;
+    bool isRemembered(const QString& fullUrl) const;
+    void setRemembered(const QString& fullUrl, bool remember);
 
 private:
-    static const char SEPARATOR;
-};
+    static void remember(const QString& fullUrl, const QString& password);
+    static void forget(const QString &fullUrl);
+    static QByteArray serialize(const QString &password);
+    static QString deserialize(const QByteArray &data);
 
-class U2CORE_EXPORT CredentialsStorage {
-public:
-    CredentialsStorage();
-
-    void addEntry(const QString& resourceId, const Credentials& entry, bool remember);
-    void removeEntry(const QString& resourceId);
-    Credentials getEntry(const QString& resourceId) const;
-    bool contains(const QString& resourceId) const;
-    bool isRemembered(const QString& resourceId) const;
-
-private:
-    static void remember(const QString& resourceId, const Credentials& entry);
-    static void forget(const QString resourceId);
-
-    QMap<QString, Credentials> registry;
+    QStrStrMap registry;
 
     static const QString SETTINGS_PATH;
 };
 
 }   // namespace U2
 
-#endif // _U2_CREDENTIALS_STORAGE_H_
+#endif // _U2_PASSWORD_STORAGE_H_

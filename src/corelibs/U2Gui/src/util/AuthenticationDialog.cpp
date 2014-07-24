@@ -77,6 +77,10 @@ bool AuthenticationDialog::isRemembered() const {
     return authenticationWidget->isRemembered();
 }
 
+void AuthenticationDialog::disableLogin() {
+    authenticationWidget->leLogin->setEnabled(false);
+}
+
 void AuthenticationDialog::accept() {
     if (authenticationWidget->getLogin().isEmpty()) {
         QMessageBox::critical(this, tr("Error!"), tr("Login is not set"));

@@ -24,7 +24,7 @@
 #include <U2Core/CMDLineRegistry.h>
 #include <U2Core/CMDLineUtils.h>
 #include <U2Core/CredentialsAsker.h>
-#include <U2Core/CredentialsStorage.h>
+#include <U2Core/PasswordStorage.h>
 #include <U2Core/DataBaseRegistry.h>
 #include <U2Core/DBXRefRegistry.h>
 #include <U2Core/DNAAlphabetRegistryImpl.h>
@@ -456,8 +456,8 @@ int main(int argc, char **argv)
     WorkflowScriptRegistry* workflowScriptRegistry = new WorkflowScriptRegistry();
     appContext->setWorkflowScriptRegistry(workflowScriptRegistry);
 
-    CredentialsStorage* credentialsStorage = new CredentialsStorage();
-    appContext->setCredentialsStorage(credentialsStorage);
+    PasswordStorage* passwordStorage = new PasswordStorage();
+    appContext->setPasswordStorage(passwordStorage);
 
     CredentialsAsker* credentialsAsker = new CredentialsAsker();
     appContext->setCredentialsAsker(credentialsAsker);
@@ -532,8 +532,8 @@ int main(int argc, char **argv)
     appContext->setCredentialsAsker(NULL);
     delete credentialsAsker;
 
-    appContext->setCredentialsStorage(NULL);
-    delete credentialsStorage;
+    appContext->setPasswordStorage(NULL);
+    delete passwordStorage;
 
     appContext->setDASSourceRegistry(NULL);
     delete dsr;

@@ -22,7 +22,7 @@
 #ifndef _U2_CREDENTIALS_ASKER_H_
 #define _U2_CREDENTIALS_ASKER_H_
 
-#include <U2Core/CredentialsStorage.h>
+#include <U2Core/PasswordStorage.h>
 
 namespace U2 {
 
@@ -31,7 +31,8 @@ public:
     CredentialsAsker();
     virtual ~CredentialsAsker();
 
-    virtual bool ask(const QString& resourceId);
+    virtual bool ask(const QString& resourceUrl);
+    virtual bool ask(QString& resourceUrl);
 };
 
 }   // namespace U2

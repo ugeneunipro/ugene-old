@@ -22,6 +22,7 @@
 #include <QtGui/QMainWindow>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/MainWindow.h>
@@ -35,28 +36,49 @@ CredentialsAskerGui::CredentialsAskerGui()
 {
 }
 
-bool CredentialsAskerGui::ask(const QString& resourceId) {
+bool CredentialsAskerGui::ask(const QString &resourceUrl) {
     QWidget* mainWindow = qobject_cast<QWidget*>(AppContext::getMainWindow()->getQMainWindow());
-    AuthenticationDialog authDialog(QObject::tr("Connect to the ") + resourceId, mainWindow);
-    Credentials result;
+
+    QString userName;
+    const QString shortDbiUrl = U2DbiUtils::full2shortDbiUrl(resourceUrl, userName);
+
+    AuthenticationDialog authDialog(QObject::tr("Connect to the ") + shortDbiUrl, mainWindow);
+    authDialog.setLogin(userName);
+    authDialog.disableLogin();
 
     if (QDialog::Accepted != authDialog.exec()) {
         return false;
     }
 
-    result.login = authDialog.getLogin();
-    result.password = authDialog.getPassword();
-
-    saveCredentials(resourceId, result, authDialog.isRemembered());
+    saveCredentials(resourceUrl, authDialog.getPassword(), authDialog.isRemembered());
 
     return true;
 }
 
-void CredentialsAskerGui::saveCredentials(const QString& resourceId, const Credentials& credentials, bool remember) const {
-    CredentialsStorage* storage = AppContext::getCredentialsStorage();
+bool CredentialsAskerGui::ask(QString& resourceUrl) {
+    QWidget* mainWindow = qobject_cast<QWidget*>(AppContext::getMainWindow()->getQMainWindow());
+
+    QString userName;
+    const QString shortDbiUrl = U2DbiUtils::full2shortDbiUrl(resourceUrl, userName);
+
+    AuthenticationDialog authDialog(QObject::tr("Connect to the ") + shortDbiUrl, mainWindow);
+    authDialog.setLogin(userName);
+
+    if (QDialog::Accepted != authDialog.exec()) {
+        return false;
+    }
+
+    resourceUrl = U2DbiUtils::createFullDbiUrl(authDialog.getLogin(), shortDbiUrl);
+    saveCredentials(resourceUrl, authDialog.getPassword(), authDialog.isRemembered());
+
+    return true;
+}
+
+void CredentialsAskerGui::saveCredentials(const QString& resourceUrl, const QString &password, bool remember) const {
+    PasswordStorage* storage = AppContext::getPasswordStorage();
     CHECK(NULL != storage, );
 
-    storage->addEntry(resourceId, credentials, remember);
+    storage->addEntry(resourceUrl, password, remember);
 }
 
 }   // namespace U2

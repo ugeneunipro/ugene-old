@@ -23,7 +23,7 @@
 
 #include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/CredentialsStorage.h>
+#include <U2Core/PasswordStorage.h>
 #include <U2Core/CredentialsAsker.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/Log.h>
@@ -127,7 +127,7 @@ Document* ObjectViewTask::createDocumentAndAddToProject( const QString& docUrl, 
         DocumentFormat* format = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::DATABASE_CONNECTION);
         SAFE_POINT_EXT(NULL != format, os.setError("Database connection format is NULL"), NULL);
 
-        if (!AppContext::getCredentialsStorage()->contains(docUrl) && !AppContext::getCredentialsAsker()->ask(docUrl)) {
+        if (!AppContext::getPasswordStorage()->contains(docUrl) && !AppContext::getCredentialsAsker()->ask(docUrl)) {
             return NULL;
         }
 

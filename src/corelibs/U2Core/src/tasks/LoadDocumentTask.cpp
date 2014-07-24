@@ -19,7 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/CredentialsAsker.h>
 #include <U2Core/FormatSettings.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -322,8 +321,6 @@ void LoadDocumentTask::prepare() {
     if (memUseMB > 0) {
         addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, false));
     }
-
-    checkAccess();
 }
 
 static QList<Document*> loadMulti(IOAdapterFactory* iof, const QVariantMap& fs, U2OpStatus& os){
@@ -525,27 +522,6 @@ int LoadDocumentTask::calculateMemory() const {
 
     return memUseMB;
 }
-
-void LoadDocumentTask::checkAccess() {
-    if (GUrl_Network != url.getType()) {
-        return;
-    }
-
-    CredentialsStorage* storage = AppContext::getCredentialsStorage();
-    CHECK(NULL != storage, );
-
-    if (storage->contains(url.getURLString())) {
-        return;
-    }
-
-    CredentialsAsker* asker = AppContext::getCredentialsAsker();
-    CHECK(NULL != asker, );
-
-    if (!asker->ask(url.getURLString())) {
-        cancel();
-    }
-}
-
 
 void LoadDocumentTask::renameObjects(Document* doc, const QStringList& names) {
     if (doc->getObjects().size() != names.size()) {

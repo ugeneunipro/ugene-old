@@ -91,7 +91,7 @@ class PairwiseAlignmentRegistry;
 class DASSourceRegistry;
 class ScriptingToolRegistry;
 class CredentialsAsker;
-class CredentialsStorage;
+class PasswordStorage;
 class ConvertFactoryRegistry;
 
 class U2CORE_EXPORT AppContext  : public QObject {
@@ -251,7 +251,7 @@ public:
 
     static CredentialsAsker* getCredentialsAsker() { return getInstance()->_getCredentialsAsker(); }
 
-    static CredentialsStorage* getCredentialsStorage() { return getInstance()->_getCredentialsStorage(); }
+    static PasswordStorage* getPasswordStorage() { return getInstance()->_getPasswordStorage(); }
 
 protected:
     static AppContext* getInstance() {assert(instance); return instance;}
@@ -321,7 +321,7 @@ protected:
     virtual DASSourceRegistry* _getDASSourceRegistry() const = 0; 
     virtual ScriptingToolRegistry* _getScriptingToolRegistry() const = 0;
     virtual CredentialsAsker* _getCredentialsAsker() const = 0;
-    virtual CredentialsStorage* _getCredentialsStorage() const = 0;
+    virtual PasswordStorage* _getPasswordStorage() const = 0;
     virtual ConvertFactoryRegistry* _getConvertFactoryRegistry() const = 0;
 
     virtual void _registerGlobalObject(AppGlobalObject* go) = 0;

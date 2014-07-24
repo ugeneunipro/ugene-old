@@ -25,7 +25,7 @@
 
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/CredentialsStorage.h>
+#include <U2Core/PasswordStorage.h>
 #include <U2Core/ConnectSharedDatabaseTask.h>
 #include <U2Core/Counter.h>
 #include <U2Core/ProjectModel.h>
@@ -93,16 +93,16 @@ void SharedConnectionsDialog::sl_itemDoubleClicked(const QModelIndex& index) {
 void SharedConnectionsDialog::sl_connectClicked() {
     QListWidgetItem *selectedItem = ui->lwConnections->currentItem();
     SAFE_POINT(NULL != selectedItem, "Invalid list item detected", );
-    const QString dbUrl = selectedItem->data(Qt::UserRole).toString();
     const QString connectionName = selectedItem->data(Qt::DisplayRole).toString();
+    QString fullDbiUrl = getCurrentFullDbiUrl();
 
-    countConnectionsToPublicDatabase(dbUrl);
+    countConnectionsToPublicDatabase(fullDbiUrl);
 
     // TODO: don't forget to change this when new DB providers will be introduced
-    const U2DbiRef dbiRef(MYSQL_DBI_ID, dbUrl);
+    const U2DbiRef dbiRef(MYSQL_DBI_ID, fullDbiUrl);
 
-    if (!AppContext::getCredentialsStorage()->contains(dbUrl)) {
-        if (!askCredentials(dbUrl)) {
+    if (!AppContext::getPasswordStorage()->contains(fullDbiUrl)) {
+        if (!askCredentials(fullDbiUrl)) {
             return;
         }
     }
@@ -121,11 +121,13 @@ void SharedConnectionsDialog::sl_connectClicked() {
 }
 
 void SharedConnectionsDialog::sl_disconnectClicked() {
-    const QString dbUrl = ui->lwConnections->currentItem()->data(Qt::UserRole).toString();
+    const QString dbiUrl = ui->lwConnections->currentItem()->data(UrlRole).toString();
+    const QString userName = ui->lwConnections->currentItem()->data(LoginRole).toString();
+    const QString fullDbiUrl = U2DbiUtils::createFullDbiUrl(userName, dbiUrl);
 
     cancelConnection(ui->lwConnections->currentItem());
 
-    Document* doc = AppContext::getProject()->findDocumentByURL(dbUrl);
+    Document* doc = AppContext::getProject()->findDocumentByURL(fullDbiUrl);
     if (NULL != doc) {
         AppContext::getProject()->removeDocument(doc);
     }
@@ -134,18 +136,20 @@ void SharedConnectionsDialog::sl_disconnectClicked() {
 }
 
 void SharedConnectionsDialog::sl_editClicked() {
-    const U2DbiId dbUrl = ui->lwConnections->currentItem()->data(Qt::UserRole).toString();
-    const QString name = ui->lwConnections->currentItem()->text();
+    const QString dbiUrl = ui->lwConnections->currentItem()->data(UrlRole).toString();
+    const QString userName = ui->lwConnections->currentItem()->data(LoginRole).toString();
+    const QString connectionName = ui->lwConnections->currentItem()->text();
 
-    EditConnectionDialog editDialog(this, dbUrl, name);
+    EditConnectionDialog editDialog(this, dbiUrl, userName, connectionName);
     if (QDialog::Accepted == editDialog.exec()) {
         QListWidgetItem* item = ui->lwConnections->currentItem();
-        if (name != editDialog.getName()) {
+        if (connectionName != editDialog.getName()) {
             removeRecentConnection(item);
         }
 
         item->setText(editDialog.getName());
-        item->setData(Qt::UserRole, editDialog.getDbUrl());
+        item->setData(UrlRole, editDialog.getShortDbiUrl());
+        item->setData(LoginRole, editDialog.getUserName());
 
         saveRecentConnection(item);
         updateState();
@@ -156,7 +160,7 @@ void SharedConnectionsDialog::sl_addClicked() {
     EditConnectionDialog editDialog(this);
 
     if (QDialog::Accepted == editDialog.exec()) {
-        QListWidgetItem* item = insertConnection(editDialog.getName(), editDialog.getDbUrl());
+        QListWidgetItem* item = insertConnection(editDialog.getName(), editDialog.getShortDbiUrl(), editDialog.getUserName());
         CHECK(NULL != item, );
         ui->lwConnections->setCurrentItem(item);
         saveRecentConnection(item);
@@ -165,12 +169,7 @@ void SharedConnectionsDialog::sl_addClicked() {
 }
 
 void SharedConnectionsDialog::sl_deleteClicked() {
-    if (ui->pbDisconnect->isEnabled()) {
-        sl_disconnectClicked();
-    }
-
-    const QString dbUrl = ui->lwConnections->currentItem()->data(Qt::UserRole).toString();
-    AppContext::getCredentialsStorage()->removeEntry(dbUrl);
+    AppContext::getPasswordStorage()->setRemembered(getCurrentFullDbiUrl(), false);
 
     int index = ui->lwConnections->currentRow();
     QListWidgetItem* item = ui->lwConnections->takeItem(index);
@@ -197,7 +196,6 @@ void SharedConnectionsDialog::sl_connectionComplete() {
 void SharedConnectionsDialog::init() {
     restoreRecentConnections();
     addPredefinedConnection();
-    addConnectionsFromProject();
     saveRecentConnections();
 }
 
@@ -243,11 +241,15 @@ void SharedConnectionsDialog::updateItemIcon(QListWidgetItem* item, bool isConne
     item->setIcon(QIcon(px));
 }
 
-bool SharedConnectionsDialog::askCredentials(const QString& dbUrl) {
-    AuthenticationDialog authenticationDialog(tr("Connect to the database: '%1'").arg(dbUrl), this);
+bool SharedConnectionsDialog::askCredentials(const QString &fullDbiUrl) {
+    QString userName;
+    const QString shortDbiUrl = U2DbiUtils::full2shortDbiUrl(fullDbiUrl, userName);
+
+    AuthenticationDialog authenticationDialog(tr("Connect to the database %1").arg(shortDbiUrl), this);
+    authenticationDialog.setLogin(userName);
+
     if (QDialog::Accepted == authenticationDialog.exec()) {
-        Credentials credentials(authenticationDialog.getLogin(), authenticationDialog.getPassword());
-        AppContext::getCredentialsStorage()->addEntry(dbUrl, credentials, authenticationDialog.isRemembered());
+        AppContext::getPasswordStorage()->addEntry(fullDbiUrl, authenticationDialog.getPassword(), authenticationDialog.isRemembered());
         return true;
     } else {
         return false;
@@ -257,8 +259,8 @@ bool SharedConnectionsDialog::askCredentials(const QString& dbUrl) {
 void SharedConnectionsDialog::restoreRecentConnections() {
     const QStringList recentList = AppContext::getSettings()->getAllKeys(SETTINGS_RECENT);
     foreach (const QString& recent, recentList) {
-        const QString data = AppContext::getSettings()->getValue(SETTINGS_RECENT + recent).toString();
-        insertConnection(recent, data);
+        const QString fullDbiUrl = AppContext::getSettings()->getValue(SETTINGS_RECENT + recent).toString();
+        insertConnection(recent, fullDbiUrl);
     }
 }
 
@@ -267,7 +269,7 @@ void SharedConnectionsDialog::removeRecentConnection(const QListWidgetItem* item
 }
 
 void SharedConnectionsDialog::saveRecentConnection(const QListWidgetItem* item) const {
-    AppContext::getSettings()->setValue(SETTINGS_RECENT + item->text(), item->data(Qt::UserRole));
+    AppContext::getSettings()->setValue(SETTINGS_RECENT + item->text(), getFullDbiUrl(item));
 }
 
 void SharedConnectionsDialog::saveRecentConnections() const {
@@ -279,25 +281,10 @@ void SharedConnectionsDialog::saveRecentConnections() const {
     }
 }
 
-void SharedConnectionsDialog::addConnectionsFromProject() {
-    if (NULL == AppContext::getProject()) {
-        return;
-    }
-
-    const QStringList urls = getDbUrls();
-    const QList<Document*> docList = AppContext::getProject()->getDocuments();
-    foreach (const Document* doc, docList) {
-        if (GUrl_Network == doc->getURL().getType() && !urls.contains(doc->getURLString())) {
-            insertConnection(doc->getName(), doc->getURLString());
-        }
-    }
-}
-
 void SharedConnectionsDialog::addPredefinedConnection() {
-    if (!getDbUrls().contains(PUBLIC_DATABASE_URL)) {
-        insertConnection(PUBLIC_DATABASE_NAME, PUBLIC_DATABASE_URL);
-        Credentials credentials(PUBLIC_DATABASE_LOGIN, PUBLIC_DATABASE_PASSWORD);
-        AppContext::getCredentialsStorage()->addEntry(PUBLIC_DATABASE_URL, credentials, true);
+    if (!alreadyExists(PUBLIC_DATABASE_URL, PUBLIC_DATABASE_LOGIN)) {
+        QListWidgetItem *item = insertConnection(PUBLIC_DATABASE_NAME, PUBLIC_DATABASE_URL, PUBLIC_DATABASE_LOGIN);
+        AppContext::getPasswordStorage()->addEntry(getFullDbiUrl(item), PUBLIC_DATABASE_PASSWORD, true);
     }
 }
 
@@ -345,28 +332,36 @@ bool SharedConnectionsDialog::isConnected(QListWidgetItem* item) const {
 
     bool connectionIsInProcess = connectionTasks.contains(item);
 
-    Document* connectionDoc = AppContext::getProject()->findDocumentByURL(GUrl(item->data(Qt::UserRole).toString(), GUrl_Network));
+    Document* connectionDoc = AppContext::getProject()->findDocumentByURL(GUrl(getFullDbiUrl(item), GUrl_Network));
 
     return ((NULL != connectionDoc) && (connectionDoc->isLoaded()))
             || connectionIsInProcess;
 }
 
-QStringList SharedConnectionsDialog::getDbUrls() const{
-    QStringList result;
-
+bool SharedConnectionsDialog::alreadyExists(const QString &dbiUrl, const QString &userName) const {
     for (int i = 0; i < ui->lwConnections->count(); i++) {
-        result << ui->lwConnections->item(i)->data(Qt::UserRole).toString();
+        if (dbiUrl == ui->lwConnections->item(i)->data(UrlRole).toString() &&
+                userName == ui->lwConnections->item(i)->data(LoginRole).toString()) {
+            return true;
+        }
     }
 
-    return result;
+    return false;
 }
 
-QListWidgetItem* SharedConnectionsDialog::insertConnection(const QString& preferredName, const QString& dbUrl) {
-    CHECK(!getDbUrls().contains(dbUrl), NULL);
+QListWidgetItem *SharedConnectionsDialog::insertConnection(const QString &preferredName, const QString &fullDbiUrl) {
+    QString userName;
+    const QString shortDbiUrl = U2DbiUtils::full2shortDbiUrl(fullDbiUrl, userName);
+    return insertConnection(preferredName, shortDbiUrl, userName);
+}
+
+QListWidgetItem* SharedConnectionsDialog::insertConnection(const QString& preferredName, const QString& dbiUrl, const QString &userName) {
+    CHECK(!alreadyExists(dbiUrl, userName), NULL);
     const QString name = rollName(preferredName);
 
     QListWidgetItem* item = new QListWidgetItem(name);
-    item->setData(Qt::UserRole, dbUrl);
+    item->setData(UrlRole, dbiUrl);
+    item->setData(LoginRole, userName);
     ui->lwConnections->addItem(item);
     return item;
 }
@@ -389,10 +384,18 @@ QString SharedConnectionsDialog::rollName(const QString &preferredName) const {
     return name;
 }
 
-void SharedConnectionsDialog::countConnectionsToPublicDatabase(const QString &dbUrl) {
-    if (PUBLIC_DATABASE_URL == dbUrl) {
+void SharedConnectionsDialog::countConnectionsToPublicDatabase(const QString &dbiUrl) {
+    if (PUBLIC_DATABASE_URL == dbiUrl) {
         GCOUNTER(cvar, tvar, "Connections to public database");
     }
+}
+
+QString SharedConnectionsDialog::getCurrentFullDbiUrl() const {
+    return getFullDbiUrl(ui->lwConnections->currentItem());
+}
+
+QString SharedConnectionsDialog::getFullDbiUrl(const QListWidgetItem *item) const {
+    return U2DbiUtils::createFullDbiUrl(item->data(LoginRole).toString(), item->data(UrlRole).toString());
 }
 
 }   // namespace U2

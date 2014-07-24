@@ -182,9 +182,22 @@ public:
 
     static QString ref2Url(const U2DbiRef& dbiRef);
 
-    static U2DbiId createDbiUrl(const QString &host, int port, const QString &dbName);
+    /**
+     * Dbi url (short dbi url) looks like "host:port/database_name"
+     * Full dbi url looks like "user_name@host:port/database_name"
+     * Short dbi url is used where user name is not defined. It should be converted
+     * to the full url before using.
+     */
+    static QString createDbiUrl(const QString &host, int port, const QString &dbName);
+    static QString createFullDbiUrl(const QString &userName, const QString &host, int port, const QString &dbName);
+    static QString createFullDbiUrl(const QString &userName, const QString &dbiUrl);
 
-    static bool parseDbiUrl(const U2DbiId& dbiId, QString& host, int& port, QString& dbName);
+    static bool parseDbiUrl(const QString& dbiUrl, QString& host, int& port, QString& dbName);
+    static bool parseFullDbiUrl(const QString& dbiUrl, QString &userName, QString& host, int& port, QString& dbName);
+
+    static QString full2shortDbiUrl(const QString& fullDbiUrl);
+    static QString full2shortDbiUrl(const QString& fullDbiUrl, QString &userName);
+    static bool isFullDbiUrl(const QString& dbiUrl);
 
     static QString makeFolderCanonical(const QString& folder);
 

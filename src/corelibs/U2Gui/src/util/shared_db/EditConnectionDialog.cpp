@@ -22,7 +22,7 @@
 #include <QtGui/QMessageBox>
 
 #include <U2Core/AppContext.h>
-#include <U2Core/CredentialsStorage.h>
+#include <U2Core/PasswordStorage.h>
 #include <U2Core/Settings.h>
 
 #include <U2Gui/HelpButton.h>
@@ -35,14 +35,14 @@ namespace U2 {
 
 const QString EditConnectionDialog::DEFAULT_PORT = "3306";
 
-EditConnectionDialog::EditConnectionDialog(QWidget *parent, const U2DbiId& dbiUrl, const QString &name) :
+EditConnectionDialog::EditConnectionDialog(QWidget *parent, const QString &dbiUrl, const QString &userName, const QString &connectionName) :
     QDialog(parent),
     ui(new Ui::EditConnectionDialog)
 {
     ui->setupUi(this);
     new HelpButton(this, ui->buttonBox, "8093779");
     adjustSize();
-    init(dbiUrl, name);
+    init(dbiUrl, connectionName, userName);
 }
 
 EditConnectionDialog::~EditConnectionDialog() {
@@ -53,11 +53,15 @@ QString EditConnectionDialog::getName() const {
     if (!ui->leName->text().isEmpty()) {
         return ui->leName->text();
     } else {
-        return getDbUrl();
+        return getShortDbiUrl();
     }
 }
 
-U2DbiId EditConnectionDialog::getDbUrl() const {
+QString EditConnectionDialog::getUserName() const {
+    return ui->authenticationWidget->getLogin();
+}
+
+QString EditConnectionDialog::getShortDbiUrl() const {
     return U2DbiUtils::createDbiUrl(ui->leHost->text(),
                                     ui->lePort->text().toInt(),
                                     ui->leDatabase->text());
@@ -78,33 +82,30 @@ void EditConnectionDialog::accept() {
     QDialog::accept();
 }
 
-void EditConnectionDialog::init(const U2DbiId& dbUrl, const QString& name) {
+void EditConnectionDialog::init(const U2DbiId& dbiUrl, const QString& connectionName, const QString &userName) {
     initTabOrder();
 
-    ui->leName->setText(name);
+    ui->leName->setText(connectionName);
     ui->lePort->setText(DEFAULT_PORT);
 
-    if (dbUrl.isNull()) {
-        return;
+    if (!dbiUrl.isEmpty()) {
+        QString host;
+        int port = -1;
+        QString dbName;
+
+        U2DbiUtils::parseDbiUrl(dbiUrl, host,port, dbName);
+        ui->leHost->setText(host);
+        if (port > 0) {
+            ui->lePort->setText(QString::number(port));
+        }
+        ui->leDatabase->setText(dbName);
     }
 
-    QString host;
-    int port = -1;
-    QString dbName;
-
-    U2DbiUtils::parseDbiUrl(dbUrl, host,port, dbName);
-    ui->leHost->setText(host);
-    if (port > 0) {
-        ui->lePort->setText(QString::number(port));
-    }
-    ui->leDatabase->setText(dbName);
-
-    Credentials credentials = AppContext::getCredentialsStorage()->getEntry(dbUrl);
-    if (credentials.isValid()) {
-        ui->authenticationWidget->setLogin(credentials.login);
-        ui->authenticationWidget->setPassword(credentials.password);
-        ui->authenticationWidget->setRemembered(AppContext::getCredentialsStorage()->isRemembered(dbUrl));
-    }
+    const QString fullDbiUrl = U2DbiUtils::createFullDbiUrl(userName, dbiUrl);
+    const QString password = AppContext::getPasswordStorage()->getEntry(fullDbiUrl);
+    ui->authenticationWidget->setLogin(userName);
+    ui->authenticationWidget->setPassword(password);
+    ui->authenticationWidget->setRemembered(AppContext::getPasswordStorage()->isRemembered(fullDbiUrl));
 }
 
 void EditConnectionDialog::initTabOrder() {
@@ -118,13 +119,12 @@ void EditConnectionDialog::initTabOrder() {
 }
 
 void EditConnectionDialog::saveCredentials() const {
-    const Credentials credentials(ui->authenticationWidget->getLogin(), ui->authenticationWidget->getPassword());
     const bool remember = ui->authenticationWidget->isRemembered();
-    AppContext::getCredentialsStorage()->addEntry(getDbUrl(), credentials, remember);
+    AppContext::getPasswordStorage()->addEntry(getFullDbiUrl(), ui->authenticationWidget->getPassword(), remember);
 }
 
 void EditConnectionDialog::removeCredentials() const {
-    AppContext::getCredentialsStorage()->removeEntry(getDbUrl());
+    AppContext::getPasswordStorage()->removeEntry(getFullDbiUrl());
 }
 
 bool EditConnectionDialog::checkFields() {
@@ -141,6 +141,10 @@ bool EditConnectionDialog::checkFields() {
     }
 
     return true;
+}
+
+QString EditConnectionDialog::getFullDbiUrl() const {
+    return U2DbiUtils::createFullDbiUrl(ui->authenticationWidget->getLogin(), getShortDbiUrl());
 }
 
 }   // namespace U2

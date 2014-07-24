@@ -22,7 +22,7 @@
 #include <QtCore/QSettings>
 
 #include <U2Core/AppContext.h>
-#include <U2Core/CredentialsStorage.h>
+#include <U2Core/PasswordStorage.h>
 #include <U2Core/Settings.h>
 #include <U2Core/U2DbiUtils.h>
 
@@ -100,11 +100,10 @@ QString GTDatabaseConfig::password() {
 }
 
 void GTDatabaseConfig::initTestConnectionInfo(const QString &name, const QString &db, bool withCredentials) {
-    QString url =  U2DbiUtils::createDbiUrl(host(), port(), db);
+    QString url =  U2DbiUtils::createFullDbiUrl(login(), host(), port(), db);
     AppContext::getSettings()->setValue(SETTINGS_RECENT + name, url);
     if (withCredentials) {
-        Credentials credentials(login(), password());
-        AppContext::getCredentialsStorage()->addEntry(url, credentials, true /*remember*/);
+        AppContext::getPasswordStorage()->addEntry(url, password(), true /*remember*/);
     }
 }
 

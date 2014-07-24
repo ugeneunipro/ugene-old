@@ -114,7 +114,6 @@ private:
     void init();
     void processObjRef();
     int calculateMemory() const;
-    void checkAccess();
 
     static void renameObjects(Document* doc, const QStringList& names);
     

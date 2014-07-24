@@ -49,6 +49,8 @@ public:
     QString getPassword() const;
     bool isRemembered() const;
 
+    void disableLogin();
+
 private slots:
     void accept();
 

@@ -119,25 +119,33 @@ QString U2DbiUtils::ref2Url(const U2DbiRef& dbiRef) {
     return dbiFactory->id2Url(dbiRef.dbiId).getURLString();
 }
 
-U2DbiId U2DbiUtils::createDbiUrl(const QString &host, int port, const QString &dbName ) {
+QString U2DbiUtils::createDbiUrl(const QString &host, int port, const QString &dbName ) {
     QString portString = (port >= 0 ? QString::number(port) : "");
     return host + ":" + portString + "/" + dbName;
 }
 
-bool U2DbiUtils::parseDbiUrl(const U2DbiId& dbiId, QString& host, int& port, QString& dbName) {
-    int sepIndex = dbiId.indexOf(":");
+QString U2DbiUtils::createFullDbiUrl(const QString &userName, const QString &host, int port, const QString &dbName) {
+    return createFullDbiUrl(userName, createDbiUrl(host, port, dbName));
+}
+
+QString U2DbiUtils::createFullDbiUrl(const QString &userName, const QString &dbiUrl) {
+    return userName + "@" + dbiUrl;
+}
+
+bool U2DbiUtils::parseDbiUrl(const QString &dbiUrl, QString& host, int& port, QString& dbName) {
+    int sepIndex = dbiUrl.indexOf(":");
     if (sepIndex < 0) {
         return false;
     }
 
-    host = dbiId.left(sepIndex);
+    host = dbiUrl.left(sepIndex);
 
-    sepIndex = dbiId.indexOf("/", sepIndex);
+    sepIndex = dbiUrl.indexOf("/", sepIndex);
     if (sepIndex < 0) {
         return false;
     }
 
-    QString portString = dbiId.mid(host.length() + 1, sepIndex - host.length() - 1);
+    QString portString = dbiUrl.mid(host.length() + 1, sepIndex - host.length() - 1);
     if (portString.isEmpty()) {
         port = -1;
     } else {
@@ -148,9 +156,31 @@ bool U2DbiUtils::parseDbiUrl(const U2DbiId& dbiId, QString& host, int& port, QSt
         }
     }
 
-    dbName = dbiId.right(dbiId.length() - sepIndex - 1);
+    dbName = dbiUrl.right(dbiUrl.length() - sepIndex - 1);
 
     return true;
+}
+
+bool U2DbiUtils::parseFullDbiUrl(const QString &dbiUrl, QString &userName, QString &host, int &port, QString &dbName) {
+    return parseDbiUrl(full2shortDbiUrl(dbiUrl, userName), host, port, dbName);
+}
+
+QString U2DbiUtils::full2shortDbiUrl(const QString &fullDbiUrl) {
+    QString unusedUserName;
+    return full2shortDbiUrl(fullDbiUrl, unusedUserName);
+}
+
+QString U2DbiUtils::full2shortDbiUrl(const QString &fullDbiUrl, QString &userName) {
+    int sepIndex = fullDbiUrl.indexOf("@");
+    if (sepIndex >= 0) {
+        userName = fullDbiUrl.left(sepIndex);
+    }
+
+    return fullDbiUrl.right(fullDbiUrl.length() - sepIndex - 1);
+}
+
+bool U2DbiUtils::isFullDbiUrl(const QString &dbiUrl) {
+    return dbiUrl.contains('@');
 }
 
 QString U2DbiUtils::makeFolderCanonical(const QString& folder) {

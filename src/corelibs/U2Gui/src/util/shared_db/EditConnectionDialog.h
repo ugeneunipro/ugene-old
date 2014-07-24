@@ -38,21 +38,23 @@ class EditConnectionDialog : public QDialog {
     Q_DISABLE_COPY(EditConnectionDialog)
     Q_OBJECT
 public:
-    EditConnectionDialog(QWidget *parent = 0, const U2DbiId &dbiUrl = QString(), const QString &name = QString());
+    EditConnectionDialog(QWidget *parent = 0, const QString &dbiUrl = "", const QString &userName = "", const QString &connectionName = "");
     ~EditConnectionDialog();
 
     QString     getName()       const;
-    U2DbiId     getDbUrl()      const;
+    QString     getUserName()   const;
+    QString     getShortDbiUrl() const;
 
 public slots:
     void accept();
     
 private:
-    void init(const U2DbiId &dbUrl, const QString &name);
+    void init(const QString &dbiUrl, const QString &connectionName, const QString &userName);
     void initTabOrder();
     void saveCredentials() const;
     void removeCredentials() const;
     bool checkFields();
+    QString getFullDbiUrl() const;
 
     Ui::EditConnectionDialog *ui;
 

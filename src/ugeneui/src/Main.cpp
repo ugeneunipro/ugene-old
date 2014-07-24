@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/CredentialsStorage.h>
+#include <U2Core/PasswordStorage.h>
 #include <U2Core/Log.h>
 #include <U2Core/Timer.h>
 #include <U2Core/GUrlUtils.h>
@@ -555,8 +555,8 @@ int main(int argc, char **argv)
     CredentialsAsker* credentialsAsker = new CredentialsAskerGui();
     appContext->setCredentialsAsker(credentialsAsker);
 
-    CredentialsStorage* credentialsStorage = new CredentialsStorage();
-    appContext->setCredentialsStorage(credentialsStorage);
+    PasswordStorage* passwordStorage = new PasswordStorage();
+    appContext->setPasswordStorage(passwordStorage);
 
     ConvertFactoryRegistry* convertFactoryRegistry = new ConvertFactoryRegistry();
     appContext->setConvertFactoryRegistry(convertFactoryRegistry);
@@ -687,8 +687,8 @@ int main(int argc, char **argv)
     appContext->setCredentialsAsker(NULL);
     delete credentialsAsker;
 
-    appContext->setCredentialsStorage(NULL);
-    delete credentialsStorage;
+    appContext->setPasswordStorage(NULL);
+    delete passwordStorage;
 
     appContext->setDASSourceRegistry( NULL );
     delete dsr;

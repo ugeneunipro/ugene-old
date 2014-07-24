@@ -58,7 +58,7 @@ private slots:
 private:
     void init();
     void connectSignals();
-    bool askCredentials(const QString &dbUrl);
+    bool askCredentials(const QString &dbiUrl);
 
     void updateState();
     void updateButtonsState();
@@ -69,21 +69,25 @@ private:
     void removeRecentConnection(const QListWidgetItem *item) const;
     void saveRecentConnection(const QListWidgetItem *item) const;
     void saveRecentConnections() const;
-    void addConnectionsFromProject();
     void addPredefinedConnection();
 
     bool checkDatabaseAvailability(const U2DbiRef &ref, bool &initializationRequired);
     bool isConnected(QListWidgetItem *item) const;
-    QStringList getDbUrls() const;
-    QListWidgetItem* insertConnection(const QString& preferredName, const QString& dbUrl);
+    bool alreadyExists(const QString& dbiUrl, const QString &userName) const;
+    QListWidgetItem* insertConnection(const QString& preferredName, const QString& fullDbiUrl);
+    QListWidgetItem* insertConnection(const QString& preferredName, const QString& dbiUrl, const QString &userName);
     void cancelConnection(QListWidgetItem* item);
     QString rollName(const QString& preferredName) const;
-    void countConnectionsToPublicDatabase(const QString &dbUrl);
+    void countConnectionsToPublicDatabase(const QString &dbiUrl);
+    QString getCurrentFullDbiUrl() const;
+    QString getFullDbiUrl(const QListWidgetItem *item) const;
 
     Ui::SharedConnectionsDialog *ui;
     QMap<QListWidgetItem*, Task*> connectionTasks;
 
     static const QString SETTINGS_RECENT;
+    static const int UrlRole = Qt::UserRole;
+    static const int LoginRole = UrlRole + 1;
 
     static const QString PUBLIC_DATABASE_NAME;
     static const QString PUBLIC_DATABASE_URL;

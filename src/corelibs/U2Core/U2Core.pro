@@ -90,7 +90,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/globals/BaseDocumentFormats.h \
            src/globals/Counter.h \
            src/globals/CredentialsAsker.h \
-           src/globals/CredentialsStorage.h \
            src/globals/DataBaseRegistry.h \
            src/globals/DataPathRegistry.h \
            src/globals/DBXRefRegistry.h \
@@ -105,6 +104,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/globals/Log.h \
            src/globals/LogCache.h \
            src/globals/NetworkConfiguration.h \
+           src/globals/PasswordStorage.h \
            src/globals/PluginModel.h \
            src/globals/ProjectService.h \
            src/globals/ResourceTracker.h \
@@ -295,7 +295,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/globals/BaseDocumentFormats.cpp \
            src/globals/Counter.cpp \
            src/globals/CredentialsAsker.cpp \
-           src/globals/CredentialsStorage.cpp \
            src/globals/DataBaseRegistry.cpp \
            src/globals/DataPathRegistry.cpp \
            src/globals/DBXRefRegistry.cpp \
@@ -306,6 +305,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/globals/Log.cpp \
            src/globals/LogCache.cpp \
            src/globals/NetworkConfiguration.cpp \
+           src/globals/PasswordStorage.cpp \
            src/globals/PluginModel.cpp \
            src/globals/ProjectService.cpp \
            src/globals/ResourceTracker.cpp \

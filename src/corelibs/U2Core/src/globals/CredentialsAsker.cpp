@@ -30,7 +30,11 @@ CredentialsAsker::CredentialsAsker()
 CredentialsAsker::~CredentialsAsker() {
 }
 
-bool CredentialsAsker::ask(const QString&) {
+bool CredentialsAsker::ask(const QString &) {
+    return false;
+}
+
+bool CredentialsAsker::ask(QString&) {
     return false;
 }
 
