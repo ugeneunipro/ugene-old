@@ -40,7 +40,7 @@ class EMBLGenbankDataEntry;
 class U2FORMATS_EXPORT EMBLGenbankAbstractDocument : public DocumentFormat {
     Q_OBJECT
 public:
-    EMBLGenbankAbstractDocument(const DocumentFormatId& id, const QString& formatName, 
+    EMBLGenbankAbstractDocument(const DocumentFormatId& id, const QString& formatName,
                                 int maxLineSize, DocumentFormatFlags flags, QObject* p);
 
     virtual DocumentFormatId getFormatId() const {return id;}
@@ -60,17 +60,17 @@ protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
     virtual void load(const U2DbiRef& dbiRef, IOAdapter* io, QList<GObject*>& objects, QVariantMap& fs, U2OpStatus& si, QString& writeLockReason);
-    
+
     virtual int     readMultilineQualifier(IOAdapter* io, char* cbuff, int maxSize, bool prevLineHasMaxSize, int lenFirstQualLine);
     virtual SharedAnnotationData readAnnotation(IOAdapter* io, char* cbuff, int contentLen, int bufSize, U2OpStatus& si, int offset, int seqLen = -1);
     virtual bool    readSequence(ParserState*, U2SequenceImporter& , int&, int&, U2OpStatus&);
 
-    virtual bool readEntry(ParserState*, U2SequenceImporter& ,int& seqSize,int& fullSeqSize,bool merge, int gapSize,U2OpStatus&) = 0;	
+    virtual bool readEntry(ParserState*, U2SequenceImporter& ,int& seqSize,int& fullSeqSize,bool merge, int gapSize,U2OpStatus&) = 0;
     virtual void readAnnotations(ParserState*, int offset);
     virtual void readHeaderAttributes(QVariantMap& tags, DbiConnection& con, U2SequenceObject* so) {
         Q_UNUSED(tags); Q_UNUSED(con); Q_UNUSED(so);
     } // does nothing if not overloaded
-    
+
     DocumentFormatId id;
     QString     formatName;
     QByteArray  fPrefix;
@@ -93,7 +93,7 @@ public:
     QVariantMap tags;
     QList<SharedAnnotationData> features;
 
-    // hasAnnotationObjectFlag parameter is used to indicate that 
+    // hasAnnotationObjectFlag parameter is used to indicate that
     // annotation table object must present even if result list is empty
     bool hasAnnotationObjectFlag;
     bool circular;

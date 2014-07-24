@@ -410,7 +410,7 @@ void GenbankPlainTextFormat::readHeaderAttributes(QVariantMap& tags, DbiConnecti
 static QString genLocusString(QList<GObject*> aos, U2SequenceObject* so, QString& locustFromHeader);
 static void writeAnnotations(IOAdapter* io, QList<GObject*> aos, U2OpStatus& os);
 static void writeSequence(IOAdapter* io, U2SequenceObject* ao, QList<U2Region> lowerCaseRegs, U2OpStatus& os);
-static void prepareMultiline(QString& lineToChange, int spacesOnLineStart, bool newLineAtTheEnd = true, int maxLineLen = 79);
+static void prepareMultiline(QString& lineToChange, int spacesOnLineStart, bool lineBreakOnlyOnSpace = true, bool newLineAtTheEnd = true, int maxLineLen = 79);
 
 
 static bool writeKeyword(IOAdapter* io, U2OpStatus& os, const QString& key, const QString& value, bool wrap = true /*TODO*/) {
@@ -650,7 +650,7 @@ static void writeQualifier(const QString& name, const QString& val, IOAdapter* i
             qstr = "/" + name + "=\"" + val + "\"";
         }
     }
-    prepareMultiline(qstr, 21);
+    prepareMultiline(qstr, 21, !qstr.startsWith("/translation")); // (qualifier name != translation) --> break line only on space
     len = io->writeBlock(qstr.toLocal8Bit());
     if (len != qstr.length()) {
         si.setError(GenbankPlainTextFormat::tr("Error writing document"));
@@ -827,7 +827,7 @@ static void writeSequence(IOAdapter* io, U2SequenceObject* ao, QList<U2Region> l
 
 // splits line into multiple lines adding 'spacesOnLineStart' to every line except first one
 // and '\n' to the end of every new line
-static void prepareMultiline(QString& line, int spacesOnLineStart, bool newLineAtTheEnd, int maxLineLen) {
+static void prepareMultiline(QString& line, int spacesOnLineStart, bool lineBreakOnlyOnSpace, bool newLineAtTheEnd, int maxLineLen) {
     Q_ASSERT(spacesOnLineStart < maxLineLen);
     line.replace('\n', ';');
     const int len = line.length() ;
@@ -836,20 +836,25 @@ static void prepareMultiline(QString& line, int spacesOnLineStart, bool newLineA
         QString newLine;
         int charsInLine = maxLineLen - spacesOnLineStart;
         int pos = 0;
+        bool skipLineBreak = false;
         do {
-            if (pos!=0) {
+            if (pos != 0 && !skipLineBreak) {
                 newLine.append('\n');
                 newLine.append(spacesPrefix);
             }
+            skipLineBreak = false;
             int pos2 =  pos + charsInLine - 1;
             if (pos2 < len) { //not the last line
-                while (pos2 > pos && !line[pos2].isSpace()) {
+                while (pos2 > pos && !line[pos2].isSpace() && lineBreakOnlyOnSpace) {
                     pos2--;
                 }
                 if (pos == pos2) { //we failed to find word end
                     pos2 = pos + charsInLine - 1;
+                    if (lineBreakOnlyOnSpace) {
+                        skipLineBreak = true;
+                    }
                 }
-                newLine.append(line.mid(pos, pos2 + 1 - pos));
+                newLine.append(line.mid(pos, pos2 - pos + (int)(!lineBreakOnlyOnSpace || skipLineBreak)));
             } else { //last line
                 newLine.append(line.mid(pos, len - pos));
             }

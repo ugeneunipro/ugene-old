@@ -450,7 +450,7 @@ int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbu
             numQuotes += numQuotesInLine(lineBuf,lineLen);
         }
 
-        if (breakWords && lineLen - A_COL > 0 && lineBuf[A_COL] != ' ' && cbuff[len - 1] != ' ') { //add space to separate words
+        if (!QString(cbuff).startsWith("/translation") && breakWords && lineLen - A_COL > 0) { //add space to separate words
             cbuff[len] = ' ';
             len++;
         }
