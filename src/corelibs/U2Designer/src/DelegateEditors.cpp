@@ -431,90 +431,106 @@ void SchemaRunModeDelegate::sl_valueChanged( const QString & val ) {
     emit si_showOpenFileButton( THIS_COMPUTER_STR == val );
 }
 
-/********************************
-* AttributeScriptDelegate
-********************************/
 
-QString AttributeScriptDelegate::createScriptHeader(const AttributeScript & attrScript) {
+/********************************
+* ScriptSelectionWidget
+********************************/
+const int NO_SCRIPT_ITEM_ID = 0;
+const int USER_SCRIPT_ITEM_ID = 1;
+const QPair<QString, int> NO_SCRIPT_ITEM_STR("no script", NO_SCRIPT_ITEM_ID);
+const QPair<QString, int> USER_SCRIPT_ITEM_STR("user script", USER_SCRIPT_ITEM_ID);
+const QString SCRIPT_PROPERTY = "combo_script_property";
+
+ScriptSelectionWidget::ScriptSelectionWidget(QWidget *parent) :
+    PropertyWidget(parent)
+{
+    combobox = new QComboBox;
+    combobox->addItem(NO_SCRIPT_ITEM_STR.first);
+    combobox->addItem(USER_SCRIPT_ITEM_STR.first);
+    connect(combobox, SIGNAL(activated(int)), SLOT(sl_comboActivated(int)));
+    addMainWidget(combobox);
+}
+
+void ScriptSelectionWidget::setValue(const QVariant &value) {
+    AttributeScript attrScript = value.value<AttributeScript>();
+    if (attrScript.isEmpty()) {
+        combobox->setCurrentIndex(NO_SCRIPT_ITEM_STR.second);
+    } else {
+        combobox->setCurrentIndex(USER_SCRIPT_ITEM_STR.second);
+    }
+    combobox->setProperty(SCRIPT_PROPERTY.toLatin1().constData(), qVariantFromValue<AttributeScript>(attrScript));
+}
+
+QVariant ScriptSelectionWidget::value() {
+    return combobox->itemData(USER_SCRIPT_ITEM_ID, ConfigurationEditor::ItemValueRole);
+}
+
+void ScriptSelectionWidget::sl_comboActivated(int itemId) {
+    switch(itemId) {
+    case NO_SCRIPT_ITEM_ID: {
+            combobox->setItemData(USER_SCRIPT_ITEM_ID, "", ConfigurationEditor::ItemValueRole);
+            return;
+        }
+    case USER_SCRIPT_ITEM_ID: {
+        AttributeScript attrScript = combobox->property(SCRIPT_PROPERTY.toLatin1().constData()).value<AttributeScript>();
+        ScriptEditorDialog dlg(combobox, createScriptHeader(attrScript));
+        dlg.setScriptText(attrScript.getScriptText());
+
+        int rc = dlg.exec();
+        if(rc != QDialog::Accepted) {
+            combobox->setItemData(USER_SCRIPT_ITEM_ID, qVariantFromValue<AttributeScript>(attrScript), ConfigurationEditor::ItemValueRole);
+        } else {
+            attrScript.setScriptText(dlg.getScriptText());
+            combobox->setItemData(USER_SCRIPT_ITEM_ID, qVariantFromValue<AttributeScript>(attrScript), ConfigurationEditor::ItemValueRole);
+        }
+
+        emit si_finished();
+        return;
+    }
+    default: {
+        FAIL("Unexpected item", );
+    }
+    }
+}
+
+QString ScriptSelectionWidget::createScriptHeader(const AttributeScript & attrScript) {
     QString header;
-    foreach( const Descriptor & desc, attrScript.getScriptVars().keys() ) {
+    foreach (const Descriptor & desc, attrScript.getScriptVars().keys()) {
         header += QString("var %1; // %2\n").arg(desc.getId()).arg(desc.getDisplayName());
     }
     return header;
 }
 
-const int NO_SCRIPT_ITEM_ID = 0;
-const int USER_SCRIPT_ITEM_ID = 1;
-const QPair<QString, int> NO_SCRIPT_ITEM_STR("no script", NO_SCRIPT_ITEM_ID);
-const QPair<QString, int> USER_SCRIPT_ITEM_STR("user script", USER_SCRIPT_ITEM_ID);
-
-const QString SCRIPT_PROPERTY = "combo_script_property";
-
+/********************************
+* AttributeScriptDelegate
+********************************/
 AttributeScriptDelegate::AttributeScriptDelegate(QObject *parent) : PropertyDelegate(parent) {
 }
 
 AttributeScriptDelegate::~AttributeScriptDelegate() {
 }
 
-void AttributeScriptDelegate::sl_comboActivated(int itemId ) {
-    QComboBox * editor = qobject_cast<QComboBox*>(sender());
-    assert(editor != NULL);
-    
-    switch(itemId) {
-    case NO_SCRIPT_ITEM_ID:
-        {
-            editor->setItemData( USER_SCRIPT_ITEM_ID, "", ConfigurationEditor::ItemValueRole );
-            return;
-        }
-    case USER_SCRIPT_ITEM_ID:
-        {
-            QComboBox * combo = qobject_cast<QComboBox*>(sender());
-            assert(combo != NULL);
-            AttributeScript attrScript = combo->property(SCRIPT_PROPERTY.toLatin1().constData()).value<AttributeScript>();
-            
-            ScriptEditorDialog dlg(editor, createScriptHeader(attrScript));
-            dlg.setScriptText(attrScript.getScriptText());
-            
-            int rc = dlg.exec();
-            if(rc != QDialog::Accepted) {
-                editor->setItemData( USER_SCRIPT_ITEM_ID, 
-                    qVariantFromValue<AttributeScript>(attrScript), ConfigurationEditor::ItemValueRole );
-                return;
-            }
-            attrScript.setScriptText(dlg.getScriptText());
-            editor->setItemData( USER_SCRIPT_ITEM_ID, 
-                qVariantFromValue<AttributeScript>(attrScript), ConfigurationEditor::ItemValueRole );
-            return;
-        }
-    default:
-        assert(false);
-    }
+void AttributeScriptDelegate::sl_commit() {
+    ScriptSelectionWidget *editor = static_cast<ScriptSelectionWidget*>(sender());
+    emit commitData(editor);
 }
 
 QWidget * AttributeScriptDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &) const {
-    QComboBox *editor = new QComboBox(parent);
-    editor->addItem(NO_SCRIPT_ITEM_STR.first);
-    editor->addItem(USER_SCRIPT_ITEM_STR.first);
-    connect(editor, SIGNAL(activated(int)), SLOT(sl_comboActivated(int)));
+    ScriptSelectionWidget *editor = new ScriptSelectionWidget(parent);
+    connect(editor, SIGNAL(si_finished()), SLOT(sl_commit()));
     return editor;
 }
 
 void AttributeScriptDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const {
-    QComboBox * combo = qobject_cast<QComboBox*>(editor);
+    ScriptSelectionWidget * combo = qobject_cast<ScriptSelectionWidget*>(editor);
     assert(combo != NULL);
-    AttributeScript attrScript = index.model()->data(index, ConfigurationEditor::ItemValueRole).value<AttributeScript>();
-    if( attrScript.isEmpty() ) {
-        combo->setCurrentIndex(NO_SCRIPT_ITEM_STR.second);
-    } else {
-        combo->setCurrentIndex(USER_SCRIPT_ITEM_STR.second);
-    }
-    combo->setProperty(SCRIPT_PROPERTY.toLatin1().constData(), qVariantFromValue<AttributeScript>(attrScript));
+    combo->setValue(index.model()->data(index, ConfigurationEditor::ItemValueRole));
 }
 
 void AttributeScriptDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const {
-    QComboBox * combo = qobject_cast<QComboBox*>(editor);
+    ScriptSelectionWidget *combo = qobject_cast<ScriptSelectionWidget *>(editor);
     assert(combo != NULL);
-    model->setData(index, combo->itemData(USER_SCRIPT_ITEM_ID, ConfigurationEditor::ItemValueRole), ConfigurationEditor::ItemValueRole);
+    model->setData(index, combo->value(), ConfigurationEditor::ItemValueRole);
 }
 
 QVariant AttributeScriptDelegate::getDisplayValue(const QVariant& val) const{

@@ -301,6 +301,27 @@ signals:
     
 }; // SchemaRunModeDelegate
 
+class ScriptSelectionWidget : public PropertyWidget {
+    Q_OBJECT
+public:
+    ScriptSelectionWidget(QWidget *parent = NULL);
+    QVariant value();
+
+public slots:
+    void setValue(const QVariant &value);
+
+private slots:
+    void sl_comboActivated(int itemId);
+
+signals:
+    void si_finished();
+
+private:
+    static QString createScriptHeader(const AttributeScript & attrScript);
+
+    QComboBox *combobox;
+};
+
 class U2DESIGNER_EXPORT AttributeScriptDelegate : public PropertyDelegate {
     Q_OBJECT
 public:
@@ -312,28 +333,12 @@ public:
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
     QVariant getDisplayValue(const QVariant&) const;
 
-    static QString createScriptHeader(const AttributeScript & attrScript);
-
     virtual PropertyDelegate *clone() {
         return new AttributeScriptDelegate(parent());
     }
 private slots:
-    void sl_comboActivated(int);
-    
+    void sl_commit();
 }; // AttributeScriptDelegate
-
-//class U2DESIGNER_EXPORT InputPortDataDelegate : public ComboBoxDelegate {
-//    Q_OBJECT
-//public:
-//    InputPortDataDelegate(const QVariantMap& items, QObject *parent = NULL );
-//    virtual ~InputPortDataDelegate();
-//    
-//    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-//    void setEditorData(QWidget *editor, const QModelIndex &index) const;
-//    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
-//    QVariant getDisplayValue(const QVariant&) const;
-//    
-//}; // InputPortDataDelegatedes
 
 class U2DESIGNER_EXPORT StingListEdit : public QLineEdit {
     Q_OBJECT
