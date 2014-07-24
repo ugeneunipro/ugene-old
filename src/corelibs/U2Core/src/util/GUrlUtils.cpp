@@ -328,16 +328,6 @@ QString GUrlUtils::createDirectory(const QString &path, const QString &suffix, U
     return newPath;
 }
 
-void GUrlUtils::getLocalPathFromUrl(const GUrl &url, const QString &defaultBaseFileName, QString &dirPath, QString &baseFileName) {
-    if (url.isLocalFile()) {
-        dirPath = url.dirPath();
-        baseFileName = url.baseFileName();
-    } else {
-        dirPath = getDefaultDataPath();
-        baseFileName = defaultBaseFileName;
-    }
-}
-
 namespace {
     QString getDotExtension(const DocumentFormatId &formatId) {
         DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
@@ -350,6 +340,26 @@ namespace {
         CHECK(!results.isEmpty(), "");
 
         return "." + results.first();
+    }
+
+    /**
+     * Replaces from the filename all symbols except 0-9, a-z, A-Z, '.', '_', and '-' with '_' symbol,
+     * so file name will both POSIX-compatible and Windows-compatible.
+     */
+    QString fixFileName(const QString &fileName) {
+        QString result = fileName;
+        result.replace(QRegExp("[^0-9a-zA-Z._\\-]"), "_");
+        return result.replace(QRegExp("_+"), "_");
+    }
+}
+
+void GUrlUtils::getLocalPathFromUrl(const GUrl &url, const QString &defaultBaseFileName, QString &dirPath, QString &baseFileName) {
+    if (url.isLocalFile()) {
+        dirPath = url.dirPath();
+        baseFileName = url.baseFileName();
+    } else {
+        dirPath = getDefaultDataPath();
+        baseFileName = fixFileName(defaultBaseFileName);
     }
 }
 
