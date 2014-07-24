@@ -74,9 +74,6 @@ public :
     /** Init time DBI parameter name to specify that database must be created if not exists */
     static const QString U2_DBI_OPTION_CREATE;
 
-    /** Init time DBI parameter name to specify user login for the database. */
-    static const QString U2_DBI_OPTION_LOGIN;
-
     /** Init time DBI parameter name to specify user password for the database. */
     static const QString U2_DBI_OPTION_PASSWORD;
 

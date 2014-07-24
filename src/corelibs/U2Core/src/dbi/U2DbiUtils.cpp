@@ -172,10 +172,11 @@ QString U2DbiUtils::full2shortDbiUrl(const QString &fullDbiUrl) {
 
 QString U2DbiUtils::full2shortDbiUrl(const QString &fullDbiUrl, QString &userName) {
     int sepIndex = fullDbiUrl.indexOf("@");
-    if (sepIndex >= 0) {
-        userName = fullDbiUrl.left(sepIndex);
+    if (-1 == sepIndex) {
+        return fullDbiUrl;
     }
 
+    userName = fullDbiUrl.left(sepIndex);
     return fullDbiUrl.right(fullDbiUrl.length() - sepIndex - 1);
 }
 
