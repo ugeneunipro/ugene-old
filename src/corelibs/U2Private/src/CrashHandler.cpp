@@ -32,6 +32,7 @@
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/Version.h>
+#include <QTextStream>
 
 
 static const QString SESSION_DB_FILE_ARG("-d");
@@ -49,6 +50,8 @@ static const int MAX_FILE_LOG = 500;
 #endif
 
 namespace U2 {
+
+bool CrashHandler::sendCrashReports = true;
 
 bool CrashHandler::isEnabled() {
 
@@ -387,6 +390,13 @@ void CrashHandler::setupHandler() {
 
 void CrashHandler::runMonitorProcess(const QString &exceptionType)
 {
+    if(!sendCrashReports) {
+        QTextStream out(stderr);
+        out << "Unrecognized error";
+        out.flush();
+        exit(1);
+    }
+
     CrashHandlerArgsHelper helper;
     QString path = AppContext::getWorkingDirectoryPath() + "/ugenem";
 

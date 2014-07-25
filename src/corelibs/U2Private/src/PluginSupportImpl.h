@@ -30,6 +30,7 @@
 #include <QtCore/QDir>
 
 #include "PluginDescriptor.h"
+#include <QtCore/QProcess>
 
 namespace U2 {
 
@@ -55,7 +56,7 @@ class U2PRIVATE_EXPORT PluginSupportImpl : public PluginSupport {
     friend class AddPluginTask;
     
 public:
-    PluginSupportImpl();
+    PluginSupportImpl(bool testingMode = false);
     ~PluginSupportImpl();
 
     virtual const QList<Plugin*>& getPlugins() {return plugins;}
@@ -87,11 +88,13 @@ protected:
     QString getPluginFileURL(Plugin* p) const;
     
     void updateSavedState(PluginRef* ref);
+    static QSet<QString> getPluginPaths();
 
 private:
-    QString             versionAppendix;
-    QList<PluginRef*>   plugRefs;
-    QList<Plugin*>      plugins;
+    static QString       versionAppendix;
+    static const QString OPENCL_CHECKED_SETTINGS;
+    QList<PluginRef*>    plugRefs;
+    QList<Plugin*>       plugins;
 };
 
 
@@ -107,19 +110,40 @@ private:
     PluginDesc          desc;
 };
 
+class VerifyPluginTask : public Task {
+    Q_OBJECT
+public:
+    VerifyPluginTask(PluginSupportImpl* ps, const PluginDesc& desc);
+    void run();
+    bool isCorrectPlugin() const{return pluginIsCorrect;}
+    const PluginDesc& getPluginDescriptor() const{return desc;}
+private:
+    PluginSupportImpl*  ps;
+    PluginDesc          desc;
+    int                 timeOut;
+    QProcess*           proc;
+    bool                pluginIsCorrect;
+};
+
 class LoadAllPluginsTask : public Task {
     Q_OBJECT
 public:
-    LoadAllPluginsTask(PluginSupportImpl* ps,const QStringList& pluginFiles);
+    LoadAllPluginsTask(PluginSupportImpl* ps,const QStringList& pluginFiles, const QStringList& verifiedPlugins = QStringList());
     void prepare();
     ReportResult report();
+    QList<Task*> onSubTaskFinished(Task* subTask);
+
+
 private:
     void addToOrderingQueue(const QString& url);
 
     PluginSupportImpl*  ps;
     QStringList         pluginFiles;
+    QStringList         verifiedPlugins;
     QList<PluginDesc>   orderedPlugins; // plugins ordered by desc
+    QList<PluginDesc>   orderedPluginsWithVerification;
 };
+
 
 
 }//namespace

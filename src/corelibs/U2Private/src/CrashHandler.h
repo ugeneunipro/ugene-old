@@ -93,6 +93,7 @@ public:
 
     static char*            buffer;
     static LogCache*        crashLogCache;
+    static bool             sendCrashReports;
 };
 
 class CrashLogCache : public LogCache {

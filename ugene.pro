@@ -27,6 +27,7 @@ SUBDIRS += \
           src/ugeneui \
           src/ugenecl \
           src/ugenem \
+          src/plugins_checker \
           src/plugins_3rdparty/ball \
           src/plugins_3rdparty/sitecon \
           src/plugins_3rdparty/snp_effect \

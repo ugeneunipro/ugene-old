@@ -26,6 +26,8 @@
 #include <U2Core/PluginModel.h>
 #include <U2Core/ServiceTypes.h>
 
+#include "NotificationsTypes.h"
+
 #include <QtCore/QEvent>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
@@ -142,6 +144,8 @@ public:
 
 
     virtual void setWindowTitle(const QString& title) = 0;
+
+    virtual void addNotification(const QString& message, NotificationType type) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////

@@ -86,6 +86,7 @@ public:
     void runClosingTask();
     void setShutDownInProcess(bool flag) {shutDownInProcess = flag;}
     void registerStartupChecks(QList<Task*> tasks);
+    void addNotification(const QString& message, NotificationType type);
 signals:
     void si_show();
 public slots:
@@ -134,6 +135,7 @@ private:
     bool                    shutDownInProcess;
 
     QList<Task*>            startupTasklist;
+    QList<Notification*>    startupNotificationsList;
 };
 
 }//namespace

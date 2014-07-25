@@ -26,13 +26,20 @@
 #include <U2Core/Settings.h>
 #include <U2Core/Log.h>
 #include <U2Core/L10n.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QLibrary>
 #include <QtCore/QDir>
 #include <QtCore/QSet>
 
+#include <U2Gui/MainWindow.h>
+
 #include <algorithm>
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
 
 namespace U2 {
 
@@ -41,6 +48,8 @@ namespace U2 {
 #define SKIP_LIST_SETTINGS QString("plugin_support/skip_list/")
 #define PLUGINS_ACCEPTED_LICENSE_LIST QString("plugin_support/accepted_list/")
 
+QString PluginSupportImpl::versionAppendix("");
+const QString PluginSupportImpl::OPENCL_CHECKED_SETTINGS("plugin_support/opencl/");
 static QStringList findAllPluginsInDefaultPluginsDir();
 
 
@@ -49,35 +58,36 @@ PluginRef::PluginRef(Plugin* _plugin, QLibrary* _library, const PluginDesc& desc
 {
 }
 
-PluginSupportImpl::PluginSupportImpl(): allLoaded(false) {
+PluginSupportImpl::PluginSupportImpl(bool testingMode): allLoaded(false) {
     //read plugin names from settings
     Settings* settings = AppContext::getSettings();
     QString pluginListSettingsDir = settings->toVersionKey(PLUGINS_LIST_SETTINGS);
-    QStringList allKeys = settings->getAllKeys(pluginListSettingsDir);
-    QSet<QString> pluginFiles;
-    versionAppendix = Version::buildDate;
-    if (!Version::appVersion().isDevVersion){
-        versionAppendix.clear();
-    }else{
-        versionAppendix.replace(" ", ".");
-        versionAppendix.append("-");
-        if (allKeys.size() > 150){
-            settings->remove(pluginListSettingsDir);
-        }
-    }
-    foreach (QString pluginId, allKeys) {
-        QString file = settings->getValue(pluginListSettingsDir + versionAppendix + pluginId).toString();
-        pluginFiles.insert(file);
-    }
+
+    QSet<QString> pluginFiles = getPluginPaths();
 
     connect(this, SIGNAL(si_allStartUpPluginsLoaded()), SLOT(sl_registerServices()));
 
-    //read all plugins from the current folder and from ./plugins folder
-    // use SKIP list to learn which plugin should not be loaded
-    QStringList skipFiles = settings->getValue(settings->toVersionKey(SKIP_LIST_SETTINGS), QStringList()).toStringList();
-    pluginFiles.unite(findAllPluginsInDefaultPluginsDir().toSet());
-    pluginFiles.subtract(skipFiles.toSet());
-    Task* loadStartUpPlugins = new LoadAllPluginsTask(this, pluginFiles.toList());
+    if(testingMode) {
+        foreach(const QString& pluginFile, pluginFiles) {
+            if(pluginFile.contains("opencl_support")) {
+                Task* loadStartUpPlugins = new LoadAllPluginsTask(this, QStringList(pluginFile));
+                AppContext::getTaskScheduler()->registerTopLevelTask(loadStartUpPlugins);
+                return;
+            }
+        }
+    }
+
+    QString openclCheckingVersion = settings->getValue(OPENCL_CHECKED_SETTINGS, "").toString();
+
+    Task* loadStartUpPlugins = NULL;
+    if(openclCheckingVersion != Version::appVersion().text && !testingMode) {
+        loadStartUpPlugins = new LoadAllPluginsTask(this, pluginFiles.toList(), QStringList("opencl_support"));
+    }
+    else {
+        loadStartUpPlugins = new LoadAllPluginsTask(this, pluginFiles.toList(), QStringList());
+        settings->setValue(OPENCL_CHECKED_SETTINGS, Version::appVersion().text);
+    }
+
     AppContext::getTaskScheduler()->registerTopLevelTask(loadStartUpPlugins);
 }
 
@@ -92,8 +102,8 @@ bool PluginSupportImpl::isAllPluginsLoaded() const {
     return allLoaded;
 }
 
-LoadAllPluginsTask::LoadAllPluginsTask(PluginSupportImpl* _ps,const QStringList& _pluginFiles)
-: Task(tr("Loading start up plugins"), TaskFlag_NoRun), ps(_ps), pluginFiles(_pluginFiles)
+LoadAllPluginsTask::LoadAllPluginsTask(PluginSupportImpl* _ps, const QStringList& _pluginFiles, const QStringList& verifiedPlugins)
+: Task(tr("Loading start up plugins"), TaskFlag_NoRun), ps(_ps), pluginFiles(_pluginFiles), verifiedPlugins(verifiedPlugins)
 {
     coreLog.trace("List of the plugins to be loaded:");
     foreach(const QString& path, pluginFiles) {
@@ -109,15 +119,47 @@ void LoadAllPluginsTask::prepare() {
 
     QString err;
     orderedPlugins = PluginDescriptorHelper::orderPlugins(orderedPlugins, err);
-    
+
     if (!err.isEmpty()) {
         setError(err);
         return;
     }
-    
+
+    if(!orderedPluginsWithVerification.isEmpty()) {
+        orderedPluginsWithVerification = PluginDescriptorHelper::orderPlugins(orderedPluginsWithVerification, err);
+
+        if (!err.isEmpty()) {
+            setError(err);
+            return;
+        }
+        foreach(const PluginDesc& desc, orderedPluginsWithVerification) {
+            addSubTask(new VerifyPluginTask(ps, desc));
+        }
+    }
+
     foreach(const PluginDesc& desc, orderedPlugins) {
         addSubTask(new AddPluginTask(ps, desc));
     }
+}
+
+QList<Task*> LoadAllPluginsTask::onSubTaskFinished(Task* subTask) {
+    QList<Task*> res;
+    VerifyPluginTask* verifyTask = qobject_cast<VerifyPluginTask*>(subTask);
+    if(NULL != verifyTask) {
+        if(verifyTask->isCorrectPlugin()) {
+            res << new AddPluginTask(ps, verifyTask->getPluginDescriptor());
+        }
+        else {
+            MainWindow* mw = AppContext::getMainWindow();
+            if(NULL == mw) {
+                return res;
+            }
+            mw->addNotification(tr("Problem occurred loading the OpenCL driver. Please try to update drivers if \
+                                   you're going to make calculations on your video card. For details see this page: \
+                                   <a href=\"%1\">%1</a>").arg("http://ugene.unipro.ru/using-video-cards.html"), Warning_Not);
+        }
+    }
+    return res;
 }
 
 void LoadAllPluginsTask::addToOrderingQueue(const QString& url) {
@@ -205,6 +247,13 @@ void LoadAllPluginsTask::addToOrderingQueue(const QString& url) {
         return;
     }
 #endif
+
+    foreach(const QString& verifiedPlugin, verifiedPlugins) {
+        if(url.contains(verifiedPlugin) && !verifiedPlugin.isEmpty()) {
+            orderedPluginsWithVerification.append(desc);
+            return;
+        }
+    }
     orderedPlugins.append(desc);
 }
 
@@ -367,10 +416,42 @@ QDir PluginSupportImpl::getDefaultPluginsDir() {
     return QDir(AppContext::getWorkingDirectoryPath() + "/plugins");
 }
 
-bool PluginSupportImpl::isDefaultPluginsDir(const QString& url) {    
+bool PluginSupportImpl::isDefaultPluginsDir(const QString& url) {
     QDir urlAbsDir = QFileInfo(url).absoluteDir();
     QDir plugsDir = getDefaultPluginsDir();
     return  urlAbsDir == plugsDir;
+}
+
+QSet<QString> PluginSupportImpl::getPluginPaths(){
+    Settings* settings = AppContext::getSettings();
+    QString pluginListSettingsDir = settings->toVersionKey(PLUGINS_LIST_SETTINGS);
+
+    QStringList pluginsIds = settings->getAllKeys(pluginListSettingsDir);
+
+    QSet<QString> pluginFiles;
+    versionAppendix = Version::buildDate;
+    if (!Version::appVersion().isDevVersion){
+        versionAppendix.clear();
+    }else{
+        versionAppendix.replace(" ", ".");
+        versionAppendix.append("-");
+        if (pluginsIds.size() > 150){
+            settings->remove(pluginListSettingsDir);
+        }
+    }
+    foreach (const QString& pluginId, pluginsIds) {
+        QString file = settings->getValue(pluginListSettingsDir + versionAppendix + pluginId).toString();
+        if(!file.isEmpty()) {
+            pluginFiles.insert(file);
+        }
+    }
+    //read all plugins from the current folder and from ./plugins folder
+    // use SKIP list to learn which plugin should not be loaded
+    QStringList skipFiles = settings->getValue(settings->toVersionKey(SKIP_LIST_SETTINGS), QStringList()).toStringList();
+    pluginFiles.unite(findAllPluginsInDefaultPluginsDir().toSet());
+    pluginFiles.subtract(skipFiles.toSet());
+
+    return pluginFiles;
 }
 
 
@@ -448,5 +529,36 @@ Task::ReportResult AddPluginTask::report() {
     return ReportResult_Finished;
 }
 
+VerifyPluginTask::VerifyPluginTask(PluginSupportImpl* ps, const PluginDesc& desc) 
+: Task(tr("Verify plugin task: %1").arg(desc.id), TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled), ps(ps), desc(desc), timeOut(100000), proc(NULL), pluginIsCorrect(false) 
+{
+}
+void VerifyPluginTask::run() {
+    Settings* settings = AppContext::getSettings();
 
+    QString executableDir = AppContext::getWorkingDirectoryPath();
+    QString openclCheckerDir = executableDir + "/plugins_checker";
+    if(Version::appVersion().debug) {
+        openclCheckerDir += 'd';
+    }
+
+    proc = new QProcess();
+    proc->start(openclCheckerDir, QStringList());
+    
+    int elapsedTime = 0;
+    while(!proc->waitForFinished(1000) && elapsedTime < timeOut) {
+        if(isCanceled()) {
+            proc->kill();
+        }
+        elapsedTime += 1000;
+    }
+    QString errorMessage = proc->readAllStandardError();
+
+    if(0 != proc->exitCode() || !errorMessage.isEmpty()) {
+        settings->setValue(settings->toVersionKey(SKIP_LIST_SETTINGS) + desc.id, desc.descriptorUrl.getURLString());
+    }
+    else {
+        pluginIsCorrect = true;
+    }
+}
 }//namespace

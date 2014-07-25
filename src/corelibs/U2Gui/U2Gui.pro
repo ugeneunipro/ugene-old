@@ -4,6 +4,7 @@ include (U2Gui.pri)
 HEADERS += src/AppSettingsGUI.h \
            src/MainWindow.h \
            src/Notification.h \
+           src/NotificationsTypes.h \
            src/NotificationWidget.h \
            src/ObjectViewModel.h \
            src/ObjectViewTasks.h \

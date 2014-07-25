@@ -545,12 +545,24 @@ void MainWindowImpl::sl_show(){
     foreach(Task *t, startupTasklist){
         AppContext::getTaskScheduler()->registerTopLevelTask(t);
     }
+    foreach(Notification* notification, startupNotificationsList) {
+        nStack->addNotification(notification);
+    }
     startupTasklist.clear();
     emit si_show();
 }
 
 void MainWindowImpl::registerStartupChecks( QList<Task*> tasks ){
     startupTasklist << tasks;
+}
+void MainWindowImpl::addNotification(const QString& message, NotificationType type) {
+    Notification* notification = new Notification(message, type);
+    if(mw->isVisible()) {
+        nStack->addNotification(notification);
+    }
+    else {
+        startupNotificationsList << notification;
+    }
 }
 
 }//namespace

@@ -1,0 +1,34 @@
+#include <Windows.h>
+
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
+#define UGENE_VERSION_STRING TOSTRING(UGENE_VERSION)
+
+#ifndef DEBUG
+#define VER_DEBUG                   0
+#else
+#define VER_DEBUG                   VS_FF_DEBUG
+#endif
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION    	UGENE_VER_MAJOR,UGENE_VER_MINOR,UGENE_VER_PATCH,0
+PRODUCTVERSION 	UGENE_VER_MAJOR,UGENE_VER_MINOR,UGENE_VER_PATCH
+FILEFLAGSMASK  	VS_FFI_FILEFLAGSMASK
+FILEFLAGS      	(VER_DEBUG)
+FILETYPE       	VFT_APP
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName",      "Unipro, Russia"
+            VALUE "FileDescription",  "Resource dependency checker"
+            VALUE "FileVersion",      TOSTRING(UGENE_VER_MAJOR.UGENE_VER_MINOR.UGENE_VER_PATCH.0)
+            VALUE "OriginalFilename", "plugins_checker"
+            VALUE "ProductName",      "Unipro UGENE"
+            VALUE "ProductVersion",   UGENE_VERSION_STRING
+            VALUE "Comments",         "UGENE is a free cross-platform genome analysis suite: http://ugene.unipro.ru/"
+        END
+    END
+END

@@ -162,5 +162,6 @@
         <file>images/clean_empty_bin.png</file>
         <file>images/clean_full_bin.png</file>
         <file>images/consensus.png</file>
+        <file>images/warning_notification.png</file>
     </qresource>
 </RCC>

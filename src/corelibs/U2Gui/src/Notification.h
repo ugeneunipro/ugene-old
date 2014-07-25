@@ -23,10 +23,9 @@
 #define _TOOL_TIP_H_
 
 #include <U2Core/global.h>
-#include <U2Core/AppContext.h>
 #include <U2Core/U2OpStatusUtils.h>
-#include "MainWindow.h"
 #include "NotificationWidget.h"
+#include "NotificationsTypes.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
@@ -65,12 +64,6 @@
 namespace U2 {
 
 #define MAX_NOTIFICATION 100
-
-enum NotificationType {
-    Info_Not,
-    Error_Not,
-    Report_Not
-};
 
 class U2GUI_EXPORT Notification: public QLabel {
     Q_OBJECT
@@ -129,11 +122,7 @@ public:
     void setFixed(bool val);
 
     // just a shortcut to write less
-    static void addNotification(const QString& message, NotificationType type, QAction *action = 0) {
-        Notification *n = new Notification(message, type, action);
-        AppContext::getMainWindow()->getNotificationStack()->addNotification(n);
-    }
-
+    static void addNotification(const QString& message, NotificationType type, QAction *action = 0);
  private slots:
      void sl_notificationDissapear();
      void sl_delete();

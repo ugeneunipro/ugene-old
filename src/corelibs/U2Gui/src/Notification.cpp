@@ -20,6 +20,9 @@
  */
 
 #include "Notification.h"
+#include "MainWindow.h"
+#include <U2Core/AppContext.h>
+#include <QtGui/QTextBrowser>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QStatusBar>
@@ -72,15 +75,19 @@ void Notification::generateCSS(bool isHovered) {
     switch(type) {
         case Info_Not: bgColor = "background-color: #BDE5F8;";
             fontColor = "color: #00529B;";
-            img = "background-image: url(':core/images/info_notification.png');" ;
+            img = "background-image: url(':core/images/info_notification.png');";
             break;
         case Error_Not: bgColor = "background-color: #FFBABA;";
             fontColor = "color: #D8000C;";
-            img = "background-image: url(':core/images/error_notification.png');" ;
+            img = "background-image: url(':core/images/error_notification.png');";
             break;
         case Report_Not: bgColor = "background-color: #BDE5F8;";
             fontColor = "color: #00529B;";
-            img = "background-image: url(':core/images/info_notification.png');" ;
+            img = "background-image: url(':core/images/info_notification.png');";
+            break;
+        case Warning_Not : bgColor = "background-color: #FCF8E3;";
+            fontColor = "color: #C09853;";
+            img = "background-image: url(':core/images/warning_notification.png');";
             break;
         default: assert(0);
     }
@@ -159,7 +166,8 @@ void Notification::mousePressEvent(QMouseEvent *ev) {
             hLayout.addWidget(&ok);
 
             dlg.setLayout(&vLayout);
-            QTextEdit txtEdit;
+            QTextBrowser txtEdit;
+            txtEdit.setOpenExternalLinks(true);
             txtEdit.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             dlg.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             txtEdit.setReadOnly(true);
@@ -344,6 +352,12 @@ void NotificationStack::showStack() {
 void NotificationStack::setFixed(bool val) {
     w->setFixed(val);
 }
+
+void NotificationStack::addNotification(const QString& message, NotificationType type, QAction *action) {
+    Notification *n = new Notification(message, type, action);
+    AppContext::getMainWindow()->getNotificationStack()->addNotification(n);
+}
+
 
 QPoint NotificationStack::getBottomRightOfMainWindow() {
     QPoint pos;
