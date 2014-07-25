@@ -176,6 +176,13 @@ void CircularViewSplitter::sl_moveSlider(int delta) {
 }
 
 void CircularViewSplitter::removeView(CircularView* view, RestrctionMapWidget* rmapWidget) {
+    QWidget* viewport = view->parentWidget();
+    SAFE_POINT( viewport != NULL, "Circular View viewport is NULL", );
+    QScrollArea* scrollArea = qobject_cast<QScrollArea*>(viewport->parentWidget());
+    SAFE_POINT( scrollArea != NULL, "Scroll area is NULL", );
+    view->setParent(NULL);
+    delete scrollArea;
+
     circularViewList.removeAll(view);
     restrictionMapWidgets.removeAll(rmapWidget);
 }
