@@ -187,6 +187,10 @@ QString UserAppsSettings::getDefaultDataDirPath() const{
 #else
     dirpath = AppContext::getSettings()->getValue(SETTINGS_ROOT + DATA_DIR, QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation)+"/UGENE_Data").toString();
 #endif
+    QDir d(dirpath);
+    if(!d.exists(dirpath)){
+        d.mkdir(dirpath);
+    }
     return dirpath;
 }
 
