@@ -24,11 +24,11 @@
 namespace U2 {
 
 QList<GCounter*>& GCounter::getCounters() {
-    static QList<GCounter*> counters;
-    return counters;
+    static GCounterList counters;
+    return counters.list;
 }
 
-GCounter::GCounter(const QString& _name, const QString& s, double scale) : name(_name), suffix(s), totalCount(0), counterScale(scale) {
+GCounter::GCounter(const QString& _name, const QString& s, double scale) : name(_name), suffix(s), totalCount(0), counterScale(scale), destroyMe(false) {
     assert(counterScale > 0);
     getCounters().append(this);
     dynamicCounter = false;
@@ -40,9 +40,25 @@ GCounter::~GCounter() {
     }
 }
 
+GCounter *GCounter::getCounter(const QString &name, const QString &suffix) {
+    foreach (GCounter *counter, getCounters()) {
+        if (name == counter->name && suffix == counter->suffix) {
+            return counter;
+        }
+    }
+    return NULL;
+}
+
 GReportableCounter::GReportableCounter(const QString& name, const QString& suffix, double scale /* = 1 */) :
 GCounter(name, suffix, scale) {
 }
 
-} //namespace
+GCounterList::~GCounterList() {
+    for (int i = 0; i < list.size(); i++) {
+        if (list[i]->destroyMe) {
+            delete list.takeAt(i);
+        }
+    }
+}
 
+} //namespace

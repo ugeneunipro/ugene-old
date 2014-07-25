@@ -30,7 +30,6 @@
 #include <QtGui/QPixmap>
 
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPrinter>
 #include <QtGui/QBoxLayout>
 #include <QtGui/QComboBox>
 #include <QtGui/QFileDialog>
@@ -39,11 +38,12 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
+#include <QtGui/QPrinter>
+#include <QtGui/QShortcut>
 #include <QtGui/QSplitter>
 #include <QtGui/QTableWidget>
 #include <QtGui/QToolBar>
 #include <QtGui/QToolButton>
-#include <QtGui/QShortcut>
 #else
 #include <QtPrintSupport/QPrinter>
 #include <QtWidgets/QBoxLayout>
@@ -54,16 +54,17 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QShortcut>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QToolButton>
-#include <QtWidgets/QShortcut>
 #endif
 
 #include <QtSvg/QSvgGenerator>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/ExternalToolRunTask.h>
@@ -75,6 +76,7 @@
 #include <U2Core/TaskSignalMapper.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+
 #include <U2Designer/Dashboard.h>
 #include <U2Designer/DelegateEditors.h>
 #include <U2Designer/DesignerUtils.h>
@@ -82,15 +84,17 @@
 #include <U2Designer/GrouperEditor.h>
 #include <U2Designer/MarkerEditor.h>
 #include <U2Designer/WizardController.h>
+
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Gui/GlassView.h>
-#include <U2Gui/MainWindow.h>
 #include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/DialogUtils.h>
+#include <U2Gui/MainWindow.h>
+
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
-#include <U2Lang/BaseAttributes.h>
 #include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/BaseAttributes.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/ExternalToolCfg.h>
 #include <U2Lang/GrouperSlotAttribute.h>
@@ -99,17 +103,19 @@
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/MapDatatypeEditor.h>
 #include <U2Lang/SchemaEstimationTask.h>
+#include <U2Lang/WorkflowDebugStatus.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowManager.h>
 #include <U2Lang/WorkflowRunTask.h>
 #include <U2Lang/WorkflowSettings.h>
 #include <U2Lang/WorkflowUtils.h>
-#include <U2Lang/WorkflowDebugStatus.h>
+
 #include <U2Remote/DistributedComputingUtil.h>
 #include <U2Remote/RemoteMachine.h>
 #include <U2Remote/RemoteMachineMonitorDialogController.h>
 #include <U2Remote/RemoteWorkflowRunTask.h>
 
+#include "BreakpointManagerView.h"
 #include "ChooseItemDialog.h"
 #include "CreateScriptWorker.h"
 #include "DashboardsManagerDialog.h"
@@ -124,6 +130,7 @@
 #include "WorkflowDesignerPlugin.h"
 #include "WorkflowDocument.h"
 #include "WorkflowEditor.h"
+#include "WorkflowInvestigationWidgetsController.h"
 #include "WorkflowMetaDialog.h"
 #include "WorkflowPalette.h"
 #include "WorkflowSamples.h"
@@ -132,12 +139,10 @@
 #include "WorkflowViewController.h"
 #include "WorkflowViewItems.h"
 #include "WorkflowViewItems.h"
-#include "BreakpointManagerView.h"
 #include "debug_messages_translation/WorkflowDebugMessageParserImpl.h"
 #include "library/CreateExternalProcessDialog.h"
 #include "library/ExternalProcessWorker.h"
 #include "library/ScriptWorker.h"
-#include "WorkflowInvestigationWidgetsController.h"
 
 /* TRANSLATOR U2::LocalWorkflow::WorkflowView*/
 
@@ -1461,9 +1466,15 @@ void WorkflowView::localHostLaunch() {
     if (!sl_validate(false)) {
         return;
     }
+
     if (schema->getDomain().isEmpty()) {
         // TODO: user choice
         schema->setDomain(WorkflowEnv::getDomainRegistry()->getAllIds().value(0));
+    }
+
+    Metadata meta = getMeta();
+    if (meta.isSample()) {
+        GRUNTIME_NAMED_COUNTER(cvar, tvar, meta.name, "WDSample:run");
     }
 
     const Schema *s = getSchema();
@@ -1482,7 +1493,6 @@ void WorkflowView::localHostLaunch() {
         connect(signalMapper, SIGNAL(si_taskFinished(Task*)), SLOT(sl_toggleLock()));
     }
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
-    Metadata meta = getMeta();
     foreach (WorkflowMonitor *m, t->getMonitors()) {
         m->setSaveSchema(meta);
         tabView->addDashboard(m, meta.name);
@@ -1866,6 +1876,8 @@ void WorkflowView::sl_pasteSample(const QString& s) {
         scene->update();
         rescale();
         sl_refreshActorDocs();
+        meta.setSampleMark(true);
+        GRUNTIME_NAMED_COUNTER(c, t, meta.name, "WDSample:open");
         checkAutoRunWizard();
     } else {
         breakpointView->clear();
@@ -2373,6 +2385,7 @@ const Workflow::Metadata & WorkflowView::getMeta() {
 }
 
 const Workflow::Metadata & WorkflowView::updateMeta() {
+    meta.setSampleMark(false);
     meta.resetVisual();
     foreach (QGraphicsItem *it, scene->items()) {
         switch (it->type()) {

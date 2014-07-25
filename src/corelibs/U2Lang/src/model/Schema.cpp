@@ -650,6 +650,7 @@ void Metadata::reset() {
     comment = QString();
     url = QString();
     scalePercent = 100;
+    isSampleWorkflow = false;
     estimationsCode.clear();
 
     resetVisual();
@@ -727,6 +728,14 @@ QList<ActorVisualData> Metadata::getActorsVisual() const {
 
 QMap<QString, QPointF> Metadata::getTextPosMap() const {
     return textPosMap;
+}
+
+void Metadata::setSampleMark(bool isSample) {
+    isSampleWorkflow = isSample;
+}
+
+bool Metadata::isSample() const {
+    return isSampleWorkflow;
 }
 
 void Metadata::renameActors(const QMap<ActorId, ActorId> &actorsMapping) {

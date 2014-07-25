@@ -225,11 +225,15 @@ public:
     QList<ActorVisualData> getActorsVisual() const;
     QMap<QString, QPointF> getTextPosMap() const;
 
+    void setSampleMark(bool isSample);
+    bool isSample() const;
+
 public:
     QString name;
     QString url;
     QString comment;
     int scalePercent;
+    bool isSampleWorkflow;
     // ECMAScript code of schema run estimations
     QString estimationsCode;
 
