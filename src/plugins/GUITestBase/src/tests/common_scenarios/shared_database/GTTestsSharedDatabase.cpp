@@ -815,12 +815,12 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
     const QString sequenceWidgetName = "[s] NC_001363";
     const QString annotationObjectName = "NC_001363 features";
     const QString annotationTableName = "NC_001363 features [%1]";
-    const QString databaseAssemblyObjectPath = folderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+    const QString databaseSequenceObjectPath = folderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
     const QString databaseAnnotationObjectPath = folderPath + U2ObjectDbi::PATH_SEP + annotationObjectName;
 
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
     const QModelIndex folderItemIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, folderPath);
-    QModelIndex databaseSequenceObjectItemIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseAssemblyObjectPath);
+    QModelIndex databaseSequenceObjectItemIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
 
     GTFileDialog::openFile(os, dataDir + "/samples/Genbank/", "murine.gb");
     const QModelIndex fileDocIndex = GTUtilsProjectTreeView::findIndex(os, fileDocName);
@@ -852,7 +852,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0003) {
     GTGlobals::sleep(5000);
     GTUtilsSharedDatabaseDocument::disconnectDatabase(os, databaseDoc);
     databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
-    databaseSequenceObjectItemIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseAssemblyObjectPath);
+    databaseSequenceObjectItemIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
 
     GTUtilsProjectTreeView::doubleClickItem(os, databaseSequenceObjectItemIndex);
     GTGlobals::sleep(200);
@@ -898,7 +898,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0004) {
     const QString resultFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + resultFolderName;
     const QString filePath = QFileInfo(dataDir + "samples/FASTA/human_T1.fa").absoluteFilePath();
     const QString sequenceObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
-    const QString databaseAssemblyObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+    const QString databaseSequenceObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
 
 
     QList<ImportToDatabaseDialogFiller::Action> actions;
@@ -926,7 +926,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0004) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(15000);
 
-    const QModelIndex assemblyObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseAssemblyObjectPath);
+    const QModelIndex assemblyObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
     CHECK_SET_ERR(assemblyObjectIndex.isValid(), "Result item wasn't found");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
@@ -955,7 +955,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0005) {
     const QString resultFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + resultFolderName;
     const QString filePath = QFileInfo(dataDir + "samples/FASTA/human_T1.fa").absoluteFilePath();
     const QString sequenceObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
-    const QString databaseAssemblyObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+    const QString databaseSequenceObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
 
 
     QList<ImportToDatabaseDialogFiller::Action> actions;
@@ -978,7 +978,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0005) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(15000);
 
-    const QModelIndex assemblyObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseAssemblyObjectPath);
+    const QModelIndex assemblyObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
     CHECK_SET_ERR(assemblyObjectIndex.isValid(), "Result item wasn't found");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
@@ -1018,7 +1018,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0006) {
     const QString notImportedFolderName = "second";
     const QString notImportedObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
     const QString sequenceObjectName = "SEQUENCE_WITH_A_ENTRY";
-    const QString databaseAssemblyObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+    const QString databaseSequenceObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
 
 
     QList<ImportToDatabaseDialogFiller::Action> actions;
@@ -1046,7 +1046,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0006) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(15000);
 
-    const QModelIndex assemblyObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseAssemblyObjectPath);
+    const QModelIndex assemblyObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
     CHECK_SET_ERR(assemblyObjectIndex.isValid(), "Result item wasn't found");
 
     const QModelIndex dstFolderIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, dstFolderPath);
@@ -1096,7 +1096,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0007) {
     const QString resultFolderPath = importedTopLevelFolderPath + U2ObjectDbi::ROOT_FOLDER + resultFolderName;
     const QString folderPath = testDir + "_common_data/scenarios/shared_database/import/first/second/";
     const QString sequenceObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
-    const QString databaseAssemblyObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+    const QString databaseSequenceObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
 
 
     QList<ImportToDatabaseDialogFiller::Action> actions;
@@ -1124,11 +1124,11 @@ GUI_TEST_CLASS_DEFINITION(import_test_0007) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(15000);
 
-    GTUtilsSharedDatabaseDocument::ensureItemExists(os, databaseDoc, databaseAssemblyObjectPath);
+    GTUtilsSharedDatabaseDocument::ensureItemExists(os, databaseDoc, databaseSequenceObjectPath);
 
     const QStringList expectedItems = QStringList() << importedTopLevelFolderPath
                                                     << resultFolderPath
-                                                    << databaseAssemblyObjectPath;
+                                                    << databaseSequenceObjectPath;
     GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(os, databaseDoc, dstFolderPath, expectedItems);
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
@@ -1306,7 +1306,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0010) {
     const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
     const QString documentName = "human_T1.fa";
     const QString sequenceObjectName = "human_T1 (UCSC April 2002 chr7:115977709-117855134)";
-    const QString databaseAssemblyObjectPath = dstFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+    const QString databaseSequenceObjectPath = dstFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
 
 
     QList<ImportToDatabaseDialogFiller::Action> actions;
@@ -1333,7 +1333,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0010) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(15000);
 
-    const QModelIndex assemblyObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseAssemblyObjectPath);
+    const QModelIndex assemblyObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
     CHECK_SET_ERR(assemblyObjectIndex.isValid(), "Result item wasn't found");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
@@ -1368,7 +1368,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0011) {
     const QString AnnotationTableObjectName = "NC_001363 features";
     const QString sequenceVisibleWidgetName = "[s] " + sequenceObjectName;
     const QString someFeatureName = "CDS";
-    const QString databaseAssemblyObjectPath = dstFolderPath + U2ObjectDbi::PATH_SEP + documentName + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+    const QString databaseSequenceObjectPath = dstFolderPath + U2ObjectDbi::PATH_SEP + documentName + U2ObjectDbi::PATH_SEP + sequenceObjectName;
     const QString databaseAnnotationTableObjectPath = dstFolderPath + U2ObjectDbi::PATH_SEP + documentName + U2ObjectDbi::PATH_SEP + AnnotationTableObjectName;
 
 
@@ -1396,13 +1396,13 @@ GUI_TEST_CLASS_DEFINITION(import_test_0011) {
     GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep(15000);
 
-    const QModelIndex assemblyObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseAssemblyObjectPath);
+    const QModelIndex assemblyObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseSequenceObjectPath);
     CHECK_SET_ERR(assemblyObjectIndex.isValid(), "Sequence item wasn't found");
 
     const QModelIndex annotationTableObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseAnnotationTableObjectPath);
     CHECK_SET_ERR(annotationTableObjectIndex.isValid(), "Annotation table item wasn't found");
 
-    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblyObjectPath);
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseSequenceObjectPath);
     QWidget* seqView = GTWidget::findWidget(os, " " + sequenceVisibleWidgetName);
     CHECK_SET_ERR(NULL != seqView, "View wasn't opened");
 
@@ -1496,7 +1496,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0013) {
     const QString annotationTableObjectName = "Contigs";
     const QString sequenceVisibleWidgetName = "[s] " + sequenceObjectName;
     const QString databaseAnnotationTableObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + annotationTableObjectName;
-    const QString databaseAssemblyObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
+    const QString databaseSequenceObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + sequenceObjectName;
     const QString contigFeatureName = "contig  (0, 2)";
     const QString expectedSecondContigRegion = "243..362";
 
@@ -1509,11 +1509,11 @@ GUI_TEST_CLASS_DEFINITION(import_test_0013) {
     GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, dstFolderPath, QStringList() << testDir + "_common_data/fasta/multy_fa.fa", options);
 
     const QStringList expectedItems = QStringList() << objectFolderPath
-                                                    << databaseAssemblyObjectPath
+                                                    << databaseSequenceObjectPath
                                                     << databaseAnnotationTableObjectPath;
     GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(os, databaseDoc, dstFolderPath, expectedItems);
 
-    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblyObjectPath);
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseSequenceObjectPath);
     QWidget* seqView = GTWidget::findWidget(os, " " + sequenceVisibleWidgetName);
     CHECK_SET_ERR(NULL != seqView, "View wasn't opened");
 
@@ -1596,7 +1596,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0015) {
     const QString objectFolderName = "chrM.sorted";
     const QString objectFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + objectFolderName;
     const QString assemblyObjectName = "chrM";
-    const QString databaseAssemblyObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + assemblyObjectName;
+    const QString databaseSequenceObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + assemblyObjectName;
     const qint64 expectedLength = 16571;
     const qint64 expectedReadsCount = 38461;
 
@@ -1607,10 +1607,10 @@ GUI_TEST_CLASS_DEFINITION(import_test_0015) {
     GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, dstFolderPath, QStringList() << sandBoxDir + getName() + "/chrM.sorted.bam");
 
     const QStringList expectedItems = QStringList() << objectFolderPath
-                                                    << databaseAssemblyObjectPath;
+                                                    << databaseSequenceObjectPath;
     GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(os, databaseDoc, dstFolderPath, expectedItems);
 
-    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblyObjectPath);
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseSequenceObjectPath);
 
     qint64 length = GTUtilsAssemblyBrowser::getLength(os, " [as] " + assemblyObjectName);
     qint64 readsCount = GTUtilsAssemblyBrowser::getReadsCount(os, " [as] " + assemblyObjectName);
@@ -1645,7 +1645,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0016) {
     const QString objectFolderName = "scerevisiae";
     const QString objectFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + objectFolderName;
     const QString assemblyObjectName = "Scmito";
-    const QString databaseAssemblyObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + assemblyObjectName;
+    const QString databaseSequenceObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + assemblyObjectName;
     const qint64 expectedLength = 85779;
     const qint64 expectedReadsCount = 2;
 
@@ -1656,10 +1656,10 @@ GUI_TEST_CLASS_DEFINITION(import_test_0016) {
     GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, dstFolderPath, QStringList() << sandBoxDir + getName() + "/scerevisiae.sam");
 
     const QStringList expectedItems = QStringList() << objectFolderPath
-                                                    << databaseAssemblyObjectPath;
+                                                    << databaseSequenceObjectPath;
     GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(os, databaseDoc, dstFolderPath, expectedItems);
 
-    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblyObjectPath);
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseSequenceObjectPath);
 
     qint64 length = GTUtilsAssemblyBrowser::getLength(os, " [as] " + assemblyObjectName);
     qint64 readsCount = GTUtilsAssemblyBrowser::getReadsCount(os, " [as] " + assemblyObjectName);
@@ -1879,13 +1879,13 @@ GUI_TEST_CLASS_DEFINITION(view_test_0001) {
     const QString sequenceVisibleWidgetName = " [s] NC_001363";
     const QString annotationVisibleName = "NC_001363 features";
     const QString someFeatureName = "CDS";
-    const QString databaseAssemblyObjectPath = folderPath + U2ObjectDbi::PATH_SEP + sequenceVisibleName;
+    const QString databaseSequenceObjectPath = folderPath + U2ObjectDbi::PATH_SEP + sequenceVisibleName;
     const QString databaseAnnotationObjectPath = folderPath + U2ObjectDbi::PATH_SEP + annotationVisibleName;
     const int position = 2970;
 
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
 
-    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblyObjectPath);
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseSequenceObjectPath);
     QWidget* seqView = GTWidget::findWidget(os, sequenceVisibleWidgetName);
     CHECK_SET_ERR(NULL != seqView, "View wasn't opened");
 
@@ -1942,7 +1942,7 @@ GUI_TEST_CLASS_DEFINITION(view_test_0003) {
     const QString folderPath = U2ObjectDbi::PATH_SEP + folderName;
     const QString assemblyVisibleName = "chrM";
     const QString assemblyVisibleNameWidget = " [as] chrM";
-    const QString databaseAssemblyObjectPath = folderPath + U2ObjectDbi::PATH_SEP + assemblyVisibleName;
+    const QString databaseSequenceObjectPath = folderPath + U2ObjectDbi::PATH_SEP + assemblyVisibleName;
 
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
 
