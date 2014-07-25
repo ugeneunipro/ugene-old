@@ -181,11 +181,13 @@ void UserAppsSettings::setUserTemporaryDirPath(const QString& newPath) {
 }
 
 QString UserAppsSettings::getDefaultDataDirPath() const{
+    QString dirpath;
 #if (QT_VERSION >= 0x050000)
-    return AppContext::getSettings()->getValue(SETTINGS_ROOT + DATA_DIR, QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)+"/UGENE_Data").toString();
+    dirpath = AppContext::getSettings()->getValue(SETTINGS_ROOT + DATA_DIR, QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)+"/UGENE_Data").toString();
 #else
-    return AppContext::getSettings()->getValue(SETTINGS_ROOT + DATA_DIR, QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation)+"/UGENE_Data").toString();
+    dirpath = AppContext::getSettings()->getValue(SETTINGS_ROOT + DATA_DIR, QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation)+"/UGENE_Data").toString();
 #endif
+    return dirpath;
 }
 
 void UserAppsSettings::setDefaultDataDirPath( const QString& newPath ){
