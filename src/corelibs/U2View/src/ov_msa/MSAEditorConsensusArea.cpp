@@ -399,6 +399,8 @@ void MSAEditorConsensusArea::drawHistogram(QPainter &p, int firstBase, int lastB
     U2Region yr = getYRange(MSAEditorConsElement_HISTOGRAM);
     yr.startPos++; yr.length-=2; //keep borders
     QBrush brush(c, Qt::Dense4Pattern);
+    p.setBrush(brush);
+    QVector<QRect> rects;
 
     for (int pos = firstBase, lastPos = lastBase; pos <= lastPos; pos++) {
         U2Region xr = ui->seqArea->getBaseXRange(pos, true);
@@ -406,10 +408,10 @@ void MSAEditorConsensusArea::drawHistogram(QPainter &p, int firstBase, int lastB
         assert(percent >= 0 && percent <= 100);
         int h = qRound(percent * yr.length / 100.0);
         QRect hr(xr.startPos + 1, yr.endPos() - h, xr.length - 2, h);
-        p.drawRect(hr);
-        p.fillRect(hr, brush);
+        rects << hr;
     }
 
+    p.drawRects(rects);
 }
 
 U2Region MSAEditorConsensusArea::getYRange(MSAEditorConsElement e) const {
