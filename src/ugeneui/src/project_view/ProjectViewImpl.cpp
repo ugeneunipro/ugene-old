@@ -138,7 +138,7 @@ void DocumentUpdater::update() {
 
         QFileInfo fi(doc->getURLString());
         bool fileCheckAllowedByHints = !(doc->getGHintsMap().value(ProjectLoaderHint_DontCheckForExistence, false).toBool());
-        
+
         if (!fileCheckAllowedByHints && !doc->isModified()) {
             doc->setModified(true);
         }
@@ -452,16 +452,17 @@ void ProjectViewImpl::enable() {
     connect(pr, SIGNAL(si_documentAdded(Document*)), SLOT(sl_onDocumentAdded(Document*)));
     connect(pr, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_onDocumentRemoved(Document*)));
     connect(pr, SIGNAL(si_modifiedStateChanged()), SLOT(sl_onProjectModifiedStateChanged()));
-    
+
     pr->setMainThreadModificationOnly(true);
-    
+
     MWMDIManager* mdi = AppContext::getMainWindow()->getMDIManager();
     connect(mdi, SIGNAL(si_windowAdded(MWMDIWindow*)), SLOT(sl_onMDIWindowAdded(MWMDIWindow*)));
-        
+
     assert(w == NULL);
     w = new ProjectViewWidget();
 
     saveSelectedDocsAction = new QAction(QIcon(":ugene/images/save_selected_documents.png"), tr("save_selected_modified_docs_action"), w);
+    saveSelectedDocsAction->setObjectName(ACTION_PROJECT__SAVE_DOCUMENT);
     connect(saveSelectedDocsAction, SIGNAL(triggered()), SLOT(sl_onSaveSelectedDocs()));
 
     toggleCircularAction = new QAction(tr("Mark as circular"), w);
@@ -487,7 +488,7 @@ void ProjectViewImpl::enable() {
         dm->activateDock(w->objectName());
         AppContext::getSettings()->setValue(SETTINGS_ROOT + "firstShow", false);
     }
-    
+
     AppContextImpl::getApplicationContext()->setProjectView(this);
 
     updateMWTitle();
@@ -720,8 +721,8 @@ void ProjectViewImpl::sl_onActivated(GObject* o) {
         QAction* a = openActions.first();
         a->trigger();
         return;
-    } 
-    if (openActions.isEmpty()) { 
+    }
+    if (openActions.isEmpty()) {
         if (o->isUnloaded()) {
             AppContext::getTaskScheduler()->registerTopLevelTask(new LoadUnloadedDocumentTask(o->getDocument()));
         }
@@ -739,7 +740,7 @@ void ProjectViewImpl::sl_onActivated( Document* d){
 
     MultiGSelection ms;
     GObjectSelection gs;
-    DocumentSelection ds; 
+    DocumentSelection ds;
 
     if (d->isLoaded()){
         //find view for loaded objects in document
@@ -758,7 +759,7 @@ void ProjectViewImpl::sl_onActivated( Document* d){
         QList<QAction*> tmp = selectOpenViewActions(f, ms, &activeViewsMenu, true);
         openActions<<tmp;
     }
-    if (openActions.isEmpty()) { 
+    if (openActions.isEmpty()) {
         if (!d->isLoaded()) {
             AppContext::getTaskScheduler()->registerTopLevelTask(new LoadUnloadedDocumentTask(d));
         }
@@ -1097,7 +1098,7 @@ void ProjectViewImpl::sl_relocate() {
     if (h.url.isEmpty()) {
         return;
     }
-    AppContext::getTaskScheduler()->registerTopLevelTask(new RelocateDocumentTask(d->getURL(), GUrl(h.url, GUrl_File)));    
+    AppContext::getTaskScheduler()->registerTopLevelTask(new RelocateDocumentTask(d->getURL(), GUrl(h.url, GUrl_File)));
 }
 
 void ProjectViewImpl::sl_exportDocument() {
@@ -1133,7 +1134,7 @@ void ProjectViewImpl::sl_onToggleCircular() {
 
 //EnableProjectViewTask
 
-EnableProjectViewTask::EnableProjectViewTask(ProjectViewImpl* _pvi) 
+EnableProjectViewTask::EnableProjectViewTask(ProjectViewImpl* _pvi)
 : Task(tr("enable_project_view"), TaskFlag_NoRun), pvi(_pvi)
 {
 }
@@ -1145,7 +1146,7 @@ Task::ReportResult EnableProjectViewTask::report() {
 }
 
 
-DisableProjectViewTask::DisableProjectViewTask(ProjectViewImpl* _pvi, bool saveProjectOnClose) 
+DisableProjectViewTask::DisableProjectViewTask(ProjectViewImpl* _pvi, bool saveProjectOnClose)
 : Task(tr("disable_project_view"), TaskFlags_NR_FOSCOE), pvi(_pvi), saveProject(saveProjectOnClose)
 {
 }

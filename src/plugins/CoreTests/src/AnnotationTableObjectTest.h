@@ -44,18 +44,18 @@ private:
 
 class GTest_CheckNumAnnotations : public GTest {
     Q_OBJECT
-    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckNumAnnotations, "check-num-annotations");
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckNumAnnotations, "check-num-annotations")
 
     ReportResult report();
 
-private:    
+private:
     QString        objContextName;
     int            num;
 };
 
 class GTest_FindAnnotationByNum : public GTest {
     Q_OBJECT
-    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_FindAnnotationByNum, "find-annotation-by-number");
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_FindAnnotationByNum, "find-annotation-by-number")
 
     ReportResult report();
 
@@ -63,7 +63,7 @@ class GTest_FindAnnotationByNum : public GTest {
 
     void cleanup();
 
-private:    
+private:
     QString     objContextName;
     QString     annotationContextName;
     int         number;
@@ -72,7 +72,7 @@ private:
 
 class GTest_FindAnnotationByName : public GTest {
     Q_OBJECT
-        SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_FindAnnotationByName, "find-annotation-by-name");
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_FindAnnotationByName, "find-annotation-by-name")
 
     ReportResult report();
 
@@ -80,7 +80,7 @@ class GTest_FindAnnotationByName : public GTest {
 
     void cleanup();
 
-private:    
+private:
     QString     objContextName;
     QString     annotationContextName;
     QString     aName;
@@ -89,7 +89,7 @@ private:
 
 class GTest_FindAnnotationByLocation : public GTest {
     Q_OBJECT
-    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_FindAnnotationByLocation, "find-annotation-by-location");
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_FindAnnotationByLocation, "find-annotation-by-location")
 
     ReportResult report();
 
@@ -97,7 +97,7 @@ class GTest_FindAnnotationByLocation : public GTest {
 
     void cleanup();
 
-private:    
+private:
     QString     objContextName;
     QString     annotationContextName;
     U2Region    location;
@@ -107,7 +107,7 @@ private:
 
 class GTest_CheckAnnotationLocation : public GTest {
     Q_OBJECT
-    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationLocation, "check-annotation-location");
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationLocation, "check-annotation-location")
 
     ReportResult report();
 
@@ -119,22 +119,22 @@ private:
 
 class GTest_CheckAnnotationName : public GTest {
     Q_OBJECT
-        SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationName, "check-annotation-name");
+        SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationName, "check-annotation-name")
 
     ReportResult report();
 
-private:    
+private:
     QString         annCtxName;
     QString         aName;
 };
 
 class GTest_CheckAnnotationSequence : public GTest {
     Q_OBJECT
-        SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationSequence, "check-annotation-sequence");
+        SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationSequence, "check-annotation-sequence")
 
     ReportResult report();
 
-private:    
+private:
     QString         seqPart;
     QString         seqCtxName;
     QString         aCtxName;
@@ -143,11 +143,11 @@ private:
 
 class GTest_CheckAnnotationQualifier : public GTest {
     Q_OBJECT
-    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationQualifier, "check-annotation-qualifier");
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationQualifier, "check-annotation-qualifier")
 
     ReportResult report();
 
-private:    
+private:
     QString        annCtxName;
     QString        qName;
     QString        qValue;
@@ -156,7 +156,7 @@ private:
 
 class GTest_CheckAnnotationQualifierIsAbsent : public GTest {
     Q_OBJECT
-    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationQualifierIsAbsent, "check-no-annotation-qualifier");
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationQualifierIsAbsent, "check-no-annotation-qualifier")
 
     ReportResult report();
 
@@ -168,7 +168,7 @@ private:
 
 class GTest_CheckAnnotationsNumInTwoObjects : public GTest {
     Q_OBJECT
-    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsNumInTwoObjects, "compare-annotations-num-in-two-objects");
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsNumInTwoObjects, "compare-annotations-num-in-two-objects")
 
     ReportResult report();
     bool compareNumObjects;
@@ -178,7 +178,7 @@ class GTest_CheckAnnotationsNumInTwoObjects : public GTest {
 
 class GTest_CheckAnnotationsLocationsInTwoObjects : public GTest {
     Q_OBJECT
-    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsLocationsInTwoObjects, "compare-annotations-locations-in-two-objects");
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsLocationsInTwoObjects, "compare-annotations-locations-in-two-objects")
 
     ReportResult report();
     bool compareNumObjects;
@@ -189,8 +189,8 @@ class GTest_CheckAnnotationsLocationsInTwoObjects : public GTest {
 // compare annotations that may be in different order in two docs
 class GTest_CheckAnnotationsLocationsAndNumReorderdered : public GTest {
     Q_OBJECT
-    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsLocationsAndNumReorderdered, "compare-annotations-locations-and-num-reordered");
-    
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsLocationsAndNumReorderdered, "compare-annotations-locations-and-num-reordered")
+
     ReportResult report();
     QString doc1CtxName;
     QString doc2CtxName;
@@ -198,7 +198,7 @@ class GTest_CheckAnnotationsLocationsAndNumReorderdered : public GTest {
 
 class GTest_CheckAnnotationsQualifiersInTwoObjects : public GTest {
     Q_OBJECT
-    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsQualifiersInTwoObjects, "compare-annotations-qualifiers-in-two-objects");
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsQualifiersInTwoObjects, "compare-annotations-qualifiers-in-two-objects")
 
     ReportResult report();
     QString docContextName;
@@ -207,7 +207,7 @@ class GTest_CheckAnnotationsQualifiersInTwoObjects : public GTest {
 
 class GTest_CheckAnnotationsNamesInTwoObjects : public GTest {
     Q_OBJECT
-    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsNamesInTwoObjects, "compare-annotations-names-in-two-objects");
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CheckAnnotationsNamesInTwoObjects, "compare-annotations-names-in-two-objects")
 
     ReportResult report();
     QString docContextName;
@@ -216,7 +216,7 @@ class GTest_CheckAnnotationsNamesInTwoObjects : public GTest {
 
 class GTest_CreateTmpAnnotationObject : public GTest {
     Q_OBJECT
-        SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CreateTmpAnnotationObject, "create-tmp-annotation-object");
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_CreateTmpAnnotationObject, "create-tmp-annotation-object")
 
     ReportResult report();
     void cleanup();

@@ -942,6 +942,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0007_2);
 
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0008);
+    REGISTER_TEST(GUITest_common_scenarios_annotations_qualifiers::test_0009);
+
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/smith_waterman_dialog
 /////////////////////////////////////////////////////////////////////////

@@ -854,7 +854,7 @@ static void prepareMultiline(QString& line, int spacesOnLineStart, bool lineBrea
                         skipLineBreak = true;
                     }
                 }
-                newLine.append(line.mid(pos, pos2 - pos + (int)(!lineBreakOnlyOnSpace || skipLineBreak)));
+                newLine.append(line.mid(pos, pos2 - pos + (!lineBreakOnlyOnSpace || skipLineBreak)));
             } else { //last line
                 newLine.append(line.mid(pos, len - pos));
             }

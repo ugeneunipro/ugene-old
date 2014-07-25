@@ -41,6 +41,11 @@ public:
     static Document* getDocument(U2OpStatus &os, const QString& documentName);
 
     static bool isDocumentLoaded(U2OpStatus &os, const QString& documentName);
+
+    static void saveDocument(U2OpStatus &os, const QString& documentName);
+    static void unloadDocument(U2OpStatus &os, const QString& documentName);
+    static void loadDocument(U2OpStatus &os, const QString& documentName);
+
 protected:
     static GObjectView* getDocumentGObjectView(U2OpStatus &os, Document* d);
 

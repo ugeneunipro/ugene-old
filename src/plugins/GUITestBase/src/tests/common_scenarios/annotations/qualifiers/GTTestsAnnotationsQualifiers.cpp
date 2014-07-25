@@ -635,5 +635,85 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "new_qualifier_1") != NULL, "Item qu not found in tree widget");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0008) {
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/", "1anot_1seq.gen");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    QString longQualifierValueNoSpaces =
+            QString("Most qualifier values will be a descriptive text phrase which must be enclosed ") +
+            QString("in double quotation marks. When the text occupies more than one line, a single ") +
+            QString("set of quotation marks is required at the beginning and at the end of the ") +
+            QString("text");
+
+    Runnable *filler = new EditQualifierFiller(os, "long", longQualifierValueNoSpaces);
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "add_qualifier_action"));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "long") != NULL, "Item long not found in tree widget1");
+
+    GTUtilsDocument::saveDocument(os, "1anot_1seq.gen");
+    GTUtilsDocument::unloadDocument(os, "1anot_1seq.gen");
+    GTUtilsDocument::loadDocument(os, "1anot_1seq.gen");
+
+    GTGlobals::sleep();
+
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
+    GTMouseDriver::click(os);
+
+    QTreeWidgetItem* qualifierTreeItem = GTUtilsAnnotationsTreeView::findItem(os, "long");
+    CHECK_SET_ERR(qualifierTreeItem->text(1) == longQualifierValueNoSpaces, "Different qualifier value!");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_REMOVE << "Selected annotations and qualifiers"));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "long"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsDocument::saveDocument(os, "1anot_1seq.gen");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0009) {
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/", "1anot_1seq.gen");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    QString longQualifierValueNoSpaces = "Mostqualifiervalueswillbeadescriptivetextphrasewhichmustbeenclosedindoublequotationmarks.";
+
+    Runnable *filler = new EditQualifierFiller(os, "noSpaces", longQualifierValueNoSpaces);
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "add_qualifier_action"));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "noSpaces") != NULL, "Item long not found in tree widget1");
+
+    GTUtilsDocument::saveDocument(os, "1anot_1seq.gen");
+    GTUtilsDocument::unloadDocument(os, "1anot_1seq.gen");
+    GTUtilsDocument::loadDocument(os, "1anot_1seq.gen");
+
+    GTGlobals::sleep();
+
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
+    GTMouseDriver::click(os);
+
+    QTreeWidgetItem* qualifierTreeItem = GTUtilsAnnotationsTreeView::findItem(os, "noSpaces");
+    CHECK_SET_ERR(qualifierTreeItem->text(1) == longQualifierValueNoSpaces, "Different qualifier value!");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_REMOVE << "Selected annotations and qualifiers"));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "noSpaces"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsDocument::saveDocument(os, "1anot_1seq.gen");
+}
+
 } // namespace GUITest_common_scenarios_annotations_qualifiers
 } // namespace U2

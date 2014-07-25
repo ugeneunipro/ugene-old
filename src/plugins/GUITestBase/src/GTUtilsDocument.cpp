@@ -26,6 +26,7 @@
 #include "api/GTMenu.h"
 #include "GTUtilsProjectTreeView.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/qt/MessageBoxFiller.h"
 
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Core/AppContext.h>
@@ -135,6 +136,50 @@ bool GTUtilsDocument::isDocumentLoaded(U2OpStatus &os, const QString& documentNa
     GT_CHECK_RESULT(d != NULL, "Document \"" + documentName + "\" is NULL", false);
 
     return static_cast<bool> (getDocumentGObjectView(os, d));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "saveDocument"
+void GTUtilsDocument::saveDocument(U2OpStatus &os, const QString &documentName) {
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__SAVE_DOCUMENT, GTGlobals::UseMouse);
+
+    GTUtilsDialog::waitForDialog(os, popupChooser);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTGlobals::sleep(500);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "unloadDocument"
+void GTUtilsDocument::unloadDocument(U2OpStatus &os, const QString &documentName) {
+    if (!isDocumentLoaded(os, documentName)) {
+        return;
+    }
+
+    Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__UNLOAD_SELECTED, GTGlobals::UseMouse);
+
+    MessageBoxDialogFiller *filler = new MessageBoxDialogFiller(os, "Yes");
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTUtilsDialog::waitForDialog(os, popupChooser);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTGlobals::sleep(500);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "loadDocument"
+void GTUtilsDocument::loadDocument(U2OpStatus &os, const QString &documentName) {
+    if (isDocumentLoaded(os, documentName)) {
+        return;
+    }
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName));
+    GTMouseDriver::doubleClick(os);
+
+    GTGlobals::sleep(500);
 }
 #undef GT_METHOD_NAME
 

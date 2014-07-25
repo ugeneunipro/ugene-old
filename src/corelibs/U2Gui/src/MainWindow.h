@@ -40,7 +40,7 @@ class QMenu;
 class QToolBar;
 class QMainWindow;
 
-// menu 
+// menu
 #define MWMENU                              "mw_menu_bar"
 #define MWMENU_FILE                         "mwmenu_file"
 #define MWMENU_ACTIONS                      "mwmenu_actions"
@@ -86,6 +86,7 @@ class QMainWindow;
 #define ACTION_PROJECT__UNLOAD_SELECTED             "action_project__unload_selected_action"
 #define ACTION_PROJECT__IMPORT_TO_DATABASE          "action_project__import_to_database"
 #define ACTION_PROJECT__CREATE_FOLDER               "action_project__create_folder"
+#define ACTION_PROJECT__SAVE_DOCUMENT               "action_prpject__save_document"
 
 #define ACTION_PROJECT__EDIT_MENU                   "action_project__edit_menu"
 
@@ -137,8 +138,8 @@ public:
     virtual MWMDIManager*           getMDIManager() const = 0;
     virtual MWDockManager*          getDockManager() const = 0;
     virtual NotificationStack*      getNotificationStack() const = 0;
-    
-    
+
+
 
     virtual void setWindowTitle(const QString& title) = 0;
 };
@@ -171,7 +172,7 @@ class U2GUI_EXPORT MWMDIManager : public QObject {
     Q_OBJECT
 public:
     MWMDIManager(QObject* p) : QObject(p){}
-    
+
     /** Adds the specified window to MainWindow layout and activates it. */
     virtual void addMDIWindow(MWMDIWindow* w) = 0;
 
@@ -191,7 +192,7 @@ signals:
     void si_windowActivated(MWMDIWindow* w);
     void si_windowDeactivated(MWMDIWindow* w);
 
-protected: 
+protected:
     /* returns true if the window agreed to close, false otherwise */
     bool onCloseEvent(MWMDIWindow* w) {return w->onCloseEvent();}
 };
@@ -210,7 +211,7 @@ class U2GUI_EXPORT MWDockManager: public QObject {
     Q_OBJECT
 public:
     MWDockManager(QObject* p) : QObject(p){}
-    
+
     virtual QAction* registerDock(MWDockArea area, QWidget* w, const QKeySequence& ks = QKeySequence()) = 0;
 
     virtual QWidget* findWidget(const QString& widgetObjName) = 0;
