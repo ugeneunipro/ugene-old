@@ -54,6 +54,8 @@ GCounter(name, suffix, scale) {
 }
 
 GCounterList::~GCounterList() {
+    return; // turned off to prevent crashes in release version (https://ugene.unipro.ru/tracker/browse/UGENE-3271)
+
     for (int i = 0; i < list.size(); i++) {
         if (list[i]->destroyMe) {
             delete list.takeAt(i);
