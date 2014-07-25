@@ -260,7 +260,8 @@ void CodonTableView::addItemToTable(int row, int column, const QString& text, co
 void CodonTableView::addItemToTable(int row, int column, DNACodon *codon) {
     CHECK(codon != NULL, )
     addItemToTable(row, column,
-                   codon->getFullName() + " (" + codon->getTreeLetterCode() + ")",
+                   codon->getFullName() + " (" + codon->getTreeLetterCode() +
+                   (codon->getFullName() != "Stop codon" ? QString(", ") + QChar(codon->getSymbol()) : "" ) + ")",
                    getColor(codon->getCodonGroup()),
                    codon->getLink());
 }
