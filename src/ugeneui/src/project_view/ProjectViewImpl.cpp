@@ -922,7 +922,7 @@ void ProjectViewImpl::buildRelocateMenu(QMenu* m) {
                 allWritableFormats.append(format);
             }
         }
-        foreach(DocumentFormat *f ,allWritableFormats){
+        foreach(DocumentFormat *f, allWritableFormats){
             const QSet<GObjectType>& supportedObjectTypes = f->getSupportedObjectTypes();
             bool allObjectsWitable = true;
             foreach(GObject *gobj, doc->getObjects()){
@@ -930,7 +930,7 @@ void ProjectViewImpl::buildRelocateMenu(QMenu* m) {
                      allObjectsWitable = false;
                 }
             }
-            if(allObjectsWitable){
+            if(allObjectsWitable && !ProjectUtils::isDatabaseDoc(doc)){
                 m->addAction(exportDocumentAction);
                 return;
             }

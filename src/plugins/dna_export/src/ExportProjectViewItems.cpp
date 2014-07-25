@@ -134,7 +134,16 @@ void ExportProjectViewItemsContoller::addExportImportMenu(QMenu& m) {
     assert(pv!=NULL);
     QMenu* sub = NULL;
 
-    MultiGSelection ms; ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
+    MultiGSelection ms;
+    ms.addSelection(pv->getGObjectSelection());
+    ms.addSelection(pv->getDocumentSelection());
+
+    foreach (Document *doc, pv->getDocumentSelection()->getSelectedDocuments()) {
+        if (Q_UNLIKELY(doc->isDatabaseConnection())) {
+            return;
+        }
+    }
+
     QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
     if (!set.isEmpty()) {
         sub = new QMenu(tr("Export/Import"));
