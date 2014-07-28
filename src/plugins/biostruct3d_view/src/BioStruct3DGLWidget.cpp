@@ -46,6 +46,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/DocumentModel.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Algorithm/StructuralAlignmentAlgorithm.h>
 #include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
@@ -348,8 +349,9 @@ void BioStruct3DGLWidget::setLightPosition( const Vector3D& pos )
 }
 
 static int getSequenceChainId(const U2SequenceObject* seqObj) {
-    int id = seqObj->getIntegerAttribute(DNAInfo::CHAIN_ID);
-    return id;
+    QVariantMap info = seqObj->getSequenceInfo();
+    SAFE_POINT(info.contains(DNAInfo::CHAIN_ID), "Sequence does not have the CHAIN_ID attribute", -1);
+    return seqObj->getIntegerAttribute(DNAInfo::CHAIN_ID);
 }
 
 void BioStruct3DGLWidget::sl_onSequenceSelectionChanged(LRegionsSelection *s, const QVector<U2Region> &added, const QVector<U2Region> &removed) {

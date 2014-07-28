@@ -286,7 +286,7 @@ void MysqlAttributeDbi::createStringAttribute(U2StringAttribute& a, U2OpStatus& 
     static const QString queryString("INSERT INTO StringAttribute(attribute, value) VALUES(:attribute, :value)");
     U2SqlQuery q(queryString, db, os);
     q.bindInt64("attribute", id);
-    q.bindString("value", a.value);
+    q.bindString("value", (a.value.isNull()) ? "" : a.value);
     q.execute();
 }
 
