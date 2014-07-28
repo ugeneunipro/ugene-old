@@ -47,6 +47,7 @@ DbiDocumentFormat::DbiDocumentFormat(const U2DbiFactoryId& _id, const DocumentFo
     supportedObjectTypes+=GObjectTypes::ASSEMBLY;
     formatFlags|=DocumentFormatFlag_NoPack;
     formatFlags|=DocumentFormatFlag_NoFullMemoryLoad;
+    formatFlags|=DocumentFormatFlag_DirectWriteOperations;
 }    
 
 
@@ -62,11 +63,10 @@ static void renameObjectsIfNamesEqual(QList<GObject*> & objs) {
     }
 }
 
-Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os){
-    Q_UNUSED(dbiRef);
+Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dstDbiRef, const QVariantMap& fs, U2OpStatus& os){
     //1. open db
     //2. read all objects
-    //3. if there is a DEEP_COPY_OBJECT hint, all objects are cloned to the db defined by DBI_REF_HINT value from hints
+    //3. if there is a DEEP_COPY_OBJECT hint, all objects are cloned to the db defined by dstDbiRef
     //3. close db
     QString url = io->getURL().getURLString();
     U2DbiRef srcDbiRef(id, url);
@@ -82,10 +82,9 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef,
     ref.dbiRef = srcDbiRef;
 
     objects << prepareObjects(handle, objectIds);
-    CHECK(!objects.isEmpty(), NULL);
 
     if (fs.value(DEEP_COPY_OBJECT, false).toBool()) {
-        QList<GObject *> clonedObjects = cloneObjects(objects, fs, os);
+        QList<GObject *> clonedObjects = cloneObjects(objects, dstDbiRef, fs, os);
         qDeleteAll(objects);
         CHECK_OP_EXT(os, qDeleteAll(clonedObjects), NULL);
         objects = clonedObjects;
@@ -93,7 +92,7 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef,
         renameObjectsIfNamesEqual(objects);
     }
     
-    Document* d = new Document(this, io->getFactory(), io->getURL(), objects.first()->getEntityRef().dbiRef, objects, fs);
+    Document* d = new Document(this, io->getFactory(), io->getURL(), dstDbiRef, objects, fs);
     d->setDocumentOwnsDbiResources(false);
 
     return d;
@@ -124,10 +123,8 @@ QList<GObject *> DbiDocumentFormat::prepareObjects(DbiConnection &handle, const 
     return objects;
 }
 
-QList<GObject *> DbiDocumentFormat::cloneObjects(const QList<GObject *> &srcObjects, const QVariantMap &hints, U2OpStatus &os) {
+QList<GObject *> DbiDocumentFormat::cloneObjects(const QList<GObject *> &srcObjects, const U2DbiRef &dstDbiRef, const QVariantMap &hints, U2OpStatus &os) {
     QList<GObject *> clonedObjects;
-
-    const U2DbiRef dstDbiRef = hints.value(DBI_REF_HINT).value<U2DbiRef>();
     CHECK_EXT(dstDbiRef.isValid(), os.setError(tr("Invalid destination database reference")), clonedObjects);
 
     int number = 0;
@@ -144,26 +141,29 @@ QList<GObject *> DbiDocumentFormat::cloneObjects(const QList<GObject *> &srcObje
     return clonedObjects;
 }
 
-void DbiDocumentFormat::storeDocument(Document* d, IOAdapter*, U2OpStatus& os) {
-    QString url = d->getURLString();
-    U2DbiRef dstDbiRef(id, url);
+void DbiDocumentFormat::storeDocument(Document* d, IOAdapter* ioAdapter, U2OpStatus& os) {
+    const QString url = ioAdapter->getURL().getURLString();
+
+    const U2DbiRef dstDbiRef(id, url);
     DbiConnection dstCon(dstDbiRef, true, os);
     CHECK_OP(os, );
+    Q_UNUSED(dstCon);
 
-    foreach (GObject *object, d->findGObjectByType(GObjectTypes::ASSEMBLY)) {
-        U2DbiRef srcDbiRef = object->getEntityRef().dbiRef;
-        if (srcDbiRef == dstDbiRef) { // do not need to import
+    foreach (GObject *object, d->getObjects()) {
+        if (!supportedObjectTypes.contains(object->getGObjectType())) {
             continue;
         }
-        AssemblyObject *srcObj = dynamic_cast<AssemblyObject*>(object);
-        CHECK_EXT(NULL != srcObj, os.setError("NULL source assembly object"), );
 
-        AssemblyObject::dbi2dbiClone(srcObj, dstDbiRef, os);
+        U2DbiRef srcDbiRef = object->getEntityRef().dbiRef;
+        if (srcDbiRef == dstDbiRef) {
+            // do not need to import
+            continue;
+        }
+
+        GObject *resultObject = object->clone(dstDbiRef, os);
         CHECK_OP(os, );
-    }
 
-    if (!os.isCoR()) {
-        dstCon.dbi->flush(os);
+        delete resultObject;
     }
 }
 

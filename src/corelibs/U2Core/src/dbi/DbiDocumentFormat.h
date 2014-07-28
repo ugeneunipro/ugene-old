@@ -47,7 +47,7 @@ protected:
     virtual Document* loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os);
 
     QList<GObject *> prepareObjects(DbiConnection &handle, const QList<U2DataId> &objectIds);
-    QList<GObject *> cloneObjects(const QList<GObject *> &srcObjects, const QVariantMap &hints, U2OpStatus &os);
+    QList<GObject *> cloneObjects(const QList<GObject *> &srcObjects, const U2DbiRef &dstDbiRef, const QVariantMap &hints, U2OpStatus &os);
 
 private:
     QString             formatName;

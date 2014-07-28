@@ -329,6 +329,7 @@ bool Document::_removeObject(GObject* obj, bool deleteObjects) {
     if (obj->entityRef.isValid()) {
         U2OpStatus2Log os;
         DbiConnection con(obj->entityRef.dbiRef, os);
+        SAFE_POINT_OP(os, false);
         if (con.dbi->getObjectDbi()->isObjectInUse(obj->entityRef.entityId, os)) {
             return false;
         }
@@ -657,7 +658,7 @@ bool Document::isDatabaseConnection() const {
 }
 
 void Document::setModified(bool modified, const QString& modType) {
-    CHECK(!isDatabaseConnection(), );
+    CHECK(!df->checkFlags(DocumentFormatFlag_DirectWriteOperations), );
     if (loadStateChangeMode && modified && modType == StateLockModType_AddChild) { //ignore modification events during loading/unloading
         return;
     }

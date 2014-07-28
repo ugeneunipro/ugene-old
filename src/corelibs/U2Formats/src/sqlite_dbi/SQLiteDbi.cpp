@@ -426,6 +426,12 @@ QVariantMap SQLiteDbi::shutdown(U2OpStatus& os) {
         return QVariantMap();
     }
 
+    if (!flush(os)) {
+        CHECK_OP(os, QVariantMap());
+        os.setError(U2DbiL10n::tr("Can't synchronize database state"));
+        return QVariantMap();
+    }
+
     udrDbi->shutdown(os);
     objectDbi->shutdown(os);
     sequenceDbi->shutdown(os);

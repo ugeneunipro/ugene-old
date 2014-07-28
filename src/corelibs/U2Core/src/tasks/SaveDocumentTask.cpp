@@ -112,6 +112,11 @@ void SaveDocumentTask::run() {
         ? originalFile.exists( ) && 0 != originalFile.size( )
         : false;
 
+    if (originalFileExists && df->checkFlags(DocumentFormatFlag_DirectWriteOperations)) {
+        // Changes are already applied, the file shouldn't be saved
+        return;
+    }
+
     if (url.isLocalFile() && originalFileExists) {
         // make tmp file
         QString tmpFileName = GUrlUtils::prepareTmpFileLocation(url.dirPath(), url.fileName(), "tmp", stateInfo);
@@ -129,7 +134,7 @@ void SaveDocumentTask::run() {
 
         // save document to tmp file, QScopedPointer will release file in destructor
         {
-            QScopedPointer<IOAdapter> io(IOAdapterUtils::open(GUrl(tmpFileName), stateInfo, flags.testFlag(SaveDoc_Append)? IOAdapterMode_Append: IOAdapterMode_Write));
+            QScopedPointer<IOAdapter> io(IOAdapterUtils::open(GUrl(tmpFileName), stateInfo, flags.testFlag(SaveDoc_Append) ? IOAdapterMode_Append: IOAdapterMode_Write));
             CHECK_OP(stateInfo, );
             df->storeDocument(doc, io.data(), stateInfo);
         }
@@ -147,7 +152,7 @@ void SaveDocumentTask::run() {
         CHECK_EXT(renamed == true, stateInfo.setError(tr("Can't rename saved tmp file to original file")), );
     }
     else {
-        QScopedPointer<IOAdapter> io(IOAdapterUtils::open(url, stateInfo, flags.testFlag(SaveDoc_Append)? IOAdapterMode_Append: IOAdapterMode_Write));
+        QScopedPointer<IOAdapter> io(IOAdapterUtils::open(url, stateInfo, flags.testFlag(SaveDoc_Append) ? IOAdapterMode_Append: IOAdapterMode_Write));
         CHECK_OP(stateInfo, );
         df->storeDocument(doc, io.data(), stateInfo);
     }

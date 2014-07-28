@@ -538,6 +538,14 @@ QVariantMap MysqlDbi::shutdown(U2OpStatus& os) {
     CHECK_EXT(state == U2DbiState_Ready,
                 db->handle.close();
               , QVariantMap());
+
+
+    if (!flush(os)) {
+        CHECK_OP(os, QVariantMap());
+        os.setError(U2DbiL10n::tr("Can't synchronize database state"));
+        return QVariantMap();
+    }
+
     QMutexLocker(&db->mutex);
 
     assemblyDbi->shutdown(os);
