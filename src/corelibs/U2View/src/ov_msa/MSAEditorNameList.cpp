@@ -126,7 +126,7 @@ QPixmap MSAEditorNameList::drawNames(const QList<qint64> &seqIdx, bool drawSelec
     for (qint64 i = 0; i < seqIdx.size(); i++) {
         SAFE_POINT(seqIdx[i] < seqNames.size(), tr("Invalid sequence index"), QPixmap());
         bool isSelected = drawSelection && isRowInSelection(seqIdx[i]);
-        drawSequenceItem(p, i, seqNames[ seqIdx[i] ], isSelected);
+        drawSequenceItem(p, i, getTextForRow(seqIdx[i]), isSelected);
     }
 
     return pixmap;
@@ -684,7 +684,7 @@ void MSAEditorNameList::drawContent(QPainter& p) {
             int end = qMin((qint64)numRows, r.endPos());
             for (int s = r.startPos; s < end; s++) {
                 bool isSelected = isRowInSelection(pos);
-                drawSequenceItem(p, s, al.getRow(s).getName(), isSelected, yRange, pos);
+                drawSequenceItem(p, s, getTextForRow(s), isSelected, yRange, pos);
                 yRange.startPos += ui->editor->getRowHeight();
                 pos++;
             }
@@ -692,7 +692,7 @@ void MSAEditorNameList::drawContent(QPainter& p) {
     } else {
         for (int s = startSeq; s <= lastSeq; s++) {
             bool isSelected = isRowInSelection(s);
-            drawSequenceItem(p, s, al.getRow(s).getName(), isSelected);
+            drawSequenceItem(p, s, getTextForRow(s), isSelected);
         }
     }
 }
