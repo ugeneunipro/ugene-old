@@ -560,8 +560,7 @@ void MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, con
     }
 
     //Use dots to draw regions, which are similar to reference sequence
-    bool useDots = useDotsAction->isChecked();
-    highlightingScheme->setUseDots(useDots);
+    highlightingScheme->setUseDots(useDotsAction->isChecked());
     //Highlighting scheme's settings
     QString schemeName = highlightingScheme->metaObject()->className();
     bool isGapsScheme = schemeName == "U2::MSAHighlightingSchemeGaps";
@@ -584,9 +583,7 @@ void MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, con
             if (isGapsScheme){
                 const char refChar = 'z';
                 bool drawColor = false;
-                if(useDots) {
-                    highlightingScheme->process(refChar, c, drawColor);
-                }
+                highlightingScheme->process(refChar, c, drawColor);
                 color = QColor(192, 192, 192);
                 if (color.isValid() && drawColor) {
                     p.fillRect(cr, color);
@@ -604,9 +601,7 @@ void MSAEditorSequenceArea::drawContent(QPainter &p, const U2Region &region, con
             }else{
                 const char refChar = r->charAt(pos);
                 bool drawColor = false;
-                if(useDots) {
-                    highlightingScheme->process(refChar, c, drawColor);
-                }
+                highlightingScheme->process(refChar, c, drawColor);
 
                 if(isGapsScheme){
                     color = QColor(192, 192, 192);
