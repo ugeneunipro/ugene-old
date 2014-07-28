@@ -42,7 +42,7 @@
 #include <U2Lang/WorkflowMonitor.h>
 
 #include "BwaSupport.h"
-#include "BwaWorker.h"
+#include "BwaMemWorker.h"
 #include "BwaTask.h"
 
 namespace U2 {

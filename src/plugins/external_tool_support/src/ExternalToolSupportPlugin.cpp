@@ -125,7 +125,7 @@
 #include "phyml/PhyMLSupport.h"
 #include "phyml/PhyMLTests.h"
 
-#include "bwa/BwaWorker.h"
+#include "bwa/BwaMemWorker.h"
 #include "bedtools/BedtoolsSupport.h"
 #include "bedtools/BedToolsWorkersLibrary.h"
 #include "bigWigTools/BigWigSupport.h"
