@@ -127,6 +127,11 @@ int main(int argc, char **argv)
     ServiceRegistryImpl* sreg = new ServiceRegistryImpl() ;
     appContext->setServiceRegistry(sreg);
 
+#ifdef OPENCL_SUPPORT
+    OpenCLGpuRegistry * oclgr = new OpenCLGpuRegistry();
+    appContext->setOpenCLGpuRegistry( oclgr );
+#endif
+
     registerCoreServices();
 
     //3 run QT 
