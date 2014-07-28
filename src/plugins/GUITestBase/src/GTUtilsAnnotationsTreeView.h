@@ -49,6 +49,8 @@ public:
 
     static QString getAVItemName(U2OpStatus &os, AVItem* avItem);
 
+    static QList<U2Region> getAnnotatedRegions(U2OpStatus &os);
+
     static const QString widgetName;
 };
 

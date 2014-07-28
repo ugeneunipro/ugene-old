@@ -160,8 +160,27 @@ QPoint GTUtilsAnnotationsTreeView::getItemCenter(U2OpStatus &os, const QString &
 
     return GTTreeWidget::getItemCenter(os, item);
 }
-
 #undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getAnnotatedRegions"
+QList<U2Region> GTUtilsAnnotationsTreeView::getAnnotatedRegions(U2OpStatus &os) {
+    QList<U2Region> res;
+
+    QTreeWidget *treeWidget = getTreeWidget(os);
+    GT_CHECK_RESULT(treeWidget != NULL, "Tree widget is NULL", res);
+
+    QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
+    foreach (QTreeWidgetItem* item, treeItems) {
+        AVAnnotationItem* annotationItem = static_cast<AVAnnotationItem*>(item);
+        CHECK_OPERATION(annotationItem != NULL, continue);
+
+        const Annotation ann = annotationItem->annotation;
+        res.append( ann.getRegions().toList() );
+    }
+    return res;
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }
