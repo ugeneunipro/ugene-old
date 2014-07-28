@@ -3453,45 +3453,67 @@ GUI_TEST_CLASS_DEFINITION(test_0038_4){
 //Expected state: tree appeared
 }
 
+void test_0039_function(U2OpStatus &os, int comboNum, QString extention){
+    //1. open document samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, GUITest::dataDir + "samples/CLUSTALW/", "COI.aln");
+
+    //2. Use project tree context menu->Export/Import->Export Nucleic Alignment to Amino Translation
+    //Expected state: Export Nucleic Alignment to Amino Translation dialog appeared
+    //3.Fill dialog:
+    //    File name: test/_common_data/scenarios/sandbox/transl.aln
+    //    File format: CLUSTALW(use other formats too, check extension change)
+    //    Amino translation: Standart genetic code
+    //    Add document to project: checked
+    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI"));
+    GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os, comboNum, GUITest::testDir + "_common_data/scenarios/sandbox/COI_transl.aln"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION<<ACTION_PROJECT__EXPORT_TO_AMINO_ACTION));
+    GTMouseDriver::click(os,Qt::RightButton);
+    GTGlobals::sleep(500);
+
+    //Expected state: transl.aln appeared in project
+    GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI_transl." + extention));
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_0039){
-    QMap<int,QString> extMap;
-    extMap[0] = "aln";
-    extMap[1] = "fa";
-    extMap[2] = "msf";
-    extMap[3] = "meg";
-    extMap[4] = "nex";
-    extMap[5] = "phy";
-    extMap[6] = "phy";
-    extMap[7] = "sto";
-//1. open document samples/CLUSTALW/COI.aln
-    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
-//2. Use project tree context menu->Export/Import->Export Nucleic Alignment to Amino Translation
-    for (int i=0; i<extMap.size(); i++){
-        GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI"));
-        if(i == 6){
-            GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os,i, testDir + "_common_data/scenarios/sandbox/COI_transl1.aln"));
-        }else{
-            GTUtilsDialog::waitForDialog(os, new ExportMSA2MSADialogFiller(os,i, testDir + "_common_data/scenarios/sandbox/COI_transl.aln"));
-        }
-        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION<<ACTION_PROJECT__EXPORT_TO_AMINO_ACTION));
-        GTMouseDriver::click(os,Qt::RightButton);
-        GTGlobals::sleep(500);
+//    QMap<int,QString> extMap;
+//    extMap[0] = "aln";
+//    extMap[1] = "fa";
+//    extMap[2] = "msf";
+//    extMap[3] = "meg";
+//    extMap[4] = "nex";
+//    extMap[5] = "phy";
+//    extMap[6] = "phy";
+//    extMap[7] = "sto";
+    test_0039_function(os, 0, "aln");
+}
 
-        if(i == 6){
-            GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI_transl1." + extMap[i]));
-        }else{
-            GTMouseDriver::moveTo(os,GTUtilsProjectTreeView::getItemCenter(os,"COI_transl." + extMap[i]));
-        }
-    }
-//Expected state: Export Nucleic Alignment to Amino Translation dialog appeared
+GUI_TEST_CLASS_DEFINITION(test_0039_1){
+    test_0039_function(os, 1, "fa");
+}
 
-//3.Fill dialog:
-//    File name: test/_common_data/scenarios/sandbox/transl.aln
-//    File format: CLUSTALW(use other formats too, check extension change)
-//    Amino translation: Standart genetic code
-//    Add document to project: checked
+GUI_TEST_CLASS_DEFINITION(test_0039_2){
+    test_0039_function(os, 2, "msg");
+}
 
-//Expected state: transl.aln appeared in project
+GUI_TEST_CLASS_DEFINITION(test_0039_3){
+    test_0039_function(os, 3, "meg");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0039_4){
+    test_0039_function(os, 4, "nex");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0039_5){
+    test_0039_function(os, 5, "phy");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0039_6){
+    test_0039_function(os, 6, "phy");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0039_7){
+    test_0039_function(os, 7, "sto");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0040){//UGENE crashes when opening several files

@@ -662,7 +662,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_3);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0038_4);
 
-    REGISTER_TEST_IGNORED_MAC(GUITest_common_scenarios_msa_editor::test_0039, "https://ugene.unipro.ru/tracker/browse/UGENE-3219");
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039_1);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039_2);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039_3);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039_4);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039_5);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039_6);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0039_7);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0040);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0041);
 
