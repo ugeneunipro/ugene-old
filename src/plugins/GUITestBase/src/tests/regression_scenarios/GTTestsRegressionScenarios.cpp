@@ -2196,14 +2196,14 @@ GUI_TEST_CLASS_DEFINITION( test_2049 ){
     GTWidget::click(os, GTWidget::findWidget(os, "AminoToolbarButton"));
     GTGlobals::sleep(500);
     QWidget* w = GTWidget::findWidget(os, "Codon table widget");
-    int ititHeight = GTWidget::findWidget(os, "Leucine (Leu)",w)->geometry().height();
+    int ititHeight = GTWidget::findWidget(os, "Leucine (Leu, L)",w)->geometry().height();
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"3. The Yeast Mitochondrial Code"));
     GTWidget::click(os, GTWidget::findWidget(os, "AminoToolbarButton"));
     GTGlobals::sleep(500);
 
     w = GTWidget::findWidget(os, "Codon table widget");
-    int finalHeight = GTWidget::findWidget(os, "Leucine (Leu)",w)->geometry().height();
+    int finalHeight = GTWidget::findWidget(os, "Leucine (Leu, L)",w)->geometry().height();
     CHECK_SET_ERR(ititHeight != finalHeight, "codone table not changed");
     }
 
@@ -3027,7 +3027,7 @@ GUI_TEST_CLASS_DEFINITION( test_2172 ) {
         "searchIdsButton" ) );
     CHECK_SET_ERR( NULL != fetchButton, "Cannot find the \"Fetch IDs\" button" );
     fetchButton->click( );
-    GTGlobals::sleep( 200 );
+    GTGlobals::sleep( 2000 );
 
     // 5. Check error message in log
     CHECK_SET_ERR( logTracer.hasError( ), "Error message expected in log" );
