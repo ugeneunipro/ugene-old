@@ -194,7 +194,7 @@ void PhyMLLogParser::parseErrOutput(const QString& partOfLog){
 }
 int PhyMLLogParser::getProgress(){
     SAFE_POINT(sequencesNumber > 0, tr("UGENE internal error"), 0);
-    return (processedBranches * 100) / sequencesNumber;
+    return qMin((processedBranches * 100) / sequencesNumber, 99);
 }
 
 PhyMLGetCalculatedTreeTask::PhyMLGetCalculatedTreeTask(const QString& url)
