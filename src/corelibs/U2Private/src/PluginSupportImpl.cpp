@@ -537,13 +537,20 @@ void VerifyPluginTask::run() {
     Settings* settings = AppContext::getSettings();
 
     QString executableDir = AppContext::getWorkingDirectoryPath();
-    QString openclCheckerDir = executableDir + "/plugins_checker";
+    QString openclCheckerPath = executableDir + "/plugins_checker";
     if(Version::appVersion().debug) {
-        openclCheckerDir += 'd';
+        openclCheckerPath += 'd';
     }
+    #ifdef Q_OS_WIN
+        openclCheckerPath += ".exe";
+    #endif
 
+    if(!QFileInfo(openclCheckerPath).exists()) {
+        coreLog.error(QString("Can not find file: \"%1\"").arg(openclCheckerPath));
+        return;
+    }
     proc = new QProcess();
-    proc->start(openclCheckerDir, QStringList());
+    proc->start(openclCheckerPath, QStringList());
     
     int elapsedTime = 0;
     while(!proc->waitForFinished(1000) && elapsedTime < timeOut) {
