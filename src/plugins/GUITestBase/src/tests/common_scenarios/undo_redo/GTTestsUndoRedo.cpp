@@ -35,6 +35,7 @@ k
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
+#include "GTUtilsTaskTreeView.h"
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
@@ -778,11 +779,9 @@ GUI_TEST_CLASS_DEFINITION(test_0011_1){//Kalign undo test
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"align_with_kalign", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os,100));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
-#ifdef Q_OS_MAC
-    GTGlobals::sleep(10000);
-#else
-    GTGlobals::sleep(3000);
-#endif
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     QString changedAln = GTClipboard::text(os);
     CHECK_SET_ERR(changedAln==expectedAln, "Unexpected alignment" + changedAln);

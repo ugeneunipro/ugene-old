@@ -1321,7 +1321,7 @@ GUI_TEST_CLASS_DEFINITION(test_1786){
     // 3. Fill resource id: 1CRN. Press ok
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "1CRN", 7));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
-    GTGlobals::sleep(8000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state: document P01542_das.gb appeared in project
     GTUtilsProjectTreeView::findIndex(os, "P01542_das.gb");
     }
