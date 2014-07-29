@@ -42,12 +42,13 @@ MSAOverviewImageExportToBitmapTask::MSAOverviewImageExportToBitmapTask(MSASimple
 {
     SAFE_POINT_EXT(simpleOverview != NULL, setError(tr("Overview is NULL")), );
     SAFE_POINT_EXT(graphOverview != NULL, setError(tr("Graph overview is NULL")), );
+    CHECK_EXT( overviewSettings.exportGraphOverview || overviewSettings.exportSimpleOverview,
+            setError(tr("Nothing to export. ") + EXPORT_FAIL_MESSAGE.arg(settings.fileName)), );
 }
 
 void MSAOverviewImageExportToBitmapTask::run() {
     SAFE_POINT_EXT( settings.isBitmapFormat(),
                     setError(WRONG_FORMAT_MESSAGE.arg(settings.format).arg("MSAOverviewImageExportToBitmapTask")), );
-
     QPixmap pixmap(settings.imageSize.width(), settings.imageSize.height());
     QPainter p(&pixmap);
 
@@ -73,6 +74,7 @@ MSAOverviewImageExportTaskFactory::MSAOverviewImageExportTaskFactory(MSASimpleOv
 {
     SAFE_POINT(simpleOverview != NULL, QObject::tr("Overview is NULL"), );
     SAFE_POINT(graphOverview != NULL, QObject::tr("Graph overview is NULL"), );
+    shortDescription = tr("Alignment overview");
     initSettingsWidget();
 }
 
@@ -94,8 +96,11 @@ int MSAOverviewImageExportTaskFactory::getImageHeight() const {
 Task* MSAOverviewImageExportTaskFactory::getExportToBitmapTask(const ImageExportTaskSettings &settings) const {
     MSAOverviewImageExportSettings overviewSettings(exportSimpleOverview->isChecked(),
                                                     exportGraphOverview->isChecked());
+    // overview has fixed size
+    ImageExportTaskSettings copySettings = settings;
+    copySettings.imageSize = QSize(getImageWidth(), getImageHeight());
     return new MSAOverviewImageExportToBitmapTask(simpleOverview, graphOverview,
-                                                  overviewSettings, settings);
+                                                  overviewSettings, copySettings);
 }
 
 void MSAOverviewImageExportTaskFactory::initSettingsWidget() {
