@@ -3493,7 +3493,7 @@ GUI_TEST_CLASS_DEFINITION(test_0039_1){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0039_2){
-    test_0039_function(os, 2, "msg");
+    test_0039_function(os, 2, "msf");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0039_3){
