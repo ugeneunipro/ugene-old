@@ -52,6 +52,10 @@ echo copying console binary
 cp "$RELEASE_DIR/ugenecl.app/Contents/MacOS/ugenecl" "$TARGET_EXE_DIR"
 changeCoreInstallNames ugenecl
 
+echo copying plugin checker binary
+cp "$RELEASE_DIR/plugins_checker" "$TARGET_EXE_DIR"
+changeCoreInstallNames plugins_checker
+
 cp ./ugene "$TARGET_EXE_DIR"
 
 echo Copying core shared libs
@@ -132,7 +136,7 @@ done
 
 echo
 echo macdeployqt running...
-macdeployqt "$TARGET_APP_DIR" -executable="$TARGET_EXE_DIR"/ugenecl -executable="$TARGET_EXE_DIR"/ugenem
+macdeployqt "$TARGET_APP_DIR" -executable="$TARGET_EXE_DIR"/ugenecl -executable="$TARGET_EXE_DIR"/ugenem -executable="$TARGET_EXE_DIR"/plugins_checker
 
 # Do not use @loader_path that produced by macdeployqt with "-executable" argument,
 # it cause a crash with plugins loading (UGENE-2994)

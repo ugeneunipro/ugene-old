@@ -53,6 +53,10 @@ echo copying console binary
 cp "$DEBUG_DIR/ugenecld.app/Contents/MacOS/ugenecld" "$TARGET_EXE_DIR"
 changeCoreInstallNames ugenecld
 
+echo copying plugin checker binary
+cp "$DEBUG_DIR/plugins_checkerd" "$TARGET_EXE_DIR"
+changeCoreInstallNames plugins_checkerd
+
 echo Copying core shared libs
 
 add-library U2Algorithm
