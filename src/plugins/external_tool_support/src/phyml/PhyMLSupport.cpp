@@ -27,7 +27,7 @@
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 namespace U2 {
 
-const QString PhyMLSupport::PhyMlRegistryId("PhyML");
+const QString PhyMLSupport::PhyMlRegistryId("PhyML Maximum Likelihood");
 const QString PhyMLSupport::PhyMlTempDir("phyml");
 
 PhyMLSupport::PhyMLSupport(const QString& name) : ExternalTool(name)
@@ -41,7 +41,7 @@ PhyMLSupport::PhyMLSupport(const QString& name) : ExternalTool(name)
 #ifdef Q_OS_WIN
     executableFileName = "PhyML.exe";
 #elif defined(Q_OS_LINUX) || defined(Q_OS_MAC)
-    executableFileName = "PhyML";
+    executableFileName = "phyml";
 #endif
 
     validationArguments << "--help";
