@@ -40,6 +40,8 @@ public:
     // finds a window with a given window title in MDIManager windows
     // fails if windowName is empty or because of FindOptions settings
     static QWidget* findWindow(U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+
+    static bool closeWindow(U2OpStatus &os, const QString& windowName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 };
 
 } // namespace

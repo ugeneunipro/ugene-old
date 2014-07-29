@@ -43,7 +43,7 @@ public:
     static bool isDocumentLoaded(U2OpStatus &os, const QString& documentName);
 
     static void saveDocument(U2OpStatus &os, const QString& documentName);
-    static void unloadDocument(U2OpStatus &os, const QString& documentName);
+    static void unloadDocument(U2OpStatus &os, const QString& documentName, bool waitForMessageBox = true);
     static void loadDocument(U2OpStatus &os, const QString& documentName);
 
 protected:

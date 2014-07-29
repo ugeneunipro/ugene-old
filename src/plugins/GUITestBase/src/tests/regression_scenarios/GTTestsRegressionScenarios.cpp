@@ -4806,6 +4806,80 @@ GUI_TEST_CLASS_DEFINITION(test_2903) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3052) {
+//    1. Open "_common_data/bam/chrM.sorted.bam".
+//    Expected state: an "Import BAM file" dialog appears.
+
+//    2. Import the assembly somewhere to the "1.ugenedb" file.
+//    Expected state: the assembly is imported, a view opens.
+
+//    3. Close the view.
+//    4. Open "_common_data/bam/scerevisiae.bam".
+//    Expected state: an "Import BAM file" dialog appears.
+
+//    5. Select the same file as for "chrM.sorted.bam". Try to start import.
+//    Expected state: a message box appears, it allows to replace the file, to append appent to the file or to cancel operation.
+
+//    6. Select the "Append" option.
+//    Expected state: the assembly is imported, a view opens.
+
+//    7. Remove the the first assembly object from the document in the project view.
+//    Expected state: the object is removed, there is no errors in the log.
+
+//    8. Remove the document from the project view (or just unload it - test_3052_1). Open it again.
+//    Expected state: there is one assembly object in it.
+
+    GTLogTracer l;
+
+    QString ugenedbFileName = testDir + "_common_data/scenarios/sandbox/test_3052.ugenedb";
+    QString docName = "test_3052.ugenedb";
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, ugenedbFileName));
+    GTFileDialog::openFile( os, testDir + "_common_data/bam", "chrM.sorted.bam" );
+
+    GTUtilsMdi::closeWindow(os, "test_3052 [as] chrM");
+
+    GTUtilsDialog::waitForDialog( os, new MessageBoxDialogFiller( os, "Append" ) );
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, ugenedbFileName));
+    GTFileDialog::openFile( os, testDir + "_common_data/bam", "scerevisiae.bam" );
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "chrM"));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::removeDocument(os, docName);
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/sandbox", "test_3052.ugenedb" );
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3052_1) {
+    GTLogTracer l;
+
+    QString ugenedbFileName = testDir + "_common_data/scenarios/sandbox/test_3052.ugenedb";
+    QString docName = "test_3052.ugenedb";
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, ugenedbFileName));
+    GTFileDialog::openFile( os, testDir + "_common_data/bam", "chrM.sorted.bam" );
+
+    GTUtilsMdi::closeWindow(os, "test_3052 [as] chrM");
+
+    GTUtilsDialog::waitForDialog( os, new MessageBoxDialogFiller( os, "Append" ) );
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, ugenedbFileName));
+    GTFileDialog::openFile( os, testDir + "_common_data/bam", "scerevisiae.bam" );
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "chrM"));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    GTUtilsDocument::unloadDocument(os, docName, false);
+    GTGlobals::sleep();
+    GTUtilsDocument::loadDocument(os, docName);
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3074) {
 //    Disconnect from the shared database with opened msa from this database
 

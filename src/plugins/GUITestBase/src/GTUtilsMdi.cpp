@@ -106,6 +106,22 @@ QWidget* GTUtilsMdi::findWindow(U2OpStatus &os, const QString& windowName, const
 }
 #undef GT_METHOD_NAME
 
+
+#define GT_METHOD_NAME "closeWindow"
+bool GTUtilsMdi::closeWindow(U2OpStatus &os, const QString &windowName, const GTGlobals::FindOptions& options) {
+    GT_CHECK_RESULT(windowName.isEmpty() == false, "windowname is empty", false);
+
+    MainWindow* mw = AppContext::getMainWindow();
+    GT_CHECK_RESULT(mw != NULL, "MainWindow == NULL", false);
+
+    MWMDIManager* manager = mw->getMDIManager();
+    MWMDIWindow* window = qobject_cast<MWMDIWindow*>(findWindow(os, windowName, options));
+    GT_CHECK_RESULT(window != NULL, "Cannot find MDI window", false);
+    return manager->closeMDIWindow( window );
+}
+
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "activeWindow"
 QWidget* GTUtilsMdi::activeWindow(U2OpStatus &os, const GTGlobals::FindOptions& options) {
 

@@ -152,15 +152,15 @@ void GTUtilsDocument::saveDocument(U2OpStatus &os, const QString &documentName) 
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "unloadDocument"
-void GTUtilsDocument::unloadDocument(U2OpStatus &os, const QString &documentName) {
-    if (!isDocumentLoaded(os, documentName)) {
-        return;
-    }
+void GTUtilsDocument::unloadDocument(U2OpStatus &os, const QString &documentName, bool waitForMessageBox) {
+    GT_CHECK_RESULT( isDocumentLoaded(os, documentName), "Document is not loaded", );
 
     Runnable *popupChooser = new PopupChooser(os, QStringList() << ACTION_PROJECT__UNLOAD_SELECTED, GTGlobals::UseMouse);
 
-    MessageBoxDialogFiller *filler = new MessageBoxDialogFiller(os, "Yes");
-    GTUtilsDialog::waitForDialog(os, filler);
+    if (waitForMessageBox) {
+        MessageBoxDialogFiller *filler = new MessageBoxDialogFiller(os, "Yes");
+        GTUtilsDialog::waitForDialog(os, filler);
+    }
 
     GTUtilsDialog::waitForDialog(os, popupChooser);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName));
@@ -172,9 +172,7 @@ void GTUtilsDocument::unloadDocument(U2OpStatus &os, const QString &documentName
 
 #define GT_METHOD_NAME "loadDocument"
 void GTUtilsDocument::loadDocument(U2OpStatus &os, const QString &documentName) {
-    if (isDocumentLoaded(os, documentName)) {
-        return;
-    }
+    GT_CHECK_RESULT( !isDocumentLoaded(os, documentName), "Document is loaded", );
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, documentName));
     GTMouseDriver::doubleClick(os);
