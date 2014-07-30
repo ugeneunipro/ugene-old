@@ -24,6 +24,7 @@
 
 #include <U2Gui/ImageExportTask.h>
 
+class QComboBox;
 class QCheckBox;
 namespace U2 {
 
@@ -84,6 +85,9 @@ class CircularViewImageExportTaskFactory : public ImageExportTaskFactory {
 public:
     CircularViewImageExportTaskFactory(CircularView *cv);
 
+    CircularViewImageExportTaskFactory(const QList<CircularView*> &list,
+                                       CircularView* defaultCV = NULL);
+
     int getImageWidth() const;
     int getImageHeight() const;
 
@@ -95,10 +99,15 @@ protected:
     Task* getExportToBitmapTask(const ImageExportTaskSettings &settings) const;
 
 private:
-    CircularView *cvWidget;
+    void updateCvWidget() const;
+
+    mutable CircularView*   cvWidget;
+    QList<CircularView*>    cvList;
 
     QCheckBox*      includeMarkerCheckbox;
     QCheckBox*      includeSelectionCheckbox;
+
+    QComboBox*      sequenceComboBox;
 };
 
 } // namespace

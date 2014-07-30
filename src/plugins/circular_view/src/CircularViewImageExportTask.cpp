@@ -22,12 +22,19 @@
 #include "CircularViewImageExportTask.h"
 #include "CircularView.h"
 
-#include <QtGui/QCheckBox>
-#include <QtGui/QVBoxLayout>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPrinter>
+#include <QtGui/QLabel>
+#include <QtGui/QCheckBox>
+#include <QtGui/QComboBox>
+#include <QtGui/QVBoxLayout>
 #else
 #include <QtPrintSupport/QPrinter>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QVBoxLayout>
 #endif
 #include <QtXml/QDomDocument>
 #include <QtSvg/QSvgGenerator>
@@ -119,6 +126,21 @@ CircularViewImageExportTaskFactory::CircularViewImageExportTaskFactory(CircularV
     : ImageExportTaskFactory(),
       cvWidget(cv)
 {
+    SAFE_POINT( cv != NULL, "Circular View is NULL!", );
+    shortDescription = QObject::tr("Circular view");
+    initSettingsWidget();
+}
+
+CircularViewImageExportTaskFactory::CircularViewImageExportTaskFactory(const QList<CircularView *> &list,
+                                                                       CircularView* defaultCV)
+    : ImageExportTaskFactory(),
+      cvWidget(defaultCV),
+      cvList(list) {
+    SAFE_POINT( !list.isEmpty(), tr("List of Circular Views is empty!"), );
+    if (defaultCV == NULL) {
+        cvWidget = list.first();
+    }
+
     shortDescription = QObject::tr("Circular view");
     initSettingsWidget();
 }
@@ -133,6 +155,27 @@ int CircularViewImageExportTaskFactory::getImageHeight() const {
 
 void CircularViewImageExportTaskFactory::initSettingsWidget() {
     QVBoxLayout* layout = new QVBoxLayout();
+
+    if (cvList.size() > 1) {
+        QLabel* label = new QLabel(tr("Sequence"));
+        sequenceComboBox = new QComboBox();
+        foreach(CircularView* cv, cvList) {
+            SAFE_POINT( cv->getSequenceContext() != NULL, tr("Sequence context is NULL!"), );
+            SAFE_POINT( cv->getSequenceContext()->getSequenceGObject() != NULL, tr("Sequece Gobject is NULL"), );
+            QString seqName = cv->getSequenceContext()->getSequenceGObject()->getGObjectName();
+            sequenceComboBox->addItem(seqName);
+            if (cv == cvWidget) {
+                sequenceComboBox->setCurrentIndex( sequenceComboBox->count() - 1 );
+            }
+        }
+        sequenceComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
+        QHBoxLayout* seqLayout = new QHBoxLayout();
+        seqLayout->addWidget(label);
+        seqLayout->addWidget(sequenceComboBox);
+
+        layout->addLayout(seqLayout);
+    }
 
     includeMarkerCheckbox = new QCheckBox(QObject::tr("Include position marker"));
     includeSelectionCheckbox = new QCheckBox(QObject::tr("Include selection"));
@@ -150,17 +193,27 @@ void CircularViewImageExportTaskFactory::initSettingsWidget() {
 Task* CircularViewImageExportTaskFactory::getExportToSVGTask(const ImageExportTaskSettings &settings) const {
     CircularViewImageExportSettings cvSettings(includeMarkerCheckbox->isChecked(),
                                                includeSelectionCheckbox->isChecked());
+    updateCvWidget();
     return new CircularViewImageExportToSVGTask(cvWidget, cvSettings, settings);
 }
 Task* CircularViewImageExportTaskFactory::getExportToPDFTask(const ImageExportTaskSettings &settings) const {
     CircularViewImageExportSettings cvSettings(includeMarkerCheckbox->isChecked(),
                                                includeSelectionCheckbox->isChecked());
+    updateCvWidget();
     return new CircularViewImageExportToPDFTask(cvWidget, cvSettings, settings);
 }
 Task* CircularViewImageExportTaskFactory::getExportToBitmapTask(const ImageExportTaskSettings &settings) const {
     CircularViewImageExportSettings cvSettings(includeMarkerCheckbox->isChecked(),
                                                includeSelectionCheckbox->isChecked());
+    updateCvWidget();
     return new CircularViewImageExportToBitmapTask(cvWidget, cvSettings, settings);
+}
+
+void CircularViewImageExportTaskFactory::updateCvWidget() const {
+    if (cvList.size() > 1) {
+        SAFE_POINT(sequenceComboBox != NULL, "Sequence combo box is NULL", );
+        cvWidget = cvList[ sequenceComboBox->currentIndex() ];
+    }
 }
 
 } // namespace

@@ -209,12 +209,23 @@ bool noValidExtension(const QString& url) {
 }
 
 void CircularViewSplitter::sl_export() {
-    CircularView* cv = circularViewList.last();
-    SAFE_POINT(cv->getSequenceContext() != NULL, tr("Sequence context is NULL"), );
-    U2SequenceObject* seqObj = cv->getSequenceContext()->getSequenceObject();
+    CircularView* cvInFocus = NULL;
+    foreach(CircularView* cv, circularViewList) {
+        if (cv->hasFocus()) {
+            cvInFocus = cv;
+            break;
+        }
+    }
+    if (cvInFocus == NULL) {
+        cvInFocus = circularViewList.last();
+    }
+
+    SAFE_POINT(cvInFocus->getSequenceContext() != NULL, tr("Sequence context is NULL"), );
+    U2SequenceObject* seqObj = cvInFocus->getSequenceContext()->getSequenceObject();
     SAFE_POINT(seqObj != NULL, tr("Sequence obejct is NULL"), );
 
-    CircularViewImageExportTaskFactory factory(cv);
+    CircularViewImageExportTaskFactory factory(circularViewList, cvInFocus);
+
     ExportImageDialog dialog(&factory, ExportImageDialog::CircularView,
                              ExportImageDialog::Resizable,
                              ExportImageDialog::SupportVectorFormats,
