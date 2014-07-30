@@ -99,12 +99,8 @@ void MSAEditorTreeViewer::setSynchronizationMode(SynchronizationMode newSyncMode
             connect(treeViewerUI, SIGNAL(si_groupColorsChanged(const GroupColorSchema&)), msaUI->getEditorNameList(), SLOT(sl_onGroupColorsChanged(const GroupColorSchema&)));
             //connect(msa, SIGNAL(si_sizeChanged(int, bool, bool)), treeViewerUI, SLOT(sl_onHeightChanged(int, bool, bool)));
 
-            connect(treeViewerUI,               SIGNAL(si_treeZoomedIn()),
-                    msa,                        SLOT(sl_zoomIn()));
             connect(msa,                        SIGNAL(si_referenceSeqChanged(qint64)),
                     treeViewerUI,               SLOT(sl_onReferenceSeqChanged(qint64)));
-            connect(treeViewerUI,               SIGNAL(si_treeZoomedOut()),
-                    msa,                        SLOT(sl_zoomOut()));
             connect(msaUI->getSequenceArea(),   SIGNAL(si_visibleRangeChanged(QStringList, int)),
                     treeViewerUI,               SLOT(sl_onVisibleRangeChanged(QStringList, int)));
 
@@ -187,13 +183,12 @@ void MSAEditorTreeViewerUI::wheelEvent(QWheelEvent *we ) {
         TreeViewerUI::wheelEvent(we);
         return;
     }
+    bool toMin = we->delta() > 0;
+    QScrollBar* hScrollBar = horizontalScrollBar();
+    if(NULL != hScrollBar) {
+        hScrollBar->triggerAction(toMin ? QAbstractSlider::SliderSingleStepSub : QAbstractSlider::SliderSingleStepAdd);
+    }
     we->accept();
-    if(0 < we->delta() && !hasMaxSize) {
-        emit si_treeZoomedIn();
-    }
-    if(0 > we->delta() && !hasMinSize) {
-        emit si_treeZoomedOut();
-    }
 }
 
 void MSAEditorTreeViewerUI::mouseMoveEvent(QMouseEvent *me) {

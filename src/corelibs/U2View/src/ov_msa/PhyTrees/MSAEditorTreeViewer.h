@@ -128,8 +128,6 @@ protected:
 signals:
     void si_collapseModelChangedInTree(const QList<QStringList>&);
     void si_seqOrderChanged(QStringList* order);
-    void si_treeZoomedIn();
-    void si_treeZoomedOut();
     void si_groupColorsChanged(const GroupColorSchema& schema);
 public slots:
     void sl_sortAlignment();
