@@ -177,12 +177,16 @@ void MSASimpleOverview::drawOverview(QPainter &p) {
             }
 
             bool drawColor = true;
+            qint64 refId = editor->getReferenceRowId();
+            if (refId != MAlignmentRow::invalidRowId()) {
+                refId = refId - 1;
+            }
             drawColor = MSAHighlightingOverviewCalculationTask::isCellHighlighted(
                         mAlignmentObj,
                         highlightingScheme,
                         colorScheme,
                         seq, pos,
-                        editor->getReferenceRowId() - 1);
+                        refId);
 
             if (color.isValid() && drawColor) {
                 p.fillRect(rect, color);
