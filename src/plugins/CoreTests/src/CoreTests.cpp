@@ -42,6 +42,7 @@
 #include "FindAlgorithmTests.h"
 #include "FormatDetectionTests.h"
 #include "PingRemoteServiceTests.h"
+#include "TextObjectTests.h"
 
 #include "EditAlignmentTests.h"
 #include "SMatrixTests.h"
@@ -152,6 +153,8 @@ void CoreTests::registerFactories() {
 
     // Automatic format detection tests
     registerFactory<FormatDetectionTests>(xmlTestFormat);
+
+    registerFactory<TextObjectTests>(xmlTestFormat);
 }
 
 }//namespace

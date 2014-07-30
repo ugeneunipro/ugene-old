@@ -3,6 +3,7 @@ include (CoreTests.pri)
 # Input
 HEADERS += src/AnnotationTableObjectTest.h \
            src/AsnParserTests.h \
+           src/BinaryFindOpenCLTests.h \
            src/BioStruct3DObjectTests.h \
            src/CMDLineTests.h \
            src/CoreTests.h \
@@ -12,40 +13,41 @@ HEADERS += src/AnnotationTableObjectTest.h \
            src/DocumentModelTests.h \
            src/EditAlignmentTests.h \
            src/EditSequenceTests.h \
+           src/FindAlgorithmTests.h \
+           src/FormatDetectionTests.h \
+           src/GUrlTests.h \
            src/LoadDASDocumentTests.h \
            src/LoadRemoteDocumentTests.h \
-           src/PhyTreeObjectTests.h \
            src/PWMatrixTests.h \
+           src/PhyTreeObjectTests.h \
+           src/PingRemoteServiceTests.h \
+           src/SMatrixTests.h \
            src/SecStructPredictTests.h \
            src/SequenceWalkerTests.h \
-           src/SMatrixTests.h \
            src/TaskTests.h \
-           src/BinaryFindOpenCLTests.h \
-           src/GUrlTests.h \
-           src/FindAlgorithmTests.h \
-           src/PingRemoteServiceTests.h \
-           src/FormatDetectionTests.h
+           src/TextObjectTests.h
 SOURCES += src/AnnotationTableObjectTest.cpp \
            src/AsnParserTests.cpp \
+           src/BinaryFindOpenCLTests.cpp \
            src/BioStruct3DObjectTests.cpp \
            src/CMDLineTests.cpp \
            src/CoreTests.cpp \
-           src/DnaAssemblyTests.cpp \
            src/DNASequenceObjectTests.cpp \
            src/DNATranslationImplTests.cpp \
+           src/DnaAssemblyTests.cpp \
            src/DocumentModelTests.cpp \
            src/EditAlignmentTests.cpp \
            src/EditSequenceTests.cpp \
+           src/FindAlgorithmTests.cpp \
+           src/FormatDetectionTests.cpp \
+           src/GUrlTests.cpp \
            src/LoadDASDocumentTests.cpp \
            src/LoadRemoteDocumentTests.cpp \
-           src/PhyTreeObjectTests.cpp \
            src/PWMatrixTests.cpp \
+           src/PhyTreeObjectTests.cpp \
+           src/PingRemoteServiceTests.cpp \
+           src/SMatrixTests.cpp \
            src/SecStructPredictTests.cpp \
            src/SequenceWalkerTests.cpp \
-           src/SMatrixTests.cpp \
            src/TaskTests.cpp \
-           src/BinaryFindOpenCLTests.cpp \
-           src/GUrlTests.cpp \
-           src/FindAlgorithmTests.cpp \
-           src/PingRemoteServiceTests.cpp \
-           src/FormatDetectionTests.cpp
+           src/TextObjectTests.cpp
