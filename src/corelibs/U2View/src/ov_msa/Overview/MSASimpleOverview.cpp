@@ -182,7 +182,7 @@ void MSASimpleOverview::drawOverview(QPainter &p) {
                         highlightingScheme,
                         colorScheme,
                         seq, pos,
-                        editor->getReferenceRowId());
+                        editor->getReferenceRowId() - 1);
 
             if (color.isValid() && drawColor) {
                 p.fillRect(rect, color);
