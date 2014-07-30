@@ -72,7 +72,7 @@ void MysqlSingleTableAssemblyAdapter::createReadsTables(U2OpStatus& os) {
     // mq - mapping quality
     // data - packed data: CIGAR, read sequence, quality string
     static QString q = "CREATE TABLE IF NOT EXISTS %1 (id BIGINT PRIMARY KEY AUTO_INCREMENT, name BIGINT NOT NULL, prow BIGINT NOT NULL, "
-        "gstart BIGINT NOT NULL, elen BIGINT NOT NULL, flags BIGINT NOT NULL, mq TINYINT NOT NULL, data LONGBLOB NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+        "gstart BIGINT NOT NULL, elen BIGINT NOT NULL, flags BIGINT NOT NULL, mq TINYINT UNSIGNED NOT NULL, data LONGBLOB NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
     U2SqlQuery(q.arg(readsTable), db, os).execute();
 }
