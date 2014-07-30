@@ -296,6 +296,7 @@ bool SharedConnectionsDialog::checkDatabaseAvailability(const U2DbiRef &ref, boo
                               tr("Connection Error"),
                               tr("Unable to connect to the database:\n"
                                  "check the connection settings"));
+        coreLog.details(tr("Can't connect to the shared databse: ") + os.getError());
         return false;
     }
 
