@@ -22,6 +22,8 @@
 #include "MSASimpleOverview.h"
 #include "MSAGraphCalculationTask.h"
 
+#include <U2Core/U2OpStatusUtils.h>
+
 #include <U2View/MSAColorScheme.h>
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
@@ -157,6 +159,9 @@ void MSASimpleOverview::drawOverview(QPainter &p) {
 
     MAlignmentObject* mAlignmentObj = editor->getMSAObject();
     SAFE_POINT(NULL != mAlignmentObj, tr("Incorrect multiple alignment object!"), );
+    MAlignment mAlignment = mAlignmentObj->getMAlignment();
+
+    U2OpStatusImpl os;
     for (int seq = 0; seq < editor->getNumSequences(); seq++) {
         for (int pos = 0; pos < editor->getAlignmentLen(); pos++) {
             QRect rect;
@@ -177,16 +182,18 @@ void MSASimpleOverview::drawOverview(QPainter &p) {
             }
 
             bool drawColor = true;
+            int refPos = -1;;
             qint64 refId = editor->getReferenceRowId();
             if (refId != MAlignmentRow::invalidRowId()) {
-                refId = refId - 1;
+                refPos = mAlignment.getRowIndexByRowId(refId, os);
+                SAFE_POINT_OP(os, );
             }
             drawColor = MSAHighlightingOverviewCalculationTask::isCellHighlighted(
                         mAlignmentObj,
                         highlightingScheme,
                         colorScheme,
                         seq, pos,
-                        refId);
+                        refPos);
 
             if (color.isValid() && drawColor) {
                 p.fillRect(rect, color);
