@@ -556,6 +556,7 @@ void GSequenceLineViewAnnotatedRenderArea::drawCutSites( QPainter &p ){
     foreach(const CutSiteDrawData &data, cutsiteDataList) {
         drawCutSite(p, data.r, data.color, data.pos, data.direct);
     }
+    cutsiteDataList.clear();
 }
 
 void GSequenceLineViewAnnotatedRenderArea::drawAnnotationsSelection( QPainter &p ) {

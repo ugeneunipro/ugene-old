@@ -368,6 +368,7 @@ void DetViewRenderArea::drawAll(QPaintDevice* pd) {
     bool hasSelectedAnnotationInRange = isAnnotationSelectionInVisibleRange();
 
     if (completeRedraw) {
+        cutsiteDataList.clear();
         QPainter pCached(cachedView); 
         pCached.fillRect(0, 0, pd->width(), pd->height(), Qt::white);
         pCached.setPen(Qt::black);
