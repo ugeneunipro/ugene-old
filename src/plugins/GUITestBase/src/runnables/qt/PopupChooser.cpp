@@ -20,8 +20,11 @@
  */
 
 #include "PopupChooser.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
+
+#include <U2Core/U2OpStatusUtils.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -39,6 +42,11 @@ void PopupChooser::run()
     GTMouseDriver::release(os);
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
     GTMenu::clickMenuItemByName(os, activePopupMenu, namePath, useMethod);
+    if (os.hasError()) {
+        U2OpStatus2Log opStatus;
+        GTKeyboardDriver::keyClick(opStatus, GTKeyboardDriver::key["esc"]);
+        SAFE_POINT_OP(opStatus, );
+    }
 }
 
 void PopupChooserbyText::run()

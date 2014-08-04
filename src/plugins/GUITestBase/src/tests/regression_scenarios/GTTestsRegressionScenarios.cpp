@@ -5033,6 +5033,21 @@ GUI_TEST_CLASS_DEFINITION(test_3209_2) {
     CHECK_SET_ERR(found, "Can not find the blast result");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3250) {
+    //1. Connect to a shared database.
+    //2. Right click on the document in the project view.
+    //Expected: there are no the "Export/Import" menu for the database connection.
+    GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+    CHECK_OP(os, );
+    QPoint p = GTUtilsProjectTreeView::getItemCenter(os, "ugene_gui_test");
+    CHECK_OP(os, );
+    GTMouseDriver::moveTo(os, p);
+    U2OpStatus2Log opStatus;
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(opStatus, QStringList() << "Export/Import"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    CHECK_SET_ERR(opStatus.hasError(), "Export item exists");
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
