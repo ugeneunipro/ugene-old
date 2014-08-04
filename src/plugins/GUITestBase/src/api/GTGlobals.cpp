@@ -34,11 +34,31 @@
 #include <QtWidgets/QDesktopWidget>
 #endif
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+
 namespace U2 {
+namespace {
+    void sysSleep(int sec) {
+#ifdef Q_OS_WIN
+        Sleep(1000*sec);
+#else
+        sleep(sec);
+#endif
+    }
+}
 
 void GTGlobals::sleep(int msec) {
     QTest::qWait((msec));
 }
+
+void GTGlobals::systemSleep(int sec) {
+    sysSleep(sec);
+}
+
 
 void GTGlobals::sendEvent(QObject *obj, QEvent *e) {
     QSpontaneKeyEvent::setSpontaneous(e);

@@ -100,6 +100,7 @@ public:
     };
 
     static void sleep(int msec = 2000);
+    static void systemSleep(int sec = 2);
     static void sendEvent(QObject *obj, QEvent *e);
     static void takeScreenShot(QString path);
     static void GUITestFail();

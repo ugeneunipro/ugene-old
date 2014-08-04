@@ -4979,6 +4979,26 @@ GUI_TEST_CLASS_DEFINITION(test_3170) {
     CHECK_SET_ERR(!found2, "Wrong blast result");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3180) {
+    //1. Open "samples/FASTA/human_T1.fa".
+    //2. Click the "Find restriction sites" button on the main toolbar.
+    //3. Accept the dialog.
+    //Expected: the task becomes cancelled.
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
+    GTWidget::click(os, GTWidget::findWidget(os, "AutoAnnotationUpdateAction"));
+    GTGlobals::systemSleep();
+    foreach (Task *task, AppContext::getTaskScheduler()->getTopLevelTasks()) {
+        if (task->getTaskName() != "Auto-annotations update task") {
+            continue;
+        }
+        GTGlobals::systemSleep();
+        task->cancel();
+    }
+    GTGlobals::sleep();
+    CHECK_SET_ERR(AppContext::getTaskScheduler()->getTopLevelTasks().isEmpty(), "Task is not cancelled");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3209_1) {
     // BLAST+ from file
     BlastAllSupportDialogFiller::Parameters blastParams;
