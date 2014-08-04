@@ -169,4 +169,42 @@ void SelectSubalignmentFiller::run() {
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+ImageExportFormFiller::ImageExportFormFiller(U2OpStatus &os, const Parameters &parameters)
+: Filler(os, "ImageExportForm"), parameters(parameters)
+{
+
+}
+
+#define GT_CLASS_NAME "GTUtilsDialog::ImageExportFormFiller"
+#define GT_METHOD_NAME "run"
+
+void ImageExportFormFiller::run() {
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QCheckBox* export_msa_simple_overview = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "export_msa_simple_overview", dialog));
+    GT_CHECK(export_msa_simple_overview, "export_msa_simple_overview is NULL");
+    GTCheckBox::setChecked(os, export_msa_simple_overview, parameters.simpleOverviewChecked);
+
+    QCheckBox* export_msa_graph_overview = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "export_msa_graph_overview", dialog));
+    GT_CHECK(export_msa_graph_overview, "export_msa_graph_overview is NULL");
+    GTCheckBox::setChecked(os, export_msa_graph_overview, parameters.graphOverviewChecked);
+
+    QLineEdit* fileNameEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "fileNameEdit", dialog));
+    GT_CHECK(fileNameEdit, "fileNameEdit is NULL");
+    GTLineEdit::setText(os, fileNameEdit, parameters.fileName);
+
+    QComboBox* formatsBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "formatsBox", dialog));
+    GT_CHECK(formatsBox, "formatsBox is NULL");
+    GTComboBox::setIndexWithText(os, formatsBox, parameters.format);
+
+    QDialogButtonBox* box = dialog->findChild<QDialogButtonBox*>("buttonBox");
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* ok = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(ok !=NULL, "ok button is NULL");
+    GTWidget::click(os, ok);
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
 }

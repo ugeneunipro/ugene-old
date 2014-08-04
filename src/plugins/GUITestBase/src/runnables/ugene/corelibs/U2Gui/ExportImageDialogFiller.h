@@ -105,6 +105,30 @@ namespace U2 {
     private:
         RegionMsa   msaRegion;
     };
+
+class ImageExportFormFiller : public Filler {
+public:
+    class Parameters {
+    public:
+        Parameters():
+            simpleOverviewChecked(true),
+            graphOverviewChecked(true),
+            fileName(""),
+            format("png"){}
+
+        bool simpleOverviewChecked;
+        bool graphOverviewChecked;
+        QString fileName;
+        QString format;
+    };
+
+    ImageExportFormFiller(U2OpStatus &os, const Parameters &parameters);
+    void run();
+
+private:
+    Parameters parameters;
+};
+
 }
 
 #endif //_U2_GT_RUNNABLES_EXPORT_IMAGE_DIALOG_FILLER_H_

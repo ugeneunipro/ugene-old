@@ -66,6 +66,7 @@
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
@@ -5046,6 +5047,26 @@ GUI_TEST_CLASS_DEFINITION(test_3250) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(opStatus, QStringList() << "Export/Import"));
     GTMouseDriver::click(os, Qt::RightButton);
     CHECK_SET_ERR(opStatus.hasError(), "Export item exists");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3287) {
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    CHECK_OP(os, );
+
+    ImageExportFormFiller::Parameters params;
+    params.graphOverviewChecked = false;
+    params.fileName = testDir + "_common_data/scenarios/sandbox/test_3287.bmp";
+    params.format = "bmp";
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export as image"));
+    GTUtilsDialog::waitForDialog(os, new ImageExportFormFiller(os, params));
+
+    QWidget *overview = GTWidget::findWidget(os, "msa_overview_area_graph");
+    CHECK_OP(os, );
+    GTWidget::click(os, overview, Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    QImage image(params.fileName);
+    CHECK_SET_ERR(70 == image.height(), "Wrong image height");
 }
 
 } // GUITest_regression_scenarios namespace
