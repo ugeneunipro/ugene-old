@@ -5049,6 +5049,51 @@ GUI_TEST_CLASS_DEFINITION(test_3250) {
     CHECK_SET_ERR(opStatus.hasError(), "Export item exists");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3277){
+//    Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    QWidget* seqArea = GTWidget::findWidget(os, "msa_editor_sequence_area");
+    QColor before = GTWidget::getColor(seqArea, QPoint(1,1));
+    QString bName = before.name();
+//    Open the "Highlighting" options panel tab.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+//    Set any reference sequence.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-5, 5));
+    GTWidget::click(os, GTWidget::findWidget(os, "addSeq"));
+//    Select different highlighting schemes.
+    QComboBox* highlightingScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
+    GTComboBox::setIndexWithText(os, highlightingScheme, "Gaps");
+//    Current state: the highlighting doesn't work for all sequences except the reference sequence.
+
+    QColor after = GTWidget::getColor(seqArea, QPoint(1,1));
+    QString aName = after.name();
+
+    CHECK_SET_ERR(before != after, "colors not changed");
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3279){
+//    Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    Open "Statistics" options panel tab.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_SEQ_STATISTICS_WIDGET"));
+//    Set any reference sequence.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-5, 5));
+    GTWidget::click(os, GTWidget::findWidget(os, "addSeq"));
+//    Set "Show distances column" option.
+    QCheckBox* showDistancesColumnCheck = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "showDistancesColumnCheck"));
+    GTCheckBox::setChecked(os, showDistancesColumnCheck, true);
+//    Expected state: the addition column is shown, it contains distances to the reference sequence.
+    QString num1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 1);
+    QString num3 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 3);
+    CHECK_SET_ERR(num1 == "19%", "unexpected sumilarity value an line 1: " + num1);
+    CHECK_SET_ERR(num3 == "11%", "unexpected sumilarity value an line 3: " + num3);
+//    Current state: the addition column is shown, it contains sequence names.
+
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3287) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
     CHECK_OP(os, );
