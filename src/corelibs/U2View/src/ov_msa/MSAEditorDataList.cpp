@@ -60,6 +60,7 @@ MSAEditorSimilarityColumn::MSAEditorSimilarityColumn(MSAEditorUI* ui, QScrollBar
 : MSAEditorNameList(ui, nhBar), algo(NULL), autoUpdate(true) {
     newSettings = curSettings = *_settings;
     updateDistanceMatrix();
+    setObjectName("msa_editor_similarity_column");
 }
 
 MSAEditorSimilarityColumn::~MSAEditorSimilarityColumn() {

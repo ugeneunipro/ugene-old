@@ -82,6 +82,7 @@ public:
 };
 
 class MSAEditorSimilarityColumn : public MSAEditorNameList, public UpdatedWidgetInterface {
+    friend class GTUtilsMSAEditorSequenceArea;
     Q_OBJECT
 public:
     MSAEditorSimilarityColumn(MSAEditorUI* ui, QScrollBar* nhBar, const SimilarityStatisticsSettings* _settings);

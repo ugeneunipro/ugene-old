@@ -39,6 +39,7 @@ public:
     // MSAEditorNameList
     static QStringList getNameList(U2OpStatus &os);
     static QStringList getVisibaleNames(U2OpStatus &os);
+    static QString getSimilarityValue(U2OpStatus &os, int row);
 
     static int getLeftOffset(U2OpStatus &os);
     static int getRightOffset(U2OpStatus &os);

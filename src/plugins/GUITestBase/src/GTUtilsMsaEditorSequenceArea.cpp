@@ -20,6 +20,7 @@
  */
 
 #include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorDataList.h>
 #include <U2Core/AppContext.h>
 
 #include "GTUtilsMdi.h"
@@ -178,7 +179,7 @@ QStringList GTUtilsMSAEditorSequenceArea::getNameList(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "getNameList"
+#define GT_METHOD_NAME "getVisibaleNames"
 QStringList GTUtilsMSAEditorSequenceArea::getVisibaleNames(U2OpStatus &os){
     QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
     MSAEditor* editor = mw->findChild<MSAEditor*>();
@@ -200,6 +201,17 @@ QStringList GTUtilsMSAEditorSequenceArea::getVisibaleNames(U2OpStatus &os){
     }
 
     return visiableRowNames;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getSimilarityValue"
+QString GTUtilsMSAEditorSequenceArea::getSimilarityValue(U2OpStatus &os, int row){
+    //bad sulution, but better then nothing
+    MSAEditorSimilarityColumn* simCol = qobject_cast<MSAEditorSimilarityColumn*>(GTWidget::findWidget(os, "msa_editor_similarity_column"));
+    GT_CHECK_RESULT(simCol != NULL, "SimilarityColumn is NULL", "");
+
+    return simCol->getTextForRow(row);
+
 }
 #undef GT_METHOD_NAME
 
