@@ -192,6 +192,9 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     WorkflowProcessItem *newScript = GTUtilsWorkflowDesigner::getWorker(os, "workflow_scripting_test_0004");
     QString newText = newScript->getProcess()->getScript()->getScriptText();
     CHECK_SET_ERR(text == newText, "Different script text");
+    GTGlobals::sleep();
+
+    QFile::remove(dataDir + "workflow_samples/users/workflow_scripting_test_0004.usa");
 }
 
 } // GUITest_common_scenarios_workflow_scripting
