@@ -207,7 +207,7 @@ QStringList GTUtilsMSAEditorSequenceArea::getVisibaleNames(U2OpStatus &os){
 #define GT_METHOD_NAME "getSimilarityValue"
 QString GTUtilsMSAEditorSequenceArea::getSimilarityValue(U2OpStatus &os, int row){
     //bad sulution, but better then nothing
-    MSAEditorSimilarityColumn* simCol = qobject_cast<MSAEditorSimilarityColumn*>(GTWidget::findWidget(os, "msa_editor_similarity_column"));
+    MSAEditorSimilarityColumn* simCol = dynamic_cast<MSAEditorSimilarityColumn*>(GTWidget::findWidget(os, "msa_editor_similarity_column"));
     GT_CHECK_RESULT(simCol != NULL, "SimilarityColumn is NULL", "");
 
     return simCol->getTextForRow(row);
