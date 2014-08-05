@@ -102,7 +102,7 @@ bool SwissProtPlainTextFormat::readIdLine(ParserState* s) {
         return false;
     }
     s->entry->tags.insert(DNAInfo::LOCUS, qVariantFromValue<DNALocusInfo>(loi));
-    
+
     return true;
 }
 
@@ -376,7 +376,7 @@ SharedAnnotationData SwissProtPlainTextFormat::readAnnotation(IOAdapter* io, cha
             valQStr.append(QString::fromLatin1(cbuff).split(QRegExp("\\n")).takeAt(0).mid(34));
         }else{
             for (; QN_COL < len && TextUtils::LINE_BREAKS[(uchar)cbuff[len-1]]; len--){}; //remove line breaks
-            int flen = len + readMultilineQualifier(io, cbuff, READ_BUFF_SIZE-len, len == maxAnnotationLineLen, len);
+            int flen = len + readMultilineQualifier(io, cbuff, READ_BUFF_SIZE-len, len == maxAnnotationLineLen, len, si);
             //now the whole feature is in cbuff
             int valStart = A_COL + 1;
             for (; valStart < flen && cbuff[valStart] != '='; valStart++){}; //find '==' and valStart

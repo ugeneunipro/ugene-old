@@ -641,13 +641,15 @@ static void writeQualifier(const QString& name, const QString& val, IOAdapter* i
     if (num) {
         qstr = "/"+name+ "="+val;
     } else {
+        QString modifiedVal = val;
+        modifiedVal.replace("\"", "\"\"");
         if (GBFeatureUtils::isFeatureHasNoValue(name))
         {
             qstr = "/" + name;
         }
         else
         {
-            qstr = "/" + name + "=\"" + val + "\"";
+            qstr = "/" + name + "=\"" + modifiedVal + "\"";
         }
     }
     prepareMultiline(qstr, 21, !qstr.startsWith("/translation")); // (qualifier name != translation) --> break line only on space

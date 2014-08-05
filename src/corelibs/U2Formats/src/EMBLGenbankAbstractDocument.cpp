@@ -394,13 +394,18 @@ static int numQuotesInLine(char* cbuff, int len){
     int pos = 0;
     int numQuotes = 0;
     while((pos = line.indexOf('\"',pos+1)) != -1){
-         numQuotes++;
+        if ( line[pos + 1] == '\"') { // skip ""
+            pos++;
+            continue;
+        }
+        numQuotes++;
     }
     return numQuotes;
 }
 
 //TODO: make it IO active -> read util the end. Otherwise qualifier is limited in size by maxSize
-int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbuff, int maxSize, bool _prevLineHasMaxSize, int lenFirstLine) {
+int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbuff, int maxSize, bool _prevLineHasMaxSize, int lenFirstLine,
+                                                        U2OpStatus& os) {
     int len = 0;
     bool lineOk = true;
     static const int MAX_LINE = 256;
@@ -459,6 +464,12 @@ int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbu
         len+=lineLen-A_COL;
         breakWords = breakWords || lineLen < maxAnnotationLineLen;
     } while (true);
+
+    if (numQuotes != 2 && numQuotes != 0) {
+        os.setError(tr("The file contains an incorrect data that describes a qualifier value. ") +
+                    tr("The value cannot contain a single quote character. The qualifier is \'%1\'").arg(QByteArray(cbuff - lenFirstLine, len + lenFirstLine).data()));
+        return 0;
+    }
     return len;
 }
 
@@ -530,7 +541,7 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
     a->name = key;
 
     //qualifier starts on offset 22;
-    int qlen = len + readMultilineQualifier(io, cbuff, READ_BUFF_SIZE - len, true,len);
+    int qlen = len + readMultilineQualifier(io, cbuff, READ_BUFF_SIZE - len, true, len, si);
     if (qlen < 21) {
         si.setError(EMBLGenbankAbstractDocument::tr("Error parsing location"));
         return SharedAnnotationData();
@@ -569,7 +580,7 @@ SharedAnnotationData EMBLGenbankAbstractDocument::readAnnotation(IOAdapter* io, 
         }
         for (; QN_COL < len && LINE_BREAKS[(uchar)cbuff[len-1]]; len--){}; //remove line breaks
 
-        int flen = len + readMultilineQualifier(io, cbuff, READ_BUFF_SIZE-len, len >= maxAnnotationLineLen,len);
+        int flen = len + readMultilineQualifier(io, cbuff, READ_BUFF_SIZE-len, len >= maxAnnotationLineLen, len, si);
         //now the whole feature is in cbuff
         int valStart = A_COL + 1;
         for (; valStart < flen && cbuff[valStart] != '='; valStart++){}; //find '==' and valStart
