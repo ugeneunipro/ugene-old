@@ -475,7 +475,6 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
     QList<QUrl> files;
     files << testDir + "_common_data/fasta/DNA.fa";
     files << testDir + "_common_data/fasta/DNA_1_seq.fa";
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
     GTSequenceReadingModeDialog::mode = GTSequenceReadingModeDialog::Merge;
     GTUtilsProject::openFiles(os, files);
 
@@ -483,8 +482,6 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
     CHECK_SET_ERR(2249 == length, QString("Sequence length mismatch. Expected: %1. Actual: %2").arg(2249).arg(length));
 
     QString mergedFileName = testDir + "_common_data/fasta/merged_document.gb";
-
-    GTGlobals::sleep(10000);
     QFile::remove(mergedFileName);
     GTGlobals::sleep();
 }
