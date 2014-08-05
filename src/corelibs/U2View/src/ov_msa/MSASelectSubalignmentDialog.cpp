@@ -21,6 +21,7 @@
 
 #include "MSASelectSubalignmentDialog.h"
 #include "MSAEditor.h"
+#include <U2Gui/HelpButton.h>
 
 #include <QtGui/QCheckBox>
 #include <QtGui/QMessageBox>
@@ -35,6 +36,7 @@ SelectSubalignmentDialog::SelectSubalignmentDialog(MSAEditorUI *ui, QWidget *p)
     SAFE_POINT(ui->getEditor() != NULL, tr("MSA Editor is NULL"), );
 
     setupUi(this);
+    new HelpButton(this, buttonBox, "4227488");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Select"));
 
     connect(allButton, SIGNAL(clicked()), SLOT(sl_allButtonClicked()));
