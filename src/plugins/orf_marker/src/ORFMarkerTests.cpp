@@ -44,7 +44,6 @@ namespace U2 {
 #define ALT_INIT_ATTR "allow_alt_init_codons"
 #define TRANSLATION_ID_ATTR "translation_id"
 #define EXPECTED_RESULTS_ATTR  "expected_results"
-#define CIRCULAR_ATTR  "circular_search"
 
 Translator::Translator(const U2SequenceObject *s, const QString& tid) : seq(s), complTransl(NULL), aminoTransl(NULL) {
     const DNAAlphabet* al = seq->getAlphabet();
@@ -160,13 +159,6 @@ void GTest_ORFMarkerTask::init(XMLTestFormat *tf, const QDomElement& el) {
         return;
     }
 
-    QString circularSearch = el.attribute(CIRCULAR_ATTR);
-    if (circularSearch == "true") {
-        settings.circularSearch = true;
-    } else{
-        settings.circularSearch = false;
-    }
-
     settings.maxResult2Search = INT_MAX;
 
     QString strTranslationId = el.attribute(TRANSLATION_ID_ATTR);
@@ -185,7 +177,7 @@ void GTest_ORFMarkerTask::init(XMLTestFormat *tf, const QDomElement& el) {
 void GTest_ORFMarkerTask::prepare() {
     U2SequenceObject * mySequence = getContext<U2SequenceObject>(this, seqName);
     CHECK_EXT(mySequence != NULL, setError("Can't cast to sequence from GObject"), );
-    
+
     Translator tr(mySequence, translationId);
     settings.complementTT = tr.getComplTranslation();
     settings.proteinTT = tr.getAminoTranslation();

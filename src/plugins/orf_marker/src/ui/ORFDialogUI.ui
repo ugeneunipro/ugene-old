@@ -304,13 +304,6 @@ p, li { white-space: pre-wrap; }
                </widget>
               </item>
               <item>
-               <widget class="QCheckBox" name="ckCircularSearch">
-                <property name="text">
-                 <string>Circular Search</string>
-                </property>
-               </widget>
-              </item>
-              <item>
                <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <property name="sizeConstraint">
                  <enum>QLayout::SetMinimumSize</enum>
@@ -459,6 +452,12 @@ p, li { white-space: pre-wrap; }
          <property name="rootIsDecorated">
           <bool>false</bool>
          </property>
+         <attribute name="headerDefaultSectionSize">
+          <number>150</number>
+         </attribute>
+         <attribute name="headerMinimumSectionSize">
+          <number>150</number>
+         </attribute>
          <column>
           <property name="text">
            <string>Region</string>

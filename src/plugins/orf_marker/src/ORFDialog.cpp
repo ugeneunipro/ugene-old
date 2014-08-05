@@ -34,6 +34,7 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/L10n.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2View/AutoAnnotationUtils.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -62,7 +63,7 @@ Q_DECLARE_METATYPE(QAction *)
 
 namespace U2 {
 
-/* TRANSLATOR U2::ORFDialog */ 
+/* TRANSLATOR U2::ORFDialog */
 
 
 class ORFListItem : public QTreeWidgetItem {
@@ -75,7 +76,7 @@ public:
 
 
 ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
-: QDialog(_ctx->getAnnotatedDNAView()->getWidget()) 
+: QDialog(_ctx->getAnnotatedDNAView()->getWidget())
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "4227619");
@@ -84,7 +85,7 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
 
     ctx = _ctx;
     task = NULL;
-    
+
     initSettings();
 
     qint64 seqLen = ctx->getSequenceLength();
@@ -98,7 +99,7 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
 
     timer = new QTimer(this);
 
-    
+
     connectGUI();
     updateState();
 
@@ -109,7 +110,7 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
         transCombo->addItem(a->text(), qVariantFromValue<QAction*>(a));
         if (a->isChecked()) transCombo->setCurrentIndex(transCombo->count()-1);
     }
-    connect(transCombo, SIGNAL(currentIndexChanged ( int )), SLOT(sl_translationChanged()));    
+    connect(transCombo, SIGNAL(currentIndexChanged ( int )), SLOT(sl_translationChanged()));
     sl_translationChanged();
 
     createAnnotationWidget();
@@ -167,7 +168,7 @@ void ORFDialog::sl_translationChanged() {
         + "<tr><td>" + tr("Alternative start codons") + "&nbsp;&nbsp;&nbsp;</td><td><b>" + altStarts + "</b></td></tr>"
         + "<tr><td>" + tr("Stop codons") + "&nbsp;&nbsp;&nbsp;</td><td><b>" + stopCodons + "</b></td></tr>"
         + "</table>";
-    
+
     codonsView->setText(text);
 }
 
@@ -175,7 +176,7 @@ void ORFDialog::connectGUI() {
     //buttons
     connect(pbClearList, SIGNAL(clicked()), SLOT(sl_onClearList()));
     connect(pbFindAll, SIGNAL(clicked()), SLOT(sl_onFindAll()));
-    
+
     //results list
     connect(resultsTree, SIGNAL(itemActivated(QTreeWidgetItem*, int)), SLOT(sl_onResultActivated(QTreeWidgetItem*, int)));
 
@@ -189,11 +190,11 @@ void ORFDialog::updateState() {
 
     bool hasResults = resultsTree->topLevelItemCount() > 0;
     pbClearList->setEnabled(hasResults);
-    
+
     pbFindAll->setEnabled(!hasActiveTask);
     pbClearList->setEnabled(!hasActiveTask);
     buttonBox->setEnabled(!hasActiveTask);
-    
+
     rbBoth->setEnabled(!hasActiveTask && hasCompl);
     rbDirect->setEnabled(!hasActiveTask);
     rbComplement->setEnabled(!hasActiveTask && hasCompl);
@@ -261,7 +262,7 @@ U2Region ORFDialog::getCompleteSearchRegion(bool *ok) const{
 
 void ORFDialog::runTask() {
     assert(task == NULL);
-    
+
     ORFAlgorithmSettings s;
     getSettings(s);
     if(!isRegionOk){
@@ -270,7 +271,7 @@ void ORFDialog::runTask() {
     }
 
     task = new ORFFindTask(s, ctx->getSequenceObject()->getEntityRef());
-    
+
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     updateState();
     timer->start(400);
@@ -331,7 +332,7 @@ void ORFDialog::accept()
     if (task!=NULL) {
         task->cancel();
     }
-    
+
     ORFAlgorithmSettings s;
     getSettings(s);
     if(!isRegionOk){
@@ -339,6 +340,7 @@ void ORFDialog::accept()
         return;
     }
     ORFSettingsKeys::save(s, AppContext::getSettings());
+
     if (ac->useAutoAnnotationModel()) {
         AutoAnnotationUtils::triggerAutoAnnotationsUpdate(ctx, ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
     } else {
@@ -346,7 +348,7 @@ void ORFDialog::accept()
         if (!err.isEmpty()) {
             QMessageBox::warning(this, tr("Error"), err);
             return;
-        } 
+        }
         bool objectPrepared = ac->prepareAnnotationObject();
         if (!objectPrepared){
             QMessageBox::warning(this, tr("Error"), tr("Cannot create an annotation object. Please check settings"));
@@ -373,7 +375,6 @@ void ORFDialog::initSettings()
     ckOverlap->setChecked(s.allowOverlap);
     sbMinLen->setValue(s.minLen);
     ckIncStopCodon->setChecked(s.includeStopCodon);
-    ckCircularSearch->setChecked(s.circularSearch);
     maxResultField->setValue(s.maxResult2Search);
     maxResult->setChecked(s.isResultsLimited);
     if (s.strand == ORFAlgorithmStrand_Direct) {
@@ -396,18 +397,20 @@ void ORFDialog::getSettings(ORFAlgorithmSettings& s)
     s.allowAltStart = ckAlt->isChecked();
     s.allowOverlap = ckOverlap->isChecked();
     s.includeStopCodon = ckIncStopCodon->isChecked();
-    s.circularSearch = ckCircularSearch->isChecked();
     s.minLen = (ckMinLen->isChecked()) ? sbMinLen->value() : 0;
     s.maxResult2Search = maxResultField->value();
     s.isResultsLimited = maxResult->isChecked();
 
     //setup search region
     s.searchRegion = getCompleteSearchRegion(&isRegionOk);
+
+    SAFE_POINT( ctx->getSequenceObject() != NULL, tr("Sequence object is NULL"), );
+    s.circularSearch = ctx->getSequenceObject()->isCircular();
 }
 
 U2::ORFAlgorithmStrand ORFDialog::getAlgStrand() const
 {
-    return rbBoth->isChecked() ? ORFAlgorithmStrand_Both : 
+    return rbBoth->isChecked() ? ORFAlgorithmStrand_Both :
         (rbDirect->isChecked() ? ORFAlgorithmStrand_Direct : ORFAlgorithmStrand_Complement);
 }
 
@@ -436,9 +439,13 @@ void ORFDialog::createAnnotationWidget()
 //////////////////////////////////////////////////////////////////////////
 /// list
 
-ORFListItem::ORFListItem(const ORFFindResult& r) : res(r) 
+ORFListItem::ORFListItem(const ORFFindResult& r) : res(r)
 {
-    QString range = QString(" [%1 %2] ").arg(res.region.startPos + 1).arg(res.region.endPos());
+    QString range = QString(" [%1..%2] ").arg(res.region.startPos + 1).arg(res.region.endPos());
+    if (r.isJoined) {
+        range = QString(" [%1..%2], [%3..%4] ").arg(res.region.startPos + 1).arg(res.region.endPos())
+                .arg(res.joinedRegion.startPos + 1).arg(res.joinedRegion.endPos());
+    }
     setText(0, range);
     setText(1, " "+(res.frame < 0 ? ORFDialog::tr("Complement") : ORFDialog::tr("Direct"))+" ");
     setText(2, " "+QString::number(res.region.length)+" ");
@@ -449,7 +456,7 @@ bool ORFListItem::operator< ( const QTreeWidgetItem & other ) const {
     if (sortCol == 1) { //compl/direct
         return text(sortCol) < other.text(sortCol);
     }
-    
+
     const ORFListItem& o = (const ORFListItem &)other;
     if (sortCol == 0) { //pos
         if (o.res.region.startPos == res.region.startPos) {
@@ -459,7 +466,7 @@ bool ORFListItem::operator< ( const QTreeWidgetItem & other ) const {
             return o.res.region.endPos() > res.region.endPos();
         }
         return o.res.region.startPos > res.region.startPos;
-    } 
+    }
     assert(sortCol == 2); //len
     return res.region.length > o.res.region.length;
 }

@@ -272,7 +272,7 @@ EnzymeGroupTreeItem* EnzymesSelectorWidget::findGroupItem(const QString& s, bool
 }
 
 void EnzymesSelectorWidget::sl_filterTextChanged(const QString& filterText) {
-    
+
     for(int i = 0, n = tree->topLevelItemCount(); i < n; ++i){
         EnzymeGroupTreeItem* gi = static_cast<EnzymeGroupTreeItem*>(tree->topLevelItem(i));
         int numHiddenItems = 0;
@@ -287,7 +287,7 @@ void EnzymesSelectorWidget::sl_filterTextChanged(const QString& filterText) {
             }
         }
         gi->setHidden(numHiddenItems == itemCount);
-        
+
     }
 
 }
@@ -383,9 +383,9 @@ void EnzymesSelectorWidget::sl_inverseSelection() {
 }
 
 void EnzymesSelectorWidget::sl_saveSelectionToFile() {
-    
-    QString selectionData =  checkedEnzymesEdit->toPlainText();        
-    
+
+    QString selectionData =  checkedEnzymesEdit->toPlainText();
+
     if (selectionData.size() == 0) {
         QMessageBox::warning(this, tr("Save selection"), tr("Can not save empty selection!"));
         return;
@@ -462,13 +462,13 @@ void EnzymesSelectorWidget::sl_loadSelectionFromFile()
     LastUsedDirHelper dir;
     dir.url = QFileDialog::getOpenFileName(this, tr("Select enzymes selection"), dir.dir, DialogUtils::prepareFileFilter(tr("Selection files"), QStringList("*")) );
     if (!dir.url.isEmpty()) {
-        
+
         QFile selectionFile(dir.url);
         if (!selectionFile.open(QIODevice::ReadOnly)) {
-            QMessageBox::critical(this, tr("Load selection"), tr("Failed to open selection file %1").arg(dir.url));    
+            QMessageBox::critical(this, tr("Load selection"), tr("Failed to open selection file %1").arg(dir.url));
             return;
         }
-        
+
         QSet<QString> enzymeNames;
         QTextStream in(&selectionFile);
         while (!in.atEnd()) {
@@ -480,10 +480,10 @@ void EnzymesSelectorWidget::sl_loadSelectionFromFile()
         }
 
         if (enzymeNames.isEmpty()) {
-            QMessageBox::critical(this, tr("Load selection"), tr("Enzymes selection is empty!"));    
+            QMessageBox::critical(this, tr("Load selection"), tr("Enzymes selection is empty!"));
             return;
         }
-        
+
         ignoreItemChecks =  true;
         for(int i=0, n = tree->topLevelItemCount(); i<n; i++){
             EnzymeGroupTreeItem* gi = static_cast<EnzymeGroupTreeItem*>(tree->topLevelItem(i));
@@ -500,13 +500,13 @@ void EnzymesSelectorWidget::sl_loadSelectionFromFile()
             gi->updateVisual();
         }
         ignoreItemChecks = false;
-        
+
         updateStatus();
 
         foreach (const QString& enzyme, enzymeNames) {
             ioLog.error(tr("Failed to load %1 from selection.").arg(enzyme));
         }
-    }            
+    }
 }
 
 void EnzymesSelectorWidget::sl_saveEnzymesFile()
@@ -522,8 +522,6 @@ FindEnzymesDialog::FindEnzymesDialog(ADVSequenceObjectContext* sctx)
 : QDialog(sctx->getAnnotatedDNAView()->getWidget()), seqCtx(sctx) {
     setupUi(this);
     new HelpButton(this, buttonBox, "4227631");
-
-    circularButton->setChecked(seqCtx->getSequenceObject()->isCircular());
 
     maxHitSB->setMaximum(INT_MAX);
     minHitSB->setMaximum(INT_MAX);
@@ -547,7 +545,7 @@ FindEnzymesDialog::FindEnzymesDialog(ADVSequenceObjectContext* sctx)
 
     connect(enzSel, SIGNAL(si_selectionModified(int,int)), SLOT(sl_onSelectionModified(int,int)));
     sl_onSelectionModified( enzSel->getTotalNumber(),enzSel->getNumSelected());
-    
+
 }
 
 #define MAX_ENZYMES_TO_FIND 100*1000
@@ -558,7 +556,7 @@ void FindEnzymesDialog::sl_onSelectionModified(int total, int nChecked) {
 
 void FindEnzymesDialog::accept() {
     QList<SEnzymeData> selectedEnzymes = enzSel->getSelectedEnzymes();
-    
+
     if (excludeRegionBox->isChecked()){
         bool isRegionOk=false;
         rs->getRegion(&isRegionOk);
@@ -568,7 +566,7 @@ void FindEnzymesDialog::accept() {
         }
     }
     if (selectedEnzymes.isEmpty()) {
-        int ret = QMessageBox::question(this, windowTitle(), 
+        int ret = QMessageBox::question(this, windowTitle(),
             tr("<html><body align=\"center\">No enzymes are selected!\
                 Do you want to turn off <br>enzymes annotations highlighting?</body></html>"),
             QMessageBox::Yes, QMessageBox::No );
@@ -581,7 +579,7 @@ void FindEnzymesDialog::accept() {
         }
         return;
     }
-    
+
     int maxHitVal = maxHitSB->value(), minHitVal = minHitSB->value();
     if(maxHitVal == ANY_VALUE){
         maxHitVal = INT_MAX;
@@ -594,11 +592,11 @@ void FindEnzymesDialog::accept() {
         QMessageBox::critical(this, tr("Error!"), tr("Minimum hit value must be lesser or equal then maximum!"));
         return;
     }
-    
+
     saveSettings();
-    
+
     AutoAnnotationUtils::triggerAutoAnnotationsUpdate(seqCtx, ANNOTATION_GROUP_ENZYME);
-    
+
     QDialog::accept();
 }
 
@@ -609,7 +607,7 @@ void FindEnzymesDialog::initSettings()
     bool useHitCountControl = AppContext::getSettings()->getValue(EnzymeSettings::ENABLE_HIT_COUNT, false).toBool();
     int minHitValue = AppContext::getSettings()->getValue(EnzymeSettings::MIN_HIT_VALUE, 1).toInt();
     int maxHitValue = AppContext::getSettings()->getValue(EnzymeSettings::MAX_HIT_VALUE, 2).toInt();
-    
+
     QString exludedRegionStr = AppContext::getSettings()->getValue(EnzymeSettings::NON_CUT_REGION, "").toString();
     bool excludeRegionOn = false;
     if (!exludedRegionStr.isEmpty()) {
@@ -621,7 +619,7 @@ void FindEnzymesDialog::initSettings()
             rs->setRegion(range);
         }
     }
-    
+
     excludeRegionBox->setChecked(excludeRegionOn);
 
     filterGroupBox->setChecked(useHitCountControl);
@@ -653,7 +651,7 @@ void FindEnzymesDialog::saveSettings()
         }
     }
     AppContext::getSettings()->setValue(EnzymeSettings::NON_CUT_REGION, QVariant::fromValue(range) );
-    
+
     enzSel->saveSettings();
 
 }
@@ -665,10 +663,10 @@ void FindEnzymesDialog::initDefaultSettings()
 
 //////////////////////////////////////////////////////////////////////////
 // Tree item
-EnzymeTreeItem::EnzymeTreeItem(const SEnzymeData& ed) 
+EnzymeTreeItem::EnzymeTreeItem(const SEnzymeData& ed)
 : enzyme(ed)
 {
-    setText(0, enzyme->id);  
+    setText(0, enzyme->id);
     setCheckState(0, Qt::Unchecked);
     setText(1, enzyme->accession);
     setText(2, enzyme->type);
@@ -687,7 +685,7 @@ bool EnzymeTreeItem::operator<(const QTreeWidgetItem & other) const {
             return enzyme->id < ei.enzyme->id;
         }
         return this < &ei;
-    } 
+    }
     return text(col) < ei.text(col);
 }
 
@@ -706,7 +704,7 @@ void EnzymeGroupTreeItem::updateVisual() {
     }
     QString text0 = s + " (" + QString::number(checkedEnzymes.size()) + ", " + QString::number(numChilds) + ")";
     setText(0, text0);
-    
+
     if (numChilds > 0) {
         QString text4 = (static_cast<EnzymeTreeItem*>(child(0)))->enzyme->id;
         if (childCount() > 1) {

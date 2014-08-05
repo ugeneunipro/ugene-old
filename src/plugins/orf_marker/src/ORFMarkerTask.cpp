@@ -42,7 +42,6 @@ const QString ORFSettingsKeys::MUST_FIT("orf_finder/must_fit");
 const QString ORFSettingsKeys::MUST_INIT("orf_finder/must_init");
 const QString ORFSettingsKeys::SEARCH_REGION("orf_finder/region");
 const QString ORFSettingsKeys::INCLUDE_STOP_CODON("orf_finder/incldue_stop_codon");
-const QString ORFSettingsKeys::CIRCULAR_SEARCH("orf_finder/circular_search");
 const QString ORFSettingsKeys::MAX_RESULT("orf_finder/max_result");
 const QString ORFSettingsKeys::IS_RESULT_LIMITED("orf_finder/is_result_limited");
 
@@ -54,7 +53,6 @@ void ORFSettingsKeys::save(const ORFAlgorithmSettings& cfg, Settings* s) {
     s->setValue(ORFSettingsKeys::ALLOW_OVERLAP, cfg.allowOverlap);
     s->setValue(ORFSettingsKeys::MIN_LEN, cfg.minLen);
     s->setValue(ORFSettingsKeys::SEARCH_REGION, QVariant::fromValue(cfg.searchRegion));
-    s->setValue(ORFSettingsKeys::CIRCULAR_SEARCH, cfg.circularSearch);
     s->setValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::getStrandStringId(cfg.strand));
     s->setValue(ORFSettingsKeys::INCLUDE_STOP_CODON, cfg.includeStopCodon);
     s->setValue(ORFSettingsKeys::MAX_RESULT,cfg.maxResult2Search);
@@ -66,7 +64,6 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
     cfg.mustInit = s->getValue(ORFSettingsKeys::MUST_INIT, true).toBool();
     cfg.allowAltStart = s->getValue(ORFSettingsKeys::ALLOW_ALT_START, false).toBool();
     cfg.allowOverlap = s->getValue(ORFSettingsKeys::ALLOW_OVERLAP, false).toBool();
-    cfg.circularSearch = s->getValue(ORFSettingsKeys::CIRCULAR_SEARCH, false).toBool();
     cfg.minLen = s->getValue(ORFSettingsKeys::MIN_LEN, 100).toInt();
     cfg.maxResult2Search =  s->getValue(ORFSettingsKeys::MAX_RESULT,200000).toInt();
     cfg.isResultsLimited = s->getValue(ORFSettingsKeys::IS_RESULT_LIMITED,true).toBool();
@@ -87,19 +84,20 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
 //////////////////////////////////////////////////////////////////////////
 // find ORFS and save 2 annotations task
 
-FindORFsToAnnotationsTask::FindORFsToAnnotationsTask( AnnotationTableObject* aobj,const U2EntityRef& _entityRef, 
+FindORFsToAnnotationsTask::FindORFsToAnnotationsTask( AnnotationTableObject* aobj,const U2EntityRef& _entityRef,
                                                      const ORFAlgorithmSettings& settings, const QString& gName )
   :  Task(tr("Find ORFs and save to annotations"), TaskFlags_FOSCOE), aObj(aobj), cfg(settings), groupName(gName), entityRef(_entityRef)
 {
+    SAFE_POINT_EXT( aobj != NULL, setError(tr("Annotation table object is NULL!")), );
     fTask = new ORFFindTask(cfg, entityRef);
     addSubTask(fTask);
 }
 
 
 void U2::FindORFsToAnnotationsTask::run()
-{   
+{
     QList<ORFFindResult> results =  fTask->popResults();
-    
+
     foreach( const ORFFindResult& res, results) {
         aData.append(res.toAnnotation(ORFAlgorithmSettings::ANNOTATION_GROUP_NAME));
     }
@@ -110,7 +108,7 @@ Task::ReportResult U2::FindORFsToAnnotationsTask::report()
     if (isCanceled() || hasError()) {
         return ReportResult_Finished;
     }
-    
+
     if (aObj->isStateLocked()) {
         setError(tr("Annotation obj %1 is locked for modifications").arg(aObj->getGObjectName()));
         return ReportResult_Finished;
@@ -137,10 +135,11 @@ Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnno
 {
     AnnotationTableObject *aObj = aa->getAnnotationObject();
     U2SequenceObject* dnaObj = aa->getSeqObject();
-    
+
     ORFAlgorithmSettings cfg;
     ORFSettingsKeys::read(cfg, AppContext::getSettings());
-    
+    cfg.circularSearch = dnaObj->isCircular();
+
     cfg.complementTT = GObjectUtils::findComplementTT(dnaObj->getAlphabet());
     if (cfg.proteinTT == NULL) {
         cfg.proteinTT = GObjectUtils::findAminoTT(dnaObj,false);
@@ -149,7 +148,7 @@ Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnno
     if (cfg.searchRegion.isEmpty() || cfg.searchRegion.endPos() >= seqLen + 1 ) {
         cfg.searchRegion = U2Region(0, dnaObj->getSequenceLength());
     }
-    
+
     Task* task = new FindORFsToAnnotationsTask(aObj, dnaObj->getSequenceRef(), cfg );
 
     return task;
