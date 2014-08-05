@@ -132,10 +132,9 @@ GObjectView* GTUtilsDocument::getDocumentGObjectView(U2OpStatus &os, Document* d
 #define GT_METHOD_NAME "isDocumentLoaded"
 bool GTUtilsDocument::isDocumentLoaded(U2OpStatus &os, const QString& documentName)
 {
-    Document *d = getDocument(os, documentName);
-    GT_CHECK_RESULT(d != NULL, "Document \"" + documentName + "\" is NULL", false);
-
-    return static_cast<bool> (getDocumentGObjectView(os, d));
+    QModelIndex index = GTUtilsProjectTreeView::findIndex(os, GTUtilsProjectTreeView::getTreeView(os), documentName);
+    QString s = index.data().toString();
+    return !s.contains("unloaded");
 }
 #undef GT_METHOD_NAME
 

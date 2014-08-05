@@ -4838,6 +4838,7 @@ GUI_TEST_CLASS_DEFINITION(test_3052) {
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, ugenedbFileName));
     GTFileDialog::openFile( os, testDir + "_common_data/bam", "chrM.sorted.bam" );
 
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsMdi::closeWindow(os, "test_3052 [as] chrM");
 
     GTUtilsDialog::waitForDialog( os, new MessageBoxDialogFiller( os, "Append" ) );
@@ -4864,6 +4865,7 @@ GUI_TEST_CLASS_DEFINITION(test_3052_1) {
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, ugenedbFileName));
     GTFileDialog::openFile( os, testDir + "_common_data/bam", "chrM.sorted.bam" );
 
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsMdi::closeWindow(os, "test_3052 [as] chrM");
 
     GTUtilsDialog::waitForDialog( os, new MessageBoxDialogFiller( os, "Append" ) );
