@@ -185,6 +185,9 @@ QList<Task *> ReloadDocumentTask::onSubTaskFinished( Task* subTask ) {
             res.append( openDocTask );
         }
     } else if ( subTask == openDocTask ) {
+        if (openDocTask->hasError()) {
+            return res;
+        }
         Project *currentProj = AppContext::getProject( );
         SAFE_POINT( NULL != currentProj, "Invalid project state!", res );
         doc = currentProj->findDocumentByURL( url );
