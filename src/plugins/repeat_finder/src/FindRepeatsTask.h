@@ -78,6 +78,7 @@ public:
     int  getIdentity(int mismatch = -1) const {return qBound(50, int(100.0 - (mismatch == -1 ? mismatches : mismatch) * 100. /minLen), 100);}
     bool hasRegionFilters() const {return !midRegionsToInclude.isEmpty() || !midRegionsToExclude.isEmpty() || !allowedRegions.isEmpty();}
 
+    static int getIdentity(int mismatch, int len) { return qBound(50, int(100.0 - (mismatch * 100. / len )),100); }
 };
 
 //WARNING: this task is suitable only for a single sequence processing -> check addResults x/y sorting
@@ -97,7 +98,7 @@ public:
 
     virtual void onResult(const RFResult& r);
     virtual void onResults(const QVector<RFResult>& v) ;
-    
+
     QVector<RFResult> getResults() const {return results;} // used if createAnnotations == false
     const FindRepeatsTaskSettings&  getSettings() const {return settings;}
 
@@ -126,9 +127,9 @@ protected:
 class FindRepeatsToAnnotationsTask : public Task {
     Q_OBJECT
 public:
-    FindRepeatsToAnnotationsTask(const FindRepeatsTaskSettings& s, const DNASequence& seq, 
+    FindRepeatsToAnnotationsTask(const FindRepeatsTaskSettings& s, const DNASequence& seq,
                                 const QString& annName, const QString& groupName, const GObjectReference& annObjRef);
-    
+
     QList<Task*> onSubTaskFinished(Task* subTask);
     QList<AnnotationData> importAnnotations();
 
@@ -144,7 +145,7 @@ class RevComplSequenceTask : public Task {
     Q_OBJECT
 public:
     RevComplSequenceTask(const DNASequence& s, const U2Region& reg);
-    
+
     void run();
     void cleanup();
 
