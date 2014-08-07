@@ -2351,5 +2351,32 @@ GUI_TEST_CLASS_DEFINITION(export_test_0008) {
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
 
+GUI_TEST_CLASS_DEFINITION(export_test_0009) {
+    //Export tree
+    //1. Connect to the "ugene_gui_test" database.
+    //2. Right click the object "/export_tests/export_test_0009/long name with bad symbols : /?/=+\|*" -> Export/Import -> Export object
+    //3. Compare modified name with expected
+    //Expected: the object is exported into the file that is opened in the project.
+    GTLogTracer lt;
+    GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+    CHECK_OP(os, );
+
+    QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
+    CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "long name with bad symbols : /?/=+\\|*"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0009_export.fasta", GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(5000);
+
+    QFileInfo f(ExportSelectedRegionFiller::defaultExportPath);
+    QString baseName = f.baseName();
+
+    CHECK_SET_ERR(baseName == "long_name_with_bad_symbols__new", "Exporting basename don't match");
+    CHECK_OP(os, );
+    CHECK_SET_ERR(!lt.hasError(), "errors in log");
+}
+
 } // GUITest_common_scenarios_shared_database
 } // U2

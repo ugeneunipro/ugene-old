@@ -110,6 +110,13 @@ void GTLineEdit::checkTextSize(U2OpStatus& os, QLineEdit* lineEdit) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "copyText"
+QString GTLineEdit::copyText(U2OpStatus& os, QLineEdit* lineEdit) {
+    GT_CHECK_RESULT(lineEdit != NULL, "lineEdit is NULL", QString());
+    return lineEdit->text();
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }

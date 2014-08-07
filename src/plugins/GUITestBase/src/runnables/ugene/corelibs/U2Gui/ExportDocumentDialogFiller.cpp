@@ -38,6 +38,8 @@
 
 namespace U2 {
 
+QString ExportDocumentDialogFiller::defaultExportString = "";
+
 #define GT_CLASS_NAME "ExportDocumentDialogFiller"
 ExportDocumentDialogFiller::ExportDocumentDialogFiller(U2OpStatus &_os, const QString &_path, const QString &_name, 
                          ExportDocumentDialogFiller::FormatToUse _format, bool compressFile,
@@ -71,6 +73,7 @@ void ExportDocumentDialogFiller::run()
     if (!path.isEmpty()) {
         QLineEdit *lineEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
         GT_CHECK(lineEdit != NULL, "line edit not found");
+        defaultExportString = GTLineEdit::copyText(os, lineEdit);
         GTLineEdit::setText(os, lineEdit, path + name);
 
         QComboBox *comboBox = dialog->findChild<QComboBox*>("formatCombo");

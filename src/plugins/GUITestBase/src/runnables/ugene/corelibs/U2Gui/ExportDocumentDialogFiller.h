@@ -33,6 +33,8 @@ namespace U2 {
             ExportDocumentDialogFiller::FormatToUse _format = ExportDocumentDialogFiller::Genbank, bool compressFile = false,
                                  bool addToProject = false, GTGlobals::UseMethod method = GTGlobals::UseMouse);
         virtual void run();
+
+        static QString defaultExportString;
     private:
         QString path, name;
         GTGlobals::UseMethod useMethod;

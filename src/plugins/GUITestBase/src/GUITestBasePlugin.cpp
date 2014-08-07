@@ -1221,6 +1221,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_shared_database::export_test_0006);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::export_test_0007);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::export_test_0008);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::export_test_0009);
 
 /////////////////////////////////////////////////////////////////////////
 // common_scenarios/circular_view

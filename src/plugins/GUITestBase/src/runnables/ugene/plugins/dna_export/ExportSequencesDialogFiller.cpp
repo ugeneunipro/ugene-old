@@ -40,6 +40,8 @@
 
 namespace U2 {
 
+QString ExportSelectedRegionFiller::defaultExportPath = "";
+
 #define GT_CLASS_NAME "GTUtilsDialog::ExportSelectedRegionFiller"
 ExportSelectedRegionFiller::ExportSelectedRegionFiller(U2OpStatus &_os, const QString &_path, const QString &_name, GTGlobals::UseMethod method):
 Filler(_os, "U2__ExportSequencesDialog"), name(_name), useMethod(method) {
@@ -59,6 +61,7 @@ void ExportSelectedRegionFiller::run()
 
     QLineEdit *lineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "fileNameEdit", dialog));
     GT_CHECK(lineEdit != NULL, "File name line edit not found");
+    defaultExportPath = GTLineEdit::copyText(os, lineEdit);
     GTLineEdit::setText(os, lineEdit, path + name);
 
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
