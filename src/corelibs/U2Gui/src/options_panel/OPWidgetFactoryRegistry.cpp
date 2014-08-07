@@ -23,8 +23,6 @@
 
 #include <U2Core/U2SafePoints.h>
 
-#include <U2View/SequenceInfoFactory.h>
-
 
 namespace U2 {
 
