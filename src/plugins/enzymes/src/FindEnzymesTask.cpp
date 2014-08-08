@@ -120,7 +120,7 @@ Task::ReportResult FindEnzymesToAnnotationsTask::report()
         aObj->addAnnotations( adata, stateInfo, groupName );
     }
 
-    if (aObj->getAnnotations().isEmpty() && !cfg.isAutoAnnotationUpdateTask) {
+    if (!aObj.isNull() && aObj->getAnnotations().isEmpty() && !cfg.isAutoAnnotationUpdateTask) {
         // no results found -> delete empty annotation document
         Project* proj = AppContext::getProject();
         if (proj!=NULL) {
