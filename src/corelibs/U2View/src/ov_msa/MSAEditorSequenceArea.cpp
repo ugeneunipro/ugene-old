@@ -62,6 +62,8 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SequenceUtils.h>
+#include <U2Gui/OptionsPanel.h>
+#include <U2Gui/OPWidgetFactory.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
 
@@ -75,6 +77,7 @@
 
 #include "ColorSchemaSettingsController.h"
 #include "CreateSubalignmentDialogController.h"
+#include "Highlighting/MSAHighlightingTabFactory.h"
 #include "MSAColorScheme.h"
 #include "MSAEditor.h"
 #include "MSAEditorNameList.h"
@@ -455,6 +458,23 @@ void MSAEditorSequenceArea::sl_changeHighlightScheme(){
         return;
 
     highlightingScheme = f->create(this, ui->editor->getMSAObject());
+
+    const MAlignment msa = ui->editor->getMSAObject()->getMAlignment();
+
+    U2OpStatusImpl os;
+    const int refSeq = msa.getRowIndexByRowId(editor->getReferenceRowId(), os);
+
+    MSAHighlightingFactory msaHighlightingFactory;
+    QString msaHighlightingId = msaHighlightingFactory.getOPGroupParameters().getGroupId();
+
+    CHECK(ui->getEditor(), );
+    CHECK(ui->getEditor()->getOptionsPanel(), );
+
+    if(!f->isRefFree() && refSeq == -1 && ui->getEditor()->getOptionsPanel()->getActiveGroupId() != msaHighlightingId) {
+        QMessageBox::warning(ui, tr("No reference sequence selected"), 
+            tr("Reference sequence for current highlighting scheme is not selected.\r\nUse context menu or Highlighting tab on Options panel to select it"));
+    }
+
     foreach(QAction* action, highlightingSchemeMenuActions) {
         action->setChecked(action == a);
     }

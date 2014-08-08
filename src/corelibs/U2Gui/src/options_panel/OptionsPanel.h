@@ -61,7 +61,9 @@ public:
 
     /** Open a group with the specified group ID: only one at a time */
     void openGroupById(const QString& groupId);
-
+    
+    /** Returs Id for current tab **/
+    QString getActiveGroupId(){return activeGroupId;};
 
 public slots:
     /** Catches signals that a group header has been pressed
