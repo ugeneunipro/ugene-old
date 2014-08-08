@@ -139,6 +139,7 @@ public:
      */
     int shiftRegion(int startPos, int startRow, int nBases, int nRows, int shift);
     void deleteColumnWithGaps(int requiredGapCount = GAP_COLUMN_ONLY);
+    QList<qint64> getColumnsWithGaps(int requiredGapCount = GAP_COLUMN_ONLY) const;
     void updateCachedMAlignment(const MAlignmentModInfo &mi = MAlignmentModInfo(),
         const QList<qint64> &modifiedRowIds = QList<qint64>(),
         const QList<qint64> &removedRowIds = QList<qint64>());

@@ -1814,27 +1814,35 @@ void MSAEditorSequenceArea::sl_delCol() {
         cancelShiftTracking( );
 
         MAlignmentObject* msaObj = editor->getMSAObject();
-        U2OpStatus2Log os;
-        U2UseCommonUserModStep userModStep(msaObj->getEntityRef(), os);
-        Q_UNUSED(userModStep);
-        SAFE_POINT_OP(os, );
-
+        int gapCount = GAP_COLUMN_ONLY;
         switch(deleteMode) {
-        case DeleteByAbsoluteVal: msaObj->deleteColumnWithGaps(value);
+        case DeleteByAbsoluteVal:
+            gapCount = value;
             break;
         case DeleteByRelativeVal: {
             int absoluteValue = qRound(( msaObj->getNumRows() * value ) / 100.0);
             if (absoluteValue < 1) {
                 absoluteValue = 1;
             }
-            msaObj->deleteColumnWithGaps(absoluteValue);
+            gapCount = absoluteValue;
             break;
         }
-        case DeleteAll: msaObj->deleteColumnWithGaps();
+        case DeleteAll:
+            gapCount = GAP_COLUMN_ONLY;
             break;
         default:
-            assert(0);
+            FAIL("Unknown delete mode", );
         }
+
+        QList<qint64> columnsToDelete = msaObj->getColumnsWithGaps(gapCount);
+        if (columnsToDelete.isEmpty()) {
+            return;
+        }
+        U2OpStatus2Log os;
+        U2UseCommonUserModStep userModStep(msaObj->getEntityRef(), os);
+        Q_UNUSED(userModStep);
+        SAFE_POINT_OP(os, );
+        msaObj->deleteColumnWithGaps(gapCount);
     }
 }
 

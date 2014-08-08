@@ -500,7 +500,7 @@ void MAlignmentObject::crop(U2Region window, const QSet<QString>& rowNames) {
     updateCachedMAlignment();
 }
 
-void MAlignmentObject::deleteColumnWithGaps(int requiredGapCount) {
+QList<qint64> MAlignmentObject::getColumnsWithGaps(int requiredGapCount) const {
     MAlignment msa = getMAlignment();
     const int length = msa.getLength();
     if (GAP_COLUMN_ONLY == requiredGapCount) {
@@ -519,7 +519,13 @@ void MAlignmentObject::deleteColumnWithGaps(int requiredGapCount) {
             colsForDelete.prepend(i); //invert order
         }
     }
-    if (length == colsForDelete.count()) {
+    return colsForDelete;
+}
+
+void MAlignmentObject::deleteColumnWithGaps(int requiredGapCount) {
+    MAlignment msa = getMAlignment();
+    QList<qint64> colsForDelete = getColumnsWithGaps(requiredGapCount);
+    if (msa.getLength() == colsForDelete.count()) {
         return;
     }
     QList<qint64>::const_iterator column = colsForDelete.constBegin();
