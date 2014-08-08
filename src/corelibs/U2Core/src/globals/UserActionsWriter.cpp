@@ -234,11 +234,6 @@ void UserActionsWriter::generateKeyMessage(){
     QString text = k->text();
     QString s = keys.value(Qt::Key(k->key()));
 
-    //debugging
-    if(s == "num_lock"){
-        QString s = keys.value(Qt::Key(k->key()));
-    }
-
     appendModifiersInfo();
 
     if(!s.isEmpty()){
