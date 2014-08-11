@@ -1568,7 +1568,7 @@ GUI_TEST_CLASS_DEFINITION( test_1884 )
     // 3. Select all the upper rows and make some extra "selection"
     const int extraUpperSelectionCount = 3;
     GTKeyboardDriver::keyPress( os, GTKeyboardDriver::key["shift"] );
-    GTGlobals::sleep(200);
+    GTGlobals::sleep(2000);
     for ( int i = 0; i < extraUpperSelectionCount; ++i ) {
         GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["up"] );
         GTGlobals::sleep(200);
@@ -3298,7 +3298,6 @@ GUI_TEST_CLASS_DEFINITION( test_2259 ){
     }
 
 GUI_TEST_CLASS_DEFINITION( test_2266_1 ){
-
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os, testDir + "_common_data/scenarios/sandbox"));
 
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
@@ -3317,7 +3316,7 @@ GUI_TEST_CLASS_DEFINITION( test_2266_1 ){
     QString baseDirName = QDateTime::currentDateTime().toString("yyyy.MM.dd_hh-mm");
     GTWidget::click(os,GTAction::button(os,"Run workflow"));
 
-    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os, 6000000);
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/" + baseDirName + "/", "variations.vcf");
 
@@ -4350,7 +4349,7 @@ GUI_TEST_CLASS_DEFINITION( test_2460 ) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign"));
     GTMouseDriver::click(os, Qt::RightButton);
 
-    GTGlobals::sleep();
+	GTUtilsTaskTreeView::waitTaskFinished(os);
 
     CHECK_SET_ERR( l.hasError() == true, "There is no error in the log");
 
