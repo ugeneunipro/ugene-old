@@ -2007,11 +2007,11 @@ GUI_TEST_CLASS_DEFINITION( test_2021_6 )
 
 GUI_TEST_CLASS_DEFINITION( test_2021_7 )
 {
-    // 1. Open "data/samples/CLUSTAL/COI.aln".
-    GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
+    // 1. Open test/_common_data/scenarios/msa/ma2_gap_col.aln.
+    GTFileDialog::openFile( os, testDir + "_common_data/scenarios/msa", "ma2_gap_col.aln" );
 
-    //2. Select the 45 and 46 of the second line (two symbols after gaps).
-    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 44, 1 ), QPoint( 45, 1 ) );
+    //2. Select the 8 and 9 of the third line (two symbols after gaps).
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 7, 2 ), QPoint( 8, 2 ) );
     GTGlobals::sleep(200);
 
     //3. Press BACKSPACE.
@@ -2019,11 +2019,11 @@ GUI_TEST_CLASS_DEFINITION( test_2021_7 )
     GTGlobals::sleep( 200 );
 
     // 4. Expected state: the gap was deleted, selection moves to the previous symbol.
-    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 1 ), QPoint( 44, 1 ) );
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 2 ), QPoint( 13, 2 ) );
     GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
     GTGlobals::sleep( 200 );
     const QString finalMsaContent = GTClipboard::text( os );
-    CHECK_SET_ERR(  "TAAGCTTACTAATCCGGGCCGAATTAGGTCAACCTGGTTAT-CTA" == finalMsaContent,
+    CHECK_SET_ERR(  "TAG--TTATTAA--" == finalMsaContent,
                     "Unexpected MSA content has occurred" );
 
 }

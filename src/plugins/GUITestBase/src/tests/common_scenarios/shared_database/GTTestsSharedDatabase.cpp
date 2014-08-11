@@ -1763,10 +1763,10 @@ GUI_TEST_CLASS_DEFINITION(import_test_0018) {
     const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
     const QString dstFolderName = "import_test_0018";
     const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
-    const QString resultFolderName = "chrM.sorted.bam";
+    const QString resultFolderName = "scerevisiae.bam";
     const QString resultFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + resultFolderName;
-    const QString filePath = QFileInfo(testDir + "_common_data/ugenedb/chrM.sorted.bam.ugenedb").absoluteFilePath();
-    const QString assemblyObjectName = "chrM";
+    const QString filePath = QFileInfo(testDir + "_common_data/ugenedb/scerevisiae.bam.ugenedb").absoluteFilePath();
+    const QString assemblyObjectName = "Scmito";
     const QString databaseAssemblyObjectPath = resultFolderPath + U2ObjectDbi::PATH_SEP + assemblyObjectName;
 
     QList<ImportToDatabaseDialogFiller::Action> actions;
@@ -1791,7 +1791,7 @@ GUI_TEST_CLASS_DEFINITION(import_test_0018) {
     GTUtilsSharedDatabaseDocument::callImportDialog(os, databaseDoc, parentFolderPath);
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
-    GTGlobals::sleep(80000);
+    GTGlobals::sleep(10000);
 
     const QModelIndex assemblyObjectIndex = GTUtilsSharedDatabaseDocument::getItemIndex(os, databaseDoc, databaseAssemblyObjectPath);
     CHECK_SET_ERR(assemblyObjectIndex.isValid(), "Result item wasn't found");
