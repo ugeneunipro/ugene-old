@@ -94,10 +94,10 @@ void CircularViewContext::initViewContext(GObjectView* v) {
     }
     connect(av, SIGNAL(si_sequenceWidgetAdded(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetAdded(ADVSequenceWidget*)));
     connect (av, SIGNAL(si_sequenceWidgetRemoved(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetRemoved(ADVSequenceWidget*)));
-    
+
     ADVGlobalAction* globalToggleViewAction = new ADVGlobalAction(av,
-        QIcon(":circular_view/images/circular.png"), 
-        tr("Toggle circular views"), 
+        QIcon(":circular_view/images/circular.png"),
+        tr("Toggle circular views"),
         std::numeric_limits<int>::max()); // big enough to be the last one?
     globalToggleViewAction->addAlphabetFilter(DNAAlphabet_NUCL);
     globalToggleViewAction->setObjectName("globalToggleViewAction");
@@ -111,7 +111,7 @@ void CircularViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
     if (sw == NULL || sw->getSequenceObject() == NULL || !sw->getSequenceObject()->getAlphabet()->isNucleic()) {
         return;
     }
-    
+
     CircularViewAction* action = new CircularViewAction();
     action->setIcon(QIcon(":circular_view/images/circular.png"));
     action->setCheckable(true);
@@ -119,7 +119,7 @@ void CircularViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
     action->addToMenu = true;
     action->addToBar = true;
     connect(action, SIGNAL(triggered()), SLOT(sl_showCircular()));
-    
+
     sw->addADVSequenceWidgetAction(action);
 
     qint64 len = sw->getSequenceContext()->getSequenceLength();
@@ -135,7 +135,6 @@ void CircularViewContext::sl_sequenceWidgetAdded(ADVSequenceWidget* w) {
 }
 
 void CircularViewContext::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
-    
     ADVSingleSequenceWidget* sw = qobject_cast<ADVSingleSequenceWidget*>(w);
     if(!sw->getSequenceObject()->getAlphabet()->isNucleic()){
         return;
@@ -145,9 +144,10 @@ void CircularViewContext::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
     if(splitter != NULL) {
         CircularViewAction* a = qobject_cast<CircularViewAction*>(sw->getADVSequenceWidgetAction(CIRCULAR_ACTION_NAME));
         SAFE_POINT(a != NULL, "Circular view action is not found", );
+        CHECK(a->view != NULL, );
         splitter->removeView(a->view,a->rmapWidget);
         delete a->view;
-        delete a->rmapWidget;        
+        delete a->rmapWidget;
         if(splitter->isEmpty()) {
             removeCircularView(sw->getAnnotatedDNAView());
         }
@@ -262,7 +262,7 @@ void CircularViewContext::sl_toggleViews()
     if (av == NULL) {
         return;
     }
-    
+
     QList<ADVSequenceWidget*> sWidgets = av->getSequenceWidgets();
 
     foreach( ADVSequenceWidget* sw, sWidgets) {
