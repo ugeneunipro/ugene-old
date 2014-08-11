@@ -1593,18 +1593,18 @@ GUI_TEST_CLASS_DEFINITION(import_test_0015) {
     const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
     const QString dstFolderName = "import_test_0015";
     const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
-    const QString objectFolderName = "chrM.sorted";
+    const QString objectFolderName = "scerevisiae";
     const QString objectFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + objectFolderName;
-    const QString assemblyObjectName = "chrM";
+    const QString assemblyObjectName = "Scmito";
     const QString databaseAssemblyObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + assemblyObjectName;
-    const qint64 expectedLength = 16571;
-    const qint64 expectedReadsCount = 38461;
+    const qint64 expectedLength = 85779;
+    const qint64 expectedReadsCount = 2;
 
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
 
     QDir(sandBoxDir).mkdir(getName());
-    GTFile::copy(os, testDir + "_common_data/bam/chrM.sorted.bam", sandBoxDir + getName() + "/chrM.sorted.bam");
-    GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, dstFolderPath, QStringList() << sandBoxDir + getName() + "/chrM.sorted.bam");
+    GTFile::copy(os, testDir + "_common_data/bam/scerevisiae.bam", sandBoxDir + getName() + "/scerevisiae.bam");
+    GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, dstFolderPath, QStringList() << sandBoxDir + getName() + "/scerevisiae.bam");
 
     const QStringList expectedItems = QStringList() << objectFolderPath
                                                     << databaseAssemblyObjectPath;
@@ -2368,7 +2368,7 @@ GUI_TEST_CLASS_DEFINITION(export_test_0009) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
     GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0009_export.fasta", GTGlobals::UseMouse));
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep(5000);
+    GTGlobals::sleep(500000);
 
     QFileInfo f(ExportSelectedRegionFiller::defaultExportPath);
     QString baseName = f.baseName();

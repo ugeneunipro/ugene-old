@@ -1196,7 +1196,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0012);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0013);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0014);
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_shared_database::import_test_0015, "https://ugene.unipro.ru/tracker/browse/UGENE-3198");
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0015);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0016);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0017);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0018);
@@ -1221,7 +1221,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_shared_database::export_test_0006);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::export_test_0007);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::export_test_0008);
-    REGISTER_TEST(GUITest_common_scenarios_shared_database::export_test_0009);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_shared_database::export_test_0009, "https://ugene.unipro.ru/tracker/browse/UGENE-3356");
 
 /////////////////////////////////////////////////////////////////////////
 // common_scenarios/circular_view
