@@ -148,7 +148,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0001) {
         GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
         GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
-        GTGlobals::sleep(100);
+        GTGlobals::sleep(500);
 #ifdef Q_OS_MAC
         QMenu *menu = GTMenu::showMainMenu(os, MWMENU_FILE);
         GTMenu::clickMenuItem(os, menu, ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
