@@ -72,7 +72,6 @@ namespace U2 {
 #define BEST_HITS_ATTR "best-hits"
 #define QUALITY_THRESHOLD_ATTR "quality-threshold"
 #define BARCODE_LENGTH_ATTR "barcode-length"
-#define COLORSPACE_ATTR "colorspace"
 #define LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS_ATTR "long-scaled-gap-penalty-for-long-deletions"
 #define NON_ITERATIVE_MODE_ATTR "non-iterative-mode"
 #define ALG_NAME_ATTR   "alg"
@@ -241,13 +240,6 @@ void GTest_Bwa::init(XMLTestFormat *tf, const QDomElement& el) {
         if(!el.attribute(attr).isEmpty()) {
             config.setCustomValue(BwaTask::OPTION_BARCODE_LENGTH, el.attribute(attr).toInt(&ok));
             if(!ok) failMissingValue(attr);
-        }
-    }
-    {
-        const QString attr = COLORSPACE_ATTR;
-
-        if(!el.attribute(attr).isEmpty()) {
-            config.setCustomValue(BwaTask::OPTION_COLORSPACE, true);
         }
     }
     {

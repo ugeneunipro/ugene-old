@@ -46,9 +46,6 @@ void BwaBuildIndexTask::prepare() {
     arguments.append("index");
     arguments.append("-a");
     arguments.append(settings.getCustomValue(BwaTask::OPTION_INDEX_ALGORITHM, "is").toString());
-    if(settings.getCustomValue(BwaTask::OPTION_COLORSPACE, false).toBool()) {
-        arguments.append("-c");
-    }
     arguments.append("-p");
     arguments.append(indexPath);
     arguments.append(referencePath);
@@ -148,10 +145,6 @@ void BwaAlignTask::prepare() {
 
         arguments.append("-B");
         arguments.append(settings.getCustomValue(BwaTask::OPTION_BARCODE_LENGTH, 0).toString());
-
-        if(settings.getCustomValue(BwaTask::OPTION_COLORSPACE, false).toBool()) {
-            arguments.append("-c");
-        }
 
         if(settings.getCustomValue(BwaTask::OPTION_LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS, false).toBool()) {
             arguments.append("-L");
@@ -420,7 +413,6 @@ const QString BwaTask::OPTION_MAX_SEED_DIFFERENCES = "max-seed-differences";
 const QString BwaTask::OPTION_MAX_QUEUE_ENTRIES = "max-queue-entries";
 const QString BwaTask::OPTION_BEST_HITS = "best-hits";
 const QString BwaTask::OPTION_QUALITY_THRESHOLD = "quality-threshold";
-const QString BwaTask::OPTION_COLORSPACE = "colorspace";
 const QString BwaTask::OPTION_BARCODE_LENGTH = "barcode-length";
 const QString BwaTask::OPTION_LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS = "long-scaled-gap-penalty-for-long-deletions";
 const QString BwaTask::OPTION_NON_ITERATIVE_MODE = "non-iterative-mode";

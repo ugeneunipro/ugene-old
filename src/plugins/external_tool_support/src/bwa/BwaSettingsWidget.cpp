@@ -169,7 +169,6 @@ QMap<QString,QVariant> BwaSettingsWidget::getDnaAssemblyCustomSettings() {
     settings.insert(BwaTask::OPTION_BEST_HITS, bestHitsSpinBox->value());
     settings.insert(BwaTask::OPTION_QUALITY_THRESHOLD, qualityThresholdSpinBox->value());
     settings.insert(BwaTask::OPTION_BARCODE_LENGTH, barcodeLengthSpinBox->value());
-    settings.insert(BwaTask::OPTION_COLORSPACE, colorspaceCheckBox->isChecked());
     settings.insert(BwaTask::OPTION_LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS, longScaledGapPenaltyForLongDeletionsCheckBox->isChecked());
     settings.insert(BwaTask::OPTION_NON_ITERATIVE_MODE, nonIterativeModeCheckBox->isChecked());
 
@@ -203,7 +202,6 @@ BwaBuildSettingsWidget::BwaBuildSettingsWidget(QWidget *parent)
 
 QMap<QString,QVariant> BwaBuildSettingsWidget::getBuildIndexCustomSettings() {
     QMap<QString, QVariant> settings;
-    settings.insert(BwaTask::OPTION_COLORSPACE, colorspaceCheckBox->isChecked());
     {
         QString algorithm;
         switch(indexAlgorithmComboBox->currentIndex()) {

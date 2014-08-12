@@ -123,7 +123,6 @@ public:
     static const QString OPTION_BEST_HITS;
     static const QString OPTION_QUALITY_THRESHOLD;
     static const QString OPTION_BARCODE_LENGTH;
-    static const QString OPTION_COLORSPACE;
     static const QString OPTION_LONG_SCALED_GAP_PENALTY_FOR_LONG_DELETIONS;
     static const QString OPTION_NON_ITERATIVE_MODE;
     static const QString OPTION_SW_ALIGNMENT;

@@ -37,20 +37,13 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
           <item row="0" column="0">
-           <widget class="QCheckBox" name="colorspaceCheckBox">
-            <property name="text">
-             <string>Colorspace (-c)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
            <widget class="QCheckBox" name="longScaledGapPenaltyForLongDeletionsCheckBox">
             <property name="text">
              <string>Long-scaled gap penalty for long deletions (-L)</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="1" column="0">
            <widget class="QCheckBox" name="nonIterativeModeCheckBox">
             <property name="text">
              <string>Non-iterative mode (-N)</string>
