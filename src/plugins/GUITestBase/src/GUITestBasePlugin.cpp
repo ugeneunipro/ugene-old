@@ -228,7 +228,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2030);
     REGISTER_TEST(GUITest_regression_scenarios::test_2032);
     REGISTER_TEST(GUITest_regression_scenarios::test_2049);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2070, "https://ugene.unipro.ru/tracker/browse/UGENE-2775");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2070);
     REGISTER_TEST_ONLY_WINDOWS(GUITest_regression_scenarios::test_2089);//, "no forbidden folder characters on linux and mac");
     REGISTER_TEST(GUITest_regression_scenarios::test_2077);
     //REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2093_1,"dashboards");
