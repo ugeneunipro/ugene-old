@@ -139,8 +139,9 @@ Task* RCWorker::tick() {
             TextUtils::reverse(seq.seq.data(), seq.seq.size());
         }
 
-        if(output) {
-            QVariant v = qVariantFromValue<DNASequence >(seq);
+        if (output) {
+            const SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(seq);
+            const QVariant v = qVariantFromValue<SharedDbiDataHandler>(seqId);
             output->put(Message(BaseTypes::DNA_SEQUENCE_TYPE(), v));
             if (input->isEnded()) {
                 output->setEnded();
