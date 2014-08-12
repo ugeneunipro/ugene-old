@@ -617,7 +617,9 @@ bool BAMUtils::isEqualByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpS
     {
         while ((r1 = samread(in, b1)) >= 0) { // read one alignment from file1
             if((r2 = samread(out, b2) >= 0)){ //read one alignment from file2
-
+                if(b1->data_len != b2->data_len) {
+                    os.setError("Different alignment of reads");
+                }
             }else{
                 samreadCheck(r2, os, fileName2);
                 os.setError("Different number of reads in files");
