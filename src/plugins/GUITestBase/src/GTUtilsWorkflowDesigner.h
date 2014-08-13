@@ -90,6 +90,7 @@ public:
 
     //gets oneparameter worker parameter
     static QString getParameter(U2OpStatus& os, QString parameter);
+    static bool isParameterEnabled(U2OpStatus& os, QString parameter);
 
     static void setParameterScripting(U2OpStatus& os, QString parameter, QString scriptMode);
 

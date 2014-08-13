@@ -45,6 +45,7 @@
 #include <QtGui/QListWidget>
 #include <QtGui/QTableView>
 #include <QtGui/QSpinBox>
+#include <QApplication>
 #else
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QToolButton>
@@ -416,11 +417,14 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
     int row = -1;
     for(int i = 0; i<iMax; i++){
         QString s = model->data(model->index(i,0)).toString();
-        if (s.contains(parameter,Qt::CaseInsensitive))
+        if (s.contains(parameter,Qt::CaseInsensitive)){
             row = i;
+            break;
+        }
     }
     GT_CHECK(row != -1, "parameter not found");
     table->scrollTo(model->index(row,1));
+
     GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,1,row));
     GTMouseDriver::click(os);
     GTGlobals::sleep(500);
@@ -481,6 +485,33 @@ QString GTUtilsWorkflowDesigner::getParameter(U2OpStatus &os, QString parameter)
 
     QVariant var = model->data(model->index(row,1));
     return var.toString();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isParameterEnabled"
+bool GTUtilsWorkflowDesigner::isParameterEnabled(U2OpStatus &os, QString parameter){
+    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
+    GT_CHECK_RESULT(table,"tableView not found", false);
+
+    //FIND CELL
+    QAbstractItemModel* model = table->model();
+    int iMax = model->rowCount();
+    int row = -1;
+    for(int i = 0; i<iMax; i++){
+        QString s = model->data(model->index(i,0)).toString();
+        if (s.contains(parameter,Qt::CaseInsensitive))
+            row = i;
+    }
+    GT_CHECK_RESULT(row != -1, "parameter not found", false);
+    table->scrollTo(model->index(row,1));
+    GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,1,row));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(500);
+    QWidget* w = QApplication::widgetAt(GTMouseDriver::getMousePosition());
+    QString s =  w->metaObject()->className();
+
+    bool result = !(s == "QWidget");//if parameter is disabled QWidget is under cursor
+    return result;
 }
 #undef GT_METHOD_NAME
 
