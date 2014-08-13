@@ -126,6 +126,7 @@
 #include "phyml/PhyMLTests.h"
 
 #include "bwa/BwaMemWorker.h"
+#include "bwa/BwaWorker.h"
 #include "bedtools/BedtoolsSupport.h"
 #include "bedtools/BedToolsWorkersLibrary.h"
 #include "bigWigTools/BigWigSupport.h"
@@ -594,6 +595,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     LocalWorkflow::CAP3WorkerFactory::init();
     LocalWorkflow::VcfConsensusWorkerFactory::init();
     LocalWorkflow::BWAMEMWorkerFactory::init();
+    LocalWorkflow::BWAWorkerFactory::init();
     LocalWorkflow::SlopbedWorkerFactory::init();
     LocalWorkflow::GenomecovWorkerFactory::init();
     LocalWorkflow::BedGraphToBigWigFactory::init();

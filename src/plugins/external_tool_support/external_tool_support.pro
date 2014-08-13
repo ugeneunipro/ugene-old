@@ -47,6 +47,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/bwa/BwaSupport.h \
            src/bwa/BwaTask.h \
            src/bwa/BwaMemWorker.h \
+           src/bwa/BwaWorker.h \
            src/cap3/CAP3Support.h \
            src/cap3/CAP3SupportDialog.h \
            src/cap3/CAP3SupportTask.h \
@@ -199,6 +200,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/bwa/BwaSupport.cpp \
            src/bwa/BwaTask.cpp \
            src/bwa/BwaMemWorker.cpp \
+           src/bwa/BwaWorker.cpp \
            src/cap3/CAP3Support.cpp \
            src/cap3/CAP3SupportDialog.cpp \
            src/cap3/CAP3SupportTask.cpp \
