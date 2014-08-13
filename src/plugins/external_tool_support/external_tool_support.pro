@@ -39,6 +39,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/bowtie/BowtieSettingsWidget.h \
            src/bowtie/BowtieSupport.h \
            src/bowtie/BowtieTask.h \
+           src/bowtie/BowtieWorker.h \ 
            src/bowtie2/Bowtie2Support.h \
            src/bowtie2/Bowtie2Task.h \
            src/bowtie2/Bowtie2SettingsWidget.h \
@@ -192,6 +193,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/bowtie/BowtieSettingsWidget.cpp \
            src/bowtie/BowtieSupport.cpp \
            src/bowtie/BowtieTask.cpp \
+           src/bowtie/BowtieWorker.cpp \
            src/bowtie2/Bowtie2Support.cpp \
            src/bowtie2/Bowtie2Task.cpp \
            src/bowtie2/Bowtie2SettingsWidget.cpp \
