@@ -629,7 +629,7 @@ bool BAMUtils::isEqualByLength(const GUrl &fileUrl1, const GUrl &fileUrl2, U2OpS
         }
 
         samreadCheck(r1, os, fileName1);
-        if((r2 = samread(out, b2)) >= 0){
+        if(!os.hasError() && (r2 = samread(out, b2)) >= 0){
             os.setError("Different number of reads in files");
         }
         bam_destroy1(b1);
