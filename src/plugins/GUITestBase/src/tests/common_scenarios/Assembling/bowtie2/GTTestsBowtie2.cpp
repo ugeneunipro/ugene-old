@@ -23,6 +23,7 @@
 
 #include "api/GTMenu.h"
 #include "api/GTFile.h"
+#include "GTUtilsTaskTreeView.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.h"
@@ -273,11 +274,12 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
                                                                "e_coli_1000.fq");
     bowtie2Parameters.prebuiltIndex = true;
     GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &bowtie2Parameters));
-
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
 
-    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
-    GTGlobals::sleep(20000);
+
+    //GTGlobals::sleep(20000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
