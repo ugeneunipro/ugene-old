@@ -5125,6 +5125,44 @@ GUI_TEST_CLASS_DEFINITION(test_3287) {
     CHECK_SET_ERR(70 == image.height(), "Wrong image height");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3346) {
+    GTLogTracer lt;
+
+    QFile originalFile(dataDir + "samples/Genbank/murine.gb");
+    CHECK_SET_ERR(originalFile.exists(), "Unable to find original file");
+
+    const QString dstPath = sandBoxDir + "murine.gb";
+    originalFile.copy(dstPath);
+    QFile copiedFile(dstPath);
+    CHECK_SET_ERR(copiedFile.exists(), "Unable to copy file");
+
+    GTFileDialog::openFile(os, sandBoxDir, "murine.gb");
+    CHECK_OP(os, );
+
+    if (!copiedFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        os.setError("Unable to open file");
+        return;
+    }
+    QString fileData = copiedFile.readAll();
+    copiedFile.close();
+    fileData.replace("\"gag polyprotein\"", "\"gag polyprotein");
+
+    if (!copiedFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+        os.setError("Unable to open file");
+        return;
+    }
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+
+    QTextStream out(&copiedFile);
+    out << fileData;
+    copiedFile.close();
+
+    GTGlobals::sleep(6000);
+
+    CHECK_SET_ERR(lt.hasError(), "Error in log expected");
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
