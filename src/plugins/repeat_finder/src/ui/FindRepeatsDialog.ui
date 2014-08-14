@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>635</width>
-    <height>351</height>
+    <width>696</width>
+    <height>388</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,8 +45,11 @@
               <height>0</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>Number of bases in a sliding window that is moved along the sequence</string>
+            </property>
             <property name="text">
-             <string>Minimum repeat length</string>
+             <string>Window size</string>
             </property>
            </widget>
           </item>
@@ -118,8 +121,11 @@
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_3">
+            <property name="toolTip">
+             <string>How similar the two windows of the sequence</string>
+            </property>
             <property name="text">
-             <string>Repeats  identity</string>
+             <string>Minimum indentity per window</string>
             </property>
            </widget>
           </item>
