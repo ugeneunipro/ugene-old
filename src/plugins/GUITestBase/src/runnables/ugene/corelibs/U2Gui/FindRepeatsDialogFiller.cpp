@@ -21,6 +21,7 @@
 
 #include "FindRepeatsDialogFiller.h"
 #include "api/GTWidget.h"
+#include "api/GTSpinBox.h"
 #include "api/GTTabWidget.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -29,12 +30,14 @@
 #include <QtGui/QAbstractButton>
 #include <QtGui/QCheckBox>
 #include <QtGui/QDialogButtonBox>
+#include <QtGui/QSpinBox>
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QAbstractButton>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QSpinBox>
 #endif
 
 namespace U2 {
@@ -43,8 +46,9 @@ namespace U2 {
 #define GT_METHOD_NAME "run"
 
 FindRepeatsDialogFiller::FindRepeatsDialogFiller(U2OpStatus &_os, const QString & _resultFilesPath,
-    bool _searchInverted) : Filler(_os, "FindRepeatsDialog"), button(Start),
-    resultAnnotationFilesPath(_resultFilesPath), searchInverted(_searchInverted)
+    bool _searchInverted, int minRepeatLength, int repeatsIdentity, int minDistance)
+    : Filler(_os, "FindRepeatsDialog"), button(Start), resultAnnotationFilesPath(_resultFilesPath),
+    searchInverted(_searchInverted), minRepeatLength(minRepeatLength), repeatsIdentity(repeatsIdentity), minDistance(minDistance)
 {
 
 }
@@ -61,6 +65,21 @@ void FindRepeatsDialogFiller::run() {
 
     QTabWidget *tabWidget = qobject_cast<QTabWidget*>(GTWidget::findWidget(os, "tabWidget", dialog));
     GTTabWidget::setCurrentIndex(os, tabWidget, 0);
+
+    if (-1 != minRepeatLength) {
+        QSpinBox *minLenBox = qobject_cast<QSpinBox *>(GTWidget::findWidget(os, "minLenBox", dialog));
+        GTSpinBox::setValue(os, minLenBox, minRepeatLength);
+    }
+
+    if (-1 != repeatsIdentity) {
+        QSpinBox *identityBox = qobject_cast<QSpinBox *>(GTWidget::findWidget(os, "identityBox", dialog));
+        GTSpinBox::setValue(os, identityBox, repeatsIdentity);
+    }
+
+    if (-1 != minDistance) {
+        QSpinBox *minDistBox = qobject_cast<QSpinBox *>(GTWidget::findWidget(os, "minDistBox", dialog));
+        GTSpinBox::setValue(os, minDistBox, minDistance);
+    }
 
     QLineEdit *resultLocationEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "locationEdit", dialog));
     resultLocationEdit->setText(resultAnnotationFilesPath);

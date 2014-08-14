@@ -32,14 +32,18 @@ class FindRepeatsDialogFiller : public Filler {
 public:
     enum Button {Start, Cancel};
 
-    FindRepeatsDialogFiller(U2OpStatus &_os, const QString & _resultFilesPath, bool _searchInverted = false);
-    
+    FindRepeatsDialogFiller(U2OpStatus &_os, const QString & _resultFilesPath, bool _searchInverted = false,
+        int minRepeatLength = -1, int repeatsIdentity = -1, int minDistance = -1);
+
     virtual void run();
     Button button;
 
 private:
     QString resultAnnotationFilesPath;
     bool searchInverted;
+    int minRepeatLength;
+    int repeatsIdentity;
+    int minDistance;
 };
 
 } // namespace U2

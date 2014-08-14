@@ -275,7 +275,7 @@ public:
     AnnotationsTreeView* atv;
 };
 
-class AVAnnotationItem : public AVItem {
+class U2VIEW_EXPORT AVAnnotationItem : public AVItem {
 public:
     AVAnnotationItem( AVGroupItem *parent, const Annotation &a );
 

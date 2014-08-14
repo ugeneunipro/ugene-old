@@ -67,6 +67,7 @@
 #include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/PositionSelectorFiller.h"
@@ -103,6 +104,7 @@
 #include <U2View/ADVConstants.h>
 #include <U2View/ADVSingleSequenceWidget.h>
 #include <U2View/AnnotatedDNAViewFactory.h>
+#include <U2View/AnnotationsTreeView.h>
 #include <U2View/MSAEditor.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -5161,6 +5163,34 @@ GUI_TEST_CLASS_DEFINITION(test_3346) {
     GTGlobals::sleep(6000);
 
     CHECK_SET_ERR(lt.hasError(), "Error in log expected");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3348) {
+    GTFileDialog::openFile(os, testDir + "_common_data/cmdline/", "DNA.fa");
+    GTUtilsDocument::checkDocument(os, "DNA.fa");
+
+    Runnable * findDialog = new FindRepeatsDialogFiller(os, testDir + "_common_data/scenarios/sandbox/", true, 10, 75, 100);
+    GTUtilsDialog::waitForDialog(os, findDialog);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "find_repeats_action", GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep(6000);
+
+    QTreeWidget *treeWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
+    CHECK_SET_ERR(treeWidget != NULL, "Tree widget is NULL");
+
+    QTreeWidgetItem *annotationGroup = GTUtilsAnnotationsTreeView::findItem(os, "repeat_unit  (0, 39)");
+    QTreeWidgetItem *generalItem = annotationGroup->child(36);
+    CHECK_SET_ERR(generalItem != NULL, "Invalid annotation tree item");
+
+    AVAnnotationItem *annotation = dynamic_cast<AVAnnotationItem *>(generalItem);
+    if (annotation == NULL || "76" != annotation->annotation.findFirstQualifierValue("repeat_homology(%)")) {
+        os.setError("Annotation is not found");
+        return;
+    }
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTMouseDriver::click(os);
 }
 
 } // GUITest_regression_scenarios namespace
