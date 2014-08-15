@@ -44,8 +44,8 @@
 
 namespace U2 {
 
-GSequenceLineView::GSequenceLineView(QWidget* p, ADVSequenceObjectContext* _ctx) 
-: QWidget(p), ctx(_ctx), renderArea(NULL), scrollBar(NULL), lastPressPos(-1), 
+GSequenceLineView::GSequenceLineView(QWidget* p, ADVSequenceObjectContext* _ctx)
+: QWidget(p), ctx(_ctx), renderArea(NULL), scrollBar(NULL), lastPressPos(-1),
 lastUpdateFlags(GSLV_UF_ViewResized), featureFlags(GSLV_FF_SupportsCustomRange),
 frameView(NULL), coherentRangeView(NULL), ignoreMouseSelectionEvents(false)
 {
@@ -56,7 +56,7 @@ frameView(NULL), coherentRangeView(NULL), ignoreMouseSelectionEvents(false)
     coefScrollBarMapping = (seqLen >= INT_MAX) ? (((double)INT_MAX)/seqLen) : 1;
 
     scrollBar = new GScrollBar(Qt::Horizontal, this);
-    
+
     connect(ctx->getSequenceSelection(),
         SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)),
         SLOT(sl_onDNASelectionChanged(LRegionsSelection*, const QVector<U2Region>& , const QVector<U2Region>&)));
@@ -74,7 +74,7 @@ void GSequenceLineView::pack() {
     setFixedHeight(layout->minimumSize().height());
 }
 
-void GSequenceLineView::resizeEvent(QResizeEvent *e) { 
+void GSequenceLineView::resizeEvent(QResizeEvent *e) {
     updateScrollBar();
     addUpdateFlags(GSLV_UF_ViewResized);
     QWidget::resizeEvent(e);
@@ -186,7 +186,7 @@ void GSequenceLineView::mousePressEvent(QMouseEvent* me) {
 
 void GSequenceLineView::mouseReleaseEvent(QMouseEvent* me) {
     setFocus();
-    
+
     if (!ignoreMouseSelectionEvents) {
         //click with 'alt' selects a single base
         Qt::KeyboardModifiers km = QApplication::keyboardModifiers();
@@ -215,7 +215,7 @@ void GSequenceLineView::mouseMoveEvent(QMouseEvent* me) {
     }
     if (me->buttons() & Qt::LeftButton) {
         QPoint areaPoint = toRenderAreaPoint(me->pos());
-        
+
         // manage scrollbar auto-scrolling
         if (areaPoint.x() > width()) {
             scrollBar->setupRepeatAction(QAbstractSlider::SliderSingleStepAdd);
@@ -224,7 +224,7 @@ void GSequenceLineView::mouseMoveEvent(QMouseEvent* me) {
         } else {
             scrollBar->setupRepeatAction(QAbstractSlider::SliderNoAction);
         }
-        
+
         // compute selection
         qint64 pos = renderArea->coordToPos(areaPoint.x());
         qint64 selStart = qMin(lastPressPos, pos);
@@ -348,7 +348,7 @@ void GSequenceLineView::wheelEvent(QWheelEvent *we) {
         if (zoomAction != NULL) {
             zoomAction->activate(QAction::Trigger);
         }
-    } 
+    }
 }
 
 void GSequenceLineView::sl_onDNASelectionChanged(LRegionsSelection*, const QVector<U2Region>& added, const QVector<U2Region>& removed) {
@@ -446,7 +446,7 @@ void GSequenceLineView::sl_onCoherentRangeViewRangeChanged() {
 
 void GSequenceLineView::setVisibleRange(const U2Region& newRange, bool signal) {
     SAFE_POINT(newRange.startPos >=0 && newRange.endPos() <= seqLen, "Failed to update visible range. Range is out of the sequence range!",);
-    
+
     if (newRange == visibleRange) {
         return;
     }
@@ -464,7 +464,8 @@ U2SequenceObject* GSequenceLineView::getSequenceObject() const {
 
 
 void GSequenceLineView::completeUpdate(){
-    addUpdateFlags(GSLV_UF_NeedCompleteRedraw); 
+    seqLen = ctx->getSequenceLength();
+    addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
     update();
 }
 
@@ -491,7 +492,7 @@ GSequenceLineViewRenderArea::GSequenceLineViewRenderArea(GSequenceLineView* v) :
     rulerFont.setPointSize(8);
 
     updateFontMetrics();
-} 
+}
 
 GSequenceLineViewRenderArea::~GSequenceLineViewRenderArea() {
     delete cachedView;
