@@ -1213,7 +1213,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_common_scenarios_shared_database::del_test_0001);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::del_test_0002);
-    REGISTER_TEST(GUITest_common_scenarios_shared_database::del_test_0003);
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_shared_database::del_test_0003, "UGENE-3387");
 
     REGISTER_TEST(GUITest_common_scenarios_shared_database::export_test_0001);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::export_test_0002);

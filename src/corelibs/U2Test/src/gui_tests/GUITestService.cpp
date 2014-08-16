@@ -324,6 +324,9 @@ void GUITestService::runGUITest(GUITest* t) {
         }
     }
 
+    QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
+    originalPixmap.save(GUITest::screenshotDir + t->getName() + ".jpg");
+
     QString testResult = os.hasError() ? os.getError() : GUITestTeamcityLogger::successResult;
     writeTestResult(testResult);
 
