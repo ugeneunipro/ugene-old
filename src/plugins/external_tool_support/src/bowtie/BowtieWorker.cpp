@@ -204,6 +204,7 @@ DnaAssemblyToRefTaskSettings BowtieWorker::getSettings( U2OpStatus &os ){
     customSettings.insert(BowtieTask::OPTION_ALL, getValue<bool>(ALL));
     customSettings.insert(BowtieTask::OPTION_NOMAQROUND, getValue<bool>(NOMAQROUND));
     customSettings.insert(BowtieTask::OPTION_COLORSPACE, getValue<bool>(COLORSPACE));
+    customSettings.insert(BowtieTask::OPTION_THREADS, 4);
 
     settings.setCustomSettings(customSettings);
 

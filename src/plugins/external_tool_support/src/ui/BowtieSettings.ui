@@ -251,7 +251,7 @@ Default: 64.</string>
          </widget>
         </item>
         <item row="6" column="3">
-         <widget class="QSpinBox" name="spinBox">
+         <widget class="QSpinBox" name="seedSpinBox">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -411,7 +411,7 @@ bowtie is somewhat slower when --best is specified.
   <tabstop>chunckmbsCheckBox</tabstop>
   <tabstop>chunkmbsSpinBox</tabstop>
   <tabstop>seedCheckBox</tabstop>
-  <tabstop>spinBox</tabstop>
+  <tabstop>seedSpinBox</tabstop>
   <tabstop>threadsSpinBox</tabstop>
   <tabstop>colorspaceCheckBox</tabstop>
   <tabstop>nomaqroundCheckBox</tabstop>
@@ -490,7 +490,7 @@ bowtie is somewhat slower when --best is specified.
   <connection>
    <sender>seedCheckBox</sender>
    <signal>clicked(bool)</signal>
-   <receiver>spinBox</receiver>
+   <receiver>seedSpinBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

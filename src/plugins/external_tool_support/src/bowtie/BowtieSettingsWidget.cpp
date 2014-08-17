@@ -79,7 +79,7 @@ QMap<QString,QVariant> BowtieSettingsWidget::getDnaAssemblyCustomSettings() {
         settings.insert(BowtieTask::OPTION_CHUNKMBS, chunkmbsSpinBox->value());
     }
     if(seedCheckBox->isChecked()) {
-        settings.insert(BowtieTask::OPTION_SEED, seedlenSpinBox->value());
+        settings.insert(BowtieTask::OPTION_SEED, seedSpinBox->value());
     }
 
     settings.insert(BowtieTask::OPTION_THREADS, threadsSpinBox->value());
