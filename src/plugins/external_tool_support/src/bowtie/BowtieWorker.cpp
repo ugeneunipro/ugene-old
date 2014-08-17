@@ -160,8 +160,6 @@ void BowtieWorker::sl_taskFinished() {
 DnaAssemblyToRefTaskSettings BowtieWorker::getSettings( U2OpStatus &os ){
     DnaAssemblyToRefTaskSettings settings;
 
-    settings.prebuiltIndex = true;
-
     QString outDir = GUrlUtils::createDirectory(
         getValue<QString>(OUTPUT_DIR) + QDir::separator() + BASE_Bowtie_SUBDIR,
         "_", os);
@@ -177,8 +175,10 @@ DnaAssemblyToRefTaskSettings BowtieWorker::getSettings( U2OpStatus &os ){
     }
     settings.resultFileName = outDir + outFileName;
     
-    settings.indexFileName = getValue<QString>(REFERENCE_GENOME);
-    settings.refSeqUrl = GUrl(settings.indexFileName).baseFileName();
+    QString refGenome = getValue<QString>(REFERENCE_GENOME);
+    settings.prebuiltIndex = !refGenome.contains(".fa");
+    settings.indexFileName = refGenome;
+    settings.refSeqUrl = refGenome;
 
     settings.algName = BowtieTask::taskName;
 
