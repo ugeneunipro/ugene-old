@@ -42,6 +42,7 @@
 
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsBookmarksTreeView.h"
+#include "GTUtilsCircularView.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsEscClicker.h"
 #include "GTUtilsLog.h"
@@ -5050,6 +5051,33 @@ GUI_TEST_CLASS_DEFINITION(test_3250) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(opStatus, QStringList() << "Export/Import"));
     GTMouseDriver::click(os, Qt::RightButton);
     CHECK_SET_ERR(opStatus.hasError(), "Export item exists");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3274) {
+    QStringList expectedNames;
+    QList<ADVSingleSequenceWidget*> seqWidgets;
+    expectedNames << "seq1" << "seq3" << "seq5";
+
+    seqWidgets = GTUtilsProject::openFileExpectSequences(os,
+        testDir + "_common_data/alphabets",
+        "standard_dna_rna_amino_1000.fa",
+        expectedNames);
+    CHECK_OP_SET_ERR(os, "Failed to open sequences!");
+
+    ADVSingleSequenceWidget *seq1Widget = seqWidgets.at(0);
+    ADVSingleSequenceWidget *seq3Widget = seqWidgets.at(1);
+    ADVSingleSequenceWidget *seq5Widget = seqWidgets.at(2);
+
+    GTUtilsCv::cvBtn::click(os, seq3Widget);
+    GTUtilsCv::cvBtn::click(os, seq1Widget);
+
+    QWidget* circularView = GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_0");
+    CHECK_OP_SET_ERR(os, "Failed to open circular view!");
+
+    GTUtilsDialog::waitForDialog(os, new CircularViewExportImage(os, testDir + "_common_data/scenarios/sandbox/image.jpg", "", "seq3"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< ADV_MENU_EXPORT << "Save circular view as image", GTGlobals::UseMouse));
+
+    GTWidget::click(os, circularView, Qt::RightButton);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3277){

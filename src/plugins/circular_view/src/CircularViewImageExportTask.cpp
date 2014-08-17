@@ -169,6 +169,7 @@ void CircularViewImageExportTaskFactory::initSettingsWidget() {
             }
         }
         sequenceComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        sequenceComboBox->setObjectName("Exported_sequence_combo");
 
         QHBoxLayout* seqLayout = new QHBoxLayout();
         seqLayout->addWidget(label);

@@ -40,6 +40,21 @@ namespace U2 {
         int spinValue;
     };
 
+    class CircularViewExportImage : public Filler {
+    public:
+        CircularViewExportImage(U2OpStatus &_os, QString _filePath, QString _comboValue = "", QString exportedSequenceName = "", int _spinValue=0) : Filler(_os, "ImageExportForm"),
+            filePath(_filePath),
+            comboValue(_comboValue),
+            spinValue(_spinValue),
+            exportedSequenceName(exportedSequenceName)
+            {}
+        virtual void run();
+    protected:
+        QString filePath, comboValue;
+        int spinValue;
+        QString exportedSequenceName;
+    };
+
     struct RegionMsa {
         RegionMsa(const U2Region &region = U2Region(),
                   const QStringList &seqList = QStringList())

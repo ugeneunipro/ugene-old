@@ -75,6 +75,40 @@ void ExportImage::run() {
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::CircularViewExportImage"
+#define GT_METHOD_NAME "run"
+void CircularViewExportImage::run() {
+
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QLineEdit* fileEdit = dialog->findChild<QLineEdit*>("fileNameEdit");
+    GTLineEdit::setText(os,fileEdit, filePath);
+
+    if(comboValue != ""){
+        QComboBox* formatsBox = dialog->findChild<QComboBox*>("formatsBox");
+        GTComboBox::setIndexWithText(os, formatsBox,comboValue);
+    }
+
+    if(spinValue){
+        QSpinBox* spin = dialog->findChild<QSpinBox*>("qualitySpinBox");
+        GTSpinBox::setValue(os, spin, spinValue, GTGlobals::UseKeyBoard);
+    }
+
+    if(!exportedSequenceName.isEmpty()) {
+        QComboBox* seqsCombo = dialog->findChild<QComboBox*>("Exported_sequence_combo");
+        GTComboBox::setIndexWithText(os, seqsCombo, exportedSequenceName);
+    }
+
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
 #define GT_CLASS_NAME "GTUtilsDialog::ExportMsaImage"
 #define GT_METHOD_NAME "run"
 void ExportMsaImage::run() {

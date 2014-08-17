@@ -83,6 +83,7 @@ void CircularViewContext::initViewContext(GObjectView* v) {
 
     exportAction = new GObjectViewAction(this, v, tr("Save circular view as image"));
     exportAction->setIcon(QIcon(":/core/images/cam2.png"));
+    exportAction->setObjectName("Save circular view as image");
 
     setSequenceOriginAction = new GObjectViewAction(this, v, tr("Set new sequence origin..."));
     connect(setSequenceOriginAction, SIGNAL(triggered()), SLOT(sl_setSequenceOrigin()));
