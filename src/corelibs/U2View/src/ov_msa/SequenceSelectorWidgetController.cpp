@@ -36,6 +36,7 @@ SequenceSelectorWidgetController::SequenceSelectorWidgetController(MSAEditor* _m
     seqLineEdit->setText(msa->getReferenceRowName());
     seqLineEdit->setCursorPosition(CURSOR_START_POSITION);
     seqLineEdit->setObjectName("sequenceLineEdit");
+    seqId = msa->getReferenceRowId();
     completer = new BaseCompleter(filler, seqLineEdit);
     updateCompleter();
 
@@ -85,7 +86,10 @@ void SequenceSelectorWidgetController::updateCompleter() {
     }
 }
 
-void SequenceSelectorWidgetController::sl_seqLineEditEditingFinished(const MAlignment& , const MAlignmentModInfo&){
+void SequenceSelectorWidgetController::sl_seqLineEditEditingFinished(const MAlignment& , const MAlignmentModInfo& modInfo){
+    if(!modInfo.sequenceListChanged) {
+        return;
+    }
     MAlignmentObject* maObj = msa->getMSAObject();
     const MAlignment& ma = maObj->getMAlignment();
     filler->updateSeqList(ma.getRowNames());
