@@ -72,27 +72,6 @@ private:
     void parseHsp(const QDomNode &xml,const QString &id, const QString &def, const QString &accession);
 };
 
-class HttpRequestCDD:public HttpRequest {
-public:
-    HttpRequestCDD(Task *_task):HttpRequest(_task){};
-    virtual void sendRequest(const QString &program,const QString &query);
-    virtual void parseResult(ResponseBuffer &buf);
-
-private:
-    class Waiter: public QThread {
-    public:
-        static void await(int mseconds) {
-            msleep(mseconds);
-        }
-    };
-    static const QString host;
-    void parseHit(QByteArray &b,ResponseBuffer &buf);
-    QString extractText(const QByteArray &b);
-    bool getLocations(QByteArray &b,int &from, int &to);
-
-    static const QByteArray SERVER_CONTACTING_MESSAGE;
-    static const QByteArray PAGE_REFRESHING_MESSAGE;
-};
 
 }
 

@@ -70,7 +70,7 @@ RemoteBLASTPlugin::RemoteBLASTPlugin():Plugin(tr("Remote BLAST"),tr("Performs re
     DataBaseRegistry *reg = AppContext::getDataBaseRegistry();
     reg->registerDataBase(new BLASTFactory(),"blastn");
     reg->registerDataBase(new BLASTFactory(),"blastp");
-    reg->registerDataBase(new CDDFactory(),"cdd");
+    reg->registerDataBase(new BLASTFactory(),"cdd");
 
     LocalWorkflow::RemoteBLASTWorkerFactory::init();
 

@@ -377,14 +377,19 @@ void SendSelectionDialog::sl_OK() {
     }
 
     else { //CDD
-        if(!isAminoSeq) {
-            translateToAmino = true;
-        }
+        requestParameters = "CMD=Put";
+        db = "blastp";
+        addParametr(requestParameters,ReqParams::program, db);
 
-        requestParameters = "filter=true";
-        addParametr(requestParameters,ReqParams::cdd_db,dbComboBox->currentText());
-        addParametr(requestParameters,ReqParams::cdd_hits,quantitySpinBox->value());
-        addParametr(requestParameters,ReqParams::cdd_eValue,evalueSpinBox->value());    
+        double eValue = evalueSpinBox->value();
+        addParametr(requestParameters,ReqParams::expect, evalueSpinBox->value());
+
+        addParametr(requestParameters,ReqParams::hits,quantitySpinBox->value());
+
+        QString dbName = dbComboBox->currentText().split(" ").last();
+        addParametr(requestParameters,ReqParams::database, dbName.toLower());
+        addParametr(requestParameters,ReqParams::service, "rpsblast");
+        addParametr(requestParameters,ReqParams::database, dbName.toLower());
     }
 
     if(translateToAmino) {

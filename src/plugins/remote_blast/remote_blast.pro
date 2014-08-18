@@ -15,7 +15,6 @@ SOURCES += src/RemoteBLASTPlugin.cpp \
 			src/RemoteBLASTPluginTests.cpp \
 			src/RemoteBLASTTask.cpp \
 			src/HttpRequestBLAST.cpp \
-			src/HttpRequestCDD.cpp \
 			src/SendSelectionDialog.cpp \
 			src/RemoteBLASTConsts.cpp \
 			src/RemoteBLASTWorker.cpp \

@@ -32,10 +32,6 @@ class BLASTFactory: public DataBaseFactory {
     HttpRequest* getRequest(Task *t) {return new HttpRequestBLAST(t);}
 };
 
-class CDDFactory: public DataBaseFactory {
-    HttpRequest* getRequest(Task* t) {return new HttpRequestCDD(t);}
-};
-
 }
 
 
