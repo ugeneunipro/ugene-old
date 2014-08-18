@@ -94,7 +94,7 @@ void CircularViewContext::initViewContext(GObjectView* v) {
         sl_sequenceWidgetAdded(w);
     }
     connect(av, SIGNAL(si_sequenceWidgetAdded(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetAdded(ADVSequenceWidget*)));
-    connect (av, SIGNAL(si_sequenceWidgetRemoved(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetRemoved(ADVSequenceWidget*)));
+    connect(av, SIGNAL(si_sequenceWidgetRemoved(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetRemoved(ADVSequenceWidget*)));
 
     ADVGlobalAction* globalToggleViewAction = new ADVGlobalAction(av,
         QIcon(":circular_view/images/circular.png"),
@@ -198,6 +198,7 @@ void CircularViewContext::buildMenu(U2::GObjectView *v, QMenu *m) {
     }
     QMenu* exportMenu = GUIUtils::findSubMenu(m, ADV_MENU_EXPORT);
     SAFE_POINT(exportMenu != NULL, "exportMenu", );
+    reconnectExportAction(v);
     exportMenu->addAction(exportAction);
 
     QMenu* editMenu = GUIUtils::findSubMenu(m, ADV_MENU_EDIT);
@@ -222,6 +223,20 @@ void CircularViewContext::removeCircularView(GObjectView* view) {
             delete circularView;
         }
     }
+}
+
+void CircularViewContext::reconnectExportAction(GObjectView *view) {
+    QList<QObject*> list = viewResources.value(view);
+    CHECK( !list.isEmpty(), );
+
+    CircularViewSplitter* circularView = qobject_cast<CircularViewSplitter*>(list.first());
+    SAFE_POINT( circularView != NULL, "CircularViewSplitter is NULL", );
+
+    if (!exportAction) {
+        initViewContext(view);
+    }
+    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
+    connect(exportAction, SIGNAL(triggered()), circularView, SLOT(sl_export()));
 }
 
 void CircularViewContext::sl_showCircular() {

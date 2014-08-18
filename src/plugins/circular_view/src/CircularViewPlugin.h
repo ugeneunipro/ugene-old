@@ -76,10 +76,11 @@ protected:
     void buildMenu(GObjectView* v, QMenu* m);
     CircularViewSplitter* getView(GObjectView* view, bool create);
     void removeCircularView(GObjectView* view);
+    void reconnectExportAction(GObjectView* view);
 private:
     GObjectViewAction* exportAction;
     GObjectViewAction* setSequenceOriginAction;
-};    
+};
 
 } //namespace
 
