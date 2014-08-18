@@ -244,11 +244,15 @@ Task* RemoteBLASTWorker::tick() {
             evalue = 10;
         }
 
-        if(cfg.dbChoosen == "cdd") {
+        if(cfg.dbChoosen.contains("cdd", Qt::CaseInsensitive)) {
+            cfg.dbChoosen = "blastp";
+            cfg.params = "CMD=Put";
+            addParametr(cfg.params, ReqParams::program, cfg.dbChoosen);
+            addParametr(cfg.params, ReqParams::service, "rpsblast");
             QString usedDB = getValue<QString>(DATABASE_ATTR);
-            addParametr(cfg.params,ReqParams::database,usedDB);
-            addParametr(cfg.params,ReqParams::cdd_hits,maxHits);
-            addParametr(cfg.params,ReqParams::cdd_eValue,evalue);
+            addParametr(cfg.params, ReqParams::database, usedDB.toLower());
+            addParametr(cfg.params, ReqParams::hits, maxHits);
+            addParametr(cfg.params, ReqParams::expect, evalue);
         }
         else {
             cfg.params = "CMD=Put";
