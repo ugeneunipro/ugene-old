@@ -641,9 +641,9 @@ void MSAEditor::copyRowFromSequence(U2SequenceObject *seqObj, U2OpStatus &os) {
     msaObject->updateCachedMAlignment();
 }
 
-void MSAEditor::sl_onSeqOrderChanged( QStringList* order ){
+void MSAEditor::sl_onSeqOrderChanged(const QStringList& order ){
     if(!msaObject->isStateLocked()) {
-        msaObject->sortRowsByList(*order);
+        msaObject->sortRowsByList(order);
     }
 }
 

@@ -200,7 +200,7 @@ protected slots:
     void sl_unsetReferenceSeq();
     void sl_exportHighlighted();
 
-    void sl_onSeqOrderChanged(QStringList* order);
+    void sl_onSeqOrderChanged(const QStringList& order);
     void sl_showTreeOP();
     void sl_hideTreeOP();
     void sl_rowsRemoved(const QList<qint64> &rowIds);

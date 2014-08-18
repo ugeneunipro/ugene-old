@@ -95,14 +95,15 @@ void MSAEditorTreeViewer::setSynchronizationMode(SynchronizationMode newSyncMode
         if(false == slotsAreConnected) {
             connect(treeViewerUI, SIGNAL(si_collapseModelChangedInTree(const QList<QStringList>&)), 
                 msaUI->getSequenceArea(), SLOT(sl_setCollapsingRegions(const QList<QStringList>&)));
-            connect(treeViewerUI, SIGNAL(si_seqOrderChanged(QStringList*)), msa, SLOT(sl_onSeqOrderChanged(QStringList*)));
+            connect(treeViewerUI, SIGNAL(si_seqOrderChanged(const QStringList&)), msa, SLOT(sl_onSeqOrderChanged(const QStringList&)));
             connect(treeViewerUI, SIGNAL(si_groupColorsChanged(const GroupColorSchema&)), msaUI->getEditorNameList(), SLOT(sl_onGroupColorsChanged(const GroupColorSchema&)));
-            //connect(msa, SIGNAL(si_sizeChanged(int, bool, bool)), treeViewerUI, SLOT(sl_onHeightChanged(int, bool, bool)));
 
             connect(msa,                        SIGNAL(si_referenceSeqChanged(qint64)),
                     treeViewerUI,               SLOT(sl_onReferenceSeqChanged(qint64)));
             connect(msaUI->getSequenceArea(),   SIGNAL(si_visibleRangeChanged(QStringList, int)),
                     treeViewerUI,               SLOT(sl_onVisibleRangeChanged(QStringList, int)));
+            connect(msa->getMSAObject(),        SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
+                SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
 
             slotsAreConnected = true;
         }
@@ -112,6 +113,33 @@ void MSAEditorTreeViewer::setSynchronizationMode(SynchronizationMode newSyncMode
     }
     connect(msaUI->getSequenceArea(),   SIGNAL(si_selectionChanged(const QStringList&)), treeViewerUI,  SLOT(sl_selectionChanged(const QStringList&)));
     connect(msaUI->getEditorNameList(), SIGNAL(si_sequenceNameChanged(QString, QString)), treeViewerUI, SLOT(sl_sequenceNameChanged(QString, QString)));
+}
+
+void MSAEditorTreeViewer::sl_alignmentChanged(const MAlignment& aln, const MAlignmentModInfo& mod) {
+    if(mod.sequenceListChanged) {
+        MSAEditorTreeViewerUI* treeViewerUI = dynamic_cast<MSAEditorTreeViewerUI*>(ui);
+        CHECK(NULL != treeViewerUI, );
+
+        QStringList alnRowNames = msa->getMSAObject()->getMAlignment().getRowNames();
+        QStringList treeRowNames = treeViewerUI->getOrderedSeqNames();
+        if(alnRowNames.count() != treeRowNames.count()) {
+            sortSeqAction->setEnabled(false);
+            return;
+        }
+
+        bool sameOrder = true;
+        foreach(const QString& alnRowName, alnRowNames) {
+            int treeRowIndex = treeRowNames.indexOf(alnRowName);
+            if(treeRowIndex < 0) {
+                sortSeqAction->setEnabled(false);
+                return;
+            }
+            else if(sameOrder && treeRowIndex != alnRowNames.indexOf(alnRowName)) {
+                sameOrder = false;
+            }
+        }
+        sortSeqAction->setEnabled(!sameOrder);
+    }
 }
 
 MSAEditorTreeViewerUI::MSAEditorTreeViewerUI(MSAEditorTreeViewer* treeViewer) 
@@ -307,7 +335,7 @@ void MSAEditorTreeViewerUI::sl_sequenceNameChanged(QString prevName, QString new
 
 typedef QPair<qreal, QString> seqNameWithPos;
 
-QStringList* MSAEditorTreeViewerUI::getOrderedSeqNames() {
+QStringList MSAEditorTreeViewerUI::getOrderedSeqNames() {
     QList<QGraphicsItem*> items = scene()->items();
     QList<seqNameWithPos> namesAndHeights;
 
@@ -326,9 +354,9 @@ QStringList* MSAEditorTreeViewerUI::getOrderedSeqNames() {
     }
     qSort(namesAndHeights.begin(), namesAndHeights.end());
 
-    QStringList *seqNames = new QStringList;
+    QStringList seqNames;
     foreach(seqNameWithPos pair, namesAndHeights) {
-        seqNames->append(pair.second);
+        seqNames.append(pair.second);
     }
 
     getTreeSize();

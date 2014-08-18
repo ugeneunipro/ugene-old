@@ -84,6 +84,7 @@ protected:
     virtual QWidget* createWidget();
 private slots:
     void sl_refreshTree();
+    void sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&);
 signals:
     void si_refreshTree(MSAEditorTreeViewer* treeViewer);
 private:
@@ -106,7 +107,7 @@ public:
         emit si_groupColorsChanged(GroupColorSchema());
     }
 
-    QStringList* getOrderedSeqNames();
+    QStringList getOrderedSeqNames();
 
     U2Region getTreeSize(); 
 
@@ -127,7 +128,7 @@ protected:
     virtual void updateTreeSettings(bool setDefaultZoom = true);
 signals:
     void si_collapseModelChangedInTree(const QList<QStringList>&);
-    void si_seqOrderChanged(QStringList* order);
+    void si_seqOrderChanged(const QStringList& order);
     void si_groupColorsChanged(const GroupColorSchema& schema);
 public slots:
     void sl_sortAlignment();
