@@ -389,7 +389,6 @@ void SendSelectionDialog::sl_OK() {
         QString dbName = dbComboBox->currentText().split(" ").last();
         addParametr(requestParameters,ReqParams::database, dbName.toLower());
         addParametr(requestParameters,ReqParams::service, "rpsblast");
-        addParametr(requestParameters,ReqParams::database, dbName.toLower());
     }
 
     if(translateToAmino) {
