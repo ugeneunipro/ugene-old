@@ -211,8 +211,8 @@ void CircularView::mouseMoveEvent( QMouseEvent * e )
             if (e->modifiers() & Qt::ControlModifier ) {
                 setInverseSelection(U2Region(0, selEnd), U2Region(selStart, seqLen - selStart));
             } else {
-                setSelection(U2Region(selStart, seqLen-selStart));
-                addSelection(U2Region(0, selEnd));
+                setSelection(U2Region(0, selEnd));
+                addSelection(U2Region(selStart, seqLen-selStart));
             }
         }
         else {
