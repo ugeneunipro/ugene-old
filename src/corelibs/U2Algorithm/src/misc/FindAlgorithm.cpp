@@ -111,6 +111,10 @@ FindAlgorithmSettings::FindAlgorithmSettings(const QByteArray &pattern, FindAlgo
 
 }
 
+static qint64 cycleIndex(qint64 segmentLen, qint64 index) {
+    return (index >= segmentLen ? index - segmentLen : index);
+}
+
 //TODO: in BothStrands&SingleShot mode it's impossible to find result on complement strand if there also a result on direct strand from the same pos!
 
 static void findInAmino(    FindAlgorithmResultsListener* rl,
@@ -120,6 +124,7 @@ static void findInAmino(    FindAlgorithmResultsListener* rl,
                             bool insDel,
                             const char* seq,
                             const U2Region& range,
+                            bool searchIsCircular,
                             const char* pattern,
                             int patternLen,
                             int maxErr,
@@ -128,6 +133,7 @@ static void findInAmino(    FindAlgorithmResultsListener* rl,
 {
     SAFE_POINT( aminoTT->getSrcAlphabet( )->isNucleic( ) && aminoTT->getDstAlphabet( )->isAmino( ),
         "Invalid alphabet detected!", );
+    SAFE_POINT( !searchIsCircular || range.length == QByteArray(seq).size() , "Circular search is available only for the whole sequence", );
 
     int width =  patternLen + maxErr;
     int height = patternLen;
@@ -153,8 +159,9 @@ static void findInAmino(    FindAlgorithmResultsListener* rl,
     QByteArray complMap = complTT == NULL ? QByteArray() : complTT->getOne2OneMapper();
     int patternLenInNucl =  3 * patternLen;
 
-    for (int i=range.startPos, end = range.endPos(), translStrand = 0;
-        i < end-2 && !stopFlag;
+    int end = (searchIsCircular ? range.endPos() + 3*(patternLen - 1) : range.endPos());
+    for (int i=range.startPos, translStrand = 0;
+        i < end - 2 && !stopFlag;
         i++, leftTillPercent--, translStrand = translStrand == 2 ? 0 : translStrand + 1)
     {
         for (int ci = conStart; ci < conEnd; ci++) {
@@ -164,9 +171,14 @@ static void findInAmino(    FindAlgorithmResultsListener* rl,
             FindAlgorithmResult& res = ctx.res;
 
             for (int j=0; j < patternLen; j++) { //TODO: optimize -> specialize loops
+                int k = cycleIndex(range.length, i);
                 char amino = ci == 0 ?
-                    aminoTT->translate3to1( seq[i], seq[i + 1], seq[i + 2]) :  //direct amino
-                    aminoTT->translate3to1(complMap.at( (quint8) seq[i + 2]), complMap.at((quint8) seq[i + 1]), complMap.at( (quint8)seq[i]) ); //compl amino
+                    aminoTT->translate3to1( seq[k],
+                                            seq[cycleIndex(range.length, k + 1)],
+                                            seq[cycleIndex(range.length, k + 2)]) :  //direct amino
+                    aminoTT->translate3to1(complMap.at( (quint8) seq[cycleIndex(range.length, k + 2)]),
+                                           complMap.at((quint8) seq[cycleIndex(range.length, k + 1)]),
+                                           complMap.at( (quint8)seq[k]) ); //compl amino
 
                 bool matched = (amino == p[j]);
                 dt.match(j, matched);
@@ -182,10 +194,12 @@ static void findInAmino(    FindAlgorithmResultsListener* rl,
                 if (res.isEmpty() || res.err > err || (res.err == err && newLen < res.region.length)) {
                     SAFE_POINT( newLen + 3  * maxErr >= patternLenInNucl, "Internal algorithm error!", );
                     int newStart = i - newLen + 3;
-                    if (insDel || (range.contains(newStart) && range.contains(newStart + newLen - 1))) {//boundary check for mismatch mode
+                    bool boundaryCheck = range.contains(newStart) && range.contains(newStart + newLen - 1);
+                    bool circularBoundaryCheck = (!range.contains(newStart + newLen - 1) && searchIsCircular);
+                    if (insDel || boundaryCheck || circularBoundaryCheck) {//boundary check for mismatch mode
                         SAFE_POINT( insDel || newLen == patternLenInNucl, "Internal algorithm error!", );
                         SAFE_POINT( newStart >= range.startPos, "Internal algorithm error!", );
-                        SAFE_POINT( newStart+newLen <= range.endPos( ), "Internal algorithm error!", );
+                        SAFE_POINT( searchIsCircular || newStart+newLen <= range.endPos( ), "Internal algorithm error!", );
 
                         res.region.startPos = newStart;
                         res.region.length = newLen;
@@ -216,6 +230,7 @@ static void findInAmino_subst(  FindAlgorithmResultsListener *rl,
                                 FindAlgorithmStrand strand,
                                 const char *seq,
                                 const U2Region &range,
+                                bool searchIsCircular,
                                 const char *pattern,
                                 int patternLen,
                                 int maxErr,
@@ -224,6 +239,8 @@ static void findInAmino_subst(  FindAlgorithmResultsListener *rl,
 {
     SAFE_POINT( NULL != complTT && NULL != aminoTT && aminoTT->getSrcAlphabet( )->isNucleic( )
         && aminoTT->getDstAlphabet( )->isAmino( ), "Invalid alphabet supplied!", );
+    SAFE_POINT( !searchIsCircular || range.length == QByteArray(seq).size() , "Circular search is available only for the whole sequence", );
+
     int patternLenInNucl =  3 * patternLen;
     if( range.length < patternLenInNucl ) {
         return;
@@ -235,11 +252,17 @@ static void findInAmino_subst(  FindAlgorithmResultsListener *rl,
     QByteArray translatedPiece2( patternLen, 0 );
     QByteArray translatedPiece3( patternLen, 0 );
 
-    int tail = range.length - patternLenInNucl - 2;
+    QByteArray seqExpanded;
+    seqExpanded.append(QByteArray(seq));
+    if (searchIsCircular) {
+        seqExpanded.append(QByteArray(seq, 3*(patternLen - 1)));
+    }
+
+    int tail = range.length - patternLenInNucl - 2 + searchIsCircular *(patternLenInNucl - 3);
     tail = tail > 0 ? 0 : tail;
-    aminoTT->translate( seq + range.startPos, patternLenInNucl + tail + 2, translatedPiece1.data(), patternLen );
-    aminoTT->translate( seq + range.startPos+1, patternLenInNucl + tail + 1, translatedPiece2.data(), patternLen );
-    aminoTT->translate( seq + range.startPos+2, patternLenInNucl + tail, translatedPiece3.data(), patternLen );
+    aminoTT->translate( seqExpanded.data() + range.startPos, patternLenInNucl + tail + 2, translatedPiece1.data(), patternLen );
+    aminoTT->translate( seqExpanded.data() + range.startPos + 1, patternLenInNucl + tail + 1, translatedPiece2.data(), patternLen );
+    aminoTT->translate( seqExpanded.data() + range.startPos + 2, patternLenInNucl + tail, translatedPiece3.data(), patternLen );
 
     QByteArray translatedPiece1c( patternLen, 0 );
     QByteArray translatedPiece2c( patternLen, 0 );
@@ -266,7 +289,7 @@ static void findInAmino_subst(  FindAlgorithmResultsListener *rl,
         StrandContext(translatedPiece3c, patternLen, revPattern.data()),
     };
 
-    int onePercentLen = range.length / 100;
+    int onePercentLen = (range.length + searchIsCircular * (patternLenInNucl - 1) ) / 100;
     int leftTillPercent = onePercentLen;
 
     percentsCompleted = 0;
@@ -274,7 +297,8 @@ static void findInAmino_subst(  FindAlgorithmResultsListener *rl,
     int conEnd =  isComplement(strand) ? 2 : 1;
     QByteArray complMap = complTT ? complTT->getOne2OneMapper() : QByteArray();
 
-    for( int i = range.startPos, end = range.endPos(), translStrand = 0;
+    int end = searchIsCircular ? range.endPos() + patternLenInNucl - 1: range.endPos();
+    for( int i = range.startPos, translStrand = 0;
         i < end - patternLenInNucl + 1 && !stopFlag;
         i++, leftTillPercent--, translStrand = translStrand == 2 ? 0 : translStrand + 1)
     {
@@ -293,9 +317,9 @@ static void findInAmino_subst(  FindAlgorithmResultsListener *rl,
             }
             if( i + patternLenInNucl + 2 < end ) {
                 int wheree = i + patternLenInNucl;
-                char c1 = ci ? complMap.at( (quint8)seq[wheree+2] ) : seq[wheree];
-                char c2 = ci ? complMap.at((quint8)seq[wheree+1] ) : seq[wheree+1];
-                char c3 = ci ? complMap.at((quint8)seq[wheree] ) : seq[wheree+2];
+                char c1 = ci ? complMap.at( (quint8)seqExpanded[ wheree + 2] ) : seq[ wheree ];
+                char c2 = ci ? complMap.at((quint8)seqExpanded[ wheree + 1 ] ) : seq[ wheree + 1 ];
+                char c3 = ci ? complMap.at((quint8)seqExpanded[ wheree ] ) : seqExpanded[ wheree + 2 ];
                 char newchar = aminoTT->translate3to1( c1, c2, c3 );
                 ci ? ctx.rollArr.push_front_pop_back( newchar ) : ctx.rollArr.push_back_pop_front( newchar );
             }
@@ -473,11 +497,13 @@ static void findInAmino_regExp( FindAlgorithmResultsListener *rl,
                                 FindAlgorithmStrand strand,
                                 const char *seq,
                                 const U2Region &range,
+                                bool searchIsCircular,
                                 const char *pattern,
                                 int maxRegExpResult,
                                 int &stopFlag,
                                 int &percentsCompleted )
 {
+    SAFE_POINT( !searchIsCircular || range.length == QByteArray(seq).size() , "Circular search is available only for the whole sequence", );
     percentsCompleted = 0;
 
     int conStart = isDirect( strand )? 0 : 1;
@@ -496,20 +522,42 @@ static void findInAmino_regExp( FindAlgorithmResultsListener *rl,
         const int translationLen = range.length / 3;
 
         if ( ci == 1 ) { // complementary
-            TextUtils::translate( complTT->getOne2OneMapper( ), seq + range.startPos, range.length,
-                rawTranslation );
-            TextUtils::reverse( rawTranslation, range.length );
-            aminoTT->translate( rawTranslation, range.length );
+            TextUtils::translate( complTT->getOne2OneMapper( ), seq + range.startPos, range.length, rawTranslation );
+            TextUtils::reverse( rawTranslation, range.length);
+            aminoTT->translate( rawTranslation, range.length);
             translation = QString( QByteArray( rawTranslation, translationLen ) );
+            if (searchIsCircular) {
+                int bufferSize = (range.length > maxRegExpResult) ? maxRegExpResult - 1 : range.length;
+                QByteArray buffer( bufferSize, 0);
+                char *complBuffer = buffer.data();
+                TextUtils::translate( complTT->getOne2OneMapper( ), seq, bufferSize, complBuffer);
+                TextUtils::reverse( complBuffer, bufferSize);
+                aminoTT->translate( complBuffer, bufferSize);
+                translation += buffer;
+            }
+
             resultStrand = U2Strand::Complementary;
         } else { // direct
-            aminoTT->translate( seq + range.startPos, range.length, rawTranslation, range.length );
+            aminoTT->translate( seq + range.startPos, range.length, rawTranslation, range.length);
             translation = QString( QByteArray( rawTranslation, translationLen ) );
+            if (searchIsCircular) {
+                int startSize = (range.length > maxRegExpResult) ? maxRegExpResult - 1 : range.length;
+                aminoTT->translate( seq, startSize,
+                                    rawTranslation, startSize);
+                translation += rawTranslation;
+            }
             resultStrand = U2Strand::Direct;
         }
 
-        regExpSearch( translation, regExp, resultStrand, range, maxAminoResult, ci, conEnd, true,
-            percentsCompleted, stopFlag, rl );
+        if (searchIsCircular) {
+            U2Region cirRange = range;
+            cirRange.length += (range.length > maxRegExpResult) ? maxRegExpResult - 1 : range.length;
+            regExpSearch( translation, regExp, resultStrand, cirRange, maxRegExpResult, ci, conEnd, true,
+                percentsCompleted, stopFlag, rl, range.endPos());
+        } else {
+            regExpSearch( translation, regExp, resultStrand, range, maxAminoResult, ci, conEnd, true,
+                          percentsCompleted, stopFlag, rl );
+        }
     }
 }
 
@@ -525,8 +573,10 @@ static void findRegExp( FindAlgorithmResultsListener *rl,
                         int &stopFlag,
                         int &percentsCompleted )
 {
+    SAFE_POINT( !searchIsCircular || range.length == QByteArray(seq).size() , "Circular search is available only for the whole sequence", );
+
     if ( NULL != aminoTT ) {
-        findInAmino_regExp( rl, aminoTT, complTT, strand, seq, range, pattern,
+        findInAmino_regExp( rl, aminoTT, complTT, strand, seq, range, searchIsCircular, pattern,
             maxRegExpResult, stopFlag, percentsCompleted );
         return;
     }
@@ -575,10 +625,10 @@ static void findRegExp( FindAlgorithmResultsListener *rl,
             cirRange.length += (range.length > maxRegExpResult) ? maxRegExpResult - 1 : range.length;
             regExpSearch( substr, regExp, resultStrand, cirRange, maxRegExpResult, ci, conEnd, false,
                 percentsCompleted, stopFlag, rl, range.endPos());
-            return;
+        } else {
+            regExpSearch( substr, regExp, resultStrand, range, maxRegExpResult, ci, conEnd, false,
+                          percentsCompleted, stopFlag, rl );
         }
-        regExpSearch( substr, regExp, resultStrand, range, maxRegExpResult, ci, conEnd, false,
-            percentsCompleted, stopFlag, rl );
     }
 }
 
@@ -597,9 +647,10 @@ static void find_subst( FindAlgorithmResultsListener* rl,
                         int& percentsCompleted )
 {
     SAFE_POINT( NULL == complTT || complTT->isOne2One( ), "Invalid translation supplied!", );
+    SAFE_POINT( !searchIsCircular || range.length == QByteArray(seq).size() , "Circular search is available only for the whole sequence", );
 
     if (aminoTT != NULL) {
-        findInAmino_subst( rl, aminoTT, complTT, strand, seq, range, pattern, patternLen, maxErr,
+        findInAmino_subst( rl, aminoTT, complTT, strand, seq, range, searchIsCircular, pattern, patternLen, maxErr,
             stopFlag, percentsCompleted );
         return;
     }
@@ -694,6 +745,7 @@ void FindAlgorithm::find(
     Q_UNUSED(seqLen);
     SAFE_POINT( NULL == complTT || complTT->isOne2One( ), "Invalid translation supplied!", );
     SAFE_POINT( patternLen > maxErr, "Invalid maximum error count supplied!", );
+    SAFE_POINT( !searchIsCircular || range.length == seqLen , "Circular search is available only for the whole sequence", );
 
     if ( patternSettings == FindAlgorithmPatternSettings_RegExp ) {
         findRegExp( rl, aminoTT, complTT, strand, seq, searchIsCircular, range, pattern, maxRegExpResult, stopFlag,
@@ -710,7 +762,7 @@ void FindAlgorithm::find(
     bool insDel = (patternSettings == FindAlgorithmPatternSettings_InsDel);
 
     if (aminoTT != NULL) {
-        findInAmino(rl, aminoTT, complTT, strand, insDel, seq, range, pattern, patternLen, maxErr,
+        findInAmino(rl, aminoTT, complTT, strand, insDel, seq, range, searchIsCircular, pattern, patternLen, maxErr,
             stopFlag, percentsCompleted );
         return;
     }
@@ -757,7 +809,7 @@ void FindAlgorithm::find(
                 FindAlgorithmResult& res = ctx.res;
 
                 for (int j=0; j<patternLen; j++) {
-                    bool matched = seq[ (i >= seqLen) ? i - seqLen : i ] == p[j];
+                    bool matched = seq[ cycleIndex( seqLen, i) ] == p[j];
                     dt.match(j, matched);
                 }
 
