@@ -129,6 +129,7 @@ void GTUtilsSharedDatabaseDocument::createFolder(U2OpStatus &os, Document *datab
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, parentFolderIndex));
     GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
 }
 #undef GT_METHOD_NAME
 

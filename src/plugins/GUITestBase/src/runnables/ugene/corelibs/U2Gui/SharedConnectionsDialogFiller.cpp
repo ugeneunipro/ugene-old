@@ -105,6 +105,7 @@ void waitForConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Acti
 }
 
 void establishConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Action &action) {
+    GTGlobals::sleep(1000);
     QWidget *cnctBtn = GTWidget::findWidget(os,"pbConnect");
     QWidget *dcntBtn = GTWidget::findWidget(os,"pbDisconnect");
     QWidget *editBtn = GTWidget::findWidget(os,"pbEdit");

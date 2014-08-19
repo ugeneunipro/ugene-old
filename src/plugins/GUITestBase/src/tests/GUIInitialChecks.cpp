@@ -63,6 +63,10 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     CHECK_SET_ERR(mainWindow != NULL, "main window is NULL");
     mainWindow->showMaximized();
 
+#ifdef Q_OS_WIN
+    mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::WindowStaysOnTopHint);
+#endif
+
 #ifdef Q_OS_MAC
     mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::CustomizeWindowHint);
     mainWindow->show();
