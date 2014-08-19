@@ -13,7 +13,7 @@
 namespace U2 {
 
 HMMSearchTask::HMMSearchTask(plan7_s* _hmm, const DNASequence& _seq, const UHMMSearchSettings& s)
-: Task("", TaskFlag_NoRun), 
+: Task("", TaskFlag_NoRun),
   hmm(_hmm), seq(_seq), settings(s), complTrans(NULL), aminoTrans(NULL), fName(""), swTask(NULL), readHMMTask(NULL)
 {
     setTaskName(tr("HMM search with '%1'").arg(hmm->name));
@@ -21,7 +21,7 @@ HMMSearchTask::HMMSearchTask(plan7_s* _hmm, const DNASequence& _seq, const UHMMS
 }
 
 HMMSearchTask::HMMSearchTask( const QString& hFile, const DNASequence& _seq, const UHMMSearchSettings& s )
-:Task("", TaskFlag_NoRun), 
+:Task("", TaskFlag_NoRun),
 hmm(NULL), seq(_seq), settings(s), complTrans(NULL), aminoTrans(NULL), fName(hFile), swTask(NULL), readHMMTask(NULL)
 {
     setTaskName(tr("HMM Search"));
@@ -61,14 +61,14 @@ void HMMSearchTask::prepare() {
 //     } else {
 //         config.lastChunkExtraLen = settings.extraLen;
 //     }
-//     
+//
 //     config.nThreads = MAX_PARALLEL_SUBTASKS_AUTO;
-//     
+//
 //     addSubTask(new SequenceWalkerTask(config, this, tr("parallel_hmm_search_task")));
 }
 
 
-void HMMSearchTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& si) 
+void HMMSearchTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& si)
 {
     const char* localSeq = t->getRegionSequence();
     int localSeqSize = t->getRegionSequenceLen();
@@ -92,7 +92,7 @@ void HMMSearchTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& si)
         TaskLocalData::freeHMMContext(t->getTaskId());
         return;
     }
-    
+
     //convert all UHMMSearchResults into HMMSearchTaskResult
     QMutexLocker locker( &lock );
     int halfOverlap = hmm->M;
@@ -103,7 +103,7 @@ void HMMSearchTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& si)
         r.onCompl = wasCompl;
         r.onAmino = wasAmino;
         int resLen   = wasAmino ? sr.r.length * 3 : sr.r.length;
-		int resStart = wasAmino ? sr.r.startPos * 3 : sr.r.startPos;
+        int resStart = wasAmino ? sr.r.startPos * 3 : sr.r.startPos;
         if (wasCompl) {
             resStart = globalReg.length - resStart - resLen;
         }
@@ -139,7 +139,7 @@ static bool HMMSearchResult_LessThan(const HMMSearchTaskResult& r1, const HMMSea
                 return &r1 < &r2;
             }
             return r2.onCompl;
-        } 
+        }
         return r1.r < r2.r;
     }
     return r1.evalue < r2.evalue;
@@ -197,7 +197,7 @@ Task::ReportResult HMMSearchTask::report() {
             results.append(r);
         }
     }
-   
+
     // sort results by E-value
     qSort(results.begin(), results.end(), HMMSearchResult_LessThan);
     return ReportResult_Finished;
@@ -236,7 +236,7 @@ QList<AnnotationData> HMMSearchTask::getResultsAsAnnotations(const QString& name
     return annotations;
 }
 
-bool HMMSearchTask::checkAlphabets(int hmmAlType, const DNAAlphabet* seqAl, DNATranslation*& complTrans, DNATranslation*& aminoTrans) 
+bool HMMSearchTask::checkAlphabets(int hmmAlType, const DNAAlphabet* seqAl, DNATranslation*& complTrans, DNATranslation*& aminoTrans)
 {
     assert(stateInfo.getError().isEmpty());
     DNAAlphabetType hmmAl = HMMIO::convertHMMAlphabet(hmmAlType);
@@ -286,7 +286,7 @@ SequenceWalkerTask* HMMSearchTask::getSWSubtask()
 {
     assert( !hasError() );
     assert( NULL != hmm );
-    
+
     if (!checkAlphabets(hmm->atype, seq.alphabet, complTrans, aminoTrans)) {
         return NULL;
     }
@@ -303,6 +303,7 @@ SequenceWalkerTask* HMMSearchTask::getSWSubtask()
     } else {
         config.lastChunkExtraLen = settings.extraLen;
     }
+    config.walkCircular = false;
 
     config.nThreads = MAX_PARALLEL_SUBTASKS_AUTO;
 

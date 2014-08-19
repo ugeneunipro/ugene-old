@@ -123,11 +123,11 @@ void ExpertDiscoveryLoadPosNegTask::sl_generateNegativeSample(Task* task){
         suffix = QString(".").append(suffix);
     }
     baseName.append(suffix);
-    
+
     QString negFileName = positiveDoc->getURL().dirPath().append("/"+baseName);
     GUrl url(negFileName);
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(url));
- 
+
     negativeDoc = positiveDoc->getDocumentFormat()->createNewLoadedDocument(iof, url, stateInfo);
     CHECK_OP(stateInfo, );
     const QList<GObject*>& posObjects = positiveDoc->getObjects();
@@ -298,7 +298,7 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
                     addSubTask(new LoadUnloadedDocumentTask(posDoc));
 
                 } else {
-                    ifstream fPosAnn(strPosName.toStdString().c_str());  
+                    ifstream fPosAnn(strPosName.toStdString().c_str());
                     edData.getPosMarkBase().load(fPosAnn);
                 }
             }
@@ -338,7 +338,7 @@ void ExpertDiscoveryLoadPosNegMrkTask::prepare(){
                     edData.getNegMarkBase().load(fNegAnn);
                 }
             }
-            
+
         }
     }
     catch (exception& ex) {
@@ -446,9 +446,9 @@ bool ExpertDiscoveryLoadPosNegMrkTask::loadAnnotationFromUgeneDocument(MarkingBa
            try {
                mrk = base.getMarking(objN);
            }catch(...){}
-       
-            QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj, 
-                GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence, 
+
+            QList<GObject*> annotations = GObjectUtils::findObjectsRelatedToObjectByRole(seqObj,
+                GObjectTypes::ANNOTATION_TABLE, ObjectRole_Sequence,
                 allSeqAnnotations, UOF_LoadedOnly);
 
             foreach(GObject* ao, annotations) {
@@ -650,7 +650,7 @@ void ExpertDiscoverySignalExtractorTask::sl_newFolder(const QString& folderName)
     emit si_newFolder(folderName);
 }
 
-ExpertDiscoveryCreateViewTask::ExpertDiscoveryCreateViewTask(const QList<GObject*>& objects) 
+ExpertDiscoveryCreateViewTask::ExpertDiscoveryCreateViewTask(const QList<GObject*>& objects)
 : ObjectViewTask("ED")
 ,adv(NULL)
 {
@@ -674,7 +674,7 @@ ExpertDiscoveryCreateViewTask::ExpertDiscoveryCreateViewTask(const QList<GObject
 
 
         //look for sequence object using relations
-        QList<GObject*> objWithSeqRelation = GObjectUtils::selectRelations(obj, GObjectTypes::SEQUENCE, 
+        QList<GObject*> objWithSeqRelation = GObjectUtils::selectRelations(obj, GObjectTypes::SEQUENCE,
             ObjectRole_Sequence, allSequenceObjects, UOF_LoadedAndUnloaded);
 
         foreach(GObject* robj, objWithSeqRelation) {
@@ -833,7 +833,7 @@ void ExpertDiscoveryToAnnotationTask::prepare(){
                 stateInfo.setError(tr("No expert discovery sequence"));
                 return;
             }else{
-                edSeq = edData->getConSeqBase().getSequence(seqNumber); 
+                edSeq = edData->getConSeqBase().getSequence(seqNumber);
                 isControl = true;
             }
         }else{
@@ -972,7 +972,7 @@ ExpertDiscoveryUpdateSelectionTask::ExpertDiscoveryUpdateSelectionTask(ExpertDis
     curPS = view->getCurrentProcessedSignals();
     updatePS = true;
     pItem = NULL;
-    
+
 }
 
 void ExpertDiscoveryUpdateSelectionTask::run(){
@@ -989,8 +989,8 @@ void ExpertDiscoveryUpdateSelectionTask::run(){
        case PIT_CSN_MRK_ITEM:
        case PIT_MRK_ITEM:{
            EDPICSNode* pPICSN = dynamic_cast<EDPICSNode*>(pItem);
-          
-           if (curPS == pPICSN->getProcessedSignal(view->getExpertDiscoveryData())) { 
+
+           if (curPS == pPICSN->getProcessedSignal(view->getExpertDiscoveryData())) {
                updatePS = false;
            }
            else {
@@ -1003,7 +1003,7 @@ void ExpertDiscoveryUpdateSelectionTask::run(){
            assert(0);
     }
 
-    
+
 }
 Task::ReportResult ExpertDiscoveryUpdateSelectionTask::report(){
     if (curPS == NULL) {
@@ -1029,7 +1029,7 @@ void ExpertDiscoveryUpdateSelectionTask::updateAnnotations(){
 
     view->getAutoAnnotationUpdater()->setEDProcSignals(curPS);
 
-    foreach(ADVSequenceObjectContext* sctx, currentAdv->getSequenceContexts()){    
+    foreach(ADVSequenceObjectContext* sctx, currentAdv->getSequenceContexts()){
         AutoAnnotationUtils::triggerAutoAnnotationsUpdate(sctx, "ExpertDiscover Signals");
     }
 }
@@ -1052,7 +1052,7 @@ ExpertDiscoverySaveDocumentTask::ExpertDiscoverySaveDocumentTask(ExpertDiscovery
 ,edData(data)
 ,filename(fileName)
 {
-    
+
 }
 
 void ExpertDiscoverySaveDocumentTask::run(){
@@ -1065,7 +1065,7 @@ void ExpertDiscoverySaveDocumentTask::run(){
         setError(L10N::errorOpeningFileWrite(filename));
         return;
     }
-    
+
     QDataStream out(&file);
 
     EDPMCSFolder::save(out, &edData.getRootFolder());
@@ -1084,7 +1084,7 @@ void ExpertDiscoverySaveDocumentTask::run(){
     edData.getPosSeqBase().setMarking(edData.getPosMarkBase());
     edData.getNegSeqBase().setMarking(edData.getNegMarkBase());
     edData.getConSeqBase().setMarking(edData.getConMarkBase());
-   
+
     edData.getSelectedSignalsContainer().save(out, edData.getRootFolder());
 
     edData.setModifed(false);
@@ -1131,7 +1131,7 @@ void ExpertDiscoveryLoadDocumentTask::run(){
     if(stateInfo.isCanceled()){
         return;
     }
-    
+
     EDPMSeqBase::load(inStream, edData.getPosSeqBase());
     EDPMSeqBase::load(inStream, edData.getNegSeqBase());
     EDPMSeqBase::load(inStream, edData.getConSeqBase());
@@ -1178,7 +1178,7 @@ void ExpertDiscoveryMarkupTask::run(){
             return;
         }
         edData.clearScores();
-        
+
         // Adding new signal family for letters
         std::string strFamilyName = ExpertDiscoveryData::FAMILY_ED_SIGNAL.toStdString();
         std::string strMethodName = ExpertDiscoveryData::FAMILY_ED_METHOD.toStdString();
@@ -1213,7 +1213,7 @@ void ExpertDiscoveryMarkupTask::run(){
 
 void ExpertDiscoveryMarkupTask::addSignalMarkup(SequenceBase& rBase, MarkingBase& rAnn, bool isPos){
     std::string strFamilyName = ExpertDiscoveryData::FAMILY_ED_SIGNAL.toStdString();
-    
+
     int size = rBase.getSize();
     std::string seq;
     for (int i=0; i<size; i++) {
@@ -1266,7 +1266,7 @@ void ExpertDiscoveryCalculateErrors::run(){
         size = (int)settings.negScore.size();
         for (int j=0; j<size; j++)
             if (settings.negScore[j] >= curScore) probNegRec++;
-        probNegRec /= settings.negScore.size(); 
+        probNegRec /= settings.negScore.size();
         result.errorSecondType[i] = probNegRec;
 
         result.maxErrorVal = qMax(result.maxErrorVal, probPosRej);
@@ -1281,10 +1281,11 @@ void ExpertDiscoveryCalculateErrors::run(){
 
 //search
 
-ExpertDiscoverySearchTask::ExpertDiscoverySearchTask(ExpertDiscoveryData& data, const QByteArray& seq, const ExpertDiscoverySearchCfg& cfg, int ro) 
+ExpertDiscoverySearchTask::ExpertDiscoverySearchTask(ExpertDiscoveryData& data, const QByteArray& seq, const ExpertDiscoverySearchCfg& cfg, int ro)
 : Task(tr("ExpertDiscovery Search"), TaskFlags_NR_FOSCOE), edData(data), cfg(cfg), resultsOffset(ro), wholeSeq(seq), lenLeft(0)
 {
     SequenceWalkerConfig c;
+    c.walkCircular = false;
     c.seq = wholeSeq.constData();
     c.seqSize = wholeSeq.length();
     c.complTrans  = cfg.complTT;
@@ -1293,7 +1294,7 @@ ExpertDiscoverySearchTask::ExpertDiscoverySearchTask(ExpertDiscoveryData& data, 
 
     c.chunkSize = edData.getMaxPosSequenceLen();
     c.nThreads = 1;         //for now ExpertDiscovery signal can be processed only in one thread
-    c.overlapSize = c.chunkSize - 1; //move window to 1bp 
+    c.overlapSize = c.chunkSize - 1; //move window to 1bp
 
     //for progress
     lenLeft = wholeSeq.size();

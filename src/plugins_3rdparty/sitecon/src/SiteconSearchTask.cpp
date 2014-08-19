@@ -24,7 +24,7 @@
 
 namespace U2 {
 
-SiteconSearchTask::SiteconSearchTask(const SiteconModel& m, const QByteArray& seq, const SiteconSearchCfg& cfg, int ro) 
+SiteconSearchTask::SiteconSearchTask(const SiteconModel& m, const QByteArray& seq, const SiteconSearchCfg& cfg, int ro)
 : Task(tr("sitecon_search"), TaskFlags_NR_FOSCOE), model(new SiteconModel(m)), cfg(new SiteconSearchCfg(cfg)), resultsOffset(ro), wholeSeq(seq)
 {
     lock = new QMutex();
@@ -37,6 +37,7 @@ SiteconSearchTask::SiteconSearchTask(const SiteconModel& m, const QByteArray& se
     c.complTrans  = cfg.complTT;
     c.strandToWalk = cfg.complTT == NULL ? StrandOption_DirectOnly : StrandOption_Both;
     c.aminoTrans = NULL;
+    c.walkCircular = false;
 
     c.chunkSize = seq.length();
     c.overlapSize = 0;
@@ -69,7 +70,7 @@ void SiteconSearchTask::onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) {
         r.err1 = model->err1[r.psum];
         r.err2 = model->err2[r.psum];
         if (r.psum >= cfg->minPSUM && r.err1 >= cfg->minE1 && r.err2 <= cfg->maxE2) {//report result
-            
+
             r.modelInfo = model->modelName;
             r.strand = t->isDNAComplemented() ? U2Strand::Complementary : U2Strand::Direct;
             r.region.startPos = globalRegion.startPos +  i + resultsOffset;

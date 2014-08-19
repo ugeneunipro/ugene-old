@@ -83,7 +83,7 @@ UHMM3PhmmerTask::UHMM3PhmmerTask(const QString &queryFilename,
     CHECK_EXT(!dbFilename.isEmpty(), stateInfo.setError(L10N::badArgument(tr("db_sequence_to_search_in"))), );
 
     setTaskName(tr("HMM Phmmer search %1 sequence with %2 database").arg(queryFilename).arg(dbFilename));
-    
+
     loadQueryTask = LoadDocumentTask::getDefaultLoadDocTask(queryFilename);
     CHECK_EXT(NULL != loadQueryTask, stateInfo.setError(tr("cannot_create_load_query_doc_task")), );
     addSubTask(loadQueryTask);
@@ -106,7 +106,7 @@ UHMM3PhmmerTask::UHMM3PhmmerTask(const QString &queryFilename,
     CHECK_EXT(0 < db.length(), stateInfo.setError(L10N::badArgument(tr("sequence_to_search_in"))), );
 
     setTaskName(tr("HMM Phmmer search %1 sequence in %2 database").arg(queryFilename).arg(db.getName()));
-    
+
     loadQueryTask = LoadDocumentTask::getDefaultLoadDocTask(queryFilename);
     CHECK_EXT(NULL != loadQueryTask, stateInfo.setError(tr("cannot_create_load_query_doc_task")), );
     addSubTask(loadQueryTask);
@@ -115,7 +115,7 @@ UHMM3PhmmerTask::UHMM3PhmmerTask(const QString &queryFilename,
 void UHMM3PhmmerTask::addMemResource() {
     SAFE_POINT_EXT(!db.isNull(), setError("An internal error: db is NULL"), );
     SAFE_POINT_EXT(!query.isNull(), setError("An internal error: query is NULL"), );
-    
+
     int howManyMem = countPhmmerMemInMB(db.length(), query.length());
     addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, howManyMem));
     algoLog.trace(QString("%1 requires %2 of memory").arg(getTaskName()).arg(howManyMem));
@@ -124,7 +124,7 @@ void UHMM3PhmmerTask::addMemResource() {
 DNASequence UHMM3PhmmerTask::getSequenceFromDocument(Document *doc, TaskStateInfo &ti) {
     DNASequence ret;
     CHECK_EXT(NULL != doc, ti.setError(tr("cannot load document from:")), ret);
-    
+
     QList<GObject *> objsList = doc->findGObjectByType(GObjectTypes::SEQUENCE);
     CHECK_EXT(!objsList.isEmpty(), ti.setError(tr("no_dna_sequence_objects_in_document")), ret);
 
@@ -141,7 +141,7 @@ QList<Task *> UHMM3PhmmerTask::onSubTaskFinished(Task *subTask) {
     QMutexLocker locker(&loadTasksMtx);
     QList<Task *> res;
     SAFE_POINT_EXT(NULL != subTask, setError("An internal error: the subtask is NULL"), res);
-    
+
     if (loadQueryTask == subTask) {
         query = getSequenceFromDocument(loadQueryTask->getDocument(), stateInfo);
         CHECK_OP_EXT(stateInfo, stateInfo.setError(getError() + tr(" query sequence")), res);
@@ -154,7 +154,7 @@ QList<Task *> UHMM3PhmmerTask::onSubTaskFinished(Task *subTask) {
         setError("Unexpected bahavior: an undefined task has finished");
         FAIL("", res);
     }
-    
+
     if (NULL == loadQueryTask && NULL == loadDbTask) {
         addMemResource();
     }
@@ -168,19 +168,19 @@ UHMM3SearchResult UHMM3PhmmerTask::getResult() const {
 QList<SharedAnnotationData> UHMM3PhmmerTask::getResultsAsAnnotations(const QString &name) const {
     QList<SharedAnnotationData> annotations;
     SAFE_POINT(!name.isEmpty(), "An empty annotation name", annotations);
-    
+
     foreach(const UHMM3SearchSeqDomainResult &domain, result.domainResList) {
         AnnotationData *annData = new AnnotationData();
-        
+
         annData->name = name;
         annData->setStrand(U2Strand::Direct);
         annData->location->regions << domain.seqRegion;
         annData->qualifiers << U2Qualifier("Query_sequence", query.getName());
         domain.writeQualifiersToAnnotation(annData);
-        
+
         annotations << SharedAnnotationData(annData);
     }
-    
+
     return annotations;
 }
 
@@ -208,13 +208,13 @@ UHMM3SWPhmmerTask::UHMM3SWPhmmerTask(const QString &qF,
     aminoTranslation(NULL)
 {
     GCOUNTER(cvar, tvar, "UHMM3SWPhmmerTask");
-    
+
     SAFE_POINT_EXT(searchChunkSize > 0, setError("Invalid search chunk size"), );
     setTaskName(tr("HMM Phmmer search %1 sequence in %2 database").arg(queryFilename).arg(db.getName()));
 
     CHECK_EXT(!queryFilename.isEmpty(), setError(L10N::badArgument("querySeq filename")), );
     CHECK_EXT(0 < dbSeq.seq.length(), setError(L10N::badArgument("sequence")), );
-    
+
     loadQueryTask = LoadDocumentTask::getDefaultLoadDocTask(queryFilename);
     CHECK_EXT(NULL != loadQueryTask, setError(tr("Can not create load query doc task")), );
     addSubTask(loadQueryTask);
@@ -223,7 +223,7 @@ UHMM3SWPhmmerTask::UHMM3SWPhmmerTask(const QString &qF,
 QList<Task *> UHMM3SWPhmmerTask::onSubTaskFinished(Task *subTask) {
     QList<Task *> res;
     SAFE_POINT(subTask != NULL ,"An internal error: the subtask is NULL", res);
-    
+
     if (loadQueryTask == subTask) {
         querySeq = UHMM3PhmmerTask::getSequenceFromDocument(loadQueryTask->getDocument(), stateInfo);
         CHECK_OP_EXT(stateInfo, setError(getError() + tr(" querySeq sequence")), res);
@@ -277,13 +277,13 @@ void UHMM3SWPhmmerTask::setTranslations() {
 SequenceWalkerTask *UHMM3SWPhmmerTask::getSWSubtask() {
     CHECK(!hasError() && !isCanceled(), NULL);
     SAFE_POINT_EXT(0 != querySeq.length(), setError("The sequence is empty"), NULL);
-    
+
     checkAlphabets();
     CHECK_OP(stateInfo, NULL);
 
     setTranslations();
     CHECK_OP(stateInfo, NULL);
-    
+
     SequenceWalkerConfig config;
     config.seq                  = dbSeq.seq.data();
     config.seqSize              = dbSeq.seq.size();
@@ -294,6 +294,7 @@ SequenceWalkerTask *UHMM3SWPhmmerTask::getSWSubtask() {
     config.chunkSize            = config.seqSize;
     config.lastChunkExtraLen    = config.chunkSize / 2;
     config.nThreads             = MAX_PARALLEL_SUBTASKS_AUTO;
+    config.walkCircular         = false;
 
     return new SequenceWalkerTask(config, this, tr("HMMER3 phmmer sequence walker search task"));
 }
@@ -303,21 +304,21 @@ void UHMM3SWPhmmerTask::onRegion(SequenceWalkerSubtask *t, TaskStateInfo &ti) {
     if (hasError() || ti.hasError() || isCanceled() || ti.cancelFlag) {
         return;
     }
-    
+
     const char *seq     = t->getRegionSequence();
     int seqLen          = t->getRegionSequenceLen();
     bool isAmino        = t->isAminoTranslated();
-    
+
     UHMM3SearchTaskLocalStorage::createTaskContext(t->getTaskId());
     int wholeSeqSz = t->getGlobalConfig().seqSize;
     wholeSeqSz = isAmino ? (wholeSeqSz / 3) : wholeSeqSz;
-    UHMM3SearchResult generalRes = UHMM3Phmmer::phmmer(querySeq.seq.constData(), querySeq.length(), 
+    UHMM3SearchResult generalRes = UHMM3Phmmer::phmmer(querySeq.seq.constData(), querySeq.length(),
                                                        seq, seqLen, settings, stateInfo, wholeSeqSz);
     if (ti.hasError()) {
         UHMM3SearchTaskLocalStorage::freeTaskContext(t->getTaskId());
         return;
     }
-    
+
     QMutexLocker locker(&writeResultsMtx);
     UHMM3SWSearchTask::writeResults(generalRes.domainResList, t, results, overlaps, querySeq.length());
     UHMM3SearchTaskLocalStorage::freeTaskContext(t->getTaskId());
@@ -417,12 +418,12 @@ UHMM3PhmmerToAnnotationsTask::UHMM3PhmmerToAnnotationsTask(const QString &qfile,
 QList<Task *> UHMM3PhmmerToAnnotationsTask::onSubTaskFinished(Task *subTask) {
     QList<Task *> res;
     SAFE_POINT_EXT(NULL != subTask, setError("An internal error: the subtask is NULL"), res);
-    
+
     if (annotationObj.isNull()) {
         stateInfo.setError(tr("Annotation object was removed"));
         return res;
     }
-    
+
     if (phmmerTask == subTask) {
         QList<AnnotationData> annotations;
         foreach (const SharedAnnotationData &data, phmmerTask->getResultsAsAnnotations(annName)) {
@@ -439,7 +440,7 @@ QList<Task *> UHMM3PhmmerToAnnotationsTask::onSubTaskFinished(Task *subTask) {
         setError("Unexpected behavior: an undefined task finished");
         FAIL("", res);
     }
-    
+
     return res;
 }
 
@@ -447,17 +448,17 @@ QString UHMM3PhmmerToAnnotationsTask::generateReport() const {
     QString res;
     res += "<table>";
     res += "<tr><td width=200><b>" + tr("Query sequence") + "</b></td><td>" + QFileInfo(queryfile).absoluteFilePath() + "</td></tr>";
-    
+
     if (hasError() || isCanceled()) {
         res += "<tr><td width=200><b>" + tr("Task was not finished") + "</b></td><td></td></tr>";
         res += "</table>";
         return res;
     }
-    
+
     res += "<tr><td><b>" + tr("Result annotation table") + "</b></td><td>" + annotationObj->getDocument()->getName() + "</td></tr>";
     res += "<tr><td><b>" + tr("Result annotation group") + "</b></td><td>" + annGroup + "</td></tr>";
     res += "<tr><td><b>" + tr("Result annotation name") +  "</b></td><td>" + annName + "</td></tr>";
-    
+
     int nResults = createAnnotationsTask == NULL ? 0 : createAnnotationsTask->getAnnotationCount();
     res += "<tr><td><b>" + tr("Results count") +  "</b></td><td>" + QString::number(nResults) + "</td></tr>";
     res += "</table>";

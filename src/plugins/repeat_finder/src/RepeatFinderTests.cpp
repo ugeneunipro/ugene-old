@@ -122,7 +122,7 @@ void GTest_FindSingleSequenceRepeatsTask::init(XMLTestFormat *tf, const QDomElem
         stateInfo.setError(QString("Illegal value for '%1': %2").arg(C_ATTR).arg(cStr));
         return;
     }
-    
+
     inverted = el.attribute("invert") == "true";
     reflect = el.attribute("reflect", "true") == "true";
     filterNested = el.attribute("filterNested", "false") == "true";
@@ -138,7 +138,7 @@ void GTest_FindSingleSequenceRepeatsTask::init(XMLTestFormat *tf, const QDomElem
         stateInfo.setError(QString("Value not found '%1'").arg(RESULT_ATTR));
         return;
     }
-    
+
     excludeList = el.attribute(EXCL_ATTR).split(',', QString::SkipEmptyParts);
 }
 
@@ -165,16 +165,16 @@ void GTest_FindSingleSequenceRepeatsTask::prepare() {
     if (region.isEmpty()) {
         region = U2Region(0, seq1IObj->getSequenceLength());
     }
-    
+
     int maxLen = seq1IObj->getSequenceLength();
     if (minD == -1) {
         minD = -maxLen;
-    } 
+    }
     if (maxD == -1) {
         maxD = maxLen;
     }
 
-    
+
     QList<RFAlgorithm> algos;
     if (alg == RFAlgorithm_Auto) {
         algos << RFAlgorithm_Diagonal << RFAlgorithm_Suffix;
@@ -189,10 +189,10 @@ void GTest_FindSingleSequenceRepeatsTask::prepare() {
     s.minDist = minD;
     s.maxDist = maxD;
     s.inverted = inverted;
-    s.seqRegion = region; 
+    s.seqRegion = region;
     s.seq2Region = region;
     s.reportReflected = reflect;
-    s.nThreads = 1;//todo: add to settings 
+    s.nThreads = 1;//todo: add to settings
 
     if (filterNested == true){
         s.filter = DisjointRepeats;
@@ -201,7 +201,7 @@ void GTest_FindSingleSequenceRepeatsTask::prepare() {
     }else{
         s.filter = NoFiltering;
     }
-    
+
     foreach(RFAlgorithm algo, algos) {
         QString algName = getAlgName(algo);
         if (excludeList.contains(algName)) {
@@ -320,7 +320,7 @@ void GTest_FindTandemRepeatsTask::prepare() {
     int maxLen = sequence.length();
     if (minD == -1) {
         minD = -maxLen;
-    } 
+    }
     if (maxD == -1) {
         maxD = maxLen;
     }
@@ -333,7 +333,7 @@ void GTest_FindTandemRepeatsTask::prepare() {
     s.minPeriod = minSize;
     s.minRepeatCount = repeatCount;
     s.seqRegion = region;
-    s.nThreads = 1;//todo: add to settings 
+    s.nThreads = 1;//todo: add to settings
 
     addSubTask( new TandemFinder(s, *seqObj) );
 }
@@ -547,7 +547,7 @@ void GTest_SArrayBasedFindTask::init(XMLTestFormat *tf, const QDomElement& el) {
         stateInfo.setError(QString("Value not found: '%1'").arg(RESULT_ATTR));
         return;
     }
-    
+
     QStringList results = buf.split(",");
     foreach (const QString& str, results ) {
         bool ok = false;
@@ -565,7 +565,7 @@ void GTest_SArrayBasedFindTask::init(XMLTestFormat *tf, const QDomElement& el) {
         stateInfo.setError(QString("Value not found: '%1'").arg(SEQUENCE));
         return;
     }
-    
+
     buf = el.attribute(MISMATCHES);
     bool ok = false;
     nMismatches = buf.toInt(&ok);
@@ -592,7 +592,7 @@ void GTest_SArrayBasedFindTask::cleanup() {
 
 void GTest_SArrayBasedFindTask::prepare() {
     CHECK_OP(stateInfo, );
-    
+
     U2SequenceObject * seqObj = getContext<U2SequenceObject>(this, seqObjName);
     if (seqObj == NULL){
         stateInfo.setError(QString("Can't find index sequence %1").arg(seqObjName));
@@ -603,7 +603,7 @@ void GTest_SArrayBasedFindTask::prepare() {
 
     const quint32* bitMask = NULL;
     int bitCharLen = 0;
-    
+
     if (useBitMask) {
         bitCharLen = bt.getBitMaskCharBitsNum(seqType);
         bitMask = bt.getBitMaskCharBits(seqType);
@@ -613,14 +613,14 @@ void GTest_SArrayBasedFindTask::prepare() {
     if (nMismatches > 0) {
         prefixSize = prefixSize / (nMismatches + 1);
     }
-    
+
     wholeSeq = seqObj->getWholeSequenceData();
     index = new SArrayIndex(wholeSeq.constData(), seqObj->getSequenceLength(), prefixSize, stateInfo, unknownChar, bitMask, bitCharLen);
-    
+
     if (hasError()) {
         return;
     }
-    
+
     SArrayBasedSearchSettings s;
     s.query = query.toLatin1();
     s.useBitMask = useBitMask;
@@ -637,7 +637,7 @@ void GTest_SArrayBasedFindTask::run()
     if (hasError() || isCanceled()) {
         return;
     }
-    
+
     qSort(expectedResults);
 
     QList<int> calcResults = findTask->getResults();

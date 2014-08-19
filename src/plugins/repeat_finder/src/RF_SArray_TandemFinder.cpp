@@ -40,7 +40,7 @@ Task(tr("Find repeats to annotations"), TaskFlags_NR_FOSCOE), saveAnns(true), ma
     GCOUNTER( cvar, tvar, "FindTandemsToAnnotationsTask" );
     setVerboseLogMode(true);
     if (annObjRef.isValid()) {
-        LoadUnloadedDocumentTask::addLoadingSubtask(this, 
+        LoadUnloadedDocumentTask::addLoadingSubtask(this,
             LoadDocumentTaskConfig(true, annObjRef, new LDTObjectFactory(this)));
     }
     addSubTask(new TandemFinder(s, mainSeq));
@@ -129,6 +129,7 @@ public:
         chunkSize=_chunkSize;
         lastChunkExtraLen=_chunkSize/2;
         overlapSize=TandemFinder::maxCheckPeriod;
+        walkCircular = false;
     }
 };
 
