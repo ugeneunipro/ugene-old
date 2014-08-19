@@ -57,8 +57,8 @@ struct SmithWatermanSettings {
         ANNOTATIONS = 1, MULTIPLE_ALIGNMENT
     };
 
-    SmithWatermanSettings() 
-        : percentOfScore(0), complTT( NULL ), aminoTT( NULL ),
+    SmithWatermanSettings()
+        : searchCircular(false), percentOfScore(0), complTT( NULL ), aminoTT( NULL ),
         resultListener( NULL ), resultFilter( NULL ),
         resultCallback( NULL ), resultView(ANNOTATIONS), includePatternContent( false )
         /* @resultView is initialized with SWResultView::ANNOTATIONS
@@ -71,6 +71,7 @@ struct SmithWatermanSettings {
 
     QByteArray          ptrn;
     QByteArray          sqnc;
+    bool                searchCircular;
 
     U2Region            globalRegion;
     StrandOption        strand;
@@ -92,12 +93,13 @@ struct SmithWatermanSettings {
                                 // results in case of annotation result view
 
     bool operator==(const SmithWatermanSettings& op) const {
-        return  ptrn == op.ptrn && 
-                sqnc == op.sqnc && 
-                globalRegion == op.globalRegion && 
+        return  ptrn == op.ptrn &&
+                sqnc == op.sqnc &&
+                searchCircular == op.searchCircular &&
+                globalRegion == op.globalRegion &&
                 strand == op.strand &&
                 gapModel.scoreGapExtd == op.gapModel.scoreGapExtd &&
-                gapModel.scoreGapOpen == op.gapModel.scoreGapOpen;    
+                gapModel.scoreGapOpen == op.gapModel.scoreGapOpen;
     }
 
     qint32 getResultViewKeyForString(const QString & value) {
@@ -109,10 +111,10 @@ struct SmithWatermanSettings {
         }
         return STRING_HAS_NO_KEY_MESSAGE;
     }
-    
+
     static QHash<SWResultView, const char *> & getResultViewNames(const char * newResultName = NULL, SWResultView key = static_cast<SWResultView>(0)) {
         static QHash<SWResultView, const char *> resultViewNames;
-            
+
         if(NULL != newResultName && static_cast<SWResultView>(0) != key) {
             if(!resultViewNames.contains(key)) {
                 resultViewNames[key] = newResultName;

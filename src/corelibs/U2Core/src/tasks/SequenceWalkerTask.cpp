@@ -26,16 +26,21 @@
 
 namespace U2 {
 
-SequenceWalkerConfig::SequenceWalkerConfig() 
-: seq(NULL), seqSize(0), complTrans(NULL), aminoTrans(NULL), 
-        chunkSize(0), lastChunkExtraLen(0), overlapSize(0), nThreads(MAX_PARALLEL_SUBTASKS_SERIAL) 
+SequenceWalkerConfig::SequenceWalkerConfig()
+: seq(NULL), seqSize(0), complTrans(NULL), aminoTrans(NULL),
+        chunkSize(0), lastChunkExtraLen(0), overlapSize(0), nThreads(MAX_PARALLEL_SUBTASKS_SERIAL),
+        walkCircular(false), walkCircularDistance(0)
 {
     strandToWalk = (complTrans!=NULL) ? StrandOption_Both : StrandOption_DirectOnly;
 }
 
 
-SequenceWalkerTask::SequenceWalkerTask(const SequenceWalkerConfig& c, SequenceWalkerCallback* cb, const QString& name, TaskFlags tf) 
-: Task(name, tf), config(c), callback(cb)
+SequenceWalkerTask::SequenceWalkerTask(const SequenceWalkerConfig& c, SequenceWalkerCallback* cb,
+                                       const QString& name, TaskFlags tf)
+    : Task(name, tf),
+      config(c),
+      callback(cb),
+      tempBuffer(NULL)
 {
     assert(config.chunkSize > static_cast<uint>(config.overlapSize)); // if chunk == overlap -> infinite loop occurs
     assert(cb != NULL);
@@ -50,7 +55,7 @@ SequenceWalkerTask::SequenceWalkerTask(const SequenceWalkerConfig& c, SequenceWa
 
 QList<SequenceWalkerSubtask*> SequenceWalkerTask::prepareSubtasks() {
     QList<SequenceWalkerSubtask*> res;
-    
+
     if (config.range.isEmpty()) {
         config.range.startPos = 0;
         config.range.length = config.seqSize;
@@ -59,6 +64,16 @@ QList<SequenceWalkerSubtask*> SequenceWalkerTask::prepareSubtasks() {
         assert(wholeSeqReg.contains(config.range));
         config.range = wholeSeqReg.intersect(config.range);
     }
+
+    if (config.walkCircular && config.range.length == config.seqSize) {
+        tempBuffer.clear();
+        tempBuffer.append(QByteArray(config.seq, config.seqSize));
+        tempBuffer.append(QByteArray(config.seq).left(config.walkCircularDistance * (config.aminoTrans == NULL ? 1 : 3)));
+
+        config.seq = tempBuffer.constData();
+        config.range.length += config.walkCircularDistance * (config.aminoTrans == NULL ? 1 : 3);
+    }
+
     if (config.aminoTrans == NULL ) {
         //try walk direct and complement strands
         QVector<U2Region> chunks = splitRange(config.range, config.chunkSize, config.overlapSize, config.lastChunkExtraLen, false);
@@ -73,6 +88,11 @@ QList<SequenceWalkerSubtask*> SequenceWalkerTask::prepareSubtasks() {
             res+=complTasks;
         }
     } else {
+        // in case of amino walk (chunk - overlap) should be devisible by 3
+        if ( (config.chunkSize - config.overlapSize) % 3 != 0 && config.overlapSize != 0) {
+            config.chunkSize += 3 - (config.chunkSize - config.overlapSize) % 3;
+        }
+
         // try walk 3 direct and 3 complement translations
         if (config.strandToWalk == StrandOption_Both || config.strandToWalk == StrandOption_DirectOnly) {
             for (int i=0; i<3; i++) {
@@ -107,12 +127,12 @@ QList<SequenceWalkerSubtask*> SequenceWalkerTask::createSubs(const QVector<U2Reg
     return res;
 }
 
-QVector<U2Region> SequenceWalkerTask::splitRange(const U2Region& range, int chunkSize, int overlapSize, 
-                                              int lastChunkExtraLen, bool reverseMode) 
+QVector<U2Region> SequenceWalkerTask::splitRange(const U2Region& range, int chunkSize, int overlapSize,
+                                              int lastChunkExtraLen, bool reverseMode)
 {
     assert(chunkSize > overlapSize);
     int stepSize = chunkSize - overlapSize;
-    
+
     QVector<U2Region> res;
     for (int pos = range.startPos, end = range.endPos(), lastPos = range.startPos; lastPos < end; pos+=stepSize) {
         int chunkLen = qMin(pos + chunkSize, end) - pos;
@@ -137,13 +157,13 @@ QVector<U2Region> SequenceWalkerTask::splitRange(const U2Region& range, int chun
 //////////////////////////////////////////////////////////////////////////
 // subtask
 SequenceWalkerSubtask::SequenceWalkerSubtask(SequenceWalkerTask* _t, const U2Region& glob, bool lo, bool ro, const char* _seq, int _len, bool _doCompl, bool _doAmino)
-: Task(tr("Sequence walker subtask"), TaskFlag_None), 
+: Task(tr("Sequence walker subtask"), TaskFlag_None),
 t(_t), globalRegion(glob), localSeq(_seq), originalLocalSeq(_seq),
 localLen(_len), originalLocalLen(_len), doCompl(_doCompl), doAmino(_doAmino),
 leftOverlap(lo), rightOverlap(ro)
 {
     tpm = Task::Progress_Manual;
-    
+
     // get resources
     QList< TaskResourceUsage > resources = t->getCallback()->getResources( this );
     foreach( const TaskResourceUsage & resource, resources ) {
@@ -200,7 +220,7 @@ bool SequenceWalkerSubtask::intersectsWithOverlaps(const U2Region& reg) const {
     bool intersects = false;
     if (leftOverlap) {
         intersects = reg.intersects(U2Region(globalRegion.startPos, overlap));
-    } 
+    }
     if (!intersects && rightOverlap) {
         intersects = reg.intersects(U2Region(globalRegion.endPos() - overlap, overlap));
     }

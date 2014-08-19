@@ -35,7 +35,7 @@
 #include <QtCore/QVector>
 #include <QtCore/QMutex>
 
-namespace U2 {    
+namespace U2 {
 
 enum SW_AlgType {SW_classic, SW_sse2, SW_cuda, SW_opencl};
 
@@ -43,8 +43,8 @@ class CudaGpuModel;
 class OpenCLGpuModel;
 
 class SWAlgorithmTask : public Task, public SequenceWalkerCallback {
-    Q_OBJECT        
-public:    
+    Q_OBJECT
+public:
 
     SWAlgorithmTask(const SmithWatermanSettings& s,
         const QString& taskName, SW_AlgType algType);
@@ -52,9 +52,9 @@ public:
 
     void prepare();
 
-    virtual void onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti);        
+    virtual void onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti);
 
-    QList<PairAlignSequences> & getResult();        
+    QList<PairAlignSequences> & getResult();
     ReportResult report();
 
     QList<Task*> onSubTaskFinished(Task* subTask);
@@ -62,7 +62,7 @@ public:
 private:
 
     void addResult(QList<PairAlignSequences> & res);
-    int calculateMatrixLength(const QByteArray & searchSeq, const QByteArray & patternSeq, int gapOpen, int gapExtension, int maxScore, int minScore);
+    int calculateMatrixLength(int searchSeqLen, int patternLen, int gapOpen, int gapExtension, int maxScore, int minScore);
     void removeResultFromOverlap(QList<PairAlignSequences> & res);
     int calculateMaxScore(const QByteArray & seq, const SMatrix& substitutionMatrix);
 
@@ -74,11 +74,11 @@ private:
     QMutex lock;
 
     SW_AlgType algType;
-    
+
     QList<SmithWatermanResult> resultList;
     SmithWatermanSettings sWatermanConfig;
     SequenceWalkerTask* t;
-    
+
     CudaGpuModel * cudaGpu;
     OpenCLGpuModel * openClGpu;
 };

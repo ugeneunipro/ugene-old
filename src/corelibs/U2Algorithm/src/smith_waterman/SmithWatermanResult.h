@@ -34,6 +34,9 @@ struct U2ALGORITHM_EXPORT SmithWatermanResult {
         AnnotationData data;
         data.name = name;
         data.location->regions << refSubseq;
+        if (isJoined) {
+            data.location->regions << refJoinedSubseq;
+        }
         data.setStrand(strand);
         data.qualifiers.append(U2Qualifier("score", QString::number(score)));
         return data;
@@ -49,6 +52,9 @@ struct U2ALGORITHM_EXPORT SmithWatermanResult {
     bool trans;
     float score;
     U2Region refSubseq;
+    bool isJoined;
+    U2Region refJoinedSubseq;
+
     U2Region ptrnSubseq;
     QByteArray pairAlignment;
 

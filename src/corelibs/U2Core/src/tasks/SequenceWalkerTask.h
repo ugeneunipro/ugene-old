@@ -37,7 +37,7 @@ enum StrandOption {
 };
 class U2CORE_EXPORT SequenceWalkerConfig {
 public:
-    
+
     //TODO: allow select custom strand only!
 
     SequenceWalkerConfig();
@@ -45,14 +45,17 @@ public:
     const char*     seq;            //  sequence to split
     quint64         seqSize;        //  size of the sequence to split
     U2Region         range;          //  if not empty -> only this region is processed
-    DNATranslation* complTrans; 
+    DNATranslation* complTrans;
     DNATranslation* aminoTrans;
-    
+
     quint64         chunkSize;          // optimal chunk size, used by default for all regions except last one
     int             lastChunkExtraLen;  // extra length allowed to be added to the last chunk
     int             overlapSize;        // overlap for 2 neighbor regions
     int             nThreads;
     StrandOption    strandToWalk;
+
+    bool            walkCircular;
+    quint64         walkCircularDistance;
 };
 
 class U2CORE_EXPORT SequenceWalkerCallback {
@@ -60,7 +63,7 @@ public:
     virtual ~SequenceWalkerCallback(){}
 
     virtual void onRegion(SequenceWalkerSubtask* t, TaskStateInfo& ti) = 0;
-    
+
     /* implement this to give SequenceWalkerSubtask required resources
      * here are resources for ONE(!) SequenceWalkerSubtask execution e.g. for one execution of onRegion function
      */
@@ -70,9 +73,9 @@ public:
 class U2CORE_EXPORT SequenceWalkerTask : public Task {
     Q_OBJECT
 public:
-    SequenceWalkerTask(const SequenceWalkerConfig& config, SequenceWalkerCallback* callback, 
+    SequenceWalkerTask(const SequenceWalkerConfig& config, SequenceWalkerCallback* callback,
         const QString& name, TaskFlags tf = TaskFlags_NR_FOSE_COSC);
-    
+
     SequenceWalkerCallback*     getCallback() const {return callback;}
     const SequenceWalkerConfig& getConfig() const {return config;}
 
@@ -87,32 +90,34 @@ private:
 
     SequenceWalkerConfig    config;
     SequenceWalkerCallback* callback;
+
+    QByteArray              tempBuffer;
 };
 
 class U2CORE_EXPORT SequenceWalkerSubtask : public Task {
     Q_OBJECT
 public:
-    SequenceWalkerSubtask(SequenceWalkerTask* t, const U2Region& globalReg, bool lo, bool ro, 
+    SequenceWalkerSubtask(SequenceWalkerTask* t, const U2Region& globalReg, bool lo, bool ro,
                         const char* localSeq, int localLen, bool doCompl, bool doAmino);
 
     void run();
-    
+
     const char* getRegionSequence();
-    
+
     int  getRegionSequenceLen();
-    
+
     bool isDNAComplemented() const {return doCompl;}
-    
+
     bool isAminoTranslated() const {return doAmino;}
-    
+
     U2Region getGlobalRegion() const {return globalRegion;}
-    
+
     const SequenceWalkerConfig& getGlobalConfig() const {return t->getConfig();}
 
     bool intersectsWithOverlaps(const U2Region& globalReg) const;
     bool hasLeftOverlap() const {return leftOverlap;}
     bool hasRightOverlap() const {return rightOverlap;}
-    
+
 private:
     bool needLocalRegionProcessing() const {return (doAmino || doCompl) && processedSeqImage.isEmpty();}
     void prepareLocalRegion();
@@ -127,7 +132,7 @@ private:
     bool                    doAmino;
     bool                    leftOverlap;
     bool                    rightOverlap;
-    
+
     QByteArray              processedSeqImage;
 
 };

@@ -109,8 +109,8 @@ void SWAlgorithmTask::setupTask(int maxScore) {
     c.strandToWalk = sWatermanConfig.strand;
     algoLog.details(QString("Strand: %1 ").arg(c.strandToWalk));
 
-    quint64 overlapSize = calculateMatrixLength(sWatermanConfig.sqnc,
-        sWatermanConfig.ptrn,
+    quint64 overlapSize = calculateMatrixLength(sWatermanConfig.sqnc.length(),
+        sWatermanConfig.ptrn.length() * (sWatermanConfig.aminoTT == NULL ? 1 : 3),
         sWatermanConfig.gapModel.scoreGapOpen,
         sWatermanConfig.gapModel.scoreGapExtd,
         maxScore,
@@ -140,15 +140,22 @@ void SWAlgorithmTask::setupTask(int maxScore) {
             assert(0);
     }
 
-    partsNumber = static_cast<qint64>(sWatermanConfig.sqnc.size() / (computationMatrixSquare / sWatermanConfig.ptrn.size()) + 1.0);
+    c.walkCircular = sWatermanConfig.searchCircular;
+    c.walkCircularDistance = c.walkCircular ? sWatermanConfig.ptrn.size() - 1 : 0;
+
+    partsNumber = static_cast<qint64>((sWatermanConfig.sqnc.size() + c.walkCircularDistance) / (computationMatrixSquare / sWatermanConfig.ptrn.size()) + 1.0);
     if(partsNumber < c.nThreads) {
         c.nThreads = partsNumber;
     }
 
-    c.chunkSize = (c.seqSize + overlapSize * (partsNumber - 1)) / partsNumber;
+    c.chunkSize = (c.seqSize + c.walkCircularDistance + overlapSize * (partsNumber - 1)) / partsNumber;
     if (c.chunkSize <= overlapSize) {
         c.chunkSize = overlapSize + 1;
     }
+    if (c.chunkSize < (quint64)sWatermanConfig.ptrn.length() * (sWatermanConfig.aminoTT == NULL ? 1 : 3)) {
+        c.chunkSize = sWatermanConfig.ptrn.length() * (sWatermanConfig.aminoTT == NULL ? 1 : 3);
+    }
+
     c.overlapSize = overlapSize;
 
     c.lastChunkExtraLen = partsNumber - 1;
@@ -367,16 +374,16 @@ void SWAlgorithmTask::addResult(QList<PairAlignSequences> & res) {
     pairAlignSequences += res;
 }
 
-int SWAlgorithmTask::calculateMatrixLength(const QByteArray & searchSeq, const QByteArray & patternSeq, int gapOpen, int gapExtension, int maxScore, int minScore) {
+int SWAlgorithmTask::calculateMatrixLength(int searchSeqLen, int patternSeqLen, int gapOpen, int gapExtension, int maxScore, int minScore) {
 
     int matrixLength = 0;
 
     int gap = gapOpen;
     if (gapOpen < gapExtension) gap = gapExtension;
 
-    matrixLength = patternSeq.length() + (maxScore - minScore)/gap * (-1) + 1;
+    matrixLength = patternSeqLen + (maxScore - minScore) / gap * (-1) + 1;
 
-    if (searchSeq.length() + 1 < matrixLength) matrixLength = searchSeq.length() + 1;
+    if (searchSeqLen + 1 < matrixLength) matrixLength = searchSeqLen + 1;
 
     matrixLength += 1;
 
@@ -456,8 +463,16 @@ void SWResultsPostprocessingTask::run(){
     for(QList<PairAlignSequences>::const_iterator i = resPAS.constBegin(); i != resPAS.constEnd(); ++i) {
         r.strand = (*i).isDNAComplemented ? U2Strand::Complementary : U2Strand::Direct;
         r.trans = (*i).isAminoTranslated;
+
         r.refSubseq = (*i).refSubseqInterval;
         r.refSubseq.startPos += sWatermanConfig.globalRegion.startPos;
+        r.isJoined = false;
+        if ((*i).refSubseqInterval.endPos() > sWatermanConfig.sqnc.size() && sWatermanConfig.searchCircular) {
+            int t = (*i).refSubseqInterval.endPos() - sWatermanConfig.sqnc.size();
+            r.refSubseq.length -= t;
+            r.isJoined = true;
+            r.refJoinedSubseq = U2Region(0, t);
+        }
         r.ptrnSubseq = (*i).ptrnSubseqInterval;
         r.score = (*i).score;
         r.pairAlignment = (*i).pairAlignment;

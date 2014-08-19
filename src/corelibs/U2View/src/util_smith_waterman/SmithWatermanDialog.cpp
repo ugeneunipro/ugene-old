@@ -66,14 +66,14 @@ const QChar DEFAULT_SHORTHANDS_SEPARATOR = '_';
 
 namespace U2 {
 
-SmithWatermanDialog::SmithWatermanDialog(QWidget* w, 
-                                         ADVSequenceObjectContext* ctx, 
+SmithWatermanDialog::SmithWatermanDialog(QWidget* w,
+                                         ADVSequenceObjectContext* ctx,
                                          SWDialogConfig* _dialogConfig):
     QDialog(w), substMatrixRegistry(0), swTaskFactoryRegistry(0)
 {
     ctxSeq = ctx;
     dialogConfig = _dialogConfig;
-        
+
     setupUi(this);
     new HelpButton(this, buttonBox, "4227681");
     buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Remote run"));
@@ -97,11 +97,11 @@ SmithWatermanDialog::SmithWatermanDialog(QWidget* w,
         QDialog::done(-1);
         return;
     }
-    
+
     swResultFilterRegistry = AppContext::getSWResultFilterRegistry();
     if (0 == swResultFilterRegistry) {
         coreLog.error(tr("No filter registry found.")); //FIXME should be optional?
-        QDialog::done(-1);                    //No.  
+        QDialog::done(-1);                    //No.
         return;
     }
 
@@ -224,7 +224,7 @@ bool SmithWatermanDialog::checkTemplateButtonName(const QString & name)
         return false;
 
     quint32 closeBracketIndex = 0;
-    
+
     for(qint32 i = 1; i < name.length(); ++i) {
         if(!name[i].isLetterOrNumber() && !name[i].isSpace() && CLOSE_SQUARE_BRACKET != name[i])
             return false;
@@ -244,7 +244,7 @@ bool SmithWatermanDialog::checkTemplateButtonName(const QString & name)
                 && SHORTHAND_AND_LABEL_SEPARATOR == name[i - 1])
             return true;
     }
-    
+
     return false;
 }
 
@@ -276,7 +276,7 @@ void SmithWatermanDialog::fillTemplateNamesFieldsByDefault()
                                                 .prepend(OPEN_SQUARE_BRACKET);
     patternSubseqNameTmpl->setText(defaultPtrnSubseqTagsString);
     delete defaultPtrnSubseqTags;
-    
+
     patternSequenceName->setText(DEFAULT_PATTERN_SEQUENCE_NAME + QString::number(dialogConfig->countOfLaunchesAlgorithm));
 }
 
@@ -319,7 +319,7 @@ void SmithWatermanDialog::addAnnotationWidget()
     acm.hideLocation = true;
     acm.sequenceLen = dnaso->getSequenceLength();
     annotationController = new CreateAnnotationWidgetController(acm, this);
-    QWidget* caw = annotationController->getWidget();    
+    QWidget* caw = annotationController->getWidget();
     QVBoxLayout* l = new QVBoxLayout();
     l->setMargin(0);
     l->addWidget(caw);
@@ -331,7 +331,7 @@ void SmithWatermanDialog::addAnnotationWidget()
 
     annotationsWidget->setLayout(l);
     annotationsWidget->setMinimumSize(caw->layout()->minimumSize());
-} 
+}
 
 void SmithWatermanDialog::setParameters()
 {
@@ -341,7 +341,7 @@ void SmithWatermanDialog::setParameters()
         bttnViewMatrix->setEnabled(true);
 
     comboMatrix->addItems(matrixList);
-    
+
     QStringList alg_lst = swTaskFactoryRegistry->getListFactoryNames();
     comboRealization->addItems(alg_lst);
 
@@ -354,7 +354,7 @@ void SmithWatermanDialog::setParameters()
     radioSequence->setChecked(true);
     if (0 != ctxSeq->getAminoTT())
         radioTranslation->setEnabled(true);
-    
+
     radioDirect->setEnabled(true);
     if (ctxSeq->getComplementTT() != NULL) {
         radioComplement->setEnabled(true);
@@ -370,7 +370,7 @@ void SmithWatermanDialog::setParameters()
     resultViewVariants->addItem(tr(SmithWatermanSettings::getResultViewNames()[SmithWatermanSettings::MULTIPLE_ALIGNMENT]));
     resultViewVariants->addItem(tr(SmithWatermanSettings::getResultViewNames()[SmithWatermanSettings::ANNOTATIONS]));
     resultViewVariants->setCurrentIndex(0);
-    
+
     mObjectNameTmpl->installEventFilter(this);
     refSubseqNameTmpl->installEventFilter(this);
     patternSubseqNameTmpl->installEventFilter(this);
@@ -502,7 +502,7 @@ void SmithWatermanDialog::sl_bttnRun()
                                                                         sequence->getAlphabet());
         }
         config.resultListener = new SmithWatermanResultListener;
-        
+
         Task* task = realization->getTaskInstance(config, tr("SmithWatermanTask") );
         AppContext::getTaskScheduler()->registerTopLevelTask(task);
         saveDialogConfig();
@@ -516,17 +516,18 @@ bool SmithWatermanDialog::readParameters()
     clearAll();
 
     config.sqnc = ctxSeq->getSequenceObject()->getWholeSequenceData();
-    
+    config.searchCircular = ctxSeq->getSequenceObject()->isCircular();
+
     DNATranslation* aminoTT = 0;
     bool isTranslation = radioTranslation->isChecked();
     if (isTranslation)
         aminoTT = ctxSeq->getAminoTT();
     else
         aminoTT = 0;
-    
+
     if (!readSubstMatrix())
         return false;
-    
+
     if (!readPattern(aminoTT))
         return false;
 
@@ -534,7 +535,7 @@ bool SmithWatermanDialog::readParameters()
 
     if (!readRegion() || !readGapModel() || !readResultFilter() || !readRealization())
         return false;
-    
+
     qint32 resultView = config.getResultViewKeyForString(resultViewVariants->currentText());
     if(STRING_HAS_NO_KEY_MESSAGE != resultView) {
         config.resultView = static_cast<SmithWatermanSettings::SWResultView>(resultView);
@@ -548,7 +549,7 @@ bool SmithWatermanDialog::readParameters()
         }
     } else
         assert(0);
-    
+
     if (radioDirect->isChecked())
         config.strand = StrandOption_DirectOnly;
     else if (radioComplement->isChecked())
@@ -563,7 +564,7 @@ bool SmithWatermanDialog::readParameters()
         QMessageBox::critical(this, windowTitle(), tr("Complement translation is not found."));
         return false;
     }
-        
+
     return true;
 }
 
@@ -584,7 +585,7 @@ bool SmithWatermanDialog::readSubstMatrix()
     QString strSelectedMatrix = comboMatrix->currentText();
     SMatrix mtx = substMatrixRegistry->getMatrix(strSelectedMatrix);
     if (mtx.isEmpty()) {
-        QMessageBox::critical(this, windowTitle(), 
+        QMessageBox::critical(this, windowTitle(),
                               tr("Matrix %1 is not found.").arg(strSelectedMatrix));
         return false;
     }
@@ -603,7 +604,7 @@ bool SmithWatermanDialog::readGapModel()
 {
     float scoreGapOpen = spinGapOpen->value();
     config.gapModel.scoreGapOpen = scoreGapOpen;
-    
+
     float scoreGapExtd = spinGapExtd->value();
     config.gapModel.scoreGapExtd = scoreGapExtd;
 
@@ -614,7 +615,7 @@ bool SmithWatermanDialog::readResultFilter()
 {
     int percentOfScore = spinScorePercent->value();
     config.percentOfScore = percentOfScore;
-    
+
     QString strSelectedFilter = comboResultFilter->currentText();
     SmithWatermanResultFilter* filter = swResultFilterRegistry->getFilter(strSelectedFilter);
     if (0 == filter) {
@@ -630,7 +631,7 @@ bool SmithWatermanDialog::readPattern(DNATranslation* aminoTT)
     const DNAAlphabet* al = 0;
     if (0 == aminoTT) {
         assert(config.pSm.getAlphabet() != NULL);
-        al = config.pSm.getAlphabet(); 
+        al = config.pSm.getAlphabet();
     } else
         al = aminoTT->getDstAlphabet();
 
@@ -646,14 +647,14 @@ bool SmithWatermanDialog::readPattern(DNATranslation* aminoTT)
         QMessageBox::critical(this, windowTitle(),  tr("Pattern is empty"));
         return false;
     }
-        
+
     QByteArray pattern;
     if (!al->isCaseSensitive()) {
         QString upperPattern = inputPattern.toUpper();
         pattern = upperPattern.toLocal8Bit();
     } else
         pattern = inputPattern.toLocal8Bit();
-    
+
     if (!TextUtils::fits(al->getMap(), pattern.constData(), pattern.length())) {
         QMessageBox::critical(this, windowTitle(),  tr("Pattern contains unknown symbol"));
         return false;
@@ -692,7 +693,7 @@ void SmithWatermanDialog::clearAll()
     config.strand = StrandOption_DirectOnly;
     config.complTT = 0;
     config.aminoTT = 0;
-    
+
     realization = 0;
 }
 
@@ -709,7 +710,7 @@ void SmithWatermanDialog::loadDialogConfig()
     default:
         break;
     }
-    
+
     const StrandOption strand = dialogConfig->strand;
     switch (strand) {
     case (StrandOption_DirectOnly):
@@ -755,7 +756,7 @@ void SmithWatermanDialog::loadDialogConfig()
         assert(-1 != filterIndex);
         comboResultFilter->setCurrentIndex(filterIndex);
     }
-        
+
     const float minScoreInPercent = dialogConfig->minScoreInPercent;
     spinScorePercent->setValue(minScoreInPercent);
 
@@ -790,27 +791,27 @@ void SmithWatermanDialog::loadDialogConfig()
 void SmithWatermanDialog::saveDialogConfig()
 {
     dialogConfig->ptrn = teditPattern->toPlainText().toLatin1();
-    
+
     dialogConfig->algVersion = comboRealization->currentText();
     dialogConfig->scoringMatrix = comboMatrix->currentText();
 
     dialogConfig->gm.scoreGapOpen = (float)spinGapOpen->value();
     dialogConfig->gm.scoreGapExtd = (float)spinGapExtd->value();
-    
+
     dialogConfig->resultFilter = comboResultFilter->currentText();
     dialogConfig->minScoreInPercent = spinScorePercent->value();
-    
-    dialogConfig->searchType =  (radioSequence->isChecked()) ? 
+
+    dialogConfig->searchType =  (radioSequence->isChecked()) ?
                                 (SmithWatermanSearchType_inSequence):
                                 (SmithWatermanSearchType_inTranslation);
 
-    dialogConfig->strand =  (radioDirect->isChecked()) ? 
+    dialogConfig->strand =  (radioDirect->isChecked()) ?
                             (StrandOption_DirectOnly):
                             (dialogConfig->strand);
-    dialogConfig->strand =  (radioComplement->isChecked()) ? 
+    dialogConfig->strand =  (radioComplement->isChecked()) ?
                             (StrandOption_ComplementOnly):
                             (dialogConfig->strand);
-    dialogConfig->strand =  (radioBoth->isChecked()) ? 
+    dialogConfig->strand =  (radioBoth->isChecked()) ?
                             (StrandOption_Both):
                             (dialogConfig->strand);
 
