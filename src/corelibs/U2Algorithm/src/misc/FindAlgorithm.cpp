@@ -745,7 +745,9 @@ void FindAlgorithm::find(
     Q_UNUSED(seqLen);
     SAFE_POINT( NULL == complTT || complTT->isOne2One( ), "Invalid translation supplied!", );
     SAFE_POINT( patternLen > maxErr, "Invalid maximum error count supplied!", );
-    SAFE_POINT( !searchIsCircular || range.length == seqLen , "Circular search is available only for the whole sequence", );
+    if (searchIsCircular && range.length != seqLen) {
+        searchIsCircular = false;
+    }
 
     if ( patternSettings == FindAlgorithmPatternSettings_RegExp ) {
         findRegExp( rl, aminoTT, complTT, strand, seq, searchIsCircular, range, pattern, maxRegExpResult, stopFlag,
