@@ -5221,6 +5221,45 @@ GUI_TEST_CLASS_DEFINITION(test_3348) {
     GTMouseDriver::click(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3379) {
+    //1. Open "_common_data/fasta/abds.fa" as separate sequences
+    QStringList expectedNames;
+    QList<ADVSingleSequenceWidget*> seqWidgets;
+    expectedNames << "seq1" << "seq3" << "seq5";
+
+    seqWidgets = GTUtilsProject::openFileExpectSequences(os,
+        testDir + "_common_data/alphabets",
+        "standard_dna_rna_amino_1000.fa",
+        expectedNames);
+    CHECK_OP_SET_ERR(os, "Failed to open sequences!");
+
+    //2. Open a few CV
+    ADVSingleSequenceWidget *seq1Widget = seqWidgets.at(0);
+    ADVSingleSequenceWidget *seq3Widget = seqWidgets.at(1);
+    ADVSingleSequenceWidget *seq5Widget = seqWidgets.at(2);
+
+    GTUtilsCv::cvBtn::click(os, seq3Widget);
+    GTUtilsCv::cvBtn::click(os, seq1Widget);
+
+    QWidget* circularView = GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_0");
+    CHECK_OP_SET_ERR(os, "Failed to open circular view!");
+
+    //3.Add more files to the project and open a few more views
+    GTFileDialog::openFile(os, testDir + "_common_data/cmdline/", "DNA.fa");
+    GTGlobals::sleep(500);
+
+    //4. Return to 'abcd.fa' view
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "seq1"));
+    GTMouseDriver::doubleClick(os);
+
+    //5. Try to launch Export dialog using context menu
+    GTUtilsDialog::waitForDialog(os, new CircularViewExportImage(os, testDir + "_common_data/scenarios/sandbox/image.jpg"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< ADV_MENU_EXPORT << "Save circular view as image", GTGlobals::UseMouse));
+
+    GTWidget::click(os, circularView, Qt::RightButton);
+}
+
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
