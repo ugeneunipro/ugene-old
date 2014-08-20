@@ -103,6 +103,15 @@ void GUIDialogWaiter::checkDialog() {
         uiLog.trace("-------------------------");
 
         hadRun = true;
+#ifdef Q_OS_WIN
+        if(widget->isModal()){
+            GTGlobals::sleep(100);
+            widget->setWindowFlags(widget->windowFlags() | Qt::WindowStaysOnTopHint);
+            widget->show();
+            widget->raise();
+            GTGlobals::sleep(100);
+        }
+#endif
         runnable->run();
     }
     else {
