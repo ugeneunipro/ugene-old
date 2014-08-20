@@ -431,7 +431,7 @@ FormatCheckResult BedFormat::checkRawData(const QByteArray& rawData, const GUrl&
     int numToIterate;
     int HUGE_DATA = 65536;
     if (size < HUGE_DATA) {
-        numToIterate = fileLines.size(); 
+        numToIterate = fileLines.size();
     }
     else {
         // Skip the last line as it can be incomplete
@@ -617,14 +617,14 @@ QHash<QString, QList<SharedAnnotationData> > BedFormat::parseDocument(
     // Read other lines
     int lineNumber = 1;
     int numOfFieldsPerLine = 0;
-    
+
     //we have already red the line if there is no header
     if (!noHeader){
         length = readBedLine(qstrbuf, io, buff);
     }
 
     while (length > 0) {
-        
+
         // Parse and validate the line
         BEDLineValidateFlags validationStatus;
 
@@ -638,6 +638,7 @@ QHash<QString, QList<SharedAnnotationData> > BedFormat::parseDocument(
             // "3" as there must be at least "chrom", "chromStart" and "chromEnd" fields
             if (numOfFieldsPerLine < 3) {
                 os.setError(tr("BED parsing error: unexpected number of fields in the first annotations line!"));
+                return resultHash;
             }
         }
         BedLineData bedLineData = parseAndValidateLine(qstrbuf, numOfFieldsPerLine, validationStatus);
@@ -759,7 +760,6 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
 
     ioLog.trace(tr("Starting BED saving: '%1'").arg(doc->getURLString()));
 
-    bool noErrorsDuringStoring = true;
     QList<GObject*> annotTables = doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
 
     QByteArray lineData;
@@ -781,20 +781,20 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
 
             QStringList lineFields;
             QVector<U2Region> annotRegions = annot.getRegions( );
-            QVector<U2Qualifier> annotQualifiers = annot.getQualifiers( );
+            if (annotRegions.size() > 1) {
+                coreLog.info(tr("You are trying to save joined annotation to BED format! The joining will be lost"));
+            }
 
             QString chromName = annot.findFirstQualifierValue( CHROM_QUALIFIER_NAME );
             if (chromName.isEmpty()) {
-                ioLog.trace(tr("BED saving error: can't save an annotation to a BED file"
+                os.setError(tr("BED saving error: can't save an annotation to a BED file"
                     " - the annotation doesn't have the 'chrom' qualifier!"));
-                noErrorsDuringStoring = false;
-                continue;
-            }
-            else {
-                lineFields << chromName;
+                return;
             }
 
             foreach (const U2Region& region, annotRegions) {
+                lineFields << chromName;
+
                 // chromStart and chromEnd
                 lineFields << QString::number(region.startPos);
                 lineFields << QString::number(region.endPos());
@@ -853,9 +853,9 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
                                 fieldsNumberPerLine = 8;
                             }
                             else {
-                                ioLog.trace(tr("BED saving error: incorrect thick coordinates"
+                                os.setError(tr("BED saving error: incorrect thick coordinates"
                                     " in the first annotation!"));
-                                noErrorsDuringStoring = false;
+                                return;
                             }
                         }
 
@@ -867,9 +867,9 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
                         if (!blockCountQualValue.isEmpty()) {
                             if (blockStartsQualValue.isEmpty() ||
                                 blockSizesQualValue.isEmpty()) {
-                                    ioLog.trace(tr("BED saving error: incorrect block fields"
-                                        " in the first annotation!"));
-                                    noErrorsDuringStoring = false;
+                                    os.setError(tr("BED saving error: incorrect block fields"
+                                               " in the first annotation!"));
+                                    return;
                             }
                             else {
                                 fieldsNumberPerLine = 12;
@@ -883,10 +883,9 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
                 // Append the required number of fields to the line
                 if (fieldsNumberPerLine >= 4) {
                     if (nameQualValue.isEmpty()) {
-                        ioLog.trace(tr("BED saving error: an annotation is expected to have '%1'"
-                            " qualifier, but it is absent! Skipping the annotation.").arg(ANNOT_QUALIFIER_NAME));
-                        noErrorsDuringStoring = false;
-                        continue;
+                        os.setError(tr("BED saving error: an annotation is expected to have '%1'"
+                                       " qualifier, but it is absent! Skipping the annotation.").arg(ANNOT_QUALIFIER_NAME));
+                        return;
                     }
                     else {
                         lineFields << nameQualValue;
@@ -944,10 +943,9 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
                         blockStartsQualValue.isEmpty() ||
                         blockSizesQualValue.isEmpty())
                     {
-                        ioLog.trace(tr("BED saving error: an annotation is expected to have the block"
-                            " qualifiers! Skipping the annotation."));
-                        noErrorsDuringStoring = false;
-                        continue;
+                        os.setError(tr("BED saving error: an annotation is expected to have the block"
+                                       " qualifiers! Skipping the annotation."));
+                        return;
                     }
                     else {
                         lineFields << blockCountQualValue;
@@ -963,13 +961,9 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
                     os.setError(L10N::errorWritingFile(doc->getURLString()));
                     return;
                 }
+                lineFields.clear();
             }
         }
-    }
-
-    if (!noErrorsDuringStoring) {
-        ioLog.error(tr("BED saving error: one or more errors occurred while saving file '%1',"
-            " see TRACE log for details!").arg(doc->getURLString()));
     }
 
     ioLog.trace(tr("Finished BED saving: '%1'").arg(doc->getURLString()));

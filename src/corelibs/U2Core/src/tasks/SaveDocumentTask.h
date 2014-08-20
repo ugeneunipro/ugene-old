@@ -37,8 +37,8 @@ class DocumentFormat;
 
 enum SaveDocFlag {
     SaveDoc_Overwrite = 0x0,
-    SaveDoc_Append = 0x1, 
-    SaveDoc_Roll = 0x2, 
+    SaveDoc_Append = 0x1,
+    SaveDoc_Roll = 0x2,
     SaveDoc_DestroyAfter = 0x4,
     SaveDoc_DestroyButDontUnload = 0x8,
     SaveDoc_OpenAfter = 0x16,

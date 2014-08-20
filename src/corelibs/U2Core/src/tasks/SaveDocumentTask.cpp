@@ -75,7 +75,7 @@ SaveDocumentTask::SaveDocumentTask(Document* _doc, IOAdapterFactory* _io, const 
 }
 
 SaveDocumentTask::SaveDocumentTask(Document* _doc, SaveDocFlags f, const QSet<QString>& _excludeFileNames)
-: Task(tr("Save document"), TaskFlag_None), 
+: Task(tr("Save document"), TaskFlag_None),
 doc(_doc), iof(doc->getIOAdapterFactory()), url(doc->getURL()), flags(f), excludeFileNames(_excludeFileNames)
 {
     assert(doc!=NULL);
@@ -155,6 +155,9 @@ void SaveDocumentTask::run() {
         QScopedPointer<IOAdapter> io(IOAdapterUtils::open(url, stateInfo, flags.testFlag(SaveDoc_Append) ? IOAdapterMode_Append: IOAdapterMode_Write));
         CHECK_OP(stateInfo, );
         df->storeDocument(doc, io.data(), stateInfo);
+        if (stateInfo.isCoR() && !originalFileExists && url.isLocalFile()) {
+            QFile::remove(url.getURLString());
+        }
     }
 }
 
@@ -166,7 +169,7 @@ Task::ReportResult SaveDocumentTask::report() {
         lock = NULL;
     }
     CHECK_OP(stateInfo, ReportResult_Finished);
-    
+
     if (doc && url == doc->getURL() && iof == doc->getIOAdapterFactory()) {
         doc->makeClean();
     }
