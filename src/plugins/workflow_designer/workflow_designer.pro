@@ -1,7 +1,8 @@
 include (workflow_designer.pri)
 
 # Input
-HEADERS += src/ActorCfgModel.h \
+HEADERS += src/ActorCfgFilterProxyModel.h \
+           src/ActorCfgModel.h \
            src/BreakpointManagerView.h \
            src/ChooseItemDialog.h \
            src/CreateScriptWorker.h \
@@ -104,7 +105,8 @@ FORMS += src/ui/ChooseItemDialog.ui \
            src/ui/WorkflowEditorWidget.ui \
            src/ui/WorkflowMetaDialog.ui \
            src/ui/WorkflowSettingsWidget.ui
-SOURCES += src/ActorCfgModel.cpp \
+SOURCES += src/ActorCfgFilterProxyModel.cpp \
+           src/ActorCfgModel.cpp \
            src/BreakpointManagerView.cpp \
            src/ChooseItemDialog.cpp \
            src/CreateScriptWorker.cpp \

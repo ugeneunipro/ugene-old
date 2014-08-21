@@ -69,23 +69,18 @@ public:
 
     void changeScriptMode(bool _mode);
 
-    QModelIndex modelIndexById(const QString& id) const {
-        for (int i=0; i<attrs.size(); i++) {
-            Attribute* a = attrs.at(i);
-            if (a->getId()==id) {
-                QModelIndex modelIndex = index(i, 1);
-                return modelIndex;
-            }
-        }
-        return QModelIndex();
-    }
+    QModelIndex modelIndexById(const QString &id) const;
+
+    Attribute * getAttributeByRow(int row) const;
+    bool isVisible(Attribute *a) const;
 
 private:
     bool setAttributeValue( const Attribute * attr, QVariant & attrValue ) const;
     void setupAttributesScripts();
-    Attribute *getAttributeByRow(int row) const;
-    bool isVisible(Attribute *a) const;
     bool canSetData(Attribute *attr, const QVariant &value);
+
+    QMap<Attribute *, bool> getAttributeRelatedVisibility(Attribute *changedAttr) const;
+    void checkIfAttributeVisibilityChanged(const QMap<Attribute *, bool> &attributeVisibility);
 
 private:
     SchemaConfig*       schemaConfig;

@@ -23,6 +23,7 @@
 #include "WorkflowViewController.h"
 #include "WorkflowEditorDelegates.h"
 
+#include "ActorCfgFilterProxyModel.h"
 #include "ActorCfgModel.h"
 
 #include <U2Core/Log.h>
@@ -81,7 +82,9 @@ customWidget(NULL), subject(NULL), actor(NULL)
     //doc->setMaximumHeight(height()/4);
 
     actorModel = new ActorCfgModel(this, owner);
-    table->setModel(actorModel);
+    ActorCfgFilterProxyModel *proxyModel = new ActorCfgFilterProxyModel(this);
+    proxyModel->setSourceModel(actorModel);
+    table->setModel(proxyModel);
     
     table->horizontalHeader()->setStretchLastSection(true);
     //table->horizontalHeader()->setStretchLastSection(false);
