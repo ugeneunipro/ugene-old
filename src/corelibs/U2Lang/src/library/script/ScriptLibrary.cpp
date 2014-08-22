@@ -201,7 +201,7 @@ QScriptValue WorkflowScriptLibrary::getSubsequence(QScriptContext *ctx, QScriptE
             return ctx->throwError(QObject::tr("Invalid subsequence region"));
         }
         QString newName(dna.getName() + "_" + QByteArray::number(beg) + "_" + QByteArray::number(end));
-        DNASequence subsequence(newName, dna.seq.mid(beg, end - beg),dna.alphabet);
+        DNASequence subsequence(newName, dna.seq.mid(beg, end - beg + 1),dna.alphabet);
         calee.setProperty("res", putSequence(engine, subsequence));
         return calee.property("res");
     }
