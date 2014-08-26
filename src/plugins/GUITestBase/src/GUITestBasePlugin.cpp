@@ -51,6 +51,7 @@
 #include "tests/common_scenarios/annotations_import/GTTestsAnnotationsImport.h"
 #include "tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.h"
 #include "tests/common_scenarios/options_panel/GTTestsOptionPanel.h"
+#include "tests/common_scenarios/options_panel/MSA/GTTestsOptionPanelMSA.h"
 #include "tests/common_scenarios/dp_view/GTTestsDpView.h"
 #include "tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h"
 #include "tests/common_scenarios/Assembling/bowtie2/GTTestsBowtie2.h"
@@ -990,6 +991,14 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_options_panel::test_0010, "bad layout of common statistic OP lapel on mac. jira");
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0012);
+
+/////////////////////////////////////////////////////////////////////////
+// Common scenarios/option_panel
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::general_test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::general_test_0001_1);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::general_test_0002);
+
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/dp_view
 /////////////////////////////////////////////////////////////////////////

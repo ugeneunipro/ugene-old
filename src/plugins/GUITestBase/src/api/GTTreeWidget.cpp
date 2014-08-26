@@ -104,6 +104,35 @@ QList<QTreeWidgetItem*> GTTreeWidget::getItems(QTreeWidgetItem* root) {
     return treeItems;
 }
 
+#define GT_METHOD_NAME "findItem"
+QTreeWidgetItem* GTTreeWidget::findItem(U2OpStatus &os, QTreeWidget *tree, const QString& text, QTreeWidgetItem *parent, int column){
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(tree != NULL, "tree widget is null", NULL);
+    if(parent == NULL){
+        parent = tree->invisibleRootItem();
+    }
+    QList<QTreeWidgetItem*> list = getItems(parent);
+    foreach(QTreeWidgetItem* item, list){
+        QString itemText = item->text(column);
+        if(itemText == text){
+            return item;
+        }
+    }
+    return NULL;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "click"
+void GTTreeWidget::click(U2OpStatus &os, QTreeWidgetItem *item){
+    GT_CHECK(item != NULL, "item is NULL");
+    QTreeWidget* tree = item->treeWidget();
+    tree->scrollToItem(item);
+
+    GTMouseDriver::moveTo(os, getItemCenter(os, item));
+    GTMouseDriver::click(os);
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }

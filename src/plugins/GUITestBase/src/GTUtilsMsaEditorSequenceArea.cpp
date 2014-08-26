@@ -364,7 +364,7 @@ bool GTUtilsMSAEditorSequenceArea::hasAminoAlphabet(U2OpStatus &os)
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "isSequenceHightighted"
-bool GTUtilsMSAEditorSequenceArea::isSequenceHightighted(U2OpStatus &os, QString seqName){
+bool GTUtilsMSAEditorSequenceArea::isSequenceHightighted(U2OpStatus &os, const QString &seqName){
     QStringList names = getVisibaleNames(os);
     GT_CHECK_RESULT(names.contains(seqName), QString("sequence with name %1 not found").arg(seqName), false);
 
@@ -396,9 +396,8 @@ bool GTUtilsMSAEditorSequenceArea::isSequenceHightighted(U2OpStatus &os, QString
 int GTUtilsMSAEditorSequenceArea::getRowHeight(U2OpStatus &os){
     QWidget* activeWindow = GTUtilsMdi::activeWindow(os);
     GT_CHECK_RESULT(activeWindow != NULL, "active mdi window is NULL", 0);
-    MSAEditorUI* Ui = GTUtilsMdi::activeWindow(os)->findChild<MSAEditorUI*>();
-    return Ui->getEditor()->getRowHeight();
-
+    MSAEditorUI* ui = GTUtilsMdi::activeWindow(os)->findChild<MSAEditorUI*>();
+    return ui->getEditor()->getRowHeight();
 }
 #undef GT_METHOD_NAME
 

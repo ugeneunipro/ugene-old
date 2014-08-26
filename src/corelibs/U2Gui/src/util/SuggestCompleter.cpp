@@ -37,7 +37,7 @@ namespace U2 {
 BaseCompleter::BaseCompleter( CompletionFiller *filler, QLineEdit *parent /*= 0*/ )
     : QObject(parent), filler(filler), editor(parent), lastChosenItemIndex(INVALID_ITEM_INDEX)
 {
-    popup = new QTreeWidget;
+    popup = new QTreeWidget(parent);
     popup->setWindowFlags(Qt::Popup);
     popup->setFocusPolicy(Qt::NoFocus);
     popup->setFocusProxy(parent);
@@ -61,7 +61,6 @@ BaseCompleter::BaseCompleter( CompletionFiller *filler, QLineEdit *parent /*= 0*
 
 BaseCompleter::~BaseCompleter(){
     delete filler;
-    delete popup;
 }
 
 bool BaseCompleter::eventFilter(QObject *obj, QEvent *ev){

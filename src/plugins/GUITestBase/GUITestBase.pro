@@ -112,6 +112,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsTaskTreeView.h \
             src/GTUtilsMsaEditorSequenceArea.h \
             src/GTUtilsOptionsPanel.h \
+            src/GTUtilsOptionPanelMSA.h \
             src/GTUtilsPhyTree.h \
             src/GTUtilsQueryDesigner.h \
             src/GTUtilsSharedDatabaseDocument.h \
@@ -147,6 +148,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/shared_database/GTTestsSharedDatabase.h \
             src/tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.h \
             src/tests/common_scenarios/options_panel/GTTestsOptionPanel.h \
+            src/tests/common_scenarios/options_panel/msa/GTTestsOptionPanelMSA.h \
             src/tests/common_scenarios/dp_view/GTTestsDpView.h \
             src/tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h \
             src/tests/common_scenarios/Assembling/bowtie2/GTTestsBowtie2.h \
@@ -198,7 +200,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTDoubleSpinBox.h \
             src/api/GTTableView.h  \
             src/api/GTGraphicsItem.h \
-            src/api/GTTreeView.h
+            src/api/GTTreeView.h \
+            src/api/GTBaseCompleter.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -309,6 +312,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsTaskTreeView.cpp \
             src/GTUtilsMsaEditorSequenceArea.cpp \
             src/GTUtilsOptionsPanel.cpp \
+            src/GTUtilsOptionPanelMSA.cpp \
             src/GTUtilsQueryDesigner.cpp \
             src/GTUtilsSharedDatabaseDocument.cpp \
             src/GTUtilsWorkflowDesigner.cpp \
@@ -344,6 +348,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/shared_database/GTTestsSharedDatabase.cpp \
             src/tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.cpp \
             src/tests/common_scenarios/options_panel/GTTestsOptionPanel.cpp \
+            src/tests/common_scenarios/options_panel/msa/GTTestsOptionPanelMSA.cpp \
             src/tests/common_scenarios/dp_view/GTTestsDpView.cpp \
             src/tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.cpp \
             src/tests/common_scenarios/Assembling/bowtie2/GTTestsBowtie2.cpp \
@@ -401,4 +406,5 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTDoubleSpinBox.cpp \
             src/api/GTTableView.cpp \
             src/api/GTGraphicsItem.cpp \
-            src/api/GTTreeView.cpp
+            src/api/GTTreeView.cpp \
+            src/api/GTBaseCompleter.cpp

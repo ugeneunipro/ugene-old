@@ -42,6 +42,9 @@ public:
 
     // gets all items under root recursively and returns a list of them
     static QList<QTreeWidgetItem*> getItems(QTreeWidgetItem* root);
+
+    static QTreeWidgetItem* findItem(U2OpStatus &os, QTreeWidget* tree, const QString& text, QTreeWidgetItem* parent = NULL, int column = 0);
+    static void click(U2OpStatus &os, QTreeWidgetItem* item);
 };
 
 } // namespace
