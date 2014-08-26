@@ -265,7 +265,7 @@ void BlastRunCommonDialog::sl_onBrowseDatabasePath(){
     lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a database file"), lod.dir, "", NULL, options);
     if (!name.isEmpty()) {
         QFileInfo fileInfo(name);
-        baseNameLineEdit->setText(fileInfo.fileName().replace(QRegExp("(\\.\\d+)?(((formatDB|makeBlastDB)\\.log)|(\\.(phr|pin|psq|nhr|nin|nsq)))?$", Qt::CaseInsensitive), QString()));
+        baseNameLineEdit->setText(fileInfo.fileName().replace(QRegExp("(\\.\\d+)?(((formatDB|makeBlastDB)\\.log)|(\\.(phr|pin|psq|phd|pnd|pog|ppi|psi|phi|pni|ppd|psd|psq|pal|nhr|nin|nsq)))?$", Qt::CaseInsensitive), QString()));
         databasePathLineEdit->setText(fileInfo.dir().path());
     }
 }
