@@ -51,7 +51,7 @@
 #include "tests/common_scenarios/annotations_import/GTTestsAnnotationsImport.h"
 #include "tests/common_scenarios/smith_waterman_dialog/GTTestsSWDialog.h"
 #include "tests/common_scenarios/options_panel/GTTestsOptionPanel.h"
-#include "tests/common_scenarios/options_panel/MSA/GTTestsOptionPanelMSA.h"
+#include "tests/common_scenarios/options_panel/msa/GTTestsOptionPanelMSA.h"
 #include "tests/common_scenarios/dp_view/GTTestsDpView.h"
 #include "tests/common_scenarios/Assembling/Assembly_browser/GTTestsAssemblyBrowser.h"
 #include "tests/common_scenarios/Assembling/bowtie2/GTTestsBowtie2.h"
