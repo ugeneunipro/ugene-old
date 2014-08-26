@@ -33,6 +33,7 @@
 
 
 namespace U2 {
+const QString GTUtilsMSAEditorSequenceArea::highlightningColorName = "#9999cc";
 
 #define GT_CLASS_NAME "GTUtilsMSAEditorSequenceArea"
 
@@ -362,6 +363,44 @@ bool GTUtilsMSAEditorSequenceArea::hasAminoAlphabet(U2OpStatus &os)
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "isSequenceHightighted"
+bool GTUtilsMSAEditorSequenceArea::isSequenceHightighted(U2OpStatus &os, QString seqName){
+    QStringList names = getVisibaleNames(os);
+    GT_CHECK_RESULT(names.contains(seqName), QString("sequence with name %1 not found").arg(seqName), false);
+
+    int row = 0;
+    while (names[row] != seqName) {
+        row++;
+    }
+    QPoint center = convertCoordinates(os, QPoint(-5, row));
+    QWidget* nameList = GTWidget::findWidget(os, "msa_editor_name_list");
+    GT_CHECK_RESULT(nameList !=NULL, "name list is NULL", false);
+
+    int initCoord = center.y() - getRowHeight(os)/2;
+    int finalCoord = center.y() + getRowHeight(os)/2;
+
+    for (int i = initCoord; i<finalCoord; i++){
+        QPoint local = nameList->mapFromGlobal(QPoint(center.x(), i));
+        QColor c = GTWidget::getColor(nameList,local);
+        QString name = c.name();
+        if(name == highlightningColorName){
+            return true;
+        }
+    }
+
+    return false;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getRowHeight"
+int GTUtilsMSAEditorSequenceArea::getRowHeight(U2OpStatus &os){
+    QWidget* activeWindow = GTUtilsMdi::activeWindow(os);
+    GT_CHECK_RESULT(activeWindow != NULL, "active mdi window is NULL", 0);
+    MSAEditorUI* Ui = GTUtilsMdi::activeWindow(os)->findChild<MSAEditorUI*>();
+    return Ui->getEditor()->getRowHeight();
+
+}
+#undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
 

@@ -65,7 +65,12 @@ public:
     static bool offsetsVisible(U2OpStatus &os);
 
     static bool hasAminoAlphabet(U2OpStatus &os);
+    static bool isSequenceHightighted(U2OpStatus &os, QString seqName);
+    static int getRowHeight(U2OpStatus &os);
+
+    static const QString highlightningColorName;
 };
+
 
 } // namespace
 #endif // GTUTILSMSAEDITORSEQUENCEAREA_H
