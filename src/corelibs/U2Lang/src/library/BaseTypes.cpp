@@ -183,6 +183,43 @@ DataTypePtr BaseTypes::URL_DATASETS_TYPE() {
     return dtr->getById(URL_DATASETS_TYPE_ID);
 }
 
+U2DataType BaseTypes::toDataType(const QString &typeId) {
+    if (typeId == DNA_SEQUENCE_TYPE()->getId()) {
+        return U2Type::Sequence;
+    } else if (typeId == ANNOTATION_TABLE_TYPE()->getId()) {
+        return U2Type::AnnotationTable;
+    } else if (typeId == MULTIPLE_ALIGNMENT_TYPE()->getId()) {
+        return U2Type::Msa;
+    } else if (typeId == VARIATION_TRACK_TYPE()->getId()) {
+        return U2Type::VariantTrack;
+    } else if (typeId == ASSEMBLY_TYPE()->getId()) {
+        return U2Type::Assembly;
+    } else if (typeId == STRING_TYPE()->getId()) {
+        return U2Type::Text;
+    } else {
+        return U2Type::Unknown;
+    }
+}
+
+QString BaseTypes::toTypeId(const U2DataType &dataType) {
+    switch (dataType) {
+    case U2Type::Sequence :
+        return DNA_SEQUENCE_TYPE()->getId();
+    case U2Type::AnnotationTable :
+        return ANNOTATION_TABLE_TYPE()->getId();
+    case U2Type::Msa :
+        return MULTIPLE_ALIGNMENT_TYPE()->getId();
+    case U2Type::VariantTrack :
+        return VARIATION_TRACK_TYPE()->getId();
+    case U2Type::Assembly :
+        return ASSEMBLY_TYPE()->getId();
+    case U2Type::Text :
+        return STRING_TYPE()->getId();
+    default:
+        return ANY_TYPE()->getId();
+    }
+}
+
 static void setIfNotNull( bool * to, bool val ) {
     if( to != NULL ) {
         *to = val;
@@ -226,6 +263,13 @@ QVariant BoolTypeValueFactory::getValueFromString( const QString & s, bool * ok 
 ****************************************/
 QVariant NumTypeValueFactory::getValueFromString( const QString & str, bool * okArg ) const {
     bool ok = false;
+
+    qint64 longIntCandidate = str.toLongLong(&ok);
+    if(ok) {
+        setIfNotNull(okArg, true);
+        return qVariantFromValue(longIntCandidate);
+    }
+
     int intCandidate = str.toInt(&ok);
     if(ok) {
         setIfNotNull(okArg, true);

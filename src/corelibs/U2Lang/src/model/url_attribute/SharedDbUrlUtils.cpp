@@ -27,6 +27,8 @@
 #include <U2Core/U2ObjectTypeUtils.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Lang/BaseTypes.h>
+
 #include "SharedDbUrlUtils.h"
 
 namespace U2 {
@@ -81,6 +83,15 @@ QString SharedDbUrlUtils::createDbUrl(const U2DbiRef &dbiRef) {
     return dbiRef.dbiFactoryId + DB_PROVIDER_SEP + dbiRef.dbiId;
 }
 
+bool SharedDbUrlUtils::checkBaseDbUrlStructure(const QString &dbUrl) {
+    const int dbProviderSepPos = dbUrl.indexOf(DB_PROVIDER_SEP);
+    if (dbProviderSepPos < 1) {
+        return false;
+    }
+
+    return GUrl::getURLType(dbUrl.mid(dbProviderSepPos + 1)) == GUrl_Network;
+}
+
 QString SharedDbUrlUtils::createDbFolderUrl(const Folder &folder) {
     Document *doc = folder.getDocument();
     CHECK(NULL != doc, QString());
@@ -91,6 +102,13 @@ QString SharedDbUrlUtils::createDbFolderUrl(const Folder &folder) {
     CHECK(checkFolderPath(folderPath), false);
 
     return dbiRef.dbiFactoryId + DB_PROVIDER_SEP + dbiRef.dbiId + DB_URL_SEP + folderPath;
+}
+
+QString SharedDbUrlUtils::createDbFolderUrl(const QString &dbUrl, const QString &path) {
+    SAFE_POINT(checkBaseDbUrlStructure(dbUrl), "Invalid DB URL", QString());
+    SAFE_POINT(path.isEmpty(), "Invalid DB folder path", QString());
+
+    return dbUrl + DB_URL_SEP + path;
 }
 
 bool SharedDbUrlUtils::isDbFolderUrl(const QString &url) {
@@ -122,12 +140,33 @@ QString SharedDbUrlUtils::createDbObjectUrl(const GObject *obj) {
     return dbiRef.dbiFactoryId + DB_PROVIDER_SEP + dbiRef.dbiId + DB_URL_SEP + objIdStr;
 }
 
-bool SharedDbUrlUtils::isDbObjectUrl(const QString &url) {
-    const int dbProviderSepPos = url.indexOf(DB_PROVIDER_SEP);
+QString SharedDbUrlUtils::createDbObjectUrl(const QString &dbUrl, qint64 objId, const QString &objType, const QString &objName) {
+    SAFE_POINT(checkBaseDbUrlStructure(dbUrl), "Invalid DB URL", QString());
+    const U2DataType objDataType = BaseTypes::toDataType(objType);
+    SAFE_POINT(U2Type::Unknown != objDataType, "Invalid object type detected", QString());
+    SAFE_POINT(!objName.isEmpty(), "Invalid DB object name", QString());
+
+    return dbUrl + DB_URL_SEP + QString::number(objId) + DB_OBJ_ID_SEP + QString::number(objDataType) + DB_OBJ_ID_SEP + objName;
+}
+
+namespace {
+
+bool getSeparatorIndices(const QString &entityUrl, int &dbProviderSepPos, int &dbUrlSepPos) {
+    dbProviderSepPos = entityUrl.indexOf(SharedDbUrlUtils::DB_PROVIDER_SEP);
     CHECK(dbProviderSepPos >= 1, false);
 
-    const int dbUrlSepPos = url.indexOf(DB_URL_SEP, dbProviderSepPos);
-    CHECK(-1 != dbUrlSepPos, false);
+    dbUrlSepPos = entityUrl.indexOf(SharedDbUrlUtils::DB_URL_SEP, dbProviderSepPos);
+    CHECK(dbUrlSepPos != -1, false);
+
+    return true;
+}
+
+}
+
+bool SharedDbUrlUtils::isDbObjectUrl(const QString &url) {
+    int dbProviderSepPos = -1;
+    int dbUrlSepPos = -1;
+    CHECK(getSeparatorIndices(url, dbProviderSepPos, dbUrlSepPos), false);
 
     const int dbObjIdSepPos = url.indexOf(DB_OBJ_ID_SEP, dbUrlSepPos);
     CHECK(-1 != dbObjIdSepPos, false);
@@ -141,10 +180,10 @@ bool SharedDbUrlUtils::isDbObjectUrl(const QString &url) {
 }
 
 U2DbiRef SharedDbUrlUtils::getDbRefFromEntityUrl(const QString &url) {
-    const int dbProviderSepPos = url.indexOf(DB_PROVIDER_SEP);
-    CHECK(dbProviderSepPos >= 1, U2DbiRef());
+    int dbProviderSepPos = -1;
+    int dbUrlSepPos = -1;
+    CHECK(getSeparatorIndices(url, dbProviderSepPos, dbUrlSepPos), U2DbiRef());
 
-    const int dbUrlSepPos = url.indexOf(DB_URL_SEP, dbProviderSepPos);
     return U2DbiRef(url.right(dbProviderSepPos), url.mid(dbProviderSepPos + 1, -1 != dbUrlSepPos ? dbUrlSepPos - dbProviderSepPos - 1 : -1));
 }
 
@@ -157,6 +196,14 @@ QVariantMap SharedDbUrlUtils::getKnownDbs() {
         result.insert(shortName, MYSQL_DBI_ID + DB_PROVIDER_SEP + appSettings->getValue(CONN_SETTINGS_PATH + shortName).toString());
     }
     return result;
+}
+
+QString SharedDbUrlUtils::getDbUrlFromEntityUrl(const QString &url) {
+    int dbProviderSepPos = -1;
+    int dbUrlSepPos = -1;
+    CHECK(getSeparatorIndices(url, dbProviderSepPos, dbUrlSepPos), QString());
+
+    return url.left(dbUrlSepPos);
 }
 
 QString SharedDbUrlUtils::getDbShortNameFromEntityUrl(const QString &url) {
@@ -190,6 +237,16 @@ U2DataId SharedDbUrlUtils::getObjectIdByUrl(const QString &objUrl) {
     return U2DbiUtils::toU2DataId(idNumber, dataType);
 }
 
+qint64 SharedDbUrlUtils::getObjectNumberIdByUrl(const QString &url) {
+    QStringList objIdParts;
+    CHECK(disassembleObjectId(url, objIdParts), -1);
+
+    qint64 idNumber = 0;
+    CHECK(str2Int(objIdParts[0], idNumber), -1);
+
+    return idNumber;
+}
+
 GObjectType SharedDbUrlUtils::getDbObjectTypeByUrl(const QString &objUrl) {
     QStringList objIdParts;
     CHECK(disassembleObjectId(objUrl, objIdParts), GObjectType());
@@ -198,6 +255,15 @@ GObjectType SharedDbUrlUtils::getDbObjectTypeByUrl(const QString &objUrl) {
     CHECK(str2DataType(objIdParts[1], dataType), GObjectType());
 
     return U2ObjectTypeUtils::toGObjectType(dataType);
+}
+
+QString SharedDbUrlUtils::getDbSerializedObjectTypeByUrl(const QString &url) {
+    QStringList objIdParts;
+    CHECK(disassembleObjectId(url, objIdParts), QString());
+
+    U2DataType dataType = U2Type::Unknown;
+    CHECK(str2DataType(objIdParts[1], dataType), QString());
+    return BaseTypes::toTypeId(dataType);
 }
 
 QString SharedDbUrlUtils::getDbObjectNameByUrl(const QString &objUrl) {

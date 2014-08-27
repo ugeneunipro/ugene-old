@@ -119,6 +119,16 @@ public:
     virtual void accept(URLContainerVisitor *visitor);
 
     virtual bool validateUrl(ProblemList &problemList);
+
+    void setSequenceAccFilter(const QString &acc);
+    void setObjNameFilter(const QString &name);
+
+    const QString & getSequenceAccFilter() const;
+    const QString & getObjNameFilter() const;
+
+private:
+    QString accFilter;
+    QString objNameFilter;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

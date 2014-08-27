@@ -89,6 +89,13 @@ public:
     static const QString ACTION;
     static const QString OUT_SLOT_ATTR;
     static const QString DATASET_NAME;
+    static const QString DB_SELECT;
+    static const QString DB_URL;
+    static const QString DB_OBJECT_TYPE;
+    static const QString DB_OBJECT_ID;
+    static const QString DB_OBJ_CACHED_NAME;
+    static const QString DB_OBJ_NAME_FILTER;
+    static const QString DB_SEQ_ACC_FILTER;
     static const QString DIRECTORY_URL;
     static const QString FILE_URL;
     static const QString PATH;

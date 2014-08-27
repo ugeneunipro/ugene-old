@@ -22,6 +22,8 @@
 #ifndef __U2_BASE_TYPES_H_
 #define __U2_BASE_TYPES_H_
 
+#include <U2Core/U2Type.h>
+
 #include <U2Lang/Datatype.h>
 
 namespace U2 {
@@ -43,6 +45,8 @@ public:
     static DataTypePtr URL_DATASETS_TYPE();
     static DataTypePtr ANY_TYPE();
 
+    static U2DataType toDataType(const QString &typeId);
+    static QString toTypeId(const U2DataType &dataType);
 }; // BaseTypes
 
 // value factories for core datatypes

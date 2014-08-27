@@ -227,4 +227,20 @@ bool DbFolderUrlContainer::validateUrl(ProblemList &problemList) {
     return res;
 }
 
+const QString & DbFolderUrlContainer::getSequenceAccFilter() const {
+    return accFilter;
+}
+
+const QString & DbFolderUrlContainer::getObjNameFilter() const {
+    return objNameFilter;
+}
+
+void DbFolderUrlContainer::setSequenceAccFilter(const QString &acc) {
+    accFilter = acc;
+}
+
+void DbFolderUrlContainer::setObjNameFilter(const QString &name) {
+    objNameFilter = name;
+}
+
 } // U2

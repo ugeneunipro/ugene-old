@@ -31,19 +31,25 @@ class GObject;
 
 class U2LANG_EXPORT SharedDbUrlUtils {
 public:
+    static bool checkBaseDbUrlStructure(const QString &dbUrl);
+
     static QString createDbUrl(const U2DbiRef &dbiRef);
 
     // Example of DB Folder URL: "SQL_SERVER>user@ugene.com:3306/ugene_db,/path/to/folder"
     static QString createDbFolderUrl(const Folder &folder);
+    static QString createDbFolderUrl(const QString &dbUrl, const QString &path);
     static bool isDbFolderUrl(const QString &url);
 
     // Example of DB Object URL: "SQL_SERVER>user@ugene.com:3306/ugene_db,123:1:human_T1"
     // the string after the comma has the following format: <object_id>:<object_type>:<object_cached_name>
     static QString createDbObjectUrl(const GObject *obj);
+    // @objType here is the ID of the BaseTypes class members
+    static QString createDbObjectUrl(const QString &dbUrl, qint64 objId, const QString &objType, const QString &objName);
     static bool isDbObjectUrl(const QString &url);
 
     // Extracts DB reference from an object of folder url.
     static U2DbiRef getDbRefFromEntityUrl(const QString &url);
+    static QString getDbUrlFromEntityUrl(const QString &url);
 
     // Returns a user-defined name for the DB according to the @url string.
     // If the DB is unknown or invalid, the DB URL string is returned
@@ -55,7 +61,9 @@ public:
     static void saveNewDbConnection(const QString &connectionName, const QString &connectionUrl);
 
     static U2DataId getObjectIdByUrl(const QString &url);
+    static qint64 getObjectNumberIdByUrl(const QString &url);
     static GObjectType getDbObjectTypeByUrl(const QString &url);
+    static QString getDbSerializedObjectTypeByUrl(const QString &url);
     static QString getDbObjectNameByUrl(const QString &url);
 
     static QString getDbFolderPathByUrl(const QString &url);
