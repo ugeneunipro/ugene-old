@@ -724,6 +724,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_consensus::test_0004_1);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor_consensus::test_0004_2);
 
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_consensus::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor_consensus::test_0006);
+
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/msa_editor/edit
 /////////////////////////////////////////////////////////////////////////
@@ -998,6 +1001,18 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::general_test_0001);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::general_test_0001_1);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::general_test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::general_test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::general_test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::general_test_0005);
+
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0001_1);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0001_2);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0001_3);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0001_4);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0002_1);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0003);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/dp_view

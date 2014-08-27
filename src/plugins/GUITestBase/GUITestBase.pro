@@ -171,6 +171,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTRegionSelector.h \
             src/api/GTSequenceReadingModeDialog.h \
             src/api/GTSequenceReadingModeDialogUtils.h \
+            src/api/GTBaseCompleter.h \
 #   Qt primitives
             src/api/GTClipboard.h \
             src/api/GTCheckBox.h \
@@ -201,7 +202,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTTableView.h  \
             src/api/GTGraphicsItem.h \
             src/api/GTTreeView.h \
-            src/api/GTBaseCompleter.h
+            src/api/GTListWidget.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -371,6 +372,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTRegionSelector.cpp \
             src/api/GTSequenceReadingModeDialog.cpp \
             src/api/GTSequenceReadingModeDialogUtils.cpp \
+            src/api/GTBaseCompleter.cpp \
 #   Qt primitives
             src/api/GTClipboard.cpp \
             src/api/GTCheckBox.cpp \
@@ -407,4 +409,4 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTTableView.cpp \
             src/api/GTGraphicsItem.cpp \
             src/api/GTTreeView.cpp \
-            src/api/GTBaseCompleter.cpp
+            src/api/GTListWidget.cpp

@@ -173,10 +173,6 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
     checkColor(os,QPoint(12, 2), "#ffffff",5);//chech13
     checkColor(os,QPoint(13, 2), "#ccccff",5);//chech14
 
-
-
-
-
 }
 } // namespace
 } // namespace U2

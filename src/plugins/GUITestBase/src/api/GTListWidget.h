@@ -20,36 +20,19 @@
  */
 
 
-#ifndef U2_GTUTILS_OPTION_PANEL_MSA_H
-#define U2_GTUTILS_OPTION_PANEL_MSA_H
+#ifndef _U2_GT_LISTWIDGET_H_
+#define _U2_GT_LISTWIDGET_H_
 
 #include "api/GTGlobals.h"
+#include <QtGui/QListWidget>
+namespace U2{
 
-namespace U2 {
-
-class U2OpStatus;
-
-
-class GTUtilsOptionPanelMsa{
+class GTListWidget
+{
 public:
-    enum Tabs{General, Highlighting, PairwiseAlignment, TreeSettings, ExportConsensus, Statistics};
-    enum AddRefMethod{Button, Completer};
-
-    static const QMap<Tabs,QString> tabsNames;
-    //Openes option panel tab. TODO: check if tab is already opened
-    static void openTab(U2OpStatus &os, Tabs tab);
-    static void addReference(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
-    static void removeReference(U2OpStatus &os);
-    static int getLength(U2OpStatus &os);
-    static int getHeight(U2OpStatus &os);
-
-private:
-    static QMap<Tabs,QString> initNames();
+    static void click(U2OpStatus &os, QListWidget* list, const QString& text);
 };
-
 
 }
 
-
-
-#endif // GTUTILSOPTIONPANELMSA_H
+#endif // GTLISTWIDGET_H

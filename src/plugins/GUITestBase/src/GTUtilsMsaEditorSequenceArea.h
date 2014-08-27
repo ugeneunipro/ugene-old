@@ -23,6 +23,7 @@
 #define GTUTILSMSAEDITORSEQUENCEAREA_H
 
 #include "api/GTGlobals.h"
+#include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
 #include <U2View/MSAEditorSequenceArea.h>
 
 namespace U2 {
@@ -66,7 +67,13 @@ public:
 
     static bool hasAminoAlphabet(U2OpStatus &os);
     static bool isSequenceHightighted(U2OpStatus &os, const QString& seqName);
+    static QString getColor(U2OpStatus &os, QPoint p);
     static int getRowHeight(U2OpStatus &os);
+
+    static void renameSequence(U2OpStatus &os, const QString& seqToRename, const QString& newName);
+
+    static void createColorScheme(U2OpStatus &os, const QString& schemeName, const NewColorSchemeCreator::alphabet al);
+    static void deleteColorScheme(U2OpStatus &os, const QString& schemeName);
 
     static const QString highlightningColorName;
 };

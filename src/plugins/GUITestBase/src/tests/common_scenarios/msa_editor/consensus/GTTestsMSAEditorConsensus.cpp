@@ -33,6 +33,7 @@
 #include "GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsOptionPanelMSA.h"
 #include "runnables/qt/PopupChooser.h"
 #include "GTUtilsMdi.h"
 #include <U2View/MSAEditor.h>
@@ -62,7 +63,13 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
 
     GTUtilsMSAEditorSequenceArea::checkConsensus(os,"              ");
 //    Expected state: consensus must be empty
+    QWidget* thresholdSlider = GTWidget::findWidget(os, "thresholdSlider");
+    CHECK_SET_ERR(thresholdSlider != NULL, "thresholdSlider is NULL");
+    CHECK_SET_ERR(!thresholdSlider->isEnabled(), "thresholdSlider is unexpectidly enabled");
 
+    QWidget* thresholdSpinBox = GTWidget::findWidget(os, "thresholdSpinBox");
+    CHECK_SET_ERR(thresholdSpinBox != NULL, "thresholdSpinBox is NULL");
+    CHECK_SET_ERR(!thresholdSpinBox->isEnabled(), "thresholdSpinBox is unexpectidly enabled");
 }
 GUI_TEST_CLASS_DEFINITION(test_0002){
 //Check consensus in MSA editor
@@ -293,6 +300,85 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2){
 
     GTUtilsMSAEditorSequenceArea::checkConsensus(os, "W-------------");
 //Expected state: consensus must be W-------------
+}
+
+void checkLimits(U2OpStatus &os, int minVal, int maxVal){
+    QSlider* thresholdSlider = qobject_cast<QSlider*>(GTWidget::findWidget(os, "thresholdSlider"));
+    CHECK_SET_ERR(thresholdSlider != NULL, "thresholdSlider not found");
+    int actualSliderMin = thresholdSlider->minimum();
+    int actualSliderMax = thresholdSlider->maximum();
+    CHECK_SET_ERR(actualSliderMin == minVal, QString("wrong minimal value for slider. Expected: %1, actual: %2").arg(minVal).arg(actualSliderMin));
+    CHECK_SET_ERR(actualSliderMax == maxVal, QString("wrong maximim value for slider. Expected: %1, actual: %2").arg(maxVal).arg(actualSliderMin));
+
+    QSpinBox* thresholdSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "thresholdSpinBox"));
+    CHECK_SET_ERR(thresholdSpinBox != NULL, "thresholdSpin not found");
+    int actualSpinMin = thresholdSpinBox->minimum();
+    int actualSpinMax = thresholdSpinBox->maximum();
+    CHECK_SET_ERR(actualSpinMin == minVal, QString("wrong minimal value for spin. Expected: %1, actual: %2").arg(minVal).arg(actualSpinMin));
+    CHECK_SET_ERR(actualSpinMax == maxVal, QString("wrong maximim value for spin. Expected: %1, actual: %2").arg(maxVal).arg(actualSpinMin));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0005){
+//check thresholdSpinBox and thresholdSlider limits
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Open general option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
+    GTGlobals::sleep(200);
+    QComboBox* consensusType = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "consensusType"));
+    CHECK_SET_ERR(consensusType != NULL, "consensus combobox not found");
+//3. Select "Default" consensus mode. Limits are 1-100
+    GTComboBox::setIndexWithText(os, consensusType, "Default");
+    checkLimits(os, 1, 100);
+//4. Select "Levitsky" consensus mode. Limits are 50-100
+    GTComboBox::setIndexWithText(os, consensusType, "Levitsky");
+    checkLimits(os, 50, 100);
+//4. Select "Strict" consensus mode. Limits are 50-100
+    GTComboBox::setIndexWithText(os, consensusType, "Strict");
+    checkLimits(os, 1, 100);
+}
+
+void checkValues(U2OpStatus &os, int expected){
+    QSlider* thresholdSlider = qobject_cast<QSlider*>(GTWidget::findWidget(os, "thresholdSlider"));
+    CHECK_SET_ERR(thresholdSlider != NULL, "thresholdSlider not found");
+    int actualSliderValue = thresholdSlider->value();
+    CHECK_SET_ERR(actualSliderValue == expected, QString("wrong value for slider. Exected: %1, actual: %2").arg(expected).arg(actualSliderValue));
+
+    QSpinBox* thresholdSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "thresholdSpinBox"));
+    CHECK_SET_ERR(thresholdSpinBox != NULL, "thresholdSpin not found");
+    int actualSpinValue = thresholdSpinBox->value();
+    CHECK_SET_ERR(actualSpinValue == expected, QString("wrong value for Spin. Exected: %1, actual: %2").arg(expected).arg(actualSpinValue));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0006){
+//check reset button
+//1. Open document _common_data\scenarios\msa\ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Open general option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
+    GTGlobals::sleep(200);
+
+    QComboBox* consensusType = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "consensusType"));
+    CHECK_SET_ERR(consensusType != NULL, "consensus combobox not found");
+    QSpinBox* thresholdSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "thresholdSpinBox"));
+    CHECK_SET_ERR(thresholdSpinBox != NULL, "thresholdSpin not found");
+    QWidget* thresholdResetButton = GTWidget::findWidget(os, "thresholdResetButton");
+    CHECK_SET_ERR(thresholdResetButton != NULL, "thresholdResetButton not found");
+//3. Select "Default" consensus mode
+    GTComboBox::setIndexWithText(os, consensusType, "Default");
+    GTSpinBox::setValue(os, thresholdSpinBox, 10, GTGlobals::UseKeyBoard);
+    GTWidget::click(os, thresholdResetButton);
+    checkValues(os, 100);
+//3. Select "Levitsky" consensus mode
+    GTComboBox::setIndexWithText(os, consensusType, "Levitsky");
+    GTSpinBox::setValue(os, thresholdSpinBox, 10, GTGlobals::UseKeyBoard);
+    GTWidget::click(os, thresholdResetButton);
+    checkValues(os, 90);
+//3. Select "Strict" consensus mode
+    GTComboBox::setIndexWithText(os, consensusType, "Strict");
+    GTSpinBox::setValue(os, thresholdSpinBox, 10, GTGlobals::UseKeyBoard);
+    GTWidget::click(os, thresholdResetButton);
+    checkValues(os, 100);
 }
 } // namespace
 } // namespace U2

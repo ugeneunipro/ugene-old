@@ -29,6 +29,8 @@
 #include "api/GTMouseDriver.h"
 #include "api/GTMSAEditorStatusWidget.h"
 #include "api/GTWidget.h"
+#include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
+#include "runnables/qt/PopupChooser.h"
 #include <QMainWindow>
 
 
@@ -392,6 +394,20 @@ bool GTUtilsMSAEditorSequenceArea::isSequenceHightighted(U2OpStatus &os, const Q
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getColor"
+QString GTUtilsMSAEditorSequenceArea::getColor(U2OpStatus &os, QPoint p){
+    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", GTUtilsMdi::activeWindow(os)));
+    GT_CHECK_RESULT(msaEditArea != NULL, "MsaEditorSequenceArea not found", "");
+
+    QPoint global = convertCoordinates(os, p);
+    global.setY(global.y() + (getRowHeight(os)/2 - 1));
+    QPoint local = msaEditArea->mapFromGlobal(global);
+    QColor c = GTWidget::getColor(msaEditArea, local);
+    QString name = c.name();
+    return name;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getRowHeight"
 int GTUtilsMSAEditorSequenceArea::getRowHeight(U2OpStatus &os){
     QWidget* activeWindow = GTUtilsMdi::activeWindow(os);
@@ -400,6 +416,35 @@ int GTUtilsMSAEditorSequenceArea::getRowHeight(U2OpStatus &os){
     return ui->getEditor()->getRowHeight();
 }
 #undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "renameSequence"
+void GTUtilsMSAEditorSequenceArea::renameSequence(U2OpStatus &os, const QString &seqToRename, const QString &newName){
+    int num = getVisibaleNames(os).indexOf(seqToRename);
+    GT_CHECK(num != -1, "sequence not found");
+
+    GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, newName, seqToRename));
+    moveTo(os, QPoint(-10,num));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep(500);
+}
+#undef GT_METHOD_NAME
+
+void GTUtilsMSAEditorSequenceArea::createColorScheme(U2OpStatus &os, const QString &colorSchemeName, const NewColorSchemeCreator::alphabet al){
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 1));
+    GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
+        << "Custom schemes" << "Create new color scheme" ) );
+    GTUtilsDialog::waitForDialog( os, new NewColorSchemeCreator( os, colorSchemeName, al) );
+    GTMouseDriver::click( os, Qt::RightButton );
+}
+
+void GTUtilsMSAEditorSequenceArea::deleteColorScheme(U2OpStatus &os, const QString &colorSchemeName){
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 1));
+    GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
+        << "Custom schemes" << "Create new color scheme" ) );
+    GTUtilsDialog::waitForDialog( os, new NewColorSchemeCreator( os, colorSchemeName, NewColorSchemeCreator::nucl,
+                                                                 NewColorSchemeCreator::Delete) );
+    GTMouseDriver::click( os, Qt::RightButton );
+}
 
 #undef GT_CLASS_NAME
 

@@ -20,36 +20,26 @@
  */
 
 
-#ifndef U2_GTUTILS_OPTION_PANEL_MSA_H
-#define U2_GTUTILS_OPTION_PANEL_MSA_H
+#include "GTListWidget.h"
+#include "api/GTMouseDriver.h"
 
-#include "api/GTGlobals.h"
+namespace U2{
+#define GT_CLASS_NAME "GTListWidget"
 
-namespace U2 {
+#define GT_METHOD_NAME "click"
+void GTListWidget::click(U2OpStatus &os, QListWidget *listWidget, const QString &text){
+    QList<QListWidgetItem*> list = listWidget->findItems(text, Qt::MatchExactly);
+    GT_CHECK(!list.isEmpty(), QString("item %1 not found").arg(text));
 
-class U2OpStatus;
+    QListWidgetItem* item = list.first();
+    listWidget->scrollToItem(item);
 
-
-class GTUtilsOptionPanelMsa{
-public:
-    enum Tabs{General, Highlighting, PairwiseAlignment, TreeSettings, ExportConsensus, Statistics};
-    enum AddRefMethod{Button, Completer};
-
-    static const QMap<Tabs,QString> tabsNames;
-    //Openes option panel tab. TODO: check if tab is already opened
-    static void openTab(U2OpStatus &os, Tabs tab);
-    static void addReference(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
-    static void removeReference(U2OpStatus &os);
-    static int getLength(U2OpStatus &os);
-    static int getHeight(U2OpStatus &os);
-
-private:
-    static QMap<Tabs,QString> initNames();
-};
-
-
+    QRect r = listWidget->visualItemRect(item);
+    QPoint global = listWidget->mapToGlobal(r.center());
+    GTMouseDriver::moveTo(os, global);
+    GTMouseDriver::click(os);
 }
+#undef GT_METHOD_NAME
 
-
-
-#endif // GTUTILSOPTIONPANELMSA_H
+#undef GT_CLASS_NAME
+}

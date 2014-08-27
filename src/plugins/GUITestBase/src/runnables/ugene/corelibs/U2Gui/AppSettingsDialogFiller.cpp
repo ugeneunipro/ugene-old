@@ -27,6 +27,7 @@
 #include "api/GTComboBox.h"
 #include "api/GTLineEdit.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTListWidget.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -97,11 +98,23 @@ void NewColorSchemeCreator::run(){
             GTMouseDriver::click(os);
         }
     }
-    QWidget* addSchemaButton = GTWidget::findWidget(os, "addSchemaButton");
-    GT_CHECK (addSchemaButton, "addSchemaButton not found");
+    if(act == Delete){
+        QListWidget* colorSchemas = qobject_cast<QListWidget*>(GTWidget::findWidget(os, "colorSchemas", dialog));
+        GT_CHECK(colorSchemas != NULL, "colorSchemas list widget not found");
+        GTListWidget::click(os, colorSchemas, schemeName);
 
-    GTUtilsDialog::waitForDialog(os, new CreateAlignmentColorSchemeDialogFiller(os, schemeName, al));
-    GTWidget::click(os, addSchemaButton);
+        QWidget* deleteSchemaButton = GTWidget::findWidget(os, "deleteSchemaButton");
+        GT_CHECK (deleteSchemaButton, "deleteSchemaButton not found");
+        GTWidget::click(os, deleteSchemaButton);
+
+
+    }else if(act == Create){
+        QWidget* addSchemaButton = GTWidget::findWidget(os, "addSchemaButton");
+        GT_CHECK (addSchemaButton, "addSchemaButton not found");
+
+        GTUtilsDialog::waitForDialog(os, new CreateAlignmentColorSchemeDialogFiller(os, schemeName, al));
+        GTWidget::click(os, addSchemaButton);
+    }
 
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
     GT_CHECK(box != NULL, "buttonBox is NULL");

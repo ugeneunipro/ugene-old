@@ -42,12 +42,14 @@ private:
 class NewColorSchemeCreator: public Filler{
 public:
     enum alphabet{amino,nucl};
-    NewColorSchemeCreator(U2OpStatus &_os, QString _schemeName, alphabet _al): Filler(_os,"AppSettingsDialog"),
-        schemeName(_schemeName), al(_al){}
+    enum Action{Create, Delete};
+    NewColorSchemeCreator(U2OpStatus &_os, QString _schemeName, alphabet _al, Action _act = Create): Filler(_os,"AppSettingsDialog"),
+        schemeName(_schemeName), al(_al), act(_act){}
     virtual void run();
 private:
     QString schemeName;
     alphabet al;
+    Action act;
 };
 
 class CreateAlignmentColorSchemeDialogFiller: public Filler{

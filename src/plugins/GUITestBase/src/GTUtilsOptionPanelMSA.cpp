@@ -86,5 +86,27 @@ void GTUtilsOptionPanelMsa::removeReference(U2OpStatus &os){
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getLength"
+int GTUtilsOptionPanelMsa::getLength(U2OpStatus &os){
+    QLabel* alignmentLengthLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "alignmentLength"));
+    GT_CHECK_RESULT(alignmentLengthLabel != NULL, "alignmentLengthLabel not found", -1);
+    bool ok;
+    int result = alignmentLengthLabel->text().toInt(&ok);
+    GT_CHECK_RESULT(ok == true, "label text is not int", -1);
+    return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getHeight"
+int GTUtilsOptionPanelMsa::getHeight(U2OpStatus &os){
+    QLabel* alignmentHeightLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "alignmentHeight"));
+    GT_CHECK_RESULT(alignmentHeightLabel != NULL, "alignmentHeightLabel not found", -1);
+    bool ok;
+    int result = alignmentHeightLabel->text().toInt(&ok);
+    GT_CHECK_RESULT(ok == true, "label text is not int", -1);
+    return result;
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 }
