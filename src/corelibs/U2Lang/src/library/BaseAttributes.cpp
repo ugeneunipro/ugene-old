@@ -24,6 +24,9 @@
 static const QString URL_LOCATION_ATTR_ID("url_location");
 static const QString URL_OUT_ATTR_ID("url-out");
 static const QString URL_IN_ATTR_ID("url-in");
+static const QString DATA_STORAGE_ATTR_ID("data-storage");
+static const QString DATABASE_ATTR_ID("database");
+static const QString DB_PATH_ID("db-path");
 static const QString DOCUMENT_FORMAT_ATTR_ID("document-format");
 static const QString APPEND_ATTR_ID("accumulate");
 static const QString READ_BY_LINES_ATTR_ID("read-by-lines");
@@ -47,6 +50,35 @@ const Descriptor BaseAttributes::URL_OUT_ATTRIBUTE() {
 
 const Descriptor BaseAttributes::URL_LOCATION_ATTRIBUTE() {
     return Descriptor(URL_LOCATION_ATTR_ID, tr("Located on"), tr("Machine file(s) are located on")); 
+}
+
+const Descriptor BaseAttributes::DATA_STORAGE_ATTRIBUTE() {
+    return Descriptor(DATA_STORAGE_ATTR_ID, tr("Data storage"), tr("Place to store workflow results"));
+}
+
+const QString BaseAttributes::LOCAL_FS_DATA_STORAGE() {
+    return "Local file system";
+}
+
+const QString BaseAttributes::SHARED_DB_DATA_STORAGE() {
+    return "Shared UGENE database";
+}
+
+const QVariantMap BaseAttributes::DATA_STORAGE_ATTRIBUTE_VALUES_MAP() {
+    QVariantMap resultMap;
+
+    resultMap[LOCAL_FS_DATA_STORAGE()] = LOCAL_FS_DATA_STORAGE();
+    resultMap[SHARED_DB_DATA_STORAGE()] = SHARED_DB_DATA_STORAGE();
+
+    return resultMap;
+}
+
+const Descriptor BaseAttributes::DATABASE_ATTRIBUTE() {
+    return Descriptor(DATABASE_ATTR_ID, tr("Database"), tr("The URL or name of a shared UGENE database"));
+}
+
+const Descriptor BaseAttributes::DB_PATH() {
+    return Descriptor(DB_PATH_ID, tr("Output path"), tr("Location of output objects in a shared database"));
 }
 
 const Descriptor BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE() {

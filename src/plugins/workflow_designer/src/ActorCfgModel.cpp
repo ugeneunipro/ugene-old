@@ -163,18 +163,17 @@ bool ActorCfgModel::isVisible(Attribute *a) const {
         return false;
     }
     const QVector<const AttributeRelation*> &relations = a->getRelations();
-    bool hasVisibilityRelations = false;
     foreach(const AttributeRelation *relation, relations) {
         if (VISIBILITY == relation->getType()) {
-            hasVisibilityRelations = true;
-            QVariant visibilityValue = data(modelIndexById(relation->getRelatedAttrId()));
-            if (relation->getAffectResult(visibilityValue, QVariant()).toBool()) {
-                return true;
+            const QModelIndex relatedIndex = modelIndexById(relation->getRelatedAttrId());
+            const QVariant visibilityValue = data(relatedIndex);
+            if (!relation->getAffectResult(visibilityValue, QVariant()).toBool()) {
+                return false;
             }
         }
     }
 
-    return !hasVisibilityRelations;
+    return true;
 }
 
 Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
@@ -182,8 +181,9 @@ Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
     int row = index.row();
 
     Attribute *currentAttribute = getAttributeByRow(row);
+    SAFE_POINT(NULL != currentAttribute, "Unexpected attribute", Qt::NoItemFlags);
     if (!isVisible(currentAttribute)) {
-        return 0;
+        return Qt::NoItemFlags;
     }
 
     switch(col) {
@@ -194,11 +194,9 @@ Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {
     case SCRIPT_COLUMN:
         {
             if(row < attrs.size()) {
-                Attribute * currentAttribute = getAttributeByRow(row);
-                assert(currentAttribute != NULL);
                 // FIXME: add support for all types in scripting
                 if(currentAttribute->getAttributeType() != BaseTypes::STRING_TYPE() && currentAttribute->getAttributeType() != BaseTypes::NUM_TYPE()) {
-                    return Qt::ItemIsEnabled;    
+                    return Qt::ItemIsEnabled;
                 } else {
                     return Qt::ItemIsEditable | Qt::ItemIsEnabled;
                 }
@@ -246,7 +244,7 @@ Attribute * ActorCfgModel::getAttributeByRow(int row) const{
 QModelIndex ActorCfgModel::modelIndexById(const QString &id) const {
     for (int i = 0; i < attrs.size(); i++) {
         Attribute *a = getAttributeByRow(i);
-        if (a->getId() == id) {
+        if (NULL != a && a->getId() == id) {
             QModelIndex modelIndex = index(i, 1);
             return modelIndex;
         }
@@ -256,6 +254,7 @@ QModelIndex ActorCfgModel::modelIndexById(const QString &id) const {
 
 QVariant ActorCfgModel::data(const QModelIndex & index, int role ) const {
     const Attribute *currentAttribute = getAttributeByRow(index.row());
+    SAFE_POINT(NULL != currentAttribute, "Invalid attribute", QVariant());
     if (role == DescriptorRole) { // descriptor that will be shown in under editor. 'propDoc' in WorkflowEditor
         return qVariantFromValue<Descriptor>(*currentAttribute);
     }
@@ -460,6 +459,11 @@ bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, 
 
 void ActorCfgModel::changeScriptMode(bool _mode) {
     scriptMode = _mode;
+    update();
+}
+
+bool ActorCfgModel::getScriptMode() const {
+    return scriptMode;
 }
 
 } // U2

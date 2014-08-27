@@ -156,7 +156,7 @@ void CoreLib::init() {
         Descriptor pd(BasePorts::IN_SEQ_PORT_ID(), tr("Sequence"), tr("A sequence along with FASTA header line."));
         p << new PortDescriptor(pd, fastaTypeSet, true);
         a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
-        IntegralBusActorPrototype* proto = new WriteDocActorProto(BaseDocumentFormats::FASTA, acd, p, pd.getId(), a);
+        IntegralBusActorPrototype* proto = new WriteDocActorProto(BaseDocumentFormats::FASTA, acd, p, pd.getId(), a, false);
         proto->setPrompter(new WriteFastaPrompter("FASTA"));
         r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
     }
@@ -176,7 +176,7 @@ void CoreLib::init() {
         Descriptor acd(CoreLibConstants::READ_TEXT_PROTO_ID, tr("Read Plain Text"), tr("Reads text from local or remote files."));
         p << new PortDescriptor(Descriptor(BasePorts::OUT_TEXT_PORT_ID(), tr("Plain text"), ""), dtl, false, true);
         ReadDocActorProto* proto = new ReadDocActorProto(BaseDocumentFormats::PLAIN_TEXT, acd, p, a);
-        proto->setCompatibleGObjectTypes(QSet<GObjectType>() << GObjectTypes::TEXT);
+        proto->setCompatibleDbObjectTypes(QSet<GObjectType>() << GObjectTypes::TEXT);
         proto->setPrompter(new ReadDocPrompter(tr("Reads text from <u>%1</u>.")));
         
         if(AppContext::isGUIMode()) {
@@ -196,7 +196,9 @@ void CoreLib::init() {
         Descriptor acd(CoreLibConstants::WRITE_TEXT_PROTO_ID, tr("Write Plain Text"), tr("Write strings to a file."));
         Descriptor pd(BasePorts::IN_TEXT_PORT_ID(), tr("Plain text"), tr("Plain text"));
         p << new PortDescriptor(pd, dtl, true);
-        a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
+        Attribute *accumulateObjsAttr = new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
+        accumulateObjsAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
+        a << accumulateObjsAttr;
         IntegralBusActorPrototype* proto = new WriteDocActorProto(BaseDocumentFormats::PLAIN_TEXT, acd, p, pd.getId(), a);
         proto->setPrompter(new WriteDocPrompter(tr("Save text from <u>%1</u> to <u>%2</u>."), BaseSlots::TEXT_SLOT().getId()));
         r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
@@ -219,7 +221,8 @@ void CoreLib::init() {
             a << docFormatAttr;
             WriteDocActorProto *proto = new WriteDocActorProto(format, acd, p, pd.getId(), a);
             docFormatAttr->addRelation(new FileExtensionRelation(proto->getUrlAttr()->getId()));
-            
+            docFormatAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
+
             QVariantMap m;
             foreach( const DocumentFormatId & fid, supportedFormats ) {
                 m[fid] = fid;
@@ -250,18 +253,22 @@ void CoreLib::init() {
             Descriptor acd(CoreLibConstants::WRITE_SEQ_PROTO_ID, tr("Write Sequence"), tr("Writes all supplied sequences to file(s) in selected format."));
             Descriptor pd(BasePorts::IN_SEQ_PORT_ID(), tr("Sequence"), tr("Sequence"));
             p << new PortDescriptor(pd, typeSet, true);
-            a << new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
+            Attribute *accumulateAttr = new Attribute(BaseAttributes::ACCUMULATE_OBJS_ATTRIBUTE(), BaseTypes::BOOL_TYPE(), false, true);
+            a << accumulateAttr;
+            accumulateAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
             Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true, format);
             a << docFormatAttr;
             QMap <QString, PropertyDelegate*> delegates;
             Attribute* splitAttr = new Attribute(BaseAttributes::SPLIT_SEQ_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, 1);
-            splitAttr ->addRelation(new VisibilityRelation(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(), BaseDocumentFormats::FASTA));
+            splitAttr->addRelation(new VisibilityRelation(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(), BaseDocumentFormats::FASTA));
+            splitAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
             a << splitAttr;
-            WriteDocActorProto *proto = new WriteDocActorProto(format, acd, p, pd.getId(), a, false, false);
+            WriteDocActorProto *proto = new WriteDocActorProto(format, acd, p, pd.getId(), a, true, false, false);
             proto->setPortValidator(pd.getId(), new WriteSequencePortValidator());
             proto->setValidator(new WriteSequenceValidator(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BasePorts::IN_SEQ_PORT_ID(), BaseSlots::URL_SLOT().getId()));
             docFormatAttr->addRelation(new FileExtensionRelation(proto->getUrlAttr()->getId()));
-            
+            docFormatAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
+
             QVariantMap m;
             foreach( const DocumentFormatId & fid, supportedFormats ) {
                 m[fid] = fid;
@@ -277,7 +284,6 @@ void CoreLib::init() {
             proto->getEditor()->addDelegate(spinDelegate, BaseAttributes::SPLIT_SEQ_ATTRIBUTE().getId());
             proto->setPrompter(new WriteDocPrompter(tr("Save all sequences from <u>%1</u> to <u>%2</u>."), BaseSlots::DNA_SEQUENCE_SLOT().getId()));
             r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
-            
         }
     }
     DataWorkerFactory::init();

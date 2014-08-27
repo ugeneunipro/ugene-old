@@ -74,10 +74,6 @@ FileUrlContainer::FileUrlContainer(const QString &url)
 
 }
 
-FileUrlContainer::~FileUrlContainer() {
-
-}
-
 FilesIterator * FileUrlContainer::getFileUrls() {
     return FilesIteratorFactory::createFileList(QStringList() << url);
 }
@@ -129,10 +125,6 @@ DirUrlContainer::DirUrlContainer(const QString &url, bool convertUrlToAbsolute)
 DirUrlContainer::DirUrlContainer(const QString &url, const QString &_incFilter, const QString &_excFilter, bool _recursive, bool convertUrlToAbsolute)
     : URLContainer(url, convertUrlToAbsolute), incFilter(_incFilter), excFilter(_excFilter), recursive(_recursive)
 {
-
-}
-
-DirUrlContainer::~DirUrlContainer() {
 
 }
 

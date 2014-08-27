@@ -34,7 +34,7 @@ public:
         const QList<Attribute *> &attrs = QList<Attribute *>());
 
     // set @types as a compatible types for a URL attribute
-    virtual void setCompatibleGObjectTypes(const QSet<GObjectType> &types);
+    virtual void setCompatibleDbObjectTypes(const QSet<GObjectType> &types);
 };
 
 } // Workflow

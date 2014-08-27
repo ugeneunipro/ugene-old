@@ -42,6 +42,7 @@
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/SharedDbUrlUtils.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
 
@@ -209,24 +210,41 @@ void WriteAnnotationsWorkerFactory::init() {
     // attributes description
     QList<Attribute*> attrs;
     {
+        attrs << new Attribute(BaseAttributes::DATA_STORAGE_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, BaseAttributes::LOCAL_FS_DATA_STORAGE());
+        Attribute *dbAttr = new Attribute(BaseAttributes::DATABASE_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
+        dbAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::SHARED_DB_DATA_STORAGE()));
+        attrs << dbAttr;
+        Attribute *dbPathAttr = new Attribute(BaseAttributes::DB_PATH(), BaseTypes::STRING_TYPE(), true, U2ObjectDbi::ROOT_FOLDER);
+        dbPathAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::SHARED_DB_DATA_STORAGE()));
+        attrs << dbPathAttr;
+
         Attribute *docFormatAttr = new Attribute(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, format);
+        docFormatAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
         Attribute *urlAttr = new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false );
+        urlAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
         attrs << docFormatAttr;
         attrs << urlAttr;
-        attrs << new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
+        Attribute *fileModeAttr = new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
+        fileModeAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
+        attrs << fileModeAttr;
         Descriptor annotationsNameDesc(ANNOTATIONS_NAME, WriteAnnotationsWorker::tr("Annotations name"),
             WriteAnnotationsWorker::tr("Annotations name: Name of the saved"
             " annotations. This option is only available for document formats"
             " that support saving of annotations names."));
         Attribute *nameAttr = new Attribute(annotationsNameDesc, BaseTypes::STRING_TYPE(), false, QVariant(ANNOTATIONS_NAME_DEF_VAL));
+        nameAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
         attrs << nameAttr;
         Descriptor separatorDesc(SEPARATOR, WriteAnnotationsWorker::tr("CSV separator"), 
             WriteAnnotationsWorker::tr("String which separates values in CSV files."));
-        attrs << new Attribute(separatorDesc, BaseTypes::STRING_TYPE(), false, QVariant(SEPARATOR_DEFAULT_VALUE));
+        Attribute *csvSeparatorAttr = new Attribute(separatorDesc, BaseTypes::STRING_TYPE(), false, QVariant(SEPARATOR_DEFAULT_VALUE));
+        csvSeparatorAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
+        attrs << csvSeparatorAttr;
 
         Descriptor writeNamesDesc(WRITE_NAMES, WriteAnnotationsWorker::tr("Write sequence names"), 
             WriteAnnotationsWorker::tr("Add names of sequences into CSV file."));
-        attrs << new Attribute(writeNamesDesc, BaseTypes::BOOL_TYPE(), false, false);
+        Attribute *seqNamesAttr = new Attribute(writeNamesDesc, BaseTypes::BOOL_TYPE(), false, false);
+        seqNamesAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
+        attrs << seqNamesAttr;
 
         docFormatAttr->addRelation(new FileExtensionRelation(urlAttr->getId()));
         nameAttr->addRelation(new VisibilityRelation(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(),
@@ -240,7 +258,7 @@ void WriteAnnotationsWorkerFactory::init() {
 
     Descriptor protoDesc(WriteAnnotationsWorkerFactory::ACTOR_ID, 
         WriteAnnotationsWorker::tr("Write Annotations"), 
-        WriteAnnotationsWorker::tr("Writes all supplied annotations to file(s) in selected formatId."));
+        WriteAnnotationsWorker::tr("Writes all supplied annotations to file(s) in selected format."));
     ActorPrototype * proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
 
     // proto delegates
@@ -254,6 +272,10 @@ void WriteAnnotationsWorkerFactory::init() {
         delegates[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] =
             new URLDelegate(DialogUtils::prepareDocumentsFileFilter(format, true), QString(), false, false, true, NULL, format);
         delegates[BaseAttributes::FILE_MODE_ATTRIBUTE().getId()] = new FileModeDelegate(attrs.size() > 2);
+
+        delegates[BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId()] = new ComboBoxDelegate(BaseAttributes::DATA_STORAGE_ATTRIBUTE_VALUES_MAP());
+
+        delegates[BaseAttributes::DATABASE_ATTRIBUTE().getId()] = new ComboBoxWithDbUrlsDelegate;
     }
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new WriteAnnotationsPrompter());
@@ -273,18 +295,43 @@ Worker * WriteAnnotationsWorkerFactory::createWorker(Actor* a) {
  * WriteAnnotationsPrompter
  ***************************/
 QString WriteAnnotationsPrompter::composeRichDoc() {
-    QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
+    const QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     IntegralBusPort * input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_ANNOTATIONS_PORT_ID()));
     QString annName = getProducers(BasePorts::IN_ANNOTATIONS_PORT_ID(), BaseSlots::ANNOTATION_TABLE_SLOT().getId());
     annName = annName.isEmpty() ? unsetStr : annName;
     
-    QString url = getScreenedURL(input, BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId());
-    QString format = getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId()).value<QString>();
-    
-    return tr("Save all annotations from <u>%1</u> to %2 in %3 format")
+    Attribute *dataStorageAttr = target->getParameter(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId());
+    SAFE_POINT(NULL != dataStorageAttr, "Invalid attribute", QString());
+    const QVariant dataStorage = dataStorageAttr->getAttributePureValue();
+
+    QString url;
+    QString dbName;
+    const bool storeToFs = dataStorage == BaseAttributes::LOCAL_FS_DATA_STORAGE();
+    if (storeToFs) {
+        url = getScreenedURL(input, BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId());
+        url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
+    } else if (dataStorage == BaseAttributes::SHARED_DB_DATA_STORAGE()) {
+        Attribute *dbPathAttr = target->getParameter(BaseAttributes::DB_PATH().getId());
+        SAFE_POINT(NULL != dbPathAttr, "Invalid attribute", QString());
+        url = dbPathAttr->getAttributePureValue().toString();
+        url = getHyperlink(BaseAttributes::DB_PATH().getId(), url);
+
+        Attribute *dbAttr = target->getParameter(BaseAttributes::DATABASE_ATTRIBUTE().getId());
+        SAFE_POINT(NULL != dbAttr, "Invalid attribute", QString());
+        const QString dbUrl = dbAttr->getAttributePureValue().toString();
+        dbName = SharedDbUrlUtils::getDbShortNameFromEntityUrl(dbUrl);
+        dbName = dbName.isEmpty() ? unsetStr : getHyperlink(BaseAttributes::DATABASE_ATTRIBUTE().getId(), dbName);
+    } else {
+        FAIL("Unexpected attribute value", QString());
+    }
+
+    const QString format = getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId()).value<QString>();
+
+    return tr("Save all annotations from <u>%1</u> to %2")
         .arg(annName)
         .arg(getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url))
-        .arg(getHyperlink(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(), format));
+        + (storeToFs ? tr(" in %1 format.").arg(getHyperlink(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId(), format))
+        : tr(" in the ") + QString("<u>%1</u>").arg(dbName) + tr(" database."));
 }
 
 } // LocalWorkflow

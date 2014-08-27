@@ -90,7 +90,6 @@ class U2DESIGNER_EXPORT URLDelegate : public PropertyDelegate {
     Q_OBJECT
 public:
     URLDelegate(const QString& filter, const QString& type, bool multi = false, bool isPath = false, bool saveFile = true, QObject *parent = 0, const QString &format = "", bool noFilesMode = false);
-    virtual ~URLDelegate() {}
 
     virtual QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
         const QModelIndex &index) const;
@@ -236,9 +235,36 @@ public:
 signals:
     void si_valueChanged( const QString & newVal ) const;
 
+private slots:
+    void sl_valueChanged(const QString &newVal);
+
 protected:
     QVariantMap items;
     bool isPath;
+};
+
+class U2DESIGNER_EXPORT ComboBoxWithDbUrlsDelegate : public PropertyDelegate {
+    Q_OBJECT
+public:
+    ComboBoxWithDbUrlsDelegate(QObject *parent = NULL);
+
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
+
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+    QVariant getDisplayValue(const QVariant&) const;
+
+    virtual PropertyDelegate *clone();
+
+signals:
+    void si_valueChanged(const QString &newVal) const;
+
+private slots:
+    void sl_valueChanged(const QString &newVal);
+
+private:
+    QVariantMap items;
 };
 
 class U2DESIGNER_EXPORT ComboBoxWithChecksDelegate: public PropertyDelegate{

@@ -34,7 +34,7 @@ namespace U2 {
 
 class AuthenticationWidget;
 
-class EditConnectionDialog : public QDialog {
+class U2GUI_EXPORT EditConnectionDialog : public QDialog {
     Q_DISABLE_COPY(EditConnectionDialog)
     Q_OBJECT
 public:
@@ -44,6 +44,7 @@ public:
     QString     getName()       const;
     QString     getUserName()   const;
     QString     getShortDbiUrl() const;
+    QString     getFullDbiUrl() const;
 
 public slots:
     void accept();
@@ -54,7 +55,6 @@ private:
     void saveCredentials() const;
     void removeCredentials() const;
     bool checkFields();
-    QString getFullDbiUrl() const;
 
     Ui::EditConnectionDialog *ui;
 

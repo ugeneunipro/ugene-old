@@ -33,7 +33,7 @@ ReadDbObjActorPrototype::ReadDbObjActorPrototype(const Descriptor &desc, const Q
 
 }
 
-void ReadDbObjActorPrototype::setCompatibleGObjectTypes(const QSet<GObjectType> &types) {
+void ReadDbObjActorPrototype::setCompatibleDbObjectTypes(const QSet<GObjectType> &types) {
     foreach (Attribute *a, attrs) {
         URLAttribute *urlAttr = dynamic_cast<URLAttribute *>(a);
         if (NULL != urlAttr) {
@@ -45,4 +45,4 @@ void ReadDbObjActorPrototype::setCompatibleGObjectTypes(const QSet<GObjectType> 
 
 } // Workflow
 
-} // Workflow
+} // U2

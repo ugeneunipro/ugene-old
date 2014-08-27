@@ -61,7 +61,6 @@ public:
 class U2LANG_EXPORT FileUrlContainer : public URLContainer {
 public:
     FileUrlContainer(const QString &url);
-    virtual ~FileUrlContainer();
 
     virtual FilesIterator * getFileUrls();
     virtual URLContainer * clone();
@@ -85,7 +84,6 @@ class U2LANG_EXPORT DirUrlContainer : public URLContainer {
 public:
     DirUrlContainer(const QString &url, bool convertUrlToAbsolute = true);
     DirUrlContainer(const QString &url, const QString &incFilter, const QString &excFilter, bool recursive, bool convertUrlToAbsolute = true);
-    virtual ~DirUrlContainer();
 
     virtual FilesIterator * getFileUrls();
     virtual URLContainer * clone();

@@ -140,14 +140,33 @@ public:
 signals:
     void valueChanged(const QString &value);
 
-private:
+protected slots:
+    virtual void sl_browse();
+
+protected:
     QComboBox *comboBox;
     int customIdx;
     bool isPath;
 
 private slots:
-        void sl_valueChanged(int index);
-        void sl_browse();
+    void sl_valueChanged(int index);
+};
+
+/************************************************************************/
+/* ComboBoxWithDbUrlWidget */
+/************************************************************************/
+class ComboBoxWithDbUrlWidget : public ComboBoxWithUrlWidget {
+    Q_OBJECT
+public:
+    ComboBoxWithDbUrlWidget(QWidget *parent = NULL);
+
+    QVariantMap getItems() const;
+
+protected:
+    virtual void sl_browse();
+
+private:
+    void updateComboValues();
 };
 
 /************************************************************************/

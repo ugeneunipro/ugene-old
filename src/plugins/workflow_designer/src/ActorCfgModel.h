@@ -68,6 +68,7 @@ public:
     bool setData ( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
 
     void changeScriptMode(bool _mode);
+    bool getScriptMode() const;
 
     QModelIndex modelIndexById(const QString &id) const;
 

@@ -30,10 +30,10 @@ class ActorCfgFilterProxyModel : public QSortFilterProxyModel {
     Q_OBJECT
 public:
     ActorCfgFilterProxyModel(QObject *p = NULL);
-    virtual ~ActorCfgFilterProxyModel();
 
 protected:
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
+    virtual bool filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const;
 };
 
 } // namespace U2

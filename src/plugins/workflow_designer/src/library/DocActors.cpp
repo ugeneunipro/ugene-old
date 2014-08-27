@@ -28,6 +28,7 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseAttributes.h>
+#include <U2Lang/SharedDbUrlUtils.h>
 #include <U2Lang/URLAttribute.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/FormatUtils.h>
@@ -86,28 +87,51 @@ bool ReadDocActorProto::isAcceptableDrop(const QMimeData * md, QVariantMap * par
 /****************************
  * WriteDocActorProto
  *****************************/
-WriteDocActorProto::WriteDocActorProto(const DocumentFormatId& _fid, const Descriptor& _desc, const QList<PortDescriptor*>& _ports, 
-                                       const QString & portId, const QList<Attribute*>& _attrs, bool addValidator, bool addPortValidator)
-: DocActorProto( _fid, _desc, _ports, _attrs ), outPortId(portId) {
-    construct(addValidator, addPortValidator);
+WriteDocActorProto::WriteDocActorProto(const DocumentFormatId& _fid, const Descriptor& _desc, const QList<PortDescriptor*>& _ports,
+    const QString & portId, const QList<Attribute*>& _attrs, bool canWriteToSharedDB, bool addValidator, bool addPortValidator)
+    : DocActorProto( _fid, _desc, _ports, _attrs ), outPortId(portId)
+{
+    construct(canWriteToSharedDB, addValidator, addPortValidator);
 }
 
 WriteDocActorProto::WriteDocActorProto(const Descriptor& _desc, const GObjectType & t, const QList<PortDescriptor*>& _ports, 
-                                       const QString & portId, const QList<Attribute*>& _attrs, bool addValidator, bool addPortValidator)
-: DocActorProto(_desc, t, _ports, _attrs), outPortId(portId) {
-    construct(addValidator, addPortValidator);
+    const QString & portId, const QList<Attribute*>& _attrs, bool canWriteToSharedDB, bool addValidator, bool addPortValidator)
+    : DocActorProto(_desc, t, _ports, _attrs), outPortId(portId)
+{
+    construct(canWriteToSharedDB, addValidator, addPortValidator);
 }
 
 bool WriteDocActorProto::isAcceptableDrop(const QMimeData * md, QVariantMap * params ) const {
     return DocActorProto::isAcceptableDrop( md, params, BaseAttributes::URL_OUT_ATTRIBUTE().getId() );
 }
 
-void WriteDocActorProto::construct(bool addValidator, bool addPortValidator) {
+void WriteDocActorProto::construct(bool canWriteToSharedDb, bool addValidator, bool addPortValidator) {
+    QMap< QString, PropertyDelegate* > delegateMap;
+
+    if (canWriteToSharedDb) {
+        attrs.prepend(new Attribute(BaseAttributes::DATA_STORAGE_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false, BaseAttributes::LOCAL_FS_DATA_STORAGE()));
+        Attribute *dbAttr = new Attribute(BaseAttributes::DATABASE_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true);
+        dbAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::SHARED_DB_DATA_STORAGE()));
+        attrs << dbAttr;
+        Attribute *dbPathAttr = new Attribute(BaseAttributes::DB_PATH(), BaseTypes::STRING_TYPE(), true, U2ObjectDbi::ROOT_FOLDER);
+        dbPathAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::SHARED_DB_DATA_STORAGE()));
+        attrs << dbPathAttr;
+
+        delegateMap[BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId()] = new ComboBoxDelegate(BaseAttributes::DATA_STORAGE_ATTRIBUTE_VALUES_MAP());
+
+        delegateMap[BaseAttributes::DATABASE_ATTRIBUTE().getId()] = new ComboBoxWithDbUrlsDelegate;
+    }
+
     urlAttr = new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), false );
     attrs << urlAttr;
-    attrs << new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
+    Attribute *fileModeAttr = new Attribute(BaseAttributes::FILE_MODE_ATTRIBUTE(), BaseTypes::NUM_TYPE(), false, SaveDoc_Roll);
+    attrs << fileModeAttr;
 
-    QMap< QString, PropertyDelegate* > delegateMap;
+    if (canWriteToSharedDb) {
+        urlAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
+        fileModeAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
+    }
+
     delegateMap[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = new URLDelegate(prepareDocumentFilter(), QString(), false, false, true, 0, fid);
     delegateMap[BaseAttributes::FILE_MODE_ATTRIBUTE().getId()] = new FileModeDelegate(attrs.size() > 2);
 
@@ -190,17 +214,46 @@ ActorDocument* WriteFastaPrompter::createDescription(Actor* a) {
  * WriteDocPrompter
  *****************************/
 QString WriteDocPrompter::composeRichDoc() {
-    QString outPortId = target->getInputPorts().first()->getId();
-    QString url = getScreenedURL( qobject_cast<IntegralBusPort*>(target->getPort(outPortId)), 
-        BaseAttributes::URL_OUT_ATTRIBUTE().getId(), BaseSlots::URL_SLOT().getId() );
-    url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
-    
+    const QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
+
+    const QString outPortId = target->getInputPorts().first()->getId();
+    Attribute *dataStorageAttr = target->getParameter(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId());
+    SAFE_POINT(NULL != dataStorageAttr, "Invalid attribute", QString());
+    const QVariant dataStorage = dataStorageAttr->getAttributePureValue();
+
+    QString url;
+    const bool storeToDb = dataStorage == BaseAttributes::SHARED_DB_DATA_STORAGE();
+    if (storeToDb) {
+        Attribute *dbPathAttr = target->getParameter(BaseAttributes::DB_PATH().getId());
+        SAFE_POINT(NULL != dbPathAttr, "Invalid attribute", QString());
+        url = dbPathAttr->getAttributePureValue().toString();
+        url = getHyperlink(BaseAttributes::DB_PATH().getId(), url);
+    } else if (dataStorage == BaseAttributes::LOCAL_FS_DATA_STORAGE()) {
+        url = getScreenedURL(qobject_cast<IntegralBusPort*>(target->getPort(outPortId)), BaseAttributes::URL_OUT_ATTRIBUTE().getId(),
+            BaseSlots::URL_SLOT().getId());
+        url = getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), url);
+    } else {
+        FAIL("Unexpected attribute value", QString());
+    }
+
+    QString result = spec;
     QString producers = getProducers(outPortId, slot);
     if (producers.isEmpty()) {
-        QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
-        return spec.arg(unsetStr).arg(url);
+        producers = unsetStr;
     }
-    return spec.arg(producers).arg(url);
+    if (storeToDb) {
+        Attribute *dbAttr = target->getParameter(BaseAttributes::DATABASE_ATTRIBUTE().getId());
+        SAFE_POINT(NULL != dbAttr, "Invalid attribute", QString());
+        const QString dbUrl = dbAttr->getAttributePureValue().toString();
+        QString dbName = SharedDbUrlUtils::getDbShortNameFromEntityUrl(dbUrl);
+        dbName = dbName.isEmpty() ? unsetStr : getHyperlink(BaseAttributes::DATABASE_ATTRIBUTE().getId(), dbName);
+
+        result = spec.left(spec.size() - 1); // remove last dot
+        result += tr(" in the ") + "<u>%3</u>" + tr(" database.");
+        return result.arg(producers).arg(url).arg(dbName);
+    } else {
+        return result.arg(producers).arg(url);
+    }
 }
 
 /****************************

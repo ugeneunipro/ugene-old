@@ -108,7 +108,7 @@ void ReadAssemblyWorker::onTaskFinished(Task *task) {
 ReadAssemblyProto::ReadAssemblyProto()
 : GenericReadDocProto(ReadAssemblyWorkerFactory::ACTOR_ID)
 {
-    setCompatibleGObjectTypes(QSet<GObjectType>() << GObjectTypes::ASSEMBLY);
+    setCompatibleDbObjectTypes(QSet<GObjectType>() << GObjectTypes::ASSEMBLY);
 
     setDisplayName(ReadAssemblyWorker::tr("Read Assembly"));
     setDocumentation(ReadAssemblyWorker::tr("Reads assembly from files."));

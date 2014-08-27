@@ -31,10 +31,6 @@ ActorCfgFilterProxyModel::ActorCfgFilterProxyModel(QObject *p)
     setDynamicSortFilter(true);
 }
 
-ActorCfgFilterProxyModel::~ActorCfgFilterProxyModel() {
-
-}
-
 bool ActorCfgFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const {
     ActorCfgModel *srcModel = dynamic_cast<ActorCfgModel *>(sourceModel());
     SAFE_POINT(NULL != srcModel, "Invalid actor configuration model", true);
@@ -43,6 +39,13 @@ bool ActorCfgFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex
     SAFE_POINT(NULL != attr, "Invalid actor attribute", true);
 
     return srcModel->isVisible(attr);
+}
+
+bool ActorCfgFilterProxyModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const {
+    ActorCfgModel *srcModel = dynamic_cast<ActorCfgModel *>(sourceModel());
+    SAFE_POINT(NULL != srcModel, "Invalid actor configuration model", true);
+
+    return srcModel->getScriptMode() || sourceColumn < 2;
 }
 
 } // namespace U2

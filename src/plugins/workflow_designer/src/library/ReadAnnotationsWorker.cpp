@@ -116,7 +116,7 @@ const QString ReadAnnotationsProto::MODE_ATTR("mode");
 ReadAnnotationsProto::ReadAnnotationsProto()
 : GenericReadDocProto(ReadAnnotationsWorkerFactory::ACTOR_ID)
 {
-    setCompatibleGObjectTypes(QSet<GObjectType>() << GObjectTypes::ANNOTATION_TABLE);
+    setCompatibleDbObjectTypes(QSet<GObjectType>() << GObjectTypes::ANNOTATION_TABLE);
 
     setDisplayName(ReadAnnotationsWorker::tr("Read Annotations"));
     setDocumentation(ReadAnnotationsWorker::tr("Reads annotations from files."));

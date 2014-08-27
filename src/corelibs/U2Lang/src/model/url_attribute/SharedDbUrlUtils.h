@@ -31,6 +31,8 @@ class GObject;
 
 class U2LANG_EXPORT SharedDbUrlUtils {
 public:
+    static QString createDbUrl(const U2DbiRef &dbiRef);
+
     // Example of DB Folder URL: "SQL_SERVER>user@ugene.com:3306/ugene_db,/path/to/folder"
     static QString createDbFolderUrl(const Folder &folder);
     static bool isDbFolderUrl(const QString &url);
@@ -46,6 +48,11 @@ public:
     // Returns a user-defined name for the DB according to the @url string.
     // If the DB is unknown or invalid, the DB URL string is returned
     static QString getDbShortNameFromEntityUrl(const QString &url);
+
+    // Returning map contains DB URL <=> DB short name
+    static QVariantMap getKnownDbs();
+    // Stores a new connection in app settings
+    static void saveNewDbConnection(const QString &connectionName, const QString &connectionUrl);
 
     static U2DataId getObjectIdByUrl(const QString &url);
     static GObjectType getDbObjectTypeByUrl(const QString &url);

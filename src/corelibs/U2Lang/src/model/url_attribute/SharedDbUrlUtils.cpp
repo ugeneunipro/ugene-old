@@ -37,14 +37,26 @@ const QString SharedDbUrlUtils::DB_OBJ_ID_SEP = ":";
 
 namespace {
 
+const QString CONN_SETTINGS_PATH = "/shared_database/recent_connections/";
+
 bool checkFolderPath(const QString &folderPath) {
     return !folderPath.isEmpty() && folderPath.startsWith(U2ObjectDbi::ROOT_FOLDER);
 }
 
 bool disassembleObjectId(const QString &objUrl, QStringList &idParts) {
     SAFE_POINT(SharedDbUrlUtils::isDbObjectUrl(objUrl), "Invalid shared DB object URL", false);
-    idParts = objUrl.mid(objUrl.indexOf(SharedDbUrlUtils::DB_URL_SEP) + 1).split(SharedDbUrlUtils::DB_OBJ_ID_SEP);
-    SAFE_POINT(idParts.size() == 3, "Invalid shared DB object URL", false);
+    const QString fullObjId = objUrl.mid(objUrl.indexOf(SharedDbUrlUtils::DB_URL_SEP) + 1);
+    idParts.clear();
+    const int firstSepPos = fullObjId.indexOf(SharedDbUrlUtils::DB_OBJ_ID_SEP);
+    SAFE_POINT(-1 != firstSepPos, "Invalid object DB URL", false);
+    idParts.append(fullObjId.left(firstSepPos));
+
+    const int secondSepPos = fullObjId.indexOf(SharedDbUrlUtils::DB_OBJ_ID_SEP, firstSepPos + 1);
+    SAFE_POINT(-1 != secondSepPos, "Invalid object DB URL", false);
+    SAFE_POINT(fullObjId.size() - 2 >= secondSepPos, "Invalid object DB URL", false);
+    idParts.append(fullObjId.mid(firstSepPos + 1, secondSepPos - firstSepPos - 1));
+    idParts.append(fullObjId.mid(secondSepPos + 1));
+
     return true;
 }
 
@@ -64,6 +76,11 @@ bool str2DataType(const QString &str, U2DataType &res) {
 
 }
 
+QString SharedDbUrlUtils::createDbUrl(const U2DbiRef &dbiRef) {
+    SAFE_POINT(dbiRef.isValid(), "Invalid DBI reference", QString());
+    return dbiRef.dbiFactoryId + DB_PROVIDER_SEP + dbiRef.dbiId;
+}
+
 QString SharedDbUrlUtils::createDbFolderUrl(const Folder &folder) {
     Document *doc = folder.getDocument();
     CHECK(NULL != doc, QString());
@@ -77,8 +94,6 @@ QString SharedDbUrlUtils::createDbFolderUrl(const Folder &folder) {
 }
 
 bool SharedDbUrlUtils::isDbFolderUrl(const QString &url) {
-    CHECK(GUrl(url).getType() == GUrl_Network, false);
-
     const int dbProviderSepPos = url.indexOf(DB_PROVIDER_SEP);
     if (dbProviderSepPos < 1) {
         return false;
@@ -108,8 +123,6 @@ QString SharedDbUrlUtils::createDbObjectUrl(const GObject *obj) {
 }
 
 bool SharedDbUrlUtils::isDbObjectUrl(const QString &url) {
-    CHECK(GUrl(url).getType() == GUrl_Network, false);
-
     const int dbProviderSepPos = url.indexOf(DB_PROVIDER_SEP);
     CHECK(dbProviderSepPos >= 1, false);
 
@@ -132,23 +145,36 @@ U2DbiRef SharedDbUrlUtils::getDbRefFromEntityUrl(const QString &url) {
     CHECK(dbProviderSepPos >= 1, U2DbiRef());
 
     const int dbUrlSepPos = url.indexOf(DB_URL_SEP, dbProviderSepPos);
-    CHECK(dbUrlSepPos != -1, U2DbiRef());
+    return U2DbiRef(url.right(dbProviderSepPos), url.mid(dbProviderSepPos + 1, -1 != dbUrlSepPos ? dbUrlSepPos - dbProviderSepPos - 1 : -1));
+}
 
-    return U2DbiRef(url.left(dbProviderSepPos), url.mid(dbProviderSepPos + 1, dbUrlSepPos - dbProviderSepPos - 1));
+QVariantMap SharedDbUrlUtils::getKnownDbs() {
+    QVariantMap result;
+    Settings *appSettings = AppContext::getSettings();
+    const QStringList recentList = appSettings->getAllKeys(CONN_SETTINGS_PATH);
+    foreach (const QString &shortName, recentList) {
+        // TODO: fix this when other DB providers emerge
+        result.insert(shortName, MYSQL_DBI_ID + DB_PROVIDER_SEP + appSettings->getValue(CONN_SETTINGS_PATH + shortName).toString());
+    }
+    return result;
 }
 
 QString SharedDbUrlUtils::getDbShortNameFromEntityUrl(const QString &url) {
     const QString dbUrl = getDbRefFromEntityUrl(url).dbiId;
     CHECK(!dbUrl.isEmpty(), url);
-    const QString connSettingsPath = "/shared_database/recent_connections/";
     Settings *appSettings = AppContext::getSettings();
-    const QStringList recentList = appSettings->getAllKeys(connSettingsPath);
+    const QStringList recentList = appSettings->getAllKeys(CONN_SETTINGS_PATH);
     foreach (const QString &shortName, recentList) {
-        if (dbUrl == appSettings->getValue(connSettingsPath + shortName).toString()) {
+        if (dbUrl == appSettings->getValue(CONN_SETTINGS_PATH + shortName).toString()) {
             return shortName;
         }
     }
     return dbUrl;
+}
+
+void SharedDbUrlUtils::saveNewDbConnection(const QString &connectionName, const QString &connectionUrl) {
+    SAFE_POINT(!connectionName.isEmpty() && !connectionUrl.isEmpty(), "Unexpected DB connection", );
+    AppContext::getSettings()->setValue(CONN_SETTINGS_PATH + connectionName, connectionUrl);
 }
 
 U2DataId SharedDbUrlUtils::getObjectIdByUrl(const QString &objUrl) {

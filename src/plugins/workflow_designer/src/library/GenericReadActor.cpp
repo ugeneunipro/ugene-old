@@ -83,7 +83,7 @@ const QString GenericMAActorProto::TYPE("generic.ma");
 
 GenericSeqActorProto::GenericSeqActorProto() : GenericReadDocProto(CoreLibConstants::GENERIC_READ_SEQ_PROTO_ID)
 {
-    setCompatibleGObjectTypes(QSet<GObjectType>() << GObjectTypes::SEQUENCE);
+    setCompatibleDbObjectTypes(QSet<GObjectType>() << GObjectTypes::SEQUENCE);
 
     setDisplayName(U2::Workflow::CoreLib::tr("Read Sequence"));
     desc = U2::Workflow::CoreLib::tr("Reads sequences and annotations if any from local or remote files.");
@@ -143,7 +143,7 @@ GenericSeqActorProto::GenericSeqActorProto() : GenericReadDocProto(CoreLibConsta
 
 GenericMAActorProto::GenericMAActorProto() : GenericReadDocProto(CoreLibConstants::GENERIC_READ_MA_PROTO_ID) 
 {
-    setCompatibleGObjectTypes(QSet<GObjectType>() << GObjectTypes::MULTIPLE_ALIGNMENT);
+    setCompatibleDbObjectTypes(QSet<GObjectType>() << GObjectTypes::MULTIPLE_ALIGNMENT);
 
     setDisplayName(U2::Workflow::CoreLib::tr("Read Alignment"));
     desc = U2::Workflow::CoreLib::tr("Reads multiple sequence alignments (MSAs) from local or remote files."
