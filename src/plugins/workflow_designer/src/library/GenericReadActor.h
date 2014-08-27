@@ -23,14 +23,14 @@
 #define _U2_WORKFLOW_SEQ_ACTOR_H_
 
 #include <U2Lang/Attribute.h>
-#include <U2Lang/IntegralBusModel.h>
+#include <U2Lang/ReadDbObjActorPrototype.h>
 
 #include <U2Lang/WorkflowUtils.h>
 
 namespace U2 {
 namespace Workflow {
 
-class GenericReadDocProto : public IntegralBusActorPrototype {
+class GenericReadDocProto : public ReadDbObjActorPrototype {
 public:
     GenericReadDocProto(const Descriptor &desc);
 };

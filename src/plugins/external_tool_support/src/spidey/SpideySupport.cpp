@@ -158,10 +158,10 @@ void SpideySupportContext::sl_align_with_Spidey() {
 
     ProjectTreeControllerModeSettings settings;
     settings.allowMultipleSelection = false;
-    settings.objectTypesToShow.append(GObjectTypes::SEQUENCE);
+    settings.objectTypesToShow.insert(GObjectTypes::SEQUENCE);
     QScopedPointer<U2SequenceObjectConstraints> seqConstraints(new U2SequenceObjectConstraints());
     seqConstraints->alphabetType = DNAAlphabet_NUCL;
-    settings.objectConstraints.append(seqConstraints.data());
+    settings.objectConstraints.insert(seqConstraints.data());
 
     QList<GObject*> objects = ProjectTreeItemSelectorDialog::selectObjects(settings,parent);
     if (objects.size() != 1) {

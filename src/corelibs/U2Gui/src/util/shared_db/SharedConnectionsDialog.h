@@ -85,7 +85,9 @@ private:
     Ui::SharedConnectionsDialog *ui;
     QMap<QListWidgetItem*, Task*> connectionTasks;
 
-    static const QString SETTINGS_RECENT;
+    static const QString SETTINGS_RECENT; // TODO: move this identifier to another class, since it is to be used
+                                          // not only within the dialog. After that search through the code,
+                                          // where its literal value is used and replace it with the identifier.
     static const int UrlRole = Qt::UserRole;
     static const int LoginRole = UrlRole + 1;
 

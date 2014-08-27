@@ -39,11 +39,15 @@ public:
     virtual Attribute * clone();
     virtual bool validate(ProblemList &problemList);
 
+    virtual const QSet<GObjectType> & getCompatibleObjectTypes() const;
+    virtual void setCompatibleObjectTypes(const QSet<GObjectType> &types);
+
     QList<Dataset> & getDatasets();
     void updateValue();
 
 private:
     QList<Dataset> sets;
+    QSet<GObjectType> compatibleObjectTypes;
 
 private:
     QStringList emptyDatasetNames(bool &hasUrls);

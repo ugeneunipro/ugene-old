@@ -417,7 +417,7 @@ void ProjectTreeController::sl_onAddObjectToSelectedDocument() {
 
     QSet<GObjectType> types = doc->getDocumentFormat()->getSupportedObjectTypes();
     foreach(const GObjectType &type, types) {
-        settings.objectTypesToShow.append(type);
+        settings.objectTypesToShow.insert(type);
     }
 
     QList<GObject*> objects = ProjectTreeItemSelectorDialog::selectObjects(settings, tree);
@@ -1067,6 +1067,19 @@ bool ProjectTreeController::isSubFolder(const QList<Folder> &folders, const Fold
         return folders.contains(expectedSubFolder);
     }
     return false;
+}
+
+bool ProjectTreeController::isObjectInFolder(GObject *obj, const Folder &folder) const {
+    Document *objDoc = obj->getDocument();
+    SAFE_POINT(NULL != objDoc, "Invalid parent document", false);
+    Document *folderDoc = folder.getDocument();
+    SAFE_POINT(NULL != folderDoc, "Invalid parent document", false);
+    if (objDoc != folderDoc) {
+        return false;
+    }
+
+    const Folder objFolder(objDoc, model->getObjectFolder(objDoc, obj));
+    return isSubFolder(QList<Folder>() << folder, objFolder, true);
 }
 
 bool ProjectTreeController::removeObjects(const QList<GObject*> &objs, const QList<Document*> &excludedDocs, const QList<Folder> &excludedFolders, bool removeFromDbi) {

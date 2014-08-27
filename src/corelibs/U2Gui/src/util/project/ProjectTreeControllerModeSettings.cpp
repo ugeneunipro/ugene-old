@@ -36,7 +36,10 @@ bool ProjectTreeControllerModeSettings::isDocumentShown(Document* doc) const {
     if (groupMode == ProjectTreeGroupMode_Flat && (doc->isLoaded() || !doc->getObjects().isEmpty())) {
         return false; // only unloaded docs without cached object info are shown in flat mode
     }
-    
+    if (excludeDocList.contains(doc)) {
+        return false;
+    }
+
     //filter by readonly state
     //TODO: revise readonly filters;
     //if the only lock is unloaded state lock -> not show it
@@ -64,7 +67,7 @@ bool ProjectTreeControllerModeSettings::isDocumentShown(Document* doc) const {
         } else {
             if (!doc->isLoaded()) {
                 DocumentFormatConstraints c;
-                c.supportedObjectTypes += objectTypesToShow.toSet();
+                c.supportedObjectTypes += objectTypesToShow;
                 res = doc->getDocumentFormat()->checkConstraints(c);
             } else {
                 res = false;

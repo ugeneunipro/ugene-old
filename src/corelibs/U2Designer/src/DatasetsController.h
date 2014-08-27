@@ -40,7 +40,7 @@ class UrlItem;
 class U2DESIGNER_EXPORT DatasetsController : public QObject {
     Q_OBJECT
 public:
-    DatasetsController();
+    DatasetsController(const QSet<GObjectType> &compatibleObjTypes = QSet<GObjectType>());
     virtual ~DatasetsController();
 
     virtual void update();
@@ -49,21 +49,24 @@ public:
     virtual void addDataset(const QString &name, U2OpStatus &os) = 0;
     virtual void onUrlAdded(URLListController *ctrl, URLContainer *url) = 0;
 
+    virtual const QSet<GObjectType> & getCompatibleObjTypes() const;
+
 signals:
     void si_attributeChanged();
 
 protected:
     virtual QStringList names() const = 0;
     void checkName(const QString &name, U2OpStatus &os, const QString &exception = "");
+
+private:
+    QSet<GObjectType> compatibleObjTypes;
 };
 
 class U2DESIGNER_EXPORT AttributeDatasetsController : public DatasetsController {
 public:
-    AttributeDatasetsController(URLAttribute *attr);
-    AttributeDatasetsController(QList<Dataset> &sets);
+    AttributeDatasetsController(QList<Dataset> &sets, const QSet<GObjectType> &compatibleObjTypes);
     virtual ~AttributeDatasetsController();
 
-    virtual void update();
     virtual void renameDataset(int dsNum, const QString &newName, U2OpStatus &os);
     virtual void deleteDataset(int dsNum);
     virtual void addDataset(const QString &name, U2OpStatus &os);
@@ -77,7 +80,6 @@ protected:
 
 private:
     DatasetsListWidget *datasetsWidget;
-    URLAttribute *attr;
     QList<Dataset*> sets;
 
 private:
@@ -173,6 +175,7 @@ public:
 
     URLListWidget * getWidget();
     Dataset * dataset();
+    const QSet<GObjectType> & getCompatibleObjTypes() const;
 
 private:
     URLListWidget *widget;

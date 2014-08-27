@@ -48,6 +48,7 @@ protected:
 private slots:
     void sl_addFileButton();
     void sl_addDirButton();
+    void sl_addFromDbButton();
     void sl_downButton();
     void sl_upButton();
     void sl_deleteButton();
@@ -58,6 +59,7 @@ private slots:
 private:
     void addUrl(const QString &url);
     void reset();
+    bool readingFromDbIsSupported() const;
 
 private:
     URLListController *ctrl;

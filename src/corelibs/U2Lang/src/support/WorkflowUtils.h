@@ -38,6 +38,7 @@ class QListWidgetItem;
 namespace U2 {
 class Descriptor;
 class DocumentFormat;
+class Folder;
 
 using namespace Workflow;
 
@@ -128,10 +129,15 @@ public:
      * Empty input string is considered valid.
      * Otherwise, the input string is split into separate URL(s) by ';'.
      * For each input file: the URL must exist, be a file and have permissions to read from it.
-     * For each input directory: the URL must exist and be a directory.     
+     * For each input directory: the URL must exist and be a directory.
+     * For each object from a database: DB URL must be available, object must exist
+     * For each folder from a database: DB URL must be available, folder must exist
      */
     static bool validateInputFiles(QString urls, ProblemList &problemList);
     static bool validateInputDirs(QString urls, ProblemList &problemList);
+
+    static bool validateInputDbObjects(QString urls, ProblemList &problemList);
+    static bool validateInputDbFolders(QString urls, ProblemList &problemList);
 
     /**
      * Validation of output file/directory.

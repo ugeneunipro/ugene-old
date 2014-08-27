@@ -21,25 +21,21 @@
 
 #include <U2Core/GObjectTypes.h>
 
-#include "U2ObjectRelationsDbi.h"
+#include <U2Lang/SharedDbUrlUtils.h>
+
+#include "DbObjectItem.h"
 
 namespace U2 {
 
-U2ObjectRelation::U2ObjectRelation( )
-    : referencedType( GObjectTypes::UNKNOWN ), relationRole( ObjectRole_Sequence )
+DbObjectItem::DbObjectItem(const QString &url, QListWidget *parent)
+    : FileItem(url, parent)
 {
+    QIcon fileIcon = GObjectTypes::getTypeInfo(SharedDbUrlUtils::getDbObjectTypeByUrl(url)).icon;
+    setIcon(fileIcon);
 
+    const QString objectName = SharedDbUrlUtils::getDbObjectNameByUrl(url);
+    setText(objectName);
+    setToolTip("\"" + objectName + tr("\" is located in the database <b>") + SharedDbUrlUtils::getDbShortNameFromEntityUrl(url) + "</b>");
 }
 
-bool U2ObjectRelation::operator ==( const U2ObjectRelation &other ) const {
-    return referencedObject == other.referencedObject && referencedName == other.referencedName
-        && referencedType == other.referencedType && relationRole == other.relationRole;
-}
-
-U2ObjectRelationsDbi::U2ObjectRelationsDbi( U2Dbi *rootDbi )
-    : U2ChildDbi( rootDbi )
-{
-
-}
-
-} // namespace U2
+} // U2

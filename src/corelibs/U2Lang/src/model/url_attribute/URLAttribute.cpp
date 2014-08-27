@@ -85,6 +85,7 @@ Attribute * URLAttribute::clone() {
     }
     cloned->value = qVariantFromValue< QList<Dataset> >(clonedSets);
     cloned->scriptData = AttributeScript(scriptData);
+    cloned->setCompatibleObjectTypes(compatibleObjectTypes);
     return cloned;
 }
 
@@ -135,6 +136,14 @@ bool URLAttribute::validate(ProblemList &problemList) {
         return false;
     }
     return true;
+}
+
+const QSet<GObjectType> & URLAttribute::getCompatibleObjectTypes() const {
+    return compatibleObjectTypes;
+}
+
+void URLAttribute::setCompatibleObjectTypes(const QSet<GObjectType> &types) {
+    compatibleObjectTypes = types;
 }
 
 } // U2

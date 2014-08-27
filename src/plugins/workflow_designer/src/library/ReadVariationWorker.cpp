@@ -165,6 +165,8 @@ const QString ReadVariationProto::SPLIT_ATTR("split-mode");
 ReadVariationProto::ReadVariationProto()
 : GenericReadDocProto(ReadVariationWorkerFactory::ACTOR_ID)
 {
+    setCompatibleGObjectTypes(QSet<GObjectType>() << GObjectTypes::VARIANT_TRACK);
+
     setDisplayName(ReadVariationWorker::tr("Read Variations"));
     setDocumentation(ReadVariationWorker::tr("Reads variations from files and produces variations tracks."));
     {

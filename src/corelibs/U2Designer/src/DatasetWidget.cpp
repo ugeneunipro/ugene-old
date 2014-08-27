@@ -25,12 +25,18 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/ProjectModel.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Designer/DatasetsController.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/ProjectTreeControllerModeSettings.h>
+#include <U2Gui/ProjectTreeItemSelectorDialog.h>
+
+#include <U2Lang/SharedDbUrlUtils.h>
 
 #include "DatasetWidget.h"
 
@@ -45,23 +51,30 @@ URLListWidget::URLListWidget(URLListController *_ctrl)
     reset();
     QIcon fileIcon = QIcon(QString(":U2Designer/images/add_file.png"));
     QIcon dirIcon = QIcon(QString(":U2Designer/images/add_directory.png"));
+    QIcon dbIcon = QIcon(QString(":U2Designer/images/database_add.png"));
     QIcon deleteIcon = QIcon(QString(":U2Designer/images/exit.png"));
     QIcon upIcon = QIcon(QString(":U2Designer/images/up.png"));
     QIcon downIcon = QIcon(QString(":U2Designer/images/down.png"));
 
     addFileButton->setIcon(fileIcon);
     addDirButton->setIcon(dirIcon);
+    addFromDbButton->setIcon(dbIcon);
     deleteButton->setIcon(deleteIcon);
     upButton->setIcon(upIcon);
     downButton->setIcon(downIcon);
 
     connect(addFileButton, SIGNAL(clicked()), SLOT(sl_addFileButton()));
     connect(addDirButton, SIGNAL(clicked()), SLOT(sl_addDirButton()));
+    connect(addFromDbButton, SIGNAL(clicked()), SLOT(sl_addFromDbButton()));
     connect(downButton, SIGNAL(clicked()), SLOT(sl_downButton()));
     connect(upButton, SIGNAL(clicked()), SLOT(sl_upButton()));
     connect(deleteButton, SIGNAL(clicked()), SLOT(sl_deleteButton()));
 
     connect(itemsArea, SIGNAL(itemSelectionChanged()), SLOT(sl_itemChecked()));
+
+    if (!readingFromDbIsSupported()) {
+        addFromDbButton->hide();
+    }
 
     QAction *deleteAction = new QAction(itemsArea);
     deleteAction->setShortcut(QKeySequence::Delete);
@@ -108,6 +121,63 @@ void URLListWidget::sl_addDirButton() {
     }
 }
 
+namespace {
+
+bool sharedDbsAvailable() {
+    Project *proj = AppContext::getProject();
+    if (NULL == proj) {
+        return false;
+    }
+
+    foreach (Document *doc, proj->getDocuments()) {
+        if (doc->isDatabaseConnection()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+ProjectTreeControllerModeSettings createProjectTreeSettings(const QSet<GObjectType> &compatibleObjTypes) {
+    ProjectTreeControllerModeSettings settings;
+    settings.objectTypesToShow += compatibleObjTypes;
+
+    Project *proj = AppContext::getProject();
+    SAFE_POINT(NULL != proj, "Invalid project", settings);
+
+    foreach (Document *doc, proj->getDocuments()) {
+        if (!doc->isDatabaseConnection()) {
+            settings.excludeDocList << doc;
+        }
+    }
+
+    return settings;
+}
+
+}
+
+void URLListWidget::sl_addFromDbButton() {
+    if (!sharedDbsAvailable()) {
+        QMessageBox::warning(this, tr("Unable to Browse Databases"), tr("To start using shared data in your workflow "
+            "you need to connect to at least one shared database. You can do this using menu %1")
+            .arg("<i>File -> Connect to shared database...</i>"));
+        return;
+    }
+
+    const ProjectTreeControllerModeSettings settings = createProjectTreeSettings(ctrl->getCompatibleObjTypes());
+
+    QList<Folder> folders;
+    QList<GObject *> objects;
+    ProjectTreeItemSelectorDialog::selectObjectsAndFolders(settings, this, folders, objects);
+
+    foreach (const Folder &f, folders) {
+        addUrl(SharedDbUrlUtils::createDbFolderUrl(f));
+    }
+
+    foreach (GObject *obj, objects) {
+        addUrl(SharedDbUrlUtils::createDbObjectUrl(obj));
+    }
+}
+
 void URLListWidget::addUrl(const QString &url) {
     U2OpStatusImpl os;
     ctrl->addUrl(url, os);
@@ -132,6 +202,10 @@ void URLListWidget::reset() {
     upButton->setEnabled(false);
     downButton->setEnabled(false);
     popup->hideOptions();
+}
+
+bool URLListWidget::readingFromDbIsSupported() const {
+    return !ctrl->getCompatibleObjTypes().isEmpty();
 }
 
 void URLListWidget::sl_downButton() {

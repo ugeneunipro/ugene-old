@@ -19,27 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/GObjectTypes.h>
+#include <U2Lang/URLAttribute.h>
 
-#include "U2ObjectRelationsDbi.h"
+#include "ReadDbObjActorPrototype.h"
 
 namespace U2 {
 
-U2ObjectRelation::U2ObjectRelation( )
-    : referencedType( GObjectTypes::UNKNOWN ), relationRole( ObjectRole_Sequence )
+namespace Workflow {
+
+ReadDbObjActorPrototype::ReadDbObjActorPrototype(const Descriptor &desc, const QList<PortDescriptor *> &ports, const QList<Attribute *> &attrs)
+    : IntegralBusActorPrototype(desc, ports, attrs)
 {
 
 }
 
-bool U2ObjectRelation::operator ==( const U2ObjectRelation &other ) const {
-    return referencedObject == other.referencedObject && referencedName == other.referencedName
-        && referencedType == other.referencedType && relationRole == other.relationRole;
+void ReadDbObjActorPrototype::setCompatibleGObjectTypes(const QSet<GObjectType> &types) {
+    foreach (Attribute *a, attrs) {
+        URLAttribute *urlAttr = dynamic_cast<URLAttribute *>(a);
+        if (NULL != urlAttr) {
+            urlAttr->setCompatibleObjectTypes(types);
+            break;
+        }
+    }
 }
 
-U2ObjectRelationsDbi::U2ObjectRelationsDbi( U2Dbi *rootDbi )
-    : U2ChildDbi( rootDbi )
-{
+} // Workflow
 
-}
-
-} // namespace U2
+} // Workflow

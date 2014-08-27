@@ -86,7 +86,10 @@ QWidget * InUrlDatasetsController::createGUI(U2OpStatus & /*os*/) {
         sets.clear();
         sets << Dataset();
     }
-    dsc = new AttributeDatasetsController(sets);
+    URLAttribute *attr = dynamic_cast<URLAttribute *>(attribute());
+    SAFE_POINT(NULL != attr, "Unexpected attribute value", NULL);
+    const QSet<GObjectType> compatibleObjTypes = NULL != attr ? attr->getCompatibleObjectTypes() : QSet<GObjectType>();
+    dsc = new AttributeDatasetsController(sets,  compatibleObjTypes);
     connect(dsc, SIGNAL(si_attributeChanged()), SLOT(sl_datasetsChanged()));
     return dsc->getWigdet();
 }

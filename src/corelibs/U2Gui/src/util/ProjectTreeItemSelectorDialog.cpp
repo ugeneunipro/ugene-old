@@ -23,6 +23,7 @@
 #include "ProjectTreeItemSelectorDialogImpl.h"
 
 #include <U2Core/DocumentModel.h>
+#include <U2Core/U2SafePoints.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
@@ -94,10 +95,9 @@ QList<GObject*> ProjectTreeItemSelectorDialog::selectObjects(const ProjectTreeCo
     return res;
 }
 
-void ProjectTreeItemSelectorDialog::selectObjectsAndDocuments(const ProjectTreeControllerModeSettings& s,
-                                                              QWidget* p,
-                                                              QList<Document*>& docList,
-                                                              QList<GObject*>& objList) {
+void ProjectTreeItemSelectorDialog::selectObjectsAndDocuments(const ProjectTreeControllerModeSettings& s, QWidget* p, QList<Document*>& docList,
+    QList<GObject*>& objList)
+{
     ProjectTreeItemSelectorDialogImpl d(p, s);
     int rc = d.exec();
     if (rc == QDialog::Accepted) {
@@ -108,6 +108,32 @@ void ProjectTreeItemSelectorDialog::selectObjectsAndDocuments(const ProjectTreeC
         foreach (GObject* obj, os->getSelectedObjects()) {
             if (!docList.contains(obj->getDocument())) {
                 objList << obj;
+            }
+        }
+    }
+}
+
+void ProjectTreeItemSelectorDialog::selectObjectsAndFolders(const ProjectTreeControllerModeSettings &s, QWidget *p, QList<Folder> &folderList,
+    QList<GObject *> &objList)
+{
+    ProjectTreeItemSelectorDialogImpl d(p, s);
+    int rc = d.exec();
+    if (rc == QDialog::Accepted) {
+        SAFE_POINT(NULL != d.controller, "Invalid project tree controller", );
+        folderList << d.controller->getSelectedFolders(); // add folders selected by a user
+
+        const GObjectSelection* os = d.controller->getGObjectSelection();
+        SAFE_POINT(NULL != os, "Invalid object selection", );
+        foreach (GObject* obj, os->getSelectedObjects()) {
+            bool objectIsAlreadySelected = false;
+            foreach (const Folder &selectedFolder, folderList) {
+                if (d.controller->isObjectInFolder(obj, selectedFolder)) {
+                    objectIsAlreadySelected = true;
+                    break;
+                }
+            }
+            if (!objectIsAlreadySelected) {
+                objList << obj; // add objects selected by the user that are not located in chosen folders
             }
         }
     }

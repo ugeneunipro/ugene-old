@@ -20,6 +20,7 @@
  */
 
 #include <U2Lang/HRSchemaSerializer.h>
+#include <U2Lang/SharedDbUrlUtils.h>
 #include <U2Lang/WorkflowUtils.h>
 
 #include "URLContainer.h"
@@ -30,8 +31,8 @@ static QString toUniversal(const QString &url) {
     return QFileInfo(url).absoluteFilePath();
 }
 
-URLContainer::URLContainer(const QString &_url)
-: url(toUniversal(_url))
+URLContainer::URLContainer(const QString &_url, bool convertUrlToAbsolute)
+    : url(convertUrlToAbsolute ? toUniversal(_url) : _url)
 {
 
 }
@@ -44,21 +45,31 @@ const QString & URLContainer::getUrl() const {
     return url;
 }
 
+//////////////////////////////////////////////////////////////////////////
+
 URLContainer * URLContainerFactory::createUrlContainer(const QString &url) {
+    if (SharedDbUrlUtils::isDbObjectUrl(url)) {
+        return new DbObjUrlContainer(url);
+    } else if (SharedDbUrlUtils::isDbFolderUrl(url)) {
+        return new DbFolderUrlContainer(url);
+    }
+
     QFileInfo info(url);
     if (!info.exists()) {
         return NULL;
     }
 
     if (info.isDir()) {
-        return new DirUrlContainer(url, "", "", false);
+        return new DirUrlContainer(url);
     } else {
         return new FileUrlContainer(url);
     }
 }
 
+//////////////////////////////////////////////////////////////////////////
+
 FileUrlContainer::FileUrlContainer(const QString &url)
-: URLContainer(url)
+    : URLContainer(url)
 {
 
 }
@@ -83,14 +94,40 @@ bool FileUrlContainer::validateUrl(ProblemList &problemList) {
     return WorkflowUtils::validateInputFiles(url, problemList);
 }
 
-DirUrlContainer::DirUrlContainer(const QString &url)
-: URLContainer(url), recursive(false)
+//////////////////////////////////////////////////////////////////////////
+
+DbObjUrlContainer::DbObjUrlContainer(const QString &url)
+    : URLContainer(url, false)
 {
 
 }
 
-DirUrlContainer::DirUrlContainer(const QString &url, const QString &_incFilter, const QString &_excFilter, bool _recursive)
-: URLContainer(url), incFilter(_incFilter), excFilter(_excFilter), recursive(_recursive)
+FilesIterator * DbObjUrlContainer::getFileUrls() {
+    return NULL;
+}
+
+URLContainer * DbObjUrlContainer::clone() {
+    return new DbObjUrlContainer(url);
+}
+
+void DbObjUrlContainer::accept(URLContainerVisitor *visitor) {
+    visitor->visit(this);
+}
+
+bool DbObjUrlContainer::validateUrl(ProblemList &problemList) {
+    return WorkflowUtils::validateInputDbObjects(url, problemList);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+DirUrlContainer::DirUrlContainer(const QString &url, bool convertUrlToAbsolute)
+    : URLContainer(url, convertUrlToAbsolute), recursive(false)
+{
+
+}
+
+DirUrlContainer::DirUrlContainer(const QString &url, const QString &_incFilter, const QString &_excFilter, bool _recursive, bool convertUrlToAbsolute)
+    : URLContainer(url, convertUrlToAbsolute), incFilter(_incFilter), excFilter(_excFilter), recursive(_recursive)
 {
 
 }
@@ -154,6 +191,48 @@ void DirUrlContainer::setExcludeFilter(const QString &value) {
 
 void DirUrlContainer::setRecursive(bool value) {
     recursive = value;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+DbFolderUrlContainer::DbFolderUrlContainer(const QString &url)
+    : DirUrlContainer(url, false)
+{
+
+}
+
+DbFolderUrlContainer::DbFolderUrlContainer(const QString &url, const QString &incFilter, const QString &excFilter, bool recursive)
+    : DirUrlContainer(url, incFilter, excFilter, recursive, false)
+{
+
+}
+
+FilesIterator * DbFolderUrlContainer::getFileUrls() {
+    return NULL;
+}
+
+URLContainer * DbFolderUrlContainer::clone() {
+    return new DbFolderUrlContainer(url, getIncludeFilter(), getExcludeFilter(), isRecursive());
+}
+
+void DbFolderUrlContainer::accept(URLContainerVisitor *visitor) {
+    visitor->visit(this);
+}
+
+bool DbFolderUrlContainer::validateUrl(ProblemList &problemList) {
+    bool res = WorkflowUtils::validateInputDbFolders(url, problemList);
+    if (!res) {
+        return false;
+    }
+
+    FilesIterator *it = getFileUrls();
+    SAFE_POINT(NULL != it, "NULL fileIterator!", false);
+    while (it->hasNext()) {
+        QString fileUrl = it->getNextFile();
+        bool urlIsValid = WorkflowUtils::validateInputDbObjects(fileUrl, problemList);
+        res = res && urlIsValid;
+    }
+    return res;
 }
 
 } // U2

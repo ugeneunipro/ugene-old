@@ -68,9 +68,10 @@ public:
         groupMode(ProjectTreeGroupMode_ByDocument),allowSelectUnloaded(false), objectFilter(NULL), documentFilter(NULL), 
         markActive(false){}
     
-    QList<GObjectType>          objectTypesToShow;  // show only objects of specified type
-    QList<GObjectConstraints*>  objectConstraints;  // show only objects that fits constraints
+    QSet<GObjectType>          objectTypesToShow;  // show only objects of specified type
+    QSet<GObjectConstraints*>  objectConstraints;  // show only objects that fits constraints
     QList<QPointer<GObject> >   excludeObjectList;  // do not show these objects
+    QList<QPointer<Document> >  excludeDocList;     // do not show these documents
     QStringList                 tokensToShow;       // show documents/objects with all of tokens in a name
     bool                        allowMultipleSelection; //use multiple selection in tree
     TriState                    readOnlyFilter;     // unknown->all, true->filter(exclude) readonly, false -> keep only readonly

@@ -34,6 +34,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/QDConstraint.h \
            src/model/QDScheme.h \
            src/model/QueryDesignerRegistry.h \
+           src/model/ReadDbObjActorPrototype.h \
            src/model/RunFileSystem.h \
            src/model/Schema.h \
            src/model/SchemaActorsRegistry.h \
@@ -86,6 +87,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/actor/ActorScriptValidator.h \
            src/model/actor/ActorValidator.h \
            src/model/url_attribute/Dataset.h \
+           src/model/url_attribute/SharedDbUrlUtils.h \
            src/model/url_attribute/URLAttribute.h \
            src/model/url_attribute/URLContainer.h \
            src/model/wizard/ElementSelectorWidget.h \
@@ -138,6 +140,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/QDConstraint.cpp \
            src/model/QDScheme.cpp \
            src/model/QueryDesignerRegistry.cpp \
+           src/model/ReadDbObjActorPrototype.cpp \
            src/model/RunFileSystem.cpp \
            src/model/Schema.cpp \
            src/model/SchemaActorsRegistry.cpp \
@@ -186,6 +189,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/actor/ActorScriptValidator.cpp \
            src/model/actor/ActorValidator.cpp \
            src/model/url_attribute/Dataset.cpp \
+           src/model/url_attribute/SharedDbUrlUtils.cpp \
            src/model/url_attribute/URLAttribute.cpp \
            src/model/url_attribute/URLContainer.cpp \
            src/model/wizard/ElementSelectorWidget.cpp \

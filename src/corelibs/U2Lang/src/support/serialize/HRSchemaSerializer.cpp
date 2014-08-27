@@ -1362,6 +1362,14 @@ public:
         result = HRSchemaSerializer::makeBlock(Constants::DIRECTORY_URL, Constants::NO_NAME, res, tabCount);
     }
 
+    virtual void visit(DbObjUrlContainer *url) {
+
+    }
+
+    virtual void visit(DbFolderUrlContainer *) {
+
+    }
+
     const QString & getResult() {
         return result;
     }

@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2ObjectTypeUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "util/MysqlHelpers.h"
@@ -74,7 +75,7 @@ QList<U2ObjectRelation> MysqlObjectRelationsDbi::getObjectRelations( const U2Dat
         U2ObjectRelation relation;
         const U2DataType objectType = U2DbiUtils::toType( object );
         const U2DataType referenceType = q.getInt32( 0 );
-        relation.referencedType = toGObjectType( referenceType );
+        relation.referencedType = U2ObjectTypeUtils::toGObjectType( referenceType );
         relation.referencedName = q.getString( 1 );
         relation.id = q.getDataId( 2, objectType );
         relation.referencedObject = q.getDataId( 3, referenceType );

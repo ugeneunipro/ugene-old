@@ -40,11 +40,11 @@ namespace Workflow {
  * DocActorProto
  *****************************/
 DocActorProto::DocActorProto(const DocumentFormatId& _fid, const Descriptor& _desc, const QList<PortDescriptor*>& _ports, 
-                             const QList<Attribute*>& _attrs ) : IntegralBusActorPrototype(_desc, _ports, _attrs), fid(_fid) {
+                             const QList<Attribute*>& _attrs ) : ReadDbObjActorPrototype(_desc, _ports, _attrs), fid(_fid) {
 }
 
 DocActorProto::DocActorProto(const Descriptor& _desc, const GObjectType& t, const QList<PortDescriptor*>& _ports,
-                             const QList<Attribute*>& _attrs ) : IntegralBusActorPrototype(_desc, _ports, _attrs), type(t) {
+                             const QList<Attribute*>& _attrs ) : ReadDbObjActorPrototype(_desc, _ports, _attrs), type(t) {
 }
 
 bool DocActorProto::isAcceptableDrop(const QMimeData * md, QVariantMap * params, const QString & urlAttrId ) const {

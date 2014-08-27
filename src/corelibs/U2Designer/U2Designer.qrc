@@ -25,8 +25,10 @@
         <file>images/outside.png</file>
         <file>images/settings.png</file>
         <file>images/copy.png</file>
+        <file>images/database_add.png</file>
+        <file>images/database_folder.png</file>
     </qresource>
-    <qresource>
+    <qresource prefix="/">
         <file>javascript/bootstrap/css/bootstrap-responsive.css</file>
         <file>javascript/bootstrap/css/bootstrap-responsive.min.css</file>
         <file>javascript/bootstrap/css/bootstrap.css</file>
@@ -37,5 +39,4 @@
         <file>javascript/bootstrap/js/bootstrap.min.js</file>
         <file>javascript/jquery/jquery.js</file>
     </qresource>
-
 </RCC>

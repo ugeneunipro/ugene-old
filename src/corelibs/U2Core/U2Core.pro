@@ -221,6 +221,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/MsaDbiUtils.h \
            src/util/MsaRowUtils.h \
            src/util/MSAUtils.h \
+           src/util/U2ObjectTypeUtils.h \
            src/util/PMatrixSerializeUtils.h \
            src/util/QVariantUtils.h \
            src/util/SequenceUtils.h \
@@ -411,6 +412,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/MsaDbiUtils.cpp \
            src/util/MsaRowUtils.cpp \
            src/util/MSAUtils.cpp \
+           src/util/U2ObjectTypeUtils.cpp \
            src/util/QVariantUtils.cpp \
            src/util/SequenceUtils.cpp \
            src/util/SNPTablesUtils.cpp \

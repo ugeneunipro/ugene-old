@@ -2335,10 +2335,10 @@ void MSAEditorSequenceArea::sl_addSeqFromProject()
     }
 
     ProjectTreeControllerModeSettings settings;
-    settings.objectTypesToShow.append(GObjectTypes::SEQUENCE);
+    settings.objectTypesToShow.insert(GObjectTypes::SEQUENCE);
     QScopedPointer<U2SequenceObjectConstraints> seqConstraints(new U2SequenceObjectConstraints());
     seqConstraints->alphabetType = msaObject->getAlphabet()->getType();
-    settings.objectConstraints.append(seqConstraints.data());
+    settings.objectConstraints.insert(seqConstraints.data());
 
     QList<GObject*> objects = ProjectTreeItemSelectorDialog::selectObjects(settings,this);
 

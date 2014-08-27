@@ -25,7 +25,7 @@
 #include <U2Core/global.h>
 
 #include <U2Lang/Attribute.h>
-#include <U2Lang/IntegralBusModel.h>
+#include <U2Lang/ReadDbObjActorPrototype.h>
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
 
@@ -34,7 +34,7 @@
 namespace U2 {
 namespace Workflow {
 
-class DocActorProto : public IntegralBusActorPrototype {
+class DocActorProto : public ReadDbObjActorPrototype {
 public:
     DocActorProto(const DocumentFormatId& _fid, const Descriptor& desc, const QList<PortDescriptor*>& ports, 
         const QList<Attribute*>& attrs = QList<Attribute*>());

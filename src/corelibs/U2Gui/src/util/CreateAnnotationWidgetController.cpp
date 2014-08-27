@@ -478,7 +478,7 @@ public:
 void CreateAnnotationWidgetController::sl_onLoadObjectsClicked() {
     ProjectTreeControllerModeSettings s;
     s.allowMultipleSelection = false;
-    s.objectTypesToShow.append(GObjectTypes::ANNOTATION_TABLE);
+    s.objectTypesToShow.insert(GObjectTypes::ANNOTATION_TABLE);
     s.groupMode = ProjectTreeGroupMode_Flat;
     GObjectRelation rel(model.sequenceObjectRef, ObjectRole_Sequence);
     QScopedPointer<PTCAnnotationObjectFilter> filter(new PTCAnnotationObjectFilter(rel, model.useUnloadedObjects));

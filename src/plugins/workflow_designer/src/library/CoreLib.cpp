@@ -175,7 +175,8 @@ void CoreLib::init() {
         
         Descriptor acd(CoreLibConstants::READ_TEXT_PROTO_ID, tr("Read Plain Text"), tr("Reads text from local or remote files."));
         p << new PortDescriptor(Descriptor(BasePorts::OUT_TEXT_PORT_ID(), tr("Plain text"), ""), dtl, false, true);
-        IntegralBusActorPrototype* proto = new ReadDocActorProto(BaseDocumentFormats::PLAIN_TEXT, acd, p, a);
+        ReadDocActorProto* proto = new ReadDocActorProto(BaseDocumentFormats::PLAIN_TEXT, acd, p, a);
+        proto->setCompatibleGObjectTypes(QSet<GObjectType>() << GObjectTypes::TEXT);
         proto->setPrompter(new ReadDocPrompter(tr("Reads text from <u>%1</u>.")));
         
         if(AppContext::isGUIMode()) {

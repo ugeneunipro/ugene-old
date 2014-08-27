@@ -324,7 +324,7 @@ void ImportToDatabaseDialog::getProjectItemsToImport(QList<Document*>& docList, 
         settings.excludeObjectList.append(obj);
     }
 
-    settings.objectTypesToShow = dbConnection->getDocumentFormat()->getSupportedObjectTypes().toList();
+    settings.objectTypesToShow += dbConnection->getDocumentFormat()->getSupportedObjectTypes();
 
     ProjectTreeItemSelectorDialog::selectObjectsAndDocuments(settings, this, docList, objList);
 }

@@ -49,12 +49,8 @@ public :
     virtual void                        removeAllObjectRelations( const U2DataId &object, U2OpStatus &os ) = 0;
     virtual void                        removeReferencesForObject( const U2DataId &object, U2OpStatus &os ) = 0;
 
-    static U2DataType                   toDataType( const GObjectType &gType );
-
 protected :
                                         U2ObjectRelationsDbi( U2Dbi *rootDbi );
-
-    static GObjectType                  toGObjectType( const U2DataType &dbType );
 };
 
 } // namespace U2

@@ -40,6 +40,7 @@
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/IntegralBus.h>
+#include <U2Lang/SharedDbUrlUtils.h>
 #include <U2Lang/URLAttribute.h>
 #include <U2Lang/WorkflowSettings.h>
 
@@ -50,6 +51,7 @@
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/ExternalToolRunTask.h>
+#include <U2Core/Folder.h>
 #include <U2Core/GObject.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
@@ -65,7 +67,6 @@
 #include "WorkflowUtils.h"
 
 namespace U2 {
-
 /*****************************
  * WorkflowUtils
  *****************************/
@@ -960,7 +961,7 @@ bool WorkflowUtils::validateInputFiles(QString urls, ProblemList &problemList) {
     // Verify each URL
     QStringList urlsList = urls.split(';');
     bool res = true;
-    foreach (QString url, urlsList) {
+    foreach (const QString &url, urlsList) {
         QFileInfo fi(url);
         if (!fi.exists()) {
             problemList << Problem(L10N::errorFileNotFound(url));
@@ -992,7 +993,7 @@ bool WorkflowUtils::validateInputDirs(QString urls, ProblemList &problemList) {
 
     QStringList urlsList = urls.split(';');
     bool res = true;
-    foreach (QString url, urlsList) {
+    foreach (const QString &url, urlsList) {
         QFileInfo fi(url);
         if (!fi.exists()) {
             problemList << Problem(L10N::errorDirNotFound(url));
@@ -1000,6 +1001,119 @@ bool WorkflowUtils::validateInputDirs(QString urls, ProblemList &problemList) {
         }
         else if (!fi.isDir()) {
             problemList << Problem(L10N::errorIsNotADir(url));
+            res = false;
+        }
+    }
+    return res;
+}
+
+namespace {
+
+U2DbiRef url2Ref(const QString &url) {
+    const QStringList urlParts = url.split(SharedDbUrlUtils::DB_PROVIDER_SEP);
+    CHECK(urlParts.size() == 2, U2DbiRef());
+
+    return U2DbiRef(urlParts[0], urlParts[1]);
+}
+
+bool checkDbConnection(const QString &dbUrl) {
+    U2OpStatusImpl os;
+    const U2DbiRef dbRef = url2Ref(dbUrl);
+    CHECK(dbRef.isValid(), false);
+
+    DbiConnection connection(dbRef, os);
+    CHECK_OP(os, false);
+    return connection.isOpen();
+}
+
+bool checkObjectInDb(const QString &url) {
+    const QStringList urlParts = url.split(",");
+    SAFE_POINT(urlParts.size() == 2, "Invalid DB object URL", false);
+    const QString dbUrl = urlParts[0];
+
+    U2OpStatusImpl os;
+    const U2DbiRef dbRef = url2Ref(dbUrl);
+    CHECK(dbRef.isValid(), false);
+
+    const U2DataId realId = SharedDbUrlUtils::getObjectIdByUrl(url);
+    CHECK(!realId.isEmpty(), false);
+
+    DbiConnection connection(dbRef, os);
+    CHECK_OP(os, false);
+    CHECK(NULL != connection.dbi, false);
+
+    U2ObjectDbi *oDbi = connection.dbi->getObjectDbi();
+    CHECK(NULL != oDbi, false);
+    U2Object testObject;
+    oDbi->getObject(testObject, realId, os);
+    CHECK_OP(os, false);
+
+    return testObject.hasValidId();
+}
+
+bool checkFolderInDb(const QString &dbUrl, const QString &folderPath) {
+    U2OpStatusImpl os;
+    const U2DbiRef dbRef = url2Ref(dbUrl);
+    CHECK(dbRef.isValid(), false);
+
+    CHECK(!folderPath.isEmpty() && folderPath.startsWith(U2ObjectDbi::ROOT_FOLDER), false);
+
+    DbiConnection connection(dbRef, os);
+    CHECK_OP(os, false);
+    CHECK(NULL != connection.dbi, false);
+
+    U2ObjectDbi *oDbi = connection.dbi->getObjectDbi();
+    CHECK(NULL != oDbi, false);
+    const qint64 folderVersion = oDbi->getFolderLocalVersion(folderPath, os);
+    CHECK_OP(os, false);
+
+    return -1 != folderVersion;
+}
+
+}
+
+bool WorkflowUtils::validateInputDbObjects(QString urls, ProblemList &problemList) {
+    normalizeUrls(urls);
+    if (urls.isEmpty()) {
+        return true;
+    }
+
+    QStringList urlsList = urls.split(';');
+    bool res = true;
+    foreach (const QString &url, urlsList) {
+        const QStringList dbUrlAndObjId = url.split(",");
+        if (dbUrlAndObjId.size() != 2) {
+            problemList << Problem(L10N::errorWrongDbObjUrlFormat(url));
+            res = false;
+        } else if (!checkDbConnection(dbUrlAndObjId[0])) {
+            problemList << Problem(L10N::errorDbInacsessible(dbUrlAndObjId[0]));
+            res = false;
+        } else if (!checkObjectInDb(url)) {
+            problemList << Problem(L10N::errorDbObjectInacsessible(dbUrlAndObjId[0]));
+            res = false;
+        }
+    }
+    return res;
+}
+
+bool WorkflowUtils::validateInputDbFolders(QString urls, ProblemList &problemList) {
+    normalizeUrls(urls);
+    if (urls.isEmpty()) {
+        return true;
+    }
+
+    QStringList urlsList = urls.split(';');
+    bool res = true;
+    foreach (const QString &url, urlsList) {
+        const QStringList dbUrlAndPath = url.split(",");
+        if (dbUrlAndPath.size() != 2) {
+            problemList << Problem(L10N::errorWrongDbFolderUrlFormat(url));
+            res = false;
+        } else if (!checkDbConnection(dbUrlAndPath[0])) {
+            problemList << Problem(L10N::errorDbInacsessible(dbUrlAndPath[0]));
+            res = false;
+        } else if (!checkFolderInDb(dbUrlAndPath[0], dbUrlAndPath[1])) {
+            problemList << Problem(L10N::errorDbFolderInacsessible(dbUrlAndPath[0]));
             res = false;
         }
     }
@@ -1171,6 +1285,10 @@ QString PrompterBaseImpl::getURL(const QString& id, bool * empty ) {
         if( empty != NULL ) { *empty = true; }
     } else if (url.indexOf(";") != -1) {
         url = tr("the list of files");
+    } else if (SharedDbUrlUtils::isDbObjectUrl(url)) {
+        url = SharedDbUrlUtils::getDbObjectNameByUrl(url);
+    } else if (SharedDbUrlUtils::isDbFolderUrl(url)) {
+        url = Folder::getFolderName(SharedDbUrlUtils::getDbFolderPathByUrl(url));
     } else {
         QString name = QFileInfo(url).fileName();
         if (!name.isEmpty()) {

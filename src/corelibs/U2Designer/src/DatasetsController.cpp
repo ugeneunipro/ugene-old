@@ -35,6 +35,8 @@
 #include <U2Lang/URLContainer.h>
 
 #include "DatasetsListWidget.h"
+#include "DbFolderItem.h"
+#include "DbObjectItem.h"
 #include "DelegateEditors.h"
 #include "DirectoryItem.h"
 #include "FileItem.h"
@@ -58,6 +60,18 @@ public:
 
     virtual void visit(DirUrlContainer *url) {
         DirectoryItem *dItem = new DirectoryItem(url->getUrl());
+        dItem->setIncludeFilter(url->getIncludeFilter());
+        dItem->setExcludeFilter(url->getExcludeFilter());
+        dItem->setRecursive(url->isRecursive());
+        urlItem = dItem;
+    }
+
+    virtual void visit(DbObjUrlContainer *url) {
+        urlItem = new DbObjectItem(url->getUrl());
+    }
+
+    virtual void visit(DbFolderUrlContainer *url) {
+        DbFolderItem *dItem = new DbFolderItem(url->getUrl());
         dItem->setIncludeFilter(url->getIncludeFilter());
         dItem->setExcludeFilter(url->getExcludeFilter());
         dItem->setRecursive(url->isRecursive());
@@ -109,6 +123,14 @@ public:
         item->accept(&helper);
     }
 
+    virtual void visit(DbObjUrlContainer *) {
+
+    }
+
+    virtual void visit(DbFolderUrlContainer *) {
+
+    }
+
 private:
     UrlItem *item;
 };
@@ -116,7 +138,9 @@ private:
 /************************************************************************/
 /* Controller */
 /************************************************************************/
-DatasetsController::DatasetsController() {
+DatasetsController::DatasetsController(const QSet<GObjectType> &compatibleObjTypes)
+    : compatibleObjTypes(compatibleObjTypes)
+{
 
 }
 
@@ -144,18 +168,15 @@ void DatasetsController::checkName(const QString &newName, U2OpStatus &os, const
     }
 }
 
+const QSet<GObjectType> & DatasetsController::getCompatibleObjTypes() const {
+    return compatibleObjTypes;
+}
+
 /************************************************************************/
 /* AttributeDatasetsController */
 /************************************************************************/
-AttributeDatasetsController::AttributeDatasetsController(URLAttribute *_attr)
-: DatasetsController(), datasetsWidget(NULL), attr(_attr)
-{
-    initSets(attr->getDatasets());
-    initialize();
-}
-
-AttributeDatasetsController::AttributeDatasetsController(QList<Dataset> &_sets)
-: DatasetsController(), datasetsWidget(NULL), attr(NULL)
+AttributeDatasetsController::AttributeDatasetsController(QList<Dataset> &_sets, const QSet<GObjectType> &compatibleObjTypes)
+    : DatasetsController(compatibleObjTypes), datasetsWidget(NULL)
 {
     initSets(_sets);
     initialize();
@@ -239,13 +260,6 @@ void AttributeDatasetsController::renameDataset(int dsNum, const QString &newNam
 
     dSet->setName(newName);
     update();
-}
-
-void AttributeDatasetsController::update() {
-    if (NULL != attr) {
-        attr->updateValue();
-    }
-    DatasetsController::update();
 }
 
 QStringList AttributeDatasetsController::names() const {
@@ -765,6 +779,10 @@ URLContainer * URLListController::getUrl(int pos) {
     URLContainer *url = set->getUrls().at(pos);
     SAFE_POINT(NULL != url, "NULL url container", NULL);
     return url;
+}
+
+const QSet<GObjectType> & URLListController::getCompatibleObjTypes() const {
+    return controller->getCompatibleObjTypes();
 }
 
 } // U2

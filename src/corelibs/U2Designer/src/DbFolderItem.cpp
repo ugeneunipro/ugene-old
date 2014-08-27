@@ -19,27 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/GObjectTypes.h>
+#include <U2Core/Folder.h>
+#include <U2Core/U2ObjectDbi.h>
 
-#include "U2ObjectRelationsDbi.h"
+#include <U2Lang/SharedDbUrlUtils.h>
+
+#include "DbFolderItem.h"
 
 namespace U2 {
 
-U2ObjectRelation::U2ObjectRelation( )
-    : referencedType( GObjectTypes::UNKNOWN ), relationRole( ObjectRole_Sequence )
+DbFolderItem::DbFolderItem(const QString &url, QListWidget *parent)
+    : DirectoryItem(url, parent)
 {
+    QIcon dirIcon = QIcon(QString(":U2Designer/images/database_folder.png"));
+    setIcon(dirIcon);
 
-}
+    const QString folderPath = SharedDbUrlUtils::getDbFolderPathByUrl(url);
+    setToolTip("<p><b>" + SharedDbUrlUtils::getDbShortNameFromEntityUrl(url) + "</b>: " + folderPath + "</p><p>" + tr("Use <i>right click</i> to set advanced options") + "</p>");
 
-bool U2ObjectRelation::operator ==( const U2ObjectRelation &other ) const {
-    return referencedObject == other.referencedObject && referencedName == other.referencedName
-        && referencedType == other.referencedType && relationRole == other.relationRole;
-}
+    QString folderName = Folder::getFolderName(folderPath);
+    if (folderName.isEmpty()) {
+        folderName = U2ObjectDbi::ROOT_FOLDER;
+    }
 
-U2ObjectRelationsDbi::U2ObjectRelationsDbi( U2Dbi *rootDbi )
-    : U2ChildDbi( rootDbi )
-{
-
+    setText(folderName);
 }
 
 } // namespace U2

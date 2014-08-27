@@ -5,6 +5,8 @@ HEADERS += src/BreakpointHitCountDialog.h \
            src/DatasetsController.h \
            src/DatasetsListWidget.h \
            src/DatasetWidget.h \
+           src/DbFolderItem.h \
+           src/DbObjectItem.h \
            src/DelegateEditors.h \
            src/DesignerUtils.h \
            src/DirectoryItem.h \
@@ -69,6 +71,8 @@ SOURCES += src/BreakpointHitCountDialog.cpp \
            src/DatasetsController.cpp \
            src/DatasetsListWidget.cpp \
            src/DatasetWidget.cpp \
+           src/DbFolderItem.cpp \
+           src/DbObjectItem.cpp \
            src/DelegateEditors.cpp \
            src/DesignerUtils.cpp \
            src/DirectoryItem.cpp \

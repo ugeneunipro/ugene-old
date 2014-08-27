@@ -589,7 +589,7 @@ void SpecialParametersPanel::editActor(Actor *a) {
     reset();
 
     bool visible = false;
-    foreach (const QString attrId, a->getParameters().keys()) {
+    foreach (const QString &attrId, a->getParameters().keys()) {
         Attribute *attr = a->getParameter(attrId);
         CHECK(NULL != attr, );
         URLAttribute *urlAttr = dynamic_cast<URLAttribute*>(attr);
@@ -597,7 +597,7 @@ void SpecialParametersPanel::editActor(Actor *a) {
             continue;
         }
         sets[attrId] = urlAttr->getAttributePureValue().value< QList<Dataset> >();
-        controllers[attrId] = new AttributeDatasetsController(sets[attrId]);
+        controllers[attrId] = new AttributeDatasetsController(sets[attrId], urlAttr->getCompatibleObjectTypes());
         connect(controllers[attrId], SIGNAL(si_attributeChanged()), SLOT(sl_datasetsChanged()));
         addWidget(controllers[attrId]);
         visible = true;

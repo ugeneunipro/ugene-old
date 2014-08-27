@@ -289,10 +289,10 @@ void ChromatogramView::sl_onAddExistingSequenceObject() {
 
     ProjectTreeControllerModeSettings s;
     s.allowMultipleSelection = false;
-    s.objectTypesToShow.append(GObjectTypes::SEQUENCE);
+    s.objectTypesToShow.insert(GObjectTypes::SEQUENCE);
     U2SequenceObjectConstraints ac;
     ac.sequenceSize = ctx->getSequenceLength();
-    s.objectConstraints.append(&ac);
+    s.objectConstraints.insert(&ac);
     ac.alphabetType = ctx->getSequenceObject()->getAlphabet()->getType();
     s.groupMode = ProjectTreeGroupMode_Flat;
     foreach(GObject* o, ctx->getAnnotatedDNAView()->getObjects()) {

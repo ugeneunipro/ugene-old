@@ -47,8 +47,10 @@ public:
 
     const DocumentSelection * getDocumentSelection() const;
     const GObjectSelection * getGObjectSelection() const;
+    QList<Folder> getSelectedFolders() const;
 
     bool isObjectInRecycleBin(GObject *obj) const;
+    bool isObjectInFolder(GObject *obj, const Folder &folder) const;
     const ProjectTreeControllerModeSettings & getModeSettings() const;
     void highlightItem(Document *doc);
     QAction * getLoadSeletectedDocumentsAction() const;
@@ -103,7 +105,6 @@ private:
     void updateLoadingState(Document *doc);
     void runLoadDocumentTasks(const QList<Document*> &docs) const;
     QSet<Document*> getDocsInSelection(bool deriveFromObjects) const;
-    QList<Folder> getSelectedFolders() const;
     void removeItems(const QList<Document*> &docs, const QList<Folder> &folders, const QList<GObject*> &objs);
     bool removeObjects(const QList<GObject*> &objs, const QList<Document*> &excludedDocs, const QList<Folder> &excludedFolders, bool removeFromDbi);
     bool removeFolders(const QList<Folder> &folders, const QList<Document*> &excludedDocs);

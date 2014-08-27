@@ -57,7 +57,7 @@ namespace Workflow {
 #define ICOLOR QColor(85,85,255)
 
 GenericReadDocProto::GenericReadDocProto(const Descriptor &desc)
-: IntegralBusActorPrototype(desc)
+    : ReadDbObjActorPrototype(desc)
 {
     {
         attrs << new URLAttribute(BaseAttributes::URL_IN_ATTRIBUTE(),
@@ -83,6 +83,8 @@ const QString GenericMAActorProto::TYPE("generic.ma");
 
 GenericSeqActorProto::GenericSeqActorProto() : GenericReadDocProto(CoreLibConstants::GENERIC_READ_SEQ_PROTO_ID)
 {
+    setCompatibleGObjectTypes(QSet<GObjectType>() << GObjectTypes::SEQUENCE);
+
     setDisplayName(U2::Workflow::CoreLib::tr("Read Sequence"));
     desc = U2::Workflow::CoreLib::tr("Reads sequences and annotations if any from local or remote files.");
     QMap<Descriptor, DataTypePtr> m;
@@ -141,6 +143,8 @@ GenericSeqActorProto::GenericSeqActorProto() : GenericReadDocProto(CoreLibConsta
 
 GenericMAActorProto::GenericMAActorProto() : GenericReadDocProto(CoreLibConstants::GENERIC_READ_MA_PROTO_ID) 
 {
+    setCompatibleGObjectTypes(QSet<GObjectType>() << GObjectTypes::MULTIPLE_ALIGNMENT);
+
     setDisplayName(U2::Workflow::CoreLib::tr("Read Alignment"));
     desc = U2::Workflow::CoreLib::tr("Reads multiple sequence alignments (MSAs) from local or remote files."
         "<p>Besides the known alignment formats, it supports composing an alignment from a set of sequences in a corresponding file (e.g. FASTA or Genbank).");

@@ -31,6 +31,7 @@
 #include <U2Core/UnloadedObject.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2ObjectRelationsDbi.h>
+#include <U2Core/U2ObjectTypeUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -161,7 +162,7 @@ void GObject::setRelationsInDb(QList<GObjectRelation>& list) const {
     QList<U2ObjectRelation> dbRelations;
     for (int i = 0, n = list.size(); i < n; ++i ) {
         GObjectRelation &relation = list[i];
-        const U2DataType refType = U2ObjectRelationsDbi::toDataType(relation.ref.objType);
+        const U2DataType refType = U2ObjectTypeUtils::toDataType(relation.ref.objType);
         const bool relatedObjectDbReferenceValid = relation.ref.entityRef.dbiRef.isValid();
         if (U2Type::Unknown == refType || (relatedObjectDbReferenceValid && !(relation.ref.entityRef.dbiRef == entityRef.dbiRef))) {
             continue;

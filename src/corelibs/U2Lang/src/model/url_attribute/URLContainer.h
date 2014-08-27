@@ -36,7 +36,7 @@ class URLContainerVisitor;
 
 class U2LANG_EXPORT URLContainer {
 public:
-    URLContainer(const QString &url);
+    URLContainer(const QString &url, bool convertUrlToAbsolute = true);
     virtual ~URLContainer();
 
     const QString & getUrl() const;
@@ -67,14 +67,24 @@ public:
     virtual URLContainer * clone();
     virtual void accept(URLContainerVisitor *visitor);
 
+    virtual bool validateUrl(ProblemList &problemList);
+};
+
+class U2LANG_EXPORT DbObjUrlContainer : public URLContainer {
+public:
+    DbObjUrlContainer(const QString &url);
+
+    virtual FilesIterator * getFileUrls();
+    virtual URLContainer * clone();
+    virtual void accept(URLContainerVisitor *visitor);
 
     virtual bool validateUrl(ProblemList &problemList);
 };
 
 class U2LANG_EXPORT DirUrlContainer : public URLContainer {
 public:
-    DirUrlContainer(const QString &url);
-    DirUrlContainer(const QString &url, const QString &incFilter, const QString &excFilter, bool recursive);
+    DirUrlContainer(const QString &url, bool convertUrlToAbsolute = true);
+    DirUrlContainer(const QString &url, const QString &incFilter, const QString &excFilter, bool recursive, bool convertUrlToAbsolute = true);
     virtual ~DirUrlContainer();
 
     virtual FilesIterator * getFileUrls();
@@ -101,11 +111,25 @@ private:
     bool recursive;
 };
 
+class U2LANG_EXPORT DbFolderUrlContainer : public DirUrlContainer {
+public:
+    DbFolderUrlContainer(const QString &url);
+    DbFolderUrlContainer(const QString &url, const QString &incFilter, const QString &excFilter, bool recursive);
+
+    virtual FilesIterator * getFileUrls();
+    virtual URLContainer * clone();
+    virtual void accept(URLContainerVisitor *visitor);
+
+    virtual bool validateUrl(ProblemList &problemList);
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 class U2LANG_EXPORT URLContainerVisitor {
 public:
     virtual void visit(FileUrlContainer *) = 0;
     virtual void visit(DirUrlContainer *) = 0;
+    virtual void visit(DbObjUrlContainer *) = 0;
+    virtual void visit(DbFolderUrlContainer *) = 0;
 };
 
 } // U2

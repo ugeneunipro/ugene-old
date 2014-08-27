@@ -19,27 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/GObjectTypes.h>
+#ifndef _U2_OBJECT_TYPE_UTILS_H_
+#define _U2_OBJECT_TYPE_UTILS_H_
 
-#include "U2ObjectRelationsDbi.h"
+#include <U2Core/U2IdTypes.h>
+#include <U2Core/U2Type.h>
 
 namespace U2 {
 
-U2ObjectRelation::U2ObjectRelation( )
-    : referencedType( GObjectTypes::UNKNOWN ), relationRole( ObjectRole_Sequence )
-{
-
-}
-
-bool U2ObjectRelation::operator ==( const U2ObjectRelation &other ) const {
-    return referencedObject == other.referencedObject && referencedName == other.referencedName
-        && referencedType == other.referencedType && relationRole == other.relationRole;
-}
-
-U2ObjectRelationsDbi::U2ObjectRelationsDbi( U2Dbi *rootDbi )
-    : U2ChildDbi( rootDbi )
-{
-
-}
+class U2CORE_EXPORT U2ObjectTypeUtils {
+public :
+    static U2DataType                   toDataType( const GObjectType &gType );
+    static GObjectType                  toGObjectType( const U2DataType &dbType );
+};
 
 } // namespace U2
+
+#endif // _U2_OBJECT_TYPE_UTILS_H_
