@@ -43,7 +43,6 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/SelectionModel.h>
 #include <U2Core/Task.h>
-#include <U2Core/TaskSignalMapper.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
