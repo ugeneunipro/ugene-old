@@ -77,7 +77,7 @@ QString SharedDbUrlUtils::createDbFolderUrl(const Folder &folder) {
 }
 
 bool SharedDbUrlUtils::isDbFolderUrl(const QString &url) {
-    CHECK(GUrl(url).getType() == GUrlType::GUrl_Network, false);
+    CHECK(GUrl(url).getType() == GUrl_Network, false);
 
     const int dbProviderSepPos = url.indexOf(DB_PROVIDER_SEP);
     if (dbProviderSepPos < 1) {
@@ -108,7 +108,7 @@ QString SharedDbUrlUtils::createDbObjectUrl(const GObject *obj) {
 }
 
 bool SharedDbUrlUtils::isDbObjectUrl(const QString &url) {
-    CHECK(GUrl(url).getType() == GUrlType::GUrl_Network, false);
+    CHECK(GUrl(url).getType() == GUrl_Network, false);
 
     const int dbProviderSepPos = url.indexOf(DB_PROVIDER_SEP);
     CHECK(dbProviderSepPos >= 1, false);
