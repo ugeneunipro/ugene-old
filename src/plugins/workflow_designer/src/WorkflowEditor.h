@@ -30,6 +30,8 @@
 
 #include <QtGui/QShortcutEvent>
 
+class QSortFilterProxyModel;
+
 namespace U2 {
 using namespace Workflow;
 class ActorCfgModel;
@@ -89,6 +91,7 @@ private:
     Actor* actor;
     friend class SuperDelegate;
     ActorCfgModel* actorModel;
+    QSortFilterProxyModel *proxyModel;
     QList<QWidget *> inputPortWidget;
     QList<QWidget *> outputPortWidget;
     int paramHeight, inputHeight, outputHeight;

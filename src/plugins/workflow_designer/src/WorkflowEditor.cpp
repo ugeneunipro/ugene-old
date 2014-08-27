@@ -82,7 +82,7 @@ customWidget(NULL), subject(NULL), actor(NULL)
     //doc->setMaximumHeight(height()/4);
 
     actorModel = new ActorCfgModel(this, owner);
-    ActorCfgFilterProxyModel *proxyModel = new ActorCfgFilterProxyModel(this);
+    proxyModel = new ActorCfgFilterProxyModel(this);
     proxyModel->setSourceModel(actorModel);
     table->setModel(proxyModel);
     
@@ -551,7 +551,7 @@ bool WorkflowEditor::eventFilter(QObject* object, QEvent* event) {
 void WorkflowEditor::sl_linkActivated(const QString& url) {
     const QString& id = WorkflowUtils::getParamIdFromHref(url);
     
-    QModelIndex modelIndex = actorModel->modelIndexById(id);
+    QModelIndex modelIndex = proxyModel->mapFromSource(actorModel->modelIndexById(id));
     QModelIndex prev = table->selectionModel()->currentIndex();
     if (modelIndex==prev) {
         table->selectionModel()->reset();
