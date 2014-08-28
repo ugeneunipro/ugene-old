@@ -76,6 +76,7 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
     hint->setWordWrap(true);
 
     useDots = new QCheckBox(tr("Use dots"));
+    useDots->setObjectName("useDots");
 
     exportHighlightning = new QToolButton();
     exportHighlightning->setText(tr("Export"));

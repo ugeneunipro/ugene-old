@@ -48,6 +48,7 @@
 #include "GTUtilsLog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsOptionsPanel.h"
 #include "GTUtilsPhyTree.h"
 #include "GTUtilsProject.h"
@@ -5153,6 +5154,51 @@ GUI_TEST_CLASS_DEFINITION(test_3287) {
 
     QImage image(params.fileName);
     CHECK_SET_ERR(70 == image.height(), "Wrong image height");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3318) {
+    // 1. Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    CHECK_OP(os, );
+
+    // 2. Open COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    CHECK_OP(os, );
+
+    // 3. Drag the sequence to the alignment
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from current project"));
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "human_T1.fa", "human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+    GTGlobals::sleep();
+
+    // 4. Make the sequence reference
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(-5, 18));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "set_seq_as_reference"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // 5. Change the highlighting mode to "Disagreements"
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+    QComboBox *highlightingSchemeCombo = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "highlightingScheme"));
+    GTComboBox::setIndexWithText(os, highlightingSchemeCombo, "Disagreements");
+
+    // 6. Use the dots
+    QCheckBox *useDotsCheckBox = qobject_cast<QCheckBox *>(GTWidget::findWidget(os, "useDots"));
+    GTCheckBox::setChecked(os, useDotsCheckBox);
+
+    // 7. Drag the reference sequence in the list of sequences
+    const QPoint mouseDragPosition(-5, 18);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, mouseDragPosition);
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(1000);
+    GTMouseDriver::press(os);
+    GTGlobals::sleep(200);
+    GTUtilsMSAEditorSequenceArea::moveTo(os, mouseDragPosition + QPoint(0, -10));
+    GTMouseDriver::release(os);
+    GTGlobals::sleep(200);
+
+    // Expected result: the highlighting mode is the same, human_T1 is still the reference.
+    CHECK_SET_ERR(highlightingSchemeCombo->currentText() == "Disagreements", "Invalid highlighting scheme");
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::isSequenceHightighted(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)"), "Unexpected reference sequence");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3346) {
