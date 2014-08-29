@@ -371,7 +371,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006){
     checkValues(os, 100);
 //3. Select "Levitsky" consensus mode
     GTComboBox::setIndexWithText(os, consensusType, "Levitsky");
-    GTSpinBox::setValue(os, thresholdSpinBox, 10, GTGlobals::UseKeyBoard);
+    GTSpinBox::setValue(os, thresholdSpinBox, 70, GTGlobals::UseKeyBoard);
     GTWidget::click(os, thresholdResetButton);
     checkValues(os, 90);
 //3. Select "Strict" consensus mode

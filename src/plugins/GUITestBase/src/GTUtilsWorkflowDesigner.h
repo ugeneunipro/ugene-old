@@ -65,6 +65,8 @@ public:
     //returns center of worker on workflow scene in global coordinates
     static QPoint getItemCenter(U2OpStatus &os,QString itemName);
 
+    static void click(U2OpStatus &os, QString itemName);
+
     //returs worker placed on workflow scene which contains item name
     static WorkflowProcessItem* getWorker(U2OpStatus &os, QString itemName,const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
 
@@ -87,6 +89,7 @@ public:
 
     //sets oneparameter worker parameter
     static void setParameter(U2OpStatus& os, QString parameter, QVariant value, valueType type);
+    static QStringList getAllParameters(U2OpStatus& os);
 
     //gets oneparameter worker parameter
     static QString getParameter(U2OpStatus& os, QString parameter);

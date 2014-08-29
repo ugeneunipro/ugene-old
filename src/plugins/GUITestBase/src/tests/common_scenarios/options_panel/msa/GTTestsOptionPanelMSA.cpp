@@ -327,10 +327,12 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0003){
     GTComboBox::setIndexWithText(os, colorScheme, "Scheme");
 //    5. Delete scheme which is selected
     GTUtilsMSAEditorSequenceArea::deleteColorScheme(os, "Scheme");
+    GTGlobals::sleep(500);
 
 //    UGENE not crashess
 //    no color sheme is selected
-    CHECK_SET_ERR(colorScheme->currentText() == "No color", "wrong color scheme selected");
+    QString s = colorScheme->currentText();
+    CHECK_SET_ERR(colorScheme->currentText() == "No colors", "wrong color scheme selected");
     QString a = GTUtilsMSAEditorSequenceArea::getColor(os, QPoint(0,0));
     QString t = GTUtilsMSAEditorSequenceArea::getColor(os, QPoint(0,2));
     QString g = GTUtilsMSAEditorSequenceArea::getColor(os, QPoint(2,0));

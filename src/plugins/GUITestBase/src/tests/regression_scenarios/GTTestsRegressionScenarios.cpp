@@ -5348,6 +5348,45 @@ GUI_TEST_CLASS_DEFINITION(test_3379) {
     GTWidget::click(os, circularView, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3384){
+    GTLogTracer l;
+//    Open sequence data/samples/Genbank/murine.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+//    Open CV
+    GTWidget::click(os, GTWidget::findWidget(os, "CircularViewAction"));
+//    Insert at least one symbol to the sequence
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_EDIT"
+                                                      << "action_edit_insert_sub_sequences"));
+    GTUtilsDialog::waitForDialog(os, new InsertSequenceFiller(os, "A"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+
+//    Select an area on CV that contains zero position
+    QWidget* cv = GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_0");
+    GTWidget::click(os, cv);
+    GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(20, -20));
+    GTMouseDriver::press(os);
+    GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(0,40));
+    GTMouseDriver::release(os);
+//    Current state: SAFE_POINT triggers and selection is "beautiful" (see the attachment)
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3396){
+//Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//Add macs worker
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "macs");
+//set paremeter wiggle output to false
+    GTUtilsWorkflowDesigner::click(os, "macs");
+    GTUtilsWorkflowDesigner::setParameter(os, "Wiggle output", 0, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::click(os, "macs");
+    GTGlobals::sleep(500);
+//Expected state: parrameter wiggle space is hidden
+    QStringList parameters = GTUtilsWorkflowDesigner::getAllParameters(os);
+    CHECK_SET_ERR(!parameters.contains("Wiggle space"), "Wiggle space parameter is shown");
+
+}
+
 
 } // GUITest_regression_scenarios namespace
 

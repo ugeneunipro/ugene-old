@@ -263,6 +263,11 @@ int GTUtilsWorkflowDesigner::getItemBottom(U2OpStatus &os, QString itemName){
     return i;
 }
 
+void GTUtilsWorkflowDesigner::click(U2OpStatus &os, QString itemName){
+    GTMouseDriver::moveTo(os, getItemCenter(os, itemName));
+    GTMouseDriver::click(os);
+}
+
 #define GT_METHOD_NAME "getWorker"
 WorkflowProcessItem* GTUtilsWorkflowDesigner::getWorker(U2OpStatus &os,QString itemName,const GTGlobals::FindOptions &options){
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
@@ -464,6 +469,23 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
     }
     }
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getAllParameters"
+QStringList GTUtilsWorkflowDesigner::getAllParameters(U2OpStatus &os){
+    QStringList result;
+    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
+    GT_CHECK_RESULT(table,"tableView not found", result);
+
+    QAbstractItemModel* model = table->model();
+    int iMax = model->rowCount();
+    int row = -1;
+    for(int i = 0; i<iMax; i++){
+        QString s = model->data(model->index(i,0)).toString();
+            result<<s;
+    }
+    return result;
 }
 #undef GT_METHOD_NAME
 
