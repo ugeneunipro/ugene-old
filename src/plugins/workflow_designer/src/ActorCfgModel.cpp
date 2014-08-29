@@ -137,7 +137,6 @@ void ActorCfgModel::setupAttributesScripts() {
 }
 
 void ActorCfgModel::update() {
-//    reset();
     beginResetModel();
     endResetModel();
 }
@@ -381,6 +380,7 @@ QMap<Attribute *, bool> ActorCfgModel::getAttributeRelatedVisibility(Attribute *
 void ActorCfgModel::checkIfAttributeVisibilityChanged(const QMap<Attribute *, bool> &attributeVisibility) {
     foreach (Attribute *a, attributeVisibility.keys()) {
         if (attributeVisibility[a] != isVisible(a)) {
+            a->setVisible(isVisible(a));
             const QModelIndex affectedIndex = modelIndexById(a->getId());
             emit dataChanged(affectedIndex, affectedIndex);
         }

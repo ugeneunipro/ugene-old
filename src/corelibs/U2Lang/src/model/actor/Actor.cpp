@@ -234,6 +234,12 @@ void Actor::remap(const QMap<ActorId, ActorId>& m) {
     }
 }
 
+void Actor::updateAttributesVisibility() const {
+    foreach (Attribute *attribute, getAttributes()) {
+        updateAttributeVisibility(attribute);
+    }
+}
+
 void Actor::update(const QMap<ActorId, ActorId> &actorsMapping) {
     foreach (Port *p, getPorts()) {
         p->updateBindings(actorsMapping);
@@ -312,6 +318,31 @@ void Actor::updateGrouperSlots(const QMap<ActorId, ActorId> &actorsMapping) {
 
     DataTypePtr newType(new MapDataType(dynamic_cast<Descriptor&>(*(outPort->getType())), outBusMap));
     outPort->setNewType(newType);
+}
+
+void Actor::updateAttributeVisibility(Attribute *attribute) const {
+    // This method can't correctly process chain of the related attributes
+    const QVector<const AttributeRelation*> &relations = attribute->getRelations();
+    foreach (const AttributeRelation *relation, relations) {
+        if (VISIBILITY == relation->getType()) {
+            Attribute *relatedAttribute = getAttributeById(relation->getRelatedAttrId());
+            SAFE_POINT(NULL != relatedAttribute, "Invalid related attribute", );
+            QVariant value = relatedAttribute->getAttributePureValue();
+            const bool isVisible = relation->getAffectResult(value, QVariant()).toBool();
+            if (isVisible != attribute->isVisible()) {
+                attribute->setVisible(isVisible);
+            }
+        }
+    }
+}
+
+Attribute *Actor::getAttributeById(const QString &attributeId) const {
+    foreach (Attribute *attribute, getAttributes()) {
+        if (attributeId == attribute->getId()) {
+            return attribute;
+        }
+    }
+    return NULL;
 }
 
 void Actor::replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings) {

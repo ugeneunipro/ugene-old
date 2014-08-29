@@ -34,7 +34,7 @@ using namespace WorkflowSerialize;
  *  Attribute
  *************************************/
 Attribute::Attribute(const Descriptor& d, const DataTypePtr t, bool req, const QVariant & defaultValue )
-: Descriptor(d), type(t), required(req), defaultValue(defaultValue) {
+    : Descriptor(d), type(t), required(req), isAttributeVisible(true), defaultValue(defaultValue) {
     value = defaultValue;
     debugCheckAttributeId();
 }
@@ -52,7 +52,7 @@ const DataTypePtr Attribute::getAttributeType()const {
 }
 
 bool Attribute::isRequiredAttribute() const {
-    return required;
+    return required && isAttributeVisible;
 }
 
 void Attribute::setAttributeValue(const QVariant & newVal) {
@@ -73,6 +73,14 @@ const QVariant &Attribute::getDefaultPureValue() const {
 
 bool Attribute::isDefaultValue() const {
     return (value == defaultValue);
+}
+
+bool Attribute::isVisible() const {
+    return isAttributeVisible;
+}
+
+void Attribute::setVisible(bool visible) {
+    isAttributeVisible = visible;
 }
 
 const AttributeScript & Attribute::getAttributeScript() const {
@@ -153,6 +161,7 @@ bool Attribute::validate(ProblemList &problemList) {
     if(!isRequiredAttribute()) {
         return true;
     }
+
     if( (isEmpty() || isEmptyString()) && getAttributeScript().isEmpty()) {
         problemList.append(Problem(U2::WorkflowUtils::tr("Required parameter is not set: %1").arg(getDisplayName())));
         return false;

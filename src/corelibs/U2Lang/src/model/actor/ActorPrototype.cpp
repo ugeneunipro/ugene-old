@@ -118,6 +118,9 @@ Actor* ActorPrototype::createInstance(const ActorId &actorId, AttributeScript *s
             proc->setEditor(ed->clone());
         }
     }
+
+    proc->updateAttributesVisibility();
+
     return proc;
 }
 

@@ -31,7 +31,7 @@ ActorCfgFilterProxyModel::ActorCfgFilterProxyModel(QObject *p)
     setDynamicSortFilter(true);
 }
 
-bool ActorCfgFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const {
+bool ActorCfgFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex & /*sourceParent*/) const {
     ActorCfgModel *srcModel = dynamic_cast<ActorCfgModel *>(sourceModel());
     SAFE_POINT(NULL != srcModel, "Invalid actor configuration model", true);
 

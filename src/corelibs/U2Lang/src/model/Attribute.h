@@ -99,6 +99,8 @@ public:
     virtual const QVariant &getDefaultPureValue() const;
     virtual bool isDefaultValue() const;
 
+    bool isVisible() const;
+    void setVisible(bool visible);
     
     // base realization without scripting. to support scripting for other types: see template realizations
     template<typename T> T getAttributeValue(Workflow::WorkflowContext *) const {
@@ -146,6 +148,8 @@ protected:
     // values of required attributes cannot be empty
     // used in configuration validations
     const bool          required;
+    // invisible attributes can not be required and shouldn't be validated
+    bool                isAttributeVisible;
     // pure value and default pure value. if script exists, value should be processed throw it
     QVariant            value;
     QVariant            defaultValue;
