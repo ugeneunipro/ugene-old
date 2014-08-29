@@ -369,6 +369,11 @@ void U2SequenceImporter::addSequenceBlock(const U2EntityRef& sequenceRef, const 
 
 void U2SequenceImporter::addDefaultSymbolsBlock(int n, U2OpStatus& os) {
     SAFE_POINT(n >= 0, QString("Invalid number of symbols: %1").arg(n), );
+    const DNAAlphabet *al = AppContext::getDNAAlphabetRegistry()->findById(sequence.alphabet.id);
+    if (NULL == al) {
+        os.setError(QObject::tr("Unable to detect sequence alphabet. Probably, this is because some of merged sequences are empty."));
+        return;
+    }
     char defaultChar = U2AlphabetUtils::getDefaultSymbol(sequence.alphabet);
     QByteArray a(n, defaultChar);
     _addBlock2Buffer(a.data(), a.size(), os);
