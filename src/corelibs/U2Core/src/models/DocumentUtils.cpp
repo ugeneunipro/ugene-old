@@ -206,11 +206,6 @@ bool DocumentUtils::canRemoveGObjectFromDocument(GObject *obj)
         return false;
     }
 
-    if (doc->getObjects().size() < 2 && !doc->isDatabaseConnection()) {
-        // cannot remove the only object in the document
-        return false;
-    }
-
     DocumentFormat* df = doc->getDocumentFormat();
     if (!df->isObjectOpSupported(doc, DocumentFormat::DocObjectOp_Remove, obj->getGObjectType())) {
         return false;

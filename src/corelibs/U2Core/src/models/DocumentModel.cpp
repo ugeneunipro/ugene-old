@@ -307,8 +307,7 @@ void Document::_addObject(GObject* obj) {
 }
 
 bool Document::removeObject(GObject* obj, DocumentObjectRemovalMode removalMode) {
-    assert(df->isObjectOpSupported(this, DocumentFormat::DocObjectOp_Remove, obj->getGObjectType()));
-    assert(!obj->isTreeItemModified());
+    SAFE_POINT(df->isObjectOpSupported(this, DocumentFormat::DocObjectOp_Remove, obj->getGObjectType()), "Unsupported format operation", false);
 
     switch (removalMode) {
     case DocumentObjectRemovalMode_Deallocate:
