@@ -19,16 +19,19 @@
  * MA 02110-1301, USA.
  */
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QHeaderView>
+#include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QTreeWidget>
+#endif
+
 #include "GTTreeWidget.h"
 #include "GTUtilsProjectTreeView.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTMouseDriver.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTreeWidget>
-#include <QtGui/QHeaderView>
-#else
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QHeaderView>
-#endif
+#include "api/GTWidget.h"
 
 namespace U2 {
 
@@ -36,7 +39,6 @@ namespace U2 {
 
 #define GT_METHOD_NAME "expand"
 void GTTreeWidget::expand(U2OpStatus &os, QTreeWidgetItem* item) {
-
     if (item == NULL) {
         return;
     }
@@ -45,6 +47,8 @@ void GTTreeWidget::expand(U2OpStatus &os, QTreeWidgetItem* item) {
 
     QTreeWidget *treeWidget = item->treeWidget();
     GT_CHECK(item->isHidden() == false, "parent item is hidden");
+
+    treeWidget->scrollToItem(item);
 
     QRect itemRect = treeWidget->visualItemRect(item);
     if (!item->isExpanded()) {
@@ -60,9 +64,22 @@ void GTTreeWidget::expand(U2OpStatus &os, QTreeWidgetItem* item) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "checkItem"
+void GTTreeWidget::checkItem(U2OpStatus &os, QTreeWidgetItem *item, int column) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(NULL != item, "treeWidgetItem is NULL", );
+    GT_CHECK_RESULT(0 <= column, "The column number is invalid", );
+
+    QTreeWidget *tree = item->treeWidget();
+    GT_CHECK_RESULT(NULL != tree, "The tree widget is NULL", );
+
+    getItemRect(os, item);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getItemRect"
 QRect GTTreeWidget::getItemRect(U2OpStatus &os, QTreeWidgetItem* item) {
-
     GT_CHECK_RESULT(item != NULL, "treeWidgetItem is NULL", QRect());
 
     QTreeWidget *treeWidget = item->treeWidget();

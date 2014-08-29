@@ -40,6 +40,9 @@ public:
     // fails if item is NULL, item is hidden or item wasn't expanded
     static void expand(U2OpStatus &os, QTreeWidgetItem* item);
 
+    // Checks the tree item or unchecks it if it is already checked
+    static void checkItem(U2OpStatus &os, QTreeWidgetItem *item, int column = 0);
+
     // gets all items under root recursively and returns a list of them
     static QList<QTreeWidgetItem*> getItems(QTreeWidgetItem* root);
 

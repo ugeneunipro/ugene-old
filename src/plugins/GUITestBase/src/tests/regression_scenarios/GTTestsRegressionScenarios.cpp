@@ -84,6 +84,7 @@
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
+#include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/BlastAllSupportDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
@@ -5199,6 +5200,48 @@ GUI_TEST_CLASS_DEFINITION(test_3318) {
     // Expected result: the highlighting mode is the same, human_T1 is still the reference.
     CHECK_SET_ERR(highlightingSchemeCombo->currentText() == "Disagreements", "Invalid highlighting scheme");
     CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::isSequenceHightighted(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)"), "Unexpected reference sequence");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3328) {
+    class TestBody_3328 : public QRunnable {
+    public:
+        TestBody_3328(U2OpStatus &os, QEventLoop *waiter) :
+            QRunnable(),
+            os(os),
+            waiter(waiter) {}
+        ~TestBody_3328() {
+            waiter->exit();
+        }
+
+        void run() {
+        //    1. Open "test/_common_data/fasta/human_T1_cutted.fa".
+            GTFileDialog::openFile(os, GUITest::testDir + "/_common_data/fasta/", "human_T1_cutted.fa");
+
+        //    2. Click the "Find restriction sites" button on the main toolbar.
+        //    3. Select a single enzyme: "AbaBGI". Start the search.
+            GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, QStringList() << "AbaBGI"));
+
+            GTWidget::click(os, GTToolbar::getWidgetForActionTooltip(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Find restriction sites..."));
+            GTGlobals::sleep(2000);
+
+        //    4. Close the sequence view until task has finished.
+            GTUtilsMdi::click(os, GTGlobals::Close);
+
+        //    Expected state: the task is canceled.
+            CHECK_SET_ERR(0 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "There are unfinished tasks");
+        }
+
+    private:
+        U2OpStatus &os;
+        QEventLoop *waiter;
+    };
+
+    QThreadPool threadPool(this);
+    QEventLoop waiter(this);
+
+    TestBody_3328 *testBody = new TestBody_3328(os, &waiter);
+    threadPool.start(testBody);
+    waiter.exec();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3346) {

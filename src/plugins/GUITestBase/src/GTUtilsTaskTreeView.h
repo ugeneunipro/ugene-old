@@ -43,12 +43,13 @@ public:
     static void moveToOpenedView(U2OpStatus& os, const QString &itemName);
     static QPoint getTreeViewItemPosition(U2OpStatus &os, const QString &itemName);
     static void moveTo(U2OpStatus &os,const QString &itemName);
+    static int getTopLevelTasksCount(U2OpStatus &os);
 
     static const QString widgetName;
 
 private:
     static QTreeWidgetItem* getTreeWidgetItem(QTreeWidget* tree, const QString &itemName);
-    static QList<QTreeWidgetItem*> getTaskTreeViewItems(QTreeWidgetItem* root);
+    static QList<QTreeWidgetItem*> getTaskTreeViewItems(QTreeWidgetItem* root, bool recursively = true);
     static QString getTasksInfo(QList<U2::Task *> tasks, int level);
 
 };

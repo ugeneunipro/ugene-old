@@ -125,13 +125,15 @@ QTreeWidget* GTUtilsTaskTreeView::getTreeWidget(U2OpStatus &os) {
     return treeWidget;
 }
 
-QList<QTreeWidgetItem*> GTUtilsTaskTreeView::getTaskTreeViewItems(QTreeWidgetItem* root) {
+QList<QTreeWidgetItem*> GTUtilsTaskTreeView::getTaskTreeViewItems(QTreeWidgetItem* root, bool recursively) {
 
     QList<QTreeWidgetItem*> treeItems;
 
     for (int i=0; i<root->childCount(); i++) {
         treeItems.append(root->child(i));
-        treeItems.append(getTaskTreeViewItems(root->child(i)));
+        if (recursively) {
+            treeItems.append(getTaskTreeViewItems(root->child(i)));
+        }
     }
 
     return treeItems;
@@ -153,6 +155,17 @@ void GTUtilsTaskTreeView::moveTo(U2OpStatus &os,const QString &itemName) {
     openView(os);
     moveToOpenedView(os, itemName);
 }
+
+#define GT_METHOD_NAME "getTopLevelTasksCount"
+int GTUtilsTaskTreeView::getTopLevelTasksCount(U2OpStatus &os) {
+    openView(os);
+
+    QTreeWidget *treeWidget = getTreeWidget(os);
+    GT_CHECK_RESULT(treeWidget != NULL, "Tree widget not found", NULL);
+
+    return getTaskTreeViewItems(treeWidget->invisibleRootItem(), false).size();
+}
+#undef GT_METHOD_NAME
 
 void GTUtilsTaskTreeView::moveToOpenedView( U2OpStatus& os, const QString &itemName ){
     QPoint p = getTreeViewItemPosition(os, itemName);
