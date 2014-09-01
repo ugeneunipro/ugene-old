@@ -25,7 +25,7 @@
      <item row="0" column="0" colspan="2">
       <widget class="QLabel" name="announcementLabel">
        <property name="text">
-        <string>Break execution when it reaches this element in the scheme</string>
+        <string>Break execution when it reaches this element in the workflow</string>
        </property>
       </widget>
      </item>

@@ -1627,7 +1627,7 @@ QString HRSchemaSerializer::elementsDefinition(const QList<Actor*> & procs, cons
     QString res;
     foreach( Actor * actor, procs) {
         QString idStr = nmap[actor->getId()];
-        SAFE_POINT(!idStr.contains(QRegExp("\\s")), tr("Error: element name in the scheme file contains spaces"), QString());
+        SAFE_POINT(!idStr.contains(QRegExp("\\s")), tr("Error: element name in the workflow file contains spaces"), QString());
         res += makeBlock(idStr, Constants::NO_NAME, elementsDefinitionBlock(actor, copyMode));
     }
     return res + Constants::NEW_LINE;

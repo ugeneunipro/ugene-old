@@ -32,7 +32,7 @@ QString DesignerUtils::getSchemaFileFilter(bool any, bool addOldExt) {
     if(addOldExt) {
         exts << WorkflowUtils::WD_XML_FORMAT_EXTENSION;
     }
-    return DialogUtils::prepareFileFilter(WorkflowUtils::tr("UGENE workflow schemes"), exts, any);
+    return DialogUtils::prepareFileFilter(WorkflowUtils::tr("UGENE workflow documents"), exts, any);
 }
 
 } //ns

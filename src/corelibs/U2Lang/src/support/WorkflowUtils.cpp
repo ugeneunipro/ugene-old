@@ -285,7 +285,7 @@ bool WorkflowUtils::validate(const Schema &schema, ProblemList &problemList) {
     }
     if ( !hasSchemeCycles( schema ) ) {
         good = false;
-        problemList << Problem(QObject::tr( "The scheme contains a cycle" ));
+        problemList << Problem(QObject::tr( "The workflow contains a cycle" ));
     }
 
     good &= validateParameters(schema, problemList);
