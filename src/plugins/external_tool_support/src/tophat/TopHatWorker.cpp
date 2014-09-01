@@ -32,6 +32,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/Version.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -804,25 +805,25 @@ bool BowtieToolsValidator::validateBowtie(const Actor *actor, ProblemList &probl
             ExternalTool *topHatTool = AppContext::getExternalToolRegistry()->getByName( ET_TOPHAT );
             SAFE_POINT( NULL != topHatTool, "NULL tophat tool", false );
 
-            const QString &bowtieVersion = bowTieTool->getVersion( );
-            const QString &topHatVersion = topHatTool->getVersion( );
+            Version bowtieVersion = Version::parseVersion(bowTieTool->getVersion( ));
+            Version topHatVersion = Version::parseVersion(topHatTool->getVersion( ));
 
-            if ( topHatVersion.isEmpty( ) || bowtieVersion.isEmpty( ) ) {
-                const QString toolName = topHatVersion.isEmpty( ) ? "TopHat" : "Bowtie";
+            if ( topHatVersion.text.isEmpty( ) || bowtieVersion.text.isEmpty( ) ) {
+                const QString toolName = topHatVersion.text.isEmpty( ) ? "TopHat" : "Bowtie";
                 const QString message = QObject::tr( "%1 tool's version is undefined, "
                     "this may cause some compatibility issues" ).arg( toolName );
 
                 Problem warning( message, actor->getLabel( ), Problem::U2_WARNING );
                 problemList << warning;
                 return true;
-            } else if ( !( "0.12.9" > bowtieVersion && "2.0.8" >= topHatVersion )
-                 && !( "0.12.9" <= bowtieVersion && "2.0.8b" <= topHatVersion ) )
+            } else if ( !( Version::parseVersion("0.12.9") > bowtieVersion && Version::parseVersion("2.0.8") >= topHatVersion )
+                 && !( Version::parseVersion("0.12.9") <= bowtieVersion && Version::parseVersion("2.0.8b") <= topHatVersion ) )
             {
-                const QString message = QObject::tr( "Bowtie and TopHat tools have incompatible"
+                const QString message = QObject::tr( "Bowtie and TopHat tools have incompatible "
                     "versions. Your TopHat's version is %1, Bowtie's one is %2. The following are "
                     "considered to be compatible: Bowtie < \"0.12.9\" and TopHat <= \"2.0.8\" or "
-                    "Bowtie >= \"0.12.9\" and TopHat >= \"2.0.8.b\"" ).arg( topHatVersion,
-                     bowtieVersion );
+                    "Bowtie >= \"0.12.9\" and TopHat >= \"2.0.8.b\"" ).arg( topHatVersion.text,
+                     bowtieVersion.text);
 
                 Problem error( message, actor->getLabel( ) );
                 problemList << error;
