@@ -72,6 +72,7 @@ private slots:
 
 private:
     void updateCombo();
+    void connectDocument(Document *document);
     void addObject(GObject*);
     void removeObject(const GObjectReference& ref);
     void addDocumentObjects(Document* d);

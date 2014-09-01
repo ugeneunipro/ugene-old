@@ -37,12 +37,13 @@ GObjectComboBoxController::GObjectComboBoxController(QObject* p, const GObjectCo
 {
     connect(AppContext::getProject(), SIGNAL(si_documentAdded(Document*)), SLOT(sl_onDocumentAdded(Document*)));
     connect(AppContext::getProject(), SIGNAL(si_documentRemoved(Document*)), SLOT(sl_onDocumentRemoved(Document*)));
-    foreach(Document* d, AppContext::getProject()->getDocuments()) {
-        sl_onDocumentAdded(d);
-    }
     objectIcon = QIcon(":core/images/gobject.png");
     unloadedObjectIcon = objectIcon.pixmap(QSize(16, 16), QIcon::Disabled);
     combo->setInsertPolicy(QComboBox::InsertAlphabetically);
+
+    foreach(Document* d, AppContext::getProject()->getDocuments()) {
+        connectDocument(d);
+    }
     updateCombo();
 }
 
@@ -69,13 +70,27 @@ void GObjectComboBoxController::updateCombo() {
     }
 }
 
+void GObjectComboBoxController::connectDocument(Document *document) {
+    if (document->isDatabaseConnection()) {
+        return;
+    }
+    connect(document, SIGNAL(si_objectAdded(GObject*)), SLOT(sl_onObjectAdded(GObject*)));
+    connect(document, SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_onObjectRemoved(GObject*)));
+}
+
 void GObjectComboBoxController::addDocumentObjects(Document* d) {
+    if (d->isDatabaseConnection()) {
+        return;
+    }
     foreach(GObject* obj, d->getObjects()) {
         addObject(obj);
     }
 }
 
 void GObjectComboBoxController::removeDocumentObjects(Document* d) {
+    if (d->isDatabaseConnection()) {
+        return;
+    }
     foreach(GObject* obj, d->getObjects()) {
         removeObject(obj);
     }
@@ -163,8 +178,7 @@ GObject* GObjectComboBoxController::getSelectedObject() const {
 
 
 void GObjectComboBoxController::sl_onDocumentAdded(Document* d) {
-    connect(d, SIGNAL(si_objectAdded(GObject*)), SLOT(sl_onObjectAdded(GObject*)));
-    connect(d, SIGNAL(si_objectRemoved(GObject*)), SLOT(sl_onObjectRemoved(GObject*)));
+    connectDocument(d);
     if (d->isLoaded()) {
         addDocumentObjects(d);
     }
