@@ -150,7 +150,9 @@ bool ReportSender::send(const QString &additionalInfo) {
 
     //send report
     QString data = "data=" + QUrl::toPercentEncoding(report);
-    reply = netManager->post(QNetworkRequest(reportsPath), data.toUtf8());
+    QNetworkRequest request(reportsPath);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/x-www-form-urlencoded"));
+    reply = netManager->post(request, data.toUtf8());
     loop.exec();
     if( reply->error() != QNetworkReply::NoError ) {
         return false;
