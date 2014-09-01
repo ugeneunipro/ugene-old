@@ -334,8 +334,7 @@ void DocumentUpdater::excludeDocumentsInTasks(const QList<Task*>& tasks, QList<D
         } else {
             LoadDocumentTask* loadTask = qobject_cast<LoadDocumentTask*>(task);
             if (loadTask) {
-                documents.removeAll(loadTask->getDocument(NULL == loadTask->getParentTask() ||
-                    loadTask->getParentTask()->thread() == QCoreApplication::instance()->thread()));
+                documents.removeAll(loadTask->getDocument(false));
             }
         }
     }
