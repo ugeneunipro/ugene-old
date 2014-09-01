@@ -98,7 +98,7 @@ QString MrBayesModelTypes::equalin("equalin");
 
 QStringList MrBayesModelTypes::getAAModelTypes(){
     static QStringList list;
-    if (U2_UNLIKELY(list.isEmpty())) {
+    if (Q_UNLIKELY(list.isEmpty())) {
         list << MrBayesModelTypes::poisson
              << MrBayesModelTypes::jones
              << MrBayesModelTypes::dayhoff
@@ -121,7 +121,7 @@ QString MrBayesModelTypes::GTR("GTR (Nst=6)");
 
 QStringList MrBayesModelTypes::getSubstitutionModelTypes() {
     static QStringList list;
-    if (U2_UNLIKELY(list.isEmpty())) {
+    if (Q_UNLIKELY(list.isEmpty())) {
         list << MrBayesModelTypes::JC69
              << MrBayesModelTypes::HKY85
              << MrBayesModelTypes::GTR;
@@ -137,7 +137,7 @@ QString MrBayesVariationTypes::invgamma("invgamma");
 
 QStringList MrBayesVariationTypes::getVariationTypes() {
     static QList<QString> list;
-    if (U2_UNLIKELY(list.isEmpty())) {
+    if (Q_UNLIKELY(list.isEmpty())) {
         list << MrBayesVariationTypes::equal
              << MrBayesVariationTypes::gamma
              << MrBayesVariationTypes::propinv

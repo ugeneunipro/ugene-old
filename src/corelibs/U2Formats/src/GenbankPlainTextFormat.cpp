@@ -121,7 +121,17 @@ static QList<StrPair> formatKeywords(QVariantMap& varMap, bool withLocus = false
             QVariant v = tags.take(key);
             DNAReferenceInfo ri = v.value<DNAReferenceInfo>();
             res<< qMakePair(key, ri.referencesRecord);
-            //res << qMakePair(key, v.toString());
+        }
+    }
+    {
+        const QString key = DNAInfo::COMMENT;
+        while (tags.contains(key)) {
+            const QVariant v = tags.take(key);
+            CHECK_EXT_BREAK(v.canConvert<QStringList>(), coreLog.info("Unexpected Genbank COMMENT section"));
+            const QStringList comments = v.value<QStringList>();
+            foreach (QString comment, comments) {
+                res << qMakePair(key, comment.replace("\n", "\n" + QString(VAL_OFF, ' ')));
+            }
         }
     }
 
@@ -148,9 +158,6 @@ static QList<StrPair> formatKeywords(QVariantMap& varMap, bool withLocus = false
     return res;
 
 }
-// static QList<StrPair> formatKeywords(U2SequenceObject* so) {
-//    return formatKeywords(so->getSequenceInfo());
-// }
 
 GenbankPlainTextFormat::GenbankPlainTextFormat(QObject* p)
 : EMBLGenbankAbstractDocument(BaseDocumentFormats::PLAIN_GENBANK, tr("Genbank"), 79, DocumentFormatFlags_SW, p)
@@ -294,7 +301,7 @@ bool GenbankPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqI
                 commentSection.append(st->value());
             }
             if (commentSection.size() > 0) {
-                st->entry->tags.insert(DNAInfo::COMMENT, commentSection);
+                st->entry->tags[DNAInfo::COMMENT] = st->entry->tags[DNAInfo::COMMENT].toStringList() << commentSection.join("\n");
             }
             hasLine = true;
             continue;
@@ -394,10 +401,12 @@ void GenbankPlainTextFormat::readHeaderAttributes(QVariantMap& tags, DbiConnecti
     }
 
     if (tags.keys().contains(DNAInfo::COMMENT)) {
-        QString comment = tags.value(DNAInfo::COMMENT).toStringList().join("\n");
-        U2StringAttribute commentAttr(so->getSequenceRef().entityId, DNAInfo::COMMENT, comment);
-        con.dbi->getAttributeDbi()->createStringAttribute(commentAttr, os);
-        CHECK_OP(os, );
+        const QStringList comments = tags.value(DNAInfo::COMMENT).toStringList();
+        foreach (const QString &comment, comments) {
+            U2StringAttribute commentAttr(so->getSequenceRef().entityId, DNAInfo::COMMENT, comment);
+            con.dbi->getAttributeDbi()->createStringAttribute(commentAttr, os);
+            CHECK_OP(os, );
+        }
     }
 
 

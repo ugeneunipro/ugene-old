@@ -174,7 +174,7 @@ namespace {
 void addFeatureKeyToAnnotation( const U2FeatureKey &key, AnnotationData &aData, U2OpStatus &op ) {
     CHECK(key.isValid(), );
 
-    if ( U2_UNLIKELY( U2FeatureKeyOperation == key.name ) ) {
+    if ( Q_UNLIKELY( U2FeatureKeyOperation == key.name ) ) {
         if ( U2FeatureKeyOperationJoin == key.value ) {
             aData.setLocationOperator( U2LocationOperator_Join );
         } else if ( U2FeatureKeyOperationOrder == key.value ) {
@@ -182,7 +182,7 @@ void addFeatureKeyToAnnotation( const U2FeatureKey &key, AnnotationData &aData, 
         } else {
             CHECK_EXT( false, op.setError( "Unexpected feature operator value!" ), );
         }
-    } else if ( U2_UNLIKELY( U2FeatureKeyCase == key.name ) ) {
+    } else if ( Q_UNLIKELY( U2FeatureKeyCase == key.name ) ) {
         aData.caseAnnotation = true;
     } else {
         aData.qualifiers << U2Qualifier( key.name, key.value );
@@ -225,12 +225,12 @@ AnnotationData U2FeatureUtils::getAnnotationDataFromFeature( const U2DataId &fea
     foreach ( const U2Feature &f, features ) {
         CHECK_EXT( U2Feature::Annotation == f.type,
             op.setError( "Invalid feature type detected!" ), result );
-        if ( U2_UNLIKELY( f.id == featureId ) ) {
+        if ( Q_UNLIKELY( f.id == featureId ) ) {
             CHECK_EXT( !annotatingFeature.hasValidId( ),
                 op.setError( "Invalid feature selection occurred!" ), result );
             annotatingFeature = f;
         }
-        if ( U2_LIKELY( U2Region( ) != f.location.region ) ) {
+        if ( Q_LIKELY( U2Region( ) != f.location.region ) ) {
             regions << f.location.region;
         }
     }

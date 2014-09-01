@@ -46,7 +46,7 @@ WorkflowDebugMessageParser::~WorkflowDebugMessageParser( ) {
 
 void WorkflowDebugMessageParser::setSourceData( const QQueue<Message> &initSource ) {
     sourceMessages.clear( );
-    if ( U2_UNLIKELY( possibleMessageTypes.isEmpty( ) ) ) {
+    if ( Q_UNLIKELY( possibleMessageTypes.isEmpty( ) ) ) {
         possibleMessageTypes << BaseSlots::DNA_SEQUENCE_SLOT( ).getId( );
         possibleMessageTypes << BaseSlots::MULTIPLE_ALIGNMENT_SLOT( ).getId( );
         possibleMessageTypes << BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( );

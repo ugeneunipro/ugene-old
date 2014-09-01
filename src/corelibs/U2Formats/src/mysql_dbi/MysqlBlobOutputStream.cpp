@@ -45,7 +45,7 @@ void MysqlBlobOutputStream::write(const char *buffer, int length, U2OpStatus &os
     Q_UNUSED(t);
 
     QByteArray blobData;
-    if (U2_LIKELY(wasUsed)) {
+    if (Q_LIKELY(wasUsed)) {
         U2SqlQuery getBlobQuery("SELECT " + columnId + " FROM " + tableId
             + " WHERE " + UdrSchema::RECORD_ID_FIELD_NAME + " = :" + UdrSchema::RECORD_ID_FIELD_NAME,
             db, os);

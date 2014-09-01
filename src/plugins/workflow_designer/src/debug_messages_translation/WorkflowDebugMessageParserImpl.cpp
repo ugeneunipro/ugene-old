@@ -55,7 +55,7 @@ namespace U2 {
 using namespace Workflow;
 
 void WorkflowDebugMessageParserImpl::initParsedInfo( ) {
-    if ( U2_LIKELY( !messageTypes.isEmpty( ) ) ) {
+    if ( Q_LIKELY( !messageTypes.isEmpty( ) ) ) {
         foreach ( const QString &typeName, messageTypes ) {
             parsedInfo[typeName] = QQueue<QString>( );
         }
@@ -83,13 +83,13 @@ WorkflowInvestigationData WorkflowDebugMessageParserImpl::getAllMessageValues( )
     if ( !sourceMessages.isEmpty( ) ) {
         foreach ( const QString &key, sourceMessages.head( ).keys( ) ) {
             const QString messageType = getMessageTypeFromIdentifier( key );
-            if ( U2_UNLIKELY( !possibleMessageTypes.contains( messageType ) ) ) {
+            if ( Q_UNLIKELY( !possibleMessageTypes.contains( messageType ) ) ) {
                 coreLog.info( QObject::tr( "Messages in requested queue include info of the '%1' "
                     "data type that is currently unsupported for view. "
                     "No intermediate data will be displayed" ).arg( messageType ) );
                 return parsedInfo;
             }
-            if( U2_UNLIKELY( !messageTypes.contains( key ) ) ) {
+            if( Q_UNLIKELY( !messageTypes.contains( key ) ) ) {
                 messageTypes << key;
             }
         }
@@ -136,7 +136,7 @@ void WorkflowDebugMessageParserImpl::convertMessagesToDocuments( const QString &
             ExportObjectUtils::exportAnnotations( annsObj->getAnnotations( ), baseFileUrl );
         } else {
             GObject *objectToWrite = fetchObjectFromMessage( messageType, mapData[convertedType] );
-            if( U2_LIKELY( NULL != objectToWrite ) ) {
+            if( Q_LIKELY( NULL != objectToWrite ) ) {
                 ExportObjectUtils::exportObject2Document( objectToWrite, baseFileUrl, false );
                 ++messageCounter;
             }

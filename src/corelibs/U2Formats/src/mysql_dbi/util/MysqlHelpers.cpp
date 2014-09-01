@@ -111,7 +111,7 @@ void U2SqlQuery::ensureDone() {
     CHECK(!hasError(), );
 
     bool done = !step();
-    if (U2_UNLIKELY(!done && !hasError())) {
+    if (Q_UNLIKELY(!done && !hasError())) {
         setError(U2DbiL10n::tooManyResults());
     }
 }
@@ -163,7 +163,7 @@ U2DataId U2SqlQuery::getDataIdExt(int column) const {
 
     U2DataType type = getInt32(column + 1);
     CHECK(!hasError(), emptyId);
-    if (U2_UNLIKELY(type == U2Type::Unknown)) {
+    if (Q_UNLIKELY(type == U2Type::Unknown)) {
         return emptyId;
     }
 
@@ -272,7 +272,7 @@ void U2SqlQuery::execute() {
     QMutexLocker locker(&db->mutex);
 
     query.exec();
-    if (U2_UNLIKELY(query.lastError().isValid())) {
+    if (Q_UNLIKELY(query.lastError().isValid())) {
         setError("Error: " + query.lastError().text() +
                  "; Query: '" + query.lastQuery() + "' "
                  + getBoundValues());

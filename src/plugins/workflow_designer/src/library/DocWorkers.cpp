@@ -45,9 +45,6 @@
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Formats/EMBLGenbankAbstractDocument.h>
-#include <U2Formats/GFFFormat.h>
-
 #include <U2Lang/BaseAttributes.h>
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseTypes.h>

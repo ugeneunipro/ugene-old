@@ -46,7 +46,7 @@ WorkflowDebugStatus::~WorkflowDebugStatus() {
 void WorkflowDebugStatus::setContext(WorkflowContext *initContext) {
     SAFE_POINT( NULL != initContext, "Invalid workflow context!", );
     context = initContext;
-    if ( U2_LIKELY( NULL != parser ) ) {
+    if ( Q_LIKELY( NULL != parser ) ) {
         parser->setContext( initContext );
     }
 }
