@@ -362,13 +362,38 @@ void Document::makeClean() {
     }
 }
 
-GObject* Document::findGObjectByName(const QString& name) const {
-    foreach(GObject* obj, objects) {
+GObject * Document::findGObjectByNameInDb(const QString &name) const {
+    U2OpStatusImpl os;
+    DbiConnection con(dbiRef, os);
+    SAFE_POINT_OP(os, NULL);
+
+    U2ObjectDbi *oDbi = con.dbi->getObjectDbi();
+    SAFE_POINT(NULL != oDbi, "Invalid database connection", NULL);
+
+    QScopedPointer<U2DbiIterator<U2DataId> > iter(oDbi->getObjectsByVisualName(name, U2Type::Unknown, os));
+    SAFE_POINT_OP(os, NULL);
+
+    while (iter->hasNext()) {
+        const U2DataId objId = iter->next();
+        GObject *obj = getObjectById(objId);
+        if (NULL != obj) {
+            return obj;
+        }
+    }
+    return NULL;
+}
+
+GObject * Document::findGObjectByNameInMem(const QString &name) const {
+    foreach(GObject *obj, objects) {
         if (obj->getGObjectName() == name) {
             return obj;
         }
     }
     return NULL;
+}
+
+GObject * Document::findGObjectByName(const QString &name) const {
+    return isLoaded() ? findGObjectByNameInDb(name) : findGObjectByNameInMem(name);
 }
 
 QList<GObject*> Document::findGObjectByType(GObjectType t, UnloadedObjectFilter f) const {

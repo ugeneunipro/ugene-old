@@ -99,23 +99,31 @@ QList<GObjectRelation> GObject::getObjectRelations() const {
     // fetch permanent object relations from DB
     // only for first time
     if (!arePermanentRelationsFetched && !isUnloaded()) {
-        Document *parentDoc = getDocument();
-        // take into account the case when the object was not added to document
-        CHECK(NULL != parentDoc && entityRef.dbiRef.isValid(), res);
+        fetchPermanentGObjectRelations(res);
+    }
 
-        U2OpStatusImpl os;
-        DbiConnection con(entityRef.dbiRef, os);
-        SAFE_POINT_OP(os, res);
+    return res;
+}
 
-        U2ObjectRelationsDbi *rDbi = con.dbi->getObjectRelationsDbi();
-        SAFE_POINT(rDbi != NULL, "Invalid object relations DBI detected!", QList<GObjectRelation>());
+void GObject::fetchPermanentGObjectRelations(QList<GObjectRelation> &res) const {
+    Document *parentDoc = getDocument();
+    // take into account the case when the object was not added to document
+    CHECK(NULL != parentDoc && entityRef.dbiRef.isValid(), );
 
-        const QList<U2ObjectRelation> rawDbRelations = rDbi->getObjectRelations(entityRef.entityId, os);
-        SAFE_POINT_OP(os, res);
+    U2OpStatusImpl os;
+    DbiConnection con(entityRef.dbiRef, os);
+    SAFE_POINT_OP(os, );
 
-        const QString docUrl = parentDoc->getURLString();
-        QList<GObjectRelation> dbRelations;
-        foreach (const U2ObjectRelation &relation, rawDbRelations) {
+    U2ObjectRelationsDbi *rDbi = con.dbi->getObjectRelationsDbi();
+    SAFE_POINT(rDbi != NULL, "Invalid object relations DBI detected!", );
+
+    const QList<U2ObjectRelation> rawDbRelations = rDbi->getObjectRelations(entityRef.entityId, os);
+    SAFE_POINT_OP(os, );
+
+    const QString docUrl = parentDoc->getURLString();
+    QList<GObjectRelation> dbRelations;
+    foreach (const U2ObjectRelation &relation, rawDbRelations) {
+        if (NULL != parentDoc->findGObjectByName(relation.referencedName)) {
             GObjectReference reference(docUrl, relation.referencedName, relation.referencedType);
             reference.entityRef = U2EntityRef(entityRef.dbiRef, relation.referencedObject);
             const GObjectRelation relationFromDb(reference, relation.relationRole);
@@ -125,22 +133,20 @@ QList<GObjectRelation> GObject::getObjectRelations() const {
                 res.append(relationFromDb);
             }
         }
-
-        QList<GObjectRelation> relationsMissedFromDb;
-        foreach (const GObjectRelation &relation, res) {
-            if (!dbRelations.contains(relation)) {
-                relationsMissedFromDb.append(relation);
-            }
-        }
-        if (!relationsMissedFromDb.isEmpty()) {
-            const_cast<GObject *>(this)->setRelationsInDb(relationsMissedFromDb);
-        }
-
-        hints->set(GObjectHint_RelatedObjects, QVariant::fromValue<QList<GObjectRelation> >(res));
-        const_cast<GObject *>(this)->arePermanentRelationsFetched = true;
     }
 
-    return res;
+    QList<GObjectRelation> relationsMissedFromDb;
+    foreach (const GObjectRelation &relation, res) {
+        if (!dbRelations.contains(relation)) {
+            relationsMissedFromDb.append(relation);
+        }
+    }
+    if (!relationsMissedFromDb.isEmpty()) {
+        const_cast<GObject *>(this)->setRelationsInDb(relationsMissedFromDb);
+    }
+
+    hints->set(GObjectHint_RelatedObjects, QVariant::fromValue<QList<GObjectRelation> >(res));
+    const_cast<GObject *>(this)->arePermanentRelationsFetched = true;
 }
 
 void GObject::setObjectRelations(const QList<GObjectRelation>& list) {

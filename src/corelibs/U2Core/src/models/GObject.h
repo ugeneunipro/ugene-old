@@ -142,6 +142,7 @@ private:
     void checkIfBelongToSharedDatabase(StateLockableTreeItem *parent);
     void setRelationsInDb(QList<GObjectRelation>& list) const;
     void setupHints(QVariantMap hintsMap);
+    void fetchPermanentGObjectRelations(QList<GObjectRelation> &res) const;
 
     void removeAllLocks();
 

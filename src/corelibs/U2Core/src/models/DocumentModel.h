@@ -368,7 +368,10 @@ public:
 
     void makeClean();
 
-    GObject* findGObjectByName(const QString& name) const;
+    // avoid using this method against shared databases documents,
+    // since databases allow many objects with the same name. The method returns
+    // first matched GObject. Use `getObjectById` instead.
+    GObject * findGObjectByName(const QString &name) const;
 
     QList<GObject*> findGObjectByType(GObjectType t, UnloadedObjectFilter f = UOF_LoadedOnly) const;
 
@@ -436,6 +439,9 @@ protected:
     void checkLoadedState() const;
     void checkUniqueObjectNames() const;
     void addUnloadedObjects(const QList<UnloadedObjectInfo>& info);
+
+    GObject * findGObjectByNameInDb(const QString &name) const;
+    GObject * findGObjectByNameInMem(const QString &name) const;
 
     DocumentFormat* const       df;
     IOAdapterFactory* const     io;
