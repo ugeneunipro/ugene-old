@@ -106,6 +106,8 @@ public:
     bool                                useAmbiguousBases;
     int                                 maxRegExpResult;
     int                                 maxResult2Find;
+
+    static const int                    MAX_RESULT_TO_FIND_UNLIMITED = -1;
 };
 
 class U2ALGORITHM_EXPORT FindAlgorithm {

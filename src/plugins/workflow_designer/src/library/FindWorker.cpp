@@ -380,6 +380,7 @@ Task* FindWorker::tick() {
         cfg.maxErr = actor->getParameter(ERR_ATTR)->getAttributeValue<int>(context);
         cfg.patternSettings = static_cast<FindAlgorithmPatternSettings> (actor->getParameter(ALGO_ATTR)->getAttributeValue<int>(context));
         cfg.useAmbiguousBases = actor->getParameter(AMBIGUOUS_ATTR)->getAttributeValue<bool>(context);
+        cfg.maxResult2Find = FindAlgorithmSettings::MAX_RESULT_TO_FIND_UNLIMITED;
 
         resultName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
 

@@ -67,6 +67,7 @@ Task* QDFindActor::getAlgorithmTask(const QVector<U2Region>& location) {
     Task* t = new Task(tr("Find"), TaskFlag_NoRun);
     settings.sequence = scheme->getSequence().seq;
     settings.pattern = cfg->getParameter(PATTERN_ATTR)->getAttributeValueWithoutScript<QString>().toLatin1().toUpper();
+    settings.maxResult2Find = FindAlgorithmSettings::MAX_RESULT_TO_FIND_UNLIMITED;
 
     switch(getStrandToRun()) {
         case QDStrand_Both:
