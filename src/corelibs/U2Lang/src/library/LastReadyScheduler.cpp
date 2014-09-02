@@ -22,8 +22,10 @@
 #include <U2Lang/WorkflowDebugStatus.h>
 
 #include <U2Core/Timer.h>
+#include <U2Core/TaskSignalMapper.h>
 
 #include <U2Lang/WorkflowMonitor.h>
+#include <U2Lang/ElapsedTimeUpdater.h>
 
 #include "LastReadyScheduler.h"
 
@@ -32,13 +34,13 @@ namespace U2 {
 namespace LocalWorkflow {
 
 LastReadyScheduler::LastReadyScheduler(Schema *sh)
-    : Scheduler(sh), lastWorker(NULL), canLastTaskBeCanceled(false), requestedActorForNextTick()
+    : Scheduler(sh), lastWorker(NULL), canLastTaskBeCanceled(false), requestedActorForNextTick(), timeUpdater(NULL)
 {
 
 }
 
 LastReadyScheduler::~LastReadyScheduler() {
-
+    delete timeUpdater;
 }
 
 void LastReadyScheduler::init() {
@@ -82,21 +84,20 @@ inline void LastReadyScheduler::measuredTick() {
     CHECK(NULL != lastWorker, );
     lastWorker->deleteBackupMessagesFromPreviousTick();
 
-    qint64 startTimeMks = GTimer::currentTimeMicros();
     lastTask = lastWorker->tick(canLastTaskBeCanceled);
-    qint64 endTimeMks = GTimer::currentTimeMicros();
 
-    context->getMonitor()->addTick(endTimeMks - startTimeMks, actorId());
+    delete timeUpdater;
+    timeUpdater = NULL;
 
     if (NULL != lastTask) {
+        timeUpdater = new ElapsedTimeUpdater(actorId(), context->getMonitor(), lastTask);
+        timeUpdater->start(1000);
+
         context->getMonitor()->registerTask(lastTask, actorId());
     }
 }
 
 Task * LastReadyScheduler::tick() {
-    if (hasValidFinishedTask()) {
-        context->getMonitor()->addTime(lastTaskTimeSec(), actorId());
-    }
     for (int vertexLabel = 0; vertexLabel < topologicSortedGraph.size(); vertexLabel++) {
         foreach (Actor *a, topologicSortedGraph.value(vertexLabel)) {
             if (a->castPeer<BaseWorker>()->isReady()) {

@@ -33,6 +33,7 @@ namespace LocalWorkflow {
  * seeks the nearest to the end of the workflow worker and ticks it
  * uses workflow's actors bindings graph
  */
+class ElapsedTimeUpdater;
 class LastReadyScheduler : public Scheduler {
 public:
     LastReadyScheduler(Schema *sh);
@@ -61,6 +62,7 @@ protected:
     BaseWorker *lastWorker;
     bool canLastTaskBeCanceled;
     ActorId requestedActorForNextTick;
+    ElapsedTimeUpdater* timeUpdater;
 };
 
 } // LocalWorkflow
