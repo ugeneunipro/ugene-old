@@ -32,6 +32,7 @@
 #include <QtGui/QRadioButton>
 #include <QtGui/QGroupBox>
 #include <QtGui/QDialogButtonBox>
+#include <QtGui/QComboBox>
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QPushButton>
@@ -40,6 +41,7 @@
 #include <QtWidgets/QRadioButton>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QComboBox>
 #endif
 
 const int RESULT_INTERSECTION_FILTER_INDEX = 0;
