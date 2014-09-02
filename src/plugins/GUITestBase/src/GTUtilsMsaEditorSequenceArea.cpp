@@ -408,6 +408,15 @@ QString GTUtilsMSAEditorSequenceArea::getColor(U2OpStatus &os, QPoint p){
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "checkColor"
+bool GTUtilsMSAEditorSequenceArea::checkColor(U2OpStatus &os, const QPoint &p, const QString &expectedColor){
+    QColor c = getColor(os, p);
+    bool result = (expectedColor == c.name());
+    GT_CHECK_RESULT(result, QString("wrong color. Expected: %1, actual: %2").arg(expectedColor).arg(c.name()), result);
+    return result;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getRowHeight"
 int GTUtilsMSAEditorSequenceArea::getRowHeight(U2OpStatus &os){
     QWidget* activeWindow = GTUtilsMdi::activeWindow(os);

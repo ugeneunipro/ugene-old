@@ -18,10 +18,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
+#include <QtGui/QListView>
 
 #include "GTComboBox.h"
 #include "GTWidget.h"
-
 #include "GTMouseDriver.h"
 #include "GTKeyboardDriver.h"
 
@@ -30,7 +30,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTComboBox"
 
 #define GT_METHOD_NAME "setCurrentIndex"
-void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index, bool checkVal) {
+void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index, bool checkVal, GTGlobals::UseMethod method) {
 
     GT_CHECK(comboBox != NULL, "QComboBox* == NULL");
 
@@ -43,30 +43,48 @@ void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index,
 
     GTWidget::setFocus(os, comboBox);
     GTGlobals::sleep();
-    int currIndex = comboBox->currentIndex() == -1 ? 0 : comboBox->currentIndex();
-    QString directionKey = index > currIndex ? "down" : "up";
 
-    int pressCount = qAbs(index-currIndex);
-    for (int i=0; i<pressCount; i++) {
-        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);
-        GTGlobals::sleep(100);
-    }
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
-    GTGlobals::sleep(500);
+    switch (method){
+    case GTGlobals::UseKeyBoard:
+    case GTGlobals::UseKey:{
+            int currIndex = comboBox->currentIndex() == -1 ? 0 : comboBox->currentIndex();
+        QString directionKey = index > currIndex ? "down" : "up";
 
-    if(checkVal){
-        currIndex = comboBox->currentIndex();
-        GT_CHECK(currIndex == index, "Can't set index");
+        int pressCount = qAbs(index-currIndex);
+        for (int i=0; i<pressCount; i++) {
+            GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key[directionKey]);
+            GTGlobals::sleep(100);
+        }
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        GTGlobals::sleep(500);
+
+        if(checkVal){
+            currIndex = comboBox->currentIndex();
+            GT_CHECK(currIndex == index, "Can't set index");
+        }
+        break;
     }
+    case GTGlobals::UseMouse:{
+        QListView* view = comboBox->findChild<QListView*>();
+        GT_CHECK(view != NULL, "list view not found");
+        QModelIndex modelIndex = view->model()->index(index,0);
+        GT_CHECK(modelIndex.isValid(), "invalid model index");
+        GTMouseDriver::moveTo(os, view->mapToGlobal(view->visualRect(modelIndex).center()));
+        GTMouseDriver::click(os);
+        GTGlobals::sleep(500);
+        break;
+    }
+    }
+
 }
 
-void GTComboBox::setIndexWithText(U2OpStatus& os, QComboBox *comboBox, const QString& text, bool checkVal) {
+void GTComboBox::setIndexWithText(U2OpStatus& os, QComboBox *comboBox, const QString& text, bool checkVal, GTGlobals::UseMethod method) {
     GT_CHECK(comboBox != NULL, "QComboBox* == NULL");
 
     int index = comboBox->findText(text, Qt::MatchContains);
     GT_CHECK(index != -1, "Text was not found");
 
-    setCurrentIndex(os, comboBox, index, checkVal);
+    setCurrentIndex(os, comboBox, index, checkVal, method);
     CHECK_OP(os, );
     if(checkVal){
         QString currentText = comboBox->currentText();
