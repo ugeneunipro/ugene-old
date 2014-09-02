@@ -24,6 +24,10 @@
 namespace U2 {
 
 static QList<GObject*> emptyObjs;
+GObjectSelection::GObjectSelection(QObject *p) : GSelection(GSelectionTypes::GOBJECTS, p) {
+    connect(this, SIGNAL(si_selectionChanged(GObjectSelection*,QList<GObject*>,QList<GObject*>)), SLOT(sl_selectionChanged()));
+}
+
 void GObjectSelection::clear() {
     QList<GObject*> tmpRemoved = selectedObjects;
     selectedObjects.clear();

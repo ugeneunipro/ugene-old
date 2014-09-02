@@ -86,7 +86,7 @@ CreateFragmentDialog::CreateFragmentDialog( U2SequenceObject* obj, const U2Regio
     }
 
     rs=new RegionSelector(this, seqObj->getSequenceLength(), false);
-    rs->setRegion(region);
+    rs->setCustomRegion(region);
     rangeSelectorLayout->addWidget(rs);
 
     setupAnnotationsWidget();

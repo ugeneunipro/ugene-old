@@ -34,7 +34,7 @@ class Document;
 class U2CORE_EXPORT DocumentSelection : public GSelection {
     Q_OBJECT
 public:
-    DocumentSelection(QObject* p = NULL) : GSelection(GSelectionTypes::DOCUMENTS, p) {}
+    DocumentSelection(QObject* p = NULL);
 
     const QList<Document*>& getSelectedDocuments() const {return selectedDocs;}
 

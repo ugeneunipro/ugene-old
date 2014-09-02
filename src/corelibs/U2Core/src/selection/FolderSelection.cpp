@@ -37,6 +37,7 @@ bool FolderSelection::isEmpty() const {
 
 void FolderSelection::clear() {
     selection.clear();
+    sl_selectionChanged();
 }
 
 const QList<Folder> & FolderSelection::getSelection() const {
@@ -45,6 +46,7 @@ const QList<Folder> & FolderSelection::getSelection() const {
 
 void FolderSelection::setSelection(const QList<Folder> &folders) {
      selection = folders;
+     sl_selectionChanged();
 }
 
 } // U2

@@ -22,27 +22,28 @@
 #ifndef _U2_REGION_SELECTOR_H_
 #define _U2_REGION_SELECTOR_H_
 
-#include <U2Core/global.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialog>
+#include <QtGui/QLineEdit>
+#else
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QLineEdit>
+#endif
+
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/U2Region.h>
+#include <U2Core/global.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLineEdit>
-#include <QtGui/QDialog>
-#include <QtGui/QComboBox>
-#else
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QComboBox>
-#endif
+class QComboBox;
 
 namespace U2 {
 
+class AnnotatedDNAView;
 class RegionLineEdit;
 
 struct RegionPreset {
     RegionPreset() {}
-    RegionPreset(QString text_, const U2Region & region_) : text(text_), region(region_) {}
+    RegionPreset(const QString &text, const U2Region &region) : text(text), region(region) {}
     QString text;
     U2Region region;
 };
@@ -50,12 +51,14 @@ struct RegionPreset {
 class U2GUI_EXPORT RegionSelector : public QWidget {
     Q_OBJECT
 public:
-    RegionSelector(QWidget* p, qint64 len, bool isVertical = false, DNASequenceSelection* selection = NULL, QList<RegionPreset> presets_ = QList<RegionPreset>());
+    RegionSelector(QWidget* p, qint64 len, bool isVertical = false, DNASequenceSelection* selection = NULL, QList<RegionPreset> presetRegions = QList<RegionPreset>());
 
-    ~RegionSelector();
     U2Region getRegion(bool *ok = NULL) const;
 
-    void setRegion(const U2Region& value);
+    void setMaxLength(qint64 length);
+    void setCustomRegion(const U2Region& value);
+    void setSequenceSelection(DNASequenceSelection* selection);
+    void updateSelectedRegion(const U2Region &selectedRegion);
     void setWholeRegionSelected();
     void reset();
 
@@ -65,25 +68,27 @@ signals:
     void si_regionChanged(const U2Region& newRegion);
 
 private slots:
-    void sl_onComboBoxIndexChanged(int);
+    void sl_onComboBoxIndexChanged(int index);
     void sl_onRegionChanged();
     void sl_onValueEdited();
+    void sl_onSelectionChanged(GSelection* selection);
 
 private:
-    void init();
+    void initLayout();
+    void init(const QList<RegionPreset> &presetRegions);
+    void connectSignals();
 
-    qint64          maxLen;
-    RegionLineEdit* startEdit;
-    RegionLineEdit* endEdit;
-    QComboBox*      comboBox;
-    U2Region        region;
-    bool            isVertical;
-    bool            needAddSelectionButton;
+    qint64                maxLen;
+    RegionLineEdit *      startEdit;
+    RegionLineEdit *      endEdit;
+    QComboBox *           comboBox;
+    bool                  isVertical;
+    QString               defaultItemText;
+    DNASequenceSelection *selection;
 
-    QList<RegionPreset> presets;
-    int             customIndex;
-    int             defaultIndex;
-    int             wholeRegionIndex;
+    static const QString WHOLE_SEQUENCE;
+    static const QString SELECTED_REGION;
+    static const QString CUSTOM_REGION;
 };
 
 class RegionLineEdit : public QLineEdit {

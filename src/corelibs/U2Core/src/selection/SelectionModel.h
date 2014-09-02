@@ -40,6 +40,9 @@ public:
 
     virtual void clear() = 0;
 
+protected slots:
+    void sl_selectionChanged();
+
 signals:
     void si_onSelectionChanged(GSelection*);
 

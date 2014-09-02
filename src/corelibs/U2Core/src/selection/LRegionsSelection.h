@@ -30,7 +30,7 @@ namespace U2 {
 class U2CORE_EXPORT LRegionsSelection : public GSelection {
     Q_OBJECT
 public:
-    LRegionsSelection(GSelectionType type, QObject* p = NULL) : GSelection(type, p) {}
+    LRegionsSelection(GSelectionType type, QObject* p = NULL);
 
     const QVector<U2Region>& getSelectedRegions() const {return regions;}
 

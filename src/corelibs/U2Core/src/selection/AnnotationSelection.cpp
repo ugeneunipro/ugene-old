@@ -68,7 +68,7 @@ int AnnotationSelectionData::getSelectedRegionsLen( ) const {
 AnnotationSelection::AnnotationSelection( QObject *p )
     : GSelection( GSelectionTypes::ANNOTATIONS, p )
 {
-
+    connect(this, SIGNAL(si_selectionChanged(AnnotationSelection*,QList<Annotation>,QList<Annotation>)), SLOT(sl_selectionChanged()));
 }
 
 const QList<AnnotationSelectionData> & AnnotationSelection::getSelection( ) const {
@@ -251,7 +251,7 @@ static QList<AnnotationGroup> emptyGroups;
 AnnotationGroupSelection::AnnotationGroupSelection( QObject *p )
     : GSelection( GSelectionTypes::ANNOTATION_GROUPS, p )
 {
-
+    connect(this, SIGNAL(si_selectionChanged(AnnotationGroupSelection*,QList<AnnotationGroup>,QList<AnnotationGroup>)), SLOT(sl_selectionChanged()));
 }
 
 const QList<AnnotationGroup> & AnnotationGroupSelection::getSelection( ) const {

@@ -19,174 +19,206 @@
  * MA 02110-1301, USA.
  */
 
-#include "RegionSelector.h"
+#include <math.h>
+
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QIntValidator>
+#include <QtGui/QPalette>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QAction>
+#include <QtGui/QComboBox>
+#include <QtGui/QGroupBox>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QMenu>
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QToolButton>
+#include <QtGui/QVBoxLayout>
+#else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QVBoxLayout>
+#endif
+
 #include <U2Core/L10n.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/GUIUtils.h>
 
-#include <QtGui/QIntValidator>
-#include <QtGui/QPalette>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QAction>
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QToolButton>
-#include <QtGui/QGroupBox>
-#include <QtGui/QMessageBox>
-#include <QtGui/QMenu>
-#else
-#include <QtWidgets/QAction>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QMenu>
-#endif
-#include <QContextMenuEvent>
-#include <math.h>
+#include "RegionSelector.h"
 
 namespace U2 {
 ////////////////////////////////////////
 // RangeSelectorWidget
-RegionSelector::RegionSelector(QWidget* p, qint64 _len, bool _isVertical, DNASequenceSelection* selection, QList<RegionPreset> presets_)
-    : QWidget(p), maxLen(_len), startEdit(NULL), endEdit(NULL), isVertical(_isVertical)
-{
-    needAddSelectionButton=true;
+const QString RegionSelector::WHOLE_SEQUENCE = tr("Whole sequence");
+const QString RegionSelector::SELECTED_REGION = tr("Selected region");
+const QString RegionSelector::CUSTOM_REGION = tr("Custom region");
 
-    region.startPos = 0;
-    region.length = maxLen;
-    presets << RegionPreset(tr("Whole sequence"), region);
-    wholeRegionIndex = presets.count() - 1;
-    defaultIndex = wholeRegionIndex;
+RegionSelector::RegionSelector(QWidget* p, qint64 len, bool isVertical, DNASequenceSelection* selection, QList<RegionPreset> presetRegions) :
+    QWidget(p),
+    maxLen(len),
+    startEdit(NULL),
+    endEdit(NULL),
+    isVertical(isVertical),
+    selection(selection)
+{
+    defaultItemText = WHOLE_SEQUENCE;
 
     if (selection != NULL && !selection->isEmpty()) {
+        U2Region region;
         region.startPos = selection->getSelectedRegions().first().startPos;
         region.length = selection->getSelectedRegions().first().endPos() - region.startPos;
-        presets << RegionPreset(tr("Selected"), region);
+        presetRegions.prepend(RegionPreset(SELECTED_REGION, region));
+        defaultItemText = SELECTED_REGION;
     }
-    defaultIndex = presets.count() - 1;
 
-    presets += presets_;
+    presetRegions.prepend(RegionPreset(WHOLE_SEQUENCE, U2Region(0, maxLen)));
 
-    init();
+    initLayout();
+    init(presetRegions);
+    connectSignals();
     reset();
 }
 
-void RegionSelector::init() {
-    int w = qMax(((int)log10((double)region.endPos()))*10, 50);
+U2Region RegionSelector::getRegion(bool *_ok) const {
+    bool ok = false;
+    qint64 v1 = startEdit->text().toLongLong(&ok) - 1;
 
-    comboBox = new QComboBox(this);
-    foreach(const RegionPreset & rp, presets) {
-        comboBox->addItem(rp.text);
-    }
-    comboBox->addItem(tr("Custom region"));
-    customIndex = comboBox->count() - 1;
-
-    connect(comboBox,SIGNAL(currentIndexChanged(int)),SLOT(sl_onComboBoxIndexChanged(int)));
-
-    startEdit = new RegionLineEdit(this,tr("Set minimum"), 1);
-    startEdit->setValidator(new QIntValidator(1, maxLen, startEdit));
-    startEdit->setMinimumWidth(w);
-
-    startEdit->setAlignment(Qt::AlignRight);
-    startEdit->setText(QString::number(region.startPos + 1));
-    connect(startEdit, SIGNAL(editingFinished()), SLOT(sl_onRegionChanged()));
-    connect(startEdit, SIGNAL(textEdited(QString)), SLOT(sl_onValueEdited()));
-
-    endEdit = new RegionLineEdit(this,tr("Set maximum"), maxLen);
-    endEdit->setValidator(new QIntValidator(1, maxLen, startEdit));
-    endEdit->setMinimumWidth(w);
-
-    endEdit->setAlignment(Qt::AlignRight);
-    endEdit->setText(QString::number(region.endPos()));
-
-    connect(endEdit, SIGNAL(editingFinished()), SLOT(sl_onRegionChanged()));
-    connect(endEdit, SIGNAL(textEdited(QString)), SLOT(sl_onValueEdited()));
-
-    if(isVertical){
-        QGroupBox* gb=new QGroupBox(this);
-        gb->setTitle(tr("Region"));
-        QGridLayout* l = new QGridLayout(gb);
-        gb->setLayout(l);
-        l->addWidget(comboBox,0,0,1,3);
-        l->addWidget(startEdit, 1, 0);
-        l->addWidget(new QLabel(tr("-"), gb), 1, 1);
-        l->addWidget(endEdit, 1, 2);
-        l->setRowStretch(2,1);
-        QVBoxLayout* rootLayout = new QVBoxLayout(this);
-        rootLayout->setMargin(0);
-        setLayout(rootLayout);
-        rootLayout->addWidget(gb);
-    }else{
-        QHBoxLayout* l = new QHBoxLayout(this);
-        l->setMargin(0);
-
-        setLayout(l);
-
-        QLabel* rangeLabel = new QLabel(tr("Region"), this);
-        rangeLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
-
-
-        l->addWidget(rangeLabel);
-        l->addWidget(comboBox);
-        l->addWidget(startEdit);
-        l->addWidget(new QLabel(tr("-"), this));
-        l->addWidget(endEdit);
-
+    if (!ok || v1 < 0) {
+        if (_ok != NULL) {
+            *_ok = false;
+        }
+        return U2Region();
     }
 
-    startEdit->setObjectName("start_edit_line");
-    endEdit->setObjectName("end_edit_line");
-    this->setObjectName("range_selector");
+    int v2 = endEdit->text().toLongLong(&ok);
+    if (!ok || v2 <= 0 || v2 > maxLen) {
+        if (_ok != NULL) {
+            *_ok = false;
+        }
+        return U2Region();
+    }
+
+    if (v1 > v2 ) { // start > end
+        if (_ok != NULL) {
+            *_ok = false;
+        }
+        return U2Region();
+    }
+
+    if (_ok != NULL) {
+        *_ok = true;
+    }
+
+    return U2Region(v1, v2 - v1);
 }
 
-RegionSelector::~RegionSelector(){
+void RegionSelector::setMaxLength(qint64 length) {
+    maxLen = length;
+    const int wholeSequenceIndex = comboBox->findText(WHOLE_SEQUENCE);
+    comboBox->setItemData(wholeSequenceIndex, qVariantFromValue(U2Region(0, length)));
+    if (wholeSequenceIndex == comboBox->currentIndex()) {
+        sl_onComboBoxIndexChanged(wholeSequenceIndex);
+    }
+}
+
+void RegionSelector::setCustomRegion(const U2Region& value) {
+    if (value.startPos < 0 || value.length > maxLen) {
+        return;
+    }
+
+    if (value == getRegion()) {
+        return;
+    }
+
+    startEdit->setText(QString::number(value.startPos + 1));
+    endEdit->setText(QString::number(value.endPos()));
+
+    if (U2Region(0, maxLen) != value) {
+        comboBox->setCurrentIndex(comboBox->findText(CUSTOM_REGION));
+    }
+
+    emit si_regionChanged(value);
+}
+
+void RegionSelector::setSequenceSelection(DNASequenceSelection *_selection) {
+    disconnect(this, SLOT(sl_onSelectionChanged(GSelection*)));
+    selection = _selection;
+    if (NULL != selection) {
+        connect(selection, SIGNAL(si_onSelectionChanged(GSelection*)), SLOT(sl_onSelectionChanged(GSelection*)));
+        sl_onSelectionChanged(selection);
+    }
+}
+
+void RegionSelector::setWholeRegionSelected() {
+    comboBox->setCurrentIndex(comboBox->findText(WHOLE_SEQUENCE));
+}
+
+void RegionSelector::reset() {
+    comboBox->setCurrentIndex(comboBox->findText(defaultItemText));
+}
+
+void RegionSelector::showErrorMessage() {
+    QMessageBox msgBox(QMessageBox::NoIcon, L10N::errorTitle(), tr("Invalid sequence region!"), QMessageBox::Ok);
+
+    //set focus to error field
+    bool ok = false;
+    qint64 v1 = startEdit->text().toLongLong(&ok) - 1;
+    if (!ok || v1 < 0) {
+        msgBox.setInformativeText(tr("Invalid Start position of region"));
+        msgBox.exec();
+        startEdit->setFocus();
+        return;
+    }
+
+    int v2 = endEdit->text().toLongLong(&ok);
+    if (!ok || v2 <= 0 || v2 > maxLen) {
+        msgBox.setInformativeText(tr("Invalid End position of region"));
+        msgBox.exec();
+        endEdit->setFocus();
+        return;
+    }
+
+    if ( v1 > v2 ) { // start > end
+        msgBox.setInformativeText(tr("Start position is greater than End position"));
+        msgBox.exec();
+        startEdit->setFocus();
+        return;
+    }
+
+    msgBox.exec();
 }
 
 void RegionSelector::sl_onComboBoxIndexChanged(int index) {
-    if(index < presets.count()) {
-        U2Region r = presets[index].region;
-        qint64 start = r.startPos + 1;
-        qint64 end = r.endPos();
-        startEdit->setText(QString::number(start));
-        endEdit->setText(QString::number(end));
-        sl_onValueEdited();
-        sl_onRegionChanged();
-    }
-}
-
-void RegionSelector::sl_onValueEdited(){
-    if(startEdit->text().isEmpty() || endEdit->text().isEmpty()){
-        GUIUtils::setWidgetWarning(startEdit, startEdit->text().isEmpty());
-        GUIUtils::setWidgetWarning(endEdit, endEdit->text().isEmpty());
-        // select "custom" in combobox
-        comboBox->setCurrentIndex(customIndex);
+    if (index == comboBox->findText(CUSTOM_REGION)) {
         return;
     }
-    region=getRegion();
-    int currentIndex = customIndex;
-    for(int i = 0; i < presets.count(); ++i) {
-        if(region == presets[i].region) {
-            currentIndex = i;
-        }
-    }
-    comboBox->setCurrentIndex(currentIndex);
 
-    GUIUtils::setWidgetWarning(startEdit, region.isEmpty());
-    GUIUtils::setWidgetWarning(endEdit, region.isEmpty());
+    const U2Region region = comboBox->itemData(index).value<U2Region>();
+    qint64 start = region.startPos + 1;
+    qint64 end = region.endPos();
+    startEdit->setText(QString::number(start));
+    endEdit->setText(QString::number(end));
+    sl_onValueEdited();
+    sl_onRegionChanged();
 }
 
 void RegionSelector::sl_onRegionChanged() {
     bool ok = false;
+
     int v1 = startEdit->text().toInt(&ok);
     if (!ok || v1 < 1 || v1 > maxLen) {
         return;
     }
+
     int v2 = endEdit->text().toInt(&ok);
     if (!ok || v2 < v1 || v2 > maxLen) {
         return;
@@ -196,79 +228,117 @@ void RegionSelector::sl_onRegionChanged() {
     emit si_regionChanged(r);
 }
 
-U2Region RegionSelector::getRegion(bool *_ok) const{
-    bool ok = false;
-    qint64 v1 = startEdit->text().toLongLong(&ok) - 1;
-    if (!ok || v1 < 0){
-        if (_ok != NULL) *_ok = false;
-        return U2Region();
+void RegionSelector::sl_onValueEdited() {
+    if (startEdit->text().isEmpty() || endEdit->text().isEmpty()) {
+        GUIUtils::setWidgetWarning(startEdit, startEdit->text().isEmpty());
+        GUIUtils::setWidgetWarning(endEdit, endEdit->text().isEmpty());
+        // select "custom" in combobox
+        comboBox->setCurrentIndex(comboBox->findText(CUSTOM_REGION));
+        return;
     }
-    int v2 = endEdit->text().toLongLong(&ok);
-    if (!ok || v2 <= 0 || v2 > maxLen){
-        if (_ok != NULL) *_ok = false;
-        return U2Region();
+
+    const U2Region region = getRegion();
+    if (region != comboBox->itemData(comboBox->currentIndex()).value<U2Region>()) {
+        int currentIndex = comboBox->findText(CUSTOM_REGION);
+        for (int i = 0; i < comboBox->count(); i++) {
+            if (region == comboBox->itemData(i).value<U2Region>()) {
+                currentIndex = i;
+                break;
+            }
+        }
+        comboBox->setCurrentIndex(currentIndex);
     }
-    if (v1 > v2 ) { // start > end
-        if (_ok != NULL) *_ok = false;
-        return U2Region();
-    }
-    if (_ok != NULL) *_ok = true;
-    return U2Region(v1, v2 - v1);
+
+    GUIUtils::setWidgetWarning(startEdit, region.isEmpty());
+    GUIUtils::setWidgetWarning(endEdit, region.isEmpty());
 }
 
-void RegionSelector::setRegion(const U2Region& value){
-    if (value.startPos < 0 || value.length > maxLen){
-        return;
+void RegionSelector::sl_onSelectionChanged(GSelection *_selection) {
+    SAFE_POINT(selection == _selection, "Invalid sequence selection", );
+    int selectedRegionIndex = comboBox->findText(SELECTED_REGION);
+    if (-1 == selectedRegionIndex) {
+        selectedRegionIndex = comboBox->findText(WHOLE_SEQUENCE) + 1;
+        comboBox->insertItem(selectedRegionIndex, SELECTED_REGION);
     }
-    if (value == region) {
-        return;
-    }
-    startEdit->setText(QString::number(value.startPos+1));
-    endEdit->setText(QString::number(value.endPos()));
-    if (! (value.startPos == 0 && value.length == maxLen) ) {
-        comboBox->setCurrentIndex(customIndex);
-    }
-    emit si_regionChanged(value);
 
+    const U2Region region = selection->getSelectedRegions().isEmpty() ? U2Region(0, maxLen) : selection->getSelectedRegions().first();
+    if (region != comboBox->itemData(selectedRegionIndex).value<U2Region>()) {
+        comboBox->setItemData(selectedRegionIndex, qVariantFromValue(region));
+        if (selectedRegionIndex == comboBox->currentIndex()) {
+            sl_onComboBoxIndexChanged(selectedRegionIndex);
+        }
+    }
 }
 
-void RegionSelector::reset(){
-    comboBox->setCurrentIndex(defaultIndex);
+void RegionSelector::initLayout() {
+    int w = qMax(((int)log10((double)maxLen))*10, 50);
+
+    comboBox = new QComboBox(this);
+
+    startEdit = new RegionLineEdit(this, tr("Set minimum"), 1);
+    startEdit->setValidator(new QIntValidator(1, maxLen, startEdit));
+    startEdit->setMinimumWidth(w);
+    startEdit->setAlignment(Qt::AlignRight);
+
+    endEdit = new RegionLineEdit(this, tr("Set maximum"), maxLen);
+    endEdit->setValidator(new QIntValidator(1, maxLen, startEdit));
+    endEdit->setMinimumWidth(w);
+    endEdit->setAlignment(Qt::AlignRight);
+
+    if (isVertical) {
+        QGroupBox* gb = new QGroupBox(this);
+        gb->setTitle(tr("Region"));
+        QGridLayout* l = new QGridLayout(gb);
+        gb->setLayout(l);
+        l->addWidget(comboBox, 0, 0, 1, 3);
+        l->addWidget(startEdit, 1, 0);
+        l->addWidget(new QLabel(tr("-"), gb), 1, 1);
+        l->addWidget(endEdit, 1, 2);
+        l->setRowStretch(2, 1);
+        QVBoxLayout* rootLayout = new QVBoxLayout(this);
+        rootLayout->setMargin(0);
+        setLayout(rootLayout);
+        rootLayout->addWidget(gb);
+    } else {
+        QHBoxLayout* l = new QHBoxLayout(this);
+        l->setMargin(0);
+        setLayout(l);
+
+        QLabel* rangeLabel = new QLabel(tr("Region"), this);
+        rangeLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
+
+        l->addWidget(rangeLabel);
+        l->addWidget(comboBox);
+        l->addWidget(startEdit);
+        l->addWidget(new QLabel(tr("-"), this));
+        l->addWidget(endEdit);
+    }
+
+    startEdit->setObjectName("start_edit_line");
+    endEdit->setObjectName("end_edit_line");
+    this->setObjectName("range_selector");
 }
 
-void RegionSelector::showErrorMessage(){
-    QMessageBox msgBox;//todo more informative message
-    msgBox.setWindowTitle(L10N::errorTitle());
-    msgBox.setText(tr("Invalid sequence region!"));
-    msgBox.setStandardButtons(QMessageBox::Ok);
-    //set focus to error field
-    bool ok = false;
-    qint64 v1 = startEdit->text().toLongLong(&ok) - 1;
-    if (!ok || v1 < 0){
-        msgBox.setInformativeText(tr("Invalid Start position of region"));
-        msgBox.exec();
-        startEdit->setFocus();
-        return;
+void RegionSelector::init(const QList<RegionPreset> &presetRegions) {
+    foreach(const RegionPreset &presetRegion, presetRegions) {
+        comboBox->addItem(presetRegion.text, qVariantFromValue(presetRegion.region));
     }
-    int v2 = endEdit->text().toLongLong(&ok);
-    if(!ok || v2 <= 0 || v2 > maxLen){
-        msgBox.setInformativeText(tr("Invalid End position of region"));
-        msgBox.exec();
-        endEdit->setFocus();
-        return;
-    }
-    if ( v1 > v2 ){ // start > end
-        msgBox.setInformativeText(tr("Start position is greater than End position"));
-        msgBox.exec();
-        startEdit->setFocus();
-        return;
-    }
-    msgBox.exec();//all other errors
+    comboBox->addItem(CUSTOM_REGION);
+
+    const U2Region region = comboBox->itemData(comboBox->findText(defaultItemText)).value<U2Region>();
+    startEdit->setText(QString::number(region.startPos + 1));
+    endEdit->setText(QString::number(region.endPos()));
 }
 
-void RegionSelector::setWholeRegionSelected()
-{
-    comboBox->setCurrentIndex(wholeRegionIndex);
+void RegionSelector::connectSignals() {
+    connect(comboBox,  SIGNAL(currentIndexChanged(int)),           SLOT(sl_onComboBoxIndexChanged(int)));
+    connect(startEdit, SIGNAL(editingFinished()),                  SLOT(sl_onRegionChanged()));
+    connect(startEdit, SIGNAL(textEdited(const QString &)),        SLOT(sl_onValueEdited()));
+    connect(endEdit,   SIGNAL(editingFinished()),                  SLOT(sl_onRegionChanged()));
+    connect(endEdit,   SIGNAL(textEdited(const QString &)),        SLOT(sl_onValueEdited()));
+    if (NULL != selection) {
+        connect(selection, SIGNAL(si_onSelectionChanged(GSelection*)), SLOT(sl_onSelectionChanged(GSelection*)));
+    }
 }
 
 ///////////////////////////////////////

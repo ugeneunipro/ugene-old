@@ -616,7 +616,7 @@ void FindEnzymesDialog::initSettings()
         if (!location->isEmpty()) {
             excludeRegionOn = true;
             const U2Region& range = location->regions.first();
-            rs->setRegion(range);
+            rs->setCustomRegion(range);
         }
     }
 

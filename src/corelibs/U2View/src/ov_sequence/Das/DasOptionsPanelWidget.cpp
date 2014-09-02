@@ -246,6 +246,7 @@ void DasOptionsPanelWidget::sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSeq
                SLOT(sl_onSelectionChanged(LRegionsSelection*,QVector<U2Region>,QVector<U2Region>)));
 
     selection = ctx->getSequenceSelection();
+    regionSelector->setSequenceSelection(selection);
 
     connect(selection,
             SIGNAL(si_selectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)),
@@ -262,13 +263,6 @@ void DasOptionsPanelWidget::sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSeq
     //clear no sense results and tasks if the sequence is switched
     clear();
 
-    checkState();
-}
-
-void DasOptionsPanelWidget::sl_onSelectionChanged(LRegionsSelection* _selection, const QVector<U2Region>& added, const QVector<U2Region>& removed) {
-    Q_UNUSED(added);
-    Q_UNUSED(removed);
-    SAFE_POINT(selection == _selection, "Selection is invalid", );
     checkState();
 }
 
@@ -307,8 +301,6 @@ void DasOptionsPanelWidget::initialize() {
 
     regionSelector = new RegionSelector(this, ctx->getSequenceLength(), true, ctx->getSequenceSelection());
     regionLayout->addWidget(regionSelector);
-
-    updateRegionSelectorWidget();
 
     blastSettingsWidget = new DasBlastSettingsWidget();
     settingsShowHideWidget = new ShowHideSubgroupWidget(ALGORITHM_SETTINGS, ALGORITHM_SETTINGS, blastSettingsWidget, false);
@@ -409,9 +401,6 @@ void DasOptionsPanelWidget::connectSignals() {
     connect(annotatedDnaView,
             SIGNAL(si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*)),
             SLOT(sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*)));
-    connect(selection,
-            SIGNAL(si_selectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)),
-            SLOT(sl_onSelectionChanged(LRegionsSelection*, QVector<U2Region>, QVector<U2Region>)));
     connect(fetchIdsAction,
             SIGNAL(triggered()),
             SLOT(sl_searchIdsClicked()));
@@ -556,10 +545,6 @@ bool DasOptionsPanelWidget::regionIsOk() const {
     bool result=false;
     regionSelector->getRegion(&result);
     return result;
-}
-
-void DasOptionsPanelWidget::updateRegionSelectorWidget(){
-    SAFE_POINT(NULL != selection, "Selection is NULL", );
 }
 
 void DasOptionsPanelWidget::updateShowOptions() {

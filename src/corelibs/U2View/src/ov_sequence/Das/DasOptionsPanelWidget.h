@@ -78,7 +78,6 @@ private slots:
     void sl_blastSearchFinish();
     void sl_onLoadAnnotationsFinish();
     void sl_onSequenceFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*);
-    void sl_onSelectionChanged(LRegionsSelection* _selection, const QVector<U2Region>& added, const QVector<U2Region>& removed);
     void sl_openInNewView();
     void sl_showLessClicked(const QString&);
     void sl_onRegionChanged(const U2Region& );
@@ -88,7 +87,6 @@ private:
     void initialize();
     void connectSignals();
     void checkState();
-    void updateRegionSelectorWidget();
     void updateShowOptions();
 
     QList<DASSource> getFeatureSources();

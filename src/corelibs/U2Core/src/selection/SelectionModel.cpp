@@ -44,6 +44,10 @@ const GSelection* MultiGSelection::findSelectionByType(GSelectionType t) const {
     return NULL;
 }
 
+void GSelection::sl_selectionChanged() {
+    emit si_onSelectionChanged(this);
+}
+
 
 
 }//namespace

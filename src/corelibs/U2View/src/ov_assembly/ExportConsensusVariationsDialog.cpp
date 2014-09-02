@@ -75,7 +75,7 @@ ExportConsensusVariationsDialog::ExportConsensusVariationsDialog(QWidget *p, con
     saveController->setSelectedFormatId(settings.formatId);
     sequenceNameLineEdit->setText(settings.seqObjName);
     addToProjectCheckBox->setChecked(settings.addToProject);
-    regionSelector->setRegion(settings.region);
+    regionSelector->setCustomRegion(settings.region);
     keepGapsCheckBox->setChecked(settings.keepGaps);
 
     QList<QString> algos = AppContext::getAssemblyConsensusAlgorithmRegistry()->getAlgorithmIds();

@@ -24,6 +24,12 @@
 namespace U2 {
 
 static QVector<U2Region> emptyLRegions;
+
+LRegionsSelection::LRegionsSelection(GSelectionType type, QObject *p) : GSelection(type, p)
+{
+    connect(this, SIGNAL(si_selectionChanged(LRegionsSelection*,QVector<U2Region>,QVector<U2Region>)), SLOT(sl_selectionChanged()));
+}
+
 void LRegionsSelection::clear() {
     QVector<U2Region> tmpRemoved = regions;
     regions.clear();
