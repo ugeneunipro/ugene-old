@@ -22,6 +22,10 @@
 #ifndef _U2_REGION_SELECTOR_H_
 #define _U2_REGION_SELECTOR_H_
 
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/U2Region.h>
+#include <U2Core/global.h>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
 #include <QtGui/QLineEdit>
@@ -29,10 +33,6 @@
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QLineEdit>
 #endif
-
-#include <U2Core/DNASequenceSelection.h>
-#include <U2Core/U2Region.h>
-#include <U2Core/global.h>
 
 class QComboBox;
 
