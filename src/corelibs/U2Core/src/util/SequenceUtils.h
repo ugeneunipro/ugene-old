@@ -43,8 +43,8 @@ public:
     static QList<QByteArray> extractRegions(const QByteArray& seq, const QVector<U2Region>& regions, 
         DNATranslation* complTT, DNATranslation* aminoTT = NULL, bool circular = false, bool join = false);
 
-    /** Joins sequence parts into a single sequence */
-    static QByteArray joinRegions(const QList<QByteArray>& parts);
+    /** Joins sequence parts into a single sequence, with given gap */
+    static QByteArray joinRegions(const QList<QByteArray>& parts, int gapSize = 0);
 
     /** Translates sequence parts, if  join == true -> joins parts before translation is started
     */

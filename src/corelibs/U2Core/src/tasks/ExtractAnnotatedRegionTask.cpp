@@ -96,7 +96,7 @@ void ExtractAnnotatedRegionTask::run() {
     } else {
         resParts = U1SequenceUtils::translateRegions(resParts, aminoT, inputAnn.isJoin());
     }
-    resultedSeq.seq = resParts.size() == 1 ? resParts.first() : U1SequenceUtils::joinRegions(resParts);
+    resultedSeq.seq = resParts.size() == 1 ? resParts.first() : U1SequenceUtils::joinRegions(resParts, cfg.gapLength);
     resultedAnn = inputAnn;
     resultedAnn.location->regions = safeLocation;
     resultedAnn.setStrand(U2Strand::Direct);

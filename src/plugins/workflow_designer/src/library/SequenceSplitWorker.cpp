@@ -256,7 +256,7 @@ void SequenceSplitWorkerFactory::init() {
         attribs << new Attribute( complementDesc, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(false) );
         attribs << new Attribute( extendLeftDesc, BaseTypes::NUM_TYPE(), /*required*/ false, QVariant(0) );
         attribs << new Attribute( extendRightDesc, BaseTypes::NUM_TYPE(), /*required*/ false, QVariant(0) );
-        attribs << new Attribute( gapLengthDesc, BaseTypes::NUM_TYPE(), false, QVariant(1) );
+        attribs << new Attribute( gapLengthDesc, BaseTypes::NUM_TYPE(), false, QVariant(0) );
     }
 
     Descriptor desc( SequenceSplitWorkerFactory::ACTOR, 

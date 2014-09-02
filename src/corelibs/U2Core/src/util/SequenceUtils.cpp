@@ -336,7 +336,8 @@ QList<GObject*> U1SequenceUtils::mergeSequences(Document* doc, const U2DbiRef& r
     return mergeSequences(docs, ref, doc->getURLString(), hints, os);
 } 
 
-QByteArray U1SequenceUtils::joinRegions(const QList<QByteArray>& parts) {
+QByteArray U1SequenceUtils::joinRegions(const QList<QByteArray>& parts, int gapSize) {
+    CHECK(!parts.isEmpty(), QByteArray());
     if (parts.size() == 1) {
         return parts.first();
     }
@@ -344,10 +345,16 @@ QByteArray U1SequenceUtils::joinRegions(const QList<QByteArray>& parts) {
     foreach(const QByteArray& p, parts) {
         size += p.size();
     }
+    size += gapSize * (parts.size() - 1);
+
+    const DNAAlphabet *alphabet = U2AlphabetUtils::findBestAlphabet(parts.first());
+
     QByteArray res;
     res.reserve(size);
-    foreach(const QByteArray& p, parts) {
-        res.append(p);
+    res.append(parts.first());
+    for(int i = 1; i < parts.size(); i++){
+        res.append(QByteArray(gapSize, alphabet->getDefaultSymbol()));
+        res.append(parts[i]);
     }
     return res;
 }
