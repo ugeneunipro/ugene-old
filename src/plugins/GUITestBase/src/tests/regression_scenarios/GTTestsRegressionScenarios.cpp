@@ -5387,6 +5387,82 @@ GUI_TEST_CLASS_DEFINITION(test_3396){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3398_1) {
+//    1. Open "_common_data/fasta/data_in_the_name_line.fa".
+//    2. Select "As separate sequences" mode.
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "data_in_the_name_line.fa");
+
+//    Expected state: an unloaded document appears, there are no objects within.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    Document *doc = GTUtilsDocument::getDocument(os, "data_in_the_name_line.fa");
+    CHECK_SET_ERR(NULL != doc, "Document is NULL");
+    CHECK_SET_ERR(!doc->isLoaded(), "Document is unexpectedly loaded");
+
+//    3. Call context menu on the document.
+//    Expected state: UGENE doesn't crash, a context menu is shown.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "data_in_the_name_line.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3398_2) {
+    //    1. Open "_common_data/fasta/data_in_the_name_line.fa".
+    //    2. Select "As separate sequences" mode.
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge, 10));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "data_in_the_name_line.fa");
+
+    //    Expected state: an unloaded document appears, there are no objects within.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    Document *doc = GTUtilsDocument::getDocument(os, "data_in_the_name_line.fa");
+    CHECK_SET_ERR(NULL != doc, "Document is NULL");
+    CHECK_SET_ERR(!doc->isLoaded(), "Document is unexpectedly loaded");
+
+    //    3. Call context menu on the document.
+    //    Expected state: UGENE doesn't crash, a context menu is shown.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "data_in_the_name_line.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3398_3) {
+    //    1. Open "_common_data/fasta/data_in_the_name_line.fa".
+    //    2. Select "Merge into one sequence" mode, set 10 'unknown' symbols.
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge, 0));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "data_in_the_name_line.fa");
+
+    //    Expected state: an unloaded document appears, there are no objects within.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    Document *doc = GTUtilsDocument::getDocument(os, "data_in_the_name_line.fa");
+    CHECK_SET_ERR(NULL != doc, "Document is NULL");
+    CHECK_SET_ERR(!doc->isLoaded(), "Document is unexpectedly loaded");
+
+    //    3. Call context menu on the document.
+    //    Expected state: UGENE doesn't crash, a context menu is shown.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "data_in_the_name_line.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3398_4) {
+    //    1. Open "_common_data/fasta/data_in_the_name_line.fa".
+    //    2. Select "As separate sequences" mode.
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "data_in_the_name_line.fa");
+
+    //    Expected state: an unloaded document appears, there are no objects within.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    Document *doc = GTUtilsDocument::getDocument(os, "data_in_the_name_line.fa");
+    CHECK_SET_ERR(NULL != doc, "Document is NULL");
+    CHECK_SET_ERR(!doc->isLoaded(), "Document is unexpectedly loaded");
+
+    //    3. Call context menu on the document.
+    //    Expected state: UGENE doesn't crash, a context menu is shown.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents"));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "data_in_the_name_line.fa"));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3439){
     //Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
