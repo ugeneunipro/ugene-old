@@ -5387,6 +5387,29 @@ GUI_TEST_CLASS_DEFINITION(test_3396){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3439){
+    //Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    //Add macs worker
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Alignment");
+    //Validate workflow
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTWidget::click(os,GTAction::button(os, "Validate workflow"));
+    GTGlobals::sleep();
+    //there is should be 2 errors
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Write Alignment") == 2, "Errors count dont match, should be 2 validation errors");
+    //set paramter "Data storage" to "Shared UGENE database"
+    GTUtilsWorkflowDesigner::click(os, "Write Alignment");
+    GTGlobals::sleep();
+    GTUtilsWorkflowDesigner::setParameter(os, "Data storage", 1, GTUtilsWorkflowDesigner::comboValue);
+    //Validate workflow
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTWidget::click(os,GTAction::button(os, "Validate workflow"));
+    GTGlobals::sleep();
+    //there is should be 3 errors
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Write Alignment") == 3, "Errors count dont match, should be 2 validation errors");
+}
+
 
 } // GUITest_regression_scenarios namespace
 
