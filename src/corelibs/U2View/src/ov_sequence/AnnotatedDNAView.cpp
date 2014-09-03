@@ -112,7 +112,6 @@ AnnotatedDNAView::AnnotatedDNAView(const QString& viewName, const QList<U2Sequen
     connect(this, SIGNAL(si_focusChanged(ADVSequenceWidget*,ADVSequenceWidget*)),
             codonTableView, SLOT(sl_onSequenceFocusChanged(ADVSequenceWidget*,ADVSequenceWidget*)));
     showCodonTableAction = new CodonTableAction(codonTableView);
-    showCodonTableAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_T));
 
     createAnnotationAction = (new ADVAnnotationCreation(this))->getCreateAnnotationAction();
 
