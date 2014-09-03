@@ -37,13 +37,11 @@
 #include <QtGui/QTableView>
 #include <QtGui/QHeaderView>
 #include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
 #else
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QTableView>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
 #endif
 
 

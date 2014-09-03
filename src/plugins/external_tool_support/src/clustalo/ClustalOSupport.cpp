@@ -36,11 +36,9 @@
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
 #include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
 #else
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
 #endif
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorFactory.h>

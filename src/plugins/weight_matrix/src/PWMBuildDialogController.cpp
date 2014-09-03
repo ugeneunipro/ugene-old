@@ -19,46 +19,43 @@
  * MA 02110-1301, USA.
  */
 
-#include "PWMBuildDialogController.h"
-
-#include "WeightMatrixPlugin.h"
-#include "WeightMatrixIO.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/Settings.h>
-#include <U2Core/Counter.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/DIProperties.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2OpStatusUtils.h>
-
-#include <U2Formats/DocumentFormatUtils.h>
-
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/DialogUtils.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
 
 #include <U2Algorithm/PWMConversionAlgorithm.h>
 #include <U2Algorithm/PWMConversionAlgorithmRegistry.h>
 
-#include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
+#include <U2Core/DIProperties.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
+#include <U2Formats/DocumentFormatUtils.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "PWMBuildDialogController.h"
+#include "WeightMatrixIO.h"
+#include "WeightMatrixPlugin.h"
 
 #define SETTINGS_ROOT   QString("plugin_weight_matrix/")
 
@@ -90,7 +87,7 @@ PWMBuildDialogController::PWMBuildDialogController(QWidget* w)
 
 void PWMBuildDialogController::sl_inFileButtonClicked() {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getOpenFileName(this, tr("Select file with alignment"), lod, 
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Select file with alignment"), lod,
         DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true).append("\n").append(
         DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, false)));
     if (lod.url.isEmpty()) {
@@ -223,9 +220,9 @@ void PWMBuildDialogController::replaceLogo(const MAlignment& ma) {
 void PWMBuildDialogController::sl_outFileButtonClicked() {
     LastUsedDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
     if (frequencyButton->isChecked()) {
-        lod.url = QFileDialog::getSaveFileName(this, tr("Select file to save frequency matrix to..."), lod, WeightMatrixIO::getPFMFileFilter(false));
+        lod.url = U2FileDialog::getSaveFileName(this, tr("Select file to save frequency matrix to..."), lod, WeightMatrixIO::getPFMFileFilter(false));
     } else {
-        lod.url = QFileDialog::getSaveFileName(this, tr("Select file to save weight matrix to..."), lod, WeightMatrixIO::getPWMFileFilter(false));
+        lod.url = U2FileDialog::getSaveFileName(this, tr("Select file to save weight matrix to..."), lod, WeightMatrixIO::getPWMFileFilter(false));
     }
     if (lod.url.isEmpty()) {
         return;

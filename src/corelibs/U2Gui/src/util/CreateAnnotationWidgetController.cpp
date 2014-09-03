@@ -51,12 +51,10 @@
 #include <U2Core/TextUtils.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QGridLayout>
 #include <QtGui/QGroupBox>
 #else
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
@@ -450,7 +448,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
 void CreateAnnotationWidgetController::sl_onNewDocClicked() {
     QString openUrl = QFileInfo(newFileEdit->text()).absoluteDir().absolutePath();
     QString filter = DialogUtils::prepareDocumentsFileFilter(BaseDocumentFormats::PLAIN_GENBANK, false);
-    QString name = QFileDialog::getSaveFileName(NULL, tr("Save file"), openUrl, filter);
+    QString name = U2FileDialog::getSaveFileName(NULL, tr("Save file"), openUrl, filter);
     if (!name.isEmpty()) {
         newFileEdit->setText(name);
         AppContext::getSettings()->setValue(SETTINGS_LASTDIR, QFileInfo(name).absoluteDir().absolutePath(), true);

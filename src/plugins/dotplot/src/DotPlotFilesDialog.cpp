@@ -19,25 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#include "DotPlotFilesDialog.h"
-
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/U2SafePoints.h>
-
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Gui/HelpButton.h>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
 #else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
 #endif
 
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "DotPlotFilesDialog.h"
 
 namespace U2 {
 
@@ -82,7 +81,7 @@ void DotPlotFilesDialog::sl_mergeSecond() {
 void DotPlotFilesDialog::sl_openFirstFile() {
 
     LastUsedDirHelper lod("DotPlot first file");
-    lod.url = QFileDialog::getOpenFileName(NULL, tr("Open first file"), lod.dir, filter);
+    lod.url = U2FileDialog::getOpenFileName(NULL, tr("Open first file"), lod.dir, filter);
 
     SAFE_POINT(firstFileEdit, "firstFileEdit is NULL", );
     if (!lod.url.isEmpty()) {
@@ -114,7 +113,7 @@ void DotPlotFilesDialog::sl_openSecondFile() {
 
         lod.dir = lodFirst.dir;
     }
-    lod.url = QFileDialog::getOpenFileName(NULL, tr("Open second file"), lod.dir, filter);
+    lod.url = U2FileDialog::getOpenFileName(NULL, tr("Open second file"), lod.dir, filter);
 
     SAFE_POINT(secondFileEdit, "secondFileEdit is NULL", );
     if (!lod.url.isEmpty()) {

@@ -19,19 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include "WorkflowMetaDialog.h"
-
-#include <U2Lang/WorkflowUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
-#include <U2Designer/DesignerUtils.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QFileDialog>
-#endif
-#include <U2Gui/HelpButton.h>
 
+#include <U2Designer/DesignerUtils.h>
+
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include <U2Lang/WorkflowUtils.h>
+
+#include "WorkflowMetaDialog.h"
 
 namespace U2 {
 
@@ -85,7 +83,7 @@ void WorkflowMetaDialog::sl_onBrowse() {
         url = AppContext::getSettings()->getValue(LAST_DIR, QString("")).toString();
     }
     QString filter = DesignerUtils::getSchemaFileFilter(false);
-    url = QFileDialog::getSaveFileName(0, tr("Save workflow to file"), url, filter);
+    url = U2FileDialog::getSaveFileName(0, tr("Save workflow to file"), url, filter);
     if (!url.isEmpty()) {
         AppContext::getSettings()->setValue(LAST_DIR, QFileInfo(url).absoluteDir().absolutePath());
         urlEdit->setText(url);

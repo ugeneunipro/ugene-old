@@ -75,7 +75,6 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QGridLayout>
 #include <QtGui/QToolBar>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #include <QtGui/QFontDialog>
 #else
@@ -84,7 +83,6 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QToolBar>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QFontDialog>
 #endif
@@ -940,7 +938,7 @@ void MSAEditorUI::sl_saveScreenshot(){
 void MSAEditorUI::sl_saveSvgImage() {
 
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getSaveFileName(this, tr("Save SVG"),
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Save SVG"),
         lod.dir, tr("SVG files (*.svg)"));
 
     QSvgGenerator generator;

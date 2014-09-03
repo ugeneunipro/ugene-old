@@ -19,29 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#include "EditSequenceDialogController.h"
-#include "ui/ui_EditSequenceDialog.h"
-
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Formats/GenbankLocationParser.h>
-
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/HelpButton.h>
-
 #include <QtCore/QDir>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#endif
 #include <QtGui/QKeyEvent>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
+
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Formats/GenbankLocationParser.h>
+
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "EditSequenceDialogController.h"
+#include "ui/ui_EditSequenceDialog.h"
 
 namespace U2{
 
@@ -168,7 +168,7 @@ void EditSequenceDialogController::addSeqpasterWidget(){
 void EditSequenceDialogController::sl_browseButtonClicked(){
     LastUsedDirHelper h;
     
-    h.url = QFileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter);
+    h.url = U2FileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter);
     ui->filepathEdit->setText(h.url);
     sl_indexChanged(ui->formatBox->currentIndex());
 }

@@ -272,7 +272,7 @@ void PluginViewerController::sl_addPlugin() {
     
     QString ext=tr("genome_browser2_plugin_files")+" (*."+PLUGIN_FILE_EXT+")";
 
-    QString pluginFilePath = QFileDialog::getOpenFileName(ui.treeWidget, caption, lastDir, ext);
+    QString pluginFilePath = U2FileDialog::getOpenFileName(ui.treeWidget, caption, lastDir, ext);
     if (pluginFilePath.isEmpty())  {
         return;
     }

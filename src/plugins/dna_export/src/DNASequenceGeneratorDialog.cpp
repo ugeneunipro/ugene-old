@@ -19,27 +19,27 @@
 * MA 02110-1301, USA.
 */
 
-#include "DNASequenceGeneratorDialog.h"
-#include "DNASequenceGenerator.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
 
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/GObjectTypes.h>
 #include <U2Core/Settings.h>
 
-#include <U2Gui/SaveDocumentGroupController.h>
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "DNASequenceGeneratorDialog.h"
+#include "DNASequenceGenerator.h"
 
 namespace U2 {
 
@@ -104,7 +104,7 @@ void DNASequenceGeneratorDialog::sl_stateChanged(int state) {
 void DNASequenceGeneratorDialog::sl_browseReference() {
     LastUsedDirHelper lod;
     QString filter = DNASequenceGenerator::prepareReferenceFileFilter();
-    lod.url = QFileDialog::getOpenFileName(this, tr("Open file"), lod.dir, filter);
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Open file"), lod.dir, filter);
     inputEdit->setText(lod.url);
 }
 

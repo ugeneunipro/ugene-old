@@ -19,46 +19,44 @@
  * MA 02110-1301, USA.
  */
 
-#include "QueryViewController.h"
-#include "QueryViewItems.h"
-#include "QueryPalette.h"
-#include "QDSamples.h"
-#include "QueryEditor.h"
-#include "QDSceneIOTasks.h"
-#include "QDRunDialog.h"
-#include "QDGroupsEditor.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMenu>
+#include <QtGui/QMessageBox>
+#include <QtGui/QSplitter>
+#include <QtGui/QTabWidget>
+#include <QtGui/QToolBar>
+#else
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QSplitter>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QToolBar>
+#endif
 
-#include <U2Core/Log.h>
-#include <U2Core/L10n.h>
-#include <U2Core/Counter.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
+#include <U2Core/L10n.h>
+#include <U2Core/Log.h>
 #include <U2Core/Settings.h>
 #include <U2Core/TaskSignalMapper.h>
 
+#include <U2Designer/DelegateEditors.h>
+
 #include <U2Gui/GlassView.h>
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include <U2Lang/QueryDesignerRegistry.h>
 
-#include <U2Designer/DelegateEditors.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMenu>
-#include <QtGui/QToolBar>
-#include <QtGui/QTabWidget>
-#include <QtGui/QSplitter>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QSplitter>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#endif
-#include <U2Gui/HelpButton.h>
-
+#include "QDGroupsEditor.h"
+#include "QDRunDialog.h"
+#include "QDSamples.h"
+#include "QDSceneIOTasks.h"
+#include "QueryEditor.h"
+#include "QueryPalette.h"
+#include "QueryViewController.h"
+#include "QueryViewItems.h"
 
 namespace U2 {
     
@@ -927,7 +925,7 @@ void QueryViewController::sl_loadScene() {
         }
     }
     LastUsedDirHelper dir(QUERY_DESIGNER_ID);
-    dir.url = QFileDialog::getOpenFileName(this, tr("Load Schema"), dir, QString("*.%1").arg(QUERY_SCHEME_EXTENSION));
+    dir.url = U2FileDialog::getOpenFileName(this, tr("Load Schema"), dir, QString("*.%1").arg(QUERY_SCHEME_EXTENSION));
     if (!dir.url.isEmpty()) {
         QDLoadSceneTask* t = new QDLoadSceneTask(scene, dir.url);
         connect(new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_updateTitle()));
@@ -953,7 +951,7 @@ void QueryViewController::sl_saveScene() {
 
 void QueryViewController::sl_saveSceneAs() {
     LastUsedDirHelper dir(QUERY_DESIGNER_ID);
-    dir.url = QFileDialog::getSaveFileName(this, tr("Save Schema"), dir, QString("*.%1").arg(QUERY_SCHEME_EXTENSION));
+    dir.url = U2FileDialog::getSaveFileName(this, tr("Save Schema"), dir, QString("*.%1").arg(QUERY_SCHEME_EXTENSION));
     if (!dir.url.isEmpty()) {
         schemeUri = dir.url;
         sl_saveScene();

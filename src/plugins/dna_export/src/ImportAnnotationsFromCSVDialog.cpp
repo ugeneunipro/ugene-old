@@ -19,35 +19,34 @@
  * MA 02110-1301, USA.
  */
 
-#include "ImportAnnotationsFromCSVDialog.h"
-#include "ImportAnnotationsFromCSVTask.h"
-#include "CSVColumnConfigurationDialog.h"
+#include <QtCore/QFileInfo>
 
-#include <U2Core/L10n.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
+
+#include <U2Core/Annotation.h>
+#include <U2Core/AppContext.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/AppContext.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
 #include <U2Core/TextUtils.h>
 
-#include <U2Core/Annotation.h>
-
-#include <U2Gui/ScriptEditorDialog.h>
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
-#include <U2Gui/SaveDocumentGroupController.h>
 #include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Gui/ScriptEditorDialog.h>
+#include <U2Gui/U2FileDialog.h>
 
-#include <QtCore/QFileInfo>
+#include "ImportAnnotationsFromCSVDialog.h"
+#include "ImportAnnotationsFromCSVTask.h"
+#include "CSVColumnConfigurationDialog.h"
 
 //TODO: add complement token configuration
 //TODO: autodetect numeric columns, propose using them as start/end/length positions
@@ -327,7 +326,7 @@ void ImportAnnotationsFromCSVDialog::sl_readFileClicked() {
     // show the dialog
     LastUsedDirHelper lod("CSV");
     QString filter = DialogUtils::prepareFileFilter(tr("CSV Files"), QStringList() << "csv", true, QStringList());
-    lod.url = QFileDialog::getOpenFileName(this, tr("Select CSV file to read"), lod, filter);
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Select CSV file to read"), lod, filter);
     if (lod.url.isEmpty()) {
         return;
     }

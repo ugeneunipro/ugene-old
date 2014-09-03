@@ -49,14 +49,12 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
 #include <QtGui/QInputDialog>
 #include <QtGui/QHeaderView>
 #else
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QInputDialog>
 #include <QtWidgets/QHeaderView>
 #endif
@@ -310,7 +308,7 @@ void EnzymesSelectorWidget::updateStatus() {
 
 void EnzymesSelectorWidget::sl_openEnzymesFile() {
     LastUsedDirHelper dir(EnzymeSettings::DATA_DIR_KEY);
-    dir.url = QFileDialog::getOpenFileName(this, tr("Select enzyme database file"), dir.dir, EnzymesIO::getFileDialogFilter());
+    dir.url = U2FileDialog::getOpenFileName(this, tr("Select enzyme database file"), dir.dir, EnzymesIO::getFileDialogFilter());
     if (!dir.url.isEmpty()) {
         loadFile(dir.url);
     }
@@ -392,7 +390,7 @@ void EnzymesSelectorWidget::sl_saveSelectionToFile() {
     }
 
     LastUsedDirHelper dir;
-    dir.url = QFileDialog::getSaveFileName(this, tr("Select enzymes selection"), dir.dir );
+    dir.url = U2FileDialog::getSaveFileName(this, tr("Select enzymes selection"), dir.dir );
     if (!dir.url.isEmpty()) {
         QFile data(dir.url);
         if (!data.open(QFile::WriteOnly)) {
@@ -460,7 +458,7 @@ void EnzymesSelectorWidget::initSelection()
 void EnzymesSelectorWidget::sl_loadSelectionFromFile()
 {
     LastUsedDirHelper dir;
-    dir.url = QFileDialog::getOpenFileName(this, tr("Select enzymes selection"), dir.dir, DialogUtils::prepareFileFilter(tr("Selection files"), QStringList("*")) );
+    dir.url = U2FileDialog::getOpenFileName(this, tr("Select enzymes selection"), dir.dir, DialogUtils::prepareFileFilter(tr("Selection files"), QStringList("*")) );
     if (!dir.url.isEmpty()) {
 
         QFile selectionFile(dir.url);
@@ -512,7 +510,7 @@ void EnzymesSelectorWidget::sl_loadSelectionFromFile()
 void EnzymesSelectorWidget::sl_saveEnzymesFile()
 {
     LastUsedDirHelper dir(EnzymeSettings::DATA_DIR_KEY);
-    dir.url = QFileDialog::getSaveFileName(this, tr("Select enzyme database file"), dir.dir, EnzymesIO::getFileDialogFilter());
+    dir.url = U2FileDialog::getSaveFileName(this, tr("Select enzyme database file"), dir.dir, EnzymesIO::getFileDialogFilter());
     if (!dir.url.isEmpty()) {
         saveFile(dir.url);
     }

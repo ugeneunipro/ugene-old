@@ -19,33 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#include "DotPlotDialog.h"
-#include "DotPlotTasks.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QColorDialog>
+#else
+#include <QtWidgets/QColorDialog>
+#endif
 
-#include <U2Core/global.h>
-#include <U2Core/GObjectUtils.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/ProjectModel.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/global.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#include <QtGui/QColorDialog>
-#else
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QColorDialog>
-#endif
+#include "DotPlotDialog.h"
+#include "DotPlotTasks.h"
 
 namespace U2 {
 
@@ -245,7 +243,7 @@ void DotPlotDialog::sl_invertedDefaultColorButton() {
 void DotPlotDialog::sl_loadSequenceButton(){
     QString filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
     LastUsedDirHelper lod("DotPlot file");
-    lod.url = QFileDialog::getOpenFileName(this, tr("Open file"), lod.dir, filter);
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Open file"), lod.dir, filter);
     if(!lod.url.isEmpty()){
         Task *tasks = new Task("Adding document to the project", TaskFlag_NoRun);
 

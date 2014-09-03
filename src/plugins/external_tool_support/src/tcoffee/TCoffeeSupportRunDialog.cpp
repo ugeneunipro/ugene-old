@@ -19,24 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "TCoffeeSupportRunDialog.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QToolButton>
+#endif
+
 #include <U2Core/DocumentUtils.h>
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Core/GUrlUtils.h>
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
-#include <QtGui/QToolButton>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "TCoffeeSupportRunDialog.h"
 
 namespace U2 {
 
@@ -93,7 +94,7 @@ TCoffeeWithExtFileSpecifySupportRunDialog::TCoffeeWithExtFileSpecifySupportRunDi
 
 void TCoffeeWithExtFileSpecifySupportRunDialog::sl_inputPathButtonClicked() {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getOpenFileName(this, tr("Open an alignment file"), lod.dir, 
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Open an alignment file"), lod.dir,
         DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
     if (lod.url.isEmpty()) {
         return;
@@ -103,7 +104,7 @@ void TCoffeeWithExtFileSpecifySupportRunDialog::sl_inputPathButtonClicked() {
 
 void TCoffeeWithExtFileSpecifySupportRunDialog::sl_outputPathButtonClicked() {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getSaveFileName(this, tr("Save an multiple alignment file"), lod.dir);
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Save an multiple alignment file"), lod.dir);
     if (lod.url.isEmpty()) {
         return;
     }

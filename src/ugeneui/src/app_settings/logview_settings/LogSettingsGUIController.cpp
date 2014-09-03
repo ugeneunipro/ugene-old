@@ -19,25 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "LogSettingsGUIController.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QMessageBox>
+#include <QtGui/QColorDialog>
+#include <QtGui/QHeaderView>
+#include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QToolButton>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/LogCache.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QHeaderView>
-#include <QtGui/QToolButton>
-#include <QtGui/QColorDialog>
-#include <QtGui/QFileDialog>
-#include <QMessageBox>
-#else
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QColorDialog>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2Gui/U2FileDialog.h>
+
+#include "LogSettingsGUIController.h"
 
 namespace U2 {
 
@@ -296,7 +296,7 @@ void LogSettingsPageWidget::sl_outFileStateChanged(int state){
 }
 
 void LogSettingsPageWidget::sl_browseFileClicked(){
-    outFileEdit->setText(QFileDialog::getSaveFileName());
+    outFileEdit->setText(U2FileDialog::getSaveFileName());
 }
 
 void LogSettingsPageWidget::updateColorLabel(QLabel* l, const QString& color) {

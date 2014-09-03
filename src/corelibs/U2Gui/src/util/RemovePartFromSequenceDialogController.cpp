@@ -19,31 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#include "RemovePartFromSequenceDialogController.h"
-#include "ui/ui_RemovePartFromSequenceDialog.h"
+#include <QtCore/QDir>
 
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/AppContext.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
+
 #include <U2Core/AnnotationData.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/ModifySequenceObjectTask.h>
 
 #include <U2Formats/GenbankLocationParser.h>
 
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
-#include <QtCore/QDir>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
-#endif
+#include "RemovePartFromSequenceDialogController.h"
+#include "ui/ui_RemovePartFromSequenceDialog.h"
 
 namespace U2{
 
@@ -107,7 +106,7 @@ void RemovePartFromSequenceDialogController::accept(){
 void RemovePartFromSequenceDialogController::sl_browseButtonClicked(){
     LastUsedDirHelper h;
     
-    h.url = QFileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter);
+    h.url = U2FileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter);
     ui->filepathEdit->setText(h.url);
     sl_indexChanged(ui->formatBox->currentIndex());
 }

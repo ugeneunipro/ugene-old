@@ -19,36 +19,39 @@
  * MA 02110-1301, USA.
  */
 
-#include "SmithWatermanDialogImpl.h"
-
-#include <QtCore/QStringList>
 #include <QtCore/QRegExp>
+#include <QtCore/QStringList>
+
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
 #include <QtGui/QCheckBox>
+#include <QtGui/QMessageBox>
 #else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QMessageBox>
 #endif
 
+#include <U2Algorithm/SmithWatermanReportCallback.h>
+
 #include <U2Core/AppContext.h>
-#include <U2Core/Log.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Gui/CreateAnnotationWidgetController.h>
-#include <U2Remote/RemoteMachineMonitorDialogController.h>
-#include <U2View/ADVSequenceObjectContext.h>
-#include <U2Core/TextUtils.h>
-#include <U2Core/DNASequenceSelection.h>
-#include <U2Gui/DialogUtils.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Settings.h>
-#include <U2Gui/HelpButton.h>
+#include <U2Core/TextUtils.h>
 
-#include <U2Algorithm/SmithWatermanReportCallback.h>
+#include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include <U2Remote/RemoteMachineMonitorDialogController.h>
+
+#include <U2View/ADVSequenceObjectContext.h>
+
 #include "SubstMatrixDialog.h"
+#include "SmithWatermanDialogImpl.h"
 
 const QString SETTINGS_LASTDIR = "save_align_files/last_dir";
 
@@ -419,7 +422,7 @@ void SmithWatermanDialog::templateEditLostFocus()
 void SmithWatermanDialog::sl_browseAlignFilesDir()
 {
     const QString openUrl = QFileInfo(alignmentFilesPath->text()).absoluteDir().absolutePath();
-    const QString name = QFileDialog::getExistingDirectory(this, tr("Choose folder"), openUrl);
+    const QString name = U2FileDialog::getExistingDirectory(this, tr("Choose folder"), openUrl);
     if (!name.isEmpty()) {
         alignmentFilesPath->setText(name + '/');
         AppContext::getSettings()->setValue(SETTINGS_LASTDIR, name, true);

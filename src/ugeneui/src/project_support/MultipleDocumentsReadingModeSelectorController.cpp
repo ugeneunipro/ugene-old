@@ -1,22 +1,39 @@
-#include "MultipleDocumentsReadingModeSelectorController.h"
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
 
-#include <U2Core/DocumentModel.h>
-#include <U2Core/ProjectModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/GUrlUtils.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/LocalFileAdapter.h>
+#include <U2Core/ProjectModel.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Gui/LastUsedDirHelper.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QFileDialog>
-#endif
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "MultipleDocumentsReadingModeSelectorController.h"
 
 namespace U2{
 
@@ -40,7 +57,7 @@ void MultipleDocumentsReadingModeDialog::sl_onChooseDirPath(){
     fileFormats.append("All files (*)");
 
     LastUsedDirHelper helper("SaveMergeDocumentsAsOneDocument");
-    helper.url = QFileDialog::getSaveFileName(this, tr("Select file to save new document"), helper.dir, fileFormats, 
+    helper.url = U2FileDialog::getSaveFileName(this, tr("Select file to save new document"), helper.dir, fileFormats, 
         NULL, QFileDialog::DontConfirmOverwrite);
     if(!helper.url.isEmpty()){
         newDocUrl->setText(helper.url);

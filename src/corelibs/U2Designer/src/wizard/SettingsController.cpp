@@ -19,20 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
-
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLineEdit>
-#include <QtGui/QFileDialog>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
 #else
 #include <QtWidgets/QLineEdit>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
 #endif
+
+#include <U2Core/AppContext.h>
+#include <U2Core/Settings.h>
+
+#include <U2Gui/U2FileDialog.h>
 
 #include "SettingsController.h"
 
@@ -68,7 +68,7 @@ void SettingsController::sl_valueChanged() {
 
 void SettingsController::sl_fileSelect() {
     if (sw->type() == TYPE_URL) {
-        QString newValue = QFileDialog::getExistingDirectory();
+        QString newValue = U2FileDialog::getExistingDirectory();
         if (!newValue.isEmpty()) {
             lineEdit->setText(newValue);
             sl_valueChanged();

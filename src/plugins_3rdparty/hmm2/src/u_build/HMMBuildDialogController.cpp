@@ -1,34 +1,52 @@
-#include "HMMBuildDialogController.h"
-#include "TaskLocalStorage.h"
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
 
-#include <HMMIO.h>
-#include <hmmer2/funcs.h>
-
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/Counter.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/U2OpStatusUtils.h>
-
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/DialogUtils.h>
-
-#include <U2Gui/HelpButton.h>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
 #include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
+#include <QtGui/QPushButton>
 #else
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QPushButton>
 #endif
 
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/Counter.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/U2OpStatusUtils.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "HMMBuildDialogController.h"
+#include "HMMIO.h"
+#include "TaskLocalStorage.h"
+#include "hmmer2/funcs.h"
 
 namespace U2 {
 HMMBuildDialogController::HMMBuildDialogController(const QString& _pn, const MAlignment& _ma, QWidget* p) 
@@ -58,7 +76,7 @@ HMMBuildDialogController::HMMBuildDialogController(const QString& _pn, const MAl
 
 void HMMBuildDialogController::sl_msaFileClicked() {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getOpenFileName(this, tr("select_file_with_alignment"), 
+    lod.url = U2FileDialog::getOpenFileName(this, tr("select_file_with_alignment"),
         lod, DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
     
     if (lod.url.isEmpty()) {
@@ -70,7 +88,7 @@ void HMMBuildDialogController::sl_msaFileClicked() {
 
 void HMMBuildDialogController::sl_resultFileClicked() {
     LastUsedDirHelper lod(HMMIO::HMM_ID);
-    lod.url = QFileDialog::getSaveFileName(this, tr("Select file with HMM profile"), lod, HMMIO::getHMMFileFilter());
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Select file with HMM profile"), lod, HMMIO::getHMMFileFilter());
     if (lod.url.isEmpty()) {
         return;
     }

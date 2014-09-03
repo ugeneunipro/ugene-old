@@ -19,25 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#include "TestViewController.h"
-#include "TestRunnerPlugin.h"
-#include <U2Test/TestRunnerTask.h>
-#include "TestViewReporter.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
-#include <U2Test/GTest.h>
-#include <U2Test/GTestFrameworkComponents.h>
-#include <U2Core/IOAdapter.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMenu>
-#include <QtGui/QFileDialog>
 #include <QtGui/QToolBar>
 #else
 #include <QtWidgets/QMenu>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QToolBar>
 #endif
+
+#include <U2Core/AppContext.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/Settings.h>
+
+#include <U2Gui/U2FileDialog.h>
+
+#include <U2Test/GTest.h>
+#include <U2Test/GTestFrameworkComponents.h>
+#include <U2Test/TestRunnerTask.h>
+
+#include "TestRunnerPlugin.h"
+#include "TestViewController.h"
+#include "TestViewReporter.h"
 
 //todo: remember splitter geom
 
@@ -458,7 +460,7 @@ void TestViewReporter::setupViewMenu(QMenu* m) {
 
 void TestViewReporter::sl_save(){
     QString dir = AppContext::getSettings()->getValue(SETTINGS_ROOT + "lastDir", QString()).toString();
-    QString file = QFileDialog::getSaveFileName(this, tr("select_save_path"), dir,tr("*.html"));
+    QString file = U2FileDialog::getSaveFileName(this, tr("select_save_path"), dir,tr("*.html"));
     if (file.isEmpty()) {
         return;
     }

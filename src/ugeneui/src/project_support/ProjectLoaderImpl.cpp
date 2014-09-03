@@ -19,43 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "ProjectLoaderImpl.h"
-#include "DocumentFormatSelectorController.h"
-#include "DocumentReadingModeSelectorController.h"
-#include "MultipleDocumentsReadingModeSelectorController.h"
-#include "ProjectTasksGui.h"
-#include "ProjectImpl.h"
-#include "project_view/ProjectViewImpl.h"
-
-#include <U2Core/AddDocumentTask.h>
-#include <U2Core/Settings.h>
-#include <U2Core/ServiceTypes.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/CMDLineUtils.h>
-#include <U2Core/DocumentImport.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/L10n.h>
-#include <U2Core/CMDLineCoreOptions.h>
-
-#include <U2Gui/LastUsedDirHelper.h>
-
-#include <U2Gui/SharedConnectionsDialog.h>
-#include <U2Gui/CreateDocumentFromTextDialogController.h>
-#include <U2Gui/SearchGenbankSequenceDialogController.h>
-#include <U2Gui/DownloadRemoteFileDialog.h>
-#include <U2Gui/ObjectViewModel.h>
-#include <U2Gui/ProjectView.h>
-#include <U2Gui/MainWindow.h>
-#include <U2Gui/OpenViewTask.h>
-#include <U2Gui/HelpButton.h>
-
-#include <U2View/DnaAssemblyGUIExtension.h>
-
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
 #include <QtGui/QPushButton>
@@ -64,6 +27,42 @@
 #include <QtWidgets/QPushButton>
 #endif
 
+#include <U2Core/AddDocumentTask.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/CMDLineCoreOptions.h>
+#include <U2Core/CMDLineUtils.h>
+#include <U2Core/DocumentImport.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/L10n.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/ServiceTypes.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/CreateDocumentFromTextDialogController.h>
+#include <U2Gui/DownloadRemoteFileDialog.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/OpenViewTask.h>
+#include <U2Gui/ProjectView.h>
+#include <U2Gui/SearchGenbankSequenceDialogController.h>
+#include <U2Gui/SharedConnectionsDialog.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include <U2View/DnaAssemblyGUIExtension.h>
+
+#include "DocumentFormatSelectorController.h"
+#include "DocumentReadingModeSelectorController.h"
+#include "MultipleDocumentsReadingModeSelectorController.h"
+#include "ProjectImpl.h"
+#include "ProjectLoaderImpl.h"
+#include "ProjectTasksGui.h"
+#include "project_view/ProjectViewImpl.h"
 
 namespace U2 {
 
@@ -204,11 +203,11 @@ void ProjectLoaderImpl::sl_openProject() {
 
 #ifdef Q_OS_MAC
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-        files = QFileDialog::getOpenFileNames(QApplication::activeWindow(), tr("Select files to open"), h.dir,  filter, 0, QFileDialog::DontUseNativeDialog);
+        files = U2FileDialog::getOpenFileNames(QApplication::activeWindow(), tr("Select files to open"), h.dir,  filter, 0, QFileDialog::DontUseNativeDialog);
     } else
 #endif
 
-    files = QFileDialog::getOpenFileNames(QApplication::activeWindow(), tr("Select files to open"), h.dir,  filter);
+    files = U2FileDialog::getOpenFileNames(QApplication::activeWindow(), tr("Select files to open"), h.dir,  filter);
 
     if (files.isEmpty()) {
         return;
@@ -738,7 +737,7 @@ void ProjectDialogController::keyPressEvent(QKeyEvent* event) {
 }
 
 void ProjectDialogController::sl_folderSelectClicked() {
-    QString folder = QFileDialog::getExistingDirectory(this, tr("Choose directory"), projectFolderEdit->text());
+    QString folder = U2FileDialog::getExistingDirectory(this, tr("Choose directory"), projectFolderEdit->text());
     if (folder.isEmpty()) return;
     projectFolderEdit->setText(folder);
     updateState();
@@ -788,7 +787,7 @@ Project* ProjectLoaderImpl::createProject(const QString& name, const QString& ur
 void ProjectLoaderImpl::sl_onAddExistingDocument(){
     LastUsedDirHelper h;
     QString filter = DialogUtils::prepareDocumentsFileFilter(true);
-    QString file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open"), h.dir,  filter);
+    QString file = U2FileDialog::getOpenFileName(NULL, tr("Select files to open"), h.dir,  filter);
     if (file.isEmpty()) {
         return;
     }

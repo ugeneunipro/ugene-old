@@ -19,11 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#include <QContextMenuEvent>
-#include <QDesktopWidget>
-#include <QFileDialog>
-#include <QInputDialog>
-#include <QMessageBox>
+#include <QtGui/QContextMenuEvent>
+#include <QtGui/QDesktopWidget>
+#include <QtGui/QInputDialog>
+#include <QtGui/QMessageBox>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
@@ -35,6 +34,7 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ProjectTreeControllerModeSettings.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include <U2Lang/SharedDbUrlUtils.h>
 
@@ -102,10 +102,10 @@ void URLListWidget::sl_addFileButton() {
     QStringList files;
 #ifdef Q_OS_MAC
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-        files = QFileDialog::getOpenFileNames(NULL, tr("Select file"), lod.dir, "", 0, QFileDialog::DontUseNativeDialog);
+        files = U2FileDialog::getOpenFileNames(NULL, tr("Select file"), lod.dir, "", 0, QFileDialog::DontUseNativeDialog);
     } else
 #endif
-    files = QFileDialog::getOpenFileNames(NULL, tr("Select file"), lod.dir);
+    files = U2FileDialog::getOpenFileNames(NULL, tr("Select file"), lod.dir);
     foreach (const QString &file, files) {
         lod.url = file;
         addUrl(file);
@@ -114,7 +114,7 @@ void URLListWidget::sl_addFileButton() {
 
 void URLListWidget::sl_addDirButton() {
     LastUsedDirHelper lod;
-    QString dir = QFileDialog::getExistingDirectory(NULL, tr("Select a directory"), lod.dir);
+    QString dir = U2FileDialog::getExistingDirectory(NULL, tr("Select a directory"), lod.dir);
     if (!dir.isEmpty()) {
         lod.dir = dir;
         addUrl(dir);

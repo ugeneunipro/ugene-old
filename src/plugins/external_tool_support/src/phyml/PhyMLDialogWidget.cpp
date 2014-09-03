@@ -19,11 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "PhyMLDialogWidget.h"
-#include "PhyMLSupport.h"
-
-#include "ExternalToolSupportSettingsController.h"
-#include "ExternalToolSupportSettings.h"
+#include <QtGui/QMessageBox>
 
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DNAAlphabet.h>
@@ -32,9 +28,12 @@
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
+#include "PhyMLDialogWidget.h"
+#include "PhyMLSupport.h"
+#include "ExternalToolSupportSettingsController.h"
+#include "ExternalToolSupportSettings.h"
 
 namespace U2 {
 
@@ -166,7 +165,7 @@ void PhyMlWidget::sl_checkTreeImprovement(int newIndex) {
 
 void PhyMlWidget::sl_inputPathButtonClicked() {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getOpenFileName(this, tr("Open an alignment file"), lod.dir, 
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Open an alignment file"), lod.dir,
         DialogUtils::prepareDocumentsFileFilter(BaseDocumentFormats::NEWICK, false));
     if (lod.url.isEmpty()) {
         return;

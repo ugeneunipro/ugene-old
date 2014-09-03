@@ -20,36 +20,36 @@
  */
 
 #include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#endif
+
 #include <QtGui/QKeyEvent>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
+
+#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+
 #include <U2Core/AppContext.h>
-#include <U2Core/DocumentModel.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
-#include <U2Core/GUrlUtils.h>
 #include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/SAMFormat.h>
 
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/AppSettingsGUI.h>
-
-#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include <U2View/DnaAssemblyUtils.h>
 
 #include "DnaAssemblyDialog.h"
 #include "DnaAssemblyGUIExtension.h"
-#include <U2Gui/HelpButton.h>
-
 
 namespace U2 {
 
@@ -148,10 +148,10 @@ void DnaAssemblyDialog::sl_onAddShortReadsButtonClicked() {
     QStringList fileNames;
 #ifdef Q_OS_MAC
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-        fileNames = QFileDialog::getOpenFileNames(this, tr("Add short reads"), lod.dir, QString(), 0, QFileDialog::DontUseNativeDialog );
+        fileNames = U2FileDialog::getOpenFileNames(this, tr("Add short reads"), lod.dir, QString(), 0, QFileDialog::DontUseNativeDialog );
     } else
 #endif
-    fileNames = QFileDialog::getOpenFileNames(this, tr("Add short reads"), lod.dir);
+    fileNames = U2FileDialog::getOpenFileNames(this, tr("Add short reads"), lod.dir);
     if (fileNames.isEmpty()) {
         return;
     }
@@ -171,11 +171,11 @@ void DnaAssemblyDialog::sl_onAddRefButtonClicked() {
     QString filter;
 #ifdef Q_OS_MAC
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-        lod.url = QFileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter, 0, QFileDialog::DontUseNativeDialog );
+        lod.url = U2FileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter, 0, QFileDialog::DontUseNativeDialog );
     } else
 #endif
 
-    lod.url = QFileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter);
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter);
     if (lod.url.isEmpty()) {
         return;
     }
@@ -290,7 +290,7 @@ void DnaAssemblyDialog::sl_onRemoveShortReadsButtonClicked() {
 
 void DnaAssemblyDialog::sl_onSetResultFileNameButtonClicked() {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getSaveFileName(this, tr("Set result alignment file name"), lod.dir);
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Set result alignment file name"), lod.dir);
     if (!lod.url.isEmpty()) {
         GUrl result = lod.url;
         buildResultUrl(result);

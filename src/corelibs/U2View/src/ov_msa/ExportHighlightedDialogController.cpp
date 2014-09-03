@@ -19,18 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportHighlightedDialogController.h"
-
-#include <U2Gui/LastUsedDirHelper.h>
-#include <ov_msa/MSAEditorSequenceArea.h>
-#include <qfiledialog.h>
-#include <U2Gui/HelpButton.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
 #else
 #include <QtWidgets/QPushButton>
 #endif
 
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "ExportHighlightedDialogController.h"
+#include "ov_msa/MSAEditorSequenceArea.h"
 
 namespace U2{
 
@@ -83,7 +83,7 @@ void ExportHighligtningDialogController::accept(){
 void ExportHighligtningDialogController::sl_fileButtonClicked(){
     LastUsedDirHelper h;
 
-    h.url = QFileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir);
+    h.url = U2FileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir);
     fileNameEdit->setText(h.url);
 }
 

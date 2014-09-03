@@ -50,7 +50,6 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QMenu>
 #include <QtGui/QToolBar>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QScrollBar>
@@ -61,7 +60,6 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QToolBar>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QScrollBar>

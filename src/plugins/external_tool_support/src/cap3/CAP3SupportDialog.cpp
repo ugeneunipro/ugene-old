@@ -19,21 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#include "CAP3SupportDialog.h"
-#include "CAP3SupportTask.h"
-
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/HelpButton.h>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
 #include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
+#include <QtGui/QPushButton>
 #else
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QPushButton>
 #endif
 
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "CAP3SupportDialog.h"
+#include "CAP3SupportTask.h"
 
 namespace U2 {
 ////////////////////////////////////////
@@ -136,7 +135,7 @@ void CAP3SupportDialog::accept()
 void CAP3SupportDialog::sl_onAddButtonClicked()
 {
     LastUsedDirHelper lod;
-    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Add Sequences to Assembly"), lod.dir);
+    QStringList fileNames = U2FileDialog::getOpenFileNames(this, tr("Add Sequences to Assembly"), lod.dir);
     if (fileNames.isEmpty()) {
         return;
     }
@@ -167,7 +166,7 @@ void CAP3SupportDialog::sl_onSpecifyOutputPathButtonClicked()
 {
     
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getSaveFileName(this, tr("Set Result Contig File Name"), lod.dir, tr("ACE format (*.ace)"));
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Set Result Contig File Name"), lod.dir, tr("ACE format (*.ace)"));
     if (!lod.url.isEmpty()) {
         GUrl result = lod.url;
         if (result.lastFileSuffix().isEmpty()) {

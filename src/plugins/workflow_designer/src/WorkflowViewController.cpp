@@ -19,20 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-
 #include <algorithm>
 #include <functional>
 
 #include <QtCore/QFileInfo>
+
 #include <QtGui/QClipboard>
 #include <QtGui/QCloseEvent>
 #include <QtGui/QPainter>
 #include <QtGui/QPixmap>
 
+#include <QtSvg/QSvgGenerator>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QBoxLayout>
 #include <QtGui/QComboBox>
-#include <QtGui/QFileDialog>
 #include <QtGui/QGraphicsSceneMouseEvent>
 #include <QtGui/QGraphicsView>
 #include <QtGui/QMainWindow>
@@ -46,9 +47,9 @@
 #include <QtGui/QToolButton>
 #else
 #include <QtPrintSupport/QPrinter>
+
 #include <QtWidgets/QBoxLayout>
 #include <QtWidgets/QComboBox>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QGraphicsSceneMouseEvent>
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QMainWindow>
@@ -60,8 +61,6 @@
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QToolButton>
 #endif
-
-#include <QtSvg/QSvgGenerator>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
@@ -90,6 +89,7 @@
 #include <U2Gui/GlassView.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/MainWindow.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include <U2Lang/ActorModel.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
@@ -911,7 +911,7 @@ namespace {
 
 void WorkflowView::sl_appendExternalToolWorker() {
     QString filter = DialogUtils::prepareFileFilter(WorkflowUtils::tr("UGENE workflow element"), QStringList() << "etc", true);
-    QString url = QFileDialog::getOpenFileName(this, tr("Add element"), QString(), filter);
+    QString url = U2FileDialog::getOpenFileName(this, tr("Add element"), QString(), filter);
     if (!url.isEmpty()) {
         IOAdapter *io = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(GUrl(url)))->createIOAdapter();
         if(!io->open(url, IOAdapterMode_Read)) {
@@ -2209,10 +2209,10 @@ void WorkflowView::sl_loadScene() {
     QString url;
 #ifdef Q_OS_MAC
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-        url = QFileDialog::getOpenFileName(0, tr("Open workflow file"), dir, filter, 0, QFileDialog::DontUseNativeDialog);
+        url = U2FileDialog::getOpenFileName(0, tr("Open workflow file"), dir, filter, 0, QFileDialog::DontUseNativeDialog);
     }else
 #endif
-    url = QFileDialog::getOpenFileName(0, tr("Open workflow file"), dir, filter);
+    url = U2FileDialog::getOpenFileName(0, tr("Open workflow file"), dir, filter);
     if (!url.isEmpty()) {
         AppContext::getSettings()->setValue(LAST_DIR, QFileInfo(url).absoluteDir().absolutePath());
         sl_loadScene(url, false);

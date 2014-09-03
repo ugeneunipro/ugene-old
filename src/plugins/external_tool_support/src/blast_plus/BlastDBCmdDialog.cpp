@@ -19,19 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include "BlastDBCmdDialog.h"
-
-#include <U2Gui/LastUsedDirHelper.h>
-
-#include <U2Gui/HelpButton.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
 #else
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
 #endif
 
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "BlastDBCmdDialog.h"
 
 namespace U2 {
 
@@ -72,7 +70,7 @@ void BlastDBCmdDialog::sl_onSelectInputDbButtonClick()
     LastUsedDirHelper lod("Database Directory");
 
     QString name;
-    lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a database file"), lod.dir);
+    lod.url = name = U2FileDialog::getOpenFileName(NULL, tr("Select a database file"), lod.dir);
     if (!name.isEmpty()) {
         QFileInfo fileInfo(name);
         QString dbName = fileInfo.filePath().replace(QRegExp(".(phr|pin|psq|nhr|nin|nsq)", Qt::CaseInsensitive), QString());
@@ -86,7 +84,7 @@ void BlastDBCmdDialog::sl_onSelectInputDbButtonClick()
 void BlastDBCmdDialog::sl_onSelectOutputFileButtonClick()
 {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getSaveFileName(this, tr("Set a result FASTA file name"), lod.dir);
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Set a result FASTA file name"), lod.dir);
     if (!lod.url.isEmpty()) {
         GUrl result = lod.url;
         if (result.lastFileSuffix().isEmpty()) {

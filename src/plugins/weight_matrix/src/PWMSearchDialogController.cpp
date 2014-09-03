@@ -59,12 +59,10 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QMessageBox>
 #include <QtGui/QListWidgetItem>
-#include <QtGui/QFileDialog>
 #else
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QListWidgetItem>
-#include <QtWidgets/QFileDialog>
 #endif
 
 namespace U2 {
@@ -219,7 +217,7 @@ bool PWMSearchDialogController::eventFilter(QObject *obj, QEvent *ev) {
 
 void PWMSearchDialogController::sl_selectModelFile() {
     LastUsedDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
-    lod.url = QFileDialog::getOpenFileName(this, tr("Select file with frequency or weight matrix"), lod, 
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Select file with frequency or weight matrix"), lod,
          WeightMatrixIO::getAllMatrixFileFilter(false) + ";;" +
          WeightMatrixIO::getPFMFileFilter(false) + ";;" +
          WeightMatrixIO::getPWMFileFilter(true));
@@ -357,7 +355,7 @@ void PWMSearchDialogController::sl_onViewMatrix() {
 
 void PWMSearchDialogController::sl_onLoadList() {
     LastUsedDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
-    lod.url = QFileDialog::getOpenFileName(this, tr("Load file with list of matrices"), lod, tr("CSV files (*.csv)"));
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Load file with list of matrices"), lod, tr("CSV files (*.csv)"));
     if (lod.url.isEmpty()) {
         return;
     }
@@ -397,7 +395,7 @@ void PWMSearchDialogController::sl_onSaveList() {
         return;
     }
     LastUsedDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
-    lod.url = QFileDialog::getSaveFileName(this, tr("Save file with list of matrices"), lod, tr("CSV files (*.csv)"));
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Save file with list of matrices"), lod, tr("CSV files (*.csv)"));
     if (lod.url.isEmpty()) {
         return;
     }
@@ -424,7 +422,7 @@ void PWMSearchDialogController::sl_onClearQueue() {
 
 void PWMSearchDialogController::sl_onLoadFolder() {
     LastUsedDirHelper lod(WeightMatrixIO::WEIGHT_MATRIX_ID);
-    lod.dir = QFileDialog::getExistingDirectory(this, tr("Select directory with frequency or weight matrices"), lod);
+    lod.dir = U2FileDialog::getExistingDirectory(this, tr("Select directory with frequency or weight matrices"), lod);
     if (lod.dir.isEmpty()) {
         return;
     }

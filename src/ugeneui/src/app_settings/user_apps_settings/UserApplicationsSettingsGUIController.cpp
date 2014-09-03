@@ -19,26 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#include "UserApplicationsSettingsGUIController.h"
+#include <QtCore/QFile>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QStyleFactory>
+#else
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QStyleFactory>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/CleanupFileStorageTask.h>
-#include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/Log.h>
+#include <U2Core/TmpDirChecker.h>
+#include <U2Core/UserApplicationsSettings.h>
 
-#include <QtCore/QFile>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QStyleFactory>
-#include <QtGui/QFileDialog>
-#include <QtGui/QDialogButtonBox>
-#else
-#include <QtWidgets/QStyleFactory>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QDialogButtonBox>
-#endif
+#include <U2Gui/U2FileDialog.h>
 
-#include "U2Core/TmpDirChecker.h"
+#include "UserApplicationsSettingsGUIController.h"
 
 namespace U2
 {
@@ -218,14 +218,14 @@ AppSettingsGUIPageState* UserApplicationsSettingsPageWidget::getState(QString& e
 }
 
 void UserApplicationsSettingsPageWidget::sl_wbURLClicked() {
-    QString file = QFileDialog::getOpenFileName(this, tr("select_wb_file_title"), QString(), 0);
+    QString file = U2FileDialog::getOpenFileName(this, tr("select_wb_file_title"), QString(), 0);
     if (!file.isEmpty()) {
         webBrowserEdit->setText(file);
     }
 }
 
 void UserApplicationsSettingsPageWidget::sl_transFileClicked() {
-    QString file = QFileDialog::getOpenFileName(this, tr("select_trans_file_title"), QString(), 0);
+    QString file = U2FileDialog::getOpenFileName(this, tr("select_trans_file_title"), QString(), 0);
     if (!file.isEmpty()) {
         QFileInfo fi(file);
         int idx = langCombo->findData(fi.baseName());
@@ -246,7 +246,7 @@ void UserApplicationsSettingsPageWidget::sl_transFileClicked() {
 void UserApplicationsSettingsPageWidget::sl_browseButtonClicked()
 {
     QString path = downloadsDirPathEdit->text();
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
+    QString dir = U2FileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!dir.isEmpty()) {
         downloadsDirPathEdit->setText(dir);
@@ -258,7 +258,7 @@ void UserApplicationsSettingsPageWidget::sl_browseTmpDirButtonClicked()
 {
 
     QString path = tmpDirPathEdit->text();
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
+    QString dir = U2FileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!dir.isEmpty()) {
         tmpDirPathEdit->setText(dir);
@@ -270,7 +270,7 @@ void UserApplicationsSettingsPageWidget::sl_browseFileStorageButtonClicked()
 {
 
     QString path = fileStorageDirPathEdit->text();
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
+    QString dir = U2FileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!dir.isEmpty()) {
         fileStorageDirPathEdit->setText(dir);

@@ -19,53 +19,48 @@
  * MA 02110-1301, USA.
  */
 
-#include "PairAlign.h"
-#include "../SequenceSelectorWidgetController.h"
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtCore/QVariant>
 
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QLayout>
+#else
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLayout>
+#endif
 
-#include <U2Core/MAlignmentObject.h>
+#include <U2Algorithm/BuiltInDistanceAlgorithms.h>
+#include <U2Algorithm/MSADistanceAlgorithm.h>
+#include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
+#include <U2Algorithm/PairwiseAlignmentRegistry.h>
+#include <U2Algorithm/PairwiseAlignmentTask.h>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/UserApplicationsSettings.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/L10n.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/Task.h>
+#include <U2Core/U2Alphabet.h>
 #include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2Msa.h>
+#include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/U2Alphabet.h>
-#include <U2Core/U2MsaDbi.h>
-#include <U2Core/U2Msa.h>
 #include <U2Core/U2SequenceDbi.h>
-#include <U2Core/Task.h>
-#include <U2Core/L10n.h>
+#include <U2Core/UserApplicationsSettings.h>
+
+#include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include <U2View/MSAEditorNameList.h>
 #include <U2View/MSAEditorSequenceArea.h>
-
-
-#include <U2Algorithm/PairwiseAlignmentRegistry.h>
-#include <U2Algorithm/PairwiseAlignmentTask.h>
-#include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
-#include <U2Algorithm/MSADistanceAlgorithm.h>
-#include <U2Algorithm/BuiltInDistanceAlgorithms.h>
-
 #include <U2View/PairwiseAlignmentGUIExtension.h>
 
-#include <U2Gui/ShowHideSubgroupWidget.h>
-
-#include <QtCore/QVariant>
-#include <QtCore/QString>
-#include <QtCore/QStringList>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#include <QtGui/QLayout>
-#include <QtGui/QHBoxLayout>
-#else
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QLayout>
-#include <QtWidgets/QHBoxLayout>
-#endif
-
+#include "PairAlign.h"
+#include "../SequenceSelectorWidgetController.h"
 
 inline U2::U2DataId getSequenceIdByRowId( U2::MSAEditor* msa, qint64 rowId, U2::U2OpStatus &os ) {
     U2::MAlignmentRow row = msa->getMSAObject()->getMAlignment().getRowByRowId(rowId, os);
@@ -282,7 +277,7 @@ void PairAlign::sl_inNewWindowCheckBoxChangeState(bool newState) {
 }
 
 void PairAlign::sl_selectFileButtonClicked() {
-    QString fileName = QFileDialog::getSaveFileName(NULL, tr("Save file"), "", tr("Clustal format (*.aln)"));
+    QString fileName = U2FileDialog::getSaveFileName(NULL, tr("Save file"), "", tr("Clustal format (*.aln)"));
     if (false == fileName.isEmpty()) {
         outputFileLineEdit->setText(fileName);
     }

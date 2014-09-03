@@ -19,27 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#include "DialogUtils.h"
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include <U2Core/AppContext.h>
-#include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentImport.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/FormatUtils.h>
 #include <U2Core/Settings.h>
 #include <U2Core/Task.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
-#include <QtCore/QDir>
-#include <QtCore/QCoreApplication>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
-#endif
+#include "DialogUtils.h"
 
 namespace U2 {
 
@@ -75,7 +74,7 @@ QPair<QString, QString> DialogUtils::selectFileForScreenShot(QWidget * parent) {
 
     LastUsedDirHelper lod("image");
     QString selectedFilter;
-    lod.url = QFileDialog::getSaveFileName(parent, tr("Export alignment image"), lod.dir, QStringList(filters.keys()).join(";;"), &selectedFilter);
+    lod.url = U2FileDialog::getSaveFileName(parent, tr("Export alignment image"), lod.dir, QStringList(filters.keys()).join(";;"), &selectedFilter);
     return QPair<QString, QString>(lod.url, filters.value(selectedFilter));
 }
 
@@ -95,13 +94,13 @@ void FileLineEdit::sl_onBrowse() {
 
     QString name;
     if (multi) {
-        QStringList lst = QFileDialog::getOpenFileNames(NULL, tr("Select file(s)"), lod.dir, FileFilter, NULL, options);
+        QStringList lst = U2FileDialog::getOpenFileNames(NULL, tr("Select file(s)"), lod.dir, FileFilter, NULL, options);
         name = lst.join(";");
         if (!lst.isEmpty()) {
             lod.url = lst.first();
         }
     } else {
-        lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select file(s)"), lod.dir, FileFilter, NULL, options);
+        lod.url = name = U2FileDialog::getOpenFileName(NULL, tr("Select file(s)"), lod.dir, FileFilter, NULL, options);
     }
     if (!name.isEmpty()) {
         setText(name);

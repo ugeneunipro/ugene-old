@@ -19,21 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#include <QFileDialog>
-#include <QFocusEvent>
-#include <QLayout>
+#include <QtGui/QFocusEvent>
+#include <QtGui/QLayout>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GUrlUtils.h>
 
-#include <U2Lang/SchemaConfig.h>
-
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/SuggestCompleter.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include <U2Lang/SchemaConfig.h>
 
 #include "PropertyWidget.h"
-
 #include "URLLineEdit.h"
 
 namespace U2 {
@@ -149,10 +148,10 @@ void URLLineEdit::browse(bool addFiles) {
     if(isPath || multi){
         QStringList lst;
         if (isPath) {
-            QString dir = QFileDialog::getExistingDirectory(NULL, tr("Select a directory"), lastDir);
+            QString dir = U2FileDialog::getExistingDirectory(NULL, tr("Select a directory"), lastDir);
             lst << dir;
         } else {
-            lst = QFileDialog::getOpenFileNames(NULL, tr("Select file(s)"), lastDir, FileFilter);
+            lst = U2FileDialog::getOpenFileNames(NULL, tr("Select file(s)"), lastDir, FileFilter);
         }
 
         if (addFiles) {
@@ -167,15 +166,15 @@ void URLLineEdit::browse(bool addFiles) {
         }
     } else {
         if(saveFile) {
-            lod.url = name = QFileDialog::getSaveFileName(NULL, tr("Select a file"), lastDir, FileFilter, 0, QFileDialog::DontConfirmOverwrite);
+            lod.url = name = U2FileDialog::getSaveFileName(NULL, tr("Select a file"), lastDir, FileFilter, 0, QFileDialog::DontConfirmOverwrite);
             this->checkExtension(name);
         } else {
             #ifdef Q_OS_MAC
                 if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-                    lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir, FileFilter, 0, QFileDialog::DontUseNativeDialog );
+                    lod.url = name = U2FileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir, FileFilter, 0, QFileDialog::DontUseNativeDialog );
                 } else
             #endif
-            lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir, FileFilter );
+            lod.url = name = U2FileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir, FileFilter );
         }
     }
     if (!name.isEmpty()) {

@@ -19,44 +19,45 @@
  * MA 02110-1301, USA.
  */
 
-#include "TestViewController.h"
-#include "TestRunnerPlugin.h"
-#include <U2Test/TestRunnerTask.h>
-#include "TestViewReporter.h"
-#include "ExcludeReasonDialog.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
-#include <U2Core/Log.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Test/GTest.h>
-#include <U2Test/GTestFrameworkComponents.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/CMDLineCoreOptions.h>
-#include <QMap>
+#include <QtCore/QMap>
 
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLineEdit>
-#include <QtGui/QMenu>
-#include <QtGui/QToolBar>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QFormLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QLineEdit>
+#include <QtGui/QMenu>
+#include <QtGui/QMessageBox>
+#include <QtGui/QToolBar>
+#include <QtGui/QVBoxLayout>
 #else
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QFormLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QVBoxLayout>
 #endif
 
+#include <U2Core/AppContext.h>
+#include <U2Core/CMDLineCoreOptions.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/Log.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/U2FileDialog.h>
+
+#include <U2Test/GTest.h>
+#include <U2Test/GTestFrameworkComponents.h>
+#include <U2Test/TestRunnerTask.h>
+
+#include "ExcludeReasonDialog.h"
+#include "TestRunnerPlugin.h"
+#include "TestViewController.h"
+#include "TestViewReporter.h"
 
 /* TRANSLATOR U2::TestViewController */
 
@@ -459,7 +460,7 @@ void TestViewController::addTestSuiteList(QString url) {
 
 void TestViewController::sl_addTestSuiteAction() {
     QString dir = AppContext::getSettings()->getValue(SETTINGS_ROOT + "lastDir", QString()).toString();
-    QStringList fileNames=QFileDialog::getOpenFileNames(this, tr("Select test suite file"),dir);
+    QStringList fileNames=U2FileDialog::getOpenFileNames(this, tr("Select test suite file"),dir);
     bool saveLastDir=true;
     foreach(QString file,fileNames){
         if (file.isEmpty()) {

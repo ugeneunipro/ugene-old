@@ -19,26 +19,26 @@
 * MA 02110-1301, USA.
 */
 
-#include "ColorSchemaSettingsController.h"
+#include <QtCore/QDir>
 
-#include "ColorSchemaDialogController.h"
+#include <QtGui/QColor>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/Settings.h>
-#include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
-#include <U2Core/GUrlUtils.h>
+#include <U2Core/Settings.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/UserApplicationsSettings.h>
+
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/U2FileDialog.h>
 
-#include <QtCore/QDir>
-
-#include <QtGui/QFileDialog>
-#include <QtGui/QColor>
+#include "ColorSchemaDialogController.h"
+#include "ColorSchemaSettingsController.h"
 
 const QString SETTINGS_ROOT = "/color_schema_settings/";
 const QString SETTINGS_SUB_DIRECTORY = "MSA_schemes";
@@ -353,7 +353,7 @@ void ColorSchemaSettingsPageWidget::sl_schemaChanged(int index){
 
 void ColorSchemaSettingsPageWidget::sl_onColorsDirButton() {
     QString path = colorsDirEdit->text();
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
+    QString dir = U2FileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!dir.isEmpty()) {
         colorsDirEdit->setText(dir);

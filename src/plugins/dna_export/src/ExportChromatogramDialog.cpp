@@ -20,11 +20,9 @@
  */
 
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #include <QtGui/QPushButton>
 #else
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QPushButton>
 #endif
@@ -39,6 +37,7 @@
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/SaveDocumentGroupController.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include "ExportChromatogramDialog.h"
 #include "ExportUtils.h"
@@ -65,7 +64,7 @@ void ExportChromatogramDialog::sl_onBrowseClicked() {
     LastUsedDirHelper lod;
     QString filter;
 
-    lod.url = QFileDialog::getSaveFileName(this, tr("Select a file"), lod.dir, "*.scf");
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Select a file"), lod.dir, "*.scf");
     if (lod.url.isEmpty()) {    
         return;
     }

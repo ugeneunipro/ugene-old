@@ -35,12 +35,13 @@
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 
+#include <QtCore/QFileInfo>
+
 #include <QtGui/QPixmap>
 #include <QtGui/QPainter>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QFileDialog>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QPrinter>
@@ -49,7 +50,6 @@
 #include <QtGui/QScrollArea>
 #else
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtPrintSupport/QPrinter>

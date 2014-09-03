@@ -19,17 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#include "TreeViewerUtils.h"
-
-#include <U2Gui/LastUsedDirHelper.h>
-
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #else
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #endif
+
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "TreeViewerUtils.h"
 
 #define IMAGE_DIR "image"
 
@@ -54,7 +53,7 @@ void TreeViewerUtils::saveImageDialog(const QString& filters, QString &fileName,
         fileName = fileName.left(i);
     }
     QString initialPath = lod.dir + "/" + fileName;
-    fileName = QFileDialog::getSaveFileName(NULL, QObject::tr("Save As"), initialPath, filters, &format);
+    fileName = U2FileDialog::getSaveFileName(NULL, QObject::tr("Save As"), initialPath, filters, &format);
     lod.url = fileName;
     if (fileName.isEmpty())
         return;

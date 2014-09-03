@@ -1,15 +1,26 @@
-#include "ExpertDiscoveryView.h"
-#include "ExpertDiscoveryTask.h"
-#include "ExpertDiscoveryPosNegDialog.h"
-#include "ExpertDiscoveryControlDialog.h"
-#include "ExpertDiscoveryPosNegMrkDialog.h"
-#include "ExpertDiscoveryControlMrkDialog.h"
-#include "ExpertDiscoveryExtSigWiz.h"
-#include "ExpertDiscoveryPlugin.h"
-#include "ExpertDiscoveryGraphs.h"
-#include "ExpertDiscoverySearchDialogController.h"
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
+
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/Counter.h>
+#include <U2Core/GHints.h>
+#include <U2Core/GObjectSelection.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SequenceUtils.h>
+#include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
 #include <U2View/ADVUtils.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
@@ -17,27 +28,16 @@
 #include <U2View/AutoAnnotationUtils.h>
 #include <U2View/DetView.h>
 
-#include <U2Core/AppContext.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/AppSettings.h>
-#include <U2Core/UserApplicationsSettings.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/GObjectSelection.h>
-#include <U2Core/GHints.h>
-#include <U2Core/Counter.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2SequenceUtils.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
-#endif
-
+#include "ExpertDiscoveryControlDialog.h"
+#include "ExpertDiscoveryControlMrkDialog.h"
+#include "ExpertDiscoveryExtSigWiz.h"
+#include "ExpertDiscoveryGraphs.h"
+#include "ExpertDiscoveryPlugin.h"
+#include "ExpertDiscoveryPosNegDialog.h"
+#include "ExpertDiscoveryPosNegMrkDialog.h"
+#include "ExpertDiscoverySearchDialogController.h"
+#include "ExpertDiscoveryTask.h"
+#include "ExpertDiscoveryView.h"
 
 namespace U2{
 using namespace DDisc;
@@ -206,7 +206,7 @@ void ExpertDiscoveryView::sl_newDoc(){
 void ExpertDiscoveryView::sl_openDoc(){
 
     LastUsedDirHelper lod("ExpertDiscovery");           
-    lod.url = QFileDialog::getOpenFileName(NULL, tr("Load ExpertDiscovery document"), lod.dir, tr("ExpertDiscovery files (*.exd)"));
+    lod.url = U2FileDialog::getOpenFileName(NULL, tr("Load ExpertDiscovery document"), lod.dir, tr("ExpertDiscovery files (*.exd)"));
 
     if (lod.url.length() <= 0) {
         return;
@@ -231,7 +231,7 @@ void ExpertDiscoveryView::sl_openDoc(){
 void ExpertDiscoveryView::sl_saveDoc(){
 
     LastUsedDirHelper lod("ExpertDiscovery");
-    lod.url = QFileDialog::getSaveFileName(NULL, tr("Save ExpertDiscovery document"), lod.dir, tr("ExpertDiscovery files (*.exd)"));
+    lod.url = U2FileDialog::getSaveFileName(NULL, tr("Save ExpertDiscovery document"), lod.dir, tr("ExpertDiscovery files (*.exd)"));
 
     if (lod.url.length() <= 0) {
         return;

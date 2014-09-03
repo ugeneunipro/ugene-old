@@ -19,33 +19,33 @@
  * MA 02110-1301, USA.
  */
 
-#include "DistanceMatrixMSAProfileDialog.h"
+#include <QtCore/QDateTime>
 
-#include <U2Core/AppContext.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/TextUtils.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/MAlignmentObject.h>
-
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/HelpButton.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #else
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #endif
-
-#include <U2View/MSAEditor.h>
-#include <U2View/WebWindow.h>
 
 #include <U2Algorithm/MSADistanceAlgorithm.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 
-#include <QDateTime>
+#include <U2Core/AppContext.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/MAlignmentObject.h>
+#include <U2Core/TextUtils.h>
+
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include <U2View/MSAEditor.h>
+#include <U2View/WebWindow.h>
+
+#include "DistanceMatrixMSAProfileDialog.h"
 
 namespace U2 {
 
@@ -81,7 +81,7 @@ void DistanceMatrixMSAProfileDialog::sl_selectFile() {
     } else {
         filter = tr("HTML files") + " (*.html)";
     }
-    h.url = QFileDialog::getSaveFileName(this, tr("Select file to save report to.."), h.dir, filter);
+    h.url = U2FileDialog::getSaveFileName(this, tr("Select file to save report to.."), h.dir, filter);
     if (h.url.isEmpty()) {
         return;
     }

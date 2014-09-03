@@ -19,20 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "SaveDocumentGroupController.h"
-
 #include <U2Core/AppContext.h>
 #include <U2Core/GUrlUtils.h>
 
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/DocumentFormatComboboxController.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QFileDialog>
-#endif
+#include "SaveDocumentGroupController.h"
 
 namespace U2 {
 
@@ -92,7 +87,7 @@ void SaveDocumentGroupController::sl_saveButtonClicked() {
 
     // show the dialog
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getSaveFileName(conf.parentWidget, conf.saveTitle, lod, filter);
+    lod.url = U2FileDialog::getSaveFileName(conf.parentWidget, conf.saveTitle, lod, filter);
     if (lod.url.isEmpty()) {
         return;
     }

@@ -20,24 +20,27 @@
  */
 
 #include <QtCore/QFile>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
-#endif
-#include <QtScript/QScriptEngine>
+
 #include <QtGui/QMouseEvent>
 
+#include <QtScript/QScriptEngine>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
+
 #include <U2Core/L10n.h>
-#include <U2Gui/LastUsedDirHelper.h>
+
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
-#include "ScriptEditorWidget.h"
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
-#include "ui/ui_ScriptEditorDialog.h"
 #include "ScriptEditorDialog.h"
+#include "ScriptEditorWidget.h"
+#include "ui/ui_ScriptEditorDialog.h"
 
 namespace U2 {
 
@@ -114,7 +117,7 @@ void ScriptEditorDialog::setScriptPath(const QString& path) {
 
 void ScriptEditorDialog::sl_openScript() {
     LastUsedDirHelper ld(SCRIPTS_DOMAIN);
-    ld.url = QFileDialog::getOpenFileName(this, tr("Select script to open"), ld.dir, getScriptsFileFilter());
+    ld.url = U2FileDialog::getOpenFileName(this, tr("Select script to open"), ld.dir, getScriptsFileFilter());
     if (ld.url.isEmpty()) {
         return;
     }
@@ -137,7 +140,7 @@ void ScriptEditorDialog::sl_saveAsScript() {
         return;
     }
     LastUsedDirHelper ld(SCRIPTS_DOMAIN);
-    ld.url = QFileDialog::getSaveFileName(this, tr("Save script to file"), ld.dir, getScriptsFileFilter());
+    ld.url = U2FileDialog::getSaveFileName(this, tr("Save script to file"), ld.dir, getScriptsFileFilter());
     if (ld.url.isEmpty()) {
         return;
     }

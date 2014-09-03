@@ -22,22 +22,22 @@
 #include <QtCore/QEvent>
 
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLabel>
-#include <QtGui/QPushButton>
-#include <QtGui/QLineEdit>
-#include <QtGui/QFileDialog>
 #include <QtGui/QHBoxLayout>
+#include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
+#include <QtGui/QPushButton>
 #include <QtGui/QVBoxLayout>
 #else
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QVBoxLayout>
 #endif
 
 #include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/U2FileDialog.h>
 
 #include <U2Lang/WorkflowSettings.h>
 
@@ -76,7 +76,7 @@ OutputDirectoryWidget::OutputDirectoryWidget(QWidget *parent, bool commitOnHide)
 }
 
 void OutputDirectoryWidget::sl_browse() {
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Select a directory"), pathEdit->text());
+    QString dir = U2FileDialog::getExistingDirectory(this, tr("Select a directory"), pathEdit->text());
 
     if(!dir.isEmpty()) {
         dir = QDir::toNativeSeparators(dir);

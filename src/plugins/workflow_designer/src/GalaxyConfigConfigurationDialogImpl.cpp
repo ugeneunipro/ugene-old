@@ -19,13 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <QFileDialog>
-
 #include <U2Core/AppContext.h>
-#include <cmdline/GalaxyConfigTask.h>
+
+#include <U2Gui/U2FileDialog.h>
+
 #include "GalaxyConfigConfigurationDialogImpl.h"
-
-
+#include "cmdline/GalaxyConfigTask.h"
 
 namespace U2 {
 namespace Workflow {
@@ -49,21 +48,21 @@ GalaxyConfigConfigurationDialogImpl::GalaxyConfigConfigurationDialogImpl( const 
 }
 
 void GalaxyConfigConfigurationDialogImpl::sl_ugeneToolButtonClicked( ) {
-    QString newDirectoryPath = QFileDialog::getExistingDirectory(this, tr( "Set UGENE directory" ), ugenePathLineEdit->text() );
+    QString newDirectoryPath = U2FileDialog::getExistingDirectory(this, tr( "Set UGENE directory" ), ugenePathLineEdit->text() );
     if( !newDirectoryPath.isEmpty() ) {
         ugenePathLineEdit->setText( newDirectoryPath );
     }
 }
 
 void GalaxyConfigConfigurationDialogImpl::sl_galaxyToolButtonClicked( ) {
-    QString newDirectoryPath = QFileDialog::getExistingDirectory(this, tr( "Set Galaxy directory" ), galaxyPathLineEdit->text() );
+    QString newDirectoryPath = U2FileDialog::getExistingDirectory(this, tr( "Set Galaxy directory" ), galaxyPathLineEdit->text() );
     if( !newDirectoryPath.isEmpty() ) {
         galaxyPathLineEdit->setText( newDirectoryPath );
     }
 }
 
 void GalaxyConfigConfigurationDialogImpl::sl_destinationToolButtonClicked( ) {
-    QString newDirectoryPath = QFileDialog::getExistingDirectory(this, tr( "Set destination directory" ), destinationPathLineEdit->text() );
+    QString newDirectoryPath = U2FileDialog::getExistingDirectory(this, tr( "Set destination directory" ), destinationPathLineEdit->text() );
     if( !newDirectoryPath.isEmpty() ) {
         destinationPathLineEdit->setText( newDirectoryPath );
     }

@@ -19,28 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#include "ClustalOSupportRunDialog.h"
-#include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
-#include <U2Core/AppResources.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/HelpButton.h>
-#include <U2Core/GUrlUtils.h>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
 #include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
+#include <QtGui/QPushButton>
 #include <QtGui/QToolButton>
 #else
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QToolButton>
 #endif
 
+#include <U2Core/AppContext.h>
+#include <U2Core/AppResources.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GUrlUtils.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "ClustalOSupportRunDialog.h"
 
 namespace U2 {
 ////////////////////////////////////////
@@ -103,7 +104,7 @@ ClustalOWithExtFileSpecifySupportRunDialog::ClustalOWithExtFileSpecifySupportRun
 }
 void ClustalOWithExtFileSpecifySupportRunDialog::sl_inputPathButtonClicked() {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getOpenFileName(this, tr("Open an alignment file"), lod.dir, 
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Open an alignment file"), lod.dir,
         DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
     if (lod.url.isEmpty()) {
         return;
@@ -113,7 +114,7 @@ void ClustalOWithExtFileSpecifySupportRunDialog::sl_inputPathButtonClicked() {
 
 void ClustalOWithExtFileSpecifySupportRunDialog::sl_outputPathButtonClicked() {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getSaveFileName(this, tr("Save an multiple alignment file"), lod.dir);
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Save an multiple alignment file"), lod.dir);
     if (lod.url.isEmpty()) {
         return;
     }

@@ -1,25 +1,43 @@
-#include "HMMCalibrateDialogController.h"
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
 
-#include "HMMCalibrateTask.h"
-#include <HMMIO.h>
-
-#include <U2Core/AppContext.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/AppResources.h>
-
-#include <U2Gui/LastUsedDirHelper.h>
-
-#include <U2Gui/HelpButton.h>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
 #else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
 #endif
 
+#include <U2Core/AppContext.h>
+#include <U2Core/AppResources.h>
+#include <U2Core/IOAdapter.h>
+
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "HMMCalibrateDialogController.h"
+#include "HMMCalibrateTask.h"
+#include "HMMIO.h"
 
 namespace U2 {
 
@@ -43,7 +61,7 @@ HMMCalibrateDialogController::HMMCalibrateDialogController(QWidget* w)
 
 void HMMCalibrateDialogController::sl_hmmFileButtonClicked() {
     LastUsedDirHelper lod(HMMIO::HMM_ID);
-    lod.url = QFileDialog::getOpenFileName(this, tr("select_file_with_hmm_model"), lod, HMMIO::getHMMFileFilter());
+    lod.url = U2FileDialog::getOpenFileName(this, tr("select_file_with_hmm_model"), lod, HMMIO::getHMMFileFilter());
     if (lod.url.isEmpty()) {
         return;
     }
@@ -52,7 +70,7 @@ void HMMCalibrateDialogController::sl_hmmFileButtonClicked() {
 
 void HMMCalibrateDialogController::sl_outFileButtonClicked() {
     LastUsedDirHelper lod(HMMIO::HMM_ID);
-    lod.url= QFileDialog::getSaveFileName(this, tr("select_file_with_hmm_model"), lod, HMMIO::getHMMFileFilter());
+    lod.url= U2FileDialog::getSaveFileName(this, tr("select_file_with_hmm_model"), lod, HMMIO::getHMMFileFilter());
     if (lod.url.isEmpty()) {
         return;
     }

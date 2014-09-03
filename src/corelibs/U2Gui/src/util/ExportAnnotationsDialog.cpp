@@ -20,22 +20,19 @@
  */
 
 #include <QtCore/QList>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QFileDialog>
-#endif
+
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
-#include <U2Core/global.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Gui/HelpButton.h>
 #include <U2Core/FormatUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/global.h>
 
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
-#include "ui_ExportAnnotationsDialog.h"
 #include "ExportAnnotationsDialog.h"
+#include "ui_ExportAnnotationsDialog.h"
 
 namespace U2 {
 
@@ -136,7 +133,7 @@ void ExportAnnotationsDialog::sl_onChooseFileButtonClicked( ) {
     fileFormats.append( "All files (*)" );
 
     LastUsedDirHelper helper( "ExportAnnotationsDialogHelperDomain" );
-    helper.url = QFileDialog::getSaveFileName( this, tr( "Select file to save annotations" ),
+    helper.url = U2FileDialog::getSaveFileName( this, tr( "Select file to save annotations" ),
         helper.dir, fileFormats, NULL, QFileDialog::DontConfirmOverwrite );
     if ( !helper.url.isEmpty( ) ) {
         ui->fileNameEdit->setText( helper.url );

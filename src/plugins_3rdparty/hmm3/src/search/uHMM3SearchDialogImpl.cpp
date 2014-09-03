@@ -19,29 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#include "uHMM3SearchDialogImpl.h"
-
-#include <U2Core/AppContext.h>
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Remote/DistributedComputingUtil.h>
-
-#include <gobject/uHMMObject.h>
-
-#include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#endif
-
 #include <cmath>
 #include <cassert>
+
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
+
+#include <U2Core/AppContext.h>
+#include <U2Core/GObjectTypes.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include <U2Remote/DistributedComputingUtil.h>
+
+#include "uHMM3SearchDialogImpl.h"
+#include "gobject/uHMMObject.h"
 
 namespace U2 {
 
@@ -231,7 +231,7 @@ void UHMM3SearchDialogImpl::sl_domESpinBoxChanged( int newVal ) {
 
 void UHMM3SearchDialogImpl::sl_queryHmmFileToolButtonClicked() {
     LastUsedDirHelper helper( HMM_FILES_DIR_ID );
-    helper.url = QFileDialog::getOpenFileName( this, tr( "Select query HMM profile" ), 
+    helper.url = U2FileDialog::getOpenFileName( this, tr( "Select query HMM profile" ),
         helper, DialogUtils::prepareDocumentsFileFilterByObjType( UHMMObject::UHMM_OT, true ) );
     if( !helper.url.isEmpty() ) {
         queryHmmFileEdit->setText( helper.url );

@@ -35,7 +35,7 @@
 #endif
 
 #include <QtCore/QList>
-
+#include "U2FileDialog.h"
 
 namespace U2 {
 

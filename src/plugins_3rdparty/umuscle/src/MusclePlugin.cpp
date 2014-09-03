@@ -46,11 +46,9 @@
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMainWindow>
 #else
 #include <QtWidgets/QDialog>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMainWindow>
 #endif
 
@@ -238,10 +236,10 @@ void MuscleMSAEditorContext::sl_alignSequencesToProfile() {
     LastUsedDirHelper lod;
 #ifdef Q_OS_MAC
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-        lod.url = QFileDialog::getOpenFileName(NULL, tr("Select file with sequences"), lod, filter, 0, QFileDialog::DontUseNativeDialog );
+        lod.url = U2FileDialog::getOpenFileName(NULL, tr("Select file with sequences"), lod, filter, 0, QFileDialog::DontUseNativeDialog );
     } else
 #endif
-    lod.url = QFileDialog::getOpenFileName(NULL, tr("Select file with sequences"), lod, filter);
+    lod.url = U2FileDialog::getOpenFileName(NULL, tr("Select file with sequences"), lod, filter);
     if (lod.url.isEmpty()) {
         return;
     }
@@ -263,11 +261,11 @@ void MuscleMSAEditorContext::sl_alignProfileToProfile() {
     LastUsedDirHelper lod;
 #ifdef Q_OS_MAC
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-        lod.url = QFileDialog::getOpenFileName(NULL, tr("Select file with alignment"), lod,
+        lod.url = U2FileDialog::getOpenFileName(NULL, tr("Select file with alignment"), lod,
             DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true), 0, QFileDialog::DontUseNativeDialog );
     } else
 #endif
-    lod.url = QFileDialog::getOpenFileName(NULL, tr("Select file with alignment"), lod,
+    lod.url = U2FileDialog::getOpenFileName(NULL, tr("Select file with alignment"), lod,
         DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
 
     if (lod.url.isEmpty()) {

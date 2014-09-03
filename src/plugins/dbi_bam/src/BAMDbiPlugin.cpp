@@ -24,13 +24,11 @@
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QAction>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenu>
 #include <QtGui/QMessageBox>
 #else
 #include <QtWidgets/QAction>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMessageBox>

@@ -51,12 +51,10 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QMessageBox>
 #include <QtGui/QListWidgetItem>
-#include <QtGui/QFileDialog>
 #else
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QListWidgetItem>
-#include <QtWidgets/QFileDialog>
 #endif
 
 namespace U2 {
@@ -186,7 +184,7 @@ bool SiteconSearchDialogController::eventFilter(QObject *obj, QEvent *ev) {
 
 void SiteconSearchDialogController::sl_selectModelFile() {
     LastUsedDirHelper lod(SiteconIO::SITECON_ID);
-    lod.url = QFileDialog::getOpenFileName(this, tr("select_file_with_model"), lod, SiteconIO::getFileFilter());
+    lod.url = U2FileDialog::getOpenFileName(this, tr("select_file_with_model"), lod, SiteconIO::getFileFilter());
     if (lod.url.isEmpty()) {
         return;
     }

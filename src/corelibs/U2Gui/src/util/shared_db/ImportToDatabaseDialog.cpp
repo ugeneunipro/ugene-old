@@ -19,7 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QFileDialog>
 #include <QtGui/QListView>
 #include <QtGui/QMenu>
 
@@ -39,13 +38,14 @@
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/MainWindow.h>
-#include <U2Gui/ProjectTreeItemSelectorDialog.h>
 #include <U2Gui/ProjectTreeController.h>
+#include <U2Gui/ProjectTreeItemSelectorDialog.h>
+#include <U2Gui/U2FileDialog.h>
 
-#include "ui/ui_ImportToDatabaseDialog.h"
 #include "CommonImportOptionsDialog.h"
 #include "ImportToDatabaseDialog.h"
 #include "ItemToImportEditDialog.h"
+#include "ui/ui_ImportToDatabaseDialog.h"
 
 namespace U2 {
 
@@ -282,7 +282,7 @@ QStringList ImportToDatabaseDialog::getFilesToImport() {
     }
 #endif
 
-    const QStringList fileList = QFileDialog::getOpenFileNames(this,
+    const QStringList fileList = U2FileDialog::getOpenFileNames(this,
                                                                tr("Select files to import"),
                                                                dirHelper.dir,
                                                                "",
@@ -305,7 +305,7 @@ QString ImportToDatabaseDialog::getFolderToImport() {
     }
 #endif
 
-    const QString dir = QFileDialog::getExistingDirectory(this,
+    const QString dir = U2FileDialog::getExistingDirectory(this,
                                                           tr("Select a folder to import"),
                                                           dirHelper.dir,
                                                           QFileDialog::ShowDirsOnly | additionalOptions);

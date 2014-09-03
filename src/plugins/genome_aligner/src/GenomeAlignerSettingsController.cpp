@@ -19,12 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <QFileDialog>
-
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/Settings.h>
 #include <U2Core/UserApplicationsSettings.h>
+
+#include <U2Gui/U2FileDialog.h>
 
 #include "GenomeAlignerSettingsController.h"
 
@@ -93,7 +93,7 @@ AppSettingsGUIPageState* GenomeAlignerSettingsPageWidget::getState(QString& ) co
 
 void GenomeAlignerSettingsPageWidget::sl_onIndexDirButton() {
     QString path = indexDirEdit->text();
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
+    QString dir = U2FileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!dir.isEmpty()) {
         indexDirEdit->setText(dir);

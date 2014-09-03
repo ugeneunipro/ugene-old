@@ -20,21 +20,28 @@
  */
 
 #include <cfloat>
-#include <qglobal.h>
+
+#include <QtCore/qglobal.h>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
 #else
 #include <QtWidgets/QMessageBox>
 #endif
 
-#include <U2View/AnnotatedDNAView.h>
+#include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
+
+#include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceSelection.h>
 #include <U2Core/L10n.h>
-#include <U2Core/AppContext.h>
-#include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
-#include "Primer3Dialog.h"
+
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include <U2View/AnnotatedDNAView.h>
+
+#include "Primer3Dialog.h"
 
 namespace U2 {
 
@@ -678,7 +685,7 @@ void Primer3Dialog::sl_pbPick_clicked()
 void Primer3Dialog::sl_saveSettings()
 {
     LastUsedDirHelper lod;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save primer settings"),  lod.dir, "Text files (*.txt)");
+    QString fileName = U2FileDialog::getSaveFileName(this, tr("Save primer settings"),  lod.dir, "Text files (*.txt)");
     if (!fileName.endsWith(".txt")) {
         fileName += ".txt";
     }
@@ -760,7 +767,7 @@ void Primer3Dialog::sl_saveSettings()
 void Primer3Dialog::sl_loadSettings()
 {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getOpenFileName(this, tr("Load settings"), lod.dir, "Text files (*.txt)");
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Load settings"), lod.dir, "Text files (*.txt)");
 
     QSettings diagSettings(lod.url, QSettings::IniFormat);
     

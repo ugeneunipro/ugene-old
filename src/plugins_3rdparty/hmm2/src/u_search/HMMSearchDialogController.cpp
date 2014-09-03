@@ -19,38 +19,35 @@
  * MA 02110-1301, USA.
  */
 
-#include "HMMSearchDialogController.h"
-#include "HMMSearchTask.h"
-#include "TaskLocalStorage.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QVBoxLayout>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QVBoxLayout>
+#endif
 
-#include <HMMIO.h>
-#include <hmmer2/funcs.h>
-
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/LoadDocumentTask.h>
 
 #include <U2Gui/CreateAnnotationWidgetController.h>
-#include <U2Gui/LastUsedDirHelper.h>
-
 #include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
+#include "HMMIO.h"
+#include "HMMSearchDialogController.h"
+#include "HMMSearchTask.h"
+#include "TaskLocalStorage.h"
+#include "hmmer2/funcs.h"
 
 namespace U2 {
 
@@ -109,7 +106,7 @@ void HMMSearchDialogController::reject() {
 
 void HMMSearchDialogController::sl_hmmFileClicked() {
     LastUsedDirHelper lod(HMMIO::HMM_ID);
-    lod.url = QFileDialog::getOpenFileName(this, tr("select_file_with_hmm_model"), lod, HMMIO::getHMMFileFilter());
+    lod.url = U2FileDialog::getOpenFileName(this, tr("select_file_with_hmm_model"), lod, HMMIO::getHMMFileFilter());
     if (lod.url.isEmpty()) {
         return;
     }

@@ -1,52 +1,51 @@
-#include "ExpertDiscoveryTask.h"
+#include <fstream>
+#include <limits>
 
-#include "ExpertDiscoveryExtSigWiz.h"
-#include "ExpertDiscoveryPersistent.h"
+#include <QtCore/QList>
+#include <QtCore/QSet>
 
-#include <U2Core/ProjectModel.h>
-#include <U2Core/DocumentFormatConfigurators.h>
-#include <U2Core/L10n.h>
-#include <U2Core/U2SafePoints.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMainWindow>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMessageBox>
+#endif
+
+#include <U2Core/AddDocumentTask.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/Counter.h>
+#include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/DocumentFormatConfigurators.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/GHints.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/U2SequenceUtils.h>
+#include <U2Core/L10n.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/Log.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/MSAUtils.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceUtils.h>
 
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/Log.h>
-#include <U2Core/L10n.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/Counter.h>
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/U2FileDialog.h>
+
 #include <U2View/AutoAnnotationUtils.h>
 
-
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/AddDocumentTask.h>
-#include <U2Core/GHints.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
-#endif
-
-#include <QtCore/QSet>
-#include <QtCore/QList>
-
-#include <fstream>
-#include <limits>
+#include "ExpertDiscoveryTask.h"
+#include "ExpertDiscoveryExtSigWiz.h"
+#include "ExpertDiscoveryPersistent.h"
 
 namespace U2 {
 
@@ -1359,36 +1358,33 @@ ExpertDiscoveryExportSequences::ExpertDiscoveryExportSequences( const SequenceBa
 }
 
 
-void ExpertDiscoveryExportSequences::prepare(){
-    QFileDialog saveRepDialog;
-    saveRepDialog.setFileMode(QFileDialog::AnyFile);
-    saveRepDialog.setNameFilter(tr("Fasta Files (*.fa *.fasta)"));
-    saveRepDialog.setViewMode(QFileDialog::Detail);
-    saveRepDialog.setAcceptMode(QFileDialog::AcceptSave);
-
-    if(saveRepDialog.exec()){
-        QStringList fileNames = saveRepDialog.selectedFiles();
-        if(fileNames.isEmpty()) return;
-
-        fileName = fileNames.first();
+void ExpertDiscoveryExportSequences::prepare() {
+    const QString filter = DialogUtils::prepareDocumentsFileFilter(BaseDocumentFormats::FASTA, false, QStringList());
+    fileName = U2FileDialog::getSaveFileName(qobject_cast<QWidget *>(AppContext::getMainWindow()->getQMainWindow()), tr("Save File"), "", filter);
+    if (fileName.isEmpty()) {
+        cancel();
     }
 }
 
-void ExpertDiscoveryExportSequences::run()
-{
-    if(fileName.isEmpty() || isCanceled()){
-
+void ExpertDiscoveryExportSequences::run() {
+    if (hasError() || isCanceled()){
+        return;
     }
 
     ofstream out(fileName.toStdString().c_str());
 
-    if(!out.is_open()){
-        QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Report generation failed"));
-        mb.exec();
+    if (!out.is_open()) {
+        setError(tr("Report generation failed: ") + L10N::errorOpeningFileWrite(GUrl(fileName)));
         return;
     }
 
     base.save(out);
+}
+
+Task::ReportResult ExpertDiscoveryExportSequences::report() {
+    if (hasError()) {
+        QMessageBox(QMessageBox::Critical, tr("Error"), stateInfo.getError()).exec();
+    }
 }
 
 }//namespace

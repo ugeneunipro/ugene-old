@@ -26,12 +26,6 @@
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Gui/DialogUtils.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QFileDialog>
-#endif
-
 #include "BuildSArraySettingsWidget.h"
 #include "GenomeAlignerTask.h"
 

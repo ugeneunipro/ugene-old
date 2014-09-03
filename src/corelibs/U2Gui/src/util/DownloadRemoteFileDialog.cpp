@@ -27,29 +27,28 @@
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
 #else
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
 #endif
 
 #include <U2Core/AppContext.h>
+#include <U2Core/DASSource.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/L10n.h>
 #include <U2Core/LoadRemoteDocumentTask.h>
 #include <U2Core/Log.h>
-#include <U2Core/L10n.h>
-#include <U2Core/GUrlUtils.h>
 #include <U2Core/MultiTask.h>
 #include <U2Core/Settings.h>
 #include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/DASSource.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include "DownloadRemoteFileDialog.h"
-#include "ui/ui_DownloadRemoteFileDialog.h"
 #include "OpenViewTask.h"
+#include "ui/ui_DownloadRemoteFileDialog.h"
 
 static const QString SAVE_DIR("downloadremotefiledialog/savedir");
 static const QString HINT_STYLE_SHEET = "color:green; font:bold";
@@ -134,7 +133,7 @@ const QString DOWNLOAD_REMOTE_FILE_DOMAIN = "DownloadRemoteFileDialog";
 
 void DownloadRemoteFileDialog::sl_saveFilenameButtonClicked() {
     LastUsedDirHelper lod(DOWNLOAD_REMOTE_FILE_DOMAIN);
-    QString filename = QFileDialog::getExistingDirectory(this, tr("Select directory to save"), lod.dir);
+    QString filename = U2FileDialog::getExistingDirectory(this, tr("Select directory to save"), lod.dir);
     if(!filename.isEmpty()) {
         ui->saveFilenameLineEdit->setText(filename);
         lod.url = filename;

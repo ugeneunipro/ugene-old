@@ -19,23 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#include <qglobal.h>
+#include <QtCore/qglobal.h>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
 #else
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
 #endif
 
 #include <U2Core/AppContext.h>
+
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include "RemoteServiceMachine.h"
 #include "RemoteServiceUtilTasks.h"
 #include "RemoteTasksDialog.h"
-#include <U2Gui/HelpButton.h>
-
 
 namespace U2 {
 
@@ -141,7 +141,7 @@ void RemoteTasksDialog::sl_onFetchButtonClicked() {
     }
 
     LastUsedDirHelper h;
-    QString folder = QFileDialog::getExistingDirectory(this, tr("Select directory to save results: "), h.dir);
+    QString folder = U2FileDialog::getExistingDirectory(this, tr("Select directory to save results: "), h.dir);
     
     if (folder.isEmpty()) {
         return;

@@ -19,23 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/AppContext.h>
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/DialogUtils.h>
-
-#include <gobject/uHMMObject.h>
-#include "uHMM3BuildDialogImpl.h"
-#include <U2Gui/HelpButton.h>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
 #else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
 #endif
 
+#include <U2Core/AppContext.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "uHMM3BuildDialogImpl.h"
+#include "gobject/uHMMObject.h"
 
 namespace U2 {
 
@@ -105,7 +105,7 @@ void UHMM3BuildDialogImpl::setModelValues() {
 
 void UHMM3BuildDialogImpl::sl_maOpenFileButtonClicked() {
     LastUsedDirHelper helper( MA_FILES_DIR_ID );
-    helper.url = QFileDialog::getOpenFileName( this, tr( "Select multiple alignment file" ),
+    helper.url = U2FileDialog::getOpenFileName( this, tr( "Select multiple alignment file" ),
         helper, DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
     if( !helper.url.isEmpty() ) {
         maLoadFromFileEdit->setText( helper.url );
@@ -114,7 +114,7 @@ void UHMM3BuildDialogImpl::sl_maOpenFileButtonClicked() {
 
 void UHMM3BuildDialogImpl::sl_outHmmFileButtonClicked() {
     LastUsedDirHelper helper( HMM_FILES_DIR_ID );
-    helper.url = QFileDialog::getSaveFileName( this, tr( "Select hmm file to create" ), 
+    helper.url = U2FileDialog::getSaveFileName( this, tr( "Select hmm file to create" ),
         helper, DialogUtils::prepareDocumentsFileFilterByObjType( UHMMObject::UHMM_OT, true) );
     if( !helper.url.isEmpty() ) {
         outHmmfileEdit->setText( helper.url );

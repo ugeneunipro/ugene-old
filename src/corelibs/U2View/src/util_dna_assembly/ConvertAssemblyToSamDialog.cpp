@@ -19,25 +19,23 @@
  * MA 02110-1301, USA.
  */
 
-#include "ConvertAssemblyToSamDialog.h"
-#include <ui/ui_AssemblyToSamDialog.h>
-
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DocumentUtils.h>
-
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/HelpButton.h>
-
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
 #else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
 #endif
 
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GUrlUtils.h>
+
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "ConvertAssemblyToSamDialog.h"
+#include "ui/ui_AssemblyToSamDialog.h"
 
 namespace U2 {
 
@@ -106,7 +104,7 @@ void ConvertAssemblyToSamDialog::sl_onSetDbPathButtonClicked() {
     LastUsedDirHelper lod;
     QString filter;
 
-    lod.url = QFileDialog::getOpenFileName(this, tr("Open an Assembly Database File"), lod.dir, filter);
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Open an Assembly Database File"), lod.dir, filter);
     if (lod.url.isEmpty()) {
         return;
     }
@@ -117,7 +115,7 @@ void ConvertAssemblyToSamDialog::sl_onSetDbPathButtonClicked() {
 
 void ConvertAssemblyToSamDialog::sl_onSetSamPathButtonClicked() {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getSaveFileName(this, tr("Set a result SAM file name"), lod.dir);
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Set a result SAM file name"), lod.dir);
     if (!lod.url.isEmpty()) {
         GUrl result = lod.url;
         if (result.lastFileSuffix().isEmpty()) {

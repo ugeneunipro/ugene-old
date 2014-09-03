@@ -38,7 +38,6 @@
 #include <QtGui/QComboBox>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QFileDialog>
 #include <QtGui/QTextEdit>
 #else
 #include <QtWidgets/QPushButton>
@@ -50,7 +49,6 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QTextEdit>
 #endif
 

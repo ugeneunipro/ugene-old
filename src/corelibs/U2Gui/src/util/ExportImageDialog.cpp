@@ -19,28 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportImageDialog.h"
-#include "imageExport/WidgetScreenshotExportTask.h"
-
-#include <ui/ui_ExportImageDialog.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/L10n.h>
-#include <U2Core/AppContext.h>
-#include <U2Gui/HelpButton.h>
+#include <QtGui/QButtonGroup>
+#include <QtGui/QImageWriter>
+#include <QtGui/QPushButton>
+#include <QtGui/QRadioButton>
 
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #else
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #endif
-#include <QtGui/QImageWriter>
-#include <QtGui/QRadioButton>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QPushButton>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/L10n.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "ExportImageDialog.h"
+#include "imageExport/WidgetScreenshotExportTask.h"
+#include "ui/ui_ExportImageDialog.h"
 
 namespace U2 {
 
@@ -146,7 +146,7 @@ void ExportImageDialog::sl_onBrowseButtonClick() {
 
     QString fileName = ui->fileNameEdit->text();
     LastUsedDirHelper lod(IMAGE_DIR);
-    lod.url = QFileDialog::getSaveFileName(this, tr("Save Image As"), fileName, fileFormats, 0, QFileDialog::DontConfirmOverwrite);
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Save Image As"), fileName, fileFormats, 0, QFileDialog::DontConfirmOverwrite);
     if (lod.url.isEmpty()) {
         return;
     }

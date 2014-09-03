@@ -19,7 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportProjectDialogController.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
 
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/ProjectModel.h>
@@ -28,17 +34,9 @@
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButton>
-#endif
-#include <U2Gui/HelpButton.h>
+#include "ExportProjectDialogController.h"
 
 namespace U2{
 
@@ -90,7 +88,7 @@ void ExportProjectDialogController::accept(){
 
 void ExportProjectDialogController::sl_onBrowseButton(){
 	LastUsedDirHelper h;
-	QString folder = QFileDialog::getExistingDirectory(this, tr("Choose Directory"), h.dir);
+	QString folder = U2FileDialog::getExistingDirectory(this, tr("Choose Directory"), h.dir);
     if (folder.isEmpty()) {
         return;
     }

@@ -19,46 +19,44 @@
  * MA 02110-1301, USA.
  */
 
-#include "DotPlotWidget.h"
-#include "DotPlotDialog.h"
-#include "DotPlotTasks.h"
-#include "DotPlotFilterDialog.h"
+#include <QtGui/QMouseEvent>
 
-#include <U2Core/Counter.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/MultiTask.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/DNASequenceSelection.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/TextUtils.h>
-#include <U2Core/DNAAlphabet.h>
-#include <U2Core/U2SafePoints.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QToolTip>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QToolTip>
+#endif
 
-#include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 #include <U2Algorithm/RepeatFinderSettings.h>
 #include <U2Algorithm/RepeatFinderTaskFactory.h>
+#include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
+#include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/MultiTask.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportImageDialog.h>
+#include <U2Gui/GraphUtils.h>
+#include <U2Gui/U2FileDialog.h>
 
-#include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVSingleSequenceWidget.h>
+#include <U2View/AnnotatedDNAView.h>
 #include <U2View/PanView.h>
 
-#include <U2Gui/GraphUtils.h>
-#include <U2Gui/DialogUtils.h>
-
-#include <QtGui/QMouseEvent>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#include <QtGui/QToolTip>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QToolTip>
-#include <QtWidgets/QMessageBox>
-#endif
+#include "DotPlotDialog.h"
+#include "DotPlotFilterDialog.h"
+#include "DotPlotTasks.h"
+#include "DotPlotWidget.h"
 
 namespace U2 {
 
@@ -534,7 +532,7 @@ void DotPlotWidget::sl_showSaveImageDialog() {
 bool DotPlotWidget::sl_showSaveFileDialog() {
 
     LastUsedDirHelper lod("Dotplot");
-    lod.url = QFileDialog::getSaveFileName(NULL, tr("Save Dotplot"), lod.dir, tr("Dotplot files (*.dpt)"));
+    lod.url = U2FileDialog::getSaveFileName(NULL, tr("Save Dotplot"), lod.dir, tr("Dotplot files (*.dpt)"));
 
     if (lod.url.length() <= 0) {
         return false; // Cancel button pressed
@@ -579,7 +577,7 @@ bool DotPlotWidget::sl_showSaveFileDialog() {
 bool DotPlotWidget::sl_showLoadFileDialog() {
 
     LastUsedDirHelper lod("Dotplot");
-    lod.url = QFileDialog::getOpenFileName(NULL, tr("Load Dotplot"), lod.dir, tr("Dotplot files (*.dpt)"));
+    lod.url = U2FileDialog::getOpenFileName(NULL, tr("Load Dotplot"), lod.dir, tr("Dotplot files (*.dpt)"));
 
     if (lod.url.length() <= 0) {
         return false; // Cancel button pressed

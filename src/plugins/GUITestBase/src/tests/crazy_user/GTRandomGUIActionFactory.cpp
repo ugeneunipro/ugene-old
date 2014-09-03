@@ -96,7 +96,6 @@ public:
         while (iterator.hasNext()) {
             iterator.next();
             if (!iterator.fileInfo().isDir()) {
-                QString filename = iterator.fileName();
                 files.append(iterator.filePath());
             }
         }

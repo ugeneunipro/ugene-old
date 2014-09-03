@@ -18,55 +18,51 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 * MA 02110-1301, USA.
 */
-#include "MSAEditorTreeManager.h"
-#include <ov_phyltree/TreeViewerTasks.h>
-
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/SaveDocumentTask.h>
-#include <U2Core/PhyTreeObject.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/TaskSignalMapper.h>
-
-#include "phyltree/CreatePhyTreeDialogController.h"
-#include "ov_phyltree/TreeViewer.h"
-#include "ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h"
-#include "ov_msa/TreeOptions/TreeOptionsWidgetFactory.h"
-#include "ov_phyltree/GraphicsRectangularBranchItem.h"
-#include <U2View/MSAEditor.h>
-#include <U2View/MSAEditorSequenceArea.h>
-#include <U2View/MSAEditorNameList.h>
-#include <U2View/MSAEditorDataList.h>
-
-#include <U2Algorithm/PhyTreeGeneratorTask.h>
-#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #else
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #endif
 
+#include <U2Algorithm/MSADistanceAlgorithm.h>
+#include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
+#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
+#include <U2Algorithm/PhyTreeGeneratorTask.h>
+
+#include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
-#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/PhyTreeObject.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/ExportDocumentDialogController.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/OpenViewTask.h>
+#include <U2Gui/U2FileDialog.h>
 
-#include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
-#include <U2Algorithm/MSADistanceAlgorithm.h>
+#include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorDataList.h>
+#include <U2View/MSAEditorNameList.h>
+#include <U2View/MSAEditorSequenceArea.h>
 
+#include "MSAEditorTreeManager.h"
+#include "ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h"
+#include "ov_msa/TreeOptions/TreeOptionsWidgetFactory.h"
+#include "ov_phyltree/GraphicsRectangularBranchItem.h"
+#include "ov_phyltree/TreeViewer.h"
 #include "ov_phyltree/TreeViewerTasks.h"
+#include "phyltree/CreatePhyTreeDialogController.h"
 
 namespace U2 {
 MSAEditorTreeManager::MSAEditorTreeManager(MSAEditor* _editor)
@@ -314,10 +310,10 @@ void MSAEditorTreeManager::openTreeFromFile() {
     QString file;
 #ifdef Q_OS_MAC
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-        file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter, 0, QFileDialog::DontUseNativeDialog);
+        file = U2FileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter, 0, QFileDialog::DontUseNativeDialog);
     }else
 #endif
-    file = QFileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter);
+    file = U2FileDialog::getOpenFileName(QApplication::activeWindow(), tr("Select files to open..."), h.dir,  filter);
     CHECK(!file.isEmpty(),);
     if (QFileInfo(file).exists()) {
         h.url = file;

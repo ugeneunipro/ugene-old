@@ -38,11 +38,9 @@
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLabel>
 #include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
 #else
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
 #endif
 
 namespace U2 {
@@ -421,7 +419,7 @@ void RemoteMachineMonitorDialogImpl::sl_saveMachine() {
     RemoteMachineItemInfo & item = machinesItemsByOrder[getSelectedTopLevelRow()];
     QString filename;
     LastUsedDirHelper dirHelper(SAVE_SETTINGS_FILE_DOMAIN);
-    dirHelper.url = filename = QFileDialog::getSaveFileName( this, tr("Select a file to save"), dirHelper.dir);
+    dirHelper.url = filename = U2FileDialog::getSaveFileName( this, tr("Select a file to save"), dirHelper.dir);
     AppContext::getTaskScheduler()->registerTopLevelTask(new SaveRemoteMachineSettings(item.settings, filename));
 }
 

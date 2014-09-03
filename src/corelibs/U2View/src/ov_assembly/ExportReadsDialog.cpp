@@ -19,23 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportReadsDialog.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>
 
-#include <U2Gui/LastUsedDirHelper.h>
-
 #include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "ExportReadsDialog.h"
 
 namespace U2 {
 
@@ -73,7 +72,7 @@ void ExportReadsDialog::accept() {
 
 void ExportReadsDialog::sl_selectFile() {
     LastUsedDirHelper lod("ExportReadsDialog");
-    lod.url = QFileDialog::getSaveFileName(this, tr("Select file to save"), lod, filter);
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Select file to save"), lod, filter);
     if (lod.url.isEmpty()) {
         return;
     }

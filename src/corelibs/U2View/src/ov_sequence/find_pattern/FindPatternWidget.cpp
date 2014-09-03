@@ -19,35 +19,35 @@
  * MA 02110-1301, USA.
  */
 
-#include "FindPatternTask.h"
-#include "FindPatternWidget.h"
-
 #include <U2Algorithm/FindAlgorithmTask.h>
 
+#include <U2Core/AnnotationData.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNATranslation.h>
+#include <U2Core/DocumentUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/AnnotationData.h>
 
-#include <U2View/ADVSequenceObjectContext.h>
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVSequenceWidget.h>
-
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/ShowHideSubgroupWidget.h>
-
-#include <U2Core/DocumentUtils.h>
-#include <U2Gui/DialogUtils.h>
 #include <U2Formats/FastaFormat.h>
 #include <U2Formats/GenbankFeatures.h>
 
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/ADVSequenceWidget.h>
+#include <U2View/AnnotatedDNAView.h>
+
+#include "FindPatternTask.h"
+#include "FindPatternWidget.h"
 
 const QString NEW_LINE_SYMBOL = "\n";
 const QString COLOR_NAME_FOR_INFO_MESSAGES = "green";
@@ -1162,7 +1162,7 @@ void FindPatternWidget::sl_onFileSelectorClicked()
     LastUsedDirHelper lod(FIND_PATTER_LAST_DIR);
 
     QString filter = DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::SEQUENCE, true);
-    lod.url = QFileDialog::getOpenFileName(dynamic_cast<QWidget *>(AppContext::getMainWindow()),
+    lod.url = U2FileDialog::getOpenFileName(dynamic_cast<QWidget *>(AppContext::getMainWindow()),
                                            tr("Select file to open..."), lod.dir, filter);
     if (!lod.url.isEmpty())
         filePathLineEdit->setText(lod.url);

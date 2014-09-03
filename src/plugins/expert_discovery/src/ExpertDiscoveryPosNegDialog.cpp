@@ -1,20 +1,20 @@
-#include "ExpertDiscoveryPosNegDialog.h"
 
-#include <U2Core/GObjectTypes.h>
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/DialogUtils.h>
-
-#include <U2Gui/HelpButton.h>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
 #else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
 #endif
 
+#include <U2Core/GObjectTypes.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "ExpertDiscoveryPosNegDialog.h"
 
 namespace U2 {
 
@@ -73,7 +73,7 @@ void ExpertDiscoveryPosNegDialog::sl_oneSequence() {
 
 void ExpertDiscoveryPosNegDialog::sl_openFirstFile(){
     LastUsedDirHelper lod("ExpertDiscovery positive sequences file");
-    lod.url = QFileDialog::getOpenFileName(NULL, tr("Open positive sequences file"), lod.dir, filter);
+    lod.url = U2FileDialog::getOpenFileName(NULL, tr("Open positive sequences file"), lod.dir, filter);
 
     Q_ASSERT(firstFileEdit);
     if (!lod.url.isEmpty()) {
@@ -88,7 +88,7 @@ void ExpertDiscoveryPosNegDialog::sl_openSecondFile() {
 
         lod.dir = lodFirst.dir;
     }
-    lod.url = QFileDialog::getOpenFileName(NULL, tr("Open second file"), lod.dir, filter);
+    lod.url = U2FileDialog::getOpenFileName(NULL, tr("Open second file"), lod.dir, filter);
 
     Q_ASSERT(secondFileEdit);
     if (!lod.url.isEmpty()) {

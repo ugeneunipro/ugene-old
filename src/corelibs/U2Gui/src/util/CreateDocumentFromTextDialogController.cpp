@@ -21,11 +21,9 @@
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #else
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #endif
 
@@ -55,6 +53,7 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include "CreateDocumentFromTextDialogController.h"
 #include "ui/ui_CreateDocumentFromTextDialog.h"
@@ -85,7 +84,7 @@ CreateDocumentFromTextDialogController::CreateDocumentFromTextDialogController(Q
 
 void CreateDocumentFromTextDialogController::sl_browseButtonClicked(){
     LastUsedDirHelper h;
-    h.url = QFileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter);
+    h.url = U2FileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter);
     ui->filepathEdit->setText(QDir::toNativeSeparators(h.url));
     sl_indexChanged(ui->formatBox->currentIndex());   
 }

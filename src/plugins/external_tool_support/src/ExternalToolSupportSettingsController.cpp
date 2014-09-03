@@ -539,7 +539,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolKitPath(){
     LastUsedDirHelper lod("toolkit path");
     QString dir;
 
-    lod.url = dir = QFileDialog::getExistingDirectory(this, tr("Choose Directory With Executables"), lod.dir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    lod.url = dir = U2FileDialog::getExistingDirectory(this, tr("Choose Directory With Executables"), lod.dir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (!dir.isEmpty()) {
         assert(treeWidget->selectedItems().isEmpty() == 0);
         QString toolKitName = treeWidget->selectedItems().first()->text(0);
@@ -596,7 +596,7 @@ void ExternalToolSupportSettingsPageWidget::sl_onBrowseToolPackPath() {
     LastUsedDirHelper lod("toolpack path");
     QString dirPath;
     bool isPathValid = false;
-    lod.url = dirPath = QFileDialog::getExistingDirectory(this, tr("Choose Directory With External Tools Pack"), lod.dir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    lod.url = dirPath = U2FileDialog::getExistingDirectory(this, tr("Choose Directory With External Tools Pack"), lod.dir, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
     if (!dirPath.isEmpty()) {
         QDir dir = QDir(dirPath);
@@ -670,9 +670,9 @@ void PathLineEdit::sl_onBrowse() {
 
     QString name;
     if (text().isEmpty()) {
-        lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), lod.dir, FileFilter, 0, QFileDialog::DontConfirmOverwrite);
+        lod.url = name = U2FileDialog::getOpenFileName(NULL, tr("Select a file"), lod.dir, FileFilter, 0, QFileDialog::DontConfirmOverwrite);
     } else {
-        lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), text(), FileFilter, 0, QFileDialog::DontConfirmOverwrite);
+        lod.url = name = U2FileDialog::getOpenFileName(NULL, tr("Select a file"), text(), FileFilter, 0, QFileDialog::DontConfirmOverwrite);
     }
     if (!name.isEmpty()) {
         setText(QDir::toNativeSeparators(name));

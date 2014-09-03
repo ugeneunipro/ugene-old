@@ -47,11 +47,9 @@
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
 #include <QtGui/QListWidgetItem>
-#include <QtGui/QFileDialog>
 #else
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QListWidgetItem>
-#include <QtWidgets/QFileDialog>
 #endif
 
 namespace U2 {

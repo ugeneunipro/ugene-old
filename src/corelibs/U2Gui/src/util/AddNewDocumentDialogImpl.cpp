@@ -33,11 +33,9 @@
 #include <U2Gui/HelpButton.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #else
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #endif
 
@@ -144,7 +142,7 @@ void AddNewDocumentDialogImpl::sl_documentURLButtonClicked() {
 		url = AppContext::getSettings()->getValue(SETTINGS_LASTDIR, QString("")).toString();
     }
     QString filter = DialogUtils::prepareDocumentsFileFilter(formatController->getActiveFormatId(), false);
-	QString name = QFileDialog::getSaveFileName(this, tr("Save file"), url, filter);
+	QString name = U2FileDialog::getSaveFileName(this, tr("Save file"), url, filter);
 	if (!name.isEmpty()) {
 		documentURLEdit->setText(name);	
 		AppContext::getSettings()->setValue(SETTINGS_LASTDIR, QFileInfo(name).absoluteDir().absolutePath());

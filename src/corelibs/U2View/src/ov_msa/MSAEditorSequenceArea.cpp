@@ -28,12 +28,10 @@
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QDialog>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #endif
 
@@ -2313,10 +2311,10 @@ void MSAEditorSequenceArea::sl_addSeqFromFile()
     QStringList urls;
 #ifdef Q_OS_MAC
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-        urls = QFileDialog::getOpenFileNames(this, tr("Open file with sequences"), lod.dir, filter, 0, QFileDialog::DontUseNativeDialog );
+        urls = U2FileDialog::getOpenFileNames(this, tr("Open file with sequences"), lod.dir, filter, 0, QFileDialog::DontUseNativeDialog );
     } else
 #endif
-    urls = QFileDialog::getOpenFileNames(this, tr("Open file with sequences"), lod.dir, filter);
+    urls = U2FileDialog::getOpenFileNames(this, tr("Open file with sequences"), lod.dir, filter);
 
     if (!urls.isEmpty()) {
         lod.url = urls.first();

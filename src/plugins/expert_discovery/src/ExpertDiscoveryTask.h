@@ -364,6 +364,7 @@ public:
     ExpertDiscoveryExportSequences(const SequenceBase& base);
     void prepare();
     void run();
+    ReportResult report();
 private:
     const SequenceBase& base;
     QString fileName;

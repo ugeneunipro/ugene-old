@@ -20,11 +20,9 @@
  */
 
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMessageBox>
 #else
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMessageBox>
 #endif
@@ -500,7 +498,7 @@ void ExportProjectViewItemsContoller::sl_exportSequenceQuality() {
     }
     
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getSaveFileName(QApplication::activeWindow(), tr("Set output quality file"), lod.dir,".qual");
+    lod.url = U2FileDialog::getSaveFileName(QApplication::activeWindow(), tr("Set output quality file"), lod.dir,".qual");
     if (lod.url.isEmpty()) {
         return;
     }

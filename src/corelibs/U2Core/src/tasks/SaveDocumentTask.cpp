@@ -19,34 +19,33 @@
  * MA 02110-1301, USA.
  */
 
-#include "SaveDocumentTask.h"
-
-#include <U2Core/IOAdapter.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/Log.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/L10n.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/IOAdapterUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/TmpDirChecker.h>
-#include <U2Core/GHints.h>
-
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
 #else
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
 #include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
 #endif
+
+#include <U2Core/AppContext.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GHints.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/IOAdapterUtils.h>
+#include <U2Core/L10n.h>
+#include <U2Core/Log.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/TmpDirChecker.h>
+#include <U2Core/U2SafePoints.h>
+
+#include "SaveDocumentTask.h"
 
 namespace U2 {
 
@@ -279,12 +278,14 @@ GUrl SaveMultipleDocuments::chooseAnotherUrl(Document* doc) {
         if (msgBox.clickedButton() == saveButton) {
             QString newFileUrl = GUrlUtils::rollFileName(doc->getURLString(), "_modified_", DocumentUtils::getNewDocFileNameExcludesHint( ) );
             QString saveFileFilter = doc->getDocumentFormat()->getSupportedDocumentFileExtensions().join(" *.").prepend("*.");
-            QFileDialog fileDialog(dynamic_cast<QWidget*>(QApplication::activeWindow()),
-                                   tr("Save as"), newFileUrl, saveFileFilter);
-            fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+            QWidget *activeWindow = qobject_cast<QWidget*>(QApplication::activeWindow());
+            const QString fileName = QFileDialog::getSaveFileName(activeWindow, tr("Save as"), newFileUrl, saveFileFilter);
+#ifdef Q_OS_MAC
+            activeWindow->activateWindow();
+#endif
 
-            if (fileDialog.exec()) {
-                url = fileDialog.selectedFiles().first();
+            if (!fileName.isEmpty()) {
+                url = fileName;
             } else {
                 return GUrl();
             }

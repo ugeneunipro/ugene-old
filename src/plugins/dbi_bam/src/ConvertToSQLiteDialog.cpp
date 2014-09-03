@@ -19,29 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/Task.h>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
-#include <QtGui/QTextEdit>
 #include <QtGui/QDesktopWidget>
+#include <QtGui/QMessageBox>
+#include <QtGui/QTextEdit>
 #else
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QTextEdit>
 #include <QtWidgets/QDesktopWidget>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QTextEdit>
 #endif
-#include <U2Gui/DialogUtils.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DocumentUtils.h>
+
 #include <U2Core/AppContext.h>
-#include <U2Core/ProjectModel.h>
+#include <U2Core/DocumentUtils.h>
 #include <U2Core/FormatUtils.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/L10n.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/Task.h>
 #include <U2Core/TmpDirChecker.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Gui/ObjectViewModel.h>
+
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/ObjectViewModel.h>
+#include <U2Gui/U2FileDialog.h>
+
 #include "BAMDbiPlugin.h"
 #include "BaiReader.h"
 #include "ConvertToSQLiteDialog.h"
@@ -250,10 +252,10 @@ void ConvertToSQLiteDialog::sl_refUrlButtonClicked() {
     QString value;
     #ifdef Q_OS_MAC
         if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-            value = QFileDialog::getOpenFileName(this, QObject::tr("Reference File"), dir, "", 0, QFileDialog::DontUseNativeDialog);
+            value = U2FileDialog::getOpenFileName(this, QObject::tr("Reference File"), dir, "", 0, QFileDialog::DontUseNativeDialog);
         } else
     #endif
-    value = QFileDialog::getOpenFileName(this, QObject::tr("Reference File"), dir);
+    value = U2FileDialog::getOpenFileName(this, QObject::tr("Reference File"), dir);
     if(!value.isEmpty()) {
         ui.refUrlEdit->setText(value);
         hideReferenceMessage();
@@ -387,10 +389,10 @@ void ConvertToSQLiteDialog::on_destinationUrlButton_clicked() {
         QString returnedValue;
     #ifdef Q_OS_MAC
         if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-            returnedValue = QFileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination UGENEDB File"), dir, BAMDbiPlugin::tr("UGENEDB Files (*.ugenedb);;All Files (*)"), NULL, QFileDialog::DontConfirmOverwrite | QFileDialog::DontUseNativeDialog);
+            returnedValue = U2FileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination UGENEDB File"), dir, BAMDbiPlugin::tr("UGENEDB Files (*.ugenedb);;All Files (*)"), NULL, QFileDialog::DontConfirmOverwrite | QFileDialog::DontUseNativeDialog);
         } else
     #endif
-    returnedValue = QFileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination UGENEDB File"), dir, BAMDbiPlugin::tr("UGENEDB Files (*.ugenedb);;All Files (*)"), NULL, QFileDialog::DontConfirmOverwrite);
+    returnedValue = U2FileDialog::getSaveFileName(this, BAMDbiPlugin::tr("Destination UGENEDB File"), dir, BAMDbiPlugin::tr("UGENEDB Files (*.ugenedb);;All Files (*)"), NULL, QFileDialog::DontConfirmOverwrite);
     if(!returnedValue.isEmpty()) {
         ui.destinationUrlEdit->setText(returnedValue);
     }

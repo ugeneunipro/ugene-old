@@ -22,12 +22,10 @@
 #include <qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMenu>
 #include <QtGui/QWidgetAction>
 #else
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QWidgetAction>
 #endif

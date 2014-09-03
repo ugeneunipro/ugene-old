@@ -19,14 +19,13 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtGui/QPushButton>
+
 #include <U2Gui/LastUsedDirHelper.h>
-
-#include <QFileDialog>
-#include <QPushButton>
-
-#include "PropertyWidget.h"
+#include <U2Gui/U2FileDialog.h>
 
 #include "BowtieWidgetController.h"
+#include "PropertyWidget.h"
 
 namespace U2 {
 
@@ -77,7 +76,7 @@ QWidget * BowtieWidgetController::createGUI(U2OpStatus &os) {
 void BowtieWidgetController::sl_browse() {
     LastUsedDirHelper lod;
     QString lastDir = lod.dir;
-    QString url = QFileDialog::getOpenFileName(NULL, tr("Select one of Bowtie index files"), lastDir);
+    QString url = U2FileDialog::getOpenFileName(NULL, tr("Select one of Bowtie index files"), lastDir);
     if (url.isEmpty()) {
         return;
     }

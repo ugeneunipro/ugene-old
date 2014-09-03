@@ -19,15 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "MSAExportConsensusTab.h"
-
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/DialogUtils.h>
-
-#include <U2View/MSAEditorConsensusArea.h>
-#include <U2View/MSAEditorSequenceArea.h>
-#include <U2View/MSAEditorTasks.h>
-
 #include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
 
 #include <U2Core/AppContext.h>
@@ -35,8 +26,18 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/L10n.h>
-#include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/U2IdTypes.h>
+#include <U2Core/UserApplicationsSettings.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include <U2View/MSAEditorConsensusArea.h>
+#include <U2View/MSAEditorSequenceArea.h>
+#include <U2View/MSAEditorTasks.h>
+
+#include "MSAExportConsensusTab.h"
 
 namespace U2 {
 
@@ -69,7 +70,7 @@ MSAExportConsensusTab::MSAExportConsensusTab(MSAEditor* msa_)
 void MSAExportConsensusTab::sl_browseClicked(){
     LastUsedDirHelper h;
     DocumentFormatId id = formatCb->itemData(formatCb->currentIndex()).toString();
-    QString fileName = QFileDialog::getSaveFileName(NULL, tr("Save file"), h.dir, DialogUtils::prepareDocumentsFileFilter(id, false));
+    QString fileName = U2FileDialog::getSaveFileName(NULL, tr("Save file"), h.dir, DialogUtils::prepareDocumentsFileFilter(id, false));
     if (!fileName.isEmpty()) {
         pathLe->setText(fileName);
     }

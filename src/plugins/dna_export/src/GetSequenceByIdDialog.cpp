@@ -19,22 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#include "GetSequenceByIdDialog.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
 
-#include <U2Gui/LastUsedDirHelper.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#endif
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "GetSequenceByIdDialog.h"
 
 namespace U2 {
 
@@ -52,7 +51,7 @@ const QString DOWNLOAD_REMOTE_FILE_DOMAIN = "DownloadRemoteFileDialog";
 
 void GetSequenceByIdDialog::sl_saveFilenameButtonClicked() {
     LastUsedDirHelper lod(DOWNLOAD_REMOTE_FILE_DOMAIN);
-    QString dirName = QFileDialog::getExistingDirectory(this, tr("Select directory to save"), lod.dir);
+    QString dirName = U2FileDialog::getExistingDirectory(this, tr("Select directory to save"), lod.dir);
     if(!dirName.isEmpty()) {
         directoryEdit->setText(dirName);
         dir = dirName;

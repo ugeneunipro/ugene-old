@@ -51,14 +51,12 @@
 #include <QtGui/QToolButton>
 #include <QtGui/QWidgetAction>
 #include <QtGui/QDialog>
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QWidgetAction>
 #include <QtWidgets/QDialog>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #endif
 

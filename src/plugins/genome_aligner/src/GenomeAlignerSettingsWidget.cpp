@@ -19,25 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#include "GenomeAlignerIndex.h"
-#include "GenomeAlignerSettingsController.h"
-#include "GenomeAlignerTask.h"
+#include <U2Algorithm/OpenCLGpuRegistry.h>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/UserApplicationsSettings.h>
-#include <U2Algorithm/OpenCLGpuRegistry.h>
+
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
+#include "GenomeAlignerIndex.h"
+#include "GenomeAlignerSettingsController.h"
 #include "GenomeAlignerSettingsWidget.h"
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QFileDialog>
-#endif
+#include "GenomeAlignerTask.h"
 
 namespace U2 {
 
@@ -185,7 +181,7 @@ or the index directory.").arg(index.seqPartSize).arg(partSlider->value());
 void GenomeAlignerSettingsWidget::sl_onSetIndexDirButtonClicked() {
     LastUsedDirHelper lod;
 
-    lod.url = QFileDialog::getExistingDirectory(this, tr("Set index files directory"), indexDirEdit->text());
+    lod.url = U2FileDialog::getExistingDirectory(this, tr("Set index files directory"), indexDirEdit->text());
     if (!lod.url.isEmpty()) {
         GUrl result = lod.url;
         indexDirEdit->setText(result.getURLString());

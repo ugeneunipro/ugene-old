@@ -208,7 +208,7 @@ bool DocumentUpdater::makeDecision(Document *doc, QListIterator<Document*> &iter
     switch (btn) {
     case QMessageBox::Yes: {
         QString saveFileFilter = doc->getDocumentFormat()->getSupportedDocumentFileExtensions().join(" *.").prepend("*.");
-        QString newFileUrl = QFileDialog::getSaveFileName(dynamic_cast<QWidget*>(AppContext::getMainWindow()),
+        QString newFileUrl = U2FileDialog::getSaveFileName(dynamic_cast<QWidget*>(AppContext::getMainWindow()),
             tr("Save as"), doc->getURLString(), saveFileFilter);
         CHECK(!newFileUrl.isEmpty(), false);
 
@@ -1093,7 +1093,7 @@ void ProjectViewImpl::sl_relocate() {
         return;
     }
     LastUsedDirHelper h;
-    h.url = QFileDialog::getOpenFileName(w, tr("Select new file location"), h.dir);
+    h.url = U2FileDialog::getOpenFileName(w, tr("Select new file location"), h.dir);
     if (h.url.isEmpty()) {
         return;
     }

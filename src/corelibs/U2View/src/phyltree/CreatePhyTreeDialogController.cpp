@@ -1,37 +1,55 @@
-#include "CreatePhyTreeDialogController.h"
-#include "ui/ui_CreatePhyTreeDialog.h"
+/**
+ * UGENE - Integrated Bioinformatics Tools.
+ * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
+ * http://ugene.unipro.ru
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ */
 
-#include "CreatePhyTreeWidget.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#endif
+
+#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
+#include <U2Algorithm/SubstMatrixRegistry.h>
 
 #include <U2Core/AppContext.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
-#include <U2Core/Settings.h>
 #include <U2Core/AppResources.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/IOAdapter.h>
+#include <U2Core/MAlignmentObject.h>
 #include <U2Core/PluginModel.h>
+#include <U2Core/Settings.h>
 #include <U2Core/TmpDirChecker.h>
 
-#include <U2Algorithm/SubstMatrixRegistry.h>
-#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
-
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include <U2View/LicenseDialog.h>
 
+#include "CreatePhyTreeWidget.h"
+#include "CreatePhyTreeDialogController.h"
+#include "ui/ui_CreatePhyTreeDialog.h"
 
 namespace U2{
 
@@ -198,7 +216,7 @@ void CreatePhyTreeDialogController::sl_browseClicked()
     } else {
         path = oldUrl.getURLString();
     }
-    GUrl newUrl = QFileDialog::getSaveFileName(this, "Choose file name", path,"Newick format (*.nwk)");
+    GUrl newUrl = U2FileDialog::getSaveFileName(this, "Choose file name", path,"Newick format (*.nwk)");
     
     if (newUrl.isEmpty()) {
         return;

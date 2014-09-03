@@ -20,12 +20,12 @@
  */
 
 #include <qglobal.h>
+
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QLayout>
 #include <QFileDialog>
+#include <QLayout>
 #else
 #include <QtWidgets/QLayout>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QListView>
 #endif
 
@@ -33,8 +33,9 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/EditConnectionDialog.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
 #include <U2Lang/SchemaConfig.h>
 #include <U2Lang/SharedDbUrlUtils.h>
@@ -43,7 +44,6 @@
 #include <U2Lang/WorkflowUtils.h>
 
 #include "OutputFileDialog.h"
-
 #include "PropertyWidget.h"
 
 namespace U2 {
@@ -242,12 +242,12 @@ void ComboBoxWithUrlWidget::sl_browse(){
 
     QString name;
     if (isPath){
-        lod.dir = name = QFileDialog::getExistingDirectory(NULL, tr("Select a directory"), lastDir);
+        lod.dir = name = U2FileDialog::getExistingDirectory(NULL, tr("Select a directory"), lastDir);
         if (!name.isEmpty()) {
             setValue(name);
         }
     }else{
-        lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir);
+        lod.url = name = U2FileDialog::getOpenFileName(NULL, tr("Select a file"), lastDir);
         if (!name.isEmpty()) {
             setValue(name);
         }

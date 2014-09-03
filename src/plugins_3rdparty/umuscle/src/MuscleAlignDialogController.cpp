@@ -19,27 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#include "MuscleAlignDialogController.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QToolButton>
+#endif
+
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNATranslation.h>
-#include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/GUrlUtils.h>
 
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/HelpButton.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QMessageBox>
-#include <QtGui/QToolButton>
-#include <QtGui/QFileDialog>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QFileDialog>
-#endif
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
+#include "MuscleAlignDialogController.h"
 
 /* TRANSLATOR U2::MuscleAlignDialogController */    
 
@@ -165,7 +165,7 @@ MuscleAlignWithExtFileSpecifyDialogController::MuscleAlignWithExtFileSpecifyDial
 }
 void MuscleAlignWithExtFileSpecifyDialogController::sl_inputPathButtonClicked() {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getOpenFileName(this, tr("Open an alignment file"), lod.dir, 
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Open an alignment file"), lod.dir,
         DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
     if (lod.url.isEmpty()) {
         return;
@@ -175,7 +175,7 @@ void MuscleAlignWithExtFileSpecifyDialogController::sl_inputPathButtonClicked() 
 
 void MuscleAlignWithExtFileSpecifyDialogController::sl_outputPathButtonClicked() {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getSaveFileName(this, tr("Save an multiple alignment file"), lod.dir);
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Save an multiple alignment file"), lod.dir);
     if (lod.url.isEmpty()) {
         return;
     }

@@ -19,46 +19,44 @@
  * MA 02110-1301, USA.
  */
 
-#include "QDRunDialog.h"
-#include "QDSceneIOTasks.h"
-#include "QueryViewController.h"
+#include <QtGui/QMessageBox>
 
-#include <U2Core/L10n.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/SaveDocumentTask.h>
-#include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AddDocumentTask.h>
-#include <U2Core/TaskSignalMapper.h>
+#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/L10n.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/TaskSignalMapper.h>
 #include <U2Core/U2SafePoints.h>
-
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/AnnotatedDNAViewTasks.h>
-#include <U2View/ADVSequenceObjectContext.h>
-
-#include <U2Gui/OpenViewTask.h>
-#include <U2Gui/CreateAnnotationWidgetController.h>
 
 #include <U2Designer/QDScheduler.h>
 
+#include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/DialogUtils.h>
-#include <U2Gui/LastUsedDirHelper.h>
-
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
 #include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/OpenViewTask.h>
+#include <U2Gui/U2FileDialog.h>
 
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/AnnotatedDNAView.h>
+#include <U2View/AnnotatedDNAViewTasks.h>
+
+#include "QDRunDialog.h"
+#include "QDSceneIOTasks.h"
+#include "QueryViewController.h"
 
 //TODO: there are issues with 'docWithSequence' here
 // Issue 1: if docWithSequence removed from the project during calc -> crash
@@ -116,9 +114,9 @@ void QDRunDialog::sl_selectFile() {
     }
 
     if (edit==inFileEdit) {
-        dir.url = QFileDialog::getOpenFileName(this, title, dir, fileFilter);
+        dir.url = U2FileDialog::getOpenFileName(this, title, dir, fileFilter);
     } else {
-        dir.url = QFileDialog::getSaveFileName(this, title, dir, fileFilter);
+        dir.url = U2FileDialog::getSaveFileName(this, title, dir, fileFilter);
     }
     
     if (!dir.url.isEmpty()) {
@@ -330,7 +328,7 @@ void QDDialog::sl_selectScheme() {
     delete scheme;
     scheme = NULL;
     LastUsedDirHelper dir(QUERY_DESIGNER_ID);
-    dir.url = QFileDialog::getOpenFileName(this, tr("Select query"), dir, QString("*.%1").arg(QUERY_SCHEME_EXTENSION));
+    dir.url = U2FileDialog::getOpenFileName(this, tr("Select query"), dir, QString("*.%1").arg(QUERY_SCHEME_EXTENSION));
     if (dir.url.isEmpty()) {
         return;
     }

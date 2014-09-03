@@ -19,29 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#include "MSAAlignDialog.h"
-#include "MSAAlignGUIExtension.h"
-#include <ui/ui_PerformAlignmentDialog.h>
+#include <QtGui/QKeyEvent>
 
-#include <U2Core/AppContext.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/GUrlUtils.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QMessageBox>
+#endif
 
 #include <U2Algorithm/MSAAlignAlgRegistry.h>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/GUrlUtils.h>
+
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#endif
-#include <QtGui/QKeyEvent>
+#include "MSAAlignDialog.h"
+#include "MSAAlignGUIExtension.h"
+#include "ui/ui_PerformAlignmentDialog.h"
 
 namespace U2 {
 
@@ -63,7 +63,7 @@ MSAAlignDialog::MSAAlignDialog(const QString& _algorithmName, bool useFileMenu ,
 
 void MSAAlignDialog::sl_onFileNameButtonClicked() {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getOpenFileName(this, tr("Set result alignment file name"), lod.dir, 
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Set result alignment file name"), lod.dir,
         DialogUtils::prepareDocumentsFileFilterByObjType(GObjectTypes::MULTIPLE_ALIGNMENT, true));
     if (!lod.url.isEmpty()) {
         ui->fileNameEdit->setText(lod.url);

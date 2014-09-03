@@ -19,35 +19,34 @@
  * MA 02110-1301, USA.
  */
 
-#include "BlastRunCommonDialog.h"
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QToolButton>
+#else
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QToolButton>
+#endif
 
 #include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
 #include <U2Core/AppResources.h>
+#include <U2Core/AppSettings.h>
 #include <U2Core/DNAAlphabet.h>
-#include <U2Core/GObjectReference.h>
-#include <U2Core/IOAdapter.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/GObjectReference.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/IOAdapter.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MultiTask.h>
-#include <U2Gui/HelpButton.h>
+#include <U2Core/ProjectModel.h>
 
-#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QFileDialog>
-#include <QtGui/QToolButton>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QMessageBox>
-#endif
+#include "BlastRunCommonDialog.h"
 
 namespace U2 {
 
@@ -262,7 +261,7 @@ void BlastRunCommonDialog::sl_onBrowseDatabasePath(){
 #endif
 
     QString name;
-    lod.url = name = QFileDialog::getOpenFileName(NULL, tr("Select a database file"), lod.dir, "", NULL, options);
+    lod.url = name = U2FileDialog::getOpenFileName(NULL, tr("Select a database file"), lod.dir, "", NULL, options);
     if (!name.isEmpty()) {
         QFileInfo fileInfo(name);
         baseNameLineEdit->setText(fileInfo.fileName().replace(QRegExp("(\\.\\d+)?(((formatDB|makeBlastDB)\\.log)|(\\.(phr|pin|psq|phd|pnd|pog|ppi|psi|phi|pni|ppd|psd|psq|pal|nhr|nin|nsq)))?$", Qt::CaseInsensitive), QString()));

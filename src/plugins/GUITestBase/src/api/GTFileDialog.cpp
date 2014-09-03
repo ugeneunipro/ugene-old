@@ -32,7 +32,6 @@
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QComboBox>
-#include <QtGui/QFileDialog>
 #include <QtGui/QFileSystemModel>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLineEdit>
@@ -41,7 +40,6 @@
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QFileSystemModel>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLineEdit>

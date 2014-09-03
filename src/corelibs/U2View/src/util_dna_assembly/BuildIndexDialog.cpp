@@ -19,32 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#include "BuildIndexDialog.h"
-#include "DnaAssemblyGUIExtension.h"
-
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/ExternalToolRegistry.h>
-#include <U2Core/U2SafePoints.h>
-
-#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
-
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/AppSettingsGUI.h>
-
-#include <U2Gui/HelpButton.h>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 #include <QtGui/QPushButton>
 #else
-#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QPushButton>
 #endif
 
+#include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/DocumentUtils.h>
+#include <U2Core/ExternalToolRegistry.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/AppSettingsGUI.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/U2FileDialog.h>
+
+#include "BuildIndexDialog.h"
+#include "DnaAssemblyGUIExtension.h"
 
 namespace U2 {
 
@@ -89,10 +86,10 @@ void BuildIndexDialog::sl_onAddRefButtonClicked() {
     QString filter;
 #ifdef Q_OS_MAC
     if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
-        lod.url = QFileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter, 0, QFileDialog::DontUseNativeDialog );
+        lod.url = U2FileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter, 0, QFileDialog::DontUseNativeDialog );
     } else
 #endif
-    lod.url = QFileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter);
+    lod.url = U2FileDialog::getOpenFileName(this, tr("Open reference sequence"), lod.dir, filter);
     if (lod.url.isEmpty()) {
         return;
     }
@@ -106,7 +103,7 @@ void BuildIndexDialog::sl_onAddRefButtonClicked() {
 
 void BuildIndexDialog::sl_onSetIndexFileNameButtonClicked() {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getSaveFileName(this, tr("Set index file name"), lod.dir);
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Set index file name"), lod.dir);
     if (!lod.url.isEmpty()) {
         GUrl index = lod.url;
         if (index.lastFileSuffix().isEmpty() && customGUI != NULL) {

@@ -23,26 +23,24 @@
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
-#include <QtGui/QFileDialog>
 #else
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
 #endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/GUrlUtils.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/GUrlUtils.h>
 
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
-#include <U2Gui/LastUsedDirHelper.h>
-#include <U2Gui/HelpButton.h>
-
+#include <U2Gui/U2FileDialog.h>
 
 #include "ConstructMoleculeDialog.h"
-#include "EditFragmentDialog.h"
 #include "CreateFragmentDialog.h"
+#include "EditFragmentDialog.h"
 
 namespace U2 {
 
@@ -116,7 +114,7 @@ void ConstructMoleculeDialog::accept()
 void ConstructMoleculeDialog::sl_onBrowseButtonClicked()
 {
     LastUsedDirHelper lod;
-    lod.url = QFileDialog::getSaveFileName(this, tr("Set new molecule file name"), lod.dir, tr("Genbank (*.gb )"));
+    lod.url = U2FileDialog::getSaveFileName(this, tr("Set new molecule file name"), lod.dir, tr("Genbank (*.gb )"));
     if (!lod.url.isEmpty()) {
         GUrl result = lod.url;
         filePathEdit->setText(result.getURLString());
