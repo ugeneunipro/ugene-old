@@ -67,8 +67,6 @@ QString SequenceSplitPromter::composeRichDoc() {
     Actor * seqProducer = input->getProducer( BaseSlots::DNA_SEQUENCE_SLOT().getId() );
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString seqProducerText = tr("from <u>%1</u>").arg(seqProducer ? seqProducer->getLabel() : unsetStr);
-    
-    
 
     //translate or not?
     bool translate = getParameter( TRANSLATE_ATTR ).toBool();
@@ -110,7 +108,6 @@ QString SequenceSplitPromter::composeRichDoc() {
     doc.remove( QRegExp("[\\,\\s]*$") ); //remove all commas and spaces from the end;
     doc.append(".");
     return doc;
-
 }
 
 void SequenceSplitWorker::init() {

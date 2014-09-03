@@ -185,7 +185,7 @@ ClustalWPrompter::ClustalWPrompter(Actor* p) : PrompterBase<ClustalWPrompter>(p)
 QString ClustalWPrompter::composeRichDoc() {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_MSA_PORT_ID()));
     Actor* producer = input->getProducer(BasePorts::IN_MSA_PORT_ID());
-    QString producerName = producer ? tr(" from %1").arg(producer->getLabel()) : "";    
+    QString producerName = producer ? tr(" from %1").arg(producer->getLabel()) : "";
     QString doc = tr("Aligns each MSA supplied <u>%1</u> with \"<u>ClustalW</u>\".")
         .arg(producerName);
 

@@ -175,7 +175,7 @@ void HMM3IOWorkerFactory::init() {
 }
 
 QString HMM3ReadPrompter::composeRichDoc() {
-    return tr("Read HMM3 profile(s) from %1").arg(getHyperlink(BaseAttributes::URL_IN_ATTRIBUTE().getId(), getURL(BaseAttributes::URL_IN_ATTRIBUTE().getId())));
+    return tr("Read HMM3 profile(s) from %1.").arg(getHyperlink(BaseAttributes::URL_IN_ATTRIBUTE().getId(), getURL(BaseAttributes::URL_IN_ATTRIBUTE().getId())));
 }
 
 QString HMM3WritePrompter::composeRichDoc() {

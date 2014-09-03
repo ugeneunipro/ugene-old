@@ -127,7 +127,7 @@ Worker *GetFileListWorkerFactory::createWorker(Actor *a) {
 /************************************************************************/
 QString GetFileListPrompter::composeRichDoc() {
     QString url = getHyperlink(URL_ATTR, getURL(URL_ATTR));
-    return tr("Gets paths of files: <u>%1</u>")
+    return tr("Gets paths of files: <u>%1</u>.")
         .arg(url);
 }
 

@@ -176,7 +176,7 @@ QString VcfConsensusPrompter::composeRichDoc() {
     QString vcf = getProducersOrUnset(IN_PORT_ID, IN_VCF_URL_SLOT_ID);
     QString out = getHyperlink(OUT_FASTA_URL_ID, getURL(OUT_FASTA_URL_ID));
 
-    return tr("Apply VCF variants from <u>%1</u> to fasta file <u>%2</u> and save consensus sequence to <u>%3</u>")
+    return tr("Apply VCF variants from <u>%1</u> to fasta file <u>%2</u> and save consensus sequence to <u>%3</u>.")
               .arg(vcf)
               .arg(fasta)
               .arg(out);

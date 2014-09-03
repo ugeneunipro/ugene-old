@@ -245,7 +245,7 @@ QString AminoTranslationPrompter::composeRichDoc(){
         usingGenetic = getHyperlink(AUTO_TRANSLATION_ATTR, "auto selected genetic code");
     }
 
-    QString doc = QString("Translated sequence to amino from %1 position using %2").
+    QString doc = QString("Translated sequence to amino from %1 position using %2.").
                     arg(offset). // offset from sequence will be translated
                     arg(usingGenetic); // genetic code
     return doc;

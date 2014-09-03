@@ -1048,7 +1048,7 @@ void ProjectTreeController::removeItems(const QList<Document*> &docs, const QLis
 
     if (!foldersRemoved || !objectsRemoved) {
         QMessageBox::warning(QApplication::activeWindow(), QObject::tr("Unable to Remove"),
-            QObject::tr("Some of selected objects are used by the other users of the database. "
+            QObject::tr("Some of selected objects are being used by the other users of the database. "
             "Try to remove them later."));
     }
 }
