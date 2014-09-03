@@ -500,6 +500,55 @@ void FolderObjectTreeStorage::setLastUpdate(const DocumentFoldersUpdate &value) 
     lastUpdate = value;
 }
 
+void FolderObjectTreeStorage::setIgnoredObjects(const QSet<U2DataId> &ids) {
+    ignoredObjects = ids;
+}
+
+void FolderObjectTreeStorage::addIgnoredObject(const U2DataId &id) {
+    SAFE_POINT(!ignoredObjects.contains(id), "Attempting to ignore object repeatedly", );
+    ignoredObjects.insert(id);
+}
+
+void FolderObjectTreeStorage::setIgnoredFolders(const QSet<QString> &paths) {
+    ignoredPaths = paths;
+}
+
+void FolderObjectTreeStorage::addIgnoredFolder(const QString &path) {
+    SAFE_POINT(!ignoredPaths.contains(path), "Attempting to ignore folder repeatedly", );
+    ignoredPaths.insert(path);
+}
+
+void FolderObjectTreeStorage::excludeFromObjFilter(const QSet<U2DataId> &ids) {
+    foreach (const U2DataId &id, ids) {
+        SAFE_POINT(ignoredObjects.contains(id), "Unexpected object detected", );
+        ignoredObjects.remove(id);
+    }
+}
+
+void FolderObjectTreeStorage::excludeFromFolderFilter(const QSet<QString> &paths) {
+    foreach (const QString &path, paths) {
+        SAFE_POINT(ignoredPaths.contains(path), "Unexpected path detected", );
+        ignoredPaths.remove(path);
+    }
+}
+
+bool FolderObjectTreeStorage::isObjectIgnored(const U2DataId &id) const {
+    return ignoredObjects.contains(id);
+}
+
+bool FolderObjectTreeStorage::isFolderIgnored(const QString &path) const {
+    if (ignoredPaths.contains(path)) {
+        return true;
+    }
+
+    foreach (const QString &ignoredPath, ignoredPaths) {
+        if (Folder::isSubFolder(ignoredPath, path)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 const QStringList & FolderObjectTreeStorage::allFolders() const {
     return lastUpdate.folders;
 }

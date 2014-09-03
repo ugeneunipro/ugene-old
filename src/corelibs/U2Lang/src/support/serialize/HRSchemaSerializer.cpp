@@ -546,7 +546,12 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
     }
 
     foreach( const QString & key, pairs.equalPairs.keys() ) {
-        proc->getParameter(key)->setAttributeValue(getAttrValue(proc, key, pairs.equalPairs.value(key)));
+        Attribute *attr = proc->getParameter(key);
+        if (NULL != attr) {
+           attr->setAttributeValue(getAttrValue(proc, key, pairs.equalPairs.value(key)));
+        } else {
+            coreLog.details(tr("Unexpected actor attribute: %1").arg(key));
+        }
     }
 
     foreach (const QString &valDef, pairs.blockPairs.values(Constants::VALIDATOR)) {

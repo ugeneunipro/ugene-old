@@ -468,7 +468,8 @@ void ProjectViewModel::merge(Document *doc, const DocumentFoldersUpdate &update)
     ConnectionHelper con(doc->getDbiRef(), os);
     CHECK_OP(os, );
 
-    DocumentFoldersUpdate lastUpdate = folders[doc]->getLastUpdate();
+    DocumentFolders *docFolders = folders[doc];
+    DocumentFoldersUpdate lastUpdate = docFolders->getLastUpdate();
 
     // folders
     QStringList deletedFolders;
@@ -477,7 +478,9 @@ void ProjectViewModel::merge(Document *doc, const DocumentFoldersUpdate &update)
 
     // NOTE: this cycle supposes that @addedFolders is sorted
     foreach (const QString &path, addedFolders) {
-        insertFolder(doc, path);
+        if (!docFolders->isFolderIgnored(path)) {
+            insertFolder(doc, path);
+        }
     }
 
     // objects
@@ -487,6 +490,10 @@ void ProjectViewModel::merge(Document *doc, const DocumentFoldersUpdate &update)
         const U2Object &entity = it.key();
         const U2DataId id = entity.id;
         const QString path = it.value();
+
+        if (docFolders->isObjectIgnored(id) || docFolders->isFolderIgnored(path)) {
+            continue;
+        }
 
         // current object is not removed from DB
         deletedObjectIds.remove(id);
@@ -501,11 +508,11 @@ void ProjectViewModel::merge(Document *doc, const DocumentFoldersUpdate &update)
                 insertObject(doc, obj, path);
                 doc->addObject(obj);
             }
-        } else if (folders[doc]->hasObject(id)) { // existing object
-            GObject *obj = folders[doc]->getObject(id);
+        } else if (docFolders->hasObject(id)) { // existing object
+            GObject *obj = docFolders->getObject(id);
             SAFE_POINT(NULL != obj, "NULL object", );
 
-            QString oldFolder = folders[doc]->getObjectFolder(obj);
+            QString oldFolder = docFolders->getObjectFolder(obj);
             if (oldFolder != path) { // new object folder -> move it
                 removeObject(doc, obj);
                 insertObject(doc, obj, path);
@@ -519,10 +526,10 @@ void ProjectViewModel::merge(Document *doc, const DocumentFoldersUpdate &update)
     // delete deleted objects
     if (!doc->isStateLocked()) {
         foreach (const U2DataId &id, deletedObjectIds) {
-            if (!folders[doc]->hasObject(id)) {
+            if (!docFolders->hasObject(id) || docFolders->isObjectIgnored(id)) {
                 continue;
             }
-            GObject *obj = folders[doc]->getObject(id);
+            GObject *obj = docFolders->getObject(id);
             SAFE_POINT(NULL != obj, "NULL object", );
             doc->removeObject(obj, DocumentObjectRemovalMode_Release);
             delete obj;
@@ -533,8 +540,30 @@ void ProjectViewModel::merge(Document *doc, const DocumentFoldersUpdate &update)
     qSort(deletedFolders);
     while (!deletedFolders.isEmpty()) {
         QString path = deletedFolders.takeLast();
-        removeFolder(doc, path);
+        if (!docFolders->isFolderIgnored(path)) {
+            removeFolder(doc, path);
+        }
     }
+}
+
+void ProjectViewModel::addToIgnoreObjFilter(Document *doc, const U2DataId &objId) {
+    SAFE_POINT(folders.contains(doc), "Unknown document", );
+    folders[doc]->addIgnoredObject(objId);
+}
+
+void ProjectViewModel::addToIgnoreFolderFilter(Document *doc, const QString &folderPath) {
+    SAFE_POINT(folders.contains(doc), "Unknown document", );
+    folders[doc]->addIgnoredFolder(folderPath);
+}
+
+void ProjectViewModel::excludeFromObjIgnoreFilter(Document *doc, const QSet<U2DataId> &ids) {
+    SAFE_POINT(folders.contains(doc), "Unknown document", );
+    folders[doc]->excludeFromObjFilter(ids);
+}
+
+void ProjectViewModel::excludeFromFolderIgnoreFilter(Document *doc, const QSet<QString> &paths) {
+    SAFE_POINT(folders.contains(doc), "Unknown document", );
+    folders[doc]->excludeFromFolderFilter(paths);
 }
 
 void ProjectViewModel::moveObject(Document *doc, GObject *obj, const QString &newFolderPath) {

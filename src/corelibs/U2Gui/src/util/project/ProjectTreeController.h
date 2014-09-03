@@ -86,6 +86,8 @@ private slots:
     void sl_onRestoreSelectedItems();
     void sl_onEmptyRecycleBin();
     void sl_onProjectItemRenamed(const QModelIndex &index);
+    void sl_onObjRemovalTaskFinished();
+    void sl_onFolderRemovalTaskFinished();
 
 signals:
     void si_onPopupMenuRequested(QMenu &popup);
@@ -121,6 +123,16 @@ private:
     void updateRenameAction();
     void updateLoadDocumentActions();
 
+    // after folders or objects has been removed from Project View,
+    // they can still present in the database during the next merge procedure (due to their large sizes).
+    // Therefore when delete task is created, corresponding objects and folders are added to some ignore filters
+    // which keep them untouched by merging. After the task has finished the objects/folders have to be
+    // removed from filters.
+    //
+    // Two methods below store removed objects and folders respectively in order to remove them on delete task finish.
+    void startTrackingRemovedObjects(Task *deleteTask, const QHash<GObject *, Document *> &objs2Docs);
+    void startTrackingRemovedFolders(Task *deleteTask, const QList<Folder> &folders);
+
     static bool isSubFolder(const QList<Folder> &folders, const Folder &expectedSubFolder, bool trueIfSamePath);
 
     QTreeView *tree;
@@ -146,6 +158,9 @@ private:
     GObjectSelection objectSelection;
     GObjectView *markActiveView;
     GObject *objectIsBeingRecycled;
+
+    QHash<Task *, QHash<Document *, QSet<U2DataId> > > task2ObjectsBeingDeleted;
+    QHash<Task *, QHash<Document *, QSet<QString> > > task2FoldersBeingDeleted;
 };
 
 } // U2

@@ -57,6 +57,21 @@ public:
 
     const DocumentFoldersUpdate & getLastUpdate() const;
 
+    // objects from DB which have IDs from the `ids` list won't be affected by merging procedure
+    // pass an empty set as `ids` to unset the filter
+    void setIgnoredObjects(const QSet<U2DataId> &ids);
+    void addIgnoredObject(const U2DataId &id);
+    // folders from DB which have paths from the `paths` list won't be affected by merging procedure
+    // pass an empty set as `paths` to unset the filter
+    void setIgnoredFolders(const QSet<QString> &paths);
+    void addIgnoredFolder(const QString &path);
+
+    void excludeFromObjFilter(const QSet<U2DataId> &ids);
+    void excludeFromFolderFilter(const QSet<QString> &paths);
+
+    bool isObjectIgnored(const U2DataId &id) const;
+    bool isFolderIgnored(const QString &path) const;
+
 protected:
     void setLastUpdate(const DocumentFoldersUpdate &value);
     const QStringList & allFolders() const;
@@ -82,6 +97,10 @@ private:
     QHash<U2DataId, GObject*> objectsIds; // objectId -> GObject
     QHash<GObject*, QString> objectFolders; // GObject -> path
     QHash<QString, QList<GObject *> > folderObjects; // path -> GObject
+
+    // these objects and folders won't be affected during merge
+    QSet<U2DataId> ignoredObjects;
+    QSet<QString> ignoredPaths;
 };
 
 class DocumentFolders : public FolderObjectTreeStorage {

@@ -1084,8 +1084,7 @@ bool ProjectTreeController::isObjectInFolder(GObject *obj, const Folder &folder)
 
 bool ProjectTreeController::removeObjects(const QList<GObject*> &objs, const QList<Document*> &excludedDocs, const QList<Folder> &excludedFolders, bool removeFromDbi) {
     bool deletedSuccessfully = true;
-    QList<GObject *> objects2Delete;
-    QList<Document *> docs2Invalidate;
+    QHash<GObject *, Document *> objects2Doc;
 
     foreach (GObject *obj, objs) {
         Document *doc = obj->getDocument();
@@ -1099,10 +1098,9 @@ bool ProjectTreeController::removeObjects(const QList<GObject*> &objs, const QLi
         } else if (!ProjectUtils::isDatabaseDoc(doc) || isObjectInRecycleBin(obj)) {
             objectSelection.removeFromSelection(obj);
             if (doc->removeObject(obj, DocumentObjectRemovalMode_Release)) {
-                objects2Delete.append(obj);
-                if (!docs2Invalidate.contains(doc)) {
-                    updater->invalidate(doc);
-                    docs2Invalidate.append(doc);
+                objects2Doc.insert(obj, doc);
+                if (removeFromDbi) {
+                    model->addToIgnoreObjFilter(doc, obj->getEntityRef().entityId);
                 }
             } else {
                 deletedSuccessfully = false;
@@ -1116,12 +1114,13 @@ bool ProjectTreeController::removeObjects(const QList<GObject*> &objs, const QLi
         updater->invalidate(doc);
     }
 
-    if (removeFromDbi) {
-        if (!objects2Delete.isEmpty()) {
-            AppContext::getTaskScheduler()->registerTopLevelTask(new DeleteObjectsTask(objects2Delete));
-        }
+    if (removeFromDbi && !objects2Doc.isEmpty()) {
+        Task *t = new DeleteObjectsTask(objects2Doc.keys());
+        startTrackingRemovedObjects(t, objects2Doc);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_onObjRemovalTaskFinished()));
+        AppContext::getTaskScheduler()->registerTopLevelTask(t);
     } else {
-        foreach (GObject *obj, objects2Delete) {
+        foreach (GObject *obj, objects2Doc.keys()) {
             delete obj;
         }
     }
@@ -1140,29 +1139,90 @@ bool ProjectTreeController::removeFolders(const QList<Folder> &folders, const QL
         bool parentFolderSelected = isSubFolder(folders, folder, false);
         bool parentDocSelected = excludedDocs.contains(doc);
 
-        if (parentDocSelected || parentFolderSelected || !ProjectUtils::isFolderRemovable(folder.getFolderPath())) {
+        const QString &folderPath = folder.getFolderPath();
+        if (parentDocSelected || parentFolderSelected || !ProjectUtils::isFolderRemovable(folderPath)) {
             continue;
-        } else if (ProjectUtils::isFolderInRecycleBin(folder.getFolderPath())) {
-            QList<GObject*> objects = model->getFolderContent(doc, folder.getFolderPath());
+        } else if (ProjectUtils::isFolderInRecycleBin(folderPath)) {
+            QList<GObject*> objects = model->getFolderContent(doc, folderPath);
             deletedSuccessfully &= removeObjects(objects, excludedDocs, QList<Folder>(), false);
             if (!deletedSuccessfully) {
                 continue;
             }
-            model->removeFolder(doc, folder.getFolderPath());
+            model->removeFolder(doc, folderPath);
             folders2Delete << folder;
+            model->addToIgnoreFolderFilter(doc, folderPath);
         } else {
-            const QString dstPath = ProjectUtils::RECYCLE_BIN_FOLDER_PATH + folder.getFolderPath();
-            model->renameFolder(doc, folder.getFolderPath(), dstPath);
+            const QString dstPath = ProjectUtils::RECYCLE_BIN_FOLDER_PATH + folderPath;
+            model->renameFolder(doc, folderPath, dstPath);
         }
         relatedDocs.insert(doc);
     }
     if (!folders2Delete.isEmpty()) {
-        AppContext::getTaskScheduler()->registerTopLevelTask(new DeleteFoldersTask(folders2Delete));
+        Task *t = new DeleteFoldersTask(folders2Delete);
+        startTrackingRemovedFolders(t, folders2Delete);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_onFolderRemovalTaskFinished()));
+        AppContext::getTaskScheduler()->registerTopLevelTask(t);
     }
     foreach (Document *doc, relatedDocs) {
         updater->invalidate(doc);
     }
     return deletedSuccessfully;
+}
+
+void ProjectTreeController::sl_onObjRemovalTaskFinished() {
+    Task *removalTask = qobject_cast<Task *>(sender());
+    if (NULL != removalTask && removalTask->isFinished()) {
+        SAFE_POINT(task2ObjectsBeingDeleted.contains(removalTask), "Invalid object removal task detected", );
+        QHash<Document *, QSet<U2DataId> > &doc2ObjIds = task2ObjectsBeingDeleted[removalTask];
+        foreach (Document *doc, doc2ObjIds.keys()) {
+            model->excludeFromObjIgnoreFilter(doc, doc2ObjIds[doc]);
+            updater->invalidate(doc);
+        }
+        task2ObjectsBeingDeleted.remove(removalTask);
+    }
+}
+
+void ProjectTreeController::sl_onFolderRemovalTaskFinished() {
+    Task *removalTask = qobject_cast<Task *>(sender());
+    if (NULL != removalTask && removalTask->isFinished()) {
+        SAFE_POINT(task2FoldersBeingDeleted.contains(removalTask), "Invalid folder removal task detected", );
+        QHash<Document *, QSet<QString> > &doc2Paths = task2FoldersBeingDeleted[removalTask];
+        foreach (Document *doc, doc2Paths.keys()) {
+            model->excludeFromFolderIgnoreFilter(doc, doc2Paths[doc]);
+            updater->invalidate(doc);
+        }
+        task2FoldersBeingDeleted.remove(removalTask);
+    }
+}
+
+void ProjectTreeController::startTrackingRemovedObjects(Task *deleteTask, const QHash<GObject *, Document *> &objs2Docs) {
+    SAFE_POINT(NULL != deleteTask && !objs2Docs.isEmpty(), "Incorrect objects removal", );
+
+    task2ObjectsBeingDeleted.insert(deleteTask, QHash<Document *, QSet<U2DataId> >());
+    QHash<Document *, QSet<U2DataId> > &doc2ObjIds = task2ObjectsBeingDeleted[deleteTask];
+    foreach (GObject *o, objs2Docs.keys()) {
+        Document *parentDoc = objs2Docs[o];
+        SAFE_POINT(NULL != parentDoc, "Invalid parent document detected", );
+        if (!doc2ObjIds.contains(parentDoc)) {
+            doc2ObjIds.insert(parentDoc, QSet<U2DataId>());
+        }
+        doc2ObjIds[parentDoc].insert(o->getEntityRef().entityId);
+    }
+}
+
+void ProjectTreeController::startTrackingRemovedFolders(Task *deleteTask, const QList<Folder> &folders) {
+    SAFE_POINT(NULL != deleteTask && !folders.isEmpty(), "Incorrect folders removal", );
+
+    task2FoldersBeingDeleted.insert(deleteTask, QHash<Document *, QSet<QString> >());
+    QHash<Document *, QSet<QString> > &doc2Folders = task2FoldersBeingDeleted[deleteTask];
+    foreach (const Folder &f, folders) {
+        Document *parentDoc = f.getDocument();
+        SAFE_POINT(NULL != parentDoc, "Invalid parent document detected", );
+        if (!doc2Folders.contains(parentDoc)) {
+            doc2Folders.insert(parentDoc, QSet<QString>());
+        }
+        doc2Folders[parentDoc].insert(f.getFolderPath());
+    }
 }
 
 void ProjectTreeController::removeDocuments(const QList<Document*> &docs) {

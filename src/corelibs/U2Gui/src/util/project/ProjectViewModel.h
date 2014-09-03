@@ -84,6 +84,12 @@ public:
     static Folder * toFolder(const QModelIndex &index);
     static GObject * toObject(const QModelIndex &index);
 
+    void addToIgnoreObjFilter(Document *doc, const U2DataId &objId);
+    void addToIgnoreFolderFilter(Document *doc, const QString &folderPath);
+
+    void excludeFromObjIgnoreFilter(Document *doc, const QSet<U2DataId> &ids);
+    void excludeFromFolderIgnoreFilter(Document *doc, const QSet<QString> &paths);
+
 signals:
     void si_modelChanged();
     void si_documentContentChanged(Document *doc);
