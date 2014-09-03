@@ -1385,6 +1385,7 @@ Task::ReportResult ExpertDiscoveryExportSequences::report() {
     if (hasError()) {
         QMessageBox(QMessageBox::Critical, tr("Error"), stateInfo.getError()).exec();
     }
+    return ReportResult_Finished;
 }
 
 }//namespace
