@@ -5388,10 +5388,10 @@ GUI_TEST_CLASS_DEFINITION(test_3396){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3398_1) {
-//    1. Open "_common_data/fasta/data_in_the_name_line.fa".
+//    1. Open "_common_data/fasta/broken/data_in_the_name_line.fa".
 //    2. Select "As separate sequences" mode.
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
-    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "data_in_the_name_line.fa");
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/broken", "data_in_the_name_line.fa");
 
 //    Expected state: an unloaded document appears, there are no objects within.
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -5407,10 +5407,10 @@ GUI_TEST_CLASS_DEFINITION(test_3398_1) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3398_2) {
-    //    1. Open "_common_data/fasta/data_in_the_name_line.fa".
+    //    1. Open "_common_data/fasta/broken/data_in_the_name_line.fa".
     //    2. Select "As separate sequences" mode.
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge, 10));
-    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "data_in_the_name_line.fa");
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/broken", "data_in_the_name_line.fa");
 
     //    Expected state: an unloaded document appears, there are no objects within.
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -5426,10 +5426,10 @@ GUI_TEST_CLASS_DEFINITION(test_3398_2) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3398_3) {
-    //    1. Open "_common_data/fasta/data_in_the_name_line.fa".
+    //    1. Open "_common_data/fasta/broken/data_in_the_name_line.fa".
     //    2. Select "Merge into one sequence" mode, set 10 'unknown' symbols.
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge, 0));
-    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "data_in_the_name_line.fa");
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/broken", "data_in_the_name_line.fa");
 
     //    Expected state: an unloaded document appears, there are no objects within.
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -5445,10 +5445,10 @@ GUI_TEST_CLASS_DEFINITION(test_3398_3) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3398_4) {
-    //    1. Open "_common_data/fasta/data_in_the_name_line.fa".
+    //    1. Open "_common_data/fasta/broken/data_in_the_name_line.fa".
     //    2. Select "As separate sequences" mode.
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
-    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "data_in_the_name_line.fa");
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/broken", "data_in_the_name_line.fa");
 
     //    Expected state: an unloaded document appears, there are no objects within.
     GTUtilsTaskTreeView::waitTaskFinished(os);
