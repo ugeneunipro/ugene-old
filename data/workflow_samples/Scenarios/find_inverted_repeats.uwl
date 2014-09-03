@@ -1,0 +1,219 @@
+#@UGENE_WORKFLOW
+#This workflow performs the search of inverted repeats for each input sequence, then it stores repeats found on direct strand to the "first repeat elements.fa" file and the complement ones to the "second repeat elements.fa" file.
+
+include "Get the first half of sequence.usa" as "Script-Get the first half of sequence"
+include "Get the second half of sequence.usa" as "Script-Get the second half of sequence"
+
+workflow "Find inverted repeats"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read Sequence";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    repeats-search {
+        type:repeats-search;
+        name:"Find Inverted Repeats";
+        algorithm:0;
+        exclude-tandems:false;
+        filter-algorithm:0;
+        identity:90;
+        inverted:true;
+        max-distance:5000;
+        min-distance:100;
+        min-length:10;
+        threads:0;
+    }
+    extract-annotated-sequence {
+        type:extract-annotated-sequence;
+        name:"Get Sequences by Annotations";
+    }
+    reverse-complement {
+        type:reverse-complement;
+        name:"Reverse Complement";
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write the First Repeat Element";
+        url-out:"first repeat elements.fa";
+    }
+    write-sequence-1 {
+        type:write-sequence;
+        name:"Write the Second Repeat Element";
+        url-out:"second repeat elements.fa";
+    }
+    Script-Get-the-first-half-of-sequence {
+        type:"Script-Get the first half of sequence";
+        name:"Get the First Half of Sequence";
+        script {
+out_sequence = subsequence(in_sequence, 0, size(in_sequence) / 2 - 1);
+        };
+    }
+    Script-Get-the-second-half-of-sequence {
+        type:"Script-Get the second half of sequence";
+        name:"Get the Second Half of Sequence";
+        script {
+out_sequence = subsequence(in_sequence, size(in_sequence) / 2, size(in_sequence) - 1);
+        };
+    }
+
+    .actor-bindings {
+        read-sequence.out-sequence->repeats-search.in-sequence
+        repeats-search.out-annotations->extract-annotated-sequence.in-sequence
+        extract-annotated-sequence.out-sequence->Script-Get-the-second-half-of-sequence.in
+        extract-annotated-sequence.out-sequence->Script-Get-the-first-half-of-sequence.in
+        reverse-complement.out-sequence->write-sequence-1.in-sequence
+        Script-Get-the-first-half-of-sequence.out->write-sequence.in-sequence
+        Script-Get-the-second-half-of-sequence.out->reverse-complement.in-sequence
+    }
+
+    read-sequence.sequence->repeats-search.in-sequence.sequence
+    repeats-search.annotations->extract-annotated-sequence.in-sequence.annotations
+    read-sequence.sequence->extract-annotated-sequence.in-sequence.sequence
+    Script-Get-the-second-half-of-sequence.sequence->reverse-complement.in-sequence.sequence
+    Script-Get-the-first-half-of-sequence.sequence->write-sequence.in-sequence.sequence
+    reverse-complement.sequence->write-sequence-1.in-sequence.sequence
+    extract-annotated-sequence.sequence->Script-Get-the-first-half-of-sequence.in.sequence
+    extract-annotated-sequence.sequence->Script-Get-the-second-half-of-sequence.in.sequence
+
+    .meta {
+        visual {
+            Script-Get-the-first-half-of-sequence {
+                pos:"-491 -642";
+                style:ext;
+                bg-color-ext:"85 170 255 64";
+                in.angle:58.5704;
+                out.angle:290.298;
+            }
+            Script-Get-the-second-half-of-sequence {
+                pos:"-217 -651";
+                style:ext;
+                bg-color-ext:"85 170 255 64";
+                bounds:"-30 -30 81.625 81";
+                in.angle:47.0454;
+                out.angle:288.06;
+            }
+            extract-annotated-sequence {
+                pos:"-386 -822";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-sequence.angle:294.605;
+            }
+            read-sequence {
+                pos:"-932 -828";
+                style:ext;
+                bg-color-ext:"255 170 127 64";
+                out-sequence.angle:360;
+            }
+            repeats-search {
+                pos:"-735 -828";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+                out-annotations.angle:358.946;
+            }
+            reverse-complement {
+                pos:"-221 -487";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                bounds:"-30 -30 114.5 81";
+                in-sequence.angle:44.1931;
+                out-sequence.angle:292.714;
+            }
+            write-sequence {
+                pos:"-492 -476";
+                style:ext;
+                bg-color-ext:"170 170 0 64";
+                bounds:"-30 -30 80 97";
+                in-sequence.angle:49.844;
+            }
+            write-sequence-1 {
+                pos:"-218 -294";
+                style:ext;
+                bg-color-ext:"170 170 0 64";
+                in-sequence.angle:44.1931;
+            }
+            Script-Get-the-first-half-of-sequence.out->write-sequence.in-sequence {
+                text-pos:"-30.5 -12";
+            }
+            Script-Get-the-second-half-of-sequence.out->reverse-complement.in-sequence {
+                text-pos:"-32.5 -13";
+            }
+            extract-annotated-sequence.out-sequence->Script-Get-the-first-half-of-sequence.in {
+                text-pos:"-38 -15";
+            }
+            extract-annotated-sequence.out-sequence->Script-Get-the-second-half-of-sequence.in {
+                text-pos:"-52 -19";
+            }
+            read-sequence.out-sequence->repeats-search.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+            repeats-search.out-annotations->extract-annotated-sequence.in-sequence {
+                text-pos:"-45 -37";
+            }
+            reverse-complement.out-sequence->write-sequence-1.in-sequence {
+                text-pos:"-37 -21";
+            }
+        }
+        wizard {
+            name:"Find inverted repeats";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Find Inverted Repeats";
+                parameters-area {
+                    group {
+                        title:"Find Repeats parameters";
+                        label-size:150;
+                        repeats-search.result-name {
+                        }
+                        repeats-search.min-length {
+                        }
+                        repeats-search.identity {
+                        }
+                        repeats-search.min-distance {
+                        }
+                        repeats-search.max-distance {
+                        }
+                        repeats-search.filter-algorithm {
+                        }
+                        repeats-search.algorithm {
+                        }
+                        repeats-search.threads {
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        title:"Result files";
+                        label-size:120;
+                        write-sequence.url-out {
+                            label:"First repeat elements";
+                        }
+                        write-sequence-1.url-out {
+                            label:"Second repeat elements";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

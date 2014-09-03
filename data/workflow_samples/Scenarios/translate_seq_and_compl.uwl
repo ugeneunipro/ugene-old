@@ -1,0 +1,142 @@
+#@UGENE_WORKFLOW
+#The workflow takes a nucleotide sequence as input and returns two files: translations of the sequence and translations of the complement sequence.
+
+
+
+workflow "Get amino translations of a sequence"{
+
+    sequence-translation {
+        type:sequence-translation;
+        name:"Amino Translation of Direct";
+    }
+    read-sequence {
+        type:read-sequence;
+        name:"Read Sequence";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    reverse-complement {
+        type:reverse-complement;
+        name:Complement;
+    }
+    sequence-translation-1 {
+        type:sequence-translation;
+        name:"Amino Translation of Complement";
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write Direct Translations";
+        url-out:direct_translations.fa;
+    }
+    write-sequence-1 {
+        type:write-sequence;
+        name:"Write Complement Translations";
+        url-out:compl_translations.fa;
+    }
+
+    .actor-bindings {
+        sequence-translation.out-sequence->write-sequence.in-sequence
+        read-sequence.out-sequence->sequence-translation.in-sequence
+        read-sequence.out-sequence->reverse-complement.in-sequence
+        reverse-complement.out-sequence->sequence-translation-1.in-sequence
+        sequence-translation-1.out-sequence->write-sequence-1.in-sequence
+    }
+
+    read-sequence.sequence->sequence-translation.in-sequence.sequence
+    read-sequence.sequence->reverse-complement.in-sequence.sequence
+    reverse-complement.sequence->sequence-translation-1.in-sequence.sequence
+    sequence-translation.sequence->write-sequence.in-sequence.sequence
+    sequence-translation-1.sequence->write-sequence-1.in-sequence.sequence
+
+    .meta {
+        visual {
+            read-sequence {
+                pos:"-649 -620";
+                style:ext;
+                bg-color-ext:"0 0 127 64";
+                out-sequence.angle:360;
+            }
+            reverse-complement {
+                pos:"-518 -448";
+                style:ext;
+                bg-color-ext:"85 170 255 64";
+                in-sequence.angle:180;
+                out-sequence.angle:358.176;
+            }
+            sequence-translation {
+                pos:"-291 -619";
+                style:ext;
+                bg-color-ext:"0 129 94 64";
+                in-sequence.angle:180;
+                out-sequence.angle:360;
+            }
+            sequence-translation-1 {
+                pos:"-281 -445";
+                style:ext;
+                bg-color-ext:"0 129 94 64";
+                in-sequence.angle:180;
+                out-sequence.angle:360;
+            }
+            write-sequence {
+                pos:"-29 -620";
+                style:ext;
+                bg-color-ext:"85 85 0 64";
+                bounds:"-30 -30 122.25 78";
+                in-sequence.angle:180;
+            }
+            write-sequence-1 {
+                pos:"-15 -447";
+                style:ext;
+                bg-color-ext:"85 85 0 64";
+                bounds:"-30 -30 122.5 89";
+                in-sequence.angle:180;
+            }
+            read-sequence.out-sequence->reverse-complement.in-sequence {
+                text-pos:"9.5 -12";
+            }
+            read-sequence.out-sequence->sequence-translation.in-sequence {
+                text-pos:"-29.5 -29";
+            }
+            reverse-complement.out-sequence->sequence-translation-1.in-sequence {
+                text-pos:"-44 -43";
+            }
+            sequence-translation-1.out-sequence->write-sequence-1.in-sequence {
+                text-pos:"-41 -31";
+            }
+            sequence-translation.out-sequence->write-sequence.in-sequence {
+                text-pos:"-46 -28";
+            }
+        }
+        wizard {
+            name:"Get Amino Translations Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        title:"Result files";
+                        label-size:120;
+                        write-sequence.url-out {
+                            label:"Direct translations";
+                        }
+                        write-sequence-1.url-out {
+                            label:"Compl. translations";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

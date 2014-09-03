@@ -1,0 +1,12 @@
+<!DOCTYPE GB2WORKFLOW>
+<Actor>
+ <Input-port>
+  <In-Slots Slot="seq"/>
+ </Input-port>
+ <Output-port>
+  <Out-Slots Slot="seq"/>
+ </Output-port>
+ <Attributes/>
+ <Element-name Name="Get the Second Half of Sequence"/>
+ <Element-description Description="Fetch the second half of incoming sequence."/>
+</Actor>

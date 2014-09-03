@@ -76,8 +76,8 @@ ActorPrototype *IncludedProtoFactoryImpl::_getScriptProto(QList<DataTypePtr > in
     DataTypePtr outSet( new MapDataType(Descriptor(OUTPUT_PORT_TYPE + name), map) );
     dr->registerEntry( outSet );
 
-    Descriptor inDesc( IN_PORT_ID, LocalWorkflow::ScriptWorker::tr("input data"), LocalWorkflow::ScriptWorker::tr("input data") );
-    Descriptor outDesc( OUT_PORT_ID, LocalWorkflow::ScriptWorker::tr("output data"), LocalWorkflow::ScriptWorker::tr("output data") );
+    Descriptor inDesc( IN_PORT_ID, LocalWorkflow::ScriptWorker::tr("Input data"), LocalWorkflow::ScriptWorker::tr("Input data") );
+    Descriptor outDesc( OUT_PORT_ID, LocalWorkflow::ScriptWorker::tr("Output data"), LocalWorkflow::ScriptWorker::tr("Output data") );
 
     if(!input.isEmpty()) {
         portDescs << new PortDescriptor( inDesc, inSet, /*input*/ true );
