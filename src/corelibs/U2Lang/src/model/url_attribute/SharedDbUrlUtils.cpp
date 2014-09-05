@@ -182,7 +182,8 @@ bool SharedDbUrlUtils::isDbObjectUrl(const QString &url) {
 U2DbiRef SharedDbUrlUtils::getDbRefFromEntityUrl(const QString &url) {
     int dbProviderSepPos = -1;
     int dbUrlSepPos = -1;
-    CHECK(getSeparatorIndices(url, dbProviderSepPos, dbUrlSepPos), U2DbiRef());
+    getSeparatorIndices(url, dbProviderSepPos, dbUrlSepPos);
+    CHECK(-1 != dbProviderSepPos, U2DbiRef());
 
     return U2DbiRef(url.right(dbProviderSepPos), url.mid(dbProviderSepPos + 1, -1 != dbUrlSepPos ? dbUrlSepPos - dbProviderSepPos - 1 : -1));
 }
