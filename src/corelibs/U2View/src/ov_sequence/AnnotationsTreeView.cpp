@@ -1295,7 +1295,7 @@ bool AnnotationsTreeView::initiateDragAndDrop(QMouseEvent* ) {
                 dndSelItems.append(itemi);
             }
         } else if (itemi->type == AVItemType_Qualifier) { // remove qualifiers from selection
-            dndSelItems[i]->setSelected(false); 
+            itemi->setSelected(false); 
         } else {
             assert(itemi->type == AVItemType_Group);
             if (itemi->parent() == NULL) { // object level group -> add all subgroups
