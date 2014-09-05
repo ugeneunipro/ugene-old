@@ -1,10 +1,10 @@
 #@UGENE_WORKFLOW
-#This workflow performs the search of inverted repeats for each input sequence, then it stores repeats found on direct strand to the "first repeat elements.fa" file and the complement ones to the "second repeat elements.fa" file.
+#For each input sequence the workflow performs a search of inverted repeats. Then it saves the repeats found on the direct strand to the "direct_strand_repeat_units.fa" file and the complement ones to the "compl_strand_repeat_units.fa" file.
 
 include "Get the first half of sequence.usa" as "Script-Get the first half of sequence"
 include "Get the second half of sequence.usa" as "Script-Get the second half of sequence"
 
-workflow "Find inverted repeats"{
+workflow "Search for inverted repeats"{
 
     read-sequence {
         type:read-sequence;
@@ -36,13 +36,13 @@ workflow "Find inverted repeats"{
     }
     write-sequence {
         type:write-sequence;
-        name:"Write the First Repeat Element";
-        url-out:"first repeat elements.fa";
+        name:"Write the Direct Strand Repeat Unit";
+        url-out:direct_strand_repeat_units.fa;
     }
     write-sequence-1 {
         type:write-sequence;
-        name:"Write the Second Repeat Element";
-        url-out:"second repeat elements.fa";
+        name:"Write the Direct Strand Repeat Unit";
+        url-out:compl_strand_repeat_units.fa;
     }
     Script-Get-the-first-half-of-sequence {
         type:"Script-Get the first half of sequence";
@@ -124,17 +124,18 @@ out_sequence = subsequence(in_sequence, size(in_sequence) / 2, size(in_sequence)
                 out-sequence.angle:292.714;
             }
             write-sequence {
-                pos:"-492 -476";
+                pos:"-486 -471";
                 style:ext;
                 bg-color-ext:"170 170 0 64";
-                bounds:"-30 -30 80 97";
+                bounds:"-30 -30 87 112";
                 in-sequence.angle:49.844;
             }
             write-sequence-1 {
-                pos:"-218 -294";
+                pos:"-209 -297";
                 style:ext;
                 bg-color-ext:"170 170 0 64";
-                in-sequence.angle:44.1931;
+                bounds:"-30 -30 97.25 102";
+                in-sequence.angle:50.5275;
             }
             Script-Get-the-first-half-of-sequence.out->write-sequence.in-sequence {
                 text-pos:"-30.5 -12";
@@ -159,7 +160,7 @@ out_sequence = subsequence(in_sequence, size(in_sequence) / 2, size(in_sequence)
             }
         }
         wizard {
-            name:"Find inverted repeats";
+            name:"Search for Inverted Repeats Wizard";
             page {
                 id:1;
                 next:2;
@@ -173,10 +174,10 @@ out_sequence = subsequence(in_sequence, size(in_sequence) / 2, size(in_sequence)
             page {
                 id:2;
                 next:3;
-                title:"Find Inverted Repeats";
+                title:"Search for inverted repeats parameters";
                 parameters-area {
                     group {
-                        title:"Find Repeats parameters";
+                        title:"Find Inverted Repeats parameters";
                         label-size:150;
                         repeats-search.result-name {
                         }
@@ -199,16 +200,16 @@ out_sequence = subsequence(in_sequence, size(in_sequence) / 2, size(in_sequence)
             }
             page {
                 id:3;
-                title:"Output data";
+                title:"Output sequences";
                 parameters-area {
                     group {
                         title:"Result files";
-                        label-size:120;
+                        label-size:150;
                         write-sequence.url-out {
-                            label:"First repeat elements";
+                            label:"Direct strand repeat units";
                         }
                         write-sequence-1.url-out {
-                            label:"Second repeat elements";
+                            label:"Compl. strand repeat units";
                         }
                     }
                 }
