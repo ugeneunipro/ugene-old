@@ -1,0 +1,438 @@
+#@UGENE_WORKFLOW
+
+workflow dna_paired{
+
+    CASAVAFilter {
+        type:CASAVAFilter;
+        name:"CASAVA FASTQ Filter";
+        custom-dir:filtered_fastq;
+    }
+    QualityTrim {
+        type:QualityTrim;
+        name:"FASTQ Quality Trimmer";
+        custom-dir:filtered_fastq;
+        len-id:1;
+        out-mode:2;
+        qual-id:20;
+    }
+    get-file-list {
+        type:get-file-list;
+        name:"File List";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    bwamem-id {
+        type:bwamem-id;
+        name:"Align reads with BWA MEM";
+        output-dir:filtered_fastq;
+    }
+    files-conversion {
+        type:files-conversion;
+        name:"File Format Conversion";
+        document-format:bam;
+    }
+    merge-bam {
+        type:merge-bam;
+        name:"Merge BAM files";
+    }
+    filter-bam {
+        type:filter-bam;
+        name:"Filter BAM/SAM files";
+        flag:"The read is unmapped";
+        mapq:1;
+        region:"chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr7 chr8 chr9 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr18 hr19 chr20 chr21 chr22 chrX chrY";
+    }
+    rmdup-bam {
+        type:rmdup-bam;
+        name:"Remove Duplicates in BAM Files";
+        remove-single-end:true;
+    }
+    files-conversion-1 {
+        type:files-conversion;
+        name:"File Format Conversion 1";
+        document-format:bed;
+    }
+    Sort-bam {
+        type:Sort-bam;
+        name:"Sort BAM Files";
+    }
+    get-file-list-1 {
+        type:get-file-list;
+        name:"File List 1";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    CASAVAFilter-1 {
+        type:CASAVAFilter;
+        name:"CASAVA FASTQ Filter 1";
+        custom-dir:filtered_fastq;
+    }
+    QualityTrim-1 {
+        type:QualityTrim;
+        name:"FASTQ Quality Trimmer 1";
+        custom-dir:filtered_fastq;
+        len-id:1;
+        qual-id:20;
+    }
+    multiplexer {
+        type:multiplexer;
+        name:Multiplexer;
+    }
+    Sort-bam-1 {
+        type:Sort-bam;
+        name:"Sort BAM Files 1";
+    }
+
+    .actor-bindings {
+        bwamem-id.out-data->files-conversion.in-file
+        CASAVAFilter-1.out-file->QualityTrim-1.in-file
+        files-conversion.out-file->merge-bam.in-file
+        CASAVAFilter.out-file->QualityTrim.in-file
+        get-file-list.out-url->CASAVAFilter.in-file
+        QualityTrim-1.out-file->multiplexer.input-data-2
+        filter-bam.out-file->Sort-bam-1.in-file
+        Sort-bam.out-file->files-conversion-1.in-file
+        get-file-list-1.out-url->CASAVAFilter-1.in-file
+        rmdup-bam.out-file->Sort-bam.in-file
+        QualityTrim.out-file->multiplexer.input-data-1
+        merge-bam.out-file->filter-bam.in-file
+        multiplexer.output-data->bwamem-id.in-data
+        Sort-bam-1.out-file->rmdup-bam.in-file
+    }
+
+    get-file-list.url->CASAVAFilter.in-file.url
+    CASAVAFilter.url->QualityTrim.in-file.url
+    QualityTrim-1.url->bwamem-id.in-data.readspairedurl
+    QualityTrim.url->bwamem-id.in-data.readsurl
+    bwamem-id.assembly-out->files-conversion.in-file.url
+    files-conversion.url->merge-bam.in-file.url
+    merge-bam.url->filter-bam.in-file.url
+    Sort-bam-1.url->rmdup-bam.in-file.url
+    Sort-bam.url->files-conversion-1.in-file.url
+    rmdup-bam.url->Sort-bam.in-file.url
+    get-file-list-1.url->CASAVAFilter-1.in-file.url
+    CASAVAFilter-1.url->QualityTrim-1.in-file.url
+    filter-bam.url->Sort-bam-1.in-file.url
+
+    .meta {
+        parameter-aliases {
+            get-file-list.url-in {
+                alias:in;
+            }
+            bwamem-id.output-dir {
+                alias:dir;
+            }
+            bwamem-id.reference {
+                alias:idx;
+            }
+            bwamem-id.threads {
+                alias:bwa_t;
+            }
+            get-file-list-1.url-in {
+                alias:in_mate;
+            }
+        }
+        visual {
+            CASAVAFilter {
+                pos:"-885 -600";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            CASAVAFilter-1 {
+                pos:"-884 -377";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            QualityTrim {
+                pos:"-621 -601";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            QualityTrim-1 {
+                pos:"-618 -380";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            Sort-bam {
+                pos:"1070 -308";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            Sort-bam-1 {
+                pos:"786 -335";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            bwamem-id {
+                pos:"-114 -535";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-data.angle:180;
+                out-data.angle:360;
+            }
+            files-conversion {
+                pos:"137 -533";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            files-conversion-1 {
+                pos:"1197 -534";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            filter-bam {
+                pos:"636 -534";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            get-file-list {
+                pos:"-1084 -601";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-url.angle:360;
+            }
+            get-file-list-1 {
+                pos:"-1094 -380";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-url.angle:360;
+            }
+            merge-bam {
+                pos:"401 -534";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            multiplexer {
+                pos:"-423 -458";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                input-data-1.angle:150;
+                input-data-2.angle:210;
+                output-data.angle:360;
+            }
+            rmdup-bam {
+                pos:"907 -533";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-file.angle:180;
+                out-file.angle:360;
+            }
+            CASAVAFilter-1.out-file->QualityTrim-1.in-file {
+                text-pos:"-35.75 -24";
+            }
+            CASAVAFilter.out-file->QualityTrim.in-file {
+                text-pos:"-35.75 -24";
+            }
+            QualityTrim-1.out-file->multiplexer.input-data-2 {
+                text-pos:"-35.75 -24";
+            }
+            QualityTrim.out-file->multiplexer.input-data-1 {
+                text-pos:"-35.75 -24";
+            }
+            Sort-bam-1.out-file->rmdup-bam.in-file {
+                text-pos:"-45 -37";
+            }
+            Sort-bam.out-file->files-conversion-1.in-file {
+                text-pos:"-45 -37";
+            }
+            bwamem-id.out-data->files-conversion.in-file {
+                text-pos:"-45 -37";
+            }
+            files-conversion.out-file->merge-bam.in-file {
+                text-pos:"-14.4531 -24";
+            }
+            filter-bam.out-file->Sort-bam-1.in-file {
+                text-pos:"-45 -50";
+            }
+            get-file-list-1.out-url->CASAVAFilter-1.in-file {
+                text-pos:"-35.7578 -24";
+            }
+            get-file-list.out-url->CASAVAFilter.in-file {
+                text-pos:"-35.7578 -24";
+            }
+            merge-bam.out-file->filter-bam.in-file {
+                text-pos:"-45 -37";
+            }
+            multiplexer.output-data->bwamem-id.in-data {
+                text-pos:"-45 -50";
+            }
+            rmdup-bam.out-file->Sort-bam.in-file {
+                text-pos:"-45 -37";
+            }
+        }
+        wizard {
+            name:"Raw DNA-seq Processing Wizard";
+            page {
+                id:1;       
+                next:2;
+                title:"Input data";
+                parameters-area {
+                    group {
+                        title:"Short Reads";
+                        label-size:120;
+                        get-file-list.url-in {
+                            label:"FASTQ Files 1";
+                        }
+                        get-file-list-1.url-in {
+                            label:"FASTQ Files 2";
+                        }
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Pre-processing";
+                parameters-area {
+                    group {
+                        title:"Filtration 1";
+                        label-size:120;
+                        QualityTrim.qual-id {
+                        }
+                        QualityTrim.len-id {
+                        }
+                    }
+                    group {
+                        title:"Filtration 2";
+                        label-size:120;
+                        QualityTrim-1.qual-id {
+                        }
+                        QualityTrim-1.len-id {
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                next:4;
+                title:"Mapping";
+                parameters-area {
+                    group {
+                        title:"BWA-MEM Mapping";
+                        label-size:120;
+                        bwamem-id.reference {
+                        }
+                        bwamem-id.threads {
+                        }
+                    }
+                    group {
+                        title:Advanced;
+                        label-size:120;
+                        type:hideable;
+                        bwamem-id.min-seed {
+                        }
+                        bwamem-id.band-width {
+                        }
+                        bwamem-id.dropoff {
+                        }
+                        bwamem-id.seed-lookup {
+                        }
+                        bwamem-id.seed-threshold {
+                        }
+                        bwamem-id.drop-chains {
+                        }
+                        bwamem-id.mate-rescue {
+                        }
+                        bwamem-id.skip-mate-rescues {
+                        }
+                        bwamem-id.skip-pairing {
+                        }
+                        bwamem-id.match-score {
+                        }
+                        bwamem-id.mistmatch-penalty {
+                        }
+                        bwamem-id.gap-open-penalty {
+                        }
+                        bwamem-id.gap-ext-penalty {
+                        }
+                        bwamem-id.clipping-penalty {
+                        }
+                        bwamem-id.inpaired-panalty {
+                        }
+                        bwamem-id.score-threshold {
+                        }
+                    }
+                }
+            }
+            page {
+                id:4;
+                next:5;
+                title:"Post-processing";
+                parameters-area {
+                    group {
+                        title:"Filtration";
+                        label-size:120;
+                        filter-bam.mapq {
+                        }
+                        filter-bam.flag {
+                        }
+                        filter-bam.region {
+                        }
+                    }
+                    group {
+                        title:"Remove Duplicates";
+                        label-size:120;
+                        rmdup-bam.remove-single-end {
+                        }
+                    }
+                }
+            }
+            page {
+                id:5;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        title:"Alignmed data";
+                        label-size:130;
+                        bwamem-id.outname {
+                        }
+                        bwamem-id.output-dir {
+                        }
+                    }
+                    group {
+                        title:"Filtered FASTQ 1";
+                        label-size:130;
+                        type:hideable;
+                        CASAVAFilter.out-mode {
+                        }
+                        CASAVAFilter.custom-dir {
+                        }
+                    }
+                    group {
+                        title:"Filtered FASTQ 2";
+                        label-size:130;
+                        type:hideable;
+                        CASAVAFilter-1.out-mode {
+                        }
+                        CASAVAFilter-1.custom-dir {
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+}
+
