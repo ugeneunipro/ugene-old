@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtGui/QApplication>
 #include <QtGui/QMainWindow>
 
 #include <U2Core/AppContext.h>
@@ -56,11 +57,15 @@ QString U2FileDialog::getSaveFileName(QWidget *parent, const QString &caption, c
 
 void U2FileDialog::activateWindow() {
 #ifdef Q_OS_MAC
-    MainWindow *mainWindow = AppContext::getMainWindow();
-    CHECK(NULL != mainWindow, );
-    QMainWindow *qMainWindow = mainWindow->getQMainWindow();
-    CHECK(NULL != qMainWindow, );
-    qMainWindow->activateWindow();
+    QWidget *target = QApplication::activeModalWidget();
+    if (NULL == target) {
+        MainWindow *mainWindow = AppContext::getMainWindow();
+        CHECK(NULL != mainWindow, );
+        QMainWindow *qMainWindow = mainWindow->getQMainWindow();
+        target = qobject_cast<QWidget*>(qMainWindow);
+    }
+    CHECK(NULL != target, );
+    target->activateWindow();
 #endif
 }
 
