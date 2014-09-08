@@ -38,7 +38,6 @@ class U2VIEW_EXPORT SequenceInfoFactory : public OPWidgetFactory
     Q_OBJECT
 public:
     SequenceInfoFactory();
-    virtual ~SequenceInfoFactory(){}
 
     virtual QWidget* createWidget(GObjectView* objView);
 
