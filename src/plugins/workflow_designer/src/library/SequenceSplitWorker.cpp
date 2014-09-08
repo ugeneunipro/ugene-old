@@ -186,7 +186,9 @@ void SequenceSplitWorker::sl_onTaskFinished( Task * ) {
         SAFE_POINT(ssT, "Finished task 'ExtractAnnotatedRegionTask' is NULL", );
         int seqCount = 1;
         QList<DNASequence> sequences = ssT->getResultedSequences();
-        foreach(DNASequence resSeq, sequences){
+        QList<DNASequence>::Iterator iter(sequences.begin());
+        for(;iter != sequences.end(); iter++){
+            DNASequence &resSeq = *iter;
             QString name = resSeq.getName() + " " + ssT->getInputAnnotation().name;
             if(sequences.size() > 1){
                 name += " " + QString::number(seqCount++);
