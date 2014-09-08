@@ -61,6 +61,7 @@ const static QString COMPLEMENT_ATTR( "complement" );
 const static QString EXTEND_LEFT_ATTR( "extend-left" );
 const static QString EXTEND_RIGHT_ATTR( "extend-right" );
 const static QString GAP_LENGTH_ATTR( "merge-gap-length" );
+const static QString SPLIT_ATTR("split-joined-annotations");
 
 QString SequenceSplitPromter::composeRichDoc() {
     IntegralBusPort * input = qobject_cast<IntegralBusPort *> ( target->getPort(BasePorts::IN_SEQ_PORT_ID()) );
@@ -128,6 +129,7 @@ Task * SequenceSplitWorker::tick() {
         cfg.extLeft = actor->getParameter( EXTEND_LEFT_ATTR )->getAttributeValue<int>(context);
         cfg.extRight = actor->getParameter( EXTEND_RIGHT_ATTR )->getAttributeValue<int>(context);
         cfg.gapLength = actor->getParameter( GAP_LENGTH_ATTR )->getAttributeValue<int>(context);
+        cfg.splitJoined = actor->getParameter(SPLIT_ATTR)->getAttributeValue<bool>(context);
         cfg.gapSym = '-'; //FIXME
         QVariantMap qm = inputMessage.getData().toMap();
         
@@ -181,26 +183,25 @@ void SequenceSplitWorker::sl_onTaskFinished( Task * ) {
     QVariantMap channelContext = outPort->getContext();
     foreach( Task * t, ssTasks ) {
         ExtractAnnotatedRegionTask * ssT = qobject_cast<ExtractAnnotatedRegionTask *>(t);
-        assert( ssT );
+        SAFE_POINT(ssT, "Finished task 'ExtractAnnotatedRegionTask' is NULL", );
+        int seqCount = 1;
+        QList<DNASequence> sequences = ssT->getResultedSequences();
+        foreach(DNASequence resSeq, sequences){
+            QString name = resSeq.getName() + " " + ssT->getInputAnnotation().name;
+            if(sequences.size() > 1){
+                name += " " + QString::number(seqCount++);
+            }
+            resSeq.info[DNAInfo::ID] = name;
 
-        DNASequence resSeq = ssT->getResultedSequence();
-        AnnotationData resAnn = ssT->getResultedAnnotation();
-        QString name = resSeq.getName() + "|" + resAnn.name + "|" + Genbank::LocationParser::buildLocationString( &resAnn );
-        resSeq.info[DNAInfo::ID] = name;
+            QVariantMap messageData;
+            SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(resSeq);
+            messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(seqId);
 
-        QList<AnnotationData> annToPut;
-        annToPut << resAnn;
-
-        QVariantMap messageData;
-        SharedDbiDataHandler seqId = context->getDataStorage()->putSequence(resSeq);
-        messageData[ BaseSlots::DNA_SEQUENCE_SLOT().getId() ] = qVariantFromValue<SharedDbiDataHandler>(seqId);
-        const SharedDbiDataHandler tableId = context->getDataStorage( )->putAnnotationTable( annToPut );
-        messageData[ BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ) ] = qVariantFromValue<SharedDbiDataHandler>( tableId );
-
-        DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById( REGIONED_SEQ_TYPE );
-        if( outPort ) {
-            outPort->setContext(channelContext);
-            outPort->put( Message(messageType, messageData) );
+            DataTypePtr messageType = WorkflowEnv::getDataTypeRegistry()->getById( REGIONED_SEQ_TYPE );
+            if( outPort ) {
+                outPort->setContext(channelContext);
+                outPort->put( Message(messageType, messageData) );
+            }
         }
     }
     if( seqPort->isEnded() ) {
@@ -217,10 +218,16 @@ void SequenceSplitWorkerFactory::init() {
     inputMap[ BaseSlots::DNA_SEQUENCE_SLOT() ] = BaseTypes::DNA_SEQUENCE_TYPE();
     inputMap[ BaseSlots::ANNOTATION_TABLE_SLOT() ] = BaseTypes::ANNOTATION_TABLE_TYPE();
 
+    QMap<Descriptor, DataTypePtr> outMap;
+    outMap[ BaseSlots::DNA_SEQUENCE_SLOT() ] = BaseTypes::DNA_SEQUENCE_TYPE();
+
     DataTypePtr inSet( new MapDataType(Descriptor(REGIONED_SEQ_TYPE), inputMap) );
     DataTypeRegistry * dr = WorkflowEnv::getDataTypeRegistry();
     assert(dr);
     dr->registerEntry( inSet );
+
+    DataTypePtr outSet(new MapDataType(Descriptor(REGIONED_SEQ_TYPE), outMap));
+    dr->registerEntry(outSet);
 
     { //Create input port descriptors 
         Descriptor seqDesc( BasePorts::IN_SEQ_PORT_ID(), SequenceSplitWorker::tr("Input sequence"), 
@@ -229,7 +236,7 @@ void SequenceSplitWorkerFactory::init() {
             SequenceSplitWorker::tr("Resulted subsequences, translated and complemented according to corresponding annotations.") );
         
         portDescs << new PortDescriptor( seqDesc, inSet, /*input*/ true );
-        portDescs << new PortDescriptor( outDesc, inSet, /*input*/false, /*multi*/true );
+        portDescs << new PortDescriptor( outDesc, outSet, /*input*/false, /*multi*/true );
     }
 
     { //Create attributes descriptors    
@@ -239,6 +246,9 @@ void SequenceSplitWorkerFactory::init() {
         Descriptor complementDesc( COMPLEMENT_ATTR,
                                    SequenceSplitWorker::tr("Complement"),
                                    SequenceSplitWorker::tr("Complement the annotated regions if the corresponding annotation is located on complement strand.") );
+        Descriptor splitDesc(SPLIT_ATTR,
+                                SequenceSplitWorker::tr("Split joined"),
+                                SequenceSplitWorker::tr("Split joined annotations to single region annotations."));
         Descriptor extendLeftDesc( EXTEND_LEFT_ATTR,
                                    SequenceSplitWorker::tr("Extend left"),
                                    SequenceSplitWorker::tr("Extend the resulted regions to left.") );
@@ -251,6 +261,7 @@ void SequenceSplitWorkerFactory::init() {
 
         attribs << new Attribute( translateDesc, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(false) );
         attribs << new Attribute( complementDesc, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(false) );
+        attribs << new Attribute( splitDesc, BaseTypes::BOOL_TYPE(), /*required*/ false, QVariant(false) );
         attribs << new Attribute( extendLeftDesc, BaseTypes::NUM_TYPE(), /*required*/ false, QVariant(0) );
         attribs << new Attribute( extendRightDesc, BaseTypes::NUM_TYPE(), /*required*/ false, QVariant(0) );
         attribs << new Attribute( gapLengthDesc, BaseTypes::NUM_TYPE(), false, QVariant(0) );

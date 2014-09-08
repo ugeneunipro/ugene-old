@@ -36,9 +36,6 @@ Task( tr("Extract annotated regions"), TaskFlag_None ), inputSeq(sequence_), inp
 
 void ExtractAnnotatedRegionTask::prepare() {
     prepareTranslations();
-    resultedSeq.alphabet = aminoT ? aminoT->getDstAlphabet() : complT ? complT->getDstAlphabet() : inputSeq.alphabet;
-   // resultedSeq.info = inputSeq.info;
-    resultedSeq.info[DNAInfo::ID] = inputSeq.getName();
 }
 
 void ExtractAnnotatedRegionTask::prepareTranslations() {
@@ -96,11 +93,32 @@ void ExtractAnnotatedRegionTask::run() {
     } else {
         resParts = U1SequenceUtils::translateRegions(resParts, aminoT, inputAnn.isJoin());
     }
-    resultedSeq.seq = resParts.size() == 1 ? resParts.first() : U1SequenceUtils::joinRegions(resParts, cfg.gapLength);
-    resultedAnn = inputAnn;
-    resultedAnn.location->regions = safeLocation;
-    resultedAnn.setStrand(U2Strand::Direct);
-    resultedAnn.setLocationOperator(inputAnn.getLocationOperator());
+    foreach(const QByteArray &seq, resParts){
+        DNASequence s;
+        s.info[DNAInfo::ID] = inputSeq.getName();
+        if (!cfg.splitJoined || resParts.size() == 1){
+            s.seq = resParts.size() == 1 ? resParts.first() : U1SequenceUtils::joinRegions(resParts, cfg.gapLength);
+        }else{
+            s.seq = seq;
+        }
+        s.alphabet = aminoT ? aminoT->getDstAlphabet() : complT ? complT->getDstAlphabet() : inputSeq.alphabet;
+        if (aminoT != NULL) {
+            s.alphabet = aminoT->getDstAlphabet();
+        }else if (complT != NULL) {
+            s.alphabet = complT->getDstAlphabet();
+        }else {
+            s.alphabet = inputSeq.alphabet;
+        }
+        resultedSeqList.append(s);
+    }
+}
+
+const QList<DNASequence>& ExtractAnnotatedRegionTask::getResultedSequences() const {
+    return resultedSeqList;
+}
+
+const AnnotationData& ExtractAnnotatedRegionTask::getInputAnnotation() const {
+    return inputAnn;
 }
 
 

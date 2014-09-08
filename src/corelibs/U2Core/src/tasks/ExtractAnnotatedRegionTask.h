@@ -31,13 +31,14 @@
 namespace U2 {
 
 struct U2CORE_EXPORT ExtractAnnotatedRegionTaskSettings {
-    ExtractAnnotatedRegionTaskSettings() : gapSym('-'), gapLength(0), translate(true), complement(true), extLeft(0), extRight(0) {}
+    ExtractAnnotatedRegionTaskSettings() : gapSym('-'), gapLength(0), translate(true), complement(true), extLeft(0), extRight(0), splitJoined(false) {}
     char    gapSym;
     int     gapLength;
     bool    translate;
     bool    complement;
     int     extLeft; 
     int     extRight;
+    bool    splitJoined;
 };
 
 class U2CORE_EXPORT ExtractAnnotatedRegionTask : public Task {
@@ -46,22 +47,21 @@ public:
     ExtractAnnotatedRegionTask( const DNASequence & sequence, const AnnotationData &sd, const ExtractAnnotatedRegionTaskSettings & cfg);
     void prepare();
     void run();
-    DNASequence getResultedSequence() const {return resultedSeq;}
-    AnnotationData getResultedAnnotation() {return resultedAnn;}
+    const QList<DNASequence>& getResultedSequences() const;
+    const AnnotationData& getInputAnnotation() const;
 private:
     void prepareTranslations();
     void extractLocations(QList<QByteArray>& resParts, QVector<U2Region>& resLocation, const QVector<U2Region>& origLocation);
     
     DNASequence inputSeq;
-    AnnotationData inputAnn;
+    const AnnotationData inputAnn;
     ExtractAnnotatedRegionTaskSettings cfg;
 
     QVector<U2Region> extendedRegions;
     DNATranslation * complT;
     DNATranslation * aminoT;
 
-    AnnotationData resultedAnn;
-    DNASequence resultedSeq;
+    QList<DNASequence> resultedSeqList;
 };
 
 }// ns
