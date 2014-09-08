@@ -19,24 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#include "CreateAnnotationWidgetFiller.h"
-
-#include "api/GTWidget.h"
-#include "api/GTLineEdit.h"
-#include "api/GTComboBox.h"
-#include "api/GTKeyboardDriver.h"
+#include <QtCore/QDir>
 
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QDialogButtonBox>
 #include <QtGui/QAbstractButton>
+#include <QtGui/QApplication>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QRadioButton>
 #else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QAbstractButton>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
 #endif
+
+#include "CreateAnnotationWidgetFiller.h"
+#include "api/GTComboBox.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTLineEdit.h"
+#include "api/GTRadioButton.h"
+#include "api/GTWidget.h"
 
 namespace U2 {
 
@@ -109,6 +113,27 @@ void CreateAnnotationWidgetFiller::run() {
 #endif
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    if (newTableRB) {
+        QRadioButton *newFileRb = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "newFileRB", dialog));
+        GT_CHECK(newFileRb != NULL, "Radio button is NULL");
+        GTRadioButton::click(os, newFileRb);
+        QLineEdit *leFilePath = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "newFilePath", dialog));
+        GT_CHECK(leFilePath != NULL, "File path line edit is NULL");
+        if (!saveTo.isEmpty()) {
+            QDir().mkpath(QFileInfo(saveTo).dir().absolutePath());
+            GTLineEdit::setText(os, leFilePath, saveTo);
+        }
+    } else {
+        QRadioButton *existingObjectRb = qobject_cast<QRadioButton *>(GTWidget::findWidget(os, "existingObjectRB", dialog));
+        GT_CHECK(existingObjectRb != NULL, "Radio button is NULL");
+        GTRadioButton::click(os, existingObjectRb);
+        QComboBox *cbExistingObject = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "existingObjectCombo", dialog));
+        GT_CHECK(cbExistingObject != NULL, "Existing object combobox is NULL");
+        if (!saveTo.isEmpty()) {
+            GTComboBox::setIndexWithText(os, cbExistingObject, saveTo);
+        }
+    }
 
     QLineEdit *groupNameLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "groupNameEdit", dialog));
     GT_CHECK(groupNameLineEdit != NULL, "LineEdit is NULL");

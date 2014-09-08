@@ -149,6 +149,12 @@ void GTUtilsProjectTreeView::doubleClickItem(U2OpStatus &os, const QModelIndex &
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "doubleClickItem"
+void GTUtilsProjectTreeView::doubleClickItem(U2OpStatus &os, const QString &itemName) {
+    doubleClickItem(os, findIndex(os, itemName));
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getTreeWidget"
 QTreeView* GTUtilsProjectTreeView::getTreeView(U2OpStatus &os) {
 

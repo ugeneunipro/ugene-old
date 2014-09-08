@@ -48,6 +48,7 @@ public:
     static void scrollTo(U2OpStatus &os, const QString &itemName);
 
     static void doubleClickItem(U2OpStatus &os, const QModelIndex& itemIndex);
+    static void doubleClickItem(U2OpStatus &os, const QString& itemName);
 
     static QTreeView* getTreeView(U2OpStatus &os);
     static QModelIndex findIndex(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());

@@ -65,7 +65,7 @@ QList<SequenceWalkerSubtask*> SequenceWalkerTask::prepareSubtasks() {
         config.range = wholeSeqReg.intersect(config.range);
     }
 
-    if (config.walkCircular && config.range.length == config.seqSize) {
+    if (config.walkCircular && static_cast<quint64>(config.range.length) == config.seqSize) {
         tempBuffer.clear();
         tempBuffer.append(QByteArray(config.seq, config.seqSize));
         tempBuffer.append(QByteArray(config.seq).left(config.walkCircularDistance * (config.aminoTrans == NULL ? 1 : 3)));

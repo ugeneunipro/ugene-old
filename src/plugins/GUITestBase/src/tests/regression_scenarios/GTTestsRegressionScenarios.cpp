@@ -5244,6 +5244,35 @@ GUI_TEST_CLASS_DEFINITION(test_3328) {
     waiter.exec();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3335) {
+    GTLogTracer lt;
+
+//    1. Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+//    2. Create an annotation.
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "test_3335", "misc_feature", "50..100", sandBoxDir + "test_3335/annotationTable.gb"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "create_annotation_action"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+
+//    Expected state: an annotation table object appears in a new document.
+    GTUtilsDocument::checkDocument(os, "annotationTable.gb");
+
+//    3. Rename the sequence object.
+    GTUtilsProjectTreeView::rename(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)", "renamed sequence");
+
+//    Expected state: the sequence object is renamed, object relations are correct, there are no errors in the log.
+    const QModelIndex sequenceObjectIndex = GTUtilsProjectTreeView::findIndex(os, "renamed sequence");
+    CHECK_SET_ERR(sequenceObjectIndex.isValid(), "Can't find the renamed sequence object");
+
+    GTUtilsMdi::closeWindow(os, "human_T1 [s] renamed sequence");
+    GTUtilsProjectTreeView::doubleClickItem(os, "Annotations");
+    QWidget *relatedSequenceView = GTUtilsMdi::findWindow(os, "human_T1 [s] renamed sequence");
+    CHECK_SET_ERR(NULL != relatedSequenceView, "A view for the related sequence was not opened");
+
+    GTUtilsLog::check(os, lt);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3346) {
     GTLogTracer lt;
 
