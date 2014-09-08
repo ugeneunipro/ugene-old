@@ -5083,6 +5083,29 @@ GUI_TEST_CLASS_DEFINITION(test_3274) {
     GTWidget::click(os, circularView, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3276) {
+//    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+
+//    2. Build a phylogenetic tree synchronized with the alignment.
+    QDir().mkdir(QFileInfo(sandBoxDir + "test_3276/COI.nwk").dir().absolutePath());
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_3276/COI.wnk", 0, 0, true));
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Build Tree"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+//    3. Rename the first and the second sequences to "1".
+    GTUtilsMSAEditorSequenceArea::renameSequence(os, "Phaneroptera_falcata", "1");
+    GTUtilsMSAEditorSequenceArea::renameSequence(os, "Isophya_altaica_EF540820", "1");
+
+//    4. Remove the first sequence.
+    GTUtilsMSAEditorSequenceArea::removeSequence(os, "1");
+
+//    5. Ensure that the "Sort alignment by tree" button on the tree view toolbar is disabled.
+    QAction *sortAction = GTAction::findAction(os, "Sort Alignment");
+    CHECK_SET_ERR(NULL != sortAction, "'Sort alignment by tree' was not found");
+    CHECK_SET_ERR(!sortAction->isEnabled(), "'Sort alignment by tree' is unexpectedly enabled");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3277){
 //    Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
@@ -5280,7 +5303,7 @@ GUI_TEST_CLASS_DEFINITION(test_3335) {
     const QModelIndex sequenceObjectIndex = GTUtilsProjectTreeView::findIndex(os, "renamed sequence");
     CHECK_SET_ERR(sequenceObjectIndex.isValid(), "Can't find the renamed sequence object");
 
-    GTUtilsMdi::closeWindow(os, "human_T1 [s] renamed sequence");
+    GTUtilsMdi::click(os, GTGlobals::Close);
     GTUtilsProjectTreeView::doubleClickItem(os, "Annotations");
     QWidget *relatedSequenceView = GTUtilsMdi::findWindow(os, "human_T1 [s] renamed sequence");
     CHECK_SET_ERR(NULL != relatedSequenceView, "A view for the related sequence was not opened");

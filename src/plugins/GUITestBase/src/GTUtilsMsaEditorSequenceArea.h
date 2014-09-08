@@ -39,7 +39,7 @@ public:
 
     // MSAEditorNameList
     static QStringList getNameList(U2OpStatus &os);
-    static QStringList getVisibaleNames(U2OpStatus &os);
+    static QStringList getVisibleNames(U2OpStatus &os);
     static QString getSimilarityValue(U2OpStatus &os, int row);
 
     static int getLeftOffset(U2OpStatus &os);
@@ -60,6 +60,7 @@ public:
 
     static void selectSequence(U2OpStatus &os, QString seqName);
     static bool isSequenceSelected(U2OpStatus &os, QString seqName);
+    static void removeSequence(U2OpStatus &os, const QString &sequenceName);
     static int getSelectedSequencesNum(U2OpStatus &os);
     static bool isSequenceVisible(U2OpStatus &os, QString seqName);
 

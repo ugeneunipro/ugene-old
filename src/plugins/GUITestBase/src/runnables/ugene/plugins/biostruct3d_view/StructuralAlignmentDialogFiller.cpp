@@ -25,7 +25,7 @@
 
 namespace U2 {
 
-#define GT_CLASS_NAME "GTUtilsDialog::ExportAnnotationsFiller"
+#define GT_CLASS_NAME "StructuralAlignmentDialogFiller"
 StructuralAlignmentDialogFiller::StructuralAlignmentDialogFiller(U2OpStatus &os) :
     Filler(os, "StructuralAlignmentDialog")
 {

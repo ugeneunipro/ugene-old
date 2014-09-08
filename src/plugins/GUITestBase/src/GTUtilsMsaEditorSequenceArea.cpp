@@ -182,8 +182,8 @@ QStringList GTUtilsMSAEditorSequenceArea::getNameList(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "getVisibaleNames"
-QStringList GTUtilsMSAEditorSequenceArea::getVisibaleNames(U2OpStatus &os){
+#define GT_METHOD_NAME "getVisibleNames"
+QStringList GTUtilsMSAEditorSequenceArea::getVisibleNames(U2OpStatus &os){
     QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
     MSAEditor* editor = mw->findChild<MSAEditor*>();
     CHECK_SET_ERR_RESULT(editor != NULL, "MsaEditor not found", QStringList());
@@ -280,7 +280,7 @@ void GTUtilsMSAEditorSequenceArea::selectSequence(U2OpStatus &os, QString seqNam
             (GTWidget::findWidget(os, "msa_editor_sequence_area"));
     CHECK_SET_ERR(msaEditArea != NULL, "MsaEditorSequenceArea not found");
 
-    QStringList names = getVisibaleNames(os);
+    QStringList names = getVisibleNames(os);
     int row = 0;
     while (names[row] != seqName) {
         row++;
@@ -311,7 +311,14 @@ bool GTUtilsMSAEditorSequenceArea::isSequenceSelected(U2OpStatus &os, QString se
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME
+#define GT_METHOD_NAME "removeSequence"
+void GTUtilsMSAEditorSequenceArea::removeSequence(U2OpStatus &os, const QString &sequenceName) {
+    selectSequence(os, sequenceName);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getSelectedSequencesNum"
 int GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(U2OpStatus &os) {
     MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>
         (GTWidget::findWidget(os, "msa_editor_sequence_area"));
@@ -323,7 +330,7 @@ int GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(U2OpStatus &os) {
 
 #define GT_METHOD_NAME "isSequenceVisible"
 bool GTUtilsMSAEditorSequenceArea::isSequenceVisible(U2OpStatus &os, QString seqName) {    
-    QStringList visiableRowNames = getVisibaleNames(os);
+    QStringList visiableRowNames = getVisibleNames(os);
     return visiableRowNames.contains(seqName);
 }
 #undef GT_METHOD_NAME
@@ -367,7 +374,7 @@ bool GTUtilsMSAEditorSequenceArea::hasAminoAlphabet(U2OpStatus &os)
 
 #define GT_METHOD_NAME "isSequenceHightighted"
 bool GTUtilsMSAEditorSequenceArea::isSequenceHightighted(U2OpStatus &os, const QString &seqName){
-    QStringList names = getVisibaleNames(os);
+    QStringList names = getVisibleNames(os);
     GT_CHECK_RESULT(names.contains(seqName), QString("sequence with name %1 not found").arg(seqName), false);
 
     int row = 0;
@@ -428,7 +435,7 @@ int GTUtilsMSAEditorSequenceArea::getRowHeight(U2OpStatus &os){
 
 #define GT_METHOD_NAME "renameSequence"
 void GTUtilsMSAEditorSequenceArea::renameSequence(U2OpStatus &os, const QString &seqToRename, const QString &newName){
-    int num = getVisibaleNames(os).indexOf(seqToRename);
+    int num = getVisibleNames(os).indexOf(seqToRename);
     GT_CHECK(num != -1, "sequence not found");
 
     GTUtilsDialog::waitForDialog(os, new RenameSequenceFiller(os, newName, seqToRename));
