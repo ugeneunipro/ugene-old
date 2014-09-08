@@ -57,7 +57,6 @@ SaveGraphCutoffsDialogController::SaveGraphCutoffsDialogController( GSequenceGra
     l->setMargin(0);
     l->addWidget(caw);
     annotationsWidget->setLayout(l);
-    annotationsWidget->setMinimumSize(caw->layout()->minimumSize());
 
     betweenRadioButton->setChecked(true);
     
