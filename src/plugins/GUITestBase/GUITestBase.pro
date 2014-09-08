@@ -70,6 +70,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #   Runnables / UGENE / plugins
 #   Runnables / UGENE / plugins / annotator
             src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h \
+#   Runnables / UGENE / plugins / biostruct3d_view
+            src/runnables/ugene/plugins/biostruct3d_view/StructuralAlignmentDialogFiller.h \
 #   Runnables / UGENE / plugins / dotplot
             src/runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h \
             src/runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h \
@@ -273,6 +275,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Runnables / UGENE / plugins
 #   Runnables / UGENE / plugins / annotator
             src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.cpp \
+#   Runnables / UGENE / plugins / biostruct3d_view
+            src/runnables/ugene/plugins/biostruct3d_view/StructuralAlignmentDialogFiller.cpp \
 #   Runnables / UGENE / plugins / dotplot
             src/runnables/ugene/plugins/dotplot/DotPlotDialogFiller.cpp \
             src/runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.cpp \

@@ -81,6 +81,7 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h"
+#include "runnables/ugene/plugins/biostruct3d_view/StructuralAlignmentDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
@@ -5155,6 +5156,20 @@ GUI_TEST_CLASS_DEFINITION(test_3287) {
 
     QImage image(params.fileName);
     CHECK_SET_ERR(70 == image.height(), "Wrong image height");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3308) {
+//    1. Open "data/samples/PDB/1CF7.PDB".
+    GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
+
+//    2. Call context menu on the 3dview, select {Structural Alignment -> Align With...} menu item.
+//    3. Accept the dialog.
+//    Expected state: UGENE doesn't crash.
+    GTUtilsDialog::waitForDialog(os, new StructuralAlignmentDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Structural Alignment" << "align_with"));
+    QWidget *widget3d = GTWidget::findWidget(os, "1-1CF7");
+    CHECK_SET_ERR(NULL != widget3d, "3D widget was not found");
+    GTWidget::click(os, widget3d, Qt::RightButton);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3318) {

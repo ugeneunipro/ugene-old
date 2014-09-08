@@ -787,6 +787,7 @@ void BioStruct3DGLWidget::createActions()
 
 void BioStruct3DGLWidget::createStrucluralAlignmentActions() {
     alignWithAction = new QAction(tr("Align With..."), this);
+    alignWithAction->setObjectName("align_with");
     connect(alignWithAction, SIGNAL(triggered()), this, SLOT(sl_alignWith()));
 
     resetAlignmentAction = new QAction(tr("Reset"), this);
@@ -836,6 +837,7 @@ void BioStruct3DGLWidget::createMenus()
 
 QMenu* BioStruct3DGLWidget::createStructuralAlignmentMenu() {
     QMenu *saMenu = new QMenu(tr("Structural Alignment"));
+    saMenu->menuAction()->setObjectName("Structural Alignment");
 
     saMenu->addAction(alignWithAction);
     saMenu->addAction(resetAlignmentAction);
