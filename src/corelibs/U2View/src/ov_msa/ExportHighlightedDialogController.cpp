@@ -29,20 +29,27 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/U2FileDialog.h>
 
+#include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
+
 #include "ExportHighlightedDialogController.h"
 #include "ov_msa/MSAEditorSequenceArea.h"
 
 namespace U2{
 
-    ExportHighligtningDialogController::ExportHighligtningDialogController(MSAEditorUI *msaui_, QWidget* p ): QDialog(p){
+ExportHighligtningDialogController::ExportHighligtningDialogController(MSAEditorUI *msaui_, QWidget* p ): QDialog(p), msaui(msaui_){
     setupUi(this);
     new HelpButton(this, buttonBox, "4227438");
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+    CHECK(AppContext::getAppSettings(), );
+    CHECK(AppContext::getAppSettings()->getUserAppsSettings(), );
+    CHECK(msaui->getEditor(), );
+    CHECK(msaui->getEditor()->getMSAObject(), );    
+    fileNameEdit->setText(QDir::toNativeSeparators(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/" + msaui->getEditor()->getMSAObject()->getGObjectName() + "_highlighting.txt"));
 
     connect(fileButton, SIGNAL(clicked()), SLOT(sl_fileButtonClicked()));
-
-    msaui = msaui_;
 
     int alignLength = msaui->getEditor()->getMSAObject()->getLength();
     QRect selection = msaui->getSequenceArea()->getSelection().getRect();
