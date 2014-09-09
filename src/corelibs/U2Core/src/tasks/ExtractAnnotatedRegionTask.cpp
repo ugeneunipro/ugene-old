@@ -94,10 +94,12 @@ void ExtractAnnotatedRegionTask::run() {
         resParts = U1SequenceUtils::translateRegions(resParts, aminoT, inputAnn.isJoin());
     }
     foreach(const QByteArray &seq, resParts){
+        bool onlyOneIteration = false;
         DNASequence s;
         s.info[DNAInfo::ID] = inputSeq.getName();
         if (!cfg.splitJoined || resParts.size() == 1){
             s.seq = resParts.size() == 1 ? resParts.first() : U1SequenceUtils::joinRegions(resParts, cfg.gapLength);
+            onlyOneIteration = true;
         }else{
             s.seq = seq;
         }
@@ -110,6 +112,9 @@ void ExtractAnnotatedRegionTask::run() {
             s.alphabet = inputSeq.alphabet;
         }
         resultedSeqList.append(s);
+        if (onlyOneIteration){
+            break;
+        }
     }
 }
 
