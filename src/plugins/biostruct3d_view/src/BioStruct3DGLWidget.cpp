@@ -218,7 +218,11 @@ void BioStruct3DGLWidget::initializeGL() {
 
     updateAllRenderers();
 
-    if (!imageRenderingMode) {
+
+    QString videoAdapterString(QLatin1String (reinterpret_cast<const char*>(glGetString(GL_VENDOR))));
+    if(videoAdapterString.contains("intel", Qt::CaseInsensitive)) {
+        anaglyphStatus = NOT_AVAILABLE;
+    } else if (!imageRenderingMode) {
         anaglyph->init();
         if (!anaglyph->isAvailable()) {
             anaglyphStatus = NOT_AVAILABLE;

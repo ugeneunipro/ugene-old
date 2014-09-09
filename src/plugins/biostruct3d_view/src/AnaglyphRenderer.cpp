@@ -143,9 +143,15 @@ void AnaglyphRenderer::setOrthoProjection() {
 void AnaglyphRenderer::createEmptyTextures() {
     CHECK_GL_ERROR
 
-    glDeleteTextures(1, &anaglyphRenderTextureLeft);
-    glDeleteTextures(1, &anaglyphRenderTextureRight);
-    glDeleteTextures(1, &tempAnaglyphRenderTexture);
+    if(anaglyphRenderTextureLeft != 0) {
+        glDeleteTextures(1, &anaglyphRenderTextureLeft);
+    }
+    if(anaglyphRenderTextureRight != 0) {
+        glDeleteTextures(1, &anaglyphRenderTextureRight);
+    }
+    if(tempAnaglyphRenderTexture != 0) {
+        glDeleteTextures(1, &tempAnaglyphRenderTexture);
+    }
 
     // TODO : check for NPOT sizes
     GLuint texwidth = width, texheight = height;
