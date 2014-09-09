@@ -182,8 +182,11 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
         //read sequence
         if (sequenceNumber == 0 || !merge) {
             QString objName = headerLine;
+            if(objName.isEmpty()){
+                objName = "Sequence";
+            }
             if (settingsMakeUniqueName) {
-                objName = (merge) ? "Sequence" : TextUtils::variate(headerLine, "_", uniqueNames);
+                objName = (merge) ? "Sequence" : TextUtils::variate(objName, "_", uniqueNames);
                 objName.squeeze();
                 memoryLocker.tryAcquire(2*objName.size());
                 uniqueNames.insert(objName);

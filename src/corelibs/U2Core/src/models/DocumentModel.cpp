@@ -414,6 +414,11 @@ void Document::checkUnloadedState() const {
 
 void Document::checkUniqueObjectNames() const {
 #ifdef _DEBUG
+    QVariantMap hints = getGHintsMap();
+    bool dontCheckUniqueNames = hints.value(DocumentReadingMode_DontMakeUniqueNames, false).toBool();
+    if (dontCheckUniqueNames){
+        return;
+    }
     QSet<QString> names;
     foreach(GObject* o, objects) {
         const QString& name = o->getGObjectName();
