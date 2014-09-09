@@ -70,6 +70,8 @@ void RemoteBLASTWorkerFactory::init() {
         RemoteBLASTWorker::tr("This parameter specifies the statistical significance threshold of reporting matches against the database sequences."));
     Descriptor hitsDescriptor(HITS_ATTR,RemoteBLASTWorker::tr("Max hits"),
         RemoteBLASTWorker::tr("Maximum number of hits."));
+    Descriptor mbDescriptor(MEGABLAST_ATTR, RemoteBLASTWorker::tr("Megablast"),
+        RemoteBLASTWorker::tr("Use megablast."));
     Descriptor shortSeqDescriptor(SHORTSEQ_ATTR,RemoteBLASTWorker::tr("Short sequence"),
         RemoteBLASTWorker::tr("Optimize search for short sequences."));
     Descriptor entrezQueryDescriptor(ENTREZ_QUERY_ATTR,RemoteBLASTWorker::tr("Entrez query"),
@@ -105,23 +107,26 @@ void RemoteBLASTWorkerFactory::init() {
 
     a << new Attribute(evalueDescriptor,BaseTypes::STRING_TYPE(),false,10);
 
+    QVariantList notCddTools;
+    notCddTools << "ncbi-blastn" << "ncbi-blastp";
+
     a << new Attribute(hitsDescriptor,BaseTypes::NUM_TYPE(),false,10);
+    Attribute *mbAttr = new Attribute(mbDescriptor, BaseTypes::BOOL_TYPE(), false, false);
+    mbAttr->addRelation(new VisibilityRelation(ALG_ATTR, "ncbi-blastn"));
+    a << mbAttr;
 
     Attribute* shortSeqAttr = new Attribute(shortSeqDescriptor,BaseTypes::BOOL_TYPE(),true,false);
-    shortSeqAttr->addRelation(new VisibilityRelation(ALG_ATTR, "ncbi-blastn"));
-    shortSeqAttr->addRelation(new VisibilityRelation(ALG_ATTR, "ncbi-blastp"));
+    shortSeqAttr->addRelation(new VisibilityRelation(ALG_ATTR, notCddTools));
     a << shortSeqAttr;
 
     Attribute* entrezQueryAttr = new Attribute(entrezQueryDescriptor, BaseTypes::STRING_TYPE(), false);
-    entrezQueryAttr->addRelation(new VisibilityRelation(ALG_ATTR, "ncbi-blastn"));
-    entrezQueryAttr->addRelation(new VisibilityRelation(ALG_ATTR, "ncbi-blastp"));
+    entrezQueryAttr->addRelation(new VisibilityRelation(ALG_ATTR, notCddTools));
     a << entrezQueryAttr;
     a << new Attribute(annotateAsDescriptor,BaseTypes::STRING_TYPE(),false);
     a << new Attribute(outputDescriptor, BaseTypes::STRING_TYPE(),false);
 
     Attribute* gapAttr = new Attribute(gapCosts, BaseTypes::STRING_TYPE(), false, "2 2");
-    gapAttr->addRelation(new VisibilityRelation(ALG_ATTR, "ncbi-blastn"));
-    gapAttr->addRelation(new VisibilityRelation(ALG_ATTR, "ncbi-blastp"));
+    gapAttr->addRelation(new VisibilityRelation(ALG_ATTR, notCddTools));
     a << gapAttr;
 
     Attribute* msAttr = new Attribute(matchScores, BaseTypes::STRING_TYPE(), false, "1 -3");
@@ -278,6 +283,9 @@ Task* RemoteBLASTWorker::tick() {
             addParametr(cfg.params, ReqParams::expect, evalue);
             
             addParametr(cfg.params, ReqParams::hits, maxHits);
+            if (getValue<bool>(MEGABLAST_ATTR)) {
+                addParametr(cfg.params, ReqParams::megablast, "true");
+            }
         }
         SharedDbiDataHandler seqId = inputMessage.getData().toMap().value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
         QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));

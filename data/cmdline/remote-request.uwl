@@ -39,6 +39,10 @@ workflow remote-request{
                 alias:in;
                 description:"Input sequence";
             }
+            blast-ncbi.megablast {
+                alias:megablast;
+                description:"Use megablast";
+            }
             blast-ncbi.blast-output {
                 alias:blast-output;
                 description:"Location of BLAST output file";

@@ -328,7 +328,7 @@ void SendSelectionDialog::sl_OK() {
         addParametr(requestParameters,ReqParams::hits,maxHit);
 
         if(megablastCheckBox->isChecked()) {
-            addParametr(requestParameters,ReqParams::megablast,"yes");
+            addParametr(requestParameters,ReqParams::megablast,"true");
         }
         
         addParametr(requestParameters,ReqParams::database,dbComboBox->currentText().split(" ").last());
