@@ -248,15 +248,15 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2156);
     REGISTER_TEST(GUITest_regression_scenarios::test_2157);
     REGISTER_TEST(GUITest_regression_scenarios::test_2160);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2163);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2164);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2163, "UGENE-3470");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2164, "UGENE-3470");
     REGISTER_TEST(GUITest_regression_scenarios::test_2165);
     REGISTER_TEST(GUITest_regression_scenarios::test_2167);
     REGISTER_TEST(GUITest_regression_scenarios::test_2169);
     REGISTER_TEST(GUITest_regression_scenarios::test_2171);
     REGISTER_TEST(GUITest_regression_scenarios::test_2172);
     REGISTER_TEST(GUITest_regression_scenarios::test_2174);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2186);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2186, "UGENE-3470");
     REGISTER_TEST(GUITest_regression_scenarios::test_2187);
     REGISTER_TEST(GUITest_regression_scenarios::test_2188);
     REGISTER_TEST(GUITest_regression_scenarios::test_2202);
@@ -1064,6 +1064,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0007_1);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0007_2);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0007_3);
+
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/dp_view
