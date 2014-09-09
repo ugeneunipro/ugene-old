@@ -2368,7 +2368,7 @@ GUI_TEST_CLASS_DEFINITION(export_test_0009) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
     GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "et0009_export.fasta", GTGlobals::UseMouse));
     GTMouseDriver::click(os, Qt::RightButton);
-    GTGlobals::sleep(500000);
+    GTGlobals::sleep(10000);
 
     QFileInfo f(ExportSelectedRegionFiller::defaultExportPath);
     QString baseName = f.baseName();
