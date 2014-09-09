@@ -32,8 +32,8 @@ class GTBaseCompleter
 {
 public:
     static void click(U2OpStatus &os, QTreeWidget* tree, const QString &seqName);
-    static QStringList getNames(U2OpStatus &os, QTreeWidget* tree);
-    static bool isEmpty(U2OpStatus &os, QTreeWidget* tree);
+    static QStringList getNames(U2OpStatus &os, QTreeWidget* tree = NULL);
+    static bool isEmpty(U2OpStatus &os, QTreeWidget* tree = NULL);
     static QTreeWidget* getCompleter(U2OpStatus &os);
 };
 

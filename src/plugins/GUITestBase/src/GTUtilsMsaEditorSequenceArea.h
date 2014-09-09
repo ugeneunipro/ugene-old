@@ -39,7 +39,7 @@ public:
 
     // MSAEditorNameList
     static QStringList getNameList(U2OpStatus &os);
-    static QStringList getVisibleNames(U2OpStatus &os);
+    static QStringList getVisibaleNames(U2OpStatus &os);
     static QString getSimilarityValue(U2OpStatus &os, int row);
 
     static int getLeftOffset(U2OpStatus &os);
@@ -76,6 +76,8 @@ public:
 
     static void createColorScheme(U2OpStatus &os, const QString& schemeName, const NewColorSchemeCreator::alphabet al);
     static void deleteColorScheme(U2OpStatus &os, const QString& schemeName);
+
+    static void checkSelection(U2OpStatus &os, const QPoint& start, const QPoint& end, const QString& expected);
 
     static const QString highlightningColorName;
 };

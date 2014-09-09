@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2ObjectDbi.h>
+
 #include "GTTestsRegressionScenarios.h"
 
 #include "api/GTAction.h"
@@ -81,7 +83,6 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h"
-#include "runnables/ugene/plugins/biostruct3d_view/StructuralAlignmentDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
@@ -5007,6 +5008,47 @@ GUI_TEST_CLASS_DEFINITION(test_3180) {
     CHECK_SET_ERR(AppContext::getTaskScheduler()->getTopLevelTasks().isEmpty(), "Task is not cancelled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3207){
+//    Steps to reproduce:
+//    1. Open "\samples\PDB\1CF7.PDB"
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "AMINO.fa");
+//    2. Select region [30..31] in "1CF7 chain 1" sequence
+    GTUtilsSequenceView::selectSequenceRegion(os, 30,31);
+//    3. Open "DAS annotaions" OP
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_DAS"));
+//    Expected state:
+//    The options panel appeared, selected region in OP [30..31], there is warning, that region is too short
+    QLineEdit* start_edit_line = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "start_edit_line"));
+    CHECK_SET_ERR(start_edit_line != NULL, "start_edit_line not found");
+    QString start = start_edit_line->text();
+    CHECK_SET_ERR(start == "30", QString("unexpected start value: %1").arg(start));
+
+    QLineEdit* end_edit_line = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "end_edit_line"));
+    CHECK_SET_ERR(end_edit_line != NULL, "end_edit_line not found");
+    QString end = end_edit_line->text();
+    CHECK_SET_ERR(end == "31", QString("unexpected end value: %1").arg(end));
+
+    QLabel* hintLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "hintLabel"));
+    CHECK_SET_ERR(hintLabel != NULL, "hintLabel not found");
+    QString hint = hintLabel->text();
+    CHECK_SET_ERR(hint == "Warning: Selected region is too short. It should be from 4 to 1900 amino acids.",
+                  QString("unexpected hint: %1").arg(hint));
+//    4. Select region [20..40] in the sequence
+    GTUtilsSequenceView::selectSequenceRegion(os, 20, 40);
+//    Expected state:
+//    Selected region in OP is [20..40], warning is not shown
+    start = start_edit_line->text();
+    CHECK_SET_ERR(start == "20", QString("unexpected start value: %1").arg(start));
+
+    end = end_edit_line->text();
+    CHECK_SET_ERR(end == "40", QString("unexpected end value: %1").arg(end));
+
+    QWidget* hintLabelWidget = GTWidget::findWidget(os, "hintLabel");
+    CHECK_SET_ERR(hintLabel->isHidden(), "hintLabel unexpectidly presents");
+//    Current state:
+//    Selected region in OP is [30..31], warning is shown
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3209_1) {
     // BLAST+ from file
     BlastAllSupportDialogFiller::Parameters blastParams;
@@ -5089,6 +5131,7 @@ GUI_TEST_CLASS_DEFINITION(test_3276) {
 
 //    2. Build a phylogenetic tree synchronized with the alignment.
     QDir().mkdir(QFileInfo(sandBoxDir + "test_3276/COI.nwk").dir().absolutePath());
+    GTUtilsDialog::waitForDialog(os, new LicenseAgreemntDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_3276/COI.wnk", 0, 0, true));
     GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Build Tree"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -5105,6 +5148,8 @@ GUI_TEST_CLASS_DEFINITION(test_3276) {
     CHECK_SET_ERR(NULL != sortAction, "'Sort alignment by tree' was not found");
     CHECK_SET_ERR(!sortAction->isEnabled(), "'Sort alignment by tree' is unexpectedly enabled");
 }
+
+
 
 GUI_TEST_CLASS_DEFINITION(test_3277){
 //    Open "data/samples/CLUSTALW/COI.aln".
@@ -5181,6 +5226,36 @@ GUI_TEST_CLASS_DEFINITION(test_3287) {
     CHECK_SET_ERR(70 == image.height(), "Wrong image height");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3307){
+    //1. Connect to shared database
+    const QString folderName = "view_test_0001";
+    const QString folderPath = U2ObjectDbi::PATH_SEP + folderName;
+    const QString sequenceVisibleName = "NC_001363";
+    const QString sequenceVisibleWidgetName = " [s] NC_001363";
+    const QString databaseSequenceObjectPath = folderPath + U2ObjectDbi::PATH_SEP + sequenceVisibleName;
+
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    //2. Open any sequence from database
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseSequenceObjectPath);
+    QWidget* seqView = GTWidget::findWidget(os, sequenceVisibleWidgetName);
+    CHECK_SET_ERR(NULL != seqView, "View wasn't opened");
+
+    //3. Use context menu on sequence area. Choose "new annotation"
+
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "ann1", "1.. 20"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "create_annotation_action"));
+    GTMenu::showContextMenu(os, seqView);
+    GTGlobals::sleep(500);
+    GTUtilsTaskTreeView::waitTaskFinished(os, 60000);
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "MyDocument.gb"));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(500);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3308) {
 //    1. Open "data/samples/PDB/1CF7.PDB".
     GTFileDialog::openFile(os, dataDir + "samples/PDB", "1CF7.PDB");
@@ -5188,7 +5263,7 @@ GUI_TEST_CLASS_DEFINITION(test_3308) {
 //    2. Call context menu on the 3dview, select {Structural Alignment -> Align With...} menu item.
 //    3. Accept the dialog.
 //    Expected state: UGENE doesn't crash.
-    GTUtilsDialog::waitForDialog(os, new StructuralAlignmentDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os, new StructuralAlignmentDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Structural Alignment" << "align_with"));
     QWidget *widget3d = GTWidget::findWidget(os, "1-1CF7");
     CHECK_SET_ERR(NULL != widget3d, "3D widget was not found");
@@ -5285,31 +5360,33 @@ GUI_TEST_CLASS_DEFINITION(test_3328) {
 GUI_TEST_CLASS_DEFINITION(test_3335) {
     GTLogTracer lt;
 
-//    1. Open "data/samples/FASTA/human_T1.fa".
+    //    1. Open "data/samples/FASTA/human_T1.fa".
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
-//    2. Create an annotation.
+    //    2. Create an annotation.
     GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "test_3335", "misc_feature", "50..100", sandBoxDir + "test_3335/annotationTable.gb"));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "create_annotation_action"));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 
-//    Expected state: an annotation table object appears in a new document.
+    //    Expected state: an annotation table object appears in a new document.
     GTUtilsDocument::checkDocument(os, "annotationTable.gb");
 
-//    3. Rename the sequence object.
+    //    3. Rename the sequence object.
     GTUtilsProjectTreeView::rename(os, "human_T1 (UCSC April 2002 chr7:115977709-117855134)", "renamed sequence");
 
-//    Expected state: the sequence object is renamed, object relations are correct, there are no errors in the log.
-    const QModelIndex sequenceObjectIndex = GTUtilsProjectTreeView::findIndex(os, "renamed sequence");
+    //    Expected state: the sequence object is renamed, object relations are correct, there are no errors in the log.
+     const QModelIndex sequenceObjectIndex = GTUtilsProjectTreeView::findIndex(os, "renamed sequence");
     CHECK_SET_ERR(sequenceObjectIndex.isValid(), "Can't find the renamed sequence object");
 
-    GTUtilsMdi::click(os, GTGlobals::Close);
-    GTUtilsProjectTreeView::doubleClickItem(os, "Annotations");
+     GTUtilsMdi::click(os, GTGlobals::Close);
+     GTUtilsProjectTreeView::doubleClickItem(os, "Annotations");
     QWidget *relatedSequenceView = GTUtilsMdi::findWindow(os, "human_T1 [s] renamed sequence");
     CHECK_SET_ERR(NULL != relatedSequenceView, "A view for the related sequence was not opened");
 
     GTUtilsLog::check(os, lt);
-}
+    }
+
+
 
 GUI_TEST_CLASS_DEFINITION(test_3346) {
     GTLogTracer lt;
@@ -5452,6 +5529,14 @@ GUI_TEST_CLASS_DEFINITION(test_3396){
     QStringList parameters = GTUtilsWorkflowDesigner::getAllParameters(os);
     CHECK_SET_ERR(!parameters.contains("Wiggle space"), "Wiggle space parameter is shown");
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3437){
+//    1. Open file test/_common_data/fasta/empty.fa
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "empty.fa");
+//    Expected: file opened in msa editor
+    QWidget* w = GTWidget::findWidget(os,"msa_editor_sequence_area");
+    CHECK_SET_ERR(w != NULL, "msa editor not opened");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3398_1) {

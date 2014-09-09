@@ -574,7 +574,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     //Group name: group
     //Annotation name: misc_feature
     //Location: 1..1000
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "group", "misc_feature", "1..1000"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "group", "misc_feature", "1..1000"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
@@ -595,7 +595,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
     GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", false);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "group_new", "misc_feature_1", "1..500"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "group_new", "misc_feature_1", "1..500"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
@@ -628,11 +628,11 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
     //Group name: group
     //Annotation name: misc_feature
     //Location: 1..1000
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "group", "misc_feature", "1..1000"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "group", "misc_feature", "1..1000"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "group_new", "misc_feature_1", "1..500"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "group_new", "misc_feature_1", "1..500"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 

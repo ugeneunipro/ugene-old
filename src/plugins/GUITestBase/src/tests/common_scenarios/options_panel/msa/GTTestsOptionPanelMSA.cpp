@@ -21,12 +21,14 @@
 
 #include "GTTestsOptionPanelMSA.h"
 
-#include "api/GTFileDialog.h"
-#include "api/GTWidget.h"
-#include "api/GTLineEdit.h"
-#include "api/GTComboBox.h"
 #include "api/GTBaseCompleter.h"
+#include "api/GTComboBox.h"
+#include "api/GTCheckBox.h"
+#include "api/GTDoubleSpinBox.h"
+#include "api/GTFileDialog.h"
 #include "api/GTKeyboardDriver.h"
+#include "api/GTLineEdit.h"
+#include "api/GTWidget.h"
 
 #include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
@@ -853,8 +855,401 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0008_1){
     setHighlightingType(os, "Agreements");
     GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(6,1), "#ffffff");
     GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(7,1), "#ffee00");
+}
+
+GUI_TEST_CLASS_DEFINITION(highlighting_test_0009){
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//    2. Open highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+//    3. Select Phaneroptera_falcata as reference.
+    GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+//    4. Check Disagreements highlighting type
+    setHighlightingType(os, "Disagreements");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(0,1), "#ffffff");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(2,1), "#ffffff");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(5,1), "#ffffff");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(7,1), "#ffffff");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(4,2), "#ffffff");
+}
+
+GUI_TEST_CLASS_DEFINITION(highlighting_test_0009_1){
+//    1. Open file test/_common_data/scenarios/msa/ty3.aln.gz
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
+//    2. Open highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+//    3. Select Phaneroptera_falcata as reference.
+    GTUtilsOptionPanelMsa::addReference(os, "CfT-1_Cladosporium_fulvum");
+//    4. Check Disagreements highlighting type
+    setHighlightingType(os, "Disagreements");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(4,1), "#ffffff");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(7,1), "#ffffff");
+}
+
+GUI_TEST_CLASS_DEFINITION(highlighting_test_0010){
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//    2. Open highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+//    3. Select Phaneroptera_falcata as reference.
+    GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+//    4. Check Gaps highlighting type
+    setHighlightingType(os, "Gaps");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(4,2), "#c0c0c0");
+}
+
+GUI_TEST_CLASS_DEFINITION(highlighting_test_0010_1){
+//    1. Open file test/_common_data/scenarios/msa/ty3.aln.gz
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
+//    2. Open highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+//    3. Select Phaneroptera_falcata as reference.
+    GTUtilsOptionPanelMsa::addReference(os, "CfT-1_Cladosporium_fulvum");
+//    4. Check Gaps highlighting type
+    setHighlightingType(os, "Gaps");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(0,0), "#c0c0c0");
+}
+
+GUI_TEST_CLASS_DEFINITION(highlighting_test_0011){
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//    2. Open highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+//    3. Select Phaneroptera_falcata as reference.
+    GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+//    4. Check Transitions highlighting type
+    setHighlightingType(os, "Transitions");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(0,1), "#ffffff");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(2,1), "#ffffff");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(4,1), "#ff99b1");
+}
+
+GUI_TEST_CLASS_DEFINITION(highlighting_test_0012){
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//    2. Open highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+//    3. Select Phaneroptera_falcata as reference.
+    GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+//    4. Check Transversions highlighting type
+    setHighlightingType(os, "Transversions");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(0,1), "#ffffff");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(3,1), "#70f970");
+    GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(6,1), "#fcff92");
+}
+
+GUI_TEST_CLASS_DEFINITION(highlighting_test_0013){
+//1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//2. Open highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+    QWidget* w = GTWidget::findWidget(os, "msa_editor_sequence_area");
+    QPixmap initPixmap = QPixmap::grabWidget(w, w->rect());
+    QImage initImg = initPixmap.toImage();//initial state
+//3. Check "use dots" checkbox
+    setHighlightingType(os, "Agreements");
+    QCheckBox* useDots = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "useDots"));
+    CHECK_SET_ERR(useDots != NULL, "use dots checkbox not found");
+    GTCheckBox::setChecked(os, useDots, true);
+//Expected state: no effect
+    QPixmap pixmap = QPixmap::grabWidget(w, w->rect());
+    QImage img = pixmap.toImage();
+    CHECK_SET_ERR(img == initImg, "sequence area unexpectedly changed");
+//4. Select Phaneroptera_falcata as reference.
+    GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+//Expected state: not highlighted changed to dots
+    pixmap = QPixmap::grabWidget(w, w->rect());
+    img = pixmap.toImage();
+    CHECK_SET_ERR(img != initImg, "image not changed");//no way to check dots. Can only check that sequence area changed
+}
+
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0001){
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//    2. Open Pairwise alignment option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    3. Add Phaneroptera_falcata sequence
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+//    Expected state: align button is disabled
+    QPushButton* alignButton = qobject_cast<QPushButton*>(GTWidget::findWidget(os, "alignButton"));
+    CHECK_SET_ERR(alignButton != NULL, "alignButton not found");
+    CHECK_SET_ERR(!alignButton->isEnabled(), "alignButton is unexpectidly enabled");
+//    4. Add Isophya_altaica_EF540820 sequence
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+//    Expected state: Similarity label appeared. Similarity is 42%. Align button enabled
+    CHECK_SET_ERR(alignButton->isEnabled(), "align button is unexpectibly disabled");
+    QLabel* similarityValueLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "similarityValueLabel"));
+    CHECK_SET_ERR(similarityValueLabel != NULL, "similarityValueLabel not found");
+    QString percent = similarityValueLabel->text();
+    CHECK_SET_ERR(percent == "42%", QString("unexpected percent: %1").arg(percent));
+//    (branches: amino, raw alphabets)
+}
+
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0002){
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//    2. Open Pairwise alignment option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    3. Add Phaneroptera_falcata sequence two times
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Phaneroptera_falcata");
+//    Expected state: Similarity label appeared. Similarity is 100%. Align button disabled
+    QPushButton* alignButton = qobject_cast<QPushButton*>(GTWidget::findWidget(os, "alignButton"));
+    CHECK_SET_ERR(alignButton != NULL, "alignButton not found");
+    CHECK_SET_ERR(!alignButton->isEnabled(), "align button is unexpectibly disabled");
+
+    QLabel* similarityValueLabel = qobject_cast<QLabel*>(GTWidget::findWidget(os, "similarityValueLabel"));
+    CHECK_SET_ERR(similarityValueLabel != NULL, "similarityValueLabel not found");
+    QString percent = similarityValueLabel->text();
+    CHECK_SET_ERR(percent == "100%", QString("unexpected percent: %1").arg(percent));
+//    (branches: amino, raw alphabets)
+}
+
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0003){
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//    2. Open Pairwise alignment option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    3. Add Phaneroptera_falcata sequence with popup helper
+//    Expected state: sequence added
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata", GTUtilsOptionPanelMsa::Completer);
+    QLineEdit* line1 = GTUtilsOptionPanelMsa::getSeqLineEdit(os, 1);
+    CHECK_SET_ERR(line1 != NULL, "lineEdit 1 not found");
+    CHECK_SET_ERR(line1->text() == "Phaneroptera_falcata", QString("unexpected lineEdit 1 text: %1").arg(line1->text()));
+//    4. Add Isophya_altaica_EF540820 sequence with popup helper
+//    Expected state: sequence added
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820", GTUtilsOptionPanelMsa::Completer);
+    QLineEdit* line2 = GTUtilsOptionPanelMsa::getSeqLineEdit(os, 2);
+    CHECK_SET_ERR(line2 != NULL, "lineEdit 2 not found");
+    CHECK_SET_ERR(line2->text() == "Isophya_altaica_EF540820", QString("unexpected lineEdit 2 text: %1").arg(line2->text()));
+//    5. Remove Phaneroptera_falcata with button
+    GTWidget::click(os, GTUtilsOptionPanelMsa::getDeleteButton(os, 1));
+    CHECK_SET_ERR(line1->text().isEmpty(), QString("unexpected lineEdit 1 text: %1").arg(line1->text()));
+//    6. Remove Phaneroptera_falcata with button
+    GTWidget::click(os, GTUtilsOptionPanelMsa::getDeleteButton(os, 2));
+    CHECK_SET_ERR(line2->text().isEmpty(), QString("unexpected lineEdit 2 text: %1").arg(line2->text()));
+}
+
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0004){
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
+//    2. Open Pairwise alignment option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    3. Type wrong names in sequences' line edits.
+    QLineEdit* line1 = GTUtilsOptionPanelMsa::getSeqLineEdit(os, 1);
+    CHECK_SET_ERR(line1 != NULL, "lineEdit 1 not found");
+    GTLineEdit::setText(os, line1, "wrong name");
+    CHECK_SET_ERR(GTBaseCompleter::isEmpty(os), "Completer is not empty");
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+
+    QLineEdit* line2 = GTUtilsOptionPanelMsa::getSeqLineEdit(os, 2);
+    CHECK_SET_ERR(line2 != NULL, "lineEdit 2 not found");
+    GTLineEdit::setText(os, line2, "wrong name");
+    CHECK_SET_ERR(GTBaseCompleter::isEmpty(os), "Completer is not empty");
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+//    Expected state: empty popup helper appeared
+}
+
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0005){
+//    1. Open file test/_common_data/scenarios/msa/ty3.aln.gz
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
+//    2. Open Pairwise alignment option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    3. Add two sequences to PA line edits
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "CfT-1_Cladosporium_fulvum");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "AspOryTy3-2");
+//    Expected state: sequenseq added
+    QLineEdit* line1 = GTUtilsOptionPanelMsa::getSeqLineEdit(os, 1);
+    QLineEdit* line2 = GTUtilsOptionPanelMsa::getSeqLineEdit(os, 2);
+    CHECK_SET_ERR(line1 != NULL, "line edit1 not found");
+    CHECK_SET_ERR(line2 != NULL, "line edit2 not found");
+    CHECK_SET_ERR(line1->text() == "CfT-1_Cladosporium_fulvum", QString("wrong text in line edit1: %1").arg(line1->text()));
+    CHECK_SET_ERR(line2->text() == "AspOryTy3-2", QString("wrong text in line edit2: %1").arg(line2->text()));
+//    4. Remove sequenses
+    GTWidget::click(os, GTUtilsOptionPanelMsa::getDeleteButton(os, 1));
+    GTWidget::click(os, GTUtilsOptionPanelMsa::getDeleteButton(os, 2));
+//    Expected state: sequences removed
+    CHECK_SET_ERR(line1->text().isEmpty(), QString("wrong text in line edit1: %1").arg(line1->text()));
+    CHECK_SET_ERR(line2->text().isEmpty(), QString("wrong text in line edit2: %1").arg(line2->text()));
+}
+
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0005_1){
+//    1. Open file test/_common_data/alphabets/raw_alphabet.aln
+        GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "raw_alphabet.aln");
+//    2. Open Pairwise alignment option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    Expected state: wrong alphabet hint appeared
+    QLabel* lblMessage = qobject_cast<QLabel*>(GTWidget::findWidget(os, "lblMessage"));
+    CHECK_SET_ERR(lblMessage != NULL, "lblMessage not found");
+    CHECK_SET_ERR(lblMessage->text() == "Warning: Current alphabet does not correspond the requirements.",
+                  QString("wrong label text: %1").arg(lblMessage->text()));
+//    3. Add two sequences to PA line edits
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "seq7");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "seq7_1");
+//    Expected state: sequenseq added
+    QLineEdit* line1 = GTUtilsOptionPanelMsa::getSeqLineEdit(os, 1);
+    QLineEdit* line2 = GTUtilsOptionPanelMsa::getSeqLineEdit(os, 2);
+    CHECK_SET_ERR(line1 != NULL, "line edit1 not found");
+    CHECK_SET_ERR(line2 != NULL, "line edit2 not found");
+    CHECK_SET_ERR(line1->text() == "seq7", QString("wrong text in line edit1: %1").arg(line1->text()));
+    CHECK_SET_ERR(line2->text() == "seq7_1", QString("wrong text in line edit2: %1").arg(line2->text()));
+//    4. Remove sequenses
+    GTWidget::click(os, GTUtilsOptionPanelMsa::getDeleteButton(os, 1));
+    GTWidget::click(os, GTUtilsOptionPanelMsa::getDeleteButton(os, 2));
+//    Expected state: sequences removed
+    CHECK_SET_ERR(line1->text().isEmpty(), QString("wrong text in line edit1: %1").arg(line1->text()));
+    CHECK_SET_ERR(line2->text().isEmpty(), QString("wrong text in line edit2: %1").arg(line2->text()));
+}
+
+namespace{
+
+void expandSettings(U2OpStatus &os, const QString& widgetName, const QString& arrowName) {
+    QWidget* widget = GTWidget::findWidget(os, widgetName);
+    CHECK_SET_ERR(widget != NULL, QString("%1 not found").arg(widgetName));
+    if(widget->isHidden()){
+        GTWidget::click(os, GTWidget::findWidget(os, arrowName));
+    }
+}
+
+void expandAlgoSettings(U2OpStatus &os){
+    expandSettings(os, "settingsContainerWidget", "ArrowHeader_Algorithm settings");
+}
+
+void expandOutputSettings(U2OpStatus &os){
+    expandSettings(os, "outputContainerWidget", "ArrowHeader_Output settings");
+}
 
 }
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0006){
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+//    2. Open Pairwise alignment option panel tab. check spinboxes limits for KAilign
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+    expandAlgoSettings(os);
+
+    QDoubleSpinBox* gapOpen = qobject_cast<QDoubleSpinBox*>(GTWidget::findWidget(os, "gapOpen"));
+    QDoubleSpinBox* gapExtd = qobject_cast<QDoubleSpinBox*>(GTWidget::findWidget(os, "gapExtd"));
+    QDoubleSpinBox* gapTerm = qobject_cast<QDoubleSpinBox*>(GTWidget::findWidget(os, "gapTerm"));
+    QDoubleSpinBox* bonusScore = qobject_cast<QDoubleSpinBox*>(GTWidget::findWidget(os, "bonusScore"));
+
+    GTDoubleSpinbox::checkLimits(os, gapOpen, 0, 65535);
+    GTDoubleSpinbox::checkLimits(os, gapExtd, 0, 65535);
+    GTDoubleSpinbox::checkLimits(os, gapTerm, 0, 65535);
+    GTDoubleSpinbox::checkLimits(os, bonusScore, 0, 65535);
+//    3. Add Phaneroptera_falcata and Isophya_altaica_EF540820 sequences to PA
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+//    4. Align with KAlign
+    GTWidget::click(os, GTWidget::findWidget(os, "alignButton"));
+    GTGlobals::sleep(1000);
+    QString expected = "AAGACTTCTTTTAA\n"
+                       "AAGCTTACT---AA";
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0,0), QPoint(13,1), expected);
+
+}
+
+void setSpinValue(U2OpStatus &os, double value, const QString& spinName){
+    expandAlgoSettings(os);
+    QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(GTWidget::findWidget(os, spinName));
+    CHECK_SET_ERR(spinBox != NULL, spinName + " spinbox not found");
+    GTDoubleSpinbox::setValue(os, spinBox, value, GTGlobals::UseKeyBoard);
+}
+
+void setGapOpen(U2OpStatus &os, double value){
+    setSpinValue(os, value, "gapOpen");
+}
+
+void setGapExtd(U2OpStatus &os, double value){
+    setSpinValue(os, value, "gapExtd");
+}
+
+void setGapTerm(U2OpStatus &os, double value){
+    setSpinValue(os, value, "gapTerm");
+}
+
+void setBonusScore(U2OpStatus &os, double value){
+    setSpinValue(os, value, "bonusScore");
+}
+
+void inNewWindow(U2OpStatus &os, bool inNew){
+    expandOutputSettings(os);
+    QCheckBox* inNewWindowCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "inNewWindowCheckBox"));
+    CHECK_SET_ERR(inNewWindowCheckBox != NULL, "inNewWindowCheckBox not found");
+    GTCheckBox::setChecked(os, inNewWindowCheckBox, inNew);
+}
+
+void align(U2OpStatus &os){
+    GTWidget::click(os, GTWidget::findWidget(os, "alignButton"));
+}
+
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0007){
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+//    2. Open Pairwise alignment option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    3. Add Phaneroptera_falcata and Isophya_altaica_EF540820 sequences to PA
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+//    4. Set gapOpen to 1. Press align button
+    setGapOpen(os, 1);
+    inNewWindow(os, false);
+    align(os);
+//    Expected state: Isophya_altaica_EF540820 is AAG-CTTA-CT-AA
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0,1), QPoint(13,1), "AAG-CTTA-CT-AA");
+}
+
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0007_1){
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+//    2. Open Pairwise alignment option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    3. Add Phaneroptera_falcata and Isophya_altaica_EF540820 sequences to PA
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+//    4. Set gap extention penalty to 1000. Press align button
+    setGapExtd(os, 1000);
+    inNewWindow(os, false);
+    align(os);
+//    Expected state: Isophya_altaica_EF540820 is AAG-CT--TACTAA
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0,1), QPoint(13,1), "AAG-CT--TACTAA");
+}
+
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0007_2){
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+//    2. Open Pairwise alignment option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    3. Add Phaneroptera_falcata and Isophya_altaica_EF540820 sequences to PA
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+//    4. Set terminate gap penalty to 1000. Press align button
+    setGapTerm(os, 1000);
+    inNewWindow(os, false);
+    align(os);
+//    Expected state: Isophya_altaica_EF540820 is AAGCTTACT---AA
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0,1), QPoint(13,1), "AAGCTTACT---AA");
+}
+
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0007_3){
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+//    2. Open Pairwise alignment option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    3. Add Phaneroptera_falcata and Isophya_altaica_EF540820 sequences to PA
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+//    4. Set gap open to 10, gap ext to 1, bonus score to 1. Press align button
+    setGapOpen(os, 10);
+    setGapExtd(os, 1);
+    setBonusScore(os, 1);
+    inNewWindow(os, false);
+    align(os);
+//    Expected state: Isophya_altaica_EF540820 is AAG-CTTACT---AA
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0,1), QPoint(14,1), "AAG-CTTACT---AA");
+}
+
 
 }
 }

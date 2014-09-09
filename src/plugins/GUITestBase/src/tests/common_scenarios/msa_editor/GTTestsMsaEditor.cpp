@@ -2368,12 +2368,12 @@ GUI_TEST_CLASS_DEFINITION(test_0019) {
 // 1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
-    QStringList preList = GTUtilsMSAEditorSequenceArea::getVisibleNames(os);
+    QStringList preList = GTUtilsMSAEditorSequenceArea::getVisibaleNames(os);
 // 2. Press button Enable collapsing
     GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
 
 // Expected state: Mecopoda_elongata__Ishigaki__J and Mecopoda_elongata__Sumatra_ folded together
-    QStringList postList = GTUtilsMSAEditorSequenceArea::getVisibleNames(os);
+    QStringList postList = GTUtilsMSAEditorSequenceArea::getVisibaleNames(os);
     CHECK_SET_ERR(preList.size() == postList.size() + 1, "Name lists differs not by 1");
 }
 
@@ -2383,12 +2383,12 @@ GUI_TEST_CLASS_DEFINITION(test_0019_1) {
 // 1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
-    QStringList preList = GTUtilsMSAEditorSequenceArea::getVisibleNames(os);
+    QStringList preList = GTUtilsMSAEditorSequenceArea::getVisibaleNames(os);
 // 2. Press button Enable collapsing
     GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
 
 // Expected state: Mecopoda_elongata__Ishigaki__J and Mecopoda_elongata__Sumatra_ folded together
-    QStringList postList = GTUtilsMSAEditorSequenceArea::getVisibleNames(os);
+    QStringList postList = GTUtilsMSAEditorSequenceArea::getVisibaleNames(os);
     CHECK_SET_ERR(preList.size() == postList.size() + 1, "Name lists differs not by 1");
 }
 
@@ -2398,12 +2398,12 @@ GUI_TEST_CLASS_DEFINITION(test_0019_2) {
 // 1. open document samples/CLUSTALW/COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
 
-    QStringList preList = GTUtilsMSAEditorSequenceArea::getVisibleNames(os);
+    QStringList preList = GTUtilsMSAEditorSequenceArea::getVisibaleNames(os);
 // 2. Press button Enable collapsing
     GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
 
 // Expected state: Mecopoda_elongata__Ishigaki__J and Mecopoda_elongata__Sumatra_ folded together
-    QStringList postList = GTUtilsMSAEditorSequenceArea::getVisibleNames(os);
+    QStringList postList = GTUtilsMSAEditorSequenceArea::getVisibaleNames(os);
     CHECK_SET_ERR(preList.size() == postList.size() + 1, "Name lists differs not by 1");
 }
 

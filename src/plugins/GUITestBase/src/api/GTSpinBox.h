@@ -36,7 +36,9 @@ class GTSpinBox {
 public:
     // fails if the spinBox is NULL or can't set value
     static void setValue(U2OpStatus& os, QSpinBox *spinBox, int v, GTGlobals::UseMethod useMethod = GTGlobals::UseMouse);
+    static void checkLimits(U2OpStatus &os, QSpinBox *spinBox, int min, int max);
 };
 
 }
 #endif // _U2_GT_SPINBOX_H_
+

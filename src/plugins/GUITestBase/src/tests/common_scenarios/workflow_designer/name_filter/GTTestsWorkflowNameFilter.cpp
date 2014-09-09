@@ -178,7 +178,7 @@ GUI_TEST_CLASS_DEFINITION( test_0003 ) {
             }
         }
     }
-    CHECK_SET_ERR(count == 6, "Wrong number of visible items in sample tree");
+    CHECK_SET_ERR(count == 10, "Wrong number of visible items in sample tree");
 }
 
 }

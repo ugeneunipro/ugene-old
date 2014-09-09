@@ -91,6 +91,16 @@ void GTDoubleSpinbox::setValue(U2OpStatus& os, QDoubleSpinBox *spinBox, double v
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "checkLimits"
+void GTDoubleSpinbox::checkLimits(U2OpStatus &os, QDoubleSpinBox *spinBox, double min, double max){
+    GT_CHECK(spinBox != NULL, "spinbox is NULL");
+    int actualMin = spinBox->minimum();
+    int actualMax = spinBox->maximum();
+    GT_CHECK(actualMin == min, QString("wrong minimum. Expected: %1, actual: 2").arg(min).arg(actualMin));
+    GT_CHECK(actualMax == max, QString("wrong maximum. Expected: %1, actual: 2").arg(max).arg(actualMax));
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }

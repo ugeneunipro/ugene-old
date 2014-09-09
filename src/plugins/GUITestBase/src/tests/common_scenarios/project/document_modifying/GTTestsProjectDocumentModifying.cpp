@@ -59,7 +59,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTMouseDriver::click(os, Qt::RightButton);
 
 // Press Ctrl+N and add annotation to it annotations table.
-    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "CCC", "1.. 10"));
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "<auto>", "CCC", "1.. 10"));
     GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 

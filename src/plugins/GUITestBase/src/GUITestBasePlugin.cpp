@@ -325,6 +325,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3138);
     REGISTER_TEST(GUITest_regression_scenarios::test_3170);
     REGISTER_TEST(GUITest_regression_scenarios::test_3180);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3207);
     REGISTER_TEST(GUITest_regression_scenarios::test_3209_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_3209_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_3250);
@@ -334,6 +335,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3279);
     REGISTER_TEST(GUITest_regression_scenarios::test_3283);
     REGISTER_TEST(GUITest_regression_scenarios::test_3287);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3307);
     REGISTER_TEST(GUITest_regression_scenarios::test_3308);
     REGISTER_TEST(GUITest_regression_scenarios::test_3318);
     REGISTER_TEST(GUITest_regression_scenarios::test_3328);
@@ -343,6 +345,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3379);
     REGISTER_TEST(GUITest_regression_scenarios::test_3384);
     REGISTER_TEST(GUITest_regression_scenarios::test_3396);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3437);
     REGISTER_TEST(GUITest_regression_scenarios::test_3398_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_3398_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_3398_3);
@@ -1042,6 +1045,25 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0007_1);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0008);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0008_1);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0009);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0009_1);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0010);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0010_1);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0011);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0012);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::highlighting_test_0013);
+
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0005_1);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0007_1);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0007_2);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0007_3);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/dp_view

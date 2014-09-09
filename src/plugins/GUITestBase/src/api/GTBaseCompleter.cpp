@@ -43,7 +43,9 @@ void GTBaseCompleter::click(U2OpStatus &os, QTreeWidget* tree, const QString &se
 
 #define GT_METHOD_NAME "getNames"
 QStringList GTBaseCompleter::getNames(U2OpStatus &os, QTreeWidget *tree){
-    Q_UNUSED(os);
+    if(tree == NULL){
+        tree = getCompleter(os);
+    }
     GT_CHECK_RESULT(tree != NULL, "tree widget is NULL", QStringList());
     QStringList result;
     QList<QTreeWidgetItem*> items = GTTreeWidget::getItems(tree->invisibleRootItem());
@@ -55,6 +57,9 @@ QStringList GTBaseCompleter::getNames(U2OpStatus &os, QTreeWidget *tree){
 #undef GT_METHOD_NAME
 
 bool GTBaseCompleter::isEmpty(U2OpStatus &os, QTreeWidget *tree){
+    if(tree == NULL){
+        tree = getCompleter(os);
+    }
     QStringList items = getNames(os, tree);
     bool result = (items.count() == 1) && (items.at(0) == "");
     return result;

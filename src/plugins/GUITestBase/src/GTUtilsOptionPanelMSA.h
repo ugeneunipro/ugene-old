@@ -19,16 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-
 #ifndef U2_GTUTILS_OPTION_PANEL_MSA_H
 #define U2_GTUTILS_OPTION_PANEL_MSA_H
+
+#include <QtGui/QToolButton>
+#include <QtGui/QLineEdit>
 
 #include "api/GTGlobals.h"
 
 namespace U2 {
 
 class U2OpStatus;
-
 
 class GTUtilsOptionPanelMsa{
 public:
@@ -39,9 +40,21 @@ public:
     //Openes option panel tab. TODO: check if tab is already opened
     static void openTab(U2OpStatus &os, Tabs tab);
     static void addReference(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
+    static void addFirstSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
+    static void addSecondSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
     static void removeReference(U2OpStatus &os);
     static int getLength(U2OpStatus &os);
     static int getHeight(U2OpStatus &os);
+
+    //functions for accessing PA gui elements
+    static QToolButton* getAddButton(U2OpStatus &os, int number);
+    static QLineEdit* getSeqLineEdit(U2OpStatus &os, int number);
+    static QToolButton* getDeleteButton(U2OpStatus &os, int number);
+private:
+    static QWidget* getWidget(U2OpStatus &os, const QString& widgetName, int number);
+
+    static void addSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method, int number);
+
 
 private:
     static QMap<Tabs,QString> initNames();

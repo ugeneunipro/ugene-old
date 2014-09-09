@@ -19,7 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-
 #include "GTUtilsOptionPanelMSA.h"
 #include "api/GTWidget.h"
 #include "api/GTKeyboardDriver.h"
@@ -105,6 +104,101 @@ int GTUtilsOptionPanelMsa::getHeight(U2OpStatus &os){
     int result = alignmentHeightLabel->text().toInt(&ok);
     GT_CHECK_RESULT(ok == true, "label text is not int", -1);
     return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "addFirstSeqToPA"
+void GTUtilsOptionPanelMsa::addFirstSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method){
+    addSeqToPA(os, seqName, method, 1);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "addSecondSeqToPA"
+void GTUtilsOptionPanelMsa::addSecondSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method){
+    addSeqToPA(os, seqName, method, 2);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "addSeqToPA"
+void GTUtilsOptionPanelMsa::addSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method, int number){
+    GT_CHECK(number == 1 || number == 2, "number must be 1 or 2");
+    GT_CHECK(!seqName.isEmpty(), "sequence name is empty");
+    //Option panel should be opned to use this method
+    QStringList nameList = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    GT_CHECK(nameList.contains(seqName), QString("sequence with name %1 not found").arg(seqName));
+
+    switch (method)
+    {
+    case Button:
+        GTUtilsMSAEditorSequenceArea::selectSequence(os, seqName);
+        GTWidget::click(os, getAddButton(os, number));
+        break;
+    case Completer:
+        QWidget* sequenceLineEdit = getSeqLineEdit(os, number);
+        GTWidget::click(os, sequenceLineEdit);
+        GTKeyboardDriver::keyClick(os, seqName.at(0).toAscii());
+        GTGlobals::sleep(200);
+        QTreeWidget* completer = sequenceLineEdit->findChild<QTreeWidget*>();
+        GT_CHECK(completer != NULL, "auto completer widget not found");
+        GTBaseCompleter::click(os, completer, seqName);
+        break;
+    }
+}
+#undef GT_METHOD_NAME
+
+
+#define GT_METHOD_NAME "getAddButton"
+QToolButton* GTUtilsOptionPanelMsa::getAddButton(U2OpStatus &os, int number){
+    QToolButton* result = qobject_cast<QToolButton*>(getWidget(os, "addSeq", number));
+    GT_CHECK_RESULT(result != NULL, "toolbutton is NULL", NULL);
+    return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getDeleteButton"
+QToolButton* GTUtilsOptionPanelMsa::getDeleteButton(U2OpStatus &os, int number){
+    QToolButton* result = qobject_cast<QToolButton*>(getWidget(os, "deleteSeq", number));
+    GT_CHECK_RESULT(result != NULL, "toolbutton is NULL", NULL);
+    return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getSeqLineEdit"
+QLineEdit* GTUtilsOptionPanelMsa::getSeqLineEdit(U2OpStatus &os, int number){
+    QLineEdit* result = qobject_cast<QLineEdit*>(getWidget(os, "sequenceLineEdit", number));
+    GT_CHECK_RESULT(result != NULL, "sequenceLineEdit is NULL", NULL);
+    return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "agetWidget"
+QWidget* GTUtilsOptionPanelMsa::getWidget(U2OpStatus &os, const QString& widgetName, int number){
+    QWidget* sequenceContainerWidget = GTWidget::findWidget(os, "sequenceContainerWidget");
+    GT_CHECK_RESULT(sequenceContainerWidget != NULL, "sequenceContainerWidget not found", NULL);
+    QList<QWidget*> widgetList = sequenceContainerWidget->findChildren<QWidget*>(widgetName);
+    GT_CHECK_RESULT(widgetList.count() == 2, QString("unexpected number of widgets: %1").arg(widgetList.count()), NULL);
+    QWidget* w1 = widgetList[0];
+    QWidget* w2 = widgetList[1];
+    int y1 = w1->mapToGlobal(w1->rect().center()).y();
+    int y2 = w2->mapToGlobal(w2->rect().center()).y();
+    GT_CHECK_RESULT(y1 != y2, "coordinates are unexpectidly equal", NULL);
+
+    if(number == 1){
+        if(y1 < y2){
+            return w1;
+        }else{
+            return w2;
+        }
+    }else if(number == 2){
+        if(y1 < y2){
+            return w2;
+        }else{
+            return w1;
+        }
+    }else{
+        GT_CHECK_RESULT(false, "number should be 1 or 2", NULL);
+    }
 }
 #undef GT_METHOD_NAME
 

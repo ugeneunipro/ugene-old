@@ -16,7 +16,7 @@ class GTDoubleSpinbox
 {
 public:
     static void setValue(U2OpStatus& os, QDoubleSpinBox *spinBox, double v, GTGlobals::UseMethod useMethod = GTGlobals::UseMouse);
-    GTDoubleSpinbox();
+    static void checkLimits(U2OpStatus &os, QDoubleSpinBox *spinBox, double min, double max);
 };
 }
 #endif // GTDOUBLESPINBOX_H
