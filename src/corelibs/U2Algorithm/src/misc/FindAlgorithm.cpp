@@ -47,6 +47,7 @@ AnnotationData FindAlgorithmResult::toAnnotation(const QString &name, bool split
     AnnotationData data;
     data.name = name;
     if (splitCircular && region.endPos() > seqLen) {
+        SAFE_POINT(region.startPos < seqLen, "Region is not correct", AnnotationData());
         data.location->regions << U2Region(region.startPos, seqLen - region.startPos);
         data.location->regions << U2Region(0, region.length - (seqLen - region.startPos));
     } else {
@@ -439,8 +440,10 @@ static void regExpSearch(   const QString &refSequence,
                             const U2Region &sequenceRange,
                             int maxResultLen,
                             int currentStrand,
+                            int tailCutted, //only for translation on complementary strand, it is size of the tail that can not form amino acid
                             int totalStrandCount,
                             bool refSeqIsAminoTranslation,
+                            int aminoFrameNumber,
                             int &percentsCompleted,
                             int &stopFlag,
                             FindAlgorithmResultsListener *rl,
@@ -449,6 +452,7 @@ static void regExpSearch(   const QString &refSequence,
     if (cyclePoint == -1) {
         cyclePoint = sequenceRange.endPos();
     }
+
     int foundStartPos = 0;
     while ( 0 == stopFlag
         && -1 != ( foundStartPos = regExp.indexIn( refSequence, foundStartPos ) ) )
@@ -463,8 +467,12 @@ static void regExpSearch(   const QString &refSequence,
             int resultStartPos = refSeqIsAminoTranslation ? foundStartPos * 3 : foundStartPos;
             if (resultStartPos < cyclePoint) {
                 const int resultLen = refSeqIsAminoTranslation ? foundLength * 3 : foundLength;
-                prepareResultPosition( sequenceRange.startPos, sequenceRange.length, resultStartPos, resultLen,
+                prepareResultPosition( sequenceRange.startPos + (searchStrand.isCompementary() ? 0 : 1) * (aminoFrameNumber),
+                                       cyclePoint - sequenceRange.startPos,
+                                       resultStartPos,
+                                       resultLen,
                                        searchStrand );
+                resultStartPos -= (searchStrand.isCompementary() ? tailCutted : 0);
                 sendResultToListener( resultStartPos, resultLen, searchStrand, rl );
             }
         }
@@ -479,8 +487,12 @@ static void regExpSearch(   const QString &refSequence,
                 int resultStartPos = refSeqIsAminoTranslation ? foundStartPos * 3 : foundStartPos;
                 if (resultStartPos < cyclePoint) {
                     const int resultLen = refSeqIsAminoTranslation ? foundSubstrLength * 3 : foundSubstrLength;
-                    prepareResultPosition( sequenceRange.startPos, sequenceRange.length, resultStartPos, resultLen,
+                    prepareResultPosition( sequenceRange.startPos + (searchStrand.isCompementary() ? 0 : 1) * (aminoFrameNumber),
+                                           cyclePoint - sequenceRange.startPos,
+                                           resultStartPos,
+                                           resultLen,
                                            searchStrand );
+                    resultStartPos -= (searchStrand.isCompementary() ? tailCutted : 0);
                     sendResultToListener( resultStartPos, resultLen, searchStrand, rl );
                 }
             }
@@ -515,48 +527,58 @@ static void findInAmino_regExp( FindAlgorithmResultsListener *rl,
     int maxAminoResult = maxRegExpResult * 3;
 
     for ( int ci = conStart; ci < conEnd; ++ci ) {
-        QString translation;
-        QByteArray tmp( range.length + 1, 0 );
-        char *rawTranslation = tmp.data( );
-        U2Strand resultStrand;
-        const int translationLen = range.length / 3;
 
-        if ( ci == 1 ) { // complementary
-            TextUtils::translate( complTT->getOne2OneMapper( ), seq + range.startPos, range.length, rawTranslation );
-            TextUtils::reverse( rawTranslation, range.length);
-            aminoTT->translate( rawTranslation, range.length);
-            translation = QString( QByteArray( rawTranslation, translationLen ) );
-            if (searchIsCircular) {
-                int bufferSize = (range.length > maxRegExpResult) ? maxRegExpResult - 1 : range.length;
-                QByteArray buffer( bufferSize, 0);
-                char *complBuffer = buffer.data();
-                TextUtils::translate( complTT->getOne2OneMapper( ), seq, bufferSize, complBuffer);
-                TextUtils::reverse( complBuffer, bufferSize);
-                aminoTT->translate( complBuffer, bufferSize);
-                translation += buffer;
+        for (int aminoFrameNumber = 0; aminoFrameNumber < 3; aminoFrameNumber++) {
+            int len = range.length - aminoFrameNumber;
+
+            QString translation;
+            QByteArray tmp( len + 1, 0 );
+            char *rawTranslation = tmp.data( );
+            U2Strand resultStrand;
+            const int translationLen = len / 3;
+
+            if ( ci == 1 ) { // complementary
+                TextUtils::translate( complTT->getOne2OneMapper( ), seq + range.startPos + aminoFrameNumber,
+                                      len, rawTranslation );
+                TextUtils::reverse( rawTranslation, len - len % 3);
+                aminoTT->translate( rawTranslation, len);
+                translation = QString( QByteArray( rawTranslation, translationLen ) );
+                if (searchIsCircular) {
+                    int bufferSize = (len > maxRegExpResult) ? maxRegExpResult - 1 : len;
+                    QByteArray buffer( bufferSize, 0);
+                    char *complBuffer = buffer.data();
+                    TextUtils::translate( complTT->getOne2OneMapper( ), seq, bufferSize, complBuffer);
+                    TextUtils::reverse( complBuffer, bufferSize);
+                    aminoTT->translate( complBuffer, bufferSize);
+                    translation += buffer;
+                }
+
+                resultStrand = U2Strand::Complementary;
+            } else { // direct
+                aminoTT->translate( seq + range.startPos + aminoFrameNumber, len,
+                                    rawTranslation, len);
+                translation = QString( QByteArray( rawTranslation, translationLen ) );
+                if (searchIsCircular) {
+                    int startSize = (len > maxRegExpResult) ? maxRegExpResult - 1 : len;
+                    aminoTT->translate( seq, startSize,
+                                        rawTranslation, startSize);
+                    translation += rawTranslation;
+                }
+                resultStrand = U2Strand::Direct;
             }
 
-            resultStrand = U2Strand::Complementary;
-        } else { // direct
-            aminoTT->translate( seq + range.startPos, range.length, rawTranslation, range.length);
-            translation = QString( QByteArray( rawTranslation, translationLen ) );
             if (searchIsCircular) {
-                int startSize = (range.length > maxRegExpResult) ? maxRegExpResult - 1 : range.length;
-                aminoTT->translate( seq, startSize,
-                                    rawTranslation, startSize);
-                translation += rawTranslation;
+                U2Region cirRange = range;
+                cirRange.length += (len > maxRegExpResult) ? maxRegExpResult - 1 : len;
+                regExpSearch( translation, regExp, resultStrand, cirRange, maxRegExpResult, ci,
+                              len % 3, conEnd, true, aminoFrameNumber,
+                              percentsCompleted, stopFlag, rl, range.endPos());
+            } else {
+                regExpSearch( translation, regExp, resultStrand, range, maxAminoResult, ci,
+                              len % 3, conEnd, true, aminoFrameNumber,
+                              percentsCompleted, stopFlag, rl );
             }
-            resultStrand = U2Strand::Direct;
-        }
 
-        if (searchIsCircular) {
-            U2Region cirRange = range;
-            cirRange.length += (range.length > maxRegExpResult) ? maxRegExpResult - 1 : range.length;
-            regExpSearch( translation, regExp, resultStrand, cirRange, maxRegExpResult, ci, conEnd, true,
-                percentsCompleted, stopFlag, rl, range.endPos());
-        } else {
-            regExpSearch( translation, regExp, resultStrand, range, maxAminoResult, ci, conEnd, true,
-                          percentsCompleted, stopFlag, rl );
         }
     }
 }
@@ -623,10 +645,10 @@ static void findRegExp( FindAlgorithmResultsListener *rl,
         if (searchIsCircular) {
             U2Region cirRange = range;
             cirRange.length += (range.length > maxRegExpResult) ? maxRegExpResult - 1 : range.length;
-            regExpSearch( substr, regExp, resultStrand, cirRange, maxRegExpResult, ci, conEnd, false,
+            regExpSearch( substr, regExp, resultStrand, cirRange, maxRegExpResult, ci, 0, conEnd, false, 0,
                 percentsCompleted, stopFlag, rl, range.endPos());
         } else {
-            regExpSearch( substr, regExp, resultStrand, range, maxRegExpResult, ci, conEnd, false,
+            regExpSearch( substr, regExp, resultStrand, range, maxRegExpResult, ci, 0, conEnd, false, 0,
                           percentsCompleted, stopFlag, rl );
         }
     }
