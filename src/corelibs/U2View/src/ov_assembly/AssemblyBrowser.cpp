@@ -160,7 +160,11 @@ QWidget * AssemblyBrowser::createWidget() {
 }
 
 QVariantMap AssemblyBrowser::saveState() {
-    return AssemblyBrowserState::buildStateMap(this);
+    if(NULL != ui && ui->isCorrectView()) {
+        return AssemblyBrowserState::buildStateMap(this);
+    } else {
+        return QVariantMap();
+    }
 }
 
 Task * AssemblyBrowser::updateViewTask(const QString &stateName, const QVariantMap &stateData) {
@@ -909,7 +913,7 @@ void AssemblyBrowser::sl_coveredRegionClicked(const QString link) {
 //==============================================================================
 
 AssemblyBrowserUi::AssemblyBrowserUi(AssemblyBrowser * browser_) : browser(browser_), zoomableOverview(0),
-referenceArea(0), coverageGraph(0), ruler(0), readsArea(0), annotationsArea(0) {
+referenceArea(0), coverageGraph(0), ruler(0), readsArea(0), annotationsArea(0), nothingToVisualize(true) {
     U2OpStatusImpl os;
     if(browser->getModel()->hasReads(os)) { // has mapped reads -> show rich visualization
         setMinimumSize(300, 200);
@@ -964,6 +968,7 @@ referenceArea(0), coverageGraph(0), ruler(0), readsArea(0), annotationsArea(0) {
         qDeleteAll(filters);
 
         setLayout(mainLayout);
+        nothingToVisualize = false;
 
         connect(readsArea, SIGNAL(si_heightChanged()), zoomableOverview, SLOT(sl_visibleAreaChanged()));
         connect(readsArea, SIGNAL(si_mouseMovedToPos(const QPoint&)), ruler, SLOT(sl_handleMoveToPos(const QPoint&)));
@@ -986,6 +991,7 @@ referenceArea(0), coverageGraph(0), ruler(0), readsArea(0), annotationsArea(0) {
         infoLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         mainLayout->addWidget(infoLabel);
         setLayout(mainLayout);
+        nothingToVisualize = true;
     }
 }
 

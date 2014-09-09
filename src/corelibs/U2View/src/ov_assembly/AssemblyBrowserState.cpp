@@ -75,8 +75,10 @@ void AssemblyBrowserState::saveState(const AssemblyBrowser *ab) {
 }
 
 void AssemblyBrowserState::restoreState(AssemblyBrowser *ab) const {
-    ab->navigateToRegion( getVisibleBasesRegion() );
-    ab->setYOffsetInAssembly( getYOffset() );
+    if(NULL != ab->getMainWidget() && ab->getMainWidget()->isCorrectView()) {
+        ab->navigateToRegion( getVisibleBasesRegion() );
+        ab->setYOffsetInAssembly( getYOffset() );
+    }
 }
 
 } // namespace

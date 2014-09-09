@@ -234,6 +234,7 @@ public:
     inline AssemblyReferenceArea * getReferenceArea() const {return referenceArea;}
     inline AssemblyConsensusArea * getConsensusArea() const {return consensusArea;}
     inline AssemblyAnnotationsArea * getAnnotationsArea() const {return annotationsArea;}
+    inline bool isCorrectView() const {return !nothingToVisualize;}
 
     QColor getCoverageColor(double grayCoeff);
     
@@ -246,7 +247,7 @@ private:
     AssemblyRuler * ruler;
     AssemblyReadsArea * readsArea;
     AssemblyAnnotationsArea * annotationsArea;
-    
+    bool nothingToVisualize;
 };
 
 
