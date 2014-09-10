@@ -72,8 +72,13 @@ private slots:
     void sl_startWorkflowPlugin();
 
 private:
+    void initDesignerAction();
+    void initNewWorkflowAction();
+
+private:
     QAction*        designerAction;
     QAction*        managerAction;
+    QAction*        newWorkflowAction;
 };
 
 

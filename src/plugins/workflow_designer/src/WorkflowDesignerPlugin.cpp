@@ -223,7 +223,7 @@ Task* WorkflowDesignerService::createServiceDisablingTask(){
 
 WorkflowDesignerService::WorkflowDesignerService() 
 : Service(Service_WorkflowDesigner, tr("Workflow Designer"), ""),
-designerAction(NULL), managerAction(NULL)
+designerAction(NULL), managerAction(NULL), newWorkflowAction(NULL)
 {
 }
 
@@ -233,7 +233,8 @@ void WorkflowDesignerService::serviceStateChangedCallback(ServiceState , bool en
         return;
     }
     if (isEnabled()) {
-        assert(designerAction == NULL);
+        SAFE_POINT(NULL == designerAction, "Illegal WD service state", );
+        SAFE_POINT(NULL == newWorkflowAction, "Illegal WD service state", );
 
         if(!AppContext::getPluginSupport()->isAllPluginsLoaded()) {
             connect( AppContext::getPluginSupport(), SIGNAL( si_allStartUpPluginsLoaded() ), SLOT(sl_startWorkflowPlugin())); 
@@ -241,20 +242,42 @@ void WorkflowDesignerService::serviceStateChangedCallback(ServiceState , bool en
             sl_startWorkflowPlugin();
         }
     } else {
+        delete newWorkflowAction;
+        newWorkflowAction = NULL;
         delete designerAction;
         designerAction = NULL;
     }
 }
 
 void WorkflowDesignerService::sl_startWorkflowPlugin() {
+    initDesignerAction();
+    initNewWorkflowAction();
+}
+
+void WorkflowDesignerService::initDesignerAction() {
     designerAction = new QAction( QIcon(":/workflow_designer/images/wd.png"), tr("Workflow Designer..."), this);
     designerAction->setObjectName("Workflow Designer");
 #ifdef _DEBUG
     designerAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_D));
 #endif
     connect(designerAction, SIGNAL(triggered()), SLOT(sl_showDesignerWindow()));
-
     AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS)->addAction(designerAction);
+}
+
+void WorkflowDesignerService::initNewWorkflowAction() {
+    newWorkflowAction = new QAction(QIcon(":/workflow_designer/images/wd.png"), tr("New workflow..."), this);
+    newWorkflowAction->setObjectName("New workflow");
+    connect(newWorkflowAction, SIGNAL(triggered()), SLOT(sl_showDesignerWindow()));
+
+    QMenu *fileMenu = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_FILE);
+    QAction *beforeAction = NULL;
+    foreach (QAction *action, fileMenu->actions()) {
+        if (action->objectName() == ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB) {
+            beforeAction = action;
+            break;
+        }
+    }
+    fileMenu->insertAction(beforeAction, newWorkflowAction);
 }
 
 bool WorkflowDesignerService::closeViews() {

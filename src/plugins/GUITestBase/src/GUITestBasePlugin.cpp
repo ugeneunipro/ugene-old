@@ -1148,6 +1148,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0013);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0015);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0017);
+    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0058);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer/Workflow parameters validation

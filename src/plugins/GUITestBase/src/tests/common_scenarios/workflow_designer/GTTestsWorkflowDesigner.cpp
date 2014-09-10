@@ -535,6 +535,17 @@ GUI_TEST_CLASS_DEFINITION(test_0017){
     CHECK_SET_ERR(!l.hasError(), "There are error messages about write access in WD directory");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0058){
+    //1. Click the menu {File -> New workflow}
+    //Expected: Workflow Designer is opened.
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
+    QMenu *menu = GTMenu::showMainMenu(os, MWMENU_FILE);
+    GTMenu::clickMenuItemByName(os, menu, QStringList() << "New workflow");
+    QWidget *wdView = GTUtilsMdi::activeWindow(os);
+    CHECK_OP(os, );
+    CHECK_SET_ERR(wdView->objectName() == "Workflow Designer", "Wrong mdi window");
+}
+
 } // namespace GUITest_common_scenarios_workflow_designer
 
 } // namespace U2
