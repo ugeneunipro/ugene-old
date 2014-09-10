@@ -258,6 +258,10 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
 
         CHECK_OP_BREAK(os);
 
+        if(sequenceName.isEmpty()){
+            sequenceName = "Sequence";
+        }
+
         if ((merge == false) || (seqNumber == 0)) {
             QString objName = sequenceName;
             if (settingsMakeUniqueName) {

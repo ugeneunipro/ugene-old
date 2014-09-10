@@ -48,6 +48,8 @@ protected:
 private:
     void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap& hints, U2OpStatus& si);
 
+    static QString extractSeqObjectName( QString &fastaHeaderName, const QStringList &words, QSet<QString> &names);
+
     QStringList parseLine(const QString &line) const;
 
     QString formatName;

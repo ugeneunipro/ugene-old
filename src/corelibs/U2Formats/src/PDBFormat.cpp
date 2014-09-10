@@ -766,6 +766,7 @@ Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, Bio
     Q_UNUSED(opBlock);
 
     QList<GObject*> objects;
+    QSet<QString> uniqueNames;
     QMap<AnnotationTableObject *, U2SequenceObject *> relationsMap;
     QString objectName = bioStruct.pdbId.isEmpty() ? url.baseFileName() : bioStruct.pdbId;
     const QString folder = fs.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
@@ -780,6 +781,12 @@ Document * PDBFormat::createDocumentFromBioStruct3D( const U2DbiRef &dbiRef, Bio
         // Create dna sequence object
         QByteArray sequence = bioStruct.getRawSequenceByChainId(key);
         QString sequenceName(QString(bioStruct.pdbId) + QString(" chain %1 sequence").arg(key));
+        if (sequenceName.isEmpty()){
+            sequenceName = "Sequence";
+        }
+        sequenceName = TextUtils::variate(sequenceName, "_", uniqueNames);
+        sequenceName.squeeze();
+        uniqueNames.insert(sequenceName);
         const DNAAlphabet* al = U2AlphabetUtils::findBestAlphabet(sequence);
         DNASequence dnaSeq(sequenceName, sequence, al);
         dnaSeq.info.insert(DNAInfo::DEFINITION, sequenceName);

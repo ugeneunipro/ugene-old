@@ -43,6 +43,7 @@ namespace U2{
 
 #define READ_BUFF_SIZE 32768         //file reader buffer size
 #define SAVE_LINE_LEN 70            //line length for 
+#define DEFAULT_EMPTY_FASTA_SEQUENCE_NAME "EMPTY_NAME"            //line length for 
 
 GFFFormat::GFFFormat(QObject* p):DocumentFormat(p, DocumentFormatFlag_SupportWriting, QStringList("gff")){
     formatName = tr("GFF");
@@ -229,7 +230,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
     QMap<AnnotationData *, QString> annotationGroups;
     QMap<AnnotationData *, AnnotationTableObject *> annotationTables;
     bool fastaSectionStarts = false;
-    QString headerName, objName;
+    QString fastaHeaderName(DEFAULT_EMPTY_FASTA_SEQUENCE_NAME), objName;
     QByteArray seq;
     QSet<QString> names;
     TmpDbiObjects dbiObjects(dbiRef, os);
@@ -244,12 +245,9 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         words = parseLine(qstrbuf);
         //retrieving annotations from  document
         if(fastaSectionStarts){
-            if(words[0].startsWith(">") && headerName.isEmpty()){
-                headerName = words.join(" ").remove(">");
+            if(words[0].startsWith(">") && fastaHeaderName == DEFAULT_EMPTY_FASTA_SEQUENCE_NAME){
+                objName = extractSeqObjectName(fastaHeaderName, words, names);
             }else if(words[0].startsWith(">")){
-                headerName = TextUtils::variate(headerName, "_", names);
-                names.insert(headerName);
-                objName = headerName + SEQUENCE_TAG;
                 DNASequence sequence(objName, seq);
                 sequence.info.insert(DNAInfo::FASTA_HDR, objName);
                 U2SequenceObject *seqObj = importSequence(sequence, objName, objects, seqImporter, dbiRef, folder, os);
@@ -258,8 +256,8 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
                 SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
                 dbiObjects.objects << seqObj->getSequenceRef().entityId;
                 seqMap.insert(objName, seqObj);
-                addAnnotations( seqImporter.getCaseAnnotations( ), objects, atoSet, headerName, dbiRef, hints );
-                headerName = words.join(" ").remove(">");
+                addAnnotations( seqImporter.getCaseAnnotations( ), objects, atoSet, fastaHeaderName, dbiRef, hints );
+                objName = extractSeqObjectName(fastaHeaderName, words, names);
                 seq = "";
             } else {
                 if(words.size() > 1){
@@ -401,9 +399,6 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
 
     //handling last fasta sequence
     if(fastaSectionStarts){
-        headerName = TextUtils::variate(headerName, "_", names);
-        names.insert(headerName);
-        objName = headerName + SEQUENCE_TAG;
         DNASequence sequence(objName, seq);
         sequence.info.insert(DNAInfo::FASTA_HDR, objName);
         sequence.info.insert(DNAInfo::ID, objName);
@@ -416,7 +411,7 @@ void GFFFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& obj
         SAFE_POINT(seqObj != NULL, "DocumentFormatUtils::addSequenceObject returned NULL but didn't set error",);
         seqMap.insert(objName, seqObj);
         dbiObjects.objects << seqObj->getSequenceRef().entityId;
-        addAnnotations( seqImporter.getCaseAnnotations( ), objects, atoSet, headerName, dbiRef, hints );
+        addAnnotations( seqImporter.getCaseAnnotations( ), objects, atoSet, fastaHeaderName, dbiRef, hints );
     }
     
     //linking annotation tables with corresponding sequences
@@ -616,6 +611,21 @@ void GFFFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os){
             }
         }
     }
+}
+
+QString GFFFormat::extractSeqObjectName( QString &fastaHeaderName, const QStringList &words, QSet<QString> &names){
+    fastaHeaderName = words.join(" ").remove(">");
+    bool addSeqTag = true;
+    if(fastaHeaderName.isEmpty()){
+        fastaHeaderName = "Sequence";
+        addSeqTag = false;
+    }
+    fastaHeaderName = TextUtils::variate(fastaHeaderName, "_", names);
+    names.insert(fastaHeaderName);
+    if (addSeqTag){
+        return fastaHeaderName + SEQUENCE_TAG;
+    }
+    return fastaHeaderName;
 }
 
 } //namespace
