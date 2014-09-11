@@ -56,6 +56,7 @@ const QString BlastAllWorkerFactory::ACTOR_ID("blast");
 #define BLASTALL_DATABASE_PATH  QString("db-path")
 #define BLASTALL_DATABASE_NAME  QString("db-name")
 #define BLASTALL_EXPECT_VALUE   QString("e-val")
+#define BLASTALL_MAX_HITS      QString("max-hits")
 #define BLASTALL_GROUP_NAME     QString("result-name")
 #define BLASTALL_EXT_TOOL_PATH  QString("tool-path")
 #define BLASTALL_TMP_DIR_PATH   QString("temp-dir")
@@ -94,6 +95,8 @@ void BlastAllWorkerFactory::init() {
                    BlastAllWorker::tr("Base name for BLAST DB files."));
     Descriptor ev(BLASTALL_EXPECT_VALUE, BlastAllWorker::tr("Expected value"),
                    BlastAllWorker::tr("This setting specifies the statistical significance threshold for reporting matches against database sequences."));
+    Descriptor mh(BLASTALL_MAX_HITS, BlastAllWorker::tr("Max hits"),
+                   BlastAllWorker::tr("Specifies the number of best hits from a region of the query to keep. 0 turns it off. If used, 100 is recommended."));
     Descriptor gn(BLASTALL_GROUP_NAME, BlastAllWorker::tr("Annotate as"),
                    BlastAllWorker::tr("Name for annotations."));
     Descriptor etp(BLASTALL_EXT_TOOL_PATH, BlastAllWorker::tr("Tool Path"),
@@ -132,6 +135,7 @@ void BlastAllWorkerFactory::init() {
     a << new Attribute(etp, BaseTypes::STRING_TYPE(), true, QVariant("default"));
     a << new Attribute(tdp, BaseTypes::STRING_TYPE(), true, QVariant("default"));
     a << new Attribute(ev, BaseTypes::NUM_TYPE(), false, QVariant(10.00));
+    a << new Attribute(mh, BaseTypes::NUM_TYPE(), false, QVariant(0));
     a << new Attribute(gn, BaseTypes::STRING_TYPE(), false, QVariant("blast_result"));
 
     Attribute* gaAttr= new Attribute(ga, BaseTypes::BOOL_TYPE(), false, QVariant(true));
@@ -187,6 +191,12 @@ void BlastAllWorkerFactory::init() {
         m["singleStep"] = 1.0;
         m["decimals"] = 6;
         delegates[BLASTALL_EXPECT_VALUE] = new DoubleSpinBoxDelegate(m);
+    }
+    {
+        QVariantMap m;
+        m["minimum"] = 0;
+        m["maximum"] = INT_MAX;
+        delegates[BLASTALL_MAX_HITS] = new SpinBoxDelegate(m);
     }
     {
         QVariantMap m;
@@ -346,26 +356,26 @@ Task* BlastAllWorker::tick() {
             output->transit();
             return NULL;
         }
-        cfg.programName=actor->getParameter(BLASTALL_PROGRAM_NAME)->getAttributeValue<QString>(context);
-        cfg.databaseNameAndPath=actor->getParameter(BLASTALL_DATABASE_PATH)->getAttributeValue<QString>(context) +"/"+
-                                actor->getParameter(BLASTALL_DATABASE_NAME)->getAttributeValue<QString>(context);
-        cfg.isDefaultCosts=true;
-        cfg.isDefaultMatrix=true;
-        cfg.isDefautScores=true;
-        cfg.wordSize=0;
-        cfg.isGappedAlignment=actor->getParameter(BLASTALL_GAPPED_ALN)->getAttributeValue<bool>(context);
-        cfg.expectValue=actor->getParameter(BLASTALL_EXPECT_VALUE)->getAttributeValue<double>(context);
-        cfg.groupName=actor->getParameter(BLASTALL_GROUP_NAME)->getAttributeValue<QString>(context);
+        cfg.programName = getValue<QString>(BLASTALL_PROGRAM_NAME);
+        cfg.databaseNameAndPath = getValue<QString>(BLASTALL_DATABASE_PATH) + "/" + getValue<QString>(BLASTALL_DATABASE_NAME);
+        cfg.isDefaultCosts = true;
+        cfg.isDefaultMatrix = true;
+        cfg.isDefautScores = true;
+        cfg.wordSize = 0;
+        cfg.isGappedAlignment = getValue<bool>(BLASTALL_GAPPED_ALN);
+        cfg.expectValue = getValue<double>(BLASTALL_EXPECT_VALUE);
+        cfg.numberOfHits = getValue<int>(BLASTALL_MAX_HITS);
+        cfg.groupName = getValue<QString>(BLASTALL_GROUP_NAME);
         if(cfg.groupName.isEmpty()){
             cfg.groupName="blast_result";
         }
 
 
-        QString path=actor->getParameter(BLASTALL_EXT_TOOL_PATH)->getAttributeValue<QString>(context);
+        QString path = actor->getParameter(BLASTALL_EXT_TOOL_PATH)->getAttributeValue<QString>(context);
         if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
             AppContext::getExternalToolRegistry()->getByName(ET_BLASTALL)->setPath(path);
         }
-        path=actor->getParameter(BLASTALL_TMP_DIR_PATH)->getAttributeValue<QString>(context);
+        path = actor->getParameter(BLASTALL_TMP_DIR_PATH)->getAttributeValue<QString>(context);
         if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
             AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
         }
@@ -395,9 +405,9 @@ Task* BlastAllWorker::tick() {
                 return new FailTask(tr("Selected BLAST search with amino acid input sequence"));
             }
         }
-        cfg.needCreateAnnotations=false;
-        cfg.outputType=actor->getParameter(BLASTALL_OUT_TYPE)->getAttributeValue<int>(context);
-        cfg.outputOriginalFile=getValue<QString>(BLASTALL_ORIGINAL_OUT);
+        cfg.needCreateAnnotations = false;
+        cfg.outputType = getValue<int>(BLASTALL_OUT_TYPE);
+        cfg.outputOriginalFile = getValue<QString>(BLASTALL_ORIGINAL_OUT);
         if(cfg.outputType != 7 && cfg.outputOriginalFile.isEmpty()){
             return new FailTask(tr("Not selected BLAST output file"));
         }

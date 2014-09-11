@@ -58,6 +58,7 @@ const QString BlastPlusWorkerFactory::ACTOR_ID("blast-plus");
 #define BLASTPLUS_DATABASE_PATH "db-path"
 #define BLASTPLUS_DATABASE_NAME "db-name"
 #define BLASTPLUS_EXPECT_VALUE  "e-val"
+#define BLASTPLUS_MAX_HITS "max-hits"
 #define BLASTPLUS_GROUP_NAME    "result-name"
 #define BLASTPLUS_EXT_TOOL_PATH "tool-path"
 #define BLASTPLUS_TMP_DIR_PATH  "temp-dir"
@@ -90,6 +91,8 @@ void BlastPlusWorkerFactory::init() {
                    BlastPlusWorker::tr("Base name for BLAST+ DB files."));
     Descriptor ev(BLASTPLUS_EXPECT_VALUE, BlastPlusWorker::tr("Expected value"),
                    BlastPlusWorker::tr("This setting specifies the statistical significance threshold for reporting matches against database sequences."));
+    Descriptor mh(BLASTPLUS_MAX_HITS, BlastPlusWorker::tr("Max hits"),
+                   BlastPlusWorker::tr("If the query range of a hit is enveloped by that of at least this many higher-scoring hits, delete the hit."));
     Descriptor gn(BLASTPLUS_GROUP_NAME, BlastPlusWorker::tr("Annotate as"),
                    BlastPlusWorker::tr("Name for annotations."));
     Descriptor etp(BLASTPLUS_EXT_TOOL_PATH, BlastPlusWorker::tr("Tool Path"),
@@ -114,6 +117,7 @@ void BlastPlusWorkerFactory::init() {
     a << new Attribute(etp, BaseTypes::STRING_TYPE(), true, QVariant("default"));
     a << new Attribute(tdp, BaseTypes::STRING_TYPE(), true, QVariant("default"));
     a << new Attribute(ev, BaseTypes::NUM_TYPE(), false, QVariant(10.00));
+    a << new Attribute(mh, BaseTypes::NUM_TYPE(), false, QVariant(0));
     a << new Attribute(gn, BaseTypes::STRING_TYPE(), false, QVariant("blast_result"));
 
     Attribute* gaAttr= new Attribute(ga, BaseTypes::BOOL_TYPE(), false, QVariant(true));
@@ -155,6 +159,12 @@ void BlastPlusWorkerFactory::init() {
         m["singleStep"] = 1.0;
         m["decimals"] = 6;
         delegates[BLASTPLUS_EXPECT_VALUE] = new DoubleSpinBoxDelegate(m);
+    }
+    {
+        QVariantMap m;
+        m["minimum"] = 0;
+        m["maximum"] = INT_MAX;
+        delegates[BLASTPLUS_MAX_HITS] = new SpinBoxDelegate(m);
     }
     {
         QVariantMap m;
@@ -241,21 +251,21 @@ Task* BlastPlusWorker::tick() {
             output->transit();
             return NULL;
         }
-        cfg.programName=actor->getParameter(BLASTPLUS_PROGRAM_NAME)->getAttributeValue<QString>(context);
-        cfg.databaseNameAndPath=actor->getParameter(BLASTPLUS_DATABASE_PATH)->getAttributeValue<QString>(context) +"/"+
-                                actor->getParameter(BLASTPLUS_DATABASE_NAME)->getAttributeValue<QString>(context);
-        cfg.isDefaultCosts=true;
-        cfg.isDefaultMatrix=true;
-        cfg.isDefautScores=true;
-        cfg.expectValue=actor->getParameter(BLASTPLUS_EXPECT_VALUE)->getAttributeValue<double>(context);
-        cfg.groupName=actor->getParameter(BLASTPLUS_GROUP_NAME)->getAttributeValue<QString>(context);
+        cfg.programName = getValue<QString>(BLASTPLUS_PROGRAM_NAME);
+        cfg.databaseNameAndPath = getValue<QString>(BLASTPLUS_DATABASE_PATH) + "/"+ getValue<QString>(BLASTPLUS_DATABASE_NAME);
+        cfg.isDefaultCosts = true;
+        cfg.isDefaultMatrix = true;
+        cfg.isDefautScores = true;
+        cfg.expectValue = getValue<double>(BLASTPLUS_EXPECT_VALUE);
+        cfg.numberOfHits = getValue<int>(BLASTPLUS_MAX_HITS);
+        cfg.groupName = getValue<QString>(BLASTPLUS_GROUP_NAME);
         if(cfg.groupName.isEmpty()){
             cfg.groupName="blast result";
         }
         cfg.wordSize=0;
-        cfg.isGappedAlignment=actor->getParameter(BLASTPLUS_GAPPED_ALN)->getAttributeValue<bool>(context);
+        cfg.isGappedAlignment = getValue<bool>(BLASTPLUS_GAPPED_ALN);
 
-        QString path=actor->getParameter(BLASTPLUS_EXT_TOOL_PATH)->getAttributeValue<QString>(context);
+        QString path = actor->getParameter(BLASTPLUS_EXT_TOOL_PATH)->getAttributeValue<QString>(context);
         if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
             if(cfg.programName == "blastn"){
                 AppContext::getExternalToolRegistry()->getByName(ET_BLASTN)->setPath(path);
@@ -268,9 +278,8 @@ Task* BlastPlusWorker::tick() {
             }else if(cfg.programName == "tblastx"){
                 AppContext::getExternalToolRegistry()->getByName(ET_TBLASTX)->setPath(path);
             }
-
         }
-        path=actor->getParameter(BLASTPLUS_TMP_DIR_PATH)->getAttributeValue<QString>(context);
+        path = actor->getParameter(BLASTPLUS_TMP_DIR_PATH)->getAttributeValue<QString>(context);
         if(QString::compare(path, "default", Qt::CaseInsensitive) != 0){
             AppContext::getAppSettings()->getUserAppsSettings()->setUserTemporaryDirPath(path);
         }
@@ -300,9 +309,9 @@ Task* BlastPlusWorker::tick() {
                 return new FailTask(tr("Selected BLAST search with amino acid input sequence"));
             }
         }
-        cfg.needCreateAnnotations=false;
-        cfg.outputType=actor->getParameter(BLASTPLUS_OUT_TYPE)->getAttributeValue<int>(context);
-        cfg.outputOriginalFile=getValue<QString>(BLASTPLUS_ORIGINAL_OUT);
+        cfg.needCreateAnnotations = false;
+        cfg.outputType = getValue<int>(BLASTPLUS_OUT_TYPE);
+        cfg.outputOriginalFile = getValue<QString>(BLASTPLUS_ORIGINAL_OUT);
         if(cfg.outputType != 5 && cfg.outputOriginalFile.isEmpty()){
             return new FailTask(tr("Not selected BLAST output file"));
         }

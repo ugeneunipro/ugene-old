@@ -59,6 +59,10 @@ workflow local-blast{
                 alias:e;
                 description:"The statistical significance threshold for reporting matches against database sequences (using '10.0' by default)";
             }
+            blast.max-hits {
+                alias:max-hits;
+                description:"Specifies the number of best hits from a region of the query to keep. 0 turns it off. If used, 100 is recommended.";
+            }
             blast.gapped-aln {
                 alias:gap-aln;
                 description:"Perform gapped alignment (using 'use' by default)";
