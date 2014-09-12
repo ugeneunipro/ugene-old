@@ -2270,6 +2270,7 @@ void WorkflowView::sl_onSceneLoaded() {
     sl_refreshActorDocs();
     checkAutoRunWizard();
     hideDashboards();
+    tabs->setCurrentIndex(ElementsTab);
 }
 
 void WorkflowView::sl_onSceneSaved() {
