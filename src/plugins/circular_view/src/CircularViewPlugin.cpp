@@ -281,10 +281,22 @@ void CircularViewContext::sl_toggleViews()
 
     QList<ADVSequenceWidget*> sWidgets = av->getSequenceWidgets();
 
+    bool openAll = true;
     foreach( ADVSequenceWidget* sw, sWidgets) {
         CircularViewAction* a = qobject_cast<CircularViewAction*>(sw->getADVSequenceWidgetAction(CIRCULAR_ACTION_NAME));
-        if (a != NULL) {
+        CHECK_OPERATION(a != NULL, continue);
+        //if there is at least one opened CV, close them all
+        if (a->isChecked()) {
+            openAll = false;
             a->trigger();
+        }
+    }
+
+    if (openAll) {
+        foreach( ADVSequenceWidget* sw, sWidgets) {
+           CircularViewAction* a = qobject_cast<CircularViewAction*>(sw->getADVSequenceWidgetAction(CIRCULAR_ACTION_NAME));
+           CHECK_OPERATION(a != NULL, continue);
+           a->trigger();
         }
     }
 }
