@@ -71,7 +71,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/SuggestCompleter.h \
            src/util/TextEditorDialog.h \
            src/util/TreeWidgetUtils.h \
-           src/util/U2FileDIalog.h \
+           src/util/U2FileDialog.h \
            src/util/imageExport/ImageExportTask.h \
            src/util/imageExport/WidgetScreenshotExportTask.h \
            src/util/ImportDialogs/AceImportDialog.h \
@@ -185,7 +185,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/SuggestCompleter.cpp \
            src/util/TextEditorDialog.cpp \
            src/util/TreeWidgetUtils.cpp \
-           src/util/U2FileDIalog.cpp \
+           src/util/U2FileDialog.cpp \
            src/util/GenbankLocationValidator.cpp \
            src/util/imageExport/ImageExportTask.cpp \
            src/util/imageExport/WidgetScreenshotExportTask.cpp \
