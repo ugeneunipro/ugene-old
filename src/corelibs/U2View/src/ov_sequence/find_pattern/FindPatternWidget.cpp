@@ -640,24 +640,15 @@ void FindPatternWidget::sl_onRegionValueEdited()
     else if (editEnd->text().isEmpty()) {
         highlightBackground(editEnd);
         regionIsCorrect = false;
-    }
-    else {
-        // Start <= end
+    } else {
         bool ok = false;
         qint64 value1 = editStart->text().toLongLong(&ok);
         if (!ok || (value1 < 1)) {
             highlightBackground(editStart);
             regionIsCorrect = false;
         }
-
         int value2 = editEnd->text().toLongLong(&ok);
-        if (!ok) {
-            highlightBackground(editEnd);
-            regionIsCorrect = false;
-        }
-
-        if (ok && (value1 > value2)) {
-            highlightBackground(editStart);
+        if (!ok || value2 < 1) {
             highlightBackground(editEnd);
             regionIsCorrect = false;
         }
@@ -1070,8 +1061,7 @@ U2Region FindPatternWidget::getCompleteSearchRegion(bool& regionIsCorrect, qint6
     }
 
     if (value1 > value2 ) { // start > end
-        regionIsCorrect = false;
-        return U2Region();
+        value2 += maxLen;
     }
 
     regionIsCorrect = true;
@@ -1360,9 +1350,24 @@ bool FindPatternWidget::checkPatternRegion( const QString& pattern ){
 
 void FindPatternWidget::sl_onSelectedRegionChanged(){
     if(!currentSelection->getSelectedRegions().isEmpty()){
-        U2Region r = currentSelection->getSelectedRegions().first();
-        editStart->setText(QString::number(r.startPos + 1));
-        editEnd->setText(QString::number(r.endPos() + 1));
+        U2Region firstReg = currentSelection->getSelectedRegions().first();
+        editStart->setText(QString::number(firstReg.startPos + 1));
+        editEnd->setText(QString::number(firstReg.endPos()));
+
+        if (currentSelection->getSelectedRegions().size() == 2) {
+            U2Region secondReg = currentSelection->getSelectedRegions().last();
+            SAFE_POINT(annotatedDnaView->getSequenceInFocus() != NULL, tr("Sequence in focus is NULL"), );
+            int seqLen = annotatedDnaView->getSequenceInFocus()->getSequenceLength();
+            bool circularSelection = (firstReg.startPos == 0 && secondReg.endPos() == seqLen)
+                    || (firstReg.endPos() == seqLen && secondReg.startPos == 0);
+            if (circularSelection) {
+                if (secondReg.startPos == 0) {
+                    editEnd->setText(QString::number(secondReg.endPos()));
+                } else {
+                    editStart->setText(QString::number(secondReg.startPos + 1));
+                }
+            }
+        }
     }else{
         SAFE_POINT(annotatedDnaView->getSequenceInFocus() != NULL, "No sequence in focus, with active search tab in options panel",);
         editStart->setText(QString::number(1));

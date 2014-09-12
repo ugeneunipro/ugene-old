@@ -46,10 +46,14 @@ AnnotationData FindAlgorithmResult::toAnnotation(const QString &name, bool split
     SAFE_POINT( !splitCircular || (seqLen != -1), "Sequence length is not set!", AnnotationData());
     AnnotationData data;
     data.name = name;
-    if (splitCircular && region.endPos() > seqLen) {
-        SAFE_POINT(region.startPos < seqLen, "Region is not correct", AnnotationData());
-        data.location->regions << U2Region(region.startPos, seqLen - region.startPos);
-        data.location->regions << U2Region(0, region.length - (seqLen - region.startPos));
+    if (splitCircular && (region.endPos() > seqLen) ) {
+        if (region.startPos >= seqLen) {
+            data.location->regions << U2Region(region.startPos - seqLen, region.length);
+        } else {
+            SAFE_POINT(region.startPos < seqLen, "Region is not correct", AnnotationData());
+            data.location->regions << U2Region(region.startPos, seqLen - region.startPos);
+            data.location->regions << U2Region(0, region.length - (seqLen - region.startPos));
+        }
     } else {
         data.location->regions << region;
     }
@@ -116,6 +120,22 @@ static qint64 cycleIndex(qint64 segmentLen, qint64 index) {
     return (index >= segmentLen ? index - segmentLen : index);
 }
 
+static qint64 getCircularOverlap(const char *seq, const U2Region &searchRange, int defaultCircularOverlap) {
+    int seqLen = QByteArray(seq).size();
+    if (searchRange.length == seqLen && searchRange.startPos == 0) {
+        return defaultCircularOverlap;
+    }
+    return searchRange.endPos() - seqLen;
+}
+
+static qint64 getSearchEndPos(const char *seq, const U2Region &searchRange, int defaultCircularOverlap, bool searchIsCircular) {
+    int seqLen = QByteArray(seq).size();
+    if (searchIsCircular && searchRange.length == seqLen && searchRange.startPos == 0) {
+        return searchRange.endPos() + defaultCircularOverlap;
+    }
+    return searchRange.endPos();
+}
+
 //TODO: in BothStrands&SingleShot mode it's impossible to find result on complement strand if there also a result on direct strand from the same pos!
 
 static void findInAmino(    FindAlgorithmResultsListener* rl,
@@ -134,8 +154,8 @@ static void findInAmino(    FindAlgorithmResultsListener* rl,
 {
     SAFE_POINT( aminoTT->getSrcAlphabet( )->isNucleic( ) && aminoTT->getDstAlphabet( )->isAmino( ),
         "Invalid alphabet detected!", );
-    SAFE_POINT( !searchIsCircular || range.length == QByteArray(seq).size() , "Circular search is available only for the whole sequence", );
 
+    int seqLen = QByteArray(seq).size();
     int width =  patternLen + maxErr;
     int height = patternLen;
 
@@ -160,7 +180,7 @@ static void findInAmino(    FindAlgorithmResultsListener* rl,
     QByteArray complMap = complTT == NULL ? QByteArray() : complTT->getOne2OneMapper();
     int patternLenInNucl =  3 * patternLen;
 
-    int end = (searchIsCircular ? range.endPos() + 3*(patternLen - 1) : range.endPos());
+    int end = getSearchEndPos(seq, range, patternLenInNucl - 1, searchIsCircular);
     for (int i=range.startPos, translStrand = 0;
         i < end - 2 && !stopFlag;
         i++, leftTillPercent--, translStrand = translStrand == 2 ? 0 : translStrand + 1)
@@ -172,13 +192,13 @@ static void findInAmino(    FindAlgorithmResultsListener* rl,
             FindAlgorithmResult& res = ctx.res;
 
             for (int j=0; j < patternLen; j++) { //TODO: optimize -> specialize loops
-                int k = cycleIndex(range.length, i);
+                int k = cycleIndex(seqLen, i);
                 char amino = ci == 0 ?
                     aminoTT->translate3to1( seq[k],
-                                            seq[cycleIndex(range.length, k + 1)],
-                                            seq[cycleIndex(range.length, k + 2)]) :  //direct amino
-                    aminoTT->translate3to1(complMap.at( (quint8) seq[cycleIndex(range.length, k + 2)]),
-                                           complMap.at((quint8) seq[cycleIndex(range.length, k + 1)]),
+                                            seq[cycleIndex(seqLen, k + 1)],
+                                            seq[cycleIndex(seqLen, k + 2)]) :  //direct amino
+                    aminoTT->translate3to1(complMap.at( (quint8) seq[cycleIndex(seqLen, k + 2)]),
+                                           complMap.at((quint8) seq[cycleIndex(seqLen, k + 1)]),
                                            complMap.at( (quint8)seq[k]) ); //compl amino
 
                 bool matched = (amino == p[j]);
@@ -240,8 +260,8 @@ static void findInAmino_subst(  FindAlgorithmResultsListener *rl,
 {
     SAFE_POINT( NULL != complTT && NULL != aminoTT && aminoTT->getSrcAlphabet( )->isNucleic( )
         && aminoTT->getDstAlphabet( )->isAmino( ), "Invalid alphabet supplied!", );
-    SAFE_POINT( !searchIsCircular || range.length == QByteArray(seq).size() , "Circular search is available only for the whole sequence", );
 
+    int seqLen = QByteArray(seq).size();
     int patternLenInNucl =  3 * patternLen;
     if( range.length < patternLenInNucl ) {
         return;
@@ -256,10 +276,12 @@ static void findInAmino_subst(  FindAlgorithmResultsListener *rl,
     QByteArray seqExpanded;
     seqExpanded.append(QByteArray(seq));
     if (searchIsCircular) {
-        seqExpanded.append(QByteArray(seq, 3*(patternLen - 1)));
+        int bufferSize = getCircularOverlap(seq, range, patternLenInNucl - 1);
+        seqExpanded.append(QByteArray(seq, bufferSize));
     }
 
-    int tail = range.length - patternLenInNucl - 2 + searchIsCircular *(patternLenInNucl - 3);
+    int tail = range.length - patternLenInNucl - 2
+            + (range.length == seqLen && range.startPos == 0 && searchIsCircular) *(patternLenInNucl - 1);
     tail = tail > 0 ? 0 : tail;
     aminoTT->translate( seqExpanded.data() + range.startPos, patternLenInNucl + tail + 2, translatedPiece1.data(), patternLen );
     aminoTT->translate( seqExpanded.data() + range.startPos + 1, patternLenInNucl + tail + 1, translatedPiece2.data(), patternLen );
@@ -298,7 +320,7 @@ static void findInAmino_subst(  FindAlgorithmResultsListener *rl,
     int conEnd =  isComplement(strand) ? 2 : 1;
     QByteArray complMap = complTT ? complTT->getOne2OneMapper() : QByteArray();
 
-    int end = searchIsCircular ? range.endPos() + patternLenInNucl - 1: range.endPos();
+    int end = getSearchEndPos(seq, range, patternLenInNucl - 1, searchIsCircular);
     for( int i = range.startPos, translStrand = 0;
         i < end - patternLenInNucl + 1 && !stopFlag;
         i++, leftTillPercent--, translStrand = translStrand == 2 ? 0 : translStrand + 1)
@@ -316,10 +338,11 @@ static void findInAmino_subst(  FindAlgorithmResultsListener *rl,
                     break;
                 }
             }
+
             if( i + patternLenInNucl + 2 < end ) {
                 int wheree = i + patternLenInNucl;
-                char c1 = ci ? complMap.at( (quint8)seqExpanded[ wheree + 2] ) : seq[ wheree ];
-                char c2 = ci ? complMap.at((quint8)seqExpanded[ wheree + 1 ] ) : seq[ wheree + 1 ];
+                char c1 = ci ? complMap.at( (quint8)seqExpanded[ wheree + 2] ) : seqExpanded[ wheree ];
+                char c2 = ci ? complMap.at((quint8)seqExpanded[ wheree + 1 ] ) : seqExpanded[ wheree + 1 ];
                 char c3 = ci ? complMap.at((quint8)seqExpanded[ wheree ] ) : seqExpanded[ wheree + 2 ];
                 char newchar = aminoTT->translate3to1( c1, c2, c3 );
                 ci ? ctx.rollArr.push_front_pop_back( newchar ) : ctx.rollArr.push_back_pop_front( newchar );
@@ -465,14 +488,15 @@ static void regExpSearch(   const QString &refSequence,
         const int foundLength = regExp.matchedLength( );
         if ( maxResultLen >= foundLength ) {
             int resultStartPos = refSeqIsAminoTranslation ? foundStartPos * 3 : foundStartPos;
-            if (resultStartPos < cyclePoint) {
+            if (resultStartPos < cyclePoint || sequenceRange.startPos != 0) {
                 const int resultLen = refSeqIsAminoTranslation ? foundLength * 3 : foundLength;
-                prepareResultPosition( sequenceRange.startPos + (searchStrand.isCompementary() ? 0 : 1) * (aminoFrameNumber),
-                                       cyclePoint - sequenceRange.startPos,
+                prepareResultPosition( sequenceRange.startPos + (refSeqIsAminoTranslation * aminoFrameNumber),
+                                       sequenceRange.length - (refSeqIsAminoTranslation * aminoFrameNumber),
                                        resultStartPos,
                                        resultLen,
                                        searchStrand );
-                resultStartPos -= (searchStrand.isCompementary() ? tailCutted : 0);
+                resultStartPos -= (searchStrand.isCompementary() && refSeqIsAminoTranslation ? tailCutted : 0);
+
                 sendResultToListener( resultStartPos, resultLen, searchStrand, rl );
             }
         }
@@ -485,14 +509,15 @@ static void regExpSearch(   const QString &refSequence,
             const int foundSubstrLength = regExp.matchedLength( );
             if ( maxResultLen >= foundSubstrLength ) {
                 int resultStartPos = refSeqIsAminoTranslation ? foundStartPos * 3 : foundStartPos;
-                if (resultStartPos < cyclePoint) {
+                if (resultStartPos < cyclePoint || sequenceRange.startPos != 0) {
                     const int resultLen = refSeqIsAminoTranslation ? foundSubstrLength * 3 : foundSubstrLength;
-                    prepareResultPosition( sequenceRange.startPos + (searchStrand.isCompementary() ? 0 : 1) * (aminoFrameNumber),
-                                           cyclePoint - sequenceRange.startPos,
+                    prepareResultPosition( sequenceRange.startPos + (refSeqIsAminoTranslation * aminoFrameNumber),
+                                           sequenceRange.length - (refSeqIsAminoTranslation * aminoFrameNumber),
                                            resultStartPos,
                                            resultLen,
                                            searchStrand );
-                    resultStartPos -= (searchStrand.isCompementary() ? tailCutted : 0);
+                    resultStartPos -= (searchStrand.isCompementary() && refSeqIsAminoTranslation ? tailCutted : 0);
+
                     sendResultToListener( resultStartPos, resultLen, searchStrand, rl );
                 }
             }
@@ -515,7 +540,6 @@ static void findInAmino_regExp( FindAlgorithmResultsListener *rl,
                                 int &stopFlag,
                                 int &percentsCompleted )
 {
-    SAFE_POINT( !searchIsCircular || range.length == QByteArray(seq).size() , "Circular search is available only for the whole sequence", );
     percentsCompleted = 0;
 
     int conStart = isDirect( strand )? 0 : 1;
@@ -525,57 +549,60 @@ static void findInAmino_regExp( FindAlgorithmResultsListener *rl,
     SAFE_POINT( regExp.isValid( ), "Invalid regular expression supplied!", );
 
     int maxAminoResult = maxRegExpResult * 3;
+    int seqLen = QByteArray(seq).size();
+
+    int bufferSize = 0;
+    const char *sequence = NULL;
+    QByteArray temp;
+    if (searchIsCircular) {
+        bufferSize = getCircularOverlap(seq, range, (seqLen > maxRegExpResult) ? maxRegExpResult - 1 : seqLen - 1);
+        temp = QByteArray(seq) + QByteArray(seq, bufferSize);
+        sequence = temp.data();
+    } else {
+        sequence = seq;
+    }
 
     for ( int ci = conStart; ci < conEnd; ++ci ) {
 
         for (int aminoFrameNumber = 0; aminoFrameNumber < 3; aminoFrameNumber++) {
-            int len = range.length - aminoFrameNumber;
+            int len = seqLen - aminoFrameNumber - range.startPos;
+            if (range.startPos < seqLen && range.endPos() < seqLen) {
+                len = range.length - aminoFrameNumber;
+            }
 
             QString translation;
-            QByteArray tmp( len + 1, 0 );
-            char *rawTranslation = tmp.data( );
+            QByteArray rawTranslation( len + bufferSize + 1, 0 );
             U2Strand resultStrand;
-            const int translationLen = len / 3;
+            const int translationLen = (len + bufferSize) / 3;
 
             if ( ci == 1 ) { // complementary
-                TextUtils::translate( complTT->getOne2OneMapper( ), seq + range.startPos + aminoFrameNumber,
-                                      len, rawTranslation );
-                TextUtils::reverse( rawTranslation, len - len % 3);
-                aminoTT->translate( rawTranslation, len);
-                translation = QString( QByteArray( rawTranslation, translationLen ) );
-                if (searchIsCircular) {
-                    int bufferSize = (len > maxRegExpResult) ? maxRegExpResult - 1 : len;
-                    QByteArray buffer( bufferSize, 0);
-                    char *complBuffer = buffer.data();
-                    TextUtils::translate( complTT->getOne2OneMapper( ), seq, bufferSize, complBuffer);
-                    TextUtils::reverse( complBuffer, bufferSize);
-                    aminoTT->translate( complBuffer, bufferSize);
-                    translation += buffer;
-                }
+                TextUtils::translate( complTT->getOne2OneMapper( ), sequence + range.startPos + aminoFrameNumber,
+                                      len + bufferSize,
+                                      rawTranslation.data() );
+                TextUtils::reverse( rawTranslation.data(), len + bufferSize - (len + bufferSize) % 3);
+                aminoTT->translate( rawTranslation.data(), len + bufferSize);
 
                 resultStrand = U2Strand::Complementary;
             } else { // direct
-                aminoTT->translate( seq + range.startPos + aminoFrameNumber, len,
-                                    rawTranslation, len);
-                translation = QString( QByteArray( rawTranslation, translationLen ) );
-                if (searchIsCircular) {
-                    int startSize = (len > maxRegExpResult) ? maxRegExpResult - 1 : len;
-                    aminoTT->translate( seq, startSize,
-                                        rawTranslation, startSize);
-                    translation += rawTranslation;
-                }
+                strcpy(rawTranslation.data(), QByteArray(sequence + range.startPos + aminoFrameNumber,
+                                                  len + bufferSize).data());
+                aminoTT->translate( rawTranslation.data(), len + bufferSize);
+
                 resultStrand = U2Strand::Direct;
             }
+            translation = QString( QByteArray( rawTranslation.data(), translationLen ) );
+
 
             if (searchIsCircular) {
                 U2Region cirRange = range;
-                cirRange.length += (len > maxRegExpResult) ? maxRegExpResult - 1 : len;
+                cirRange.length += (seqLen == range.length && range.startPos == 0) ? bufferSize : 0;
+
                 regExpSearch( translation, regExp, resultStrand, cirRange, maxRegExpResult, ci,
-                              len % 3, conEnd, true, aminoFrameNumber,
-                              percentsCompleted, stopFlag, rl, range.endPos());
+                              (len + bufferSize) % 3, conEnd, true, aminoFrameNumber,
+                              percentsCompleted, stopFlag, rl, len);
             } else {
                 regExpSearch( translation, regExp, resultStrand, range, maxAminoResult, ci,
-                              len % 3, conEnd, true, aminoFrameNumber,
+                              (len + bufferSize) % 3, conEnd, true, aminoFrameNumber,
                               percentsCompleted, stopFlag, rl );
             }
 
@@ -595,8 +622,6 @@ static void findRegExp( FindAlgorithmResultsListener *rl,
                         int &stopFlag,
                         int &percentsCompleted )
 {
-    SAFE_POINT( !searchIsCircular || range.length == QByteArray(seq).size() , "Circular search is available only for the whole sequence", );
-
     if ( NULL != aminoTT ) {
         findInAmino_regExp( rl, aminoTT, complTT, strand, seq, range, searchIsCircular, pattern,
             maxRegExpResult, stopFlag, percentsCompleted );
@@ -605,6 +630,7 @@ static void findRegExp( FindAlgorithmResultsListener *rl,
 
     percentsCompleted = 0;
 
+    int seqLen = QByteArray(seq).size();
     const int conStart = isDirect( strand ) ? 0 : 1;
     const int conEnd =  isComplement( strand ) ? 2 : 1;
 
@@ -619,34 +645,40 @@ static void findRegExp( FindAlgorithmResultsListener *rl,
 
         if ( ci == 1 ) { // complementary
             complSeq = tmp.data( );
-            TextUtils::translate( complTT->getOne2OneMapper( ), seq + range.startPos, range.length,
-                complSeq );
-            TextUtils::reverse( complSeq, range.length );
-            substr = QString( QByteArray( complSeq, range.length ) );
+            TextUtils::translate( complTT->getOne2OneMapper( ), seq + range.startPos,
+                                  qMin(range.length, seqLen - range.startPos),
+                                  complSeq );
+            TextUtils::reverse( complSeq, qMin(range.length, seqLen - range.startPos) );
+            substr = QString( QByteArray( complSeq, qMin(range.length, seqLen - range.startPos) ) );
             if (searchIsCircular) {
-                int bufferSize = (range.length > maxRegExpResult) ? maxRegExpResult - 1 : range.length;
+                int bufferSize = getCircularOverlap(seq, range,
+                                                 (range.length > maxRegExpResult) ? maxRegExpResult - 1 : range.length);
                 QByteArray buffer( bufferSize, 0);
                 char *complBuffer = buffer.data();
                 TextUtils::translate( complTT->getOne2OneMapper( ), seq, bufferSize, complBuffer);
                 TextUtils::reverse( complBuffer, bufferSize);
-                substr += buffer;
+                substr.prepend(buffer);
             }
 
             resultStrand = U2Strand::Complementary;
         } else { // direct
-            substr = QString( QByteArray( seq + range.startPos, range.length ) );
+            substr = QString( QByteArray( seq + range.startPos,
+                                          qMin(range.length, seqLen - range.startPos ) ));
             if (searchIsCircular) {
-                substr += QString( QByteArray( seq,
-                                               (range.length > maxRegExpResult) ? maxRegExpResult - 1 : range.length));
+                int bufferSize = getCircularOverlap(seq, range,
+                                                 (range.length > maxRegExpResult) ? maxRegExpResult - 1 : range.length);
+                substr += QString( QByteArray( seq, bufferSize));
             }
             resultStrand = U2Strand::Direct;
         }
 
         if (searchIsCircular) {
             U2Region cirRange = range;
-            cirRange.length += (range.length > maxRegExpResult) ? maxRegExpResult - 1 : range.length;
+            if (range.length == seqLen && range.startPos == 0) {
+                cirRange.length += (range.length > maxRegExpResult) ? maxRegExpResult - 1 : range.length;
+            }
             regExpSearch( substr, regExp, resultStrand, cirRange, maxRegExpResult, ci, 0, conEnd, false, 0,
-                percentsCompleted, stopFlag, rl, range.endPos());
+                percentsCompleted, stopFlag, rl, seqLen);
         } else {
             regExpSearch( substr, regExp, resultStrand, range, maxRegExpResult, ci, 0, conEnd, false, 0,
                           percentsCompleted, stopFlag, rl );
@@ -669,7 +701,6 @@ static void find_subst( FindAlgorithmResultsListener* rl,
                         int& percentsCompleted )
 {
     SAFE_POINT( NULL == complTT || complTT->isOne2One( ), "Invalid translation supplied!", );
-    SAFE_POINT( !searchIsCircular || range.length == QByteArray(seq).size() , "Circular search is available only for the whole sequence", );
 
     if (aminoTT != NULL) {
         findInAmino_subst( rl, aminoTT, complTT, strand, seq, range, searchIsCircular, pattern, patternLen, maxErr,
@@ -704,13 +735,15 @@ static void find_subst( FindAlgorithmResultsListener* rl,
 
     const char *sequence = NULL;
     QByteArray temp;
+    int end = range.endPos();
     if (searchIsCircular) {
-        temp = QByteArray(seq) + QByteArray(seq, patternLen - 1);
+        int beginningSize = getCircularOverlap(seq, range, patternLen - 1);
+        end = getSearchEndPos(seq, range, getCircularOverlap(seq, range, patternLen - 1), searchIsCircular);
+        temp = QByteArray(seq) + QByteArray(seq, beginningSize);
         sequence = temp.data();
     } else {
         sequence = seq;
     }
-    int end = (searchIsCircular ? range.endPos() + patternLen - 1 : range.endPos());
     for (int i = range.startPos;
          i < end - patternLen + 1 && !stopFlag; i++, leftTillPercent--) {
         for (int ci = conStart; ci < conEnd; ci++) {
@@ -767,7 +800,12 @@ void FindAlgorithm::find(
     Q_UNUSED(seqLen);
     SAFE_POINT( NULL == complTT || complTT->isOne2One( ), "Invalid translation supplied!", );
     SAFE_POINT( patternLen > maxErr, "Invalid maximum error count supplied!", );
-    if (searchIsCircular && range.length != seqLen) {
+
+    if (range.endPos() > seqLen) {
+        searchIsCircular = true;
+    }
+    // no need to search circular on non-circular region
+    if (range.startPos < seqLen && range.endPos() < seqLen) {
         searchIsCircular = false;
     }
 
@@ -824,7 +862,7 @@ void FindAlgorithm::find(
         SAFE_POINT( conStart < conEnd, "Internal algorithm error: incorrect strand order!", );
 
 
-        int end = (searchIsCircular ? range.endPos() + patternLen - 1 : range.endPos());
+        int end = getSearchEndPos(seq, range, patternLen - 1, searchIsCircular);
         for (int i=range.startPos; i < end && !stopFlag; i++, leftTillPercent--) {
             for (int ci = conStart; ci < conEnd; ci++) {
                 StrandContext& ctx = context[ci];
