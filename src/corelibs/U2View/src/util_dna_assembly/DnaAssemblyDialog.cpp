@@ -72,7 +72,7 @@ DnaAssemblyDialog::DnaAssemblyDialog(QWidget* p, const QStringList& shortReadsUr
     setupUi(this);
     QMap<QString,QString> helpPagesMap;
     helpPagesMap.insert("BWA","4227715");
-    helpPagesMap.insert("BWA-MEM","222");
+    helpPagesMap.insert("BWA-MEM","10289159");
     helpPagesMap.insert("BWA-SW","6062167");
     helpPagesMap.insert("Bowtie","4227709");
     helpPagesMap.insert("Bowtie2","6062135");

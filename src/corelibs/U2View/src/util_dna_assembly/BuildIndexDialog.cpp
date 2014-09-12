@@ -53,7 +53,7 @@ BuildIndexDialog::BuildIndexDialog(const DnaAssemblyAlgRegistry* registry, QWidg
     setupUi(this);
     QMap<QString,QString> helpPagesMap;
     helpPagesMap.insert("BWA","4227717");
-    helpPagesMap.insert("BWA-MEM","222");
+    helpPagesMap.insert("BWA-MEM","10289163");
     helpPagesMap.insert("BWA-SW","6062169");
     helpPagesMap.insert("Bowtie","4227711");
     helpPagesMap.insert("Bowtie2","6062137");

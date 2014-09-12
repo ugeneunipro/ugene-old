@@ -69,7 +69,7 @@ ExportDocumentDialogController::ExportDocumentDialogController(GObject *object, 
             ->getSupportedDocumentFileExtensions().first());
     }
     ui->fileNameEdit->setText(fileName);
-    new HelpButton(this, ui->buttonBox, "https://ugene.unipro.ru/wiki/display/UUOUM/Editing+Fragment+Overhangs");
+    new HelpButton(this, ui->buttonBox, "4227234");
 }
 
 void ExportDocumentDialogController::initSaveController(const QList<GObject *> &objects,

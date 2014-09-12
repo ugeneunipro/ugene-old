@@ -57,7 +57,7 @@ RemoteTasksDialog::RemoteTasksDialog(const RemoteServiceSettingsPtr& settings,QW
     refresh();
     
     updateState();
-    new HelpButton(this, buttonBox, "https://ugene.unipro.ru/wiki/display/UUOUM/Editing+Fragment+Overhangs");
+    new HelpButton(this, buttonBox, "4227131");
 
 }
 
