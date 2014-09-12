@@ -26,6 +26,7 @@
 #include "api/GTTreeWidget.h"
 #include "GTUtilsMdi.h"
 #include "api/GTTabWidget.h"
+#include "api/GTToolbar.h"
 #include "api/GTGraphicsItem.h"
 #include "api/GTFileDialog.h"
 #include "api/GTTableView.h"
@@ -67,6 +68,34 @@ void GTUtilsWorkflowDesigner::openWorkflowDesigner(U2OpStatus &os){
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_TOOLS);
     GTMenu::clickMenuItemByName(os, menu, QStringList() << "Workflow Designer");
     GTGlobals::sleep(500);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "currentTab"
+GTUtilsWorkflowDesigner::tab GTUtilsWorkflowDesigner::currentTab(U2OpStatus &os) {
+    QTabWidget *tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os, "tabs"));
+    GT_CHECK_RESULT(NULL != tabs, "tabs widget is not found", algoriths);
+    return tab(tabs->currentIndex());
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setCurrentTab"
+void GTUtilsWorkflowDesigner::setCurrentTab(U2OpStatus &os, tab t) {
+    QTabWidget *tabs = qobject_cast<QTabWidget*>(GTWidget::findWidget(os, "tabs"));
+    GT_CHECK(NULL != tabs, "tabs widget is not found");
+    GTTabWidget::setCurrentIndex(os, tabs, int(t));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "loadWorkflow"
+void GTUtilsWorkflowDesigner::loadWorkflow(U2OpStatus &os, const QString &fileUrl) {
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, fileUrl));
+    QToolBar *wdToolbar = GTToolbar::getToolbar(os, "mwtoolbar_activemdi");
+    GT_CHECK(wdToolbar, "Toolbar is not found");
+    QWidget *loadButton = GTToolbar::getWidgetForActionName(os, wdToolbar, "Load workflow");
+    GT_CHECK(loadButton, "Load button is not found");
+    GTWidget::click(os, loadButton);
+    GTGlobals::sleep();
 }
 #undef GT_METHOD_NAME
 

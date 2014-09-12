@@ -5638,6 +5638,29 @@ GUI_TEST_CLASS_DEFINITION(test_3439){
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Write Alignment") == 3, "Errors count dont match, should be 2 validation errors");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3455){
+    //1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    //2. Activate samples.
+    GTUtilsWorkflowDesigner::setCurrentTab(os, GTUtilsWorkflowDesigner::samples);
+
+    //3. Choose a sample (but not open it).
+    QTreeWidgetItem *sample = GTUtilsWorkflowDesigner::findTreeItem(os, "call variants", GTUtilsWorkflowDesigner::samples);
+    sample->parent()->setExpanded(true);
+    GTMouseDriver::moveTo(os,GTTreeWidget::getItemCenter(os, sample));
+    GTMouseDriver::click(os);
+    CHECK_OP(os, );
+
+    //4. Load any workflow.
+    QString schemaPath = testDir + "_common_data/scenarios/workflow designer/222.uwl";
+    GTUtilsWorkflowDesigner::loadWorkflow(os, schemaPath);
+    CHECK_OP(os, );
+
+    //Expected: the elements tab is active.
+    GTUtilsWorkflowDesigner::tab current = GTUtilsWorkflowDesigner::currentTab(os);
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::algoriths == current, "Samples tab is active");
+}
 
 } // GUITest_regression_scenarios namespace
 
