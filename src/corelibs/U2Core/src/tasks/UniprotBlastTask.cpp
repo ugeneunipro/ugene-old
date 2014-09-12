@@ -77,7 +77,6 @@ void ReplyHandler::sl_replyFinished(QNetworkReply *reply) {
     CHECK_EXT(!os->isCoR(), emit si_finish(), );
 
     timer.stop();
-    curAttemptNumber = 0;
 
     replyData = reply->readAll();
     ioLog.trace(QString("Server reply received, request url=\'%1\'").arg(reply->url().toString()));
@@ -533,8 +532,10 @@ QString UniprotBlastTask::generateUrl() {
 
     url = BASE_URL;
     url += "?";
-    url += "query=" + sequence;
+    url += "blastQuery=" + sequence;
     url += "&" + settings.getString();
+    url += "&landingPage=no";
+    url += "&redirect=yes";
     return url;
 }
 
