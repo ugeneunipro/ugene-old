@@ -368,15 +368,12 @@ void GObjectUtils::replaceAnnotationQualfier( AnnotationData &a, const QString &
 {
     QVector<U2Qualifier> quals;
     a.findQualifiers( name, quals );
-    
+    QList<U2Qualifier> qualifiersList = a.qualifiers.toList();
+
     foreach ( const U2Qualifier &q, quals ) {
-        for ( int i = 0; i < quals.size( ); ++i ) {
-            if ( a.qualifiers[i] == q ) {
-                a.qualifiers.remove( i );
-                --i;
-            }
-        }
+        qualifiersList.removeAll(q);
     }
+    a.qualifiers = qualifiersList.toVector();
 
     if ( create || !quals.isEmpty( ) ) {
         a.qualifiers << U2Qualifier( name, newVal );
