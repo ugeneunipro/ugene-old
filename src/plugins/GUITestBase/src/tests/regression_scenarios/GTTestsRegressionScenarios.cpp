@@ -88,6 +88,7 @@
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/BlastAllSupportDialogFiller.h"
+#include "runnables/ugene/plugins/external_tools/FormatDBDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
@@ -5638,7 +5639,7 @@ GUI_TEST_CLASS_DEFINITION(test_3439){
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Write Alignment") == 3, "Errors count dont match, should be 2 validation errors");
 }
 
-GUI_TEST_CLASS_DEFINITION(test_3455){
+GUI_TEST_CLASS_DEFINITION(test_3455) {
     //1. Open WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
@@ -5660,6 +5661,24 @@ GUI_TEST_CLASS_DEFINITION(test_3455){
     //Expected: the elements tab is active.
     GTUtilsWorkflowDesigner::tab current = GTUtilsWorkflowDesigner::currentTab(os);
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::algoriths == current, "Samples tab is active");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3478) {
+    //1. Open _common_data/fasta/multy_fa.fa
+    //2. File context menu -> BLAST -> Format DB
+    //Expected: there are not safe points errors in the log
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
+    GTUtilsProject::openFiles(os, testDir + "_common_data/fasta/multy_fa.fa");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "multy_fa.fa"));
+    GTLogTracer l;
+    FormatDBSupportRunDialogFiller::Parameters p;
+    p.justCancel = true;
+    GTUtilsDialog::waitForDialog(os, new FormatDBSupportRunDialogFiller(os, p));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "BLAST" << "FormatDB"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsLog::check(os, l);
 }
 
 } // GUITest_regression_scenarios namespace

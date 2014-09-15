@@ -87,6 +87,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h \
 #   Runnables / UGENE / plugins / external_tools
             src/runnables/ugene/plugins/external_tools/BlastAllSupportDialogFiller.h \
+            src/runnables/ugene/plugins/external_tools/FormatDBDialogFiller.h \
             src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h \
             src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h \
 #   Runnables / UGENE / plugins / workflow_designer
@@ -292,6 +293,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.cpp \
 #   Runnables / UGENE / plugins / external_tools
             src/runnables/ugene/plugins/external_tools/BlastAllSupportDialogFiller.cpp \
+            src/runnables/ugene/plugins/external_tools/FormatDBDialogFiller.cpp \
             src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.cpp \
             src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp \
 #   Runnables / UGENE / plugins / workflow_designer

@@ -56,6 +56,7 @@ namespace U2 {
 ETSProjectViewItemsContoller::ETSProjectViewItemsContoller(QObject* p) : QObject(p) {
     formatDBOnSelectionAction=new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(ET_FORMATDB));
     makeBLASTDBOnSelectionAction=new ExternalToolSupportAction(tr("BLAST+ make DB..."), this, QStringList(ET_MAKEBLASTDB));
+    formatDBOnSelectionAction->setObjectName(ET_FORMATDB);
     connect(formatDBOnSelectionAction,SIGNAL(triggered()), SLOT(sl_runFormatDBOnSelection()));
     connect(makeBLASTDBOnSelectionAction,SIGNAL(triggered()), SLOT(sl_runFormatDBOnSelection()));
 
@@ -81,6 +82,7 @@ void ETSProjectViewItemsContoller::sl_addToProjectViewMenu(QMenu& m) {
     }
     if (hasFastaDocs) {
         QMenu* subMenu = m.addMenu(tr("BLAST"));
+        subMenu->menuAction()->setObjectName("BLAST");
         subMenu->setIcon(QIcon(":external_tool_support/images/ncbi.png"));
         subMenu->addAction(formatDBOnSelectionAction);
         subMenu->addAction(makeBLASTDBOnSelectionAction);
