@@ -136,7 +136,7 @@ void ETSProjectViewItemsContoller::sl_runFormatDBOnSelection(){
             settings.inputFilesPath.append(doc->getURLString());
 
             const QList<GObject*>& objects = doc->getObjects();
-            SAFE_POINT( 1 == objects.size( ), "FASTA document: sequence objects count error", );
+            SAFE_POINT(!objects.isEmpty( ), "FASTA document: sequence objects count error", );
             U2SequenceObject *seqObj = dynamic_cast<U2SequenceObject*>(objects.first());
             if ( NULL != seqObj ) {
                 SAFE_POINT(seqObj->getAlphabet() != NULL,
