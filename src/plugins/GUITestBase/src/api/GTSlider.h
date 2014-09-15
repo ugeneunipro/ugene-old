@@ -19,31 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef LICENSEAGREEMNTDIALOGFILLER_H
-#define LICENSEAGREEMNTDIALOGFILLER_H
+#ifndef _U2_GT_SLIDER_H_
+#define _U2_GT_SLIDER_H_
 
-#include "GTUtilsDialog.h"
-#include "api/GTWidget.h"
+#include <QtGui/QSlider>
 
+#include "api/GTGlobals.h"
+namespace U2{
 
-#include <QtGui/QPushButton>
-#include <QtGui/QApplication>
-namespace U2 {
-
-class LicenseAgreemntDialogFiller : public Filler {
+class GTSlider
+{
 public:
-    LicenseAgreemntDialogFiller(U2OpStatus &os) : Filler(os, "LicenseDialog"){}
-    virtual void run(){
-        QWidget* dialog = QApplication::activeModalWidget();
-        CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
-        GTGlobals::sleep(1000);
-
-        QPushButton* accept = dialog->findChild<QPushButton*>("acceptButton");
-        GTWidget::click(os, accept);
-    }
-private:
-
+    static void setValue(U2OpStatus &os, QSlider* slider, int value);
 };
 
 }
-#endif // LICENSEAGREEMNTDIALOGFILLER_H
+
+#endif // GTSLIDER_H

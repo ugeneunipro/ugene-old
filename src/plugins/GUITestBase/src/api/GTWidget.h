@@ -45,6 +45,9 @@ public:
     // finds widget with the given object name using given FindOptions. Parent widget is QMainWindow, if not set
     static QWidget *findWidget(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
+    //template<typename T>
+    //static T findExactWidget(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+
     static QAbstractButton *findButtonByText(U2OpStatus &os, const QString &text, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
     //returns color of point p in widget w coordinates
@@ -52,6 +55,20 @@ public:
 
     //this method writes info about all widgets to opStatus
     static void getAllWidgetsInfo(U2OpStatus &os, QWidget* parent=NULL);
+
+    #define GT_CLASS_NAME "GTWidget"
+    #define GT_METHOD_NAME "findWidget"
+    template<class T>
+    static T findExactWidget(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& options= GTGlobals::FindOptions()){
+        T result;
+        QWidget* w = findWidget(os, widgetName, parentWidget, options);
+        GT_CHECK_RESULT(w != NULL, "widget not found", result);
+        result = qobject_cast<T>(w);
+        GT_CHECK_RESULT(w != NULL, "widget of specefied class not found", result);
+        return result;
+    }
+    #undef GT_METHOD_NAME
+    #undef GT_CLASS_NAME
 };
 
 } //namespace

@@ -25,13 +25,26 @@
 #include "api/GTComboBox.h"
 #include "api/GTCheckBox.h"
 #include "api/GTDoubleSpinBox.h"
+#include "api/GTFile.h"
 #include "api/GTFileDialog.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
+#include "api/GTSlider.h"
 #include "api/GTWidget.h"
 
-#include "GTUtilsOptionPanelMSA.h"
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/qt/ColorDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
+#include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
+
+#include "GTUtilsLog.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsOptionPanelMSA.h"
+#include "GTUtilsPhyTree.h"
+#include "GTUtilsProjectTreeView.h"
+
+#include <U2Core/AppContext.h>
 namespace U2{
 
 namespace GUITest_common_scenarios_options_panel_MSA{
@@ -1150,6 +1163,8 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0006){
 
 }
 
+namespace{
+
 void setSpinValue(U2OpStatus &os, double value, const QString& spinName){
     expandAlgoSettings(os);
     QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(GTWidget::findWidget(os, spinName));
@@ -1184,6 +1199,7 @@ void align(U2OpStatus &os){
     GTWidget::click(os, GTWidget::findWidget(os, "alignButton"));
 }
 
+}
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0007){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
@@ -1249,7 +1265,604 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0007_3){
 //    Expected state: Isophya_altaica_EF540820 is AAG-CTTACT---AA
     GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0,1), QPoint(14,1), "AAG-CTTACT---AA");
 }
+namespace{
+void setOutputPath(U2OpStatus &os, const QString& path, const QString& name){
+    expandOutputSettings(os);
+    QWidget* outputFileSelectButton = GTWidget::findWidget(os, "outputFileSelectButton");
+    CHECK_SET_ERR(outputFileSelectButton != NULL, "outputFileSelectButton not found");
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, path, name, GTFileDialogUtils::Save));
+    GTWidget::click(os, outputFileSelectButton);
+    GTGlobals::sleep(300);
+}
+}
 
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0008){
+    const QString fileName = "pairwise_alignment_test_0008.aln";
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+//    2. Open Pairwise alignment option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    3. Add Phaneroptera_falcata sequence
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+//    4. Add Isophya_altaica_EF540820 sequence
+//    5. Select some existing file as output
+    QString s = sandBoxDir + fileName;
+    QFile f(s);
+    bool created = f.open(QFile::ReadWrite);
+    CHECK_SET_ERR(created, "file not created");
+
+    setOutputPath(os, sandBoxDir,  fileName);
+    align(os);
+    GTGlobals::sleep(500);
+//    Expected state: file rewrited
+    int size = GTFile::getSize(os, sandBoxDir + fileName);
+    CHECK_SET_ERR(size == 185, QString("unexpected file size %1").arg(size));
+    GTUtilsProjectTreeView::doubleClickItem(os, fileName);
+    f.close();
+}
+
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0009){
+    GTLogTracer l;
+    const QString fileName = "pairwise_alignment_test_0009.aln";
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+//    2. Open Pairwise alignment option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    3. Add Phaneroptera_falcata sequence
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+//    4. Add Isophya_altaica_EF540820 sequence
+//    5. Select some existing read-only file as output
+    QString s = sandBoxDir + fileName;
+    QFile f(s);
+    bool created = f.open(QFile::ReadWrite);
+    PermissionsSetter p;
+    CHECK_SET_ERR(created, "file not created");
+    p.setPermissions(s, QFile::ReadOwner);
+
+    setOutputPath(os, sandBoxDir,  fileName);
+    align(os);
+    GTGlobals::sleep(500);
+//    Expected state: error in log: Task {PairwiseAlignmentTask} finished with error: No permission to write to 'COI_transl.aln' file.
+    QString error = l.getError();
+    QString expected = QString("Task {PairwiseAlignmentTask} finished with error: No permission to write to \'%1\' file.").arg(fileName);
+    CHECK_SET_ERR(error == expected, QString("enexpected error: %1").arg(error));
+    f.close();
+}
+
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0010){
+    GTLogTracer l;
+    const QString fileName = "pairwise_alignment_test_0010.aln";
+    const QString dirName = "pairwise_alignment_test_0010";
+//    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+//    2. Open Pairwise alignment option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//    3. Add Phaneroptera_falcata sequence
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+//    4. Add Isophya_altaica_EF540820 sequence
+//    5. Select some existing read-only file as output
+    QString s = sandBoxDir + dirName;
+    bool ok = QDir().mkpath(s);
+    CHECK_SET_ERR(ok, "subdirectory not created");
+    PermissionsSetter p;
+    p.setPermissions(s, QFile::ReadOwner);
+
+    setOutputPath(os, sandBoxDir + dirName,  fileName);
+    align(os);
+    GTGlobals::sleep(500);
+//    Expected state: error in log: Task {PairwiseAlignmentTask} finished with error: No permission to write to 'COI_transl.aln' file.
+    QString error = l.getError();
+    QString expected = QString("Task {PairwiseAlignmentTask} finished with error: No permission to write to \'%1\' file.").arg(fileName);
+    CHECK_SET_ERR(error == expected, QString("enexpected error: %1").arg(error));
+}
+GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0011){
+//1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped.aln");
+//2. Open Pairwise alignment option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+//3. Add Phaneroptera_falcata sequence
+//4. Add Isophya_altaica_EF540820 sequence
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+//5. Use empty path in output settings
+    expandOutputSettings(os);
+    QLineEdit* outputFileLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "outputFileLineEdit"));
+    CHECK_SET_ERR(outputFileLineEdit != NULL, "outputFileLineEdit not found");
+    QString initialText = outputFileLineEdit->text();
+    CHECK_SET_ERR(!initialText.isEmpty(), "line edit is empty");
+    GTWidget::click(os, outputFileLineEdit);
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(300);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(300);
+    QString finalText = outputFileLineEdit->text();
+//Expected state: empty path can not be set
+    CHECK_SET_ERR(initialText == finalText, QString("wrong text: %1").arg(finalText));
+}
+
+GUI_TEST_CLASS_DEFINITION(tree_settings_test_0001){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open tree settings option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
+//    3. Press "Open tree" button. Select data/samples/CLUSTALW/COI.nwk in file dialog
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/Newick", "COI.nwk"));
+    GTWidget::click(os, GTWidget::findWidget(os, "OpenTreeButton"));
+    GTGlobals::sleep(1000);
+//    Expected state: tree opened.
+    GTWidget::findWidget(os, "treeView");
+}
+
+GUI_TEST_CLASS_DEFINITION(tree_settings_test_0002){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open tree settings option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
+//    3. Press "build tree" button.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default"));
+    GTWidget::click(os, GTWidget::findWidget(os, "BuildTreeButton"));
+    GTGlobals::sleep(1000);
+//    4. Fill build tree dialog with defaulb values
+//    Expected state: tree built.
+    GTWidget::findWidget(os, "treeView");
+}
+
+GUI_TEST_CLASS_DEFINITION(tree_settings_test_0003){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open tree settings option panel tab. build tree
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default", 0, 0, true));
+    GTWidget::click(os, GTWidget::findWidget(os, "BuildTreeButton"));
+    GTGlobals::sleep(1000);
+
+    //prepating widgets
+    QWidget* treeView = GTWidget::findWidget(os, "treeView");
+    CHECK_SET_ERR(treeView != NULL, "tree view not found");
+    QWidget* heightSlider = GTWidget::findWidget(os, "heightSlider");
+    CHECK_SET_ERR(heightSlider != NULL, "heightSlider not found");
+    QComboBox* layoutCombo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "layoutCombo"));
+    CHECK_SET_ERR(layoutCombo != NULL, "layoutCombo not found");
+
+    QPixmap init = QPixmap::grabWidget(treeView, treeView->rect());
+    QImage initImage = init.toImage();
+
+//    3. Select circular layout
+    GTComboBox::setIndexWithText(os, layoutCombo, "Circular");
+    GTGlobals::sleep(500);
+//    Expected state: layout changed, height slider is disabled
+    QPixmap circular = QPixmap::grabWidget(treeView, treeView->rect());
+    QImage circularImage = circular.toImage();
+    CHECK_SET_ERR(initImage != circularImage, "tree view not changed to circular");
+    CHECK_SET_ERR(!heightSlider->isEnabled(), "heightSlider in enabled for circular layout");
+//    4. Select unrooted layout
+    GTComboBox::setIndexWithText(os, layoutCombo, "Unrooted");
+    GTGlobals::sleep(500);
+//    Expected state: layout changed, height slider is disabled
+    QPixmap unrooted = QPixmap::grabWidget(treeView, treeView->rect());
+    QImage unrootedImage = unrooted.toImage();
+    CHECK_SET_ERR(initImage != unrootedImage, "tree view not changed to unrooted");
+    CHECK_SET_ERR(!heightSlider->isEnabled(), "heightSlider in enabled for unrooted layout");
+//    5. Select rectangular layout
+    GTComboBox::setIndexWithText(os, layoutCombo, "Rectangular");
+    GTGlobals::sleep(500);
+//    Expected state: tree is similar to the beginning, height slider is enabled
+    QPixmap rectangular = QPixmap::grabWidget(treeView, treeView->rect());
+    QImage rectangularImage = rectangular.toImage();
+    CHECK_SET_ERR(initImage == rectangularImage, "final image is not equal to initial");
+    CHECK_SET_ERR(heightSlider->isEnabled(), "heightSlider in disabled for rectangular layout");
+}
+
+GUI_TEST_CLASS_DEFINITION(tree_settings_test_0004){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open tree settings option panel tab. build tree
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default", 0, 0, true));
+    GTWidget::click(os, GTWidget::findWidget(os, "BuildTreeButton"));
+    GTGlobals::sleep(1000);
+
+    //prepating widgets
+    QWidget* treeView = GTWidget::findWidget(os, "treeView");
+    CHECK_SET_ERR(treeView != NULL, "tree view not found");
+    QComboBox* treeViewCombo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "treeViewCombo"));
+    CHECK_SET_ERR(treeViewCombo != NULL, "treeViewCombo not found");
+
+    QPixmap init = QPixmap::grabWidget(treeView, treeView->rect());
+    QImage initImage = init.toImage();
+
+//    3. Select phylogram view
+    GTComboBox::setIndexWithText(os, treeViewCombo, "Phylogram");
+    GTGlobals::sleep(500);
+//    Expected state: layout changed
+    QPixmap circular = QPixmap::grabWidget(treeView, treeView->rect());
+    QImage circularImage = circular.toImage();
+    CHECK_SET_ERR(initImage != circularImage, "tree view not changed to Phylogram");
+//    4. Select cladogram view
+    GTComboBox::setIndexWithText(os, treeViewCombo, "Cladogram");
+    GTGlobals::sleep(500);
+//    Expected state: layout changed
+    QPixmap unrooted = QPixmap::grabWidget(treeView, treeView->rect());
+    QImage unrootedImage = unrooted.toImage();
+    CHECK_SET_ERR(initImage != unrootedImage, "tree view not changed to unrooted");
+//    5. Select default view
+    GTComboBox::setIndexWithText(os, treeViewCombo, "Default");
+    GTGlobals::sleep(500);
+//    Expected state: tree is similar to the beginning
+    QPixmap rectangular = QPixmap::grabWidget(treeView, treeView->rect());
+    QImage rectangularImage = rectangular.toImage();
+    CHECK_SET_ERR(initImage == rectangularImage, "final image is not equal to initial");
+}
+
+GUI_TEST_CLASS_DEFINITION(tree_settings_test_0005){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open tree settings option panel tab. build tree
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default", 0, 0, true));
+    GTWidget::click(os, GTWidget::findWidget(os, "BuildTreeButton"));
+    GTGlobals::sleep();
+
+    QCheckBox* showNamesCheck = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "showNamesCheck"));
+    CHECK_SET_ERR(showNamesCheck != NULL, "showNamesCheck not found");
+    QCheckBox* showDistancesCheck = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "showDistancesCheck"));
+    CHECK_SET_ERR(showDistancesCheck != NULL, "showDistancesCheck not found");
+    QCheckBox* alignLabelsCheck = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "alignLabelsCheck"));
+    CHECK_SET_ERR(alignLabelsCheck != NULL, "alignLabelsCheck not found");
+
+    QWidget* parent = GTWidget::findWidget(os, "COI [m] COI");
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView", parent));
+
+    QList<QGraphicsSimpleTextItem*> initNames = GTUtilsPhyTree::getVisiableLabels(os, treeView);
+    QList<QGraphicsSimpleTextItem*> initDistanses = GTUtilsPhyTree::getVisiableDistances(os, treeView);
+    int initNamesNumber =initNames.count();
+    int initDistansesNumber = initDistanses.count();
+//    3. Uncheck "show names" checkbox.
+    GTCheckBox::setChecked(os, showNamesCheck, false);
+    GTGlobals::sleep(500);
+//    Expected state: names are not shown, align labels checkbox is disabled
+    QList<QGraphicsSimpleTextItem*> names = GTUtilsPhyTree::getVisiableLabels(os, treeView);
+    CHECK_SET_ERR(names.count() == 0, QString("unexpected number of names: %1").arg(names.count()));
+    CHECK_SET_ERR(!alignLabelsCheck->isEnabled(), "align labels checkbox is unexpectidly enabled");
+//    4. Check "show names" checkbox.
+    GTCheckBox::setChecked(os, showNamesCheck, true);
+    GTGlobals::sleep(500);
+//    Expected state: names are shown, align labels checkbox is enabled
+    names = GTUtilsPhyTree::getVisiableLabels(os, treeView);
+    CHECK_SET_ERR(names.count() == initNamesNumber, QString("unexpected number of names: %1").arg(names.count()));
+    CHECK_SET_ERR(alignLabelsCheck->isEnabled(), "align labels checkbox is unexpectidly disabled");
+//    5. Uncheck "show distanses" checkbox.
+    GTCheckBox::setChecked(os, showDistancesCheck, false);
+    GTGlobals::sleep(500);
+//    Expected state: distanses are not shown
+    QList<QGraphicsSimpleTextItem*> distanses = GTUtilsPhyTree::getVisiableDistances(os, treeView);
+    CHECK_SET_ERR(distanses.count() == 0, QString("unexpected number of distanses: %1").arg(names.count()));
+//    6. Check "show distanses" checkbox.
+    GTCheckBox::setChecked(os, showDistancesCheck, true);
+    GTGlobals::sleep(500);
+//    Expected state: distanses are shown
+    distanses = GTUtilsPhyTree::getVisiableDistances(os, treeView);
+    CHECK_SET_ERR(distanses.count() == initDistansesNumber, QString("unexpected number of distanses: %1").arg(names.count()));
+//    7. Check "align labels" checkbox.
+    //saving init image
+    GTCheckBox::setChecked(os, alignLabelsCheck, false);
+    QWidget* w = GTWidget::findWidget(os, "treeView");
+    CHECK_SET_ERR(w != NULL, "tree view not found");
+    QPixmap initPixmap = QPixmap::grabWidget(w, w->rect());
+    QImage initImg = initPixmap.toImage();//initial state
+
+    GTCheckBox::setChecked(os, alignLabelsCheck, true);
+//    Expected state: labels are aligned
+    QPixmap alignedPixmap = QPixmap::grabWidget(w, w->rect());
+    QImage alignedImg = alignedPixmap.toImage();//initial state
+    CHECK_SET_ERR(alignedImg != initImg, "labels not aligned");
+//    8. Uncheck "align labels" checkbox.
+    GTCheckBox::setChecked(os, alignLabelsCheck, false);
+//    Expected state: labels are not aligned
+    QPixmap finalPixmap = QPixmap::grabWidget(w, w->rect());
+    QImage finalImg = finalPixmap.toImage();//initial state
+    CHECK_SET_ERR(finalImg == initImg, "tree ialigned");
+}
+
+namespace{
+void expandFontSettings(U2OpStatus &os){
+    QWidget* labelsColorButton = GTWidget::findWidget(os, "labelsColorButton");
+    CHECK_SET_ERR(labelsColorButton != NULL, "labelsColorButton not found");
+    if(!labelsColorButton->isVisible()){
+        GTWidget::click(os, GTWidget::findWidget(os, "lblFontSettings"));
+    }
+}
+
+void setLabelsColor(U2OpStatus &os, int r, int g, int b){
+    expandFontSettings(os);
+    GTUtilsDialog::waitForDialog(os , new ColorDialogFiller(os, r, g, b));
+    QWidget* labelsColorButton = GTWidget::findWidget(os, "labelsColorButton");
+    GTWidget::click(os, labelsColorButton);
+}
+
+bool checkLabelColor(U2OpStatus &os, QString expectedColorName){
+    QGraphicsView* w = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR_RESULT(w != NULL, "tree view not found", false);
+    QList<QGraphicsSimpleTextItem*> labels = GTUtilsPhyTree::getVisiableLabels(os, w);
+    CHECK_SET_ERR_RESULT(!labels.isEmpty(), "there are no visiable labels", false);
+
+    QPixmap pixmap = QPixmap::grabWidget(AppContext::getMainWindow()->getQMainWindow(), AppContext::getMainWindow()->getQMainWindow()->rect());
+    QImage img = pixmap.toImage();
+
+    //hack
+    foreach(QGraphicsSimpleTextItem* label, labels){
+        QRectF rect = label->boundingRect();
+        w->ensureVisible(label);
+        for(int i = 0; i< rect.right(); i++){
+            for(int j = 0; j< rect.bottom(); j++){
+                QPoint p(i,j);
+                QPoint global = w->viewport()->mapToGlobal(w->mapFromScene(label->mapToScene(p)));
+
+                QRgb rgb = img.pixel(global);
+                QColor c = QColor(rgb);
+                QString name = c.name();
+                if(name == expectedColorName){
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+}
+
+GUI_TEST_CLASS_DEFINITION(tree_settings_test_0006){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open tree settings option panel tab. build tree
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default", 0, 0, true));
+    GTWidget::click(os, GTWidget::findWidget(os, "BuildTreeButton"));
+    GTGlobals::sleep();
+//    3. Change labels color.
+    setLabelsColor(os, 255, 0, 0);
+    GTGlobals::sleep();
+//    Expected: color changed
+    bool b = checkLabelColor(os, "#ff0000");
+    CHECK_SET_ERR(b, "color not changed");
+//    4. Change labels font
+    QComboBox* fontComboBox = GTWidget::findExactWidget<QComboBox*>(os, "fontComboBox");
+    QLineEdit* l = fontComboBox->findChild<QLineEdit*>();
+    GTLineEdit::setText(os, l, "Serif");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep(500);
+//    Expected: font changed
+    QGraphicsSimpleTextItem* label = GTUtilsPhyTree::getVisiableLabels(os).at(0);
+    QString family = label->font().family();
+    CHECK_SET_ERR(family == "Serif", "unexpected style: " + family);
+//    5. Change labels size
+    QWidget* fontSizeSpinBox = GTWidget::findWidget(os, "fontSizeSpinBox");
+    CHECK_SET_ERR(fontSizeSpinBox != NULL, "fontSizeSpinBox not found");
+
+    QLineEdit* fontLineedit = fontSizeSpinBox->findChild<QLineEdit*>();
+    GTLineEdit::setText(os, fontLineedit, "20");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+//    Expected: size changed
+    int pointSize = label->font().pointSize();
+    CHECK_SET_ERR(pointSize == 20, QString("unexpected point size: %1").arg(pointSize));
+// check font settings buttons
+    QWidget* boldAttrButton = GTWidget::findWidget(os, "boldAttrButton");
+    QWidget* italicAttrButton = GTWidget::findWidget(os, "italicAttrButton");
+    QWidget* underlineAttrButton = GTWidget::findWidget(os, "underlineAttrButton");
+
+    //bold
+    GTWidget::click(os, boldAttrButton);
+    GTGlobals::sleep(300);
+    CHECK_SET_ERR(label->font().bold(), "expected bold font");
+    //not bold
+    GTWidget::click(os, boldAttrButton);
+    GTGlobals::sleep(300);
+    CHECK_SET_ERR(!label->font().bold(), "bold font not canceled");
+
+    //italic
+    GTWidget::click(os, italicAttrButton);
+    GTGlobals::sleep(300);
+    CHECK_SET_ERR(label->font().italic(), "expected italic font");
+    //not italic
+    GTWidget::click(os, italicAttrButton);
+    GTGlobals::sleep(300);
+    CHECK_SET_ERR(!label->font().italic(), "italic font not canceled");
+
+    //underline
+    GTWidget::click(os, underlineAttrButton);
+    GTGlobals::sleep(300);
+    CHECK_SET_ERR(label->font().underline(), "expected underline font");
+    //not underline
+    GTWidget::click(os, underlineAttrButton);
+    GTGlobals::sleep(300);
+    CHECK_SET_ERR(!label->font().underline(), "underline font not canceled");
+}
+
+GUI_TEST_CLASS_DEFINITION(tree_settings_test_0007){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open tree settings option panel tab. build tree
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default", 0, 0, true));
+    GTWidget::click(os, GTWidget::findWidget(os, "BuildTreeButton"));
+    GTGlobals::sleep();
+
+    QGraphicsView* treeView = GTWidget::findExactWidget<QGraphicsView*>(os, "treeView");
+    CHECK_SET_ERR(treeView != NULL, "tree view not found");
+    QGraphicsScene* scene = treeView->scene();
+//    3. change widthSlider value
+    int initWidth = scene->width();
+    QSlider* widthSlider = GTWidget::findExactWidget<QSlider*>(os, "widthSlider");
+    GTSlider::setValue(os, widthSlider, 50);
+    GTGlobals::sleep(300);
+//    Expected state:tree became wider
+    int finalWidth = scene->width();
+    CHECK_SET_ERR(initWidth < finalWidth, "width not changed");
+
+//    4. change heightSlider value
+    int initheight = scene->height();
+    QSlider* heightSlider = GTWidget::findExactWidget<QSlider*>(os, "heightSlider");
+    GTSlider::setValue(os, heightSlider, 20);
+    GTGlobals::sleep(300);
+//    Expected state:tree became wider
+    int finalHiegth = scene->height();
+    CHECK_SET_ERR(initheight < finalHiegth, "height not changed");
+}
+
+namespace{
+
+void expandPenSettings(U2OpStatus &os){
+    QWidget* branchesColorButton = GTWidget::findWidget(os, "branchesColorButton");
+    CHECK_SET_ERR(branchesColorButton != NULL, "branchesColorButton not found");
+    if(!branchesColorButton->isVisible()){
+        GTWidget::click(os, GTWidget::findWidget(os, "lblPenSettings"));
+    }
+}
+
+void setBranchColor(U2OpStatus &os, int r, int g, int b){
+    expandPenSettings(os);
+    GTUtilsDialog::waitForDialog(os , new ColorDialogFiller(os, r, g, b));
+    QWidget* branchesColorButton = GTWidget::findWidget(os, "branchesColorButton");
+    GTWidget::click(os, branchesColorButton);
+}
+double colorPercent(U2OpStatus &os, QWidget* w, const QString& c){
+    double total = 0;
+    double found = 0;
+    QPixmap pixmap = QPixmap::grabWidget(w, w->rect());
+    QImage img = pixmap.toImage();
+    QRect r = w->rect();
+    int wid = r.width();
+    int heig = r.height();
+    for(int i = 0; i < wid; i++){
+        for (int j = 0; j < heig; j++){
+            total++;
+            QPoint p(i,j);
+            QRgb rgb = img.pixel(p);
+            QColor color = QColor(rgb);
+            QString name = color.name();
+            if(name == c){
+                found++;
+            }
+        }
+    }
+    double result = found/total;
+    return result;
+}
+}
+
+GUI_TEST_CLASS_DEFINITION(tree_settings_test_0008){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open tree settings option panel tab. build tree
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default", 0, 0, true));
+    GTWidget::click(os, GTWidget::findWidget(os, "BuildTreeButton"));
+    GTGlobals::sleep();
+//    3. change branch color
+    setBranchColor(os, 255, 0, 0);
+    GTGlobals::sleep(500);
+//    Expected state: color changed
+    QGraphicsView* treeView = GTWidget::findExactWidget<QGraphicsView*>(os, "treeView");
+    CHECK_SET_ERR(treeView != NULL, "tree view not found");
+    double initPercent = colorPercent(os, treeView, "#ff0000");
+    CHECK_SET_ERR(initPercent != 0, "color not changed");
+//    4. change  line Weight
+    QSpinBox* lineWeightSpinBox = GTWidget::findExactWidget<QSpinBox*>(os, "lineWeightSpinBox");
+    GTSpinBox::setValue(os, lineWeightSpinBox, 50, GTGlobals::UseKeyBoard);
+    double finalPercent = colorPercent(os, treeView, "#ff0000");
+    CHECK_SET_ERR(finalPercent > initPercent*10, "branches width changed not enough");
+}
+
+namespace{
+void setConsensusOutputPath(U2OpStatus &os, const QString& path){
+    QLineEdit* pathLe = GTWidget::findExactWidget<QLineEdit*>(os, "pathLe");
+    CHECK_SET_ERR(pathLe != NULL, "pathLe not found");
+    GTLineEdit::setText(os, pathLe, path);
+}
+}
+
+GUI_TEST_CLASS_DEFINITION(export_consensus_test_0001){
+    const QString fileName = "export_consensus_test_0001.txt";
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open export consensus option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "plain text"));
+//    3. Select some existing file as output
+    QString s = sandBoxDir + fileName;
+    QFile f(s);
+    bool created = f.open(QFile::ReadWrite);
+    CHECK_SET_ERR(created, "file not created");
+
+    setConsensusOutputPath(os, sandBoxDir + fileName);
+//    4. Press export button
+    GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
+    GTGlobals::sleep(300);
+//    Expected state: file rewrited
+    int size = GTFile::getSize(os, sandBoxDir + fileName);
+    CHECK_SET_ERR(size == 604, QString("unexpected file size %1").arg(size));
+    GTUtilsProjectTreeView::doubleClickItem(os, fileName);
+    f.close();
+}
+
+GUI_TEST_CLASS_DEFINITION(export_consensus_test_0002){
+    GTLogTracer l;
+    const QString fileName = "export_consensus_test_0002.aln";
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open export consensus option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
+//    3. Select some existing read-only file as output
+    QString s = sandBoxDir + fileName;
+    QFile f(s);
+    bool created = f.open(QFile::ReadWrite);
+    PermissionsSetter p;
+    CHECK_SET_ERR(created, "file not created");
+    p.setPermissions(s, QFile::ReadOwner);
+
+    setConsensusOutputPath(os, sandBoxDir + fileName);
+//    4. Press export button
+    GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
+    GTGlobals::sleep(300);
+//    Expected state: error in log: Task {Save document} finished with error: No permission to write to 'COI_transl.aln' file.
+    QString error = l.getError();
+    QString expected = QString("Task {Export consensus to MSA} finished with error: Subtask {Save document} is failed: No permission to write to \'%1\' file.").arg(fileName);
+    CHECK_SET_ERR(error == expected, QString("enexpected error: %1").arg(error));
+    f.close();
+}
+
+GUI_TEST_CLASS_DEFINITION(export_consensus_test_0003){
+    GTLogTracer l;
+    const QString fileName = "export_consensus_test_0003.aln";
+    const QString dirName = "export_consensus_test_0003";
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open export consensus option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
+//    3. Select some existing read-only file as output
+    QString s = sandBoxDir + dirName;
+    bool ok = QDir().mkpath(s);
+    CHECK_SET_ERR(ok, "subdirectory not created");
+    PermissionsSetter p;
+    p.setPermissions(s, QFile::ReadOwner);
+
+    setConsensusOutputPath(os, sandBoxDir + dirName + '/' + fileName);
+//    4. Press export button
+    GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
+    GTGlobals::sleep(300);
+//    Expected state: error in log: Task {PairwiseAlignmentTask} finished with error: No permission to write to 'COI_transl.aln' file.
+    QString error = l.getError();
+    QString expected = QString("Task {Export consensus to MSA} finished with error: Subtask {Save document} is failed: No permission to write to \'%1\' file.").arg(fileName);
+    CHECK_SET_ERR(error == expected, QString("enexpected error: %1").arg(error));
+}
+
+GUI_TEST_CLASS_DEFINITION(export_consensus_test_0004){
+
+}
 
 }
 }

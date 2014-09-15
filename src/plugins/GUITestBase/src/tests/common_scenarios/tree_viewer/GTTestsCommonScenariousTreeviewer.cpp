@@ -44,7 +44,6 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
-#include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
@@ -75,7 +74,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     GTGlobals::sleep(500);
 //2. Click on "Build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
@@ -101,7 +100,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1){
     GTGlobals::sleep(500);
 //2. Click on "Build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
@@ -127,7 +126,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2){
     GTGlobals::sleep(500);
 //2. Click on "Build tree" button on toolbar
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
@@ -154,7 +153,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
 //2. Click on "Build tree" button on toolbar "Build Tree"
 //Expected state: "Create Philogenetic Tree" dialog appears
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
@@ -200,7 +199,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1){
 //2. Click on "Build tree" button on toolbar "Build Tree"
 //Expected state: "Create Philogenetic Tree" dialog appears
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+
     //DIFFERENCE: Context menu is used for building tree
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_TREES<<"Build Tree"));
 
@@ -253,7 +252,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2){
 //2. Click on "Build tree" button on toolbar "Build Tree"
 //Expected state: "Create Philogenetic Tree" dialog appears
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+
     //DIFFERENCE: Main menu is used for building tree
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_TREES<<"Build Tree"));
 
@@ -308,7 +307,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
 //    Expected state: "Create Philogenetic Tree" dialog appears
 
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",2,52));
-    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep(500);
@@ -333,7 +332,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
 //    2. Click on "Build tree" button on toolbar
 //    Expected state: "Create Philogenetic Tree" dialog appears
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os,new LicenseAgreemntDialogFiller(os));
+
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
     GTGlobals::sleep();
@@ -376,7 +375,6 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 //2. Do menu {Actions->Align->Align With Muscle}
 //Expected state: "Align with muscle" dialog appears
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk"));
-    GTUtilsDialog::waitForDialog(os, new LicenseAgreemntDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<MSAE_MENU_ALIGN<<"Align with muscle", GTGlobals::UseMouse));
     GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os));
 
@@ -998,7 +996,6 @@ GUI_TEST_CLASS_DEFINITION( test_0023 ) {
     QDir outputDir( outputDirPath );
     GTUtilsDialog::waitForDialog( os,
         new BuildTreeDialogFiller( os, outputDir.absolutePath( ) + "/COI.nwk", 0, 0.0, true ) );
-    GTUtilsDialog::waitForDialog( os,new LicenseAgreemntDialogFiller( os ) );
     GTWidget::click( os, buildButton );
     GTGlobals::sleep( 500 );
 
@@ -1017,7 +1014,6 @@ GUI_TEST_CLASS_DEFINITION( test_0024 ) {
     //3. Press the "Build" button in the dialog
     GTUtilsDialog::waitForDialog( os,
         new PopupChooser( os, QStringList( ) << MSAE_MENU_TREES << "Build Tree" ) );
-    GTUtilsDialog::waitForDialog( os, new LicenseAgreemntDialogFiller( os ) );
 
     QString outputDirPath( testDir + "_common_data/scenarios/sandbox" );
     QDir outputDir( outputDirPath );

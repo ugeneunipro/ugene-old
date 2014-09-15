@@ -19,31 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef LICENSEAGREEMNTDIALOGFILLER_H
-#define LICENSEAGREEMNTDIALOGFILLER_H
+#include "GTSlider.h"
 
-#include "GTUtilsDialog.h"
-#include "api/GTWidget.h"
+namespace U2{
+#define GT_CLASS_NAME "GTSpinBox"
 
+#define GT_METHOD_NAME "setValue"
+void GTSlider::setValue(U2OpStatus &os, QSlider *slider, int value){
+    Q_UNUSED(os);
+    GT_CHECK(slider != NULL, "slider not found");
+    int min = slider->minimum();
+    int max = slider->maximum();
+    GT_CHECK(slider->isEnabled(), "slider is disabled");
+    GT_CHECK(value >= min, QString("can not set value %1, mininum is %2").arg(value).arg(min));
+    GT_CHECK(value <= max, QString("can not set value %1, maximum is %2").arg(value).arg(max));
 
-#include <QtGui/QPushButton>
-#include <QtGui/QApplication>
-namespace U2 {
-
-class LicenseAgreemntDialogFiller : public Filler {
-public:
-    LicenseAgreemntDialogFiller(U2OpStatus &os) : Filler(os, "LicenseDialog"){}
-    virtual void run(){
-        QWidget* dialog = QApplication::activeModalWidget();
-        CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
-        GTGlobals::sleep(1000);
-
-        QPushButton* accept = dialog->findChild<QPushButton*>("acceptButton");
-        GTWidget::click(os, accept);
-    }
-private:
-
-};
+    slider->setValue(value);
 
 }
-#endif // LICENSEAGREEMNTDIALOGFILLER_H
+#undef GT_CLASS_NAME
+
+#undef GT_METHOD_NAME
+}

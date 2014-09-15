@@ -71,9 +71,11 @@ QList<QGraphicsItem*> GTUtilsPhyTree::getNodes(U2OpStatus &os){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getLabels"
-QList<QGraphicsSimpleTextItem*> GTUtilsPhyTree::getLabels(U2OpStatus &os){
+QList<QGraphicsSimpleTextItem*> GTUtilsPhyTree::getLabels(U2OpStatus &os, QGraphicsView *treeView){
     QList<QGraphicsSimpleTextItem*> result;
-    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    if(treeView == NULL){
+        treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    }
     GT_CHECK_RESULT(treeView, "treeView not found", result);
     QList<QGraphicsItem*> list = treeView->scene()->items();
 
@@ -81,7 +83,8 @@ QList<QGraphicsSimpleTextItem*> GTUtilsPhyTree::getLabels(U2OpStatus &os){
         QGraphicsSimpleTextItem* textItem = qgraphicsitem_cast<QGraphicsSimpleTextItem*>(item);
         if(textItem){
             bool ok;
-            textItem->text().toDouble(&ok);
+            QString s = textItem->text();
+            s.toDouble(&ok);
             if(!ok){
                 result<<textItem;
             }
@@ -91,10 +94,22 @@ QList<QGraphicsSimpleTextItem*> GTUtilsPhyTree::getLabels(U2OpStatus &os){
 }
 #undef GT_METHOD_NAME
 
-#define GT_METHOD_NAME "getDistances"
-QList<QGraphicsSimpleTextItem*> GTUtilsPhyTree::getDistances(U2OpStatus &os){
+QList<QGraphicsSimpleTextItem*> GTUtilsPhyTree::getVisiableLabels(U2OpStatus &os, QGraphicsView *treeView){
     QList<QGraphicsSimpleTextItem*> result;
-    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    foreach(QGraphicsSimpleTextItem* item, getLabels(os, treeView)){
+        if(item->isVisible()){
+            result<<item;
+        }
+    }
+    return result;
+}
+
+#define GT_METHOD_NAME "getDistances"
+QList<QGraphicsSimpleTextItem*> GTUtilsPhyTree::getDistances(U2OpStatus &os, QGraphicsView *treeView){
+    QList<QGraphicsSimpleTextItem*> result;
+    if(treeView == NULL){
+        treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    }
     GT_CHECK_RESULT(treeView, "treeView not found", result);
     QList<QGraphicsItem*> list = treeView->scene()->items();
 
@@ -112,6 +127,15 @@ QList<QGraphicsSimpleTextItem*> GTUtilsPhyTree::getDistances(U2OpStatus &os){
 }
 #undef GT_METHOD_NAME
 
+QList<QGraphicsSimpleTextItem*> GTUtilsPhyTree::getVisiableDistances(U2OpStatus &os, QGraphicsView *treeView){
+    QList<QGraphicsSimpleTextItem*> result;
+    foreach(QGraphicsSimpleTextItem* item, getDistances(os, treeView)){
+        if(item->isVisible()){
+            result<<item;
+        }
+    }
+    return result;
+}
 #define GT_METHOD_NAME "getDistancesValues"
 QList<double> GTUtilsPhyTree::getDistancesValues(U2OpStatus &os){
     QList<double> result;
@@ -155,6 +179,7 @@ QPoint GTUtilsPhyTree::getGlobalCoord(U2OpStatus& os,QGraphicsItem *item){
     return globalCoord;
 }
 #undef GT_METHOD_NAME
+
 
 #undef GT_CLASS_NAME
 }

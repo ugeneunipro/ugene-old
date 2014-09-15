@@ -75,6 +75,7 @@ QList<QRadioButton*> GTRadioButton::getAllButtonsByText(U2OpStatus &os, QString 
     }
     QList<QRadioButton*> radioList = parent->findChildren<QRadioButton*>();
     foreach(QRadioButton* but, radioList){
+        QString s = but->text().toLower();
         if(but->text().toLower().contains(text.toLower())){
             result<<but;
         }

@@ -28,6 +28,8 @@
 #include "api/GTDoubleSpinBox.h"
 #include "api/GTRadioButton.h"
 
+#include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
+
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -60,6 +62,7 @@ void BuildTreeDialogFiller::run() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new LicenseAgreemntDialogFiller(os));
     if(saveTree!="default"){
         QLineEdit* saveLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os,"fileNameEdit"));
         GTLineEdit::setText(os,saveLineEdit, saveTree);

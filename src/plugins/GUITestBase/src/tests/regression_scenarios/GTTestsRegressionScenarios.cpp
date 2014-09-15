@@ -83,6 +83,7 @@
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h"
+#include "runnables/ugene/plugins/biostruct3d_view/StructuralAlignmentDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
@@ -846,7 +847,7 @@ GUI_TEST_CLASS_DEFINITION(test_1189){
 
     QLineEdit *end = (QLineEdit*)GTWidget::findWidget(os,"editEnd");
     CHECK_SET_ERR(end->isVisible(), "editEnd line is not visiable");
-    CHECK_SET_ERR(end->text()=="201","Wrong endValue. Current value is: "+end->text());
+    CHECK_SET_ERR(end->text()=="200","Wrong endValue. Current value is: "+end->text());
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1189_1){
@@ -3631,7 +3632,6 @@ GUI_TEST_CLASS_DEFINITION( test_2309 ) {
 
     // 2. Build tree for the alignment
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/2309.nwk", 0, 0, true));
-    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os,new LicenseAgreemntDialogFiller(os));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os, tree);
     GTGlobals::sleep(500);
@@ -4313,7 +4313,6 @@ GUI_TEST_CLASS_DEFINITION( test_2449 ) {
 
 //    2. Create a phylogenetic tree for the alignment.
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_2449.nwk", 0, 0, true));
-    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new LicenseAgreemntDialogFiller(os));
     GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() << "Tree" << "Build Tree");
 
 //    3. Open tree options panel widget (it can be opened automatically after tree building).
@@ -5132,14 +5131,13 @@ GUI_TEST_CLASS_DEFINITION(test_3276) {
 
 //    2. Build a phylogenetic tree synchronized with the alignment.
     QDir().mkdir(QFileInfo(sandBoxDir + "test_3276/COI.nwk").dir().absolutePath());
-    GTUtilsDialog::waitForDialog(os, new LicenseAgreemntDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_3276/COI.wnk", 0, 0, true));
     GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Build Tree"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    3. Rename the first and the second sequences to "1".
-    GTUtilsMSAEditorSequenceArea::renameSequence(os, "Phaneroptera_falcata", "1");
     GTUtilsMSAEditorSequenceArea::renameSequence(os, "Isophya_altaica_EF540820", "1");
+    GTUtilsMSAEditorSequenceArea::renameSequence(os, "Bicolorana_bicolor_EF540830", "1");
 
 //    4. Remove the first sequence.
     GTUtilsMSAEditorSequenceArea::removeSequence(os, "1");
@@ -5264,7 +5262,7 @@ GUI_TEST_CLASS_DEFINITION(test_3308) {
 //    2. Call context menu on the 3dview, select {Structural Alignment -> Align With...} menu item.
 //    3. Accept the dialog.
 //    Expected state: UGENE doesn't crash.
-    //GTUtilsDialog::waitForDialog(os, new StructuralAlignmentDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new StructuralAlignmentDialogFiller(os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Structural Alignment" << "align_with"));
     QWidget *widget3d = GTWidget::findWidget(os, "1-1CF7");
     CHECK_SET_ERR(NULL != widget3d, "3D widget was not found");

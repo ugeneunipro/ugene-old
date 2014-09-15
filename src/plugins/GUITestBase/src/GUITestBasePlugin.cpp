@@ -1066,7 +1066,23 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0007_1);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0007_2);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0007_3);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0008);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0009);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0010);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::pairwise_alignment_test_0011);
 
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0008);
+
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::export_consensus_test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::export_consensus_test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::export_consensus_test_0003);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/dp_view

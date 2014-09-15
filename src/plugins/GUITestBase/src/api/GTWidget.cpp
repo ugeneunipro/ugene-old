@@ -135,6 +135,8 @@ void GTWidget::getAllWidgetsInfo(U2OpStatus &os, QWidget *parent){
 }
 #undef GT_METHOD_NAME
 
+
+
 QColor GTWidget::getColor(QWidget *w, QPoint p){
     QPixmap pixmap = QPixmap::grabWidget(w, w->rect());
     QImage img = pixmap.toImage();

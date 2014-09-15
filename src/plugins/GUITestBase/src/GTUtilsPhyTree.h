@@ -34,8 +34,10 @@ public:
     static QList<QGraphicsItem *> getUnselectedNodes(U2OpStatus& os);
     static QList<QGraphicsItem *> getNodes(U2OpStatus& os);
 
-    static QList<QGraphicsSimpleTextItem*> getLabels(U2OpStatus& os);
-    static QList<QGraphicsSimpleTextItem*> getDistances(U2OpStatus& os);
+    static QList<QGraphicsSimpleTextItem*> getLabels(U2OpStatus& os, QGraphicsView* treeView = NULL);
+    static QList<QGraphicsSimpleTextItem*> getVisiableLabels(U2OpStatus& os, QGraphicsView* treeView = NULL);
+    static QList<QGraphicsSimpleTextItem*> getDistances(U2OpStatus& os, QGraphicsView* treeView = NULL);
+    static QList<QGraphicsSimpleTextItem*> getVisiableDistances(U2OpStatus& os, QGraphicsView* treeView = NULL);
     static QStringList getLabelsText(U2OpStatus& os);
     static QList<double> getDistancesValues(U2OpStatus& os);
     static QPoint getGlobalCoord(U2OpStatus& os, QGraphicsItem* item);

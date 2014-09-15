@@ -14,6 +14,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
 #   Runnables / UGENE
 #   Runnables / UGENE / ugeneui
             src/runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h \
+            src/runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h \
             src/runnables/ugene/ugeneui/ExportProjectDialogFiller.h \
             src/runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h \
             src/runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h \
@@ -206,7 +207,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/api/GTTableView.h  \
             src/api/GTGraphicsItem.h \
             src/api/GTTreeView.h \
-            src/api/GTListWidget.h
+            src/api/GTListWidget.h \
+            src/api/GTSlider.h
 
 SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/crazy_user/GUICrazyUserTest.cpp \
@@ -221,6 +223,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
 #   Runnables / UGENE
 #   Runnables / UGENE / ugeneui
             src/runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.cpp \
+            src/runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.cpp \
             src/runnables/ugene/ugeneui/ExportProjectDialogFiller.cpp \
             src/runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.cpp \
             src/runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.cpp \
@@ -418,4 +421,5 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/api/GTTableView.cpp \
             src/api/GTGraphicsItem.cpp \
             src/api/GTTreeView.cpp \
-            src/api/GTListWidget.cpp
+            src/api/GTListWidget.cpp \
+            src/api/GTSlider.cpp
