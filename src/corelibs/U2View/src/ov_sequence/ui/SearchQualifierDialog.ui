@@ -6,14 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>385</width>
-    <height>231</height>
+    <width>387</width>
+    <height>301</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
     <width>385</width>
-    <height>231</height>
+    <height>301</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -22,6 +28,12 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="5" column="0" colspan="5">
     <widget class="QGroupBox" name="groupBox_2">
+     <property name="minimumSize">
+      <size>
+       <width>369</width>
+       <height>96</height>
+      </size>
+     </property>
      <property name="title">
       <string>Match Parameter</string>
      </property>
@@ -54,6 +66,12 @@
    </item>
    <item row="4" column="0" colspan="5">
     <widget class="QGroupBox" name="groupBox">
+     <property name="minimumSize">
+      <size>
+       <width>369</width>
+       <height>96</height>
+      </size>
+     </property>
      <property name="title">
       <string>Qualifier</string>
      </property>
@@ -101,7 +119,7 @@
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>40</width>
+       <width>5</width>
        <height>20</height>
       </size>
      </property>
