@@ -10,7 +10,12 @@ use_bundled_zlib() {
     INCLUDEPATH += ../../libs_3rdparty/zlib/src
 }
 
-LIBS += -lugenedb -lsamtools -lzlib
+LIBS += -lugenedb -lsamtools
+
+win32-msvc2013 {
+    DEFINES += NOMINMAX _XKEYCHECK_H
+    LIBS += -lzlib
+}
 
 # Force re-linking when lib changes
 unix:POST_TARGETDEPS += ../../_release/libsamtools.a
@@ -24,8 +29,13 @@ win32:DEFINES += _USE_MATH_DEFINES "inline=__inline" "__func__=__FUNCTION__" "R_
 !debug_and_release|build_pass {
 
     CONFIG(debug, debug|release) {
-        LIBS -= -lugenedb -lsamtools -lzlib
-        LIBS += -lugenedbd -lsamtoolsd -lzlibd
+        LIBS -= -lugenedb -lsamtools
+        LIBS += -lugenedbd -lsamtoolsd
+
+        win32-msvc2013 {
+            LIBS -= -lzlib
+            LIBS += -lzlibd
+        }
 
         unix:POST_TARGETDEPS -= ../../_release/libsamtools.a
         unix:POST_TARGETDEPS += ../../_debug/libsamtoolsd.a
@@ -34,7 +44,3 @@ win32:DEFINES += _USE_MATH_DEFINES "inline=__inline" "__func__=__FUNCTION__" "R_
 
 INCLUDEPATH += ../../libs_3rdparty/sqlite3/src
 INCLUDEPATH += ../../libs_3rdparty/samtools/src ../../libs_3rdparty/samtools/src/samtools
-
-win32-msvc2013 {
-    DEFINES += NOMINMAX _XKEYCHECK_H
-}
