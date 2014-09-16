@@ -31,8 +31,8 @@ namespace U2 {
 const int AnnotHighlightTree::COL_NUM_ANNOT_NAME = 0;
 const int AnnotHighlightTree::COL_NUM_COLOR = 1;
 
-const QString AnnotHighlightTree::HEADER_ANNOT_NAMES = AnnotHighlightTree::tr("Annotation");
-const QString AnnotHighlightTree::HEADER_COLORS = AnnotHighlightTree::tr("Color");
+const QString AnnotHighlightTree::HEADER_ANNOT_NAMES = QObject::tr("Annotation");
+const QString AnnotHighlightTree::HEADER_COLORS = QObject::tr("Color");
 
 const int AnnotHighlightTree::ANNOT_COLUMN_WIDTH = 140;
 const int AnnotHighlightTree::COLOR_COLUMN_WIDTH = 10;

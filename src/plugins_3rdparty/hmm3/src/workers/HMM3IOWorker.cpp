@@ -75,7 +75,7 @@ DataTypePtr HMM3Lib::HMM3_PROFILE_TYPE() {
     return dtr->getById(HMM3_PROFILE_TYPE_ID);
 }
 
-const Descriptor HMM3Lib::HMM3_SLOT("hmm3-profile", HMM3Lib::tr("HMM3 Profile"), "");
+const Descriptor HMM3Lib::HMM3_SLOT("hmm3-profile", QObject::tr("HMM3 Profile"), "");
 
 const Descriptor HMM3Lib::HMM3_CATEGORY() {return Descriptor("hmmer3", tr("HMMER3 Tools"), "");}
 

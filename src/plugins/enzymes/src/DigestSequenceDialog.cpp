@@ -50,8 +50,8 @@
 
 namespace U2 {
 
-const QString DigestSequenceDialog::WAIT_MESSAGE(tr("The restrictions sites are being updated. Please wait"));
-const QString DigestSequenceDialog::HINT_MESSAGE(tr("Hint: there are no available enzymes. Use \"Analyze->Find Restrictions Sites\" feature to find them."));
+const QString DigestSequenceDialog::WAIT_MESSAGE(QObject::tr("The restrictions sites are being updated. Please wait"));
+const QString DigestSequenceDialog::HINT_MESSAGE(QObject::tr("Hint: there are no available enzymes. Use \"Analyze->Find Restrictions Sites\" feature to find them."));
 
 
 DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidget* p )

@@ -37,12 +37,8 @@
 
 namespace U2 {
 
-const QString ShowAllAnnotTypesLabel::SHOW_ALL_ANNOT_TYPES =
-    ShowAllAnnotTypesLabel::tr("Show all annotation types");
-
-const QString ShowAllAnnotTypesLabel::SHOW_ANNOT_TYPES_FOR_SEQ =
-    ShowAllAnnotTypesLabel::tr("Show types for the sequence only");
-
+const QString ShowAllAnnotTypesLabel::SHOW_ALL_ANNOT_TYPES = QObject::tr("Show all annotation types");
+const QString ShowAllAnnotTypesLabel::SHOW_ANNOT_TYPES_FOR_SEQ = QObject::tr("Show types for the sequence only");
 
 ShowAllAnnotTypesLabel::ShowAllAnnotTypesLabel()
 {

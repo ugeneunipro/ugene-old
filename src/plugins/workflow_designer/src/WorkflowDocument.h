@@ -84,7 +84,7 @@ class WorkflowViewFactory : public GObjectViewFactory {
     Q_OBJECT
 public:
     static const GObjectViewFactoryId ID;
-    WorkflowViewFactory(QObject* p = NULL) : GObjectViewFactory(ID, U2::WorkflowDesignerPlugin::tr("Workflow Designer"), p) {}    
+    WorkflowViewFactory(QObject* p = NULL) : GObjectViewFactory(ID, tr("Workflow Designer"), p) {}
 
     virtual bool canCreateView(const MultiGSelection& multiSelection);
     virtual Task* createViewTask(const MultiGSelection& multiSelection, bool single = false);

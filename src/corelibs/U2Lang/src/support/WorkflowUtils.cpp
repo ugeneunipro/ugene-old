@@ -379,7 +379,7 @@ QStringList WorkflowUtils::findMatchingTypesAsStringList(DataTypePtr set, DataTy
     return candidatesAsStringList(descList);
 }
 
-const Descriptor EMPTY_VALUES_DESC("", WorkflowUtils::tr("<empty>"), WorkflowUtils::tr("Default value"));
+const Descriptor EMPTY_VALUES_DESC("", QObject::tr("<empty>"), QObject::tr("Default value"));
 
 QList<Descriptor> WorkflowUtils::findMatchingCandidates(DataTypePtr from, DataTypePtr elementDatatype) {
     QList<Descriptor> candidates = findMatchingTypes(from, elementDatatype);

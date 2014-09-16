@@ -56,7 +56,7 @@ static const QString STABLE_ATTR("stable");
 static const QString MAX_ITERATIONS_ATTR("max-iterations");
 static const QString RANGE_ATTR("range");
 static const QString RANGE_ATTR_DEFAULT_VALUE("Whole alignment");
-static const QString RANGE_ERR_MSG(MuscleWorker::tr("Region should be set as 'start..end', start should be less than end, e.g. '1..100'"));
+static const QString RANGE_ERR_MSG(QObject::tr("Region should be set as 'start..end', start should be less than end, e.g. '1..100'"));
 
 void MuscleWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;

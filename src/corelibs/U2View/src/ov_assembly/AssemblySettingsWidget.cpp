@@ -219,7 +219,7 @@ QWidget * AssemblySettingsWidget::createRulerSettings() {
 ////////////////////////////////////
 const QString AssemblySettingsWidgetFactory::GROUP_ID = "OP_ASS_SETTINGS";
 const QString AssemblySettingsWidgetFactory::GROUP_ICON_STR = ":core/images/settings2.png";
-const QString AssemblySettingsWidgetFactory::GROUP_TITLE = QString(tr("Assembly Browser Settings"));
+const QString AssemblySettingsWidgetFactory::GROUP_TITLE = QString(QObject::tr("Assembly Browser Settings"));
 const QString AssemblySettingsWidgetFactory::GROUP_DOC_PAGE = "4227557";
 
 

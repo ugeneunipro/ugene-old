@@ -72,7 +72,7 @@ DataTypePtr const PWMatrixWorkerFactory::WEIGHT_MATRIX_MODEL_TYPE() {
     return dtr->getById(WEIGHT_MATRIX_MODEL_TYPE_ID);
 }
 
-const Descriptor PWMatrixWorkerFactory::WMATRIX_SLOT("wmatrix", WeightMatrixIO::tr("Weight matrix"), "");
+const Descriptor PWMatrixWorkerFactory::WMATRIX_SLOT("wmatrix", QObject::tr("Weight matrix"), "");
 
 const Descriptor PWMatrixWorkerFactory::WEIGHT_MATRIX_CATEGORY() {return Descriptor("hweightmatrix", WeightMatrixIO::tr("Weight matrix"), "");}
 
@@ -296,7 +296,7 @@ DataTypePtr const PFMatrixWorkerFactory::FREQUENCY_MATRIX_MODEL_TYPE() {
     return dtr->getById(FREQUENCY_MATRIX_MODEL_TYPE_ID);
 }
 
-const Descriptor PFMatrixWorkerFactory::FMATRIX_SLOT("fmatrix", WeightMatrixIO::tr("Frequency matrix"), "");
+const Descriptor PFMatrixWorkerFactory::FMATRIX_SLOT("fmatrix", QObject::tr("Frequency matrix"), "");
 
 const Descriptor PFMatrixWorkerFactory::FREQUENCY_MATRIX_CATEGORY() {return Descriptor("hweightmatrix", WeightMatrixIO::tr("Weight matrix"), "");}
 

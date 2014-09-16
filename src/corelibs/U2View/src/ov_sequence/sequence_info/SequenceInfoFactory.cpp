@@ -26,14 +26,12 @@
 
 #include <QObject>
 
-
 namespace U2 {
 
 const QString SequenceInfoFactory::GROUP_ID = "OP_SEQ_INFO";
 const QString SequenceInfoFactory::GROUP_ICON_STR = ":core/images/chart_bar.png";
-const QString SequenceInfoFactory::GROUP_TITLE = QString(tr("Statistics"));
+const QString SequenceInfoFactory::GROUP_TITLE = QString(QObject::tr("Statistics"));
 const QString SequenceInfoFactory::GROUP_DOC_PAGE = "4227298";
-
 
 SequenceInfoFactory::SequenceInfoFactory()
 {

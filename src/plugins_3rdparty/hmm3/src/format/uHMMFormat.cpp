@@ -38,7 +38,7 @@
 
 using namespace U2;
 
-const QString UHMMFormat::WRITE_FAILED  = UHMMFormat::tr( "write_to_file_failed" );
+const QString UHMMFormat::WRITE_FAILED = QObject::tr("write_to_file_failed");
 
 static void loadOne( IOAdapter* io, QList< GObject* >& objects, U2OpStatus& os) {
     CHECK_OP(os, );
@@ -299,7 +299,7 @@ static void saveAll( IOAdapter* io, const QList< GObject* >& objects, U2OpStatus
 namespace U2 {
 
 const DocumentFormatId  UHMMFormat::UHHMER_FORMAT_ID   = "hmmer_document_format";
-const QString           UHMMFormat::WRITE_LOCK_REASON  = UHMMFormat::tr( "hmm_files_are_read_only" );
+const QString           UHMMFormat::WRITE_LOCK_REASON = QObject::tr("hmm_files_are_read_only");
 
 UHMMFormat::UHMMFormat( QObject* obj ) : DocumentFormat( obj, DocumentFormatFlags_SW, QStringList("hmm")) {
     formatName = tr( "hmmer_format" );

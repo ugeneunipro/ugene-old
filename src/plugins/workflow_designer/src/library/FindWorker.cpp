@@ -67,13 +67,9 @@ const QString FindWorkerFactory::ACTOR_ID("search");
 
 const QString PATTERN_DELIMITER(";");
 
-static const Descriptor pd(PATTERN_ATTR,
-              FindWorker::tr("Pattern(s)"),
-              FindWorker::tr("Semicolon-separated list of patterns to search for."));
+static const Descriptor pd(PATTERN_ATTR, QObject::tr("Pattern(s)"), QObject::tr("Semicolon-separated list of patterns to search for."));
 
-static const Descriptor pf(PATTERN_FILE_ATTR,
-              FindWorker::tr("Pattern file"),
-              FindWorker::tr("Load pattern from file in any sequence format or in newline-delimited format."));
+static const Descriptor pf(PATTERN_FILE_ATTR, QObject::tr("Pattern file"), QObject::tr("Load pattern from file in any sequence format or in newline-delimited format."));
 
 /************************************************************************/
 /* FindPatternsValidator */

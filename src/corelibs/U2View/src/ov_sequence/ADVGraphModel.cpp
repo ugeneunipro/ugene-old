@@ -149,7 +149,7 @@ int GSequenceGraphUtils::getNumSteps(const U2Region& range, int w, int s) {
 //////////////////////////////////////////////////////////////////////////
 //drawer
 
-const QString GSequenceGraphDrawer::DEFAULT_COLOR(tr("Default color"));
+const QString GSequenceGraphDrawer::DEFAULT_COLOR(QObject::tr("Default color"));
 const int GSequenceGraphDrawer::UNKNOWN_VAL = -1;
 
 GSequenceGraphDrawer::GSequenceGraphDrawer(GSequenceGraphView* v, const GSequenceGraphWindowData& wd, 

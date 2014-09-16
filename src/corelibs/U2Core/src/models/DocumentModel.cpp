@@ -50,8 +50,8 @@
 
 namespace U2 {
 
-const QString DocumentFormat::CREATED_NOT_BY_UGENE = DocumentFormat::tr( "The document is created not by UGENE" );
-const QString DocumentFormat::MERGED_SEQ_LOCK = DocumentFormat::tr( "Document sequences were merged" );
+const QString DocumentFormat::CREATED_NOT_BY_UGENE(QObject::tr("The document is created not by UGENE"));
+const QString DocumentFormat::MERGED_SEQ_LOCK(QObject::tr("Document sequences were merged"));
 const QString DocumentFormat::DBI_REF_HINT("dbi_alias");
 const QString DocumentFormat::DBI_FOLDER_HINT("dbi_folder");
 const QString DocumentFormat::DEEP_COPY_OBJECT("deep_copy_object");

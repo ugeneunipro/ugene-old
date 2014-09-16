@@ -45,7 +45,7 @@
 
 namespace U2 {
 
-const QString RemoteMachineMonitorDialogImpl::OK_BUTTON_RUN = RemoteMachineMonitorDialogImpl::tr( "Run" );
+const QString RemoteMachineMonitorDialogImpl::OK_BUTTON_RUN = QObject::tr("Run");
 const QString RemoteMachineMonitorDialogImpl::SAVE_SETTINGS_FILE_DOMAIN = "rservice";
 
 static LogFilter prepareLogFilter() {

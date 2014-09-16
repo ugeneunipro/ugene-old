@@ -73,7 +73,7 @@ FormatDetectionScore FpkmTrackingLineValidateFlags::getFormatDetectionScore()
 //-------------------------------------------------------------------
 //  FPKMTrackingFormat
 //-------------------------------------------------------------------
-const QString FpkmTrackingFormat::FORMAT_NAME = FpkmTrackingFormat::tr("FPKM Tracking Format");
+const QString FpkmTrackingFormat::FORMAT_NAME = QObject::tr("FPKM Tracking Format");
 
 const QString FpkmTrackingFormat::NO_VALUE_STR = "-";
 

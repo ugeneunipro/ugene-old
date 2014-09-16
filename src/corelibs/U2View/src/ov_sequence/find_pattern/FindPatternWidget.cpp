@@ -360,9 +360,9 @@ const static QString SHOW_OPTIONS_LINK("show_options_link");
 const int FindPatternWidget::DEFAULT_RESULTS_NUM_LIMIT = 100000;
 const int FindPatternWidget::DEFAULT_REGEXP_RESULT_LENGTH_LIMIT = 10000;
 
-const QString FindPatternWidget::ALGORITHM_SETTINGS = tr("Search algorithm");
-const QString FindPatternWidget::SEARCH_IN_SETTINGS = tr("Search in");
-const QString FindPatternWidget::OTHER_SETTINGS= tr("Other settings");
+const QString FindPatternWidget::ALGORITHM_SETTINGS = QObject::tr("Search algorithm");
+const QString FindPatternWidget::SEARCH_IN_SETTINGS = QObject::tr("Search in");
+const QString FindPatternWidget::OTHER_SETTINGS = QObject::tr("Other settings");
 
 FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
     : annotatedDnaView(_annotatedDnaView)

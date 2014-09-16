@@ -160,10 +160,10 @@ enum {ElementsTab,SamplesTab};
 #define WS 1000
 #define MAX_FILE_SIZE 1000000
 
-static const QString XML_SCHEMA_WARNING = WorkflowView::tr("You opened obsolete workflow in XML format. It is strongly recommended"
+static const QString XML_SCHEMA_WARNING = QObject::tr("You opened obsolete workflow in XML format. It is strongly recommended"
                                                            " to clear working space and create workflow from scratch.");
 
-static const QString XML_SCHEMA_APOLOGIZE = WorkflowView::tr("Sorry! This workflow is obsolete and cannot be opened.");
+static const QString XML_SCHEMA_APOLOGIZE = QObject::tr("Sorry! This workflow is obsolete and cannot be opened.");
 
 static const QString BREAKPOINT_MANAGER_LABEL = QObject::tr( "Breakpoints" );
 static const int ABSENT_WIDGET_TAB_NUMBER = -1;
@@ -171,7 +171,7 @@ static const int ABSENT_WIDGET_TAB_NUMBER = -1;
 /************************************************************************/
 /* Utilities */
 /************************************************************************/
-static QString percentStr = WorkflowView::tr("%");
+static QString percentStr = QObject::tr("%");
 class PercentValidator : public QRegExpValidator {
 public:
     PercentValidator(QObject* parent) : QRegExpValidator(QRegExp("[1-9][0-9]*"+percentStr), parent) {}

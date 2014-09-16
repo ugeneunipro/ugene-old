@@ -31,7 +31,7 @@ namespace U2 {
 
 const QString AnnotHighlightWidgetFactory::GROUP_ID = "OP_ANNOT_HIGHLIGHT";
 const QString AnnotHighlightWidgetFactory::GROUP_ICON_STR = ":core/images/annotation_settings.png";
-const QString AnnotHighlightWidgetFactory::GROUP_TITLE = QString(tr("Annotations Highlighting"));
+const QString AnnotHighlightWidgetFactory::GROUP_TITLE = QString(QObject::tr("Annotations Highlighting"));
 const QString AnnotHighlightWidgetFactory::GROUP_DOC_PAGE = "4227350";
 
 

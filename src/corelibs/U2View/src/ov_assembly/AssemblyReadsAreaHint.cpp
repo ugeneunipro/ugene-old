@@ -69,7 +69,7 @@ AssemblyReadsAreaHint::AssemblyReadsAreaHint(QWidget * p): QFrame(p), label(new 
 
 static QString getCigarString(const QString & ci) {
     if(ci.isEmpty()) {
-        return AssemblyReadsAreaHint::tr("no information");
+        return QObject::tr("no information");
     }
     
     QString cigar;
@@ -84,8 +84,8 @@ static QString getCigarString(const QString & ci) {
     return cigar;
 }
 
-static const QString DIRECT_STR(AssemblyReadsAreaHint::tr("direct"));
-static const QString COMPL_STR(AssemblyReadsAreaHint::tr("complement"));
+static const QString DIRECT_STR(QObject::tr("direct"));
+static const QString COMPL_STR(QObject::tr("complement"));
 
 QString getReadSequence(const QByteArray & bytes) {
     QString ret(bytes);
@@ -159,7 +159,7 @@ static QString formatReadInfo(U2AssemblyRead r) {
     }
     text += QString("<tr><td><b>Read sequence</b>:&nbsp;%1</td></tr>").arg(getReadSequence(r->readSequence));
     if(ReadFlagsUtils::isUnmappedRead(r->flags)) {
-        text += QString("<tr><td><b><font color=\"red\">%1</font></b></td></tr>").arg(AssemblyReadsAreaHint::tr("Unmapped"));
+        text += QString("<tr><td><b><font color=\"red\">%1</font></b></td></tr>").arg(QObject::tr("Unmapped"));
     }
     return text;
 }

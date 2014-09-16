@@ -56,8 +56,8 @@
 namespace U2 {
 
 const QString ImportToDatabaseDialog::DIR_HELPER_NAME = "import_to_database";
-const QString ImportToDatabaseDialog::FILES_AND_FOLDERS = ImportToDatabaseDialog::tr("Files and folders");
-const QString ImportToDatabaseDialog::OBJECTS_AND_DOCUMENTS = ImportToDatabaseDialog::tr("Documents and objects");
+const QString ImportToDatabaseDialog::FILES_AND_FOLDERS = QObject::tr("Files and folders");
+const QString ImportToDatabaseDialog::OBJECTS_AND_DOCUMENTS = QObject::tr("Documents and objects");
 
 ImportToDatabaseDialog::ImportToDatabaseDialog(Document *dbConnection, const QString &defaultFolder, QWidget *parent) :
     QDialog(parent),

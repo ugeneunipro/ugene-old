@@ -81,7 +81,7 @@ FormatDetectionScore GTFLineValidateFlags::getFormatDetectionScore()
 //-------------------------------------------------------------------
 //  GTFFormat
 //-------------------------------------------------------------------
-const QString GTFFormat::FORMAT_NAME = GTFFormat::tr("GTF");
+const QString GTFFormat::FORMAT_NAME = QObject::tr("GTF");
 
 const int GTFFormat::FIELDS_COUNT_IN_EACH_LINE = 9;
 

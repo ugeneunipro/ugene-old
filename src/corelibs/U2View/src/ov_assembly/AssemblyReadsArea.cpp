@@ -143,7 +143,7 @@ void AssemblyReadsArea::createMenu() {
     connect(optimizeRenderAction, SIGNAL(toggled(bool)), SLOT(sl_onOptimizeRendering(bool)));
 }
 
-static const QString BIND_HERE(AssemblyReadsArea::tr("Lock here"));
+static const QString BIND_HERE(QObject::tr("Lock here"));
 
 QMenu* AssemblyReadsArea::createShadowingMenu() {
     QMenu *shadowingMenu = new QMenu(tr("Reads shadowing"));
@@ -280,19 +280,19 @@ const QList<AssemblyReadsArea::HotkeyDescription> AssemblyReadsArea::HOTKEY_DESC
 
 QList<AssemblyReadsArea::HotkeyDescription> AssemblyReadsArea::initHotkeyDescriptions() {
     QList<HotkeyDescription> res;
-    res << HotkeyDescription(tr("Shift+move mouse"), tr("Zoom the Assembly Overview to selection"));
-    res << HotkeyDescription(tr("Ctrl+wheel"), tr("Zoom the Assembly Overview"));
-    res << HotkeyDescription(tr("Alt+click"), tr("Zoom the Assembly Overview in 100x"));
-    res << HotkeyDescription(tr("Wheel+move mouse"), tr("Move the Assembly Overview"));
-    res << HotkeyDescription(tr("Wheel"), tr("Zoom the Reads Area"));
-    res << HotkeyDescription(tr("Double-click"), tr("Zoom in the Reads Area"));
-    res << HotkeyDescription(tr("+/-"), tr("Zoom in/Zoom out the Reads Area"));
-    res << HotkeyDescription(tr("Click+move mouse"), tr("Move the Reads Area"));
-    res << HotkeyDescription(tr("Arrow"), tr("Move one base in the corresponding direction in the Reads Area"));
-    res << HotkeyDescription(tr("Ctrl+arrow"), tr("Move one page in the corresponding direction in the Reads Area"));
-    res << HotkeyDescription(tr("Page up/Page down"), tr("Move one page up/down in the Reads Area"));
-    res << HotkeyDescription(tr("Home/End"), tr("Move to the beginning/end of the assembly in the Reads Area"));
-    res << HotkeyDescription(tr("Ctrl+G"), tr("Focus to the <i>Go to position</i> field on the toolbar"));
+    res << HotkeyDescription(QObject::tr("Shift+move mouse"), QObject::tr("Zoom the Assembly Overview to selection"));
+    res << HotkeyDescription(QObject::tr("Ctrl+wheel"), QObject::tr("Zoom the Assembly Overview"));
+    res << HotkeyDescription(QObject::tr("Alt+click"), QObject::tr("Zoom the Assembly Overview in 100x"));
+    res << HotkeyDescription(QObject::tr("Wheel+move mouse"), QObject::tr("Move the Assembly Overview"));
+    res << HotkeyDescription(QObject::tr("Wheel"), QObject::tr("Zoom the Reads Area"));
+    res << HotkeyDescription(QObject::tr("Double-click"), QObject::tr("Zoom in the Reads Area"));
+    res << HotkeyDescription(QObject::tr("+/-"), QObject::tr("Zoom in/Zoom out the Reads Area"));
+    res << HotkeyDescription(QObject::tr("Click+move mouse"), QObject::tr("Move the Reads Area"));
+    res << HotkeyDescription(QObject::tr("Arrow"), QObject::tr("Move one base in the corresponding direction in the Reads Area"));
+    res << HotkeyDescription(QObject::tr("Ctrl+arrow"), QObject::tr("Move one page in the corresponding direction in the Reads Area"));
+    res << HotkeyDescription(QObject::tr("Page up/Page down"), QObject::tr("Move one page up/down in the Reads Area"));
+    res << HotkeyDescription(QObject::tr("Home/End"), QObject::tr("Move to the beginning/end of the assembly in the Reads Area"));
+    res << HotkeyDescription(QObject::tr("Ctrl+G"), QObject::tr("Focus to the <i>Go to position</i> field on the toolbar"));
     return res;
 }
 

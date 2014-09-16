@@ -81,7 +81,7 @@ FormatDetectionScore BEDLineValidateFlags::getFormatDetectionScore()
 //-------------------------------------------------------------------
 //  BedFormat
 //-------------------------------------------------------------------
-const QString BedFormat::FORMAT_NAME = BedFormat::tr("BED");
+const QString BedFormat::FORMAT_NAME = QObject::tr("BED");
 
 const QString BedFormat::TRACK_NAME_QUALIFIER_NAME = "track_name";
 const QString BedFormat::TRACK_DESCR_QUALIFIER_NAME = "track_description";

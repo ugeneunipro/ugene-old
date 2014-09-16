@@ -347,8 +347,8 @@ static void readLine( IOAdapter* io, QByteArray& to, QStringList* tokens = NULL 
 
 namespace U2 {
 
-const QString UHMMFormatReader::HMM_FORMAT_READER_ERROR_PREFIX  = UHMMFormatReader::tr( "HMM reader error occurred: " );
-const QString UHMMFormatReader::READ_FAILED                     = UHMMFormatReader::tr( "reading file failed" );
+const QString UHMMFormatReader::HMM_FORMAT_READER_ERROR_PREFIX  = QObject::tr("HMM reader error occurred: ");
+const QString UHMMFormatReader::READ_FAILED                     = QObject::tr("reading file failed");
 const QString UHMMFormatReader::HMMER2_VERSION_HEADER           = "HMMER2";
 const QString UHMMFormatReader::HMMER3_VERSION_HEADER           = "HMMER3";
 

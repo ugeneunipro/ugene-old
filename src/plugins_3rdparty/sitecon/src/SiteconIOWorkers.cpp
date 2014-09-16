@@ -66,7 +66,7 @@ DataTypePtr const SiteconWorkerFactory::SITECON_MODEL_TYPE() {
     return dtr->getById(SITECON_MODEL_TYPE_ID);
 }
 
-const Descriptor SiteconWorkerFactory::SITECON_SLOT("sitecon-model", SiteconIO::tr("Sitecon model"), "");
+const Descriptor SiteconWorkerFactory::SITECON_SLOT("sitecon-model", QObject::tr("Sitecon model"), "");
 
 const Descriptor SiteconWorkerFactory::SITECON_CATEGORY() {return Descriptor("hsitecon", SiteconIO::tr("SITECON"), "");}
 

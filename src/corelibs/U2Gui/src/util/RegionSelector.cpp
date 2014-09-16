@@ -59,9 +59,9 @@
 namespace U2 {
 ////////////////////////////////////////
 // RangeSelectorWidget
-const QString RegionSelector::WHOLE_SEQUENCE = tr("Whole sequence");
-const QString RegionSelector::SELECTED_REGION = tr("Selected region");
-const QString RegionSelector::CUSTOM_REGION = tr("Custom region");
+const QString RegionSelector::WHOLE_SEQUENCE = QObject::tr("Whole sequence");
+const QString RegionSelector::SELECTED_REGION = QObject::tr("Selected region");
+const QString RegionSelector::CUSTOM_REGION = QObject::tr("Custom region");
 
 RegionSelector::RegionSelector(QWidget* p, qint64 len, bool isVertical, DNASequenceSelection* selection, QList<RegionPreset> presetRegions) :
     QWidget(p),

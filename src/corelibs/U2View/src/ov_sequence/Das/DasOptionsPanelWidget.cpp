@@ -54,13 +54,13 @@ namespace U2 {
 #define DAS_UNIPROT "dasuniprot"    // hardcoded, taken from U2Core/DASSource.cpp
 // TODO: add combobox with all available sources.
 
-const QString DasOptionsPanelWidget::BLAST_SEARCH = tr("BLAST");
-const QString DasOptionsPanelWidget::ALGORITHM_SETTINGS = tr("Algorithm settings");
-const QString DasOptionsPanelWidget::ANNOTATIONS_SETTINGS = tr("Annotations settings");
-const QString DasOptionsPanelWidget::SOURCES = tr("DAS features sources");
-const QString DasOptionsPanelWidget::WHOLE_SEQUENCE = tr("Whole sequence");
-const QString DasOptionsPanelWidget::SELECTED_REGION = tr("Selected region");
-const QString DasOptionsPanelWidget::CUSTOM_REGION = tr("Custom region");
+const QString DasOptionsPanelWidget::BLAST_SEARCH = QObject::tr("BLAST");
+const QString DasOptionsPanelWidget::ALGORITHM_SETTINGS = QObject::tr("Algorithm settings");
+const QString DasOptionsPanelWidget::ANNOTATIONS_SETTINGS = QObject::tr("Annotations settings");
+const QString DasOptionsPanelWidget::SOURCES = QObject::tr("DAS features sources");
+const QString DasOptionsPanelWidget::WHOLE_SEQUENCE = QObject::tr("Whole sequence");
+const QString DasOptionsPanelWidget::SELECTED_REGION = QObject::tr("Selected region");
+const QString DasOptionsPanelWidget::CUSTOM_REGION = QObject::tr("Custom region");
 
 const static QString SHOW_OPTIONS_LINK("show_options_link");
 
