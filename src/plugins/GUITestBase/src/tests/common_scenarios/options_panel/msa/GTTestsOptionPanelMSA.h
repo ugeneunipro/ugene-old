@@ -99,6 +99,10 @@ GUI_TEST_CLASS_DECLARATION(export_consensus_test_0001)
 GUI_TEST_CLASS_DECLARATION(export_consensus_test_0002)
 GUI_TEST_CLASS_DECLARATION(export_consensus_test_0003)
 GUI_TEST_CLASS_DECLARATION(export_consensus_test_0004)
+
+GUI_TEST_CLASS_DECLARATION(statistics_test_0001)
+GUI_TEST_CLASS_DECLARATION(statistics_test_0002)
+GUI_TEST_CLASS_DECLARATION(statistics_test_0003)
 }//namespace GUITest_common_scenarios_options_panel_MSA
 
 }//U2

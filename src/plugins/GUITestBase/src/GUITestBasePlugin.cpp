@@ -1073,8 +1073,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0001);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0002);
-    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0003);
-    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0004);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0003, "UGENE-3504");
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0004, "UGENE-3504");
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0005);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0006);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::tree_settings_test_0007);
@@ -1083,6 +1083,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::export_consensus_test_0001);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::export_consensus_test_0002);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::export_consensus_test_0003);
+
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::statistics_test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::statistics_test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::statistics_test_0003);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/dp_view

@@ -188,18 +188,18 @@ GUI_TEST_CLASS_DEFINITION(general_avail_8) {
     // @expected: CV for seq1 widget is opened, CV button for seq1 widget is toggled
     // @expected: CV for seq3 widget is closed, CV button for seq1 widget is not toggled
     GTUtilsCv::commonCvBtn::click(os);
-    CHECK_SET_ERR(GTUtilsCv::isCvPresent(os, seq1Widget), "Unexpected state of CV widget for seq1!");
+    CHECK_SET_ERR(!GTUtilsCv::isCvPresent(os, seq1Widget), "Unexpected state of CV widget for seq1!");
     CHECK_SET_ERR(!GTUtilsCv::isCvPresent(os, seq3Widget), "Unexpected state of CV widget for seq3!");
-    CHECK_SET_ERR(GTUtilsCv::cvBtn::isChecked(os, seq1Widget), "Unexpected state of CV button on seq1 widget!");
+    CHECK_SET_ERR(!GTUtilsCv::cvBtn::isChecked(os, seq1Widget), "Unexpected state of CV button on seq1 widget!");
     CHECK_SET_ERR(!GTUtilsCv::cvBtn::isChecked(os, seq3Widget), "Unexpected state of CV button on seq3 widget!");
 
     // @@step5: click CV button on the sequence view again
     // @expected: CV for seq1 widget is closed, CV button for seq1 widget is not toggled
     // @expected: CV for seq3 widget is opened, CV button for seq1 widget is toggled
     GTUtilsCv::commonCvBtn::click(os);
-    CHECK_SET_ERR(!GTUtilsCv::isCvPresent(os, seq1Widget), "Unexpected state of CV widget for seq1!");
+    CHECK_SET_ERR(GTUtilsCv::isCvPresent(os, seq1Widget), "Unexpected state of CV widget for seq1!");
     CHECK_SET_ERR(GTUtilsCv::isCvPresent(os, seq3Widget), "Unexpected state of CV widget for seq3!");
-    CHECK_SET_ERR(!GTUtilsCv::cvBtn::isChecked(os, seq1Widget), "Unexpected state of CV button on seq1 widget!");
+    CHECK_SET_ERR(GTUtilsCv::cvBtn::isChecked(os, seq1Widget), "Unexpected state of CV button on seq1 widget!");
     CHECK_SET_ERR(GTUtilsCv::cvBtn::isChecked(os, seq3Widget), "Unexpected state of CV button on seq3 widget!");
 }
 

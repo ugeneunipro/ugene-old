@@ -30,6 +30,7 @@
 
 #include "GTTestsOptionPanelMSA.h"
 
+#include "api/GTAction.h"
 #include "api/GTBaseCompleter.h"
 #include "api/GTComboBox.h"
 #include "api/GTCheckBox.h"
@@ -38,6 +39,7 @@
 #include "api/GTFileDialog.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
+#include "api/GTRadioButton.h"
 #include "api/GTSlider.h"
 #include "api/GTWidget.h"
 
@@ -1874,5 +1876,117 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0004){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(statistics_test_0001){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open export statistics option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
+//    3. check showDistancesColumn checkbox
+    QCheckBox* showDistancesColumnCheck = GTWidget::findExactWidget<QCheckBox*>(os, "showDistancesColumnCheck");
+    GTCheckBox::setChecked(os,showDistancesColumnCheck, true);
+//    4. Check reference hint
+    QLabel* refSeqWarning = GTWidget::findExactWidget<QLabel*>(os, "refSeqWarning");
+    CHECK_SET_ERR(refSeqWarning != NULL, "refSeqWarning");
+    CHECK_SET_ERR(refSeqWarning->text() == "Hint: select a reference above", QString("Unexpected hint: %1").arg(refSeqWarning->text()));
+//    5. Add Phaneroptera_falcata as reference
+    GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+//    Expected state: similarity column appaered
+    QString s0 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 0);
+    CHECK_SET_ERR(s0 == "0%", QString("Unexpected similarity at line 1: %1").arg(s0));
+    QString s1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 1);
+    CHECK_SET_ERR(s1 == "17%", QString("Unexpected similarity at line 2: %1").arg(s1));
+
+//    6. Check counts mode
+    QRadioButton* countsButton = GTWidget::findExactWidget<QRadioButton*>(os, "countsButton");
+    GTRadioButton::click(os, countsButton);
+
+    s0 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 0);
+    CHECK_SET_ERR(s0 == "0", QString("Unexpected similarity at line 1: %1").arg(s0));
+    s1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 1);
+    CHECK_SET_ERR(s1 == "106", QString("Unexpected similarity at line 2: %1").arg(s1));
+//    7. Check exclude gabs mode
+    QCheckBox* excludeGapsCheckBox = GTWidget::findExactWidget<QCheckBox*>(os, "excludeGapsCheckBox");
+    GTCheckBox::setChecked(os, excludeGapsCheckBox, true);
+
+    s0 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 7);
+    CHECK_SET_ERR(s0 == "110", QString("Unexpected similarity at line 8: %1").arg(s0));
+    s1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 8);
+    CHECK_SET_ERR(s1 == "100", QString("Unexpected similarity at line 9: %1").arg(s1));
+}
+
+GUI_TEST_CLASS_DEFINITION(statistics_test_0002){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open export statistics option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
+//    3. check showDistancesColumn checkbox
+    QCheckBox* showDistancesColumnCheck = GTWidget::findExactWidget<QCheckBox*>(os, "showDistancesColumnCheck");
+    GTCheckBox::setChecked(os,showDistancesColumnCheck, true);
+//    4. Add Phaneroptera_falcata as reference
+    GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+//    5. Check identity algorithm
+    QComboBox* algoComboBox = GTWidget::findExactWidget<QComboBox*>(os, "algoComboBox");
+    GTComboBox::setIndexWithText(os, algoComboBox, "Identity");
+
+    QString s0 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 0);
+    CHECK_SET_ERR(s0 == "100%", QString("Unexpected similarity at line 1: %1").arg(s0));
+    QString s1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 1);
+    CHECK_SET_ERR(s1 == "82%", QString("Unexpected similarity at line 2: %1").arg(s1));
+//    6. Check counts mode
+    QRadioButton* countsButton = GTWidget::findExactWidget<QRadioButton*>(os, "countsButton");
+    GTRadioButton::click(os, countsButton);
+
+    s0 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 0);
+    CHECK_SET_ERR(s0 == "604", QString("Unexpected similarity at line 1: %1").arg(s0));
+    s1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 1);
+    CHECK_SET_ERR(s1 == "498", QString("Unexpected similarity at line 2: %1").arg(s1));
+}
+GUI_TEST_CLASS_DEFINITION(statistics_test_0003){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open export statistics option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
+//    3. check showDistancesColumn checkbox
+    QCheckBox* showDistancesColumnCheck = GTWidget::findExactWidget<QCheckBox*>(os, "showDistancesColumnCheck");
+    GTCheckBox::setChecked(os,showDistancesColumnCheck, true);
+//    4. Add Phaneroptera_falcata as reference
+    GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+//    5. delete symbol at point (0,0)
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0,0));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(500);
+//    Expected state: similarity changed, updateButton ins disablec
+    QString s0 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 0);
+    CHECK_SET_ERR(s0 == "0%", QString("(1)Unexpected similarity at line 1: %1").arg(s0));
+    QString s1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 1);
+    CHECK_SET_ERR(s1 == "69%", QString("(1)Unexpected similarity at line 2: %1").arg(s1));
+
+    QWidget* updateButton = GTWidget::findWidget(os, "updateButton");
+    CHECK_SET_ERR(updateButton != NULL, "updateButton not found");
+    CHECK_SET_ERR(!updateButton->isEnabled(), "updateButton is unexpectidly enabled");
+//    6. Undo. Uncheck automatic update checkbox
+    GTWidget::click(os, GTAction::button(os, "msa_action_undo"));
+    QCheckBox* autoUpdateCheck = GTWidget::findExactWidget<QCheckBox*>(os, "autoUpdateCheck");
+    GTCheckBox::setChecked(os, autoUpdateCheck, false);
+//    5. delete symbol at point (0,0)
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os));
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(0,0));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(500);
+//    Expected state: similarity not changed
+    s0 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 0);
+    CHECK_SET_ERR(s0 == "0%", QString("(2)Unexpected similarity at line 1: %1").arg(s0));
+    s1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 1);
+    CHECK_SET_ERR(s1 == "17%", QString("(2)Unexpected similarity at line 2: %1").arg(s1));
+//    6. Press autoUpdate button
+    GTWidget::click(os, updateButton);
+    GTGlobals::sleep(500);
+//    Expected state: similarity updated
+    s0 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 0);
+    CHECK_SET_ERR(s0 == "0%", QString("(3)Unexpected similarity at line 1: %1").arg(s0));
+    s1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 1);
+    CHECK_SET_ERR(s1 == "69%", QString("(3)Unexpected similarity at line 2: %1").arg(s1));
+}
 }
 }
