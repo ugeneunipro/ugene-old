@@ -3,6 +3,8 @@
 MODULE_ID=U2Algorithm
 include( ../../ugene_lib_common.pri )
 
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 use_opencl(){
     DEFINES += OPENCL_SUPPORT
 }
@@ -45,6 +47,10 @@ win32:LIBS+=-lws2_32
     CONFIG(release, debug|release) {
         DESTDIR=../../_release
     }
+}
+
+win32-msvc2013 {
+    DEFINES += NOMINMAX
 }
 
 unix {

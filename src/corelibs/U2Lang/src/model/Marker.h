@@ -26,6 +26,8 @@
 #include <U2Lang/Datatype.h>
 #include <U2Lang/Descriptor.h>
 
+#undef TEXT
+
 namespace U2 {
 
 enum MarkerDataType {

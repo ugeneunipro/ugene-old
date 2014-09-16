@@ -37,8 +37,10 @@
 #include <U2View/ADVConstants.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QHeaderView>
+#include <QtGui/QTreeWidgetItem>
 #else
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QTreeWidgetItem>
 #endif
 
 namespace U2 {

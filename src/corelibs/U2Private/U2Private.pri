@@ -29,3 +29,7 @@ unix {
 win32 {
     LIBS += Advapi32.lib
 }
+
+win32-msvc2013 {
+    DEFINES += NOMINMAX
+}

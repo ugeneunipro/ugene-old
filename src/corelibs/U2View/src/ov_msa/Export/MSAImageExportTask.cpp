@@ -19,6 +19,13 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QCheckBox>
+#else
+#include <QtWidgets/QCheckBox>
+#endif
+
 #include "MSAImageExportTask.h"
 #include "../MSASelectSubalignmentDialog.h"
 
@@ -27,7 +34,6 @@
 #include <U2View/MSAEditorConsensusArea.h>
 #include <U2View/MSAEditorSequenceArea.h>
 
-#include <QtGui/QCheckBox>
 #include "ui_MSAExportSettings.h"
 
 namespace U2 {

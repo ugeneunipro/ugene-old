@@ -22,18 +22,15 @@
 #ifndef _U2_EXPORT_IMAGE_DIALOG_H_
 #define _U2_EXPORT_IMAGE_DIALOG_H_
 
-
-#include "imageExport/ImageExportTask.h"
-#include <U2Gui/LastUsedDirHelper.h>
-
-#include <QtCore/QList>
-#include <QtCore/QString>
+#include <QtCore/qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
 #else
 #include <QtWidgets/QDialog>
 #endif
 
+#include "imageExport/ImageExportTask.h"
+#include <U2Gui/LastUsedDirHelper.h>
 
 class Ui_ImageExportForm;
 class QRadioButton;

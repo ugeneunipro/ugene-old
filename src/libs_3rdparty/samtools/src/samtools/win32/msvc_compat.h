@@ -8,11 +8,12 @@
 
 #include <float.h>
 #define isnan _isnan
+#undef isinf
 static inline int isinf(double x) {
     return ! _finite(x);
 }
 #include <math.h>
-//#ifndef lgamma
+#if (!defined(_MSC_VER) || _MSC_VER < 1800)
 /* Log gamma function
  * \log{\Gamma(z)}
  * AS245, 2nd algorithm, http://lib.stat.cmu.edu/apstat/245
@@ -31,7 +32,7 @@ static double lgamma(double z)
 	x += 0.9999999999995183;
 	return log(x) - 5.58106146679532777 - z + (z-0.5) * log(z+6.5);
 }
-//#endif
+#endif
 
 #endif
 

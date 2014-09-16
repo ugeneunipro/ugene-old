@@ -22,10 +22,16 @@
 #ifndef _U2_GT_SLIDER_H_
 #define _U2_GT_SLIDER_H_
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QSlider>
+#else
+#include <QtWidgets/QSlider>
+#endif
 
 #include "api/GTGlobals.h"
-namespace U2{
+
+namespace U2 {
 
 class GTSlider
 {

@@ -21,16 +21,16 @@
 
 #include <math.h>
 
-#include <QtGui/QApplication>
 #include <QtGui/QFontMetrics>
 #include <QtGui/QPainter>
-#include <U2Core/U2SafePoints.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
 #include <QtGui/QDialog>
 #include <QtGui/QGridLayout>
 #include <QtGui/QTextEdit>
 #else
+#include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QTextEdit>

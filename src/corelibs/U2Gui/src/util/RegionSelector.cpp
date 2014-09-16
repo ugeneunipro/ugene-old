@@ -38,6 +38,7 @@
 #include <QtGui/QVBoxLayout>
 #else
 #include <QtWidgets/QAction>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>

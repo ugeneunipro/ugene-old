@@ -19,15 +19,26 @@
  * MA 02110-1301, USA.
  */
 
-#include "GenbankLocationValidator.h"
-
-#include <U2Formats/GenbankLocationParser.h>
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QLineEdit>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
+#endif
 
 #include <U2Core/AnnotationData.h>
 #include <U2Core/Log.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2Location.h>
+#include <U2Core/U2Region.h>
+
+#include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Gui/GUIUtils.h>
+
+#include "GenbankLocationValidator.h"
 
 namespace U2 {
 
@@ -51,7 +62,7 @@ QValidator::State GenbankLocationValidator::validate( QString &str, int &/*ii*/ 
         if (loc.data()->isEmpty()){
             return failValidate();
         }
-        foreach(U2Region r, loc.data()->regions){
+        foreach(const U2Region &r, loc.data()->regions){
             if(r.startPos < 0 || r.startPos >seqLen){
                 return failValidate();
             }

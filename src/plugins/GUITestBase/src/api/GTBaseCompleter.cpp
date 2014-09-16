@@ -19,11 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTBaseCompleter.h"
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QTreeWidget>
+#endif
+
 #include "api/GTTreeWidget.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
 
+#include "GTBaseCompleter.h"
 
 namespace U2 {
 

@@ -19,10 +19,11 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QMessageBox>
 #include <QtGui/QColorDialog>
 #include <QtGui/QHeaderView>
+#include <QtGui/QMessageBox>
 #include <QtGui/QToolButton>
 #else
 #include <QtWidgets/QColorDialog>

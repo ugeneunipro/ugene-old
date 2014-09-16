@@ -22,13 +22,16 @@
 #include "WidgetScreenshotExportTask.h"
 
 #include <U2Core/U2SafePoints.h>
+
 #include <QtCore/QFile>
 #include <QtGui/QPainter>
 #include <QtSvg/QSvgGenerator>
 #include <QtXml/QDomDocument>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPrinter>
+#include <QtGui/QWidget>
 #else
+#include <QtWidgets/QWidget>
 #include <QtPrintSupport/QPrinter>
 #endif
 
@@ -65,7 +68,7 @@ void WidgetScreenshotExportToSvgTask::run() {
 
     file.close();
     QDomNodeList radialGradients=doc.elementsByTagName("radialGradient");
-    for (uint i = 0;i < radialGradients.length(); i++) {
+    for (int i = 0;i < radialGradients.length(); i++) {
         if (radialGradients.at(i).isElement()) {
             QDomElement tag = radialGradients.at(i).toElement();
             if (tag.hasAttribute("xml:id")) {
@@ -110,6 +113,14 @@ WidgetScreenshotImageExportTaskFactory::WidgetScreenshotImageExportTaskFactory(Q
       widget(widget)
 {
     shortDescription = tr("Screenshot");
+}
+
+int WidgetScreenshotImageExportTaskFactory::getImageWidth() const {
+    return widget->width();
+}
+
+int WidgetScreenshotImageExportTaskFactory::getImageHeight() const {
+    return widget->height();
 }
 
 Task* WidgetScreenshotImageExportTaskFactory::getExportToSVGTask(const ImageExportTaskSettings &settings) const {

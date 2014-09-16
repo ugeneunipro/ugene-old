@@ -22,7 +22,12 @@
 #ifndef _U2_GUI_DIALOG_UTILS_H_
 #define _U2_GUI_DIALOG_UTILS_H_
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialogButtonBox>
+#else
+#include <QtWidgets/QDialogButtonBox>
+#endif
 
 #include "api/GTGlobals.h"
 

@@ -22,15 +22,10 @@
 #ifndef _U2_GENBANK_LOCATION_VALIDATOR_PARSER_H
 #define _U2_GENBANK_LOCATION_VALIDATOR_PARSER_H
 
-#include <U2Core/global.h>
-#include <U2Core/U2Location.h>
-#include <U2Core/U2Region.h>
-
-#include <QtCore/QList>
 #include <QtGui/QValidator>
-#include <QtGui/QPushButton>
-#include <QtGui/QLineEdit>
 
+class QLineEdit;
+class QPushButton;
 
 namespace U2 {
 

@@ -19,17 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#include "HelpButton.h"
-
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QComboBox>
+#include <QtGui/QPushButton>
+#else
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QPushButton>
+#endif
 
 #include <U2Gui/GUIUtils.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#else
-#include <QtWidgets/QPushButton>
-#endif
+#include "HelpButton.h"
 
 namespace U2{
 

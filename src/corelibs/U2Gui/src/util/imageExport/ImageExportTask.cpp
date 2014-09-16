@@ -19,10 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#include "ImageExportTask.h"
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QWidget>
+#else
+#include <QtWidgets/QWidget>
+#endif
 
 #include <U2Core/U2SafePoints.h>
-#include <QtGui/QWidget>
+
+#include "ImageExportTask.h"
 
 namespace U2 {
 

@@ -22,8 +22,12 @@
 #ifndef _U2_PROJECT_VIEW_WIDGET_
 #define _U2_PROJECT_VIEW_WIDGET_
 
-
-#include "../_tmp/ui/ui_ProjectViewWidget.h"
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QDockWidget>
+#else
+#include <QtWidgets/QDockWidget>
+#endif
 
 #include <U2Core/DocumentSelection.h>
 #include <U2Core/GObjectSelection.h>
@@ -33,15 +37,10 @@
 #include <U2Gui/ProjectView.h>
 #include <U2Gui/MainWindow.h>
 
-#include <assert.h>
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ObjectViewTreeController.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDockWidget>
-#else
-#include <QtWidgets/QDockWidget>
-#endif
+#include "../_tmp/ui/ui_ProjectViewWidget.h"
 
 namespace U2 {
 

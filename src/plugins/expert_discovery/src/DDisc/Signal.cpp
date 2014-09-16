@@ -5,8 +5,14 @@
 #include "Signal.h"
 #include "Context.h"
 #include "Sequence.h"
+#include "statmath.h"
 #include <stdexcept>
 #include <string.h>
+
+#if (defined(_MSC_VER) && _MSC_VER >= 1800)
+#include <algorithm>
+#endif
+
 using namespace std;
 
 namespace DDisc {
@@ -277,16 +283,16 @@ Context& OpInterval::createCompartibleContext() const
 bool OpInterval::find(const Sequence& rSeq, Context &rContext) const
 {
 	ConInterval& context = dynamic_cast<ConInterval&>(rContext);
-	if (context.isEOF()) return false;
+	if (context.isEof()) return false;
 	if (context.getSearchRegion().isEmpty()) {
-		context.setEOF(true);
+		context.setEof(true);
 		return false;
 	}
 	if (context.getSubContext().getSearchRegion()==Interval()) 
 		context.getSubContext().setSearchRegion(context.getSearchRegion().intersect(getInt()));
 
 	bool bResult = getArgument()->find(rSeq, context.getSubContext());
-	if (!bResult) context.setEOF(true);
+	if (!bResult) context.setEof(true);
 	else {
 		context.setPosition( context.getSubContext().getPosition() );
 		context.setLength( context.getSubContext().getLength() );
@@ -349,9 +355,9 @@ Context& OpReiteration::createCompartibleContext() const
 bool OpReiteration::find(const Sequence& rSeq, Context &rContext) const
 {
 	ConReiteration& context = dynamic_cast<ConReiteration&>(rContext);
-	if (context.isEOF()) return false;
+	if (context.isEof()) return false;
 	if (context.getSearchRegion().isEmpty()) {
-		context.setEOF(true);
+		context.setEof(true);
 		return false;
 	}
 	do {
@@ -406,7 +412,7 @@ bool OpReiteration::find(const Sequence& rSeq, Context &rContext) const
 			}
 		}
 	} while (context.isFound()); 
-	context.setEOF(true);
+	context.setEof(true);
 	return false;
 }
 
@@ -467,9 +473,9 @@ Context& OpDistance::createCompartibleContext() const
 bool OpDistance::find(const Sequence& rSeq, Context &rContext) const
 {
 	ConDistance& context = dynamic_cast<ConDistance&>(rContext);
-	if (context.isEOF()) return false;
+	if (context.isEof()) return false;
 	if (context.getSearchRegion().isEmpty()) {
-		context.setEOF(true);
+		context.setEof(true);
 		return false;
 	}
 	const Operation *arg[] = {getArgument(0), getArgument(1)};
@@ -521,7 +527,7 @@ bool OpDistance::find(const Sequence& rSeq, Context &rContext) const
 		context.setBOF(true);
 		con[i]->reset();
 	}
-	context.setEOF(true);
+	context.setEof(true);
 	return false;
 }
 
@@ -627,9 +633,9 @@ inline bool TS::compare(const char* seq, unsigned nSeqLen, const char *word, uns
 bool TS::find(const Sequence& rSeq, Context &rContext) const 
 {
 	ConTS& context = dynamic_cast<ConTS&>(rContext);
-	if (context.isEOF()) return false;
+	if (context.isEof()) return false;
 	if (context.getSearchRegion().isEmpty()) {
-		context.setEOF(true);
+		context.setEof(true);
 		return false;
 	}
 	if (isFromMarking()) {
@@ -649,7 +655,7 @@ bool TS::find(const Sequence& rSeq, Context &rContext) const
 			context.setSearchRegion( Interval(location.getFrom() + 1, context.getSearchRegion().getTo()));
 			return true;
 		}
-		context.setEOF(true);
+		context.setEof(true);
 		return false;
 	}
 	else {
@@ -675,7 +681,7 @@ bool TS::find(const Sequence& rSeq, Context &rContext) const
 				nSeqLen--;
 			}
 		}
-		context.setEOF(true);
+		context.setEof(true);
 		return false;
 	}
 }

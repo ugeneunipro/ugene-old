@@ -22,14 +22,14 @@
 #ifndef _U2_PROJECTTREECONTROLLER_H_
 #define _U2_PROJECTTREECONTROLLER_H_
 
-#include <QtGui/QAction>
-
 #include <U2Core/DocumentSelection.h>
 #include <U2Core/FolderSelection.h>
 #include <U2Core/GObjectSelection.h>
 
 #include <U2Gui/ProjectViewModel.h>
 
+class QAction;
+class QMenu;
 class QTreeView;
 
 namespace U2 {

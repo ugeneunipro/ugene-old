@@ -21,14 +21,20 @@
 
 #include <QtCore/QTimer>
 
-#include <QtGui/QApplication>
 #include <QtGui/QKeyEvent>
-#include <QtGui/QMenu>
-#include <QtGui/QMainWindow>
-#include <QtGui/QMessageBox>
 #if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QAction>
+#include <QtGui/QApplication>
+#include <QtGui/QMainWindow>
+#include <QtGui/QMenu>
+#include <QtGui/QMessageBox>
 #include <QtGui/QTreeView>
 #else
+#include <QtWidgets/QAction>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
 #include <QtWidgets/QTreeView>
 #endif
 

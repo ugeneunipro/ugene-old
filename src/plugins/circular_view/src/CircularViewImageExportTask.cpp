@@ -73,7 +73,7 @@ void CircularViewImageExportToSVGTask::run() {
     if(result){
         file.close();
         QDomNodeList radialGradients=doc.elementsByTagName("radialGradient");
-        for(uint i=0;i<radialGradients.length();i++){
+        for(int i=0;i<radialGradients.length();i++){
             if(radialGradients.at(i).isElement()){
                 QDomElement tag=radialGradients.at(i).toElement();
                 if(tag.hasAttribute("xml:id")){

@@ -21,7 +21,12 @@
 
 #include <QtCore/QSharedPointer>
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLineEdit>
+#else
+#include <QtWidgets/QLineEdit>
+#endif
 
 #include <U2View/AssemblyBrowser.h>
 #include <U2View/AssemblyModel.h>

@@ -9,6 +9,7 @@ PROB ScoreToProb(SCORE Score)
 	return (PROB) pow(2.0, (double) Score/INTSCALE);
 	}
 
+#if (!defined(_MSC_VER) || _MSC_VER < 1800)
 double log2(double x)
 	{
 	if (0 == x)
@@ -19,6 +20,7 @@ double log2(double x)
 // is faster than division.
 	return log(x)*dInvLn2;
 	}
+#endif
 
 static const double log2e = log2(exp(1.0));
 

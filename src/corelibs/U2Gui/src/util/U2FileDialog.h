@@ -22,7 +22,12 @@
 #ifndef _U2_FILE_DIALOG_H_
 #define _U2_FILE_DIALOG_H_
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QFileDialog>
+#else
+#include <QtWidgets/QFileDialog>
+#endif
 
 #include <U2Core/global.h>
 

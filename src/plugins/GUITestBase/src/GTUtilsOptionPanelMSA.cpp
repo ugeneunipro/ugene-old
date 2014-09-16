@@ -19,6 +19,13 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QTreeWidget>
+#endif
+
 #include "GTUtilsOptionPanelMSA.h"
 #include "api/GTWidget.h"
 #include "api/GTKeyboardDriver.h"
@@ -26,9 +33,6 @@
 #include "api/GTBaseCompleter.h"
 
 #include "GTUtilsMsaEditorSequenceArea.h"
-
-#include <QtGui/QTreeWidget>
-
 
 namespace U2{
 QMap<GTUtilsOptionPanelMsa::Tabs, QString> GTUtilsOptionPanelMsa::initNames(){
@@ -69,7 +73,7 @@ void GTUtilsOptionPanelMsa::addReference(U2OpStatus &os, QString seqName, AddRef
     case Completer:
         QWidget* sequenceLineEdit = GTWidget::findWidget(os, "sequenceLineEdit");
         GTWidget::click(os, sequenceLineEdit);
-        GTKeyboardDriver::keyClick(os, seqName.at(0).toAscii());
+        GTKeyboardDriver::keyClick(os, seqName.at(0).toLatin1());
         GTGlobals::sleep(200);
         QTreeWidget* completer = sequenceLineEdit->findChild<QTreeWidget*>();
         GT_CHECK(completer != NULL, "auto completer widget not found");
@@ -137,7 +141,7 @@ void GTUtilsOptionPanelMsa::addSeqToPA(U2OpStatus &os, QString seqName, AddRefMe
     case Completer:
         QWidget* sequenceLineEdit = getSeqLineEdit(os, number);
         GTWidget::click(os, sequenceLineEdit);
-        GTKeyboardDriver::keyClick(os, seqName.at(0).toAscii());
+        GTKeyboardDriver::keyClick(os, seqName.at(0).toLatin1());
         GTGlobals::sleep(200);
         QTreeWidget* completer = sequenceLineEdit->findChild<QTreeWidget*>();
         GT_CHECK(completer != NULL, "auto completer widget not found");

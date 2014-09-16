@@ -19,10 +19,18 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QCheckBox>
 #include <QtGui/QLineEdit>
 #include <QtGui/QRadioButton>
 #include <QtGui/QSpinBox>
+#else
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QSpinBox>
+#endif
 
 #include <U2Gui/ImportOptionsWidget.h>
 

@@ -20,7 +20,11 @@
  */
 
 #include <QtGui/QFocusEvent>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLayout>
+#else
+#include <QtWidgets/QLayout>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DocumentModel.h>

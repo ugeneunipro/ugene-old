@@ -19,10 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#include "InputWidgetsControllers.h"
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QCheckBox>
+#include <QtGui/QComboBox>
+#include <QtGui/QDoubleSpinBox>
+#include <QtGui/QLineEdit>
+#include <QtGui/QRadioButton>
+#include <QtGui/QSpinBox>
+#else
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QDoubleSpinBox>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QSpinBox>
+#endif
+
 #include <U2Core/AppContext.h>
 #include <U2Core/Settings.h>
 #include <U2Core/U2SafePoints.h>
+
+#include "InputWidgetsControllers.h"
 
 namespace U2 {
 

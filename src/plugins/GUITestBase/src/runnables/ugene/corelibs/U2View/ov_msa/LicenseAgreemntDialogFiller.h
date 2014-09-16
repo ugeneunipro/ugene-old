@@ -22,12 +22,18 @@
 #ifndef LICENSEAGREEMNTDIALOGFILLER_H
 #define LICENSEAGREEMNTDIALOGFILLER_H
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QPushButton>
+#include <QtGui/QApplication>
+#else
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QApplication>
+#endif
+
 #include "GTUtilsDialog.h"
 #include "api/GTWidget.h"
 
-
-#include <QtGui/QPushButton>
-#include <QtGui/QApplication>
 namespace U2 {
 
 class LicenseAgreemntDialogFiller : public Filler {

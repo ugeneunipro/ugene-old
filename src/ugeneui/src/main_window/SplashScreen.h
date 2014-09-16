@@ -22,11 +22,16 @@
 #ifndef _U2_SPLASH_SCREEN_CONTROLLER_
 #define _U2_SPLASH_SCREEN_CONTROLLER_
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialog>
+#else
+#include <QtWidgets/QDialog>
+#endif
 
-namespace U2{
+namespace U2 {
 
-class SplashScreen : public QDialog{
+class SplashScreen : public QDialog {
     Q_OBJECT
 public:
     SplashScreen(QWidget *parent = NULL);

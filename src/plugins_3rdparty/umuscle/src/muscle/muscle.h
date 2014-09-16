@@ -131,7 +131,7 @@ bool VectorIsZero(const float dValues[], unsigned n);
 void VectorSet(float dValues[], unsigned n, float d);
 
 // @@TODO should be "not linux"
-#if	_WIN32
+#if	(_WIN32 && (!defined(_MSC_VER) || _MSC_VER < 1800))
 double log2(double x);	// Defined in <math.h> on Linux
 #endif
 

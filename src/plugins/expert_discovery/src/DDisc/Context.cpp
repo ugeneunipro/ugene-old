@@ -23,7 +23,7 @@ Context::~Context()
 
 void Context::reset()
 {
-	setEOF(false);
+	setEof(false);
 	setSearchRegion(Interval());
 	setPosition(0);
 	setLength(0);

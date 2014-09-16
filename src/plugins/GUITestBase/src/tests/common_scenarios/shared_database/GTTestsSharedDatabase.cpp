@@ -19,7 +19,12 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeWidgetItem>
+#else
+#include <QtWidgets/QTreeWidgetItem>
+#endif
 
 #include <U2Core/ImportToDatabaseOptions.h>
 #include <U2Core/U2ObjectDbi.h>

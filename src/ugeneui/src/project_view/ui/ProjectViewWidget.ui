@@ -137,7 +137,7 @@
  <customwidgets>
   <customwidget>
    <class>U2::ProjectViewDocTree</class>
-   <extends>QTreeWidget</extends>
+   <extends>QTreeView</extends>
    <header location="global">project_view/ProjectViewDocTree.h</header>
   </customwidget>
  </customwidgets>

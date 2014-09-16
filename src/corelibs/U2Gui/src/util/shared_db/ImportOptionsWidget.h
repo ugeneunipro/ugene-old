@@ -22,7 +22,12 @@
 #ifndef _U2_IMPORT_OPTIONS_WIDGET_H_
 #define _U2_IMPORT_OPTIONS_WIDGET_H_
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
+#else
+#include <QtWidgets/QWidget>
+#endif
 
 #include "U2Core/ImportToDatabaseOptions.h"
 

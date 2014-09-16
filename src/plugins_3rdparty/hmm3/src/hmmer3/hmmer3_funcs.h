@@ -7,7 +7,10 @@
 
 extern int      isnan( float x );
 extern int      isinf( float x );
+
+#if (!defined(_MSC_VER) || _MSC_VER < 1800)
 extern float    roundf( float x );
+#endif
 
 #else // if not Windows -> we have all functions and defines in math.h
 #include <math.h>

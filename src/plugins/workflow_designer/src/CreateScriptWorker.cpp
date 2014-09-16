@@ -19,31 +19,35 @@
  * MA 02110-1301, USA.
  */
 
-#include "CreateScriptWorker.h"
-#include "WorkflowEditorDelegates.h"
-#include "library/ScriptWorker.h"
-#include "util/WorkerNameValidator.h"
-
-#include <U2Core/Log.h>
-#include <U2Lang/ActorPrototypeRegistry.h>
-#include <U2Lang/WorkflowSettings.h>
-#include <U2Lang/BaseTypes.h>
-#include <U2Lang/BaseSlots.h>
-
 #include <QtCore/QAbstractItemModel>
-#include <U2Gui/HelpButton.h>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QPushButton>
-#include <QtGui/QTableView>
+#include <QtGui/QFileDialog>
 #include <QtGui/QHeaderView>
 #include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
+#include <QtGui/QTableView>
 #else
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QTableView>
+#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTableView>
 #endif
 
+#include <U2Core/Log.h>
+
+#include <U2Gui/HelpButton.h>
+
+#include <U2Lang/ActorPrototypeRegistry.h>
+#include <U2Lang/BaseSlots.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/WorkflowSettings.h>
+
+#include "library/ScriptWorker.h"
+#include "util/WorkerNameValidator.h"
+#include "WorkflowEditorDelegates.h"
+
+#include "CreateScriptWorker.h"
 
 namespace U2 {
 
@@ -456,9 +460,6 @@ void CreateScriptElementDialog::fillFields(ActorPrototype *proto) {
 }
 
 void CreateScriptElementDialog::sl_getDirectory() {
-    /*Settings *s = AppContext::getSettings();
-    QString defaultPath = QDir::searchPaths( PATH_PREFIX_DATA ).first() + "/workflow_samples/" + "users/";
-    QString url = s->getValue(SETTINGS_ROOT + ACTORS_PATH, defaultPath).toString();*/
     QString url = WorkflowSettings::getUserDirectory();
 
     QFileDialog dialog(this);

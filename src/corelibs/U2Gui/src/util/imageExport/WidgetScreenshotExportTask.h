@@ -24,10 +24,9 @@
 
 #include "ImageExportTask.h"
 
-#include <QtGui/QWidget>
+class QWidget;
 
 namespace U2 {
-
 
 class WidgetScreenshotExportTask : public ImageExportTask {
 public:
@@ -64,8 +63,8 @@ class WidgetScreenshotImageExportTaskFactory : public ImageExportTaskFactory {
 public:
     WidgetScreenshotImageExportTaskFactory(QWidget *widget);
 
-    int getImageWidth() const { return widget->width(); }
-    int getImageHeight() const { return widget->height(); }
+    int getImageWidth() const;
+    int getImageHeight() const;
 
 protected:
     void initSettingsWidget() {}

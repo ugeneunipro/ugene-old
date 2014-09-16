@@ -53,6 +53,9 @@ win32 {
     QMAKE_MSVC_PROJECT_NAME=lib_3rd_samtools
 }
 
+win32-msvc2013 {
+    DEFINES += NOMINMAX _XKEYCHECK_H
+}
 
 #unix {
 #    target.path = $$UGENE_INSTALL_DIR/$$UGENE_RELATIVE_DESTDIR

@@ -22,9 +22,15 @@
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QHeaderView>
 #include <QtGui/QTreeWidget>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QTreeWidget>
+#endif
 
 #include "ImportToDatabaseDialogFiller.h"
 #include "api/GTFileDialog.h"

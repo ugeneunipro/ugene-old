@@ -25,8 +25,6 @@
 #include <U2Core/AppSettings.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/ProjectModel.h>
-//#include <U2Core/MultiTask.h>
-//#include <U2Core/LoadDocumentTask.h>
 
 #include "project_view/ProjectViewImpl.h"
 

@@ -19,12 +19,18 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QCheckBox>
+#include <QtGui/QMessageBox>
+#else
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QMessageBox>
+#endif
+
 #include "MSASelectSubalignmentDialog.h"
 #include "MSAEditor.h"
 #include <U2Gui/HelpButton.h>
-
-#include <QtGui/QCheckBox>
-#include <QtGui/QMessageBox>
 
 namespace U2 {
 

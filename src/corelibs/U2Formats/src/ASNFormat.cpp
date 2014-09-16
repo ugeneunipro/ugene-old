@@ -431,7 +431,7 @@ void ASNFormat::BioStructLoader::loadBioStructGraph( AsnNode* graphNode, BioStru
         // Load molecule id
         bool ok = false;
         int molId = molNode->getChildById(0)->value.toInt(&ok);
-        Q_ASSERT(ok == TRUE);
+        SAFE_POINT(ok, "Invalid type conversion", );
         // Load molecule data
         QByteArray molTypeName = molNode->findChildByName("descr")->findChildByName("molecule-type")->value;
         if (molTypeName == "protein" || molTypeName == "dna" || molTypeName == "rna") {

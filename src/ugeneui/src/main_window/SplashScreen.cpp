@@ -26,8 +26,13 @@
 
 #include <QtCore/qcoreevent.h>
 #include <QtGui/QMovie>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLayout>
 #include <QtGui/QLabel>
+#else
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QLabel>
+#endif
 
 namespace U2{
 

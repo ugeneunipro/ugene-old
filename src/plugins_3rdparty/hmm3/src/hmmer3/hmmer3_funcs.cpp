@@ -17,12 +17,14 @@ int isinf( float x ) {
     return inf == x || inf == -x;
 }
 
+#if (!defined(_MSC_VER) || _MSC_VER < 1800)
 float roundf( float x ){
     if( isnan( x ) || isinf( x ) ) {
         return x;
     }
     return (float)(x >= 0.0 ? (int)(x + 0.5) : (int)(x - (int)(x-1) + 0.5) + (int)(x-1));
 }
+#endif
 
 #endif // _WINDOWS
 

@@ -24,6 +24,8 @@
 
 #include <U2Core/global.h>
 
+#undef NO_ERROR
+
 namespace U2 {
 namespace WorkflowSerialize {
 

@@ -19,6 +19,17 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
+#include <QtGui/QGroupBox>
+#include <QtGui/QComboBox>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QComboBox>
+#endif
+
 #include "api/GTWidget.h"
 #include "api/GTSpinBox.h"
 #include "api/GTDoubleSpinBox.h"
@@ -26,9 +37,6 @@
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
 #include "api/GTRadioButton.h"
-#include <QtGui/QApplication>
-#include <QtGui/QGroupBox>
-#include <QtGui/QComboBox>
 
 #include "FormatDBDialogFiller.h"
 

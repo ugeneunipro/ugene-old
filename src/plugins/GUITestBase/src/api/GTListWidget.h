@@ -24,7 +24,9 @@
 #define _U2_GT_LISTWIDGET_H_
 
 #include "api/GTGlobals.h"
-#include <QtGui/QListWidget>
+
+class QListWidget;
+
 namespace U2{
 
 class GTListWidget

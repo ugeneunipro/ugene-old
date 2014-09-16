@@ -19,14 +19,20 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtGui/QPainter>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QCheckBox>
+#include <QtGui/QVBoxLayout>
+#else
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QVBoxLayout>
+#endif
+
 #include "MSAOverviewImageExportTask.h"
 #include "MSASimpleOverview.h"
 #include "MSAGraphOverview.h"
 
 #include <U2Core/U2SafePoints.h>
-#include <QtGui/QCheckBox>
-#include <QtGui/QPainter>
-#include <QtGui/QVBoxLayout>
 
 namespace U2 {
 

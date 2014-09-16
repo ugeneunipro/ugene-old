@@ -24,7 +24,8 @@
 #define U2_GT_BASECOMPLETER_H
 
 #include "api/GTGlobals.h"
-#include <QtGui/QTreeWidget>
+
+class QTreeWidget;
 
 namespace U2 {
 

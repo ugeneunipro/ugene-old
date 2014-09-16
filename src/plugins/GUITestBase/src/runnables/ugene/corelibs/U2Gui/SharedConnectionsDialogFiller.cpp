@@ -19,6 +19,19 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
+#include <QtGui/QComboBox>
+#include <QtGui/QGroupBox>
+#include <QtGui/QListWidget>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QListWidget>
+#endif
+
 #include "GTDatabaseConfig.h"
 #include "GTUtilsProjectTreeView.h"
 #include "SharedConnectionsDialogFiller.h"
@@ -31,10 +44,6 @@
 #include "api/GTComboBox.h"
 #include "api/GTRadioButton.h"
 #include "runnables/qt/MessageBoxFiller.h"
-#include <QtGui/QApplication>
-#include <QtGui/QComboBox>
-#include <QtGui/QGroupBox>
-#include <QtGui/QListWidget>
 
 namespace U2 {
 

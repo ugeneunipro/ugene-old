@@ -22,8 +22,14 @@
 #ifndef U2_GTUTILS_OPTION_PANEL_MSA_H
 #define U2_GTUTILS_OPTION_PANEL_MSA_H
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QToolButton>
 #include <QtGui/QLineEdit>
+#else
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QLineEdit>
+#endif
 
 #include "api/GTGlobals.h"
 

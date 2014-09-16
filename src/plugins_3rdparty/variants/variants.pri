@@ -40,3 +40,6 @@ LIBS += -lsamtools
     } 
 }
 
+win32-msvc2013 {
+    DEFINES += _XKEYCHECK_H
+}

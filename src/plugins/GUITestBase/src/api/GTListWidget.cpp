@@ -19,9 +19,16 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QListWidget>
+#else
+#include <QtWidgets/QListWidget>
+#endif
+
+#include "api/GTMouseDriver.h"
 
 #include "GTListWidget.h"
-#include "api/GTMouseDriver.h"
 
 namespace U2{
 #define GT_CLASS_NAME "GTListWidget"

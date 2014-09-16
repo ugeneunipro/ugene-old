@@ -19,8 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "ProjectViewImpl.h"
-
 #include <AppContextImpl.h>
 
 #include <U2Core/CopyDocumentTask.h>
@@ -69,6 +67,8 @@
 #else
 #include <QtWidgets/QtWidgets>
 #endif
+
+#include "ProjectViewImpl.h"
 
 namespace U2 {
 

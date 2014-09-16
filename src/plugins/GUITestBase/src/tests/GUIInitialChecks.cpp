@@ -19,6 +19,17 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QDir>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QApplication>
+#include <QtGui/QMainWindow>
+#include <QtGui/QTreeView>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QTreeView>
+#endif
+
 #include "GUIInitialChecks.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
@@ -35,15 +46,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/ObjectViewModel.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QMainWindow>
-#include <QtCore/QDir>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QMainWindow>
-#endif
 
 namespace U2 {
 

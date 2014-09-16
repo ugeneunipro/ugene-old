@@ -1,5 +1,6 @@
-#if !defined(CONTEXT_H__INCLUDED_)
-#define      CONTEXT_H__INCLUDED_
+#ifndef CONTEXT_H__INCLUDED_
+#define CONTEXT_H__INCLUDED_
+
 #include "definitions.h"
 #include "Signal.h"
 
@@ -59,7 +60,7 @@ protected:
    /**
     *	Flag EOF become true if search is done for current sequence
     */
-	FLAG(EOF);
+	FLAG(Eof);
    /**
     *	Interval of sequence where search is performed
     */
@@ -235,4 +236,4 @@ private:
 
 };
 
-#endif // !defined(CONTEXT_H__INCLUDED_)
+#endif // CONTEXT_H__INCLUDED_

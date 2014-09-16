@@ -19,6 +19,15 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtGui/QDropEvent>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QMainWindow>
+#include <QtGui/QTreeView>
+#else
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QTreeView>
+#endif
+
 #include "GTUtilsProjectTreeView.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
@@ -26,13 +35,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/MainWindow.h>
-#include <QtGui/QDropEvent>
-#include <QtGui/QTreeView>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#else
-#include <QtWidgets/QMainWindow>
-#endif
 
 #include "runnables/qt/PopupChooser.h"
 

@@ -96,20 +96,20 @@ QByteArray MysqlAssemblyUtils::packData(MysqlAssemblyDataMethod method, const U2
     pos++;
 
     // rnext
-    qMemCopy(data + pos, rnext.constData(), rnext.length());
+    memcpy(data + pos, rnext.constData(), rnext.length());
     pos += rnext.length();
     data[pos] = '\n';
     pos++;
 
     // pnext
-    qMemCopy(data + pos, pnext.constData(), pnext.length());
+    memcpy(data + pos, pnext.constData(), pnext.length());
     if (!aux.isEmpty()) {
         pos += pnext.length();
         data[pos] = '\n';
         pos++;
 
         // aux
-        qMemCopy(data + pos, aux.constData(), aux.length());
+        memcpy(data + pos, aux.constData(), aux.length());
     }
 
     return res;

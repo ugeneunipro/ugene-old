@@ -19,6 +19,15 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/qglobal.h>
+#if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QGraphicsItem>
+#include <QtGui/QMainWindow>
+#else
+#include <QtWidgets/QGraphicsItem>
+#include <QtWidgets/QMainWindow>
+#endif
+
 #include "GTTestsOptionPanelMSA.h"
 
 #include "api/GTBaseCompleter.h"
@@ -45,6 +54,7 @@
 #include "GTUtilsProjectTreeView.h"
 
 #include <U2Core/AppContext.h>
+
 namespace U2{
 
 namespace GUITest_common_scenarios_options_panel_MSA{

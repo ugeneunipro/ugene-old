@@ -19,17 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#include "Notification.h"
-#include "MainWindow.h"
-#include <U2Core/AppContext.h>
-#include <QtGui/QTextBrowser>
+#include <QtCore/QTime>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QStatusBar>
+#include <QtGui/QTextBrowser>
 #else
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTextBrowser>
 #endif
-#include <QtCore/QTime>
+
+#include <U2Core/AppContext.h>
+
+#include "MainWindow.h"
+#include "Notification.h"
 
 namespace U2 {
 

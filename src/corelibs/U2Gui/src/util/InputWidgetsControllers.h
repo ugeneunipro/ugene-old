@@ -23,14 +23,15 @@
 #define _U2_INPUT_WIDGETS_CONTROLLERS_H
 
 #include <QtCore/QVariant>
-#include <QtGui/QCheckBox>
-#include <QtGui/QComboBox>
-#include <QtGui/QDoubleSpinBox>
-#include <QtGui/QLineEdit>
-#include <QtGui/QRadioButton>
-#include <QtGui/QSpinBox>
 
 #include <U2Core/global.h>
+
+class QCheckBox;
+class QComboBox;
+class QDoubleSpinBox;
+class QLineEdit;
+class QRadioButton;
+class QSpinBox;
 
 namespace U2 {
 

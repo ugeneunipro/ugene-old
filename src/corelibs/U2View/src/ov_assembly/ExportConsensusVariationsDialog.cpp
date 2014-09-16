@@ -19,17 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "ExportConsensusVariationsDialog.h"
-
-#include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
-
-#include <U2Core/DocumentModel.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Gui/HelpButton.h>
-#include <U2Gui/SaveDocumentGroupController.h>
-#include <U2Gui/RegionSelector.h>
-#include <QtGui/QPushButton>
+#include <QtCore/qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
 #include <QtGui/QPushButton>
@@ -37,6 +27,18 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QMessageBox>
 #endif
+
+#include <U2Core/DocumentModel.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
+
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/RegionSelector.h>
+#include <U2Gui/SaveDocumentGroupController.h>
+
+#include "ExportConsensusVariationsDialog.h"
 
 namespace U2 {
 

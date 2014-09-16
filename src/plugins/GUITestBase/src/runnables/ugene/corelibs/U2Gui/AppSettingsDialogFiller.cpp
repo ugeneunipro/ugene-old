@@ -31,12 +31,14 @@
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
+#include <QtGui/QListWidget>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QComboBox>
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QAbstractButton>
 #else
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QListWidget>
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialogButtonBox>

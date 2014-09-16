@@ -6,6 +6,8 @@ include( ../../ugene_lib_common.pri )
 UGENE_RELATIVE_DESTDIR = ''
 
 QT += network xml
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 DEFINES+= QT_FATAL_ASSERT BUILDING_U2CORE_DLL
 use_bundled_zlib() {
     INCLUDEPATH += ../../libs_3rdparty/zlib/src
