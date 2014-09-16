@@ -68,7 +68,7 @@ void WidgetScreenshotExportToSvgTask::run() {
 
     file.close();
     QDomNodeList radialGradients=doc.elementsByTagName("radialGradient");
-    for (int i = 0;i < radialGradients.length(); i++) {
+    for (int i = 0;i < static_cast<int>(radialGradients.length()); i++) {
         if (radialGradients.at(i).isElement()) {
             QDomElement tag = radialGradients.at(i).toElement();
             if (tag.hasAttribute("xml:id")) {

@@ -21,7 +21,7 @@
 
 #include <QtCore/qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication
+#include <QtGui/QApplication>
 #include <QtGui/QMainWindow>
 #else
 #include <QtWidgets/QApplication>

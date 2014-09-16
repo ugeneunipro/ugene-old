@@ -12,7 +12,7 @@ UGENE_RELATIVE_DESTDIR = ''
 DEFINES+= QT_FATAL_ASSERT BUILDING_U2FORMATS_DLL
 
 LIBS += -L../../_release -lU2Core -lU2Algorithm
-LIBS += -lugenedb -lsamtools -lzlib
+LIBS += -lugenedb -lsamtools
 
 win32-msvc2013 {
     DEFINES += NOMINMAX _XKEYCHECK_H
