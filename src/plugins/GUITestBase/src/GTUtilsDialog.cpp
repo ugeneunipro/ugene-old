@@ -96,22 +96,12 @@ void GUIDialogWaiter::checkDialog() {
     }
 
     if (widget && !hadRun && isExpectedName(widget->objectName(), settings.objectName)) {
-        //GTUtilsDialog::pool.removeOne(this);
         timer->stop();
         uiLog.trace("-------------------------");
         uiLog.trace("GUIDialogWaiter::wait Id = " + QString::number(waiterId) + ", going to RUN");
         uiLog.trace("-------------------------");
 
         hadRun = true;
-#ifdef Q_OS_WIN
-        if(widget->isModal()){
-            GTGlobals::sleep(100);
-            widget->setWindowFlags(widget->windowFlags() | Qt::WindowStaysOnTopHint);
-            widget->show();
-            widget->raise();
-            GTGlobals::sleep(100);
-        }
-#endif
         runnable->run();
     }
     else {
