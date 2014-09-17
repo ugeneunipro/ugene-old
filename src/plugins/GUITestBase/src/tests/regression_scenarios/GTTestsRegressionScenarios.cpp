@@ -5637,6 +5637,38 @@ GUI_TEST_CLASS_DEFINITION(test_3439){
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Write Alignment") == 3, "Errors count dont match, should be 2 validation errors");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3452) {
+    //1. Open "samples/Genbank/murine.gb".
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    //2. Find the annotation: NC_001363 -> CDS (0, 4) -> CDS.
+    //Expected state: qualifiers of CDS are shown.
+    QTreeWidgetItem *item1 = GTUtilsAnnotationsTreeView::findItem(os, "CDS");
+    QTreeWidgetItem *item2 = GTUtilsAnnotationsTreeView::findItem(os, "comment");
+    QPoint p1 = GTTreeWidget::getItemCenter(os, item1);
+    QPoint pQual(p1.x(), p1.y() + 80);
+    QPoint p2 = GTTreeWidget::getItemCenter(os, item2);
+
+    //3. Select the annotaions and its several qualifiers.
+    GTMouseDriver::moveTo(os, p1);
+    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(os, pQual);
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(500);
+
+    //4. Try to drag selected annotaions.
+    GTMouseDriver::moveTo(os, p1);
+    GTMouseDriver::press(os);
+    GTGlobals::sleep(500);
+    GTMouseDriver::moveTo(os, p2);
+    GTGlobals::sleep(500);
+    GTMouseDriver::release(os);
+    //Expected state: UGENE does not crash.
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3455) {
     //1. Open WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
