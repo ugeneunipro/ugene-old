@@ -230,12 +230,14 @@ Document* PWMatrixFormat::loadDocument( IOAdapter* io, const U2DbiRef& dbiRef, c
     TaskStateInfo siPWM;
     PWMatrix m = WeightMatrixIO::readPWMatrix(iof, io->getURL().getURLString(), siPWM);
     if (siPWM.hasError()) {
-        os.setError("Given file is not PWM");
+        os.setError(tr("The file format is not PWM"));
     } else {
         if (m.getLength() == 0) {
-            os.setError("Zero length or corrupted model\nMaybe model data is not enough for selected algorithm");
+            os.setError(tr("Zero length or corrupted model.\nMaybe model data are not enough for selected algorithm"));
         }
     }
+    CHECK_OP(os, NULL);
+
     PWMatrixObject *mObj = PWMatrixObject::createInstance(m, QFileInfo(io->getURL().getURLString()).baseName(), dbiRef, os, fs);
     CHECK_OP(os, NULL);
     objs.append(mObj);
