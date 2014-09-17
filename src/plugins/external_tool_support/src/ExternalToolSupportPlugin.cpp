@@ -88,6 +88,7 @@
 #include "bowtie2/Bowtie2Support.h"
 #include "bowtie2/Bowtie2Task.h"
 #include "bowtie2/Bowtie2SettingsWidget.h"
+#include "bowtie2/Bowtie2Worker.h"
 #include "bwa/BwaSupport.h"
 #include "bwa/BwaTask.h"
 #include "bwa/BwaSettingsWidget.h"
@@ -598,6 +599,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     LocalWorkflow::BWAMEMWorkerFactory::init();
     LocalWorkflow::BWAWorkerFactory::init();
     LocalWorkflow::BowtieWorkerFactory::init();
+    LocalWorkflow::Bowtie2WorkerFactory::init();
     LocalWorkflow::SlopbedWorkerFactory::init();
     LocalWorkflow::GenomecovWorkerFactory::init();
     LocalWorkflow::BedGraphToBigWigFactory::init();

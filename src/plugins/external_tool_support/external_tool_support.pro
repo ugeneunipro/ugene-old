@@ -43,6 +43,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/bowtie2/Bowtie2Support.h \
            src/bowtie2/Bowtie2Task.h \
            src/bowtie2/Bowtie2SettingsWidget.h \
+           src/bowtie2/Bowtie2Worker.h \ 
            src/bwa/bwa_tests/bwaTests.h \
            src/bwa/BwaSettingsWidget.h \
            src/bwa/BwaSupport.h \
@@ -197,6 +198,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/bowtie2/Bowtie2Support.cpp \
            src/bowtie2/Bowtie2Task.cpp \
            src/bowtie2/Bowtie2SettingsWidget.cpp \
+           src/bowtie2/Bowtie2Worker.cpp \
            src/bwa/bwa_tests/bwaTests.cpp \
            src/bwa/BwaSettingsWidget.cpp \
            src/bwa/BwaSupport.cpp \
