@@ -164,7 +164,7 @@ static U2SequenceObject* storeSequenceUseGenbankHeader(const QVariantMap& hints,
     seqImport.addBlock(symbolsOfNotExistingSequence.data(), sequenceLength, os);
     CHECK_OP(os, NULL);
 
-    U2Sequence u2seq = seqImport.finalizeSequence(os);
+    U2Sequence u2seq = seqImport.finalizeSequenceAndValidate(os);
     CHECK_OP(os, NULL);
 
     return new U2SequenceObject(u2seq.visualName, U2EntityRef(dbiRef, u2seq.id));
@@ -292,7 +292,7 @@ static QList<GObject *> createNewObjects(
         importGroupSequences2newObject( seqObjects, newAnnObj, mergeGap, seqImport,
             annotationsBySequenceObjectName, os );
 
-        U2Sequence u2seq = seqImport.finalizeSequence( os );
+        U2Sequence u2seq = seqImport.finalizeSequenceAndValidate( os );
         CHECK_OP( os, QList<GObject *>( ) );
 
         if ( !newUrl.getURLString( ).isEmpty( ) ) {

@@ -67,6 +67,7 @@ void GTest_LoadDocument::init(XMLTestFormat*, const QDomElement& el) {
     contextAdded = false;
     docContextName = el.attribute("index");
     needVerifyLog = false;
+    QVariantMap hints;
 
     if (NULL != el.attribute("message")) {
         expectedLogMessage = el.attribute("message");
@@ -79,7 +80,16 @@ void GTest_LoadDocument::init(XMLTestFormat*, const QDomElement& el) {
     if (NULL != el.attribute("no-message")) {
         unexpectedLogMessage = el.attribute("no-message");
     }
-    
+
+    if (NULL != el.attribute("sequence-mode")) {
+        QString seqMode = el.attribute("sequence-mode");
+        if ("msa" == seqMode) {
+            hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+        } else if ("merge" == seqMode) {
+            hints[DocumentReadingMode_SequenceMergeGapSize] = 10; // just default value
+        }
+    }
+
     QString dir = el.attribute("dir");
     if(dir == "temp"){
         tempFile = true;
@@ -92,7 +102,6 @@ void GTest_LoadDocument::init(XMLTestFormat*, const QDomElement& el) {
     IOAdapterId         io = el.attribute("io");
     IOAdapterFactory*   iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(io);
     DocumentFormatId    format = el.attribute("format");
-    QVariantMap         fs;
     if (iof == NULL) {
         stateInfo.setError( QString("io_adapter_not_found_%1").arg(io));
     } else if (format.isEmpty()) {
@@ -101,10 +110,10 @@ void GTest_LoadDocument::init(XMLTestFormat*, const QDomElement& el) {
         if (format == BaseDocumentFormats::SAM) {
             //SAM format is temporarily removed from base formats list -> create it manually
             SAMFormat* samFormat = new SAMFormat();
-            loadTask = new LoadDocumentTask(samFormat, url, iof);
+            loadTask = new LoadDocumentTask(samFormat, url, iof, hints);
             samFormat->setParent(loadTask);
         } else {
-            loadTask = new LoadDocumentTask(format, url, iof);
+            loadTask = new LoadDocumentTask(format, url, iof, hints);
         }
         addSubTask(loadTask);
     }
@@ -223,7 +232,17 @@ void GTest_LoadBrokenDocument::init(XMLTestFormat* tf, const QDomElement& el) {
 
     message = el.attribute("message");
 
-    loadTask = new LoadDocumentTask(format, url, iof);
+    QVariantMap hints;
+    if (NULL != el.attribute("sequence-mode")) {
+        QString seqMode = el.attribute("sequence-mode");
+        if ("msa" == seqMode) {
+            hints[DocumentReadingMode_SequenceAsAlignmentHint] = true;
+        } else if ("merge" == seqMode) {
+            hints[DocumentReadingMode_SequenceMergeGapSize] = 10; // just default value
+        }
+    }
+
+    loadTask = new LoadDocumentTask(format, url, iof, hints);
     addSubTask(loadTask);
 }
 

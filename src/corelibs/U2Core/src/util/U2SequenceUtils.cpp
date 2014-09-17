@@ -193,7 +193,7 @@ U2EntityRef U2SequenceUtils::import(const U2DbiRef& dbiRef, const QString& folde
     i.addBlock(seq.constData(), seq.length(), os);
     CHECK_OP(os, res);
     
-    U2Sequence u2seq = i.finalizeSequence(os);
+    U2Sequence u2seq = i.finalizeSequenceAndValidate(os);
     CHECK_OP(os, res);
     
     res.dbiRef = dbiRef;
@@ -466,6 +466,15 @@ U2Sequence U2SequenceImporter::finalizeSequence(U2OpStatus& os) {
     sequenceCreated = false;
     committedLength = 0;
     return sequence;
+}
+
+U2Sequence U2SequenceImporter::finalizeSequenceAndValidate(U2OpStatus &os) {
+    U2Sequence result = finalizeSequence(os);
+    CHECK_OP(os, result);
+    if (!result.hasValidId()) {
+        os.setError(QObject::tr("Sequence was not imported. Probably, this is because the sequence is empty."));
+    }
+    return result;
 }
 
 void U2SequenceImporter::setCaseAnnotationsMode(CaseAnnotationsMode mode) {

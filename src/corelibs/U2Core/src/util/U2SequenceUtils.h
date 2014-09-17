@@ -76,6 +76,8 @@ public:
     void addSequenceBlock(const U2EntityRef& seqId, const U2Region& r, U2OpStatus& os);
     virtual void addDefaultSymbolsBlock(int n, U2OpStatus& os);
     U2Sequence finalizeSequence(U2OpStatus& os);
+    /** Checks that finalized sequence has the valid id */
+    U2Sequence finalizeSequenceAndValidate(U2OpStatus& os);
     U2AlphabetId getAlphabet() const {return sequence.alphabet;}
 
     void setCaseAnnotationsMode(CaseAnnotationsMode mode);

@@ -117,7 +117,7 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
 
             seqImporter.startSequence(dbiRef, folder, dnaSeq.getName(), dnaSeq.circular, os);
             seqImporter.addBlock(seq.constData(), seq.length(), os);
-            U2Sequence u2seq = seqImporter.finalizeSequence(os);
+            U2Sequence u2seq = seqImporter.finalizeSequenceAndValidate(os);
             TmpDbiObjects dbiObjects(dbiRef, os);
             dbiObjects.objects << u2seq.id;
             CHECK_OP(os,);

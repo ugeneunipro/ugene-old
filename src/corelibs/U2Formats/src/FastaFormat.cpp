@@ -233,12 +233,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
             mergedMapping.append(U2Region(sequenceStart, sequenceLen));
         } else {
             memoryLocker.tryAcquire(800);
-            U2Sequence seq = seqImporter.finalizeSequence(os);
-            if (!seq.hasValidId()) {
-                os.setError(QObject::tr("Sequence was not imported. Probably, this is because the sequence is empty."));
-            } else {
-                dbiObjects.objects << seq.id;
-            }
+            U2Sequence seq = seqImporter.finalizeSequenceAndValidate(os);
+            dbiObjects.objects << seq.id;
             CHECK_OP_BREAK(os);
             sequenceRef.entityRef = U2EntityRef(dbiRef, seq.id);
             
@@ -272,7 +268,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
         return;
     }
 
-    U2Sequence seq = seqImporter.finalizeSequence(os);
+    U2Sequence seq = seqImporter.finalizeSequenceAndValidate(os);
     dbiObjects.objects << seq.id;
     CHECK_OP(os, );
     sequenceRef.entityRef = U2EntityRef(dbiRef, seq.id);

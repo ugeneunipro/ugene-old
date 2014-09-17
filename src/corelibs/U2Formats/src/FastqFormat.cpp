@@ -312,7 +312,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
             mergedMapping.append(U2Region(sequenceStart, sequence.length() ));
         }
         else {
-            U2Sequence u2seq = seqImporter.finalizeSequence(os);
+            U2Sequence u2seq = seqImporter.finalizeSequenceAndValidate(os);
             dbiObjects.objects << u2seq.id;
             CHECK_OP_BREAK(os);
             sequenceRef = GObjectReference(io->getURL().getURLString(), u2seq.visualName, GObjectTypes::SEQUENCE, U2EntityRef(dbiRef, u2seq.id));
@@ -345,7 +345,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
     if (!merge) {
         return;
     }
-    U2Sequence u2seq = seqImporter.finalizeSequence(os);
+    U2Sequence u2seq = seqImporter.finalizeSequenceAndValidate(os);
     dbiObjects.objects << u2seq.id;
     CHECK_OP(os,);
 

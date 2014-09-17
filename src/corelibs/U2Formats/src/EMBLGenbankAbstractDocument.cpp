@@ -270,7 +270,7 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
         return;
     }
 
-    U2Sequence u2seq = seqImporter.finalizeSequence(os);
+    U2Sequence u2seq = seqImporter.finalizeSequenceAndValidate(os);
     dbiObjects.objects << u2seq.id;
 
     CHECK_OP(os,);

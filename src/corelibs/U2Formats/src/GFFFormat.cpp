@@ -135,7 +135,7 @@ U2SequenceObject *importSequence(DNASequence &sequence,
     CHECK_OP(os, NULL);
     seqImporter.addBlock(sequence.seq.constData(), sequence.seq.length(), os);
     CHECK_OP(os, NULL);
-    U2Sequence u2seq = seqImporter.finalizeSequence(os);
+    U2Sequence u2seq = seqImporter.finalizeSequenceAndValidate(os);
     TmpDbiObjects dbiObjects(dbiRef, os);
     dbiObjects.objects << u2seq.id;
     CHECK_OP(os, NULL);

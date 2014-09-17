@@ -444,11 +444,12 @@ void ExternalProcessWorker::sl_onTaskFinishied() {
                 U2Region wholeSeq(0, obj->getSequenceLength());
                 seqImporter.addSequenceBlock(eRef, wholeSeq, os);
             }
-            U2Sequence seq = seqImporter.finalizeSequence(os);
+            U2Sequence seq = seqImporter.finalizeSequenceAndValidate(os);
             U2EntityRef eRef(context->getDataStorage()->getDbiRef(), seq.id);
             SharedDbiDataHandler id = context->getDataStorage()->getDataHandler(eRef);
             v[slotId] = qVariantFromValue<SharedDbiDataHandler>(id);
         }
+        CHECK_OP(os, );
         output->put(Message(dataType, v));
     }
 }
