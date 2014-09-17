@@ -1304,6 +1304,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0008){
     QFile f(s);
     bool created = f.open(QFile::ReadWrite);
     CHECK_SET_ERR(created, "file not created");
+    f.close();
 
     setOutputPath(os, sandBoxDir,  fileName);
     align(os);
@@ -1312,7 +1313,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0008){
     int size = GTFile::getSize(os, sandBoxDir + fileName);
     CHECK_SET_ERR(size == 185, QString("unexpected file size %1").arg(size));
     GTUtilsProjectTreeView::doubleClickItem(os, fileName);
-    f.close();
+
 }
 
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0009){
@@ -1332,6 +1333,7 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0009){
     bool created = f.open(QFile::ReadWrite);
     PermissionsSetter p;
     CHECK_SET_ERR(created, "file not created");
+    f.close();
     p.setPermissions(s, QFile::ReadOwner);
 
     setOutputPath(os, sandBoxDir,  fileName);
@@ -1339,9 +1341,13 @@ GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0009){
     GTGlobals::sleep(500);
 //    Expected state: error in log: Task {PairwiseAlignmentTask} finished with error: No permission to write to 'COI_transl.aln' file.
     QString error = l.getError();
-    QString expected = QString("Task {PairwiseAlignmentTask} finished with error: No permission to write to \'%1\' file.").arg(fileName);
-    CHECK_SET_ERR(error == expected, QString("enexpected error: %1").arg(error));
-    f.close();
+    QString expected;
+#ifdef Q_OS_WIN
+    expected = "Task {PairwiseAlignmentTask} finished with error: Failed to rename";
+#else
+    expected = QString("Task {PairwiseAlignmentTask} finished with error: No permission to write to \'%1\' file.").arg(fileName);
+#endif
+    CHECK_SET_ERR(error.contains(expected), QString("enexpected error: %1").arg(error));
 }
 
 GUI_TEST_CLASS_DEFINITION(pairwise_alignment_test_0010){
@@ -1809,6 +1815,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0001){
     QFile f(s);
     bool created = f.open(QFile::ReadWrite);
     CHECK_SET_ERR(created, "file not created");
+    f.close();
 
     setConsensusOutputPath(os, sandBoxDir + fileName);
 //    4. Press export button
@@ -1818,7 +1825,6 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0001){
     int size = GTFile::getSize(os, sandBoxDir + fileName);
     CHECK_SET_ERR(size == 604, QString("unexpected file size %1").arg(size));
     GTUtilsProjectTreeView::doubleClickItem(os, fileName);
-    f.close();
 }
 
 GUI_TEST_CLASS_DEFINITION(export_consensus_test_0002){
@@ -1834,6 +1840,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0002){
     bool created = f.open(QFile::ReadWrite);
     PermissionsSetter p;
     CHECK_SET_ERR(created, "file not created");
+    f.close();
     p.setPermissions(s, QFile::ReadOwner);
 
     setConsensusOutputPath(os, sandBoxDir + fileName);
@@ -1842,9 +1849,13 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0002){
     GTGlobals::sleep(300);
 //    Expected state: error in log: Task {Save document} finished with error: No permission to write to 'COI_transl.aln' file.
     QString error = l.getError();
-    QString expected = QString("Task {Export consensus to MSA} finished with error: Subtask {Save document} is failed: No permission to write to \'%1\' file.").arg(fileName);
-    CHECK_SET_ERR(error == expected, QString("enexpected error: %1").arg(error));
-    f.close();
+    QString expected;
+#ifdef Q_OS_WIN
+    expected = "Task {Export consensus to MSA} finished with error: Subtask {Save document} is failed: Failed to rename";
+#else
+    expected = QString("Task {Export consensus to MSA} finished with error: Subtask {Save document} is failed: No permission to write to \'%1\' file.").arg(fileName);
+#endif
+    CHECK_SET_ERR(error.contains(expected), QString("enexpected error: %1").arg(error));
 }
 
 GUI_TEST_CLASS_DEFINITION(export_consensus_test_0003){
