@@ -96,12 +96,14 @@ Document* PFMatrixFormat::loadDocument( IOAdapter* io, const U2DbiRef& dbiRef, c
     TaskStateInfo siPFM;
     PFMatrix m = WeightMatrixIO::readPFMatrix(iof, io->getURL().getURLString(), siPFM);
     if (siPFM.hasError()) {
-        os.setError("Given file is not PFM");
+        os.setError(tr("The file format is not PFM"));
     } else {
        if (m.getLength() == 0) {
-            os.setError("Zero length or corrupted model\nMaybe model data is not enough for selected algorithm");
+            os.setError(tr("Zero length or corrupted model\nMaybe model data are not enough for selected algorithm"));
         }
     }
+    CHECK_OP(os, NULL);
+
     PFMatrixObject *mObj = PFMatrixObject::createInstance(m, QFileInfo(io->getURL().getURLString()).baseName(), dbiRef, os, fs);
     CHECK_OP(os, NULL);
     objs.append(mObj);
