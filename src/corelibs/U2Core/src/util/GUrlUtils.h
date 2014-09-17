@@ -121,6 +121,9 @@ public:
     // Rolls the result of getLocalUrlFromUrl()
     static QString getNewLocalUrlByFormat(const GUrl &url, const QString &defaultBaseFileName, const DocumentFormatId &format, const QString &suffix);
     static QString getNewLocalUrlByExtention(const GUrl &url, const QString &defaultBaseFileName, const QString &dotExtention, const QString &suffix);
+
+    // Check that @url is the path to the local file. Creates the path if it does not exist
+    static void validateLocalFileUrl(const GUrl &url, U2OpStatus &os, const QString &urlName = tr("Output URL"));
 };
 
 } //namespace

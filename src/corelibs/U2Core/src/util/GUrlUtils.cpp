@@ -380,4 +380,26 @@ QString GUrlUtils::getNewLocalUrlByExtention(const GUrl &url, const QString &def
     return rollFileName(result, DocumentUtils::getNewDocFileNameExcludesHint());
 }
 
+void GUrlUtils::validateLocalFileUrl(const GUrl &url, U2OpStatus &os, const QString &urlName) {
+    QString urlStr = url.getURLString();
+    if (!url.isLocalFile()) {
+        os.setError(tr("%1 is not a local file [%2]").arg(urlName).arg(urlStr));
+        return;
+    }
+
+    QFileInfo info(urlStr);
+    if (!info.exists()) {
+        QString dirUrl = info.dir().absolutePath();
+        bool created = QDir().mkpath(dirUrl);
+        if (!created) {
+            os.setError(tr("Can not create a directory [%1]").arg(dirUrl));
+        }
+        return;
+    }
+    if (info.isDir()) {
+        os.setError(tr("%1 is a directory [%2]").arg(urlName).arg(urlStr));
+        return;
+    }
+}
+
 }//namespace

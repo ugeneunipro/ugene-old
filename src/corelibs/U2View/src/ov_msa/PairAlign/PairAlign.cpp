@@ -40,6 +40,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/Task.h>
@@ -314,6 +315,13 @@ void PairAlign::sl_alignButtonPressed() {
         settings.resultFileName = GUrl(AppContext::getAppSettings()->getUserAppsSettings()->getCurrentProcessTemporaryDirPath() +
                                        "/" + PairwiseAlignmentTaskSettings::PA_DEFAULT_NAME);
     }
+    GUrlUtils::validateLocalFileUrl(settings.resultFileName, os);
+    if (os.hasError()) {
+        QMessageBox::warning(this, tr("Error"), tr("Please, change the output file.") + "\n" + os.getError());
+        outputFileLineEdit->setFocus(Qt::MouseFocusReason);
+        return;
+    }
+
     settings.inNewWindow = inNewWindowCheckBox->isChecked();
     settings.msaRef = msaRef;
     settings.alphabet = U2AlphabetId(msa->getMSAObject()->getAlphabet()->getId());
