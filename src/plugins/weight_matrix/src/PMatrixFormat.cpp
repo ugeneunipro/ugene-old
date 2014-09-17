@@ -199,19 +199,18 @@ U2::FormatCheckResult PWMatrixFormat::checkRawData( const QByteArray& rawData, c
     }
     qsl.pop_front(); //skip first line
     foreach(QString str, qsl){
-        QStringList line = str.split(QRegExp("\\s+"));
-        if(line.at(0).isEmpty()){
-            break;
-        }
-        if(line.at(0).at(1) != ':'){
-            return FormatDetection_NotMatched;
-        }
-        line.pop_front();
-        foreach(QString word, line){
-            if (!word.isEmpty()){
+        QStringList words = str.split(QRegExp("\\s+"));
+        CHECK(!words.isEmpty(), FormatDetection_NotMatched);
+
+        QString firstWord = words.takeFirst();
+        CHECK(2 == firstWord.size(), FormatDetection_NotMatched);
+        CHECK(':' == firstWord[1], FormatDetection_NotMatched);
+
+        foreach (QString word, words) {
+            if (!word.isEmpty()) {
                 bool isFloat;
                 word.toFloat(&isFloat);
-                if (!isFloat){
+                if (!isFloat) {
                     return FormatDetection_NotMatched;
                 }
             }
