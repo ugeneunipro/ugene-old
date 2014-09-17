@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Lang/HRSchemaSerializer.h>
+#include <U2Lang/DbFolderScanner.h>
 #include <U2Lang/SharedDbUrlUtils.h>
 #include <U2Lang/WorkflowUtils.h>
 
@@ -99,7 +99,7 @@ DbObjUrlContainer::DbObjUrlContainer(const QString &url)
 }
 
 FilesIterator * DbObjUrlContainer::getFileUrls() {
-    return NULL;
+    return FilesIteratorFactory::createFileList(QStringList() << url);
 }
 
 URLContainer * DbObjUrlContainer::clone() {
@@ -116,21 +116,20 @@ bool DbObjUrlContainer::validateUrl(ProblemList &problemList) {
 
 //////////////////////////////////////////////////////////////////////////
 
-DirUrlContainer::DirUrlContainer(const QString &url, bool convertUrlToAbsolute)
-    : URLContainer(url, convertUrlToAbsolute), recursive(false)
+DirUrlContainer::DirUrlContainer(const QString &url)
+    : URLContainer(url), recursive(false)
 {
 
 }
 
-DirUrlContainer::DirUrlContainer(const QString &url, const QString &_incFilter, const QString &_excFilter, bool _recursive, bool convertUrlToAbsolute)
-    : URLContainer(url, convertUrlToAbsolute), incFilter(_incFilter), excFilter(_excFilter), recursive(_recursive)
+DirUrlContainer::DirUrlContainer(const QString &url, const QString &_incFilter, const QString &_excFilter, bool _recursive)
+    : URLContainer(url), incFilter(_incFilter), excFilter(_excFilter), recursive(_recursive)
 {
 
 }
 
 FilesIterator * DirUrlContainer::getFileUrls() {
-    return FilesIteratorFactory::createDirectoryScanner(
-        QStringList() << url, incFilter, excFilter, recursive);
+    return FilesIteratorFactory::createDirectoryScanner(QStringList() << url, incFilter, excFilter, recursive);
 }
 
 URLContainer * DirUrlContainer::clone() {
@@ -188,23 +187,23 @@ void DirUrlContainer::setRecursive(bool value) {
 //////////////////////////////////////////////////////////////////////////
 
 DbFolderUrlContainer::DbFolderUrlContainer(const QString &url)
-    : DirUrlContainer(url, false)
+    : URLContainer(url, false), recursive(false)
 {
 
 }
 
-DbFolderUrlContainer::DbFolderUrlContainer(const QString &url, const QString &incFilter, const QString &excFilter, bool recursive)
-    : DirUrlContainer(url, incFilter, excFilter, recursive, false)
+DbFolderUrlContainer::DbFolderUrlContainer(const QString &url, const QString &accFilter, const QString &objNameFilter, bool recursive)
+    : URLContainer(url, false), accFilter(accFilter), objNameFilter(objNameFilter), recursive(recursive)
 {
 
 }
 
 FilesIterator * DbFolderUrlContainer::getFileUrls() {
-    return NULL;
+    return new DbFolderScanner(url, accFilter, objNameFilter, recursive);
 }
 
 URLContainer * DbFolderUrlContainer::clone() {
-    return new DbFolderUrlContainer(url, getIncludeFilter(), getExcludeFilter(), isRecursive());
+    return new DbFolderUrlContainer(url, accFilter, objNameFilter, recursive);
 }
 
 void DbFolderUrlContainer::accept(URLContainerVisitor *visitor) {
@@ -218,7 +217,7 @@ bool DbFolderUrlContainer::validateUrl(ProblemList &problemList) {
     }
 
     FilesIterator *it = getFileUrls();
-    SAFE_POINT(NULL != it, "NULL fileIterator!", false);
+    SAFE_POINT(NULL != it, "Invalid DB object iterator", false);
     while (it->hasNext()) {
         QString fileUrl = it->getNextFile();
         bool urlIsValid = WorkflowUtils::validateInputDbObjects(fileUrl, problemList);
@@ -241,6 +240,14 @@ void DbFolderUrlContainer::setSequenceAccFilter(const QString &acc) {
 
 void DbFolderUrlContainer::setObjNameFilter(const QString &name) {
     objNameFilter = name;
+}
+
+bool DbFolderUrlContainer::isRecursive() const {
+    return recursive;
+}
+
+void DbFolderUrlContainer::setRecursive(bool value) {
+    recursive = value;
 }
 
 } // U2

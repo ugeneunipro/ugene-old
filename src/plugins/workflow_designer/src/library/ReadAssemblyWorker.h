@@ -41,6 +41,7 @@ public:
 
 protected:
     virtual void onTaskFinished(Task *task);
+    virtual void addReadDbObjectToData(const QString &objUrl, QVariantMap &data);
 
 protected:
     virtual Task * createReadTask(const QString &url, const QString &datasetName);

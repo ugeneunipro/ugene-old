@@ -21,30 +21,31 @@
 
 #include <QtCore/QScopedPointer>
 
-#include <U2Core/DocumentModel.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/SaveDocumentTask.h>
-#include <U2Core/QVariantUtils.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/DocumentUtils.h>
 #include <U2Core/FailTask.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Core/ImportObjectToDatabaseTask.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/DocumentUtils.h>
-#include <U2Core/GUrlUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/MultiTask.h>
+#include <U2Core/QVariantUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
-#include <U2Lang/BaseTypes.h>
-#include <U2Lang/BaseSlots.h>
-#include <U2Lang/BasePorts.h>
-#include <U2Lang/BaseAttributes.h>
+#include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/BaseAttributes.h>
+#include <U2Lang/BasePorts.h>
+#include <U2Lang/BaseSlots.h>
+#include <U2Lang/BaseTypes.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/SharedDbUrlUtils.h>
 #include <U2Lang/WorkflowEnv.h>
-#include <U2Lang/ActorPrototypeRegistry.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include <U2Designer/DelegateEditors.h>
 
@@ -77,65 +78,56 @@ void WriteAnnotationsWorker::init() {
     annotationsPort = ports.value(BasePorts::IN_ANNOTATIONS_PORT_ID());
 }
 
-Task * WriteAnnotationsWorker::tick() {
-    QString formatId = getValue<QString>(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
-    DocumentFormat * format = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
-    SaveDocFlags fl(getValue<uint>(BaseAttributes::FILE_MODE_ATTRIBUTE().getId()));
-    if( formatId != CSV_FORMAT_ID && format == NULL ) {
-        return new FailTask(tr("Unrecognized formatId: '%1'").arg(formatId));
+Task * WriteAnnotationsWorker::takeParameters(QString &formatId, SaveDocFlags &fl, QString &resultPath, U2DbiRef &dstDbiRef,
+    WriteAnnotationsWorker::DataStorage &storage)
+{
+    const QString storageStr = getValue<QString>(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId());
+    if (BaseAttributes::LOCAL_FS_DATA_STORAGE() == storageStr) {
+        storage = LocalFs;
+        formatId = getValue<QString>(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
+        DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
+        fl = SaveDocFlags(getValue<uint>(BaseAttributes::FILE_MODE_ATTRIBUTE().getId()));
+        resultPath = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
+        if (formatId != CSV_FORMAT_ID && NULL == format) {
+            return new FailTask(tr("Unrecognized formatId: '%1'").arg(formatId));
+        }
+    } else if (BaseAttributes::SHARED_DB_DATA_STORAGE() == storageStr) {
+        storage = SharedDb;
+        dstDbiRef = SharedDbUrlUtils::getDbRefFromEntityUrl(getValue<QString>(BaseAttributes::DATABASE_ATTRIBUTE().getId()));
+        CHECK(dstDbiRef.isValid(), new FailTask(tr("Invalid shared DB URL")));
+        resultPath = getValue<QString>(BaseAttributes::DB_PATH().getId());
+        CHECK(!resultPath.isEmpty(), new FailTask(tr("Invalid path in shared DB")));
+    } else {
+        return new FailTask(tr("Unrecognized data storage: '%1'").arg(storageStr));
     }
+    return NULL;
+}
 
-    QString seqName;
+Task * WriteAnnotationsWorker::tick() {
+    QString formatId;
+    SaveDocFlags fl;
+    QString resultPath;
+    U2DbiRef dstDbiRef;
+    DataStorage storage;
+
+    Task *failTask = takeParameters(formatId, fl, resultPath, dstDbiRef, storage);
+    CHECK(NULL == failTask, failTask);
 
     while(annotationsPort->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(annotationsPort);
         if (inputMessage.isEmpty()) {
             continue;
         }
-
         const QVariantMap qm = inputMessage.getData().toMap();
-        QString filepath = getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId());
-        filepath = filepath.isEmpty() ? qm.value(BaseSlots::URL_SLOT().getId()).value<QString>() : filepath;
-        if (filepath.isEmpty()) {
-            return new FailTask(tr("Unspecified URL to write %1").arg(formatId));
-        }
-        filepath = context->absolutePath(filepath);
-        SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
-        QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
-        
-        if (NULL != seqObj.data()) {
-            seqName = seqObj->getSequenceName();
-        }
-        QStringList exts = formatId == CSV_FORMAT_ID ? QStringList("csv") : format->getSupportedDocumentFileExtensions();
 
-        QString objName = getValue<QString>(ANNOTATIONS_NAME);
-        if(objName.isEmpty()) {
-            objName = ANNOTATIONS_NAME_DEF_VAL;
-            coreLog.details(tr("Annotations name not specified. Default value used: '%1'").arg(objName));
-        }
-        AnnotationTableObject *att = NULL;
-        if (annotationsByUrl.contains(filepath)) {
-            att = annotationsByUrl.value(filepath);
-        } else {
-            att = new AnnotationTableObject( objName, context->getDataStorage( )->getDbiRef( ) );
-            annotationsByUrl.insert(filepath, att);
+        if (LocalFs == storage) {
+            resultPath = resultPath.isEmpty() ? qm.value(BaseSlots::URL_SLOT().getId()).value<QString>() : resultPath;
+            CHECK(!resultPath.isEmpty(), new FailTask(tr("Unspecified URL to write")));
+            resultPath = context->absolutePath(resultPath);
         }
 
-        const QVariant annVar = qm[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-        const QList<AnnotationData> inputAnns = StorageUtils::getAnnotationTable(
-            context->getDataStorage( ), annVar );
-
-        bool isWriteNames = getValue<bool>(WRITE_NAMES);
-        foreach ( AnnotationData ad, inputAnns ) {
-            if ( isWriteNames ) {
-                U2Qualifier seqNameQual;
-                seqNameQual.name = "Sequence Name";
-                seqNameQual.value = seqName;
-                ad.qualifiers.append( seqNameQual );
-            }
-            att->addAnnotation( ad );
-        }
-    } // while
+        fetchIncomingAnnotations(qm, resultPath);
+    }
 
     bool done = annotationsPort->isEnded();
     if (!done) {
@@ -143,9 +135,83 @@ Task * WriteAnnotationsWorker::tick() {
     }
 
     setDone();
+    if (LocalFs == storage) {
+        return getSaveDocTask(formatId, fl);
+    } else if (SharedDb == storage) {
+        return getSaveObjTask(dstDbiRef);
+    } else {
+        // this branch must never execute, it was added to avoid a compiler warning
+        return new FailTask(tr("Unrecognized data storage"));
+    }
+}
+
+QString WriteAnnotationsWorker::fetchIncomingSequenceName(const QVariantMap &incomingData) {
+    const SharedDbiDataHandler seqId = incomingData.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
+    QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+
+    return seqObj.isNull() ? QString() : seqObj->getSequenceName();
+}
+
+QString WriteAnnotationsWorker::getAnnotationName() const {
+    QString objName = getValue<QString>(ANNOTATIONS_NAME);
+    if (objName.isEmpty()) {
+        objName = ANNOTATIONS_NAME_DEF_VAL;
+        coreLog.details(tr("Annotations name not specified. Default value used: '%1'").arg(objName));
+    }
+    return objName;
+}
+
+void WriteAnnotationsWorker::fetchIncomingAnnotations(const QVariantMap &incomingData, const QString &resultPath) {
+    const QString annObjName = getAnnotationName();
+
+    AnnotationTableObject *att = NULL;
+    if (annotationsByUrl.contains(resultPath)) {
+        att = annotationsByUrl.value(resultPath);
+    } else {
+        att = new AnnotationTableObject(annObjName, context->getDataStorage()->getDbiRef());
+        annotationsByUrl.insert(resultPath, att);
+    }
+
+    const QVariant annVar = incomingData[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
+    const QList<AnnotationData> inputAnns = StorageUtils::getAnnotationTable(context->getDataStorage(), annVar);
+
+    const QString seqObjName = fetchIncomingSequenceName(incomingData);
+    bool isWriteNames = getValue<bool>(WRITE_NAMES);
+    foreach (AnnotationData ad, inputAnns) {
+        if (isWriteNames && !seqObjName.isEmpty()) {
+            U2Qualifier seqNameQual;
+            seqNameQual.name = "Sequence Name";
+            seqNameQual.value = seqObjName;
+            ad.qualifiers.append(seqNameQual);
+        }
+        att->addAnnotation(ad);
+    }
+}
+
+Task * WriteAnnotationsWorker::createWriteMultitask(const QList<Task *> &taskList) const {
+    if (taskList.isEmpty()) {
+        monitor()->addError(tr("Nothing to write"), getActorId(), Problem::U2_WARNING);
+        return NULL;
+    } else if (1 == taskList.size()) {
+        return taskList.first();
+    }
+    return new MultiTask(QObject::tr("Save annotations"), taskList);
+}
+
+Task * WriteAnnotationsWorker::getSaveObjTask(const U2DbiRef &dstDbiRef) const {
+    QList<Task *> taskList;
+    foreach (const QString &path, annotationsByUrl.keys()) {
+        taskList << new ImportObjectToDatabaseTask(annotationsByUrl[path], dstDbiRef, path);
+    }
+    return createWriteMultitask(taskList);
+}
+
+Task * WriteAnnotationsWorker::getSaveDocTask(const QString &formatId, SaveDocFlags &fl) {
+    SAFE_POINT(!formatId.isEmpty(), "Invalid format ID", NULL);
+
     QList<Task*> taskList;
     QSet<QString> excludeFileNames = DocumentUtils::getNewDocFileNameExcludesHint();
-    foreach (QString filepath, annotationsByUrl.keys()) {
+    foreach (const QString &filepath, annotationsByUrl.keys()) {
         AnnotationTableObject *att = annotationsByUrl.value(filepath);
 
         if(formatId == CSV_FORMAT_ID) {
@@ -155,7 +221,7 @@ Task * WriteAnnotationsWorker::tick() {
                 return new FailTask(ti.getError());
             }
             taskList << new ExportAnnotations2CSVTask(att->getAnnotations(), QByteArray(), QString(), NULL, false, 
-                  false, filepath, fl.testFlag(SaveDoc_Append)
+                false, filepath, fl.testFlag(SaveDoc_Append)
                 , getValue<QString>(SEPARATOR));
         } else {
             fl |= SaveDoc_DestroyAfter;
@@ -173,15 +239,11 @@ Task * WriteAnnotationsWorker::tick() {
             taskList << new SaveDocumentTask(doc, fl, excludeFileNames);
         }
     }
-    if (taskList.isEmpty()) {
-        return NULL;
-    } else if (1 == taskList.size()) {
-        return taskList.first();
-    }
-    return new MultiTask(tr("Save annotations"), taskList);
+    return createWriteMultitask(taskList);
 }
 
 void WriteAnnotationsWorker::cleanup() {
+
 }
 
 /*******************************
@@ -232,7 +294,6 @@ void WriteAnnotationsWorkerFactory::init() {
             " annotations. This option is only available for document formats"
             " that support saving of annotations names."));
         Attribute *nameAttr = new Attribute(annotationsNameDesc, BaseTypes::STRING_TYPE(), false, QVariant(ANNOTATIONS_NAME_DEF_VAL));
-        nameAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
         attrs << nameAttr;
         Descriptor separatorDesc(SEPARATOR, WriteAnnotationsWorker::tr("CSV separator"), 
             WriteAnnotationsWorker::tr("String which separates values in CSV files."));

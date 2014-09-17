@@ -528,6 +528,9 @@ bool ScreenedParamValidator::validate(const Configuration* cfg, ProblemList &pro
 
 QString ScreenedParamValidator::validate(const Configuration * cfg) const {
     Attribute* param = cfg->getParameter(id);
+    const bool paramIsVisible = param->isVisible();
+    CHECK(paramIsVisible, QString());
+
     QVariant val = param->getAttributePureValue();
     const Workflow::Actor* a = dynamic_cast<const Workflow::Actor*>(cfg);
     assert(a);
@@ -543,8 +546,7 @@ QString ScreenedParamValidator::validate(const Configuration * cfg) const {
     if (noParam && noSlot) {
         QString slotName = p->getType()->getDatatypeDescriptor(slot).getDisplayName(); 
         assert(!slotName.isEmpty());
-        return U2::WorkflowUtils::tr("Either parameter '%1' or input slot '%2' must be set")
-            .arg(param->getDisplayName()).arg(slotName);//FIXME translator class
+        return U2::WorkflowUtils::tr("Either parameter '%1' or input slot '%2' must be set").arg(param->getDisplayName()).arg(slotName);//FIXME translator class
     }
     if (noParam == noSlot) {
         QString slotName = p->getType()->getDatatypeDescriptor(slot).getDisplayName();

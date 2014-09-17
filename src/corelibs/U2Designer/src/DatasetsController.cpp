@@ -72,8 +72,6 @@ public:
 
     virtual void visit(DbFolderUrlContainer *url) {
         DbFolderItem *dItem = new DbFolderItem(url->getUrl());
-        dItem->setIncludeFilter(url->getIncludeFilter());
-        dItem->setExcludeFilter(url->getExcludeFilter());
         dItem->setRecursive(url->isRecursive());
         urlItem = dItem;
     }
@@ -89,9 +87,13 @@ private:
 class URLContainerUpdateHelper : public UrlItemVisitor {
 public:
     URLContainerUpdateHelper(FileUrlContainer *url)
-        : fileUrl(url), dirUrl(NULL) {}
+        : fileUrl(url), dirUrl(NULL), dbObjUrl(NULL), dbFolderUrl(NULL) {}
     URLContainerUpdateHelper(DirUrlContainer *url)
-        : fileUrl(NULL), dirUrl(url) {}
+        : fileUrl(NULL), dirUrl(url), dbObjUrl(NULL), dbFolderUrl(NULL) {}
+    URLContainerUpdateHelper(DbObjUrlContainer *url)
+        : fileUrl(NULL), dirUrl(NULL), dbObjUrl(url), dbFolderUrl(NULL) {}
+    URLContainerUpdateHelper(DbFolderUrlContainer *url)
+        : fileUrl(NULL), dirUrl(NULL), dbObjUrl(NULL), dbFolderUrl(url) {}
 
     virtual void visit(DirectoryItem *item) {
         SAFE_POINT(NULL != dirUrl, "NULL directory url", );
@@ -101,11 +103,23 @@ public:
     }
 
     virtual void visit(FileItem * /*item*/) {
+
+    }
+
+    virtual void visit(DbObjectItem * /*item*/) {
+
+    }
+
+    virtual void visit(DbFolderItem *item) {
+        SAFE_POINT(NULL != dbFolderUrl, "NULL directory url", );
+        dbFolderUrl->setRecursive(item->isRecursive());
     }
 
 private:
     FileUrlContainer *fileUrl;
     DirUrlContainer *dirUrl;
+    DbObjUrlContainer *dbObjUrl;
+    DbFolderUrlContainer *dbFolderUrl;
 };
 
 class URLContainerUpdater : public URLContainerVisitor {
@@ -123,12 +137,14 @@ public:
         item->accept(&helper);
     }
 
-    virtual void visit(DbObjUrlContainer *) {
-
+    virtual void visit(DbObjUrlContainer *url) {
+        URLContainerUpdateHelper helper(url);
+        item->accept(&helper);
     }
 
-    virtual void visit(DbFolderUrlContainer *) {
-
+    virtual void visit(DbFolderUrlContainer *url) {
+        URLContainerUpdateHelper helper(url);
+        item->accept(&helper);
     }
 
 private:

@@ -254,6 +254,7 @@ public:
     QVariant getDisplayValue(const QVariant&) const;
 
     virtual PropertyDelegate *clone();
+    virtual Type type() const;
 
 signals:
     void si_valueChanged(const QString &newVal) const;

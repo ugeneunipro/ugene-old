@@ -84,6 +84,11 @@ bool BaseWriteAssemblyWorker::hasDataToWrite(const QVariantMap &data) const {
     return data.contains(BaseSlots::ASSEMBLY_SLOT().getId());
 }
 
+QSet<GObject *> BaseWriteAssemblyWorker::getObjectsToWrite(const QVariantMap &data) const {
+    SharedDbiDataHandler objId = data[BaseSlots::ASSEMBLY_SLOT().getId()].value<SharedDbiDataHandler>();
+    return QSet<GObject *>() << StorageUtils::getAssemblyObject(context->getDataStorage(), objId);
+}
+
 /************************************************************************/
 /* WriteBAMWorker */
 /************************************************************************/

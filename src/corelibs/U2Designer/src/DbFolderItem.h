@@ -22,14 +22,48 @@
 #ifndef _U2_DB_FOLDER_ITEM_H_
 #define _U2_DB_FOLDER_ITEM_H_
 
-#include "DirectoryItem.h"
+#include "UrlItem.h"
+
+namespace Ui {
+
+class DbFolderOptions;
+
+}
 
 namespace U2 {
 
-class DbFolderItem : public DirectoryItem {
+class DbFolderOptions;
+
+class DbFolderItem : public UrlItem {
     Q_OBJECT
 public:
     DbFolderItem(const QString &url, QListWidget *parent = NULL);
+    ~DbFolderItem();
+
+    virtual void accept(UrlItemVisitor *visitor);
+    virtual QWidget * getOptionsWidget();
+
+    void setRecursive(bool value);
+    bool isRecursive() const;
+
+private:
+    DbFolderOptions *options;
+};
+
+class DbFolderOptions : public QWidget {
+    Q_OBJECT
+public:
+    DbFolderOptions(QWidget *parent = NULL);
+    ~DbFolderOptions();
+
+    void setRecursive(bool value);
+    bool isRecursive() const;
+
+signals:
+    void si_dataChanged();
+
+private:
+    Ui::DbFolderOptions *ui;
 };
 
 } // namespace U2

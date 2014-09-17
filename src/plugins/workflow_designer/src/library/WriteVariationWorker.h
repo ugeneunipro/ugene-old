@@ -36,6 +36,7 @@ protected:
     virtual void data2doc(Document *doc, const QVariantMap &data);
     virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
     virtual bool hasDataToWrite(const QVariantMap &data) const;
+    virtual QSet<GObject *> getObjectsToWrite(const QVariantMap &data) const;
 }; // WriteVariationWorker
 
 class WriteVariationWorkerFactory : public DomainFactory {

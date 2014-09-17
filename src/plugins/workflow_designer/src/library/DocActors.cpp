@@ -118,7 +118,6 @@ void WriteDocActorProto::construct(bool canWriteToSharedDb, bool addValidator, b
         attrs << dbPathAttr;
 
         delegateMap[BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId()] = new ComboBoxDelegate(BaseAttributes::DATA_STORAGE_ATTRIBUTE_VALUES_MAP());
-
         delegateMap[BaseAttributes::DATABASE_ATTRIBUTE().getId()] = new ComboBoxWithDbUrlsDelegate;
     }
 

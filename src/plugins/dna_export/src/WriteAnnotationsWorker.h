@@ -22,6 +22,8 @@
 #ifndef __WRITE_ANNOTATIONS_WORKER_H_
 #define __WRITE_ANNOTATIONS_WORKER_H_
 
+#include <U2Core/SaveDocumentTask.h>
+
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Lang/LocalDomain.h>
 
@@ -44,14 +46,28 @@ protected:
 class WriteAnnotationsWorker : public BaseWorker {
     Q_OBJECT
 public:
+    enum DataStorage {
+        LocalFs,
+        SharedDb
+    };
+
     WriteAnnotationsWorker(Actor * p) : BaseWorker(p), annotationsPort(NULL) {}
     ~WriteAnnotationsWorker();
     
     virtual void init();
     virtual Task * tick();
     virtual void cleanup();
-    
+
 private:
+    Task * takeParameters(QString &formatId, SaveDocFlags &fl, QString &resultPath, U2DbiRef &dstDbiRef, DataStorage &storage);
+    QString fetchIncomingSequenceName(const QVariantMap &incomingData);
+    QString getAnnotationName() const;
+    void fetchIncomingAnnotations(const QVariantMap &incomingData, const QString &resultPath);
+
+    Task * getSaveDocTask(const QString &formatId, SaveDocFlags &fl);
+    Task * getSaveObjTask(const U2DbiRef &dstDbiRef) const;
+    Task * createWriteMultitask(const QList<Task *> &taskList) const;
+
     IntegralBus * annotationsPort;
     QList<AnnotationTableObject *> createdAnnotationObjects;
     QMap<QString, AnnotationTableObject *> annotationsByUrl;

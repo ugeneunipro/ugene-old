@@ -46,10 +46,6 @@ incRx(includeFilter), excRx(excludeFilter)
     excRx.setPatternSyntax(QRegExp::Wildcard);
 }
 
-DirectoryScanner::~DirectoryScanner() {
-
-}
-
 QString DirectoryScanner::getNextFile() {
     while (readyResults.isEmpty() && !unusedDirs.isEmpty()) {
         QFileInfo entry = unusedDirs.takeFirst();
@@ -131,10 +127,6 @@ QFileInfoList DirectoryScanner::scanDirectory(const QDir &dir) {
 FileList::FileList(const QStringList &_files)
 : FilesIterator(), files(_files)
 {
-
-}
-
-FileList::~FileList() {
 
 }
 

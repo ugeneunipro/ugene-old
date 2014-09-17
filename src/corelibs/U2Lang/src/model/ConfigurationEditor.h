@@ -130,7 +130,8 @@ public:
         INPUT_FILE,
         INPUT_DIR,
         OUTPUT_FILE,
-        OUTPUT_DIR
+        OUTPUT_DIR,
+        SHARED_DB_URL
     };
     PropertyDelegate(QObject *parent = 0);
     virtual ~PropertyDelegate();

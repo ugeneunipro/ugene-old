@@ -30,8 +30,10 @@
 #include <QtWidgets/QMessageBox>
 #endif
 
+#include <U2Core/AddDocumentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/U2ObjectTypeUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -40,6 +42,7 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ProjectTreeControllerModeSettings.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
+#include <U2Gui/SharedConnectionsDialog.h>
 #include <U2Gui/U2FileDialog.h>
 
 #include <U2Lang/SharedDbUrlUtils.h>
@@ -49,7 +52,7 @@
 namespace U2 {
 
 URLListWidget::URLListWidget(URLListController *_ctrl)
-: QWidget(), ctrl(_ctrl)
+    : QWidget(), ctrl(_ctrl), connectToDbDialog(new SharedConnectionsDialog(this)), waitingForDbToConnect(false)
 {
     setupUi(this);
     popup = new OptionsPopup(this);
@@ -75,6 +78,7 @@ URLListWidget::URLListWidget(URLListController *_ctrl)
     connect(downButton, SIGNAL(clicked()), SLOT(sl_downButton()));
     connect(upButton, SIGNAL(clicked()), SLOT(sl_upButton()));
     connect(deleteButton, SIGNAL(clicked()), SLOT(sl_deleteButton()));
+    connect(connectToDbDialog, SIGNAL(si_connectionCompleted()), SLOT(sl_sharedDbConnected()));
 
     connect(itemsArea, SIGNAL(itemSelectionChanged()), SLOT(sl_itemChecked()));
 
@@ -159,24 +163,52 @@ ProjectTreeControllerModeSettings createProjectTreeSettings(const QSet<GObjectTy
     return settings;
 }
 
+void waitWhileDbIsBeingConnected() {
+    QList<Task *> topLevelTasks;
+    bool projectIsLoaded = false;
+    while (!projectIsLoaded) {
+        projectIsLoaded = true;
+        foreach (Task *t, AppContext::getTaskScheduler()->getTopLevelTasks()) {
+            if (NULL != qobject_cast<AddDocumentTask *>(t)) {
+                projectIsLoaded = false;
+            }
+        }
+        if (!projectIsLoaded) {
+            QCoreApplication::processEvents();
+        }
+    }
+}
+
+}
+
+void URLListWidget::sl_sharedDbConnected() {
+    SAFE_POINT(waitingForDbToConnect, "Unexpected database state", );
+    waitingForDbToConnect = false;
+    sl_addFromDbButton();
 }
 
 void URLListWidget::sl_addFromDbButton() {
+    CHECK(!waitingForDbToConnect, );
     if (!sharedDbsAvailable()) {
-        QMessageBox::warning(this, tr("Unable to Browse Databases"), tr("To start using shared data in your workflow "
-            "you need to connect to at least one shared database. You can do this using menu %1")
-            .arg("<i>File -> Connect to shared database...</i>"));
-        return;
-    }
+         if (QDialog::Accepted == connectToDbDialog->exec()) {
+             waitingForDbToConnect = true;
+         }
+         return;
+     } else {
+        waitingForDbToConnect = false;
+     }
 
-    const ProjectTreeControllerModeSettings settings = createProjectTreeSettings(ctrl->getCompatibleObjTypes());
+    const QSet<GObjectType> compatTypes = ctrl->getCompatibleObjTypes();
+    SAFE_POINT(!compatTypes.isEmpty(), "Invalid object types", );
+    const ProjectTreeControllerModeSettings settings = createProjectTreeSettings(compatTypes);
 
     QList<Folder> folders;
     QList<GObject *> objects;
     ProjectTreeItemSelectorDialog::selectObjectsAndFolders(settings, this, folders, objects);
 
     foreach (const Folder &f, folders) {
-        addUrl(SharedDbUrlUtils::createDbFolderUrl(f));
+        // FIXME when readers for different data types appear
+        addUrl(SharedDbUrlUtils::createDbFolderUrl(f, U2ObjectTypeUtils::toDataType(*compatTypes.begin())));
     }
 
     foreach (GObject *obj, objects) {

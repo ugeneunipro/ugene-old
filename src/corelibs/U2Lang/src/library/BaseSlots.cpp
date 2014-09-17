@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/U2SafePoints.h>
+
 #include "BaseSlots.h"
 
 static const QString SEQ_SLOT_ID("sequence");

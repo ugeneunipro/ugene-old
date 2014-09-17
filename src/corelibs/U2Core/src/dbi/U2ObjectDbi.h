@@ -107,7 +107,7 @@ public:
     virtual qint64 countObjects(const QString& folder, U2OpStatus& os) = 0;
 
     /** Lists database top-level objects of the specified type, starts with 'offset' and limits by 'count'. 
-    The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'DBI_NO_LIMIT'. */
+    The 'offset' and 'count' can be arbitrarily large but should not be negative. Also, 'count' can have special value 'U2DbiOptions::U2_DBI_NO_LIMIT'. */
     virtual QList<U2DataId> getObjects(const QString& folder, qint64 offset, qint64 count, U2OpStatus& os) = 0;
 
     /**  Returns all folders this object must be shown in  */

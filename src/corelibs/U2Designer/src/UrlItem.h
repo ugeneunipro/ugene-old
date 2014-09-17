@@ -42,6 +42,9 @@ signals:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
+class DbFolderItem;
+class DbObjectItem;
 class DirectoryItem;
 class FileItem;
 
@@ -49,6 +52,8 @@ class UrlItemVisitor {
 public:
     virtual void visit(DirectoryItem *item) = 0;
     virtual void visit(FileItem *item) = 0;
+    virtual void visit(DbObjectItem *item) = 0;
+    virtual void visit(DbFolderItem *item) = 0;
 };
 
 } // U2

@@ -449,6 +449,9 @@ bool Actor::validate(ProblemList &problemList) const {
     bool urlsRes = true;
     foreach (Attribute *attr, getParameters()) {
         SAFE_POINT(NULL != attr, "NULL attribute!", false);
+        if (!attr->isVisible()) {
+            continue;
+        }
         UrlAttributeType urlType = WorkflowUtils::isUrlAttribute(attr, this);
 
         if (urlType != NotAnUrl) {
@@ -456,14 +459,17 @@ bool Actor::validate(ProblemList &problemList) const {
             urlsRes = urlsRes && urlAttrValid;
         }
 
-        if (attr->getAttributeType() == BaseTypes::NUM_TYPE()
-                && !attr->getAttributePureValue().toString().isEmpty()) {
+        if (attr->getAttributeType() == BaseTypes::NUM_TYPE() && !attr->getAttributePureValue().toString().isEmpty()) {
             bool ok;
             attr->getAttributePureValue().toString().toDouble((&ok));
             result &= ok;
             if (!ok) {
                 problemList << Problem(L10N::badArgument(attr->getAttributePureValue().toString()));
             }
+        }
+
+        if (WorkflowUtils::isSharedDbUrlAttribute(attr, this)) {
+            result &= WorkflowUtils::validateSharedDbUrl(attr->getAttributePureValue().toString(), problemList);
         }
     }
     result = result && urlsRes;

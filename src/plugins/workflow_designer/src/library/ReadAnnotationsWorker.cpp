@@ -74,6 +74,10 @@ Task * ReadAnnotationsWorker::createReadTask(const QString &url, const QString &
     return new ReadAnnotationsTask(url, datasetName, context, mergeAnnotations);
 }
 
+void ReadAnnotationsWorker::addReadDbObjectToData(const QString &objUrl, QVariantMap &data) {
+    data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(getDbObjectHandlerByUrl(objUrl));
+}
+
 void ReadAnnotationsWorker::onTaskFinished(Task *task) {
     ReadAnnotationsTask *t = qobject_cast<ReadAnnotationsTask*>(task);
     if (ReadAnnotationsProto::MERGE_FILES == mode) {

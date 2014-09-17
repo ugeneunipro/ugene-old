@@ -50,6 +50,7 @@
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Lang/Dataset.h>
 #include <U2Lang/NoFailTaskWrapper.h>
+#include <U2Lang/SharedDbUrlUtils.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowMonitor.h>
 
@@ -87,16 +88,48 @@ Task * GenericDocReader::tick() {
 
     if (!sendMessages && files->hasNext()) {
         QString newUrl = files->getNextFile();
-        Task *t = createReadTask(newUrl, files->getLastDatasetName());
-        NoFailTaskWrapper *wrapper = new NoFailTaskWrapper(t);
-        connect(wrapper, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-        return wrapper;
+        return GenericDocReader::createReadTask(newUrl, files->getLastDatasetName());
     } else if (!files->hasNext()) {
         // the cache is empty and the no more URLs -> finish the worker
         setDone();
         ch->setEnded();
     }
     return NULL;
+}
+
+Task * GenericDocReader::createReadTask(const QString &url, const QString &datasetName) {
+    if (!SharedDbUrlUtils::isDbObjectUrl(url)) {
+        Task *t = createReadTask(url, datasetName);
+        NoFailTaskWrapper *wrapper = new NoFailTaskWrapper(t);
+        connect(wrapper, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return wrapper;
+    } else {
+        readObjectFromDb(url, datasetName);
+        return NULL;
+    }
+}
+
+void GenericDocReader::readObjectFromDb(const QString &url, const QString &datasetName) {
+    QVariantMap m;
+    m[BaseSlots::URL_SLOT().getId()] = url;
+    m[BaseSlots::DATASET_SLOT().getId()] = datasetName;
+    addReadDbObjectToData(url, m);
+    cache.append(Message(mtype, m));
+}
+
+void GenericDocReader::addReadDbObjectToData(const QString & /*objUrl*/, QVariantMap & /*data*/) {
+
+}
+
+SharedDbiDataHandler GenericDocReader::getDbObjectHandlerByUrl(const QString &url) const {
+    const U2DataId objDbId = SharedDbUrlUtils::getObjectIdByUrl(url);
+    SAFE_POINT(!objDbId.isEmpty(), "Unexpected object ID supplied", SharedDbiDataHandler());
+    const U2DataType objDbType = U2DbiUtils::toType(objDbId);
+    SAFE_POINT(U2Type::Unknown != objDbType, "Unexpected object type supplied", SharedDbiDataHandler());
+
+    const U2EntityRef objRef = SharedDbUrlUtils::getObjEntityRefByUrl(url);
+    SAFE_POINT(objRef.isValid(), "Invalid DB object reference detected", SharedDbiDataHandler());
+    return context->getDataStorage()->getDataHandler(objRef);
 }
 
 bool GenericDocReader::isDone() {
@@ -136,6 +169,10 @@ void GenericMSAReader::onTaskFinished(Task *task) {
         m[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = msaHandler;
         cache.append(Message(mtype, m));
     }
+}
+
+void GenericMSAReader::addReadDbObjectToData(const QString &objUrl, QVariantMap &data) {
+    data[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(getDbObjectHandlerByUrl(objUrl));
 }
 
 /**************************
@@ -256,6 +293,10 @@ void GenericSeqReader::onTaskFinished(Task *task) {
     t->results.clear();
 }
 
+void GenericSeqReader::addReadDbObjectToData(const QString &objUrl, QVariantMap &data) {
+    data[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(getDbObjectHandlerByUrl(objUrl));
+}
+
 /**************************
  * LoadSeqTask
  **************************/
@@ -319,8 +360,7 @@ void LoadSeqTask::run() {
                     annObjs.removeAll( annGObj );
                 }
                 const SharedDbiDataHandler tableId = storage->putAnnotationTable( l );
-                m.insert( BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ),
-                    qVariantFromValue<SharedDbiDataHandler>( tableId ) );
+                m.insert( BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ), qVariantFromValue<SharedDbiDataHandler>( tableId ) );
             }
             results.append( m );
         }
@@ -338,8 +378,7 @@ void LoadSeqTask::run() {
                     l << a.getData( );
                 }
                 const SharedDbiDataHandler tableId = storage->putAnnotationTable( l );
-                m.insert( BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ),
-                    qVariantFromValue<SharedDbiDataHandler>( tableId ) );
+                m.insert( BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( ), qVariantFromValue<SharedDbiDataHandler>( tableId ) );
                 results.append( m );
             }
         }

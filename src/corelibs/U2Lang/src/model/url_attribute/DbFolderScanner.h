@@ -19,31 +19,33 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef __U2_WORKFLOW_BASE_SLOTS_H_
-#define __U2_WORKFLOW_BASE_SLOTS_H_
+#ifndef _U2_DB_FOLDER_SCANNER_
+#define _U2_DB_FOLDER_SCANNER_
 
-#include <U2Core/U2Type.h>
-
-#include <U2Lang/Descriptor.h>
+#include <U2Core/FilesIterator.h>
+#include <U2Core/U2DbiUtils.h>
 
 namespace U2 {
-namespace Workflow {
 
-class U2LANG_EXPORT BaseSlots : public QObject {
-    Q_OBJECT
+class U2LANG_EXPORT DbFolderScanner : public FilesIterator {
 public:
-    static const Descriptor DNA_SEQUENCE_SLOT();
-    static const Descriptor MULTIPLE_ALIGNMENT_SLOT();
-    static const Descriptor ANNOTATION_TABLE_SLOT();
-    static const Descriptor TEXT_SLOT();
-    static const Descriptor URL_SLOT();
-    static const Descriptor FASTA_HEADER_SLOT();
-    static const Descriptor VARIATION_TRACK_SLOT();
-    static const Descriptor ASSEMBLY_SLOT();
-    static const Descriptor DATASET_SLOT();
-}; // BaseSlots
+    DbFolderScanner(const QString &url, const QString &accFilter, const QString &objNameFilter, bool recursive);
 
-} // Workflow
+    virtual QString getNextFile();
+    virtual bool hasNext();
+
+private:
+    void initTargetObjectList(const QSet<QString> &paths, const QString &objNameFilter, U2OpStatus &os);
+    void getSubfolders(const QString &folderPath, QSet<QString> &subfolders, U2OpStatus &os);
+    bool passFilter(const QString &objUrl);
+    bool hasAccession(const QString &objUrl);
+
+    DbiConnection dbConnection;
+    QStringList unusedObjects;
+    const QString accFilter;
+    U2DataType typeFilter;
+};
+
 } // U2
 
-#endif // __U2_WORKFLOW_BASE_SLOTS_H_
+#endif // _U2_DB_FOLDER_SCANNER_

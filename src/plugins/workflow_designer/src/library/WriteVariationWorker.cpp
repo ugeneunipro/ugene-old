@@ -68,7 +68,7 @@ void WriteVariationWorker::storeEntry(IOAdapter *io, const QVariantMap &data, in
         SharedDbiDataHandler objId = data.value(BaseSlots::VARIATION_TRACK_SLOT().getId())
             .value<SharedDbiDataHandler>();
         trackObj.reset(StorageUtils::getVariantTrackObject(context->getDataStorage(), objId));
-        SAFE_POINT(NULL != trackObj.data(), tr("Can't get track object"), );
+        SAFE_POINT(!trackObj.isNull(), "Can't get track object", );
     }
 
     QMap< GObjectType, QList<GObject*> > objectsMap;
@@ -89,6 +89,11 @@ void WriteVariationWorker::storeEntry(IOAdapter *io, const QVariantMap &data, in
 
 bool WriteVariationWorker::hasDataToWrite(const QVariantMap &data) const {
     return data.contains(BaseSlots::VARIATION_TRACK_SLOT().getId());
+}
+
+QSet<GObject *> WriteVariationWorker::getObjectsToWrite(const QVariantMap &data) const {
+    SharedDbiDataHandler objId = data[BaseSlots::VARIATION_TRACK_SLOT().getId()].value<SharedDbiDataHandler>();
+    return QSet<GObject *>() << StorageUtils::getVariantTrackObject(context->getDataStorage(), objId);
 }
 
 /************************************************************************/

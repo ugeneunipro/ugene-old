@@ -43,12 +43,16 @@ public:
 
     static bool hasSequence(const QVariantMap &data);
     static bool hasSequenceOrAnns(const QVariantMap &data);
+    static GObject * getSeqObject(const QVariantMap &data, WorkflowContext *context);
+    static GObject * getAnnObject(const QVariantMap &data, WorkflowContext *context);
+
 protected:
     int numSplitSequences;
     int currentSplitSequence;
 
     virtual void data2doc(Document*, const QVariantMap&);
     virtual bool hasDataToWrite(const QVariantMap &data) const;
+    virtual QSet<GObject *> getObjectsToWrite(const QVariantMap &data) const;
     virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
 
     virtual void takeParameters(U2OpStatus &os);
@@ -65,6 +69,7 @@ protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual bool isStreamingSupport() const;
     virtual bool hasDataToWrite(const QVariantMap &data) const;
+    virtual QSet<GObject *> getObjectsToWrite(const QVariantMap &data) const;
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
 };
@@ -72,19 +77,29 @@ public:
 class TextReader : public BaseDocReader {
     Q_OBJECT
 public:
-    TextReader(Actor* a) : BaseDocReader(a, CoreLibConstants::TEXT_TYPESET_ID, BaseDocumentFormats::PLAIN_TEXT),
-        io(NULL), urls(NULL) {}
+    TextReader(Actor *a);
+
     void init();
-    Task *tick();
+    Task * tick();
+
 protected:
-    virtual void doc2data(Document* doc);
+    virtual void doc2data(Document *doc);
+
 private:
     IOAdapter *io;
     DatasetFilesIterator *urls;
     QString url;
 
+    static const int MAX_LINE_LEN;
+    static const int READ_BLOCK_SIZE;
+
 private:
     void sendMessage(const QByteArray &data);
+    void processNextLine();
+    Task * processUrlEntity(const QString &url);
+    Task * processFile(const QString &url);
+    Task * processDbObject(const QString &url);
+    Task * createDbObjectReadFailTask(const QString &url);
 };
 
 class TextWriter : public BaseDocWriter {
@@ -96,6 +111,7 @@ protected:
     virtual bool isStreamingSupport() const;
     virtual bool isSupportedSeveralMessages() const;
     virtual bool hasDataToWrite(const QVariantMap &data) const;
+    virtual QSet<GObject *> getObjectsToWrite(const QVariantMap &data) const;
 };
 
 class FastaWriter : public SeqWriter {
@@ -120,6 +136,7 @@ protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
     virtual bool hasDataToWrite(const QVariantMap &data) const;
+    virtual QSet<GObject *> getObjectsToWrite(const QVariantMap &data) const;
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
     static void streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum);
@@ -133,6 +150,7 @@ protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
     virtual bool hasDataToWrite(const QVariantMap &data) const;
+    virtual QSet<GObject *> getObjectsToWrite(const QVariantMap &data) const;
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
     static void streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum);
@@ -146,6 +164,7 @@ protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual void storeEntry(IOAdapter *io, const QVariantMap &data, int entryNum);
     virtual bool hasDataToWrite(const QVariantMap &data) const;
+    virtual GObject * getObjectToWrite(const QVariantMap &data) const;
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
     static void streamingStoreEntry(DocumentFormat* format, IOAdapter *io, const QVariantMap &data, WorkflowContext *context, int entryNum);
@@ -158,6 +177,7 @@ public:
 protected:
     virtual void data2doc(Document*, const QVariantMap&);
     virtual bool hasDataToWrite(const QVariantMap &data) const;
+    virtual QSet<GObject *> getObjectsToWrite(const QVariantMap &data) const;
 public:
     static void data2document(Document*, const QVariantMap&, WorkflowContext*);
 };

@@ -51,11 +51,16 @@ public:
     static QString errorIsNotADir(const GUrl &url) { return tr("'%1' is not a directory").arg(url.getURLString()); }
 
     // messages to work with a shared database
-    static QString errorWrongDbObjUrlFormat(const GUrl &url) { return tr("'%1' does not match database object URL format").arg(url.getURLString()); }
-    static QString errorWrongDbFolderUrlFormat(const GUrl &url) { return tr("'%1' does not match database folder URL format").arg(url.getURLString()); }
-    static QString errorDbInacsessible(const GUrl &url) { return tr("Unable to connect to the database '%1'").arg(url.getURLString()); }
-    static QString errorDbObjectInacsessible(const GUrl &url) { return tr("Unable to find the object with the specified ID in the database '%1'").arg(url.getURLString()); }
-    static QString errorDbFolderInacsessible(const GUrl &url) { return tr("Unable to find the folder with the specified path in the database '%1'").arg(url.getURLString()); }
+    static QString errorWrongDbObjUrlFormat(const QString &url) { return tr("'%1' does not match database object URL format").arg(url); }
+    static QString errorWrongDbFolderUrlFormat(const QString &url) { return tr("'%1' does not match database folder URL format").arg(url); }
+    static QString errorDbInacsessible(const QString &url) { return tr("Unable to connect to the database '%1'. Check your connection settings in File -> Connect to shared database...").arg(url); }
+    static QString errorDbObjectInaccessible(const QString &url, const QString &name) {
+        return tr("Unable to find the object '%1' in the database '%2'").arg(name).arg(url);
+    }
+    static QString errorDbFolderInacsessible(const QString &url, const QString &path) {
+        return tr("Unable to find the folder '%1' with the specified path in the database '%2'").arg(path).arg(url);
+    }
+    static QString errorDbWritePermissons(const QString &url) { return tr("You do not have write permissions to the database '%1'").arg(url); }
 
     static QString notValidFileFormat(const QString& type, const GUrl& url) {return tr("Invalid file format. Expected file format: %1,  File: %2").arg(type).arg(url.getURLString());}
     static QString notSupportedFileFormat(const GUrl& url) {return tr("Invalid file format! File: %1").arg(url.getURLString());}

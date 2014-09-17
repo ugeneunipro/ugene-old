@@ -392,12 +392,18 @@ URLContainer * HRSchemaSerializer::createDbObjectUrl(const QString &dbUrl, const
     }
 }
 
-DbFolderUrlContainer * HRSchemaSerializer::createDbFolderUrl(const QString &dbUrl, const QString &path) {
-    const QString folderUrl = SharedDbUrlUtils::createDbFolderUrl(dbUrl, path);
+DbFolderUrlContainer * HRSchemaSerializer::createDbFolderUrl(const QString &dbUrl, const QString &dataType, const QString &path, bool recursive) {
+    if (dataType.isEmpty()) {
+        throw ReadFailed(tr("Database select definition: '%1' expected but not found").arg(Constants::DB_OBJECT_TYPE));
+    } else if (path.isEmpty()) {
+        throw ReadFailed(tr("Database select definition: '%1' expected but not found").arg(Constants::PATH));
+    }
+
+    const QString folderUrl = SharedDbUrlUtils::createDbFolderUrl(dbUrl, path, BaseTypes::toDataType(dataType));
     if (folderUrl.isEmpty()) {
         throw ReadFailed(tr("Database select definition: invalid DB folder URL"));
     }
-    return new DbFolderUrlContainer(folderUrl);
+    return new DbFolderUrlContainer(folderUrl, QString(), QString(), recursive);
 }
 
 URLContainer * HRSchemaSerializer::parseDbSelectUrl(Tokenizer &tokenizer) {
@@ -421,8 +427,6 @@ URLContainer * HRSchemaSerializer::parseDbSelectUrl(Tokenizer &tokenizer) {
         const QString objCachedName = pairs.equalPairs.value(Constants::DB_OBJ_CACHED_NAME, "");
 
         const QString path = pairs.equalPairs.value(Constants::PATH, "");
-        const QString incFilter = pairs.equalPairs.value(Constants::INC_FILTER, "");
-        const QString excFilter = pairs.equalPairs.value(Constants::EXC_FILTER, "");
         const QString objNameFilter = pairs.equalPairs.value(Constants::DB_OBJ_NAME_FILTER, "");
         const QString accFilter = pairs.equalPairs.value(Constants::DB_SEQ_ACC_FILTER, "");
         const QString recursiveStr = pairs.equalPairs.value(Constants::RECURSIVE, "");
@@ -442,10 +446,7 @@ URLContainer * HRSchemaSerializer::parseDbSelectUrl(Tokenizer &tokenizer) {
         } else if (objId != -1) {
             return createDbObjectUrl(dbUrl, objId, dataType, objCachedName);
         } else if (!path.isEmpty()) {
-            DbFolderUrlContainer *result = createDbFolderUrl(dbUrl, path);
-            result->setIncludeFilter(incFilter);
-            result->setExcludeFilter(excFilter);
-            result->setRecursive(recursive);
+            DbFolderUrlContainer *result = createDbFolderUrl(dbUrl, dataType, path, recursive);
             if (!AppContext::isGUIMode()) {
                 result->setObjNameFilter(objNameFilter);
                 result->setSequenceAccFilter(accFilter);
@@ -1462,18 +1463,9 @@ public:
         QString res;
         res += HRSchemaSerializer::makeEqualsPair(Constants::DB_URL, SharedDbUrlUtils::getDbUrlFromEntityUrl(dbFolderUrl), tabCount + 1);
         res += HRSchemaSerializer::makeEqualsPair(Constants::PATH, SharedDbUrlUtils::getDbFolderPathByUrl(dbFolderUrl), tabCount + 1);
+        res += HRSchemaSerializer::makeEqualsPair(Constants::DB_OBJECT_TYPE, SharedDbUrlUtils::getDbFolderSerializedDataTypeByUrl(dbFolderUrl), tabCount + 1);
 
-        processDirUrlContainerOptionalParams(url, res);
-
-        const QString accFilter = url->getSequenceAccFilter();
-        if (!accFilter.isEmpty()) {
-            res += HRSchemaSerializer::makeEqualsPair(Constants::DB_SEQ_ACC_FILTER, accFilter, tabCount + 1);
-        }
-
-        const QString objNameFilter = url->getObjNameFilter();
-        if (!objNameFilter.isEmpty()) {
-            res += HRSchemaSerializer::makeEqualsPair(Constants::DB_OBJ_NAME_FILTER, objNameFilter, tabCount + 1);
-        }
+        processDbFolderUrlContainerOptionalParams(url, res);
 
         result = HRSchemaSerializer::makeBlock(Constants::DB_SELECT, Constants::NO_NAME, res, tabCount);
     }
@@ -1498,6 +1490,24 @@ private:
         if (recursive) {
             const QString recStr = recursive ? BoolTypeValueFactory::TRUE_STR : BoolTypeValueFactory::FALSE_STR;
             res += HRSchemaSerializer::makeEqualsPair(Constants::RECURSIVE, recStr, tabCount + 1);
+        }
+    }
+
+    void processDbFolderUrlContainerOptionalParams(DbFolderUrlContainer *url, QString &res) {
+        bool recursive = url->isRecursive();
+        if (recursive) {
+            const QString recStr = recursive ? BoolTypeValueFactory::TRUE_STR : BoolTypeValueFactory::FALSE_STR;
+            res += HRSchemaSerializer::makeEqualsPair(Constants::RECURSIVE, recStr, tabCount + 1);
+        }
+
+        const QString accFilter = url->getSequenceAccFilter();
+        if (!accFilter.isEmpty()) {
+            res += HRSchemaSerializer::makeEqualsPair(Constants::DB_SEQ_ACC_FILTER, accFilter, tabCount + 1);
+        }
+
+        const QString objNameFilter = url->getObjNameFilter();
+        if (!objNameFilter.isEmpty()) {
+            res += HRSchemaSerializer::makeEqualsPair(Constants::DB_OBJ_NAME_FILTER, objNameFilter, tabCount + 1);
         }
     }
 

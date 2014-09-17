@@ -49,6 +49,9 @@ class U2GUI_EXPORT SharedConnectionsDialog : public QDialog {
 public:
     explicit SharedConnectionsDialog(QWidget *parent = 0);
     ~SharedConnectionsDialog();
+
+signals:
+    void si_connectionCompleted();
     
 private slots:
     void sl_selectionChanged();

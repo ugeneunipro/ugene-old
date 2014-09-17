@@ -88,6 +88,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/actor/ActorScriptValidator.h \
            src/model/actor/ActorValidator.h \
            src/model/url_attribute/Dataset.h \
+           src/model/url_attribute/DbFolderScanner.h \
            src/model/url_attribute/SharedDbUrlUtils.h \
            src/model/url_attribute/URLAttribute.h \
            src/model/url_attribute/URLContainer.h \
@@ -191,6 +192,7 @@ SOURCES += src/library/BaseActorCategories.cpp \
            src/model/actor/ActorScriptValidator.cpp \
            src/model/actor/ActorValidator.cpp \
            src/model/url_attribute/Dataset.cpp \
+           src/model/url_attribute/DbFolderScanner.cpp \
            src/model/url_attribute/SharedDbUrlUtils.cpp \
            src/model/url_attribute/URLAttribute.cpp \
            src/model/url_attribute/URLContainer.cpp \

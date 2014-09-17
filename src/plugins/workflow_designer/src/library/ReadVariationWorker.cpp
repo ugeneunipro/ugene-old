@@ -79,6 +79,10 @@ void ReadVariationWorker::onTaskFinished(Task *task) {
     }
 }
 
+void ReadVariationWorker::addReadDbObjectToData(const QString &objUrl, QVariantMap &data) {
+    data[BaseSlots::VARIATION_TRACK_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(getDbObjectHandlerByUrl(objUrl));
+}
+
 /************************************************************************/
 /* Task */
 /************************************************************************/

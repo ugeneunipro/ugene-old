@@ -52,6 +52,7 @@ protected slots:
 protected:
     virtual void onTaskFinished(Task *task);
     virtual Task * createReadTask(const QString &url, const QString &datasetName);
+    virtual void addReadDbObjectToData(const QString &objUrl, QVariantMap &data);
 
 private:
     void sendData(const QList<QVariantMap> &data);

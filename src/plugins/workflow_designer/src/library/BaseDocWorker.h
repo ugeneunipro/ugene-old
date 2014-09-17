@@ -63,6 +63,11 @@ protected:
 class BaseDocWriter : public BaseWorker {
     Q_OBJECT
 public:
+    enum DataStorage {
+        LocalFs,
+        SharedDb
+    };
+
     BaseDocWriter(Actor* a, const DocumentFormatId& fid);
     BaseDocWriter( Actor * a );
     virtual ~BaseDocWriter(){}
@@ -75,6 +80,7 @@ public:
 protected:
     virtual void data2doc(Document*, const QVariantMap&) = 0;
     virtual bool hasDataToWrite(const QVariantMap &data) const = 0;
+    virtual QSet<GObject *> getObjectsToWrite(const QVariantMap &data) const;
     virtual bool isStreamingSupport() const;
     virtual bool isSupportedSeveralMessages() const;
     virtual void storeEntry(IOAdapter *, const QVariantMap &, int) {}
@@ -85,7 +91,11 @@ protected:
 protected:
     DocumentFormat *format;
 
+    U2DbiRef dstDbiRef;
+
 private:
+    DataStorage dataStorage;
+
     CommunicationChannel *ch;
     bool append;
     uint fileMode;
@@ -93,6 +103,12 @@ private:
     QMap<QString, int> counters; // url <-> count suffix
     QMap<QString, IOAdapter*> adapters;
     QMap<IOAdapter*, Document*> docs;
+
+    QString dstPathInDb;
+    bool objectsReceived;
+
+private slots:
+    void sl_objectImported(Task *importTask);
 
 private:
     bool ifCreateAdapter(const QString &url) const;
@@ -107,6 +123,8 @@ private:
     Task * processDocs();
     SaveDocFlags getDocFlags() const;
     void storeData(const QStringList &urls, const QVariantMap &data, U2OpStatus &os);
+    Task * createWriteToSharedDbTask(const QVariantMap &data);
+    void reportNoDataReceivedWarning();
 };
 
 }// Workflow namespace

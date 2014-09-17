@@ -121,7 +121,7 @@ private:
     static URLContainer * parseDirectoryUrl(Tokenizer &tokenizer);
     static URLContainer * parseDbSelectUrl(Tokenizer &tokenizer);
     static URLContainer * createDbObjectUrl(const QString &dbUrl, const qint64 objId, const QString &dataType, const QString &objCachedName);
-    static DbFolderUrlContainer * createDbFolderUrl(const QString &dbUrl, const QString &path);
+    static DbFolderUrlContainer * createDbFolderUrl(const QString &dbUrl, const QString &dataType, const QString &path, bool recursive);
     static void checkHeaderLine(const QString &line, Tokenizer &tokenizer);
     static void parseMarkers(Actor *proc, const QStringList &markers, const QString &attrId);
     static Marker * parseMarker(const QString &def);

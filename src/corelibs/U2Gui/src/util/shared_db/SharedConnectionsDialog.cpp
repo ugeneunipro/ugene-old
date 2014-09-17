@@ -108,10 +108,8 @@ void SharedConnectionsDialog::sl_connectClicked() {
     // TODO: don't forget to change this when new DB providers will be introduced
     const U2DbiRef dbiRef(MYSQL_DBI_ID, fullDbiUrl);
 
-    if (!AppContext::getPasswordStorage()->contains(fullDbiUrl)) {
-        if (!askCredentials(fullDbiUrl)) {
-            return;
-        }
+    if (!AppContext::getPasswordStorage()->contains(fullDbiUrl) && !askCredentials(fullDbiUrl)) {
+        return;
     }
 
     bool initializeDb = false;
@@ -196,8 +194,8 @@ void SharedConnectionsDialog::sl_connectionComplete() {
     }
 
     connectionTasks.remove(connectionTasks.key(task));
-
     updateState();
+    emit si_connectionCompleted();
 }
 
 void SharedConnectionsDialog::init() {

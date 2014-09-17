@@ -82,8 +82,8 @@ public:
 
 class U2LANG_EXPORT DirUrlContainer : public URLContainer {
 public:
-    DirUrlContainer(const QString &url, bool convertUrlToAbsolute = true);
-    DirUrlContainer(const QString &url, const QString &incFilter, const QString &excFilter, bool recursive, bool convertUrlToAbsolute = true);
+    DirUrlContainer(const QString &url);
+    DirUrlContainer(const QString &url, const QString &incFilter, const QString &excFilter, bool recursive);
 
     virtual FilesIterator * getFileUrls();
     virtual URLContainer * clone();
@@ -109,10 +109,10 @@ private:
     bool recursive;
 };
 
-class U2LANG_EXPORT DbFolderUrlContainer : public DirUrlContainer {
+class U2LANG_EXPORT DbFolderUrlContainer : public URLContainer {
 public:
     DbFolderUrlContainer(const QString &url);
-    DbFolderUrlContainer(const QString &url, const QString &incFilter, const QString &excFilter, bool recursive);
+    DbFolderUrlContainer(const QString &url, const QString &accFilter, const QString &objNameFilter, bool recursive);
 
     virtual FilesIterator * getFileUrls();
     virtual URLContainer * clone();
@@ -126,9 +126,13 @@ public:
     const QString & getSequenceAccFilter() const;
     const QString & getObjNameFilter() const;
 
+    bool isRecursive() const;
+    void setRecursive(bool value);
+
 private:
     QString accFilter;
     QString objNameFilter;
+    bool recursive;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

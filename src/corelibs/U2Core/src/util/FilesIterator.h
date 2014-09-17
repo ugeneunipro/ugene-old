@@ -19,15 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include <QDir>
-#include <QFileInfoList>
-#include <QString>
-#include <QStringList>
-
-#include <U2Core/global.h>
-
 #ifndef _U2_FILES_ITERATOR_
 #define _U2_FILES_ITERATOR_
+
+#include <QtCore/QDir>
+
+#include <U2Core/global.h>
 
 namespace U2 {
 
@@ -58,7 +55,6 @@ public:
 class U2CORE_EXPORT DirectoryScanner : public FilesIterator {
 public:
     DirectoryScanner(const QStringList &dirs, const QString &includeFilter, const QString &excludeFilter, bool recursive);
-    virtual ~DirectoryScanner();
 
     virtual QString getNextFile();
     virtual bool hasNext();
@@ -83,7 +79,6 @@ private:
 class U2CORE_EXPORT FileList : public FilesIterator {
 public:
     FileList(const QStringList &files);
-    virtual ~FileList();
 
     virtual QString getNextFile();
     virtual bool hasNext();

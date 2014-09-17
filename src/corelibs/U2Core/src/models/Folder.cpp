@@ -104,7 +104,7 @@ QString Folder::getFolderParentPath(const QString &path) {
 QString Folder::getFolderName(const QString &path) {
     QStringList pathList = path.split(U2ObjectDbi::PATH_SEP, QString::SkipEmptyParts);
     if (pathList.isEmpty()) {
-        return "";
+        return U2ObjectDbi::ROOT_FOLDER;
     }
     return pathList.last();
 }

@@ -52,6 +52,7 @@ FORMS += src/ui/AnnsActionDialog.ui \
          src/ui/BreakpointHitCountDialog.ui \
          src/ui/CreateDirectoryDialog.ui \
          src/ui/DatasetWidget.ui \
+         src/ui/DbFolderOptions.ui \
          src/ui/DirectoryOptions.ui \
          src/ui/EditBreakpointLabelsDialog.ui \
          src/ui/EditFloatMarkerWidget.ui \

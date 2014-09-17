@@ -50,7 +50,12 @@ protected slots:
 
 protected:
     virtual void onTaskFinished(Task *task) = 0;
-    virtual Task * createReadTask(const QString &url, const QString &datasetName) = 0;
+    virtual Task * createReadTask(const QString &url, const QString &datasetName);
+    virtual void readObjectFromDb(const QString &url, const QString &datasetName);
+    // the method is to be overridden in subclasses capable of reading from shared DBs
+    virtual void addReadDbObjectToData(const QString &objUrl, QVariantMap &data);
+
+    SharedDbiDataHandler getDbObjectHandlerByUrl(const QString &url) const;
 
     CommunicationChannel *ch;
     QList<Message> cache;
@@ -111,6 +116,7 @@ public:
 
 protected:
     virtual void onTaskFinished(Task *task);
+    virtual void addReadDbObjectToData(const QString &objUrl, QVariantMap &data);
 
 protected:
     virtual Task *createReadTask(const QString &url, const QString &datasetName) {
@@ -126,6 +132,7 @@ public:
 
 protected:
     virtual void onTaskFinished(Task *task);
+    virtual void addReadDbObjectToData(const QString &objUrl, QVariantMap &data);
 
 protected:
     virtual Task * createReadTask(const QString &url, const QString &datasetName);

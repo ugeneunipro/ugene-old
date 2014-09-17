@@ -124,6 +124,8 @@ public:
     /** Use it to check if the attribute contains URL(s) and what are they (input/output, etc.) */
     static UrlAttributeType isUrlAttribute(Attribute *attr, const Actor *actor);
 
+    static bool checkSharedDbConnection(const QString &fullDbUrl);
+
     /**
      * Validation of input files/directories.
      * Empty input string is considered valid.
@@ -145,8 +147,11 @@ public:
      * For output URL it is verified that it is accessible for
      * writing (the path can be absolute or relative to the Workflow Output Directory).
      */
-    static bool validateOutputFile(QString url, ProblemList &problemList);
-    static bool validateOutputDir(QString url, ProblemList &problemList);
+    static bool validateOutputFile(const QString &url, ProblemList &problemList);
+    static bool validateOutputDir(const QString &url, ProblemList &problemList);
+
+    static bool isSharedDbUrlAttribute(const Attribute *attr, const Actor *actor);
+    static bool validateSharedDbUrl(const QString &url, ProblemList &problemList);
 
     /**
      * Validates input files in datasets are present and readable (i.e.

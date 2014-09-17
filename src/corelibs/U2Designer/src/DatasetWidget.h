@@ -33,6 +33,7 @@ class QVBoxLayout;
 namespace U2 {
 
 class OptionsPopup;
+class SharedConnectionsDialog;
 class URLListController;
 
 class URLListWidget : public QWidget, public Ui::DatasetWidget {
@@ -55,6 +56,7 @@ private slots:
     void sl_itemChecked();
     void sl_selectAll();
     void sl_dataChanged();
+    void sl_sharedDbConnected();
 
 private:
     void addUrl(const QString &url);
@@ -64,6 +66,8 @@ private:
 private:
     URLListController *ctrl;
     OptionsPopup *popup;
+    SharedConnectionsDialog *connectToDbDialog;
+    bool waitingForDbToConnect;
 };
 
 class OptionsPopup : public QFrame {

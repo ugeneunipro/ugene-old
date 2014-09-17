@@ -333,6 +333,10 @@ PropertyDelegate * ComboBoxWithDbUrlsDelegate::clone() {
     return new ComboBoxWithDbUrlsDelegate(parent());
 }
 
+PropertyDelegate::Type ComboBoxWithDbUrlsDelegate::type() const {
+    return SHARED_DB_URL;
+}
+
 /********************************
 * ComboBoxWithChecksDelegate
 ********************************/

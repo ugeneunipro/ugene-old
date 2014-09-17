@@ -223,12 +223,12 @@ qint64 MysqlObjectDbi::countObjects(const QString& folder, U2OpStatus& os) {
     return q.selectInt64();
 }
 
-QList<U2DataId> MysqlObjectDbi::getObjects(const QString& folder, qint64 , qint64 , U2OpStatus& os) {
+QList<U2DataId> MysqlObjectDbi::getObjects(const QString& folder, qint64 offset, qint64 count, U2OpStatus& os) {
     const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(folder);
     const QByteArray hash = QCryptographicHash::hash(canonicalFolder.toLatin1(), QCryptographicHash::Md5).toHex();
 
     static const QString queryString = "SELECT o.id, o.type FROM Object AS o, FolderContent AS fc, Folder AS f WHERE f.hash = :hash AND fc.folder = f.id AND fc.object = o.id";
-    U2SqlQuery q(queryString, db, os);
+    U2SqlQuery q(queryString, offset, count, db, os);
     q.bindString("hash", hash);
     return q.selectDataIdsExt();
 }

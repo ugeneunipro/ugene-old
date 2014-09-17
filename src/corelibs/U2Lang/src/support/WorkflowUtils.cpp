@@ -47,6 +47,7 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/CredentialsAsker.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ExternalToolRegistry.h>
@@ -58,6 +59,7 @@
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/PasswordStorage.h>
 #include <U2Core/QVariantUtils.h>
 #include <U2Core/Settings.h>
 #include <U2Core/StringAdapter.h>
@@ -163,115 +165,116 @@ QStringList WorkflowUtils::expandToUrls(const QString& s) {
 }
 
 namespace {
-    bool validateParameters(const Schema &schema, ProblemList &infoList) {
-        bool good = true;
-        foreach (Actor* a, schema.getProcesses()) {
-            ProblemList problemList;
-            good &= a->validate(problemList);
+
+bool validateParameters(const Schema &schema, ProblemList &infoList) {
+    bool good = true;
+    foreach (Actor* a, schema.getProcesses()) {
+        const int problemCountBefore = infoList.size();
+        good &= a->validate(infoList);
+        for (int i = problemCountBefore; i < infoList.size(); ++i) {
+            infoList[i].actor = a->getId();
+        }
+    }
+    return good;
+}
+
+bool validateExternalTools(Actor *a, ProblemList &infoList) {
+    bool good = true;
+    QStrStrMap tools = a->getProto()->getExternalTools();
+    foreach (const QString &toolId, tools.keys()) {
+        Attribute *attr = a->getParameter(tools[toolId]);
+        ExternalTool *tool = AppContext::getExternalToolRegistry()->getByName(toolId);
+        SAFE_POINT(NULL != tool, "NULL tool", false);
+
+        bool fromAttr = (NULL != attr) && !attr->isDefaultValue();
+        bool valid = fromAttr ? !attr->isEmpty() : !tool->getPath().isEmpty();
+        if (!valid) {
+            good = false;
+            infoList << Problem(WorkflowUtils::externalToolError(tool->getName()),
+                                a->getId(),
+                                Problem::U2_ERROR);
+        } else if (!fromAttr && !tool->isValid()) {
+            infoList << Problem(WorkflowUtils::externalToolInvalidError(tool->getName()),
+                                a->getId(),
+                                Problem::U2_WARNING);
+        }
+    }
+    return good;
+}
+
+bool validatePorts(Actor *a, ProblemList &infoList) {
+    bool good = true;
+    foreach(Port *p, a->getPorts()) {
+        ProblemList problemList;
+        good &= p->validate(problemList);
+        if (!problemList.isEmpty()) {
             foreach(Problem problem, problemList) {
-                problem.actor = a->getId();
-                infoList << problem;
+                Problem item;
+                item.message = QString("%1 : %2").arg(a->getLabel()).arg(problem.message);
+                item.port = p->getId();
+                item.actor = a->getId();
+                item.type = problem.type;
+                infoList << item;
             }
         }
-        return good;
     }
+    return good;
+}
 
-    bool validateExternalTools(Actor *a, ProblemList &infoList) {
-        bool good = true;
-        QStrStrMap tools = a->getProto()->getExternalTools();
-        foreach (const QString &toolId, tools.keys()) {
-            Attribute *attr = a->getParameter(tools[toolId]);
-            ExternalTool *tool = AppContext::getExternalToolRegistry()->getByName(toolId);
-            SAFE_POINT(NULL != tool, "NULL tool", false);
-
-            bool fromAttr = (NULL != attr) && !attr->isDefaultValue();
-            bool valid = fromAttr ? !attr->isEmpty() : !tool->getPath().isEmpty();
-            if (!valid) {
-                good = false;
-                infoList << Problem(WorkflowUtils::externalToolError(tool->getName()),
-                                    a->getId(),
-                                    Problem::U2_ERROR);
-            } else if (!fromAttr && !tool->isValid()) {
-                infoList << Problem(WorkflowUtils::externalToolInvalidError(tool->getName()),
-                                    a->getId(),
-                                    Problem::U2_WARNING);
-            }
+bool graphDepthFirstSearch( Actor *vertex, QList<Actor *> &visitedVertices ) {
+    visitedVertices.append( vertex );
+    const QList<Port *> outputPorts = vertex->getOutputPorts( );
+    QList<Actor *> receivingVertices;
+    foreach ( Port *outputPort, outputPorts ) {
+        foreach ( Port *receivingPort, outputPort->getLinks( ).keys( ) ) {
+            receivingVertices.append( receivingPort->owner( ) );
         }
-        return good;
     }
-
-    bool validatePorts(Actor *a, ProblemList &infoList) {
-        bool good = true;
-        foreach(Port *p, a->getPorts()) {
-            ProblemList problemList;
-            good &= p->validate(problemList);
-            if (!problemList.isEmpty()) {
-                foreach(Problem problem, problemList) {
-                    Problem item;
-                    item.message = QString("%1 : %2").arg(a->getLabel()).arg(problem.message);
-                    item.port = p->getId();
-                    item.actor = a->getId();
-                    item.type = problem.type;
-                    infoList << item;
-                }
-            }
+    foreach ( Actor *receivingVertex, receivingVertices ) {
+        if ( visitedVertices.contains( receivingVertex ) ) {
+            return false;
+        } else {
+            return graphDepthFirstSearch( receivingVertex, visitedVertices );
         }
-        return good;
     }
+    return true;
+}
 
-    bool graphDepthFirstSearch( Actor *vertex, QList<Actor *> &visitedVertices ) {
-        visitedVertices.append( vertex );
-        const QList<Port *> outputPorts = vertex->getOutputPorts( );
-        QList<Actor *> receivingVertices;
-        foreach ( Port *outputPort, outputPorts ) {
-            foreach ( Port *receivingPort, outputPort->getLinks( ).keys( ) ) {
-                receivingVertices.append( receivingPort->owner( ) );
-            }
-        }
-        foreach ( Actor *receivingVertex, receivingVertices ) {
-            if ( visitedVertices.contains( receivingVertex ) ) {
-                return false;
-            } else {
-                return graphDepthFirstSearch( receivingVertex, visitedVertices );
-            }
-        }
-        return true;
-    }
-
-    // the returning values signals about cycles existence in the scheme
-    bool hasSchemeCycles( const Schema &scheme ) {
-        foreach ( Actor *vertex, scheme.getProcesses( ) ) {
-            QList<Actor *> visitedVertices;
-            if ( !graphDepthFirstSearch( vertex, visitedVertices ) ) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    bool validateScript(Actor *a, ProblemList &infoList) {
-        SAFE_POINT(NULL != a, "NULL actor", false);
-        SAFE_POINT(NULL != a->getScript(), "NULL script", false);
-        const QString scriptText = a->getScript()->getScriptText();
-        if (scriptText.simplified().isEmpty()) {
-            infoList << Problem(QObject::tr("Empty script text"), a->getId());
+// the returning values signals about cycles existence in the scheme
+bool hasSchemeCycles( const Schema &scheme ) {
+    foreach ( Actor *vertex, scheme.getProcesses( ) ) {
+        QList<Actor *> visitedVertices;
+        if ( !graphDepthFirstSearch( vertex, visitedVertices ) ) {
             return false;
         }
-        QScopedPointer<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
-        QScriptSyntaxCheckResult syntaxResult = engine->checkSyntax(scriptText);
-
-        if (syntaxResult.state() != QScriptSyntaxCheckResult::Valid) {
-            Problem problem;
-            problem.message = QObject::tr("Script syntax check failed! Line: %1, error: %2")
-                .arg(syntaxResult.errorLineNumber())
-                .arg(syntaxResult.errorMessage());
-            problem.actor = a->getId();
-            problem.type = Problem::U2_ERROR;
-            infoList << problem;
-            return false;
-        }
-        return true;
     }
+    return true;
+}
+
+bool validateScript(Actor *a, ProblemList &infoList) {
+    SAFE_POINT(NULL != a, "NULL actor", false);
+    SAFE_POINT(NULL != a->getScript(), "NULL script", false);
+    const QString scriptText = a->getScript()->getScriptText();
+    if (scriptText.simplified().isEmpty()) {
+        infoList << Problem(QObject::tr("Empty script text"), a->getId());
+        return false;
+    }
+    QScopedPointer<WorkflowScriptEngine> engine(new WorkflowScriptEngine(NULL));
+    QScriptSyntaxCheckResult syntaxResult = engine->checkSyntax(scriptText);
+
+    if (syntaxResult.state() != QScriptSyntaxCheckResult::Valid) {
+        Problem problem;
+        problem.message = QObject::tr("Script syntax check failed! Line: %1, error: %2")
+            .arg(syntaxResult.errorLineNumber())
+            .arg(syntaxResult.errorMessage());
+        problem.actor = a->getId();
+        problem.type = Problem::U2_ERROR;
+        infoList << problem;
+        return false;
+    }
+    return true;
+}
+
 }
 
 bool WorkflowUtils::validate(const Schema &schema, ProblemList &problemList) {
@@ -1016,14 +1019,17 @@ U2DbiRef url2Ref(const QString &url) {
     return U2DbiRef(urlParts[0], urlParts[1]);
 }
 
-bool checkDbConnection(const QString &dbUrl) {
-    U2OpStatusImpl os;
-    const U2DbiRef dbRef = url2Ref(dbUrl);
-    CHECK(dbRef.isValid(), false);
-
-    DbiConnection connection(dbRef, os);
-    CHECK_OP(os, false);
-    return connection.isOpen();
+bool checkDbCredentials(const QString &dbUrl) {
+    if (AppContext::isGUIMode()) {
+        if (!AppContext::getPasswordStorage()->contains(dbUrl)) {
+            return AppContext::getCredentialsAsker()->ask(dbUrl);
+        } else {
+            return true;
+        }
+    } else {
+        // TODO: make specific check for CLI
+        return true;
+    }
 }
 
 bool checkObjectInDb(const QString &url) {
@@ -1070,6 +1076,43 @@ bool checkFolderInDb(const QString &dbUrl, const QString &folderPath) {
     return -1 != folderVersion;
 }
 
+bool checkWritePermissionsForDb(const QString &fullDbUrl) {
+    U2OpStatusImpl os;
+    const U2DbiRef dbRef = SharedDbUrlUtils::getDbRefFromEntityUrl(fullDbUrl);
+    CHECK(dbRef.isValid(), false);
+
+    DbiConnection connection(dbRef, os);
+    CHECK_OP(os, false);
+    return !connection.dbi->getFeatures().contains(U2DbiFeature_GlobalReadOnly);
+}
+
+// If a database was unavailable for some reasons during previous validation procedures
+// and now has become available, it is needed to remove previous error messages regarding this from a problem list.
+bool checkDbConnectionAndFixProblems(const QString &dbUrl, ProblemList &problemList, const Problem &problemMsg) {
+    if (!WorkflowUtils::checkSharedDbConnection(dbUrl)) {
+        problemList << problemMsg;
+        return false;
+    } else {
+        for (ProblemList::iterator i = problemList.begin(); i != problemList.end(); ++i) {
+            if (i->message == problemMsg.message && i->type == problemMsg.type) {
+                problemList.erase(i);
+            }
+        }
+        return true;
+    }
+}
+
+}
+
+bool WorkflowUtils::checkSharedDbConnection(const QString &fullDbUrl) {
+    U2OpStatusImpl os;
+    const U2DbiRef dbRef = SharedDbUrlUtils::getDbRefFromEntityUrl(fullDbUrl);
+    CHECK(dbRef.isValid(), false);
+    CHECK(checkDbCredentials(dbRef.dbiId), false);
+
+    DbiConnection connection(dbRef, os);
+    CHECK_OP_EXT(os, AppContext::getPasswordStorage()->removeEntry(dbRef.dbiId), false);
+    return connection.isOpen();
 }
 
 bool WorkflowUtils::validateInputDbObjects(QString urls, ProblemList &problemList) {
@@ -1081,15 +1124,17 @@ bool WorkflowUtils::validateInputDbObjects(QString urls, ProblemList &problemLis
     QStringList urlsList = urls.split(';');
     bool res = true;
     foreach (const QString &url, urlsList) {
-        const QStringList dbUrlAndObjId = url.split(",");
-        if (dbUrlAndObjId.size() != 2) {
+        const QString dbUrl = SharedDbUrlUtils::getDbUrlFromEntityUrl(url);
+        const U2DataId objId = SharedDbUrlUtils::getObjectIdByUrl(url);
+        const QString objName = SharedDbUrlUtils::getDbObjectNameByUrl(url);
+        const QString shortDbName = SharedDbUrlUtils::getDbShortNameFromEntityUrl(url);
+        if (dbUrl.isEmpty() || objId.isEmpty() || objName.isEmpty()) {
             problemList << Problem(L10N::errorWrongDbObjUrlFormat(url));
             res = false;
-        } else if (!checkDbConnection(dbUrlAndObjId[0])) {
-            problemList << Problem(L10N::errorDbInacsessible(dbUrlAndObjId[0]));
+        } else if (!checkDbConnectionAndFixProblems(dbUrl, problemList, Problem(L10N::errorDbInacsessible(shortDbName)))) {
             res = false;
         } else if (!checkObjectInDb(url)) {
-            problemList << Problem(L10N::errorDbObjectInacsessible(dbUrlAndObjId[0]));
+            problemList << Problem(L10N::errorDbObjectInaccessible(shortDbName, objName));
             res = false;
         }
     }
@@ -1105,15 +1150,17 @@ bool WorkflowUtils::validateInputDbFolders(QString urls, ProblemList &problemLis
     QStringList urlsList = urls.split(';');
     bool res = true;
     foreach (const QString &url, urlsList) {
-        const QStringList dbUrlAndPath = url.split(",");
-        if (dbUrlAndPath.size() != 2) {
+        const QString dbUrl = SharedDbUrlUtils::getDbUrlFromEntityUrl(url);
+        const QString folderPath = SharedDbUrlUtils::getDbFolderPathByUrl(url);
+        const U2DataType dataType = SharedDbUrlUtils::getDbFolderDataTypeByUrl(url);
+        const QString shortDbName = SharedDbUrlUtils::getDbShortNameFromEntityUrl(url);
+        if (dbUrl.isEmpty() || folderPath.isEmpty() || U2Type::Unknown == dataType) {
             problemList << Problem(L10N::errorWrongDbFolderUrlFormat(url));
             res = false;
-        } else if (!checkDbConnection(dbUrlAndPath[0])) {
-            problemList << Problem(L10N::errorDbInacsessible(dbUrlAndPath[0]));
+        } else if (!checkDbConnectionAndFixProblems(dbUrl, problemList, Problem(L10N::errorDbInacsessible(shortDbName)))) {
             res = false;
-        } else if (!checkFolderInDb(dbUrlAndPath[0], dbUrlAndPath[1])) {
-            problemList << Problem(L10N::errorDbFolderInacsessible(dbUrlAndPath[0]));
+        } else if (!checkFolderInDb(dbUrl, folderPath)) {
+            problemList << Problem(L10N::errorDbFolderInacsessible(shortDbName, folderPath));
             res = false;
         }
     }
@@ -1158,7 +1205,7 @@ static bool canWriteToPath(QString dirAbsPath) {
     return true;
 }
 
-bool WorkflowUtils::validateOutputFile(QString url, ProblemList &problemList) {
+bool WorkflowUtils::validateOutputFile(const QString &url, ProblemList &problemList) {
     if (url.isEmpty()) {
         return true;
     }
@@ -1177,7 +1224,7 @@ bool WorkflowUtils::validateOutputFile(QString url, ProblemList &problemList) {
     }
 }
 
-bool WorkflowUtils::validateOutputDir(QString url, ProblemList &problemList) {
+bool WorkflowUtils::validateOutputDir(const QString &url, ProblemList &problemList) {
     if (url.isEmpty()) {
         return true;
     }
@@ -1194,6 +1241,39 @@ bool WorkflowUtils::validateOutputDir(QString url, ProblemList &problemList) {
         problemList << Problem(tr("Can't output directory path: '%1', check permissions").arg(url));
         return false;
     }
+}
+
+bool WorkflowUtils::isSharedDbUrlAttribute(const Attribute *attr, const Actor *actor) {
+    SAFE_POINT(NULL != attr, "Invalid attribute supplied", false);
+    SAFE_POINT(NULL != actor, "Invalid actor supplied", false);
+
+    ConfigurationEditor *editor = actor->getEditor();
+    CHECK(NULL != editor, false);
+    PropertyDelegate *delegate = editor->getDelegate(attr->getId());
+    CHECK(NULL != delegate, false);
+
+    return PropertyDelegate::SHARED_DB_URL == delegate->type();
+}
+
+bool WorkflowUtils::validateSharedDbUrl(const QString &url, ProblemList &problemList) {
+    if (url.isEmpty()) {
+        problemList << Problem(tr("Empty shared database URL specified"));
+        return false;
+    }
+
+    const U2DbiRef dbRef = SharedDbUrlUtils::getDbRefFromEntityUrl(url);
+    const QString shortDbName = SharedDbUrlUtils::getDbShortNameFromEntityUrl(url);
+    if (!dbRef.isValid()) {
+        problemList << Problem(L10N::errorWrongDbFolderUrlFormat(url));
+        return false;
+    } else if (!checkDbConnectionAndFixProblems(url, problemList, Problem(L10N::errorDbInacsessible(shortDbName)))) {
+        return false;
+    } else if (!checkWritePermissionsForDb(url)) {
+        problemList << Problem(L10N::errorDbWritePermissons(shortDbName));
+        return false;
+    }
+
+    return true;
 }
 
 bool WorkflowUtils::validateDatasets(const QList<Dataset> &sets, ProblemList &problemList) {

@@ -24,13 +24,16 @@
 
 #include <U2Lang/SharedDbUrlUtils.h>
 
+#include "ui/ui_DbFolderOptions.h"
 #include "DbFolderItem.h"
 
 namespace U2 {
 
 DbFolderItem::DbFolderItem(const QString &url, QListWidget *parent)
-    : DirectoryItem(url, parent)
+    : UrlItem(url, parent), options(new DbFolderOptions())
 {
+    connect(options, SIGNAL(si_dataChanged()), SIGNAL(si_dataChanged()));
+
     QIcon dirIcon = QIcon(QString(":U2Designer/images/database_folder.png"));
     setIcon(dirIcon);
 
@@ -43,6 +46,49 @@ DbFolderItem::DbFolderItem(const QString &url, QListWidget *parent)
     }
 
     setText(folderName);
+}
+
+DbFolderItem::~DbFolderItem() {
+    options->setParent(NULL);
+    delete options;
+}
+
+QWidget * DbFolderItem::getOptionsWidget() {
+    return options;
+}
+
+void DbFolderItem::accept(UrlItemVisitor *visitor) {
+    visitor->visit(this);
+}
+
+void DbFolderItem::setRecursive(bool value) {
+    options->setRecursive(value);
+}
+
+bool DbFolderItem::isRecursive() const {
+    return options->isRecursive();
+}
+
+/************************************************************************/
+/* DbFolderOptions */
+/************************************************************************/
+DbFolderOptions::DbFolderOptions(QWidget *parent)
+    : QWidget(parent), ui(new Ui::DbFolderOptions)
+{
+    ui->setupUi(this);
+    connect(ui->recursiveBox, SIGNAL(clicked(bool)), SIGNAL(si_dataChanged()));
+}
+
+DbFolderOptions::~DbFolderOptions() {
+    delete ui;
+}
+
+void DbFolderOptions::setRecursive(bool value) {
+    ui->recursiveBox->setChecked(value);
+}
+
+bool DbFolderOptions::isRecursive() const {
+    return ui->recursiveBox->isChecked();
 }
 
 } // namespace U2
