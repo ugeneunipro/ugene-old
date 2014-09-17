@@ -5385,7 +5385,52 @@ GUI_TEST_CLASS_DEFINITION(test_3335) {
     GTUtilsLog::check(os, lt);
     }
 
+GUI_TEST_CLASS_DEFINITION(test_3443) {
+    GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
 
+    QWidget *logViewWidget = GTWidget::findWidget(os, "dock_log_view");
+    CHECK_SET_ERR(logViewWidget->isVisible(), "Log view is expected to be visible");
+
+    GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+    CHECK_SET_ERR(!logViewWidget->isVisible(), "Log view is expected to be visible");
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+
+    QWidget *projectViewWidget = GTWidget::findWidget(os, "project_view");
+    CHECK_SET_ERR(projectViewWidget->isVisible(), "Project view is expected to be visible");
+
+    GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(!projectViewWidget->isVisible(), "Project view is expected to be invisible");
+
+    GTKeyboardDriver::keyClick(os, '2', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+
+    QWidget *taskViewWidget = GTWidget::findWidget(os, "dock_task_view");
+    CHECK_SET_ERR(taskViewWidget->isVisible(), "Task view is expected to be visible");
+
+    GTKeyboardDriver::keyClick(os, '2', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(!taskViewWidget->isVisible(), "Task view is expected to be invisible");
+
+    GTKeyboardDriver::keyClick(os, 'b', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    QWidget *codonTableWidget = GTWidget::findWidget(os, "Codon table widget");
+    CHECK_SET_ERR(codonTableWidget->isVisible(), "Codon table is expected to be visible");
+
+    GTKeyboardDriver::keyClick(os, 'b', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(!codonTableWidget->isVisible(), "Codon table is expected to be invisible");
+}
 
 GUI_TEST_CLASS_DEFINITION(test_3346) {
     GTLogTracer lt;
