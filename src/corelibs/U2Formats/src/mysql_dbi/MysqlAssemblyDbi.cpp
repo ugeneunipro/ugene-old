@@ -113,7 +113,7 @@ MysqlAssemblyAdapter* MysqlAssemblyDbi::getAdapter(const U2DataId& assemblyId, U
 
     static const QString qString = "SELECT imethod FROM Assembly WHERE object = :object";
     U2SqlQuery q(qString, db, os);
-    q.bindDataId("object", assemblyId);
+    q.bindDataId(":object", assemblyId);
     if (!q.step()) {
         os.setError(U2DbiL10n::tr("There is no assembly object with the specified id."));
         return NULL;
@@ -146,7 +146,7 @@ U2Assembly MysqlAssemblyDbi::getAssemblyObject(const U2DataId& assemblyId, U2OpS
 
     U2SqlQuery q("SELECT Assembly.reference, Object.type, '' FROM Assembly, Object "
                 " WHERE Assembly.object = :object AND Object.id = Assembly.reference", db, os);
-    q.bindDataId("object", assemblyId);
+    q.bindDataId(":object", assemblyId);
     if (q.step())  {
         res.referenceId = q.getDataIdExt(0);
         q.ensureDone();
@@ -262,10 +262,10 @@ void MysqlAssemblyDbi::createAssemblyObject(U2Assembly& assembly,
     //QString elenMethod = dbi->getProperty(Mysql_DBI_ASSEMBLY_READ_ELEN_METHOD_KEY, Mysql_DBI_ASSEMBLY_READ_ELEN_METHOD_SINGLE_TABLE, os);
 
     U2SqlQuery q("INSERT INTO Assembly(object, reference, imethod, cmethod) VALUES(:object, :reference, :imethod, :cmethod)", db, os);
-    q.bindDataId("object", assembly.id);
-    q.bindDataId("reference", assembly.referenceId);
-    q.bindString("imethod", elenMethod);
-    q.bindString("cmethod", "no-compression");
+    q.bindDataId(":object", assembly.id);
+    q.bindDataId(":reference", assembly.referenceId);
+    q.bindString(":imethod", elenMethod);
+    q.bindString(":cmethod", "no-compression");
     q.insert();
     SAFE_POINT_OP(os,);
 
@@ -300,8 +300,8 @@ void MysqlAssemblyDbi::updateAssemblyObject(U2Assembly& assembly, U2OpStatus& os
     Q_UNUSED(t);
 
     U2SqlQuery q("UPDATE Assembly SET reference = :reference WHERE object = :object", db, os);
-    q.bindDataId("reference", assembly.referenceId);
-    q.bindDataId("object", assembly.id);
+    q.bindDataId(":reference", assembly.referenceId);
+    q.bindDataId(":object", assembly.id);
     q.execute();
 
     SAFE_POINT_OP(os, );
@@ -349,7 +349,7 @@ void MysqlAssemblyDbi::removeAssemblyEntry(const U2DataId &assemblyId, U2OpStatu
 
     static const QString queryString("DELETE FROM Assembly WHERE object = :object");
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("object", assemblyId);
+    q.bindDataId(":object", assemblyId);
     q.execute();
 }
 

@@ -63,7 +63,7 @@ U2Sequence MysqlSequenceDbi::getSequenceObject(const U2DataId& sequenceId, U2OpS
 
     static const QString queryString = "SELECT length, alphabet, circular FROM Sequence WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("object", sequenceId);
+    q.bindDataId(":object", sequenceId);
     if (q.step()) {
         res.length = q.getInt64(0);
         res.alphabet = q.getString(1);
@@ -92,9 +92,9 @@ QByteArray MysqlSequenceDbi::getSequenceData(const U2DataId& sequenceId, const U
     U2SqlQuery q(queryString, db, os);
 
     try {
-        q.bindDataId("id", sequenceId);
-        q.bindInt64("startPos", region.startPos);
-        q.bindInt64("endPos", region.endPos());
+        q.bindDataId(":id", sequenceId);
+        q.bindInt64(":startPos", region.startPos);
+        q.bindInt64(":endPos", region.endPos());
         qint64 pos = region.startPos;
         qint64 regionLengthToRead = region.length;
         while (q.step()) {
@@ -130,10 +130,10 @@ void MysqlSequenceDbi::createSequenceObject(U2Sequence& sequence, const QString&
 
     static const QString queryString = "INSERT INTO Sequence(object, length, alphabet, circular) VALUES(:object, :length, :alphabet, :circular)";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("object", sequence.id);
-    q.bindInt64("length", sequence.length);
-    q.bindString("alphabet", sequence.alphabet.id);
-    q.bindBool("circular", sequence.circular);
+    q.bindDataId(":object", sequence.id);
+    q.bindInt64(":length", sequence.length);
+    q.bindString(":alphabet", sequence.alphabet.id);
+    q.bindBool(":circular", sequence.circular);
     q.insert();
 }
 
@@ -143,9 +143,9 @@ void MysqlSequenceDbi::updateSequenceObject(U2Sequence& sequence, U2OpStatus& os
 
     static const QString queryString = "UPDATE Sequence SET alphabet = :alphabet, circular = :circular WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindString("alphabet", sequence.alphabet.id);
-    q.bindBool("circular", sequence.circular);
-    q.bindDataId("object", sequence.id);
+    q.bindString(":alphabet", sequence.alphabet.id);
+    q.bindBool(":circular", sequence.circular);
+    q.bindDataId(":object", sequence.id);
     q.execute();
     CHECK_OP(os, );
 
@@ -290,9 +290,9 @@ void MysqlSequenceDbi::updateSequenceDataCore(const U2DataId& sequenceId, const 
 
         static const QString rightString = "SELECT send FROM SequenceData WHERE sequence = :sequence AND sstart <= :endPos1 AND :endPos2 <= send";
         U2SqlQuery rightQ(rightString, db, os);
-        rightQ.bindDataId("sequence", sequenceId);
-        rightQ.bindInt64("endPos1", regionToReplace.endPos());
-        rightQ.bindInt64("endPos2", regionToReplace.endPos());
+        rightQ.bindDataId(":sequence", sequenceId);
+        rightQ.bindInt64(":endPos1", regionToReplace.endPos());
+        rightQ.bindInt64(":endPos2", regionToReplace.endPos());
         qint64 cropRightPos = rightQ.selectInt64(-1);
         CHECK_OP(os, );
 
@@ -304,11 +304,11 @@ void MysqlSequenceDbi::updateSequenceDataCore(const U2DataId& sequenceId, const 
         // remove all affected regions
         static const QString removeString = "DELETE FROM SequenceData WHERE sequence = :sequence AND ((:startPos1 <= sstart AND sstart <= :endPos) OR (sstart <= :startPos2 AND :startPos3 <= send))";
         U2SqlQuery removeQ(removeString, db, os);
-        removeQ.bindDataId("sequence", sequenceId);
-        removeQ.bindInt64("startPos1", regionToReplace.startPos);
-        removeQ.bindInt64("startPos2", regionToReplace.startPos);
-        removeQ.bindInt64("startPos3", regionToReplace.startPos);
-        removeQ.bindInt64("endPos", regionToReplace.endPos());
+        removeQ.bindDataId(":sequence", sequenceId);
+        removeQ.bindInt64(":startPos1", regionToReplace.startPos);
+        removeQ.bindInt64(":startPos2", regionToReplace.startPos);
+        removeQ.bindInt64(":startPos3", regionToReplace.startPos);
+        removeQ.bindInt64(":endPos", regionToReplace.endPos());
         removeQ.execute();
         CHECK_OP(os, );
 
@@ -318,10 +318,10 @@ void MysqlSequenceDbi::updateSequenceDataCore(const U2DataId& sequenceId, const 
 
             static const QString updateString = "UPDATE SequenceData SET sstart = sstart + :dataLength1, send = send + :dataLength2 WHERE sequence = :sequence AND sstart >= :endPos";
             U2SqlQuery updateQ(updateString, db, os);
-            updateQ.bindInt64("dataLength1", d);
-            updateQ.bindInt64("dataLength2", d);
-            updateQ.bindDataId("sequence", sequenceId);
-            updateQ.bindInt64("endPos", regionToReplace.endPos());
+            updateQ.bindInt64(":dataLength1", d);
+            updateQ.bindInt64(":dataLength2", d);
+            updateQ.bindDataId(":sequence", sequenceId);
+            updateQ.bindInt64(":endPos", regionToReplace.endPos());
             updateQ.execute();
             CHECK_OP(os, );
         }
@@ -334,10 +334,10 @@ void MysqlSequenceDbi::updateSequenceDataCore(const U2DataId& sequenceId, const 
     static const QString insertString = "INSERT INTO SequenceData(sequence, sstart, send, data) VALUES(:sequence, :sstart, :send, :data)";
     U2SqlQuery insertQ(insertString, db, os);
     foreach (const QByteArray& d, newDataToInsert) {
-        insertQ.bindDataId("sequence", sequenceId);
-        insertQ.bindInt64("sstart", startPos);
-        insertQ.bindInt64("send", startPos + d.length());
-        insertQ.bindBlob("data", d);
+        insertQ.bindDataId(":sequence", sequenceId);
+        insertQ.bindInt64(":sstart", startPos);
+        insertQ.bindInt64(":send", startPos + d.length());
+        insertQ.bindBlob(":data", d);
         insertQ.execute();
         CHECK_OP(os, );
 
@@ -351,7 +351,7 @@ void MysqlSequenceDbi::updateSequenceDataCore(const U2DataId& sequenceId, const 
     } else {
         static const QString lengthString = "SELECT MAX(send) FROM SequenceData WHERE sequence = :sequence";
         U2SqlQuery lengthQ(lengthString, db, os);
-        lengthQ.bindDataId("sequence", sequenceId);
+        lengthQ.bindDataId(":sequence", sequenceId);
         newLength = lengthQ.selectInt64();
         CHECK_OP(os, );
     }
@@ -359,8 +359,8 @@ void MysqlSequenceDbi::updateSequenceDataCore(const U2DataId& sequenceId, const 
     if (updateLenght) {
         static const QString updateLengthString = "UPDATE Sequence SET length = :length WHERE object = :object";
         U2SqlQuery updateLengthQuery(updateLengthString, db, os);
-        updateLengthQuery.bindInt64("length", newLength);
-        updateLengthQuery.bindDataId("object", sequenceId);
+        updateLengthQuery.bindInt64(":length", newLength);
+        updateLengthQuery.bindDataId(":object", sequenceId);
         updateLengthQuery.update();
         CHECK_OP(os, );
     }

@@ -55,9 +55,9 @@ void MysqlObjectRelationsDbi::createObjectRelation( U2ObjectRelation &relation, 
     static const QString queryString( "INSERT INTO ObjectRelation (object, reference, role) VALUES(:object, :reference, :role)" );
     U2SqlQuery q( queryString, db, os );
     CHECK_OP(os, );
-    q.bindDataId( "object", relation.id );
-    q.bindDataId( "reference", relation.referencedObject );
-    q.bindInt32( "role", relation.relationRole );
+    q.bindDataId( ":object", relation.id );
+    q.bindDataId( ":reference", relation.referencedObject );
+    q.bindInt32( ":role", relation.relationRole );
     q.insert( );
 }
 
@@ -70,7 +70,7 @@ QList<U2ObjectRelation> MysqlObjectRelationsDbi::getObjectRelations( const U2Dat
         "INNER JOIN Object AS o ON o.id = o_r.reference WHERE o_r.object = :object";
     U2SqlQuery q( queryString, db, os );
     CHECK_OP(os, result);
-    q.bindDataId( "object", object );
+    q.bindDataId( ":object", object );
     while ( q.step( ) ) {
         U2ObjectRelation relation;
         const U2DataType objectType = U2DbiUtils::toType( object );
@@ -96,8 +96,8 @@ QList<U2DataId> MysqlObjectRelationsDbi::getReferenceRelatedObjects( const U2Dat
         "ON o.id = o_r.object WHERE o_r.reference = :reference AND o_r.role = :role";
     U2SqlQuery q( queryString, db, os );
     CHECK_OP(os, result);
-    q.bindDataId( "reference", reference );
-    q.bindInt32( "role", relationRole );
+    q.bindDataId( ":reference", reference );
+    q.bindInt32( ":role", relationRole );
     while ( q.step( ) ) {
         const U2DataType objType = q.getInt32( 1 );
         result.append( q.getDataId( 0, objType ) );
@@ -115,8 +115,8 @@ void MysqlObjectRelationsDbi::removeObjectRelation( U2ObjectRelation &relation, 
         "WHERE object = :object AND reference = :reference" );
     U2SqlQuery q( queryString, db, os );
     CHECK_OP(os, );
-    q.bindDataId( "object", relation.id );
-    q.bindDataId( "reference", relation.referencedObject );
+    q.bindDataId( ":object", relation.id );
+    q.bindDataId( ":reference", relation.referencedObject );
     q.execute( );
 }
 
@@ -127,8 +127,8 @@ void MysqlObjectRelationsDbi::removeAllObjectRelations( const U2DataId &object, 
     static const QString queryString( "DELETE FROM ObjectRelation WHERE object = :object OR reference = :reference" );
     U2SqlQuery q( queryString, db, os );
     CHECK_OP(os, );
-    q.bindDataId( "object", object );
-    q.bindDataId( "reference", object );
+    q.bindDataId( ":object", object );
+    q.bindDataId( ":reference", object );
     q.execute( );
 }
 
@@ -139,7 +139,7 @@ void MysqlObjectRelationsDbi::removeReferencesForObject( const U2DataId &object,
     static const QString queryString( "DELETE FROM ObjectRelation WHERE object = :object" );
     U2SqlQuery q( queryString, db, os );
     CHECK_OP(os, );
-    q.bindDataId( "object", object );
+    q.bindDataId( ":object", object );
     q.execute( );
 }
 

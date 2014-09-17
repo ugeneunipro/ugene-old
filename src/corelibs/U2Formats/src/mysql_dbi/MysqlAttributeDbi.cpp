@@ -78,14 +78,14 @@ QList<U2DataId> MysqlAttributeDbi::getObjectAttributes(const U2DataId& objectId,
     if (name.isEmpty()) {
         static const QString queryString("SELECT id, type, '' FROM Attribute WHERE object = :object ORDER BY id");
         U2SqlQuery q(queryString, db, os);
-        q.bindDataId("object", objectId);
+        q.bindDataId(":object", objectId);
         return q.selectDataIdsExt();
     }
 
     static const QString queryString("SELECT id, type, '' FROM Attribute WHERE object = :object AND name = :name ORDER BY id");
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("object", objectId);
-    q.bindString("name", name);
+    q.bindDataId(":object", objectId);
+    q.bindString(":name", name);
     return q.selectDataIdsExt();
 }
 
@@ -94,16 +94,16 @@ QList<U2DataId> MysqlAttributeDbi::getObjectPairAttributes(const U2DataId& objec
     if (name.isEmpty()) {
         static const QString queryString("SELECT id, type, '' FROM Attribute WHERE object = :object AND child = :child ORDER BY id");
         U2SqlQuery q(queryString, db, os);
-        q.bindDataId("object", objectId);
-        q.bindDataId("child", childId);
+        q.bindDataId(":object", objectId);
+        q.bindDataId(":child", childId);
         return q.selectDataIdsExt();
     }
 
     static const QString queryString("SELECT id, type, '' FROM Attribute WHERE object = :object AND child = :child AND name = :name ORDER BY id");
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("object", objectId);
-    q.bindDataId("child", childId);
-    q.bindString("name", name);
+    q.bindDataId(":object", objectId);
+    q.bindDataId(":child", childId);
+    q.bindString(":name", name);
     return q.selectDataIdsExt();
 }
 
@@ -111,7 +111,7 @@ QList<U2DataId> MysqlAttributeDbi::getObjectPairAttributes(const U2DataId& objec
 U2IntegerAttribute MysqlAttributeDbi::getIntegerAttribute(const U2DataId& attributeId, U2OpStatus& os) {
     static const QString queryString(buildSelectAttributeQuery("IntegerAttribute"));
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("id", attributeId);
+    q.bindDataId(":id", attributeId);
 
     U2IntegerAttribute res;
     readAttribute(q, res);
@@ -126,7 +126,7 @@ U2IntegerAttribute MysqlAttributeDbi::getIntegerAttribute(const U2DataId& attrib
 U2RealAttribute MysqlAttributeDbi::getRealAttribute(const U2DataId& attributeId, U2OpStatus& os) {
     static const QString queryString(buildSelectAttributeQuery("RealAttribute"));
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("id", attributeId);
+    q.bindDataId(":id", attributeId);
 
     U2RealAttribute res;
     readAttribute(q, res);
@@ -141,7 +141,7 @@ U2RealAttribute MysqlAttributeDbi::getRealAttribute(const U2DataId& attributeId,
 U2StringAttribute MysqlAttributeDbi::getStringAttribute(const U2DataId& attributeId, U2OpStatus& os) {
     static const QString queryString(buildSelectAttributeQuery("StringAttribute"));
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("id", attributeId);
+    q.bindDataId(":id", attributeId);
 
     U2StringAttribute res;
     readAttribute(q, res);
@@ -156,7 +156,7 @@ U2StringAttribute MysqlAttributeDbi::getStringAttribute(const U2DataId& attribut
 U2ByteArrayAttribute MysqlAttributeDbi::getByteArrayAttribute(const U2DataId& attributeId, U2OpStatus& os) {
     static const QString queryString(buildSelectAttributeQuery("ByteArrayAttribute"));
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("id", attributeId);
+    q.bindDataId(":id", attributeId);
 
     U2ByteArrayAttribute res;
     readAttribute(q, res);
@@ -211,7 +211,7 @@ void MysqlAttributeDbi::removeAttributes(const QList<U2DataId>& attributeIds, U2
         }
 
         U2SqlQuery removeAttrDetails(secQueryStr.arg(tableName), db, os);
-        removeAttrDetails.bindDataId("attribute", id);
+        removeAttrDetails.bindDataId(":attribute", id);
         removeAttrDetails.execute();
         CHECK_OP(os, );
 
@@ -247,8 +247,8 @@ void MysqlAttributeDbi::createIntegerAttribute(U2IntegerAttribute& a, U2OpStatus
 
     static const QString queryString("INSERT INTO IntegerAttribute(attribute, value) VALUES(:attribute, :value)");
     U2SqlQuery q(queryString, db, os);
-    q.bindInt64("attribute", id);
-    q.bindInt64("value", a.value);
+    q.bindInt64(":attribute", id);
+    q.bindInt64(":value", a.value);
     q.execute();
 }
 
@@ -266,8 +266,8 @@ void MysqlAttributeDbi::createRealAttribute(U2RealAttribute& a, U2OpStatus& os) 
 
     static const QString queryString("INSERT INTO RealAttribute(attribute, value) VALUES(:attribute, :value)");
     U2SqlQuery q(queryString, db, os);
-    q.bindInt64("attribute", id);
-    q.bindDouble("value", a.value);
+    q.bindInt64(":attribute", id);
+    q.bindDouble(":value", a.value);
     q.execute();
 }
 
@@ -285,8 +285,8 @@ void MysqlAttributeDbi::createStringAttribute(U2StringAttribute& a, U2OpStatus& 
 
     static const QString queryString("INSERT INTO StringAttribute(attribute, value) VALUES(:attribute, :value)");
     U2SqlQuery q(queryString, db, os);
-    q.bindInt64("attribute", id);
-    q.bindString("value", (a.value.isNull()) ? "" : a.value);
+    q.bindInt64(":attribute", id);
+    q.bindString(":value", (a.value.isNull()) ? "" : a.value);
     q.execute();
 }
 
@@ -304,8 +304,8 @@ void MysqlAttributeDbi::createByteArrayAttribute(U2ByteArrayAttribute& a, U2OpSt
 
     static const QString queryString("INSERT INTO ByteArrayAttribute(attribute, value) VALUES(:attribute, :value)");
     U2SqlQuery q(queryString, db, os);
-    q.bindInt64("attribute", id);
-    q.bindBlob("value", a.value);
+    q.bindInt64(":attribute", id);
+    q.bindBlob(":value", a.value);
     q.execute();
 }
 
@@ -317,15 +317,15 @@ qint64 MysqlAttributeDbi::createAttribute(U2Attribute& attr, U2DataType type, U2
         " VALUES(:type, :object, :child, :otype, :ctype, :oextra, :cextra, :version, :name)");
     U2SqlQuery q(queryString, db, os);
 
-    q.bindType("type", type);
-    q.bindDataId("object", attr.objectId);
-    q.bindDataId("child", attr.childId);
-    q.bindType("otype", U2DbiUtils::toType(attr.objectId));
-    q.bindType("ctype", U2DbiUtils::toType(attr.childId));
-    q.bindBlob("oextra", U2DbiUtils::toDbExtra(attr.objectId));
-    q.bindBlob("cextra", U2DbiUtils::toDbExtra(attr.childId));
-    q.bindInt64("version", attr.version);
-    q.bindString("name", attr.name);
+    q.bindType(":type", type);
+    q.bindDataId(":object", attr.objectId);
+    q.bindDataId(":child", attr.childId);
+    q.bindType(":otype", U2DbiUtils::toType(attr.objectId));
+    q.bindType(":ctype", U2DbiUtils::toType(attr.childId));
+    q.bindBlob(":oextra", U2DbiUtils::toDbExtra(attr.objectId));
+    q.bindBlob(":cextra", U2DbiUtils::toDbExtra(attr.childId));
+    q.bindInt64(":version", attr.version);
+    q.bindString(":name", attr.name);
 
     return q.insert();
 }

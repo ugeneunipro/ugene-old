@@ -30,6 +30,8 @@
 #include "MysqlObjectDbi.h"
 #include "MysqlUdrDbi.h"
 
+static const QString PLACEHOLDER_MARK = ":";
+
 namespace U2 {
 
 namespace {
@@ -73,7 +75,7 @@ UdrRecord MysqlUdrDbi::getRecord(const UdrRecordId &recordId, U2OpStatus &os) {
     U2SqlQuery q(selectDef(schema, os), db, os);
     CHECK_OP(os, result);
 
-    q.bindDataId(QString(UdrSchema::RECORD_ID_FIELD_NAME), recordId.getRecordId());
+    q.bindDataId(PLACEHOLDER_MARK + QString(UdrSchema::RECORD_ID_FIELD_NAME), recordId.getRecordId());
 
     bool ok = q.step();
     CHECK_EXT(ok, os.setError("Unknown record id"), result);
@@ -101,7 +103,7 @@ QList<U2DataId> MysqlUdrDbi::getObjectRecordIds(const UdrSchema *schema, const U
 
     U2SqlQuery q("SELECT " + UdrSchema::RECORD_ID_FIELD_NAME + " FROM " + tableName(schema->getId())
         + " WHERE " + UdrSchema::OBJECT_FIELD_NAME + " = :obj", db, os);
-    q.bindDataId("obj", objectId);
+    q.bindDataId(":obj", objectId);
 
     while (q.step()) {
         result << q.getDataId(0, U2Type::UdrRecord);
@@ -131,7 +133,7 @@ void MysqlUdrDbi::removeRecord(const UdrRecordId &recordId, U2OpStatus &os) {
 
     U2SqlQuery q("DELETE FROM " + tableName(recordId.getSchemaId())
         + " WHERE " + UdrSchema::RECORD_ID_FIELD_NAME + " = :id", db, os);
-    q.bindDataId("id", recordId.getRecordId());
+    q.bindDataId(":id", recordId.getRecordId());
     q.execute();
 }
 
@@ -340,19 +342,19 @@ void MysqlUdrDbi::bindData(const QList<UdrValue> &data, const UdrSchema *schema,
 
         switch (field.getDataType()) {
             case UdrSchema::INTEGER:
-                q.bindInt64(field.getName(), value.getInt(os));
+                q.bindInt64(PLACEHOLDER_MARK + field.getName(), value.getInt(os));
                 break;
             case UdrSchema::DOUBLE:
-                q.bindDouble(field.getName(), value.getDouble(os));
+                q.bindDouble(PLACEHOLDER_MARK + field.getName(), value.getDouble(os));
                 break;
             case UdrSchema::STRING:
-                q.bindString(field.getName(), value.getString(os));
+                q.bindString(PLACEHOLDER_MARK + field.getName(), value.getString(os));
                 break;
             case UdrSchema::BLOB:
-                q.bindBlob(field.getName(), "");
+                q.bindBlob(PLACEHOLDER_MARK + field.getName(), "");
                 break;
             case UdrSchema::ID:
-                q.bindDataId(field.getName(), value.getDataId(os));
+                q.bindDataId(PLACEHOLDER_MARK + field.getName(), value.getDataId(os));
                 break;
             default:
                 FAIL("Unknown UDR data type detected!", );

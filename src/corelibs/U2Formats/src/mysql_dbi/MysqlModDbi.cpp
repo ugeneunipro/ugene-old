@@ -120,8 +120,8 @@ U2SingleModStep MysqlModDbi::getModStep(const U2DataId &objectId, qint64 trackVe
 
     static const QString queryString = "SELECT id, object, otype, oextra, version, modType, details FROM SingleModStep WHERE object = :object AND version = :version LIMIT 1";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("object", objectId);
-    q.bindInt64("version", trackVersion);
+    q.bindDataId(":object", objectId);
+    q.bindInt64(":version", trackVersion);
 
     if (q.step()) {
         res.id = q.getInt64(0);
@@ -142,8 +142,8 @@ qint64 MysqlModDbi::getNearestUserModStepVersion(const U2DataId &masterObjId, qi
 
     static const QString qeuryString = "SELECT MAX(version) FROM UserModStep WHERE object = :object AND version <= :version";
     U2SqlQuery qVersion(qeuryString, db, os);
-    qVersion.bindDataId("object", masterObjId);
-    qVersion.bindInt64("version", version);
+    qVersion.bindDataId(":object", masterObjId);
+    qVersion.bindInt64(":version", version);
 
     if (qVersion.step()) {
         userStepVersion = qVersion.getInt64(0);
@@ -160,8 +160,8 @@ QList< QList<U2SingleModStep> > MysqlModDbi::getModSteps(const U2DataId &masterO
     qint64 userStepId = -1;
     static const QString qUserStepIdString = "SELECT id FROM UserModStep WHERE object = :object AND version = :version LIMIT 1";
     U2SqlQuery qGetUserStepId(qUserStepIdString, db, os);
-    qGetUserStepId.bindDataId("object", masterObjId);
-    qGetUserStepId.bindInt64("version", version);
+    qGetUserStepId.bindDataId(":object", masterObjId);
+    qGetUserStepId.bindInt64(":version", version);
 
     if (qGetUserStepId.step()) {
         userStepId = qGetUserStepId.getInt64(0);
@@ -175,13 +175,13 @@ QList< QList<U2SingleModStep> > MysqlModDbi::getModSteps(const U2DataId &masterO
     static const QString qSingleStepString = "SELECT id, object, otype, oextra, version, modType, details FROM SingleModStep WHERE multiStepId = :multiStepId";
 
     U2SqlQuery qMultiStepId(qMultiStepIdString, db, os);
-    qMultiStepId.bindInt64("userStepId", userStepId);
+    qMultiStepId.bindInt64(":userStepId", userStepId);
 
     while (qMultiStepId.step()) {
         qint64 multiStepId = qMultiStepId.getInt64(0);
 
         U2SqlQuery qSingleStep(qSingleStepString, db, os);
-        qSingleStep.bindInt64("multiStepId", multiStepId);
+        qSingleStep.bindInt64(":multiStepId", multiStepId);
 
         QList<U2SingleModStep> currentMultiStepSingleSteps;
         while (qSingleStep.step()) {
@@ -219,13 +219,13 @@ void MysqlModDbi::createModStep(const U2DataId &masterObjId, U2SingleModStep &st
     static const QString qSingleString = "INSERT INTO SingleModStep(object, otype, oextra, version, modType, details, multiStepId)"
             " VALUES(:object, :otype, :oextra, :version, :modType, :details, :multiStepId)";
     U2SqlQuery qSingle(qSingleString, db, os);
-    qSingle.bindDataId("object", step.objectId);
-    qSingle.bindType("otype", U2DbiUtils::toType(step.objectId));
-    qSingle.bindBlob("oextra", U2DbiUtils::toDbExtra(step.objectId));
-    qSingle.bindInt64("version", step.version);
-    qSingle.bindInt64("modType", step.modType);
-    qSingle.bindBlob("details", step.details);
-    qSingle.bindInt64("multiStepId", modStepsByObject[masterObjId].multiModStepId);
+    qSingle.bindDataId(":object", step.objectId);
+    qSingle.bindType(":otype", U2DbiUtils::toType(step.objectId));
+    qSingle.bindBlob(":oextra", U2DbiUtils::toDbExtra(step.objectId));
+    qSingle.bindInt64(":version", step.version);
+    qSingle.bindInt64(":modType", step.modType);
+    qSingle.bindBlob(":details", step.details);
+    qSingle.bindInt64(":multiStepId", modStepsByObject[masterObjId].multiModStepId);
     step.id = qSingle.insert();
     CHECK_OP(os, );
 
@@ -244,8 +244,8 @@ void MysqlModDbi::removeModsWithGreaterVersion(const U2DataId &masterObjId, qint
     QList<qint64> userStepIds;
     static const QString qSelectUserStepsString = "SELECT id FROM UserModStep WHERE object = :object AND version >= :version";
     U2SqlQuery qSelectUserSteps(qSelectUserStepsString, db, os);
-    qSelectUserSteps.bindDataId("object", masterObjId);
-    qSelectUserSteps.bindInt64("version", masterObjVersion);
+    qSelectUserSteps.bindDataId(":object", masterObjId);
+    qSelectUserSteps.bindInt64(":version", masterObjVersion);
 
     while (qSelectUserSteps.step()) {
         qint64 userStepId = qSelectUserSteps.getInt64(0);
@@ -265,8 +265,8 @@ void MysqlModDbi::removeDuplicateUserStep(const U2DataId &masterObjId, qint64 ma
     QList<qint64> userStepIds;
     static const QString qSelectString = "SELECT id FROM UserModStep WHERE object = :object AND version = :version";
     U2SqlQuery qSelect(qSelectString, db, os);
-    qSelect.bindDataId("object", masterObjId);
-    qSelect.bindInt64("version", masterObjVersion);
+    qSelect.bindDataId(":object", masterObjId);
+    qSelect.bindInt64(":version", masterObjVersion);
 
     while (qSelect.step()) {
         qint64 id = qSelect.getInt64(0);
@@ -302,7 +302,7 @@ void MysqlModDbi::removeSteps(QList<qint64> userStepIds, U2OpStatus &os) {
 
     foreach (qint64 userStepId, userStepIds) {
         U2SqlQuery qSelectMultiSteps(qSelectMultiStepsString, db, os);
-        qSelectMultiSteps.bindInt64("userStepId", userStepId);
+        qSelectMultiSteps.bindInt64(":userStepId", userStepId);
 
         while (qSelectMultiSteps.step()) {
             qint64 multiStepId = qSelectMultiSteps.getInt64(0);
@@ -315,7 +315,7 @@ void MysqlModDbi::removeSteps(QList<qint64> userStepIds, U2OpStatus &os) {
     static const QString qDeleteSingleStepsString = "DELETE FROM SingleModStep WHERE multiStepId = :multiStepId";
     U2SqlQuery qDeleteSingleSteps(qDeleteSingleStepsString, db, os);
     foreach (qint64 multiStepId, multiStepIds) {
-        qDeleteSingleSteps.bindInt64("multiStepId", multiStepId);
+        qDeleteSingleSteps.bindInt64(":multiStepId", multiStepId);
         qDeleteSingleSteps.execute();
     }
     CHECK_OP(os, );
@@ -324,7 +324,7 @@ void MysqlModDbi::removeSteps(QList<qint64> userStepIds, U2OpStatus &os) {
     static const QString qDeleteMultiStepsString = "DELETE FROM MultiModStep WHERE id = :id";
     U2SqlQuery qDeleteMultiSteps(qDeleteMultiStepsString, db, os);
     foreach (qint64 multiStepId, multiStepIds) {
-        qDeleteMultiSteps.bindInt64("id", multiStepId);
+        qDeleteMultiSteps.bindInt64(":id", multiStepId);
         qDeleteMultiSteps.execute();
     }
     CHECK_OP(os, );
@@ -333,7 +333,7 @@ void MysqlModDbi::removeSteps(QList<qint64> userStepIds, U2OpStatus &os) {
     static const QString qDeleteUserStepsString = "DELETE FROM UserModStep WHERE id = :id";
     U2SqlQuery qDeleteUserSteps(qDeleteUserStepsString, db, os);
     foreach (qint64 userStepId, userStepIds) {
-        qDeleteUserSteps.bindInt64("id", userStepId);
+        qDeleteUserSteps.bindInt64(":id", userStepId);
         qDeleteUserSteps.execute();
     }
 }
@@ -346,7 +346,7 @@ void MysqlModDbi::removeObjectMods(const U2DataId &objectId, U2OpStatus &os) {
     QList<qint64> userStepIds;
     static const QString qSelectUserStepsString = "SELECT id FROM UserModStep WHERE object = :object";
     U2SqlQuery qSelectUserSteps(qSelectUserStepsString, db, os);
-    qSelectUserSteps.bindDataId("object", objectId);
+    qSelectUserSteps.bindDataId(":object", objectId);
 
     while (qSelectUserSteps.step()) {
         qint64 userStepId = qSelectUserSteps.getInt64(0);
@@ -418,7 +418,7 @@ void MysqlModDbi::endCommonUserModStep(const U2DataId &userMasterObjId, U2OpStat
         // Get multiple steps IDs
         static const QString qSelectMultiStepsString = "SELECT id FROM MultiModStep WHERE userStepId = :userStepId LIMIT 1";
         U2SqlQuery qSelectMultiSteps(qSelectMultiStepsString, db, os);
-        qSelectMultiSteps.bindInt64("userStepId", userModStepId);
+        qSelectMultiSteps.bindInt64(":userStepId", userModStepId);
 
         // If user modification step doesn't contain any multi modification steps
         if (!qSelectMultiSteps.step()) {
@@ -426,7 +426,7 @@ void MysqlModDbi::endCommonUserModStep(const U2DataId &userMasterObjId, U2OpStat
 
             static const QString qDeleteUserStepsString = "DELETE FROM UserModStep WHERE id = :id";
             U2SqlQuery qDeleteUserSteps(qDeleteUserStepsString, db, os);
-            qDeleteUserSteps.bindInt64("id", userModStepId);
+            qDeleteUserSteps.bindInt64(":id", userModStepId);
             qDeleteUserSteps.execute();
         }
     }
@@ -477,10 +477,10 @@ void MysqlModDbi::createUserModStep(const U2DataId &masterObjId, U2OpStatus &os)
 
     static const QString qUserString = "INSERT INTO UserModStep(object, otype, oextra, version) VALUES(:object, :otype, :oextra, :version)";
     U2SqlQuery qUser(qUserString, db, os);
-    qUser.bindDataId("object", masterObjId);
-    qUser.bindType("otype", U2DbiUtils::toType(masterObjId));
-    qUser.bindBlob("oextra", U2DbiUtils::toDbExtra(masterObjId));
-    qUser.bindInt64("version", masterObjVersion);
+    qUser.bindDataId(":object", masterObjId);
+    qUser.bindType(":otype", U2DbiUtils::toType(masterObjId));
+    qUser.bindBlob(":oextra", U2DbiUtils::toDbExtra(masterObjId));
+    qUser.bindInt64(":version", masterObjVersion);
 
     qint64 curUserModStepId = qUser.insert();
     CHECK_OP(os, );
@@ -501,7 +501,7 @@ void MysqlModDbi::createMultiModStep(const U2DataId &masterObjId, U2OpStatus &os
 
     static const QString qMultiString = "INSERT INTO MultiModStep(userStepId) VALUES(:userStepId)";
     U2SqlQuery qMulti(qMultiString, db, os);
-    qMulti.bindInt64("userStepId", modStepsByObject[masterObjId].userModStepId);
+    qMulti.bindInt64(":userStepId", modStepsByObject[masterObjId].userModStepId);
 
     qint64 curMultiModStepId = qMulti.insert();
     CHECK_OP(os, );
@@ -541,8 +541,8 @@ bool MysqlModDbi::canUndo(const U2DataId &objectId, U2OpStatus &os) {
     // Verify if there are steps
     static const QString qString = "SELECT id FROM UserModStep WHERE object = :object AND version < :version LIMIT 1";
     U2SqlQuery q(qString, db, os);
-    q.bindDataId("object", objectId);
-    q.bindInt64("version", objVersion);
+    q.bindDataId(":object", objectId);
+    q.bindInt64(":version", objVersion);
 
     return q.step();
 }
@@ -558,8 +558,8 @@ bool MysqlModDbi::canRedo(const U2DataId &objectId, U2OpStatus &os) {
     // Verify if there are steps
     static const QString qString = "SELECT id FROM UserModStep WHERE object = :object AND version >= :version LIMIT 1";
     U2SqlQuery q(qString, db, os);
-    q.bindDataId("object", objectId);
-    q.bindInt64("version", objVersion);
+    q.bindDataId(":object", objectId);
+    q.bindInt64(":version", objVersion);
 
     return q.step();
 }

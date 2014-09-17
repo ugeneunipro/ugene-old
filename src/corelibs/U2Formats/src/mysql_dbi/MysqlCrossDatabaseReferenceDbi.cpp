@@ -57,11 +57,11 @@ void MysqlCrossDatabaseReferenceDbi::createCrossReference(U2CrossDatabaseReferen
 
     static const QString queryString = "INSERT INTO CrossDatabaseReference(object, factory, dbi, rid, version) VALUES(:object, :factory, :dbi, :rid, :version)";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("object", reference.id);
-    q.bindString("factory", reference.dataRef.dbiRef.dbiFactoryId);
-    q.bindString("dbi", reference.dataRef.dbiRef.dbiId);
-    q.bindBlob("rid", reference.dataRef.entityId);
-    q.bindInt64("version", reference.dataRef.version);
+    q.bindDataId(":object", reference.id);
+    q.bindString(":factory", reference.dataRef.dbiRef.dbiFactoryId);
+    q.bindString(":dbi", reference.dataRef.dbiRef.dbiId);
+    q.bindBlob(":rid", reference.dataRef.entityId);
+    q.bindInt64(":version", reference.dataRef.version);
     q.execute();
 }
 
@@ -71,7 +71,7 @@ void MysqlCrossDatabaseReferenceDbi::removeCrossReferenceData(const U2DataId &re
 
     static const QString queryString = "DELETE FROM CrossDatabaseReference WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("object", referenceId);
+    q.bindDataId(":object", referenceId);
     q.execute();
 }
 
@@ -80,7 +80,7 @@ U2CrossDatabaseReference MysqlCrossDatabaseReferenceDbi::getCrossReference(const
 
     static const QString queryString = "SELECT r.factory, r.dbi, r.rid, r.version, o.name, o.version FROM CrossDatabaseReference AS r, Object AS o WHERE o.id = :id AND r.object = o.id";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("id", objectId);
+    q.bindDataId(":id", objectId);
     if (q.step())  {
         res.dataRef.dbiRef.dbiFactoryId= q.getString(0);
         res.dataRef.dbiRef.dbiId = q.getString(1);
@@ -100,11 +100,11 @@ void MysqlCrossDatabaseReferenceDbi::updateCrossReference(const U2CrossDatabaseR
 
     static const QString queryString = "UPDATE CrossDatabaseReference SET factory = :factory, dbi = :dbi, rid = :rid, version = :version WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindString("factory", reference.dataRef.dbiRef.dbiFactoryId);
-    q.bindString("dbi", reference.dataRef.dbiRef.dbiId);
-    q.bindBlob("rid", reference.dataRef.entityId);
-    q.bindInt64("version", reference.dataRef.version);
-    q.bindDataId("object", reference.id);
+    q.bindString(":factory", reference.dataRef.dbiRef.dbiFactoryId);
+    q.bindString(":dbi", reference.dataRef.dbiRef.dbiId);
+    q.bindBlob(":rid", reference.dataRef.entityId);
+    q.bindInt64(":version", reference.dataRef.version);
+    q.bindDataId(":object", reference.id);
     q.execute();
 }
 

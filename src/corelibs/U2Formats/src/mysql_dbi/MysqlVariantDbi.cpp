@@ -120,7 +120,7 @@ U2DbiIterator<U2VariantTrack>* MysqlVariantDbi::getVariantTracks(VariantTrackTyp
 U2DbiIterator<U2VariantTrack>* MysqlVariantDbi::getVariantTracks(const U2DataId& seqId, U2OpStatus& os) {
     static const QString queryString = "SELECT object, sequence, sequenceName, trackType, fileHeader FROM VariantTrack WHERE sequence = :sequence";
     QSharedPointer<U2SqlQuery> q(new U2SqlQuery(queryString, db, os));
-    q->bindDataId("sequence", seqId);
+    q->bindDataId(":sequence", seqId);
 
     return new MysqlRSIterator<U2VariantTrack>(q, new SimpleVariantTrackLoader(), NULL, U2VariantTrack(), os);
 }
@@ -132,7 +132,7 @@ U2DbiIterator<U2VariantTrack>* MysqlVariantDbi::getVariantTracks( const U2DataId
 
     static const QString queryString = "SELECT object, sequence, sequenceName FROM VariantTrack WHERE sequence = :sequence";
     QSharedPointer<U2SqlQuery> q(new U2SqlQuery(queryString, db, os));
-    q->bindDataId("sequence", seqId);
+    q->bindDataId(":sequence", seqId);
 
     return new MysqlRSIterator<U2VariantTrack>(q, new SimpleVariantTrackLoader(), new SimpleVariantTrackFilter(trackType), U2VariantTrack(), os);
 }
@@ -148,7 +148,7 @@ U2VariantTrack MysqlVariantDbi::getVariantTrack(const U2DataId& variantTrackId, 
 
     static const QString queryString = "SELECT sequence, sequenceName, trackType, fileHeader FROM VariantTrack WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("object", variantTrackId);
+    q.bindDataId(":object", variantTrackId);
 
     if (q.step()) {
         res.sequence = q.getDataId(0, U2Type::Sequence);
@@ -172,7 +172,7 @@ U2VariantTrack MysqlVariantDbi::getVariantTrackofVariant( const U2DataId& varian
 
     static const QString queryString = "SELECT track FROM Variant WHERE id = :id";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("id", variantId);
+    q.bindDataId(":id", variantId);
 
     if (q.step()) {
         U2DataId trackId = q.getDataId(0, U2Type::VariantTrack);
@@ -193,13 +193,13 @@ void MysqlVariantDbi::addVariantsToTrack(const U2VariantTrack& track, U2DbiItera
 
     while (it->hasNext()) {
         U2Variant var = it->next();
-        q.bindDataId("track", track.id);
-        q.bindInt64("startPos", var.startPos);
-        q.bindInt64("endPos", var.endPos);
-        q.bindBlob("refData", var.refData);
-        q.bindBlob("obsData", var.obsData);
-        q.bindString("publicId", var.publicId);
-        q.bindString("additionalInfo", var.additionalInfo);
+        q.bindDataId(":track", track.id);
+        q.bindInt64(":startPos", var.startPos);
+        q.bindInt64(":endPos", var.endPos);
+        q.bindBlob(":refData", var.refData);
+        q.bindBlob(":obsData", var.obsData);
+        q.bindString(":publicId", var.publicId);
+        q.bindString(":additionalInfo", var.additionalInfo);
 
         var.id = q.insert(U2Type::VariantType);
         CHECK_OP(os, );
@@ -228,11 +228,11 @@ void MysqlVariantDbi::createVariantTrack(U2VariantTrack& track, VariantTrackType
     static const QString queryString = "INSERT INTO VariantTrack(object, sequence, sequenceName, trackType, fileHeader) "
             "VALUES(:object, :sequence, :sequenceName, :trackType, :fileHeader)";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("object", track.id);
-    q.bindDataId("sequence", track.sequence);
-    q.bindString("sequenceName", track.sequenceName);
-    q.bindInt32("trackType", track.trackType);
-    q.bindString("fileHeader", track.fileHeader);
+    q.bindDataId(":object", track.id);
+    q.bindDataId(":sequence", track.sequence);
+    q.bindString(":sequenceName", track.sequenceName);
+    q.bindInt32(":trackType", track.trackType);
+    q.bindString(":fileHeader", track.fileHeader);
     q.execute();
 }
 
@@ -242,11 +242,11 @@ void MysqlVariantDbi::updateVariantTrack(U2VariantTrack &track, U2OpStatus& os) 
 
     static const QString queryString = "UPDATE VariantTrack SET sequence = :sequence, sequenceName = :sequenceName, trackType = :trackType, fileHeader = :fileHeader WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("sequence", track.sequence);
-    q.bindString("sequenceName", track.sequenceName);
-    q.bindInt32("trackType", track.trackType);
-    q.bindString("fileHeader", track.fileHeader);
-    q.bindDataId("object", track.id);
+    q.bindDataId(":sequence", track.sequence);
+    q.bindString(":sequenceName", track.sequenceName);
+    q.bindInt32(":trackType", track.trackType);
+    q.bindString(":fileHeader", track.fileHeader);
+    q.bindDataId(":object", track.id);
     q.execute();
     CHECK_OP(os, );
 
@@ -260,7 +260,7 @@ U2DbiIterator<U2Variant>* MysqlVariantDbi::getVariants(const U2DataId& trackId, 
     if (region == U2_REGION_MAX) {
         static QString wholeRegionString ("SELECT id, startPos, endPos, refData, obsData, publicId, additionalInfo FROM Variant WHERE track = :track ORDER BY startPos");
         QSharedPointer<U2SqlQuery> q(new U2SqlQuery(wholeRegionString, db, os));
-        q->bindDataId("track", trackId);
+        q->bindDataId(":track", trackId);
 
         return new MysqlRSIterator<U2Variant>(q, new MysqlVariantLoader(), NULL, U2Variant(), os);
     }
@@ -268,9 +268,9 @@ U2DbiIterator<U2Variant>* MysqlVariantDbi::getVariants(const U2DataId& trackId, 
     static const QString localRegionString = "SELECT id, startPos, endPos, refData, obsData, publicId, additionalInfo FROM Variant "
             "WHERE track = :track AND startPos >= :regionStart AND startPos < :regionEnd";
     QSharedPointer<U2SqlQuery> q(new U2SqlQuery(localRegionString, db, os));
-    q->bindDataId("track", trackId);
-    q->bindInt64("regionStart", region.startPos);
-    q->bindInt64("regionEnd", region.endPos());
+    q->bindDataId(":track", trackId);
+    q->bindInt64(":regionStart", region.startPos);
+    q->bindInt64(":regionEnd", region.endPos());
 
     return new MysqlRSIterator<U2Variant>(q, new MysqlVariantLoader(), NULL, U2Variant(), os);
 }
@@ -281,9 +281,9 @@ U2DbiIterator<U2Variant>* MysqlVariantDbi::getVariantsRange(const U2DataId& trac
     static const QString queryString = "SELECT id, startPos, endPos, refData, obsData, publicId, additionalInfo FROM Variant "
             "WHERE track = :track LIMIT :limit OFFSET :offset";
     QSharedPointer<U2SqlQuery> q(new U2SqlQuery(queryString, db, os));
-    q->bindDataId("track", track);
-    q->bindInt64("limit", limit);
-    q->bindInt64("offset", offset);
+    q->bindDataId(":track", track);
+    q->bindInt64(":limit", limit);
+    q->bindInt64(":offset", offset);
 
     return new MysqlRSIterator<U2Variant>(q, new MysqlVariantLoader(), NULL, U2Variant(), os);
 }
@@ -291,7 +291,7 @@ U2DbiIterator<U2Variant>* MysqlVariantDbi::getVariantsRange(const U2DataId& trac
 int MysqlVariantDbi::getVariantCount( const U2DataId& trackId, U2OpStatus& os ) {
     static const QString sueryString = "SELECT COUNT(*) FROM Variant WHERE track = :track";
     U2SqlQuery q(sueryString, db, os);
-    q.bindDataId("track", trackId);
+    q.bindDataId(":track", trackId);
     if (!q.step()) {
         return -1;
     }
@@ -305,13 +305,13 @@ void MysqlVariantDbi::removeTrack(const U2DataId& trackId, U2OpStatus& os) {
 
     static const QString variantString = "DELETE FROM Variant WHERE track = :track";
     U2SqlQuery variantQuery(variantString, db, os);
-    variantQuery.bindDataId("track", trackId);
+    variantQuery.bindDataId(":track", trackId);
     variantQuery.execute();
     CHECK_OP(os,);
 
     static const QString trackString = "DELETE FROM VariantTrack WHERE object = :object";
     U2SqlQuery trackQuery(trackString, db, os);
-    trackQuery.bindDataId("object", trackId);
+    trackQuery.bindDataId(":object", trackId);
     trackQuery.execute();
 }
 
@@ -325,9 +325,9 @@ void MysqlVariantDbi::updateVariantPublicId( const U2DataId& track, const U2Data
 
     static QString qvString("UPDATE Variant SET publicId = :publicId WHERE track = :track AND id = :id");
     U2SqlQuery qv(qvString, db, os);
-    qv.bindString("publicId", newId);
-    qv.bindDataId("track", track);
-    qv.bindDataId("id", variant);
+    qv.bindString(":publicId", newId);
+    qv.bindDataId(":track", track);
+    qv.bindDataId(":id", variant);
     qv.execute();
 }
 

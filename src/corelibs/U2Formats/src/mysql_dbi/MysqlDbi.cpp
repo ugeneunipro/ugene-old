@@ -172,7 +172,7 @@ MysqlDbRef* MysqlDbi::getDbRef() {
 bool MysqlDbi::isInitialized(U2OpStatus &os) {
     if (!tablesAreCreated) {
         U2SqlQuery q("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = :name and TABLE_TYPE='BASE TABLE'", db, os);
-        q.bindString("name", db->handle.databaseName());
+        q.bindString(":name", db->handle.databaseName());
 
         const int countOfTables = q.selectInt64();
         CHECK_OP(os, false);
@@ -190,7 +190,7 @@ QString MysqlDbi::getProperty(const QString& name, const QString& defaultValue, 
     }
 
     U2SqlQuery q("SELECT value FROM Meta WHERE name = :name", db, os);
-    q.bindString("name", name);
+    q.bindString(":name", name);
     QStringList res = q.selectStrings();
     CHECK_OP(os, defaultValue);
 
@@ -210,13 +210,13 @@ void MysqlDbi::setProperty(const QString& name, const QString& value, U2OpStatus
     Q_UNUSED(t);
 
     U2SqlQuery q1("DELETE FROM Meta WHERE name = :name", db, os);
-    q1.bindString("name", name);
+    q1.bindString(":name", name);
     q1.execute();
     CHECK_OP(os, );
 
     U2SqlQuery q2("INSERT INTO Meta(name, value) VALUES (:name, :value)", db, os);
-    q2.bindString("name", name);
-    q2.bindString("value", value);
+    q2.bindString(":name", name);
+    q2.bindString(":value", value);
     q2.execute();
 }
 
@@ -431,8 +431,8 @@ void MysqlDbi::checkUserPermissions(U2OpStatus& os) {
     const QString schemaQueryString = "SELECT DISTINCT PRIVILEGE_TYPE FROM information_schema.schema_privileges "
         "WHERE GRANTEE LIKE :userName AND TABLE_SCHEMA = :tableSchema";
     U2SqlQuery sq(schemaQueryString, db, os);
-    sq.bindString("userName", QString("'%1'%").arg(userName));
-    sq.bindString("tableSchema", databaseName);
+    sq.bindString(":userName", QString("'%1'%").arg(userName));
+    sq.bindString(":tableSchema", databaseName);
 
     while (sq.step() && !(selectEnabled && updateEnabled && deleteEnabled && insertEnabled)) {
         const QString grantString = sq.getString(0);
@@ -447,7 +447,7 @@ void MysqlDbi::checkUserPermissions(U2OpStatus& os) {
     const QString userQueryString = "SELECT DISTINCT PRIVILEGE_TYPE FROM information_schema.user_privileges "
         "WHERE GRANTEE LIKE :userName";
     U2SqlQuery uq(userQueryString, db, os);
-    uq.bindString("userName", QString("'%1'%").arg(userName));
+    uq.bindString(":userName", QString("'%1'%").arg(userName));
 
     while (!(selectEnabled && updateEnabled && deleteEnabled && insertEnabled) && uq.step()) {
         const QString grantString = uq.getString(0);
@@ -618,7 +618,7 @@ bool MysqlDbiFactory::isDbiExists(const U2DbiId& id) const {
 
 //    U2OpStatusImpl os;
 //    U2SqlQuery q("SELECT DATA LIKE :dbName", db, os);
-//    q.bindString("dbName", dbName);
+//    q.bindString(":dbName", dbName);
 //    return !q.selectStrings().isEmpty();
     return false;
 }

@@ -93,7 +93,7 @@ U2Msa MysqlMsaDbi::getMsaObject(const U2DataId& msaId, U2OpStatus& os) {
 
     static const QString queryString = "SELECT length, alphabet FROM Msa WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("object", msaId);
+    q.bindDataId(":object", msaId);
     if (q.step()) {
         res.length = q.getInt64(0);
         res.alphabet = q.getString(1);
@@ -110,7 +110,7 @@ qint64 MysqlMsaDbi::getNumOfRows(const U2DataId& msaId, U2OpStatus& os) {
 
     static const QString queryString = "SELECT numOfRows FROM Msa WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("object", msaId);
+    q.bindDataId(":object", msaId);
     if (q.step())  {
         res = q.getInt64(0);
         q.ensureDone();
@@ -128,7 +128,7 @@ QList<U2MsaRow> MysqlMsaDbi::getRows(const U2DataId& msaId, U2OpStatus& os) {
 
     static const QString rowString = "SELECT rowId, sequence, gstart, gend, length FROM MsaRow WHERE msa = :msa ORDER BY pos";
     U2SqlQuery rowQuery(rowString, db, os);
-    rowQuery.bindDataId("msa", msaId);
+    rowQuery.bindDataId(":msa", msaId);
 
     static const QString gapString = "SELECT gapStart, gapEnd FROM MsaRowGap WHERE msa = :msa AND rowId = :rowId ORDER BY gapStart";
 
@@ -141,8 +141,8 @@ QList<U2MsaRow> MysqlMsaDbi::getRows(const U2DataId& msaId, U2OpStatus& os) {
         row.length = rowQuery.getInt64(4);
 
         U2SqlQuery gapQuery(gapString, db, os);
-        gapQuery.bindDataId("msa", msaId);
-        gapQuery.bindInt64("rowId", row.rowId);
+        gapQuery.bindDataId(":msa", msaId);
+        gapQuery.bindInt64(":rowId", row.rowId);
         while (gapQuery.step()) {
             U2MsaGap gap;
             gap.offset = gapQuery.getInt64(0);
@@ -164,8 +164,8 @@ U2MsaRow MysqlMsaDbi::getRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os
 
     static const QString rowString = "SELECT sequence, gstart, gend, length FROM MsaRow WHERE msa = :msa AND rowId = :rowId";
     U2SqlQuery q(rowString, db, os);
-    q.bindDataId("msa", msaId);
-    q.bindInt64("rowId", rowId);
+    q.bindDataId(":msa", msaId);
+    q.bindInt64(":rowId", rowId);
     if (q.step()) {
         res.rowId = rowId;
         res.sequenceId = q.getDataId(0, U2Type::Sequence);
@@ -180,8 +180,8 @@ U2MsaRow MysqlMsaDbi::getRow(const U2DataId& msaId, qint64 rowId, U2OpStatus& os
 
     static const QString gapString = "SELECT gapStart, gapEnd FROM MsaRowGap WHERE msa = :msa AND rowId = :rowId ORDER BY gapStart";
     U2SqlQuery gapQ(gapString, db, os);
-    gapQ.bindDataId("msa", msaId);
-    gapQ.bindInt64("rowId", rowId);
+    gapQ.bindDataId(":msa", msaId);
+    gapQ.bindInt64(":rowId", rowId);
     while (gapQ.step()) {
         U2MsaGap gap;
         gap.offset = gapQ.getInt64(0);
@@ -197,7 +197,7 @@ QList<qint64> MysqlMsaDbi::getRowsOrder(const U2DataId& msaId, U2OpStatus& os) {
 
     static const QString queryString = "SELECT rowId FROM MsaRow WHERE msa = :msa ORDER BY pos";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("msa", msaId);
+    q.bindDataId(":msa", msaId);
     while (q.step()) {
         res.append(q.getInt64(0));
     }
@@ -220,10 +220,10 @@ U2DataId MysqlMsaDbi::createMsaObject(const QString& folder, const QString& name
     // Create a record in the Msa table
     static const QString queryString = "INSERT INTO Msa(object, length, alphabet, numOfRows) VALUES(:object, :length, :alphabet, :numOfRows)";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("object", msa.id);
-    q.bindInt64("length", 0); // length = 0
-    q.bindString("alphabet", msa.alphabet.id);
-    q.bindInt64("numOfRows", 0); // no rows
+    q.bindDataId(":object", msa.id);
+    q.bindInt64(":length", 0); // length = 0
+    q.bindString(":alphabet", msa.alphabet.id);
+    q.bindInt64(":numOfRows", 0); // no rows
     q.insert();
 
     return msa.id;
@@ -259,8 +259,8 @@ void MysqlMsaDbi::updateMsaAlphabet(const U2DataId& msaId, const U2AlphabetId& a
     // Update the alphabet
     static const QString queryString = "UPDATE Msa SET alphabet = :alphabet WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindString("alphabet", alphabet.id);
-    q.bindDataId("object", msaId);
+    q.bindString(":alphabet", alphabet.id);
+    q.bindDataId(":object", msaId);
     q.update();
     CHECK_OP(os, );
 
@@ -406,7 +406,7 @@ void MysqlMsaDbi::deleteRowsData(const U2DataId& msaId, U2OpStatus& os) {
 
     static const QString queryString = "DELETE O.* FROM Object AS O INNER JOIN MsaRow AS MR ON O.id = MR.sequence WHERE MR.msa = :msa";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("msa", msaId);
+    q.bindDataId(":msa", msaId);
     q.execute();
 }
 
@@ -576,7 +576,7 @@ qint64 MysqlMsaDbi::getMsaLength(const U2DataId& msaId, U2OpStatus& os) {
     qint64 res = 0;
 
     U2SqlQuery q("SELECT length FROM Msa WHERE object = :object", db, os);
-    q.bindDataId("object", msaId);
+    q.bindDataId(":object", msaId);
     if (q.step()) {
         res = q.getInt64(0);
         q.ensureDone();
@@ -615,12 +615,12 @@ void MysqlMsaDbi::createMsaRow(const U2DataId& msaId, qint64 posInMsa, U2MsaRow&
     // Insert the data
     static const QString queryString = "INSERT INTO MsaRow(msa, sequence, pos, gstart, gend, length) VALUES(:msa, :sequence, :pos, :gstart, :gend, :length)";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("msa", msaId);
-    q.bindDataId("sequence", msaRow.sequenceId);
-    q.bindInt64("pos", posInMsa);
-    q.bindInt64("gstart", msaRow.gstart);
-    q.bindInt64("gend", msaRow.gend);
-    q.bindInt64("length", rowLength);
+    q.bindDataId(":msa", msaId);
+    q.bindDataId(":sequence", msaRow.sequenceId);
+    q.bindInt64(":pos", posInMsa);
+    q.bindInt64(":gstart", msaRow.gstart);
+    q.bindInt64(":gend", msaRow.gend);
+    q.bindInt64(":length", rowLength);
     msaRow.rowId = q.insert();
 }
 
@@ -630,10 +630,10 @@ void MysqlMsaDbi::createMsaRowGap(const U2DataId& msaId, qint64 msaRowId, const 
 
     static const QString queryString = "INSERT INTO MsaRowGap(msa, rowId, gapStart, gapEnd) VALUES(:msa, :rowId, :gapStart, :gapEnd)";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("msa", msaId);
-    q.bindInt64("rowId", msaRowId);
-    q.bindInt64("gapStart", msaGap.offset);
-    q.bindInt64("gapEnd", msaGap.offset + msaGap.gap);
+    q.bindDataId(":msa", msaId);
+    q.bindInt64(":rowId", msaRowId);
+    q.bindInt64(":gapStart", msaGap.offset);
+    q.bindInt64(":gapEnd", msaGap.offset + msaGap.gap);
     q.insert();
 }
 
@@ -658,8 +658,8 @@ void MysqlMsaDbi::removeRecordsFromMsaRowGap(const U2DataId& msaId, qint64 rowId
 
     static const QString queryString = "DELETE FROM MsaRowGap WHERE msa = :msa AND rowId = :rowId";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("msa", msaId);
-    q.bindInt64("rowId", rowId);
+    q.bindDataId(":msa", msaId);
+    q.bindInt64(":rowId", rowId);
     q.update();
 }
 
@@ -669,8 +669,8 @@ void MysqlMsaDbi::removeRecordFromMsaRow(const U2DataId& msaId, qint64 rowId, U2
 
     static const QString queryString = "DELETE FROM MsaRow WHERE msa = :msa AND rowId = :rowId";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("msa", msaId);
-    q.bindInt64("rowId", rowId);
+    q.bindDataId(":msa", msaId);
+    q.bindInt64(":rowId", rowId);
     q.update();
 }
 
@@ -680,8 +680,8 @@ void MysqlMsaDbi::updateNumOfRows(const U2DataId& msaId, qint64 numOfRows, U2OpS
 
     static const QString queryString = "UPDATE Msa SET numOfRows = :numOfRows WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindInt64("numOfRows", numOfRows);
-    q.bindDataId("object", msaId);
+    q.bindInt64(":numOfRows", numOfRows);
+    q.bindDataId(":object", msaId);
     q.update();
 }
 
@@ -696,9 +696,9 @@ void MysqlMsaDbi::recalculateRowsPositions(const U2DataId& msaId, U2OpStatus& os
     for (int i = 0, n = rows.count(); i < n; ++i) {
         qint64 rowId = rows[i].rowId;
         U2SqlQuery q(queryString, db, os);
-        q.bindInt64("pos", i);
-        q.bindDataId("msa", msaId);
-        q.bindInt64("rowId", rowId);
+        q.bindInt64(":pos", i);
+        q.bindDataId(":msa", msaId);
+        q.bindInt64(":rowId", rowId);
         q.execute();
         CHECK_OP(os, );
     }
@@ -712,7 +712,7 @@ void MysqlMsaDbi::recalculateMsaLength(const U2DataId& msaId, U2OpStatus& os) {
     // Get maximum row length
     static const QString queryString = "SELECT MAX(length) FROM MsaRow WHERE msa = :msa";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("msa", msaId);
+    q.bindDataId(":msa", msaId);
     if (q.step()) {
         msaLength = q.getInt64(0);
         q.ensureDone();
@@ -740,8 +740,8 @@ qint64 MysqlMsaDbi::getRowSequenceLength(const U2DataId& msaId, qint64 rowId, U2
 
     static const QString queryString = "SELECT gstart, gend FROM MsaRow WHERE msa = :msa AND rowId = :rowId";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("msa", msaId);
-    q.bindInt64("rowId", rowId);
+    q.bindDataId(":msa", msaId);
+    q.bindInt64(":rowId", rowId);
     if (q.step()) {
         qint64 startInSeq = q.getInt64(0);
         qint64 endInSeq = q.getInt64(1);
@@ -760,9 +760,9 @@ void MysqlMsaDbi::updateRowLength(const U2DataId& msaId, qint64 rowId, qint64 ne
 
     static const QString queryString = "UPDATE MsaRow SET length = :length WHERE msa = :msa AND rowId = :rowId";
     U2SqlQuery q(queryString, db, os);
-    q.bindInt64("length", newLength);
-    q.bindDataId("msa", msaId);
-    q.bindInt64("rowId", rowId);
+    q.bindInt64(":length", newLength);
+    q.bindDataId(":msa", msaId);
+    q.bindInt64(":rowId", rowId);
     q.update();
 }
 
@@ -772,8 +772,8 @@ void MysqlMsaDbi::updateMsaLength(const U2DataId& msaId, qint64 length, U2OpStat
 
     static const QString queryString = "UPDATE Msa SET length = :length WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindInt64("length", length);
-    q.bindDataId("object", msaId);
+    q.bindInt64(":length", length);
+    q.bindDataId(":object", msaId);
     q.execute();
 }
 
@@ -782,8 +782,8 @@ U2DataId MysqlMsaDbi::getSequenceIdByRowId(const U2DataId& msaId, qint64 rowId, 
 
     static const QString queryString = "SELECT sequence FROM MsaRow WHERE msa = :msa AND rowId = :rowId";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("msa", msaId);
-    q.bindInt64("rowId", rowId);
+    q.bindDataId(":msa", msaId);
+    q.bindInt64(":rowId", rowId);
     if (q.step()) {
         res = q.getDataId(0, U2Type::Sequence);
         q.ensureDone();
@@ -799,8 +799,8 @@ qint64 MysqlMsaDbi::getPosInMsa(const U2DataId &msaId, qint64 rowId, U2OpStatus 
 
     static const QString queryString = "SELECT pos FROM MsaRow WHERE msa = :msa AND rowId = :rowId";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("msa", msaId);
-    q.bindInt64("rowId", rowId);
+    q.bindDataId(":msa", msaId);
+    q.bindInt64(":rowId", rowId);
     if (q.step()) {
         result = q.getInt64(0);
         q.ensureDone();
@@ -982,9 +982,9 @@ void MysqlMsaDbi::setNewRowsOrderCore(const U2DataId &msaId, const QList<qint64>
     for (int i = 0, n = rowIds.count(); i < n; ++i) {
         qint64 rowId = rowIds[i];
         U2SqlQuery q(queryString, db, os);
-        q.bindInt64("pos", i);
-        q.bindDataId("msa", msaId);
-        q.bindInt64("rowId", rowId);
+        q.bindInt64(":pos", i);
+        q.bindDataId(":msa", msaId);
+        q.bindInt64(":rowId", rowId);
         q.execute();
         CHECK_OP(os, );
     }
@@ -996,11 +996,11 @@ void MysqlMsaDbi::updateRowInfoCore(const U2DataId& msaId, const U2MsaRow& row, 
 
     static const QString queryString = "UPDATE MsaRow SET sequence = :sequence, gstart = :gstart, gend = :gend WHERE msa = :msa AND rowId = :rowId";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("sequence", row.sequenceId);
-    q.bindInt64("gstart", row.gstart);
-    q.bindInt64("gend", row.gend);
-    q.bindDataId("msa", msaId);
-    q.bindInt64("rowId", row.rowId);
+    q.bindDataId(":sequence", row.sequenceId);
+    q.bindInt64(":gstart", row.gstart);
+    q.bindInt64(":gend", row.gend);
+    q.bindDataId(":msa", msaId);
+    q.bindInt64(":rowId", row.rowId);
     q.update();
 }
 
@@ -1020,8 +1020,8 @@ void MysqlMsaDbi::undoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray&
     // Update the value
     static const QString queryString = "UPDATE Msa SET alphabet = :alphabet WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindString("alphabet", oldAlphabet.id);
-    q.bindDataId("object", msaId);
+    q.bindString(":alphabet", oldAlphabet.id);
+    q.bindDataId(":object", msaId);
     q.update();
 }
 
@@ -1138,8 +1138,8 @@ void MysqlMsaDbi::redoUpdateMsaAlphabet(const U2DataId& msaId, const QByteArray&
     // Redo the updating
     static const QString queryString = "UPDATE Msa SET alphabet = :alphabet WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindString("alphabet", newAlphabet.id);
-    q.bindDataId("object", msaId);
+    q.bindString(":alphabet", newAlphabet.id);
+    q.bindDataId(":object", msaId);
     q.update();
 }
 

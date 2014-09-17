@@ -135,8 +135,8 @@ U2DbiIterator<U2AssemblyRead>* MysqlSingleTableAssemblyAdapter::getReadsByRow(co
     static const QString qStr = "SELECT " + ALL_READ_FIELDS + " FROM %1 WHERE %2 AND (prow >= :minRow AND prow < :maxRow)";
     QSharedPointer<U2SqlQuery> q (new U2SqlQuery(qStr.arg(readsTable).arg(rangeConditionCheck), db, os));
     bindRegion(*q, r);
-    q->bindInt64("minRow", minRow);
-    q->bindInt64("maxRow", maxRow);
+    q->bindInt64(":minRow", minRow);
+    q->bindInt64(":maxRow", maxRow);
     return new MysqlRSIterator<U2AssemblyRead>(q, new MysqlSimpleAssemblyReadLoader(), NULL, U2AssemblyRead(), os);
 }
 
@@ -144,7 +144,7 @@ U2DbiIterator<U2AssemblyRead>* MysqlSingleTableAssemblyAdapter::getReadsByName(c
     static const QString qStr = "SELECT " + ALL_READ_FIELDS + " FROM %1 WHERE name = :name";
     QSharedPointer<U2SqlQuery> q (new U2SqlQuery(qStr.arg(readsTable), db, os));
     int hash = qHash(name);
-    q->bindInt64("name", hash);
+    q->bindInt64(":name", hash);
     return new MysqlRSIterator<U2AssemblyRead>(q, new MysqlSimpleAssemblyReadLoader(),
         new MysqlAssemblyNameFilter(name), U2AssemblyRead(), os);
 }
@@ -174,13 +174,13 @@ void MysqlSingleTableAssemblyAdapter::addReads(U2DbiIterator<U2AssemblyRead>* it
         int hash = qHash(read->name);
         QByteArray packedData = MysqlAssemblyUtils::packData(MysqlAssemblyDataMethod_NSCQ, read, os);
 
-        insertQ.bindInt64("name", hash);
-        insertQ.bindInt64("prow", read->packedViewRow);
-        insertQ.bindInt64("flags", flags);
-        insertQ.bindInt64("gstart", read->leftmostPos);
-        insertQ.bindInt64("elen", read->effectiveLen);
-        insertQ.bindInt32("mq", read->mappingQuality);
-        insertQ.bindBlob("data", packedData);
+        insertQ.bindInt64(":name", hash);
+        insertQ.bindInt64(":prow", read->packedViewRow);
+        insertQ.bindInt64(":flags", flags);
+        insertQ.bindInt64(":gstart", read->leftmostPos);
+        insertQ.bindInt64(":elen", read->effectiveLen);
+        insertQ.bindInt32(":mq", read->mappingQuality);
+        insertQ.bindBlob(":data", packedData);
         insertQ.insert();
         CHECK_OP(os, );
 
@@ -273,14 +273,14 @@ qint64 MysqlSingleTableAssemblyAdapter::getMaxReadLength() const {
 
 void MysqlSingleTableAssemblyAdapter::bindRegion(U2SqlQuery& q, const U2Region& r, bool forCount) {
     if (rangeMode) {
-        q.bindInt64("end", r.endPos());
-        q.bindInt64("start", r.startPos - maxReadLength);
+        q.bindInt64(":end", r.endPos());
+        q.bindInt64(":start", r.startPos - maxReadLength);
         if (!forCount) {
-            q.bindInt64("realStart", r.startPos);
+            q.bindInt64(":realStart", r.startPos);
         }
     } else {
-        q.bindInt64("end", r.endPos());
-        q.bindInt64("start", r.startPos);
+        q.bindInt64(":end", r.endPos());
+        q.bindInt64(":start", r.startPos);
     }
 }
 
@@ -309,8 +309,8 @@ void MysqlSingleTablePackAlgorithmAdapter::assignProw(const U2DataId& readId, qi
     }
 
     updateQuery = new U2SqlQuery("UPDATE " + readsTable + " SET prow = :prow WHERE id = :id", db, os);
-    updateQuery->bindInt64("prow", prow);
-    updateQuery->bindDataId("id", readId);
+    updateQuery->bindInt64(":prow", prow);
+    updateQuery->bindDataId(":id", readId);
     updateQuery->execute();
 }
 

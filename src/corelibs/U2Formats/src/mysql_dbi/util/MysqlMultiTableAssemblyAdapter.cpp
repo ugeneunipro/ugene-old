@@ -454,7 +454,7 @@ void MysqlMultiTableAssemblyAdapter::syncTables(U2OpStatus& os) {
 
     static const QString queryString = "SELECT idata FROM Assembly WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindDataId("object", assemblyId);
+    q.bindDataId(":object", assemblyId);
     if (q.step()) {
         const QByteArray data = q.getBlob(0);
         rereadTables(data, os);
@@ -579,8 +579,8 @@ void MysqlMultiTableAssemblyAdapter::flushTables(U2OpStatus& os) {
 
     static const QString queryString = "UPDATE Assembly SET idata = :idata WHERE object = :object";
     U2SqlQuery q(queryString, db, os);
-    q.bindBlob("idata", idata);
-    q.bindDataId("object", assemblyId);
+    q.bindBlob(":idata", idata);
+    q.bindDataId(":object", assemblyId);
     q.execute();
 }
 
@@ -804,8 +804,8 @@ void MysqlMultiTablePackAlgorithmAdapter::migrate(MysqlMtaSingleTableAdapter* ne
             static const QString insertQuery = "INSERT INTO %1(id, prow) VALUES(:id, :prow)";
             foreach(const MysqlReadTableMigrationData& d, migData) {
                 U2SqlQuery insertIds(insertQuery.arg(idsTable), db, os);
-                insertIds.bindInt64("id", d.readId);
-                insertIds.bindInt32("prow", d.newProw);
+                insertIds.bindInt64(":id", d.readId);
+                insertIds.bindInt32(":prow", d.newProw);
 #ifdef _DEBUG
                 SAFE_POINT(newProwRegion.contains(d.newProw), "Invalid region", );
 #endif
