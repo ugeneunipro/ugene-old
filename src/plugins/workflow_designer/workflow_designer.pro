@@ -42,6 +42,7 @@ HEADERS += src/ActorCfgFilterProxyModel.h \
            src/library/AssemblyToSequenceWorker.h \
            src/library/BaseDocWorker.h \
            src/library/CDSearchWorker.h \
+           src/library/CfgExternalToolModel.h \
            src/library/ConvertFilesFormatWorker.h \
            src/library/CoreLib.h \
            src/library/CreateExternalProcessDialog.h \
@@ -146,6 +147,7 @@ SOURCES += src/ActorCfgFilterProxyModel.cpp \
            src/library/AssemblyToSequenceWorker.cpp \
            src/library/BaseDocWorker.cpp \
            src/library/CDSearchWorker.cpp \
+           src/library/CfgExternalToolModel.cpp \
            src/library/ConvertFilesFormatWorker.cpp \
            src/library/CoreLib.cpp \
            src/library/CreateExternalProcessDialog.cpp \

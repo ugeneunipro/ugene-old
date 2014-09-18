@@ -5761,6 +5761,33 @@ GUI_TEST_CLASS_DEFINITION(test_3455) {
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::algoriths == current, "Samples tab is active");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3472) {
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Conocephalus_discolor");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Conocephalus_sp.");
+
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Output settings"));
+
+    QLineEdit *outputFilePathEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "outputFileLineEdit"));
+    CHECK_SET_ERR(NULL != outputFilePathEdit, "Invalid output file path edit field");
+    GTLineEdit::setText(os, outputFilePathEdit, "\\\123\\\123\123");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTWidget::click(os, GTWidget::findWidget(os, "alignButton"));
+
+    GTGlobals::sleep();
+
+    GTLineEdit::setText(os, outputFilePathEdit, sandBoxDir + "123/123/123/1.aln");
+    GTWidget::click(os, GTWidget::findWidget(os, "alignButton"));
+
+    GTGlobals::sleep();
+    QString expected = "TTAGCTTATTAATT\n"
+                       "TTAGCTTATTAATT";
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0, 0), QPoint(13, 1), expected);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3478) {
     //1. Open _common_data/fasta/multy_fa.fa
     //2. File context menu -> BLAST -> Format DB
