@@ -66,9 +66,9 @@ void CloneObjectTask::run() {
 
     DbiConnection con(dstDbiRef, stateInfo);
     CHECK_OP(stateInfo, );
-    SAFE_POINT_EXT(NULL != con.dbi, setError(QObject::tr("Error! No DBI")), );
+    SAFE_POINT_EXT(NULL != con.dbi, setError(tr("Error! No DBI")), );
     U2ObjectDbi *oDbi = con.dbi->getObjectDbi();
-    SAFE_POINT_EXT(NULL != oDbi, setError(QObject::tr("Error! No object DBI")), );
+    SAFE_POINT_EXT(NULL != oDbi, setError(tr("Error! No object DBI")), );
 
     QVariantMap hints;
     hints[DocumentFormat::DBI_FOLDER_HINT] = dstFolder;

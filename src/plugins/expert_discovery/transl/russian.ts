@@ -141,7 +141,7 @@ y
     <name>ExpertDiscoveryControlDialog</name>
     <message>
         <source>Load Control sequences</source>
-        <translation>Загрузка контрольных последовательностей</translation>
+        <translation type="obsolete">Загрузка контрольных последовательностей</translation>
     </message>
     <message>
         <source>File with control sequences</source>
@@ -153,15 +153,19 @@ y
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation type="obsolete">Отмена</translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation>Ок</translation>
+        <translation type="obsolete">Ок</translation>
     </message>
     <message>
         <source>You may load any sequence file to recognize your complex signals on the sequences.</source>
         <translation>Вы можете загрузить любой файл с последовательностями, чтобы распознать комплексные сигналы на них.</translation>
+    </message>
+    <message>
+        <source>Load Control Sequences</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -180,11 +184,11 @@ y
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation type="obsolete">Отмена</translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation>Ок</translation>
+        <translation type="obsolete">Ок</translation>
     </message>
 </context>
 <context>
@@ -207,7 +211,7 @@ y
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation type="obsolete">Отмена</translation>
     </message>
     <message>
         <source>Positive and Negative sequences</source>
@@ -219,7 +223,7 @@ y
     </message>
     <message>
         <source>Load positive and negative sequence bases</source>
-        <translation>Загрузка позитивных и негативных выборок последовательностей</translation>
+        <translation type="obsolete">Загрузка позитивных и негативных выборок последовательностей</translation>
     </message>
     <message>
         <source>Positive sequences file</source>
@@ -251,10 +255,14 @@ ExpertDiscovery построит комплексные сигналы, кото
     </message>
     <message>
         <source>Next</source>
-        <translation>Далее</translation>
+        <translation type="obsolete">Далее</translation>
     </message>
     <message>
         <source>Negatives per positive amount:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load Positive and Negative Sequence Bases</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -282,7 +290,7 @@ ExpertDiscovery построит комплексные сигналы, кото
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation type="obsolete">Отмена</translation>
     </message>
     <message>
         <source>Positive and Negative Sequences Markup</source>
@@ -290,7 +298,7 @@ ExpertDiscovery построит комплексные сигналы, кото
     </message>
     <message>
         <source>Ok</source>
-        <translation>Ок</translation>
+        <translation type="obsolete">Ок</translation>
     </message>
     <message>
         <source>Append to Current Markup</source>
@@ -385,11 +393,11 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Search</source>
-        <translation>Поиск</translation>
+        <translation type="obsolete">Поиск</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation type="obsolete">Отмена</translation>
     </message>
     <message>
         <source>score</source>
@@ -780,7 +788,7 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     <name>U2::ExpertDiscoveryCreateADVTask</name>
     <message>
         <source>ExpertDiscovery sequence view</source>
-        <translation>ExpertDiscovery sequence view</translation>
+        <translation type="obsolete">ExpertDiscovery sequence view</translation>
     </message>
 </context>
 <context>
@@ -998,6 +1006,14 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     <message>
         <source>Open second file</source>
         <translation>Открыть второй файл</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation type="unfinished">Далее</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Отмена</translation>
     </message>
 </context>
 <context>

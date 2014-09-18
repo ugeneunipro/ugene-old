@@ -86,7 +86,7 @@
 <context>
     <name>U2::CudaSupportSettingsPageController</name>
     <message>
-        <location filename="../src/CudaSupportSettingsController.cpp" line="35"/>
+        <location filename="../src/CudaSupportSettingsController.cpp" line="42"/>
         <source>CUDA</source>
         <translation type="unfinished"></translation>
     </message>

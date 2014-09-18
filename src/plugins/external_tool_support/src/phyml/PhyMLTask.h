@@ -36,6 +36,7 @@
 namespace U2 {
 
 class PhyMLPrepareDataForCalculation : public Task{
+    Q_OBJECT
 public:
     PhyMLPrepareDataForCalculation(const MAlignment& ma, const CreatePhyTreeSettings& s, const QString& url);
     void prepare();
@@ -51,6 +52,7 @@ private:
 
 class PhyMLSupportTask;
 class PhyMLLogParser : public ExternalToolLogParser {
+    Q_OBJECT
 public:
     PhyMLLogParser(PhyMLSupportTask* parentTask, int sequencesNumber);
     int getProgress();
@@ -67,6 +69,7 @@ private:
 };
 
 class PhyMLGetCalculatedTreeTask: public Task{
+    Q_OBJECT
 public:
     PhyMLGetCalculatedTreeTask(const QString& url);
     void prepare();
@@ -79,6 +82,7 @@ private:
 };
 
 class PhyMLSupportTask : public PhyTreeGeneratorTask{
+    Q_OBJECT
 public:
     PhyMLSupportTask(const MAlignment& ma, const CreatePhyTreeSettings& s);
     void prepare();

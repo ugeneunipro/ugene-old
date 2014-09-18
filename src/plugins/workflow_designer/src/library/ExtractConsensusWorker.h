@@ -53,6 +53,7 @@ private:
 };
 
 class ExtractConsensusTaskHelper : public Task {
+    Q_OBJECT
 public:
     ExtractConsensusTaskHelper(const QString &algoId, bool keepGaps, const U2EntityRef &assembly, const U2DbiRef &targetDbi);
 

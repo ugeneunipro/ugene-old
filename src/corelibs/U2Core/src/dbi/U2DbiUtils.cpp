@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2DbiUtils.h>
+#include "U2DbiUtils.h"
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AppContext.h>

@@ -1048,7 +1048,7 @@ static QList<int> modelIdsToModelIdx(const BioStruct3D &bs, const QList<int> &mo
     return modelsIdx;
 }
 
-void BioStruct3DGLWidget::addBiostruct(const BioStruct3DObject *obj, const QList<int> &shownModels /*= QList<int>()*/) {
+void BioStruct3DGLWidget::addBiostruct(const BioStruct3DObject *obj, const QList<int> &shownModels /* = QList<int>()*/) {
     assert(contexts.size() < 2 && "Multiple models in one view is unsupported now");
     BioStruct3DRendererContext ctx(obj);
 

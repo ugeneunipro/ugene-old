@@ -43,6 +43,7 @@ struct ExportConsensusVariationsTaskSettings : public AssemblyConsensusTaskSetti
 };
 
 class ExportConsensusVariationsTask : public DocumentProviderTask, ConsensusSettingsQueue {
+    Q_OBJECT
 public:
     ExportConsensusVariationsTask(const ExportConsensusVariationsTaskSettings &settings_);
 

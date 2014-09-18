@@ -35,6 +35,7 @@
 
 namespace U2 {
 class MrBayesPrepareDataForCalculation :public Task{
+    Q_OBJECT
 public:
     MrBayesPrepareDataForCalculation(const MAlignment& _ma, const CreatePhyTreeSettings& s, const QString& url);
     void prepare();
@@ -64,6 +65,7 @@ private:
 };
 
 class MrBayesGetCalculatedTreeTask: public Task{
+    Q_OBJECT
 public:
     MrBayesGetCalculatedTreeTask(const QString& url);
     void prepare();
@@ -77,6 +79,7 @@ private:
 };
 
 class MrBayesSupportTask : public PhyTreeGeneratorTask{
+    Q_OBJECT
 public:
     MrBayesSupportTask(const MAlignment& _ma, const CreatePhyTreeSettings& s);
     void prepare();

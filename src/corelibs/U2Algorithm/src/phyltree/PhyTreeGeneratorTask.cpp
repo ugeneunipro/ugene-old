@@ -22,14 +22,14 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
+#include "PhyTreeGeneratorTask.h"
+#include "PhyTreeGeneratorRegistry.h"
 
-#include <U2Algorithm/PhyTreeGeneratorRegistry.h>
-#include <U2Algorithm/PhyTreeGeneratorTask.h>
 
 namespace U2 {
 
 PhyTreeGeneratorTask::PhyTreeGeneratorTask(const MAlignment& ma, const CreatePhyTreeSettings& _settings) 
-   : Task(tr("Calculating Phylogenetic Tree"), TaskFlag_FailOnSubtaskError), inputMA(ma), settings(_settings)
+: Task(PhyTreeGeneratorTask::tr("Calculating Phylogenetic Tree"), TaskFlag_FailOnSubtaskError), inputMA(ma), settings(_settings)
 {
     tpm = Task::Progress_Manual;
 }
@@ -42,7 +42,7 @@ Task::ReportResult PhyTreeGeneratorTask::report() {
 }
 
 PhyTreeGeneratorLauncherTask::PhyTreeGeneratorLauncherTask(const MAlignment& ma, const CreatePhyTreeSettings& _settings)
-:Task(tr("Calculating Phylogenetic Tree"), TaskFlag_FailOnSubtaskError), inputMA(ma), settings(_settings), task(NULL){
+:Task(PhyTreeGeneratorLauncherTask::tr("Calculating Phylogenetic Tree"), TaskFlag_FailOnSubtaskError), inputMA(ma), settings(_settings), task(NULL){
     tpm = Task::Progress_SubTasksBased;
 }
 void PhyTreeGeneratorLauncherTask::prepare(){
@@ -51,7 +51,7 @@ void PhyTreeGeneratorLauncherTask::prepare(){
     PhyTreeGenerator* generator = registry->getGenerator(algId);
     assert(generator!=NULL);
     if (generator == NULL) {
-        stateInfo.setError(tr("Tree construction algorithm %1 not found").arg(algId));
+        stateInfo.setError(PhyTreeGeneratorLauncherTask::tr("Tree construction algorithm %1 not found").arg(algId));
     }else{
         const QStringList& rowsOrder = settings.rowsOrder;
         if(rowsOrder.size() >= inputMA.getRowNames().size()) {

@@ -32,6 +32,7 @@
 #include <U2Formats/BAMUtils.h>
 
 #include "PrepareToImportTask.h"
+#include "LoadBamInfoTask.h"
 
 namespace U2 {
 namespace BAM {
@@ -64,7 +65,7 @@ QString PrepareToImportTask::getFastaUrl() const {
 }
 
 QString PrepareToImportTask::getCopyError(const QString &url1, const QString &url2) const {
-    return tr("Can not copy the '%1' file to '%2'").arg(url1).arg(url2);
+    return LoadInfoTask::tr("Can not copy the '%1' file to '%2'").arg(url1).arg(url2);
 }
 
 namespace {
@@ -87,7 +88,7 @@ void PrepareToImportTask::run() {
     QString bamUrl = getBamUrl();
     if (samFormat) {
         newURL = true;
-        stateInfo.setDescription(tr("Converting SAM to BAM"));
+        stateInfo.setDescription(LoadInfoTask::tr("Converting SAM to BAM"));
 
         checkReferenceFile();
         CHECK_OP(stateInfo, );
@@ -107,7 +108,7 @@ void PrepareToImportTask::run() {
         sortedBamUrl = bamUrl;
     } else {
         newURL = true;
-        stateInfo.setDescription(tr("Sorting BAM"));
+        stateInfo.setDescription(LoadInfoTask::tr("Sorting BAM"));
 
         sortedBamUrl = BAMUtils::sortBam(bamUrl, getSortedBamUrl(bamUrl), stateInfo).getURLString();
         CHECK_OP(stateInfo, );
@@ -124,12 +125,12 @@ void PrepareToImportTask::run() {
         indexedBamUrl = getIndexedBamUrl(sortedBamUrl);
         if (needToCopyBam(sortedBamUrl)) {
             newURL = true;
-            stateInfo.setDescription(tr("Coping sorted BAM"));
+            stateInfo.setDescription(LoadInfoTask::tr("Coping sorted BAM"));
 
             bool copied = QFile::copy(sortedBamUrl, indexedBamUrl);
             CHECK_EXT(copied, setError(getCopyError(sortedBamUrl, indexedBamUrl)), );
         }
-        stateInfo.setDescription(tr("Creating BAM index"));
+        stateInfo.setDescription(LoadInfoTask::tr("Creating BAM index"));
 
         BAMUtils::createBamIndex(indexedBamUrl, stateInfo);
         CHECK_OP(stateInfo, );
@@ -167,12 +168,12 @@ void PrepareToImportTask::checkReferenceFile() {
     cfg.useImporters = true;
     QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(refUrl, cfg);
     if (isUnknownFormat(formats)) {
-        setError(tr("Unknown reference sequence format. Only FASTA is supported"));
+        setError(LoadInfoTask::tr("Unknown reference sequence format. Only FASTA is supported"));
         return;
     }
     QString formatId = detectedFormatId(formats.first());
     if (BaseDocumentFormats::FASTA != formatId) {
-        setError(tr("The detected reference sequence format is '%1'. Only FASTA is supported").arg(formatId));
+        setError(LoadInfoTask::tr("The detected reference sequence format is '%1'. Only FASTA is supported").arg(formatId));
         return;
     }
 

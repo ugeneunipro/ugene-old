@@ -37,7 +37,7 @@ MSAAlignAlgorithmEnv::~MSAAlignAlgorithmEnv() {
     delete guiExtFactory;
 }
 
-MSAAlignAlgRegistry::MSAAlignAlgRegistry( QObject* pOwn /*= 0*/ ) : QObject(pOwn) {
+MSAAlignAlgRegistry::MSAAlignAlgRegistry( QObject* pOwn /* = 0*/ ) : QObject(pOwn) {
 }
 
 MSAAlignAlgRegistry::~MSAAlignAlgRegistry() {

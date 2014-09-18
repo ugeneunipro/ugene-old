@@ -887,7 +887,76 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3730"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3532"/>
+        <source>RT-PCR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3535"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;In this section user can specify if primer product must overlap exon-exon junction or span intron. This only applies when designing primers for a cDNA (mRNA) sequence with annotated exons. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3545"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;This feature allows to specify if primer product must span intron-exon boundaries. &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Checking this option will result in ignoring &lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-style:italic;&quot;&gt;Excluded&lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt; and &lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-style:italic;&quot;&gt;Target Regions&lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt; from Main section.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3553"/>
+        <source>Design primers for RT-PCR analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3573"/>
+        <source>Exon annotation name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3580"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;The name of the annotation which defines the exons in the mRNA sequence.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3583"/>
+        <source>exon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3608"/>
+        <source>Minimum exon junction overlap size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3672"/>
+        <source>Exon range:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3685"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;If the range is set, primer search will be restricted to selected exons. For example:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;1-5&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;If the range is larger than actual exon range or the starting exon number exceeds number of exons, error message is shown. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3719"/>
+        <source>Max number of pairs to query:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3726"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This number of found primer pairs wil bel queried to check if they fullfill the requirements for RTPCR&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3784"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -896,7 +965,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3747"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3801"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -905,52 +974,77 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3760"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3814"/>
         <source>Min sequence quality:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3773"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3827"/>
         <source>The minimum sequence quality allowed within a primer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3783"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3837"/>
         <source>Min 3&apos; sequence quality:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3796"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3850"/>
         <source>The minimum sequence quality allowed within the 3&apos; pentamer of a primer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3806"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3860"/>
         <source>Sequence quality range min:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3819"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3873"/>
         <source>The minimum legal sequence quality.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3829"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3883"/>
         <source>Sequence quality range max:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3842"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3896"/>
         <source>The maximum legal sequence quality.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3858"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3912"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This section allows to set output annotations&apos; settings.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3971"/>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3991"/>
+        <source>Save settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3998"/>
+        <source>Load settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="4005"/>
+        <source>Reset form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/Primer3Dialog.ui" line="4012"/>
+        <source>Pick primers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1187,7 +1281,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="2597"/>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3740"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3794"/>
         <source>Sequence quality</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1345,91 +1439,27 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3532"/>
-        <source>Span Intron/Exon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3535"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In this section user can specify if primer product must span intron-exon region. This only applies when searching in genomic sequence. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3545"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;This feature allows to specify if primer product must span intron-exon regions. &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Checking this option will result in ignoring &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-style:italic;&quot;&gt;Target Regions&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt; from Main section.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3553"/>
-        <source>Span intron/exon boundary</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/Primer3Dialog.ui" line="3565"/>
         <source>mRNA sequence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3571"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use this option if the given sequence (DNA or mRNA ) already includes annotations of exonic regions. These annotations must have name &lt;span style=&quot; font-weight:600; font-style:italic;&quot;&gt;exon&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3574"/>
-        <source>Use existing exonic annotations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3584"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This option should be used if the given sequence is genomic. To find exon regions a corresponding mRNA sequence should be provided. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3587"/>
-        <source>Download from NCBI </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3599"/>
-        <source>GenbankId or accsession:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3609"/>
-        <source>Please provide here an NCBI identifier of mRNA refsequence, for example NM_000926.4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3637"/>
-        <source>Minimum intron/exon boundary overlap size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3643"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3620"/>
         <source>At 5&apos; side (bp):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3673"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3650"/>
         <source>At 3&apos;side (bp)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3693"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3707"/>
         <source>Primer product must span at least one intron on the corresponding genomic DNA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3727"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3781"/>
         <source>Sequence Quality</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1452,7 +1482,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3855"/>
+        <location filename="../src/ui/Primer3Dialog.ui" line="3909"/>
         <source>Result Settings</source>
         <translation>Параметры результатов</translation>
     </message>
@@ -1469,70 +1499,68 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Выделенный регион</translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3913"/>
         <source>Reset Form</source>
-        <translation>Сброс параметров</translation>
+        <translation type="obsolete">Сброс параметров</translation>
     </message>
     <message>
-        <location filename="../src/ui/Primer3Dialog.ui" line="3920"/>
         <source>Pick Primers</source>
-        <translation>Подобрать</translation>
+        <translation type="obsolete">Подобрать</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="185"/>
+        <location filename="../src/Primer3Query.cpp" line="172"/>
         <source>Primer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="186"/>
+        <location filename="../src/Primer3Query.cpp" line="173"/>
         <source>PCR primer design</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="188"/>
+        <location filename="../src/Primer3Query.cpp" line="175"/>
         <source>Excluded regions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="189"/>
+        <location filename="../src/Primer3Query.cpp" line="176"/>
         <source>Targets</source>
         <translation type="unfinished">Целевые регионы</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="190"/>
+        <location filename="../src/Primer3Query.cpp" line="177"/>
         <source>Product size ranges</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="191"/>
+        <location filename="../src/Primer3Query.cpp" line="178"/>
         <source>Number to return</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="193"/>
+        <location filename="../src/Primer3Query.cpp" line="180"/>
         <source>Max repeat mispriming</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="194"/>
+        <location filename="../src/Primer3Query.cpp" line="181"/>
         <source>Max template mispriming</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="195"/>
+        <location filename="../src/Primer3Query.cpp" line="182"/>
         <source>Max 3&apos; stability</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="196"/>
+        <location filename="../src/Primer3Query.cpp" line="183"/>
         <source>Pair max repeat mispriming</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="197"/>
+        <location filename="../src/Primer3Query.cpp" line="184"/>
         <source>Pair max template mispriming</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1540,22 +1568,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::FindExonRegionsTask</name>
     <message>
-        <location filename="../src/FindExonRegionsTask.cpp" line="52"/>
-        <source>Failed to load RNA sequence from %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/FindExonRegionsTask.cpp" line="57"/>
-        <source>Failed to load RNA sequence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/FindExonRegionsTask.cpp" line="65"/>
-        <source>No algorithm found to align cDNA sequence</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/FindExonRegionsTask.cpp" line="100"/>
+        <location filename="../src/FindExonRegionsTask.cpp" line="102"/>
         <source>Failed to search for exon annotations. The sequence %1 doesn&apos;t have any related annotations.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1563,17 +1576,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::Primer3ADVContext</name>
     <message>
-        <location filename="../src/Primer3Plugin.cpp" line="130"/>
+        <location filename="../src/Primer3Plugin.cpp" line="96"/>
         <source>Primer3...</source>
         <translation type="unfinished">Подбор праймеров...</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Plugin.cpp" line="179"/>
+        <location filename="../src/Primer3Plugin.cpp" line="145"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Plugin.cpp" line="179"/>
+        <location filename="../src/Primer3Plugin.cpp" line="145"/>
         <source>Cannot create an annotation object. Please check settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1581,120 +1594,135 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::Primer3Dialog</name>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="58"/>
+        <location filename="../src/Primer3Dialog.cpp" line="76"/>
         <source>NONE</source>
         <translation type="unfinished">нет</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="59"/>
+        <location filename="../src/Primer3Dialog.cpp" line="77"/>
         <source>HUMAN</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="60"/>
+        <location filename="../src/Primer3Dialog.cpp" line="78"/>
         <source>RODENT_AND_SIMPLE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="61"/>
+        <location filename="../src/Primer3Dialog.cpp" line="79"/>
         <source>RODENT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="62"/>
+        <location filename="../src/Primer3Dialog.cpp" line="80"/>
         <source>DROSOPHILA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="370"/>
+        <location filename="../src/Primer3Dialog.cpp" line="422"/>
         <source>Start Codon Position</source>
         <translation type="unfinished">Позиция стартового кодона</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="384"/>
+        <location filename="../src/Primer3Dialog.cpp" line="436"/>
         <source>Product Min Tm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="398"/>
+        <location filename="../src/Primer3Dialog.cpp" line="450"/>
         <source>Product Opt Tm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="412"/>
+        <location filename="../src/Primer3Dialog.cpp" line="464"/>
         <source>Product Max Tm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="426"/>
+        <location filename="../src/Primer3Dialog.cpp" line="478"/>
         <source>Opt GC%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="440"/>
+        <location filename="../src/Primer3Dialog.cpp" line="492"/>
         <source>Inside Penalty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="454"/>
+        <location filename="../src/Primer3Dialog.cpp" line="506"/>
         <source>Internal Oligo Opt Tm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="466"/>
+        <location filename="../src/Primer3Dialog.cpp" line="518"/>
         <source>Excluded Regions</source>
         <translation type="unfinished">Исключаемые регионы</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="478"/>
+        <location filename="../src/Primer3Dialog.cpp" line="530"/>
         <source>Internal Oligo Excluded Regions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="490"/>
+        <location filename="../src/Primer3Dialog.cpp" line="542"/>
         <source>Targets</source>
         <translation type="unfinished">Целевые регионы</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="502"/>
+        <location filename="../src/Primer3Dialog.cpp" line="554"/>
         <source>Product Size Ranges</source>
         <translation type="unfinished">Диапазоны размеров продукта</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="539"/>
+        <location filename="../src/Primer3Dialog.cpp" line="591"/>
         <source>Sequence Quality</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="546"/>
+        <location filename="../src/Primer3Dialog.cpp" line="598"/>
         <source>Sequence quality list length must be equal to the sequence length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="568"/>
+        <location filename="../src/Primer3Dialog.cpp" line="620"/>
         <source>Can&apos;t pick hyb oligo and only one primer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="588"/>
+        <location filename="../src/Primer3Dialog.cpp" line="640"/>
         <source>Nothing to pick</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Dialog.cpp" line="607"/>
+        <location filename="../src/Primer3Dialog.cpp" line="659"/>
         <source>The field &apos;%1&apos; has invalid value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Dialog.cpp" line="681"/>
+        <source>Save primer settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Dialog.cpp" line="763"/>
+        <source>Load settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Dialog.cpp" line="773"/>
+        <source>Can not load settings file: invalid format.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::Primer3Plugin</name>
     <message>
-        <location filename="../src/Primer3Plugin.cpp" line="55"/>
+        <location filename="../src/Primer3Plugin.cpp" line="59"/>
         <source>Primer3</source>
         <translation>Primer3</translation>
     </message>
     <message>
-        <location filename="../src/Primer3Plugin.cpp" line="55"/>
+        <location filename="../src/Primer3Plugin.cpp" line="59"/>
         <source>Integrated tool for PCR primers design.</source>
         <translation>Инструмент для дизайна праймеров.</translation>
     </message>
@@ -1702,7 +1730,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::Primer3Task</name>
     <message>
-        <location filename="../src/Primer3Task.cpp" line="330"/>
+        <location filename="../src/Primer3Task.cpp" line="331"/>
         <source>Pick primers task</source>
         <translation>Выбор праймеров</translation>
     </message>
@@ -1710,30 +1738,40 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::Primer3ToAnnotationsTask</name>
     <message>
-        <location filename="../src/Primer3Task.cpp" line="585"/>
+        <location filename="../src/Primer3Task.cpp" line="702"/>
         <source>Search primers to annotations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Task.cpp" line="617"/>
-        <source>No exons are found in the sequence. Please, make sure corresponding RNA sequence is selected correctly.</source>
+        <location filename="../src/Primer3Task.cpp" line="734"/>
+        <source>Failed to find any exon annotations associated with the sequence %1.Make sure the provided sequence is cDNA and has exonic structure annotated</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Task.cpp" line="745"/>
+        <source>The first exon from the selected range [%1,%2] is larger the number of exons (%2). Please set correct exon range.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/Primer3Task.cpp" line="751"/>
+        <source>The the selected exon range [%1,%2] is larger the number of exons (%2). Please set correct exon range.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::QDPrimerActor</name>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="76"/>
+        <location filename="../src/Primer3Query.cpp" line="73"/>
         <source>%1 invalid input. Excluded regions.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="85"/>
+        <location filename="../src/Primer3Query.cpp" line="82"/>
         <source>%1 invalid input. Targets.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/Primer3Query.cpp" line="94"/>
+        <location filename="../src/Primer3Query.cpp" line="91"/>
         <source>%1 invalid input. Product size ranges.</source>
         <translation type="unfinished"></translation>
     </message>

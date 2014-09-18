@@ -4,6 +4,13 @@
 <context>
     <name>PerfMonitorPlugin</name>
     <message>
+        <source>Show counters</source>
+        <translation type="obsolete">Включить счетчики</translation>
+    </message>
+</context>
+<context>
+    <name>U2::PerfMonitorPlugin</name>
+    <message>
         <source>Performance Monitor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13,7 +20,7 @@
     </message>
     <message>
         <source>Show counters</source>
-        <translation>Включить счетчики</translation>
+        <translation type="unfinished">Включить счетчики</translation>
     </message>
 </context>
 <context>

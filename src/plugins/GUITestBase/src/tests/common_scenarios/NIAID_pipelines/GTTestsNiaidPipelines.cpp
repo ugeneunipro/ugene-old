@@ -120,8 +120,8 @@ virtual void run(){
     }
 private:
     QString label,path;
-    QWidget* dialog; //= QApplication::activeModalWidget();
-    QWizard* wizard; //= qobject_cast<QWizard*>(dialog);
+    QWidget* dialog; // = QApplication::activeModalWidget();
+    QWizard* wizard; // = qobject_cast<QWizard*>(dialog);
 };
 GUI_TEST_CLASS_DEFINITION(test_0001){
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));

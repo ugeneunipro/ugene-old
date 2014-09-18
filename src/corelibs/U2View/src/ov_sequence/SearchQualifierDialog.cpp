@@ -157,7 +157,7 @@ void SearchQualifierDialog::clearPrevResults(){
     indexOfPrevResult = -1;
 }
 
-void SearchQualifierDialog::search( bool searchAll /*= false*/ ){
+void SearchQualifierDialog::search( bool searchAll /* = false*/ ){
     QString name = simplify(ui->nameEdit->text());
     QString val = simplify(ui->valueEdit->text());
     if (!(name.length() < 20 && TextUtils::fits(TextUtils::QUALIFIER_NAME_CHARS, name.toLatin1().data(), name.length()))) {

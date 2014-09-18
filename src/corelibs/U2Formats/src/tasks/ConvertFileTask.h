@@ -50,6 +50,7 @@ protected:
 
 //use this task for default conversions
 class U2FORMATS_EXPORT DefaultConvertFileTask : public ConvertFileTask  {
+    Q_OBJECT
 public:
     DefaultConvertFileTask(const GUrl &sourceURL, const QString &detectedFormat, const QString &targetFormat, const QString &dir);
 

@@ -32,6 +32,7 @@
 namespace U2 {
 
 class BAMFormat : public DbiDocumentFormat {
+    Q_OBJECT
 public:
     BAMFormat();
 

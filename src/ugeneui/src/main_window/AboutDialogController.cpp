@@ -698,7 +698,7 @@ TPiece TPiece::rotatedRight() const {
     return result;
 }
 
-NextPieceLabel::NextPieceLabel( QWidget* parent /*= 0*/ ) : QLabel(parent)
+NextPieceLabel::NextPieceLabel( QWidget* parent /* = 0*/ ) : QLabel(parent)
 {
     QPalette p = palette();
     p.setColor(QPalette::Background, Qt::white);

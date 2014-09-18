@@ -25,13 +25,13 @@
 #include <U2Core/PasswordStorage.h>
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
-#include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2DbiUtils.h>
+#include "U2DbiRegistry.h"
 
 #include <U2Formats/MysqlDbiUtils.h>
 

@@ -35,6 +35,7 @@ class ScriptableScheduler;
 class WorkflowRunTask;
 
 class U2LANG_EXPORT BaseSerializedSchemeRunner : public Task {
+    Q_OBJECT
 public:
                                 BaseSerializedSchemeRunner( const QString &pathToScheme,
                                     ScriptableScheduler *scheduler, QStringList &outputFiles );

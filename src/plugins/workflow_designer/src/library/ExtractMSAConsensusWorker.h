@@ -52,6 +52,7 @@ private:
 };
 
 class ExtractMSAConsensusTaskHelper : public Task {
+    Q_OBJECT
 public:
     ExtractMSAConsensusTaskHelper(const QString &algoId, int threshold, bool keepGaps, const MAlignment &msa, const U2DbiRef &targetDbi);
 

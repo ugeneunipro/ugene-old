@@ -100,7 +100,7 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog(QWidget *p):QDialog(p), isQue
     setSaveFilename();
 }
 
-DownloadRemoteFileDialog::DownloadRemoteFileDialog( const QString& id, const QString& dbId, QWidget *p /*= NULL*/ ) 
+DownloadRemoteFileDialog::DownloadRemoteFileDialog( const QString& id, const QString& dbId, QWidget *p /* = NULL*/ ) 
     :QDialog(p), isQueryDB(false)
 {
     ui = new Ui_DownloadRemoteFileDialog;

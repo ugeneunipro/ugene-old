@@ -32,13 +32,14 @@
 #include <U2Formats/BAMUtils.h>
 
 #include "MergeBamTask.h"
+#include "DocumentFormatUtils.h"
 
 namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////
 //MergeBamTask
 MergeBamTask::MergeBamTask(const QStringList& urls, const QString &dir, const QString & outName)
-: Task(tr("Merge BAM files with SAMTools merge"), TaskFlags_FOSCOE)
+: Task(DocumentFormatUtils::tr("Merge BAM files with SAMTools merge"), TaskFlags_FOSCOE)
 , outputName(outName)
 , workingDir(dir)
 , targetUrl("")

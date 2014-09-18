@@ -94,7 +94,7 @@ FindORFsToAnnotationsTask::FindORFsToAnnotationsTask( AnnotationTableObject* aob
 }
 
 
-void U2::FindORFsToAnnotationsTask::run()
+void FindORFsToAnnotationsTask::run()
 {
     QList<ORFFindResult> results =  fTask->popResults();
 
@@ -103,7 +103,7 @@ void U2::FindORFsToAnnotationsTask::run()
     }
 }
 
-Task::ReportResult U2::FindORFsToAnnotationsTask::report()
+Task::ReportResult FindORFsToAnnotationsTask::report()
 {
     if (isCanceled() || hasError()) {
         return ReportResult_Finished;

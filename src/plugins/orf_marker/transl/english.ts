@@ -133,10 +133,6 @@ Ignore boundary ORFs which last beyond the search region
         <translation></translation>
     </message>
     <message>
-        <source>Circular Search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Find Open Reading Frames in sequence</source>
         <translation type="unfinished"></translation>
     </message>
@@ -170,6 +166,10 @@ Ignore boundary ORFs which last beyond the search region
     <message>
         <source>Annotation obj %1 is locked for modifications</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Annotation table object is NULL!</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -373,6 +373,10 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>Cannot create an annotation object. Please check settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sequence object is NULL</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

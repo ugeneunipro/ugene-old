@@ -29,6 +29,7 @@ class QWidget;
 namespace U2 {
 
 class WidgetScreenshotExportTask : public ImageExportTask {
+    Q_OBJECT
 public:
     WidgetScreenshotExportTask(QWidget *widget, const ImageExportTaskSettings &settings)
         : ImageExportTask(settings),
@@ -39,6 +40,7 @@ protected:
 };
 
 class WidgetScreenshotExportToSvgTask : public WidgetScreenshotExportTask {
+    Q_OBJECT
 public:
     WidgetScreenshotExportToSvgTask(QWidget *widget, const ImageExportTaskSettings &settings)
         : WidgetScreenshotExportTask(widget, settings) {}
@@ -60,6 +62,7 @@ public:
 };
 
 class WidgetScreenshotImageExportTaskFactory : public ImageExportTaskFactory {
+    Q_OBJECT
 public:
     WidgetScreenshotImageExportTaskFactory(QWidget *widget);
 

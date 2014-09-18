@@ -31,6 +31,7 @@ namespace U2 {
 class CloneObjectTask;
 
 class CloneAssemblyWithReferenceToDbiTask : public Task {
+    Q_OBJECT
 public:
     CloneAssemblyWithReferenceToDbiTask(const U2Assembly &assembly,
                                         const U2Sequence &reference,

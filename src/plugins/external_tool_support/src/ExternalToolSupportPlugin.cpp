@@ -156,7 +156,7 @@ extern "C" Q_DECL_EXPORT Plugin * U2_PLUGIN_INIT_FUNC() {
 class SearchToolsInPathTask : public Task {
 public:
     SearchToolsInPathTask(ExternalToolSupportPlugin *_plugin)
-        : Task(tr("Search tools in PATH"), TaskFlag_NoRun), plugin(_plugin)
+        : Task(ExternalToolSupportPlugin::tr("Search tools in PATH"), TaskFlag_NoRun), plugin(_plugin)
     {
 
     }

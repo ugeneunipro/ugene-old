@@ -504,9 +504,9 @@ void FindPatternWidget::initSeqTranslSelection()
 
 void FindPatternWidget::initRegionSelection()
 {
-    boxRegion->addItem(tr("Whole sequence"), RegionSelectionIndex_WholeSequence);
-    boxRegion->addItem(tr("Custom region"), RegionSelectionIndex_CustomRegion);
-    boxRegion->addItem(tr("Selected region"), RegionSelectionIndex_CurrentSelectedRegion);
+    boxRegion->addItem(FindPatternWidget::tr("Whole sequence"), RegionSelectionIndex_WholeSequence);
+    boxRegion->addItem(FindPatternWidget::tr("Custom region"), RegionSelectionIndex_CustomRegion);
+    boxRegion->addItem(FindPatternWidget::tr("Selected region"), RegionSelectionIndex_CurrentSelectedRegion);
 
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     SAFE_POINT(NULL != activeContext, "Internal error: sequence context is NULL during region selection init.",);

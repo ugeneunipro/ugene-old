@@ -251,7 +251,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2</name>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="55"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="56"/>
         <source>UGENE Genome Aligner</source>
         <translation type="unfinished">Модуль сборки контигов UGENE</translation>
     </message>
@@ -440,7 +440,7 @@ ugene --genome-aligner --reference=/path/to/ref --short-reads=/path/to/reads --r
 <context>
     <name>U2::GenomeAlignerSettingsPageWidget</name>
     <message>
-        <location filename="../src/GenomeAlignerSettingsController.cpp" line="94"/>
+        <location filename="../src/GenomeAlignerSettingsController.cpp" line="96"/>
         <source>Choose Directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -448,13 +448,13 @@ ugene --genome-aligner --reference=/path/to/ref --short-reads=/path/to/reads --r
 <context>
     <name>U2::GenomeAlignerSettingsWidget</name>
     <message>
-        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="112"/>
-        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="174"/>
+        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="116"/>
+        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="178"/>
         <source>This index file is corrupted. Please, load a valid index file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="168"/>
+        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="172"/>
         <source>The index directory has already contain the prebuilt index. But its reference fragmentation parameter is %1 and it doesn&apos;t equal to the parameter you have chosen (%2).
 
 Press &quot;Ok&quot; to delete this index file and create a new during the aligning.
@@ -462,7 +462,7 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</sourc
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="184"/>
+        <location filename="../src/GenomeAlignerSettingsWidget.cpp" line="188"/>
         <source>Set index files directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -478,57 +478,57 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</sourc
         <translation type="obsolete">Модуль сборки контигов UGENE</translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="115"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="126"/>
         <source>Genome Aligner settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="116"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="127"/>
         <source>Index file name: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="117"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="128"/>
         <source>Use prebuilt index: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="172"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="203"/>
         <source>Can not init short reads loader.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="303"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="334"/>
         <source>The aligning is finished.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="304"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="335"/>
         <source>Whole working time = %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="305"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="336"/>
         <source>%1% reads aligned.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="307"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="338"/>
         <source>Short-reads loading time = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="308"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="339"/>
         <source>Results writing time = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="310"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="341"/>
         <source>Index loading time = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GenomeAlignerTask.cpp" line="311"/>
+        <location filename="../src/GenomeAlignerTask.cpp" line="342"/>
         <source>Short-reads IO time = %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -811,7 +811,7 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</sourc
 <context>
     <name>U2::ShortReadAlignerCPU</name>
     <message>
-        <location filename="../src/GenomeAlignerFindTask.cpp" line="203"/>
+        <location filename="../src/GenomeAlignerFindTask.cpp" line="202"/>
         <source>[%1] Index size for part %2/%3 is zero, skipping it.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -819,7 +819,7 @@ Press &quot;Cancel&quot; to change this parameter or the index directory.</sourc
 <context>
     <name>U2::ShortReadAlignerOpenCL</name>
     <message>
-        <location filename="../src/GenomeAlignerFindTask.cpp" line="290"/>
+        <location filename="../src/GenomeAlignerFindTask.cpp" line="289"/>
         <source>Index size for part %1/%2 is zero, skipping it.</source>
         <translation type="unfinished"></translation>
     </message>

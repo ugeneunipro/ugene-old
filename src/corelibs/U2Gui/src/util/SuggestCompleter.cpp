@@ -34,7 +34,7 @@ const int INVALID_ITEM_INDEX = -1;
 
 namespace U2 {
 
-BaseCompleter::BaseCompleter( CompletionFiller *filler, QLineEdit *parent /*= 0*/ )
+BaseCompleter::BaseCompleter( CompletionFiller *filler, QLineEdit *parent /* = 0*/ )
     : QObject(parent), filler(filler), editor(parent), lastChosenItemIndex(INVALID_ITEM_INDEX)
 {
     popup = new QTreeWidget(parent);

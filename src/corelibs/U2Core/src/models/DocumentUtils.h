@@ -71,6 +71,7 @@ public:
 };
 
 class U2CORE_EXPORT DocumentUtils: public QObject    {
+    Q_OBJECT
 public:
     /* returns set with document urls */
     static QSet<QString> getURLs(const QList<Document*>& docs);

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>525</width>
-    <height>314</height>
+    <height>333</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>hmm_file_name</string>
+        <string>HMM file: </string>
        </property>
       </widget>
      </item>
@@ -50,13 +50,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
         <property name="toolTip">
-         <string>fixed_tip</string>
-        </property>
-        <property name="statusTip">
-         <string>fixed_tip</string>
-        </property>
-        <property name="whatsThis">
-         <string>fixed_tip</string>
+         <string>Fixed tip</string>
         </property>
         <property name="text">
          <string>fixed</string>
@@ -83,15 +77,6 @@
           <width>100</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="toolTip">
-         <string>fixed_tip</string>
-        </property>
-        <property name="statusTip">
-         <string>fixed_tip</string>
-        </property>
-        <property name="whatsThis">
-         <string>fixed_tip</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -148,10 +133,10 @@
          <string>mean_tip</string>
         </property>
         <property name="statusTip">
-         <string>mean_tip</string>
+         <string notr="true"/>
         </property>
         <property name="whatsThis">
-         <string>mean_tip</string>
+         <string notr="true"/>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -208,10 +193,10 @@
          <string>num_tip</string>
         </property>
         <property name="statusTip">
-         <string>num_tip</string>
+         <string notr="true"/>
         </property>
         <property name="whatsThis">
-         <string>num_tip</string>
+         <string notr="true"/>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -262,10 +247,10 @@
          <string>sd_tip</string>
         </property>
         <property name="statusTip">
-         <string>sd_tip</string>
+         <string notr="true"/>
         </property>
         <property name="whatsThis">
-         <string>sd_tip</string>
+         <string notr="true"/>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -316,10 +301,10 @@
          <string>seed_tip</string>
         </property>
         <property name="statusTip">
-         <string>seed_tip</string>
+         <string notr="true"/>
         </property>
         <property name="whatsThis">
-         <string>seed_tip</string>
+         <string notr="true"/>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

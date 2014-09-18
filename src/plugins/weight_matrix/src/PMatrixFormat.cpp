@@ -51,7 +51,7 @@ PFMatrixFormat::PFMatrixFormat(QObject* p): DocumentFormat(p, DocumentFormatFlag
     formatDescription = tr("Position frequency matrix file.");
 }
 
-Document* PFMatrixFormat::createNewLoadedDocument( IOAdapterFactory* io, const QString& url, const QVariantMap& fs /*= QVariantMap()*/ ){
+Document* PFMatrixFormat::createNewLoadedDocument( IOAdapterFactory* io, const QString& url, const QVariantMap& fs /* = QVariantMap()*/ ){
     U2OpStatus2Log os;
     Document* d = DocumentFormat::createNewLoadedDocument(io, url, os, fs);
     return d;
@@ -125,7 +125,7 @@ bool PFMatrixViewFactory::canCreateView( const MultiGSelection& multiSelection )
     return false;
 }
 
-Task* PFMatrixViewFactory::createViewTask( const MultiGSelection& multiSelection, bool single /*= false*/ ){
+Task* PFMatrixViewFactory::createViewTask( const MultiGSelection& multiSelection, bool single /* = false*/ ){
     QSet<Document*> documents = SelectionUtils::findDocumentsWithObjects(PFMatrixObject::TYPE, &multiSelection, UOF_LoadedAndUnloaded, true);
     if (documents.size() == 0) {
         return NULL;
@@ -260,7 +260,7 @@ bool PWMatrixViewFactory::canCreateView( const MultiGSelection& multiSelection )
     return false;
 }
 
-Task* PWMatrixViewFactory::createViewTask( const MultiGSelection& multiSelection, bool single /*= false*/ ){
+Task* PWMatrixViewFactory::createViewTask( const MultiGSelection& multiSelection, bool single /* = false*/ ){
     QSet<Document*> documents = SelectionUtils::findDocumentsWithObjects(PWMatrixObject::TYPE, &multiSelection, UOF_LoadedAndUnloaded, true);
     if (documents.size() == 0) {
         return NULL;

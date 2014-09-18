@@ -32,6 +32,7 @@ class Document;
 class GObject;
 
 class U2FORMATS_EXPORT BAMUtils : public QObject {
+    Q_OBJECT
 public:
     class U2FORMATS_EXPORT ConvertOption {
     public:

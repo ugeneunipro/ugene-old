@@ -82,6 +82,7 @@ public:
 };
 
 class CircularViewImageExportTaskFactory : public ImageExportTaskFactory {
+    Q_OBJECT
 public:
     CircularViewImageExportTaskFactory(CircularView *cv);
 

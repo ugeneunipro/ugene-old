@@ -270,12 +270,12 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                 assert(state == RS_WEIGHT);
                 if (!branchStack.isEmpty()) { //ignore root node weight if present
                     if (nodeStack.size() < 2) {
-                        si.setError(QObject::tr("Unexpected weight: %1").arg(lastStr));
+                        si.setError(DatatypeSerializers::tr("Unexpected weight: %1").arg(lastStr));
                     }
                     bool ok = false;
                     branchStack.top()->distance = lastStr.toDouble(&ok);
                     if (!ok) {
-                        si.setError(QObject::tr("Error parsing weight: %1").arg(lastStr));
+                        si.setError(DatatypeSerializers::tr("Error parsing weight: %1").arg(lastStr));
                         break;
                     }
                 }
@@ -291,7 +291,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                 state = RS_NAME;
             } else if (c == ':') { //weight start
                 if (state == RS_WEIGHT) {
-                    si.setError(QObject::tr("Unexpected weight start token: %1").arg(lastStr));
+                    si.setError(DatatypeSerializers::tr("Unexpected weight start token: %1").arg(lastStr));
                     break;
                 }
                 state = RS_WEIGHT;
@@ -299,7 +299,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                 assert(!nodeStack.isEmpty());
                 assert(!branchStack.isEmpty());
                 if (nodeStack.isEmpty() || branchStack.isEmpty()) {
-                    si.setError(QObject::tr("Unexpected new sibling %1").arg(lastStr));
+                    si.setError(DatatypeSerializers::tr("Unexpected new sibling %1").arg(lastStr));
                     break;
                 }
                 nodeStack.pop();
@@ -312,7 +312,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
             } else if ( c == ')' ) { //end of the branch, go up
                 nodeStack.pop();
                 if (nodeStack.isEmpty()) {
-                    si.setError(QObject::tr("Unexpected closing bracket :%1").arg(lastStr));
+                    si.setError(DatatypeSerializers::tr("Unexpected closing bracket :%1").arg(lastStr));
                     break;
                 }
                 assert(!branchStack.isEmpty());
@@ -320,7 +320,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                 state = RS_NAME;
             } else if (c == ';') {
                 if (!branchStack.isEmpty() || nodeStack.size()!=1) {
-                    si.setError(QObject::tr("Unexpected end of file"));
+                    si.setError(DatatypeSerializers::tr("Unexpected end of file"));
                     break;
                 }
                 PhyTree tree(new PhyTreeData());
@@ -341,7 +341,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
     if (!si.isCoR()) {
         if (!branchStack.isEmpty() || nodeStack.size()!=1) {
             delete rd;
-            si.setError(QObject::tr("Unexpected end of file"));
+            si.setError(DatatypeSerializers::tr("Unexpected end of file"));
             return result;
         }
         if (!done) {
@@ -352,7 +352,7 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
         } else {
             delete rd;
             if (result.empty()) {
-                si.setError(QObject::tr("Empty file"));
+                si.setError(DatatypeSerializers::tr("Empty file"));
             }
         }
     }

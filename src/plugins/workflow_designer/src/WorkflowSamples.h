@@ -140,6 +140,7 @@ private:
 };
 
 class NameFilterLayout : public QHBoxLayout {
+    Q_OBJECT
 public:
     NameFilterLayout(QWidget *parent);
 

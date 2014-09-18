@@ -82,7 +82,7 @@ p7_domaindef_Create(ESL_RANDOMNESS *r)
     ddef->mocc = ddef->btot = ddef->etot = NULL;
     ddef->n2sc = NULL;
     ddef->sp   = NULL;
-    ddef->tr   = NULL;
+    ddef->trr   = NULL;
     ddef->dcl  = NULL;
 
     /* level 2 alloc: posterior prob arrays */
@@ -119,7 +119,7 @@ p7_domaindef_Create(ESL_RANDOMNESS *r)
 
     /* allocate reusable, growable objects that domain def reuses for each seq */
     ddef->sp  = p7_spensemble_Create(1024, 64, 32); /* init allocs = # sampled pairs; max endpoint range; # of domains */
-    ddef->tr  = p7_trace_CreateWithPP();
+    ddef->trr  = p7_trace_CreateWithPP();
     ddef->gtr = p7_trace_Create();
 
     /* keep a copy of ptr to the RNG */
@@ -214,7 +214,7 @@ p7_domaindef_Reuse(P7_DOMAINDEF *ddef)
     ddef->nenvelopes = 0;
 
     p7_spensemble_Reuse(ddef->sp);
-    p7_trace_Reuse(ddef->tr);	/* probable overkill; should already have been called */
+    p7_trace_Reuse(ddef->trr);	/* probable overkill; should already have been called */
     p7_trace_Reuse(ddef->gtr);	/* likewise */
     return eslOK;
 
@@ -301,7 +301,7 @@ p7_domaindef_Destroy(P7_DOMAINDEF *ddef)
     }
 
     p7_spensemble_Destroy(ddef->sp);
-    p7_trace_Destroy(ddef->tr);
+    p7_trace_Destroy(ddef->trr);
     p7_trace_Destroy(ddef->gtr);
     free(ddef);
     return;
@@ -458,7 +458,7 @@ p7_domaindef_ByPosteriorHeuristics(const ESL_SQ *sq, P7_OPROFILE *om,
                         last_j2 = j2;
                 }
                 p7_spensemble_Reuse(ddef->sp);
-                p7_trace_Reuse(ddef->tr);
+                p7_trace_Reuse(ddef->trr);
             }
             else 
             {
@@ -598,26 +598,26 @@ region_trace_ensemble(P7_DOMAINDEF *ddef, const P7_OPROFILE *om, const ESL_DSQ *
     /* Collect an ensemble of sampled traces; calculate null2 odds ratios from these */
     for (t = 0; t < ddef->nsamples; t++)
     {
-        p7_StochasticTrace(ddef->r, dsq+ireg-1, Lr, om, fwd, ddef->tr);
-        p7_trace_Index(ddef->tr);
+        p7_StochasticTrace(ddef->r, dsq+ireg-1, Lr, om, fwd, ddef->trr);
+        p7_trace_Index(ddef->trr);
 
         pos = 1;
-        for (d = 0; d < ddef->tr->ndom; d++)
+        for (d = 0; d < ddef->trr->ndom; d++)
         {
-            p7_spensemble_Add(ddef->sp, t, ddef->tr->sqfrom[d]+ireg-1, ddef->tr->sqto[d]+ireg-1, ddef->tr->hmmfrom[d], ddef->tr->hmmto[d]);
+            p7_spensemble_Add(ddef->sp, t, ddef->trr->sqfrom[d]+ireg-1, ddef->trr->sqto[d]+ireg-1, ddef->trr->hmmfrom[d], ddef->trr->hmmto[d]);
 
-            p7_Null2_ByTrace(om, ddef->tr, ddef->tr->tfrom[d], ddef->tr->tto[d], wrk, null2);
+            p7_Null2_ByTrace(om, ddef->trr, ddef->trr->tfrom[d], ddef->trr->tto[d], wrk, null2);
 
             /* residues outside domains get bumped +1: because f'(x) = f(x), so f'(x)/f(x) = 1 in these segments */
-            for (; pos <= ddef->tr->sqfrom[d]; pos++) ddef->n2sc[ireg+pos-1] += 1.0;
+            for (; pos <= ddef->trr->sqfrom[d]; pos++) ddef->n2sc[ireg+pos-1] += 1.0;
 
             /* Residues inside domains get bumped by their null2 ratio */
-            for (; pos <= ddef->tr->sqto[d];   pos++) ddef->n2sc[ireg+pos-1] += null2[dsq[ireg+pos-1]];
+            for (; pos <= ddef->trr->sqto[d];   pos++) ddef->n2sc[ireg+pos-1] += null2[dsq[ireg+pos-1]];
         }
         /* the remaining residues in the region outside any domains get +1 */
         for (; pos <= Lr; pos++)  ddef->n2sc[ireg+pos-1] += 1.0;
 
-        p7_trace_Reuse(ddef->tr);        
+        p7_trace_Reuse(ddef->trr);        
     }
 
     /* Convert the accumulated n2sc[] ratios in this region to log odds null2 scores on each residue. */
@@ -743,11 +743,11 @@ rescore_isolated_domain(P7_DOMAINDEF *ddef, const P7_OPROFILE *om, const ESL_SQ 
 
     /* Find an optimal accuracy alignment */
     p7_OptimalAccuracy(om, ox2, ox1, &oasc);      /* <ox1> is now overwritten with OA scores              */
-    p7_OATrace        (om, ox2, ox1, ddef->tr);   /* <tr>'s seq coords are offset by i-1, rel to orig dsq */
+    p7_OATrace        (om, ox2, ox1, ddef->trr);   /* <tr>'s seq coords are offset by i-1, rel to orig dsq */
 
     /* hack the trace's sq coords to be correct w.r.t. original dsq */
-    for (z = 0; z < ddef->tr->N; z++)
-        if (ddef->tr->i[z] > 0) ddef->tr->i[z] += i-1;
+    for (z = 0; z < ddef->trr->N; z++)
+        if (ddef->trr->i[z] > 0) ddef->trr->i[z] += i-1;
 
     /* get ptr to next empty domain structure in domaindef's results */
     if (ddef->ndom == ddef->nalloc) {
@@ -768,16 +768,16 @@ rescore_isolated_domain(P7_DOMAINDEF *ddef, const P7_OPROFILE *om, const ESL_SQ 
     dom->pvalue        = 1.0;	/* gets set later by caller, using bitscore */
     dom->is_reported   = FALSE;	/* gets set later by caller */
     dom->is_included   = FALSE;	/* gets set later by caller */
-    dom->ad            = p7_alidisplay_Create(ddef->tr, 0, om, sq);
+    dom->ad            = p7_alidisplay_Create(ddef->trr, 0, om, sq);
     dom->iali          = dom->ad->sqfrom;
     dom->jali          = dom->ad->sqto;
 
     ddef->ndom++;
 
-    p7_trace_Reuse(ddef->tr);
+    p7_trace_Reuse(ddef->trr);
     return eslOK;
 
 ERROR:
-    p7_trace_Reuse(ddef->tr);
+    p7_trace_Reuse(ddef->trr);
     return status;
 }

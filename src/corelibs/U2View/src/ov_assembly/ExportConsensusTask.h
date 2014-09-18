@@ -45,6 +45,7 @@ struct U2VIEW_EXPORT ExportConsensusTaskSettings : public AssemblyConsensusTaskS
 };
 
 class U2VIEW_EXPORT ExportConsensusTask : public DocumentProviderTask, ConsensusSettingsQueue {
+    Q_OBJECT
 public:
     ExportConsensusTask(const ExportConsensusTaskSettings &settings_);
 

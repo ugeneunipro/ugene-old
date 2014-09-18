@@ -89,16 +89,6 @@
         <translation type="obsolete">Remote run...</translation>
     </message>
     <message>
-        <location filename="../src/ui/MuscleAlignDialog.ui" line="383"/>
-        <source>Align</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/MuscleAlignDialog.ui" line="393"/>
-        <source>Cancel</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../src/ui/MuscleAlignDialog.ui" line="123"/>
         <source>Do not re-arrange sequences (-stable)</source>
         <translation></translation>
@@ -316,12 +306,12 @@
 <context>
     <name>U2::MuscleAddSequencesToProfileTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="264"/>
+        <location filename="../src/MuscleTask.cpp" line="266"/>
         <source>MUSCLE align profiles &apos;%1&apos; vs &apos;%2&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="266"/>
+        <location filename="../src/MuscleTask.cpp" line="268"/>
         <source>MUSCLE align &apos;%2&apos; by profile &apos;%1&apos;</source>
         <translation></translation>
     </message>
@@ -330,17 +320,17 @@
         <translation type="obsolete">Can&apos;t detect file format</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="307"/>
+        <location filename="../src/MuscleTask.cpp" line="309"/>
         <source>Sequences in file have different alphabets %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="326"/>
+        <location filename="../src/MuscleTask.cpp" line="328"/>
         <source>No sequences found in file %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="328"/>
+        <location filename="../src/MuscleTask.cpp" line="330"/>
         <source>No alignment found in file %1</source>
         <translation></translation>
     </message>
@@ -348,12 +338,12 @@
 <context>
     <name>U2::MuscleAlignDialogController</name>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="95"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="109"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="95"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="109"/>
         <source>Illegal alignment region</source>
         <translation></translation>
     </message>
@@ -370,47 +360,57 @@
         <translation type="obsolete">Distributed run on many machines is not supported yet. Select 1 machine</translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="241"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="53"/>
+        <source>Align</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="54"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="258"/>
         <source>MUSCLE default</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="242"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="259"/>
         <source>&lt;p&gt;The default settings are designed to give the best accuracy</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="243"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="260"/>
         <source>&lt;p&gt;&lt;b&gt;Command line:&lt;/b&gt; muscle &lt;no-parameters&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="247"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="264"/>
         <source>Large alignment</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="248"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="265"/>
         <source>&lt;p&gt;If you have a large number of sequences (a few thousand), or they are very long, then the default settings may be too slow for practical use. A good compromise between speed and accuracy is to run just the first two iterations of the algorithm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="249"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="266"/>
         <source>&lt;p&gt;&lt;b&gt;Command line:&lt;/b&gt; muscle &lt;i&gt;-maxiters 2&lt;/i&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="253"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="270"/>
         <source>Refine only</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="254"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="271"/>
         <source>&lt;p&gt;Improves existing alignment without complete realignment</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="255"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="272"/>
         <source>&lt;p&gt;&lt;b&gt;Command line:&lt;/b&gt; muscle &lt;i&gt;-refine&lt;/i&gt;</source>
         <translation></translation>
     </message>
@@ -418,38 +418,48 @@
 <context>
     <name>U2::MuscleAlignWithExtFileSpecifyDialogController</name>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="151"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="141"/>
+        <source>Align</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="142"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="168"/>
         <source>Open an alignment file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="161"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="178"/>
         <source>Save an multiple alignment file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="197"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="214"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="197"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="214"/>
         <source>Illegal alignment region</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="214"/>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="217"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="231"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="234"/>
         <source>Kalign with Align</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="215"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="232"/>
         <source>Input file is not set!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleAlignDialogController.cpp" line="218"/>
+        <location filename="../src/MuscleAlignDialogController.cpp" line="235"/>
         <source>Output file is not set!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -457,12 +467,17 @@
 <context>
     <name>U2::MuscleGObjectRunFromSchemaTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="572"/>
+        <location filename="../src/MuscleTask.cpp" line="595"/>
+        <source>Workflow wrapper &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleTask.cpp" line="608"/>
         <source>MUSCLE align &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="575"/>
+        <location filename="../src/MuscleTask.cpp" line="611"/>
         <source>MUSCLE refine &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -470,35 +485,32 @@
 <context>
     <name>U2::MuscleGObjectTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="358"/>
+        <location filename="../src/MuscleTask.cpp" line="360"/>
         <source>MUSCLE align &apos;%1&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="361"/>
+        <location filename="../src/MuscleTask.cpp" line="363"/>
         <source>MUSCLE refine &apos;%1&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="364"/>
+        <location filename="../src/MuscleTask.cpp" line="366"/>
         <source>MUSCLE add to profile &apos;%1&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="367"/>
+        <location filename="../src/MuscleTask.cpp" line="369"/>
         <source>MUSCLE align profiles</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="382"/>
         <source>object_removed</source>
-        <translation>Object was removed</translation>
+        <translation type="obsolete">Object was removed</translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="386"/>
-        <location filename="../src/MuscleTask.cpp" line="409"/>
         <source>object_is_state_locked</source>
-        <translation>Object is locked</translation>
+        <translation type="obsolete">Object is locked</translation>
     </message>
 </context>
 <context>
@@ -531,29 +543,29 @@
 <context>
     <name>U2::MuscleMSAEditorContext</name>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="140"/>
+        <location filename="../src/MusclePlugin.cpp" line="149"/>
         <source>Align with MUSCLE...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="148"/>
+        <location filename="../src/MusclePlugin.cpp" line="158"/>
         <source>Align sequences to profile with MUSCLE...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="156"/>
+        <location filename="../src/MusclePlugin.cpp" line="167"/>
         <source>Align profile to profile with MUSCLE...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="229"/>
-        <location filename="../src/MusclePlugin.cpp" line="232"/>
+        <location filename="../src/MusclePlugin.cpp" line="241"/>
+        <location filename="../src/MusclePlugin.cpp" line="244"/>
         <source>Select file with sequences</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="254"/>
-        <location filename="../src/MusclePlugin.cpp" line="258"/>
+        <location filename="../src/MusclePlugin.cpp" line="266"/>
+        <location filename="../src/MusclePlugin.cpp" line="270"/>
         <source>Select file with alignment</source>
         <translation></translation>
     </message>
@@ -569,22 +581,22 @@
 <context>
     <name>U2::MusclePlugin</name>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="60"/>
+        <location filename="../src/MusclePlugin.cpp" line="66"/>
         <source>MUSCLE</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="61"/>
+        <location filename="../src/MusclePlugin.cpp" line="67"/>
         <source>A port of MUSCLE package for multiple sequence alignment. Check http://www.drive5.com/muscle/ for the original version</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="69"/>
+        <location filename="../src/MusclePlugin.cpp" line="75"/>
         <source>MUSCLE...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MusclePlugin.cpp" line="75"/>
+        <location filename="../src/MusclePlugin.cpp" line="81"/>
         <source>Multiple alignment</source>
         <translation type="unfinished"></translation>
     </message>
@@ -655,32 +667,46 @@
 <context>
     <name>U2::MuscleTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="76"/>
+        <location filename="../src/MuscleTask.cpp" line="74"/>
         <source>MUSCLE alignment</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="83"/>
+        <location filename="../src/MuscleTask.cpp" line="82"/>
         <source>MUSCLE alignment started</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="129"/>
+        <location filename="../src/MuscleTask.cpp" line="103"/>
+        <source>Incorrect region to align</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleTask.cpp" line="105"/>
+        <source>Stopping MUSCLE task, because of error in MAlignment::mid function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleTask.cpp" line="130"/>
         <source>Performing MUSCLE alignment...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="151"/>
+        <location filename="../src/MuscleTask.cpp" line="153"/>
         <source>MUSCLE alignment successfully finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/MuscleTask.cpp" line="207"/>
+        <source>Unexpected number of rows in the result multiple alignment!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::MuscleWithExtFileSpecifySupportTask</name>
     <message>
-        <location filename="../src/MuscleTask.cpp" line="497"/>
         <source>input_format_error</source>
-        <translation type="unfinished">Can&apos;t detect file format</translation>
+        <translation type="obsolete">Can&apos;t detect file format</translation>
     </message>
 </context>
 <context>

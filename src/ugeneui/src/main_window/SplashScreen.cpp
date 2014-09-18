@@ -36,7 +36,7 @@
 
 namespace U2{
 
-SplashScreen::SplashScreen( QWidget *parent /*= NULL*/ ):QDialog(parent) {
+SplashScreen::SplashScreen( QWidget *parent /* = NULL*/ ):QDialog(parent) {
     setEnabled(false);
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint);

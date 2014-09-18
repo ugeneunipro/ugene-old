@@ -28,6 +28,7 @@
 namespace U2 {
 
 class U2PRIVATE_EXPORT DocumentFormatRegistryImpl  : public DocumentFormatRegistry {
+    Q_OBJECT
 public:
     DocumentFormatRegistryImpl(QObject* p = NULL) : DocumentFormatRegistry(p) {init();}
 

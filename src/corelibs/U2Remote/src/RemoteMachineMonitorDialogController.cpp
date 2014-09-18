@@ -33,7 +33,7 @@
 namespace U2 {
 
 RemoteMachineSettingsPtr RemoteMachineMonitorDialogController::selectRemoteMachine(
-    RemoteMachineMonitor* monitor, bool runTaskMode /*= false */ )
+    RemoteMachineMonitor* monitor, bool runTaskMode /* = false */ )
 {
     RemoteMachineMonitorDialogImpl dlg( QApplication::activeWindow(), monitor, runTaskMode);
 

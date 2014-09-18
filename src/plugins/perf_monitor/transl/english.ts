@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>PerfMonitorPlugin</name>
+    <name>U2::PerfMonitorPlugin</name>
     <message>
         <source>Performance Monitor</source>
         <translation type="unfinished"></translation>
@@ -13,7 +13,7 @@
     </message>
     <message>
         <source>Show counters</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-U2AssemblyReadIterator::U2AssemblyReadIterator(const QByteArray & read_, QList<U2CigarToken> cigar_, int startPos /*= 0*/) :
+U2AssemblyReadIterator::U2AssemblyReadIterator(const QByteArray & read_, QList<U2CigarToken> cigar_, int startPos /* = 0*/) :
 offsetInRead(0), read(read_), offsetInToken(0), offsetInCigar(0), cigar(cigar_)  
 {
     for(int i = 0; i < startPos && hasNext();) {

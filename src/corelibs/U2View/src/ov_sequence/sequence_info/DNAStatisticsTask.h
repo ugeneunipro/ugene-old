@@ -51,6 +51,7 @@ struct DNAStatistics {
 };
 
 class U2VIEW_EXPORT DNAStatisticsTask : public BackgroundTask< DNAStatistics > {
+    Q_OBJECT
 public:
     DNAStatisticsTask(const DNAAlphabet* alphabet, const U2EntityRef seqRef, const U2Region& region = U2Region());
     virtual void run();

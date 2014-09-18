@@ -30,12 +30,12 @@
 <context>
     <name>U2::SecStructPredictPlugin</name>
     <message>
-        <location filename="../src/GorIVPlugin.cpp" line="51"/>
+        <location filename="../src/GorIVPlugin.cpp" line="58"/>
         <source>GORIV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/GorIVPlugin.cpp" line="51"/>
+        <location filename="../src/GorIVPlugin.cpp" line="58"/>
         <source>GORIV protein secondary structure prediction</source>
         <translation type="unfinished">Предсказание вторичной структуры протеинов GORIV</translation>
     </message>

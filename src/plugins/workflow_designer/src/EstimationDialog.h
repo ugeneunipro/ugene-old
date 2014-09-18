@@ -29,6 +29,7 @@
 namespace U2 {
 
 class EstimationDialog : public QDialog {
+    Q_OBJECT
 public:
     EstimationDialog(const Workflow::EstimationResult &er, QWidget *parent);
 };

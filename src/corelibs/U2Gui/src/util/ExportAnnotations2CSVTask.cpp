@@ -93,8 +93,8 @@ void ExportAnnotations2CSVTask::run( ) {
 
     QHash<QString, int> columnIndices;
     QStringList columnNames;
-    columnNames << tr( "Group" ) << tr( "Name" ) << tr( "Start" ) <<  tr( "End" ) << tr( "Length" )
-        << tr( "Complementary" );
+    columnNames << tr( "Group" ) << tr( "Name" ) << tr("Start") 
+<<  tr( "End" ) << tr( "Length" ) << tr( "Complementary" );
     if ( exportSequenceName ) {
         columnNames << tr( "Sequence name" );
     }

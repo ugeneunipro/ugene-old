@@ -69,12 +69,12 @@ It could cause an error. Do you want to continue?</source>
 <context>
     <name>U2::PhylipPlugin</name>
     <message>
-        <location filename="../src/PhylipPlugin.cpp" line="54"/>
+        <location filename="../src/PhylipPlugin.cpp" line="61"/>
         <source>PHYLIP</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PhylipPlugin.cpp" line="54"/>
+        <location filename="../src/PhylipPlugin.cpp" line="61"/>
         <source>PHYLIP (the PHYLogeny Inference Package) is a package of programs for inferring phylogenies (evolutionary trees). Original version at: http://evolution.genetics.washington.edu/phylip.html</source>
         <translation>PHYLIP (the PHYLogeny Inference Package) - пакет программ для построения филогенетических деревьев. Оригинальная версия находится по адресу: http://evolution.genetics.washington.edu/phylip.html</translation>
     </message>

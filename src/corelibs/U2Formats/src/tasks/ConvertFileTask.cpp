@@ -33,6 +33,7 @@
 #include <U2Formats/BAMUtils.h>
 
 #include "ConvertFileTask.h"
+#include "DocumentFormatUtils.h"
 
 namespace U2 {
 
@@ -52,7 +53,7 @@ namespace{
 //////////////////////////////////////////////////////////////////////////
 //ConvertFileTask
 ConvertFileTask::ConvertFileTask(const GUrl &sourceURL, const QString &detectedFormat, const QString &targetFormat, const QString &workingDir)
-: Task(tr("Conversion file from %1 to %2").arg(detectedFormat).arg(targetFormat), TaskFlags_FOSCOE),
+: Task(DocumentFormatUtils::tr("Conversion file from %1 to %2").arg(detectedFormat).arg(targetFormat), TaskFlags_FOSCOE),
     sourceURL(sourceURL), detectedFormat(detectedFormat), targetFormat(targetFormat), workingDir(workingDir)
 {
     if (!workingDir.endsWith("/") && !workingDir.endsWith("\\")) {

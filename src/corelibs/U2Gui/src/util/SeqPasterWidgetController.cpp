@@ -20,7 +20,7 @@
  */
 #include <QMessageBox>
 
-#include"SeqPasterWidgetController.h"
+#include "SeqPasterWidgetController.h"
 #include "ui/ui_SeqPasterWidget.h"
 
 #include <U2Core/AppContext.h>

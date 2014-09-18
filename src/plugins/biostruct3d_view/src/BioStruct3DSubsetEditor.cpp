@@ -28,7 +28,7 @@ namespace U2 {
 
 static const QString ALL_CHAINS("All chains");
 
-BioStruct3DSubsetEditor::BioStruct3DSubsetEditor(const QList<BioStruct3DObject*> &biostructs, const BioStruct3DObject *selected /*= 0*/, int selectedModel /*= -1*/,  QWidget *parent /*= 0*/)
+BioStruct3DSubsetEditor::BioStruct3DSubsetEditor(const QList<BioStruct3DObject*> &biostructs, const BioStruct3DObject *selected /* = 0*/, int selectedModel /* = -1*/,  QWidget *parent /* = 0*/)
         : QWidget(parent)
 {
     setupUi(this);

@@ -25,7 +25,7 @@
 
 namespace U2 {
 
-SecStructPredictAlgRegistry::SecStructPredictAlgRegistry( QObject* pOwn /*= 0*/ ) : QObject(pOwn)
+SecStructPredictAlgRegistry::SecStructPredictAlgRegistry( QObject* pOwn /* = 0*/ ) : QObject(pOwn)
 {
    
 

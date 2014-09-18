@@ -4,23 +4,13 @@
 <context>
     <name>ChooseItemDialog</name>
     <message>
-        <location filename="../src/ui/ChooseItemDialog.ui" line="13"/>
+        <location filename="../src/ui/ChooseItemDialog.ui" line="14"/>
         <source>Choose task type</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/ChooseItemDialog.ui" line="19"/>
+        <location filename="../src/ui/ChooseItemDialog.ui" line="20"/>
         <source>Add a task of the following type:</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ChooseItemDialog.ui" line="44"/>
-        <source>OK</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/ChooseItemDialog.ui" line="51"/>
-        <source>Cancel</source>
         <translation></translation>
     </message>
 </context>
@@ -228,16 +218,6 @@ p, li { white-space: pre-wrap; }
         <source>...</source>
         <translation></translation>
     </message>
-    <message>
-        <location filename="../src/ui/CreateScriptBlockDialog.ui" line="209"/>
-        <source>OK</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/CreateScriptBlockDialog.ui" line="216"/>
-        <source>Cancel</source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>DashboardsManagerDialog</name>
@@ -316,8 +296,8 @@ p, li { white-space: pre-wrap; }
     <name>ImportSchemaDialog</name>
     <message>
         <location filename="../src/ui/ImportSchemaDialog.ui" line="14"/>
-        <source>Import workflow to element</source>
-        <translation></translation>
+        <source>Import Workflow to Element</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/ImportSchemaDialog.ui" line="22"/>
@@ -337,8 +317,8 @@ p, li { white-space: pre-wrap; }
     <name>PortAliasesConfigurationDialog</name>
     <message>
         <location filename="../src/ui/PortAliasesConfigurationDialog.ui" line="17"/>
-        <source>Configure port and slot aliases</source>
-        <translation></translation>
+        <source>Configure Port and Slot Aliases</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/PortAliasesConfigurationDialog.ui" line="34"/>
@@ -375,83 +355,73 @@ p, li { white-space: pre-wrap; }
         <source>Port description:</source>
         <translation></translation>
     </message>
-    <message>
-        <location filename="../src/ui/PortAliasesConfigurationDialog.ui" line="147"/>
-        <source>Ok</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/PortAliasesConfigurationDialog.ui" line="154"/>
-        <source>Cancel</source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/DashboardsManagerDialog.cpp" line="27"/>
+        <location filename="../src/DashboardsManagerDialog.cpp" line="34"/>
         <source>Removing Dashboards</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DashboardsManagerDialog.cpp" line="29"/>
+        <location filename="../src/DashboardsManagerDialog.cpp" line="36"/>
         <source>The following dashboards are about to be deleted:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DashboardsManagerDialog.cpp" line="31"/>
+        <location filename="../src/DashboardsManagerDialog.cpp" line="38"/>
         <source>The following dashboard is about to be deleted:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="72"/>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="123"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="71"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="125"/>
         <source>Empty text slot</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="81"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="80"/>
         <source>Empty sequence slot</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="87"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="86"/>
         <source>Error with sequence object</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="95"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="94"/>
         <source>Empty annotations slot</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="109"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="111"/>
         <source>Empty alignment slot</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="115"/>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="311"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="117"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="313"/>
         <source>Error with alignment object</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="144"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="146"/>
         <source>Unknown document format: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="299"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="301"/>
         <source>No target objects in the file: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="323"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="326"/>
         <source>Error with annotations object</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="84"/>
+        <location filename="../src/library/FindWorker.cpp" line="86"/>
         <source>Patterns are not set. Set the &apos;%1&apos; or &apos;%2&apos; parameter or bind the input text slot</source>
         <translation></translation>
     </message>
@@ -476,42 +446,37 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="144"/>
+        <location filename="../src/WorkflowViewController.cpp" line="168"/>
         <source>Breakpoints</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="202"/>
+        <location filename="../src/WorkflowViewController.cpp" line="226"/>
         <source>Element style</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="214"/>
-        <source>Run mode</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/WorkflowViewController.cpp" line="225"/>
+        <location filename="../src/WorkflowViewController.cpp" line="237"/>
         <source>Scripting mode</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="884"/>
+        <location filename="../src/WorkflowViewController.cpp" line="894"/>
         <source>Can not create the directory: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="890"/>
+        <location filename="../src/WorkflowViewController.cpp" line="900"/>
         <source>The file &apos;%1&apos; already exists</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="895"/>
+        <location filename="../src/WorkflowViewController.cpp" line="905"/>
         <source>Can not copy the file here: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1521"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1457"/>
         <source>Run workflow</source>
         <translation></translation>
     </message>
@@ -527,29 +492,53 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/library/ExtractConsensusWorker.cpp" line="248"/>
+        <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="236"/>
         <source>Algorithm</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/library/ExtractConsensusWorker.cpp" line="249"/>
+        <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="237"/>
         <source>The algorithm of consensus extracting.</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/library/ExtractConsensusWorker.cpp" line="251"/>
+        <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="242"/>
         <source>Keep gaps</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/library/ExtractConsensusWorker.cpp" line="252"/>
+        <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="243"/>
         <source>Set this parameter if the result consensus must keep the gaps.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/debug_messages_translation/WorkflowDebugMessageParserImpl.cpp" line="86"/>
+        <location filename="../src/debug_messages_translation/WorkflowDebugMessageParserImpl.cpp" line="87"/>
         <location filename="../src/WorkflowDebugMessageParserImpl.cpp" line="117"/>
         <source>Messages in requested queue include info of the &apos;%1&apos; data type that is currently unsupported for view. No intermediate data will be displayed</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="217"/>
+        <source>Extract Consensus from Alignment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="218"/>
+        <source>Extract the consensus sequence from the incoming multiple sequence alignment.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="239"/>
+        <source>Threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="240"/>
+        <source>The threshold of the algorithm.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -561,8 +550,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/SchemaAliasesConfigurationDialog.ui" line="17"/>
-        <source>Configure parameter aliases</source>
-        <translation></translation>
+        <source>Configure Parameter Aliases</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/SchemaAliasesConfigurationDialog.ui" line="69"/>
@@ -577,16 +566,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/SchemaAliasesConfigurationDialog.ui" line="79"/>
         <source>Help message</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/SchemaAliasesConfigurationDialog.ui" line="106"/>
-        <source>Ok</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/SchemaAliasesConfigurationDialog.ui" line="113"/>
-        <source>Cancel</source>
         <translation></translation>
     </message>
 </context>
@@ -612,7 +591,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::ActorCfgModel</name>
     <message>
-        <location filename="../src/ActorCfgModel.cpp" line="317"/>
+        <location filename="../src/ActorCfgModel.cpp" line="321"/>
         <source>N/A</source>
         <translation></translation>
     </message>
@@ -620,47 +599,47 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::BreakpointManagerView</name>
     <message>
-        <location filename="../src/BreakpointManagerView.cpp" line="136"/>
+        <location filename="../src/BreakpointManagerView.cpp" line="148"/>
         <source>&amp;Break at element...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/BreakpointManagerView.cpp" line="143"/>
+        <location filename="../src/BreakpointManagerView.cpp" line="155"/>
         <source>Delete &amp;all breakpoints</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/BreakpointManagerView.cpp" line="150"/>
+        <location filename="../src/BreakpointManagerView.cpp" line="162"/>
         <source>&amp;Delete</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/BreakpointManagerView.cpp" line="157"/>
+        <location filename="../src/BreakpointManagerView.cpp" line="169"/>
         <source>Delete the selected breakpoints</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/BreakpointManagerView.cpp" line="159"/>
+        <location filename="../src/BreakpointManagerView.cpp" line="171"/>
         <source>&amp;Enable or disable all breakpoints</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/BreakpointManagerView.cpp" line="165"/>
+        <location filename="../src/BreakpointManagerView.cpp" line="177"/>
         <source>H&amp;ighlight selected item</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/BreakpointManagerView.cpp" line="171"/>
+        <location filename="../src/BreakpointManagerView.cpp" line="183"/>
         <source>&amp;Hit Count...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/BreakpointManagerView.cpp" line="174"/>
+        <location filename="../src/BreakpointManagerView.cpp" line="186"/>
         <source>Edit &amp;labels...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/BreakpointManagerView.cpp" line="177"/>
+        <location filename="../src/BreakpointManagerView.cpp" line="189"/>
         <source>&amp;Condition...</source>
         <translation></translation>
     </message>
@@ -676,122 +655,122 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::CreateExternalProcessDialog</name>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="207"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="212"/>
         <source>Name for command line parameter</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="208"/>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="454"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="213"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="452"/>
         <source>Type</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="211"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="216"/>
         <source>Read as</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="213"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="218"/>
         <source>Write as</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="215"/>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="455"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="220"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="453"/>
         <source>Description</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="453"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="451"/>
         <source>Name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="747"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="751"/>
         <source>Warning</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="748"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="752"/>
         <source>You have changed the structure of the element (name, slots, attributes&apos; names and types). All elements on the scene would be removed. Do you really want to change it?
 You could also reset the dialog to the initial state.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="777"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="781"/>
         <source>Create Element</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="779"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="783"/>
         <source>Please set the input/output data.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="784"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="788"/>
         <source>Please set the command line to run external tool.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="789"/>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="887"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="793"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="891"/>
         <source>Please set the name for the new element.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="795"/>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="899"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="799"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="903"/>
         <source>Invalid symbols in the element name.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="800"/>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="904"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="804"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="908"/>
         <source>Element with this name already exists.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="808"/>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="819"/>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="830"/>
-        <source>For one or more parameter name was not set.</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/library/CreateExternalProcessDialog.cpp" line="812"/>
         <location filename="../src/library/CreateExternalProcessDialog.cpp" line="823"/>
         <location filename="../src/library/CreateExternalProcessDialog.cpp" line="834"/>
+        <source>For one or more parameter name was not set.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="816"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="827"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="838"/>
         <source>Invalid symbols in a name.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="841"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="845"/>
         <source>The same name of element parameters was found</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="849"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="853"/>
         <source>You don&apos;t use parameter %1 in template string. Continue?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="850"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="854"/>
         <source>Continue</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="851"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="855"/>
         <source>Abort</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="893"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="897"/>
         <source>Spaces in the element name.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="919"/>
+        <location filename="../src/library/CreateExternalProcessDialog.cpp" line="923"/>
         <source>It is the correct name</source>
         <translation></translation>
     </message>
@@ -799,78 +778,78 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::CreateScriptElementDialog</name>
     <message>
-        <location filename="../src/CreateScriptWorker.cpp" line="299"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="309"/>
         <source>Name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CreateScriptWorker.cpp" line="300"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="310"/>
         <source>type</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CreateScriptWorker.cpp" line="502"/>
         <location filename="../src/CreateScriptWorker.cpp" line="516"/>
-        <location filename="../src/CreateScriptWorker.cpp" line="529"/>
-        <location filename="../src/CreateScriptWorker.cpp" line="535"/>
-        <location filename="../src/CreateScriptWorker.cpp" line="553"/>
-        <location filename="../src/CreateScriptWorker.cpp" line="561"/>
-        <location filename="../src/CreateScriptWorker.cpp" line="569"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="530"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="543"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="549"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="567"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="575"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="583"/>
         <source>error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CreateScriptWorker.cpp" line="502"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="516"/>
         <source>Two identical types for input port</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CreateScriptWorker.cpp" line="503"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="517"/>
         <source>two identical types for input port</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CreateScriptWorker.cpp" line="516"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="530"/>
         <source>Two identical types for output port</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CreateScriptWorker.cpp" line="517"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="531"/>
         <source>two identical types for output port</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CreateScriptWorker.cpp" line="529"/>
-        <location filename="../src/CreateScriptWorker.cpp" line="530"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="543"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="544"/>
         <source>Name for some attributes is empty</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CreateScriptWorker.cpp" line="535"/>
-        <location filename="../src/CreateScriptWorker.cpp" line="536"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="549"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="550"/>
         <source>Two attributes with name %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CreateScriptWorker.cpp" line="553"/>
-        <location filename="../src/CreateScriptWorker.cpp" line="554"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="567"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="568"/>
         <source>Name for block is empty</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CreateScriptWorker.cpp" line="561"/>
-        <location filename="../src/CreateScriptWorker.cpp" line="562"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="575"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="576"/>
         <source>Actor with this name already registered</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CreateScriptWorker.cpp" line="569"/>
-        <location filename="../src/CreateScriptWorker.cpp" line="570"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="583"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="584"/>
         <source>Description for block is empty</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/CreateScriptWorker.cpp" line="624"/>
+        <location filename="../src/CreateScriptWorker.cpp" line="638"/>
         <source>Can&apos;t save user&apos;s workflow element</source>
         <translation></translation>
     </message>
@@ -878,12 +857,12 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::DashboardManagerHelper</name>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="255"/>
+        <location filename="../src/WorkflowViewController.cpp" line="267"/>
         <source>No dashboards</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="256"/>
+        <location filename="../src/WorkflowViewController.cpp" line="268"/>
         <source>You have not any dashboards yet. You need to run some workflow to use Dashboards Manager.</source>
         <translation></translation>
     </message>
@@ -891,22 +870,22 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::DashboardsManagerDialog</name>
     <message>
-        <location filename="../src/DashboardsManagerDialog.cpp" line="55"/>
+        <location filename="../src/DashboardsManagerDialog.cpp" line="64"/>
         <source>Name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DashboardsManagerDialog.cpp" line="55"/>
+        <location filename="../src/DashboardsManagerDialog.cpp" line="64"/>
         <source>Directory</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DashboardsManagerDialog.cpp" line="166"/>
+        <location filename="../src/DashboardsManagerDialog.cpp" line="183"/>
         <source>Confirm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/DashboardsManagerDialog.cpp" line="167"/>
+        <location filename="../src/DashboardsManagerDialog.cpp" line="184"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
@@ -922,7 +901,7 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::ExtendedProcStyle</name>
     <message>
-        <location filename="../src/ItemViewStyle.cpp" line="199"/>
+        <location filename="../src/ItemViewStyle.cpp" line="213"/>
         <source>Auto-resize to text</source>
         <translation></translation>
     </message>
@@ -930,7 +909,7 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::GalaxyConfigTask</name>
     <message>
-        <location filename="../src/cmdline/GalaxyConfigTask.cpp" line="78"/>
+        <location filename="../src/cmdline/GalaxyConfigTask.cpp" line="83"/>
         <source>Create Galaxy config from existing workflow</source>
         <translation></translation>
     </message>
@@ -938,36 +917,36 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::ImportSchemaDialog</name>
     <message>
-        <location filename="../src/ImportSchemaDialog.cpp" line="38"/>
-        <location filename="../src/ImportSchemaDialog.cpp" line="43"/>
-        <location filename="../src/ImportSchemaDialog.cpp" line="48"/>
-        <location filename="../src/ImportSchemaDialog.cpp" line="53"/>
-        <location filename="../src/ImportSchemaDialog.cpp" line="58"/>
+        <location filename="../src/ImportSchemaDialog.cpp" line="40"/>
+        <location filename="../src/ImportSchemaDialog.cpp" line="45"/>
+        <location filename="../src/ImportSchemaDialog.cpp" line="50"/>
+        <location filename="../src/ImportSchemaDialog.cpp" line="55"/>
+        <location filename="../src/ImportSchemaDialog.cpp" line="60"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportSchemaDialog.cpp" line="38"/>
+        <location filename="../src/ImportSchemaDialog.cpp" line="40"/>
         <source>Element name is empty</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportSchemaDialog.cpp" line="43"/>
+        <location filename="../src/ImportSchemaDialog.cpp" line="45"/>
         <source>Element name contains spaces</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportSchemaDialog.cpp" line="48"/>
+        <location filename="../src/ImportSchemaDialog.cpp" line="50"/>
         <source>Element name contains dots</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportSchemaDialog.cpp" line="53"/>
+        <location filename="../src/ImportSchemaDialog.cpp" line="55"/>
         <source>Element name contains @</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ImportSchemaDialog.cpp" line="58"/>
+        <location filename="../src/ImportSchemaDialog.cpp" line="60"/>
         <source>An element with this name already exists</source>
         <translation></translation>
     </message>
@@ -975,12 +954,12 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::ItemViewStyle</name>
     <message>
-        <location filename="../src/ItemViewStyle.cpp" line="62"/>
+        <location filename="../src/ItemViewStyle.cpp" line="72"/>
         <source>Background color</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ItemViewStyle.cpp" line="65"/>
+        <location filename="../src/ItemViewStyle.cpp" line="75"/>
         <source>Font</source>
         <translation></translation>
     </message>
@@ -988,18 +967,18 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LoadSamplesTask</name>
     <message>
-        <location filename="../src/WorkflowSamples.cpp" line="245"/>
+        <location filename="../src/WorkflowSamples.cpp" line="256"/>
         <source>Load workflow samples</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowSamples.cpp" line="256"/>
+        <location filename="../src/WorkflowSamples.cpp" line="267"/>
         <source>Sample dir does not exist: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowSamples.cpp" line="268"/>
-        <location filename="../src/WorkflowSamples.cpp" line="280"/>
+        <location filename="../src/WorkflowSamples.cpp" line="279"/>
+        <location filename="../src/WorkflowSamples.cpp" line="291"/>
         <source>Failed to load sample: %1</source>
         <translation></translation>
     </message>
@@ -1081,12 +1060,12 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::AminoTranslationPrompter</name>
     <message>
-        <location filename="../src/library/AminoTranslationWorker.cpp" line="228"/>
+        <location filename="../src/library/AminoTranslationWorker.cpp" line="227"/>
         <source>unset</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/AminoTranslationWorker.cpp" line="229"/>
+        <location filename="../src/library/AminoTranslationWorker.cpp" line="228"/>
         <source> from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation></translation>
     </message>
@@ -1094,62 +1073,62 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::AminoTranslationWorker</name>
     <message>
-        <location filename="../src/library/AminoTranslationWorker.cpp" line="162"/>
+        <location filename="../src/library/AminoTranslationWorker.cpp" line="161"/>
         <source>Input Data</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/AminoTranslationWorker.cpp" line="163"/>
+        <location filename="../src/library/AminoTranslationWorker.cpp" line="162"/>
         <source>An input sequence to translate in amino.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/AminoTranslationWorker.cpp" line="166"/>
+        <location filename="../src/library/AminoTranslationWorker.cpp" line="165"/>
         <source>Amino sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/AminoTranslationWorker.cpp" line="167"/>
+        <location filename="../src/library/AminoTranslationWorker.cpp" line="166"/>
         <source>Sequence has been translated.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/AminoTranslationWorker.cpp" line="178"/>
+        <location filename="../src/library/AminoTranslationWorker.cpp" line="177"/>
         <source>Translate from </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/AminoTranslationWorker.cpp" line="178"/>
+        <location filename="../src/library/AminoTranslationWorker.cpp" line="177"/>
         <source>What position would sequence translated from : first, second, third or from all positions.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/AminoTranslationWorker.cpp" line="181"/>
+        <location filename="../src/library/AminoTranslationWorker.cpp" line="180"/>
         <source>Auto selected genetic code</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/AminoTranslationWorker.cpp" line="181"/>
+        <location filename="../src/library/AminoTranslationWorker.cpp" line="180"/>
         <source>Set if genetic code will be selected automatically.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/AminoTranslationWorker.cpp" line="185"/>
+        <location filename="../src/library/AminoTranslationWorker.cpp" line="184"/>
         <source>Amino Translation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/AminoTranslationWorker.cpp" line="186"/>
+        <location filename="../src/library/AminoTranslationWorker.cpp" line="185"/>
         <source>Translate sequence into it&apos;s amino translation . Output a sequence.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/AminoTranslationWorker.cpp" line="189"/>
+        <location filename="../src/library/AminoTranslationWorker.cpp" line="188"/>
         <source>Genetic code</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/AminoTranslationWorker.cpp" line="189"/>
+        <location filename="../src/library/AminoTranslationWorker.cpp" line="188"/>
         <source>Which genetic code should be used for translating the input nucleotide sequence.</source>
         <translation></translation>
     </message>
@@ -1196,42 +1175,42 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::BaseDocWriter</name>
     <message>
-        <location filename="../src/library/BaseDocWorker.cpp" line="167"/>
+        <location filename="../src/library/BaseDocWorker.cpp" line="168"/>
         <source>Document format not set</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/BaseDocWorker.cpp" line="187"/>
+        <location filename="../src/library/BaseDocWorker.cpp" line="188"/>
         <source>Unspecified URL to write %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/BaseDocWorker.cpp" line="231"/>
+        <location filename="../src/library/BaseDocWorker.cpp" line="232"/>
         <source>Can not create directory: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/BaseDocWorker.cpp" line="251"/>
+        <location filename="../src/library/BaseDocWorker.cpp" line="252"/>
         <source>Can not open a file for writing: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/BaseDocWorker.cpp" line="325"/>
+        <location filename="../src/library/BaseDocWorker.cpp" line="326"/>
         <source>No data to write</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/BaseDocWorker.cpp" line="352"/>
+        <location filename="../src/library/BaseDocWorker.cpp" line="353"/>
         <source>Nothing to write</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/BaseDocWorker.cpp" line="360"/>
+        <location filename="../src/library/BaseDocWorker.cpp" line="361"/>
         <source>Writing to %1 [%2]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/BaseDocWorker.cpp" line="366"/>
+        <location filename="../src/library/BaseDocWorker.cpp" line="369"/>
         <source>Save documents</source>
         <translation></translation>
     </message>
@@ -1252,6 +1231,113 @@ You could also reset the dialog to the initial state.</source>
         <location filename="../src/library/WriteAssemblyWorkers.cpp" line="181"/>
         <source>Build BAM index for the target BAM file. The file .bai will be created in the same directory.</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::CASAVAFilterPrompter</name>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="56"/>
+        <source>unset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="57"/>
+        <source> from &lt;u&gt;%1&lt;/u&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="59"/>
+        <source>Filters FASTQ reads from %1 generated by CASAVA 1.8.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::CASAVAFilterWorker</name>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="67"/>
+        <source>CASAVA FASTQ Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="68"/>
+        <source>Reads in FASTQ file produced by CASAVA 1.8 contain &apos;N&apos; or &apos;Y&apos; as a part of an idetifier. &apos;Y&apos; if a read if filtered, &apos;N&apos; if the read if the read is not filtered. The workflow cleans up the filtered reads.
+For example:
+@HWI-ST880:181:D1WRUACXX:8:1102:4905:2125 1:N:0:TAAGGG
+CTTACATAACTACTGACCATGCTCTCTCTTGTCTGTCTCTTATACACATCT
++
+111442222322324232AAFFHIJJJJJJIHIIF111CGGFHIG???FGB
+@HWI-ST880:181:D1WRUACXX:8:1102:7303:2101 1:Y:0:TAAGGG
+TCCTTACTGTCTGAGCAATGGGATTCCATCTTTTACGATCTAGACATGGCT
++
+11++4222322&lt;CEE2&lt;:3&lt;3333333&lt;A&lt;CAFE:1?C??::C?00?BD90.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="81"/>
+        <source>Input File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="82"/>
+        <source>Set of FASTQ reads files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="83"/>
+        <source>Output File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="84"/>
+        <source>Output FASTQ files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="97"/>
+        <source>Output directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="98"/>
+        <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="102"/>
+        <source>Custom directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="103"/>
+        <source>Select the custom output directory.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="105"/>
+        <source>Output file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="106"/>
+        <source>A name of an output file. If default of empty value is provided the output name is the name of the first file with additional extention.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="110"/>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="120"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="118"/>
+        <source>Input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="119"/>
+        <source>Workflow</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1368,17 +1454,17 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::ConvertFilesFormatPrompter</name>
     <message>
-        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="67"/>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="71"/>
         <source>unset</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="68"/>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="72"/>
         <source> from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="70"/>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="74"/>
         <source>Convert file %1 to selected format if it is not excluded.</source>
         <translation></translation>
     </message>
@@ -1386,38 +1472,89 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::ConvertFilesFormatWorker</name>
     <message>
-        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="89"/>
-        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="91"/>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="117"/>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="119"/>
         <source>File</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="90"/>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="118"/>
         <source>A file to perform format conversion</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="92"/>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="120"/>
         <source>File of selected format</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="103"/>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="133"/>
         <source>Excluded formats</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="104"/>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="134"/>
         <source>Input file won&apos;t be converted to any of selected formats.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="107"/>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="136"/>
+        <source>Output directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="137"/>
+        <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="141"/>
+        <source>Custom directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="142"/>
+        <source>Select the custom output directory.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="147"/>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="164"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="162"/>
+        <source>Input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="163"/>
+        <source>Workflow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="200"/>
+        <source>The file does not exist: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="274"/>
+        <source>Convert Format: result directory is empty, default workflow directory is used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="327"/>
+        <source>Unknown file format: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="112"/>
         <source>File Format Conversion</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="108"/>
+        <location filename="../src/library/ConvertFilesFormatWorker.cpp" line="113"/>
         <source>Converts the file to selected format if it is not excluded.</source>
         <translation></translation>
     </message>
@@ -1425,17 +1562,17 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::DASAnnotationPrompter</name>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="240"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="241"/>
         <source>unset</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="241"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="242"/>
         <source> from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="244"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="245"/>
         <source>For each protein sequence %1, finds IDs of similar sequences using remote BLAST.&lt;br&gt;Loads annotations for DAS sources using the first %2 ID(s).</source>
         <translation></translation>
     </message>
@@ -1443,157 +1580,157 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::DASAnnotationWorker</name>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="71"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="72"/>
         <source>Input sequences</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="72"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="73"/>
         <source>Protein sequences for annotation. Nucleotide sequences are skipped.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="73"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="74"/>
         <source>DAS annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="74"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="75"/>
         <source>A set of annotations loaded from DAS sources using IDs of similar sequences.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="83"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="84"/>
         <source>Max result IDs</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="83"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="84"/>
         <source>Use first IDs of similar sequences to load annotations.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="84"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="85"/>
         <source>Database</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="84"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="85"/>
         <source>Database against which the search is performed: UniProtKB or clusters of sequences with 100%, 90% or 50% identity.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="85"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="86"/>
         <source>Min identity</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="85"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="86"/>
         <source>Minimum identity of a BLAST result and an input sequence.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="86"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="87"/>
         <source>Feature sources</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="86"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="87"/>
         <source>The DAS sources to read features from.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="87"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="88"/>
         <source>Threshold</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="87"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="88"/>
         <source>The expectation value (E) threshold is a statistical measure of the number of expected matches in a random database. The lower the e-value, the more likely the match is to be significant.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="88"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="89"/>
         <source>Matrix</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="88"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="89"/>
         <source>The matrix assigns a probability score for each position in an alignment.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="89"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="90"/>
         <source>Filtering</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="89"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="90"/>
         <source>Low-complexity regions (e.g. stretches of cysteine in Q03751, or hydrophobic regions in membrane proteins) tend to producespurious, insignificant matches with sequences in the database which have the same kind of low-complexity regions, but are unrelated biologically. If &apos;Filter low complexity regions&apos; is selected, the query sequence will be run through the program SEG, and all amino acids in low-complexity regions will be replaced by X&apos;s.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="92"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="93"/>
         <source>Gapped</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="92"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="93"/>
         <source>This will allow gaps to be introduced in the sequences when the comparison is done.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="93"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="94"/>
         <source>Hits</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="93"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="94"/>
         <source>Limits the number of returned alignments.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="105"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="106"/>
         <source>Annotate with DAS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="106"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="107"/>
         <source>Finds similar protein sequence using remote BLAST.&lt;p&gt;Using IDs of sequences found loads annotation for DAS sources.&lt;p&gt;Nucleotide sequences are skipped if any supplied to input.&lt;/p&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="149"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="150"/>
         <source>No DAS registry</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="152"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="153"/>
         <source>No DAS feature sources</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="286"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="287"/>
         <source>Internal error: no DAS Registry.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="311"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="312"/>
         <source>Sequence %1 is %2 amino acids long. Only sequences from %3 to %4 amino acids are processed.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="331"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="332"/>
         <source>Bad sequence supplied to DASAnnotationWorker: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="349"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="363"/>
         <source>Number of similar sequences: %1.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASAnnotationWorker.cpp" line="349"/>
+        <location filename="../src/library/DASAnnotationWorker.cpp" line="362"/>
         <source> IDs: </source>
         <translation></translation>
     </message>
@@ -1639,72 +1776,72 @@ You could also reset the dialog to the initial state.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="276"/>
+        <location filename="../src/library/DASFetchWorker.cpp" line="275"/>
         <source>Read from DAS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="277"/>
+        <location filename="../src/library/DASFetchWorker.cpp" line="276"/>
         <source>Reads sequences and annotations if any from the Distributed Annotation System.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="281"/>
+        <location filename="../src/library/DASFetchWorker.cpp" line="280"/>
         <source>Sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="286"/>
+        <location filename="../src/library/DASFetchWorker.cpp" line="285"/>
         <source>No DAS registry</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="289"/>
+        <location filename="../src/library/DASFetchWorker.cpp" line="288"/>
         <source>No DAS sources</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="291"/>
+        <location filename="../src/library/DASFetchWorker.cpp" line="290"/>
         <source>No DAS feature sources</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="308"/>
+        <location filename="../src/library/DASFetchWorker.cpp" line="307"/>
         <source>Feature Sources</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="309"/>
+        <location filename="../src/library/DASFetchWorker.cpp" line="308"/>
         <source>The DAS sources to read features from.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="313"/>
+        <location filename="../src/library/DASFetchWorker.cpp" line="312"/>
         <source>Reference Source</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="314"/>
+        <location filename="../src/library/DASFetchWorker.cpp" line="313"/>
         <source>The DAS source to read reference from.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="324"/>
+        <location filename="../src/library/DASFetchWorker.cpp" line="323"/>
         <source>Resource ID(s)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="325"/>
+        <location filename="../src/library/DASFetchWorker.cpp" line="324"/>
         <source>Semicolon-separated list of resource ID`s in the source.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="331"/>
+        <location filename="../src/library/DASFetchWorker.cpp" line="330"/>
         <source>Save file to directory</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DASFetchWorker.cpp" line="332"/>
+        <location filename="../src/library/DASFetchWorker.cpp" line="331"/>
         <source>The directory to store sequence files loaded from the source.</source>
         <translation></translation>
     </message>
@@ -1712,82 +1849,82 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::DNAStatWorker</name>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="38"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="61"/>
         <source>Input sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="39"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="62"/>
         <source>Sequence for which GC-content and GC3-content will be evaluated.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="40"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="63"/>
         <source>Result annotation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="41"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="64"/>
         <source>Resulted annotations, with GC-content and GC3-content.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="47"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="70"/>
         <source>GC-content</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="47"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="70"/>
         <source>Evaluate GC-content.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="49"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="72"/>
         <source>Evaluate GC1-content.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="51"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="74"/>
         <source>Evaluate GC2-content.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="53"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="76"/>
         <source>Evaluate GC3-content.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="49"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="72"/>
         <source>GC1-content</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="51"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="74"/>
         <source>GC2-content</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="53"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="76"/>
         <source>GC3-content</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="57"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="80"/>
         <source>DNA Statistics</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="58"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="81"/>
         <source>Evaluates statistics for DNA sequences.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="94"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="117"/>
         <source>Sequence must be nucleotide</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="123"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="146"/>
         <source>No statistics was selected</source>
         <translation></translation>
     </message>
@@ -1795,7 +1932,7 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::DNAStatWorkerPrompter</name>
     <message>
-        <location filename="../src/library/StatisticWorkers.cpp" line="69"/>
+        <location filename="../src/library/StatisticWorkers.cpp" line="92"/>
         <source>Evaluates GC-Content and GC3-Content.</source>
         <translation></translation>
     </message>
@@ -1816,15 +1953,15 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::ExternalProcessWorkerPrompter</name>
     <message>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="614"/>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="629"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="615"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="630"/>
         <source>unset</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="615"/>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="634"/>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="638"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="616"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="635"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="639"/>
         <source>&lt;u&gt;%1&lt;/u&gt;</source>
         <translation></translation>
     </message>
@@ -1864,9 +2001,43 @@ You could also reset the dialog to the initial state.</source>
     </message>
 </context>
 <context>
+    <name>U2::LocalWorkflow::ExtractMSAConsensusTaskHelper</name>
+    <message>
+        <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="147"/>
+        <source>Extract consensus</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="190"/>
+        <source>Unknown consensus algorithm: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::ExtractMSAConsensusWorker</name>
+    <message>
+        <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="103"/>
+        <source>Empty msa slot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="109"/>
+        <source>Error with msa object</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::ExtractMSAConsensusWorkerPrompter</name>
+    <message>
+        <location filename="../src/library/ExtractMSAConsensusWorker.cpp" line="283"/>
+        <source>Extracts the consensus sequence from the incoming alignment(s) using the %1 algorithm.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::LocalWorkflow::FastQWriter</name>
     <message>
-        <location filename="../src/library/DocWorkers.cpp" line="334"/>
+        <location filename="../src/library/DocWorkers.cpp" line="338"/>
         <source>Fastq writer: NULL sequence object</source>
         <translation></translation>
     </message>
@@ -1874,17 +2045,17 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::FetchSequenceByIdFromAnnotationPrompter</name>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="314"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="316"/>
         <source>unset</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="315"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="317"/>
         <source> from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="317"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="319"/>
         <source>In each annotation from %1 search for accession ID and download the corresponding sequences.</source>
         <translation></translation>
     </message>
@@ -1892,7 +2063,7 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::FetchSequenceByIdFromAnnotationWorker</name>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="324"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="326"/>
         <source>Cannot create directory &apos;%1&apos;</source>
         <translation></translation>
     </message>
@@ -1902,45 +2073,129 @@ You could also reset the dialog to the initial state.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="444"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="438"/>
         <source>Fetch Sequences by ID from Annotation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="445"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="439"/>
         <source>Parses annotations to find any IDs and fetches corresponding sequences.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="449"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="443"/>
         <source>Input annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="450"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="444"/>
         <source>The annotations are scanned for accesion ids.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="456"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="450"/>
         <source>Sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="457"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="451"/>
         <source>The downloaded sequences</source>
         <translation></translation>
     </message>
 </context>
 <context>
+    <name>U2::LocalWorkflow::FilterAnnotationsByQualifierPrompter</name>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.cpp" line="49"/>
+        <source>unset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.cpp" line="52"/>
+        <source>Filter annotations from &lt;u&gt;%1&lt;/u&gt; by given qualifier name and value.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::FilterAnnotationsByQualifierTask</name>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.h" line="69"/>
+        <source>Filter annotations by qualifier task</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::FilterAnnotationsByQualifierWorker</name>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.cpp" line="108"/>
+        <source>Input annotations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.cpp" line="109"/>
+        <source>Annotations to be filtered by name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.cpp" line="110"/>
+        <source>Result annotations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.cpp" line="111"/>
+        <source>Resulted annotations, filtered by name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.cpp" line="119"/>
+        <source>Qualifier name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.cpp" line="120"/>
+        <source>Name of the qualifier to use for filtering.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.cpp" line="122"/>
+        <source>Qualifier value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.cpp" line="123"/>
+        <source>Text value of the qualifier to apply as filtering criteria</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.cpp" line="125"/>
+        <source>Accept or filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.cpp" line="126"/>
+        <source>Selects the name filter: accept specified names or accept all except specified.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.cpp" line="134"/>
+        <source>Filter Annotations by Qualifier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterAnnotationsByQualifierWorker.cpp" line="135"/>
+        <source>Filters annotations by Qualifier.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::LocalWorkflow::FilterAnnotationsPrompter</name>
     <message>
-        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="47"/>
+        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="48"/>
         <source>unset</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="50"/>
+        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="51"/>
         <source>Filter annotations from &lt;u&gt;%1&lt;/u&gt; by supplied names.</source>
         <translation></translation>
     </message>
@@ -1956,60 +2211,198 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::FilterAnnotationsWorker</name>
     <message>
-        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="101"/>
+        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="106"/>
         <source>Input annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="102"/>
+        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="107"/>
         <source>Annotations to be filtered by name.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="103"/>
+        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="108"/>
         <source>Result annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="104"/>
+        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="109"/>
         <source>Resulted annotations, filtered by name.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="112"/>
+        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="117"/>
         <source>Annotation names</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="113"/>
+        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="118"/>
         <source>File with annotation names, separated with whitespaces or list of annotation names which will be accepted or filtered. Use space as the separator.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="116"/>
+        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="121"/>
         <source>Accept or filter</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="117"/>
+        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="122"/>
         <source>Selects the name filter: accept specified names or accept all except specified.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="124"/>
+        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="129"/>
         <source>Filter Annotations by Name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="125"/>
+        <location filename="../src/library/FilterAnnotationsWorker.cpp" line="130"/>
         <source>Filters annotations by name.</source>
         <translation></translation>
     </message>
 </context>
 <context>
+    <name>U2::LocalWorkflow::FilterBamPrompter</name>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="72"/>
+        <source>unset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="73"/>
+        <source> from &lt;u&gt;%1&lt;/u&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="75"/>
+        <source>Filter BAM/SAM files from %1 with SAMTools view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::FilterBamWorker</name>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="119"/>
+        <source>Filter BAM/SAM files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="120"/>
+        <source>Filters BAM/SAM files using SAMTools view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="124"/>
+        <source>BAM/SAM File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="125"/>
+        <source>Set of BAM/SAM files to filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="126"/>
+        <location filename="../src/library/FilterBamWorker.cpp" line="127"/>
+        <source>Filtered BAM/SAM files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="140"/>
+        <source>Output directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="141"/>
+        <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="145"/>
+        <source>Custom directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="146"/>
+        <source>Select the custom output directory.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="148"/>
+        <source>Output name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="149"/>
+        <source>A name of an output BAM/SAM file. If default of empty value is provided the output name is the name of the first BAM/SAM file with .filtered extention.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="151"/>
+        <source>Output format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="152"/>
+        <source>Format of an output assembly file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="154"/>
+        <source>Region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="155"/>
+        <source>Regions to filter. For BAM output only. chr2 to output the whole chr2. chr2:1000 to output regions of chr 2 starting from 1000. chr2:1000-2000 to ouput regions of chr2 between 1000 and 2000 including the end point. To input multiple regions use the space seprator (e.g. chr1 chr2 chr3:1000-2000).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="158"/>
+        <source>MAPQ threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="159"/>
+        <source>Minimum MAPQ quality score.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="161"/>
+        <source>Skip flag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="162"/>
+        <source>Skip alignment with the selected items. Select the items in the combobox to configure bit flag. Do not select the items to avoid filtration by this parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="166"/>
+        <location filename="../src/library/FilterBamWorker.cpp" line="180"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="178"/>
+        <source>Input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="179"/>
+        <source>Workflow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="235"/>
+        <source>Unknown file format: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::LocalWorkflow::FindAllRegionsTask</name>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="528"/>
+        <location filename="../src/library/FindWorker.cpp" line="535"/>
         <source>FindAllRegionsTask</source>
         <translation></translation>
     </message>
@@ -2017,52 +2410,52 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::FindPrompter</name>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="245"/>
+        <location filename="../src/library/FindWorker.cpp" line="247"/>
         <source>unset</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="273"/>
+        <location filename="../src/library/FindWorker.cpp" line="275"/>
         <source>translated</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="281"/>
+        <location filename="../src/library/FindWorker.cpp" line="283"/>
         <source>A substring must %1.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="282"/>
+        <location filename="../src/library/FindWorker.cpp" line="284"/>
         <source>match a pattern exactly</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="284"/>
+        <location filename="../src/library/FindWorker.cpp" line="286"/>
         <source>Maximum number of mismatches is %1.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="292"/>
+        <location filename="../src/library/FindWorker.cpp" line="294"/>
         <source>&lt;u&gt;%1&lt;/u&gt; pattern(s)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="294"/>
+        <location filename="../src/library/FindWorker.cpp" line="296"/>
         <source>patterns from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="302"/>
+        <location filename="../src/library/FindWorker.cpp" line="304"/>
         <source> and &lt;u&gt;%1&lt;/u&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="306"/>
+        <location filename="../src/library/FindWorker.cpp" line="308"/>
         <source> using pattern names</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="309"/>
+        <location filename="../src/library/FindWorker.cpp" line="311"/>
         <source>Searches regions in each sequence from &lt;u&gt;%1&lt;/u&gt; similar to %2%3.&lt;br/&gt;%4&lt;br/&gt;Searches in &lt;u&gt;%5&lt;/u&gt; of a %6sequence. Outputs the regions found annotated as &lt;u&gt;%7&lt;/u&gt;.</source>
         <translation></translation>
     </message>
@@ -2070,163 +2463,163 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::FindWorker</name>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="129"/>
+        <location filename="../src/library/FindWorker.cpp" line="131"/>
         <source>Input Data</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="130"/>
+        <location filename="../src/library/FindWorker.cpp" line="132"/>
         <source>An input sequence to search in.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="133"/>
+        <location filename="../src/library/FindWorker.cpp" line="135"/>
         <source>Pattern Annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="134"/>
+        <location filename="../src/library/FindWorker.cpp" line="136"/>
         <source>The regions found.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="145"/>
+        <location filename="../src/library/FindWorker.cpp" line="147"/>
         <source>Name of the result annotations.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="69"/>
+        <location filename="../src/library/FindWorker.cpp" line="71"/>
         <source>Pattern(s)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="70"/>
+        <location filename="../src/library/FindWorker.cpp" line="72"/>
         <source>Semicolon-separated list of patterns to search for.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="73"/>
+        <location filename="../src/library/FindWorker.cpp" line="75"/>
         <source>Pattern file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="74"/>
+        <location filename="../src/library/FindWorker.cpp" line="76"/>
         <source>Load pattern from file in any sequence format or in newline-delimited format.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="148"/>
+        <location filename="../src/library/FindWorker.cpp" line="150"/>
         <source>Use pattern name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="149"/>
+        <location filename="../src/library/FindWorker.cpp" line="151"/>
         <source>If patterns are loaded from a file, use names of pattern sequences as annotation names. The name from the parameters is used by default.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="151"/>
+        <location filename="../src/library/FindWorker.cpp" line="153"/>
         <source>Max Mismatches</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="152"/>
+        <location filename="../src/library/FindWorker.cpp" line="154"/>
         <source>Maximum number of mismatches between a substring and a pattern.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="156"/>
+        <location filename="../src/library/FindWorker.cpp" line="158"/>
         <source>Allow Insertions/Deletions</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="157"/>
+        <location filename="../src/library/FindWorker.cpp" line="159"/>
         <source>Takes into account possibility of insertions/deletions when searching. By default substitutions are only considered.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="161"/>
+        <location filename="../src/library/FindWorker.cpp" line="163"/>
         <source>Support ambiguous bases</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="162"/>
+        <location filename="../src/library/FindWorker.cpp" line="164"/>
         <source>Performs correct handling of ambiguous bases. When this option is activated insertions and deletions are not considered. </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="166"/>
+        <location filename="../src/library/FindWorker.cpp" line="168"/>
         <source>Search in Translation</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="167"/>
+        <location filename="../src/library/FindWorker.cpp" line="169"/>
         <source>Translates a supplied nucleotide sequence to protein and searches in the translated sequence.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="171"/>
+        <location filename="../src/library/FindWorker.cpp" line="173"/>
         <source>Qualifier name for pattern name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="172"/>
+        <location filename="../src/library/FindWorker.cpp" line="174"/>
         <source>Name of qualifier in result annotations which is containing a pattern name.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="188"/>
+        <location filename="../src/library/FindWorker.cpp" line="190"/>
         <source>Find Pattern</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="189"/>
+        <location filename="../src/library/FindWorker.cpp" line="191"/>
         <source>Searches regions in a sequence similar to a pattern sequence. Outputs a set of annotations.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="258"/>
+        <location filename="../src/library/FindWorker.cpp" line="260"/>
         <source>both strands</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="261"/>
+        <location filename="../src/library/FindWorker.cpp" line="263"/>
         <source>direct strand</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="264"/>
+        <location filename="../src/library/FindWorker.cpp" line="266"/>
         <source>complement strand</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="349"/>
+        <location filename="../src/library/FindWorker.cpp" line="351"/>
         <source>Load file with patterns</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="371"/>
+        <location filename="../src/library/FindWorker.cpp" line="373"/>
         <source>Null sequence supplied to FindWorker: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="415"/>
+        <location filename="../src/library/FindWorker.cpp" line="418"/>
         <source>Empty pattern given</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="440"/>
+        <location filename="../src/library/FindWorker.cpp" line="443"/>
         <source>Find algorithm subtasks</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="494"/>
-        <location filename="../src/library/FindWorker.cpp" line="514"/>
+        <location filename="../src/library/FindWorker.cpp" line="497"/>
+        <location filename="../src/library/FindWorker.cpp" line="520"/>
         <source>Found %1 matches of pattern &apos;%2&apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/FindWorker.cpp" line="144"/>
+        <location filename="../src/library/FindWorker.cpp" line="146"/>
         <source>Annotate as</source>
         <translation></translation>
     </message>
@@ -2234,7 +2627,7 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::GFFWriter</name>
     <message>
-        <location filename="../src/library/DocWorkers.cpp" line="566"/>
+        <location filename="../src/library/DocWorkers.cpp" line="576"/>
         <source>GFF writer: NULL sequence object</source>
         <translation></translation>
     </message>
@@ -2242,7 +2635,7 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::GenbankWriter</name>
     <message>
-        <location filename="../src/library/DocWorkers.cpp" line="440"/>
+        <location filename="../src/library/DocWorkers.cpp" line="444"/>
         <source>Genbank writer: NULL sequence object</source>
         <translation></translation>
     </message>
@@ -2363,42 +2756,42 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::ImportAnnotationsWorker</name>
     <message>
-        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="78"/>
+        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="80"/>
         <source>Load documents with annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="150"/>
+        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="154"/>
         <source>Input annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="151"/>
+        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="155"/>
         <source>Input annotation table. Read annotations will be added to it</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="157"/>
+        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="161"/>
         <source>Output annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="158"/>
+        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="162"/>
         <source>Output annotation table</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="168"/>
+        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="172"/>
         <source>Merge Annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="169"/>
+        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="173"/>
         <source>Read input annotation table and merge it with supplied annotation tables.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="179"/>
+        <location filename="../src/library/ImportAnnotationsWorker.cpp" line="183"/>
         <source>Merge input annotations with annotations from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation></translation>
     </message>
@@ -2406,17 +2799,17 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::LaunchExternalToolTask</name>
     <message>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="501"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="502"/>
         <source>Launch external process task</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="575"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="576"/>
         <source>Running external process: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ExternalProcessWorker.cpp" line="580"/>
+        <location filename="../src/library/ExternalProcessWorker.cpp" line="581"/>
         <source>Can&apos;t launch %1</source>
         <translation></translation>
     </message>
@@ -2424,22 +2817,22 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::LoadMSATask</name>
     <message>
-        <location filename="../src/library/GenericReadWorker.cpp" line="173"/>
+        <location filename="../src/library/GenericReadWorker.cpp" line="171"/>
         <source>File &apos;%1&apos; not exists</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/GenericReadWorker.cpp" line="193"/>
+        <location filename="../src/library/GenericReadWorker.cpp" line="191"/>
         <source>Unsupported document format: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/GenericReadWorker.cpp" line="196"/>
+        <location filename="../src/library/GenericReadWorker.cpp" line="194"/>
         <source>Reading MSA from %1 [%2]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/GenericReadWorker.cpp" line="147"/>
+        <location filename="../src/library/GenericReadWorker.cpp" line="145"/>
         <source>Read MSA from %1</source>
         <translation></translation>
     </message>
@@ -2447,17 +2840,17 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::LoadSeqTask</name>
     <message>
-        <location filename="../src/library/GenericReadWorker.cpp" line="267"/>
+        <location filename="../src/library/GenericReadWorker.cpp" line="265"/>
         <source>File &apos;%1&apos; not exists</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/GenericReadWorker.cpp" line="280"/>
+        <location filename="../src/library/GenericReadWorker.cpp" line="278"/>
         <source>Unsupported document format: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/GenericReadWorker.cpp" line="312"/>
+        <location filename="../src/library/GenericReadWorker.cpp" line="285"/>
         <source>Reading sequences from %1 [%2]</source>
         <translation></translation>
     </message>
@@ -2478,7 +2871,7 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::MSAWriter</name>
     <message>
-        <location filename="../src/library/DocWorkers.cpp" line="755"/>
+        <location filename="../src/library/DocWorkers.cpp" line="768"/>
         <source>Empty alignment passed for writing to %1</source>
         <translation></translation>
     </message>
@@ -2486,7 +2879,7 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::MarkSequencePrompter</name>
     <message>
-        <location filename="../src/library/MarkSequenceWorker.cpp" line="155"/>
+        <location filename="../src/library/MarkSequenceWorker.cpp" line="165"/>
         <source>Adds one or several marks to the input sequence.</source>
         <translation></translation>
     </message>
@@ -2494,44 +2887,243 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::MarkSequenceWorker</name>
     <message>
-        <location filename="../src/library/MarkSequenceWorker.cpp" line="113"/>
+        <location filename="../src/library/MarkSequenceWorker.cpp" line="123"/>
         <source>Location</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/MarkSequenceWorker.cpp" line="113"/>
+        <location filename="../src/library/MarkSequenceWorker.cpp" line="123"/>
         <source>Location of sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/MarkSequenceWorker.cpp" line="119"/>
+        <location filename="../src/library/MarkSequenceWorker.cpp" line="129"/>
         <source>Sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/MarkSequenceWorker.cpp" line="126"/>
+        <location filename="../src/library/MarkSequenceWorker.cpp" line="136"/>
         <source>Marked sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/MarkSequenceWorker.cpp" line="131"/>
+        <location filename="../src/library/MarkSequenceWorker.cpp" line="141"/>
         <source>Sequence Marker</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/MarkSequenceWorker.cpp" line="132"/>
+        <location filename="../src/library/MarkSequenceWorker.cpp" line="142"/>
         <source>Adds one or several marks to the input sequence depending on the sequence properties. Use this element, for example, in conjunction with the Filter element.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/MarkSequenceWorker.cpp" line="134"/>
+        <location filename="../src/library/MarkSequenceWorker.cpp" line="144"/>
         <source>Markers</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/MarkSequenceWorker.cpp" line="134"/>
+        <location filename="../src/library/MarkSequenceWorker.cpp" line="144"/>
         <source>Markers.</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::MergeBamPrompter</name>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="66"/>
+        <source>unset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="67"/>
+        <source> from &lt;u&gt;%1&lt;/u&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="69"/>
+        <source>Merge BAM files from %1 with SAMTools merge.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::MergeBamWorker</name>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="81"/>
+        <source>Merge BAM files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="82"/>
+        <source>Merge BAM files using SAMTools merge.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="86"/>
+        <source>BAM File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="87"/>
+        <source>Set of BAM files to merge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="88"/>
+        <source>Merged BAM File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="89"/>
+        <source>Merged BAM file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="102"/>
+        <source>Output directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="103"/>
+        <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="107"/>
+        <source>Custom directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="108"/>
+        <source>Select the custom output directory.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="110"/>
+        <source>Output BAM name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="111"/>
+        <source>A name of an output BAM file. If default of empty value is provided the output name is the name of the first BAM file with .merged.bam extention.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="116"/>
+        <location filename="../src/library/MergeBamWorker.cpp" line="126"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="124"/>
+        <source>Input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="125"/>
+        <source>Workflow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/MergeBamWorker.cpp" line="168"/>
+        <source>Unknown file format: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::MergeFastqPrompter</name>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="395"/>
+        <source>unset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="396"/>
+        <source> from &lt;u&gt;%1&lt;/u&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="398"/>
+        <source>Merges input sequences from %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::MergeFastqWorker</name>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="406"/>
+        <source>FASTQ Merger</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="407"/>
+        <source>Merges input sequences to one output file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="411"/>
+        <source>Input File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="412"/>
+        <source>Set of FASTQ reads files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="413"/>
+        <source>Output File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="414"/>
+        <source>Output FASTQ file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="427"/>
+        <source>Output directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="428"/>
+        <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="432"/>
+        <source>Custom directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="433"/>
+        <source>Select the custom output directory.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="435"/>
+        <source>Output file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="436"/>
+        <source>A name of an output file. If default of empty value is provided the output name is the name of the first file with additional extention.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="441"/>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="451"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="449"/>
+        <source>Input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="450"/>
+        <source>Workflow</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2657,6 +3249,123 @@ You could also reset the dialog to the initial state.</source>
     </message>
 </context>
 <context>
+    <name>U2::LocalWorkflow::QualityTrimPrompter</name>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="214"/>
+        <source>unset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="215"/>
+        <source> from &lt;u&gt;%1&lt;/u&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="217"/>
+        <source>Trim input sequence %1 from the end, using the quality threshold.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::QualityTrimWorker</name>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="225"/>
+        <source>FASTQ Quality Trimmer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="226"/>
+        <source>The workflow scans each input sequence from the end to find the first position where the quality is greater or equal to the minimum quality threshold. Then it trims the sequence to that position. If a the whole sequence has quality less than the threshold or the length of the output sequence less than the minimum length threshold then the sequence is skipped.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="232"/>
+        <source>Input File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="233"/>
+        <source>Set of FASTQ reads files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="234"/>
+        <source>Output File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="235"/>
+        <source>Output FASTQ files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="248"/>
+        <source>Output directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="249"/>
+        <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="253"/>
+        <source>Custom directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="254"/>
+        <source>Select the custom output directory.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="256"/>
+        <source>Output file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="257"/>
+        <source>A name of an output file. If default of empty value is provided the output name is the name of the first file with additional extention.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="259"/>
+        <source>Quality threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="260"/>
+        <source>Quality threshold for trimming.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="262"/>
+        <source>Min Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="263"/>
+        <source>Too short reads are discarded by the filter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="267"/>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="279"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="277"/>
+        <source>Input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FASTQWorkersLibrary.cpp" line="278"/>
+        <source>Workflow</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::LocalWorkflow::RCWorker</name>
     <message>
         <location filename="../src/library/ReverseComplementWorker.cpp" line="35"/>
@@ -2741,7 +3450,7 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::RawSeqWriter</name>
     <message>
-        <location filename="../src/library/DocWorkers.cpp" line="382"/>
+        <location filename="../src/library/DocWorkers.cpp" line="386"/>
         <source>Raw sequence writer: NULL sequence object</source>
         <translation></translation>
     </message>
@@ -2749,22 +3458,22 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::ReadAnnotationsTask</name>
     <message>
-        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="170"/>
+        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="178"/>
         <source>Read annotations from %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="198"/>
+        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="207"/>
         <source>File &apos;%1&apos; does not exist</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="208"/>
+        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="217"/>
         <source>Unsupported document format: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="210"/>
+        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="220"/>
         <source>Reading annotations from %1 [%2]</source>
         <translation></translation>
     </message>
@@ -2772,52 +3481,52 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::ReadAnnotationsWorker</name>
     <message>
-        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="112"/>
+        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="119"/>
         <source>Read Annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="113"/>
+        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="120"/>
         <source>Reads annotations from files.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="123"/>
+        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="130"/>
         <source>Annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="124"/>
+        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="131"/>
         <source>Annotations.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="129"/>
+        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="136"/>
         <source>Mode</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="130"/>
+        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="137"/>
         <source>If the file contains more than one annotation table, &lt;i&gt;Split&lt;/i&gt; mode sends them &quot;as is&quot; to the output, while &lt;i&gt;Merge&lt;/i&gt; appends all the annotation tables and outputs the sole merged annotation table.In &lt;i&gt;Merge files&lt;/i&gt; is the same as &lt;i&gt;Merge&lt;/i&gt; but it operates with all annotation tables from all files of one dataset.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="140"/>
+        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="147"/>
         <source>Split</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="141"/>
+        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="148"/>
         <source>Merge</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="142"/>
+        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="149"/>
         <source>Merge files</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="149"/>
+        <location filename="../src/library/ReadAnnotationsWorker.cpp" line="156"/>
         <source>Reads annotations from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation></translation>
     </message>
@@ -2954,62 +3663,263 @@ You could also reset the dialog to the initial state.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="156"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="158"/>
         <source>failed to load item &apos;%1&apos; from &apos;%2&apos; DB : %3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="229"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="231"/>
         <source>Read from Remote Database</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="230"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="232"/>
         <source>Reads sequences and annotations if any from a remote database.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="234"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="236"/>
         <source>Sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="245"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="247"/>
         <source>Database</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="246"/>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="475"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="248"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="465"/>
         <source>The database to read from.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="250"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="252"/>
         <source>Resource ID(s)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="251"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="253"/>
         <source>Semicolon-separated list of resource ID`s in the database.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="255"/>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="469"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="257"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="459"/>
         <source>Save file to directory</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="256"/>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="470"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="258"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="460"/>
         <source>The directory to store sequence files loaded from a database.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="474"/>
+        <location filename="../src/library/RemoteDBFetcherWorker.cpp" line="464"/>
         <source>NCBI database</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::RmdupBamPrompter</name>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="67"/>
+        <source>unset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="68"/>
+        <source> from &lt;u&gt;%1&lt;/u&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="70"/>
+        <source>Remove PCR duplicates of BAM files from %1 with SAMTools rmdup.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::RmdupBamWorker</name>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="83"/>
+        <source>Remove Duplicates in BAM Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="84"/>
+        <source>Remove PCR duplicates of BAM files using SAMTools rmdup.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="88"/>
+        <source>BAM File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="89"/>
+        <source>Set of BAM files to rmdup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="90"/>
+        <source>Cleaned BAM File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="91"/>
+        <source>Cleaned BAM file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="104"/>
+        <source>Output directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="105"/>
+        <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="109"/>
+        <source>Custom directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="110"/>
+        <source>Select the custom output directory.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="112"/>
+        <source>Output BAM name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="113"/>
+        <source>A name of an output BAM file. If default of empty value is provided the output name is the name of the first BAM file with .nodup.bam extention.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="115"/>
+        <source>Remove for single-end reads</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="116"/>
+        <source>Remove duplicate for single-end reads. By default, the command works for paired-end reads only (-s).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="118"/>
+        <source>Treat as single-end</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="119"/>
+        <source>Treat paired-end reads and single-end reads (-S).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="123"/>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="135"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="133"/>
+        <source>Input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="134"/>
+        <source>Workflow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="177"/>
+        <source>Unknown file format: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::SamtoolsRmdupTask</name>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="289"/>
+        <source>Samtool rmdup for %1 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="295"/>
+        <source>No assembly URL to filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="301"/>
+        <source>Directory does not exist: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="335"/>
+        <source>Can not run %1 tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="341"/>
+        <source>%1 tool exited with code %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/RmdupBamWorker.cpp" line="343"/>
+        <source>Tool %1 finished successfully</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::SamtoolsSortTask</name>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="264"/>
+        <source>No assembly URL to filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="270"/>
+        <source>Directory does not exist: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::SamtoolsViewFilterTask</name>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="354"/>
+        <source>Samtool view (filter) for %1 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="360"/>
+        <source>No assembly URL to filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="366"/>
+        <source>Directory does not exist: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="403"/>
+        <source>Can not run %1 tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="409"/>
+        <source>%1 tool exited with code %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/FilterBamWorker.cpp" line="411"/>
+        <source>Tool %1 finished successfully</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3065,42 +3975,42 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::SequenceSplitPromter</name>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="66"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="68"/>
         <source>unset</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="67"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="69"/>
         <source>from &lt;u&gt;%1&lt;/u&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="75"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="77"/>
         <source>%1 it if annotation marks translated subsequence, </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="76"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="78"/>
         <source>translate</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="83"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="85"/>
         <source>make it %1 if annotation is located on complement strand, </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="92"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="94"/>
         <source>expand it to left with &lt;u&gt;%1&lt;/u&gt;, </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="95"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="97"/>
         <source>expand it to right with &lt;u&gt;%1&lt;/u&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="102"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="104"/>
         <source>Extract each annotated sequence region %5 %2 %3%4</source>
         <translation></translation>
     </message>
@@ -3108,97 +4018,97 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::SequenceSplitWorker</name>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="147"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="149"/>
         <source>No sequence provided to split worker</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="149"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="151"/>
         <source>Nothing to extract. Sequence &apos;%1&apos; has no annotations.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="165"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="167"/>
         <source>Nothing to extract: no sequence region match the constraints</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="227"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="229"/>
         <source>Input sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="228"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="230"/>
         <source>A sequence which will be split into annotated regions.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="229"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="231"/>
         <source>Annotated regions</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="230"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="232"/>
         <source>Resulted subsequences, translated and complemented according to corresponding annotations.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="238"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="240"/>
         <source>Translate</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="239"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="241"/>
         <source>Translate the annotated regions.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="241"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="243"/>
         <source>Complement</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="242"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="244"/>
         <source>Complement the annotated regions if the corresponding annotation is located on complement strand.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="244"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="246"/>
         <source>Extend left</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="245"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="247"/>
         <source>Extend the resulted regions to left.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="247"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="249"/>
         <source>Extend right</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="248"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="250"/>
         <source>Extend the resulted regions to right.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="250"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="252"/>
         <source>Gap length</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="251"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="253"/>
         <source>Insert gap of specified length between merged locations of annotation.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="261"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="263"/>
         <source>Get Sequences by Annotations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/SequenceSplitWorker.cpp" line="262"/>
+        <location filename="../src/library/SequenceSplitWorker.cpp" line="264"/>
         <source>Creates sequences from annotated regions of input sequence.</source>
         <translation></translation>
     </message>
@@ -3242,6 +4152,118 @@ You could also reset the dialog to the initial state.</source>
         <location filename="../src/library/SequencesToMSAWorker.cpp" line="136"/>
         <source>Creates multiple sequence alignment from sequences.</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::SortBamPrompter</name>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="66"/>
+        <source>unset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="67"/>
+        <source> from &lt;u&gt;%1&lt;/u&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="69"/>
+        <source>Sort BAM file %1 with SAMTools sort.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::LocalWorkflow::SortBamWorker</name>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="81"/>
+        <source>Sort BAM Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="82"/>
+        <source>Sort BAM Files using SAMTools Sort.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="86"/>
+        <source>BAM File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="87"/>
+        <source>Set of BAM files to sort</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="88"/>
+        <source>Sorted BAM File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="89"/>
+        <source>Sorted BAM file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="102"/>
+        <source>Output directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="103"/>
+        <source>Select an output directory. &lt;b&gt;Custom&lt;/b&gt; - specify the output directory in the &apos;Custom directory&apos; parameter. &lt;b&gt;Workflow&lt;/b&gt; - internal workflow directory. &lt;b&gt;Input file&lt;/b&gt; - the directory of the input file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="107"/>
+        <source>Custom directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="108"/>
+        <source>Select the custom output directory.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="110"/>
+        <source>Output BAM name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="111"/>
+        <source>A name of an output BAM file. If default of empty value is provided the output name is the name of the first BAM file with .sorted.bam extention.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="113"/>
+        <source>Build index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="114"/>
+        <source>Build index for the sorted file with SAMTools index.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="118"/>
+        <location filename="../src/library/SortBamWorker.cpp" line="129"/>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="127"/>
+        <source>Input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="128"/>
+        <source>Workflow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/library/SortBamWorker.cpp" line="171"/>
+        <source>Unknown file format: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3383,17 +4405,17 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::LocalWorkflow::TextReader</name>
     <message>
-        <location filename="../src/library/DocWorkers.cpp" line="99"/>
+        <location filename="../src/library/DocWorkers.cpp" line="101"/>
         <source>Can&apos;t load file %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DocWorkers.cpp" line="111"/>
+        <location filename="../src/library/DocWorkers.cpp" line="113"/>
         <source>Can&apos;t load file %1. %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/DocWorkers.cpp" line="144"/>
+        <location filename="../src/library/DocWorkers.cpp" line="146"/>
         <source>Reading text from %1</source>
         <translation></translation>
     </message>
@@ -3445,33 +4467,33 @@ You could also reset the dialog to the initial state.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/WriteVariationWorker.cpp" line="107"/>
         <location filename="../src/library/WriteVariationWorker.cpp" line="108"/>
+        <location filename="../src/library/WriteVariationWorker.cpp" line="109"/>
         <source>Variation track</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/WriteVariationWorker.cpp" line="110"/>
+        <location filename="../src/library/WriteVariationWorker.cpp" line="111"/>
         <source>Write Variations</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/WriteVariationWorker.cpp" line="111"/>
+        <location filename="../src/library/WriteVariationWorker.cpp" line="112"/>
         <source>Writes all supplied variations to file(s) in selected format.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/WriteVariationWorker.cpp" line="117"/>
+        <location filename="../src/library/WriteVariationWorker.cpp" line="118"/>
         <source>Location</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/WriteVariationWorker.cpp" line="118"/>
+        <location filename="../src/library/WriteVariationWorker.cpp" line="119"/>
         <source>Location for writing data</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/WriteVariationWorker.cpp" line="144"/>
+        <location filename="../src/library/WriteVariationWorker.cpp" line="145"/>
         <source>Save all variations from &lt;u&gt;%1&lt;/u&gt; to &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation></translation>
     </message>
@@ -3479,17 +4501,17 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::NameFilterLayout</name>
     <message>
-        <location filename="../src/WorkflowSamples.cpp" line="321"/>
+        <location filename="../src/WorkflowSamples.cpp" line="332"/>
         <source>Type to filter by name...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowSamples.cpp" line="323"/>
+        <location filename="../src/WorkflowSamples.cpp" line="334"/>
         <source>Name filter:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowSamples.cpp" line="330"/>
+        <location filename="../src/WorkflowSamples.cpp" line="341"/>
         <source>Esc</source>
         <translation></translation>
     </message>
@@ -3518,12 +4540,7 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::StartupDialog</name>
     <message>
-        <location filename="../src/StartupDialog.cpp" line="40"/>
-        <source>Don&apos;t use the directory</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/StartupDialog.cpp" line="57"/>
+        <location filename="../src/StartupDialog.cpp" line="68"/>
         <source>You have no write access to the directory. Please choose another one.</source>
         <translation></translation>
     </message>
@@ -3531,116 +4548,116 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::Workflow::CoreLib</name>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="121"/>
+        <location filename="../src/library/CoreLib.cpp" line="128"/>
         <source>Location</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="121"/>
+        <location filename="../src/library/CoreLib.cpp" line="128"/>
         <source>Location for writing data</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="148"/>
+        <location filename="../src/library/CoreLib.cpp" line="155"/>
         <source>Write FASTA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="148"/>
+        <location filename="../src/library/CoreLib.cpp" line="155"/>
         <source>Writes all supplied sequences to file(s) in FASTA format.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="149"/>
-        <location filename="../src/library/CoreLib.cpp" line="241"/>
+        <location filename="../src/library/CoreLib.cpp" line="156"/>
+        <location filename="../src/library/CoreLib.cpp" line="250"/>
         <location filename="../src/library/GenericReadActor.cpp" line="98"/>
         <source>Sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="149"/>
+        <location filename="../src/library/CoreLib.cpp" line="156"/>
         <source>A sequence along with FASTA header line.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="169"/>
+        <location filename="../src/library/CoreLib.cpp" line="176"/>
         <source>Read Plain Text</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="169"/>
+        <location filename="../src/library/CoreLib.cpp" line="176"/>
         <source>Reads text from local or remote files.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="170"/>
-        <location filename="../src/library/CoreLib.cpp" line="189"/>
+        <location filename="../src/library/CoreLib.cpp" line="177"/>
+        <location filename="../src/library/CoreLib.cpp" line="196"/>
         <source>Plain text</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="172"/>
+        <location filename="../src/library/CoreLib.cpp" line="179"/>
         <source>Reads text from &lt;u&gt;%1&lt;/u&gt;.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="188"/>
+        <location filename="../src/library/CoreLib.cpp" line="195"/>
         <source>Write Plain Text</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="188"/>
+        <location filename="../src/library/CoreLib.cpp" line="195"/>
         <source>Write strings to a file.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="193"/>
+        <location filename="../src/library/CoreLib.cpp" line="200"/>
         <source>Save text from &lt;u&gt;%1&lt;/u&gt; to &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="402"/>
+        <location filename="../src/library/CoreLib.cpp" line="420"/>
         <source>Another worker with this name is already registered: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="404"/>
+        <location filename="../src/library/CoreLib.cpp" line="422"/>
         <source>The actor &apos;%1&apos; has been already registered</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="207"/>
+        <location filename="../src/library/CoreLib.cpp" line="215"/>
         <location filename="../src/library/GenericReadActor.cpp" line="156"/>
         <source>Multiple sequence alignment</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="219"/>
+        <location filename="../src/library/CoreLib.cpp" line="227"/>
         <source>Save all MSAs from &lt;u&gt;%1&lt;/u&gt; to &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="206"/>
+        <location filename="../src/library/CoreLib.cpp" line="214"/>
         <source>Write Alignment</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="206"/>
+        <location filename="../src/library/CoreLib.cpp" line="214"/>
         <source>Writes all supplied alignments to file(s) in selected format.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="240"/>
+        <location filename="../src/library/CoreLib.cpp" line="249"/>
         <source>Write Sequence</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="240"/>
+        <location filename="../src/library/CoreLib.cpp" line="249"/>
         <source>Writes all supplied sequences to file(s) in selected format.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/library/CoreLib.cpp" line="268"/>
+        <location filename="../src/library/CoreLib.cpp" line="277"/>
         <source>Save all sequences from &lt;u&gt;%1&lt;/u&gt; to &lt;u&gt;%2&lt;/u&gt;.</source>
         <translation></translation>
     </message>
@@ -3683,17 +4700,17 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::Workflow::GalaxyConfigConfigurationDialogImpl</name>
     <message>
-        <location filename="../src/GalaxyConfigConfigurationDialogImpl.cpp" line="50"/>
+        <location filename="../src/GalaxyConfigConfigurationDialogImpl.cpp" line="52"/>
         <source>Set UGENE directory</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/GalaxyConfigConfigurationDialogImpl.cpp" line="57"/>
+        <location filename="../src/GalaxyConfigConfigurationDialogImpl.cpp" line="59"/>
         <source>Set Galaxy directory</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/GalaxyConfigConfigurationDialogImpl.cpp" line="64"/>
+        <location filename="../src/GalaxyConfigConfigurationDialogImpl.cpp" line="66"/>
         <source>Set destination directory</source>
         <translation></translation>
     </message>
@@ -3701,35 +4718,35 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::Workflow::PortAliasesConfigurationDialog</name>
     <message>
-        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="110"/>
+        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="127"/>
         <source>Input</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="112"/>
+        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="129"/>
         <source>Output</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="229"/>
-        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="238"/>
-        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="254"/>
+        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="246"/>
+        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="253"/>
+        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="269"/>
         <source>Workflow Designer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="230"/>
+        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="247"/>
         <source>There is a port with some aliased slots but without alias name:
 %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="239"/>
+        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="254"/>
         <source>Slot aliases of one port must be different!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="255"/>
+        <location filename="../src/PortAliasesConfigurationDialog.cpp" line="270"/>
         <source>Port aliases must be different! Rename one of ports:
 %1 or %2</source>
         <translation></translation>
@@ -3738,37 +4755,37 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::Workflow::ReadAssemblyTask</name>
     <message>
-        <location filename="../src/tasks/ReadAssemblyTask.cpp" line="147"/>
+        <location filename="../src/tasks/ReadAssemblyTask.cpp" line="149"/>
         <source>Read assembly from %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/ReadAssemblyTask.cpp" line="160"/>
+        <location filename="../src/tasks/ReadAssemblyTask.cpp" line="162"/>
         <source>File &apos;%1&apos; not exists</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/ReadAssemblyTask.cpp" line="196"/>
+        <location filename="../src/tasks/ReadAssemblyTask.cpp" line="198"/>
         <source>Unsupported document format: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/ReadAssemblyTask.cpp" line="207"/>
+        <location filename="../src/tasks/ReadAssemblyTask.cpp" line="209"/>
         <source>Can not read assemblies from the file: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/ReadAssemblyTask.cpp" line="231"/>
+        <location filename="../src/tasks/ReadAssemblyTask.cpp" line="233"/>
         <source>Reading assembly from %1 [%2]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/ReadAssemblyTask.cpp" line="266"/>
+        <location filename="../src/tasks/ReadAssemblyTask.cpp" line="268"/>
         <source>No assemblies in the file: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/tasks/ReadAssemblyTask.cpp" line="271"/>
+        <location filename="../src/tasks/ReadAssemblyTask.cpp" line="273"/>
         <source>Incorrect assembly object in %1</source>
         <translation></translation>
     </message>
@@ -3883,68 +4900,68 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::WorkflowDesignerPlugin</name>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="76"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="80"/>
         <location filename="../src/WorkflowDocument.h" line="87"/>
         <source>Workflow Designer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="76"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="80"/>
         <source>Workflow Designer allows to create complex computational workflows.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="163"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="167"/>
         <source>Runs the specified task.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="164"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="168"/>
         <source>Runs the specified task. A path to a user-defined UGENE workflow be used as a task name.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="166"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="170"/>
         <source>&lt;task_name&gt; [&lt;task_parameter&gt;=value ...]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="172"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="176"/>
         <source>Prints the content of the specified slot.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="173"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="177"/>
         <source>Prints the content of the specified slot. The incoming/outcoming content of specified slot is printed to the standart output.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="175"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="179"/>
         <source>&lt;actor_name&gt;.&lt;port_name&gt;.&lt;slot_name&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="180"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="184"/>
         <source>Creates new Galaxy tool config.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="181"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="185"/>
         <source>Creates new Galaxy tool config from existing workflow. Paths to UGENE and Galaxy can be set</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="183"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="187"/>
         <source>&lt;uwl-file&gt; [--ugene-path=value] [--galaxy-path=value]</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="203"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="207"/>
         <source>Close Designer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="212"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="216"/>
         <source>Close Designer canceled</source>
         <translation></translation>
     </message>
@@ -3952,12 +4969,12 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::WorkflowDesignerService</name>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="221"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="225"/>
         <source>Workflow Designer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDesignerPlugin.cpp" line="260"/>
+        <location filename="../src/WorkflowDesignerPlugin.cpp" line="250"/>
         <source>Workflow Designer...</source>
         <translation></translation>
     </message>
@@ -3965,19 +4982,19 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::WorkflowDocFormat</name>
     <message>
-        <location filename="../src/WorkflowDocument.cpp" line="78"/>
-        <location filename="../src/WorkflowDocument.cpp" line="86"/>
-        <location filename="../src/WorkflowDocument.cpp" line="111"/>
+        <location filename="../src/WorkflowDocument.cpp" line="83"/>
+        <location filename="../src/WorkflowDocument.cpp" line="91"/>
+        <location filename="../src/WorkflowDocument.cpp" line="116"/>
         <source>Workflow</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDocument.cpp" line="80"/>
+        <location filename="../src/WorkflowDocument.cpp" line="85"/>
         <source>WorkflowDoc is a format used for creating/editing/storing/retrievingworkflow with the text file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowDocument.cpp" line="103"/>
+        <location filename="../src/WorkflowDocument.cpp" line="108"/>
         <source>Invalid header. %1 expected</source>
         <translation></translation>
     </message>
@@ -3985,68 +5002,68 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::WorkflowEditor</name>
     <message>
-        <location filename="../src/ActorCfgModel.cpp" line="224"/>
+        <location filename="../src/ActorCfgModel.cpp" line="228"/>
         <source>Name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ActorCfgModel.cpp" line="226"/>
+        <location filename="../src/ActorCfgModel.cpp" line="230"/>
         <source>Value</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ActorCfgModel.cpp" line="228"/>
+        <location filename="../src/ActorCfgModel.cpp" line="232"/>
         <source>Script</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowEditor.cpp" line="206"/>
-        <location filename="../src/WorkflowEditor.cpp" line="345"/>
+        <location filename="../src/WorkflowEditor.cpp" line="221"/>
+        <location filename="../src/WorkflowEditor.cpp" line="360"/>
         <source>Parameters</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowEditor.cpp" line="272"/>
+        <location filename="../src/WorkflowEditor.cpp" line="287"/>
         <source>Element name:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowEditor.cpp" line="275"/>
+        <location filename="../src/WorkflowEditor.cpp" line="290"/>
         <source>To configure the parameters of the element go to &quot;Parameters&quot; area below.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowEditor.cpp" line="394"/>
+        <location filename="../src/WorkflowEditor.cpp" line="409"/>
         <source>&lt;b&gt;%1 &quot;%2&quot;&lt;/b&gt; of task &quot;%3&quot;:&lt;br&gt;%4&lt;br&gt;&lt;br&gt;%5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowEditor.cpp" line="395"/>
+        <location filename="../src/WorkflowEditor.cpp" line="410"/>
         <source>Output port</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowEditor.cpp" line="395"/>
+        <location filename="../src/WorkflowEditor.cpp" line="410"/>
         <source>Input port</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowEditor.cpp" line="399"/>
+        <location filename="../src/WorkflowEditor.cpp" line="414"/>
         <source>You can observe data slots of the port and configure connections if any in the &quot;Parameters&quot; widget suited below.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowEditor.cpp" line="423"/>
+        <location filename="../src/WorkflowEditor.cpp" line="438"/>
         <source>Input data</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowEditor.cpp" line="425"/>
+        <location filename="../src/WorkflowEditor.cpp" line="440"/>
         <source>Output data</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowEditor.cpp" line="433"/>
+        <location filename="../src/WorkflowEditor.cpp" line="448"/>
         <source>Select an element to inspect.</source>
         <translation></translation>
     </message>
@@ -4054,17 +5071,17 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::WorkflowInvestigationWidgetsController</name>
     <message>
-        <location filename="../src/WorkflowInvestigationWidgetsController.cpp" line="109"/>
+        <location filename="../src/WorkflowInvestigationWidgetsController.cpp" line="122"/>
         <source>Messages from &apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowInvestigationWidgetsController.cpp" line="110"/>
+        <location filename="../src/WorkflowInvestigationWidgetsController.cpp" line="123"/>
         <source>&apos; to &apos;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowInvestigationWidgetsController.cpp" line="110"/>
+        <location filename="../src/WorkflowInvestigationWidgetsController.cpp" line="123"/>
         <source>&apos;</source>
         <translation></translation>
     </message>
@@ -4072,7 +5089,7 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::WorkflowMetaDialog</name>
     <message>
-        <location filename="../src/WorkflowMetaDialog.cpp" line="78"/>
+        <location filename="../src/WorkflowMetaDialog.cpp" line="88"/>
         <source>Save workflow to file</source>
         <translation></translation>
     </message>
@@ -4080,27 +5097,27 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::WorkflowPaletteElements</name>
     <message>
-        <location filename="../src/WorkflowPalette.cpp" line="549"/>
+        <location filename="../src/WorkflowPalette.cpp" line="566"/>
         <source>Can&apos;t remove element %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowPalette.cpp" line="571"/>
+        <location filename="../src/WorkflowPalette.cpp" line="588"/>
         <source>Expand all</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowPalette.cpp" line="572"/>
+        <location filename="../src/WorkflowPalette.cpp" line="589"/>
         <source>Collapse all</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowPalette.cpp" line="575"/>
+        <location filename="../src/WorkflowPalette.cpp" line="592"/>
         <source>Edit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowPalette.cpp" line="576"/>
+        <location filename="../src/WorkflowPalette.cpp" line="593"/>
         <source>Remove</source>
         <translation></translation>
     </message>
@@ -4159,22 +5176,22 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::WorkflowScene</name>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="2578"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2518"/>
         <source>Open document(s)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="2738"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2678"/>
         <source>Workflow Designer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="2738"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2678"/>
         <source>Unable to open specified documents. Watch log for details.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="2820"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2760"/>
         <source>Drop an element from the palette here</source>
         <translation></translation>
     </message>
@@ -4182,7 +5199,7 @@ You could also reset the dialog to the initial state.</source>
 <context>
     <name>U2::WorkflowSettingsPageController</name>
     <message>
-        <location filename="../src/WorkflowSettingsController.cpp" line="37"/>
+        <location filename="../src/WorkflowSettingsController.cpp" line="42"/>
         <source>Workflow Designer</source>
         <translation></translation>
     </message>
@@ -4223,392 +5240,377 @@ You could also reset the dialog to the initial state.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowSettingsController.cpp" line="82"/>
-        <location filename="../src/WorkflowViewController.cpp" line="752"/>
+        <location filename="../src/WorkflowSettingsController.cpp" line="86"/>
+        <location filename="../src/WorkflowViewController.cpp" line="776"/>
         <source>Minimal</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowSettingsController.cpp" line="83"/>
-        <location filename="../src/WorkflowViewController.cpp" line="758"/>
+        <location filename="../src/WorkflowSettingsController.cpp" line="87"/>
+        <location filename="../src/WorkflowViewController.cpp" line="782"/>
         <source>Extended</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="150"/>
+        <location filename="../src/WorkflowViewController.cpp" line="174"/>
         <source>%</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="139"/>
+        <location filename="../src/WorkflowViewController.cpp" line="163"/>
         <source>You opened obsolete workflow in XML format. It is strongly recommended to clear working space and create workflow from scratch.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="142"/>
+        <location filename="../src/WorkflowViewController.cpp" line="166"/>
         <source>Sorry! This workflow is obsolete and cannot be opened.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="292"/>
-        <location filename="../src/WorkflowViewController.cpp" line="2373"/>
+        <location filename="../src/WorkflowViewController.cpp" line="326"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2315"/>
         <source>Workflow Designer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="364"/>
+        <location filename="../src/WorkflowViewController.cpp" line="395"/>
         <source>Elements</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="367"/>
+        <location filename="../src/WorkflowViewController.cpp" line="398"/>
         <source>Samples</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="383"/>
-        <location filename="../src/WorkflowViewController.cpp" line="526"/>
+        <location filename="../src/WorkflowViewController.cpp" line="414"/>
+        <location filename="../src/WorkflowViewController.cpp" line="550"/>
         <source>Error list</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="411"/>
-        <location filename="../src/WorkflowViewController.cpp" line="413"/>
-        <location filename="../src/WorkflowViewController.cpp" line="2299"/>
-        <location filename="../src/WorkflowViewController.cpp" line="2301"/>
+        <location filename="../src/WorkflowViewController.cpp" line="442"/>
+        <location filename="../src/WorkflowViewController.cpp" line="444"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2239"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2241"/>
         <source>Warning!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="416"/>
+        <location filename="../src/WorkflowViewController.cpp" line="447"/>
         <source>Undefined workflow format for %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="416"/>
+        <location filename="../src/WorkflowViewController.cpp" line="447"/>
         <source>file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="588"/>
+        <location filename="../src/WorkflowViewController.cpp" line="612"/>
         <source>&amp;Run workflow</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="595"/>
+        <location filename="../src/WorkflowViewController.cpp" line="619"/>
         <source>S&amp;top workflow</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="601"/>
+        <location filename="../src/WorkflowViewController.cpp" line="625"/>
         <source>&amp;Validate workflow</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="607"/>
+        <location filename="../src/WorkflowViewController.cpp" line="631"/>
         <source>&amp;Estimate workflow</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="614"/>
+        <location filename="../src/WorkflowViewController.cpp" line="638"/>
         <source>&amp;Pause workflow</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="621"/>
+        <location filename="../src/WorkflowViewController.cpp" line="645"/>
         <source>&amp;Next step</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="631"/>
+        <location filename="../src/WorkflowViewController.cpp" line="655"/>
         <source>Process one &amp;message</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="641"/>
+        <location filename="../src/WorkflowViewController.cpp" line="665"/>
         <source>&amp;New workflow</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="646"/>
+        <location filename="../src/WorkflowViewController.cpp" line="670"/>
         <source>&amp;Save workflow</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="653"/>
+        <location filename="../src/WorkflowViewController.cpp" line="677"/>
         <source>&amp;Save workflow as...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="658"/>
+        <location filename="../src/WorkflowViewController.cpp" line="682"/>
         <source>Show wizard</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="674"/>
+        <location filename="../src/WorkflowViewController.cpp" line="698"/>
         <source>&amp;Load workflow</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="685"/>
+        <location filename="../src/WorkflowViewController.cpp" line="709"/>
         <source>Delete</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="800"/>
+        <location filename="../src/WorkflowViewController.cpp" line="810"/>
         <source>Create element with script...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="805"/>
+        <location filename="../src/WorkflowViewController.cpp" line="815"/>
         <source>Edit script of the element...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="811"/>
+        <location filename="../src/WorkflowViewController.cpp" line="821"/>
         <source>Create element with command line tool...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="820"/>
+        <location filename="../src/WorkflowViewController.cpp" line="830"/>
         <source>Add element with command line tool...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="908"/>
-        <location filename="../src/WorkflowViewController.cpp" line="933"/>
+        <location filename="../src/WorkflowViewController.cpp" line="918"/>
+        <location filename="../src/WorkflowViewController.cpp" line="943"/>
         <source>Can&apos;t load element.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1344"/>
-        <location filename="../src/WorkflowViewController.cpp" line="1411"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1293"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1354"/>
         <source>Element style</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1404"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1347"/>
         <source>Element properties</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="727"/>
+        <location filename="../src/WorkflowViewController.cpp" line="751"/>
         <source>Select all elements</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="680"/>
+        <location filename="../src/WorkflowViewController.cpp" line="704"/>
         <source>&amp;Export workflow as image</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="689"/>
+        <location filename="../src/WorkflowViewController.cpp" line="713"/>
         <source>Dashboards manager</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="722"/>
+        <location filename="../src/WorkflowViewController.cpp" line="746"/>
         <source>Create Galaxy tool config...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="730"/>
+        <location filename="../src/WorkflowViewController.cpp" line="754"/>
         <source>&amp;Copy</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="737"/>
+        <location filename="../src/WorkflowViewController.cpp" line="761"/>
         <source>Cu&amp;t</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="744"/>
+        <location filename="../src/WorkflowViewController.cpp" line="768"/>
         <source>&amp;Paste</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="766"/>
-        <source>Local host</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/WorkflowViewController.cpp" line="773"/>
-        <source>Remote machine</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/WorkflowViewController.cpp" line="780"/>
+        <location filename="../src/WorkflowViewController.cpp" line="790"/>
         <source>Hide scripting options</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="787"/>
+        <location filename="../src/WorkflowViewController.cpp" line="797"/>
         <source>Show scripting options</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="795"/>
+        <location filename="../src/WorkflowViewController.cpp" line="805"/>
         <source>Unlock Scene</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1350"/>
-        <location filename="../src/WorkflowViewController.cpp" line="1420"/>
-        <source>Run mode</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1356"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1299"/>
         <source>Scripting mode</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="904"/>
-        <location filename="../src/WorkflowViewController.cpp" line="1311"/>
-        <location filename="../src/WorkflowViewController.cpp" line="1428"/>
+        <location filename="../src/WorkflowViewController.cpp" line="914"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1260"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1364"/>
         <source>Add element</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="709"/>
+        <location filename="../src/WorkflowViewController.cpp" line="733"/>
         <source>Configure parameter aliases...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="714"/>
+        <location filename="../src/WorkflowViewController.cpp" line="738"/>
         <source>Configure port and slot aliases...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="718"/>
+        <location filename="../src/WorkflowViewController.cpp" line="742"/>
         <source>Import workflow to element...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="815"/>
+        <location filename="../src/WorkflowViewController.cpp" line="825"/>
         <source>Edit configuration...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="967"/>
+        <location filename="../src/WorkflowViewController.cpp" line="977"/>
         <source>Can&apos;t remove element %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1463"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1399"/>
         <source>Empty workflow!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1463"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1399"/>
         <source>Nothing to run: empty workflow</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1488"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1424"/>
         <source>Workflow cannot be executed</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1489"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1425"/>
         <source>Please fix issues listed in the error list (located under workflow).</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1492"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1428"/>
         <source>Workflow is valid.
 </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1494"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1430"/>
         <source>Well done!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1496"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1432"/>
         <source>There are non-critical warnings.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1498"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1434"/>
         <source>Workflow is valid</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1763"/>
-        <location filename="../src/WorkflowViewController.cpp" line="1796"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1695"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1728"/>
         <source>Bad input!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1763"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1695"/>
         <source>Aliases for workflow parameters should be different!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1860"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1792"/>
         <source>The workflow contains a wizard. Sorry, but current version of UGENE doesn&apos;t support of wizards in the includes.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1862"/>
-        <location filename="../src/WorkflowViewController.cpp" line="1887"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1794"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1819"/>
         <source>Error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1796"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1728"/>
         <source>Workflow does not contain any parameter aliases</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1807"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1739"/>
         <source>Internal error!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1807"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1739"/>
         <source>Can not create Galaxy config</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="1903"/>
+        <location filename="../src/WorkflowViewController.cpp" line="1835"/>
         <source>Drag the palette element to the scene or just click on the scene to add the element.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="2186"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2119"/>
         <source>File is not found: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="2223"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2157"/>
         <source>Show dashboard</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="2232"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2166"/>
         <source>Show workflow</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="2275"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2212"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2215"/>
         <source>Open workflow file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="2312"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2253"/>
         <source>New workflow</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="2342"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2284"/>
         <source>Workflow Designer - %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="2374"/>
+        <location filename="../src/WorkflowViewController.cpp" line="2316"/>
         <source>The workflow has been modified.
 Do you want to save changes?</source>
         <translation></translation>
@@ -4617,7 +5619,7 @@ Do you want to save changes?</source>
 <context>
     <name>U2::WorkflowViewFactory</name>
     <message>
-        <location filename="../src/WorkflowDocument.cpp" line="156"/>
+        <location filename="../src/WorkflowDocument.cpp" line="161"/>
         <source>Open multiple views</source>
         <translation></translation>
     </message>
@@ -4658,38 +5660,28 @@ Do you want to save changes?</source>
 <context>
     <name>WorkflowMetaDialog</name>
     <message>
-        <location filename="../src/ui/WorkflowMetaDialog.ui" line="13"/>
-        <source>Workflow properties</source>
-        <translation></translation>
+        <location filename="../src/ui/WorkflowMetaDialog.ui" line="14"/>
+        <source>Workflow Properties</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/WorkflowMetaDialog.ui" line="19"/>
+        <location filename="../src/ui/WorkflowMetaDialog.ui" line="42"/>
         <source>Location</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/WorkflowMetaDialog.ui" line="29"/>
+        <location filename="../src/ui/WorkflowMetaDialog.ui" line="52"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/WorkflowMetaDialog.ui" line="36"/>
+        <location filename="../src/ui/WorkflowMetaDialog.ui" line="59"/>
         <source>Name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/WorkflowMetaDialog.ui" line="46"/>
+        <location filename="../src/ui/WorkflowMetaDialog.ui" line="69"/>
         <source>Comment</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/WorkflowMetaDialog.ui" line="56"/>
-        <source>OK</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/WorkflowMetaDialog.ui" line="66"/>
-        <source>Cancel</source>
         <translation></translation>
     </message>
 </context>
@@ -4731,17 +5723,17 @@ Do you want to save changes?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/WorkflowSettingsWidget.ui" line="155"/>
+        <location filename="../src/ui/WorkflowSettingsWidget.ui" line="145"/>
         <source>Directory for custom elements with scripts</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/WorkflowSettingsWidget.ui" line="176"/>
+        <location filename="../src/ui/WorkflowSettingsWidget.ui" line="166"/>
         <source>Directory for custom elements with command line tools</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/WorkflowSettingsWidget.ui" line="197"/>
+        <location filename="../src/ui/WorkflowSettingsWidget.ui" line="187"/>
         <source>Directory for included schema elements</source>
         <translation></translation>
     </message>
@@ -4774,7 +5766,7 @@ Do you want to save changes?</source>
 <context>
     <name>WorkflowUtils</name>
     <message>
-        <location filename="../src/WorkflowViewController.cpp" line="903"/>
+        <location filename="../src/WorkflowViewController.cpp" line="913"/>
         <source>UGENE workflow element</source>
         <translation></translation>
     </message>

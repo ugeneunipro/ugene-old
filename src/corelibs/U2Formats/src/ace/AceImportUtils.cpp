@@ -26,6 +26,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include "ace/AceImportUtils.h"
+#include "DocumentFormatUtils.h"
 
 namespace U2 {
 
@@ -132,11 +133,11 @@ AceReader::AceReader(IOAdapter& _io, U2OpStatus &_os) :
     skipBreaks(io, buff, &len);
     CHECK_OP((*os), );
     QByteArray headerLine = (QByteArray::fromRawData(buff, len)).trimmed();
-    CHECK_EXT(headerLine.startsWith(AS), os->setError(tr("First line is not an ace header")), );
+    CHECK_EXT(headerLine.startsWith(AS), os->setError(DocumentFormatUtils::tr("First line is not an ace header")), );
 
     contigsCount = getContigCount(headerLine);
     CHECK_OP((*os), );
-    CHECK_EXT(contigsCount > 0, os->setError((tr("There is no assemblies in input file"))), );
+    CHECK_EXT(contigsCount > 0, os->setError((DocumentFormatUtils::tr("There is no assemblies in input file"))), );
 }
 
 Assembly AceReader::getAssembly() {
@@ -152,7 +153,7 @@ Assembly AceReader::getAssembly() {
     QSet<QByteArray> names;
     QMap<QByteArray, bool> complMap;
 
-    CHECK_EXT(currentContig < contigsCount, os->setError(tr("There are not enough assemblies")), result);
+    CHECK_EXT(currentContig < contigsCount, os->setError(DocumentFormatUtils::tr("There are not enough assemblies")), result);
 
     do {
         skipBreaks(io, buff, &len);
@@ -208,15 +209,15 @@ bool AceReader::isFinish() {
 void AceReader::skipBreaks(IOAdapter *io, char *buff, qint64 *len) {
     bool lineOk = true;
     *len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &lineOk);
-    CHECK_EXT(*len != 0, os->setError(tr("Unexpected end of file")), );
-    CHECK_EXT(lineOk || io->isEof(), os->setError(tr("Line is too long")), );
+    CHECK_EXT(*len != 0, os->setError(DocumentFormatUtils::tr("Unexpected end of file")), );
+    CHECK_EXT(lineOk || io->isEof(), os->setError(DocumentFormatUtils::tr("Line is too long")), );
 }
 
 int AceReader::getContigCount(const QByteArray &cur_line) {
     QByteArray line = cur_line;
     int contigC = getSubString(line, CONTIG_COUNT_POS);
     CHECK_OP((*os), 0);
-    CHECK_EXT(-1 != contigC, os->setError(tr("No contig count tag in the header line")), -1);
+    CHECK_EXT(-1 != contigC, os->setError(DocumentFormatUtils::tr("No contig count tag in the header line")), -1);
     return contigC;
 }
 
@@ -228,7 +229,7 @@ int AceReader::getSubString(QByteArray &line, int pos) {
 
     for (int i = 0; i < pos; i++) {
         curIdx = line.indexOf(space);
-        CHECK_EXT(-1 != curIdx, os->setError(tr("Not enough parameters in current line")), -1);
+        CHECK_EXT(-1 != curIdx, os->setError(DocumentFormatUtils::tr("Not enough parameters in current line")), -1);
         line = line.mid(curIdx + 1);
     }
 
@@ -239,7 +240,7 @@ int AceReader::getSubString(QByteArray &line, int pos) {
 
     bool ok = false;
     int result = line.toInt(&ok);
-    CHECK_EXT(ok, os->setError(tr("Parameter is not a digit")), -1);
+    CHECK_EXT(ok, os->setError(DocumentFormatUtils::tr("Parameter is not a digit")), -1);
 
     return result;
 }
@@ -247,7 +248,7 @@ int AceReader::getSubString(QByteArray &line, int pos) {
 int AceReader::getReadsCount(const QByteArray &cur_line) {
     QByteArray line = cur_line;
     int readsCount = getSubString(line, READS_COUNT_POS);
-    CHECK_OP_EXT((*os), os->setError(tr("There is no note about reads count")), 0);
+    CHECK_OP_EXT((*os), os->setError(DocumentFormatUtils::tr("There is no note about reads count")), 0);
     return readsCount;
 }
 
@@ -259,14 +260,14 @@ void AceReader::parseConsensus(IOAdapter *io, char *buff, QSet<QByteArray> &name
     QByteArray line;
 
     consensus.name = getName(headerLine);
-    CHECK_EXT(!names.contains(consensus.name), os->setError(tr("A name is duplicated")), );
+    CHECK_EXT(!names.contains(consensus.name), os->setError(DocumentFormatUtils::tr("A name is duplicated")), );
 
     names.insert(consensus.name);
     consensus.name += "_ref";
 
     do {
         len = io->readUntil(buff, READ_BUFF_SIZE, aceBStart, IOAdapter::Term_Exclude, &ok);
-        CHECK_EXT(len > 0, os->setError(tr("No consensus")), );
+        CHECK_EXT(len > 0, os->setError(DocumentFormatUtils::tr("No consensus")), );
 
         len = TextUtils::remove(buff, len, TextUtils::WHITES);
         buff[len] = 0;
@@ -276,10 +277,10 @@ void AceReader::parseConsensus(IOAdapter *io, char *buff, QSet<QByteArray> &name
 
     len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
     line = (QByteArray::fromRawData(buff, len)).trimmed();
-    CHECK_EXT(line.startsWith(BQ), os->setError(tr("BQ keyword hasn't been found")), );
+    CHECK_EXT(line.startsWith(BQ), os->setError(DocumentFormatUtils::tr("BQ keyword hasn't been found")), );
 
     formatSequence(consensus.data);
-    CHECK_EXT(checkSeq(consensus.data), os->setError(tr("Unexpected symbols in consensus data")), );
+    CHECK_EXT(checkSeq(consensus.data), os->setError(DocumentFormatUtils::tr("Unexpected symbols in consensus data")), );
 }
 
 QByteArray AceReader::getName(const QByteArray &line) {
@@ -290,7 +291,7 @@ QByteArray AceReader::getName(const QByteArray &line) {
 
     // Cut off tag
     curIdx = name.indexOf(space);
-    CHECK_EXT(-1 != curIdx, os->setError(tr("Can't find a sequence name in current line")), "");
+    CHECK_EXT(-1 != curIdx, os->setError(DocumentFormatUtils::tr("Can't find a sequence name in current line")), "");
 
     name = name.mid(curIdx + 1);
 
@@ -300,7 +301,7 @@ QByteArray AceReader::getName(const QByteArray &line) {
         name = name.mid(0, curIdx);
     }
 
-    CHECK_EXT(!name.isEmpty(), os->setError(tr("An empty sequence name")), "");
+    CHECK_EXT(!name.isEmpty(), os->setError(DocumentFormatUtils::tr("An empty sequence name")), "");
     return name;
 }
 
@@ -350,7 +351,7 @@ void AceReader::parseAfTag(U2::IOAdapter *io, char *buff, int count, QMap<QByteA
 
         afLine.replace('\n', "");
 
-        SAFE_POINT_EXT(afLine.startsWith(AF), os->setError(tr("Invalid AF tag")), );
+        SAFE_POINT_EXT(afLine.startsWith(AF), os->setError(DocumentFormatUtils::tr("Invalid AF tag")), );
 
         name = getName(afLine);
         CHECK_OP((*os), );
@@ -367,13 +368,13 @@ void AceReader::parseAfTag(U2::IOAdapter *io, char *buff, int count, QMap<QByteA
 
         QList<QByteArray> b = names.toList();
 
-        CHECK_EXT(!names.contains(name), os->setError(tr("A name is duplicated: %1").arg(QString(name))), );
+        CHECK_EXT(!names.contains(name), os->setError(DocumentFormatUtils::tr("A name is duplicated: %1").arg(QString(name))), );
         names.insert(name);
 
         readsCount--;
     }
 
-    CHECK_EXT(0 == readsCount, os->setError(tr("Not all reads were found")), );
+    CHECK_EXT(0 == readsCount, os->setError(DocumentFormatUtils::tr("Not all reads were found")), );
     os->setProgress(io->getProgress());
 }
 
@@ -382,11 +383,11 @@ int AceReader::readsPos(const QByteArray &cur_line) {
     char space = ' ';
 
     prepareLine(line, READS_POS);
-    CHECK_EXT(!line.contains(space), os->setError(tr("Bad AF note")), 0);
+    CHECK_EXT(!line.contains(space), os->setError(DocumentFormatUtils::tr("Bad AF note")), 0);
 
     bool ok = true;
     int result = line.toInt(&ok);
-    CHECK_EXT(ok, os->setError(tr("Bad AF note")), 0);
+    CHECK_EXT(ok, os->setError(DocumentFormatUtils::tr("Bad AF note")), 0);
 
     return result;
 }
@@ -418,7 +419,7 @@ int AceReader::readsComplement(const QByteArray &cur_line) {
     } else if (line.startsWith(COMPLEMENT)) {
         return 1;
     } else {
-        os->setError(tr("Bad AF note"));
+        os->setError(DocumentFormatUtils::tr("Bad AF note"));
         return -1;
     }
 }
@@ -430,7 +431,7 @@ int AceReader::paddedStartCons(const QByteArray &cur_line) {
 
     bool ok = true;
     int result = line.toInt(&ok);
-    CHECK_EXT(ok, os->setError(tr("Bad AF note")), 0);
+    CHECK_EXT(ok, os->setError(DocumentFormatUtils::tr("Bad AF note")), 0);
 
     return result;
 }
@@ -456,11 +457,11 @@ void AceReader::parseRdAndQaTag(U2::IOAdapter *io, char *buff, QSet<QByteArray> 
         CHECK_OP((*os), );
         rdBlock = (QByteArray::fromRawData(buff, len)).trimmed();
     } while (!rdBlock.startsWith(RD));
-    CHECK_EXT(rdBlock.startsWith(RD), os->setError(tr("There is no read note")), );
+    CHECK_EXT(rdBlock.startsWith(RD), os->setError(DocumentFormatUtils::tr("There is no read note")), );
 
     do {    // read the tail of RD part
         len = io->readUntil(buff, READ_BUFF_SIZE, aceQStart, IOAdapter::Term_Exclude, &ok);
-        CHECK_EXT(len > 0, os->setError(tr("Unexpected end of file")), );
+        CHECK_EXT(len > 0, os->setError(DocumentFormatUtils::tr("Unexpected end of file")), );
         buff[len] = 0;
         rdBlock += QByteArray(" ") + QByteArray(buff);
         os->setProgress(io->getProgress());
@@ -469,8 +470,8 @@ void AceReader::parseRdAndQaTag(U2::IOAdapter *io, char *buff, QSet<QByteArray> 
 
     QList<QByteArray> rdSplitted = rdBlock.split(' ');
     // Magic numbers: RD tag, name, three numbers, sequence data
-    CHECK_EXT(6 <= rdSplitted.count(), os->setError(tr("Invalid RD part")), );
-    SAFE_POINT_EXT(RD == rdSplitted[0], os->setError(tr("Can't find the RD tag")), );
+    CHECK_EXT(6 <= rdSplitted.count(), os->setError(DocumentFormatUtils::tr("Invalid RD part")), );
+    SAFE_POINT_EXT(RD == rdSplitted[0], os->setError(DocumentFormatUtils::tr("Can't find the RD tag")), );
     read.name = rdSplitted[1];
 
     for (int chain = 5; chain < rdSplitted.count(); chain++) {
@@ -479,7 +480,7 @@ void AceReader::parseRdAndQaTag(U2::IOAdapter *io, char *buff, QSet<QByteArray> 
 
     len = io->readUntil(buff, READ_BUFF_SIZE, TextUtils::LINE_BREAKS, IOAdapter::Term_Include, &ok);
     QByteArray qaBlock = (QByteArray::fromRawData(buff, len)).trimmed();
-    CHECK_EXT(qaBlock.startsWith(QA), os->setError(tr("QA keyword hasn't been found")), );
+    CHECK_EXT(qaBlock.startsWith(QA), os->setError(DocumentFormatUtils::tr("QA keyword hasn't been found")), );
 
     int clearRangeStart = getClearRangeStart(qaBlock);
     CHECK_OP((*os), );
@@ -488,28 +489,28 @@ void AceReader::parseRdAndQaTag(U2::IOAdapter *io, char *buff, QSet<QByteArray> 
 
     CHECK_EXT(clearRangeStart <= clearRangeEnd &&
               clearRangeEnd - clearRangeStart <= read.data.length(),
-              os->setError(tr("QA error bad range")), );
+              os->setError(DocumentFormatUtils::tr("QA error bad range")), );
 
     formatSequence(read.data);
-    CHECK_EXT(checkSeq(read.data), os->setError(tr("Unexpected symbols in sequence data")), );
+    CHECK_EXT(checkSeq(read.data), os->setError(DocumentFormatUtils::tr("Unexpected symbols in sequence data")), );
 
-    CHECK_EXT(names.contains(read.name), os->setError(tr("A name is not match with AF names")), );
+    CHECK_EXT(names.contains(read.name), os->setError(DocumentFormatUtils::tr("A name is not match with AF names")), );
     names.remove(read.name);
 }
 
 int AceReader::getClearRangeStart(const QByteArray &cur_line) {
     QByteArray line = cur_line;
     int result = getSubString(line, FIRST_QA_POS);
-    CHECK_OP_EXT((*os), os->setError(tr("Can't find clear range start in current line")), 0);
-    CHECK_EXT(result > 0, os->setError(tr("Clear range start is invalid")), 0);
+    CHECK_OP_EXT((*os), os->setError(DocumentFormatUtils::tr("Can't find clear range start in current line")), 0);
+    CHECK_EXT(result > 0, os->setError(DocumentFormatUtils::tr("Clear range start is invalid")), 0);
     return result;
 }
 
 int AceReader::getClearRangeEnd(const QByteArray &cur_line) {
     QByteArray line = cur_line;
     int result = getSubString(line, LAST_QA_POS);
-    CHECK_OP_EXT((*os), os->setError(tr("Can't find clear range end in current line")), 0);
-    CHECK_EXT(result > 0, os->setError(tr("Clear range end is invalid")), 0);
+    CHECK_OP_EXT((*os), os->setError(DocumentFormatUtils::tr("Can't find clear range end in current line")), 0);
+    CHECK_EXT(result > 0, os->setError(DocumentFormatUtils::tr("Clear range end is invalid")), 0);
     return result;
 }
 
@@ -533,7 +534,7 @@ bool AceIterator::hasNext() {
 }
 
 Assembly AceIterator::next() {
-    CHECK_EXT(hasNext(), os->setError(QObject::tr("There is no next element")), Assembly());
+    CHECK_EXT(hasNext(), os->setError(DocumentFormatUtils::tr("There is no next element")), Assembly());
     return reader->getAssembly();
 }
 

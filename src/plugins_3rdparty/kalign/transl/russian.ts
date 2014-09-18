@@ -68,14 +68,12 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; color:#3d3d3d;&quot;&gt;*Обратите внимание, что значения по умолчанию для неотмеченных параметров отличаются в зависимости от алфавита.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/KalignDialog.ui" line="356"/>
         <source>Align</source>
-        <translation>Выровнять</translation>
+        <translation type="obsolete">Выровнять</translation>
     </message>
     <message>
-        <location filename="../src/ui/KalignDialog.ui" line="366"/>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation type="obsolete">Отмена</translation>
     </message>
 </context>
 <context>
@@ -117,36 +115,64 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::KalignAlignWithExtFileSpecifyDialogController</name>
     <message>
-        <location filename="../src/KalignDialogController.cpp" line="130"/>
+        <location filename="../src/KalignDialogController.cpp" line="133"/>
+        <source>Align</source>
+        <translation type="unfinished">Выровнять</translation>
+    </message>
+    <message>
+        <location filename="../src/KalignDialogController.cpp" line="134"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Отмена</translation>
+    </message>
+    <message>
+        <location filename="../src/KalignDialogController.cpp" line="150"/>
         <source>Open an alignment file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/KalignDialogController.cpp" line="140"/>
+        <location filename="../src/KalignDialogController.cpp" line="160"/>
         <source>Save an multiple alignment file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/KalignDialogController.cpp" line="180"/>
-        <location filename="../src/KalignDialogController.cpp" line="183"/>
+        <location filename="../src/KalignDialogController.cpp" line="200"/>
+        <location filename="../src/KalignDialogController.cpp" line="203"/>
         <source>Kalign with Align</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/KalignDialogController.cpp" line="181"/>
+        <location filename="../src/KalignDialogController.cpp" line="201"/>
         <source>Input file is not set!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/KalignDialogController.cpp" line="184"/>
+        <location filename="../src/KalignDialogController.cpp" line="204"/>
         <source>Output file is not set!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
+    <name>U2::KalignDialogController</name>
+    <message>
+        <location filename="../src/KalignDialogController.cpp" line="70"/>
+        <source>Align</source>
+        <translation type="unfinished">Выровнять</translation>
+    </message>
+    <message>
+        <location filename="../src/KalignDialogController.cpp" line="71"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Отмена</translation>
+    </message>
+</context>
+<context>
     <name>U2::KalignGObjectRunFromSchemaTask</name>
     <message>
-        <location filename="../src/KalignTask.cpp" line="226"/>
+        <location filename="../src/KalignTask.cpp" line="253"/>
+        <source>Workflow wrapper &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/KalignTask.cpp" line="263"/>
         <source>KAlign align &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -154,30 +180,15 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::KalignGObjectTask</name>
     <message>
-        <location filename="../src/KalignTask.cpp" line="146"/>
+        <location filename="../src/KalignTask.cpp" line="145"/>
         <source>KALIGN align &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/KalignTask.cpp" line="157"/>
-        <source>Object is removed!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/KalignTask.cpp" line="158"/>
-        <source>Object is state-locked!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/KalignTask.cpp" line="176"/>
-        <source>object_is_state_locked</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>U2::KalignMSAEditorContext</name>
     <message>
-        <location filename="../src/KalignPlugin.cpp" line="162"/>
+        <location filename="../src/KalignPlugin.cpp" line="169"/>
         <source>Align with Kalign...</source>
         <translation>Выравнивание Kalign</translation>
     </message>
@@ -185,22 +196,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::KalignPlugin</name>
     <message>
-        <location filename="../src/KalignPlugin.cpp" line="73"/>
+        <location filename="../src/KalignPlugin.cpp" line="80"/>
         <source>Kalign</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/KalignPlugin.cpp" line="74"/>
+        <location filename="../src/KalignPlugin.cpp" line="81"/>
         <source>A port of Kalign package for multiple sequence alignment. Check http://msa.sbc.su.se for the original version</source>
         <translation type="unfinished">Встроенный в UGENE программный пакет для множественного выравнивания последовательности. Здесь http://msa.sbc.su.se находится оригинальная версия</translation>
     </message>
     <message>
-        <location filename="../src/KalignPlugin.cpp" line="84"/>
+        <location filename="../src/KalignPlugin.cpp" line="91"/>
         <source>Kalign...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/KalignPlugin.cpp" line="90"/>
+        <location filename="../src/KalignPlugin.cpp" line="97"/>
         <source>Multiple alignment</source>
         <translation>Множественное выравнивание</translation>
     </message>
@@ -212,22 +223,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::KalignTask</name>
     <message>
-        <location filename="../src/KalignTask.cpp" line="75"/>
+        <location filename="../src/KalignTask.cpp" line="73"/>
         <source>KALIGN alignment</source>
         <translation>Выравнивание KALIGN</translation>
     </message>
     <message>
-        <location filename="../src/KalignTask.cpp" line="91"/>
+        <location filename="../src/KalignTask.cpp" line="90"/>
         <source>Unsupported alphabet: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/KalignTask.cpp" line="94"/>
+        <location filename="../src/KalignTask.cpp" line="93"/>
         <source>Kalign alignment started</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/KalignTask.cpp" line="99"/>
+        <location filename="../src/KalignTask.cpp" line="98"/>
         <source>Kalign alignment successfully finished</source>
         <translation type="unfinished"></translation>
     </message>
@@ -237,14 +248,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Select input file</source>
         <translation type="obsolete">Выберите входной файл</translation>
-    </message>
-</context>
-<context>
-    <name>U2::KalignWithExtFileSpecifySupportTask</name>
-    <message>
-        <location filename="../src/KalignTask.cpp" line="278"/>
-        <source>input_format_error</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

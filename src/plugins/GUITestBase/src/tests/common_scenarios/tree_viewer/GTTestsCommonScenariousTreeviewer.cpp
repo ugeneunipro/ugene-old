@@ -957,7 +957,7 @@ GUI_TEST_CLASS_DEFINITION( test_0023 ) {
 
     QWidget *optionsPanelContainer = GTWidget::findWidget( os, "AddTreeWidget" );
 
-    QWidget *openButton = GTWidget::findButtonByText( os, tr( "Open tree" ), optionsPanelContainer );
+    QWidget *openButton = GTWidget::findButtonByText( os, QObject::tr( "Open tree" ), optionsPanelContainer );
     CHECK_SET_ERR( NULL != openButton, "The \"Open Tree\" button is not found" );
 
     // 3. Press the first one
@@ -985,7 +985,7 @@ GUI_TEST_CLASS_DEFINITION( test_0023 ) {
 
     optionsPanelContainer = GTWidget::findWidget( os, "AddTreeWidget" );
 
-    QWidget *buildButton = GTWidget::findButtonByText( os, tr( "Build tree" ),
+    QWidget *buildButton = GTWidget::findButtonByText( os, QObject::tr( "Build tree" ),
         optionsPanelContainer );
     CHECK_SET_ERR( NULL != buildButton, "The \"Build Tree\" button is not found" );
 

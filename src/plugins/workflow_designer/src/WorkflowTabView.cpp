@@ -41,7 +41,7 @@ public:
     CloseButton(QWidget *content)
         : QPushButton(QIcon(":workflow_designer/images/delete.png"), ""), _content(content)
     {
-        setToolTip(tr("Close dashboard"));
+        setToolTip(WorkflowTabView::tr("Close dashboard"));
         setFlat(true);
         setFixedSize(16, 16);
     }

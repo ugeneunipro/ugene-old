@@ -61,6 +61,7 @@ private slots:
 }; // SeqPosWorker
 
 class SeqPosComboBoxWithChecksDelegate : public ComboBoxWithChecksDelegate {
+    Q_OBJECT
 public:
     SeqPosComboBoxWithChecksDelegate(const QVariantMap& items, QObject *parent = 0) : ComboBoxWithChecksDelegate(items, parent) {}
     virtual ~SeqPosComboBoxWithChecksDelegate() {}

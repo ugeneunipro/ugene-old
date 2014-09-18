@@ -80,7 +80,7 @@ static Service* findServiceToDisable(ServiceRegistry* sr) {
 
 class CancelAllTask : public Task {
 public:
-    CancelAllTask() : Task(QObject::tr("Cancel active tasks"), TaskFlag_NoRun) {}
+    CancelAllTask() : Task(ConsoleShutdownTask::tr("Cancel active tasks"), TaskFlag_NoRun) {}
     void prepare() {
         // cancel all tasks but ShutdownTask
         QList<Task*> activeTopTasks = AppContext::getTaskScheduler()->getTopLevelTasks();

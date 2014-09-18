@@ -165,6 +165,7 @@ private:
 /* URLListController */
 /************************************************************************/
 class URLListController : public QObject {
+    Q_OBJECT
 public:
     URLListController(DatasetsController *parent, Dataset *set);
 

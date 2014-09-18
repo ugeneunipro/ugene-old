@@ -31,7 +31,7 @@ namespace U2 {
 #define GT_CLASS_NAME "GTLineEdit"
 
 #define GT_METHOD_NAME ""
-void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck /*= false*/) {
+void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str, bool noCheck /* = false*/) {
 
     GT_CHECK(lineEdit != NULL, "lineEdit is NULL");
     if(lineEdit->text() == str){

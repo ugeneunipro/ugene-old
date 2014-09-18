@@ -551,7 +551,7 @@ typedef struct p7_domaindef_s {
     ESL_RANDOMNESS *r;		/* random number generator                                 */
     int             do_reseeding;	/* TRUE to reset the RNG, make results reproducible        */
     P7_SPENSEMBLE  *sp;		/* an ensemble of sampled segment pairs (domain endpoints) */
-    P7_TRACE       *tr;		/* reusable space for a trace of a domain                  */
+    P7_TRACE       *trr;		/* reusable space for a trace of a domain                  */
     P7_TRACE       *gtr;		/* reusable space for a traceback of the entire target seq */
 
     /* Heuristic thresholds that control the region definition process */
@@ -862,8 +862,8 @@ extern int p7_Handmodelmaker(ESL_MSA *msa,                P7_HMM **ret_hmm, P7_T
 extern int p7_Fastmodelmaker(ESL_MSA *msa, float symfrac, P7_HMM **ret_hmm, P7_TRACE ***ret_tr);
 
 /* emit.c */
-extern int p7_CoreEmit   (ESL_RANDOMNESS *r, const P7_HMM *hmm,                                        ESL_SQ *sq, P7_TRACE *tr);
-extern int p7_ProfileEmit(ESL_RANDOMNESS *r, const P7_HMM *hmm, const P7_PROFILE *gm, const P7_BG *bg, ESL_SQ *sq, P7_TRACE *tr);
+extern int p7_CoreEmit   (ESL_RANDOMNESS *r, const P7_HMM *hmm,                                        ESL_SQ *sq, P7_TRACE *trr);
+extern int p7_ProfileEmit(ESL_RANDOMNESS *r, const P7_HMM *hmm, const P7_PROFILE *gm, const P7_BG *bg, ESL_SQ *sq, P7_TRACE *trr);
 extern int p7_emit_SimpleConsensus(const P7_HMM *hmm, ESL_SQ *sq);
 
 /* errors.c */
@@ -914,11 +914,11 @@ extern double p7_MeanMatchRelativeEntropy(const P7_HMM *hmm, const P7_BG *bg);
 // here were mpi support definitions. we don't need them
 
 /* tracealign.c */
-extern int p7_tracealign_Seqs(ESL_SQ **sq,           P7_TRACE **tr, int nseq, int M, int optflags, ESL_MSA **ret_msa);
-extern int p7_tracealign_MSA (const ESL_MSA *premsa, P7_TRACE **tr,           int M, int optflags, ESL_MSA **ret_postmsa);
+extern int p7_tracealign_Seqs(ESL_SQ **sq,           P7_TRACE **trr, int nseq, int M, int optflags, ESL_MSA **ret_msa);
+extern int p7_tracealign_MSA (const ESL_MSA *premsa, P7_TRACE **trr,           int M, int optflags, ESL_MSA **ret_postmsa);
 
 /* p7_alidisplay.c */
-extern P7_ALIDISPLAY *p7_alidisplay_Create(const P7_TRACE *tr, int which, const P7_OPROFILE *om, const ESL_SQ *sq);
+extern P7_ALIDISPLAY *p7_alidisplay_Create(const P7_TRACE *trr, int which, const P7_OPROFILE *om, const ESL_SQ *sq);
 extern void           p7_alidisplay_Destroy(P7_ALIDISPLAY *ad);
 extern char           p7_alidisplay_EncodePostProb(float p);
 extern float          p7_alidisplay_DecodePostProb(char pc);
@@ -1096,35 +1096,35 @@ extern int p7_tophits_Alignment(const P7_TOPHITS *th, const ESL_ALPHABET *abc,
 /* p7_trace.c */
 extern P7_TRACE *p7_trace_Create(void);
 extern P7_TRACE *p7_trace_CreateWithPP(void);
-extern int  p7_trace_Reuse(P7_TRACE *tr);
-extern int  p7_trace_Grow(P7_TRACE *tr);
-extern int  p7_trace_GrowIndex(P7_TRACE *tr);
-extern int  p7_trace_GrowTo(P7_TRACE *tr, int N);
-extern int  p7_trace_GrowIndexTo(P7_TRACE *tr, int ndom);
-extern void p7_trace_Destroy(P7_TRACE *tr);
-extern void p7_trace_DestroyArray(P7_TRACE **tr, int N);
+extern int  p7_trace_Reuse(P7_TRACE *trr);
+extern int  p7_trace_Grow(P7_TRACE *trr);
+extern int  p7_trace_GrowIndex(P7_TRACE *trr);
+extern int  p7_trace_GrowTo(P7_TRACE *trr, int N);
+extern int  p7_trace_GrowIndexTo(P7_TRACE *trr, int ndom);
+extern void p7_trace_Destroy(P7_TRACE *trr);
+extern void p7_trace_DestroyArray(P7_TRACE **trr, int N);
 
-extern int  p7_trace_GetDomainCount   (const P7_TRACE *tr, int *ret_ndom);
-extern int  p7_trace_GetStateUseCounts(const P7_TRACE *tr, int *counts);
-extern int  p7_trace_GetDomainCoords  (const P7_TRACE *tr, int which, int *ret_i1, int *ret_i2,
+extern int  p7_trace_GetDomainCount   (const P7_TRACE *trr, int *ret_ndom);
+extern int  p7_trace_GetStateUseCounts(const P7_TRACE *trr, int *counts);
+extern int  p7_trace_GetDomainCoords  (const P7_TRACE *trr, int which, int *ret_i1, int *ret_i2,
                                        int *ret_k1, int *ret_k2);
 
-extern int   p7_trace_Validate(const P7_TRACE *tr, const ESL_ALPHABET *abc, const ESL_DSQ *dsq, char *errbuf);
-extern int   p7_trace_Dump(FILE *fp, const P7_TRACE *tr, const P7_PROFILE *gm, const ESL_DSQ *dsq);
+extern int   p7_trace_Validate(const P7_TRACE *trr, const ESL_ALPHABET *abc, const ESL_DSQ *dsq, char *errbuf);
+extern int   p7_trace_Dump(FILE *fp, const P7_TRACE *trr, const P7_PROFILE *gm, const ESL_DSQ *dsq);
 extern int   p7_trace_Compare(P7_TRACE *tr1, P7_TRACE *tr2, float pptol);
-extern int   p7_trace_Score(P7_TRACE *tr, ESL_DSQ *dsq, P7_PROFILE *gm, float *ret_sc);
-extern int   p7_trace_SetPP(P7_TRACE *tr, const P7_GMX *pp);
-extern float p7_trace_GetExpectedAccuracy(const P7_TRACE *tr);
+extern int   p7_trace_Score(P7_TRACE *trr, ESL_DSQ *dsq, P7_PROFILE *gm, float *ret_sc);
+extern int   p7_trace_SetPP(P7_TRACE *trr, const P7_GMX *pp);
+extern float p7_trace_GetExpectedAccuracy(const P7_TRACE *trr);
 
-extern int  p7_trace_Append(P7_TRACE *tr, char st, int k, int i);
-extern int  p7_trace_AppendWithPP(P7_TRACE *tr, char st, int k, int i, float pp);
-extern int  p7_trace_Reverse(P7_TRACE *tr);
-extern int  p7_trace_Index(P7_TRACE *tr);
+extern int  p7_trace_Append(P7_TRACE *trr, char st, int k, int i);
+extern int  p7_trace_AppendWithPP(P7_TRACE *trr, char st, int k, int i, float pp);
+extern int  p7_trace_Reverse(P7_TRACE *trr);
+extern int  p7_trace_Index(P7_TRACE *trr);
 
-extern int  p7_trace_FauxFromMSA(ESL_MSA *msa, int *matassign, int optflags, P7_TRACE **tr);
-extern int  p7_trace_Doctor(P7_TRACE *tr, int *opt_ndi, int *opt_nid);
+extern int  p7_trace_FauxFromMSA(ESL_MSA *msa, int *matassign, int optflags, P7_TRACE **trr);
+extern int  p7_trace_Doctor(P7_TRACE *trr, int *opt_ndi, int *opt_nid);
 
-extern int  p7_trace_Count(P7_HMM *hmm, ESL_DSQ *dsq, float wt, P7_TRACE *tr);
+extern int  p7_trace_Count(P7_HMM *hmm, ESL_DSQ *dsq, float wt, P7_TRACE *trr);
 
 
 

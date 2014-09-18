@@ -48,7 +48,7 @@ DnaAssemblyAlgorithmEnv::~DnaAssemblyAlgorithmEnv() {
     delete guiExtFactory;
 }
 
-DnaAssemblyAlgRegistry::DnaAssemblyAlgRegistry( QObject* pOwn /*= 0*/ ) : QObject(pOwn) {
+DnaAssemblyAlgRegistry::DnaAssemblyAlgRegistry( QObject* pOwn /* = 0*/ ) : QObject(pOwn) {
 }
 
 DnaAssemblyAlgRegistry::~DnaAssemblyAlgRegistry() {

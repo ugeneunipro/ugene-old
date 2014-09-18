@@ -121,13 +121,13 @@ QList<Task*> Shtirlitz::wakeup() {
     // and user did not enabled stats before -> ask to enable
     // Do not ask to enable it twice for different versions!
     if( thisVersionFirstLaunch && !enabledByUser) {
-        QMessageBox::StandardButton answ = QMessageBox::question(QApplication::activeWindow(), tr("Statistical reports"), tr(firstTimeNotice), QMessageBox::Yes | QMessageBox::No );
+        QMessageBox::StandardButton answ = QMessageBox::question(QApplication::activeWindow(), ShtirlitzTask::tr("Statistical reports"), ShtirlitzTask::tr(firstTimeNotice), QMessageBox::Yes | QMessageBox::No );
         if( QMessageBox::Yes != answ ) {
              AppContext::getAppSettings()->getUserAppsSettings()->setEnableCollectingStatistics( false );
              return result;
          }
          AppContext::getAppSettings()->getUserAppsSettings()->setEnableCollectingStatistics( true );
-        coreLog.details( tr("Shtirlitz is sending the first-time report") );
+         coreLog.details( ShtirlitzTask::tr("Shtirlitz is sending the first-time report") );
         result << sendSystemReport();
         //Leave a mark that the first-time report was sent
     } 
@@ -139,7 +139,7 @@ QList<Task*> Shtirlitz::wakeup() {
         int daysPassed = prevDate.isValid() ? prevDate.daysTo(QDate::currentDate()) : 0;
 
         if( !prevDate.isValid() || daysPassed > DAYS_BETWEEN_REPORTS ) {
-            coreLog.details( tr("%1 days passed passed since previous Shtirlitz's report. Shtirlitz is sending the new one.") );
+            coreLog.details( ShtirlitzTask::tr("%1 days passed passed since previous Shtirlitz's report. Shtirlitz is sending the new one.") );
             result << sendCountersReport();
             //and save the new date
             s->setValue( SETTINGS_PREVIOUS_REPORT_DATE, QDate::currentDate() );
@@ -270,7 +270,7 @@ void Shtirlitz::getFirstLaunchInfo(bool& thisVersion, bool& allVersions) {
 }
 
 QString Shtirlitz::tr( const char * str ) {
-    return QObject::tr(str);
+    return ShtirlitzTask::tr(str);
 }
 
 //////////////////////////////////////////////////////////////////////////

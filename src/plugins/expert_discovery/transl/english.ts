@@ -125,10 +125,6 @@ y
 <context>
     <name>ExpertDiscoveryControlDialog</name>
     <message>
-        <source>Load Control sequences</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>File with control sequences</source>
         <translation></translation>
     </message>
@@ -137,16 +133,12 @@ y
         <translation></translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>You may load any sequence file to recognize your complex signals on the sequences.</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Load Control Sequences</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -163,14 +155,6 @@ y
         <source>...</source>
         <translation></translation>
     </message>
-    <message>
-        <source>Cancel</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>ExpertDiscoveryPosNegDialog</name>
@@ -180,14 +164,6 @@ y
     </message>
     <message>
         <source>Generate negative sequences</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Load positive and negative sequence bases</source>
         <translation></translation>
     </message>
     <message>
@@ -211,11 +187,11 @@ The more sequences you provide the better will be the result</source>
         <translation></translation>
     </message>
     <message>
-        <source>Next</source>
-        <translation></translation>
+        <source>Negatives per positive amount:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Negatives per positive amount:</source>
+        <source>Load Positive and Negative Sequence Bases</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -234,15 +210,7 @@ The more sequences you provide the better will be the result</source>
         <translation></translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation></translation>
-    </message>
-    <message>
         <source>Positive and Negative Sequences Markup</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Ok</source>
         <translation></translation>
     </message>
     <message>
@@ -324,14 +292,6 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
     <message>
         <source>Status</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Search</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Cancel</source>
         <translation></translation>
     </message>
     <message>
@@ -681,13 +641,6 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     </message>
 </context>
 <context>
-    <name>U2::ExpertDiscoveryCreateADVTask</name>
-    <message>
-        <source>ExpertDiscovery sequence view</source>
-        <translation></translation>
-    </message>
-</context>
-<context>
     <name>U2::ExpertDiscoveryCreateViewTask</name>
     <message>
         <source>ED</source>
@@ -894,6 +847,14 @@ Load markup for your sequences in specified XML format or genbank format.</sourc
     <message>
         <source>Open second file</source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -2,6 +2,14 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
+    <name>QObject</name>
+    <message>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="48"/>
+        <source>Run</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>RemoteMachineMonitorDialog</name>
     <message>
         <location filename="../src/ui/RemoteMachineMonitorDialog.ui" line="14"/>
@@ -192,7 +200,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::DistributedComputingUtil</name>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="63"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="67"/>
         <source>Remote machines monitor...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -200,17 +208,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::PingTask</name>
     <message>
-        <location filename="../src/PingTask.cpp" line="43"/>
+        <location filename="../src/PingTask.cpp" line="39"/>
         <source>PingTask</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/PingTask.cpp" line="50"/>
+        <location filename="../src/PingTask.cpp" line="46"/>
         <source>Starting remote service ping task, task-id: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/PingTask.cpp" line="52"/>
+        <location filename="../src/PingTask.cpp" line="48"/>
         <source>Remote service ping task finished, task-id: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -218,99 +226,94 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>U2::RemoteMachineMonitorDialogImpl</name>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="82"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="83"/>
         <source>Found %1 remote machine records</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="124"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="130"/>
         <source>Save machine...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="131"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="137"/>
         <source>Can&apos;t add %1 machine. The machine is already registered</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="202"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="208"/>
         <source>Add remote macnine</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="202"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="208"/>
         <source>No protocols for distributed computing are found.
 Please check your plugin list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="248"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="254"/>
         <source>Error!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="349"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="355"/>
         <source>Ping task is already active for machine: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="370"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="376"/>
         <source>Public machines request is already sent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="389"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="395"/>
         <source>Error during remote machines request: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="391"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="397"/>
         <source>No public machines found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="471"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="477"/>
         <source>User Tasks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="472"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="478"/>
         <source>&lt;html&gt;&lt;br&gt;Unable to show user task statistics for guest account.                &lt;br&gt;Please register on &lt;a href=http://ugene-service.com &gt;ugene-service.com&lt;/a&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="246"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="252"/>
         <source>Cannot delete machine that is waiting for response</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="46"/>
-        <source>Run</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="319"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="325"/>
         <source>Test connection for machine %1 finished with error: &apos;%2&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="389"/>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="391"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="395"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="397"/>
         <source>Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="416"/>
+        <location filename="../src/RemoteMachineMonitorDialogImpl.cpp" line="422"/>
         <source>Select a file to save</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogController.cpp" line="45"/>
+        <location filename="../src/RemoteMachineMonitorDialogController.cpp" line="49"/>
         <source>Selecting machines error!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineMonitorDialogController.cpp" line="46"/>
+        <location filename="../src/RemoteMachineMonitorDialogController.cpp" line="50"/>
         <source>You didn&apos;t select a machine to run remote task!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -318,7 +321,7 @@ Please check your plugin list.</source>
 <context>
     <name>U2::RemoteMachineScanDialogImpl</name>
     <message>
-        <location filename="../src/RemoteMachineScanDialogImpl.cpp" line="56"/>
+        <location filename="../src/RemoteMachineScanDialogImpl.cpp" line="61"/>
         <source>No protocols that supports scanning found!</source>
         <translation></translation>
     </message>
@@ -326,13 +329,13 @@ Please check your plugin list.</source>
 <context>
     <name>U2::RemoteMachineSettingsDialog</name>
     <message>
-        <location filename="../src/RemoteMachineSettingsDialog.cpp" line="74"/>
-        <location filename="../src/RemoteMachineSettingsDialog.cpp" line="101"/>
+        <location filename="../src/RemoteMachineSettingsDialog.cpp" line="79"/>
+        <location filename="../src/RemoteMachineSettingsDialog.cpp" line="106"/>
         <source>Error!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineSettingsDialog.cpp" line="101"/>
+        <location filename="../src/RemoteMachineSettingsDialog.cpp" line="106"/>
         <source>Sorry! Cannot create remote machine</source>
         <translation type="unfinished"></translation>
     </message>
@@ -377,22 +380,22 @@ Please check your plugin list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="231"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="237"/>
         <source>Failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="231"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="237"/>
         <source>Canceled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="231"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="237"/>
         <source>Finished</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteWorkflowRunTask.cpp" line="242"/>
+        <location filename="../src/RemoteWorkflowRunTask.cpp" line="248"/>
         <source>Output files:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -400,22 +403,22 @@ Please check your plugin list.</source>
 <context>
     <name>U2::RetrievePublicMachinesTask</name>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="138"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="137"/>
         <source>Retrieving public machines...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="152"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="151"/>
         <source>Failed to retrieve public machines, error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="154"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="153"/>
         <source>Found %1 public machines</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="163"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="162"/>
         <source>Illegal server response</source>
         <translation type="unfinished"></translation>
     </message>
@@ -423,32 +426,32 @@ Please check your plugin list.</source>
 <context>
     <name>U2::RetrieveRemoteMachineInfoTask</name>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="47"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="46"/>
         <source>Retrieve remote machine info task</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="65"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="64"/>
         <source>Cannot create remote machine from remote machine settings: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="88"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="87"/>
         <source>Ping task is canceled by user</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="91"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="90"/>
         <source>Ping task finished with error: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="98"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="97"/>
         <source>Task is canceled by user</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="60"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="59"/>
         <source>Retrieving remomote machine info...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -456,22 +459,22 @@ Please check your plugin list.</source>
 <context>
     <name>U2::SaveRemoteMachineSettings</name>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="184"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="183"/>
         <source>Save remote machine settings task</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="186"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="185"/>
         <source>Output file not set</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="190"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="189"/>
         <source>Nothing to write: empty remote machine settings</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/RemoteMachineTasks.cpp" line="202"/>
+        <location filename="../src/RemoteMachineTasks.cpp" line="201"/>
         <source>Cannot open %1 file</source>
         <translation></translation>
     </message>
@@ -479,22 +482,22 @@ Please check your plugin list.</source>
 <context>
     <name>U2::UpdateActiveTasks</name>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="97"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="99"/>
         <source>Updating active tasks...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="122"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="124"/>
         <source>Found active task: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="126"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="128"/>
         <source>Active tasks update finished!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/DistributedComputingUtil.cpp" line="101"/>
+        <location filename="../src/DistributedComputingUtil.cpp" line="103"/>
         <source>Cannot create remote machine from remote machine settings: %1</source>
         <translation type="unfinished"></translation>
     </message>

@@ -47,8 +47,8 @@ DatabaseConnectionFormat::DatabaseConnectionFormat(QObject *p) :
                    | DocumentFormatFlag_AllowDuplicateNames
                    | DocumentFormatFlag_DirectWriteOperations)
 {
-    formatName = tr("DatabaseConnection");
-    formatDescription = tr("A fake format that was added to implement shared database connection within existing document model.");
+    formatName = DocumentFormat::tr("DatabaseConnection");
+    formatDescription = DocumentFormat::tr("A fake format that was added to implement shared database connection within existing document model.");
 
     supportedObjectTypes << GObjectTypes::SEQUENCE
                          << GObjectTypes::MULTIPLE_ALIGNMENT
@@ -87,7 +87,7 @@ Document* DatabaseConnectionFormat::loadDocument(IOAdapter* io, const U2DbiRef&,
     CHECK_OP_EXT(os, qDeleteAll(objects), NULL);
 
     const QString modLockDesc = dbi->getFeatures().contains(U2DbiFeature_GlobalReadOnly)
-        ? tr("You have no permissions to modify the content of this database")
+        ? DocumentFormat::tr("You have no permissions to modify the content of this database")
         : QString();
     Document* resultDocument = new Document(this, io->getFactory(), io->getURL(), dbi->getDbiRef(), objects, hints, modLockDesc);
     resultDocument->setDocumentOwnsDbiResources(false);
@@ -107,7 +107,7 @@ namespace {
 #define CHECK_OBJECT(object) \
     CHECK_OP(os, NULL); \
     if (object.visualName.isEmpty()) { \
-        os.setError(tr("Empty object name")); \
+    os.setError(DocumentFormat::tr("Empty object name")); \
         return NULL; \
     }
 

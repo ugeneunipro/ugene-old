@@ -303,6 +303,7 @@ struct CalculateErrorTaskInfo{
 };
 
 class ExpertDiscoveryCalculateErrors : public BackgroundTask<ErrorsInfo>{
+    Q_OBJECT
 public:
     ExpertDiscoveryCalculateErrors(const CalculateErrorTaskInfo& settings);
     void run();
@@ -360,6 +361,7 @@ private:
 };
 
 class ExpertDiscoveryExportSequences : public Task{
+    Q_OBJECT
 public:
     ExpertDiscoveryExportSequences(const SequenceBase& base);
     void prepare();

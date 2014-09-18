@@ -24,7 +24,7 @@
 
 namespace U2 {
 
-MolecularSurfaceFactoryRegistry::MolecularSurfaceFactoryRegistry( QObject* pOwn /*= 0*/ ) : QObject(pOwn)
+MolecularSurfaceFactoryRegistry::MolecularSurfaceFactoryRegistry( QObject* pOwn /* = 0*/ ) : QObject(pOwn)
 {
     registerSurfaceFactory(new VanDerWaalsSurfaceFactory(),QString("vdWS"));
 }

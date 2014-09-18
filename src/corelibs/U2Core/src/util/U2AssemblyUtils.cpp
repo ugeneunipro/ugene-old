@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2AssemblyUtils.h>
+#include "U2AssemblyUtils.h"
 
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2OpStatus.h>

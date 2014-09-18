@@ -23,7 +23,7 @@
 
 namespace U2 {
 
-    PhyTreeGeneratorRegistry::PhyTreeGeneratorRegistry( QObject* pOwn /*= 0*/ ) : QObject(pOwn)
+    PhyTreeGeneratorRegistry::PhyTreeGeneratorRegistry( QObject* pOwn /* = 0*/ ) : QObject(pOwn)
     {}
 
     PhyTreeGeneratorRegistry::~PhyTreeGeneratorRegistry()

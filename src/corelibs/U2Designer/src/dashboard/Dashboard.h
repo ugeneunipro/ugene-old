@@ -168,6 +168,7 @@ private:
 };
 
 class U2DESIGNER_EXPORT RemoveDashboardsTask : public Task {
+    Q_OBJECT
 public:
     RemoveDashboardsTask(const QList<DashboardInfo> &dashboards);
     void run();

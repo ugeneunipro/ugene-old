@@ -68,6 +68,7 @@ enum DASObjectType{
 
 
 class U2CORE_EXPORT DASSourceRegistry : public QObject {
+    Q_OBJECT
 public:
     
     static QString getRequestURLString(const DASSource& source, const QString& accId, DASObjectType& requestType);

@@ -52,6 +52,7 @@ public:
 
 
 class U2GUI_EXPORT ImageExportTask : public Task {
+    Q_OBJECT
 public:
     ImageExportTask(const ImageExportTaskSettings &settings)
         : Task(tr("Image export task"), TaskFlag_RunInMainThread),

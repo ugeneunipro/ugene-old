@@ -128,6 +128,7 @@ public:
 };
 
 class PairwiseAlignmentSmithWatermanTask : public PairwiseAlignmentTask, public SequenceWalkerCallback {
+    Q_OBJECT
 public:
     PairwiseAlignmentSmithWatermanTask(PairwiseAlignmentSmithWatermanTaskSettings* _settings, SW_AlgType algType);
     ~PairwiseAlignmentSmithWatermanTask();

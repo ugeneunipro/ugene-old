@@ -66,6 +66,7 @@ public:
 };
 
 class MSAImageExportToBitmapTask : public ImageExportTask {
+    Q_OBJECT
 public:
     MSAImageExportToBitmapTask(MSAEditorUI *ui,
                                const MSAImageExportSettings& msaSettings,

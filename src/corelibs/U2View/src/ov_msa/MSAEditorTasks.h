@@ -77,6 +77,7 @@ public:
 };
 
 class ExtractConsensusTask : public Task {
+    Q_OBJECT
 public:
     ExtractConsensusTask( bool keepGaps, MSAEditor* msa);
     void run();
@@ -88,6 +89,7 @@ private:
 };
 
 class ExportMSAConsensusTask : public DocumentProviderTask {
+    Q_OBJECT
 public:
     ExportMSAConsensusTask(const ExportMSAConsensusTaskSettings& s);
     

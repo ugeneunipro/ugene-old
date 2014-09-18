@@ -44,6 +44,7 @@ public:
 
 
 class MSAOverviewImageExportToBitmapTask : public ImageExportTask {
+    Q_OBJECT
 public:
     MSAOverviewImageExportToBitmapTask(MSASimpleOverview *simpleOverview, MSAGraphOverview *graphOverview,
                                        const MSAOverviewImageExportSettings &overviewSettings,
@@ -57,6 +58,7 @@ private:
 
 
 class MSAOverviewImageExportTaskFactory : public ImageExportTaskFactory {
+    Q_OBJECT
 public:
     MSAOverviewImageExportTaskFactory(MSASimpleOverview *simpleOverview, MSAGraphOverview *graphOverview);
 

@@ -28,6 +28,7 @@
 namespace U2 {
 
 class U2FORMATS_EXPORT DNAQualityIOUtils : public QObject {
+    Q_OBJECT
 public:
     
     static void writeDNAQuality(const U2SequenceObject* seqObj, const QString& fileName, 

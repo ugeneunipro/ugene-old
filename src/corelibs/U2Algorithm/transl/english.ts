@@ -2,27 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>PhyTreeGeneratorLauncherTask</name>
-    <message>
-        <location filename="../src/phyltree/PhyTreeGeneratorTask.cpp" line="45"/>
-        <source>Calculating Phylogenetic Tree</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/phyltree/PhyTreeGeneratorTask.cpp" line="54"/>
-        <source>Tree construction algorithm %1 not found</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>PhyTreeGeneratorTask</name>
-    <message>
-        <location filename="../src/phyltree/PhyTreeGeneratorTask.cpp" line="32"/>
-        <source>Calculating Phylogenetic Tree</source>
-        <translation></translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <location filename="../src/util_gpu/opencl/OpenCLHelper.cpp" line="64"/>
@@ -110,7 +89,47 @@
 <context>
     <name>U2::AlignInAminoFormTask</name>
     <message>
-        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="141"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="97"/>
+        <source>Align in amino form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="107"/>
+        <source>Invalid MSA object detected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="108"/>
+        <source>AlignInAminoFormTask: Input alphabet is not nucleic!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="109"/>
+        <source>AlignInAminoFormTask: Input alignment is empty!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="116"/>
+        <source>Invalid applications settings detected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="119"/>
+        <source>Invalid users applications settings detected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="126"/>
+        <source>Invalid MSA document detected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="147"/>
+        <source>NULL clonedObj in AlignInAminoFormTask::prepare!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="157"/>
         <source>Can not find row %1 in original alignment.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -164,7 +183,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/util_msaedit/CreateSubalignmentTask.cpp" line="71"/>
+        <location filename="../src/util_msaedit/CreateSubalignmentTask.cpp" line="75"/>
         <source>Document is locked: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -172,7 +191,7 @@
 <context>
     <name>U2::DnaAssemblyMultiTask</name>
     <message>
-        <location filename="../src/misc/DnaAssemblyMultiTask.cpp" line="81"/>
+        <location filename="../src/misc/DnaAssemblyMultiTask.cpp" line="86"/>
         <source>The short reads can&apos;t be mapped to the reference sequence!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -180,7 +199,7 @@
 <context>
     <name>U2::FindAlgorithmTask</name>
     <message>
-        <location filename="../src/misc/FindAlgorithmTask.cpp" line="43"/>
+        <location filename="../src/misc/FindAlgorithmTask.cpp" line="44"/>
         <source>Find in sequence task</source>
         <translation></translation>
     </message>
@@ -188,7 +207,7 @@
 <context>
     <name>U2::LoadPatternsFileTask</name>
     <message>
-        <location filename="../src/misc/FindAlgorithmTask.cpp" line="125"/>
+        <location filename="../src/misc/FindAlgorithmTask.cpp" line="123"/>
         <source>Detecting format error for file %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -305,7 +324,7 @@ For every column selects the most rare symbol in the whole alignment with percen
 <context>
     <name>U2::MolecularSurfaceCalcTask</name>
     <message>
-        <location filename="../src/molecular_geometry/MolecularSurface.cpp" line="123"/>
+        <location filename="../src/molecular_geometry/MolecularSurface.cpp" line="122"/>
         <source>Molecular surface calculation</source>
         <translation></translation>
     </message>
@@ -366,6 +385,27 @@ For every column selects the most rare symbol in the whole alignment with percen
     </message>
 </context>
 <context>
+    <name>U2::PhyTreeGeneratorLauncherTask</name>
+    <message>
+        <location filename="../src/phyltree/PhyTreeGeneratorTask.cpp" line="47"/>
+        <source>Calculating Phylogenetic Tree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/phyltree/PhyTreeGeneratorTask.cpp" line="56"/>
+        <source>Tree construction algorithm %1 not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>U2::PhyTreeGeneratorTask</name>
+    <message>
+        <location filename="../src/phyltree/PhyTreeGeneratorTask.cpp" line="34"/>
+        <source>Calculating Phylogenetic Tree</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>U2::SecStructPredictTask</name>
     <message>
         <location filename="../src/registry/SecStructPredictTask.cpp" line="27"/>
@@ -376,12 +416,12 @@ For every column selects the most rare symbol in the whole alignment with percen
 <context>
     <name>U2::SmithWatermanReportCallbackAnnotImpl</name>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="62"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="63"/>
         <source>Annotation object not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="66"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="67"/>
         <source>Annotation table is read-only</source>
         <translation type="unfinished"></translation>
     </message>
@@ -389,73 +429,73 @@ For every column selects the most rare symbol in the whole alignment with percen
 <context>
     <name>U2::SmithWatermanReportCallbackMAImpl</name>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="178"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="199"/>
         <source>SmithWatermanReportCallback failed to create new MA document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="188"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="212"/>
         <source>Failed to add a reference subsequence row.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="192"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="217"/>
         <source>Failed to add a pattern subsequence row.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="195"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="276"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="221"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="315"/>
         <source>Failed to create an alignment.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="224"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="298"/>
-        <source>Smith-Waterman pairwise alignement: no results</source>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="252"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="337"/>
+        <source>Smith-Waterman pairwise alignment: no results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="231"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="303"/>
-        <source>Sequences aren`t stored in the source msa dbi. Reimplement this code.</source>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="260"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="343"/>
+        <source>Sequences aren&apos;t stored in the source msa dbi</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="243"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="275"/>
         <source>SmithWatermanReportCallback failed to create new MA document.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="246"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="248"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="310"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="312"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="281"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="283"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="354"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="356"/>
         <source>Failed to get the sequence object.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="262"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="264"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="326"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="328"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="298"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="301"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="371"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="374"/>
         <source>Failed to get the sequence data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="271"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="273"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="309"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="311"/>
         <source>Failed to add row to result msa.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="334"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="384"/>
         <source>Failed to get msa from dbi</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="355"/>
-        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="357"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="405"/>
+        <location filename="../src/smith_waterman/SmithWatermanReportCallback.cpp" line="407"/>
         <source>Failed to update row gap model</source>
         <translation type="unfinished"></translation>
     </message>
@@ -540,8 +580,31 @@ For every column selects the most rare symbol in the whole alignment with percen
 <context>
     <name>U2::TranslateMSA2AminoTask</name>
     <message>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="46"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="59"/>
+        <source>Translate nucleic alignment to amino</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="48"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="61"/>
+        <source>Invalid MSA object detected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="49"/>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="62"/>
+        <source>Multiple alignment already has amino-acid alphabet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="53"/>
         <source>Unable to find suitable translation for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/util_msaedit/MAlignmentUtilTasks.cpp" line="69"/>
+        <source>Invalid translation object</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

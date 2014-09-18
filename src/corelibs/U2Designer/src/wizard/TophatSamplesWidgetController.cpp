@@ -366,7 +366,7 @@ bool TophatSamples::rename(QLineEdit *nameEdit) {
     ctrl->renameSample(order.indexOf(sampleWidget), nameEdit->text(), os);
     if (os.hasError()) {
         if (ctrl->canShowWarning()) {
-            QMessageBox::critical(this, QObject::tr("Error"), os.getError());
+            QMessageBox::critical(this, TophatSamples::tr("Error"), os.getError());
         }
         return false;
     }

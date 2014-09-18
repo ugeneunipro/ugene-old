@@ -85,15 +85,15 @@ void HMMBuildWorkerFactory::init() {
     Descriptor td(THREADS_ATTR, HMMBuildWorker::tr("Parallel calibration"), 
         HMMBuildWorker::tr("Number of parallel threads that the calibration will run in."));
     Descriptor fid(FIXEDLEN_ATTR, HMMBuildWorker::tr("Fixed length of samples"), 
-        QApplication::translate("HMMCalibrateDialog", "fixed_tip", 0, QApplication::UnicodeUTF8));
+        QApplication::translate("HMMBuildWorker", "Fixed tip", 0, QApplication::UnicodeUTF8));
     Descriptor lmd(LENMEAN_ATTR, HMMBuildWorker::tr("Mean length of samples"), 
-        QApplication::translate("HMMCalibrateDialog", "mean_tip", 0, QApplication::UnicodeUTF8));
+        QApplication::translate("HMMBuildWorker", "mean_tip_1", 0, QApplication::UnicodeUTF8));
     Descriptor nud(NUM_ATTR, HMMBuildWorker::tr("Number of samples"), 
-        QApplication::translate("HMMCalibrateDialog", "num_tip", 0, QApplication::UnicodeUTF8));
+        QApplication::translate("HMMBuildWorker", "num_tip_1", 0, QApplication::UnicodeUTF8));
     Descriptor ldd(LENDEV_ATTR, HMMBuildWorker::tr("Standard deviation"), 
-        QApplication::translate("HMMCalibrateDialog", "sd_tip", 0, QApplication::UnicodeUTF8));
+        QApplication::translate("HMMBuildWorker", "sd_tip_1", 0, QApplication::UnicodeUTF8));
     Descriptor sed(SEED_ATTR, HMMBuildWorker::tr("Random seed"),
-        QApplication::translate("HMMCalibrateDialog", "seed_tip", 0, QApplication::UnicodeUTF8));
+        QApplication::translate("HMMBuildWorker", "seed_tip_1", 0, QApplication::UnicodeUTF8));
 
 //     nsample      = 5000;
 //     fixedlen     = 0;

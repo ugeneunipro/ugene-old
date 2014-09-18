@@ -120,6 +120,7 @@ signals:
 
 //
 class DotPlotFilterTask : public Task{
+    Q_OBJECT
 public:
     DotPlotFilterTask(ADVSequenceObjectContext* _sequenceX, ADVSequenceObjectContext* _sequenceY, 
         const QMultiMap<FilterIntersectionParameter, QString>& _annotationNames, QList<DotPlotResults>* _initialResults, QList<DotPlotResults>* _filteredResults

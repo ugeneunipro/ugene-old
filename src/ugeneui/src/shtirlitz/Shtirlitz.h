@@ -64,6 +64,7 @@ private:
 
 //Task which performs sending of data
 class ShtirlitzTask : public Task {
+    Q_OBJECT
 public:
     ShtirlitzTask( const QString & _report );
     void run();

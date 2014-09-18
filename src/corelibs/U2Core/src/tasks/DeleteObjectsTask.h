@@ -31,6 +31,7 @@ namespace U2 {
 class GObject;
 
 class U2CORE_EXPORT DeleteObjectsTask : public Task {
+    Q_OBJECT
 public:
     DeleteObjectsTask(const QList<GObject *> &objs);
 
@@ -41,6 +42,7 @@ private:
 };
 
 class U2CORE_EXPORT DeleteFoldersTask : public Task {
+    Q_OBJECT
 public:
     DeleteFoldersTask(const QList<Folder> &folders);
 

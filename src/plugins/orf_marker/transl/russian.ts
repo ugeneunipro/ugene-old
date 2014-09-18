@@ -157,10 +157,6 @@ Ignore boundary ORFs which last beyond the search region
         <translation>Игнорировать границы ORF, находящиеся за пределами области поиска(т.е. не имеющие стоп-кодона в пределах диапазона).</translation>
     </message>
     <message>
-        <source>Circular Search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -186,6 +182,10 @@ Ignore boundary ORFs which last beyond the search region
     <message>
         <source>Annotation obj %1 is locked for modifications</source>
         <translation>Аннотация %1 не может быть изменена</translation>
+    </message>
+    <message>
+        <source>Annotation table object is NULL!</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -400,6 +400,10 @@ Ignore boundary ORFs which last beyond the search region
     </message>
     <message>
         <source>Cannot create an annotation object. Please check settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sequence object is NULL</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

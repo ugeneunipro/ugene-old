@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2Bits.h>
+#include "U2Bits.h"
 #include <U2Core/U2OpStatus.h>
 
 namespace U2 {

@@ -24,7 +24,7 @@
 
 namespace U2 {
 
-SplicedAlignmentTaskRegistry::SplicedAlignmentTaskRegistry( QObject* pOwn /*= 0*/ ) : QObject(pOwn)
+SplicedAlignmentTaskRegistry::SplicedAlignmentTaskRegistry( QObject* pOwn /* = 0*/ ) : QObject(pOwn)
 {
 
 
