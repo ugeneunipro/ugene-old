@@ -57,6 +57,7 @@ Filler(_os, "U2__ExportAnnotationsDialog"), softMode(false), format(_format), sa
 void ExportAnnotationsFiller::init(const QString &exportToFile) {
     this->exportToFile = QDir::cleanPath(QDir::currentPath() + "/" + exportToFile);
 
+    comboBoxItems[bed] = "bed";
     comboBoxItems[genbank] = "genbank";
     comboBoxItems[gff] = "gff";
     comboBoxItems[csv] = "csv";

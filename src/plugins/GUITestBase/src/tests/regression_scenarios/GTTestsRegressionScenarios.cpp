@@ -84,6 +84,7 @@
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
 #include "runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h"
 #include "runnables/ugene/plugins/biostruct3d_view/StructuralAlignmentDialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
@@ -5043,7 +5044,6 @@ GUI_TEST_CLASS_DEFINITION(test_3207){
     end = end_edit_line->text();
     CHECK_SET_ERR(end == "40", QString("unexpected end value: %1").arg(end));
 
-    QWidget* hintLabelWidget = GTWidget::findWidget(os, "hintLabel");
     CHECK_SET_ERR(hintLabel->isHidden(), "hintLabel unexpectidly presents");
 //    Current state:
 //    Selected region in OP is [30..31], warning is shown
@@ -5111,7 +5111,6 @@ GUI_TEST_CLASS_DEFINITION(test_3274) {
 
     ADVSingleSequenceWidget *seq1Widget = seqWidgets.at(0);
     ADVSingleSequenceWidget *seq3Widget = seqWidgets.at(1);
-    ADVSingleSequenceWidget *seq5Widget = seqWidgets.at(2);
 
     GTUtilsCv::cvBtn::click(os, seq3Widget);
     GTUtilsCv::cvBtn::click(os, seq1Widget);
@@ -5147,8 +5146,6 @@ GUI_TEST_CLASS_DEFINITION(test_3276) {
     CHECK_SET_ERR(NULL != sortAction, "'Sort alignment by tree' was not found");
     CHECK_SET_ERR(!sortAction->isEnabled(), "'Sort alignment by tree' is unexpectedly enabled");
 }
-
-
 
 GUI_TEST_CLASS_DEFINITION(test_3277){
 //    Open "data/samples/CLUSTALW/COI.aln".
@@ -5223,6 +5220,33 @@ GUI_TEST_CLASS_DEFINITION(test_3287) {
 
     QImage image(params.fileName);
     CHECK_SET_ERR(70 == image.height(), "Wrong image height");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3305) {
+    GTLogTracer logTracer;
+
+//    1. Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+//    2. Create an annotation.
+    QDir().mkpath(sandBoxDir + "test_3305");
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "misc_feature", "1..5", sandBoxDir + "test_3305/test_3305.gb"));
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "create_annotation_action"));
+
+//    3. Call context menu on the annotations document, select the {Export/Import -> Export annotations...} menu item.
+//    4. Fill the dialog:
+//        Export to file: any acceptable path;
+//        File format: bed
+//    and accept it.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << "ep_exportAnnotations2CSV"));
+    GTUtilsDialog::waitForDialog(os, new ExportAnnotationsFiller(sandBoxDir + "test_3305/test_3305.bed", ExportAnnotationsFiller::bed, os));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "test_3305.gb"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+//    Expected state: the annotation is successfully exported, result file exists, there are no errors in the log.
+    CHECK_SET_ERR(logTracer.hasError(), "There are unexpectedly no errors in the log");
+    const QFile bedFile(sandBoxDir + "test_3305/test_3305.bed");
+    CHECK_SET_ERR(!(bedFile.exists() && bedFile.size() == 0), "An empty file exists");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3307){
@@ -5383,53 +5407,6 @@ GUI_TEST_CLASS_DEFINITION(test_3335) {
     CHECK_SET_ERR(NULL != relatedSequenceView, "A view for the related sequence was not opened");
 
     GTUtilsLog::check(os, lt);
-    }
-
-GUI_TEST_CLASS_DEFINITION(test_3443) {
-    GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
-    GTGlobals::sleep();
-
-    QWidget *logViewWidget = GTWidget::findWidget(os, "dock_log_view");
-    CHECK_SET_ERR(logViewWidget->isVisible(), "Log view is expected to be visible");
-
-    GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
-    GTGlobals::sleep();
-    CHECK_SET_ERR(!logViewWidget->isVisible(), "Log view is expected to be visible");
-
-    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
-
-    GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
-    GTGlobals::sleep();
-
-    QWidget *projectViewWidget = GTWidget::findWidget(os, "project_view");
-    CHECK_SET_ERR(projectViewWidget->isVisible(), "Project view is expected to be visible");
-
-    GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
-    GTGlobals::sleep();
-
-    CHECK_SET_ERR(!projectViewWidget->isVisible(), "Project view is expected to be invisible");
-
-    GTKeyboardDriver::keyClick(os, '2', GTKeyboardDriver::key["alt"]);
-    GTGlobals::sleep();
-
-    QWidget *taskViewWidget = GTWidget::findWidget(os, "dock_task_view");
-    CHECK_SET_ERR(taskViewWidget->isVisible(), "Task view is expected to be visible");
-
-    GTKeyboardDriver::keyClick(os, '2', GTKeyboardDriver::key["alt"]);
-    GTGlobals::sleep();
-
-    CHECK_SET_ERR(!taskViewWidget->isVisible(), "Task view is expected to be invisible");
-
-    GTKeyboardDriver::keyClick(os, 'b', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep();
-
-    QWidget *codonTableWidget = GTWidget::findWidget(os, "Codon table widget");
-    CHECK_SET_ERR(codonTableWidget->isVisible(), "Codon table is expected to be visible");
-
-    GTKeyboardDriver::keyClick(os, 'b', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep();
-
-    CHECK_SET_ERR(!codonTableWidget->isVisible(), "Codon table is expected to be invisible");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3346) {
@@ -5513,7 +5490,6 @@ GUI_TEST_CLASS_DEFINITION(test_3379) {
     //2. Open a few CV
     ADVSingleSequenceWidget *seq1Widget = seqWidgets.at(0);
     ADVSingleSequenceWidget *seq3Widget = seqWidgets.at(1);
-    ADVSingleSequenceWidget *seq5Widget = seqWidgets.at(2);
 
     GTUtilsCv::cvBtn::click(os, seq3Widget);
     GTUtilsCv::cvBtn::click(os, seq1Widget);
@@ -5573,14 +5549,6 @@ GUI_TEST_CLASS_DEFINITION(test_3396){
     QStringList parameters = GTUtilsWorkflowDesigner::getAllParameters(os);
     CHECK_SET_ERR(!parameters.contains("Wiggle space"), "Wiggle space parameter is shown");
 
-}
-
-GUI_TEST_CLASS_DEFINITION(test_3437){
-//    1. Open file test/_common_data/fasta/empty.fa
-    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "empty.fa");
-//    Expected: file opened in msa editor
-    QWidget* w = GTWidget::findWidget(os,"msa_editor_sequence_area");
-    CHECK_SET_ERR(w != NULL, "msa editor not opened");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3398_1) {
@@ -5659,6 +5627,14 @@ GUI_TEST_CLASS_DEFINITION(test_3398_4) {
     GTMouseDriver::click(os, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3437){
+//    1. Open file test/_common_data/fasta/empty.fa
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "empty.fa");
+//    Expected: file opened in msa editor
+    QWidget* w = GTWidget::findWidget(os,"msa_editor_sequence_area");
+    CHECK_SET_ERR(w != NULL, "msa editor not opened");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3439){
     //Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
@@ -5680,6 +5656,53 @@ GUI_TEST_CLASS_DEFINITION(test_3439){
     GTGlobals::sleep();
     //there is should be 3 errors
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Write Alignment") == 3, "Errors count dont match, should be 2 validation errors");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3443) {
+    GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+
+    QWidget *logViewWidget = GTWidget::findWidget(os, "dock_log_view");
+    CHECK_SET_ERR(logViewWidget->isVisible(), "Log view is expected to be visible");
+
+    GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+    CHECK_SET_ERR(!logViewWidget->isVisible(), "Log view is expected to be visible");
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+
+    QWidget *projectViewWidget = GTWidget::findWidget(os, "project_view");
+    CHECK_SET_ERR(projectViewWidget->isVisible(), "Project view is expected to be visible");
+
+    GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(!projectViewWidget->isVisible(), "Project view is expected to be invisible");
+
+    GTKeyboardDriver::keyClick(os, '2', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+
+    QWidget *taskViewWidget = GTWidget::findWidget(os, "dock_task_view");
+    CHECK_SET_ERR(taskViewWidget->isVisible(), "Task view is expected to be visible");
+
+    GTKeyboardDriver::keyClick(os, '2', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(!taskViewWidget->isVisible(), "Task view is expected to be invisible");
+
+    GTKeyboardDriver::keyClick(os, 'b', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    QWidget *codonTableWidget = GTWidget::findWidget(os, "Codon table widget");
+    CHECK_SET_ERR(codonTableWidget->isVisible(), "Codon table is expected to be visible");
+
+    GTKeyboardDriver::keyClick(os, 'b', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(!codonTableWidget->isVisible(), "Codon table is expected to be invisible");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3452) {

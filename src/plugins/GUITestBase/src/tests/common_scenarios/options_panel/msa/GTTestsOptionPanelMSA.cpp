@@ -1747,7 +1747,8 @@ void setBranchColor(U2OpStatus &os, int r, int g, int b){
     QWidget* branchesColorButton = GTWidget::findWidget(os, "branchesColorButton");
     GTWidget::click(os, branchesColorButton);
 }
-double colorPercent(U2OpStatus &os, QWidget* w, const QString& c){
+
+double colorPercent(U2OpStatus & /*os*/, QWidget* w, const QString& c){
     double total = 0;
     double found = 0;
     QPixmap pixmap = QPixmap::grabWidget(w, w->rect());
@@ -1884,7 +1885,7 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0003){
 }
 
 GUI_TEST_CLASS_DEFINITION(export_consensus_test_0004){
-
+    Q_UNUSED(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(statistics_test_0001){
