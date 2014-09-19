@@ -5772,14 +5772,46 @@ GUI_TEST_CLASS_DEFINITION(test_3472) {
 
     QLineEdit *outputFilePathEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "outputFileLineEdit"));
     CHECK_SET_ERR(NULL != outputFilePathEdit, "Invalid output file path edit field");
-    GTLineEdit::setText(os, outputFilePathEdit, "\\\123\\\123\123");
+
+    GTWidget::setFocus(os, outputFilePathEdit);
+#ifndef Q_OS_MAC
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
+#else
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["left"], GTKeyboardDriver::key["ctrl"]);
+#endif
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keySequence(os, "///123/123/123");
+    GTGlobals::sleep();
+
+    int deleteCounter = 100;
+    while (0 < --deleteCounter) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+        GTGlobals::sleep(100);
+    }
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
     GTWidget::click(os, GTWidget::findWidget(os, "alignButton"));
 
     GTGlobals::sleep();
 
-    GTLineEdit::setText(os, outputFilePathEdit, sandBoxDir + "123/123/123/1.aln");
+    GTWidget::setFocus(os, outputFilePathEdit);
+#ifndef Q_OS_MAC
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
+#else
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["left"], GTKeyboardDriver::key["ctrl"]);
+#endif
+    GTGlobals::sleep();
+
+    GTKeyboardDriver::keySequence(os, sandBoxDir + "123/123/123/1.aln");
+    GTGlobals::sleep();
+
+    deleteCounter = 15;
+    while (0 < --deleteCounter) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+        GTGlobals::sleep(100);
+    }
+
     GTWidget::click(os, GTWidget::findWidget(os, "alignButton"));
 
     GTGlobals::sleep();
