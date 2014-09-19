@@ -165,9 +165,9 @@ void BaseDocWriter::init() {
 
 void BaseDocWriter::takeParameters(U2OpStatus &os) {
     Attribute *dataStorageAttr = actor->getParameter(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId());
-    CHECK_EXT(NULL != dataStorageAttr, os.setError(tr("Data storage is not specified")), );
 
-    const QString storage = dataStorageAttr->getAttributeValue<QString>(context);
+    const QString storage = (NULL == dataStorageAttr) ? BaseAttributes::LOCAL_FS_DATA_STORAGE()
+                                                      : dataStorageAttr->getAttributeValue<QString>(context);
     if (BaseAttributes::LOCAL_FS_DATA_STORAGE() == storage) {
         dataStorage = LocalFs;
 
