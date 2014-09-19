@@ -193,7 +193,7 @@ void ORFDialog::updateState() {
 
     pbFindAll->setEnabled(!hasActiveTask);
     pbClearList->setEnabled(!hasActiveTask);
-    buttonBox->setEnabled(!hasActiveTask);
+    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!hasActiveTask);
 
     rbBoth->setEnabled(!hasActiveTask && hasCompl);
     rbDirect->setEnabled(!hasActiveTask);

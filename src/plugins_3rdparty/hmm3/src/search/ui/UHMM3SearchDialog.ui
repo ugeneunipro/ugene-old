@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>465</width>
-    <height>283</height>
+    <width>625</width>
+    <height>371</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,15 +18,15 @@
     <widget class="QTabWidget" name="tabWidget">
      <property name="sizeHint" stdset="0">
       <size>
-       <width>447</width>
-       <height>311</height>
+       <width>601</width>
+       <height>342</height>
       </size>
      </property>
      <property name="tabShape">
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="inputAndOutputTab">
       <attribute name="title">
