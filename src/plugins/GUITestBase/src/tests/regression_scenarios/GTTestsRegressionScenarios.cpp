@@ -5635,6 +5635,48 @@ GUI_TEST_CLASS_DEFINITION(test_3437){
     CHECK_SET_ERR(w != NULL, "msa editor not opened");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3430) {
+    //1. Open "_common_data/alphabets/standard_dna_rna_amino_1000.fa" as separate sequences
+    QStringList expectedNames;
+    QList<ADVSingleSequenceWidget*> seqWidgets;
+    expectedNames << "seq1" << "seq3" << "seq5";
+
+    seqWidgets = GTUtilsProject::openFileExpectSequences(os,
+        testDir + "_common_data/alphabets",
+        "standard_dna_rna_amino_1000.fa",
+        expectedNames);
+    CHECK_OP_SET_ERR(os, "Failed to open sequences!");
+
+    //2. Open one circular view
+    ADVSingleSequenceWidget *seq1Widget = seqWidgets.at(0);
+
+    GTUtilsCv::cvBtn::click(os, seq1Widget);
+
+    QWidget* circularView1 = GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_0");
+    CHECK_OP_SET_ERR(os, "Failed to open circular view!");
+
+    QWidget* circularView2 = GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_1", NULL, GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(NULL == circularView2, "Unexpected circular view is opened!");
+
+    //3. Press "Toggle circular views" button
+
+    GTWidget::click(os, GTWidget::findWidget(os, "globalToggleViewAction_widget"));
+
+    circularView1 = GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_0", NULL, GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(NULL == circularView1, "Unexpected circular view is opened!");
+
+    circularView2 = GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_1", NULL, GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(NULL == circularView2, "Unexpected circular view is opened!");
+    //4. Press "Toggle circular views" again
+    GTWidget::click(os, GTWidget::findWidget(os, "globalToggleViewAction_widget"));
+
+    GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_0");
+    CHECK_OP_SET_ERR(os, "Failed to open circular view!");
+
+    GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_1");
+    CHECK_OP_SET_ERR(os, "Failed to open circular view!");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3439){
     //Open WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
