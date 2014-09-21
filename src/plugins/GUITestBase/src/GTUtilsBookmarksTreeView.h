@@ -40,6 +40,8 @@ public:
     static QString getSelectedItem(U2OpStatus &os);
 //	static QString getBookmarkItemName(U2OpStatus &os, AVItem* avItem);
 
+    static void addBookmark(U2OpStatus &os, const QString &viewName, const QString &bookmarkName);
+
     static const QString widgetName;
 };
 

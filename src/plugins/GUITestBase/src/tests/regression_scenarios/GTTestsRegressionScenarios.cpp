@@ -5803,6 +5803,19 @@ GUI_TEST_CLASS_DEFINITION(test_3455) {
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::algoriths == current, "Samples tab is active");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3471) {
+//    1. Open "_common_data\bam\1.bam"
+//    Expected state: "Import BAM file dialog" appeared
+//    2. Press "Import" button in the dialog
+//    Expected state: assembly is empty, there is text "Assembly has no mapped reads. Nothing to visualize."
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_3471/test_3471.ugenedb"));
+    GTFileDialog::openFile(os, testDir + "_common_data/bam/", "1.bam");
+
+//    3. Add bookmark
+//    Expected state: UGENE doesn't crash
+    GTUtilsBookmarksTreeView::addBookmark(os, GTUtilsMdi::activeWindow(os)->windowTitle(), "test_3471");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3472) {
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);

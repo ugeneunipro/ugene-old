@@ -40,15 +40,22 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ImportBAMFileFiller"
 #define GT_METHOD_NAME "run"
+ImportBAMFileFiller::ImportBAMFileFiller(U2OpStatus &os, const QString destinationUrl, const QString &referenceFolderPath, const QString &referenceFileName, int timeoutMs) :
+    Filler(os, "Import BAM File"),
+    referenceFolderPath(referenceFolderPath),
+    referenceFileName(referenceFileName),
+    destinationUrl(destinationUrl){
+    settings.timeout = timeoutMs;
+}
+
 void ImportBAMFileFiller::run() {
 
     GTGlobals::sleep(500);
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
-    if (!databasePath.isEmpty())
-        {
-        GTFileDialogUtils *ob = new GTFileDialogUtils(os, databasePath, databaseFileName);
+    if (!referenceFolderPath.isEmpty()) {
+        GTFileDialogUtils *ob = new GTFileDialogUtils(os, referenceFolderPath, referenceFileName);
         GTUtilsDialog::waitForDialog(os, ob);
         GTWidget::click(os, GTWidget::findWidget(os,"refUrlButton",dialog));
         }

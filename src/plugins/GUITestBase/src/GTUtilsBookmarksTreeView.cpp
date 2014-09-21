@@ -19,16 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTUtilsBookmarksTreeView.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTWidget.h"
-#include "api/GTTreeWidget.h"
-#include "GTUtilsTaskTreeView.h"
-#include "GTUtilsProjectTreeView.h"
-#include <U2Core/ProjectModel.h>
-#include <U2Gui/MainWindow.h>
-#include <U2Gui/ObjectViewTreeController.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
 #include <QtGui/QTreeWidget>
@@ -36,7 +26,24 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QTreeWidget>
 #endif
+
+#include <U2Core/ProjectModel.h>
+
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/ObjectViewTreeController.h>
+
 #include <U2View/AnnotationsTreeView.h>
+
+#include "GTUtilsBookmarksTreeView.h"
+#include "GTUtilsDialog.h"
+#include "GTUtilsProjectTreeView.h"
+#include "GTUtilsTaskTreeView.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTLineEdit.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTTreeWidget.h"
+#include "api/GTWidget.h"
+#include "runnables/qt/PopupChooser.h"
 
 namespace U2 {
 
@@ -101,6 +108,19 @@ QString GTUtilsBookmarksTreeView::getSelectedItem(U2OpStatus &os)
     }
 
     return QString();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "addBookmark"
+void GTUtilsBookmarksTreeView::addBookmark(U2OpStatus &os, const QString &viewName, const QString &bookmarkName) {
+    Q_UNUSED(os);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_ADD_BOOKMARK));
+    GTMouseDriver::moveTo(os, getItemCenter(os, viewName));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    QWidget *bookmarkLineEdit = getTreeWidget(os)->itemWidget(getTreeWidget(os)->currentItem(), 0);
+    GTLineEdit::setText(os, qobject_cast<QLineEdit *>(bookmarkLineEdit), bookmarkName);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
 }
 #undef GT_METHOD_NAME
 

@@ -26,22 +26,17 @@
 
 namespace U2 {
 
-    class ImportBAMFileFiller : public Filler {
-    public:
-        ImportBAMFileFiller(U2OpStatus &_os, const QString _destinationUrl = "", const QString &_dbPath = "", const QString &_dbFileName = "", int timeoutMs = 120000) :
-          Filler(_os, "Import BAM File"),
-              databasePath(_dbPath),
-              databaseFileName(_dbFileName),
-              destinationUrl(_destinationUrl){
-              settings.timeout = timeoutMs;
-          }
-           virtual void run();
-        private:
-            const QString databasePath;
-            const QString databaseFileName;
-            const QString destinationUrl;
-            };
-   
-}
+class ImportBAMFileFiller : public Filler {
+public:
+    ImportBAMFileFiller(U2OpStatus &os, const QString destinationUrl = "", const QString &referenceFolderPath = "", const QString &referenceFileName = "", int timeoutMs = 120000);
 
-#endif
+    virtual void run();
+private:
+    const QString referenceFolderPath;
+    const QString referenceFileName;
+    const QString destinationUrl;
+};
+
+}   // namespace U2
+
+#endif // _U2_GT_RUNNABLES_IMPORT_BAM_FILE_DIALOG_FILLER_H_
