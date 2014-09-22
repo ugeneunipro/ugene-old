@@ -44,6 +44,7 @@
 
 /**************************************************** to use qt file dialog *************************************************************/
 #ifdef Q_OS_LINUX
+#if (QT_VERSION < 0x050000) //Qt 5
 typedef QStringList(*_qt_filedialog_open_filenames_hook)(QWidget * parent, const QString &caption, const QString &dir,
                                                           const QString &filter, QString *selectedFilter, QFileDialog::Options options);
 typedef QString(*_qt_filedialog_open_filename_hook)     (QWidget * parent, const QString &caption, const QString &dir,
@@ -57,6 +58,7 @@ extern Q_GUI_EXPORT _qt_filedialog_open_filename_hook qt_filedialog_open_filenam
 extern Q_GUI_EXPORT _qt_filedialog_open_filenames_hook qt_filedialog_open_filenames_hook;
 extern Q_GUI_EXPORT _qt_filedialog_save_filename_hook qt_filedialog_save_filename_hook;
 extern Q_GUI_EXPORT _qt_filedialog_existing_directory_hook qt_filedialog_existing_directory_hook;
+#endif
 #endif
 /******************************************************************************************************************************************/
 
@@ -399,13 +401,15 @@ void GUITestService::writeTestResult(const QString& result) {
 
 void GUITestService::setQtFileDialogView()
 {
-#ifdef __linux__
+#ifdef Q_OS_LINUX
+#if (QT_VERSION < 0x050000) //Qt 5
     if (!qgetenv("UGENE_USE_NATIVE_DIALOGS").isEmpty()) {
         qt_filedialog_open_filename_hook = 0;
         qt_filedialog_open_filenames_hook = 0;
         qt_filedialog_save_filename_hook = 0;
         qt_filedialog_existing_directory_hook = 0;
     }
+#endif
 #endif
 }
 
