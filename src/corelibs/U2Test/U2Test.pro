@@ -8,10 +8,11 @@ HEADERS += src/GTest.h \
            src/xmltest/XMLTestFormat.h \
            src/xmltest/XMLTestUtils.h \
            src/gui_tests/GUITest.h \
-           src/gui_tests/GUITestService.h \
-           src/gui_tests/GUITestLauncher.h \
-           src/gui_tests/GUITestTeamcityLogger.h \
            src/gui_tests/GUITestBase.h \
+           src/gui_tests/GUITestLauncher.h \
+           src/gui_tests/GUITestOpStatus.h \
+           src/gui_tests/GUITestService.h \
+           src/gui_tests/GUITestTeamcityLogger.h \
            src/gui_tests/GUITestWindow.h
 SOURCES += src/GTest.cpp \
            src/GTestFrameworkComponents.cpp \
@@ -19,10 +20,10 @@ SOURCES += src/GTest.cpp \
            src/xmltest/XMLTestFormat.cpp \
            src/xmltest/XMLTestUtils.cpp \
            src/gui_tests/GUITest.cpp \
-           src/gui_tests/GUITestService.cpp \
-           src/gui_tests/GUITestLauncher.cpp \
-           src/gui_tests/GUITestTeamcityLogger.cpp \
            src/gui_tests/GUITestBase.cpp \
+           src/gui_tests/GUITestLauncher.cpp \
+           src/gui_tests/GUITestService.cpp \
+           src/gui_tests/GUITestTeamcityLogger.cpp \
            src/gui_tests/GUITestWindow.cpp
 
 TRANSLATIONS += transl/chinese.ts \

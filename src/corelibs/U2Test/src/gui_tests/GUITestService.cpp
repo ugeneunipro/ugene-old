@@ -41,6 +41,7 @@
 #include "GUITestService.h"
 #include "GUITestTeamcityLogger.h"
 #include "GUITestWindow.h"
+#include "GUITestOpStatus.h"
 
 /**************************************************** to use qt file dialog *************************************************************/
 #ifdef Q_OS_LINUX
@@ -308,25 +309,29 @@ void GUITestService::runGUICrazyUserTest() {
 
 void GUITestService::runGUITest(GUITest* t) {
     SAFE_POINT(NULL != t,"",);
-    TaskStateInfo os;
+    GUITestOpStatus os;
 
     GUITests tests = preChecks();
     if (!t) {
         os.setError("GUITestService __ Test not found");
     }
     tests.append(t);
-    tests.append(postChecks());
 
     clearSandbox();
     QTimer::singleShot(t->getTimeout(), t, SLOT(sl_fail()));
-    foreach(GUITest* t, tests) {
-        if (t) {
-            t->run(os);
-        }
-    }
 
-    QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
-    originalPixmap.save(GUITest::screenshotDir + t->getName() + ".jpg");
+    try{
+        foreach(GUITest* t, tests) {
+            if (t) {
+                    t->run(os);
+            }
+        }
+    }catch(GUITestOpStatus* _os){}
+
+    foreach(GUITest* t, postChecks()){
+        TaskStateInfo os1;
+        t->run(os1);
+    }
 
     QString testResult = os.hasError() ? os.getError() : GUITestTeamcityLogger::successResult;
     writeTestResult(testResult);

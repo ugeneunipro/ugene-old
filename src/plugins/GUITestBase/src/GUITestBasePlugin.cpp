@@ -1369,6 +1369,7 @@ void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
         guiTestBase->registerTest(new GUITest_initial_checks::post_test_0001, GUITestBase::PostAdditional);
         guiTestBase->registerTest(new GUITest_initial_checks::post_test_0002, GUITestBase::PostAdditional);
         //guiTestBase->registerTest(new GUITest_initial_checks::post_test_0003, GUITestBase::PostAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::post_test_0004, GUITestBase::PostAdditional);
     }
 }
 

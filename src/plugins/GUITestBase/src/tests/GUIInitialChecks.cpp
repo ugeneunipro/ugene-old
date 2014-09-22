@@ -82,9 +82,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj4.uprj");
     GTFile::backup(os, testDir + "_common_data/scenarios/project/proj5.uprj");
     GTFile::backup(os, testDir + "_common_data/scenarios/assembly/example-alignment.ugenedb");
-#ifndef Q_OS_MAC
-    //GTFile::backupDir(os, dataDir + "workflow_samples");
-#endif
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0004){
@@ -122,15 +119,22 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
         uiLog.trace("alt pressed");
         GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["alt"]);
     }
-
-    //GTKeyboardDriver::releaseAllKeys(os);
 }
 
-GUI_TEST_CLASS_DEFINITION(post_test_0000) {
-    GTUtilsDialog::cleanup(os);
+GUI_TEST_CLASS_DEFINITION(post_test_0000){
+    Q_UNUSED(os);
+    QWidget* w = QApplication::activeModalWidget();
+    while(w!=NULL){
+        w = QApplication::activeModalWidget();
+        w->close();
+    }
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0001) {
+    GTUtilsDialog::cleanup(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(post_test_0002) {
 
     GTGlobals::sleep(1000);
     // close project
@@ -165,7 +169,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0001) {
     }
 }
 
-GUI_TEST_CLASS_DEFINITION(post_test_0002) {
+GUI_TEST_CLASS_DEFINITION(post_test_0003) {
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj1.uprj");
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj2-1.uprj");
     GTFile::restore(os, testDir + "_common_data/scenarios/project/proj2.uprj");
@@ -179,7 +183,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
     GTFile::removeDir(QDir().currentPath() + "/MSA_schemes");
 }
 
-GUI_TEST_CLASS_DEFINITION(post_test_0003) {     //if this post test detect any problems, use test_0004 and post_test_0002 for backup and restore corrupted files
+GUI_TEST_CLASS_DEFINITION(post_test_0004) {     //if this post test detect any problems, use test_0004 and post_test_0002 for backup and restore corrupted files
     Q_UNUSED(os);
 #ifdef Q_OS_WIN 
     QProcess *svnProcess = new QProcess();

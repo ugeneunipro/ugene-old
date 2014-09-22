@@ -19,34 +19,32 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_INITIAL_CHECKS_H_
-#define _U2_GUI_INITIAL_CHECKS_H_
 
-#include <U2Test/GUITestBase.h>
+#ifndef _U2_GUI_TEST_OP_STATUS_H_
+#define _U2_GUI_TEST_OP_STATUS_H_
+
+#include <U2Core/U2OpStatus.h>
 
 namespace U2 {
+class GUITestOpStatus : public U2OpStatus
+{
+public:
+    GUITestOpStatus(){}
 
-namespace GUITest_initial_checks {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_initial_checks_"
+    virtual void setError(const QString & err){error = err; throw  this;}
+    virtual QString getError() const {return error;}
+    virtual bool hasError() const {return !error.isEmpty();}
 
-GUI_TEST_CLASS_DECLARATION(test_0000)
-GUI_TEST_CLASS_DECLARATION(test_0001)
-GUI_TEST_CLASS_DECLARATION(test_0002)
-GUI_TEST_CLASS_DECLARATION(test_0003)
-GUI_TEST_CLASS_DECLARATION(test_0004)
-GUI_TEST_CLASS_DECLARATION(test_0005)
-GUI_TEST_CLASS_DECLARATION(test_0006)
+    virtual bool isCanceled() const {return false;}
+    virtual void setCanceled(bool v) {Q_UNUSED(v)}
 
-GUI_TEST_CLASS_DECLARATION(post_test_0000)
-GUI_TEST_CLASS_DECLARATION(post_test_0001)
-GUI_TEST_CLASS_DECLARATION(post_test_0002)
-GUI_TEST_CLASS_DECLARATION(post_test_0003)
-GUI_TEST_CLASS_DECLARATION(post_test_0004)
+    virtual int getProgress() const {return 100;}
+    virtual void setProgress(int v) {Q_UNUSED(v)}
 
-#undef GUI_TEST_PREFIX
+    virtual QString getDescription() const {return "";}
+    virtual void setDescription(const QString& desc) {}
+private:
+    QString error;
+};
 }
-
-} //namespace
-
-#endif
+#endif // GUITESTOPSTATUS_H
