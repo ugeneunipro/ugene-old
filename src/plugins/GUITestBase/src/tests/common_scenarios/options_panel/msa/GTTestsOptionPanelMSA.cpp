@@ -2000,5 +2000,365 @@ GUI_TEST_CLASS_DEFINITION(statistics_test_0003){
     s1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 1);
     CHECK_SET_ERR(s1 == "69%", QString("(3)Unexpected similarity at line 2: %1").arg(s1));
 }
+
+GUI_TEST_CLASS_DEFINITION(save_parameters_test_0001){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open export general option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
+//   Check saving parameters
+    //find widgets
+    QComboBox* consensusType = GTWidget::findExactWidget<QComboBox*>(os, "consensusType");
+    QSpinBox* thresholdSpinBox = GTWidget::findExactWidget<QSpinBox*>(os, "thresholdSpinBox");
+
+    //set some parameters
+    GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+    GTComboBox::setIndexWithText(os, consensusType, "Strict");
+    GTSpinBox::setValue(os, thresholdSpinBox, 50, GTGlobals::UseKeyBoard);
+
+    //close and open option panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_GENERAL"));
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_GENERAL"));
+    GTGlobals::sleep(500);
+
+    //checks
+    QLineEdit* sequenceLineEdit = GTWidget::findExactWidget<QLineEdit*>(os, "sequenceLineEdit");
+    consensusType = GTWidget::findExactWidget<QComboBox*>(os, "consensusType");
+    thresholdSpinBox = GTWidget::findExactWidget<QSpinBox*>(os, "thresholdSpinBox");
+
+    CHECK_SET_ERR(sequenceLineEdit->text() == "Phaneroptera_falcata", QString("unexpected reference: %1").arg(sequenceLineEdit->text()));
+    CHECK_SET_ERR(consensusType->currentText() == "Strict", QString("unexpected consensus: %1").arg(consensusType->currentText()));
+    CHECK_SET_ERR(thresholdSpinBox->value() == 50, QString("unexpected threshold value: %1").arg(thresholdSpinBox->value()));
+}
+
+GUI_TEST_CLASS_DEFINITION(save_parameters_test_0002){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open export highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
+
+//   Check saving parameters
+    //find widgets
+    QComboBox* colorScheme = GTWidget::findExactWidget<QComboBox*>(os, "colorScheme");
+    QComboBox* highlightingScheme = GTWidget::findExactWidget<QComboBox*>(os, "highlightingScheme");
+    QCheckBox* useDots = GTWidget::findExactWidget<QCheckBox*>(os, "useDots");
+
+    //set some parameters
+    GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+    GTComboBox::setIndexWithText(os, colorScheme, "Jalview");
+    GTComboBox::setIndexWithText(os, highlightingScheme, "Agreements");
+    GTCheckBox::setChecked(os, useDots, true);
+
+    //close and open option panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTGlobals::sleep(500);
+
+    //checks
+    QLineEdit* sequenceLineEdit = GTWidget::findExactWidget<QLineEdit*>(os, "sequenceLineEdit");
+    colorScheme = GTWidget::findExactWidget<QComboBox*>(os, "colorScheme");
+    highlightingScheme = GTWidget::findExactWidget<QComboBox*>(os, "highlightingScheme");
+    useDots = GTWidget::findExactWidget<QCheckBox*>(os, "useDots");
+
+    CHECK_SET_ERR(sequenceLineEdit->text() == "Phaneroptera_falcata", QString("unexpected reference: %1").arg(sequenceLineEdit->text()));
+    CHECK_SET_ERR(colorScheme->currentText() == "Jalview", QString("uexpected color scheme: %1").arg(colorScheme->currentText()));
+    CHECK_SET_ERR(highlightingScheme->currentText() == "Agreements", QString("uexpected highlighting: %1").arg(highlightingScheme->currentText()));
+    CHECK_SET_ERR(useDots->isChecked(), "Use dots checkbox is not checked");
+
+}
+
+GUI_TEST_CLASS_DEFINITION(save_parameters_test_0003){
+    //KAlign settings
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open export highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+
+//   Check saving parameters
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+
+    //expand settings
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Algorithm settings"));
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Output settings"));
+
+    //find widgets
+    QDoubleSpinBox* gapOpen = GTWidget::findExactWidget<QDoubleSpinBox*>(os, "gapOpen");
+    QDoubleSpinBox* gapExtd = GTWidget::findExactWidget<QDoubleSpinBox*>(os, "gapExtd");
+    QDoubleSpinBox* gapTerm = GTWidget::findExactWidget<QDoubleSpinBox*>(os, "gapTerm");
+    QDoubleSpinBox* bonusScore = GTWidget::findExactWidget<QDoubleSpinBox*>(os, "bonusScore");
+    QCheckBox* inNewWindowCheckBox = GTWidget::findExactWidget<QCheckBox*>(os, "inNewWindowCheckBox");
+
+    //set values
+    GTDoubleSpinbox::setValue(os, gapOpen, 100, GTGlobals::UseKeyBoard);
+    GTDoubleSpinbox::setValue(os, gapExtd, 100, GTGlobals::UseKeyBoard);
+    GTDoubleSpinbox::setValue(os, gapTerm, 100, GTGlobals::UseKeyBoard);
+    GTDoubleSpinbox::setValue(os, bonusScore, 100, GTGlobals::UseKeyBoard);
+    GTCheckBox::setChecked(os, inNewWindowCheckBox, false);
+
+    //close and open option panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_PAIRALIGN"));
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_PAIRALIGN"));
+    GTGlobals::sleep(500);
+
+    //checks
+    QLineEdit* l1 = GTUtilsOptionPanelMsa::getSeqLineEdit(os, 1);
+    QLineEdit* l2 = GTUtilsOptionPanelMsa::getSeqLineEdit(os, 2);
+    gapOpen = GTWidget::findExactWidget<QDoubleSpinBox*>(os, "gapOpen");
+    gapExtd = GTWidget::findExactWidget<QDoubleSpinBox*>(os, "gapExtd");
+    gapTerm = GTWidget::findExactWidget<QDoubleSpinBox*>(os, "gapTerm");
+    bonusScore = GTWidget::findExactWidget<QDoubleSpinBox*>(os, "bonusScore");
+    inNewWindowCheckBox = GTWidget::findExactWidget<QCheckBox*>(os, "inNewWindowCheckBox");
+
+    CHECK_SET_ERR(l1->text() == "Phaneroptera_falcata", QString("unexpected seq1: %1").arg(l1->text()));
+    CHECK_SET_ERR(l2->text() == "Isophya_altaica_EF540820", QString("unexpected seq2: %1").arg(l2->text()));
+    CHECK_SET_ERR(gapOpen->value() == 100, QString("unexpected gapOpen value: %1").arg(gapOpen->value()));
+    CHECK_SET_ERR(gapExtd->value() == 100, QString("unexpected gapExtd value: %1").arg(gapExtd->value()));
+    CHECK_SET_ERR(gapTerm->value() == 100, QString("unexpected gapTerm value: %1").arg(gapTerm->value()));
+    CHECK_SET_ERR(bonusScore->value() == 100, QString("unexpected bonusScore value: %1").arg(bonusScore->value()));
+    CHECK_SET_ERR(!inNewWindowCheckBox->isChecked(), "inNewWindowCheckBox is unexpectidly checked");
+}
+
+GUI_TEST_CLASS_DEFINITION(save_parameters_test_0003_1){//
+    //smith-waterman settings
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open export highlighting option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+
+//   Check saving parameters
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Phaneroptera_falcata");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Isophya_altaica_EF540820");
+
+    //expand settings
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Algorithm settings"));
+
+    //find widgets
+    QComboBox* algorithmListComboBox = GTWidget::findExactWidget<QComboBox*>(os, "algorithmListComboBox");
+    GTComboBox::setIndexWithText(os, algorithmListComboBox, "Smith-Waterman");
+
+    QComboBox* algorithmVersion = GTWidget::findExactWidget<QComboBox*>(os, "algorithmVersion");
+    QComboBox* scoringMatrix = GTWidget::findExactWidget<QComboBox*>(os, "scoringMatrix");
+    QSpinBox* gapOpen = GTWidget::findExactWidget<QSpinBox*>(os, "gapOpen");
+    QSpinBox* gapExtd = GTWidget::findExactWidget<QSpinBox*>(os, "gapExtd");
+
+    //setValues
+    GTComboBox::setIndexWithText(os, algorithmVersion, "SW_classic");
+    GTComboBox::setIndexWithText(os, scoringMatrix, "nuc", false);
+    GTSpinBox::setValue(os, gapOpen, 5);
+    GTSpinBox::setValue(os, gapExtd, 5);
+
+    //close and open option panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_PAIRALIGN"));
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_PAIRALIGN"));
+    GTGlobals::sleep(500);
+
+    //checks
+    QLineEdit* l1 = GTUtilsOptionPanelMsa::getSeqLineEdit(os, 1);
+    QLineEdit* l2 = GTUtilsOptionPanelMsa::getSeqLineEdit(os, 2);
+    algorithmListComboBox = GTWidget::findExactWidget<QComboBox*>(os, "algorithmListComboBox");
+    algorithmVersion = GTWidget::findExactWidget<QComboBox*>(os, "algorithmVersion");
+    scoringMatrix = GTWidget::findExactWidget<QComboBox*>(os, "scoringMatrix");
+    gapOpen = GTWidget::findExactWidget<QSpinBox*>(os, "gapOpen");
+    gapExtd = GTWidget::findExactWidget<QSpinBox*>(os, "gapExtd");
+
+    CHECK_SET_ERR(l1->text() == "Phaneroptera_falcata", QString("unexpected seq1: %1").arg(l1->text()));
+    CHECK_SET_ERR(l2->text() == "Isophya_altaica_EF540820", QString("unexpected seq2: %1").arg(l2->text()));
+    CHECK_SET_ERR(algorithmListComboBox->currentText() == "Smith-Waterman", QString("unexpected current text").arg(algorithmListComboBox->currentText()));
+    CHECK_SET_ERR(algorithmVersion->currentText() == "SW_classic", QString("unexpected algorithm: %1").arg(algorithmVersion->currentText()));
+    CHECK_SET_ERR(scoringMatrix->currentText().contains("nuc"), QString("unexpected scoring matrix").arg(scoringMatrix->currentText()));
+    CHECK_SET_ERR(gapOpen->value() == 5, QString("unexpected gap open value: %1").arg(gapOpen->value()));
+    CHECK_SET_ERR(gapExtd->value() == 5, QString("unexpected gap ext value: %1").arg(gapExtd->value()));
+}
+
+GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open tree settings option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
+//    3. Press "build tree" button.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default", 0, 0, true));
+    GTWidget::click(os, GTWidget::findWidget(os, "BuildTreeButton"));
+    GTGlobals::sleep(1000);
+
+    //set some values
+    expandFontSettings(os);
+    QComboBox* layoutCombo = GTWidget::findExactWidget<QComboBox*>(os, "layoutCombo");
+    GTComboBox::setIndexWithText(os, layoutCombo, "Circular");
+
+    QComboBox* treeViewCombo = GTWidget::findExactWidget<QComboBox*>(os, "treeViewCombo");
+    GTComboBox::setIndexWithText(os, treeViewCombo, "Cladogram");
+
+    setLabelsColor(os, 255, 0, 0);
+
+    QComboBox* fontComboBox = GTWidget::findExactWidget<QComboBox*>(os, "fontComboBox");
+    QLineEdit* l = fontComboBox->findChild<QLineEdit*>();
+    GTLineEdit::setText(os, l, "Serif");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+
+    QSpinBox* fontSizeSpinBox = GTWidget::findExactWidget<QSpinBox*>(os, "fontSizeSpinBox");
+    GTSpinBox::setValue(os, fontSizeSpinBox, 14);
+
+    GTWidget::click(os, GTWidget::findWidget(os, "boldAttrButton"));
+    GTWidget::click(os, GTWidget::findWidget(os, "italicAttrButton"));
+    GTWidget::click(os, GTWidget::findWidget(os, "underlineAttrButton"));
+
+    //close and open option panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_TREES_WIDGET"));
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_TREES_WIDGET"));
+    GTGlobals::sleep(500);
+
+    //check settings
+    layoutCombo = GTWidget::findExactWidget<QComboBox*>(os, "layoutCombo");
+    treeViewCombo = GTWidget::findExactWidget<QComboBox*>(os, "treeViewCombo");
+    QWidget* labelsColorButton = GTWidget::findWidget(os, "labelsColorButton");
+    fontComboBox = GTWidget::findExactWidget<QComboBox*>(os, "fontComboBox");
+    fontSizeSpinBox = GTWidget::findExactWidget<QSpinBox*>(os, "fontSizeSpinBox");
+    QToolButton* boldAttrButton = GTWidget::findExactWidget<QToolButton*>(os, "boldAttrButton");
+    QToolButton* italicAttrButton = GTWidget::findExactWidget<QToolButton*>(os, "italicAttrButton");
+    QToolButton* underlineAttrButton = GTWidget::findExactWidget<QToolButton*>(os, "underlineAttrButton");
+
+    CHECK_SET_ERR(layoutCombo->currentText() == "Circular", QString("unexpected layout: %1").arg(layoutCombo->currentText()));
+    CHECK_SET_ERR(treeViewCombo->currentText() == "Cladogram", QString("unexpected tree view: %1").arg(treeViewCombo->currentText()));
+    QString color = GTWidget::getColor(labelsColorButton, QPoint(10,10)).name();
+    CHECK_SET_ERR(color == "#ff0000", QString("unexpected color: %1").arg(color));
+    CHECK_SET_ERR(fontComboBox->currentText().contains("Serif"), QString("unexpected font: %1").arg(fontComboBox->currentText()));
+    CHECK_SET_ERR(fontSizeSpinBox->value() == 14, QString("unexpected font size: %1").arg(fontSizeSpinBox->value()));
+    CHECK_SET_ERR(boldAttrButton->isChecked(), "boldAttrButton is not checked");
+    CHECK_SET_ERR(italicAttrButton->isChecked(), "italicAttrButton is not checked");
+    CHECK_SET_ERR(underlineAttrButton->isChecked(), "underlineAttrButton is not checked");
+}
+
+GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004_1){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open tree settings option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::TreeSettings);
+//    3. Press "build tree" button.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, "default", 0, 0, true));
+    GTWidget::click(os, GTWidget::findWidget(os, "BuildTreeButton"));
+    GTGlobals::sleep(1000);
+
+    //find widgets
+    QCheckBox* showNamesCheck = GTWidget::findExactWidget<QCheckBox*>(os, "showNamesCheck");
+    QCheckBox* showDistancesCheck = GTWidget::findExactWidget<QCheckBox*>(os, "showDistancesCheck");
+    QSlider* widthSlider = GTWidget::findExactWidget<QSlider*>(os, "widthSlider");
+    QSlider* heightSlider = GTWidget::findExactWidget<QSlider*>(os, "heightSlider");
+
+    expandPenSettings(os);
+    QSpinBox* lineWeightSpinBox = GTWidget::findExactWidget<QSpinBox*>(os, "lineWeightSpinBox");
+
+    //set some values
+    GTCheckBox::setChecked(os, showNamesCheck, false);
+    GTCheckBox::setChecked(os, showDistancesCheck, false);
+    GTSlider::setValue(os, widthSlider, 50);
+    GTSlider::setValue(os, heightSlider, 20);
+    setBranchColor(os, 255, 0, 0);
+    GTSpinBox::setValue(os, lineWeightSpinBox, 2);
+
+    //close and open option panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_TREES_WIDGET"));
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_TREES_WIDGET"));
+    GTGlobals::sleep(500);
+
+    //checks
+    showNamesCheck = GTWidget::findExactWidget<QCheckBox*>(os, "showNamesCheck");
+    showDistancesCheck = GTWidget::findExactWidget<QCheckBox*>(os, "showDistancesCheck");
+    widthSlider = GTWidget::findExactWidget<QSlider*>(os, "widthSlider");
+    heightSlider = GTWidget::findExactWidget<QSlider*>(os, "heightSlider");
+    lineWeightSpinBox = GTWidget::findExactWidget<QSpinBox*>(os, "lineWeightSpinBox");
+    QWidget* branchesColorButton = GTWidget::findWidget(os, "branchesColorButton");
+
+    CHECK_SET_ERR(!showNamesCheck->isChecked(), "show names checkbox is unexpectidly checked");
+    CHECK_SET_ERR(!showDistancesCheck->isChecked(), "show distanses checkbox is unexpectidly checked");
+    CHECK_SET_ERR(widthSlider->value() == 50, QString("unexpected width slider value: %1").arg(widthSlider->value()));
+    CHECK_SET_ERR(heightSlider->value() == 20, QString("unexpected height slider value: %1").arg(heightSlider->value()));
+    CHECK_SET_ERR(lineWeightSpinBox->value() == 2, QString("unexpected line width: %1").arg(lineWeightSpinBox->value()));
+    QString color = GTWidget::getColor(branchesColorButton, QPoint(10,10)).name();
+    CHECK_SET_ERR(color == "#ff0000", QString("unexpected color: %1").arg(color));
+}
+
+GUI_TEST_CLASS_DEFINITION(save_parameters_test_0005){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2.  Set scrict consensus
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::General);
+    QComboBox* consensusType = GTWidget::findExactWidget<QComboBox*>(os, "consensusType");
+    GTComboBox::setIndexWithText(os, consensusType, "Strict");
+//    3. Open export consensus tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
+
+    //find widgets
+    QLineEdit* pathLe = GTWidget::findExactWidget<QLineEdit*>(os, "pathLe");
+    QComboBox* formatCb = GTWidget::findExactWidget<QComboBox*>(os, "formatCb");
+    QCheckBox* keepGapsChb = GTWidget::findExactWidget<QCheckBox*>(os, "keepGapsChb");
+
+    //set some values
+    GTLineEdit::setText(os, pathLe, "some_path");
+    GTComboBox::setIndexWithText(os, formatCb, "Genbank");
+    GTCheckBox::setChecked(os, keepGapsChb, true);
+
+    //close and open option panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_EXPORT_CONSENSUS"));
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_EXPORT_CONSENSUS"));
+    GTGlobals::sleep(500);
+
+    //checks
+    pathLe = GTWidget::findExactWidget<QLineEdit*>(os, "pathLe");
+    formatCb = GTWidget::findExactWidget<QComboBox*>(os, "formatCb");
+    keepGapsChb = GTWidget::findExactWidget<QCheckBox*>(os, "keepGapsChb");
+
+    CHECK_SET_ERR(pathLe->text().contains("some_path"), QString("unexpected path: %1").arg(pathLe->text()));
+    CHECK_SET_ERR(formatCb->currentText() == "Genbank", QString("unexpected format: %1").arg(formatCb->currentText()));
+    CHECK_SET_ERR(keepGapsChb->isChecked(), "keep gaps checkBox is unexpectidly unchecked");
+}
+
+GUI_TEST_CLASS_DEFINITION(save_parameters_test_0006){
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2.  Set scrict consensus
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
+    GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+
+    //find widgets
+    QCheckBox* showDistancesColumnCheck = GTWidget::findExactWidget<QCheckBox*>(os, "showDistancesColumnCheck");
+    QComboBox* algoComboBox = GTWidget::findExactWidget<QComboBox*>(os, "algoComboBox");
+    QRadioButton* countsButton = GTWidget::findExactWidget<QRadioButton*>(os, "countsButton");
+    QCheckBox* excludeGapsCheckBox = GTWidget::findExactWidget<QCheckBox*>(os, "excludeGapsCheckBox");
+    QCheckBox* autoUpdateCheck = GTWidget::findExactWidget<QCheckBox*>(os, "autoUpdateCheck");
+
+    //set some parameters
+    GTCheckBox::setChecked(os, showDistancesColumnCheck, true);
+    GTComboBox::setIndexWithText(os, algoComboBox, "Identity");
+    GTRadioButton::click(os, countsButton);
+    GTCheckBox::setChecked(os, excludeGapsCheckBox, true);
+    GTCheckBox::setChecked(os, autoUpdateCheck, false);
+
+    //close and open option panel
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_SEQ_STATISTICS_WIDGET"));
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_SEQ_STATISTICS_WIDGET"));
+    GTGlobals::sleep(500);
+
+    //checks
+    showDistancesColumnCheck = GTWidget::findExactWidget<QCheckBox*>(os, "showDistancesColumnCheck");
+    algoComboBox = GTWidget::findExactWidget<QComboBox*>(os, "algoComboBox");
+    countsButton = GTWidget::findExactWidget<QRadioButton*>(os, "countsButton");
+    excludeGapsCheckBox = GTWidget::findExactWidget<QCheckBox*>(os, "excludeGapsCheckBox");
+    autoUpdateCheck = GTWidget::findExactWidget<QCheckBox*>(os, "autoUpdateCheck");
+
+    CHECK_SET_ERR(showDistancesColumnCheck->isChecked(), "show distancses is unexpectidly unchedked");
+    CHECK_SET_ERR(algoComboBox->currentText() == "Identity", QString("unexpected algorithm: %1").arg(algoComboBox->currentText()));
+    CHECK_SET_ERR(countsButton->isChecked(), "counts radio is not checked");
+    CHECK_SET_ERR(excludeGapsCheckBox->isChecked(), "exclude gaps not checked");
+    CHECK_SET_ERR(!autoUpdateCheck->isChecked(), "auto update is unexpectidly checked");
+}
 }
 }
