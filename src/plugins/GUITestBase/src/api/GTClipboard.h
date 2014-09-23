@@ -30,6 +30,8 @@ class GTClipboard {
 public:
     // fails if can't get clipboard or clipboard doesn't contain text data
     static QString text(U2OpStatus &os);
+
+    static void setText(U2OpStatus &os, QString text);
 };
 
 } //namespace

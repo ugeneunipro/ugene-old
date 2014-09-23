@@ -113,6 +113,27 @@ QTreeWidgetItem* GTUtilsAnnotationsTreeView::findItem(U2OpStatus &os, const QStr
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "findItems"
+QList<QTreeWidgetItem*> GTUtilsAnnotationsTreeView::findItems(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions &options) {
+    QList<QTreeWidgetItem*> result;
+    GT_CHECK_RESULT(itemName.isEmpty() == false, "Item name is empty", result);
+
+    QTreeWidget *treeWidget = getTreeWidget(os);
+    GT_CHECK_RESULT(treeWidget != NULL, "Tree widget is NULL", result);
+
+    QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
+    foreach (QTreeWidgetItem* item, treeItems) {
+        QString treeItemName = item->text(0);
+        if (treeItemName == itemName) {
+            result.append(item);
+        }
+    }
+    GT_CHECK_RESULT(options.failIfNull == false, "Item " + itemName + " not found in tree widget", result);
+
+    return result;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "findRegion"
 bool GTUtilsAnnotationsTreeView::findRegion(U2OpStatus &os, const QString &itemName, const U2Region& r) {
 

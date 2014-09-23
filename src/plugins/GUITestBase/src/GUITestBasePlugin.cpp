@@ -70,6 +70,7 @@
 #include "tests/common_scenarios/NIAID_pipelines/GTTestsNiaidPipelines.h"
 #include "tests/common_scenarios/shared_database/GTTestsSharedDatabase.h"
 #include "tests/common_scenarios/circular_view/GTTestsCvGeneral.h"
+#include "tests/common_scenarios/options_panel/sequence_view/GTTestsOptionPanelSequenceView.h"
 #include "tests/crazy_user/GUICrazyUserTest.h"
 
 #define REGISTER_TEST(X) if (guiTestBase) guiTestBase->registerTest(new X())
@@ -1352,6 +1353,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_6);
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_7);
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_8);
+
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0004);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

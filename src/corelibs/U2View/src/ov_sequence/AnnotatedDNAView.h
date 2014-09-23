@@ -196,10 +196,12 @@ signals:
     /** Emitted when a part was added to a sequence, or it was removed or replaced */
     void si_sequenceModified(ADVSequenceObjectContext*);
 
+public slots:
+    void sl_onPosChangeRequest(int pos);
+
 private slots:
     void sl_onContextMenuRequested(const QPoint & pos);
     void sl_onFindPatternClicked();
-    void sl_onPosChangeRequest(int pos);
     void sl_onShowPosSelectorRequest();
     void sl_toggleHL();
     void sl_splitterMoved(int, int);

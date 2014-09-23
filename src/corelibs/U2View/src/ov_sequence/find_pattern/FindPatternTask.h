@@ -37,25 +37,20 @@ class U2VIEW_EXPORT FindPatternTask : public Task
     Q_OBJECT
 
 public:
-    FindPatternTask(const FindAlgorithmTaskSettings& settings,
-        AnnotationTableObject* annotObject,
-        const QString& annotName,
-        const QString& annotGroup,
-        bool removeOverlaps);
-
+    FindPatternTask(const FindAlgorithmTaskSettings& settings, bool removeOverlaps);
+    
     QList<Task*> onSubTaskFinished(Task* subTask);
     bool hasNoResults() { return noResults; }
-
+    const QList<AnnotationData>& getResults() const;
+    
 private:
     void removeOverlappedResults(QList<FindAlgorithmResult>& results);
 
     FindAlgorithmTaskSettings           settings;
-    QPointer<AnnotationTableObject>       annotObject;
-    QString                             annotName;
-    QString                             annotGroup;
     bool                                removeOverlaps;
     FindAlgorithmTask*                  findAlgorithmTask;
     bool                                noResults;
+    QList<AnnotationData>               results;
 
     static const float MAX_OVERLAP_K;
 };
@@ -67,24 +62,18 @@ class U2VIEW_EXPORT FindPatternListTask : public Task {
 public:
     FindPatternListTask(const FindAlgorithmTaskSettings& settings,
                         const QList<NamePattern>& patterns,
-                        AnnotationTableObject* annotObject,
-                        const QString& annotName,
-                        const QString& annotGroup,
                         bool removeOverlaps,
-                        int match,
-                        bool useAnnotName = false);
+                        int match);
     QList<Task*> onSubTaskFinished(Task* subTask);
-    QString generateReport() const;
+    const QList<AnnotationData>& getResults() const;
+    bool hasNoResults() const;
 
 private:
     FindAlgorithmTaskSettings settings;
-
-    QPointer<AnnotationTableObject>     annotObject;
-    QString                             annotName;
-    QString                             annotGroup;
-    bool                                removeOverlaps;
-    int                                 match;
-    bool                                noResults;
+    bool                      removeOverlaps;
+    int                       match;
+    bool                      noResults;
+    QList<AnnotationData>     results;
 
     static const float MAX_OVERLAP_K;
 

@@ -52,6 +52,15 @@ QString GTClipboard::text(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setText"
+void GTClipboard::setText( U2OpStatus &os, QString text ){
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->clear();
+    clipboard->setText(text);
+}
+
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 } //namespace

@@ -33,15 +33,9 @@ namespace U2 {
 const float FindPatternTask::MAX_OVERLAP_K = 0.5F;
 
 FindPatternTask::FindPatternTask(const FindAlgorithmTaskSettings& _settings,
-    AnnotationTableObject* _annotObject,
-    const QString& _annotName,
-    const QString& _annotGroup,
     bool _removeOverlaps)
-    : Task(tr("Searching a pattern in sequence task"), (TaskFlags(TaskFlag_FailOnSubtaskError) | TaskFlag_NoRun)),
+    : Task(tr("Searching a pattern in sequence task"), TaskFlags_NR_FOSE_COSC),
       settings(_settings),
-      annotObject(_annotObject),
-      annotName(_annotName),
-      annotGroup(_annotGroup),
       removeOverlaps(_removeOverlaps),
       noResults(false)
 {
@@ -53,38 +47,27 @@ FindPatternTask::FindPatternTask(const FindAlgorithmTaskSettings& _settings,
 
 QList<Task*> FindPatternTask::onSubTaskFinished(Task* subTask)
 {
-    QList<Task*> resultsList;
+    QList<Task*> res;
 
     if (subTask->hasError() && subTask == findAlgorithmTask) {
         stateInfo.setError(subTask->getError());
-        return resultsList;
-    }
-
-    if (annotObject.isNull()) {
-        stateInfo.setError(tr("The annotations object is not available!"));
-        return resultsList;
+        return res;
     }
 
     if (subTask == findAlgorithmTask) {
         FindAlgorithmTask* task = qobject_cast<FindAlgorithmTask*>(findAlgorithmTask);
         SAFE_POINT(task, "Failed to cast FindAlgorithTask!", QList<Task*>());
 
-        QList<FindAlgorithmResult> results = task->popResults();
+        QList<FindAlgorithmResult> resultz = task->popResults();
         if (removeOverlaps && !results.isEmpty()) {
-            removeOverlappedResults(results);
+            removeOverlappedResults(resultz);
         }
 
-        QList<AnnotationData> annots = FindAlgorithmResult::toTable(results, annotName,
-                                                                    settings.searchIsCircular, settings.sequence.size());
-
-        if (!annots.isEmpty()) {
-            resultsList.append(new CreateAnnotationsTask(annotObject, annotGroup, annots));
-        } else {
-            noResults = true;
-        }
+        results.append(FindAlgorithmResult::toTable(resultz, "annotation",
+                        settings.searchIsCircular, settings.sequence.size()));
     }
 
-    return resultsList;
+    return res;
 }
 
 
@@ -94,6 +77,9 @@ void FindPatternTask::removeOverlappedResults(QList<FindAlgorithmResult>& result
 
     for (int i = 0, n = results.count(); i < n; ++i) {
         for (int j = i + 1; j < n; ++j) {
+            if(stateInfo.isCoR()){
+                return;
+            }
             SAFE_POINT(results.at(j).region.startPos >= results.at(i).region.startPos,
                 "Internal error: inconsistence between regions start positions."
                 "Skipping further removing of overlapped results.",);
@@ -131,26 +117,21 @@ void FindPatternTask::removeOverlappedResults(QList<FindAlgorithmResult>& result
     coreLog.info(tr("Removed %1 overlapped results.").arg(removed));
 }
 
+const QList<AnnotationData>& FindPatternTask::getResults() const {
+    return results;
+}
+
 
 FindPatternListTask::FindPatternListTask(const FindAlgorithmTaskSettings &_settings,
                                          const QList<NamePattern> &patterns,
-                                         AnnotationTableObject *_annotObject,
-                                         const QString &_annotName,
-                                         const QString &_annotGroup,
                                          bool _removeOverlaps,
-                                         int _match,
-                                         bool useAnnotName)
-    : Task( tr( "Searching patterns in sequence task" ), TaskFlags_FOSE_COSC | TaskFlag_NoRun
-    | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled ),
+                                         int _match)
+: Task( tr( "Searching patterns in sequence task" ), TaskFlags_NR_FOSE_COSC),
       settings(_settings),
-      annotObject(_annotObject),
-      annotName(_annotName),
-      annotGroup(_annotGroup),
       removeOverlaps(_removeOverlaps),
       match(_match),
       noResults(true)
 {
-    setNotificationReport(true);
     foreach (const NamePattern& pattern, patterns) {
         if (pattern.second.isEmpty()) {
             uiLog.error(tr("Empty pattern"));
@@ -158,23 +139,8 @@ FindPatternListTask::FindPatternListTask(const FindAlgorithmTaskSettings &_setti
         }
         FindAlgorithmTaskSettings subTaskSettings = settings;
         subTaskSettings.pattern = pattern.second.toLocal8Bit().toUpper();
-        QString subAnnotName = annotName;
         subTaskSettings.maxErr = getMaxError( subTaskSettings.pattern );
-        if (useAnnotName) {
-            QString newPatternName = pattern.first;
-            if (newPatternName.length() >= GBFeatureUtils::MAX_KEY_LEN){
-                newPatternName = pattern.first.left(GBFeatureUtils::MAX_KEY_LEN);
-            }
-            if (Annotation::isValidAnnotationName(newPatternName)){
-                subAnnotName = newPatternName;
-            }
-        }
-
-        FindPatternTask* task = new FindPatternTask(subTaskSettings,
-                                                    annotObject,
-                                                    subAnnotName,
-                                                    annotGroup,
-                                                    removeOverlaps);
+        FindPatternTask* task = new FindPatternTask(subTaskSettings, removeOverlaps);
         addSubTask(task);
     }
 }
@@ -182,31 +148,31 @@ FindPatternListTask::FindPatternListTask(const FindAlgorithmTaskSettings &_setti
 
 QList<Task*> FindPatternListTask::onSubTaskFinished(Task *subTask) {
     QList<Task*> res;
+    if(stateInfo.isCoR()){
+        return res;
+    }
     FindPatternTask* task = qobject_cast<FindPatternTask*>(subTask);
     SAFE_POINT(NULL != task, "Failed to cast FindPatternTask!", QList<Task*>());
     if (!task->hasNoResults()) {
         noResults = false;
-        setNotificationReport(false);
     }
+    results.append(task->getResults());
     return res;
 }
-
-
-QString FindPatternListTask::generateReport() const {
-    if (noResults) {
-        QString message = tr("No results found.");
-        taskLog.info(tr("Searching patterns in sequence task: ") + message);
-        return message;
-    }
-    return QString();
-}
-
 
 int FindPatternListTask::getMaxError( const QString& pattern ) const {
     if (settings.patternSettings == FindAlgorithmPatternSettings_Exact) {
         return 0;
     }
     return int((float)(1 - float(match) / 100) * pattern.length());
+}
+
+const QList<AnnotationData> &FindPatternListTask::getResults() const {
+    return results;
+}
+
+bool FindPatternListTask::hasNoResults() const {
+    return noResults;
 }
 
 } // namespace

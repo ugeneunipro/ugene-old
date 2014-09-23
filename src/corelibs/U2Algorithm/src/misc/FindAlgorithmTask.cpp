@@ -83,6 +83,9 @@ void FindAlgorithmTask::onResult(const FindAlgorithmResult& r) {
         stateInfo.cancelFlag = true;
         return;
     }
+    if(stateInfo.isCoR()){
+        return;
+    }
     lock.lock();
     newResults.append(r);
     lock.unlock();

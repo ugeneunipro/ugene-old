@@ -24,6 +24,7 @@
 #include <U2Core/AnnotationData.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DNATranslation.h>
@@ -32,6 +33,9 @@
 #include <U2Core/Log.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/TextUtils.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/FastaFormat.h>
@@ -365,7 +369,7 @@ const QString FindPatternWidget::SEARCH_IN_SETTINGS = QObject::tr("Search in");
 const QString FindPatternWidget::OTHER_SETTINGS = QObject::tr("Other settings");
 
 FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
-    : annotatedDnaView(_annotatedDnaView)
+    : annotatedDnaView(_annotatedDnaView),searchTask(NULL),previousPatternString(""),iterPos(0)
 {
     setupUi(this);
 
@@ -394,12 +398,9 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         connectSlots();
 
         checkState();
-        btnSearch->setAutoDefault(true);
 
         FindPatternEventFilter *findPatternEventFilter = new FindPatternEventFilter(this);
         textPattern->installEventFilter(findPatternEventFilter);
-        connect(findPatternEventFilter, SIGNAL(si_tabPressed()), SLOT(sl_onTabInPatternFieldPressed()));
-        connect(findPatternEventFilter, SIGNAL(si_enterPressed()), SLOT(sl_onEnterInPatternFieldPressed()));
 
         setFocusProxy(textPattern);
 
@@ -408,10 +409,18 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
 
         sl_onSearchPatternChanged();
     }
+    nextPushButton->setDisabled(true);
+    prevPushButton->setDisabled(true);
+    getAnnotationsPushButton->setDisabled(true);
+    resultLabel->setText(tr("Results: 0/0"));
 }
 
 void FindPatternWidget::initLayout()
 {
+    lblErrorMessage->setStyleSheet(
+        "color: " + L10N::errorColorLabelStr() + ";"
+        "font: bold;");
+    lblErrorMessage->setText("");
     setMinimumSize(QSize(170, 150));
 
     initAlgorithmLayout();
@@ -425,11 +434,6 @@ void FindPatternWidget::initLayout()
     subgroupsLayout->addWidget(new ShowHideSubgroupWidget(SEARCH_IN_SETTINGS, SEARCH_IN_SETTINGS, widgetSearchIn, true));
     subgroupsLayout->addWidget(new ShowHideSubgroupWidget(OTHER_SETTINGS, OTHER_SETTINGS, widgetOther, false));
     subgroupsLayout->addWidget(annotsWidget);
-
-    lblErrorMessage->setStyleSheet(
-        "color: " + L10N::errorColorLabelStr() + ";"
-        "font: bold;");
-    lblErrorMessage->setText("");
 
     updateLayout();
 
@@ -540,7 +544,14 @@ void FindPatternWidget::connectSlots()
     connect(editStart, SIGNAL(textEdited(QString)), SLOT(sl_onRegionValueEdited()));
     connect(editEnd, SIGNAL(textEdited(QString)), SLOT(sl_onRegionValueEdited()));
     connect(boxSeqTransl, SIGNAL(currentIndexChanged(int)), SLOT(sl_onSequenceTranslationChanged(int)));
-    connect(btnSearch, SIGNAL(clicked()), SLOT(sl_onSearchClicked()));
+
+    connect(boxStrand, SIGNAL(currentIndexChanged(int)), SLOT(sl_activateNewSearch()));
+    connect(boxSeqTransl, SIGNAL(currentIndexChanged(int)), SLOT(sl_activateNewSearch()));
+    connect(boxRegion, SIGNAL(currentIndexChanged(int)), SLOT(sl_activateNewSearch()));
+
+    connect(removeOverlapsBox, SIGNAL(stateChanged(int)), SLOT(sl_activateNewSearch()));
+    connect(boxUseMaxResult, SIGNAL(stateChanged(int)), SLOT(sl_activateNewSearch()));
+    connect(boxMaxResult, SIGNAL(valueChanged(int)), SLOT(sl_activateNewSearch()));
 
     // A sequence has been selected in the Sequence View
     connect(annotatedDnaView, SIGNAL(si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*)),
@@ -553,6 +564,11 @@ void FindPatternWidget::connectSlots()
     connect(loadFromFileToolButton, SIGNAL( clicked() ), SLOT( sl_onFileSelectorClicked()));
     connect(loadFromFileGroupBox, SIGNAL( toggled(bool) ), SLOT( sl_onFileSelectorToggled(bool)));
 
+    connect(filePathLineEdit, SIGNAL(textChanged(const QString &)), SLOT(sl_activateNewSearch()));
+
+    connect(getAnnotationsPushButton, SIGNAL(clicked()), SLOT(sl_getAnnotationsButtonClicked()));
+    connect(prevPushButton, SIGNAL(clicked()), SLOT(sl_prevButtonClicked()));
+    connect(nextPushButton, SIGNAL(clicked()), SLOT(sl_nextButtonClicked()));
 }
 
 
@@ -574,6 +590,7 @@ void FindPatternWidget::sl_onAlgorithmChanged(int index)
     updatePatternText(previousAlgorithm);
     updateLayout();
     verifyPatternAlphabet();
+    sl_activateNewSearch();
 }
 
 
@@ -753,6 +770,7 @@ void FindPatternWidget::updateLayout()
 }
 
 void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, const QString& additionalMsg ){
+    QString ss = lblErrorMessage->styleSheet();
     if (show) {
         if (!messageFlags.contains(messageFlag)) {
             messageFlags.append(messageFlag);
@@ -817,8 +835,20 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
                     }
                     text += QString(tr(" Please input valid annotation names "));
                     break;
-
-
+                case NoPatternToSearch:
+                    if (!text.isEmpty()) {
+                        text += "\n";
+                    }
+                    text += QString(tr("Warning: there is no pattern to search. "));
+                    text += QString(tr(" Please input a valid pattern or choose a file with patterns "));
+                    break;
+                case SearchRegionIncorrect:
+                    if (!text.isEmpty()) {
+                        text += "\n";
+                    }
+                    text += QString(tr("Warning: there is no pattern to search. "));
+                    text += QString(tr(" Please input a valid pattern or choose a file with patterns "));
+                    break;
                 default:
                     FAIL("Unexpected value of the error flag in show/hide error message for pattern!",);
             }
@@ -866,6 +896,10 @@ void FindPatternWidget::sl_onSearchPatternChanged()
         // Show a warning if the pattern alphabet doesn't match,
         // but do not block the "Search" button
         verifyPatternAlphabet();
+        if(patterns != previousPatternString){
+            previousPatternString = patterns;
+            sl_activateNewSearch();
+        }
     }
 }
 
@@ -986,23 +1020,22 @@ void FindPatternWidget::checkState()
     //and pattern is not loaded from a file
     if (textPattern->toPlainText().isEmpty()
         && !loadFromFileGroupBox->isChecked()) {
-        btnSearch->setDisabled(true);
+        showHideMessage(true, NoPatternToSearch);
         return;
     }
 
-    // Disable if the region is not correct
+    // Show warning if the region is not correct
     if (!regionIsCorrect) {
-        btnSearch->setDisabled(true);
+        showHideMessage(true, SearchRegionIncorrect);
         return;
     }
     if(!loadFromFileGroupBox->isChecked()){
-        // Disable if the length of the pattern is greater than the search region length
+        // Show warning if the length of the pattern is greater than the search region length
         // Not for RegExp algorithm
         if (FindAlgorithmPatternSettings_RegExp != selectedAlgorithm) {
             bool regionOk = checkPatternRegion(textPattern->toPlainText());
 
             if (!regionOk) {
-                btnSearch->setDisabled(true);
                 highlightBackground(textPattern);
                 showHideMessage(true, PatternIsTooLong);
                 return;
@@ -1017,7 +1050,6 @@ void FindPatternWidget::checkState()
     //validate annotation name
     QString v = annotController->validate();
     if(!v.isEmpty()){
-        btnSearch->setDisabled(true);
         showHideMessage(true, AnnotationNotValidName, v);
         annotController->setFocusToNameEdit();
         return;
@@ -1026,8 +1058,8 @@ void FindPatternWidget::checkState()
     showHideMessage(false, AnnotationNotValidName);
     showHideMessage(false, PatternsWithBadRegionInFile);
     showHideMessage(false, PatternsWithBadAlphabetInFile);
-    // Otherwise enable the button
-    btnSearch->setDisabled(false);
+    showHideMessage(false, NoPatternToSearch);
+    showHideMessage(false, SearchRegionIncorrect);
 }
 
 
@@ -1073,45 +1105,6 @@ int FindPatternWidget::getMaxError( const QString& pattern ) const{
         return 0;
     }
     return int((float)(1 - float(spinMatch->value()) / 100) * pattern.length());
-}
-
-void FindPatternWidget::sl_onTabInPatternFieldPressed()
-{
-    if (btnSearch->isEnabled()) {
-        btnSearch->setFocus(Qt::TabFocusReason);
-    } else {
-        boxAlgorithm->setFocus(Qt::TabFocusReason);
-    }
-    return;
-}
-
-void FindPatternWidget::sl_onEnterInPatternFieldPressed()
-{
-    if (btnSearch->isEnabled()) {
-        sl_onSearchClicked();
-    }
-    else {
-        return;
-    }
-}
-
-void FindPatternWidget::sl_onSearchClicked()
-{
-    SAFE_POINT(!textPattern->toPlainText().isEmpty() || loadFromFileGroupBox->isChecked(), "Internal error: can't search for an empty string!",);
-
-    if(loadFromFileGroupBox->isChecked()) {
-        LoadPatternsFileTask* loadTask = new LoadPatternsFileTask(filePathLineEdit->text());
-        connect(loadTask, SIGNAL(si_stateChanged()), SLOT(sl_loadPatternTaskStateChanged()));
-        AppContext::getTaskScheduler()->registerTopLevelTask(loadTask);
-    } else {
-        U2OpStatus2Log os;
-        const QList <NamePattern >& patterns = getPatternsFromTextPatternField(os);
-
-        initFindPatternTask(patterns);
-        updateAnnotationsWidget();
-
-        annotModelPrepared = false;
-    }
 }
 
 QList <QPair<QString, QString> > FindPatternWidget::getPatternsFromTextPatternField(U2OpStatus &os) const
@@ -1162,9 +1155,13 @@ void FindPatternWidget::sl_onFileSelectorToggled(bool on)
 {
     textPattern->setDisabled(on);
     checkState();
+    sl_activateNewSearch();
 }
 
 void FindPatternWidget::initFindPatternTask( const QList<NamePattern>& patterns){
+    if(patterns.isEmpty()){
+        return;
+    }
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus!",);
 
@@ -1232,37 +1229,19 @@ void FindPatternWidget::initFindPatternTask( const QList<NamePattern>& patterns)
         boxMaxResultLen->value() :
     DEFAULT_REGEXP_RESULT_LENGTH_LIMIT;
 
-    // Preparing the annotations object and other annotations parameters
-    if (!annotModelPrepared){
-
-        bool objectPrepared = annotController->prepareAnnotationObject();
-        SAFE_POINT(objectPrepared, "Cannot create an annotation object. Please check settings", );
-        annotModelPrepared = true;
-    }
-
-    QString v = annotController->validate();
-    SAFE_POINT(v.isEmpty(), "Annotation names are invalid", );
-
-    const CreateAnnotationModel& annotModel = annotController->getModel();
-    QString annotGroup = annotModel.groupName;
-
-    AnnotationTableObject *aTableObj = annotModel.getAnnotationObject();
-    SAFE_POINT(aTableObj != NULL, "Invalid annotation table detected!", );
-
     // Creating and registering the task
     bool removeOverlaps = removeOverlapsBox->isChecked();
 
-    FindPatternListTask* task = new FindPatternListTask(settings,
+    SAFE_POINT(searchTask == NULL, "Search task is not NULL", );
+    nextPushButton->setDisabled(true);
+    prevPushButton->setDisabled(true);
+    searchTask = new FindPatternListTask(settings,
         patterns,
-        aTableObj,
-        annotModel.data.name,
-        annotGroup,
         removeOverlaps,
-        spinMatch->value(),
-        usePatternNamesCheckBox->isChecked());
-    connect(task, SIGNAL(si_progressChanged()), SLOT(sl_findPatrernTaskStateChanged()));
+        spinMatch->value());
+    connect(searchTask, SIGNAL(si_stateChanged()), SLOT(sl_findPatrernTaskStateChanged()));
 
-    AppContext::getTaskScheduler()->registerTopLevelTask(task);
+    AppContext::getTaskScheduler()->registerTopLevelTask(searchTask);
 }
 
 void FindPatternWidget::sl_loadPatternTaskStateChanged(){
@@ -1298,13 +1277,23 @@ void FindPatternWidget::sl_findPatrernTaskStateChanged() {
     if (!findTask) {
         return;
     }
-    if(!findTask->isFinished() || findTask->isCanceled()){
-        return;
-    }
-    if (findTask->hasError()){
-        return;
-    }
-    updateAnnotationsWidget();
+    
+    if(findTask->isFinished() || findTask->isCanceled() || findTask->hasError()){
+        if (findTask->hasNoResults()){
+            findPatternResults.clear();
+            resultLabel->setText(tr("Results: 0/0"));
+        }else{
+            findPatternResults = findTask->getResults();
+            if(findPatternResults.size() > 0){
+                iterPos = 1;
+                resultLabel->setText(tr("Results: %1/%2").arg(QString::number(iterPos)).arg(QString::number(findPatternResults.size())));
+                nextPushButton->setEnabled(true);
+                prevPushButton->setEnabled(true);
+                getAnnotationsPushButton->setEnabled(true);
+            }
+        }        
+        searchTask = NULL;
+    } 
 }
 
 bool FindPatternWidget::checkAlphabet( const QString& pattern ){
@@ -1439,6 +1428,88 @@ void FindPatternWidget::validateCheckBoxSize(QCheckBox* checkBox, int requiredWi
         }
     }
     checkBox->setText(text);
+}
+
+void FindPatternWidget::sl_activateNewSearch(){
+    if(searchTask != NULL){
+        disconnect(this, SLOT(sl_loadPatternTaskStateChanged()));
+        searchTask->cancel();
+        searchTask = NULL;
+    }
+    if(loadFromFileGroupBox->isChecked()) {
+        LoadPatternsFileTask* loadTask = new LoadPatternsFileTask(filePathLineEdit->text());
+        connect(loadTask, SIGNAL(si_stateChanged()), SLOT(sl_loadPatternTaskStateChanged()));
+        AppContext::getTaskScheduler()->registerTopLevelTask(loadTask);
+    } else {
+        U2OpStatus2Log os;
+        const QList <NamePattern >& patterns = getPatternsFromTextPatternField(os);
+
+        initFindPatternTask(patterns);
+
+        annotModelPrepared = false;
+    }
+}
+
+void FindPatternWidget::sl_getAnnotationsButtonClicked() {
+    if (!annotModelPrepared){
+        bool objectPrepared = annotController->prepareAnnotationObject();
+        SAFE_POINT(objectPrepared, "Cannot create an annotation object. Please check settings", );
+        annotModelPrepared = true;
+        nextPushButton->setDisabled(true);
+        prevPushButton->setDisabled(true);
+        if(findPatternResults.isEmpty()){
+            getAnnotationsPushButton->setDisabled(true);
+        }
+    }
+    QString v = annotController->validate();
+    SAFE_POINT(v.isEmpty(), "Annotation names are invalid", );
+
+    const CreateAnnotationModel& annotModel = annotController->getModel();
+    QString group = annotModel.groupName;
+
+    AnnotationTableObject *aTableObj = annotModel.getAnnotationObject();
+    SAFE_POINT(aTableObj != NULL, "Invalid annotation table detected!", );
+
+    QList<AnnotationData>::Iterator it = findPatternResults.begin(); 
+    QList<AnnotationData>::Iterator endIter = findPatternResults.end();
+    for(;it != endIter; it++){
+        (*it).name = annotModel.data.name;
+    }
+
+    AppContext::getTaskScheduler()->registerTopLevelTask(new CreateAnnotationsTask(aTableObj, group, findPatternResults));
+}
+
+void FindPatternWidget::sl_prevButtonClicked() {
+    int resultSize = findPatternResults.size();
+    if(iterPos == 1){
+        iterPos = resultSize;
+    }else{
+        iterPos--;
+    }
+    showCurrentResult();
+}
+
+void FindPatternWidget::sl_nextButtonClicked() {
+    int resultSize = findPatternResults.size();
+    if(iterPos == resultSize){
+        iterPos = 1;
+    }else{
+        iterPos++;
+    }
+    showCurrentResult();
+}
+
+void FindPatternWidget::showCurrentResult() const {
+    resultLabel->setText(tr("Results: %1/%2").arg(QString::number(iterPos)).arg(QString::number(findPatternResults.size())));
+    CHECK(findPatternResults.size() > iterPos, );
+    const AnnotationData &ad = findPatternResults.at(iterPos-1);
+    ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
+    const QVector<U2Region> regions = ad.getRegions();
+    CHECK(activeContext->getSequenceSelection() != NULL, );
+    CHECK(!regions.isEmpty(), );
+    activeContext->getSequenceSelection()->setRegion(regions.first());
+    int centerPos = regions.first().center();
+    annotatedDnaView->sl_onPosChangeRequest(centerPos);
 }
 
 } // namespace

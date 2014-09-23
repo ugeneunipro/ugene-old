@@ -57,7 +57,9 @@ enum MessageFlag {
     PatternsWithBadAlphabetInFile,
     PatternsWithBadRegionInFile,
     UseMultiplePatternsTip,
-    AnnotationNotValidName
+    AnnotationNotValidName,
+    NoPatternToSearch,
+    SearchRegionIncorrect
 };
 
 
@@ -92,27 +94,11 @@ private slots:
     void sl_onRegionValueEdited();
     void sl_onSequenceTranslationChanged(int);
     void sl_onSearchPatternChanged();
-    void sl_onSearchClicked();
 
     void sl_onFileSelectorClicked();
     void sl_onFileSelectorToggled(bool on);
     void sl_loadPatternTaskStateChanged();
     void sl_findPatrernTaskStateChanged();
-
-
-    /**
-     * If the search button is enabled, launches the search
-     * (i.e. on pressing enter in the pattern field)
-     */
-    void sl_onEnterInPatternFieldPressed();
-
-    /**
-     * On pressing tab in the pattern field moves focus to the search button,
-     * if it is enabled.
-     * This is done temporarily to avoid confusion with passing focus to other
-     * AnnotatedDNAView widgets.
-     */
-    void sl_onTabInPatternFieldPressed();
 
     /** Another sequence has been selected */
     void sl_onFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*);
@@ -122,11 +108,13 @@ private slots:
 
     void sl_onSelectedRegionChanged();
 
-    /** annotation name/group name was changed */
+    void sl_onUsePatternNamesClicked();
     void sl_onAnotationNameEdited();
 
-    void sl_onUsePatternNamesClicked();
-
+    void sl_activateNewSearch();
+    void sl_getAnnotationsButtonClicked();
+    void sl_prevButtonClicked();
+    void sl_nextButtonClicked();
 private:
     void initLayout();
     void initAlgorithmLayout();
@@ -137,6 +125,7 @@ private:
     void updateLayout();
     void connectSlots();
     int getMaxError(const QString& pattern) const;
+    void showCurrentResult() const;
 
     /**
      * Enables or disables the Search button depending on
@@ -151,9 +140,6 @@ private:
      * the search pattern is empty. Otherwise it is enabled.
      */
     void enableDisableMatchSpin();
-
-    /** Update when a new document has been created, etc. */
-    void updateAnnotationsWidget();
 
     /** Allows showing of several error messages. */
     void showHideMessage(bool show, MessageFlag messageFlag, const QString& additionalMsg = QString());
@@ -182,7 +168,8 @@ private:
     void updatePatternText(int previousAlgorithm);
 
     void validateCheckBoxSize(QCheckBox* checkBox, int requiredWidth);
-
+    void updateAnnotationsWidget();
+   
     AnnotatedDNAView* annotatedDnaView;
     CreateAnnotationWidgetController* annotController;
     bool annotModelPrepared;
@@ -218,6 +205,11 @@ private:
     static const QString ALGORITHM_SETTINGS;
     static const QString SEARCH_IN_SETTINGS;
     static const QString OTHER_SETTINGS;
+
+    QList<AnnotationData> findPatternResults;
+    int iterPos;
+    Task *searchTask;
+    QString previousPatternString;
 };
 
 } // namespace

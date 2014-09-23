@@ -26,7 +26,6 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Lang/SharedDbUrlUtils.h>
-#include <U2Lang/WorkflowUtils.h>
 
 #include "DbFolderScanner.h"
 
@@ -35,10 +34,9 @@ namespace U2 {
 DbFolderScanner::DbFolderScanner(const QString &url, const QString &accFilter, const QString &objNameFilter, bool recursive)
     : accFilter(accFilter)
 {
-    CHECK(WorkflowUtils::checkSharedDbConnection(SharedDbUrlUtils::getDbUrlFromEntityUrl(url)), );
+    const U2DbiRef dbiRef = SharedDbUrlUtils::getDbRefFromEntityUrl(url);
 
     U2OpStatusImpl os;
-    const U2DbiRef dbiRef = SharedDbUrlUtils::getDbRefFromEntityUrl(url);
     dbConnection = DbiConnection(dbiRef, os);
     CHECK_OP(os, );
 
@@ -76,11 +74,11 @@ void DbFolderScanner::initTargetObjectList(const QSet<QString> &paths, const QSt
 
     const bool nameFilterApplied = !objNameFilter.isEmpty();
     foreach (const QString &path, paths) {
-        const QList<U2DataId> objIds = oDbi->getObjects(path, 0, U2DbiOptions::U2_DBI_NO_LIMIT, os);
+        const QList<U2DataId> objIds = oDbi->getObjects(path, U2DbiOptions::U2_DBI_NO_LIMIT, U2DbiOptions::U2_DBI_NO_LIMIT, os);
         CHECK_OP(os, );
         QHash<U2DataId, QString> objNames;
         if (nameFilterApplied) {
-            objNames = oDbi->getObjectNames(0, U2DbiOptions::U2_DBI_NO_LIMIT, os);
+            objNames = oDbi->getObjectNames(U2DbiOptions::U2_DBI_NO_LIMIT, U2DbiOptions::U2_DBI_NO_LIMIT, os);
             CHECK_OP(os, );
         }
         foreach (const U2DataId &objId, objIds) {

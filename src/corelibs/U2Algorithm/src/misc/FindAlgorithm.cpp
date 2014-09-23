@@ -185,13 +185,13 @@ static void findInAmino(    FindAlgorithmResultsListener* rl,
         i < end - 2 && !stopFlag;
         i++, leftTillPercent--, translStrand = translStrand == 2 ? 0 : translStrand + 1)
     {
-        for (int ci = conStart; ci < conEnd; ci++) {
+        for (int ci = conStart; ci < conEnd && !stopFlag; ci++) {
             StrandContext& ctx = context[3 * ci + translStrand];
             DynTable& dt = ctx.dynTable;
             const char* p = ctx.pattern;
             FindAlgorithmResult& res = ctx.res;
 
-            for (int j=0; j < patternLen; j++) { //TODO: optimize -> specialize loops
+            for (int j=0; j < patternLen && !stopFlag; j++) { //TODO: optimize -> specialize loops
                 int k = cycleIndex(seqLen, i);
                 char amino = ci == 0 ?
                     aminoTT->translate3to1( seq[k],
@@ -325,13 +325,13 @@ static void findInAmino_subst(  FindAlgorithmResultsListener *rl,
         i < end - patternLenInNucl + 1 && !stopFlag;
         i++, leftTillPercent--, translStrand = translStrand == 2 ? 0 : translStrand + 1)
     {
-        for (int ci = conStart; ci < conEnd; ci++) {
+        for (int ci = conStart; ci < conEnd && !stopFlag; ci++) {
             StrandContext & ctx = context[ci * 3 + translStrand];
             const char * p = ctx.pattern;
             FindAlgorithmResult & res = ctx.res;
             bool match = true;
             int curErr = 0;
-            for ( int j = 0; j < patternLen; j++ ) {
+            for ( int j = 0; j < patternLen && !stopFlag; j++ ) {
                 char rollchar = ctx.rollArr.get(j);
                 if( rollchar != p[j] && ++curErr > maxErr ) {
                     match = false;
@@ -562,9 +562,9 @@ static void findInAmino_regExp( FindAlgorithmResultsListener *rl,
         sequence = seq;
     }
 
-    for ( int ci = conStart; ci < conEnd; ++ci ) {
+    for ( int ci = conStart; ci < conEnd && !stopFlag; ++ci ) {
 
-        for (int aminoFrameNumber = 0; aminoFrameNumber < 3; aminoFrameNumber++) {
+        for (int aminoFrameNumber = 0; aminoFrameNumber < 3 && !stopFlag; aminoFrameNumber++) {
             int len = seqLen - aminoFrameNumber - range.startPos;
             if (range.startPos < seqLen && range.endPos() < seqLen) {
                 len = range.length - aminoFrameNumber;
@@ -637,7 +637,7 @@ static void findRegExp( FindAlgorithmResultsListener *rl,
     QRegExp regExp( pattern );
     SAFE_POINT( regExp.isValid( ), "Invalid regular expression supplied!", );
 
-    for ( int ci = conStart; ci < conEnd; ++ci ) {
+    for ( int ci = conStart; ci < conEnd && !stopFlag; ++ci ) {
         QString substr;
         QByteArray tmp( range.length + 1, 0 );
         char *complSeq = NULL;
@@ -746,7 +746,7 @@ static void find_subst( FindAlgorithmResultsListener* rl,
     }
     for (int i = range.startPos;
          i < end - patternLen + 1 && !stopFlag; i++, leftTillPercent--) {
-        for (int ci = conStart; ci < conEnd; ci++) {
+        for (int ci = conStart; ci < conEnd && !stopFlag; ci++) {
             StrandContext& ctx = context[ci];
             const char* p = ctx.pattern;
             FindAlgorithmResult& res = ctx.res;
@@ -864,13 +864,13 @@ void FindAlgorithm::find(
 
         int end = getSearchEndPos(seq, range, patternLen - 1, searchIsCircular);
         for (int i=range.startPos; i < end && !stopFlag; i++, leftTillPercent--) {
-            for (int ci = conStart; ci < conEnd; ci++) {
+            for (int ci = conStart; ci < conEnd && !stopFlag; ci++) {
                 StrandContext& ctx = context[ci];
                 DynTable& dt = ctx.dynTable;
                 const char* p = ctx.pattern;
                 FindAlgorithmResult& res = ctx.res;
 
-                for (int j=0; j<patternLen; j++) {
+                for (int j=0; j<patternLen && !stopFlag; j++) {
                     bool matched = seq[ cycleIndex( seqLen, i) ] == p[j];
                     dt.match(j, matched);
                 }
