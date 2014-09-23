@@ -77,11 +77,16 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget /* = 0 */);
     CircularAnnotationLabel* getLabel() const;
     void setLabel(CircularAnnotationLabel* label);
+
+    void setArrowCenterPercentage(qreal arrowCenter) { arrowCenterPercentage = arrowCenter; }
+    qreal getArrowCenterPercentage() const { return arrowCenterPercentage; }
+
 protected:
     CircularAnnotationItem *parent;
     CircularAnnotationLabel *label;
     int number;
     bool isShort;
+    qreal arrowCenterPercentage;
 };
 
 /************************************************************************/
@@ -89,7 +94,9 @@ protected:
 /************************************************************************/
 class CircularAnnotationLabel : public QGraphicsItem {
 public:
-    CircularAnnotationLabel( const Annotation &ann, int _region, int sequenceLength, const QFont& font, CircularViewRenderArea* renderArea );
+    CircularAnnotationLabel( const Annotation &ann, bool isAutoAnnotation,
+                             int _region, int sequenceLength,
+                             const QFont& font, CircularViewRenderArea* renderArea );
     virtual void paint(QPainter *p,const QStyleOptionGraphicsItem *item,QWidget *widget);
     Annotation getAnnotation() const;
     virtual QRectF boundingRect() const;
@@ -99,6 +106,13 @@ public:
     static void prepareLabels(QList<CircularAnnotationLabel*>& labelItems);
 
     bool operator<(const CircularAnnotationLabel& a);
+
+    void setAnnRegion(CircularAnnotationRegionItem* region);
+    bool canFitToTheRegion() const;
+
+    void drawLabelInsideRegion(QPainter *p, bool canFit);
+    void drawLabelOutsideRegion(QPainter *p, QPen& pen);
+
 private:
     int findClosestPoint(const QPoint& targetPoint, const QVector<QRect>& rects, QVector<int> indexes);
     void getVacantPositions(const QVector<QRect>& rects, QVector<int>& result);
@@ -106,6 +120,7 @@ private:
     void getConnectionPoint();
 
     Annotation annotation;
+    bool isAutoAnnotation;
     float annotationAngle;
     QFont labelFont;
     QRectF midRect;
@@ -118,6 +133,7 @@ private:
     QPoint labelPos;
     QPoint connectionPoint;
     CircularViewRenderArea* ra;
+    CircularAnnotationRegionItem *regionItem;
     bool hasPosition;
     QString labelText;
     bool inner;

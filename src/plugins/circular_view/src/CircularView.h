@@ -52,12 +52,13 @@ namespace U2 {
 class CircularViewRenderArea;
 class CircularAnnotationItem;
 class CircularAnnotationLabel;
+class CircularViewSettings;
 class TextItem;
 
 class CircularView : public GSequenceLineViewAnnotated {
     Q_OBJECT
 public:
-    CircularView(QWidget* p, ADVSequenceObjectContext* ctx);
+    CircularView(QWidget* p, ADVSequenceObjectContext* ctx, CircularViewSettings* settings);
     void pack();
     void mousePressEvent(QMouseEvent * e);
     void mouseMoveEvent(QMouseEvent * e);
@@ -89,6 +90,10 @@ public:
 
     //used by export to file function
     void paint(QPainter &p, int w, int h, bool paintSelection, bool paintMarker);
+
+    CircularViewSettings* getSettings() { return settings; }
+    void redraw();
+
 signals:
     void si_wheelMoved(int);
     void si_zoomInDisabled(bool);
@@ -129,6 +134,7 @@ protected:
     int lastMouseY;
     CircularViewRenderArea* ra;
     bool clockwise, holdSelection;
+    CircularViewSettings*   settings;
 
 private:
     static const int graduation;
@@ -159,13 +165,16 @@ protected:
         bool selected = false, const AnnotationSettings *as = NULL );
     virtual void drawAnnotations(QPainter& p);
 
+    void redraw();
+
     void paintContent(QPainter& p, bool paintSelection = true, bool paintMarker = true);
     void paintContent(QPainter &p, int w, int h, bool paintSelection, bool paintMarker);
 
     void buildAnnotationLabel( const QFont &font, const Annotation &a,
-        const AnnotationSettings *as );
+        const AnnotationSettings *as, bool isAutoAnnotation = false);
     void drawSequenceName(QPainter& p);
     void drawRuler(QPainter& p);
+    void drawRulerCoordinates(QPainter& p, int startPos, int seqLen);
     void drawRulerNotches(QPainter& p, int start, int span, int seqLen);
     void drawAnnotationsSelection(QPainter& p);
     void drawSequenceSelection(QPainter& p);
@@ -183,6 +192,8 @@ private:
     static const int ARROW_LENGTH;
     static const int ARROW_HEIGHT_DELTA;
     static const int MAX_DISPLAYING_LABELS;
+    static const int MAX_LABEL_WIDTH;
+    static const int FREE_SPACE_HEIGHT_FOR_INTERNAL_LABELS;
 
     static const int MARKER_LEN;
     static const int ARR_LEN;
@@ -200,6 +211,9 @@ private:
     bool fitsInView;
     int verticalOffset;
 
+    CircularViewSettings*   settings;
+    bool settingsWereChanged;
+
     CircularView* circularView;
     QList< QVector<U2Region> > regionY;
     QMap<Annotation, CircularAnnotationItem* > circItems;
@@ -210,7 +224,6 @@ private:
     qreal rotationDegree;
     qreal mouseAngle;
     QVector<QRect> labelEmptyPositions;
-    QVector<QRect> labelEmptyInnerPositions;
     int oldYlevel;
 };
 

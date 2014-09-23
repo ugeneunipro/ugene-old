@@ -401,6 +401,7 @@ bool AnnotatedDNAView::onCloseEvent() {
     foreach (AnnotationTableObject *ao, annotations) {
         ao->deref();
     }
+    emit si_onClose(this);
     return true;
 }
 

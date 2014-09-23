@@ -38,8 +38,9 @@
 
 namespace U2 {
 
-class CircularViewSplitter;
 class CircularView;
+class CircularViewSettings;
+class CircularViewSplitter;
 class RestrctionMapWidget;
 
 class CircularViewPlugin : public Plugin {
@@ -61,16 +62,44 @@ public slots:
     void sl_circularStateChanged();
 };
 
+struct CircularViewSettings {
+    enum LabelMode {
+        Inside,
+        Outside,
+        Mixed,
+        None
+    };
+    CircularViewSettings();
+
+    bool        showTitle;
+    bool        showLength;
+    int         titleFontSize;
+    QString     titleFont;
+    bool        titleBold;
+
+    bool        showRulerLine;
+    bool        showRulerCoordinates;
+    int         rulerFontSize;
+
+    LabelMode   labelMode;
+    int         labelFontSize;
+};
+
 class CircularViewContext: public GObjectViewWindowContext {
+    friend class CircularViewSettingsWidgetFactory;
     Q_OBJECT
 public:
     CircularViewContext(QObject* p);
+    CircularViewSettings* getSettings(AnnotatedDNAView* view) { return viewSettings.value(view); }
+signals:
+    void si_cvSplitterWasCreatedOrRemoved(CircularViewSplitter*);
 protected slots:
     void sl_showCircular();
     void sl_sequenceWidgetAdded(ADVSequenceWidget*);
     void sl_sequenceWidgetRemoved(ADVSequenceWidget* w);
     void sl_toggleViews();
     void sl_setSequenceOrigin();
+    void sl_onDNAViewClosed(AnnotatedDNAView* v);
 protected:
     virtual void initViewContext(GObjectView* view);
     void buildMenu(GObjectView* v, QMenu* m);
@@ -78,8 +107,10 @@ protected:
     void removeCircularView(GObjectView* view);
     void reconnectExportAction(GObjectView* view);
 private:
-    GObjectViewAction* exportAction;
-    GObjectViewAction* setSequenceOriginAction;
+    GObjectViewAction*      exportAction;
+    GObjectViewAction*      setSequenceOriginAction;
+
+    QMap <AnnotatedDNAView*, CircularViewSettings*> viewSettings;
 };
 
 } //namespace

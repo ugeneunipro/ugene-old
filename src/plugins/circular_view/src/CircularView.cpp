@@ -54,19 +54,20 @@
 
 #include "CircularItems.h"
 #include "CircularView.h"
+#include "CircularViewPlugin.h"
 
 
 namespace U2 {
 
-const int CircularView::CV_REGION_ITEM_WIDTH = 20;
+const int CircularView::CV_REGION_ITEM_WIDTH = 25;
 
 const int CircularView::MIN_OUTER_SIZE = 100;
 const int CircularView::graduation = 16;
 
 
 
-CircularView::CircularView(QWidget* p, ADVSequenceObjectContext* ctx)
-: GSequenceLineViewAnnotated(p, ctx), clockwise(true), holdSelection(false)
+CircularView::CircularView(QWidget* p, ADVSequenceObjectContext* ctx, CircularViewSettings* settings)
+: GSequenceLineViewAnnotated(p, ctx), clockwise(true), holdSelection(false), settings(settings)
 {
     QSet<AnnotationTableObject*> anns = ctx->getAnnotationObjects(true);
     foreach(AnnotationTableObject* obj, anns ) {
@@ -342,7 +343,7 @@ void CircularView::sl_zoomIn() {
     if (ra->outerEllipseSize / width() > 10) {
         return;
     }
-    ra->outerEllipseSize*=ZOOM_SCALE;
+    ra->outerEllipseSize *= ZOOM_SCALE;
     adaptSizes();
     updateZoomActions();
 }
@@ -351,7 +352,7 @@ void CircularView::sl_zoomOut() {
     if (ra->fitsInView) {
         return;
     }
-    ra->outerEllipseSize/=ZOOM_SCALE;
+    ra->outerEllipseSize /= ZOOM_SCALE;
     adaptSizes();
     updateZoomActions();
 }
@@ -409,8 +410,8 @@ void CircularView::invertCurrentSelection() {
 }
 
 void CircularView::adaptSizes() {
-    ra->innerEllipseSize=ra->outerEllipseSize-CV_REGION_ITEM_WIDTH;
-    ra->rulerEllipseSize=ra->outerEllipseSize-CV_REGION_ITEM_WIDTH;
+    ra->innerEllipseSize = ra->outerEllipseSize - CV_REGION_ITEM_WIDTH;
+    ra->rulerEllipseSize = ra->outerEllipseSize - CV_REGION_ITEM_WIDTH;
     ra->middleEllipseSize = (ra->outerEllipseSize + ra->innerEllipseSize)/2;
     updateMinSize();
     addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
@@ -438,18 +439,25 @@ void CircularView::paint(QPainter &p, int w, int h, bool paintSelection, bool pa
     ra->paintContent(p, w, h, paintSelection, paintMarker);
 }
 
+void CircularView::redraw() {
+    ra->redraw();
+}
+
 /************************************************************************/
 /* CircularViewRenderArea                                               */
 /************************************************************************/
 
 const int CircularViewRenderArea::OUTER_ELLIPSE_SIZE = 512;
-const int CircularViewRenderArea::ELLIPSE_DELTA = 22;
+const int CircularViewRenderArea::ELLIPSE_DELTA = CircularView::CV_REGION_ITEM_WIDTH + 2;
+
 const int CircularViewRenderArea::INNER_ELLIPSE_SIZE = OUTER_ELLIPSE_SIZE - CircularView::CV_REGION_ITEM_WIDTH;
 const int CircularViewRenderArea::RULER_ELLIPSE_SIZE = INNER_ELLIPSE_SIZE - CircularView::CV_REGION_ITEM_WIDTH;
 const int CircularViewRenderArea::MIDDLE_ELLIPSE_SIZE = (INNER_ELLIPSE_SIZE + OUTER_ELLIPSE_SIZE) / 2;
 const int CircularViewRenderArea::ARROW_LENGTH = 32;
 const int CircularViewRenderArea::ARROW_HEIGHT_DELTA = 4;
 const int CircularViewRenderArea::MAX_DISPLAYING_LABELS = 20;
+const int CircularViewRenderArea::MAX_LABEL_WIDTH = 80;
+const int CircularViewRenderArea::FREE_SPACE_HEIGHT_FOR_INTERNAL_LABELS = 4;
 
 const int CircularViewRenderArea::MARKER_LEN = 30;
 const int CircularViewRenderArea::ARR_LEN = 4;
@@ -458,11 +466,26 @@ const int CircularViewRenderArea::NOTCH_SIZE = 5;
 
 
 CircularViewRenderArea::CircularViewRenderArea(CircularView* d)
-: GSequenceLineViewAnnotatedRenderArea(d, true), outerEllipseSize(OUTER_ELLIPSE_SIZE),
-ellipseDelta(ELLIPSE_DELTA), innerEllipseSize(INNER_ELLIPSE_SIZE), rulerEllipseSize(RULER_ELLIPSE_SIZE),
-middleEllipseSize(MIDDLE_ELLIPSE_SIZE), arrowLength(ARROW_LENGTH),
-arrowHeightDelta(ARROW_HEIGHT_DELTA), maxDisplayingLabels(MAX_DISPLAYING_LABELS), fitsInView(true),
-circularView(d), rotationDegree(0), mouseAngle(0), oldYlevel(0) {
+    : GSequenceLineViewAnnotatedRenderArea(d, true),
+      outerEllipseSize(OUTER_ELLIPSE_SIZE),
+      ellipseDelta(ELLIPSE_DELTA),
+      innerEllipseSize(INNER_ELLIPSE_SIZE),
+      rulerEllipseSize(RULER_ELLIPSE_SIZE),
+      middleEllipseSize(MIDDLE_ELLIPSE_SIZE),
+      arrowLength(ARROW_LENGTH),
+      arrowHeightDelta(ARROW_HEIGHT_DELTA),
+      maxDisplayingLabels(MAX_DISPLAYING_LABELS),
+      fitsInView(true),
+      circularView(d),
+      rotationDegree(0),
+      mouseAngle(0),
+      oldYlevel(0)
+{
+    SAFE_POINT(d != NULL, tr("CircularView is NULL"), );
+    settings = d->getSettings();
+    SAFE_POINT(settings != NULL, tr("Circular view settings are NULL"), );
+    settingsWereChanged = false;
+
     setMouseTracking(true);
 
     ADVSequenceObjectContext* ctx = view->getSequenceContext();
@@ -501,7 +524,9 @@ void CircularViewRenderArea::paintContent( QPainter& p, bool paintSelection, boo
 
     drawRuler(p);
     drawAnnotations(p);
-    drawSequenceName(p);
+    if (settings->showTitle || settings->showLength) {
+        drawSequenceName(p);
+    }
     if (paintSelection) {
         drawAnnotationsSelection(p);
         drawSequenceSelection(p);
@@ -509,6 +534,7 @@ void CircularViewRenderArea::paintContent( QPainter& p, bool paintSelection, boo
     if (paintMarker) {
         drawMarker(p);
     }
+
     p.restore();
 }
 
@@ -532,7 +558,7 @@ void CircularViewRenderArea::drawAll(QPaintDevice* pd) {
     p.setRenderHint(QPainter::Antialiasing);
     GSLV_UpdateFlags uf = view->getUpdateFlags();
     bool completeRedraw = uf.testFlag(GSLV_UF_NeedCompleteRedraw) || uf.testFlag(GSLV_UF_ViewResized) ||
-        uf.testFlag(GSLV_UF_AnnotationsChanged);
+        uf.testFlag(GSLV_UF_AnnotationsChanged) || settingsWereChanged;
 
     int viewSize = qMin(circularView->height(), circularView->width());
     verticalOffset = parentWidget()->height()/2;
@@ -542,6 +568,7 @@ void CircularViewRenderArea::drawAll(QPaintDevice* pd) {
     } else {
         fitsInView = true;
     }
+
     if (completeRedraw) {
         QPainter pCached(cachedView);
         pCached.setRenderHint(QPainter::Antialiasing);
@@ -608,12 +635,13 @@ void CircularViewRenderArea::drawSequenceName(QPainter& p) {
 
     assert( ctx->getSequenceGObject() != NULL );
 
-    //QString docName = ctx->getSequenceGObject()->getDocument()->getName();
     QString docName = ctx->getSequenceGObject()->getGObjectName();
     QString seqLen = QString::number(ctx->getSequenceLength()) + " bp";
     int docNameFullLength = docName.length();
 
-    QFont font = p.font();
+    QFont font(settings->titleFont, settings->titleFontSize);
+    font.setBold(settings->titleBold);
+    p.setFont(font);
     QFontMetrics fm(font);
     int cw = fm.width('O');
     int symbolsAlowed = (rulerEllipseSize - RULER_PAD)/cw;
@@ -640,10 +668,14 @@ void CircularViewRenderArea::drawSequenceName(QPainter& p) {
     }
 
     nameBound.moveCenter(namePt);
-    p.drawText(nameBound, docName);
+    if (settings->showTitle) {
+        p.drawText(nameBound.bottomLeft(), docName);
+    }
 
     lenBound.moveCenter(lenPt);
-    p.drawText(lenBound, seqLen);
+    if (settings->showLength) {
+        p.drawText(lenBound.bottomLeft(), seqLen);
+    }
 }
 
 void CircularViewRenderArea::drawSequenceSelection( QPainter& p ) {
@@ -780,13 +812,30 @@ QPair<int,int> CircularViewRenderArea::getVisibleRange() const {
 
 void CircularViewRenderArea::drawRuler( QPainter& p ) {
     p.save();
-    ADVSequenceObjectContext* ctx = view->getSequenceContext();
-    U2Region range(0, ctx->getSequenceLength());
-    int seqLen = range.length;
     normalizeAngle(rotationDegree);
 
+    if (settings->showRulerCoordinates) {
+        ADVSequenceObjectContext* ctx = view->getSequenceContext();
+        U2Region range(0, ctx->getSequenceLength());
+        QFont font = p.font();
+        font.setPointSize(settings->rulerFontSize);
+        p.setFont(font);
+        drawRulerCoordinates(p, range.startPos, range.length);
+    }
+    if (settings->showRulerLine) {
+        QPen boldPen(Qt::black);
+        boldPen.setWidth(3);
+        p.setPen(boldPen);
+        QRectF rulerRect(-rulerEllipseSize/2, -rulerEllipseSize/2, rulerEllipseSize, rulerEllipseSize);
+        rulerRect.moveCenter(QPointF(0,0));
+        p.drawEllipse(rulerRect);
+    }
+    p.restore();
+}
+
+void CircularViewRenderArea::drawRulerCoordinates(QPainter &p, int startPos, int seqLen) {
     if (fitsInView) {
-        drawRulerNotches(p, range.startPos, seqLen, seqLen);
+        drawRulerNotches(p, startPos, seqLen, seqLen);
     } else {
         const QPair<int,int>& loc = getVisibleRange();
         int start = loc.first;
@@ -804,13 +853,6 @@ void CircularViewRenderArea::drawRuler( QPainter& p ) {
             drawRulerNotches(p, start, span, seqLen);
         }
     }
-    QPen boldPen(Qt::black);
-    boldPen.setWidth(3);
-    p.setPen(boldPen);
-    QRectF rulerRect(-rulerEllipseSize/2, -rulerEllipseSize/2, rulerEllipseSize, rulerEllipseSize);
-    rulerRect.moveCenter(QPointF(0,0));
-    p.drawEllipse(rulerRect);
-    p.restore();
 }
 
 void CircularViewRenderArea::drawAnnotations( QPainter &p ) {
@@ -828,11 +870,15 @@ void CircularViewRenderArea::drawAnnotations( QPainter &p ) {
     AnnotationSettingsRegistry *asr = AppContext::getAnnotationsSettingsRegistry( );
     //TODO: there need const order of annotation tables
     QSet<AnnotationTableObject *> anns = ctx->getAnnotationObjects( true );
+    QSet<AnnotationTableObject *> autoAnns = ctx->getAutoAnnotationObjects();
     foreach ( AnnotationTableObject *ao, anns ) {
+        bool isAutoAnnotation = autoAnns.contains(ao);
         foreach ( const Annotation &a, ao->getAnnotations( ) ) {
             AnnotationSettings *as = asr->getAnnotationSettings(a.getData());
             buildAnnotationItem(DrawAnnotationPass_DrawFill, a, false, as);
-            buildAnnotationLabel(p.font(), a, as);
+            QFont font = p.font();
+            font.setPointSize(settings->labelFontSize);
+            buildAnnotationLabel(font, a, as, isAutoAnnotation);
         }
     }
 
@@ -842,10 +888,20 @@ void CircularViewRenderArea::drawAnnotations( QPainter &p ) {
     foreach(CircularAnnotationItem* item, circItems) {
         item->paint(&p, NULL, this);
     }
+
+    if (settings->labelMode == CircularViewSettings::None) {
+        return;
+    }
     foreach(CircularAnnotationLabel* label, labelList) {
+        const Annotation ann = label->getAnnotation();
         label->setLabelPosition();
         label->paint(&p, NULL, this);
     }
+}
+
+void CircularViewRenderArea::redraw() {
+    settingsWereChanged = true;
+    repaint();
 }
 
 #define REGION_MIN_LEN 3
@@ -933,6 +989,7 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
             spanAngle = (float)REGION_MIN_LEN / (PI*outerRect.height()) * 360;
         }
 
+        qreal centerPercent = 0;
         if(isShort) {
             path.moveTo(outerRect.width()/2 * cos(-startAngle / 180.0 * PI),-outerRect.height()/2 * sin(-startAngle / 180.0 * PI));
             path.arcTo(outerRect, -startAngle, -spanAngle);
@@ -955,23 +1012,30 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
                 path.moveTo(outerRect.width()/2 * cos(startAngle / 180.0 * PI),
                     outerRect.height()/2 * sin(startAngle / 180.0 * PI));
                 path.arcTo(outerRect, -startAngle, -(spanAngle - dAlpha));
-                path.lineTo((outerRect.width()/2 + arrowHeightDelta) * cos((startAngle + spanAngle - dAlpha) / 180.0 * PI),(outerRect.height()/2 + arrowHeightDelta) * sin((startAngle + spanAngle - dAlpha) / 180.0 * PI));
-                path.lineTo(middleRect.width()/2 * cos((startAngle + spanAngle) / 180.0 * PI),middleRect.height()/2 * sin((startAngle + spanAngle)/ 180.0 * PI));
-                path.lineTo((innerRect.width()/2 - arrowHeightDelta) * cos((-startAngle - (spanAngle - dAlpha)) / 180.0 * PI),(innerRect.height()/2 - arrowHeightDelta) * sin((startAngle + spanAngle - dAlpha) / 180.0 * PI));
+                path.lineTo((outerRect.width()/2 + arrowHeightDelta) * cos((startAngle + spanAngle - dAlpha) / 180.0 * PI),
+                        (outerRect.height()/2 + arrowHeightDelta) * sin((startAngle + spanAngle - dAlpha) / 180.0 * PI));
+                path.lineTo(middleRect.width()/2 * cos((startAngle + spanAngle) / 180.0 * PI),
+                        middleRect.height()/2 * sin((startAngle + spanAngle)/ 180.0 * PI));
+                path.lineTo((innerRect.width()/2 - arrowHeightDelta) * cos((-startAngle - (spanAngle - dAlpha)) / 180.0 * PI),
+                        (innerRect.height()/2 - arrowHeightDelta) * sin((startAngle + spanAngle - dAlpha) / 180.0 * PI));
                 path.arcTo(innerRect, -startAngle - (spanAngle - dAlpha), spanAngle - dAlpha);
                 path.closeSubpath();
             }
+            qreal center = PI * (middleRect.width() / 2) * (spanAngle - dAlpha) / 360;
+            centerPercent = center / path.length();
         }
-        regions.append(new CircularAnnotationRegionItem(path, isShort, location.indexOf(r)));
+        CircularAnnotationRegionItem* regItem = new CircularAnnotationRegionItem(path, isShort, location.indexOf(r));
+        regItem->setArrowCenterPercentage(centerPercent);
+        regions.append( regItem );
     }
 
     CircularAnnotationItem* item = new CircularAnnotationItem(a, regions, this);
     circItems[a] = item;
 }
 
-void CircularViewRenderArea::buildAnnotationLabel( const QFont &font, const Annotation &a, const AnnotationSettings *as) {
+void CircularViewRenderArea::buildAnnotationLabel( const QFont &font, const Annotation &a,
+                                                   const AnnotationSettings *as, bool isAutoAnnotation) {
     const AnnotationData aData = a.getData( );
-
     if ( !as->visible ) {
         return;
     }
@@ -990,9 +1054,11 @@ void CircularViewRenderArea::buildAnnotationLabel( const QFont &font, const Anno
         if ( splitted && 0 != r ) {
             break;
         }
-        CircularAnnotationLabel *label = new CircularAnnotationLabel( a, r, seqLen, font, this );
+        CircularAnnotationLabel *label = new CircularAnnotationLabel( a, isAutoAnnotation, r,
+                                                                      seqLen, font, this );
         labelList.append( label );
         CircularAnnotationRegionItem *ri = circItems[a]->getRegions( )[r];
+        label->setAnnRegion(ri);
         ri->setLabel( label );
     }
 }
@@ -1046,14 +1112,12 @@ void CircularViewRenderArea::drawMarker(QPainter& p) {
 #define LABEL_PAD 30
 void CircularViewRenderArea::evaluateLabelPositions() {
     labelEmptyPositions.clear();
-    labelEmptyInnerPositions.clear();
 
     QFont f;
     QFontMetrics fm(f);
     int labelHeight = fm.height();
     int lvlsNum = regionY.count();
     int outerRadius = outerEllipseSize/2 + (lvlsNum-1)*ellipseDelta/2;
-    int cw = fm.width('O');
 
     int areaHeight = height();
 
@@ -1072,25 +1136,6 @@ void CircularViewRenderArea::evaluateLabelPositions() {
             QRect l_rect(-x - LABEL_PAD, zPos, width()/2-(x+LABEL_PAD), labelHeight);
             QRect r_rect(x + LABEL_PAD, zPos, width()/2-(x+LABEL_PAD), labelHeight);
             labelEmptyPositions << l_rect << r_rect;
-        }
-    }
-    //inner points
-
-    int innerRadius = rulerEllipseSize/2 - LABEL_PAD;
-    for (int zPos=-innerRadius+labelHeight; zPos<-2*labelHeight; zPos+=labelHeight) {
-        int x = sqrt(float(innerRadius*innerRadius - zPos*zPos));
-        if(2*x>=cw) {
-            QRect r_rect(x,zPos,2*x,labelHeight);
-            QRect l_rect(-x,zPos,2*x,labelHeight);
-            labelEmptyInnerPositions << r_rect << l_rect;
-        }
-    }
-    for (int zPos=innerRadius; zPos>2*labelHeight; zPos-=labelHeight) {
-        int x = sqrt(float(innerRadius*innerRadius - zPos*zPos));
-        if(2*x>=cw) {
-            QRect r_rect(x,zPos,2*x,labelHeight);
-            QRect l_rect(-x,zPos,2*x,labelHeight);
-            labelEmptyInnerPositions << r_rect << l_rect;
         }
     }
 }

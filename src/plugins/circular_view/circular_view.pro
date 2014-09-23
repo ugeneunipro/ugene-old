@@ -5,15 +5,20 @@ HEADERS += src/CircularItems.h \
            src/CircularView.h \
            src/CircularViewImageExportTask.h \
            src/CircularViewPlugin.h \
+           src/CircularViewSettingsWidget.h \
+           src/CircularViewSettingsWidgetFactory.h \
            src/CircularViewSplitter.h \
            src/RestrictionMapWidget.h \
            src/SetSequenceOriginDialog.h \
            src/ShiftSequenceStartTask.h
-FORMS += src/ui/SetSequenceOriginDialog.ui
+FORMS +=   src/ui/CircularViewSettingsWidget.ui \
+           src/ui/SetSequenceOriginDialog.ui
 SOURCES += src/CircularItems.cpp \
            src/CircularView.cpp \
            src/CircularViewImageExportTask.cpp \
            src/CircularViewPlugin.cpp \
+           src/CircularViewSettingsWidget.cpp \
+           src/CircularViewSettingsWidgetFactory.cpp \
            src/CircularViewSplitter.cpp \
            src/RestrictionMapWidget.cpp \
            src/SetSequenceOriginDialog.cpp \

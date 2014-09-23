@@ -209,6 +209,12 @@ bool noValidExtension(const QString& url) {
     return false;
 }
 
+void CircularViewSplitter::updateViews() {
+    foreach(CircularView* cv, circularViewList) {
+        cv->redraw();
+    }
+}
+
 void CircularViewSplitter::sl_export() {
     CircularView* cvInFocus = NULL;
     foreach(CircularView* cv, circularViewList) {

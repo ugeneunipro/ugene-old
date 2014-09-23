@@ -58,6 +58,7 @@ public:
     void removeView(CircularView* view, RestrctionMapWidget* rmapWidget);
     bool isEmpty();
     const QList<CircularView*>& getViewList() const { return circularViewList; }
+    void updateViews();
 protected slots:
     void sl_export();
     void sl_horSliderMoved(int);

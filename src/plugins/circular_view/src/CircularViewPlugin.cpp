@@ -21,6 +21,7 @@
 
 #include "CircularViewPlugin.h"
 #include "CircularView.h"
+#include "CircularViewSettingsWidgetFactory.h"
 #include "CircularViewSplitter.h"
 #include "RestrictionMapWidget.h"
 #include "SetSequenceOriginDialog.h"
@@ -30,9 +31,11 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Gui/MainWindow.h>
 #include <U2Core/DocumentSelection.h>
 #include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/MainWindow.h>
+#include <U2Gui/OPWidgetFactoryRegistry.h>
 
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSingleSequenceWidget.h>
@@ -63,10 +66,29 @@ extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     return NULL;
 }
 
+CircularViewSettings::CircularViewSettings()
+    : showTitle(true),
+      showLength(true),
+      titleFontSize(11),
+      titleBold(false),
+      showRulerLine(true),
+      showRulerCoordinates(true),
+      rulerFontSize(11),
+      labelMode(Mixed),
+      labelFontSize(11)
+{
+    QPainter p;
+    titleFont = p.fontInfo().family();
+}
+
 
 CircularViewPlugin::CircularViewPlugin() : Plugin(tr("CircularView"), tr("Enables drawing of DNA sequences using circular representation")) {
     viewCtx = new CircularViewContext(this);
     viewCtx->init();
+
+    OPWidgetFactoryRegistry *opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
+    SAFE_POINT(opWidgetFactoryRegistry != NULL, tr("OPWidgetFactoryRegistry is NULL"), );
+    opWidgetFactoryRegistry->registerFactory(new CircularViewSettingsWidgetFactory(qobject_cast<CircularViewContext*>(viewCtx)));
 }
 
 CircularViewPlugin::~CircularViewPlugin() {
@@ -80,7 +102,6 @@ CircularViewContext::CircularViewContext(QObject* p)
 }
 
 void CircularViewContext::initViewContext(GObjectView* v) {
-
     exportAction = new GObjectViewAction(this, v, tr("Save circular view as image"));
     exportAction->setIcon(QIcon(":/core/images/cam2.png"));
     exportAction->setObjectName("Save circular view as image");
@@ -89,12 +110,16 @@ void CircularViewContext::initViewContext(GObjectView* v) {
     connect(setSequenceOriginAction, SIGNAL(triggered()), SLOT(sl_setSequenceOrigin()));
 
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(v);
+    if (!viewSettings.contains(av)) {
+        viewSettings.insert(av, new CircularViewSettings());
+    }
 
     foreach(ADVSequenceWidget* w, av->getSequenceWidgets()) {
         sl_sequenceWidgetAdded(w);
     }
     connect(av, SIGNAL(si_sequenceWidgetAdded(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetAdded(ADVSequenceWidget*)));
     connect(av, SIGNAL(si_sequenceWidgetRemoved(ADVSequenceWidget*)), SLOT(sl_sequenceWidgetRemoved(ADVSequenceWidget*)));
+    connect(av, SIGNAL(si_onClose(AnnotatedDNAView*)), SLOT(sl_onDNAViewClosed(AnnotatedDNAView*)));
 
     ADVGlobalAction* globalToggleViewAction = new ADVGlobalAction(av,
         QIcon(":circular_view/images/circular.png"),
@@ -169,6 +194,7 @@ CircularViewSplitter* CircularViewContext::getView(GObjectView* view, bool creat
     if (create) {
         AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
         circularView = new CircularViewSplitter(av);
+        emit si_cvSplitterWasCreatedOrRemoved(circularView);
         resources.append(circularView);
         viewResources.insert(view, resources);
 
@@ -221,6 +247,7 @@ void CircularViewContext::removeCircularView(GObjectView* view) {
             resources.removeOne(circularView);
             viewResources.insert(view, resources);
             delete circularView;
+            emit si_cvSplitterWasCreatedOrRemoved(NULL);
         }
     }
 }
@@ -247,7 +274,8 @@ void CircularViewContext::sl_showCircular() {
         a->setText(tr("Remove circular view"));
         assert(a->view == NULL);
         CircularViewSplitter* splitter = getView(sw->getAnnotatedDNAView(), true);
-        a->view = new CircularView(sw, sw->getSequenceContext());
+        a->view = new CircularView(sw, sw->getSequenceContext(),
+                                   viewSettings.value(sw->getAnnotatedDNAView()));
         a->view->setObjectName("CV_" + sw->objectName());
         a->rmapWidget=new RestrctionMapWidget(sw->getSequenceContext(),splitter);
         splitter->addView(a->view,a->rmapWidget);
@@ -328,6 +356,12 @@ void CircularViewContext::sl_setSequenceOrigin()
         }
     }
 
+}
+
+void CircularViewContext::sl_onDNAViewClosed(AnnotatedDNAView *v) {
+    CircularViewSettings* settings = viewSettings.value(v);
+    viewSettings.remove(v);
+    delete settings;
 }
 
 CircularViewAction::CircularViewAction() : ADVSequenceWidgetAction(CIRCULAR_ACTION_NAME, tr("Show circular view")), view(NULL), rmapWidget(NULL)

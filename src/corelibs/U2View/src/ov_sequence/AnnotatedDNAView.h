@@ -88,13 +88,13 @@ public:
     const QList<ADVSequenceObjectContext*>& getSequenceContexts() const {return seqContexts;}
 
     QList<U2SequenceObject*> getSequenceObjectsWithContexts() const;
-    
+
     QList<GObject*> getSequenceGObjectsWithContexts() const;
 
     QList<AnnotationTableObject *> getAnnotationObjects( bool includeAutoAnnotations = false) const;
 
     AnnotationSelection*        getAnnotationsSelection() const {return annotationSelection;}
-    
+
     AnnotationGroupSelection*   getAnnotationsGroupSelection() const {return annotationGroupSelection;}
 
     const QList<ADVSequenceWidget*> getSequenceWidgets() const {return seqViews;}
@@ -108,7 +108,7 @@ public:
     void insertWidgetIntoSplitter(ADVSplitWidget* widget);
 
     void unregisterSplitWidget(ADVSplitWidget* widget);
-    
+
     virtual QString addObject(GObject* o);
 
     void saveWidgetState();
@@ -116,7 +116,7 @@ public:
     ADVSequenceObjectContext* getSequenceContext(AnnotationTableObject *obj) const;
 
     ADVSequenceObjectContext* getSequenceContext(U2SequenceObject*) const;
-    
+
     ADVSequenceObjectContext* getSequenceContext(const GObjectReference& r) const;
 
     QWidget* getScrolledWidget() const {return scrolledWidget;}
@@ -134,10 +134,10 @@ public:
     void updateState(const AnnotatedDNAViewState& s);
 
     QAction* getCreateAnnotationAction() const {return createAnnotationAction;}
-    
+
     void addADVAction(ADVGlobalAction* a);
-    
-    void removeADVAction(ADVGlobalAction* a) {advActions.removeAll(a);} 
+
+    void removeADVAction(ADVGlobalAction* a) {advActions.removeAll(a);}
 
     AnnotationsTreeView* getAnnotationsView() {return annotationsView;}
 
@@ -169,7 +169,7 @@ protected:
     virtual void onObjectRenamed(GObject* obj, const QString& oldName);
     virtual bool eventFilter(QObject*, QEvent*);
     virtual void timerEvent(QTimerEvent *e);
-    
+
     virtual bool isChildWidgetObject(GObject* o) const;
     virtual void addAnalyseMenu(QMenu* m);
     virtual void addAddMenu(QMenu* m);
@@ -196,6 +196,8 @@ signals:
     /** Emitted when a part was added to a sequence, or it was removed or replaced */
     void si_sequenceModified(ADVSequenceObjectContext*);
 
+    void si_onClose(AnnotatedDNAView* v);
+
 public slots:
     void sl_onPosChangeRequest(int pos);
 
@@ -212,7 +214,7 @@ private slots:
     void sl_replaceSequencePart();
     void sl_sequenceModifyTaskStateChanged();
     void sl_reverseSequence();
-    
+
     virtual void sl_onDocumentAdded(Document*);
     virtual void sl_onDocumentLoadedStateChanged();
     virtual void sl_removeSelectedSequenceObject();
@@ -220,7 +222,7 @@ private slots:
 private:
     void updateScrollAreaHeight();
     void updateMultiViewActions();
-    
+
     void addRelatedAnnotations(ADVSequenceObjectContext* seqCtx);
     void addAutoAnnotations(ADVSequenceObjectContext* seqCtx);
     void removeAutoAnnotations(ADVSequenceObjectContext* seqCtx);
@@ -238,7 +240,7 @@ private:
 
     CodonTableView*     codonTableView;
     CodonTableAction*   showCodonTableAction;
-    
+
     QAction*            createAnnotationAction;
     QAction*            findPatternAction;
     QAction*            posSelectorAction;
@@ -251,14 +253,14 @@ private:
     QAction*            replaceSequencePart;
     QAction*            removeSequenceObjectAction;
     QAction*            reverseSequenceAction;
-    
+
     PositionSelector*   posSelector;
-    
+
     QList<ADVSequenceObjectContext*>    seqContexts;
     QList<AnnotationTableObject*>         annotations;
-    QList<ADVObjectHandler*>            handlers; 
+    QList<ADVObjectHandler*>            handlers;
     QList<ADVGlobalAction*>             advActions;
-    
+
     QMap<ADVSequenceObjectContext*, AutoAnnotationObject*>   autoAnnotationsMap;
 
     AnnotationsTreeView*        annotationsView;
@@ -267,13 +269,13 @@ private:
 
     AnnotationSelection *       annotationSelection;
     AnnotationGroupSelection *  annotationGroupSelection;
-    
+
     ADVClipboard*               clipb;
     ADVSyncViewManager*         syncViewManager;
 
     ADVSequenceWidget*          focusedWidget;
     ADVSequenceWidget*          replacedSeqWidget;     // not NULL when any sequence widget is dragging to the new place.
-    
+
     int                         timerId;
 };
 
