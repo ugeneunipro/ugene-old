@@ -199,6 +199,8 @@ DNAChromatogram DNAChromatogramSerializer::deserialize(const QByteArray &binary,
 /* NewickPhyTreeSerializer */
 /************************************************************************/
 namespace {
+    enum ReadState {RS_NAME, RS_WEIGHT, RS_QUOTED_NAME};
+
     void packTreeNode(QByteArray &binary, const PhyNode *node) {
         int branches = node->branchCount();
         if (branches == 1 && (node->getName() == "" || node->getName() == "ROOT")) {
@@ -222,8 +224,10 @@ namespace {
                 }
             }
             binary.append(")");
+        } else if(node->getName().contains(QRegExp("\\s|[(]|[)]|[:]|[;]|[,]"))) {
+            binary.append(QString("\'%1\'").arg(node->getName()).toLocal8Bit());
         } else {
-            binary.append(QString(node->getName()).replace(' ', '_').toLatin1());
+            binary.append(QString(node->getName()).toLatin1());
         }
     }
 }
@@ -243,8 +247,13 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
     bool done = true;
 
     QBitArray ops(256);
-    ops['('] = ops[')'] = ops[':']  = ops[','] = ops[';'] = true;
-    enum ReadState {RS_NAME, RS_WEIGHT};
+    ops['('] = true;
+    ops[')'] = true;
+    ops[':'] = true;
+    ops[','] = true;
+    ops[';'] = true;
+    ops['\''] = true;
+
     ReadState state = RS_NAME;
     QString lastStr;
     PhyNode *rd = new PhyNode();
@@ -256,6 +265,9 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
         for (int i = 0; i < blockLen; ++i) {
             unsigned char c = block[i];
             if (TextUtils::WHITES[(uchar)c]) {
+                if(state == RS_QUOTED_NAME) {
+                    lastStr.append(c);
+                }
                 continue;
             }
             done = false;
@@ -264,6 +276,22 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                 continue;
             }
             // use cached value
+
+            if(c == '\'') {
+                if(state == RS_NAME) {
+                    state = RS_QUOTED_NAME;
+                } else if(state == RS_QUOTED_NAME) {
+                    unsigned char nextChar = block[i+1];
+                    if(nextChar == '\'') {
+                        lastStr.append(c);
+                        ++i;
+                    } else {
+                        state = RS_NAME;
+                    }
+                }
+                continue;
+            }
+
             if (state == RS_NAME) {
                 nodeStack.top()->setName(lastStr);
             } else {

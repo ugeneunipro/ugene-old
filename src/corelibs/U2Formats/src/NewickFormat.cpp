@@ -78,7 +78,19 @@ FormatCheckResult NewickFormat::checkRawData(const QByteArray& rawData, const GU
     int brackets = 0;
     typedef enum { letter, letter_than_whites, any } Cases;
     Cases last = any;
+    bool quotedLabelStarted = false;
     for (int i = 0; i < size; ++i) {
+        if('\'' == data[i]) {
+            if(!quotedLabelStarted && i > 0 && (data[i-1] == '(' || data[i-1] == ',')) {
+                quotedLabelStarted = true;
+            } else if(quotedLabelStarted) {
+                quotedLabelStarted = false;
+            }
+            continue;
+        }
+        if(quotedLabelStarted) {
+            continue;
+        }
         switch (data[i]) {
             case '(':
                 ++brackets;
