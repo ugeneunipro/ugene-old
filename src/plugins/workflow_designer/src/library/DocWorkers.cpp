@@ -806,7 +806,7 @@ void SeqWriter::takeParameters(U2OpStatus &os) {
 
 QStringList SeqWriter::takeUrlList(const QVariantMap &data, U2OpStatus &os) {
     QStringList urls = BaseDocWriter::takeUrlList(data, os);
-    SAFE_POINT_OP(os, urls);
+    CHECK_OP(os, urls);
     SAFE_POINT(1 == urls.size(), "Several urls in the output attribute", urls);
 
     SharedDbiDataHandler seqId = data.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
