@@ -127,7 +127,7 @@ Document* ObjectViewTask::createDocumentAndAddToProject( const QString& docUrl, 
         DocumentFormat* format = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::DATABASE_CONNECTION);
         SAFE_POINT_EXT(NULL != format, os.setError("Database connection format is NULL"), NULL);
 
-        if (!AppContext::getPasswordStorage()->contains(docUrl) && !AppContext::getCredentialsAsker()->ask(docUrl)) {
+        if (!AppContext::getPasswordStorage()->contains(docUrl) && !AppContext::getCredentialsAsker()->askWithFixedLogin(docUrl)) {
             return NULL;
         }
 

@@ -37,12 +37,10 @@
 
 namespace U2 {
 
-CredentialsAskerGui::CredentialsAskerGui()
-{
-}
+bool CredentialsAskerGui::askWithFixedLogin(const QString &resourceUrl) const {
+    SAFE_POINT(AppContext::isGUIMode(), "Unexpected application run mode", false);
 
-bool CredentialsAskerGui::ask(const QString &resourceUrl) {
-    QWidget* mainWindow = qobject_cast<QWidget*>(AppContext::getMainWindow()->getQMainWindow());
+    QWidget *mainWindow = qobject_cast<QWidget *>(AppContext::getMainWindow()->getQMainWindow());
 
     QString userName;
     const QString shortDbiUrl = U2DbiUtils::full2shortDbiUrl(resourceUrl, userName);
@@ -60,8 +58,10 @@ bool CredentialsAskerGui::ask(const QString &resourceUrl) {
     return true;
 }
 
-bool CredentialsAskerGui::ask(QString& resourceUrl) {
-    QWidget* mainWindow = qobject_cast<QWidget*>(AppContext::getMainWindow()->getQMainWindow());
+bool CredentialsAskerGui::askWithModifiableLogin(QString &resourceUrl) const {
+    SAFE_POINT(AppContext::isGUIMode(), "Unexpected application run mode", false);
+
+    QWidget *mainWindow = qobject_cast<QWidget *>(AppContext::getMainWindow()->getQMainWindow());
 
     QString userName;
     const QString shortDbiUrl = U2DbiUtils::full2shortDbiUrl(resourceUrl, userName);
@@ -79,11 +79,4 @@ bool CredentialsAskerGui::ask(QString& resourceUrl) {
     return true;
 }
 
-void CredentialsAskerGui::saveCredentials(const QString& resourceUrl, const QString &password, bool remember) const {
-    PasswordStorage* storage = AppContext::getPasswordStorage();
-    CHECK(NULL != storage, );
-
-    storage->addEntry(resourceUrl, password, remember);
-}
-
-}   // namespace U2
+} // namespace U2

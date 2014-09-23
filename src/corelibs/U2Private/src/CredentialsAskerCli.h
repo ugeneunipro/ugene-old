@@ -19,23 +19,19 @@
 * MA 02110-1301, USA.
 */
 
-#include <U2Core/AppContext.h>
-#include <U2Core/PasswordStorage.h>
-#include <U2Core/U2SafePoints.h>
+#ifndef _U2_CREDENTIALS_ASKER_CLI_H_
+#define _U2_CREDENTIALS_ASKER_CLI_H_
 
-#include "CredentialsAsker.h"
+#include <U2Core/CredentialsAsker.h>
 
 namespace U2 {
 
-CredentialsAsker::~CredentialsAsker() {
-
-}
-
-void CredentialsAsker::saveCredentials(const QString &resourceUrl, const QString &password, bool remember) {
-    PasswordStorage *storage = AppContext::getPasswordStorage();
-    CHECK(NULL != storage, );
-
-    storage->addEntry(resourceUrl, password, remember);
-}
+class U2PRIVATE_EXPORT CredentialsAskerCli : public CredentialsAsker {
+public:
+    bool askWithFixedLogin(const QString &resourceUrl) const;
+    bool askWithModifiableLogin(QString &resourceUrl) const;
+};
 
 } // namespace U2
+
+#endif // _U2_CREDENTIALS_ASKER_CLI_H_

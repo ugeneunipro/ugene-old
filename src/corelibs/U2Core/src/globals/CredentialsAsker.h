@@ -22,19 +22,21 @@
 #ifndef _U2_CREDENTIALS_ASKER_H_
 #define _U2_CREDENTIALS_ASKER_H_
 
-#include <U2Core/PasswordStorage.h>
+#include <U2Core/global.h>
 
 namespace U2 {
 
 class U2CORE_EXPORT CredentialsAsker {
 public:
-    CredentialsAsker();
     virtual ~CredentialsAsker();
 
-    virtual bool ask(const QString& resourceUrl);
-    virtual bool ask(QString& resourceUrl);
+    virtual bool askWithFixedLogin(const QString &resourceUrl) const = 0;
+    virtual bool askWithModifiableLogin(QString &resourceUrl) const = 0;
+
+protected:
+    static void saveCredentials(const QString &resourceUrl, const QString &password, bool remember);
 };
 
-}   // namespace U2
+} // namespace U2
 
 #endif // _U2_CREDENTIALS_ASKER_H_

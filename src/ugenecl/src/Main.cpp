@@ -23,7 +23,6 @@
 #include <U2Core/CMDLineCoreOptions.h>
 #include <U2Core/CMDLineRegistry.h>
 #include <U2Core/CMDLineUtils.h>
-#include <U2Core/CredentialsAsker.h>
 #include <U2Core/PasswordStorage.h>
 #include <U2Core/DataBaseRegistry.h>
 #include <U2Core/DBXRefRegistry.h>
@@ -95,8 +94,9 @@
 #include <ServiceRegistryImpl.h>
 #include <TaskSchedulerImpl.h>
 #include <AppSettingsImpl.h>
-#include <CrashHandler.h>
 #include <ConsoleLogDriver.h>
+#include <CrashHandler.h>
+#include <CredentialsAskerCli.h>
 
 // local project imports
 #include "ForeverTask.h"
@@ -459,7 +459,7 @@ int main(int argc, char **argv)
     PasswordStorage* passwordStorage = new PasswordStorage();
     appContext->setPasswordStorage(passwordStorage);
 
-    CredentialsAsker* credentialsAsker = new CredentialsAsker();
+    CredentialsAsker* credentialsAsker = new CredentialsAskerCli();
     appContext->setCredentialsAsker(credentialsAsker);
 
     AppFileStorage *appFileStorage = new AppFileStorage();

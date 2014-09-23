@@ -1020,14 +1020,13 @@ U2DbiRef url2Ref(const QString &url) {
 }
 
 bool checkDbCredentials(const QString &dbUrl) {
-    if (AppContext::isGUIMode()) {
-        if (!AppContext::getPasswordStorage()->contains(dbUrl)) {
-            return AppContext::getCredentialsAsker()->ask(dbUrl);
-        } else {
-            return true;
-        }
+    QString userName;
+    const QString shortDbiUrl = U2DbiUtils::full2shortDbiUrl(dbUrl, userName);
+    CHECK(!userName.isEmpty(), false);
+
+    if (!AppContext::getPasswordStorage()->contains(dbUrl)) {
+        return AppContext::getCredentialsAsker()->askWithFixedLogin(dbUrl);
     } else {
-        // TODO: make specific check for CLI
         return true;
     }
 }
@@ -1433,6 +1432,12 @@ QString PrompterBaseImpl::getHyperlink(const QString& id, int val) {
 
 QString PrompterBaseImpl::getHyperlink(const QString& id, qreal val) {
     return getHyperlink(id, QString::number(val));
+}
+
+void PrompterBaseImpl::sl_actorModified() {
+    if (AppContext::isGUIMode()) {
+        setHtml(QString("<center><b>%1</b></center><hr>%2").arg(target->getLabel()).arg(composeRichDoc()));
+    }
 }
 
 }//namespace

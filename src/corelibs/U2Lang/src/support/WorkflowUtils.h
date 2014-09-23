@@ -198,14 +198,8 @@ public:
     virtual void update(const QVariantMap& cfg) {map = cfg; sl_actorModified();}
 
 protected slots:
-    virtual void sl_actorModified() {
-        /*Actor* a = qobject_cast<Actor*>(sender());
-        if (!a) {
-            a = qobject_cast<Port*>(sender())->owner();
-        }*/
-        setHtml(QString("<center><b>%1</b></center><hr>%2")
-            .arg(target->getLabel()).arg(composeRichDoc()));
-    }
+    virtual void sl_actorModified();
+
 protected:
     QVariantMap map;
     

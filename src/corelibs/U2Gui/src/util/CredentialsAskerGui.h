@@ -28,15 +28,10 @@ namespace U2 {
 
 class U2GUI_EXPORT CredentialsAskerGui : public CredentialsAsker {
 public:
-    CredentialsAskerGui();
-
-    bool ask(const QString& resourceUrl);
-    bool ask(QString& resourceUrl);
-
-private:
-    void saveCredentials(const QString &resourceUrl, const QString& password, bool remember) const;
+    bool askWithFixedLogin(const QString &resourceUrl) const;
+    bool askWithModifiableLogin(QString &resourceUrl) const;
 };
 
-}   // namespace U2
+} // namespace U2
 
 #endif // _U2_CREDENTIALS_ASKER_GUI_H_

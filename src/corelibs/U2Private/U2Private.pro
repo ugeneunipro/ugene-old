@@ -5,6 +5,7 @@ HEADERS += src/AppContextImpl.h \
            src/AppSettingsImpl.h \
            src/ConsoleLogDriver.h \
            src/CrashHandler.h \
+           src/CredentialsAskerCli.h \
            src/DocumentFormatRegistryImpl.h \
            src/IOAdapterRegistryImpl.h \
            src/LogSettings.h \
@@ -18,6 +19,7 @@ SOURCES += src/AppContextImpl.cpp \
            src/AppSettingsImpl.cpp \
            src/ConsoleLogDriver.cpp \
            src/CrashHandler.cpp \
+           src/CredentialsAskerCli.cpp \
            src/DocumentFormatRegistryImpl.cpp \
            src/IOAdapterRegistryImpl.cpp \
            src/LogSettings.cpp \
