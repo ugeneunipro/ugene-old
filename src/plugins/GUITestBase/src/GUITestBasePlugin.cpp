@@ -1018,6 +1018,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_options_panel::test_0010, "bad layout of common statistic OP lapel on mac. jira");
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0011);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0012);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0013);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_options_panel::test_0014, "UGENE-3526");
+    REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0015);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0016);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0017);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0018);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/option_panel

@@ -99,8 +99,8 @@ void GTSpinBox::checkLimits(U2OpStatus &os, QSpinBox *spinBox, int min, int max)
     GT_CHECK(spinBox != NULL, "spinbox is NULL");
     int actualMin = spinBox->minimum();
     int actualMax = spinBox->maximum();
-    GT_CHECK(actualMin == min, QString("wrong minimum. Expected: %1, actual: 2").arg(min).arg(actualMin));
-    GT_CHECK(actualMax == max, QString("wrong maximum. Expected: %1, actual: 2").arg(max).arg(actualMax));
+    GT_CHECK(actualMin == min, QString("wrong minimum. Expected: %1, actual: %2").arg(min).arg(actualMin));
+    GT_CHECK(actualMax == max, QString("wrong maximum. Expected: %1, actual: %2").arg(max).arg(actualMax));
 }
 #undef GT_METHOD_NAME
 

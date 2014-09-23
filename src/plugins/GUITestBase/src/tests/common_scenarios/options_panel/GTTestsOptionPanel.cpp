@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -21,30 +21,38 @@
 
 #include <QFile>
 #include <QTextStream>
+
 #include "GTTestsOptionPanel.h"
-#include "api/GTMouseDriver.h"
+
+#include "api/GTCheckBox.h"
+#include "api/GTClipboard.h"
+#include "api/GTComboBox.h"
+#include "api/GTFileDialog.h"
+#include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
-#include "api/GTWidget.h"
-#include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTSpinBox.h"
 #include "api/GTTreeWidget.h"
-#include "api/GTGlobals.h"
-#include "api/GTClipboard.h"
-#include "GTUtilsApp.h"
-#include "GTUtilsDocument.h"
-#include "GTUtilsProjectTreeView.h"
+#include "api/GTWidget.h"
+
 #include "GTUtilsAnnotationsTreeView.h"
-#include "GTUtilsSequenceView.h"
+#include "GTUtilsApp.h"
+#include "GTUtilsCircularView.h"
+#include "GTUtilsDocument.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsOptionsPanel.h"
-#include "runnables/qt/PopupChooser.h"
+#include "GTUtilsProject.h"
+#include "GTUtilsProjectTreeView.h"
+#include "GTUtilsSequenceView.h"
+
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
-
 
 namespace U2 {
 
@@ -253,7 +261,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
                                "29.7%  ");
     CHECK_SET_ERR(clipboardText.contains(text), "\nExpected:\n" + text + "\nFound: " + clipboardText);
 
-//3. Use context menu to select and copy information from "Character Occurence". Paste copied information into test editor 
+//3. Use context menu to select and copy information from "Character Occurence". Paste copied information into test editor
      //Expected state: copied and pasted iformation are identical
 }
 GUI_TEST_CLASS_DEFINITION(test_0005){
@@ -285,12 +293,12 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
 
-// 
+//
 // Steps:
-// 
+//
 // 1. Use menu {File->Open}. Open project _common_data/scenarios/project/proj3.uprj
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj3.uprj");
-// Expected state: 
+// Expected state:
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 //     2) UGENE window titled with text "proj3 UGENE"
@@ -519,6 +527,158 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
                             "<tr><td><b>Molecular Weight: </b></td><td>5752.43</td></tr>"
                             "<tr><td><b>Isoelectic Point: </b></td><td>5.15</td></tr></table>");
     CHECK_SET_ERR(l->text() == s, "Statistics is wrong!");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013) {
+    // 1. Open linear nucl sequence
+    // 2. Open "Circular View Settings" tab
+    // 3. Check the hint: it is visible
+    // 4. Open CV
+    // 5. Check the hint: it is hidden
+
+    ADVSingleSequenceWidget *seqWidget = GTUtilsProject::openFileExpectSequence(os,
+        dataDir  + "samples/Genbank", "sars.gb", "NC_004718");
+    GTWidget::click( os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
+
+    QWidget *hintLabel = GTWidget::findWidget(os,"hintLabel");
+    CHECK_SET_ERR( hintLabel != NULL, "No hint widget");
+    CHECK_SET_ERR( hintLabel->isVisible(), "Hint label should be hidden");
+
+    GTUtilsCv::cvBtn::click(os, seqWidget);
+    CHECK_SET_ERR(hintLabel->isHidden(), "Hint label should be visible");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0014) {
+    // 1. Open sequence with CV
+    // 2. Set some circular settings
+    // 3. Open another sequence
+    // 4. Check difference between the modified and newly opened settings
+
+    ADVSingleSequenceWidget *seqWidget1 = GTUtilsProject::openFileExpectSequence(os,
+        dataDir  + "samples/Genbank", "sars.gb", "NC_004718");
+    GTWidget::click( os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
+    GTUtilsCv::cvBtn::click(os, seqWidget1);
+
+    QSpinBox*  titleFontSpinBox1 = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "fontSizeSpinBox"));
+    CHECK_SET_ERR( titleFontSpinBox1 != NULL, "Title font size spinBox is NULL");
+    GTSpinBox::setValue(os, titleFontSpinBox1, 28);
+    int fontSize1 = titleFontSpinBox1->value();
+    GTWidget::click( os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+    QList<ADVSingleSequenceWidget*> seqWidgets = GTUtilsMdi::activeWindow(os)->findChildren<ADVSingleSequenceWidget*>();
+    CHECK_SET_ERR(seqWidgets.size() == 1, "Wrong number of sequences");
+    ADVSingleSequenceWidget* seqWidget2 = seqWidgets.first();
+    GTUtilsCv::cvBtn::click(os, seqWidget2);
+    GTGlobals::sleep();
+
+    QWidget* cvTab = GTWidget::findWidget(os,"OP_CV_SETTINGS");
+    CHECK_SET_ERR(cvTab != NULL, "CV settings tab is NULL");
+    GTWidget::click( os, cvTab);
+
+    QSpinBox*  titleFontSpinBox2 = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "fontSizeSpinBox"));
+    CHECK_SET_ERR( titleFontSpinBox2 != NULL, "Title font size spinBox is NULL");
+    int fontSize2 = titleFontSpinBox2->value();
+
+    CHECK_SET_ERR( fontSize1 != fontSize2,
+                   "CV Settings should be differenct for different documents");
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0015) {
+    // 1. Open sequence
+    // 2. Open CV
+    // 3. Open CV Settings tab
+    // 4. Select each available label position option
+
+    ADVSingleSequenceWidget *seqWidget = GTUtilsProject::openFileExpectSequence(os,
+        dataDir  + "samples/Genbank", "sars.gb", "NC_004718");
+    GTUtilsCv::cvBtn::click(os, seqWidget);
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
+
+    QComboBox* positionComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "labelPositionComboBox"));
+    CHECK_SET_ERR( positionComboBox != NULL, "Position comboBox is NULL");
+    CHECK_SET_ERR( positionComboBox->count() == 4, "Wrong amount of available label position");
+    GTComboBox::setCurrentIndex(os, positionComboBox, 0);
+    GTComboBox::setCurrentIndex(os, positionComboBox, 1);
+    GTComboBox::setCurrentIndex(os, positionComboBox, 2);
+    GTComboBox::setCurrentIndex(os, positionComboBox, 3);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0016) {
+    // 1. Open sequence with CV
+    // 2. Open CV Settings tab
+    // 3. Check font spinboxes bound values
+
+    ADVSingleSequenceWidget *seqWidget = GTUtilsProject::openFileExpectSequence(os,
+        dataDir  + "samples/Genbank", "NC_014267.1.gb", "NC_014267");
+    CHECK_SET_ERR( GTUtilsCv::isCvPresent(os, seqWidget), "No CV opened");
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
+
+    QSpinBox* titleFontSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "fontSizeSpinBox"));
+    QSpinBox* rulerFontSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "rulerFontSizeSpinBox"));
+    QSpinBox* annotFontSpinBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "labelFontSizeSpinBox"));
+
+    CHECK_SET_ERR( titleFontSpinBox != NULL, "Title font size spinBox is NULL");
+    CHECK_SET_ERR( rulerFontSpinBox != NULL, "Ruler font size spinBox is NULL");
+    CHECK_SET_ERR( annotFontSpinBox != NULL, "Annotation font size spinBox is NULL");
+
+    GTSpinBox::checkLimits(os, titleFontSpinBox, 7, 48);
+    GTSpinBox::checkLimits(os, rulerFontSpinBox, 7, 24);
+    GTSpinBox::checkLimits(os, annotFontSpinBox, 7, 24);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0017) {
+    // 1. Open sequence with CV
+    // 2. Open CV Settings tab
+    // 3. Check default conditions of checkboxes, uncheck them
+
+    ADVSingleSequenceWidget *seqWidget = GTUtilsProject::openFileExpectSequence(os,
+        dataDir  + "samples/Genbank", "NC_014267.1.gb", "NC_014267");
+    CHECK_SET_ERR( GTUtilsCv::isCvPresent(os, seqWidget), "No CV opened");
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
+
+    QCheckBox* titleCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "titleCheckBox"));
+    QCheckBox* lengthCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "lengthCheckBox"));
+    QCheckBox* rulerLineCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "rulerLineCheckBox"));
+    QCheckBox* rulerCoordsCheckBox = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "rulerCoordsCheckBox"));
+
+    CHECK_SET_ERR( titleCheckBox != NULL, "Show/hide title checkBox is NULL");
+    CHECK_SET_ERR( lengthCheckBox != NULL, "Show/hide seqeuence length checkBox is NULL");
+    CHECK_SET_ERR( rulerLineCheckBox != NULL, "Show/hide ruler line checkBox is NULL");
+    CHECK_SET_ERR( rulerCoordsCheckBox != NULL, "Show/hide ruler coordinates checkBox is NULL");
+
+    CHECK_SET_ERR( titleCheckBox->isChecked(), "Show/hide title checkBox is unchecked");
+    CHECK_SET_ERR( lengthCheckBox->isChecked(), "Show/hide sequence length checkBox is unchecked");
+    CHECK_SET_ERR( rulerLineCheckBox->isChecked(), "Show/hide ruler line checkBox is unchecked");
+    CHECK_SET_ERR( rulerCoordsCheckBox->isChecked(), "Show/hide ruler coordinates checkBox is unchecked");
+
+    GTCheckBox::setChecked(os, titleCheckBox, false);
+    GTCheckBox::setChecked(os, lengthCheckBox, false);
+    GTCheckBox::setChecked(os, rulerLineCheckBox, false);
+    GTCheckBox::setChecked(os, rulerCoordsCheckBox, false);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0018) {
+    // 1. Open sequence with CV
+    // 2. Open CV Settings tab
+    // 3. Check font combobox and bold attribute button
+
+    ADVSingleSequenceWidget *seqWidget = GTUtilsProject::openFileExpectSequence(os,
+        dataDir  + "samples/Genbank", "murine.gb", "NC_001363");
+    GTUtilsCv::cvBtn::click(os, seqWidget);
+    GTWidget::click(os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
+
+    QWidget* boldButton = GTWidget::findWidget(os, "boldButton");
+    CHECK_SET_ERR( boldButton != NULL, "Bold button is NULL");
+    GTWidget::click(os, boldButton);
+    CHECK_SET_ERR( qobject_cast<QPushButton*>(boldButton)->isChecked(), "Bold button is not checked");
+
+    QFontComboBox* fontComboBox = qobject_cast<QFontComboBox*>(GTWidget::findWidget(os, "fontComboBox"));
+    CHECK_SET_ERR( fontComboBox != NULL, "Font comboBox is NULL");
+
+    GTComboBox::setIndexWithText(os, fontComboBox, "Times New Roman");
+    GTComboBox::setIndexWithText(os, fontComboBox, "Arial");
 }
 
 } // namespace GUITest_common_scenarios_annotations_edit
