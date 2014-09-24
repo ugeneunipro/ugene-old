@@ -89,6 +89,7 @@ exclude_list_enabled() {
     SUBDIRS -= src/plugins/test_runner
     SUBDIRS -= src/plugins/perf_monitor
     SUBDIRS -= src/plugins/GUITestBase
+    SUBDIRS -= src/plugins/api_tests
 }
 without_non_free() {
     SUBDIRS -= src/plugins_3rdparty/psipred
