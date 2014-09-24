@@ -61,8 +61,6 @@ install-arch:
 	$(MAKE) INSTALL_ROOT=$$(pwd)/debian/ugene-non-free sub-src-plugins_3rdparty-psipred-install_subtargets sub-src-plugins_3rdparty-phylip-install_subtargets install_plugins
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/annotator.license
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/annotator.plugin
-	rm debian/ugene-non-free/usr/lib/ugene/plugins/api_tests.license
-	rm debian/ugene-non-free/usr/lib/ugene/plugins/api_tests.plugin
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/ball.license
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/ball.plugin
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/biostruct3d_view.license
