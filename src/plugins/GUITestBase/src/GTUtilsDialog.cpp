@@ -29,8 +29,6 @@
 #include <QtWidgets/QPushButton>
 #endif
 
-#include <U2Test/GUITestOpStatus.h>
-
 #include "GTUtilsDialog.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
