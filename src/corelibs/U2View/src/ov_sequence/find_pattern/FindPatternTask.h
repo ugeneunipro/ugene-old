@@ -42,6 +42,8 @@ public:
     QList<Task*> onSubTaskFinished(Task* subTask);
     bool hasNoResults() { return noResults; }
     const QList<AnnotationData>& getResults() const;
+
+    void prepare();
     
 private:
     void removeOverlappedResults(QList<FindAlgorithmResult>& results);
@@ -67,6 +69,7 @@ public:
     QList<Task*> onSubTaskFinished(Task* subTask);
     const QList<AnnotationData>& getResults() const;
     bool hasNoResults() const;
+    void prepare();
 
 private:
     FindAlgorithmTaskSettings settings;
@@ -74,6 +77,7 @@ private:
     int                       match;
     bool                      noResults;
     QList<AnnotationData>     results;
+    const QList<NamePattern>  patterns;
 
     static const float MAX_OVERLAP_K;
 

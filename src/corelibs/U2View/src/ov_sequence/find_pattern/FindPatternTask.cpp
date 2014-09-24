@@ -37,12 +37,7 @@ FindPatternTask::FindPatternTask(const FindAlgorithmTaskSettings& _settings,
     : Task(tr("Searching a pattern in sequence task"), TaskFlags_NR_FOSE_COSC),
       settings(_settings),
       removeOverlaps(_removeOverlaps),
-      noResults(false)
-{
-    // Note that even if the subtask has been canceled, the already calculated results are
-    // saved anyway. This mechanism is used to limit the number of results.
-    addSubTask(findAlgorithmTask = new FindAlgorithmTask(settings));
-}
+      noResults(false){}
 
 
 QList<Task*> FindPatternTask::onSubTaskFinished(Task* subTask)
@@ -121,29 +116,24 @@ const QList<AnnotationData>& FindPatternTask::getResults() const {
     return results;
 }
 
+void FindPatternTask::prepare(){
+    // Note that even if the subtask has been canceled, the already calculated results are
+    // saved anyway. This mechanism is used to limit the number of results.
+    addSubTask(findAlgorithmTask = new FindAlgorithmTask(settings));
+}
+
 
 FindPatternListTask::FindPatternListTask(const FindAlgorithmTaskSettings &_settings,
-                                         const QList<NamePattern> &patterns,
+                                         const QList<NamePattern> &_patterns,
                                          bool _removeOverlaps,
                                          int _match)
 : Task( tr( "Searching patterns in sequence task" ), TaskFlags_NR_FOSE_COSC),
-      settings(_settings),
-      removeOverlaps(_removeOverlaps),
-      match(_match),
-      noResults(true)
-{
-    foreach (const NamePattern& pattern, patterns) {
-        if (pattern.second.isEmpty()) {
-            uiLog.error(tr("Empty pattern"));
-            continue;
-        }
-        FindAlgorithmTaskSettings subTaskSettings = settings;
-        subTaskSettings.pattern = pattern.second.toLocal8Bit().toUpper();
-        subTaskSettings.maxErr = getMaxError( subTaskSettings.pattern );
-        FindPatternTask* task = new FindPatternTask(subTaskSettings, removeOverlaps);
-        addSubTask(task);
-    }
-}
+    settings(_settings),
+    removeOverlaps(_removeOverlaps),
+    match(_match),
+    noResults(true),
+    patterns(_patterns)
+{}
 
 
 QList<Task*> FindPatternListTask::onSubTaskFinished(Task *subTask) {
@@ -173,6 +163,20 @@ const QList<AnnotationData> &FindPatternListTask::getResults() const {
 
 bool FindPatternListTask::hasNoResults() const {
     return noResults;
+}
+
+void FindPatternListTask::prepare(){
+    foreach (const NamePattern& pattern, patterns) {
+        if (pattern.second.isEmpty()) {
+            uiLog.error(tr("Empty pattern"));
+            continue;
+        }
+        FindAlgorithmTaskSettings subTaskSettings = settings;
+        subTaskSettings.pattern = pattern.second.toLocal8Bit().toUpper();
+        subTaskSettings.maxErr = getMaxError( subTaskSettings.pattern );
+        FindPatternTask* task = new FindPatternTask(subTaskSettings, removeOverlaps);
+        addSubTask(task);
+    }
 }
 
 } // namespace
