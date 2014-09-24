@@ -19,11 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTUtilsDialog.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTWidget.h"
-
 #include <QtCore/QTimer>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QPushButton>
@@ -32,6 +29,11 @@
 #include <QtWidgets/QPushButton>
 #endif
 
+#include <U2Test/GUITestOpStatus.h>
+
+#include "GTUtilsDialog.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTWidget.h"
 
 namespace U2 {
 
@@ -102,7 +104,21 @@ void GUIDialogWaiter::checkDialog() {
         uiLog.trace("-------------------------");
 
         hadRun = true;
-        runnable->run();
+        try {
+            runnable->run();
+        } catch(U2OpStatus *opStatus) {
+            Q_UNUSED(opStatus);
+            QWidget* w = QApplication::activeModalWidget();
+            while (w != NULL){
+                w->close();
+                w = QApplication::activeModalWidget();
+            }
+            w = QApplication::activePopupWidget();
+            while (w != NULL){
+                w->close();
+                w = QApplication::activePopupWidget();
+            }
+        }
     }
     else {
         waitingTime += timerPeriod;
