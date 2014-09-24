@@ -100,7 +100,13 @@ void MSAEditorTreeManager::loadRelatedTrees() {
 
     foreach(const GObjectRelation &rel, relatedTrees) {
         const QString& treeFileName = rel.getDocURL();
-        loadTreeFromFile(treeFileName);
+        Document* doc = AppContext::getProject()->findDocumentByURL(treeFileName);
+        if(NULL != doc) {
+            QList<GObject*> objects = doc->findGObjectByType(GObjectTypes::PHYLOGENETIC_TREE);
+            if(!objects.isEmpty() && !objects.first()->isUnloaded()) {
+                loadTreeFromFile(treeFileName);
+            }
+        }
     }
 }
 
@@ -351,18 +357,16 @@ void MSAEditorTreeManager::loadTreeFromFile(const QString& treeFileName) {
         AppContext::getProject()->addDocument(doc);
     }
 
-    const QList<GObject*>& objects = doc->getObjects();
+    const QList<GObject*>& objects = doc->findGObjectByType(GObjectTypes::PHYLOGENETIC_TREE);
     foreach(GObject* obj, objects) {
-        if(GObjectTypes::PHYLOGENETIC_TREE == obj->getGObjectType()) {
-            PhyTreeObject* treeObject = qobject_cast<PhyTreeObject*>(obj);
-            if(NULL == treeObject) {
-                continue;
-            }
-            const MSAEditorMultiTreeViewer* multiTreeViewer = getMultiTreeViewer();
-            if(NULL == multiTreeViewer || !multiTreeViewer->getTreeNames().contains(doc->getName())) {
-                Task* task = new MSAEditorOpenTreeViewerTask(treeObject, this);
-                scheduler->registerTopLevelTask(task);
-            }
+        PhyTreeObject* treeObject = qobject_cast<PhyTreeObject*>(obj);
+        if(NULL == treeObject) {
+            continue;
+        }
+        const MSAEditorMultiTreeViewer* multiTreeViewer = getMultiTreeViewer();
+        if(NULL == multiTreeViewer || !multiTreeViewer->getTreeNames().contains(doc->getName())) {
+            Task* task = new MSAEditorOpenTreeViewerTask(treeObject, this);
+            scheduler->registerTopLevelTask(task);
         }
     }
 }
