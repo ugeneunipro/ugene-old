@@ -326,7 +326,10 @@ void GUITestService::runGUITest(GUITest* t) {
                     t->run(os);
             }
         }
-    }catch(GUITestOpStatus* _os){}
+    }catch(GUITestOpStatus* _os){
+        QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
+        originalPixmap.save(GUITest::screenshotDir + t->getName() + ".jpg");
+    }
 
     foreach(GUITest* t, postChecks()){
         TaskStateInfo os1;

@@ -311,6 +311,8 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 // 3. Press ctrl+f. Check focus. Find subsequence TA
     GTUtilsOptionsPanel::runFindPatternWithHotKey("TA", os);
 
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    GTGlobals::sleep(500);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
@@ -327,6 +329,8 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1) {
 
     GTUtilsOptionsPanel::runFindPatternWithHotKey("TTTTTAAAAA", os);
 
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    GTGlobals::sleep(500);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
@@ -539,12 +543,14 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
     ADVSingleSequenceWidget *seqWidget = GTUtilsProject::openFileExpectSequence(os,
         dataDir  + "samples/Genbank", "sars.gb", "NC_004718");
     GTWidget::click( os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
+    GTGlobals::sleep(500);
 
     QWidget *hintLabel = GTWidget::findWidget(os,"hintLabel");
     CHECK_SET_ERR( hintLabel != NULL, "No hint widget");
     CHECK_SET_ERR( hintLabel->isVisible(), "Hint label should be hidden");
 
     GTUtilsCv::cvBtn::click(os, seqWidget);
+    GTGlobals::sleep(500);
     CHECK_SET_ERR(hintLabel->isHidden(), "Hint label should be visible");
 }
 

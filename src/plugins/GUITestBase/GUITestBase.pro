@@ -108,6 +108,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsEscClicker.h \
             src/GTUtilsLog.h \
             src/GTUtilsMdi.h \
+            src/GTUtilsNotifications.h \
             src/GTUtilsProject.h \
             src/GTUtilsProjectTreeView.h \
             src/GTUtilsAnnotationsTreeView.h \
@@ -318,6 +319,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsEscClicker.cpp \
             src/GTUtilsLog.cpp \
             src/GTUtilsMdi.cpp \
+            src/GTUtilsNotifications.cpp \
             src/GTUtilsProject.cpp \
             src/GTUtilsProjectTreeView.cpp \
             src/GTUtilsAnnotationsTreeView.cpp \

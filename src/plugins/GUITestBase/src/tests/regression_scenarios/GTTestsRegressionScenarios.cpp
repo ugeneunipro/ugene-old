@@ -50,6 +50,7 @@
 #include "GTUtilsLog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsNotifications.h"
 #include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsOptionsPanel.h"
 #include "GTUtilsPhyTree.h"
@@ -942,6 +943,8 @@ GUI_TEST_CLASS_DEFINITION(test_1252){
 //    2. Find any pattern. A new annotation document is created
     GTUtilsOptionsPanel::runFindPatternWithHotKey("TTTTTAAAAA", os);
 
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    GTGlobals::sleep(500);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     QTreeWidgetItem *item = GTUtilsAnnotationsTreeView::findItem(os, "misc_feature");
     GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, item));
@@ -1062,7 +1065,10 @@ GUI_TEST_CLASS_DEFINITION(test_1262) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     //2. Find any pattern. A new annotation document is created
     GTUtilsOptionsPanel::runFindPatternWithHotKey("AGGAAAAAATGCTAAGGGCAGCCAGAGAGAGGTCAGG", os);
+    GTGlobals::sleep(1000);
 
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    GTGlobals::sleep(500);
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<ACTION_PROJECT__REMOVE_SELECTED));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
 
@@ -1438,6 +1444,7 @@ GUI_TEST_CLASS_DEFINITION( test_1821 ) {
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1859 ) {
+    GTUtilsNotifications::waitForNotification(os);
     QString workflowOutputDirPath( testDir + "_common_data/scenarios/sandbox" );
     QDir workflowOutputDir( workflowOutputDirPath );
     const QString outputFilePath = workflowOutputDir.absolutePath( ) + "/test.gb";
@@ -2915,10 +2922,10 @@ GUI_TEST_CLASS_DEFINITION( test_2165 ) {
     GTWidget::click(os, GTWidget::findWidget(os, "textPattern"));
 
     GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(500);
+    GTGlobals::sleep(5000);
 
     //4. Press the "Search" button
-    GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
+    //GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
 
     GTGlobals::sleep(500);
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -4652,9 +4659,9 @@ GUI_TEST_CLASS_DEFINITION( test_2566 ) {
      GTSpinBox::setValue( os, matchingBox, 97, GTGlobals::UseKeyBoard );
 
 //6. Click "Search".
-     QPushButton* button = qobject_cast<QPushButton*>(GTWidget::findWidget(os, "btnSearch"));
-     CHECK_SET_ERR(button !=NULL, "ok button is NULL");
-     GTWidget::click(os, button);
+     GTGlobals::sleep(500);
+     GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+     GTGlobals::sleep(500);
 
 //Expected: 97% is entered.
      CHECK_SET_ERR(97 == matchingBox->value(), "Entered and actual values don't match");
@@ -4736,6 +4743,8 @@ GUI_TEST_CLASS_DEFINITION( test_2612 ) {
     // 2. Search for 20 first nucleotides (TTGTCAGATTCACCAAAGTT) using Find Pattern.
     GTUtilsOptionsPanel::runFindPatternWithHotKey("TTGTCAGATTCACCAAAGTT", os);
     GTGlobals::sleep(1000);
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    GTGlobals::sleep(500);
     // Expected state: the annotation with pattern created and shown in sequence view.
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     GTGlobals::sleep(1000);
@@ -4950,8 +4959,9 @@ GUI_TEST_CLASS_DEFINITION(test_3138) {
     GTGlobals::sleep(200);
     GTKeyboardDriver::keySequence(os, "A*");
 
-    GTWidget::click(os, GTWidget::findWidget(os, "btnSearch"));
-    GTGlobals::sleep(200);
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    GTGlobals::sleep(500);
 
     QList<U2Region> regions = GTUtilsAnnotationsTreeView::getAnnotatedRegions(os);
     foreach(const U2Region& r, regions) {
@@ -5242,6 +5252,7 @@ GUI_TEST_CLASS_DEFINITION(test_3305) {
     GTUtilsDialog::waitForDialog(os, new ExportAnnotationsFiller(sandBoxDir + "test_3305/test_3305.bed", ExportAnnotationsFiller::bed, os));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "test_3305.gb"));
     GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
 
 //    Expected state: the annotation is successfully exported, result file exists, there are no errors in the log.
     CHECK_SET_ERR(logTracer.hasError(), "There are unexpectedly no errors in the log");
