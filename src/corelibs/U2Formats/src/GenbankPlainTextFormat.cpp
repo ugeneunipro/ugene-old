@@ -242,6 +242,7 @@ bool GenbankPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqI
     U2OpStatus& si = st->si;
     QString lastTagName;
     bool hasLine = false;
+    savedInUgene = false;
     while (hasLine || st->readNextLine(true)) {
         hasLine = false;
         if (st->len == 0) {
@@ -252,6 +253,10 @@ bool GenbankPlainTextFormat::readEntry(ParserState* st, U2SequenceImporter& seqI
             assert(si.hasError() || !st->entry->name.isEmpty());
             continue;
         }
+        if (st->entry->tags.contains(UGENE_MARK) && savedInUgene == false) {
+            savedInUgene = true;
+        }
+
         if (st->hasKey("FEATURES") && st->readNextLine()) {
             readAnnotations(st, fullSequenceLen + gapSize);
             hasLine = true;

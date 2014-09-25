@@ -32,7 +32,7 @@ public:
     GenbankPlainTextFormat(QObject* p);
 
     virtual void storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os);
-    
+
     virtual FormatCheckResult checkRawData(const QByteArray& rawData, const GUrl& = GUrl()) const;
 
     virtual bool isStreamingSupport() {return true;}

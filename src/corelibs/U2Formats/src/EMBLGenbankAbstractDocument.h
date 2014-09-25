@@ -76,6 +76,7 @@ protected:
     QByteArray  fPrefix;
     QByteArray  sequenceStartPrefix;
     int         maxAnnotationLineLen;
+    bool        savedInUgene; // saveInUgene marker is a hack for opening genbank files that were saved incorrectly(!) in UGENE version <1.14.1
 };
 
 //////////////////////////////////////////////////////////////////////////

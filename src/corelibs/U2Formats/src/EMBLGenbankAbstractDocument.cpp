@@ -58,7 +58,7 @@ namespace U2 {
 
 EMBLGenbankAbstractDocument::EMBLGenbankAbstractDocument(const DocumentFormatId& _id, const QString& _formatName, int mls,
                                                          DocumentFormatFlags flags, QObject* p)
-: DocumentFormat(p, flags), id(_id), formatName(_formatName), maxAnnotationLineLen(mls)
+: DocumentFormat(p, flags), id(_id), formatName(_formatName), maxAnnotationLineLen(mls), savedInUgene(false)
 {
     supportedObjectTypes+=GObjectTypes::ANNOTATION_TABLE;
     supportedObjectTypes+=GObjectTypes::SEQUENCE;
@@ -465,7 +465,8 @@ int EMBLGenbankAbstractDocument::readMultilineQualifier(IOAdapter* io, char* cbu
         breakWords = breakWords || lineLen < maxAnnotationLineLen;
     } while (true);
 
-    if (numQuotes != 2 && numQuotes != 0) {
+    // ignore that error if the file was saved by UGENE (version <1.14.1)
+    if (numQuotes != 2 && numQuotes != 0 && !savedInUgene) {
         os.setError(tr("The file contains an incorrect data that describes a qualifier value. ") +
                     tr("The value cannot contain a single quote character. The qualifier is \'%1\'").arg(QByteArray(cbuff - lenFirstLine, len + lenFirstLine).data()));
         return 0;
