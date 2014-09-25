@@ -21,7 +21,7 @@
 
 #include <QFile>
 #include <QTextStream>
-
+#include <QFontComboBox>
 #include "GTTestsOptionPanel.h"
 
 #include "api/GTCheckBox.h"

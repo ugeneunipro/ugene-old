@@ -22,6 +22,7 @@
 #ifndef _U2_CIRCULAR_VIEW_SETTINGS_WIDGET_H_
 #define _U2_CIRCULAR_VIEW_SETTINGS_WIDGET_H_
 
+#include <qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QWidget>
 #else

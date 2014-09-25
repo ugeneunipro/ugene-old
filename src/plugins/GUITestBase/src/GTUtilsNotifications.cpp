@@ -21,9 +21,15 @@
 
 
 #include <QtCore/QTimer>
+#if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QMainWindow>
 #include <QtGui/QTextBrowser>
+#else
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QTextBrowser>
+#endif
 
 #include <U2Core/AppContext.h>
 #include <U2Gui/MainWindow.h>
