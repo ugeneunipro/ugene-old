@@ -44,19 +44,8 @@ NotificationChecker::NotificationChecker(U2OpStatus &_os):os(_os){
 
 #define GT_METHOD_NAME "sl_checkNotification"
 void NotificationChecker::sl_checkNotification(){
-    QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
-    GT_CHECK(mw !=NULL, "main window not found");
-    Notification* w = mw->findChild<Notification*>();
-    if(w!=NULL){
-        uiLog.trace("found");
-    }
 
-    NotificationWidget* w1 = mw->findChild<NotificationWidget*>();
-    if(w1!=NULL){
-        uiLog.trace("found");
-    }
-
-    QList<QWidget*> list = QApplication::allWidgets();
+QList<QWidget*> list = QApplication::allWidgets();
     foreach(QWidget* wid, list){
         Notification* notif = dynamic_cast<Notification*>(wid);
         if(notif!=NULL && notif->isVisible()){
@@ -64,13 +53,6 @@ void NotificationChecker::sl_checkNotification(){
             GTWidget::click(os, notif);
             t->stop();
         }
-
-
-    }
-
-    if(w != NULL && w->isVisible()){
-
-        GTWidget::click(os, w);
     }
 }
 #undef GT_METHOD_NAME
