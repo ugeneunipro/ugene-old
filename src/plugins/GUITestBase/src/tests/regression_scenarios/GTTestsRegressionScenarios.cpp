@@ -1444,7 +1444,6 @@ GUI_TEST_CLASS_DEFINITION( test_1821 ) {
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1859 ) {
-    GTUtilsNotifications::waitForNotification(os);
     QString workflowOutputDirPath( testDir + "_common_data/scenarios/sandbox" );
     QDir workflowOutputDir( workflowOutputDirPath );
     const QString outputFilePath = workflowOutputDir.absolutePath( ) + "/test.gb";
@@ -2362,7 +2361,7 @@ GUI_TEST_CLASS_DEFINITION( test_2124 ) {
 
     // 2. Call the context menu on the sequence area.
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 1));
-    const QString colorSchemeName = "Scheme";
+    const QString colorSchemeName = getName() + "_Scheme";
     GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
         << "Custom schemes" << "Create new color scheme" ) );
     GTUtilsDialog::waitForDialog( os, new NewColorSchemeCreator( os, colorSchemeName,
@@ -4787,7 +4786,7 @@ GUI_TEST_CLASS_DEFINITION(test_2897) {
     int oldItemsNumber = combo->count();
 
     //    3. Create a new custom nucleotide color scheme.
-    const QString colorSchemeName = "NewScheme";
+    const QString colorSchemeName = getName() + "_NewScheme";
     GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
         << "Custom schemes" << "Create new color scheme" ) );
     GTUtilsDialog::waitForDialog( os, new NewColorSchemeCreator( os, colorSchemeName,

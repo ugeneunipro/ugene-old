@@ -57,7 +57,7 @@ QList<QWidget*> list = QApplication::allWidgets();
         if(notif!=NULL && notif->isVisible()){
             uiLog.trace("found");
             GTWidget::click(os, notif);
-            t->stop();
+            //t->stop();
         }
     }
 }

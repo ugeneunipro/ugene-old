@@ -306,13 +306,14 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0002){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
 //    2. Create custom color scheme
-    GTUtilsMSAEditorSequenceArea::createColorScheme(os, "Scheme", NewColorSchemeCreator::nucl);
+    const QString schemeName = getName() + "Scheme";
+    GTUtilsMSAEditorSequenceArea::createColorScheme(os, schemeName, NewColorSchemeCreator::nucl);
 //    3. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    Expected state: color scheme added to "Color" combobox
     QComboBox* colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
     GTComboBox::setIndexWithText(os, colorScheme, "No colors");
-    GTComboBox::setIndexWithText(os, colorScheme, "Scheme");
+    GTComboBox::setIndexWithText(os, colorScheme, schemeName);
 //    4. Select custom scheme
 //    Expected state: scheme changed
     QString a = GTUtilsMSAEditorSequenceArea::getColor(os, QPoint(0,0));
@@ -331,29 +332,33 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0002_1){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
 //    2. Create 3 color schemes
-    GTUtilsMSAEditorSequenceArea::createColorScheme(os, "Scheme1", NewColorSchemeCreator::nucl);
-    GTUtilsMSAEditorSequenceArea::createColorScheme(os, "Scheme2", NewColorSchemeCreator::nucl);
-    GTUtilsMSAEditorSequenceArea::createColorScheme(os, "Scheme3", NewColorSchemeCreator::nucl);
+    const QString scheme1 = getName() + "_scheme1";
+    const QString scheme2 = getName() + "_scheme2";
+    const QString scheme3 = getName() + "_scheme3";
+    GTUtilsMSAEditorSequenceArea::createColorScheme(os, scheme1, NewColorSchemeCreator::nucl);
+    GTUtilsMSAEditorSequenceArea::createColorScheme(os, scheme2, NewColorSchemeCreator::nucl);
+    GTUtilsMSAEditorSequenceArea::createColorScheme(os, scheme3, NewColorSchemeCreator::nucl);
 //    Expected state: color schemes added to "Color" combobox
      GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
      QComboBox* colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
-     GTComboBox::setIndexWithText(os, colorScheme, "Scheme1");
-     GTComboBox::setIndexWithText(os, colorScheme, "Scheme2");
-     GTComboBox::setIndexWithText(os, colorScheme, "Scheme3");
+     GTComboBox::setIndexWithText(os, colorScheme, scheme1);
+     GTComboBox::setIndexWithText(os, colorScheme, scheme2);
+     GTComboBox::setIndexWithText(os, colorScheme, scheme3);
 }
 
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0003){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
 //    2. Create custom color scheme
-    GTUtilsMSAEditorSequenceArea::createColorScheme(os, "Scheme", NewColorSchemeCreator::nucl);
+    const QString scheme = getName() + "_scheme";
+    GTUtilsMSAEditorSequenceArea::createColorScheme(os, scheme, NewColorSchemeCreator::nucl);
 //    3. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    4. Select custom scheme
     QComboBox* colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
-    GTComboBox::setIndexWithText(os, colorScheme, "Scheme");
+    GTComboBox::setIndexWithText(os, colorScheme, scheme);
 //    5. Delete scheme which is selected
-    GTUtilsMSAEditorSequenceArea::deleteColorScheme(os, "Scheme");
+    GTUtilsMSAEditorSequenceArea::deleteColorScheme(os, scheme);
     GTGlobals::sleep(500);
 
 //    UGENE not crashess
@@ -741,13 +746,14 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0005){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
 //    2. Create custom color scheme
-    GTUtilsMSAEditorSequenceArea::createColorScheme(os, "Scheme", NewColorSchemeCreator::amino);
+    const QString scheme = getName() + "_scheme";
+    GTUtilsMSAEditorSequenceArea::createColorScheme(os, scheme, NewColorSchemeCreator::amino);
 //    3. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    Expected state: color scheme added to "Color" combobox
     QComboBox* colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
     GTComboBox::setIndexWithText(os, colorScheme, "No colors");
-    GTComboBox::setIndexWithText(os, colorScheme, "Scheme");
+    GTComboBox::setIndexWithText(os, colorScheme, scheme);
 //    4. Select custom scheme
 //    Expected state: scheme changed
     GTUtilsMSAEditorSequenceArea::checkColor(os, QPoint(0,0), "#ad0052");//a
@@ -784,29 +790,33 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0005_1){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
 //    2. Create 3 color schemes
-    GTUtilsMSAEditorSequenceArea::createColorScheme(os, "Scheme1", NewColorSchemeCreator::amino);
-    GTUtilsMSAEditorSequenceArea::createColorScheme(os, "Scheme2", NewColorSchemeCreator::amino);
-    GTUtilsMSAEditorSequenceArea::createColorScheme(os, "Scheme3", NewColorSchemeCreator::amino);
+    const QString scheme1 = getName() + "_scheme1";
+    const QString scheme2 = getName() + "_scheme2";
+    const QString scheme3 = getName() + "_scheme3";
+    GTUtilsMSAEditorSequenceArea::createColorScheme(os, scheme1, NewColorSchemeCreator::amino);
+    GTUtilsMSAEditorSequenceArea::createColorScheme(os, scheme2, NewColorSchemeCreator::amino);
+    GTUtilsMSAEditorSequenceArea::createColorScheme(os, scheme3, NewColorSchemeCreator::amino);
 //    Expected state: color schemes added to "Color" combobox
      GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
      QComboBox* colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
-     GTComboBox::setIndexWithText(os, colorScheme, "Scheme1", true, GTGlobals::UseMouse);
-     GTComboBox::setIndexWithText(os, colorScheme, "Scheme2", true, GTGlobals::UseMouse);
-     GTComboBox::setIndexWithText(os, colorScheme, "Scheme3", true, GTGlobals::UseMouse);
+     GTComboBox::setIndexWithText(os, colorScheme, scheme1, true, GTGlobals::UseMouse);
+     GTComboBox::setIndexWithText(os, colorScheme, scheme2, true, GTGlobals::UseMouse);
+     GTComboBox::setIndexWithText(os, colorScheme, scheme3, true, GTGlobals::UseMouse);
 }
 
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0006){
 //    1. Open file test/_common_data/alphabets/extended_amino.aln
     GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "extended_amino.aln");
 //    2. Create custom color scheme
-    GTUtilsMSAEditorSequenceArea::createColorScheme(os, "Scheme", NewColorSchemeCreator::amino);
+    const QString scheme = getName() + "_scheme";
+    GTUtilsMSAEditorSequenceArea::createColorScheme(os, scheme, NewColorSchemeCreator::amino);
 //    3. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
 //    4. Select custom scheme
     QComboBox* colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
-    GTComboBox::setIndexWithText(os, colorScheme, "Scheme");
+    GTComboBox::setIndexWithText(os, colorScheme, scheme);
 //    5. Delete scheme which is selected
-    GTUtilsMSAEditorSequenceArea::deleteColorScheme(os, "Scheme");
+    GTUtilsMSAEditorSequenceArea::deleteColorScheme(os, scheme);
     GTGlobals::sleep(500);
 //    UGENE not crashess
     for(int i = 0; i<29; i++){

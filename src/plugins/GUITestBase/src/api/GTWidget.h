@@ -59,8 +59,8 @@ public:
     static T findExactWidget(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& options= GTGlobals::FindOptions()){
         T result;
         QWidget* w = findWidget(os, widgetName, parentWidget, options);
-        GT_CHECK_RESULT(w != NULL, "widget not found", result);
         result = qobject_cast<T>(w);
+        GT_CHECK_RESULT(w != NULL, "widget not found", result);        
         GT_CHECK_RESULT(w != NULL, "widget of specefied class not found", result);
         return result;
     }
