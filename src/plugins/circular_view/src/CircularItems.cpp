@@ -331,6 +331,7 @@ void CircularAnnotationLabel::drawLabelInsideRegion(QPainter *p, bool canFit) {
 
 void CircularAnnotationLabel::drawLabelOutsideRegion(QPainter *p, QPen& pen) {
     QRectF bound = boundingRect();
+    p->fillRect(bound, Qt::white);
     p->drawText(bound, labelText);
 
     pen.setStyle(Qt::DotLine);
