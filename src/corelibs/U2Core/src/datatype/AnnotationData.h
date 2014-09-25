@@ -47,13 +47,15 @@ public:
     inline QString findFirstQualifierValue(const QString& name) const;
 
     bool isJoin() const {return location->isJoin();}
-    
+
     bool isOrder() const {return location->isOrder();}
-    
+
+    bool isBond() const {return location->isBond();}
+
     U2Strand getStrand() const  {return location->strand;}
 
     void setStrand(U2Strand s)  {location->strand = s;}
-    
+
     U2LocationOperator getLocationOperator() const {return location->op;}
 
     void setLocationOperator(U2LocationOperator o)  {location->op = o;}
@@ -75,9 +77,9 @@ U2CORE_EXPORT QDataStream& operator<<(QDataStream& dataStream, const U2Qualifier
 U2CORE_EXPORT QDataStream& operator>>(QDataStream& dataStream, AnnotationData& data);
 U2CORE_EXPORT QDataStream& operator<<(QDataStream& dataStream, const AnnotationData& data);
 
-AnnotationData& AnnotationData::operator= ( const AnnotationData & a ) { 
-    name = a.name; 
-    location = a.location; 
+AnnotationData& AnnotationData::operator= ( const AnnotationData & a ) {
+    name = a.name;
+    location = a.location;
     qualifiers = a.qualifiers;
     return *this;
 }

@@ -74,6 +74,7 @@ const QVector<GBFeatureKeyInfo>& GBFeatureUtils::allKeys() {
     inited = true;
     FK(GBFeatureKey_assembly_gap,     "assemlby_gap",     cl("000000"), false, QObject::tr("Gap between two components of a genome or transcriptome assembly"));
     FK(GBFeatureKey_attenuator,       "attenuator",       cl("000000"), false, QObject::tr("Sequence related to transcription termination"));
+    FK(GBFeatureKey_bond,             "Bond",             cl("000000"), false, QObject::tr("Describes disulfide bonds (for protein files)"));
     FK(GBFeatureKey_C_region,         "C_region",         cl("000000"), false, QObject::tr("Span of the C immunological feature"));
     FK(GBFeatureKey_CAAT_signal,      "CAAT_signal",      cl("000000"), false, QObject::tr("`CAAT box' in eukaryotic promoters"));
     FKE(GBFeatureKey_CDS,             "CDS",             cl("9bffff"), true,  QObject::tr("Sequence coding for amino acids in protein (includes stop codon)"),
@@ -207,6 +208,7 @@ const QMultiMap<QString, GBFeatureKey>& GBFeatureUtils::getKeyGroups() {
         groups.insert(binding, GBFeatureKey_misc_binding);
         groups.insert(binding, GBFeatureKey_primer_bind);
         groups.insert(binding, GBFeatureKey_protein_bind);
+        groups.insert(binding, GBFeatureKey_bond);
 
         QString variation = QObject::tr("Variation");
         groups.insert(variation, GBFeatureKey_conflict);

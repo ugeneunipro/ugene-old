@@ -179,6 +179,8 @@ void addFeatureKeyToAnnotation( const U2FeatureKey &key, AnnotationData &aData, 
             aData.setLocationOperator( U2LocationOperator_Join );
         } else if ( U2FeatureKeyOperationOrder == key.value ) {
             aData.setLocationOperator( U2LocationOperator_Order );
+        } else if ( U2FeatureKeyOperationBond == key.value ) {
+            aData.setLocationOperator( U2LocationOperator_Bond );
         } else {
             CHECK_EXT( false, op.setError( "Unexpected feature operator value!" ), );
         }
@@ -804,6 +806,9 @@ U2FeatureKey U2FeatureUtils::createFeatureKeyLocationOperator( U2LocationOperato
         break;
     case U2LocationOperator_Order :
         result = U2FeatureKey( U2FeatureKeyOperation, U2FeatureKeyOperationOrder );
+        break;
+    case U2LocationOperator_Bond:
+        result = U2FeatureKey( U2FeatureKeyOperation, U2FeatureKeyOperationBond );
         break;
     default:
         SAFE_POINT( false, "Unexpected location operator!", result );

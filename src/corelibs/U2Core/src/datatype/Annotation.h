@@ -57,6 +57,8 @@ public:
 
     bool                    isJoin( ) const;
 
+    bool                    isBond( ) const;
+
     U2Strand                getStrand( ) const;
 
     void                    setStrand( const U2Strand &strand );
@@ -84,7 +86,7 @@ public:
     void                    removeQualifier( const U2Qualifier &q );
 
     AnnotationGroup         getGroup( ) const;
-    /** 
+    /**
      * Appends to @res all existing qualifiers with the given @name
      */
     void                    findQualifiers( const QString &name, QList<U2Qualifier> &res ) const;

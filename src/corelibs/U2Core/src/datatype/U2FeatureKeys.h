@@ -47,6 +47,7 @@ const QString U2FeatureKey_Disease =                "disease";
 const QString U2FeatureKeyOperation =               "#~o";
 const QString U2FeatureKeyOperationOrder =          "#~oo";
 const QString U2FeatureKeyOperationJoin =           "#~oj";
+const QString U2FeatureKeyOperationBond =           "#~ob";
 
 const QString U2FeatureKeyCase =                    "#~c";
 

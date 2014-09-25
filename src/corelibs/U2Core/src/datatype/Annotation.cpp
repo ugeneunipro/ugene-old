@@ -94,6 +94,14 @@ bool Annotation::isJoin( ) const {
     return data.isJoin( );
 }
 
+bool Annotation::isBond( ) const {
+    U2OpStatusImpl os;
+    const AnnotationData data = U2FeatureUtils::getAnnotationDataFromFeature( id,
+        parentObject->getEntityRef( ).dbiRef, os );
+    SAFE_POINT_OP( os, false );
+    return data.isBond( );
+}
+
 U2Strand Annotation::getStrand( ) const {
     // use only root feature to determine the strand
     U2OpStatusImpl os;

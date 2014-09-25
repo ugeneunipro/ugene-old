@@ -36,6 +36,7 @@ enum GBFeatureKey {
     GBFeatureKey_assembly_gap,    // Gap between two components of a genome or transcriptome assembly
 
     GBFeatureKey_attenuator,      // Sequence related to transcription termination
+    GBFeatureKey_bond,            // Describes disulfide bonds (for protein files)
     GBFeatureKey_C_region,        // Span of the C immunological feature
     GBFeatureKey_CAAT_signal,     // `CAAT box' in eukaryotic promoters
     GBFeatureKey_CDS,             // Sequence coding for amino acids in protein (includes stop codon)
