@@ -55,6 +55,23 @@ GUI_TEST_CLASS_DEFINITION(test_0000) {
 #ifdef Q_OS_WIN
     QProcess::execute("closeAllErrors.exe"); //this exe file, compiled Autoit script
 #endif
+    //temporary code for tracking file content
+    uiLog.trace("ma2_gapped.aln content");
+    QFile f(testDir + "/_common_data/scenarios/msa/ma2_gapped.aln");
+    QString s;
+    if(f.open(QFile::ReadOnly)){
+        while(1){
+            QByteArray b = f.readLine(1024);
+            if(b.isEmpty()){
+                break;
+            }
+            s.append(b);
+        }
+        uiLog.trace(s);
+    }else{
+        uiLog.error("FILE NOT FOUND");
+    }
+
     GTUtilsDialog::cleanup(os);
 }
 
@@ -104,24 +121,6 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 #ifdef Q_OS_MAC
     GTWidget::click(os, mw, Qt::LeftButton, QPoint(1500,300));
 #endif
-    GTGlobals::sleep(200);
-    Qt::KeyboardModifiers mods = QApplication::keyboardModifiers();
-    uiLog.trace(QString("modifiers: %1").arg(mods));
-    if(mods.testFlag(Qt::ShiftModifier)){
-        uiLog.trace("shift pressed");
-        GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
-    }
-    if(mods.testFlag(Qt::ControlModifier)){
-        uiLog.trace("control pressed");
-        GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
-    }
-    if(mods.testFlag(Qt::MetaModifier)){
-        uiLog.trace("meta pressed");
-    }
-    if(mods.testFlag(Qt::AltModifier)){
-        uiLog.trace("alt pressed");
-        GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["alt"]);
-    }
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0000){
