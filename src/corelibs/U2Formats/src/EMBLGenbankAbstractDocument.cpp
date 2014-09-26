@@ -170,16 +170,11 @@ void EMBLGenbankAbstractDocument::load(const U2DbiRef& dbiRef, IOAdapter* io, QL
             QStringList groupNames;
             foreach ( SharedAnnotationData d, data.features ) {
                 if (!d->location->regions.isEmpty()) {
-                    bool annotationOversized = false;
                     for (int i = 0, n = d->location->regions.size(); i < n; ++i) {
                         // for some reason larger numbers cannot be stored within rtree SQLite tables
                         if (d->location->regions[i].endPos() > 9223371036854775807LL) {
-                            annotationOversized = true;
-                            break;
+                            d->location->regions[i].length = 9223371036854775807LL - d->location->regions[i].startPos;
                         }
-                    }
-                    if (annotationOversized) {
-                        continue;
                     }
                 }
                 groupNames.clear( );
