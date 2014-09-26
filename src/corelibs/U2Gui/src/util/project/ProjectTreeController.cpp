@@ -1181,8 +1181,10 @@ void ProjectTreeController::sl_onObjRemovalTaskFinished() {
         SAFE_POINT(task2ObjectsBeingDeleted.contains(removalTask), "Invalid object removal task detected", );
         QHash<Document *, QSet<U2DataId> > &doc2ObjIds = task2ObjectsBeingDeleted[removalTask];
         foreach (Document *doc, doc2ObjIds.keys()) {
-            model->excludeFromObjIgnoreFilter(doc, doc2ObjIds[doc]);
-            updater->invalidate(doc);
+            if (model->hasDocument(doc)) {
+                model->excludeFromObjIgnoreFilter(doc, doc2ObjIds[doc]);
+                updater->invalidate(doc);
+            }
         }
         task2ObjectsBeingDeleted.remove(removalTask);
     }
