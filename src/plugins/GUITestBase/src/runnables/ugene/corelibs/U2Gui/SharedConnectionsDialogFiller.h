@@ -22,9 +22,11 @@
 #ifndef _SHARED_CONNECTIONS_DIALOG_FILLER_H_
 #define _SHARED_CONNECTIONS_DIALOG_FILLER_H_
 
-#ifdef Q_CC_MSVC
+#ifdef DELETE
 #undef DELETE
 #endif
+
+#include <QtCore/QFlags>
 
 #include "GTUtilsDialog.h"
 #include "api/GTFileDialog.h"
@@ -33,6 +35,8 @@ namespace U2 {
 
 class SharedConnectionsDialogFiller : public Filler {
 public:
+    enum Behavior { SAFE, UNSAFE };
+
     class Action {
     public:
         enum Type {ADD, CLICK, EDIT, DELETE, CONNECT, DISCONNECT};
@@ -47,11 +51,12 @@ public:
         ConnectResult expectedResult;
     };
 
-    SharedConnectionsDialogFiller(U2OpStatus &os, const QList<Action> &actions);
+    SharedConnectionsDialogFiller(U2OpStatus &os, const QList<Action> &actions, const QFlags<Behavior> &behavior = QFlags<Behavior>(SAFE));
     void run();
 
 private:
     QList<Action> actions;
+    QFlags<Behavior> behavior;
 };
 
 } // U2

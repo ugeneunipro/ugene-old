@@ -571,7 +571,7 @@ static void findInAmino_regExp( FindAlgorithmResultsListener *rl,
             }
 
             QString translation;
-            QByteArray rawTranslation( len + bufferSize + 1, 0 );
+            QByteArray rawTranslation(len + bufferSize + 1, 0);
             U2Strand resultStrand;
             const int translationLen = (len + bufferSize) / 3;
 
@@ -584,8 +584,7 @@ static void findInAmino_regExp( FindAlgorithmResultsListener *rl,
 
                 resultStrand = U2Strand::Complementary;
             } else { // direct
-                strcpy(rawTranslation.data(), QByteArray(sequence + range.startPos + aminoFrameNumber,
-                                                  len + bufferSize).data());
+                qstrcpy(rawTranslation.data(), QByteArray(sequence + range.startPos + aminoFrameNumber, len + bufferSize).data());
                 aminoTT->translate( rawTranslation.data(), len + bufferSize);
 
                 resultStrand = U2Strand::Direct;

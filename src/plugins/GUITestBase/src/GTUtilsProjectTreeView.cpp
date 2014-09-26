@@ -267,6 +267,29 @@ QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os,
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "checkObjectTypes"
+void GTUtilsProjectTreeView::checkObjectTypes(U2OpStatus &os, QTreeView *treeView, const QSet<GObjectType> &acceptableTypes, const QModelIndex &parent) {
+    CHECK_SET_ERR(NULL != treeView, "Invalid tree view detected");
+    CHECK(!acceptableTypes.isEmpty(), );
+
+    ProjectViewModel *model = qobject_cast<ProjectViewModel *>(treeView->model());
+    CHECK_SET_ERR(NULL != model, "Invalid view model detected");
+
+    const int rowCount = model->rowCount(parent);
+    for (int i = 0; i < rowCount; i++) {
+        const QModelIndex index = model->index(i, 0, parent);
+        GObject *object = model->toObject(index);
+        if (NULL != object && Qt::NoItemFlags != model->flags(index) && !acceptableTypes.contains(object->getGObjectType()))
+            CHECK_SET_ERR(NULL == object || Qt::NoItemFlags == model->flags(index) || acceptableTypes.contains(object->getGObjectType()), "Object has unexpected type");
+
+        if (NULL == object) {
+            checkObjectTypes(os, treeView, acceptableTypes, index);
+            CHECK_OP_BREAK(os);
+        }
+    }
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getSelectedItem"
 QString GTUtilsProjectTreeView::getSelectedItem(U2OpStatus &os)
 {

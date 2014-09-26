@@ -39,7 +39,7 @@
 namespace U2 {
 
 class CircularView;
-class CircularViewSettings;
+struct CircularViewSettings;
 class CircularViewSplitter;
 class RestrctionMapWidget;
 

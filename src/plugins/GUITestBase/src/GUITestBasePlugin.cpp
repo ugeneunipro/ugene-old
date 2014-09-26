@@ -64,6 +64,7 @@
 #include "tests/common_scenarios/workflow_designer/name_filter/GTTestsWorkflowNameFilter.h"
 #include "tests/common_scenarios/workflow_designer/parameters_validation/GTTestsWorkflowParemeterValidation.h"
 #include "tests/common_scenarios/workflow_designer/scripting/GTTestsWorkflowScripting.h"
+#include "tests/common_scenarios/workflow_designer/shared_db/GTTestsSharedDbWd.h"
 #include "tests/common_scenarios/tree_viewer/GTTestsCommonScenariousTreeviewer.h"
 #include "tests/common_scenarios/repeat_finder/GTTestsRepeatFinder.h"
 #include "tests/common_scenarios/undo_redo/GTTestsUndoRedo.h"
@@ -1331,7 +1332,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_common_scenarios_shared_database::del_test_0001);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::del_test_0002);
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_shared_database::del_test_0003, "UGENE-3387");
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::del_test_0003);
 
     REGISTER_TEST(GUITest_common_scenarios_shared_database::export_test_0001);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::export_test_0002);
@@ -1359,6 +1360,22 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0004);
+
+/////////////////////////////////////////////////////////////////////////
+// common_scenarios/workflow_designer/shared_db
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::read_gui_test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::read_gui_test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::read_gui_test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::read_gui_test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::read_gui_test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::read_gui_test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::read_gui_neg_test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::read_gui_test_0008);
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::read_gui_test_0009);
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::read_gui_test_0010);
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::read_gui_test_0011);
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::read_gui_neg_test_0012);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

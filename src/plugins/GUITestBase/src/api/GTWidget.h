@@ -57,7 +57,7 @@ public:
     #define GT_METHOD_NAME "findWidget"
     template<class T>
     static T findExactWidget(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& options= GTGlobals::FindOptions()){
-        T result;
+        T result = NULL;
         QWidget* w = findWidget(os, widgetName, parentWidget, options);
         result = qobject_cast<T>(w);
         GT_CHECK_RESULT(w != NULL, "widget not found", result);        

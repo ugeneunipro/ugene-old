@@ -405,11 +405,8 @@ void GTUtilsWorkflowDesigner::setDatasetInputFile(U2OpStatus &os, QString filePa
 
     QWidget* addFileButton = GTWidget::findWidget(os, "addFileButton", DatasetWidget);
     GT_CHECK(addFileButton, "addFileButton not found");
-#ifdef Q_OS_MAC
+
     GTFileDialogUtils *ob = new GTFileDialogUtils(os, filePath, fileName, GTFileDialogUtils::Open, GTGlobals::UseMouse);
-#else
-    GTFileDialogUtils *ob = new GTFileDialogUtils(os, filePath, fileName, GTFileDialogUtils::Open, GTGlobals::UseMouse);
-#endif
     GTUtilsDialog::waitForDialog(os, ob);
 
     GTWidget::click(os, addFileButton);

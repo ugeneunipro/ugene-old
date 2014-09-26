@@ -52,7 +52,7 @@ namespace U2 {
 class CircularViewRenderArea;
 class CircularAnnotationItem;
 class CircularAnnotationLabel;
-class CircularViewSettings;
+struct CircularViewSettings;
 class TextItem;
 
 class CircularView : public GSequenceLineViewAnnotated {

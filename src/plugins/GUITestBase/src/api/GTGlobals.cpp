@@ -19,20 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#include "api/GTGlobals.h"
-#include <U2Core/AppContext.h>
 #include <QtCore/QEventLoop>
 #include <QtCore/QTimer>
 #include <QtTest/QSpontaneKeyEvent>
 #include <QtTest>
-#include <QtGui/QPixmap>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
+#include <QtGui/QPixmap>
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
+#include <QtGui/QScreen>
 #endif
+
+#include "api/GTGlobals.h"
+#include <U2Core/AppContext.h>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -65,9 +67,12 @@ void GTGlobals::sendEvent(QObject *obj, QEvent *e) {
     qApp->notify(obj, e);
 }
 
-void GTGlobals::takeScreenShot(QString path){
-
+void GTGlobals::takeScreenShot(QString path) {
+#if (QT_VERSION < 0x050000) // deprecated method
     QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
+#else
+    QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
+#endif
     originalPixmap.save(path);
 }
 

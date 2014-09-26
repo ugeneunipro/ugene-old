@@ -426,7 +426,6 @@ int main(int argc, char **argv)
     AppContext::getAppSettingsGUI()->registerPage(new LogSettingsPageController(logView));
     AppContext::getMainWindow()->getDockManager()->registerDock(MWDockArea_Bottom, logView, QKeySequence(Qt::ALT | Qt::Key_3));
     
-    
     GObjectViewFactoryRegistry* ovfr = new GObjectViewFactoryRegistry();
     appContext->setObjectViewFactoryRegistry(ovfr);
 

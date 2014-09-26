@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-class OPGroupParameters;
+struct OPGroupParameters;
 class CircularViewContext;
 
 class CircularViewSettingsWidgetFactory : public OPWidgetFactory {

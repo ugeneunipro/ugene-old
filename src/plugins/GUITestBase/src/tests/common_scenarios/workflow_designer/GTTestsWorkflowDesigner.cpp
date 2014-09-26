@@ -330,7 +330,7 @@ GUI_TEST_CLASS_DEFINITION(test_0006_1){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0007){
-    //GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+//GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
 //1. Do menu {Settings->Prefrences}
     GTUtilsDialog::waitForDialog(os,new AppSettingsDialogFiller(os,255,0,0));
     QMenu* menu=GTMenu::showMainMenu(os, MWMENU_SETTINGS);
@@ -345,13 +345,16 @@ GUI_TEST_CLASS_DEFINITION(test_0007){
     QPoint p(GTUtilsWorkflowDesigner::getItemLeft(os,"read alignment")+20,
              GTUtilsWorkflowDesigner::getItemTop(os,"read alignment")+20);
 
+#if (QT_VERSION < 0x050000) // deprecated method
     QPixmap pixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
+#else
+    QPixmap pixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
+#endif
     QImage img = pixmap.toImage();
     QRgb rgb = img.pixel(p);
     QColor c(rgb);
 
     CHECK_SET_ERR(c.name()=="#ffbfbf", QString("Expected: #ffbfbf, found: %1").arg(c.name()));
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0009){

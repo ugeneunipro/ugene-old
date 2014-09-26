@@ -29,11 +29,21 @@ namespace U2 {
 
 class ProjectTreeItemSelectorDialogFiller : public Filler{
 public:
-    ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, const QString &documentName, const QString &objectName);
-    ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, const QMap<QString, QStringList> &itemsToSelect);
+    enum SelectionMode {
+        Single, Separate, Continuous
+    };
+
+    ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, const QString &documentName, const QString &objectName,
+        const QSet<GObjectType> &acceptableTypes = QSet<GObjectType>(), SelectionMode mode = Single, int expectedDocCount = -1);
+    ProjectTreeItemSelectorDialogFiller(U2OpStatus &os, const QMap<QString, QStringList> &itemsToSelect,
+        const QSet<GObjectType> &acceptableTypes = QSet<GObjectType>(), SelectionMode mode = Single, int expectedDocCount = -1);
     virtual void run();
+
 private:
     QMap<QString, QStringList> itemsToSelect;
+    const QSet<GObjectType> acceptableTypes;
+    const SelectionMode mode;
+    const int expectedDocCount;
 };
 
 }

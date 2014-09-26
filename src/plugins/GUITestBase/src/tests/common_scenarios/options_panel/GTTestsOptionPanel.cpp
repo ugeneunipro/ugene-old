@@ -20,9 +20,8 @@
  */
 
 #include <QFile>
-#include <QTextStream>
 #include <QFontComboBox>
-#include "GTTestsOptionPanel.h"
+#include <QTextStream>
 
 #include "api/GTCheckBox.h"
 #include "api/GTClipboard.h"
@@ -53,6 +52,8 @@
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/PopupChooser.h"
+
+#include "GTTestsOptionPanel.h"
 
 namespace U2 {
 

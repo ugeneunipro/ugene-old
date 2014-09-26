@@ -22,8 +22,10 @@
 #include <QtCore/qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
+#include <QtGui/QPixmap>
 #else
 #include <QtWidgets/QMainWindow>
+#include <QtGui/QScreen>
 #endif
 
 #include <U2Core/AppContext.h>
@@ -320,15 +322,19 @@ void GUITestService::runGUITest(GUITest* t) {
     clearSandbox();
     QTimer::singleShot(t->getTimeout(), t, SLOT(sl_fail()));
 
-    try{
-        foreach(GUITest* t, tests) {
+    try {
+        foreach (GUITest* t, tests) {
             if (t) {
-                    t->run(os);
+                t->run(os);
             }
         }
-    }catch(GUITestOpStatus* _os){
-        QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
-        originalPixmap.save(GUITest::screenshotDir + t->getName() + ".jpg");
+    } catch(GUITestOpStatus *) {
+#if (QT_VERSION < 0x050000) // deprecated method
+    QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
+#else
+    QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
+#endif
+    originalPixmap.save(GUITest::screenshotDir + t->getName() + ".jpg");
     }
 
     foreach(GUITest* t, postChecks()){

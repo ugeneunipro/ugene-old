@@ -1,9 +1,10 @@
 #include "GUITest.h"
-#include <QtGui/QPixmap>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
+#include <QtGui/QPixmap>
 #else
+#include <QtGui/QScreen>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDesktopWidget>
 #endif
@@ -57,7 +58,11 @@ const QString GUITest::dataDir = getDataDir();
 const QString GUITest::sandBoxDir = testDir + "_common_data/scenarios/sandbox/";
 
 void GUITest::sl_fail(){
+#if (QT_VERSION < 0x050000) // deprecated method
     QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
+#else
+    QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
+#endif
     originalPixmap.save(GUITest::screenshotDir + name + ".jpg");
     uiLog.error("GUItest timed out");
     exit(0);

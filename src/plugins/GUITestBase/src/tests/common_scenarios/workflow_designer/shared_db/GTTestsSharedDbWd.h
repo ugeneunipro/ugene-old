@@ -19,19 +19,32 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CREDENTIALS_ASKER_CLI_H_
-#define _U2_CREDENTIALS_ASKER_CLI_H_
+#ifndef _GTTESTS_SHARED_DB_WD_H_
+#define _GTTESTS_SHARED_DB_WD_H_
 
-#include <U2Core/CredentialsAsker.h>
+#include <U2Test/GUITestBase.h>
 
 namespace U2 {
 
-class U2PRIVATE_EXPORT CredentialsAskerCli : public CredentialsAsker {
-public:
-    bool askWithFixedLogin(const QString &resourceUrl) const;
-    bool askWithModifiableLogin(QString &resourceUrl) const;
-};
+namespace GUITest_common_scenarios_shared_db_wd {
+#undef GUI_TEST_PREFIX
+#define GUI_TEST_PREFIX "GUITest_common_scenarios_shared_db_wd_"
 
-} // namespace U2
+GUI_TEST_CLASS_DECLARATION(read_gui_test_0001)
+GUI_TEST_CLASS_DECLARATION(read_gui_test_0002)
+GUI_TEST_CLASS_DECLARATION(read_gui_test_0003)
+GUI_TEST_CLASS_DECLARATION(read_gui_test_0004)
+GUI_TEST_CLASS_DECLARATION(read_gui_test_0005)
+GUI_TEST_CLASS_DECLARATION(read_gui_test_0006)
+GUI_TEST_CLASS_DECLARATION(read_gui_neg_test_0007)
+GUI_TEST_CLASS_DECLARATION(read_gui_test_0008)
+GUI_TEST_CLASS_DECLARATION(read_gui_test_0009)
+GUI_TEST_CLASS_DECLARATION(read_gui_test_0010)
+GUI_TEST_CLASS_DECLARATION(read_gui_test_0011)
+GUI_TEST_CLASS_DECLARATION(read_gui_neg_test_0012)
 
-#endif // _U2_CREDENTIALS_ASKER_CLI_H_
+}
+
+} // U2
+
+#endif // _GTTESTS_SHARED_DB_WD_H_

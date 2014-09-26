@@ -53,8 +53,8 @@ SharedConnectionsDialogFiller::Action::Action(Type type, QString itemName)
     dbName = GTDatabaseConfig::database();
 }
 
-SharedConnectionsDialogFiller::SharedConnectionsDialogFiller(U2OpStatus &os, const QList<Action> &actions)
-: Filler(os, "SharedConnectionsDialog"), actions(actions)
+SharedConnectionsDialogFiller::SharedConnectionsDialogFiller(U2OpStatus &os, const QList<Action> &actions, const QFlags<Behavior> &behavior)
+    : Filler(os, "SharedConnectionsDialog"), actions(actions), behavior(behavior)
 {
 
 }
@@ -113,7 +113,9 @@ void waitForConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Acti
     }
 }
 
-void establishConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Action &action) {
+void establishConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Action &action,
+    const QFlags<SharedConnectionsDialogFiller::Behavior> &behavior)
+{
     GTGlobals::sleep(1000);
     QWidget *cnctBtn = GTWidget::findWidget(os,"pbConnect");
     QWidget *dcntBtn = GTWidget::findWidget(os,"pbDisconnect");
@@ -124,6 +126,8 @@ void establishConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Ac
     CHECK_OP(os, );
 
     GTWidget::click(os, cnctBtn);
+    CHECK(behavior.testFlag(SharedConnectionsDialogFiller::SAFE), );
+
     GTGlobals::sleep(2000);
 
     if (SharedConnectionsDialogFiller::Action::OK == action.expectedResult ||
@@ -205,7 +209,7 @@ void SharedConnectionsDialogFiller::run() {
                 CHECK_OP(os, );
                 break;
             case Action::CONNECT:
-                establishConnection(os, action);
+                establishConnection(os, action, behavior);
                 CHECK_OP(os, );
                 if (Action::OK == action.expectedResult) {
                     connected = true;
