@@ -76,7 +76,9 @@ void GTComboBox::setCurrentIndex(U2OpStatus& os, QComboBox *comboBox, int index,
         QModelIndex modelIndex = view->model()->index(index,0);
         GT_CHECK(modelIndex.isValid(), "invalid model index");
         view->scrollTo(modelIndex);
-        GTMouseDriver::moveTo(os, view->mapToGlobal(view->visualRect(modelIndex).center()));
+        GTGlobals::sleep(500);
+        coreLog.trace("MOVING TO LIST ITEM");
+        GTMouseDriver::moveTo(os, view->viewport()->mapToGlobal(view->visualRect(modelIndex).center()));
         GTMouseDriver::click(os);
         GTGlobals::sleep(500);
         break;
