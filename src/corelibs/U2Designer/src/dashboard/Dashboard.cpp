@@ -59,7 +59,6 @@ namespace U2 {
 static const QString REPORT_SUB_DIR("report/");
 static const QString DB_FILE_NAME("dashboard.html");
 static const QString SETTINGS_FILE_NAME("settings.ini");
-static const QString SCHEMA_FILE_NAME("schema.uwl");
 static const QString OPENED_SETTING("opened");
 static const QString NAME_SETTING("name");
 
@@ -336,7 +335,7 @@ void Dashboard::sl_runStateChanged(bool paused) {
 }
 
 void Dashboard::loadSchema() {
-    QString url = dir + REPORT_SUB_DIR + SCHEMA_FILE_NAME;
+    QString url = dir + REPORT_SUB_DIR + WorkflowMonitor::WORKFLOW_FILE_NAME;
     emit si_loadSchema(url);
 }
 

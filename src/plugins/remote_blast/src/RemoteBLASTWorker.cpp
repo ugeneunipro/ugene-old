@@ -245,7 +245,7 @@ Task* RemoteBLASTWorker::tick() {
         bool shortSeq = getValue<bool>(SHORTSEQ_ATTR);
 
         if(evalue <= 0 ){
-            algoLog.error(tr("Incorrect value for 'e-value' parameter, default value passed to schema"));
+            algoLog.error(tr("Incorrect value for the 'e-value' parameter, default value passed to the workflow"));
             evalue = 10;
         }
 

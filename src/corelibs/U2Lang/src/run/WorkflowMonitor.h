@@ -122,6 +122,8 @@ public:
 
     void onLogChanged(const WDListener* listener, int messageType, const QString& message);
 
+    static const QString WORKFLOW_FILE_NAME;
+
 public slots:
     void sl_progressChanged();
     void sl_taskStateChanged();

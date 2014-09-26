@@ -40,6 +40,8 @@ WorkerLogInfo::~WorkerLogInfo() {
     }
 }
 
+const QString WorkflowMonitor::WORKFLOW_FILE_NAME("workflow.uwl");
+
 WorkflowMonitor::WorkflowMonitor(WorkflowAbstractIterationRunner *_task, Schema *_schema)
 : QObject(), schema(_schema), task(_task), saveSchema(false), started(false)
 {
@@ -128,18 +130,18 @@ void WorkflowMonitor::addTick(qint64 timeMks, const QString &actor) {
 }
 
 void WorkflowMonitor::start() {
-    SAFE_POINT(!started, "The schema is already started", );
+    SAFE_POINT(!started, "The workflow is already started", );
     started = true;
     setRunState(false);
 }
 
 void WorkflowMonitor::pause() {
-    SAFE_POINT(started, "The schema is not started yet", );
+    SAFE_POINT(started, "The workflow is not started yet", );
     setRunState(true);
 }
 
 void WorkflowMonitor::resume() {
-    SAFE_POINT(started, "The schema is not started yet", );
+    SAFE_POINT(started, "The workflow is not started yet", );
     setRunState(false);
 }
 
@@ -153,7 +155,7 @@ void WorkflowMonitor::setOutputDir(const QString &dir) {
     emit si_dirSet(outputDir());
 
     if (saveSchema) {
-        QString url = outputDir() + "report/schema.uwl";
+        QString url = outputDir() + "report/" + WORKFLOW_FILE_NAME;
         U2OpStatus2Log os;
         HRSchemaSerializer::saveSchema(schema, meta.data(), url, os);
     }

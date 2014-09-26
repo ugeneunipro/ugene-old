@@ -70,7 +70,7 @@ Task::ReportResult LoadWorkflowTask::report() {
     if(format == HR) {
         err = HRSchemaSerializer::string2Schema(rawData, schema, meta, &remap);
     } else if(format == XML) {
-        setError(tr("Sorry! XML schema format is obsolete and not supported. You can create new schema in GUI mode"
+        setError(tr("Sorry! XML workflow format is obsolete and not supported. You can create new workflow in GUI mode"
                     " or write it by yourself. Check our documentation for details!"));
         return ReportResult_Finished;
     } else {
