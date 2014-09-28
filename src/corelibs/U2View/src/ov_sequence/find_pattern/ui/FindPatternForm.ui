@@ -16,12 +16,6 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="minimumSize">
-   <size>
-    <width>0</width>
-    <height>800</height>
-   </size>
-  </property>
   <property name="focusPolicy">
    <enum>Qt::StrongFocus</enum>
   </property>
@@ -29,6 +23,9 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
    <item>
     <widget class="QLabel" name="searchForLabel">
      <property name="sizePolicy">
@@ -144,11 +141,14 @@
       </item>
       <item row="1" column="1">
        <widget class="QComboBox" name="boxAlgorithm">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>22</height>
-         </size>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToMinimumContentsLength</enum>
         </property>
        </widget>
       </item>
@@ -181,6 +181,9 @@
       </property>
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinAndMaxSize</enum>
+        </property>
         <item>
          <widget class="QLineEdit" name="editStart">
           <property name="maximumSize">
@@ -221,11 +224,14 @@
         </item>
         <item row="0" column="1">
          <widget class="QComboBox" name="boxStrand">
-          <property name="minimumSize">
-           <size>
-            <width>111</width>
-            <height>22</height>
-           </size>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QComboBox::AdjustToMinimumContentsLength</enum>
           </property>
          </widget>
         </item>
@@ -238,11 +244,14 @@
         </item>
         <item row="1" column="1">
          <widget class="QComboBox" name="boxSeqTransl">
-          <property name="minimumSize">
-           <size>
-            <width>111</width>
-            <height>22</height>
-           </size>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QComboBox::AdjustToMinimumContentsLength</enum>
           </property>
          </widget>
         </item>
@@ -255,11 +264,14 @@
         </item>
         <item row="2" column="1">
          <widget class="QComboBox" name="boxRegion">
-          <property name="minimumSize">
-           <size>
-            <width>111</width>
-            <height>22</height>
-           </size>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QComboBox::AdjustToMinimumContentsLength</enum>
           </property>
          </widget>
         </item>
@@ -276,27 +288,62 @@
        <height>16777215</height>
       </size>
      </property>
-     <layout class="QGridLayout" name="gridLayout_4">
-      <property name="margin">
-       <number>0</number>
-      </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="spacing">
        <number>4</number>
       </property>
-      <item row="0" column="0">
-       <widget class="QCheckBox" name="removeOverlapsBox">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>23</height>
-         </size>
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" name="removeOverlapsLayout" stretch="0,1">
+        <property name="spacing">
+         <number>10</number>
         </property>
-        <property name="text">
-         <string>Remove overlapped results</string>
-        </property>
-       </widget>
+        <item>
+         <widget class="QCheckBox" name="removeOverlapsBox">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="removeOverlapsLabel">
+          <property name="text">
+           <string>Remove overlapped results</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="2" column="0">
+      <item>
+       <layout class="QHBoxLayout" name="layoutUseMaxResult" stretch="0,1">
+        <property name="spacing">
+         <number>10</number>
+        </property>
+        <item>
+         <widget class="QCheckBox" name="boxUseMaxResult">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelUseMaxResult">
+          <property name="text">
+           <string>Limit results number to:</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <widget class="QSpinBox" name="boxMaxResult">
         <property name="maximum">
          <number>50000</number>
@@ -306,13 +353,6 @@
         </property>
         <property name="value">
          <number>50000</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="boxUseMaxResult">
-        <property name="text">
-         <string>Limit results number to:</string>
         </property>
        </widget>
       </item>
@@ -394,8 +434,6 @@
   <tabstop>boxRegion</tabstop>
   <tabstop>editStart</tabstop>
   <tabstop>editEnd</tabstop>
-  <tabstop>removeOverlapsBox</tabstop>
-  <tabstop>boxUseMaxResult</tabstop>
   <tabstop>boxMaxResult</tabstop>
  </tabstops>
  <resources/>

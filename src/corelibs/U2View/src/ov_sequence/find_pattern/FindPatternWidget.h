@@ -122,6 +122,8 @@ private:
     void initSeqTranslSelection();
     void initRegionSelection();
     void initResultsLimit();
+    void initUseAmbiguousBasesContainer();
+    void initMaxResultLenContainer();
     void updateLayout();
     void connectSlots();
     int getMaxError(const QString& pattern) const;
@@ -184,13 +186,15 @@ private:
 
     /** Widgets in the Algorithm group */
     QHBoxLayout* layoutMismatch;
-    QHBoxLayout* layoutRegExpLen;
+    QVBoxLayout* layoutRegExpLen;
     QHBoxLayout* layoutRegExpInfo;
 
     QLabel* lblMatch;
     QSpinBox* spinMatch;
+    QWidget *useAmbiguousBasesContainer;
     QCheckBox* useAmbiguousBasesBox;
 
+    QWidget *useMaxResultLenContainer;
     QCheckBox* boxUseMaxResultLen;
     QSpinBox* boxMaxResultLen;
 

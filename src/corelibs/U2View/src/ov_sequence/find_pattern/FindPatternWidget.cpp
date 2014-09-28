@@ -369,7 +369,7 @@ const QString FindPatternWidget::SEARCH_IN_SETTINGS = QObject::tr("Search in");
 const QString FindPatternWidget::OTHER_SETTINGS = QObject::tr("Other settings");
 
 FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
-    : annotatedDnaView(_annotatedDnaView),searchTask(NULL),previousPatternString(""),iterPos(0)
+    : annotatedDnaView(_annotatedDnaView),iterPos(0),searchTask(NULL),previousPatternString("")
 {
     setupUi(this);
 
@@ -415,14 +415,11 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
     resultLabel->setText(tr("Results: 0/0"));
 }
 
-void FindPatternWidget::initLayout()
-{
+void FindPatternWidget::initLayout() {
     lblErrorMessage->setStyleSheet(
         "color: " + L10N::errorColorLabelStr() + ";"
         "font: bold;");
     lblErrorMessage->setText("");
-    setMinimumSize(QSize(170, 150));
-
     initAlgorithmLayout();
     initStrandSelection();
     initSeqTranslSelection();
@@ -470,22 +467,8 @@ void FindPatternWidget::initAlgorithmLayout()
 
     layoutAlgorithmSettings->addLayout(layoutMismatch);
 
-    useAmbiguousBasesBox = new QCheckBox(tr("Search with ambiguous bases"));
-    layoutAlgorithmSettings->addWidget(useAmbiguousBasesBox);
-
-    layoutRegExpLen = new QHBoxLayout();
-    boxUseMaxResultLen = new QCheckBox(tr("Results no longer than"));
-    boxMaxResultLen = new QSpinBox();
-    boxMaxResultLen->setMinimum(REG_EXP_MIN_RESULT_LEN);
-    boxMaxResultLen->setMaximum(REG_EXP_MAX_RESULT_LEN);
-    boxMaxResultLen->setSingleStep(REG_EXP_MAX_RESULT_SINGLE_STEP);
-    boxMaxResultLen->setValue(REG_EXP_MAX_RESULT_LEN);
-    layoutRegExpLen->addWidget(boxUseMaxResultLen);
-    layoutRegExpLen->addWidget(boxMaxResultLen);
-    layoutAlgorithmSettings->addLayout(layoutRegExpLen);
-    boxMaxResultLen->setEnabled( false );
-    connect( boxUseMaxResultLen, SIGNAL( toggled( bool ) ), boxMaxResultLen,
-        SLOT( setEnabled( bool ) ) );
+    initUseAmbiguousBasesContainer();
+    initMaxResultLenContainer();
 
     selectedAlgorithm = boxAlgorithm->itemData(boxAlgorithm->currentIndex()).toInt();
 }
@@ -532,6 +515,56 @@ void FindPatternWidget::initResultsLimit()
     boxMaxResult->setMaximum(INT_MAX);
     boxMaxResult->setValue(DEFAULT_RESULTS_NUM_LIMIT);
     boxMaxResult->setEnabled(false);
+}
+
+void FindPatternWidget::initUseAmbiguousBasesContainer() {
+    useAmbiguousBasesContainer = new QWidget();
+
+    QHBoxLayout *useAmbiguousBasesLayout = new QHBoxLayout();
+    useAmbiguousBasesLayout->setContentsMargins(0, 0, 0, 0);
+    useAmbiguousBasesLayout->setSpacing(10);
+    useAmbiguousBasesLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+    useAmbiguousBasesContainer->setLayout(useAmbiguousBasesLayout);
+
+    useAmbiguousBasesBox = new QCheckBox();
+    QLabel *useAmbiguousBasesLabel = new QLabel(tr("Search with ambiguous bases"));
+    useAmbiguousBasesLabel->setWordWrap(true);
+
+    useAmbiguousBasesLayout->addWidget(useAmbiguousBasesBox, 0);
+    useAmbiguousBasesLayout->addWidget(useAmbiguousBasesLabel, 1);
+    layoutAlgorithmSettings->addWidget(useAmbiguousBasesContainer);
+}
+
+void FindPatternWidget::initMaxResultLenContainer() {
+    useMaxResultLenContainer = new QWidget();
+
+    layoutRegExpLen = new QVBoxLayout();
+    layoutRegExpLen->setContentsMargins(0, 0, 0, 0);
+    layoutRegExpLen->setSpacing(3);
+    layoutRegExpLen->setSizeConstraint(QLayout::SetMinAndMaxSize);
+    useMaxResultLenContainer->setLayout(layoutRegExpLen);
+
+    QHBoxLayout *layoutUseMaxResultLen = new QHBoxLayout();
+    layoutUseMaxResultLen->setSpacing(10);
+    layoutUseMaxResultLen->setSizeConstraint(QLayout::SetMinAndMaxSize);
+
+    boxUseMaxResultLen = new QCheckBox();
+    QLabel *labelUseMaxResultLen = new QLabel(tr("Results no longer than:"));
+    labelUseMaxResultLen->setWordWrap(true);
+    layoutUseMaxResultLen->addWidget(boxUseMaxResultLen, 0);
+    layoutUseMaxResultLen->addWidget(labelUseMaxResultLen, 1);
+
+    boxMaxResultLen = new QSpinBox();
+    boxMaxResultLen->setMinimum(REG_EXP_MIN_RESULT_LEN);
+    boxMaxResultLen->setMaximum(REG_EXP_MAX_RESULT_LEN);
+    boxMaxResultLen->setSingleStep(REG_EXP_MAX_RESULT_SINGLE_STEP);
+    boxMaxResultLen->setValue(REG_EXP_MAX_RESULT_LEN);
+    boxMaxResultLen->setEnabled(false);
+    connect(boxUseMaxResultLen, SIGNAL(toggled(bool)), boxMaxResultLen, SLOT(setEnabled(bool)));
+
+    layoutRegExpLen->addLayout(layoutUseMaxResultLen);
+    layoutRegExpLen->addWidget(boxMaxResultLen);
+    layoutAlgorithmSettings->addWidget(useMaxResultLenContainer);
 }
 
 
@@ -717,16 +750,16 @@ void FindPatternWidget::updateLayout()
     // Algorithm group
     if (selectedAlgorithm == FindAlgorithmPatternSettings_Exact) {
         useAmbiguousBasesBox->setChecked(false);
-        useAmbiguousBasesBox->hide();
-        boxUseMaxResultLen->hide();
+        useAmbiguousBasesContainer->hide();
+        useMaxResultLenContainer->hide();
         boxMaxResultLen->hide();
         spinMatch->hide();
         lblMatch->hide();
     }
     if (selectedAlgorithm == FindAlgorithmPatternSettings_InsDel) {
         useAmbiguousBasesBox->setChecked(false);
-        useAmbiguousBasesBox->hide();
-        boxUseMaxResultLen->hide();
+        useAmbiguousBasesContainer->hide();
+        useMaxResultLenContainer->hide();
         boxMaxResultLen->hide();
         enableDisableMatchSpin();
         lblMatch->show();
@@ -734,8 +767,8 @@ void FindPatternWidget::updateLayout()
         QWidget::setTabOrder(boxAlgorithm, spinMatch);
     }
     else if (selectedAlgorithm == FindAlgorithmPatternSettings_Subst) {
-        useAmbiguousBasesBox->show();
-        boxUseMaxResultLen->hide();
+        useAmbiguousBasesContainer->show();
+        useMaxResultLenContainer->hide();
         boxMaxResultLen->hide();
         QWidget::setTabOrder(boxAlgorithm, useAmbiguousBasesBox);
         enableDisableMatchSpin();
@@ -745,8 +778,8 @@ void FindPatternWidget::updateLayout()
     }
     else if (selectedAlgorithm == FindAlgorithmPatternSettings_RegExp) {
         useAmbiguousBasesBox->setChecked(false);
-        useAmbiguousBasesBox->hide();
-        boxUseMaxResultLen->show();
+        useAmbiguousBasesContainer->hide();
+        useMaxResultLenContainer->show();
         boxMaxResultLen->show();
         spinMatch->hide();
         lblMatch->hide();
@@ -770,7 +803,6 @@ void FindPatternWidget::updateLayout()
 }
 
 void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, const QString& additionalMsg ){
-    QString ss = lblErrorMessage->styleSheet();
     if (show) {
         if (!messageFlags.contains(messageFlag)) {
             messageFlags.append(messageFlag);
