@@ -26,7 +26,7 @@
 #include <U2Core/U2Assembly.h>
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2DbiUtils.h>
-#include <U2COre/U2SafePoints.h>
+#include <U2Core/U2SafePoints.h>
 
 #include "ExportCoverageTask.h"
 
