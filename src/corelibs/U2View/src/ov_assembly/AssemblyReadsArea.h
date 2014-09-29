@@ -95,6 +95,8 @@ private:
     void setupHScrollBar();
     void setupVScrollBar();
 
+    void accumulateDelta(int delta);
+
     void drawAll();
     void drawReads(QPainter & p);
 
@@ -164,6 +166,11 @@ private:
     CoveredRegionsLabel coveredRegionsLabel;
     QScrollBar * hBar;
     QScrollBar * vBar;
+
+    // Some variables for a workaround UGENE-3183
+    static const int DEFAULT_MOUSE_DELTA;
+    int wheelEventAccumulatedDelta;
+    int wheelEventPrevDelta;
     
     // caches reads that are visible on a screen
     class ReadsCache {

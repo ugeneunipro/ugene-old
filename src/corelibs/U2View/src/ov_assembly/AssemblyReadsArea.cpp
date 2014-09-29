@@ -68,15 +68,30 @@ namespace U2 {
 static const QColor backgroundColor(Qt::white);
 static const QColor shadowingColor(255,255,255,200);
 const QString AssemblyReadsArea::ZOOM_LINK = "zoom";
+const int AssemblyReadsArea::DEFAULT_MOUSE_DELTA = 120;
 
-AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_)
-    :  QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), redraw(true), cellRenderer(NULL),
-        coveredRegionsLabel(browser, this), hBar(hBar_), vBar(vBar_), hintData(this), mover(),
-        shadowingEnabled(false), shadowingData(),
-        scribbling(false), currentHotkeyIndex(-1),
-        hintEnabled(AssemblyBrowserSettings::getReadHintEnabled()), scrolling(false),
-        optimizeRenderOnScroll(AssemblyBrowserSettings::getOptimizeRenderOnScroll()),
-        readMenu(new QMenu(this))
+AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_, QScrollBar * vBar_) :
+    QWidget(ui_),
+    ui(ui_),
+    browser(ui_->getWindow()),
+    model(ui_->getModel()),
+    redraw(true),
+    cellRenderer(NULL),
+    coveredRegionsLabel(browser, this),
+    hBar(hBar_),
+    vBar(vBar_),
+    wheelEventAccumulatedDelta(0),
+    wheelEventPrevDelta(0),
+    hintData(this),
+    mover(),
+    shadowingEnabled(false),
+    shadowingData(),
+    scribbling(false),
+    currentHotkeyIndex(-1),
+    hintEnabled(AssemblyBrowserSettings::getReadHintEnabled()),
+    scrolling(false),
+    optimizeRenderOnScroll(AssemblyBrowserSettings::getOptimizeRenderOnScroll()),
+    readMenu(new QMenu(this))
 {
     setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
     QVBoxLayout * coveredRegionsLayout = new QVBoxLayout();
@@ -86,10 +101,10 @@ AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_
     connectSlots();
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
-    
+
     coveredRegionsLabel.installEventFilter(this);
     coveredRegionsLabel.setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    
+
     createMenu();
 }
 
@@ -186,7 +201,7 @@ void AssemblyReadsArea::initRedraw() {
 void AssemblyReadsArea::connectSlots() {
     connect(browser, SIGNAL(si_zoomOperationPerformed()), SLOT(sl_zoomOperationPerformed()));
     connect(browser, SIGNAL(si_offsetsChanged()), SLOT(sl_redraw()));
-}   
+}
 
 void AssemblyReadsArea::setupHScrollBar() {
     U2OpStatusImpl status;
@@ -236,6 +251,20 @@ void AssemblyReadsArea::setupVScrollBar() {
     connect(vBar, SIGNAL(sliderReleased()), SLOT(sl_onScrollReleased()));
 }
 
+void AssemblyReadsArea::accumulateDelta(int delta) {
+    if (wheelEventAccumulatedDelta * delta < 0) {
+        wheelEventAccumulatedDelta = 0;
+        wheelEventPrevDelta = 0;
+    }
+
+    // Skip events which have delta closer to zero that the previous one.
+    if (abs(delta) >= abs(wheelEventPrevDelta)) {
+        wheelEventAccumulatedDelta += (delta > 0 ? 1 : -1) * qMin(abs(delta), DEFAULT_MOUSE_DELTA);
+    }
+
+    wheelEventPrevDelta = delta;
+}
+
 void AssemblyReadsArea::drawAll() {
     GTIMER(c1, t1, "AssemblyReadsArea::drawAll");
     if(!model->isEmpty()) {
@@ -254,7 +283,7 @@ void AssemblyReadsArea::drawAll() {
                 showWelcomeScreen();
             }
 
-            setupHScrollBar(); 
+            setupHScrollBar();
             setupVScrollBar();
         }
 
@@ -309,7 +338,7 @@ void AssemblyReadsArea::showWelcomeScreen() {
         prefix += tr(" or choose one of the well-covered regions:<br><br>");
     }
     prefix += "<center>";
-    
+
     assert(!HOTKEY_DESCRIPTIONS.isEmpty());
     if(currentHotkeyIndex == -1 || !coveredRegionsLabel.isVisible()) {
         currentHotkeyIndex = qrand() % HOTKEY_DESCRIPTIONS.size();
@@ -317,7 +346,7 @@ void AssemblyReadsArea::showWelcomeScreen() {
     QString postfix = "</center><br><br><br><u>TIP:</u>&nbsp;&nbsp;&nbsp;";
     HotkeyDescription hotkey = HOTKEY_DESCRIPTIONS.at(currentHotkeyIndex);
     postfix += QString("<b>%1</b>&nbsp;&mdash;&nbsp;%2").arg(hotkey.key).arg(hotkey.desc);
-    
+
     coveredRegionsLabel.setAdditionalText(prefix, postfix);
     coveredRegionsLabel.show();
 
@@ -342,7 +371,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
     // 0. Get reads from the database
     U2OpStatusImpl status;
     qint64 t = GTimer::currentTimeMicros();
-    cachedReads.data = model->getReadsFromAssembly(cachedReads.visibleBases, cachedReads.visibleRows.startPos, 
+    cachedReads.data = model->getReadsFromAssembly(cachedReads.visibleBases, cachedReads.visibleRows.startPos,
         cachedReads.visibleRows.endPos(), status);
     t = GTimer::currentTimeMicros() - t;
     perfLog.trace(QString("Assembly: reads 2D load time: %1").arg(double(t) / 1000 / 1000));
@@ -359,7 +388,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
     // 1. Render cells using AssemblyCellRenderer
     cachedReads.letterWidth = browser->getCellWidth();
 
-    bool text = browser->areLettersVisible(); 
+    bool text = browser->areLettersVisible();
     if(browser->areCellsVisible()) {
         GTIMER(c3, t3, "AssemblyReadsArea::drawReads -> cells rendering");
         QFont f = browser->getFont();
@@ -393,7 +422,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
         }
 
         if(browser->areCellsVisible()) { //->draw color rects
-            int firstVisibleBase = readVisibleBases.startPos - readBases.startPos; 
+            int firstVisibleBase = readVisibleBases.startPos - readBases.startPos;
             int x_pix_start = browser->calcPainterOffset(xToDrawRegion.startPos);
             int y_pix_start = browser->calcPainterOffset(yToDrawRegion.startPos);
 
@@ -429,7 +458,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
                     ++totalBasesPainted;
                 }
             }
-        } else { 
+        } else {
             int xstart = browser->calcPixelCoord(xToDrawRegion.startPos);
             int xend = browser->calcPixelCoord(xToDrawRegion.endPos());
             int ystart = browser->calcPixelCoord(yToDrawRegion.startPos);
@@ -437,7 +466,7 @@ void AssemblyReadsArea::drawReads(QPainter & p) {
 
             p.fillRect(xstart, ystart, xend - xstart, yend - ystart, Qt::black);
         }
-    }    
+    }
     t0 = GTimer::currentTimeMicros() - t0;
     perfLog.trace(QString("Assembly: drawing reads (%1 bases)   : %2 seconds").arg(totalBasesPainted).arg(double(t0) / 1000 / 1000));
 }
@@ -483,7 +512,7 @@ void AssemblyReadsArea::updateHint() {
         sl_hideHint();
         return;
     }
-    
+
     // 2. set hint info
     if(read->id != hintData.curReadId) {
         hintData.curReadId = read->id;
@@ -502,7 +531,7 @@ void AssemblyReadsArea::updateHint() {
 
     // 3. move hint if needed
     QRect readsAreaRect(mapToGlobal(rect().topLeft()), mapToGlobal(rect().bottomRight()));
-    QRect hintRect = hintData.hint.rect(); 
+    QRect hintRect = hintData.hint.rect();
     hintRect.moveTo(QCursor::pos() + AssemblyReadsAreaHint::OFFSET_FROM_CURSOR);
     QPoint offset(0, 0);
     if(hintRect.right() > readsAreaRect.right()) {
@@ -631,16 +660,21 @@ void AssemblyReadsArea::resizeEvent(QResizeEvent * e) {
 }
 
 void AssemblyReadsArea::wheelEvent(QWheelEvent * e) {
-    bool positive = e->delta() > 0;
-    int numDegrees = abs(e->delta()) / 8;
+    // This method is complicated because of UGENE-3183
+    accumulateDelta(e->delta());
+
+    bool positive = wheelEventAccumulatedDelta > 0;
+    int numDegrees = abs(wheelEventAccumulatedDelta) / 8;
     int numSteps = numDegrees / 15;
 
     // zoom
     if(Qt::NoButton == e->buttons()) {
         for(int i = 0; i < numSteps; ++i) {
             if(positive) {
+                wheelEventAccumulatedDelta -= DEFAULT_MOUSE_DELTA;
                 browser->sl_zoomIn(curPos);
             } else {
+                wheelEventAccumulatedDelta += DEFAULT_MOUSE_DELTA;
                 browser->sl_zoomOut(curPos);
             }
         }
@@ -721,7 +755,7 @@ void AssemblyReadsArea::keyPressEvent(QKeyEvent * e) {
             int step = e->modifiers() & Qt::ControlModifier ? vBar->pageStep() : vBar->singleStep();
             step = k == Qt::Key_Up ? -step : step;
             vBar->setValue(vBar->value() + step);
-            e->accept();    
+            e->accept();
         }
     } else if(k == Qt::Key_Home) {
         if(hBar->isEnabled()) {
@@ -838,7 +872,7 @@ void AssemblyReadsArea::updateMenuActions() {
 
 void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
     GCOUNTER( cvar, tvar, "AssemblyReadsArea:exportReads" );
-    
+
     assert(!reads.isEmpty());
     ExportReadsDialog dlg(this, QList<DocumentFormatId>() << BaseDocumentFormats::FASTA << BaseDocumentFormats::FASTQ);
     int ret = dlg.exec();
