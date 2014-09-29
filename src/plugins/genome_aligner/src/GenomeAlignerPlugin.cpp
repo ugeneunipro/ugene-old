@@ -91,6 +91,8 @@ GenomeAlignerPlugin::GenomeAlignerPlugin() : Plugin( tr("UGENE Genome Aligner"),
     Q_UNUSED(res);
     assert(res);
 
+    LocalWorkflow::GenomeAlignerWorkerFactory::init();
+
     registerCMDLineHelp();
     processCMDLineOptions();
 }

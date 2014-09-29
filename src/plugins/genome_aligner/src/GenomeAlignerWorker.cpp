@@ -21,7 +21,11 @@
 
 #include "GenomeAlignerWorker.h"
 
+#include <U2Core/AppContext.h>
 #include <U2Core/Log.h>
+#include <U2Core/FailTask.h>
+#include <U2Core/GUrlUtils.h>
+#include <U2Algorithm/OpenCLGpuRegistry.h>
 #include <U2Lang/IntegralBusModel.h>
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/ActorPrototypeRegistry.h>
@@ -33,6 +37,7 @@
 #include <U2Designer/DelegateEditors.h>
 #include <U2Lang/CoreLibConstants.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include "GenomeAlignerPlugin.h"
 
@@ -40,112 +45,132 @@ namespace U2 {
 namespace LocalWorkflow {
 
 
+static const QString IN_TYPE_ID("Bowtie2-data");
+static const QString OUT_TYPE_ID("Bowtie2-data-out");
+static const QString IN_PORT_DESCR("in-data");
+static const QString OUT_PORT_DESCR("out-data");
 static const QString INDEX_PORT_ID("in-gen-al-index");
 static const QString INDEX_OUT_PORT_ID("out-gen-al-index");
+static const QString OUTPUT_DIR("output-dir");
+static const QString OUTPUT_NAME = "outname";
+
+static const QString READS_URL_SLOT_ID("readsurl");
+static const QString READS_PAIRED_URL_SLOT_ID("readspairedurl");
+
+static const QString ASSEBLY_OUT_SLOT_ID("assembly-out");
+
+static const QString BASE_GENOME_ALIGNER_SUBDIR("genome_aligner");
+static const QString BASE_GENOME_ALIGNER_OUTFILE("out.sam");
+
 
 const QString GenomeAlignerWorkerFactory::ACTOR_ID("genome-aligner");
-const QString GenomeAlignerBuildWorkerFactory::ACTOR_ID("gen-al-build-index");
-const QString GenomeAlignerIndexReaderWorkerFactory::ACTOR_ID("gen-al-read-index");
 
-const QString ABS_OR_PERC_MISMATCHES_ATTR("if-absolute-mismatches-value");
-const QString MISMATCHES_ATTR("absolute-mismatches");
-const QString PERCENT_MISMATCHES_ATTR("percentage-mismatches");
-const QString REVERSE_ATTR("reverse");
-const QString BEST_ATTR("best");
-const QString GPU_ATTR("gpu");
-const QString QUAL_ATTR("quality-threshold");
-const QString REFSEQ_URL_ATTR("url-reference");
-const QString INDEX_URL_ATTR("url-index");
-const QString REF_SIZE_ATTR("ref-size");
+static const QString ABS_OR_PERC_MISMATCHES_ATTR("if-absolute-mismatches-value");
+static const QString MISMATCHES_ATTR("absolute-mismatches");
+static const QString PERCENT_MISMATCHES_ATTR("percentage-mismatches");
+static const QString REVERSE_ATTR("reverse");
+static const QString BEST_ATTR("best");
+static const QString GPU_ATTR("gpu");
+static const QString QUAL_ATTR("quality-threshold");
+static const QString REFERENCE_GENOME("reference");
 
 /************************************************************************/
-/* Genome aligner                                                       */
+/* Genome aligner worker                                                */
 /************************************************************************/
+
 GenomeAlignerWorker::GenomeAlignerWorker(Actor* a)
-: BaseWorker(a, false), reads(NULL), index(NULL), output(NULL), reader(NULL), writer(NULL)
+: BaseWorker(a, false), inChannel(NULL), output(NULL)
 {
-    done = false;
-}
-
-static const Descriptor INDEX_SLOT("gen-al-index-slot", QString("Genome aligner index"), QString("Index for genome aligner"));
-
-void GenomeAlignerWorkerFactory::init() {
-    QList<PortDescriptor*> p; QList<Attribute*> a;
-    Descriptor readsd(BasePorts::IN_SEQ_PORT_ID(), GenomeAlignerWorker::tr("Short read sequences"), GenomeAlignerWorker::tr("Short reads to be aligned."));
-    Descriptor indexd(INDEX_PORT_ID, QString("Genome aligner index"), QString("Genome aligner index of reference sequence."));
-    Descriptor oud(BasePorts::OUT_MSA_PORT_ID(), GenomeAlignerWorker::tr("Short reads alignment"), GenomeAlignerWorker::tr("Result of alignment."));
-
-    QMap<Descriptor, DataTypePtr> inSeqM;
-    inSeqM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
-    p << new PortDescriptor(readsd, DataTypePtr(new MapDataType("genome.aligner.in.reads", inSeqM)), true /*input*/);
-    QMap<Descriptor, DataTypePtr> inIndexM;
-    inIndexM[INDEX_SLOT] = GenomeAlignerPlugin::GENOME_ALIGNER_INDEX_TYPE();
-    p << new PortDescriptor(indexd, DataTypePtr(new MapDataType("genome.aligner.in.index", inIndexM)), true /*input*/, false /*multi*/, IntegralBusPort::BLIND_INPUT);
-    QMap<Descriptor, DataTypePtr> outM;
-    outM[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
-    p << new PortDescriptor(oud, DataTypePtr(new MapDataType("genome.aligner.out.ma", outM)), false /*input*/, false /*multi*/);
-
-    Descriptor absMismatches(ABS_OR_PERC_MISMATCHES_ATTR, GenomeAlignerWorker::tr("Is absolute mismatches values?"),
-        GenomeAlignerWorker::tr("<html><body><p><b>true</b> - absolute mismatches mode is used</p><p><b>false</b> - percentage mismatches mode is used</p>\
-                                You can choose absolute or percentage mismatches values mode.</body></html>"));
-    Descriptor mismatches(MISMATCHES_ATTR, GenomeAlignerWorker::tr("Absolute mismatches"), 
-        GenomeAlignerWorker::tr("<html><body>Number of mismatches allowed while aligning reads.</body></html>"));
-    Descriptor ptMismatches(PERCENT_MISMATCHES_ATTR, GenomeAlignerWorker::tr("Percentage mismatches"),
-        GenomeAlignerWorker::tr("<html><body>Percentage of mismatches allowed while aligning reads.</body></html>"));
-    Descriptor reverse(REVERSE_ATTR, GenomeAlignerWorker::tr("Align reverse complement reads"), 
-        GenomeAlignerWorker::tr("<html><body>Set this option to align both direct and reverse complement reads.</body></html>"));
-    Descriptor best(BEST_ATTR, GenomeAlignerWorker::tr("Use \"best\"-mode"), 
-        GenomeAlignerWorker::tr("<html><body>Report only the best alignment for each read (in terms of mismatches).</body></html>"));
-    Descriptor qual(QUAL_ATTR, GenomeAlignerWorker::tr("Omit reads with qualities lower than"), 
-        GenomeAlignerWorker::tr("<html><body>Omit reads with qualities lower than the specified value. Reads that have no qualities are not omited.\
-                                <p>Set <b>\"0\"</b> to switch off this option.</p></body></html>"));
-    Descriptor gpu(GPU_ATTR, GenomeAlignerWorker::tr("Use GPU-optimization"), 
-        GenomeAlignerWorker::tr("<html><body>Use GPU-calculatings while aligning reads. This option requires OpenCL-enable GPU-device.</body></html>"));
-
-    a << new Attribute(absMismatches, BaseTypes::BOOL_TYPE(), true/*required*/, false);
-    a << new Attribute(mismatches, BaseTypes::NUM_TYPE(), false, 0);
-    a << new Attribute(ptMismatches, BaseTypes::NUM_TYPE(), false, 0);
-    a << new Attribute(reverse, BaseTypes::BOOL_TYPE(), false/*required*/, true);
-    a << new Attribute(best, BaseTypes::BOOL_TYPE(), false/*required*/, false);
-    a << new Attribute(qual, BaseTypes::NUM_TYPE(), false/*required*/, 0);
-    a << new Attribute(gpu, BaseTypes::BOOL_TYPE(), false/*required*/, false);
-
-    Descriptor desc(ACTOR_ID, GenomeAlignerWorker::tr("UGENE Genome Aligner"), 
-        GenomeAlignerWorker::tr("Unique UGENE algorithm for aligning short reads to reference genome"));
-    ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
-
-    QMap<QString, PropertyDelegate*> delegates;    
-
-    {
-        QVariantMap m; m["minimum"] = 0; m["maximum"] = 3;
-        delegates[MISMATCHES_ATTR] = new SpinBoxDelegate(m);
-
-        QVariantMap ptM; ptM["minimum"] = 0; ptM["maximum"] = 10;
-        delegates[PERCENT_MISMATCHES_ATTR] = new SpinBoxDelegate(ptM);
-
-        QVariantMap q; q["minimum"] = 0; q["maximum"] = 70;
-        delegates[QUAL_ATTR] = new SpinBoxDelegate(q);
-    }
-
-    proto->setEditor(new DelegateEditor(delegates));
-    proto->setPrompter(new GenomeAlignerPrompter());
-    proto->setIconPath(":core/images/align.png");
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ASSEMBLY(), proto);
-
-    DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
-    localDomain->registerEntry(new GenomeAlignerWorkerFactory());
 }
 
 void GenomeAlignerWorker::init() {
-    reader = NULL;
-    writer = NULL;
-    reads = ports.value(BasePorts::IN_SEQ_PORT_ID());
-    index = ports.value(INDEX_PORT_ID);
-    output = ports.value(BasePorts::OUT_MSA_PORT_ID());
+    inChannel = ports.value(IN_PORT_DESCR);
+    output = ports.value(OUT_PORT_DESCR);
+}
 
-    //TODO: PREBUILT INDEX
-    //settings.setCustomValue(GenomeAlignerTask::OPTION_PREBUILT_INDEX, true);
-    settings.prebuiltIndex = true;
+Task* GenomeAlignerWorker::tick() {
+    if (inChannel->hasMessage()) {
+        U2OpStatus2Log os;
+        if(inChannel->isEnded()) {
+            algoLog.error(GenomeAlignerWorker::tr("Short reads list is empty."));
+            return NULL;
+        }
+        Message m = getMessageAndSetupScriptValues(inChannel);
+        QVariantMap data = m.getData().toMap();
+
+        //settings.indexFileName = getValue<QString>(REFERENCE_GENOME);
+        DnaAssemblyToRefTaskSettings settings = getSettings(os);
+        if (os.hasError()) {
+            return new FailTask(os.getError());
+        }
+        QString readsUrl = data[READS_URL_SLOT_ID].toString();
+        if(data.contains(READS_PAIRED_URL_SLOT_ID)){
+            //paired
+            QString readsPairedUrl = data[READS_PAIRED_URL_SLOT_ID].toString();
+            settings.shortReadSets.append(ShortReadSet(readsUrl, ShortReadSet::PairedEndReads, ShortReadSet::UpstreamMate));
+            settings.shortReadSets.append(ShortReadSet(readsPairedUrl, ShortReadSet::PairedEndReads, ShortReadSet::DownstreamMate));
+            settings.pairedReads = true;
+        }else {
+            //single
+            settings.shortReadSets.append(ShortReadSet(readsUrl, ShortReadSet::SingleEndReads, ShortReadSet::UpstreamMate));
+            settings.pairedReads = false;
+        }
+
+        Task* t = new GenomeAlignerTask(settings);
+        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+        return t;
+    } else if (inChannel->isEnded()) {
+        setDone();
+        output->setEnded();
+    }
+    return NULL;
+}
+
+
+void GenomeAlignerWorker::cleanup() {
+}
+
+void GenomeAlignerWorker::sl_taskFinished() {
+    GenomeAlignerTask *t = dynamic_cast<GenomeAlignerTask*>(sender());
+    if (!t->isFinished() || t->hasError() || t->isCanceled()) {
+        return;
+    }
+
+    QString url = t->getSettings().resultFileName.getURLString();
+
+    QVariantMap data;
+    data[ASSEBLY_OUT_SLOT_ID] =  qVariantFromValue<QString>(url);
+    output->put(Message(output->getBusType(), data));
+
+    context->getMonitor()->addOutputFile(url, getActor()->getId());
+
+    if (inChannel->isEnded() && !inChannel->hasMessage()) {
+        setDone();
+        output->setEnded();
+    }
+}
+
+DnaAssemblyToRefTaskSettings GenomeAlignerWorker::getSettings(U2OpStatus &os) {
+    DnaAssemblyToRefTaskSettings settings;
+
+    QString refSeqOrIndexPath = getValue<QString>(REFERENCE_GENOME);
+    settings.prebuiltIndex = refSeqOrIndexPath.contains(".idx");
+    settings.refSeqUrl = refSeqOrIndexPath;
+    QString outDir = GUrlUtils::createDirectory(
+        getValue<QString>(OUTPUT_DIR) + QDir::separator() + BASE_GENOME_ALIGNER_SUBDIR,
+        "_", os);
+    CHECK_OP(os, settings);
+
+    if (!outDir.endsWith(QDir::separator())){
+        outDir  = outDir + QDir::separator();
+    }
+
+    QString outFileName = getValue<QString>(OUTPUT_NAME);
+    if(outFileName.isEmpty()){
+        outFileName = BASE_GENOME_ALIGNER_OUTFILE;
+    }
+    settings.resultFileName = outDir + outFileName;
+
     bool absMismatches = actor->getParameter(ABS_OR_PERC_MISMATCHES_ATTR)->getAttributeValue<bool>(context);
     settings.setCustomValue(GenomeAlignerTask::OPTION_IF_ABS_MISMATCHES, absMismatches);
     int nMismatches = actor->getParameter(MISMATCHES_ATTR)->getAttributeValue<int>(context);
@@ -158,244 +183,205 @@ void GenomeAlignerWorker::init() {
     settings.setCustomValue(GenomeAlignerTask::OPTION_BEST, best);
     int qual = actor->getParameter(QUAL_ATTR)->getAttributeValue<int>(context);
     settings.setCustomValue(GenomeAlignerTask::OPTION_QUAL_THRESHOLD, qual);
-    bool gpu = actor->getParameter(GPU_ATTR)->getAttributeValue<bool>(context);
-    settings.setCustomValue(GenomeAlignerTask::OPTION_OPENCL, gpu);
-}
-
-bool GenomeAlignerWorker::isReady() {
-    return (reads && reads->hasMessage() && index && index->hasMessage());
-}
-
-Task* GenomeAlignerWorker::tick() {
-    if (reads->hasMessage()) {
-        if(reads->isEnded()) {
-            algoLog.error(GenomeAlignerWorker::tr("Short reads list is empty."));
-            return NULL;
-        }
-
-        reader = new GenomeAlignerCommunicationChanelReader(reads);
-        writer = new GenomeAlignerMAlignmentWriter();
-
-        QString indexFile = index->get().getData().toMap().value(INDEX_SLOT.getId()).value<QString>();
-        settings.refSeqUrl = indexFile;
-        settings.setCustomValue(GenomeAlignerTask::OPTION_READS_READER, QVariant::fromValue(GenomeAlignerReaderContainer(reader)));
-        settings.setCustomValue(GenomeAlignerTask::OPTION_READS_WRITER, QVariant::fromValue(GenomeAlignerWriterContainer(writer)));
-        Task* t = new GenomeAlignerTask(settings);
-        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-        return t;
+    if(GenomeAlignerWorkerFactory::openclEnabled) {
+        bool gpu = actor->getParameter(GPU_ATTR)->getAttributeValue<bool>(context);
+        settings.setCustomValue(GenomeAlignerTask::OPTION_OPENCL, gpu);
     }
-    return NULL;
-}
-
-
-void GenomeAlignerWorker::cleanup() {
-    delete reader;
-    delete writer;
-    writer = NULL;
-    reader = NULL;
-}
-
-void GenomeAlignerWorker::sl_taskFinished() {
-    GenomeAlignerTask* t = qobject_cast<GenomeAlignerTask*>(sender());
-    if (t->getState() != Task::State_Finished) {
-        return;
-    }
-    
-    MAlignment al = dynamic_cast<GenomeAlignerMAlignmentWriter*>(writer)->getResult();
-    SAFE_POINT(NULL != output, "NULL output!", );
-    SharedDbiDataHandler msaId = context->getDataStorage()->putAlignment(al);
-    QVariantMap msgData;
-    msgData[BaseSlots::MULTIPLE_ALIGNMENT_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(msaId);
-    output->put(Message(BaseTypes::MULTIPLE_ALIGNMENT_TYPE(), msgData));
-
-    if (reads->isEnded()) {
-        output->setEnded();
-    }
-    done = true;
+    return settings;
 }
 
 QString GenomeAlignerPrompter::composeRichDoc() {
-    Actor* readsProducer = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_SEQ_PORT_ID()))->getProducer(BasePorts::IN_SEQ_PORT_ID());
-    Actor* indexProducer = qobject_cast<IntegralBusPort*>(target->getPort(INDEX_PORT_ID))->getProducer(INDEX_PORT_ID);
+    QString res = ""; 
 
-    QString readsName = readsProducer ? tr(" from <u>%1</u>").arg(readsProducer->getLabel()) : "";
-    QString indexName = indexProducer ? tr(" from <u>%1</u>").arg(indexProducer->getLabel()) : "";
+    Actor* readsProducer = qobject_cast<IntegralBusPort*>(target->getPort(IN_PORT_DESCR))->getProducer(READS_URL_SLOT_ID);
 
-    QString doc = tr("Align short reads %1 to the reference genome %2 and send it to output.")
-        .arg(readsName).arg(indexName);
+    QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
+    QString readsUrl = readsProducer ? readsProducer->getLabel() : unsetStr;
+    QString genome = getHyperlink(REFERENCE_GENOME, getURL(REFERENCE_GENOME));
 
-    return doc;
+    res.append(tr("Aligns reads from <u>%1</u> ").arg(readsUrl));
+    res.append(tr(" to reference genome <u>%1</u>.").arg(genome));
+
+    return res;
 }
 
+
 /************************************************************************/
-/* Genome aligner index build                                           */
+/* Factory */
 /************************************************************************/
-void GenomeAlignerBuildWorkerFactory::init() {
-    QList<PortDescriptor*> p; QList<Attribute*> a;
-    Descriptor oud(INDEX_OUT_PORT_ID, QString("Genome aligner index"), QString("Result genome aligner index of reference sequence."));
+bool GenomeAlignerWorkerFactory::openclEnabled(false);
 
-    QMap<Descriptor, DataTypePtr> outM;
-    outM[INDEX_SLOT] = GenomeAlignerPlugin::GENOME_ALIGNER_INDEX_TYPE();
-    p << new PortDescriptor(oud, DataTypePtr(new MapDataType("gen.al.build.index.out", outM)), false /*input*/, true /*multi*/);
+class GenomeAlignerInputSlotsValidator : public PortValidator {
+public:
 
-    Descriptor refseq(REFSEQ_URL_ATTR, GenomeAlignerBuildWorker::tr("Reference"), 
-        GenomeAlignerBuildWorker::tr("Reference sequence url. The short reads will be aligned to this reference genome."));
-    Descriptor desc(ACTOR_ID, GenomeAlignerBuildWorker::tr("Genome aligner index builder"), 
-        GenomeAlignerBuildWorker::tr("GenomeAlignerBuild builds an index from a set of DNA sequences. GenomeAlignerBuild outputs a set of 3 files with suffixes .idx, .ref, .sarr. These files together constitute the index: they are all that is needed to align reads to that reference."));
-    Descriptor index(INDEX_URL_ATTR, GenomeAlignerBuildWorker::tr("Index"), 
-        GenomeAlignerBuildWorker::tr("Output index url."));
-    Descriptor refSize(REF_SIZE_ATTR, GenomeAlignerBuildWorker::tr("Reference fragmentation"), 
-        GenomeAlignerBuildWorker::tr("Reference fragmentation size"));
+    bool validate(const IntegralBusPort *port, ProblemList &problemList) const {
+        QVariant busMap = port->getParameter(Workflow::IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributePureValue();
+        bool data = isBinded(busMap.value<QStrStrMap>(), READS_URL_SLOT_ID);
+        if (!data){
+            QString dataName = slotName(port, READS_URL_SLOT_ID);
+            problemList.append(Problem(IntegralBusPort::tr("The slot must be not empty: '%1'").arg(dataName)));
+            return false;
+        }
 
-    a << new Attribute(refseq, BaseTypes::STRING_TYPE(), true /*required*/, QString());
-    a << new Attribute(index, BaseTypes::STRING_TYPE(), true /*required*/, QString());
-    a << new Attribute(refSize, BaseTypes::NUM_TYPE(), true /*required*/, 10);
+        QString slot1Val = busMap.value<QStrStrMap>().value(READS_URL_SLOT_ID);
+        QString slot2Val = busMap.value<QStrStrMap>().value(READS_PAIRED_URL_SLOT_ID);
+        U2OpStatusImpl os;
+        const QList<IntegralBusSlot>& slots1 = IntegralBusSlot::listFromString(slot1Val, os);
+        const QList<IntegralBusSlot>& slots2 = IntegralBusSlot::listFromString(slot2Val, os);
 
-    ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
+        bool hasCommonElements = false;
+
+        foreach(const IntegralBusSlot& ibsl1, slots1){
+            if (hasCommonElements){
+                break;
+            }
+            foreach(const IntegralBusSlot& ibsl2, slots2){
+                if (ibsl1 == ibsl2){
+                    hasCommonElements = true;
+                    break;
+                }
+            }
+        }
+
+        if (hasCommonElements){
+            problemList.append(Problem(GenomeAlignerWorker::tr("Bowtie2 cannot recognize read pairs from the same file. Please, perform demultiplexing first.")));
+            return false;
+        }
+
+        return true;
+    }
+};
+
+void GenomeAlignerWorkerFactory::init() {
+    QList<PortDescriptor*> p;
+    //in port
+    QMap<Descriptor, DataTypePtr> inTypeMap;
+    Descriptor readsDesc(READS_URL_SLOT_ID,
+        GenomeAlignerWorker::tr("URL of a file with reads"),
+        GenomeAlignerWorker::tr("Input reads to be aligned."));
+    Descriptor readsPairedDesc(READS_PAIRED_URL_SLOT_ID,
+        GenomeAlignerWorker::tr("URL of a file with mate reads"),
+        GenomeAlignerWorker::tr("Input mate reads to be aligned."));
+
+    inTypeMap[readsDesc] = BaseTypes::STRING_TYPE();
+    inTypeMap[readsPairedDesc] = BaseTypes::STRING_TYPE();
+
+    Descriptor inPortDesc(IN_PORT_DESCR,
+        GenomeAlignerWorker::tr("Genome aligner data"),
+        GenomeAlignerWorker::tr("Input reads to be aligned with Bowtie2."));
+
+    DataTypePtr inTypeSet(new MapDataType(IN_TYPE_ID, inTypeMap));
+    p << new PortDescriptor(inPortDesc, inTypeSet, true);
+    //out port
+    QMap<Descriptor, DataTypePtr> outTypeMap;
+    Descriptor assemblyOutDesc(ASSEBLY_OUT_SLOT_ID,
+        GenomeAlignerWorker::tr("Assembly URL"),
+        GenomeAlignerWorker::tr("Output assembly URL."));
+
+    Descriptor outPortDesc(OUT_PORT_DESCR,
+        GenomeAlignerWorker::tr("Genome aligner output data"),
+        GenomeAlignerWorker::tr("Output assembly files."));
+
+    outTypeMap[assemblyOutDesc] = BaseTypes::STRING_TYPE();
+
+    DataTypePtr outTypeSet(new MapDataType(OUT_TYPE_ID, outTypeMap));
+    p << new PortDescriptor(outPortDesc, outTypeSet, false, true);
+
+    QList<Attribute*> attrs;
+    {
+
+        Descriptor outDir(OUTPUT_DIR,
+            GenomeAlignerWorker::tr("Output directory"),
+            GenomeAlignerWorker::tr("Directory to save UGENE genome aligner output files."));
+
+        Descriptor outName(OUTPUT_NAME,
+            GenomeAlignerWorker::tr("Output file name"),
+            GenomeAlignerWorker::tr("Base name of the output file. 'out.sam' by default"));
+
+        Descriptor refGenome(REFERENCE_GENOME,
+            GenomeAlignerWorker::tr("Reference genome"),
+            GenomeAlignerWorker::tr("Path to indexed reference genome."));
+        Descriptor absMismatches(ABS_OR_PERC_MISMATCHES_ATTR, 
+            GenomeAlignerWorker::tr("Is absolute mismatches values?"),
+            GenomeAlignerWorker::tr("<html><body><p><b>true</b> - absolute mismatches mode is used</p><p><b>false</b> - percentage mismatches mode is used</p>\
+                                    You can choose absolute or percentage mismatches values mode.</body></html>"));
+        Descriptor mismatches(MISMATCHES_ATTR,
+            GenomeAlignerWorker::tr("Absolute mismatches"), 
+            GenomeAlignerWorker::tr("<html><body>Number of mismatches allowed while aligning reads.</body></html>"));
+        Descriptor ptMismatches(PERCENT_MISMATCHES_ATTR,
+            GenomeAlignerWorker::tr("Percentage mismatches"),
+            GenomeAlignerWorker::tr("<html><body>Percentage of mismatches allowed while aligning reads.</body></html>"));
+        Descriptor reverse(REVERSE_ATTR, 
+            GenomeAlignerWorker::tr("Align reverse complement reads"), 
+            GenomeAlignerWorker::tr("<html><body>Set this option to align both direct and reverse complement reads.</body></html>"));
+        Descriptor best(BEST_ATTR,
+            GenomeAlignerWorker::tr("Use \"best\"-mode"), 
+            GenomeAlignerWorker::tr("<html><body>Report only the best alignment for each read (in terms of mismatches).</body></html>"));
+        Descriptor qual(QUAL_ATTR,
+            GenomeAlignerWorker::tr("Omit reads with qualities lower than"), 
+            GenomeAlignerWorker::tr("<html><body>Omit reads with qualities lower than the specified value. Reads that have no qualities are not omited.\
+                                    <p>Set <b>\"0\"</b> to switch off this option.</p></body></html>"));
+
+#ifdef OPENCL_SUPPORT
+        openclEnabled = !AppContext::getOpenCLGpuRegistry()->getEnabledGpus().empty();
+#endif
+        if(openclEnabled) {
+            Descriptor gpu(GPU_ATTR, GenomeAlignerWorker::tr("Use GPU-optimization"), 
+                GenomeAlignerWorker::tr("<html><body>Use GPU-calculatings while aligning reads. This option requires OpenCL-enable GPU-device.</body></html>"));
+
+            attrs << new Attribute(gpu, BaseTypes::BOOL_TYPE(), false/*required*/, false);
+        }
+
+        attrs << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, QVariant(""));
+        attrs << new Attribute(outName, BaseTypes::STRING_TYPE(), true, QVariant(BASE_GENOME_ALIGNER_OUTFILE));
+        attrs << new Attribute(refGenome, BaseTypes::STRING_TYPE(), true, QVariant(""));
+        attrs << new Attribute(absMismatches, BaseTypes::BOOL_TYPE(), true/*required*/, true);
+        Attribute* mismatchesAttr = new Attribute(mismatches, BaseTypes::NUM_TYPE(), false, 0);
+        mismatchesAttr->addRelation(new VisibilityRelation(ABS_OR_PERC_MISMATCHES_ATTR, "True"));
+        attrs << mismatchesAttr;
+        Attribute* ptMismatchesAttr = new Attribute(ptMismatches, BaseTypes::NUM_TYPE(), false, 0);
+        ptMismatchesAttr->addRelation(new VisibilityRelation(ABS_OR_PERC_MISMATCHES_ATTR, "False"));
+        attrs << ptMismatchesAttr;
+        attrs << new Attribute(reverse, BaseTypes::BOOL_TYPE(), false/*required*/, false);
+        attrs << new Attribute(best, BaseTypes::BOOL_TYPE(), false/*required*/, true);
+        attrs << new Attribute(qual, BaseTypes::NUM_TYPE(), false/*required*/, 0);
+    }
+
+    Descriptor desc(ACTOR_ID, GenomeAlignerWorker::tr("UGENE Genome Aligner"), 
+        GenomeAlignerWorker::tr("Unique UGENE algorithm for aligning short reads to reference genome"));
+    ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, attrs);
 
     QMap<QString, PropertyDelegate*> delegates;    
 
-    delegates[REFSEQ_URL_ATTR] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true);
-    delegates[INDEX_URL_ATTR] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), false);
+    {
+        delegates[OUTPUT_DIR] = new URLDelegate("", "", false, true);
+        delegates[REFERENCE_GENOME] = new URLDelegate("", "", false, false, false);
+
+        QVariantMap m;
+        m["minimum"] = 0;
+        m["maximum"] = 3;
+        delegates[MISMATCHES_ATTR] = new SpinBoxDelegate(m);
+
+        QVariantMap ptM;
+        ptM["minimum"] = 0;
+        ptM["maximum"] = 10;
+        delegates[PERCENT_MISMATCHES_ATTR] = new SpinBoxDelegate(ptM);
+
+        QVariantMap q;
+        q["minimum"] = 0;
+        q["maximum"] = 70;
+        delegates[QUAL_ATTR] = new SpinBoxDelegate(q);
+    }
 
     proto->setEditor(new DelegateEditor(delegates));
-    proto->setPrompter(new GenomeAlignerBuildPrompter());
+    proto->setPrompter(new GenomeAlignerPrompter());
+    proto->setPortValidator(IN_PORT_DESCR, new GenomeAlignerInputSlotsValidator());
     proto->setIconPath(":core/images/align.png");
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ASSEMBLY(), proto);
 
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
-    localDomain->registerEntry(new GenomeAlignerBuildWorkerFactory());
+    localDomain->registerEntry(new GenomeAlignerWorkerFactory());
 }
 
-void GenomeAlignerBuildWorker::init() {
-    output = ports.value(INDEX_OUT_PORT_ID);
-    refSeqUrl = actor->getParameter(REFSEQ_URL_ATTR)->getAttributeValue<QString>(context);
-    indexUrl = actor->getParameter(INDEX_URL_ATTR)->getAttributeValue<QString>(context);
-
-    settings.prebuiltIndex = false;
-}
-
-bool GenomeAlignerBuildWorker::isReady() {
-    return !isDone();
-}
-
-Task* GenomeAlignerBuildWorker::tick() {
-    if( refSeqUrl.isEmpty()) {
-        algoLog.trace(GenomeAlignerBuildWorker::tr("Reference sequence URL is empty")); 
-        return NULL;
-    }
-    if( indexUrl.isEmpty()) {
-        algoLog.trace(GenomeAlignerBuildWorker::tr("Result index URL is empty")); 
-        return NULL;
-    }
-
-
-    settings.refSeqUrl = refSeqUrl;
-    settings.indexFileName = indexUrl.getURLString();
-    Task* t = new GenomeAlignerTask(settings, true);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
-}
-
-void GenomeAlignerBuildWorker::sl_taskFinished() {
-    GenomeAlignerTask* t = qobject_cast<GenomeAlignerTask*>(sender());
-    if (t->getState() != Task::State_Finished) {
-        return;
-    }
-
-    done = true;
-
-    QVariant v = qVariantFromValue<QString>(t->getIndexPath());
-    output->put(Message(GenomeAlignerPlugin::GENOME_ALIGNER_INDEX_TYPE(), v));
-    output->setEnded();
-    algoLog.trace(tr("Genome aligner index building finished. Result name is %1").arg(t->getIndexPath()));
-}
-
-bool GenomeAlignerBuildWorker::isDone() {
-    return done;
-}
-
-QString GenomeAlignerBuildPrompter::composeRichDoc() {
-    QString refSeqUrl = getParameter(REFSEQ_URL_ATTR).toString();
-    QString refSeq = (refSeqUrl.isEmpty() ? "" : QString("<u>%1</u>").arg(GUrl(refSeqUrl).fileName()) );
-
-    QString doc = tr("Build genome aligner index from %1 and send it url to output.").arg(refSeq);
-
-    return doc;
-}
-
-/************************************************************************/
-/* Genome aligner index read                                            */
-/************************************************************************/
-void GenomeAlignerIndexReaderWorkerFactory::init() {
-    QList<PortDescriptor*> p; QList<Attribute*> a;
-    Descriptor oud(INDEX_OUT_PORT_ID, GenomeAlignerIndexReaderWorker::tr("Genome aligner index"), GenomeAlignerIndexReaderWorker::tr("Result of genome aligner index builder."));
-
-    QMap<Descriptor, DataTypePtr> outM;
-    outM[INDEX_SLOT] = GenomeAlignerPlugin::GENOME_ALIGNER_INDEX_TYPE();
-    p << new PortDescriptor(oud, DataTypePtr(new MapDataType("gen.al.index.reader.out", outM)), false /*input*/, true /*multi*/);
-
-    Descriptor desc(ACTOR_ID, GenomeAlignerIndexReaderWorker::tr("Genome aligner index reader"), 
-       GenomeAlignerIndexReaderWorker::tr("Read a set of several files with extensions .idx, .ref, .X.sarr. These files together constitute the index: they are all that is needed to align reads to that reference."));
-    Descriptor index(INDEX_URL_ATTR, GenomeAlignerIndexReaderWorker::tr("Index"), 
-        GenomeAlignerIndexReaderWorker::tr("Select an index file with the .idx extension"));
-
-    a << new Attribute(index, BaseTypes::STRING_TYPE(), true /*required*/, QString());
-
-    ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
-
-    QMap<QString, PropertyDelegate*> delegates;    
-
-    delegates[INDEX_URL_ATTR] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), false, false, false);
-
-    proto->setEditor(new DelegateEditor(delegates));
-    proto->setPrompter(new GenomeAlignerIndexReaderPrompter());
-    proto->setIconPath(":core/images/align.png");
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ASSEMBLY(), proto);
-
-    DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
-    localDomain->registerEntry(new GenomeAlignerIndexReaderWorkerFactory());
-}
-
-void GenomeAlignerIndexReaderWorker::init() {
-    output = ports.value(INDEX_OUT_PORT_ID);
-    indexUrl = actor->getParameter(INDEX_URL_ATTR)->getAttributeValue<QString>(context);
-}
-
-bool GenomeAlignerIndexReaderWorker::isReady() {
-    return !isDone();
-}
-
-Task *GenomeAlignerIndexReaderWorker::tick() {
-
-    if(indexUrl.isEmpty()) {
-        algoLog.trace(GenomeAlignerIndexReaderWorker::tr("Index URL is empty")); 
-        return NULL;
-    }
-    Task* t = new Task("Genome aligner index reader", TaskFlags_NR_FOSCOE);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
-}
-
-void GenomeAlignerIndexReaderWorker::sl_taskFinished() {
-    QVariant v = qVariantFromValue<QString>(indexUrl.getURLString());
-    output->put(Message(GenomeAlignerPlugin::GENOME_ALIGNER_INDEX_TYPE(), v));
-    output->setEnded();
-    done = true;
-    algoLog.trace(tr("Reading genome aligner index finished. Result name is %1").arg(indexUrl.getURLString()));
-}
-
-bool GenomeAlignerIndexReaderWorker::isDone() {
-    return done;
-}
-
-QString GenomeAlignerIndexReaderPrompter::composeRichDoc() {
-    QString indexUrl = getParameter(INDEX_URL_ATTR).toString();
-    QString index = (indexUrl.isEmpty() ? "" : QString("<u>%1</u>").arg(GUrl(indexUrl).fileName()));
-
-    QString doc = tr("Read genome aligner index from %1 and send it url to output.").arg(index);
-
-    return doc;
-}
 } //namespace LocalWorkflow
 } //namespace U2

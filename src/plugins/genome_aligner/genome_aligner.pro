@@ -14,6 +14,7 @@ HEADERS += src/BuildSArraySettingsWidget.h \
            src/GenomeAlignerSettingsWidget.h \
            src/GenomeAlignerTask.h \
            src/GenomeAlignerWorker.h \
+           src/GenomeAlignerIndexWorker.h \
            src/GenomeAlignerWriteTask.h \
            src/ReadShortReadsSubTask.h \
            src/WriteAlignedReadsSubTask.h \
@@ -35,6 +36,7 @@ SOURCES += src/BuildSArraySettingsWidget.cpp \
            src/GenomeAlignerSettingsWidget.cpp \
            src/GenomeAlignerTask.cpp \
            src/GenomeAlignerWorker.cpp \
+           src/GenomeAlignerIndexWorker.cpp \
            src/GenomeAlignerWriteTask.cpp \
            src/ReadShortReadsSubTask.cpp \
            src/WriteAlignedReadsSubTask.cpp \
