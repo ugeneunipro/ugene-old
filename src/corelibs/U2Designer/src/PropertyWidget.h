@@ -198,7 +198,7 @@ protected slots:
 /************************************************************************/
 class RunFileSystem;
 
-class URLWidget : public PropertyWidget {
+class U2DESIGNER_EXPORT URLWidget : public PropertyWidget {
     Q_OBJECT
 public:
     URLWidget(const QString &type, bool multi, bool isPath, bool saveFile, DelegateTags *tags, QWidget *parent = NULL);
