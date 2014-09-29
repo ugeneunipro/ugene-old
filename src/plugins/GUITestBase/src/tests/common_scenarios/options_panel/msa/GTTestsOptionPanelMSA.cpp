@@ -799,9 +799,9 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0005_1){
 //    Expected state: color schemes added to "Color" combobox
      GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
      QComboBox* colorScheme = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
-     GTComboBox::setIndexWithText(os, colorScheme, scheme1, true, GTGlobals::UseMouse);
-     GTComboBox::setIndexWithText(os, colorScheme, scheme2, true, GTGlobals::UseMouse);
-     GTComboBox::setIndexWithText(os, colorScheme, scheme3, true, GTGlobals::UseMouse);
+     GTComboBox::setIndexWithText(os, colorScheme, scheme1, true);
+     GTComboBox::setIndexWithText(os, colorScheme, scheme2, true);
+     GTComboBox::setIndexWithText(os, colorScheme, scheme3, true);
 }
 
 GUI_TEST_CLASS_DEFINITION(highlighting_test_0006){
@@ -1896,6 +1896,17 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0003){
 
 GUI_TEST_CLASS_DEFINITION(export_consensus_test_0004){
     Q_UNUSED(os);
+    //forbidden charecters
+}
+
+GUI_TEST_CLASS_DEFINITION(export_consensus_test_0005){
+    Q_UNUSED(os);
+    //empty path
+}
+
+GUI_TEST_CLASS_DEFINITION(export_consensus_test_0006){
+    Q_UNUSED(os);
+    //empty path
 }
 
 GUI_TEST_CLASS_DEFINITION(statistics_test_0001){

@@ -29,6 +29,8 @@
 #include <QtWidgets/QPushButton>
 #endif
 
+#include <U2Test/GUITest.h>
+
 #include "GTUtilsDialog.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
@@ -105,7 +107,7 @@ void GUIDialogWaiter::checkDialog() {
         try {
             runnable->run();
         } catch(U2OpStatus *opStatus) {
-            Q_UNUSED(opStatus);
+            GTGlobals::takeScreenShot(GUITest::screenshotDir + QDateTime::currentDateTime().toString() + ".jpg");
             QWidget* w = QApplication::activeModalWidget();
             while (w != NULL){
                 w->close();
