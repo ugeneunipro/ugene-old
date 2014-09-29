@@ -16,6 +16,7 @@ HEADERS += src/ActorCfgFilterProxyModel.h \
            src/SceneSerializer.h \
            src/SchemaAliasesConfigurationDialogImpl.h \
            src/StartupDialog.h \
+           src/TableViewTabKey.h \
            src/WorkflowDesignerPlugin.h \
            src/WorkflowDocument.h \
            src/WorkflowEditor.h \
@@ -51,6 +52,7 @@ HEADERS += src/ActorCfgFilterProxyModel.h \
            src/library/DocActors.h \
            src/library/DocWorkers.h \
            src/library/ExternalProcessWorker.h \
+           src/library/ExtractAssemblyCoverageWorker.h \
            src/library/ExtractConsensusWorker.h \
            src/library/ExtractMSAConsensusWorker.h \
            src/library/FilterAnnotationsByQualifierWorker.h \
@@ -91,8 +93,7 @@ HEADERS += src/ActorCfgFilterProxyModel.h \
            src/util/RequiredSlotsValidator.h \
            src/util/SaveSchemaImageUtils.h \
            src/util/WorkerNameValidator.h \
-           src/util/WriteSequenceValidator.h \
-    src/TableViewTabKey.h
+           src/util/WriteSequenceValidator.h
 FORMS += src/ui/ChooseItemDialog.ui \
            src/ui/CreateScriptBlockDialog.ui \
            src/ui/DashboardsManagerDialog.ui \
@@ -121,6 +122,7 @@ SOURCES += src/ActorCfgFilterProxyModel.cpp \
            src/SceneSerializer.cpp \
            src/SchemaAliasesConfigurationDialogImpl.cpp \
            src/StartupDialog.cpp \
+           src/TableViewTabKey.cpp \
            src/WorkflowDesignerPlugin.cpp \
            src/WorkflowDocument.cpp \
            src/WorkflowEditor.cpp \
@@ -156,6 +158,7 @@ SOURCES += src/ActorCfgFilterProxyModel.cpp \
            src/library/DocActors.cpp \
            src/library/DocWorkers.cpp \
            src/library/ExternalProcessWorker.cpp \
+           src/library/ExtractAssemblyCoverageWorker.cpp \
            src/library/ExtractConsensusWorker.cpp \
            src/library/ExtractMSAConsensusWorker.cpp \
            src/library/FASTQWorkersLibrary.cpp \
@@ -196,7 +199,6 @@ SOURCES += src/ActorCfgFilterProxyModel.cpp \
            src/util/RequiredSlotsValidator.cpp \
            src/util/SaveSchemaImageUtils.cpp \
            src/util/WorkerNameValidator.cpp \
-           src/util/WriteSequenceValidator.cpp \
-    src/TableViewTabKey.cpp
+           src/util/WriteSequenceValidator.cpp
 RESOURCES += workflow_designer.qrc
 TRANSLATIONS += transl/english.ts transl/russian.ts

@@ -381,7 +381,6 @@ void SendSelectionDialog::sl_OK() {
         db = "blastp";
         addParametr(requestParameters,ReqParams::program, db);
 
-        double eValue = evalueSpinBox->value();
         addParametr(requestParameters,ReqParams::expect, evalueSpinBox->value());
 
         addParametr(requestParameters,ReqParams::hits,quantitySpinBox->value());

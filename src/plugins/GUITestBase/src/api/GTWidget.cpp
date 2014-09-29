@@ -78,6 +78,7 @@ void GTWidget::setFocus(U2OpStatus &os, QWidget *w) {
 
 #define GT_METHOD_NAME "findWidget"
 QWidget* GTWidget::findWidget(U2OpStatus &os, const QString &widgetName, QWidget *parentWidget, const GTGlobals::FindOptions& options) {
+    Q_UNUSED(os);
 
     if (parentWidget == NULL) {
         parentWidget = AppContext::getMainWindow()->getQMainWindow();

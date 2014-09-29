@@ -24,6 +24,7 @@ HEADERS += src/Init.h \
            src/ov_assembly/AssemblyRuler.h \
            src/ov_assembly/AssemblyVariantHint.h \
            src/ov_assembly/AssemblyVariantRow.h \
+           src/ov_assembly/CalculateCoveragePerBaseTask.h \
            src/ov_assembly/CoverageInfo.h \
            src/ov_assembly/CoveredRegionsManager.h \
            src/ov_assembly/ExportReadsDialog.h \
@@ -31,6 +32,8 @@ HEADERS += src/Init.h \
            src/ov_assembly/ExportConsensusTask.h \
            src/ov_assembly/ExportConsensusVariationsDialog.h \
            src/ov_assembly/ExportConsensusVariationsTask.h \
+           src/ov_assembly/ExportCoverageDialog.h \
+           src/ov_assembly/ExportCoverageTask.h \
            src/ov_assembly/ZoomableAssemblyOverview.h \
            src/ov_msa/AlignmentLogo.h \
            src/ov_msa/CreateSubalignmentDialogController.h \
@@ -171,6 +174,7 @@ HEADERS += src/Init.h \
            src/ov_msa/ExportConsensus/MSAExportConsensusTabFactory.h \
            src/ov_msa/ExportConsensus/MSAExportConsensusTab.h
 FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
+         src/ov_assembly/ui/ExportCoverageDialog.ui \
          src/ov_assembly/ui/ExportReadsDialog.ui \
          src/ov_msa/ui/CreateSubalignmentDialog.ui \
          src/ov_msa/ui/DeleteGapsDialog.ui \
@@ -231,12 +235,15 @@ SOURCES += src/Init.cpp \
            src/ov_assembly/AssemblySettingsWidget.cpp \
            src/ov_assembly/AssemblyVariantHint.cpp \
            src/ov_assembly/AssemblyVariantRow.cpp \
+           src/ov_assembly/CalculateCoveragePerBaseTask.cpp \
            src/ov_assembly/CoverageInfo.cpp \
            src/ov_assembly/CoveredRegionsManager.cpp \
            src/ov_assembly/ExportConsensusDialog.cpp \
            src/ov_assembly/ExportConsensusTask.cpp \
            src/ov_assembly/ExportConsensusVariationsDialog.cpp \
            src/ov_assembly/ExportConsensusVariationsTask.cpp \
+           src/ov_assembly/ExportCoverageDialog.cpp \
+           src/ov_assembly/ExportCoverageTask.cpp \
            src/ov_assembly/ExportReadsDialog.cpp \
            src/ov_assembly/ZoomableAssemblyOverview.cpp \
            src/ov_msa/AlignmentLogo.cpp \

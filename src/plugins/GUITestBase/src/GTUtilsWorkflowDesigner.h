@@ -32,6 +32,8 @@
 #include <QtWidgets/QGraphicsItem>
 #endif
 
+class QTableView;
+
 namespace U2 {
 class WorkflowProcessItem;
 class WorkflowPortItem;
@@ -103,6 +105,9 @@ public:
     //gets oneparameter worker parameter
     static QString getParameter(U2OpStatus& os, QString parameter);
     static bool isParameterEnabled(U2OpStatus& os, QString parameter);
+    static bool isParameterRequired(U2OpStatus &os, const QString &parameter);
+    static void clickParameter(U2OpStatus &os, const QString &parameter);
+    static QTableView *getParametersTable(U2OpStatus &os);
 
     static void setParameterScripting(U2OpStatus& os, QString parameter, QString scriptMode);
 

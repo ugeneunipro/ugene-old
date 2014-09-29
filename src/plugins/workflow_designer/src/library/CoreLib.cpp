@@ -21,79 +21,78 @@
 
 #include <QtXml/qdom.h>
 
-#include "CoreLib.h"
-#include "BaseDocWorker.h"
-#include "DocWorkers.h"
+#include <U2Core/AppContext.h>
+#include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/Log.h>
+#include <U2Core/Settings.h>
+#include <U2Core/global.h>
 
-#include "DocActors.h"
-#include "GenericReadActor.h"
-#include "FindWorker.h"
-#include "SequenceSplitWorker.h"
-#include "ScriptWorker.h"
-#include "Text2SequenceWorker.h"
-#include "ImportAnnotationsWorker.h"
-#include "SequencesToMSAWorker.h"
-#include "FilterAnnotationsWorker.h"
-#include "FilterAnnotationsByQualifierWorker.h"
+#include <U2Designer/DelegateEditors.h>
+
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
+
+#include <U2Lang/ActorPrototypeRegistry.h>
+#include <U2Lang/BaseActorCategories.h>
+#include <U2Lang/BaseAttributes.h>
+#include <U2Lang/BasePorts.h>
+#include <U2Lang/BaseSlots.h>
+#include <U2Lang/BaseTypes.h>
+#include <U2Lang/CoreLibConstants.h>
+#include <U2Lang/HRSchemaSerializer.h>
+#include <U2Lang/IncludedProtoFactory.h>
+#include <U2Lang/IntegralBusModel.h>
+#include <U2Lang/LocalDomain.h>
+#include <U2Lang/ScriptWorkerSerializer.h>
+#include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowManager.h>
+#include <U2Lang/WorkflowSettings.h>
+
+#include "BaseDocWorker.h"
 #include "CDSearchWorker.h"
-#include "StatisticWorkers.h"
-#include "ReverseComplementWorker.h"
-#include "MSA2SequenceWorker.h"
+#include "CoreLib.h"
+#include "DocActors.h"
+#include "DocWorkers.h"
 #include "ExternalProcessWorker.h"
+#include "FilterAnnotationsByQualifierWorker.h"
+#include "FilterAnnotationsWorker.h"
+#include "FindWorker.h"
+#include "GenericReadActor.h"
+#include "ImportAnnotationsWorker.h"
+#include "MSA2SequenceWorker.h"
+#include "ReverseComplementWorker.h"
+#include "ScriptWorker.h"
+#include "SequenceSplitWorker.h"
+#include "SequencesToMSAWorker.h"
+#include "StatisticWorkers.h"
+#include "Text2SequenceWorker.h"
 #include "library/AminoTranslationWorker.h"
 #include "library/AssemblyToSequenceWorker.h"
 #include "library/ConvertFilesFormatWorker.h"
+#include "library/DASAnnotationWorker.h"
+#include "library/DASFetchWorker.h"
+#include "library/ExtractAssemblyCoverageWorker.h"
 #include "library/ExtractConsensusWorker.h"
 #include "library/ExtractMSAConsensusWorker.h"
+#include "library/FASTQWorkersLibrary.h"
+#include "library/FilterBamWorker.h"
 #include "library/GetFileListWorker.h"
 #include "library/GroupWorker.h"
-#include "library/PassFilterWorker.h"
 #include "library/MarkSequenceWorker.h"
+#include "library/MergeBamWorker.h"
 #include "library/MultiplexerWorker.h"
+#include "library/PassFilterWorker.h"
+#include "library/ReadAnnotationsWorker.h"
 #include "library/ReadAssemblyWorker.h"
 #include "library/ReadVariationWorker.h"
-#include "library/WriteAssemblyWorkers.h"
-#include "library/WriteVariationWorker.h"
-#include "library/ReadAnnotationsWorker.h"
-#include "library/DASAnnotationWorker.h"
-#include "library/MergeBamWorker.h"
-#include "library/FilterBamWorker.h"
+#include "library/RemoteDBFetcherWorker.h"
 #include "library/RmdupBamWorker.h"
 #include "library/SortBamWorker.h"
-#include "library/FASTQWorkersLibrary.h"
+#include "library/WriteAssemblyWorkers.h"
+#include "library/WriteVariationWorker.h"
 #include "util/WriteSequenceValidator.h"
-
-#include "RemoteDBFetcherWorker.h"
-#include "DASFetchWorker.h"
-
-#include <U2Core/BaseDocumentFormats.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
-#include <U2Core/Log.h>
-#include <U2Core/GObjectTypes.h>
-#include <U2Lang/IncludedProtoFactory.h>
-
-#include <U2Lang/IntegralBusModel.h>
-#include <U2Lang/WorkflowManager.h>
-#include <U2Lang/ActorPrototypeRegistry.h>
-#include <U2Lang/WorkflowEnv.h>
-
-#include <U2Lang/WorkflowSettings.h>
-#include <U2Lang/BaseTypes.h>
-#include <U2Lang/LocalDomain.h>
-#include <U2Lang/BaseSlots.h>
-#include <U2Lang/BasePorts.h>
-#include <U2Lang/BaseAttributes.h>
-#include <U2Lang/BaseActorCategories.h>
-#include <U2Designer/DelegateEditors.h>
-#include <U2Lang/CoreLibConstants.h>
-#include <U2Lang/ScriptWorkerSerializer.h>
-
-#include <U2Core/global.h>
-#include <U2Gui/DialogUtils.h>
-#include <U2Gui/GUIUtils.h>
-#include <U2Lang/HRSchemaSerializer.h>
 
 
 /* TRANSLATOR U2::Workflow::CoreLib */
@@ -286,44 +285,45 @@ void CoreLib::init() {
             r->registerProto(BaseActorCategories::CATEGORY_DATASINK(), proto);
         }
     }
-    DataWorkerFactory::init();
-    FindWorkerFactory::init();
-    RemoteDBFetcherFactory::init();
-    DASFetcherFactory::init();
-    SequenceSplitWorkerFactory::init();
-    Text2SequenceWorkerFactory::init();
     Alignment2SequenceWorkerFactory::init();
-    ImportAnnotationsWorkerFactory::init();
-    FilterAnnotationsWorkerFactory::init();
-    FilterAnnotationsByQualifierWorkerFactory::init();
-    SequencesToMSAWorkerFactory::init();
-    CDSearchWorkerFactory::init();
-    DNAStatWorkerFactory::init();
-    RCWorkerFactory::init();
-    PassFilterWorkerFactory::init();
-    MarkSequenceWorkerFactory::init();
-    MultiplexerWorkerFactory::init();
-    GetFileListWorkerFactory::init();
-    FetchSequenceByIdFromAnnotationFactory::init();
-    GroupWorkerFactory::init();
     AminoTranslationWorkerFactory::init();
-    ReadVariationWorkerFactory::init();
-    WriteVariationWorkerFactory::init();
-    ReadAssemblyWorkerFactory::init();
     AssemblyToSequencesWorkerFactory::init();
-    WriteAssemblyWorkerFactory::init();
-    ReadAnnotationsWorkerFactory::init();
+    CASAVAFilterWorkerFactory::init();
+    CDSearchWorkerFactory::init();
     ConvertFilesFormatWorkerFactory::init();
-    MergeBamWorkerFactory::init();
-    FilterBamWorkerFactory::init();
-    RmdupBamWorkerFactory::init();
-    SortBamWorkerFactory::init();
     DASAnnotationWorkerFactory::init();
+    DASFetcherFactory::init();
+    DNAStatWorkerFactory::init();
+    DataWorkerFactory::init();
     ExtractConsensusWorkerFactory::init();
     ExtractMSAConsensusWorkerFactory::init();
-    CASAVAFilterWorkerFactory::init();
-    QualityTrimWorkerFactory::init();
+    ExtractAssemblyCoverageWorkerFactory::init();
+    FetchSequenceByIdFromAnnotationFactory::init();
+    FilterAnnotationsByQualifierWorkerFactory::init();
+    FilterAnnotationsWorkerFactory::init();
+    FilterBamWorkerFactory::init();
+    FindWorkerFactory::init();
+    GetFileListWorkerFactory::init();
+    GroupWorkerFactory::init();
+    ImportAnnotationsWorkerFactory::init();
+    MarkSequenceWorkerFactory::init();
+    MergeBamWorkerFactory::init();
     MergeFastqWorkerFactory::init();
+    MultiplexerWorkerFactory::init();
+    PassFilterWorkerFactory::init();
+    QualityTrimWorkerFactory::init();
+    RCWorkerFactory::init();
+    ReadAnnotationsWorkerFactory::init();
+    ReadAssemblyWorkerFactory::init();
+    ReadVariationWorkerFactory::init();
+    RemoteDBFetcherFactory::init();
+    RmdupBamWorkerFactory::init();
+    SequenceSplitWorkerFactory::init();
+    SequencesToMSAWorkerFactory::init();
+    SortBamWorkerFactory::init();
+    Text2SequenceWorkerFactory::init();
+    WriteAssemblyWorkerFactory::init();
+    WriteVariationWorkerFactory::init();
 
     initUsersWorkers();
     initExternalToolsWorkers();

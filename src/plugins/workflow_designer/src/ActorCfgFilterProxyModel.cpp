@@ -41,7 +41,7 @@ bool ActorCfgFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex
     return srcModel->isVisible(attr);
 }
 
-bool ActorCfgFilterProxyModel::filterAcceptsColumn(int sourceColumn, const QModelIndex &sourceParent) const {
+bool ActorCfgFilterProxyModel::filterAcceptsColumn(int sourceColumn, const QModelIndex & /*sourceParent*/) const {
     ActorCfgModel *srcModel = dynamic_cast<ActorCfgModel *>(sourceModel());
     SAFE_POINT(NULL != srcModel, "Invalid actor configuration model", true);
 

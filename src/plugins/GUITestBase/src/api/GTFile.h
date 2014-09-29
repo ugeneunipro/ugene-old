@@ -72,6 +72,9 @@ public:
     // checks if file exists
     static bool check(U2OpStatus &os, const QString&);
 
+    // creates a new empty file, rewrite the file if it already exists
+    static void create(U2OpStatus &os, const QString &filePath);
+
     static const QString backupPostfix;
 };
 

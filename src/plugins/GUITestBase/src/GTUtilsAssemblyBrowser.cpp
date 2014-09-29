@@ -32,11 +32,13 @@
 #include <U2View/AssemblyModel.h>
 
 #include "GTUtilsAssemblyBrowser.h"
+#include "GTUtilsDialog.h"
 #include "GTUtilsOptionsPanel.h"
 #include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTToolbar.h"
 #include "api/GTWidget.h"
+#include "runnables/qt/PopupChooser.h"
 
 namespace U2 {
 
@@ -174,6 +176,15 @@ void GTUtilsAssemblyBrowser::goToPosition(U2OpStatus &os, qint64 position) {
     GTWidget::click(os, positionLineEdit);
     GTKeyboardDriver::keySequence(os, QString::number(position));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "callExportCoverageDialog"
+void GTUtilsAssemblyBrowser::callExportCoverageDialog(U2OpStatus &os) {
+    Q_UNUSED(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export coverage"));
+    GTWidget::click(os, GTWidget::findWidget(os, "Consensus area"), Qt::RightButton);
 }
 #undef GT_METHOD_NAME
 

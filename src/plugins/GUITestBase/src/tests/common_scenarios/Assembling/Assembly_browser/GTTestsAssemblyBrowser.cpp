@@ -18,30 +18,43 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
+
+#include <QtCore/QString>
+
+#include <U2Core/GUrlUtils.h>
+
+#include <U2Designer/PropertyWidget.h>
+
 #include "GTTestsAssemblyBrowser.h"
-#include "api/GTMouseDriver.h"
+#include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsApp.h"
+#include "GTUtilsAssemblyBrowser.h"
+#include "GTUtilsDocument.h"
+#include "GTUtilsMdi.h"
+#include "GTUtilsProjectTreeView.h"
+#include "GTUtilsSequenceView.h"
+#include "GTUtilsTaskTreeView.h"
+#include "GTUtilsWorkflowDesigner.h"
+#include "api/GTFile.h"
+#include "api/GTFileDialog.h"
+#include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
-#include "api/GTWidget.h"
-#include "api/GTFileDialog.h"
 #include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTSpinBox.h"
 #include "api/GTTreeWidget.h"
-#include "api/GTGlobals.h"
-#include "GTUtilsApp.h"
-#include "GTUtilsDocument.h"
-#include "GTUtilsProjectTreeView.h"
-#include "GTUtilsAnnotationsTreeView.h"
-#include "GTUtilsSequenceView.h"
-#include "GTUtilsMdi.h"
-#include "runnables/qt/PopupChooser.h"
+#include "api/GTWidget.h"
 #include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditGroupAnnotationsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_assembly/ExportCoverageDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
-#include <QString>
+
 namespace U2 {
 
 namespace GUITest_Assembly_browser {
@@ -106,6 +119,257 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 
 void test_0004::sl_fail() {
     _os->setError("Too long");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010) {
+//    Test default values and bounds of all GUI-elements.
+
+//    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+
+//    2. Call context menu on the consensus area, select "Export coverage" menu item.
+//    Expected state: an "Export the Assembly Coverage" dialog appears.
+    QList<ExportCoverageDialogFiller::Action> actions;
+
+//    3. Check default values.
+//    file path line edit - is "%ugene_data%/chrM_coverage.txt" ;
+//    compress check box - is not set;
+//    export coverage checkbox - is set;
+//    export bases count checkbox - is not set;
+//    threshold - value is 1, min value is 0, max value is INT_MAX.
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckCompress, false);
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckExportCoverage, true);
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckExportBasesCount, false);
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckThreshold, 1);
+    QVariantMap thresholdBounds;
+    thresholdBounds.insert(ExportCoverageDialogFiller::SPINBOX_MINIMUM, 0);
+    thresholdBounds.insert(ExportCoverageDialogFiller::SPINBOX_MAXIMUM, 65535);
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckThresholdBounds, thresholdBounds);
+
+//    4. Set any file path via select file dialog.
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SelectFile, sandBoxDir + "/common_assembly_browser/test_0010.txt");
+
+//    5. Cancel "Export the Assembly Coverage" dialog.
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickCancel, QVariant());
+    GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
+    GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
+
+//    6. Create a file it the same folder as you set in the point 4 with name "chrM_coverage.txt".
+    GTFile::create(os, sandBoxDir + "/common_assembly_browser/chrM_coverage.txt");
+
+//    7. Call "Export the Assembly Coverage" dialog  again.
+//    Expected state: the file path is "%path_from_point_4%/chrM_coverage_1.txt"
+    actions.clear();
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, QFileInfo(sandBoxDir + "common_assembly_browser/chrM_coverage_1.txt").absoluteFilePath());
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickCancel, QVariant());
+    GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
+    GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011) {
+//    Test compress checkbox GUI action.
+
+//    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+
+//    2. Call context menu on the consensus area, select "Export coverage" menu item.
+//    Expected state: an "Export the Assembly Coverage" dialog appears.
+    QList<ExportCoverageDialogFiller::Action> actions;
+
+//    3. Check the "compress" checkbox.
+//    Expected state: a ".gz" suffix was added to the file path.
+
+//    4. Uncheck the "compress" checkbox.
+//    Expected state: the ".gz" suffix was removed to the file path.
+
+//    5. Write the ".gz" suffix to the file path manually, then check the checkbox.
+//    Expected state: the file path is not changed.
+
+//    6. Remove the ".gz" suffix from the file path manually, then uncheck the checkbox.
+//    Expected state: the file path is not changed.
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SetCompress, true);
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt.gz");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SetCompress, false);
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt.gz");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SetCompress, true);
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt.gz");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SetCompress, false);
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickCancel, QVariant());
+    GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
+    GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0012) {
+//    Some negative tests for the output file path.
+
+//    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+
+//    2. Call context menu on the consensus area, select "Export coverage" menu item.
+//    Expected state: an "Export the Assembly Coverage" dialog appears.
+    QList<ExportCoverageDialogFiller::Action> actions;
+    GTFile::removeDir(sandBoxDir + "common_assembly_browser/test_0012/test_0012");
+
+//    3. Set the empty path and accept the dialog.
+//    Expected state: a messagebox appears, dialog is not closed.
+
+//    4. Set the path to a file in a read-only folder and accept the dialog.
+//    Expected state: a messagebox appears, dialog is not closed.
+
+//    5. Set the path to a file in a non-existant folder, which parent is read-only, and accept the dialog.
+//    Expected state: a messagebox appears, dialog is not closed.
+
+//    6. Set the path to an existant read-only file.
+//    Expected state: a messagebox appears, dialog is not closed.
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, "");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ExpectMessageBox, "");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
+
+    QDir().mkpath(sandBoxDir + "common_assembly_browser/test_0012");
+    PermissionsSetter permSetter;
+    const bool permWereSet = permSetter.setPermissions(sandBoxDir + "common_assembly_browser/test_0012", QFile::ReadUser, true);
+    CHECK_SET_ERR(permWereSet, "Can't set folder permissons");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, sandBoxDir + "common_assembly_browser/test_0012/test_0012.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ExpectMessageBox, "");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
+
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, sandBoxDir + "common_assembly_browser/test_0012/test_0012/test_0012.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ExpectMessageBox, "");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
+
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickCancel, QVariant());
+    GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
+    GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0013) {
+//    Some positive tests for the output file path.
+
+//    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+
+//    2. Call context menu on the consensus area, select "Export coverage" menu item.
+//    Expected state: an "Export the Assembly Coverage" dialog appears.
+    QList<ExportCoverageDialogFiller::Action> actions;
+
+//    3. Click the "Select file" button, select any non-existant file in the writable folder and accept the dialog.
+//    Expected state: dialog closes, file appears.
+    QDir().mkpath(sandBoxDir + "common_assembly_browser/test_0013");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SelectFile, sandBoxDir + "common_assembly_browser/test_0013/test_0013_1.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
+    GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
+    GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTFile::check(os, sandBoxDir + "common_assembly_browser/test_0013/test_0013_1.txt");
+
+//    4. Call the dialog again. Write the valid output file path manually. Path should be to a non-existant file in the writable folder. Accept the dialog.
+//    Expected state: dialog closes, file appears.
+    actions.clear();
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, sandBoxDir + "common_assembly_browser/test_0013/test_0013_2.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
+    GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
+    GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTFile::check(os, sandBoxDir + "common_assembly_browser/test_0013/test_0013_2.txt");
+
+//    5. Call the dialog again. Write the valid output file path manually. Path should be to a non-existant file in a non-existant folder with the writable parent folder. Accept the dialog.
+//    Expected state: dialog closes, file appears.
+    actions.clear();
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, sandBoxDir + "common_assembly_browser/test_0013/test_0013/test_0013_3.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
+    GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
+    GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTFile::check(os, sandBoxDir + "common_assembly_browser/test_0013/test_0013/test_0013_3.txt");
+
+//    6. Call the dialog again. Set the output file path to an existant writable file. Accept the dialog.
+//    Expected state: dialog closes, file is overwritten.
+    GTFile::copy(os, testDir + "_common_data/text/text.txt", sandBoxDir + "common_assembly_browser/test_0013/test_0013_4.txt");
+    const qint64 fileSizeBefore = GTFile::getSize(os, sandBoxDir + "common_assembly_browser/test_0013/test_0013_4.txt");
+    actions.clear();
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, sandBoxDir + "common_assembly_browser/test_0013/test_0013_4.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
+    GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
+    GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTFile::check(os, sandBoxDir + "common_assembly_browser/test_0013/test_0013/test_0013_4.txt");
+    const qint64 fileSizeAfter = GTFile::getSize(os, sandBoxDir + "common_assembly_browser/test_0013/test_0013_4.txt");
+    CHECK_SET_ERR(fileSizeAfter != fileSizeBefore, "File wasn't overwritten");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0014) {
+//    Test for the unselected export type
+
+//    1. Open "_common_data/ugenedb/chrM.sorted.bam.ugenedb".
+    GTFileDialog::openFile(os, testDir + "_common_data/ugenedb", "chrM.sorted.bam.ugenedb");
+
+//    2. Call context menu on the consensus area, select "Export coverage" menu item.
+//    Expected state: an "Export the Assembly Coverage" dialog appears.
+    QList<ExportCoverageDialogFiller::Action> actions;
+
+//    3. Uncheck all export types (both coverage and bases count). Accept the dialog.
+//    Expected state: a messagebox appears, dialog is not closed.
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SetExportCoverage, false);
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SetExportBasesCount, false);
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ExpectMessageBox, "");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
+
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickCancel, "");
+    GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
+    GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0015) {
+//    Test default state of the export coverage worker, compression support.
+
+//    1. Open Workflow Designer.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+//    2. Add an "Extract Coverage from Assembly" element to the scene.
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Extract Coverage from Assembly");
+
+//    3. Check that "Output file" and "Export" parameters are required.
+    GTUtilsWorkflowDesigner::click(os, "Extract Coverage from Assembly");
+    const bool isOutputFileRequired = GTUtilsWorkflowDesigner::isParameterRequired(os, "Output file");
+    const bool isExportTypeRequired = GTUtilsWorkflowDesigner::isParameterRequired(os, "Export");
+    const bool isThresholdRequired = GTUtilsWorkflowDesigner::isParameterRequired(os, "Threshold");
+    CHECK_SET_ERR(isOutputFileRequired, "The 'Output file' parameter is unexpectedly not required");
+    CHECK_SET_ERR(isExportTypeRequired, "The 'Export' parameter is unexpectedly not required");
+    CHECK_SET_ERR(!isThresholdRequired, "The 'Threshold' parameter is unexpectedly required");
+
+//    4. Check parameters default values.
+//    Expected state: values are:
+//    Output file - "assembly_coverage.txt";
+//    Export - "coverage";
+//    Threshold default value- "1";
+//    Threshold minimum value - "0";
+//    Threshold maximum value - "65535";
+    const QString outputFileValue = GTUtilsWorkflowDesigner::getParameter(os, "Output file");
+    const QString exportTypeValue = GTUtilsWorkflowDesigner::getParameter(os, "Export");
+    const QString thresholdValue = GTUtilsWorkflowDesigner::getParameter(os, "Threshold");
+    CHECK_SET_ERR("assembly_coverage.txt" == outputFileValue, QString("An unexpected default value of the 'Output file' parameter: expect '%1', got '%2'").arg("assembly_coverage.txt").arg(outputFileValue));
+    CHECK_SET_ERR("coverage" == exportTypeValue, QString("An unexpected default value of the 'Export' parameter: expect '%1', got '%2'").arg("coverage").arg(exportTypeValue));
+    CHECK_SET_ERR("1" == thresholdValue, QString("An unexpected default value of the 'Threshold' parameter: expect '%1', got '%2'").arg("1").arg(thresholdValue));
+
+    GTUtilsWorkflowDesigner::clickParameter(os, "Threshold");
+    QSpinBox *sbThreshold = qobject_cast<QSpinBox *>(GTUtilsWorkflowDesigner::getParametersTable(os)->findChild<QSpinBox*>());
+    GTSpinBox::checkLimits(os, sbThreshold, 0, 65535);
+
+//    5. Enter any value to the "Output file" parameter.
+//    Expected state: a popup completer appears, it contains extensions for the compressed format.
+    GTUtilsWorkflowDesigner::clickParameter(os, "Output file");
+    URLWidget *urlWidget = qobject_cast<URLWidget *>(GTUtilsWorkflowDesigner::getParametersTable(os)->findChild<URLWidget *>());
+    GTKeyboardDriver::keySequence(os, "aaa");
+    CHECK_SET_ERR(NULL != urlWidget, "Output file url widget was not found");
+    QTreeWidget *completer = urlWidget->findChild<QTreeWidget *>();
+    CHECK_SET_ERR(completer != NULL, "auto completer widget was not found");
+    bool itemFound = !completer->findItems("aaa.txt.gz", Qt::MatchExactly).isEmpty();
+    CHECK_SET_ERR(itemFound, "Completer item was not found");
 }
 
 } // namespace GUITest_Assembly_browser_

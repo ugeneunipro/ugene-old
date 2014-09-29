@@ -115,7 +115,7 @@ void MSAEditorTreeViewer::setSynchronizationMode(SynchronizationMode newSyncMode
     connect(msaUI->getEditorNameList(), SIGNAL(si_sequenceNameChanged(QString, QString)), treeViewerUI, SLOT(sl_sequenceNameChanged(QString, QString)));
 }
 
-void MSAEditorTreeViewer::sl_alignmentChanged(const MAlignment& aln, const MAlignmentModInfo& mod) {
+void MSAEditorTreeViewer::sl_alignmentChanged(const MAlignment& /*aln*/, const MAlignmentModInfo& mod) {
     if(mod.sequenceListChanged) {
         MSAEditorTreeViewerUI* treeViewerUI = dynamic_cast<MSAEditorTreeViewerUI*>(ui);
         CHECK(NULL != treeViewerUI, );

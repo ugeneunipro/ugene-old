@@ -170,7 +170,7 @@ public:
     QByteArray          name;
     
     /**  
-        Left-most position of the read 
+        Zero-based left-most position of the read
     */
     qint64              leftmostPos;
 

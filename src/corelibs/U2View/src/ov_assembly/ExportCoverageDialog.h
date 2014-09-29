@@ -6,7 +6,6 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
-k
  * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -20,39 +19,38 @@ k
  * MA 02110-1301, USA.
  */
 
-#ifndef U2_GUITEST_ASSEMBLY_BROWSER_H_
-#define U2_GUITEST_ASSEMBLY_BROWSER_H_
+#ifndef _U2_EXPORT_COVERAGE_DIALOG_H_
+#define _U2_EXPORT_COVERAGE_DIALOG_H_
 
-#include <U2Test/GUITestBase.h>
+#include <QtGui/QDialog>
+
+#include "ExportCoverageTask.h"
+#include "ui/ui_ExportCoverageDialog.h"
 
 namespace U2 {
 
-namespace GUITest_Assembly_browser {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_Assembly_browser_"
-
-GUI_TEST_CLASS_DECLARATION(test_0001)
-GUI_TEST_CLASS_DECLARATION(test_0002)
-class test_0004 : public GUITest {
+class ExportCoverageDialog : public QDialog, public Ui_ExportCoverageDialog {
     Q_OBJECT
 public:
-    test_0004 () : GUITest(TESTNAME(test_0004)){}
-protected slots:
-    void sl_fail();
-protected:
-    U2OpStatus *_os;
-    virtual void run(U2OpStatus &os);
+    ExportCoverageDialog(const QString &assemblyName, QWidget *parent = NULL);
+
+    ExportCoverageSettings getSettings() const;
+
+public slots:
+    void accept();
+    
+private slots:
+    void sl_browseFiles();
+    void sl_compressToggled(bool isChecked);
+    
+private:
+    void init(QString assemblyName);
+    void connectSignals();
+    bool checkPermissions() const;
+
+    static const QString DIR_HELPER_NAME;
 };
-GUI_TEST_CLASS_DECLARATION(test_0010)
-GUI_TEST_CLASS_DECLARATION(test_0011)
-GUI_TEST_CLASS_DECLARATION(test_0012)
-GUI_TEST_CLASS_DECLARATION(test_0013)
-GUI_TEST_CLASS_DECLARATION(test_0014)
-GUI_TEST_CLASS_DECLARATION(test_0015)
 
-#undef GUI_TEST_PREFIX
-} // namespace U2
+}   // namespace U2
 
-} //namespace
-
-#endif // GTTESTSMSAEDITOR_H
+#endif // _U2_EXPORT_COVERAGE_DIALOG_H_

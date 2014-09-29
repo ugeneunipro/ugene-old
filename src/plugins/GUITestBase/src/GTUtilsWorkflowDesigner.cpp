@@ -511,7 +511,6 @@ QStringList GTUtilsWorkflowDesigner::getAllParameters(U2OpStatus &os){
 
     QAbstractItemModel* model = table->model();
     int iMax = model->rowCount();
-    int row = -1;
     for(int i = 0; i<iMax; i++){
         QString s = model->data(model->index(i,0)).toString();
             result<<s;
@@ -543,28 +542,64 @@ QString GTUtilsWorkflowDesigner::getParameter(U2OpStatus &os, QString parameter)
 
 #define GT_METHOD_NAME "isParameterEnabled"
 bool GTUtilsWorkflowDesigner::isParameterEnabled(U2OpStatus &os, QString parameter){
-    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
-    GT_CHECK_RESULT(table,"tableView not found", false);
-
-    //FIND CELL
-    QAbstractItemModel* model = table->model();
-    int iMax = model->rowCount();
-    int row = -1;
-    for(int i = 0; i<iMax; i++){
-        QString s = model->data(model->index(i,0)).toString();
-        if (s.contains(parameter,Qt::CaseInsensitive))
-            row = i;
-    }
-    GT_CHECK_RESULT(row != -1, "parameter not found", false);
-    table->scrollTo(model->index(row,1));
-    GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,1,row));
-    GTMouseDriver::click(os);
-    GTGlobals::sleep(500);
-    QWidget* w = QApplication::widgetAt(GTMouseDriver::getMousePosition());
+    clickParameter(os, parameter);
+    QWidget *w = QApplication::widgetAt(GTMouseDriver::getMousePosition());
     QString s =  w->metaObject()->className();
 
     bool result = !(s == "QWidget");//if parameter is disabled QWidget is under cursor
     return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isParameterRequired"
+bool GTUtilsWorkflowDesigner::isParameterRequired(U2OpStatus &os, const QString &parameter) {
+    QTableView *table = qobject_cast<QTableView *>(GTWidget::findWidget(os, "table"));
+    GT_CHECK_RESULT(table, "tableView not found", false);
+
+    // find a cell
+    QAbstractItemModel *model = table->model();
+    int iMax = model->rowCount();
+    int row = -1;
+    for (int i = 0; i < iMax; i++) {
+        QString s = model->data(model->index(i, 0)).toString();
+        if (s.contains(parameter, Qt::CaseInsensitive)) {
+            row = i;
+        }
+    }
+    GT_CHECK_RESULT(row != -1, "parameter not found", false);
+    table->scrollTo(model->index(row, 0));
+
+    const QFont font = model->data(model->index(row, 0), Qt::FontRole).value<QFont>();
+    return font.bold();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clickParameter"
+void GTUtilsWorkflowDesigner::clickParameter(U2OpStatus &os, const QString &parameter) {
+    QTableView *table = qobject_cast<QTableView *>(GTWidget::findWidget(os, "table"));
+    GT_CHECK_RESULT(table, "tableView not found", );
+
+    //FIND CELL
+    QAbstractItemModel *model = table->model();
+    int iMax = model->rowCount();
+    int row = -1;
+    for (int i = 0; i < iMax; i++) {
+        QString s = model->data(model->index(i, 0)).toString();
+        if (s.contains(parameter, Qt::CaseInsensitive)) {
+            row = i;
+        }
+    }
+    GT_CHECK_RESULT(row != -1, "parameter not found", );
+    table->scrollTo(model->index(row, 1));
+    GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os, table, 1, row));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(500);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getParametersTable"
+QTableView *GTUtilsWorkflowDesigner::getParametersTable(U2OpStatus &os){
+    return qobject_cast<QTableView *>(GTWidget::findWidget(os, "table"));
 }
 #undef GT_METHOD_NAME
 

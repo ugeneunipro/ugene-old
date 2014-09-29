@@ -25,7 +25,8 @@ HEADERS += src/AnnotationTableObjectTest.h \
            src/SecStructPredictTests.h \
            src/SequenceWalkerTests.h \
            src/TaskTests.h \
-           src/TextObjectTests.h
+           src/TextObjectTests.h \
+           src/UtilTestActions.h
 SOURCES += src/AnnotationTableObjectTest.cpp \
            src/AsnParserTests.cpp \
            src/BinaryFindOpenCLTests.cpp \
@@ -50,4 +51,5 @@ SOURCES += src/AnnotationTableObjectTest.cpp \
            src/SecStructPredictTests.cpp \
            src/SequenceWalkerTests.cpp \
            src/TaskTests.cpp \
-           src/TextObjectTests.cpp
+           src/TextObjectTests.cpp \
+           src/UtilTestActions.cpp

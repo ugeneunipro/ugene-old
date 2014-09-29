@@ -33,8 +33,8 @@ public:
     enum Button {Open, Cancel, Save, Choose};
     enum ViewMode {List, Detail};
 
-    GTFileDialogUtils(U2OpStatus&, const QString&, const QString&, Button b = Open, GTGlobals::UseMethod = GTGlobals::UseMouse);
-    GTFileDialogUtils(U2OpStatus&, const QString& filePath, GTGlobals::UseMethod method = GTGlobals::UseMouse);
+    GTFileDialogUtils(U2OpStatus &os, const QString &folderPath, const QString &fileName, Button b = Open, GTGlobals::UseMethod = GTGlobals::UseMouse);
+    GTFileDialogUtils(U2OpStatus &os, const QString &filePath, GTGlobals::UseMethod method = GTGlobals::UseMouse);
     void openFileDialog();
     void run();
 

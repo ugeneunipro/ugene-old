@@ -387,6 +387,14 @@ bool GTFile::check(U2OpStatus &/*os*/, const QString& path) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "create"
+void GTFile::create(U2OpStatus &os, const QString &filePath) {
+    Q_UNUSED(os);
+    bool success = QFile(filePath).open(QIODevice::WriteOnly);
+    GT_CHECK(success, "Can't open file to write");
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 } //namespace

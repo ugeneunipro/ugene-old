@@ -1,0 +1,105 @@
+#@UGENE_WORKFLOW
+#This workflows allows one to extract a coverage and/or bases count from an assembly. It receives a number of assemblies and for each of them produces coverage as a tab delimited plain text file. The coverage is extracted considering a threshold value.
+
+
+
+workflow "Extract Coverage"{
+
+    read-assembly {
+        type:read-assembly;
+        name:"Read Assembly";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    extract-assembly-coverage {
+        type:extract-assembly-coverage;
+        name:"Extract Coverage from Assembly";
+    }
+
+    .actor-bindings {
+        read-assembly.out-assembly->extract-assembly-coverage.in-assembly
+    }
+
+    read-assembly.assembly->extract-assembly-coverage.in-assembly.assembly
+
+    .meta {
+        parameter-aliases {
+            read-assembly.url-in {
+                alias:in-assembly;
+                description:"An input assembly";
+            }
+            extract-assembly-coverage.export-type {
+                alias:export-type;
+                description:"The export type, possible values: 'coverage', 'bases count'. It is a single string, types are separated with comma.";
+            }
+            extract-assembly-coverage.threshold {
+                alias:threshold;
+                description:"A threshold value";
+            }
+            extract-assembly-coverage.url-out {
+                alias:url-out;
+                description:"An URL to the output file";
+            }
+        }
+        visual {
+            extract-assembly-coverage {
+                pos:"-435 -480";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-assembly.angle:180;
+            }
+            read-assembly {
+                pos:"-720 -480";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-assembly.angle:360;
+            }
+            read-assembly.out-assembly->extract-assembly-coverage.in-assembly {
+                text-pos:"-34.1406 -27";
+            }
+        }
+        wizard {
+            name:"Extract the assembly coverage and / or bases count";
+            page {
+                id:1;
+                next:2;
+                title:"Input assembly(-ies)";
+                parameters-area {
+                    read-assembly.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Extract parameters";
+                parameters-area {
+                    group {
+                        title:"Extract coverage parameters";
+                        label-size:120;
+                        extract-assembly-coverage.export-type {
+                        }
+                        extract-assembly-coverage.threshold {
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        label-size:120;
+                        title:"Output data";
+                        extract-assembly-coverage.url-out {
+                            label:"Result file";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

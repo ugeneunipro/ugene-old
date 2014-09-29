@@ -44,6 +44,8 @@ public:
     static void zoomToMax(U2OpStatus& os);
 
     static void goToPosition(U2OpStatus &os, qint64 position);
+
+    static void callExportCoverageDialog(U2OpStatus &os);
 };
 
 }   // namespace U2

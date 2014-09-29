@@ -54,6 +54,7 @@ QString GTClipboard::text(U2OpStatus &os) {
 
 #define GT_METHOD_NAME "setText"
 void GTClipboard::setText( U2OpStatus &os, QString text ){
+    Q_UNUSED(os);
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->clear();
     clipboard->setText(text);
