@@ -25,11 +25,11 @@
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
+#include "runnables/ugene/corelibs/U2Gui/EditConnectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
-#include "GTDatabaseConfig.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsWorkflowDesigner.h"
@@ -44,13 +44,18 @@ namespace {
 void createTestConnection(U2OpStatus &os) {
     GTLogTracer lt;
     QString conName = "ugene_gui_test";
-    GTDatabaseConfig::initTestConnectionInfo(conName);
     {
         QList<SharedConnectionsDialogFiller::Action> actions;
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::ADD);
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, conName);
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, conName);
         GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions,
             QFlags<SharedConnectionsDialogFiller::Behavior>(SharedConnectionsDialogFiller::UNSAFE)));
+    }
+    {
+        EditConnectionDialogFiller::Parameters params;
+        params.connectionName = conName;
+        GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, params, EditConnectionDialogFiller::FROM_SETTINGS));
     }
 
     CHECK_SET_ERR_RESULT(!lt.hasError(), "errors in log", );
