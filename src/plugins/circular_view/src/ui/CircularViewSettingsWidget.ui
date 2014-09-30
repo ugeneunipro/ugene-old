@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>213</width>
-    <height>349</height>
+    <height>346</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,6 +20,9 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="cvSettingsMainLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -345,23 +348,54 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="hintLabel">
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color: green;</string>
-     </property>
-     <property name="text">
-      <string>Info: No Circular View opened</string>
-     </property>
+    <widget class="QWidget" name="openCvWidget" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="hintLabel">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>There are no displayed Circular Views, so settings are hidden.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="openCvButton">
+        <property name="text">
+         <string>Open Circular View(s)</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../circular_view.qrc">
+          <normaloff>:/circular_view/images/circular.png</normaloff>:/circular_view/images/circular.png</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../circular_view.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -194,7 +194,7 @@ CircularViewSplitter* CircularViewContext::getView(GObjectView* view, bool creat
     if (create) {
         AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
         circularView = new CircularViewSplitter(av);
-        emit si_cvSplitterWasCreatedOrRemoved(circularView);
+        emit si_cvSplitterWasCreatedOrRemoved(circularView, viewSettings.value(av));
         resources.append(circularView);
         viewResources.insert(view, resources);
 
@@ -247,7 +247,7 @@ void CircularViewContext::removeCircularView(GObjectView* view) {
             resources.removeOne(circularView);
             viewResources.insert(view, resources);
             delete circularView;
-            emit si_cvSplitterWasCreatedOrRemoved(NULL);
+            emit si_cvSplitterWasCreatedOrRemoved(NULL, viewSettings.value(av));
         }
     }
 }
@@ -264,6 +264,32 @@ void CircularViewContext::reconnectExportAction(GObjectView *view) {
     }
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
     connect(exportAction, SIGNAL(triggered()), circularView, SLOT(sl_export()));
+}
+
+void CircularViewContext::toggleViews(AnnotatedDNAView *av) {
+    SAFE_POINT(av != NULL, "AnnotatedDNAView is NULL", );
+    QList<ADVSequenceWidget*> sWidgets = av->getSequenceWidgets();
+
+    bool openAll = true;
+    foreach( ADVSequenceWidget* sw, sWidgets) {
+        SAFE_POINT(sw != NULL, "ADVSequenceWidget is NULL", );
+        CircularViewAction* a = qobject_cast<CircularViewAction*>(sw->getADVSequenceWidgetAction(CIRCULAR_ACTION_NAME));
+        CHECK_OPERATION(a != NULL, continue);
+        //if there is at least one opened CV, close them all
+        if (a->isChecked()) {
+            openAll = false;
+            a->trigger();
+        }
+    }
+
+    if (openAll) {
+        foreach( ADVSequenceWidget* sw, sWidgets) {
+           SAFE_POINT(sw != NULL, "ADVSequenceWidget is NULL", );
+           CircularViewAction* a = qobject_cast<CircularViewAction*>(sw->getADVSequenceWidgetAction(CIRCULAR_ACTION_NAME));
+           CHECK_OPERATION(a != NULL, continue);
+           a->trigger();
+        }
+    }
 }
 
 void CircularViewContext::sl_showCircular() {
@@ -299,34 +325,13 @@ void CircularViewContext::sl_showCircular() {
 
 void CircularViewContext::sl_toggleViews()
 {
-
     ADVGlobalAction* globalToggleViewAction = qobject_cast<ADVGlobalAction*>(sender());
     assert(globalToggleViewAction != NULL);
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*> (globalToggleViewAction->getObjectView());
     if (av == NULL) {
         return;
     }
-
-    QList<ADVSequenceWidget*> sWidgets = av->getSequenceWidgets();
-
-    bool openAll = true;
-    foreach( ADVSequenceWidget* sw, sWidgets) {
-        CircularViewAction* a = qobject_cast<CircularViewAction*>(sw->getADVSequenceWidgetAction(CIRCULAR_ACTION_NAME));
-        CHECK_OPERATION(a != NULL, continue);
-        //if there is at least one opened CV, close them all
-        if (a->isChecked()) {
-            openAll = false;
-            a->trigger();
-        }
-    }
-
-    if (openAll) {
-        foreach( ADVSequenceWidget* sw, sWidgets) {
-           CircularViewAction* a = qobject_cast<CircularViewAction*>(sw->getADVSequenceWidgetAction(CIRCULAR_ACTION_NAME));
-           CHECK_OPERATION(a != NULL, continue);
-           a->trigger();
-        }
-    }
+    toggleViews(av);
 }
 
 void CircularViewContext::sl_setSequenceOrigin()
@@ -362,6 +367,12 @@ void CircularViewContext::sl_onDNAViewClosed(AnnotatedDNAView *v) {
     CircularViewSettings* settings = viewSettings.value(v);
     viewSettings.remove(v);
     delete settings;
+}
+
+void CircularViewContext::sl_toggleBySettings(CircularViewSettings* s) {
+    AnnotatedDNAView* av = viewSettings.key(s, NULL);
+    SAFE_POINT(av != NULL, "No AnnotatedDNAView corresponds to provided CircularViewSettings", );
+    toggleViews(av);
 }
 
 CircularViewAction::CircularViewAction() : ADVSequenceWidgetAction(CIRCULAR_ACTION_NAME, tr("Show circular view")), view(NULL), rmapWidget(NULL)

@@ -32,13 +32,15 @@ namespace U2 {
 
 CircularViewSettingsWidget::CircularViewSettingsWidget(CircularViewSettings* s, CircularViewSplitter* cv)
     : circularViewSplitter(cv),
-      settings(s)
+      settings(s),
+      settingsWidget(NULL)
 {
     SAFE_POINT(s != NULL, tr("Circular view settings is NULL"), );
     setupUi(this);
 
     initLayout();
-    hintLabel->setVisible(cv == NULL);
+    openCvWidget->setVisible(cv == NULL);
+    settingsWidget->setVisible(cv != NULL);
     connectSlots();
 }
 
@@ -72,9 +74,18 @@ void CircularViewSettingsWidget::sl_modifySettings() {
     }
 }
 
-void CircularViewSettingsWidget::sl_cvSplitterWasCreatedOrRemoved(CircularViewSplitter *splitter) {
+void CircularViewSettingsWidget::sl_cvSplitterWasCreatedOrRemoved(CircularViewSplitter *splitter, CircularViewSettings* settings) {
+    if (settings != this->settings) {
+        return;
+    }
     circularViewSplitter = splitter;
-    hintLabel->setVisible(splitter == NULL);
+    bool showSettings = splitter != NULL;
+    settingsWidget->setVisible(showSettings);
+    openCvWidget->setVisible(!showSettings);
+}
+
+void CircularViewSettingsWidget::sl_openCvButton() {
+    emit si_openCvButtonClicked(settings);
 }
 
 void CircularViewSettingsWidget::initLayout() {
@@ -85,17 +96,24 @@ void CircularViewSettingsWidget::initLayout() {
     rulerFontSizeSpinBox->setValue(settings->rulerFontSize);
     labelFontSizeSpinBox->setValue(settings->labelFontSize);
 
+    settingsWidget = new QWidget(this);
+    QVBoxLayout* settingsLayout = new QVBoxLayout(settingsWidget);
+    settingsLayout->setMargin(0);
+    settingsLayout->setSpacing(0);
+    settingsWidget->setLayout(settingsLayout);
+
     ShowHideSubgroupWidget* titleGroup = new ShowHideSubgroupWidget("CV_TITLE", tr("Title"), titleWidget, true);
-    cvSettingsMainLayout->addWidget(titleGroup);
+    settingsLayout->addWidget(titleGroup);
 
     ShowHideSubgroupWidget* rulerGroup = new ShowHideSubgroupWidget("CV_RULER", tr("Ruler"), rulerWidget, true);
-    cvSettingsMainLayout->addWidget(rulerGroup);
+    settingsLayout->addWidget(rulerGroup);
 
     ShowHideSubgroupWidget* annotationGroup = new ShowHideSubgroupWidget("CV_ANNOTATION", tr("Annotations"), annotationLabelWidget, true);
-    cvSettingsMainLayout->addWidget(annotationGroup);
+    settingsLayout->addWidget(annotationGroup);
 
-    hintLabel->setVisible(false);
-    cvSettingsMainLayout->addWidget(hintLabel);
+    cvSettingsMainLayout->addWidget(settingsWidget);
+
+    openCvWidget->setVisible(false);
 }
 
 void CircularViewSettingsWidget::connectSlots() {
@@ -111,6 +129,8 @@ void CircularViewSettingsWidget::connectSlots() {
 
     connect(labelPositionComboBox, SIGNAL(currentIndexChanged(int)), SLOT(sl_modifySettings()));
     connect(labelFontSizeSpinBox, SIGNAL(valueChanged(int)), SLOT(sl_modifySettings()));
+
+    connect(openCvButton, SIGNAL(clicked()), SLOT(sl_openCvButton()));
 }
 
 } // namespace

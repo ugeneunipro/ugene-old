@@ -546,13 +546,13 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
     GTWidget::click( os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
     GTGlobals::sleep(500);
 
-    QWidget *hintLabel = GTWidget::findWidget(os,"hintLabel");
-    CHECK_SET_ERR( hintLabel != NULL, "No hint widget");
-    CHECK_SET_ERR( hintLabel->isVisible(), "Hint label should be hidden");
+    QWidget *openCvWidget = GTWidget::findWidget(os,"openCvWidget");
+    CHECK_SET_ERR( openCvWidget != NULL, "No hint widget");
+    CHECK_SET_ERR( openCvWidget->isVisible(), "Hint label and OpenCV button should be visible");
 
     GTUtilsCv::cvBtn::click(os, seqWidget);
     GTGlobals::sleep(500);
-    CHECK_SET_ERR(hintLabel->isHidden(), "Hint label should be visible");
+    CHECK_SET_ERR(openCvWidget->isHidden(), "Hint label and OpenCV button should be hidden");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0014) {
@@ -686,6 +686,65 @@ GUI_TEST_CLASS_DEFINITION(test_0018) {
 
     GTComboBox::setIndexWithText(os, fontComboBox, "Times New Roman");
     GTComboBox::setIndexWithText(os, fontComboBox, "Arial");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0019) {
+    // 1. Open linear nucl sequence
+    // 2. Open "Circular View Settings" tab
+    // 3. Check the hint: it is visible
+    // 4. Push "Show CVs" button
+    // 5. Check the hint: it is hidden, the settings are visible
+    // 6. Hide CV, using tool bar
+    // 7. The hint is visible again
+
+    ADVSingleSequenceWidget *seqWidget = GTUtilsProject::openFileExpectSequence(os,
+        dataDir  + "samples/Genbank", "sars.gb", "NC_004718");
+    GTWidget::click( os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
+    GTGlobals::sleep(500);
+
+    QWidget *openCvWidget = GTWidget::findWidget(os,"openCvWidget");
+    CHECK_SET_ERR( openCvWidget != NULL, "No hint widget");
+    CHECK_SET_ERR( openCvWidget->isVisible(), "Hint label and OpenCV button should be visible");
+
+    GTWidget::click(os, GTWidget::findWidget(os, "openCvButton"));
+    CHECK_SET_ERR( GTUtilsCv::isCvPresent(os, seqWidget), "No CV opened");
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(openCvWidget->isHidden(), "Hint label and OpenCV button should be hidden");
+
+    GTUtilsCv::cvBtn::click(os, seqWidget);
+    CHECK_SET_ERR( openCvWidget->isVisible(), "Hint label and OpenCV button should be visible");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0020) {
+    // 1. Open linear nucl sequence
+    // 2. Open "Circular View Settings" tab
+    // 3. Check the hint: it is visible
+    // 4. Open another sequence (circular)
+    // 5. Open "Circular View Settings" tab
+    // 6. Check the hint: it is hidden
+    // 7. Return to the first question
+    // 8. The hint is visible, the settings are hidden
+
+    ADVSingleSequenceWidget *seqWidget1 = GTUtilsProject::openFileExpectSequence(os,
+        dataDir  + "samples/Genbank", "sars.gb", "NC_004718");
+    GTWidget::click( os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
+    GTGlobals::sleep(500);
+
+    QWidget *openCvWidget1 = GTWidget::findWidget(os,"openCvWidget");
+    CHECK_SET_ERR( openCvWidget1 != NULL, "No hint widget");
+    CHECK_SET_ERR( openCvWidget1->isVisible(), "Hint label and OpenCV button should be visible");
+
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "NC_014267.1.gb");
+    QList<ADVSingleSequenceWidget*> seqWidgets = GTUtilsMdi::activeWindow(os)->findChildren<ADVSingleSequenceWidget*>();
+    CHECK_SET_ERR(seqWidgets.size() == 1, "Wrong number of sequences");
+    ADVSingleSequenceWidget* seqWidget2 = seqWidgets.first();
+    CHECK_SET_ERR( GTUtilsCv::isCvPresent(os, seqWidget2), "No CV opened");
+    GTGlobals::sleep();
+
+    GTWidget::click( os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
+    QWidget *openCvWidget2 = GTWidget::findWidget(os,"openCvWidget");
+    CHECK_SET_ERR( openCvWidget2 != NULL, "No hint widget");
+    CHECK_SET_ERR( openCvWidget2->isHidden(), "Hint label and OpenCV button should be hidden");
 }
 
 } // namespace GUITest_common_scenarios_annotations_edit

@@ -46,8 +46,10 @@ QWidget* CircularViewSettingsWidgetFactory::createWidget(GObjectView *objView) {
     AnnotatedDNAView* annotatedDnaView = qobject_cast<AnnotatedDNAView*>(objView);
     SAFE_POINT(annotatedDnaView != NULL, "Can not cast GObjectView to AnnotatedDNAView", NULL);
     CircularViewSettingsWidget* widget = new CircularViewSettingsWidget(ctx->getSettings(annotatedDnaView), cvSplitter);
-    connect(ctx, SIGNAL(si_cvSplitterWasCreatedOrRemoved(CircularViewSplitter*)),
-            widget, SLOT(sl_cvSplitterWasCreatedOrRemoved(CircularViewSplitter*)));
+    connect(ctx, SIGNAL(si_cvSplitterWasCreatedOrRemoved(CircularViewSplitter*, CircularViewSettings*)),
+            widget, SLOT(sl_cvSplitterWasCreatedOrRemoved(CircularViewSplitter*, CircularViewSettings*)));
+    connect(widget, SIGNAL(si_openCvButtonClicked(CircularViewSettings*)),
+            ctx, SLOT(sl_toggleBySettings(CircularViewSettings*)));
 
     return widget;
 }

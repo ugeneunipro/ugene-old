@@ -92,12 +92,13 @@ public:
     CircularViewContext(QObject* p);
     CircularViewSettings* getSettings(AnnotatedDNAView* view) { return viewSettings.value(view); }
 signals:
-    void si_cvSplitterWasCreatedOrRemoved(CircularViewSplitter*);
+    void si_cvSplitterWasCreatedOrRemoved(CircularViewSplitter*, CircularViewSettings*);
 protected slots:
     void sl_showCircular();
     void sl_sequenceWidgetAdded(ADVSequenceWidget*);
     void sl_sequenceWidgetRemoved(ADVSequenceWidget* w);
     void sl_toggleViews();
+    void sl_toggleBySettings(CircularViewSettings* s);
     void sl_setSequenceOrigin();
     void sl_onDNAViewClosed(AnnotatedDNAView* v);
 protected:
@@ -106,6 +107,7 @@ protected:
     CircularViewSplitter* getView(GObjectView* view, bool create);
     void removeCircularView(GObjectView* view);
     void reconnectExportAction(GObjectView* view);
+    void toggleViews(AnnotatedDNAView* view);
 private:
     GObjectViewAction*      exportAction;
     GObjectViewAction*      setSequenceOriginAction;

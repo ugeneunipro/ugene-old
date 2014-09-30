@@ -43,10 +43,12 @@ public:
 
 signals:
     void si_settingsChanged();
+    void si_openCvButtonClicked(CircularViewSettings*);
 
 private slots:
     void sl_modifySettings();
-    void sl_cvSplitterWasCreatedOrRemoved(CircularViewSplitter*);
+    void sl_cvSplitterWasCreatedOrRemoved(CircularViewSplitter*, CircularViewSettings*);
+    void sl_openCvButton();
 
 private:
     void initLayout();
@@ -55,6 +57,7 @@ private:
 private:
     CircularViewSplitter* circularViewSplitter;
     CircularViewSettings* settings;
+    QWidget*             settingsWidget;
 };
 
 } // namepace
