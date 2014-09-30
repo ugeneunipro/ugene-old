@@ -102,10 +102,7 @@ void MSAEditorTreeManager::loadRelatedTrees() {
         const QString& treeFileName = rel.getDocURL();
         Document* doc = AppContext::getProject()->findDocumentByURL(treeFileName);
         if(NULL != doc) {
-            QList<GObject*> objects = doc->findGObjectByType(GObjectTypes::PHYLOGENETIC_TREE);
-            if(!objects.isEmpty() && !objects.first()->isUnloaded()) {
-                loadTreeFromFile(treeFileName);
-            }
+            loadTreeFromFile(treeFileName);
         }
     }
 }
