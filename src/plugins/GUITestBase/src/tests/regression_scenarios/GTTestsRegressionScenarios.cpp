@@ -4363,7 +4363,7 @@ GUI_TEST_CLASS_DEFINITION( test_2460 ) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign"));
     GTMouseDriver::click(os, Qt::RightButton);
 
-	GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     CHECK_SET_ERR( l.hasError() == true, "There is no error in the log");
 
@@ -5901,6 +5901,91 @@ GUI_TEST_CLASS_DEFINITION(test_3478) {
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3484) {
+//    1. Open an alignment
+//    2. Build the tree
+//    3. Unload both documents (alignment and tree)
+//    4. Delete the tree document from project
+//    5. Load alignment
+//    Expected state: only alignment is opened.
+    GTFile::copy(os, dataDir + "samples/CLUSTALW/COI.aln", testDir + "_common_data/scenarios/sandbox/COI_3484.aln");
+
+    GTFileDialog::openFile(os, testDir + "_common_Data/scenarios/sandbox/", "COI_3484.aln");
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,
+                                                               testDir + "_common_data/scenarios/sandbox/COI_3484.nwk",
+                                                               0, 0, true));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(500);
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView!=NULL,"TreeView not found");
+
+    GTUtilsDocument::unloadDocument(os, "COI_3484.nwk", false);
+    GTGlobals::sleep(500);
+    GTUtilsDocument::saveDocument(os, "COI_3484.aln");
+    GTUtilsDocument::unloadDocument(os, "COI_3484.aln", true);
+
+    GTGlobals::sleep();
+    GTUtilsDocument::removeDocument(os, "COI_3484.nwk");
+    GTUtilsDocument::loadDocument(os, "COI_3484.aln");
+
+    CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "COI_3484  .nwk") == false, "Unauthorized tree opening!");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3484_1) {
+//    1. Open alignment
+//    2. Build the tree
+//    Current state: tree and alignment are both in the project, loaded and visualized.
+//    3. Save the file and the project, relaunch UGENE (or close and reload project)
+//    4. Open project, open alignment
+//    Current state: tree and alignment are both in the project, loaded and visualized.
+//    5. Delete the tree document from the project
+//    6. Save the alignment
+//    7. Save the project
+//    8. Relaunch UGENE and open the project
+//    9. Load the alignment
+//    Current state: tree document is added to the project, both documents are loaded.
+//    Expected state: only alignment is loaded.
+
+    GTFile::copy(os, dataDir + "samples/CLUSTALW/COI.aln", testDir + "_common_data/scenarios/sandbox/COI_3484_1.aln");
+
+    GTFileDialog::openFile(os, testDir + "_common_Data/scenarios/sandbox/", "COI_3484_1.aln");
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,
+                                                               testDir + "_common_data/scenarios/sandbox/COI_3484_1.nwk",
+                                                               0, 0, true));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os,tree);
+    GTGlobals::sleep(500);
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView != NULL,"TreeView not found");
+
+    GTUtilsDialog::waitForDialog(os, new SaveProjectAsDialogFiller(os, "proj_3484_1",
+                                                                   testDir + "_common_data/scenarios/sandbox/",
+                                                                   "proj_3484_1"));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
+    GTGlobals::sleep();
+
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/sandbox/", "proj_3484_1.uprj"));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__OPEN_PROJECT);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::loadDocument(os, "COI_3484_1.aln");
+    QGraphicsView* treeView1 = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    CHECK_SET_ERR(treeView1 != NULL,"TreeView not found");
+
+    GTUtilsDocument::removeDocument(os, "COI_3484_1.nwk");
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SAVE_PROJECT);
+
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/scenarios/sandbox/", "proj_3484_1.uprj"));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__OPEN_PROJECT);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::loadDocument(os, "COI_3484_1.aln");
+    CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "COI_3484_1.nwk") == false, "Unauthorized tree opening!");
 }
 
 } // GUITest_regression_scenarios namespace

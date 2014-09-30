@@ -67,6 +67,12 @@ public:
                                         int parentDepth = 0,
                                         const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
 
+    // returns true if the item exists, does not set error unlike findIndex method
+    static bool checkItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
+    static bool checkItem(U2OpStatus &os, QTreeView *treeView, const QString &itemName, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
+    static bool checkItem(U2OpStatus &os, const QString &itemName, const QModelIndex& parent, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
+    static bool checkItem(U2OpStatus &os, QTreeView *treeView, const QString &itemName, const QModelIndex& parent, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
+
     // the method does nothing if `acceptableTypes` is an empty set
     static void checkObjectTypes(U2OpStatus &os, QTreeView *treeView, const QSet<GObjectType> &acceptableTypes, const QModelIndex &parent = QModelIndex());
 

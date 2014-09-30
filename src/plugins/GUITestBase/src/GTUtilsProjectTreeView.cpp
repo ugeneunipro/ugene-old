@@ -146,7 +146,7 @@ void GTUtilsProjectTreeView::doubleClickItem(U2OpStatus &os, const QModelIndex &
     GT_CHECK(itemIndex.isValid(), "Item index is invalid");
     getTreeView(os)->scrollTo(itemIndex);
 
-    GTMouseDriver::moveTo(os, getItemCenter(os, itemIndex));    
+    GTMouseDriver::moveTo(os, getItemCenter(os, itemIndex));
     GTMouseDriver::doubleClick(os);
 }
 #undef GT_METHOD_NAME
@@ -264,6 +264,39 @@ QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os,
     }
 
     return foundIndecies;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkItem"
+bool GTUtilsProjectTreeView::checkItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions &options) {
+    QTreeView *treeView = getTreeView(os);
+    GT_CHECK_RESULT(treeView != NULL, "Tree view is NULL", false);
+    return checkItem(os, treeView, itemName, QModelIndex(), options);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkItem"
+bool GTUtilsProjectTreeView::checkItem(U2OpStatus &os, const QString &itemName, const QModelIndex &parent, const GTGlobals::FindOptions &options) {
+    QTreeView *treeView = getTreeView(os);
+    GT_CHECK_RESULT(treeView != NULL, "Tree view is NULL", false);
+    return checkItem(os, treeView, itemName, parent, options);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkItem"
+bool GTUtilsProjectTreeView::checkItem(U2OpStatus &os, QTreeView *treeView, const QString &itemName, const GTGlobals::FindOptions &options) {
+    GT_CHECK_RESULT(treeView != NULL, "Tree view is NULL", false);
+    return checkItem(os, treeView, itemName, QModelIndex(), options);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkItem"
+bool GTUtilsProjectTreeView::checkItem(U2OpStatus &os, QTreeView *treeView, const QString &itemName, const QModelIndex &parent, const GTGlobals::FindOptions &options) {
+    GT_CHECK_RESULT(treeView != NULL, "Tree view is NULL", false);
+    GT_CHECK_RESULT(itemName.isEmpty() == false, "Item name is empty", false);
+
+    QModelIndexList foundIndexes = findIndecies(os, treeView, itemName, parent, 0, options);
+    return !foundIndexes.isEmpty();
 }
 #undef GT_METHOD_NAME
 
