@@ -137,7 +137,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 //    export coverage checkbox - is set;
 //    export bases count checkbox - is not set;
 //    threshold - value is 1, min value is 0, max value is INT_MAX.
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, QDir::toNativeSeparators(GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt"));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckCompress, false);
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckExportCoverage, true);
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckExportBasesCount, false);
@@ -161,7 +161,7 @@ GUI_TEST_CLASS_DEFINITION(test_0010) {
 //    7. Call "Export the Assembly Coverage" dialog  again.
 //    Expected state: the file path is "%path_from_point_4%/chrM_coverage_1.txt"
     actions.clear();
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, QFileInfo(sandBoxDir + "common_assembly_browser/chrM_coverage_1.txt").absoluteFilePath());
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, QDir::toNativeSeparators(QFileInfo(sandBoxDir + "common_assembly_browser/chrM_coverage_1.txt").absoluteFilePath()));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickCancel, QVariant());
     GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
     GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
@@ -188,17 +188,17 @@ GUI_TEST_CLASS_DEFINITION(test_0011) {
 
 //    6. Remove the ".gz" suffix from the file path manually, then uncheck the checkbox.
 //    Expected state: the file path is not changed.
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, QDir::toNativeSeparators(GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt"));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SetCompress, true);
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt.gz");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, QDir::toNativeSeparators(GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt.gz"));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SetCompress, false);
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt");
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt.gz");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, QDir::toNativeSeparators(GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt"));
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, QDir::toNativeSeparators(GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt.gz"));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SetCompress, true);
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt.gz");
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, QDir::toNativeSeparators(GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt.gz"));
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, QDir::toNativeSeparators(GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt"));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SetCompress, false);
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::CheckFilePath, QDir::toNativeSeparators(GUrlUtils::getDefaultDataPath() + "/chrM_coverage.txt"));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickCancel, QVariant());
     GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
     GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
@@ -234,11 +234,11 @@ GUI_TEST_CLASS_DEFINITION(test_0012) {
     PermissionsSetter permSetter;
     const bool permWereSet = permSetter.setPermissions(sandBoxDir + "common_assembly_browser/test_0012", QFile::ReadUser, true);
     CHECK_SET_ERR(permWereSet, "Can't set folder permissons");
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, sandBoxDir + "common_assembly_browser/test_0012/test_0012.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, QDir::toNativeSeparators(sandBoxDir + "common_assembly_browser/test_0012/test_0012.txt"));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ExpectMessageBox, "");
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
 
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, sandBoxDir + "common_assembly_browser/test_0012/test_0012/test_0012.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, QDir::toNativeSeparators(sandBoxDir + "common_assembly_browser/test_0012/test_0012/test_0012.txt"));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ExpectMessageBox, "");
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
 
@@ -260,7 +260,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 //    3. Click the "Select file" button, select any non-existant file in the writable folder and accept the dialog.
 //    Expected state: dialog closes, file appears.
     QDir().mkpath(sandBoxDir + "common_assembly_browser/test_0013");
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SelectFile, sandBoxDir + "common_assembly_browser/test_0013/test_0013_1.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::SelectFile, QDir::toNativeSeparators(sandBoxDir + "common_assembly_browser/test_0013/test_0013_1.txt"));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
     GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
     GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
@@ -270,7 +270,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 //    4. Call the dialog again. Write the valid output file path manually. Path should be to a non-existant file in the writable folder. Accept the dialog.
 //    Expected state: dialog closes, file appears.
     actions.clear();
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, sandBoxDir + "common_assembly_browser/test_0013/test_0013_2.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, QDir::toNativeSeparators(sandBoxDir + "common_assembly_browser/test_0013/test_0013_2.txt"));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
     GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
     GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
@@ -280,7 +280,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 //    5. Call the dialog again. Write the valid output file path manually. Path should be to a non-existant file in a non-existant folder with the writable parent folder. Accept the dialog.
 //    Expected state: dialog closes, file appears.
     actions.clear();
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, sandBoxDir + "common_assembly_browser/test_0013/test_0013/test_0013_3.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, QDir::toNativeSeparators(sandBoxDir + "common_assembly_browser/test_0013/test_0013/test_0013_3.txt"));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
     GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
     GTUtilsAssemblyBrowser::callExportCoverageDialog(os);
@@ -292,7 +292,7 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
     GTFile::copy(os, testDir + "_common_data/text/text.txt", sandBoxDir + "common_assembly_browser/test_0013/test_0013_4.txt");
     const qint64 fileSizeBefore = GTFile::getSize(os, sandBoxDir + "common_assembly_browser/test_0013/test_0013_4.txt");
     actions.clear();
-    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, sandBoxDir + "common_assembly_browser/test_0013/test_0013_4.txt");
+    actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::EnterFilePath, QDir::toNativeSeparators(sandBoxDir + "common_assembly_browser/test_0013/test_0013_4.txt"));
     actions << ExportCoverageDialogFiller::Action(ExportCoverageDialogFiller::ClickOk, "");
     GTUtilsDialog::waitForDialog(os, new ExportCoverageDialogFiller(os, actions));
     GTUtilsAssemblyBrowser::callExportCoverageDialog(os);

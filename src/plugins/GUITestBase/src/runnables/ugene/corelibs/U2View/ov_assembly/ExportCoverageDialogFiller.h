@@ -28,22 +28,22 @@ namespace U2 {
 
 class ExportCoverageDialogFiller : public Filler {
 public:
-    enum ActionType {
-        EnterFilePath,
-        SelectFile,
-        SetCompress,
-        SetExportCoverage,
-        SetExportBasesCount,
-        SetThreshold,
-        CheckFilePath,
-        CheckCompress,
-        CheckExportCoverage,
-        CheckExportBasesCount,
-        CheckThreshold,
-        CheckThresholdBounds,
-        ExpectMessageBox,
-        ClickOk,
-        ClickCancel
+    enum ActionType {                   // An appropriate action data
+        EnterFilePath,                  // QString with a path (do not forget about native separators)
+        SelectFile,                     // QString with a path
+        SetCompress,                    // bool with a new checkbox state
+        SetExportCoverage,              // bool with a new checkbox state
+        SetExportBasesCount,            // bool with a new checkbox state
+        SetThreshold,                   // int with a new threshold value
+        CheckFilePath,                  // QString with an expected path (do not forget about native separators)
+        CheckCompress,                  // bool with an expected checkbox state
+        CheckExportCoverage,            // bool with an expected checkbox state
+        CheckExportBasesCount,          // bool with an expected checkbox state
+        CheckThreshold,                 // int with an expected spinbox value
+        CheckThresholdBounds,           // QVariantMap that contains two items: key: "minimum", value: int; key: "maximum", value: int
+        ExpectMessageBox,               // ignored
+        ClickOk,                        // ignored
+        ClickCancel                     // ignored
     };
 
     typedef QPair<ActionType, QVariant> Action;

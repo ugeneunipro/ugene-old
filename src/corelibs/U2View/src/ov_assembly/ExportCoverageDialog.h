@@ -22,7 +22,7 @@
 #ifndef _U2_EXPORT_COVERAGE_DIALOG_H_
 #define _U2_EXPORT_COVERAGE_DIALOG_H_
 
-#include <QtGui/QDialog>
+#include <QDialog>
 
 #include "ExportCoverageTask.h"
 #include "ui/ui_ExportCoverageDialog.h"
