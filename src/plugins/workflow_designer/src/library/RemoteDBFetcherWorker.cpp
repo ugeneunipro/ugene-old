@@ -314,7 +314,7 @@ QString FetchSequenceByIdFromAnnotationPrompter::composeRichDoc()
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_ANNOTATIONS_PORT_ID()));
     Actor* producer = input->getProducer(BaseSlots::ANNOTATION_TABLE_SLOT().getId());
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
-    QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
+    QString producerName = tr("<u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
 
     return tr("In each annotation from %1 search for accession ID and download the corresponding sequences.").arg(producerName);
 }
