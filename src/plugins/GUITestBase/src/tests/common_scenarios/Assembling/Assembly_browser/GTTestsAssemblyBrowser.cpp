@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QString>
+#include <QTableView>
 
 #include <U2Core/GUrlUtils.h>
 

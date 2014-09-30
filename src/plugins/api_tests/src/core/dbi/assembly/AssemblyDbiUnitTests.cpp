@@ -479,8 +479,8 @@ void AssemblyDbiUnitTests_addReads::Test() {
 
     QVariantList reads2add = testData.getValue<QVariantList>(ADD_READ);
     QList<U2AssemblyRead> reads;
-    foreach(QVariant var, reads2add) {
-        const U2AssemblyRead& read = qVariantValue<U2AssemblyRead>(var);
+    foreach (const QVariant &var, reads2add) {
+        const U2AssemblyRead read = var.value<U2AssemblyRead>();
         reads.append(read);
     }
 

@@ -27,7 +27,7 @@
 #include <QtGui/QPushButton>
 #else
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QPushButotn>
+#include <QtWidgets/QPushButton>
 #endif
 
 #include <U2Core/AppContext.h>

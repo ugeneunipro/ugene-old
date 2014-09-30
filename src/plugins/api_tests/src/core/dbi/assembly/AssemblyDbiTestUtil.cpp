@@ -81,8 +81,8 @@ bool AssemblyDbiTestUtil::compareReadLists( U2DbiIterator<U2AssemblyRead>* iter,
 }
 
 void AssemblyDbiTestUtil::var2readList( const QVariantList& varList, QList<U2AssemblyRead>& reads ) {
-    foreach(QVariant var, varList) {
-        U2AssemblyRead read = qVariantValue<U2AssemblyRead>(var);
+    foreach(const QVariant &var, varList) {
+        U2AssemblyRead read = var.value<U2AssemblyRead>();
         reads.append(read);
     }
 }
