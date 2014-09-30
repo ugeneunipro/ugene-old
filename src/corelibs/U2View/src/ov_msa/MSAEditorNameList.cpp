@@ -913,10 +913,11 @@ bool MSAEditorNameList::isRowInSelection( int seqnum )
 qint64 MSAEditorNameList::sequenceIdAtPos( QPoint p ) {
     qint64 result = MAlignmentRow::invalidRowId();
     curSeq = ui->seqArea->getSequenceNumByY(p.y());
+    if (!ui->seqArea->isSeqInRange(curSeq)) {
+        return result;
+    }
     if (ui->isCollapsibleMode()) {
-        if ( curSeq >= ui->seqArea->getNumDisplayedSequences( ) ) {
-            return result;
-        }
+        curSeq = ui->getCollapseModel()->mapToRow(curSeq);
     }
     if (curSeq != -1) {
         MAlignmentObject* maObj = editor->getMSAObject();
