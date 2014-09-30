@@ -526,9 +526,10 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
 void MSAEditorNameList::updateSelection( int newSeq )
 {
     if (newSeq != -1) {
-        int lastVisibleRow = ui->seqArea->getNumDisplayedSequences( )
+        int lastVisibleRow = ui->seqArea->getNumVisibleSequences(true)
             + ui->seqArea->getFirstVisibleSequence( ) - 1;
         curSeq = qMin(curSeq, lastVisibleRow);
+        newSeq = qMin(newSeq, lastVisibleRow);
         int startSeq = qMin(curSeq,newSeq);
         int width = editor->getAlignmentLen();
         int height = qAbs(newSeq - curSeq) + 1;

@@ -850,13 +850,7 @@ void MSAEditorSequenceArea::updateVScrollBar() {
     } else {
         int start = getFirstVisibleSequence();
         int numVisibleSequences = getNumVisibleSequences(false);
-        int nSeqs = editor->getNumSequences();
-
-        if (ui->isCollapsibleMode()) {
-            MSACollapsibleItemModel* m = ui->getCollapseModel();
-            nSeqs = m->getLastPos() + 1;
-            numVisibleSequences = qMin(numVisibleSequences, nSeqs);
-        }
+        int nSeqs = getNumDisplayedSequences();
 
         SAFE_POINT(numVisibleSequences <= nSeqs, tr("Vertical scrollbar appears unexpectedly: numVisibleSequences is too small"), );
 
@@ -958,7 +952,7 @@ int MSAEditorSequenceArea::getLastVisibleSequence(bool countClipped) const {
     }
 
     int nVisible = countHeightForSequences(countClipped);
-    int numSeqs = editor->getNumSequences();
+    int numSeqs = getNumDisplayedSequences();
     int res = qBound(0, startSeq + nVisible - 1, numSeqs - 1);
     return res;
 }
@@ -2373,6 +2367,7 @@ void MSAEditorSequenceArea::sl_sortByName() {
 
 void MSAEditorSequenceArea::sl_setCollapsingMode(bool enabled) {
     MAlignmentObject* msaObject = editor->getMSAObject();
+    int prevNumVisibleSequences = getNumVisibleSequences(false);
     if (msaObject == NULL  || msaObject->isStateLocked() ) {
         if (collapseModeSwitchAction->isChecked()) {
             collapseModeSwitchAction->setChecked(false);
@@ -2396,6 +2391,10 @@ void MSAEditorSequenceArea::sl_setCollapsingMode(bool enabled) {
     ui->setCollapsibleMode(enabled);
     updateSelection();
     updateVScrollBar();
+    int emptyRowsCount = prevNumVisibleSequences - getNumVisibleSequences(false);
+    if(emptyRowsCount > 0) {
+        setFirstVisibleSequence(qMax(getFirstVisibleSequence() - emptyRowsCount, 0));
+    }
 }
 
 void MSAEditorSequenceArea::sl_updateCollapsingMode() {
