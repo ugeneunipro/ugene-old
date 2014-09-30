@@ -27,31 +27,30 @@
 #include <U2Core/Timer.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/U2FeatureUtils.h>
+#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
-CreateAnnotationsTask::CreateAnnotationsTask( AnnotationTableObject *_ao, const QString &_g,
-    const AnnotationData &_data )
-    : Task( tr( "Create annotations" ), TaskFlag_NoRun ), aobj( _ao ), groupName( _g ), pos( 0 )
+CreateAnnotationsTask::CreateAnnotationsTask( AnnotationTableObject *_ao, const QString &_g, const AnnotationData &_data )
+    : Task( tr( "Create annotations" ), TaskFlags_FOSE_COSC ), aobj( _ao ), groupName( _g ), pos( 0 )
 {
     aData << _data;
     aRef.objName = _ao->getGObjectName( );
     tpm = Progress_Manual;
 }
 
-CreateAnnotationsTask::CreateAnnotationsTask( AnnotationTableObject *_ao, const QString &_g,
-    const QList<AnnotationData> &_data )
-    : Task( tr( "Create annotations" ), TaskFlag_NoRun ), aobj( _ao ), groupName( _g ), pos( 0 )
+CreateAnnotationsTask::CreateAnnotationsTask( AnnotationTableObject *_ao, const QString &_g, const QList<AnnotationData> &_data )
+    : Task( tr( "Create annotations" ), TaskFlags_FOSE_COSC ), aobj( _ao ), groupName( _g ), pos( 0 )
 {
     aData = _data;
     aRef.objName = _ao->getGObjectName( );
     tpm = Progress_Manual;
 }
 
-CreateAnnotationsTask::CreateAnnotationsTask( const GObjectReference &r, const QString &_g,
-    const QList<AnnotationData> &_data )
-: Task( tr( "Create annotations" ), TaskFlag_NoRun ), aRef( r ), groupName( _g ), pos( 0 )
+CreateAnnotationsTask::CreateAnnotationsTask( const GObjectReference &r, const QString &_g, const QList<AnnotationData> &_data )
+    : Task( tr( "Create annotations" ), TaskFlags_FOSE_COSC ), aRef( r ), groupName( _g ), pos( 0 )
 {
     aData << _data;
     GObject *ao = ( GObjectUtils::selectObjectByReference( aRef, UOF_LoadedAndUnloaded ) );
@@ -61,15 +60,27 @@ CreateAnnotationsTask::CreateAnnotationsTask( const GObjectReference &r, const Q
     tpm = Progress_Manual;
 }
 
+void CreateAnnotationsTask::run() {
+    U2OpStatusImpl os;
+    AnnotationTableObject *parentObject = getGObject();
+    const U2DataId rootFeatureId = parentObject->getRootFeatureId();
+    const U2DbiRef dbiRef = parentObject->getEntityRef().dbiRef;
+    const U2DataId groupId = AnnotationGroup(rootFeatureId, parentObject).getSubgroup(groupName, true).id;
+
+    foreach (const AnnotationData &a, aData) {
+        CHECK_OP(os, );
+        importedFeatures << U2FeatureUtils::exportAnnotationDataToFeatures(a, rootFeatureId, groupId, dbiRef, os);
+    }
+}
+
 Task::ReportResult CreateAnnotationsTask::report( ) {
     GTIMER( c1, t1, "CreateAnnotationsTask::report" );
-    if ( hasError( ) || isCanceled( ) || aData.isEmpty( ) ) {
+    if ( hasError( ) || isCanceled( ) || importedFeatures.isEmpty( ) ) {
         return ReportResult_Finished;
     }
     AnnotationTableObject *ao = getGObject( );
     if ( NULL == ao ) {
-        stateInfo.setError( tr( "Annotation object '%1' not found in active project: %2" )
-            .arg( aRef.objName ).arg( aRef.docUrl ) );
+        stateInfo.setError( tr( "Annotation object '%1' not found in active project: %2" ).arg( aRef.objName ).arg( aRef.docUrl ) );
     }
 
     if ( ao->isStateLocked( ) ) {
@@ -78,12 +89,12 @@ Task::ReportResult CreateAnnotationsTask::report( ) {
     }
     stateInfo.setDescription( QString( ) );
 
-    const int brk = qMin( pos + 10000, aData.size( ) );
+    const int brk = qMin( 500, importedFeatures.size( ) - pos );
     GTIMER( c2, t2, "CreateAnnotationsTask::report [addAnnotations]" );
-    ao->addAnnotations( aData.mid( pos, brk ), stateInfo, groupName );
-    stateInfo.progress = 100 * brk / aData.size( );
-    if ( brk != aData.size( ) ) {
-        pos = brk;
+    AnnotationGroup( ao->getRootFeatureId( ), ao ).getSubgroup( groupName, false ).addFeatures( importedFeatures.mid( pos, brk ) );
+    stateInfo.progress = 100 * ( pos + brk ) / importedFeatures.size( );
+    if (pos + brk != importedFeatures.size()) {
+        pos += brk;
         return ReportResult_CallMeAgain;
     }
 
@@ -93,10 +104,8 @@ Task::ReportResult CreateAnnotationsTask::report( ) {
 AnnotationTableObject * CreateAnnotationsTask::getGObject( ) const {
     AnnotationTableObject *result = NULL;
     if ( aRef.isValid( ) ) {
-        SAFE_POINT( aobj.isNull( ), "Unexpected annotation table object content!",
-            NULL );
-        result = qobject_cast<AnnotationTableObject *>( GObjectUtils::selectObjectByReference( aRef,
-            UOF_LoadedOnly ) );
+        SAFE_POINT( aobj.isNull( ), "Unexpected annotation table object content!", NULL );
+        result = qobject_cast<AnnotationTableObject *>( GObjectUtils::selectObjectByReference( aRef, UOF_LoadedOnly ) );
     } else {
         result = aobj.data( );
     }

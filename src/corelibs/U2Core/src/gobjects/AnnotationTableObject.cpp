@@ -104,7 +104,7 @@ void AnnotationTableObject::addAnnotation( const AnnotationData &a, const QStrin
 void AnnotationTableObject::addAnnotations( const QList<AnnotationData> &annotations, U2OpStatus &os,
     const QString &groupName )
 {
-    if ( annotations.isEmpty( ) || os.isCanceled() ) {
+    if ( annotations.isEmpty( ) || os.isCanceled( ) ) {
         return;
     }
 

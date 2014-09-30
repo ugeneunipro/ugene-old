@@ -40,15 +40,17 @@ public:
                                     CreateAnnotationsTask( const GObjectReference &ref,
                                         const QString &group, const QList<AnnotationData> &data );
 
+    void                            run( );
     ReportResult                    report( );
-    AnnotationTableObject *           getGObject( ) const;
+    AnnotationTableObject *         getGObject( ) const;
     int                             getAnnotationCount( ) const;
 
 private:
     GObjectReference                aRef;
-    QPointer<AnnotationTableObject>   aobj;
+    QPointer<AnnotationTableObject> aobj;
     QString                         groupName;
     QList<AnnotationData>           aData;
+    QList<U2Feature>                importedFeatures;
     int                             pos;
 };
 

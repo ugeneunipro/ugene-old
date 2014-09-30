@@ -23,6 +23,7 @@
 #define _U2_ANNOTATION_GROUP_H_
 
 #include <U2Core/Annotation.h>
+#include <U2Core/U2Feature.h>
 
 namespace U2 {
 
@@ -30,8 +31,7 @@ class AnnotationTableObject;
 
 class U2CORE_EXPORT AnnotationGroup : public U2Entity {
 public:
-                            AnnotationGroup( const U2DataId &featureId,
-                                AnnotationTableObject *parentObject );
+                            AnnotationGroup( const U2DataId &featureId, AnnotationTableObject *parentObject );
                             ~AnnotationGroup( );
     /*
      * Returning value specifies whether the @name may be used as an annotation name or not.
@@ -48,6 +48,8 @@ public:
     QList<Annotation>       getAnnotations( bool recurcively = false ) const;
 
     Annotation              addAnnotation( const AnnotationData &a );
+
+    void                    addFeatures( const QList<U2Feature> &features );
 
     void                    addAnnotation( const Annotation &a );
 

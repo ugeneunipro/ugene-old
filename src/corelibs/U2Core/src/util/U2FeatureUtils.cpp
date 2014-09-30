@@ -523,6 +523,10 @@ QList<U2Feature> U2FeatureUtils::getAnnotatingFeaturesByRegion( const U2DataId &
     SAFE_POINT( dbiRef.isValid( ), "Invalid DBI reference detected!", result );
     CHECK( 0 != range.length, result );
 
+    if (dbiAnnotationCache.containsAnnotationTable(dbiRef, rootFeatureId)) {
+        return dbiAnnotationCache.getSubfeaturesByRegion(dbiRef, rootFeatureId, range, contains);
+    }
+
     DbiConnection connection;
     connection.open( dbiRef, os );
     CHECK_OP( os, result );

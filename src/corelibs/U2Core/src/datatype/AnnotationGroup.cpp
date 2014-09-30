@@ -122,6 +122,19 @@ Annotation AnnotationGroup::addAnnotation( const AnnotationData &a ) {
     return result;
 }
 
+void AnnotationGroup::addFeatures( const QList<U2Feature> &features ) {
+    QList<Annotation> anns;
+
+    foreach ( const U2Feature &f, features ) {
+        if (f.parentFeatureId == id) {
+            anns << Annotation(f.id, parentObject);
+        }
+    }
+
+    parentObject->setModified(true);
+    parentObject->emit_onAnnotationsAdded(anns);
+}
+
 void AnnotationGroup::addAnnotation( const Annotation &a ) {
     SAFE_POINT( a.getGObject( ) == parentObject, "Illegal object!", );
     U2OpStatusImpl os;

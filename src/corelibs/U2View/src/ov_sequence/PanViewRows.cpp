@@ -113,7 +113,7 @@ void PVRowsManager::addAnnotation( const Annotation &a, const AnnotationData &da
 
 void PVRowsManager::removeAnnotation( const Annotation &a ) {
     PVRowData* row = rowByAnnotation.value( a, NULL );
-    SAFE_POINT( NULL != row, "Now row by annotation", );
+    CHECK( NULL != row, ); // annotation may present in a DB, but has not been added to the panview yet
     rowByAnnotation.remove( a );
     row->annotations.removeOne( a );
     U2Region::removeAll( row->ranges, a.getRegions( ) );

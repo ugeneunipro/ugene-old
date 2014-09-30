@@ -97,6 +97,41 @@ QList<U2Feature> AnnotationDataCache::getSubfeatures(const U2DataId &rootId) {
     return result;
 }
 
+namespace {
+
+bool annotationIntersectsRange(const AnnotationData &ad, const U2Region &range, bool contains) {
+    if (!contains) {
+        foreach (const U2Region &r, ad.getRegions()) {
+            if (r.intersects(range)) {
+                return true;
+            }
+        }
+        return false;
+    } else {
+        foreach (const U2Region &r, ad.getRegions()) {
+            if (!range.contains(r)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+}
+
+QList<U2Feature> AnnotationDataCache::getSubfeaturesByRegion(const U2DataId &rootId, const U2Region &range, bool contains) {
+    QMutexLocker locker(&guard);
+
+    QList<U2Feature> result;
+    foreach(const U2DataId &featureId, rootSubfeatures.value(rootId)) {
+        const AnnotationData a = annotationDataId.value(featureId);
+        if (annotationIntersectsRange(a, range, contains)) {
+            result << feature2Id.value(featureId);
+        }
+    }
+    return result;
+}
+
 void AnnotationDataCache::removeAnnotationData(const U2DataId &featureId) {
     QMutexLocker locker(&guard);
 
@@ -176,6 +211,11 @@ U2Feature & DbiAnnotationCache::getFeature(const U2DbiRef &dbiRef, const U2DataI
 QList<U2Feature> DbiAnnotationCache::getSubfeatures(const U2DbiRef &dbiRef, const U2DataId &rootId) {
     SAFE_POINT(containsAnnotationTable(dbiRef, rootId), "Unexpected annotation table requested from cache", QList<U2Feature>());
     return dbiDataCache[dbiRef]->getSubfeatures(rootId);
+}
+
+QList<U2Feature> DbiAnnotationCache::getSubfeaturesByRegion(const U2DbiRef &dbiRef, const U2DataId &rootId, const U2Region &range, bool contains) {
+    SAFE_POINT(containsAnnotationTable(dbiRef, rootId), "Unexpected annotation table requested from cache", QList<U2Feature>());
+    return dbiDataCache[dbiRef]->getSubfeaturesByRegion(rootId, range, contains);
 }
 
 void DbiAnnotationCache::removeAnnotationData(const U2DbiRef &dbiRef, const U2DataId &featureId) {
