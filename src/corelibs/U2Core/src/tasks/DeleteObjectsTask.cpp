@@ -74,19 +74,6 @@ DeleteObjectsTask::DeleteObjectsTask(const QList<GObject *> &objs)
 }
 
 namespace {
-
-DbiConnection * findConnection(const QList<DbiConnection *> &connections, const U2DbiRef &dbiRef) {
-    foreach (DbiConnection *con, connections) {
-        if (con->dbi->getDbiRef() == dbiRef) {
-            return con;
-        }
-    }
-    return NULL;
-}
-
-}
-
-namespace {
     class ProgressUpdater {
         U2OpStatus &os;
         const int size;

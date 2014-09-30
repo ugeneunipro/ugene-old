@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>429</width>
-    <height>185</height>
+    <width>419</width>
+    <height>201</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,53 +15,46 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="filePathLayout">
-     <item>
-      <widget class="QLabel" name="lblFilePath">
-       <property name="text">
-        <string>Export to:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="leFilePath"/>
-     </item>
-     <item>
-      <widget class="QToolButton" name="tbFilePath">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QGroupBox" name="gbFileOptions">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QVBoxLayout" name="fileOptionsLayout">
+      <item>
+       <layout class="QHBoxLayout" name="filePathLayout">
+        <item>
+         <widget class="QLabel" name="lblFilePath">
+          <property name="text">
+           <string>Export to:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="leFilePath"/>
+        </item>
+        <item>
+         <widget class="QToolButton" name="tbFilePath">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chbCompress">
+        <property name="text">
+         <string>Compress the file</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="0">
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QCheckBox" name="chbCompress">
-         <property name="text">
-          <string>Compress the file</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>10</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
+    <layout class="QHBoxLayout" name="optionsLayout">
+     <item>
+      <layout class="QVBoxLayout" name="exportTypeLayout">
        <item>
         <widget class="QCheckBox" name="chbCoverage">
          <property name="text">
@@ -81,7 +74,23 @@
        </item>
       </layout>
      </item>
-     <item row="0" column="2">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <layout class="QHBoxLayout" name="thresholdLayout">
        <item>
         <widget class="QLabel" name="lblThreshold">
@@ -107,22 +116,6 @@
         </widget>
        </item>
       </layout>
-     </item>
-     <item row="0" column="1">
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
    </item>

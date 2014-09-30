@@ -106,7 +106,7 @@ void GUIDialogWaiter::checkDialog() {
         hadRun = true;
         try {
             runnable->run();
-        } catch(U2OpStatus *opStatus) {
+        } catch(U2OpStatus *) {
             GTGlobals::takeScreenShot(GUITest::screenshotDir + QDateTime::currentDateTime().toString() + ".jpg");
             QWidget* w = QApplication::activeModalWidget();
             while (w != NULL){

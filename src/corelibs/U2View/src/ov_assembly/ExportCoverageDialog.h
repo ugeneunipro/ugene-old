@@ -44,6 +44,7 @@ private slots:
     void sl_compressToggled(bool isChecked);
     
 private:
+    void initLayout();
     void init(QString assemblyName);
     void connectSignals();
     bool checkPermissions() const;

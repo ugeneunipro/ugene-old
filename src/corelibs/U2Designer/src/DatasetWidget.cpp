@@ -163,22 +163,6 @@ ProjectTreeControllerModeSettings createProjectTreeSettings(const QSet<GObjectTy
     return settings;
 }
 
-void waitWhileDbIsBeingConnected() {
-    QList<Task *> topLevelTasks;
-    bool projectIsLoaded = false;
-    while (!projectIsLoaded) {
-        projectIsLoaded = true;
-        foreach (Task *t, AppContext::getTaskScheduler()->getTopLevelTasks()) {
-            if (NULL != qobject_cast<AddDocumentTask *>(t)) {
-                projectIsLoaded = false;
-            }
-        }
-        if (!projectIsLoaded) {
-            QCoreApplication::processEvents();
-        }
-    }
-}
-
 }
 
 void URLListWidget::sl_sharedDbConnected() {

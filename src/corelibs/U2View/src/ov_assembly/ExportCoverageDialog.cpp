@@ -24,8 +24,10 @@
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
+#include <QtGui/QPushButton>
 #else
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButotn>
 #endif
 
 #include <U2Core/AppContext.h>
@@ -35,6 +37,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/U2FileDialog.h>
 
@@ -48,6 +51,7 @@ ExportCoverageDialog::ExportCoverageDialog(const QString &assemblyName, QWidget 
     QDialog(parent)
 {
     setupUi(this);
+    initLayout();
     init(assemblyName);
     connectSignals();
 }
@@ -120,6 +124,11 @@ void ExportCoverageDialog::sl_compressToggled(bool isChecked) {
     }
 }
 
+void ExportCoverageDialog::initLayout() {
+    buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
+    new HelpButton(this, buttonBox, "4227548");
+}
+
 void ExportCoverageDialog::init(QString assemblyName) {
     LastUsedDirHelper dirHelper(DIR_HELPER_NAME, GUrlUtils::getDefaultDataPath());
     assemblyName.replace(QRegExp("[^0-9a-zA-Z._\\-]"), "_").replace(QRegExp("_+"), "_");
@@ -143,7 +152,7 @@ bool ExportCoverageDialog::checkPermissions() const {
         dirInfo = QFileInfo(dirInfo.dir().absolutePath());
         isDirWritable = dirInfo.isWritable();
     }
-    return isFileExist && isFileWritable || isDirWritable;
+    return (isFileExist && isFileWritable) || isDirWritable;
 }
 
 }   // namespace U2

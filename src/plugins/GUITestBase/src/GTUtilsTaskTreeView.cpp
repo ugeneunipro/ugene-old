@@ -161,7 +161,7 @@ int GTUtilsTaskTreeView::getTopLevelTasksCount(U2OpStatus &os) {
     openView(os);
 
     QTreeWidget *treeWidget = getTreeWidget(os);
-    GT_CHECK_RESULT(treeWidget != NULL, "Tree widget not found", NULL);
+    GT_CHECK_RESULT(treeWidget != NULL, "Tree widget not found", -1);
 
     return getTaskTreeViewItems(treeWidget->invisibleRootItem(), false).size();
 }

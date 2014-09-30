@@ -41,9 +41,6 @@ namespace {
             return longStr;
         }
     }
-    QString shorthen(QByteArray longStr, int maxLen = MAX_FIELD_LEN) {
-        return shorten(QString(longStr), maxLen);
-    }
 
     QFormLayout * buildFormLayout(QWidget * w) {
         QFormLayout * layout = new QFormLayout;

@@ -104,7 +104,7 @@ QString SharedDbUrlUtils::createDbFolderUrl(const Folder &folder, const U2DataTy
     CHECK(dbiRef.isValid(), QString());
 
     const QString folderPath = folder.getFolderPath();
-    CHECK(checkFolderPath(folderPath), false);
+    CHECK(checkFolderPath(folderPath), QString());
 
     return dbiRef.dbiFactoryId + DB_PROVIDER_SEP + dbiRef.dbiId + DB_URL_SEP
         + QString::number(compatibleType) + DB_OBJ_ID_SEP + folderPath;

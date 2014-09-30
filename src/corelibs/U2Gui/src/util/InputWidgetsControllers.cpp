@@ -165,7 +165,7 @@ void DoubleSpinBoxController::setWidgetValue(const QVariant& newValue) {
 }
 
 QVariant DoubleSpinBoxController::getWidgetValue() {
-    if(inputWidget->specialValueText().isEmpty() || inputWidget->value() >= 0 && inputWidget->isEnabled()) {
+    if(inputWidget->specialValueText().isEmpty() || (inputWidget->value() >= 0 && inputWidget->isEnabled())) {
         return inputWidget->value();
     }
     else {
