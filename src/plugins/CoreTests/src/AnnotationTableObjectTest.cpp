@@ -161,6 +161,16 @@ void GTest_FindAnnotationByName::init(XMLTestFormat *tf, const QDomElement& el) 
         failMissingValue(NAME_ATTR);
         return;
     }
+    number = 0;
+    QString num_str = el.attribute(NUMBER_ATTR);
+    if (!num_str.isEmpty()) {
+        bool ok = false;
+        number = num_str.toInt(&ok);
+        if(!ok || number < 0) {
+            stateInfo.setError(QString("invalid value: %1").arg(NUMBER_ATTR));
+            return;
+        }
+    }
     result = AnnotationData( );
     annotationContextName = el.attribute(INDEX_ATTR);
     if (annotationContextName.isEmpty()) {
@@ -185,18 +195,22 @@ Task::ReportResult GTest_FindAnnotationByName::report() {
         return ReportResult_Finished;
     }
     const QList<Annotation> annList = anntbl->getAnnotations();
+    QList<AnnotationData> resultsList;
 
-    bool found = false;
     foreach ( const Annotation &a, annList ) {
         if ( a.getName( ) == aName ) {
-            found = true;
-            result = a.getData( ); 
+            resultsList << a.getData( );
         }
     }
-    if(!found) {
+    if(resultsList.isEmpty()) {
         stateInfo.setError(QString("annotation named %1 is not found").arg(aName));
         return ReportResult_Finished;
     }
+    if (resultsList.size() <= number) {
+        stateInfo.setError(QString("Can't get annotation named %1 and number %2: there are only %3 annotations with this name").arg(aName).arg(number).arg(resultsList.size()));
+        return ReportResult_Finished;
+    }
+    result = resultsList.at(number);
     
     assert( result != AnnotationData( ) );
     if (!annotationContextName.isEmpty()) {
@@ -325,11 +339,10 @@ void GTest_CheckAnnotationLocation::init(XMLTestFormat *tf, const QDomElement& e
     }
 
     QRegExp rx("(\\d+)(..)(\\d+)");
-    QStringList list;
     int pos = 0;
     while ((pos = rx.indexIn(loc, pos)) != -1) {
-        int start=rx.cap(1).toInt();
-        int end=rx.cap(3).toInt();
+        qint64 start=rx.cap(1).toLongLong();
+        qint64 end=rx.cap(3).toLongLong();
         location.append(U2Region(start-1,end-start+1));
         pos += rx.matchedLength();
     }

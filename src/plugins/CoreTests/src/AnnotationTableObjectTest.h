@@ -84,6 +84,7 @@ private:
     QString     objContextName;
     QString     annotationContextName;
     QString     aName;
+    int         number;
     AnnotationData  result;
 };
 
