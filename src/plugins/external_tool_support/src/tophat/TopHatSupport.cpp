@@ -19,12 +19,12 @@
  * MA 02110-1301, USA.
  */
 
-#include "TopHatSupport.h"
-
 #include <U2Core/AppContext.h>
 
 #include <U2Gui/MainWindow.h>
 
+#include "TopHatSupport.h"
+#include "python/PythonSupport.h"
 
 namespace U2 {
 
@@ -46,6 +46,8 @@ TopHatSupport::TopHatSupport(const QString& name, const QString& path)
 #endif
 #endif
     validationArguments << "--version";
+
+    dependencies << ET_PYTHON;
 
     validMessage = "TopHat ";
     description = "<i>TopHat</i> is a program that aligns RNA-Seq reads to a genome"

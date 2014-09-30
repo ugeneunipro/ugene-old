@@ -28,6 +28,7 @@
 
 namespace U2 {
 
+class ExternalTool;
 class ExternalToolLogParser;
 class ExternalToolValidation;
 class ExternalToolSearchTask;
@@ -65,6 +66,7 @@ public:
     void cancelProcess();
 
 private:
+    void setEnvironment(ExternalTool *tool);
     bool parseLog(const ExternalToolValidation& validation);
     void checkVersion(const QString& partOfLog);
     void checkArchitecture(const QString &toolPath);

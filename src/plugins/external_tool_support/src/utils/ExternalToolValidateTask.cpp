@@ -109,9 +109,8 @@ void ExternalToolJustValidateTask::run() {
         CHECK_OP(stateInfo, );
         
         externalToolProcess = new QProcess();
-        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        externalToolProcess->setProcessEnvironment(env);
-
+        setEnvironment(tool);
+        
         externalToolProcess->start(validation.executableFile, validation.arguments);
         bool started = externalToolProcess->waitForStarted(3000);
 
@@ -169,6 +168,31 @@ Task::ReportResult ExternalToolJustValidateTask::report() {
 
 void ExternalToolJustValidateTask::cancelProcess() {
     externalToolProcess->kill();
+}
+
+void ExternalToolJustValidateTask::setEnvironment(ExternalTool *tool) {
+    QStringList additionalPaths;
+    foreach (const QString &toolName, tool->getDependencies()) {
+        ExternalTool *masterTool = AppContext::getExternalToolRegistry()->getByName(toolName);
+        if (NULL != masterTool) {
+            additionalPaths << QFileInfo(masterTool->getPath()).dir().absolutePath();
+        }
+    }
+
+#ifdef Q_OS_WIN
+    const QString pathVariableSeparator = ";";
+#else
+    const QString pathVariableSeparator = ":";
+#endif
+
+    QProcessEnvironment processEnvironment = QProcessEnvironment::systemEnvironment();
+    const QString path = additionalPaths.join(pathVariableSeparator) + pathVariableSeparator + processEnvironment.value("PATH");
+    if (!additionalPaths.isEmpty()) {
+        algoLog.trace(QString("PATH environment variable: '%1'").arg(path));
+    }
+    processEnvironment.insert("PATH", path);
+
+    externalToolProcess->setProcessEnvironment(processEnvironment);
 }
 
 

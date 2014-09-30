@@ -19,8 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include "TopHatSupportTask.h"
-#include "../ExternalToolSupportL10N.h"
+#include <QtCore/QDir>
+
+#include <QCoreApplication>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
@@ -40,9 +41,9 @@
 #include <U2Lang/WorkflowEnv.h>
 #include <U2Lang/WorkflowTasksRegistry.h>
 
-#include <QCoreApplication>
-#include <QDir>
-
+#include "ExternalToolSupportL10N.h"
+#include "TopHatSupportTask.h"
+#include "python/PythonSupport.h"
 
 namespace U2 {
 
@@ -213,8 +214,13 @@ ExternalToolRunTask * TopHatSupportTask::runTophat() {
     // Create a log parser
     logParser = new ExternalToolLogParser();
 
-    // Add Bowtie and samtools to the PATH environment variable
+    // Add Bowtie, samtools an python to the PATH environment variable
     QStringList additionalPaths;
+    ExternalTool *pythonTool = AppContext::getExternalToolRegistry()->getByName(ET_PYTHON);
+    if (NULL != pythonTool) {
+        additionalPaths << QFileInfo(pythonTool->getPath()).dir().absolutePath();
+    }
+
     additionalPaths << QFileInfo(settings.bowtiePath).dir().absolutePath();
     additionalPaths << QFileInfo(settings.samtoolsPath).dir().absolutePath();
 
