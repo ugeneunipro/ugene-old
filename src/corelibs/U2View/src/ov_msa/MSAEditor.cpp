@@ -371,6 +371,13 @@ int MSAEditor::getFirstVisibleBase() const {
     return ui->seqArea->getFirstVisibleBase();
 }
 
+const MAlignmentRow& MSAEditor::getRowByLineNumber(int lineNumber) const {
+    if (ui->isCollapsibleMode()) {
+        lineNumber = ui->getCollapseModel()->mapToRow(lineNumber);
+    }
+    return getMSAObject()->getRow(lineNumber);
+}
+
 void MSAEditor::sl_changeFont() {
     bool ok = false;
     QFont f = QFontDialog::getFont(&ok, font, widget, tr("Select font for alignment"));

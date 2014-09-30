@@ -132,7 +132,7 @@ void SequenceSelectorWidgetController::sl_addSeqClicked() {
         return;
     }
 
-    const MAlignmentRow selectedRow = msa->getMSAObject()->getRow(msa->getCurrentSelection().y());
+    const MAlignmentRow selectedRow = msa->getRowByLineNumber(msa->getCurrentSelection().y());
     setSequenceId(selectedRow.getRowId());
     emit si_selectionChanged();
 }

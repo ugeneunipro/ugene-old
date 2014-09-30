@@ -148,6 +148,10 @@ public:
 
     const QFont& getFont() const {return font;}
     int getFirstVisibleBase() const;
+
+    //Return alignment row that is displayed on target line in MSAEditor
+    const MAlignmentRow& getRowByLineNumber(int lineNumber) const;
+
     float getZoomFactor() const {return zoomFactor;}
 
     enum ResizeMode {

@@ -113,10 +113,11 @@ void PairAlign::initLayout() {
 
 void PairAlign::initParameters() {
     if (2 == msa->getCurrentSelection().height()) {
-        firstSeqSelectorWC->setSequenceId(msa->getMSAObject()->getRow(
-            msa->getCurrentSelection().y()).getRowId());
-        secondSeqSelectorWC->setSequenceId(msa->getMSAObject()->getRow(
-            msa->getCurrentSelection().y() + 1).getRowId());
+        int selectionPos = msa->getCurrentSelection().y();
+        qint64 firstRowId = msa->getRowByLineNumber(selectionPos).getRowId();
+        firstSeqSelectorWC->setSequenceId(firstRowId);
+        qint64 secondRowId = msa->getRowByLineNumber(selectionPos + 1).getRowId();
+        secondSeqSelectorWC->setSequenceId(secondRowId);
     } else {
         firstSeqSelectorWC->setSequenceId(pairwiseAlignmentWidgetsSettings->firstSequenceId);
         secondSeqSelectorWC->setSequenceId(pairwiseAlignmentWidgetsSettings->secondSequenceId);
