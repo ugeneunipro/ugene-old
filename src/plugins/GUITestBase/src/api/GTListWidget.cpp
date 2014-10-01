@@ -45,6 +45,8 @@ void GTListWidget::click(U2OpStatus &os, QListWidget *listWidget, const QString 
     QPoint global = listWidget->mapToGlobal(r.center());
     GTMouseDriver::moveTo(os, global);
     GTMouseDriver::click(os);
+    GTGlobals::sleep();
+    GT_CHECK(true, "click method completed");
 }
 #undef GT_METHOD_NAME
 

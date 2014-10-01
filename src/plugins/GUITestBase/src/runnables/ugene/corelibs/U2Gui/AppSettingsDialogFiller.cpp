@@ -106,7 +106,7 @@ void NewColorSchemeCreator::run(){
         GTListWidget::click(os, colorSchemas, schemeName);
         GTGlobals::sleep(500);
 
-        QWidget* deleteSchemaButton = GTWidget::findWidget(os, "deleteSchemaButton");
+        QWidget* deleteSchemaButton = GTWidget::findWidget(os, "deleteSchemaButton",dialog);
         GT_CHECK (deleteSchemaButton, "deleteSchemaButton not found");
         GTWidget::click(os, deleteSchemaButton);
 
