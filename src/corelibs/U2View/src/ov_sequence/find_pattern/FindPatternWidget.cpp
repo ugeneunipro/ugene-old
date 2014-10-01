@@ -1521,7 +1521,7 @@ void FindPatternWidget::sl_activateNewSearch(){
         AppContext::getTaskScheduler()->registerTopLevelTask(loadTask);
     } else {
         U2OpStatus2Log os;
-        QList <NamePattern >& patterns = getPatternsFromTextPatternField(os);
+        QList <NamePattern> patterns = getPatternsFromTextPatternField(os);
 
         initFindPatternTask(patterns);
 
