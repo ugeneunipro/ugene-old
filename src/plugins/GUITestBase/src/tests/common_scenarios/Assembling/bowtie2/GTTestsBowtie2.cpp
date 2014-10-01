@@ -277,8 +277,6 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
 
-
-    //GTGlobals::sleep(20000);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 

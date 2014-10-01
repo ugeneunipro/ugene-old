@@ -41,6 +41,7 @@
 #include "api/GTLineEdit.h"
 
 #include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsTaskTreeView.h"
 
 namespace U2{
 
@@ -164,6 +165,7 @@ void GTUtilsOptionPanelSequenceView::enterPatternFromFile( U2OpStatus &os, QStri
     QToolButton *browse = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "loadFromFileToolButton"));
     GTWidget::click(os, browse);
     GTGlobals::sleep(2500);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 #undef GT_METHOD_NAME

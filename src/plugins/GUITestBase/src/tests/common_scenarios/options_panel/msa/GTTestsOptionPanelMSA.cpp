@@ -1652,11 +1652,15 @@ GUI_TEST_CLASS_DEFINITION(tree_settings_test_0006){
     GTWidget::click(os, GTWidget::findWidget(os, "BuildTreeButton"));
     GTGlobals::sleep();
 //    3. Change labels color.
+#ifndef Q_OS_MAC
     setLabelsColor(os, 255, 0, 0);
     GTGlobals::sleep();
 //    Expected: color changed
     bool b = checkLabelColor(os, "#ff0000");
     CHECK_SET_ERR(b, "color not changed");
+#else
+    expandFontSettings(os);
+#endif
 //    4. Change labels font
     QComboBox* fontComboBox = GTWidget::findExactWidget<QComboBox*>(os, "fontComboBox");
     QLineEdit* l = fontComboBox->findChild<QLineEdit*>();
@@ -1792,17 +1796,28 @@ GUI_TEST_CLASS_DEFINITION(tree_settings_test_0008){
     GTWidget::click(os, GTWidget::findWidget(os, "BuildTreeButton"));
     GTGlobals::sleep();
 //    3. change branch color
+#ifndef Q_OS_MAC
     setBranchColor(os, 255, 0, 0);
+#else
+    expandPenSettings(os);
+#endif
     GTGlobals::sleep(500);
 //    Expected state: color changed
     QGraphicsView* treeView = GTWidget::findExactWidget<QGraphicsView*>(os, "treeView");
     CHECK_SET_ERR(treeView != NULL, "tree view not found");
-    double initPercent = colorPercent(os, treeView, "#ff0000");
+    QString colorName;
+#ifndef Q_OS_MAC
+    colorName = "#ff0000";
+#else
+    colorName = "#000000";
+#endif
+    double initPercent = colorPercent(os, treeView, colorName);
     CHECK_SET_ERR(initPercent != 0, "color not changed");
+
 //    4. change  line Weight
     QSpinBox* lineWeightSpinBox = GTWidget::findExactWidget<QSpinBox*>(os, "lineWeightSpinBox");
     GTSpinBox::setValue(os, lineWeightSpinBox, 50, GTGlobals::UseKeyBoard);
-    double finalPercent = colorPercent(os, treeView, "#ff0000");
+    double finalPercent = colorPercent(os, treeView, colorName);
     CHECK_SET_ERR(finalPercent > initPercent*10, "branches width changed not enough");
 }
 
@@ -1923,6 +1938,7 @@ GUI_TEST_CLASS_DEFINITION(statistics_test_0001){
     CHECK_SET_ERR(refSeqWarning->text() == "Hint: select a reference above", QString("Unexpected hint: %1").arg(refSeqWarning->text()));
 //    5. Add Phaneroptera_falcata as reference
     GTUtilsOptionPanelMsa::addReference(os, "Phaneroptera_falcata");
+    GTGlobals::sleep(500);
 //    Expected state: similarity column appaered
     QString s0 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 0);
     CHECK_SET_ERR(s0 == "0%", QString("Unexpected similarity at line 1: %1").arg(s0));
@@ -1932,6 +1948,7 @@ GUI_TEST_CLASS_DEFINITION(statistics_test_0001){
 //    6. Check counts mode
     QRadioButton* countsButton = GTWidget::findExactWidget<QRadioButton*>(os, "countsButton");
     GTRadioButton::click(os, countsButton);
+    GTGlobals::sleep(500);
 
     s0 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 0);
     CHECK_SET_ERR(s0 == "0", QString("Unexpected similarity at line 1: %1").arg(s0));
@@ -1940,6 +1957,7 @@ GUI_TEST_CLASS_DEFINITION(statistics_test_0001){
 //    7. Check exclude gabs mode
     QCheckBox* excludeGapsCheckBox = GTWidget::findExactWidget<QCheckBox*>(os, "excludeGapsCheckBox");
     GTCheckBox::setChecked(os, excludeGapsCheckBox, true);
+    GTGlobals::sleep(500);
 
     s0 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 7);
     CHECK_SET_ERR(s0 == "110", QString("Unexpected similarity at line 8: %1").arg(s0));
@@ -2213,9 +2231,9 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004){
 
     QComboBox* treeViewCombo = GTWidget::findExactWidget<QComboBox*>(os, "treeViewCombo");
     GTComboBox::setIndexWithText(os, treeViewCombo, "Cladogram");
-
+#ifndef Q_OS_MAC
     setLabelsColor(os, 255, 0, 0);
-
+#endif
     QComboBox* fontComboBox = GTWidget::findExactWidget<QComboBox*>(os, "fontComboBox");
     QLineEdit* l = fontComboBox->findChild<QLineEdit*>();
 #ifdef Q_OS_LINUX
@@ -2250,8 +2268,10 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004){
 
     CHECK_SET_ERR(layoutCombo->currentText() == "Circular", QString("unexpected layout: %1").arg(layoutCombo->currentText()));
     CHECK_SET_ERR(treeViewCombo->currentText() == "Cladogram", QString("unexpected tree view: %1").arg(treeViewCombo->currentText()));
+#ifndef Q_OS_MAC
     QString color = GTWidget::getColor(labelsColorButton, QPoint(10,10)).name();
     CHECK_SET_ERR(color == "#ff0000", QString("unexpected color: %1").arg(color));
+#endif
     CHECK_SET_ERR(fontComboBox->currentText().contains("Serif"), QString("unexpected font: %1").arg(fontComboBox->currentText()));
     CHECK_SET_ERR(fontSizeSpinBox->value() == 14, QString("unexpected font size: %1").arg(fontSizeSpinBox->value()));
     CHECK_SET_ERR(boldAttrButton->isChecked(), "boldAttrButton is not checked");
@@ -2283,7 +2303,9 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004_1){
     GTCheckBox::setChecked(os, showDistancesCheck, false);
     GTSlider::setValue(os, widthSlider, 50);
     GTSlider::setValue(os, heightSlider, 20);
+#ifndef Q_OS_MAC
     setBranchColor(os, 255, 0, 0);
+#endif
     GTSpinBox::setValue(os, lineWeightSpinBox, 2);
 
     //close and open option panel
@@ -2305,8 +2327,10 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004_1){
     CHECK_SET_ERR(widthSlider->value() == 50, QString("unexpected width slider value: %1").arg(widthSlider->value()));
     CHECK_SET_ERR(heightSlider->value() == 20, QString("unexpected height slider value: %1").arg(heightSlider->value()));
     CHECK_SET_ERR(lineWeightSpinBox->value() == 2, QString("unexpected line width: %1").arg(lineWeightSpinBox->value()));
+#ifndef Q_OS_MAC
     QString color = GTWidget::getColor(branchesColorButton, QPoint(10,10)).name();
     CHECK_SET_ERR(color == "#ff0000", QString("unexpected color: %1").arg(color));
+#endif
 }
 
 GUI_TEST_CLASS_DEFINITION(save_parameters_test_0005){
