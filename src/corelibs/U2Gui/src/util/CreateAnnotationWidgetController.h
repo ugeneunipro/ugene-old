@@ -107,6 +107,8 @@ public:
 
     void setEnabledNameEdit(bool enbaled);
 
+    bool getEnabledNameEdit() const;
+
     QWidget* getWidget() const {return w;}
 
     const CreateAnnotationModel&    getModel() const {return model;}

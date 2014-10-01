@@ -112,6 +112,40 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="resultLabel">
+     <property name="text">
+      <string notr="true">Results: 0/0</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="prevPushButton">
+       <property name="text">
+        <string>Previous</string>
+       </property>
+       <property name="shortcut">
+        <string>Shift+Return</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="nextPushButton">
+       <property name="text">
+        <string>Next</string>
+       </property>
+       <property name="shortcut">
+        <string>Return</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <layout class="QVBoxLayout" name="subgroupsLayout"/>
    </item>
    <item>
@@ -367,37 +401,9 @@
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="resultLabel">
-     <property name="text">
-      <string notr="true">Results: 0/0</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QPushButton" name="prevPushButton">
-       <property name="text">
-        <string>Prev</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="nextPushButton">
-       <property name="text">
-        <string>Next</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
     <widget class="QPushButton" name="getAnnotationsPushButton">
      <property name="text">
-      <string>Get annotations</string>
+      <string>Create annotations</string>
      </property>
     </widget>
    </item>
@@ -425,9 +431,25 @@
     </spacer>
    </item>
   </layout>
+  <zorder>searchForLabel</zorder>
+  <zorder>textPattern</zorder>
+  <zorder>loadFromFileGroupBox</zorder>
+  <zorder>widgetAlgorithm</zorder>
+  <zorder>widgetSearchIn</zorder>
+  <zorder>widgetOther</zorder>
+  <zorder>lblErrorMessage</zorder>
+  <zorder>getAnnotationsPushButton</zorder>
+  <zorder>resultLabel</zorder>
+  <zorder>nextPushButton</zorder>
+  <zorder>prevPushButton</zorder>
  </widget>
  <tabstops>
   <tabstop>textPattern</tabstop>
+  <tabstop>loadFromFileGroupBox</tabstop>
+  <tabstop>filePathLineEdit</tabstop>
+  <tabstop>loadFromFileToolButton</tabstop>
+  <tabstop>prevPushButton</tabstop>
+  <tabstop>nextPushButton</tabstop>
   <tabstop>boxAlgorithm</tabstop>
   <tabstop>boxStrand</tabstop>
   <tabstop>boxSeqTransl</tabstop>
@@ -435,6 +457,7 @@
   <tabstop>editStart</tabstop>
   <tabstop>editEnd</tabstop>
   <tabstop>boxMaxResult</tabstop>
+  <tabstop>getAnnotationsPushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

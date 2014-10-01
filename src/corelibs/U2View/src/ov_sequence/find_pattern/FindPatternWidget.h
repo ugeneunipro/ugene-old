@@ -59,7 +59,8 @@ enum MessageFlag {
     UseMultiplePatternsTip,
     AnnotationNotValidName,
     NoPatternToSearch,
-    SearchRegionIncorrect
+    SearchRegionIncorrect,
+    PatternWrongRegExp
 };
 
 
@@ -75,7 +76,7 @@ public:
 
 signals:
     void si_enterPressed();
-    void si_tabPressed();
+    void si_shiftEnterPressed();
 
 protected:
     bool eventFilter(QObject* obj, QEvent *event);
@@ -115,6 +116,9 @@ private slots:
     void sl_getAnnotationsButtonClicked();
     void sl_prevButtonClicked();
     void sl_nextButtonClicked();
+
+    void sl_onEnterPressed();
+    void sl_onShiftEnterPressed();
 private:
     void initLayout();
     void initAlgorithmLayout();

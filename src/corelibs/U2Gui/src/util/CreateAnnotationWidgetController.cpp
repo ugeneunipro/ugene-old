@@ -717,5 +717,8 @@ void CreateAnnotationWidgetController::sl_groupNameEdited(){
     emit si_annotationNamesEdited();
 }
 
+bool CreateAnnotationWidgetController::getEnabledNameEdit() const {
+    return annotationNameEdit->isEnabled();
+}
 
 } // namespace

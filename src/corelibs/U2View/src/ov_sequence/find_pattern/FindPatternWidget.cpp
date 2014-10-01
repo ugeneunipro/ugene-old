@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QFlags>
+
 #include <U2Algorithm/FindAlgorithmTask.h>
 
 #include <U2Core/AnnotationData.h>
@@ -334,16 +336,14 @@ bool FindPatternEventFilter::eventFilter(QObject* obj, QEvent* event) {
     const QEvent::Type eventType = event->type();
     if (QEvent::KeyPress == eventType) {
         QKeyEvent *keyEvent = dynamic_cast<QKeyEvent*>(event);
-        if (Qt::Key_Tab == keyEvent->key()) {
-            emit si_tabPressed();
-            return true;
-        }
-        if ((Qt::Key_Enter == keyEvent->key() || Qt::Key_Return == keyEvent->key())) {
-            if(!(Qt::ControlModifier & keyEvent->modifiers())) {
+        if (Qt::Key_Enter == keyEvent->key() || Qt::Key_Return == keyEvent->key()) {
+            if(keyEvent->modifiers().testFlag(Qt::ShiftModifier)) {
+                emit si_shiftEnterPressed();
+                return true;
+            }else if(!keyEvent->modifiers().testFlag(Qt::ControlModifier)) {
                 emit si_enterPressed();
                 return true;
-            }
-            else {
+            }else{
                 keyEvent->setModifiers(keyEvent->modifiers() & ~Qt::ControlModifier);
                 return false;
             }
@@ -369,7 +369,7 @@ const QString FindPatternWidget::SEARCH_IN_SETTINGS = QObject::tr("Search in");
 const QString FindPatternWidget::OTHER_SETTINGS = QObject::tr("Other settings");
 
 FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
-    : annotatedDnaView(_annotatedDnaView),iterPos(0),searchTask(NULL),previousPatternString("")
+    : annotatedDnaView(_annotatedDnaView),iterPos(1),searchTask(NULL),previousPatternString("")
 {
     setupUi(this);
 
@@ -407,12 +407,17 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         currentSelection = NULL;
         showHideMessage(true, UseMultiplePatternsTip);
 
+        connect(findPatternEventFilter, SIGNAL(si_enterPressed()), SLOT(sl_onEnterPressed()));
+        connect(findPatternEventFilter, SIGNAL(si_shiftEnterPressed()), SLOT(sl_onShiftEnterPressed()));
+        connect(usePatternNamesCheckBox, SIGNAL(stateChanged(int)), SLOT(sl_activateNewSearch()));
+
         sl_onSearchPatternChanged();
     }
     nextPushButton->setDisabled(true);
     prevPushButton->setDisabled(true);
     getAnnotationsPushButton->setDisabled(true);
     resultLabel->setText(tr("Results: 0/0"));
+    QWidget::setTabOrder(nextPushButton, boxAlgorithm);
 }
 
 void FindPatternWidget::initLayout() {
@@ -765,16 +770,18 @@ void FindPatternWidget::updateLayout()
         lblMatch->show();
         spinMatch->show();
         QWidget::setTabOrder(boxAlgorithm, spinMatch);
+        QWidget::setTabOrder(spinMatch, boxStrand);
     }
     else if (selectedAlgorithm == FindAlgorithmPatternSettings_Subst) {
         useAmbiguousBasesContainer->show();
         useMaxResultLenContainer->hide();
         boxMaxResultLen->hide();
-        QWidget::setTabOrder(boxAlgorithm, useAmbiguousBasesBox);
+        QWidget::setTabOrder(boxAlgorithm, spinMatch);
+        QWidget::setTabOrder(spinMatch, useAmbiguousBasesBox);
         enableDisableMatchSpin();
         lblMatch->show();
         spinMatch->show();
-        QWidget::setTabOrder(spinMatch, useAmbiguousBasesBox);
+        QWidget::setTabOrder(useAmbiguousBasesBox, boxStrand);
     }
     else if (selectedAlgorithm == FindAlgorithmPatternSettings_RegExp) {
         useAmbiguousBasesBox->setChecked(false);
@@ -880,6 +887,12 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
                     }
                     text += QString(tr("Warning: there is no pattern to search. "));
                     text += QString(tr(" Please input a valid pattern or choose a file with patterns "));
+                    break;
+                case PatternWrongRegExp:
+                    if (!text.isEmpty()) {
+                        text += "\n";
+                    }
+                    text += QString(tr("Warning: invalid regexp. "));
                     break;
                 default:
                     FAIL("Unexpected value of the error flag in show/hide error message for pattern!",);
@@ -1030,6 +1043,17 @@ void FindPatternWidget::verifyPatternAlphabet()
     else {
         showHideMessage(false, PatternAlphabetDoNotMatch);
     }
+
+    if(selectedAlgorithm == FindAlgorithmPatternSettings_RegExp){
+        QRegExp regExp(textPattern->toPlainText());
+        if(regExp.isValid()){
+            showHideMessage(false, PatternWrongRegExp);
+        }else{
+            showHideMessage(true, PatternWrongRegExp);
+        }
+    }else{
+        showHideMessage(false, PatternWrongRegExp);
+    }
 }
 
 void FindPatternWidget::sl_onSequenceTranslationChanged(int /* index */)
@@ -1151,6 +1175,12 @@ QList <QPair<QString, QString> > FindPatternWidget::getPatternsFromTextPatternFi
         }
     }
 
+    if(!usePatternNamesCheckBox->isChecked()){
+        const CreateAnnotationModel& model = annotController->getModel();
+        for(int i = 0; i < result.size(); i++){
+            result[i].first = model.data.name;
+        }
+    }
     return result;
 }
 
@@ -1193,6 +1223,13 @@ void FindPatternWidget::sl_onFileSelectorToggled(bool on)
 void FindPatternWidget::initFindPatternTask( const QList<NamePattern>& patterns){
     if(patterns.isEmpty()){
         return;
+    }
+
+    if(selectedAlgorithm == FindAlgorithmPatternSettings_RegExp){
+        QRegExp regExp(textPattern->toPlainText());
+        if(!regExp.isValid()){
+            return;
+        }
     }
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus!",);
@@ -1311,18 +1348,16 @@ void FindPatternWidget::sl_findPatrernTaskStateChanged() {
     }
     
     if(findTask->isFinished() || findTask->isCanceled() || findTask->hasError()){
-        if (findTask->hasNoResults()){
-            findPatternResults.clear();
+        findPatternResults = findTask->getResults();
+        if (findPatternResults.isEmpty()){
             resultLabel->setText(tr("Results: 0/0"));
         }else{
-            findPatternResults = findTask->getResults();
-            if(findPatternResults.size() > 0){
-                iterPos = 1;
-                resultLabel->setText(tr("Results: %1/%2").arg(QString::number(iterPos)).arg(QString::number(findPatternResults.size())));
-                nextPushButton->setEnabled(true);
-                prevPushButton->setEnabled(true);
-                getAnnotationsPushButton->setEnabled(true);
-            }
+            iterPos = 1;
+            resultLabel->setText(tr("Results: %1/%2").arg(QString::number(iterPos)).arg(QString::number(findPatternResults.size())));
+            nextPushButton->setEnabled(true);
+            prevPushButton->setEnabled(true);
+            getAnnotationsPushButton->setEnabled(true);
+            showCurrentResult();
         }        
         searchTask = NULL;
     } 
@@ -1468,13 +1503,25 @@ void FindPatternWidget::sl_activateNewSearch(){
         searchTask->cancel();
         searchTask = NULL;
     }
+    findPatternResults.clear();
+    nextPushButton->setDisabled(true);
+    prevPushButton->setDisabled(true);
+    getAnnotationsPushButton->setDisabled(true);
     if(loadFromFileGroupBox->isChecked()) {
-        LoadPatternsFileTask* loadTask = new LoadPatternsFileTask(filePathLineEdit->text());
+        if(filePathLineEdit->text().isEmpty()){
+            return;
+        }
+        LoadPatternsFileTask* loadTask = NULL;
+        if(usePatternNamesCheckBox->isChecked()){
+            loadTask = new LoadPatternsFileTask(filePathLineEdit->text());
+        }else{
+            loadTask = new LoadPatternsFileTask(filePathLineEdit->text(), annotController->getModel().data.name);
+        }
         connect(loadTask, SIGNAL(si_stateChanged()), SLOT(sl_loadPatternTaskStateChanged()));
         AppContext::getTaskScheduler()->registerTopLevelTask(loadTask);
     } else {
         U2OpStatus2Log os;
-        const QList <NamePattern >& patterns = getPatternsFromTextPatternField(os);
+        QList <NamePattern >& patterns = getPatternsFromTextPatternField(os);
 
         initFindPatternTask(patterns);
 
@@ -1502,13 +1549,10 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
     AnnotationTableObject *aTableObj = annotModel.getAnnotationObject();
     SAFE_POINT(aTableObj != NULL, "Invalid annotation table detected!", );
 
-    QList<AnnotationData>::Iterator it = findPatternResults.begin(); 
-    QList<AnnotationData>::Iterator endIter = findPatternResults.end();
-    for(;it != endIter; it++){
-        (*it).name = annotModel.data.name;
-    }
-
     AppContext::getTaskScheduler()->registerTopLevelTask(new CreateAnnotationsTask(aTableObj, group, findPatternResults));
+    
+    annotModelPrepared = false;
+    updateAnnotationsWidget();
 }
 
 void FindPatternWidget::sl_prevButtonClicked() {
@@ -1533,15 +1577,27 @@ void FindPatternWidget::sl_nextButtonClicked() {
 
 void FindPatternWidget::showCurrentResult() const {
     resultLabel->setText(tr("Results: %1/%2").arg(QString::number(iterPos)).arg(QString::number(findPatternResults.size())));
-    CHECK(findPatternResults.size() > iterPos, );
+    CHECK(findPatternResults.size() >= iterPos, );
     const AnnotationData &ad = findPatternResults.at(iterPos-1);
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     const QVector<U2Region> regions = ad.getRegions();
     CHECK(activeContext->getSequenceSelection() != NULL, );
     CHECK(!regions.isEmpty(), );
     activeContext->getSequenceSelection()->setRegion(regions.first());
-    int centerPos = regions.first().center();
+    int centerPos = regions.first().center() + 1;
     annotatedDnaView->sl_onPosChangeRequest(centerPos);
+}
+
+void FindPatternWidget::sl_onEnterPressed(){
+    if(nextPushButton->isEnabled()){
+        nextPushButton->click();
+    }
+}
+
+void FindPatternWidget::sl_onShiftEnterPressed(){
+    if(prevPushButton->isEnabled()){
+        prevPushButton->click();
+    }
 }
 
 } // namespace

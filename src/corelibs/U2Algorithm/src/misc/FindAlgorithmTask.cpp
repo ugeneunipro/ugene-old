@@ -101,8 +101,8 @@ QList<FindAlgorithmResult> FindAlgorithmTask::popResults() {
 
 //////////////////////////////////////////////////////////////////////////
 //LoadPatternsFileTask
-LoadPatternsFileTask::LoadPatternsFileTask( const QString& _filePath )
-: Task("Load pattern from file", TaskFlag_None), filePath(_filePath)
+LoadPatternsFileTask::LoadPatternsFileTask( const QString& _filePath, const QString &_annotationName)
+: Task(tr("Load pattern from file"), TaskFlag_None), filePath(_filePath), annotationName(_annotationName)
 {
 
 }
@@ -156,7 +156,11 @@ void LoadPatternsFileTask::run()
             assert(NULL != sequenceObject);
             QByteArray sequence = sequenceObject->getWholeSequenceData();
             QString seqName = sequenceObject->getSequenceName();
-            namesPatterns.append(qMakePair(seqName, QString(sequence)));
+            if(annotationName.isEmpty()){
+                namesPatterns.append(qMakePair(seqName, QString(sequence)));
+            }else{
+                namesPatterns.append(qMakePair(annotationName, QString(sequence)));
+            }
         }
     } else {
         QFile file(filePath);

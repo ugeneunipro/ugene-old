@@ -38,8 +38,9 @@ public:
     FindAlgorithmTaskSettings()
         : searchIsCircular(false) {}
     FindAlgorithmTaskSettings(const FindAlgorithmSettings& f) : FindAlgorithmSettings(f) {}
-    QByteArray          sequence;
-    bool                searchIsCircular;
+    QByteArray  sequence;
+    bool        searchIsCircular;
+    QString     name;
 };
 
 class U2ALGORITHM_EXPORT FindAlgorithmTask : public Task, public FindAlgorithmResultsListener {
@@ -69,7 +70,7 @@ class Document;
 class U2ALGORITHM_EXPORT LoadPatternsFileTask: public Task{
     Q_OBJECT
 public:
-    LoadPatternsFileTask(const QString &_filePath);
+    LoadPatternsFileTask(const QString &_filePath, const QString &annotationName = QString());
     QList<QPair<QString, QString> > getNamesPatterns(){return namesPatterns;}
     void run();
 
@@ -79,6 +80,7 @@ private:
     QString filePath;
     QList<QPair<QString, QString> > namesPatterns;
     bool isRawSequence;
+    QString annotationName;
 };
 
 } //namespace

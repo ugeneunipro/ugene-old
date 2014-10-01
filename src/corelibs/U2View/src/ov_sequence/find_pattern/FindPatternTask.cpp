@@ -58,7 +58,7 @@ QList<Task*> FindPatternTask::onSubTaskFinished(Task* subTask)
             removeOverlappedResults(resultz);
         }
 
-        results.append(FindAlgorithmResult::toTable(resultz, "annotation",
+        results.append(FindAlgorithmResult::toTable(resultz, settings.name,
                         settings.searchIsCircular, settings.sequence.size()));
     }
 
@@ -122,7 +122,6 @@ void FindPatternTask::prepare(){
     addSubTask(findAlgorithmTask = new FindAlgorithmTask(settings));
 }
 
-
 FindPatternListTask::FindPatternListTask(const FindAlgorithmTaskSettings &_settings,
                                          const QList<NamePattern> &_patterns,
                                          bool _removeOverlaps,
@@ -138,9 +137,6 @@ FindPatternListTask::FindPatternListTask(const FindAlgorithmTaskSettings &_setti
 
 QList<Task*> FindPatternListTask::onSubTaskFinished(Task *subTask) {
     QList<Task*> res;
-    if(stateInfo.isCoR()){
-        return res;
-    }
     FindPatternTask* task = qobject_cast<FindPatternTask*>(subTask);
     SAFE_POINT(NULL != task, "Failed to cast FindPatternTask!", QList<Task*>());
     if (!task->hasNoResults()) {
@@ -174,6 +170,7 @@ void FindPatternListTask::prepare(){
         FindAlgorithmTaskSettings subTaskSettings = settings;
         subTaskSettings.pattern = pattern.second.toLocal8Bit().toUpper();
         subTaskSettings.maxErr = getMaxError( subTaskSettings.pattern );
+        subTaskSettings.name = pattern.first;
         FindPatternTask* task = new FindPatternTask(subTaskSettings, removeOverlaps);
         addSubTask(task);
     }
