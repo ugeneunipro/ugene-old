@@ -268,7 +268,7 @@ void ExtractConsensusWorkerFactory::init() {
     proto->setPrompter(new ExtractConsensusWorkerPrompter());
     proto->setEditor(new DelegateEditor(delegates));
 
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ASSEMBLY(), proto);
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_NGS_BASIC(), proto);
     DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
     localDomain->registerEntry(new ExtractConsensusWorkerFactory());
 }

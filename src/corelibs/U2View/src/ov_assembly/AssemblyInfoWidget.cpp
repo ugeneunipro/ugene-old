@@ -34,14 +34,6 @@ namespace U2 {
 namespace {
     const int MAX_FIELD_LEN = 12;
 
-    QString shorten(QString longStr, int maxLen = MAX_FIELD_LEN) {
-        if(longStr.length() > maxLen) {
-            return QString("%1... <a href='%2'>Copy</a>").arg(longStr.left(maxLen)).arg(longStr);
-        } else {
-            return longStr;
-        }
-    }
-
     QFormLayout * buildFormLayout(QWidget * w) {
         QFormLayout * layout = new QFormLayout;
         layout->setSpacing(0);
