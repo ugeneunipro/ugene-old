@@ -58,7 +58,7 @@ ExportCoverageDialog::ExportCoverageDialog(const QString &assemblyName, QWidget 
 
 ExportCoverageSettings ExportCoverageDialog::getSettings() const {
     ExportCoverageSettings settings;
-    settings.url = leFilePath->text();
+    settings.url = QDir::toNativeSeparators(leFilePath->text());
     settings.compress = chbCompress->isChecked();
     settings.exportCoverage = chbCoverage->isChecked();
     settings.exportBasesCount = chbBasesCount->isChecked();
@@ -110,7 +110,7 @@ void ExportCoverageDialog::sl_browseFiles() {
     }
 
     dirHelper.url = filePath;
-    leFilePath->setText(QFileInfo(filePath).absoluteFilePath());
+    leFilePath->setText(QDir::toNativeSeparators(QFileInfo(filePath).absoluteFilePath()));
 }
 
 void ExportCoverageDialog::sl_compressToggled(bool isChecked) {
@@ -134,7 +134,7 @@ void ExportCoverageDialog::init(QString assemblyName) {
     assemblyName.replace(QRegExp("[^0-9a-zA-Z._\\-]"), "_").replace(QRegExp("_+"), "_");
     QString filePath = dirHelper.dir + QDir::separator() + assemblyName + "_coverage.txt" + (chbCompress->isChecked() ? ".gz" : "");
     filePath = GUrlUtils::rollFileName(filePath, "_", QSet<QString>());
-    leFilePath->setText(filePath);
+    leFilePath->setText(QDir::toNativeSeparators(filePath));
 }
 
 void ExportCoverageDialog::connectSignals() {
