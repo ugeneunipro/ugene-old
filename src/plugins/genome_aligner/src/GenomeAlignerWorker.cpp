@@ -347,7 +347,7 @@ void GenomeAlignerWorkerFactory::init() {
         attrs << new Attribute(qual, BaseTypes::NUM_TYPE(), false/*required*/, 0);
     }
 
-    Descriptor desc(ACTOR_ID, GenomeAlignerWorker::tr("UGENE Genome Aligner"), 
+    Descriptor desc(ACTOR_ID, GenomeAlignerWorker::tr("Align Reads with UGENE Genome Aligner"), 
         GenomeAlignerWorker::tr("Unique UGENE algorithm for aligning short reads to reference genome"));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, attrs);
 
@@ -376,8 +376,7 @@ void GenomeAlignerWorkerFactory::init() {
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPrompter(new GenomeAlignerPrompter());
     proto->setPortValidator(IN_PORT_DESCR, new GenomeAlignerInputSlotsValidator());
-    proto->setIconPath(":core/images/align.png");
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ASSEMBLY(), proto);
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_NGS_ALIGN_SHORT_READS(), proto);
 
     DomainFactory* localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
     localDomain->registerEntry(new GenomeAlignerWorkerFactory());

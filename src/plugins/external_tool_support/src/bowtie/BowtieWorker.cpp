@@ -444,7 +444,7 @@ void BowtieWorkerFactory::init() {
     }
 
     Descriptor protoDesc(BowtieWorkerFactory::ACTOR_ID,
-        BowtieWorker::tr("Align reads with Bowtie"),
+        BowtieWorker::tr("Align Reads with Bowtie"),
         BowtieWorker::tr("Performs alignment of short reads with Bowtie."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
@@ -452,7 +452,7 @@ void BowtieWorkerFactory::init() {
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPortValidator(IN_PORT_DESCR, new BowtieInputSlotsValidator());
     proto->addExternalTool(ET_BOWTIE);
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ASSEMBLY(), proto);
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_NGS_ALIGN_SHORT_READS(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new BowtieWorkerFactory());
 }
 

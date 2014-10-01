@@ -475,7 +475,7 @@ void BWAWorkerFactory::init() {
     }
 
     Descriptor protoDesc(BWAWorkerFactory::ACTOR_ID,
-        BWAWorker::tr("Align reads with BWA"),
+        BWAWorker::tr("Align Reads with BWA"),
         BWAWorker::tr("Performs alignment of short reads with BWA."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
@@ -483,7 +483,7 @@ void BWAWorkerFactory::init() {
     proto->setEditor(new DelegateEditor(delegates));
     proto->setPortValidator(IN_PORT_DESCR, new BWAInputSlotsValidator());
     proto->addExternalTool(ET_BWA);
-    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ASSEMBLY(), proto);
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_NGS_ALIGN_SHORT_READS(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new BWAWorkerFactory());
 }
 
