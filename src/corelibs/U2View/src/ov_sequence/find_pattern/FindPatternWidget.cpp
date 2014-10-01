@@ -1428,7 +1428,7 @@ void FindPatternWidget::updatePatternText(int previousAlgorithm) {
 
 void FindPatternWidget::validateCheckBoxSize(QCheckBox* checkBox, int requiredWidth) {
     QFont font = checkBox->font();
-    QFontMetrics checkBoxMetrics(font);
+    QFontMetrics checkBoxMetrics(font, checkBox);
     QString text = checkBox->text();
 
     if(text.contains('\n')) {

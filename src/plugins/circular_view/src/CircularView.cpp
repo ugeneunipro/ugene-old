@@ -504,7 +504,7 @@ CircularViewRenderArea::CircularViewRenderArea(CircularView* d)
 void CircularViewRenderArea::adaptNumberOfLabels(int h) {
 
     QFont font;
-    QFontMetrics fm(font);
+    QFontMetrics fm(font, this);
 
     int lblHeight = fm.height();
     maxDisplayingLabels = int(h/lblHeight);
@@ -642,7 +642,7 @@ void CircularViewRenderArea::drawSequenceName(QPainter& p) {
     QFont font(settings->titleFont, settings->titleFontSize);
     font.setBold(settings->titleBold);
     p.setFont(font);
-    QFontMetrics fm(font);
+    QFontMetrics fm(font, this);
     int cw = fm.width('O');
     int symbolsAlowed = (rulerEllipseSize - RULER_PAD)/cw;
     if(symbolsAlowed<docNameFullLength) {
@@ -735,7 +735,7 @@ void normalizeAngleRad(qreal& a) {
 void CircularViewRenderArea::drawRulerNotches(QPainter& p, int start, int span, int seqLen) {
     int notchSize = 5;
     QFont f;
-    QFontMetrics fm(f);
+    QFontMetrics fm(f,this);
     int cw = fm.width('0');
     int N = QString::number(start+span).length()*cw*3/2.0 + 0.5f;
     int rulerLen = span / (float)seqLen * PI * rulerEllipseSize;
@@ -1114,7 +1114,7 @@ void CircularViewRenderArea::evaluateLabelPositions() {
     labelEmptyPositions.clear();
 
     QFont f;
-    QFontMetrics fm(f);
+    QFontMetrics fm(f,this);
     int labelHeight = fm.height();
     int lvlsNum = regionY.count();
     int outerRadius = outerEllipseSize/2 + (lvlsNum-1)*ellipseDelta/2;

@@ -156,7 +156,7 @@ void MSAEditorNameList::updateScrollBar() {
 
     QFont f = ui->editor->getFont();
     f.setItalic(true);
-    QFontMetrics fm(f);
+    QFontMetrics fm(f,this);
     int maxNameWidth = 0;
 
     MAlignmentObject* maObj = editor->getMSAObject();

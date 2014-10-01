@@ -117,7 +117,7 @@ MSAEditorOffsetsViewWidget::~MSAEditorOffsetsViewWidget() {
 void MSAEditorOffsetsViewWidget::updateView() {
     int aliLen = cache->getMSAObject()->getLength();
     QFont f = getOffsetsFont();
-    QFontMetrics fm(f);
+    QFontMetrics fm(f,this);
     int aliLenStrLen = int(log10((double)aliLen)) + 1; 
     int w = OFFS_WIDGET_BORDER + fm.width('X') * aliLenStrLen + OFFS_WIDGET_BORDER;
     w += (showStartPos ? fm.width('[') : fm.width(']'));
@@ -162,7 +162,7 @@ void MSAEditorOffsetsViewWidget::drawAll(QPainter& p) {
     int w = width();
     
     QFont f = getOffsetsFont();
-    QFontMetrics fm(f);
+    QFontMetrics fm(f,this);
     p.setFont(f);
 
     int nSeqVisible = seqArea->getNumVisibleSequences(true);

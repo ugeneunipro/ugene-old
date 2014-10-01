@@ -203,12 +203,12 @@ MSAEditor::MSAEditor(const QString& viewName, GObject* obj)
 }
 
 int MSAEditor::getRowHeight() const {
-    QFontMetrics fm(font);
+    QFontMetrics fm(font, ui);
     return fm.height() * zoomMult;
 }
 
 int MSAEditor::getColumnWidth() const {
-    QFontMetrics fm(font);
+    QFontMetrics fm(font, ui);
     int width =  fm.width('W') * zoomMult;
 
     width = (int)(width * zoomFactor);

@@ -249,7 +249,7 @@ bool CircularAnnotationLabel::canFitToTheRegion() const {
     CHECK(regionItem != NULL, false);
 
     QPainterPath path = regionItem->path();
-    QFontMetrics metrics(labelFont);
+    QFontMetrics metrics(labelFont, ra);
     qreal labelTextPixSize = metrics.width(labelText);
     // (can fit in width) && (can fit in height)
     if ((regionItem->getArrowCenterPercentage() * path.length() > labelTextPixSize / 2)
@@ -263,7 +263,7 @@ bool CircularAnnotationLabel::canFitToTheRegion() const {
 void CircularAnnotationLabel::drawLabelInsideRegion(QPainter *p, bool canFit) {
     QPainterPath path = regionItem->path();
     SAFE_POINT( path.length() != 0, "Region path has zero length", );
-    QFontMetrics metrics(labelFont);
+    QFontMetrics metrics(labelFont,ra);
 
     if (metrics.height() + ra->FREE_SPACE_HEIGHT_FOR_INTERNAL_LABELS
             > ra->circularView->CV_REGION_ITEM_WIDTH) {

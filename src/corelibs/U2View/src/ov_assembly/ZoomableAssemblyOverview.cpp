@@ -289,7 +289,7 @@ void ZoomableAssemblyOverview::drawCoordLabels(QPainter & p) {
         font.setStyleHint(QFont::SansSerif, QFont::PreferAntialias);
 #endif
     p.setFont(font);
-    QFontMetrics fontMetrics(font);
+    QFontMetrics fontMetrics(font, this);
 
     p.setPen(labelForegroundColor);
 

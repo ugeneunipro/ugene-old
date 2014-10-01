@@ -51,7 +51,7 @@ Notification::Notification(const QString &message, NotificationType _type, QActi
     setLayout(h);
     counter = 1;
 
-    QFontMetrics metrics(font());
+    QFontMetrics metrics(font(),this);
     setText(metrics.elidedText(text, Qt::ElideRight, width()-50));
     setToolTip(text);
     
@@ -252,7 +252,7 @@ NotificationType Notification::getType() const {
 
 void Notification::increaseCounter(){
     counter++;
-    QFontMetrics metrics(font());
+    QFontMetrics metrics(font(),this);
     QString addText = "(" + QString::number(counter) + ")";
     int cWidth = metrics.width(addText);
     setText(metrics.elidedText(text, Qt::ElideRight, width()-50 - cWidth ) + addText);

@@ -109,7 +109,7 @@ void MSASimpleOverview::paintEvent(QPaintEvent *e) {
         QPainter p(this);
         p.fillRect(rect(), Qt::gray);
 
-        QFontMetrics metrics(p.font());
+        QFontMetrics metrics(p.font(), this);
         p.drawText(rect(), Qt::AlignCenter, metrics.elidedText(
                        tr("Multiple sequence alignment is too big for current window size.\nSimple overview is unavailable."),
                        Qt::ElideRight,

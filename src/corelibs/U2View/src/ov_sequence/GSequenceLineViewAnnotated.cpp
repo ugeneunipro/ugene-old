@@ -369,8 +369,8 @@ GSequenceLineViewAnnotatedRenderArea::GSequenceLineViewAnnotatedRenderArea(GSequ
     afNormal = new QFont("Courier", 10);
     afSmall = new QFont("Arial", 8);
 
-    afmNormal = new QFontMetrics(*afNormal);
-    afmSmall = new QFontMetrics(*afSmall);
+    afmNormal = new QFontMetrics(*afNormal, this);
+    afmSmall = new QFontMetrics(*afSmall, this);
 
     afNormalCharWidth  = afmNormal->width('w');
     afSmallCharWidth   = afmSmall->width('w');

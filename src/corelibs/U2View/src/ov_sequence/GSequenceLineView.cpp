@@ -499,13 +499,13 @@ GSequenceLineViewRenderArea::~GSequenceLineViewRenderArea() {
 }
 
 void GSequenceLineViewRenderArea::updateFontMetrics() {
-    QFontMetrics fm(sequenceFont);
+    QFontMetrics fm(sequenceFont, view);
     yCharOffset = 4;
     lineHeight = fm.boundingRect('W').height() + 2 * yCharOffset;
     xCharOffset = 1;
     charWidth = fm.boundingRect('W').width() + 2 * xCharOffset;
 
-    QFontMetrics fms(smallSequenceFont);
+    QFontMetrics fms(smallSequenceFont, view);
     smallCharWidth = fms.boundingRect('W').width();
 }
 

@@ -118,7 +118,7 @@ void MSAEditorStatusWidget::updateCoords() {
     const QPoint& pos = seqArea->getSelection().topLeft();
     int aliLen = aliObj->getLength();
     int nSeq = aliObj->getNumRows();
-    QFontMetrics fm(linesLabel->font());
+    QFontMetrics fm(linesLabel->font(),this);
 
     QString lpattern = QString(tr("Ln %1 / %2"));
     qint64 shownLine = seqArea->isAlignmentEmpty() ? pos.y() : pos.y() + 1;

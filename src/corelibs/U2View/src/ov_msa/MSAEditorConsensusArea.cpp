@@ -350,7 +350,7 @@ void MSAEditorConsensusArea::drawRuler(QPainter& p, int start, int end, bool dra
     int lastPos = (end != - 1) ? end - 1
                                : ui->seqArea->getLastVisibleBase(true);
 
-    QFontMetrics rfm(rulerFont);
+    QFontMetrics rfm(rulerFont,this);
     U2Region rr = getYRange(MSAEditorConsElement_RULER);
     U2Region rrP = getYRange(MSAEditorConsElement_CONSENSUS_TEXT);
     int dy = rr.startPos - rrP.endPos();
@@ -448,7 +448,7 @@ void MSAEditorConsensusArea::sl_alignmentChanged(const MAlignment&, const MAlign
 void MSAEditorConsensusArea::setupFontAndHeight() {
     rulerFont.setFamily("Arial");
     rulerFont.setPointSize(qMax(8, int(ui->editor->getFont().pointSize() * 0.7)));
-    rulerFontHeight = QFontMetrics(rulerFont).height();
+    rulerFontHeight = QFontMetrics(rulerFont,this).height();
     setFixedHeight( getYRange(MSAEditorConsElement_RULER).endPos() + 1);
 
 }

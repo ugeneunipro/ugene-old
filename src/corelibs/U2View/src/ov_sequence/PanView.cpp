@@ -698,7 +698,7 @@ void PanViewRenderArea::drawCustomRulers(GraphUtils::RulerConfig c,  QPainter& p
     int lastCharCenter = qRound(posToCoordF(visibleRange.endPos()-1) + halfChar);
     QFont crf = rulerFont;
     crf.setBold(true);
-    QFontMetrics fm(crf);
+    QFontMetrics fm(crf, this);
     int w = width();
 
     int maxRulerTextWidth = 0;
@@ -843,7 +843,7 @@ void PanViewRenderArea::drawSequenceSelection(QPainter& p) {
     QPen pen1(Qt::darkGray, 1, Qt::SolidLine);
     QPen pen2(QColor("#007DE3"), 2, Qt::SolidLine);
     p.setFont(rulerFont);
-    QFontMetrics rfm(rulerFont);
+    QFontMetrics rfm(rulerFont, this);
 
     int lineY = getLineY(getSelectionLine());
     int ly = lineY + lineHeight/2; //ruler line

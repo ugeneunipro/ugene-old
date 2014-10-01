@@ -939,7 +939,7 @@ ADVSingleSequenceHeaderWidget::ADVSingleSequenceHeaderWidget(ADVSingleSequenceWi
     pixLabel->installEventFilter(this);
 
     int labelWidth = 50;
-    QFontMetrics fm(f);
+    QFontMetrics fm(f, this);
     nameLabel = new QLabel("", this);
     updateTitle();
     nameLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
