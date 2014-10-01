@@ -10,8 +10,8 @@ workflow "Raw RNA-Seq processing" {
             name: "Configure RNA-Seq Pipeline";
             finish-label: "Setup";
             result {
-                NGS/raw_ngs/rnaseq/rna_single.uwl: pipeline.single;
-                NGS/raw_ngs/rnaseq/rna_paired.uwl: pipeline.paired;
+                NGS/raw_ngs/rnaseq/rnaseq_single.uwl: pipeline.single;
+                NGS/raw_ngs/rnaseq/rnaseq_paired.uwl: pipeline.paired;
             }
             page {
                 id: 1;
