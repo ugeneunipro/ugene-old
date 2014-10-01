@@ -499,6 +499,8 @@ QString normalizeQualifier(QString qual){
     if(qual.contains(rx)){
         qual.replace(rx, " ");
     }
+    QRegExp rxN("\n+");
+    qual.replace(rxN, " ");
     return qual;
 }
 
