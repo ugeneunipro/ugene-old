@@ -87,6 +87,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os,QStringList()<<"Screen Capture"));
     GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/image.svg", "jpeg",50));
     GTWidget::click(os,GTWidget::findWidget(os,"cameraMenu"));
+    GTGlobals::sleep();
 
     GTFile::getSize(os,testDir + "_common_data/scenarios/sandbox/image.jpeg");
 //Expected state: images on screenshots same as on your screen

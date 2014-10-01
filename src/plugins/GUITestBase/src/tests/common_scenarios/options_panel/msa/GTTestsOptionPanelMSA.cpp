@@ -2218,7 +2218,11 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004){
 
     QComboBox* fontComboBox = GTWidget::findExactWidget<QComboBox*>(os, "fontComboBox");
     QLineEdit* l = fontComboBox->findChild<QLineEdit*>();
+#ifdef Q_OS_LINUX
     GTLineEdit::setText(os, l, "Serif");
+#else
+    GTLineEdit::setText(os, l, "Tahoma");
+#endif
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
 
     QSpinBox* fontSizeSpinBox = GTWidget::findExactWidget<QSpinBox*>(os, "fontSizeSpinBox");
