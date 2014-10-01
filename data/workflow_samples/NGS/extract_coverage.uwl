@@ -3,7 +3,7 @@
 
 
 
-workflow "Extract Coverage"{
+workflow "Extract coverage from assembly"{
 
     read-assembly {
         type:read-assembly;

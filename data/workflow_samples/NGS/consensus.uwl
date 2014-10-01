@@ -3,7 +3,7 @@
 
 
 
-workflow "Extract consensus"{
+workflow "Extract consensus from assembly"{
 
     read-assembly {
         type:read-assembly;

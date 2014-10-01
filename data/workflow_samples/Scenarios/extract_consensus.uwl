@@ -3,7 +3,7 @@
 
 
 
-workflow "Extract Consensus"{
+workflow "Extract consensus"{
 
     extract-msa-consensus {
         type:extract-msa-consensus;
