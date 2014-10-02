@@ -1,0 +1,169 @@
+#@UGENE_WORKFLOW
+#The workflow gets one or several sequences as input. For each sequence it sends a request to the NCBI BLAST remote database to search for homologous sequences.
+#The following options are set to the BLAST search by default:
+#  1) Nucleotide BLAST database is used.
+#  2) The search is optimized for high similar sequences (i.e. the "Megablast" option is selected) as on the NCBI BLAST web site.
+#  3) The maximum number of hits is set to 10.
+#As the result of the BLAST each input sequence is annotated with the "blast result" annotations.
+#These annotations are used to fetch the corresponding homologous sequences from the NCBI database based on the identifiers specified in the "blast result" annotations.
+#The output homologous sequences and the original sequences, annotated by BLAST, are grouped by folders. Name of the corresponding original sequence is used as the folder name.
+
+workflow "Remote BLASTing"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read Sequence(s)";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write Original Sequence(s) with BLAST Annotations";
+        document-format:genbank;
+        url-out {
+var re = /[\\\/]/;
+var tokens = url.toString().split(re);
+var dir = "";
+if (tokens.length > 0) {
+    dir = tokens[tokens.length-1] + "/";
+}
+url_out = dir + "orig_with_blast.gb"
+        };
+    }
+    blast-ncbi {
+        type:blast-ncbi;
+        name:"Remote BLAST";
+        megablast:true;
+    }
+    fetch-sequence-by-id-from-annotation {
+        type:fetch-sequence-by-id-from-annotation;
+        name:"Fetch Sequences by ID from BLAST Annotations";
+    }
+    write-sequence-1 {
+        type:write-sequence;
+        name:"Write Homologous Sequences";
+        document-format:genbank;
+        url-out {
+var re = /[\\\/]/;
+var tokens = url.toString().split(re);
+var dir = "";
+if (tokens.length > 0) {
+    dir = tokens[tokens.length-1] + "/";
+}
+url_out = dir + "homologous.gb"
+        };
+    }
+
+    .actor-bindings {
+        read-sequence.out-sequence->blast-ncbi.in-sequence
+        blast-ncbi.out-annotations->write-sequence.in-sequence
+        blast-ncbi.out-annotations->fetch-sequence-by-id-from-annotation.in-annotations
+        fetch-sequence-by-id-from-annotation.out-sequence->write-sequence-1.in-sequence
+    }
+
+    blast-ncbi.annotations->write-sequence.in-sequence.annotations
+    read-sequence.annotations->write-sequence.in-sequence.annotations
+    read-sequence.sequence->write-sequence.in-sequence.sequence
+    read-sequence.sequence->blast-ncbi.in-sequence.sequence
+    blast-ncbi.annotations->fetch-sequence-by-id-from-annotation.in-annotations.annotations
+    fetch-sequence-by-id-from-annotation.annotations->write-sequence-1.in-sequence.annotations
+    fetch-sequence-by-id-from-annotation.sequence->write-sequence-1.in-sequence.sequence
+
+    .meta {
+        visual {
+            blast-ncbi {
+                pos:"-627 -675";
+                style:ext;
+                bg-color-ext:"0 170 127 64";
+                in-sequence.angle:180;
+                out-annotations.angle:291.038;
+            }
+            fetch-sequence-by-id-from-annotation {
+                pos:"-658 -497";
+                style:ext;
+                bg-color-ext:"0 97 0 64";
+                bounds:"-30 -30 147 84";
+                in-annotations.angle:28.3008;
+                out-sequence.angle:303.69;
+            }
+            read-sequence {
+                pos:"-866 -676";
+                style:ext;
+                bg-color-ext:"0 141 212 64";
+                bounds:"-30 -30 86.25 69";
+                out-sequence.angle:360;
+            }
+            write-sequence {
+                pos:"-401 -498";
+                style:ext;
+                bg-color-ext:"117 86 175 64";
+                bounds:"-30 -30 121.25 79";
+                in-sequence.angle:74.876;
+            }
+            write-sequence-1 {
+                pos:"-654 -293";
+                style:ext;
+                bg-color-ext:"117 86 175 64";
+                bounds:"-30 -30 129.25 83";
+                in-sequence.angle:29.9315;
+            }
+            blast-ncbi.out-annotations->fetch-sequence-by-id-from-annotation.in-annotations {
+                text-pos:"-55 -13";
+            }
+            blast-ncbi.out-annotations->write-sequence.in-sequence {
+                text-pos:"-15 -11";
+            }
+            fetch-sequence-by-id-from-annotation.out-sequence->write-sequence-1.in-sequence {
+                text-pos:"-43.5 -12";
+            }
+            read-sequence.out-sequence->blast-ncbi.in-sequence {
+                text-pos:"-27.5 -24";
+            }
+        }
+        wizard {
+            name:"Remote BLASTing Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input sequence(s)";
+                parameters-area {
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                title:"Remote BLAST";
+                parameters-area {
+                    group {
+                        title:"Remote BLAST parameters";
+                        label-size:120;
+
+                        blast-ncbi.alg {
+                            label:"Program";
+                        }
+                        blast-ncbi.db {}
+                        blast-ncbi.e-value {}
+                        blast-ncbi.hits {}
+                        blast-ncbi.megablast {}
+                        blast-ncbi.gap_costs {}
+                        blast-ncbi.match_scores {}
+                    }
+                    group {
+                        title:"Additional";
+                        label-size:120;
+                        type:hideable;
+
+                        blast-ncbi.short_seq {}
+                        blast-ncbi.entrez_query {}
+                        blast-ncbi.blast-output {}
+                        blast-ncbi.result-name {}
+                    }
+                }
+            }
+        }
+    }
+}
+
