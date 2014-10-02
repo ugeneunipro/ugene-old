@@ -2272,7 +2272,11 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004){
     QString color = GTWidget::getColor(labelsColorButton, QPoint(10,10)).name();
     CHECK_SET_ERR(color == "#ff0000", QString("unexpected color: %1").arg(color));
 #endif
+#ifdef Q_OS_LINUX
     CHECK_SET_ERR(fontComboBox->currentText().contains("Serif"), QString("unexpected font: %1").arg(fontComboBox->currentText()));
+#else
+    CHECK_SET_ERR(fontComboBox->currentText().contains("Tahoma"), QString("unexpected font: %1").arg(fontComboBox->currentText()));
+#endif
     CHECK_SET_ERR(fontSizeSpinBox->value() == 14, QString("unexpected font size: %1").arg(fontSizeSpinBox->value()));
     CHECK_SET_ERR(boldAttrButton->isChecked(), "boldAttrButton is not checked");
     CHECK_SET_ERR(italicAttrButton->isChecked(), "italicAttrButton is not checked");
