@@ -283,7 +283,7 @@ void CircularAnnotationLabel::drawLabelInsideRegion(QPainter *p, bool canFit) {
 
     qreal percent = 0;
     qreal percentIncreaseSgn = -1;
-    qreal arrowWidthPercentage = (ra->outerEllipseSize - ra->innerEllipseSize) / (2 * path.length());
+    qreal arrowWidthPercentage = (ra->outerEllipseSize - ra->innerEllipseSize + 5) / (2 * path.length());
 
     AnnotationData aData = annotation.getData();
     bool isDirect = aData.getStrand().isDirect();
