@@ -64,11 +64,6 @@ FormatDBSupportRunDialog::FormatDBSupportRunDialog(const QString &_name, FormatD
     if(!settings.inputFilesPath.isEmpty()){
         QString names=settings.inputFilesPath.join(";");
         inputFilesLineEdit->setText(names);
-        inputFilesLineEdit->setReadOnly(true);
-        inputFilesToolButton->setDisabled(true);
-        inputDirLineEdit->setDisabled(true);
-        inputDirRadioButton->setDisabled(true);
-        inputDirToolButton->setDisabled(true);
     }
     if (!settings.isInputAmino) {
         nucleotideTypeRadioButton->setChecked(true);
