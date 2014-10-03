@@ -24,6 +24,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/MAlignmentWalker.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
@@ -370,8 +371,10 @@ void MegaFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObjec
     //write data
     int seqLength=ma.getLength();
     int writtenLength=0;
-    QList<QByteArray> seqs = ma.toByteArrayList();
+    MAlignmentWalker walker(ma);
     while (writtenLength<seqLength) {
+        QList<QByteArray> seqs = walker.nextData(BLOCK_LENGTH, ti);
+        CHECK_OP(ti, );
         QList<QByteArray>::ConstIterator si = seqs.constBegin();
         QList<MAlignmentRow>::ConstIterator ri = ma.getRows().constBegin();
         for (; si != seqs.constEnd(); si++, ri++) {
@@ -384,10 +387,7 @@ void MegaFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObjec
                 line.append(' ');
             }
             
-            U2OpStatus2Log os;
-            QByteArray currentBlock=si->mid(writtenLength, BLOCK_LENGTH).
-                left(writtenLength + BLOCK_LENGTH > seqLength ? seqLength - writtenLength : BLOCK_LENGTH);
-            line.append(currentBlock).append('\n');
+            line.append(*si).append('\n');
             
             len = io->writeBlock(line);
             if (len != line.length()) {

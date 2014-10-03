@@ -218,6 +218,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/KnownMutationsUtils.h \
            src/util/MAlignmentExporter.h \
            src/util/MAlignmentImporter.h \
+           src/util/MAlignmentWalker.h \
            src/util/MsaDbiUtils.h \
            src/util/MsaRowUtils.h \
            src/util/MSAUtils.h \
@@ -409,6 +410,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/KnownMutationsUtils.cpp \
            src/util/MAlignmentExporter.cpp \
            src/util/MAlignmentImporter.cpp \
+           src/util/MAlignmentWalker.cpp \
            src/util/MsaDbiUtils.cpp \
            src/util/MsaRowUtils.cpp \
            src/util/MSAUtils.cpp \

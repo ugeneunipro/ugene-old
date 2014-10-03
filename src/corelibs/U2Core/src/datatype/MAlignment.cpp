@@ -1265,15 +1265,6 @@ bool MAlignment::sortRowsByList(const QStringList& rowsOrder) {
     return true;
 }
 
-QList<QByteArray> MAlignment::toByteArrayList() const {
-    QList<QByteArray> result;
-    U2OpStatus2Log os;
-    foreach(const MAlignmentRow &row, getRows()) {
-        result << row.toByteArray(getLength(), os);
-    }
-    return result;
-}
-
 const MAlignmentRow& MAlignment::getRow( QString name ) const{
     static MAlignmentRow emptyRow;
     for(int i = 0;i < rows.count();i++){

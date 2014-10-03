@@ -33,6 +33,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/MAlignmentWalker.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
@@ -252,9 +253,11 @@ void ClustalWAlnFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList
 
     //write sequence
     U2OpStatus2Log os;
-    QList<QByteArray> seqs = ma.toByteArrayList();
+    MAlignmentWalker walker(ma);
     for(int i = 0; i < aliLen; i+=seqPerPage) {
         int partLen = i + seqPerPage > aliLen ? aliLen - i : seqPerPage;
+        QList<QByteArray> seqs = walker.nextData(partLen, os);
+        CHECK_OP(os, );
         QList<QByteArray>::ConstIterator si = seqs.constBegin();
         QList<MAlignmentRow>::ConstIterator ri = ma.getRows().constBegin();
         for (; si != seqs.constEnd(); si++, ri++) {
@@ -265,7 +268,7 @@ void ClustalWAlnFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList
             }
             TextUtils::replace(line.data(), line.length(), TextUtils::WHITES, '_');
             line.append(QByteArray::fromRawData(spaces, seqStart - line.length()));
-            line.append(si->mid(i, partLen));
+            line.append(*si);
             line.append(' ');
             line.append(QString::number(qMin(i+seqPerPage, aliLen)));
             assert(line.length() <= MAX_LINE_LEN);

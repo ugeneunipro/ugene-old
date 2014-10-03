@@ -29,6 +29,7 @@
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentInfo.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/MAlignmentWalker.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiUtils.h>
@@ -629,7 +630,7 @@ static QByteArray getNameSeqGap( int diff ) {
     return ret;
 }
 
-static void save( IOAdapter* io, const MAlignment& msa, const QString& name ) {
+static void save( IOAdapter* io, const MAlignment& msa, const QString& name, U2OpStatus &os ) {
     assert( NULL != io );
     assert( msa.getNumRows() );
     int ret = 0;
@@ -648,9 +649,12 @@ static void save( IOAdapter* io, const MAlignment& msa, const QString& name ) {
     int name_max_len = getMaxNameLen( msa );
     int seq_len = msa.getLength();
     int cur_seq_pos = 0;
-    QList<QByteArray> seqs = msa.toByteArrayList();
+    MAlignmentWalker walker(msa);
+    CHECK_OP(os, );
     while ( 0 < seq_len ) {
         int block_len = ( WRITE_BLOCK_LENGTH >= seq_len )? seq_len: WRITE_BLOCK_LENGTH;
+        QList<QByteArray> seqs = walker.nextData(block_len, os);
+        CHECK_OP(os, );
 
         //write block
         U2OpStatus2Log os;
@@ -663,7 +667,7 @@ static void save( IOAdapter* io, const MAlignment& msa, const QString& name ) {
             name += getNameSeqGap( name_max_len - row.getName().size() );
             ret = io->writeBlock( name );
             checkValThrowException<int>( true, name.size(), ret, StockholmFormat::WriteError(io->getURL()) );
-            QByteArray seq = si->mid(cur_seq_pos, block_len).left(block_len) + NEW_LINE;
+            QByteArray seq = *si + NEW_LINE;
             ret = io->writeBlock( seq );
             checkValThrowException<int>( true, seq.size(), ret, StockholmFormat::WriteError(io->getURL()) );
         }
@@ -712,7 +716,7 @@ void StockholmFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os
         foreach( GObject* p_obj, doc->getObjects() ) {
             const MAlignmentObject* aln_obj = qobject_cast<const MAlignmentObject*>( p_obj );
             assert( NULL != aln_obj );
-            save( io, aln_obj->getMAlignment(), aln_obj->getGObjectName() );
+            save( io, aln_obj->getMAlignment(), aln_obj->getGObjectName(), os );
             CHECK_OP(os, );
         }
     } catch( const StockholmBaseException& ex ) {

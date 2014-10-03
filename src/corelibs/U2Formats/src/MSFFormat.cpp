@@ -25,6 +25,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
+#include <U2Core/MAlignmentWalker.h>
 #include <U2Core/MSAUtils.h>
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
@@ -309,7 +310,7 @@ void MSFFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject
         return;
     }
 
-    QList<QByteArray> seqs = ma.toByteArrayList();
+    MAlignmentWalker walker(ma, '.');
     for (int i = 0; !os.isCoR() && i < maLen; i += CHARS_IN_ROW) {
         /* write numbers */ {
             QByteArray line(maxNameLen + 2, ' ');
@@ -329,6 +330,8 @@ void MSFFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject
         }
 
         //write sequence
+        QList<QByteArray> seqs = walker.nextData(CHARS_IN_ROW, os);
+        CHECK_OP(os, );
         QList<QByteArray>::ConstIterator si = seqs.constBegin();
         QList<MAlignmentRow>::ConstIterator ri = ma.getRows().constBegin();
         for (; si != seqs.constEnd(); si++, ri++) {
@@ -340,8 +343,7 @@ void MSFFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject
             for (int j = 0; j < CHARS_IN_ROW && i + j < maLen; j += CHARS_IN_WORD) {
                 line += ' ';
                 int nChars = qMin(CHARS_IN_WORD, maLen - (i + j));
-                QByteArray bytes = si->mid(i + j, nChars);
-                bytes.replace(MAlignment_GapChar, '.');
+                QByteArray bytes = si->mid(j, nChars);
                 line += bytes;
             }
             SAFE_POINT_OP(os, );
