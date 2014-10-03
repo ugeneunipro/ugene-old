@@ -239,7 +239,7 @@ void DbiAnnotationCache::refAnnotationTable(const U2DbiRef &dbiRef, const U2Data
 }
 
 void DbiAnnotationCache::derefAnnotationTable(const U2DbiRef &dbiRef, const U2DataId &rootId) {
-    SAFE_POINT(containsAnnotationTable(dbiRef, rootId), "Unexpected annotation table", );
+    CHECK(containsAnnotationTable(dbiRef, rootId), );
     dbiDataCache[dbiRef]->derefAnnotationTable(rootId);
 }
 

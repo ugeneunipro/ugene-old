@@ -62,7 +62,6 @@
 #include <QtGui/QMessageBox>
 #include <QtGui/QColorDialog>
 #else
-#include <QtGui/QOpenGLFunctions_1_3>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QColorDialog>
 #endif
@@ -285,12 +284,9 @@ void BioStruct3DGLWidget::draw() {
     foreach (const BioStruct3DRendererContext &ctx, contexts) {
         glPushMatrix();
 
-#ifdef GL_VERSION_1_3
-#if (QT_VERSION < 0x050000) //Qt 5
+#if defined(GL_VERSION_1_3) && (QT_VERSION < 0x050000)
+        // glMultTransposeMatrixf is deprecated since Qt 5
         glMultTransposeMatrixf(ctx.biostruct->getTransform().data());
-#else
-        QOpenGLFunctions_1_3().glMultTransposeMatrixf(ctx.biostruct->getTransform().data());
-#endif
 #else
         // on OpenGL versions below 1.3 glMultTransposeMatrix not suported
         // see http://www.opengl.org/resources/faq/technical/extensions.htm

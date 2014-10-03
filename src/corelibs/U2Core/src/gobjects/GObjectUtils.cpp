@@ -262,15 +262,14 @@ GObject* GObjectUtils::selectObjectByReference(const GObjectReference& r, Unload
 
 GObject* GObjectUtils::selectObjectByReference(const GObjectReference& r, const QList<GObject*>& fromObjects, UnloadedObjectFilter f) {
     foreach(GObject* o, fromObjects) {
-        if (r.entityRef.isValid() && !(r.entityRef == o->getEntityRef())) {
+        Document *parentDoc = o->getDocument();
+        if (r.entityRef.isValid() && !(r.entityRef == o->getEntityRef()) && (NULL == parentDoc || parentDoc->isDatabaseConnection())) {
             continue;
         }
         if (o->getGObjectName() != r.objName) {
             continue;
         }
-        if ((o->getDocument() == NULL && !r.docUrl.isEmpty())
-            || (o->getDocument()->getURL().getURLString() != r.docUrl))
-        {
+        if ((parentDoc == NULL && !r.docUrl.isEmpty()) || (parentDoc->getURL().getURLString() != r.docUrl)) {
             continue;
         }
         if (r.objType != o->getGObjectType()) {

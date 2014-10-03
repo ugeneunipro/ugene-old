@@ -25,15 +25,15 @@
 #include "DocumentModel.h"
 #include "GHints.h"
 
-#include <U2Core/U2DbiUtils.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/GObjectUtils.h>
-#include <U2Core/UnloadedObject.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2ObjectRelationsDbi.h>
 #include <U2Core/U2ObjectTypeUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/UnloadedObject.h>
 
 namespace U2 {
 
@@ -97,8 +97,9 @@ QList<GObjectRelation> GObject::getObjectRelations() const {
     QList<GObjectRelation> res = hints->get(GObjectHint_RelatedObjects).value<QList<GObjectRelation> >();
 
     // fetch permanent object relations from DB
-    // only for first time
-    if (!arePermanentRelationsFetched && !isUnloaded()) {
+    // only for the first time for objects from shared DBs
+    Document *parentDoc = getDocument();
+    if (!arePermanentRelationsFetched && !isUnloaded() && !(NULL != parentDoc && !parentDoc->isDatabaseConnection())) {
         fetchPermanentGObjectRelations(res);
     }
 
@@ -170,6 +171,7 @@ void GObject::setRelationsInDb(QList<GObjectRelation>& list) const {
         GObjectRelation &relation = list[i];
         const U2DataType refType = U2ObjectTypeUtils::toDataType(relation.ref.objType);
         const bool relatedObjectDbReferenceValid = relation.ref.entityRef.dbiRef.isValid();
+
         if (U2Type::Unknown == refType || (relatedObjectDbReferenceValid && !(relation.ref.entityRef.dbiRef == entityRef.dbiRef))) {
             continue;
         }
@@ -251,9 +253,27 @@ void GObject::addObjectRelation(const GObject* obj, const GObjectRelationRole& r
     addObjectRelation(rel);
 }
 
+namespace {
+
+bool relationsAreEqualExceptDbId(const GObjectRelation &f, const GObjectRelation &s) {
+    return f.role == s.role && f.ref.objName == s.ref.objName && f.getDocURL() == s.getDocURL() && f.ref.objType == s.ref.objType &&
+        (!f.ref.entityRef.isValid() || !s.ref.entityRef.isValid() || f.ref.entityRef.dbiRef == s.ref.entityRef.dbiRef);
+}
+
+}
 
 bool GObject::hasObjectRelation(const GObjectRelation& r) const {
-    return getObjectRelations().contains(r);
+    Document *parentDoc = getDocument();
+    if (NULL != parentDoc && !parentDoc->isDatabaseConnection()) {
+        foreach (const GObjectRelation &rel, getObjectRelations()) {
+            if (relationsAreEqualExceptDbId(rel, r)) {
+                return true;
+            }
+        }
+        return false;
+    } else {
+        return getObjectRelations().contains(r);
+    }
 }
 
 bool GObject::hasObjectRelation(const GObject* obj, const GObjectRelationRole& role) const {
