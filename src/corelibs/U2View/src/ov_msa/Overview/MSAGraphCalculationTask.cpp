@@ -45,6 +45,8 @@ void MSAGraphCalculationTask::run() {
 
 void MSAGraphCalculationTask::constructPolygon(QPolygonF &polygon) {
     SAFE_POINT_EXT(width != 0, setError(tr("Overview width is zero")), );
+    stateInfo.setProgress(0);
+    emit si_progressChanged();
 
     if (msaLength == 0) {
         polygon = QPolygonF();
@@ -66,6 +68,8 @@ void MSAGraphCalculationTask::constructPolygon(QPolygonF &polygon) {
             int percent = getGraphValue(pos);
             points.append(QPointF(qRound( stepX * static_cast<double>(pos) + stepX / 2),
                                   height - stepY * percent));
+            stateInfo.setProgress(100 * pos / msaLength);
+            emit si_progressChanged();
         }
         points.append(QPointF( width, qRound( height - stepY * static_cast<double>(getGraphValue(msaLength - 1)))));
 
@@ -88,11 +92,15 @@ void MSAGraphCalculationTask::constructPolygon(QPolygonF &polygon) {
             CHECK(count != 0, );
             average /= count;
             points.append( QPointF(pos, height - stepY * average ));
+            stateInfo.setProgress(100 * pos / width);
+            emit si_progressChanged();
         }
     }
 
     points.append(QPointF(width, height));
     polygon = QPolygonF(points);
+    stateInfo.setProgress(100);
+    emit si_progressChanged();
 }
 
 MSAConsensusOverviewCalculationTask::MSAConsensusOverviewCalculationTask(MAlignmentObject* msa,
