@@ -674,18 +674,16 @@ void WidgetCreator::visit(LabelWidget *lw) {
                     ";
     style += "color: " + lw->textColor + ";";
     style += "background-color: " + lw->backgroundColor + ";";
-#ifdef Q_OS_WIN
     style += "padding: 8px;";
-#else
-    style += "padding: 0px 5px 0px 5px;";
-#endif
     label->setStyleSheet(style);
     label->setAlignment(Qt::AlignJustify);
     label->setWordWrap(true);
 
+#ifdef Q_OS_WIN
     QFont font = label->font();
     font.setPointSize(font.pointSize() + 2);
     label->setFont(font);
+#endif
 
     result = label;
 }
