@@ -20,17 +20,18 @@
  */
 
 #include <U2Core/L10n.h>
+#include <U2Core/MAlignmentObject.h>
 
 #include "MAlignmentWalker.h"
 
 namespace U2 {
 
-class RowWalker : public QObject {
+class RowWalker {
 public:
-    RowWalker(const MAlignmentRow &row, char gapChar, QObject *parent)
-    : QObject(parent), row(row), seqPos(0), gapChar(gapChar)
+    RowWalker(const MAlignmentRow &row, char gapChar)
+    : row(row), gaps(row.getGapModel()), seqPos(0), gapChar(gapChar)
     {
-        gaps = row.getGapModel();
+
     }
 
     QByteArray nextData(int startPos, int length, U2OpStatus &os) {
@@ -73,7 +74,7 @@ private:
         CHECK(!gaps.isEmpty(), false);
         const U2MsaGap &gap = gaps.first();
 
-        SAFE_POINT_EXT(gap.offset >= startPos, os.setError(L10N::badArgument(tr("Unexpected gap start"))), false);
+        SAFE_POINT_EXT(gap.offset >= startPos, os.setError(L10N::badArgument(MAlignmentObject::tr("Unexpected gap start"))), false);
 
         if (gap.offset >= startPos + length) {
             return false;
@@ -82,8 +83,8 @@ private:
     }
 
     static void splitGap(int startPos, int length, const U2MsaGap &gap, U2MsaGap &inRegion, U2MsaGap &outRegion, U2OpStatus &os) {
-        SAFE_POINT_EXT(gap.offset >= startPos, os.setError(L10N::badArgument(tr("Unexpected gap start (too small)"))), );
-        SAFE_POINT_EXT(gap.offset < startPos + length, os.setError(L10N::badArgument(tr("Unexpected gap start (too big)"))), );
+        SAFE_POINT_EXT(gap.offset >= startPos, os.setError(L10N::badArgument(MAlignmentObject::tr("Unexpected gap start (too small)"))), );
+        SAFE_POINT_EXT(gap.offset < startPos + length, os.setError(L10N::badArgument(MAlignmentObject::tr("Unexpected gap start (too big)"))), );
 
         int endPos = startPos + length - 1;
         if (gap.offset + gap.gap <= endPos) {
@@ -97,10 +98,10 @@ private:
 
         SAFE_POINT_EXT((startPos + length >= inRegion.offset + inRegion.gap)
                     && (inRegion.gap + outRegion.gap == gap.gap),
-                    os.setError(L10N::internalError() + tr(" Incorrect gap splitting")), );
+                    os.setError(L10N::internalError() + MAlignmentObject::tr(" Incorrect gap splitting")), );
     }
 
-    QByteArray gapsBytes(int length) {
+    QByteArray gapsBytes(int length) const {
         return QByteArray(length, gapChar);
     }
 
@@ -111,12 +112,19 @@ private:
     const char gapChar;
 };
 
+/************************************************************************/
+/* MAlignmentWalker */
+/************************************************************************/
 MAlignmentWalker::MAlignmentWalker(const MAlignment &msa, char gapChar)
-: QObject(), msa(msa), currentOffset(0)
+: msa(msa), currentOffset(0)
 {
     for (int i=0; i<msa.getNumRows(); i++) {
-        rowWalkerList << new RowWalker(msa.getRow(i), gapChar, this);
+        rowWalkerList << new RowWalker(msa.getRow(i), gapChar);
     }
+}
+
+MAlignmentWalker::~MAlignmentWalker() {
+    qDeleteAll(rowWalkerList);
 }
 
 bool MAlignmentWalker::isEnded() const {
@@ -125,8 +133,8 @@ bool MAlignmentWalker::isEnded() const {
 
 QList<QByteArray> MAlignmentWalker::nextData(int length, U2OpStatus &os) {
     QList<QByteArray> result;
-    SAFE_POINT_EXT(!isEnded(), os.setError(L10N::internalError() + tr(" Alignment walker is ended")), result);
-    SAFE_POINT_EXT(msa.getNumRows() == rowWalkerList.size(), os.setError(L10N::internalError() + tr(" Alignment changed")), result);
+    SAFE_POINT_EXT(!isEnded(), os.setError(L10N::internalError() + MAlignmentObject::tr(" Alignment walker is ended")), result);
+    SAFE_POINT_EXT(msa.getNumRows() == rowWalkerList.size(), os.setError(L10N::internalError() + MAlignmentObject::tr(" Alignment changed")), result);
 
     int charsRemain = msa.getLength() - currentOffset;
     int chunkSize = (charsRemain < length) ? charsRemain : length;

@@ -28,9 +28,10 @@ namespace U2 {
 
 class RowWalker;
 
-class U2CORE_EXPORT MAlignmentWalker : public QObject {
+class U2CORE_EXPORT MAlignmentWalker {
 public:
     MAlignmentWalker(const MAlignment &msa, char gapChar = MAlignment_GapChar);
+    ~MAlignmentWalker();
 
     bool isEnded() const;
 
