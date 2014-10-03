@@ -41,8 +41,8 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::ImportBAMFileFiller"
 #define GT_METHOD_NAME "run"
 ImportBAMFileFiller::ImportBAMFileFiller(U2OpStatus &os, const QString destinationUrl,
+                                         const QString referenceFolderPath, const QString referenceFileName,
                                          bool importUnmappedReads,
-                                         const QString &referenceFolderPath, const QString &referenceFileName,
                                          int timeoutMs) :
     Filler(os, "Import BAM File"),
     referenceFolderPath(referenceFolderPath),

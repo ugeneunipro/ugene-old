@@ -5114,7 +5114,8 @@ GUI_TEST_CLASS_DEFINITION(test_3255) {
 //    Expected state: the task finished without errors.
     GTLogTracer l;
 
-    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_3255/test_3255.ugenedb", true));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_3255/test_3255.ugenedb",
+                                                             "", "", true));
     GTFileDialog::openFile(os, testDir + "_common_data/bam/", "1.bam");
 
     GTUtilsLog::check(os, l);
