@@ -197,6 +197,8 @@ namespace {
             wc->setAttributeValue(tsw->samplesAttr, defaultSamples);
         }
 
+        void visit(LabelWidget *) {}
+
     private:
         WizardController *wc;
     };
@@ -659,6 +661,33 @@ void WidgetCreator::visit(TophatSamplesWidget *tsw) {
     U2OpStatusImpl os;
     result = controller->createGUI(os);
     fullWidth = true;
+}
+
+void WidgetCreator::visit(LabelWidget *lw) {
+    QString text = lw->text;
+    text.replace("\\n", "\n");
+    QLabel *label = new QLabel(text);
+    QString style = "\
+                    border-width: 1px;\
+                    border-style: solid;\
+                    border-radius: 4px;\
+                    ";
+    style += "color: " + lw->textColor + ";";
+    style += "background-color: " + lw->backgroundColor + ";";
+#ifdef Q_OS_WIN
+    style += "padding: 8px;";
+#else
+    style += "padding: 0px 5px 0px 5px;";
+#endif
+    label->setStyleSheet(style);
+    label->setAlignment(Qt::AlignJustify);
+    label->setWordWrap(true);
+
+    QFont font = label->font();
+    font.setPointSize(font.pointSize() + 2);
+    label->setFont(font);
+
+    result = label;
 }
 
 QWidget * WidgetCreator::getResult() {

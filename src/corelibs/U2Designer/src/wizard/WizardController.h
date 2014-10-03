@@ -147,6 +147,7 @@ public:
     virtual void visit(SettingsWidget *sw);
     virtual void visit(BowtieWidget *sw);
     virtual void visit(TophatSamplesWidget *tsw);
+    virtual void visit(LabelWidget *lw);
 
     QWidget * getResult();
     QList<WidgetController*> & getControllers();

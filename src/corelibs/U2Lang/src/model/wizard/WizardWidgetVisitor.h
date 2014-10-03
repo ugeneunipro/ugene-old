@@ -40,6 +40,7 @@ public:
     virtual void visit(SettingsWidget *) = 0;
     virtual void visit(BowtieWidget *) = 0;
     virtual void visit(TophatSamplesWidget *) = 0;
+    virtual void visit(LabelWidget *) = 0;
 };
 
 } // U2

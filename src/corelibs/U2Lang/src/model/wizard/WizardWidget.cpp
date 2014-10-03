@@ -414,4 +414,22 @@ void TophatSamplesWidget::validate(const QList<Actor*> &actors, U2OpStatus &os) 
     os.setError(QObject::tr("Unknown actor ID: ") + datasetsProvider);
 }
 
+/************************************************************************/
+/* LabelWidget */
+/************************************************************************/
+const QString LabelWidget::ID("label");
+const QString LabelWidget::DEFAULT_BG_COLOR("");
+const QString LabelWidget::DEFAULT_TEXT_COLOR("black");
+
+LabelWidget::LabelWidget()
+: WizardWidget()
+{
+    textColor = DEFAULT_TEXT_COLOR;
+    backgroundColor = DEFAULT_BG_COLOR;
+}
+
+void LabelWidget::accept(WizardWidgetVisitor *visitor) {
+    visitor->visit(this);
+}
+
 } // U2

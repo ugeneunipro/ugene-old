@@ -1,5 +1,5 @@
 #@UGENE_WORKFLOW
-#The workflow gets one or several sequences as input. For each sequence it sends a request to the NCBI BLAST remote database to search for homologous sequences.
+#The workflow gets one or several sequences as input. For each sequence it sends a request to the NCBI BLAST remote database to search for homologous nucleotide sequences.
 #The following options are set to the BLAST search by default:
 #  1) Nucleotide BLAST database is used.
 #  2) The search is optimized for high similar sequences (i.e. the "Megablast" option is selected) as on the NCBI BLAST web site.
@@ -126,7 +126,7 @@ url_out = dir + "homologous.gb"
             page {
                 id:1;
                 next:2;
-                title:"Input sequence(s)";
+                title:"Input Sequence(s)";
                 parameters-area {
                     read-sequence.url-in {
                         type:datasets;
@@ -135,35 +135,41 @@ url_out = dir + "homologous.gb"
             }
             page {
                 id:2;
-                title:"Remote BLAST";
+                next:3;
+                title:"Remote Nucleotide BLAST";
                 parameters-area {
                     group {
-                        title:"Remote BLAST parameters";
+                        title:"Remote BLAST Parameters";
                         label-size:120;
 
-                        blast-ncbi.alg {
-                            label:"Program";
-                        }
                         blast-ncbi.db {}
                         blast-ncbi.e-value {}
                         blast-ncbi.hits {}
                         blast-ncbi.megablast {}
-                        blast-ncbi.gap_costs {}
-                        blast-ncbi.match_scores {}
                     }
                     group {
                         title:"Additional";
                         label-size:120;
                         type:hideable;
 
+                        blast-ncbi.gap_costs {}
+                        blast-ncbi.match_scores {}
                         blast-ncbi.short_seq {}
                         blast-ncbi.entrez_query {}
-                        blast-ncbi.blast-output {}
                         blast-ncbi.result-name {}
+                    }
+                }
+            }
+            page {
+                id:3;
+                title:"Output Files";
+                parameters-area {
+                    label {
+                        text:"For each input sequence the workflow outputs the sequence itself with the BLAST result annotations (named 'orig_with_blast.gb') and a set of homologous sequences loaded from the NCBI by IDs specified in the BLAST results (named 'homologous.gb').\n\nThe output files are grouped by folders, named as the input sequences, so that the results from different sequences can be clearly distinguished.";
+                        background-color:"rgb(203,222,228)";
                     }
                 }
             }
         }
     }
 }
-

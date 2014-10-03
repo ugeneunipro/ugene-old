@@ -55,6 +55,9 @@ const QString HRWizardParser::TOOLTIP("tooltip");
 const QString HRWizardParser::HAS_RUN_BUTTON("has-run-button");
 const QString HRWizardParser::HAS_DEFAULTS_BUTTON("has-defaults-button");
 const QString HRWizardParser::DATASETS_PROVIDER("datasets-provider");
+const QString HRWizardParser::TEXT("text");
+const QString HRWizardParser::TEXT_COLOR("text-color");
+const QString HRWizardParser::BACKGROUND_COLOR("background-color");
 
 HRWizardParser::HRWizardParser(Tokenizer &tokenizer, const QMap<QString, Actor*> &_actorMap)
 : tokenizer(tokenizer), actorMap(_actorMap)
@@ -432,6 +435,22 @@ void WizardWidgetParser::visit(TophatSamplesWidget *tsw) {
     tsw->samplesAttr = parseInfo(pairs.blockPairsList[0].first, pairs.blockPairsList[0].second);
 }
 
+void WizardWidgetParser::visit(LabelWidget *lw) {
+    pairs = ParsedPairs(data, 0);
+    if (!pairs.equalPairs.contains(HRWizardParser::TEXT)) {
+        os.setError(HRWizardParser::tr("Not enough attributes for the label widget"));
+        return;
+    }
+    lw->text = pairs.equalPairs[HRWizardParser::TEXT];
+
+    if (pairs.equalPairs.contains(HRWizardParser::TEXT_COLOR)) {
+        lw->textColor = pairs.equalPairs[HRWizardParser::TEXT_COLOR];
+    }
+    if (pairs.equalPairs.contains(HRWizardParser::BACKGROUND_COLOR)) {
+        lw->backgroundColor = pairs.equalPairs[HRWizardParser::BACKGROUND_COLOR];
+    }
+}
+
 SelectorValue WizardWidgetParser::parseSelectorValue(ActorPrototype *srcProto, const QString &valueDef) {
     ParsedPairs pairs(valueDef, 0);
     if (!pairs.equalPairs.contains(HRWizardParser::ID)) {
@@ -535,6 +554,8 @@ WizardWidget * WizardWidgetParser::createWidget(const QString &id) {
         return new BowtieWidget();
     } else if (TophatSamplesWidget::ID == id) {
         return new TophatSamplesWidget();
+    } else if (LabelWidget::ID == id) {
+        return new LabelWidget();
     } else {
         return new AttributeWidget();
     }
@@ -805,6 +826,18 @@ void WizardWidgetSerializer::visit(TophatSamplesWidget *tsw) {
 
     result = HRSchemaSerializer::makeBlock(TophatSamplesWidget::ID,
         Constants::NO_NAME, tsData, depth);
+}
+
+void WizardWidgetSerializer::visit(LabelWidget *lw) {
+    QString lData;
+    lData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::TEXT, lw->text, depth + 1);
+    if (lw->backgroundColor != LabelWidget::DEFAULT_BG_COLOR) {
+        lData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::BACKGROUND_COLOR, lw->backgroundColor, depth + 1);
+    }
+    if (lw->textColor != LabelWidget::DEFAULT_TEXT_COLOR) {
+        lData += HRSchemaSerializer::makeEqualsPair(HRWizardParser::TEXT_COLOR, lw->textColor, depth + 1);
+    }
+    result = HRSchemaSerializer::makeBlock(LabelWidget::ID, Constants::NO_NAME, lData, depth);
 }
 
 QString WizardWidgetSerializer::serializeSlotsMapping(const QList<SlotMapping> &mappings, int depth) const {

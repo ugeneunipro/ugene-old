@@ -282,6 +282,26 @@ public:
     QString datasetsProvider;
 };
 
+/************************************************************************/
+/* LabelWidget */
+/************************************************************************/
+class U2LANG_EXPORT LabelWidget : public WizardWidget {
+public:
+    LabelWidget();
+
+    virtual void accept(WizardWidgetVisitor *visitor);
+
+    static const QString ID;
+    static const QString DEFAULT_BG_COLOR;
+    static const QString DEFAULT_TEXT_COLOR;
+
+public:
+    QString text;
+    QString textColor;
+    QString backgroundColor;
+};
+
+
 } // U2
 
 #endif // _U2_WIZARDWIDGET_H_

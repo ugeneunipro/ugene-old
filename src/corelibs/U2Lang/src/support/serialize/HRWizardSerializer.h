@@ -92,6 +92,9 @@ public:
     static const QString BWT_DIR;
     static const QString BWT_IDX_NAME;
     static const QString DATASETS_PROVIDER;
+    static const QString TEXT;
+    static const QString TEXT_COLOR;
+    static const QString BACKGROUND_COLOR;
 };
 
 class U2LANG_EXPORT HRWizardSerializer {
@@ -126,6 +129,7 @@ public:
     virtual void visit(SettingsWidget *sw);
     virtual void visit(BowtieWidget *bw);
     virtual void visit(TophatSamplesWidget *tsw);
+    virtual void visit(LabelWidget *lw);
 
 private:
     QString title;
@@ -182,6 +186,7 @@ public:
     virtual void visit(SettingsWidget *sw);
     virtual void visit(BowtieWidget *bw);
     virtual void visit(TophatSamplesWidget *tsw);
+    virtual void visit(LabelWidget *lw);
 
     const QString & getResult();
 
