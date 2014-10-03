@@ -40,11 +40,15 @@ namespace U2 {
 
 #define GT_CLASS_NAME "GTUtilsDialog::ImportBAMFileFiller"
 #define GT_METHOD_NAME "run"
-ImportBAMFileFiller::ImportBAMFileFiller(U2OpStatus &os, const QString destinationUrl, const QString &referenceFolderPath, const QString &referenceFileName, int timeoutMs) :
+ImportBAMFileFiller::ImportBAMFileFiller(U2OpStatus &os, const QString destinationUrl,
+                                         bool importUnmappedReads,
+                                         const QString &referenceFolderPath, const QString &referenceFileName,
+                                         int timeoutMs) :
     Filler(os, "Import BAM File"),
     referenceFolderPath(referenceFolderPath),
     referenceFileName(referenceFileName),
-    destinationUrl(destinationUrl){
+    destinationUrl(destinationUrl),
+    importUnmappedReads(importUnmappedReads) {
     settings.timeout = timeoutMs;
 }
 
@@ -66,11 +70,17 @@ void ImportBAMFileFiller::run() {
         GTLineEdit::setText(os, destinationUrlEdit, destinationUrl);
     }
 
+    QCheckBox* importUnmapped = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "importUnmappedBox", dialog));
+    GT_CHECK(importUnmapped, "ImportUnmappedReads checkbox is NULL");
+    if (importUnmapped->isChecked() != importUnmappedReads) {
+        GTCheckBox::setChecked(os, importUnmapped, importUnmapped);
+    }
+
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
     QPushButton* button = box->button(QDialogButtonBox::Ok);
     GT_CHECK(button !=NULL, "ok button is NULL");
     GTWidget::click(os, button);
-    }
+}
 
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME

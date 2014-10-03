@@ -5107,6 +5107,19 @@ GUI_TEST_CLASS_DEFINITION(test_3250) {
     CHECK_SET_ERR(opStatus.hasError(), "Export item exists");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3255) {
+//    1. Open "data/samples/Assembly/chrM.sam.bam".
+//    Expected state: an import dialog appears.
+//    2. Set any valid output path (or use default), check the "Import unmapped reads" option and click the "Import" button.
+//    Expected state: the task finished without errors.
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_3255/test_3255.ugenedb", true));
+    GTFileDialog::openFile(os, testDir + "_common_data/bam/", "1.bam");
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3274) {
     QStringList expectedNames;
     QList<ADVSingleSequenceWidget*> seqWidgets;
@@ -5483,6 +5496,52 @@ GUI_TEST_CLASS_DEFINITION(test_3348) {
 
     GTUtilsMdi::click(os, GTGlobals::Close);
     GTMouseDriver::click(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3373) {
+//    1. Launch WD
+//    2. Create the following workflow: "Read Sequence" -> "Reverse Complement" -> "Write Sequence"
+//    3. Set output format "genbank" (to prevent warnings about annotation support) and the "result.gb" output file name
+//    4. Set input file "test/_common_data/fasta/seq1.fa"
+//    5. Run the workflow
+//    Expected state: workflow is successfully finished. "result.gb" contains reverse complement sequence for "seq1.fa"
+    GTLogTracer l;
+
+    QMenu* menu=GTMenu::showMainMenu( os, MWMENU_TOOLS);
+    GTMenu::clickMenuItemByName( os, menu, QStringList() << "Workflow Designer");
+
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Reverse Complement");
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Write Sequence");
+
+    WorkflowProcessItem *seqReader = GTUtilsWorkflowDesigner::getWorker( os, "Read Sequence");
+    WorkflowProcessItem *revComplement = GTUtilsWorkflowDesigner::getWorker( os, "Reverse Complement");
+    WorkflowProcessItem *seqWriter = GTUtilsWorkflowDesigner::getWorker( os, "Write Sequence");
+
+    GTUtilsWorkflowDesigner::connect( os, seqReader, revComplement);
+    GTUtilsWorkflowDesigner::connect( os, revComplement, seqWriter);
+
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Write Sequence" ) );
+    GTMouseDriver::click( os );
+    QTableView *table = qobject_cast<QTableView *>( GTWidget::findWidget( os, "table" ) );
+    CHECK_SET_ERR( table, "tableView not found" );
+    GTMouseDriver::moveTo( os, GTTableView::getCellPosition( os, table, 1, 2 ) );
+    GTMouseDriver::click( os );
+    GTKeyboardDriver::keySequence( os, "genbank" );
+    GTGlobals::sleep();
+    GTMouseDriver::moveTo( os, GTTableView::getCellPosition( os, table, 1, 3 ) );
+    GTMouseDriver::click( os );
+    GTKeyboardDriver::keySequence( os, "result.gb" );
+    GTWidget::click( os, GTUtilsMdi::activeWindow( os ) );
+
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Read Sequence"));
+    GTMouseDriver::click( os);
+    QString dirPath = testDir + "_common_data/fasta/";
+    GTUtilsWorkflowDesigner::setDatasetInputFile( os, dirPath, "seq1.fa" );
+
+    GTWidget::click( os, GTAction::button(os,"Run workflow"));
+
+    GTUtilsLog::check( os, l );
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3379) {

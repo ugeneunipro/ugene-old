@@ -28,13 +28,17 @@ namespace U2 {
 
 class ImportBAMFileFiller : public Filler {
 public:
-    ImportBAMFileFiller(U2OpStatus &os, const QString destinationUrl = "", const QString &referenceFolderPath = "", const QString &referenceFileName = "", int timeoutMs = 120000);
+    ImportBAMFileFiller(U2OpStatus &os, const QString destinationUrl = "",
+                        bool importUnmappedReads = false,
+                        const QString &referenceFolderPath = "", const QString &referenceFileName = "",
+                        int timeoutMs = 120000);
 
     virtual void run();
 private:
     const QString referenceFolderPath;
     const QString referenceFileName;
     const QString destinationUrl;
+    const bool    importUnmappedReads;
 };
 
 }   // namespace U2
