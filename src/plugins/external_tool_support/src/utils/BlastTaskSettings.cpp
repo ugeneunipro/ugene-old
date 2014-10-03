@@ -34,6 +34,7 @@ BlastTaskSettings::BlastTaskSettings() {
     isDefaultCosts=true;
     isGappedAlignment=true;
     isDefaultThreshold=true;
+    isSequenceCircular=false;
     reset();
 }
 
@@ -61,6 +62,7 @@ void BlastTaskSettings::reset() {
     windowSize=0;
     threshold=0;
     isDefaultThreshold=true;
+    isSequenceCircular=false;
     directStrand = TriState_Unknown;
 }
 

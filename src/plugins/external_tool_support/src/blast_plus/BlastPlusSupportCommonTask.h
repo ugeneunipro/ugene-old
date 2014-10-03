@@ -35,6 +35,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationData.h>
 #include <U2Core/ExternalToolRunTask.h>
+#include <U2Core/U2SequenceUtils.h>
 
 #include "utils/BlastTaskSettings.h"
 
@@ -69,6 +70,7 @@ private:
     U2SequenceObject*               sequenceObject;
     Document*                       tmpDoc;
     QList<AnnotationData>           result;
+    U2PseudoCircularization*        circularization;
 
     void parseTabularResult();
     void parseTabularLine(const QByteArray &line);
@@ -94,7 +96,7 @@ private:
 };
 
 class BlastDbCmdSupportTask : public Task {
-    
+
 };
 
 

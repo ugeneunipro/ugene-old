@@ -60,6 +60,7 @@ BlastPlusSupportCommonTask::BlastPlusSupportCommonTask(const BlastTaskSettings& 
     tmpDoc=NULL;
     saveTemporaryDocumentTask=NULL;
     sequenceObject=NULL;
+    circularization = new U2PseudoCircularization(this, settings.isSequenceCircular, settings.querySequence);
     addTaskResource(TaskResourceUsage(RESOURCE_THREAD, settings.numberOfProcessors));
 }
 
@@ -119,7 +120,7 @@ void BlastPlusSupportCommonTask::prepare(){
     CHECK_OP(stateInfo, );
     sequenceObject = new U2SequenceObject("input sequence", seqRef);
     tmpDoc->addObject(sequenceObject);
-    
+
     saveTemporaryDocumentTask = new SaveDocumentTask(tmpDoc, AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE), url);
     saveTemporaryDocumentTask->setSubtaskProgressWeight(5);
     addSubTask(saveTemporaryDocumentTask);
@@ -175,7 +176,6 @@ QList<Task*> BlastPlusSupportCommonTask::onSubTaskFinished(Task* subTask) {
                     AnnotationData &ad = it_ad.next();
                     U2Region::shift(settings.offsInGlobalSeq, ad.location->regions);
                 }
-
                 res.append(new CreateAnnotationsTask(settings.aobj, settings.groupName, result));
             }
         }
@@ -186,7 +186,7 @@ Task::ReportResult BlastPlusSupportCommonTask::report(){
     if( url.isEmpty() ) {
         return ReportResult_Finished;
     }
-    
+
     //Remove subdir for temporary files, that created in prepare
     QDir tmpDir(QFileInfo(url).absoluteDir());
     foreach(QString file, tmpDir.entryList(QDir::Files|QDir::Hidden)){
@@ -232,12 +232,12 @@ void BlastPlusSupportCommonTask::parseTabularLine(const QByteArray &line){
     }
     from = elements.at(6).toInt(&isOk);
     if(!isOk) {
-        stateInfo.setError("Can't get location");
+        stateInfo.setError(tr("Can't get location"));
         return;
     }
     to = elements.at(7).toInt(&isOk);
     if(!isOk) {
-        stateInfo.setError("Can't get location");
+        stateInfo.setError(tr("Can't get location"));
         return;
     }
     if( from != -1 && to != -1 ) {
@@ -246,19 +246,21 @@ void BlastPlusSupportCommonTask::parseTabularLine(const QByteArray &line){
         }else{
             ad.location->regions << U2Region( to-1, from - to + 1);
         }
+        circularization->uncircularizeLocation(ad.location);
+        CHECK( !ad.location->regions.isEmpty(), );
     } else {
-        stateInfo.setError("Can't evaluate location");
+        stateInfo.setError(tr("Can't evaluate location"));
         return;
     }
 
     hitFrom = elements.at(8).toInt(&isOk);
     if(!isOk) {
-        stateInfo.setError("Can't get hit location");
+        stateInfo.setError(tr("Can't get hit location"));
         return;
     }
     hitTo = elements.at(9).toInt(&isOk);
     if(!isOk) {
-        stateInfo.setError("Can't get hit location");
+        stateInfo.setError(tr("Can't get hit location"));
         return;
     }
     if( hitFrom != -1 && hitTo != -1 ) {
@@ -274,7 +276,7 @@ void BlastPlusSupportCommonTask::parseTabularLine(const QByteArray &line){
             ad.qualifiers.push_back(U2Qualifier("hit-from", QString::number(hitTo)));
         }
     } else {
-        stateInfo.setError("Can't evaluate hit location");
+        stateInfo.setError(tr("Can't evaluate hit location"));
         return;
     }
     QString elem=QString(elements.at(11));
@@ -288,17 +290,17 @@ void BlastPlusSupportCommonTask::parseTabularLine(const QByteArray &line){
 
     align_len = elements.at(3).toInt(&isOk);
     if(!isOk) {
-        stateInfo.setError("Can't get align length");
+        stateInfo.setError(tr("Can't get align length"));
         return;
     }
     gaps = elements.at(4).toInt(&isOk);
     if(!isOk) {
-        stateInfo.setError("Can't get gaps");
+        stateInfo.setError(tr("Can't get gaps"));
         return;
     }
     float identitiesPercent = elements.at(2).toFloat(&isOk);
     if(!isOk) {
-        stateInfo.setError("Can't get identity");
+        stateInfo.setError(tr("Can't get identity"));
         return;
     }
     if( align_len != -1 ) {
@@ -327,11 +329,11 @@ void BlastPlusSupportCommonTask::parseXMLResult() {
     QDomDocument xmlDoc;
     QFile file(settings.outputOriginalFile);
     if (!file.open(QIODevice::ReadOnly)){
-        stateInfo.setError("Can't open output file");
+        stateInfo.setError(tr("Can't open output file"));
         return;
     }
     if (!xmlDoc.setContent(&file)) {
-        stateInfo.setError("Can't read output file");
+        stateInfo.setError(tr("Can't read output file"));
         file.close();
         return;
     }
@@ -390,14 +392,14 @@ void BlastPlusSupportCommonTask::parseXMLHsp(const QDomNode &xml,const QString &
     QString fr = elem.text();
     from = elem.text().toInt(&isOk);
     if(!isOk) {
-        stateInfo.setError("Can't get location");
+        stateInfo.setError(tr("Can't get location"));
         return;
     }
 
     elem = xml.lastChildElement("Hsp_query-to");
     to = elem.text().toInt(&isOk);
     if(!isOk) {
-        stateInfo.setError("Can't get location");
+        stateInfo.setError(tr("Can't get location"));
         return;
     }
 
@@ -414,7 +416,7 @@ void BlastPlusSupportCommonTask::parseXMLHsp(const QDomNode &xml,const QString &
     elem = xml.lastChildElement("Hsp_hit-frame");
     int frame = elem.text().toInt(&isOk);
     if(!isOk) {
-        stateInfo.setError("Can't get location");
+        stateInfo.setError(tr("Can't get location"));
         return;
     }
     QString frame_txt = (frame < 0) ? "complement" : "direct";
@@ -424,7 +426,7 @@ void BlastPlusSupportCommonTask::parseXMLHsp(const QDomNode &xml,const QString &
     elem = xml.lastChildElement("Hsp_identity");
     identities = elem.text().toInt(&isOk);
     if(!isOk) {
-        stateInfo.setError("Can't get identity");
+        stateInfo.setError(tr("Can't get identity"));
         return;
     }
 
@@ -432,7 +434,7 @@ void BlastPlusSupportCommonTask::parseXMLHsp(const QDomNode &xml,const QString &
     if(!elem.isNull()) {
         gaps = elem.text().toInt(&isOk);
         if(!isOk) {
-            stateInfo.setError("Can't get gaps");
+            stateInfo.setError(tr("Can't get gaps"));
             return;
         }
     }
@@ -440,11 +442,13 @@ void BlastPlusSupportCommonTask::parseXMLHsp(const QDomNode &xml,const QString &
     elem = xml.lastChildElement("Hsp_align-len");
     align_len = elem.text().toInt(&isOk);
     if(!isOk) {
-        stateInfo.setError("Can't get align length");
+        stateInfo.setError(tr("Can't get align length"));
         return;
     }
     //at new blast+ not need check strand
     ad.location->regions << U2Region( from-1, to - from + 1);
+    circularization->uncircularizeLocation(ad.location);
+    CHECK( !ad.location->regions.isEmpty(), );
 
     if( align_len != -1 ) {
         if( gaps != -1 ) {

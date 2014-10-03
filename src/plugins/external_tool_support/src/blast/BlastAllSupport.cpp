@@ -174,7 +174,7 @@ void BlastAllSupportContext::sl_showDialog() {
     U2OpStatus2Log os;
     ExternalToolSupportSettings::checkTemporaryDir(os);
     CHECK_OP(os, );
-    
+
     QAction* a = (QAction*)sender();
     GObjectViewAction* viewAction = qobject_cast<GObjectViewAction*>(a);
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(viewAction->getObjectView());
@@ -199,6 +199,8 @@ void BlastAllSupportContext::sl_showDialog() {
 //            DNATranslation * aminoT = (dlg.translateToAmino ? seqCtx->getAminoTT() : 0);
 //            DNATranslation * complT = (dlg.translateToAmino ? seqCtx->getComplementTT() : 0);
             settings.offsInGlobalSeq=r.startPos;
+            SAFE_POINT(seqCtx->getSequenceObject() != NULL, tr("Sequence object is NULL"), );
+            settings.isSequenceCircular = seqCtx->getSequenceObject()->isCircular();
             Task * t = new BlastAllSupportTask(settings);
             AppContext::getTaskScheduler()->registerTopLevelTask( t );
         }

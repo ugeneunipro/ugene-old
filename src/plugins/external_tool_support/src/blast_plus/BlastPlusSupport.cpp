@@ -209,7 +209,7 @@ void BlastPlusSupport::sl_runWithExtFileSpecify(){
     U2OpStatus2Log os;
     ExternalToolSupportSettings::checkTemporaryDir(os);
     CHECK_OP(os, );
-    
+
     //Call select input file and setup settings dialog
     BlastPlusWithExtFileSpecifySupportRunDialog blastPlusRunDialog(lastDBPath, lastDBName, AppContext::getMainWindow()->getQMainWindow());
     if(blastPlusRunDialog.exec() != QDialog::Accepted){
@@ -229,7 +229,7 @@ BlastPlusSupportContext::BlastPlusSupportContext(QObject* p) : GObjectViewWindow
     toolList << ET_BLASTN << ET_BLASTP << ET_BLASTX << ET_TBLASTN << ET_TBLASTX << ET_RPSBLAST;
     lastDBName="";
     lastDBPath="";
-    
+
     fetchSequenceByIdAction = new QAction(tr("Fetch sequences by 'id'"), this);
     connect(fetchSequenceByIdAction, SIGNAL(triggered()), SLOT(sl_fetchSequenceById()));
 
@@ -252,7 +252,7 @@ static void setActionFontItalic(QAction* action, bool italic) {
     action->setFont(font);
 }
 void BlastPlusSupportContext::buildMenu(GObjectView* view, QMenu* m) {
-    
+
     QList<GObjectViewAction *> actions = getViewActions(view);
     QMenu* analyseMenu = GUIUtils::findSubMenu(m, ADV_MENU_ANALYSE);
     SAFE_POINT(analyseMenu != NULL, "analyseMenu", );
@@ -276,14 +276,14 @@ void BlastPlusSupportContext::buildMenu(GObjectView* view, QMenu* m) {
         if(name != sel.annotation.getName()) {
             name = "";
         }
-        
+
         QString id = sel.annotation.findFirstQualifierValue("id");
         if(!id.isEmpty()) {
             isShowId = true;
             selectedId = id;
-        } 
+        }
 
-        isBlastResult = name == BLAST_ANNOTATION_NAME; 
+        isBlastResult = name == BLAST_ANNOTATION_NAME;
     }
 
     if(isShowId && isBlastResult ) {
@@ -337,7 +337,7 @@ void BlastPlusSupportContext::sl_showDialog() {
             return;
         }
     }
-    
+
     U2OpStatus2Log os(LogLevel_DETAILS);
     ExternalToolSupportSettings::checkTemporaryDir(os);
     CHECK_OP(os, );
@@ -366,6 +366,8 @@ void BlastPlusSupportContext::sl_showDialog() {
 //            DNATranslation * aminoT = (dlg.translateToAmino ? seqCtx->getAminoTT() : 0);
 //            DNATranslation * complT = (dlg.translateToAmino ? seqCtx->getComplementTT() : 0);
             settings.offsInGlobalSeq=r.startPos;
+            SAFE_POINT(seqCtx->getSequenceObject() != NULL, tr("Sequence object is NULL"), );
+            settings.isSequenceCircular = seqCtx->getSequenceObject()->isCircular();
             Task * t=NULL;
             if(settings.programName == "blastn"){
                 t = new BlastNPlusSupportTask(settings);
@@ -419,7 +421,7 @@ void BlastPlusSupportContext::sl_fetchSequenceById()
     BlastDBCmdSupportTask* blastDBCmdSupportTask =new BlastDBCmdSupportTask(settings);
     AppContext::getTaskScheduler()->registerTopLevelTask(blastDBCmdSupportTask);
 
-    
+
 }
 
 

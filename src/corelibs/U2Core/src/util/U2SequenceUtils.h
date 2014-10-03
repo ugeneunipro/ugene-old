@@ -34,7 +34,7 @@ class DNASequence;
 class DNAQuality;
 class DNATranslation;
 
-/**                                           
+/**
     U2Sequence and related structures utility functions
 */
 class U2CORE_EXPORT U2SequenceUtils : public QObject {
@@ -46,10 +46,10 @@ public:
     /** Extract sequence parts marked by the regions
         Note: the order of complemented regions is also reversed
     */
-    static QList<QByteArray> extractRegions(const U2EntityRef& seqRef, const QVector<U2Region>& regions, 
+    static QList<QByteArray> extractRegions(const U2EntityRef& seqRef, const QVector<U2Region>& regions,
         DNATranslation* complTT, DNATranslation* aminoTT, bool join, U2OpStatus& os);
 
-    
+
     static DNAAlphabetType alphabetType(const U2EntityRef& ref, U2OpStatus& os);
 
     static qint64 length(const U2EntityRef& ref, U2OpStatus& os);
@@ -70,7 +70,7 @@ public:
     U2SequenceImporter(qint64 _insertBlockSize, const QVariantMap& fs = QVariantMap(),
         bool lazyMode = false, bool singleThread = true);
     virtual ~U2SequenceImporter();
-    
+
     void startSequence(const U2DbiRef& dbiRef, const QString &folder, const QString& visualName, bool circular, U2OpStatus& os);
     virtual void addBlock(const char* data, qint64 len, U2OpStatus& os);
     void addSequenceBlock(const U2EntityRef& seqId, const U2Region& r, U2OpStatus& os);
@@ -140,6 +140,16 @@ class U2CORE_EXPORT U2SequenceDbiHints {
 public:
     static const QString UPDATE_SEQUENCE_LENGTH;
     static const QString EMPTY_SEQUENCE;
+};
+
+// untwist/expand circular sequence
+class U2CORE_EXPORT U2PseudoCircularization : public QObject {
+public:
+    U2PseudoCircularization(QObject* parent, bool isCircular, QByteArray& seq, qint64 circOverlap = -1);
+    QVector<U2Region> uncircularizeRegion(const U2Region& region, bool &uncircularized) const;
+    void uncircularizeLocation(U2Location &location) const;
+private:
+    qint64 seqLen;
 };
 
 } //namespace

@@ -122,6 +122,8 @@ public:
 
     QString         queryFile;              //-i Query File [File In]
     QByteArray      querySequence;
+    bool            isSequenceCircular;     // if the sequence is circular, UGENE will expand the sequence
+                                            // and results on circular junction will be found
     QString         outputResFile;          //Output file with annotations
     QString         outputOriginalFile;     //-o BLAST report Output File [File Out]  Optional
     int             outputType;             //-m Type of BLAST report Output File [File Out]  Optional

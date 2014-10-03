@@ -63,7 +63,7 @@ void GTest_CheckNumAnnotations::init(XMLTestFormat *tf, const QDomElement& el) {
     if (v.isEmpty()) {
         failMissingValue(VALUE_ATTR);
         return;
-    } 
+    }
     bool ok = false;
     num = v.toInt(&ok);
     if (!ok) {
@@ -211,7 +211,7 @@ Task::ReportResult GTest_FindAnnotationByName::report() {
         return ReportResult_Finished;
     }
     result = resultsList.at(number);
-    
+
     assert( result != AnnotationData( ) );
     if (!annotationContextName.isEmpty()) {
         addContext( annotationContextName,
@@ -241,7 +241,7 @@ void GTest_CheckAnnotationName::init(XMLTestFormat *tf, const QDomElement& el) {
     if (aName.isEmpty()) {
         failMissingValue(NAME_ATTR);
         return;
-    } 
+    }
 
 }
 
@@ -252,7 +252,7 @@ Task::ReportResult GTest_CheckAnnotationName::report() {
         return ReportResult_Finished;
     }
     const SharedAnnotationData a = annCtx->getAnnotation();
-    if (a->name != aName) {    
+    if (a->name != aName) {
         stateInfo.setError(QString("name does not matched, name=\"%1\" , expected=\"%2\"").arg(a->name).arg(aName));
     }
     return ReportResult_Finished;
@@ -268,7 +268,7 @@ void GTest_CheckAnnotationSequence::init(XMLTestFormat *tf, const QDomElement& e
         failMissingValue(ANNOTATION_ATTR);
         return;
     }
-    
+
     seqCtxName = el.attribute(SEQUENCE_ATTR);
     if (seqCtxName.isEmpty()) {
         failMissingValue(SEQUENCE_ATTR);
@@ -290,7 +290,7 @@ Task::ReportResult GTest_CheckAnnotationSequence::report() {
         stateInfo.setError("Invalid sequence context");
         return ReportResult_Finished;
     }
-    
+
     GTestAnnotationDataItem *annCtx = getContext<GTestAnnotationDataItem>(this,aCtxName);
     if (annCtx == NULL){
         stateInfo.setError(QString("invalid annotation context"));
@@ -303,7 +303,7 @@ Task::ReportResult GTest_CheckAnnotationSequence::report() {
     }
     U2Region reg = a->location->regions.first();
     QString seq = dnaObj->getSequenceData(reg);
-    
+
     if (seq != seqPart) {
         stateInfo.setError(QString("Sequence of annotation does not matched, seq=\"%1\" , expected=\"%2\"").arg(seq).arg(seqPart));
     }
@@ -325,13 +325,13 @@ void GTest_CheckAnnotationLocation::init(XMLTestFormat *tf, const QDomElement& e
     if (loc.isEmpty()) {
         failMissingValue(LOCATION_ATTR);
         return;
-    } 
+    }
 
     QString complement_str=el.attribute(COMPLEMENT_ATTR);
     if (complement_str.isEmpty()) {
         failMissingValue(COMPLEMENT_ATTR);
         return;
-    } 
+    }
     bool ok = false;
     strand  = complement_str.toInt(&ok) ? U2Strand::Complementary : U2Strand::Direct;
     if (!ok) {
@@ -407,7 +407,7 @@ void GTest_CheckAnnotationQualifier::init(XMLTestFormat *tf, const QDomElement& 
     if (qName.isEmpty()) {
         failMissingValue(QUALIFIER_ATTR);
         return;
-    } 
+    }
     qValue =el.attribute(VALUE_ATTR);
 }
 
@@ -424,7 +424,7 @@ Task::ReportResult GTest_CheckAnnotationQualifier::report() {
         stateInfo.setError(QString("Qualifier not found, name=%1").arg(qName));
         return ReportResult_Finished;
     }
-    
+
     bool ok = false;
     QString value;
     foreach(const U2Qualifier& q, res) {
@@ -456,7 +456,7 @@ void GTest_CheckAnnotationQualifierIsAbsent::init(XMLTestFormat *tf, const QDomE
     if (qName.isEmpty()) {
         failMissingValue(QUALIFIER_ATTR);
         return;
-    } 
+    }
 }
 
 
@@ -540,7 +540,7 @@ Task::ReportResult GTest_CheckAnnotationsNumInTwoObjects::report() {
     for(int i=0;(i!=objs.size())&&(i!=objs2.size());i++){
         obj = objs.at(i);
         obj2 = objs2.at(i);
-        
+
         if((obj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE)&&(obj2->getGObjectType() == GObjectTypes::ANNOTATION_TABLE)){
             myAnnotation = qobject_cast<AnnotationTableObject*>(obj);
             if(myAnnotation == NULL){
@@ -555,17 +555,17 @@ Task::ReportResult GTest_CheckAnnotationsNumInTwoObjects::report() {
 //////////////////////////////////////////////////////////
             const QList<Annotation> annList = myAnnotation->getAnnotations();
             const QList<Annotation> annList2 = myAnnotation2->getAnnotations();
-            
+
             if (annList2.size() != annList.size()) {
                 stateInfo.setError(QString("annotations count not matched: %1, expected %2 ").arg(annList2.size()).arg(annList.size()));
             return ReportResult_Finished;
             }
-         
+
 //////////////////////////////////////////////////////////
         }
 
     }
-    
+
     if (!compareNumObjects) {
         return ReportResult_Finished;
     }
@@ -579,7 +579,7 @@ Task::ReportResult GTest_CheckAnnotationsNumInTwoObjects::report() {
         }
         stateInfo.setError(error);
     }
-    
+
     return ReportResult_Finished;
 }
 
@@ -610,11 +610,35 @@ void GTest_CheckAnnotationsLocationsInTwoObjects::init(XMLTestFormat *tf, const 
 
 struct AnnotationsLess {
     bool operator( ) ( const Annotation &a1, const Annotation &a2 ) const {
-        U2Region r1 = a1.getLocation()->regions.first();
-        U2Region r2 = a2.getLocation()->regions.first();
-        return r1.startPos < r2.startPos || ( r1.startPos == r2.startPos && r1.endPos() < r2.endPos());
-    } 
-}; 
+        QVector<U2Region> a1Regions = a1.getLocation()->regions;
+        QVector<U2Region> a2Regions = a2.getLocation()->regions;
+        int a1Size = a1Regions.size();
+        int a2Size = a2Regions.size();
+        CHECK(a1Size != 0, true);
+        CHECK(a2Size != 0, false);
+        if (a1Size != a2Size) {
+            return a1Size < a2Size;
+        }
+        qSort(a1Regions);
+        qSort(a2Regions);
+
+        if (a1Regions.first().startPos != a2Regions.first().startPos) {
+            return a1Regions.first().startPos < a2Regions.first().startPos;
+        }
+        if (a1Regions.last().endPos() != a2Regions.last().endPos()) {
+            return a1Regions.last().endPos() < a2Regions.last().endPos();
+        }
+        for (int i = 0; i < a1Size - 1; i++) {
+            if (a1Regions[i].endPos() != a2Regions[i].endPos()) {
+                return a1Regions[i].endPos() < a2Regions[i].endPos();
+            }
+            if (a1Regions[i + 1].startPos != a2Regions[i + 1].endPos()) {
+                return a1Regions[i + 1].startPos < a2Regions[i + 1].endPos();
+            }
+        }
+        return true;
+    }
+};
 
 Task::ReportResult GTest_CheckAnnotationsLocationsInTwoObjects::report() {
     Document* doc = getContext<Document>(this, docContextName);
@@ -638,7 +662,7 @@ Task::ReportResult GTest_CheckAnnotationsLocationsInTwoObjects::report() {
     for(int i=0;(i!=objs.size())&&(i!=objs2.size());i++){
         obj = objs.at(i);
         obj2 = objs2.at(i);
-        
+
         if((obj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE)&&(obj2->getGObjectType() == GObjectTypes::ANNOTATION_TABLE)){
             myAnnotation = qobject_cast<AnnotationTableObject*>(obj);
             if(myAnnotation == NULL){
@@ -655,10 +679,12 @@ Task::ReportResult GTest_CheckAnnotationsLocationsInTwoObjects::report() {
             QList<Annotation> annList2 = myAnnotation2->getAnnotations();
             qSort(annList1.begin(), annList1.end(), AnnotationsLess());
             qSort(annList2.begin(), annList2.end(), AnnotationsLess());
-            
+
             for(int n=0;(n != annList1.size())&&(n != annList2.size());n++){
-                const U2Location& l1 = annList1.at(n).getLocation();
-                const U2Location& l2 = annList2.at(n).getLocation();
+                U2Location l1 = annList1.at(n).getLocation();
+                U2Location l2 = annList2.at(n).getLocation();
+                qSort(l1->regions);
+                qSort(l2->regions);
                 if (l1 != l2){
                     U2Region r1 = l1->regions.first();
                     U2Region r2 = l2->regions.first();
@@ -672,7 +698,7 @@ Task::ReportResult GTest_CheckAnnotationsLocationsInTwoObjects::report() {
         }
 
     }
-    
+
     if (!compareNumObjects) {
         return ReportResult_Finished;
     }
@@ -693,18 +719,18 @@ Task::ReportResult GTest_CheckAnnotationsLocationsInTwoObjects::report() {
 //---------------------------------------------------------------
 void GTest_CheckAnnotationsLocationsAndNumReorderdered::init(XMLTestFormat *tf, const QDomElement& el) {
     Q_UNUSED(tf);
-    
+
     doc1CtxName = el.attribute(DOC_ATTR);
     if (doc1CtxName.isEmpty()) {
         failMissingValue(DOC_ATTR);
         return;
     }
-    
+
     doc2CtxName = el.attribute(VALUE_ATTR);
     if (doc2CtxName.isEmpty()) {
         failMissingValue(VALUE_ATTR);
         return;
-    } 
+    }
 }
 
 static bool findAnnotationByLocation(const QList<Annotation> &anns, const QVector<U2Region> & location) {
@@ -727,7 +753,7 @@ Task::ReportResult GTest_CheckAnnotationsLocationsAndNumReorderdered::report() {
         stateInfo.setError(QString("document not found %1").arg(doc2CtxName));
         return ReportResult_Finished;
     }
-    
+
     QList<GObject*> objs1 = doc1->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
     QList<GObject*> objs2 = doc2->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
     if( objs1.size() != objs2.size() ) {
@@ -769,7 +795,7 @@ void GTest_CheckAnnotationsQualifiersInTwoObjects::init(XMLTestFormat *tf, const
     if (secondDocContextName.isEmpty()) {
         failMissingValue(VALUE_ATTR);
         return;
-    } 
+    }
 }
 
 Task::ReportResult GTest_CheckAnnotationsQualifiersInTwoObjects::report() {
@@ -794,7 +820,7 @@ Task::ReportResult GTest_CheckAnnotationsQualifiersInTwoObjects::report() {
     for(int i=0;(i!=objs.size())&&(i!=objs2.size());i++){
         obj = objs.at(i);
         obj2 = objs2.at(i);
-        
+
         if((obj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE)&&(obj2->getGObjectType() == GObjectTypes::ANNOTATION_TABLE)){
             myAnnotation = qobject_cast<AnnotationTableObject*>(obj);
             if(myAnnotation == NULL){
@@ -829,7 +855,7 @@ Task::ReportResult GTest_CheckAnnotationsQualifiersInTwoObjects::report() {
         }
 
     }
-    
+
     if (objs.size() != objs2.size()) {
         QString error("Number of objects in doc mismatches: [%1=%2] vs [%3=%4]");
         error = error.arg(docContextName).arg(objs.size())
@@ -857,7 +883,7 @@ void GTest_CheckAnnotationsNamesInTwoObjects::init(XMLTestFormat *tf, const QDom
     if (secondDocContextName.isEmpty()) {
         failMissingValue(VALUE_ATTR);
         return;
-    } 
+    }
 }
 
 Task::ReportResult GTest_CheckAnnotationsNamesInTwoObjects::report() {
@@ -882,7 +908,7 @@ Task::ReportResult GTest_CheckAnnotationsNamesInTwoObjects::report() {
     for(int i=0;(i!=objs.size())&&(i!=objs2.size());i++){
         obj = objs.at(i);
         obj2 = objs2.at(i);
-        
+
         if((obj->getGObjectType() == GObjectTypes::ANNOTATION_TABLE)&&(obj2->getGObjectType() == GObjectTypes::ANNOTATION_TABLE)){
             myAnnotation = qobject_cast<AnnotationTableObject*>(obj);
             if(myAnnotation == NULL){

@@ -35,6 +35,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/AnnotationData.h>
 #include <U2Core/ExternalToolRunTask.h>
+#include <U2Core/U2SequenceUtils.h>
 
 #include "utils/BlastTaskSettings.h"
 
@@ -61,6 +62,7 @@ private:
     SaveDocumentTask*           saveTemporaryDocumentTask;
     ExternalToolRunTask*        blastAllTask;
     BlastTaskSettings           settings;
+    U2PseudoCircularization*      circularization;
 
     U2SequenceObject*           sequenceObject;
     Document*                   tmpDoc;

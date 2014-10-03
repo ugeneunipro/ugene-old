@@ -45,13 +45,13 @@ const QString U2SequenceDbiHints::EMPTY_SEQUENCE = "empty-sequence";
 DNAAlphabetType U2SequenceUtils::alphabetType(const U2EntityRef& ref, U2OpStatus& os) {
     DNAAlphabetType res = DNAAlphabet_RAW;
     DbiConnection con(ref.dbiRef, os);
-    
+
     U2Sequence seq = con.dbi->getSequenceDbi()->getSequenceObject(ref.entityId, os);
     CHECK_OP(os, res);
-    
+
     const DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(seq.alphabet.id);
     CHECK_EXT(al != NULL, os.setError(tr("Alphabet is not found!")), res);
-    
+
     return al->getType();
 }
 
@@ -88,7 +88,7 @@ U2Sequence U2SequenceUtils::copySequence(const U2EntityRef& srcSeq, const U2DbiR
     U2Sequence res;
     DbiConnection srcCon(srcSeq.dbiRef, os);
     CHECK_OP(os, res);
-    
+
     U2Sequence seq = srcCon.dbi->getSequenceDbi()->getSequenceObject(srcSeq.entityId, os);
     CHECK_OP(os, res);
 
@@ -108,12 +108,12 @@ U2Sequence U2SequenceUtils::copySequence(const U2EntityRef& srcSeq, const U2DbiR
     dstCon.dbi->getSequenceDbi()->updateSequenceData(res.id, U2Region(0, 0), wholeSeq, hints, os);
     CHECK_OP(os, res);
     res.length += wholeSeq.length();
-   
+
     return res;
 }
 
 
-static QList<QByteArray> _extractRegions(const U2EntityRef& seqRef, const QVector<U2Region>& regions, DNATranslation* complTT, U2OpStatus& os) 
+static QList<QByteArray> _extractRegions(const U2EntityRef& seqRef, const QVector<U2Region>& regions, DNATranslation* complTT, U2OpStatus& os)
 {
     QList<QByteArray> res;
 
@@ -143,7 +143,7 @@ static QList<QByteArray> _extractRegions(const U2EntityRef& seqRef, const QVecto
     return res;
 }
 
-QList<QByteArray> U2SequenceUtils::extractRegions(const U2EntityRef& seqRef, const QVector<U2Region>& origLocation, 
+QList<QByteArray> U2SequenceUtils::extractRegions(const U2EntityRef& seqRef, const QVector<U2Region>& origLocation,
                                                 DNATranslation* complTT, DNATranslation* aminoTT, bool join, U2OpStatus& os)
 {
     QList<QByteArray> res = _extractRegions(seqRef, origLocation, complTT, os);
@@ -159,7 +159,7 @@ QList<QByteArray> U2SequenceUtils::extractRegions(const U2EntityRef& seqRef, con
     if (seq.circular && res.size() > 1) {
         const U2Region& firstL = origLocation.first();
         const U2Region& lastL = origLocation.last();
-        if (firstL.startPos == 0 && lastL.endPos() == seq.length) { 
+        if (firstL.startPos == 0 && lastL.endPos() == seq.length) {
             QByteArray lastS = res.last();
             QByteArray firstS = res.first();
             res.removeLast();
@@ -168,7 +168,7 @@ QList<QByteArray> U2SequenceUtils::extractRegions(const U2EntityRef& seqRef, con
     }
     if (aminoTT != NULL) {
         res = U1SequenceUtils::translateRegions(res, aminoTT, join);
-    } 
+    }
 
     if (join && res.size() > 1) {
         QByteArray joined = U1SequenceUtils::joinRegions(res);
@@ -186,16 +186,16 @@ U2EntityRef U2SequenceUtils::import(const U2DbiRef& dbiRef, const DNASequence& s
 U2EntityRef U2SequenceUtils::import(const U2DbiRef& dbiRef, const QString& folder, const DNASequence& seq, U2OpStatus& os) {
     U2EntityRef res;
     U2SequenceImporter i;
-    
+
     i.startSequence(dbiRef, folder, seq.getName(), seq.circular, os);
     CHECK_OP(os, res);
-    
+
     i.addBlock(seq.constData(), seq.length(), os);
     CHECK_OP(os, res);
-    
+
     U2Sequence u2seq = i.finalizeSequenceAndValidate(os);
     CHECK_OP(os, res);
-    
+
     res.dbiRef = dbiRef;
     res.entityId = u2seq.id;
 
@@ -311,7 +311,7 @@ void U2SequenceImporter::startSequence(const U2DbiRef& dbiRef,
     currentLength = 0;
     isUnfinishedRegion = false;
     annList.clear();
-    
+
     if (!lazyMode) {
         con.dbi->getSequenceDbi()->createSequenceObject(sequence, folder, os);
         CHECK_OP(os, );
@@ -337,8 +337,8 @@ void U2SequenceImporter::addBlock(const char* data, qint64 len, U2OpStatus& os) 
             resAl = U2AlphabetUtils::deriveCommonAlphabet(blockAl, oldAl);
         }
         CHECK_EXT(resAl!=NULL, os.setError(U2SequenceUtils::tr("Failed to derive sequence alphabet!")), );
-    } 
-    
+    }
+
     if (resAl != U2AlphabetUtils::getById(sequence.alphabet)) {
         sequence.alphabet.id = resAl->getId();
         if (sequenceCreated) {
@@ -360,7 +360,7 @@ void U2SequenceImporter::addSequenceBlock(const U2EntityRef& sequenceRef, const 
     CHECK_OP(os, );
     DbiConnection con(sequenceRef.dbiRef, os);
     CHECK_OP(os, );
-    
+
     //TODO: optimize -> create utility that uses small to copy sequence!
     QByteArray arr = con.dbi->getSequenceDbi()->getSequenceData(sequenceRef.entityId, r, os);
     CHECK_OP(os, );
@@ -397,7 +397,7 @@ void U2SequenceImporter::_addBlock2Db(const char* data, qint64 len, U2OpStatus& 
     if (len == 0) {
         return;
     }
-    QByteArray arr(data, len); 
+    QByteArray arr(data, len);
     TextUtils::translate(TextUtils::UPPER_CASE_MAP, arr.data(), arr.length());
 
     bool updateLength = true;
@@ -516,7 +516,7 @@ void U2MemorySequenceImporter::addBlock(const char* data, qint64 len, U2OpStatus
             resAl = U2AlphabetUtils::deriveCommonAlphabet(blockAl, oldAl);
         }
         CHECK_EXT(resAl!=NULL, os.setError(U2SequenceUtils::tr("Failed to derive sequence alphabet!")), );
-    } 
+    }
 
     if (resAl != U2AlphabetUtils::getById(sequence.alphabet)) {
         sequence.alphabet.id = resAl->getId();
@@ -537,5 +537,38 @@ qint64 U2MemorySequenceImporter::getCurrentLength() const {
     return sequenceData.length();
 }
 
+U2PseudoCircularization::U2PseudoCircularization(QObject* parent, bool isCircular, QByteArray& seq, qint64 circOverlap)
+    : QObject(parent) {
+    seqLen = seq.size();
+    if (isCircular) {
+        circOverlap = (circOverlap == -1 ? seqLen - 1 : circOverlap);
+        seq.append(QByteArray(seq).left(circOverlap));
+    }
+}
+
+QVector<U2Region> U2PseudoCircularization::uncircularizeRegion(const U2Region& region, bool &uncircularized) const {
+    uncircularized = false;
+    if ((region.startPos >= seqLen && region.endPos() >= seqLen) || (region.length > seqLen)) { // dublicate
+        return QVector<U2Region>();
+    }
+    if (region.endPos() > seqLen) {
+        uncircularized = true;
+        return QVector<U2Region>() << U2Region(region.startPos, seqLen - region.startPos)
+                                   << U2Region(0, region.endPos() - seqLen);
+    }
+    return QVector<U2Region>() << region;
+}
+
+void U2PseudoCircularization::uncircularizeLocation(U2Location &location) const {
+    QVector<U2Region> res;
+    foreach(const U2Region& r, location->regions) {
+        bool regionWasSplitted = false;
+        res << uncircularizeRegion(r, regionWasSplitted);
+        if (regionWasSplitted) {
+            location->op = U2LocationOperator_Join;
+        }
+    }
+    location->regions = res;
+}
 
 } //namespace

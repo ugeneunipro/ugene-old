@@ -72,17 +72,17 @@ const QString BlastPlusWorkerFactory::ACTOR_ID("blast-plus");
 
 void BlastPlusWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
-    Descriptor ind(BasePorts::IN_SEQ_PORT_ID(), BlastPlusWorker::tr("Input sequence"), 
+    Descriptor ind(BasePorts::IN_SEQ_PORT_ID(), BlastPlusWorker::tr("Input sequence"),
         BlastPlusWorker::tr("Sequence for which annotations is searched."));
     Descriptor oud(BasePorts::OUT_ANNOTATIONS_PORT_ID(), BlastPlusWorker::tr("Annotations"), BlastPlusWorker::tr("Found annotations."));
-    
+
     QMap<Descriptor, DataTypePtr> inM;
     inM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
     p << new PortDescriptor(ind, DataTypePtr(new MapDataType("blast.plus.seq", inM)), true /*input*/);
     QMap<Descriptor, DataTypePtr> outM;
     outM[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
     p << new PortDescriptor(oud, DataTypePtr(new MapDataType("blast.plus.annotations", outM)), false /*input*/, true /*multi*/);
-    
+
     Descriptor pn(BLASTPLUS_PROGRAM_NAME, BlastPlusWorker::tr("Search type"),
                    BlastPlusWorker::tr("Select type of BLAST+ searches."));
     Descriptor dp(BLASTPLUS_DATABASE_PATH, BlastPlusWorker::tr("Database Path"),
@@ -290,11 +290,12 @@ Task* BlastPlusWorker::tick() {
             return NULL;
         }
         DNASequence seq = seqObj->getWholeSequence();
-        
+
         if( seq.length() < 1) {
             return new FailTask(tr("Empty sequence supplied to BLAST"));
         }
         cfg.querySequence=seq.seq;
+        cfg.isSequenceCircular = seq.circular;
 
         const DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(seq.seq);
         cfg.alphabet=alp;
