@@ -51,6 +51,7 @@ TaskStatusBar::TaskStatusBar() {
     taskInfoLabel = new QLabel();
     taskInfoLabel->setTextFormat(Qt::PlainText);
     taskInfoLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    taskInfoLabel->setObjectName("taskInfoLabel");
     l->addWidget(taskInfoLabel);
 
     taskCountLabel = new QLabel();
@@ -58,7 +59,7 @@ TaskStatusBar::TaskStatusBar() {
     taskCountLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     taskCountLabel->setMinimumWidth(100);
     taskCountLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-
+    taskCountLabel->setObjectName("taskCountLabel");
     l->addWidget(taskCountLabel);
 
     notificationEmpty = QPixmap(":ugene/images/empty_notification.png");
@@ -95,6 +96,7 @@ TaskStatusBar::TaskStatusBar() {
     taskProgressBar->setValue(0);
     taskProgressBar->setFixedWidth(120);
     taskProgressBar->setFixedHeight(16);
+    taskProgressBar->setObjectName("taskProgressBar");
     l->insertWidget(2, taskProgressBar);
 
     setObjectName("taskStatusBar");

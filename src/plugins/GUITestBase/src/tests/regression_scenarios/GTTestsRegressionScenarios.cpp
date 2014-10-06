@@ -6096,6 +6096,50 @@ GUI_TEST_CLASS_DEFINITION(test_3484_1) {
     CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "COI_3484_1.nwk") == false, "Unauthorized tree opening!");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3545){
+//    1. Open "_common_data\scenarios\msa\big.aln"
+    GTFile::copy(os, testDir + "_common_data/scenarios/msa/big.aln", sandBoxDir + "big.aln");
+    GTFileDialog::openFile(os, sandBoxDir , "big.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    2. Use context menu
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/fasta", "NC_008253.fna" ));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_LOAD_SEQ"
+                                                      << "Sequence from file"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    GTGlobals::sleep();
+//    {Add->Sequence from file}
+
+//    Expected state: "Open file with sequence" dialog appeared
+//    3. Select sequence "_common_data\fasta\NC_008253.fna" and press "Open"
+//    4. Close MSAEditor
+    GTUtilsMdi::click(os, GTGlobals::Close);
+//    5. Save document "big.aln"
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+    GTKeyboardDriver::keyClick(os, 's', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(5000);
+//    Current state: UGENE crashes
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3552){
+//1. Open "_common_data\clustal\454LargeContigs_00012.aln"
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/" , "454LargeContigs_00012.aln");
+    GTGlobals::sleep(200);
+
+    QLabel* taskInfoLabel = GTWidget::findExactWidget<QLabel*>(os, "taskInfoLabel");
+    while (!taskInfoLabel->text().contains("Render")) {
+        GTGlobals::sleep(100);
+    }
+    GTGlobals::sleep(500);
+    QProgressBar* taskProgressBar = GTWidget::findExactWidget<QProgressBar*>(os, "taskProgressBar");
+    QString text = taskProgressBar->text();
+    CHECK_SET_ERR(text.contains("%"), "unexpected text: " + text);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    GTWidget::click(os, GTWidget::findWidget(os, "doc_lable_dock_task_view"));
+//    GTGlobals::sleep(300);
+//    GTWidget::click(os, GTWidget::findWidget(os, "doc_lable_dock_task_view"));
+//Expected state: render view task started, progress is correct
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
