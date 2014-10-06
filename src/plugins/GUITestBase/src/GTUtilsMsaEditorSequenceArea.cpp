@@ -147,6 +147,28 @@ void GTUtilsMSAEditorSequenceArea::scrollToPosition(U2OpStatus &os, const QPoint
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "scrollToBottom"
+void GTUtilsMSAEditorSequenceArea::scrollToBottom(U2OpStatus &os) {
+    MSAEditorSequenceArea *msaSeqArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", GTUtilsMdi::activeWindow(os)));
+    GT_CHECK(NULL != msaSeqArea, "MSA Editor sequence area is not found");
+
+    // scroll down
+    GScrollBar* vBar = msaSeqArea->getVBar();
+    GT_CHECK(NULL != vBar, "Vertical scroll bar is not found");
+
+    QStyleOptionSlider vScrollBarOptions;
+    vScrollBarOptions.initFrom(vBar);
+
+    while (vBar->value() != vBar->maximum()) {
+        const QRect sliderSpaceRect = vBar->style()->subControlRect(QStyle::CC_ScrollBar, &vScrollBarOptions, QStyle::SC_ScrollBarGroove, vBar);
+        const QPoint bottomEdge(sliderSpaceRect.width() / 2 + 10, sliderSpaceRect.y() + sliderSpaceRect.height());
+
+        GTMouseDriver::moveTo(os, vBar->mapToGlobal(bottomEdge) - QPoint(0, 1));
+        GTMouseDriver::click(os);
+    }
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "clickToPosition"
 void GTUtilsMSAEditorSequenceArea::clickToPosition(U2OpStatus &os, const QPoint &position) {
     MSAEditorSequenceArea *msaSeqArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", GTUtilsMdi::activeWindow(os)));
@@ -343,7 +365,7 @@ int GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "isSequenceVisible"
-bool GTUtilsMSAEditorSequenceArea::isSequenceVisible(U2OpStatus &os, QString seqName) {    
+bool GTUtilsMSAEditorSequenceArea::isSequenceVisible(U2OpStatus &os, QString seqName) {
     QStringList visiableRowNames = getVisibaleNames(os);
     return visiableRowNames.contains(seqName);
 }

@@ -58,6 +58,7 @@ public:
 
     // scrolls to the position (in the MSA zero-based coordinates)
     static void scrollToPosition(U2OpStatus &os, const QPoint& position);
+    static void scrollToBottom(U2OpStatus &os);
     static void clickToPosition(U2OpStatus &os, const QPoint& position);
 
     static void selectSequence(U2OpStatus &os, QString seqName);

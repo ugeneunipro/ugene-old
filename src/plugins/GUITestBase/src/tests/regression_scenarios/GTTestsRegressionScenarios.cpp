@@ -117,6 +117,7 @@
 #include <U2View/AnnotatedDNAViewFactory.h>
 #include <U2View/AnnotationsTreeView.h>
 #include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorNameList.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialogButtonBox>
@@ -5481,6 +5482,38 @@ GUI_TEST_CLASS_DEFINITION(test_3335) {
     GTUtilsLog::check(os, lt);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3344) {
+//    Steps to reproduce:
+//    1. Open "human_T1"
+//    2. Press "Find tandems" tool button
+//    3. Choose following settings in the dialog: region="whole sequence", min repeat length=10bp
+//    4. Press "start"
+//    5. Wait until repeats finding complete
+//    Expected state: repeats finding completed and create annotations task started
+//    6. Delete "repeat_unit" annotations group
+//    Current state: UGENE hangs
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    Runnable * tDialog = new FindTandemsDialogFiller(os, testDir + "_common_data/scenarios/sandbox/test_3344.gb");
+    GTUtilsDialog::waitForDialog(os, tDialog);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE
+        << "find_tandems_action", GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "Annotations [test_3344.gb] *"));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "repeat_unit  (0, 313)"));
+
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3346) {
     GTLogTracer lt;
 
@@ -6139,6 +6172,33 @@ GUI_TEST_CLASS_DEFINITION(test_3552){
 //    GTWidget::click(os, GTWidget::findWidget(os, "doc_lable_dock_task_view"));
 //Expected state: render view task started, progress is correct
 }
+
+GUI_TEST_CLASS_DEFINITION(test_3555) {
+//    1. Open "_common_data\muscul4\prefab_1_ref.aln"
+//    2. Press "Switch on/off collapsing" tool button
+//    3. Scroll down sequences
+//    Expected state: scrolling will continue until the last sequence becomes visible
+//    Current state: see the attachment
+//    4. Click on the empty space below "1a0cA" sequence
+//    Current state: SAFE_POINT in debug mode and incorrect selection in release(see the attachment)
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, testDir + "_common_data/muscul4/", "prefab_1_ref.aln");
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+
+    GTUtilsMSAEditorSequenceArea::scrollToBottom(os);
+
+    QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    MSAEditor* editor = mw->findChild<MSAEditor*>();
+    CHECK_SET_ERR(editor != NULL, "MsaEditor not found");
+
+    MSAEditorNameList* nameList = editor->getUI()->getEditorNameList();
+    CHECK_SET_ERR(nameList != NULL, "MSANameList is empty");
+    GTWidget::click(os, nameList, Qt::LeftButton, QPoint(10, nameList->height() - 1));
+
+    GTUtilsLog::check(os, l);
+}
+
 
 } // GUITest_regression_scenarios namespace
 

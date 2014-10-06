@@ -22,6 +22,7 @@
 #include "FindTandemsDialogFiller.h"
 #include "api/GTWidget.h"
 #include "api/GTTabWidget.h"
+#include "api/GTLineEdit.h"
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -37,7 +38,7 @@
 
 namespace U2 {
 
-FindTandemsDialogFiller::FindTandemsDialogFiller( U2OpStatus &_os, const QString & _resultFilesPath) 
+FindTandemsDialogFiller::FindTandemsDialogFiller( U2OpStatus &_os, const QString & _resultFilesPath)
     : Filler(_os, "FindTandemsDialog"), button(Start), resultAnnotationFilesPath(_resultFilesPath){
 }
 
@@ -59,8 +60,9 @@ void FindTandemsDialogFiller::run(){
     GTTabWidget::setCurrentIndex(os, tabWidget, 0);
     */
 
-    QLineEdit *resultLocationEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "locationEdit", dialog));
-    resultLocationEdit->setText(resultAnnotationFilesPath);
+    QLineEdit *resultLocationEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "newFilePath", dialog));
+    GT_CHECK(resultLocationEdit, "resultLocation is NULL");
+    GTLineEdit::setText(os, resultLocationEdit, resultAnnotationFilesPath);
 
     //GTTabWidget::setCurrentIndex(os, tabWidget, 1);
 
