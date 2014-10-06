@@ -53,7 +53,7 @@ void AliasesDialogFiller::run(){
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
     }
 
-    GTWidget::click(os,GTWidget::findWidget(os,"okPushButton"));
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 
 }
 

@@ -80,6 +80,7 @@
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
@@ -94,6 +95,7 @@
 #include "runnables/ugene/plugins/external_tools/FormatDBDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
@@ -5092,6 +5094,40 @@ GUI_TEST_CLASS_DEFINITION(test_3209_2) {
     CHECK_SET_ERR(found, "Can not find the blast result");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3226) {
+    //1. Create a workflow with a 'File List' element.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "File list");
+
+    ////2. Setup alias 'in' for input path.
+    QMap<QPoint*, QString> map;
+    QPoint p(1, 0);
+    map[&p] = "in";
+    GTUtilsDialog::waitForDialog(os, new AliasesDialogFiller(os, map));
+    GTWidget::click(os, GTAction::button(os, "Configure parameter aliases"));
+
+    ////3. Copy and paste the 'File list' element.
+    GTUtilsWorkflowDesigner::click(os, "File List");
+    //GTKeyboardUtils::copy(os);
+    GTWidget::click(os, GTAction::button(os, "Copy action"));
+    GTKeyboardUtils::paste(os);
+
+    ////4. Save the workflow.
+    QString path = sandBoxDir + "test_3226_workflow.uwl";
+    GTUtilsDialog::waitForDialog(os, new WorkflowMetaDialogFiller(os, path, ""));
+    GTWidget::click(os, GTAction::button(os, "Save workflow action"));
+
+    //5. Close current workflow.
+    GTWidget::click(os, GTAction::button(os, "New workflow action"));
+
+    //7. Open the saved workflow.
+    GTLogTracer l;
+    GTUtilsWorkflowDesigner::loadWorkflow(os, path);
+
+    //Expected state: the saved workflow is opened, there are no errors in the log, the alias it set only for the one element.
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3250) {
     //1. Connect to a shared database.
     //2. Right click on the document in the project view.
@@ -5402,6 +5438,18 @@ GUI_TEST_CLASS_DEFINITION(test_3328) {
     TestBody_3328 *testBody = new TestBody_3328(os, &waiter);
     threadPool.start(testBody);
     waiter.exec();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3332) {
+    //1. Open "data/sample/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    //2. Select {Edit -> Remove columns of gaps...} menu item from the context menu.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EDIT << "remove_columns_of_gaps"));
+    //3. Select the "all-gaps columns" option and accept the dialog.
+    GTUtilsDialog::waitForDialog(os, new DeleteGapsDialogFiller(os, 1));
+    GTMenu::showContextMenu(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os));
+    //Expected state: nothing happens.
+    CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLength(os) == 604, "Wrong msa length");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3335) {

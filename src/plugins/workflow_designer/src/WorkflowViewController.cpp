@@ -665,6 +665,7 @@ void WorkflowView::createActions() {
     newAction = new QAction(tr("&New workflow"), this);
     newAction->setIcon(QIcon(":workflow_designer/images/filenew.png"));
     newAction->setShortcuts(QKeySequence::New);
+    newAction->setObjectName("New workflow action");
     connect(newAction, SIGNAL(triggered()), SLOT(sl_newScene()));
 
     saveAction = new QAction(tr("&Save workflow"), this);
@@ -755,6 +756,7 @@ void WorkflowView::createActions() {
     copyAction->setIcon(QIcon(":workflow_designer/images/editcopy.png"));
     copyAction->setShortcut(QKeySequence("Ctrl+C"));
     copyAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    copyAction->setObjectName("Copy action");
     connect(copyAction, SIGNAL(triggered()), SLOT(sl_copyItems()));
     addAction(copyAction);
 

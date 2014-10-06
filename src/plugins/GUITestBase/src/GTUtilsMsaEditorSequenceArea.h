@@ -30,6 +30,8 @@ namespace U2 {
 
 class GTUtilsMSAEditorSequenceArea {
 public:
+    static MSAEditorSequenceArea * getSequenceArea(U2OpStatus &os);
+
     static void checkSelectedRect(U2OpStatus &os, const QRect &expectedRect);
     static void checkSorted(U2OpStatus &os, bool sortedState = true);
 

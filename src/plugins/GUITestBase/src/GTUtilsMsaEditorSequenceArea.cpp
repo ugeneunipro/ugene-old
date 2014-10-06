@@ -41,6 +41,17 @@ const QString GTUtilsMSAEditorSequenceArea::highlightningColorName = "#9999cc";
 
 #define GT_CLASS_NAME "GTUtilsMSAEditorSequenceArea"
 
+#define GT_METHOD_NAME "getSequenceArea"
+MSAEditorSequenceArea * GTUtilsMSAEditorSequenceArea::getSequenceArea(U2OpStatus &os) {
+    QWidget *activeWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_OP(os, NULL);
+
+    MSAEditorSequenceArea *result = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area", activeWindow));
+    GT_CHECK_RESULT(NULL != result, "MsaEditorSequenceArea is not found", NULL);
+    return result;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "moveTo"
 void GTUtilsMSAEditorSequenceArea::moveTo(U2OpStatus &os, const QPoint &p)
 {

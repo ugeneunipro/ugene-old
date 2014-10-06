@@ -31,6 +31,7 @@
 #endif
 
 #include "GUIInitialChecks.h"
+#include "api/GTClipboard.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
 #include "api/GTGlobals.h"
@@ -134,6 +135,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0000){
 
 GUI_TEST_CLASS_DEFINITION(post_test_0001) {
     GTUtilsDialog::cleanup(os);
+    GTClipboard::text(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0002) {
