@@ -163,6 +163,7 @@ bool TaskSchedulerImpl::processFinishedTasks() {
                 cancelTask(t);
             }
         }
+
         if (state != Task::State_Running) {
             continue;
         }
@@ -479,9 +480,15 @@ void TaskSchedulerImpl::prepareNewTasks() {
     foreach(Task* task, newCopy) {
         if (task->hasError() || task->isCanceled()) {//check if its canceled or has errors
             propagateStateToParent(task);
+
             //forget about this task
-            TaskInfo ti(task, 0);
-            promoteTask(&ti, Task::State_Finished);
+            TaskInfo pti(task, 0);
+            foreach (Task *sub, task->getSubtasks()) {
+                TaskInfo ti(sub, &pti);
+                promoteTask(&ti, Task::State_Finished);
+            }
+            promoteTask(&pti, Task::State_Finished);
+
             if (task->isTopLevelTask()) {
                 unregisterTopLevelTask(task);
             }
@@ -756,7 +763,9 @@ void TaskSchedulerImpl::promoteTask(TaskInfo* ti, Task::State newState) {
             tti.finishTime = GTimer::currentTimeMicros();
             tsi.setDescription(QString());
             if (pti != NULL) {
-                pti->numRunningSubtasks--;
+                if (ti->selfRunFinished) {
+                    pti->numRunningSubtasks--;
+                }
                 assert(pti->numRunningSubtasks>=0);
                 pti->numFinishedSubtasks++;
                 assert(pti->numFinishedSubtasks <= pti->task->getSubtasks().size());

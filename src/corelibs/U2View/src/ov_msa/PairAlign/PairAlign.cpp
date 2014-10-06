@@ -332,6 +332,12 @@ void PairAlign::sl_alignButtonPressed() {
     settings.appendCustomSettings(pairwiseAlignmentWidgetsSettings->customSettings);
     settings.convertCustomSettings();
 
+    if (NULL != pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask) {
+        disconnect(this, SLOT(sl_alignComplete()));
+        pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask->cancel();
+        pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask = NULL;
+    }
+
     PairwiseAlignmentRegistry* par = AppContext::getPairwiseAlignmentRegistry();
     SAFE_POINT(NULL != par, "PairwiseAlignmentRegistry is NULL.", );
     PairwiseAlignmentTaskFactory* factory = par->getAlgorithm(settings.algorithmName)->getFactory(settings.realizationName);
@@ -366,6 +372,8 @@ void PairAlign::sl_distanceCalculated() {
 }
 
 void PairAlign::sl_alignComplete() {
+    CHECK(pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask == sender(), );
+    SAFE_POINT(NULL != pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask, "Can't process an unexpected align task", );
     if (true == pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask->isFinished()) {
         if(!inNewWindowCheckBox->isChecked()){
             msa->getMSAObject()->updateCachedMAlignment();
