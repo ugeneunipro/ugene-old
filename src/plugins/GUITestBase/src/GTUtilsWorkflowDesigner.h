@@ -106,6 +106,7 @@ public:
     static QString getParameter(U2OpStatus& os, QString parameter);
     static bool isParameterEnabled(U2OpStatus& os, QString parameter);
     static bool isParameterRequired(U2OpStatus &os, const QString &parameter);
+    static bool isParameterVisible(U2OpStatus &os, const QString &parameter);
     static void clickParameter(U2OpStatus &os, const QString &parameter);
     static QTableView *getParametersTable(U2OpStatus &os);
 

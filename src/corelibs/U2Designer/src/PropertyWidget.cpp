@@ -190,6 +190,7 @@ ComboBoxWithUrlWidget::ComboBoxWithUrlWidget(const QVariantMap &items, bool _isP
     }
 
     QToolButton * toolButton = new QToolButton(this);
+    toolButton->setObjectName("browsePathBtn");
     toolButton->setText("...");
     toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     connect(toolButton, SIGNAL(clicked()), SLOT(sl_browse()));

@@ -5095,6 +5095,15 @@ GUI_TEST_CLASS_DEFINITION(test_3209_2) {
     CHECK_SET_ERR(found, "Can not find the blast result");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3218) {
+    // 1. Open "test/_common_data/genbank/big_feature_region.gb".
+    GTLogTracer l;
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/", "big_feature_region.gb");
+
+    // Expected state : file is opened, there are no errors in the log
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3226) {
     //1. Create a workflow with a 'File List' element.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);

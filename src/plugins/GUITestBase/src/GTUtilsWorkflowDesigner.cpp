@@ -470,7 +470,7 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
     switch(type){
     case(spinValue):{
         int spinVal = value.toInt(&ok);
-        GT_CHECK(ok,"Wrong input. Int requaered for GTUtilsWorkflowDesigner::spinValue")
+        GT_CHECK(ok,"Wrong input. Int required for GTUtilsWorkflowDesigner::spinValue")
         QSpinBox* box = qobject_cast<QSpinBox*>(table->findChild<QSpinBox*>());
         GT_CHECK(box, "spinBox not found. Widget in this cell might be not QSpinBox");
         GTSpinBox::setValue(os, box, spinVal, GTGlobals::UseKeyBoard);
@@ -478,7 +478,7 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
     }
     case(doubleSpinValue):{
         double spinVal = value.toDouble(&ok);
-        GT_CHECK(ok,"Wrong input. Double requaered for GTUtilsWorkflowDesigner::doubleSpinValue")
+        GT_CHECK(ok,"Wrong input. Double required for GTUtilsWorkflowDesigner::doubleSpinValue")
         QDoubleSpinBox* box = qobject_cast<QDoubleSpinBox*>(table->findChild<QDoubleSpinBox*>());
         GT_CHECK(box, "QDoubleSpinBox not found. Widget in this cell might be not QDoubleSpinBox");
         GTDoubleSpinbox::setValue(os, box, spinVal, GTGlobals::UseKeyBoard);
@@ -486,7 +486,7 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
     }
     case(comboValue):{
         int comboVal = value.toInt(&ok);
-        GT_CHECK(ok,"Wrong input. Int requaered for GTUtilsWorkflowDesigner::ComboValue")
+        GT_CHECK(ok,"Wrong input. Int required for GTUtilsWorkflowDesigner::ComboValue")
         QComboBox* box = qobject_cast<QComboBox*>(table->findChild<QComboBox*>());
         GT_CHECK(box, "QComboBox not found. Widget in this cell might be not QComboBox");
         GTComboBox::setCurrentIndex(os, box, comboVal);
@@ -574,26 +574,44 @@ bool GTUtilsWorkflowDesigner::isParameterRequired(U2OpStatus &os, const QString 
 }
 #undef GT_METHOD_NAME
 
+namespace {
+
+int getParameterRow(QTableView *table, const QString &parameter) {
+    QAbstractItemModel *model = table->model();
+    int iMax = model->rowCount();
+    for (int i = 0; i < iMax; i++) {
+        QString s = model->data(model->index(i, 0)).toString();
+        if (s.contains(parameter, Qt::CaseInsensitive)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+}
+
 #define GT_METHOD_NAME "clickParameter"
 void GTUtilsWorkflowDesigner::clickParameter(U2OpStatus &os, const QString &parameter) {
     QTableView *table = qobject_cast<QTableView *>(GTWidget::findWidget(os, "table"));
     GT_CHECK_RESULT(table, "tableView not found", );
 
     //FIND CELL
-    QAbstractItemModel *model = table->model();
-    int iMax = model->rowCount();
-    int row = -1;
-    for (int i = 0; i < iMax; i++) {
-        QString s = model->data(model->index(i, 0)).toString();
-        if (s.contains(parameter, Qt::CaseInsensitive)) {
-            row = i;
-        }
-    }
+    const int row = getParameterRow(table, parameter);
     GT_CHECK_RESULT(row != -1, "parameter not found", );
+
+    QAbstractItemModel *model = table->model();
     table->scrollTo(model->index(row, 1));
     GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os, table, 1, row));
     GTMouseDriver::click(os);
     GTGlobals::sleep(500);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isParameterVisible"
+bool GTUtilsWorkflowDesigner::isParameterVisible(U2OpStatus &os, const QString &parameter) {
+    QTableView *table = qobject_cast<QTableView *>(GTWidget::findWidget(os, "table"));
+    GT_CHECK_RESULT(table, "tableView not found", false);
+    return -1 != getParameterRow(table, parameter);
 }
 #undef GT_METHOD_NAME
 

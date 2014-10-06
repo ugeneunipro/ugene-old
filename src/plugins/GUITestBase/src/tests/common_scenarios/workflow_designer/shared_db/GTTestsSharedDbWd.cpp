@@ -366,5 +366,92 @@ GUI_TEST_CLASS_DEFINITION(read_gui_neg_test_0012) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(write_gui_test_0001_1) {
+    createTestConnection(os);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Alignment");
+
+    const QString dataStorageParamValue = GTUtilsWorkflowDesigner::getParameter(os, "Data storage");
+    CHECK_SET_ERR("Local file system" == dataStorageParamValue, "Invalid data storage parameter value");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Output file"), "Unexpected parameter state");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Document format"), "Unexpected parameter state");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Existing file"), "Unexpected parameter state");
+    CHECK_SET_ERR(4 == GTUtilsWorkflowDesigner::getAllParameters(os).count(), "Unexpected parameter count");
+
+    GTUtilsWorkflowDesigner::setParameter(os, "Data storage", 1, GTUtilsWorkflowDesigner::comboValue);
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Database"), "Unexpected parameter state");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Output path"), "Unexpected parameter state");
+    CHECK_SET_ERR(3 == GTUtilsWorkflowDesigner::getAllParameters(os).count(), "Unexpected parameter count");
+
+    GTUtilsWorkflowDesigner::setParameter(os, "Database", 0, GTUtilsWorkflowDesigner::comboValue);
+    CHECK_OP(os, );
+    CHECK_SET_ERR("/" == GTUtilsWorkflowDesigner::getParameter(os, "Output path"), "Unexpected parameter default value");
+}
+
+GUI_TEST_CLASS_DEFINITION(write_gui_test_0001_2) {
+    createTestConnection(os);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Sequence");
+
+    const QString dataStorageParamValue = GTUtilsWorkflowDesigner::getParameter(os, "Data storage");
+    CHECK_SET_ERR("Local file system" == dataStorageParamValue, "Invalid data storage parameter value");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Output file"), "Unexpected parameter state");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Document format"), "Unexpected parameter state");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Existing file"), "Unexpected parameter state");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Split sequence"), "Unexpected parameter state");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Accumulate objects"), "Unexpected parameter state");
+    CHECK_SET_ERR(6 == GTUtilsWorkflowDesigner::getAllParameters(os).count(), "Unexpected parameter count");
+
+    GTUtilsWorkflowDesigner::setParameter(os, "Data storage", 1, GTUtilsWorkflowDesigner::comboValue);
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Database"), "Unexpected parameter state");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Output path"), "Unexpected parameter state");
+    CHECK_SET_ERR(3 == GTUtilsWorkflowDesigner::getAllParameters(os).count(), "Unexpected parameter count");
+
+    GTUtilsWorkflowDesigner::setParameter(os, "Database", 0, GTUtilsWorkflowDesigner::comboValue);
+    CHECK_OP(os, );
+    CHECK_SET_ERR("/" == GTUtilsWorkflowDesigner::getParameter(os, "Output path"), "Unexpected parameter default value");
+
+}
+
+GUI_TEST_CLASS_DEFINITION(write_gui_test_0002) {
+    createTestConnection(os);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write FASTA");
+
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Output file"), "Unexpected parameter state");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Existing file"), "Unexpected parameter state");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Accumulate objects"), "Unexpected parameter state");
+    CHECK_SET_ERR(3 == GTUtilsWorkflowDesigner::getAllParameters(os).count(), "Unexpected parameter count");
+}
+
+GUI_TEST_CLASS_DEFINITION(write_gui_test_0003) {
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Assembly");
+
+    GTUtilsWorkflowDesigner::setParameter(os, "Data storage", 1, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::clickParameter(os, "Database");
+
+    const QString connectionName = "ugene_gui_test";
+    EditConnectionDialogFiller::Parameters params;
+    params.connectionName = connectionName;
+    GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, params, EditConnectionDialogFiller::FROM_SETTINGS));
+
+    GTWidget::click(os, GTWidget::findWidget(os, "browsePathBtn"));
+
+    GTUtilsWorkflowDesigner::setParameter(os, "Database", 0, GTUtilsWorkflowDesigner::comboValue);
+
+    QList<SharedConnectionsDialogFiller::Action> actions;
+    actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, connectionName);
+    actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, connectionName);
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+}
+
 } // GUITest_common_scenarios_shared_db_wd
 } // U2
