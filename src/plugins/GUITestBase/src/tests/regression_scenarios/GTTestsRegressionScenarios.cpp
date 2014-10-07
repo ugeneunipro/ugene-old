@@ -5495,7 +5495,7 @@ GUI_TEST_CLASS_DEFINITION(test_3335) {
 GUI_TEST_CLASS_DEFINITION(test_3344) {
 //    Steps to reproduce:
 //    1. Open "human_T1"
-//    2. Press "Find tandems" tool button
+//    2. Press "Find repeats" tool button
 //    3. Choose following settings in the dialog: region="whole sequence", min repeat length=10bp
 //    4. Press "start"
 //    5. Wait until repeats finding complete
@@ -5506,17 +5506,18 @@ GUI_TEST_CLASS_DEFINITION(test_3344) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
 
-    Runnable * tDialog = new FindTandemsDialogFiller(os, testDir + "_common_data/scenarios/sandbox/test_3344.gb");
+    Runnable * tDialog = new FindRepeatsDialogFiller(os, testDir + "_common_data/scenarios/sandbox/test_3344.gb",
+                                                     false, 10);
     GTUtilsDialog::waitForDialog(os, tDialog);
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE
-        << "find_tandems_action", GTGlobals::UseMouse));
+        << "find_repeats_action", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
     GTGlobals::sleep();
     GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "Annotations [test_3344.gb] *"));
-    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "repeat_unit  (0, 313)"));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "repeat_unit  (0, 3486)"));
 
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep();
