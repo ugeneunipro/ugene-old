@@ -119,6 +119,7 @@
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorNameList.h>
 
+#include <QProgressBar>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QHeaderView>

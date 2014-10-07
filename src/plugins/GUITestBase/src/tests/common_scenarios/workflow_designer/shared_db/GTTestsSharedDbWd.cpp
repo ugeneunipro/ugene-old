@@ -21,6 +21,7 @@
 
 #include <QListWidget>
 
+#include "api/GTAction.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
@@ -29,6 +30,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/WorkflowMetaDialogFiller.h"
 
 #include "GTUtilsLog.h"
 #include "GTUtilsTaskTreeView.h"
@@ -451,6 +453,71 @@ GUI_TEST_CLASS_DEFINITION(write_gui_test_0003) {
     actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, connectionName);
     GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+}
+
+GUI_TEST_CLASS_DEFINITION(open_uwl_gui_test_0001) {
+    GTLogTracer l;
+    GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "shared_db_objects_input.uwl");
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(open_uwl_gui_test_0002) {
+    GTLogTracer l;
+    GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "shared_db_folders_input.uwl");
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(open_uwl_gui_test_0003) {
+    GTLogTracer l;
+    GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "shared_db_output.uwl");
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(save_uwl_gui_test_0001) {
+    GTLogTracer l;
+
+    createTestConnection(os);
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Variations");
+
+    GTUtilsWorkflowDesigner::setParameter(os, "Data storage", 1, GTUtilsWorkflowDesigner::comboValue);
+
+    GTUtilsWorkflowDesigner::setParameter(os, "Database", 1, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output path", "/123", GTUtilsWorkflowDesigner::textValue);
+
+    QString path = sandBoxDir + "save_uwl_gui_test_0001.uwl";
+    GTUtilsDialog::waitForDialog(os, new WorkflowMetaDialogFiller(os, path, "New workflow"));
+    GTWidget::click(os, GTAction::button(os, "Save workflow action"));
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(save_uwl_gui_test_0002) {
+    GTLogTracer l;
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Annotations");
+
+    createTestConnection(os);
+
+    QMap<QString, QStringList> doc2Objects;
+    doc2Objects["ugene_gui_test"] << "et0002_features" << "pt0005_dir3";
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, doc2Objects, QSet<GObjectType>(),
+        ProjectTreeItemSelectorDialogFiller::Separate));
+
+    QWidget *addFromDbButton = GTWidget::findWidget(os, "addFromDbButton");
+    GTWidget::click(os, addFromDbButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    QString path = sandBoxDir + "save_uwl_gui_test_0001.uwl";
+    GTUtilsDialog::waitForDialog(os, new WorkflowMetaDialogFiller(os, path, "New workflow"));
+    GTWidget::click(os, GTAction::button(os, "Save workflow action"));
+
+    GTUtilsLog::check(os, l);
 }
 
 } // GUITest_common_scenarios_shared_db_wd

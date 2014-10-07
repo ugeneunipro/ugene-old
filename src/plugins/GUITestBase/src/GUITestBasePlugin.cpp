@@ -1400,6 +1400,13 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::write_gui_test_0001_2);
     REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::write_gui_test_0002);
     REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::write_gui_test_0003);
+
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::open_uwl_gui_test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::open_uwl_gui_test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::open_uwl_gui_test_0003);
+
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::save_uwl_gui_test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::save_uwl_gui_test_0002);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

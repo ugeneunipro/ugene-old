@@ -48,6 +48,12 @@ GUI_TEST_CLASS_DECLARATION(write_gui_test_0001_2);
 GUI_TEST_CLASS_DECLARATION(write_gui_test_0002);
 GUI_TEST_CLASS_DECLARATION(write_gui_test_0003);
 
+GUI_TEST_CLASS_DECLARATION(open_uwl_gui_test_0001);
+GUI_TEST_CLASS_DECLARATION(open_uwl_gui_test_0002);
+GUI_TEST_CLASS_DECLARATION(open_uwl_gui_test_0003);
+
+GUI_TEST_CLASS_DECLARATION(save_uwl_gui_test_0001);
+GUI_TEST_CLASS_DECLARATION(save_uwl_gui_test_0002);
 }
 
 } // U2
