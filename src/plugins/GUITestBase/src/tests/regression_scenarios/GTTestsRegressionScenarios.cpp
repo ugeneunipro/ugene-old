@@ -4973,6 +4973,34 @@ GUI_TEST_CLASS_DEFINITION(test_3138) {
     }
 
 }
+GUI_TEST_CLASS_DEFINITION(test_3155) {
+    // 1. Open "humam_T1"
+    // Expected state: "Circular search" checkbox does not exist
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep(200);
+    // 2. Press "Find ORFs" tool button
+    class CancelClicker : public Filler {
+    public:
+        CancelClicker(U2OpStatus& _os) : Filler(_os, "ORFDialogBase"){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Cancel);
+            CHECK(NULL != button, );
+            QCheckBox *check = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "ckCircularSearch", NULL, GTGlobals::FindOptions(false)));
+            CHECK(NULL == check, );
+            GTWidget::click(os, button);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new CancelClicker(os));
+    GTWidget::click(os, GTAction::button(os, "Find ORFs"));
+
+    //QCheckBox *check = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "ckCircularSearch"));
+    //CHECK_SET_ERR(check = NULL, "Circular search checkbox found!");
+
+}
 
 GUI_TEST_CLASS_DEFINITION(test_3170) {
     // 1. Open human_T1.fa.
@@ -5001,6 +5029,18 @@ GUI_TEST_CLASS_DEFINITION(test_3170) {
     bool found2 = GTUtilsAnnotationsTreeView::findRegion(os, "blast result", U2Region(1, 52));
     CHECK_OP(os, );
     CHECK_SET_ERR(!found2, "Wrong blast result");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3175) {
+    // 1. Open "_common_data/scenarios/msa/ma.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma.aln");
+    GTGlobals::sleep(200);
+    // Expected: the first sequence is "TAAGACTTCTAA".
+    GTUtilsMSAEditorSequenceArea::selectArea( os, QPoint( 0, 0 ), QPoint( 12, 0 ) );
+    GTKeyboardDriver::keyClick( os, 'c', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep(200);
+    const QString selectionContent = GTClipboard::text( os );
+    CHECK_SET_ERR( "TAAGACTTCTAA" == selectionContent, "MSA changing is failed" );
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3180) {
