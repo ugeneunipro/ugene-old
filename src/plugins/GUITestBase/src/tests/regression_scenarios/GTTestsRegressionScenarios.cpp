@@ -88,6 +88,7 @@
 #include "runnables/ugene/plugins/biostruct3d_view/StructuralAlignmentDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"
@@ -5795,6 +5796,55 @@ GUI_TEST_CLASS_DEFINITION(test_3437){
 //    Expected: file opened in msa editor
     QWidget* w = GTWidget::findWidget(os,"msa_editor_sequence_area");
     CHECK_SET_ERR(w != NULL, "msa editor not opened");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3402){
+//    Open "test/_common_data/clustal/100_sequences.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal", "fungal - all.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Call context menu on the "100_sequences" object.
+
+    GTUtilsDialog::waitForDialog(os, new ExportToSequenceFormatFiller(os, sandBoxDir, "test_3402.fa",
+                                                                      ExportToSequenceFormatFiller::FASTA, true, true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__export_import_menu_action"
+     << "action_project__export_as_sequence_action"));
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "fungal - all.aln"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    //GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Select {Export/Import -> Export alignmnet to sequence format...}
+
+//    menu item.
+//    Export somewhere as fasta, sure that "Add document to the project" checkbox is checked.
+//    Wait until open view task will start.
+    TaskScheduler* scheduller = AppContext::getTaskScheduler();
+
+    bool end = false;
+    while(!end){
+        QList<Task*> tList = scheduller->getTopLevelTasks();
+        if(tList.isEmpty()){
+            continue;
+        }
+        QList<Task*> innertList;
+        foreach (Task* t, tList) {
+            innertList.append(t->getSubtasks());
+        }
+        foreach (Task* t, innertList) {
+            if(t->getTaskName().contains("Opening view")){
+                end = true;
+                break;
+            }
+        }
+        GTGlobals::sleep(100);
+    }
+
+//    Expected state: the fasta document is present in the project, open view task is in progress.
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "test_3402.fa"));
+//    Delete the fasta document from the project.
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(500);
+//    Current state: UGENE not crashes.
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3430) {

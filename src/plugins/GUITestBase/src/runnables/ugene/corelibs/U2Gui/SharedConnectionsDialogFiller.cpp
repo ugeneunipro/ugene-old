@@ -125,7 +125,7 @@ void establishConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Ac
     waitForConnection(os, action);
     CHECK_OP(os, );
 
-    GTWidget::click(os, cnctBtn);
+    GTWidget::click(os, cnctBtn, Qt::LeftButton, QPoint(), false);//no processing events after clicking
     CHECK(behavior.testFlag(SharedConnectionsDialogFiller::SAFE), );
 
     GTGlobals::sleep(2000);
