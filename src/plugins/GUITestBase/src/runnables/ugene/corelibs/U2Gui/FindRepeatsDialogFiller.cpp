@@ -54,6 +54,7 @@ FindRepeatsDialogFiller::FindRepeatsDialogFiller(U2OpStatus &_os, const QString 
 }
 
 void FindRepeatsDialogFiller::run() {
+    GTGlobals::sleep(1000);
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

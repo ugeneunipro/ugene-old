@@ -6114,7 +6114,7 @@ GUI_TEST_CLASS_DEFINITION(test_3484) {
 //    Expected state: only alignment is opened.
     GTFile::copy(os, dataDir + "samples/CLUSTALW/COI.aln", testDir + "_common_data/scenarios/sandbox/COI_3484.aln");
 
-    GTFileDialog::openFile(os, testDir + "_common_Data/scenarios/sandbox/", "COI_3484.aln");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/", "COI_3484.aln");
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,
                                                                testDir + "_common_data/scenarios/sandbox/COI_3484.nwk",
                                                                0, 0, true));
@@ -6153,7 +6153,7 @@ GUI_TEST_CLASS_DEFINITION(test_3484_1) {
 
     GTFile::copy(os, dataDir + "samples/CLUSTALW/COI.aln", testDir + "_common_data/scenarios/sandbox/COI_3484_1.aln");
 
-    GTFileDialog::openFile(os, testDir + "_common_Data/scenarios/sandbox/", "COI_3484_1.aln");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/", "COI_3484_1.aln");
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os,
                                                                testDir + "_common_data/scenarios/sandbox/COI_3484_1.nwk",
                                                                0, 0, true));
