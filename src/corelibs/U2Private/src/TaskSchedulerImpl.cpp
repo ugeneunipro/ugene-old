@@ -483,10 +483,7 @@ void TaskSchedulerImpl::prepareNewTasks() {
 
             //forget about this task
             TaskInfo pti(task, 0);
-            foreach (Task *sub, task->getSubtasks()) {
-                TaskInfo ti(sub, &pti);
-                promoteTask(&ti, Task::State_Finished);
-            }
+            finishSubtasks(&pti);
             promoteTask(&pti, Task::State_Finished);
 
             if (task->isTopLevelTask()) {
@@ -884,6 +881,14 @@ void TaskSchedulerImpl::deleteTask(Task* task) {
     }
     taskLog.trace(tr("Deleting task: %1").arg(task->getTaskName()));
     delete task;
+}
+
+void TaskSchedulerImpl::finishSubtasks(TaskInfo *pti) {
+    foreach (Task *sub, pti->task->getSubtasks()) {
+        TaskInfo ti(sub, pti);
+        finishSubtasks(&ti);
+        promoteTask(&ti, Task::State_Finished);
+    }
 }
 
 #define MAX_SECS_TO_LOWER_PRIORITY 60

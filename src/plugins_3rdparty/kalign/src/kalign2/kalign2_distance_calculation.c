@@ -951,15 +951,16 @@ float dna_distance_calculation(struct bignode* hash[],int* p,int seqlen,int diag
 	struct bignode* node_p;
 	float out = 0.0;
 	unsigned int* tmp = 0;
-	unsigned int* d = 0;
+    unsigned int* d = 0;
+    unsigned int* d_array_start = 0;
 	int i,j;
 	unsigned int hv;
 	kalign_context* ctx = get_kalign_context();
 	
-	d = malloc(sizeof(int)*diagonals);
+    d_array_start = d = malloc(sizeof(int)*diagonals);
 	for (i = 0;i < diagonals;i++){
 		d[i] = 0;
-	}
+    }
 	for (i = seqlen-5;i--;){
 		if(check_task_canceled(ctx)) {
 			break;
@@ -1023,22 +1024,24 @@ float dna_distance_calculation(struct bignode* hash[],int* p,int seqlen,int diag
 			}
 		}	
 	
-		d++;
+        d++;
 	}
 	//exit(0);
-	d -= (seqlen-5);
-	//for (i = seqlen-1;i--;){
-	for (i = diagonals;i--;){
-		//d[i] /= minlen;
-		
-		//printf("%d ",d[i]);
-		
-		if(d[i] > mode){
-		//k_printf("%f	%d\n",d[i]/ minlen,d[i]);
-			out += d[i];
-		}
-	}
-	free(d);
+    d -= (seqlen-5);
+    //for (i = seqlen-1;i--;){
+    if (!check_task_canceled(ctx)) {
+        for (i = diagonals;i--;){
+            //d[i] /= minlen;
+
+            //printf("%d ",d[i]);
+
+            if(d[i] > mode){
+            //k_printf("%f	%d\n",d[i]/ minlen,d[i]);
+                out += d[i];
+            }
+        }
+    }
+    free(d_array_start);
 	return out;
 }
 

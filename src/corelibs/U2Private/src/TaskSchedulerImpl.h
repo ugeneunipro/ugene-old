@@ -162,6 +162,7 @@ private:
     void updateTaskProgressAndDesc(TaskInfo* ti);
     void promoteTask(TaskInfo* ti, Task::State newState);
     void deleteTask(Task* t);
+    void finishSubtasks(TaskInfo *pti);
     
     QString tryLockResources(Task* task, bool prepareStage, bool& hasLockedResourcesAfterCall); //returns error message
     void releaseResources(TaskInfo* ti, bool prepareStage);

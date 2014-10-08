@@ -59,7 +59,9 @@ void setTaskProgress(struct kalign_context* ctx, int percent) {
 
 void setTaskDesc(struct kalign_context* ctx, const char *str ) {
 	TaskStateInfo *tsi = (TaskStateInfo*)ctx->ptask_state;
-	tsi->setDescription(QString::fromLatin1(str));
+    QString description = QString::fromLatin1(str);
+    description.replace('\n', " ");
+    tsi->setDescription(description);
 }
 
 bool isCanceled(struct kalign_context* ctx) {
