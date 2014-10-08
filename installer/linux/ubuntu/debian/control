@@ -3,7 +3,7 @@ Section: science
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Ivan Efremov <iefremov@unipro.ru>
-Build-Depends: libqt4-dev (>= 4.7.0), libqtwebkit-dev, libqt4-opengl-dev (>= 4.7.0), zlib1g-dev, debhelper (>=5.0.38)
+Build-Depends: libqt4-dev (>= 4.7.0), libqtwebkit-dev, libqt4-opengl-dev (>= 4.7.0), libqt4-sql-mysql, zlib1g-dev, debhelper (>=5.0.38)
 Standards-Version: 3.9.3
 Homepage: http://ugene.unipro.ru
 
