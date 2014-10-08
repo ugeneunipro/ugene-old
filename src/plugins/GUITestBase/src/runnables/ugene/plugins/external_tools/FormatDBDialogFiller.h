@@ -32,12 +32,13 @@ public:
     class Parameters {
         public:
         Parameters():
-            justCancel(false)
+            justCancel(false), customFiller_3551(false)
         {
 
         }
 
-        int justCancel;
+        bool justCancel;
+        bool customFiller_3551;
     };
 
 

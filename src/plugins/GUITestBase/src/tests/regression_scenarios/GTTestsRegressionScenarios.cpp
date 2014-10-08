@@ -6254,6 +6254,23 @@ GUI_TEST_CLASS_DEFINITION(test_3545){
 //    Current state: UGENE crashes
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3551){
+    //1. Open "samples/FASTA/human_T1.fa".
+    //2. Context menu of the document "human_T1.fa": {Blast-> FormatDB...}.
+    //3. Click the "Select input file(s)" radio button.
+    //Expected: the "Select input file(s)" tool button is enabled.
+    //4. Click the "Select input file(s)" radio button.
+    //Expected: the "Select input file(s)" tool button is enabled.
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+    FormatDBSupportRunDialogFiller::Parameters p;
+    p.customFiller_3551 = true;
+    GTUtilsDialog::waitForDialog(os, new FormatDBSupportRunDialogFiller(os, p));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "BLAST" << "FormatDB"));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3552){
 //1. Open "_common_data\clustal\454LargeContigs_00012.aln"
     GTFileDialog::openFile(os, testDir + "_common_data/clustal/" , "454LargeContigs_00012.aln");

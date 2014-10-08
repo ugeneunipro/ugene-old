@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QToolButton>
+
 #include <QtCore/qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -54,6 +56,35 @@ FormatDBSupportRunDialogFiller::FormatDBSupportRunDialogFiller(U2OpStatus &os, c
 void FormatDBSupportRunDialogFiller::run() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QRadioButton *inputFilesRadioButton = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "inputFilesRadioButton", dialog));
+    GT_CHECK(inputFilesRadioButton, "inputFilesRadioButton not found");
+    QLineEdit *inputFilesLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "inputFilesLineEdit", dialog));
+    GT_CHECK(inputFilesLineEdit, "inputFilesLineEdit is NULL");
+    QToolButton *inputFilesToolButton = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "inputFilesToolButton", dialog));
+    GT_CHECK(inputFilesToolButton, "inputFilesToolButton is NULL");
+
+    QRadioButton *inputDirRadioButton = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "inputDirRadioButton", dialog));
+    GT_CHECK(inputDirRadioButton, "inputDirRadioButton not found");
+    QLineEdit *inputDirLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "inputDirLineEdit", dialog));
+    GT_CHECK(inputDirLineEdit, "inputDirLineEdit is NULL");
+    QToolButton *inputDirToolButton = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "inputDirToolButton", dialog));
+    GT_CHECK(inputDirLineEdit, "inputDirToolButton is NULL");
+
+    if (parameters.customFiller_3551) {
+        GTWidget::click(os, inputFilesRadioButton);
+        CHECK_SET_ERR(inputFilesRadioButton->isChecked(), "Files radio button is unchecked");
+        CHECK_SET_ERR(inputFilesLineEdit->isEnabled(), "Files lineedit is disabled");
+        CHECK_SET_ERR(inputFilesToolButton->isEnabled(), "Files button is disabled");
+
+        GTGlobals::sleep(500);
+
+        GTWidget::click(os, inputDirRadioButton);
+        CHECK_SET_ERR(inputDirRadioButton->isChecked(), "Dir radio button is unchecked");
+        CHECK_SET_ERR(inputDirLineEdit->isEnabled(), "Dir lineedit is disabled");
+        CHECK_SET_ERR(inputDirLineEdit->isEnabled(), "Dir button is disabled");
+        GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+    }
 
     if (parameters.justCancel) {
         GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
