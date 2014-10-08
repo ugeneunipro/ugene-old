@@ -26,12 +26,15 @@
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
+#include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditConnectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 
+#include "GTDatabaseConfig.h"
+#include "GTUtilsEscClicker.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsWorkflowDesigner.h"
@@ -457,18 +460,21 @@ GUI_TEST_CLASS_DEFINITION(write_gui_test_0003) {
 
 GUI_TEST_CLASS_DEFINITION(open_uwl_gui_test_0001) {
     GTLogTracer l;
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "shared_db_objects_input.uwl");
     GTUtilsLog::check(os, l);
 }
 
 GUI_TEST_CLASS_DEFINITION(open_uwl_gui_test_0002) {
     GTLogTracer l;
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "shared_db_folders_input.uwl");
     GTUtilsLog::check(os, l);
 }
 
 GUI_TEST_CLASS_DEFINITION(open_uwl_gui_test_0003) {
     GTLogTracer l;
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "shared_db_output.uwl");
     GTUtilsLog::check(os, l);
 }
@@ -518,6 +524,168 @@ GUI_TEST_CLASS_DEFINITION(save_uwl_gui_test_0002) {
     GTWidget::click(os, GTAction::button(os, "Save workflow action"));
 
     GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0001_1) {
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "read_from_shared_db_no_credentials.uwl");
+
+    GTUtilsWorkflowDesigner::click(os, "Write Alignment");
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", "output.aln", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsDialog::waitForDialog(os, new AuthenticationDialogFiller(os, "invalid_user", "pass"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok,
+        "Please fix issues listed in the error list (located under workflow)."));
+
+    GTWidget::click(os, GTAction::button(os, "Run workflow"));
+    GTGlobals::sleep(5000);
+
+    GTUtilsWorkflowDesigner::checkErrorList(os, "Unable to connect to the database");
+}
+
+GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0001_2) {
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "read_from_shared_db_no_credentials.uwl");
+
+    GTUtilsWorkflowDesigner::click(os, "Write Alignment");
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", "output.aln", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsDialog::waitForDialog(os, new AuthenticationDialogFiller(os, GTDatabaseConfig::login(), GTDatabaseConfig::password()));
+
+    GTWidget::click(os, GTAction::button(os, "Run workflow"));
+    GTGlobals::sleep(5000);
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0002) {
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "read_from_inaccessible_shared_db.uwl");
+
+    GTUtilsWorkflowDesigner::click(os, "Write Variations");
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", "output.snp", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsDialog::waitForDialog(os, new AuthenticationDialogFiller(os, GTDatabaseConfig::login(), GTDatabaseConfig::password()));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok,
+        "Please fix issues listed in the error list (located under workflow)."));
+
+    GTWidget::click(os, GTAction::button(os, "Run workflow"));
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::checkErrorList(os, "Unable to connect to the database");
+}
+
+GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0003) {
+    GTLogTracer l;
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Annotations");
+
+    createTestConnection(os);
+
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "ugene_gui_test", "et0002_features"));
+
+    QWidget *addFromDbButton = GTWidget::findWidget(os, "addFromDbButton");
+    GTWidget::click(os, addFromDbButton);
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Annotations");
+    GTUtilsWorkflowDesigner::setParameter(os, "Data storage", 1, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Database", 1, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output path", "/test", GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Annotations name", "run_workflow_gui_test_0003", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Annotations"),
+        GTUtilsWorkflowDesigner::getWorker(os, "Write Annotations"));
+
+    GTWidget::click(os, GTAction::button(os, "Run workflow"));
+    GTGlobals::sleep(5000);
+
+    GTUtilsLog::check(os, l);
+
+    GTGlobals::FindOptions projectTreefindOptions;
+    projectTreefindOptions.depth = GTGlobals::FindOptions::INFINITE_DEPTH;
+    GTUtilsProjectTreeView::findIndex(os, "run_workflow_gui_test_0003", projectTreefindOptions);
+}
+
+GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0004) {
+    QList<SharedConnectionsDialogFiller::Action> actions;
+    actions << SharedConnectionsDialogFiller::Action::CANCEL;
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Plain Text");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/text/", "text.txt");
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Plain Text");
+    GTUtilsWorkflowDesigner::setParameter(os, "Data storage", 1, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Database", 0, GTUtilsWorkflowDesigner::comboValue);
+
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Plain Text"),
+        GTUtilsWorkflowDesigner::getWorker(os, "Write Plain Text"));
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok,
+        "Please fix issues listed in the error list (located under workflow)."));
+
+    GTWidget::click(os, GTAction::button(os, "Run workflow"));
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::checkErrorList(os, "You do not have write permissions to the database");
+}
+
+GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0005_1) {
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "write_to_shared_db_no_credentials.uwl");
+
+    GTUtilsWorkflowDesigner::click(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta/", "aaa.fa");
+
+    GTUtilsDialog::waitForDialog(os, new AuthenticationDialogFiller(os, GTDatabaseConfig::login(), GTDatabaseConfig::password()));
+    GTWidget::click(os, GTAction::button(os, "Run workflow"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0005_2) {
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "write_to_shared_db_no_credentials.uwl");
+
+    GTUtilsWorkflowDesigner::click(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta/", "aaa.fa");
+
+    GTUtilsDialog::waitForDialog(os, new AuthenticationDialogFiller(os, GTDatabaseConfig::login(), "invalid_password"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok,
+        "Please fix issues listed in the error list (located under workflow)."));
+
+    GTWidget::click(os, GTAction::button(os, "Run workflow"));
+
+    GTUtilsWorkflowDesigner::checkErrorList(os, "Unable to connect to the database");
+}
+
+GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0006) {
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new StartupDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/workflow/", "write_to_inaccessible_shared_db.uwl");
+
+    GTUtilsWorkflowDesigner::click(os, "Read Assembly\n\n");
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/ugenedb/", "1.bam.ugenedb");
+
+    GTUtilsDialog::waitForDialog(os, new AuthenticationDialogFiller(os, GTDatabaseConfig::login(), GTDatabaseConfig::password()));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok,
+        "Please fix issues listed in the error list (located under workflow)."));
+
+    GTWidget::click(os, GTAction::button(os, "Run workflow"));
+    GTGlobals::sleep();
+
+    GTUtilsWorkflowDesigner::checkErrorList(os, "Unable to connect to the database");
 }
 
 } // GUITest_common_scenarios_shared_db_wd

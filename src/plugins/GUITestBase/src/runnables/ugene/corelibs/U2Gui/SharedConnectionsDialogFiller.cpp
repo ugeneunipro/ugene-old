@@ -219,6 +219,9 @@ void SharedConnectionsDialogFiller::run() {
                 stopConnection(os, action);
                 CHECK_OP(os, );
                 break;
+            case Action::CANCEL:
+                GTWidget::click(os, GTWidget::findButtonByText(os, "Close"));
+                break;
             default:
                 os.setError("Unknown action type");
                 return;

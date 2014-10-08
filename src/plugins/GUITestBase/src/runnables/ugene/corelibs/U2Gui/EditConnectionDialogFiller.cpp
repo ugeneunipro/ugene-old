@@ -92,7 +92,9 @@ void AuthenticationDialogFiller::run() {
 
     QLineEdit* leLogin = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "leLogin", dialog));
     GT_CHECK(leLogin, "leLogin is NULL");
-    GTLineEdit::setText(os, leLogin, login);
+    if (leLogin->isEnabled()) {
+        GTLineEdit::setText(os, leLogin, login);
+    }
 
     QLineEdit* lePassword = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "lePassword", dialog));
     GT_CHECK(lePassword, "lePassword is NULL");

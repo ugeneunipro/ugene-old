@@ -43,7 +43,7 @@ qint64 MysqlUtils::remove(const QString& table, const QString& field, const U2Da
 
     static const QString queryString = "DELETE FROM %1 WHERE %2 = :id";
     U2SqlQuery q(queryString.arg(table).arg(field), db, os);
-    q.bindDataId("id", id);
+    q.bindDataId(":id", id);
     const qint64 changedRows = q.update();
     SAFE_POINT( -1 == expectedRows || changedRows == expectedRows,
                 "Unexpected changed row count",
