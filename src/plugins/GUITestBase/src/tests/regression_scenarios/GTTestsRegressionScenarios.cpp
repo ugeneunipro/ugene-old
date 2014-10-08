@@ -6128,6 +6128,24 @@ GUI_TEST_CLASS_DEFINITION(test_3472) {
     GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0, 0), QPoint(13, 1), expected);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3473) {
+/*  1. Open "human_T1"
+    2. Press "Show circular view" tool button
+        Expected state: circular view appeared and button's hint change to "Remove circular view"
+    3. Press the button again
+        Expected state: the hint is "Show circular view"
+*/
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep(1000);
+    QToolButton* a = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "CircularViewAction"));
+    CHECK_SET_ERR(a->toolTip() == "Show circular view", QString("Unexpected tooltip: %1, must be").arg(a->toolTip()).arg("Show circular view"));
+    GTWidget::click(os, GTWidget::findWidget(os, "CircularViewAction"));
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(a->toolTip() == "Remove circular view", QString("Unexpected tooltip: %1, must be").arg(a->toolTip()).arg("Remove circular view"));
+    GTGlobals::sleep(500);
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3478) {
     //1. Open _common_data/fasta/multy_fa.fa
     //2. File context menu -> BLAST -> Format DB
