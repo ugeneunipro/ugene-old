@@ -82,7 +82,7 @@ void FormatDBSupportRunDialogFiller::run() {
         GTWidget::click(os, inputDirRadioButton);
         CHECK_SET_ERR(inputDirRadioButton->isChecked(), "Dir radio button is unchecked");
         CHECK_SET_ERR(inputDirLineEdit->isEnabled(), "Dir lineedit is disabled");
-        CHECK_SET_ERR(inputDirLineEdit->isEnabled(), "Dir button is disabled");
+        CHECK_SET_ERR(inputDirToolButton->isEnabled(), "Dir button is disabled");
         GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
     }
 
