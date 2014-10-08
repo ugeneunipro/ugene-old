@@ -46,7 +46,8 @@
 namespace U2 {
 namespace LocalWorkflow {
 
-const QString ExtractMSAConsensusWorkerFactory::ACTOR_ID("extract-msa-consensus");
+const QString ExtractMSAConsensusSequenceWorkerFactory::ACTOR_ID("extract-msa-consensus-sequence");
+const QString ExtractMSAConsensusStringWorkerFactory::ACTOR_ID("extract-msa-consensus-string");
 
 namespace {
     const QString ALGO_ATTR_ID("algorithm");
@@ -64,13 +65,13 @@ void ExtractMSAConsensusWorker::init() {
 
 }
 
-Task * ExtractMSAConsensusWorker::tick() {
+Task* ExtractMSAConsensusWorker::tick() {
     if (hasMsa()) {
         U2OpStatusImpl os;
         MAlignment msa = takeMsa(os);
         CHECK_OP(os, new FailTask(os.getError()));
-
-        return createTask(msa);
+        extractMsaConsensus = createTask(msa);
+        return extractMsaConsensus;
     } else {
         finish();
         return NULL;
@@ -112,16 +113,45 @@ MAlignment ExtractMSAConsensusWorker::takeMsa(U2OpStatus &os) {
     return obj->getMAlignment();
 }
 
-Task * ExtractMSAConsensusWorker::createTask(const MAlignment &msa) {
-    const QString algoId = getValue<QString>(ALGO_ATTR_ID);
-    const int threshold = getValue<int>(THRESHOLD_ATTR_ID);
-    const bool keepGaps = getValue<bool>(GAPS_ATTR_ID);
-    Task *t = new ExtractMSAConsensusTaskHelper(algoId, threshold, keepGaps, msa, context->getDataStorage()->getDbiRef());
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-    return t;
+///////////////////////////////////////////////////////////////////////
+//ExtractMSAConsensusStringWorker
+ExtractMSAConsensusStringWorker::ExtractMSAConsensusStringWorker(Actor *actor):ExtractMSAConsensusWorker(actor){}
+
+void ExtractMSAConsensusStringWorker::finish() {
+    IntegralBus *inPort = ports[BasePorts::IN_MSA_PORT_ID()];
+    SAFE_POINT(NULL != inPort, "NULL msa port", );
+    SAFE_POINT(inPort->isEnded(), "The msa is not ended", );
+    IntegralBus *outPort = ports[BasePorts::OUT_TEXT_PORT_ID()];
+    SAFE_POINT(NULL != outPort, "NULL text port", );
+
+    outPort->setEnded();
+    setDone();
 }
 
-void ExtractMSAConsensusWorker::finish() {
+void ExtractMSAConsensusStringWorker::sendResult(const SharedDbiDataHandler &seqId) {
+    //QScopedPointer<U2SequenceObject> obj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+    QVariantMap data;
+    data[BaseSlots::TEXT_SLOT().getId()] = extractMsaConsensus->getResultAsText();
+    IntegralBus *outPort = ports[BasePorts::OUT_TEXT_PORT_ID()];
+
+    SAFE_POINT(NULL != outPort, "NULL text port", );
+
+    outPort->put(Message(outPort->getBusType(), data));
+}
+
+ExtractMSAConsensusTaskHelper* ExtractMSAConsensusStringWorker::createTask(const MAlignment &msa){
+    const QString algoId = getValue<QString>(ALGO_ATTR_ID);
+    const int threshold = getValue<int>(THRESHOLD_ATTR_ID);
+    extractMsaConsensus = new ExtractMSAConsensusTaskHelper(algoId, threshold, true, msa, context->getDataStorage()->getDbiRef());
+    connect(extractMsaConsensus, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+    return extractMsaConsensus;
+}
+
+///////////////////////////////////////////////////////////////////////
+//ExtractMSAConsensusSequenceWorker
+ExtractMSAConsensusSequenceWorker::ExtractMSAConsensusSequenceWorker(Actor *actor):ExtractMSAConsensusWorker(actor){}
+
+void ExtractMSAConsensusSequenceWorker::finish() {
     IntegralBus *inPort = ports[BasePorts::IN_MSA_PORT_ID()];
     SAFE_POINT(NULL != inPort, "NULL msa port", );
     SAFE_POINT(inPort->isEnded(), "The msa is not ended", );
@@ -132,7 +162,7 @@ void ExtractMSAConsensusWorker::finish() {
     setDone();
 }
 
-void ExtractMSAConsensusWorker::sendResult(const SharedDbiDataHandler &seqId) {
+void ExtractMSAConsensusSequenceWorker::sendResult(const SharedDbiDataHandler &seqId) {
     QVariantMap data;
     data[BaseSlots::DNA_SEQUENCE_SLOT().getId()] = qVariantFromValue<SharedDbiDataHandler>(seqId);
     IntegralBus *outPort = ports[BasePorts::OUT_SEQ_PORT_ID()];
@@ -141,15 +171,25 @@ void ExtractMSAConsensusWorker::sendResult(const SharedDbiDataHandler &seqId) {
     outPort->put(Message(outPort->getBusType(), data));
 }
 
+ExtractMSAConsensusTaskHelper* ExtractMSAConsensusSequenceWorker::createTask(const MAlignment &msa){
+    const QString algoId = getValue<QString>(ALGO_ATTR_ID);
+    const int threshold = getValue<int>(THRESHOLD_ATTR_ID);
+    const bool keepGaps = getValue<bool>(GAPS_ATTR_ID);
+    extractMsaConsensus = new ExtractMSAConsensusTaskHelper(algoId, threshold, keepGaps, msa, context->getDataStorage()->getDbiRef());
+    connect(extractMsaConsensus, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
+    return extractMsaConsensus;
+}
+
 ///////////////////////////////////////////////////////////////////////
 //ExtractMSAConsensusTaskHelper
 ExtractMSAConsensusTaskHelper::ExtractMSAConsensusTaskHelper(const QString &algoId, int threshold, bool keepGaps, const MAlignment &msa, const U2DbiRef &targetDbi)
-: Task(tr("Extract consensus"), TaskFlags_NR_FOSCOE),
+: Task(ExtractMSAConsensusTaskHelper::tr("Extract consensus"), TaskFlags_NR_FOSCOE),
   algoId(algoId),
   threshold(threshold),
   keepGaps(keepGaps),
   msa(msa),
   targetDbi(targetDbi)
+  //,resultText("")
 {
 
 }
@@ -162,18 +202,20 @@ QString ExtractMSAConsensusTaskHelper::getResultName () const {
 }
 
 void ExtractMSAConsensusTaskHelper::prepare() {
-    QSharedPointer<MSAConsensusAlgorithm> algo (createAlgorithm());
+    QSharedPointer<MSAConsensusAlgorithm> algo(createAlgorithm());
+    SAFE_POINT_EXT(NULL != algo, setError("Wrong consensus algorithm"), );
 
-    QByteArray cons;
-    MSAConsensusUtils::updateConsensus(msa, cons, algo.data());
-    if(!keepGaps){
-        cons.replace("-", "");
+    MSAConsensusUtils::updateConsensus(msa, resultText, algo.data());
+    if(!keepGaps && algo->getFactory()->isSequenceLikeResult()){
+        resultText.replace("-", "");
     }
 
-    U2SequenceImporter seqImporter;
-    seqImporter.startSequence(targetDbi, U2ObjectDbi::ROOT_FOLDER, getResultName(), false, stateInfo);
-    seqImporter.addBlock(cons.data(), cons.length(), stateInfo);
-    resultSequence = seqImporter.finalizeSequence(stateInfo);
+    if (algo->getFactory()->isSequenceLikeResult()) {
+        U2SequenceImporter seqImporter;
+        seqImporter.startSequence(targetDbi, U2ObjectDbi::ROOT_FOLDER, getResultName(), false, stateInfo);
+        seqImporter.addBlock(resultText.data(), resultText.length(), stateInfo);
+        resultSequence = seqImporter.finalizeSequence(stateInfo);
+    }
 }
 
 U2EntityRef ExtractMSAConsensusTaskHelper::getResult() const {
@@ -187,7 +229,7 @@ MSAConsensusAlgorithm * ExtractMSAConsensusTaskHelper::createAlgorithm() {
 
     MSAConsensusAlgorithmFactory *f = reg->getAlgorithmFactory(algoId);
     if (NULL == f) {
-        setError(tr("Unknown consensus algorithm: ") + algoId);
+        setError(ExtractMSAConsensusTaskHelper::tr("Unknown consensus algorithm: ") + algoId);
         return NULL;
     }
     MSAConsensusAlgorithm* alg = f->createAlgorithm(msa);
@@ -197,25 +239,29 @@ MSAConsensusAlgorithm * ExtractMSAConsensusTaskHelper::createAlgorithm() {
     return alg;
 }
 
+QByteArray ExtractMSAConsensusTaskHelper::getResultAsText() const {
+    return resultText;
+}
+
 ///////////////////////////////////////////////////////////////////////
 //ExtractMSAConsensusWorkerFactory
-ExtractMSAConsensusWorkerFactory::ExtractMSAConsensusWorkerFactory()
+ExtractMSAConsensusSequenceWorkerFactory::ExtractMSAConsensusSequenceWorkerFactory()
 : DomainFactory(ACTOR_ID)
 {
 
 }
 
-Worker * ExtractMSAConsensusWorkerFactory::createWorker(Actor *actor) {
-    return new ExtractMSAConsensusWorker(actor);
+Worker * ExtractMSAConsensusSequenceWorkerFactory::createWorker(Actor *actor) {
+    return new ExtractMSAConsensusSequenceWorker(actor);
 }
 
-void ExtractMSAConsensusWorkerFactory::init() {
+void ExtractMSAConsensusSequenceWorkerFactory::init() {
     MSAConsensusAlgorithmRegistry *reg = AppContext::getMSAConsensusAlgorithmRegistry();
     SAFE_POINT(NULL != reg, "NULL registry", );
 
     const Descriptor desc(ACTOR_ID,
-        QObject::tr("Extract Consensus from Alignment"),
-        QObject::tr("Extract the consensus sequence from the incoming multiple sequence alignment."));
+        ExtractMSAConsensusSequenceWorker::tr("Extract Consensus from Alignment as Sequence"),
+        ExtractMSAConsensusSequenceWorker::tr("Extract the consensus sequence from the incoming multiple sequence alignment."));
 
     QList<PortDescriptor*> ports;
     {
@@ -233,16 +279,16 @@ void ExtractMSAConsensusWorkerFactory::init() {
     QList<Attribute*> attrs;
     {
         const Descriptor algoDesc(ALGO_ATTR_ID,
-            QObject::tr("Algorithm"),
-            QObject::tr("The algorithm of consensus extracting."));
+            ExtractMSAConsensusSequenceWorker::tr("Algorithm"),
+            ExtractMSAConsensusSequenceWorker::tr("The algorithm of consensus extracting."));
         const Descriptor thresholdDesc(THRESHOLD_ATTR_ID,
-            QObject::tr("Threshold"),
-            QObject::tr("The threshold of the algorithm."));
+            ExtractMSAConsensusSequenceWorker::tr("Threshold"),
+            ExtractMSAConsensusSequenceWorker::tr("The threshold of the algorithm."));
         const Descriptor gapsDesc(GAPS_ATTR_ID,
-            QObject::tr("Keep gaps"),
-            QObject::tr("Set this parameter if the result consensus must keep the gaps."));
+            ExtractMSAConsensusSequenceWorker::tr("Keep gaps"),
+            ExtractMSAConsensusSequenceWorker::tr("Set this parameter if the result consensus must keep the gaps."));
 
-        attrs << new Attribute(algoDesc, BaseTypes::STRING_TYPE(), true, BuiltInConsensusAlgorithms::DEFAULT_ALGO);
+        attrs << new Attribute(algoDesc, BaseTypes::STRING_TYPE(), true, BuiltInConsensusAlgorithms::STRICT_ALGO);
         attrs << new Attribute(thresholdDesc, BaseTypes::NUM_TYPE(), true, 100);
         attrs << new Attribute(gapsDesc, BaseTypes::BOOL_TYPE(), true, true);
     }
@@ -250,13 +296,17 @@ void ExtractMSAConsensusWorkerFactory::init() {
     QMap<QString, PropertyDelegate*> delegates;
     {
         QVariantMap algos;
-        foreach (const QString algoId, reg->getAlgorithmIds()) {
+        foreach (const QString &algoId, reg->getAlgorithmIds()) {
             MSAConsensusAlgorithmFactory *f = reg->getAlgorithmFactory(algoId);
-            algos[f->getName()] = algoId;
+            if(f->isSequenceLikeResult()){
+                algos[f->getName()] = algoId;
+            }
         }
         delegates[ALGO_ATTR_ID] = new ComboBoxDelegate(algos);
 
-        QVariantMap m; m["minimum"] = 0; m["maximum"] = 100;
+        QVariantMap m; 
+        m["minimum"] = 0; 
+        m["maximum"] = 100;
         delegates[THRESHOLD_ATTR_ID] = new SpinBoxDelegate(m);
     }
 
@@ -266,7 +316,79 @@ void ExtractMSAConsensusWorkerFactory::init() {
 
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ALIGNMENT(), proto);
     DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
-    localDomain->registerEntry(new ExtractMSAConsensusWorkerFactory());
+    localDomain->registerEntry(new ExtractMSAConsensusSequenceWorkerFactory());
+}
+
+///////////////////////////////////////////////////////////////////////
+//ExtractMSAConsensusStringWorkerFactory
+ExtractMSAConsensusStringWorkerFactory::ExtractMSAConsensusStringWorkerFactory()
+: DomainFactory(ACTOR_ID)
+{
+
+}
+
+Worker * ExtractMSAConsensusStringWorkerFactory::createWorker(Actor *actor) {
+    return new ExtractMSAConsensusStringWorker(actor);
+}
+
+void ExtractMSAConsensusStringWorkerFactory::init() {
+    MSAConsensusAlgorithmRegistry *reg = AppContext::getMSAConsensusAlgorithmRegistry();
+    SAFE_POINT(NULL != reg, "NULL registry", );
+
+    const Descriptor desc(ACTOR_ID,
+        ExtractMSAConsensusSequenceWorker::tr("Extract Consensus from Alignment as String"),
+        ExtractMSAConsensusSequenceWorker::tr("Extract the consensus string from the incoming multiple sequence alignment."));
+
+    QList<PortDescriptor*> ports;
+    {
+        QMap<Descriptor, DataTypePtr> inData;
+        inData[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
+        DataTypePtr inType(new MapDataType(BasePorts::IN_MSA_PORT_ID(), inData));
+        ports << new PortDescriptor(BasePorts::IN_MSA_PORT_ID(), inType, true);
+
+        QMap<Descriptor, DataTypePtr> outData;
+        outData[BaseSlots::TEXT_SLOT()] = BaseTypes::STRING_TYPE();
+        DataTypePtr outType(new MapDataType(BasePorts::OUT_TEXT_PORT_ID(), outData));
+        ports << new PortDescriptor(BasePorts::OUT_TEXT_PORT_ID(), outType, false, true);
+    }
+
+    QList<Attribute*> attrs;
+    {
+        const Descriptor algoDesc(ALGO_ATTR_ID,
+            ExtractMSAConsensusSequenceWorker::tr("Algorithm"),
+            ExtractMSAConsensusSequenceWorker::tr("The algorithm of consensus extracting."));
+        const Descriptor thresholdDesc(THRESHOLD_ATTR_ID,
+            ExtractMSAConsensusSequenceWorker::tr("Threshold"),
+            ExtractMSAConsensusSequenceWorker::tr("The threshold of the algorithm."));
+
+        attrs << new Attribute(algoDesc, BaseTypes::STRING_TYPE(), true, BuiltInConsensusAlgorithms::DEFAULT_ALGO);
+        attrs << new Attribute(thresholdDesc, BaseTypes::NUM_TYPE(), true, 100);
+    }
+
+    QMap<QString, PropertyDelegate*> delegates;
+    {
+        QVariantMap algos;
+        foreach (const QString &algoId, reg->getAlgorithmIds()) {
+            MSAConsensusAlgorithmFactory *f = reg->getAlgorithmFactory(algoId);
+            if(!f->isSequenceLikeResult()){
+                algos[f->getName()] = algoId;
+            }
+        }
+        delegates[ALGO_ATTR_ID] = new ComboBoxDelegate(algos);
+
+        QVariantMap m; 
+        m["minimum"] = 0; 
+        m["maximum"] = 100;
+        delegates[THRESHOLD_ATTR_ID] = new SpinBoxDelegate(m);
+    }
+
+    ActorPrototype *proto = new IntegralBusActorPrototype(desc, ports, attrs);
+    proto->setPrompter(new ExtractMSAConsensusWorkerPrompter());
+    proto->setEditor(new DelegateEditor(delegates));
+
+    WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_ALIGNMENT(), proto);
+    DomainFactory *localDomain = WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID);
+    localDomain->registerEntry(new ExtractMSAConsensusStringWorkerFactory());
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -280,7 +402,7 @@ ExtractMSAConsensusWorkerPrompter::ExtractMSAConsensusWorkerPrompter(Actor *acto
 QString ExtractMSAConsensusWorkerPrompter::composeRichDoc() {
     QString algorithm = getParameter(ALGO_ATTR_ID).toString();
     QString link = getHyperlink(ALGO_ATTR_ID, algorithm);
-    return tr("Extracts the consensus sequence from the incoming alignment(s) using the %1 algorithm.").arg(link);
+    return ExtractMSAConsensusSequenceWorker::tr("Extracts the consensus sequence from the incoming alignment(s) using the %1 algorithm.").arg(link);
 }
 
 } // LocalWorkflow

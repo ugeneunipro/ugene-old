@@ -294,9 +294,10 @@ void CoreLib::init() {
     DASFetcherFactory::init();
     DNAStatWorkerFactory::init();
     DataWorkerFactory::init();
-    ExtractConsensusWorkerFactory::init();
-    ExtractMSAConsensusWorkerFactory::init();
     ExtractAssemblyCoverageWorkerFactory::init();
+    ExtractConsensusWorkerFactory::init();
+    ExtractMSAConsensusSequenceWorkerFactory::init();
+    ExtractMSAConsensusStringWorkerFactory::init();
     FetchSequenceByIdFromAnnotationFactory::init();
     FilterAnnotationsByQualifierWorkerFactory::init();
     FilterAnnotationsWorkerFactory::init();

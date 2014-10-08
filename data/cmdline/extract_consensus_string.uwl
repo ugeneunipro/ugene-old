@@ -1,0 +1,86 @@
+#@UGENE_WORKFLOW
+#This workflows allows one to extract a consensus as a text. In inputs a number of alignments and for each of them outputs consensus as a text. The consensus sequence is calculated according to the algorithm selected
+
+
+
+workflow "New workflow"{
+
+    read-msa {
+        type:read-msa;
+        name:"Read Alignment";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    extract-msa-consensus-string {
+        type:extract-msa-consensus-string;
+        name:"Extract Consensus from Alignment as string";
+    }
+    write-text {
+        type:write-text;
+        name:"Write Plain Text";
+        write-mode:0;
+    }
+
+    .actor-bindings {
+        extract-msa-consensus-string.out-text->write-text.in-text
+        read-msa.out-msa->extract-msa-consensus-string.in-msa
+    }
+
+    read-msa.msa->extract-msa-consensus-string.in-msa.msa
+    extract-msa-consensus-string.text->write-text.in-text.text
+
+    .meta {
+        parameter-aliases {
+            read-msa.url-in {
+                alias:in;
+            }
+            extract-msa-consensus-string.algorithm {
+                alias:algorithm;
+            }
+            extract-msa-consensus-string.threshold {
+                alias:threshold;
+            }
+            write-text.data-storage {
+                alias:storage;
+            }
+            write-text.database {
+                alias:db;
+            }
+            write-text.db-path {
+                alias:out_path;
+            }
+            write-text.url-out {
+                alias:out;
+            }
+        }
+        visual {
+            extract-msa-consensus-string {
+                pos:"-495 -570";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+                out-text.angle:360;
+            }
+            read-msa {
+                pos:"-645 -570";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-msa.angle:360;
+            }
+            write-text {
+                pos:"-240 -570";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-text.angle:180;
+            }
+            extract-msa-consensus-string.out-text->write-text.in-text {
+                text-pos:"-24 -24";
+            }
+            read-msa.out-msa->extract-msa-consensus-string.in-msa {
+                text-pos:"-45 -50";
+            }
+        }
+    }
+}
+

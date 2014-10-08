@@ -1,0 +1,92 @@
+#@UGENE_WORKFLOW
+#This workflows allows one to extract a consensus sequence. In inputs a number of alignments and for each of them outputs consensus as a sequence. The consensus sequence is calculated according to the algorithm selected
+
+
+
+workflow "New workflow"{
+
+    read-msa {
+        type:read-msa;
+        name:"Read Alignment";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write Sequence";
+        write-mode:0;
+    }
+    extract-msa-consensus-sequence {
+        type:extract-msa-consensus-sequence;
+        name:"Extract Consensus from Alignment as sequence";
+    }
+
+    .actor-bindings {
+        read-msa.out-msa->extract-msa-consensus-sequence.in-msa
+        extract-msa-consensus-sequence.out-sequence->write-sequence.in-sequence
+    }
+
+    extract-msa-consensus-sequence.sequence->write-sequence.in-sequence.sequence
+    read-msa.msa->extract-msa-consensus-sequence.in-msa.msa
+
+    .meta {
+        parameter-aliases {
+            read-msa.url-in {
+                alias:in;
+            }
+            write-sequence.data-storage {
+                alias:storage;
+            }
+            write-sequence.database {
+                alias:db;
+            }
+            write-sequence.db-path {
+                alias:out_path;
+            }
+            write-sequence.document-format {
+                alias:format;
+            }
+            write-sequence.url-out {
+                alias:out;
+            }
+            extract-msa-consensus-sequence.algorithm {
+                alias:algorithm;
+            }
+            extract-msa-consensus-sequence.keep-gaps {
+                alias:keep_gaps;
+            }
+            extract-msa-consensus-sequence.threshold {
+                alias:threshhold;
+            }
+        }
+        visual {
+            extract-msa-consensus-sequence {
+                pos:"-525 -615";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-msa.angle:180;
+                out-sequence.angle:360;
+            }
+            read-msa {
+                pos:"-690 -615";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-msa.angle:360;
+            }
+            write-sequence {
+                pos:"-285 -615";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-sequence.angle:180;
+            }
+            extract-msa-consensus-sequence.out-sequence->write-sequence.in-sequence {
+                text-pos:"-37 -24";
+            }
+            read-msa.out-msa->extract-msa-consensus-sequence.in-msa {
+                text-pos:"-45 -50";
+            }
+        }
+    }
+}
+

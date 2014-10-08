@@ -31,6 +31,8 @@ namespace U2 {
 namespace LocalWorkflow {
 using namespace Workflow;
 
+class ExtractMSAConsensusTaskHelper;
+
 class ExtractMSAConsensusWorker : public BaseWorker {
     Q_OBJECT
 public:
@@ -39,16 +41,37 @@ public:
     void init();
     Task * tick();
     void cleanup();
-
+protected:
+    virtual ExtractMSAConsensusTaskHelper* createTask(const MAlignment &msa) = 0;
+    virtual void finish() = 0;
+    virtual void sendResult(const SharedDbiDataHandler &seqId) = 0;
+    ExtractMSAConsensusTaskHelper *extractMsaConsensus;
 private slots:
     void sl_taskFinished();
 
 private:
     bool hasMsa() const;
     MAlignment takeMsa(U2OpStatus &os);
-    Task * createTask(const MAlignment &msa);
-    void finish();
-    void sendResult(const SharedDbiDataHandler &seqId);
+};
+
+class ExtractMSAConsensusStringWorker : public ExtractMSAConsensusWorker {
+    Q_OBJECT
+public:
+    ExtractMSAConsensusStringWorker(Actor *actor);
+protected:
+    virtual ExtractMSAConsensusTaskHelper* createTask(const MAlignment &msa);
+    virtual void finish();
+    virtual void sendResult(const SharedDbiDataHandler &seqId);
+};
+
+class ExtractMSAConsensusSequenceWorker : public ExtractMSAConsensusWorker {
+    Q_OBJECT
+public:
+    ExtractMSAConsensusSequenceWorker(Actor *actor);
+protected:
+    virtual ExtractMSAConsensusTaskHelper* createTask(const MAlignment &msa);
+    virtual void finish();
+    virtual void sendResult(const SharedDbiDataHandler &seqId);
 };
 
 class ExtractMSAConsensusTaskHelper : public Task {
@@ -59,23 +82,36 @@ public:
 
     void prepare();
     U2EntityRef getResult() const;
+    QByteArray getResultAsText() const;
 
 private:
+    MSAConsensusAlgorithm * createAlgorithm();
+    QString getResultName () const;
+
     const QString algoId;
     const int threshold;
     const bool keepGaps;
     MAlignment msa;
     const U2DbiRef targetDbi;
     U2Sequence resultSequence;
+    QByteArray resultText;
 
-private:
-    MSAConsensusAlgorithm * createAlgorithm();
-    QString getResultName () const;
 };
 
-class ExtractMSAConsensusWorkerFactory : public DomainFactory {
+class ExtractMSAConsensusSequenceWorkerFactory : public DomainFactory {
 public:
-    ExtractMSAConsensusWorkerFactory();
+    ExtractMSAConsensusSequenceWorkerFactory();
+
+    Worker * createWorker(Actor *actor);
+
+    static void init();
+
+    static const QString ACTOR_ID;
+};
+
+class ExtractMSAConsensusStringWorkerFactory : public DomainFactory {
+public:
+    ExtractMSAConsensusStringWorkerFactory();
 
     Worker * createWorker(Actor *actor);
 
