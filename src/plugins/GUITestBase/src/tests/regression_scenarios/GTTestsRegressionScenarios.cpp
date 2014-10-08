@@ -5137,6 +5137,69 @@ GUI_TEST_CLASS_DEFINITION(test_3209_2) {
     CHECK_SET_ERR(found, "Can not find the blast result");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3216_1) {
+//    1. Open "test/_common_data/genbank/1anot_1seq.gen" file.
+    QDir().mkpath(sandBoxDir + "test_3216");
+    GTFile::copy(os, testDir + "_common_data/genbank/1anot_1seq.gen", sandBoxDir + "test_3216/test_3216_1.gen");
+    GTFileDialog::openFile(os, sandBoxDir + "test_3216", "test_3216_1.gen");
+
+//    2. Add a qualifier with the value "012345678901234567890123456789012345678901234567890123456789".
+    const QString expectedValue = "012345678901234567890123456789012345678901234567890123456789";
+    GTUtilsAnnotationsTreeView::createQualifier(os, "test_3216_1", expectedValue, "CDS");
+
+//    3. Save the file, reopen the file.
+//    Expected state: the qualifier value is the same.
+    GTUtilsDocument::saveDocument(os, "test_3216_1.gen");
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTUtilsDocument::removeDocument(os, "test_3216_1.gen");
+
+    GTFileDialog::openFile(os, sandBoxDir + "test_3216", "test_3216_1.gen");
+    const QString actualValue = GTUtilsAnnotationsTreeView::getQualifierValue(os, "test_3216_1", "CDS");
+    CHECK_SET_ERR(expectedValue == actualValue, QString("The qualifier value is incorrect: expect '%1', got '%2'").arg(expectedValue).arg(actualValue));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3216_2) {
+//    1. Open "test/_common_data/genbank/1anot_1seq.gen" file.
+    QDir().mkpath(sandBoxDir + "test_3216");
+    GTFile::copy(os, testDir + "_common_data/genbank/1anot_1seq.gen", sandBoxDir + "test_3216/test_3216_2.gen");
+    GTFileDialog::openFile(os, sandBoxDir + "test_3216", "test_3216_2.gen");
+
+//    2. Add a qualifier with the value "012345678901234567890123456789 012345678901234567890123456789".
+    const QString expectedValue = "012345678901234567890123456789 012345678901234567890123456789";
+    GTUtilsAnnotationsTreeView::createQualifier(os, "test_3216_2", expectedValue, "CDS");
+
+//    3. Save the file, reopen the file.
+//    Expected state: the qualifier value is the same.
+    GTUtilsDocument::saveDocument(os, "test_3216_2.gen");
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTUtilsDocument::removeDocument(os, "test_3216_2.gen");
+
+    GTFileDialog::openFile(os, sandBoxDir + "test_3216", "test_3216_2.gen");
+    const QString actualValue = GTUtilsAnnotationsTreeView::getQualifierValue(os, "test_3216_2", "CDS");
+    CHECK_SET_ERR(expectedValue == actualValue, QString("The qualifier value is incorrect: expect '%1', got '%2'").arg(expectedValue).arg(actualValue));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3216_3) {
+//    1. Open "test/_common_data/genbank/1anot_1seq.gen" file.
+    QDir().mkpath(sandBoxDir + "test_3216");
+    GTFile::copy(os, testDir + "_common_data/genbank/1anot_1seq.gen", sandBoxDir + "test_3216/test_3216_3.gen");
+    GTFileDialog::openFile(os, sandBoxDir + "test_3216", "test_3216_3.gen");
+
+//    2. Add a qualifier with the value "012345678901234567890123456789 0  1 2345678901234567890123456789".
+    const QString expectedValue = "012345678901234567890123456789 0  1 2345678901234567890123456789";
+    GTUtilsAnnotationsTreeView::createQualifier(os, "test_3216_3", expectedValue, "CDS");
+
+//    3. Save the file, reopen the file.
+//    Expected state: the qualifier value is the same.
+    GTUtilsDocument::saveDocument(os, "test_3216_3.gen");
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTUtilsDocument::removeDocument(os, "test_3216_3.gen");
+
+    GTFileDialog::openFile(os, sandBoxDir + "test_3216", "test_3216_3.gen");
+    const QString actualValue = GTUtilsAnnotationsTreeView::getQualifierValue(os, "test_3216_3", "CDS");
+    CHECK_SET_ERR(expectedValue == actualValue, QString("The qualifier value is incorrect: expect '%1', got '%2'").arg(expectedValue).arg(actualValue));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3218) {
     // 1. Open "test/_common_data/genbank/big_feature_region.gb".
     GTLogTracer l;

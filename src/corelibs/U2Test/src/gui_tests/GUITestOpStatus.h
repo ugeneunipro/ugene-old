@@ -42,7 +42,7 @@ public:
     virtual void setProgress(int v) {Q_UNUSED(v)}
 
     virtual QString getDescription() const {return "";}
-    virtual void setDescription(const QString& desc) {}
+    virtual void setDescription(const QString& desc) {Q_UNUSED(desc);}
 private:
     QString error;
 };

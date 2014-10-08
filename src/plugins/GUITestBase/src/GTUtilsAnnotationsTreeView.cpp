@@ -19,24 +19,26 @@
  * MA 02110-1301, USA.
  */
 
+#include <QMainWindow>
+#include <QTreeWidget>
+
+#include <U2Core/ProjectModel.h>
+
+#include <U2Gui/MainWindow.h>
+
+#include <U2View/AnnotationsTreeView.h>
+
 #include "GTUtilsAnnotationsTreeView.h"
-#include "api/GTMouseDriver.h"
+#include "GTUtilsDialog.h"
+#include "GTUtilsMdi.h"
+#include "GTUtilsTaskTreeView.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTKeyboardUtils.h"
-#include "api/GTWidget.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTTreeWidget.h"
-#include "GTUtilsTaskTreeView.h"
-#include "GTUtilsMdi.h"
-#include <U2Core/ProjectModel.h>
-#include <U2Gui/MainWindow.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMainWindow>
-#include <QtGui/QTreeWidget>
-#else
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QTreeWidget>
-#endif
-#include <U2View/AnnotationsTreeView.h>
+#include "api/GTWidget.h"
+#include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
 
 namespace U2 {
 
@@ -89,6 +91,15 @@ QString GTUtilsAnnotationsTreeView::getAVItemName(U2OpStatus &os, AVItem* avItem
     }
 
     return "";
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getQualifierValue"
+QString GTUtilsAnnotationsTreeView::getQualifierValue(U2OpStatus &os, const QString &qualName, const QString &parentName) {
+    getItemCenter(os, parentName);
+    QTreeWidgetItem *qualItem = findItem(os, qualName);
+    GT_CHECK_RESULT(NULL != qualItem, "Qualifier item not found", "");
+    return qualItem->text(1);
 }
 #undef GT_METHOD_NAME
 
@@ -199,6 +210,15 @@ QList<U2Region> GTUtilsAnnotationsTreeView::getAnnotatedRegions(U2OpStatus &os) 
         res.append( ann.getRegions().toList() );
     }
     return res;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "createQualifier"
+void GTUtilsAnnotationsTreeView::createQualifier(U2OpStatus &os, const QString &qualName, const QString &qualValue, const QString &parentName) {
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "add_qualifier_action"));
+    GTUtilsDialog::waitForDialog(os, new EditQualifierFiller(os, qualName, qualValue));
+    GTMouseDriver::moveTo(os, getItemCenter(os, parentName));
+    GTMouseDriver::click(os, Qt::RightButton);
 }
 #undef GT_METHOD_NAME
 

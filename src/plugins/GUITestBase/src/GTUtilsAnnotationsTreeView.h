@@ -41,17 +41,17 @@ public:
     static QPoint getItemCenter(U2OpStatus &os, const QString &itemName);
 
     static QTreeWidgetItem* findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
-
     static QList<QTreeWidgetItem*> findItems(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
     // finds given region in annotation with a given name. U2Region: visible {begin, end} positions.
     static bool findRegion(U2OpStatus &os, const QString &itemName, const U2Region& region);
 
     static QString getSelectedItem(U2OpStatus &os);
-
     static QString getAVItemName(U2OpStatus &os, AVItem* avItem);
-
+    static QString getQualifierValue(U2OpStatus &os, const QString &qualName, const QString &parentName);
     static QList<U2Region> getAnnotatedRegions(U2OpStatus &os);
+
+    static void createQualifier(U2OpStatus &os, const QString &qualName, const QString &qualValue, const QString &parentName);
 
     static const QString widgetName;
 };
