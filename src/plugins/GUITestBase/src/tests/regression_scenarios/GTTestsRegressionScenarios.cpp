@@ -6300,6 +6300,29 @@ GUI_TEST_CLASS_DEFINITION(test_3555) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3557) {
+    //1. Open "_common_data/muscul4/prefab_1_ref.aln".
+    //2. Press the "Switch on/off collapsing" tool button.
+    //3. Select the "2|1a0cA|gi|32470780" and "1a0cA" sequences.
+    //4. Open the "Pairwise Alignment" OP tab.
+    //Expected: "2|1a0cA|gi|32470780" and "1a0cA" are in the OP.
+
+    GTFileDialog::openFile(os, testDir + "_common_data/muscul4/", "prefab_1_ref.aln");
+    GTWidget::click(os, GTAction::button(os, "Enable collapsing"));
+    GTUtilsMSAEditorSequenceArea::scrollToBottom(os);
+
+    GTUtilsMSAEditorSequenceArea::selectSequence(os, "2|1a0cA|gi|32470780");
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    GTUtilsMSAEditorSequenceArea::selectSequence(os, "1a0cA");
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_PAIRALIGN"));
+
+    QLineEdit *firstEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "sequenceLineEdit", GTWidget::findWidget(os, "firstSeqSelectorWC")));
+    QLineEdit *secondEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "sequenceLineEdit", GTWidget::findWidget(os, "secondSeqSelectorWC")));
+    CHECK_SET_ERR(firstEdit->text() == "2|1a0cA|gi|32470780", "Wrong first sequence");
+    CHECK_SET_ERR(secondEdit->text() == "1a0cA", "Wrong second sequence");
+}
 
 } // GUITest_regression_scenarios namespace
 
