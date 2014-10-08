@@ -81,7 +81,6 @@ private:
     bool canSetData(Attribute *attr, const QVariant &value);
 
     QMap<Attribute *, bool> getAttributeRelatedVisibility(Attribute *changedAttr) const;
-    void checkIfAttributeVisibilityChanged(const QMap<Attribute *, bool> &attributeVisibility);
 
 private:
     SchemaConfig*       schemaConfig;

@@ -119,8 +119,6 @@ Actor* ActorPrototype::createInstance(const ActorId &actorId, AttributeScript *s
         }
     }
 
-    proc->updateAttributesVisibility();
-
     return proc;
 }
 

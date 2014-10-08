@@ -69,6 +69,9 @@ public:
 
     virtual QList<Attribute*> getAttributes() const;
     
+    void updateAttributesVisibility() const;
+    void updateDependentAttributesVisibility(Attribute *masterAttribute) const;
+
 protected:
     // controller for ui editor of this configuration
     ConfigurationEditor* editor;

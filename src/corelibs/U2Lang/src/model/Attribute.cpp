@@ -25,6 +25,7 @@
 
 #include <U2Lang/HRSchemaSerializer.h>
 #include <U2Lang/WorkflowUtils.h>
+
 #include "Attribute.h"
 
 namespace U2 {
@@ -34,7 +35,7 @@ using namespace WorkflowSerialize;
  *  Attribute
  *************************************/
 Attribute::Attribute(const Descriptor& d, const DataTypePtr t, bool req, const QVariant & defaultValue )
-    : Descriptor(d), type(t), required(req), isAttributeVisible(true), defaultValue(defaultValue) {
+    : Descriptor(d), type(t), required(req), isAttributeVisible(true), defaultValue(defaultValue), owner(NULL) {
     value = defaultValue;
     debugCheckAttributeId();
 }
@@ -56,10 +57,15 @@ bool Attribute::isRequiredAttribute() const {
 }
 
 void Attribute::setAttributeValue(const QVariant & newVal) {
+    CHECK(value != newVal, );
     if (QVariant() == newVal) {
         value = defaultValue;
     } else {
         value = newVal;
+    }
+
+    if (NULL != owner) {
+        owner->updateDependentAttributesVisibility(this);
     }
 }
 
@@ -80,7 +86,11 @@ bool Attribute::isVisible() const {
 }
 
 void Attribute::setVisible(bool visible) {
+    CHECK(isAttributeVisible != visible, );
     isAttributeVisible = visible;
+    if (NULL != owner) {
+        owner->updateDependentAttributesVisibility(this);
+    }
 }
 
 const AttributeScript & Attribute::getAttributeScript() const {
@@ -139,6 +149,10 @@ bool Attribute::isEmptyString() const {
 
 void Attribute::addRelation(const AttributeRelation *relation) {
     relations.append(relation);
+}
+
+void Attribute::setOwner(Configuration *newOwner) {
+    owner = newOwner;
 }
 
 QVector<const AttributeRelation*> &Attribute::getRelations() {

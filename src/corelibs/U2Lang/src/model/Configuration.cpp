@@ -53,7 +53,9 @@ Attribute * Configuration::removeParameter( const QString & name ) {
 void Configuration::addParameter( const QString & name, Attribute * attr ) {
     assert(attr != NULL);
     params[name] = attr;
+    attr->setOwner(this);
     attrs << attr;
+    updateAttributesVisibility();
 }
 
 void Configuration::setParameter(const QString& name, const QVariant& val) {
@@ -113,6 +115,27 @@ bool Configuration::validate(ProblemList &problemList) const {
 
 QList<Attribute*> Configuration::getAttributes() const {
     return /*params.values()*/attrs;
+}
+
+void Configuration::updateAttributesVisibility() const {
+    foreach (Attribute *attribute, getAttributes()) {
+        updateDependentAttributesVisibility(attribute);
+    }
+}
+
+void Configuration::updateDependentAttributesVisibility(Attribute *masterAttribute) const {
+    foreach (Attribute *attribute, getAttributes()) {
+        const QVector<const AttributeRelation*> &relations = attribute->getRelations();
+        foreach (const AttributeRelation *relation, relations) {
+            if (VISIBILITY == relation->getType() && relation->getRelatedAttrId() == masterAttribute->getId()) {
+                const QVariant value = masterAttribute->getAttributePureValue();
+                const bool isVisible = relation->getAffectResult(value, QVariant()).toBool();
+                if (isVisible != attribute->isVisible()) {
+                    attribute->setVisible(isVisible);
+                }
+            }
+        }
+    }
 }
 
 } // U2

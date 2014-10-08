@@ -97,7 +97,6 @@ public:
      */
     virtual void updateActorIds(const QMap<ActorId, ActorId> &actorIdsMap);
 
-    void updateAttributesVisibility() const;
     void update(const QMap<ActorId, ActorId> &actorsMapping);
     void replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings);
 
@@ -150,9 +149,6 @@ private:
     void setupVariablesForAttribute(AttributeScript *_script);
 
     void updateGrouperSlots(const QMap<ActorId, ActorId> &actorsMapping);
-
-    void updateAttributeVisibility(Attribute *attribute) const;
-    Attribute *getAttributeById(const QString &attributeId) const;
 }; // Actor
 
 } // Workflow

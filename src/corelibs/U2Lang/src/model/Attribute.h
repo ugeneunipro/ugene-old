@@ -44,6 +44,7 @@ namespace U2 {
 typedef QString ActorId;
 inline ActorId str2aid(const QString& s) {return s;}
 inline QString aid2str(const ActorId& s) {return s;}
+class Configuration;
 
 /**
  * attribute value can be obtained from script
@@ -123,6 +124,7 @@ public:
     bool fromVariant(const QVariant& variant);
     bool isEmptyString() const;
     void addRelation(const AttributeRelation *relation);
+    void setOwner(Configuration *newOwner);
     QVector<const AttributeRelation*> &getRelations();
 
     virtual bool isEmpty() const;
@@ -156,6 +158,9 @@ protected:
     // script text and variable values for script evaluating
     // script variables get values only in runtime
     AttributeScript     scriptData;
+
+    // the entity that owns the attribute and updates attribut's visibility state.
+    Configuration *owner;
 
     QVector<const AttributeRelation*> relations;
     
