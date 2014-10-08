@@ -65,6 +65,9 @@ private slots:
     void sl_onProgressChanged();
 
 private:
+    void reportError(const QString &message);
+
+private:
     Task* task;
     AlignmentLogoRenderArea* logoArea;
     QPushButton* okButton;

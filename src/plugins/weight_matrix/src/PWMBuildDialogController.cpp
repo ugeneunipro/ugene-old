@@ -41,6 +41,7 @@
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/L10n.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/Settings.h>
@@ -99,6 +100,7 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
     QString inFile = QFileInfo(lod.url).absoluteFilePath();
     QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(inFile);
     if (formats.isEmpty()) {
+        reportError(L10N::notSupportedFileFormat(lod.url));
         return;
     }
 
@@ -120,20 +122,16 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
     }
 
     if(format == NULL){
-        QMessageBox mb(QMessageBox::Critical, tr("Error"), tr("Could not detect format of the file. Files must be in supported malignment or sequence formats."));
-        mb.exec();
+        reportError(tr("Could not detect the format of the file. Files must be in supported multiple alignment or sequence formats."));
         return;
     }
-    
     inputEdit->setText(inFile);
 
     IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(inFile));
     TaskStateInfo ti;
     QVariantMap hints;
     Document *doc = format->loadDocument(iof, inFile, hints, ti);
-    CHECK_OP(ti, );
-    
-    assert (doc != NULL);
+    CHECK_OP_EXT(ti, reportError(ti.getError()), );
 
     QList<GObject*> mobjs = doc->findGObjectByType(GObjectTypes::MULTIPLE_ALIGNMENT);
     if (!mobjs.isEmpty()) {
@@ -142,63 +140,26 @@ void PWMBuildDialogController::sl_inFileButtonClicked() {
         replaceLogo(ma);
     } else {
         mobjs = doc->findGObjectByType(GObjectTypes::SEQUENCE);
-        if (!mobjs.isEmpty()) {
-            U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(mobjs.first());
-            MAlignment ma(dnaObj->getSequenceName(), dnaObj->getAlphabet());
-            foreach (GObject* obj, mobjs) {
-                U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
-                if (dnaObj->getAlphabet()->getType() != DNAAlphabet_NUCL) {
-                    ti.setError(  tr("Wrong sequence alphabet") );
-                }
-                U2OpStatus2Log os;
-                ma.addRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), os);
-            }
-            replaceLogo(ma);
-        } else {
-            PFMatrix pfm = WeightMatrixIO::readPFMatrix(iof, lod.url, ti);
-            if (ti.hasError()) {
-                logoArea->hide();
-                return;
-            }
-            int len = pfm.getLength();
-            if (len == 0) {
-                logoArea->hide();
-                ti.setError(tr("Zero length matrix is not allowed"));
-                return;
-            }
-            int size = 0;
-            
-            for (int i = 0, n = pfm.getType() == PFM_MONONUCLEOTIDE ? 4 : 16; i < n; i++) {
-                size += pfm.getValue(i, 0);
-            }
-            const DNAAlphabet* al = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
-            MAlignment ma(QString("Temporary alignment"), al);
-            QList<MAlignmentRow> rows;
-            for (int i = 0; i < size; i++) {
-                QByteArray arr;
-                for (int j = 0; j < len; j++) {
-                    int row = 0;
-                    int sum = i;
-                    while (sum >= pfm.getValue(row, j)) {
-                        sum -= pfm.getValue(row, j);
-                        row++;
-                    }   
-                    if (pfm.getType() == PFM_MONONUCLEOTIDE) {
-                        arr.append(DiProperty::fromIndex(row));
-                    } else {
-                        arr.append(DiProperty::fromIndexHi(row));
-                        if (j == len - 1) {
-                            arr.append(DiProperty::fromIndexLo(row));
-                        }
-                    }
-                }
-                U2OpStatus2Log os;
-                QString rowName = QString("Row %1").arg(i);
-                ma.addRow(rowName, arr, os);
-            }
-            replaceLogo(ma);
+        if (mobjs.isEmpty()) {
+            reportError(tr("There are no sequences in the file."));
+            return;
         }
+        U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(mobjs.first());
+        MAlignment ma(dnaObj->getSequenceName(), dnaObj->getAlphabet());
+        foreach (GObject* obj, mobjs) {
+            U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
+            if (dnaObj->getAlphabet()->getType() != DNAAlphabet_NUCL) {
+                ti.setError(  tr("Wrong sequence alphabet") );
+            }
+            U2OpStatus2Log os;
+            ma.addRow(dnaObj->getSequenceName(), dnaObj->getWholeSequenceData(), os);
+        }
+        replaceLogo(ma);
     }
+}
+
+void PWMBuildDialogController::reportError(const QString &message) {
+    QMessageBox::warning(this, L10N::errorTitle(), message);
 }
 
 void PWMBuildDialogController::replaceLogo(const MAlignment& ma) {
