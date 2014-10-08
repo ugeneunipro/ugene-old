@@ -5641,8 +5641,7 @@ GUI_TEST_CLASS_DEFINITION(test_3373) {
 //    Expected state: workflow is successfully finished. "result.gb" contains reverse complement sequence for "seq1.fa"
     GTLogTracer l;
 
-    QMenu* menu=GTMenu::showMainMenu( os, MWMENU_TOOLS);
-    GTMenu::clickMenuItemByName( os, menu, QStringList() << "Workflow Designer");
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Read Sequence");
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Reverse Complement");
@@ -5964,17 +5963,19 @@ GUI_TEST_CLASS_DEFINITION(test_3443) {
     CHECK_SET_ERR(!logViewWidget->isVisible(), "Log view is expected to be visible");
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
-
-    GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
-    GTGlobals::sleep();
+    GTGlobals::sleep(500);
 
     QWidget *projectViewWidget = GTWidget::findWidget(os, "project_view");
-    CHECK_SET_ERR(projectViewWidget->isVisible(), "Project view is expected to be visible");
 
     GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
     GTGlobals::sleep();
 
     CHECK_SET_ERR(!projectViewWidget->isVisible(), "Project view is expected to be invisible");
+
+    GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(projectViewWidget->isVisible(), "Project view is expected to be visible");
 
     GTKeyboardDriver::keyClick(os, '2', GTKeyboardDriver::key["alt"]);
     GTGlobals::sleep();
@@ -6272,8 +6273,8 @@ GUI_TEST_CLASS_DEFINITION(test_3551){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3552){
-//1. Open "_common_data\clustal\454LargeContigs_00012.aln"
-    GTFileDialog::openFile(os, testDir + "_common_data/clustal/" , "454LargeContigs_00012.aln");
+//1. Open "_common_data\clustal\fungal - all.aln"
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal", "fungal - all.aln");
     GTGlobals::sleep(200);
 
     QLabel* taskInfoLabel = GTWidget::findExactWidget<QLabel*>(os, "taskInfoLabel");

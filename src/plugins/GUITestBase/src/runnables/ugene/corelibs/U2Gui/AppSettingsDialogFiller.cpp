@@ -108,6 +108,10 @@ void NewColorSchemeCreator::run(){
 
         QWidget* deleteSchemaButton = GTWidget::findWidget(os, "deleteSchemaButton",dialog);
         GT_CHECK (deleteSchemaButton, "deleteSchemaButton not found");
+        while(!deleteSchemaButton->isEnabled()){
+            uiLog.trace("deleteSchemaButton is disabled");
+            GTGlobals::sleep(100);
+        }
         GTWidget::click(os, deleteSchemaButton);
 
 
