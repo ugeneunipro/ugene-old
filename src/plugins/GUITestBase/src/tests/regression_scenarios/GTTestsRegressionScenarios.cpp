@@ -6300,6 +6300,28 @@ GUI_TEST_CLASS_DEFINITION(test_3555) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3556) {
+    //1. Open "_common_data/muscul4/prefab_1_ref.aln".
+    //2. Press the "Switch on/off collapsing" tool button.
+    //3. Select the sequence "1a0cA".
+    //4. Context menu: {Set with sequence as reference}.
+    //Expected state: the sequence became reference.
+
+    GTFileDialog::openFile(os, testDir + "_common_data/muscul4/", "prefab_1_ref.aln");
+    GTWidget::click(os, GTAction::button(os, "Enable collapsing"));
+
+    GTUtilsMSAEditorSequenceArea::scrollToBottom(os);
+    GTUtilsMSAEditorSequenceArea::selectSequence(os, "1a0cA");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "set_seq_as_reference"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_GENERAL"));
+
+    QLineEdit *refEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "sequenceLineEdit"));
+    CHECK_SET_ERR(refEdit->text() == "1a0cA", "Wrong reference sequence");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3557) {
     //1. Open "_common_data/muscul4/prefab_1_ref.aln".
     //2. Press the "Switch on/off collapsing" tool button.
