@@ -5445,6 +5445,21 @@ GUI_TEST_CLASS_DEFINITION(test_3287) {
     CHECK_SET_ERR(70 == image.height(), "Wrong image height");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3288){
+//1. Open "data/samples/CLUSTALW/HIV-1.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "HIV-1.aln");
+//2. Click the "Build tree" button on the main toolbar.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFillerPhyML(os, true));
+    GTWidget::click(os, GTAction::button(os, "Build Tree"));
+//3. Select the "PhyML" tool, set "Equilibrium frequencies" option to "opti,ized", build the tree
+    GTGlobals::sleep(500);
+    QProgressBar* taskProgressBar = GTWidget::findExactWidget<QProgressBar*>(os, "taskProgressBar");
+    QString text = taskProgressBar->text();
+    CHECK_SET_ERR(text.contains("%"), "unexpected text: " + text);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//Expected state: the task progress is correct.
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3305) {
     GTLogTracer logTracer;
 

@@ -41,7 +41,7 @@ void GTListWidget::click(U2OpStatus &os, QListWidget *listWidget, const QString 
     QListWidgetItem* item = list.first();
     listWidget->scrollToItem(item);
 
-    QRect r = listWidget->visualItemRect(item);
+    QRect r = listWidget->viewport()->visualItemRect(item);
     QPoint global = listWidget->mapToGlobal(r.center());
     GTMouseDriver::moveTo(os, global);
     GTMouseDriver::click(os);

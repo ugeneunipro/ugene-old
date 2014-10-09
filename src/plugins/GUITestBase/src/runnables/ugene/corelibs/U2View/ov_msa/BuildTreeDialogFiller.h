@@ -55,6 +55,15 @@ private:
     bool displayWithMsa;
 };
 
+class BuildTreeDialogFillerPhyML : public Filler{
+ public:
+    BuildTreeDialogFillerPhyML(U2OpStatus &os, bool _freqOptimRadioPressed): Filler(os, "CreatePhyTree"),
+    freqOptimRadioPressed(_freqOptimRadioPressed){}
+    virtual void run();
+private:
+    bool freqOptimRadioPressed;
+};
+
 }
 
 #endif //_U2_GT_RUNNABLES_BUILD_TREE_DIALOG_FILLER_H_

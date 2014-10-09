@@ -116,6 +116,33 @@ void BuildTreeDialogFiller::run() {
 
 
 }
+
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTUtilsDialog::BuildTreeDialogFiller"
+#define GT_METHOD_NAME "run"
+void BuildTreeDialogFillerPhyML::run(){
+    QWidget* dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new LicenseAgreemntDialogFiller(os));
+
+    QComboBox* algorithmBox = GTWidget::findExactWidget<QComboBox*>(os, "algorithmBox", dialog);
+    GTComboBox::setIndexWithText(os, algorithmBox, "PhyML Maximum Likelihood");
+
+    QRadioButton* freqOptimRadio = GTWidget::findExactWidget<QRadioButton*>(os, "freqOptimRadio");
+    if(freqOptimRadioPressed){
+        GTRadioButton::click(os, freqOptimRadio);
+    }
+
+    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    GT_CHECK(box != NULL, "buttonBox is NULL");
+    QPushButton* button = box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "cancel button is NULL");
+    GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
+
+}
