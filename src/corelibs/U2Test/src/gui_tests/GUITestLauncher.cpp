@@ -35,7 +35,13 @@
 #include "GUITestTeamcityLogger.h"
 
 #define TIMEOUT 720000
+
+#ifdef Q_OS_LINUX
+#define NUMBER_OF_TESTS_IN_SUTIE 400
+#else
 #define NUMBER_OF_TESTS_IN_SUTIE 500
+#endif
+
 #define GUITESTING_REPORT_PREFIX "GUITesting"
 
 namespace U2 {

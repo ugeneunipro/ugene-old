@@ -62,14 +62,11 @@ SharedConnectionsDialogFiller::SharedConnectionsDialogFiller(U2OpStatus &os, con
 namespace {
 
 QListWidgetItem * findConnection(U2OpStatus &os, QListWidget *list, const QString &name, GTGlobals::FindOptions options = GTGlobals::FindOptions()) {
+    GTGlobals::sleep(1000);
     QList<QListWidgetItem*> items = list->findItems(name, Qt::MatchExactly);
-    if (1 != items.size()) {
-        if (options.failIfNull) {
-            os.setError("List item not found");
-        }
-        return NULL;
+    if (options.failIfNull) {
+        CHECK_SET_ERR_RESULT(items.size() ==1, "List item not found", NULL);
     }
-
     return items.first();
 }
 

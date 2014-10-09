@@ -458,7 +458,7 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
             break;
         }
     }
-    GT_CHECK(row != -1, "parameter not found");
+    GT_CHECK(row != -1, QString("parameter not found: %1").arg(parameter));
     table->scrollTo(model->index(row,1));
 
     GTMouseDriver::moveTo(os,GTTableView::getCellPosition(os,table,1,row));
