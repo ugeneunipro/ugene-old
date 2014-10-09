@@ -14,7 +14,7 @@ workflow "New workflow"{
     }
     extract-msa-consensus-string {
         type:extract-msa-consensus-string;
-        name:"Extract Consensus from Alignment as string";
+        name:"Extract Consensus from Alignment as String";
     }
     write-text {
         type:write-text;
