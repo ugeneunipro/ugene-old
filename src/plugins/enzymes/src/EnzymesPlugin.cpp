@@ -220,6 +220,7 @@ EnzymesADVContext::EnzymesADVContext(QObject* p,const QList<QAction*>& actions) 
 void EnzymesADVContext::initViewContext(GObjectView* view) {
     AnnotatedDNAView* av = qobject_cast<AnnotatedDNAView*>(view);
     ADVGlobalAction* a = new ADVGlobalAction(av, QIcon(":enzymes/images/enzymes.png"), tr("Find restriction sites..."), 50);
+    a->setObjectName("Find restriction sites");
     a->addAlphabetFilter(DNAAlphabet_NUCL);
     connect(a, SIGNAL(triggered()), SLOT(sl_search()));
     

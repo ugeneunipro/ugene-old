@@ -41,13 +41,16 @@ public:
     static void expand(U2OpStatus &os, QTreeWidgetItem* item);
 
     // Checks the tree item or unchecks it if it is already checked
-    static void checkItem(U2OpStatus &os, QTreeWidgetItem *item, int column = 0);
+    static void checkItem(U2OpStatus &os, QTreeWidgetItem *item, int column = 0, GTGlobals::UseMethod method = GTGlobals::UseMouse);
 
     // gets all items under root recursively and returns a list of them
     static QList<QTreeWidgetItem*> getItems(QTreeWidgetItem* root);
 
-    static QTreeWidgetItem* findItem(U2OpStatus &os, QTreeWidget* tree, const QString& text, QTreeWidgetItem* parent = NULL, int column = 0);
+    static QTreeWidgetItem* findItem(U2OpStatus &os, QTreeWidget* tree, const QString& text, QTreeWidgetItem* parent = NULL, int column = 0, Qt::MatchFlags flags = Qt::MatchExactly);
     static void click(U2OpStatus &os, QTreeWidgetItem* item);
+
+    // Returns item level, 0 - top level item
+    static int getItemLevel(U2OpStatus &os, QTreeWidgetItem *item);
 };
 
 } // namespace

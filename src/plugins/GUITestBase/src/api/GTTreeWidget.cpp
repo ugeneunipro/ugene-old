@@ -66,16 +66,38 @@ void GTTreeWidget::expand(U2OpStatus &os, QTreeWidgetItem* item) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkItem"
-void GTTreeWidget::checkItem(U2OpStatus &os, QTreeWidgetItem *item, int column) {
+void GTTreeWidget::checkItem(U2OpStatus &os, QTreeWidgetItem *item, int column, GTGlobals::UseMethod method) {
     Q_UNUSED(os);
-    GT_CHECK_RESULT(NULL != item, "treeWidgetItem is NULL", );
-    GT_CHECK_RESULT(0 <= column, "The column number is invalid", );
+    GT_CHECK(NULL != item, "treeWidgetItem is NULL");
+    GT_CHECK(0 <= column, "The column number is invalid");
 
     QTreeWidget *tree = item->treeWidget();
-    GT_CHECK_RESULT(NULL != tree, "The tree widget is NULL", );
+    GT_CHECK(NULL != tree, "The tree widget is NULL");
 
-    getItemRect(os, item);
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    const QRect itemRect = getItemRect(os, item);
+    const QPoint indentationOffset(tree->indentation(), 0);
+    const QPoint itemStartPos = itemRect.topLeft() - indentationOffset;
+    const QPoint columnOffset(tree->columnViewportPosition(column), 0);
+    const QPoint itemLevelOffset(getItemLevel(os, item) * tree->indentation(), 0);
+
+    switch (method) {
+    case GTGlobals::UseKeyBoard: {
+        const QPoint cellCenterOffset(tree->columnWidth(column) / 2, itemRect.height() / 2);
+        GTMouseDriver::moveTo(os, itemStartPos + itemLevelOffset + columnOffset + cellCenterOffset);
+        GTMouseDriver::click(os);
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+        break;
+    }
+    case GTGlobals::UseMouse: {
+        const QPoint magicCheckBoxOffset = QPoint(15, 10);
+        GTMouseDriver::moveTo(os, tree->mapToGlobal(itemStartPos + itemLevelOffset + columnOffset + magicCheckBoxOffset));
+        GTMouseDriver::click(os);
+        coreLog.error(QString("column: %1").arg(columnOffset.x()));
+        break;
+    }
+    default:
+        GT_CHECK(false, "Method is not implemented");
+    }
 }
 #undef GT_METHOD_NAME
 
@@ -89,7 +111,11 @@ QRect GTTreeWidget::getItemRect(U2OpStatus &os, QTreeWidgetItem* item) {
     expand(os, item);
     GT_CHECK_RESULT(item->isHidden() == false, "item is hidden", QRect());
 
-    return treeWidget->visualItemRect(item);
+    QRect rect = treeWidget->visualItemRect(item);
+    QHeaderView *headerView = treeWidget->header();
+    rect.setTop(rect.top() + headerView->height());
+
+    return rect;
 }
 #undef GT_METHOD_NAME
 
@@ -123,19 +149,24 @@ QList<QTreeWidgetItem*> GTTreeWidget::getItems(QTreeWidgetItem* root) {
 }
 
 #define GT_METHOD_NAME "findItem"
-QTreeWidgetItem* GTTreeWidget::findItem(U2OpStatus &os, QTreeWidget *tree, const QString& text, QTreeWidgetItem *parent, int column){
+QTreeWidgetItem* GTTreeWidget::findItem(U2OpStatus &os, QTreeWidget *tree, const QString& text, QTreeWidgetItem *parent, int column, Qt::MatchFlags flags) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(tree != NULL, "tree widget is null", NULL);
-    if(parent == NULL){
+
+    if (parent == NULL) {
         parent = tree->invisibleRootItem();
     }
-    QList<QTreeWidgetItem*> list = getItems(parent);
-    foreach(QTreeWidgetItem* item, list){
-        QString itemText = item->text(column);
-        if(itemText == text){
+
+    QList<QTreeWidgetItem *> list = getItems(parent);
+    foreach (QTreeWidgetItem *item, list){
+        const QString itemText = item->text(column);
+        if (flags.testFlag(Qt::MatchExactly) && itemText == text) {
+            return item;
+        } else if (flags.testFlag(Qt::MatchContains) && itemText.contains(text)) {
             return item;
         }
     }
+
     return NULL;
 }
 #undef GT_METHOD_NAME
@@ -148,6 +179,21 @@ void GTTreeWidget::click(U2OpStatus &os, QTreeWidgetItem *item){
 
     GTMouseDriver::moveTo(os, getItemCenter(os, item));
     GTMouseDriver::click(os);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getItemLevel"
+int GTTreeWidget::getItemLevel(U2OpStatus &os, QTreeWidgetItem *item) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(item != NULL, "item is NULL", -1);
+
+    int level = 0;
+    while (NULL != item->parent()) {
+        level++;
+        item = item->parent();
+    }
+
+    return level;
 }
 #undef GT_METHOD_NAME
 

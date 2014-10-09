@@ -19,44 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QTreeWidget>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QTreeWidget>
-#endif
+#include <QApplication>
+#include <QTreeWidget>
 
-#include "FindEnzymesDialogFiller.h"
-#include "api/GTTreeWidget.h"
+#include "DigestSequenceDialogFiller.h"
 #include "api/GTWidget.h"
 
 namespace U2 {
 
-#define GT_CLASS_NAME "FindEnzymesDialogFiller"
+#define GT_CLASS_NAME "DigestSequenceDialogFiller"
 
-FindEnzymesDialogFiller::FindEnzymesDialogFiller(U2OpStatus &os, const QStringList &enzymesToFind) :
-    Filler(os, "FindEnzymesDialog"),
-    enzymesToFind(enzymesToFind)
+DigestSequenceDialogFiller::DigestSequenceDialogFiller(U2OpStatus &os) :
+    Filler(os, "DigestSequenceDialog")
 {
 }
 
 #define GT_METHOD_NAME "run"
-void FindEnzymesDialogFiller::run() {
+void DigestSequenceDialogFiller::run() {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(NULL != dialog, "activeModalWidget is NULL");
 
-    QWidget *enzymesSelectorWidget = GTWidget::findWidget(os, "enzymesSelectorWidget");
-    GT_CHECK(NULL != enzymesSelectorWidget, "enzymesSelectorWidget is NULL");
-
-    GTWidget::click(os, GTWidget::findWidget(os, "selectNoneButton", enzymesSelectorWidget));
-
-    QTreeWidget *enzymesTree = qobject_cast<QTreeWidget *>(GTWidget::findWidget(os, "tree", enzymesSelectorWidget));
-    foreach (const QString& enzyme, enzymesToFind) {
-        QTreeWidgetItem *item = GTTreeWidget::findItem(os, enzymesTree, enzyme);
-        GTTreeWidget::checkItem(os, item);
-    }
+    GTWidget::click(os, GTWidget::findWidget(os, "addAllButton", dialog));
 
     GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
