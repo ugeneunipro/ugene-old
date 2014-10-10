@@ -55,11 +55,7 @@ void GTTreeWidget::expand(U2OpStatus &os, QTreeWidgetItem* item) {
     if (!item->isExpanded()) {
         QPoint p = QPoint(itemRect.left(), itemRect.center().y());
 
-        QHeaderView *headerView = treeWidget->header();
-        int headerHeight = headerView->height();
-        p.setY(p.y() + headerHeight);
-
-        GTMouseDriver::moveTo(os, treeWidget->mapToGlobal(p));
+        GTMouseDriver::moveTo(os, treeWidget->viewport()->mapToGlobal(p));
         GTMouseDriver::click(os);
     }
 }
@@ -112,8 +108,6 @@ QRect GTTreeWidget::getItemRect(U2OpStatus &os, QTreeWidgetItem* item) {
     GT_CHECK_RESULT(item->isHidden() == false, "item is hidden", QRect());
 
     QRect rect = treeWidget->visualItemRect(item);
-    QHeaderView *headerView = treeWidget->header();
-    rect.setTop(rect.top() + headerView->height());
 
     return rect;
 }
@@ -128,11 +122,8 @@ QPoint GTTreeWidget::getItemCenter(U2OpStatus &os, QTreeWidgetItem* item) {
     GT_CHECK_RESULT(treeWidget != NULL, "treeWidget is NULL", QPoint());
 
     QPoint p = getItemRect(os, item).center();
-    QHeaderView *headerView = treeWidget->header();
-    int headerHeight = headerView->height();
-    p.setY(p.y() + headerHeight);
 
-    return treeWidget->mapToGlobal(p);
+    return treeWidget->viewport()->mapToGlobal(p);
 }
 #undef GT_METHOD_NAME
 
