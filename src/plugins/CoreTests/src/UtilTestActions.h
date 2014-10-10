@@ -44,6 +44,28 @@ private:
     static const QString TO_URL_ATTR;
 };
 
+class GTest_AddSharedDbUrl : public GTest {
+    Q_OBJECT
+public:
+    SIMPLE_XML_TEST_BODY_WITH_FACTORY(GTest_AddSharedDbUrl, "add-shared-db");
+
+    ReportResult report();
+
+private:
+    QString dbUrl;
+    QString userName;
+    QString password;
+    QString customDbName;
+    bool passwordIsSet;
+
+    static const QString URL_ATTR;
+    static const QString PORT_ATTR;
+    static const QString DB_NAME_ATTR;
+    static const QString USER_NAME_ATTR;
+    static const QString PASSWORD_ATTR;
+    static const QString CUSTOM_DB_NAME;
+};
+
 class UtilTestActions {
 public:
     static QList<XMLTestFactory*> createTestFactories();

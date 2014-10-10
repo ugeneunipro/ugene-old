@@ -87,20 +87,17 @@ void DbFolderScanner::initTargetObjectList(const QSet<QString> &paths, const QSt
             if (passedNameFilter || passedTypeFilter) {
                 continue;
             }
-            unusedObjects << SharedDbUrlUtils::createDbObjectUrl(dbiRef, objId, objNames.value(objId, "Object"));
+            const QString objUrl = SharedDbUrlUtils::createDbObjectUrl(dbiRef, objId, objNames.value(objId, "Object"));
+            if (passFilter(objUrl)) {
+                unusedObjects << objUrl;
+            }
         }
     }
 }
 
 QString DbFolderScanner::getNextFile() {
-    QString objUrl;
-    bool passedFilter = false;
-    do {
-        objUrl = unusedObjects.takeFirst();
-        passedFilter = passFilter(objUrl);
-    } while (!passedFilter && !unusedObjects.isEmpty());
-
-    return passedFilter ? objUrl : QString();
+    SAFE_POINT(hasNext(), "URL list is empty", QString());
+    return unusedObjects.takeFirst();
 }
 
 bool DbFolderScanner::passFilter(const QString &objUrl) {

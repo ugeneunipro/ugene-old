@@ -141,19 +141,14 @@ extern Q_GUI_EXPORT bool qt_use_native_dialogs;
 QT_END_NAMESPACE
 #endif
 
-namespace U2 {
+using namespace U2;
 
 static void registerCoreServices() {
     ServiceRegistry* sr = AppContext::getServiceRegistry();
     TaskScheduler* ts = AppContext::getTaskScheduler();
     ts->registerTopLevelTask(sr->registerServiceTask(new PluginViewerImpl()));
     ts->registerTopLevelTask(sr->registerServiceTask(new ProjectViewImpl()));
-//    ts->registerTopLevelTask(sr->registerServiceTask(new ScriptRegistryService()));
 }
-
-}//namespace
-
-using namespace U2;
 
 static void updateStaticTranslations() {
     GObjectTypes::initTypeTranslations();
@@ -550,6 +545,7 @@ int main(int argc, char **argv)
 
     PasswordStorage* passwordStorage = new PasswordStorage();
     appContext->setPasswordStorage(passwordStorage);
+    AppSettingsImpl::addPublicDbCredentials2Settings();
 
     ConvertFactoryRegistry* convertFactoryRegistry = new ConvertFactoryRegistry();
     appContext->setConvertFactoryRegistry(convertFactoryRegistry);
@@ -572,7 +568,6 @@ int main(int argc, char **argv)
     appContext->setRecentlyDownloadedCache(rdc);
 
     DistributedComputingUtil * dcu = new DistributedComputingUtil();
-
 
     AutoAnnotationsSupport* aaSupport = new AutoAnnotationsSupport();
     appContext->setAutoAnnotationsSupport(aaSupport);

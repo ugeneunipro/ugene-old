@@ -77,7 +77,6 @@ private:
     void removeRecentConnection(const QListWidgetItem *item) const;
     void saveRecentConnection(const QListWidgetItem *item) const;
     void saveRecentConnections() const;
-    void addPredefinedConnection();
 
     bool checkDatabaseAvailability(const U2DbiRef &ref, bool &initializationRequired);
     bool isConnected(QListWidgetItem *item) const;
@@ -98,11 +97,6 @@ private:
                                           // where its literal value is used and replace it with the identifier.
     static const int UrlRole = Qt::UserRole;
     static const int LoginRole = UrlRole + 1;
-
-    static const QString PUBLIC_DATABASE_NAME;
-    static const QString PUBLIC_DATABASE_URL;
-    static const QString PUBLIC_DATABASE_LOGIN;
-    static const QString PUBLIC_DATABASE_PASSWORD;
 };
 
 }   // namespace U2

@@ -19,6 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/AppContext.h>
+#include <U2Core/PasswordStorage.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "UtilTestActions.h"
@@ -88,12 +92,58 @@ void GTest_CopyFile::replacePrefix(QString &path) {
     path = result.mid(0, result.size() - 1); // without the last ';'
 }
 
+/************************************************************************/
+/* GTest_AddSharedDbUrl */
+/************************************************************************/
+const QString GTest_AddSharedDbUrl::URL_ATTR = "url";
+const QString GTest_AddSharedDbUrl::PORT_ATTR = "port";
+const QString GTest_AddSharedDbUrl::DB_NAME_ATTR = "db_name";
+const QString GTest_AddSharedDbUrl::USER_NAME_ATTR = "user";
+const QString GTest_AddSharedDbUrl::PASSWORD_ATTR = "password";
+const QString GTest_AddSharedDbUrl::CUSTOM_DB_NAME = "custom-db-name";
+
+void GTest_AddSharedDbUrl::init(XMLTestFormat *, const QDomElement &el) {
+    const QString url = el.attribute(URL_ATTR);
+    CHECK_EXT(!url.isEmpty(), failMissingValue(URL_ATTR), );
+    const QString portStr = el.attribute(PORT_ATTR);
+    int port = -1;
+    if (!portStr.isEmpty()) {
+        bool conversionOk = false;
+        port = portStr.toInt(&conversionOk);
+        CHECK_EXT(conversionOk, stateInfo.setError(QString("Cannot convert %1 to an integer value of port number").arg(portStr)), );
+    }
+    const QString dbName = el.attribute(DB_NAME_ATTR);
+    CHECK_EXT(!dbName.isEmpty(), failMissingValue(DB_NAME_ATTR), );
+
+    dbUrl = U2DbiUtils::createDbiUrl(url, port, dbName);
+    userName = el.attribute(USER_NAME_ATTR);
+    passwordIsSet = el.hasAttribute(PASSWORD_ATTR);
+    password = el.attribute(PASSWORD_ATTR);
+    customDbName = el.attribute(CUSTOM_DB_NAME);
+}
+
+Task::ReportResult GTest_AddSharedDbUrl::report() {
+    Settings *settings = AppContext::getSettings();
+    CHECK_EXT(NULL != settings, stateInfo.setError("Invalid application settings"), ReportResult_Finished);
+    const QString fullDbUrl = U2DbiUtils::createFullDbiUrl(userName, dbUrl);
+    settings->setValue("/shared_database/recent_connections/" + customDbName, fullDbUrl);
+
+    if (passwordIsSet) {
+        PasswordStorage *passStorage = AppContext::getPasswordStorage();
+        CHECK_EXT(NULL != passStorage, stateInfo.setError("Invalid shared DB passwords storage"), ReportResult_Finished);
+        passStorage->addEntry(fullDbUrl, password, true);
+    }
+
+    return ReportResult_Finished;
+}
+
 /*******************************
 * GUrlTests
 *******************************/
 QList<XMLTestFactory*> UtilTestActions::createTestFactories() {
     QList<XMLTestFactory*> res;
     res.append(GTest_CopyFile::createFactory());
+    res.append(GTest_AddSharedDbUrl::createFactory());
     return res;
 }
 

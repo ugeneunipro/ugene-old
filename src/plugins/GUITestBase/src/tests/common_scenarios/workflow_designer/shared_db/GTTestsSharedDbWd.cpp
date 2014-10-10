@@ -613,11 +613,6 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0003) {
 }
 
 GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0004) {
-    QList<SharedConnectionsDialogFiller::Action> actions;
-    actions << SharedConnectionsDialogFiller::Action::CANCEL;
-    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
-
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
 
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Plain Text");

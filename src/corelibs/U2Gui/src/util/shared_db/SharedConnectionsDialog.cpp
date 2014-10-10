@@ -65,10 +65,6 @@ static const char * UNABLE_TO_CONNECT_TEXT = "The database has been set up "
 namespace U2 {
 
 const QString SharedConnectionsDialog::SETTINGS_RECENT = "/shared_database/recent_connections/";
-const QString SharedConnectionsDialog::PUBLIC_DATABASE_NAME = QObject::tr("UGENE public database");
-const QString SharedConnectionsDialog::PUBLIC_DATABASE_URL = U2DbiUtils::createDbiUrl("5.9.139.103", 3306, "public_ugene");
-const QString SharedConnectionsDialog::PUBLIC_DATABASE_LOGIN = "public";
-const QString SharedConnectionsDialog::PUBLIC_DATABASE_PASSWORD = "public";
 
 SharedConnectionsDialog::SharedConnectionsDialog(QWidget *parent) :
     QDialog(parent),
@@ -200,7 +196,6 @@ void SharedConnectionsDialog::sl_connectionComplete() {
 
 void SharedConnectionsDialog::init() {
     restoreRecentConnections();
-    addPredefinedConnection();
     saveRecentConnections();
 }
 
@@ -286,13 +281,6 @@ void SharedConnectionsDialog::saveRecentConnections() const {
     }
 }
 
-void SharedConnectionsDialog::addPredefinedConnection() {
-    if (!alreadyExists(PUBLIC_DATABASE_URL, PUBLIC_DATABASE_LOGIN)) {
-        QListWidgetItem *item = insertConnection(PUBLIC_DATABASE_NAME, PUBLIC_DATABASE_URL, PUBLIC_DATABASE_LOGIN);
-        AppContext::getPasswordStorage()->addEntry(getFullDbiUrl(item), PUBLIC_DATABASE_PASSWORD, true);
-    }
-}
-
 bool SharedConnectionsDialog::checkDatabaseAvailability(const U2DbiRef &ref, bool &initializationRequired) {
     U2OpStatusImpl os;
     const bool dbInitialized = MysqlDbiUtils::isDbInitialized(ref, os);
@@ -301,7 +289,7 @@ bool SharedConnectionsDialog::checkDatabaseAvailability(const U2DbiRef &ref, boo
                               tr("Connection Error"),
                               tr("Unable to connect to the database:\n"
                                  "check the connection settings"));
-        coreLog.details(tr("Can't connect to the shared databse: ") + os.getError());
+        coreLog.details(tr("Can't connect to the shared database: ") + os.getError());
         return false;
     }
 
@@ -322,8 +310,7 @@ bool SharedConnectionsDialog::checkDatabaseAvailability(const U2DbiRef &ref, boo
     }
 
     QString minRequiredVersion;
-    const bool isAppVersionSufficient = MysqlDbiUtils::dbSatisfiesAppVersion(ref,
-        minRequiredVersion, os);
+    const bool isAppVersionSufficient = MysqlDbiUtils::dbSatisfiesAppVersion(ref, minRequiredVersion, os);
     SAFE_POINT_OP(os, false);
     if (!isAppVersionSufficient) {
         QMessageBox::critical(this, tr(UNABLE_TO_CONNECT_TITLE), tr(UNABLE_TO_CONNECT_TEXT).arg(minRequiredVersion));
@@ -340,8 +327,7 @@ bool SharedConnectionsDialog::isConnected(QListWidgetItem* item) const {
 
     Document* connectionDoc = AppContext::getProject()->findDocumentByURL(GUrl(getFullDbiUrl(item), GUrl_Network));
 
-    return ((NULL != connectionDoc) && (connectionDoc->isLoaded()))
-            || connectionIsInProcess;
+    return ((NULL != connectionDoc) && (connectionDoc->isLoaded())) || connectionIsInProcess;
 }
 
 bool SharedConnectionsDialog::alreadyExists(const QString &dbiUrl, const QString &userName) const {
@@ -391,7 +377,7 @@ QString SharedConnectionsDialog::rollName(const QString &preferredName) const {
 }
 
 void SharedConnectionsDialog::countConnectionsToPublicDatabase(const QString &dbiUrl) {
-    if (PUBLIC_DATABASE_URL == dbiUrl) {
+    if (U2DbiUtils::PUBLIC_DATABASE_URL == dbiUrl) {
         GCOUNTER(cvar, tvar, "Connections to public database");
     }
 }

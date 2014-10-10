@@ -30,6 +30,8 @@ class U2PRIVATE_EXPORT AppSettingsImpl : public AppSettings {
 public:
     AppSettingsImpl();
     ~AppSettingsImpl();
+
+    static void addPublicDbCredentials2Settings();
 };
 
 }//namespace

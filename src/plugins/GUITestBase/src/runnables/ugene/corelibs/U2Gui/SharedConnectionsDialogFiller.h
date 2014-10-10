@@ -39,7 +39,7 @@ public:
 
     class Action {
     public:
-        enum Type {ADD, CLICK, EDIT, DELETE, CONNECT, DISCONNECT, CANCEL};
+        enum Type {ADD, CLICK, EDIT, DELETE, CONNECT, DISCONNECT};
 
         Action(Type type, QString itemName = "");
         Type type;

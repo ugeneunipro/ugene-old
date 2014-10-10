@@ -331,7 +331,7 @@ inline static U2SequenceObject * getCopiedSequenceObject(const QVariantMap &data
     int refCount = seqId.constData()->getReferenceCount();
     if (refCount > 2) { // need to copy because it is used by another worker
         DNASequence seq = seqObj->getSequence(reg);
-        U2EntityRef seqRef = U2SequenceUtils::import(seqObj->getEntityRef().dbiRef, seq, os);
+        U2EntityRef seqRef = U2SequenceUtils::import(context->getDataStorage()->getDbiRef(), seq, os);
         CHECK_OP(os, NULL);
 
         return new U2SequenceObject(seqObj->getSequenceName(), seqRef);

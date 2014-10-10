@@ -202,6 +202,11 @@ public:
     static QString makeFolderCanonical(const QString& folder);
 
     static bool isDbiReadOnly(const U2DbiRef &dbiRef);
+
+    static const QString PUBLIC_DATABASE_NAME;
+    static const QString PUBLIC_DATABASE_URL;
+    static const QString PUBLIC_DATABASE_LOGIN;
+    static const QString PUBLIC_DATABASE_PASSWORD;
 };
 
 /**

@@ -113,15 +113,10 @@ using namespace U2;
 static void registerCoreServices() {
     ServiceRegistry* sr = AppContext::getServiceRegistry();
     TaskScheduler* ts = AppContext::getTaskScheduler();
-    Q_UNUSED(sr); Q_UNUSED(ts);
+    Q_UNUSED(sr);
+    Q_UNUSED(ts);
     // unlike ugene's UI Main.cpp we don't create PluginViewerImpl, ProjectViewImpl
-//    ts->registerTopLevelTask(sr->registerServiceTask(new ScriptRegistryService()));
 }
-
-// we will run task that don't die
-//static void setCongeneStayAlive() {
-//    AppContext::getTaskScheduler()->registerTopLevelTask( new ForeverTask() );
-//}
 
 static bool openDocs() {
     bool ret = false;
@@ -447,6 +442,7 @@ int main(int argc, char **argv)
 
     PasswordStorage* passwordStorage = new PasswordStorage();
     appContext->setPasswordStorage(passwordStorage);
+    AppSettingsImpl::addPublicDbCredentials2Settings();
 
     CredentialsAsker* credentialsAsker = new CredentialsAskerCli();
     appContext->setCredentialsAsker(credentialsAsker);
