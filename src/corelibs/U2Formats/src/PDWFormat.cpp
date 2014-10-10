@@ -104,6 +104,9 @@ void PDWFormat::load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& f
         
         if (readBuff.startsWith(PDW_DNANAME_TAG)) {
             seqName = readPdwValue(readBuff, PDW_DNANAME_TAG);
+            if(seqName.isEmpty()){
+                seqName = "Sequence";
+            }
         } else if (readBuff.startsWith(PDW_SEQUENCE_TAG)) {
             QByteArray seq = parseSequence(io, os);
             const DNAAlphabet* alphabet = U2AlphabetUtils::findBestAlphabet(seq);
