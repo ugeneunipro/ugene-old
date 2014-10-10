@@ -44,7 +44,6 @@ class DNAAlphabetRegistry;
 class GObjectViewFactoryRegistry;
 class ResourceTracker;
 class TaskScheduler;
-class DocumentFormatConfigurators;
 class AnnotationSettingsRegistry;
 class TestFramework;
 class DBXRefRegistry;
@@ -69,7 +68,6 @@ class MSADistanceAlgorithmRegistry;
 class PWMConversionAlgorithmRegistry;
 class VirtualFileSystemRegistry;
 class DnaAssemblyAlgRegistry;
-class MSAAlignAlgRegistry;
 class AppGlobalObject;
 class DataBaseRegistry;
 class ExternalToolRegistry;
@@ -142,8 +140,6 @@ public:
 
     static  ResourceTracker* getResourceTracker() {return getInstance()->_getResourceTracker();}
 
-    static DocumentFormatConfigurators* getDocumentFormatConfigurators() {return getInstance()->_getDocumentFormatConfigurators();}
-
     static AnnotationSettingsRegistry* getAnnotationsSettingsRegistry() {return getInstance()->_getAnnotationsSettingsRegistry();}
 
     static TestFramework* getTestFramework() {return getInstance()->_getTestFramework();}
@@ -192,8 +188,6 @@ public:
 
     static DnaAssemblyAlgRegistry* getDnaAssemblyAlgRegistry() { return getInstance()->_getDnaAssemblyAlgRegistry(); }
     
-    static MSAAlignAlgRegistry* getMSAAlignAlgRegistry() { return getInstance()->_getMSAAlignAlgRegistry(); }
-
     static RepeatFinderTaskFactoryRegistry* getRepeatFinderTaskFactoryRegistry() {return getInstance()->_getRepeatFinderTaskFactoryRegistry();}
     
     static AutoAnnotationsSupport* getAutoAnnotationsSupport() { return getInstance()->_getAutoAnnotationsSupport(); }
@@ -273,7 +267,6 @@ protected:
     virtual GObjectViewFactoryRegistry* _getObjectViewFactoryRegistry() const = 0;
     virtual TaskScheduler*              _getTaskScheduler() const = 0;
     virtual ResourceTracker*            _getResourceTracker() const = 0;
-    virtual DocumentFormatConfigurators* _getDocumentFormatConfigurators() const = 0;
     virtual AnnotationSettingsRegistry* _getAnnotationsSettingsRegistry() const = 0;
     virtual AppSettings *               _getAppSettings() const = 0;
     virtual AppSettingsGUI*             _getAppSettingsGUI() const = 0;
@@ -300,7 +293,6 @@ protected:
     virtual PWMConversionAlgorithmRegistry* _getPWMConversionAlgorithmRegistry() const = 0;
     virtual VirtualFileSystemRegistry * _getVirtualFileSystemRegistry() const = 0;
     virtual DnaAssemblyAlgRegistry*     _getDnaAssemblyAlgRegistry() const = 0;
-    virtual MSAAlignAlgRegistry*        _getMSAAlignAlgRegistry() const = 0;
     virtual DataBaseRegistry *          _getDataBaseRegistry() const = 0;
     virtual ExternalToolRegistry *          _getExternalToolRegistry() const = 0;
     virtual RepeatFinderTaskFactoryRegistry*  _getRepeatFinderTaskFactoryRegistry() const = 0;

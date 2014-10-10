@@ -25,7 +25,6 @@
 #include <U2Core/PluginModel.h>
 #include <U2Gui/ObjectViewModel.h>
 
-#include <U2View/MSAAlignGUIExtension.h>
 #include <U2View/SmithWatermanDialog.h>
 #include <U2Algorithm/PairwiseAlignmentTask.h>
 
@@ -34,7 +33,6 @@ namespace U2 {
 class XMLTestFactory;
 class SWAlgorithmADVContext;
 class SWAlgorithmMSAContext;
-class MSAAlignAlgorithmMainWidget;
 
 class SWAlgorithmPlugin : public Plugin {
     Q_OBJECT

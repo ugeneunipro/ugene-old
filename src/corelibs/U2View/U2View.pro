@@ -148,7 +148,6 @@ HEADERS += src/Init.h \
            src/ov_text/SimpleTextObjectView.h \
            src/ov_text/SimpleTextObjectViewTasks.h \
            src/phyltree/BranchSettingsDialog.h \
-           src/phyltree/ButtonSettingsDialog.h \
            src/phyltree/CreatePhyTreeDialogController.h \
            src/phyltree/CreatePhyTreeWidget.h \
            src/phyltree/TextSettingsDialog.h \
@@ -158,8 +157,6 @@ HEADERS += src/Init.h \
            src/util_dna_assembly/DnaAssemblyDialog.h \
            src/util_dna_assembly/DnaAssemblyGUIExtension.h \
            src/util_dna_assembly/DnaAssemblyUtils.h \
-           src/util_msa_align/MSAAlignDialog.h \
-           src/util_msa_align/MSAAlignGUIExtension.h \
            src/util_sec_struct_predict/SecStructDialog.h \
            src/util_sec_struct_predict/SecStructPredictUtils.h \
            src/util_smith_waterman/SmithWatermanDialog.h \
@@ -196,14 +193,12 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_sequence/ui/SaveGraphCutoffsDialog.ui \
          src/ov_sequence/ui/SearchQualifierDialog.ui \
          src/phyltree/ui/BranchSettingsDialog.ui \
-         src/phyltree/ui/ButtonSettingsDialog.ui \
          src/phyltree/ui/CreatePhyTreeDialog.ui \
          src/phyltree/ui/TextSettingsDialog.ui \
          src/phyltree/ui/TreeSettingsDialog.ui \
          src/util_dna_assembly/ui/AssemblyToRefDialog.ui \
          src/util_dna_assembly/ui/AssemblyToSamDialog.ui \
          src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui \
-         src/util_msa_align/ui/PerformAlignmentDialog.ui \
          src/util_sec_struct_predict/ui/SecStructDialog.ui \
          src/util_smith_waterman/ui/SmithWatermanDialogBase.ui \
          src/util_smith_waterman/ui/SubstMatrixDialogBase.ui \
@@ -357,7 +352,6 @@ SOURCES += src/Init.cpp \
            src/ov_text/SimpleTextObjectView.cpp \
            src/ov_text/SimpleTextObjectViewTasks.cpp \
            src/phyltree/BranchSettingsDialog.cpp \
-           src/phyltree/ButtonSettingsDialog.cpp \
            src/phyltree/CreatePhyTreeDialogController.cpp \
            src/phyltree/CreatePhyTreeWidget.cpp \
            src/phyltree/TextSettingsDialog.cpp \
@@ -366,7 +360,6 @@ SOURCES += src/Init.cpp \
            src/util_dna_assembly/ConvertAssemblyToSamDialog.cpp \
            src/util_dna_assembly/DnaAssemblyDialog.cpp \
            src/util_dna_assembly/DnaAssemblyUtils.cpp \
-           src/util_msa_align/MSAAlignDialog.cpp \
            src/util_sec_struct_predict/SecStructDialog.cpp \
            src/util_sec_struct_predict/SecStructPredictUtils.cpp \
            src/util_smith_waterman/SmithWatermanDialog.cpp \

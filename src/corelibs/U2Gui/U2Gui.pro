@@ -25,7 +25,6 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/AddNewDocumentDialogImpl.h \
            src/util/AuthenticationDialog.h \
            src/util/AuthenticationWidget.h \
-           src/util/BaseDocumentFormatConfigurators.h \
            src/util/BreakpointConditionEditDialog.h \
            src/util/CreateAnnotationDialog.h \
            src/util/CreateAnnotationWidgetController.h \
@@ -69,7 +68,6 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/SearchGenbankSequenceDialogController.h \
            src/util/SeqPasterWidgetController.h \
            src/util/SuggestCompleter.h \
-           src/util/TextEditorDialog.h \
            src/util/TreeWidgetUtils.h \
            src/util/U2FileDialog.h \
            src/util/imageExport/ImageExportTask.h \
@@ -105,7 +103,6 @@ FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/ExportDocumentDialog.ui \
          src/util/ui/ExportImageDialog.ui \
          src/util/ui/FolderNameDialog.ui \
-         src/util/ui/FormatSettingsDialog.ui \
          src/util/ui/MultipartDocFormatConfiguratorWidget.ui \
          src/util/ui/ProjectTreeItemSelectorDialogBase.ui \
          src/util/ui/RangeSelectionDialog.ui \
@@ -113,7 +110,6 @@ FORMS += src/util/ui/AddNewDocumentDialog.ui \
          src/util/ui/ScriptEditorDialog.ui \
          src/util/ui/SearchGenbankSequenceDialog.ui \
          src/util/ui/SeqPasterWidget.ui \
-         src/util/ui/TextEditorDialog.ui \
          src/util/ImportDialogs/ui/AceImportDialog.ui \
          src/util/shared_db/ui/CommonImportOptionsDialog.ui \
          src/util/shared_db/ui/EditConnectionDialog.ui \
@@ -140,7 +136,6 @@ SOURCES += src/MainWindow.cpp \
            src/util/AddNewDocumentDialogImpl.cpp \
            src/util/AuthenticationDialog.cpp \
            src/util/AuthenticationWidget.cpp \
-           src/util/BaseDocumentFormatConfigurators.cpp \
            src/util/BreakpointConditionEditDialog.cpp \
            src/util/CreateAnnotationDialog.cpp \
            src/util/CreateAnnotationWidgetController.cpp \
@@ -183,7 +178,6 @@ SOURCES += src/MainWindow.cpp \
            src/util/SearchGenbankSequenceDialogController.cpp \
            src/util/SeqPasterWidgetController.cpp \
            src/util/SuggestCompleter.cpp \
-           src/util/TextEditorDialog.cpp \
            src/util/TreeWidgetUtils.cpp \
            src/util/U2FileDialog.cpp \
            src/util/GenbankLocationValidator.cpp \

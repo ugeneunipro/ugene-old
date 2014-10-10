@@ -27,7 +27,6 @@
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
-#include <U2Core/DocumentFormatConfigurators.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AddDocumentTask.h>

@@ -28,8 +28,6 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/registry/CudaGpuRegistry.h \
            src/registry/DnaAssemblyAlgRegistry.h \
            src/registry/DnaAssemblyTask.h \
-           src/registry/MSAAlignAlgRegistry.h \
-           src/registry/MSAAlignTask.h \
            src/registry/OpenCLGpuRegistry.h \
            src/registry/RepeatFinderTaskFactoryRegistry.h \
            src/registry/SecStructPredictAlgRegistry.h \
@@ -109,8 +107,6 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/registry/CudaGpuRegistry.cpp \
            src/registry/DnaAssemblyAlgRegistry.cpp \
            src/registry/DnaAssemblyTask.cpp \
-           src/registry/MSAAlignAlgRegistry.cpp \
-           src/registry/MSAAlignTask.cpp \
            src/registry/OpenCLGpuRegistry.cpp \
            src/registry/RepeatFinderTaskFactoryRegistry.cpp \
            src/registry/SecStructPredictAlgRegistry.cpp \

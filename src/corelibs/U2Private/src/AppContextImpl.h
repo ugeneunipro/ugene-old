@@ -48,7 +48,6 @@ public:
         ovfr = NULL;
         ts = NULL;
         rt = NULL;
-        dfc = NULL;
         asr = NULL;
         as = NULL;
         tf = NULL;
@@ -71,7 +70,6 @@ public:
         msaDistanceAlgoRegistry = NULL;
         pwmConversionAlgoRegistry = NULL;
         dnaAssemblyAlgRegistry = NULL;
-        msaAlignAlgRegistry = NULL;
         virtualFileSystemRegistry = NULL;
         dataBaseRegistry = NULL;
         externalToolRegistry = NULL;
@@ -140,8 +138,6 @@ public:
 
     void setResourceTracker(ResourceTracker* _rt) {assert(rt == NULL || _rt == NULL); rt = _rt;}
     
-    void setDocumentFormatConfigurators(DocumentFormatConfigurators* _dfc)  {assert(dfc == NULL || _dfc == NULL); dfc = _dfc;}
-
     void setAnnotationSettingsRegistry(AnnotationSettingsRegistry* _asr)  {assert(asr == NULL || _asr == NULL); asr = _asr;}
 
     void setTestFramework( TestFramework* _tf) { assert( tf || _tf ); tf = _tf; }
@@ -217,11 +213,6 @@ public:
     void setDnaAssemblyAlgRegistry( DnaAssemblyAlgRegistry * r ) { 
         assert( dnaAssemblyAlgRegistry == NULL || r == NULL );
         dnaAssemblyAlgRegistry = r;
-    }
-
-    void setMSAAlignAlgRegistry( MSAAlignAlgRegistry * r ) { 
-        assert( msaAlignAlgRegistry == NULL || r == NULL );
-        msaAlignAlgRegistry = r;
     }
 
     void setDataBaseRegistry( DataBaseRegistry *dbr) {
@@ -362,7 +353,6 @@ protected:
     virtual CudaGpuRegistry *            _getCudaGpuRegistry() const { return cgr; }
     virtual OpenCLGpuRegistry *          _getOpenCLGpuRegistry() const { return oclgr; }
     virtual RecentlyDownloadedCache*     _getRecentlyDownloadedCache() const {return rdc;}
-    virtual DocumentFormatConfigurators*    _getDocumentFormatConfigurators() const {return dfc;}
     virtual ProtocolInfoRegistry *          _getProtocolInfoRegistry() const { return protocolInfoRegistry; }
     virtual RemoteMachineMonitor *          _getRemoteMachineMonitor() const { return remoteMachineMonitor; }
     virtual CMDLineRegistry*                _getCMDLineRegistry() const {return cmdLineRegistry;}
@@ -372,7 +362,6 @@ protected:
     virtual PWMConversionAlgorithmRegistry* _getPWMConversionAlgorithmRegistry() const {return pwmConversionAlgoRegistry;}
     virtual VirtualFileSystemRegistry *     _getVirtualFileSystemRegistry() const { return virtualFileSystemRegistry; }
     virtual DnaAssemblyAlgRegistry*         _getDnaAssemblyAlgRegistry() const {return dnaAssemblyAlgRegistry; }
-    virtual MSAAlignAlgRegistry*         _getMSAAlignAlgRegistry() const {return msaAlignAlgRegistry; }
     virtual DataBaseRegistry *              _getDataBaseRegistry() const {return dataBaseRegistry;}
     virtual ExternalToolRegistry *          _getExternalToolRegistry() const {return externalToolRegistry;}
     virtual RepeatFinderTaskFactoryRegistry*   _getRepeatFinderTaskFactoryRegistry() const {return rfr;}
@@ -420,7 +409,6 @@ private:
     GObjectViewFactoryRegistry* ovfr;
     TaskScheduler* ts;
     ResourceTracker* rt;
-    DocumentFormatConfigurators* dfc;
     AnnotationSettingsRegistry* asr;
     AppSettings * as;
     TestFramework* tf;
@@ -447,7 +435,6 @@ private:
     PWMConversionAlgorithmRegistry* pwmConversionAlgoRegistry;
     VirtualFileSystemRegistry * virtualFileSystemRegistry;
     DnaAssemblyAlgRegistry* dnaAssemblyAlgRegistry;
-    MSAAlignAlgRegistry* msaAlignAlgRegistry;
     DataBaseRegistry* dataBaseRegistry;
     ExternalToolRegistry * externalToolRegistry;
     RepeatFinderTaskFactoryRegistry* rfr;

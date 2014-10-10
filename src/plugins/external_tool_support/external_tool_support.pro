@@ -155,7 +155,6 @@ FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/MAFFTSupportRunDialog.ui \
          src/ui/MrBayesDialog.ui \ 
          src/ui/PhyMLDialog.ui \
-         src/ui/SelectPathDialog.ui \
          src/ui/TCoffeeSupportRunDialog.ui
 SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/ExternalToolManager.cpp \

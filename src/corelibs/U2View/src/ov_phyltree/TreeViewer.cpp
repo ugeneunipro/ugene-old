@@ -56,7 +56,6 @@
 #include "phyltree/CreatePhyTreeDialogController.h"
 
 #include "phyltree/BranchSettingsDialog.h"
-#include "phyltree/ButtonSettingsDialog.h"
 #include "phyltree/TextSettingsDialog.h"
 #include "phyltree/TreeSettingsDialog.h"
 

@@ -28,7 +28,6 @@
 #include <U2Core/DBXRefRegistry.h>
 #include <U2Core/DNAAlphabetRegistryImpl.h>
 #include <U2Core/DNATranslation.h>
-#include <U2Core/DocumentFormatConfigurators.h>
 #include <U2Core/ExternalToolRegistry.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/UdrSchemaRegistry.h>
@@ -53,7 +52,6 @@
 #include <U2Algorithm/CudaGpuRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
 #include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
-#include <U2Algorithm/MSAAlignAlgRegistry.h>
 #include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 #include <U2Algorithm/AssemblyConsensusAlgorithmRegistry.h>
@@ -75,8 +73,6 @@
 
 #include <U2Test/GTestFrameworkComponents.h>
 #include <U2Test/TestRunnerTask.h>
-
-#include <U2Gui/BaseDocumentFormatConfigurators.h>
 
 #include <U2Remote/DistributedComputingUtil.h>
 
@@ -366,10 +362,6 @@ int main(int argc, char **argv)
     ServiceRegistryImpl* sreg = new ServiceRegistryImpl() ;
     appContext->setServiceRegistry(sreg);
 
-    DocumentFormatConfigurators* dfc = new DocumentFormatConfigurators();
-    appContext->setDocumentFormatConfigurators(dfc);
-    BaseDocumentFormatConfigurators::initBuiltInConfigurators();
-
     IOAdapterRegistryImpl* io = new IOAdapterRegistryImpl();
     appContext->setIOAdapterRegistry(io);
 
@@ -434,9 +426,6 @@ int main(int argc, char **argv)
 
     DnaAssemblyAlgRegistry* assemblyReg = new DnaAssemblyAlgRegistry();
     appContext->setDnaAssemblyAlgRegistry(assemblyReg);
-
-    MSAAlignAlgRegistry* alignReg = new MSAAlignAlgRegistry();
-    appContext->setMSAAlignAlgRegistry(alignReg);
 
     DataBaseRegistry* dbr = new DataBaseRegistry();
     appContext->setDataBaseRegistry(dbr);
@@ -579,9 +568,6 @@ int main(int argc, char **argv)
 
     delete io;
     appContext->setIOAdapterRegistry(NULL);
-
-    delete dfc;
-    appContext->setDocumentFormatConfigurators(NULL);
 
     delete dfr;
     appContext->setDocumentFormatRegistry(NULL);

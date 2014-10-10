@@ -25,7 +25,6 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/ResourceTracker.h>
-#include <U2Core/DocumentFormatConfigurators.h>
 #include <U2Core/DBXRefRegistry.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/AutoAnnotationsSupport.h>
@@ -64,7 +63,6 @@
 #include <U2Algorithm/SWMulAlignResultNamesTagsRegistry.h>
 #include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
-#include <U2Algorithm/MSAAlignAlgRegistry.h>
 #include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 #include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
@@ -77,7 +75,6 @@
 #include <U2Gui/ImportDialogsFactories.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
-#include <U2Gui/BaseDocumentFormatConfigurators.h>
 #include <U2Gui/LogView.h>
 
 #include <U2Formats/ConvertFileTask.h>
@@ -524,9 +521,6 @@ int main(int argc, char **argv)
     DnaAssemblySupport assemblySupport;
     Q_UNUSED(assemblySupport);
 
-    MSAAlignAlgRegistry* alignReg = new MSAAlignAlgRegistry();
-    appContext->setMSAAlignAlgRegistry(alignReg);
-
     DataBaseRegistry *dbr = new DataBaseRegistry();
     appContext->setDataBaseRegistry(dbr);
 
@@ -568,10 +562,6 @@ int main(int argc, char **argv)
 
     PluginSupportImpl* psp = new PluginSupportImpl();
     appContext->setPluginSupport(psp);
-
-    DocumentFormatConfigurators* dfc = new DocumentFormatConfigurators();
-    appContext->setDocumentFormatConfigurators(dfc);
-    BaseDocumentFormatConfigurators::initBuiltInConfigurators();
 
     ProjectLoaderImpl* pli = new ProjectLoaderImpl();
     appContext->setProjectLoader(pli);
@@ -713,9 +703,6 @@ int main(int argc, char **argv)
     appContext->setDataBaseRegistry(NULL);
     delete dbr;
 
-    appContext->setMSAAlignAlgRegistry(NULL);
-    delete alignReg;
-
     appContext->setDnaAssemblyAlgRegistry(NULL);
     delete assemblyReg;
 
@@ -825,9 +812,6 @@ int main(int argc, char **argv)
 
     appContext->setTestFramework(NULL);
     delete tf;
-
-    appContext->setDocumentFormatConfigurators(NULL);
-    delete dfc;
 
     appContext->setTaskScheduler(NULL);
     delete ts;

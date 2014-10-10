@@ -24,7 +24,6 @@
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/ResourceTracker.h>
-#include <U2Core/DocumentFormatConfigurators.h>
 #include <U2Core/DBXRefRegistry.h>
 #include <U2Core/UserApplicationsSettings.h>
 #include <U2Core/AutoAnnotationsSupport.h>
@@ -65,7 +64,6 @@
 #include <U2Algorithm/SWMulAlignResultNamesTagsRegistry.h>
 #include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
-#include <U2Algorithm/MSAAlignAlgRegistry.h>
 #include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 #include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
@@ -73,8 +71,6 @@
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/SplicedAlignmentTaskRegistry.h>
 #include <U2Algorithm/PairwiseAlignmentRegistry.h>
-
-#include <U2Gui/BaseDocumentFormatConfigurators.h>
 
 #include <U2Lang/WorkflowEnvImpl.h>
 #include <U2Lang/LocalDomain.h>
@@ -213,10 +209,6 @@ UgeneContextWrapper::UgeneContextWrapper( const QString &workingDirectoryPath )
     sreg = new ServiceRegistryImpl( );
     appContext->setServiceRegistry( sreg );
 
-    dfc = new DocumentFormatConfigurators( );
-    appContext->setDocumentFormatConfigurators( dfc );
-    BaseDocumentFormatConfigurators::initBuiltInConfigurators( );
-
     io = new IOAdapterRegistryImpl( );
     appContext->setIOAdapterRegistry( io );
 
@@ -281,9 +273,6 @@ UgeneContextWrapper::UgeneContextWrapper( const QString &workingDirectoryPath )
 
     assemblyReg = new DnaAssemblyAlgRegistry( );
     appContext->setDnaAssemblyAlgRegistry( assemblyReg );
-
-    alignReg = new MSAAlignAlgRegistry( );
-    appContext->setMSAAlignAlgRegistry( alignReg );
 
     dbr = new DataBaseRegistry( );
     appContext->setDataBaseRegistry( dbr );
@@ -370,9 +359,6 @@ UgeneContextWrapper::~UgeneContextWrapper( ) {
 
     delete io;
     appContext->setIOAdapterRegistry( NULL );
-
-    delete dfc;
-    appContext->setDocumentFormatConfigurators( NULL );
 
     delete dfr;
     appContext->setDocumentFormatRegistry( NULL );

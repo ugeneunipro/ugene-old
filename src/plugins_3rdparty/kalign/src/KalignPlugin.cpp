@@ -42,14 +42,12 @@
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DNAAlphabet.h>
 
-#include <U2Algorithm/MSAAlignAlgRegistry.h>
 #include <U2Algorithm/PairwiseAlignmentRegistry.h>
 
 #include <U2Lang/WorkflowSettings.h>
 
 #include <U2View/MSAEditorFactory.h>
 #include <U2View/MSAEditor.h>
-#include <U2View/MSAAlignDialog.h>
 
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/Notification.h>
@@ -66,8 +64,6 @@
 #endif
 
 namespace U2 {
-
-class MSAAlignDialog;
 
 extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
     KalignPlugin * plug = new KalignPlugin();
