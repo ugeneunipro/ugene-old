@@ -4943,6 +4943,43 @@ GUI_TEST_CLASS_DEFINITION(test_3092) {
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3128) {
+    // 1. Open file test/_common_data/cmdline/read-write/read_db_write_gen.uws"
+    GTLogTracer l;
+    GTFileDialog::openFile(os, testDir + "_common_data/cmdline/read-write/", "read_db_write_gen.uws");
+
+    // 2. Set parameters:     db="NCBI protein sequence database", id="AAA59172.1"
+    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Read from remote database" ) );
+    GTMouseDriver::click( os );
+    GTUtilsWorkflowDesigner::setParameter( os, "Database", 2, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter( os, "Resource ID(s)", "AAA59172.1", GTUtilsWorkflowDesigner::textValue);
+
+    // 3. Launch scheme.
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTWidget::click( os,GTAction::button( os,"Run workflow" ) );
+    GTGlobals::sleep( );
+
+    // Expected state: no errors in the log.
+    GTUtilsLog::check( os, l );
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3128_1) {
+
+    // 2. Find the "comment" annotation, click it.
+    // Expected state: no crash.
+
+    // 1. Open any genbank file with a COMMENT section 
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    // 2. Find the "comment" annotation, click it.
+    QTreeWidgetItem *item2 = GTUtilsAnnotationsTreeView::findItem(os, "comment");
+    QPoint p2 = GTTreeWidget::getItemCenter(os, item2);
+    GTMouseDriver::moveTo(os, p2);
+    GTMouseDriver::click(os);
+    //Expected state: UGENE does not crash.
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3138) {
 //    1. Open "_common_data/fasta/abcd.fa"
 //    2. Open Find Pattern on the Option Panel
@@ -4998,10 +5035,6 @@ GUI_TEST_CLASS_DEFINITION(test_3155) {
     };
     GTUtilsDialog::waitForDialog(os, new CancelClicker(os));
     GTWidget::click(os, GTAction::button(os, "Find ORFs"));
-
-    //QCheckBox *check = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "ckCircularSearch"));
-    //CHECK_SET_ERR(check = NULL, "Circular search checkbox found!");
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3170) {
