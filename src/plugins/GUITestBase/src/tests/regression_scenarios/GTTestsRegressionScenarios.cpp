@@ -67,6 +67,7 @@
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
@@ -4943,6 +4944,19 @@ GUI_TEST_CLASS_DEFINITION(test_3092) {
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3126) {
+//    1. Open "test/_common_data/ace/ace_test_1.ace".
+//    2. Click "OK" in the import dialog.
+//    Expected: the file is imported, UGENE does not crash.
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os,
+                                                                        sandBoxDir + "test_3126"));
+    GTFileDialog::openFile(os, testDir + "_common_data/ace/", "ace_test_1.ace");
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3128) {
     // 1. Open file test/_common_data/cmdline/read-write/read_db_write_gen.uws"
     GTLogTracer l;
@@ -4969,7 +4983,7 @@ GUI_TEST_CLASS_DEFINITION(test_3128_1) {
     // 2. Find the "comment" annotation, click it.
     // Expected state: no crash.
 
-    // 1. Open any genbank file with a COMMENT section 
+    // 1. Open any genbank file with a COMMENT section
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
 
     // 2. Find the "comment" annotation, click it.
@@ -5010,8 +5024,31 @@ GUI_TEST_CLASS_DEFINITION(test_3138) {
     foreach(const U2Region& r, regions) {
         CHECK_SET_ERR(r.length > 0, "Invalid annotated region!");
     }
-
 }
+
+GUI_TEST_CLASS_DEFINITION(test_3142) {
+//    1. Open "data/samples/CLUSTALW/COI.aln"
+//    2. On the options panel press the "Open tree" button
+//    Expected state: the "Select files to open..." dialog has opened
+//    3. Choose the file "data/samples/Newick/COI.nwk"
+//    Expected state: a tree view has appeared along with MSA view
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep();
+
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_ADD_TREE_WIDGET"));
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, dataDir + "samples/Newick/COI.nwk"));
+    GTWidget::click(os, GTWidget::findWidget(os, "OpenTreeButton"));
+
+    QWidget* msaWidget = GTWidget::findWidget(os, "msa_editor_sequence_area");
+    CHECK_SET_ERR( msaWidget != NULL, "MSASequenceArea not found");
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3155) {
     // 1. Open "humam_T1"
     // Expected state: "Circular search" checkbox does not exist
@@ -6580,6 +6617,66 @@ GUI_TEST_CLASS_DEFINITION(test_3557) {
     QLineEdit *secondEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "sequenceLineEdit", GTWidget::findWidget(os, "secondSeqSelectorWC")));
     CHECK_SET_ERR(firstEdit->text() == "2|1a0cA|gi|32470780", "Wrong first sequence");
     CHECK_SET_ERR(secondEdit->text() == "1a0cA", "Wrong second sequence");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3563_1) {
+//    1. Open an alignment
+//    2. Build the tree
+//    3. Unload both documents (alignment and tree)
+//    4. Load alignment
+//    Expected state: no errors in the log
+    GTLogTracer l;
+
+    GTFile::copy(os, testDir + "_common_data/clustal/dna.fasta.aln",
+                 testDir + "_common_data/scenarios/sandbox/test_3563_1.aln");
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/", "test_3563_1.aln");
+
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/test_3563_1.nwk", 0, 0, true));
+    QAbstractButton *tree= GTAction::button(os,"Build Tree");
+    GTWidget::click(os, tree);
+    GTGlobals::sleep();
+    GTUtilsDocument::saveDocument(os, "test_3563_1.aln");
+
+    GTUtilsDocument::unloadDocument(os, "test_3563_1.nwk", false);
+    GTGlobals::sleep();
+
+    GTUtilsDocument::unloadDocument(os, "test_3563_1.aln", true);
+    GTGlobals::sleep();
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3563_2) {
+//    1. Open "human_T1.fa"
+//    2. Open "GFF/5prime_utr_intron_A21.gff"
+//    3. Drag and drop "Ca21 chr5 features" to "human_T1"
+//    4. Unload both documents
+//    5. Load "human_T1.fa" document
+//    6. Load "GFF/5prime_utr_intron_A21.gff" document
+//    Expected state: no errors in the log
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTFileDialog::openFile(os, dataDir + "samples/GFF/", "5prime_utr_intron_A21.gff");
+
+    QModelIndex idxGff = GTUtilsProjectTreeView::findIndex(os, "Ca21chr5 features");
+    CHECK_SET_ERR( idxGff.isValid(), "Can not find 'Ca21 chr5 features' object");
+    QWidget* seqArea = GTWidget::findWidget(os, "render_area_human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    CHECK_SET_ERR( seqArea != NULL, "No sequence view opened");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Yes"));
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    GTUtilsProjectTreeView::dragAndDrop(os, idxGff, seqArea);
+
+    GTUtilsDocument::unloadDocument(os, "human_T1.fa");
+    GTUtilsDocument::unloadDocument(os, "5prime_utr_intron_A21.gff");
+    GTGlobals::sleep();
+
+    GTUtilsDocument::loadDocument(os, "human_T1.fa");
+    CHECK_SET_ERR( GTUtilsDocument::isDocumentLoaded(os, "5prime_utr_intron_A21.gff"),
+                   "Connection between documents was lost");
+
+    GTUtilsLog::check(os, l);
 }
 
 } // GUITest_regression_scenarios namespace
