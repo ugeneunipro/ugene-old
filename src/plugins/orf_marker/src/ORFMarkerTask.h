@@ -22,7 +22,6 @@
 #ifndef _U2_ORF_MARKER_TASK_H_
 #define _U2_ORF_MARKER_TASK_H_
 
-
 #include <QtCore/QPointer>
 
 #include <U2Algorithm/ORFAlgorithmTask.h>
@@ -53,19 +52,18 @@ public:
     static void read(ORFAlgorithmSettings& cfg, const Settings* st);
 };
 
- class FindORFsToAnnotationsTask: public Task {
+class FindORFsToAnnotationsTask :      public Task
+{
     Q_OBJECT
- public:
-    FindORFsToAnnotationsTask(AnnotationTableObject* aobj,const U2EntityRef& entityRef,
-         const ORFAlgorithmSettings& settings, const QString& groupName = QString());
+public:
+                                        FindORFsToAnnotationsTask(AnnotationTableObject *aobj, const U2EntityRef &entityRef,
+                                            const ORFAlgorithmSettings &settings, const QString &groupName = QString());
 
-    void run();
-    ReportResult report();
-     
- private:
-    QList<AnnotationData>               aData;
-    QPointer<AnnotationTableObject>       aObj;
-    ORFFindTask*                        fTask;
+    QList<Task *>                       onSubTaskFinished(Task *subTask);
+
+private:
+    QPointer<AnnotationTableObject>     aObj;
+    ORFFindTask *                       fTask;
     ORFAlgorithmSettings                cfg;
     QString                             groupName;
     U2EntityRef                         entityRef;

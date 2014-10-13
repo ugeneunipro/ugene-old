@@ -20,13 +20,14 @@
  */
 
 
-#include <U2Core/DNASequence.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/DNATranslation.h>
-#include <U2Core/Settings.h>
+#include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNATranslation.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/Settings.h>
+#include <U2Core/U2FeatureUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "ORFMarkerTask.h"
@@ -86,40 +87,28 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
 
 FindORFsToAnnotationsTask::FindORFsToAnnotationsTask( AnnotationTableObject* aobj,const U2EntityRef& _entityRef,
                                                      const ORFAlgorithmSettings& settings, const QString& gName )
-  :  Task(tr("Find ORFs and save to annotations"), TaskFlags_FOSCOE), aObj(aobj), cfg(settings), groupName(gName), entityRef(_entityRef)
+    : Task(tr("Find ORFs and save to annotations"), TaskFlags_NR_FOSCOE), aObj(aobj), cfg(settings), groupName(gName), entityRef(_entityRef)
 {
     SAFE_POINT_EXT( aobj != NULL, setError(tr("Annotation table object is NULL!")), );
+    if (groupName.isEmpty()) {
+        groupName = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
+    }
+
     fTask = new ORFFindTask(cfg, entityRef);
     addSubTask(fTask);
 }
 
+QList<Task *> FindORFsToAnnotationsTask::onSubTaskFinished(Task *subTask) {
+    CHECK(subTask == fTask, QList<Task *>());
 
-void FindORFsToAnnotationsTask::run()
-{
-    QList<ORFFindResult> results =  fTask->popResults();
-
-    foreach( const ORFFindResult& res, results) {
-        aData.append(res.toAnnotation(ORFAlgorithmSettings::ANNOTATION_GROUP_NAME));
-    }
-}
-
-Task::ReportResult FindORFsToAnnotationsTask::report()
-{
-    if (isCanceled() || hasError()) {
-        return ReportResult_Finished;
+    const QList<ORFFindResult> results = fTask->popResults();
+    QList<AnnotationData> annotationList;
+    foreach(const ORFFindResult &res, results) {
+        CHECK_OP(stateInfo, QList<Task *>());
+        annotationList << res.toAnnotation(ORFAlgorithmSettings::ANNOTATION_GROUP_NAME);
     }
 
-    if (aObj->isStateLocked()) {
-        setError(tr("Annotation obj %1 is locked for modifications").arg(aObj->getGObjectName()));
-        return ReportResult_Finished;
-    }
-
-    if (groupName.isEmpty()) {
-        groupName = ORFAlgorithmSettings::ANNOTATION_GROUP_NAME;
-    }
-    aObj->addAnnotations( aData, stateInfo, groupName );
-
-    return ReportResult_Finished;
+    return QList<Task *>() << new CreateAnnotationsTask(aObj, groupName, annotationList);
 }
 
 //////////////////////////////////////////////////////////////////////////
