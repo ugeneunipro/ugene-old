@@ -149,9 +149,7 @@ void AnnotationGroup::addAnnotation( const Annotation &a ) {
 }
 
 void AnnotationGroup::removeAnnotation( const Annotation &a ) {
-    SAFE_POINT( a.getGObject( ) == parentObject,
-        "Attempting to remove annotation belonging to different object!", );
-
+    SAFE_POINT( a.getGObject( ) == parentObject, "Attempting to remove annotation belonging to different object!", );
     parentObject->removeAnnotation( a );
 }
 

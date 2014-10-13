@@ -355,7 +355,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3335);
     REGISTER_TEST(GUITest_regression_scenarios::test_3344);
     REGISTER_TEST(GUITest_regression_scenarios::test_3346);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3348, "https://ugene.unipro.ru/tracker/browse/UGENE-3587");
+    REGISTER_TEST(GUITest_regression_scenarios::test_3348);
     REGISTER_TEST(GUITest_regression_scenarios::test_3373);
     REGISTER_TEST(GUITest_regression_scenarios::test_3379);
     REGISTER_TEST(GUITest_regression_scenarios::test_3384);

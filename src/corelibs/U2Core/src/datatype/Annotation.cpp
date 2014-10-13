@@ -357,7 +357,7 @@ bool Annotation::isValidQualifierValue( const QString & /*v*/ ) {
 }
 
 bool Annotation::operator ==( const Annotation &other ) const {
-    return id == other.id && parentObject == other.getGObject( );
+    return id == other.id && parentObject->getEntityRef( ).dbiRef == other.getGObject( )->getEntityRef( ).dbiRef;
 }
 
 bool Annotation::operator <( const Annotation &other ) const {

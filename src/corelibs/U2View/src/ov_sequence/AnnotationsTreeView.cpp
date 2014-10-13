@@ -489,10 +489,14 @@ void AnnotationsTreeView::sl_onAnnotationsAdded( const QList<Annotation> &as ) {
     TreeSorter ts(this);
 
     QSet<AVGroupItem*> toUpdate;
+    QList<AnnotationGroup> createdGroups;
     foreach(const Annotation &a, as) {
         const AnnotationGroup &ag = a.getGroup( );
+        if (createdGroups.contains(ag)) {
+            continue;
+        }
         AVGroupItem* gi = findGroupItem(ag);
-        if (gi!=NULL) {
+        if (NULL != gi) {
             buildAnnotationTree(gi, a);
         } else {
             AnnotationGroup childGroup = ag;
@@ -505,6 +509,8 @@ void AnnotationsTreeView::sl_onAnnotationsAdded( const QList<Annotation> &as ) {
             }
             SAFE_POINT( NULL != gi, "AnnotationsTreeView::sl_onAnnotationsAdded: childGroup not found", );
             buildGroupTree(gi, childGroup);
+            createdGroups << childGroup; // if a group item has been built it already contains corresponding annotation items
+                                         // so in further iterations we skip child annotations of this group
         }
         SAFE_POINT( NULL != gi, "Invalid annotation view item!", );
         toUpdate.insert(gi);
