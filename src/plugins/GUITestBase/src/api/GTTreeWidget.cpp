@@ -53,7 +53,7 @@ void GTTreeWidget::expand(U2OpStatus &os, QTreeWidgetItem* item) {
 
     QRect itemRect = treeWidget->visualItemRect(item);
     if (!item->isExpanded()) {
-        QPoint p = QPoint(itemRect.left(), itemRect.center().y());
+        QPoint p = QPoint(itemRect.left() - 8, itemRect.center().y());
 
         GTMouseDriver::moveTo(os, treeWidget->viewport()->mapToGlobal(p));
         GTMouseDriver::click(os);
@@ -85,7 +85,7 @@ void GTTreeWidget::checkItem(U2OpStatus &os, QTreeWidgetItem *item, int column, 
         break;
     }
     case GTGlobals::UseMouse: {
-        const QPoint magicCheckBoxOffset = QPoint(15, 10);
+        const QPoint magicCheckBoxOffset = QPoint(15, 35);
         GTMouseDriver::moveTo(os, tree->mapToGlobal(itemStartPos + itemLevelOffset + columnOffset + magicCheckBoxOffset));
         GTMouseDriver::click(os);
         coreLog.error(QString("column: %1").arg(columnOffset.x()));

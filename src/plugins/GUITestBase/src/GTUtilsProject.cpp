@@ -78,6 +78,7 @@ void GTUtilsProject::openFiles(U2OpStatus &os, const QList<QUrl> &urls, const Op
 
 void GTUtilsProject::openFiles(U2OpStatus &os, const GUrl &path, const OpenFileSettings& s) {
     openFiles(os, QList<QUrl>() << path.getURLString(), s);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 #define GT_METHOD_NAME "checkProject"

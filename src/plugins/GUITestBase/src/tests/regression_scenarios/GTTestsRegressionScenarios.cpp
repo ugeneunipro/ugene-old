@@ -4959,6 +4959,7 @@ GUI_TEST_CLASS_DEFINITION(test_3126) {
 
 GUI_TEST_CLASS_DEFINITION(test_3128) {
     // 1. Open file test/_common_data/cmdline/read-write/read_db_write_gen.uws"
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     GTLogTracer l;
     GTFileDialog::openFile(os, testDir + "_common_data/cmdline/read-write/", "read_db_write_gen.uws");
 
@@ -5851,15 +5852,8 @@ GUI_TEST_CLASS_DEFINITION(test_3373) {
 
     GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Write Sequence" ) );
     GTMouseDriver::click( os );
-    QTableView *table = qobject_cast<QTableView *>( GTWidget::findWidget( os, "table" ) );
-    CHECK_SET_ERR( table, "tableView not found" );
-    GTMouseDriver::moveTo( os, GTTableView::getCellPosition( os, table, 1, 2 ) );
-    GTMouseDriver::click( os );
-    GTKeyboardDriver::keySequence( os, "genbank" );
-    GTGlobals::sleep();
-    GTMouseDriver::moveTo( os, GTTableView::getCellPosition( os, table, 1, 3 ) );
-    GTMouseDriver::click( os );
-    GTKeyboardDriver::keySequence( os, "result.gb" );
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", 2, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", "result.gb", GTUtilsWorkflowDesigner::textValue);
     GTWidget::click( os, GTUtilsMdi::activeWindow( os ) );
 
     GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Read Sequence"));
