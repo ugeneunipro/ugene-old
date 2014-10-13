@@ -142,7 +142,7 @@ void MSAEditorSimilarityColumn::onAlignmentChanged(const MAlignment&, const MAli
 
 void MSAEditorSimilarityColumn::sl_createMatrixTaskFinished(Task* t) {
     CreateDistanceMatrixTask* task = qobject_cast<CreateDistanceMatrixTask*> (t);
-    if(NULL != task) {
+    if(NULL != task && !task->hasError() && !task->isCanceled()) {
         if(NULL != algo) {
             delete algo;
         }
@@ -158,7 +158,7 @@ void MSAEditorSimilarityColumn::sl_createMatrixTaskFinished(Task* t) {
 }
 
 CreateDistanceMatrixTask::CreateDistanceMatrixTask(const SimilarityStatisticsSettings& _s) 
-: Task(tr("Generate distance matrix"), TaskFlag_NoRun), s(_s), resMatrix(NULL) {
+: Task(tr("Generate distance matrix"), TaskFlags_NR_FOSE_COSC), s(_s), resMatrix(NULL) {
     SAFE_POINT(NULL != s.ma, QString("Incorrect MAlignment in MSAEditorSimilarityColumnTask ctor!"), );
     SAFE_POINT(NULL != s.ui, QString("Incorrect MSAEditorUI in MSAEditorSimilarityColumnTask ctor!"), );
     setVerboseLogMode(true);
@@ -183,6 +183,10 @@ QList<Task*> CreateDistanceMatrixTask::onSubTaskFinished(Task* subTask){
     MSADistanceAlgorithm* algo = qobject_cast<MSADistanceAlgorithm*>(subTask);
     MSADistanceMatrix *matrix = new MSADistanceMatrix(algo, s.usePercents && s.excludeGaps);
     if(NULL != algo) {
+        if(algo->hasError()) {
+            setError(algo->getError());
+            return res;
+        }
         resMatrix = matrix;
     }
     return res;

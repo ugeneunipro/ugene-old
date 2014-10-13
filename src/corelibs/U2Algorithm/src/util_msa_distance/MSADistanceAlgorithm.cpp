@@ -22,9 +22,6 @@
 #include "MSADistanceAlgorithm.h" 
 
 #include <U2Core/DNAAlphabet.h>
-#include <U2Core/MAlignment.h>
-
-#include <QtCore/QVector>
 
 namespace U2 {
 
@@ -66,25 +63,45 @@ MSADistanceAlgorithm::MSADistanceAlgorithm(MSADistanceAlgorithmFactory* _factory
 , excludeGaps(true)
 , isSimilarity(true)
 {    
-    for (int i = 0; i < ma.getNumRows(); i++) {
-        distanceTable.append(QVarLengthArray<int>(ma.getNumRows()));
-        memset(distanceTable[i].data(), 0, ma.getNumRows() * sizeof(int));
-    }    
+    int rowsNumber = ma.getNumRows();
+    qint64 requiredMemory = sizeof(int) * rowsNumber * rowsNumber / 2 + sizeof(QVarLengthArray<int>) * rowsNumber;
+    bool memoryAcquired = memoryLocker.tryAcquire(requiredMemory);
+    CHECK_EXT(memoryAcquired, setError(QString("There is not enough memory to calculating distances matrix, required %1 megabytes").arg(requiredMemory / 1024 / 1024)), );
+
+    distanceTable.reserve(rowsNumber);
+    for (int i = 0; i < rowsNumber; i++) {
+        distanceTable.append(QVarLengthArray<int>(i + 1));
+        memset(distanceTable[i].data(), 0, (i + 1) * sizeof(int));
+    }
 }
 
 int MSADistanceAlgorithm::getSimilarity(int row1, int row2) {    
     lock.lock();
-    int res = distanceTable[row1][row2];
+    int res = 0;
+    if(row2 > row1) {
+        res = distanceTable[row2][row1];
+    } else {
+        res = distanceTable[row1][row2];
+    }
     lock.unlock();
     return res;    
 }
+
+void MSADistanceAlgorithm::setDistanceValue(int row1, int row2, int distance) {
+    if(row2 > row1) {
+        distanceTable[row2][row1] = distance;
+    } else {
+        distanceTable[row1][row2] = distance;
+    }
+}
+
 void MSADistanceAlgorithm::fillTable() {
     int nSeq = ma.getNumRows();
     for (int i = 0; i < nSeq; i++) {
         for (int j = i; j < nSeq; j++) {
             int sim = calculateSimilarity(i, j);
             lock.lock();
-            distanceTable[i][j] = distanceTable[j][i] = sim;
+            setDistanceValue(i, j, sim);
             lock.unlock();
         }
     }
@@ -105,10 +122,18 @@ MSADistanceMatrix::MSADistanceMatrix(const MSADistanceAlgorithm *algo, bool _use
 int MSADistanceMatrix::getSimilarity(int refRow, int row) {    
     if(usePercents) {
         int refSeqLength = excludeGaps ? seqsUngappedLenghts.at(refRow) : alignmentLength;
-        return distanceTable[refRow][row] * 100 / refSeqLength;
+        if(refRow > row) {
+            return distanceTable[refRow][row] * 100 / refSeqLength;
+        } else {
+            return distanceTable[row][refRow] * 100 / refSeqLength;
+        }
     }
     else {
-        return distanceTable[refRow][row];
+        if(refRow > row) {
+            return distanceTable[refRow][row];
+        } else {
+            return distanceTable[row][refRow];
+        }
     }
 }
 

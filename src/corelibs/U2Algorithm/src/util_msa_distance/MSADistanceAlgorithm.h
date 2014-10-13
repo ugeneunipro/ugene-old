@@ -22,8 +22,7 @@
 #ifndef _U2_MSA_DISTANCE_ALGORITHM_H_
 #define _U2_MSA_DISTANCE_ALGORITHM_H_
 
-#include <U2Core/global.h>
-#include <U2Core/U2Region.h>
+#include <U2Core/AppResources.h>
 #include <U2Core/Task.h>
 #include <U2Core/MAlignment.h>
 #include <QtCore/QVarLengthArray>
@@ -99,14 +98,17 @@ public:
 
     bool getExcludeGapsFlag() const {return excludeGaps;}
 
+    void setDistanceValue(int row1, int row2, int distance);
+
 private:
-    MSADistanceAlgorithmFactory*    factory;
+    varLengthMatrix              distanceTable;
+    MSADistanceAlgorithmFactory* factory;
+    MemoryLocker                 memoryLocker;
 
 protected:
     virtual void fillTable();
     virtual int calculateSimilarity(int , int ){return 0;}
     MAlignment                                  ma;
-    varLengthMatrix                             distanceTable;
     QMutex                                      lock;
     bool                                        excludeGaps;
     bool                                        isSimilarity;

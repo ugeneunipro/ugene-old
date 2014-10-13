@@ -83,7 +83,7 @@ void MSADistanceAlgorithmHammingRevCompl::run() {
                 if (ma.charAt(i, k) == revtransl.charAt(j, k)) sim++;
             }
             lock.lock();
-            distanceTable[i][j] = distanceTable[j][i] = sim;
+            setDistanceValue(i, j, sim);
             lock.unlock();
         }
         stateInfo.setProgress(i * 100 / nSeq);

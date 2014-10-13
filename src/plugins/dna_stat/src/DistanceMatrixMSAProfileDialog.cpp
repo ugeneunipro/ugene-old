@@ -139,7 +139,7 @@ void DistanceMatrixMSAProfileDialog::accept() {
 //////////////////////////////////////////////////////////////////////////
 // task
 DistanceMatrixMSAProfileTask::DistanceMatrixMSAProfileTask(const DistanceMatrixMSAProfileTaskSettings& _s) 
-: Task(tr("Generate distance matrix"), TaskFlag_NoRun), s(_s)
+: Task(tr("Generate distance matrix"), TaskFlags_NR_FOSE_COSC), s(_s)
 {
     setVerboseLogMode(true);
 }
@@ -162,6 +162,10 @@ QList<Task*> DistanceMatrixMSAProfileTask::onSubTaskFinished(Task* subTask){
     MSADistanceAlgorithm* algo = qobject_cast<MSADistanceAlgorithm*>(subTask);
     QList<Task*> res;
     if (algo != NULL) {
+        if(algo->hasError() || algo->isCanceled()) {
+            setError(algo->getError());
+            return res;
+        }
         if (s.outFormat != DistanceMatrixMSAProfileOutputFormat_Show && s.outURL.isEmpty()) {
             setError(tr("No output file name specified"));
             return res;
