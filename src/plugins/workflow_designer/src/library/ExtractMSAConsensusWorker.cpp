@@ -128,8 +128,7 @@ void ExtractMSAConsensusStringWorker::finish() {
     setDone();
 }
 
-void ExtractMSAConsensusStringWorker::sendResult(const SharedDbiDataHandler &seqId) {
-    //QScopedPointer<U2SequenceObject> obj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
+void ExtractMSAConsensusStringWorker::sendResult(const SharedDbiDataHandler & /*seqId*/) {
     QVariantMap data;
     data[BaseSlots::TEXT_SLOT().getId()] = extractMsaConsensus->getResultAsText();
     IntegralBus *outPort = ports[BasePorts::OUT_TEXT_PORT_ID()];

@@ -528,7 +528,7 @@ bool ScreenedParamValidator::validate(const Configuration* cfg, ProblemList &pro
 
 QString ScreenedParamValidator::validate(const Configuration * cfg) const {
     Attribute* param = cfg->getParameter(id);
-    const bool paramIsVisible = param->isVisible();
+    const bool paramIsVisible = cfg->isAttributeVisible(param);
     CHECK(paramIsVisible, QString());
 
     QVariant val = param->getAttributePureValue();

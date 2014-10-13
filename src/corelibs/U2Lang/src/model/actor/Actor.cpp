@@ -418,7 +418,7 @@ bool Actor::validate(ProblemList &problemList) const {
     bool urlsRes = true;
     foreach (Attribute *attr, getParameters()) {
         SAFE_POINT(NULL != attr, "NULL attribute!", false);
-        if (!attr->isVisible()) {
+        if (!isAttributeVisible(attr)) {
             continue;
         }
         UrlAttributeType urlType = WorkflowUtils::isUrlAttribute(attr, this);

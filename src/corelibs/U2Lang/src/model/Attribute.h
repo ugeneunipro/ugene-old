@@ -44,7 +44,6 @@ namespace U2 {
 typedef QString ActorId;
 inline ActorId str2aid(const QString& s) {return s;}
 inline QString aid2str(const ActorId& s) {return s;}
-class Configuration;
 
 /**
  * attribute value can be obtained from script
@@ -100,8 +99,6 @@ public:
     virtual const QVariant &getDefaultPureValue() const;
     virtual bool isDefaultValue() const;
 
-    bool isVisible() const;
-    void setVisible(bool visible);
     
     // base realization without scripting. to support scripting for other types: see template realizations
     template<typename T> T getAttributeValue(Workflow::WorkflowContext *) const {
@@ -124,7 +121,6 @@ public:
     bool fromVariant(const QVariant& variant);
     bool isEmptyString() const;
     void addRelation(const AttributeRelation *relation);
-    void setOwner(Configuration *newOwner);
     QVector<const AttributeRelation*> &getRelations();
 
     virtual bool isEmpty() const;
@@ -150,17 +146,12 @@ protected:
     // values of required attributes cannot be empty
     // used in configuration validations
     const bool          required;
-    // invisible attributes can not be required and shouldn't be validated
-    bool                isAttributeVisible;
     // pure value and default pure value. if script exists, value should be processed throw it
     QVariant            value;
     QVariant            defaultValue;
     // script text and variable values for script evaluating
     // script variables get values only in runtime
     AttributeScript     scriptData;
-
-    // the entity that owns the attribute and updates attribut's visibility state.
-    Configuration *owner;
 
     QVector<const AttributeRelation*> relations;
     

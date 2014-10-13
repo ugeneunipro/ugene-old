@@ -68,10 +68,9 @@ public:
     virtual void remap(const QMap<ActorId, ActorId>&) = 0;
 
     virtual QList<Attribute*> getAttributes() const;
-    
-    void updateAttributesVisibility() const;
-    void updateDependentAttributesVisibility(Attribute *masterAttribute) const;
 
+    bool isAttributeVisible(Attribute *attribute) const;
+    
 protected:
     // controller for ui editor of this configuration
     ConfigurationEditor* editor;

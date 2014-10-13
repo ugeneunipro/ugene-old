@@ -377,6 +377,15 @@ QMap<Attribute *, bool> ActorCfgModel::getAttributeRelatedVisibility(Attribute *
     return relatedAttributesVisibility;
 }
 
+void ActorCfgModel::checkIfAttributeVisibilityChanged(const QMap<Attribute *, bool> &attributeVisibility) {
+    foreach (Attribute *a, attributeVisibility.keys()) {
+        if (attributeVisibility[a] != isVisible(a)) {
+            const QModelIndex affectedIndex = modelIndexById(a->getId());
+            emit dataChanged(affectedIndex, affectedIndex);
+        }
+    }
+}
+
 bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, int role ) {
     int col = index.column();
     Attribute* editingAttribute = getAttributeByRow(index.row());
@@ -415,6 +424,7 @@ bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, 
                             }
                         }
                     }
+                    checkIfAttributeVisibilityChanged(relatedAttributesVisibility);
 
                     return true;
                 }

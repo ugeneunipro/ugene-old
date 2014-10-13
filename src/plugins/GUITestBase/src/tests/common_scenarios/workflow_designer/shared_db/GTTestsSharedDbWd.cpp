@@ -449,7 +449,7 @@ GUI_TEST_CLASS_DEFINITION(write_gui_test_0003) {
 
     GTWidget::click(os, GTWidget::findWidget(os, "browsePathBtn"));
 
-    GTUtilsWorkflowDesigner::setParameter(os, "Database", 0, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Database", 1, GTUtilsWorkflowDesigner::comboValue);
 
     QList<SharedConnectionsDialogFiller::Action> actions;
     actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, connectionName);
