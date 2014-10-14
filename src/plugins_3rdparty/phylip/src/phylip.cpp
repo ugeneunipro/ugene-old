@@ -947,7 +947,7 @@ void inithermitcat(long categs, double alpha, double *rate, double *probcat)
     rate[i] = 1.0 + std * hroot[i];
     probcat[i] = probcat[i];
   }
-  PhylipFree(hroot);
+  free(hroot);
 } /* inithermitcat */
 
 
@@ -3025,9 +3025,9 @@ void stringnames_delete(char **names)
   assert( names != NULL );
   for ( i = 0; i < spp; i++ ) {
     assert( names[i] != NULL );
-    PhylipFree(names[i]);
+    free(names[i]);
   }
-  PhylipFree(names);
+  free(names);
 }
 
 int fieldwidth_double(double val, unsigned int precision)
@@ -3232,6 +3232,6 @@ void output_matrix_d(FILE *fp, double **matrix,
       putc('\n', fp); /* blank line */
     cstart = cend;
   } /* End of block */
-  PhylipFree(colwidth);
+  free(colwidth);
 } /* output_matrix_d */
 

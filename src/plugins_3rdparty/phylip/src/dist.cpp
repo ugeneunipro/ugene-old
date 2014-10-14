@@ -48,7 +48,7 @@ void dist_freetree(pointptr *treenode, long nonodes)
   for (i = spp; i < nonodes; i++) {
     p = (*treenode)[i];
     q = p->next;
-    while(q != p && q != NULL)
+    while(q != p)
     {
         node * r = q;
         q = q->next;

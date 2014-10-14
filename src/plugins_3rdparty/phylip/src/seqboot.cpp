@@ -225,8 +225,8 @@ void matrix_char_delete(char **mat, long rows)
   
   assert(mat != NULL);
   for (i = 0; i < rows; i++)
-    PhylipFree(mat[i]);
-  PhylipFree(mat);
+    free(mat[i]);
+  free(mat);
 }
 
 
@@ -251,8 +251,8 @@ void matrix_double_delete(double **mat, long rows)
   
   assert(mat != NULL);
   for (i = 0; i < rows; i++)
-    PhylipFree(mat[i]);
-  PhylipFree(mat);
+    free(mat[i]);
+  free(mat);
 }
 
 
@@ -495,21 +495,24 @@ void seq_freerest()
 {
   /* Free bookkeeping arrays */
     if (alleles){
-        PhylipFree(alleles);
+        free(alleles);
+        alleles = NULL;
     }
-  PhylipFree(oldweight);
-  PhylipFree(weight);
+  free(oldweight);
+  free(weight);
   if (categories)
-    PhylipFree(category);
+    free(category);
   if (mixture)
-    PhylipFree(mixdata);
+    free(mixdata);
   if (ancvar)
-    PhylipFree(ancdata);
-  PhylipFree(where);
-  PhylipFree(how_many);
-  PhylipFree(factor);
-  PhylipFree(factorr);
-  PhylipFree(nayme);
+    free(ancdata);
+  free(where);
+  free(how_many);
+  free(factor);
+  factor = NULL;
+  free(factorr);
+  factorr = NULL;
+  free(nayme);
 }
 
 
@@ -530,8 +533,8 @@ void freenew(void)
   assert(newwhere != NULL);
   assert(newhowmany != NULL);
 
-  PhylipFree(newwhere);
-  PhylipFree(newhowmany);
+  free(newwhere);
+  free(newhowmany);
 
   newwhere = NULL;
   newhowmany = NULL;
@@ -549,13 +552,16 @@ void allocnewer(long newergroups, long newersites)
 
   if (newerwhere != NULL) {
     if (newergroups > curnewergroups) {
-      PhylipFree(newerwhere);
-      PhylipFree(newerhowmany);
+      free(newerwhere);
+      newerwhere = NULL;
+      free(newerhowmany);
       for (i = 0; i < spp; i++)
-        PhylipFree(charorder[i]);
+        free(charorder[i]);
+      newerwhere = NULL;
     }
     if (newersites > curnewersites) {
-      PhylipFree(newerfactor);
+      free(newerfactor);
+      newerfactor = NULL;
     }
   }
 
@@ -589,13 +595,17 @@ void freenewer()
   long i;
 
   if (newerwhere) {
-    PhylipFree(newerwhere);
-    PhylipFree(newerhowmany);
+    free(newerwhere);
+    newerwhere = NULL;
+    free(newerhowmany);
+    newerhowmany = NULL;
 
-    PhylipFree(newerfactor);
+    free(newerfactor);
+    newerfactor = NULL;
     for (i = 0; i < spp; i++)
-      PhylipFree(charorder[i]);
-    PhylipFree(charorder);
+      free(charorder[i]);
+    free(charorder);
+    charorder = NULL;
   }
 }
 
@@ -916,8 +926,9 @@ void writedata( QVector<U2::MAlignment*>& mavect, int rep, const U2::MAlignment&
   if (rewrite && nexus)
     printf("  ;\nEND;\n");
   for (i = 0; i < (newergroups); i++)
-    PhylipFree(sppord[i]);
-  PhylipFree(sppord);
+    free(sppord[i]);
+  free(sppord);
+  sppord = NULL;
 }  /* writedata */
 
 

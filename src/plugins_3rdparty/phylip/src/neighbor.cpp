@@ -12,7 +12,7 @@
 /* function prototypes */
 void getoptions(void);
 void allocrest(void);
-bool doinit(void);
+void doinit(void);
 void inputoptions(void);
 void getinput(void);
 void describe(node *, double);
@@ -206,20 +206,17 @@ void neighbor_allocrest()
 
 void freerest()
 {
-    long i;
+  long i;
 
-    for (i = 0; i < spp; i++) {
-        PhylipFree(x[i]);
-    }
-    PhylipFree(x);
-    for (i = 0; i < spp; i++) {
-        PhylipFree(reps[i]);
-    }
-    spp = 0;
-    PhylipFree(reps);
-    PhylipFree(nayme);
-    PhylipFree(enterorder);
-    PhylipFree(cluster);
+  for (i = 0; i < spp; i++)
+    free(x[i]);
+  free(x);
+  for (i = 0; i < spp; i++)
+    free(reps[i]);
+  free(reps);
+  free(nayme);
+  free(enterorder);
+  free(cluster);
 }  /* freerest */
 
 
@@ -242,8 +239,8 @@ void neighbor_doinit_modified(U2::MemoryLocker& memLocker){
     }
     p = curtree.nodep[nonodes2]->next;
     curtree.nodep[nonodes2]->next = curtree.nodep[nonodes2];
-    PhylipFree(p->next);
-    PhylipFree(p);
+    free(p->next);
+    free(p);
     neighbor_allocrest();
 
 }  /* doinit */
@@ -260,8 +257,8 @@ void neighbor_doinit(U2::MemoryLocker& memLocker){
   dist_alloctree(&curtree.nodep, nonodes2+1, memLocker);
   p = curtree.nodep[nonodes2]->next;
   curtree.nodep[nonodes2]->next = curtree.nodep[nonodes2];
-  PhylipFree(p->next);
-  PhylipFree(p);
+  free(p->next);
+  free(p);
   neighbor_allocrest();
   
 }  /* doinit */
@@ -510,8 +507,8 @@ void jointree()
   if (!njoin) {
     curtree.start = cluster[el[0] - 1];
     curtree.start->back = NULL;
-    PhylipFree(av);
-    PhylipFree(oc);
+    free(av);
+    free(oc);
     return;
   }
   bi = (x[el[0] - 1][el[1] - 1] + x[el[0] - 1][el[2] - 1] - x[el[1] - 1]
@@ -544,9 +541,9 @@ void jointree()
   cluster[el[1] - 1]->back->v = bj;
   cluster[el[2] - 1]->back->v = bk;
   curtree.start = cluster[el[0] - 1]->back;
-  PhylipFree(av);
-  PhylipFree(oc);
-  PhylipFree(R);
+  free(av);
+  free(oc);
+  free(R);
 }  /* jointree */
 
 
@@ -639,10 +636,7 @@ void neighbour_free_resources()
     //FClose(outfile);
     FClose(outtree);
     freerest();
-    if(NULL != curtree.nodep) {
-        dist_freetree(&curtree.nodep, nonodes2+1);
-        curtree.nodep = NULL;
-    }
+    dist_freetree(&curtree.nodep, nonodes2+1);
 #ifdef MAC
     fixmacfile(outfilename);
     fixmacfile(outtreename);

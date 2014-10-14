@@ -2,6 +2,7 @@
 #define PROTDIST_H
 
 #include <U2Algorithm/CreatePhyTreeSettings.h>
+#include <U2Core/AppResources.h>
 
 #include <QList>
 #include <QString>
@@ -31,10 +32,10 @@ public:
 
 /* function prototypes */
 void   protdist_uppercase(Phylip_Char *);
-void   protdist_inputnumbers(void);
+void   protdist_inputnumbers(U2::MemoryLocker& memLocker);
 void   prot_getoptions(const QString& matModel);
 void   transition(void);
-void   prot_doinit(const U2::CreatePhyTreeSettings& settings);
+void   prot_doinit(const U2::CreatePhyTreeSettings& settings, U2::MemoryLocker& memLocker);
 void   prot_printcategories(void);
 void   prot_inputoptions(void);
 void   protdist_inputdata(void);

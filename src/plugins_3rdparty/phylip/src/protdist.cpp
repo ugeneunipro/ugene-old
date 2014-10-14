@@ -58,12 +58,18 @@ void protdist_uppercase(Phylip_Char *ch)
 }  /* protdist_uppercase */
 
 
-void protdist_inputnumbers()
+void protdist_inputnumbers(U2::MemoryLocker& memLocker)
 {
   /* input the numbers of species and of characters */
   long i;
 
 //  fscanf(infile, "%ld%ld", &spp, &chars);
+
+  qint64 memSize = spp * (sizeof(aas *) + chars * sizeof(aas ));
+  memSize += chars * sizeof(long) * 3 + spp * (sizeof(double) + sizeof(naym) + spp*sizeof(double));
+  if(!memLocker.tryAcquire(memSize)) {
+      return;
+  }
 
   if (printdata)
     fprintf(outfile, "%2ld species, %3ld  positions\n\n", spp, chars);
@@ -501,10 +507,13 @@ void transition()
 }  /* transition */
 
 
-void prot_doinit(const U2::CreatePhyTreeSettings& settings)
+void prot_doinit(const U2::CreatePhyTreeSettings& settings, U2::MemoryLocker& memLocker)
 {
   /* initializes variables */
-  protdist_inputnumbers();
+  protdist_inputnumbers(memLocker);
+  if(memLocker.hasError()) {
+      return;
+  }
   prot_getoptions(settings.matrixId);
   transition();
 }  /* doinit*/
@@ -534,11 +543,11 @@ void reallocchars(void)
 {
   int i;
 
-  PhylipFree(weight);
-  PhylipFree(oldweight);
-  PhylipFree(category);
+  free(weight);
+  free(oldweight);
+  free(category);
   for (i = 0; i < spp; i++) {
-    PhylipFree(gnode[i]);
+    free(gnode[i]);
     gnode[i] = (aas *)Malloc(chars * sizeof(aas ));
   }
   weight = (steparray)Malloc(chars*sizeof(long));

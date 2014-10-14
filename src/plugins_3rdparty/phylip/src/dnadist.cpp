@@ -429,16 +429,16 @@ void reallocsites()
   long i;
 
   for (i = 0; i < spp; i++) {
-    PhylipFree(y[i]);  
+    free(y[i]);  
     y[i] = (Phylip_Char *)Malloc(sites*sizeof(Phylip_Char));
   }
-  PhylipFree(category);
-  PhylipFree(oldweight);
-  PhylipFree(weight);
-  PhylipFree(alias);
-  PhylipFree(ally);
-  PhylipFree(location);
-  PhylipFree(weightrat);
+  free(category);
+  free(oldweight);
+  free(weight);
+  free(alias);
+  free(ally);
+  free(location);
+  free(weightrat);
   
   category = (steptr)Malloc(sites*sizeof(long));
   oldweight = (steptr)Malloc(sites*sizeof(long));
@@ -1191,9 +1191,9 @@ void makev(long m, long n, double *v)
       baddists = true;
     }
     vv = tt * fracchange;
-    PhylipFree(prod);
-    PhylipFree(prod2);
-    PhylipFree(prod3);
+    free(prod);
+    free(prod2);
+    free(prod3);
   }
   if (logdetquick) {  /* compute logdet when no ambiguous nucleotides */
     for (i = 0; i < 4; i++) {

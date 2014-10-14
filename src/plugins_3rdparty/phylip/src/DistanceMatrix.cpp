@@ -100,7 +100,11 @@ void DistanceMatrix::calculateOutOfAlignment( const MAlignment& ma, const Create
 
         } else {
 
-            prot_doinit(settings);
+            prot_doinit(settings, memoryLocker);
+            if(memoryLocker.hasError()) {
+                errorMessage = memoryLocker.getError();
+                return;
+            } 
             if (!(kimura || similarity))
                 code();
             if (!(usejtt || usepmb || usepam ||  kimura || similarity)) {
@@ -247,9 +251,8 @@ void DistanceMatrix::calculateOutOfAlignment( const MAlignment& ma, const Create
             prot_makedists();
 
             for (int i = 0; i < spp; i++) {
-                PhylipFree(gnode[i]);
+                free(gnode[i]);
             }
-            PhylipFree(gnode);
         }
         for (int i=0; i<spp; i++){
             for(int j=0; j<spp; j++){
@@ -260,9 +263,9 @@ void DistanceMatrix::calculateOutOfAlignment( const MAlignment& ma, const Create
         errorMessage = QString("Not enough memory to calculate distance matrix for alignment \"%1\"").arg(ma.getName());
         if(NULL != gnode) {
             for (int i = 0; i < spp; i++) {
-                PhylipFree(gnode[i]);
+                free(gnode[i]);
             }
-            PhylipFree(gnode);
+            free(gnode);
         }
     }
 }
@@ -270,43 +273,50 @@ void DistanceMatrix::calculateOutOfAlignment( const MAlignment& ma, const Create
 DistanceMatrix::~DistanceMatrix(){
     if(NULL != y) {
         for (int i = 0; i < spp; i++) {
-            PhylipFree(y[i]); 
+            free(y[i]); 
         }
-        PhylipFree(y);
+        free(y);
+        y = NULL;
     }
 
     if(NULL != nodep) {
         for (int i = 0; i < spp; i++) {
-            node* curNode = nodep[i];
-            if(NULL != nodep[i]->x) {
-                for (int j = 0; j < endsite; j++) {
-                    PhylipFree(nodep[i]->x[j]);
-                }
-                PhylipFree(nodep[i]->x);
+            for (int j = 0; j < endsite; j++) {
+                free(nodep[i]->x[j]);
             }
-            PhylipFree(nodep[i]);
+            free(nodep[i]->x);
+            free(nodep[i]);
         }
-        PhylipFree(nodep);
+        free(nodep);
+        nodep = NULL;
     }
-    PhylipFree(category);
+    free(category);
+    category = NULL;
 
-    PhylipFree(oldweight);
+    free(oldweight);
+    oldweight = NULL;
 
-    PhylipFree(weight);
+    free(weight);
+    weight = NULL;
 
-    PhylipFree(alias);
+    free(alias);
+    alias = NULL;
 
-    PhylipFree(ally);
+    free(ally);
+    ally = NULL;
 
-    PhylipFree(location);
+    free(location);
+    location = NULL;
 
-    PhylipFree(weightrat);
+    free(weightrat);
+    weightrat = NULL;
 
     if(NULL != d) {
         for (int i = 0; i < spp; i++) {
-            PhylipFree(d[i]);
+            free(d[i]);
         }
-        PhylipFree(d);
+        free(d);
+        d = NULL;
     }
 }
 

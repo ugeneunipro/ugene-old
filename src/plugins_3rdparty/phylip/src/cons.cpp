@@ -140,7 +140,7 @@ void namesClearTable(void) {
       do {
         temp = p;
         p = p->next;
-        PhylipFree(temp);
+        free(temp);
       } while (p != NULL);
     hashp[i] = NULL;
     }
@@ -236,25 +236,21 @@ printf("Done.\n\n");
 }
 
 void consens_free_res(){
-    if(NULL != nodep_cons) {
-        node *p, *q;
-        for (int i = 0; i < spp; i++) {
-            free(nodep_cons[i]);
-            nodep_cons[i] = NULL;
+    node *p, *q;
+    for (int i = 0; i < spp; i++)
+        free(nodep_cons[i]);
+    for (int i = spp; i < 2*(1 + spp); i++) {
+        if (nodep_cons[i] != NULL) {
+            p = nodep_cons[i]->next;
+            do {
+                q = p->next;
+                free(p);
+                p = q;
+            } while (p != nodep_cons[i]);
+            free(p);
         }
-        for (int i = spp; i < 2*(1 + spp); i++) {
-            if (nodep_cons[i] != NULL) {
-                p = nodep_cons[i]->next;
-                do {
-                    q = p->next;
-                    PhylipFree(p);
-                    p = q;
-                } while (p != nodep_cons[i]);
-                PhylipFree(p);
-            }
-        }
-        PhylipFree(nodep_cons);
     }
+    free(nodep_cons);
     FClose(intree);
 
 #ifdef MAC
@@ -379,8 +375,10 @@ void censor(void)
       if (!(mre || (mr && (2*(*timesseen[i-1]) > ntrees))
                 || (ml && ((*timesseen[i-1]) >= int(mlfrac*ntrees+0.5)))
                 || (strict && ((*timesseen[i-1]) == ntrees)))) {
-        PhylipFree(grouping[i - 1]);
-        PhylipFree(timesseen[i - 1]);
+        free(grouping[i - 1]);
+        free(timesseen[i - 1]);
+        grouping[i - 1] = NULL;
+        timesseen[i - 1] = NULL;
     }
     i++;
   } while (i < maxgrp);
@@ -406,8 +404,10 @@ void compress(long *n)
       timesseen[i - 1] = (double *)Malloc(sizeof(double));
       memcpy(grouping[i - 1], grouping[j - 1], setsz * sizeof(group_type));
       *timesseen[i - 1] = *timesseen[j - 1];
-      PhylipFree(grouping[j - 1]);
-      PhylipFree(timesseen[j - 1]);
+      free(grouping[j - 1]);
+      free(timesseen[j - 1]);
+      grouping[j - 1] = NULL;
+      timesseen[j - 1] = NULL;
     }
   } while (j != maxgrp);
   (*n) = i - 1;
@@ -440,7 +440,7 @@ void sort(long n)
     }
     gap /= 2;
   }
-  PhylipFree(stemp);
+  free(stemp);
 }  /* sort */
 
 
@@ -502,8 +502,10 @@ void eliminate(long *n, long *n2)
       }
     }
     if (*timesseen[i - 1] == 0.0) {
-      PhylipFree(grouping[i - 1]);
-      PhylipFree(timesseen[i -  1]);
+      free(grouping[i - 1]);
+      free(timesseen[i -  1]);
+      timesseen[i - 1] = NULL;
+      grouping[i - 1] = NULL;
     }
   }
 }  /* eliminate */
@@ -591,7 +593,7 @@ void bigsubset(group_type *st, long n)
     }
   }
   memcpy(st, su, setsz * sizeof(group_type));
-  PhylipFree(su);
+  free(su);
 }  /* bigsubset */
 
 
@@ -686,8 +688,8 @@ void recontraverse(node **p, group_type *st, long n, long *nextnode)
     }
   }
   q->next = *p;
-  PhylipFree(tempset);
-  PhylipFree(st2);
+  free(tempset);
+  free(st2);
 }  /* recontraverse */
 
 
@@ -701,7 +703,7 @@ void reconstruct(long n)
   s = (group_type *)Malloc(setsz * sizeof(group_type));
   memcpy(s, fullset, setsz * sizeof(group_type));
   recontraverse(&root, s, n, &nextnode);
-  PhylipFree(s);
+  free(s);
 }  /* reconstruct */
 
 
@@ -920,13 +922,17 @@ void elimboth(long n)
       }
     }
     if (*timesseen[i] == 0.0) {
-      PhylipFree(grouping[i]);
-      PhylipFree(timesseen[i]);
+      free(grouping[i]);
+      free(timesseen[i]);
+      timesseen[i] = NULL;
+      grouping[i] = NULL;
     }
   }
   if (*timesseen[n-1] == 0.0) {
-    PhylipFree(grouping[n-1]);
-    PhylipFree(timesseen[n-1]);
+    free(grouping[n-1]);
+    free(timesseen[n-1]);
+    timesseen[n-1] = NULL;
+    grouping[n-1] = NULL;
   }
 }  /* elimboth */
 
@@ -984,17 +990,17 @@ void consensus(pattern_elm ***pattern_array, long trees_in)
   if (mr)
     printf("\nMajority rule consensus tree\n");
   printree();
-  PhylipFree(nayme);  
+  free(nayme);  
   for (i = 0; i < maxgrp; i++)
-    PhylipFree(grouping[i]);
-  PhylipFree(grouping);
+    free(grouping[i]);
+  free(grouping);
   for (i = 0; i < maxgrp; i++)
-    PhylipFree(order[i]);
-  PhylipFree(order);
+    free(order[i]);
+  free(order);
   for (i = 0; i < maxgrp; i++)
     if (timesseen[i] != NULL)
-      PhylipFree(timesseen[i]);
-  PhylipFree(timesseen);
+      free(timesseen[i]);
+  free(timesseen);
 }  /* consensus */
 
 
@@ -1055,9 +1061,13 @@ void rehash()
         tchange2[new_index] = timesseen_changes[old_index];
 
 
-        PhylipFree(grouping[old_index]);
-        PhylipFree(timesseen[old_index]);
-        PhylipFree(order[i]);
+        free(grouping[old_index]);
+        free(timesseen[old_index]);
+        free(order[i]);
+
+        grouping[old_index] = NULL;
+        timesseen[old_index] = NULL;
+        order[i] = NULL;
 
         done = true; /* successfully found place for this item */
 
@@ -1068,13 +1078,13 @@ void rehash()
     }
   }
 
-  PhylipFree(lengths);
-  PhylipFree(timesseen);
-  PhylipFree(grouping);
-  PhylipFree(order);
-  PhylipFree(timesseen_changes);
+  free(lengths);
+  free(timesseen);
+  free(grouping);
+  free(order);
+  free(timesseen_changes);
 
-  PhylipFree(s);
+  free(s);
 
   timesseen = tmseen2;
   grouping = grping2;
@@ -1606,7 +1616,7 @@ void read_groups (pattern_elm ****pattern_array,
     gdispose(root);
     for (j = 0; j < 2*(1+spp); j++)
       nodep_cons[j] = NULL;
-    PhylipFree(nodep_cons);
+    free(nodep_cons);
     /* Added by Dan F. */
     if (tree_pairing != NO_PAIRING) {
         /* If we're computing pairing or need separate tree sets, store the
@@ -1623,23 +1633,23 @@ void clean_up_final()
     for(i=0;i<maxgrp;i++)
     {
         if(grouping[i] != NULL) {
-            PhylipFree(grouping[i]);
+            free(grouping[i]);
         }
         if(order[i] != NULL) {
-            PhylipFree(order[i]);
+            free(order[i]);
         }
         if(timesseen[i] != NULL) {
-            PhylipFree(timesseen[i]);
+            free(timesseen[i]);
         }
     }
-    PhylipFree(grouping);
-    PhylipFree(nayme);
-    PhylipFree(order);
-    PhylipFree(timesseen);
-    PhylipFree(timesseen_changes);
-    PhylipFree(fullset);
-    PhylipFree(lengths);
+    free(grouping);
+    free(nayme);
+    free(order);
+    free(timesseen);
+    free(timesseen_changes);
+    free(fullset);
+    free(lengths);
 
     namesClearTable();
-    PhylipFree(hashp);
+    free(hashp);
 }
