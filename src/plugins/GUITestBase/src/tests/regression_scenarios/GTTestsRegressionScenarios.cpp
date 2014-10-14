@@ -4995,6 +4995,35 @@ GUI_TEST_CLASS_DEFINITION(test_3128_1) {
     //Expected state: UGENE does not crash.
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3137) {
+    GTLogTracer l;
+
+    // 1. Connect to shared database(eg.ugene_gui_test_win);
+    Document *dbDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    // 2. Add folder;
+    GTUtilsSharedDatabaseDocument::createFolder(os, dbDoc, "/", "regression_test_3137");
+
+    // 3. Import some file to this folder(eg.COI.aln);
+    GTUtilsSharedDatabaseDocument::importFiles(os, dbDoc, "/regression_test_3137", QStringList() << dataDir + "samples/CLUSTALW/COI.aln");
+
+    // 4. Delete folder;
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "regression_test_3137"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_SELECTED));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // 5. Wait for several seconds;
+    GTGlobals::sleep(10000);
+
+    // Expected state : folder does not appear.
+    GTGlobals::FindOptions findOptions(false);
+    findOptions.depth = 1;
+    const QModelIndex innerFolderNotFoundIndex = GTUtilsProjectTreeView::findIndex(os, "regression_test_3137", findOptions);
+    CHECK_SET_ERR(!innerFolderNotFoundIndex.isValid(), "The 'regression_test_3137' folder was found in the database but expected to disappear");
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3138) {
 //    1. Open "_common_data/fasta/abcd.fa"
 //    2. Open Find Pattern on the Option Panel
@@ -5046,6 +5075,40 @@ GUI_TEST_CLASS_DEFINITION(test_3142) {
 
     QWidget* msaWidget = GTWidget::findWidget(os, "msa_editor_sequence_area");
     CHECK_SET_ERR( msaWidget != NULL, "MSASequenceArea not found");
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3144) {
+    GTLogTracer l;
+
+    // 1.Connect to a shared database.
+    Document *dbDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    // 2. Create a folder "regression_test_3144_1" in the root folder.
+    GTUtilsSharedDatabaseDocument::createFolder(os, dbDoc, "/", "regression_test_3144_1");
+
+    // 3. Create a folder "regression_test_3144_2" in the folder "regression_test_3144_1".
+    GTUtilsSharedDatabaseDocument::createFolder(os, dbDoc, "/regression_test_3144_1", "regression_test_3144_2");
+
+    // 4. Remove the folder "regression_test_3144_2".
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "regression_test_3144_2"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_SELECTED));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // Expected state : the folder "regression_test_3144_2" is moved to the "Recycle bin".
+    const QModelIndex rbIndex = GTUtilsProjectTreeView::findIndex(os, "Recycle bin");
+    const QModelIndex innerFolderIndex = GTUtilsProjectTreeView::findIndex(os, "regression_test_3144_2", rbIndex);
+
+    // 5. Remove the folder "regression_test_3144_1".
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "regression_test_3144_1"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_SELECTED));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // Expected state : folders "regression_test_3144_1" is shown in the "Recycle bin", folder "regression_test_3144_2" disappears.
+    const QModelIndex outerFolderIndex = GTUtilsProjectTreeView::findIndex(os, "regression_test_3144_1", rbIndex);
+    const QModelIndex innerFolderNotFoundIndex = GTUtilsProjectTreeView::findIndex(os, "regression_test_3144_2", rbIndex, GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(!innerFolderNotFoundIndex.isValid(), "The 'regression_test_3144_2' folder was found in Recycle Bin but expected to disappear");
 
     GTUtilsLog::check(os, l);
 }
