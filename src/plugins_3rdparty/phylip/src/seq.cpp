@@ -57,10 +57,10 @@ void alloctemp(node **temp, long *zeros, long endsite)
 void freetemp(node **temp)
 {
   /* used in dnacomp, dnapars, & dnapenny */
-  free((*temp)->numsteps);
-  free((*temp)->base);
-  free((*temp)->numnuc);
-  free(*temp);
+  PhylipFree((*temp)->numsteps);
+  PhylipFree((*temp)->base);
+  PhylipFree((*temp)->numnuc);
+  PhylipFree(*temp);
 }  /* freetemp */
 
 
@@ -73,20 +73,20 @@ void freetree2 (pointarray treenode, long nonodes)
 
   /* The first spp elements are just nodes, not rings */
   for (i = 0; i < spp; i++)
-    free (treenode[i]);
+    PhylipFree(treenode[i]);
 
   /* The rest are rings */
   for (i = spp; i < nonodes; i++) {
     p = treenode[i]->next;
     while (p != treenode[i]) {
       q = p->next;
-      free (p);
+      PhylipFree(p);
       p = q;
     }
     /* p should now point to treenode[i], which has yet to be freed */
-    free (p);
+    PhylipFree(p);
   }
-  free (treenode);
+  PhylipFree(treenode);
 }  /* freetree2 */
 
 
@@ -2545,7 +2545,7 @@ void hypstates(long chars, node *root, pointarray treenode,
       n = chars;
     hyptrav(root, nothing, i * 40 - 39, n, true, treenode, garbage, basechar);
   }
-  free(nothing);
+  PhylipFree(nothing);
 }  /* hypstates */
 
 
@@ -3639,12 +3639,12 @@ void standev(long chars, long numtrees, long minwhich, double minsteps,
       }
     }
   fprintf(outfile, "\n");
-  free(P);             /* free the variables we Malloc'ed */
-  free(f);
-  free(r);
+  PhylipFree(P);             /* free the variables we Malloc'ed */
+  PhylipFree(f);
+  PhylipFree(r);
   for (i = 0; i < numtrees; i++)
-    free(covar[i]);
-  free(covar);
+    PhylipFree(covar[i]);
+  PhylipFree(covar);
   }
 }  /* standev */
 
@@ -3780,12 +3780,12 @@ void standev2(long numtrees, long maxwhich, long a, long b, double maxlogl,
       }
     }
   fprintf(outfile, "\n");
-  free(P);             /* free the variables we Malloc'ed */
-  free(f);
-  free(r);
+  PhylipFree(P);             /* free the variables we Malloc'ed */
+  PhylipFree(f);
+  PhylipFree(r);
   for (i = 0; i < numtrees; i++)
-    free(covar[i]);
-  free(covar);
+    PhylipFree(covar[i]);
+  PhylipFree(covar);
   }
 }  /* standev */
 
@@ -3794,10 +3794,10 @@ void freetip(node *anode)
 {
   /* used in dnacomp, dnapars, & dnapenny */
 
-  free(anode->numsteps);
-  free(anode->oldnumsteps);
-  free(anode->base);
-  free(anode->oldbase);
+  PhylipFree(anode->numsteps);
+  PhylipFree(anode->oldnumsteps);
+  PhylipFree(anode->base);
+  PhylipFree(anode->oldbase);
 }  /* freetip */
 
 
@@ -3805,11 +3805,11 @@ void freenontip(node *anode)
 {
   /* used in dnacomp, dnapars, & dnapenny */
 
-  free(anode->numsteps);
-  free(anode->oldnumsteps);
-  free(anode->base);
-  free(anode->oldbase);
-  free(anode->numnuc);
+  PhylipFree(anode->numsteps);
+  PhylipFree(anode->oldnumsteps);
+  PhylipFree(anode->base);
+  PhylipFree(anode->oldbase);
+  PhylipFree(anode->numnuc);
 }  /* freenontip */
 
 
@@ -3839,7 +3839,7 @@ void freenode(node **anode)
   /* used in dnacomp, dnapars, & dnapenny */
 
   freenontip(*anode);
-  free(*anode);
+  PhylipFree(*anode);
 }  /* freenode */
 
 
@@ -3850,19 +3850,19 @@ void freetree(long nonodes, pointarray treenode)
   node *p, *q;
 
   for (i = 0; i < spp; i++)
-    free(treenode[i]);
+    PhylipFree(treenode[i]);
   for (i = spp; i < nonodes; i++) {
     if (treenode[i] != NULL) {
       p = treenode[i]->next;
       do {
         q = p->next;
-        free(p);
+        PhylipFree(p);
         p = q;
       } while (p != treenode[i]);
-      free(p);
+      PhylipFree(p);
     }
   }
-  free(treenode);
+  PhylipFree(treenode);
 }  /* freetree */
 
 
@@ -3877,13 +3877,10 @@ void prot_freex_notip(long nonodes, pointarray treenode)
     if ( p == NULL ) continue;
     do {
       for (j = 0; j < endsite; j++){
-        free(p->protx[j]);
-        p->protx[j] = NULL;
+        PhylipFree(p->protx[j]);
       }
-      free(p->underflows);
-      p->underflows = NULL;
-      free(p->protx);
-      p->protx = NULL;
+      PhylipFree(p->underflows);
+      PhylipFree(p->protx);
       p = p->next;
     } while (p != treenode[i]);
   }
@@ -3898,17 +3895,17 @@ void prot_freex(long nonodes, pointarray treenode)
 
   for (i = 0; i < spp; i++) {
     for (j = 0; j < endsite; j++)
-      free(treenode[i]->protx[j]);
-    free(treenode[i]->protx);
-    free(treenode[i]->underflows);
+      PhylipFree(treenode[i]->protx[j]);
+    PhylipFree(treenode[i]->protx);
+    PhylipFree(treenode[i]->underflows);
   }
   for (i = spp; i < nonodes; i++) {
     p = treenode[i];
     do {
       for (j = 0; j < endsite; j++)
-        free(p->protx[j]);
-      free(p->protx);
-      free(p->underflows);
+        PhylipFree(p->protx[j]);
+      PhylipFree(p->protx);
+      PhylipFree(p->underflows);
       p = p->next;
     } while (p != treenode[i]);
   }
@@ -3926,9 +3923,9 @@ void freex_notip(long nonodes, pointarray treenode)
     if ( p == NULL ) continue;
     do {
       for (j = 0; j < endsite; j++)
-        free(p->x[j]);
-      free(p->underflows);
-      free(p->x);
+        PhylipFree(p->x[j]);
+      PhylipFree(p->underflows);
+      PhylipFree(p->x);
       p = p->next;
     } while (p != treenode[i]);
   }
@@ -3943,18 +3940,18 @@ void freex(long nonodes, pointarray treenode)
 
   for (i = 0; i < spp; i++) {
     for (j = 0; j < endsite; j++)
-      free(treenode[i]->x[j]);
-    free(treenode[i]->x);
-    free(treenode[i]->underflows);
+      PhylipFree(treenode[i]->x[j]);
+    PhylipFree(treenode[i]->x);
+    PhylipFree(treenode[i]->underflows);
   }
   for (i = spp; i < nonodes; i++) {
     if(treenode[i]){
       p = treenode[i];
       do {
         for (j = 0; j < endsite; j++)
-          free(p->x[j]);
-        free(p->x);
-        free(p->underflows);
+          PhylipFree(p->x[j]);
+        PhylipFree(p->x);
+        PhylipFree(p->underflows);
         p = p->next;
       } while (p != treenode[i]);
     }
@@ -3971,8 +3968,8 @@ void freegarbage(gbases **garbage)
   while (*garbage) {
     p = *garbage;
     *garbage = (*garbage)->next;
-    free(p->base);
-    free(p);
+    PhylipFree(p->base);
+    PhylipFree(p);
   }
 }  /*freegarbage */
 
@@ -3986,7 +3983,7 @@ void freegrbg(node **grbg)
     p = *grbg;
     *grbg = (*grbg)->next;
     freenontip(p);
-    free(p);
+    PhylipFree(p);
   }
 } /*freegrbg */
 

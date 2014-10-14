@@ -113,7 +113,7 @@ void NeighborJoinAdapter::setupCreatePhyTreeUI( CreatePhyTreeDialogController* c
 }
 
 NeighborJoinCalculateTreeTask::NeighborJoinCalculateTreeTask(const MAlignment& ma, const CreatePhyTreeSettings& s)
-:PhyTreeGeneratorTask(ma, s){
+:PhyTreeGeneratorTask(ma, s), memLocker(stateInfo){
     setTaskName("NeighborJoin algorithm");
 }
 
@@ -131,9 +131,8 @@ void NeighborJoinCalculateTreeTask::run(){
         return;
     }
 
-
-    if(settings.bootstrap){ //bootstrapping and creating a consensus tree
-        try {
+    try {
+        if(settings.bootstrap){ //bootstrapping and creating a consensus tree
             setTaskInfo(&stateInfo);
             setBootstr(true);
             stateInfo.setDescription("Generating sequences");
@@ -163,16 +162,28 @@ void NeighborJoinCalculateTreeTask::run(){
                 QScopedPointer<DistanceMatrix> distanceMatrix(new DistanceMatrix);
                 distanceMatrix->calculateOutOfAlignment(curMSA,settings);
 
+                if(!distanceMatrix->getErrorMessage().isEmpty()) {
+                    stateInfo.setError(distanceMatrix->getErrorMessage());
+                    result = phyTree;
+                    neighbour_free_resources();
+                    return;
+                }
                 if (!distanceMatrix->isValid()) {
                     setError("Calculated distance matrix is invalid");
                     result = phyTree;
+                    neighbour_free_resources();
                     return;
                 }
 
                 int sz = distanceMatrix->rawMatrix.count();
 
                 // Allocate memory resources
-                neighbour_init(sz, tmpFile.fileName());
+                neighbour_init(sz, memLocker, tmpFile.fileName());
+                if(memLocker.hasError()) {
+                    stateInfo.setError(memLocker.getError());
+                    neighbour_free_resources();
+                    return;
+                }
 
                 // Fill data
                 vector* m = getMtx();
@@ -225,21 +236,23 @@ void NeighborJoinCalculateTreeTask::run(){
             data->setRootNode(rootPhy);
 
             phyTree = data;
-
-        } catch (const char* message) {
-            stateInfo.setError(QString("Phylip error %1").arg(message));
-        }
-    }else{
+        }else{
 
         // Exceptions are used to avoid phylip exit(-1) error handling and canceling task 
-        try {   
             setTaskInfo(&stateInfo);
             setBootstr(false);
 
             QScopedPointer<DistanceMatrix> distanceMatrix(new DistanceMatrix);
             distanceMatrix->calculateOutOfAlignment(inputMA,settings);
 
+            if(!distanceMatrix->getErrorMessage().isEmpty()) {
+                neighbour_free_resources();
+                stateInfo.setError(distanceMatrix->getErrorMessage());
+                result = phyTree;
+                return;
+            }
             if (!distanceMatrix->isValid()) {
+                neighbour_free_resources();
                 stateInfo.setError("Calculated distance matrix is invalid");
                 result = phyTree;
                 return;
@@ -248,7 +261,12 @@ void NeighborJoinCalculateTreeTask::run(){
             int sz = distanceMatrix->rawMatrix.count();
 
             // Allocate memory resources
-            neighbour_init(sz);
+            neighbour_init(sz, memLocker);
+            if(memLocker.hasError()) {
+                stateInfo.setError(memLocker.getError());
+                neighbour_free_resources();
+                return;
+            }
 
             // Fill data
             vector* m = getMtx();
@@ -282,10 +300,14 @@ void NeighborJoinCalculateTreeTask::run(){
             data->setRootNode(root);
 
             phyTree = data;
-        } catch (const char* message) {
-            stateInfo.setError(QString("Phylip error %1").arg(message));
         }
-
+    }
+    catch (const std::bad_alloc &) {
+        setError(QString("Not enough memory to calculate tree for alignment \"%1\"").arg(inputMA.getName()));
+        neighbour_free_resources();
+    }
+    catch (const char* message) {
+        stateInfo.setError(QString("Phylip error %1").arg(message));
     }
 
     result = phyTree;

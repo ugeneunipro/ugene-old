@@ -34,267 +34,279 @@
 namespace U2{
 
 void DistanceMatrix::calculateOutOfAlignment( const MAlignment& ma, const CreatePhyTreeSettings& settings ) {
-    malignment = &ma;
-    int index = 0;
-    int size = ma.getNumRows();
-    this->size = size;
-    printdata = false;
+    try {
+        malignment = &ma;
+        int index = 0;
+        int size = ma.getNumRows();
+        this->size = size;
+        printdata = false;
 
-    foreach(const MAlignmentRow& r, ma.getRows()) {
-        const QString& str = r.getName();
-        index_map.insert(str, index);
-        index++;
-        unprocessed_taxa.append(str);
-    }
-    for(int i=0; i<size; i++){
-        matrixrow row;
-
-        for(int j=0; j<size; j++){
-            row.append(0);
+        foreach(const MAlignmentRow& r, ma.getRows()) {
+            const QString& str = r.getName();
+            index_map.insert(str, index);
+            index++;
+            unprocessed_taxa.append(str);
+        }
+        if(!memoryLocker.tryAcquire(size*(sizeof(matrixrow) + sizeof(float)*size))) {
+            errorMessage = memoryLocker.getError();
+            return;
         }
 
-        rawMatrix.append(row);
-    }
-    spp = ma.getNumRows();
-    sites = ma.getLength();
-    chars = sites;
-    nonodes = 2*sites - 1;
-    DNAAlphabetType alphabetType = ma.getAlphabet()->getType();
+        for(int i=0; i<size; i++){
+            matrixrow row;
 
-    ibmpc = IBMCRT;
-    ansi = ANSICRT;
-    mulsets = false;
-    datasets = 1;
-    firstset = true;
-
-    if ((alphabetType == DNAAlphabet_RAW) || (alphabetType == DNAAlphabet_NUCL)){
-
-        setDNADistSettings(settings);
-        doinit();
-        //ttratio = ttratio0;
-        inputoptions();
-
-        for (int k=0; k<spp; k++){
-            for(int j=0; j<sites; j++) {
-                const MAlignmentRow& rowK = ma.getRow(k);
-                y[k][j] = rowK.charAt(j);
+            for(int j=0; j<size; j++){
+                row.append(0);
             }
+
+            rawMatrix.append(row);
         }
-        makeweights();
-        dnadist_makevalues();
-        dnadist_empiricalfreqs();
+        spp = ma.getNumRows();
+        sites = ma.getLength();
+        chars = sites;
+        nonodes = 2*sites - 1;
+        DNAAlphabetType alphabetType = ma.getAlphabet()->getType();
 
-        getbasefreqs(freqa, freqc, freqg, freqt, &freqr, &freqy, &freqar, &freqcy,
-            &freqgr, &freqty, &ttratio, &xi, &xv, &fracchange, freqsfrom, printdata);
-        makedists();
+        ibmpc = IBMCRT;
+        ansi = ANSICRT;
+        mulsets = false;
+        datasets = 1;
+        firstset = true;
 
+        if ((alphabetType == DNAAlphabet_RAW) || (alphabetType == DNAAlphabet_NUCL)){
 
+            setDNADistSettings(settings);
+            doinit(memoryLocker);
+            if(memoryLocker.hasError()) {
+                errorMessage = memoryLocker.getError();
+                return;
+            } 
+            //ttratio = ttratio0;
+            inputoptions();
 
-    } else {
+            for (int k=0; k<spp; k++){
+                for(int j=0; j<sites; j++) {
+                    const MAlignmentRow& rowK = ma.getRow(k);
+                    y[k][j] = rowK.charAt(j);
+                }
+            }
+            makeweights();
+            dnadist_makevalues();
+            dnadist_empiricalfreqs();
 
-        prot_doinit(settings);
-        if (!(kimura || similarity))
-            code();
-        if (!(usejtt || usepmb || usepam ||  kimura || similarity)) {
-            protdist_cats();
-            maketrans();
-            qreigen(prob, 20L);
+            getbasefreqs(freqa, freqc, freqg, freqt, &freqr, &freqy, &freqar, &freqcy,
+                &freqgr, &freqty, &ttratio, &xi, &xv, &fracchange, freqsfrom, printdata);
+            makedists();
+
         } else {
-            if (kimura || similarity)
-                fracchange = 1.0;
-            else {
-                if (usejtt)
-                    jtteigen();
+
+            prot_doinit(settings);
+            if (!(kimura || similarity))
+                code();
+            if (!(usejtt || usepmb || usepam ||  kimura || similarity)) {
+                protdist_cats();
+                maketrans();
+                qreigen(prob, 20L);
+            } else {
+                if (kimura || similarity)
+                    fracchange = 1.0;
                 else {
-                    if (usepmb)
-                        pmbeigen();
-                    else
-                        pameigen();
+                    if (usejtt)
+                        jtteigen();
+                    else {
+                        if (usepmb)
+                            pmbeigen();
+                        else
+                            pameigen();
+                    }
                 }
             }
-        }
 
-        doinput();
-        Phylip_Char charstate;
-        aas aa = (aas)0;
+            doinit(memoryLocker);
+            if(memoryLocker.hasError()) {
+                errorMessage = memoryLocker.getError();
+                return;
+            } 
+            Phylip_Char charstate;
+            aas aa = (aas)0;
 
-        for (int k=0; k<spp; k++){
-            for(int j=0; j<sites; j++){
-                const MAlignmentRow& rowK = ma.getRow(k);
-                charstate = rowK.charAt(j);
-                switch (charstate) {
-                    case 'A':
-                        aa = ala;
-                        break;
-                    case 'B':
-                        aa = asx;
-                        break;
+            for (int k=0; k<spp; k++){
+                for(int j=0; j<sites; j++){
+                    const MAlignmentRow& rowK = ma.getRow(k);
+                    charstate = rowK.charAt(j);
+                    switch (charstate) {
+                        case 'A':
+                            aa = ala;
+                            break;
+                        case 'B':
+                            aa = asx;
+                            break;
 
-                    case 'C':
-                        aa = cys;
-                        break;
+                        case 'C':
+                            aa = cys;
+                            break;
 
-                    case 'D':
-                        aa = asp;
-                        break;
+                        case 'D':
+                            aa = asp;
+                            break;
 
-                    case 'E':
-                        aa = glu;
-                        break;
+                        case 'E':
+                            aa = glu;
+                            break;
 
-                    case 'F':
-                        aa = phe;
-                        break;
+                        case 'F':
+                            aa = phe;
+                            break;
 
-                    case 'G':
-                        aa = gly;
-                        break;
+                        case 'G':
+                            aa = gly;
+                            break;
 
-                    case 'H':
-                        aa = his;
-                        break;
+                        case 'H':
+                            aa = his;
+                            break;
 
-                    case 'I':
-                        aa = ileu;
-                        break;
+                        case 'I':
+                            aa = ileu;
+                            break;
 
-                    case 'K':
-                        aa = lys;
-                        break;
+                        case 'K':
+                            aa = lys;
+                            break;
 
-                    case 'L':
-                        aa = leu;
-                        break;
+                        case 'L':
+                            aa = leu;
+                            break;
 
-                    case 'M':
-                        aa = met;
-                        break;
+                        case 'M':
+                            aa = met;
+                            break;
 
-                    case 'N':
-                        aa = asn;
-                        break;
+                        case 'N':
+                            aa = asn;
+                            break;
 
-                    case 'P':
-                        aa = pro;
-                        break;
+                        case 'P':
+                            aa = pro;
+                            break;
 
-                    case 'Q':
-                        aa = gln;
-                        break;
+                        case 'Q':
+                            aa = gln;
+                            break;
 
-                    case 'R':
-                        aa = arg;
-                        break;
+                        case 'R':
+                            aa = arg;
+                            break;
 
-                    case 'S':
-                        aa = ser;
-                        break;
+                        case 'S':
+                            aa = ser;
+                            break;
 
-                    case 'T':
-                        aa = thr;
-                        break;
+                        case 'T':
+                            aa = thr;
+                            break;
 
-                    case 'V':
-                        aa = val;
-                        break;
+                        case 'V':
+                            aa = val;
+                            break;
 
-                    case 'W':
-                        aa = trp;
-                        break;
+                        case 'W':
+                            aa = trp;
+                            break;
 
-                    case 'X':
-                        aa = unk;
-                        break;
+                        case 'X':
+                            aa = unk;
+                            break;
 
-                    case 'Y':
-                        aa = tyr;
-                        break;
+                        case 'Y':
+                            aa = tyr;
+                            break;
 
-                    case 'Z':
-                        aa = glx;
-                        break;
+                        case 'Z':
+                            aa = glx;
+                            break;
 
-                    case '*':
-                        aa = stop;
-                        break;
+                        case '*':
+                            aa = stop;
+                            break;
 
-                    case '?':
-                        aa = quest;
-                        break;
+                        case '?':
+                            aa = quest;
+                            break;
 
-                    case '-':
-                        aa = del;
-                        break;
+                        case '-':
+                            aa = del;
+                            break;
+                    }
+                    gnode[k][j] = aa;
                 }
-                gnode[k][j] = aa;
+            }
+
+            if (ith == 1)
+                firstset = false;
+            prot_makedists();
+
+            for (int i = 0; i < spp; i++) {
+                PhylipFree(gnode[i]);
+            }
+            PhylipFree(gnode);
+        }
+        for (int i=0; i<spp; i++){
+            for(int j=0; j<spp; j++){
+                rawMatrix[i][j] = d[i][j];
             }
         }
-
-        if (ith == 1)
-            firstset = false;
-        prot_makedists();
-
-        for (int i = 0; i < spp; i++) {
-            free(gnode[i]);
+    } catch(const std::bad_alloc &) {
+        errorMessage = QString("Not enough memory to calculate distance matrix for alignment \"%1\"").arg(ma.getName());
+        if(NULL != gnode) {
+            for (int i = 0; i < spp; i++) {
+                PhylipFree(gnode[i]);
+            }
+            PhylipFree(gnode);
         }
     }
-    for (int i=0; i<spp; i++){
-        for(int j=0; j<spp; j++){
-            rawMatrix[i][j] = d[i][j];
-        }
-    }
-
-
-
 }
 
 DistanceMatrix::~DistanceMatrix(){
     if(NULL != y) {
         for (int i = 0; i < spp; i++) {
-            free(y[i]); 
+            PhylipFree(y[i]); 
         }
-        free(y);
-        y = NULL;
+        PhylipFree(y);
     }
 
     if(NULL != nodep) {
         for (int i = 0; i < spp; i++) {
-            for (int j = 0; j < endsite; j++) {
-                free(nodep[i]->x[j]);
+            node* curNode = nodep[i];
+            if(NULL != nodep[i]->x) {
+                for (int j = 0; j < endsite; j++) {
+                    PhylipFree(nodep[i]->x[j]);
+                }
+                PhylipFree(nodep[i]->x);
             }
-            free(nodep[i]->x);
-            free(nodep[i]);
+            PhylipFree(nodep[i]);
         }
-        free(nodep);
-        nodep = NULL;
+        PhylipFree(nodep);
     }
-    free(category);
-    category = NULL;
+    PhylipFree(category);
 
-    free(oldweight);
-    oldweight = NULL;
+    PhylipFree(oldweight);
 
-    free(weight);
-    weight = NULL;
+    PhylipFree(weight);
 
-    free(alias);
-    alias = NULL;
+    PhylipFree(alias);
 
-    free(ally);
-    ally = NULL;
+    PhylipFree(ally);
 
-    free(location);
-    location = NULL;
+    PhylipFree(location);
 
-    free(weightrat);
-    weightrat = NULL;
+    PhylipFree(weightrat);
 
     if(NULL != d) {
         for (int i = 0; i < spp; i++) {
-            free(d[i]);
+            PhylipFree(d[i]);
         }
-        free(d);
-        d = NULL;
+        PhylipFree(d);
     }
 }
 

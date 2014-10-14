@@ -392,27 +392,33 @@ void getoptions()
 }  /* getoptions */
 
 
-void allocrest()
+void allocrest(U2::MemoryLocker& memLocker)
 {
-  long i;
+    long i;
 
-  y = (Phylip_Char **)Malloc(spp*sizeof(Phylip_Char *));
-  nodep = (node **)Malloc(spp*sizeof(node *));
-  for (i = 0; i < spp; i++) {
-    y[i] = (Phylip_Char *)Malloc(sites*sizeof(Phylip_Char));
-    nodep[i] = (node *)Malloc(sizeof(node));
-  }
-  d = (double **)Malloc(spp*sizeof(double *));
-  for (i = 0; i < spp; i++)
-    d[i] = (double*)Malloc(spp*sizeof(double));
-  nayme = (naym *)Malloc(spp*sizeof(naym));
-  category = (steptr)Malloc(sites*sizeof(long));
-  oldweight = (steptr)Malloc(sites*sizeof(long));
-  weight = (steptr)Malloc(sites*sizeof(long));
-  alias = (steptr)Malloc(sites*sizeof(long));
-  ally = (steptr)Malloc(sites*sizeof(long));
-  location = (steptr)Malloc(sites*sizeof(long));
-  weightrat = (double *)Malloc(sites*sizeof(double));
+    qint64 memSize = spp * (sizeof(Phylip_Char *) + sizeof(node *) + sites*sizeof(Phylip_Char) + sizeof(node) + sizeof(double *) + spp*sizeof(double) + sizeof(naym));
+    memSize += sites * sizeof(long) * 7;
+    if(!memLocker.tryAcquire(memSize)) {
+          return;
+    }
+
+    y = (Phylip_Char **)Malloc(spp*sizeof(Phylip_Char *));
+    nodep = (node **)Malloc(spp*sizeof(node *));
+    for (i = 0; i < spp; i++) {
+        y[i] = (Phylip_Char *)Malloc(sites*sizeof(Phylip_Char));
+        nodep[i] = (node *)Malloc(sizeof(node));
+    }
+    d = (double **)Malloc(spp*sizeof(double *));
+    for (i = 0; i < spp; i++)
+        d[i] = (double*)Malloc(spp*sizeof(double));
+    nayme = (naym *)Malloc(spp*sizeof(naym));
+    category = (steptr)Malloc(sites*sizeof(long));
+    oldweight = (steptr)Malloc(sites*sizeof(long));
+    weight = (steptr)Malloc(sites*sizeof(long));
+    alias = (steptr)Malloc(sites*sizeof(long));
+    ally = (steptr)Malloc(sites*sizeof(long));
+    location = (steptr)Malloc(sites*sizeof(long));
+    weightrat = (double *)Malloc(sites*sizeof(double));
 } /* allocrest */
 
 
@@ -423,16 +429,16 @@ void reallocsites()
   long i;
 
   for (i = 0; i < spp; i++) {
-    free(y[i]);  
+    PhylipFree(y[i]);  
     y[i] = (Phylip_Char *)Malloc(sites*sizeof(Phylip_Char));
   }
-  free(category);
-  free(oldweight);
-  free(weight);
-  free(alias);
-  free(ally);
-  free(location);
-  free(weightrat);
+  PhylipFree(category);
+  PhylipFree(oldweight);
+  PhylipFree(weight);
+  PhylipFree(alias);
+  PhylipFree(ally);
+  PhylipFree(location);
+  PhylipFree(weightrat);
   
   category = (steptr)Malloc(sites*sizeof(long));
   oldweight = (steptr)Malloc(sites*sizeof(long));
@@ -444,15 +450,16 @@ void reallocsites()
 } /* reallocsites */
 
 
-void doinit()
+void doinit(U2::MemoryLocker& memLocker)
 {
-  /* initializes variables */
+    /* initializes variables */
 
-  //inputnumbers(&spp, &sites, &nonodes, 1);
-  getoptions();
-  if (printdata)
-      fprintf(outfile, "%2ld species, %3ld  sites\n", spp, sites);
-  allocrest();
+    //inputnumbers(&spp, &sites, &nonodes, 1);
+    getoptions();
+    if (printdata) {
+        fprintf(outfile, "%2ld species, %3ld  sites\n", spp, sites);
+    }
+    allocrest(memLocker);
 }  /* doinit */
 
 
@@ -1184,9 +1191,9 @@ void makev(long m, long n, double *v)
       baddists = true;
     }
     vv = tt * fracchange;
-    free(prod);
-    free(prod2);
-    free(prod3);
+    PhylipFree(prod);
+    PhylipFree(prod2);
+    PhylipFree(prod3);
   }
   if (logdetquick) {  /* compute logdet when no ambiguous nucleotides */
     for (i = 0; i < 4; i++) {

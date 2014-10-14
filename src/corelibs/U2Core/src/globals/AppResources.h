@@ -352,7 +352,8 @@ public:
                 lockedMB = needMB;
             } else {
                 if (os) {
-                    os->setError("MemoryLocker - Not enough memory error");
+                    errorMessage = QString("MemoryLocker - Not enough memory error, %1 megabytes are required").arg(needMB);
+                    os->setError(errorMessage);
                 }
             }
             return ok;
@@ -369,6 +370,10 @@ public:
         needBytes = 0;
     }
 
+    bool hasError(){return !errorMessage.isEmpty();}
+
+    const QString& getError(){return errorMessage;}
+
 private:
     U2OpStatus* os;
     int preLockMB;
@@ -376,6 +381,7 @@ private:
     qint64 needBytes;
     AppResource* resource;
     AppResource::MemoryLockType memoryLockType;
+    QString errorMessage;
 };
 
 

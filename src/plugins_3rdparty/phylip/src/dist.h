@@ -1,6 +1,7 @@
 #ifndef NDIST_H
 #define NDIST_H
 #include "phylip.h"
+#include <U2Core/AppResources.h>
 /* version 3.6. (c) Copyright 1993-2000 by the University of Washington.
    Written by Joseph Felsenstein, Akiko Fuseki, Sean Lamont, and Andrew Keeffe.
    Permission is granted to copy and use this program provided no fee is
@@ -18,7 +19,7 @@ typedef node **pointptr;
 
 #ifndef OLDC
 /*function prototypes*/
-void dist_alloctree(pointptr *, long);
+void dist_alloctree(pointptr *, long, U2::MemoryLocker& memLocker);
 void dist_freetree(pointptr *, long);
 void allocd(long, pointptr);
 void freed(long, pointptr);

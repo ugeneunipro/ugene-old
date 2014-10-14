@@ -22,6 +22,7 @@
 #include <QMap>
 #include <QString>
 #include <U2Algorithm/SubstMatrixRegistry.h>
+#include <U2Core/AppResources.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/PhyTree.h>
 #include <U2Algorithm/CreatePhyTreeSettings.h>
@@ -45,12 +46,15 @@ private:
     QList<QString> visited_list;
     QList<QString> unprocessed_taxa;
     QList<PhyNode*> printed_nodes;
+    QString errorMessage;
 
 public:
     matrix rawMatrix;
     bool isValid();
     void calculateOutOfAlignment(const MAlignment& ma, const CreatePhyTreeSettings& settings);
     ~DistanceMatrix();
+    const QString& getErrorMessage() {return errorMessage;}
+    void freeMemory(void*& allocatedMemory){free(allocatedMemory);}
 
 private:
     
@@ -83,6 +87,8 @@ private:
     static void addNodeToList(QList<PhyNode*>& nodelist, QMap<QString, int>& nodemap, QList<PhyBranch*>& branches,  PhyNode* node);
     void switchName(PhyNode* node);
     void switchNamesToAllNodes();
+
+    MemoryLocker memoryLocker;
 };
 
 

@@ -4,12 +4,11 @@
 #include "phylip.h"
 
 #include <QString>
-
+#include <U2Core/AppResources.h>
 
 
 /* function prototypes */
-int  neighbour_main(double** rawMatrix, int ssp);
-void neighbour_init(int num, const QString& filename = NULL);
+void neighbour_init(int num, U2::MemoryLocker& memLocker, const QString& filename = NULL);
 const tree* neighbour_calc_tree(); 
 void neighbour_free_resources();
 naym* getNayme();

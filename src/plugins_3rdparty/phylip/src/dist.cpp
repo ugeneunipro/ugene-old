@@ -8,7 +8,7 @@
    Permission is granted to copy and use this program provided no fee is
    charged for it and provided that this copyright notice is not removed. */
 
-void dist_alloctree(pointptr *treenode, long nonodes)
+void dist_alloctree(pointptr *treenode, long nonodes, U2::MemoryLocker& memLocker)
 {
   /* allocate spp tips and (nonodes - spp) forks, each containing three
    * nodes. Fill in treenode where 0..spp-1 are pointers to tip nodes, and
@@ -19,6 +19,9 @@ void dist_alloctree(pointptr *treenode, long nonodes)
   long i, j;
   node *p, *q;
 
+  if(!memLocker.tryAcquire(nonodes*sizeof(node *) + spp * sizeof(node) + nonodes*3*sizeof(node))) {
+      return;
+  }
   *treenode = (pointptr)Malloc(nonodes*sizeof(node *));
   for (i = 0; i < spp; i++)
     (*treenode)[i] = (node *)Malloc(sizeof(node));
@@ -45,7 +48,7 @@ void dist_freetree(pointptr *treenode, long nonodes)
   for (i = spp; i < nonodes; i++) {
     p = (*treenode)[i];
     q = p->next;
-    while(q != p)
+    while(q != p && q != NULL)
     {
         node * r = q;
         q = q->next;

@@ -12,7 +12,7 @@
 /* function prototypes */
 void getoptions(void);
 void allocrest(void);
-void doinit(void);
+bool doinit(void);
 void inputoptions(void);
 void getinput(void);
 void describe(node *, double);
@@ -206,17 +206,20 @@ void neighbor_allocrest()
 
 void freerest()
 {
-  long i;
+    long i;
 
-  for (i = 0; i < spp; i++)
-    free(x[i]);
-  free(x);
-  for (i = 0; i < spp; i++)
-    free(reps[i]);
-  free(reps);
-  free(nayme);
-  free(enterorder);
-  free(cluster);
+    for (i = 0; i < spp; i++) {
+        PhylipFree(x[i]);
+    }
+    PhylipFree(x);
+    for (i = 0; i < spp; i++) {
+        PhylipFree(reps[i]);
+    }
+    spp = 0;
+    PhylipFree(reps);
+    PhylipFree(nayme);
+    PhylipFree(enterorder);
+    PhylipFree(cluster);
 }  /* freerest */
 
 
@@ -226,36 +229,39 @@ void inputnumbers2_modified(long *spp, long *nonodes, long n)
 }  /* inputnumbers2 */
 
 
-void neighbor_doinit_modified(){
+void neighbor_doinit_modified(U2::MemoryLocker& memLocker){
     /* initializes variables */
     node *p;
 
     inputnumbers2_modified(&spp, &nonodes2, 2);
     nonodes2 += (njoin ? 0 : 1);
     neighbor_getoptions();
-    dist_alloctree(&curtree.nodep, nonodes2+1);
+    dist_alloctree(&curtree.nodep, nonodes2+1, memLocker);
+    if(memLocker.hasError()) {
+        return;
+    }
     p = curtree.nodep[nonodes2]->next;
     curtree.nodep[nonodes2]->next = curtree.nodep[nonodes2];
-    free(p->next);
-    free(p);
+    PhylipFree(p->next);
+    PhylipFree(p);
     neighbor_allocrest();
 
 }  /* doinit */
 
 
 
-void neighbor_doinit(){
+void neighbor_doinit(U2::MemoryLocker& memLocker){
   /* initializes variables */
   node *p;
 
   inputnumbers2(&spp, &nonodes2, 2);
   nonodes2 += (njoin ? 0 : 1);
   neighbor_getoptions();
-  dist_alloctree(&curtree.nodep, nonodes2+1);
+  dist_alloctree(&curtree.nodep, nonodes2+1, memLocker);
   p = curtree.nodep[nonodes2]->next;
   curtree.nodep[nonodes2]->next = curtree.nodep[nonodes2];
-  free(p->next);
-  free(p);
+  PhylipFree(p->next);
+  PhylipFree(p);
   neighbor_allocrest();
   
 }  /* doinit */
@@ -504,8 +510,8 @@ void jointree()
   if (!njoin) {
     curtree.start = cluster[el[0] - 1];
     curtree.start->back = NULL;
-    free(av);
-    free(oc);
+    PhylipFree(av);
+    PhylipFree(oc);
     return;
   }
   bi = (x[el[0] - 1][el[1] - 1] + x[el[0] - 1][el[2] - 1] - x[el[1] - 1]
@@ -538,9 +544,9 @@ void jointree()
   cluster[el[1] - 1]->back->v = bj;
   cluster[el[2] - 1]->back->v = bk;
   curtree.start = cluster[el[0] - 1]->back;
-  free(av);
-  free(oc);
-  free(R);
+  PhylipFree(av);
+  PhylipFree(oc);
+  PhylipFree(R);
 }  /* jointree */
 
 
@@ -586,7 +592,7 @@ void maketree()
 }  /* maketree */
 
 
-void neighbour_init(int num, const QString& filename) 
+void neighbour_init(int num, U2::MemoryLocker& memLocker, const QString& filename) 
 {
     int argc = 1;                
     char* argv[] = { "Neighbor" };
@@ -597,7 +603,7 @@ void neighbour_init(int num, const QString& filename)
     ansi = ANSICRT;
     mulsets = false;
     datasets = 1;
-    neighbor_doinit_modified();
+    neighbor_doinit_modified(memLocker);
     if(filename == NULL){
         trout = false;
     }
@@ -633,7 +639,10 @@ void neighbour_free_resources()
     //FClose(outfile);
     FClose(outtree);
     freerest();
-    dist_freetree(&curtree.nodep, nonodes2+1);
+    if(NULL != curtree.nodep) {
+        dist_freetree(&curtree.nodep, nonodes2+1);
+        curtree.nodep = NULL;
+    }
 #ifdef MAC
     fixmacfile(outfilename);
     fixmacfile(outtreename);
@@ -643,55 +652,6 @@ void neighbour_free_resources()
 //    phyRestoreConsoleAttributes();
 //#endif
 
-}
-
-
-
-
-int neighbour_main(double** rawMatrix, int _spp)
-{  /* main program */
-//#ifdef MAC
-  int argc = 1;                /* macsetup("Neighbor","");                */
-  char* argv[] = { "Neighbor" };
-  spp = _spp;
-//#endif
-  //init(argc, argv);
-  openfile(&infile,INFILE,"input file", "r",argv[0],infilename);
-  openfile(&outfile,OUTFILE,"output file", "w",argv[0],outfilename);
-  ibmpc = IBMCRT;
-  ansi = ANSICRT;
-  mulsets = false;
-  datasets = 1;
-  neighbor_doinit_modified();
-  if (trout)
-    openfile(&outtree,OUTTREE,"output tree file", "w",argv[0],outtreename);
-  ith = 1;
-  while (ith <= datasets) {
-    if (datasets > 1) {
-      fprintf(outfile, "Data set # %ld:\n",ith);
-      if (progress)
-        printf("Data set # %ld:\n",ith);
-    }
-    neighbor_inputoptions();
-    maketree();
-    if (eoln(infile) && (ith < datasets)) 
-      scan_eoln(infile);
-    ith++;
-  }
-  FClose(infile);
-  //FClose(outfile);
-  FClose(outtree);
-  freerest();
-  dist_freetree(&curtree.nodep, nonodes2+1);
-#ifdef MAC
-  fixmacfile(outfilename);
-  fixmacfile(outtreename);
-#endif
-  printf("Done.\n\n");
-//#ifdef WIN32
-  //phyRestoreConsoleAttributes();
-//#endif
-  return 0;
 }
 
 naym* getNayme()

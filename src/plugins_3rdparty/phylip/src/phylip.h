@@ -239,6 +239,7 @@ void phyFillScreenColor(void);
 
 #define FClose(file) if (file) fclose(file) ; file=NULL
 #define Malloc(x) mymalloc((long)x)
+#define PhylipFree(x) free(x); x = NULL;
 
 typedef void *Anyptr;
 //Does not compile with Qt4.6.x : #define Signed     signed

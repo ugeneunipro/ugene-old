@@ -24,6 +24,7 @@
 
 #include <QtCore/QObject>
 
+#include <U2Core/AppResources.h>
 #include <U2Core/PhyTree.h>
 #include <U2Algorithm/SubstMatrixRegistry.h>
 #include <U2View/CreatePhyTreeDialogController.h>
@@ -48,6 +49,7 @@ public:
     void run();
 private:
     static QMutex runLock;
+    MemoryLocker memLocker;
 };
 
 }//namespace

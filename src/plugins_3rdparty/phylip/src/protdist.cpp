@@ -534,11 +534,11 @@ void reallocchars(void)
 {
   int i;
 
-  free(weight);
-  free(oldweight);
-  free(category);
+  PhylipFree(weight);
+  PhylipFree(oldweight);
+  PhylipFree(category);
   for (i = 0; i < spp; i++) {
-    free(gnode[i]);
+    PhylipFree(gnode[i]);
     gnode[i] = (aas *)Malloc(chars * sizeof(aas ));
   }
   weight = (steparray)Malloc(chars*sizeof(long));

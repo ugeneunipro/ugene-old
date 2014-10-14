@@ -1,6 +1,7 @@
 #ifndef DNADIST_H
 #define DNADIST_H
 
+#include <U2Core/AppResources.h>
 #include <QString>
 #include <QList>
 
@@ -49,9 +50,9 @@ const CreatePhyTreeSettings& getDNADistSettings();
 #ifndef OLDC
 /* function  prototypes */ 
 void   getoptions(void);
-void   allocrest(void);
+void   allocrest(U2::MemoryLocker& memLocker);
 void   reallocsites(void);
-void   doinit(void);
+void   doinit(U2::MemoryLocker&);
 void   inputcategories(void);
 void   printcategories(void);
 void   inputoptions(void);
