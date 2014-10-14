@@ -126,11 +126,7 @@ void DistanceMatrix::calculateOutOfAlignment( const MAlignment& ma, const Create
                 }
             }
 
-            doinit(memoryLocker);
-            if(memoryLocker.hasError()) {
-                errorMessage = memoryLocker.getError();
-                return;
-            } 
+            doinput();
             Phylip_Char charstate;
             aas aa = (aas)0;
 
