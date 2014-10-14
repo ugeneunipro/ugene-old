@@ -194,6 +194,7 @@ GUI_TEST_CLASS_DEFINITION(test_0928) {
     GTUtilsDialog::waitForDialog(os, new OkClicker(os));
     GTWidget::click(os, GTAction::button(os, "Find ORFs"));
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
 
     //GTGlobals::sleep(20000);
 
@@ -4329,6 +4330,7 @@ GUI_TEST_CLASS_DEFINITION( test_2449 ) {
 //    2. Create a phylogenetic tree for the alignment.
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_2449.nwk", 0, 0, true));
     GTMenu::clickMenuItemByText(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() << "Tree" << "Build Tree");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    3. Open tree options panel widget (it can be opened automatically after tree building).
 //    4. Open font settings on the OP widget.
@@ -6591,6 +6593,7 @@ GUI_TEST_CLASS_DEFINITION(test_3552){
 
     QLabel* taskInfoLabel = GTWidget::findExactWidget<QLabel*>(os, "taskInfoLabel");
     while (!taskInfoLabel->text().contains("Render")) {
+        uiLog.trace("actual text: " + taskInfoLabel->text());
         GTGlobals::sleep(100);
     }
     GTGlobals::sleep(500);

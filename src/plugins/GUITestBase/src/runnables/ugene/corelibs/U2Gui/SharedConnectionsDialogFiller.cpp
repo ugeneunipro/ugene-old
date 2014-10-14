@@ -64,9 +64,13 @@ namespace {
 QListWidgetItem * findConnection(U2OpStatus &os, QListWidget *list, const QString &name, GTGlobals::FindOptions options = GTGlobals::FindOptions()) {
     GTGlobals::sleep(1000);
     QList<QListWidgetItem*> items = list->findItems(name, Qt::MatchExactly);
-    if (options.failIfNull) {
-        CHECK_SET_ERR_RESULT(items.size() ==1, "List item not found", NULL);
+    if (1 != items.size()) {
+        if (options.failIfNull) {
+            CHECK_SET_ERR_RESULT(false, QString("List item %1 not found").arg(name), NULL);
+        }
+        return NULL;
     }
+
     return items.first();
 }
 

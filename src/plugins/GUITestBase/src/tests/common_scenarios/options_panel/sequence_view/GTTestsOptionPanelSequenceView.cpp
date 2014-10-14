@@ -50,6 +50,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsProjectTreeView.h"
+#include "GTUtilsTaskTreeView.h"
 #include "GTUtilsAnnotationsTreeView.h"
 
 #include <U2Core/AppContext.h>
@@ -109,6 +110,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
     GTUtilsOptionPanelSequenceView::toggleSaveAnnotationsTo(os);
     GTUtilsOptionPanelSequenceView::enterFilepathForSavingAnnotations(os, sandBoxDir + "op_seqview_test_0001.gb");
     GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTGlobals::sleep();
     GTWidget::click(os, GTWidget::findWidget(os, "annotations_tree_widget"));
     GTUtilsAnnotationsTreeView::findItem(os, "misc_feature  (0, 2)");

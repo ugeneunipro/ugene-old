@@ -140,7 +140,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002){
                            "&nbsp;</td></tr><tr><td><b>TC:&nbsp;&nbsp;</td><td>11 978 &nbsp;"
                            "&nbsp;</td></tr><tr><td><b>TG:&nbsp;&nbsp;</td><td>13 329 &nbsp;"
                            "&nbsp;</td></tr><tr><td><b>TT:&nbsp;&nbsp;</td><td>19 964 &nbsp;&nbsp;</td></tr></table>");
-    GTGlobals::sleep(1000);
+    GTGlobals::sleep();
     CHECK_SET_ERR(l->text()==s, "Found: " + l->text());
 /*Expected state: next statistics has shown
 AA:  21 960

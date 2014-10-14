@@ -2609,7 +2609,7 @@ GUI_TEST_CLASS_DEFINITION(test_0024){
     GTWidget::click(os,zoom_to_sel);
 
     int finOffset  = GTUtilsMSAEditorSequenceArea::getRightOffset(os);
-    CHECK_SET_ERR(initOffset>=(finOffset*2-5), "inital offset: " + QString().setNum(initOffset) + " final offset: " + QString().setNum(finOffset));
+    CHECK_SET_ERR(initOffset>=(finOffset*2-8), "inital offset: " + QString().setNum(initOffset) + " final offset: " + QString().setNum(finOffset));
 //Expected state: MSA is zoomed
 
 //4. press toolbar button "Reset zoom"
