@@ -39,7 +39,7 @@ namespace U2 {
         MessageBoxDialogFiller(U2OpStatus &_os, QString _buttonText, QString _message = "")
         :Filler(_os, ""), b(QMessageBox::NoButton),buttonText(_buttonText), message(_message){}
         virtual void run();
-    private:
+    protected:
         QMessageBox::StandardButton b;
         QString buttonText,message;
     };

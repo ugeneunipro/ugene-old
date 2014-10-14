@@ -5140,6 +5140,74 @@ GUI_TEST_CLASS_DEFINITION(test_3155) {
     GTWidget::click(os, GTAction::button(os, "Find ORFs"));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3156){
+//    1. Connect to a shared database
+    QString conName = "ugene_gui_test";
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+    GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, "/", "test_3156");
+//    2. Open file "data/samples/Genbank/murine.gb"
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+//    3. Drag the document item onto the DB item in project view
+    QModelIndex from = GTUtilsProjectTreeView::findIndex(os, "murine.gb");
+    QModelIndex to = GTUtilsProjectTreeView::findIndex(os, "test_3156");
+    GTUtilsProjectTreeView::dragAndDrop(os, from, to);
+    GTGlobals::sleep(10000);
+//    Expected state: a new folder has appeared in the DB, objects from the document have been imported into it.
+    GTUtilsProjectTreeView::checkItem(os, "murine.gb", to);
+}
+
+class test_3165_messageBoxDialogFiller: public MessageBoxDialogFiller{
+public:
+    test_3165_messageBoxDialogFiller(U2OpStatus &os, QMessageBox::StandardButton _b):
+        MessageBoxDialogFiller(os, _b){}
+    virtual void run(){
+        QWidget* activeModal = QApplication::activeModalWidget();
+        QMessageBox *messageBox = qobject_cast<QMessageBox*>(activeModal);
+        CHECK_SET_ERR(messageBox != NULL, "messageBox is NULL");
+
+        QAbstractButton* button = messageBox->button(b);
+        CHECK_SET_ERR(button != NULL, "There is no such button in messagebox");
+
+        GTWidget::click(os, button);
+        GTGlobals::sleep(500);
+        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Save));
+    }
+};
+
+GUI_TEST_CLASS_DEFINITION(test_3165){
+//    1. Set file read-only: "test/_common_data/scenarios/msa/ma.aln".
+    GTFile::copy(os, testDir + "_common_data/scenarios/msa/ma.aln", sandBoxDir + "ma.aln");
+    PermissionsSetter permSetter;
+    QFile::Permissions p = QFile::WriteOwner | QFile::WriteUser | QFile::WriteGroup
+        | QFile::WriteOther;
+    bool res = permSetter.setPermissions( sandBoxDir + "ma.aln", ~p );
+    CHECK_SET_ERR(res, "permission not set");
+    //PermissionsSetter::setPermissions(sandBoxDir + "ma.aln"
+//    2. Open it with UGENE.
+    GTFileDialog::openFile(os, sandBoxDir, "ma.aln");
+//    3. Change the alignment (e.g. insert a gap).
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(1,1));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+//    4. Close the project.
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+    GTUtilsDialog::waitForDialog(os, new test_3165_messageBoxDialogFiller(os, QMessageBox::Yes));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, sandBoxDir, "test_3165_out.aln", GTFileDialogUtils::Save));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    GTGlobals::sleep();
+    //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Save));
+//    Expected state: you are offered to save the project.
+//    5. Do not save the project.
+//    Expected state: you are offered to save the file.
+//    6. Accept the offering.
+//    Expected state: UGENE notices that it can't rewrite the file, it offers you to save the file to another location.
+//    7. Save file anywhere.
+//    Expected state: the project closes, the file is successfully saved, UGENE doesn't crash.
+    //TODO: add this check after UGENE-3200 fix
+    //GTUtilsProject::checkProject(os, GTUtilsProject::NotExists);
+    CHECK_SET_ERR(GTFile::check(os, sandBoxDir + "test_3165_out.aln"), "file not saved");
+//    Current state: file is successfully saved, then UGENE crashes.
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3170) {
     // 1. Open human_T1.fa.
     // 2. Select the region [301..350].
