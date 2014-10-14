@@ -263,9 +263,8 @@ void DashboardManagerHelper::sl_scanTaskFinished() {
 
     if (t->getResult().isEmpty()) {
         dmAction->setEnabled(true);
-        QMessageBox *d = new QMessageBox(QMessageBox::Information,
-            tr("No dashboards"),
-            tr("You have not any dashboards yet. You need to run some workflow to use Dashboards Manager."), QMessageBox::NoButton, parent);
+        QMessageBox *d = new QMessageBox(QMessageBox::Information, tr("No Dashboards Found"),
+            tr("You do not have any dashboards yet. You need to run some workflow to use Dashboards Manager."), QMessageBox::NoButton, parent);
         d->show();
         return;
     }
