@@ -603,7 +603,7 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0003) {
         GTUtilsWorkflowDesigner::getWorker(os, "Write Annotations"));
 
     GTWidget::click(os, GTAction::button(os, "Run workflow"));
-    GTGlobals::sleep(5000);
+    GTGlobals::sleep(10000);
 
     GTUtilsLog::check(os, l);
 
