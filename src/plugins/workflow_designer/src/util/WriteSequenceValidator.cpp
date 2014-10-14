@@ -61,7 +61,7 @@ bool WriteSequenceValidator::validate(const Configuration *cfg, ProblemList &pro
 DocumentFormat * WriteSequenceValidator::getFormatSafe(const Actor *actor) {
     Attribute *attr = actor->getParameter(BaseAttributes::DOCUMENT_FORMAT_ATTRIBUTE().getId());
     SAFE_POINT(NULL != attr, "NULL format attribute", NULL);
-    CHECK(attr->isVisible(), NULL);
+    CHECK(actor->isAttributeVisible(attr), NULL);
     QString formatId = attr->getAttributePureValue().toString();
     return AppContext::getDocumentFormatRegistry()->getFormatById(formatId);
 }
