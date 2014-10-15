@@ -5025,6 +5025,24 @@ GUI_TEST_CLASS_DEFINITION(test_3128_1) {
     //Expected state: UGENE does not crash.
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3133) {
+    //1. Connect to a shared database (e.g. ugene_gui_test).
+    Document *dbDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+    QString dbName = dbDoc->getName();
+    GTUtilsProjectTreeView::findIndex(os, dbName);
+    CHECK_OP(os, );
+    //2. Save the project.
+    GTUtilsDialog::waitForDialog(os, new SaveProjectAsDialogFiller(os, "test_3133", testDir + "_common_data/scenarios/sandbox/", "test_3133"));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT);
+    //3. Close the project.
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+    //4. Open the saved project.
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/sandbox/", "test_3133.uprj");
+    //Expected state: project view is present, there are no documents presented.
+    QModelIndex idx = GTUtilsProjectTreeView::findIndex(os, dbName, GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(!idx.isValid(), "The database document is in the project");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3137) {
     GTLogTracer l;
 
