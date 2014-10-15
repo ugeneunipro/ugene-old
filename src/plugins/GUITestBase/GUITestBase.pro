@@ -94,6 +94,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/external_tools/FormatDBDialogFiller.h \
             src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h \
             src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h \
+#   Runnables / UGENE / plugins / weight_matrix
+            src/runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.h \
 #   Runnables / UGENE / plugins / workflow_designer
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.h \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h \
@@ -309,6 +311,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/external_tools/FormatDBDialogFiller.cpp \
             src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.cpp \
             src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp \
+#   Runnables / UGENE / plugins / weight_matrix
+            src/runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.cpp \
 #   Runnables / UGENE / plugins / workflow_designer
             src/runnables/ugene/plugins/workflow_designer/WizardFiller.cpp \
             src/runnables/ugene/plugins/workflow_designer/StartupDialogFiller.cpp \

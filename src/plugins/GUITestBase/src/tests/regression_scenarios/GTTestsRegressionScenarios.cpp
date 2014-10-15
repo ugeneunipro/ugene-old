@@ -102,6 +102,7 @@
 #include "runnables/ugene/plugins/external_tools/FormatDBDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
+#include "runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
@@ -6726,6 +6727,20 @@ GUI_TEST_CLASS_DEFINITION(test_3484_1) {
 
     GTUtilsDocument::loadDocument(os, "COI_3484_1.aln");
     CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "COI_3484_1.nwk") == false, "Unauthorized tree opening!");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3518) {
+//    1. Select {Tools -> Weight matrix -> Build Weight Matrix} menu item in the main menu.
+//    2. Set file "data/samples/GFF/5prime_utr_intron_A20.gff" as input.
+//    Expected state: the dialog process the file and notify user if the file is inappropriate, UGENE doesn't crash.
+    QList<PwmBuildDialogFiller::Action> actions;
+    actions << PwmBuildDialogFiller::Action(PwmBuildDialogFiller::ExpectInvalidFile, "");
+    actions << PwmBuildDialogFiller::Action(PwmBuildDialogFiller::SelectInput, dataDir + "samples/GFF/5prime_utr_intron_A20.gff");
+    actions << PwmBuildDialogFiller::Action(PwmBuildDialogFiller::ClickCancel, "");
+    GTUtilsDialog::waitForDialog(os, new PwmBuildDialogFiller(os, actions));
+
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Weight matrix" << "Build Weight Matrix");
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3545){
