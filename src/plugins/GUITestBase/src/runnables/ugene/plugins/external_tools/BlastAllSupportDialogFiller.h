@@ -37,7 +37,8 @@ public:
         Parameters():
           runBlast(false),
           programNameText("blastn"),
-          withInputFile(false) {}
+          withInputFile(false),
+          test_3211(false) {}
 
 
           bool runBlast;
@@ -45,6 +46,7 @@ public:
           QString dbPath;
           bool withInputFile;
           QString inputPath;
+          bool test_3211;
     };
 
     BlastAllSupportDialogFiller(const Parameters &parameters, U2OpStatus &os);
@@ -52,7 +54,11 @@ public:
     void run();
 
 private:
+    void test_3211();
+
+private:
     Parameters parameters;
+    QWidget *dialog;
 };
 
 }

@@ -5408,6 +5408,21 @@ GUI_TEST_CLASS_DEFINITION(test_3209_2) {
     CHECK_SET_ERR(found, "Can not find the blast result");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3211) {
+    //1. Select the "Tools" -> "BLAST" -> "BLAST Search..." item in the main menu.
+    BlastAllSupportDialogFiller::Parameters parameters;
+    parameters.test_3211 = true;
+    parameters.inputPath = dataDir + "samples/FASTA/human_T1.fa";
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+    GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(parameters, os));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "BLAST" << "BLAST Search");
+    //Expected state: there is a "Request to Local BLAST Database" dialog without an annotation widget.
+    //2. Set any input sequence.
+    //Expected state: an annotation widget was added.
+    //3. Set any another input sequence.
+    //Expected state: there is a single annotation widget.
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3216_1) {
 //    1. Open "test/_common_data/genbank/1anot_1seq.gen" file.
     QDir().mkpath(sandBoxDir + "test_3216");

@@ -28,6 +28,8 @@
 #include <QtWidgets/QComboBox>
 #endif
 
+#include <U2Test/GUITest.h>
+
 #include "api/GTComboBox.h"
 #include "api/GTFileDialog.h"
 #include "api/GTWidget.h"
@@ -41,15 +43,20 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::BlastAllSupportDialogFiller"
 
 BlastAllSupportDialogFiller::BlastAllSupportDialogFiller(const Parameters &parameters, U2OpStatus &os)
-: Filler(os, "BlastAllSupportDialog"), parameters(parameters)
+: Filler(os, "BlastAllSupportDialog"), parameters(parameters), dialog(NULL)
 {
 
 }
 
 #define GT_METHOD_NAME "run"
 void BlastAllSupportDialogFiller::run() {
-    QWidget* dialog = QApplication::activeModalWidget();
+    dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    if (parameters.test_3211) {
+        test_3211();
+        return;
+    }
 
     if (!parameters.runBlast) {
         GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
@@ -74,6 +81,29 @@ void BlastAllSupportDialogFiller::run() {
     GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
+
+void BlastAllSupportDialogFiller::test_3211() {
+    //Expected state: there is a "Request to Local BLAST Database" dialog without an annotation widget.
+    QWidget *widget = GTWidget::findWidget(os, "newFileRB", NULL, GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(NULL == widget, "Annotations widget exists");
+
+    //2. Set any input sequence.
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, GUITest::dataDir + "samples/FASTA/human_T1.fa"));
+    GTWidget::click(os, GTWidget::findWidget(os, "browseInput"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected state: an annotation widget was added.
+    GTWidget::findWidget(os, "newFileRB");
+
+    //3. Set any another input sequence.
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, GUITest::testDir + "_common_data/fasta/human_T1_cutted.fa"));
+    GTWidget::click(os, GTWidget::findWidget(os, "browseInput"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    //Expected state: there is a single annotation widget.
+    GTWidget::findWidget(os, "newFileRB");
+
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+}
 
 #undef GT_CLASS_NAME
 
