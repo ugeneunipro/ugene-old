@@ -565,6 +565,7 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
         dataDir  + "samples/Genbank", "sars.gb", "NC_004718");
     GTWidget::click( os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
     GTUtilsCv::cvBtn::click(os, seqWidget1);
+    GTGlobals::sleep();
 
     QSpinBox*  titleFontSpinBox1 = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "fontSizeSpinBox"));
     CHECK_SET_ERR( titleFontSpinBox1 != NULL, "Title font size spinBox is NULL");
@@ -579,11 +580,12 @@ GUI_TEST_CLASS_DEFINITION(test_0014) {
     GTUtilsCv::cvBtn::click(os, seqWidget2);
     GTGlobals::sleep();
 
-    QWidget* cvTab = GTWidget::findWidget(os,"OP_CV_SETTINGS");
+    QWidget* parent = GTWidget::findWidget(os, "murine [s] NC_001363");
+    QWidget* cvTab = GTWidget::findWidget(os,"OP_CV_SETTINGS", parent);
     CHECK_SET_ERR(cvTab != NULL, "CV settings tab is NULL");
     GTWidget::click( os, cvTab);
 
-    QSpinBox*  titleFontSpinBox2 = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "fontSizeSpinBox"));
+    QSpinBox*  titleFontSpinBox2 = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "fontSizeSpinBox", parent));
     CHECK_SET_ERR( titleFontSpinBox2 != NULL, "Title font size spinBox is NULL");
     int fontSize2 = titleFontSpinBox2->value();
 
@@ -742,8 +744,9 @@ GUI_TEST_CLASS_DEFINITION(test_0020) {
     CHECK_SET_ERR( GTUtilsCv::isCvPresent(os, seqWidget2), "No CV opened");
     GTGlobals::sleep();
 
-    GTWidget::click( os, GTWidget::findWidget(os,"OP_CV_SETTINGS"));
-    QWidget *openCvWidget2 = GTWidget::findWidget(os,"openCvWidget");
+    QWidget* parent = GTWidget::findWidget(os, "NC_014267.1 [s] NC_014267");
+    GTWidget::click( os, GTWidget::findWidget(os,"OP_CV_SETTINGS", parent));
+    QWidget *openCvWidget2 = GTWidget::findWidget(os,"openCvWidget", parent);
     CHECK_SET_ERR( openCvWidget2 != NULL, "No hint widget");
     CHECK_SET_ERR( openCvWidget2->isHidden(), "Hint label and OpenCV button should be hidden");
 }

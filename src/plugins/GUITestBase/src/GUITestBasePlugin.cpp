@@ -1053,13 +1053,13 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0011);
     REGISTER_TEST_IGNORED(GUITest_common_scenarios_options_panel::test_0012, "UGENE-3571");
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0013);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_options_panel::test_0014, "UGENE-3526");
+    REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0014);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0015);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0016);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0017);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0018);
     REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0019);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_options_panel::test_0020, "UGENE-3526");
+    REGISTER_TEST(GUITest_common_scenarios_options_panel::test_0020);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/option_panel
