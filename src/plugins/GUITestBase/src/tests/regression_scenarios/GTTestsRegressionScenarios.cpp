@@ -6736,8 +6736,7 @@ GUI_TEST_CLASS_DEFINITION(test_3551){
 
 GUI_TEST_CLASS_DEFINITION(test_3552){
 //1. Open "_common_data\clustal\fungal - all.aln"
-    GTFileDialog::openFile(os, testDir + "_common_data/clustal", "fungal - all.aln");
-    GTGlobals::sleep(200);
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal", "10000_sequences.aln");
 
     QLabel* taskInfoLabel = GTWidget::findExactWidget<QLabel*>(os, "taskInfoLabel");
     while (!taskInfoLabel->text().contains("Render")) {

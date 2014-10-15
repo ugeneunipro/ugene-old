@@ -350,7 +350,7 @@ GUI_TEST_CLASS_DEFINITION(highlighting_test_0003){
 //    1. Open file test/_common_data/scenarios/msa/ma2_gapped.aln
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped.aln");
 //    2. Create custom color scheme
-    const QString scheme = getName() + "_scheme";
+    const QString scheme = getName() + "_scheme111111111111111111111111111111111111111111111";
     GTUtilsMSAEditorSequenceArea::createColorScheme(os, scheme, NewColorSchemeCreator::nucl);
 //    3. Open highlighting option panel tab
     GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Highlighting);
