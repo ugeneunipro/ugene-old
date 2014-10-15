@@ -6755,6 +6755,21 @@ GUI_TEST_CLASS_DEFINITION(test_3552){
 //Expected state: render view task started, progress is correct
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3553) {
+    //1. Open "_common_data/clustal/big.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal", "big.aln");
+    //2. Select both sequences.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(1, 0), QPoint(1, 1));
+    //3. Open the "Pairwise Alignment" OP tab.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_PAIRALIGN"));
+    //4. Press the "Align" button several times(~5).
+    for (int i=0; i<5; i++) {
+        GTWidget::click(os, GTWidget::findWidget(os, "alignButton"));
+        GTGlobals::sleep(500);
+    }
+    //Expected: UGENE does not crash.
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3555) {
 //    1. Open "_common_data\muscul4\prefab_1_ref.aln"
 //    2. Press "Switch on/off collapsing" tool button
