@@ -42,6 +42,7 @@
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
 
+#include "GTDatabaseConfig.h"
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsCircularView.h"
@@ -70,6 +71,7 @@
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditAnnotationDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/EditConnectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
@@ -80,6 +82,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
@@ -5023,6 +5026,38 @@ GUI_TEST_CLASS_DEFINITION(test_3128_1) {
     GTMouseDriver::moveTo(os, p2);
     GTMouseDriver::click(os);
     //Expected state: UGENE does not crash.
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3130) {
+//    1. Create an invalid connection to a shared database (e.g. wring login/password).
+//    2. Connect.
+//    Expected: the error message is shown.
+//    3. Connect again.
+//    Expected:  the error message is shown, UGENE does not crash.
+    GTDatabaseConfig::initTestConnectionInfo("test_3133");
+
+    EditConnectionDialogFiller::Parameters parameters;
+    parameters.connectionName = "test_3133";
+    parameters.host = GTDatabaseConfig::host();
+    parameters.port = QString::number(GTDatabaseConfig::port());
+    parameters.database = GTDatabaseConfig::database();
+    parameters.login = GTDatabaseConfig::login() + "_test_3130";
+    parameters.password = GTDatabaseConfig::password();
+    GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, parameters, EditConnectionDialogFiller::MANUAL));
+
+    QList<SharedConnectionsDialogFiller::Action> actions;
+    actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, "test_3133");
+    actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::EDIT, "test_3133");
+
+    SharedConnectionsDialogFiller::Action connectAction(SharedConnectionsDialogFiller::Action::CONNECT, "test_3133");
+    connectAction.expectedResult = SharedConnectionsDialogFiller::Action::WRONG_DATA;
+    actions << connectAction;
+    actions << connectAction;
+
+    GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
+
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3133) {
