@@ -490,6 +490,10 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
         QComboBox* box = qobject_cast<QComboBox*>(table->findChild<QComboBox*>());
         GT_CHECK(box, "QComboBox not found. Widget in this cell might be not QComboBox");
         GTComboBox::setCurrentIndex(os, box, comboVal);
+#ifdef Q_OS_WIN
+        //added to fix UGENE-3597
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+#endif
         break;
     }
     case(textValue):{
