@@ -107,6 +107,7 @@
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
 #include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
+#include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/NCBISearchDialogFiller.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
@@ -5056,6 +5057,25 @@ GUI_TEST_CLASS_DEFINITION(test_3138) {
     foreach(const U2Region& r, regions) {
         CHECK_SET_ERR(r.length > 0, "Invalid annotated region!");
     }
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3139) {
+    //1. Do {File -> Open as...} in the main menu.
+    //2. Open "data/samples/FASTA/human_T1.fa" as msa.
+    //    Expected state: a MSA Editor is opened.
+    //    Current state: a Sequence View is opened.
+    GTFileDialogUtils *ob = new GTFileDialogUtils(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsDialog::waitForDialog(os, ob);
+
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "FASTA"));
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
+
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__OPEN_AS);
+    GTGlobals::sleep();
+
+    QWidget* seqArea = GTWidget::findWidget(os, "msa_editor_sequence_area");
+    CHECK_SET_ERR(NULL != seqArea, "MSA Editor isn't opened.!");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3142) {
