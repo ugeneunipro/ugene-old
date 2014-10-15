@@ -165,13 +165,11 @@ void NeighborJoinCalculateTreeTask::run(){
                 if(!distanceMatrix->getErrorMessage().isEmpty()) {
                     stateInfo.setError(distanceMatrix->getErrorMessage());
                     result = phyTree;
-                    neighbour_free_resources();
                     return;
                 }
                 if (!distanceMatrix->isValid()) {
                     setError("Calculated distance matrix is invalid");
                     result = phyTree;
-                    neighbour_free_resources();
                     return;
                 }
 
@@ -181,7 +179,6 @@ void NeighborJoinCalculateTreeTask::run(){
                 neighbour_init(sz, memLocker, tmpFile.fileName());
                 if(memLocker.hasError()) {
                     stateInfo.setError(memLocker.getError());
-                    neighbour_free_resources();
                     return;
                 }
 
@@ -246,13 +243,11 @@ void NeighborJoinCalculateTreeTask::run(){
             distanceMatrix->calculateOutOfAlignment(inputMA,settings);
 
             if(!distanceMatrix->getErrorMessage().isEmpty()) {
-                neighbour_free_resources();
                 stateInfo.setError(distanceMatrix->getErrorMessage());
                 result = phyTree;
                 return;
             }
             if (!distanceMatrix->isValid()) {
-                neighbour_free_resources();
                 stateInfo.setError("Calculated distance matrix is invalid");
                 result = phyTree;
                 return;
@@ -264,7 +259,6 @@ void NeighborJoinCalculateTreeTask::run(){
             neighbour_init(sz, memLocker);
             if(memLocker.hasError()) {
                 stateInfo.setError(memLocker.getError());
-                neighbour_free_resources();
                 return;
             }
 
@@ -304,7 +298,6 @@ void NeighborJoinCalculateTreeTask::run(){
     }
     catch (const std::bad_alloc &) {
         setError(QString("Not enough memory to calculate tree for alignment \"%1\"").arg(inputMA.getName()));
-        neighbour_free_resources();
     }
     catch (const char* message) {
         stateInfo.setError(QString("Phylip error %1").arg(message));

@@ -1279,7 +1279,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0002_1);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0002_2);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0003, "UGENE-3638");
+    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0006);
@@ -1292,7 +1292,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011_1);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0011_2);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0012);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_tree_viewer::test_0023, "tree view is added to project, but view is not opened. jira is disabled");
+    REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0023);
     REGISTER_TEST(GUITest_common_scenarios_tree_viewer::test_0024);
 
 /////////////////////////////////////////////////////////////////////////
