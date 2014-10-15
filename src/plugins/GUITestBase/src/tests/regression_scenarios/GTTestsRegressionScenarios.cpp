@@ -4740,7 +4740,7 @@ GUI_TEST_CLASS_DEFINITION( test_2605 ) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_EXPORT<<"Save subalignment"));
     GTUtilsDialog::waitForDialog(os,new ExtractSelectedAsMSADialogFiller(os,
         testDir + "_common_data/scenarios/sandbox/2605.aln",
-        QStringList() << "SEQUENCE_1"<<"SEQUENCE_2", 6, 237));
+        QStringList() << "Phaneroptera_falcata", 6, 237));
     GTMenu::showContextMenu(os,GTWidget::findWidget(os,"msa_editor_sequence_area"));
 
     // Expected state: export successfull, no any messages in log like "There is no sequence objects in given file, unable to convert it in multiple alignment"
@@ -4945,6 +4945,33 @@ GUI_TEST_CLASS_DEFINITION(test_3092) {
     GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(BlastAllSupportDialogFiller::Parameters(), os));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ANALYSE << "query_with_blast+", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3125) {
+    //1. Connect to a shared database.
+    //2. Find a msa in the database (or import a new one).
+    //3. Find menu items: {Actions -> Export -> Save subalignment}
+    //and {Actions -> Export -> Save sequence}
+
+    //Expected state: actions are enabled, you can export a subalignment and a sequence.
+    //Current state: actions are disabled.
+    GTLogTracer logTracer;
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+    CHECK_OP(os, );
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, "/view_test_0002/COI");
+
+    QWidget* msaView = GTWidget::findWidget(os, " [m] COI");
+    CHECK_SET_ERR(NULL != msaView, "View wasn't opened");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_EXPORT<<"Save subalignment"));
+    GTUtilsDialog::waitForDialog(os,new ExtractSelectedAsMSADialogFiller(os,
+        testDir + "_common_data/scenarios/sandbox/3125.aln",
+        QStringList() << "Phaneroptera_falcata", 6, 600));
+    GTMenu::showContextMenu(os,GTWidget::findWidget(os,"msa_editor_sequence_area"));
+
+    GTUtilsSharedDatabaseDocument::disconnectDatabase(os, databaseDoc);
+
+    GTUtilsLog::check(os, logTracer);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3126) {
