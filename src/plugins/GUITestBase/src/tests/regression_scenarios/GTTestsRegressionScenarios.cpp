@@ -6146,6 +6146,24 @@ GUI_TEST_CLASS_DEFINITION(test_3348) {
     GTMouseDriver::click(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3357) {
+/*  1. Open file _common_data\alphabets\standard_dna_rna_amino_1000.fa
+    2. Click the CV button on seq3 widget
+    3. Select document in project view. Press delete key
+    Expected state: UGENE doesn't crash.
+*/
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+    GTFileDialog::openFile(os, testDir +"_common_data/alphabets/", "standard_dna_rna_amino_1000.fa");
+    GTGlobals::sleep(1000);
+    QWidget* w=GTWidget::findWidget(os, "ADV_single_sequence_widget_1");
+    GTWidget::click(os, GTWidget::findWidget(os, "CircularViewAction",w));
+    GTGlobals::sleep(500);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "standard_dna_rna_amino_1000.fa"));
+    GTMouseDriver::click( os );
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(500);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3373) {
 //    1. Launch WD
 //    2. Create the following workflow: "Read Sequence" -> "Reverse Complement" -> "Write Sequence"
