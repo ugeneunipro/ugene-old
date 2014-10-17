@@ -4837,6 +4837,25 @@ GUI_TEST_CLASS_DEFINITION(test_2903) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3034) {
+//    1. Open "samples/FASTA/human_T1.fa".
+//    2. Right click on the document -> Add -> Add object to document.
+//    Expected: the dialog will appear. There are no human_T1 objects.
+    GTLogTracer l;
+    GTFileDialog::openFile( os, dataDir + "samples/FASTA", "human_T1.fa" );
+
+    GTUtilsDialog::waitForDialog( os, new ProjectTreeItemSelectorDialogFiller(os, QMap<QString, QStringList>(),
+                                                                              QSet<GObjectType>(),
+                                                                              ProjectTreeItemSelectorDialogFiller::Separate, 0));
+    GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << ACTION_PROJECT__ADD_MENU
+                                                        << ACTION_PROJECT__ADD_OBJECT) );
+    QPoint docCenter = GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa");
+    GTMouseDriver::moveTo(os, docCenter);
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3052) {
 //    1. Open "_common_data/bam/chrM.sorted.bam".
 //    Expected state: an "Import BAM file" dialog appears.
@@ -4909,6 +4928,56 @@ GUI_TEST_CLASS_DEFINITION(test_3052_1) {
     GTUtilsDocument::unloadDocument(os, docName, false);
     GTGlobals::sleep();
     GTUtilsDocument::loadDocument(os, docName);
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3073) {
+//    1. Open "human_T1.fa";
+//    2. Create few annotations (new file MyDocument_n.gb appeared);
+//    3. Save the project with these files and relaunch UGENE;
+//    4. Open the project and open either sequence or annotation file;
+//    Expected state: both files are loaded;
+    GTLogTracer l;
+    GTFileDialog::openFile( os, dataDir + "samples/FASTA", "human_T1.fa" );
+
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "group", "annotation_1",
+                                                                      "10..20", sandBoxDir + "test_3073.gb"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "create_annotation_action"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "render_area_human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
+
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "group", "annotation_2","10000..100000"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "create_annotation_action"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "render_area_human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
+
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, false, "group", "annotation_3", "120000..180000"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_ADD << "create_annotation_action"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "render_area_human_T1 (UCSC April 2002 chr7:115977709-117855134)"));
+
+    GTUtilsDocument::saveDocument(os, "test_3073.gb");
+    GTUtilsDialog::waitForDialog(os, new SaveProjectAsDialogFiller(os, "proj_test_3073", sandBoxDir, "proj_test_3073"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECTSUPPORT__SAVE_AS_PROJECT, GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_FILE);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECTSUPPORT__CLOSE_PROJECT, GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_FILE);
+    GTGlobals::sleep();
+
+    GTFileDialog::openFile( os, sandBoxDir, "proj_test_3073.uprj" );
+    GTGlobals::sleep();
+
+    GTUtilsDocument::loadDocument(os, "human_T1.fa");
+    CHECK_SET_ERR( GTUtilsDocument::isDocumentLoaded(os, "test_3073.gb"), "Annotation file is not loaded!");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECTSUPPORT__CLOSE_PROJECT, GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_FILE);
+    GTGlobals::sleep();
+
+    GTFileDialog::openFile( os, sandBoxDir, "proj_test_3073.uprj" );
+    GTGlobals::sleep();
+
+    GTUtilsDocument::loadDocument(os, "test_3073.gb");
+    CHECK_SET_ERR( GTUtilsDocument::isDocumentLoaded(os, "human_T1.fa"), "Sequence file is not loaded!");
 
     GTUtilsLog::check(os, l);
 }

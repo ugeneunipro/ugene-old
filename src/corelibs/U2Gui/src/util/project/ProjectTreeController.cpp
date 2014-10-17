@@ -371,7 +371,7 @@ void ProjectTreeController::sl_doubleClicked(const QModelIndex &index) {
     switch (ProjectViewModel::itemType(index)) {
         case ProjectViewModel::DOCUMENT: {
             Document *doc = ProjectViewModel::toDocument(index);
-            if (!doc->isLoaded() && !doc->getObjects().isEmpty()) { 
+            if (!doc->isLoaded() && !doc->getObjects().isEmpty()) {
                 SAFE_POINT(loadSelectedDocumentsAction->isEnabled(), "Action is not enabled", );
                 loadSelectedDocumentsAction->trigger();
             } else {
@@ -790,7 +790,7 @@ void ProjectTreeController::sl_windowActivated(MWMDIWindow *w) {
         markActiveView = NULL;
     }
 
-    GObjectViewWindow *ow = qobject_cast<GObjectViewWindow*>(w); 
+    GObjectViewWindow *ow = qobject_cast<GObjectViewWindow*>(w);
     CHECK(NULL != ow, );
     uiLog.trace(QString("Project view now listens object events in '%1' view").arg(ow->windowTitle()));
     markActiveView = ow->getObjectView();
@@ -802,7 +802,7 @@ void ProjectTreeController::sl_windowActivated(MWMDIWindow *w) {
 }
 
 void ProjectTreeController::sl_windowDeactivated(MWMDIWindow *w) {
-    GObjectViewWindow *ow = qobject_cast<GObjectViewWindow*>(w); 
+    GObjectViewWindow *ow = qobject_cast<GObjectViewWindow*>(w);
     CHECK(NULL != ow, );
     foreach (GObject *obj, ow->getObjects()) {
         updateObjectActiveStateVisual(obj);
@@ -882,6 +882,7 @@ bool ProjectTreeController::eventFilter(QObject *o, QEvent *e) {
 
 void ProjectTreeController::setupActions() {
     addObjectToDocumentAction = new QAction(QIcon(":core/images/add_gobject.png"), tr("Add object to document..."), this);
+    addObjectToDocumentAction->setObjectName(ACTION_PROJECT__ADD_OBJECT);
     tree->addAction(addObjectToDocumentAction);
     connect(addObjectToDocumentAction, SIGNAL(triggered()), SLOT(sl_onAddObjectToSelectedDocument()));
 
