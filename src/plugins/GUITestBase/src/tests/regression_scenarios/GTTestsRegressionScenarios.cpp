@@ -4836,6 +4836,17 @@ GUI_TEST_CLASS_DEFINITION(test_2903) {
 //    Current state: the following error appears: 'RemoteBLASTTask' task failed: Database couldn't prepare the response
     GTUtilsLog::check(os, l);
 }
+GUI_TEST_CLASS_DEFINITION(test_2991) {
+/*  1. Open file _common_data/alphabets/extended_amino_1000.fa
+    Expected state: Alphabet of opened sequence must be [amino ext]
+*/
+//    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+    GTFileDialog::openFile(os, testDir +"_common_data/alphabets/", "extended_amino_1000.fa");
+    GTGlobals::sleep(1000);
+    QWidget* w=GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
+    QLabel* label = qobject_cast<QLabel*>(GTWidget::findWidget(os, "nameLabel",w));
+    CHECK_SET_ERR(label->text().contains("[amino ext]"), QString("Unexpected label of sequence name: %1, must contain %2").arg(label->text()).arg("[amino ext]"));
+}
 
 GUI_TEST_CLASS_DEFINITION(test_3034) {
 //    1. Open "samples/FASTA/human_T1.fa".
@@ -6663,10 +6674,10 @@ GUI_TEST_CLASS_DEFINITION(test_3473) {
     GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
     GTGlobals::sleep(1000);
     QToolButton* a = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "CircularViewAction"));
-    CHECK_SET_ERR(a->toolTip() == "Show circular view", QString("Unexpected tooltip: %1, must be").arg(a->toolTip()).arg("Show circular view"));
+    CHECK_SET_ERR(a->toolTip() == "Show circular view", QString("Unexpected tooltip: %1, must be %2").arg(a->toolTip()).arg("Show circular view"));
     GTWidget::click(os, GTWidget::findWidget(os, "CircularViewAction"));
     GTGlobals::sleep(500);
-    CHECK_SET_ERR(a->toolTip() == "Remove circular view", QString("Unexpected tooltip: %1, must be").arg(a->toolTip()).arg("Remove circular view"));
+    CHECK_SET_ERR(a->toolTip() == "Remove circular view", QString("Unexpected tooltip: %1, must be %2").arg(a->toolTip()).arg("Remove circular view"));
     GTGlobals::sleep(500);
 
 }
