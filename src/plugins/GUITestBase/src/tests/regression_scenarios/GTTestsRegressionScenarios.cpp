@@ -4848,6 +4848,34 @@ GUI_TEST_CLASS_DEFINITION(test_2991) {
     CHECK_SET_ERR(label->text().contains("[amino ext]"), QString("Unexpected label of sequence name: %1, must contain %2").arg(label->text()).arg("[amino ext]"));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2998) {
+    // 1. Open human_T1.fa
+    GTLogTracer l;
+    GTFileDialog::openFile(os, dataDir +"samples/FASTA/", "human_T1.fa");
+    GTGlobals::sleep(1000);
+
+    // 2. Find any pattern
+    GTUtilsOptionsPanel::runFindPatternWithHotKey("TTTTTAAAAA", os);
+
+    // Expected state: the task will finished without errors.
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3014) {
+    //1. Open the _common_data/scenarios/_regression/3014/pdb2q41.ent.gz
+    GTLogTracer l;
+    GTFileDialog::openFile(os, testDir +"_common_data/scenarios/_regression/3014/", "pdb2q41.ent.gz");
+    GTGlobals::sleep(10000);
+
+    // 2. In context menu go to 'Molecular surface'->'SES'
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Molecular Surface" << "SES"));
+    QWidget *widget3d = GTWidget::findWidget(os, "1-2Q41");
+    GTWidget::click(os, widget3d, Qt::RightButton);
+
+    //    Expected state: Moleculaar surface calculated and showed. Program not crached.
+    GTUtilsLog::check(os, l);
+
+}
 GUI_TEST_CLASS_DEFINITION(test_3034) {
 //    1. Open "samples/FASTA/human_T1.fa".
 //    2. Right click on the document -> Add -> Add object to document.
@@ -5094,9 +5122,6 @@ GUI_TEST_CLASS_DEFINITION(test_3128) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3128_1) {
-
-    // 2. Find the "comment" annotation, click it.
-    // Expected state: no crash.
 
     // 1. Open any genbank file with a COMMENT section
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");

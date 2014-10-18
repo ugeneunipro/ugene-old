@@ -755,6 +755,7 @@ void BioStruct3DGLWidget::createActions()
     foreach(QString key, AppContext::getMolecularSurfaceFactoryRegistry()->getSurfNameList())
     {
         action = new QAction(key, molSurfaceTypeActions);
+        action->setObjectName(key);
         connect(action, SIGNAL(triggered()), this, SLOT(sl_showSurface()));
         action->setCheckable(true);
         bool hasConstraints = AppContext::getMolecularSurfaceFactoryRegistry()->getSurfaceFactory(key)->hasConstraints(*contexts.first().biostruct);
