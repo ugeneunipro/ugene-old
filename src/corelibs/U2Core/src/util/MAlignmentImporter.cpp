@@ -161,11 +161,11 @@ QList<U2MsaRow> MAlignmentImporter::importRows(const DbiConnection& con, const M
 
     U2EntityRef msaRef(con.dbi->getDbiRef(), msa.id);
 
-//    MsaDbiUtils::trim(msaRef, os);
-//    CHECK_OP(os, QList<U2MsaRow>());
+    MsaDbiUtils::trim(msaRef, os);
+    CHECK_OP(os, QList<U2MsaRow>());
 
-//    MsaDbiUtils::removeEmptyRows(msaRef, rowsIds, os);
-//    CHECK_OP(os, QList<U2MsaRow>());
+    MsaDbiUtils::removeEmptyRows(msaRef, rowsIds, os);
+    CHECK_OP(os, QList<U2MsaRow>());
 
     return rows;
 }
