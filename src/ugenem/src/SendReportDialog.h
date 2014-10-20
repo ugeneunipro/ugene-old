@@ -38,6 +38,7 @@ public:
     QString getReport() const {return report;}
     int getTotalPhysicalMemory();
     QString getCPUInfo();
+    QString getUgeneBitCount() const;
 private slots:
     void sl_replyFinished(QNetworkReply*);
 

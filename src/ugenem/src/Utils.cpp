@@ -21,6 +21,7 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QFile>
+#include <QtCore/QProcess>
 #include <QtCore/QStringList>
 
 #include "Utils.h"
@@ -60,6 +61,22 @@ QString Utils::loadReportFromUrl(const QString &url) {
     file.close();
     file.remove();
     return QString::fromUtf8(data);
+}
+
+bool Utils::isSystem64bit() {
+#ifdef Q_OS_MAC
+    QProcess p;
+    p.start("sysctl", QStringList() << "-n" << "hw.optional.x86_64");
+    p.waitForFinished();
+    const QString systemInfo = p.readAllStandardOutput();
+    p.close();
+
+    bool ok = false;
+    int is64bit = systemInfo.toInt(&ok);
+    return is64bit != 0;
+#endif
+
+    return false;
 }
 
 bool Utils::hasArgument(const QString &key) {

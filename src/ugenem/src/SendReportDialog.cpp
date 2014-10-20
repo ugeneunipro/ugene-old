@@ -88,9 +88,9 @@ void ReportSender::parse(const QString &htmlReport) {
         report += "UGENE version: ";
 #ifdef UGENE_VERSION_SUFFIX
         //Example of usage on linux: DEFINES+='UGENE_VERSION_SUFFIX=\\\"-ppa\\\"'
-        report += list.takeFirst() + QString(UGENE_VERSION_SUFFIX) +"\n\n";
+        report += list.takeFirst() + QString(UGENE_VERSION_SUFFIX) + getUgeneBitCount() + "\n\n";
 #else
-        report += list.takeFirst() + "\n\n";
+        report += list.takeFirst() + getUgeneBitCount() + "\n\n";
 #endif
 
         report += "ActiveWindow: ";
@@ -358,7 +358,20 @@ QString ReportSender::getOSVersion() {
     case QSysInfo::MV_10_8:
         result += "OS X 10.8";
         break;
+#else
+    case 0x0009:
+        result += "OS X 10.7";
+        break;
+    case 0x000A:
+        result += "OS X 10.8";
+        break;
 #endif
+    case 0x000B:
+        result += "OS X 10.9";
+        break;
+    case 0x000C:
+        result += "OS X 10.10";
+        break;
     default:
         result += "unknown";
         break;
@@ -367,10 +380,8 @@ QString ReportSender::getOSVersion() {
     result = "Unsupported OS";
 #endif
 
-#if defined(UGENE_X86_64)
-    result += " x64";
-#else
-    result += " x86";
+#ifdef Q_OS_MAC
+    result += (Utils::isSystem64bit() ? " x64" :" x86");
 #endif
 
     return result;
@@ -474,4 +485,12 @@ QString ReportSender::getCPUInfo() {
     result="unknown";
 #endif
     return result;
+}
+
+QString ReportSender::getUgeneBitCount() const {
+#if defined(UGENE_X86_64)
+    return " x64";
+#else
+    return " x86";
+#endif
 }
