@@ -154,6 +154,10 @@ void GTUtilsMSAEditorSequenceArea::scrollToBottom(U2OpStatus &os) {
 
     // scroll down
     GScrollBar* vBar = msaSeqArea->getVBar();
+#ifdef Q_OS_MAC
+    vBar->setValue(vBar->maximum());
+    return;
+#endif
     GT_CHECK(NULL != vBar, "Vertical scroll bar is not found");
 
     QStyleOptionSlider vScrollBarOptions;
