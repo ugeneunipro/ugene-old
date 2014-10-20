@@ -59,7 +59,12 @@ PicrElement::PicrElement(const QString& _accessionNumber,
 }
 
 bool PicrElement::operator == (const PicrElement& other) const {
-    return accessionNumber == other.accessionNumber;
+    return accessionNumber == other.accessionNumber &&
+            databaseName == other.databaseName;
+}
+
+bool PicrElement::operator > (const PicrElement &other) const {
+    return CommonDasSettings::getPriority(databaseName) > CommonDasSettings::getPriority(other.databaseName);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -215,7 +220,6 @@ void XmlPicrParser::parse(const QByteArray& data) {
             }
         }
 
-        // Elements from different bases with similar ID are skipped!
         if (!results.contains(element)) {
             results << element;
         }
@@ -242,7 +246,29 @@ bool XmlPicrParser::isResultsEmpty() {
 
 //////////////////////////////////////////////////////////////////////////
 //CommonDasSettings
-const QString CommonDasSettings::databaseStr = "&database=SWISSPROT";
+const QString CommonDasSettings::dbSwissprot = "SWISSPROT";
+const QString CommonDasSettings::dbTrembl = "TREMBL";
+const QString CommonDasSettings::dbSwissprotVarsplic = "SWISSPROT_VARSPLIC";
+const QString CommonDasSettings::dbTremblVarsplic = "TREMBL_VARSPLIC";
+const QString CommonDasSettings::databaseStr = "&database=" + CommonDasSettings::dbSwissprot +
+                                               "&database=" + CommonDasSettings::dbTrembl +
+                                               "&database=" + CommonDasSettings::dbSwissprotVarsplic +
+                                               "&database=" + CommonDasSettings::dbTremblVarsplic;
+
+int CommonDasSettings::getPriority(const QString &databaseName) {
+    return getPriorityTable().value(databaseName, -1);
+}
+
+QHash<QString, int> CommonDasSettings::getPriorityTable() {
+    static QHash<QString, int> priorityTable;
+    if (Q_UNLIKELY(priorityTable.isEmpty())) {
+        priorityTable.insert(dbTremblVarsplic, 0);
+        priorityTable.insert(dbSwissprotVarsplic, 1);
+        priorityTable.insert(dbTrembl, 2);
+        priorityTable.insert(dbSwissprot, 3);
+    }
+    return priorityTable;
+}
 
 //////////////////////////////////////////////////////////////////////////
 //ConvertDasIdTask
@@ -310,14 +336,15 @@ void ConvertDasIdTask::run() {
     if (!parser.getError().isEmpty()) {
         setError(parser.getError());
     } else {
-        if (!parser.isResultsEmpty()) {
-            // The first accession number is taken
-            accNumber = parser.getResults()[0].accessionNumber;
-        }
+        accNumber = getUniprotBestGuessResult(parser.getResults());
     }
 }
 
-QString ConvertDasIdTask::getAccessionNumber() {
+const QString &ConvertDasIdTask::getSourceAccessionNumber() const {
+    return resourceId;
+}
+
+const QString &ConvertDasIdTask::getAccessionNumber() const {
     return accNumber;
 }
 
@@ -369,6 +396,18 @@ QString ConvertDasIdTask::getRequestUrlString() {
     res = baseUrl + "?accession=" + resourceId + databasePart + parametersPart;
 
     return res;
+}
+
+QString ConvertDasIdTask::getUniprotBestGuessResult(const QList<PicrElement> &results) {
+    // UniProt 'best guess': In order of precedence: Swiss-Prot, TrEMBL, Swiss-Prot varsplic, and TrEMBL varsplic
+    CHECK(!results.isEmpty(), "");
+    PicrElement bestGuess = results.first();
+    foreach (const PicrElement &result, results) {
+        if (result > bestGuess) {
+            bestGuess = result;
+        }
+    }
+    return bestGuess.accessionNumber;
 }
 
 

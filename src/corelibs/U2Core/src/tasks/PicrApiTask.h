@@ -45,6 +45,7 @@ public:
                 int _identity = -1);
 
     bool operator == (const PicrElement& other) const;
+    bool operator > (const PicrElement& other) const;
 
     QString accessionNumber;
     int accessionVersion;
@@ -93,7 +94,16 @@ private:
 
 class CommonDasSettings {
 public:
+    const static QString    dbSwissprot;
+    const static QString    dbTrembl;
+    const static QString    dbSwissprotVarsplic;
+    const static QString    dbTremblVarsplic;
     const static QString    databaseStr;
+
+    static int getPriority(const QString &databaseName);
+
+private:
+    static QHash<QString, int> getPriorityTable();
 };
 
 class U2CORE_EXPORT ConvertDasIdTask : public Task {
@@ -104,7 +114,8 @@ public:
     virtual ~ConvertDasIdTask();
 
     virtual void run();
-    QString getAccessionNumber();
+    const QString &getSourceAccessionNumber() const;
+    const QString &getAccessionNumber() const;
 
 public slots:
     void sl_replyFinished(QNetworkReply* reply);
@@ -119,6 +130,7 @@ private slots:
 
 private:
     QString getRequestUrlString();
+    static QString getUniprotBestGuessResult(const QList<PicrElement> &results);
 
     QString                 resourceId;
 

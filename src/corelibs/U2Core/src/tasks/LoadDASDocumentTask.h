@@ -22,22 +22,20 @@
 #ifndef _U2_LOAD_DAS_DOCUMENT_TASK_H_
 #define _U2_LOAD_DAS_DOCUMENT_TASK_H_
 
-#include <U2Core/global.h>
-
-#include <U2Core/LoadRemoteDocumentTask.h>
-#include <U2Core/DASSource.h>
-#include <U2Core/DNASequence.h>
 #include <U2Core/AnnotationData.h>
-#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/DASSource.h>
+#include <U2Core/LoadRemoteDocumentTask.h>
+//#include <U2Core/global.h>
 
-#include <QtCore/QEventLoop>
-#include <QtCore/QUrl>
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QAuthenticator>
+class QNetworkAccessManager;
+class QNetworkReply;
 
 namespace U2 {
 
 class ConvertDasIdTask;
+class DNASequence;
+class MultiTask;
+class SaveDocumentTask;
 
 class XMLDASSequenceParser{
 public:
@@ -166,6 +164,25 @@ private:
     DNASequence*                   seq;
     QMap<QString, QList<AnnotationData> > annotationData;
 }; 
+
+class U2CORE_EXPORT ConvertIdAndLoadDasFeaturesTask : public Task {
+public:
+    ConvertIdAndLoadDasFeaturesTask(const QStringList& accessionNumbers, const QList<DASSource>& featureSources, bool convertId = false);
+
+    virtual void prepare();
+    virtual QList<Task*> onSubTaskFinished(Task *subTask);
+
+    const QMap<QString, QList<AnnotationData> >& getAnnotationData() const;
+
+private:
+    MultiTask *             convertDasIdTasks;
+    LoadDasFeaturesTask *   loadDasFeaturesTask;
+
+    QStringList             accessionNumbers;
+    QList<DASSource>        featureSources;
+
+    bool convertId;
+};
 
 class U2CORE_EXPORT ConvertIdAndLoadDasDocumentTask : public Task {
     Q_OBJECT

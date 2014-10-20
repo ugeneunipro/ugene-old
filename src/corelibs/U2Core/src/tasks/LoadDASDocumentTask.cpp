@@ -19,22 +19,30 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QEventLoop>
 #include <QtCore/QTimer>
+#include <QtCore/QUrl>
+
+#include <QtNetwork/QAuthenticator>
+#include <QtNetwork/QNetworkReply>
 
 #include <QtXml/QDomDocument>
 
-#include <U2Core/DocumentModel.h>
-#include <U2Core/U2DbiRegistry.h>
-#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/DNAAlphabet.h>
+#include <U2Core/DNASequence.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/U2AlphabetUtils.h>
-#include <U2Core/U2SequenceUtils.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/MultiTask.h>
 #include <U2Core/PicrApiTask.h>
+#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2SequenceUtils.h>
 
 #include "LoadDASDocumentTask.h"
 
@@ -752,6 +760,64 @@ void XMLDASFeaturesParser::parse( const QByteArray& data ){
         setError(QString("No %1 tag").arg(DAS_FEATURE_GFF));
         return;
     }
+}
+
+ConvertIdAndLoadDasFeaturesTask::ConvertIdAndLoadDasFeaturesTask(const QStringList &accessionNumbers, const QList<DASSource> &featureSources, bool convertId) :
+    Task(tr("Convert ID and load DAS features for: %1").arg(accessionNumbers.join(", ")), TaskFlags(TaskFlag_CancelOnSubtaskCancel | TaskFlag_NoRun | TaskFlag_MinimizeSubtaskErrorText)),
+    convertDasIdTasks(NULL),
+    loadDasFeaturesTask(NULL),
+    accessionNumbers(accessionNumbers),
+    featureSources(featureSources),
+    convertId(convertId)
+{
+}
+
+void ConvertIdAndLoadDasFeaturesTask::prepare() {
+    if (convertId) {
+        QList<Task *> convertTasks;
+        foreach (const QString &accessionNumber, accessionNumbers) {
+            convertTasks << new ConvertDasIdTask(accessionNumber);
+        }
+
+        convertDasIdTasks = new MultiTask(tr("Convert IDs task"), convertTasks, TaskFlags(TaskFlag_CancelOnSubtaskCancel));
+        addSubTask(convertDasIdTasks);
+    } else {
+        loadDasFeaturesTask = new LoadDasFeaturesTask(accessionNumbers, featureSources);
+        addSubTask(loadDasFeaturesTask);
+    }
+}
+
+QList<Task *> ConvertIdAndLoadDasFeaturesTask::onSubTaskFinished(Task *subTask) {
+    QList<Task *> subTasks;
+
+    if (subTask->isCanceled()) {
+        return subTasks;
+    }
+
+    if (subTask == convertDasIdTasks) {
+        QStringList convertedAccessionNumbers;
+        foreach (Task *convertTask, convertDasIdTasks->getSubtasks()) {
+            ConvertDasIdTask *convertDasIdTask = qobject_cast<ConvertDasIdTask *>(convertTask);
+            if (!convertDasIdTask->getAccessionNumber().isEmpty() && !convertDasIdTask->hasError()) {
+                ioLog.details(tr("\"%1\" was converted into \"%2\"").
+                              arg(convertDasIdTask->getSourceAccessionNumber()).
+                              arg(convertDasIdTask->getAccessionNumber()));
+                convertedAccessionNumbers << convertDasIdTask->getAccessionNumber();
+            }
+        }
+        loadDasFeaturesTask = new LoadDasFeaturesTask(convertedAccessionNumbers, featureSources);
+        subTasks << loadDasFeaturesTask;
+    }
+
+    if (subTask == loadDasFeaturesTask && loadDasFeaturesTask->hasError()) {
+        setError(loadDasFeaturesTask->getError());
+    }
+
+    return subTasks;
+}
+
+const QMap<QString, QList<AnnotationData> > &ConvertIdAndLoadDasFeaturesTask::getAnnotationData() const {
+    return loadDasFeaturesTask->getAnnotationData();
 }
 
 } //namespace

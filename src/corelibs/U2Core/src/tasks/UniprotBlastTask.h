@@ -51,7 +51,7 @@ public:
 
     ReplyHandler(const QString &_url, TaskStateInfo* _os);
 
-    QByteArray getReplyData() { return replyData; }
+    QByteArray getReplyData() { return result; }
     void sendRequest();
     void setUrl(const QString& _url) { url = _url; }
 
@@ -60,19 +60,21 @@ signals:
     void si_stateChanged(ReplyHandler::ReplyState state);
 
 private slots:
-    void sl_replyFinished(QNetworkReply* reply);
+    void sl_replyFinished();
     void sl_onError(QNetworkReply::NetworkError error);
+    void sl_onReadyRead();
     void sl_timerShouts();
     void sl_timeout();
     void onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*);
 
-
 private:
+    void readData(QNetworkReply *reply);
     static void registerMetaType();
     static bool isMetaRegistered;
 
     QNetworkAccessManager* networkManager;
     QString                url;                // url for the next request
+    QByteArray             result;
     QByteArray             replyData;
     TaskStateInfo*         os;
     QTimer                 timer;

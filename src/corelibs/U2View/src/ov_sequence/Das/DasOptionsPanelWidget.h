@@ -22,33 +22,28 @@
 #ifndef _U2_DAS_OPTIONS_PANEL_WIDGET_CONTROLLER_H_
 #define _U2_DAS_OPTIONS_PANEL_WIDGET_CONTROLLER_H_
 
-#include "ui/ui_DasOptionsPanelWidget.h"
-#include "ui/ui_DasBlastSettingsWidget.h"
+#include <QListWidget>
 
 #include <U2Core/AnnotationData.h>
 
 #include <U2Gui/RegionSelector.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QListWidget>
-#else
-#include <QtWidgets/QListWidget>
-#endif
+#include "ui/ui_DasOptionsPanelWidget.h"
+#include "ui/ui_DasBlastSettingsWidget.h"
 
 namespace U2 {
 
-class AnnotatedDNAView;
-class DNASequenceSelection;
-class GetDasIdsBySequenceTask;
-class ADVSequenceWidget;
 class ADVSequenceObjectContext;
-class DASSource;
-class Task;
+class ADVSequenceWidget;
+class AnnotatedDNAView;
 class CreateAnnotationWidgetController;
+class DASSource;
+class DNASequenceSelection;
 class LRegionsSelection;
+class ConvertIdAndLoadDasFeaturesTask;
 class ShowHideSubgroupWidget;
+class Task;
 class UniprotBlastSettings;
-class LoadDasFeaturesTask;
 
 class DasBlastSettingsWidget : public QWidget, private Ui_DasBlastSettingsWidget {
     Q_OBJECT
@@ -94,6 +89,7 @@ private:
     void addAnnotations();
     U2Region getRegion();
     bool regionIsOk() const;
+    bool isAccessionsUniprotLike(const QString &accessionNumber) const;
 
     AnnotatedDNAView* annotatedDnaView;
     ADVSequenceObjectContext* ctx;
@@ -105,7 +101,7 @@ private:
     RegionSelector* regionSelector;
     bool showMore;
 
-    LoadDasFeaturesTask* loadDasFeaturesTask;
+    ConvertIdAndLoadDasFeaturesTask* loadDasFeaturesTask;
     QAction* fetchIdsAction;
     QAction* fetchAnnotationsAction;
     QAction* openInNewViewAction;

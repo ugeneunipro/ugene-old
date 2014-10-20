@@ -50,7 +50,6 @@ ReplyHandler::ReplyHandler(const QString& _url, TaskStateInfo* _os) :
     registerMetaType();
 
     networkManager = new QNetworkAccessManager();
-    connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(sl_replyFinished(QNetworkReply*)));
     NetworkConfiguration* nc = AppContext::getAppSettings()->getNetworkConfiguration();
 
     QNetworkProxy proxy = nc->getProxyByUrl(url);
@@ -69,16 +68,18 @@ void ReplyHandler::sendRequest() {
     QNetworkReply* reply = networkManager->get(request);
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
             this, SLOT(sl_onError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(readyRead()), SLOT(sl_onReadyRead()), Qt::DirectConnection);
+    connect(reply, SIGNAL(finished()), SLOT(sl_replyFinished()), Qt::DirectConnection);
 
     timer.start();
 }
 
-void ReplyHandler::sl_replyFinished(QNetworkReply *reply) {
+void ReplyHandler::sl_replyFinished() {
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
     CHECK_EXT(!os->isCoR(), emit si_finish(), );
 
     timer.stop();
 
-    replyData = reply->readAll();
     ioLog.trace(QString("Server reply received, request url=\'%1\'").arg(reply->url().toString()));
     if (reply->rawHeader(CONTENT_TYPE) == XML_CONTENT_TYPE) {
         // Downloading of the result file is finished.
@@ -88,6 +89,8 @@ void ReplyHandler::sl_replyFinished(QNetworkReply *reply) {
         } else {
             os->setError(tr("Can't receive result from the server: nothing to download"));
         }
+
+        result = replyData;
 
         emit si_stateChanged(DownloadingComplete);
         emit si_finish();
@@ -152,6 +155,7 @@ void ReplyHandler::sl_replyFinished(QNetworkReply *reply) {
             curAttemptNumber++;
         }
     }
+    replyData.clear();
 }
 
 
@@ -159,6 +163,12 @@ void ReplyHandler::sl_onError(QNetworkReply::NetworkError error) {
     timer.stop();
     os->setError(tr("Network request error %1").arg(error));
     emit si_finish();
+}
+
+void ReplyHandler::sl_onReadyRead() {
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+    CHECK(NULL != reply, );
+    readData(reply);
 }
 
 void ReplyHandler::sl_timerShouts() {
@@ -182,11 +192,47 @@ void ReplyHandler::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAu
     auth->setPassword(proxy.password());
     disconnect(this, SLOT(onProxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)));
 }
+
+void ReplyHandler::readData(QNetworkReply *reply) {
+    static const int BUFFER_SIZE = 64535;
+    QByteArray buffer(BUFFER_SIZE, '\n');
+    qint64 bytesRead = reply->read(buffer.data(), BUFFER_SIZE);
+    do {
+        replyData += buffer.left(bytesRead);
+        bytesRead = reply->read(buffer.data(), BUFFER_SIZE);
+    } while (bytesRead > 0);
+}
+
 void ReplyHandler::registerMetaType() {
     if (!isMetaRegistered) {
         qRegisterMetaType<ReplyHandler::ReplyState>("ReplyHandler::ReplyState");
         isMetaRegistered = true;
     }
+}
+
+namespace {
+
+bool isDatabaseUniref(const QString &database) {
+    return database.contains(QRegExp("UR\\d\\d\\d"));
+}
+
+bool isDatabaseUniparc(const QString &database) {
+    return database == "UNIPARC";
+}
+
+QString extractAccessionFromId(const QString &database, const QString &id) {
+    if (isDatabaseUniref(database)) {
+        const QStringList idParts = id.split("_");
+        if (idParts.size() == 2) {
+            return idParts.last();
+        }
+    } else if (isDatabaseUniparc(database)) {
+        return id;
+    }
+
+    return "";
+}
+
 }
 
 const QString XmlUniprotParser::EBI_APPLICATION_RESULT = "EBIApplicationResult";
@@ -257,6 +303,9 @@ void XmlUniprotParser::parse(const QByteArray &data) {
         result.database = hitElement.attribute(HIT_DATABASE);
         result.id = hitElement.attribute(HIT_ID);
         result.accession = hitElement.attribute(HIT_AC);
+        if (result.accession.isEmpty()) {
+            result.accession = extractAccessionFromId(result.database, result.id);
+        }
 
         buf = hitElement.attribute(HIT_LENGTH);
         result.length = buf.toInt(&ok);

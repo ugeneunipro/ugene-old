@@ -151,13 +151,12 @@ void DasOptionsPanelWidget::sl_searchIdsClicked() {
 
 void DasOptionsPanelWidget::sl_loadAnnotations() {
     QStringList accessionNumbers;
-    if (!idList->selectionModel()->hasSelection()){
+    if (!idList->selectionModel()->hasSelection()) {
         //if only one id in the list try accessing the current item
         if (idList->rowCount() == 1){
             accessionNumbers.append(idList->item(idList->currentRow(), 0)->text());
         }
-        
-    }else{
+    } else {
         QSet<int> usedRows;
         QModelIndexList indexList = idList->selectionModel()->selectedIndexes();
         foreach (QModelIndex index, indexList) {
@@ -174,7 +173,8 @@ void DasOptionsPanelWidget::sl_loadAnnotations() {
     annotationData.clear();
     QList<DASSource> featureSources = getFeatureSources();
 
-    loadDasFeaturesTask = new LoadDasFeaturesTask(accessionNumbers, featureSources);
+    SAFE_POINT(!accessionNumbers.isEmpty(), "An accession numbers list is unexpectedly empty", );
+    loadDasFeaturesTask = new ConvertIdAndLoadDasFeaturesTask(accessionNumbers, featureSources, !isAccessionsUniprotLike(accessionNumbers.first()));
     TaskSignalMapper *taskMapper = new TaskSignalMapper(loadDasFeaturesTask);
     connect(taskMapper, SIGNAL(si_taskFinished(Task*)), this, SLOT(sl_onLoadAnnotationsFinish()));
 
@@ -208,7 +208,7 @@ void DasOptionsPanelWidget::sl_blastSearchFinish() {
         
         QList<UniprotResult> results = blastTask->getResults();
         for (int i = 0; i < results.count(); ++i) {
-            if (results[i].accession.isEmpty()){
+            if (results[i].accession.isEmpty()) {
                 continue;
             }
             
@@ -216,7 +216,9 @@ void DasOptionsPanelWidget::sl_blastSearchFinish() {
                 int rowNumber = idList->rowCount();
                 idList->insertRow(rowNumber);
                 idList->setItem(rowNumber, 0, new QTableWidgetItem(results[i].accession));
-                idList->setItem(rowNumber, 1, new QTableWidgetItem(QString::number(results[i].identity) + "%"));
+                QTableWidgetItem *identityItem = new QTableWidgetItem(QString::number(results[i].identity) + "%");
+                identityItem->setTextAlignment(Qt::AlignCenter);
+                idList->setItem(rowNumber, 1, identityItem);
             }
         }
 
@@ -277,7 +279,7 @@ void DasOptionsPanelWidget::sl_openInNewView() {
     dir = GUrlUtils::prepareDirLocation(dir, os);
     SAFE_POINT(!dir.isEmpty(), "Prepared default download dir is empty", );
 
-    QString accessionNumber = idList->currentItem()->text();
+    QString accessionNumber = idList->item(idList->currentRow(), 0)->text();
 
     DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
     SAFE_POINT(NULL != dasRegistry, "DAS registry is NULL", );
@@ -286,7 +288,7 @@ void DasOptionsPanelWidget::sl_openInNewView() {
     DASSource refSource = getSequenceSource();
     SAFE_POINT(refSource.isValid(), "Reference source is invalid", );
 
-    AppContext::getTaskScheduler()->registerTopLevelTask(new LoadDASDocumentsAndOpenViewTask(accessionNumber, dir, refSource, featureSources, false));
+    AppContext::getTaskScheduler()->registerTopLevelTask(new LoadDASDocumentsAndOpenViewTask(accessionNumber, dir, refSource, featureSources, !isAccessionsUniprotLike(accessionNumber)));
 }
 
 void DasOptionsPanelWidget::sl_showLessClicked(const QString& link) {
@@ -371,17 +373,7 @@ void DasOptionsPanelWidget::initialize() {
     idList->addAction(openInNewViewAction);
     idList->addAction(fetchIdsAction);
 
-
-#if (QT_VERSION < 0x050000) //Qt 5
-    idList->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
-    idList->horizontalHeader()->setResizeMode(1, QHeaderView::ResizeToContents);
-#else
-    idList->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-    idList->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-#endif
-
-    //disable editing of the results
-    idList->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    idList->sortItems(1, Qt::DescendingOrder);
 
     hintLabel->hide();
     hintLabel->setStyleSheet(
@@ -545,6 +537,12 @@ bool DasOptionsPanelWidget::regionIsOk() const {
     bool result=false;
     regionSelector->getRegion(&result);
     return result;
+}
+
+bool DasOptionsPanelWidget::isAccessionsUniprotLike(const QString &accessionNumber) const {
+    // The pattern source: http://www.uniprot.org/help/accession_numbers
+    QRegExp pattern("[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}");
+    return 0 == pattern.indexIn(accessionNumber);
 }
 
 void DasOptionsPanelWidget::updateShowOptions() {
