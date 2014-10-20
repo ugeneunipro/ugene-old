@@ -43,6 +43,8 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/QVariantUtils.h>
 
+#include <U2Core/AppContext.h>
+
 namespace U2 {
 
 /* TRANSLATOR U2::GenbankPlainTextFormat */
@@ -578,6 +580,29 @@ void GenbankPlainTextFormat::storeEntry(IOAdapter *io, const QMap< GObjectType, 
         os.setError(L10N::errorWritingFile(io->getURL()));
         return;
     }
+}
+
+bool GenbankPlainTextFormat::checkCircularity(const GUrl& filePath, U2OpStatus& os) {
+    SAFE_POINT_EXT(AppContext::getIOAdapterRegistry() != NULL, setError(tr("There is no IOAdapter registry yet")), false);
+    IOAdapterFactory* factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+    SAFE_POINT( factory != NULL, setError(tr("IOAdapterFactory is NULL")), false);
+    IOAdapter* io = factory->createIOAdapter();
+    SAFE_POINT( io != NULL, setError(tr("IOAdapter is NULL")), false);
+    bool ok = io->open(filePath, IOAdapterMode_Read);
+    CHECK_EXT( ok, os.setError(L10N::errorOpeningFileRead(filePath)), false);
+
+    QByteArray readBuffer(ParserState::READ_BUFF_SIZE, '\0');
+    ParserState st(12, io, NULL, os);
+    st.buff = readBuffer.data();
+    EMBLGenbankDataEntry data;
+    st.entry = &data;
+    st.readNextLine(true); // all information is in the first line!
+
+    if (readIdLine(&st)) {
+        return st.entry->circular;
+    }
+    CHECK_OP(os, false);
+    return false;
 }
 
 static QString getDate(){

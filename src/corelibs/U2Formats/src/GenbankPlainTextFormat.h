@@ -39,9 +39,11 @@ public:
 
     virtual void storeEntry(IOAdapter *io, const QMap< GObjectType, QList<GObject*> > &objectsMap, U2OpStatus &os);
 
+    static bool checkCircularity(const GUrl& filePath, U2OpStatus& os);
+
 protected:
 
-    bool readIdLine(ParserState*);
+    static bool readIdLine(ParserState*);
     bool readEntry(ParserState*, U2SequenceImporter&,int& seqSize,int& fullSeqSize,bool merge, int gapSize,U2OpStatus&);
     void readHeaderAttributes(QVariantMap& tags, DbiConnection& con, U2SequenceObject* so);
     //void readAnnotations(ParserState*, int offset);

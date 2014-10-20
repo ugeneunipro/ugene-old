@@ -131,6 +131,8 @@ void RemoteBLASTViewContext::sl_showDialog() {
 
             RemoteBLASTTaskSettings cfg = dlg.cfg;
             cfg.query = query;
+            SAFE_POINT(seqCtx->getSequenceObject() != NULL, tr("Sequence objects is NULL"), );
+            cfg.isCircular = seqCtx->getSequenceObject()->isCircular();
             cfg.aminoT = aminoT;
             cfg.complT = complT;
 

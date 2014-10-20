@@ -37,8 +37,6 @@
 
 namespace U2 {
 
-class RemoteBLASTTask;
-
 struct ResponseBuffer {
     ResponseBuffer(){}
     ~ResponseBuffer() { buf.close(); }
@@ -53,7 +51,7 @@ struct ResponseBuffer {
 
 class HttpRequestBLAST:public HttpRequest {
 public:
-    HttpRequestBLAST(Task *_task):HttpRequest(_task){};
+    HttpRequestBLAST(Task *_task):HttpRequest(_task){}
     virtual void sendRequest(const QString &program,const QString &query);
     virtual void parseResult(const QByteArray &buf);
     virtual QByteArray getOutputFile();
@@ -69,7 +67,8 @@ private:
     static const QString host;
     QByteArray output;
     void parseHit(const QDomNode &xml);
-    void parseHsp(const QDomNode &xml,const QString &id, const QString &def, const QString &accession);
+    void parseHsp(const QDomNode &xml,const QString &id, const QString &def,
+                  const QString &accession, const QString &hitLen);
 };
 
 

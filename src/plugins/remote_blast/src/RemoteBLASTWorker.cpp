@@ -48,11 +48,11 @@ const QString ANNOTATION_NAME("result-name");
 const QString ORIGINAL_OUT("blast-output");
 
 void RemoteBLASTWorkerFactory::init() {
-    QList<PortDescriptor*> p; 
+    QList<PortDescriptor*> p;
     QList<Attribute*> a;
-    Descriptor ind(BasePorts::IN_SEQ_PORT_ID(), RemoteBLASTWorker::tr("Input sequence"), 
+    Descriptor ind(BasePorts::IN_SEQ_PORT_ID(), RemoteBLASTWorker::tr("Input sequence"),
         RemoteBLASTWorker::tr("The sequence to search the annotations for"));
-    Descriptor outd(BasePorts::OUT_ANNOTATIONS_PORT_ID(), RemoteBLASTWorker::tr("Annotations"), 
+    Descriptor outd(BasePorts::OUT_ANNOTATIONS_PORT_ID(), RemoteBLASTWorker::tr("Annotations"),
         RemoteBLASTWorker::tr("Found annotations"));
 
     QMap<Descriptor, DataTypePtr> inM;
@@ -61,7 +61,7 @@ void RemoteBLASTWorkerFactory::init() {
     QMap<Descriptor, DataTypePtr> outM;
     outM[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
     p << new PortDescriptor(outd, DataTypePtr(new MapDataType("blast.ncbi.annotations", outM)), false, true);
-    
+
     Descriptor toolDescriptor(ALG_ATTR,RemoteBLASTWorker::tr("Database"),
         RemoteBLASTWorker::tr("Select the database to search through. Available databases are blastn, blastp and cdd."));
     Descriptor databaseDescriptor(DATABASE_ATTR, RemoteBLASTWorker::tr("Database"),
@@ -137,11 +137,11 @@ void RemoteBLASTWorkerFactory::init() {
     msAttr->addRelation(new VisibilityRelation(ALG_ATTR, "ncbi-blastn"));
     a << msAttr;
 
-    Descriptor desc(ACTOR_ID, RemoteBLASTWorker::tr("Remote BLAST"), 
+    Descriptor desc(ACTOR_ID, RemoteBLASTWorker::tr("Remote BLAST"),
         RemoteBLASTWorker::tr("Finds annotations for DNA sequence in remote database.")
         );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
-    QMap<QString, PropertyDelegate*> delegates; 
+    QMap<QString, PropertyDelegate*> delegates;
 
     {
         QVariantMap m;
@@ -228,7 +228,7 @@ Task* RemoteBLASTWorker::tick() {
     if(getValue<QString>(ANNOTATION_NAME).isEmpty()){
         algoLog.details(tr("Annotations name is empty, default name used"));
     }
-    
+
     if (input->hasMessage()) {
         Message inputMessage = getMessageAndSetupScriptValues(input);
         if (inputMessage.isEmpty()) {
@@ -281,7 +281,7 @@ Task* RemoteBLASTWorker::tick() {
                 addParametr(cfg.params, ReqParams::entrezQuery, entrezQueryStr);
             }
             addParametr(cfg.params, ReqParams::expect, evalue);
-            
+
             addParametr(cfg.params, ReqParams::hits, maxHits);
             if (getValue<bool>(MEGABLAST_ATTR)) {
                 addParametr(cfg.params, ReqParams::megablast, "true");
@@ -293,7 +293,7 @@ Task* RemoteBLASTWorker::tick() {
             return NULL;
         }
         DNASequence seq = seqObj->getWholeSequence();
-        
+
         seq.info.clear();
         const DNAAlphabet *alp = U2AlphabetUtils::findBestAlphabet(seq.seq);
         /*if(seq.length()>MAX_BLAST_SEQ_LEN) {
@@ -313,6 +313,7 @@ Task* RemoteBLASTWorker::tick() {
             }
         }
         cfg.query = seq.seq;
+        cfg.isCircular = seq.circular;
         cfg.retries = 60;
         cfg.filterResult = 0;
 
