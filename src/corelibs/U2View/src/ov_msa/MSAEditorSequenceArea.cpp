@@ -1666,11 +1666,12 @@ void MSAEditorSequenceArea::removeGapsPrecedingSelection( int countOfGaps ) {
     }
 }
 
-void MSAEditorSequenceArea::sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&) {
-    int aliLen = editor->getAlignmentLen();
+void MSAEditorSequenceArea::sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo& modInfo) {
     int nSeq = editor->getNumSequences();
+    int aliLen = editor->getAlignmentLen();
     if (ui->isCollapsibleMode()) {
         nSeq = ui->getCollapseModel()->getLastPos() + 1;
+        updateCollapsedGroups(modInfo);
     }
 
     //todo: set in one method!
@@ -1696,6 +1697,33 @@ void MSAEditorSequenceArea::sl_alignmentChanged(const MAlignment&, const MAlignm
     completeRedraw = true;
     updateActions();
     update();
+}
+
+void MSAEditorSequenceArea::updateCollapsedGroups(const MAlignmentModInfo& modInfo) {
+    U2OpStatus2Log os;
+    if(modInfo.sequenceContentChanged) {
+        QList<qint64> updatedRows;
+        bool isModelChanged = false;
+        QMap<qint64, QList<U2MsaGap> > curGapModel = editor->getMSAObject()->getGapModel();
+        foreach(qint64 modifiedSeqId, modInfo.modifiedRowIds) {
+            int modifiedRowPos = editor->getMSAObject()->getRowPosById(modifiedSeqId);
+            const MAlignmentRow& modifiedRowRef = editor->getMSAObject()->getRow(modifiedRowPos);
+            modifiedRowPos = ui->getCollapseModel()->rowToMap(modifiedRowPos);
+            U2Region rowsCollapsibleGroup = ui->getCollapseModel()->mapSelectionRegionToRows(U2Region(modifiedRowPos, 1));
+            for(int i = rowsCollapsibleGroup.startPos; i < rowsCollapsibleGroup.endPos(); i++) {
+                qint64 identicalRowId = editor->getMSAObject()->getRow(i).getRowId();
+                if(!updatedRows.contains(identicalRowId) && !modInfo.modifiedRowIds.contains(identicalRowId)) {
+                    isModelChanged = isModelChanged || modifiedRowRef.getGapModel() != curGapModel[identicalRowId];
+                    curGapModel[identicalRowId] = modifiedRowRef.getGapModel();
+                    updatedRows.append(identicalRowId);
+                }
+            }
+        }
+        if(isModelChanged) {
+            editor->getMSAObject()->updateGapModel(curGapModel, os);
+            return;
+        }
+    }
 }
 
 void MSAEditorSequenceArea::sl_buildStaticToolbar(GObjectView*, QToolBar* t) {
@@ -2130,41 +2158,7 @@ void MSAEditorSequenceArea::sl_delCurrentSelection()
 }
 
 U2Region MSAEditorSequenceArea::getSelectedRows() const {
-    if (selection.height() == 0) {
-        return U2Region();
-    }
-
-    if (!ui->isCollapsibleMode()) {
-        return U2Region(selection.y(), selection.height());
-    }
-
-    MSACollapsibleItemModel* m = ui->getCollapseModel();
-
-    int startPos = selection.y();
-    int endPos = startPos + selection.height() - 1;
-
-    int startSeq = 0;
-    int endSeq = 0;
-
-    int startItemIdx = m->itemAt(startPos);
-
-    if (startItemIdx >= 0) {
-        const MSACollapsableItem& startItem = m->getItem(startItemIdx);
-        startSeq = startItem.row;
-    } else {
-        startSeq = m->mapToRow(startPos);
-    }
-
-    int endItemIdx = m->itemAt(endPos);
-
-    if (endItemIdx >= 0) {
-        const MSACollapsableItem& endItem = m->getItem(endItemIdx);
-        endSeq = endItem.row + endItem.numRows;
-    } else {
-        endSeq = m->mapToRow(endPos) + 1;
-    }
-
-    return U2Region(startSeq, endSeq - startSeq);
+    return ui->getCollapseModel()->mapSelectionRegionToRows(U2Region(selection.y(), selection.height()));
 }
 
 U2Region MSAEditorSequenceArea::getRowsAt(int pos) const {

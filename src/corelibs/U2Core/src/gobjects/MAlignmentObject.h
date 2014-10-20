@@ -37,11 +37,13 @@ class DNASequence;
 
 class MAlignmentModInfo {
 public:
-    MAlignmentModInfo() : sequenceContentChanged(true), sequenceListChanged(true), middleState(false) {}
+    MAlignmentModInfo()
+        : sequenceContentChanged(true), sequenceListChanged(true), middleState(false) {}
     bool sequenceContentChanged;
     bool sequenceListChanged;
     bool middleState;
     QVariantMap hints;
+    QList<qint64> modifiedRowIds;
 
 private:
     static bool registerMeta;
@@ -84,6 +86,7 @@ public:
     qint64 getLength() const;
     qint64 getNumRows() const;
     const MAlignmentRow& getRow(int row) const;
+    int getRowPosById(qint64 rowId) const;
 
     /** Methods that modify the gap model only */
     void insertGap(U2Region rows, int pos, int nGaps);
@@ -102,6 +105,8 @@ public:
      * The map must contain valid row IDs and corresponding gap models.
      */
     void updateGapModel(QMap<qint64, QList<U2MsaGap> > rowsGapModel, U2OpStatus& os);
+
+    QMap<qint64, QList<U2MsaGap> > getGapModel() const;
 
     /** Methods to work with rows */
     void addRow(U2MsaRow& rowInDb, const DNASequence& sequence, int rowIdx = -1);
@@ -141,7 +146,6 @@ public:
     void deleteColumnWithGaps(int requiredGapCount = GAP_COLUMN_ONLY);
     QList<qint64> getColumnsWithGaps(int requiredGapCount = GAP_COLUMN_ONLY) const;
     void updateCachedMAlignment(const MAlignmentModInfo &mi = MAlignmentModInfo(),
-        const QList<qint64> &modifiedRowIds = QList<qint64>(),
         const QList<qint64> &removedRowIds = QList<qint64>());
     void sortRowsByList(const QStringList& order);
 

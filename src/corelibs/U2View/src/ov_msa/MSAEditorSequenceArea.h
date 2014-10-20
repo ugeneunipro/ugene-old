@@ -441,6 +441,8 @@ private:
      */
     void cancelShiftTracking( );
 
+    void updateCollapsedGroups(const MAlignmentModInfo& modInfo);
+
     MSAEditor*      editor;
     MSAEditorUI*    ui;
     GScrollBar*     shBar;

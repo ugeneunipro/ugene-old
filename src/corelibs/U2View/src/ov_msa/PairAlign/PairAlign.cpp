@@ -378,7 +378,11 @@ void PairAlign::sl_alignComplete() {
     SAFE_POINT(NULL != pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask, "Can't process an unexpected align task", );
     if (true == pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask->isFinished()) {
         if(!inNewWindowCheckBox->isChecked()){
-            msa->getMSAObject()->updateCachedMAlignment();
+            MAlignmentModInfo mi;
+            mi.sequenceListChanged = false;
+            mi.modifiedRowIds.append(pairwiseAlignmentWidgetsSettings->firstSequenceId);
+            mi.modifiedRowIds.append(pairwiseAlignmentWidgetsSettings->secondSequenceId);
+            msa->getMSAObject()->updateCachedMAlignment(mi);
         }
         pairwiseAlignmentWidgetsSettings->pairwiseAlignmentTask = NULL;
     }

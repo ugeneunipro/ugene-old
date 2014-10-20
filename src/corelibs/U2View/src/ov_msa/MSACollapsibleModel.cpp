@@ -111,6 +111,42 @@ U2Region MSACollapsibleItemModel::mapToRows(int pos) const {
     return U2Region(startPos, 1);
 }
 
+U2Region MSACollapsibleItemModel::mapSelectionRegionToRows(const U2Region& selectionRegion) const {
+    if (selectionRegion.isEmpty()) {
+        return U2Region();
+    }
+
+    if (!ui->isCollapsibleMode()) {
+        return selectionRegion;
+    }
+
+    int startPos = selectionRegion.startPos;
+    int endPos = startPos + selectionRegion.length - 1;
+
+    int startSeq = 0;
+    int endSeq = 0;
+
+    int startItemIdx = itemAt(startPos);
+
+    if (startItemIdx >= 0) {
+        const MSACollapsableItem& startItem = getItem(startItemIdx);
+        startSeq = startItem.row;
+    } else {
+        startSeq = mapToRow(startPos);
+    }
+
+    int endItemIdx = itemAt(endPos);
+
+    if (endItemIdx >= 0) {
+        const MSACollapsableItem& endItem = getItem(endItemIdx);
+        endSeq = endItem.row + endItem.numRows;
+    } else {
+        endSeq = mapToRow(endPos) + 1;
+    }
+
+    return U2Region(startSeq, endSeq - startSeq);
+}
+
 int MSACollapsibleItemModel::rowToMap(int row) const {
     int invisibleRows = 0;
     for (QVector<MSACollapsableItem>::ConstIterator it = items.constBegin();

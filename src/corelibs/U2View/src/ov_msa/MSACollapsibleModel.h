@@ -45,6 +45,8 @@ public:
 
     U2Region mapToRows(int pos) const;
 
+    U2Region mapSelectionRegionToRows(const U2Region& selectionRegion) const;
+
     /**
     * The method converts the row position in the whole msa into its "visible" position (i.e.
     * the row position that takes into account collapsed items).
@@ -69,7 +71,7 @@ public:
     /** If there is a collapsible item at 'pos' position, it is removed. */
     void removeCollapsedForPosition(int pos);
 
-    bool isEmpty() { return 0 == items.size(); }
+    bool isEmpty() const { return 0 == items.size(); }
 
 signals:
     void toggled();
