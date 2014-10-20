@@ -57,6 +57,18 @@ private:
     static void selectArea(U2::U2OpStatus &os, const int x, const int y);
 };
 
+class GTDragger: public QObject{
+    Q_OBJECT
+public:
+    GTDragger(U2OpStatus &_os, const QPoint& _to);
+public slots:
+    void sl_execDrag();
+private:
+    QTimer* timer;
+    U2OpStatus& os;
+    QPoint to;
+};
+
 } //namespace
 
 #endif

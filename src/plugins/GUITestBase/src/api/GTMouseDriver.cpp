@@ -19,6 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+#include <QTimer>
+
 #include "GTMouseDriver.h"
 
 namespace U2 {
@@ -34,9 +37,9 @@ void GTMouseDriver::click(U2::U2OpStatus &os, Qt::MouseButton button)
 void GTMouseDriver::dragAndDrop(U2OpStatus &os, const QPoint& start, const QPoint& end) {
     moveTo(os, start);
     press(os);
-
-    moveTo(os, end);
-    release(os);
+    GTDragger d(os, end);
+    Q_UNUSED(d);
+    GTMouseDriver::moveTo(os, start + QPoint(QApplication::startDragDistance(),0));
 }
 
 #ifndef Q_OS_MAC
@@ -46,4 +49,15 @@ void GTMouseDriver::doubleClick(U2OpStatus &os)
     click(os, Qt::LeftButton);
 }
 #endif
+
+GTDragger::GTDragger(U2OpStatus &_os, const QPoint& _to):QObject(), os(_os), to(_to){
+    timer = new QTimer(this);
+    timer->singleShot(2000, this, SLOT(sl_execDrag()));
+}
+
+void GTDragger::sl_execDrag(){
+    GTMouseDriver::moveTo(os, to);
+    GTMouseDriver::click(os);
+}
+
 } //namespace

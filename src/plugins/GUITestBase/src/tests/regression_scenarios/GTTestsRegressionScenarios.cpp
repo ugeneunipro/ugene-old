@@ -6584,12 +6584,7 @@ GUI_TEST_CLASS_DEFINITION(test_3452) {
     GTGlobals::sleep(500);
 
     //4. Try to drag selected annotaions.
-    GTMouseDriver::moveTo(os, p1);
-    GTMouseDriver::press(os);
-    GTGlobals::sleep(500);
-    GTMouseDriver::moveTo(os, p2);
-    GTGlobals::sleep(500);
-    GTMouseDriver::release(os);
+    GTMouseDriver::dragAndDrop(os, p1, p2);
     //Expected state: UGENE does not crash.
 }
 
