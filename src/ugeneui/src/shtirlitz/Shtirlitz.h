@@ -60,6 +60,8 @@ private:
     //loads uuid from settings if necessary
     //creates the new one if nothing was found
     static QUuid getUniqueUgeneId();
+
+    static const QString SEPARATOR;
 };
 
 //Task which performs sending of data

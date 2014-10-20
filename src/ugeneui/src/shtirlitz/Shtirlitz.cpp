@@ -39,7 +39,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/Version.h>
 #include <U2Core/Log.h>
-#include <U2Core/NetworkConfiguration.h>
+#include <U2Core/NetworkConfiguration.h>`
 #include <U2Core/AppSettings.h>
 #include <U2Core/Counter.h>
 #include <U2Gui/MainWindow.h>
@@ -64,6 +64,8 @@ namespace U2 {
 
 //////////////////////////////////////////////////////////////////////////
 // Shtirlitz itself
+
+const QString Shtirlitz::SEPARATOR = "|";
 
 QUuid Shtirlitz::getUniqueUgeneId() {
     static QUuid uniqueUgeneId;
@@ -161,7 +163,7 @@ void Shtirlitz::saveGatheredInfo() {
     QList<GCounter*> appCounters = GCounter::allCounters();
     foreach( GCounter * ctr, appCounters ) {
         if( qobject_cast<GReportableCounter*>(ctr) ) {
-            QString ctrKey = ctr->name;
+            QString ctrKey = ctr->name + SEPARATOR + ctr->suffix;
             double ctrVal = ctr->scaledTotal();
 
             QString curKey = QString(SETTINGS_COUNTERS) + "/" + ctrKey;
