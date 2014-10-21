@@ -22,6 +22,8 @@
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2View/AnnotatedDNAView.h>
+
 #include "InSilicoPcrOptionPanelWidget.h"
 
 #include "InSilicoPcrOPWidgetFactory.h"
@@ -35,7 +37,9 @@ InSilicoPcrOPWidgetFactory::InSilicoPcrOPWidgetFactory()
 }
 
 QWidget * InSilicoPcrOPWidgetFactory::createWidget(GObjectView *objView) {
-    return new InSilicoPcrOptionPanelWidget(NULL);
+    AnnotatedDNAView *annotatedDnaView = qobject_cast<AnnotatedDNAView*>(objView);
+    SAFE_POINT(NULL != annotatedDnaView, L10N::nullPointerError("AnnotatedDNAView"), NULL);
+    return new InSilicoPcrOptionPanelWidget(annotatedDnaView);
 }
 
 OPGroupParameters InSilicoPcrOPWidgetFactory::getOPGroupParameters() {

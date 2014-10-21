@@ -19,36 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_IN_SILICO_PCR_OPTION_PANEL_WIDGET_H_
-#define _U2_IN_SILICO_PCR_OPTION_PANEL_WIDGET_H_
+#ifndef _U2_IN_SILICO_PCR_PRODUCTS_TABLE_H_
+#define _U2_IN_SILICO_PCR_PRODUCTS_TABLE_H_
 
-#include <QWidget>
-
-#include "ui_InSilicoPcrOptionPanelWidget.h"
+#include <QTableWidget>
 
 namespace U2 {
 
-class AnnotatedDNAView;
+class ADVSequenceObjectContext;
 class InSilicoPcrTask;
 
-class InSilicoPcrOptionPanelWidget : public QWidget, public Ui::InSilicoPcrOptionPanelWidget {
+class InSilicoPcrProductsTable : public QTableWidget {
     Q_OBJECT
 public:
-    InSilicoPcrOptionPanelWidget(AnnotatedDNAView *annotatedDnaView);
+    InSilicoPcrProductsTable(QWidget *parent);
+
+    void showProducts(InSilicoPcrTask *task, ADVSequenceObjectContext *sequenceContext);
+
+signals:
 
 private slots:
-    void sl_onPrimerChanged();
-    void sl_findProduct();
-    void sl_extractProduct();
-    void sl_onFindTaskFinished();
 
 private:
-    void showResults(InSilicoPcrTask *task);
-
-private:
-    AnnotatedDNAView *annotatedDnaView;
+    ADVSequenceObjectContext *sequenceContext;
 };
 
 } // U2
 
-#endif // _U2_IN_SILICO_PCR_OPTION_PANEL_WIDGET_H_
+#endif // _U2_IN_SILICO_PCR_PRODUCTS_TABLE_H_

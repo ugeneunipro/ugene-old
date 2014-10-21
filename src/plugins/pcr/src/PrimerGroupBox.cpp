@@ -62,12 +62,14 @@ void PrimerGroupBox::sl_onPrimerChanged(const QString &sequence) {
     emit si_primerChanged();
 }
 
-QString PrimerGroupBox::getSequence() const {
-    return primerEdit->text();
+QByteArray PrimerGroupBox::getPrimer() const {
+    return primerEdit->text().toLocal8Bit();
 }
 
-int PrimerGroupBox::getMismatches() const {
-    return mismatchesSpinBox->value();
+uint PrimerGroupBox::getMismatches() const {
+    int value = mismatchesSpinBox->value();
+    SAFE_POINT(value >= 0, "Negative mismatches count", 0);
+    return uint(value);
 }
 
 void PrimerGroupBox::sl_translate() {
@@ -87,10 +89,15 @@ void PrimerGroupBox::sl_translate() {
     sl_onPrimerChanged(translation);
 }
 
+QString PrimerGroupBox::getDoubleStringValue(double value) {
+    QString result = QString::number(value, 'f', 2);
+    result.remove(QRegExp("\\.?0+$"));
+    return result;
+}
+
 QString PrimerGroupBox::getTmString(const QString &sequence) {
     double tm = PrimerStatistics::getMeltingTemperature(sequence.toLocal8Bit());
-    QString tmString = QString::number(tm, 'f', 2);
-    tmString.remove(QRegExp("\\.?0+$"));
+    QString tmString = getDoubleStringValue(tm);
     return tr("Tm = ") + tmString + QString::fromLatin1("\x00B0") + "C";
 }
 

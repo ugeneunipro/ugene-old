@@ -35,8 +35,10 @@ public:
 
     void setTitle(const QString &title);
 
-    QString getSequence() const;
-    int getMismatches() const;
+    QByteArray getPrimer() const;
+    uint getMismatches() const;
+
+    static QString getDoubleStringValue(double value);
 
 signals:
     void si_primerChanged();
