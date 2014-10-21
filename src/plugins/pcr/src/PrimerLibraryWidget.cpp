@@ -62,7 +62,8 @@ void PrimerLibraryWidget::sl_newPrimer() {
     CHECK(QDialog::Accepted == result, );
 
     U2OpStatusImpl os;
-    model->addPrimer(dlg.getPrimer(), os);
+    Primer primer = dlg.getPrimer();
+    model->addPrimer(primer, os);
     checkOp(os);
 }
 
@@ -105,7 +106,7 @@ PrimerLibraryModel::PrimerLibraryModel(QObject *parent)
     primers = primerLibrary->getPrimers(os);
 }
 
-int PrimerLibraryModel::columnCount(const QModelIndex &parent) const {
+int PrimerLibraryModel::columnCount(const QModelIndex & /*parent*/) const {
     return 3;
 }
 
@@ -119,7 +120,7 @@ QVariant PrimerLibraryModel::data(const QModelIndex &index, int role) const {
     return QVariant();
 }
 
-QVariant PrimerLibraryModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant PrimerLibraryModel::headerData(int section, Qt::Orientation /*orientation*/, int role) const {
     CHECK(Qt::DisplayRole == role, QVariant());
 
     switch (section) {
@@ -134,12 +135,12 @@ QVariant PrimerLibraryModel::headerData(int section, Qt::Orientation orientation
     }
 }
 
-QModelIndex PrimerLibraryModel::index(int row, int column, const QModelIndex &parent) const {
+QModelIndex PrimerLibraryModel::index(int row, int column, const QModelIndex & /*parent*/) const {
     CHECK(row < primers.size(), QModelIndex());
     return createIndex(row, column);
 }
 
-QModelIndex PrimerLibraryModel::parent(const QModelIndex &index) const {
+QModelIndex PrimerLibraryModel::parent(const QModelIndex & /*index*/) const {
     return QModelIndex();
 }
 
