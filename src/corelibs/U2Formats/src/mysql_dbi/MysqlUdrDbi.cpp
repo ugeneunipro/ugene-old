@@ -127,6 +127,25 @@ QList<UdrRecord> MysqlUdrDbi::getObjectRecords(const UdrSchemaId &schemaId, cons
     return result;
 }
 
+QList<UdrRecord> MysqlUdrDbi::getRecords(const UdrSchemaId &schemaId, U2OpStatus &os) {
+    QList<UdrRecord> result;
+    const UdrSchema *schema = udrSchema(schemaId, os);
+    CHECK_OP(os, result);
+
+    U2SqlQuery q(selectDef(schema, os), db, os);
+    CHECK_OP(os, result);
+
+    while (q.step()) {
+        QList<UdrValue> data;
+        retreiveData(data, schema, q, os);
+        CHECK_OP(os, result);
+        U2DataId dataId = q.getDataId(0, U2Type::UdrRecord);
+        result << UdrRecord(UdrRecordId(schemaId, dataId), data, os);
+    }
+
+    return result;
+}
+
 void MysqlUdrDbi::removeRecord(const UdrRecordId &recordId, U2OpStatus &os) {
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
@@ -253,7 +272,7 @@ QString MysqlUdrDbi::insertDef(const UdrSchema *schema, U2OpStatus &os) {
         + "VALUES(" + placeholders.join(", ") + ")";
 }
 
-QString MysqlUdrDbi::selectDef(const UdrSchema *schema, U2OpStatus &os) {
+QString MysqlUdrDbi::selectAllDef(const UdrSchema *schema, U2OpStatus &os) {
     QList<int> directFields = UdrSchema::notBinary(schema, os);
     CHECK_OP(os, "");
 
@@ -263,7 +282,11 @@ QString MysqlUdrDbi::selectDef(const UdrSchema *schema, U2OpStatus &os) {
         + UdrSchema::fieldNames(schema, os, directFields).join(", ")
         + (isObjectReferenced ? ", o.type" : "")
         + " FROM " + tableName(schema->getId())
-        + (isObjectReferenced ? " AS udr INNER JOIN Object AS o ON o.id = udr." + UdrSchema::OBJECT_FIELD_NAME : "")
+        + (isObjectReferenced ? " AS udr INNER JOIN Object AS o ON o.id = udr." + UdrSchema::OBJECT_FIELD_NAME : "");
+}
+
+QString MysqlUdrDbi::selectDef(const UdrSchema *schema, U2OpStatus &os) {
+    return selectAllDef(schema, os)
         + " WHERE " + UdrSchema::RECORD_ID_FIELD_NAME + " = :" + UdrSchema::RECORD_ID_FIELD_NAME;
 }
 

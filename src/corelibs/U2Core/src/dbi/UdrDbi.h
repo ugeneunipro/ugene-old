@@ -60,6 +60,11 @@ public:
     virtual QList<UdrRecord> getObjectRecords(const UdrSchemaId &schemaId, const U2DataId &objectId, U2OpStatus &os) = 0;
 
     /**
+     * Returns the list of records of the given schema.
+     */
+    virtual QList<UdrRecord> getRecords(const UdrSchemaId &schemaId, U2OpStatus &os) = 0;
+
+    /**
      * Removes the record with the given identifier.
      */
     virtual void removeRecord(const UdrRecordId &recordId, U2OpStatus &os) = 0;

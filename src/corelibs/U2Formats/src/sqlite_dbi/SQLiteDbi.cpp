@@ -376,7 +376,12 @@ void SQLiteDbi::init(const QHash<QString, QString>& props, const QVariantMap&, U
         }
  
         SQLiteQuery("PRAGMA synchronous = OFF", db, os).execute();
-        SQLiteQuery("PRAGMA main.locking_mode = EXCLUSIVE", db, os).execute();
+        QString lockingMode = props.value(U2DbiOptions::U2_DBI_LOCKING_MODE, "exclusive");
+        if (lockingMode == "normal") {
+            SQLiteQuery("PRAGMA main.locking_mode = NORMAL", db, os).execute();
+        } else {
+            SQLiteQuery("PRAGMA main.locking_mode = EXCLUSIVE", db, os).execute();
+        }
         SQLiteQuery("PRAGMA temp_store = MEMORY", db, os).execute();
         SQLiteQuery("PRAGMA journal_mode = MEMORY", db, os).execute();
         SQLiteQuery("PRAGMA cache_size = 50000", db, os).execute();

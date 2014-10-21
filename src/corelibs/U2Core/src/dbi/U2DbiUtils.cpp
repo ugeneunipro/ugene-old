@@ -221,8 +221,8 @@ DbiConnection::DbiConnection(const U2DbiRef& ref,  U2OpStatus& os) : dbi(NULL) {
     open(ref, os);
 }
 
-DbiConnection::DbiConnection(const U2DbiRef& ref,  bool create, U2OpStatus& os) : dbi(NULL) {
-    open(ref, create, os);
+DbiConnection::DbiConnection(const U2DbiRef& ref,  bool create, U2OpStatus& os, const QHash<QString, QString> &properties) : dbi(NULL) {
+    open(ref, create, os, properties);
 }
 
 DbiConnection::DbiConnection(const DbiConnection& dbiConnection) {
@@ -249,11 +249,11 @@ U2DbiPool * getDbiPool(U2OpStatus &os) {
 }
 }
 
-void DbiConnection::open(const U2DbiRef& ref,  bool create, U2OpStatus& os)  {
+void DbiConnection::open(const U2DbiRef& ref,  bool create, U2OpStatus& os, const QHash<QString, QString> &properties) {
     SAFE_POINT_EXT(!isOpen(), os.setError(QString("Connection is already opened! %1").arg(dbi->getDbiId())), );
     U2DbiPool *pool = getDbiPool(os);
     SAFE_POINT_OP(os, );
-    dbi = pool->openDbi(ref, create, os);
+    dbi = pool->openDbi(ref, create, os, properties);
 }
 
 void DbiConnection::close(U2OpStatus& os) {

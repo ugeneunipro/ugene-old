@@ -88,6 +88,8 @@ public:
     static QString complementStrandStr() { return tr("Reverse-complementary"); }
 
     static QString required() { return tr("Required"); }
+
+    static QString nullPointerError(const QString &objectName) {return tr("Internal error! The object unexpectedly does not exist: ") + objectName; }
 };
 
 }//ns

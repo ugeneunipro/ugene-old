@@ -79,6 +79,9 @@ public :
 
     /** Init time DBI parameter value. Indicates boolean 'Yes' or 'true'. */
     static const QString U2_DBI_VALUE_ON;
+
+    /** SQLite only: "exclusive" (default) or "normal" mode. */
+    static const QString U2_DBI_LOCKING_MODE;
 };
 
 /**

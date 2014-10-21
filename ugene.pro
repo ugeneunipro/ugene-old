@@ -49,6 +49,7 @@ SUBDIRS += \
           src/plugins/dna_flexibility \
           src/plugins/dna_graphpack \
           src/plugins/orf_marker \
+          src/plugins/pcr \
           src/plugins/workflow_designer \
           src/plugins/repeat_finder \
           src/plugins/test_runner \

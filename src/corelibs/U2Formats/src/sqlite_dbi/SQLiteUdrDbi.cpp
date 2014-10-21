@@ -120,6 +120,25 @@ QList<UdrRecord> SQLiteUdrDbi::getObjectRecords(const UdrSchemaId &schemaId, con
     return result;
 }
 
+QList<UdrRecord> SQLiteUdrDbi::getRecords(const UdrSchemaId &schemaId, U2OpStatus &os) {
+    QList<UdrRecord> result;
+    const UdrSchema *schema = udrSchema(schemaId, os);
+    CHECK_OP(os, result);
+
+    SQLiteQuery q(selectAllDef(schema, os), db, os);
+    CHECK_OP(os, result);
+
+    while (q.step()) {
+        QList<UdrValue> data;
+        retreiveData(data, schema, q, os);
+        CHECK_OP(os, result);
+        U2DataId dataId = q.getDataId(0, U2Type::UdrRecord);
+        result << UdrRecord(UdrRecordId(schemaId, dataId), data, os);
+    }
+
+    return result;
+}
+
 void SQLiteUdrDbi::removeRecord(const UdrRecordId &recordId, U2OpStatus &os) {
     SQLiteQuery q("DELETE FROM " + tableName(recordId.getSchemaId()) + " WHERE " + UdrSchema::RECORD_ID_FIELD_NAME + " = ?1", db, os);
     q.bindDataId(1, recordId.getRecordId());
@@ -220,7 +239,7 @@ QString SQLiteUdrDbi::insertDef(const UdrSchema *schema, U2OpStatus &os) {
         + "VALUES(" + nums.join(", ") + ")";
 }
 
-QString SQLiteUdrDbi::selectDef(const UdrSchema *schema, U2OpStatus &os) {
+QString SQLiteUdrDbi::selectAllDef(const UdrSchema *schema, U2OpStatus &os) {
     QList<int> directFields = UdrSchema::notBinary(schema, os);
     CHECK_OP(os, "");
 
@@ -230,7 +249,11 @@ QString SQLiteUdrDbi::selectDef(const UdrSchema *schema, U2OpStatus &os) {
         + UdrSchema::fieldNames(schema, os, directFields).join(", ")
         + (isObjectReferenced ? ", o.type" : "")
         + " FROM " + tableName(schema->getId())
-        + (isObjectReferenced ? " AS udr INNER JOIN Object AS o ON o.id = udr." + UdrSchema::OBJECT_FIELD_NAME : "")
+        + (isObjectReferenced ? " AS udr INNER JOIN Object AS o ON o.id = udr." + UdrSchema::OBJECT_FIELD_NAME : "");
+}
+
+QString SQLiteUdrDbi::selectDef(const UdrSchema *schema, U2OpStatus &os) {
+    return selectAllDef(schema, os)
         + " WHERE " + UdrSchema::RECORD_ID_FIELD_NAME + " = ?1";
 }
 

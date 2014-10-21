@@ -39,6 +39,8 @@ const QString U2DbiOptions::U2_DBI_OPTION_PASSWORD("password");
 
 const QString U2DbiOptions::U2_DBI_VALUE_ON("1");
 
+const QString U2DbiOptions::U2_DBI_LOCKING_MODE("locking_mode");
+
 //////////////////////////////////////////////////////////////////////////
 // U2DbiFactory
 

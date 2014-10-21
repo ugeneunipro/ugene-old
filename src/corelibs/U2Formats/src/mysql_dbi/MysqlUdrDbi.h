@@ -36,6 +36,7 @@ public:
     UdrRecord getRecord(const UdrRecordId &recordId, U2OpStatus &os);
     void createObject(const UdrSchemaId &schemaId, U2Object &udrObject, const QString &folder, U2OpStatus &os);
     QList<UdrRecord> getObjectRecords(const UdrSchemaId &schemaId, const U2DataId &objectId, U2OpStatus &os);
+    QList<UdrRecord> getRecords(const UdrSchemaId &schemaId, U2OpStatus &os);
     void removeRecord(const UdrRecordId &recordId, U2OpStatus &os);
     InputStream * createInputStream(const UdrRecordId &recordId, int fieldNum, U2OpStatus &os);
     OutputStream * createOutputStream(const UdrRecordId &recordId, int fieldNum, qint64 size, U2OpStatus &os);
@@ -50,6 +51,7 @@ private:
     /* Utilities */
     static const UdrSchema * udrSchema(const UdrSchemaId &schemaId, U2OpStatus &os);
     static QString insertDef(const UdrSchema *schema, U2OpStatus &os);
+    static QString selectAllDef(const UdrSchema *schema, U2OpStatus &os);
     static QString selectDef(const UdrSchema *schema, U2OpStatus &os);
     static QString tableStartDef(const UdrSchemaId &schemaId);
     static QString fieldDef(const UdrSchema::FieldDesc &field);

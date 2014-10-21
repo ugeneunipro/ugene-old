@@ -123,7 +123,7 @@ public:
     U2DbiPool(QObject* p = NULL);
     virtual ~U2DbiPool();
 
-    U2Dbi* openDbi(const U2DbiRef& ref, bool create, U2OpStatus& os);
+    U2Dbi* openDbi(const U2DbiRef& ref, bool create, U2OpStatus& os, const QHash<QString, QString> &properties = QHash<QString, QString>());
     void addRef(U2Dbi * dbi, U2OpStatus & os);
     void releaseDbi(U2Dbi* dbi, U2OpStatus& os);
     void closeAllConnections(const U2DbiRef& ref, U2OpStatus& os);
@@ -141,7 +141,7 @@ private:
     static QHash<QString, QString> getInitProperties(const QString& url, bool create);
     static QString getId(const U2DbiRef& ref, U2OpStatus &os);
     static bool isDbiFromMainThread(const QString &dbiId);
-    static U2Dbi * createDbi(const U2DbiRef &ref, bool create, U2OpStatus &os);
+    static U2Dbi * createDbi(const U2DbiRef &ref, bool create, U2OpStatus &os, const QHash<QString, QString> &properties);
     static void deallocateDbi(U2Dbi *dbi, U2OpStatus &os);
     static QString id2Url(const QString &id);
 

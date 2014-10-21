@@ -42,7 +42,7 @@ public:
     DbiConnection(const U2DbiRef& ref,  U2OpStatus& os);
     
     /** Opens connection to existing DBI or create news DBI*/
-    DbiConnection(const U2DbiRef& ref,  bool create, U2OpStatus& os);
+    DbiConnection(const U2DbiRef& ref,  bool create, U2OpStatus& os, const QHash<QString, QString> &properties = QHash<QString, QString>());
 
     DbiConnection(const DbiConnection & dbiConnection_);
 
@@ -55,7 +55,7 @@ public:
     void open(const U2DbiRef& ref,  U2OpStatus& os);
 
     /** Opens connection to existing DBI or create news DBI*/
-    void open(const U2DbiRef& ref,  bool create, U2OpStatus& os);
+    void open(const U2DbiRef& ref,  bool create, U2OpStatus& os, const QHash<QString, QString> &properties = QHash<QString, QString>());
     
     void close(U2OpStatus& os);
 

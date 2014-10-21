@@ -286,7 +286,7 @@ U2DbiPool::~U2DbiPool() {
     }
 }
 
-U2Dbi * U2DbiPool::createDbi(const U2DbiRef &ref, bool create, U2OpStatus &os) {
+U2Dbi * U2DbiPool::createDbi(const U2DbiRef &ref, bool create, U2OpStatus &os, const QHash<QString, QString> &properties) {
     U2DbiFactory* dbiFactory = AppContext::getDbiRegistry()->getDbiFactoryById(ref.dbiFactoryId);
     CHECK_EXT(NULL != dbiFactory, os.setError(tr("Invalid database type: %1").arg(ref.dbiFactoryId)), NULL);
     U2Dbi *result = dbiFactory->createDbi();
@@ -294,6 +294,7 @@ U2Dbi * U2DbiPool::createDbi(const U2DbiRef &ref, bool create, U2OpStatus &os) {
     const QString url = dbiFactory->id2Url(ref.dbiId).getURLString();
 
     QHash<QString, QString> initProperties = getInitProperties(url, create);
+    initProperties.unite(properties);
     result->init(initProperties, QVariantMap(), os);
     CHECK_EXT(!os.hasError(), delete result, NULL);
     return result;
@@ -312,7 +313,7 @@ U2Dbi * U2DbiPool::getDbiFromPool(const QString &id) {
     return dbi;
 }
 
-U2Dbi * U2DbiPool::openDbi(const U2DbiRef &ref, bool createDatabase, U2OpStatus &os) {
+U2Dbi * U2DbiPool::openDbi(const U2DbiRef &ref, bool createDatabase, U2OpStatus &os, const QHash<QString, QString> &properties) {
     CHECK_EXT(!ref.dbiId.isEmpty(), os.setError(tr("Invalid database id")), NULL);
     QMutexLocker m(&lock);
     Q_UNUSED(m);
@@ -331,7 +332,7 @@ U2Dbi * U2DbiPool::openDbi(const U2DbiRef &ref, bool createDatabase, U2OpStatus 
             dbi = getDbiFromPool(id);
         } else {
             // create new DBI
-            dbi = createDbi(ref, createDatabase, os);
+            dbi = createDbi(ref, createDatabase, os, properties);
             CHECK_OP(os, NULL);
         }
         SAFE_POINT_EXT(NULL != dbi, os.setError("Invalid DBI detected"), NULL);
