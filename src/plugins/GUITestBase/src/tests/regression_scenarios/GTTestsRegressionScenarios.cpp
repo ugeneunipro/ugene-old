@@ -1955,7 +1955,9 @@ GUI_TEST_CLASS_DEFINITION( test_2021_3 )
     CHECK_SET_ERR(  "AAGCTTCTTTTAA--\nAAGTTACTAA-----\nTAG---TTATTAA--\nAAGC---TATTAA--\n"
                     "TAGTTATTAA-----\nTAGTTATTAA-----\nTAGTTATTAA-----\nAAGCTTT---TAA--\n"
                     "A--AGAATAATTA--\nAAGCTTTTAA-----" == finalMsaContent,
-                    "Unexpected MSA content has occurred" );
+                    "Unexpected MSA content has occurred\n expected: \n AAGCTTCTTTTAA--\nAAGTTACTAA-----\nTAG---TTATTAA--\nAAGC---TATTAA--\n"
+                    "TAGTTATTAA-----\nTAGTTATTAA-----\nTAGTTATTAA-----\nAAGCTTT---TAA--\n"
+                    "A--AGAATAATTA--\nAAGCTTTTAA-----\n actual: \n " + finalMsaContent);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2021_4 )
@@ -4744,7 +4746,7 @@ GUI_TEST_CLASS_DEFINITION( test_2605 ) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_EXPORT<<"Save subalignment"));
     GTUtilsDialog::waitForDialog(os,new ExtractSelectedAsMSADialogFiller(os,
         testDir + "_common_data/scenarios/sandbox/2605.aln",
-        QStringList() << "Phaneroptera_falcata", 6, 237));
+        QStringList() << "SEQUENCE_1", 6, 237));
     GTMenu::showContextMenu(os,GTWidget::findWidget(os,"msa_editor_sequence_area"));
 
     // Expected state: export successfull, no any messages in log like "There is no sequence objects in given file, unable to convert it in multiple alignment"
@@ -5295,7 +5297,7 @@ GUI_TEST_CLASS_DEFINITION(test_3139) {
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
 
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__OPEN_AS);
-    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     QWidget* seqArea = GTWidget::findWidget(os, "msa_editor_sequence_area");
     CHECK_SET_ERR(NULL != seqArea, "MSA Editor isn't opened.!");
@@ -5322,6 +5324,31 @@ GUI_TEST_CLASS_DEFINITION(test_3142) {
     CHECK_SET_ERR( msaWidget != NULL, "MSASequenceArea not found");
 
     GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3143){
+//    1. Open file data/samples/Assembly/chrM.sorted.bam;
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "chrM.sorted.bam.ugenedb"));
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sorted.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    Expected state: Showed Import BAM File dialog.
+//    2. Click Import;
+//    Expected state: Imported file opened in Assembly Viewer.
+    GTWidget::findWidget(os, "assembly_browser_chrM.sorted.bam [as] chrM");
+//    3. Remove this file from project and try to open it again;
+    GTUtilsProjectTreeView::click(os, "chrM.sorted.bam.ugenedb");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+//    Expected state: Showed Import BAM File dialog.
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Replace"));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "chrM.sorted.bam.ugenedb"));
+    GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sorted.bam");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    4. Click Import;
+//    Expected state: Showed message box with question about overwriting of existing file..
+//    5. Click Replace;
+    GTWidget::findWidget(os, "assembly_browser_chrM.sorted.bam [as] chrM");
+//    Expected state: Imported file opened in Assembly Viewer without errors.
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3144) {
@@ -5421,9 +5448,8 @@ GUI_TEST_CLASS_DEFINITION(test_3165){
 //    1. Set file read-only: "test/_common_data/scenarios/msa/ma.aln".
     GTFile::copy(os, testDir + "_common_data/scenarios/msa/ma.aln", sandBoxDir + "ma.aln");
     PermissionsSetter permSetter;
-    QFile::Permissions p = QFile::WriteOwner | QFile::WriteUser | QFile::WriteGroup
-        | QFile::WriteOther;
-    bool res = permSetter.setPermissions( sandBoxDir + "ma.aln", ~p );
+    QFile::Permissions p = QFile::ReadUser | QFile::ReadOwner;
+    bool res = permSetter.setPermissions( sandBoxDir + "ma.aln", p );
     CHECK_SET_ERR(res, "permission not set");
     //PermissionsSetter::setPermissions(sandBoxDir + "ma.aln"
 //    2. Open it with UGENE.
@@ -5781,6 +5807,29 @@ GUI_TEST_CLASS_DEFINITION(test_3255) {
     GTFileDialog::openFile(os, testDir + "_common_data/bam/", "1.bam");
 
     GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3263){
+//    1. Open "_common_data/alphabets/standard_dna_rna_amino_1000.fa"
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/alphabets", "standard_dna_rna_amino_1000.fa");
+//    2. Open CV for the first sequence
+    QWidget* cvButton1 = GTWidget::findWidget(os, "CircularViewAction", GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+    QWidget* cvButton2 = GTWidget::findWidget(os, "CircularViewAction", GTWidget::findWidget(os, "ADV_single_sequence_widget_1"));
+    GTWidget::click(os, cvButton2);
+//    3. Open CV for the second sequence
+    GTWidget::click(os, cvButton1);
+//    4. Click CV button for the first sequence (turn it off and on again) few times
+    QWidget* CV_ADV_single_sequence_widget_1 = GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_1");
+    QRect geometry = CV_ADV_single_sequence_widget_1->geometry();
+    for(int i = 0; i<5; i++){
+        GTWidget::click(os, cvButton1);
+        GTGlobals::sleep(200);
+        GTWidget::click(os, cvButton1);
+        CHECK_SET_ERR(geometry == CV_ADV_single_sequence_widget_1->geometry(), "geometry changed");
+    }
+//    See the result on the attached screenshot.
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3274) {
