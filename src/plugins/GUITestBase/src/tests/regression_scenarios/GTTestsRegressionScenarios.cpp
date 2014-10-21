@@ -5059,6 +5059,24 @@ GUI_TEST_CLASS_DEFINITION(test_3092) {
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3124) {
+    // 1. Connect to a shared database.
+    // 2. Right click on the document->Add->Import to the database.
+    // 3. Click "Add files".
+    // 4. Choose "data/samples/Genbank/PBR322.gb".
+    // 5. Click "Import".
+    // Expected state : the file is imported, there are no errors in the log.
+
+    GTLogTracer logTracer;
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+    CHECK_OP(os, );
+
+    GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, "/test", QStringList() << dataDir + "samples/Genbank/PBR322.gb");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsLog::check(os, logTracer);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3125) {
     //1. Connect to a shared database.
     //2. Find a msa in the database (or import a new one).

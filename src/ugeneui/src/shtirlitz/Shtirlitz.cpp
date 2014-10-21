@@ -39,7 +39,7 @@
 #include <U2Core/Settings.h>
 #include <U2Core/Version.h>
 #include <U2Core/Log.h>
-#include <U2Core/NetworkConfiguration.h>`
+#include <U2Core/NetworkConfiguration.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/Counter.h>
 #include <U2Gui/MainWindow.h>
