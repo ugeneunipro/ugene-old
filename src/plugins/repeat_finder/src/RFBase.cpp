@@ -26,6 +26,7 @@
 #include "RFDiagonal.h"
 
 #include <U2Core/Log.h>
+#include <U2Core/U2SafePoints.h>
 
 namespace U2 {
 
@@ -99,13 +100,11 @@ void RFAlgorithmBase::addToResults(const RFResult& r){
 #ifdef _DEBUG
     checkResult(r);
 #endif
-    if (!resultsListener) {
-        cancel();
-        return;
-    }
+    CHECK_EXT(NULL != resultsListener, cancel(), );
     resultsListener->onResult(r);
     if (reflective && reportReflected) {
         assert(r.x!=r.y);
+        CHECK_EXT(NULL != resultsListener, cancel(), );
         resultsListener->onResult(RFResult(r.y, r.x, r.l, r.c));
     }
 }
@@ -115,10 +114,7 @@ void RFAlgorithmBase::addToResults(const QVector<RFResult>& results) {
 #ifdef _DEBUG
     checkResults(results);
 #endif
-    if (!resultsListener) {
-        cancel();
-        return;
-    }
+    CHECK_EXT(NULL != resultsListener, cancel(), );
     resultsListener->onResults(results);
     if (reflective && reportReflected) {
         QVector<RFResult> complResults;
@@ -135,6 +131,7 @@ void RFAlgorithmBase::addToResults(const QVector<RFResult>& results) {
             }
             complResults.append(RFResult(r.y, r.x, r.l, r.c));
         }
+        CHECK_EXT(NULL != resultsListener, cancel(), );
         resultsListener->onResults(complResults);
     }
 }
@@ -146,6 +143,7 @@ void RFAlgorithmBase::prepare() {
     }
     if (reflective && reportReflected) {
         assert(SIZE_X == SIZE_Y);
+        CHECK_EXT(NULL != resultsListener, cancel(), );
         resultsListener->onResult(RFResult(0, 0, SIZE_X));
     }
 }
@@ -214,11 +212,6 @@ bool Tandem::extend (const Tandem& t){
 
 bool Tandem::operator < (const Tandem& t) const{
     return repeatLen<t.repeatLen || (repeatLen==t.repeatLen && rightSide<t.offset);
-//  return rightSide < t.offset || repeatLen < t.repeatLen;
-/*  const qint32 left = (qint32)offset-(qint32)t.offset+(qint32)size;
-    const qint32 right = (qint32)qMax(repeatLen, t.repeatLen);
-    return (left < right) || repeatLen < t.repeatLen;
-*/
 }
 
 } //namespace
