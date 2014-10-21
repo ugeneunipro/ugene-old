@@ -49,6 +49,7 @@ private:
     QList<U2DbiRef> getDbiRefs();
     void readData();
     void updateAccessedObjects();
+    void fetchObjectsInUse(const U2DbiRef &dbiRef, U2OpStatus &os);
 
 private:
     QMutex mutex;

@@ -45,6 +45,8 @@
 
 namespace U2 {
 
+const int SQLiteDbi::BIND_PARAMETERS_LIMIT = 999;
+
 SQLiteDbi::SQLiteDbi()
     : U2AbstractDbi (SQLiteDbiFactory::ID)
 {

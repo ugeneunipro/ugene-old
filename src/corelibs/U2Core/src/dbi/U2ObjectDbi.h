@@ -201,7 +201,8 @@ public:
     /** Returns whether the object is used by some client of the DB.
         The method should be overridden for DBIs with multiple clients
     */
-    virtual bool isObjectInUse(const U2DataId& id, U2OpStatus& os);
+    virtual bool isObjectInUse(const U2DataId &id, U2OpStatus &os);
+    virtual QList<U2DataId> getAllObjectsInUse(U2OpStatus &os);
 
      /** Undo the last update operation for the object. */
     virtual void undo(const U2DataId& objId, U2OpStatus& os) = 0;

@@ -39,8 +39,6 @@ MysqlDbRef::MysqlDbRef() :
 }
 
 qint64 MysqlUtils::remove(const QString& table, const QString& field, const U2DataId& id, qint64 expectedRows, MysqlDbRef* db, U2OpStatus& os) {
-    CHECK_OP(os, -1);
-
     static const QString queryString = "DELETE FROM %1 WHERE %2 = :id";
     U2SqlQuery q(queryString.arg(table).arg(field), db, os);
     q.bindDataId(":id", id);
@@ -97,8 +95,6 @@ void U2SqlQuery::setError(const QString& err) const {
 }
 
 bool U2SqlQuery::step() {
-    CHECK(!hasError(), false);
-
     if (!query.isActive()) {
         execute();
         CHECK(!hasError(), false);
@@ -108,17 +104,19 @@ bool U2SqlQuery::step() {
 }
 
 void U2SqlQuery::ensureDone() {
-    CHECK(!hasError(), );
-
     bool done = !step();
     if (Q_UNLIKELY(!done && !hasError())) {
         setError(U2DbiL10n::tooManyResults());
     }
 }
 
-int U2SqlQuery::getInt32(int column) const {
-    CHECK(!hasError(), -1);
+void U2SqlQuery::finish() {
+    if (query.isActive()) {
+        query.finish();
+    }
+}
 
+int U2SqlQuery::getInt32(int column) const {
     bool ok = false;
     int result = query.value(column).toInt(&ok);
     CHECK_EXT(ok, setError("Can't convert value to int"), -1);
@@ -127,8 +125,6 @@ int U2SqlQuery::getInt32(int column) const {
 }
 
 qint64 U2SqlQuery::getInt64(int column) const {
-    CHECK(!hasError(), -1);
-
     bool ok = false;
     qint64 result = query.value(column).toLongLong(&ok);
     CHECK_EXT(ok, setError("Can't convert value to int64"), -1);
@@ -137,8 +133,6 @@ qint64 U2SqlQuery::getInt64(int column) const {
 }
 
 double U2SqlQuery::getDouble(int column) const {
-    CHECK(!hasError(), -1.0);
-
     bool ok = false;
     qint64 result = query.value(column).toDouble(&ok);
     CHECK_EXT(ok, setError("Can't convert value to double"), -1.0);
@@ -147,20 +141,14 @@ double U2SqlQuery::getDouble(int column) const {
 }
 
 U2DataId U2SqlQuery::getDataId(int column, U2DataType type, const QByteArray& dbExtra) const {
-    CHECK(!hasError(), emptyId);
-
     if (query.isNull(column)) {
         return emptyId;
     }
 
-    U2DataId result = U2DbiUtils::toU2DataId(getInt64(column), type, dbExtra);
-
-    return result;
+    return U2DbiUtils::toU2DataId(getInt64(column), type, dbExtra);
 }
 
 U2DataId U2SqlQuery::getDataIdExt(int column) const {
-    CHECK(!hasError(), emptyId);
-
     U2DataType type = getInt32(column + 1);
     CHECK(!hasError(), emptyId);
     if (Q_UNLIKELY(type == U2Type::Unknown)) {
@@ -170,15 +158,11 @@ U2DataId U2SqlQuery::getDataIdExt(int column) const {
     QByteArray dbExtra = getBlob(column + 2);
     CHECK(!hasError(), emptyId);
 
-    U2DataId result = U2DbiUtils::toU2DataId(getInt64(column), type, dbExtra);
-
-    return result;
+    return U2DbiUtils::toU2DataId(getInt64(column), type, dbExtra);
 }
 
 
 U2DataType U2SqlQuery::getDataType(int column) const {
-    CHECK(!hasError(), U2Type::Unknown);
-
     bool ok = false;
     U2DataType result = (U2DataType)query.value(column).toInt(&ok);
     CHECK_EXT(ok, setError("Can't convert value to data type"), U2Type::Unknown);
@@ -187,32 +171,22 @@ U2DataType U2SqlQuery::getDataType(int column) const {
 }
 
 QString U2SqlQuery::getString(int column) const {
-    CHECK(!hasError(), emptyString);
-
     return query.value(column).toString();
 }
 
 QByteArray U2SqlQuery::getCString(int column) const {
-    CHECK(!hasError(), emptyBlob);
-
     return query.value(column).toByteArray();
 }
 
 QByteArray U2SqlQuery::getBlob(int column) const {
-    CHECK(!hasError(), emptyBlob);
-
     return query.value(column).toByteArray();
 }
 
 bool U2SqlQuery::getBool(int column) const {
-    CHECK(!hasError(), false);
-
     return query.value(column).toBool();
 }
 
 void U2SqlQuery::bindDataId(const QString& placeholder, const U2DataId& val) {
-    CHECK(!hasError(), );
-
     quint64 dbiId = U2DbiUtils::toDbiId(val);
     if (0 != dbiId) {
         query.bindValue(placeholder, dbiId);
@@ -221,67 +195,98 @@ void U2SqlQuery::bindDataId(const QString& placeholder, const U2DataId& val) {
     }
 }
 
-void U2SqlQuery::bindNull(const QString& placeholder) {
-    CHECK(!hasError(), );
+void U2SqlQuery::addBindDataId(const U2DataId &val) {
+    quint64 dbiId = U2DbiUtils::toDbiId(val);
+    if (0 != dbiId) {
+        query.addBindValue(dbiId);
+    } else {
+        addBindNull();
+    }
+}
 
+void U2SqlQuery::bindNull(const QString& placeholder) {
     query.bindValue(placeholder, QVariant(QVariant::Int));
+}
+
+void U2SqlQuery::addBindNull() {
+    query.addBindValue(QVariant(QVariant::Int));
 }
 
 void U2SqlQuery::bindType(const QString& placeholder, U2DataType type) {
     bindInt64(placeholder, type);
 }
 
+void U2SqlQuery::addBindType(U2DataType type) {
+    query.addBindValue(type);
+}
+
 void U2SqlQuery::bindString(const QString& placeholder, const QString& val) {
-    CHECK(!hasError(), );
     query.bindValue(placeholder, val);
+}
+
+void U2SqlQuery::addBindString(const QString &val) {
+    query.addBindValue(val);
 }
 
 void U2SqlQuery::bindInt32(const QString& placeholder, qint32 val) {
-    CHECK(!hasError(), );
     query.bindValue(placeholder, val);
+}
+
+void U2SqlQuery::addBindInt32(qint32 val) {
+    query.addBindValue(val);
 }
 
 void U2SqlQuery::bindDouble(const QString& placeholder, double val) {
-    CHECK(!hasError(), );
     query.bindValue(placeholder, val);
+}
+
+void U2SqlQuery::addBindDouble(double val) {
+    query.addBindValue(val);
 }
 
 void U2SqlQuery::bindInt64(const QString& placeholder, qint64 val) {
-    CHECK(!hasError(), );
     query.bindValue(placeholder, val);
+}
+
+void U2SqlQuery::addBindInt64(qint64 val) {
+    query.addBindValue(val);
 }
 
 void U2SqlQuery::bindBool(const QString& placeholder, bool val) {
-    CHECK(!hasError(), );
     query.bindValue(placeholder, val);
 }
 
+void U2SqlQuery::addBindBool(bool val) {
+    query.addBindValue(val);
+}
+
 void U2SqlQuery::bindBlob(const QString& placeholder, const QByteArray& blob) {
-    CHECK(!hasError(), );
     query.bindValue(placeholder, blob);
 }
 
+void U2SqlQuery::addBindBlob(const QByteArray &blob) {
+    query.addBindValue(blob);
+}
+
 void U2SqlQuery::bindZeroBlob(const QString& placeholder, int reservedSize) {
-    CHECK(!hasError(), );
     QByteArray blob(reservedSize, 0);
     bindBlob(placeholder, blob);
 }
 
-void U2SqlQuery::execute() {
-    CHECK(!hasError(), );
-    QMutexLocker locker(&db->mutex);
+void U2SqlQuery::addBindZeroBlob(int reservedSize) {
+    QByteArray blob(reservedSize, 0);
+    addBindBlob(blob);
+}
 
+void U2SqlQuery::execute() {
+    QMutexLocker locker(&db->mutex);
     query.exec();
     if (Q_UNLIKELY(query.lastError().isValid())) {
-        setError("Error: " + query.lastError().text() +
-                 "; Query: '" + query.lastQuery() + "' "
-                 + getBoundValues());
+        setError("Error: " + query.lastError().text() + "; Query: '" + query.lastQuery() + "' " + getBoundValues());
     }
 }
 
 qint64 U2SqlQuery::update() {
-    CHECK(!hasError(), -1);
-
     execute();
     CHECK(!hasError(), -1);
 
@@ -289,8 +294,6 @@ qint64 U2SqlQuery::update() {
 }
 
 qint64 U2SqlQuery::insert() {
-    CHECK(!hasError(), -1);
-
     execute();
     CHECK(!hasError(), -1);
 
@@ -302,8 +305,6 @@ qint64 U2SqlQuery::insert() {
 }
 
 U2DataId U2SqlQuery::insert(U2DataType type, const QByteArray& dbExtra) {
-    CHECK(!hasError(), emptyId);
-
     qint64 lastRowId = insert();
     CHECK(!hasError(), emptyId);
 
@@ -311,29 +312,25 @@ U2DataId U2SqlQuery::insert(U2DataType type, const QByteArray& dbExtra) {
 }
 
 qint64 U2SqlQuery::selectInt64() {
-    CHECK(!hasError(), -1);
-
     execute();
     CHECK(!hasError(), -1);
 
     if (step()) {
         return getInt64(0);
+    } else {
+        return -1;
     }
-
-    return -1;
 }
 
 qint64 U2SqlQuery::selectInt64(qint64 defaultValue) {
-    CHECK(!hasError(), defaultValue);
-
     execute();
     CHECK(!hasError(), defaultValue);
 
     if (step()) {
         return getInt64(0);
+    } else {
+        return defaultValue;
     }
-
-    return defaultValue;
 }
 
 QList<U2DataId> U2SqlQuery::selectDataIds(U2DataType type, const QByteArray& dbExtra) {
@@ -341,8 +338,9 @@ QList<U2DataId> U2SqlQuery::selectDataIds(U2DataType type, const QByteArray& dbE
 
     execute();
     CHECK(!hasError(), res);
+    res.reserve(query.size());
 
-    while(step()) {
+    while (step()) {
         U2DataId id = getDataId(0, type, dbExtra);
         res.append(id);
     }
@@ -354,8 +352,9 @@ QList<U2DataId> U2SqlQuery::selectDataIdsExt() {
 
     execute();
     CHECK(!hasError(), res);
+    res.reserve(query.size());
 
-    while(step()) {
+    while (step()) {
         U2DataId id = getDataIdExt(0);
         res.append(id);
     }
@@ -367,6 +366,7 @@ QStringList U2SqlQuery::selectStrings() {
 
     execute();
     CHECK(!hasError(), res);
+    res.reserve(query.size());
 
     while (step()) {
         QString text = getString(0);
@@ -398,7 +398,7 @@ const MysqlDbRef* U2SqlQuery::getDb() const {
 QString U2SqlQuery::getBoundValues() const {
     QString result = U2DbiL10n::tr("Bound values: ");
     const QMap<QString, QVariant> boundValues = query.boundValues();
-    foreach (const QString placeholder, boundValues.keys()) {
+    foreach (const QString &placeholder, boundValues.keys()) {
         result += placeholder + " = " + boundValues.value(placeholder).toString() + "; ";
     }
     return result;

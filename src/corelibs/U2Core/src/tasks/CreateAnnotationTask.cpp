@@ -89,14 +89,8 @@ Task::ReportResult CreateAnnotationsTask::report( ) {
     }
     stateInfo.setDescription( QString( ) );
 
-    const int brk = qMin( 500, importedFeatures.size( ) - pos );
     GTIMER( c2, t2, "CreateAnnotationsTask::report [addAnnotations]" );
-    AnnotationGroup( ao->getRootFeatureId( ), ao ).getSubgroup( groupName, false ).addFeatures( importedFeatures.mid( pos, brk ) );
-    stateInfo.progress = 100 * ( pos + brk ) / importedFeatures.size( );
-    if (pos + brk != importedFeatures.size()) {
-        pos += brk;
-        return ReportResult_CallMeAgain;
-    }
+    AnnotationGroup( ao->getRootFeatureId( ), ao ).getSubgroup( groupName, false ).addFeatures( importedFeatures );
 
     return ReportResult_Finished;
 }

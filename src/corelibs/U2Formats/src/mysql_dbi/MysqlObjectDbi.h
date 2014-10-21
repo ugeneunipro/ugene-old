@@ -148,6 +148,7 @@ public:
         The method should be overridden for DBIs with multiple clients
     */
     virtual bool isObjectInUse(const U2DataId& id, U2OpStatus& os);
+    virtual QList<U2DataId> getAllObjectsInUse(U2OpStatus &os);
 
     // Undo/redo methods
 
@@ -253,6 +254,8 @@ private:
     void removeObjectFromFolder(const U2DataId &id, const QString &folder, U2OpStatus &os);
 
     void removeObjectFromAllFolders(const U2DataId &id, U2OpStatus &os);
+
+    void removeObjectSpecificData(const U2DataId &id, U2OpStatus &os);
 };
 
 }   // namespace U2

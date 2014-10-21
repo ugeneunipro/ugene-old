@@ -356,6 +356,8 @@ public:
 
     bool removeObject(GObject* o, DocumentObjectRemovalMode removalMode = DocumentObjectRemovalMode_Deallocate);
 
+    void setObjectsInUse(const QSet<U2DataId> &objs);
+
     const QString& getName() const {return name;}
     
     void setName(const QString& newName);
@@ -451,6 +453,7 @@ protected:
     QString                     name; /* display name == short pathname, excluding the path */
     QList<GObject*>             objects;
     QHash<U2DataId, GObject *>  id2Object;
+    QSet<U2DataId>              objectsInUse;
     GHints*                     ctxState;
     QDateTime                   lastUpdateTime;
     bool                        documentOwnsDbiResources;

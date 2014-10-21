@@ -82,34 +82,52 @@ public:
     */
     void ensureDone();
 
+    /**
+        Instructs database driver that no more data will be fetched with the query until it re-executed.
+        Bound values retain their values.
+    */
+    void finish();
+
     //////////////////////////////////////////////////////////////////////////
     // param binding methods
 
     /** Binds U2DataId  */
     void bindDataId(const QString &placeholder, const U2DataId& val);
+    void addBindDataId(const U2DataId &val);
+
     void bindNull(const QString &placeholder);
+    void addBindNull();
 
     /** Binds U2DataType */
     void bindType(const QString &placeholder, U2DataType type);
+    void addBindType(U2DataType type);
 
     /** Binds 32bit integer value*/
     void bindInt32(const QString &placeholder, qint32 val);
+    void addBindInt32(qint32 val);
 
     /** Binds 64bit integer value*/
     void bindInt64(const QString &placeholder, qint64 val);
+    void addBindInt64(qint64 val);
 
     /** Binds 64bit real value*/
     void bindDouble(const QString &placeholder, double val);
+    void addBindDouble(double val);
 
     /** Binds bool value */
     void bindBool(const QString &placeholder, bool val);
+    void addBindBool(bool val);
 
     /** Binds text string */
     void bindString(const QString &placeholder, const QString& val);
+    void addBindString(const QString &val);
 
     /** Binds BLOB */
     void bindBlob(const QString &placeholder, const QByteArray& blob);
+    void addBindBlob(const QByteArray &blob);
+
     void bindZeroBlob(const QString &placeholder, int reservedSize);
+    void addBindZeroBlob(int reservedSize);
 
     //////////////////////////////////////////////////////////////////////////
     // result retrieval methods

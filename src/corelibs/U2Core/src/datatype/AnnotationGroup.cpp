@@ -253,10 +253,10 @@ AnnotationGroup AnnotationGroup::getSubgroup( const QString &path, bool create )
     const QString subgroupName = ( 0 > separatorFirstPosition ) ? path
         : ( ( 0 == separatorFirstPosition ) ? path.mid( 1 ) : path.left( separatorFirstPosition ) );
 
+    const U2DbiRef dbiRef = parentObject->getEntityRef( ).dbiRef;
     AnnotationGroup subgroup( *this );
     U2OpStatusImpl os;
-    const QList<U2Feature> subfeatures = U2FeatureUtils::getSubGroups( id,
-        parentObject->getEntityRef( ).dbiRef, os, Nonrecursive );
+    const QList<U2Feature> subfeatures = U2FeatureUtils::getSubGroups( id, dbiRef, os, Nonrecursive );
     SAFE_POINT_OP( os, subgroup );
     foreach ( const U2Feature &feature, subfeatures ) {
         if ( feature.name == subgroupName ) {
@@ -265,9 +265,8 @@ AnnotationGroup AnnotationGroup::getSubgroup( const QString &path, bool create )
         }
     }
     if ( id == subgroup.id && create ) {
-        const U2Feature subgroupFeature = U2FeatureUtils::exportAnnotationGroupToFeature(
-            subgroupName, parentObject->getRootFeatureId( ), id,
-            parentObject->getEntityRef( ).dbiRef, os );
+        const U2Feature subgroupFeature = U2FeatureUtils::exportAnnotationGroupToFeature( subgroupName,
+            parentObject->getRootFeatureId( ), id, dbiRef, os );
         SAFE_POINT_OP( os, subgroup );
         subgroup = AnnotationGroup( subgroupFeature.id, parentObject );
 

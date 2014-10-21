@@ -102,6 +102,7 @@ void ProjectUpdater::readData() {
                 }
             }
             U2OpStatus2Log os;
+            fetchObjectsInUse(dbiRef, os);
             DocumentFoldersUpdate update(dbiRef, os);
             if (!os.hasError()) {
                 QMutexLocker lock(&mutex);
@@ -117,9 +118,24 @@ void ProjectUpdater::readData() {
     }
 }
 
+void ProjectUpdater::fetchObjectsInUse(const U2DbiRef &dbiRef, U2OpStatus &os) {
+    DbiConnection connection(dbiRef, os);
+    SAFE_POINT(NULL != connection.dbi, "Invalid database connection", );
+    U2ObjectDbi *oDbi = connection.dbi->getObjectDbi();
+    SAFE_POINT(NULL != oDbi, "Invalid database connection", );
+
+    const QSet<U2DataId> usedObjects = oDbi->getAllObjectsInUse(os).toSet();
+    CHECK_OP(os, );
+    foreach (Document *doc, docs) {
+        if (doc->getDbiRef() == dbiRef) {
+            doc->setObjectsInUse(usedObjects);
+        }
+    }
+}
+
 void ProjectUpdater::updateAccessedObjects() {
     const QList<GObjectViewWindow *> activeViews = GObjectViewUtils::getAllActiveViews();
-    QMap<U2DbiRef, DbiConnection *> dbiRef2Connections; // when changing the code below, watch out mem leaks
+    QMap<U2DbiRef, DbiConnection *> dbiRef2Connections; // when changing the code below, beware mem leaks
     U2OpStatus2Log os;
     foreach (GObjectViewWindow *view, activeViews) {
         foreach (GObject *object, view->getObjects()) {

@@ -60,10 +60,8 @@ public:
 
     virtual U2DbiIterator<U2DataId>* getObjectsByVisualName(const QString& visualName, U2DataType type, U2OpStatus& os);
 
-
     // Read methods for folders
 
-    
     /**  Returns list of folders stored in database. 
         Folders are separated by '/' character.
         At least one root folder is required. 
@@ -81,8 +79,6 @@ public:
     /**  Returns all folders this object must be shown in  */
     virtual QStringList getObjectFolders(const U2DataId& objectId, U2OpStatus& os);
 
-
-
     // Write methods for objects
 
     /** 
@@ -98,7 +94,6 @@ public:
     virtual bool removeObjects(const QList<U2DataId>& dataIds, U2OpStatus& os);
 
     virtual void renameObject(const U2DataId &id, const QString &newName, U2OpStatus &os);
-
 
     // Write methods for folders
     
@@ -121,7 +116,6 @@ public:
         to the specified folder or any of its child folders
     */
     virtual qint64 getFolderGlobalVersion(const QString& folder, U2OpStatus& os);
-
 
     /** Adds objects to the specified folder.
     All objects must exist and have a top-level type.*/
@@ -148,7 +142,6 @@ public:
     /** Returns "true", if there are steps to undo/redo modifications of the object*/
     virtual bool canUndo(const U2DataId& objId, U2OpStatus& os);
     virtual bool canRedo(const U2DataId& objId, U2OpStatus& os);
-   
 
     //////////////////////////////////////////////////////////////////////////
     // Helper methods
@@ -230,6 +223,8 @@ private:
     void removeObjectFromFolder(const U2DataId &id, const QString &folder, U2OpStatus &os);
 
     void removeObjectFromAllFolders(const U2DataId &id, U2OpStatus &os);
+
+    void removeObjectSpecificData(const U2DataId &id, U2OpStatus &os);
 };
 
 

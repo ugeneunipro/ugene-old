@@ -116,6 +116,8 @@ public:
 
     virtual bool isReadOnly() const;
 
+    static const int BIND_PARAMETERS_LIMIT;
+
 private:
     void createHandle(const QHash<QString, QString>& props);
     void open(const QHash<QString, QString>& props, U2OpStatus& os);

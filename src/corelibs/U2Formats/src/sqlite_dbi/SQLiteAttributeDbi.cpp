@@ -47,7 +47,7 @@ void SQLiteAttributeDbi::initSqlSchema(U2OpStatus& os) {
         "version INTEGER NOT NULL, name TEXT NOT NULL, "
         "FOREIGN KEY(object) REFERENCES Object(id) ON DELETE CASCADE)" , db, os).execute();
 
-    //TODO: check if index is efficient for gettting attribute for specific object
+    //TODO: check if index is efficient for getting attribute for specific object
     SQLiteQuery("CREATE INDEX Attribute_name on Attribute(name)" , db, os).execute();
     SQLiteQuery("CREATE INDEX Attribute_object on Attribute(object)" , db, os).execute();
     

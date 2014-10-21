@@ -156,6 +156,8 @@ public:
 
     virtual bool isReadOnly() const;
 
+    static const int BIND_PARAMETERS_LIMIT;
+
 private:
     QString getLastErrorMessage(int rc);
 

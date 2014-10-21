@@ -42,6 +42,8 @@
 
 namespace U2 {
 
+const int MysqlDbi::BIND_PARAMETERS_LIMIT = USHRT_MAX;
+
 MysqlDbi::MysqlDbi()
     : U2AbstractDbi(MysqlDbiFactory::ID), tablesAreCreated(false)
 {

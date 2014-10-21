@@ -29,7 +29,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DeleteObjectsTask.h>
-#include <U2Core/DocumentUtils.h>
 #include <U2Core/GHints.h>
 #include <U2Core/GObject.h>
 #include <U2Core/GObjectUtils.h>
@@ -282,6 +281,10 @@ GObject * Document::getObjectById(const U2DataId &id) const {
     return id2Object.value(id, NULL);
 }
 
+void Document::setObjectsInUse(const QSet<U2DataId> &objs) {
+    objectsInUse = objs;
+}
+
 void Document::addObject(GObject* obj){
     SAFE_POINT(obj != NULL, "Object is NULL", );
     SAFE_POINT(obj->getDocument() == NULL, "Object already belongs to some document", );
@@ -325,13 +328,8 @@ bool Document::removeObject(GObject* obj, DocumentObjectRemovalMode removalMode)
 bool Document::_removeObject(GObject* obj, bool deleteObjects) {
     SAFE_POINT(obj->getParentStateLockItem() == this, "Invalid parent document!", false);
 
-    if (obj->entityRef.isValid()) {
-        U2OpStatus2Log os;
-        DbiConnection con(obj->entityRef.dbiRef, os);
-        SAFE_POINT_OP(os, false);
-        if (con.dbi->getObjectDbi()->isObjectInUse(obj->entityRef.entityId, os)) {
-            return false;
-        }
+    if (obj->entityRef.isValid() && objectsInUse.contains(obj->getEntityRef().entityId)) {
+        return false;
     }
 
     obj->setModified(false);

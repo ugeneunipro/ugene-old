@@ -38,4 +38,8 @@ bool U2ObjectDbi::isObjectInUse(const U2DataId &/*id*/, U2OpStatus &/*os*/) {
     return false;
 }
 
+QList<U2DataId> U2ObjectDbi::getAllObjectsInUse(U2OpStatus &/*os*/) {
+    return QList<U2DataId>();
+}
+
 } // namespace U2

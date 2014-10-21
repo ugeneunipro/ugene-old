@@ -1127,9 +1127,7 @@ bool ProjectTreeController::removeObjects(const QList<GObject*> &objs, const QLi
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_onObjRemovalTaskFinished()));
         AppContext::getTaskScheduler()->registerTopLevelTask(t);
     } else {
-        foreach (GObject *obj, objects2Doc.keys()) {
-            delete obj;
-        }
+        qDeleteAll(objects2Doc.keys());
     }
 
     return deletedSuccessfully;

@@ -84,6 +84,8 @@ void MysqlObjectDbi::initSqlSchema(U2OpStatus& os) {
               "FOREIGN KEY(folder) REFERENCES Folder(id) ON DELETE CASCADE,"
               "FOREIGN KEY(object) REFERENCES Object(id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8", db, os).execute();
     CHECK_OP(os, );
+    U2SqlQuery("CREATE INDEX FolderContent_object on FolderContent(object)", db, os).execute();
+    CHECK_OP(os, );
 
     createFolder(ROOT_FOLDER, os);
     CHECK_OP(os, );
@@ -279,21 +281,67 @@ bool MysqlObjectDbi::removeObject(const U2DataId &dataId, U2OpStatus &os) {
     return removeObject(dataId, false, os);
 }
 
+namespace {
+
+QString createDeleteObjectQueryStr(int objectCount) {
+    static const QString queryStartStr("DELETE FROM Object WHERE id IN (");
+    static const QString bindingStr("?,");
+    static const QString lastBindingStr("?)");
+
+    QString result(queryStartStr);
+    result.append(bindingStr.repeated(objectCount - 1)).append(lastBindingStr);
+    return result;
+}
+
+}
+
 bool MysqlObjectDbi::removeObjects(const QList<U2DataId>& dataIds, bool force, U2OpStatus& os) {
+    CHECK(!dataIds.isEmpty(), true);
+
     MysqlTransaction t(db, os);
     Q_UNUSED(t);
 
-    bool globalResult = true;
-    foreach (const U2DataId &id, dataIds) {
-        bool localResult = removeObjectImpl(id, force, os);
-        if (globalResult && !localResult) {
-            globalResult = false;
+    // remove specific objects' data first
+    foreach(const U2DataId &objectId, dataIds) {
+        removeObjectSpecificData(objectId, os);
+        CHECK_OP(os, false);
+    }
+
+    // then remove general ones
+    const int idsCount = dataIds.count();
+    const int residualBindQueryCount = idsCount % MysqlDbi::BIND_PARAMETERS_LIMIT;
+    const int fullBindQueryCount = idsCount / MysqlDbi::BIND_PARAMETERS_LIMIT;
+
+    // prepare query strings
+    const QString residualQueryStr = createDeleteObjectQueryStr(residualBindQueryCount);
+    QString fullQueryStr;
+    if (fullBindQueryCount > 0) {
+        fullQueryStr = createDeleteObjectQueryStr(MysqlDbi::BIND_PARAMETERS_LIMIT);
+    }
+
+    // execute deletion of residual objects
+    U2SqlQuery residualDeletionQuery(residualQueryStr, db, os);
+    for (int i = 0; i < residualBindQueryCount; ++i) {
+        residualDeletionQuery.addBindDataId(dataIds.at(i));
+    }
+    CHECK(residualBindQueryCount == residualDeletionQuery.update(), false);
+    CHECK_OP(os, false);
+
+    // execute deletion of other objects in a batch fashion
+    if (fullBindQueryCount > 0) {
+        U2SqlQuery fullDeletionQuery(fullQueryStr, db, os);
+        for (int row = 0; row < fullBindQueryCount; ++row) {
+            for (int col = 0; col < MysqlDbi::BIND_PARAMETERS_LIMIT; ++col) {
+                fullDeletionQuery.addBindDataId(dataIds.at(residualBindQueryCount + row * MysqlDbi::BIND_PARAMETERS_LIMIT + col));
+            }
+            CHECK(residualBindQueryCount == fullDeletionQuery.update(), false);
+            CHECK_OP(os, false);
+            fullDeletionQuery.finish();
         }
-        CHECK_OP_BREAK(os);
     }
 
     onFolderUpdated("");
-    return globalResult;
+    return !os.hasError();
 }
 
 bool MysqlObjectDbi::removeObjects(const QList<U2DataId> &dataIds, U2OpStatus &os) {
@@ -367,22 +415,12 @@ bool MysqlObjectDbi::removeFolder(const QString& folder, U2OpStatus& os) {
     }
 
     // remove all objects from folder
-    qint64 nObjects = countObjects(canonicalFolder, os);
+    QList<U2DataId> objects = getObjects(canonicalFolder, 0, U2DbiOptions::U2_DBI_NO_LIMIT, os);
     CHECK_OP(os, false);
-    const int nObjectsPerIteration = 1000;
-
-    for (int i = 0; i < nObjects; i += nObjectsPerIteration) {
-        QList<U2DataId> objects = getObjects(canonicalFolder, i, nObjectsPerIteration, os);
-        CHECK_OP(os, false);
-
-        // Remove all objects in the folder
-        if (!objects.isEmpty()) {
-            bool deleted = removeObjects(objects, false, os);
-            CHECK_OP(os, false);
-            if (result && !deleted) {
-                result = false;
-            }
-        }
+    bool deleted = removeObjects(objects, false, os);
+    CHECK_OP(os, false);
+    if (result && !deleted) {
+        result = false;
     }
 
     if (result) {
@@ -889,12 +927,18 @@ void MysqlObjectDbi::updateObjectType(U2Object &obj, U2OpStatus &os) {
 }
 
 bool MysqlObjectDbi::isObjectInUse(const U2DataId& id, U2OpStatus& os) {
-    static const QString queryString = "SELECT COUNT(*) FROM ObjectAccessTrack WHERE object = :object "
-        "AND lastAccessTime + INTERVAL " + QString::number(OBJ_USAGE_CHECK_INTERVAL)
-        + " SECOND > NOW()";
+    static const QString queryString = QString("SELECT COUNT(*) FROM ObjectAccessTrack "
+        "WHERE object = :object AND lastAccessTime + INTERVAL %1 SECOND > NOW()").arg(OBJ_USAGE_CHECK_INTERVAL);
     U2SqlQuery q(queryString, db, os);
     q.bindDataId(":object", id);
     return 1 == q.selectInt64();
+}
+
+QList<U2DataId> MysqlObjectDbi::getAllObjectsInUse(U2OpStatus &os) {
+    static const QString queryString = QString("SELECT oat.object, o.type, '' FROM ObjectAccessTrack AS oat, Object AS o "
+        "WHERE lastAccessTime + INTERVAL %1 SECOND > NOW() AND o.id = oat.object").arg(OBJ_USAGE_CHECK_INTERVAL);
+    U2SqlQuery q(queryString, db, os);
+    return q.selectDataIdsExt();
 }
 
 void MysqlObjectDbi::removeObjectFromFolder(const U2DataId &id, const QString &folder, U2OpStatus &os) {
@@ -931,10 +975,19 @@ bool MysqlObjectDbi::removeObjectImpl(const U2DataId& objectId, bool force, U2Op
         return false;
     }
 
+    removeObjectSpecificData(objectId, os);
+    CHECK_OP(os, false);
+
+    MysqlUtils::remove("Object", "id", objectId, 1, db, os);
+
+    return !os.hasError();
+}
+
+void MysqlObjectDbi::removeObjectSpecificData(const U2DataId &objectId, U2OpStatus &os) {
     U2DataType type = dbi->getEntityTypeById(objectId);
     if (!U2Type::isObjectType(type)) {
         os.setError(U2DbiL10n::tr("Not an object, id: %1, type: %2").arg(U2DbiUtils::text(objectId)).arg(type));
-        return false;
+        return;
     }
 
     switch (type) {
@@ -945,7 +998,7 @@ bool MysqlObjectDbi::removeObjectImpl(const U2DataId& objectId, bool force, U2Op
     case U2Type::Msa:
         dbi->getMysqlMsaDbi()->deleteRowsData(objectId, os);
         break;
-    case U2Type::AnnotationTable :
+    case U2Type::AnnotationTable:
         dbi->getMysqlFeatureDbi()->removeAnnotationTableData(objectId, os);
         break;
     case U2Type::Assembly:
@@ -959,11 +1012,6 @@ bool MysqlObjectDbi::removeObjectImpl(const U2DataId& objectId, bool force, U2Op
             os.setError(U2DbiL10n::tr("Unknown object type! Id: %1, type: %2").arg(U2DbiUtils::text(objectId)).arg(type));
         }
     }
-    CHECK_OP(os, false);
-
-    MysqlUtils::remove("Object", "id", objectId, 1, db, os);
-
-    return !os.hasError();
 }
 
 void MysqlObjectDbi::removeObjectAttributes(const U2DataId& id, U2OpStatus& os) {

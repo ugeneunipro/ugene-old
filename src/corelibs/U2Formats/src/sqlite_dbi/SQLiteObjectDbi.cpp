@@ -87,6 +87,8 @@ void SQLiteObjectDbi::initSqlSchema(U2OpStatus& os) {
                         "FOREIGN KEY(folder) REFERENCES Folder(id) ON DELETE CASCADE,"
                         "FOREIGN KEY(object) REFERENCES Object(id) ON DELETE CASCADE)", db, os).execute();
     CHECK_OP(os, );
+    SQLiteQuery("CREATE INDEX FolderContent_object on FolderContent(object)", db, os).execute();
+    CHECK_OP(os, );
 
     createFolder(U2ObjectDbi::ROOT_FOLDER, os);
 }
@@ -150,17 +152,73 @@ bool SQLiteObjectDbi::removeObject(const U2DataId &dataId, U2OpStatus &os) {
     return removeObject(dataId, false, os);
 }
 
-bool SQLiteObjectDbi::removeObjects(const QList<U2DataId>& dataIds, bool /*force*/, U2OpStatus& os) {
-    bool globalResult = true;
-    foreach (U2DataId id, dataIds) {
-        bool localResult = removeObjectImpl(id, os);
-        if (globalResult && !localResult) {
-            globalResult = false;
-        }
-        CHECK_OP_BREAK(os);
+namespace {
+
+QString createDeleteObjectQueryStr(int objectCount) {
+    static const QString queryStartStr("DELETE FROM Object WHERE id IN (");
+    static const int bindingStrLength = 5; // five characters for ",?nnn"
+
+    QString result(queryStartStr);
+    result.reserve(result.length() + bindingStrLength * objectCount);
+    for (int placeholderCount = 0; placeholderCount < objectCount; ) {
+        const QString bindingStr = QString("?%1,").arg(++placeholderCount);
+        result.append(bindingStr);
     }
+    result.replace(result.length() - 1, 1, ')');
+    return result;
+}
+
+}
+
+bool SQLiteObjectDbi::removeObjects(const QList<U2DataId>& dataIds, bool /*force*/, U2OpStatus& os) {
+    CHECK(!dataIds.isEmpty(), true);
+
+    SQLiteTransaction t(db, os);
+    Q_UNUSED(t);
+
+    // remove specific objects' data first
+    foreach(const U2DataId &objectId, dataIds) {
+        removeObjectSpecificData(objectId, os);
+        CHECK_OP(os, false);
+    }
+
+    // then remove general ones
+    const int idsCount = dataIds.count();
+    const int residualBindQueryCount = idsCount % SQLiteDbi::BIND_PARAMETERS_LIMIT;
+    const int fullBindQueryCount = idsCount / SQLiteDbi::BIND_PARAMETERS_LIMIT;
+
+    QString fullQueryStr;
+    QString residualQueryStr;
+    residualQueryStr = createDeleteObjectQueryStr(residualBindQueryCount);
+    if (fullBindQueryCount > 0) {
+        fullQueryStr = createDeleteObjectQueryStr(SQLiteDbi::BIND_PARAMETERS_LIMIT);
+    }
+
+    // execute deletion of residual objects
+    SQLiteQuery residualDeletionQuery(residualQueryStr, db, os);
+    for (int i = 0; i < residualBindQueryCount; ++i) {
+        residualDeletionQuery.bindDataId(i + 1, dataIds.at(i));
+    }
+    residualDeletionQuery.update(residualBindQueryCount);
+    CHECK_OP(os, false);
+
+    // execute deletion of objects by parts of `SQLiteDbi::BIND_PARAMETERS_LIMIT` in size
+    if (fullBindQueryCount > 0) {
+        SQLiteQuery fullDeletionQuery(fullQueryStr, db, os);
+        for (int currentFullQuery = 0; currentFullQuery < fullBindQueryCount; ++currentFullQuery) {
+            const int firstBindingPos = residualBindQueryCount + currentFullQuery * SQLiteDbi::BIND_PARAMETERS_LIMIT;
+            const int lastBindingPos = residualBindQueryCount + (currentFullQuery + 1) * SQLiteDbi::BIND_PARAMETERS_LIMIT;
+            for (int idNum = firstBindingPos, paramNum = 1; idNum < lastBindingPos; ++idNum, ++paramNum) {
+                fullDeletionQuery.bindDataId(paramNum, dataIds.at(idNum));
+            }
+            fullDeletionQuery.update(SQLiteDbi::BIND_PARAMETERS_LIMIT);
+            CHECK_OP(os, false);
+            fullDeletionQuery.reset();
+        }
+    }
+
     onFolderUpdated("");
-    return globalResult;
+    return !os.hasError();
 }
 
 bool SQLiteObjectDbi::removeObjects(const QList<U2DataId> &dataIds, U2OpStatus &os) {
@@ -214,16 +272,24 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, U2OpStatus& os)
     SQLiteTransaction t(db, os);
     Q_UNUSED(t);
 
+    removeObjectSpecificData(objectId, os);
+    CHECK_OP(os, false);
+
+    SQLiteUtils::remove("Object", "id", objectId, 1, db, os);
+    return !os.hasError();
+}
+
+void SQLiteObjectDbi::removeObjectSpecificData(const U2DataId &objectId, U2OpStatus &os) {
     U2DataType type = getRootDbi()->getEntityTypeById(objectId);
     if (!U2Type::isObjectType(type)) {
         os.setError(U2DbiL10n::tr("Not an object! Id: %1, type: %2").arg(U2DbiUtils::text(objectId)).arg(type));
-        return false;
+        return;
     }
 
     switch (type) {
         case U2Type::Sequence:
         case U2Type::VariantTrack:
-            // nothing has to be done for objects of these types
+            // nothing has to be done for object of these types
             break;
         case U2Type::Msa:
             dbi->getSQLiteMsaDbi()->deleteRowsData(objectId, os);
@@ -242,10 +308,7 @@ bool SQLiteObjectDbi::removeObjectImpl(const U2DataId& objectId, U2OpStatus& os)
                 os.setError(U2DbiL10n::tr("Unknown object type! Id: %1, type: %2").arg(U2DbiUtils::text(objectId)).arg(type));
             }
     }
-    CHECK_OP(os, false);
-
-    SQLiteUtils::remove("Object", "id", objectId, 1, db, os);
-    return !os.hasError();
+    CHECK_OP(os, );
 }
 
 void SQLiteObjectDbi::removeObjectAttributes(const U2DataId& id, U2OpStatus& os) {

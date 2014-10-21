@@ -471,10 +471,10 @@ void SQLiteMsaDbi::removeMsaRowAndGaps(const U2DataId& msaId, qint64 rowId, bool
 }
 
 void SQLiteMsaDbi::deleteRowsData(const U2DataId& msaId, U2OpStatus& os) {
-    static const QString queryString = "DELETE FROM Object WHERE id IN (SELECT sequence FROM MsaRow WHERE msa = ?1)";
-    SQLiteQuery q(queryString, db, os);
-    q.bindDataId(1, msaId);
-    q.execute();
+    static const QString deleteObjStr = "DELETE FROM Object WHERE id IN (SELECT sequence FROM MsaRow WHERE msa = ?1)";
+    SQLiteQuery deleteObjQeury(deleteObjStr, db, os);
+    deleteObjQeury.bindDataId(1, msaId);
+    deleteObjQeury.execute();
 }
 
 U2Msa SQLiteMsaDbi::getMsaObject(const U2DataId& msaId, U2OpStatus& os) {

@@ -30,33 +30,30 @@
 namespace U2 {
 
 namespace {
-    class ConnectionHelper {
-    public:
-        ~ConnectionHelper() {
-            qDeleteAll(opBlocks);
-            qDeleteAll(connections);
+
+class ProgressUpdater {
+    U2OpStatus &os;
+    const int size;
+    const int percentStep;
+    int ticksCount;
+    int currentStep;
+public:
+    ProgressUpdater(U2OpStatus &os, int size)
+        : os(os), size(size), percentStep(size / 100), ticksCount(0), currentStep(0)
+    {
+        os.setProgress(0);
+    }
+    inline void tick() {
+        SAFE_POINT_EXT(size > 0, os.setError("Invalid task progress"), );
+        ticksCount++;
+        currentStep++;
+        if (currentStep >= percentStep) {
+            currentStep = 0;
+            os.setProgress(ticksCount * 100 / size);
         }
+    }
+};
 
-        DbiConnection * getConnection(const U2DbiRef &dbiRef, U2OpStatus &os) {
-            foreach (DbiConnection *con, connections) {
-                if (con->dbi->getDbiRef() == dbiRef) {
-                    return con;
-                }
-            }
-
-            DbiConnection *con = new DbiConnection(dbiRef, os);
-            connections.append(con);
-            CHECK_OP(os, NULL);
-
-            opBlocks.append(new DbiOperationsBlock(dbiRef, os));
-            CHECK_OP(os, NULL);
-
-            return con;
-        }
-
-        QList<DbiConnection*> connections;
-        QList<DbiOperationsBlock*> opBlocks;
-    };
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -67,59 +64,28 @@ DeleteObjectsTask::DeleteObjectsTask(const QList<GObject *> &objs)
     : Task(tr("Delete objects"), TaskFlag_None)
 {
     tpm = Progress_Manual;
+
     foreach (GObject *obj, objs) {
         CHECK_EXT(NULL != obj, stateInfo.setError("Invalid object detected!"), );
-        objectRefs.append(obj->getEntityRef());
+        const U2EntityRef &objRef = obj->getEntityRef();
+        if (!dbiRef2Objs.contains(objRef.dbiRef)) {
+            dbiRef2Objs.insert(objRef.dbiRef, QList<U2DataId>());
+        }
+        dbiRef2Objs[objRef.dbiRef].append(objRef.entityId);
     }
 }
 
-namespace {
-    class ProgressUpdater {
-        U2OpStatus &os;
-        const int size;
-        const int percentStep;
-        int ticksCount;
-        int currentStep;
-    public:
-        ProgressUpdater(U2OpStatus &os, int size)
-            : os(os), size(size), percentStep(size / 100), ticksCount(0), currentStep(0)
-        {
-            os.setProgress(0);
-        }
-        inline void tick() {
-            SAFE_POINT_EXT(size > 0, os.setError("Division by zero"), );
-            ticksCount++;
-            currentStep++;
-            if (currentStep >= percentStep) {
-                currentStep = 0;
-                os.setProgress(ticksCount*100 / size);
-            }
-        }
-    };
-}
-
 void DeleteObjectsTask::run() {
-    ConnectionHelper helper;
-
-    ProgressUpdater progressUpdater(stateInfo, objectRefs.size());
-    foreach (const U2EntityRef &objRef, objectRefs) {
-        progressUpdater.tick();
-        if (!objRef.isValid()) {
-            continue;
-        }
-
-        const U2DbiRef dbiRef = objRef.dbiRef;
-        if (!dbiRef.isValid()) {
-            continue;
-        }
-
-        DbiConnection *con = helper.getConnection(dbiRef, stateInfo);
+    foreach (const U2DbiRef &dbiRef, dbiRef2Objs.keys()) {
+        DbiConnection con(dbiRef, stateInfo);
         CHECK_OP(stateInfo, );
 
-        if (con->dbi->getFeatures().contains(U2DbiFeature_RemoveObjects)) {
-            con->dbi->getObjectDbi()->removeObject(objRef.entityId, stateInfo);
+        if (con.dbi->getFeatures().contains(U2DbiFeature_RemoveObjects)) {
+            con.dbi->getObjectDbi()->removeObjects(dbiRef2Objs[dbiRef], stateInfo);
             CHECK_OP(stateInfo, );
         }
+
+        stateInfo.setProgress(100 * dbiRef2Objs[dbiRef].count() / dbiRef2Objs.count());
     }
 }
 
@@ -128,7 +94,7 @@ void DeleteObjectsTask::run() {
 //////////////////////////////////////////////////////////////////////////
 
 DeleteFoldersTask::DeleteFoldersTask(const QList<Folder> &folders)
-    : Task(tr("Delete objects"), TaskFlag_None)
+    : Task(tr("Delete folders"), TaskFlag_None)
 {
     tpm = Progress_Manual;
     foreach (const Folder &folder, folders) {
@@ -141,15 +107,13 @@ DeleteFoldersTask::DeleteFoldersTask(const QList<Folder> &folders)
 }
 
 void DeleteFoldersTask::run() {
-    ConnectionHelper helper;
-
     ProgressUpdater progressUpdater(stateInfo, dbi2Path.size());
     foreach (const U2DbiRef &dbiRef, dbi2Path.keys()) {
-        foreach (const QString &path, dbi2Path.values(dbiRef)) {
-            DbiConnection *con = helper.getConnection(dbiRef, stateInfo);
-            CHECK_OP(stateInfo, );
+        DbiConnection con(dbiRef, stateInfo);
+        CHECK_OP(stateInfo, );
 
-            con->dbi->getObjectDbi()->removeFolder(path, stateInfo);
+        foreach (const QString &path, dbi2Path.values(dbiRef)) {
+            con.dbi->getObjectDbi()->removeFolder(path, stateInfo);
         }
         progressUpdater.tick();
     }

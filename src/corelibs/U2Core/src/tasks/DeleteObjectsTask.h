@@ -38,7 +38,7 @@ public:
     void run();
 
 private:
-    QList<U2EntityRef> objectRefs;
+    QMap<U2DbiRef, QList<U2DataId> > dbiRef2Objs;
 };
 
 class U2CORE_EXPORT DeleteFoldersTask : public Task {
