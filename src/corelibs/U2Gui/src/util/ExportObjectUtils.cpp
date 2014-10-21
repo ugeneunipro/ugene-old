@@ -163,23 +163,32 @@ Task * ExportObjectUtils::saveAnnotationsTask(const QString &filepath, const Doc
     CHECK_OP( os, NULL );
 
     // object and annotations will be deleted when savedoc task will delete doc
-    const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
-    CHECK_OP( os, NULL );
-    AnnotationTableObject *att = new AnnotationTableObject( "exported_annotations", dbiRef );
-    bool setAttName = false;
+    QMap<QString, AnnotationTableObject*> annTables;
     foreach ( const Annotation &a, annList ) {
         const AnnotationTableObject *parentObject = a.getGObject( );
-        if ( !setAttName && NULL != parentObject ) {
-            const QString newName = parentObject->getGObjectName( );
-            SAFE_POINT( !newName.isEmpty( ), "Empty annotation name detected!", NULL );
-            att->setGObjectName( newName );
-            setAttName = true;
+        if (parentObject != NULL) {
+            QString objName = parentObject->getGObjectName();
+            AnnotationTableObject *att = NULL;
+            if (annTables.contains(objName)) {
+                att = annTables.value(objName);
+            } else {
+                const U2DbiRef dbiRef = AppContext::getDbiRegistry( )->getSessionTmpDbiRef( os );
+                CHECK_OP( os, NULL );
+                att = new AnnotationTableObject( objName, dbiRef );
+                foreach (GObjectRelation objRel, parentObject->getObjectRelations()) {
+                    att->addObjectRelation(objRel);
+                }
+                doc->addObject( att );
+                annTables.insert(objName, att);
+            }
+            const QString groupName = a.getGroup( ).getName( );
+            att->addAnnotation( a.getData( ), groupName );
         }
-        const QString groupName = a.getGroup( ).getName( );
-        att->addAnnotation( a.getData( ), groupName );
     }
-    att->setModified( false );
-    doc->addObject( att );
+
+    foreach (AnnotationTableObject* att, annTables.values()) {
+        att->setModified( false );
+    }
     return new SaveDocumentTask( doc, fl, DocumentUtils::getNewDocFileNameExcludesHint( ) );
 }
 

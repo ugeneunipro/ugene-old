@@ -151,11 +151,18 @@ QMap<QString, QList<AnnotationData> > GTFFormat::parseDocument( IOAdapter *io, U
     int length;
     QScopedArrayPointer<char> buff( new char[READ_BUFF_SIZE] );
     QString qstrbuf;
-    QStringList fields;
 
     bool fileIsValid = true;
     int lineNumber = 1;
     while ( ( length = readGTFLine( qstrbuf, io, buff ) ) > 0 ) {
+        if (qstrbuf.startsWith("track")){ //skip comments
+            lineNumber++;
+            continue;
+        }
+        if (qstrbuf.startsWith("browser")) {
+            lineNumber++;
+            continue;
+        }
         // Parse and validate the line
         GTFLineValidateFlags validationStatus;
         GTFLineData gtfLineData = parseAndValidateLine(qstrbuf, validationStatus);
@@ -181,7 +188,7 @@ QMap<QString, QList<AnnotationData> > GTFFormat::parseDocument( IOAdapter *io, U
         if (validationStatus.isFileInvalid()) {
             fileIsValid = false;
         }
-        
+
         // Verify the feature field
         if (validationStatus.isIncorrectFeatureField()) {
             ioLog.trace(tr("GTF parsing error: unexpected value of the \"feature\""
@@ -197,8 +204,6 @@ QMap<QString, QList<AnnotationData> > GTFFormat::parseDocument( IOAdapter *io, U
 
 
         // Add qualifiers
-        annotData.qualifiers << U2Qualifier(CHROMOSOME, gtfLineData.seqName);
-
         if (NO_VALUE_STR != gtfLineData.source) {
             annotData.qualifiers << U2Qualifier(SOURCE_QUALIFIER_NAME, gtfLineData.source);
         }
@@ -257,12 +262,8 @@ QMap<QString, QList<AnnotationData> > GTFFormat::parseDocument( IOAdapter *io, U
             ioLog.trace(tr("GTF parsing error: incorrect strand"
                 " value \"%1\" at line %2!").arg(gtfLineData.strand).arg(lineNumber));
         }
-        else if ("+" == gtfLineData.strand) {
-            annotData.qualifiers << U2Qualifier(STRAND_QUALIFIER_NAME, L10N::directStrandStr());
-        }
         else if ("-" == gtfLineData.strand) {
             annotData.setStrand(U2Strand::Complementary);
-            annotData.qualifiers << U2Qualifier(STRAND_QUALIFIER_NAME, L10N::complementStrandStr());
         }
 
         // Append the result
@@ -289,7 +290,7 @@ void GTFFormat::load( IOAdapter *io, QList<GObject *> &objects, const U2DbiRef &
     QMultiMap<QString, QList<AnnotationData> >::const_iterator iter = annotationsMap.constBegin();
     while (iter != annotationsMap.constEnd()) {
         const QString& sequenceName = iter.key();
-       
+
         // Get or create the annotations table
         QString annotTableName = sequenceName + FEATURES_TAG;
         AnnotationTableObject *annotTable = NULL;
@@ -342,7 +343,7 @@ FormatCheckResult GTFFormat::checkRawData(const QByteArray &rawData, const GUrl 
     int numToIterate;
     int HUGE_DATA = 65536;
     if ((size < HUGE_DATA) || (fileLines.size() == 1)) {
-        numToIterate = fileLines.size(); 
+        numToIterate = fileLines.size();
     }
     else {
         // Skip the last line as it can be incomplete
@@ -562,6 +563,17 @@ void GTFFormat::storeDocument( Document *doc, IOAdapter *io, U2OpStatus &os ) {
         AnnotationTableObject *annTable = qobject_cast<AnnotationTableObject *>(annotTable);
         QList<Annotation> annotationsList = annTable->getAnnotations( );
 
+        QString annotTableName;
+        QList<GObjectRelation> relations = annTable->findRelatedObjectsByType(GObjectTypes::SEQUENCE);
+        if (relations.size() == 1) {
+            annotTableName = relations.first().ref.objName;
+        } else {
+            annotTableName = annotTable->getGObjectName();
+            if (annotTableName.endsWith(FEATURES_TAG)) {
+                annotTableName.chop(QString(FEATURES_TAG).size());
+            }
+        }
+
         foreach ( const Annotation &annot, annotationsList ) {
             QString annotName = annot.getName( );
             if (annotName == U1AnnotationUtils::lowerCaseAnnotationName ||
@@ -574,17 +586,11 @@ void GTFFormat::storeDocument( Document *doc, IOAdapter *io, U2OpStatus &os ) {
             QVector<U2Region> annotRegions = annot.getRegions( );
             QVector<U2Qualifier> annotQualifiers = annot.getQualifiers( );
 
-            // Joined annotations are currently stored as other annotations (we do not store that they are joined)
-            foreach (const U2Region region, annotRegions) {
-                QString annotTableName = annotTable->getGObjectName();
-                if (annotTableName.endsWith(FEATURES_TAG)) {
-                    lineFields[GTF_SEQ_NAME_INDEX] = 
-                        annotTableName.left(annotTableName.size() - QString(FEATURES_TAG).size());
-                }
-                else {
-                    lineFields[GTF_SEQ_NAME_INDEX] = annotTableName;
-                }
+            lineFields[GTF_SEQ_NAME_INDEX] = annotTableName;
+            lineFields[GTF_STRAND_INDEX] = (annot.getStrand().isCompementary() ? "-" : "+" );
 
+            // Joined annotations are currently stored as other annotations (we do not store that they are joined)
+            foreach (const U2Region& region, annotRegions) {
                 lineFields[GTF_FEATURE_INDEX] = annotName;
 
                 lineFields[GTF_START_INDEX] = QString::number(region.startPos + 1);
@@ -594,28 +600,11 @@ void GTFFormat::storeDocument( Document *doc, IOAdapter *io, U2OpStatus &os ) {
                 QString transcriptIdAttributeStr;
                 QString otherAttributesStr;
                 foreach (U2Qualifier qualifier, annotQualifiers) {
-                    if (CHROMOSOME == qualifier.name) {
-                        lineFields[GTF_SEQ_NAME_INDEX] = qualifier.value;
-                    }
-                    else if (SOURCE_QUALIFIER_NAME == qualifier.name) {
+                    if (SOURCE_QUALIFIER_NAME == qualifier.name) {
                         lineFields[GTF_SOURCE_INDEX] = qualifier.value;
                     }
                     else if (SCORE_QUALIFIER_NAME == qualifier.name) {
                         lineFields[GTF_SCORE_INDEX] = qualifier.value;
-                    }
-                    else if (STRAND_QUALIFIER_NAME == qualifier.name) {
-                        if (L10N::directStrandStr() == qualifier.value) {
-                            lineFields[GTF_STRAND_INDEX] = "+";
-                        }
-                        else if (L10N::complementStrandStr() == qualifier.value) {
-                            lineFields[GTF_STRAND_INDEX] = "-";
-                        }
-                        else {
-                            noErrorsDuringStoring = false;
-                            ioLog.trace(tr("GTF saving error: unknown value"
-                                " of the strand qualifier \"%1\" of an annotation"
-                                " \"%2\" was skipped!").arg(qualifier.name).arg(annotName));
-                        }
                     }
                     else if (FRAME_QUALIFIER_NAME == qualifier.name) {
                         lineFields[GTF_FRAME_INDEX] = qualifier.value;
@@ -635,8 +624,18 @@ void GTFFormat::storeDocument( Document *doc, IOAdapter *io, U2OpStatus &os ) {
                         }
                         else {
                             otherAttributesStr += attrStr;
-                        }                        
+                        }
                     }
+                }
+                if (geneIdAttributeStr.isEmpty()) {
+                    os.setError(tr("Can't save an annotation to a GTF file"
+                     " - the annotation doesn't have the '%1' qualifier!").arg(GENE_ID_QUALIFIER_NAME));
+                    return;
+                }
+                if (transcriptIdAttributeStr.isEmpty()) {
+                    os.setError(tr("Can't save an annotation to a GTF file"
+                     " - the annotation doesn't have the '%1' qualifier!").arg(TRANSCRIPT_ID_QUALIFIER_NAME));
+                    return;
                 }
                 lineFields[GTF_ATTRIBUTES_INDEX] = geneIdAttributeStr +
                     transcriptIdAttributeStr +

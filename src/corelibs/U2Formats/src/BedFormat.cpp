@@ -767,9 +767,27 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
     int fieldsNumberPerLine = 0;
     bool firstLine = true;
 
-    foreach (GObject* annotTable, annotTables) {
-        QList<Annotation> annotationsList =
-            ( qobject_cast<AnnotationTableObject *>( annotTable ) )->getAnnotations( );
+    foreach (GObject* annotTableGObject, annotTables) {
+        AnnotationTableObject* annotTable = qobject_cast<AnnotationTableObject *>( annotTableGObject );
+        SAFE_POINT_EXT( annotTable != NULL, os.setError(tr("Can not convert GObject to AnnotationTableObject")), );
+
+        QString chromName;
+        QList<GObjectRelation> relations = annotTable->findRelatedObjectsByType(GObjectTypes::SEQUENCE);
+        if (relations.size() == 1) {
+            chromName = relations.first().ref.objName;
+        } else {
+            chromName = annotTable->getGObjectName();
+            if (chromName.endsWith(QString(FEATURES_TAG))) {
+                chromName.chop(QString(FEATURES_TAG).size());
+            }
+        }
+        chromName.replace(' ', '_');
+        if (chromName.isEmpty()) {
+            ioLog.trace(tr("Can not detect chromosome name. 'Chr' name will be used."));
+            chromName = "chr";
+        }
+
+        QList<Annotation> annotationsList = annotTable->getAnnotations( );
 
         foreach (const Annotation &annot, annotationsList) {
             QString annotName = annot.getName( );
@@ -783,13 +801,6 @@ void BedFormat::storeDocument(Document* doc, IOAdapter* io, U2OpStatus& os)
             QVector<U2Region> annotRegions = annot.getRegions( );
             if (annotRegions.size() > 1) {
                 coreLog.info(tr("You are trying to save joined annotation to BED format! The joining will be lost"));
-            }
-
-            QString chromName = annot.findFirstQualifierValue( CHROM_QUALIFIER_NAME );
-            if (chromName.isEmpty()) {
-                os.setError(tr("BED saving error: can't save an annotation to a BED file"
-                    " - the annotation doesn't have the 'chrom' qualifier!"));
-                return;
             }
 
             foreach (const U2Region& region, annotRegions) {

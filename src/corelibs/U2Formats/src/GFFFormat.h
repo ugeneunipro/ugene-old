@@ -50,7 +50,7 @@ private:
 
     static QString extractSeqObjectName( QString &fastaHeaderName, const QStringList &words, QSet<QString> &names);
 
-    QStringList parseLine(const QString &line) const;
+    QStringList parseLine(const QString& line) const;
 
     QString formatName;
 };
