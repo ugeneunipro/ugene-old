@@ -429,6 +429,7 @@ bool AnnotatedDNAView::onObjectRemoved(GObject* o) {
             foreach ( AnnotationTableObject *ao, aObjs ) {
                 removeObject( ao );
             }
+            emit si_sequenceRemoved(seqCtx);
             seqContexts.removeOne( seqCtx );
             removeAutoAnnotations( seqCtx );
             delete seqCtx;

@@ -35,18 +35,24 @@ class InSilicoPcrOptionPanelWidget : public QWidget, public Ui::InSilicoPcrOptio
     Q_OBJECT
 public:
     InSilicoPcrOptionPanelWidget(AnnotatedDNAView *annotatedDnaView);
+    ~InSilicoPcrOptionPanelWidget();
 
 private slots:
     void sl_onPrimerChanged();
     void sl_findProduct();
     void sl_extractProduct();
     void sl_onFindTaskFinished();
+    void sl_onSequenceChanged(ADVSequenceObjectContext *sequenceContext);
+    void sl_onFocusChanged();
+    void sl_onProductsSelectionChanged();
 
 private:
+    static bool isDnaSequence(ADVSequenceObjectContext *sequenceContext);
     void showResults(InSilicoPcrTask *task);
 
 private:
     AnnotatedDNAView *annotatedDnaView;
+    InSilicoPcrTask *pcrTask;
 };
 
 } // U2

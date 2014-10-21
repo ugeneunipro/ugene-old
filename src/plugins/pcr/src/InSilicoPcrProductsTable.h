@@ -24,10 +24,13 @@
 
 #include <QTableWidget>
 
+#include <U2Core/U2Region.h>
+
+#include "InSilicoPcrTask.h"
+
 namespace U2 {
 
 class ADVSequenceObjectContext;
-class InSilicoPcrTask;
 
 class InSilicoPcrProductsTable : public QTableWidget {
     Q_OBJECT
@@ -35,13 +38,24 @@ public:
     InSilicoPcrProductsTable(QWidget *parent);
 
     void showProducts(InSilicoPcrTask *task, ADVSequenceObjectContext *sequenceContext);
+    /* Returns if current context is the modified one */
+    bool onSequenceChanged(ADVSequenceObjectContext *sequenceContext);
+
+    ADVSequenceObjectContext * productsContext() const;
+    QList<InSilicoPcrProduct> getSelectedProducts() const;
 
 signals:
 
 private slots:
+    void sl_selectionChanged();
+
+private:
+    void replaceContext(ADVSequenceObjectContext *sequenceContext);
+    QVector<U2Region> getSelection() const;
 
 private:
     ADVSequenceObjectContext *sequenceContext;
+    QList<InSilicoPcrProduct> currentProducts;
 };
 
 } // U2

@@ -37,7 +37,7 @@ InSilicoPcrTaskSettings::InSilicoPcrTaskSettings()
 }
 
 InSilicoPcrProduct::InSilicoPcrProduct()
-: ta(0.0)
+: ta(0.0), forwardPimerMatchLength(0), reversePimerMatchLength(0)
 {
 
 }
@@ -103,7 +103,16 @@ void InSilicoPcrTask::run() {
             }
             qint64 productSize = getProductSize(left, right);
             if (productSize > 0 && productSize <= qint64(settings.maxProductSize)) {
-                results << createResult(U2Region(left.startPos, productSize));
+                InSilicoPcrProduct product = createResult(U2Region(left.startPos, productSize));
+                // TODO: put all this stuff into createResult()
+                product.forwardPimerMatchLength = left.length;
+                product.reversePimerMatchLength = right.length;
+                product.forwardPrimer = settings.forwardPrimer;
+                product.reversePrimer = settings.reversePrimer;
+                if (forward.strand.isCompementary()) {
+                    qSwap(product.forwardPrimer, product.reversePrimer);
+                }
+                results << product;
             }
         }
     }

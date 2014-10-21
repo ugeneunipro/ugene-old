@@ -1,6 +1,7 @@
 include (pcr.pri)
 
 HEADERS += src/AddPrimerDialog.h \
+           src/ExtractProductTask.h \
            src/InSilicoPcrOPWidgetFactory.h \
            src/InSilicoPcrOptionPanelWidget.h \
            src/InSilicoPcrProductsTable.h \
@@ -19,6 +20,7 @@ FORMS += src/ui/AddPrimerDialog.ui \
          src/ui/PrimerLibraryWidget.ui
 
 SOURCES += src/AddPrimerDialog.cpp \
+           src/ExtractProductTask.cpp \
            src/InSilicoPcrOPWidgetFactory.cpp \
            src/InSilicoPcrOptionPanelWidget.cpp \
            src/InSilicoPcrProductsTable.cpp \

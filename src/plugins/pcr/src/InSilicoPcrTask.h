@@ -49,6 +49,11 @@ public:
 
     U2Region region;
     double ta;
+
+    QByteArray forwardPrimer;
+    QByteArray reversePrimer;
+    int forwardPimerMatchLength;
+    int reversePimerMatchLength;
 };
 
 class InSilicoPcrTask : public Task {
