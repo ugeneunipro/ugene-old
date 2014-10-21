@@ -5059,6 +5059,25 @@ GUI_TEST_CLASS_DEFINITION(test_3092) {
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3103) {
+    //1. Go to 'File->Connect to shared database...'
+    //Expected state: Showed dialog 'Shared Databases Connections'
+    //2. Click on 'Add' button
+    //Expected state: Showed dailog 'Connection Settings' and 'Port' field filled with port 3306
+    {
+        QList<SharedConnectionsDialogFiller::Action> actions;
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::ADD);
+        GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
+    }
+    {
+        EditConnectionDialogFiller::Parameters params;
+        params.checkDefaults = true;
+        params.accept = false;
+        GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, params, EditConnectionDialogFiller::FROM_SETTINGS));
+    }
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3124) {
     // 1. Connect to a shared database.
     // 2. Right click on the document->Add->Import to the database.

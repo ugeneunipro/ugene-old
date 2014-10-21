@@ -15,7 +15,8 @@ public:
             login(""),
             password(""),
             rememberMe(false),
-            accept(true) {}
+            accept(true),
+            checkDefaults(false) {}
 
         QString connectionName;
         QString host;
@@ -25,6 +26,7 @@ public:
         QString password;
         bool rememberMe;
         bool accept;
+        bool checkDefaults;
     };
 
 

@@ -41,34 +41,32 @@ EditConnectionDialogFiller::EditConnectionDialogFiller(U2OpStatus &os, const Par
 void EditConnectionDialogFiller::run() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
-
     QLineEdit* leName = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "leName", dialog));
     GT_CHECK(leName, "leName is NULL");
-    GTLineEdit::setText(os, leName, parameters.connectionName);
-
     QLineEdit* leHost = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "leHost", dialog));
     GT_CHECK(leHost, "leHost is NULL");
-    GTLineEdit::setText(os, leHost, parameters.host);
-
     QLineEdit* lePort = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "lePort", dialog));
     GT_CHECK(lePort, "lePort is NULL");
-    GTLineEdit::setText(os, lePort, parameters.port);
-
     QLineEdit* leDatabase = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "leDatabase", dialog));
     GT_CHECK(leDatabase, "leDatabase is NULL");
-    GTLineEdit::setText(os, leDatabase, parameters.database);
-
     QLineEdit* leLogin = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "leLogin", dialog));
     GT_CHECK(leLogin, "leLogin is NULL");
-    GTLineEdit::setText(os, leLogin, parameters.login);
-
     QLineEdit* lePassword = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "lePassword", dialog));
     GT_CHECK(lePassword, "lePassword is NULL");
-    GTLineEdit::setText(os, lePassword, parameters.password);
-
     QCheckBox* cbRemember = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "cbRemember", dialog));
     GT_CHECK(cbRemember, "cbRemember is NULL");
-    GTCheckBox::setChecked(os, cbRemember, parameters.rememberMe);
+
+    if (parameters.checkDefaults) {
+        GT_CHECK(lePort->text() == "3306", "Wrong default port");
+    } else {
+        GTLineEdit::setText(os, leName, parameters.connectionName);
+        GTLineEdit::setText(os, leHost, parameters.host);
+        GTLineEdit::setText(os, lePort, parameters.port);
+        GTLineEdit::setText(os, leDatabase, parameters.database);
+        GTLineEdit::setText(os, leLogin, parameters.login);
+        GTLineEdit::setText(os, lePassword, parameters.password);
+        GTCheckBox::setChecked(os, cbRemember, parameters.rememberMe);
+    }
 
     QString buttonName = parameters.accept ? "OK" : "Cancel";
     GTWidget::click(os, GTWidget::findButtonByText(os, buttonName));
