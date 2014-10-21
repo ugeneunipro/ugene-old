@@ -54,6 +54,7 @@ InSilicoPcrOptionPanelWidget::InSilicoPcrOptionPanelWidget(AnnotatedDNAView *ann
 
     productsWidget->hide();
     sl_onFocusChanged();
+    sl_onPrimerChanged();
 }
 
 InSilicoPcrOptionPanelWidget::~InSilicoPcrOptionPanelWidget() {
@@ -63,7 +64,9 @@ InSilicoPcrOptionPanelWidget::~InSilicoPcrOptionPanelWidget() {
 }
 
 void InSilicoPcrOptionPanelWidget::sl_onPrimerChanged() {
-
+    QByteArray forward = forwardPrimerBox->getPrimer();
+    QByteArray reverse = reversePrimerBox->getPrimer();
+    findProductButton->setDisabled(forward.isEmpty() || reverse.isEmpty());
 }
 
 void InSilicoPcrOptionPanelWidget::sl_findProduct() {
