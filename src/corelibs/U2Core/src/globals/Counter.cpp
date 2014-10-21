@@ -31,13 +31,10 @@ QList<GCounter*>& GCounter::getCounters() {
 GCounter::GCounter(const QString& _name, const QString& s, double scale) : name(_name), suffix(s), totalCount(0), counterScale(scale), destroyMe(false) {
     assert(counterScale > 0);
     getCounters().append(this);
-    dynamicCounter = false;
 }
 
 GCounter::~GCounter() {
-    if (dynamicCounter) {
-        getCounters().removeOne(this);
-    }
+    getCounters().removeOne(this);
 }
 
 GCounter *GCounter::getCounter(const QString &name, const QString &suffix) {
@@ -54,11 +51,11 @@ GCounter(name, suffix, scale) {
 }
 
 GCounterList::~GCounterList() {
-    return; // turned off to prevent crashes in release version (https://ugene.unipro.ru/tracker/browse/UGENE-3271)
-
     for (int i = 0; i < list.size(); i++) {
         if (list[i]->destroyMe) {
-            delete list.takeAt(i);
+            GCounter *counter = list[i];
+            list[i] = NULL;
+            delete counter;
         }
     }
 }

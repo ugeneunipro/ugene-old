@@ -41,7 +41,6 @@ public:
     QString suffix;
     qint64  totalCount;
     double  counterScale;
-    bool    dynamicCounter; //true if created and deleted dynamically at application runtime (not static init time)
     bool    destroyMe; //true if counter should be deleted by counter list
 
     double scaledTotal() const {return totalCount / counterScale;}
@@ -85,7 +84,6 @@ private:
     GCounter *cvar = GCounter::getCounter(name, suffix); \
     if (NULL == cvar) { \
         cvar = new GReportableCounter(name, suffix, 1); \
-        cvar->dynamicCounter = true; \
         cvar->destroyMe = true; \
     } \
     SimpleEventCounter tvar(cvar)

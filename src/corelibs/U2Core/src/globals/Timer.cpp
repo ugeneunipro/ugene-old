@@ -46,7 +46,6 @@ static double getFrequency() {
 
 static qint64 getCorrection() {
     GCounter totalCounter("timer correction", "ticks", 1);
-    totalCounter.dynamicCounter = true;
     
     TimeCounter tc(&totalCounter, false);
     tc.start(); tc.stop();
