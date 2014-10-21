@@ -21,11 +21,14 @@
 
 #include <QMenu>
 
+#include <U2Core/L10n.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/MainWindow.h>
+#include <U2Gui/OPWidgetFactoryRegistry.h>
 
+#include "InSilicoPcrOPWidgetFactory.h"
 #include "PrimerLibrary.h"
 #include "PrimerLibraryMdiWindow.h"
 
@@ -41,15 +44,19 @@ PcrPlugin::PcrPlugin()
 : Plugin(tr("In silico PCR"), tr("In silico PCR"))
 {
     // Init primer library
-    U2OpStatusImpl os;
-    PrimerLibrary::getInstance(os);
-    SAFE_POINT_OP(os, );
+    //U2OpStatusImpl os;
+    //PrimerLibrary::getInstance(os);
+    //SAFE_POINT_OP(os, );
 
     // Init GUI elements
     if (NULL != AppContext::getMainWindow()) {
-        QMenu *tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
+        /*QMenu *tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         QMenu *toolsSubmenu = tools->addMenu(tr("Primer"));
-        toolsSubmenu->addAction(tr("Primer library"), this, SLOT(sl_primerLibrary()));
+        toolsSubmenu->addAction(tr("Primer library"), this, SLOT(sl_primerLibrary()));*/
+
+        OPWidgetFactoryRegistry *opRegistry = AppContext::getOPWidgetFactoryRegistry();
+        SAFE_POINT(opRegistry != NULL, L10N::nullPointerError("Options Panel Registry"), );
+        opRegistry->registerFactory(new InSilicoPcrOPWidgetFactory());
     }
 }
 

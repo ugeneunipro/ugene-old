@@ -1,21 +1,31 @@
 include (pcr.pri)
 
 HEADERS += src/AddPrimerDialog.h \
+           src/InSilicoPcrOPWidgetFactory.h \
+           src/InSilicoPcrOptionPanelWidget.h \
            src/PcrPlugin.h \
            src/Primer.h \
+           src/PrimerGroupBox.h \
            src/PrimerLibrary.h \
            src/PrimerLibraryMdiWindow.h \
-           src/PrimerLibraryWidget.h
+           src/PrimerLibraryWidget.h \
+           src/PrimerStatistics.h
 
 FORMS += src/ui/AddPrimerDialog.ui \
+         src/ui/InSilicoPcrOptionPanelWidget.ui \
+         src/ui/PrimerGroupBox.ui \
          src/ui/PrimerLibraryWidget.ui
 
 SOURCES += src/AddPrimerDialog.cpp \
+           src/InSilicoPcrOPWidgetFactory.cpp \
+           src/InSilicoPcrOptionPanelWidget.cpp \
            src/PcrPlugin.cpp \
            src/Primer.cpp \
+           src/PrimerGroupBox.cpp \
            src/PrimerLibrary.cpp \
            src/PrimerLibraryMdiWindow.cpp \
-           src/PrimerLibraryWidget.cpp
+           src/PrimerLibraryWidget.cpp \
+           src/PrimerStatistics.cpp
 
 RESOURCES += pcr.qrc
 
