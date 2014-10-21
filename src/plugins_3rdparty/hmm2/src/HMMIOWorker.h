@@ -27,11 +27,6 @@
 
 #include <U2Core/SaveDocumentTask.h>
 
-struct plan7_s;
-struct msa_struct;
-
-Q_DECLARE_METATYPE(plan7_s*);
-
 namespace U2 {
 namespace LocalWorkflow {
 
@@ -128,6 +123,9 @@ public:
 
 } // Workflow namespace
 } // U2 namespace
+
+#include <hmmer2/structs.h>
+Q_DECLARE_METATYPE(plan7_s *);
 
 #endif
 

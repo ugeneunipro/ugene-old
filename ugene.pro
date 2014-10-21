@@ -71,13 +71,12 @@ SUBDIRS += \
           src/plugins/browser_support \
           src/plugins/linkdata_support
 
-equals(QT_MAJOR_VERSION, 5): SUBDIRS -= src/plugins_3rdparty/hmm2 src/plugins/query_designer
 use_cuda() {
     SUBDIRS += src/plugins/cuda_support
 }
 
 use_opencl() {
-	DEFINES+=OPENCL_SUPPORT
+    DEFINES += OPENCL_SUPPORT
     SUBDIRS += src/plugins/opencl_support
 }
 

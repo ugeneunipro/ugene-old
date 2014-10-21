@@ -2,7 +2,6 @@
 #include <U2Core/Task.h>
 
 #include <hmmer2/funcs.h>
-#include <hmmer2/structs.h>
 #include <HMMIO.h>
 
 #include <limits.h>

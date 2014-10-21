@@ -81,7 +81,7 @@ private:
     QDDocument* document;
 };
 
-class QDDocument : QObject {
+class QDDocument : public QObject {
     Q_OBJECT
 public:
     QDDocument() : schemaStrand(QDStrand_Both) {}

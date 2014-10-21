@@ -19,17 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#include "QDGroupsEditor.h"
-#include "QueryViewController.h"
+#include <QHeaderView>
+#include <QInputDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMouseEvent>
 
 #include <U2Lang/QDScheme.h>
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QMenu>
-#include <QtGui/QInputDialog>
-#include <QtGui/QMessageBox>
-
+#include "QueryViewController.h"
+#include "QDGroupsEditor.h"
 
 namespace U2 {
 

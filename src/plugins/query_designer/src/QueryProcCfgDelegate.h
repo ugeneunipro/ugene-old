@@ -26,9 +26,11 @@
 #ifndef _U2_QUERY_PROC_CFG_DELEGATE_H_
 #define _U2_QUERY_PROC_CFG_DELEGATE_H_
 
-#include "QueryEditor.h"
+#include <QItemDelegate>
+
 #include <U2Lang/ConfigurationEditor.h>
-#include <QtGui/QItemDelegate>
+
+#include "QueryEditor.h"
 
 Q_DECLARE_METATYPE(U2::PropertyDelegate*)
 

@@ -111,7 +111,7 @@ void QDSamplesWidget::sl_onItemChanged(QListWidgetItem* item) {
 }
 
 void QDSamplesWidget::sl_onItemSelected(QListWidgetItem* item) {
-    QDDocument* doc = qVariantValue<QDDocument*>(item->data(DATA_ROLE));
+    QDDocument* doc = item->data(DATA_ROLE).value<QDDocument *>();
     assert(doc);
     emit itemActivated(doc);
 }

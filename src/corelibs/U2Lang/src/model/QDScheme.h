@@ -288,4 +288,6 @@ private:
 
 }//namespace
 
+Q_DECLARE_METATYPE(U2::QDActorPrototype *)
+
 #endif

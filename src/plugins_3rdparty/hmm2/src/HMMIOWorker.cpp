@@ -257,12 +257,7 @@ Task* HMMWriter::tick() {
         }
         if (anUrl.isEmpty() || hmm == NULL) {
             QString err = (hmm == NULL) ? tr("Empty HMM passed for writing to %1").arg(anUrl) : tr("Unspecified URL for writing HMM");
-            //if (failFast) {
-                return new FailTask(err);
-            /*} else {
-                ioLog.error(err);
-                return NULL;
-            }*/
+            return new FailTask(err);
         }
         assert(!anUrl.isEmpty());
         anUrl = context->absolutePath(anUrl);

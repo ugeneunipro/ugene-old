@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtGui/QMessageBox>
+#include <QMessageBox>
 
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/AnnotationTableObject.h>

@@ -84,16 +84,17 @@ void HMMBuildWorkerFactory::init() {
         "<p>An empirical HMM calibration costs time but it only has to be done once per model, and can greatly increase the sensitivity of a database search."));
     Descriptor td(THREADS_ATTR, HMMBuildWorker::tr("Parallel calibration"), 
         HMMBuildWorker::tr("Number of parallel threads that the calibration will run in."));
+
     Descriptor fid(FIXEDLEN_ATTR, HMMBuildWorker::tr("Fixed length of samples"), 
-        QApplication::translate("HMMBuildWorker", "Fixed tip", 0, QApplication::UnicodeUTF8));
+        QApplication::translate("HMMBuildWorker", "Fixed tip", 0));
     Descriptor lmd(LENMEAN_ATTR, HMMBuildWorker::tr("Mean length of samples"), 
-        QApplication::translate("HMMBuildWorker", "mean_tip_1", 0, QApplication::UnicodeUTF8));
+        QApplication::translate("HMMBuildWorker", "mean_tip_1", 0));
     Descriptor nud(NUM_ATTR, HMMBuildWorker::tr("Number of samples"), 
-        QApplication::translate("HMMBuildWorker", "num_tip_1", 0, QApplication::UnicodeUTF8));
+        QApplication::translate("HMMBuildWorker", "num_tip_1", 0));
     Descriptor ldd(LENDEV_ATTR, HMMBuildWorker::tr("Standard deviation"), 
-        QApplication::translate("HMMBuildWorker", "sd_tip_1", 0, QApplication::UnicodeUTF8));
+        QApplication::translate("HMMBuildWorker", "sd_tip_1", 0));
     Descriptor sed(SEED_ATTR, HMMBuildWorker::tr("Random seed"),
-        QApplication::translate("HMMBuildWorker", "seed_tip_1", 0, QApplication::UnicodeUTF8));
+        QApplication::translate("HMMBuildWorker", "seed_tip_1", 0));
 
 //     nsample      = 5000;
 //     fixedlen     = 0;

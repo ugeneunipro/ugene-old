@@ -19,25 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include "QueryPalette.h"
-
-#include <U2Lang/QueryDesignerRegistry.h>
+#include <QAction>
+#include <QApplication>
+#include <QDrag>
+#include <QHeaderView>
+#include <QItemDelegate>
+#include <QMouseEvent>
 
 #include <U2Core/AppContext.h>
-#include <QtGui/QMouseEvent>
+#include <U2Lang/QueryDesignerRegistry.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QAction>
-#include <QtGui/QItemDelegate>
-#include <QtGui/QHeaderView>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QAction>
-#include <QtWidgets/QItemDelegate>
-#include <QtWidgets/QHeaderView>
-#endif
-
+#include "QueryPalette.h"
 
 namespace U2 {
 
@@ -101,7 +93,7 @@ public:
             buttonOption.subControls = QStyle::SC_ToolButton;
             buttonOption.features = QStyleOptionToolButton::None;
 
-            QAction* action = qVariantValue<QAction*>(index.data(Qt::UserRole));
+            QAction* action = index.data(Qt::UserRole).value<QAction *>();
             buttonOption.text = action->text();
             buttonOption.icon = action->icon();
             if (!buttonOption.icon.isNull()) {
@@ -152,7 +144,11 @@ QueryPalette::QueryPalette(QWidget* parent/* =NULL */)
     setRootIsDecorated(false);
     setColumnCount(1);
     header()->hide();
+#if (QT_VERSION < 0x050000)
     header()->setResizeMode(QHeaderView::Stretch);
+#else
+    header()->setSectionResizeMode(QHeaderView::Stretch);
+#endif
     setMouseTracking(true);
     setContent();
     setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Ignored));
@@ -236,7 +232,7 @@ void QueryPalette::sl_selectProcess(bool checked) {
     }
 
     if (checked && currentAction && currentAction->data().type() != QVariant::String) {
-        emit processSelected(qVariantValue<QDActorPrototype*>(currentAction->data()));
+        emit processSelected(currentAction->data().value<QDActorPrototype *>());
     } else {
         emit processSelected(NULL);
     }
@@ -251,7 +247,7 @@ void QueryPalette::mousePressEvent(QMouseEvent *event) {
             setItemExpanded(item, !isItemExpanded(item));
             return;
         }
-        QAction* action = qVariantValue<QAction*>(item->data(0, Qt::UserRole));
+        QAction* action = item->data(0, Qt::UserRole).value<QAction *>();
         if (action) {
             action->toggle();
             dragStartPosition = event->pos();
@@ -259,7 +255,6 @@ void QueryPalette::mousePressEvent(QMouseEvent *event) {
         }
         return;
     }
-    //QTreeWidget::mousePressEvent(event);
 }
 
 void QueryPalette::mouseMoveEvent(QMouseEvent *event) {
@@ -272,7 +267,7 @@ void QueryPalette::mouseMoveEvent(QMouseEvent *event) {
         if(!item) {
             return;
         }
-        QAction* action = qVariantValue<QAction*>(item->data(0,Qt::UserRole));
+        QAction* action = item->data(0, Qt::UserRole).value<QAction *>();
         if (!action) {
             return;
         }
@@ -283,12 +278,12 @@ void QueryPalette::mouseMoveEvent(QMouseEvent *event) {
             QString str = action->data().toString();
             mimeData->setText(str);
         } else {
-            QDActorPrototype* proto = qVariantValue<QDActorPrototype*>(action->data());
+            QDActorPrototype* proto = action->data().value<QDActorPrototype *>();
             mimeData->setText(proto->getId());
         }
         
         drag->setMimeData(mimeData);
-        /*Qt::DropAction dropAction = */drag->exec(Qt::CopyAction | Qt::CopyAction);
+        drag->exec(Qt::CopyAction | Qt::CopyAction);
         return;
     }
 

@@ -54,22 +54,23 @@ public:
     }
 
     void setConfiguration(Configuration* cfg) {
+        beginResetModel();
         this->cfg = cfg;
         if (cfg) {
             editor = cfg->getEditor();
-            //attrs = cfg->getParameters().values();
             attrs = cfg->getAttributes();
         } else {
             editor = NULL;
             attrs.clear();
         }
-        reset();
+        endResetModel();
     }
 
     void setConfiguration(ConfigurationEditor* ed, const QList<Attribute*>& al) {
+        beginResetModel();
         editor = ed;
         attrs = al;
-        reset();
+        endResetModel();
     }
 
     int columnCount(const QModelIndex&) const { return 2; }

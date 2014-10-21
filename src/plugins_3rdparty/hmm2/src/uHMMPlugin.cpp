@@ -67,7 +67,7 @@
 #include <QtWidgets/QMessageBox>
 #endif
 
-Q_DECLARE_METATYPE(QMenu*);
+Q_DECLARE_METATYPE(QMenu *);
 
 namespace U2 {
 

@@ -337,7 +337,7 @@ bool QDDocument::findLinkStatements(const QString& str) {
             const QString& elemS = reg.cap(1);
             const QList<QString>& elIds = idsFromString(elemS);
             QDLinkStatement* link = new QDLinkStatement(elIds);
-            int capCount = reg.numCaptures();
+            int capCount = reg.captureCount();
             const QString& attrs = reg.cap(capCount);
             const QMap<QString, QString>& attrsMap = string2attributesMap(attrs);
             foreach(const QString& attrName, attrsMap.keys()) {
