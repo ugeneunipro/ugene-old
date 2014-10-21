@@ -34,7 +34,7 @@
 
 class QLabel;
 class QLineEdit;
-class QPushButton;
+class QToolButton;
 
 
 namespace U2 {
@@ -44,7 +44,7 @@ class U2DESIGNER_EXPORT OutputDirectoryWidget : public QWidget {
 public:
     OutputDirectoryWidget(QWidget *parent, bool commitOnHide);
 
-    QString getChoosenDir(){return pathEdit->text();};
+    QString getChoosenDir(){return pathEdit->text();}
     void commit();
     static const QString INFO;
 
@@ -61,7 +61,7 @@ private:
     bool commitOnHide;
     QLabel *label;
     QLineEdit *pathEdit;
-    QPushButton *browseButton;
+    QToolButton *browseButton;
 };
 
 } // U2

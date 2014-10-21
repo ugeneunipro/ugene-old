@@ -25,13 +25,13 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
+#include <QtGui/QToolButton>
 #include <QtGui/QVBoxLayout>
 #else
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
+#include <QtWidgets/QToolButton>
 #include <QtWidgets/QVBoxLayout>
 #endif
 
@@ -64,8 +64,8 @@ OutputDirectoryWidget::OutputDirectoryWidget(QWidget *parent, bool commitOnHide)
     QHBoxLayout *hl = new QHBoxLayout();
     hl->setContentsMargins(0, 0, 0, 0);
     pathEdit = new QLineEdit(this);
-    browseButton = new QPushButton("...", this);
-    browseButton->setFixedSize(25, 19);
+    browseButton = new QToolButton(this);
+    browseButton->setText("...");
     hl->addWidget(pathEdit);
     hl->addWidget(browseButton);
 
