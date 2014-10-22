@@ -80,11 +80,12 @@ AnnotHighlightWidget::AnnotHighlightWidget(AnnotatedDNAView* _annotatedDnaView)
 
 void AnnotHighlightWidget::initLayout()
 {
-    setMinimumSize(QSize(170, 150));
+//    setMinimumSize(QSize(170, 150));
 
     QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(10);
+    mainLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
     noAnnotTypesLabel = new QLabel("");
     noAnnotTypesLabel->setWordWrap(true);
@@ -109,6 +110,7 @@ void AnnotHighlightWidget::initLayout()
     QVBoxLayout* settingsLayout = new QVBoxLayout();
     settingsLayout->setContentsMargins(0, 0, 0, 0);
     settingsLayout->setSpacing(0);
+    settingsLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
     settingsTitle = new QLabel(tr("Configure the annotation type:"));
     annotSettingsWidget = new AnnotHighlightSettingsWidget();
