@@ -47,12 +47,17 @@ class InSilicoPcrProduct {
 public:
     InSilicoPcrProduct();
 
+    /* Region within the original sequence */
     U2Region region;
+    /* Annealing temperature */
     double ta;
-
+    /* Primer sequence */
     QByteArray forwardPrimer;
+    /* Primer sequence */
     QByteArray reversePrimer;
+    /* The length of found primer region within the original sequence */
     int forwardPimerMatchLength;
+    /* The length of found primer region within the original sequence */
     int reversePimerMatchLength;
 };
 
