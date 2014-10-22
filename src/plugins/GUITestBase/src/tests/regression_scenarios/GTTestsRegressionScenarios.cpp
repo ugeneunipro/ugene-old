@@ -4839,6 +4839,34 @@ GUI_TEST_CLASS_DEFINITION(test_2903) {
 //    Current state: the following error appears: 'RemoteBLASTTask' task failed: Database couldn't prepare the response
     GTUtilsLog::check(os, l);
 }
+GUI_TEST_CLASS_DEFINITION(test_2987) {
+//      1. Open "_common_data/fasta/RAW.fa".
+//      2. Create a complement annotation.
+//      3. Select {Actions -> Export -> Export annotations...} in the main menu.
+//      4. Fill the dialog:
+//      "Export to file" - any valid file;
+//      "File format" - csv;
+//      "Save sequences under annotations" - checked
+//      and click the "Ok" button.
+//      Expected state: annotations are successfully exported.
+    GTLogTracer logTracer;
+
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "RAW2.fa");
+
+    QDir().mkpath(sandBoxDir + "test_3305");
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "misc_feature", "complement(1..5)", sandBoxDir + "test_2987/test_2987.gb"));
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "create_annotation_action"));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << "ep_exportAnnotations2CSV"));
+    GTUtilsDialog::waitForDialog(os, new ExportAnnotationsFiller(sandBoxDir + "test_2987/test_2987", ExportAnnotationsFiller::csv, os));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "test_2987.gb"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    const QFile csvFile(sandBoxDir + "test_2987/test_2987");
+    CHECK_SET_ERR(!(csvFile.exists() && csvFile.size() == 0), "An empty file exists");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2991) {
 /*  1. Open file _common_data/alphabets/extended_amino_1000.fa
     Expected state: Alphabet of opened sequence must be [amino ext]
@@ -5113,6 +5141,26 @@ GUI_TEST_CLASS_DEFINITION(test_3103) {
         GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, params, EditConnectionDialogFiller::FROM_SETTINGS));
     }
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3112) {
+//     1. Open "_common_data\scenarios\msa\big.aln".
+//     Expected state: the MSA editor is shown, there is an overview.
+//     2. Click the "Overview" button on the main toolbar.
+//     Expected state: the overview widget hides, the render task cancels.
+//     Current state: the overview widget hides, the render task still works. If you change the msa (insert a gap somewhere), a safe point triggers.
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal/", "10000_sequences.aln");
+    
+    GTGlobals::sleep(20000); //in case of failing test try to increase this pause
+    
+    QToolButton* button = qobject_cast<QToolButton*>(GTAction::button(os, "Show overview"));
+    CHECK_SET_ERR(button->isChecked(), "Overview button is not pressed");
+
+    GTWidget::click(os, button);//uncheck
+    GTWidget::click(os, button);//check
+    GTWidget::click(os, button);//uncheck
+    GTGlobals::sleep();
+    CHECK_SET_ERR(0 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "There are unfinished tasks");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3124) {
