@@ -82,7 +82,6 @@ Overview::Overview(QWidget *p, ADVSequenceObjectContext *ctx) : GSequenceLineVie
             SIGNAL(si_annotationSettingsChanged(const QStringList&)),
             SLOT(sl_onAnnotationSettingsChanged(const QStringList&)));
     }
-    connect(ctx->getSequenceGObject(), SIGNAL(si_sequenceChanged()), SLOT(sl_sequenceChanged()));
     sl_visibleRangeChanged();
 
     pack();
@@ -140,8 +139,9 @@ void Overview::sl_onAnnotationSettingsChanged(const QStringList& changedSettings
 }
 
 void Overview::sl_sequenceChanged() {
-    addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
-    update();
+    seqLen = ctx->getSequenceLength();
+    visibleRange = U2Region(0, seqLen);
+    completeUpdate();
 }
 
 void Overview::pack() {
@@ -390,6 +390,14 @@ QString Overview::createToolTip(QHelpEvent *he) {
     return tip;
 }
 
+PanView *Overview::getPan() const {
+    return panView;
+}
+
+DetView *Overview::getDet() const {
+    return detView;
+}
+
 //////////////////////////////////////////////////////////////////////////
 /// GlobalViewRenderArea
 #define ANNOTATION_GRAPH_HEIGHT 4
@@ -411,6 +419,14 @@ OverviewRenderArea::OverviewRenderArea(Overview *p)  : GSequenceLineViewRenderAr
     gradient.setColorAt(1.00, QColor(  0,   0,   0,  70));
     gradientMaskBrush = QBrush(gradient);
     showGraph=false;
+}
+
+const QRectF OverviewRenderArea::getPanSlider() const {
+    return panSlider;
+}
+
+const QRectF OverviewRenderArea::getDetSlider() const {
+    return detSlider;
 }
 
 //pos [1, seqLen]; annotationsOnPos [0, seqLen)

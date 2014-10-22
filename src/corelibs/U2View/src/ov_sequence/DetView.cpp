@@ -85,8 +85,6 @@ DetView::DetView(QWidget* p, ADVSequenceObjectContext* ctx)
     connect(ctx, SIGNAL(si_aminoTranslationChanged()), SLOT(sl_onAminoTTChanged()));
     connect(ctx, SIGNAL(si_translationRowsChanged()), SLOT(sl_translationRowsChanged()));
 
-    connect(ctx->getSequenceGObject(), SIGNAL(si_sequenceChanged()), this, SLOT(sl_sequenceChanged()));
-
     pack();
 
     updateActions();

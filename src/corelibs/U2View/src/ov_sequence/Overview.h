@@ -69,8 +69,8 @@ protected:
     void wheelEvent(QWheelEvent* we);
 
     QString createToolTip(QHelpEvent* he);
-    PanView* getPan() const {return panView;};
-    DetView* getDet() const {return detView;};
+    PanView *getPan() const;
+    DetView *getDet() const;
 
     bool        panSliderClicked;
     bool        detSliderClicked;
@@ -92,8 +92,8 @@ class OverviewRenderArea : public GSequenceLineViewRenderArea {
 public:
     OverviewRenderArea(Overview* p);
 
-    const QRectF getPanSlider() const {return panSlider;};
-    const QRectF getDetSlider() const {return detSlider;};
+    const QRectF getPanSlider() const;
+    const QRectF getDetSlider() const;
 
     int getAnnotationDensity(int pos) const;
 

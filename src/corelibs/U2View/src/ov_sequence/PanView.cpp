@@ -183,7 +183,6 @@ PanView::PanView(QWidget* p, ADVSequenceObjectContext* ctx) : GSequenceLineViewA
         registerAnnotations( obj->getAnnotations( ) );
     }
 
-    connect(ctx->getSequenceGObject(), SIGNAL(si_sequenceChanged()), this, SLOT(sl_sequenceChanged()));
     connect(this, SIGNAL(si_updateRows()), SLOT(sl_updateRows()));
 
     updateActions();

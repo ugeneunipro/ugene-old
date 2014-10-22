@@ -19,27 +19,29 @@
  * MA 02110-1301, USA.
  */
 
-#include "PositionSelector.h"
+#include <math.h>
 
-#include <QtGui/QIntValidator>
 #if (QT_VERSION < 0x050000) //Qt 5
+#include <QtGui/QHBoxLayout>
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QVBoxLayout>
 #include <QtGui/QToolButton>
+#include <QtGui/QVBoxLayout>
 #else
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QToolButton>
+#include <QtWidgets/QVBoxLayout>
 #endif
-#include <math.h>
+
+#include <U2Gui/U2LongLongValidator.h>
+
+#include "PositionSelector.h"
 
 namespace U2 {
 
-PositionSelector::PositionSelector(QWidget* p, int s, int e, bool fixedSize)
+PositionSelector::PositionSelector(QWidget* p, qint64 s, qint64 e, bool fixedSize)
 : QWidget(p), rangeStart(s), rangeEnd(e), posEdit(NULL), autoclose(false), dialog(NULL) 
 {
     init(fixedSize);
@@ -57,7 +59,7 @@ void PositionSelector::init(bool fixedSize) {
     int w = qMax(((int)log10((double)rangeEnd))*10, 70);
     posEdit = new QLineEdit(this);
     posEdit->setObjectName("go_to_pos_line_edit");
-    posEdit->setValidator(new QIntValidator(rangeStart, rangeEnd, posEdit));
+    posEdit->setValidator(new U2LongLongValidator(rangeStart, rangeEnd, posEdit));
     if (fixedSize) {
         posEdit->setFixedWidth(w);
     } else {
@@ -86,7 +88,7 @@ void PositionSelector::init(bool fixedSize) {
     l->addWidget(posEdit);
 }
 
-PositionSelector::PositionSelector(QDialog* d, int s, int e, bool _a) 
+PositionSelector::PositionSelector(QDialog* d, qint64 s, qint64 e, bool _a)
 : QWidget(d), rangeStart(s), rangeEnd(e), posEdit(NULL), autoclose(_a), dialog(d) 
 {
     init(true);
@@ -121,6 +123,26 @@ PositionSelector::PositionSelector(QDialog* d, int s, int e, bool _a)
 }
 
 PositionSelector::~PositionSelector(){ 
+}
+
+void PositionSelector::updateRange(qint64 rangeStart, qint64 rangeEnd) {
+    posEdit->setValidator(new U2LongLongValidator(rangeStart, rangeEnd, posEdit));
+
+    int width = qMax(((int)log10((double)rangeEnd))*10, 70);
+    if (posEdit->maximumWidth() == posEdit->minimumWidth()) {
+        posEdit->setFixedWidth(width);
+    } else {
+        posEdit->setMinimumWidth(qMax(120, width));
+    }
+
+    const QValidator *oldValidator = posEdit->validator();
+    posEdit->setValidator(new U2LongLongValidator(rangeStart, rangeEnd, posEdit));
+    // force the validation
+    const QString position = posEdit->text();
+    posEdit->clear();
+    posEdit->insert(position);
+
+    delete oldValidator;
 }
 
 

@@ -19,51 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_POSITION_SELECTOR_H_
-#define _U2_POSITION_SELECTOR_H_
+#ifndef _U2_LONG_LONG_VALIDATOR_H_
+#define _U2_LONG_LONG_VALIDATOR_H_
+
+#include <QtGui/QValidator>
 
 #include <U2Core/global.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLineEdit>
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QDialog>
-#endif
-#include <QtGui/QValidator>
-
 namespace U2 {
 
-class U2GUI_EXPORT PositionSelector : public QWidget {
+class U2GUI_EXPORT U2LongLongValidator : public QValidator {
     Q_OBJECT
 public:
-    PositionSelector(QWidget* p, qint64 rangeStart, qint64 rangeEnd, bool fixedSize = true);
-    PositionSelector(QDialog* d, qint64 rangeStart, qint64 rangeEnd, bool autoclose);
+    U2LongLongValidator(qint64 minimum, qint64 maximum, QObject *parent = 0);
 
-    ~PositionSelector();
-
-    void updateRange(qint64 rangeStart, qint64 rangeEnd);
-    QLineEdit* getPosEdit() const {return posEdit;}
-
-signals:
-    void si_positionChanged(int pos);
-
-private slots:
-    void sl_onButtonClicked(bool);
-    void sl_onReturnPressed();
-
+    State validate(QString &input, int &pos) const;
+    
 private:
-    void init(bool fixedSize);
-    void exec();
-
-    qint64 rangeStart;
-    qint64 rangeEnd;
-    QLineEdit* posEdit;
-    bool autoclose;
-    QDialog* dialog;
+    qint64 minimum;
+    qint64 maximum;
 };
 
-}//namespace
+}   // namespace U2
 
-#endif
+#endif // _U2_LONG_LONG_VALIDATOR_H_

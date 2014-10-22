@@ -705,6 +705,14 @@ void AnnotatedDNAView::removeSequenceWidget(ADVSequenceWidget* v) {
 void AnnotatedDNAView::updateMultiViewActions() {
     bool canRemoveFocusedSequence = seqViews.size() > 1 && focusedWidget != NULL && focusedWidget->getActiveSequenceContext() != NULL;
     removeSequenceObjectAction->setEnabled(canRemoveFocusedSequence);
+
+    if (NULL != posSelector) {
+        qint64 currentSequenceLength = 0;
+        if (NULL != focusedWidget && NULL != focusedWidget->getActiveSequenceContext()) {
+            currentSequenceLength = focusedWidget->getActiveSequenceContext()->getSequenceLength();
+        }
+        posSelector->updateRange(1, currentSequenceLength);
+    }
 }
 
 void AnnotatedDNAView::sl_onContextMenuRequested( const QPoint &scrollAreaPos ) {
@@ -1147,7 +1155,6 @@ void AnnotatedDNAView::sl_removeSequencePart(){
     U2SequenceObject *seqObj = seqCtx->getSequenceObject();
 
     Document *curDoc = seqObj->getDocument();
-    QString filter = DialogUtils::prepareDocumentsFileFilter(curDoc->getDocumentFormat()->getFormatId(), false);
     U2Region source(0, seqObj->getSequenceLength());
 
     U2Region selection = source;
@@ -1256,6 +1263,7 @@ void AnnotatedDNAView::sl_sequenceModifyTaskStateChanged( ) {
                 }
             }
         }
+        updateMultiViewActions();
         emit si_sequenceModified( seqCtx );
     }
 }

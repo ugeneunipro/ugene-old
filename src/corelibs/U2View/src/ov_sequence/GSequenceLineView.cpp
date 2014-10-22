@@ -60,6 +60,8 @@ frameView(NULL), coherentRangeView(NULL), ignoreMouseSelectionEvents(false)
     connect(ctx->getSequenceSelection(),
         SIGNAL(si_selectionChanged(LRegionsSelection*, const QVector<U2Region>&, const QVector<U2Region>&)),
         SLOT(sl_onDNASelectionChanged(LRegionsSelection*, const QVector<U2Region>& , const QVector<U2Region>&)));
+
+    connect(ctx->getSequenceGObject(), SIGNAL(si_sequenceChanged()), this, SLOT(sl_sequenceChanged()));
 }
 
 void GSequenceLineView::pack() {
@@ -464,12 +466,12 @@ U2SequenceObject* GSequenceLineView::getSequenceObject() const {
 
 
 void GSequenceLineView::completeUpdate(){
-    seqLen = ctx->getSequenceLength();
     addUpdateFlags(GSLV_UF_NeedCompleteRedraw);
     update();
 }
 
 void GSequenceLineView::sl_sequenceChanged(){
+    seqLen = ctx->getSequenceLength();
     updateScrollBar();
     completeUpdate();
 }

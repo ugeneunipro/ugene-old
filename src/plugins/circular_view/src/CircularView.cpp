@@ -78,7 +78,6 @@ CircularView::CircularView(QWidget* p, ADVSequenceObjectContext* ctx, CircularVi
     ra = qobject_cast<CircularViewRenderArea*>(renderArea);
     setMouseTracking(true);
 
-    connect(ctx->getSequenceGObject(), SIGNAL(si_sequenceChanged()), this, SLOT(sl_sequenceChanged()));
     connect(ctx->getSequenceGObject(), SIGNAL(si_nameChanged(const QString&)), this, SLOT(sl_onSequenceObjectRenamed(const QString&)));
     pack();
 }
