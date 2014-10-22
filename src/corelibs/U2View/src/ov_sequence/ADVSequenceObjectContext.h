@@ -52,13 +52,13 @@ class U2VIEW_EXPORT ADVSequenceObjectContext : public QObject {
     Q_OBJECT
 public:
     ADVSequenceObjectContext(AnnotatedDNAView* v, U2SequenceObject* obj);
-    
+
     AnnotatedDNAView*   getAnnotatedDNAView() const {return view;}
     DNATranslation*     getComplementTT() const {return complTT;}
     DNATranslation*     getAminoTT() const {return aminoTT;}
     U2SequenceObject*   getSequenceObject() const {return seqObj;}
     GObject*            getSequenceGObject() const;
-    
+
     qint64 getSequenceLength() const;
     const DNAAlphabet* getAlphabet() const;
     QByteArray getSequenceData(const U2Region& r) const;
@@ -66,11 +66,11 @@ public:
     bool        isRowChoosed();
 
     DNASequenceSelection*   getSequenceSelection() const {return selection;}
-    
+
     QSet<AnnotationTableObject *> getAnnotationObjects(bool includeAutoAnnotations = false) const;
     QSet<AnnotationTableObject *> getAutoAnnotationObjects() const { return autoAnnotations; }
     QList<GObject*> getAnnotationGObjects() const;
-    
+
     QMenu* createTranslationsMenu();
     void setAminoTranslation(const QString& tid);
 
@@ -79,7 +79,7 @@ public:
     void removeAnnotationObject(AnnotationTableObject *obj);
 
     AnnotationSelection * getAnnotationsSelection() const;
-    
+
     const QList<ADVSequenceWidget*>& getSequenceWidgets() const {return seqWidgets;}
     void addSequenceWidget(ADVSequenceWidget* w);
     void removeSequenceWidget(ADVSequenceWidget* w);
@@ -94,6 +94,7 @@ private slots:
     void sl_showDirectOnly();
     void sl_showComplOnly();
     void sl_showShowAll();
+    void sl_onAnnotationRelationChange();
 signals:
     void si_aminoTranslationChanged();
     void si_annotationObjectAdded(AnnotationTableObject *obj);

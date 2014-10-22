@@ -826,6 +826,8 @@ QString AnnotatedDNAView::addObject( GObject *o ) {
             return "";
         }
         ADVSequenceObjectContext *sc = new ADVSequenceObjectContext( this, dnaObj );
+        connect( sc, SIGNAL(si_annotationObjectRemoved(AnnotationTableObject*)),
+                 SLOT(sl_onAnnotationTableRemove(AnnotationTableObject*)));
         seqContexts.append( sc );
         //if mainSplitter==NULL -> its view initialization and widgets will be added later
         if ( NULL != mainSplitter && !isChildWidgetObject( dnaObj ) ) {
@@ -1295,6 +1297,13 @@ void AnnotatedDNAView::sl_reverseSequence( ) {
     Task *t = new ReverseSequenceTask( seqObj,annotations, seqCtx->getSequenceSelection( ), complTr );
     AppContext::getTaskScheduler( )->registerTopLevelTask( t );
     connect( t, SIGNAL( si_stateChanged( ) ), SLOT( sl_sequenceModifyTaskStateChanged( ) ) );
+}
+
+void AnnotatedDNAView::sl_onAnnotationTableRemove(AnnotationTableObject* obj) {
+    if ( annotations.contains( obj ) ){
+        annotations.removeOne( obj );
+        removeObject(obj);
+    }
 }
 
 bool AnnotatedDNAView::areAnnotationsInRange( const QList<Annotation> &toCheck ) {

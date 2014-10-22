@@ -61,7 +61,7 @@ enum GObjectModLock {
 class U2CORE_EXPORT GObject : public StateLockableTreeItem {
     friend class DocumentFormat;
     friend class Document;
-    
+
     Q_OBJECT
 public:
     GObject(QString _type, const QString& _name, const QVariantMap& hints = QVariantMap());
@@ -78,9 +78,9 @@ public:
     virtual bool checkConstraints(const GObjectConstraints* c) const {Q_UNUSED(c); return true;}
 
     GHints* getGHints() const {return hints;}
-    
+
     QVariantMap getGHintsMap() const;
-    
+
     void setGHints(GHints*);
 
     QList<GObjectRelation> getObjectRelations() const;
@@ -88,15 +88,15 @@ public:
     void setObjectRelations(const QList<GObjectRelation>& obj);
 
     QList<GObjectRelation> findRelatedObjectsByRole(const GObjectRelationRole& role) const;
-    
+
     QList<GObjectRelation> findRelatedObjectsByType(const GObjectType& objType) const;
-    
+
     void addObjectRelation(const GObjectRelation& ref);
-    
+
     void addObjectRelation(const GObject* obj, const GObjectRelationRole& role);
-    
+
     void removeObjectRelation(const GObjectRelation& ref);
-    
+
     void updateRefInRelations(const GObjectReference& oldRef, const GObjectReference& newRef);
 
     void removeRelations(const QString& removedDocUrl);
@@ -104,11 +104,11 @@ public:
     void updateDocInRelations(const QString& oldDocUrl, const QString& newDocUrl);
 
     bool hasObjectRelation(const GObject* obj, const GObjectRelationRole& role) const;
-    
+
     bool hasObjectRelation(const GObjectRelation& r) const;
 
     QHash< QString, QString > getIndexInfo() const {return indexInfo;}
-    
+
     void setIndexInfo( const QHash<QString, QString>& ii) {indexInfo = ii;}
 
     const U2EntityRef& getEntityRef() const {return entityRef;}
@@ -121,6 +121,7 @@ public:
 
 signals:
     void si_nameChanged(const QString& oldName);
+    void si_relationChanged();
 
 protected:
     void setGObjectNameNotDbi(const QString &newName);

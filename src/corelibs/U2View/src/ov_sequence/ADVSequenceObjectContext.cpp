@@ -37,7 +37,7 @@
 
 namespace U2 {
 
-ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, U2SequenceObject* obj) 
+ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, U2SequenceObject* obj)
 : QObject(v), view(v), seqObj(obj), aminoTT(NULL), complTT(NULL), selection(NULL), translations(NULL), visibleFrames(NULL),rowChoosed(false)
 {
     selection = new DNASequenceSelection(seqObj, this);
@@ -48,7 +48,7 @@ ADVSequenceObjectContext::ADVSequenceObjectContext(AnnotatedDNAView* v, U2Sequen
         complTT = GObjectUtils::findComplementTT(seqObj->getAlphabet());
         aminoTT = GObjectUtils::findAminoTT(seqObj, true);
         clarifyAminoTT = aminoTT == NULL;
-        
+
         QList<DNATranslation*> aminoTs = tr->lookupTranslation(al, DNATranslationType_NUCL_2_AMINO);
         if (!aminoTs.empty()) {
             aminoTT = aminoTT == NULL ? tr->getStandardGeneticCodeTranslation(al) : aminoTT;
@@ -197,6 +197,16 @@ void ADVSequenceObjectContext::sl_showShowAll(){
     }
 }
 
+void ADVSequenceObjectContext::sl_onAnnotationRelationChange() {
+    AnnotationTableObject* obj = qobject_cast<AnnotationTableObject*>( sender() );
+    SAFE_POINT(obj != NULL, tr("Incorrect signal sender!"), );
+
+    if (!obj->hasObjectRelation(seqObj, ObjectRole_Sequence)) {
+        disconnect(obj, SIGNAL(si_relationChanged()), this, SLOT(sl_onAnnotationRelationChange()));
+        removeAnnotationObject(obj);
+    }
+}
+
 QMenu* ADVSequenceObjectContext::createTranslationsMenu() {
     QMenu* m = NULL, *frames = NULL;
     if (translations) {
@@ -270,6 +280,7 @@ void ADVSequenceObjectContext::addSequenceWidget(ADVSequenceWidget* w) {
 void ADVSequenceObjectContext::addAnnotationObject( AnnotationTableObject *obj ) {
     SAFE_POINT( !annotations.contains( obj ), "Unexpected annotation table!", );
     SAFE_POINT( obj->hasObjectRelation( seqObj, ObjectRole_Sequence ), "Annotation table relates to unexpected sequence!", );
+    connect( obj, SIGNAL(si_relationChanged()), SLOT(sl_onAnnotationRelationChange()));
     annotations.insert( obj );
     emit si_annotationObjectAdded( obj );
     if ( clarifyAminoTT ) {

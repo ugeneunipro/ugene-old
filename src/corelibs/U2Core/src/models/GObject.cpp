@@ -154,6 +154,7 @@ void GObject::setObjectRelations(const QList<GObjectRelation>& list) {
     QList<GObjectRelation> internalCopy = list;
     setRelationsInDb(internalCopy);
     hints->set(GObjectHint_RelatedObjects, QVariant::fromValue<QList<GObjectRelation> >(internalCopy));
+    emit si_relationChanged();
 }
 
 void GObject::setRelationsInDb(QList<GObjectRelation>& list) const {
