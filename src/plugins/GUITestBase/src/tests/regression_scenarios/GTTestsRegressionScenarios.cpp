@@ -50,6 +50,7 @@
 #include "GTUtilsEscClicker.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsMdi.h"
+#include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsNotifications.h"
 #include "GTUtilsOptionPanelMSA.h"
@@ -5337,6 +5338,33 @@ GUI_TEST_CLASS_DEFINITION(test_3139) {
     CHECK_SET_ERR(NULL != seqArea, "MSA Editor isn't opened.!");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3140) {
+//    1. Open "_common_data/clustal/big.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal", "big.aln");
+
+//    2. Select the first symbol of the first line.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(0, 0));
+
+//    3. Press the Space button and do not unpress it.
+//    Expected: the alignment changes on every button press. UGENE does not crash.
+//    4. Unpress the button.
+//    Expected: the overview rendereing task is finished. The overview is shown.
+    for (int i = 0; i < 100; i++) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+    }
+
+    GTGlobals::sleep(1000);
+    int renderTasksCount = GTUtilsTaskTreeView::getTopLevelTasksCount(os);
+    CHECK_SET_ERR(1 == renderTasksCount, QString("An unexpected overview render tasks count: expect %1, got %2").arg(1).arg(renderTasksCount));
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    const QColor currentColor = GTUtilsMsaEditor::getGraphOverviewPixelColor(os, QPoint(1, 1));
+    const QColor expectedColor = QColor("white");
+    const QString currentColorString = QString("(%1, %2, %3)").arg(currentColor.red()).arg(currentColor.green()).arg(currentColor.blue());
+    const QString expectedColorString = QString("(%1, %2, %3)").arg(expectedColor.red()).arg(expectedColor.green()).arg(expectedColor.blue());
+    CHECK_SET_ERR(expectedColor == currentColor, QString("An unexpected color, maybe overview was not rendered: expected %1, got %2").arg(expectedColorString).arg(currentColorString));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3142) {
 //    1. Open "data/samples/CLUSTALW/COI.aln"
 //    2. On the options panel press the "Open tree" button
@@ -5920,7 +5948,7 @@ GUI_TEST_CLASS_DEFINITION(test_3277){
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
 
     QWidget* seqArea = GTWidget::findWidget(os, "msa_editor_sequence_area");
-    QColor before = GTWidget::getColor(seqArea, QPoint(1,1));
+    QColor before = GTWidget::getColor(os, seqArea, QPoint(1,1));
     QString bName = before.name();
 //    Open the "Highlighting" options panel tab.
     GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
@@ -5932,7 +5960,7 @@ GUI_TEST_CLASS_DEFINITION(test_3277){
     GTComboBox::setIndexWithText(os, highlightingScheme, "Gaps");
 //    Current state: the highlighting doesn't work for all sequences except the reference sequence.
 
-    QColor after = GTWidget::getColor(seqArea, QPoint(1,1));
+    QColor after = GTWidget::getColor(os, seqArea, QPoint(1,1));
     QString aName = after.name();
 
     CHECK_SET_ERR(before != after, "colors not changed");

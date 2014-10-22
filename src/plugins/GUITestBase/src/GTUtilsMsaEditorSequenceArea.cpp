@@ -430,7 +430,7 @@ bool GTUtilsMSAEditorSequenceArea::isSequenceHightighted(U2OpStatus &os, const Q
 
     for (int i = initCoord; i<finalCoord; i++){
         QPoint local = nameList->mapFromGlobal(QPoint(center.x(), i));
-        QColor c = GTWidget::getColor(nameList,local);
+        QColor c = GTWidget::getColor(os, nameList,local);
         QString name = c.name();
         if(name == highlightningColorName){
             return true;
@@ -449,7 +449,7 @@ QString GTUtilsMSAEditorSequenceArea::getColor(U2OpStatus &os, QPoint p){
     QPoint global = convertCoordinates(os, p);
     global.setY(global.y() + (getRowHeight(os)/2 - 1));
     QPoint local = msaEditArea->mapFromGlobal(global);
-    QColor c = GTWidget::getColor(msaEditArea, local);
+    QColor c = GTWidget::getColor(os, msaEditArea, local);
     QString name = c.name();
     return name;
 }

@@ -105,29 +105,30 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h \
 #   Utils classes
             src/GTDatabaseConfig.h \
+            src/GTUtilsAnnotationsTreeView.h \
             src/GTUtilsApp.h \
             src/GTUtilsAssemblyBrowser.h \
+            src/GTUtilsBookmarksTreeView.h \
             src/GTUtilsCircularView.h \
             src/GTUtilsDialog.h \
             src/GTUtilsDocument.h \
             src/GTUtilsEscClicker.h \
             src/GTUtilsLog.h \
             src/GTUtilsMdi.h \
-            src/GTUtilsNotifications.h \
-            src/GTUtilsProject.h \
-            src/GTUtilsProjectTreeView.h \
-            src/GTUtilsAnnotationsTreeView.h \
-            src/GTUtilsBookmarksTreeView.h \
-            src/GTUtilsSequenceView.h \
-            src/GTUtilsToolTip.h \
-            src/GTUtilsTaskTreeView.h \
+            src/GTUtilsMsaEditor.h \
             src/GTUtilsMsaEditorSequenceArea.h \
-            src/GTUtilsOptionsPanel.h \
+            src/GTUtilsNotifications.h \
             src/GTUtilsOptionPanelMSA.h \
             src/GTUtilsOptionPanelSequenceView.h \
+            src/GTUtilsOptionsPanel.h \
             src/GTUtilsPhyTree.h \
+            src/GTUtilsProject.h \
+            src/GTUtilsProjectTreeView.h \
             src/GTUtilsQueryDesigner.h \
+            src/GTUtilsSequenceView.h \
             src/GTUtilsSharedDatabaseDocument.h \
+            src/GTUtilsTaskTreeView.h \
+            src/GTUtilsToolTip.h \
             src/GTUtilsWorkflowDesigner.h \
 #   Tests
             src/tests/GUIInitialChecks.h \
@@ -322,30 +323,31 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.cpp \
 #   Utils classes
             src/GTDatabaseConfig.cpp \
+            src/GTUtilsAnnotationsTreeView.cpp \
             src/GTUtilsApp.cpp \
             src/GTUtilsAssemblyBrowser.cpp \
+            src/GTUtilsBookmarksTreeView.cpp \
             src/GTUtilsCircularView.cpp \
             src/GTUtilsDialog.cpp \
             src/GTUtilsDocument.cpp \
             src/GTUtilsEscClicker.cpp \
             src/GTUtilsLog.cpp \
             src/GTUtilsMdi.cpp \
-            src/GTUtilsNotifications.cpp \
-            src/GTUtilsProject.cpp \
-            src/GTUtilsProjectTreeView.cpp \
-            src/GTUtilsAnnotationsTreeView.cpp \
-            src/GTUtilsBookmarksTreeView.cpp \
-            src/GTUtilsSequenceView.cpp \
-            src/GTUtilsToolTip.cpp \
-            src/GTUtilsTaskTreeView.cpp \
+            src/GTUtilsMsaEditor.cpp \
             src/GTUtilsMsaEditorSequenceArea.cpp \
-            src/GTUtilsOptionsPanel.cpp \
+            src/GTUtilsNotifications.cpp \
             src/GTUtilsOptionPanelMSA.cpp \
             src/GTUtilsOptionPanelSequenceView.cpp \
-            src/GTUtilsQueryDesigner.cpp \
-            src/GTUtilsSharedDatabaseDocument.cpp \
-            src/GTUtilsWorkflowDesigner.cpp \
+            src/GTUtilsOptionsPanel.cpp \
             src/GTUtilsPhyTree.cpp \
+            src/GTUtilsProject.cpp \
+            src/GTUtilsProjectTreeView.cpp \
+            src/GTUtilsQueryDesigner.cpp \
+            src/GTUtilsSequenceView.cpp \
+            src/GTUtilsSharedDatabaseDocument.cpp \
+            src/GTUtilsTaskTreeView.cpp \
+            src/GTUtilsToolTip.cpp \
+            src/GTUtilsWorkflowDesigner.cpp \
 #   Tests
             src/tests/GUIInitialChecks.cpp \
 #   Tests/Regression Scenarios

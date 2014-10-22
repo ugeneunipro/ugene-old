@@ -142,17 +142,17 @@ void GTWidget::getAllWidgetsInfo(U2OpStatus &os, QWidget *parent){
 }
 #undef GT_METHOD_NAME
 
-
-
-QColor GTWidget::getColor(QWidget *w, QPoint p){
+#define GT_METHOD_NAME "getColor"
+QColor GTWidget::getColor(U2OpStatus &os, QWidget *w, const QPoint &p) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(NULL != w, "Widget is NULL", QColor());
     QPixmap pixmap = QPixmap::grabWidget(w, w->rect());
     QImage img = pixmap.toImage();
     QRgb rgb = img.pixel(p);
     QColor result = QColor(rgb);
     return result;
 }
-
-
+#undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
 

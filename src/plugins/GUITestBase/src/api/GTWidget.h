@@ -48,7 +48,7 @@ public:
     static QAbstractButton *findButtonByText(U2OpStatus &os, const QString &text, QWidget *parentWidget = NULL, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
     //returns color of point p in widget w coordinates
-    static QColor getColor(QWidget* w, QPoint p);
+    static QColor getColor(U2OpStatus &os, QWidget* w, const QPoint &p);
 
     //this method writes info about all widgets to opStatus
     static void getAllWidgetsInfo(U2OpStatus &os, QWidget* parent=NULL);
