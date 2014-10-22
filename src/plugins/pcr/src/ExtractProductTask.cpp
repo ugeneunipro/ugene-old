@@ -37,6 +37,8 @@
 #include <U2Core/U2SequenceUtils.h>
 #include <U2Core/UserApplicationsSettings.h>
 
+#include <U2Formats/GenbankFeatures.h>
+
 #include "ExtractProductTask.h"
 
 namespace U2 {
