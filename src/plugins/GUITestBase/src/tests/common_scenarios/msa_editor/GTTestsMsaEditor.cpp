@@ -47,6 +47,7 @@
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
@@ -3796,6 +3797,28 @@ GUI_TEST_CLASS_DEFINITION(test_0048) {
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"msa_editor_sequence_area"));
 
     CHECK_SET_ERR(l.hasError(), "There is no error in the log!");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0049){
+    //save alignment buttons test
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
+    GTUtilsDialog::waitForDialog(os, new ExportDocumentDialogFiller(os, sandBoxDir, "COI_test_0049.aln",
+                                                                    ExportDocumentDialogFiller::CLUSTALW));\
+    GTWidget::click(os, GTAction::button(os, "Save alignment as"));
+    GTUtilsProjectTreeView::click(os, "COI.aln");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    GTFileDialog::openFile(os, sandBoxDir, "COI_test_0049.aln");
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(10,10));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    GTWidget::click(os, GTAction::button(os, "Save alignment"));
+    GTUtilsProjectTreeView::click(os, "COI_test_0049.aln");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    GTFileDialog::openFile(os, sandBoxDir, "COI_test_0049.aln");
+    GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0,0), QPoint(10,0), "ATTCGAGCCGA");
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_fake) {
