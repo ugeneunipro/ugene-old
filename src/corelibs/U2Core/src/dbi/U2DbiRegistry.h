@@ -123,7 +123,7 @@ public:
     U2DbiPool(QObject* p = NULL);
     virtual ~U2DbiPool();
 
-    U2Dbi* openDbi(const U2DbiRef& ref, bool create, U2OpStatus& os, const QHash<QString, QString> &properties = QHash<QString, QString>());
+    U2Dbi* openDbi(const U2DbiRef& ref, bool create, U2OpStatus& os, const QHash<QString, QString> &properties = (QHash<QString, QString>()));
     void addRef(U2Dbi * dbi, U2OpStatus & os);
     void releaseDbi(U2Dbi* dbi, U2OpStatus& os);
     void closeAllConnections(const U2DbiRef& ref, U2OpStatus& os);
