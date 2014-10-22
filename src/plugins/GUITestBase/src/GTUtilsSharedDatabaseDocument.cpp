@@ -68,6 +68,25 @@ Document* GTUtilsSharedDatabaseDocument::connectToTestDatabase(U2OpStatus &os) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "connectToUgenePublicDatabase"
+Document *GTUtilsSharedDatabaseDocument::connectToUgenePublicDatabase(U2OpStatus &os) {
+    GTLogTracer lt;
+    QString conName = "UGENE public database";
+    GTDatabaseConfig::initTestConnectionInfo(conName);
+    {
+        QList<SharedConnectionsDialogFiller::Action> actions;
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, conName);
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CONNECT, conName);
+        GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
+    }
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+
+    CHECK_SET_ERR_RESULT(!lt.hasError(), "errors in log", NULL);
+
+    return GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(os, conName);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getDatabaseDocumentByName"
 Document *GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(U2OpStatus &os, const QString &name) {
     Q_UNUSED(os);

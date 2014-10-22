@@ -5061,6 +5061,16 @@ GUI_TEST_CLASS_DEFINITION(test_3092) {
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3102) {
+    //1. Go to 'File->Connect to shared database...'
+    //    Expected state: Showed dialog 'Shared Databases Connections'
+    //    In list of connections showed 'UGENE public database'
+    GTLogTracer logTracer;
+
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToUgenePublicDatabase(os);
+    CHECK_SET_ERR(NULL != databaseDoc, "UGENE public databased connection error");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3103) {
     //1. Go to 'File->Connect to shared database...'
     //Expected state: Showed dialog 'Shared Databases Connections'
