@@ -4884,7 +4884,7 @@ GUI_TEST_CLASS_DEFINITION(test_3017) {
     //2. Select few columns;
     //3. Run ClastulW, ClustalO, Mafft or T-Coffee alignment task;
     //4. Try to change an alignment while the task is running: move region, delete region etc.;
-    Current state: there is no results of your actions because msa is blocked, overview is not recalculated.
+    //Current state: there is no results of your actions because msa is blocked, overview is not recalculated.
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "HIV-1.aln");
 
     GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os, MuscleDialogFiller::Refine));
