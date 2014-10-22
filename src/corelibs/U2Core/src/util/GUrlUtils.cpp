@@ -62,6 +62,75 @@ GUrl GUrlUtils::ensureFileExt(const GUrl& url, const QStringList& typeExt) {
     return GUrl(url.getURLString() + "."  + typeExt.first(), url.getType());
 }
 
+GUrl GUrlUtils::changeFileExt(const GUrl &url, const DocumentFormatId &oldFormatId, const DocumentFormatId &newFormatId) {
+    CHECK(url.isLocalFile(), GUrl());
+    DocumentFormatRegistry *dfRegistry = AppContext::getDocumentFormatRegistry();
+    CHECK(NULL != dfRegistry, GUrl());
+    DocumentFormat *oldFormat = dfRegistry->getFormatById(oldFormatId);
+    CHECK(NULL != oldFormat, GUrl());
+    DocumentFormat *newFormat = dfRegistry->getFormatById(newFormatId);
+    CHECK(NULL != newFormat, GUrl());
+
+    const QString dirPath = url.dirPath();
+    const QString baseFileName = url.baseFileName();
+    QString completeSuffix = url.completeFileSuffix();
+
+    bool isCompressed = false;
+    if (completeSuffix.endsWith("gz")) {
+        isCompressed = true;
+        completeSuffix.chop(QString(".gz").size());
+    }
+
+    const QString currentExtension = completeSuffix.mid(completeSuffix.lastIndexOf(".") + 1);
+    if (oldFormat->getSupportedDocumentFileExtensions().contains(currentExtension)) {
+        completeSuffix.chop(currentExtension.size() + 1);
+    }
+
+    const QStringList newFormatExtensions = newFormat->getSupportedDocumentFileExtensions();
+    if (!newFormatExtensions.isEmpty()) {
+        completeSuffix += "." + newFormatExtensions.first();
+    }
+
+    if (isCompressed) {
+        completeSuffix += ".gz";
+    }
+
+    const QString dotCompleteSuffix = (completeSuffix.startsWith(".") ? completeSuffix : "." + completeSuffix);
+    return GUrl(dirPath + QDir::separator() + baseFileName + dotCompleteSuffix);
+}
+
+GUrl GUrlUtils::changeFileExt(const GUrl &url, const DocumentFormatId &newFormatId) {
+    CHECK(url.isLocalFile(), GUrl());
+    DocumentFormatRegistry *dfRegistry = AppContext::getDocumentFormatRegistry();
+    CHECK(NULL != dfRegistry, GUrl());
+    DocumentFormat *newFormat = dfRegistry->getFormatById(newFormatId);
+    CHECK(NULL != newFormat, GUrl());
+
+    const QString dirPath = url.dirPath();
+    const QString baseFileName = url.baseFileName();
+    QString completeSuffix = url.completeFileSuffix();
+
+    bool isCompressed = false;
+    if (completeSuffix.endsWith("gz")) {
+        isCompressed = true;
+        completeSuffix.chop(QString(".gz").size());
+    }
+
+    const QString currentExtension = completeSuffix.mid(completeSuffix.lastIndexOf(".") + 1);
+    completeSuffix.chop(currentExtension.size() + 1);
+
+    const QStringList newFormatExtensions = newFormat->getSupportedDocumentFileExtensions();
+    if (!newFormatExtensions.isEmpty()) {
+        completeSuffix += "." + newFormatExtensions.first();
+    }
+
+    if (isCompressed) {
+        completeSuffix += ".gz";
+    }
+
+    const QString dotCompleteSuffix = (completeSuffix.startsWith(".") ? completeSuffix : "." + completeSuffix);
+    return GUrl(dirPath + QDir::separator() + baseFileName + dotCompleteSuffix);
+}
 
 bool GUrlUtils::renameFileWithNameRoll(const QString& original, TaskStateInfo& ti, const QSet<QString>& excludeList, Logger* log) {
     QString rolled = GUrlUtils::rollFileName(original, "_oldcopy", excludeList);

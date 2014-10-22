@@ -185,7 +185,7 @@ QString UserAppsSettings::getDefaultDataDirPath() const{
 #if (QT_VERSION >= 0x050000)
     dirpath = AppContext::getSettings()->getValue(SETTINGS_ROOT + DATA_DIR, QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + QDir::separator() + "UGENE_Data").toString();
 #else
-    dirpath = AppContext::getSettings()->getValue(SETTINGS_ROOT + DATA_DIR, QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation) + QDir::separator() + "/UGENE_Data").toString();
+    dirpath = AppContext::getSettings()->getValue(SETTINGS_ROOT + DATA_DIR, QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation) + QDir::separator() + "UGENE_Data").toString();
 #endif
     QDir d(dirpath);
     if(!d.exists(dirpath)){

@@ -50,10 +50,10 @@ public:
 
 private slots:
     void sl_selectFile();
-    
+    void sl_formatChanged(const QString &newFormat);
+
 private:
-    QString filter;
-    
+    void initFilePath();
 }; // ExportReadsDialog
 
 } // U2

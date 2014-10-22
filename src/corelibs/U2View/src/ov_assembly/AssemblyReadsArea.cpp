@@ -38,7 +38,6 @@
 #endif
 #include <QtGui/QClipboard>
 
-#include <U2Core/AddDocumentTask.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DNASequenceObject.h>
@@ -57,6 +56,8 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/DocumentFormatUtils.h>
+
+#include <U2Gui/OpenViewTask.h>
 
 #include "AssemblyBrowser.h"
 #include "AssemblyConsensusArea.h"
@@ -907,7 +908,7 @@ void AssemblyReadsArea::exportReads(const QList<U2AssemblyRead> & reads) {
         if (!model.addToProject) { // only saving
             t = saveDocTask;
         } else { // save, add doc
-            t = new AddDocumentTask(new Document(df, iof, model.filepath, U2DbiRef())); // new doc because doc will be deleted
+            t = new AddDocumentAndOpenViewTask(new Document(df, iof, model.filepath, U2DbiRef())); // new doc because doc will be deleted
             t->addSubTask(saveDocTask);
             t->setMaxParallelSubtasks(1);
         }

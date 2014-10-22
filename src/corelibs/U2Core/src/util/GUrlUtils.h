@@ -46,8 +46,15 @@ public:
     // ensures that url ends with one of the exts
     static GUrl     ensureFileExt(const GUrl& url, const QStringList& typeExt);
 
+    // Changes the file's extension without affecting the ".gz" extension, returns an empty GUrl if any error occurs
+    // doesn't remove the previous extension if it doesn't belong to format defined by @oldFormatId
+    static GUrl changeFileExt(const GUrl &url, const DocumentFormatId &oldFormatId, const DocumentFormatId &newFormatId);
+
+    // Changes the file's extension without affecting the ".gz" extension, returns an empty GUrl if any error occurs
+    static GUrl changeFileExt(const GUrl &url, const DocumentFormatId &newFormatId);
+
     // returns url suitable for backup renaming (increments name for rolling file until non-existing name found)
-    static QString  rollFileName(const QString& url, const QString& rolledSuffix, const QSet<QString>& excludeList);
+    static QString  rollFileName(const QString& url, const QString& rolledSuffix, const QSet<QString>& excludeList = QSet<QString>());
 
     // same as above but with empty suffix
     static QString  rollFileName(const QString& url, const QSet<QString>& excludeList) { return rollFileName(url, "", excludeList);}
