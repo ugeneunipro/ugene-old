@@ -4878,6 +4878,30 @@ GUI_TEST_CLASS_DEFINITION(test_3014) {
     GTUtilsLog::check(os, l);
 
 }
+
+GUI_TEST_CLASS_DEFINITION(test_3017) {
+    //1. Open 'HIV-1.aln';
+    //2. Select few columns;
+    //3. Run ClastulW, ClustalO, Mafft or T-Coffee alignment task;
+    //4. Try to change an alignment while the task is running: move region, delete region etc.;
+    Current state: there is no results of your actions because msa is blocked, overview is not recalculated.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "HIV-1.aln");
+
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os, MuscleDialogFiller::Refine));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(1,1));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["space"]);
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    QString clipboardText = GTClipboard::text(os);
+    CHECK_SET_ERR("T" == clipboardText, "Alignment is not locked");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3034) {
 //    1. Open "samples/FASTA/human_T1.fa".
 //    2. Right click on the document -> Add -> Add object to document.
