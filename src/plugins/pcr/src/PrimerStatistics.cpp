@@ -58,7 +58,7 @@ PrimerStatisticsCalculator::PrimerStatisticsCalculator(const QByteArray &sequenc
 }
 
 double PrimerStatisticsCalculator::getGCContent() const {
-    if (0 == sequence.length()) {
+    if (sequence.isEmpty()) {
         return 0;
     }
     return 100.0 * (nG + nC) / double(sequence.length());

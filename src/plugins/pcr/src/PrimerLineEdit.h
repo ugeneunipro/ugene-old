@@ -19,39 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_PCR_GROUP_BOX_H_
-#define _U2_PCR_GROUP_BOX_H_
+#ifndef _U2_PRIMER_LINE_EDIT_H_
+#define _U2_PRIMER_LINE_EDIT_H_
 
-#include <QWidget>
-
-#include "ui_PrimerGroupBox.h"
+#include <QLineEdit>
 
 namespace U2 {
 
-class PrimerGroupBox : public QWidget, public Ui::PrimerGroupBox {
-    Q_OBJECT
+class PrimerLineEdit : public QLineEdit {
 public:
-    PrimerGroupBox(QWidget *parent);
+    PrimerLineEdit(QWidget *parent);
 
-    void setTitle(const QString &title);
-
-    QByteArray getPrimer() const;
-    uint getMismatches() const;
-
-    static QString getDoubleStringValue(double value);
-
-signals:
-    void si_primerChanged();
-
-private slots:
-    void sl_onPrimerChanged(const QString &sequence);
-    void sl_translate();
-    void sl_browse();
+protected:
+    void paintEvent(QPaintEvent *event);
 
 private:
-    static QString getTmString(const QString &sequence);
+    QRect placeHolderRect() const;
 };
 
 } // U2
 
-#endif // _U2_PCR_GROUP_BOX_H_
+#endif // _U2_PRIMER_LINE_EDIT_H_

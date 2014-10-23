@@ -27,7 +27,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QLineEdit" name="primerEdit">
+       <widget class="U2::PrimerLineEdit" name="primerEdit">
         <property name="text">
          <string/>
         </property>
@@ -35,7 +35,7 @@
          <number>1000</number>
         </property>
         <property name="placeholderText">
-         <string>5'                                                    3'</string>
+         <string/>
         </property>
        </widget>
       </item>
@@ -135,6 +135,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>U2::PrimerLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>PrimerLineEdit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

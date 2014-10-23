@@ -35,9 +35,6 @@ class DbiConnection;
 class UdrDbi;
 
 class PrimerLibrary {
-    static PrimerLibrary *instance;
-    static QMutex mutex;
-    static bool released;
 public:
     static PrimerLibrary * getInstance(U2OpStatus &os);
     static void release();
@@ -53,6 +50,10 @@ private:
     ~PrimerLibrary();
 
 private:
+    static PrimerLibrary *instance;
+    static QMutex mutex;
+    static bool released;
+
     DbiConnection *connection;
     UdrDbi *udrDbi;
 };

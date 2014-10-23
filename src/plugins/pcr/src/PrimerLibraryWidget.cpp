@@ -22,25 +22,19 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-#include <U2Core/AppContext.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "AddPrimerDialog.h"
-#include "PrimerGroupBox.h"
-#include "PrimerLibrary.h"
-#include "PrimerStatistics.h"
+#include "PrimerLibraryTable.h"
 
 #include "PrimerLibraryWidget.h"
 
 namespace U2 {
 
-/************************************************************************/
-/* PrimerLibraryWidget */
-/************************************************************************/
 PrimerLibraryWidget::PrimerLibraryWidget(QWidget *parent)
-: QWidget(parent), model(NULL), removePrimersButton(NULL)
+: QWidget(parent), removePrimersButton(NULL)
 {
     setupUi(this);
     QPushButton *newPrimerButton = buttonBox->addButton(tr("New primer"), QDialogButtonBox::ActionRole);
@@ -50,9 +44,6 @@ PrimerLibraryWidget::PrimerLibraryWidget(QWidget *parent)
     connect(removePrimersButton, SIGNAL(clicked()), SLOT(sl_removePrimers()));
 
     connect(buttonBox, SIGNAL(rejected()), SIGNAL(si_close()));
-
-    model = new PrimerLibraryModel(this);
-    primerTable->setModel(model);
 
     connect(primerTable->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)), SLOT(sl_selectionChanged()));
     sl_selectionChanged();
@@ -65,7 +56,7 @@ void PrimerLibraryWidget::sl_newPrimer() {
 
     U2OpStatusImpl os;
     Primer primer = dlg.getPrimer();
-    model->addPrimer(primer, os);
+    primerTable->addPrimer(primer, os);
     checkOp(os);
 }
 
@@ -76,7 +67,7 @@ void PrimerLibraryWidget::sl_removePrimers() {
     QModelIndexList selection = selectionModel->selectedIndexes();
     while (!selection.isEmpty()) {
         U2OpStatusImpl os;
-        model->removePrimer(selection.first(), os);
+        primerTable->removePrimer(selection.first(), os);
         checkOp(os);
         CHECK_OP(os, );
         selection = selectionModel->selectedIndexes();
@@ -84,122 +75,12 @@ void PrimerLibraryWidget::sl_removePrimers() {
 }
 
 void PrimerLibraryWidget::sl_selectionChanged() {
-    QItemSelectionModel *selectionModel = primerTable->selectionModel();
-    SAFE_POINT(NULL != selectionModel, L10N::nullPointerError("Selection"), );
-
-    removePrimersButton->setDisabled(selectionModel->selectedIndexes().isEmpty());
+    removePrimersButton->setDisabled(primerTable->getSelection().isEmpty());
 }
 
 void PrimerLibraryWidget::checkOp(const U2OpStatus &os) {
     if (os.hasError()) {
         QMessageBox::warning(this, tr("Error"), os.getError());
-    }
-}
-
-/************************************************************************/
-/* PrimerLibraryModel */
-/************************************************************************/
-PrimerLibraryModel::PrimerLibraryModel(QObject *parent)
-: QAbstractItemModel(parent)
-{
-    U2OpStatus2Log os;
-    PrimerLibrary *primerLibrary = PrimerLibrary::getInstance(os);
-    SAFE_POINT_OP(os, );
-    primers = primerLibrary->getPrimers(os);
-}
-
-int PrimerLibraryModel::columnCount(const QModelIndex & /*parent*/) const {
-    return 5;
-}
-
-QVariant PrimerLibraryModel::data(const QModelIndex &index, int role) const {
-    CHECK(index.isValid(), QVariant());
-
-    if (Qt::DisplayRole == role) {
-        return displayData(index);
-    }
-
-    return QVariant();
-}
-
-QVariant PrimerLibraryModel::headerData(int section, Qt::Orientation /*orientation*/, int role) const {
-    CHECK(Qt::DisplayRole == role, QVariant());
-
-    switch (section) {
-        case 0:
-            return tr("Name");
-        case 1:
-            return tr("GC-content (%)");
-        case 2:
-            return tr("Tm") + QString::fromLatin1(" (\x00B0") + "C)";
-        case 3:
-            return tr("Length (bp)");
-        case 4:
-            return tr("Sequence");
-        default:
-            return QVariant();
-    }
-}
-
-QModelIndex PrimerLibraryModel::index(int row, int column, const QModelIndex & /*parent*/) const {
-    CHECK(row < primers.size(), QModelIndex());
-    return createIndex(row, column);
-}
-
-QModelIndex PrimerLibraryModel::parent(const QModelIndex & /*index*/) const {
-    return QModelIndex();
-}
-
-int PrimerLibraryModel::rowCount(const QModelIndex &parent) const {
-    if (parent.isValid()) {
-        return 0;
-    }
-    return primers.size();
-}
-
-void PrimerLibraryModel::addPrimer(Primer &primer, U2OpStatus &os) {
-    PrimerLibrary *primerLibrary = PrimerLibrary::getInstance(os);
-    CHECK_OP(os, );
-
-    // Append statistics
-    PrimerStatisticsCalculator calc(primer.sequence.toLocal8Bit());
-    primer.gc = calc.getGCContent();
-    primer.tm = calc.getMeltingTemperature();
-
-    primerLibrary->addPrimer(primer, os);
-    CHECK_OP(os, );
-
-    beginInsertRows(QModelIndex(), primers.size(), primers.size());
-    primers << primer;
-    endInsertRows();
-}
-
-void PrimerLibraryModel::removePrimer(const QModelIndex &index, U2OpStatus &os) {
-    PrimerLibrary *primerLibrary = PrimerLibrary::getInstance(os);
-    CHECK_OP(os, );
-
-    SAFE_POINT_EXT(index.row() >= 0 && index.row() < primers.size(), os.setError(tr("Incorrect primer number")), );
-    beginRemoveRows(QModelIndex(), index.row(), index.row());
-    Primer primer = primers.takeAt(index.row());
-    primerLibrary->removePrimer(primer, os);
-    endRemoveRows();
-}
-
-QVariant PrimerLibraryModel::displayData(const QModelIndex &index) const {
-    Primer primer = primers[index.row()];
-    switch (index.column()) {
-        case 0:
-            return primer.name;
-        case 1:
-            return PrimerGroupBox::getDoubleStringValue(primer.gc);
-        case 2:
-            return PrimerGroupBox::getDoubleStringValue(primer.tm);
-        case 3:
-            return primer.sequence.length();
-        case 4:
-            return primer.sequence;
-        default:
-            return QVariant();
     }
 }
 

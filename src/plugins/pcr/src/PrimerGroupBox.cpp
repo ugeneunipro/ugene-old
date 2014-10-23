@@ -26,6 +26,7 @@
 #include <U2Core/TextUtils.h>
 #include <U2Core/U2SafePoints.h>
 
+#include "PrimerLibrarySelector.h"
 #include "PrimerStatistics.h"
 
 #include "PrimerGroupBox.h"
@@ -42,6 +43,7 @@ PrimerGroupBox::PrimerGroupBox(QWidget *parent)
 
     connect(primerEdit, SIGNAL(textEdited(const QString &)), SLOT(sl_onPrimerChanged(const QString &)));
     connect(reverseComplementButton, SIGNAL(clicked()), SLOT(sl_translate()));
+    connect(browseButton, SIGNAL(clicked()), SLOT(sl_browse()));
 }
 
 void PrimerGroupBox::setTitle(const QString &title) {
@@ -87,6 +89,13 @@ void PrimerGroupBox::sl_translate() {
 
     primerEdit->setText(translation);
     sl_onPrimerChanged(translation);
+}
+
+void PrimerGroupBox::sl_browse() {
+    PrimerLibrarySelector dlg(this);
+    CHECK(QDialog::Accepted == dlg.exec(), );
+    Primer result = dlg.getResult();
+    sl_onPrimerChanged(result.sequence);
 }
 
 QString PrimerGroupBox::getDoubleStringValue(double value) {

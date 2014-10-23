@@ -19,39 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_PCR_GROUP_BOX_H_
-#define _U2_PCR_GROUP_BOX_H_
+#ifndef _U2_PRIMER_LIBRARY_SELECTOR_H_
+#define _U2_PRIMER_LIBRARY_SELECTOR_H_
 
-#include <QWidget>
+#include <QDialog>
 
-#include "ui_PrimerGroupBox.h"
+#include "Primer.h"
+
+#include "ui_PrimerLibrarySelector.h"
 
 namespace U2 {
 
-class PrimerGroupBox : public QWidget, public Ui::PrimerGroupBox {
+class PrimerLibrarySelector : public QDialog, Ui::PrimerLibrarySelector {
     Q_OBJECT
 public:
-    PrimerGroupBox(QWidget *parent);
+    PrimerLibrarySelector(QWidget *parent);
 
-    void setTitle(const QString &title);
-
-    QByteArray getPrimer() const;
-    uint getMismatches() const;
-
-    static QString getDoubleStringValue(double value);
-
-signals:
-    void si_primerChanged();
+    Primer getResult() const;
 
 private slots:
-    void sl_onPrimerChanged(const QString &sequence);
-    void sl_translate();
-    void sl_browse();
-
-private:
-    static QString getTmString(const QString &sequence);
+    void sl_selectionChanged();
 };
 
 } // U2
 
-#endif // _U2_PCR_GROUP_BOX_H_
+#endif // _U2_PRIMER_LIBRARY_SELECTOR_H_

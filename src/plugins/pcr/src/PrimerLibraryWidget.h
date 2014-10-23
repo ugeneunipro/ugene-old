@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_PRIMERLIBRARYWIDGET_H_
-#define _U2_PRIMERLIBRARYWIDGET_H_
+#ifndef _U2_PRIMER_LIBRARY_WIDGET_H_
+#define _U2_PRIMER_LIBRARY_WIDGET_H_
 
 #include <QAbstractItemModel>
 
@@ -33,28 +33,6 @@
 #include "ui_PrimerLibraryWidget.h"
 
 namespace U2 {
-
-class PrimerLibraryModel : public QAbstractItemModel {
-public:
-    PrimerLibraryModel(QObject *parent);
-
-    /* QAbstractItemModel */
-    int columnCount(const QModelIndex &parent) const;
-    QVariant data(const QModelIndex &index, int role) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    QModelIndex index(int row, int column, const QModelIndex &parent) const;
-    QModelIndex parent(const QModelIndex &index) const;
-    int rowCount(const QModelIndex &parent) const;
-
-    void addPrimer(Primer &primer, U2OpStatus &os);
-    void removePrimer(const QModelIndex &index, U2OpStatus &os);
-
-private:
-    QVariant displayData(const QModelIndex &index) const;
-
-private:
-    QList<Primer> primers;
-};
 
 class PrimerLibraryWidget : public QWidget, Ui::PrimerLibraryWidget {
     Q_OBJECT
@@ -73,10 +51,9 @@ private:
     void checkOp(const U2OpStatus &os);
 
 private:
-    PrimerLibraryModel *model;
     QPushButton *removePrimersButton;
 };
 
 } // U2
 
-#endif // _U2_PRIMERLIBRARYWIDGET_H_
+#endif // _U2_PRIMER_LIBRARY_WIDGET_H_

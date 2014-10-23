@@ -37,6 +37,8 @@ public:
     static QString badArgument(const QString& name) { return tr("Internal error, bad argument: %1").arg(name);}
     static QString outOfMemory() {return tr("Out of memory!");}
     static QString internalError() {return tr("Internal error!");}
+    static QString internalError(const QString &message) {return internalError() + " " + message;}
+    static QString nullPointerError(const QString &objectName) {return tr("Internal error! The object unexpectedly does not exist: ") + objectName; }
 
     // messages to work with files
     static QString errorOpeningFileRead(const GUrl &url) { return tr("Error opening file for reading: '%1'").arg(url.getURLString()); }
@@ -88,8 +90,6 @@ public:
     static QString complementStrandStr() { return tr("Reverse-complementary"); }
 
     static QString required() { return tr("Required"); }
-
-    static QString nullPointerError(const QString &objectName) {return tr("Internal error! The object unexpectedly does not exist: ") + objectName; }
 };
 
 }//ns
