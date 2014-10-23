@@ -36,6 +36,9 @@ public:
     /* ACGT sequence */
     QString sequence;
 
+    /* GC-content [0..100] % */
+    double gc;
+
     /* Melting temperature */
     double tm;
 };

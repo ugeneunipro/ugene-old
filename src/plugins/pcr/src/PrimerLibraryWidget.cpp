@@ -28,7 +28,9 @@
 #include <U2Core/U2SafePoints.h>
 
 #include "AddPrimerDialog.h"
+#include "PrimerGroupBox.h"
 #include "PrimerLibrary.h"
+#include "PrimerStatistics.h"
 
 #include "PrimerLibraryWidget.h"
 
@@ -107,7 +109,7 @@ PrimerLibraryModel::PrimerLibraryModel(QObject *parent)
 }
 
 int PrimerLibraryModel::columnCount(const QModelIndex & /*parent*/) const {
-    return 3;
+    return 5;
 }
 
 QVariant PrimerLibraryModel::data(const QModelIndex &index, int role) const {
@@ -127,8 +129,12 @@ QVariant PrimerLibraryModel::headerData(int section, Qt::Orientation /*orientati
         case 0:
             return tr("Name");
         case 1:
-            return tr("Tm");
+            return tr("GC-content (%)");
         case 2:
+            return tr("Tm") + QString::fromLatin1(" (\x00B0") + "C)";
+        case 3:
+            return tr("Length (bp)");
+        case 4:
             return tr("Sequence");
         default:
             return QVariant();
@@ -155,6 +161,11 @@ void PrimerLibraryModel::addPrimer(Primer &primer, U2OpStatus &os) {
     PrimerLibrary *primerLibrary = PrimerLibrary::getInstance(os);
     CHECK_OP(os, );
 
+    // Append statistics
+    PrimerStatisticsCalculator calc(primer.sequence.toLocal8Bit());
+    primer.gc = calc.getGCContent();
+    primer.tm = calc.getMeltingTemperature();
+
     primerLibrary->addPrimer(primer, os);
     CHECK_OP(os, );
 
@@ -180,8 +191,12 @@ QVariant PrimerLibraryModel::displayData(const QModelIndex &index) const {
         case 0:
             return primer.name;
         case 1:
-            return primer.tm;
+            return PrimerGroupBox::getDoubleStringValue(primer.gc);
         case 2:
+            return PrimerGroupBox::getDoubleStringValue(primer.tm);
+        case 3:
+            return primer.sequence.length();
+        case 4:
             return primer.sequence;
         default:
             return QVariant();

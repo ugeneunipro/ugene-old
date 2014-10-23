@@ -24,7 +24,7 @@
 namespace U2 {
 
 Primer::Primer()
-: U2Entity(), tm(0.0)
+: U2Entity(), gc(0.0), tm(0.0)
 {
 
 }

@@ -32,6 +32,21 @@ public:
     static double getMeltingTemperature(const QByteArray &sequence);
 };
 
+class PrimerStatisticsCalculator {
+public:
+    PrimerStatisticsCalculator(const QByteArray &sequence);
+
+    double getGCContent() const;
+    double getMeltingTemperature() const;
+
+private:
+    const QByteArray sequence;
+    int nA;
+    int nC;
+    int nG;
+    int nT;
+};
+
 } // U2
 
 #endif // _U2_PRIMER_STATISTICS_H_

@@ -44,19 +44,20 @@ PcrPlugin::PcrPlugin()
 : Plugin(tr("In silico PCR"), tr("In silico PCR"))
 {
     // Init primer library
-    //U2OpStatusImpl os;
-    //PrimerLibrary::getInstance(os);
-    //SAFE_POINT_OP(os, );
+    U2OpStatus2Log os;
+    PrimerLibrary *library = PrimerLibrary::getInstance(os);
 
     // Init GUI elements
     if (NULL != AppContext::getMainWindow()) {
-        /*QMenu *tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
-        QMenu *toolsSubmenu = tools->addMenu(tr("Primer"));
-        toolsSubmenu->addAction(tr("Primer library"), this, SLOT(sl_primerLibrary()));*/
-
         OPWidgetFactoryRegistry *opRegistry = AppContext::getOPWidgetFactoryRegistry();
         SAFE_POINT(opRegistry != NULL, L10N::nullPointerError("Options Panel Registry"), );
         opRegistry->registerFactory(new InSilicoPcrOPWidgetFactory());
+
+        QMenu *tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
+        QMenu *toolsSubmenu = tools->addMenu(tr("Primer"));
+        if (NULL != library) {
+            toolsSubmenu->addAction(tr("Primer library"), this, SLOT(sl_primerLibrary()));
+        }
     }
 }
 

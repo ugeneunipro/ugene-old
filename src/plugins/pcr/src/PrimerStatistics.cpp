@@ -38,22 +38,33 @@ bool PrimerStatistics::checkPcrPrimersPair(const QByteArray &forward, const QByt
 }
 
 double PrimerStatistics::getMeltingTemperature(const QByteArray &sequence) {
-    int nA = 0;
-    int nC = 0;
-    int nG = 0;
-    int nT = 0;
+    PrimerStatisticsCalculator calc(sequence);
+    return calc.getMeltingTemperature();
+}
 
+PrimerStatisticsCalculator::PrimerStatisticsCalculator(const QByteArray &sequence)
+: sequence(sequence), nA(0), nC(0), nG(0), nT(0)
+{
     foreach(const char c, sequence){
         switch (c) {
             case 'A': nA++; break;
             case 'C': nC++; break;
             case 'G': nG++; break;
             case 'T': nT++; break;
-            default: FAIL(QString("Unexpected symbol: ") + c, 0.0);
+            default: FAIL(QString("Unexpected symbol: ") + c, );
         }
     }
-    SAFE_POINT(sequence.length() == (nA + nT + nG + nC), "Unexpected symbols", 0.0);
+    SAFE_POINT(sequence.length() == (nA + nT + nG + nC), "Unexpected symbols", );
+}
 
+double PrimerStatisticsCalculator::getGCContent() const {
+    if (0 == sequence.length()) {
+        return 0;
+    }
+    return 100.0 * (nG + nC) / double(sequence.length());
+}
+
+double PrimerStatisticsCalculator::getMeltingTemperature() const {
     if (sequence.length() < 15) {
         return (nA + nT) * 2 + (nG + nC) * 4;
     }

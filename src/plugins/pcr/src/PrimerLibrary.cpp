@@ -43,7 +43,8 @@ namespace {
     const UdrSchemaId PRIMER_UDR_ID = "Primer";
     const int NAME_FILED = 0;
     const int SEQ_FILED = 1;
-    const int TM_FILED = 2;
+    const int GC_FILED = 2;
+    const int TM_FILED = 3;
 }
 
 PrimerLibrary * PrimerLibrary::getInstance(U2OpStatus &os) {
@@ -99,11 +100,13 @@ PrimerLibrary::~PrimerLibrary() {
 void PrimerLibrary::initPrimerUdr(U2OpStatus &os) {
     UdrSchema::FieldDesc name("name", UdrSchema::STRING);
     UdrSchema::FieldDesc sequence("sequence", UdrSchema::STRING);
+    UdrSchema::FieldDesc gc("GC", UdrSchema::DOUBLE);
     UdrSchema::FieldDesc tm("Tm", UdrSchema::DOUBLE);
 
     QScopedPointer<UdrSchema> primerSchema(new UdrSchema(PRIMER_UDR_ID));
     primerSchema->addField(name, os);
     primerSchema->addField(sequence, os);
+    primerSchema->addField(gc, os);
     primerSchema->addField(tm, os);
     CHECK_OP(os, );
 
@@ -117,6 +120,7 @@ void PrimerLibrary::addPrimer(Primer &primer, U2OpStatus &os) {
     QList<UdrValue> values;
     values << UdrValue(primer.name);
     values << UdrValue(primer.sequence);
+    values << UdrValue(primer.gc);
     values << UdrValue(primer.tm);
     UdrRecordId record = udrDbi->addRecord(PRIMER_UDR_ID, values, os);
     CHECK_OP(os, );
@@ -135,6 +139,7 @@ QList<Primer> PrimerLibrary::getPrimers(U2OpStatus &os) const {
         primer.id = record.getId().getRecordId();
         primer.name = record.getString(NAME_FILED, os);
         primer.sequence = record.getString(SEQ_FILED, os);
+        primer.gc = record.getDouble(GC_FILED, os);
         primer.tm = record.getDouble(TM_FILED, os);
         CHECK_OP(os, result);
         result << primer;
