@@ -2269,7 +2269,7 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004){
     CHECK_SET_ERR(layoutCombo->currentText() == "Circular", QString("unexpected layout: %1").arg(layoutCombo->currentText()));
     CHECK_SET_ERR(treeViewCombo->currentText() == "Cladogram", QString("unexpected tree view: %1").arg(treeViewCombo->currentText()));
 #ifndef Q_OS_MAC
-    QString color = GTWidget::getColor(labelsColorButton, QPoint(10,10)).name();
+    QString color = GTWidget::getColor(os, labelsColorButton, QPoint(10,10)).name();
     CHECK_SET_ERR(color == "#ff0000", QString("unexpected color: %1").arg(color));
 #endif
 #ifdef Q_OS_LINUX
@@ -2332,7 +2332,7 @@ GUI_TEST_CLASS_DEFINITION(save_parameters_test_0004_1){
     CHECK_SET_ERR(heightSlider->value() == 20, QString("unexpected height slider value: %1").arg(heightSlider->value()));
     CHECK_SET_ERR(lineWeightSpinBox->value() == 2, QString("unexpected line width: %1").arg(lineWeightSpinBox->value()));
 #ifndef Q_OS_MAC
-    QString color = GTWidget::getColor(branchesColorButton, QPoint(10,10)).name();
+    QString color = GTWidget::getColor(os, branchesColorButton, QPoint(10,10)).name();
     CHECK_SET_ERR(color == "#ff0000", QString("unexpected color: %1").arg(color));
 #endif
 }
