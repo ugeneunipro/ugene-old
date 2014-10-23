@@ -101,7 +101,7 @@ void QDGroupsEditor::mousePressEvent( QMouseEvent *event ) {
     QTreeWidget::mousePressEvent(event);
 }
 
-static const QString MSGBOX_TITLE = QDGroupsEditor::tr("Query Designer");
+static const QString MSGBOX_TITLE = QObject::tr("Query Designer");
 
 void QDGroupsEditor::sl_addGroup() {
     QDScheme* scheme = view->getScheme();

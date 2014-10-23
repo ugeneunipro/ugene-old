@@ -21,6 +21,7 @@
 
 #include <math.h>
 
+#include <QtCore/qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QLabel>

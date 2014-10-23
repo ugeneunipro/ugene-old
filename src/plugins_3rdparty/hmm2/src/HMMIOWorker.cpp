@@ -65,7 +65,7 @@ DataTypePtr HMMLib::HMM_PROFILE_TYPE() {
     return dtr->getById(HMM_PROFILE_TYPE_ID);
 }
 
-const Descriptor HMMLib::HMM2_SLOT("hmm2-profile", HMMLib::tr("HMM Profile"), "");
+const Descriptor HMMLib::HMM2_SLOT("hmm2-profile", QObject::tr("HMM Profile"), "");
 
 const Descriptor HMMLib::HMM_CATEGORY() {return Descriptor("hmmer", tr("HMMER2 Tools"), "");}
 
