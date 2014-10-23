@@ -91,7 +91,6 @@ public:
 private slots:
     void sl_onAlgorithmChanged(int);
     void sl_onRegionOptionChanged(int);
-    void sl_enableBoxMaxResult(int checkBoxState);
     void sl_onRegionValueEdited();
     void sl_onSequenceTranslationChanged(int);
     void sl_onSearchPatternChanged();

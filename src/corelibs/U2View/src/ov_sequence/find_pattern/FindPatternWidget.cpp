@@ -516,10 +516,10 @@ void FindPatternWidget::initRegionSelection()
 
 void FindPatternWidget::initResultsLimit()
 {
-    boxMaxResult->setMinimum(0);
+    boxMaxResult->setMinimum(1);
     boxMaxResult->setMaximum(INT_MAX);
     boxMaxResult->setValue(DEFAULT_RESULTS_NUM_LIMIT);
-    boxMaxResult->setEnabled(false);
+    boxMaxResult->setEnabled(true);
 }
 
 void FindPatternWidget::initUseAmbiguousBasesContainer() {
@@ -578,7 +578,6 @@ void FindPatternWidget::connectSlots()
     connect(boxAlgorithm, SIGNAL(currentIndexChanged(int)), SLOT(sl_onAlgorithmChanged(int)));
     connect(boxRegion, SIGNAL(currentIndexChanged(int)), SLOT(sl_onRegionOptionChanged(int)));
     connect(textPattern, SIGNAL(textChanged()), SLOT(sl_onSearchPatternChanged()));
-    connect(boxUseMaxResult, SIGNAL(stateChanged(int)), SLOT(sl_enableBoxMaxResult(int)));
     connect(editStart, SIGNAL(textEdited(QString)), SLOT(sl_onRegionValueEdited()));
     connect(editEnd, SIGNAL(textEdited(QString)), SLOT(sl_onRegionValueEdited()));
     connect(boxSeqTransl, SIGNAL(currentIndexChanged(int)), SLOT(sl_onSequenceTranslationChanged(int)));
@@ -588,7 +587,6 @@ void FindPatternWidget::connectSlots()
     connect(boxRegion, SIGNAL(currentIndexChanged(int)), SLOT(sl_activateNewSearch()));
 
     connect(removeOverlapsBox, SIGNAL(stateChanged(int)), SLOT(sl_activateNewSearch()));
-    connect(boxUseMaxResult, SIGNAL(stateChanged(int)), SLOT(sl_activateNewSearch()));
     connect(boxMaxResult, SIGNAL(valueChanged(int)), SLOT(sl_activateNewSearch()));
 
     // A sequence has been selected in the Sequence View
@@ -607,18 +605,6 @@ void FindPatternWidget::connectSlots()
     connect(getAnnotationsPushButton, SIGNAL(clicked()), SLOT(sl_getAnnotationsButtonClicked()));
     connect(prevPushButton, SIGNAL(clicked()), SLOT(sl_prevButtonClicked()));
     connect(nextPushButton, SIGNAL(clicked()), SLOT(sl_nextButtonClicked()));
-}
-
-
-void FindPatternWidget::sl_enableBoxMaxResult(int checkBoxState)
-{
-    if (Qt::Checked == checkBoxState) {
-        boxMaxResult->setEnabled(true);
-    }
-    else {
-        boxMaxResult->setValue(DEFAULT_RESULTS_NUM_LIMIT);
-        boxMaxResult->setEnabled(false);
-    }
 }
 
 void FindPatternWidget::sl_onAlgorithmChanged(int index)
@@ -1277,9 +1263,7 @@ void FindPatternWidget::initFindPatternTask( const QList<NamePattern>& patterns)
     }
 
     // Limit results number to the specified value
-    settings.maxResult2Find = boxUseMaxResult->isChecked() ?
-        boxMaxResult->value() :
-    DEFAULT_RESULTS_NUM_LIMIT;
+    settings.maxResult2Find =  boxMaxResult->value();
 
     // Region
     bool regionIsCorrectRef = false;
