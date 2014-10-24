@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>230</width>
-    <height>112</height>
+    <height>111</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,7 +61,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="reverseComplementButton">
+         <widget class="QToolButton" name="reverseComplementButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -74,20 +74,23 @@
             <height>16777215</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string>Reverse complement sequence</string>
+          </property>
           <property name="text">
            <string/>
           </property>
           <property name="icon">
            <iconset resource="../../../../corelibs/U2Gui/U2Gui.qrc">
-            <normaloff>:/core/images/todo.png</normaloff>:/core/images/todo.png</iconset>
+            <normaloff>:/core/images/show_compl.png</normaloff>:/core/images/show_compl.png</iconset>
           </property>
-          <property name="flat">
+          <property name="autoRaise">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="browseButton">
+         <widget class="QToolButton" name="browseButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -100,14 +103,17 @@
             <height>16777215</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string>Choose a primer from the primer library</string>
+          </property>
           <property name="text">
            <string/>
           </property>
           <property name="icon">
            <iconset resource="../../../../corelibs/U2Gui/U2Gui.qrc">
-            <normaloff>:/core/images/todo.png</normaloff>:/core/images/todo.png</iconset>
+            <normaloff>:/core/images/db/database_go.png</normaloff>:/core/images/db/database_go.png</iconset>
           </property>
-          <property name="flat">
+          <property name="autoRaise">
            <bool>true</bool>
           </property>
          </widget>

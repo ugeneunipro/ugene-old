@@ -56,7 +56,7 @@ PcrPlugin::PcrPlugin()
         QMenu *tools = AppContext::getMainWindow()->getTopLevelMenu(MWMENU_TOOLS);
         QMenu *toolsSubmenu = tools->addMenu(tr("Primer"));
         if (NULL != library) {
-            toolsSubmenu->addAction(tr("Primer library"), this, SLOT(sl_primerLibrary()));
+            toolsSubmenu->addAction(QIcon(":/core/images/db/database_go.png"), tr("Primer library"), this, SLOT(sl_primerLibrary()));
         }
     }
 }

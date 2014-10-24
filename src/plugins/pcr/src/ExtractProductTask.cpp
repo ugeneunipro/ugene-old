@@ -103,7 +103,7 @@ AnnotationData ExtractProductTask::getPrimerAnnotation(const QByteArray &primer,
     result.location->regions << region;
     result.location->strand = U2Strand(strand);
 
-    result.name = GBFeatureUtils::getKeyInfo(GBFeatureKey_primer).text;
+    result.name = GBFeatureUtils::getKeyInfo(GBFeatureKey_primer_bind).text;
     result.qualifiers << U2Qualifier("sequence", primer);
     return result;
 }
