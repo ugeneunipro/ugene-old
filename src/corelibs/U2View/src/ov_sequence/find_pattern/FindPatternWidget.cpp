@@ -605,6 +605,9 @@ void FindPatternWidget::connectSlots()
     connect(getAnnotationsPushButton, SIGNAL(clicked()), SLOT(sl_getAnnotationsButtonClicked()));
     connect(prevPushButton, SIGNAL(clicked()), SLOT(sl_prevButtonClicked()));
     connect(nextPushButton, SIGNAL(clicked()), SLOT(sl_nextButtonClicked()));
+
+    connect(useAmbiguousBasesBox, SIGNAL(toggled(bool)), SLOT(sl_activateNewSearch()));
+    connect(spinMatch, SIGNAL(valueChanged(int)), SLOT(sl_activateNewSearch()));    
 }
 
 void FindPatternWidget::sl_onAlgorithmChanged(int index)

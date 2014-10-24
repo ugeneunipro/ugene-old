@@ -116,6 +116,19 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
     GTUtilsAnnotationsTreeView::findItem(os, "misc_feature  (0, 2)");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0005){
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+    
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "AAAAAAAAAAAAAAAAAAAA");
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/40"), "Results string not match");
+
+    GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Substitute");
+    GTUtilsOptionPanelSequenceView::setMatchPercentage(os, 75);
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/1649"), "Results string not match");
+}
+
 }
 
 }

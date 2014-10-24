@@ -39,6 +39,7 @@
 #include "api/GTComboBox.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
+#include "api/GTSpinBox.h"
 
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsTaskTreeView.h"
@@ -187,6 +188,25 @@ void GTUtilsOptionPanelSequenceView::enterFilepathForSavingAnnotations(U2OpStatu
     GT_CHECK(leFilePath != NULL, "File path line edit is NULL");
     QDir().mkpath(QFileInfo(filepath).dir().absolutePath());
     GTLineEdit::setText(os, leFilePath, filepath);
+}
+
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setAlgorithm"
+void GTUtilsOptionPanelSequenceView::setAlgorithm( U2OpStatus &os, QString algorithm ){
+    QComboBox *algoBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "boxAlgorithm"));
+
+    GTComboBox::setIndexWithText(os, algoBox, algorithm);
+    GTGlobals::sleep(2500);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setMatchPercentage"
+void GTUtilsOptionPanelSequenceView::setMatchPercentage( U2OpStatus &os, int percentage ){
+    QSpinBox *spinMatchBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "spinBoxMatch"));
+
+    GTSpinBox::setValue(os, spinMatchBox, percentage);
+    GTGlobals::sleep(2500);
 }
 
 #undef GT_METHOD_NAME

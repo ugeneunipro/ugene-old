@@ -54,6 +54,10 @@ public:
 
     static void setStrand(U2OpStatus &os, QString strandStr);
 
+    static void setAlgorithm(U2OpStatus &os, QString algorithm);
+    
+    static void setMatchPercentage(U2OpStatus &os, int percentage);
+
     static void enterFilepathForSavingAnnotations(U2OpStatus &os, QString filepath);
 
     static void toggleInputFromFilePattern(U2OpStatus &os);
