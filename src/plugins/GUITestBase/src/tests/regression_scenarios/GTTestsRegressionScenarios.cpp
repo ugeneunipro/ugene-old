@@ -4792,6 +4792,34 @@ GUI_TEST_CLASS_DEFINITION( test_2667 ) {
     GTUtilsProjectTreeView::findIndex(os, "NC_001363 features", options);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2866) {
+//    1. Use main menu { Tools -> Align to reference -> Align short reads }
+//    Expected state: the "Align Sequencing Reads" dialog has appeared
+//    2. Fill dialog: alignment method: Bowtie
+//                    reference sequence: _common_data/e_coli/NC_008253.gff
+//                    short reads: "_common_data/e_coli/e_coli_1000.fastq"
+//       Click start button
+//    Expected state: message box with "These files have the incompatible format" has appeared
+//    3. Click "Yes"
+//    Expected state: UGENE assembles reads without errors and the "Import SAM File" dialog has appeared
+    GTLogTracer l;
+
+    AlignShortReadsFiller::Parameters parameters(testDir + "_common_data/e_coli/",
+                                                 "NC_008253.gff",
+                                                 testDir + "_common_data/e_coli/",
+                                                 "e_coli_1000.fastq",
+                                                 AlignShortReadsFiller::Parameters::Bowtie);
+
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters)) ;
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Yes"));
+    GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "test_2866.ugenedb"));
+
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
+    GTGlobals::sleep(20000);
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2897) {
     //    1. Open {data/samples/CLUSTALW/COI.aln}.
     GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
@@ -4839,6 +4867,63 @@ GUI_TEST_CLASS_DEFINITION(test_2903) {
 //    Current state: the following error appears: 'RemoteBLASTTask' task failed: Database couldn't prepare the response
     GTUtilsLog::check(os, l);
 }
+
+GUI_TEST_CLASS_DEFINITION(test_2962_1) {
+//    1. Open "_common_data/scenarios/_regression/2924/human_T1_cutted.fa".
+//    2. Click the "Shown circular view" button on the sequence toolbar.
+//    Expected: the circular view is shown.
+//    3. Unload project.
+//    4. Repeat 1,2.
+//    Expected: UGENE does not crash.
+
+    GTLogTracer l;
+    ADVSingleSequenceWidget *seqWidget =
+            GTUtilsProject::openFileExpectSequence(os,
+                                                   testDir + "_common_data/scenarios/_regression/2924",
+                                                   "human_T1_cutted.fa",
+                                                   "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    GTUtilsCv::cvBtn::click(os, seqWidget);
+
+    CHECK_SET_ERR(GTUtilsCv::cvBtn::isChecked(os, seqWidget), "Unexpected state of CV button!");
+    CHECK_SET_ERR(GTUtilsCv::isCvPresent(os, seqWidget), "Unexpected state of CV widget!");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "No"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECTSUPPORT__CLOSE_PROJECT, GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_FILE);
+
+    seqWidget = GTUtilsProject::openFileExpectSequence(os,
+                                                       testDir + "_common_data/scenarios/_regression/2924",
+                                                       "human_T1_cutted.fa",
+                                                       "human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+    GTUtilsCv::cvBtn::click(os, seqWidget);
+    CHECK_SET_ERR(GTUtilsCv::cvBtn::isChecked(os, seqWidget), "Unexpected state of CV button!");
+    CHECK_SET_ERR(GTUtilsCv::isCvPresent(os, seqWidget), "Unexpected state of CV widget!");
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2962_2) {
+//    Open "_common_data/fasta/DNA.fa".
+//    Remove the second sequence object from the document.
+//    Click the "Toggle circular views" button on the main toolbar.
+//    Expected state: the circular view is toggled it is possible.
+//    Current state: UGENE crashes.
+
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "DNA.fa");
+
+    QPoint p = GTUtilsProjectTreeView::getItemCenter(os, "GXL_141618");
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::click(os);
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["Delete"]);
+    GTUtilsCv::commonCvBtn::click(os);
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2987) {
 //      1. Open "_common_data/fasta/RAW.fa".
 //      2. Create a complement annotation.
@@ -5150,9 +5235,9 @@ GUI_TEST_CLASS_DEFINITION(test_3112) {
 //     Expected state: the overview widget hides, the render task cancels.
 //     Current state: the overview widget hides, the render task still works. If you change the msa (insert a gap somewhere), a safe point triggers.
     GTFileDialog::openFile(os, testDir + "_common_data/clustal/", "10000_sequences.aln");
-    
+
     GTGlobals::sleep(20000); //in case of failing test try to increase this pause
-    
+
     QToolButton* button = qobject_cast<QToolButton*>(GTAction::button(os, "Show overview"));
     CHECK_SET_ERR(button->isChecked(), "Overview button is not pressed");
 
