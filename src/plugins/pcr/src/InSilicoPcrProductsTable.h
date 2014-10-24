@@ -44,8 +44,6 @@ public:
     ADVSequenceObjectContext * productsContext() const;
     QList<InSilicoPcrProduct> getSelectedProducts() const;
 
-signals:
-
 private slots:
     void sl_selectionChanged();
 

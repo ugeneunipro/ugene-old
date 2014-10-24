@@ -30,11 +30,19 @@ class PrimerLineEdit : public QLineEdit {
 public:
     PrimerLineEdit(QWidget *parent);
 
+    void setInvalidatedText(const QString &text);
+
 protected:
     void paintEvent(QPaintEvent *event);
 
 private:
     QRect placeHolderRect() const;
+};
+
+class PrimerValidator : public QRegExpValidator {
+public:
+    PrimerValidator(const QRegExp &rx, QObject *parent);
+    State validate(QString &input, int &pos) const;
 };
 
 } // U2

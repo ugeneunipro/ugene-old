@@ -128,8 +128,8 @@ void ExtractProductTask::run() {
     U2SequenceObject *sequenceObject = new U2SequenceObject(productSequence.getName(), productRef);
     doc->addObject(sequenceObject);
     AnnotationTableObject *annotations = new AnnotationTableObject(productSequence.getName() + " features", dbiRef);
-    annotations->addAnnotation(getPrimerAnnotation(product.forwardPrimer, product.forwardPimerMatchLength, U2Strand::Direct, productSequence.length()));
-    annotations->addAnnotation(getPrimerAnnotation(product.reversePrimer, product.reversePimerMatchLength, U2Strand::Complementary, productSequence.length()));
+    annotations->addAnnotation(getPrimerAnnotation(product.forwardPrimer, product.forwardPrimerMatchLength, U2Strand::Direct, productSequence.length()));
+    annotations->addAnnotation(getPrimerAnnotation(product.reversePrimer, product.reversePrimerMatchLength, U2Strand::Complementary, productSequence.length()));
     annotations->addObjectRelation(GObjectRelation(GObjectReference(sequenceObject), ObjectRole_Sequence));
     doc->addObject(annotations);
 
@@ -186,17 +186,10 @@ void ExtractProductWrapperTask::prepareUrl(const InSilicoPcrProduct &product, co
     QRegExp regExp("[^A-z0-9_\\-\\s\\.\\(\\)]");
     fileName.replace(regExp, "_");
 
-    // prepare directory
     QString outputDir = AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + QDir::separator() + "pcr";
-    QDir dir(outputDir);
-    if (!dir.exists()) {
-        bool created = dir.mkpath(outputDir);
-        if (!created) {
-            setError(tr("Can not create a directory: %1").arg(outputDir));
-        }
-    }
+    QString url = GUrlUtils::prepareDirLocation(outputDir, stateInfo) + QDir::separator() + fileName;
+    CHECK_OP(stateInfo, );
 
-    QString url = outputDir + QDir::separator() + fileName;
     outputFile = GUrlUtils::rollFileName(url, "_", QSet<QString>());
 
     // reserve file

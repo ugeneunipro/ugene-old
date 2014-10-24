@@ -77,6 +77,10 @@
           <property name="text">
            <string/>
           </property>
+          <property name="icon">
+           <iconset resource="../../../../corelibs/U2Gui/U2Gui.qrc">
+            <normaloff>:/core/images/todo.png</normaloff>:/core/images/todo.png</iconset>
+          </property>
           <property name="flat">
            <bool>true</bool>
           </property>
@@ -98,6 +102,10 @@
           </property>
           <property name="text">
            <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../../corelibs/U2Gui/U2Gui.qrc">
+            <normaloff>:/core/images/todo.png</normaloff>:/core/images/todo.png</iconset>
           </property>
           <property name="flat">
            <bool>true</bool>
@@ -142,6 +150,8 @@
    <header>PrimerLineEdit.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../../../corelibs/U2Gui/U2Gui.qrc"/>
+ </resources>
  <connections/>
 </ui>

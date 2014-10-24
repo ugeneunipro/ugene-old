@@ -37,7 +37,7 @@ InSilicoPcrTaskSettings::InSilicoPcrTaskSettings()
 }
 
 InSilicoPcrProduct::InSilicoPcrProduct()
-: ta(0.0), forwardPimerMatchLength(0), reversePimerMatchLength(0)
+: ta(0.0), forwardPrimerMatchLength(0), reversePrimerMatchLength(0)
 {
 
 }
@@ -48,7 +48,7 @@ InSilicoPcrTask::InSilicoPcrTask(const InSilicoPcrTaskSettings &settings)
 
 }
 
-FindAlgorithmTaskSettings InSilicoPcrTask::getFindPatternSettings(bool forward) {
+FindAlgorithmTaskSettings InSilicoPcrTask::getFindPatternSettings(U2Strand::Direction direction) {
     FindAlgorithmTaskSettings result;
     const DNAAlphabet *alphabet = AppContext::getDNAAlphabetRegistry()->findById(BaseDNAAlphabetIds::NUCL_DNA_DEFAULT());
     SAFE_POINT_EXT(NULL != alphabet, setError(L10N::nullPointerError("DNA Alphabet")), result);
@@ -61,7 +61,7 @@ FindAlgorithmTaskSettings InSilicoPcrTask::getFindPatternSettings(bool forward) 
     result.patternSettings = FindAlgorithmPatternSettings_Subst;
     result.strand = FindAlgorithmStrand_Both;
 
-    if (forward) {
+    if (U2Strand::Direct == direction) {
         result.pattern = settings.forwardPrimer;
         result.maxErr = settings.forwardMismatches;
     } else {
@@ -75,9 +75,9 @@ FindAlgorithmTaskSettings InSilicoPcrTask::getFindPatternSettings(bool forward) 
 }
 
 void InSilicoPcrTask::prepare() {
-    FindAlgorithmTaskSettings forwardSettings = getFindPatternSettings(true);
+    FindAlgorithmTaskSettings forwardSettings = getFindPatternSettings(U2Strand::Direct);
     CHECK_OP(stateInfo, );
-    FindAlgorithmTaskSettings reverseSettings = getFindPatternSettings(false);
+    FindAlgorithmTaskSettings reverseSettings = getFindPatternSettings(U2Strand::Complementary);
     CHECK_OP(stateInfo, );
     forwardSearch = new FindAlgorithmTask(forwardSettings);
     reverseSearch = new FindAlgorithmTask(reverseSettings);
@@ -105,8 +105,8 @@ void InSilicoPcrTask::run() {
             if (productSize > 0 && productSize <= qint64(settings.maxProductSize)) {
                 InSilicoPcrProduct product = createResult(U2Region(left.startPos, productSize));
                 // TODO: put all this stuff into createResult()
-                product.forwardPimerMatchLength = left.length;
-                product.reversePimerMatchLength = right.length;
+                product.forwardPrimerMatchLength = left.length;
+                product.reversePrimerMatchLength = right.length;
                 product.forwardPrimer = settings.forwardPrimer;
                 product.reversePrimer = settings.reversePrimer;
                 if (forward.strand.isCompementary()) {

@@ -37,11 +37,8 @@ PrimerGroupBox::PrimerGroupBox(QWidget *parent)
 : QWidget(parent)
 {
     setupUi(this);
-    primerEdit->setValidator(new QRegExpValidator(QRegExp("[acgtACGT]+")));
-    reverseComplementButton->setIcon(QIcon(":core/images/todo.png"));
-    browseButton->setIcon(QIcon(":core/images/todo.png"));
 
-    connect(primerEdit, SIGNAL(textEdited(const QString &)), SLOT(sl_onPrimerChanged(const QString &)));
+    connect(primerEdit, SIGNAL(textChanged(const QString &)), SLOT(sl_onPrimerChanged(const QString &)));
     connect(reverseComplementButton, SIGNAL(clicked()), SLOT(sl_translate()));
     connect(browseButton, SIGNAL(clicked()), SLOT(sl_browse()));
 }
@@ -51,13 +48,10 @@ void PrimerGroupBox::setTitle(const QString &title) {
 }
 
 void PrimerGroupBox::sl_onPrimerChanged(const QString &sequence) {
-    QString upSequence = sequence.toUpper();
-    primerEdit->setText(upSequence);
-
     QString characteristics;
-    if (!upSequence.isEmpty()) {
-        characteristics += getTmString(upSequence) + ", ";
-        characteristics += QString::number(upSequence.length()) + tr("-mer");
+    if (!sequence.isEmpty()) {
+        characteristics += getTmString(sequence) + ", ";
+        characteristics += QString::number(sequence.length()) + tr("-mer");
     }
     characteristicsLabel->setText(characteristics);
 
@@ -87,15 +81,14 @@ void PrimerGroupBox::sl_translate() {
     translator->translate(sequence.constData(), sequence.length(), translation.data(), translation.length());
     TextUtils::reverse(translation.data(), translation.length());
 
-    primerEdit->setText(translation);
-    sl_onPrimerChanged(translation);
+    primerEdit->setInvalidatedText(translation);
 }
 
 void PrimerGroupBox::sl_browse() {
     PrimerLibrarySelector dlg(this);
     CHECK(QDialog::Accepted == dlg.exec(), );
     Primer result = dlg.getResult();
-    sl_onPrimerChanged(result.sequence);
+    primerEdit->setInvalidatedText(result.sequence);
 }
 
 QString PrimerGroupBox::getDoubleStringValue(double value) {

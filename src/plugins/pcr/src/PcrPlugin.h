@@ -22,8 +22,8 @@
 #ifndef _U2_PCR_PLUGIN_H_
 #define _U2_PCR_PLUGIN_H_
 
-#include <U2Core/PluginModel.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/PluginModel.h>
 
 namespace U2 {
 

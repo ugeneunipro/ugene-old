@@ -42,4 +42,6 @@ SOURCES += src/AddPrimerDialog.cpp \
 
 RESOURCES += pcr.qrc
 
-TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
+TRANSLATIONS += transl/czech.ts \
+                transl/english.ts \
+                transl/russian.ts

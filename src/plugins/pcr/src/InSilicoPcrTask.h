@@ -56,9 +56,9 @@ public:
     /* Primer sequence */
     QByteArray reversePrimer;
     /* The length of found primer region within the original sequence */
-    int forwardPimerMatchLength;
+    int forwardPrimerMatchLength;
     /* The length of found primer region within the original sequence */
-    int reversePimerMatchLength;
+    int reversePrimerMatchLength;
 };
 
 class InSilicoPcrTask : public Task {
@@ -74,7 +74,7 @@ public:
 
 private:
     qint64 getProductSize(const U2Region &left, const U2Region &right) const;
-    FindAlgorithmTaskSettings getFindPatternSettings(bool forward);
+    FindAlgorithmTaskSettings getFindPatternSettings(U2Strand::Direction direction);
     InSilicoPcrProduct createResult(const U2Region &region) const;
 
 private:
