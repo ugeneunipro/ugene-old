@@ -51,6 +51,7 @@ InSilicoPcrOptionPanelWidget::InSilicoPcrOptionPanelWidget(AnnotatedDNAView *ann
     connect(annotatedDnaView, SIGNAL(si_sequenceRemoved(ADVSequenceObjectContext*)), SLOT(sl_onSequenceChanged(ADVSequenceObjectContext *)));
     connect(annotatedDnaView, SIGNAL(si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*)), SLOT(sl_onFocusChanged()));
     connect(productsTable->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)), SLOT(sl_onProductsSelectionChanged()));
+    connect(productsTable, SIGNAL(doubleClicked(const QModelIndex &)), SLOT(sl_onProductDoubleClicked()));
 
     productsWidget->hide();
     sl_onFocusChanged();
@@ -162,6 +163,13 @@ void InSilicoPcrOptionPanelWidget::sl_onFocusChanged() {
 void InSilicoPcrOptionPanelWidget::sl_onProductsSelectionChanged() {
     QList<InSilicoPcrProduct> products = productsTable->getSelectedProducts();
     extractProductButton->setEnabled(!products.isEmpty());
+}
+
+void InSilicoPcrOptionPanelWidget::sl_onProductDoubleClicked() {
+    QList<InSilicoPcrProduct> products = productsTable->getSelectedProducts();
+    if (1 == products.size()) {
+        sl_extractProduct();
+    }
 }
 
 } // U2

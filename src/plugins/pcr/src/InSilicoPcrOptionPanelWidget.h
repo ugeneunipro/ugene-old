@@ -45,6 +45,7 @@ private slots:
     void sl_onSequenceChanged(ADVSequenceObjectContext *sequenceContext);
     void sl_onFocusChanged();
     void sl_onProductsSelectionChanged();
+    void sl_onProductDoubleClicked();
 
 private:
     static bool isDnaSequence(ADVSequenceObjectContext *sequenceContext);
