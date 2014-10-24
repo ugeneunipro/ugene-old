@@ -23,6 +23,7 @@
 
 #include "GTTestsRegressionScenarios.h"
 
+#include "api/GTRadioButton.h"
 #include "api/GTAction.h"
 #include "api/GTCheckBox.h"
 #include "api/GTClipboard.h"
@@ -4868,6 +4869,108 @@ GUI_TEST_CLASS_DEFINITION(test_2903) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2910) {
+    // 1. Open {data/samples/FASTA/human_T1.fa}.
+    GTFileDialog::openFile( os, dataDir + "samples/FASTA", "human_T1.fa" );
+
+    // 2. Press Ctrl+A.
+    // 3. Select a "Multiple Range Selection" mode, enter the region: 10000..15000
+    // 4. Click the "Go" button.
+
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, "10000..15000"));
+    GTKeyboardDriver::keyClick(os, 'A', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+
+    // TODO: Expected state: the region is selected, there is a label "[5001 bp]" on the pan view.
+}
+GUI_TEST_CLASS_DEFINITION(test_2910_1) {
+    // 1. Open {data/samples/FASTA/human_T1.fa}.
+    GTFileDialog::openFile( os, dataDir + "samples/FASTA", "human_T1.fa" );
+
+    // 2. Press Ctrl+A.
+    // 3. Select a "Multiple Range Selection" mode, enter the region: 2000..5000,100000..110000
+    // 4. Click the "Go" button.
+
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, "2000..5000,100000..110000"));
+    GTKeyboardDriver::keyClick(os, 'A', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+
+    // TODO: Expected state: the region is selected, there is a label "[3001 bp]" and "[10001 bp]" on the pan view.
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2910_2) {
+    // 1. Open {data/samples/FASTA/human_T1.fa}.
+    GTFileDialog::openFile( os, dataDir + "samples/FASTA", "human_T1.fa" );
+    GTGlobals::sleep(2000);
+
+    // 2. Press Ctrl+A.
+    // Expected state: a "Region Selection" dialog appeared.
+    // 3. Select a "Multiple Range Selection" mode, enter the region: 0..5000
+    // Expected state: the region is invalid, a "Go" button is disabled.
+    class CancelClicker : public Filler {
+    public:
+        CancelClicker(U2OpStatus& _os) : Filler(_os, "RangeSelectionDialog"){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+            QRadioButton *multipleButton = w->findChild<QRadioButton*>("miltipleButton");
+            CHECK_SET_ERR(multipleButton != NULL, "RadioButton \"miltipleButton\" not found");
+            GTRadioButton::click(os, multipleButton);
+
+            QLineEdit *regionEdit= w->findChild<QLineEdit*>("multipleRegionEdit");
+            CHECK_SET_ERR(regionEdit != NULL, "QLineEdit \"multipleRegionEdit\" not foud");
+            GTLineEdit::setText(os, regionEdit, "0..5000");
+          
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Cancel);
+            CHECK(NULL != button, );
+            QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(!okButton->isEnabled(), "OK button is unexpectedly enabled");
+            GTWidget::click(os, button);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new CancelClicker(os));
+    GTKeyboardDriver::keyClick(os, 'A', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);  
+
+}
+GUI_TEST_CLASS_DEFINITION(test_2910_3) {
+    // 1. Open {data/samples/FASTA/human_T1.fa}.
+    GTFileDialog::openFile( os, dataDir + "samples/FASTA", "human_T1.fa" );
+    GTGlobals::sleep(2000);
+
+    // 2. Press Ctrl+A.
+    // Expected state: a "Region Selection" dialog appeared.
+    // 3. Select a "Multiple Range Selection" mode, enter the region: 1..199951
+    // Expected state: the region is invalid, a "Go" button is disabled.
+    class CancelClicker : public Filler {
+    public:
+        CancelClicker(U2OpStatus& _os) : Filler(_os, "RangeSelectionDialog"){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+            QRadioButton *multipleButton = w->findChild<QRadioButton*>("miltipleButton");
+            CHECK_SET_ERR(multipleButton != NULL, "RadioButton \"miltipleButton\" not found");
+            GTRadioButton::click(os, multipleButton);
+
+            QLineEdit *regionEdit= w->findChild<QLineEdit*>("multipleRegionEdit");
+            CHECK_SET_ERR(regionEdit != NULL, "QLineEdit \"multipleRegionEdit\" not foud");
+            GTLineEdit::setText(os, regionEdit, "1..199951");
+
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Cancel);
+            CHECK(NULL != button, );
+            QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(!okButton->isEnabled(), "OK button is unexpectedly enabled");
+            GTWidget::click(os, button);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new CancelClicker(os));
+    GTKeyboardDriver::keyClick(os, 'A', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);  
+}
 GUI_TEST_CLASS_DEFINITION(test_2962_1) {
 //    1. Open "_common_data/scenarios/_regression/2924/human_T1_cutted.fa".
 //    2. Click the "Shown circular view" button on the sequence toolbar.
