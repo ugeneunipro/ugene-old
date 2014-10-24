@@ -51,8 +51,15 @@ namespace U2 {
 //////////////////////////////////////////////////////////////////////////
 // unload document
 UnloadDocumentTask::UnloadDocumentTask(Document* _doc, bool save)
-: Task(tr("Unload document task: %1").arg(_doc->getURLString()), TaskFlag_NoRun), doc(_doc), saveTask(NULL)
+    : Task(tr("Unload document task: %1").arg(_doc->getURLString()), TaskFlag_NoRun),
+      doc(_doc),
+      saveTask(NULL),
+      lock(NULL)
 {
+    lock = new StateLock(Document::UNLOAD_LOCK_NAME, StateLockFlag_LiveLock);
+    lock->setParent(this);
+    doc->lockState(lock);
+
     if (save) {
         saveTask = new SaveDocumentTask(doc);
         addSubTask(saveTask);
@@ -62,6 +69,9 @@ UnloadDocumentTask::UnloadDocumentTask(Document* _doc, bool save)
 
 Task::ReportResult UnloadDocumentTask::report() {
     if (doc.isNull() || !doc->isLoaded()) {
+        if (!doc.isNull()) {
+            doc->unlockState(lock);
+        }
         return Task::ReportResult_Finished;
     }
     propagateSubtaskError();
@@ -69,17 +79,20 @@ Task::ReportResult UnloadDocumentTask::report() {
     if (hasError()) {
         assert(saveTask!=NULL);
         coreLog.error(errPrefix +  tr("save failed!"));
+        doc->unlockState(lock);
         return Task::ReportResult_Finished;
     }
     QString error = checkSafeUnload(doc);
     if (!error.isEmpty()) {
         stateInfo.setError(errPrefix + error);
         coreLog.error(stateInfo.getError());
+        doc->unlockState(lock);
         return Task::ReportResult_Finished;
     }
     bool ok = doc->unload(doc->isDocumentOwnsDbiResources());
     CHECK_EXT(ok, stateInfo.setError(errPrefix + tr("unexpected error")),
         Task::ReportResult_Finished);
+    doc->unlockState(lock);
     return Task::ReportResult_Finished;
 }
 
@@ -153,7 +166,11 @@ QString UnloadDocumentTask::checkSafeUnload(Document* doc) {
         return tr("There is an active view with document content");
     }
 
-    bool liveLocked = doc->hasLocks(StateLockableTreeFlags_ItemAndChildren, StateLockFlag_LiveLock);
+    QList<StateLock*> locks = doc->findLocks(StateLockableTreeFlags_ItemAndChildren, StateLockFlag_LiveLock);
+    bool liveLocked = (locks.size() != 1);
+    if (!liveLocked) {
+        liveLocked &= (locks.first()->getUserDesc() == Document::UNLOAD_LOCK_NAME);
+    }
     if (liveLocked) {
         return tr("Document is locked by some algorithm and cannot be unloaded");
     }

@@ -53,6 +53,7 @@ public:
 private:
     QPointer<Document>      doc;
     SaveDocumentTask*       saveTask;
+    StateLock*              lock;
 };
 
 class U2GUI_EXPORT ReloadDocumentTask : public Task{

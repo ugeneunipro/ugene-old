@@ -455,12 +455,22 @@ void ProjectTreeController::sl_onLoadSelectedDocuments() {
 void ProjectTreeController::sl_onUnloadSelectedDocuments() {
     QList<Document*> docsToUnload;
     QSet<Document*> docsInSelection = getDocsInSelection(true);
+
+    QMap<Document* , StateLock* > locks;
     foreach(Document *doc, docsInSelection) {
         if (doc->isLoaded() && !ProjectUtils::isDatabaseDoc(doc)) {
-            docsToUnload.append(doc);
+            docsToUnload.append(QPointer<Document>(doc));
+            StateLock* lock = new StateLock(Document::UNLOAD_LOCK_NAME, StateLockFlag_LiveLock);
+            doc->lockState(lock);
+            locks.insert(doc, lock);
         }
     }
     UnloadDocumentTask::runUnloadTaskHelper(docsToUnload, UnloadDocumentTask_SaveMode_Ask);
+    foreach (Document* doc, locks.keys()) {
+        StateLock* lock = locks.value(doc);
+        doc->unlockState(lock);
+        delete lock;
+    }
 }
 
 void ProjectTreeController::sl_onContextMenuRequested(const QPoint &) {

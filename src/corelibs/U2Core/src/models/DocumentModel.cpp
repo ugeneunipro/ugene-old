@@ -69,9 +69,9 @@ Document* DocumentFormat::createNewLoadedDocument(IOAdapterFactory* iof, const G
     return doc;
 }
 
-Document* DocumentFormat::createNewUnloadedDocument(IOAdapterFactory* iof, const GUrl& url, 
-                                                    U2OpStatus& os, const QVariantMap& hints, 
-                                                    const QList<UnloadedObjectInfo>& info, 
+Document* DocumentFormat::createNewUnloadedDocument(IOAdapterFactory* iof, const GUrl& url,
+                                                    U2OpStatus& os, const QVariantMap& hints,
+                                                    const QList<UnloadedObjectInfo>& info,
                                                     const QString& instanceModLockDesc)
 {
     Q_UNUSED(os);
@@ -124,14 +124,14 @@ void DocumentFormat::storeDocument( Document* , IOAdapter* , U2OpStatus& os) {
 }
 
 void DocumentFormat::storeDocument(Document* doc, U2OpStatus& os, IOAdapterFactory* iof, const GUrl& newDocURL) {
-    SAFE_POINT_EXT(formatFlags.testFlag(DocumentFormatFlag_SupportWriting), 
+    SAFE_POINT_EXT(formatFlags.testFlag(DocumentFormatFlag_SupportWriting),
         os.setError(tr("Writing is not supported for this format (%1). Feel free to send a feature request though.").arg(getFormatName())), );
-    
+
     assert(doc->getDocumentModLock(DocumentModLock_FORMAT_AS_INSTANCE) == NULL);
     if (iof == NULL) {
         iof = doc->getIOAdapterFactory();
     }
-    
+
     //prepare URL
     GUrl url = newDocURL.isEmpty() ? doc->getURL() : newDocURL;
     if (url.isLocalFile()) {
@@ -141,13 +141,13 @@ void DocumentFormat::storeDocument(Document* doc, U2OpStatus& os, IOAdapterFacto
         Q_UNUSED(res);
         assert(res == url.getURLString()); //ensure that GUrls are always canonical
     }
-    
+
     QScopedPointer<IOAdapter> io(iof->createIOAdapter());
     if (!io->open(url, IOAdapterMode_Write)) {
         os.setError(L10N::errorOpeningFileWrite(url));
         return;
     }
-    
+
     storeDocument(doc, io.data(), os);
 }
 
@@ -176,7 +176,7 @@ bool DocumentFormat::checkConstraints(const DocumentFormatConstraints& c) const 
             break;
         }
     }
-    
+
     return areTypesSatisfied;
 }
 
@@ -190,7 +190,7 @@ bool DocumentFormat::isObjectOpSupported(const Document* d, DocObjectOp op, GObj
     if (!supportedObjectTypes.contains(t)) {
         return false;
     }
-    
+
     if (!checkFlags(DocumentFormatFlag_SupportWriting)) {
         return false;
     }
@@ -206,10 +206,11 @@ bool DocumentFormat::isObjectOpSupported(const Document* d, DocObjectOp op, GObj
 
 //////////////////////////////////////////////////////////////////////////
 ///Document
+const QString Document::UNLOAD_LOCK_NAME = "unload_document_lock";
 
-Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url, 
+Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
                    const U2DbiRef& _dbiRef,
-                   const QList<UnloadedObjectInfo>& unloadedObjects,const QVariantMap& hints, 
+                   const QList<UnloadedObjectInfo>& unloadedObjects,const QVariantMap& hints,
                    const QString& instanceModLockDesc)
                    : StateLockableTreeItem(), df(_df), io(_io), url(_url), dbiRef(_dbiRef)
 {
@@ -217,21 +218,21 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
 
     ctxState = new GHintsDefaultImpl(hints);
     name = url.fileName();
-    
+
     qFill(modLocks, modLocks + DocumentModLock_NUM_LOCKS, (StateLock*)NULL);
 
     loadStateChangeMode = true;
     addUnloadedObjects(unloadedObjects);
     loadStateChangeMode = false;
-    
+
     initModLocks(instanceModLockDesc, false);
     checkUnloadedState();
     assert(!isModified());
 }
 
-Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url, 
+Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
                    const U2DbiRef& _dbiRef,
-                   const QList<GObject*>& _objects, const QVariantMap& hints, 
+                   const QList<GObject*>& _objects, const QVariantMap& hints,
                    const QString& instanceModLockDesc)
                    : StateLockableTreeItem(), df(_df), io(_io), url(_url), dbiRef(_dbiRef)
 {
@@ -248,7 +249,7 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
     loadStateChangeMode = false;
 
     initModLocks(instanceModLockDesc, true);
-    
+
     checkLoadedState();
     assert(!isModified());
 }
@@ -467,7 +468,7 @@ void Document::loadFrom(Document* sourceDoc) {
     loadStateChangeMode = true;
 
     QMap<QString, UnloadedObjectInfo> unloadedInfo;
-    
+
     foreach(GObject* obj, objects) { //remove all unloaded objects but save hints
         unloadedInfo.insert(obj->getGObjectName(), UnloadedObjectInfo(obj));
         _removeObject(obj, documentOwnsDbiResources);
@@ -545,7 +546,7 @@ void Document::setLoaded(bool v) {
 
 void Document::initModLocks(const QString& instanceModLockDesc, bool loaded) {
     setLoaded(loaded);
-    
+
     // must be locked for modifications if io-adapter does not support writes
     if (!io->isIOModeSupported(IOAdapterMode_Write)) {
         modLocks[DocumentModLock_IO] = new StateLock(tr("IO adapter does not support write operation"));
@@ -609,12 +610,12 @@ bool Document::checkConstraints(const Document::Constraints& c) const {
             return false;
         }
     }
-    
+
     if (!c.objectTypeToAdd.isNull() && !df->isObjectOpSupported(this, DocumentFormat::DocObjectOp_Add, c.objectTypeToAdd)) {
         return false;
     }
 
-    
+
     return true;
 }
 
@@ -635,7 +636,7 @@ void Document::setUserModLock(bool v) {
     }
 
     //hack: readonly settings are stored in project, so if document is in project -> mark project as modified
-    if (getParentStateLockItem()!=NULL) { 
+    if (getParentStateLockItem()!=NULL) {
         getParentStateLockItem()->setModified(true);
     }
 }
@@ -645,7 +646,12 @@ bool Document::unload(bool deleteObjects) {
     DocumentChildEventsHelper eventsHelper(this);
     Q_UNUSED(eventsHelper);
 
-    bool liveLocked = hasLocks(StateLockableTreeFlags_ItemAndChildren, StateLockFlag_LiveLock);
+    QList<StateLock*> locks = findLocks(StateLockableTreeFlags_ItemAndChildren, StateLockFlag_LiveLock);
+    bool liveLocked = (locks.size() > 1);
+    if (locks.size() == 1 && !liveLocked) {
+        SAFE_POINT(locks.first() != NULL, tr("Lock is NULL"), false);
+        liveLocked &= (locks.first()->getUserDesc() == UNLOAD_LOCK_NAME);
+    }
     if (liveLocked) {
         assert(0);
         return false;
@@ -659,7 +665,7 @@ bool Document::unload(bool deleteObjects) {
         _removeObject(obj, deleteObjects);
     }
     addUnloadedObjects(unloadedInfo);
-    
+
     StateLock* fl = modLocks[DocumentModLock_FORMAT_AS_INSTANCE];
     if (fl != NULL) {
         unlockState(fl);
@@ -670,7 +676,7 @@ bool Document::unload(bool deleteObjects) {
     documentOwnsDbiResources = false;
 
     setLoaded(false);
-    
+
     loadStateChangeMode = false;
 
     return true;
@@ -710,7 +716,7 @@ void Document::setGHints(GHints* newHints) {
         GObject* obj = objects[i];
         objectHints.append(obj->getGHintsMap());
     }
-    
+
     delete ctxState;
     ctxState = newHints;
 
@@ -745,7 +751,7 @@ QScriptValue Document::toScriptValue(QScriptEngine *engine, Document* const &in)
     return engine->newQObject(in);
 }
 
-void Document::fromScriptValue(const QScriptValue &object, Document* &out) 
+void Document::fromScriptValue(const QScriptValue &object, Document* &out)
 {
     out = qobject_cast<Document*>(object.toQObject());
 }
@@ -793,7 +799,7 @@ void Document::propagateModLocks(Document* doc)  const {
     }
 }
 
-DocumentMimeData::DocumentMimeData( Document* obj ) 
+DocumentMimeData::DocumentMimeData( Document* obj )
     : objPtr(obj){
     setUrls(QList<QUrl>() << QUrl(GUrlUtils::gUrl2qUrl(obj->getURL())));
 }
