@@ -2721,6 +2721,7 @@ GUI_TEST_CLASS_DEFINITION(test_0026_2_linux){
 //    Expected state: export dialog appeared
     GTUtilsDialog::waitForDialog(os, new ExportImage(os,testDir + "_common_data/scenarios/sandbox/smallImage.bmp","jpeg",50));
     GTWidget::click(os,saveImage);
+    GTGlobals::sleep(500);
 //    3. fill dialog:
 //    file name: test/_common_data/scenarios/sandbox/image.bmp
 //    press OK
@@ -3818,7 +3819,6 @@ GUI_TEST_CLASS_DEFINITION(test_0049){
 
     GTFileDialog::openFile(os, sandBoxDir, "COI_test_0049.aln");
     GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0,0), QPoint(10,0), "ATTCGAGCCGA");
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_fake) {

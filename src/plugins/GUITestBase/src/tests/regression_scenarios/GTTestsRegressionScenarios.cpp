@@ -4990,7 +4990,7 @@ GUI_TEST_CLASS_DEFINITION(test_2962_1) {
     CHECK_SET_ERR(GTUtilsCv::cvBtn::isChecked(os, seqWidget), "Unexpected state of CV button!");
     CHECK_SET_ERR(GTUtilsCv::isCvPresent(os, seqWidget), "Unexpected state of CV widget!");
 
-    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "No"));
+    GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECTSUPPORT__CLOSE_PROJECT, GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_FILE);
 
@@ -5714,9 +5714,10 @@ GUI_TEST_CLASS_DEFINITION(test_3156){
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
     GTUtilsSharedDatabaseDocument::createFolder(os, databaseDoc, "/", "test_3156");
 //    2. Open file "data/samples/Genbank/murine.gb"
-    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+    GTFile::copy(os, dataDir + "samples/Genbank/murine.gb", sandBoxDir + "test_3156_murine.gb");
+    GTFileDialog::openFile(os, sandBoxDir, "test_3156_murine.gb");
 //    3. Drag the document item onto the DB item in project view
-    QModelIndex from = GTUtilsProjectTreeView::findIndex(os, "murine.gb");
+    QModelIndex from = GTUtilsProjectTreeView::findIndex(os, "test_3156_murine.gb");
     QModelIndex to = GTUtilsProjectTreeView::findIndex(os, "test_3156");
     GTUtilsProjectTreeView::dragAndDrop(os, from, to);
     GTGlobals::sleep(10000);
