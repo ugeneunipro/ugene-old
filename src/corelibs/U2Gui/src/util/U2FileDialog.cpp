@@ -57,6 +57,9 @@ QStringList U2FileDialog::getOpenFileNames(QWidget *parent, const QString &capti
 }
 
 QString U2FileDialog::getExistingDirectory(QWidget *parent, const QString &caption, const QString &dir, QFileDialog::Options options) {
+    if (qgetenv("UGENE_GUI_TEST").toInt() == 1 && qgetenv("UGENE_USE_NATIVE_DIALOGS").toInt() == 0) {
+        options = options | QFileDialog::DontUseNativeDialog;
+    }
     const QString result = QFileDialog::getExistingDirectory(parent, caption, dir, options);
     activateWindow();
     return result;
