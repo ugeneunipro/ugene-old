@@ -94,6 +94,7 @@ AssemblyReadsArea::AssemblyReadsArea(AssemblyBrowserUi * ui_, QScrollBar * hBar_
     optimizeRenderOnScroll(AssemblyBrowserSettings::getOptimizeRenderOnScroll()),
     readMenu(new QMenu(this))
 {
+    setObjectName("assembly_reads_area");
     setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
     QVBoxLayout * coveredRegionsLayout = new QVBoxLayout();
     coveredRegionsLayout->addWidget(&coveredRegionsLabel);

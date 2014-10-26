@@ -50,6 +50,10 @@ public:
     static void checkTextSize(U2OpStatus& os, QLineEdit* lineEdit);
 
     static QString copyText(U2OpStatus& os, QLineEdit* lineEdit);
+
+    // fails if lineEdit is NULL
+    // checks if str can be pasted in lineEdit
+    static bool tryToSetText(U2OpStatus& os, QLineEdit* lineEdit, const QString& str);
 };
 
 }

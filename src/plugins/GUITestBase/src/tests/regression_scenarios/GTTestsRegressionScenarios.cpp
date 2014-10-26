@@ -45,6 +45,7 @@
 
 #include "GTDatabaseConfig.h"
 #include "GTUtilsAnnotationsTreeView.h"
+#include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsBookmarksTreeView.h"
 #include "GTUtilsCircularView.h"
 #include "GTUtilsDialog.h"
@@ -85,6 +86,7 @@
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
@@ -7450,6 +7452,137 @@ GUI_TEST_CLASS_DEFINITION(test_3563_2) {
     GTUtilsDocument::loadDocument(os, "human_T1.fa");
     CHECK_SET_ERR( GTUtilsDocument::isDocumentLoaded(os, "5prime_utr_intron_A21.gff"),
                    "Connection between documents was lost");
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3603) {
+//    1. Open "data/samples/FASTA/human_T1.fa".
+//    2. Open "Find Pattern" options panel tab.
+//    3. Set "Selected" region type.
+//    4. Call context menu on the sequence view, and select "Select sequence regions...".
+//    5. Accept the dialog with default values (a single region, from min to max).
+//    Expected state: the region selector widget contains "Selected" region type, region is (1..199950).
+//    Current state: the region selector widget contains "Selected" region type, region is (1..199951).
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
+    QComboBox* regionComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "boxRegion"));
+    CHECK_SET_ERR(regionComboBox != NULL, "Region comboBox is NULL");
+    GTComboBox::setIndexWithText(os, regionComboBox, "Selected region");
+
+    QWidget* renderArea = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+    CHECK_SET_ERR(renderArea != NULL, "Render area is NULL");
+    GTWidget::click(os, renderArea);
+
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os));
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+
+    QLineEdit* start = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "editStart"));
+    CHECK_SET_ERR(start != NULL, "Region start lineEdit is NULL");
+    QLineEdit* end = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "editEnd"));
+    CHECK_SET_ERR(end != NULL, "Region end lineEdit is NULL");
+    CHECK_SET_ERR( start->text() == "1" && end->text() == "199950", "Selection is wrong!");
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3609_1) {
+//    1. Open "data/samples/FASTA/human_T1.fa".
+//    2. Call context menu on the sequence view, select {Edit sequence -> Remove subsequence...} menu item.
+//    3. Remove region (5000..199950).
+//    4. Enter position 50000 to the "goto" widget on the tool bar, click the "Go" button.
+//    Expected state: you can't enter this position.
+//    Current state: you can enter this position, an error message appears in the log after button click (safe point triggers in the debug mode).
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    QWidget* seqWidget = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REMOVE_SUBSEQUENCE));
+    GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "5000..199950"));
+    GTWidget::click(os, seqWidget, Qt::RightButton);
+
+    QLineEdit* goToPosLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "go_to_pos_line_edit"));
+    CHECK_SET_ERR(goToPosLineEdit != NULL, "GoTo lineEdit is NULL");
+    bool inputResult = GTLineEdit::tryToSetText(os, goToPosLineEdit, "50000");
+    CHECK_SET_ERR(inputResult == false, "Invalid goToPosition is accepted");
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3609_2) {
+//    1. Open "data/samples/FASTA/human_T1.fa".
+//    2. Call context menu on the sequence view, select {Edit sequence -> Insert subsequence...} menu item.
+//    3. Insert any subsequence long enough.
+//    4. Enter position 199960 to the "goto" widget on the tool bar, click the "Go" button.
+//    Expected state: you can enter this position, view shows the position.
+//    Current state: you can't enter this position.
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    QWidget* seqWidget = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE));
+    GTUtilsDialog::waitForDialog(os, new InsertSequenceFiller(os, "AAACCCTTTGGGAAA"));
+    GTWidget::click(os, seqWidget, Qt::RightButton);
+
+    QLineEdit* goToPosLineEdit = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "go_to_pos_line_edit"));
+    CHECK_SET_ERR(goToPosLineEdit != NULL, "GoTo lineEdit is NULL");
+
+    GTLineEdit::setText(os, goToPosLineEdit, "199960");
+
+    QWidget* goBtn = GTWidget::findWidget(os, "Go!");
+    CHECK_SET_ERR(goBtn != NULL, "Go! button is NULL");
+    GTWidget::click(os, goBtn);
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3609_3) {
+//    1. Open "data/samples/FASTA/human_T1.fa".
+//    2. Call context menu on the sequence view, select {Edit sequence -> Insert subsequence...} menu item.
+//    3. Insert any subsequence long enough.
+//    4. Call context menu, select {Go to position...} menu item.
+//    5. Enter position 199960 and accept the dialog.
+//    Expected state: view shows the position, there are no errors in the log.
+//    Current state: view shows the position, there is an error in the log (safe point triggers in the debug mode).
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    QWidget* seqWidget = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE));
+    GTUtilsDialog::waitForDialog(os, new InsertSequenceFiller(os, "AAACCCTTTGGGAAA"));
+    GTWidget::click(os, seqWidget, Qt::RightButton);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_GOTO_ACTION));
+    GTUtilsDialog::waitForDialog(os, new GoToDialogFiller(os, 199960));
+    GTWidget::click(os, seqWidget, Qt::RightButton);
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3613) {
+//    1. Open any assembly.
+//    2. Call a context menu on any read, select {Export -> Current Read} menu item.
+//    3, Set any appropriate destination and apply the dialog.
+//    Expected state: a new document is added to the project, a view opens (MSA Editor or Sequence view, it should be clarified, see the documentation).
+//    Current state: a new unloaded document is added to the project. If you force it to open it will load but "open view" task will fail with an error: "Multiple alignment object not found".
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os,
+                                 new ImportBAMFileFiller(os, sandBoxDir + "test_3613.bam.ugenedb"));
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.bam");
+    GTUtilsAssemblyBrowser::zoomToMax(os);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Current Read"));
+    GTUtilsDialog::waitForDialog(os, new ExportReadsDialogFiller(os, sandBoxDir + "test_3613.fa"));
+    QWidget* readsArea = GTWidget::findWidget(os, "assembly_reads_area");
+    CHECK_SET_ERR(readsArea != NULL, "Assembly reads area not found");
+    GTWidget::click(os, readsArea, Qt::RightButton);
 
     GTUtilsLog::check(os, l);
 }

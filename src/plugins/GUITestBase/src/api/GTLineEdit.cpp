@@ -117,6 +117,26 @@ QString GTLineEdit::copyText(U2OpStatus& os, QLineEdit* lineEdit) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "tryToSetText"
+bool GTLineEdit::tryToSetText(U2OpStatus &os, QLineEdit *lineEdit, const QString &str) {
+    GT_CHECK_RESULT(lineEdit != NULL, "lineEdit is NULL", false);
+    GTWidget::setFocus(os, lineEdit);
+    if (lineEdit->text() == str) {
+        return true;
+    }
+
+    if (!lineEdit->text().isEmpty()) {
+        clear(os, lineEdit);
+    }
+
+    GTKeyboardDriver::keySequence(os, str);
+    GTGlobals::sleep(500);
+
+    QString s = lineEdit->text();
+    return s == str;
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }
