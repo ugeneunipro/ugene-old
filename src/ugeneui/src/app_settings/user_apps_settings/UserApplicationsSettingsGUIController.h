@@ -55,16 +55,11 @@ private:
 class UserApplicationsSettingsPageState : public AppSettingsGUIPageState {
     Q_OBJECT
 public:
-    UserApplicationsSettingsPageState() : useDefaultWebBrowser (true), 
-        openLastProjectFlag(false), askToSaveProject(0), enableStatistics(false), tabbedWindowLayout(false), resetSettings(false) {}
+    UserApplicationsSettingsPageState() : openLastProjectFlag(false),
+        askToSaveProject(0), enableStatistics(false), tabbedWindowLayout(false), resetSettings(false) {}
 
-    QString webBrowserUrl;
     QString translFile;
     QString style;
-    QString downloadsDirPath;
-    QString temporaryDirPath;
-    QString fileStorageDirPath;
-    bool useDefaultWebBrowser;
     bool openLastProjectFlag;
     int askToSaveProject;
     bool enableStatistics;
@@ -83,12 +78,7 @@ public:
     virtual AppSettingsGUIPageState* getState(QString& err) const;
 
 private slots:
-    void sl_wbURLClicked();
     void sl_transFileClicked();
-    void sl_browseButtonClicked();
-    void sl_browseTmpDirButtonClicked();
-    void sl_browseFileStorageButtonClicked();
-    void sl_cleanupStorage();
 };
 
 }//namespace

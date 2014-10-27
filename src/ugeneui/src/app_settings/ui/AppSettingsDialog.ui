@@ -55,7 +55,7 @@
      <item>
       <widget class="QGroupBox" name="settingsBox">
        <property name="title">
-        <string/>
+        <string>GroupBox</string>
        </property>
       </widget>
      </item>

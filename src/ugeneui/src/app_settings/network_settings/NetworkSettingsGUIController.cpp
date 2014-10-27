@@ -20,15 +20,18 @@
  */
 
 #include "NetworkSettingsGUIController.h"
+#include <QtCore/QFile>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/UserApplicationsSettings.h>
+#include <U2Gui/U2FileDialog.h>
 
 namespace U2
 {
 
 NetworkSettingsPageState::NetworkSettingsPageState()
-: config(*AppContext::getAppSettings()->getNetworkConfiguration())
+: config(*AppContext::getAppSettings()->getNetworkConfiguration()), useDefaultWebBrowser (true)
 {
 }
 
@@ -41,6 +44,9 @@ NetworkSettingsPageController::NetworkSettingsPageController(QObject* p)
 AppSettingsGUIPageState* NetworkSettingsPageController::getSavedState() {
     NetworkSettingsPageState* state = new NetworkSettingsPageState();
     state->config = *AppContext::getAppSettings()->getNetworkConfiguration();
+    UserAppsSettings* s = AppContext::getAppSettings()->getUserAppsSettings();
+    state->webBrowserUrl = s->getWebBrowserURL();
+    state->useDefaultWebBrowser = s->useDefaultWebBrowser();
     return state;
 }
 
@@ -48,6 +54,9 @@ void NetworkSettingsPageController::saveState(AppSettingsGUIPageState* s) {
     NetworkSettingsPageState* state = qobject_cast<NetworkSettingsPageState*>(s);
     NetworkConfiguration* dst = AppContext::getAppSettings()->getNetworkConfiguration();
     dst->copyFrom(state->config);
+    UserAppsSettings* st = AppContext::getAppSettings()->getUserAppsSettings();
+    st->setWebBrowserURL(state->webBrowserUrl);
+    st->setUseDefaultWebBrowser(state->useDefaultWebBrowser);
 }
 
 AppSettingsGUIPageWidget* NetworkSettingsPageController::createWidget(AppSettingsGUIPageState* data) {
@@ -65,6 +74,7 @@ NetworkSettingsPageWidget::NetworkSettingsPageWidget() {
 #endif
     connect( httpProxyCheck, SIGNAL(stateChanged(int)), SLOT(sl_HttpChecked(int)) );
     connect( proxyExceptionsCheck, SIGNAL(stateChanged(int)), SLOT(sl_ExceptionsChecked(int)) );
+    connect( webBrowserButton, SIGNAL(clicked()), SLOT(sl_changeWebBrowserPathButtonClicked()));
 }
 
 
@@ -110,6 +120,11 @@ void NetworkSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     int index = sslBox->findText(set.getSslProtocolName());
     sslBox->setCurrentIndex(index);
 	remoteRequestBox->setValue(set.remoteRequestTimeout());
+    defaultWebBrowser->setChecked(state->useDefaultWebBrowser);
+    customWebBrowser->setChecked(!state->useDefaultWebBrowser);
+    webBrowserButton->setEnabled(!state->useDefaultWebBrowser);
+    webBrowserEdit->setEnabled(!state->useDefaultWebBrowser);
+    webBrowserEdit->setText(state->webBrowserUrl);
 }
 
 AppSettingsGUIPageState* NetworkSettingsPageWidget::getState(QString& err) const {
@@ -140,8 +155,28 @@ AppSettingsGUIPageState* NetworkSettingsPageWidget::getState(QString& err) const
     set.setExceptionsEnabled( proxyExceptionsCheck->isChecked() );
     set.setSslProtocol(sslBox->currentText());
 	set.setRequestTimeout(remoteRequestBox->value());
-
+    if (defaultWebBrowser->isChecked()){
+        state->useDefaultWebBrowser=true;
+    } else {
+        QString wbUrl = webBrowserEdit->text();
+        QFile wbFile(wbUrl);
+        if (!wbFile.exists()) {
+            webBrowserEdit->setFocus();
+            err = tr("File not exists");
+            delete state;
+            return NULL;
+        }
+        state->webBrowserUrl = wbUrl;
+        state->useDefaultWebBrowser=false;
+    }
     return state;
 }
+void NetworkSettingsPageWidget::sl_changeWebBrowserPathButtonClicked() {
+    QString file = U2FileDialog::getOpenFileName(this, tr("Select Web browser program"), QString(), 0);
+    if (!file.isEmpty()) {
+        webBrowserEdit->setText(file);
+    }
+}
+
 
 } //namespace

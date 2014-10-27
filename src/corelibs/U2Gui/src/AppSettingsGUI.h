@@ -98,6 +98,7 @@ private:
 #define APP_SETTINGS_GUI_NETWORK    "network"
 #define APP_SETTINGS_GUI_LOG        "log"
 #define APP_SETTINGS_USER_APPS      "user_apps"
+#define APP_SETTINGS_DIRECTORIES    "directories"
 #define APP_SETTINGS_RESOURCES      "resources"
 #define APP_SETTINGS_EXTERNAL_TOOLS "ets"
 #define APP_SETTINGS_FORMAT         "format"

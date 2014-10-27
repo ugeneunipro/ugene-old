@@ -28,6 +28,7 @@ HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/shtirlitz/Shtirlitz.h \
            src/task_view/TaskStatusBar.h \
            src/task_view/TaskViewController.h \
+           src/app_settings/directories_settings/DirectoriesSettingsGUIController.h \
            src/app_settings/format_settings/FormatSettingsGUIController.h \
            src/app_settings/logview_settings/LogSettingsGUIController.h \
            src/app_settings/network_settings/NetworkSettingsGUIController.h \
@@ -43,6 +44,7 @@ FORMS += src/app_settings/ui/AppSettingsDialog.ui \
          src/project_support/ui/SequenceReadingModeSelectorDialog.ui \
          src/project_support/ui/SaveProjectDialog.ui \
          src/project_view/ui/ProjectViewWidget.ui \
+         src/app_settings/directories_settings/ui/DirectoriesSettingsWidget.ui \
          src/app_settings/format_settings/ui/FormatSettingsWidget.ui \
          src/app_settings/logview_settings/ui/LogSettingsWidget.ui \
          src/app_settings/network_settings/ui/NetworkSettingsWidget.ui \
@@ -78,6 +80,7 @@ SOURCES += src/Main.cpp \
            src/shtirlitz/Shtirlitz.cpp \
            src/task_view/TaskStatusBar.cpp \
            src/task_view/TaskViewController.cpp \
+           src/app_settings/directories_settings/DirectoriesSettingsGUIController.cpp \
            src/app_settings/format_settings/FormatSettingsGUIController.cpp \
            src/app_settings/logview_settings/LogSettingsGUIController.cpp \
            src/app_settings/network_settings/NetworkSettingsGUIController.cpp \

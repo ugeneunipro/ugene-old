@@ -19,10 +19,10 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_NETWORK_SETTINGS_WIDGET_IMPL_H_
-#define _U2_NETWORK_SETTINGS_WIDGET_IMPL_H_
+#ifndef _U2_DIRECTORIES_SETTINGS_GUI_CONTROLLER_H_
+#define _U2_DIRECTORIES_SETTINGS_GUI_CONTROLLER_H_
 
-#include <ui/ui_NetworkSettingsWidget.h>
+#include "ui/ui_DirectoriesSettingsWidget.h"
 
 #include <U2Core/NetworkConfiguration.h>
 #include <U2Gui/AppSettingsGUI.h>
@@ -32,17 +32,17 @@
 namespace U2 {
 
 
-class NetworkSettingsPageController : public AppSettingsGUIPageController {
+class DirectoriesSettingsPageController : public AppSettingsGUIPageController {
     Q_OBJECT
 public:
-    NetworkSettingsPageController(QObject* p = NULL);
+    DirectoriesSettingsPageController(QObject* p = NULL);
 
     virtual AppSettingsGUIPageState* getSavedState();
 
     virtual void saveState(AppSettingsGUIPageState* s);
 
     virtual AppSettingsGUIPageWidget* createWidget(AppSettingsGUIPageState* data);
-
+    
     const QString& getHelpPageId() const {return helpPageId;};
 
 private:
@@ -50,29 +50,29 @@ private:
 };
 
 
-class NetworkSettingsPageState : public AppSettingsGUIPageState {
+class DirectoriesSettingsPageState : public AppSettingsGUIPageState {
     Q_OBJECT
 public:
-    NetworkSettingsPageState();
-    NetworkConfiguration config;
-    QString webBrowserUrl;
-    bool useDefaultWebBrowser;
+    QString downloadsDirPath;
+    QString temporaryDirPath;
+    QString fileStorageDirPath;
 };
 
 
-class NetworkSettingsPageWidget: public AppSettingsGUIPageWidget, public Ui_NetworkSettingsWidget {
+class DirectoriesSettingsPageWidget: public AppSettingsGUIPageWidget, public Ui_DirectoriesSettingsWidget {
     Q_OBJECT
 public:
-    NetworkSettingsPageWidget();
+    DirectoriesSettingsPageWidget(DirectoriesSettingsPageController* ctrl);
 
     virtual void setState(AppSettingsGUIPageState* state);
 
     virtual AppSettingsGUIPageState* getState(QString& err) const;
 
 private slots:
-    void sl_HttpChecked( int state );
-    void sl_ExceptionsChecked( int state );
-    void sl_changeWebBrowserPathButtonClicked();
+    void sl_browseDownloadsDirButtonClicked();
+    void sl_browseTmpDirButtonClicked();
+    void sl_browseFileStorageButtonClicked();
+    void sl_cleanupStorage();
 };
 
 }//namespace

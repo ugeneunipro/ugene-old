@@ -31,9 +31,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/CleanupFileStorageTask.h>
 #include <U2Core/Log.h>
-#include <U2Core/TmpDirChecker.h>
 #include <U2Core/UserApplicationsSettings.h>
 
 #include <U2Gui/U2FileDialog.h>
@@ -77,30 +75,22 @@ UserApplicationsSettingsPageController::UserApplicationsSettingsPageController(Q
 AppSettingsGUIPageState* UserApplicationsSettingsPageController::getSavedState() {
     UserApplicationsSettingsPageState* state = new UserApplicationsSettingsPageState();
     UserAppsSettings* s = AppContext::getAppSettings()->getUserAppsSettings();
-    state->webBrowserUrl = s->getWebBrowserURL();
     state->translFile = s->getTranslationFile();
-    state->useDefaultWebBrowser = s->useDefaultWebBrowser();
     state->openLastProjectFlag = s->openLastProjectAtStartup();
     state->askToSaveProject = s->getAskToSaveProject();
     state->style = s->getVisualStyle();
-    state->downloadsDirPath = s->getDownloadDirPath();
-    state->temporaryDirPath = s->getUserTemporaryDirPath();
     state->enableStatistics = s->isStatisticsCollectionEnabled();
     state->tabbedWindowLayout = s->tabbedWindowLayout();
     state->resetSettings = s->resetSettings();
-    state->fileStorageDirPath = s->getFileStorageDir();
     return state;
 }
 
 void UserApplicationsSettingsPageController::saveState(AppSettingsGUIPageState* s) {
     UserApplicationsSettingsPageState* state = qobject_cast<UserApplicationsSettingsPageState*>(s);
     UserAppsSettings* st = AppContext::getAppSettings()->getUserAppsSettings();
-    st->setWebBrowserURL(state->webBrowserUrl);
     st->setTranslationFile(state->translFile);
-    st->setUseDefaultWebBrowser(state->useDefaultWebBrowser);
     st->setOpenLastProjectAtStartup(state->openLastProjectFlag);
     st->setAskToSaveProject(state->askToSaveProject);
-    st->setDownloadDirPath(state->downloadsDirPath);
     st->setEnableCollectingStatistics(state->enableStatistics);
     st->setTabbedWindowLayout(state->tabbedWindowLayout);
     st->setResetSettings(state->resetSettings);
@@ -109,22 +99,6 @@ void UserApplicationsSettingsPageController::saveState(AppSettingsGUIPageState* 
     if (style!=NULL) {
         QApplication::setStyle(style);
         st->setVisualStyle(state->style);
-    }
-
-
-    TmpDirChecker tmpDirChecker;
-    if (!tmpDirChecker.checkPath(state->temporaryDirPath)) {
-        uiLog.error("You do not have permission to write to \"" + state->temporaryDirPath + "\" directory\"");
-    }
-    else {
-        st->setUserTemporaryDirPath(state->temporaryDirPath);
-    }
-
-    if (!tmpDirChecker.checkPath(state->fileStorageDirPath)) {
-        uiLog.error("You do not have permission to write to \"" + state->fileStorageDirPath + "\" directory\"");
-    }
-    else {
-        st->setFileStorageDir(state->fileStorageDirPath);
     }
 }
 
@@ -138,13 +112,7 @@ const QString UserApplicationsSettingsPageController::helpPageId = QString("4227
 
 UserApplicationsSettingsPageWidget::UserApplicationsSettingsPageWidget(UserApplicationsSettingsPageController* ctrl) {
     setupUi(this);
-    connect(webBrowserButton, SIGNAL(clicked()), SLOT(sl_wbURLClicked()));
     connect(langButton, SIGNAL(clicked()), SLOT(sl_transFileClicked()));
-    connect(browseDownloadDirButton, SIGNAL(clicked()), SLOT(sl_browseButtonClicked()));
-    connect(browseTmpDirButton,SIGNAL(clicked()),SLOT(sl_browseTmpDirButtonClicked()));
-    connect(browseFileStorageButton,SIGNAL(clicked()),SLOT(sl_browseFileStorageButtonClicked()));
-    connect(cleanupStorageButton,SIGNAL(clicked()),SLOT(sl_cleanupStorage()));
-    
     QMapIterator<QString, QString> it(ctrl->translations);
     while (it.hasNext()) {
         it.next();
@@ -155,17 +123,9 @@ UserApplicationsSettingsPageWidget::UserApplicationsSettingsPageWidget(UserAppli
 
 void UserApplicationsSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     UserApplicationsSettingsPageState* state = qobject_cast<UserApplicationsSettingsPageState*>(s);
-    defaultWebBrowser->setChecked(state->useDefaultWebBrowser);
-    customWebBrowser->setChecked(!state->useDefaultWebBrowser);
-    webBrowserButton->setEnabled(!state->useDefaultWebBrowser);
-    webBrowserEdit->setEnabled(!state->useDefaultWebBrowser);
-    webBrowserEdit->setText(state->webBrowserUrl);
-    downloadsDirPathEdit->setText(state->downloadsDirPath);
-    tmpDirPathEdit->setText(state->temporaryDirPath);
     enableStatisticsEdit->setChecked(state->enableStatistics);
     tabbedButton->setChecked(state->tabbedWindowLayout);
     mdiButton->setChecked(!state->tabbedWindowLayout);
-    fileStorageDirPathEdit->setText(state->fileStorageDirPath);
     
     int idx = langCombo->findData(state->translFile);
     if (idx < 0) {
@@ -190,38 +150,15 @@ void UserApplicationsSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
 
 AppSettingsGUIPageState* UserApplicationsSettingsPageWidget::getState(QString& err) const {
     UserApplicationsSettingsPageState* state = new UserApplicationsSettingsPageState();
-    if (defaultWebBrowser->isChecked()){
-        state->useDefaultWebBrowser=true;
-    } else {
-        QString wbUrl = webBrowserEdit->text();
-        QFile wbFile(wbUrl);
-        if (!wbFile.exists()) {
-            webBrowserEdit->setFocus();
-            err = tr("file_not_exists");
-            return NULL;
-        }		
-        state->webBrowserUrl = wbUrl;
-        state->useDefaultWebBrowser=false;
-    }
     state->translFile = langCombo->itemData(langCombo->currentIndex()).toString();
     state->openLastProjectFlag = autoOpenProjectBox->isChecked();
     state->askToSaveProject = askToSaveProject->itemData(askToSaveProject->currentIndex()).toInt();
     state->style = styleCombo->currentText();
-    state->downloadsDirPath = downloadsDirPathEdit->text();
-    state->temporaryDirPath = tmpDirPathEdit->text();
     state->enableStatistics = enableStatisticsEdit->isChecked();
     state->tabbedWindowLayout = tabbedButton->isChecked();
     state->resetSettings = resetSettingsBox->isChecked();
-    state->fileStorageDirPath = fileStorageDirPathEdit->text();
 
     return state;
-}
-
-void UserApplicationsSettingsPageWidget::sl_wbURLClicked() {
-    QString file = U2FileDialog::getOpenFileName(this, tr("select_wb_file_title"), QString(), 0);
-    if (!file.isEmpty()) {
-        webBrowserEdit->setText(file);
-    }
 }
 
 void UserApplicationsSettingsPageWidget::sl_transFileClicked() {
@@ -241,47 +178,6 @@ void UserApplicationsSettingsPageWidget::sl_transFileClicked() {
         }
         langCombo->setCurrentIndex(idx);
     }
-}
-
-void UserApplicationsSettingsPageWidget::sl_browseButtonClicked()
-{
-    QString path = downloadsDirPathEdit->text();
-    QString dir = U2FileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
-        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-    if (!dir.isEmpty()) {
-        downloadsDirPathEdit->setText(dir);
-    }
-    
-}
-
-void UserApplicationsSettingsPageWidget::sl_browseTmpDirButtonClicked()
-{
-
-    QString path = tmpDirPathEdit->text();
-    QString dir = U2FileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
-        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-    if (!dir.isEmpty()) {
-        tmpDirPathEdit->setText(dir);
-    }
-
-}
-
-void UserApplicationsSettingsPageWidget::sl_browseFileStorageButtonClicked()
-{
-
-    QString path = fileStorageDirPathEdit->text();
-    QString dir = U2FileDialog::getExistingDirectory(this, tr("Choose Directory"), path,
-        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-    if (!dir.isEmpty()) {
-        fileStorageDirPathEdit->setText(dir);
-    }
-
-}
-
-void UserApplicationsSettingsPageWidget::sl_cleanupStorage()
-{
-    CleanupFileStorageTask *t = new CleanupFileStorageTask();
-    AppContext::getTaskScheduler()->registerTopLevelTask(t);
 }
 
 } //namespace

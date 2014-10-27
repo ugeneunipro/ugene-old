@@ -26,6 +26,7 @@
 #include "network_settings/NetworkSettingsGUIController.h"
 #include "user_apps_settings/UserApplicationsSettingsGUIController.h"
 #include "resource_settings/ResourceSettingsGUIController.h"
+#include "directories_settings/DirectoriesSettingsGUIController.h"
 
 #include <U2Core/AppContext.h>
 #include <U2Gui/MainWindow.h>
@@ -101,6 +102,7 @@ void AppSettingsGUIImpl::registerBuiltinPages() {
     registerPage(new ResourceSettingsGUIPageController());
     registerPage(new NetworkSettingsPageController());
     registerPage(new FormatSettingsGUIPageController());
+    registerPage(new DirectoriesSettingsPageController());
 }
 
 }//namespace
