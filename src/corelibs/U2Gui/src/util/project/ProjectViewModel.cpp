@@ -281,13 +281,13 @@ Qt::ItemFlags ProjectViewModel::flags(const QModelIndex &index) const {
         case FOLDER: {
             Folder *folder = toFolder(index);
             SAFE_POINT(NULL != folder, "NULL folder", result);
-            if (!ProjectUtils::isFolderInRecycleBin(folder->getFolderPath(), false)) {
+            if (!ProjectUtils::isFolderInRecycleBin(folder->getFolderPath())) {
                 result |= Qt::ItemIsDropEnabled;
             }
             if (ProjectUtils::RECYCLE_BIN_FOLDER_PATH != folder->getFolderPath()) {
                 result |= Qt::ItemIsDragEnabled;
             }
-            if (!ProjectUtils::isFolderInRecycleBin(folder->getFolderPath(), true)) {
+            if (!ProjectUtils::isFolderInRecycleBinSubtree(folder->getFolderPath())) {
                 result |= Qt::ItemIsEditable;
             }
             return result;
@@ -361,7 +361,7 @@ QStringList ProjectViewModel::mimeTypes() const {
 bool ProjectViewModel::dropMimeData(const QMimeData *data, Qt::DropAction /*action*/, int row, int /*column*/, const QModelIndex &parent) {
     Folder target = getDropFolder(parent);
     const QString folderPath = target.getFolderPath();
-    SAFE_POINT(-1 == row || ProjectUtils::isFolderInRecycleBin(folderPath), "Wrong insertion row", false);
+    SAFE_POINT(-1 == row || ProjectUtils::isFolderInRecycleBinSubtree(folderPath), "Wrong insertion row", false);
     Document *targetDoc = target.getDocument();
     SAFE_POINT(NULL != targetDoc, "NULL document", false);
     CHECK(!targetDoc->isStateLocked(), false);
@@ -575,6 +575,7 @@ void ProjectViewModel::moveObject(Document *doc, GObject *obj, const QString &ne
 
     U2OpStatus2Log os;
     DbiOperationsBlock opBlock(doc->getDbiRef(), os);
+    Q_UNUSED(opBlock);
     CHECK_OP(os, );
 
     DbiConnection con(doc->getDbiRef(), os);
@@ -592,7 +593,7 @@ void ProjectViewModel::moveObject(Document *doc, GObject *obj, const QString &ne
     // move object in model
     QList<U2DataId> objList;
     objList << obj->getEntityRef().entityId;
-    const bool objectIsRecycled = ProjectUtils::isFolderInRecycleBin(newFolderPath);
+    const bool objectIsRecycled = ProjectUtils::isFolderInRecycleBinSubtree(newFolderPath);
     objDbi->moveObjects(objList, oldFolderPath, newFolderPath, os, objectIsRecycled);
     CHECK_OP(os, );
 
@@ -607,10 +608,11 @@ bool ProjectViewModel::restoreObjectItemFromRecycleBin(Document *doc, GObject *o
 
     U2OpStatus2Log os;
     DbiOperationsBlock opBlock(doc->getDbiRef(), os);
+    Q_UNUSED(opBlock);
     CHECK_OP(os, false);
 
     const QString oldFolder = folders[doc]->getObjectFolder(obj);
-    SAFE_POINT(ProjectUtils::isFolderInRecycleBin(oldFolder), "Attempting to restore the non-removed object", false);
+    SAFE_POINT(ProjectUtils::isFolderInRecycleBinSubtree(oldFolder), "Attempting to restore the non-removed object", false);
 
     ConnectionHelper con(doc->getDbiRef(), os);
     CHECK_OP(os, false);
@@ -897,8 +899,8 @@ bool ProjectViewModel::renameFolder(Document *doc, const QString &oldPath, const
 void ProjectViewModel::moveObjectsBetweenFolderTrees(Document *doc, const QStringList &srcTree, const QStringList &dstTree) {
     DocumentFolders *docFolders = folders[doc];
 
-    const bool objectsWillBeObscuredInRecycleBin = ProjectUtils::isFolderInRecycleBin(dstTree.first(), false);
-    const bool objectsWereObscuredInRecycleBin = ProjectUtils::isFolderInRecycleBin(srcTree.first(), false);
+    const bool objectsWillBeObscuredInRecycleBin = ProjectUtils::isFolderInRecycleBin(dstTree.first());
+    const bool objectsWereObscuredInRecycleBin = ProjectUtils::isFolderInRecycleBin(srcTree.first());
     for (int i = 0, n = srcTree.size(); i < n; ++i) {
         const QString folderPrevPath = srcTree.at(i);
         const QString folderNewPath = dstTree.at(i);
@@ -975,7 +977,7 @@ void ProjectViewModel::insertFolder(Document *doc, const QString &path) {
     SAFE_POINT(folders.contains(doc), "Unknown document", );
     CHECK(!folders[doc]->hasFolder(path), );
 
-    if (ProjectUtils::isFolderInRecycleBin(path, false)) {
+    if (ProjectUtils::isFolderInRecycleBin(path)) {
         insertFolderInRecycleBin(doc, path);
         return;
     }
@@ -1001,7 +1003,7 @@ void ProjectViewModel::insertFolder(Document *doc, const QString &path) {
 }
 
 void ProjectViewModel::insertFolderInRecycleBin(Document *doc, const QString &path) {
-    SAFE_POINT(ProjectUtils::isFolderInRecycleBin(path, false), "Not in recycle bin path", );
+    SAFE_POINT(ProjectUtils::isFolderInRecycleBin(path), "Not in recycle bin path", );
     int newRow = beforeInsertPath(doc, path);
     folders[doc]->addFolder(path);
     afterInsert(newRow);
@@ -1122,7 +1124,7 @@ bool ProjectViewModel::hasObject(Document *doc, GObject *obj) const {
     CHECK(folders[doc]->hasObject(obj->getEntityRef().entityId), false);
 
     const QString objectFolder = getObjectFolder(doc, obj);
-    return !ProjectUtils::isFolderInRecycleBin(objectFolder, false);
+    return !ProjectUtils::isFolderInRecycleBin(objectFolder);
 }
 
 int ProjectViewModel::folderRow(Folder *subFolder) const {
@@ -1262,7 +1264,7 @@ QVariant ProjectViewModel::data(Folder *folder, int role) const {
 QVariant ProjectViewModel::getFolderDecorationData(Folder *folder) const {
     const bool isRecycleBin = (ProjectUtils::RECYCLE_BIN_FOLDER_PATH == folder->getFolderPath());
     const QString pathToIcon = isRecycleBin ? ":core/images/recycle_bin.png" : ":U2Designer/images/directory.png";
-    bool enabled = !ProjectUtils::isFolderInRecycleBin(folder->getFolderPath(), false);
+    bool enabled = !ProjectUtils::isFolderInRecycleBin(folder->getFolderPath());
     return getIcon(QIcon(pathToIcon), enabled);
 }
 
@@ -1272,7 +1274,7 @@ QVariant ProjectViewModel::data(GObject *obj, int role) const {
     SAFE_POINT(folders.contains(parentDoc), "Unknown document", QVariant());
 
     const QString folder = folders[parentDoc]->getObjectFolder(obj);
-    const bool itemIsEnabled = !ProjectUtils::isConnectedDatabaseDoc(parentDoc) || !ProjectUtils::isFolderInRecycleBin(folder);
+    const bool itemIsEnabled = !ProjectUtils::isConnectedDatabaseDoc(parentDoc) || !ProjectUtils::isFolderInRecycleBinSubtree(folder);
 
     switch (role) {
     case Qt::TextColorRole :
@@ -1468,7 +1470,7 @@ Folder ProjectViewModel::getDropFolder(const QModelIndex &index) const {
 namespace {
 
 QString changeDropPathIfInRecycleBin(const QString &path) {
-    return ProjectUtils::isFolderInRecycleBin(path, false) ? ProjectUtils::RECYCLE_BIN_FOLDER_PATH : path;
+    return ProjectUtils::isFolderInRecycleBin(path) ? ProjectUtils::RECYCLE_BIN_FOLDER_PATH : path;
 }
 
 }

@@ -35,9 +35,10 @@ public:
     static bool isConnectedDatabaseDoc(const Document *doc);
     static bool isDatabaseDoc(const Document *doc);
 
-    static bool isFolderInRecycleBin(const QString &folderPath, bool allowRecycleBin = true);
+    static bool isFolderInRecycleBin(const QString &folderPath);
+    static bool isFolderInRecycleBinSubtree(const QString &folderPath);
 
-    static bool isFolderRemovable(const QString &folderPath);
+    static bool isSystemFolder(const QString &folderPath);
 
     static const int MAX_OBJS_TO_SHOW_LOAD_PROGRESS;
     static const QString RECYCLE_BIN_FOLDER_PATH;

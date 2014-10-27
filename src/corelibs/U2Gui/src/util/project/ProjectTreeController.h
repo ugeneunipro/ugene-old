@@ -107,7 +107,7 @@ private:
     void updateLoadingState(Document *doc);
     void runLoadDocumentTasks(const QList<Document*> &docs) const;
     QSet<Document*> getDocsInSelection(bool deriveFromObjects) const;
-    void removeItems(const QList<Document*> &docs, const QList<Folder> &folders, const QList<GObject*> &objs);
+    void removeItems(const QList<Document*> &docs, QList<Folder> folders, QList<GObject *> objs);
     bool removeObjects(const QList<GObject*> &objs, const QList<Document*> &excludedDocs, const QList<Folder> &excludedFolders, bool removeFromDbi);
     bool removeFolders(const QList<Folder> &folders, const QList<Document*> &excludedDocs);
     void removeDocuments(const QList<Document*> &docs);
@@ -133,6 +133,12 @@ private:
     void startTrackingRemovedObjects(Task *deleteTask, const QHash<GObject *, Document *> &objs2Docs);
     void startTrackingRemovedFolders(Task *deleteTask, const QList<Folder> &folders);
 
+    static bool isObjectRemovable(GObject *object);
+    static bool isFolderRemovable(const Folder &folder);
+    bool isAnyObjectInRecycleBin(const QList <GObject *> &objects);
+    static bool isAnyFolderInRecycleBin(const QList <Folder> &folders);
+    static void excludeUnremovableObjectsFromList(QList<GObject *> &objects);
+    static void excludeUnremovableFoldersFromList(QList<Folder> &folders);
     static bool isSubFolder(const QList<Folder> &folders, const Folder &expectedSubFolder, bool trueIfSamePath);
 
     QTreeView *tree;

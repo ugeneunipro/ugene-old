@@ -42,16 +42,16 @@ bool ProjectUtils::isDatabaseDoc(const Document *doc) {
     return BaseDocumentFormats::DATABASE_CONNECTION == doc->getDocumentFormatId();
 }
 
-bool ProjectUtils::isFolderInRecycleBin(const QString &folderPath, bool allowRecycleBin) {
-    bool result = folderPath.startsWith(RECYCLE_BIN_FOLDER_PATH + U2ObjectDbi::PATH_SEP);
-    if (!result && allowRecycleBin) {
-        result = (folderPath == RECYCLE_BIN_FOLDER_PATH);
-    }
-    return result;
+bool ProjectUtils::isFolderInRecycleBin(const QString &folderPath) {
+    return folderPath.startsWith(RECYCLE_BIN_FOLDER_PATH + U2ObjectDbi::PATH_SEP);
 }
 
-bool ProjectUtils::isFolderRemovable(const QString &folderPath) {
-    return folderPath != U2ObjectDbi::ROOT_FOLDER && folderPath != RECYCLE_BIN_FOLDER_PATH;
+bool ProjectUtils::isFolderInRecycleBinSubtree(const QString &folderPath) {
+    return (folderPath == RECYCLE_BIN_FOLDER_PATH || isFolderInRecycleBin(folderPath));
+}
+
+bool ProjectUtils::isSystemFolder(const QString &folderPath) {
+    return folderPath == U2ObjectDbi::ROOT_FOLDER || folderPath == RECYCLE_BIN_FOLDER_PATH;
 }
 
 } // U2

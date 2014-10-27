@@ -103,7 +103,7 @@ Folder * DocumentFolders::getFolder(const QString &path) const {
 void DocumentFolders::addFolder(const QString &path) {
     SAFE_POINT(!hasFolder(path), "The folder already exists", );
 
-    if (!ProjectUtils::isFolderInRecycleBin(path)) { // add all folders from @path if they don't exist
+    if (!ProjectUtils::isFolderInRecycleBinSubtree(path)) { // add all folders from @path if they don't exist
         const QStringList pathList = path.split(U2ObjectDbi::PATH_SEP, QString::SkipEmptyParts);
         QString fullPath;
         foreach (const QString &folder, pathList) {
@@ -212,7 +212,7 @@ int DocumentFolders::getNewFolderRowInParent(const QString &path) const {
 }
 
 int DocumentFolders::getNewFolderRowInRecycleBin(const QString &path) const {
-    SAFE_POINT(ProjectUtils::isFolderInRecycleBin(path, false), "Not in recycle bin path", -1);
+    SAFE_POINT(ProjectUtils::isFolderInRecycleBin(path), "Not in recycle bin path", -1);
     QStringList paths;
     if (hasCachedSubFolders.value(ProjectUtils::RECYCLE_BIN_FOLDER_PATH, false)) {
         paths = cachedRecycleBinFolders;
@@ -239,7 +239,7 @@ QList<Folder*> DocumentFolders::getSubFolders(const QString &parentPath) const {
     if (ProjectUtils::RECYCLE_BIN_FOLDER_PATH == parentPath) {
         QStringList subFoldersPaths = calculateRecycleBinSubFoldersPaths();
         return cacheRecycleBinSubFoldersPaths(subFoldersPaths);
-    } else if (ProjectUtils::isFolderInRecycleBin(parentPath)) {
+    } else if (ProjectUtils::isFolderInRecycleBinSubtree(parentPath)) {
         return QList<Folder*>();
     } else {
         QStringList subFoldersNames = calculateSubFoldersNames(parentPath);
@@ -270,7 +270,7 @@ void DocumentFolders::addFolderToCache(const QString &path) {
 }
 
 QList<GObject*> DocumentFolders::getObjects(const QString &parentPath) const {
-    if (ProjectUtils::isFolderInRecycleBin(parentPath, false)) {
+    if (ProjectUtils::isFolderInRecycleBin(parentPath)) {
         return QList<GObject*>();
     } else {
         return getObjectsNatural(parentPath);
@@ -295,7 +295,7 @@ bool DocumentFolders::isRootRecycleBinFolder(const QString &path) const {
 }
 
 QString DocumentFolders::getParentFolder(const QString &path) {
-    if (ProjectUtils::isFolderInRecycleBin(path, false)) {
+    if (ProjectUtils::isFolderInRecycleBin(path)) {
         return ProjectUtils::RECYCLE_BIN_FOLDER_PATH;
     } else {
         return Folder::getFolderParentPath(path);

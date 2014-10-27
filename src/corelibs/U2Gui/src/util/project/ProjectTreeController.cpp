@@ -132,7 +132,7 @@ bool ProjectTreeController::isObjectInRecycleBin(GObject *obj) const {
     CHECK(NULL != doc && ProjectUtils::isConnectedDatabaseDoc(doc), false);
 
     const QString objectPath = model->getObjectFolder(doc, obj);
-    return ProjectUtils::isFolderInRecycleBin(objectPath);
+    return ProjectUtils::isFolderInRecycleBinSubtree(objectPath);
 }
 
 const ProjectTreeControllerModeSettings & ProjectTreeController::getModeSettings() const {
@@ -291,7 +291,7 @@ void ProjectTreeController::sl_updateActions() {
     bool selectedModifiableFoldersExist = !selectedFolders.isEmpty();
     bool modifiableRecycleBinSelected = false;
     foreach (const Folder &f, selectedFolders) {
-        allSelectedFoldersAreInRecycleBin = ProjectUtils::isFolderInRecycleBin(f.getFolderPath(), false);
+        allSelectedFoldersAreInRecycleBin = ProjectUtils::isFolderInRecycleBin(f.getFolderPath());
         modifiableRecycleBinSelected = ProjectUtils::RECYCLE_BIN_FOLDER_PATH == f.getFolderPath() && !f.getDocument()->isStateLocked();
         selectedModifiableFoldersExist &= !f.getDocument()->isStateLocked();
 
@@ -405,7 +405,7 @@ bool ProjectTreeController::canCreateSubFolder() const {
     const QList<Folder> selection = getSelectedFolders();
     CHECK(1 == selection.size(), false);
     const Folder &selectedFolder = selection.first();
-    return !ProjectUtils::isFolderInRecycleBin(selectedFolder.getFolderPath()) && !selectedFolder.getDocument()->isStateLocked();
+    return !ProjectUtils::isFolderInRecycleBinSubtree(selectedFolder.getFolderPath()) && !selectedFolder.getDocument()->isStateLocked();
 }
 
 void ProjectTreeController::sl_onAddObjectToSelectedDocument() {
@@ -650,7 +650,7 @@ bool ProjectTreeController::canRenameFolder() const {
     const QList<Folder> selection = getSelectedFolders();
     CHECK(1 == selection.size(), false);
     const Folder &selectedFolder = selection.first();
-    return !ProjectUtils::isFolderInRecycleBin(selectedFolder.getFolderPath()) && !selectedFolder.getDocument()->isStateLocked();
+    return !ProjectUtils::isFolderInRecycleBinSubtree(selectedFolder.getFolderPath()) && !selectedFolder.getDocument()->isStateLocked();
 }
 
 void ProjectTreeController::restoreSelectedObjects() {
@@ -660,9 +660,11 @@ void ProjectTreeController::restoreSelectedObjects() {
 
     QSet<Document *> docs;
     foreach (GObject *obj, objs) {
+        if (!isObjectInRecycleBin(obj)) {
+            continue;
+        }
         Document *doc = obj->getDocument();
         SAFE_POINT(NULL != doc, "Invalid parent document detected!", );
-        SAFE_POINT(isObjectInRecycleBin(obj), "Restoring is requested for non removed object!", );
         if (model->restoreObjectItemFromRecycleBin(doc, obj)) {
             docs.insert(doc);
         } else {
@@ -682,17 +684,20 @@ void ProjectTreeController::restoreSelectedObjects() {
 }
 
 void ProjectTreeController::restoreSelectedFolders() {
-    const QList<Folder> folders = folderSelection.getSelection();
+    QList<Folder> folders = folderSelection.getSelection();
+    excludeUnremovableFoldersFromList(folders);
 
     bool restoreFailed = false;
 
     QSet<Document *> docs;
     foreach (const Folder &folder, folders) {
+        const QString oldFolderPath = folder.getFolderPath();
+        if (!ProjectUtils::isFolderInRecycleBin(oldFolderPath)) {
+            continue;
+        }
+
         Document *doc = folder.getDocument();
         SAFE_POINT(NULL != doc, "Invalid parent document detected!", );
-
-        const QString oldFolderPath = folder.getFolderPath();
-        SAFE_POINT(ProjectUtils::isFolderInRecycleBin(oldFolderPath), "Restoring is requested for non removed folder!", );
 
         if (model->restoreFolderItemFromRecycleBin(doc, oldFolderPath)) {
             docs.insert(doc);
@@ -736,7 +741,7 @@ void ProjectTreeController::sl_onCreateFolder() {
     CHECK(1 == folders.size(), );
     const Folder folder = folders.first();
     const QString folderPath = folder.getFolderPath();
-    CHECK(!ProjectUtils::isFolderInRecycleBin(folderPath), );
+    CHECK(!ProjectUtils::isFolderInRecycleBinSubtree(folderPath), );
 
     FolderNameDialog d("", tree);
     if (QDialog::Accepted == d.exec()) {
@@ -1032,23 +1037,10 @@ QList<Folder> ProjectTreeController::getSelectedFolders() const {
     return result;
 }
 
-void ProjectTreeController::removeItems(const QList<Document*> &docs, const QList<Folder> &folders, const QList<GObject*> &objs) {
-    bool itemsInRecycleBin = false;
-    foreach (GObject *obj, objs) {
-        itemsInRecycleBin = isObjectInRecycleBin(obj);
-        if (itemsInRecycleBin) {
-            break;
-        }
-    }
-    if (!itemsInRecycleBin) {
-        foreach (const Folder &f, folders) {
-            itemsInRecycleBin = ProjectUtils::isFolderInRecycleBin(f.getFolderPath());
-            if (itemsInRecycleBin) {
-                break;
-            }
-        }
-    }
-    if (itemsInRecycleBin) {
+void ProjectTreeController::removeItems(const QList<Document*> &docs, QList<Folder> folders, QList<GObject*> objs) {
+    excludeUnremovableObjectsFromList(objs);
+    excludeUnremovableFoldersFromList(folders);
+    if (isAnyObjectInRecycleBin(objs) || isAnyFolderInRecycleBin(folders)) {
         QMessageBox::StandardButton choice = QMessageBox::warning(QApplication::activeWindow(),
             QObject::tr("Confirm Deletion"),
             QObject::tr("Are you sure you want to delete items in Recycle Bin?\n"
@@ -1155,9 +1147,9 @@ bool ProjectTreeController::removeFolders(const QList<Folder> &folders, const QL
         bool parentDocSelected = excludedDocs.contains(doc);
 
         const QString &folderPath = folder.getFolderPath();
-        if (parentDocSelected || parentFolderSelected || !ProjectUtils::isFolderRemovable(folderPath)) {
+        if (parentDocSelected || parentFolderSelected || ProjectUtils::isSystemFolder(folderPath)) {
             continue;
-        } else if (ProjectUtils::isFolderInRecycleBin(folderPath)) {
+        } else if (ProjectUtils::isFolderInRecycleBinSubtree(folderPath)) {
             QList<GObject*> objects = model->getFolderContent(doc, folderPath);
             deletedSuccessfully &= removeObjects(objects, excludedDocs, QList<Folder>(), false);
             if (!deletedSuccessfully) {
@@ -1242,8 +1234,62 @@ void ProjectTreeController::startTrackingRemovedFolders(Task *deleteTask, const 
     }
 }
 
+bool ProjectTreeController::isObjectRemovable(GObject *object) {
+    SAFE_POINT(NULL != object, "object is NULL", false);
+    Document *document = object->getDocument();
+    CHECK(NULL != document, false);
+    DocumentFormat *format = document->getDocumentFormat();
+    SAFE_POINT(NULL != format, "Document format is NULL", false);
+
+    const bool isOperationSupported = format->isObjectOpSupported(document, DocumentFormat::DocObjectOp_Remove, object->getGObjectType());
+    return !document->isStateLocked() && isOperationSupported;
+}
+
+bool ProjectTreeController::isFolderRemovable(const Folder &folder) {
+    Document *document = folder.getDocument();
+    CHECK(NULL != document, false);
+    return !document->isStateLocked() && !ProjectUtils::isSystemFolder(folder.getFolderPath());
+}
+
+bool ProjectTreeController::isAnyObjectInRecycleBin(const QList<GObject *> &objects) {
+    foreach (GObject *object, objects) {
+        if (isObjectInRecycleBin(object)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool ProjectTreeController::isAnyFolderInRecycleBin(const QList<Folder> &folders) {
+    foreach (const Folder &f, folders) {
+        if (ProjectUtils::isFolderInRecycleBin(f.getFolderPath())) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void ProjectTreeController::excludeUnremovableObjectsFromList(QList<GObject *> &objects) {
+    QList<GObject *> cleanedList;
+    foreach (GObject *object, objects) {
+        if (isObjectRemovable(object)) {
+            cleanedList << object;
+        }
+    }
+    objects = cleanedList;
+}
+
+void ProjectTreeController::excludeUnremovableFoldersFromList(QList<Folder> &folders) {
+    QList<Folder> cleanedList;
+    foreach (const Folder &folder, folders) {
+        if (isFolderRemovable(folder)) {
+            cleanedList << folder;
+        }
+    }
+    folders = cleanedList;
+}
+
 void ProjectTreeController::removeDocuments(const QList<Document*> &docs) {
-    QSet<Document*> docsInSelection = getDocsInSelection(settings.groupMode != ProjectTreeGroupMode_ByDocument);
     if (!docs.isEmpty()) {
         AppContext::getTaskScheduler()->registerTopLevelTask(new RemoveMultipleDocumentsTask(AppContext::getProject(), docs, true, true));
     }

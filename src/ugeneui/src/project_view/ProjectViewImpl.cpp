@@ -997,8 +997,7 @@ void ProjectViewImpl::buildViewMenu(QMenu& m) {
         bool allCirc = true;
         bool allNucl = true;
         foreach(GObject *obj, objSelection->getSelectedObjects()){
-            Document *doc = obj->getDocument();
-            const bool objectIsModifiable = NULL != doc && !doc->isStateLocked() && !projectTreeController->isObjectInRecycleBin(obj);
+            const bool objectIsModifiable = (!obj->isStateLocked() && !projectTreeController->isObjectInRecycleBin(obj));
             if(obj->getGObjectType() == GObjectTypes::SEQUENCE && objectIsModifiable){
                 seqobjFound = true;
                 U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(obj);
@@ -1121,7 +1120,8 @@ void ProjectViewImpl::highlightItem(Document* doc){
 void ProjectViewImpl::sl_onToggleCircular() {
     const GObjectSelection* objSelection = getGObjectSelection();
     foreach(GObject *obj, objSelection->getSelectedObjects()){
-        if(obj->getGObjectType() == GObjectTypes::SEQUENCE){
+        const bool objectIsModifiable = (!obj->isStateLocked() && !projectTreeController->isObjectInRecycleBin(obj));
+        if (objectIsModifiable && obj->getGObjectType() == GObjectTypes::SEQUENCE){
             U2SequenceObject *casted = qobject_cast<U2SequenceObject*>(obj);
             casted->setCircular(toggleCircularAction->isChecked());
         }
