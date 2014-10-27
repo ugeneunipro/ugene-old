@@ -57,7 +57,11 @@ GTDragger::GTDragger(U2OpStatus &_os, const QPoint& _to):QObject(), os(_os), to(
 
 void GTDragger::sl_execDrag(){
     GTMouseDriver::moveTo(os, to);
-    GTMouseDriver::click(os);
+#ifdef Q_OS_WIN
+    GTMouseDriver::release(os);
+#else
+	GTMouseDriver::click(os);
+#endif
 }
 
 } //namespace

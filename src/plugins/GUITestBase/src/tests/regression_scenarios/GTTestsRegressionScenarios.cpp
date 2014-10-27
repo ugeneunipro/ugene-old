@@ -5631,6 +5631,7 @@ GUI_TEST_CLASS_DEFINITION(test_3143){
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "chrM.sorted.bam.ugenedb"));
     GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sorted.bam");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+	GTGlobals::sleep();
 //    Expected state: Showed Import BAM File dialog.
 //    2. Click Import;
 //    Expected state: Imported file opened in Assembly Viewer.
@@ -5643,6 +5644,7 @@ GUI_TEST_CLASS_DEFINITION(test_3143){
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "chrM.sorted.bam.ugenedb"));
     GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sorted.bam");
     GTUtilsTaskTreeView::waitTaskFinished(os);
+	GTGlobals::sleep();
 //    4. Click Import;
 //    Expected state: Showed message box with question about overwriting of existing file..
 //    5. Click Replace;
