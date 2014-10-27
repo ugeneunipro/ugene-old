@@ -126,10 +126,13 @@ PositionSelector::PositionSelector(QDialog* d, qint64 s, qint64 e, bool _a)
 PositionSelector::~PositionSelector(){ 
 }
 
-void PositionSelector::updateRange(qint64 rangeStart, qint64 rangeEnd) {
-    posEdit->setValidator(new U2LongLongValidator(rangeStart, rangeEnd, posEdit));
+void PositionSelector::updateRange(qint64 _rangeStart, qint64 _rangeEnd) {
+    rangeStart = _rangeStart;
+    rangeEnd = _rangeEnd;
 
-    int width = qMax(((int)log10((double)rangeEnd))*10, 70);
+    posEdit->setValidator(new U2LongLongValidator(_rangeStart, _rangeEnd, posEdit));
+
+    int width = qMax(((int)log10((double)_rangeEnd))*10, 70);
     if (posEdit->maximumWidth() == posEdit->minimumWidth()) {
         posEdit->setFixedWidth(width);
     } else {
@@ -137,7 +140,7 @@ void PositionSelector::updateRange(qint64 rangeStart, qint64 rangeEnd) {
     }
 
     const QValidator *oldValidator = posEdit->validator();
-    posEdit->setValidator(new U2LongLongValidator(rangeStart, rangeEnd, posEdit));
+    posEdit->setValidator(new U2LongLongValidator(_rangeStart, _rangeEnd, posEdit));
     // force the validation
     const QString position = posEdit->text();
     posEdit->clear();
@@ -159,7 +162,7 @@ void PositionSelector::sl_onReturnPressed(){
 void PositionSelector::exec() {
     bool ok = false;
     QString text = posEdit->text().remove(' ').remove(',');
-    int v = text.toInt(&ok);
+    qint64 v = text.toLongLong(&ok);
     if (!ok || v < rangeStart || v > rangeEnd) {
         return;
     }
