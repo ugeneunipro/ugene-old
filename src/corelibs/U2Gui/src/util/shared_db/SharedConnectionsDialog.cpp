@@ -101,12 +101,12 @@ void SharedConnectionsDialog::sl_connectClicked() {
 
     countConnectionsToPublicDatabase(fullDbiUrl);
 
-    // TODO: don't forget to change this when new DB providers will be introduced
-    const U2DbiRef dbiRef(MYSQL_DBI_ID, fullDbiUrl);
-
     if (!AppContext::getPasswordStorage()->contains(fullDbiUrl) && !askCredentials(fullDbiUrl)) {
         return;
     }
+
+    // TODO: don't forget to change this when new DB providers will be introduced
+    const U2DbiRef dbiRef(MYSQL_DBI_ID, fullDbiUrl);
 
     bool initializeDb = false;
     if (!checkDatabaseAvailability(dbiRef, initializeDb)) {
@@ -241,7 +241,7 @@ void SharedConnectionsDialog::updateItemIcon(QListWidgetItem* item, bool isConne
     item->setIcon(QIcon(px));
 }
 
-bool SharedConnectionsDialog::askCredentials(const QString &fullDbiUrl) {
+bool SharedConnectionsDialog::askCredentials(QString &fullDbiUrl) {
     QString userName;
     const QString shortDbiUrl = U2DbiUtils::full2shortDbiUrl(fullDbiUrl, userName);
 
@@ -249,6 +249,7 @@ bool SharedConnectionsDialog::askCredentials(const QString &fullDbiUrl) {
     authenticationDialog.setLogin(userName);
 
     if (QDialog::Accepted == authenticationDialog.exec()) {
+        fullDbiUrl = U2DbiUtils::createFullDbiUrl(authenticationDialog.getLogin(), shortDbiUrl);
         AppContext::getPasswordStorage()->addEntry(fullDbiUrl, authenticationDialog.getPassword(), authenticationDialog.isRemembered());
         return true;
     } else {

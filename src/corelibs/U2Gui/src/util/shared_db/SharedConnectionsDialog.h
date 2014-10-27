@@ -66,7 +66,7 @@ private slots:
 private:
     void init();
     void connectSignals();
-    bool askCredentials(const QString &dbiUrl);
+    bool askCredentials(QString &dbiUrl);
 
     void updateState();
     void updateButtonsState();
