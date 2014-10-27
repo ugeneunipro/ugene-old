@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>347</width>
-    <height>201</height>
+    <width>351</width>
+    <height>240</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -30,17 +30,17 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="sizeConstraint">
-    <enum>QLayout::SetMinimumSize</enum>
+    <enum>QLayout::SetMinAndMaxSize</enum>
    </property>
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum>
+      <enum>QLayout::SetMinAndMaxSize</enum>
      </property>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="sizeConstraint">
-        <enum>QLayout::SetMinimumSize</enum>
+        <enum>QLayout::SetMinAndMaxSize</enum>
        </property>
        <item>
         <widget class="QLabel" name="label">
@@ -96,7 +96,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <property name="sizeConstraint">
-        <enum>QLayout::SetMinimumSize</enum>
+        <enum>QLayout::SetMinAndMaxSize</enum>
        </property>
        <item>
         <widget class="QLabel" name="label_2">
@@ -120,7 +120,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_7">
        <property name="sizeConstraint">
-        <enum>QLayout::SetMinimumSize</enum>
+        <enum>QLayout::SetMinAndMaxSize</enum>
        </property>
        <item>
         <widget class="QPushButton" name="storeSettings">
