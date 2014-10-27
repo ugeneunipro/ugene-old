@@ -264,6 +264,7 @@ static QString findKey(const QStringList& envList, const QString& key) {
 }
 
 namespace {
+#ifdef Q_OS_MACX
 void fixMacFonts() {
     if (QSysInfo::MacintoshVersion > QSysInfo::MV_10_8) {
         // fix Mac OS X 10.9 (mavericks) font issue
@@ -272,6 +273,7 @@ void fixMacFonts() {
         QFont::insertSubstitution(".Lucida Grande UI", "Lucida Grande");
     }
 }
+#endif
 }
 
 int main(int argc, char **argv) 
