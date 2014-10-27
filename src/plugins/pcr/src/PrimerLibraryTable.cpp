@@ -49,6 +49,7 @@ int PrimerLibraryModel::columnCount(const QModelIndex & /*parent*/) const {
 
 QVariant PrimerLibraryModel::data(const QModelIndex &index, int role) const {
     CHECK(index.isValid(), QVariant());
+    CHECK(index.row() < rowCount(index.parent()), QVariant());
 
     if (Qt::DisplayRole == role) {
         return displayData(index);

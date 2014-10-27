@@ -34,7 +34,7 @@
 
 namespace U2 {
 
-class PrimerLibraryWidget : public QWidget, Ui::PrimerLibraryWidget {
+class PrimerLibraryWidget : public QWidget, private Ui::PrimerLibraryWidget {
     Q_OBJECT
 public:
     PrimerLibraryWidget(QWidget *parent);
@@ -46,9 +46,6 @@ private slots:
     void sl_newPrimer();
     void sl_removePrimers();
     void sl_selectionChanged();
-
-private:
-    void checkOp(const U2OpStatus &os);
 
 private:
     QPushButton *removePrimersButton;

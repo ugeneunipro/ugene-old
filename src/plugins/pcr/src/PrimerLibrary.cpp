@@ -34,9 +34,8 @@
 
 namespace U2 {
 
-PrimerLibrary * PrimerLibrary::instance = NULL;
+QScopedPointer<PrimerLibrary> PrimerLibrary::instance(NULL);
 QMutex PrimerLibrary::mutex;
-bool PrimerLibrary::released = false;
 
 namespace {
     const QString libraryName = "primer_library.ugenedb";
@@ -49,42 +48,32 @@ namespace {
 
 PrimerLibrary * PrimerLibrary::getInstance(U2OpStatus &os) {
     QMutexLocker lock(&mutex);
-    if (NULL != instance) {
-        return instance;
-    }
-    if (released) {
-        os.setError(L10N::nullPointerError("Primer Library"));
-        return NULL;
+    if (NULL != instance.data()) {
+        return instance.data();
     }
 
-    released = true;
-    { // create instance
-        initPrimerUdr(os);
-        CHECK_OP(os, NULL);
+    initPrimerUdr(os);
+    CHECK_OP(os, NULL);
 
-        UserAppsSettings *settings = AppContext::getAppSettings()->getUserAppsSettings();
-        SAFE_POINT_EXT(NULL != settings, os.setError(L10N::nullPointerError("UserAppsSettings")), NULL);
+    UserAppsSettings *settings = AppContext::getAppSettings()->getUserAppsSettings();
+    SAFE_POINT_EXT(NULL != settings, os.setError(L10N::nullPointerError("UserAppsSettings")), NULL);
 
-        // open DBI connection
-        const QString path = settings->getFileStorageDir() + "/" + libraryName;
-        U2DbiRef dbiRef(DEFAULT_DBI_ID, path.toLocal8Bit());
-        QHash<QString, QString> properties;
-        properties[U2DbiOptions::U2_DBI_LOCKING_MODE] = "normal";
-        QScopedPointer<DbiConnection> connection(new DbiConnection(dbiRef, true, os, properties)); // create if not exists
-        CHECK_OP(os, NULL);
+    // open DBI connection
+    const QString path = settings->getFileStorageDir() + "/" + libraryName;
+    U2DbiRef dbiRef(DEFAULT_DBI_ID, path.toLocal8Bit());
+    QHash<QString, QString> properties;
+    properties[U2DbiOptions::U2_DBI_LOCKING_MODE] = "normal";
+    QScopedPointer<DbiConnection> connection(new DbiConnection(dbiRef, true, os, properties)); // create if not exists
+    CHECK_OP(os, NULL);
 
-        instance = new PrimerLibrary(connection.take());
-    }
-    released = false;
+    instance.reset(new PrimerLibrary(connection.take()));
 
-    return instance;
+    return instance.data();
 }
 
 void PrimerLibrary::release() {
     QMutexLocker lock(&mutex);
-    delete instance;
-    instance = NULL;
-    released = true;
+    delete instance.take();
 }
 
 PrimerLibrary::PrimerLibrary(DbiConnection *connection)
@@ -98,6 +87,8 @@ PrimerLibrary::~PrimerLibrary() {
 }
 
 void PrimerLibrary::initPrimerUdr(U2OpStatus &os) {
+    CHECK(NULL == AppContext::getUdrSchemaRegistry()->getSchemaById(PRIMER_UDR_ID), );
+
     UdrSchema::FieldDesc name("name", UdrSchema::STRING);
     UdrSchema::FieldDesc sequence("sequence", UdrSchema::STRING);
     UdrSchema::FieldDesc gc("GC", UdrSchema::DOUBLE);

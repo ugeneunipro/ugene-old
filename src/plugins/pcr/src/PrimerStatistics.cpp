@@ -42,6 +42,12 @@ double PrimerStatistics::getMeltingTemperature(const QByteArray &sequence) {
     return calc.getMeltingTemperature();
 }
 
+double PrimerStatistics::getAnnealingTemperature(const QByteArray &product, const QByteArray &forwardPrimer, const QByteArray &reversePrimer) {
+    double primersTm = (getMeltingTemperature(forwardPrimer) + getMeltingTemperature(reversePrimer)) / 2;
+    double productTm = getMeltingTemperature(product);
+    return 0.3 * primersTm + 0.7 * productTm - 14.9;
+}
+
 PrimerStatisticsCalculator::PrimerStatisticsCalculator(const QByteArray &sequence)
 : sequence(sequence), nA(0), nC(0), nG(0), nT(0)
 {
@@ -51,10 +57,10 @@ PrimerStatisticsCalculator::PrimerStatisticsCalculator(const QByteArray &sequenc
             case 'C': nC++; break;
             case 'G': nG++; break;
             case 'T': nT++; break;
+            case 'N': break;
             default: FAIL(QString("Unexpected symbol: ") + c, );
         }
     }
-    SAFE_POINT(sequence.length() == (nA + nT + nG + nC), "Unexpected symbols", );
 }
 
 double PrimerStatisticsCalculator::getGCContent() const {
@@ -65,11 +71,12 @@ double PrimerStatisticsCalculator::getGCContent() const {
 }
 
 double PrimerStatisticsCalculator::getMeltingTemperature() const {
-    if (sequence.length() < 15) {
+    CHECK(nA + nT + nG + nC > 0, 0.0);
+    if (sequence.length() < 14) {
         return (nA + nT) * 2 + (nG + nC) * 4;
     }
 
-    return 64.9 + 41 * (nG + nC - 16.4) / double(sequence.length());
+    return 64.9 + 41 * (nG + nC - 16.4) / double(nA + nT + nG + nC);
 }
 
 } // U2

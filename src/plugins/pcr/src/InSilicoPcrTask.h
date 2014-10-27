@@ -69,6 +69,8 @@ public:
     // Task
     void prepare();
     void run();
+    QString generateReport() const;
+
     const QList<InSilicoPcrProduct> & getResults() const;
     const InSilicoPcrTaskSettings & getSettings() const;
 

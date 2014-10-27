@@ -43,7 +43,8 @@ InSilicoPcrProduct::InSilicoPcrProduct()
 }
 
 InSilicoPcrTask::InSilicoPcrTask(const InSilicoPcrTaskSettings &settings)
-: Task(tr("In Silico PCR"), TaskFlags_FOSE_COSC), settings(settings), forwardSearch(NULL), reverseSearch(NULL)
+: Task(tr("In Silico PCR"), TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled | TaskFlags_FOSE_COSC),
+settings(settings), forwardSearch(NULL), reverseSearch(NULL)
 {
 
 }
@@ -118,6 +119,11 @@ void InSilicoPcrTask::run() {
     }
 }
 
+QString InSilicoPcrTask::generateReport() const {
+    // TODO
+    return tr("Products found: %1").arg(results.size());
+}
+
 InSilicoPcrProduct InSilicoPcrTask::createResult(const U2Region &region) const {
     QByteArray productSequence = settings.sequence.mid(region.startPos, region.length);
     if (productSequence.length() < region.length) {
@@ -127,7 +133,7 @@ InSilicoPcrProduct InSilicoPcrTask::createResult(const U2Region &region) const {
 
     InSilicoPcrProduct product;
     product.region = region;
-    product.ta = PrimerStatistics::getMeltingTemperature(productSequence);
+    product.ta = PrimerStatistics::getAnnealingTemperature(productSequence, settings.forwardPrimer, settings.reversePrimer);
     return product;
 }
 

@@ -31,6 +31,12 @@
 
 #include "PrimerLibraryWidget.h"
 
+#define CHECK_OP_UI(os, result) \
+    if (os.hasError()) { \
+        QMessageBox::warning(this, tr("Error"), os.getError()); \
+    } \
+    CHECK_OP(os, result);
+
 namespace U2 {
 
 PrimerLibraryWidget::PrimerLibraryWidget(QWidget *parent)
@@ -57,7 +63,7 @@ void PrimerLibraryWidget::sl_newPrimer() {
     U2OpStatusImpl os;
     Primer primer = dlg.getPrimer();
     primerTable->addPrimer(primer, os);
-    checkOp(os);
+    CHECK_OP_UI(os, );
 }
 
 void PrimerLibraryWidget::sl_removePrimers() {
@@ -68,20 +74,13 @@ void PrimerLibraryWidget::sl_removePrimers() {
     while (!selection.isEmpty()) {
         U2OpStatusImpl os;
         primerTable->removePrimer(selection.first(), os);
-        checkOp(os);
-        CHECK_OP(os, );
+        CHECK_OP_UI(os, );
         selection = selectionModel->selectedIndexes();
     }
 }
 
 void PrimerLibraryWidget::sl_selectionChanged() {
     removePrimersButton->setDisabled(primerTable->getSelection().isEmpty());
-}
-
-void PrimerLibraryWidget::checkOp(const U2OpStatus &os) {
-    if (os.hasError()) {
-        QMessageBox::warning(this, tr("Error"), os.getError());
-    }
 }
 
 } // U2

@@ -69,6 +69,20 @@
        </layout>
       </item>
       <item>
+       <widget class="QLabel" name="warningLabel">
+        <property name="styleSheet">
+         <string notr="true">color: red;
+font-weight: 600;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="findProductButton">
         <property name="text">
          <string>Find product(s)</string>
@@ -78,7 +92,9 @@
      </layout>
      <zorder>forwardPrimerBox</zorder>
      <zorder>reversePrimerBox</zorder>
+     <zorder></zorder>
      <zorder>findProductButton</zorder>
+     <zorder>warningLabel</zorder>
     </widget>
    </item>
    <item>
@@ -186,6 +202,20 @@
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="algoWarningLabel">
+     <property name="styleSheet">
+      <string notr="true">color: green;
+font-weight: 600;</string>
+     </property>
+     <property name="text">
+      <string>Info: choose a nucleic sequence for running In Silico PCR</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>

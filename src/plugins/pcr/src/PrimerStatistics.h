@@ -30,6 +30,7 @@ class PrimerStatistics : public QObject {
 public:
     static bool checkPcrPrimersPair(const QByteArray &forward, const QByteArray &reverse, QString &error);
     static double getMeltingTemperature(const QByteArray &sequence);
+    static double getAnnealingTemperature(const QByteArray &product, const QByteArray &forwardPrimer, const QByteArray &reversePrimer);
 };
 
 class PrimerStatisticsCalculator {

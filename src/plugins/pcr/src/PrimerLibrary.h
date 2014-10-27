@@ -35,7 +35,10 @@ class DbiConnection;
 class UdrDbi;
 
 class PrimerLibrary {
+    Q_DISABLE_COPY(PrimerLibrary)
 public:
+    ~PrimerLibrary();
+
     static PrimerLibrary * getInstance(U2OpStatus &os);
     static void release();
 
@@ -47,12 +50,10 @@ private:
     static void initPrimerUdr(U2OpStatus &os);
 
     PrimerLibrary(DbiConnection *connection);
-    ~PrimerLibrary();
 
 private:
-    static PrimerLibrary *instance;
+    static QScopedPointer<PrimerLibrary> instance;
     static QMutex mutex;
-    static bool released;
 
     DbiConnection *connection;
     UdrDbi *udrDbi;

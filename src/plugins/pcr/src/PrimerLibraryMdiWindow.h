@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_PRIMERLIBRARYMDIWINDOW_H_
-#define _U2_PRIMERLIBRARYMDIWINDOW_H_
+#ifndef _U2_PRIMER_LIBRARY_MDI_WINDOW_H_
+#define _U2_PRIMER_LIBRARY_MDI_WINDOW_H_
 
 #include <U2Gui/MainWindow.h>
 
@@ -40,4 +40,4 @@ private slots:
 
 } // U2
 
-#endif // _U2_PRIMERLIBRARYMDIWINDOW_H_
+#endif // _U2_PRIMER_LIBRARY_MDI_WINDOW_H_

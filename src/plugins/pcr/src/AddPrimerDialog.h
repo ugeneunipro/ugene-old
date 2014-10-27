@@ -19,8 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_ADDPRIMERDIALOG_H_
-#define _U2_ADDPRIMERDIALOG_H_
+#ifndef _U2_ADD_PRIMER_DIALOG_H_
+#define _U2_ADD_PRIMER_DIALOG_H_
 
 #include <QDialog>
 
@@ -30,7 +30,7 @@
 
 namespace U2 {
 
-class AddPrimerDialog : public QDialog, Ui::AddPrimerDialog {
+class AddPrimerDialog : public QDialog, private Ui::AddPrimerDialog {
     Q_OBJECT
 public:
     AddPrimerDialog(QWidget *parent);
@@ -47,4 +47,4 @@ private:
 
 } // U2
 
-#endif // _U2_ADDPRIMERDIALOG_H_
+#endif // _U2_ADD_PRIMER_DIALOG_H_

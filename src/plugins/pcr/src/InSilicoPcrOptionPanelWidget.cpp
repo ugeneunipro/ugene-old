@@ -31,6 +31,7 @@
 
 #include "ExtractProductTask.h"
 #include "InSilicoPcrTask.h"
+#include "PrimerStatistics.h"
 
 #include "InSilicoPcrOptionPanelWidget.h"
 
@@ -67,7 +68,23 @@ InSilicoPcrOptionPanelWidget::~InSilicoPcrOptionPanelWidget() {
 void InSilicoPcrOptionPanelWidget::sl_onPrimerChanged() {
     QByteArray forward = forwardPrimerBox->getPrimer();
     QByteArray reverse = reversePrimerBox->getPrimer();
-    findProductButton->setDisabled(forward.isEmpty() || reverse.isEmpty());
+    bool disabled = forward.isEmpty() || reverse.isEmpty();
+    findProductButton->setDisabled(disabled);
+    if (disabled) {
+        warningLabel->hide();
+        return;
+    }
+
+    QString message;
+    bool correct = PrimerStatistics::checkPcrPrimersPair(forward, reverse, message);
+    if (correct) {
+        warningLabel->hide();
+        findProductButton->setText(tr("Find product(s)"));
+    } else {
+        warningLabel->show();
+        warningLabel->setText(tr("Warning: ") + message);
+        findProductButton->setText(tr("Find product(s) anyway"));
+    }
 }
 
 void InSilicoPcrOptionPanelWidget::sl_findProduct() {
@@ -157,7 +174,9 @@ bool InSilicoPcrOptionPanelWidget::isDnaSequence(ADVSequenceObjectContext *seque
 
 void InSilicoPcrOptionPanelWidget::sl_onFocusChanged() {
     ADVSequenceObjectContext *sequenceContext = annotatedDnaView->getSequenceInFocus();
-    runPcrWidget->setEnabled(isDnaSequence(sequenceContext));
+    bool isDna = isDnaSequence(sequenceContext);
+    runPcrWidget->setEnabled(isDna);
+    algoWarningLabel->setVisible(!isDna);
 }
 
 void InSilicoPcrOptionPanelWidget::sl_onProductsSelectionChanged() {
