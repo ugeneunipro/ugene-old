@@ -142,6 +142,13 @@ void Port::removeLink(Link* b) {
     emit bindingChanged();
 }
 
+void Port::setEnabled(bool _enabled) {
+    if(enabled != _enabled) {
+        enabled = _enabled;
+        emit si_enabledChanged(enabled);
+    }
+}
+
 /**************************
 * Link
 **************************/

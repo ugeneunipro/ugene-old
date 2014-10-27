@@ -39,6 +39,8 @@
 #include <U2Lang/WorkflowContext.h>
 #include <U2Lang/WorkflowScriptEngine.h>
 
+#include "PortRelation.h"
+
 namespace U2 {
 
 typedef QString ActorId;
@@ -123,6 +125,10 @@ public:
     void addRelation(const AttributeRelation *relation);
     QVector<const AttributeRelation*> &getRelations();
 
+    void addPortRelation(const PortRelationDescriptor& relationDesc);
+
+    const QList<PortRelationDescriptor>& getPortRelations() const;
+
     virtual bool isEmpty() const;
     virtual Attribute *clone();
     virtual AttributeGroup getGroup();
@@ -154,6 +160,7 @@ protected:
     AttributeScript     scriptData;
 
     QVector<const AttributeRelation*> relations;
+    QList<PortRelationDescriptor>     portRelations;
     
 }; // Attribute
 

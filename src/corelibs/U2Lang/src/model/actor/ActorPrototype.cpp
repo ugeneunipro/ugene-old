@@ -118,6 +118,7 @@ Actor* ActorPrototype::createInstance(const ActorId &actorId, AttributeScript *s
             proc->setEditor(ed->clone());
         }
     }
+    proc->updatePortsAvailability();
 
     return proc;
 }

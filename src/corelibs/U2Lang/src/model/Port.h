@@ -102,16 +102,20 @@ public:
     virtual void updateBindings(const QMap<ActorId, ActorId>&);
     virtual void replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings);
 
+    bool isEnabled() const {return enabled;}
+    void setEnabled(bool enabled);
+
 signals:
     // emitted when link is added or removed from bindings
     void bindingChanged();
+    void si_enabledChanged(bool);
 
 protected:
     // owner of this port
     Actor* proc;
     // links with other ports
     QMap<Port*,Link*> bindings;
-
+    bool enabled;
 }; // Port
 
 /**

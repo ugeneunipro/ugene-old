@@ -137,6 +137,15 @@ QVector<const AttributeRelation*> &Attribute::getRelations() {
     return relations;
 }
 
+void Attribute::addPortRelation(const PortRelationDescriptor& relationDesc) {
+    portRelations << relationDesc;
+}
+
+const QList<PortRelationDescriptor>& Attribute::getPortRelations() const {
+    return portRelations;
+}
+
+
 Attribute *Attribute::clone() {
     return new Attribute(*this);
 }

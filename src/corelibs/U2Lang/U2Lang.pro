@@ -31,6 +31,7 @@ HEADERS += src/library/BaseActorCategories.h \
            src/model/MarkerAttribute.h \
            src/model/Peer.h \
            src/model/Port.h \
+           src/model/PortRelation.h \
            src/model/QDConstraint.h \
            src/model/QDScheme.h \
            src/model/QueryDesignerRegistry.h \

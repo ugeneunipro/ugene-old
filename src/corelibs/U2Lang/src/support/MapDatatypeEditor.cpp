@@ -246,6 +246,7 @@ QWidget* BusPortEditor::createGUI(DataTypePtr from, DataTypePtr to) {
         connect(table->model(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), 
                      this, SLOT(handleDataChanged(const QModelIndex&, const QModelIndex&)));
     }
+    connect(port, SIGNAL(si_enabledChanged(bool)), w, SLOT(setVisible(bool)));
     return w;
 }
 

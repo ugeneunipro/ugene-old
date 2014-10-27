@@ -562,6 +562,7 @@ Actor* HRSchemaSerializer::parseElementsDefinition(Tokenizer & tokenizer, const 
             proc->addCustomValidator(desc);
         }
     }
+    proc->updatePortsAvailability();
 
     return proc;
 }
@@ -1024,7 +1025,7 @@ QPair<Port*, Port*> HRSchemaSerializer::parseDataflow(Tokenizer & tokenizer, con
     }
     bool slotFound = false;
     Port * srcPort = NULL;
-    foreach(Port * port, actorMap.value(srcActorName)->getOutputPorts()) {
+    foreach(Port * port, actorMap.value(srcActorName)->getEnabledOutputPorts()) {
         DataTypePtr dt = port->Port::getType();
         QList<Descriptor> descs = dt->getAllDescriptors(); descs << *dt;
         slotFound = slotFound || descs.contains(srcSlotId);
@@ -1708,7 +1709,7 @@ static bool containsProcWithId(const QList<Actor*> & procs, const ActorId & id) 
 QString HRSchemaSerializer::dataflowDefinition(const QList<Actor*> & procs, const NamesMap & nmap) {
     QString res;
     foreach(Actor * actor, procs) {
-        foreach(Port * inputPort, actor->getInputPorts()) {
+        foreach(Port * inputPort, actor->getEnabledInputPorts()) {
             QStrStrMap busMap = inputPort->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
             IntegralBusPort *busPort = qobject_cast<IntegralBusPort*>(inputPort);
 
@@ -2007,8 +2008,8 @@ void HRSchemaSerializer::parseMarkers(Actor *proc, const QStringList &markerDefs
         throw ReadFailed(tr("%1 actor has not marker attribute").arg(proc->getId()));
     }
 
-    SAFE_POINT(1 == proc->getOutputPorts().size(), "Wrong out ports count", );
-    Port *outPort = proc->getOutputPorts().first();
+    SAFE_POINT(1 == proc->getEnabledOutputPorts().size(), "Wrong out ports count", );
+    Port *outPort = proc->getEnabledOutputPorts().first();
     QMap<Descriptor, DataTypePtr> outTypeMap = outPort->getOutputType()->getDatatypesMap();
 
     foreach (const QString &def, markerDefs) {

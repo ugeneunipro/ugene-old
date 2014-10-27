@@ -425,6 +425,7 @@ bool ActorCfgModel::setData( const QModelIndex & index, const QVariant & value, 
                         }
                     }
                     checkIfAttributeVisibilityChanged(relatedAttributesVisibility);
+                    subject->updatePortsAvailability(editingAttribute);
 
                     return true;
                 }

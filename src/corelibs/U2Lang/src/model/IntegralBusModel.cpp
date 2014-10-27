@@ -280,7 +280,7 @@ void IntegralBusPort::replaceActor(Actor *oldActor, Actor *newActor, const QList
     }
 
     QStrStrMap busMap = getBusMap();
-    foreach (Port *p, oldActor->getOutputPorts()) {
+    foreach (Port *p, oldActor->getEnabledOutputPorts()) {
         U2OpStatus2Log os;
         PortMapping pm = PortMapping::getMappingBySrcPort(p->getId(), mappings, os);
         if (os.hasError()) {

@@ -153,7 +153,8 @@ private:
     WorkflowHighlightItem *highlighting;
 };
 
-class WorkflowPortItem : public StyledItem {
+class WorkflowPortItem : public QObject, public StyledItem {
+    Q_OBJECT
 public:
     WorkflowPortItem(WorkflowProcessItem* owner, Port* port);
     virtual ~WorkflowPortItem();
@@ -194,6 +195,8 @@ protected:
     void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
     void focusOutEvent(QFocusEvent * event);
     QVariant itemChange ( GraphicsItemChange change, const QVariant & value );
+public slots:
+    void sl_onVisibleChanged(bool);
 private:
     StyleId currentStyle;
 

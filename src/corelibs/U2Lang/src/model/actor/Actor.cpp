@@ -176,17 +176,58 @@ QList<Port*> Actor::getPorts() const {
 }
 
 QList<Port*> Actor::getInputPorts() const {
-    QList<Port*> l; foreach (Port* p, ports.values()) if (p->isInput()) l<<p;
+    QList<Port*> l;
+    foreach (Port* p, ports.values()) {
+        if (p->isInput()) {
+            l<<p;
+        }
+    }
     return l;
 }
 
 QList<Port*> Actor::getOutputPorts() const {
-    QList<Port*> l; foreach (Port* p, ports.values()) if (p->isOutput()) l<<p;
+    QList<Port*> l;
+    foreach (Port* p, ports.values()) {
+        if (p->isOutput()) {
+            l<<p;
+        }
+    }
+    return l;
+}
+
+QList<Port*> Actor::getEnabledPorts() const {
+    QList<Port*> l;
+    foreach (Port* p, ports.values()) {
+        if(p->isEnabled()) {
+            l<<p;
+        }
+    }
+    return l;
+}
+
+QList<Port*> Actor::getEnabledInputPorts() const {
+    QList<Port*> l;
+    foreach (Port* p, ports.values()) {
+        if (p->isEnabled() && p->isInput()) {
+            l<<p;
+        }
+    }
+    return l;
+}
+
+QList<Port*> Actor::getEnabledOutputPorts() const {
+    QList<Port*> l;
+    foreach (Port* p, ports.values()) {
+        if (p->isEnabled() && p->isOutput()) {
+            l<<p;
+        }
+    }
     return l;
 }
 
 void Actor::setParameter(const QString& name, const QVariant& val) {
     Configuration::setParameter(name, val);
+    updatePortsAvailability(getParameter(name));
     emit si_modified();
 }
 
@@ -353,6 +394,22 @@ void Actor::updateDelegateTags() {
             }
             rel->updateDelegateTags(influencing->getAttributePureValue(), dependentDelegate->tags());
         }
+    }
+}
+
+void Actor::updatePortsAvailability() {
+    foreach (Attribute *influencing, getAttributes()) {
+        updatePortsAvailability(influencing);
+    }
+}
+
+void Actor::updatePortsAvailability(const Attribute* influencingAttribute) {
+    foreach (const PortRelationDescriptor& rel, influencingAttribute->getPortRelations()) {
+        Port* dependentPort = getPort(rel.portId);
+        if(NULL == dependentPort) {
+            continue;
+        }
+        dependentPort->setEnabled(rel.isPortEnabled(influencingAttribute->getAttributePureValue()));
     }
 }
 

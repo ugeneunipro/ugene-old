@@ -428,7 +428,7 @@ void WorkflowEditor::editPort(Port* p) {
         paramHeight = ed->getOptimalHeight();
 
         edit(p);
-        bool invisible = (ed && ed->isEmpty());
+        bool invisible = (ed && ed->isEmpty() || !p->isEnabled());
         paramBox->setVisible(!invisible);
         if (invisible) {
             paramHeight = 0;

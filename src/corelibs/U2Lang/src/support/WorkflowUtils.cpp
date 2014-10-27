@@ -204,7 +204,7 @@ bool validateExternalTools(Actor *a, ProblemList &infoList) {
 
 bool validatePorts(Actor *a, ProblemList &infoList) {
     bool good = true;
-    foreach(Port *p, a->getPorts()) {
+    foreach(Port *p, a->getEnabledPorts()) {
         ProblemList problemList;
         good &= p->validate(problemList);
         if (!problemList.isEmpty()) {

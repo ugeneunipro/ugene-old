@@ -266,7 +266,7 @@ static Port * findPort(const QList<Actor*> & procs, const ActorId & actorId, con
 
 void SchemaSerializer::updatePortBindings(const QList<Actor*> & procs) {
     foreach(Actor * actor, procs) {
-        foreach(Port * p, actor->getInputPorts()) {
+        foreach(Port * p, actor->getEnabledInputPorts()) {
             IntegralBusPort * port = qobject_cast<IntegralBusPort*>(p);
             QStrStrMap busMap = port->getParameter(IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributeValueWithoutScript<QStrStrMap>();
             foreach(const QString & key, busMap.uniqueKeys()) {

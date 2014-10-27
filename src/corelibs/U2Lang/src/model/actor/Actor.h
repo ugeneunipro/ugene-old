@@ -65,6 +65,10 @@ public:
     QList<Port*> getInputPorts() const;
     QList<Port*> getOutputPorts() const;
 
+    QList<Port*> getEnabledPorts() const;
+    QList<Port*> getEnabledInputPorts() const;
+    QList<Port*> getEnabledOutputPorts() const;
+
     // reimplemented: Configuration::setParameter
     virtual void setParameter(const QString& name, const QVariant& val);
 
@@ -101,6 +105,9 @@ public:
     void replaceActor(Actor *oldActor, Actor *newActor, const QList<PortMapping> &mappings);
 
     void updateDelegateTags();
+
+    void updatePortsAvailability();
+    void updatePortsAvailability(const Attribute* influencingAttribute);
 
     void addCustomValidator(const ValidatorDesc &desc);
     const QList<ValidatorDesc> & getCustomValidators() const;

@@ -119,22 +119,26 @@ void WorkflowProcessItem::createPorts() {
     QGraphicsScene* sc = scene();
     foreach(Port* port, process->getInputPorts()) {
         WorkflowPortItem* pit = new WorkflowPortItem(this, port);
+        connect(port, SIGNAL(si_enabledChanged(bool)), pit, SLOT(sl_onVisibleChanged(bool)));
         ports << pit;
         pit->setOrientation(90 + pie*i++);
         if (sc) {
             sc->addItem(pit);
         }
+        pit->sl_onVisibleChanged(port->isEnabled());
     }
     num = process->getOutputPorts().size() + 1;
     pie = 180/num;
     i = 1;
     foreach(Port* port, process->getOutputPorts()) {
         WorkflowPortItem* pit = new WorkflowPortItem(this, port);
+        connect(port, SIGNAL(si_enabledChanged(bool)), pit, SLOT(sl_onVisibleChanged(bool)));
         ports << pit;
         pit->setOrientation(270 + pie*i++);
         if (sc) {
             sc->addItem(pit);
         }
+        pit->sl_onVisibleChanged(port->isEnabled());
     }
 }
 
@@ -1023,6 +1027,19 @@ QVariant WorkflowPortItem::itemChange ( GraphicsItemChange change, const QVarian
     }
 
     return QGraphicsItem::itemChange(change, value);
+}
+
+void WorkflowPortItem::sl_onVisibleChanged(bool isVisible) {
+    setVisible(isVisible);
+    if(false == isVisible) {
+        foreach(WorkflowBusItem* flow, flows) {
+            WorkflowScene* ws = getWorkflowScene();
+            if(NULL != ws) {
+                WorkflowView* view = ws->getController();
+                view->removeBusItem(flow);
+            }
+        }
+    }
 }
 
 ////////////////// Flow //////////////
