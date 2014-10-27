@@ -263,6 +263,17 @@ static QString findKey(const QStringList& envList, const QString& key) {
     return result;
 }
 
+namespace {
+void fixMacFonts() {
+    if (QSysInfo::MacintoshVersion > QSysInfo::MV_10_8) {
+        // fix Mac OS X 10.9 (mavericks) font issue
+        // https://bugreports.qt-project.org/browse/QTBUG-32789
+        // the solution is taken from http://successfulsoftware.net/2013/10/23/fixing-qt-4-for-mac-os-x-10-9-mavericks/
+        QFont::insertSubstitution(".Lucida Grande UI", "Lucida Grande");
+    }
+}
+}
+
 int main(int argc, char **argv) 
 {
     if (CrashHandler::isEnabled()) {
@@ -273,6 +284,10 @@ int main(int argc, char **argv)
     QT_REQUIRE_VERSION( argc, argv, QT_VERSION_STR );
 
     GTIMER(c1, t1, "main()->QApp::exec");
+
+#ifdef Q_OS_MACX
+    fixMacFonts();
+#endif
     
     //QApplication app(argc, argv);
     GApplication app(argc, argv);
