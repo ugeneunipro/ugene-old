@@ -79,7 +79,7 @@ QMap<Descriptor, DataTypePtr> PortDescriptor::getOwnTypeMap() const {
 /**************************
 * Port
 **************************/
-Port::Port(const PortDescriptor& d, Actor* p) : PortDescriptor(d), proc(p) {
+Port::Port(const PortDescriptor& d, Actor* p) : PortDescriptor(d), proc(p), enabled(true) {
 }
 
 Actor * Port::owner() const {
