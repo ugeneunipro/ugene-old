@@ -26,6 +26,10 @@ unix {
     INSTALLS += target
 }
 
+freebsd {
+    LIBS += -lexecinfo
+}
+
 win32 {
     LIBS += Advapi32.lib
 }

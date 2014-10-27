@@ -6,3 +6,7 @@ PLUGIN_VENDOR=Unipro
 CONFIG += warn_off
 
 include( ../../ugene_plugin_common.pri )
+
+freebsd {
+    LIBS += -lexecinfo
+}
