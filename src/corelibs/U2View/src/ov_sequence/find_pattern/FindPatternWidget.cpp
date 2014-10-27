@@ -1521,8 +1521,6 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
         bool objectPrepared = annotController->prepareAnnotationObject();
         SAFE_POINT(objectPrepared, "Cannot create an annotation object. Please check settings", );
         annotModelPrepared = true;
-        nextPushButton->setDisabled(true);
-        prevPushButton->setDisabled(true);
         if(findPatternResults.isEmpty()){
             getAnnotationsPushButton->setDisabled(true);
         }
