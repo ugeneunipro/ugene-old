@@ -65,7 +65,7 @@ Primer3Plugin::Primer3Plugin() : Plugin(tr("Primer3"), tr("Integrated tool for P
 
     QDActorPrototypeRegistry* qdpr = AppContext::getQDActorProtoRegistry();
     qdpr->registerProto(new QDPrimerActorPrototype());
-    
+
     //////////////////////////////////////////////////////////////////////////
     //tests
     GTestFormatRegistry* tfr = AppContext::getTestFramework()->getTestFormatRegistry();
@@ -76,7 +76,7 @@ Primer3Plugin::Primer3Plugin() : Plugin(tr("Primer3"), tr("Integrated tool for P
     l->qlist = Primer3Tests::createTestFactories();
 
 
-    foreach(XMLTestFactory* f, l->qlist) { 
+    foreach(XMLTestFactory* f, l->qlist) {
         bool res = xmlTestFormat->registerTestFactory(f);
         Q_UNUSED(res);
         assert(res);
@@ -147,7 +147,7 @@ void Primer3ADVContext::sl_showDialog() {
             }
             const CreateAnnotationModel &model = dialog.getCreateAnnotationModel();
             AppContext::getTaskScheduler()->registerTopLevelTask(
-                new Primer3ToAnnotationsTask(settings, seqCtx->getSequenceObject(), model.getAnnotationObject(), model.groupName, ""));
+                new Primer3ToAnnotationsTask(settings, seqCtx->getSequenceObject(), model.getAnnotationObject(), model.groupName, model.data.name));
 
         }
     }

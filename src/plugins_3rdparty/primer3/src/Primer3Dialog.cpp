@@ -102,18 +102,18 @@ Primer3Dialog::Primer3Dialog(const Primer3TaskSettings &defaultSettings, ADVSequ
     }
 
     int spanIntronExonIdx = -1;
-    
+
     for (int i = 0; i < ui.tabWidget->count(); ++i) {
         if ( ui.tabWidget->tabText(i).contains("Intron") ) {
             spanIntronExonIdx = i;
             break;
         }
     }
-    
+
     if (spanIntronExonIdx != -1) {
         SplicedAlignmentTaskRegistry* sr = AppContext::getSplicedAlignmentTaskRegistry();
         ui.tabWidget->setTabEnabled(spanIntronExonIdx, sr->getAlgNameList().size() > 0);
-    }   
+    }
 
     reset();
 
@@ -770,11 +770,11 @@ void Primer3Dialog::sl_loadSettings()
     lod.url = U2FileDialog::getOpenFileName(this, tr("Load settings"), lod.dir, "Text files (*.txt)");
 
     QSettings diagSettings(lod.url, QSettings::IniFormat);
-    
+
     QStringList groups = diagSettings.childGroups();
-    bool validSettings = groups.contains("IntProperties") && groups.contains("DoubleProperties") 
+    bool validSettings = groups.contains("IntProperties") && groups.contains("DoubleProperties")
         && groups.contains("AlignProperties") && groups.contains("GeneralProperties");
-    
+
     if (!validSettings) {
         QMessageBox::warning(this, windowTitle(),
             tr("Can not load settings file: invalid format.") );

@@ -441,16 +441,16 @@ void Primer3Task::run()
             bestPairs.append(PrimerPair(primers.best_pairs.pairs[index], offset));
         }
     }
-    
+
     int maxCount = 0;
     settings.getIntProperty("PRIMER_NUM_RETURN", &maxCount);
-    
+
     if (settings.getTask() == pick_left_only) {
         if (primers.left != NULL) {
             for (int i = 0; i < settings.getSeqArgs()->left_expl.ok && i < maxCount; ++i) {
                 singlePrimers.append( Primer( * ( primers.left + i ) ));
             }
-            
+
         }
     } else if (settings.getTask() == pick_right_only) {
         if (primers.right != NULL) {
@@ -687,7 +687,7 @@ Task::ReportResult Primer3SWTask::report()
             setError("can't get PRIMER_NUM_RETURN property");
             return Task::ReportResult_Finished;
         }
-        
+
         bestPairs = bestPairs.mid(0, pairsCount);
     }
     return Task::ReportResult_Finished;
@@ -797,12 +797,12 @@ QString Primer3ToAnnotationsTask::generateReport() const {
     pair_stats pairStats = searchTask->settings.getSeqArgs()->pair_expl;
 
     if(!leftStats.considered) {
-        leftStats.considered = leftStats.ns + leftStats.target + leftStats.excluded + leftStats.gc + leftStats.gc_clamp + leftStats.temp_min 
+        leftStats.considered = leftStats.ns + leftStats.target + leftStats.excluded + leftStats.gc + leftStats.gc_clamp + leftStats.temp_min
             + leftStats.temp_max + leftStats.compl_any + leftStats.compl_end + leftStats.poly_x + leftStats.stability + leftStats.ok;
     }
 
     if(!rightStats.considered) {
-        rightStats.considered = rightStats.ns + rightStats.target + rightStats.excluded + rightStats.gc + rightStats.gc_clamp + rightStats.temp_min 
+        rightStats.considered = rightStats.ns + rightStats.target + rightStats.excluded + rightStats.gc + rightStats.gc_clamp + rightStats.temp_min
             + rightStats.temp_max + rightStats.compl_any + rightStats.compl_end + rightStats.poly_x + rightStats.stability + rightStats.ok;
     }
 
@@ -843,7 +843,7 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
         QList<AnnotationData> annotations;
         if(NULL != pair.getLeftPrimer())
         {
-            annotations.append(oligoToAnnotation("primer", *pair.getLeftPrimer(), pair.getProductSize(), U2Strand::Direct));
+            annotations.append(oligoToAnnotation(annName, *pair.getLeftPrimer(), pair.getProductSize(), U2Strand::Direct));
         }
         if(NULL != pair.getInternalOligo())
         {
@@ -851,7 +851,7 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
         }
         if(NULL != pair.getRightPrimer())
         {
-            annotations.append(oligoToAnnotation("primer", *pair.getRightPrimer(), pair.getProductSize(), U2Strand::Complementary));
+            annotations.append(oligoToAnnotation(annName, *pair.getRightPrimer(), pair.getProductSize(), U2Strand::Complementary));
         }
         AppContext::getTaskScheduler()->registerTopLevelTask(
                 new CreateAnnotationsTask(aobj, groupName + "/pair " + QString::number(index + 1), annotations));
@@ -861,9 +861,9 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
     if (settings.getTask() == pick_left_only || settings.getTask() == pick_right_only) {
         const QList<Primer> singlePrimers = searchTask->getSinglePrimers();
         QList<AnnotationData> annotations;
-        U2Strand s = settings.getTask() == pick_left_only ? U2Strand::Direct : U2Strand::Complementary; 
+        U2Strand s = settings.getTask() == pick_left_only ? U2Strand::Direct : U2Strand::Complementary;
         foreach ( const Primer &p, singlePrimers ) {
-            annotations.append( oligoToAnnotation( "primer", p, 0, s ) );
+            annotations.append( oligoToAnnotation( annName, p, 0, s ) );
         }
 
         if ( !annotations.isEmpty( ) ) {
