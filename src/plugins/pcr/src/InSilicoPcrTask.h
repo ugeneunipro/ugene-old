@@ -77,7 +77,7 @@ public:
 private:
     qint64 getProductSize(const U2Region &left, const U2Region &right) const;
     FindAlgorithmTaskSettings getFindPatternSettings(U2Strand::Direction direction);
-    InSilicoPcrProduct createResult(const U2Region &region) const;
+    InSilicoPcrProduct createResult(const U2Region &leftPrimer, const U2Region &product, const U2Region &rightPrimer, U2Strand::Direction direction) const;
 
 private:
     InSilicoPcrTaskSettings settings;
