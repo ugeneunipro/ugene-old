@@ -15,13 +15,15 @@ HEADERS += src/AddPrimerDialog.h \
            src/PrimerLibraryTable.h \
            src/PrimerLibraryWidget.h \
            src/PrimerLineEdit.h \
-           src/PrimerStatistics.h
+           src/PrimerStatistics.h \
+           src/PrimersDetailsDialog.h
 
 FORMS += src/ui/AddPrimerDialog.ui \
          src/ui/InSilicoPcrOptionPanelWidget.ui \
          src/ui/PrimerGroupBox.ui \
          src/ui/PrimerLibrarySelector.ui \
-         src/ui/PrimerLibraryWidget.ui
+         src/ui/PrimerLibraryWidget.ui \
+         src/ui/PrimersDetailsDialog.ui
 
 SOURCES += src/AddPrimerDialog.cpp \
            src/ExtractProductTask.cpp \
@@ -38,7 +40,8 @@ SOURCES += src/AddPrimerDialog.cpp \
            src/PrimerLibraryTable.cpp \
            src/PrimerLibraryWidget.cpp \
            src/PrimerLineEdit.cpp \
-           src/PrimerStatistics.cpp
+           src/PrimerStatistics.cpp \
+           src/PrimersDetailsDialog.cpp
 
 RESOURCES += pcr.qrc
 

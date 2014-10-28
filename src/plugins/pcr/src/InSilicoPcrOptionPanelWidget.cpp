@@ -32,10 +32,15 @@
 #include "ExtractProductTask.h"
 #include "InSilicoPcrTask.h"
 #include "PrimerStatistics.h"
+#include "PrimersDetailsDialog.h"
 
 #include "InSilicoPcrOptionPanelWidget.h"
 
 namespace U2 {
+
+namespace {
+    const QString DETAILS_LINK("details");
+}
 
 InSilicoPcrOptionPanelWidget::InSilicoPcrOptionPanelWidget(AnnotatedDNAView *annotatedDnaView)
 : QWidget(), annotatedDnaView(annotatedDnaView), pcrTask(NULL)
@@ -53,6 +58,7 @@ InSilicoPcrOptionPanelWidget::InSilicoPcrOptionPanelWidget(AnnotatedDNAView *ann
     connect(annotatedDnaView, SIGNAL(si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*)), SLOT(sl_onFocusChanged()));
     connect(productsTable->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)), SLOT(sl_onProductsSelectionChanged()));
     connect(productsTable, SIGNAL(doubleClicked(const QModelIndex &)), SLOT(sl_onProductDoubleClicked()));
+    connect(warningLabel, SIGNAL(linkActivated(const QString &)), SLOT(sl_showDetails(const QString &)));
 
     productsWidget->hide();
     sl_onFocusChanged();
@@ -81,8 +87,9 @@ void InSilicoPcrOptionPanelWidget::sl_onPrimerChanged() {
         warningLabel->hide();
         findProductButton->setText(tr("Find product(s)"));
     } else {
+        static const QString linkText = QString("<a href=\"%1\" style=\"color: %2\">%3</a>").arg(DETAILS_LINK).arg(L10N::linkColorLabelStr()).arg(tr("Show details"));
         warningLabel->show();
-        warningLabel->setText(tr("Warning: ") + message);
+        warningLabel->setText(message + ". " + linkText);
         findProductButton->setText(tr("Find product(s) anyway"));
     }
 }
@@ -189,6 +196,13 @@ void InSilicoPcrOptionPanelWidget::sl_onProductDoubleClicked() {
     if (1 == products.size()) {
         sl_extractProduct();
     }
+}
+
+void InSilicoPcrOptionPanelWidget::sl_showDetails(const QString &link) {
+    SAFE_POINT(DETAILS_LINK == link, "Incorrect link", );
+    PrimersPairStatistics calc(forwardPrimerBox->getPrimer(), reversePrimerBox->getPrimer());
+    PrimersDetailsDialog dlg(this, calc.generateReport());
+    dlg.exec();
 }
 
 } // U2

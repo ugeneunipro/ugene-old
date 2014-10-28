@@ -46,6 +46,7 @@ private slots:
     void sl_onFocusChanged();
     void sl_onProductsSelectionChanged();
     void sl_onProductDoubleClicked();
+    void sl_showDetails(const QString &link);
 
 private:
     static bool isDnaSequence(ADVSequenceObjectContext *sequenceContext);

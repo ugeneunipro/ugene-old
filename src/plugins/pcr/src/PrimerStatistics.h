@@ -31,14 +31,30 @@ public:
     static bool checkPcrPrimersPair(const QByteArray &forward, const QByteArray &reverse, QString &error);
     static double getMeltingTemperature(const QByteArray &sequence);
     static double getAnnealingTemperature(const QByteArray &product, const QByteArray &forwardPrimer, const QByteArray &reversePrimer);
+
+    static QString generatePrimersPairReport(const QByteArray &forward, const QByteArray &reverse);
 };
 
 class PrimerStatisticsCalculator {
 public:
     PrimerStatisticsCalculator(const QByteArray &sequence);
 
-    double getGCContent() const;
-    double getMeltingTemperature() const;
+    double getGC() const;
+    double getTm() const;
+    int getGCClamp() const;
+    int getRuns() const;
+
+    bool isValidGC(QString &error = QString()) const;
+    bool isValidTm(QString &error = QString()) const;
+    bool isValidGCClamp(QString &error = QString()) const;
+    bool isValidRuns(QString &error = QString()) const;
+
+    static const double GC_BOTTOM;
+    static const double GC_TOP;
+    static const double TM_BOTTOM;
+    static const double TM_TOP;
+    static const int CLAMP_BOTTOM;
+    static const int RUNS_TOP;
 
 private:
     const QByteArray sequence;
@@ -46,6 +62,22 @@ private:
     int nC;
     int nG;
     int nT;
+    int maxRun;
+};
+
+class PrimersPairStatistics {
+public:
+    PrimersPairStatistics(const QByteArray &forward, const QByteArray &reverse);
+
+    QString getFirstError() const;
+    QString generateReport() const;
+
+    static const QString TmString;
+    static QString toString(double value);
+
+private:
+    PrimerStatisticsCalculator forward;
+    PrimerStatisticsCalculator reverse;
 };
 
 } // U2

@@ -67,7 +67,7 @@ QVariant PrimerLibraryModel::headerData(int section, Qt::Orientation /*orientati
         case 1:
             return tr("GC-content (%)");
         case 2:
-            return tr("Tm") + QString::fromLatin1(" (\x00B0") + "C)";
+            return PrimersPairStatistics::TmString;
         case 3:
             return tr("Length (bp)");
         case 4:
@@ -104,8 +104,8 @@ void PrimerLibraryModel::addPrimer(Primer &primer, U2OpStatus &os) {
 
     // Append statistics
     PrimerStatisticsCalculator calc(primer.sequence.toLocal8Bit());
-    primer.gc = calc.getGCContent();
-    primer.tm = calc.getMeltingTemperature();
+    primer.gc = calc.getGC();
+    primer.tm = calc.getTm();
 
     primerLibrary->addPrimer(primer, os);
     CHECK_OP(os, );

@@ -120,8 +120,17 @@ void InSilicoPcrTask::run() {
 }
 
 QString InSilicoPcrTask::generateReport() const {
-    // TODO
-    return tr("Products found: %1").arg(results.size());
+    PrimersPairStatistics calc(settings.forwardPrimer, settings.reversePrimer);
+    QString spaces;
+    for (int i=0; i<150; i++) {
+        spaces += "&nbsp;";
+    }
+    return tr("Products found: %1").arg(results.size()) +
+           "<br>" +
+           spaces +
+           "<br>" +
+           tr("Primers details:") +
+           calc.generateReport();
 }
 
 InSilicoPcrProduct InSilicoPcrTask::createResult(const U2Region &region) const {
