@@ -296,11 +296,16 @@ int GTUtilsWorkflowDesigner::getItemBottom(U2OpStatus &os, QString itemName){
     int i = r.bottom();
     return i;
 }
+#define GT_METHOD_NAME "click"
+void GTUtilsWorkflowDesigner::click(U2OpStatus &os, QString itemName, QPoint p){
+    QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
+    GT_CHECK(sceneView!=NULL, "scene view is NULL");
+    sceneView->ensureVisible(getWorker(os, itemName));
 
-void GTUtilsWorkflowDesigner::click(U2OpStatus &os, QString itemName){
-    GTMouseDriver::moveTo(os, getItemCenter(os, itemName));
+    GTMouseDriver::moveTo(os, getItemCenter(os, itemName) + p);
     GTMouseDriver::click(os);
 }
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "getWorker"
 WorkflowProcessItem* GTUtilsWorkflowDesigner::getWorker(U2OpStatus &os,QString itemName,const GTGlobals::FindOptions &options){

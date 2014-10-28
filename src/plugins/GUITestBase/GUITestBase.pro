@@ -67,9 +67,10 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.h \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
+            src/runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.h \
+            src/runnables/ugene/plugins_3rdparty/hmm3/UHMM3PhmmerDialogFiller.h \
             src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h \
             src/runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h \
-            src/runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.h \
 #   Runnables / UGENE / plugins
 #   Runnables / UGENE / plugins / annotator
             src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h \
@@ -286,9 +287,10 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/BranchSettingsDialogFiller.cpp \
 #   Runnables / UGENE / plugins_3rdparty
 #   Runnables / UGENE / plugins_3rdparty / kalign
+            src/runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.cpp \
+            src/runnables/ugene/plugins_3rdparty/hmm3/UHMM3PhmmerDialogFiller.cpp \
             src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.cpp \
             src/runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.cpp \
-            src/runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.cpp \
 #   Runnables / UGENE / plugins
 #   Runnables / UGENE / plugins / annotator
             src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.cpp \

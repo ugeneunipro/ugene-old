@@ -326,6 +326,7 @@ void GTUtilsSharedDatabaseDocument::callImportDialog(U2OpStatus &os, Document *d
 
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__ADD_MENU << ACTION_PROJECT__IMPORT_TO_DATABASE, GTGlobals::UseMouse));
 
+    GTUtilsProjectTreeView::getTreeView(os)->scrollTo(itemIndex);
     const QPoint itemCenter = GTUtilsProjectTreeView::getItemCenter(os, itemIndex);
     GTMouseDriver::moveTo(os, itemCenter);
     GTMouseDriver::click(os, Qt::RightButton);

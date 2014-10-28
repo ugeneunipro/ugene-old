@@ -111,6 +111,7 @@
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/hmm3/UHMM3PhmmerDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
@@ -5028,6 +5029,60 @@ GUI_TEST_CLASS_DEFINITION(test_2962_2) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2972){
+//    1. Open "samples/FASTA/human_T1.fa".
+    GTLogTracer l;
+    GTFileDialog::openFile(os, dataDir +"samples/FASTA/", "human_T1.fa");
+//    2. Click the menu Tools -> HMMER tools -> HMM3 -> Search with HMM3 phmmer.
+    GTUtilsDialog::waitForDialog(os, new UHMM3PhmmerDialogFiller(os, dataDir + "samples/Newick/COI.nwk"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "HMMER tools"
+                                                       << "HMMER3 tools"
+                                                       << "Search with HMM3 phmmer"));
+    GTMenu::showMainMenu(os, MWMENU_TOOLS);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(l.hasError(), "no error in log");
+    QString error = l.getError();
+    QString expectedError = "No dna sequence objects found in document querySeq sequence";
+
+    CHECK_SET_ERR(error.contains(expectedError), "actual error is " + error);
+//    3. Choose the query sequence file: any non-sequence format file (e.g. *.mp3).
+//    4. Click search.
+//    Expected state: the search task fails, UGENE does not crash.
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2981) {
+//    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
+//    2. Click a "Build Tree" button on the main toolbar.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_3276_COI.wnk", 0, 0, true));
+    GTWidget::click(os, GTAction::button(os, "Build Tree"));
+    GTGlobals::sleep(1000);
+//    Expected state: a "Build Phyligenetic Tree" dialog appears.
+
+//    3. Set any acceptable path and build a tree with default parameters.
+//    Expected state: the tree is shown in the MSA Editor.
+
+//    4. Click a "Layout" button on the tree view toolbar, select a "Circular" menu item.
+    QComboBox* layoutCombo = GTWidget::findExactWidget<QComboBox*>(os, "layoutCombo");
+    GTComboBox::setIndexWithText(os, layoutCombo,"Circular");
+    GTGlobals::sleep(500);
+//    Expected state: the tree becomes circular.
+    QGraphicsView* treeView = GTWidget::findExactWidget<QGraphicsView*>(os, "treeView");
+    int initW = treeView->rect().width();
+    GTGlobals::sleep(500);
+//    5. Hide/show a project view.
+    GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep(500);
+//    Expected state: the tree size is not changed.
+    int finalW = treeView->rect().width();
+    CHECK_SET_ERR(finalW == initW, QString("initial: %1, final: %2").arg(initW).arg(finalW));
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2987) {
 //      1. Open "_common_data/fasta/RAW.fa".
 //      2. Create a complement annotation.
@@ -5417,8 +5472,7 @@ GUI_TEST_CLASS_DEFINITION(test_3128) {
     GTFileDialog::openFile(os, testDir + "_common_data/cmdline/read-write/", "read_db_write_gen.uws");
 
     // 2. Set parameters:     db="NCBI protein sequence database", id="AAA59172.1"
-    GTMouseDriver::moveTo( os, GTUtilsWorkflowDesigner::getItemCenter( os, "Read from remote database" ) );
-    GTMouseDriver::click( os );
+    GTUtilsWorkflowDesigner::click(os, "Read from remote database", QPoint(-20, -20));
     GTUtilsWorkflowDesigner::setParameter( os, "Database", 2, GTUtilsWorkflowDesigner::comboValue);
     GTUtilsWorkflowDesigner::setParameter( os, "Resource ID(s)", "AAA59172.1", GTUtilsWorkflowDesigner::textValue);
 
