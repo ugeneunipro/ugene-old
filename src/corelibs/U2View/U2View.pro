@@ -169,7 +169,8 @@ HEADERS += src/Init.h \
            src/ov_sequence/Das/DasWidgetFactory.h \
            src/ov_sequence/Das/DasOptionsPanelWidget.h \
            src/ov_msa/ExportConsensus/MSAExportConsensusTabFactory.h \
-           src/ov_msa/ExportConsensus/MSAExportConsensusTab.h
+           src/ov_msa/ExportConsensus/MSAExportConsensusTab.h \
+           src/util_dna_assembly/GenomeAssemblyDialog.h
 FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_assembly/ui/ExportCoverageDialog.ui \
          src/ov_assembly/ui/ExportReadsDialog.ui \
@@ -199,6 +200,8 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/util_dna_assembly/ui/AssemblyToRefDialog.ui \
          src/util_dna_assembly/ui/AssemblyToSamDialog.ui \
          src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui \
+         src/util_dna_assembly/ui/GenomeAssemblyDialog.ui \
+         #src/util_msa_align/ui/PerformAlignmentDialog.ui \
          src/util_sec_struct_predict/ui/SecStructDialog.ui \
          src/util_smith_waterman/ui/SmithWatermanDialogBase.ui \
          src/util_smith_waterman/ui/SubstMatrixDialogBase.ui \
@@ -371,7 +374,8 @@ SOURCES += src/Init.cpp \
            src/ov_sequence/Das/DasWidgetFactory.cpp \
            src/ov_sequence/Das/DasOptionsPanelWidget.cpp \
            src/ov_msa/ExportConsensus/MSAExportConsensusTab.cpp \
-           src/ov_msa/ExportConsensus/MSAExportConsensusTabFactory.cpp
+           src/ov_msa/ExportConsensus/MSAExportConsensusTabFactory.cpp \
+    src/util_dna_assembly/GenomeAssemblyDialog.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \

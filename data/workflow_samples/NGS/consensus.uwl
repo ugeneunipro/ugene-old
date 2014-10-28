@@ -1,8 +1,6 @@
 #@UGENE_WORKFLOW
 #Uses input assemblies to extract the consensus sequences and save them to a FASTA.
 
-
-
 workflow "Extract consensus from assembly"{
 
     read-assembly {

@@ -64,6 +64,7 @@
 #include <U2Algorithm/SWMulAlignResultNamesTagsRegistry.h>
 #include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+#include <U2Algorithm/GenomeAssemblyRegistry.h>
 #include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 #include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
@@ -274,6 +275,9 @@ UgeneContextWrapper::UgeneContextWrapper( const QString &workingDirectoryPath )
     assemblyReg = new DnaAssemblyAlgRegistry( );
     appContext->setDnaAssemblyAlgRegistry( assemblyReg );
 
+    genomeAssemblyReg = new GenomeAssemblyAlgRegistry( );
+    appContext->setGenomeAssemblyAlgRegistry( genomeAssemblyReg );
+
     dbr = new DataBaseRegistry( );
     appContext->setDataBaseRegistry( dbr );
 
@@ -320,6 +324,9 @@ UgeneContextWrapper::~UgeneContextWrapper( ) {
 
     delete dpr;
     appContext->setDataPathRegistry( NULL );
+
+    delete genomeAssemblyReg;
+    appContext->setGenomeAssemblyAlgRegistry( NULL);
 
     delete vfsReg;
     appContext->setVirtualFileSystemRegistry( NULL );

@@ -51,6 +51,7 @@
 
 #include <U2Algorithm/CudaGpuRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+#include <U2Algorithm/GenomeAssemblyRegistry.h>
 #include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
 #include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
@@ -421,6 +422,9 @@ int main(int argc, char **argv)
 
     DnaAssemblyAlgRegistry* assemblyReg = new DnaAssemblyAlgRegistry();
     appContext->setDnaAssemblyAlgRegistry(assemblyReg);
+
+    GenomeAssemblyAlgRegistry* genomeAssemblyReg = new GenomeAssemblyAlgRegistry();
+    appContext->setGenomeAssemblyAlgRegistry(genomeAssemblyReg);
 
     DataBaseRegistry* dbr = new DataBaseRegistry();
     appContext->setDataBaseRegistry(dbr);

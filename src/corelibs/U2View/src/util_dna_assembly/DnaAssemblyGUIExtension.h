@@ -81,6 +81,25 @@ public:
     static DnaAssemblyToRefTaskSettings getSettings(DnaAssemblyDialog *dialog);
 };
 
+
+// These classes are intended for extending standard Genome Assembly dialog GUI
+// with options specific to the assembly algorithm
+
+class GenomeAssemblyAlgorithmMainWidget : public QWidget {
+public:
+    GenomeAssemblyAlgorithmMainWidget(QWidget* parent) : QWidget(parent) { }
+    virtual QMap<QString,QVariant> getGenomeAssemblyCustomSettings() = 0;
+    virtual bool isParametersOk(QString &error) = 0;
+};
+
+class GenomeAssemblyGUIExtensionsFactory {
+public:
+    virtual ~GenomeAssemblyGUIExtensionsFactory() {}
+    virtual GenomeAssemblyAlgorithmMainWidget* createMainWidget(QWidget* parent) = 0;
+    virtual bool hasMainWidget() = 0;
+};
+
+
 } // U2
 
 

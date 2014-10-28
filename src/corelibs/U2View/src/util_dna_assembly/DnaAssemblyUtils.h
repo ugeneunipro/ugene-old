@@ -39,6 +39,7 @@ public:
 
 private slots:
     void sl_showDnaAssemblyDialog();
+    void sl_showGenomeAssemblyDialog();
     void sl_showBuildIndexDialog();
     void sl_showConvertToSamDialog();
 

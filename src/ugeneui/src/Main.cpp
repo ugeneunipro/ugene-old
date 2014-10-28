@@ -63,6 +63,7 @@
 #include <U2Algorithm/SWMulAlignResultNamesTagsRegistry.h>
 #include <U2Algorithm/SmithWatermanTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+#include <U2Algorithm/GenomeAssemblyRegistry.h>
 #include <U2Algorithm/RepeatFinderTaskFactoryRegistry.h>
 #include <U2Algorithm/MolecularSurfaceFactoryRegistry.h>
 #include <U2Algorithm/PhyTreeGeneratorRegistry.h>
@@ -530,6 +531,10 @@ int main(int argc, char **argv)
 
     DnaAssemblyAlgRegistry* assemblyReg = new DnaAssemblyAlgRegistry();
     appContext->setDnaAssemblyAlgRegistry(assemblyReg);
+
+    GenomeAssemblyAlgRegistry* genomeAssemblyReg = new GenomeAssemblyAlgRegistry();
+    appContext->setGenomeAssemblyAlgRegistry(genomeAssemblyReg);
+
     DnaAssemblySupport assemblySupport;
     Q_UNUSED(assemblySupport);
 

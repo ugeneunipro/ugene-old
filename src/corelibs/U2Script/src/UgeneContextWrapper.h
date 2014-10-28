@@ -67,6 +67,8 @@ class RecentlyDownloadedCache;
 class DistributedComputingUtil;
 class VirtualFileSystemRegistry;
 class DnaAssemblyAlgRegistry;
+class GenomeAssemblyAlgRegistry;
+class MSAAlignAlgRegistry;
 class DataBaseRegistry;
 class CDSearchFactoryRegistry;
 class StructuralAlignmentAlgorithmRegistry;
@@ -131,6 +133,8 @@ private:
     DistributedComputingUtil *              distrUtil;
     VirtualFileSystemRegistry *             vfsReg;
     DnaAssemblyAlgRegistry *                assemblyReg;
+    GenomeAssemblyAlgRegistry *             genomeAssemblyReg;
+    MSAAlignAlgRegistry *                   alignReg;
     DataBaseRegistry *                      dbr;
     CDSearchFactoryRegistry *               cdsfr;
     StructuralAlignmentAlgorithmRegistry *  saar;

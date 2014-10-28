@@ -1,0 +1,97 @@
+#@UGENE_WORKFLOW
+
+
+
+workflow "Spades Single Tags"{
+
+    get-file-list {
+        type:get-file-list;
+        name:"File List";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    spades-id {
+        type:spades-id;
+        name:"Assemble genomes with Spades";
+    }
+
+    .actor-bindings {
+        get-file-list.out-url->spades-id.in-data
+    }
+
+    get-file-list.url->spades-id.in-data.readsurl
+
+    .meta {
+        parameter-aliases {
+            get-file-list.url-in {
+                alias:in;
+            }
+            spades-id.dataset-type {
+                alias:type;
+            }
+            spades-id.k-mer {
+                alias:k;
+            }
+            spades-id.output-dir {
+                alias:out_dir;
+            }
+            spades-id.running-mode {
+                alias:mode;
+            }
+        }
+        visual {
+            get-file-list {
+                pos:"-900 -481";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-url.angle:360;
+            }
+            spades-id {
+                pos:"-707 -479";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-data.angle:180;
+                out-data.angle:360;
+            }
+            get-file-list.out-url->spades-id.in-data {
+                text-pos:"-35.7578 -24";
+            }
+        }
+        wizard {
+            name:"Assemble Genomes Wizard";
+            page {
+                id:1;
+                title:"Assembly Genomes with Spades";
+                parameters-area {
+                    group {
+                        title:"Input parameters";
+                        label-size:120;
+                        get-file-list.url-in {
+                            label:"Single Read URL(s)";
+                        }
+                    }
+                    group {
+                        title:"Out directory";
+                        label-size:120;
+                        spades-id.output-dir {
+                            label:"Output directory";
+                        }
+                    }
+                    group {
+                        title:Advanced;
+                        label-size:120;
+                        type:hideable;
+                        spades-id.dataset-type {
+                        }
+                        spades-id.running-mode {
+                        }
+                        spades-id.k-mer {
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

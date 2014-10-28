@@ -9,6 +9,7 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/misc/EnzymeModel.h \
            src/misc/FindAlgorithm.h \
            src/misc/FindAlgorithmTask.h \
+           src/misc/GenomeAssemblyMultiTask.h \
            src/misc/RepeatFinderSettings.h \
            src/misc/RepeatFinderTaskFactory.h \
            src/misc/RollingArray.h \
@@ -88,13 +89,15 @@ HEADERS += src/misc/BinaryFindOpenCL.h \
            src/util_gpu/opencl/OpenCLHelper.h \
            src/util_gpu/opencl/OpenCLUtils.h \
     src/registry/PairwiseAlignmentRegistry.h \
-    src/registry/PairwiseAlignmentTask.h
+    src/registry/PairwiseAlignmentTask.h \
+    src/registry/GenomeAssemblyRegistry.h
 SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/misc/BitsTable.cpp \
            src/misc/DnaAssemblyMultiTask.cpp \
            src/misc/EnzymeModel.cpp \
            src/misc/FindAlgorithm.cpp \
            src/misc/FindAlgorithmTask.cpp \
+           src/misc/GenomeAssemblyMultiTask.cpp \
            src/molecular_geometry/GeomUtils.cpp \
            src/molecular_geometry/MolecularSurface.cpp \
            src/molecular_geometry/MolecularSurfaceFactoryRegistry.cpp \
@@ -164,7 +167,8 @@ SOURCES += src/misc/BinaryFindOpenCL.cpp \
            src/util_gpu/opencl/OpenCLHelper.cpp \
            src/util_gpu/opencl/OpenCLUtils.cpp \
     src/registry/PairwiseAlignmentRegistry.cpp \
-    src/registry/PairwiseAlignmentTask.cpp
+    src/registry/PairwiseAlignmentTask.cpp \
+    src/registry/GenomeAssemblyRegistry.cpp
 RESOURCES += U2Algorithm.qrc
 TRANSLATIONS += transl/czech.ts transl/english.ts transl/russian.ts
 

@@ -134,9 +134,15 @@
 #include "bigWigTools/BigWigSupport.h"
 #include "bigWigTools/BedGraphToBigWigWorker.h"
 
+#include "spades/SpadesSupport.h"
+#include "spades/SpadesSettingsWidget.h"
+#include "spades/SpadesTask.h"
+#include "spades/SpadesWorker.h"
+
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+#include <U2Algorithm/GenomeAssemblyRegistry.h>
 #include <blast_plus/RPSBlastSupportTask.h>
 
 
@@ -359,6 +365,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     BwaSupport* bwaSupport = new BwaSupport(ET_BWA);
     etRegistry->registerEntry(bwaSupport);
 
+    // SPAdes
+    SpadesSupport* spadesSupport = new SpadesSupport(ET_SPADES);
+    etRegistry->registerEntry(spadesSupport);
+
     // SAMtools (external tool)
     SamToolsExtToolSupport* samToolsExtToolSupport = new SamToolsExtToolSupport(ET_SAMTOOLS_EXT);
     AppContext::getExternalToolRegistry()->registerEntry(samToolsExtToolSupport);
@@ -510,6 +520,13 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     AppContext::getDnaAssemblyAlgRegistry()->registerAlgorithm(new DnaAssemblyAlgorithmEnv(Bowtie2Task::taskName, new Bowtie2TaskFactory(),
         new Bowtie2GUIExtensionsFactory(), true/*Index*/, false /*Dbi*/, true/*Paired-reads*/, referenceFormats, readsFormats));
 
+    QStringList genomeReadsFormats;
+    genomeReadsFormats << BaseDocumentFormats::FASTA;
+    genomeReadsFormats << BaseDocumentFormats::FASTQ;
+
+    AppContext::getGenomeAssemblyAlgRegistry()->registerAlgorithm(new GenomeAssemblyAlgorithmEnv(ET_SPADES, new SpadesTaskFactory(),
+        new SpadesGUIExtensionsFactory(), genomeReadsFormats));
+
     {
         GTestFormatRegistry *tfr = AppContext::getTestFramework()->getTestFormatRegistry();
         XMLTestFormat *xmlTestFormat = qobject_cast<XMLTestFormat *>(tfr->findFormat("XML"));
@@ -603,6 +620,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     LocalWorkflow::SlopbedWorkerFactory::init();
     LocalWorkflow::GenomecovWorkerFactory::init();
     LocalWorkflow::BedGraphToBigWigFactory::init();
+    LocalWorkflow::SpadesWorkerFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service

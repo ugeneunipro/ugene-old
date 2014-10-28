@@ -115,6 +115,10 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/seqpos/SeqPosSupport.h \
            src/seqpos/SeqPosTask.h \
            src/seqpos/SeqPosWorker.h \
+           src/spades/SpadesSupport.h \
+           src/spades/SpadesTask.h \
+           src/spades/SpadesSettingsWidget.h \
+           src/spades/SpadesWorker.h \
            src/spidey/SpideySupport.h \
            src/spidey/SpideySupportTask.h \
            src/tcoffee/TCoffeeSupport.h \
@@ -155,7 +159,8 @@ FORMS += src/ui/BlastAllSupportDialog.ui \
          src/ui/MAFFTSupportRunDialog.ui \
          src/ui/MrBayesDialog.ui \ 
          src/ui/PhyMLDialog.ui \
-         src/ui/TCoffeeSupportRunDialog.ui
+         src/ui/TCoffeeSupportRunDialog.ui \
+         src/ui/SpadesSettings.ui
 SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/ExternalToolManager.cpp \
            src/ExternalToolSupportPlugin.cpp \
@@ -269,6 +274,10 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/seqpos/SeqPosSupport.cpp \
            src/seqpos/SeqPosTask.cpp \
            src/seqpos/SeqPosWorker.cpp \
+           src/spades/SpadesSupport.cpp \
+           src/spades/SpadesTask.cpp \
+           src/spades/SpadesSettingsWidget.cpp \
+           src/spades/SpadesWorker.cpp \
            src/spidey/SpideySupport.cpp \
            src/spidey/SpideySupportTask.cpp \
            src/tcoffee/TCoffeeSupport.cpp \

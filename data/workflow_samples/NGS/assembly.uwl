@@ -1,0 +1,38 @@
+#@UGENE_WORKFLOW
+#Assemble genomes from short reads with Spades
+
+workflow "Assembly with Spades" {
+    .meta {
+        wizard {
+            auto-run: true;
+            has-run-button: false;
+            has-defaults-button: false;
+            name: "Assembly Pipeline";
+            finish-label: "Setup";
+            result {
+                NGS/assembly/spades_single.uwl: pipeline.single;
+                NGS/assembly/spades_paired.uwl: pipeline.paired;
+            }
+            page {
+                id: 1;
+                title: "Assembly Pipeline Settings";
+                parameters-area {
+                    group {
+                        title:"Assembly type";
+                        radio {
+                            id: pipeline;
+                            value {
+                                id: single;
+                                label: "Single tags";
+                            }
+                            value {
+                                id: paired;
+                                label: "Paired tags";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -41,6 +41,8 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
+#include <U2Algorithm/GenomeAssemblyRegistry.h>
+#include <U2Algorithm/GenomeAssemblyMultiTask.h>
 #include <U2Algorithm/DnaAssemblyMultiTask.h>
 #include <U2Formats/ConvertAssemblyToSamTask.h>
 #include <U2Formats/ConvertFileTask.h>
@@ -51,6 +53,7 @@
 
 #include "DnaAssemblyUtils.h"
 #include "DnaAssemblyDialog.h"
+#include "GenomeAssemblyDialog.h"
 #include "BuildIndexDialog.h"
 #include "ConvertAssemblyToSamDialog.h"
 
@@ -69,6 +72,12 @@ DnaAssemblySupport::DnaAssemblySupport()
     convertAssemblyToSamAction->setIcon(QIcon(":core/images/align.png"));
     connect( convertAssemblyToSamAction, SIGNAL( triggered() ), SLOT( sl_showConvertToSamDialog() ) );
     dnaAssemblySub->addAction( convertAssemblyToSamAction );
+
+    QAction* genomeAssemblyAction = new QAction( tr("Assemble genomes"), this );
+    genomeAssemblyAction->setObjectName("Assemble genomes");
+    genomeAssemblyAction->setIcon(QIcon(":core/images/align.png"));
+    connect( genomeAssemblyAction, SIGNAL( triggered() ), SLOT( sl_showGenomeAssemblyDialog() ) );
+    dnaAssemblySub->addAction( genomeAssemblyAction );
 
     QMenu *refAlignSub = toolsMenu->addMenu(QIcon( ":core/images/align.png" ), tr("Align to reference"));
     refAlignSub->menuAction()->setObjectName("Align to reference");
@@ -113,6 +122,29 @@ void DnaAssemblySupport::sl_showDnaAssemblyDialog()
     }
  
 }
+
+void DnaAssemblySupport::sl_showGenomeAssemblyDialog() {
+    GenomeAssemblyAlgRegistry* registry = AppContext::getGenomeAssemblyAlgRegistry();
+    if (registry->getRegisteredAlgorithmIds().isEmpty()) {
+        QMessageBox::information(QApplication::activeWindow(), tr("Genome Assembly"),
+            tr("There are no algorithms for genome assembly available.\nPlease, check external tools in the settings.") );
+        return;
+    }
+
+    GenomeAssemblyDialog dlg(QApplication::activeWindow());
+    if (dlg.exec()) {
+        GenomeAssemblyTaskSettings s;
+        s.algName = dlg.getAlgorithmName();
+        s.outDir = dlg.getOutDir();
+        s.setCustomSettings( dlg.getCustomSettings() );
+        s.reads = dlg.getReads();
+        s.openView = true;
+        Task* assemblyTask = new GenomeAssemblyMultiTask(s);
+        AppContext::getTaskScheduler()->registerTopLevelTask(assemblyTask);
+    }
+
+}
+
 
 void DnaAssemblySupport::sl_showBuildIndexDialog()
 {

@@ -1,0 +1,137 @@
+#@UGENE_WORKFLOW
+
+
+
+workflow "Spades Paired Tags"{
+
+    get-file-list {
+        type:get-file-list;
+        name:"File List";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    spades-id {
+        type:spades-id;
+        name:"Assemble genomes with Spades";
+    }
+    get-file-list-1 {
+        type:get-file-list;
+        name:"File List 1";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    multiplexer {
+        type:multiplexer;
+        name:Multiplexer;
+    }
+
+    .actor-bindings {
+        multiplexer.output-data->spades-id.in-data
+        get-file-list-1.out-url->multiplexer.input-data-2
+        get-file-list.out-url->multiplexer.input-data-1
+    }
+
+    get-file-list-1.url->spades-id.in-data.readspairedurl
+    get-file-list.url->spades-id.in-data.readsurl
+
+    .meta {
+        parameter-aliases {
+            get-file-list.url-in {
+                alias:in;
+            }
+            spades-id.dataset-type {
+                alias:type;
+            }
+            spades-id.k-mer {
+                alias:k;
+            }
+            spades-id.output-dir {
+                alias:out_dir;
+            }
+            spades-id.running-mode {
+                alias:mode;
+            }
+            get-file-list-1.url-in {
+                alias:in_pair;
+            }
+        }
+        visual {
+            get-file-list {
+                pos:"-999 -484";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-url.angle:360;
+            }
+            get-file-list-1 {
+                pos:"-1002 -342";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                out-url.angle:360;
+            }
+            multiplexer {
+                pos:"-826 -439";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                input-data-1.angle:150;
+                input-data-2.angle:210;
+                output-data.angle:360;
+            }
+            spades-id {
+                pos:"-550 -439";
+                style:ext;
+                bg-color-ext:"0 128 128 64";
+                in-data.angle:180;
+                out-data.angle:360;
+            }
+            get-file-list-1.out-url->multiplexer.input-data-2 {
+                text-pos:"-35.7578 -24";
+            }
+            get-file-list.out-url->multiplexer.input-data-1 {
+                text-pos:"-35.7578 -24";
+            }
+            multiplexer.output-data->spades-id.in-data {
+                text-pos:"-45 -50";
+            }
+        }
+        wizard {
+            name:"Assemble Genomes Wizard";
+            page {
+                id:1;
+                title:"Assembly Genomes with Spades";
+                parameters-area {
+                    group {
+                        title:"Input parameters";
+                        label-size:120;
+                        get-file-list.url-in {
+                            label:"Left Read URL(s)";
+                        }
+                        get-file-list-1.url-in {
+                            label:"Right Read URL(s)";
+                        }
+                    }
+                    group {
+                        title:"Out directory";
+                        label-size:120;
+                        spades-id.output-dir {
+                            label:"Output directory";
+                        }
+                    }
+                    group {
+                        title:Advanced;
+                        label-size:120;
+                        type:hideable;
+                        spades-id.dataset-type {
+                        }
+                        spades-id.running-mode {
+                        }
+                        spades-id.k-mer {
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
