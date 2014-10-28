@@ -223,10 +223,11 @@ QString PrimersPairStatistics::generateReport() const {
     CREATE_COLUMN(PrimerStatistics::tr("Reverse"), 20, true);
     result += "</tr>";
 
-    CREATE_ROW("% GC",      GC_RANGE,       toString(forward.getGC()),              toString(reverse.getGC()),              forward.isValidGC(),         reverse.isValidGC());
-    CREATE_ROW(TmString,    TM_RANGE,       toString(forward.getTm()),              toString(reverse.getTm()),              forward.isValidTm(),         reverse.isValidTm());
-    CREATE_ROW("GC Clamp",  CLAMP_RANGE,    QString::number(forward.getGCClamp()),  QString::number(reverse.getGCClamp()),  forward.isValidGCClamp(),    reverse.isValidGCClamp());
-    CREATE_ROW("Runs",      RUNS_RANGE,     QString::number(forward.getRuns()),     QString::number(reverse.getRuns()),     forward.isValidRuns(),       reverse.isValidRuns());
+    QString e;
+    CREATE_ROW("% GC",      GC_RANGE,       toString(forward.getGC()),              toString(reverse.getGC()),              forward.isValidGC(e),         reverse.isValidGC(e));
+    CREATE_ROW(TmString,    TM_RANGE,       toString(forward.getTm()),              toString(reverse.getTm()),              forward.isValidTm(e),         reverse.isValidTm(e));
+    CREATE_ROW("GC Clamp",  CLAMP_RANGE,    QString::number(forward.getGCClamp()),  QString::number(reverse.getGCClamp()),  forward.isValidGCClamp(e),    reverse.isValidGCClamp(e));
+    CREATE_ROW("Runs",      RUNS_RANGE,     QString::number(forward.getRuns()),     QString::number(reverse.getRuns()),     forward.isValidRuns(e),       reverse.isValidRuns(e));
     result += "</table>";
     return result;
 }

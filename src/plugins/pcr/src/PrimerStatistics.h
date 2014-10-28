@@ -44,10 +44,10 @@ public:
     int getGCClamp() const;
     int getRuns() const;
 
-    bool isValidGC(QString &error = QString()) const;
-    bool isValidTm(QString &error = QString()) const;
-    bool isValidGCClamp(QString &error = QString()) const;
-    bool isValidRuns(QString &error = QString()) const;
+    bool isValidGC(QString &error) const;
+    bool isValidTm(QString &error) const;
+    bool isValidGCClamp(QString &error) const;
+    bool isValidRuns(QString &error) const;
 
     static const double GC_BOTTOM;
     static const double GC_TOP;

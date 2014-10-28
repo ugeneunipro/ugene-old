@@ -98,7 +98,6 @@ font-weight: 600;</string>
      </layout>
      <zorder>forwardPrimerBox</zorder>
      <zorder>reversePrimerBox</zorder>
-     <zorder></zorder>
      <zorder>findProductButton</zorder>
      <zorder>warningLabel</zorder>
     </widget>
