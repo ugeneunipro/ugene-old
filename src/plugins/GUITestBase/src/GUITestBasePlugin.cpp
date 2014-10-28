@@ -376,7 +376,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3283);
     REGISTER_TEST(GUITest_regression_scenarios::test_3287);
     REGISTER_TEST(GUITest_regression_scenarios::test_3288);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3305, "UGENE-3305");
+    REGISTER_TEST(GUITest_regression_scenarios::test_3305);
     REGISTER_TEST(GUITest_regression_scenarios::test_3307);
     REGISTER_TEST(GUITest_regression_scenarios::test_3308);
     REGISTER_TEST(GUITest_regression_scenarios::test_3318);
@@ -1004,6 +1004,22 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004_1);
     REGISTER_TEST(GUITest_common_scenarios_annotations::test_0004_2);
+
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0008);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0009);
+
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0010_1);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0010_2);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0010_3);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0011_1);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0011_2);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0011_3);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0012_1);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0012_2);
+    REGISTER_TEST(GUITest_common_scenarios_annotations::test_0012_3);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/annotations/edit

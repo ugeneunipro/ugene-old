@@ -60,6 +60,7 @@ void ExportAnnotationsFiller::init(const QString &exportToFile) {
     comboBoxItems[bed] = "bed";
     comboBoxItems[genbank] = "genbank";
     comboBoxItems[gff] = "gff";
+    comboBoxItems[gtf] = "gtf";
     comboBoxItems[csv] = "csv";
 }
 

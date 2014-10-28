@@ -222,6 +222,30 @@ void GTUtilsAnnotationsTreeView::createQualifier(U2OpStatus &os, const QString &
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "selectItems"
+void GTUtilsAnnotationsTreeView::selectItems(U2OpStatus &os, const QStringList &items) {
+    GT_CHECK_RESULT(items.size() != 0, "List of items to select is empty", );
+    // remove previous selection
+    QPoint p = getItemCenter(os, items.first());
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::click(os);
+
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+    foreach (const QString& item, items) {
+        QPoint p = getItemCenter(os, item);
+        GTMouseDriver::moveTo(os, p);
+
+        QTreeWidgetItem* treeItem = findItem(os, item);
+        GT_CHECK_RESULT(treeItem != NULL, "Tree item is NULL", );
+        if (!treeItem->isSelected()) {
+            GTMouseDriver::click(os);
+        }
+    }
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }

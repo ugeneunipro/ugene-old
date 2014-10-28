@@ -53,6 +53,8 @@ public:
 
     static void createQualifier(U2OpStatus &os, const QString &qualName, const QString &qualValue, const QString &parentName);
 
+    static void selectItems(U2OpStatus &os, const QStringList& items);
+
     static const QString widgetName;
 };
 

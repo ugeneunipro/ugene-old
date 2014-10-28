@@ -1195,8 +1195,7 @@ GUI_TEST_CLASS_DEFINITION( test_1688 ) {
     // Expected state: UGENE show error, not crashed
     GTLogTracer l;
 
-    GTUtilsDialog::waitForDialog( os, new SequenceReadingModeSelectorDialogFiller( os,
-        SequenceReadingModeSelectorDialogFiller::Separate ) );
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os) );
     GTFileDialog::openFile( os, testDir + "_common_data/scenarios/_regression/1688/", "sr100.000.fa");
     GTGlobals::sleep( 60000 );
     GTUtilsLog::check( os, l );
@@ -4922,7 +4921,7 @@ GUI_TEST_CLASS_DEFINITION(test_2910_2) {
             QLineEdit *regionEdit= w->findChild<QLineEdit*>("multipleRegionEdit");
             CHECK_SET_ERR(regionEdit != NULL, "QLineEdit \"multipleRegionEdit\" not foud");
             GTLineEdit::setText(os, regionEdit, "0..5000");
-          
+
             QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
             CHECK(NULL != buttonBox, );
             QPushButton *button = buttonBox->button(QDialogButtonBox::Cancel);
@@ -4934,7 +4933,7 @@ GUI_TEST_CLASS_DEFINITION(test_2910_2) {
     };
     GTUtilsDialog::waitForDialog(os, new CancelClicker(os));
     GTKeyboardDriver::keyClick(os, 'A', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(500);  
+    GTGlobals::sleep(500);
 
 }
 GUI_TEST_CLASS_DEFINITION(test_2910_3) {
@@ -4971,7 +4970,7 @@ GUI_TEST_CLASS_DEFINITION(test_2910_3) {
     };
     GTUtilsDialog::waitForDialog(os, new CancelClicker(os));
     GTKeyboardDriver::keyClick(os, 'A', GTKeyboardDriver::key["ctrl"]);
-    GTGlobals::sleep(500);  
+    GTGlobals::sleep(500);
 }
 GUI_TEST_CLASS_DEFINITION(test_2962_1) {
 //    1. Open "_common_data/scenarios/_regression/2924/human_T1_cutted.fa".
@@ -6297,9 +6296,10 @@ GUI_TEST_CLASS_DEFINITION(test_3305) {
     GTGlobals::sleep();
 
 //    Expected state: the annotation is successfully exported, result file exists, there are no errors in the log.
-    CHECK_SET_ERR(logTracer.hasError(), "There are unexpectedly no errors in the log");
     const QFile bedFile(sandBoxDir + "test_3305/test_3305.bed");
-    CHECK_SET_ERR(!(bedFile.exists() && bedFile.size() == 0), "An empty file exists");
+    CHECK_SET_ERR(bedFile.exists() && bedFile.size() != 0, "The result file is empty or does not exist!");
+
+    GTUtilsLog::check(os, logTracer);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3307){

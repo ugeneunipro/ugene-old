@@ -28,7 +28,7 @@ namespace U2 {
 
     class ExportAnnotationsFiller : public Filler {
     public:
-        enum fileFormat {bed, genbank, gff, csv};
+        enum fileFormat {bed, genbank, gff, gtf, csv};
         ExportAnnotationsFiller(const QString &exportToFile, fileFormat format, U2OpStatus &os);
         ExportAnnotationsFiller(U2OpStatus &_os, const QString &_exportToFile, fileFormat _format, bool _saveSequencesUnderAnnotations = true,
                                 bool _saveSequenceNames = true, GTGlobals::UseMethod method = GTGlobals::UseMouse);
