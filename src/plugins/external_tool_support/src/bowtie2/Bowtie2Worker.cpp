@@ -21,21 +21,12 @@
 
 #include <U2Algorithm/DnaAssemblyTask.h>
 
-#include <U2Core/FailTask.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/QVariantUtils.h>
-#include <U2Core/GUrlUtils.h>
-
 #include <U2Designer/DelegateEditors.h>
-
-#include <U2Gui/DialogUtils.h>
 
 #include <U2Lang/ActorPrototypeRegistry.h>
 #include <U2Lang/BaseActorCategories.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
-#include <U2Lang/WorkflowMonitor.h>
 
 #include "Bowtie2Support.h"
 #include "Bowtie2Worker.h"
@@ -45,22 +36,6 @@ namespace U2 {
 namespace LocalWorkflow {
 
 const QString Bowtie2WorkerFactory::ACTOR_ID("align-reads-with-bowtie2");
-
-static const QString READS_URL_SLOT_ID("readsurl");
-static const QString READS_PAIRED_URL_SLOT_ID("readspairedurl");
-
-static const QString IN_TYPE_ID("Bowtie2-data");
-static const QString OUT_TYPE_ID("Bowtie2-data-out");
-
-static const QString ASSEBLY_OUT_SLOT_ID("assembly-out");
-
-static const QString IN_PORT_DESCR("in-data");
-static const QString OUT_PORT_DESCR("out-data");
-
-static const QString OUTPUT_DIR("output-dir");
-static const QString REFERENCE_GENOME("reference");
-
-static const QString OUTPUT_NAME = "outname";
 
 static const QString MODE = "mode";
 static const QString MISMATCHES_NUMBER = "mismatches_number";
@@ -84,103 +59,11 @@ static const QString BASE_Bowtie2_OUTFILE("out.sam");
 /* Worker */
 /************************************************************************/
 Bowtie2Worker::Bowtie2Worker(Actor *p)
-: BaseWorker(p)
-, inChannel(NULL)
-, output(NULL)
+: BaseShortReadsAlignerWorker(p, Bowtie2Task::taskName)
 {
-
 }
 
-void Bowtie2Worker::init() {
-    inChannel = ports.value(IN_PORT_DESCR);
-    output = ports.value(OUT_PORT_DESCR);
-}
-
-Task *Bowtie2Worker::tick() {
-    if (inChannel->hasMessage()) {
-        U2OpStatus2Log os;
-
-        Message m = getMessageAndSetupScriptValues(inChannel);
-        QVariantMap data = m.getData().toMap();
-
-        DnaAssemblyToRefTaskSettings settings = getSettings(os);
-        if (os.hasError()) {
-            return new FailTask(os.getError());
-        }
-
-        QString readsUrl = data[READS_URL_SLOT_ID].toString();
-
-        if(data.contains(READS_PAIRED_URL_SLOT_ID)){
-            //paired
-            QString readsPairedUrl = data[READS_PAIRED_URL_SLOT_ID].toString();
-            settings.shortReadSets.append(ShortReadSet(readsUrl, ShortReadSet::PairedEndReads, ShortReadSet::UpstreamMate));
-            settings.shortReadSets.append(ShortReadSet(readsPairedUrl, ShortReadSet::PairedEndReads, ShortReadSet::DownstreamMate));
-            settings.pairedReads = true;
-        }else {
-            //single
-            settings.shortReadSets.append(ShortReadSet(readsUrl, ShortReadSet::SingleEndReads, ShortReadSet::UpstreamMate));
-            settings.pairedReads = false;
-        }
-
-        Bowtie2Task* t = new Bowtie2Task(settings);
-        connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
-        return t;
-    }else if (inChannel->isEnded()) {
-        setDone();
-        output->setEnded();
-    }
-    return NULL;
-}
-
-void Bowtie2Worker::cleanup() {
-
-}
-
-void Bowtie2Worker::sl_taskFinished() {
-    Bowtie2Task *t = dynamic_cast<Bowtie2Task*>(sender());
-    if (!t->isFinished() || t->hasError() || t->isCanceled()) {
-        return;
-    }
-
-    QString url = t->getSettings().resultFileName.getURLString();
-
-    QVariantMap data;
-    data[ASSEBLY_OUT_SLOT_ID] =  qVariantFromValue<QString>(url);
-    output->put(Message(output->getBusType(), data));
-
-    context->getMonitor()->addOutputFile(url, getActor()->getId());
-
-    if (inChannel->isEnded() && !inChannel->hasMessage()) {
-        setDone();
-        output->setEnded();
-    }
-}
-
-DnaAssemblyToRefTaskSettings Bowtie2Worker::getSettings( U2OpStatus &os ){
-    DnaAssemblyToRefTaskSettings settings;
-
-    QString outDir = GUrlUtils::createDirectory(
-        getValue<QString>(OUTPUT_DIR) + QDir::separator() + BASE_Bowtie2_SUBDIR,
-        "_", os);
-    CHECK_OP(os, settings);
-    
-    if (!outDir.endsWith(QDir::separator())){
-        outDir  = outDir + QDir::separator();
-    }
-
-    QString outFileName = getValue<QString>(OUTPUT_NAME);
-    if(outFileName.isEmpty()){
-        outFileName = BASE_Bowtie2_OUTFILE;
-    }
-    settings.resultFileName = outDir + outFileName;
-    
-    QString refGenome = getValue<QString>(REFERENCE_GENOME);
-    settings.prebuiltIndex = !refGenome.contains(".fa");
-    settings.indexFileName = refGenome;
-    settings.refSeqUrl = refGenome;
-
-    settings.algName = Bowtie2Task::taskName;
-
+QVariantMap Bowtie2Worker::getCustomParameters() const {
     QMap<QString, QVariant> customSettings;
 
     customSettings.insert(Bowtie2Task::OPTION_MODE, getValue<QString>(MODE));
@@ -198,107 +81,35 @@ DnaAssemblyToRefTaskSettings Bowtie2Worker::getSettings( U2OpStatus &os ){
     customSettings.insert(Bowtie2Task::OPTION_NOOVERLAP, getValue<bool>(NOOVERLAP));
     customSettings.insert(Bowtie2Task::OPTION_NOCONTAIN, getValue<bool>(NOCONTAIN));
 
-    settings.setCustomSettings(customSettings);
-
-    return settings;
+    return customSettings;
 }
 
+QString Bowtie2Worker::getDefaultFileName() const {
+    return BASE_Bowtie2_OUTFILE;
+}
+
+QString Bowtie2Worker::getBaseSubdir() const {
+    return BASE_Bowtie2_SUBDIR;
+}
+
+DnaAssemblyToReferenceTask* Bowtie2Worker::getTask(const DnaAssemblyToRefTaskSettings settings) const {
+    return new Bowtie2Task(settings);
+}
+
+void Bowtie2Worker::setGenomeIndex(DnaAssemblyToRefTaskSettings& settings){
+    QString refGenome = getValue<QString>(REFERENCE_GENOME);
+    settings.prebuiltIndex = !refGenome.contains(".fa");
+    settings.indexFileName = refGenome;
+    settings.refSeqUrl = refGenome;
+}
 /************************************************************************/
 /* Factory */
 /************************************************************************/
-class Bowtie2InputSlotsValidator : public PortValidator {
-    public:
-
-    bool validate(const IntegralBusPort *port, ProblemList &problemList) const {
-        QVariant busMap = port->getParameter(Workflow::IntegralBusPort::BUS_MAP_ATTR_ID)->getAttributePureValue();
-        bool data = isBinded(busMap.value<QStrStrMap>(), READS_URL_SLOT_ID);
-        if (!data){
-            QString dataName = slotName(port, READS_URL_SLOT_ID);
-            problemList.append(Problem(IntegralBusPort::tr("The slot must be not empty: '%1'").arg(dataName)));
-            return false;
-        }
-
-        QString slot1Val = busMap.value<QStrStrMap>().value(READS_URL_SLOT_ID);
-        QString slot2Val = busMap.value<QStrStrMap>().value(READS_PAIRED_URL_SLOT_ID);
-        U2OpStatusImpl os;
-        const QList<IntegralBusSlot>& slots1 = IntegralBusSlot::listFromString(slot1Val, os);
-        const QList<IntegralBusSlot>& slots2 = IntegralBusSlot::listFromString(slot2Val, os);
-
-        bool hasCommonElements = false;
-
-        foreach(const IntegralBusSlot& ibsl1, slots1){
-            if (hasCommonElements){
-                break;
-            }
-            foreach(const IntegralBusSlot& ibsl2, slots2){
-                if (ibsl1 == ibsl2){
-                    hasCommonElements = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasCommonElements){
-            problemList.append(Problem(Bowtie2Worker::tr("Bowtie2 cannot recognize read pairs from the same file. Please, perform demultiplexing first.")));
-            return false;
-        }
-
-        return true;
-    }
-    };
-
 void Bowtie2WorkerFactory::init() {
-    QList<PortDescriptor*> portDescs;
-    
-    //in port
-    QMap<Descriptor, DataTypePtr> inTypeMap;
-    Descriptor readsDesc(READS_URL_SLOT_ID,
-        Bowtie2Worker::tr("URL of a file with reads"),
-        Bowtie2Worker::tr("Input reads to be aligned."));
-    Descriptor readsPairedDesc(READS_PAIRED_URL_SLOT_ID,
-        Bowtie2Worker::tr("URL of a file with mate reads"),
-        Bowtie2Worker::tr("Input mate reads to be aligned."));
-
-    inTypeMap[readsDesc] = BaseTypes::STRING_TYPE();
-    inTypeMap[readsPairedDesc] = BaseTypes::STRING_TYPE();
-
-    Descriptor inPortDesc(IN_PORT_DESCR,
-        Bowtie2Worker::tr("Bowtie2 data"),
-        Bowtie2Worker::tr("Input reads to be aligned with Bowtie2."));
-
-    DataTypePtr inTypeSet(new MapDataType(IN_TYPE_ID, inTypeMap));
-    portDescs << new PortDescriptor(inPortDesc, inTypeSet, true);
-
-    //out port
-    QMap<Descriptor, DataTypePtr> outTypeMap;
-    Descriptor assemblyOutDesc(ASSEBLY_OUT_SLOT_ID,
-        Bowtie2Worker::tr("Assembly URL"),
-        Bowtie2Worker::tr("Output assembly URL."));
-    
-    Descriptor outPortDesc(OUT_PORT_DESCR,
-        Bowtie2Worker::tr("Bowtie2 output data"),
-        Bowtie2Worker::tr("Output assembly files."));
-
-    outTypeMap[assemblyOutDesc] = BaseTypes::STRING_TYPE();
-
-    DataTypePtr outTypeSet(new MapDataType(OUT_TYPE_ID, outTypeMap));
-    portDescs << new PortDescriptor(outPortDesc, outTypeSet, false, true);
-    
- 
-     QList<Attribute*> attrs;
+    QList<Attribute*> attrs;
+    QMap<QString, PropertyDelegate*> delegates;
+    addCommonAttributes(attrs, delegates);
      {
-         Descriptor outDir(OUTPUT_DIR,
-             Bowtie2Worker::tr("Output directory"),
-             Bowtie2Worker::tr("Directory to save Bowtie2 output files."));
-
-         Descriptor refGenome(REFERENCE_GENOME,
-             Bowtie2Worker::tr("Reference genome"),
-             Bowtie2Worker::tr("Path to indexed reference genome."));
-
-         Descriptor outName(OUTPUT_NAME,
-             Bowtie2Worker::tr("Output file name"),
-             Bowtie2Worker::tr("Base name of the output file. 'out.sam' by default"));
-
          Descriptor mode(MODE ,
              Bowtie2Worker::tr("Mode"),
              Bowtie2Worker::tr("When the -n option is specified (which is the default), bowtie determines which alignments \
@@ -361,11 +172,6 @@ void Bowtie2WorkerFactory::init() {
              Bowtie2Worker::tr("If one mate alignment contains the other, consider that to be non-concordant. Default: a mate can contain the \
                                \nother in a concordant alignment."));
 
-
-        attrs << new Attribute(outDir, BaseTypes::STRING_TYPE(), true, QVariant(""));
-        attrs << new Attribute(refGenome, BaseTypes::STRING_TYPE(), true, QVariant(""));
-        attrs << new Attribute(outName, BaseTypes::STRING_TYPE(), true, QVariant(BASE_Bowtie2_OUTFILE));
-
         attrs << new Attribute(mode, BaseTypes::STRING_TYPE(), false, QVariant("--end-to-end"));
         attrs << new Attribute(mismatchesNumber, BaseTypes::NUM_TYPE(), false, QVariant(0));
         attrs << new Attribute(seedLen, BaseTypes::NUM_TYPE(), false, QVariant(20));
@@ -383,11 +189,7 @@ void Bowtie2WorkerFactory::init() {
         attrs << new Attribute(nocontain, BaseTypes::BOOL_TYPE(), false, QVariant(false));
      }
 
-     QMap<QString, PropertyDelegate*> delegates;
      {
-         delegates[OUTPUT_DIR] = new URLDelegate("", "", false, true, false);
-         delegates[REFERENCE_GENOME] = new URLDelegate("", "", false, false, false);
-
          QVariantMap spinMap;
          spinMap["minimum"] = QVariant(0);
          spinMap["maximum"] = QVariant(INT_MAX);
@@ -420,10 +222,10 @@ void Bowtie2WorkerFactory::init() {
         Bowtie2Worker::tr("Align Reads with Bowtie2"),
         Bowtie2Worker::tr("Performs alignment of short reads with Bowtie2."));
 
-    ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);
-    proto->setPrompter(new Bowtie2Prompter());
+    ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, getPortDescriptors(), attrs);
+    proto->setPrompter(new ShortReadsAlignerPrompter());
     proto->setEditor(new DelegateEditor(delegates));
-    proto->setPortValidator(IN_PORT_DESCR, new Bowtie2InputSlotsValidator());
+    proto->setPortValidator(IN_PORT_DESCR, new ShortReadsAlignerSlotsValidator());
     proto->addExternalTool(ET_BOWTIE2_ALIGN);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_NGS_ALIGN_SHORT_READS(), proto);
     WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new Bowtie2WorkerFactory());
@@ -431,21 +233,6 @@ void Bowtie2WorkerFactory::init() {
 
 Worker *Bowtie2WorkerFactory::createWorker(Actor *a) {
     return new Bowtie2Worker(a);
-}
-
-QString Bowtie2Prompter::composeRichDoc() {
-    QString res = ""; 
-
-    Actor* readsProducer = qobject_cast<IntegralBusPort*>(target->getPort(IN_PORT_DESCR))->getProducer(READS_URL_SLOT_ID);
-
-    QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
-    QString readsUrl = readsProducer ? readsProducer->getLabel() : unsetStr;
-    QString genome = getHyperlink(REFERENCE_GENOME, getURL(REFERENCE_GENOME));
-
-    res.append(tr("Aligns reads from <u>%1</u> ").arg(readsUrl));
-    res.append(tr(" to reference genome <u>%1</u>.").arg(genome));
- 
-    return res;
 }
 
 } // LocalWorkflow

@@ -22,54 +22,34 @@
 #ifndef _U2_BWAMEM_SUPPORT_WORKER_
 #define _U2_BWAMEM_SUPPORT_WORKER_
 
-#include <U2Core/U2OpStatus.h>
-
-#include <U2Lang/LocalDomain.h>
-#include <U2Lang/WorkflowUtils.h>
+#include "utils/BaseShortReadsAlignerWorker.h"
 
 class DnaAssemblyToRefTaskSettings;
 
 namespace U2 {
 namespace LocalWorkflow {
 
-class BWAMEMWorker : public BaseWorker {
+class BWAMEMWorker : public BaseShortReadsAlignerWorker {
     Q_OBJECT
 public:
     BWAMEMWorker(Actor *p);
 
-    virtual void init();
-    virtual Task *tick();
-    virtual void cleanup();
-
-private:
-    IntegralBus *inChannel;
-    IntegralBus *output;
-
-private:
-    DnaAssemblyToRefTaskSettings getSettings(U2OpStatus &os);
-
-private slots:
-    void sl_taskFinished();
+protected:
+    QVariantMap getCustomParameters() const;
+    QString getDefaultFileName() const;
+    QString getBaseSubdir() const;
+    DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings settings) const;
+    void setGenomeIndex(DnaAssemblyToRefTaskSettings& settings);
 }; // BWAMEMWorker
 
-class BWAMEMWorkerFactory : public DomainFactory {
+class BWAMEMWorkerFactory : public BaseShortReadsAlignerWorkerFactory {
 public:
     static const QString ACTOR_ID;
 
-    BWAMEMWorkerFactory() : DomainFactory(ACTOR_ID) {}
+    BWAMEMWorkerFactory() : BaseShortReadsAlignerWorkerFactory(ACTOR_ID) {}
     static void init();
     virtual Worker *createWorker(Actor *a);
 }; // BWAMEMWorkerFactory
-
-class BWAMEMPrompter : public PrompterBase<BWAMEMPrompter> {
-    Q_OBJECT
-public:
-    BWAMEMPrompter(Actor *p = NULL) : PrompterBase<BWAMEMPrompter>(p) {}
-
-protected:
-    QString composeRichDoc();
-
-}; // BWAMEMPrompter
 
 } // LocalWorkflow
 } // U2

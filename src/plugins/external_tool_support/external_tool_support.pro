@@ -130,6 +130,7 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/tophat/TopHatSupportTask.h \
            src/tophat/TopHatWorker.h \
            src/utils/AlignMsaAction.h \
+           src/utils/BaseShortReadsAlignerWorker.h \
            src/utils/BlastRunCommonDialog.h \
            src/utils/BlastTaskSettings.h \
            src/utils/CistromeDelegate.h \
@@ -289,6 +290,7 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/tophat/TopHatSupportTask.cpp \
            src/tophat/TopHatWorker.cpp \
            src/utils/AlignMsaAction.cpp \
+           src/utils/BaseShortReadsAlignerWorker.cpp \
            src/utils/BlastRunCommonDialog.cpp \
            src/utils/BlastTaskSettings.cpp \
            src/utils/CistromeDelegate.cpp \

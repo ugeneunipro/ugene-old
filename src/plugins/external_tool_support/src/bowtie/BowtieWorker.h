@@ -22,54 +22,34 @@
 #ifndef _U2_BOWTIE_SUPPORT_WORKER_
 #define _U2_BOWTIE_SUPPORT_WORKER_
 
-#include <U2Core/U2OpStatus.h>
-
-#include <U2Lang/LocalDomain.h>
-#include <U2Lang/WorkflowUtils.h>
+#include "utils/BaseShortReadsAlignerWorker.h"
 
 class DnaAssemblyToRefTaskSettings;
 
 namespace U2 {
 namespace LocalWorkflow {
 
-class BowtieWorker : public BaseWorker {
+class BowtieWorker : public BaseShortReadsAlignerWorker {
     Q_OBJECT
 public:
     BowtieWorker(Actor *p);
 
-    virtual void init();
-    virtual Task *tick();
-    virtual void cleanup();
-
-private:
-    IntegralBus *inChannel;
-    IntegralBus *output;
-
-private:
-    DnaAssemblyToRefTaskSettings getSettings(U2OpStatus &os);
-
-private slots:
-    void sl_taskFinished();
+protected:
+    QVariantMap getCustomParameters() const;
+    QString getDefaultFileName() const;
+    QString getBaseSubdir() const;
+    DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings settings) const;
+    void setGenomeIndex(DnaAssemblyToRefTaskSettings& settings);
 }; // BowtieWorker
 
-class BowtieWorkerFactory : public DomainFactory {
+class BowtieWorkerFactory : public BaseShortReadsAlignerWorkerFactory {
 public:
     static const QString ACTOR_ID;
 
-    BowtieWorkerFactory() : DomainFactory(ACTOR_ID) {}
+    BowtieWorkerFactory() : BaseShortReadsAlignerWorkerFactory(ACTOR_ID) {}
     static void init();
     virtual Worker *createWorker(Actor *a);
 }; // BowtieWorkerFactory
-
-class BowtiePrompter : public PrompterBase<BowtiePrompter> {
-    Q_OBJECT
-public:
-    BowtiePrompter(Actor *p = NULL) : PrompterBase<BowtiePrompter>(p) {}
-
-protected:
-    QString composeRichDoc();
-
-}; // BowtiePrompter
 
 } // LocalWorkflow
 } // U2

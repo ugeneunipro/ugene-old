@@ -22,54 +22,34 @@
 #ifndef _U2_BWA_SUPPORT_WORKER_
 #define _U2_BWA_SUPPORT_WORKER_
 
-#include <U2Core/U2OpStatus.h>
-
-#include <U2Lang/LocalDomain.h>
-#include <U2Lang/WorkflowUtils.h>
+#include "utils/BaseShortReadsAlignerWorker.h"
 
 class DnaAssemblyToRefTaskSettings;
 
 namespace U2 {
 namespace LocalWorkflow {
 
-class BWAWorker : public BaseWorker {
+class BWAWorker : public BaseShortReadsAlignerWorker {
     Q_OBJECT
 public:
     BWAWorker(Actor *p);
 
-    virtual void init();
-    virtual Task *tick();
-    virtual void cleanup();
-
-private:
-    IntegralBus *inChannel;
-    IntegralBus *output;
-
-private:
-    DnaAssemblyToRefTaskSettings getSettings(U2OpStatus &os);
-
-private slots:
-    void sl_taskFinished();
+protected :
+    QVariantMap getCustomParameters() const;
+    QString getDefaultFileName() const;
+    QString BWAWorker::getBaseSubdir() const;
+    DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings settings) const;
+    void setGenomeIndex(DnaAssemblyToRefTaskSettings& settings);
 }; // BWAWorker
 
-class BWAWorkerFactory : public DomainFactory {
+class BWAWorkerFactory : public BaseShortReadsAlignerWorkerFactory {
 public:
     static const QString ACTOR_ID;
 
-    BWAWorkerFactory() : DomainFactory(ACTOR_ID) {}
+    BWAWorkerFactory() : BaseShortReadsAlignerWorkerFactory(ACTOR_ID) {}
     static void init();
     virtual Worker *createWorker(Actor *a);
 }; // BWAWorkerFactory
-
-class BWAPrompter : public PrompterBase<BWAPrompter> {
-    Q_OBJECT
-public:
-    BWAPrompter(Actor *p = NULL) : PrompterBase<BWAPrompter>(p) {}
-
-protected:
-    QString composeRichDoc();
-
-}; // BWAPrompter
 
 } // LocalWorkflow
 } // U2
