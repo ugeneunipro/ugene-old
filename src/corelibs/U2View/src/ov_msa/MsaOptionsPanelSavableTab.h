@@ -19,22 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_INIT_U2VIEW_H_
-#define _U2_INIT_U2VIEW_H_
+#ifndef _U2_MSA_OPTIONS_PANEL_SAVABLE_TAB_H_
+#define _U2_MSA_OPTIONS_PANEL_SAVABLE_TAB_H_
 
-#include <U2Core/global.h>
-
+#include <U2Gui/U2SavableWidget.h>
 
 namespace U2 {
 
-class U2VIEW_EXPORT Init {
+class MsaOptionsPanelSavableTab : public U2SavableWidget {
 public:
-    static void initOptionsPanels();
+    MsaOptionsPanelSavableTab(QWidget *wrappedWidget, MWMDIWindow *contextWindow);
+    ~MsaOptionsPanelSavableTab();
 
-private:
-    Init(){}
+protected:
+    QSet<QWidget *> getCompoundChildren() const;
 };
 
-} // namespace
+} // namespace U2
 
-#endif
+#endif // _U2_MSA_OPTIONS_PANEL_SAVABLE_TAB_H_

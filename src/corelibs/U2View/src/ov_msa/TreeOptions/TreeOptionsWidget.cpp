@@ -19,20 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "TreeOptionsWidget.h"
+#include <QColorDialog>
 
-#include <U2Gui/ShowHideSubgroupWidget.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/L10n.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
+
+#include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/U2WidgetStateStorage.h>
+
+#include <U2View/MSAEditor.h>
 #include "ov_msa/MSAEditorDataList.h"
 #include "ov_phyltree/TreeViewer.h"
 #include "ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h"
 #include "phyltree/TreeSettingsDialog.h"
 
+#include "TreeOptionsWidget.h"
 
 namespace U2 {
 
@@ -58,7 +63,8 @@ const QString TreeOptionsWidget::COLOR_BOX_STYLE = "QPushButton {"
                                                         "background-color : %1;}";
 
 TreeOptionsWidget::TreeOptionsWidget(MSAEditor* m, const TreeOpWidgetViewSettings& viewSettings)
-    : msa(m), treeViewer(NULL), viewSettings(viewSettings), settings(NULL), showFontSettings(false), showPenSettings(false)
+    : msa(m), treeViewer(NULL), viewSettings(viewSettings), settings(NULL), showFontSettings(false), showPenSettings(false),
+    savableTab(this, GObjectViewUtils::findViewByName(m->getName()))
 {
     SAFE_POINT(NULL != msa, QString("Invalid parameter were passed into constructor TreeOptionsWidget"), );
 
@@ -67,10 +73,13 @@ TreeOptionsWidget::TreeOptionsWidget(MSAEditor* m, const TreeOpWidgetViewSetting
 
     treeSettings = getTreeViewer()->getTreeSettings();
     createGroups();
+
+    U2WidgetStateStorage::restoreWidgetState(savableTab);
 }
 
 TreeOptionsWidget::TreeOptionsWidget(TreeViewer* tree, const TreeOpWidgetViewSettings& viewSettings)
-    : msa(NULL), treeViewer(tree->getTreeViewerUI()), viewSettings(viewSettings), settings(NULL), showFontSettings(false), showPenSettings(false)
+    : msa(NULL), treeViewer(tree->getTreeViewerUI()), viewSettings(viewSettings), settings(NULL), showFontSettings(false), showPenSettings(false),
+    savableTab(this, GObjectViewUtils::findViewByName(tree->getName()))
 {
     SAFE_POINT(NULL != treeViewer, QString("Invalid parameter were passed into constructor TreeOptionsWidget"), );
 
@@ -79,6 +88,8 @@ TreeOptionsWidget::TreeOptionsWidget(TreeViewer* tree, const TreeOpWidgetViewSet
 
     treeSettings = treeViewer->getTreeSettings();
     createGroups();
+
+    U2WidgetStateStorage::restoreWidgetState(savableTab);
 }
 
 TreeOptionsWidget::~TreeOptionsWidget() 

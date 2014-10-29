@@ -22,29 +22,29 @@
 #ifndef _U2_MSA_EXPORT_CONSENSUS_TAB_H_
 #define _U2_MSA_EXPORT_CONSENSUS_TAB_H_
 
-#include <U2View/MSAEditor.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/U2SavableWidget.h>
 
 #include "ui/ui_ExportConsensusWidget.h"
 
 namespace U2 {
 
-class U2VIEW_EXPORT MSAExportConsensusTab : public QWidget, public Ui_ExportConsensusWidget {
+class MSAEditor;
+
+class MSAExportConsensusTab : public QWidget, private Ui_ExportConsensusWidget {
     Q_OBJECT
 public:
     MSAExportConsensusTab(MSAEditor* msa_);
 
     void showHint(bool showHint);
+
 private slots:
     void sl_browseClicked();
     void sl_exportClicked();
     void sl_formatChanged();
     void sl_consensusChanged(const QString& algoId);
 private:
-    const DocumentFormatRegistry *dfr;
-
     MSAEditor *msa;
+    U2SavableWidget savableWidget;
 };
 
 } // namespace

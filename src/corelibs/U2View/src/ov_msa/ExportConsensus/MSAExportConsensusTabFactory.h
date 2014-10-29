@@ -22,22 +22,17 @@
 #ifndef _U2_MSA_EXPORT_CONSENSUS_FACTORY_TAB_H_
 #define _U2_MSA_EXPORT_CONSENSUS_FACTORY_TAB_H_
 
-#include <U2Core/global.h>
 #include <U2Gui/OPWidgetFactory.h>
-#include <QtGui/QPixmap>
-
 
 namespace U2 {
 
-class MSAExportConsensusFactoryTab : public OPWidgetFactory
-{
+class U2VIEW_EXPORT MSAExportConsensusFactoryTab : public OPWidgetFactory {
     Q_OBJECT
 public:
     MSAExportConsensusFactoryTab();
 
-    virtual QWidget* createWidget(GObjectView* objView);
-
-    virtual OPGroupParameters getOPGroupParameters();
+    QWidget * createWidget(GObjectView* objView);
+    OPGroupParameters getOPGroupParameters();
 
 private:
     static const QString GROUP_ID;
@@ -46,6 +41,6 @@ private:
     static const QString GROUP_DOC_PAGE;
 };
 
-} // namespace
+} // namespace U2
 
-#endif
+#endif // _U2_MSA_EXPORT_CONSENSUS_FACTORY_TAB_H_

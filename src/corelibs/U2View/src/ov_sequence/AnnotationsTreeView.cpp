@@ -19,6 +19,19 @@
  * MA 02110-1301, USA.
  */
 
+#include <QFileInfo>
+
+#include <QPainter>
+#include <QClipboard>
+
+#include <QDrag>
+#include <QHeaderView>
+#include <QLineEdit>
+#include <QMenu>
+#include <QMessageBox>
+#include <QToolTip>
+#include <QVBoxLayout>
+
 #include "AnnotationsTreeView.h"
 
 #include "AnnotatedDNAView.h"
@@ -53,25 +66,6 @@
 #include <U2Gui/CreateAnnotationWidgetController.h>
 
 #include <U2Gui/TreeWidgetUtils.h>
-
-#include <QtCore/QFileInfo>
-#include <QtGui/QPainter>
-#include <QtGui/QClipboard>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLineEdit>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QMenu>
-#include <QtGui/QMessageBox>
-#include <QtGui/QHeaderView>
-#include <QtGui/QToolTip>
-#else
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QToolTip>
-#endif
 
 /* TRANSLATOR U2::AnnotationsTreeView */
 

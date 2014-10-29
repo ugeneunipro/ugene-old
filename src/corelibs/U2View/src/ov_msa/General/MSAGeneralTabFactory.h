@@ -22,29 +22,19 @@
 #ifndef _U2_MSA_GENERAL_FACTORY_TAB_H_
 #define _U2_MSA_GENERAL_FACTORY_TAB_H_
 
-#include <U2Core/global.h>
-
 #include <U2Gui/OPWidgetFactory.h>
-
-#include <U2View/MSAEditor.h>
-
-#include <QtGui/QPixmap>
-
 
 namespace U2 {
 
-class U2VIEW_EXPORT MSAGeneralTabFactory : public OPWidgetFactory
-{
+class U2VIEW_EXPORT MSAGeneralTabFactory : public OPWidgetFactory {
     Q_OBJECT
 public:
     MSAGeneralTabFactory();
-    virtual ~MSAGeneralTabFactory(){}
 
-    virtual QWidget* createWidget(GObjectView* objView);
+    QWidget * createWidget(GObjectView* objView);
+    OPGroupParameters getOPGroupParameters();
 
-    virtual OPGroupParameters getOPGroupParameters();
-
-    static const QString& getGroupId() { return GROUP_ID; }
+    static const QString & getGroupId();
 
 private:
     static const QString GROUP_ID;

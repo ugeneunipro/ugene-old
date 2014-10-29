@@ -80,9 +80,22 @@
 
 #include <U2Formats/ConvertFileTask.h>
 
-#include <U2View/MSAColorScheme.h>
+#include <U2View/AnnotHighlightWidgetFactory.h>
+#include <U2View/AssemblyInfoWidget.h>
+#include <U2View/AssemblyNavigationWidget.h>
+#include <U2View/AssemblySettingsWidget.h>
+#include <U2View/DasWidgetFactory.h>
 #include <U2View/DnaAssemblyUtils.h>
-#include <U2View/Init.h>
+#include <U2View/FindPatternWidgetFactory.h>
+#include <U2View/MSAColorScheme.h>
+#include <U2View/MSAExportConsensusTabFactory.h>
+#include <U2View/MSAGeneralTabFactory.h>
+#include <U2View/MSAHighlightingTabFactory.h>
+#include <U2View/PairAlignFactory.h>
+#include <U2View/RefSeqCommonWidget.h>
+#include <U2View/SeqStatisticsWidgetFactory.h>
+#include <U2View/SequenceInfoFactory.h>
+#include <U2View/TreeOptionsWidgetFactory.h>
 
 #include <U2Test/GTestFrameworkComponents.h>
 #include <U2Test/XMLTestFormat.h>
@@ -207,6 +220,50 @@ static void initLogsCache(LogCacheExt& logsCache, const QStringList& ) {
     if(ls.toFile){
         logsCache.setFileOutputEnabled(ls.outputFile);
     }
+}
+
+static void initOptionsPanels() {
+    OPWidgetFactoryRegistry *opWidgetFactoryRegistry = AppContext::getOPWidgetFactoryRegistry();
+    OPCommonWidgetFactoryRegistry *opCommonWidgetFactoryRegistry = AppContext::getOPCommonWidgetFactoryRegistry();
+
+    // Sequence View groups
+    opWidgetFactoryRegistry->registerFactory(new FindPatternWidgetFactory());
+    opWidgetFactoryRegistry->registerFactory(new AnnotHighlightWidgetFactory());
+    opWidgetFactoryRegistry->registerFactory(new SequenceInfoFactory());
+
+    opWidgetFactoryRegistry->registerFactory(new DasWidgetFactory());
+
+    // Assembly Browser groups
+    opWidgetFactoryRegistry->registerFactory(new AssemblyNavigationWidgetFactory());
+    opWidgetFactoryRegistry->registerFactory(new AssemblyInfoWidgetFactory());
+    opWidgetFactoryRegistry->registerFactory(new AssemblySettingsWidgetFactory());
+
+    //MSA groups
+    MSAGeneralTabFactory *msaGeneralTabFactory = new MSAGeneralTabFactory();
+    QString msaGeneralId = msaGeneralTabFactory->getOPGroupParameters().getGroupId();
+    opWidgetFactoryRegistry->registerFactory(msaGeneralTabFactory);
+
+    MSAHighlightingFactory *msaHighlightingFactory = new MSAHighlightingFactory();
+    QString msaHighlightingId = msaHighlightingFactory->getOPGroupParameters().getGroupId();
+    opWidgetFactoryRegistry->registerFactory(msaHighlightingFactory);
+
+    opWidgetFactoryRegistry->registerFactory(new PairAlignFactory());
+    opWidgetFactoryRegistry->registerFactory(new MSATreeOptionsWidgetFactory());
+    opWidgetFactoryRegistry->registerFactory(new AddTreeWidgetFactory());
+    opWidgetFactoryRegistry->registerFactory(new MSAExportConsensusFactoryTab());
+
+    SeqStatisticsWidgetFactory *msaSeqStatisticvsFactory = new SeqStatisticsWidgetFactory();
+    QString msaSeqStatisticsId = msaSeqStatisticvsFactory->getOPGroupParameters().getGroupId();
+    opWidgetFactoryRegistry->registerFactory(msaSeqStatisticvsFactory);
+
+    // MSA common widgets
+    QList<QString> groupIds;
+    groupIds << msaHighlightingId << msaSeqStatisticsId << msaGeneralId;
+    RefSeqCommonWidgetFactory *refSeqCommonWidget = new RefSeqCommonWidgetFactory(groupIds);
+    opCommonWidgetFactoryRegistry->registerFactory(refSeqCommonWidget);
+
+    //Tree View groups
+    opWidgetFactoryRegistry->registerFactory(new TreeOptionsWidgetFactory());
 }
 
 class GApplication: public QApplication {
@@ -608,7 +665,7 @@ int main(int argc, char **argv)
     }
 
     // Register all Options Panel groups on the required GObjectViews
-    Init::initOptionsPanels();
+    initOptionsPanels();
 
     if(!cmdLineRegistry->hasParameter(CMDLineCoreOptions::LAUNCH_GUI_TEST)) {
         QStringList urls = CMDLineRegistryUtils::getPureValues();

@@ -23,13 +23,9 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QLayout>
-#else
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLayout>
-#endif
+#include <QHBoxLayout>
+#include <QLayout>
+#include <QMessageBox>
 
 #include <U2Algorithm/BuiltInDistanceAlgorithms.h>
 #include <U2Algorithm/MSADistanceAlgorithm.h>
@@ -55,7 +51,9 @@
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
 #include <U2Gui/U2FileDialog.h>
+#include <U2Gui/U2WidgetStateStorage.h>
 
+#include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorNameList.h>
 #include <U2View/MSAEditorSequenceArea.h>
 #include <U2View/PairwiseAlignmentGUIExtension.h>
@@ -71,12 +69,14 @@ inline U2::U2DataId getSequenceIdByRowId( U2::MSAEditor* msa, qint64 rowId, U2::
 
 namespace U2 {
 
-PairAlign::PairAlign(MSAEditor* _msa) : msa(_msa), pairwiseAlignmentWidgetsSettings(_msa->getPairwiseAlignmentWidgetsSettings()),
+PairAlign::PairAlign(MSAEditor* _msa)
+    : msa(_msa), pairwiseAlignmentWidgetsSettings(_msa->getPairwiseAlignmentWidgetsSettings()),
     distanceCalcTask(NULL), settingsWidget(NULL),
     showHideSequenceWidget(NULL), showHideSettingsWidget(NULL), showHideOutputWidget(NULL),
     showSequenceWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showSequenceWidget),
     showAlgorithmWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showAlgorithmWidget),
     showOutputWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showOutputWidget),
+    savableTab(this, GObjectViewUtils::findViewByName(_msa->getName())),
     firstSequenceSelectionOn(false), secondSequenceSelectionOn(false),
     sequencesChanged(true), sequenceNamesIsOk(false), alphabetIsOk(false)
 {
@@ -96,6 +96,8 @@ PairAlign::PairAlign(MSAEditor* _msa) : msa(_msa), pairwiseAlignmentWidgetsSetti
     initLayout();
     connectSignals();
     initParameters();
+
+    U2WidgetStateStorage::restoreWidgetState(savableTab);
 
     checkState();
 }

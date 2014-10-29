@@ -22,17 +22,13 @@
 #ifndef _U2_OPTIONS_PANEL_H_
 #define _U2_OPTIONS_PANEL_H_
 
-#include "OptionsPanelGroup.h"
-#include "OptionsPanelWidget.h"
-
 #include <U2Core/global.h>
 
-#include <U2Gui/ObjectViewModel.h>
-
-#include <U2Gui/OPWidgetFactory.h>
-
-
 namespace U2 {
+
+class GObjectView;
+class OptionsPanelWidget;
+class OPWidgetFactory;
 
 /**
  * Provides interface between instances that want to use an options panel and

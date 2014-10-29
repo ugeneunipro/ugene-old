@@ -22,39 +22,35 @@
 #ifndef __ASSEMBLY_NAVIGATION_WIDGET_H__
 #define __ASSEMBLY_NAVIGATION_WIDGET_H__
 
-#include <U2Core/global.h>
+#include <QLabel>
 
 #include <U2Gui/OPWidgetFactory.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QtGui>
-#else
-#include <QtWidgets/QtWidgets>
-#endif
-
 
 namespace U2 {
 
 class AssemblyBrowser;
+class AssemblyOptionsPanelSavableTab;
 class PositionSelector;
 
 class AssemblyNavigationWidget : public QWidget {
     Q_OBJECT
 public:
-    AssemblyNavigationWidget(AssemblyBrowser * browser, QWidget *p = NULL);
+    AssemblyNavigationWidget(AssemblyBrowser *browser, QWidget *p = NULL);
+    ~AssemblyNavigationWidget();
 
 public slots:
-        void sl_updateZoomingState();
+    void sl_updateZoomingState();
 
 private:
-    AssemblyBrowser * browser;
-    PositionSelector * posSelector;
+    AssemblyBrowser *browser;
+    PositionSelector *posSelector;
+    AssemblyOptionsPanelSavableTab *savableTab;
 };
 
 class CoveredRegionsLabel : public QLabel {
     Q_OBJECT
 public:
-    CoveredRegionsLabel(AssemblyBrowser * browser, QWidget *p = NULL);
+    CoveredRegionsLabel(AssemblyBrowser *browser, QWidget *p = NULL);
 
     void setAdditionalText(QString prefix, QString postfix);
 
@@ -62,21 +58,18 @@ public slots:
     void sl_updateContent();
 
 private:
-    AssemblyBrowser * browser;
+    AssemblyBrowser *browser;
     QString prefix;
     QString postfix;
 };
 
-class U2VIEW_EXPORT AssemblyNavigationWidgetFactory : public OPWidgetFactory
-{
+class U2VIEW_EXPORT AssemblyNavigationWidgetFactory : public OPWidgetFactory {
     Q_OBJECT
 public:
     AssemblyNavigationWidgetFactory();
-    virtual ~AssemblyNavigationWidgetFactory(){}
 
-    virtual QWidget* createWidget(GObjectView* objView);
-
-    virtual OPGroupParameters getOPGroupParameters();
+    QWidget * createWidget(GObjectView *objView);
+    OPGroupParameters getOPGroupParameters();
 
 private:
     static const QString GROUP_ID;
@@ -85,6 +78,6 @@ private:
     static const QString GROUP_DOC_PAGE;
 };
 
-} // namespace
+} // namespace U2
 
-#endif // #ifndef __ASSEMBLY_NAVIGATION_WIDGET_H__
+#endif // __ASSEMBLY_NAVIGATION_WIDGET_H__

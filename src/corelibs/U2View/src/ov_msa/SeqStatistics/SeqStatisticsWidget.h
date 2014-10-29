@@ -22,20 +22,19 @@
 #ifndef _U2_SEQ_STATISTICS_WIDGET_H_
 #define _U2_SEQ_STATISTICS_WIDGET_H_
 
-#include <QtGui/QtGui>
-#include <U2View/MSAEditor.h>
-#include "ui/ui_MSADistancesColumnSettingsWidget.h"
+#include "../MsaOptionsPanelSavableTab.h"
 
+#include "ui/ui_MSADistancesColumnSettingsWidget.h"
 
 namespace U2 {
 
+class MSAEditor;
+class MSAEditorUI;
 class SimilarityStatisticsSettings;
 
-class U2VIEW_EXPORT SeqStatisticsWidget : public QWidget
-{
+class U2VIEW_EXPORT SeqStatisticsWidget : public QWidget {
     Q_OBJECT
 public:
-
     SeqStatisticsWidget(MSAEditor* msa);
 
 private slots:
@@ -55,6 +54,7 @@ private:
     void restoreSettings();
 
     void updateWidgetsSettings();
+
 private:
     Ui_MSADistanceColumnSettingsForm ui;
 
@@ -65,7 +65,10 @@ private:
 
     SimilarityStatisticsSettings *settings;
     bool    statisticsIsShown;
+
+    MsaOptionsPanelSavableTab savableTab;
 };
+
 } // namespace
 
 #endif

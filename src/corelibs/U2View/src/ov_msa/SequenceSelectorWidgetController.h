@@ -39,7 +39,7 @@ public:
     QString text() const;
 
     void setSequenceId(qint64 newId);
-    qint64 sequenceId( ) const;
+    qint64 sequenceId() const;
 
 signals:
     void si_selectionChanged();

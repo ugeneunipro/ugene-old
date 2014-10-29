@@ -22,15 +22,11 @@
 #ifndef _U2_OP_WIDGET_FACTORY_H_
 #define _U2_OP_WIDGET_FACTORY_H_
 
-#include <U2Core/global.h>
-
 #include <U2Gui/ObjectViewModel.h>
 
 #include <QtGui/QPixmap>
 
-
 namespace U2 {
-
 
 enum ObjectViewType {ObjViewType_SequenceView, ObjViewType_AlignmentEditor, ObjViewType_AssemblyBrowser, ObjViewType_PhylogeneticTree};
 

@@ -19,16 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#include "OptionsPanel.h"
-
 #include <U2Core/AppContext.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/OPWidgetFactory.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
 
+#include "GroupHeaderImageWidget.h"
+#include "OptionsPanelWidget.h"
+
+#include "OptionsPanel.h"
 
 namespace U2 {
-
 
 OptionsPanel::OptionsPanel(GObjectView* _objView)
     : objView(_objView)
@@ -36,22 +38,17 @@ OptionsPanel::OptionsPanel(GObjectView* _objView)
     widget = new OptionsPanelWidget();
 }
 
-OptionsPanel::~OptionsPanel()
-{
-    if (0 == widget->parentWidget()) {
+OptionsPanel::~OptionsPanel() {
+    if (NULL == widget->parentWidget()) {
         delete widget;
     }
 }
 
-
-QWidget* OptionsPanel::getMainWidget()
-{
+QWidget* OptionsPanel::getMainWidget() {
     return widget;
 }
 
-
-void OptionsPanel::addGroup(OPWidgetFactory* factory)
-{
+void OptionsPanel::addGroup(OPWidgetFactory* factory) {
     // Create a widget with icon at the right side
     OPGroupParameters groupParameters = factory->getOPGroupParameters();
     GroupHeaderImageWidget* headerImageWidget =
@@ -67,14 +64,11 @@ void OptionsPanel::addGroup(OPWidgetFactory* factory)
     opWidgetFactories.append(factory);
 }
 
-
-void OptionsPanel::openGroupById(const QString& groupId)
-{
+void OptionsPanel::openGroupById(const QString& groupId) {
     if (OPMainWidgetState_Closed == widget->getState()) {
         widget->openOptionsPanel();
         openOptionsGroup(groupId);
-    }
-    else {
+    } else {
         if (activeGroupId != groupId) {
             closeOptionsGroup(activeGroupId);
         }
@@ -82,15 +76,12 @@ void OptionsPanel::openGroupById(const QString& groupId)
     }
 }
 
-
-void OptionsPanel::sl_groupHeaderPressed(QString groupId)
-{
+void OptionsPanel::sl_groupHeaderPressed(QString groupId) {
     OPWidgetFactory* opWidgetFactory = findFactoryByGroupId(groupId);
     SAFE_POINT(NULL != opWidgetFactory,
         QString("Internal error: can't open a group with ID '%1' on the Options Panel.").arg(groupId),);
 
     // Implement the logic of the groups opening/closing
-    //
     if (OPMainWidgetState_Closed == widget->getState()) {
         widget->openOptionsPanel();
         openOptionsGroup(groupId);
@@ -102,18 +93,13 @@ void OptionsPanel::sl_groupHeaderPressed(QString groupId)
         widget->closeOptionsPanel();
         closeOptionsGroup(groupId);
         return;
-    }
-    // Another group has been selected
-    else
-    {
+    } else { // Another group has been selected
         closeOptionsGroup(activeGroupId);
         openOptionsGroup(groupId);
     }
 }
 
-
-void OptionsPanel::openOptionsGroup(const QString& groupId)
-{
+void OptionsPanel::openOptionsGroup(const QString& groupId) {
     SAFE_POINT(!groupId.isEmpty(), "Empty 'groupId'!", );
 
     if (activeGroupId == groupId) {
@@ -149,9 +135,7 @@ void OptionsPanel::openOptionsGroup(const QString& groupId)
     activeGroupId = groupId;
 }
 
-
-void OptionsPanel::closeOptionsGroup(const QString& groupId)
-{
+void OptionsPanel::closeOptionsGroup(const QString& groupId) {
     if (activeGroupId != groupId || groupId.isEmpty()) {
         return;
     }
@@ -169,9 +153,7 @@ void OptionsPanel::closeOptionsGroup(const QString& groupId)
     activeGroupId = "";
 }
 
-
-OPWidgetFactory* OptionsPanel::findFactoryByGroupId(const QString& groupId)
-{
+OPWidgetFactory* OptionsPanel::findFactoryByGroupId(const QString& groupId) {
     foreach (OPWidgetFactory* factory, opWidgetFactories) {
         OPGroupParameters parameters = factory->getOPGroupParameters();
         if (parameters.getGroupId() == groupId) {
@@ -182,5 +164,4 @@ OPWidgetFactory* OptionsPanel::findFactoryByGroupId(const QString& groupId)
     return NULL;
 }
 
-
-} // namespace
+} // namespace U2

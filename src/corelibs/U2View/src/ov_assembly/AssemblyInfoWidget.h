@@ -22,34 +22,30 @@
 #ifndef __ASSEMBLY_INFO_WIDGET_H__
 #define __ASSEMBLY_INFO_WIDGET_H__
 
-#include <U2Core/global.h>
-#include <U2Core/U2Region.h>
-
 #include <U2Gui/OPWidgetFactory.h>
-
-#include <QtGui/QtGui>
-
 
 namespace U2 {
 
 class AssemblyBrowser;
+class AssemblyOptionsPanelSavableTab;
 
 class AssemblyInfoWidget : public QWidget {
     Q_OBJECT
 public:
     AssemblyInfoWidget(AssemblyBrowser * browser, QWidget *p = NULL);
+    ~AssemblyInfoWidget();
+
+private:
+    AssemblyOptionsPanelSavableTab *savableTab;
 };
 
-class U2VIEW_EXPORT AssemblyInfoWidgetFactory : public OPWidgetFactory
-{
+class U2VIEW_EXPORT AssemblyInfoWidgetFactory : public OPWidgetFactory {
     Q_OBJECT
 public:
     AssemblyInfoWidgetFactory();
-    virtual ~AssemblyInfoWidgetFactory(){}
 
-    virtual QWidget* createWidget(GObjectView* objView);
-
-    virtual OPGroupParameters getOPGroupParameters();
+    QWidget* createWidget(GObjectView* objView);
+    OPGroupParameters getOPGroupParameters();
 
 private:
     static const QString GROUP_ID;

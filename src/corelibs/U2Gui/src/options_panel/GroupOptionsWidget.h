@@ -22,19 +22,19 @@
 #ifndef _U2_GROUP_OPTIONS_WIDGET_H_
 #define _U2_GROUP_OPTIONS_WIDGET_H_
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QtGui>
-#else
-#include <QtWidgets/QtWidgets>
-#endif
+#include <QWidget>
+
+#include <U2Core/global.h>
+
+class QLabel;
+class QVBoxLayout;
 
 namespace U2 {
 
 /**
  * Widget with some options shown when a group header has been pressed.
  */
-class GroupOptionsWidget : public QWidget
+class U2GUI_EXPORT GroupOptionsWidget : public QWidget
 {
 public:
     GroupOptionsWidget(const QString& groupId, const QString& title, const QString& documentationPage, QWidget* widget);
@@ -42,7 +42,6 @@ public:
     inline const QString& getGroupId() { return groupId; }
     inline static int getWidgetWidth() { return WIDGET_WIDTH; }
     inline const QString& getTitle() { return title; }
-
 
 private:
     QString     groupId;

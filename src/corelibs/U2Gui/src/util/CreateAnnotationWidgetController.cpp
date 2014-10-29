@@ -19,48 +19,48 @@
  * MA 02110-1301, USA.
  */
 
-#include "CreateAnnotationWidgetController.h"
-
-#include "GObjectComboBoxController.h"
-#include <U2Gui/DialogUtils.h>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QGridLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMenu>
+#include <QRadioButton>
+#include <QToolButton>
+#include <QVBoxLayout>
 
 #include <U2Core/Annotation.h>
 #include <U2Core/AnnotationGroup.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/IOAdapter.h>
-#include <U2Core/AnnotationTableObject.h>
-#include <U2Core/ProjectModel.h>
-#include <U2Core/Task.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/Settings.h>
 #include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
+#include <U2Core/ProjectModel.h>
+#include <U2Core/Task.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/Settings.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2Region.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Formats/GenbankLocationParser.h>
 #include <U2Formats/GenbankFeatures.h>
 
-#include <U2Core/GObjectUtils.h>
-
+#include <U2Gui/DialogUtils.h>
+#include <U2Gui/GUIUtils.h>
 #include <U2Gui/ProjectTreeController.h>
 #include <U2Gui/ProjectTreeItemSelectorDialog.h>
-#include <U2Gui/GUIUtils.h>
-#include <U2Core/TextUtils.h>
+#include <U2Gui/ShowHideSubgroupWidget.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QGridLayout>
-#include <QtGui/QGroupBox>
-#else
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
-#endif
+#include "GObjectComboBoxController.h"
 
-//#define SETTINGS_LAST_USED_ANNOTATION_NAME "create_annotation/last_name"
+#include "CreateAnnotationWidgetController.h"
+
 #define SETTINGS_LASTDIR "create_annotation/last_dir"
 
 namespace U2 {
@@ -225,6 +225,10 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
     } else {
         annotParamsWidget->show();
     }
+}
+
+void CreateAnnotationWidgetController::setUsePatternNameCheckBoxVisible() {
+    usePatternNamesCheckBox->setVisible(true);
 }
 
 void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMode)
@@ -540,7 +544,7 @@ QString CreateAnnotationWidgetController::validate() {
         return INVALID_LOCATION;
     }
     if (!model.hideLocation){
-        foreach ( const U2Region &reg, model.data.getRegions( ) ) {
+        foreach (const U2Region &reg, model.data.getRegions()) {
             if( reg.endPos() > model.sequenceLen || reg.startPos < 0 || reg.endPos() < reg.startPos) {
                 return INVALID_LOCATION;
             }
@@ -549,7 +553,6 @@ QString CreateAnnotationWidgetController::validate() {
 
     return QString::null;
 }
-
 
 void CreateAnnotationWidgetController::updateModel(bool forValidation) {
     SAFE_POINT(annotationNameEdit != NULL, "CreateAnnotationWidgetController::updateModel no widget", );

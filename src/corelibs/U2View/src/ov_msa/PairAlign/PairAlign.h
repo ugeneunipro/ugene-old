@@ -23,6 +23,7 @@
 #define _U2_PAIR_ALIGN_H
 
 #include "ui/ui_PairwiseAlignmentOptionsPanelWidget.h"
+#include "../MsaOptionsPanelSavableTab.h"
 #include "../SequenceSelectorWidgetController.h"
 
 #include <QtCore/QList>
@@ -51,8 +52,6 @@
 #include <QtWidgets/QVBoxLayout>
 #endif
 
-#include <U2View/MSAEditor.h>
-
 #include <U2Gui/SuggestCompleter.h>
 
 namespace U2 {
@@ -61,6 +60,7 @@ class PairwiseAlignmentMainWidget;
 class PairwiseAlignmentTaskSettings;
 class MAlignment;
 class MAlignmentModInfo;
+class MSAEditor;
 class ShowHideSubgroupWidget;
 class MSADistanceAlgorithm;
 
@@ -106,6 +106,8 @@ private:
 
     SequenceSelectorWidgetController *firstSeqSelectorWC;
     SequenceSelectorWidgetController *secondSeqSelectorWC;
+
+    MsaOptionsPanelSavableTab savableTab;
 
     bool showSequenceWidget;
     bool showAlgorithmWidget;

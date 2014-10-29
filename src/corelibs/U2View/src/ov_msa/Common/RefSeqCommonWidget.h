@@ -22,20 +22,15 @@
 #ifndef _U2_MSA_REF_SEQ_COMMON_WIDGET_H_
 #define _U2_MSA_REF_SEQ_COMMON_WIDGET_H_
 
-#include "../SequenceSelectorWidgetController.h"
-
-#include <U2Core/global.h>
-
 #include <U2Gui/OPWidgetFactory.h>
-
-#include <U2View/MSAEditor.h>
-
 
 namespace U2 {
 
+class MSAEditor;
+class SequenceSelectorWidgetController;
+
 /** Reference Sequence is a common widget in the Alignment Editor */
-class RefSeqCommonWidget : public QWidget
-{
+class RefSeqCommonWidget : public QWidget {
     Q_OBJECT
 public:
     RefSeqCommonWidget(MSAEditor *msaEditor);
@@ -50,8 +45,7 @@ private:
     SequenceSelectorWidgetController *reSeqSelector;
 };
 
-class U2VIEW_EXPORT RefSeqCommonWidgetFactory : public OPCommonWidgetFactory
-{
+class U2VIEW_EXPORT RefSeqCommonWidgetFactory : public OPCommonWidgetFactory {
     Q_OBJECT
 public:
     RefSeqCommonWidgetFactory(QList<QString> groups);
@@ -60,6 +54,6 @@ public:
     virtual QWidget* createWidget(GObjectView *objView);
 };
 
-} // namespace
+} // namespace U2
 
-#endif
+#endif // _U2_MSA_REF_SEQ_COMMON_WIDGET_H_

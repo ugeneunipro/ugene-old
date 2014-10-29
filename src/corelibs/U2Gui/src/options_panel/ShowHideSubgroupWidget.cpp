@@ -19,17 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#include "ShowHideSubgroupWidget.h"
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QMovie>
+#include <QTimer>
+#include <QVBoxLayout>
 
 #include <U2Core/U2SafePoints.h>
 
+#include "ShowHideSubgroupWidget.h"
 
 namespace U2 {
 
-ShowHideSubgroupWidget::ShowHideSubgroupWidget(
-    QString _id, QString caption, QWidget* _innerWidget, bool isOpened)
-    : subgroupId(_id),
-      innerWidget(_innerWidget)
+ShowHideSubgroupWidget::ShowHideSubgroupWidget(const QString &_id, const QString &caption, QWidget* _innerWidget, bool isOpened)
+    : subgroupId(_id), innerWidget(_innerWidget)
 {
     QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->setContentsMargins(0, 10, 0, 0);
@@ -39,67 +42,51 @@ ShowHideSubgroupWidget::ShowHideSubgroupWidget(
     innerWidget->setContentsMargins(17, 5, 5, 5);
 
     arrowHeaderWidget = new ArrowHeaderWidget(caption, isOpened);
-    connect(arrowHeaderWidget, SIGNAL(si_arrowHeaderPressed(bool)),
-        this, SLOT(updateSubgroupState(bool)));
+    connect(arrowHeaderWidget, SIGNAL(si_arrowHeaderPressed(bool)), SLOT(updateSubgroupState(bool)));
     updateSubgroupState(isOpened);
 
     mainLayout->addWidget(arrowHeaderWidget);
     mainLayout->addWidget(innerWidget);
 
     setLayout(mainLayout);
+
+    setObjectName(subgroupId);
 }
 
-
-void ShowHideSubgroupWidget::updateSubgroupState(bool isSubgroupOpened)
-{
-    if (isSubgroupOpened)
-    {
-        innerWidget->show();
-    }
-    else
-    {
-        innerWidget->hide();
-    }
-
+void ShowHideSubgroupWidget::updateSubgroupState(bool isSubgroupOpened) {
+    innerWidget->setVisible(isSubgroupOpened);
     emit si_subgroupStateChanged(subgroupId);
 }
 
-
-bool ShowHideSubgroupWidget::isSubgroupOpened()
-{
+bool ShowHideSubgroupWidget::isSubgroupOpened() const {
     SAFE_POINT(0 != arrowHeaderWidget, "The arrow header widget hasn't been created, but it is used.", false);
-
     return arrowHeaderWidget->isArrowOpened();
 }
 
+void ShowHideSubgroupWidget::setSubgroupOpened(bool open) {
+    arrowHeaderWidget->setOpened(open);
+}
 
-void ShowHideSubgroupWidget::showProgress()
-{
+void ShowHideSubgroupWidget::showProgress() {
     arrowHeaderWidget->showProgressWithTimeout();
 }
 
-
-void ShowHideSubgroupWidget::hideProgress()
-{
+void ShowHideSubgroupWidget::hideProgress() {
     arrowHeaderWidget->hideProgress();
 }
 
 void ShowHideSubgroupWidget::setPermanentlyOpen(bool isOpened) {
     arrowHeaderWidget->setOpened(isOpened);
     if (isOpened) {
-        disconnect(arrowHeaderWidget, SIGNAL(si_arrowHeaderPressed(bool)),
-            this, SLOT(updateSubgroupState(bool)));
-
+        disconnect(arrowHeaderWidget, SIGNAL(si_arrowHeaderPressed(bool)), this, SLOT(updateSubgroupState(bool)));
         arrowHeaderWidget->setAttribute(Qt::WA_TransparentForMouseEvents);
     } else {
-        connect(arrowHeaderWidget, SIGNAL(si_arrowHeaderPressed(bool)),
-            this, SLOT(updateSubgroupState(bool)));
+        connect(arrowHeaderWidget, SIGNAL(si_arrowHeaderPressed(bool)), SLOT(updateSubgroupState(bool)));
         arrowHeaderWidget->setAttribute(Qt::WA_TransparentForMouseEvents, false);
     }
 }
 
-
-ArrowHeaderWidget::ArrowHeaderWidget(QString caption, bool _isOpened)
+ArrowHeaderWidget::ArrowHeaderWidget(const QString &caption, bool _isOpened)
     : isOpened(_isOpened)
 {
     QHBoxLayout* arrowHeaderLayout = new QHBoxLayout();
@@ -139,39 +126,31 @@ ArrowHeaderWidget::ArrowHeaderWidget(QString caption, bool _isOpened)
     setLayout(arrowHeaderLayout);
 }
 
-
-ArrowHeaderWidget::~ArrowHeaderWidget()
-{
+ArrowHeaderWidget::~ArrowHeaderWidget() {
     delete progressMovie;
 }
 
-void ArrowHeaderWidget::showProgressWithTimeout()
-{
+void ArrowHeaderWidget::showProgressWithTimeout() {
     QTimer* timeoutToStartProgress = new QTimer(this);
     connect(timeoutToStartProgress, SIGNAL(timeout()), SLOT(sl_showProgress()));
     timeoutToStartProgress->start(TIMEOUT);
     canStartProgress = true;
 }
 
-
-void ArrowHeaderWidget::sl_showProgress()
-{
+void ArrowHeaderWidget::sl_showProgress() {
     if (canStartProgress) {
         progressMovie->setPaused(false);
         progressMovieLabel->show();
     }
 }
 
-
-void ArrowHeaderWidget::hideProgress()
-{
+void ArrowHeaderWidget::hideProgress() {
     canStartProgress = false;
     progressMovieLabel->hide();
     progressMovie->setPaused(true);
 }
 
 void ArrowHeaderWidget::setOpened(bool _isOpened) {
-
     if (_isOpened != isOpened) {
         if (isOpened) {
             arrow->setPixmap(QPixmap(":core/images/arrow_right.png"));
@@ -185,9 +164,8 @@ void ArrowHeaderWidget::setOpened(bool _isOpened) {
 }
 
 
-void ArrowHeaderWidget::mousePressEvent(QMouseEvent * /* event */)
-{
+void ArrowHeaderWidget::mousePressEvent(QMouseEvent * /* event */) {
     setOpened(!isOpened);
 }
 
-} // namespace
+} // namespace U2

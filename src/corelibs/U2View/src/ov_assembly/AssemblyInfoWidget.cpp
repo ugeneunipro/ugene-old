@@ -19,17 +19,22 @@
  * MA 02110-1301, USA.
  */
 
+#include <QFormLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QVBoxLayout>
+
 #include "AssemblyInfoWidget.h"
 #include "AssemblyBrowser.h"
+#include "AssemblyOptionsPanelSavableTab.h"
 
 #include <U2Core/FormatUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
-
+#include <U2Gui/U2WidgetStateStorage.h>
 
 namespace U2 {
-
 
 namespace {
     const int MAX_FIELD_LEN = 12;
@@ -61,7 +66,7 @@ namespace {
 }
 
 AssemblyInfoWidget::AssemblyInfoWidget(AssemblyBrowser *browser, QWidget *p)
-    : QWidget(p)
+    : QWidget(p), savableTab(new AssemblyOptionsPanelSavableTab(this, GObjectViewUtils::findViewByName(browser->getName())))
 {
     QVBoxLayout* mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -106,6 +111,12 @@ AssemblyInfoWidget::AssemblyInfoWidget(AssemblyBrowser *browser, QWidget *p)
         QWidget * refGroup = new ShowHideSubgroupWidget("REFERENCE", tr("Reference Information"), refWidget, false);
         mainLayout->addWidget(refGroup);
     }
+
+    U2WidgetStateStorage::restoreWidgetState(*savableTab);
+}
+
+AssemblyInfoWidget::~AssemblyInfoWidget() {
+    delete savableTab;
 }
 
 //

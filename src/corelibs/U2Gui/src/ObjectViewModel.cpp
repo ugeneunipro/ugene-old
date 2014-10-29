@@ -298,8 +298,7 @@ GObjectViewWindow::GObjectViewWindow(GObjectView* v, const QString& _viewName, b
     
     // Set the layout of the whole window
     windowLayout->addLayout(objectLayout);
-    if (optionsPanel != NULL)
-    {
+    if (optionsPanel != NULL) {
         windowLayout->addWidget(optionsPanel->getMainWidget());
     }
     setLayout(windowLayout);
@@ -332,7 +331,6 @@ GObjectViewFactory* GObjectViewWindow::getViewFactory() const {
     return f;
 }
 
-
 void GObjectViewWindow::setupMDIToolbar(QToolBar* tb) {
     view->buildStaticToolbar(tb);
 }
@@ -340,7 +338,6 @@ void GObjectViewWindow::setupMDIToolbar(QToolBar* tb) {
 void GObjectViewWindow::setupViewMenu(QMenu* m) {
     view->buildStaticMenu(m);
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 /// Utils

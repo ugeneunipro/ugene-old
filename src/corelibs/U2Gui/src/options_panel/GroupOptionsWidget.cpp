@@ -19,12 +19,16 @@
  * MA 02110-1301, USA.
  */
 
-#include "GroupOptionsWidget.h"
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QSpacerItem>
+
 #include <U2Gui/HelpButton.h>
 
+#include "GroupOptionsWidget.h"
 
 namespace U2 {
-
 
 GroupOptionsWidget::GroupOptionsWidget(const QString& _groupId, const QString& _title, const QString& documentationPage, QWidget* _widget)
     : groupId(_groupId),

@@ -19,6 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include <QMessageBox>
+#include <QPushButton>
+
 #include "SaveGraphCutoffsDialogController.h"
 
 #include <U2View/ADVAnnotationCreation.h>
@@ -27,13 +30,7 @@
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/DNASequenceObject.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
 #include <U2Gui/HelpButton.h>
-
 
 namespace U2{
 

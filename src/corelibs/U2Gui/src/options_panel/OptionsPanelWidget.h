@@ -22,15 +22,16 @@
 #ifndef _U2_OPTIONS_PANEL_WIDGET_H_
 #define _U2_OPTIONS_PANEL_WIDGET_H_
 
-#include "GroupHeaderImageWidget.h"
-#include "GroupOptionsWidget.h"
-#include "OptionsPanelGroup.h"
+#include <QScrollArea>
 
-#include <QtGui/QtGui>
-#include <U2Core/global.h>
+#include <U2Gui/U2SavableWidget.h>
+
+class QVBoxLayout;
 
 namespace U2 {
 
+class GroupHeaderImageWidget;
+class GroupOptionsWidget;
 
 /**
  * Is used to add vertical scroll bar to the option groups (when needed)

@@ -19,12 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "MSAGeneralTab.h"
-#include "MSAGeneralTabFactory.h"
+#include <QPixmap>
 
 #include <U2Core/U2SafePoints.h>
 
-#include <QObject>
+#include <U2View/MSAEditor.h>
+
+#include "MSAGeneralTab.h"
+
+#include "MSAGeneralTabFactory.h"
 
 namespace U2 {
 
@@ -33,13 +36,11 @@ const QString MSAGeneralTabFactory::GROUP_ICON_STR = ":core/images/settings2.png
 const QString MSAGeneralTabFactory::GROUP_TITLE = QString(QObject::tr("General"));
 const QString MSAGeneralTabFactory::GROUP_DOC_PAGE = "4227438";
 
-
-MSAGeneralTabFactory::MSAGeneralTabFactory(){
+MSAGeneralTabFactory::MSAGeneralTabFactory() {
     objectViewOfWidget = ObjViewType_AlignmentEditor;
 }
 
-
-QWidget* MSAGeneralTabFactory::createWidget(GObjectView* objView){
+QWidget* MSAGeneralTabFactory::createWidget(GObjectView* objView) {
     SAFE_POINT(NULL != objView,
         QString("Internal error: unable to create widget for group '%1', object view is NULL.").arg(GROUP_ID),
         NULL);
@@ -54,10 +55,12 @@ QWidget* MSAGeneralTabFactory::createWidget(GObjectView* objView){
     return widget;
 }
 
+const QString & MSAGeneralTabFactory::getGroupId() {
+    return GROUP_ID;
+}
 
-OPGroupParameters MSAGeneralTabFactory::getOPGroupParameters(){
+OPGroupParameters MSAGeneralTabFactory::getOPGroupParameters() {
     return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE, GROUP_DOC_PAGE);
 }
 
-
-} // namespace
+} // namespace U2

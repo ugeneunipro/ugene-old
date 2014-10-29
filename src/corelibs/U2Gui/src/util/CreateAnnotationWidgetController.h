@@ -23,33 +23,21 @@
 #define _U2_CREATE_ANNOTATION_WIDGET_CONTROLLER_H_
 
 #include <U2Core/AnnotationData.h>
-#include <U2Core/U2Region.h>
-#include <U2Core/DocumentModel.h>
+#include <U2Core/GObjectReference.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QMenu>
-#include <QtGui/QRadioButton>
-#include <QtGui/QToolButton>
-#include <QtGui/QComboBox>
-#include <QtGui/QGroupBox>
-#else
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QRadioButton>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QGroupBox>
-#endif
-
-#include <U2Gui/ShowHideSubgroupWidget.h>
+class QCheckBox;
+class QComboBox;
+class QLabel;
+class QLineEdit;
+class QMenu;
+class QRadioButton;
+class QToolButton;
 
 namespace U2 {
 
-class GObjectComboBoxController;
 class AnnotationTableObject;
+class GObjectComboBoxController;
+class ShowHideSubgroupWidget;
 
 class U2GUI_EXPORT CreateAnnotationModel {
 public:
@@ -123,7 +111,7 @@ public:
     /** It is called from the constructor and updateWidgetForAnnotationModel(...) */
     void commonWidgetUpdate(const CreateAnnotationModel& model);
 
-    void setUsePatternNameCheckBoxVisible() { usePatternNamesCheckBox->setVisible(true); }
+    void setUsePatternNameCheckBoxVisible();
 
 signals:
     void si_annotationNamesEdited();

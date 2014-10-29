@@ -19,12 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "TreeOptionsWidgetFactory.h"
+#include <QPixmap>
 
 #include <U2Core/U2SafePoints.h>
-#include "ov_phyltree/TreeViewer.h"
 
-#include <QObject>
+#include "ov_msa/MSAEditor.h"
+#include "ov_phyltree/TreeViewer.h"
+#include "TreeOptionsWidget.h"
+
+#include "TreeOptionsWidgetFactory.h"
 
 namespace U2 {
 
@@ -34,13 +37,17 @@ const QString MSATreeOptionsWidgetFactory::GROUP_TITLE = QString(QObject::tr("Tr
 const QString MSATreeOptionsWidgetFactory::GROUP_DOC_PAGE = "4227569";
 
 
-MSATreeOptionsWidgetFactory::MSATreeOptionsWidgetFactory(){
+MSATreeOptionsWidgetFactory::MSATreeOptionsWidgetFactory()
+    : viewSettings(new TreeOpWidgetViewSettings)
+{
     objectViewOfWidget = ObjViewType_AlignmentEditor;
 }
 
+MSATreeOptionsWidgetFactory::~MSATreeOptionsWidgetFactory() {
+    delete viewSettings;
+}
 
-QWidget* MSATreeOptionsWidgetFactory::createWidget(GObjectView* objView)
-{
+QWidget* MSATreeOptionsWidgetFactory::createWidget(GObjectView* objView) {
     SAFE_POINT(NULL != objView,
         QString("Internal error: unable to create widget for group '%1', object view is NULL.").arg(GROUP_ID),
         NULL);
@@ -50,7 +57,8 @@ QWidget* MSATreeOptionsWidgetFactory::createWidget(GObjectView* objView)
         QString("Internal error: unable to cast object view to MSAEditor for group '%1'.").arg(GROUP_ID),
         NULL);
 
-    TreeOptionsWidget *treeOpWidget = new TreeOptionsWidget(msa, viewSettings);
+    SAFE_POINT(NULL != viewSettings, "Invalid tree view settings", NULL);
+    TreeOptionsWidget *treeOpWidget = new TreeOptionsWidget(msa, *viewSettings);
     connect(treeOpWidget, SIGNAL(saveViewSettings(const TreeOpWidgetViewSettings&)), SLOT(sl_onWidgetViewSaved(const TreeOpWidgetViewSettings&)));
     return treeOpWidget;
 }
@@ -60,7 +68,8 @@ OPGroupParameters MSATreeOptionsWidgetFactory::getOPGroupParameters(){
 }
 
 void MSATreeOptionsWidgetFactory::sl_onWidgetViewSaved(const TreeOpWidgetViewSettings& settings) {
-    viewSettings = settings;
+    delete viewSettings;
+    viewSettings = new TreeOpWidgetViewSettings(settings);
 }
 
 const QString TreeOptionsWidgetFactory::GROUP_ID = "OP_TREES_WIDGET";
@@ -68,8 +77,14 @@ const QString TreeOptionsWidgetFactory::GROUP_ICON_STR = ":core/images/tree.png"
 const QString TreeOptionsWidgetFactory::GROUP_TITLE = QString(QObject::tr("Tree Settings"));
 const QString TreeOptionsWidgetFactory::GROUP_DOC_PAGE = "4227569";
 
-TreeOptionsWidgetFactory::TreeOptionsWidgetFactory(){
+TreeOptionsWidgetFactory::TreeOptionsWidgetFactory()
+    : viewSettings(new TreeOpWidgetViewSettings)
+{
     objectViewOfWidget = ObjViewType_PhylogeneticTree;
+}
+
+TreeOptionsWidgetFactory::~TreeOptionsWidgetFactory() {
+    delete viewSettings;
 }
 
 QWidget* TreeOptionsWidgetFactory::createWidget(GObjectView* objView)
@@ -83,7 +98,8 @@ QWidget* TreeOptionsWidgetFactory::createWidget(GObjectView* objView)
         QString("Internal error: unable to cast object view to TreeViewer for group '%1'.").arg(GROUP_ID),
         NULL);
 
-    TreeOptionsWidget *treeOpWidget = new TreeOptionsWidget(treeView, viewSettings);
+    SAFE_POINT(NULL != viewSettings, "Invalid tree view settings", NULL);
+    TreeOptionsWidget *treeOpWidget = new TreeOptionsWidget(treeView, *viewSettings);
     connect(treeOpWidget, SIGNAL(saveViewSettings(const TreeOpWidgetViewSettings&)), SLOT(sl_onWidgetViewSaved(const TreeOpWidgetViewSettings&)));
 
     return treeOpWidget;
@@ -94,7 +110,8 @@ OPGroupParameters TreeOptionsWidgetFactory::getOPGroupParameters(){
 }
 
 void TreeOptionsWidgetFactory::sl_onWidgetViewSaved(const TreeOpWidgetViewSettings& settings) {
-    viewSettings = settings;
+    delete viewSettings;
+    viewSettings = new TreeOpWidgetViewSettings(settings);
 }
 
 const QString AddTreeWidgetFactory::GROUP_ID = "OP_MSA_ADD_TREE_WIDGET";
@@ -102,7 +119,7 @@ const QString AddTreeWidgetFactory::GROUP_ICON_STR = ":core/images/tree.png";
 const QString AddTreeWidgetFactory::GROUP_TITLE = QString(QObject::tr("Tree Settings"));
 const QString AddTreeWidgetFactory::GROUP_DOC_PAGE = "4227569";
 
-AddTreeWidgetFactory::AddTreeWidgetFactory(){
+AddTreeWidgetFactory::AddTreeWidgetFactory() {
     objectViewOfWidget = ObjViewType_AlignmentEditor;
 }
 

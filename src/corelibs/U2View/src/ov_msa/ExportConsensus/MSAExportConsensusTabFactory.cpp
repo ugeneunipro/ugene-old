@@ -19,12 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "MSAExportConsensusTabFactory.h"
-#include "MSAExportConsensusTab.h"
+#include <QtGui/QPixmap>
 
 #include <U2Core/U2SafePoints.h>
 
-#include <QtCore/QObject>
+#include <U2View/MSAEditor.h>
+
+#include "MSAExportConsensusTab.h"
+
+#include "MSAExportConsensusTabFactory.h"
 
 namespace U2 {
 
@@ -33,13 +36,11 @@ const QString MSAExportConsensusFactoryTab::GROUP_ICON_STR = ":core/images/conse
 const QString MSAExportConsensusFactoryTab::GROUP_TITLE = QObject::tr("Export Consensus");
 const QString MSAExportConsensusFactoryTab::GROUP_DOC_PAGE = "7667829";
 
-
-MSAExportConsensusFactoryTab::MSAExportConsensusFactoryTab(){
+MSAExportConsensusFactoryTab::MSAExportConsensusFactoryTab() {
     objectViewOfWidget = ObjViewType_AlignmentEditor;
 }
 
-
-QWidget* MSAExportConsensusFactoryTab::createWidget(GObjectView* objView){
+QWidget * MSAExportConsensusFactoryTab::createWidget(GObjectView* objView) {
     SAFE_POINT(NULL != objView,
         QString("Internal error: unable to create widget for group '%1', object view is NULL.").arg(GROUP_ID),
         NULL);
@@ -53,9 +54,8 @@ QWidget* MSAExportConsensusFactoryTab::createWidget(GObjectView* objView){
     return widget;
 }
 
-
-OPGroupParameters MSAExportConsensusFactoryTab::getOPGroupParameters(){
+OPGroupParameters MSAExportConsensusFactoryTab::getOPGroupParameters() {
     return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE, GROUP_DOC_PAGE);
 }
 
-} // namespace
+} // namespace U2

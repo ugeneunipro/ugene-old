@@ -22,24 +22,18 @@
 #ifndef _U2_TREES_OPTIONS_WIDGET_FACTORY_H_
 #define _U2_TREES_OPTIONS_WIDGET_FACTORY_H_
 
-#include <U2Core/global.h>
-
 #include <U2Gui/OPWidgetFactory.h>
 
-#include "ov_msa/MSAEditor.h"
-
-#include <QtGui/QPixmap>
-
-#include "TreeOptionsWidget.h"
-
 namespace U2 {
+
+struct TreeOpWidgetViewSettings;
 
 class U2VIEW_EXPORT MSATreeOptionsWidgetFactory : public OPWidgetFactory
 {
     Q_OBJECT
 public:
     MSATreeOptionsWidgetFactory();
-    virtual ~MSATreeOptionsWidgetFactory(){}
+    ~MSATreeOptionsWidgetFactory();
 
     virtual QWidget* createWidget(GObjectView* objView);
 
@@ -54,7 +48,7 @@ private:
     static const QString GROUP_TITLE;
     static const QString GROUP_DOC_PAGE;
 
-    TreeOpWidgetViewSettings viewSettings;
+    TreeOpWidgetViewSettings *viewSettings;
 };
 
 class U2VIEW_EXPORT TreeOptionsWidgetFactory : public OPWidgetFactory
@@ -62,7 +56,7 @@ class U2VIEW_EXPORT TreeOptionsWidgetFactory : public OPWidgetFactory
     Q_OBJECT
 public:
     TreeOptionsWidgetFactory();
-    virtual ~TreeOptionsWidgetFactory(){}
+    ~TreeOptionsWidgetFactory();
 
     virtual QWidget* createWidget(GObjectView* objView);
 
@@ -76,7 +70,7 @@ private:
     static const QString GROUP_TITLE;
     static const QString GROUP_DOC_PAGE;
 
-    TreeOpWidgetViewSettings viewSettings;
+    TreeOpWidgetViewSettings *viewSettings;
 };
 
 class U2VIEW_EXPORT AddTreeWidgetFactory : public OPWidgetFactory

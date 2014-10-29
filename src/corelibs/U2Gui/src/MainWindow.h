@@ -157,8 +157,8 @@ class U2GUI_EXPORT MWMDIWindow : public QWidget {
 
     friend class MWMDIManager;
 public:
-
     MWMDIWindow(const QString& _windowName);
+    ~MWMDIWindow();
 
     virtual void setupMDIToolbar(QToolBar*) {}
     virtual void setupViewMenu(QMenu*) {}

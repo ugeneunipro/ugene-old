@@ -19,22 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#include "MSAGeneralTab.h"
+#include <U2Core/AppContext.h>
+#include <U2Core/MAlignmentObject.h>
+
+#include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
-
-#include <U2Core/MAlignmentObject.h>
-#include <U2Core/AppContext.h>
+#include <U2Gui/U2WidgetStateStorage.h>
 
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorConsensusArea.h>
 
-#include <U2Algorithm/MSAConsensusAlgorithmRegistry.h>
-
+#include "MSAGeneralTab.h"
 
 namespace U2 {
 
-MSAGeneralTab::MSAGeneralTab(MSAEditor* _msa) : msa(_msa) {
+MSAGeneralTab::MSAGeneralTab(MSAEditor* _msa)
+    : msa(_msa), savableTab(this, GObjectViewUtils::findViewByName(_msa->getName()))
+{
     SAFE_POINT(NULL != msa, "MSA Editor not defined.", );
 
     setupUi(this);
@@ -46,6 +48,8 @@ MSAGeneralTab::MSAGeneralTab(MSAEditor* _msa) : msa(_msa) {
 
     initializeParameters();
     connectSignals();
+
+    U2WidgetStateStorage::restoreWidgetState(savableTab);
 }
 
 void MSAGeneralTab::sl_alignmentChanged(const MAlignment& al, const MAlignmentModInfo& modInfo) {

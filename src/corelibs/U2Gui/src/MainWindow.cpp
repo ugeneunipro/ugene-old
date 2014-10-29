@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Gui/U2WidgetStateStorage.h>
+
 #include "MainWindow.h"
 
 namespace U2 {
@@ -26,10 +28,15 @@ namespace U2 {
 //thread safe design in main thread model
 static int windowCounter = 0;
 
-MWMDIWindow::MWMDIWindow(const QString& windowName) : windowId(++windowCounter) 
-{ 
+MWMDIWindow::MWMDIWindow(const QString& windowName)
+    : windowId(++windowCounter)
+{
     setWindowTitle(windowName);
     setObjectName(windowName);
+}
+
+MWMDIWindow::~MWMDIWindow() {
+    U2WidgetStateStorage::onWindowClose(this);
 }
 
 } //namespace

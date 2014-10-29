@@ -22,11 +22,9 @@
 #ifndef _U2_MSA_GENERAL_TAB_H_
 #define _U2_MSA_GENERAL_TAB_H_
 
-#include <U2Core/global.h>
-
 #include "ui/ui_GeneralTabOptionsPanelWidget.h"
 
-#include <QtGui/QtGui>
+#include "../MsaOptionsPanelSavableTab.h"
 
 namespace U2 {
 
@@ -34,8 +32,7 @@ class MAlignment;
 class MAlignmentModInfo;
 class MSAEditor;
 
-class U2VIEW_EXPORT MSAGeneralTab : public QWidget, public Ui_GeneralTabOptionsPanelWidget
-{
+class MSAGeneralTab : public QWidget, public Ui_GeneralTabOptionsPanelWidget {
     Q_OBJECT
 public:
     MSAGeneralTab(MSAEditor* _msa);
@@ -60,9 +57,9 @@ private:
     void updateThresholdState(bool enable, int minVal = 0, int maxVal = 0, int value = 0);
 
     MSAEditor* msa;
+    MsaOptionsPanelSavableTab savableTab;
 };
 
+} // namespace U2
 
-} // namespace
-
-#endif
+#endif // _U2_MSA_GENERAL_TAB_H_

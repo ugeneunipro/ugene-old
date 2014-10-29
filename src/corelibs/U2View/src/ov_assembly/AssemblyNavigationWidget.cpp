@@ -19,6 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include <QLabel>
+#include <QVBoxLayout>
+
 #include <U2Core/FormatUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2OpStatusUtils.h>
@@ -26,15 +29,17 @@
 
 #include <U2Gui/PositionSelector.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/U2WidgetStateStorage.h>
+
+#include "AssemblyBrowser.h"
+#include "AssemblyOptionsPanelSavableTab.h"
 
 #include "AssemblyNavigationWidget.h"
-#include "AssemblyBrowser.h"
 
 namespace U2 {
 
 AssemblyNavigationWidget::AssemblyNavigationWidget(AssemblyBrowser *_browser, QWidget *p)
-    : QWidget(p)
-    ,browser(_browser)
+    : QWidget(p), browser(_browser), savableTab(new AssemblyOptionsPanelSavableTab(this, GObjectViewUtils::findViewByName(_browser->getName())))
 {
     QVBoxLayout* mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -59,6 +64,12 @@ AssemblyNavigationWidget::AssemblyNavigationWidget(AssemblyBrowser *_browser, QW
     CoveredRegionsLabel * coveredLabel = new CoveredRegionsLabel(browser, this);
     QWidget * coveredGroup = new ShowHideSubgroupWidget("COVERED", tr("Most Covered Regions"), coveredLabel, true);
     mainLayout->addWidget(coveredGroup);
+
+    U2WidgetStateStorage::restoreWidgetState(*savableTab);
+}
+
+AssemblyNavigationWidget::~AssemblyNavigationWidget() {
+    delete savableTab;
 }
 
 void AssemblyNavigationWidget::sl_updateZoomingState(){
@@ -66,7 +77,6 @@ void AssemblyNavigationWidget::sl_updateZoomingState(){
         posSelector->setEnabled(browser->canPerformZoomOut());        
     }
 }
-
 
 // ----- CoveredRegionsLabel -----
 
@@ -120,7 +130,7 @@ void CoveredRegionsLabel::sl_updateContent() {
     setText(text);
 }
 
-//
+////////////////////////////////////
 // AssemblyNavigationWidgetFactory
 ////////////////////////////////////
 const QString AssemblyNavigationWidgetFactory::GROUP_ID = "OP_ASS_NAVIGATION";
@@ -128,15 +138,11 @@ const QString AssemblyNavigationWidgetFactory::GROUP_ICON_STR = ":core/images/go
 const QString AssemblyNavigationWidgetFactory::GROUP_TITLE = QString(QObject::tr("Navigation"));
 const QString AssemblyNavigationWidgetFactory::GROUP_DOC_PAGE = "4227555";
 
-
-AssemblyNavigationWidgetFactory::AssemblyNavigationWidgetFactory()
-{
+AssemblyNavigationWidgetFactory::AssemblyNavigationWidgetFactory() {
     objectViewOfWidget = ObjViewType_AssemblyBrowser;
 }
 
-
-QWidget* AssemblyNavigationWidgetFactory::createWidget(GObjectView* objView)
-{
+QWidget* AssemblyNavigationWidgetFactory::createWidget(GObjectView* objView) {
     SAFE_POINT(NULL != objView,
         QString("Internal error: unable to create widget for group '%1', object view is NULL.").arg(GROUP_ID),
         NULL);
@@ -150,13 +156,8 @@ QWidget* AssemblyNavigationWidgetFactory::createWidget(GObjectView* objView)
     return widget;
 }
 
-
-OPGroupParameters AssemblyNavigationWidgetFactory::getOPGroupParameters()
-{
+OPGroupParameters AssemblyNavigationWidgetFactory::getOPGroupParameters() {
     return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE, GROUP_DOC_PAGE);
 }
 
-
-
-
-} // namespace
+} // namespace U2

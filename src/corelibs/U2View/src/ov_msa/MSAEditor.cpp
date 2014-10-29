@@ -64,7 +64,10 @@
 #include <U2Gui/GUIUtils.h>
 #include <U2Gui/ExportImageDialog.h>
 #include <U2Gui/DialogUtils.h>
+#include <U2Gui/GroupHeaderImageWidget.h>
+#include <U2Gui/GroupOptionsWidget.h>
 #include <U2Gui/OptionsPanel.h>
+#include <U2Gui/OptionsPanelWidget.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
 #include <U2Gui/ExportDocumentDialogController.h>
 #include <U2Gui/ExportObjectUtils.h>

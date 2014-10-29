@@ -19,12 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "MSAHighlightingTab.h"
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/U2WidgetStateStorage.h>
+
 #include <U2View/MSAColorScheme.h>
+#include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorSequenceArea.h>
-#include <U2Core/AppContext.h>
+
+#include "MSAHighlightingTab.h"
 
 namespace U2 {
 
@@ -100,7 +103,9 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
     return group;
 }
 
-MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m):msa(m){
+MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m)
+    : msa(m), savableTab(this, GObjectViewUtils::findViewByName(m->getName()))
+{
     QVBoxLayout* mainLayout = initVBoxLayout(this);
     mainLayout->setSpacing(0);
 
@@ -128,6 +133,8 @@ MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m):msa(m){
     connect(exportHighlightning, SIGNAL(clicked()), SLOT(sl_exportHighlightningClicked()));
 
     sl_updateHint();
+
+    U2WidgetStateStorage::restoreWidgetState(savableTab);
 }
 
 void MSAHighlightingTab::initColorCB(){

@@ -19,12 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "SeqStatisticsWidget.h"
-#include "SeqStatisticsWidgetFactory.h"
+#include <QPixmap>
 
 #include <U2Core/U2SafePoints.h>
 
-#include <QObject>
+#include <U2View/MSAEditor.h>
+
+#include "SeqStatisticsWidget.h"
+
+#include "SeqStatisticsWidgetFactory.h"
 
 namespace U2 {
 
@@ -34,13 +37,11 @@ const QString SeqStatisticsWidgetFactory::GROUP_TITLE = QString(QObject::tr("Sta
 const QString SeqStatisticsWidgetFactory::GROUP_DOC_PAGE = "7667751";
 
 
-SeqStatisticsWidgetFactory::SeqStatisticsWidgetFactory(){
+SeqStatisticsWidgetFactory::SeqStatisticsWidgetFactory() {
     objectViewOfWidget = ObjViewType_AlignmentEditor;
 }
 
-
-QWidget* SeqStatisticsWidgetFactory::createWidget(GObjectView* objView)
-{
+QWidget * SeqStatisticsWidgetFactory::createWidget(GObjectView* objView) {
     SAFE_POINT(NULL != objView,
         QString("Internal error: unable to create widget for group '%1', object view is NULL.").arg(GROUP_ID),
         NULL);
@@ -54,10 +55,8 @@ QWidget* SeqStatisticsWidgetFactory::createWidget(GObjectView* objView)
     return SeqStatisticsWidgetWidget;
 }
 
-
-OPGroupParameters SeqStatisticsWidgetFactory::getOPGroupParameters(){
+OPGroupParameters SeqStatisticsWidgetFactory::getOPGroupParameters() {
     return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE, GROUP_DOC_PAGE);
 }
 
-
-} // namespace
+} // namespace U2

@@ -37,17 +37,15 @@ namespace U2 {
 MAlignmentRow::MAlignmentRow(const U2MsaRow& _rowInDb,
                              const DNASequence& _sequence,
                              const QList<U2MsaGap>& _gaps)
-: sequence(_sequence),
-  gaps(_gaps),
-  initialRowInDb(_rowInDb)
+    : sequence(_sequence), gaps(_gaps), initialRowInDb(_rowInDb)
 {
+
 }
 
 MAlignmentRow::MAlignmentRow()
-: sequence(DNASequence()),
-  initialRowInDb(U2MsaRow())
+    : sequence(DNASequence()), initialRowInDb(U2MsaRow())
 {
-    initialRowInDb.rowId = -1;
+    initialRowInDb.rowId = invalidRowId();
 }
 
 MAlignmentRow MAlignmentRow::createRow(const QString& name, const QByteArray& bytes, U2OpStatus& /* os */) {
@@ -58,7 +56,7 @@ MAlignmentRow MAlignmentRow::createRow(const QString& name, const QByteArray& by
     DNASequence newSequence(name, newSequenceBytes);
 
     U2MsaRow row;
-    row.rowId = -1;
+    row.rowId = invalidRowId();
 
     return MAlignmentRow(row, newSequence, newGapsModel);
 } 

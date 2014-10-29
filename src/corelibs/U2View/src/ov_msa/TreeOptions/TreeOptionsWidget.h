@@ -22,17 +22,20 @@
 #ifndef _U2_TREE_OPTIONS_WIDGET_H_
 #define _U2_TREE_OPTIONS_WIDGET_H_
 
-#include <QtGui/QtGui>
-#include "ov_phyltree/TreeSettings.h"
-#include "ov_msa/MSAEditor.h"
-#include "ov_msa/PhyTrees/MSAEditorTreeViewer.h"
-#include "ui/ui_TreeOptionsWidget.h"
+#include <U2Core/global.h>
 
+#include "../MsaOptionsPanelSavableTab.h"
+#include "ov_phyltree/TreeSettings.h"
+
+#include "ui/ui_TreeOptionsWidget.h"
 
 namespace U2 {
 
+class MSAEditor;
 class SimilarityStatisticsSettings;
 class ShowHideSubgroupWidget;
+class TreeViewer;
+class TreeViewerUI;
 
 struct TreeOpWidgetViewSettings {
     TreeOpWidgetViewSettings() 
@@ -103,6 +106,8 @@ private:
     bool showPenSettings;
 
     QWidget* contentWidget;
+
+    MsaOptionsPanelSavableTab savableTab;
 
     static const QString COLOR_BOX_STYLE;
 };

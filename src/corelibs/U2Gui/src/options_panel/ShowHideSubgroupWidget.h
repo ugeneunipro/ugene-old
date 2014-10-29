@@ -22,29 +22,24 @@
 #ifndef _U2_SHOW_HIDE_SUBGROUP_WIDGET_H_
 #define _U2_SHOW_HIDE_SUBGROUP_WIDGET_H_
 
+#include <QWidget>
+
 #include <U2Core/global.h>
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QtGui>
-#else
-#include <QtWidgets/QtWidgets>
-#endif
-
+class QLabel;
+class QMovie;
 
 namespace U2 {
 
-
 class ArrowHeaderWidget;
 
-
-class U2GUI_EXPORT ShowHideSubgroupWidget : public QWidget
-{
+class U2GUI_EXPORT ShowHideSubgroupWidget : public QWidget {
     Q_OBJECT
 public:
-    ShowHideSubgroupWidget(QString id, QString caption, QWidget* innerWidget, bool isOpened);
+    ShowHideSubgroupWidget(const QString &id, const QString &caption, QWidget *innerWidget, bool isOpened);
 
-    bool isSubgroupOpened();
+    bool isSubgroupOpened() const;
+    void setSubgroupOpened(bool open);
 
     void showProgress();
     void hideProgress();
@@ -52,24 +47,22 @@ public:
     void setPermanentlyOpen(bool isOpened);
 
 signals:
-    void si_subgroupStateChanged(QString id);
+    void si_subgroupStateChanged(const QString &id);
 
 private:
-    ArrowHeaderWidget* arrowHeaderWidget;
+    ArrowHeaderWidget *arrowHeaderWidget;
     QString subgroupId;
-    QWidget* innerWidget;
+    QWidget *innerWidget;
 
 private slots:
     void updateSubgroupState(bool isSubgroupOpened);
 };
 
 
-class ArrowHeaderWidget : public QWidget
-{
+class ArrowHeaderWidget : public QWidget {
     Q_OBJECT
-
 public:
-    ArrowHeaderWidget(QString caption, bool isOpened);
+    ArrowHeaderWidget(const QString &caption, bool isOpened);
     ~ArrowHeaderWidget();
 
     bool isArrowOpened() { return isOpened; }
@@ -85,11 +78,13 @@ private slots:
     void sl_showProgress();
 
 private:
-    bool isOpened;
-    QLabel* arrow;
+    virtual void mousePressEvent(QMouseEvent *);
 
-    QLabel* progressMovieLabel;
-    QMovie* progressMovie;
+    bool isOpened;
+    QLabel *arrow;
+
+    QLabel *progressMovieLabel;
+    QMovie *progressMovie;
 
     /**
     * Used to provide a small timeout before the progress start
@@ -97,11 +92,8 @@ private:
     */
     bool canStartProgress;
     static const int TIMEOUT = 300;
-
-    virtual void mousePressEvent(QMouseEvent *);
 };
 
+} // namespace U2
 
-} // namespace
-
-#endif
+#endif // _U2_SHOW_HIDE_SUBGROUP_WIDGET_H_

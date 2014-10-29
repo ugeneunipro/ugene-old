@@ -22,13 +22,10 @@
 #ifndef _U2_OPTIONS_PANEL_GROUP_H_
 #define _U2_OPTIONS_PANEL_GROUP_H_
 
-#include "GroupHeaderImageWidget.h"
-#include "GroupOptionsWidget.h"
-
-#include <QtGui/QtGui>
-
-
 namespace U2 {
+
+class GroupHeaderImageWidget;
+class GroupOptionsWidget;
 
 /**
  * Provides representation of a group.

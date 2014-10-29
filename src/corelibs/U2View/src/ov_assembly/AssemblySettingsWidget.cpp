@@ -19,14 +19,21 @@
  * MA 02110-1301, USA.
  */
 
-#include "AssemblySettingsWidget.h"
+#include <QAction>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QVBoxLayout>
+
 #include "AssemblyBrowser.h"
-#include "AssemblyReadsArea.h"
 #include "AssemblyConsensusArea.h"
+#include "AssemblyOptionsPanelSavableTab.h"
+#include "AssemblyReadsArea.h"
+#include "AssemblySettingsWidget.h"
 
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/U2WidgetStateStorage.h>
 
 namespace U2 {
 
@@ -44,7 +51,7 @@ static inline QVBoxLayout * initLayout(QWidget * w) {
 }
 
 AssemblySettingsWidget::AssemblySettingsWidget(AssemblyBrowserUi * ui_)
-    : QWidget(ui_), ui(ui_)
+    : QWidget(ui_), ui(ui_), savableTab(new AssemblyOptionsPanelSavableTab(this, GObjectViewUtils::findViewByName(ui_->getWindow()->getName())))
 {
     QVBoxLayout* mainLayout = initLayout(this);
     mainLayout->setSpacing(0);
@@ -57,6 +64,12 @@ AssemblySettingsWidget::AssemblySettingsWidget(AssemblyBrowserUi * ui_)
 
     QWidget * rulerGroup = new ShowHideSubgroupWidget("RULER", tr("Ruler"), createRulerSettings(), true);
     mainLayout->addWidget(rulerGroup);
+
+    U2WidgetStateStorage::restoreWidgetState(*savableTab);
+}
+
+AssemblySettingsWidget::~AssemblySettingsWidget() {
+    delete savableTab;
 }
 
 static inline void createTwoWayBinding(QCheckBox * checkBox, QAction * action) {

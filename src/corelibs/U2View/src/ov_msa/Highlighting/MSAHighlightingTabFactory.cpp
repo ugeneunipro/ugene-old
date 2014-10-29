@@ -19,12 +19,13 @@
  * MA 02110-1301, USA.
  */
 
-#include "MSAHighlightingTab.h"
-#include "MSAHighlightingTabFactory.h"
+#include <QPixmap>
 
 #include <U2Core/U2SafePoints.h>
 
-#include <QObject>
+#include "MSAHighlightingTab.h"
+
+#include "MSAHighlightingTabFactory.h"
 
 namespace U2 {
 
@@ -33,13 +34,11 @@ const QString MSAHighlightingFactory::GROUP_ICON_STR = ":core/images/highlight.p
 const QString MSAHighlightingFactory::GROUP_TITLE = QString(QObject::tr("Highlighting"));
 const QString MSAHighlightingFactory::GROUP_DOC_PAGE = "7667818";
 
-
-MSAHighlightingFactory::MSAHighlightingFactory(){
+MSAHighlightingFactory::MSAHighlightingFactory() {
     objectViewOfWidget = ObjViewType_AlignmentEditor;
 }
 
-
-QWidget* MSAHighlightingFactory::createWidget(GObjectView* objView){
+QWidget * MSAHighlightingFactory::createWidget(GObjectView* objView) {
     SAFE_POINT(NULL != objView,
         QString("Internal error: unable to create widget for group '%1', object view is NULL.").arg(GROUP_ID),
         NULL);
@@ -53,8 +52,7 @@ QWidget* MSAHighlightingFactory::createWidget(GObjectView* objView){
     return widget;
 }
 
-
-OPGroupParameters MSAHighlightingFactory::getOPGroupParameters(){
+OPGroupParameters MSAHighlightingFactory::getOPGroupParameters() {
     return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE, GROUP_DOC_PAGE);
 }
 

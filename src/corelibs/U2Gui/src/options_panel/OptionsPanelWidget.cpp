@@ -19,13 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#include "OptionsPanelWidget.h"
+#include <QHBoxLayout>
+#include <QSpacerItem>
+#include <QVBoxLayout>
 
 #include <U2Core/U2SafePoints.h>
 
+#include "GroupHeaderImageWidget.h"
+#include "GroupOptionsWidget.h"
+
+#include "OptionsPanelWidget.h"
 
 namespace U2 {
-
 
 OptionsScrollArea::OptionsScrollArea() {
     setObjectName("OP_SCROLL_AREA");
@@ -37,16 +42,12 @@ OptionsScrollArea::OptionsScrollArea() {
     hide();
 }
 
-
-QSize OptionsScrollArea::sizeHint() const
-{
+QSize OptionsScrollArea::sizeHint() const {
     int BORDERS_APPROX_SIZE = 15;
     return QSize(GroupOptionsWidget::getWidgetWidth() + BORDERS_APPROX_SIZE, 0);
 }
 
-
-OptionsPanelWidget::OptionsPanelWidget()
-{
+OptionsPanelWidget::OptionsPanelWidget() {
     setObjectName("OP_MAIN_WIDGET");
 
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
@@ -123,9 +124,7 @@ OptionsPanelWidget::OptionsPanelWidget()
     opMainWidgetState = OPMainWidgetState_Closed;
 }
 
-
-GroupHeaderImageWidget* OptionsPanelWidget::createHeaderImageWidget(const QString& groupId, const QPixmap& image)
-{
+GroupHeaderImageWidget* OptionsPanelWidget::createHeaderImageWidget(const QString& groupId, const QPixmap& image) {
     GroupHeaderImageWidget* widget = new GroupHeaderImageWidget(groupId, image);
 
     // Add widget to the layout and "parent" it
@@ -135,7 +134,6 @@ GroupHeaderImageWidget* OptionsPanelWidget::createHeaderImageWidget(const QStrin
 
     return widget;
 }
-
 
 GroupOptionsWidget* OptionsPanelWidget::createOptionsWidget(const QString& groupId,
                                                             const QString& title,
@@ -169,23 +167,17 @@ GroupOptionsWidget* OptionsPanelWidget::createOptionsWidget(const QString& group
     return groupWidget;
 }
 
-
-void OptionsPanelWidget::openOptionsPanel()
-{
+void OptionsPanelWidget::openOptionsPanel() {
     optionsScrollArea->show();
     opMainWidgetState = OPMainWidgetState_Opened;
 }
 
-
-void OptionsPanelWidget::closeOptionsPanel()
-{
+void OptionsPanelWidget::closeOptionsPanel() {
     optionsScrollArea->hide();
     opMainWidgetState = OPMainWidgetState_Closed;
 }
 
-
-GroupHeaderImageWidget* OptionsPanelWidget::findHeaderWidgetByGroupId(const QString& groupId)
-{
+GroupHeaderImageWidget* OptionsPanelWidget::findHeaderWidgetByGroupId(const QString& groupId) {
     foreach (GroupHeaderImageWidget* widget, headerWidgets) {
         if (widget->getGroupId() == groupId) {
             return widget;
@@ -195,9 +187,7 @@ GroupHeaderImageWidget* OptionsPanelWidget::findHeaderWidgetByGroupId(const QStr
     return NULL;
 }
 
-
-GroupOptionsWidget* OptionsPanelWidget::findOptionsWidgetByGroupId(const QString& groupId)
-{
+GroupOptionsWidget* OptionsPanelWidget::findOptionsWidgetByGroupId(const QString& groupId) {
     foreach (GroupOptionsWidget* widget, optionsWidgets) {
         if (widget->getGroupId() == groupId) {
             return widget;
@@ -207,9 +197,7 @@ GroupOptionsWidget* OptionsPanelWidget::findOptionsWidgetByGroupId(const QString
     return NULL;
 }
 
-
-void OptionsPanelWidget::deleteOptionsWidget(const QString& groupId)
-{
+void OptionsPanelWidget::deleteOptionsWidget(const QString& groupId) {
     GroupOptionsWidget* optionsWidget = findOptionsWidgetByGroupId(groupId);
     SAFE_POINT(NULL != optionsWidget,
         QString("Internal error: failed to find an options widget for group '%1' to delete it.").arg(groupId),);
@@ -219,9 +207,7 @@ void OptionsPanelWidget::deleteOptionsWidget(const QString& groupId)
     optionsWidgets.removeAll(optionsWidget);
 }
 
-
-void OptionsPanelWidget::focusOptionsWidget(const QString& groupId)
-{
+void OptionsPanelWidget::focusOptionsWidget(const QString& groupId) {
     GroupOptionsWidget* optionsWidget = findOptionsWidgetByGroupId(groupId);
     SAFE_POINT(NULL != optionsWidget,
         QString("Internal error: failed to find an options widget for group '%1' to activate it.").arg(groupId),);
@@ -232,5 +218,4 @@ void OptionsPanelWidget::focusOptionsWidget(const QString& groupId)
     optionsWidget->setFocus();
 }
 
-
-} // namespace
+} // namespace U2

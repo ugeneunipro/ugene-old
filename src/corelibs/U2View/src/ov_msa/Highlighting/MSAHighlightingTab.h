@@ -22,16 +22,19 @@
 #ifndef _U2_MSA_HIGHLIGHTING_TAB_H_
 #define _U2_MSA_HIGHLIGHTING_TAB_H_
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QtGui>
-#else
-#include <QtWidgets/QtWidgets>
-#endif
+#include <QWidget>
 
-#include <U2View/MSAEditor.h>
+#include "../MsaOptionsPanelSavableTab.h"
+
+class QCheckBox;
+class QComboBox;
+class QLabel;
+class QToolButton;
 
 namespace U2 {
+
+class MSAEditor;
+class MSAEditorSequenceArea;
 
 class U2VIEW_EXPORT MSAHighlightingTab : public QWidget
 {
@@ -56,6 +59,8 @@ private:
     QLabel *hint;
     QCheckBox *useDots;
     QToolButton *exportHighlightning;
+
+    MsaOptionsPanelSavableTab savableTab;
 };
 
 } // namespace

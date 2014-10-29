@@ -21,13 +21,17 @@
 
 #include "SeqStatisticsWidget.h"
 
-#include <U2Gui/ShowHideSubgroupWidget.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/MAlignmentObject.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
-#include "U2View/MSAEditorDataList.h"
 
+#include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
+
+#include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/U2WidgetStateStorage.h>
+
+#include <U2View/MSAEditor.h>
+#include "U2View/MSAEditorDataList.h"
 
 namespace U2 {
 
@@ -41,7 +45,9 @@ static inline QVBoxLayout * initLayout(QWidget * w) {
     return layout;
 }
 
-SeqStatisticsWidget::SeqStatisticsWidget(MSAEditor* m):msa(m){
+SeqStatisticsWidget::SeqStatisticsWidget(MSAEditor* m)
+    : msa(m), savableTab(this, GObjectViewUtils::findViewByName(m->getName()))
+{
     SAFE_POINT(NULL != m, QString("Invalid parameter were passed into constructor SeqStatisticsWidget"), );
 
     copySettings();
@@ -55,6 +61,8 @@ SeqStatisticsWidget::SeqStatisticsWidget(MSAEditor* m):msa(m){
     QWidget * similarityGroup = new ShowHideSubgroupWidget("REFERENCE", tr("Distances column"), distancesStatisticsGroup, true);
     updateWidgetsSettings();
     mainLayout->addWidget(similarityGroup);
+
+    U2WidgetStateStorage::restoreWidgetState(savableTab);
 }
 
 void SeqStatisticsWidget::copySettings() {

@@ -24,6 +24,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/GObjectTypes.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2IdTypes.h>
@@ -31,8 +32,11 @@
 
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
+#include <U2Gui/ShowHideSubgroupWidget.h>
 #include <U2Gui/U2FileDialog.h>
+#include <U2Gui/U2WidgetStateStorage.h>
 
+#include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorConsensusArea.h>
 #include <U2View/MSAEditorSequenceArea.h>
 #include <U2View/MSAEditorTasks.h>
@@ -45,13 +49,15 @@ static const int ITEMS_SPACING = 6;
 static const int TITLE_SPACING = 1;
 
 MSAExportConsensusTab::MSAExportConsensusTab(MSAEditor* msa_)
-:msa(msa_){
+    : msa(msa_), savableWidget(this, GObjectViewUtils::findViewByName(msa_->getName()))
+{
     setupUi(this);
 
     hintLabel->setStyleSheet("color: green; font: bold;");
     
-    dfr = AppContext::getDocumentFormatRegistry();
-    pathLe->setText(QDir::toNativeSeparators(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/" + msa->getMSAObject()->getGObjectName() + "_consensus.txt"));
+    DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
+    pathLe->setText(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + QDir::separator()
+        + msa->getMSAObject()->getGObjectName() + "_consensus.txt");
 
     formatCb->addItem(dfr->getFormatById(BaseDocumentFormats::PLAIN_TEXT)->getFormatName(), BaseDocumentFormats::PLAIN_TEXT);
 
@@ -63,11 +69,12 @@ MSAExportConsensusTab::MSAExportConsensusTab(MSAEditor* msa_)
     connect(browseBtn, SIGNAL(clicked()), SLOT(sl_browseClicked()));
     connect(exportBtn, SIGNAL(clicked()), SLOT(sl_exportClicked()));
     connect(formatCb, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_formatChanged()));
-    connect(consensusArea, SIGNAL(si_consensusAlgorithmChanged(const QString&))
-        , SLOT(sl_consensusChanged(const QString&)) );
+    connect(consensusArea, SIGNAL(si_consensusAlgorithmChanged(const QString &)), SLOT(sl_consensusChanged(const QString &)));
+
+    U2WidgetStateStorage::restoreWidgetState(savableWidget);
 };
 
-void MSAExportConsensusTab::sl_browseClicked(){
+void MSAExportConsensusTab::sl_browseClicked() {
     LastUsedDirHelper h;
     DocumentFormatId id = formatCb->itemData(formatCb->currentIndex()).toString();
     QString fileName = U2FileDialog::getSaveFileName(NULL, tr("Save file"), h.dir, DialogUtils::prepareDocumentsFileFilter(id, false));
@@ -93,6 +100,7 @@ void MSAExportConsensusTab::sl_formatChanged(){
     }
 
     DocumentFormatId id = formatCb->itemData(formatCb->currentIndex()).toString();
+    DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
     DocumentFormat *df = dfr->getFormatById(id);
     SAFE_POINT(df, "Cant get document format by id", );
     QString fileExt = df->getSupportedDocumentFileExtensions().first();
@@ -116,6 +124,7 @@ void MSAExportConsensusTab::sl_consensusChanged(const QString& algoId) {
     SAFE_POINT(consAlgorithmFactory != NULL, "Fetched consensus algorithm factory is NULL", );
     if(consAlgorithmFactory->isSequenceLikeResult()){
         if(formatCb->count() == 1 ){ //only text
+            DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
             formatCb->addItem(dfr->getFormatById(BaseDocumentFormats::PLAIN_GENBANK)->getFormatName(), BaseDocumentFormats::PLAIN_GENBANK);
             formatCb->addItem(dfr->getFormatById(BaseDocumentFormats::FASTA)->getFormatName(), BaseDocumentFormats::FASTA);
             showHint(false);

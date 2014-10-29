@@ -19,12 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "RefSeqCommonWidget.h"
-
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
 
+#include <U2View/MSAEditor.h>
+
+#include "../SequenceSelectorWidgetController.h"
+
+#include "RefSeqCommonWidget.h"
 
 namespace U2 {
 

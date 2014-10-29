@@ -22,9 +22,6 @@
 #ifndef _U2_MSA_EDITOR_DATA_LIST_H_
 #define _U2_MSA_EDITOR_DATA_LIST_H_
 
-
-//#include <QtGui/QWidget>
-//#include <U2Core/U2Region.h>
 #include <qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLabel>

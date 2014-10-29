@@ -22,26 +22,27 @@
 #ifndef __ASSEMBLY_SETTINGS_WIDGET_H__
 #define __ASSEMBLY_SETTINGS_WIDGET_H__
 
+#include <QWidget>
+
 #include <U2Core/global.h>
 #include <U2Core/U2Region.h>
 
 #include <U2Gui/OPWidgetFactory.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QtGui>
-#else
-#include <QtWidgets/QtWidgets>
-#endif
+class QComboBox;
+class QLabel;
 
 namespace U2 {
 
 class AssemblyBrowserUi;
+class AssemblyOptionsPanelSavableTab;
 
 class AssemblySettingsWidget : public QWidget
 {
     Q_OBJECT
 public:
     AssemblySettingsWidget(AssemblyBrowserUi * ui);
+    ~AssemblySettingsWidget();
 
 private slots:
     void sl_cellRendererChanged();
@@ -57,10 +58,12 @@ private:
     AssemblyBrowserUi * ui;
 
     // Reads
-    QComboBox * readsHighlightCombo;
+    QComboBox *readsHighlightCombo;
     // Consensus
-    QComboBox * algorithmCombo;
+    QComboBox *algorithmCombo;
     QLabel *hint;
+
+    AssemblyOptionsPanelSavableTab *savableTab;
 };
 
 
