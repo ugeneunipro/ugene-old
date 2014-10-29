@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <math.h>
+
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QPushButton>
