@@ -7748,6 +7748,44 @@ GUI_TEST_CLASS_DEFINITION(test_3609_3) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3612) {
+//    1. Open "_common_data/scenarios/msa/ma.aln".
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma.aln");
+
+//    2. Turn on the collapsing mode.
+    GTUtilsMsaEditor::toggleCollapsingMode(os);
+
+//    3. Expand "Conocephalus_discolor" group.
+    GTUtilsMsaEditor::toggleCollapsingGroup(os, "Conocephalus_discolor");
+
+//    4. Open "Pairwise alignment" options panel tab.
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+
+//    5. Set parameters:
+//        First sequence: Tettigonia_viridissima
+//        Second sequence: Conocephalus_discolor
+//        Algorithm: Smith-Waterman
+//        Gap open penalty: 1
+//        In new window: unchecked
+//    and start the align task.
+//    Expected state: these two sequences are aligned, the same changes are applied to whole collapsing group.
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "Tettigonia_viridissima");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "Conocephalus_discolor");
+
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Algorithm settings"));
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Output settings"));
+    GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox*>(os, "algorithmListComboBox"), "Smith-Waterman");
+    GTSpinBox::setValue(os, GTWidget::findExactWidget<QSpinBox*>(os, "gapOpen"), 1);
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox*>(os, "inNewWindowCheckBox"), false);
+    GTWidget::click(os, GTWidget::findWidget(os, "alignButton"));
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    const QString firstSequence = GTUtilsMSAEditorSequenceArea::getSequenceData(os, "Conocephalus_discolor");
+    const QString secondSequence = GTUtilsMSAEditorSequenceArea::getSequenceData(os, "Conocephalus_sp.");
+    CHECK_SET_ERR(firstSequence == secondSequence, QString("Sequences are unexpectedly differs: '%1' and '%2'").arg(firstSequence).arg(secondSequence));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3613) {
 //    1. Open any assembly.
 //    2. Call a context menu on any read, select {Export -> Current Read} menu item.

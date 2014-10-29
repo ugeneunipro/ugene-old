@@ -19,11 +19,17 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Gui/MainWindow.h>
+
+#include <U2View/MSAEditorNameList.h>
 #include <U2View/MSAEditorOverviewArea.h>
 #include <U2View/MSAGraphOverview.h>
 
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditor.h"
+#include "GTUtilsMsaEditorSequenceArea.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTToolbar.h"
 
 namespace U2 {
 
@@ -43,6 +49,61 @@ MSAGraphOverview *GTUtilsMsaEditor::getGraphOverview(U2OpStatus &os) {
     MSAGraphOverview *result = GTWidget::findExactWidget<MSAGraphOverview *>(os, MSAEditorOverviewArea::OVERVIEW_AREA_OBJECT_NAME + QString("_graph"), activeWindow);
     GT_CHECK_RESULT(NULL != result, "MSAGraphOverview is not found", NULL);
     return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getNameListArea"
+MSAEditorNameList *GTUtilsMsaEditor::getNameListArea(U2OpStatus &os) {
+    QWidget *activeWindow = GTUtilsMdi::activeWindow(os);
+    CHECK_OP(os, NULL);
+
+    MSAEditorNameList *result = GTWidget::findExactWidget<MSAEditorNameList *>(os, "msa_editor_name_list", activeWindow);
+    GT_CHECK_RESULT(NULL != result, "MSAGraphOverview is not found", NULL);
+    return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getSequenceNameRect"
+QRect GTUtilsMsaEditor::getSequenceNameRect(U2OpStatus &os, const QString &sequenceName) {
+    Q_UNUSED(os);
+    MSAEditorNameList *nameList = getNameListArea(os);
+    GT_CHECK_RESULT(NULL != nameList, "MSAEditorNameList not found", QRect());
+
+    const int rowHeight = GTUtilsMSAEditorSequenceArea::getRowHeight(os);
+    const QStringList names = GTUtilsMSAEditorSequenceArea::getVisibaleNames(os);
+    const int rowNumber = names.indexOf(sequenceName);
+    GT_CHECK_RESULT(0 <= rowNumber, QString("Sequence '%1' not found").arg(sequenceName), QRect());
+
+    return QRect(nameList->mapToGlobal(QPoint(0, rowHeight * rowNumber)), nameList->mapToGlobal(QPoint(nameList->width(), rowHeight * (rowNumber + 1))));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clickSequenceName"
+void GTUtilsMsaEditor::clickSequenceName(U2OpStatus &os, const QString &sequenceName) {
+    Q_UNUSED(os);
+
+    const QRect sequenceNameRect = getSequenceNameRect(os, sequenceName);
+    GTMouseDriver::moveTo(os, sequenceNameRect.center());
+    GTMouseDriver::click(os);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "toggleCollapsingMode"
+void GTUtilsMsaEditor::toggleCollapsingMode(U2OpStatus &os) {
+    Q_UNUSED(os);
+    GTWidget::click(os, GTToolbar::getWidgetForActionTooltip(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Switch on/off collapsing"));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "toggleCollapsingMode"
+void GTUtilsMsaEditor::toggleCollapsingGroup(U2OpStatus &os, const QString &groupName) {
+    Q_UNUSED(os);
+
+    const QRect sequenceNameRect = getSequenceNameRect(os, groupName);
+
+    const QPoint magicExpandButtonOffset(15, 5);
+    GTMouseDriver::moveTo(os, sequenceNameRect.topLeft() + magicExpandButtonOffset);
+    GTMouseDriver::click(os);
 }
 #undef GT_METHOD_NAME
 

@@ -19,22 +19,24 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2View/MSAEditor.h>
-#include <U2View/MSAEditorDataList.h>
+#include <QMainWindow>
+
 #include <U2Core/AppContext.h>
 
+#include <U2View/MSAEditor.h>
+#include <U2View/MSAEditorDataList.h>
+
+#include "GTUtilsMSAEditor.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "api/GTClipboard.h"
 #include "api/GTKeyboardDriver.h"
-#include "api/GTMouseDriver.h"
+#include "api/GTKeyboardUtils.h"
 #include "api/GTMSAEditorStatusWidget.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
-#include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 #include "runnables/qt/PopupChooser.h"
-
-#include <QMainWindow>
-
+#include "runnables/ugene/corelibs/U2Gui/util/RenameSequenceFiller.h"
 
 namespace U2 {
 const QString GTUtilsMSAEditorSequenceArea::highlightningColorName = "#9999cc";
@@ -223,13 +225,13 @@ QStringList GTUtilsMSAEditorSequenceArea::getNameList(U2OpStatus &os) {
 
 #define GT_METHOD_NAME "getVisibaleNames"
 QStringList GTUtilsMSAEditorSequenceArea::getVisibaleNames(U2OpStatus &os){
+    Q_UNUSED(os);
     QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
     MSAEditor* editor = mw->findChild<MSAEditor*>();
     CHECK_SET_ERR_RESULT(editor != NULL, "MsaEditor not found", QStringList());
 
     MSAEditorSequenceArea* seqArea = editor->getUI()->getSequenceArea();
     CHECK_SET_ERR_RESULT(NULL != seqArea, "MSA Editor sequence area is NULL", QStringList());
-
 
     int startSeq = seqArea->getFirstVisibleSequence();
     int lastSeq = seqArea->getLastVisibleSequence(true);
@@ -322,7 +324,7 @@ void GTUtilsMSAEditorSequenceArea::checkConsensus(U2OpStatus &os, QString cons){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "selectSequence"
-void GTUtilsMSAEditorSequenceArea::selectSequence(U2OpStatus &os, QString seqName) {
+void GTUtilsMSAEditorSequenceArea::selectSequence(U2OpStatus &os, const QString &seqName) {
     MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>
             (GTWidget::findWidget(os, "msa_editor_sequence_area"));
     CHECK_SET_ERR(msaEditArea != NULL, "MsaEditorSequenceArea not found");
@@ -337,7 +339,7 @@ void GTUtilsMSAEditorSequenceArea::selectSequence(U2OpStatus &os, QString seqNam
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "isSequenceSelected"
-bool GTUtilsMSAEditorSequenceArea::isSequenceSelected(U2OpStatus &os, QString seqName) {
+bool GTUtilsMSAEditorSequenceArea::isSequenceSelected(U2OpStatus &os, const QString &seqName) {
     MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>
             (GTWidget::findWidget(os, "msa_editor_sequence_area"));
     CHECK_SET_ERR_RESULT(msaEditArea != NULL, "MsaEditorSequenceArea not found", false);
@@ -369,9 +371,25 @@ int GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(U2OpStatus &os) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "isSequenceVisible"
-bool GTUtilsMSAEditorSequenceArea::isSequenceVisible(U2OpStatus &os, QString seqName) {
+bool GTUtilsMSAEditorSequenceArea::isSequenceVisible(U2OpStatus &os, const QString &seqName) {
     QStringList visiableRowNames = getVisibaleNames(os);
     return visiableRowNames.contains(seqName);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getSequenceData"
+QString GTUtilsMSAEditorSequenceArea::getSequenceData(U2OpStatus &os, const QString &sequenceName) {
+    Q_UNUSED(os);
+    MSAEditorSequenceArea *sequenceArea = getSequenceArea(os);
+    GT_CHECK_RESULT(NULL != sequenceArea, "Sequence area is NULL", "");
+
+    const QStringList names = getNameList(os);
+    const int rowNumber = names.indexOf(sequenceName);
+    GT_CHECK_RESULT(0 <= rowNumber, QString("Sequence '%1' not found").arg(sequenceName), "");
+
+    GTUtilsMsaEditor::clickSequenceName(os, sequenceName);
+    GTKeyboardUtils::copy(os);
+    return GTClipboard::text(os);
 }
 #undef GT_METHOD_NAME
 

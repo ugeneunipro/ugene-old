@@ -62,11 +62,12 @@ public:
     static void scrollToBottom(U2OpStatus &os);
     static void clickToPosition(U2OpStatus &os, const QPoint& position);
 
-    static void selectSequence(U2OpStatus &os, QString seqName);
-    static bool isSequenceSelected(U2OpStatus &os, QString seqName);
+    static void selectSequence(U2OpStatus &os, const QString &seqName);
+    static bool isSequenceSelected(U2OpStatus &os, const QString &seqName);
     static void removeSequence(U2OpStatus &os, const QString &sequenceName);
     static int getSelectedSequencesNum(U2OpStatus &os);
-    static bool isSequenceVisible(U2OpStatus &os, QString seqName);
+    static bool isSequenceVisible(U2OpStatus &os, const QString &seqName);
+    static QString getSequenceData(U2OpStatus &os, const QString &sequenceName);
 
     static bool offsetsVisible(U2OpStatus &os);
 

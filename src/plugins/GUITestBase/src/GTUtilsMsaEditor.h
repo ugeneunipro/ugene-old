@@ -22,10 +22,13 @@
 #ifndef _U2_GT_UTILS_MSA_EDITOR_H_
 #define _U2_GT_UTILS_MSA_EDITOR_H_
 
+#include <QtCore/QRect>
+
 #include <QtGui/QColor>
 
 namespace U2 {
 
+class MSAEditorNameList;
 class MSAGraphOverview;
 class U2OpStatus;
 
@@ -34,6 +37,14 @@ class GTUtilsMsaEditor {
 public:
     static QColor getGraphOverviewPixelColor(U2OpStatus &os, const QPoint &point);
     static MSAGraphOverview *getGraphOverview(U2OpStatus &os);
+
+    static MSAEditorNameList *getNameListArea(U2OpStatus &os);
+    static QRect getSequenceNameRect(U2OpStatus &os, const QString &sequenceName);
+
+    static void clickSequenceName(U2OpStatus &os, const QString &sequenceName);
+
+    static void toggleCollapsingMode(U2OpStatus &os);
+    static void toggleCollapsingGroup(U2OpStatus &os, const QString &groupName);
 };
 
 }   // namespace U2

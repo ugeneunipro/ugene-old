@@ -49,7 +49,7 @@ class MAlignment;
 class MAlignmentModInfo;
 class MSAEditorSelection;
 
-class MSAEditorNameList: public QWidget {
+class U2VIEW_EXPORT MSAEditorNameList: public QWidget {
     Q_OBJECT
     Q_DISABLE_COPY(MSAEditorNameList)
 public:
