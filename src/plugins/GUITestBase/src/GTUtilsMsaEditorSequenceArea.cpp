@@ -26,7 +26,7 @@
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorDataList.h>
 
-#include "GTUtilsMSAEditor.h"
+#include "GTUtilsMsaEditor.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "api/GTClipboard.h"
