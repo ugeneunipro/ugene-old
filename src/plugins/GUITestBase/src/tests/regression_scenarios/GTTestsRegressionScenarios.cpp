@@ -63,6 +63,7 @@
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsSharedDatabaseDocument.h"
 #include "GTUtilsTaskTreeView.h"
+#include "GTUtilsToolTip.h"
 #include "GTUtilsWorkflowDesigner.h"
 
 #include "runnables/qt/MessageBoxFiller.h"
@@ -4879,6 +4880,23 @@ GUI_TEST_CLASS_DEFINITION(test_2903) {
 //    Expected state: the task has been finished without errors and blast result appears
 //    Current state: the following error appears: 'RemoteBLASTTask' task failed: Database couldn't prepare the response
     GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2907) {
+    //1. Open file _common_data/genbank/pBR322.gb
+    GTFileDialog::openFile(os, testDir + "_common_data/genbank/", "pBR322.gb");
+
+    //2. In annotations tree view go to element Auto - annotations->enzyme->EcoRI(0, 1)->EcoRI
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
+    GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "EcoRI"));
+
+    //3. Stop cursor on EcoRI qualifier.Wait for tooltip
+    //Expected state : tooltip will appear
+    GTUtilsToolTip::checkExistingToolTip(os, "db_xref");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2910) {
