@@ -19,12 +19,9 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QColorDialog>
-#else
-#include <QtWidgets/QColorDialog>
-#endif
+#include <math.h>
+
+#include <QColorDialog>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
