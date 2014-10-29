@@ -430,6 +430,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3609_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_3609_3);
     REGISTER_TEST(GUITest_regression_scenarios::test_3613);
+    REGISTER_TEST(GUITest_regression_scenarios::test_3629);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/
@@ -1228,6 +1229,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0013, "native separator problem");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0014, "native separator problem");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0015, "native separator problem");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0016, "native separator problem");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/bowtie2
