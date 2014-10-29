@@ -19,29 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#include "FindTandemsDialog.h"
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QToolButton>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/Settings.h>
 
 #include <U2Formats/GenbankFeatures.h>
 
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/DNASequenceSelection.h>
-#include <U2Core/AnnotationTableObject.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Gui/HelpButton.h>
+#include <U2Gui/RegionSelector.h>
+
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
-#include <U2Gui/HelpButton.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QLineEdit>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QMessageBox>
-#endif
-#include <math.h>
+#include "FindTandemsDialog.h"
 
 namespace U2 {
 

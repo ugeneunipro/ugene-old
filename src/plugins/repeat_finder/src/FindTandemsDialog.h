@@ -22,27 +22,19 @@
 #ifndef _U2_FIND_TANDEMS_DIALOG_H_
 #define _U2_FIND_TANDEMS_DIALOG_H_
 
-#include <ui/ui_FindTandemsDialog.h>
-#include "RF_SArray_TandemFinder.h"
-
-#include <U2Core/PluginModel.h>
-#include <U2Gui/ObjectViewModel.h>
-#include <U2Gui/RegionSelector.h>
 #include <U2Core/U2Region.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#include <QtGui/QCheckBox>
-#include <QtGui/QToolButton>
-#else
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QToolButton>
-#endif
+#include "RF_SArray_TandemFinder.h"
+
+#include "ui/ui_FindTandemsDialog.h"
+
+class QToolButton;
 
 namespace U2 {
+
 class CreateAnnotationWidgetController;
 class ADVSequenceObjectContext;
+class RegionSelector;
 
 class FindTandemsDialog : public QDialog, public Ui_FindTandemsDialog {
     Q_OBJECT

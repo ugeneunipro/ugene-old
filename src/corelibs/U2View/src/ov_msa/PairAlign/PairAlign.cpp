@@ -73,10 +73,10 @@ PairAlign::PairAlign(MSAEditor* _msa)
     : msa(_msa), pairwiseAlignmentWidgetsSettings(_msa->getPairwiseAlignmentWidgetsSettings()),
     distanceCalcTask(NULL), settingsWidget(NULL),
     showHideSequenceWidget(NULL), showHideSettingsWidget(NULL), showHideOutputWidget(NULL),
+    savableTab(this, GObjectViewUtils::findViewByName(_msa->getName())),
     showSequenceWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showSequenceWidget),
     showAlgorithmWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showAlgorithmWidget),
     showOutputWidget(_msa->getPairwiseAlignmentWidgetsSettings()->showOutputWidget),
-    savableTab(this, GObjectViewUtils::findViewByName(_msa->getName())),
     firstSequenceSelectionOn(false), secondSequenceSelectionOn(false),
     sequencesChanged(true), sequenceNamesIsOk(false), alphabetIsOk(false)
 {
@@ -100,9 +100,6 @@ PairAlign::PairAlign(MSAEditor* _msa)
     U2WidgetStateStorage::restoreWidgetState(savableTab);
 
     checkState();
-}
-
-PairAlign::~PairAlign() {
 }
 
 void PairAlign::initLayout() {

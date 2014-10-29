@@ -72,6 +72,7 @@ QSet<QString> U2SavableWidget::getChildIds() const {
 }
 
 bool U2SavableWidget::childValueIsAcceptable(const QString &childId, const QVariant &value) const {
+    Q_UNUSED(value);
     return childExists(childId);
 }
 

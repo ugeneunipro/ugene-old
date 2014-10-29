@@ -123,7 +123,7 @@ void GUITestService::sl_registerService() {
     }
 }
 
-const GUITestService::LaunchOptions GUITestService::getLaunchOptions(CMDLineRegistry* cmdLine) const {
+GUITestService::LaunchOptions GUITestService::getLaunchOptions(CMDLineRegistry* cmdLine) const {
     CHECK(cmdLine, NONE);
 
     if(cmdLine->hasParameter(CMDLineCoreOptions::CREATE_GUI_TEST)){

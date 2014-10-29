@@ -72,7 +72,7 @@ private:
     static void clearSandbox();
     static void removeDir(QString dirName);
 
-    const LaunchOptions getLaunchOptions(CMDLineRegistry* cmdLine) const;
+    LaunchOptions getLaunchOptions(CMDLineRegistry* cmdLine) const;
 
     void registerAllTestsTask();
     void registerAllTestsTaskNoIgnored();

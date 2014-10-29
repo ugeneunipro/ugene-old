@@ -70,7 +70,6 @@ class U2VIEW_EXPORT PairAlign : public QWidget, public Ui_PairwiseAlignmentOptio
 
 public:
     PairAlign(MSAEditor* _msa);
-    ~PairAlign();
 
 private:
     void initLayout();

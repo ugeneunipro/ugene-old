@@ -23,22 +23,16 @@
 #define _U2_FIND_REPEATS_DIALOG_H_
 
 #include <ui/ui_FindRepeatsDialog.h>
-#include "FindRepeatsTask.h"
 
-#include <U2Core/PluginModel.h>
-#include <U2Gui/ObjectViewModel.h>
-#include <U2Gui/RegionSelector.h>
 #include <U2Core/U2Region.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
+#include "FindRepeatsTask.h"
 
 namespace U2 {
+
 class CreateAnnotationWidgetController;
 class ADVSequenceObjectContext;
+class RegionSelector;
 
 class FindRepeatsDialog : public QDialog, public Ui_FindRepeatsDialog {
     Q_OBJECT
