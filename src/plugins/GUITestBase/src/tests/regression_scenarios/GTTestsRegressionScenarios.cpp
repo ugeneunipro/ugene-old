@@ -7723,6 +7723,35 @@ GUI_TEST_CLASS_DEFINITION(test_3613) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3629) {
+//    1. Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+//    2. Select {Add->New annotation...} menu item in the context menu.
+//    Expected state: "Create Annotation" dialog appeared, "create new table" option is selected.
+
+//    3. Set any location and press "Create".
+//    Expected state: new annotation object was created.
+    QDir().mkpath(sandBoxDir + "test_3629");
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "<auto>", "misc_feature", "1..5", sandBoxDir + "test_3629/test_3629.gb"));
+    GTWidget::click(os, GTToolbar::getWidgetForActionTooltip(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "New annotation"));
+    GTUtilsProjectTreeView::checkItem(os, "test_3629.gb");
+
+//    4. Open "data/samples/Genbank/sars.gb".
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "sars.gb");
+
+//    5. Add the annotation object to "sars" sequence.
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    GTUtilsProjectTreeView::dragAndDrop(os, GTUtilsProjectTreeView::findIndex(os, "Annotations"), GTUtilsAnnotationsTreeView::getTreeWidget(os));
+
+//    6. Switch view to "human_T1".
+//    Expected state: there are no attached annotations.
+    GTUtilsProjectTreeView::doubleClickItem(os, "human_T1.fa");
+    U2OpStatusImpl opStatus;
+    GTUtilsAnnotationsTreeView::findItems(opStatus, "misc_feature");
+    CHECK_SET_ERR(opStatus.isCoR(), "The annotaion table is unexpectedly attached");
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace

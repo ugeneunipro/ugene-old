@@ -47,7 +47,7 @@ public:
 
     static QAction* getCheckedAction(QList<QAction*> actions);
     static QAction* findActionByData(QList<QAction*> actions, const QString& data);
-    static QAction* findActionByText(QList<QAction*> actions, const QString& text);
+    static QAction* findActionByTooltip(QList<QAction*> actions, const QString& tooltip);
     
     static QAction* findActionAfter(const QList<QAction*>& actions, const QString& name);
 

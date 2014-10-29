@@ -62,9 +62,9 @@ QAction* GUIUtils::findActionByData(QList<QAction*> actions, const QString& data
         return NULL;
 }
 
-QAction* GUIUtils::findActionByText(QList<QAction*> actions, const QString& text){
-    foreach(QAction* action, actions) {
-        if(action->text() == text){
+QAction *GUIUtils::findActionByTooltip(QList<QAction *> actions, const QString &tooltip) {
+    foreach (QAction* action, actions) {
+        if (action->toolTip() == tooltip) {
             return action;
         }
     }
