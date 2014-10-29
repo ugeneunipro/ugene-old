@@ -126,7 +126,7 @@ void ExportCoverageDialog::sl_compressToggled(bool isChecked) {
 
 void ExportCoverageDialog::initLayout() {
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Export"));
-    new HelpButton(this, buttonBox, "4227548");
+    new HelpButton(this, buttonBox, "12156954");
 }
 
 void ExportCoverageDialog::init(QString assemblyName) {

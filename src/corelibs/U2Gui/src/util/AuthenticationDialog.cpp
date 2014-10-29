@@ -26,6 +26,7 @@
 #include <QtWidgets/QMessageBox>
 #endif
 
+#include <U2Gui/HelpButton.h>
 #include "AuthenticationDialog.h"
 #include "AuthenticationWidget.h"
 #include "ui/ui_AuthenticationDialog.h"
@@ -38,6 +39,7 @@ AuthenticationDialog::AuthenticationDialog(const QString &text, QWidget* parent)
     authenticationWidget(new AuthenticationWidget)
 {
     ui->setupUi(this);
+    new HelpButton(this, ui->buttonBox, "8093779");
     ui->mainLayout->insertWidget(1, authenticationWidget);
 
     if (text.isEmpty()) {
