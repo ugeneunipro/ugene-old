@@ -1199,7 +1199,7 @@ GUI_TEST_CLASS_DEFINITION( test_1688 ) {
 
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os) );
     GTFileDialog::openFile( os, testDir + "_common_data/scenarios/_regression/1688/", "sr100.000.fa");
-    GTGlobals::sleep( 60000 );
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsLog::check( os, l );
 }
 
@@ -5753,6 +5753,7 @@ GUI_TEST_CLASS_DEFINITION(test_3143){
 //    3. Remove this file from project and try to open it again;
     GTUtilsProjectTreeView::click(os, "chrM.sorted.bam.ugenedb");
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
 //    Expected state: Showed Import BAM File dialog.
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Replace"));
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "chrM.sorted.bam.ugenedb"));
