@@ -65,6 +65,7 @@ CircularViewSplitter::CircularViewSplitter(AnnotatedDNAView* view) : ADVSplitWid
     tbZoomIn->setIcon(QIcon(":/core/images/zoom_in.png"));
     tbZoomIn->setToolTip(tr("Zoom In"));
     tbZoomIn->setFixedSize(20,20);
+    tbZoomIn->setObjectName("tbZoomIn_" + view->getName());
 
     tbZoomOut = new QToolButton(this);
     tbZoomOut->setIcon(QIcon(":/core/images/zoom_out.png"));

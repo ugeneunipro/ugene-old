@@ -4998,6 +4998,35 @@ GUI_TEST_CLASS_DEFINITION(test_2923) {
     CHECK_SET_ERR(NULL == mdi, "Sequence view is not closed");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2924) {
+    //1. Open "_common_data/scenarios/_regression/2924/human_T1_cutted.fa".
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/2924/", "human_T1_cutted.fa");
+
+    //2. Open "_common_data/scenarios/_regression/2924/MyDocument_3.gb".
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/2924/", "MyDocument_3.gb");
+
+    //3. Drag'n'drop the annotation object from the project to the sequence view.
+    //Expected: the dialog appears.
+    //4. Click "OK".
+    //Expected : the annotations are shown on the sequence view.
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    GTUtilsProjectTreeView::dragAndDrop(os, GTUtilsProjectTreeView::findIndex(os, "Annotations"), GTUtilsAnnotationsTreeView::getTreeWidget(os));
+
+    //5. Click the "Shown circular view" button on the sequence toolbar.
+    //Expected : the circular view is shown.
+    ADVSingleSequenceWidget *seqWidget = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+    GTUtilsCv::cvBtn::click(os, seqWidget);
+
+    //6. Click the "Zoom in" button several times until it becomes disabled.
+    //Expected : UGENE does not crash.
+    QWidget *zoomInButton = GTWidget::findWidget(os, "tbZoomIn_human_T1_cutted [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+
+    while (zoomInButton->isEnabled()) {
+        GTWidget::click(os, zoomInButton);
+        GTGlobals::sleep(500);
+    }
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2930){
     GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandBoxDir + "test_2930"));
     GTFileDialog::openFile(os, dataDir+"samples/ACE", "K26.ace");
