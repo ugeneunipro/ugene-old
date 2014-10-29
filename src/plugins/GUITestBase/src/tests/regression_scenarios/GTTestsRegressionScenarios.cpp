@@ -108,6 +108,7 @@
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
 #include "runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
@@ -4986,6 +4987,51 @@ GUI_TEST_CLASS_DEFINITION(test_2923) {
     GTGlobals::sleep();
     QWidget *mdi = GTUtilsMdi::activeWindow(os, GTGlobals::FindOptions(false));
     CHECK_SET_ERR(NULL == mdi, "Sequence view is not closed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2951) {
+    //1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    //2. Click the "Scripting mode" tool button -> Show scripting options.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show scripting options"));
+    GTWidget::click(os, GTAction::button(os, GTAction::findActionByText(os, "Scripting mode")));
+
+    //3. Create the workflow: "Read sequence" -> "Write sequence".
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Sequence");
+    GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Sequence"), GTUtilsWorkflowDesigner::getWorker(os, "Write Sequence"));
+
+    //4. Set the input sequence: _common_data/fasta/abcd.fa.
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read sequence"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/fasta/", "abcd.fa");
+
+    //5. Set the correct output sequence.
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Write sequence"));
+    GTMouseDriver::click(os);
+    QString outFile = GUrl(sandBoxDir + "test_2951.gb").getURLString();
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", outFile, GTUtilsWorkflowDesigner::textValue);
+
+    //6. Edit a script for "Sequence count limit":
+    //    printToLog("test");
+    //    1
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
+    GTMouseDriver::click(os);
+    GTUtilsDialog::waitForDialog(os, new ScriptEditorDialogFiller(os, "", "printToLog(\"test message\");\n1"));
+    GTUtilsWorkflowDesigner::setParameterScripting(os, "Sequence count limit", "user script");
+
+    //Expected: the result file contains only the first sequence from the input file; there is a message "test" in the script details log.
+    GTWidget::click(os, GTAction::button(os, "Run workflow"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    bool printed = GTLogTracer::checkMessage("test message");
+    CHECK_SET_ERR(printed, "No message in the log");
+
+    GTUtilsProject::openFiles(os, outFile);
+    QModelIndex objIdx = GTUtilsProjectTreeView::findIndex(os, "d");
+    QTreeView *tree = GTUtilsProjectTreeView::getTreeView(os);
+    int objectsCount = tree->model()->rowCount(objIdx.parent());
+    CHECK_SET_ERR(1 == objectsCount, "More than one objects in the result");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2962_1) {
