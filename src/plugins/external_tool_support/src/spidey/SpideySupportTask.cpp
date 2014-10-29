@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QTextStream>
+
 #include "SpideySupportTask.h"
 #include "SpideySupport.h"
 
@@ -28,7 +30,6 @@
 #include <U2Core/Counter.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ExternalToolRegistry.h>
-
 
 namespace U2 {
 

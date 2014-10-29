@@ -19,21 +19,19 @@
  * MA 02110-1301, USA.
  */
 
+#include <QMessageBox>
+#include <QPushButton>
+
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/Settings.h>
 #include <U2Core/GObjectReference.h>
 #include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/Settings.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Gui/HelpButton.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include <U2Gui/HelpButton.h>
 
 #include "SendSelectionDialog.h"
 

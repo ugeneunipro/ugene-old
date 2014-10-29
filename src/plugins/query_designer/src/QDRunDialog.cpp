@@ -20,6 +20,7 @@
  */
 
 #include <QMessageBox>
+#include <QPushButton>
 
 #include <U2Core/AddDocumentTask.h>
 #include <U2Core/AnnotationTableObject.h>
