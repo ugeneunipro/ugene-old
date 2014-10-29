@@ -22,16 +22,11 @@
 #ifndef U2_GTUTILS_OPTION_PANEL_MSA_H
 #define U2_GTUTILS_OPTION_PANEL_MSA_H
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QToolButton>
-#include <QtGui/QLineEdit>
-#else
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QLineEdit>
-#endif
-
 #include "api/GTGlobals.h"
+
+class QLineEdit;
+class QPushButton;
+class QToolButton;
 
 namespace U2 {
 
@@ -43,7 +38,7 @@ public:
     enum AddRefMethod{Button, Completer};
 
     static const QMap<Tabs,QString> tabsNames;
-    //Openes option panel tab. TODO: check if tab is already opened
+    //Opens option panel tab. TODO: check if tab is already opened
     static void openTab(U2OpStatus &os, Tabs tab);
     static void addReference(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
     static void addFirstSeqToPA(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
@@ -56,6 +51,9 @@ public:
     static QToolButton* getAddButton(U2OpStatus &os, int number);
     static QLineEdit* getSeqLineEdit(U2OpStatus &os, int number);
     static QToolButton* getDeleteButton(U2OpStatus &os, int number);
+    static QPushButton *getAlignButton(U2OpStatus &os);
+    static void setPairwiseAlignmentAlgorithm(U2OpStatus &os, const QString &algorithm);
+
 private:
     static QWidget* getWidget(U2OpStatus &os, const QString& widgetName, int number);
 

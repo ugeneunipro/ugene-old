@@ -5178,6 +5178,24 @@ GUI_TEST_CLASS_DEFINITION(test_2972){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2975) {
+//    1. Open "_common_data/fasta/all_alphabet.fa" as multiple alignment.
+    GTUtilsProject::openMultiSequenceFileAsMalignment(os, testDir + "_common_data/fasta", "all_alphabet.fa");
+
+//    2. Open the "Pairwise alignment" options panel tab.
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::PairwiseAlignment);
+
+//    3. Set the first sequence as the first sequence and the second sequence as the second sequence, select the "Smith-Waterman" algorithm.
+//    Expected state: align button is blocked
+    GTUtilsOptionPanelMsa::addFirstSeqToPA(os, "SEQUENCE_1");
+    GTUtilsOptionPanelMsa::addSecondSeqToPA(os, "SEQUENCE_2");
+    GTUtilsOptionPanelMsa::setPairwiseAlignmentAlgorithm(os, "Smith-Waterman");
+
+    QPushButton *alignButton = GTUtilsOptionPanelMsa::getAlignButton(os);
+    CHECK_SET_ERR(NULL != alignButton, "Align button is NULL");
+    CHECK_SET_ERR(!alignButton->isEnabled(), "Align button is unexpectedly enabled");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2981) {
 //    1. Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");

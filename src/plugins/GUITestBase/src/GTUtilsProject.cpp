@@ -197,6 +197,13 @@ QList<ADVSingleSequenceWidget*> GTUtilsProject::openFileExpectSequences(U2OpStat
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "openMultiSequenceFileAsMalignment"
+void GTUtilsProject::openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &path, const QString &fileName) {
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
+    GTFileDialog::openFile(os, path, fileName);
+}
+#undef GT_METHOD_NAME
+
 
 #undef GT_CLASS_NAME
 

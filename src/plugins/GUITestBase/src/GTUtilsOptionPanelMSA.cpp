@@ -19,20 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTreeWidget>
-#else
-#include <QtWidgets/QTreeWidget>
-#endif
-
-#include "GTUtilsOptionPanelMSA.h"
-#include "api/GTWidget.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTTreeWidget.h"
-#include "api/GTBaseCompleter.h"
+#include <QLineEdit>
+#include <QPushButton>
+#include <QToolButton>
+#include <QTreeWidget>
 
 #include "GTUtilsMsaEditorSequenceArea.h"
+#include "GTUtilsOptionPanelMSA.h"
+#include "api/GTBaseCompleter.h"
+#include "api/GTComboBox.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTTreeWidget.h"
+#include "api/GTWidget.h"
 
 namespace U2{
 QMap<GTUtilsOptionPanelMsa::Tabs, QString> GTUtilsOptionPanelMsa::initNames(){
@@ -165,6 +163,20 @@ QToolButton* GTUtilsOptionPanelMsa::getDeleteButton(U2OpStatus &os, int number){
     QToolButton* result = qobject_cast<QToolButton*>(getWidget(os, "deleteSeq", number));
     GT_CHECK_RESULT(result != NULL, "toolbutton is NULL", NULL);
     return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getAlignButton"
+QPushButton *GTUtilsOptionPanelMsa::getAlignButton(U2OpStatus &os) {
+    // TODO: ensure that the Pairwise alignment" tab is opened.
+    return GTWidget::findExactWidget<QPushButton *>(os, "alignButton");
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setPairwiseAlignmentAlgorithm"
+void GTUtilsOptionPanelMsa::setPairwiseAlignmentAlgorithm(U2OpStatus &os, const QString &algorithm) {
+    // TODO: ensure that the Pairwise alignment" tab is opened.
+    GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox*>(os, "algorithmListComboBox"), algorithm);
 }
 #undef GT_METHOD_NAME
 
