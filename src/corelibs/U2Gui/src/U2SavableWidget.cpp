@@ -85,7 +85,7 @@ QVariant U2SavableWidget::getChildValue(const QString &childId) const {
     } else if (NULL != qobject_cast<QTextEdit *>(child)) {
         result = qobject_cast<QTextEdit *>(child)->toPlainText();
     } else if (NULL != qobject_cast<QComboBox *>(child)) {
-        result = qobject_cast<QComboBox *>(child)->currentText();
+        result = qobject_cast<QComboBox *>(child)->currentIndex();
     } else if (NULL != qobject_cast<QAbstractButton *>(child)) {
         result = qobject_cast<QAbstractButton *>(child)->isChecked();
     } else if (NULL != qobject_cast<QSpinBox *>(child)) {
@@ -110,8 +110,8 @@ void U2SavableWidget::setChildValue(const QString &childId, const QVariant &valu
         qobject_cast<QLineEdit *>(child)->setText(value.toString());
     } else if (NULL != qobject_cast<QTextEdit *>(child)) {
         qobject_cast<QTextEdit *>(child)->setText(value.toString());
-    } else if (NULL != qobject_cast<QComboBox *>(child)) {
-        qobject_cast<QComboBox *>(child)->setCurrentText(value.toString());
+    } else if (NULL != qobject_cast<QComboBox *>(child) && qobject_cast<QComboBox *>(child)->count() > value.toInt()) {
+        qobject_cast<QComboBox *>(child)->setCurrentIndex(value.toInt());
     } else if (NULL != qobject_cast<QAbstractButton *>(child)) {
         qobject_cast<QAbstractButton *>(child)->setChecked(value.toBool());
     } else if (NULL != qobject_cast<QSpinBox *>(child)) {
