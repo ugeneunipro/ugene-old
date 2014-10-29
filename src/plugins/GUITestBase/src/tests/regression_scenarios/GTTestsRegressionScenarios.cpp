@@ -4796,6 +4796,15 @@ GUI_TEST_CLASS_DEFINITION( test_2667 ) {
     GTUtilsProjectTreeView::findIndex(os, "NC_001363 features", options);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2853 ){
+    Runnable *filler = new NCBISearchDialogFiller(os, "rat");
+
+    GTUtilsDialog::waitForDialog(os, filler);
+
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SEARCH_GENBANK, GTGlobals::UseKey);
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2866) {
 //    1. Use main menu { Tools -> Align to reference -> Align short reads }
 //    Expected state: the "Align Sequencing Reads" dialog has appeared
