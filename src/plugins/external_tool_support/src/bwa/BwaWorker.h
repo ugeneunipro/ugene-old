@@ -37,7 +37,7 @@ public:
 protected :
     QVariantMap getCustomParameters() const;
     QString getDefaultFileName() const;
-    QString BWAWorker::getBaseSubdir() const;
+    QString getBaseSubdir() const;
     DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings settings) const;
     void setGenomeIndex(DnaAssemblyToRefTaskSettings& settings);
 }; // BWAWorker
