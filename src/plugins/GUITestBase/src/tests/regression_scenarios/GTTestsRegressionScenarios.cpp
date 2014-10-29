@@ -4989,6 +4989,15 @@ GUI_TEST_CLASS_DEFINITION(test_2923) {
     CHECK_SET_ERR(NULL == mdi, "Sequence view is not closed");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2930){
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandBoxDir + "test_2930"));
+    GTFileDialog::openFile(os, dataDir+"samples/ACE", "K26.ace");
+
+    GTFileDialog::openFile(os, dataDir+"samples/FASTA", "human_T1.fa");
+
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2951) {
     //1. Open WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
