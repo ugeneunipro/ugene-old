@@ -4973,6 +4973,21 @@ GUI_TEST_CLASS_DEFINITION(test_2910_3) {
     GTKeyboardDriver::keyClick(os, 'A', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
 }
+
+GUI_TEST_CLASS_DEFINITION(test_2923) {
+    //1. Open "samples/FASTA/human_T1.fa".
+    //Expected: the sequence view is opened.
+    //2. Press Ctrl+W.
+    //Expected: the sequence view is closed.
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsMdi::activeWindow(os);
+
+    GTKeyboardDriver::keyClick(os, 'w', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+    QWidget *mdi = GTUtilsMdi::activeWindow(os, GTGlobals::FindOptions(false));
+    CHECK_SET_ERR(NULL == mdi, "Sequence view is not closed");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2962_1) {
 //    1. Open "_common_data/scenarios/_regression/2924/human_T1_cutted.fa".
 //    2. Click the "Shown circular view" button on the sequence toolbar.
