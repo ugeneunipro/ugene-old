@@ -145,6 +145,20 @@ QList<QTreeWidgetItem*> GTUtilsAnnotationsTreeView::findItems(U2OpStatus &os, co
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getAnnotationNamesOfGroup"
+QStringList GTUtilsAnnotationsTreeView::getAnnotationNamesOfGroup(U2OpStatus &os, const QString &groupName) {
+    Q_UNUSED(os);
+    QStringList names;
+    QTreeWidgetItem *groupItem = findItem(os, groupName);
+    for (int i = 0; i < groupItem->childCount(); i++) {
+        AVItem *avItem = dynamic_cast<AVItem *>(groupItem->child(i));
+        GT_CHECK_RESULT(NULL != avItem, "Cannot convert QTreeWidgetItem to AVItem", QStringList());
+        names << getAVItemName(os, avItem);
+    }
+    return names;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "findRegion"
 bool GTUtilsAnnotationsTreeView::findRegion(U2OpStatus &os, const QString &itemName, const U2Region& r) {
 

@@ -4865,6 +4865,33 @@ GUI_TEST_CLASS_DEFINITION(test_2897) {
     CHECK_SET_ERR(newItemsNumber == oldItemsNumber, "exportButton is disabled unexpectedly");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2900) {
+//    1. Open "samples/Genbank/murine.gb".
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+//    2. Sequence view context menu -> Analyze -> Restriction sites.
+//    3. Press "OK".
+//    Expected: the 8 regions of auto-annotations are created.
+    const QStringList defaultEnzymes = QStringList() << "BamHI" << "BglII" << "ClaI" << "DraI" << "EcoRI" << "EcoRV" << "HindIII" << "PstI" << "SalI" << "SmaI" << "XmaI";
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "Find restriction sites"));
+    GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, defaultEnzymes));
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+
+    GTGlobals::sleep(500);
+    const int firstAnnotationsCount = GTUtilsAnnotationsTreeView::getAnnotationNamesOfGroup(os, "enzyme").size();
+
+//    4. Repeast 2-3.
+//    Expected: there are still 8 regions of auto-annotations. Old regions are removed, new ones are added.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ANALYSE" << "Find restriction sites"));
+    GTUtilsDialog::waitForDialog(os, new FindEnzymesDialogFiller(os, defaultEnzymes));
+    GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
+
+    GTGlobals::sleep(500);
+    const int secondAnnotationsCount = GTUtilsAnnotationsTreeView::getAnnotationNamesOfGroup(os, "enzyme").size();
+
+    CHECK_SET_ERR(firstAnnotationsCount == secondAnnotationsCount, QString("Annotations count differs: %1 annotations in the first time, %2 annotations in the second time").arg(firstAnnotationsCount).arg(secondAnnotationsCount));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2903) {
 //    1. Open the attached file
     GTLogTracer l;

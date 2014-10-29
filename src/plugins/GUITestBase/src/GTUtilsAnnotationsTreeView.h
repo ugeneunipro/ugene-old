@@ -43,6 +43,8 @@ public:
     static QTreeWidgetItem* findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
     static QList<QTreeWidgetItem*> findItems(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
+    static QStringList getAnnotationNamesOfGroup(U2OpStatus &os, const QString &groupName);
+
     // finds given region in annotation with a given name. U2Region: visible {begin, end} positions.
     static bool findRegion(U2OpStatus &os, const QString &itemName, const U2Region& region);
 
