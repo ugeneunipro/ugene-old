@@ -1229,7 +1229,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0013, "native separator problem");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0014, "native separator problem");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0015, "native separator problem");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0016, "native separator problem");
+//    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0016, "native separator problem");       it is not commited yet
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/bowtie2
