@@ -116,7 +116,7 @@ Task::ReportResult SpadesTask::report() {
     return ReportResult_Finished;
 }
 
-QList<Task *> SpadesTask::onSubTaskFinished(Task *subTask) {
+QList<Task *> SpadesTask::onSubTaskFinished(Task * /*subTask*/) {
 
     QList<Task *> result;
 

@@ -92,14 +92,6 @@ public:
     virtual bool isParametersOk(QString &error) = 0;
 };
 
-class GenomeAssemblyGUIExtensionsFactory {
-public:
-    virtual ~GenomeAssemblyGUIExtensionsFactory() {}
-    virtual GenomeAssemblyAlgorithmMainWidget* createMainWidget(QWidget* parent) = 0;
-    virtual bool hasMainWidget() = 0;
-};
-
-
 } // U2
 
 

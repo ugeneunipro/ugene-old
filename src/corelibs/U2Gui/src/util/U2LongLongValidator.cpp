@@ -45,8 +45,7 @@ QValidator::State U2LongLongValidator::validate(QString &input, int & /*pos*/) c
         return QValidator::Invalid;
     }
 
-    if (minimum >= 0 && input.startsWith('-') ||
-        maximum < 0 && input.startsWith('+')) {
+    if ((minimum >= 0 && input.startsWith('-')) || (maximum < 0 && input.startsWith('+'))) {
         return Invalid;
     }
 

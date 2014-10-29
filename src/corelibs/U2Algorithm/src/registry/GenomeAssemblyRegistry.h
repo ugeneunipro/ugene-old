@@ -32,6 +32,8 @@
 #include <U2Core/GUrl.h>
 #include <U2Core/Task.h>
 
+class QWidget;
+
 namespace U2 {
 
 #define LIBRARY_SINGLE                "Single-end"
@@ -49,7 +51,14 @@ namespace U2 {
 #define ORIENTATION_RF                 "rf"
 #define ORIENTATION_FF                 "ff"
 
-class GenomeAssemblyGUIExtensionsFactory;
+class GenomeAssemblyAlgorithmMainWidget;
+
+class U2ALGORITHM_EXPORT GenomeAssemblyGUIExtensionsFactory {
+public:
+    virtual ~GenomeAssemblyGUIExtensionsFactory() {}
+    virtual GenomeAssemblyAlgorithmMainWidget* createMainWidget(QWidget* parent) = 0;
+    virtual bool hasMainWidget() = 0;
+};
 
 class U2ALGORITHM_EXPORT GenomeAssemblyUtils {
 public:

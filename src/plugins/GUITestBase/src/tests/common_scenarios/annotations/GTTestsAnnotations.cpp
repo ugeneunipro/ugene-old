@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QTreeWidget>
+
 #include "GTTestsAnnotations.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"

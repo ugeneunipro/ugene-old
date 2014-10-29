@@ -22,8 +22,11 @@
 #ifndef _U2_SPADES_SETTINGS_WIDGET_H_
 #define _U2_SPADES_SETTINGS_WIDGET_H_
 
+#include <U2Algorithm/GenomeAssemblyRegistry.h>
+
+#include <U2View/DnaAssemblyGUIExtension.h>
+
 #include "ui/ui_SpadesSettings.h"
-#include "U2View/DnaAssemblyGUIExtension.h"
 
 namespace U2 {
 
