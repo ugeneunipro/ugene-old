@@ -1,6 +1,8 @@
 #@UGENE_WORKFLOW
 #Prepare ChIP-Seq processed data (with BedTools and bedGraphToBigWig) for visualization in a genome browser. For input BED-file produces BigWig file.
 
+
+
 workflow "ChIP-Seq Coverage"{
 
     slopbed {
@@ -54,46 +56,48 @@ workflow "ChIP-Seq Coverage"{
         }
         visual {
             bgtbw-bam {
-                pos:"-190.25 -584";
+                pos:"-174.25 -585";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"0 170 255 64";
+                bounds:"-30 -30 113.125 81";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             genomecov {
-                pos:"-422 -584";
+                pos:"-422 -585";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"170 85 255 64";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             get-file-list {
-                pos:"-832 -585";
+                pos:"-795 -586";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"85 255 0 64";
+                bounds:"-30 -30 54 53";
                 out-url.angle:360;
             }
             slopbed {
-                pos:"-649 -584";
+                pos:"-621 -586";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"255 85 0 64";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             genomecov.out-file->bgtbw-bam.in-file {
-                text-pos:"-35.75 -24";
+                text-pos:"-30.75 -28";
             }
             get-file-list.out-url->slopbed.in-file {
-                text-pos:"-35.7578 -24";
+                text-pos:"-32.7578 -27";
             }
             slopbed.out-file->genomecov.in-file {
-                text-pos:"-35.75 -24";
+                text-pos:"-30.75 -28";
             }
         }
         wizard {
             name:"ChIP-Seq Coverage Wizard";
             page {
-                id:1;       
+                id:1;
                 next:2;
                 title:"Input data";
                 parameters-area {
@@ -117,7 +121,7 @@ workflow "ChIP-Seq Coverage"{
                         slopbed.genome-id {
                         }
                     }
-                     group {
+                    group {
                         title:"Slopbed Advanced";
                         label-size:130;
                         type:hideable;
@@ -143,7 +147,6 @@ workflow "ChIP-Seq Coverage"{
                         }
                         genomecov.mode-id {
                         }
-                        
                     }
                     group {
                         title:"Genome Coverage Advanced";
