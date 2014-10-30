@@ -82,15 +82,15 @@ public:
 
     QByteArray getSequenceName()const;
     QByteArray getSequence()const;
-    QList<QPair<int, int> > getTarget()const;
-    QList<QPair<int, int> > getProductSizeRange()const;
+    QList< U2Region > getTarget()const;
+    QList< U2Region > getProductSizeRange()const;
     task getTask()const;
-    QList<QPair<int, int> > getInternalOligoExcludedRegion()const;
+    QList< U2Region > getInternalOligoExcludedRegion()const;
     QByteArray getLeftInput()const;
     QByteArray getRightInput()const;
     QByteArray getInternalInput()const;
-    QList<QPair<int, int> > getExcludedRegion()const;
-    QPair<int, int> getIncludedRegion()const;
+    QList< U2Region > getExcludedRegion()const;
+    U2Region getIncludedRegion()const;
     QVector<int> getSequenceQuality()const;
 
     QByteArray getError()const;
@@ -98,15 +98,16 @@ public:
 
     void setSequenceName(const QByteArray &value);
     void setSequence(const QByteArray &value);
-    void setTarget(const QList<QPair<int, int> > &value);
-    void setProductSizeRange(const QList<QPair<int, int> > &value);
+    void setTarget(const QList< U2Region > &value);
+    void setProductSizeRange(const QList< U2Region > &value);
     void setTask(const task &value);
-    void setInternalOligoExcludedRegion(const QList<QPair<int, int> > &value);
+    void setInternalOligoExcludedRegion(const QList< U2Region > &value);
     void setLeftInput(const QByteArray &value);
     void setRightInput(const QByteArray &value);
     void setInternalInput(const QByteArray &value);
-    void setExcludedRegion(const QList<QPair<int, int> > &value);
-    void setIncludedRegion(QPair<int, int> value);
+    void setExcludedRegion(const QList< U2Region > &value);
+    void setIncludedRegion(const U2Region &value);
+    void setIncludedRegion(const qint64 &startPos, const qint64 &length);
     void setSequenceQuality(const QVector<int> &value);
 
     void setRepeatLibrary(const QByteArray &value);

@@ -311,18 +311,16 @@ bool PrimerPair::operator<(const PrimerPair &pair)const
 
 namespace
 {
-    bool clipRegion(QPair<int, int> &region, const QPair<int, int> &clippingRegion)
+    bool clipRegion(U2Region &region, const U2Region &clippingRegion)
     {
-        int start = region.first;
-        int end = region.first + region.second;
-        start = qMax(start, clippingRegion.first);
-        end = qMin(end, clippingRegion.first + clippingRegion.second);
+        int start = qMax(region.startPos, clippingRegion.startPos);
+        int end = qMin(region.endPos(), clippingRegion.endPos());
         if(start > end)
         {
             return false;
         }
-        region.first = start;
-        region.second = end - start;
+        region.startPos = start;
+        region.length = end - start;
         return true;
     }
 }
@@ -333,16 +331,16 @@ Primer3Task::Primer3Task(const Primer3TaskSettings &settingsArg):
 {
     GCOUNTER( cvar, tvar, "Primer3Task" );
     {
-        QPair<int, int> region = settings.getIncludedRegion();
-        region.first -= settings.getFirstBaseIndex();
+        U2Region region = settings.getIncludedRegion();
+        region.startPos -= settings.getFirstBaseIndex();
         settings.setIncludedRegion(region);
     }
-    offset = settings.getIncludedRegion().first;
+    offset = settings.getIncludedRegion().startPos;
     settings.setSequence(settings.getSequence().mid(
-            settings.getIncludedRegion().first, settings.getIncludedRegion().second));
+            settings.getIncludedRegion().startPos, settings.getIncludedRegion().length));
     settings.setSequenceQuality(settings.getSequenceQuality().mid(
-            settings.getIncludedRegion().first, settings.getIncludedRegion().second));
-    settings.setIncludedRegion(qMakePair(0, settings.getIncludedRegion().second));
+            settings.getIncludedRegion().startPos, settings.getIncludedRegion().length));
+    settings.setIncludedRegion(0, settings.getIncludedRegion().length);
     if(!PR_START_CODON_POS_IS_NULL(settings.getSeqArgs()))
     {
         int startCodonPosition = PR_DEFAULT_START_CODON_POS;
@@ -353,12 +351,10 @@ Primer3Task::Primer3Task(const Primer3TaskSettings &settingsArg):
         }
     }
     {
-        QList<QPair<int, int> > regionList;
-        QPair<int, int> region;
-        foreach(region, settings.getTarget())
-        {
-            region.first -= settings.getFirstBaseIndex();
-            region.first -= offset;
+        QList< U2Region> regionList;
+        foreach (U2Region region, settings.getTarget()) {
+            region.startPos -= settings.getFirstBaseIndex();
+            region.startPos -= offset;
             if(clipRegion(region, settings.getIncludedRegion()))
             {
                 regionList.append(region);
@@ -367,12 +363,10 @@ Primer3Task::Primer3Task(const Primer3TaskSettings &settingsArg):
         settings.setTarget(regionList);
     }
     {
-        QList<QPair<int, int> > regionList;
-        QPair<int, int> region;
-        foreach(region, settings.getExcludedRegion())
-        {
-            region.first -= settings.getFirstBaseIndex();
-            region.first -= offset;
+        QList< U2Region > regionList;
+        foreach (U2Region region, settings.getExcludedRegion()) {
+            region.startPos -= settings.getFirstBaseIndex();
+            region.startPos -= offset;
             if(clipRegion(region, settings.getIncludedRegion()))
             {
                 regionList.append(region);
@@ -381,12 +375,10 @@ Primer3Task::Primer3Task(const Primer3TaskSettings &settingsArg):
         settings.setExcludedRegion(regionList);
     }
     {
-        QList<QPair<int, int> > regionList;
-        QPair<int, int> region;
-        foreach(region, settings.getInternalOligoExcludedRegion())
-        {
-            region.first -= settings.getFirstBaseIndex();
-            region.first -= offset;
+        QList< U2Region > regionList;
+        foreach (U2Region region, settings.getInternalOligoExcludedRegion()) {
+            region.startPos -= settings.getFirstBaseIndex();
+            region.startPos -= offset;
             if(clipRegion(region, settings.getIncludedRegion()))
             {
                 regionList.append(region);
@@ -639,21 +631,20 @@ Primer3SWTask::Primer3SWTask(const Primer3TaskSettings &settingsArg):
 
 void Primer3SWTask::prepare()
 {
-    if((settings.getIncludedRegion().first < settings.getFirstBaseIndex()) ||
-       (settings.getIncludedRegion().second <= 0) ||
-       (settings.getIncludedRegion().first + settings.getIncludedRegion().second >
+    if((settings.getIncludedRegion().startPos < settings.getFirstBaseIndex()) ||
+       (settings.getIncludedRegion().length <= 0) ||
+       (settings.getIncludedRegion().endPos() >
         settings.getSequence().size() + settings.getFirstBaseIndex()))
     {
         setError("invalid included region");
         return;
     }
-    QVector<U2Region> regions = SequenceWalkerTask::splitRange(
-        U2Region(settings.getIncludedRegion().first, settings.getIncludedRegion().second),
-        CHUNK_SIZE, 0, CHUNK_SIZE/2, false);
+    QVector<U2Region> regions = SequenceWalkerTask::splitRange(settings.getIncludedRegion(),
+                                                               CHUNK_SIZE, 0, CHUNK_SIZE/2, false);
     foreach(U2Region region, regions)
     {
         Primer3TaskSettings regionSettings = settings;
-        regionSettings.setIncludedRegion(qMakePair((int)region.startPos, (int)region.length));
+        regionSettings.setIncludedRegion(region);
         Primer3Task *task = new Primer3Task(regionSettings);
         regionTasks.append(task);
         addSubTask(task);
@@ -758,14 +749,13 @@ QList<Task *> Primer3ToAnnotationsTask::onSubTaskFinished(Task *subTask)
                 foreach (const U2Region& r, regions ) {
                     totalLen += r.length;
                 }
-                QPair<int,int> exonsRegion(regions.first().startPos + settings.getFirstBaseIndex(), totalLen);
-                settings.setIncludedRegion( exonsRegion  );
+                settings.setIncludedRegion(regions.first().startPos + settings.getFirstBaseIndex(), totalLen);
 
 
             }
             settings.setExonRegions(regions);
             // reset target and excluded regions regions
-            QList<QPair<int,int> > emptyList;
+            QList< U2Region > emptyList;
             settings.setExcludedRegion(emptyList);
             settings.setTarget(emptyList);
 
@@ -875,7 +865,7 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
     return ReportResult_Finished;
 }
 
-AnnotationData Primer3ToAnnotationsTask::oligoToAnnotation(QString title, const Primer &primer, int productSize, U2Strand strand)
+AnnotationData Primer3ToAnnotationsTask::oligoToAnnotation(const QString& title, const Primer &primer, int productSize, U2Strand strand)
 {
     AnnotationData annotationData;
     annotationData.name = title;

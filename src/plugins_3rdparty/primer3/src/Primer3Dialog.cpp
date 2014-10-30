@@ -135,26 +135,32 @@ bool Primer3Dialog::prepareAnnotationObject()
    return createAnnotationWidgetController->prepareAnnotationObject();
 }
 
-QString Primer3Dialog::intervalListToString(QList<QPair<int, int> > intervalList, QString delimiter) {
+QString Primer3Dialog::intervalListToString(const QList< U2Region >& intervalList, const QString& delimiter,
+                                            IntervalDefinition definition) {
     QString result;
     bool first = true;
-    QPair<int, int> interval;
+    U2Region interval;
     foreach(interval, intervalList)
     {
         if(!first)
         {
             result += " ";
         }
-        result += QString::number(interval.first);
+        result += QString::number(interval.startPos);
         result += delimiter;
-        result += QString::number(interval.second);
+        if (definition == Start_End) {
+            result += QString::number(interval.endPos() - 1);
+        } else {
+            result += QString::number(interval.length);
+        }
         first = false;
     }
     return result;
 }
 
-bool Primer3Dialog::parseIntervalList(QString inputString, QString delimiter, QList<QPair<int, int> > *outputList) {
-    QList<QPair<int, int> > result;
+bool Primer3Dialog::parseIntervalList(const QString& inputString, const QString& delimiter, QList< U2Region > *outputList,
+                                      IntervalDefinition definition) {
+    QList< U2Region > result;
     QStringList intervalStringList = inputString.split(QRegExp("\\s+"),QString::SkipEmptyParts);
     foreach(QString intervalString, intervalStringList)
     {
@@ -181,7 +187,11 @@ bool Primer3Dialog::parseIntervalList(QString inputString, QString delimiter, QL
                 return false;
             }
         }
-        result.append(qMakePair(firstValue, secondValue));
+        if (definition == Start_End) {
+            result.append(U2Region(firstValue, secondValue - firstValue + 1));
+        } else {
+            result.append(U2Region(firstValue, secondValue));
+        }
     }
     *outputList = result;
     return true;
@@ -235,7 +245,7 @@ void Primer3Dialog::reset()
     ui.edit_EXCLUDED_REGION->setText(intervalListToString(defaultSettings.getExcludedRegion(),","));
     ui.edit_PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION->setText(intervalListToString(defaultSettings.getInternalOligoExcludedRegion(),","));
     ui.edit_TARGET->setText(intervalListToString(defaultSettings.getTarget(),","));
-    ui.edit_PRIMER_PRODUCT_SIZE_RANGE->setText(intervalListToString(defaultSettings.getProductSizeRange(),"-"));
+    ui.edit_PRIMER_PRODUCT_SIZE_RANGE->setText(intervalListToString(defaultSettings.getProductSizeRange(),"-", Start_End));
     ui.edit_PRIMER_LEFT_INPUT->setText(defaultSettings.getLeftInput());
     ui.edit_PRIMER_RIGHT_INPUT->setText(defaultSettings.getRightInput());
     ui.edit_PRIMER_INTERNAL_OLIGO_INPUT->setText(defaultSettings.getInternalInput());
@@ -511,7 +521,7 @@ bool Primer3Dialog::doDataExchange()
         }
     }
     {
-        QList<QPair<int, int> > list;
+        QList< U2Region > list;
         if(parseIntervalList(ui.edit_EXCLUDED_REGION->text(), ",", &list))
         {
             settings.setExcludedRegion(list);
@@ -523,7 +533,7 @@ bool Primer3Dialog::doDataExchange()
         }
     }
     {
-        QList<QPair<int, int> > list;
+        QList< U2Region > list;
         if(parseIntervalList(ui.edit_PRIMER_INTERNAL_OLIGO_EXCLUDED_REGION->text(), ",", &list))
         {
             settings.setInternalOligoExcludedRegion(list);
@@ -535,7 +545,7 @@ bool Primer3Dialog::doDataExchange()
         }
     }
     {
-        QList<QPair<int, int> > list;
+        QList< U2Region > list;
         if(parseIntervalList(ui.edit_TARGET->text(), ",", &list))
         {
             settings.setTarget(list);
@@ -547,8 +557,8 @@ bool Primer3Dialog::doDataExchange()
         }
     }
     {
-        QList<QPair<int, int> > list;
-        if(parseIntervalList(ui.edit_PRIMER_PRODUCT_SIZE_RANGE->text(), "-", &list))
+        QList< U2Region > list;
+        if(parseIntervalList(ui.edit_PRIMER_PRODUCT_SIZE_RANGE->text(), "-", &list, Start_End))
         {
             settings.setProductSizeRange(list);
         }

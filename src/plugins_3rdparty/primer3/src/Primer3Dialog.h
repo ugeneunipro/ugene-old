@@ -49,8 +49,15 @@ public:
     QString checkModel();
     bool prepareAnnotationObject();
 public:
-    static bool parseIntervalList(QString inputString, QString delimiter, QList<QPair<int, int> > *outputList);
-    static QString intervalListToString(QList<QPair<int, int> > intervalList, QString delimiter);
+    enum IntervalDefinition {
+        Start_Length,
+        Start_End
+    };
+
+    static bool parseIntervalList(const QString& inputString, const QString& delimiter, QList< U2Region > *outputList,
+                                  IntervalDefinition way = Start_Length);
+    static QString intervalListToString(const QList< U2Region>& intervalList, const QString& delimiter,
+                                        IntervalDefinition way = Start_Length);
 private:
     void reset();
     bool doDataExchange();

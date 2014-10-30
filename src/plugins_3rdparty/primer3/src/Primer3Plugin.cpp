@@ -109,15 +109,15 @@ void Primer3ADVContext::sl_showDialog() {
     {
         Primer3TaskSettings defaultSettings;
         {
-            QList<QPair<int, int> > sizeRange;
-            sizeRange.append(qMakePair(150,250));
-            sizeRange.append(qMakePair(100,300));
-            sizeRange.append(qMakePair(301,400));
-            sizeRange.append(qMakePair(401,500));
-            sizeRange.append(qMakePair(501,600));
-            sizeRange.append(qMakePair(601,700));
-            sizeRange.append(qMakePair(701,850));
-            sizeRange.append(qMakePair(851,1000));
+            QList< U2Region > sizeRange;
+            sizeRange.append(U2Region(150, 101));  // 150-250
+            sizeRange.append(U2Region(100, 201));  // 100-300
+            sizeRange.append(U2Region(301, 100));  // 301-400
+            sizeRange.append(U2Region(401, 100));  // 401-500
+            sizeRange.append(U2Region(501, 100));  // 501-600
+            sizeRange.append(U2Region(601, 100));  // 601-700
+            sizeRange.append(U2Region(701, 150));  // 701-850
+            sizeRange.append(U2Region(851, 150));  // 851-1000
             defaultSettings.setProductSizeRange(sizeRange);
         }
         defaultSettings.setDoubleProperty("PRIMER_MAX_END_STABILITY",9.0);
@@ -132,9 +132,7 @@ void Primer3ADVContext::sl_showDialog() {
             Primer3TaskSettings settings = dialog.getSettings();
             settings.setSequence(seqCtx->getSequenceObject()->getWholeSequenceData());
             U2Region region=dialog.getRegion();
-            settings.setIncludedRegion(qMakePair(
-                    (int)region.startPos + settings.getFirstBaseIndex(),
-                    (int)region.length));//need refactor primer3 move to U2Region
+            settings.setIncludedRegion( region.startPos + settings.getFirstBaseIndex(), region.length);
             QString err = dialog.checkModel();
             if (!err.isEmpty()) {
                 QMessageBox::warning(QApplication::activeWindow(), dialog.windowTitle(), err);
