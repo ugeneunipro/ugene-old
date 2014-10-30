@@ -43,6 +43,8 @@ class Primer
 public:
     Primer();
     Primer(const primer_rec &primerRec);
+    bool operator==(const Primer& primer) const;
+    static bool areEqual(const Primer* p1, const Primer* p2);
 
     int getStart()const;
     int getLength()const;
@@ -76,6 +78,7 @@ public:
     PrimerPair(const primer_pair &primerPair, int offset = 0);
     PrimerPair(const PrimerPair &primerPair);
     const PrimerPair &operator=(const PrimerPair &primerPair);
+    bool operator==(const PrimerPair& primerPair) const;
 
     Primer *getLeftPrimer()const;
     Primer *getRightPrimer()const;
@@ -140,9 +143,14 @@ public:
     const QList<PrimerPair>& getBestPairs() const  { return bestPairs; }
     const QList<Primer>& getSinglePrimers() const { return singlePrimers; }
 private:
+    void addPrimer3Subtasks(const Primer3TaskSettings &settings, QList<Primer3Task*> &listToRemember);
+    void relocatePrimerOverMedian(Primer* primer);
+
     static const int CHUNK_SIZE = 1024*256;
 
     QList<Primer3Task *> regionTasks;
+    QList<Primer3Task *> circRegionTasks;
+    int median;
     Primer3TaskSettings settings;
     QList<PrimerPair> bestPairs;
     QList<Primer> singlePrimers;

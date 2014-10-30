@@ -33,6 +33,7 @@ Primer3TaskSettings::Primer3TaskSettings()
     std::memset(&primerArgs.glob_err,0,sizeof(primerArgs.glob_err));
     std::memset(&seqArgs,0,sizeof(seqArgs));
     seqArgs.start_codon_pos = PR_DEFAULT_START_CODON_POS;
+    isCircular = false;
 
     initMaps();
 }
@@ -40,6 +41,7 @@ Primer3TaskSettings::Primer3TaskSettings()
 Primer3TaskSettings::Primer3TaskSettings(const Primer3TaskSettings &settings):
     sequenceName(settings.sequenceName),
     sequence(settings.sequence),
+    isCircular(settings.isCircular),
     leftInput(settings.leftInput),
     rightInput(settings.rightInput),
     internalInput(settings.internalInput),
@@ -57,6 +59,7 @@ const Primer3TaskSettings &Primer3TaskSettings::operator=(const Primer3TaskSetti
 {
     sequenceName = settings.sequenceName;
     sequence = settings.sequence;
+    isCircular = settings.isCircular;
     leftInput = settings.leftInput;
     rightInput = settings.rightInput;
     internalInput = settings.internalInput;
@@ -202,6 +205,11 @@ QByteArray Primer3TaskSettings::getSequence()const
     return sequence;
 }
 
+int Primer3TaskSettings::getSequenceSize() const
+{
+    return sequence.size();
+}
+
 QList< U2Region > Primer3TaskSettings::getTarget()const
 {
     QList< U2Region > result;
@@ -296,10 +304,15 @@ void Primer3TaskSettings::setSequenceName(const QByteArray &value)
     }
 }
 
-void Primer3TaskSettings::setSequence(const QByteArray &value)
+void Primer3TaskSettings::setSequence(const QByteArray &value, bool isCirc)
 {
     sequence = value;
+    isCircular = isCirc;
     seqArgs.sequence = sequence.constData();
+}
+
+void Primer3TaskSettings::setCircularity(bool isCirc) {
+    isCircular = isCirc;
 }
 
 void Primer3TaskSettings::setTarget(const QList< U2Region > &value)

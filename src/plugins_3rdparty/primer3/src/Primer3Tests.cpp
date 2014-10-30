@@ -190,6 +190,12 @@ void GTest_Primer3::init(XMLTestFormat *tf, const QDomElement& el){
     if (!buf.isEmpty()){
         settings.setSequence(buf.toLatin1());
     }
+
+    buf = elInput.attribute("CIRCULAR");
+    if (!buf.isEmpty()) {
+        settings.setCircularity(buf == "true" ? 1 : 0);
+    }
+
 //3
     buf = elInput.attribute("TARGET");
     if (!buf.isEmpty()){

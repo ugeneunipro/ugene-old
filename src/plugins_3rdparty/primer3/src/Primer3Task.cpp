@@ -55,6 +55,28 @@ Primer::Primer(const primer_rec &primerRec):
 {
 }
 
+bool Primer::operator ==(const Primer& p) const {
+    bool result = true;
+
+    result &= start == p.start;
+    result &= length == p.length;
+    result &= meltingTemperature == p.meltingTemperature;
+    result &= gcContent == p.gcContent;
+    result &= selfAny == p.selfAny;
+    result &= selfEnd == p.selfEnd;
+    result &= endStability == p.endStability;
+
+    return result;
+}
+
+bool Primer::areEqual(const Primer *p1, const Primer *p2) {
+    if (p1 != NULL && p2 != NULL) {
+        return (*p1 == *p2);
+    } else {
+        return (p1 == p2);
+    }
+}
+
 int Primer::getStart()const
 {
     return start;
@@ -186,6 +208,22 @@ const PrimerPair &PrimerPair::operator=(const PrimerPair &primerPair)
     quality = primerPair.quality;
     complMeasure = primerPair.complMeasure;
     return *this;
+}
+
+bool PrimerPair::operator ==(const PrimerPair &primerPair) const {
+    bool result = true;
+
+    result &= Primer::areEqual(leftPrimer.data(), primerPair.leftPrimer.data());
+    result &= Primer::areEqual(rightPrimer.data(), primerPair.rightPrimer.data());
+    result &= Primer::areEqual(internalOligo.data(), primerPair.internalOligo.data());
+
+    result &= complAny == primerPair.complAny;
+    result &= complEnd == primerPair.complEnd;
+    result &= productSize == primerPair.productSize;
+    result &= quality == primerPair.quality;
+    result &= complMeasure == primerPair.complMeasure;
+
+    return result;
 }
 
 Primer *PrimerPair::getLeftPrimer()const
@@ -626,6 +664,7 @@ Primer3SWTask::Primer3SWTask(const Primer3TaskSettings &settingsArg):
     Task("Pick primers SW task", TaskFlags_NR_FOSCOE),
     settings(settingsArg)
 {
+    median = settings.getSequenceSize() / 2;
     setMaxParallelSubtasks(MAX_PARALLEL_SUBTASKS_AUTO);
 }
 
@@ -634,20 +673,25 @@ void Primer3SWTask::prepare()
     if((settings.getIncludedRegion().startPos < settings.getFirstBaseIndex()) ||
        (settings.getIncludedRegion().length <= 0) ||
        (settings.getIncludedRegion().endPos() >
-        settings.getSequence().size() + settings.getFirstBaseIndex()))
+        settings.getSequenceSize() + settings.getFirstBaseIndex()))
     {
         setError("invalid included region");
         return;
     }
-    QVector<U2Region> regions = SequenceWalkerTask::splitRange(settings.getIncludedRegion(),
-                                                               CHUNK_SIZE, 0, CHUNK_SIZE/2, false);
-    foreach(U2Region region, regions)
-    {
-        Primer3TaskSettings regionSettings = settings;
-        regionSettings.setIncludedRegion(region);
-        Primer3Task *task = new Primer3Task(regionSettings);
-        regionTasks.append(task);
-        addSubTask(task);
+
+    addPrimer3Subtasks(settings, regionTasks);
+
+    if (settings.isSequenceCircular() && settings.getIncludedRegion().startPos == 1 &&
+            settings.getIncludedRegion().length == settings.getSequenceSize()) {
+        // Based on conversation with Vladimir Trifonov:
+        // Consider the start position in the center of the sequence and find primers for it.
+        // This should be enough for circular primers search.
+        QByteArray oppositeSeq = settings.getSequence().right(median);
+        oppositeSeq.append( settings.getSequence().left(settings.getSequenceSize() - median));
+        Primer3TaskSettings circSettings = settings;
+        circSettings.setSequence(oppositeSeq, true);
+
+        addPrimer3Subtasks(circSettings, circRegionTasks);
     }
 }
 
@@ -669,7 +713,26 @@ Task::ReportResult Primer3SWTask::report()
         bestPairs.append(task->getBestPairs());
         singlePrimers.append(task->getSinglePrimers());
     }
-    if(regionTasks.size() > 1)
+
+    foreach(Primer3Task *task, circRegionTasks)
+    {
+        // relocate primers that were found for sequence splitted in the center
+        foreach (PrimerPair p, task->getBestPairs()) {
+            relocatePrimerOverMedian(p.getLeftPrimer());
+            relocatePrimerOverMedian(p.getRightPrimer());
+            if (!bestPairs.contains(p)) {
+                bestPairs.append(p);
+            }
+        }
+
+        foreach (Primer p, task->getSinglePrimers()) {
+            relocatePrimerOverMedian(&p);
+            if (!singlePrimers.contains(p)) {
+                singlePrimers.append(p);
+            }
+        }
+    }
+    if (regionTasks.size() + circRegionTasks.size() > 1)
     {
         qStableSort(bestPairs);
         int pairsCount = 0;
@@ -682,6 +745,23 @@ Task::ReportResult Primer3SWTask::report()
         bestPairs = bestPairs.mid(0, pairsCount);
     }
     return Task::ReportResult_Finished;
+}
+
+void Primer3SWTask::addPrimer3Subtasks(const Primer3TaskSettings &settings, QList<Primer3Task*> &list) {
+    QVector<U2Region> regions = SequenceWalkerTask::splitRange(settings.getIncludedRegion(),
+                                                               CHUNK_SIZE, 0, CHUNK_SIZE/2, false);
+    foreach(const U2Region& region, regions)
+    {
+        Primer3TaskSettings regionSettings = settings;
+        regionSettings.setIncludedRegion(region);
+        Primer3Task *task = new Primer3Task(regionSettings);
+        list.append(task);
+        addSubTask(task);
+    }
+}
+
+void Primer3SWTask::relocatePrimerOverMedian(Primer *primer) {
+    primer->setStart( primer->getStart() + median *( primer->getStart() > median ? -1 : 1));
 }
 
 
@@ -779,6 +859,9 @@ QString Primer3ToAnnotationsTask::generateReport() const {
     }
 
     foreach(Primer3Task *t, searchTask->regionTasks) {
+        t->sumStat(&searchTask->settings);
+    }
+    foreach(Primer3Task *t, searchTask->circRegionTasks) {
         t->sumStat(&searchTask->settings);
     }
 

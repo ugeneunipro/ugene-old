@@ -82,6 +82,7 @@ public:
 
     QByteArray getSequenceName()const;
     QByteArray getSequence()const;
+    int getSequenceSize() const;
     QList< U2Region > getTarget()const;
     QList< U2Region > getProductSizeRange()const;
     task getTask()const;
@@ -97,7 +98,8 @@ public:
     int getFirstBaseIndex()const;
 
     void setSequenceName(const QByteArray &value);
-    void setSequence(const QByteArray &value);
+    void setSequence(const QByteArray &value, bool isCircular = false);
+    void setCircularity(bool isCircular);
     void setTarget(const QList< U2Region > &value);
     void setProductSizeRange(const QList< U2Region > &value);
     void setTask(const task &value);
@@ -141,6 +143,7 @@ public:
 
     bool spanIntronExonBoundaryIsEnabled() const { return spanIntronExonBoundarySettings.enabled; }
 
+    bool isSequenceCircular() const { return isCircular; }
 
 
 private:
@@ -154,6 +157,7 @@ private:
     // don't forget to change copy constructor and assignment operator when changing this!
     QByteArray sequenceName;
     QByteArray sequence;
+    bool isCircular;
     QByteArray leftInput;
     QByteArray rightInput;
     QByteArray internalInput;
