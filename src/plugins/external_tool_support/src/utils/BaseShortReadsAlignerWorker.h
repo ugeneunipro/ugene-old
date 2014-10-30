@@ -26,10 +26,12 @@
 #include <U2Lang/WorkflowUtils.h>
 #include <U2Core/GUrl.h>
 
+
+namespace U2 {
+
 class DnaAssemblyToRefTaskSettings;
 class DnaAssemblyToReferenceTask;
 
-namespace U2 {
 namespace LocalWorkflow {
 
 const QString IN_PORT_DESCR("in-data");
@@ -50,7 +52,7 @@ protected:
     virtual void setGenomeIndex(DnaAssemblyToRefTaskSettings& settings) = 0;
     virtual QString getDefaultFileName() const = 0;
     virtual QString getBaseSubdir() const = 0;
-    virtual DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings settings) const = 0;
+    virtual DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings &settings) const = 0;
 protected:
     QString      algName;
     IntegralBus *inChannel;

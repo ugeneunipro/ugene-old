@@ -92,7 +92,7 @@ QString Bowtie2Worker::getBaseSubdir() const {
     return BASE_Bowtie2_SUBDIR;
 }
 
-DnaAssemblyToReferenceTask* Bowtie2Worker::getTask(const DnaAssemblyToRefTaskSettings settings) const {
+DnaAssemblyToReferenceTask* Bowtie2Worker::getTask(const DnaAssemblyToRefTaskSettings &settings) const {
     return new Bowtie2Task(settings);
 }
 

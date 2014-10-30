@@ -104,10 +104,12 @@ QVariantMap BWAMEMWorker::getCustomParameters() const {
 QString BWAMEMWorker::getDefaultFileName() const {
     return BASE_BWA_OUTFILE;
 }
+
 QString BWAMEMWorker::getBaseSubdir() const {
     return BASE_BWA_SUBDIR;
 }
-DnaAssemblyToReferenceTask* BWAMEMWorker::getTask(const DnaAssemblyToRefTaskSettings settings) const {
+
+DnaAssemblyToReferenceTask* BWAMEMWorker::getTask(const DnaAssemblyToRefTaskSettings &settings) const {
     return new BwaTask(settings);
 }
 

@@ -24,9 +24,10 @@
 
 #include "utils/BaseShortReadsAlignerWorker.h"
 
+namespace U2 {
+
 class DnaAssemblyToRefTaskSettings;
 
-namespace U2 {
 namespace LocalWorkflow {
 
 class BowtieWorker : public BaseShortReadsAlignerWorker {
@@ -38,7 +39,7 @@ protected:
     QVariantMap getCustomParameters() const;
     QString getDefaultFileName() const;
     QString getBaseSubdir() const;
-    DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings settings) const;
+    DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings &settings) const;
     void setGenomeIndex(DnaAssemblyToRefTaskSettings& settings);
 }; // BowtieWorker
 

@@ -24,9 +24,11 @@
 
 #include "utils/BaseShortReadsAlignerWorker.h"
 
-class DnaAssemblyToRefTaskSettings;
 
 namespace U2 {
+
+class DnaAssemblyToRefTaskSettings;
+
 namespace LocalWorkflow {
 
 class BWAMEMWorker : public BaseShortReadsAlignerWorker {
@@ -38,7 +40,7 @@ protected:
     QVariantMap getCustomParameters() const;
     QString getDefaultFileName() const;
     QString getBaseSubdir() const;
-    DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings settings) const;
+    DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings &settings) const;
     void setGenomeIndex(DnaAssemblyToRefTaskSettings& settings);
 }; // BWAMEMWorker
 

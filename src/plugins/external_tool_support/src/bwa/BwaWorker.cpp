@@ -112,7 +112,7 @@ QString BWAWorker::getBaseSubdir() const {
     return BASE_BWA_SUBDIR;
 }
 
-DnaAssemblyToReferenceTask* BWAWorker::getTask(const DnaAssemblyToRefTaskSettings settings) const {
+DnaAssemblyToReferenceTask* BWAWorker::getTask(const DnaAssemblyToRefTaskSettings &settings) const {
     return new BwaTask(settings);
 }
 
