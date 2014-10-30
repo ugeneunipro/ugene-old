@@ -52,7 +52,6 @@
 #include <U2View/ADVSequenceWidget.h>
 #include <U2View/AnnotatedDNAView.h>
 
-#include "FindPatternTask.h"
 #include "FindPatternWidget.h"
 
 const QString NEW_LINE_SYMBOL = "\n";
@@ -410,6 +409,7 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         connect(findPatternEventFilter, SIGNAL(si_enterPressed()), SLOT(sl_onEnterPressed()));
         connect(findPatternEventFilter, SIGNAL(si_shiftEnterPressed()), SLOT(sl_onShiftEnterPressed()));
         connect(usePatternNamesCheckBox, SIGNAL(stateChanged(int)), SLOT(sl_activateNewSearch()));
+        connect(usePatternNamesCheckBox, SIGNAL(stateChanged(int)), SLOT(sl_usePatternNamesCbClicked()));
 
         sl_onSearchPatternChanged();
     }
@@ -856,7 +856,7 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
                     if (!text.isEmpty()) {
                         text += "\n";
                     }
-                    text += QString(tr("Warning: annotation name or annotation group name are invalid. "));
+                    text += QString(tr("Warning: annotation name or annotation group name are either invalid or too long. "));
                     if (!additionalMsg.isEmpty()){
                         text += QString(tr("Reason: "));
                         text += additionalMsg;
@@ -1061,6 +1061,28 @@ void FindPatternWidget::sl_onSequenceModified(ADVSequenceObjectContext* /* conte
 
 void FindPatternWidget::checkState()
 {
+    //validate annotation name
+    QString v = annotController->validate();
+    if(!v.isEmpty()){
+        showHideMessage(true, AnnotationNotValidName, v);
+        annotController->setFocusToNameEdit();
+        getAnnotationsPushButton->setDisabled(true);
+        return;
+    }
+
+    if(usePatternNamesCheckBox->isChecked()){
+        foreach(const QString &name, nameList){
+            if (name.length() > GBFeatureUtils::MAX_KEY_LEN || !Annotation::isValidAnnotationName(name) || name.isEmpty()) {
+                showHideMessage(true, AnnotationNotValidName);
+                getAnnotationsPushButton->setDisabled(true);
+                return;
+            }
+        }
+        showHideMessage(false, AnnotationNotValidName);
+    }
+
+    getAnnotationsPushButton->setEnabled(!findPatternResults.isEmpty());
+
     // Disable the "Search" button if the pattern is empty
     //and pattern is not loaded from a file
     if (textPattern->toPlainText().isEmpty()
@@ -1090,14 +1112,6 @@ void FindPatternWidget::checkState()
                 showHideMessage(false, PatternIsTooLong);
             }
         }
-    }
-
-    //validate annotation name
-    QString v = annotController->validate();
-    if(!v.isEmpty()){
-        showHideMessage(true, AnnotationNotValidName, v);
-        annotController->setFocusToNameEdit();
-        return;
     }
 
     showHideMessage(false, AnnotationNotValidName);
@@ -1170,6 +1184,7 @@ QList <QPair<QString, QString> > FindPatternWidget::getPatternsFromTextPatternFi
             result[i].first = model.data.name;
         }
     }
+    
     return result;
 }
 
@@ -1344,6 +1359,7 @@ void FindPatternWidget::sl_findPatrernTaskStateChanged() {
             nextPushButton->setEnabled(true);
             prevPushButton->setEnabled(true);
             getAnnotationsPushButton->setEnabled(true);
+            checkState();
             showCurrentResult();
         }        
         searchTask = NULL;
@@ -1485,16 +1501,8 @@ void FindPatternWidget::validateCheckBoxSize(QCheckBox* checkBox, int requiredWi
 }
 
 void FindPatternWidget::sl_activateNewSearch(){
-    if(searchTask != NULL){
-        disconnect(this, SLOT(sl_loadPatternTaskStateChanged()));
-        searchTask->cancel();
-        searchTask = NULL;
-    }
-    findPatternResults.clear();
-    nextPushButton->setDisabled(true);
-    prevPushButton->setDisabled(true);
-    getAnnotationsPushButton->setDisabled(true);
     if(loadFromFileGroupBox->isChecked()) {
+        stopCurrentSearchTask();
         if(filePathLineEdit->text().isEmpty()){
             return;
         }
@@ -1508,9 +1516,27 @@ void FindPatternWidget::sl_activateNewSearch(){
         AppContext::getTaskScheduler()->registerTopLevelTask(loadTask);
     } else {
         U2OpStatus2Log os;
-        QList <NamePattern> patterns = getPatternsFromTextPatternField(os);
+        
+        QList<NamePattern> newPatterns = getPatternsFromTextPatternField(os);
 
-        initFindPatternTask(patterns);
+        nameList.clear();
+        foreach(const NamePattern &np, newPatterns){
+            nameList.append(np.first);
+        }
+        
+        if(isSearchPatternsDifferent(newPatterns)){
+            patternList.clear();
+            for(int i = 0; i < newPatterns.size();i++){
+                newPatterns[i].first = QString::number(i);
+                patternList.append(newPatterns[i].second);
+            }   
+        }else{
+            checkState();
+            return;
+        }
+
+        stopCurrentSearchTask();
+        initFindPatternTask(newPatterns);
 
         annotModelPrepared = false;
     }
@@ -1521,9 +1547,6 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
         bool objectPrepared = annotController->prepareAnnotationObject();
         SAFE_POINT(objectPrepared, "Cannot create an annotation object. Please check settings", );
         annotModelPrepared = true;
-        if(findPatternResults.isEmpty()){
-            getAnnotationsPushButton->setDisabled(true);
-        }
     }
     QString v = annotController->validate();
     SAFE_POINT(v.isEmpty(), "Annotation names are invalid", );
@@ -1533,6 +1556,15 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
 
     AnnotationTableObject *aTableObj = annotModel.getAnnotationObject();
     SAFE_POINT(aTableObj != NULL, "Invalid annotation table detected!", );
+
+    for(int i = 0; i < findPatternResults.size(); i++){
+        if(usePatternNamesCheckBox->isChecked()) {
+            SAFE_POINT(nameList.size() < findPatternResults[i].name.toInt(), "Out of boundaries in names list");
+            findPatternResults[i].name = nameList[findPatternResults[i].name.toInt()];
+        }else{
+            findPatternResults[i].name = annotModel.data.name;
+        }
+    }
 
     AppContext::getTaskScheduler()->registerTopLevelTask(new CreateAnnotationsTask(aTableObj, group, findPatternResults));
     
@@ -1583,6 +1615,34 @@ void FindPatternWidget::sl_onShiftEnterPressed(){
     if(prevPushButton->isEnabled()){
         prevPushButton->click();
     }
+}
+
+void FindPatternWidget::sl_usePatternNamesCbClicked(){
+    checkState();
+}
+
+bool FindPatternWidget::isSearchPatternsDifferent(const QList<NamePattern> &newPatterns) const {
+    if(patternList.size() != newPatterns.size()){
+        return true;
+    }
+    foreach(const NamePattern &s, newPatterns){
+        if(!patternList.contains(s.second)){
+            return true;
+        }
+    }
+    return false;
+}
+
+void FindPatternWidget::stopCurrentSearchTask(){
+    if(searchTask != NULL){
+        disconnect(this, SLOT(sl_loadPatternTaskStateChanged()));
+        searchTask->cancel();
+        searchTask = NULL;
+    }
+    findPatternResults.clear();
+    nextPushButton->setDisabled(true);
+    prevPushButton->setDisabled(true);
+    getAnnotationsPushButton->setDisabled(true);
 }
 
 } // namespace

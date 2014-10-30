@@ -471,7 +471,8 @@ QList <QPair<QString, QString> > FastaFormat::getSequencesAndNamesFromUserInput(
         QStringList seqDefs = patterns.trimmed().split(FASTA_HEADER_START_SYMBOL, QString::SkipEmptyParts);
 
         foreach (const QString &seqDef, seqDefs) {
-            QStringList seqData = seqDef.split("\n", QString::SkipEmptyParts);
+            QStringList seqData = seqDef.split("\n");
+            CHECK_EXT(!seqData.isEmpty(), os.setError("Invalid fasta input"), result);
             QString name = seqData.takeFirst();
             QString sequence;
             foreach (const QString &line, seqData) {

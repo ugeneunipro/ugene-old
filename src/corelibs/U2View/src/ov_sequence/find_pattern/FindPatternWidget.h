@@ -22,8 +22,6 @@
 #ifndef _U2_FIND_PATTERN_WIDGET_H_
 #define _U2_FIND_PATTERN_WIDGET_H_
 
-#include <ui/ui_FindPatternForm.h>
-
 #include <U2Gui/CreateAnnotationWidgetController.h>
 
 #include <U2Core/DNASequenceSelection.h>
@@ -32,6 +30,8 @@
 
 #include <QtGui/QtGui>
 
+#include "ui/ui_FindPatternForm.h"
+#include "FindPatternTask.h"
 
 namespace U2 {
 
@@ -118,6 +118,7 @@ private slots:
 
     void sl_onEnterPressed();
     void sl_onShiftEnterPressed();
+    void sl_usePatternNamesCbClicked();
 private:
     void initLayout();
     void initAlgorithmLayout();
@@ -131,6 +132,8 @@ private:
     void connectSlots();
     int getMaxError(const QString& pattern) const;
     void showCurrentResult() const;
+    bool isSearchPatternsDifferent(const QList<NamePattern> &newPatterns) const;
+    void stopCurrentSearchTask();
 
     /**
      * Enables or disables the Search button depending on
@@ -217,6 +220,8 @@ private:
     int iterPos;
     Task *searchTask;
     QString previousPatternString;
+    QStringList patternList;
+    QStringList nameList;
 };
 
 } // namespace

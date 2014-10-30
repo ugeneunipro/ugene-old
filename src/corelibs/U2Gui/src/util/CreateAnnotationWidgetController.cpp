@@ -186,7 +186,7 @@ void CreateAnnotationWidgetController::commonWidgetUpdate(const CreateAnnotation
     //default field values
     if ( !model.data.name.isEmpty( ) ) {
         annotationNameEdit->setText( model.data.name );
-    } else if (!model.hideAnnotationName) {
+    } else if (!model.hideAnnotationName && annotationNameEdit->isEnabled()) {
         //QString name = AppContext::getSettings()->getValue(SETTINGS_LAST_USED_ANNOTATION_NAME, QString("misc_feature")).toString();
         annotationNameEdit->setText("misc_feature");
     }
@@ -511,19 +511,17 @@ QString CreateAnnotationWidgetController::validate() {
         }
     }
 
-    if (model.data.name.isEmpty() && !model.hideAnnotationName ) {
-        annotationNameEdit->setFocus();
-        return tr("Annotation name is empty");
-    }
+    if(annotationNameEdit->isEnabled() && !usePatternNamesCheckBox->isChecked()){ //races is here, so double condition
+        if (model.data.name.isEmpty() && !model.hideAnnotationName ) {
+            return tr("Annotation name is empty");
+        }
 
-    if (model.data.name.length() > GBFeatureUtils::MAX_KEY_LEN) {
-        annotationNameEdit->setFocus();
-        return tr("Annotation name is too long!\nMaximum allowed size: %1 (Genbank format compatibility issue)").arg(GBFeatureUtils::MAX_KEY_LEN);
-    }
-
-    if (!Annotation::isValidAnnotationName(model.data.name) && !model.hideAnnotationName) {
-        annotationNameEdit->setFocus();
-        return tr("Illegal annotation name");
+        if (model.data.name.length() > GBFeatureUtils::MAX_KEY_LEN) {
+            return tr("Annotation name is too long!\nMaximum allowed size: %1 (Genbank format compatibility issue)").arg(GBFeatureUtils::MAX_KEY_LEN);
+        }
+        if (!Annotation::isValidAnnotationName(model.data.name) && !model.hideAnnotationName) {
+            return tr("Illegal annotation name");
+        }
     }
 
     if (model.groupName.isEmpty()) {
@@ -561,7 +559,11 @@ void CreateAnnotationWidgetController::updateModel(bool forValidation) {
     SAFE_POINT(groupNameEdit != NULL, "CreateAnnotationWidgetController::updateModel no widget", );
     model.groupName = groupNameEdit->text();
     if (model.groupName == GROUP_NAME_AUTO) {
-        model.groupName = model.data.name;
+        if(model.data.name.isEmpty()){
+            model.groupName = "misc_feature";
+        }else{
+            model.groupName = model.data.name;
+        }
     }
 
     model.data.location->reset();
