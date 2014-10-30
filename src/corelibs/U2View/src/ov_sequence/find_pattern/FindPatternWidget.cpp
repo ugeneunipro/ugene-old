@@ -1355,6 +1355,7 @@ void FindPatternWidget::sl_findPatrernTaskStateChanged() {
             resultLabel->setText(tr("Results: 0/0"));
         }else{
             iterPos = 1;
+            qSort(findPatternResults.begin(), findPatternResults.end());
             resultLabel->setText(tr("Results: %1/%2").arg(QString::number(iterPos)).arg(QString::number(findPatternResults.size())));
             nextPushButton->setEnabled(true);
             prevPushButton->setEnabled(true);
@@ -1559,8 +1560,12 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
 
     for(int i = 0; i < findPatternResults.size(); i++){
         if(usePatternNamesCheckBox->isChecked()) {
-            SAFE_POINT(nameList.size() < findPatternResults[i].name.toInt(), "Out of boundaries in names list", );
-            findPatternResults[i].name = nameList[findPatternResults[i].name.toInt()];
+            bool ok = false;
+            int index = findPatternResults[i].name.toInt(&ok);
+            SAFE_POINT(ok, "Failed conversion to integer", );
+            SAFE_POINT(nameList.size() > index, "Out of boundaries in names list", );
+            SAFE_POINT(index >= 0, "Out of boundaries in names list", );
+            findPatternResults[i].name = nameList[index];
         }else{
             findPatternResults[i].name = annotModel.data.name;
         }

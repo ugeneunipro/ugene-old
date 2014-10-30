@@ -39,6 +39,7 @@ public:
 
     inline bool operator== (const AnnotationData &other) const;
     inline bool operator!= (const AnnotationData &other) const;
+    inline bool operator< (const AnnotationData &other) const;
 
     inline void removeAllQualifiers(const QString& name, QStringList& values);
 
@@ -136,6 +137,15 @@ QString AnnotationData::findFirstQualifierValue(const QString& name) const {
     return QString::null;
 }
 
+bool AnnotationData::operator< (const AnnotationData &other) const {
+    if(getRegions().isEmpty()){
+        true;
+    }
+    if(other.getRegions().isEmpty()){
+        false;
+    }
+    return getRegions().first() < other.getRegions().first();
+}
 
 }//namespace
 
