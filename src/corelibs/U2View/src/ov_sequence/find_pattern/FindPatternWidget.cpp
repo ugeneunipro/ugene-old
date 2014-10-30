@@ -1559,7 +1559,7 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
 
     for(int i = 0; i < findPatternResults.size(); i++){
         if(usePatternNamesCheckBox->isChecked()) {
-            SAFE_POINT(nameList.size() < findPatternResults[i].name.toInt(), "Out of boundaries in names list");
+            SAFE_POINT(nameList.size() < findPatternResults[i].name.toInt(), "Out of boundaries in names list", );
             findPatternResults[i].name = nameList[findPatternResults[i].name.toInt()];
         }else{
             findPatternResults[i].name = annotModel.data.name;
