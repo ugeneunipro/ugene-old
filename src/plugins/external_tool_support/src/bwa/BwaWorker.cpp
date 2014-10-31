@@ -35,7 +35,7 @@
 namespace U2 {
 namespace LocalWorkflow {
 
-const QString BWAWorkerFactory::ACTOR_ID("align-reads-with-bwa");
+const QString BwaWorkerFactory::ACTOR_ID("align-reads-with-bwa");
 
 static const QString USE_MISS_PROB = "use-miss-prob";
 static const QString MAX_DIFF = "max-diff";
@@ -67,12 +67,12 @@ static const QString BASE_BWA_OUTFILE("out.sam");
 /************************************************************************/
 /* Worker */
 /************************************************************************/
-BWAWorker::BWAWorker(Actor *p)
+BwaWorker::BwaWorker(Actor *p)
 : BaseShortReadsAlignerWorker(p, BwaTask::ALGORITHM_BWA_ALN)
 {
 }
 
-QVariantMap BWAWorker::getCustomParameters() const {
+QVariantMap BwaWorker::getCustomParameters() const {
     QMap<QString, QVariant> customSettings;
 
     if(getValue<bool>(USE_MISS_PROB)) {
@@ -104,19 +104,19 @@ QVariantMap BWAWorker::getCustomParameters() const {
     return customSettings;
 }
 
-QString BWAWorker::getDefaultFileName() const {
+QString BwaWorker::getDefaultFileName() const {
     return BASE_BWA_OUTFILE;
 }
 
-QString BWAWorker::getBaseSubdir() const {
+QString BwaWorker::getBaseSubdir() const {
     return BASE_BWA_SUBDIR;
 }
 
-DnaAssemblyToReferenceTask* BWAWorker::getTask(const DnaAssemblyToRefTaskSettings &settings) const {
+DnaAssemblyToReferenceTask* BwaWorker::getTask(const DnaAssemblyToRefTaskSettings &settings) const {
     return new BwaTask(settings);
 }
 
-void BWAWorker::setGenomeIndex(DnaAssemblyToRefTaskSettings& settings) {
+void BwaWorker::setGenomeIndex(DnaAssemblyToRefTaskSettings& settings) {
     settings.prebuiltIndex = true;
     settings.indexFileName = getValue<QString>(REFERENCE_GENOME);
     settings.refSeqUrl = GUrl(settings.indexFileName).baseFileName();
@@ -126,95 +126,95 @@ void BWAWorker::setGenomeIndex(DnaAssemblyToRefTaskSettings& settings) {
 /* Factory */
 /************************************************************************/
 
-void BWAWorkerFactory::init() {
+void BwaWorkerFactory::init() {
 
     QList<Attribute*> attrs;
     QMap<QString, PropertyDelegate*> delegates;
     addCommonAttributes(attrs, delegates);
     {
          Descriptor useMissProb(USE_MISS_PROB ,
-             BWAWorker::tr("Use missing prob"),
-             BWAWorker::tr("Use missing prob instead maximum edit distance."));
+             BwaWorker::tr("Use missing prob"),
+             BwaWorker::tr("Use missing prob instead maximum edit distance."));
 
          Descriptor maxDiff(MAX_DIFF ,
-             BWAWorker::tr("Max #diff"),
-             BWAWorker::tr("Max #diff (-n)"));
+             BwaWorker::tr("Max #diff"),
+             BwaWorker::tr("Max #diff (-n)"));
 
          Descriptor missProb(MISSING_PROB,
-             BWAWorker::tr("Missing prob"),
-             BWAWorker::tr("Missing prob (-n)"));
+             BwaWorker::tr("Missing prob"),
+             BwaWorker::tr("Missing prob (-n)"));
 
          Descriptor seedLength(SEED_LENGTH,
-             BWAWorker::tr("Seed length"),
-             BWAWorker::tr("Seed length (-l)."));
+             BwaWorker::tr("Seed length"),
+             BwaWorker::tr("Seed length (-l)."));
 
          Descriptor maxGap(MAX_GAP,
-             BWAWorker::tr("Max gap opens"),
-             BWAWorker::tr("Max gap opens (-o)."));
+             BwaWorker::tr("Max gap opens"),
+             BwaWorker::tr("Max gap opens (-o)."));
 
          Descriptor indexAlg(INDEX_ALG,
-             BWAWorker::tr("Index algorithm"),
-             BWAWorker::tr("Index algorithm (-a)."));
+             BwaWorker::tr("Index algorithm"),
+             BwaWorker::tr("Index algorithm (-a)."));
 
          Descriptor bestHits(BEST_HITS,
-             BWAWorker::tr("Best hits"),
-             BWAWorker::tr("Best hits (-R)."));
+             BwaWorker::tr("Best hits"),
+             BwaWorker::tr("Best hits (-R)."));
 
          Descriptor longGapPenalty(SCALED_GAP,
-             BWAWorker::tr("Long-scaled gap penalty for long deletions"),
-             BWAWorker::tr("Long-scaled gap penalty for long deletions (-L)"));
+             BwaWorker::tr("Long-scaled gap penalty for long deletions"),
+             BwaWorker::tr("Long-scaled gap penalty for long deletions (-L)"));
 
          Descriptor nonIterative(NON_ITERATIVE,
-             BWAWorker::tr("Non iterative mode"),
-             BWAWorker::tr("Non iterative mode (-N)."));
+             BwaWorker::tr("Non iterative mode"),
+             BwaWorker::tr("Non iterative mode (-N)."));
 
          Descriptor enableLongGaps(ENABLE_LONG_GAPS,
-             BWAWorker::tr("Enable long gaps"),
-             BWAWorker::tr("Enable long gaps"));
+             BwaWorker::tr("Enable long gaps"),
+             BwaWorker::tr("Enable long gaps"));
 
          Descriptor maxGapExtensions(GAP_EXTENSIONS,
-             BWAWorker::tr("Max gap extensions"),
-             BWAWorker::tr("Max gap extensions (-e)"));
+             BwaWorker::tr("Max gap extensions"),
+             BwaWorker::tr("Max gap extensions (-e)"));
 
          Descriptor indelOffset(INDEL_OFFSET,
-             BWAWorker::tr("Indel offset"),
-             BWAWorker::tr("Indel offset (-i)"));
+             BwaWorker::tr("Indel offset"),
+             BwaWorker::tr("Indel offset (-i)"));
 
          Descriptor maxLongDeletions(LONG_DELETIONS, 
-             BWAWorker::tr("Max long deletions extensions"),
-             BWAWorker::tr("Max long deletions extensions(-d)"));
+             BwaWorker::tr("Max long deletions extensions"),
+             BwaWorker::tr("Max long deletions extensions(-d)"));
 
          Descriptor maxQueue(MAX_QUEUE_ENTRIES,
-             BWAWorker::tr("Max queue entries"),
-             BWAWorker::tr("Max queue entries (-m)"));
+             BwaWorker::tr("Max queue entries"),
+             BwaWorker::tr("Max queue entries (-m)"));
 
          Descriptor barcodeLength(BARCODE_LENGTH,
-             BWAWorker::tr("Barcode length"),
-             BWAWorker::tr("Barcode length (-B)"));
+             BwaWorker::tr("Barcode length"),
+             BwaWorker::tr("Barcode length (-B)"));
 
          Descriptor numThreads(NUM_THREADS,
-             BWAWorker::tr("Threads"),
-             BWAWorker::tr("Threads (-t)"));
+             BwaWorker::tr("Threads"),
+             BwaWorker::tr("Threads (-t)"));
 
          Descriptor maxSeedDiff(MAX_SEED_DIFF,
-             BWAWorker::tr("Max seed differencies"),
-             BWAWorker::tr("Max seed differencies (-k)"));
+             BwaWorker::tr("Max seed differencies"),
+             BwaWorker::tr("Max seed differencies (-k)"));
 
          Descriptor mismatchPenalty(MISMATCH_PENALTY,
-             BWAWorker::tr("Mismatch penalty"),
-             BWAWorker::tr("Mismatch penalty (-M)"));
+             BwaWorker::tr("Mismatch penalty"),
+             BwaWorker::tr("Mismatch penalty (-M)"));
 
          Descriptor gapOpen(GAP_OPEN_PENALTY,
-             BWAWorker::tr("Gap open penalty"),
-             BWAWorker::tr("Gap open penalty (-O)."));
+             BwaWorker::tr("Gap open penalty"),
+             BwaWorker::tr("Gap open penalty (-O)."));
 
          Descriptor gapExt(GAP_EXTENSION_PENALTY,
-             BWAWorker::tr("Gap extension penalty"),
-             BWAWorker::tr("Gap extension penalty; a gap of size k cost (-E)."));
+             BwaWorker::tr("Gap extension penalty"),
+             BwaWorker::tr("Gap extension penalty; a gap of size k cost (-E)."));
 
          Descriptor quolityThreshold(QUALITY_THRESHOLD,
-             BWAWorker::tr("Quolity threshold"),
-             BWAWorker::tr("Quolity threshold (-q)."));
+             BwaWorker::tr("Quolity threshold"),
+             BwaWorker::tr("Quolity threshold (-q)."));
 
         attrs << new Attribute(useMissProb, BaseTypes::BOOL_TYPE(), false, QVariant(true));
 
@@ -276,9 +276,9 @@ void BWAWorkerFactory::init() {
          delegates[INDEX_ALG] = new ComboBoxDelegate(vm);
     }
 
-    Descriptor protoDesc(BWAWorkerFactory::ACTOR_ID,
-        BWAWorker::tr("Align Reads with BWA"),
-        BWAWorker::tr("Performs alignment of short reads with BWA."));
+    Descriptor protoDesc(BwaWorkerFactory::ACTOR_ID,
+        BwaWorker::tr("Align Reads with BWA"),
+        BwaWorker::tr("Performs alignment of short reads with BWA."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, getPortDescriptors(), attrs);
     proto->setPrompter(new ShortReadsAlignerPrompter());
@@ -286,11 +286,11 @@ void BWAWorkerFactory::init() {
     proto->setPortValidator(IN_PORT_DESCR, new ShortReadsAlignerSlotsValidator());
     proto->addExternalTool(ET_BWA);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_NGS_ALIGN_SHORT_READS(), proto);
-    WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new BWAWorkerFactory());
+    WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new BwaWorkerFactory());
 }
 
-Worker *BWAWorkerFactory::createWorker(Actor *a) {
-    return new BWAWorker(a);
+Worker *BwaWorkerFactory::createWorker(Actor *a) {
+    return new BwaWorker(a);
 }
 
 } // LocalWorkflow

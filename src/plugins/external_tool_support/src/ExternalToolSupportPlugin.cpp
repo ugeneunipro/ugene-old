@@ -613,8 +613,8 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     LocalWorkflow::ConductGOWorkerFactory::init();
     LocalWorkflow::CAP3WorkerFactory::init();
     LocalWorkflow::VcfConsensusWorkerFactory::init();
-    LocalWorkflow::BWAMEMWorkerFactory::init();
-    LocalWorkflow::BWAWorkerFactory::init();
+    LocalWorkflow::BwaMemWorkerFactory::init();
+    LocalWorkflow::BwaWorkerFactory::init();
     LocalWorkflow::BowtieWorkerFactory::init();
     LocalWorkflow::Bowtie2WorkerFactory::init();
     LocalWorkflow::SlopbedWorkerFactory::init();

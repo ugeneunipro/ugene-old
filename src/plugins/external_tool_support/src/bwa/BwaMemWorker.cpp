@@ -37,7 +37,7 @@
 namespace U2 {
 namespace LocalWorkflow {
 
-const QString BWAMEMWorkerFactory::ACTOR_ID("bwamem-id");
+const QString BwaMemWorkerFactory::ACTOR_ID("bwamem-id");
 
 static const QString THREADS = "threads";
 static const QString MIN_SEED = "min-seed";
@@ -64,12 +64,12 @@ static const QString BASE_BWA_OUTFILE("out.sam");
 /************************************************************************/
 /* Worker */
 /************************************************************************/
-BWAMEMWorker::BWAMEMWorker(Actor *p)
+BwaMemWorker::BwaMemWorker(Actor *p)
 : BaseShortReadsAlignerWorker(p, BwaTask::ALGORITHM_BWA_MEM)
 {
 }
 
-QVariantMap BWAMEMWorker::getCustomParameters() const {
+QVariantMap BwaMemWorker::getCustomParameters() const {
     QMap<QString, QVariant> customSettings;
 
     customSettings.insert(BwaTask::OPTION_THREADS, getValue<int>(THREADS));
@@ -101,19 +101,19 @@ QVariantMap BWAMEMWorker::getCustomParameters() const {
     return customSettings;
 }
 
-QString BWAMEMWorker::getDefaultFileName() const {
+QString BwaMemWorker::getDefaultFileName() const {
     return BASE_BWA_OUTFILE;
 }
 
-QString BWAMEMWorker::getBaseSubdir() const {
+QString BwaMemWorker::getBaseSubdir() const {
     return BASE_BWA_SUBDIR;
 }
 
-DnaAssemblyToReferenceTask* BWAMEMWorker::getTask(const DnaAssemblyToRefTaskSettings &settings) const {
+DnaAssemblyToReferenceTask* BwaMemWorker::getTask(const DnaAssemblyToRefTaskSettings &settings) const {
     return new BwaTask(settings);
 }
 
-void BWAMEMWorker::setGenomeIndex(DnaAssemblyToRefTaskSettings& settings) {
+void BwaMemWorker::setGenomeIndex(DnaAssemblyToRefTaskSettings& settings) {
     settings.prebuiltIndex = true;
     settings.indexFileName = getValue<QString>(REFERENCE_GENOME);
     settings.refSeqUrl = GUrl(settings.indexFileName).baseFileName();
@@ -122,78 +122,78 @@ void BWAMEMWorker::setGenomeIndex(DnaAssemblyToRefTaskSettings& settings) {
 /************************************************************************/
 /* Factory */
 /************************************************************************/
-void BWAMEMWorkerFactory::init() {
+void BwaMemWorkerFactory::init() {
     QList<Attribute*> attrs;
     QMap<QString, PropertyDelegate*> delegates;
 
     addCommonAttributes(attrs, delegates);
     {
         Descriptor threads(THREADS,
-            BWAMEMWorker::tr("Number of threads"),
-            BWAMEMWorker::tr("Number of threads (-t)."));
+            BwaMemWorker::tr("Number of threads"),
+            BwaMemWorker::tr("Number of threads (-t)."));
         Descriptor minSeed(MIN_SEED,
-            BWAMEMWorker::tr("Min seed length"),
-            BWAMEMWorker::tr("Path to indexed reference genome (-k)."));
+            BwaMemWorker::tr("Min seed length"),
+            BwaMemWorker::tr("Path to indexed reference genome (-k)."));
 
         Descriptor bandWidth(BAND_WIDTH,
-            BWAMEMWorker::tr("Band width"),
-            BWAMEMWorker::tr("Band width for banded alignment (-w)."));
+            BwaMemWorker::tr("Band width"),
+            BwaMemWorker::tr("Band width for banded alignment (-w)."));
 
         Descriptor dropoff(DROPOFF,
-            BWAMEMWorker::tr("Dropoff"),
-            BWAMEMWorker::tr("Off-diagonal X-dropoff (-d)."));
+            BwaMemWorker::tr("Dropoff"),
+            BwaMemWorker::tr("Off-diagonal X-dropoff (-d)."));
 
         Descriptor internalSeed(INTERNAL_SEED_LOOKUP,
-            BWAMEMWorker::tr("Internal seed length"),
-            BWAMEMWorker::tr("Look for internal seeds inside a seed longer than {-k} (-r)."));
+            BwaMemWorker::tr("Internal seed length"),
+            BwaMemWorker::tr("Look for internal seeds inside a seed longer than {-k} (-r)."));
 
         Descriptor skipSeed(SKIP_SEED_THRESHOLD,
-            BWAMEMWorker::tr("Skip seed threshold"),
-            BWAMEMWorker::tr("Skip seeds with more than INT occurrences (-c)."));
+            BwaMemWorker::tr("Skip seed threshold"),
+            BwaMemWorker::tr("Skip seeds with more than INT occurrences (-c)."));
 
         Descriptor dropChains(DROP_CHAINS_THRESHOLD,
-            BWAMEMWorker::tr("Drop chain threshold"),
-            BWAMEMWorker::tr("Drop chains shorter than FLOAT fraction of the longest overlapping chain (-D)."));
+            BwaMemWorker::tr("Drop chain threshold"),
+            BwaMemWorker::tr("Drop chains shorter than FLOAT fraction of the longest overlapping chain (-D)."));
 
         Descriptor maxMate(MAX_MATE_RESCUES,
-            BWAMEMWorker::tr("Rounds of mate rescues"),
-            BWAMEMWorker::tr("Perform at most INT rounds of mate rescues for each read (-m)."));
+            BwaMemWorker::tr("Rounds of mate rescues"),
+            BwaMemWorker::tr("Perform at most INT rounds of mate rescues for each read (-m)."));
 
         Descriptor skipMate(SKIP_MATE_RESCUES,
-            BWAMEMWorker::tr("Skip mate rescue"),
-            BWAMEMWorker::tr("Skip mate rescue (-S)."));
+            BwaMemWorker::tr("Skip mate rescue"),
+            BwaMemWorker::tr("Skip mate rescue (-S)."));
 
         Descriptor skipPairing(SKIP_PAIRING,
-            BWAMEMWorker::tr("Skip pairing"),
-            BWAMEMWorker::tr("Skip pairing; mate rescue performed unless -S also in use (-P)."));
+            BwaMemWorker::tr("Skip pairing"),
+            BwaMemWorker::tr("Skip pairing; mate rescue performed unless -S also in use (-P)."));
 
         Descriptor matchScore(MATCH_SCORE,
-            BWAMEMWorker::tr("Mismatch penalty"),
-            BWAMEMWorker::tr("Score for a sequence match (-A)."));
+            BwaMemWorker::tr("Mismatch penalty"),
+            BwaMemWorker::tr("Score for a sequence match (-A)."));
 
         Descriptor mismatchPenalty(MISMATCH_PENALTY,
-            BWAMEMWorker::tr("Mismatch penalty"),
-            BWAMEMWorker::tr("Penalty for a mismatch (-B)."));
+            BwaMemWorker::tr("Mismatch penalty"),
+            BwaMemWorker::tr("Penalty for a mismatch (-B)."));
 
         Descriptor gapOpen(GAP_OPEN_PENALTY,
-            BWAMEMWorker::tr("Gap open penalty"),
-            BWAMEMWorker::tr("Gap open penalty (-O)."));
+            BwaMemWorker::tr("Gap open penalty"),
+            BwaMemWorker::tr("Gap open penalty (-O)."));
 
         Descriptor gapExt(GAP_EXTENSION_PENALTY,
-            BWAMEMWorker::tr("Gap extension penalty"),
-            BWAMEMWorker::tr("Gap extension penalty; a gap of size k cost {-O} (-E)."));
+            BwaMemWorker::tr("Gap extension penalty"),
+            BwaMemWorker::tr("Gap extension penalty; a gap of size k cost {-O} (-E)."));
 
         Descriptor clippingPen(CLIPPING_PENALTY,
-            BWAMEMWorker::tr("Penalty for clipping"),
-            BWAMEMWorker::tr("Penalty for clipping (-L)."));
+            BwaMemWorker::tr("Penalty for clipping"),
+            BwaMemWorker::tr("Penalty for clipping (-L)."));
 
         Descriptor unpairedPenalty(UNPAIRED_PENALTY,
-            BWAMEMWorker::tr("Penalty unpaired"),
-            BWAMEMWorker::tr("Penalty for an unpaired read pair (-U)."));
+            BwaMemWorker::tr("Penalty unpaired"),
+            BwaMemWorker::tr("Penalty for an unpaired read pair (-U)."));
 
         Descriptor scoreThreshold(SCORE_THRESHOLD,
-            BWAMEMWorker::tr("Score threshold"),
-            BWAMEMWorker::tr("Minimum score to output (-T)."));
+            BwaMemWorker::tr("Score threshold"),
+            BwaMemWorker::tr("Minimum score to output (-T)."));
 
         attrs << new Attribute(threads, BaseTypes::NUM_TYPE(), false, QVariant(1));
         attrs << new Attribute(minSeed, BaseTypes::NUM_TYPE(), false, QVariant(19));
@@ -233,9 +233,9 @@ void BWAMEMWorkerFactory::init() {
          delegates[SCORE_THRESHOLD] = new SpinBoxDelegate(spinMap);
     }
 
-    Descriptor protoDesc(BWAMEMWorkerFactory::ACTOR_ID,
-        BWAMEMWorker::tr("Align Reads with BWA MEM"),
-        BWAMEMWorker::tr("Performs alignment of short reads with BWA MEM."));
+    Descriptor protoDesc(BwaMemWorkerFactory::ACTOR_ID,
+        BwaMemWorker::tr("Align Reads with BWA MEM"),
+        BwaMemWorker::tr("Performs alignment of short reads with BWA MEM."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, getPortDescriptors(), attrs);
     proto->setPrompter(new ShortReadsAlignerPrompter());
@@ -243,11 +243,11 @@ void BWAMEMWorkerFactory::init() {
     proto->setPortValidator(IN_PORT_DESCR, new ShortReadsAlignerSlotsValidator());
     proto->addExternalTool(ET_BWA);
     WorkflowEnv::getProtoRegistry()->registerProto(BaseActorCategories::CATEGORY_NGS_ALIGN_SHORT_READS(), proto);
-    WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new BWAMEMWorkerFactory());
+    WorkflowEnv::getDomainRegistry()->getById(LocalDomainFactory::ID)->registerEntry(new BwaMemWorkerFactory());
 }
 
-Worker *BWAMEMWorkerFactory::createWorker(Actor *a) {
-    return new BWAMEMWorker(a);
+Worker *BwaMemWorkerFactory::createWorker(Actor *a) {
+    return new BwaMemWorker(a);
 }
 
 } // LocalWorkflow

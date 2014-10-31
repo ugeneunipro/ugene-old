@@ -30,10 +30,10 @@ class DnaAssemblyToRefTaskSettings;
 
 namespace LocalWorkflow {
 
-class BWAWorker : public BaseShortReadsAlignerWorker {
+class BwaWorker : public BaseShortReadsAlignerWorker {
     Q_OBJECT
 public:
-    BWAWorker(Actor *p);
+    BwaWorker(Actor *p);
 
 protected :
     QVariantMap getCustomParameters() const;
@@ -41,16 +41,16 @@ protected :
     QString getBaseSubdir() const;
     DnaAssemblyToReferenceTask* getTask(const DnaAssemblyToRefTaskSettings &settings) const;
     void setGenomeIndex(DnaAssemblyToRefTaskSettings& settings);
-}; // BWAWorker
+}; // BwaWorker
 
-class BWAWorkerFactory : public BaseShortReadsAlignerWorkerFactory {
+class BwaWorkerFactory : public BaseShortReadsAlignerWorkerFactory {
 public:
     static const QString ACTOR_ID;
 
-    BWAWorkerFactory() : BaseShortReadsAlignerWorkerFactory(ACTOR_ID) {}
+    BwaWorkerFactory() : BaseShortReadsAlignerWorkerFactory(ACTOR_ID) {}
     static void init();
     virtual Worker *createWorker(Actor *a);
-}; // BWAWorkerFactory
+}; // BwaWorkerFactory
 
 } // LocalWorkflow
 } // U2
