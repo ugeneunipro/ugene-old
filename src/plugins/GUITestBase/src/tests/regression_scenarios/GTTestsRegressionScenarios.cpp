@@ -18,7 +18,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
-
 #include <U2Core/U2ObjectDbi.h>
 
 #include "GTTestsRegressionScenarios.h"
@@ -4797,6 +4796,112 @@ GUI_TEST_CLASS_DEFINITION( test_2667 ) {
     GTUtilsProjectTreeView::findIndex(os, "NC_001363 features", options);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2808 ){
+//    1. Open WD.
+//    2. Add "Sequence Marker" element to the scene, select it.
+//    Expected state: there are buttons on the parameters widget: "add", "edit" and "remove". The "add" button is enabled, other buttons are disabled.
+//    3. Add a new marker group (click the "add" button and fill the dialog).
+//    Expected state: a new group was added, there is no selection in the marker group list, the "add" button is enabled, other buttons are disabled.
+//    4. Select the added group.
+//    Expected state: the group is selected, all buttons are enabled.
+//    5. Click the "remove" button.
+//    Expected state: the group is removed (the list is empty), the "add" button is enabled, other buttons are disabled.
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Sequence Marker");
+    GTUtilsWorkflowDesigner::click(os, "Sequence Marker");
+
+    QToolButton* addButton = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "addButton"));
+    CHECK_SET_ERR( addButton != NULL, "AddButton not found!");
+
+    QToolButton* editButton = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "editButton"));
+    CHECK_SET_ERR( editButton != NULL, "EditButton not found!");
+
+    QToolButton* removeButton = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "removeButton"));
+    CHECK_SET_ERR( removeButton != NULL, "RemoveButton not found!");
+
+    CHECK_SET_ERR( addButton->isEnabled(), "AddButton is disabled!");
+    CHECK_SET_ERR( !editButton->isEnabled(), "EditButton is enabled!");
+    CHECK_SET_ERR( !removeButton->isEnabled(), "AddButton is enabled!");
+
+    class OkClicker : public Filler {
+    public:
+        OkClicker(U2OpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK(NULL != button, );
+            GTWidget::click(os, button);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os));
+    GTWidget::click(os, addButton);
+    GTGlobals::sleep(2000);
+
+    CHECK_SET_ERR( addButton->isEnabled(), "AddButton is disabled!");
+    CHECK_SET_ERR( !editButton->isEnabled(), "EditButton is enabled!");
+    CHECK_SET_ERR( !removeButton->isEnabled(), "AddButton is enabled!");
+
+    QTableView* groupTable = qobject_cast<QTableView *>(GTWidget::findWidget(os, "markerTable"));
+    CHECK_SET_ERR( groupTable != NULL, "MerkerTable not found");
+    GTWidget::click(os, groupTable);
+
+    QPoint p = GTTableView::getCellPosition(os, groupTable, 0, 0);
+    GTMouseDriver::moveTo(os, p);
+    GTMouseDriver::click(os);
+
+    CHECK_SET_ERR( addButton->isEnabled(), "AddButton is disabled!");
+    CHECK_SET_ERR( editButton->isEnabled(), "EditButton is disabled!");
+    CHECK_SET_ERR( removeButton->isEnabled(), "AddButton is disabled!");
+
+    GTWidget::click(os, removeButton);
+
+    CHECK_SET_ERR( groupTable->model() != NULL, "Abstract table model is NULL");
+    CHECK_SET_ERR( groupTable->model()->rowCount() == 0, "Marker table is not empty!");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2809 ){
+//    1. Open WD.
+//    2. Add a "Sequence Marker" element to the scene, select it.
+//    3. Add several items to marker group list on the parameters widget.
+//    Expected state: if all items are visible, there is no vertical scroll bar.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Sequence Marker");
+    GTUtilsWorkflowDesigner::click(os, "Sequence Marker");
+
+    QToolButton* addButton = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "addButton"));
+    CHECK_SET_ERR( addButton != NULL, "AddButton not found!");
+
+    class OkClicker : public Filler {
+    public:
+        OkClicker(U2OpStatus& _os) : Filler(_os, "EditMarkerGroupDialog"){}
+        virtual void run() {
+            QWidget *w = QApplication::activeWindow();
+            CHECK(NULL != w, );
+            QDialogButtonBox *buttonBox = w->findChild<QDialogButtonBox*>(QString::fromUtf8("buttonBox"));
+            CHECK(NULL != buttonBox, );
+            QPushButton *button = buttonBox->button(QDialogButtonBox::Ok);
+            CHECK(NULL != button, );
+            GTWidget::click(os, button);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new OkClicker(os));
+    GTWidget::click(os, addButton);
+
+    QTableView* groupTable = qobject_cast<QTableView *>(GTWidget::findWidget(os, "markerTable"));
+    CHECK_SET_ERR( groupTable != NULL, "MerkerTable not found");
+    GTWidget::click(os, groupTable);
+
+    QScrollBar* scroll = groupTable->verticalScrollBar();
+    CHECK_SET_ERR( scroll != NULL, "Scroll bar is NULL");
+    CHECK_SET_ERR( !scroll->isVisible(), "Scroll bar is visible!");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2853 ){
     Runnable *filler = new NCBISearchDialogFiller(os, "rat");
 
@@ -5898,7 +6003,7 @@ GUI_TEST_CLASS_DEFINITION(test_3143){
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "chrM.sorted.bam.ugenedb"));
     GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sorted.bam");
     GTUtilsTaskTreeView::waitTaskFinished(os);
-	GTGlobals::sleep();
+    GTGlobals::sleep();
 //    Expected state: Showed Import BAM File dialog.
 //    2. Click Import;
 //    Expected state: Imported file opened in Assembly Viewer.
@@ -5912,7 +6017,7 @@ GUI_TEST_CLASS_DEFINITION(test_3143){
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os, sandBoxDir + "chrM.sorted.bam.ugenedb"));
     GTFileDialog::openFile(os, dataDir + "samples/Assembly", "chrM.sorted.bam");
     GTUtilsTaskTreeView::waitTaskFinished(os);
-	GTGlobals::sleep();
+    GTGlobals::sleep();
 //    4. Click Import;
 //    Expected state: Showed message box with question about overwriting of existing file..
 //    5. Click Replace;
