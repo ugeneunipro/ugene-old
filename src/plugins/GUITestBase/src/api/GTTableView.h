@@ -37,7 +37,7 @@ public:
     static QPoint getCellPosition(U2OpStatus &os, QTableView *table, int column, int row);
     static QPoint getCellPoint(U2OpStatus &os, QTableView *table, int row, int column);
     static int rowCount(U2OpStatus &os, QTableView *table);
-    static QString data(U2OpStatus &os, QTableView *table, int column, int row);
+    static QString data(U2OpStatus &os, QTableView *table, int row, int column);
 };
 }
 #endif // GTTABLEVIEW_H

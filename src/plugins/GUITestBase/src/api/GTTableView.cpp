@@ -59,7 +59,7 @@ int GTTableView::rowCount(U2OpStatus &os, QTableView *table) {
 
 #define GT_CLASS_NAME "GTSpinBox"
 #define GT_METHOD_NAME "rowCount"
-QString GTTableView::data(U2OpStatus &os, QTableView *table, int column, int row) {
+QString GTTableView::data(U2OpStatus &os, QTableView *table, int row, int column) {
     QModelIndex idx = table->model()->index(row, column);
     return table->model()->data(idx, Qt::DisplayRole).toString();
 }
