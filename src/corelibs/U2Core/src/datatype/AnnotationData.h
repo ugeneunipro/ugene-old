@@ -139,10 +139,10 @@ QString AnnotationData::findFirstQualifierValue(const QString& name) const {
 
 bool AnnotationData::operator< (const AnnotationData &other) const {
     if(getRegions().isEmpty()){
-        true;
+        return true;
     }
     if(other.getRegions().isEmpty()){
-        false;
+        return false;
     }
     return getRegions().first() < other.getRegions().first();
 }
