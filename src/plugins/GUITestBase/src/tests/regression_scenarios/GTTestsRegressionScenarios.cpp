@@ -4833,6 +4833,49 @@ GUI_TEST_CLASS_DEFINITION(test_2866) {
 
     GTUtilsLog::check(os, l);
 }
+GUI_TEST_CLASS_DEFINITION(test_2891) {
+    // 1. Open file "data/samples/workflow_samples/NGS/cistrome/chip_seq.uwl"
+    // 2. Set input file for the "Read Tags" element to "test/_common_data/NIAID_pipelines/Chip-seq/input_data/chr2.bed"
+    // 3. Press the "Validate workflow" button on the main toolbar
+    // Expected state: the message box about workflow errors has appeared. The "Error list" tab has appeared below the workflow
+    // 4. Press "OK"
+    // Expected state: there is no messages about the "Read tags" element on the "Error list" tab
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    GTFileDialog::openFile(os, dataDir + "/workflow_samples/NGS/cistrome/", "chip_seq.uwl");
+    GTGlobals::sleep();
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Tags"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Chip-seq/input_data/", "chr2.bed");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTWidget::click(os,GTAction::button(os, "Validate workflow"));
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Read Tags") == 0, "Errors count dont match, should be 0 validation errors");
+
+
+}GUI_TEST_CLASS_DEFINITION(test_2891_1) {
+
+    // 1. Open file "data/samples/workflow_samples/NGS/cistrome/chip_seq.uwl"
+    // 2. Set input file for the "Read Tags" element to "test/_common_data/NIAID_pipelines/Chip-seq/input_data/some_image.png"
+    // 3. Press the "Validate workflow" button on the main toolbar
+    // Expected state: the message box about workflow errors has appeared. The "Error list" tab has appeared below the workflow
+    // 4. Press "OK"
+    // Expected state: there is a warning about possible incompatibilities of the "Read tags" element on the "Error list" tab
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    GTFileDialog::openFile(os, dataDir + "/workflow_samples/NGS/cistrome/", "chip_seq.uwl");
+    GTGlobals::sleep();
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Tags"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Chip-seq/input_data/", "some_image.png");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTWidget::click(os,GTAction::button(os, "Validate workflow"));
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Read Tags") == 1, "Errors count dont match, should be 1 validation error");
+
+}
 
 GUI_TEST_CLASS_DEFINITION(test_2897) {
     //    1. Open {data/samples/CLUSTALW/COI.aln}.
