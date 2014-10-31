@@ -18,13 +18,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
+
+#include "api/GTWidget.h"
+
 #include "GTTableView.h"
 
 namespace U2{
 
 #define GT_CLASS_NAME "GTSpinBox"
 #define GT_METHOD_NAME "getCellPosition"
-QPoint GTTableView::getCellPosition(U2OpStatus& os, QTableView *table, int column, int row){
+QPoint GTTableView::getCellPosition(U2OpStatus &os, QTableView *table, int column, int row){
     GT_CHECK_RESULT(table,"table view is NULL",QPoint());
     QPoint p(table->columnViewportPosition(column)+table->columnWidth(column)/2,
              table->rowViewportPosition(row)+table->rowHeight(row)*1.5);
@@ -33,4 +36,34 @@ QPoint GTTableView::getCellPosition(U2OpStatus& os, QTableView *table, int colum
 }
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTSpinBox"
+#define GT_METHOD_NAME "getCellPoint"
+QPoint GTTableView::getCellPoint(U2OpStatus &os, QTableView *table, int row, int column) {
+    QModelIndex idx = table->model()->index(row, column);
+    table->scrollTo(idx);
+    QRect rect = table->visualRect(idx);
+    QWidget *content = GTWidget::findWidget(os, "qt_scrollarea_viewport", table);
+    return content->mapToGlobal(rect.center());
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTSpinBox"
+#define GT_METHOD_NAME "rowCount"
+int GTTableView::rowCount(U2OpStatus &os, QTableView *table) {
+    return table->model()->rowCount(QModelIndex());
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+#define GT_CLASS_NAME "GTSpinBox"
+#define GT_METHOD_NAME "rowCount"
+QString GTTableView::data(U2OpStatus &os, QTableView *table, int column, int row) {
+    QModelIndex idx = table->model()->index(row, column);
+    return table->model()->data(idx, Qt::DisplayRole).toString();
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
 }

@@ -23,6 +23,7 @@
 
 #include "api/GTLineEdit.h"
 #include "api/GTSpinBox.h"
+#include "api/GTTableView.h"
 #include "api/GTWidget.h"
 
 #include "GTUtilsPcr.h"
@@ -30,38 +31,29 @@
 namespace U2 {
 
 void GTUtilsPcr::setPrimer(U2OpStatus &os, U2Strand::Direction direction, const QByteArray &primer) {
-    QString boxName = "forwardPrimerBox";
-    if (U2Strand::Complementary == direction) {
-        boxName = "reversePrimerBox";
-    }
-    QWidget *primerBox = GTWidget::findWidget(os, boxName);
-    QLineEdit *primerEdit = dynamic_cast<QLineEdit*>(GTWidget::findWidget(os, "primerEdit", primerBox));
+    QLineEdit *primerEdit = dynamic_cast<QLineEdit*>(GTWidget::findWidget(os, "primerEdit", primerBox(os, direction)));
     GTLineEdit::setText(os, primerEdit, primer, true);
 }
 
 void GTUtilsPcr::setMismatches(U2OpStatus &os, U2Strand::Direction direction, int mismatches) {
-    QString boxName = "forwardPrimerBox";
-    if (U2Strand::Complementary == direction) {
-        boxName = "reversePrimerBox";
-    }
-    QWidget *primerBox = GTWidget::findWidget(os, boxName);
-    QSpinBox *mismatchesSpinBox = dynamic_cast<QSpinBox*>(GTWidget::findWidget(os, "mismatchesSpinBox", primerBox));
+    QSpinBox *mismatchesSpinBox = dynamic_cast<QSpinBox*>(GTWidget::findWidget(os, "mismatchesSpinBox", primerBox(os, direction)));
     GTSpinBox::setValue(os, mismatchesSpinBox, mismatches);
 }
 
+QWidget * GTUtilsPcr::browseButton(U2OpStatus &os, U2Strand::Direction direction) {
+    return GTWidget::findWidget(os, "browseButton", primerBox(os, direction));
+}
+
 int GTUtilsPcr::productsCount(U2OpStatus &os) {
-    return table(os)->model()->rowCount(QModelIndex());
+    return GTTableView::rowCount(os, table(os));
 }
 
 QString GTUtilsPcr::getResultRegion(U2OpStatus &os, int number) {
-    QModelIndex productIdx = table(os)->model()->index(number, 0);
-    return table(os)->model()->data(productIdx, Qt::DisplayRole).toString();
+    return GTTableView::data(os, table(os), number, 0);
 }
 
 QPoint GTUtilsPcr::getResultPoint(U2OpStatus &os, int number) {
-    QModelIndex productIdx = table(os)->model()->index(number, 0);
-    QRect productRect = table(os)->visualRect(productIdx);
-    return content(os)->mapToGlobal(productRect.center());
+    return GTTableView::getCellPoint(os, table(os), number, 0);
 }
 
 QPoint GTUtilsPcr::getDetailsPoint(U2OpStatus &os) {
@@ -71,12 +63,16 @@ QPoint GTUtilsPcr::getDetailsPoint(U2OpStatus &os) {
     return warning->parentWidget()->mapToGlobal(result);
 }
 
-QTableView * GTUtilsPcr::table(U2OpStatus &os) {
-    return dynamic_cast<QTableView*>(GTWidget::findWidget(os, "productsTable"));
+QWidget * GTUtilsPcr::primerBox(U2OpStatus &os, U2Strand::Direction direction) {
+    QString boxName = "forwardPrimerBox";
+    if (U2Strand::Complementary == direction) {
+        boxName = "reversePrimerBox";
+    }
+    return GTWidget::findWidget(os, boxName);
 }
 
-QWidget * GTUtilsPcr::content(U2OpStatus &os) {
-    return GTWidget::findWidget(os, "qt_scrollarea_viewport", table(os));
+QTableView * GTUtilsPcr::table(U2OpStatus &os) {
+    return dynamic_cast<QTableView*>(GTWidget::findWidget(os, "productsTable"));
 }
 
 } // U2

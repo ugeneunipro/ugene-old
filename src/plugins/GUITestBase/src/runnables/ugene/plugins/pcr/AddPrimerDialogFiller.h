@@ -19,31 +19,32 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _GTUTILS_PCR_H_
-#define _GTUTILS_PCR_H_
+#ifndef _U2_ADD_PRIMER_DIALOG_FILLER_H_
+#define _U2_ADD_PRIMER_DIALOG_FILLER_H_
 
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/U2Type.h>
-
-class QTableView;
+#include "GTUtilsDialog.h"
+#include "api/GTFileDialog.h"
 
 namespace U2 {
 
-class GTUtilsPcr {
+class AddPrimerDialogFiller : public Filler {
 public:
-    static void setPrimer(U2OpStatus &os, U2Strand::Direction direction, const QByteArray &primer);
-    static void setMismatches(U2OpStatus &os, U2Strand::Direction direction, int mismatches);
-    static QWidget * browseButton(U2OpStatus &os, U2Strand::Direction direction);
-    static int productsCount(U2OpStatus &os);
-    static QString getResultRegion(U2OpStatus &os, int number);
-    static QPoint getResultPoint(U2OpStatus &os, int number);
-    static QPoint getDetailsPoint(U2OpStatus &os);
-    static QWidget * primerBox(U2OpStatus &os, U2Strand::Direction direction);
+    class Parameters {
+    public:
+        Parameters();
+
+        QString primer;
+        QString name;
+        CustomScenario *scenario;
+    };
+
+    AddPrimerDialogFiller(U2OpStatus &os, const Parameters &parameters);
+    void commonScenario();
 
 private:
-    static QTableView * table(U2OpStatus &os);
+    Parameters parameters;
 };
 
 } // U2
 
-#endif // _GTUTILS_PCR_H_
+#endif // _U2_ADD_PRIMER_DIALOG_FILLER_H_

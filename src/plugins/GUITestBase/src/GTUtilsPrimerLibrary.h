@@ -19,26 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _GTUTILS_PCR_H_
-#define _GTUTILS_PCR_H_
+#ifndef _GTUTILS_PRIMER_LIBRARY_H_
+#define _GTUTILS_PRIMER_LIBRARY_H_
 
 #include <U2Core/U2OpStatus.h>
-#include <U2Core/U2Type.h>
 
+class QAbstractButton;
 class QTableView;
 
 namespace U2 {
 
-class GTUtilsPcr {
+class GTUtilsPrimerLibrary {
 public:
-    static void setPrimer(U2OpStatus &os, U2Strand::Direction direction, const QByteArray &primer);
-    static void setMismatches(U2OpStatus &os, U2Strand::Direction direction, int mismatches);
-    static QWidget * browseButton(U2OpStatus &os, U2Strand::Direction direction);
-    static int productsCount(U2OpStatus &os);
-    static QString getResultRegion(U2OpStatus &os, int number);
-    static QPoint getResultPoint(U2OpStatus &os, int number);
-    static QPoint getDetailsPoint(U2OpStatus &os);
-    static QWidget * primerBox(U2OpStatus &os, U2Strand::Direction direction);
+    enum Button {Add, Remove, Close};
+    static QWidget * openLibrary(U2OpStatus &os);
+    static void clickButton(U2OpStatus &os, Button button);
+    static QAbstractButton * getButton(U2OpStatus &os, Button button);
+    static int librarySize(U2OpStatus &os);
+    static QString getPrimerSequence(U2OpStatus &os, int number);
+    static QPoint getPrimerPoint(U2OpStatus &os, int number);
 
 private:
     static QTableView * table(U2OpStatus &os);
@@ -46,4 +45,4 @@ private:
 
 } // U2
 
-#endif // _GTUTILS_PCR_H_
+#endif // _GTUTILS_PRIMER_LIBRARY_H_

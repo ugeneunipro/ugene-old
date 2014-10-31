@@ -97,6 +97,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h \
             src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h \
 #   Runnables / UGENE / plugins / pcr
+            src/runnables/ugene/plugins/pcr/AddPrimerDialogFiller.h \
+            src/runnables/ugene/plugins/pcr/PrimerLibrarySelectorFiller.h \
             src/runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h \
 #   Runnables / UGENE / plugins / weight_matrix
             src/runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.h \
@@ -127,6 +129,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsOptionsPanel.h \
             src/GTUtilsPcr.h \
             src/GTUtilsPhyTree.h \
+            src/GTUtilsPrimerLibrary.h \
             src/GTUtilsProject.h \
             src/GTUtilsProjectTreeView.h \
             src/GTUtilsQueryDesigner.h \
@@ -322,6 +325,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.cpp \
             src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp \
 #   Runnables / UGENE / plugins / pcr
+            src/runnables/ugene/plugins/pcr/AddPrimerDialogFiller.cpp \
+            src/runnables/ugene/plugins/pcr/PrimerLibrarySelectorFiller.cpp \
             src/runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.cpp \
 #   Runnables / UGENE / plugins / weight_matrix
             src/runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.cpp \
@@ -352,6 +357,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsOptionsPanel.cpp \
             src/GTUtilsPcr.cpp \
             src/GTUtilsPhyTree.cpp \
+            src/GTUtilsPrimerLibrary.cpp \
             src/GTUtilsProject.cpp \
             src/GTUtilsProjectTreeView.cpp \
             src/GTUtilsQueryDesigner.cpp \

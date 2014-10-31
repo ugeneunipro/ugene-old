@@ -93,15 +93,26 @@ private:
     bool isExpectedName(const QString& widgetObjectName, const QString& expectedObjectName);
 };
 
+class CustomScenario {
+public:
+    virtual void run(U2OpStatus &os) = 0;
+    virtual ~CustomScenario() {}
+};
+
 class Filler : public Runnable {
 public:
-    Filler(U2OpStatus& _os, const GUIDialogWaiter::WaitSettings& _settings) : os(_os), settings(_settings){}
-    Filler(U2OpStatus& _os, const QString &_objectName) : os(_os), settings(GUIDialogWaiter::WaitSettings(_objectName)){}
+    Filler(U2OpStatus &os, const GUIDialogWaiter::WaitSettings &settings, CustomScenario *scenario = NULL);
+    Filler(U2OpStatus &os, const QString &objectName, CustomScenario *scenario = NULL);
+    ~Filler();
 
-    GUIDialogWaiter::WaitSettings getSettings() const { return settings; }
+    GUIDialogWaiter::WaitSettings getSettings() const;
+    void run();
+    virtual void commonScenario() {}
+
 protected:
     U2OpStatus &os;
     GUIDialogWaiter::WaitSettings settings;
+    CustomScenario *scenario;
 };
 
 class GTUtilsDialog{
@@ -111,6 +122,8 @@ public:
     enum CleanupSettings {
         FailOnUnfinished, NoFailOnUnfinished
     };
+
+    static QDialogButtonBox * buttonBox(U2OpStatus &os, QWidget *dialog);
 
     static void clickButtonBox(U2OpStatus &os, QWidget *dialog, QDialogButtonBox::StandardButton button);
 

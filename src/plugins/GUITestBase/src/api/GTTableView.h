@@ -34,7 +34,10 @@ namespace U2{
 class GTTableView
 {
 public:
-    static QPoint getCellPosition(U2OpStatus& os,QTableView* table, int column, int row);
+    static QPoint getCellPosition(U2OpStatus &os, QTableView *table, int column, int row);
+    static QPoint getCellPoint(U2OpStatus &os, QTableView *table, int row, int column);
+    static int rowCount(U2OpStatus &os, QTableView *table);
+    static QString data(U2OpStatus &os, QTableView *table, int column, int row);
 };
 }
 #endif // GTTABLEVIEW_H

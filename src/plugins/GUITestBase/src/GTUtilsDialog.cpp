@@ -141,9 +141,15 @@ void GUIDialogWaiter::checkDialog() {
 
 QList<GUIDialogWaiter*> GTUtilsDialog::pool = QList<GUIDialogWaiter*>();
 
+#define GT_METHOD_NAME "buttonBox"
+QDialogButtonBox * GTUtilsDialog::buttonBox(U2OpStatus &os, QWidget *dialog) {
+    return qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "clickButtonBox"
 void GTUtilsDialog::clickButtonBox(U2OpStatus& os, QWidget* dialog, QDialogButtonBox::StandardButton button) {
-    QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+    QDialogButtonBox* box = buttonBox(os, dialog);
     GT_CHECK(box != NULL, "buttonBox is NULL");
     QPushButton* pushButton = box->button(button);
     GT_CHECK(pushButton != NULL, "pushButton is NULL");
@@ -220,5 +226,33 @@ void GTUtilsDialog::cleanup(U2OpStatus &os, CleanupSettings s) {
 }
 
 #undef GT_CLASS_NAME
+
+Filler::Filler(U2OpStatus &os, const GUIDialogWaiter::WaitSettings &settings, CustomScenario *scenario)
+: os(os), settings(settings), scenario(scenario)
+{
+
+}
+
+Filler::Filler(U2OpStatus &os, const QString &objectName, CustomScenario *scenario)
+: os(os), settings(GUIDialogWaiter::WaitSettings(objectName)), scenario(scenario)
+{
+
+}
+
+Filler::~Filler() {
+    delete scenario;
+}
+
+GUIDialogWaiter::WaitSettings Filler::getSettings() const {
+    return settings;
+}
+
+void Filler::run() {
+    if (NULL == scenario) {
+        commonScenario();
+    } else {
+        scenario->run(os);
+    }
+}
 
 } //namespace
