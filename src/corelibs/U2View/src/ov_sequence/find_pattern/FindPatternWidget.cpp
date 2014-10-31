@@ -432,8 +432,8 @@ void FindPatternWidget::initLayout() {
     initResultsLimit();
 
     subgroupsLayout->setSpacing(0);
-    subgroupsLayout->addWidget(new ShowHideSubgroupWidget(ALGORITHM_SETTINGS, ALGORITHM_SETTINGS, widgetAlgorithm, true));
-    subgroupsLayout->addWidget(new ShowHideSubgroupWidget(SEARCH_IN_SETTINGS, SEARCH_IN_SETTINGS, widgetSearchIn, true));
+    subgroupsLayout->addWidget(new ShowHideSubgroupWidget(ALGORITHM_SETTINGS, ALGORITHM_SETTINGS, widgetAlgorithm, false));
+    subgroupsLayout->addWidget(new ShowHideSubgroupWidget(SEARCH_IN_SETTINGS, SEARCH_IN_SETTINGS, widgetSearchIn, false));
     subgroupsLayout->addWidget(new ShowHideSubgroupWidget(OTHER_SETTINGS, OTHER_SETTINGS, widgetOther, false));
     subgroupsLayout->addWidget(annotsWidget);
 
@@ -848,8 +848,7 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
                     if (!text.isEmpty()) {
                         text += "\n";
                     }
-                    text += QString(tr("Info: You may use Ctrl+Enter"
-                        " to input multiple patterns "));
+                    text += QString(tr("Info: please input at least one sequence pattern to search for. Use Ctrl+Enter to input multiple patterns.\r\nAlternatively, load patterns from a FASTA file."));
                     changeColorOfMessageText(COLOR_NAME_FOR_INFO_MESSAGES);
                     break;
                 case AnnotationNotValidName:
@@ -1087,7 +1086,7 @@ void FindPatternWidget::checkState()
     //and pattern is not loaded from a file
     if (textPattern->toPlainText().isEmpty()
         && !loadFromFileGroupBox->isChecked()) {
-        showHideMessage(true, NoPatternToSearch);
+        //showHideMessage(true, NoPatternToSearch);
         return;
     }
 

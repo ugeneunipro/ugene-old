@@ -233,12 +233,14 @@ void CreateAnnotationWidgetController::setUsePatternNameCheckBoxVisible() {
 
 void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMode)
 {
+    bool isOpenedSubgroup = true;
     QSizePolicy sizePolicy;
     if (layoutMode == normal) {
         w->resize(492, 218);
         sizePolicy = QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
         w->setMinimumSize(QSize(400, 58));
     } else if (layoutMode == optPanel) {
+        isOpenedSubgroup = false;
         w->resize(170, 369);
         sizePolicy = QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
         w->setMinimumSize(QSize(1, 0));
@@ -332,7 +334,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
 
     // Annotation parameters group
     QWidget *annotParams = new QWidget(w);
-    annotParamsWidget = new ShowHideSubgroupWidget("annotparams", "Annotation parameters", annotParams, true);
+    annotParamsWidget = new ShowHideSubgroupWidget("annotparams", "Annotation parameters", annotParams, isOpenedSubgroup);
 
     QGridLayout* gridLayoutParams = new QGridLayout(annotParams);
     gridLayoutParams->setContentsMargins(0, 0, 0, 0);
