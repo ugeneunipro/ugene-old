@@ -25,6 +25,8 @@
 
 #include "tests/GUIInitialChecks.h"
 #include "tests/regression_scenarios/GTTestsRegressionScenarios.h"
+#include "tests/common_scenarios/pcr/GTTestsInSilicoPcr.h"
+#include "tests/common_scenarios/pcr/GTTestsPrimerLibrary.h"
 #include "tests/common_scenarios/project/GTTestsProject.h"
 #include "tests/common_scenarios/project/bookmarks/GTTestsBookmarks.h"
 #include "tests/common_scenarios/project/relations/GTTestsProjectRelations.h"
@@ -1511,6 +1513,26 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::run_workflow_gui_test_0005_1);
     REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::run_workflow_gui_test_0005_2);
     REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::run_workflow_gui_test_0006);
+
+/////////////////////////////////////////////////////////////////////////
+// common_scenarios/pcr/in_silico_pcr
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_in_silico_pcr::test_0008);
+
+/////////////////////////////////////////////////////////////////////////
+// common_scenarios/pcr/primer_library
+/////////////////////////////////////////////////////////////////////////
+    REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0001);
+    REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0004);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
@@ -1523,6 +1545,7 @@ void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {
         guiTestBase->registerTest(new GUITest_initial_checks::test_0004, GUITestBase::PreAdditional);
         guiTestBase->registerTest(new GUITest_initial_checks::test_0005, GUITestBase::PreAdditional);
         guiTestBase->registerTest(new GUITest_initial_checks::test_0006, GUITestBase::PreAdditional);
+        guiTestBase->registerTest(new GUITest_initial_checks::test_0007, GUITestBase::PreAdditional);
 
         guiTestBase->registerTest(new GUITest_initial_checks::post_test_0000, GUITestBase::PostAdditional);
         guiTestBase->registerTest(new GUITest_initial_checks::post_test_0001, GUITestBase::PostAdditional);

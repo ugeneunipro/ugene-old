@@ -19,35 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_INITIAL_CHECKS_H_
-#define _U2_GUI_INITIAL_CHECKS_H_
+#ifndef _GTTESTS_PRIMER_LIBRARY_H_
+#define _GTTESTS_PRIMER_LIBRARY_H_
 
 #include <U2Test/GUITestBase.h>
 
 namespace U2 {
-
-namespace GUITest_initial_checks {
+namespace GUITest_common_scenarios_primer_library {
 #undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_initial_checks_"
+#define GUI_TEST_PREFIX "GUITest_common_scenarios_primer_library_"
 
-GUI_TEST_CLASS_DECLARATION(test_0000)
 GUI_TEST_CLASS_DECLARATION(test_0001)
 GUI_TEST_CLASS_DECLARATION(test_0002)
 GUI_TEST_CLASS_DECLARATION(test_0003)
 GUI_TEST_CLASS_DECLARATION(test_0004)
-GUI_TEST_CLASS_DECLARATION(test_0005)
-GUI_TEST_CLASS_DECLARATION(test_0006)
-GUI_TEST_CLASS_DECLARATION(test_0007)
 
-GUI_TEST_CLASS_DECLARATION(post_test_0000)
-GUI_TEST_CLASS_DECLARATION(post_test_0001)
-GUI_TEST_CLASS_DECLARATION(post_test_0002)
-GUI_TEST_CLASS_DECLARATION(post_test_0003)
-GUI_TEST_CLASS_DECLARATION(post_test_0004)
+} // GUITest_common_scenarios_primer_library
+} // U2
 
-#undef GUI_TEST_PREFIX
-}
-
-} //namespace
-
-#endif
+#endif // _GTTESTS_PRIMER_LIBRARY_H_

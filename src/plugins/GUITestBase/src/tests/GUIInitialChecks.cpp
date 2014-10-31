@@ -45,7 +45,10 @@
 #include "runnables/qt/MessageBoxFiller.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/AppSettings.h>
+#include <U2Core/GUrlUtils.h>
 #include <U2Core/ProjectModel.h>
+#include <U2Core/UserApplicationsSettings.h>
 #include <U2Gui/ObjectViewModel.h>
 
 namespace U2 {
@@ -122,6 +125,14 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 #ifdef Q_OS_MAC
     GTWidget::click(os, mw, Qt::LeftButton, QPoint(1500,300));
 #endif
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0007) {
+    QString path = AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath();
+    GUrlUtils::removeDir(path, os);
+    CHECK_OP_SET_ERR(os, os.getError());
+    bool created = QDir().mkdir(path);
+    CHECK_SET_ERR(created, "Can not create a directory");
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0000){

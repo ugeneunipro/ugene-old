@@ -19,35 +19,30 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_INITIAL_CHECKS_H_
-#define _U2_GUI_INITIAL_CHECKS_H_
+#ifndef _GTUTILS_PCR_H_
+#define _GTUTILS_PCR_H_
 
-#include <U2Test/GUITestBase.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2Type.h>
+
+class QTableView;
 
 namespace U2 {
 
-namespace GUITest_initial_checks {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_initial_checks_"
+class GTUtilsPcr {
+public:
+    static void setPrimer(U2OpStatus &os, U2Strand::Direction direction, const QByteArray &primer);
+    static void setMismatches(U2OpStatus &os, U2Strand::Direction direction, int mismatches);
+    static int productsCount(U2OpStatus &os);
+    static QString getResultRegion(U2OpStatus &os, int number);
+    static QPoint getResultPoint(U2OpStatus &os, int number);
+    static QPoint getDetailsPoint(U2OpStatus &os);
 
-GUI_TEST_CLASS_DECLARATION(test_0000)
-GUI_TEST_CLASS_DECLARATION(test_0001)
-GUI_TEST_CLASS_DECLARATION(test_0002)
-GUI_TEST_CLASS_DECLARATION(test_0003)
-GUI_TEST_CLASS_DECLARATION(test_0004)
-GUI_TEST_CLASS_DECLARATION(test_0005)
-GUI_TEST_CLASS_DECLARATION(test_0006)
-GUI_TEST_CLASS_DECLARATION(test_0007)
+private:
+    static QTableView * table(U2OpStatus &os);
+    static QWidget * content(U2OpStatus &os);
+};
 
-GUI_TEST_CLASS_DECLARATION(post_test_0000)
-GUI_TEST_CLASS_DECLARATION(post_test_0001)
-GUI_TEST_CLASS_DECLARATION(post_test_0002)
-GUI_TEST_CLASS_DECLARATION(post_test_0003)
-GUI_TEST_CLASS_DECLARATION(post_test_0004)
+} // U2
 
-#undef GUI_TEST_PREFIX
-}
-
-} //namespace
-
-#endif
+#endif // _GTUTILS_PCR_H_

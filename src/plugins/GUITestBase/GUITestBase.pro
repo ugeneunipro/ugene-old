@@ -96,6 +96,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins/external_tools/FormatDBDialogFiller.h \
             src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h \
             src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h \
+#   Runnables / UGENE / plugins / pcr
+            src/runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.h \
 #   Runnables / UGENE / plugins / weight_matrix
             src/runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.h \
 #   Runnables / UGENE / plugins / workflow_designer
@@ -123,6 +125,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsOptionPanelMSA.h \
             src/GTUtilsOptionPanelSequenceView.h \
             src/GTUtilsOptionsPanel.h \
+            src/GTUtilsPcr.h \
             src/GTUtilsPhyTree.h \
             src/GTUtilsProject.h \
             src/GTUtilsProjectTreeView.h \
@@ -140,6 +143,8 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.h \
             src/tests/common_scenarios/sequence_view/GTTestsSequenceView.h \
             src/tests/common_scenarios/toggle_view/GTTestsToggleView.h \
+            src/tests/common_scenarios/pcr/GTTestsInSilicoPcr.h \
+            src/tests/common_scenarios/pcr/GTTestsPrimerLibrary.h \
             src/tests/common_scenarios/project/GTTestsProject.h \
             src/tests/common_scenarios/project/bookmarks/GTTestsBookmarks.h \
             src/tests/common_scenarios/project/relations/GTTestsProjectRelations.h \
@@ -316,6 +321,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins/external_tools/FormatDBDialogFiller.cpp \
             src/runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.cpp \
             src/runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.cpp \
+#   Runnables / UGENE / plugins / pcr
+            src/runnables/ugene/plugins/pcr/PrimersDetailsDialogFiller.cpp \
 #   Runnables / UGENE / plugins / weight_matrix
             src/runnables/ugene/plugins/weight_matrix/PwmBuildDialogFiller.cpp \
 #   Runnables / UGENE / plugins / workflow_designer
@@ -343,6 +350,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsOptionPanelMSA.cpp \
             src/GTUtilsOptionPanelSequenceView.cpp \
             src/GTUtilsOptionsPanel.cpp \
+            src/GTUtilsPcr.cpp \
             src/GTUtilsPhyTree.cpp \
             src/GTUtilsProject.cpp \
             src/GTUtilsProjectTreeView.cpp \
@@ -360,6 +368,8 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/tests/common_scenarios/sequence_edit/GTTestsSequenceEdit.cpp \
             src/tests/common_scenarios/sequence_view/GTTestsSequenceView.cpp \
             src/tests/common_scenarios/toggle_view/GTTestsToggleView.cpp \
+            src/tests/common_scenarios/pcr/GTTestsInSilicoPcr.cpp \
+            src/tests/common_scenarios/pcr/GTTestsPrimerLibrary.cpp \
             src/tests/common_scenarios/project/GTTestsProject.cpp \
             src/tests/common_scenarios/project/bookmarks/GTTestsBookmarks.cpp \
             src/tests/common_scenarios/project/relations/GTTestsProjectRelations.cpp \

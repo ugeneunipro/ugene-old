@@ -19,35 +19,27 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_GUI_INITIAL_CHECKS_H_
-#define _U2_GUI_INITIAL_CHECKS_H_
+#include <QtGui/QApplication>
 
-#include <U2Test/GUITestBase.h>
+#include "PrimersDetailsDialogFiller.h"
 
 namespace U2 {
 
-namespace GUITest_initial_checks {
-#undef GUI_TEST_PREFIX
-#define GUI_TEST_PREFIX "GUITest_initial_checks_"
+PrimersDetailsDialogFiller::PrimersDetailsDialogFiller(U2OpStatus &os)
+: Filler(os, "PrimersDetailsDialog")
+{
 
-GUI_TEST_CLASS_DECLARATION(test_0000)
-GUI_TEST_CLASS_DECLARATION(test_0001)
-GUI_TEST_CLASS_DECLARATION(test_0002)
-GUI_TEST_CLASS_DECLARATION(test_0003)
-GUI_TEST_CLASS_DECLARATION(test_0004)
-GUI_TEST_CLASS_DECLARATION(test_0005)
-GUI_TEST_CLASS_DECLARATION(test_0006)
-GUI_TEST_CLASS_DECLARATION(test_0007)
-
-GUI_TEST_CLASS_DECLARATION(post_test_0000)
-GUI_TEST_CLASS_DECLARATION(post_test_0001)
-GUI_TEST_CLASS_DECLARATION(post_test_0002)
-GUI_TEST_CLASS_DECLARATION(post_test_0003)
-GUI_TEST_CLASS_DECLARATION(post_test_0004)
-
-#undef GUI_TEST_PREFIX
 }
 
-} //namespace
+#define GT_CLASS_NAME "GTUtilsDialog::PrimersDetailsDialogFiller"
+#define GT_METHOD_NAME "run"
+void PrimersDetailsDialogFiller::run() {
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
 
-#endif
+    GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
+
+} // U2
