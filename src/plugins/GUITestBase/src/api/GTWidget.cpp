@@ -76,7 +76,7 @@ void GTWidget::setFocus(U2OpStatus &os, QWidget *w) {
     GTGlobals::sleep(1000);
 
     if(!qobject_cast<QComboBox*>(w)){
-        GT_CHECK(w->hasFocus(), "Can't set focus on widget");
+        GT_CHECK(w->hasFocus(), "Can't set focus on widget " + w->objectName());
     }
     
 }

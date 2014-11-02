@@ -5910,6 +5910,8 @@ GUI_TEST_CLASS_DEFINITION(test_3138) {
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
 
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search algorithm"));
+
     QComboBox* algorithmBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "boxAlgorithm"));
     CHECK_SET_ERR( algorithmBox != NULL, "Cannot find boxAlgorithm widget!");
 
@@ -7404,7 +7406,7 @@ GUI_TEST_CLASS_DEFINITION(test_3472) {
 #ifndef Q_OS_MAC
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
 #else
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["left"], GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["left"], GTKeyboardDriver::key["cmd"]);
 #endif
     GTGlobals::sleep();
 
@@ -7426,7 +7428,7 @@ GUI_TEST_CLASS_DEFINITION(test_3472) {
 #ifndef Q_OS_MAC
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["home"]);
 #else
-    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["left"], GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["left"], GTKeyboardDriver::key["cmd"]);
 #endif
     GTGlobals::sleep();
 
@@ -7847,6 +7849,9 @@ GUI_TEST_CLASS_DEFINITION(test_3603) {
     GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
     QComboBox* regionComboBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "boxRegion"));
     CHECK_SET_ERR(regionComboBox != NULL, "Region comboBox is NULL");
+    if(!regionComboBox->isVisible()){
+        GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
+    }
     GTComboBox::setIndexWithText(os, regionComboBox, "Selected region");
 
     QWidget* renderArea = GTUtilsSequenceView::getSeqWidgetByNumber(os);

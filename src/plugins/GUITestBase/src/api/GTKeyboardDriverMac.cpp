@@ -77,6 +77,10 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
         key = asciiToVirtual(';');
         isChanged = true;
         break;
+    case '*':
+        key = asciiToVirtual('8');
+        isChanged = true;
+        break;
     }
 
     if (isChanged) {
@@ -156,6 +160,10 @@ void GTKeyboardDriver::keyRelease(U2::U2OpStatus &os, char key, int modifiers)
         break;
     case ':':
         key = asciiToVirtual(';');
+        isChanged = true;
+        break;
+    case '*':
+        key = asciiToVirtual('8');
         isChanged = true;
         break;
     }
