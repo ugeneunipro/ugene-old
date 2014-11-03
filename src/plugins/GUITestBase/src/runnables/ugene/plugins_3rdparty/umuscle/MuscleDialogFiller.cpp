@@ -43,8 +43,8 @@ namespace U2 {
 #define GT_CLASS_NAME "GTUtilsDialog::MuscleDialogFiller"
 #define GT_METHOD_NAME "run"
 
-MuscleDialogFiller::MuscleDialogFiller(U2OpStatus &os, Mode _mode, bool _doNotReArr)
-    : Filler(os, "MuscleAlignmentDialog"), mode(_mode), doNotReArr(_doNotReArr)
+MuscleDialogFiller::MuscleDialogFiller(U2OpStatus &os, Mode _mode, bool _doNotReArr, bool translateToAmino)
+    : Filler(os, "MuscleAlignmentDialog"), mode(_mode), doNotReArr(_doNotReArr), translateToAmino(translateToAmino)
 {
 
 }
@@ -59,6 +59,9 @@ void MuscleDialogFiller::run(){
 
     QCheckBox *stableCB = dialog->findChild<QCheckBox*>("stableCB");
     GTCheckBox::setChecked(os, stableCB, doNotReArr);
+
+    QCheckBox *translate2AminoCb = dialog->findChild<QCheckBox*>("translateCheckBox");
+    GTCheckBox::setChecked(os, translate2AminoCb, translateToAmino);
 
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
     GT_CHECK(box != NULL, "buttonBox is NULL");

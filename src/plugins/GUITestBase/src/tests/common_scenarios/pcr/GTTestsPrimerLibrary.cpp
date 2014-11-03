@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+
 #include "GTUtilsDialog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsPcr.h"

@@ -4796,6 +4796,97 @@ GUI_TEST_CLASS_DEFINITION( test_2667 ) {
     GTUtilsProjectTreeView::findIndex(os, "NC_001363 features", options);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2778) {
+    //1. Use main menu : tools->align to reference->align short reads
+    //2. Set input parameters
+    //input sequence : _common_data / genome_aligner / chrY.fa
+    //short reads : _common_data / genome_aligner / shortreads15Mb.fasta
+    //mismatches allowed : checked
+    //3. Press start
+
+    //Expected state : the task should be finished without errors.
+
+    GTLogTracer l;
+
+    AlignShortReadsFiller::UgeneGenomeAlignerParams parameters(testDir + "_common_data/genome_aligner/",
+        "chrY.fa", testDir + "_common_data/genome_aligner/", "shortreads15Mb.fasta", true);
+    parameters.samOutput = false;
+    GTUtilsDialog::waitForDialog(os, new AlignShortReadsFiller(os, &parameters));
+
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Align short reads");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2784) {
+    GTLogTracer lt;
+
+    //1. Open the file "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
+
+    //Expected state : MSA view has opened, the "Undo" button is disabled.
+    QAbstractButton *undoButton = GTAction::button(os, "msa_action_undo");
+    CHECK_SET_ERR(!undoButton->isEnabled(), "'Undo' button is unexpectedly enabled");
+
+    //2. Choose in the context menu{ Align->Align with MUSCLE... }
+    //Expected state : The "Align with MUSCLE" dialog has appeared
+    //3. Check the "Translation to amino when aligning" checkbox and press "Align"
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(41, 0), QPoint(43, 17));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    const QString initialRegionContent = GTClipboard::text(os);
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os, MuscleDialogFiller::Default, true, true));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(10, 5));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    //Expected state : Alignment task has started.After some time it finishes without errors
+    //and alignment gets changed somehow.The "Undo" button becomes active
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsLog::check(os, lt);
+    CHECK_SET_ERR(undoButton->isEnabled(), "'Undo' button is unexpectedly disabled");
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(41, 0), QPoint(43, 17));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    const QString alignedRegionContent = GTClipboard::text(os);
+    CHECK_SET_ERR(alignedRegionContent != initialRegionContent, "Alignment content has not been changed");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+
+    //4. Click on the "Undo" button
+    GTWidget::click(os, undoButton);
+
+    //Expected state : Alignment has been restored to its initial state.The "Undo" button gets disabled,
+    //the "Redo" has been enabled
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(41, 0), QPoint(43, 17));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    const QString undoneRegionContent = GTClipboard::text(os);
+    CHECK_SET_ERR(undoneRegionContent == initialRegionContent, "Undo hasn't reverted changes");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+
+    CHECK_SET_ERR(!undoButton->isEnabled(), "'Undo' button is unexpectedly enabled");
+
+    QAbstractButton *redoButton = GTAction::button(os, "msa_action_redo");
+    CHECK_SET_ERR(redoButton->isEnabled(), "'Redo' button is unexpectedly disabled");
+
+    //5. Click on the "Redo" button
+    GTWidget::click(os, redoButton);
+
+    //Expected state : Alignment has been changed.The "Redo" button gets disabled,
+    //the "Undo" has been enabled
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(41, 0), QPoint(43, 17));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    const QString redoneRegionContent = GTClipboard::text(os);
+    CHECK_SET_ERR(redoneRegionContent == alignedRegionContent, "Redo hasn't changed the alignment");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+
+    CHECK_SET_ERR(!redoButton->isEnabled(), "'Redo' button is unexpectedly enabled");
+    CHECK_SET_ERR(undoButton->isEnabled(), "'Undo' button is unexpectedly disabled");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2808 ){
 //    1. Open WD.
 //    2. Add "Sequence Marker" element to the scene, select it.

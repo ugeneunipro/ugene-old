@@ -19,6 +19,12 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+#include <QComboBox>
+#include <QDialogButtonBox>
+#include <QGroupBox>
+#include <QPushButton>
+
 #include "AlignShortReadsDialogFiller.h"
 #include "api/GTWidget.h"
 #include "api/GTSpinBox.h"
@@ -26,17 +32,6 @@
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
 #include "runnables/qt/MessageBoxFiller.h"
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QPushButton>
-#include <QtGui/QComboBox>
-#include <QtGui/QDialogButtonBox>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QDialogButtonBox>
-#endif
 
 namespace U2 {
 
@@ -131,9 +126,15 @@ void AlignShortReadsFiller::setCommonParameters(QWidget* dialog) {
 
 void AlignShortReadsFiller::setAdditionalParameters(QWidget* dialog) {
     Bowtie2Parameters* bowtie2Parameters = dynamic_cast<Bowtie2Parameters*>(parameters);
-    if (bowtie2Parameters) {
+    if (NULL != bowtie2Parameters) {
         setBowtie2AdditionalParameters(bowtie2Parameters, dialog);
-        CHECK_OP(os, );
+        return;
+    }
+
+    UgeneGenomeAlignerParams *ugaParameters = dynamic_cast<UgeneGenomeAlignerParams *>(parameters);
+    if (NULL != ugaParameters) {
+        setUgaAdditionalParameters(ugaParameters, dialog);
+        return;
     }
 }
 
@@ -253,6 +254,11 @@ void AlignShortReadsFiller::setBowtie2AdditionalParameters(Bowtie2Parameters* bo
     GT_CHECK(nocontainCheckBox, "nocontainCheckBox is NULL");
     GTCheckBox::setChecked(os, nocontainCheckBox, bowtie2Parameters->noMatesContainingOneAnother);
     CHECK_OP(os, );
+}
+
+void AlignShortReadsFiller::setUgaAdditionalParameters(UgeneGenomeAlignerParams *ugaParameters, QWidget* dialog) {
+    QGroupBox *mismatchesGroupbox = qobject_cast<QGroupBox *>(GTWidget::findWidget(os, "groupBox_mismatches", dialog));
+    mismatchesGroupbox->setChecked(ugaParameters->mismatchesAllowed);
 }
 
 #undef GT_METHOD_NAME

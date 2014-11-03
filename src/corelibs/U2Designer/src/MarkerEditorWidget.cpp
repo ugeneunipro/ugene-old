@@ -39,8 +39,8 @@ MarkerEditorWidget::MarkerEditorWidget(QAbstractTableModel *markerModel, QWidget
         markerTable->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
         markerTable->horizontalHeader()->setClickable(false);
 #else
-        table->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-        table->horizontalHeader()->setSectionsClickable(false);
+        markerTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+        markerTable->horizontalHeader()->setSectionsClickable(false);
 #endif
         markerTable->horizontalHeader()->setStretchLastSection(true);
         markerTable->verticalHeader()->hide();

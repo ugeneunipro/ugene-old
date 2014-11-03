@@ -19,9 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+
 #include "api/GTWidget.h"
 #include "api/GTLineEdit.h"
-#include <QtGui/QApplication>
 
 #include "AddPrimerDialogFiller.h"
 

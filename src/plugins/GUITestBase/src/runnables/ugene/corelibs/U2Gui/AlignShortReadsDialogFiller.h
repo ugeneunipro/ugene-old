@@ -153,6 +153,18 @@ public:
         QMap<Mode, QString> modeMap;
     };
 
+    class UgeneGenomeAlignerParams : public Parameters {
+    public:
+        UgeneGenomeAlignerParams(const QString &refDir, const QString &refFileName, const QString &readsDir,
+            const QString &readsFileName, bool allowMismatches)
+            : Parameters(refDir, refFileName, readsDir, readsFileName, UgeneGenomeAligner), mismatchesAllowed(allowMismatches)
+        {
+
+        }
+
+        bool mismatchesAllowed;
+    };
+
     AlignShortReadsFiller(U2OpStatus &os, Parameters* parameters) :
         Filler(os, "AssemblyToRefDialog"),
         parameters(parameters) {
@@ -165,6 +177,7 @@ private:
     void setCommonParameters(QWidget* dialog);
     void setAdditionalParameters(QWidget* dialog);
     void setBowtie2AdditionalParameters(Bowtie2Parameters* bowtie2Parameters, QWidget* dialog);
+    void setUgaAdditionalParameters(UgeneGenomeAlignerParams *ugaParameters, QWidget* dialog);
 
     Parameters* parameters;
 };
