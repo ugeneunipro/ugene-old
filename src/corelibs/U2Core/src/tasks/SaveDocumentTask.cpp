@@ -94,7 +94,7 @@ void SaveDocumentTask::prepare() {
         setError("Document was removed");
         return;
     }
-    lock = new StateLock(getTaskName());
+    lock = new StateLock(getTaskName(), StateLockFlag_LiveLock);
     doc->lockState(lock);
 }
 
