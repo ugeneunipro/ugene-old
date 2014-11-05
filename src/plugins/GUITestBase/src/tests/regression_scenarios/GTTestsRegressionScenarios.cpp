@@ -3756,7 +3756,7 @@ GUI_TEST_CLASS_DEFINITION( test_2318 ) {
 //    Expected state: plus button changes place, its size wasn't change
     QToolBar* toolbar = GTToolbar::getToolbar(os, "mwtoolbar_activemdi");
     CHECK_SET_ERR(toolbar, "Toolbar is NULL");
-    QWidget* farButton = GTToolbar::getWidgetForActionTooltip(os, toolbar, "Find annotated regions...");
+    QWidget* farButton = GTToolbar::getWidgetForActionTooltip(os, toolbar, "Find annotated regions");
     CHECK_SET_ERR(farButton, "Find annotated region button is NULL");
 
     // Expected state is checked in PlusClicker
