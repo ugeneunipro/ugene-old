@@ -5008,6 +5008,29 @@ GUI_TEST_CLASS_DEFINITION( test_2809 ){
     CHECK_SET_ERR( !scroll->isVisible(), "Scroll bar is visible!");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2829) {
+    //1) Open files "data/samples/Genbank/murine.gb" and "data/samples/Genbank/sars.gb" in separated views
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "sars.gb");
+
+    //2) Click on toolbar 'Build dotplot' button
+    //3) In opened dialog click 'OK' button
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os));
+    GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
+    GTGlobals::sleep();
+
+    //4) Choose some annotation by left mouse button on the upper sequence view
+    //Expected state: horisontal or vertical selection is shown on DotPlot
+    QList<QTreeWidgetItem*> geneItems = GTUtilsAnnotationsTreeView::findItems(os, "gene", GTGlobals::FindOptions(false));
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, geneItems.at(1)));
+    GTMouseDriver::click(os);
+
+    //5) In second sequence view choose { Toggle view -> Remove sequence } on the toolbar
+    //Expected state: DotPlot closed and UGENE didn't crash
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "remove_sequence"));
+    GTWidget::click(os, GTWidget::findWidget(os, "toggle_view_button_NC_001363", GTUtilsSequenceView::getSeqWidgetByNumber(os, 1)));
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2853 ){
     Runnable *filler = new NCBISearchDialogFiller(os, "rat");
 
