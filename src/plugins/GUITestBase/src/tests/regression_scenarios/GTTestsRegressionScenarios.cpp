@@ -4887,6 +4887,21 @@ GUI_TEST_CLASS_DEFINITION(test_2784) {
     CHECK_SET_ERR(undoButton->isEnabled(), "'Undo' button is unexpectedly disabled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2796) {
+    //1. Open file "_common_data/fasta/fa2.fa"
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta", "fa2.fa");
+
+    //2. Use main menu { Actions -> Analyse -> Find pattern[Smith-Waterman]... }
+    //Expected state: the "Smith-Waterman Search" dialog has appeared
+    //3. Press "Cancel" in the dialog
+    //Expected state: dialog has closed
+    SmithWatermanDialogFiller *filler = new SmithWatermanDialogFiller(os);
+    filler->button = SmithWatermanDialogFiller::Cancel;
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Analyze" << "Find pattern [Smith-Waterman]", GTGlobals::UseMouse));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2808 ){
 //    1. Open WD.
 //    2. Add "Sequence Marker" element to the scene, select it.
