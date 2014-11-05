@@ -188,6 +188,25 @@ QPoint GTUtilsTaskTreeView::getTreeViewItemPosition( U2OpStatus &os, const QStri
 }
 #undef GT_METHOD_NAME
 
+bool GTUtilsTaskTreeView::checkTask(U2OpStatus &os, const QString &itemName){
+    openView(os);
+    QTreeWidgetItem* item = getTreeWidgetItem(os, itemName);
+    return !item == NULL;
+}
+
+int GTUtilsTaskTreeView::countTasks(U2OpStatus &os, const QString &itemName){
+    openView(os);
+    int result = 0;
+    QList<QTreeWidgetItem*> treeItems = getTaskTreeViewItems(getTreeWidget(os)->invisibleRootItem());
+    foreach (QTreeWidgetItem* item, treeItems) {
+        QString treeItemName = item->text(0);
+        if (treeItemName == itemName) {
+            result++;
+        }
+    }
+    return result;
+}
+
 #undef GT_CLASS_NAME
 
 }

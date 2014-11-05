@@ -44,6 +44,8 @@ public:
     static QPoint getTreeViewItemPosition(U2OpStatus &os, const QString &itemName);
     static void moveTo(U2OpStatus &os,const QString &itemName);
     static int getTopLevelTasksCount(U2OpStatus &os);
+    static bool checkTask(U2OpStatus& os, const QString &itemName);
+    static int countTasks(U2OpStatus& os, const QString &itemName);
 
     static const QString widgetName;
 

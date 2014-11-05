@@ -4796,6 +4796,32 @@ GUI_TEST_CLASS_DEFINITION( test_2667 ) {
     GTUtilsProjectTreeView::findIndex(os, "NC_001363 features", options);
 }
 
+namespace {
+class test_2709_canceler: public TuxedoWizardFiller{
+public:
+    test_2709_canceler(U2OpStatus &os):TuxedoWizardFiller(os, "","","","", pairValList()){}
+    void run(){
+        GTWidget::click(os, getCancelButton(os));
+    }
+};
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2709) {
+//    1. Open tuxedo sample "no-new-transcripts"
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsDialog::waitForDialog(os, new ConfigureTuxedoWizardFiller(os, ConfigureTuxedoWizardFiller::no_new_transkripts,
+                                                                     ConfigureTuxedoWizardFiller::singleReads));
+    GTUtilsDialog::waitForDialog(os, new test_2709_canceler(os));
+    GTUtilsWorkflowDesigner::addSample(os, "tuxedo");
+    GTGlobals::sleep();
+//    Expected state: "No novel junctions" tophat parameter set to true by default
+    GTUtilsWorkflowDesigner::click(os, "Find Splice Junctions with TopHat");
+    QString result = GTUtilsWorkflowDesigner::getParameter(os, "No novel junctions");
+    CHECK_SET_ERR(result == "True", "No novel junctions parameter is " + result);
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2778) {
     //1. Use main menu : tools->align to reference->align short reads
     //2. Set input parameters
@@ -5078,8 +5104,7 @@ GUI_TEST_CLASS_DEFINITION(test_2891) {
     GTFileDialog::openFile(os, dataDir + "/workflow_samples/NGS/cistrome/", "chip_seq.uwl");
     GTGlobals::sleep();
 
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Tags"));
-    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::click(os, "Gets paths of files");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Chip-seq/input_data/", "chr2.bed");
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
@@ -5100,14 +5125,57 @@ GUI_TEST_CLASS_DEFINITION(test_2891) {
     GTFileDialog::openFile(os, dataDir + "/workflow_samples/NGS/cistrome/", "chip_seq.uwl");
     GTGlobals::sleep();
 
-    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Tags"));
-    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::click(os, "Gets paths of files");
     GTUtilsWorkflowDesigner::setDatasetInputFile(os, testDir + "_common_data/NIAID_pipelines/Chip-seq/input_data/", "some_image.png");
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
     GTWidget::click(os,GTAction::button(os, "Validate workflow"));
     GTGlobals::sleep();
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Read Tags") == 1, "Errors count dont match, should be 1 validation error");
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2894){
+//    1. Open {_common_data/clustal/100_sequences.aln}.
+    GTFileDialog::openFile(os, testDir + "_common_data/clustal", "100_sequences.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//    2. Use context menu {Tree->Build Tree}.
+//    Expected state: "Build phylogenetic tree" dialog has been appeared.
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "test_2894_COI.nwk", 0, 0, true));
+    GTWidget::click(os, GTAction::button(os, "Build Tree"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+//    3. Run "Phylip Neighbor Joining" with default parameters.
+//    Expected state: tree view has been appeared.
+    QWidget* treeView = GTWidget::findWidget(os, "treeView");
+    QWidget* qt_toolbar_ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button",
+                                                          GTWidget::findWidget(os, "100_sequences [m] 100_sequences"), GTGlobals::FindOptions(false));
+//    4. Press refresh tree button on the tree's toolbar.
+//    Expected state: "Calculating Phylogenetic Tree" task has been started.
+    if(qt_toolbar_ext_button != NULL && qt_toolbar_ext_button->isVisible()){
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Refresh tree"));
+        GTWidget::click(os, qt_toolbar_ext_button);
+    }else{
+        GTWidget::click(os, GTAction::button(os, "Refresh tree"));
+    }
+
+    GTUtilsTaskTreeView::checkTask(os, "Calculating Phylogenetic Tree");
+//    5. Press refresh button again.
+//    Expected state: a new refresh task is not started, the old one is in process.
+    if(qt_toolbar_ext_button != NULL && qt_toolbar_ext_button->isVisible()){
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Refresh tree"));
+        GTWidget::click(os, qt_toolbar_ext_button);
+    }else{
+        GTWidget::click(os, GTAction::button(os, "Refresh tree"));
+    }
+    GTGlobals::sleep(100);
+
+    int num = GTUtilsTaskTreeView::countTasks(os, "Calculating Phylogenetic Tree");
+    CHECK_SET_ERR(num == 1, QString("Wrong tasks number. Expected 1, actual: ").arg(num));
+//    6. Close the tree view while the task is performed.
+//    Expected state: UGENE doesn't crash, view is closed, task cancels.
+    GTUtilsProjectTreeView::click(os, "test_2894_COI.nwk");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
 
 }
 
