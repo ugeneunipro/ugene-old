@@ -8164,6 +8164,37 @@ GUI_TEST_CLASS_DEFINITION(test_3629) {
     CHECK_SET_ERR(opStatus.isCoR(), "The annotaion table is unexpectedly attached");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3639) {
+    GTLogTracer logTracer;
+
+    //2. Open "human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    //1. Connect to any shared database with write permissions.
+    GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    //3. Select "human_T1.fa" document and a 'Recycle bin" folder in the project view.
+    GTGlobals::FindOptions options;
+    options.depth = 1;
+    QModelIndex humanT1Doc = GTUtilsProjectTreeView::findIndecies(os, "human_T1.fa", QModelIndex(), 0, options).first();
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, humanT1Doc));
+    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Recycle bin"));
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+
+    //4. Remove items with "del" key.
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep();
+
+    //Expected state: the document is removed, the folder is not removed, no message boxes appear.
+    CHECK_SET_ERR(!logTracer.hasError(), "Error message");
+    GTUtilsProjectTreeView::getItemCenter(os, "Recycle bin");
+    QModelIndexList idxs = GTUtilsProjectTreeView::findIndecies(os, "human_T1.fa", QModelIndex(), 0, options);
+    CHECK_SET_ERR(idxs.isEmpty(), "The document is not removed");
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
