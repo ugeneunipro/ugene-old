@@ -1,6 +1,5 @@
 <RCC>
-    <qresource prefix="ugene/" >
-
+    <qresource prefix="/ugene">
         <file>images/create_new_project.png</file>
         <file>images/about.png</file>
         <file>images/ugene_16.png</file>
@@ -44,5 +43,6 @@
         <file>images/up.png</file>
         <file>images/down.png</file>
         <file>images/ugene_splash.gif</file>
+        <file>images/ugene_splash.png</file>
     </qresource>
 </RCC>

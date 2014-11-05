@@ -23,9 +23,12 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Core/Task.h>
+#include <U2Core/Version.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <QtCore/qcoreevent.h>
 #include <QtGui/QMovie>
+#include <QtGui/QPainter>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QLayout>
 #include <QtGui/QLabel>
@@ -35,6 +38,9 @@
 #endif
 
 namespace U2{
+
+#define TEXT_HEIGHT_PT 15
+#define TEXT_PADDING_PT 12
 
 SplashScreen::SplashScreen( QWidget *parent /* = NULL*/ ):QDialog(parent) {
     setEnabled(false);
@@ -56,13 +62,11 @@ SplashScreen::SplashScreen( QWidget *parent /* = NULL*/ ):QDialog(parent) {
     frame->setContentsMargins(0, 0, 0, 0);
     frame->setLayout(frameLayout);
 
-    QMovie *movie = new QMovie(":ugene/images/ugene_splash.gif");
-    QLabel *processLabel = new QLabel(this);
-    processLabel->setMovie(movie);
-    movie->start();
+    SplashScreenWidget* sWidget = new SplashScreenWidget();
 
     QVBoxLayout* aWLayout = (QVBoxLayout*)frame->layout();
-    aWLayout->insertWidget(0, processLabel);
+    aWLayout->insertWidget(0, sWidget);
+    aWLayout->setStretchFactor(sWidget, 100);
     installEventFilter(this);
 }
 
@@ -81,4 +85,91 @@ bool SplashScreen::eventFilter(QObject * /*obj*/, QEvent *ev){
     return false;
 }
 
+////////////////////////////////////////////////////////////////
+SplashScreenWidget::SplashScreenWidget(){
+    setObjectName("splash_screen_widget");
+
+    QImage image(":ugene/images/ugene_splash.png");
+    Version v = Version::appVersion();
+    version = v.text;
+
+    image1 = image2 = image;
+    setFixedSize(image1.size());
+
+    dots_number = 0;
+    task = "";
+    startTimer(500);
+
+    getTask();
+    getDots();
+    drawInfo();
+}
+
+void SplashScreenWidget::getTask(){
+    if(AppContext::getTaskScheduler() == NULL){
+        return;
+    }
+    QList<Task*> tasks = AppContext::getTaskScheduler()->getTopLevelTasks();
+    if(tasks.size() > 0){
+        Task* topLevelTask = tasks.at(0);
+        task = topLevelTask->getTaskName();
+
+        QList<Task*> subtasks = topLevelTask->getSubtasks();
+        if(subtasks.size() > 0){
+            task = subtasks.at(0)->getTaskName();
+        }
+    }else{
+        task = "";
+    }
+}
+
+void SplashScreenWidget::getDots(){
+    if(dots_number >= 3){
+        dots_number = 0;
+    }else{
+        dots_number++;
+    }
+}
+
+void SplashScreenWidget::timerEvent(QTimerEvent *e){
+    getTask();
+    getDots();
+    drawInfo();
+
+    update();
+    QObject::timerEvent(e);
+}
+
+void SplashScreenWidget::paintEvent(QPaintEvent *e){
+    QWidget::paintEvent(e);
+
+    QPainter p(this);
+    p.drawImage(0, 0, image2);
+}
+
+void SplashScreenWidget::drawInfo(){
+    image2 = image1;
+
+    QRect rectVersion = QRect(17, 268, width()-width()/3, TEXT_HEIGHT_PT);
+
+    QPainter p(&image2);
+
+    QFont font = p.font();
+    font.setPixelSize( rectVersion.height() );
+    font.setFamily("Heiti");
+    p.setFont( font );
+    p.setPen(QColor(0, 46, 59));
+    QString text = "Version " + version + " is loading";
+    for (int i = 0; i < dots_number; i++) {
+        text.append(".");
+    }
+    p.drawText(rectVersion, text);
+
+    if(!task.isEmpty()){
+        QRect rect2 = QRect(17, 268 + TEXT_HEIGHT_PT + TEXT_PADDING_PT, width()-width()/3, TEXT_HEIGHT_PT);
+        QString text2 = task;
+        p.drawText(rect2, text2);
+    }
+    p.end();
+}
 }

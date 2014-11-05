@@ -212,7 +212,7 @@ class SpadesInputSlotsValidator : public PortValidator {
         }
 
         if (hasCommonElements){
-            problemList.append(Problem(SpadesWorker::tr("Spades cannot recognize read pairs from the same file. Please, perform demultiplexing first.")));
+            problemList.append(Problem(SpadesWorker::tr("SPAdes cannot recognize read pairs from the same file. Please, perform demultiplexing first.")));
             return false;
         }
 
@@ -236,7 +236,7 @@ void SpadesWorkerFactory::init() {
     inTypeMap[readsPairedDesc] = BaseTypes::STRING_TYPE();
 
     Descriptor inPortDesc(IN_PORT_DESCR,
-        SpadesWorker::tr("Spades data"),
+        SpadesWorker::tr("SPAdes data"),
         SpadesWorker::tr("Input reads to be assembled with Spades."));
 
     DataTypePtr inTypeSet(new MapDataType(IN_TYPE_ID, inTypeMap));
@@ -249,7 +249,7 @@ void SpadesWorkerFactory::init() {
         SpadesWorker::tr("Output scaffolds URL."));
     
     Descriptor outPortDesc(OUT_PORT_DESCR,
-        SpadesWorker::tr("Spades output data"),
+        SpadesWorker::tr("SPAdes output data"),
         SpadesWorker::tr("Output assembly files."));
 
     outTypeMap[scaffoldOutDesc] = BaseTypes::STRING_TYPE();
@@ -317,7 +317,7 @@ void SpadesWorkerFactory::init() {
     }
 
     Descriptor protoDesc(SpadesWorkerFactory::ACTOR_ID,
-        SpadesWorker::tr("Assemble genomes with Spades"),
+        SpadesWorker::tr("Assemble genomes with SPAdes"),
         SpadesWorker::tr("Performes assembly of input short reads."));
 
     ActorPrototype *proto = new IntegralBusActorPrototype(protoDesc, portDescs, attrs);

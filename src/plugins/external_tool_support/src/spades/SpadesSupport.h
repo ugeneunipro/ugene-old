@@ -26,7 +26,7 @@
 
 namespace U2 {
 
-#define ET_SPADES "SPADES"
+#define ET_SPADES "SPAdes"
 
 class SpadesSupport : public ExternalTool {
     Q_OBJECT

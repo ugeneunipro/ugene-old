@@ -41,6 +41,32 @@ protected:
     bool eventFilter(QObject *obj, QEvent *ev);
 };
 
+////////////////////////////////////////////////////
+///SplashScreenWidget
+///
+class SplashScreenWidget : public QWidget {
+    Q_OBJECT
+
+public:
+    SplashScreenWidget();
+
+    void getTask();
+    void getDots();
+protected:
+    void timerEvent(QTimerEvent* e);
+    void paintEvent(QPaintEvent* e);
+
+private:
+    void drawInfo();
+
+    int			    dots_number;
+    QString		    version;
+    QString		    task;
+    QImage          image1;
+    QImage          image2;
+};
+
+
 } //namespace
 
 #endif
