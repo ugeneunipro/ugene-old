@@ -34,6 +34,7 @@
 
 #include "GTDatabaseConfig.h"
 #include "GTUtilsProjectTreeView.h"
+#include "GTUtilsTaskTreeView.h"
 #include "SharedConnectionsDialogFiller.h"
 #include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
@@ -130,6 +131,7 @@ void establishConnection(U2OpStatus &os, const SharedConnectionsDialogFiller::Ac
     CHECK(behavior.testFlag(SharedConnectionsDialogFiller::SAFE), );
 
     GTGlobals::sleep(2000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     if (SharedConnectionsDialogFiller::Action::OK == action.expectedResult ||
         SharedConnectionsDialogFiller::Action::INITIALIZE == action.expectedResult) {

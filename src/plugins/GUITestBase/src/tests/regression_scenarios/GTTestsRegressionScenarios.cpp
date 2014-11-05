@@ -8176,7 +8176,7 @@ GUI_TEST_CLASS_DEFINITION(test_3639) {
     //3. Select "human_T1.fa" document and a 'Recycle bin" folder in the project view.
     GTGlobals::FindOptions options;
     options.depth = 1;
-    QModelIndex humanT1Doc = GTUtilsProjectTreeView::findIndecies(os, "human_T1.fa", QModelIndex(), 0, options).first();
+    QModelIndex humanT1Doc = GTUtilsProjectTreeView::findIndex(os, "human_T1.fa", options);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, humanT1Doc));
     GTMouseDriver::click(os);
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Recycle bin"));
@@ -8186,13 +8186,44 @@ GUI_TEST_CLASS_DEFINITION(test_3639) {
 
     //4. Remove items with "del" key.
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
-    GTGlobals::sleep();
 
     //Expected state: the document is removed, the folder is not removed, no message boxes appear.
     CHECK_SET_ERR(!logTracer.hasError(), "Error message");
     GTUtilsProjectTreeView::getItemCenter(os, "Recycle bin");
-    QModelIndexList idxs = GTUtilsProjectTreeView::findIndecies(os, "human_T1.fa", QModelIndex(), 0, options);
-    CHECK_SET_ERR(idxs.isEmpty(), "The document is not removed");
+    options.failIfNull = false;
+    humanT1Doc = GTUtilsProjectTreeView::findIndex(os, "human_T1.fa", options);
+    CHECK_SET_ERR(!humanT1Doc.isValid(), "The document is not removed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3640) {
+    GTLogTracer logTracer;
+
+    //2. Open any document.
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    //1. Connect to a read-only shared database (e.g. to the UGENE public database).
+    GTUtilsSharedDatabaseDocument::connectToUgenePublicDatabase(os);
+
+    //3. Select the document and any folder in the database in the project view.
+    GTGlobals::FindOptions options;
+    options.depth = 1;
+    QModelIndex humanT1Doc = GTUtilsProjectTreeView::findIndex(os, "human_T1.fa", options);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, humanT1Doc));
+    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "genomes"));
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+
+    //4. Remove selected items via "del" key.
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+
+    //Expected state: the document is removed, the folder is not removed.
+    CHECK_SET_ERR(!logTracer.hasError(), "Error message");
+    GTUtilsProjectTreeView::findIndex(os, "genomes");
+    options.failIfNull = false;
+    humanT1Doc = GTUtilsProjectTreeView::findIndex(os, "human_T1.fa", options);
+    CHECK_SET_ERR(!humanT1Doc.isValid(), "The document is not removed");
 }
 
 } // GUITest_regression_scenarios namespace

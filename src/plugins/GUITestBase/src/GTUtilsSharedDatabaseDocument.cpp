@@ -72,7 +72,6 @@ Document* GTUtilsSharedDatabaseDocument::connectToTestDatabase(U2OpStatus &os) {
 Document *GTUtilsSharedDatabaseDocument::connectToUgenePublicDatabase(U2OpStatus &os) {
     GTLogTracer lt;
     QString conName = "UGENE public database";
-    GTDatabaseConfig::initTestConnectionInfo(conName);
     {
         QList<SharedConnectionsDialogFiller::Action> actions;
         actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, conName);
