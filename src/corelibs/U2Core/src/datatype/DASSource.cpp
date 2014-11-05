@@ -173,42 +173,42 @@ void DASSourceRegistry::initDefaultSources(){
         );
 
     featureSources.append(uniprotFeature5);
-
+/* servers were closed
     //Ensembl Human Genes
-    DASSource ensemblRef(DAS_ENSEMBL, 
-        tr("Ensembl Human Genes (DAS)"), 
-        tr("http://www.ebi.ac.uk/das-srv/genedas/das/Homo_sapiens.Gene_ID.reference/"), 
+    DASSource ensemblRef(DAS_ENSEMBL,
+        tr("Ensembl Human Genes (DAS)"),
+        tr("http://www.ebi.ac.uk/das-srv/genedas/das/Homo_sapiens.Gene_ID.reference/"),
         DASDNASequence,
         tr("Use Ensemble Gene IDs. For example: %1").arg(makeIDLink("ENSG00000139618")),
         tr("The Ensembl human Gene_ID reference source, serving sequences and non-location features."));
 
     referenceSources.append(ensemblRef);
 
-    DASSource ensemblFeatures1(QString(DAS_ENSEMBL) + "f1", 
-        tr("Ensembl Human Gene Features"), 
-        tr("http://www.ebi.ac.uk/das-srv/genedas/das/Homo_sapiens.Gene_ID.reference/"), 
+    DASSource ensemblFeatures1(QString(DAS_ENSEMBL) + "f1",
+        tr("Ensembl Human Gene Features"),
+        tr("http://www.ebi.ac.uk/das-srv/genedas/das/Homo_sapiens.Gene_ID.reference/"),
         DASDNASequence,
         tr("The Ensembl human Gene_ID source."));
 
     featureSources.append(ensemblFeatures1);
 
-    DASSource ensemblFeatures2(QString(DAS_ENSEMBL) + "f2", 
-        tr("HGNC"), 
-        tr("http://www.genenames.org/das/HGNC/"), 
+    DASSource ensemblFeatures2(QString(DAS_ENSEMBL) + "f2",
+        tr("HGNC"),
+        tr("http://www.genenames.org/das/HGNC/"),
         DASDNASequence,
         tr("The HGNC (HUGO Gene Nomenclature Committee) DAS Reference Server serves up-to-date\n"
         "approved gene symbols and names for human genes from the latest HGNC dataset, mapped via Entrez Gene ID."));
 
     featureSources.append(ensemblFeatures2);
 
-    DASSource ensemblFeatures3(QString(DAS_ENSEMBL) + "f3", 
-        tr("GAD"), 
-        tr("http://www.ebi.ac.uk/das-srv/genedas/das/gad/"), 
+    DASSource ensemblFeatures3(QString(DAS_ENSEMBL) + "f3",
+        tr("GAD"),
+        tr("http://www.ebi.ac.uk/das-srv/genedas/das/gad/"),
         DASDNASequence,
         tr("Genetic Association Database (diseases)."));
 
     featureSources.append(ensemblFeatures3);
-
+*/
 }
 
 QString DASSourceRegistry::getRequestURLString(const DASSource& source, const QString& accId, DASObjectType& requestType ){
