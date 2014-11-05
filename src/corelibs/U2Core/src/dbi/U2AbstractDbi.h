@@ -40,10 +40,6 @@
 #include <U2Core/U2ModDbi.h>
 #include <U2Core/UdrDbi.h>
 
-#include <U2Core/SNPTablesDbi.h>
-#include <U2Core/KnownMutationsDbi.h>
-
-
 namespace U2 {
 
 /** Default (empty) implementation for optional DBI methods */
@@ -87,10 +83,6 @@ public:
 
     virtual U2ModDbi* getModDbi()  {return NULL;}
 
-    virtual SNPTablesDbi* getSNPTableDbi() {return NULL;}
-
-    virtual KnownMutationsDbi* getKnownMutationsDbi() {return NULL;}
-    
     virtual U2CrossDatabaseReferenceDbi* getCrossDatabaseReferenceDbi()  {return NULL;}
 
     virtual UdrDbi* getUdrDbi() {return NULL;}

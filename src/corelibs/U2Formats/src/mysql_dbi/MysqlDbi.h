@@ -80,13 +80,11 @@ public:
     virtual U2AttributeDbi*                 getAttributeDbi();
     virtual U2CrossDatabaseReferenceDbi*    getCrossDatabaseReferenceDbi();
     virtual U2FeatureDbi*                   getFeatureDbi();
-    virtual KnownMutationsDbi*              getKnownMutationsDbi();
     virtual U2ModDbi*                       getModDbi();
     virtual U2MsaDbi*                       getMsaDbi();
     virtual U2ObjectDbi*                    getObjectDbi();
     virtual U2ObjectRelationsDbi*           getObjectRelationsDbi();
     virtual U2SequenceDbi*                  getSequenceDbi();
-    virtual SNPTablesDbi*                   getSNPTableDbi();
     virtual UdrDbi*                         getUdrDbi();
     virtual U2VariantDbi*                   getVariantDbi();
 

@@ -76,12 +76,10 @@ HEADERS += src/ABIFormat.h \
            src/sqlite_dbi/SQLiteBlobOutputStream.h \
            src/sqlite_dbi/SQLiteDbi.h \
            src/sqlite_dbi/SQLiteFeatureDbi.h \
-           src/sqlite_dbi/SQLiteKnownMutationsDbi.h \
            src/sqlite_dbi/SQLiteModDbi.h \
            src/sqlite_dbi/SQLiteMsaDbi.h \
            src/sqlite_dbi/SQLiteObjectDbi.h \
            src/sqlite_dbi/SQLiteObjectRelationsDbi.h \
-           src/sqlite_dbi/SQLiteSNPTablesDbi.h \
            src/sqlite_dbi/SQLiteSequenceDbi.h \
            src/sqlite_dbi/SQLiteUdrDbi.h \
            src/sqlite_dbi/SQLiteVariantDbi.h \
@@ -167,13 +165,11 @@ SOURCES += src/ABIFormat.cpp \
            src/sqlite_dbi/SQLiteBlobOutputStream.cpp \
            src/sqlite_dbi/SQLiteDbi.cpp \
            src/sqlite_dbi/SQLiteFeatureDbi.cpp \
-           src/sqlite_dbi/SQLiteKnownMutationsDbi.cpp \
            src/sqlite_dbi/SQLiteModDbi.cpp \
            src/sqlite_dbi/SQLiteMsaDbi.cpp \
            src/sqlite_dbi/SQLiteObjectDbi.cpp \
            src/sqlite_dbi/SQLiteObjectRelationsDbi.cpp \
            src/sqlite_dbi/SQLiteSequenceDbi.cpp \
-           src/sqlite_dbi/SQLiteSNPTablesDbi.cpp \
            src/sqlite_dbi/SQLiteUdrDbi.cpp \
            src/sqlite_dbi/SQLiteVariantDbi.cpp \
            src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp \

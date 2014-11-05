@@ -40,8 +40,6 @@ class SQLiteAttributeDbi;
 class SQLiteVariantDbi;
 class SQLiteFeatureDbi;
 class SQLiteModDbi;
-class SQLiteSNPTablesDbi;
-class SQLiteKnownMutationsDbi;
 class SQLiteUdrDbi;
 class DbRef;
 
@@ -122,11 +120,6 @@ public:
 
     virtual UdrDbi* getUdrDbi();
 
-
-    virtual SNPTablesDbi* getSNPTableDbi();
-
-    virtual KnownMutationsDbi* getKnownMutationsDbi();
-
     DbRef*    getDbRef() const {return db;}
 
     SQLiteObjectDbi* getSQLiteObjectDbi() const;
@@ -184,8 +177,6 @@ private:
     SQLiteFeatureDbi*                   featureDbi;
     SQLiteModDbi*                       modDbi;
     SQLiteTransaction*                  operationsBlockTransaction;
-    SQLiteSNPTablesDbi*                 filterTableDbi;
-    SQLiteKnownMutationsDbi*            knownMutationsDbi;
     SQLiteUdrDbi*                       udrDbi;
 
     friend class SQLiteObjectDbi;

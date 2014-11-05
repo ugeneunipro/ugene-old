@@ -159,14 +159,6 @@ MysqlVariantDbi * MysqlDbi::getMysqlVariantDbi() {
     return variantDbi;
 }
 
-SNPTablesDbi * MysqlDbi::getSNPTableDbi() {
-    return NULL;
-}
-
-KnownMutationsDbi * MysqlDbi::getKnownMutationsDbi() {
-    return NULL;
-}
-
 MysqlDbRef* MysqlDbi::getDbRef() {
     return db;
 }

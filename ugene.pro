@@ -30,7 +30,6 @@ SUBDIRS += \
           src/plugins_checker \
           src/plugins_3rdparty/ball \
           src/plugins_3rdparty/sitecon \
-          src/plugins_3rdparty/snp_effect \
           src/plugins_3rdparty/umuscle \
           src/plugins_3rdparty/hmm2 \
           src/plugins_3rdparty/gor4 \

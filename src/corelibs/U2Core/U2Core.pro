@@ -13,7 +13,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/AnnotationSettings.h \
            src/datatype/AnnotationTableObjectConstraints.h \
            src/datatype/BioStruct3D.h \
-           src/datatype/DamageEffect.h \
            src/datatype/DASSource.h \
            src/datatype/DIProperties.h \
            src/datatype/DNAAlphabet.h \
@@ -26,8 +25,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/DNATranslation.h \
            src/datatype/DNATranslationImpl.h \
            src/datatype/FeatureColors.h \
-           src/datatype/Gene.h \
-           src/datatype/KnownMutations.h \
            src/datatype/MAlignment.h \
            src/datatype/MAlignmentInfo.h \
            src/datatype/Matrix44.h \
@@ -40,7 +37,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/U2Attribute.h \
            src/datatype/U2CoreAttributes.h \
            src/datatype/U2Feature.h \
-           src/datatype/U2FeatureKeys.h \
            src/datatype/U2Identity.h \
            src/datatype/U2IdTypes.h \
            src/datatype/U2Location.h \
@@ -60,8 +56,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/datatype/Vector3D.h \
            src/datatype/udr/RawDataUdrSchema.h \
            src/dbi/DbiDocumentFormat.h \
-           src/dbi/KnownMutationsDbi.h \
-           src/dbi/SNPTablesDbi.h \
            src/dbi/U2AbstractDbi.h \
            src/dbi/U2AssemblyDbi.h \
            src/dbi/U2AttributeDbi.h \
@@ -205,7 +199,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/tasks/shared_db/ImportObjectToDatabaseTask.h \
            src/tasks/shared_db/ImportToDatabaseTask.h \
            src/util/DatatypeSerializeUtils.h \
-           src/util/FeaturesQueryCache.h \
            src/util/FileAndDirectoryUtils.h \
            src/util/FilesIterator.h \
            src/util/FileStorageUtils.h \
@@ -214,7 +207,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/GUrlUtils.h \
            src/util/ImportToDatabaseOptions.h \
            src/util/IOAdapterUtils.h \
-           src/util/KnownMutationsUtils.h \
            src/util/MAlignmentExporter.h \
            src/util/MAlignmentImporter.h \
            src/util/MAlignmentWalker.h \
@@ -225,7 +217,6 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/PMatrixSerializeUtils.h \
            src/util/QVariantUtils.h \
            src/util/SequenceUtils.h \
-           src/util/SNPTablesUtils.h \
            src/util/TextUtils.h \
            src/util/U1AnnotationUtils.h \
            src/util/U2AlphabetUtils.h \
@@ -396,7 +387,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/tasks/shared_db/ImportObjectToDatabaseTask.cpp \
            src/tasks/shared_db/ImportToDatabaseTask.cpp \
            src/util/DatatypeSerializeUtils.cpp \
-           src/util/FeaturesQueryCache.cpp \
            src/util/FileAndDirectoryUtils.cpp \
            src/util/FilesIterator.cpp \
            src/util/FileStorageUtils.cpp \
@@ -405,7 +395,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/GUrlUtils.cpp \
            src/util/ImportToDatabaseOptions.cpp \
            src/util/IOAdapterUtils.cpp \
-           src/util/KnownMutationsUtils.cpp \
            src/util/MAlignmentExporter.cpp \
            src/util/MAlignmentImporter.cpp \
            src/util/MAlignmentWalker.cpp \
@@ -415,7 +404,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/U2ObjectTypeUtils.cpp \
            src/util/QVariantUtils.cpp \
            src/util/SequenceUtils.cpp \
-           src/util/SNPTablesUtils.cpp \
            src/util/TextUtils.cpp \
            src/util/U1AnnotationUtils.cpp \
            src/util/U2AlphabetUtils.cpp \
@@ -425,8 +413,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/U2Bits.cpp \
            src/util/U2FeatureUtils.cpp \
            src/util/U2SequenceUtils.cpp \
-           src/util/U2VariationUtils.cpp \
-           src/util/VariationPropertiesUtils.cpp
+           src/util/U2VariationUtils.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \

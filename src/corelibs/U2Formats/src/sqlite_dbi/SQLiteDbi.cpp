@@ -29,8 +29,6 @@
 #include "SQLiteVariantDbi.h"
 #include "SQLiteFeatureDbi.h"
 #include "SQLiteModDbi.h"
-#include "SQLiteSNPTablesDbi.h"
-#include "SQLiteKnownMutationsDbi.h"
 #include "SQLiteUdrDbi.h"
 
 #include <U2Core/U2SafePoints.h>
@@ -62,8 +60,6 @@ SQLiteDbi::SQLiteDbi()
     variantDbi = new SQLiteVariantDbi(this);
     featureDbi = new SQLiteFeatureDbi(this);
     operationsBlockTransaction = NULL;
-    filterTableDbi = new SQLiteSNPTablesDbi(this);
-    knownMutationsDbi = new SQLiteKnownMutationsDbi(this);
     udrDbi = new SQLiteUdrDbi(this);
 }
 
@@ -81,8 +77,6 @@ SQLiteDbi::~SQLiteDbi() {
     delete attributeDbi;
     delete featureDbi;
     delete modDbi;
-    delete filterTableDbi;
-    delete knownMutationsDbi;
     delete db;
 }
 
@@ -152,14 +146,6 @@ SQLiteUdrDbi* SQLiteDbi::getSQLiteUdrDbi() const {
 
 SQLiteFeatureDbi* SQLiteDbi::getSQLiteFeatureDbi() const {
     return featureDbi;
-}
-
-SNPTablesDbi* SQLiteDbi::getSNPTableDbi(){
-    return filterTableDbi;
-}
-
-KnownMutationsDbi* SQLiteDbi::getKnownMutationsDbi(){
-    return knownMutationsDbi;
 }
 
 QString SQLiteDbi::getProperty(const QString& name, const QString& defaultValue, U2OpStatus& os) {
@@ -256,8 +242,6 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     variantDbi->initSqlSchema(os);
     featureDbi->initSqlSchema(os);
     modDbi->initSqlSchema(os);
-    filterTableDbi->initSqlSchema(os);
-    knownMutationsDbi->initSqlSchema(os);
     udrDbi->initSqlSchema(os);
 
     setVersionProperties(Version::minVersionForSQLite(), os);
@@ -449,8 +433,6 @@ QVariantMap SQLiteDbi::shutdown(U2OpStatus& os) {
     variantDbi->shutdown(os);
     featureDbi->shutdown(os);
     modDbi->shutdown(os);
-    filterTableDbi->shutdown(os);
-    knownMutationsDbi->shutdown(os);
     
     setState(U2DbiState_Stopping);
     int rc = sqlite3_close(db->handle);
