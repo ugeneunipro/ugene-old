@@ -215,8 +215,6 @@ private slots:
     void sl_sequenceModifyTaskStateChanged();
     void sl_reverseSequence();
 
-    void sl_onAnnotationTableRemove(AnnotationTableObject* obj);
-
     virtual void sl_onDocumentAdded(Document*);
     virtual void sl_onDocumentLoadedStateChanged();
     virtual void sl_removeSelectedSequenceObject();

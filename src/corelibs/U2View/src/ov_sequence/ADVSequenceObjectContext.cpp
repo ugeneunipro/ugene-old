@@ -203,7 +203,7 @@ void ADVSequenceObjectContext::sl_onAnnotationRelationChange() {
 
     if (!obj->hasObjectRelation(seqObj, ObjectRole_Sequence)) {
         disconnect(obj, SIGNAL(si_relationChanged()), this, SLOT(sl_onAnnotationRelationChange()));
-        removeAnnotationObject(obj);
+        view->removeObject(obj);
     }
 }
 
