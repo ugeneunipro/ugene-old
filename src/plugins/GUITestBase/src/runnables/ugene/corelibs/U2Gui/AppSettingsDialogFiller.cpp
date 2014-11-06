@@ -48,6 +48,15 @@
 namespace U2{
 
 #define GT_CLASS_NAME "AppSettingsDialogFiller"
+AppSettingsDialogFiller::AppSettingsDialogFiller(U2OpStatus &os, CustomScenario *customScenario) :
+    Filler(os, "AppSettingsDialog", customScenario),
+    itemStyle(none),
+    r(-1),
+    g(-1),
+    b(-1)
+{
+}
+
 #define GT_METHOD_NAME "run"
 void AppSettingsDialogFiller::run(){
 

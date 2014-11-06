@@ -119,6 +119,13 @@ public:
     static int getItemRight(U2OpStatus &os, QString itemName);
     static int getItemTop(U2OpStatus &os, QString itemName);
     static int getItemBottom(U2OpStatus &os, QString itemName);
+
+    // breakpoints
+    static void toggleDebugMode(U2OpStatus &os, bool enable = true);
+    static void toggleBreakpointManager(U2OpStatus &os);
+    static void setBreakpoint(U2OpStatus &os, const QString &itemName);
+    static QStringList getBreakpointList(U2OpStatus &os);
+
 private:
     static void selectAlgorithm(U2OpStatus &os, QTreeWidgetItem *algorithm);
     static void selectSample(U2OpStatus &os, QTreeWidgetItem *sample);

@@ -208,6 +208,7 @@ void BreakpointManagerView::initBreakpointsList() {
     Q_ASSERT(NULL == breakpointsList);
 
     breakpointsList = new QTreeWidget(this);
+    breakpointsList->setObjectName("breakpoints list");
     QStringList headerLabels = QStringList() << tr(VIEW_BREAKPOINT_STATE_COLUMN_NAME)
         << tr(VIEW_ELEMENT_NAME_COLUMN_TITLE) << tr(VIEW_LABELS_COLUMN_TITLE)
         << tr(VIEW_BREAKPOINT_CONDITION_COLUMN_NAME) << tr(VIEW_BREAKPOINT_HIT_COUNT_COLUMN_NAME);

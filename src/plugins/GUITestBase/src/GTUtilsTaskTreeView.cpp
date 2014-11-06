@@ -191,7 +191,7 @@ QPoint GTUtilsTaskTreeView::getTreeViewItemPosition( U2OpStatus &os, const QStri
 bool GTUtilsTaskTreeView::checkTask(U2OpStatus &os, const QString &itemName){
     openView(os);
     QTreeWidgetItem* item = getTreeWidgetItem(os, itemName);
-    return !item == NULL;
+    return item != NULL;
 }
 
 int GTUtilsTaskTreeView::countTasks(U2OpStatus &os, const QString &itemName){

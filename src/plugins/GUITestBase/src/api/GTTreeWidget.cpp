@@ -127,6 +127,7 @@ QPoint GTTreeWidget::getItemCenter(U2OpStatus &os, QTreeWidgetItem* item) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getItems"
 QList<QTreeWidgetItem*> GTTreeWidget::getItems(QTreeWidgetItem* root) {
 
     QList<QTreeWidgetItem*> treeItems;
@@ -138,6 +139,26 @@ QList<QTreeWidgetItem*> GTTreeWidget::getItems(QTreeWidgetItem* root) {
 
     return treeItems;
 }
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getItems"
+QList<QTreeWidgetItem *> GTTreeWidget::getItems(U2OpStatus &os, QTreeWidget *treeWidget) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(NULL != treeWidget, "Tree widget is NULL", QList<QTreeWidgetItem *>());
+    return getItems(treeWidget->invisibleRootItem());
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getItemNames"
+QStringList GTTreeWidget::getItemNames(U2OpStatus &os, QTreeWidget *treeWidget) {
+    QStringList itemNames;
+    QList<QTreeWidgetItem *> items = getItems(os, treeWidget);
+    foreach (QTreeWidgetItem *item, items) {
+        itemNames << item->text(0);
+    }
+    return itemNames;
+}
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "findItem"
 QTreeWidgetItem* GTTreeWidget::findItem(U2OpStatus &os, QTreeWidget *tree, const QString& text, QTreeWidgetItem *parent, int column, Qt::MatchFlags flags) {

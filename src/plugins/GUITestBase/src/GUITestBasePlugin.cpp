@@ -320,6 +320,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2796);
     REGISTER_TEST(GUITest_regression_scenarios::test_2808);
     REGISTER_TEST(GUITest_regression_scenarios::test_2809);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2811);
     REGISTER_TEST(GUITest_regression_scenarios::test_2829);
     REGISTER_TEST(GUITest_regression_scenarios::test_2853);
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2866);
@@ -556,6 +557,11 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0002);
+    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0007);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/toggle view/

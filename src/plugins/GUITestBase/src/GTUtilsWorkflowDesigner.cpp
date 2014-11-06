@@ -21,47 +21,50 @@
 
 #include <QtCore/qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTreeWidget>
-#include <QtGui/QToolButton>
+#include <QtGui/QApplication>
+#include <QtGui/QDialogButtonBox>
 #include <QtGui/QGraphicsView>
 #include <QtGui/QListWidget>
-#include <QtGui/QTableView>
 #include <QtGui/QSpinBox>
-#include <QtGui/QApplication>
+#include <QtGui/QTableView>
+#include <QtGui/QToolButton>
+#include <QtGui/QTreeWidget>
 #else
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QToolButton>
+#include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QListWidget>
-#include <QtWidgets/QTableView>
 #include <QtWidgets/QSpinBox>
+#include <QtWidgets/QTableView>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QTreeWidget>
 #endif
-
-#include "GTUtilsWorkflowDesigner.h"
-#include "api/GTWidget.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTTreeWidget.h"
-#include "GTUtilsMdi.h"
-#include "api/GTTabWidget.h"
-#include "api/GTToolbar.h"
-#include "api/GTGraphicsItem.h"
-#include "api/GTFileDialog.h"
-#include "api/GTTableView.h"
-#include "api/GTSpinBox.h"
-#include "api/GTDoubleSpinBox.h"
-#include "api/GTLineEdit.h"
-#include "api/GTComboBox.h"
-#include "api/GTMenu.h"
-#include "runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h"
-#include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
-
-#include <U2View/MSAEditor.h>
 
 #include <U2Core/AppContext.h>
 
+#include <U2View/MSAEditor.h>
+
 #include "../../workflow_designer/src/WorkflowViewItems.h"
+#include "GTUtilsMdi.h"
+#include "GTUtilsWorkflowDesigner.h"
+#include "api/GTCheckBox.h"
+#include "api/GTComboBox.h"
+#include "api/GTDoubleSpinBox.h"
+#include "api/GTFileDialog.h"
+#include "api/GTGraphicsItem.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTLineEdit.h"
+#include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
+#include "api/GTSpinBox.h"
+#include "api/GTTabWidget.h"
+#include "api/GTTableView.h"
+#include "api/GTToolbar.h"
+#include "api/GTTreeWidget.h"
+#include "api/GTWidget.h"
+#include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/DatasetNameEditDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 
 namespace U2 {
 #define GT_CLASS_NAME "GTUtilsWorkflowDesigner"
@@ -363,7 +366,54 @@ QRect GTUtilsWorkflowDesigner::getItemRect(U2OpStatus &os,QString itemName){
             }
         }
     }
-   return QRect();
+    return QRect();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "toggleDebugMode"
+void GTUtilsWorkflowDesigner::toggleDebugMode(U2OpStatus &os, bool enable) {
+    class DebugModeToggleScenario : public CustomScenario {
+    public:
+        DebugModeToggleScenario(bool enable) :
+            enable(enable)
+        {
+        }
+
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            GT_CHECK(dialog, "activeModalWidget is NULL");
+
+            GTTreeWidget::click(os, GTTreeWidget::findItem(os, GTWidget::findExactWidget<QTreeWidget *>(os, "tree"), "  Workflow Designer"));
+            GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "debuggerBox"), enable);
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+
+    private:
+        bool enable;
+    };
+
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new DebugModeToggleScenario(enable)));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_SETTINGS), QStringList() << "action__settings");
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "toggleBreakpointManager"
+void GTUtilsWorkflowDesigner::toggleBreakpointManager(U2OpStatus &os) {
+    GTWidget::click(os, GTToolbar::getWidgetForActionTooltip(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Show or hide breakpoint manager"));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setBreakpoint"
+void GTUtilsWorkflowDesigner::setBreakpoint(U2OpStatus &os, const QString &itemName) {
+    click(os, itemName);
+    GTWidget::click(os, GTToolbar::getWidgetForActionTooltip(os, GTToolbar::getToolbar(os, MWTOOLBAR_ACTIVEMDI), "Break at element"));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getBreakpointList"
+QStringList GTUtilsWorkflowDesigner::getBreakpointList(U2OpStatus &os) {
+    return GTTreeWidget::getItemNames(os, GTWidget::findExactWidget<QTreeWidget *>(os, "breakpoints list"));
 }
 #undef GT_METHOD_NAME
 

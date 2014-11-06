@@ -33,6 +33,7 @@ public:
         itemStyle(_itemStyle),r(-1),g(-1),b(-1){}
     AppSettingsDialogFiller(U2OpStatus &_os, int _r,int _g, int _b):Filler(_os,"AppSettingsDialog"),
         itemStyle(none),r(_r),g(_g),b(_b){}
+    AppSettingsDialogFiller(U2OpStatus &os, CustomScenario *customScenario);
     void run();
 private:
     style itemStyle;

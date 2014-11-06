@@ -148,7 +148,7 @@ void UserApplicationsSettingsPageWidget::setState(AppSettingsGUIPageState* s) {
     resetSettingsBox->setChecked(state->resetSettings);
 }
 
-AppSettingsGUIPageState* UserApplicationsSettingsPageWidget::getState(QString& err) const {
+AppSettingsGUIPageState* UserApplicationsSettingsPageWidget::getState(QString& /*err*/) const {
     UserApplicationsSettingsPageState* state = new UserApplicationsSettingsPageState();
     state->translFile = langCombo->itemData(langCombo->currentIndex()).toString();
     state->openLastProjectFlag = autoOpenProjectBox->isChecked();

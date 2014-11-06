@@ -5034,6 +5034,23 @@ GUI_TEST_CLASS_DEFINITION( test_2809 ){
     CHECK_SET_ERR( !scroll->isVisible(), "Scroll bar is visible!");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2811) {
+//    1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::toggleDebugMode(os);
+    GTUtilsWorkflowDesigner::toggleBreakpointManager(os);
+
+//    2. Open any workflow, create a breakpoint for any element.
+    GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+    GTUtilsWorkflowDesigner::setBreakpoint(os, "Align with MUSCLE");
+
+//    3. Open another workflow.
+//    Expected state: breakpoints list is cleared.
+    GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+    QStringList breakpointList = GTUtilsWorkflowDesigner::getBreakpointList(os);
+    CHECK_SET_ERR(breakpointList.isEmpty(), "There are unexpected breakpoints");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2829) {
     //1) Open files "data/samples/Genbank/murine.gb" and "data/samples/Genbank/sars.gb" in separated views
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
@@ -5147,7 +5164,7 @@ GUI_TEST_CLASS_DEFINITION(test_2894){
     GTGlobals::sleep();
 //    3. Run "Phylip Neighbor Joining" with default parameters.
 //    Expected state: tree view has been appeared.
-    QWidget* treeView = GTWidget::findWidget(os, "treeView");
+    GTWidget::findWidget(os, "treeView");
     QWidget* qt_toolbar_ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button",
                                                           GTWidget::findWidget(os, "100_sequences [m] 100_sequences"), GTGlobals::FindOptions(false));
 //    4. Press refresh tree button on the tree's toolbar.

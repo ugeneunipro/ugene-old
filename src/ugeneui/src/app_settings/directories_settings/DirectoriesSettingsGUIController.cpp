@@ -84,7 +84,7 @@ AppSettingsGUIPageWidget* DirectoriesSettingsPageController::createWidget(AppSet
 
 const QString DirectoriesSettingsPageController::helpPageId = QString("444");
 
-DirectoriesSettingsPageWidget::DirectoriesSettingsPageWidget(DirectoriesSettingsPageController* ctrl) {
+DirectoriesSettingsPageWidget::DirectoriesSettingsPageWidget(DirectoriesSettingsPageController* /*ctrl*/) {
     setupUi(this);
     connect(browseDownloadDirButton, SIGNAL(clicked()), SLOT(sl_browseDownloadsDirButtonClicked()));
     connect(browseTmpDirButton,SIGNAL(clicked()),SLOT(sl_browseTmpDirButtonClicked()));
