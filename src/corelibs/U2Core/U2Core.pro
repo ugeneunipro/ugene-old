@@ -252,7 +252,6 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/datatype/DNATranslation.cpp \
            src/datatype/DNATranslationImpl.cpp \
            src/datatype/FeatureColors.cpp \
-           src/datatype/Gene.cpp \
            src/datatype/MAlignment.cpp \
            src/datatype/MAlignmentInfo.cpp \
            src/datatype/Matrix44.cpp \
