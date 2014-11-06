@@ -318,6 +318,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2778);
     REGISTER_TEST(GUITest_regression_scenarios::test_2784);
     REGISTER_TEST(GUITest_regression_scenarios::test_2796);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2801);
     REGISTER_TEST(GUITest_regression_scenarios::test_2808);
     REGISTER_TEST(GUITest_regression_scenarios::test_2809);
     REGISTER_TEST(GUITest_regression_scenarios::test_2811);
@@ -327,6 +328,9 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2891);
     REGISTER_TEST(GUITest_regression_scenarios::test_2891_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2894);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2884);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2887);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2891, "https://local.ugene.unipro.ru/tracker/browse/UGENE-3686");
     REGISTER_TEST(GUITest_regression_scenarios::test_2897);
     REGISTER_TEST(GUITest_regression_scenarios::test_2900);
     REGISTER_TEST(GUITest_regression_scenarios::test_2903);
@@ -349,7 +353,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2998);
 
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3014, "https://local.ugene.unipro.ru/tracker/browse/UGENE-3014");
-    REGISTER_TEST(GUITest_regression_scenarios::test_3017);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3017, "https://local.ugene.unipro.ru/tracker/browse/UGENE-3632");
+    REGISTER_TEST(GUITest_regression_scenarios::test_3031);
     REGISTER_TEST(GUITest_regression_scenarios::test_3034);
     REGISTER_TEST(GUITest_regression_scenarios::test_3052);
     REGISTER_TEST(GUITest_regression_scenarios::test_3052_1);
@@ -557,11 +562,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0002);
-    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0003);
-    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0004);
-    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0005);
-    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0006);
-    REGISTER_TEST(GUITest_common_scenarios_project_remote_request::test_0007);
 
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/toggle view/

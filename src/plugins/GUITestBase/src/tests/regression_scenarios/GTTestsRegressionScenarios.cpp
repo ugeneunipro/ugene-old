@@ -4927,6 +4927,9 @@ GUI_TEST_CLASS_DEFINITION(test_2796) {
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Analyze" << "Find pattern [Smith-Waterman]", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
+GUI_TEST_CLASS_DEFINITION(test_2801) {
+}
+
 
 GUI_TEST_CLASS_DEFINITION( test_2808 ){
 //    1. Open WD.
@@ -5110,6 +5113,31 @@ GUI_TEST_CLASS_DEFINITION(test_2866) {
 
     GTUtilsLog::check(os, l);
 }
+
+GUI_TEST_CLASS_DEFINITION(test_2884) {
+    //1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    //2. Place Cuffdiff element on the scene
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Test for Diff. Expression with Cuffdiff");
+    CHECK_OP(os, );
+    
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Test for Diff. Expression with Cuffdiff"));
+    GTMouseDriver::click(os);
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::getParameter(os, "Multi read correct") == "False", "'Mate inner distance', Parameter value doesn't amtch");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2887) {
+    //1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    //2. Place Tophat element on the scene
+    GTUtilsWorkflowDesigner::addAlgorithm( os, "Find Splice Junctions with TopHat");
+    CHECK_OP(os, );
+    //3. check "Mate inner distance" parameter is 50
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Find Splice Junctions with TopHat"));
+    GTMouseDriver::click(os);
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::getParameter(os, "Mate inner distance") == "50", "'Mate inner distance', Parameter value doesn't amtch");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2891) {
     // 1. Open file "data/samples/workflow_samples/NGS/cistrome/chip_seq.uwl"
     // 2. Set input file for the "Read Tags" element to "test/_common_data/NIAID_pipelines/Chip-seq/input_data/chr2.bed"
@@ -5706,6 +5734,21 @@ GUI_TEST_CLASS_DEFINITION(test_3017) {
     GTGlobals::sleep();
     QString clipboardText = GTClipboard::text(os);
     CHECK_SET_ERR("T" == clipboardText, "Alignment is not locked");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3031){
+    //    Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    //    Open "Statistics" options panel tab.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_SEQ_STATISTICS_WIDGET"));
+    //    Set "Montatna_montana" reference sequence.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-4, 4));
+    GTWidget::click(os, GTWidget::findWidget(os, "addSeq"));
+    //    Delete "Montana_montana" sequence
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-4, 4));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    //    5. Right click on any sequence name
+    //    Expected state: action "Set this sequence as reference" is visible, "Unset reference sequence" is invisible
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3034) {
