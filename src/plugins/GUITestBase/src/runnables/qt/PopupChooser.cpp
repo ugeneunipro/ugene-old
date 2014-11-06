@@ -36,18 +36,36 @@
 
 namespace U2 {
 
-void PopupChooser::run()
-{
+#define GT_CLASS_NAME "PopupChooser"
+
+#define GT_METHOD_NAME "run"
+void PopupChooser::run() {
     GTGlobals::sleep(1000);
     GTMouseDriver::release(os);
     QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
-    GTMenu::clickMenuItemByName(os, activePopupMenu, namePath, useMethod);
+    GT_CHECK(NULL != activePopupMenu, "Active popup menu is NULL");
+
+    if (!namePath.isEmpty()) {
+        GTMenu::clickMenuItemByName(os, activePopupMenu, namePath, useMethod);
+    } else {
+        clickEsc();
+    }
+
     if (os.hasError()) {
-        U2OpStatus2Log opStatus;
-        GTKeyboardDriver::keyClick(opStatus, GTKeyboardDriver::key["esc"]);
-        SAFE_POINT_OP(opStatus, );
+        clickEsc();
     }
 }
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clickEsc"
+void PopupChooser::clickEsc() {
+    U2OpStatus2Log opStatus;
+    GTKeyboardDriver::keyClick(opStatus, GTKeyboardDriver::key["esc"]);
+    SAFE_POINT_OP(opStatus, );
+}
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
 
 void PopupChooserbyText::run()
 {

@@ -34,6 +34,9 @@ namespace U2 {
     protected:
         QStringList namePath;
         GTGlobals::UseMethod useMethod;
+
+    private:
+        static void clickEsc();
     };
 
     class PopupChooserbyText : public Filler {
