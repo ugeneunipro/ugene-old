@@ -35,13 +35,13 @@ class DNATranslation;
 class U2ALGORITHM_EXPORT ORFFindResult {
 public:
     ORFFindResult () : region(0, 0), frame(0), isJoined(false){}
-    ORFFindResult (const U2Region& _r, int frame) 
+    ORFFindResult (const U2Region& _r, int frame)
         : region(_r), frame(frame), isJoined(false){}
-    ORFFindResult (const U2Region& _r, const U2Region& _r_joined, int frame) 
+    ORFFindResult (const U2Region& _r, const U2Region& _r_joined, int frame)
         :region(_r), joinedRegion(_r_joined), frame(frame), isJoined(true){}
-    
+
     void clear() {region.startPos = 0; region.length = 0; frame = 0;}
-    
+
     bool isEmpty() const {return region.startPos == 0 && region.length == 0;}
 
     bool operator ==(const ORFFindResult& o) const {
@@ -52,13 +52,15 @@ public:
         AnnotationData data;
         data.name = name;
         data.location->regions << region;
+        int regLen = region.length;
         if(isJoined){
             data.location->regions << joinedRegion;
+            regLen += joinedRegion.length;
         }
         data.setStrand(frame < 0 ? U2Strand::Complementary : U2Strand::Direct);
-        data.qualifiers.append(U2Qualifier("dna_len", QString::number(region.length)));
-        if (region.length >= 6) { // 3 bp - end codon
-            data.qualifiers.append(U2Qualifier("protein_len", QString::number(region.length/3)));
+        data.qualifiers.append(U2Qualifier("dna_len", QString::number(regLen)));
+        if (regLen >= 6) { // 3 bp - end codon
+            data.qualifiers.append(U2Qualifier("protein_len", QString::number(regLen/3)));
         }
         return data;
     }
@@ -103,10 +105,10 @@ public:
         bool includeStopCodon = false,
         bool circularSearch = false
         ) : strand(strand), complementTT(complementTT), proteinTT(proteinTT),
-        searchRegion(searchRegion), minLen(minLen), mustFit(mustFit), 
-        mustInit(mustInit), allowAltStart(allowAltStart), allowOverlap(allowOverlap), 
+        searchRegion(searchRegion), minLen(minLen), mustFit(mustFit),
+        mustInit(mustInit), allowAltStart(allowAltStart), allowOverlap(allowOverlap),
         includeStopCodon(includeStopCodon), circularSearch(circularSearch) {}
-    
+
     ORFAlgorithmStrand          strand;
     DNATranslation*             complementTT;
     DNATranslation*             proteinTT;
@@ -124,7 +126,7 @@ public:
     // strand string ids
     static const QString        STRAND_DIRECT;
     static const QString        STRAND_COMPL;
-    static const QString        STRAND_BOTH; 
+    static const QString        STRAND_BOTH;
     static QString              getStrandStringId(ORFAlgorithmStrand strand);
     static ORFAlgorithmStrand   getStrandByStringId(const QString& id);
 };
@@ -135,8 +137,8 @@ public:
     static void find(
         ORFFindResultsListener* rl,
         const ORFAlgorithmSettings& config,
-        U2EntityRef& entityRef, 
-        int& stopFlag, 
+        U2EntityRef& entityRef,
+        int& stopFlag,
         int& percentsCompleted);
 };
 

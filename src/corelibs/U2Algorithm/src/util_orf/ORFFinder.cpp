@@ -53,7 +53,7 @@ void ORFFindAlgorithm::find(
                             ORFFindResultsListener* rl,
                             const ORFAlgorithmSettings& cfg,
                             U2EntityRef& entityRef,
-                            int& stopFlag, 
+                            int& stopFlag,
                             int& percentsCompleted)
 {
     assert(cfg.maxResult2Search >= 0);
@@ -96,7 +96,7 @@ void ORFFindAlgorithm::find(
                 SAFE_POINT_OP(os, );
                 seqPointer = 0;
             }
-            int frame = i%3;
+            int frame = i % 3;
             QList<int>* initiators = start + frame;
             if (!initiators->isEmpty() && aTT->isStopCodon(sequence.data() + seqPointer)) {
                 foreach(int initiator, *initiators) {
@@ -141,20 +141,23 @@ void ORFFindAlgorithm::find(
             }
             seqPointer = 0;
             for(qint64 i = cfg.searchRegion.startPos; i < minInitiator && !stopFlag && initiatorsRemain && !os.isCoR(); i++,++seqPointer) {
-                if( (seqPointer %BLOCK_READ_FROM_DB) == 0){ // query to db
+                if( (seqPointer % BLOCK_READ_FROM_DB) == 0){ // query to db
                     sequence.clear();
                     qint64 regLen = qMin((qint64)minInitiator - i, (qint64)BLOCK_READ_FROM_DB + 3);
                     sequence.append(dnaSeq.getSequenceData(U2Region(i, regLen), os));
                     SAFE_POINT_OP(os, );
                     seqPointer = 0;
                 }
-                int frame =(regLen+i)%3;
-                QList<int>* initiators = start + frame;
+                int frame = i % 3;
+                // NOTE: frames of the start and the end of circular region are not equal!
+                int startFrame = (dnaSeq.getSequenceLength() - (3- frame) % 3) % 3;
+                QList<int>* initiators = start + startFrame;
                 if (!initiators->isEmpty() && aTT->isStopCodon(sequence.data() + seqPointer)) {
                     foreach(int initiator, *initiators) {
                         int len = regLen + i - initiator;
-                        if (len>=minLen && !os.isCoR()){                            
-                            rl->onResult(ORFFindResult(U2Region(initiator, end-initiator), U2Region(cfg.searchRegion.startPos, i), frame),os);
+                        if (len>=minLen && !os.isCoR()){
+                            rl->onResult(ORFFindResult(U2Region(initiator, end - initiator),
+                                                       U2Region(cfg.searchRegion.startPos, i), frame),os);
                         }
                     }
                     initiators->clear();
@@ -199,7 +202,7 @@ void ORFFindAlgorithm::find(
                 TextUtils::reverse(sequence.data(),sequence.size());
                 seqPointer = 0;
             }
-            int frame = i%3;
+            int frame = (i + 1) % 3;
             QList<int>* initiators = start + frame;
             if (!initiators->isEmpty() && aTT->isStopCodon(sequence.data()+seqPointer)) {
                 foreach(int initiator, *initiators) {
@@ -253,16 +256,19 @@ void ORFFindAlgorithm::find(
                     SAFE_POINT_OP(os, );
                     sequence.append(tmp,tmp.size());
                     cfg.complementTT->translate(tmp,tmp.size(),sequence.data(),sequence.size());
-                    TextUtils::reverse(sequence.data(),sequence.size());
+                    TextUtils::reverse(sequence.data(), sequence.size());
                     seqPointer = 0;
                 }
-                int frame =(regLen+i)%3;
-                QList<int>* initiators = start + frame;
+                int frame = (i + 1) % 3;
+                // NOTE: frames of the start and the end of circular region are not equal!
+                int startFrame =  (3 - ((dnaSeq.getSequenceLength() - frame) % 3)) % 3;
+                QList<int>* initiators = start + startFrame;
                 if (!initiators->isEmpty() && aTT->isStopCodon(sequence.data()+seqPointer)) {
                     foreach(int initiator, *initiators) {
                         int len = regLen + initiator - i ;
-                        if (len>=minLen && !os.isCoR()){                            
-                            rl->onResult(ORFFindResult(U2Region(i+1, cfg.searchRegion.endPos()-(i+1)), U2Region(end, initiator+1), frame - 3),os);
+                        if (len>=minLen && !os.isCoR()){
+                            rl->onResult(ORFFindResult(U2Region(i + 1, cfg.searchRegion.endPos()-(i + 1)),
+                                                       U2Region(end, initiator+1), frame - 3),os);
                         }
                     }
                     initiators->clear();

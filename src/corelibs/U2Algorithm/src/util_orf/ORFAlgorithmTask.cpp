@@ -27,7 +27,7 @@
 
 namespace U2 {
 
-ORFFindTask::ORFFindTask(const ORFAlgorithmSettings& s,const U2EntityRef& _entityRef) 
+ORFFindTask::ORFFindTask(const ORFAlgorithmSettings& s,const U2EntityRef& _entityRef)
 : Task (tr("ORF find"), TaskFlag_None),config(s),entityRef(_entityRef)
 {
     GCOUNTER( cvar, tvar, "ORFFindTask" );

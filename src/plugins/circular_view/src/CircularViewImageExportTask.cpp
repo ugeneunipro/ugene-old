@@ -38,7 +38,7 @@
 #endif
 #include <QtXml/QDomDocument>
 #include <QtSvg/QSvgGenerator>
-#include <iostream>
+
 #include <U2Core/U2SafePoints.h>
 
 namespace U2 {
