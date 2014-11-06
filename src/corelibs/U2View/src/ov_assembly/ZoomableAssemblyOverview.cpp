@@ -58,6 +58,8 @@ const double ZoomableAssemblyOverview::ZOOM_MULT = 2.;
 ZoomableAssemblyOverview::ZoomableAssemblyOverview(AssemblyBrowserUi * ui_, bool zoomable_): QWidget(ui_), ui(ui_), browser(ui->getWindow()), 
     model(ui_->getModel()), zoomable(zoomable_), zoomFactor(1.), redrawSelection(true), redrawBackground(true), previousCoverageLength(0), selectionScribbling(false), visibleRangeScribbling(false),
 scaleType(AssemblyBrowserSettings::getOverviewScaleType()) {
+    setObjectName("Zoomable assembly overview");
+
     U2OpStatusImpl os;
     visibleRange.startPos = 0;
     visibleRange.length = model->getModelLength(os);
@@ -74,11 +76,14 @@ void ZoomableAssemblyOverview::setupActions() {
     zoomOutAction = new QAction(tr("Zoom out"), this);
     zoomIn100xActon = new QAction(tr("Zoom in 100x"), this);
     restoreGlobalOverviewAction = new QAction(tr("Restore global overview"), this);
+    QAction *exportCoverageAction = new QAction(tr("Export coverage..."), this);
+    exportCoverageAction->setObjectName("Export coverage");
 
     connect(zoomInAction, SIGNAL(triggered()), SLOT(sl_zoomInContextMenu()));
     connect(zoomOutAction, SIGNAL(triggered()), SLOT(sl_zoomOutContextMenu()));
     connect(zoomIn100xActon, SIGNAL(triggered()), SLOT(sl_zoom100xContextMenu()));
     connect(restoreGlobalOverviewAction, SIGNAL(triggered()), SLOT(sl_restoreGlobalOverview()));
+    connect(exportCoverageAction, SIGNAL(triggered()), browser, SLOT(sl_exportCoverage()));
 
     contextMenu = new QMenu(this);
 
@@ -86,6 +91,7 @@ void ZoomableAssemblyOverview::setupActions() {
     contextMenu->addAction(zoomOutAction);
     contextMenu->addAction(zoomIn100xActon);
     contextMenu->addAction(restoreGlobalOverviewAction);
+    contextMenu->addAction(exportCoverageAction);
     updateActions();
 }
 

@@ -155,6 +155,7 @@ private slots:
     void sl_saveScreenshot();
     void sl_showAssemblyInfo();
     void sl_exportToSam();
+    void sl_exportCoverage();
     
 private:
     void initFont();

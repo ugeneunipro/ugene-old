@@ -160,6 +160,9 @@ public:
     void set(const DelegateTags &other);
 
     static QString getString(const DelegateTags *tags, const QString &name);
+    static QStringList getStringList(const DelegateTags *tags, const QString &name);
+
+    const DelegateTags &operator = (const DelegateTags &other);
 private:
     QVariantMap tags;
 };

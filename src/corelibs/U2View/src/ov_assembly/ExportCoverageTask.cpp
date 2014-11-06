@@ -25,6 +25,9 @@
 #include <U2Core/L10n.h>
 #include <U2Core/U2Assembly.h>
 #include <U2Core/U2AssemblyDbi.h>
+#include <U2Core/U2AttributeDbi.h>
+#include <U2Core/U2AttributeUtils.h>
+#include <U2Core/U2CoreAttributes.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -32,13 +35,23 @@
 
 namespace U2 {
 
-ExportCoverageTask::ExportCoverageTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings) :
-Task(tr("Export coverage per base for %1"), TaskFlags_NR_FOSE_COSC),
+const QString ExportCoverageSettings::HISTOGRAM = QObject::tr("Histogram");
+const QString ExportCoverageSettings::PER_BASE = QObject::tr("Per base");
+const QString ExportCoverageSettings::BEDGRAPH = QObject::tr("Bedgraph");
+const QString ExportCoverageSettings::HISTOGRAM_EXTENSION = ".histogram";
+const QString ExportCoverageSettings::PER_BASE_EXTENSION = ".txt";
+const QString ExportCoverageSettings::BEDGRAPH_EXTENSION = ".bedgraph";
+const QString ExportCoverageSettings::COMPRESSED_EXTENSION = ".gz";
+
+const QByteArray ExportCoverageTask::SEPARATOR = "\t";
+
+ExportCoverageTask::ExportCoverageTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings, TaskFlags flags) :
+    Task(tr("Export coverage per base for %1"), flags),
     dbiRef(dbiRef),
     assemblyId(assemblyId),
     settings(settings),
-    alreadyProcessed(0),
-    calculateTask(NULL)
+    calculateTask(NULL),
+    alreadyProcessed(0)
 {
     SAFE_POINT_EXT(dbiRef.isValid(), setError(tr("Invalid database reference")), );
     SAFE_POINT_EXT(!assemblyId.isEmpty(), setError(tr("Invalid assembly ID")), );
@@ -51,7 +64,8 @@ Task(tr("Export coverage per base for %1"), TaskFlags_NR_FOSE_COSC),
 
     const U2Assembly assembly = assemblyDbi->getAssemblyObject(assemblyId, stateInfo);
     CHECK_OP(stateInfo, );
-    setTaskName(getTaskName().arg(assembly.visualName));
+    assemblyName = assembly.visualName;
+    setTaskName(getTaskName().arg(assemblyName));
 }
 
 void ExportCoverageTask::prepare() {
@@ -71,8 +85,6 @@ void ExportCoverageTask::prepare() {
     }
     CHECK_OP(stateInfo, );
 
-    writeComments();
-
     calculateTask = new CalculateCoveragePerBaseTask(dbiRef, assemblyId);
     connect(calculateTask, SIGNAL(si_regionIsProcessed(qint64)), SLOT(sl_regionIsProcessed(qint64)), Qt::DirectConnection);
     addSubTask(calculateTask);
@@ -91,10 +103,7 @@ const QString &ExportCoverageTask::getUrl() const {
 
 void ExportCoverageTask::sl_regionIsProcessed(qint64 startPos) {
     if (alreadyProcessed == startPos) {
-        QVector<CoveragePerBaseInfo> *regionCoverage = calculateTask->takeResult(startPos);
-        exportToTabDelimitedPileup(regionCoverage);
-        delete regionCoverage;
-
+        processRegion(startPos);
         CHECK_OP(stateInfo, );
 
         if (calculateTask->isResultReady(alreadyProcessed)) {
@@ -103,35 +112,206 @@ void ExportCoverageTask::sl_regionIsProcessed(qint64 startPos) {
     }
 }
 
-void ExportCoverageTask::writeComments() {
-    QByteArray comments = "#position";
+void ExportCoverageTask::write(const QByteArray &dataToWrite) {
+    qint64 bytesWritten = ioAdapter->writeBlock(dataToWrite);
+    CHECK_EXT(bytesWritten == dataToWrite.length(), setError(L10N::errorWritingFile(ioAdapter->getURL())), );
+}
+
+ExportCoverageHistogramTask::ExportCoverageHistogramTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings) :
+    ExportCoverageTask(dbiRef, assemblyId, settings, TaskFlags_FOSE_COSC)
+{
+}
+
+void ExportCoverageHistogramTask::run() {
+    DbiConnection con(dbiRef, stateInfo);
+    CHECK_OP(stateInfo, );
+    U2AttributeDbi *attributeDbi = con.dbi->getAttributeDbi();
+    SAFE_POINT_EXT(NULL != attributeDbi, setError(tr("Attribute DBI is NULL")), );
+
+    const U2IntegerAttribute lengthAttribute = U2AttributeUtils::findIntegerAttribute(attributeDbi, assemblyId, U2BaseAttributeName::reference_length, stateInfo);
+    CHECK_OP(stateInfo, );
+    CHECK_EXT(lengthAttribute.hasValidId(), setError(tr("Can't get the assembly length: attribute is missing")), );
+
+    const qint64 assemblyLength = lengthAttribute.value;
+    SAFE_POINT_EXT(0 < assemblyLength, setError(tr("Assembly has zero length")), );
+
+    for (int coverage = settings.threshold; coverage < histogramData.size(); coverage++) {
+        if (0 != histogramData.value(coverage, 0)) {
+            write(toByteArray(coverage, assemblyLength));
+            CHECK_OP(stateInfo, );
+        }
+    }
+}
+
+void ExportCoverageHistogramTask::processRegion(qint64 startPos) {
+    QVector<CoveragePerBaseInfo> *regionCoverage = calculateTask->takeResult(startPos);
+    foreach (const CoveragePerBaseInfo &info, *regionCoverage) {
+        histogramData[info.coverage] = histogramData[info.coverage]++;
+    }
+    delete regionCoverage;
+}
+
+QByteArray ExportCoverageHistogramTask::toByteArray(int coverage, qint64 assemblyLength) const {
+    return assemblyName.toLocal8Bit() +
+            SEPARATOR + QByteArray::number(coverage) +
+            SEPARATOR + QByteArray::number(histogramData.value(coverage, 0)) +
+            SEPARATOR + QByteArray::number(assemblyLength) +
+            SEPARATOR + QByteArray::number((double)histogramData.value(coverage, 0) / assemblyLength) + "\n";
+}
+
+ExportCoveragePerBaseTask::ExportCoveragePerBaseTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings) :
+    ExportCoverageTask(dbiRef, assemblyId, settings)
+{
+}
+
+void ExportCoveragePerBaseTask::prepare() {
+    ExportCoverageTask::prepare();
+    writeHeader();
+}
+
+void ExportCoveragePerBaseTask::processRegion(qint64 startPos) {
+    QVector<CoveragePerBaseInfo> *regionCoverage = calculateTask->takeResult(startPos);
+    writeResult(regionCoverage);
+    delete regionCoverage;
+}
+
+void ExportCoveragePerBaseTask::writeHeader() {
+    QByteArray comments = "#name" + SEPARATOR + "position";
 
     if (settings.exportCoverage) {
-        comments += QByteArray("\t") + "coverage";
+        comments += SEPARATOR + "coverage";
     }
 
     if (settings.exportBasesCount) {
-        comments += QByteArray("\t") + "A";
-        comments += QByteArray("\t") + "C";
-        comments += QByteArray("\t") + "G";
-        comments += QByteArray("\t") + "T";
+        comments += SEPARATOR + "A";
+        comments += SEPARATOR + "C";
+        comments += SEPARATOR + "G";
+        comments += SEPARATOR + "T";
     }
 
-    ioAdapter->writeBlock(comments + "\n");
+    write(comments + "\n");
 }
 
-void ExportCoverageTask::exportToTabDelimitedPileup(const QVector<CoveragePerBaseInfo> *data) {
+QByteArray ExportCoveragePerBaseTask::toByteArray(const CoveragePerBaseInfo &info, int pos) const {
+    QByteArray result = assemblyName.toLocal8Bit() + SEPARATOR + QByteArray::number(pos);
+
+    if (settings.exportCoverage) {
+        result += SEPARATOR + QByteArray::number(info.coverage);
+    }
+
+    if (settings.exportBasesCount) {
+        result += SEPARATOR + QByteArray::number(info.basesCount.value('A', 0)) +
+                SEPARATOR + QByteArray::number(info.basesCount.value('C', 0)) +
+                SEPARATOR + QByteArray::number(info.basesCount.value('G', 0)) +
+                SEPARATOR + QByteArray::number(info.basesCount.value('T', 0));
+    }
+
+    return result + "\n";
+}
+
+void ExportCoveragePerBaseTask::writeResult(const QVector<CoveragePerBaseInfo> *data) {
     CHECK(NULL != data, );
 
     foreach (const CoveragePerBaseInfo &info, *data) {
         alreadyProcessed++;
-        if (settings.threshold > info.coverage) {
+
+        const bool coverageSatisfy = settings.exportCoverage && (settings.threshold <= info.coverage);
+        const bool basesCountSatisfy = settings.exportBasesCount && (settings.threshold <= info.basesCount.value('A', 0) +
+                                                                     info.basesCount.value('C', 0) +
+                                                                     info.basesCount.value('G', 0) +
+                                                                     info.basesCount.value('T', 0));
+        if (!coverageSatisfy && !basesCountSatisfy) {
             continue;
         }
 
-        const QByteArray dataToWrite = info.toByteArray(alreadyProcessed, settings.exportCoverage, settings.exportBasesCount, "\t") + "\n";
-        qint64 bytesWritten = ioAdapter->writeBlock(dataToWrite);
-        CHECK_EXT(bytesWritten == dataToWrite.length(), setError(L10N::errorWritingFile(ioAdapter->getURL())), );
+        write(toByteArray(info, alreadyProcessed));
+        CHECK_OP(stateInfo, );
+    }
+}
+
+ExportCoverageBedgraphTask::ExportCoverageBedgraphTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings) :
+    ExportCoverageTask(dbiRef, assemblyId, settings),
+    currentCoverage(U2Region(), -1)
+{
+}
+
+void ExportCoverageBedgraphTask::prepare() {
+    ExportCoverageTask::prepare();
+    writeHeader();
+}
+
+QList<Task *> ExportCoverageBedgraphTask::onSubTaskFinished(Task *) {
+    CHECK_OP(stateInfo, QList<Task *>());
+    writeRegion();
+    return QList<Task *>();
+}
+
+void ExportCoverageBedgraphTask::processRegion(qint64 startPos) {
+    QVector<CoveragePerBaseInfo> *regionCoverage = calculateTask->takeResult(startPos);
+    foreach (const CoveragePerBaseInfo &info, *regionCoverage) {
+        if (currentCoverage.second == info.coverage) {
+            currentCoverage.first.length++;
+        } else {
+            writeRegion();
+            CHECK_OP(stateInfo, );
+            currentCoverage.first = U2Region(alreadyProcessed, 1);
+            currentCoverage.second = info.coverage;
+        }
+        alreadyProcessed++;
+    }
+
+    delete regionCoverage;
+}
+
+void ExportCoverageBedgraphTask::writeHeader() {
+    QByteArray comments = "#name" +
+            SEPARATOR + "start" +
+            SEPARATOR + "end" +
+            SEPARATOR + "coverage";
+    write(comments + "\n");
+}
+
+QByteArray ExportCoverageBedgraphTask::toByteArray() const {
+    QByteArray result = assemblyName.toLocal8Bit() +
+            SEPARATOR + QByteArray::number(currentCoverage.first.startPos) +
+            SEPARATOR + QByteArray::number(currentCoverage.first.endPos()) +
+            SEPARATOR + QByteArray::number(currentCoverage.second);
+    return result + "\n";
+}
+
+void ExportCoverageBedgraphTask::writeRegion() {
+    CHECK(!currentCoverage.first.isEmpty(), );
+
+    if (settings.threshold > currentCoverage.second) {
+        return;
+    }
+
+    write(toByteArray());
+}
+
+QString ExportCoverageSettings::getFormat(ExportCoverageSettings::Format format) {
+    switch (format) {
+    case Histogram:
+        return HISTOGRAM;
+    case PerBase:
+        return PER_BASE;
+    case Bedgraph:
+        return BEDGRAPH;
+    default:
+        return "";
+    }
+}
+
+QString ExportCoverageSettings::getFormatExtension(ExportCoverageSettings::Format format) {
+    switch (format) {
+    case Histogram:
+        return HISTOGRAM_EXTENSION;
+    case PerBase:
+        return PER_BASE_EXTENSION;
+    case Bedgraph:
+        return BEDGRAPH_EXTENSION;
+    default:
+        return "";
     }
 }
 

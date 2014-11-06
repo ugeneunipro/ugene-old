@@ -136,4 +136,14 @@ QString DelegateTags::getString(const DelegateTags *tags, const QString &name) {
     return tags->get(name).toString();
 }
 
+QStringList DelegateTags::getStringList(const DelegateTags *tags, const QString &name) {
+    CHECK(NULL != tags, QStringList());
+    return tags->get(name).toStringList();
+}
+
+const DelegateTags &DelegateTags::operator =(const DelegateTags &other) {
+    tags = other.tags;
+    return *this;
+}
+
 } // U2

@@ -34,23 +34,40 @@ class IOAdapter;
 
 class U2VIEW_EXPORT ExportCoverageSettings {
 public:
+    enum Format {
+        Histogram = 0,
+        PerBase = 1,
+        Bedgraph = 2
+    };
+
     ExportCoverageSettings() :
         compress(false),
         exportCoverage(true),
         exportBasesCount(true),
         threshold(0) {}
 
+    static QString getFormat(Format format);
+    static QString getFormatExtension(Format format);
+
     QString url;
     bool compress;
     bool exportCoverage;
     bool exportBasesCount;
     int threshold;
+
+    static const QString HISTOGRAM;
+    static const QString PER_BASE;
+    static const QString BEDGRAPH;
+    static const QString HISTOGRAM_EXTENSION;
+    static const QString PER_BASE_EXTENSION;
+    static const QString BEDGRAPH_EXTENSION;
+    static const QString COMPRESSED_EXTENSION;
 };
 
 class U2VIEW_EXPORT ExportCoverageTask : public Task {
     Q_OBJECT
 public:
-    ExportCoverageTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings);
+    ExportCoverageTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings, TaskFlags flags = TaskFlags_NR_FOSE_COSC);
 
     void prepare();
     ReportResult report();
@@ -60,18 +77,68 @@ public:
 private slots:
     void sl_regionIsProcessed(qint64 startPos);
 
-private:
-    void writeComments();
-    void exportToTabDelimitedPileup(const QVector<CoveragePerBaseInfo> *data);
+protected:
+    virtual void processRegion(qint64 startPos) = 0;
+    void write(const QByteArray &dataToWrite);
 
     const U2DbiRef dbiRef;
     const U2DataId assemblyId;
     const ExportCoverageSettings settings;
 
+    QString assemblyName;
+    CalculateCoveragePerBaseTask *calculateTask;
     QScopedPointer<IOAdapter> ioAdapter;
     qint64 alreadyProcessed;
 
-    CalculateCoveragePerBaseTask *calculateTask;
+    static const QByteArray SEPARATOR;
+};
+
+class U2VIEW_EXPORT ExportCoverageHistogramTask : public ExportCoverageTask {
+public:
+    ExportCoverageHistogramTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings);
+
+    void run();
+
+protected:
+    void processRegion(qint64 startPos);
+
+private:
+    QByteArray toByteArray(int coverage, qint64 assemblyLength) const;
+
+    QMap<int, qint64> histogramData;
+};
+
+class U2VIEW_EXPORT ExportCoveragePerBaseTask : public ExportCoverageTask {
+public:
+    ExportCoveragePerBaseTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings);
+
+    void prepare();
+
+protected:
+    void processRegion(qint64 startPos);
+
+private:
+    void writeHeader();
+    QByteArray toByteArray(const CoveragePerBaseInfo &info, int pos) const;         // pos - 1-based position
+    void writeResult(const QVector<CoveragePerBaseInfo> *data);
+};
+
+class U2VIEW_EXPORT ExportCoverageBedgraphTask : public ExportCoverageTask {
+public:
+    ExportCoverageBedgraphTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings);
+
+    void prepare();
+    QList<Task *> onSubTaskFinished(Task *subTask);
+
+protected:
+    void processRegion(qint64 startPos);
+
+private:
+    void writeHeader();
+    QByteArray toByteArray() const;         // startpos - 0-based position, endpos - next after real end
+    void writeRegion();
+
+    QPair<U2Region, int> currentCoverage;
 };
 
 }   // namespace U2

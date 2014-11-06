@@ -180,11 +180,26 @@ void GTUtilsAssemblyBrowser::goToPosition(U2OpStatus &os, qint64 position) {
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "callExportCoverageDialog"
-void GTUtilsAssemblyBrowser::callExportCoverageDialog(U2OpStatus &os) {
+void GTUtilsAssemblyBrowser::callExportCoverageDialog(U2OpStatus &os, Area area) {
     Q_UNUSED(os);
 
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export coverage"));
-    GTWidget::click(os, GTWidget::findWidget(os, "Consensus area"), Qt::RightButton);
+    switch (area) {
+    case Consensus:
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export coverage"));
+        GTWidget::click(os, GTWidget::findWidget(os, "Consensus area"), Qt::RightButton);
+        break;
+    case Overview:
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export coverage"));
+        GTWidget::click(os, GTWidget::findWidget(os, "Zoomable assembly overview"), Qt::RightButton);
+        break;
+    case Reads:
+        GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export" << "Export coverage"));
+        GTWidget::click(os, GTWidget::findWidget(os, "assembly_reads_area"), Qt::RightButton);
+        break;
+    default:
+        os.setError("Can't call the dialog on this area");
+        FAIL(false, );
+    }
 }
 #undef GT_METHOD_NAME
 

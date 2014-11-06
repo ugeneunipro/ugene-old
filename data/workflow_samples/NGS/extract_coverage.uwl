@@ -31,7 +31,11 @@ workflow "Extract coverage from assembly"{
             }
             extract-assembly-coverage.export-type {
                 alias:export-type;
-                description:"The export type, possible values: 'coverage', 'bases count'. It is a single string, types are separated with comma.";
+                description:"The export type, possible values: 'coverage', 'bases count'. It is a single string, types are separated with comma. This parameter is used for 'Per base' format only.";
+            }
+            extract-assembly-coverage.format {
+                alias:format;
+                description:"The export format, possible values: '0 - Histogram', '1 - Per base', '2 - Bedgraph'";
             }
             extract-assembly-coverage.threshold {
                 alias:threshold;
@@ -79,6 +83,8 @@ workflow "Extract coverage from assembly"{
                     group {
                         title:"Extract coverage parameters";
                         label-size:120;
+                        extract-assembly-coverage.format {
+                        }
                         extract-assembly-coverage.export-type {
                         }
                         extract-assembly-coverage.threshold {

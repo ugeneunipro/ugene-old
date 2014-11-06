@@ -1,7 +1,8 @@
 include (U2View.pri)
 
 # Input
-HEADERS += src/UndoRedoFramework.h \
+HEADERS += src/LicenseDialog.h \
+           src/UndoRedoFramework.h \
            src/WebWindow.h \
            src/ov_assembly/AssemblyAnnotationsArea.h \
            src/ov_assembly/AssemblyBrowser.h \
@@ -20,31 +21,44 @@ HEADERS += src/UndoRedoFramework.h \
            src/ov_assembly/AssemblyReadsArea.h \
            src/ov_assembly/AssemblyReadsAreaHint.h \
            src/ov_assembly/AssemblyReferenceArea.h \
-           src/ov_assembly/AssemblySettingsWidget.h \
            src/ov_assembly/AssemblyRuler.h \
+           src/ov_assembly/AssemblySettingsWidget.h \
            src/ov_assembly/AssemblyVariantHint.h \
            src/ov_assembly/AssemblyVariantRow.h \
            src/ov_assembly/CalculateCoveragePerBaseTask.h \
            src/ov_assembly/CoverageInfo.h \
            src/ov_assembly/CoveredRegionsManager.h \
-           src/ov_assembly/ExportReadsDialog.h \
            src/ov_assembly/ExportConsensusDialog.h \
            src/ov_assembly/ExportConsensusTask.h \
            src/ov_assembly/ExportConsensusVariationsDialog.h \
            src/ov_assembly/ExportConsensusVariationsTask.h \
            src/ov_assembly/ExportCoverageDialog.h \
            src/ov_assembly/ExportCoverageTask.h \
+           src/ov_assembly/ExportReadsDialog.h \
            src/ov_assembly/ZoomableAssemblyOverview.h \
            src/ov_msa/AlignmentLogo.h \
+           src/ov_msa/ColorSchemaDialogController.h \
+           src/ov_msa/ColorSchemaSettingsController.h \
+           src/ov_msa/Common/RefSeqCommonWidget.h \
            src/ov_msa/CreateSubalignmentDialogController.h \
            src/ov_msa/DeleteGapsDialog.h \
+           src/ov_msa/Display/MSADisplayTab.h \
+           src/ov_msa/Display/MSADisplayTabFactory.h \
+           src/ov_msa/Export/MSAImageExportTask.h \
+           src/ov_msa/ExportConsensus/MSAExportConsensusTab.h \
+           src/ov_msa/ExportConsensus/MSAExportConsensusTabFactory.h \
+           src/ov_msa/ExportHighlightedDialogController.h \
+           src/ov_msa/General/MSAGeneralTab.h \
+           src/ov_msa/General/MSAGeneralTabFactory.h \
+           src/ov_msa/Highlighting/MSAHighlightingTab.h \
+           src/ov_msa/Highlighting/MSAHighlightingTabFactory.h \
            src/ov_msa/MSACollapsibleModel.h \
            src/ov_msa/MSAColorScheme.h \
            src/ov_msa/MSAEditor.h \
-           src/ov_msa/MSAEditorDataList.h \
            src/ov_msa/MSAEditorBaseOffsetsCache.h \
            src/ov_msa/MSAEditorConsensusArea.h \
            src/ov_msa/MSAEditorConsensusCache.h \
+           src/ov_msa/MSAEditorDataList.h \
            src/ov_msa/MSAEditorFactory.h \
            src/ov_msa/MSAEditorNameList.h \
            src/ov_msa/MSAEditorOffsetsView.h \
@@ -56,37 +70,24 @@ HEADERS += src/UndoRedoFramework.h \
            src/ov_msa/MSAEditorUndoFramework.h \
            src/ov_msa/MsaOptionsPanelSavableTab.h \
            src/ov_msa/MSASelectSubalignmentDialog.h \
-           src/ov_msa/SaveSelectedSequenceFromMSADialogController.h \
-           src/ov_msa/ColorSchemaDialogController.h \
-           src/ov_msa/ColorSchemaSettingsController.h \
-           src/ov_msa/Common/RefSeqCommonWidget.h \
-           src/ov_msa/SeqStatistics/SeqStatisticsWidget.h \
-           src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.h \
-           src/ov_msa/Display/MSADisplayTab.h \
-           src/ov_msa/Display/MSADisplayTabFactory.h \
-           src/ov_msa/Export/MSAImageExportTask.h \
-           src/ov_msa/ExportConsensus/MSAExportConsensusTabFactory.h \
-           src/ov_msa/ExportConsensus/MSAExportConsensusTab.h \
-           src/ov_msa/General/MSAGeneralTab.h \
-           src/ov_msa/General/MSAGeneralTabFactory.h \
-           src/ov_msa/Highlighting/MSAHighlightingTab.h \
-           src/ov_msa/Highlighting/MSAHighlightingTabFactory.h \
+           src/ov_msa/MsaEditorUserModStepController.h \
            src/ov_msa/Overview/MSAGraphCalculationTask.h \
            src/ov_msa/Overview/MSAGraphOverview.h \
            src/ov_msa/Overview/MSAOverview.h \
            src/ov_msa/Overview/MSAOverviewContextMenu.h \
            src/ov_msa/Overview/MSAOverviewImageExportTask.h \
            src/ov_msa/Overview/MSASimpleOverview.h \
-           src/ov_msa/PairAlign/PairAlignFactory.h \
            src/ov_msa/PairAlign/PairAlign.h \
-           src/ov_msa/TreeOptions/TreeOptionsWidget.h \
-           src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.h \
-           src/ov_msa/PhyTrees/MSAEditorTreeViewer.h \
+           src/ov_msa/PairAlign/PairAlignFactory.h \
            src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h \
            src/ov_msa/PhyTrees/MSAEditorTreeManager.h \
+           src/ov_msa/PhyTrees/MSAEditorTreeViewer.h \
+           src/ov_msa/SaveSelectedSequenceFromMSADialogController.h \
+           src/ov_msa/SeqStatistics/SeqStatisticsWidget.h \
+           src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.h \
            src/ov_msa/SequenceSelectorWidgetController.h \
-           src/ov_msa/MsaEditorUserModStepController.h \
-           src/ov_msa/ExportHighlightedDialogController.h \
+           src/ov_msa/TreeOptions/TreeOptionsWidget.h \
+           src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.h \
            src/ov_phyltree/CreateBranchesTask.h \
            src/ov_phyltree/CreateCircularBranchesTask.h \
            src/ov_phyltree/CreateRectangularBranchesTask.h \
@@ -119,19 +120,23 @@ HEADERS += src/UndoRedoFramework.h \
            src/ov_sequence/AnnotationsTreeView.h \
            src/ov_sequence/AutoAnnotationUtils.h \
            src/ov_sequence/CreateRulerDialogController.h \
+           src/ov_sequence/Das/DasOptionsPanelWidget.h \
+           src/ov_sequence/Das/DasWidgetFactory.h \
            src/ov_sequence/DetView.h \
            src/ov_sequence/EditAnnotationDialogController.h \
-           src/ov_sequence/GraphLabelModel.h \
-           src/ov_sequence/GraphLabelsSelectDialog.h \
-           src/ov_sequence/GraphMenu.h \
-           src/ov_sequence/GraphSettingsDialog.h \
            src/ov_sequence/GSequenceGraphView.h \
            src/ov_sequence/GSequenceGraphViewWithFactory.h \
            src/ov_sequence/GSequenceLineView.h \
            src/ov_sequence/GSequenceLineViewAnnotated.h \
+           src/ov_sequence/GraphLabelModel.h \
+           src/ov_sequence/GraphLabelsSelectDialog.h \
+           src/ov_sequence/GraphMenu.h \
+           src/ov_sequence/GraphSettingsDialog.h \
            src/ov_sequence/Overview.h \
            src/ov_sequence/PanView.h \
            src/ov_sequence/PanViewRows.h \
+           src/ov_sequence/SaveGraphCutoffsDialogController.h \
+           src/ov_sequence/SaveGraphCutoffsTask.h \
            src/ov_sequence/SearchQualifierDialog.h \
            src/ov_sequence/WindowStepSelectorWidget.h \
            src/ov_sequence/annot_highlight/AnnotHighlightSettings.h \
@@ -139,19 +144,15 @@ HEADERS += src/UndoRedoFramework.h \
            src/ov_sequence/annot_highlight/AnnotHighlightTreeItem.h \
            src/ov_sequence/annot_highlight/AnnotHighlightWidget.h \
            src/ov_sequence/annot_highlight/AnnotHighlightWidgetFactory.h \
-           src/ov_sequence/Das/DasWidgetFactory.h \
-           src/ov_sequence/Das/DasOptionsPanelWidget.h \
+           src/ov_sequence/codon_table/CodonTable.h \
            src/ov_sequence/find_pattern/FindPatternTask.h \
            src/ov_sequence/find_pattern/FindPatternWidget.h \
            src/ov_sequence/find_pattern/FindPatternWidgetFactory.h \
-           src/ov_sequence/codon_table/CodonTable.h \
            src/ov_sequence/sequence_info/CharOccurTask.h \
-           src/ov_sequence/sequence_info/DinuclOccurTask.h \
            src/ov_sequence/sequence_info/DNAStatisticsTask.h \
+           src/ov_sequence/sequence_info/DinuclOccurTask.h \
            src/ov_sequence/sequence_info/SequenceInfo.h \
            src/ov_sequence/sequence_info/SequenceInfoFactory.h \
-           src/ov_sequence/SaveGraphCutoffsDialogController.h \
-           src/ov_sequence/SaveGraphCutoffsTask.h \
            src/ov_text/SimpleTextObjectView.h \
            src/ov_text/SimpleTextObjectViewTasks.h \
            src/phyltree/BranchSettingsDialog.h \
@@ -164,32 +165,34 @@ HEADERS += src/UndoRedoFramework.h \
            src/util_dna_assembly/DnaAssemblyDialog.h \
            src/util_dna_assembly/DnaAssemblyGUIExtension.h \
            src/util_dna_assembly/DnaAssemblyUtils.h \
+           src/util_dna_assembly/GenomeAssemblyDialog.h \
+           src/util_msa_align/PairwiseAlignmentGUIExtension.h \
            src/util_sec_struct_predict/SecStructDialog.h \
            src/util_sec_struct_predict/SecStructPredictUtils.h \
            src/util_smith_waterman/SmithWatermanDialog.h \
            src/util_smith_waterman/SmithWatermanDialogImpl.h \
-           src/util_smith_waterman/SubstMatrixDialog.h \
-           src/LicenseDialog.h \
-           src/util_dna_assembly/GenomeAssemblyDialog.h \
-           src/util_msa_align/PairwiseAlignmentGUIExtension.h
-
+           src/util_smith_waterman/SubstMatrixDialog.h
 FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/ov_assembly/ui/ExportCoverageDialog.ui \
          src/ov_assembly/ui/ExportReadsDialog.ui \
          src/ov_msa/ui/CreateSubalignmentDialog.ui \
-         src/ov_msa/ui/DeleteGapsDialog.ui \
-         src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui \
          src/ov_msa/ui/ColorSchemaDialog.ui \
          src/ov_msa/ui/ColorSchemaSettingsWidget.ui \
          src/ov_msa/ui/CreateMSAScheme.ui \
-         src/ov_msa/ui/TreeOptionsWidget.ui \
+         src/ov_msa/ui/DeleteGapsDialog.ui \
+         src/ov_msa/ui/ExportConsensusWidget.ui \
+         src/ov_msa/ui/ExportHighlightedDialog.ui \
+         src/ov_msa/ui/GeneralTabOptionsPanelWidget.ui \
          src/ov_msa/ui/MSADistancesColumnSettingsWidget.ui \
          src/ov_msa/ui/MSAExportSettings.ui \
+         src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui \
+         src/ov_msa/ui/SaveSelectedSequenceFromMSADialog.ui \
          src/ov_msa/ui/SelectSubalignmentDialog.ui \
          src/ov_msa/ui/SequenceSelectorWidget.ui \
-         src/ov_msa/ui/ExportHighlightedDialog.ui \
-         src/ov_msa/ui/ExportConsensusWidget.ui \
+         src/ov_msa/ui/TreeOptionsWidget.ui \
          src/ov_sequence/annot_highlight/ui/AnnotHighlightSettings.ui \
+         src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui \
+         src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui \
          src/ov_sequence/find_pattern/ui/FindPatternForm.ui \
          src/ov_sequence/ui/CreateRulerDialog.ui \
          src/ov_sequence/ui/EditAnnotationDialog.ui \
@@ -199,19 +202,16 @@ FORMS += src/ov_assembly/ui/ExportConsensusDialog.ui \
          src/phyltree/ui/CreatePhyTreeDialog.ui \
          src/phyltree/ui/TextSettingsDialog.ui \
          src/phyltree/ui/TreeSettingsDialog.ui \
+         src/ui/LicenseDialog.ui \
          src/util_dna_assembly/ui/AssemblyToRefDialog.ui \
          src/util_dna_assembly/ui/AssemblyToSamDialog.ui \
          src/util_dna_assembly/ui/BuildIndexFromRefDialog.ui \
          src/util_dna_assembly/ui/GenomeAssemblyDialog.ui \
          src/util_sec_struct_predict/ui/SecStructDialog.ui \
          src/util_smith_waterman/ui/SmithWatermanDialogBase.ui \
-         src/util_smith_waterman/ui/SubstMatrixDialogBase.ui \
-         src/ui/LicenseDialog.ui \
-         src/ov_msa/ui/PairwiseAlignmentOptionsPanelWidget.ui \
-         src/ov_msa/ui/GeneralTabOptionsPanelWidget.ui \
-         src/ov_sequence/Das/ui/DasOptionsPanelWidget.ui \
-         src/ov_sequence/Das/ui/DasBlastSettingsWidget.ui
-SOURCES += src/UndoRedoFramework.cpp \
+         src/util_smith_waterman/ui/SubstMatrixDialogBase.ui
+SOURCES += src/LicenseDialog.cpp \
+           src/UndoRedoFramework.cpp \
            src/WebWindow.cpp \
            src/ov_assembly/AssemblyAnnotationsArea.cpp \
            src/ov_assembly/AssemblyBrowser.cpp \
@@ -246,15 +246,26 @@ SOURCES += src/UndoRedoFramework.cpp \
            src/ov_assembly/ExportReadsDialog.cpp \
            src/ov_assembly/ZoomableAssemblyOverview.cpp \
            src/ov_msa/AlignmentLogo.cpp \
+           src/ov_msa/ColorSchemaDialogController.cpp \
+           src/ov_msa/ColorSchemaSettingsController.cpp \
+           src/ov_msa/Common/RefSeqCommonWidget.cpp \
            src/ov_msa/CreateSubalignmentDialogController.cpp \
            src/ov_msa/DeleteGapsDialog.cpp \
+           src/ov_msa/Display/MSADisplayTab.cpp \
+           src/ov_msa/Display/MSADisplayTabFactory.cpp \
+           src/ov_msa/Export/MSAImageExportTask.cpp \
+           src/ov_msa/ExportHighlightedDialogController.cpp \
+           src/ov_msa/General/MSAGeneralTab.cpp \
+           src/ov_msa/General/MSAGeneralTabFactory.cpp \
+           src/ov_msa/Highlighting/MSAHighlightingTab.cpp \
+           src/ov_msa/Highlighting/MSAHighlightingTabFactory.cpp \
            src/ov_msa/MSACollapsibleModel.cpp \
            src/ov_msa/MSAColorScheme.cpp \
            src/ov_msa/MSAEditor.cpp \
-           src/ov_msa/MSAEditorDataList.cpp \
            src/ov_msa/MSAEditorBaseOffsetsCache.cpp \
            src/ov_msa/MSAEditorConsensusArea.cpp \
            src/ov_msa/MSAEditorConsensusCache.cpp \
+           src/ov_msa/MSAEditorDataList.cpp \
            src/ov_msa/MSAEditorFactory.cpp \
            src/ov_msa/MSAEditorNameList.cpp \
            src/ov_msa/MSAEditorOffsetsView.cpp \
@@ -266,37 +277,26 @@ SOURCES += src/UndoRedoFramework.cpp \
            src/ov_msa/MSAEditorUndoFramework.cpp \
            src/ov_msa/MsaOptionsPanelSavableTab.cpp \
            src/ov_msa/MSASelectSubalignmentDialog.cpp \
-           src/ov_msa/SaveSelectedSequenceFromMSADialogController.cpp \
-           src/ov_msa/ColorSchemaDialogController.cpp \
-           src/ov_msa/ColorSchemaSettingsController.cpp \
-           src/ov_msa/Common/RefSeqCommonWidget.cpp \
-           src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp \
-           src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.cpp \
-           src/ov_msa/Display/MSADisplayTab.cpp \
-           src/ov_msa/Display/MSADisplayTabFactory.cpp \
-           src/ov_msa/Export/MSAImageExportTask.cpp \
+           src/ov_msa/MsaEditorUserModStepController.cpp \
            src/ov_msa/ExportConsensus/MSAExportConsensusTab.cpp \
            src/ov_msa/ExportConsensus/MSAExportConsensusTabFactory.cpp \
-           src/ov_msa/General/MSAGeneralTab.cpp \
-           src/ov_msa/General/MSAGeneralTabFactory.cpp \
-           src/ov_msa/Highlighting/MSAHighlightingTab.cpp \
-           src/ov_msa/Highlighting/MSAHighlightingTabFactory.cpp \
            src/ov_msa/Overview/MSAGraphCalculationTask.cpp \
            src/ov_msa/Overview/MSAGraphOverview.cpp \
            src/ov_msa/Overview/MSAOverview.cpp \
            src/ov_msa/Overview/MSAOverviewContextMenu.cpp \
            src/ov_msa/Overview/MSAOverviewImageExportTask.cpp \
            src/ov_msa/Overview/MSASimpleOverview.cpp \
-           src/ov_msa/PairAlign/PairAlignFactory.cpp \
            src/ov_msa/PairAlign/PairAlign.cpp \
-           src/ov_msa/TreeOptions/TreeOptionsWidget.cpp \
-           src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.cpp \
-           src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp \
+           src/ov_msa/PairAlign/PairAlignFactory.cpp \
            src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.cpp \
            src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp \
+           src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp \
+           src/ov_msa/SaveSelectedSequenceFromMSADialogController.cpp \
+           src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp \
+           src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.cpp \
            src/ov_msa/SequenceSelectorWidgetController.cpp \
-           src/ov_msa/MsaEditorUserModStepController.cpp \
-           src/ov_msa/ExportHighlightedDialogController.cpp \
+           src/ov_msa/TreeOptions/TreeOptionsWidget.cpp \
+           src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.cpp \
            src/ov_phyltree/CreateCircularBranchesTask.cpp \
            src/ov_phyltree/CreateRectangularBranchesTask.cpp \
            src/ov_phyltree/CreateUnrootedBranchesTask.cpp \
@@ -327,6 +327,8 @@ SOURCES += src/UndoRedoFramework.cpp \
            src/ov_sequence/AnnotationsTreeView.cpp \
            src/ov_sequence/AutoAnnotationUtils.cpp \
            src/ov_sequence/CreateRulerDialogController.cpp \
+           src/ov_sequence/Das/DasOptionsPanelWidget.cpp \
+           src/ov_sequence/Das/DasWidgetFactory.cpp \
            src/ov_sequence/DetView.cpp \
            src/ov_sequence/EditAnnotationDialogController.cpp \
            src/ov_sequence/GraphLabelModel.cpp \
@@ -352,8 +354,6 @@ SOURCES += src/UndoRedoFramework.cpp \
            src/ov_sequence/find_pattern/FindPatternTask.cpp \
            src/ov_sequence/find_pattern/FindPatternWidget.cpp \
            src/ov_sequence/find_pattern/FindPatternWidgetFactory.cpp \
-           src/ov_sequence/Das/DasWidgetFactory.cpp \
-           src/ov_sequence/Das/DasOptionsPanelWidget.cpp \
            src/ov_sequence/sequence_info/CharOccurTask.cpp \
            src/ov_sequence/sequence_info/DinuclOccurTask.cpp \
            src/ov_sequence/sequence_info/DNAStatisticsTask.cpp \
@@ -371,14 +371,12 @@ SOURCES += src/UndoRedoFramework.cpp \
            src/util_dna_assembly/ConvertAssemblyToSamDialog.cpp \
            src/util_dna_assembly/DnaAssemblyDialog.cpp \
            src/util_dna_assembly/DnaAssemblyUtils.cpp \
+           src/util_dna_assembly/GenomeAssemblyDialog.cpp \
+           src/util_msa_align/PairwiseAlignmentGUIExtension.cpp \
            src/util_sec_struct_predict/SecStructDialog.cpp \
            src/util_sec_struct_predict/SecStructPredictUtils.cpp \
            src/util_smith_waterman/SmithWatermanDialog.cpp \
-           src/util_smith_waterman/SubstMatrixDialog.cpp \
-           src/LicenseDialog.cpp \
-           src/util_dna_assembly/GenomeAssemblyDialog.cpp \
-           src/util_msa_align/PairwiseAlignmentGUIExtension.cpp
-
+           src/util_smith_waterman/SubstMatrixDialog.cpp
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
                 transl/english.ts \

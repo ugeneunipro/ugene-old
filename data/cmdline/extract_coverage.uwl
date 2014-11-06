@@ -31,7 +31,11 @@ workflow "Extract Coverage"{
             }
             extract-assembly-coverage.export-type {
                 alias:export-type;
-                description:"The export type, possible values: 'coverage', 'bases count'. It is a single string, types are separated with comma.";
+                description:"The export type, possible values: 'coverage', 'bases count'. It is a single string, types are separated with comma. This parameter is used for 'Per base' format only.";
+            }
+            extract-assembly-coverage.format {
+                alias:format;
+                description:"The export format, possible values: '0 - Histogram', '1 - Per base', '2 - Bedgraph'";
             }
             extract-assembly-coverage.threshold {
                 alias:threshold;
@@ -44,13 +48,13 @@ workflow "Extract Coverage"{
         }
         visual {
             extract-assembly-coverage {
-                pos:"-435 -480";
+                pos:"-420 -465";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-assembly.angle:180;
             }
             read-assembly {
-                pos:"-720 -480";
+                pos:"-705 -465";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-assembly.angle:360;
@@ -91,8 +95,8 @@ workflow "Extract Coverage"{
                 title:"Output data";
                 parameters-area {
                     group {
-                        label-size:120;
                         title:"Output data";
+                        label-size:120;
                         extract-assembly-coverage.url-out {
                             label:"Result file";
                         }

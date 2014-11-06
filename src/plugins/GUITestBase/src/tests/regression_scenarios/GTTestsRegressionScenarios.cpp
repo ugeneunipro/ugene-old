@@ -4943,8 +4943,6 @@ GUI_TEST_CLASS_DEFINITION(test_2796) {
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Analyze" << "Find pattern [Smith-Waterman]", GTGlobals::UseMouse));
     GTMenu::showMainMenu(os, MWMENU_ACTIONS);
 }
-GUI_TEST_CLASS_DEFINITION(test_2801) {
-}
 
 
 GUI_TEST_CLASS_DEFINITION( test_2808 ){

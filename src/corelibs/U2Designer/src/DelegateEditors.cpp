@@ -391,6 +391,17 @@ URLDelegate::URLDelegate(const QString& filter, const QString& type, bool multi,
     tags()->set("format", format);
 }
 
+URLDelegate::URLDelegate(const DelegateTags &_tags, const QString &type, bool multi, bool isPath, bool saveFile, QObject *parent, bool noFilesMode) :
+    PropertyDelegate(parent),
+    lastDirType(type),
+    multi(multi),
+    isPath(isPath),
+    saveFile(saveFile),
+    noFilesMode(noFilesMode)
+{
+    *tags() = _tags;
+}
+
 URLWidget * URLDelegate::createWidget(QWidget *parent) const {
     URLWidget *result;
     if (noFilesMode) {

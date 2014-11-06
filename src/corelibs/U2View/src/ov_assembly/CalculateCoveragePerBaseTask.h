@@ -33,11 +33,6 @@ public:
     CoveragePerBaseInfo() :
         coverage(0) {}
 
-    /**
-     * pos - one-based position
-     */
-    QByteArray toByteArray(int pos, bool writeCoverage, bool writeBasesCount, const QByteArray &separator) const;
-
     int coverage;
     QMap<char, int> basesCount;
 };

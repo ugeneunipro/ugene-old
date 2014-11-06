@@ -188,12 +188,15 @@ QPoint GTUtilsTaskTreeView::getTreeViewItemPosition( U2OpStatus &os, const QStri
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "checkTask"
 bool GTUtilsTaskTreeView::checkTask(U2OpStatus &os, const QString &itemName){
     openView(os);
     QTreeWidgetItem* item = getTreeWidgetItem(os, itemName);
     return item != NULL;
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "countTasks"
 int GTUtilsTaskTreeView::countTasks(U2OpStatus &os, const QString &itemName){
     openView(os);
     int result = 0;
@@ -206,6 +209,7 @@ int GTUtilsTaskTreeView::countTasks(U2OpStatus &os, const QString &itemName){
     }
     return result;
 }
+#undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME
 

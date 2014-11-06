@@ -76,9 +76,11 @@ private:
     void connectSlots();
     void drawAll();
 
+protected:
+    AssemblyBrowser *browser;
+
 private:
     AssemblyBrowserUi * ui;
-    AssemblyBrowser * browser;
     QSharedPointer<AssemblyModel> model;
 
     QPixmap cachedView;

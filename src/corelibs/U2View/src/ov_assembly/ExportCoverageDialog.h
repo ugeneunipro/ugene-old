@@ -34,6 +34,7 @@ class ExportCoverageDialog : public QDialog, public Ui_ExportCoverageDialog {
 public:
     ExportCoverageDialog(const QString &assemblyName, QWidget *parent = NULL);
 
+    ExportCoverageSettings::Format getFormat() const;
     ExportCoverageSettings getSettings() const;
 
 public slots:
@@ -42,6 +43,7 @@ public slots:
 private slots:
     void sl_browseFiles();
     void sl_compressToggled(bool isChecked);
+    void sl_formatChanged(const QString &format);
     
 private:
     void initLayout();

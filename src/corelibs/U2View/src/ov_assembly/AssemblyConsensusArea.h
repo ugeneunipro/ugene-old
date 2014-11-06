@@ -44,7 +44,6 @@ public:
 public slots:
     void sl_exportConsensus();
     void sl_exportConsensusVariations();
-    void sl_exportCoverage();
 
 protected:
     virtual QByteArray getSequenceRegion(U2OpStatus &os);

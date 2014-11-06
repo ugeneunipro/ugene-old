@@ -19,76 +19,75 @@
  * MA 02110-1301, USA.
  */
 
-#include "AssemblyBrowser.h"
-
-#include "AssemblyAnnotationsArea.h"
-#include "AssemblyBrowserFactory.h"
-#include "AssemblyBrowserState.h"
-#include "AssemblyBrowserTasks.h"
-#include "ZoomableAssemblyOverview.h"
-#include "AssemblyReferenceArea.h"
-#include "AssemblyConsensusArea.h"
-#include "AssemblyCoverageGraph.h"
-#include "AssemblyRuler.h"
-#include "AssemblyReadsArea.h"
-#include "AssemblyBrowserSettings.h"
-#include "AssemblyCellRenderer.h"
-
-#include <U2Core/U2Type.h>
-#include <U2Core/U2DbiUtils.h>
-#include <U2Core/DNASequenceObject.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/FormatUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/VariantTrackObject.h>
-
-#include <QtGui/QPainter>
 #include <QtCore/QEvent>
+
 #include <QtGui/QDropEvent>
+#include <QtGui/QPainter>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QMenu>
-#include <QtGui/QToolBar>
-#include <QtGui/QMessageBox>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QScrollBar>
-#include <QtGui/QToolButton>
 #include <QtGui/QDesktopWidget>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QMenu>
+#include <QtGui/QMessageBox>
+#include <QtGui/QScrollBar>
+#include <QtGui/QToolBar>
+#include <QtGui/QToolButton>
+#include <QtGui/QVBoxLayout>
 #else
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QMenu>
-#include <QtWidgets/QToolBar>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QScrollBar>
-#include <QtWidgets/QToolButton>
 #include <QtWidgets/QDesktopWidget>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QScrollBar>
+#include <QtWidgets/QToolBar>
+#include <QtWidgets/QToolButton>
+#include <QtWidgets/QVBoxLayout>
 #endif
 
 #include <U2Core/AppContext.h>
-#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/DNASequenceObject.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/FormatUtils.h>
 #include <U2Core/Log.h>
-#include <U2Core/U2AssemblyDbi.h>
-#include <U2Core/U2SequenceDbi.h>
-#include <U2Core/U2ObjectDbi.h>
-#include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/Timer.h>
-#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2AssemblyDbi.h>
+#include <U2Core/U2AssemblyUtils.h>
 #include <U2Core/U2CrossDatabaseReferenceDbi.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceDbi.h>
+#include <U2Core/U2Type.h>
+#include <U2Core/VariantTrackObject.h>
 
 #include <U2Formats/ConvertAssemblyToSamTask.h>
 
-#include <U2Gui/GUIUtils.h>
-#include <U2Gui/ExportImageDialog.h>
-
 #include <U2Gui/DialogUtils.h>
-#include <U2Gui/OptionsPanel.h>
+#include <U2Gui/ExportImageDialog.h>
+#include <U2Gui/GUIUtils.h>
 #include <U2Gui/OPWidgetFactoryRegistry.h>
+#include <U2Gui/OptionsPanel.h>
 #include <U2Gui/PositionSelector.h>
 
 #include <U2View/ConvertAssemblyToSamDialog.h>
+
+#include "AssemblyAnnotationsArea.h"
+#include "AssemblyBrowser.h"
+#include "AssemblyBrowserFactory.h"
+#include "AssemblyBrowserSettings.h"
+#include "AssemblyBrowserState.h"
+#include "AssemblyBrowserTasks.h"
+#include "AssemblyCellRenderer.h"
+#include "AssemblyConsensusArea.h"
+#include "AssemblyCoverageGraph.h"
+#include "AssemblyReadsArea.h"
+#include "AssemblyReferenceArea.h"
+#include "AssemblyRuler.h"
+#include "ExportCoverageDialog.h"
+#include "ExportCoverageTask.h"
+#include "ZoomableAssemblyOverview.h"
 
 namespace U2 {
 
@@ -717,6 +716,28 @@ void AssemblyBrowser::sl_exportToSam() {
     if (dialog.exec()) {
         ConvertAssemblyToSamTask *convertTask = new ConvertAssemblyToSamTask(&(model->getDbiConnection()), dialog.getSamFileUrl());
         AppContext::getTaskScheduler()->registerTopLevelTask(convertTask);
+    }
+}
+
+void AssemblyBrowser::sl_exportCoverage() {
+    const U2Assembly assembly = getModel()->getAssembly();
+    ExportCoverageDialog d(assembly.visualName, ui);
+    if (QDialog::Accepted == d.exec()) {
+        Task *exportTask = NULL;
+        switch (d.getFormat()) {
+        case ExportCoverageSettings::Histogram:
+            exportTask = new ExportCoverageHistogramTask(getModel()->getDbiConnection().dbi->getDbiRef(), assembly.id, d.getSettings());
+            break;
+        case ExportCoverageSettings::PerBase:
+            exportTask = new ExportCoveragePerBaseTask(getModel()->getDbiConnection().dbi->getDbiRef(), assembly.id, d.getSettings());
+            break;
+        case ExportCoverageSettings::Bedgraph:
+            exportTask = new ExportCoverageBedgraphTask(getModel()->getDbiConnection().dbi->getDbiRef(), assembly.id, d.getSettings());
+            break;
+        default:
+            FAIL("Unexpected format", );
+        }
+        AppContext::getTaskScheduler()->registerTopLevelTask(exportTask);
     }
 }
 

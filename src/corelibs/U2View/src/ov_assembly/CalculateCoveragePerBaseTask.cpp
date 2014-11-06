@@ -21,29 +21,15 @@
 
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2AssemblyUtils.h>
+#include <U2Core/U2AttributeDbi.h>
+#include <U2Core/U2AttributeUtils.h>
+#include <U2Core/U2CoreAttributes.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2SafePoints.h>
 
 #include "CalculateCoveragePerBaseTask.h"
 
 namespace U2 {
-
-QByteArray CoveragePerBaseInfo::toByteArray(int pos, bool writeCoverage, bool writeBasesCount, const QByteArray &separator) const {
-    QByteArray result = QByteArray::number(pos);
-
-    if (writeCoverage) {
-        result += separator + QByteArray::number(coverage);
-    }
-
-    if (writeBasesCount) {
-        result += separator + QByteArray::number(basesCount.value('A', 0)) +
-                separator + QByteArray::number(basesCount.value('C', 0)) +
-                separator + QByteArray::number(basesCount.value('G', 0)) +
-                separator + QByteArray::number(basesCount.value('T', 0));
-    }
-
-    return result;
-}
 
 CalculateCoveragePerBaseOnRegionTask::CalculateCoveragePerBaseOnRegionTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const U2Region &region) :
     Task(tr("Calculate coverage per base for assembly %1 on region (%2, %3)"), TaskFlag_None),
@@ -123,16 +109,15 @@ void CalculateCoveragePerBaseOnRegionTask::processRead(const U2AssemblyRead &rea
             // skip the insertion
             continue;
         case U2CigarOp_D:
-        case U2CigarOp_N:
             // skip the deletion
             deletionsCount++;
             continue;
+        case U2CigarOp_N:
+            // skip the deletion
+            deletionsCount++;
+            break;
         default:
             currentBase = read->readSequence[positionOffset - deletionsCount + insertionsCount];
-            if ('N' == currentBase || '-' == currentBase) {
-                // It is a deletion, skip it
-                continue;
-            }
             break;
         }
         info.basesCount[currentBase] = info.basesCount[currentBase] + 1;
@@ -191,11 +176,15 @@ CalculateCoveragePerBaseTask::~CalculateCoveragePerBaseTask() {
 void CalculateCoveragePerBaseTask::prepare() {
     DbiConnection con(dbiRef, stateInfo);
     CHECK_OP(stateInfo, );
-    U2AssemblyDbi *assemblyDbi = con.dbi->getAssemblyDbi();
-    SAFE_POINT_EXT(NULL != assemblyDbi, setError(tr("Assembly DBI is NULL")), );
+    U2AttributeDbi *attributeDbi = con.dbi->getAttributeDbi();
+    SAFE_POINT_EXT(NULL != attributeDbi, setError(tr("Attribute DBI is NULL")), );
 
-    const qint64 length = assemblyDbi->getMaxEndPos(assemblyId, stateInfo);
+    const U2IntegerAttribute lengthAttribute = U2AttributeUtils::findIntegerAttribute(attributeDbi, assemblyId, U2BaseAttributeName::reference_length, stateInfo);
     CHECK_OP(stateInfo, );
+    CHECK_EXT(lengthAttribute.hasValidId(), setError(tr("Can't get the assembly length: attribute is missing")), );
+
+    const qint64 length = lengthAttribute.value;
+    SAFE_POINT_EXT(0 < length, setError(tr("Assembly has zero length")), );
 
     qint64 tasksCount = length / maxRegionLength + (length % maxRegionLength > 0 ? 1 : 0);
     for (qint64 i = 0; i < tasksCount; i++) {

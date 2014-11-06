@@ -35,9 +35,7 @@ QPoint GTTableView::getCellPosition(U2OpStatus &os, QTableView *table, int colum
     return pGlob;
 }
 #undef GT_METHOD_NAME
-#undef GT_CLASS_NAME
 
-#define GT_CLASS_NAME "GTSpinBox"
 #define GT_METHOD_NAME "getCellPoint"
 QPoint GTTableView::getCellPoint(U2OpStatus &os, QTableView *table, int row, int column) {
     QModelIndex idx = table->model()->index(row, column);
@@ -47,20 +45,24 @@ QPoint GTTableView::getCellPoint(U2OpStatus &os, QTableView *table, int row, int
     return content->mapToGlobal(rect.center());
 }
 #undef GT_METHOD_NAME
-#undef GT_CLASS_NAME
 
-#define GT_CLASS_NAME "GTSpinBox"
 #define GT_METHOD_NAME "rowCount"
 int GTTableView::rowCount(U2OpStatus &os, QTableView *table) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(NULL != table, "Table view is NULL", -1);
+    GT_CHECK_RESULT(NULL != table->model(), "Table view model is NULL", -1);
     return table->model()->rowCount(QModelIndex());
 }
 #undef GT_METHOD_NAME
-#undef GT_CLASS_NAME
 
-#define GT_CLASS_NAME "GTSpinBox"
-#define GT_METHOD_NAME "rowCount"
+#define GT_METHOD_NAME "data"
 QString GTTableView::data(U2OpStatus &os, QTableView *table, int row, int column) {
+    Q_UNUSED(os);
+    GT_CHECK_RESULT(NULL != table, "Table view is NULL", "");
+    GT_CHECK_RESULT(NULL != table->model(), "Table view model is NULL", "");
+
     QModelIndex idx = table->model()->index(row, column);
+    GT_CHECK_RESULT(idx.isValid(), "Item index is invalid", "");
     return table->model()->data(idx, Qt::DisplayRole).toString();
 }
 #undef GT_METHOD_NAME

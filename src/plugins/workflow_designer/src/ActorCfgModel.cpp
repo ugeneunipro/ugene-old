@@ -161,18 +161,9 @@ bool ActorCfgModel::isVisible(Attribute *a) const {
     if (NULL != dynamic_cast<URLAttribute*>(a)) {
         return false;
     }
-    const QVector<const AttributeRelation*> &relations = a->getRelations();
-    foreach(const AttributeRelation *relation, relations) {
-        if (VISIBILITY == relation->getType()) {
-            const QModelIndex relatedIndex = modelIndexById(relation->getRelatedAttrId());
-            const QVariant visibilityValue = data(relatedIndex);
-            if (!relation->getAffectResult(visibilityValue, QVariant()).toBool()) {
-                return false;
-            }
-        }
-    }
 
-    return true;
+    CHECK(NULL != subject, true);
+    return subject->isAttributeVisible(a);
 }
 
 Qt::ItemFlags ActorCfgModel::flags( const QModelIndex & index ) const {

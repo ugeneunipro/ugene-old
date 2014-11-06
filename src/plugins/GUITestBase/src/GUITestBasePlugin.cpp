@@ -319,7 +319,6 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2778);
     REGISTER_TEST(GUITest_regression_scenarios::test_2784);
     REGISTER_TEST(GUITest_regression_scenarios::test_2796);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2801);
     REGISTER_TEST(GUITest_regression_scenarios::test_2808);
     REGISTER_TEST(GUITest_regression_scenarios::test_2809);
     REGISTER_TEST(GUITest_regression_scenarios::test_2811);
@@ -1254,8 +1253,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0012, "native separator problem");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0013, "native separator problem");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0014, "native separator problem");
-    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0015, "native separator problem");
-//    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0016, "native separator problem");       it is not commited yet
+    REGISTER_TEST_IGNORED(GUITest_Assembly_browser::test_0015, "ignored because of bugs in GTComboBox");
+    REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0016, "native separator problem");
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Assembling/bowtie2

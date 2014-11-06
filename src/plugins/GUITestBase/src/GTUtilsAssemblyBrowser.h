@@ -32,6 +32,12 @@ class U2OpStatus;
 
 class GTUtilsAssemblyBrowser {
 public:
+    enum Area {
+        Consensus,
+        Overview,
+        Reads
+    };
+
     static AssemblyBrowserUi *getView(U2OpStatus &os, const QString& viewTitle);
 
     static bool hasReference(U2OpStatus &os, const QString &viewTitle);
@@ -45,7 +51,7 @@ public:
 
     static void goToPosition(U2OpStatus &os, qint64 position);
 
-    static void callExportCoverageDialog(U2OpStatus &os);
+    static void callExportCoverageDialog(U2OpStatus &os, Area area = Consensus);
 };
 
 }   // namespace U2

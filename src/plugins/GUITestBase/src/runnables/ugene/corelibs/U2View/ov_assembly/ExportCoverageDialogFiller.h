@@ -31,16 +31,19 @@ public:
     enum ActionType {                   // An appropriate action data
         EnterFilePath,                  // QString with a path (do not forget about native separators)
         SelectFile,                     // QString with a path
+        SetFormat,                      // QString with a format name
         SetCompress,                    // bool with a new checkbox state
         SetExportCoverage,              // bool with a new checkbox state
-        SetExportBasesCount,            // bool with a new checkbox state
+        SetExportBasesQuantity,         // bool with a new checkbox state
         SetThreshold,                   // int with a new threshold value
         CheckFilePath,                  // QString with an expected path (do not forget about native separators)
+        CheckFormat,                    // QString with an expected format name
         CheckCompress,                  // bool with an expected checkbox state
+        CheckOptionsVisibility,         // bool with an expected groupbox visibility state
         CheckExportCoverage,            // bool with an expected checkbox state
-        CheckExportBasesCount,          // bool with an expected checkbox state
+        CheckExportBasesQuantity,       // bool with an expected checkbox state
         CheckThreshold,                 // int with an expected spinbox value
-        CheckThresholdBounds,           // QVariantMap that contains two items: key: "minimum", value: int; key: "maximum", value: int
+        CheckThresholdBounds,           // QPoint where x is a minimum value and y is a maximum value
         ExpectMessageBox,               // ignored
         ClickOk,                        // ignored
         ClickCancel                     // ignored
@@ -52,20 +55,20 @@ public:
 
     void run();
 
-    const static QString SPINBOX_MINIMUM;
-    const static QString SPINBOX_MAXIMUM;
-
 private:
     void enterFilePath(const QVariant &actionData);
     void selectFile(const QVariant &actionData);
+    void setFormat(const QVariant &actionData);
     void setCompress(const QVariant &actionData);
     void setExportCoverage(const QVariant &actionData);
-    void setExportBasesCount(const QVariant &actionData);
+    void setExportBasesQuantity(const QVariant &actionData);
     void setThreshold(const QVariant &actionData);
     void checkFilePath(const QVariant &actionData);
+    void checkFormat(const QVariant &actionData);
     void checkCompress(const QVariant &actionData);
+    void checkOptionsVisibility(const QVariant &actionData);
     void checkExportCoverage(const QVariant &actionData);
-    void checkExportBasesCount(const QVariant &actionData);
+    void checkExportBasesQuantity(const QVariant &actionData);
     void checkThreshold(const QVariant &actionData);
     void checkThresholdBounds(const QVariant &actionData);
     void expectMessageBox();

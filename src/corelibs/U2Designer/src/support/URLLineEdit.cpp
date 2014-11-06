@@ -50,42 +50,71 @@ public:
     }
 
     virtual QStringList getSuggestions(const QString &str) {
-        QString fileFormat = DelegateTags::getString(widget->tags(), "format");
-        QString fName = str;
-        if(fName.endsWith(".")){
-            fName = fName.left(fName.size()-1);
+        QString fileName = str;
+        if (fileName.endsWith(".")) {
+            fileName = fileName.left(fileName.size() - 1);
         }
 
-        QStringList choices, hits;
-        QFileInfo f(fName);
-        QString curExt = f.suffix(), baseName = f.completeBaseName(), completeFileName = f.fileName();
+        QStringList choices;
+        const QFileInfo f(fileName);
+        const QString completeFileName = f.fileName();
+        choices << completeFileName;
+
+        const QStringList presetExtensions = DelegateTags::getStringList(widget->tags(), "extensions");
+        if (presetExtensions.isEmpty()) {
+            bool ok = fillChoisesWithFormatExtensions(fileName, choices);
+            CHECK(ok, QStringList());
+        } else {
+            fillChoisesWithPresetExtensions(fileName, presetExtensions, choices);
+        }
+
+        return choices;
+    }
+
+    bool fillChoisesWithFormatExtensions(const QString &fileName, QStringList &choices) {
+        const QFileInfo f(fileName);
+        const QString curExt = f.suffix();
+        const QString baseName = f.completeBaseName();
+        const QString completeFileName = f.fileName();
+        choices << completeFileName;
+
+        const QString fileFormat = DelegateTags::getString(widget->tags(), "format");
         DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
-        CHECK(NULL != format, QStringList());
+        CHECK(NULL != format, false);
+
         QStringList formats = format->getSupportedDocumentFileExtensions();
-        CHECK(formats.size() > 0, QStringList());
+        CHECK(formats.size() > 0, false);
         formats.append("gz");
-        choices.append(completeFileName);
-        foreach(QString ext, formats){
-            if(!curExt.isEmpty()){
-                if (ext.startsWith(curExt, Qt::CaseInsensitive)){
-                    choices.append(baseName + "." + ext);
+
+        foreach (const QString &ext, formats) {
+            if (!curExt.isEmpty()) {
+                if (ext.startsWith(curExt, Qt::CaseInsensitive)) {
+                    choices << baseName + "." + ext;
                     if (ext != "gz"){
-                        choices.append(baseName + "." + ext + ".gz");
+                        choices << baseName + "." + ext + ".gz";
                     }
                 }
             }
         }
 
-        if(choices.size() == 1){
-            foreach(QString ext, formats){
-                choices.append(completeFileName + "." + ext);
-                if (ext != "gz"){
-                    choices.append(completeFileName + "." + ext + ".gz");
+        if (choices.size() == 1) {
+            foreach (const QString &ext, formats) {
+                choices << completeFileName + "." + ext;
+                if (ext != "gz") {
+                    choices << completeFileName + "." + ext + ".gz";
                 }
             }
         }
+        return true;
+    }
 
-        return choices;
+    static void fillChoisesWithPresetExtensions(const QString &fileName, const QStringList &presetExtensions, QStringList &choices) {
+        const QFileInfo f(fileName);
+        const QString baseName = f.completeBaseName();
+
+        foreach (const QString &extenstion, presetExtensions) {
+            choices << baseName + "." + extenstion;
+        }
     }
 
     virtual QString finalyze(const QString &editorText, const QString &suggestion) {

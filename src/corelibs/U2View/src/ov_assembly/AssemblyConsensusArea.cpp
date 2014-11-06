@@ -40,8 +40,6 @@
 #include "ExportConsensusTask.h"
 #include "ExportConsensusVariationsDialog.h"
 #include "ExportConsensusVariationsTask.h"
-#include "ExportCoverageDialog.h"
-#include "ExportCoverageTask.h"
 
 namespace U2 {
 
@@ -70,7 +68,7 @@ void AssemblyConsensusArea::createContextMenu() {
 
     QAction *exportCoverage = contextMenu->addAction(tr("Export coverage..."));
     exportCoverage->setObjectName("Export coverage");
-    connect(exportCoverage, SIGNAL(triggered()), SLOT(sl_exportCoverage()));
+    connect(exportCoverage, SIGNAL(triggered()), browser, SLOT(sl_exportCoverage()));
 
     QAction * exportAction = contextMenu->addAction(tr("Export consensus..."));
     connect(exportAction, SIGNAL(triggered()), SLOT(sl_exportConsensus()));
@@ -282,15 +280,6 @@ void AssemblyConsensusArea::sl_exportConsensusVariations(){
     if(dlg.exec() == QDialog::Accepted) {
         settings = dlg.getSettings();
         AppContext::getTaskScheduler()->registerTopLevelTask(new ExportConsensusVariationsTask(settings));
-    }
-}
-
-void AssemblyConsensusArea::sl_exportCoverage() {
-    const U2Assembly assembly = getModel()->getAssembly();
-    ExportCoverageDialog d(assembly.visualName, this);
-    if (QDialog::Accepted == d.exec()) {
-        Task *exportTask = new ExportCoverageTask(getModel()->getDbiConnection().dbi->getDbiRef(), assembly.id, d.getSettings());
-        AppContext::getTaskScheduler()->registerTopLevelTask(exportTask);
     }
 }
 

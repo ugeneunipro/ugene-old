@@ -21,6 +21,7 @@
 
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/FormatUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 
@@ -46,11 +47,12 @@ namespace LocalWorkflow {
 
 const QString ExtractAssemblyCoverageWorkerFactory::ACTOR_ID("extract-assembly-coverage");
 const QString ExtractAssemblyCoverageWorkerFactory::EXPORT_COVERAGE = QObject::tr("coverage");
-const QString ExtractAssemblyCoverageWorkerFactory::EXPORT_BASES_COUNT = QObject::tr("bases count");
+const QString ExtractAssemblyCoverageWorkerFactory::EXPORT_BASES_QUANTITY = QObject::tr("bases count");
 
 namespace {
-    const QString EXPORT_TYPE_ATTR_ID("export-type");
-    const QString THRESHOLD_ATTR_ID("threshold");
+const QString FORMAT_ATTR_ID("format");
+const QString EXPORT_TYPE_ATTR_ID("export-type");
+const QString THRESHOLD_ATTR_ID("threshold");
 }
 
 ExtractAssemblyCoverageWorker::ExtractAssemblyCoverageWorker(Actor *actor) :
@@ -112,7 +114,7 @@ ExportCoverageSettings ExtractAssemblyCoverageWorker::getSettings() const {
     ExportCoverageSettings settings;
     const QString exportTypeString = getValue<QString>(EXPORT_TYPE_ATTR_ID);
     settings.exportCoverage = exportTypeString.contains(ExtractAssemblyCoverageWorkerFactory::EXPORT_COVERAGE);
-    settings.exportBasesCount = exportTypeString.contains(ExtractAssemblyCoverageWorkerFactory::EXPORT_BASES_COUNT);
+    settings.exportBasesCount = exportTypeString.contains(ExtractAssemblyCoverageWorkerFactory::EXPORT_BASES_QUANTITY);
     settings.threshold = getValue<int>(THRESHOLD_ATTR_ID);
     settings.url = GUrlUtils::rollFileName(getValue<QString>(BaseAttributes::URL_OUT_ATTRIBUTE().getId()), "_", QSet<QString>());
     settings.compress = (settings.url.endsWith(".gz"));
@@ -120,7 +122,20 @@ ExportCoverageSettings ExtractAssemblyCoverageWorker::getSettings() const {
 }
 
 Task *ExtractAssemblyCoverageWorker::createTask(const U2EntityRef &assembly) {
-    Task *task = new ExportCoverageTask(assembly.dbiRef, assembly.entityId, getSettings());
+    const ExportCoverageSettings::Format format = static_cast<ExportCoverageSettings::Format>(getValue<int>(FORMAT_ATTR_ID));
+    Task *task = NULL;
+    switch (format) {
+    case ExportCoverageSettings::Histogram:
+        task = new ExportCoverageHistogramTask(assembly.dbiRef, assembly.entityId, getSettings());
+        break;
+    case ExportCoverageSettings::PerBase:
+        task = new ExportCoveragePerBaseTask(assembly.dbiRef, assembly.entityId, getSettings());
+        break;
+    case ExportCoverageSettings::Bedgraph:
+        task = new ExportCoverageBedgraphTask(assembly.dbiRef, assembly.entityId, getSettings());
+        break;
+    }
+
     connect(task, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
     return task;
 }
@@ -148,7 +163,7 @@ Worker *ExtractAssemblyCoverageWorkerFactory::createWorker(Actor *actor) {
 void ExtractAssemblyCoverageWorkerFactory::init() {
     const Descriptor desc(ACTOR_ID,
         ExtractAssemblyCoverageWorker::tr("Extract Coverage from Assembly"),
-        ExtractAssemblyCoverageWorker::tr("Extract the coverage and bases count from the incoming assembly."));
+        ExtractAssemblyCoverageWorker::tr("Extract the coverage and bases quantity from the incoming assembly."));
 
     QList<PortDescriptor*> ports;
     {
@@ -160,24 +175,45 @@ void ExtractAssemblyCoverageWorkerFactory::init() {
 
     QList<Attribute*> attrs;
     {
+        const Descriptor formatDesc(FORMAT_ATTR_ID,
+                                        ExtractAssemblyCoverageWorker::tr("Format"),
+                                        ExtractAssemblyCoverageWorker::tr("Format to store the output."));
         const Descriptor exportTypeDesc(EXPORT_TYPE_ATTR_ID,
-            ExtractAssemblyCoverageWorker::tr("Export"),
-            ExtractAssemblyCoverageWorker::tr("Data type to export."));
+                                        ExtractAssemblyCoverageWorker::tr("Export"),
+                                        ExtractAssemblyCoverageWorker::tr("Data type to export."));
         const Descriptor thresholdDesc(THRESHOLD_ATTR_ID,
-            ExtractAssemblyCoverageWorker::tr("Threshold"),
-            ExtractAssemblyCoverageWorker::tr("The minimum coverage value to export."));
-        attrs << new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true, "assembly_coverage.txt");
-        attrs << new Attribute(exportTypeDesc, BaseTypes::STRING_TYPE(), true, EXPORT_COVERAGE);
+                                       ExtractAssemblyCoverageWorker::tr("Threshold"),
+                                       ExtractAssemblyCoverageWorker::tr("The minimum coverage value to export."));
+        attrs << new Attribute(BaseAttributes::URL_OUT_ATTRIBUTE(), BaseTypes::STRING_TYPE(), true, "assembly_coverage" + ExportCoverageSettings::BEDGRAPH_EXTENSION);
+
+        Attribute *formatAttribute = new Attribute(formatDesc, BaseTypes::NUM_TYPE(), false, ExportCoverageSettings::Bedgraph);
+        formatAttribute->addRelation(new ExtractAssemblyCoverageFileExtensionRelation(BaseAttributes::URL_OUT_ATTRIBUTE().getId()));
+        attrs << formatAttribute;
+
+        Attribute *exportTypeAttribute = new Attribute(exportTypeDesc, BaseTypes::STRING_TYPE(), true, EXPORT_COVERAGE);
+        exportTypeAttribute->addRelation(new VisibilityRelation(formatAttribute->getId(), ExportCoverageSettings::PerBase));
+        attrs << exportTypeAttribute;
+
         attrs << new Attribute(thresholdDesc, BaseTypes::NUM_TYPE(), false, 1);
     }
 
     QMap<QString, PropertyDelegate*> delegates;
     {
-        delegates[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(BaseDocumentFormats::PLAIN_TEXT, true), "", false, false, true, NULL, BaseDocumentFormats::PLAIN_TEXT);
+        const QString filter = FormatUtils::prepareFileFilter(ExportCoverageSettings::BEDGRAPH, QStringList() << ExportCoverageSettings::BEDGRAPH_EXTENSION.mid(1), true);
+        DelegateTags tags;
+        tags.set("filter", filter);
+        tags.set("extensions", QStringList() << ExportCoverageSettings::BEDGRAPH_EXTENSION.mid(1) << ExportCoverageSettings::BEDGRAPH_EXTENSION.mid(1) + ExportCoverageSettings::COMPRESSED_EXTENSION);
+        delegates[BaseAttributes::URL_OUT_ATTRIBUTE().getId()] = new URLDelegate(tags, "", false, false, true, NULL);
+
+        QVariantMap formats;
+        formats.insert(ExportCoverageSettings::HISTOGRAM, ExportCoverageSettings::Histogram);
+        formats.insert(ExportCoverageSettings::PER_BASE, ExportCoverageSettings::PerBase);
+        formats.insert(ExportCoverageSettings::BEDGRAPH, ExportCoverageSettings::Bedgraph);
+        delegates[FORMAT_ATTR_ID] = new ComboBoxDelegate(formats);
 
         QVariantMap exportTypes;
         exportTypes.insert(EXPORT_COVERAGE, true);
-        exportTypes.insert(EXPORT_BASES_COUNT, false);
+        exportTypes.insert(EXPORT_BASES_QUANTITY, false);
         delegates[EXPORT_TYPE_ATTR_ID] = new ComboBoxWithChecksDelegate(exportTypes);
 
         QVariantMap thresholdMap;
@@ -204,20 +240,80 @@ ExtractAssemblyCoverageWorkerPrompter::ExtractAssemblyCoverageWorkerPrompter(Act
 }
 
 QString ExtractAssemblyCoverageWorkerPrompter::composeRichDoc() {
-    QString exportType = getParameter(EXPORT_TYPE_ATTR_ID).toString();
-    if (exportType.isEmpty()) {
-        exportType = tr("nothing");
+    QString exportString;
+    switch (getParameter(FORMAT_ATTR_ID).toInt()) {
+    case ExportCoverageSettings::Histogram:
+        exportString = tr("coverage in \"%1\" format").arg(getHyperlink(FORMAT_ATTR_ID, ExportCoverageSettings::HISTOGRAM));
+        break;
+    case ExportCoverageSettings::PerBase: {
+        QString exportTypeValue = getParameter(EXPORT_TYPE_ATTR_ID).toString();
+        if (exportTypeValue.isEmpty()) {
+            exportString = getHyperlink(EXPORT_TYPE_ATTR_ID, tr("nothing"));
+        } else {
+            exportTypeValue.replace(",", ", ");
+            exportString =  exportTypeValue + " " + getHyperlink(FORMAT_ATTR_ID, ExportCoverageSettings::PER_BASE.toLower());
+        }
+        break;
+    }
+    case ExportCoverageSettings::Bedgraph:
+        exportString = tr("coverage in \"%1\" format").arg(getHyperlink(FORMAT_ATTR_ID, ExportCoverageSettings::BEDGRAPH));
+        break;
     }
 
     const QString threshold = getParameter(THRESHOLD_ATTR_ID).toString();
     const QString outputFile = getParameter(BaseAttributes::URL_OUT_ATTRIBUTE().getId()).toString();
 
     return tr("Exports %1 from the incoming assembly with threshold %2 to %3 in tab delimited plain text format.").
-            arg(getHyperlink(EXPORT_TYPE_ATTR_ID, exportType)).
+            arg(exportString).
             arg(getHyperlink(THRESHOLD_ATTR_ID, threshold)).
             arg(getHyperlink(BaseAttributes::URL_OUT_ATTRIBUTE().getId(), outputFile));
 }
 
+ExtractAssemblyCoverageFileExtensionRelation::ExtractAssemblyCoverageFileExtensionRelation(const QString &relatedAttrId) :
+    AttributeRelation(relatedAttrId)
+{
+}
+
+QVariant ExtractAssemblyCoverageFileExtensionRelation::getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue, DelegateTags * /*infTags*/, DelegateTags *depTags) const {
+    const ExportCoverageSettings::Format newFormat = static_cast<ExportCoverageSettings::Format>(influencingValue.toInt());
+    updateDelegateTags(influencingValue, depTags);
+
+    QString urlStr = dependentValue.toString();
+    if (urlStr.isEmpty()) {
+        return "";
+    }
+
+    const QString newExtension = ExportCoverageSettings::getFormatExtension(newFormat);
+    bool withGz = false;
+
+    if (urlStr.endsWith(ExportCoverageSettings::COMPRESSED_EXTENSION)) {
+        withGz = true;
+        urlStr.chop(ExportCoverageSettings::COMPRESSED_EXTENSION.size());
+    }
+
+    const QString currentExtension = urlStr.mid(urlStr.lastIndexOf('.'));
+    if (currentExtension == ExportCoverageSettings::HISTOGRAM_EXTENSION ||
+            currentExtension == ExportCoverageSettings::PER_BASE_EXTENSION ||
+            currentExtension == ExportCoverageSettings::BEDGRAPH_EXTENSION) {
+        urlStr.chop(currentExtension.size());
+    }
+
+    urlStr += newExtension + (withGz ? ExportCoverageSettings::COMPRESSED_EXTENSION : "");
+    return urlStr;
+}
+
+void ExtractAssemblyCoverageFileExtensionRelation::updateDelegateTags(const QVariant &influencingValue, DelegateTags *dependentTags) const {
+    const ExportCoverageSettings::Format newFormat = static_cast<ExportCoverageSettings::Format>(influencingValue.toInt());
+    if (NULL != dependentTags) {
+        dependentTags->set("extensions", QStringList() << ExportCoverageSettings::getFormatExtension(newFormat).mid(1) << ExportCoverageSettings::getFormatExtension(newFormat).mid(1) + ExportCoverageSettings::COMPRESSED_EXTENSION);
+        const QString filter = FormatUtils::prepareFileFilter(ExportCoverageSettings::getFormat(newFormat) + " coverage files", QStringList() << ExportCoverageSettings::getFormatExtension(newFormat).mid(1));
+        dependentTags->set("filter", filter);
+    }
+}
+
+RelationType ExtractAssemblyCoverageFileExtensionRelation::getType() const {
+    return FILE_EXTENSION;
+}
 
 }   // namespace LocalWorkflow
 }   // namespace U2

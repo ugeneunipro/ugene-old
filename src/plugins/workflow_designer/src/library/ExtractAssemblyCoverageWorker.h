@@ -62,7 +62,7 @@ public:
 
     static const QString ACTOR_ID;
     static const QString EXPORT_COVERAGE;
-    static const QString EXPORT_BASES_COUNT;
+    static const QString EXPORT_BASES_QUANTITY;
 };
 
 class ExtractAssemblyCoverageWorkerPrompter : public PrompterBase<ExtractAssemblyCoverageWorkerPrompter>{
@@ -72,6 +72,21 @@ public:
 
 protected:
     QString composeRichDoc();
+};
+
+/**
+ * Since output formats are not registered in any registry, FileExtensionRelation can't be used
+*/
+class ExtractAssemblyCoverageFileExtensionRelation : public AttributeRelation {
+public:
+    ExtractAssemblyCoverageFileExtensionRelation(const QString &relatedAttrId);
+
+    QVariant getAffectResult(const QVariant &influencingValue,
+                             const QVariant &dependentValue,
+                             DelegateTags *infTags,
+                             DelegateTags *depTags) const;
+    void updateDelegateTags(const QVariant &influencingValue, DelegateTags *dependentTags) const;
+    RelationType getType() const;
 };
 
 }   // namespace LocalWorkflow

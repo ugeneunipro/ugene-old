@@ -88,6 +88,7 @@ class U2DESIGNER_EXPORT URLDelegate : public PropertyDelegate {
     Q_OBJECT
 public:
     URLDelegate(const QString& filter, const QString& type, bool multi = false, bool isPath = false, bool saveFile = true, QObject *parent = 0, const QString &format = "", bool noFilesMode = false);
+    URLDelegate(const DelegateTags& tags, const QString& type, bool multi = false, bool isPath = false, bool saveFile = true, QObject *parent = 0, bool noFilesMode = false);
 
     virtual QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
         const QModelIndex &index) const;
@@ -98,7 +99,7 @@ public:
         const QModelIndex &index) const;
 
     virtual PropertyDelegate *clone() {
-        return new URLDelegate(tags()->get("filter").toString(), lastDirType, multi, isPath, saveFile, parent(), tags()->get("format").toString(), noFilesMode);
+        return new URLDelegate(*tags(), lastDirType, multi, isPath, saveFile, parent(), noFilesMode);
     }
     virtual Type type() const;
 

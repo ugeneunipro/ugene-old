@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>419</width>
-    <height>201</height>
+    <width>429</width>
+    <height>276</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,16 +19,16 @@
      <property name="title">
       <string/>
      </property>
-     <layout class="QVBoxLayout" name="fileOptionsLayout">
-      <item>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblFilePath">
+        <property name="text">
+         <string>Export to:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
        <layout class="QHBoxLayout" name="filePathLayout">
-        <item>
-         <widget class="QLabel" name="lblFilePath">
-          <property name="text">
-           <string>Export to:</string>
-          </property>
-         </widget>
-        </item>
         <item>
          <widget class="QLineEdit" name="leFilePath"/>
         </item>
@@ -41,46 +41,72 @@
         </item>
        </layout>
       </item>
-      <item>
-       <widget class="QCheckBox" name="chbCompress">
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblFormat">
         <property name="text">
-         <string>Compress the file</string>
+         <string>Format:</string>
         </property>
        </widget>
+      </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="formatOptionsLayout">
+        <item>
+         <widget class="QComboBox" name="cbFormat"/>
+        </item>
+        <item>
+         <spacer name="formatOptionsSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="chbCompress">
+          <property name="text">
+           <string>Compress the file</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="optionsLayout">
+    <layout class="QHBoxLayout" name="thresholdLayout">
      <item>
-      <layout class="QVBoxLayout" name="exportTypeLayout">
-       <item>
-        <widget class="QCheckBox" name="chbCoverage">
-         <property name="text">
-          <string>Export coverage</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="chbBasesCount">
-         <property name="text">
-          <string>Export bases count</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QLabel" name="lblThreshold">
+       <property name="text">
+        <string>Threshold:</string>
+       </property>
+      </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer">
+      <widget class="QSpinBox" name="sbThreshold">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximum">
+        <number>65535</number>
+       </property>
+       <property name="value">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="thresholdSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -90,34 +116,33 @@
        </property>
       </spacer>
      </item>
-     <item>
-      <layout class="QHBoxLayout" name="thresholdLayout">
-       <item>
-        <widget class="QLabel" name="lblThreshold">
-         <property name="text">
-          <string>Threshold:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="sbThreshold">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximum">
-          <number>65535</number>
-         </property>
-         <property name="value">
-          <number>1</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="gbAdditionalOptions">
+     <property name="title">
+      <string>Additional options</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QCheckBox" name="chbExportCoverage">
+        <property name="text">
+         <string>Export coverage value</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chbExportBasesQuantity">
+        <property name="text">
+         <string>Export bases quantity</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
