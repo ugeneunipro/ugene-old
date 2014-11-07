@@ -40,7 +40,7 @@ void GTUtilsToolTip::checkExistingToolTip(U2OpStatus &os, const QString& tooltip
 #undef GT_METHOD_NAME
 
 QString GTUtilsToolTip::getToolTip() {
-
+    GTGlobals::sleep(3000);
     return QToolTip::text();
 }
 

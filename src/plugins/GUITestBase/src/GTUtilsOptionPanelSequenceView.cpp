@@ -174,8 +174,12 @@ void GTUtilsOptionPanelSequenceView::enterPatternFromFile( U2OpStatus &os, QStri
 #define GT_METHOD_NAME "setStrand"
 
 void GTUtilsOptionPanelSequenceView::setStrand(U2OpStatus &os, QString strandStr) {
-    QComboBox *strand = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "boxStrand"));
-    
+    QComboBox *strand = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "boxStrand", NULL, GTGlobals::FindOptions(false)));
+    GT_CHECK(strand != NULL, "combobox is NULL");
+
+    if(!strand->isVisible()){
+        GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
+    }
     GTComboBox::setIndexWithText(os, strand, strandStr);
     GTGlobals::sleep(2500);
 }
@@ -195,7 +199,11 @@ void GTUtilsOptionPanelSequenceView::enterFilepathForSavingAnnotations(U2OpStatu
 #define GT_METHOD_NAME "setAlgorithm"
 void GTUtilsOptionPanelSequenceView::setAlgorithm( U2OpStatus &os, QString algorithm ){
     QComboBox *algoBox = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "boxAlgorithm"));
+    GT_CHECK(algoBox != NULL, "algoBox is NULL");
 
+    if(!algoBox->isVisible()){
+        GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search algorithm"));
+    }
     GTComboBox::setIndexWithText(os, algoBox, algorithm);
     GTGlobals::sleep(2500);
 }

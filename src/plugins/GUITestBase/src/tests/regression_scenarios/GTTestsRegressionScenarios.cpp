@@ -1250,7 +1250,7 @@ GUI_TEST_CLASS_DEFINITION( test_1701 ) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< "Render Style"<< "Ball-and-Stick"));
     GTMenu::showContextMenu(os, pdb2);
 
-    GTGlobals::sleep(500);
+    GTGlobals::sleep();
     QPixmap before = QPixmap::grabWidget(pdb2, pdb2->rect());
 
     GTMouseDriver::moveTo( os, GTUtilsProjectTreeView::getItemCenter(os, "1A5H.pdb"));
@@ -1261,7 +1261,7 @@ GUI_TEST_CLASS_DEFINITION( test_1701 ) {
 
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList()<<"Close active view", GTGlobals::UseKey);
 
-    GTGlobals::sleep(500);
+    GTGlobals::sleep();
     QPixmap after = QPixmap::grabWidget(pdb2, pdb2->rect());
 
     GTGlobals::sleep(500);
@@ -5447,7 +5447,7 @@ GUI_TEST_CLASS_DEFINITION(test_2900) {
     GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
 
     GTGlobals::sleep(500);
-    const int firstAnnotationsCount = GTUtilsAnnotationsTreeView::getAnnotationNamesOfGroup(os, "enzyme").size();
+    const int firstAnnotationsCount = GTUtilsAnnotationsTreeView::getAnnotationNamesOfGroup(os, "enzyme  (8, 0)").size();
 
 //    4. Repeast 2-3.
 //    Expected: there are still 8 regions of auto-annotations. Old regions are removed, new ones are added.
@@ -5456,7 +5456,7 @@ GUI_TEST_CLASS_DEFINITION(test_2900) {
     GTMenu::showContextMenu(os, GTUtilsSequenceView::getSeqWidgetByNumber(os));
 
     GTGlobals::sleep(500);
-    const int secondAnnotationsCount = GTUtilsAnnotationsTreeView::getAnnotationNamesOfGroup(os, "enzyme").size();
+    const int secondAnnotationsCount = GTUtilsAnnotationsTreeView::getAnnotationNamesOfGroup(os, "enzyme  (8, 0)").size();
 
     CHECK_SET_ERR(firstAnnotationsCount == secondAnnotationsCount, QString("Annotations count differs: %1 annotations in the first time, %2 annotations in the second time").arg(firstAnnotationsCount).arg(secondAnnotationsCount));
 }
@@ -5484,6 +5484,12 @@ GUI_TEST_CLASS_DEFINITION(test_2907) {
 
     //2. In annotations tree view go to element Auto - annotations->enzyme->EcoRI(0, 1)->EcoRI
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Restriction Sites"));
+    QWidget* qt_toolbar_ext_button = GTWidget::findWidget(os, "qt_toolbar_ext_button",
+                                                          GTWidget::findWidget(os, "mwtoolbar_activemdi"), GTGlobals::FindOptions(false));
+    if(qt_toolbar_ext_button != NULL && qt_toolbar_ext_button->isVisible()){
+        GTWidget::click(os, qt_toolbar_ext_button);
+        GTGlobals::sleep(1000);
+    }
     GTWidget::click(os, GTWidget::findWidget(os, "toggleAutoAnnotationsButton"));
 
     GTUtilsTaskTreeView::waitTaskFinished(os);
