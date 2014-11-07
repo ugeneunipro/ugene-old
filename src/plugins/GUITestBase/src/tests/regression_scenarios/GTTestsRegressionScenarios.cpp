@@ -5003,6 +5003,30 @@ GUI_TEST_CLASS_DEFINITION(test_2729) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2730) {
+/*  1. Open "_common_data/fasta/abcd.fa" as separate sequences in the sequence viewer.
+    2. Click the "Automatic Annotation Highlighting" button on the first sequence's toolbar.
+    3. Click the "Plasmid features" button.
+    Expected: UGENE does not crash.
+*/
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+    GTFileDialog::openFile(os, testDir +"_common_data/fasta/", "abcd.fa");
+    GTGlobals::sleep(1000);
+    QWidget* parent=GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
+    CHECK_SET_ERR( parent != NULL, "ADV_single_sequence_widget_0 not found!");
+
+    QWidget* menuAction=GTWidget::findWidget(os, "AutoAnnotationUpdateAction",parent);
+    CHECK_SET_ERR( menuAction != NULL, "AutoAnnotationUpdateAction not found!");
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Plasmid features"));
+    GTWidget::click(os, menuAction);
+    GTGlobals::sleep(500);
+//Close file - UGENE does not crash.
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "abcd.fa"));
+    GTMouseDriver::click( os );
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(500);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2778) {
     //1. Use main menu : tools->align to reference->align short reads
     //2. Set input parameters
@@ -5861,7 +5885,6 @@ GUI_TEST_CLASS_DEFINITION(test_2991) {
 /*  1. Open file _common_data/alphabets/extended_amino_1000.fa
     Expected state: Alphabet of opened sequence must be [amino ext]
 */
-//    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
     GTFileDialog::openFile(os, testDir +"_common_data/alphabets/", "extended_amino_1000.fa");
     GTGlobals::sleep(1000);
     QWidget* w=GTWidget::findWidget(os, "ADV_single_sequence_widget_0");
