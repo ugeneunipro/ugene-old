@@ -1362,6 +1362,10 @@ void FindPatternWidget::sl_findPatrernTaskStateChanged() {
             checkState();
             showCurrentResult();
         }
+        if(findTask == searchTask){
+            disconnect(this, SLOT(sl_loadPatternTaskStateChanged()));
+            searchTask = NULL;
+        }
     } 
 }
 
@@ -1639,7 +1643,9 @@ bool FindPatternWidget::isSearchPatternsDifferent(const QList<NamePattern> &newP
 void FindPatternWidget::stopCurrentSearchTask(){
     if(searchTask != NULL){
         disconnect(this, SLOT(sl_loadPatternTaskStateChanged()));
-        searchTask->cancel();
+        if(!searchTask->isCanceled() && searchTask->getState() != Task::State_Finished){
+            searchTask->cancel();
+        }
         searchTask = NULL;
     }
     findPatternResults.clear();
