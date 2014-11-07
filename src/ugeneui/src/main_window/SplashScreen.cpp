@@ -39,8 +39,8 @@
 
 namespace U2{
 
-#define TEXT_HEIGHT_PT 15
-#define TEXT_PADDING_PT 12
+#define VERSION_HEIGHT_PX 15
+#define TASK_HEIGHT_PX 10
 
 SplashScreen::SplashScreen( QWidget *parent /* = NULL*/ ):QDialog(parent) {
     setEnabled(false);
@@ -150,25 +150,24 @@ void SplashScreenWidget::paintEvent(QPaintEvent *e){
 void SplashScreenWidget::drawInfo(){
     image2 = image1;
 
-    QRect rectVersion = QRect(17, 268, width()-width()/3, TEXT_HEIGHT_PT);
-
     QPainter p(&image2);
 
     QFont font = p.font();
-    font.setPixelSize( rectVersion.height() );
     font.setFamily("Heiti");
+    font.setPixelSize(VERSION_HEIGHT_PX);
     p.setFont( font );
     p.setPen(QColor(0, 46, 59));
     QString text = "Version " + version + " is loading";
     for (int i = 0; i < dots_number; i++) {
         text.append(".");
     }
-    p.drawText(rectVersion, text);
+    p.drawText(17,285, text);
 
     if(!task.isEmpty()){
-        QRect rect2 = QRect(17, 268 + TEXT_HEIGHT_PT + TEXT_PADDING_PT, width()-width()/3, TEXT_HEIGHT_PT);
-        QString text2 = task;
-        p.drawText(rect2, text2);
+        font.setItalic(true);
+        font.setPixelSize(TASK_HEIGHT_PX);
+        p.setFont( font );
+        p.drawText(17,297 + VERSION_HEIGHT_PX, task);
     }
     p.end();
 }
