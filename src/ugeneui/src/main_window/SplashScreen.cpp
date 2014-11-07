@@ -154,6 +154,7 @@ void SplashScreenWidget::drawInfo(){
 
     QFont font = p.font();
     font.setFamily("Heiti");
+    font.setBold(true);
     font.setPixelSize(VERSION_HEIGHT_PX);
     p.setFont( font );
     p.setPen(QColor(0, 46, 59));
@@ -166,8 +167,9 @@ void SplashScreenWidget::drawInfo(){
     if(!task.isEmpty()){
         font.setItalic(true);
         font.setPixelSize(TASK_HEIGHT_PX);
+        font.setBold(false);
         p.setFont( font );
-        p.drawText(17,297 + VERSION_HEIGHT_PX, task);
+        p.drawText(17,290 + VERSION_HEIGHT_PX, task);
     }
     p.end();
 }
