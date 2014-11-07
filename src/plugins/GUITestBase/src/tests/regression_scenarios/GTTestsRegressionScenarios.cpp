@@ -4845,6 +4845,49 @@ GUI_TEST_CLASS_DEFINITION(test_2622_1) {
     CHECK_SET_ERR(resultLabel->text() == "Results: 1/100", "Unexpected find algorithm results");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2656 ) {
+//    0. Create a file with an empty sequence. A FASTA file with the first line ">seq1" and the empty second line
+//    1. Open any sequence
+//    2. On the toolbar, press "Build dotplot"
+//    3. Press "Load sequence" in the dialog. Load the empty sequence
+//    4. Select the empty sequence as the second sequence in the combobox
+
+//    Bug: UGENE crashes
+//    Expected: an error message is shown
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    class DotplotLoadSequenceFiller : public Filler {
+    public:
+        DotplotLoadSequenceFiller(U2OpStatus &os, const QString seqPath, const QString seqName)
+            : Filler(os, "DotPlotDialog"), seqPath(seqPath), seqName(seqName) {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QPushButton* loadSeq = qobject_cast<QPushButton*>(GTWidget::findWidget(os, "loadSequenceButton", dialog));
+            CHECK_SET_ERR(loadSeq != NULL, "Load sequence button no found");
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, seqPath, seqName));
+            GTWidget::click(os, loadSeq);
+
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            QPushButton* button = box->button(QDialogButtonBox::Cancel);
+            CHECK_SET_ERR( button != NULL, "Cancel button is NULL");
+            GTWidget::click(os, button);
+        }
+
+    private:
+        QString seqPath;
+        QString seqName;
+    };
+
+    GTUtilsDialog::waitForDialog(os, new DotplotLoadSequenceFiller(os, testDir + "_common_data/fasta", "empty_2.fa"));
+    GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
+
+    CHECK_SET_ERR( l.hasError(), "An error should be in the log");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2667 ) {
 //    1. Open {/data/samples/genbank/murine.gb}.
 //    Expected state: a document was added, it contains two object: an annotation and a sequence
@@ -4860,6 +4903,62 @@ GUI_TEST_CLASS_DEFINITION( test_2667 ) {
     GTGlobals::FindOptions options;
     options.failIfNull = false;
     GTUtilsProjectTreeView::findIndex(os, "NC_001363 features", options);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2701) {
+//    1. Open {/data/samples/genbank/CVU55762.gb}.
+//    Expected state: a document was added, circular view is opened
+
+//    2. Click on Save circular view as image.
+//    Expected state: Opened Export Image dialog
+
+//    3. Select vector format (svg, pdf or ps)
+//    Expected state: Quality tuning slider is not showed.
+
+//    4. Select jpeg format
+//    Expected state: Quality tuning slider is showed.
+    GTFileDialog::openFile(os, dataDir + "/samples/Genbank/", "CVU55762.gb");
+    ADVSingleSequenceWidget* wgt = GTUtilsSequenceView::getSeqWidgetByNumber(os);
+    CHECK_SET_ERR( wgt != NULL, "No sequence widget");
+    CHECK_SET_ERR( GTUtilsCv::isCvPresent(os, wgt), "No CV opened");
+
+    class ImageQualityChecker : public Filler {
+    public:
+        ImageQualityChecker(U2OpStatus &os)
+            : Filler(os, "ImageExportForm") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QComboBox* formatsBox = dialog->findChild<QComboBox*>("formatsBox");
+            QWidget* spin = dialog->findChild<QSpinBox*>("qualitySpinBox");
+
+            GTComboBox::setIndexWithText(os, formatsBox, "svg");
+            CHECK_SET_ERR( !spin->isVisible(), "Quality spin box is visible!");
+            GTComboBox::setIndexWithText(os, formatsBox, "pdf");
+            CHECK_SET_ERR( !spin->isVisible(), "Quality spin box is visible!");
+            GTComboBox::setIndexWithText(os, formatsBox, "ps");
+            CHECK_SET_ERR( !spin->isVisible(), "Quality spin box is visible!");
+
+            GTComboBox::setIndexWithText(os, formatsBox, "jpg");
+            CHECK_SET_ERR( spin->isVisible(), "Quality spin box not visible!");
+            GTComboBox::setIndexWithText(os, formatsBox, "jpeg");
+            CHECK_SET_ERR( spin->isVisible(), "Quality spin box not visible!");
+
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+            QPushButton* button = box->button(QDialogButtonBox::Cancel);
+            CHECK_SET_ERR(button !=NULL, "Cancel button is NULL");
+            GTWidget::click(os, button);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ImageQualityChecker(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< ADV_MENU_EXPORT << "Save circular view as image", GTGlobals::UseMouse));
+
+    QWidget* circularView = GTWidget::findWidget(os, "CV_ADV_single_sequence_widget_0");
+    CHECK_OP_SET_ERR(os, "Failed to open circular view!");
+    GTWidget::click(os, circularView, Qt::RightButton);
 }
 
 namespace {
@@ -5200,7 +5299,7 @@ GUI_TEST_CLASS_DEFINITION(test_2884) {
     //2. Place Cuffdiff element on the scene
     GTUtilsWorkflowDesigner::addAlgorithm( os, "Test for Diff. Expression with Cuffdiff");
     CHECK_OP(os, );
-    
+
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Test for Diff. Expression with Cuffdiff"));
     GTMouseDriver::click(os);
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::getParameter(os, "Multi read correct") == "False", "'Mate inner distance', Parameter value doesn't amtch");
