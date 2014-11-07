@@ -1361,8 +1361,7 @@ void FindPatternWidget::sl_findPatrernTaskStateChanged() {
             getAnnotationsPushButton->setEnabled(true);
             checkState();
             showCurrentResult();
-        }        
-        searchTask = NULL;
+        }
     } 
 }
 
