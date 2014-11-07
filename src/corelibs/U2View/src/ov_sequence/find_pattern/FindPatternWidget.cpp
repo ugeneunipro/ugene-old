@@ -568,6 +568,8 @@ void FindPatternWidget::initMaxResultLenContainer() {
     boxMaxResultLen->setValue(REG_EXP_MAX_RESULT_LEN);
     boxMaxResultLen->setEnabled(false);
     connect(boxUseMaxResultLen, SIGNAL(toggled(bool)), boxMaxResultLen, SLOT(setEnabled(bool)));
+    connect(boxUseMaxResultLen, SIGNAL(toggled(bool)), SLOT(sl_activateNewSearch()));
+    connect(boxMaxResultLen, SIGNAL(valueChanged(int)), SLOT(sl_activateNewSearch()));
 
     layoutRegExpLen->addLayout(layoutUseMaxResultLen);
     layoutRegExpLen->addWidget(boxMaxResultLen);
@@ -619,7 +621,7 @@ void FindPatternWidget::sl_onAlgorithmChanged(int index)
     updatePatternText(previousAlgorithm);
     updateLayout();
     verifyPatternAlphabet();
-    sl_activateNewSearch();
+    sl_activateNewSearch(true);
 }
 
 
@@ -933,7 +935,7 @@ void FindPatternWidget::sl_onSearchPatternChanged()
         verifyPatternAlphabet();
         if(patterns != previousPatternString){
             previousPatternString = patterns;
-            sl_activateNewSearch();
+            sl_activateNewSearch(false);
         }
     }
 }
@@ -1222,7 +1224,7 @@ void FindPatternWidget::sl_onFileSelectorToggled(bool on)
 {
     textPattern->setDisabled(on);
     checkState();
-    sl_activateNewSearch();
+    sl_activateNewSearch(true);
 }
 
 void FindPatternWidget::initFindPatternTask( const QList<NamePattern>& patterns){
@@ -1505,7 +1507,7 @@ void FindPatternWidget::validateCheckBoxSize(QCheckBox* checkBox, int requiredWi
     checkBox->setText(text);
 }
 
-void FindPatternWidget::sl_activateNewSearch(){
+void FindPatternWidget::sl_activateNewSearch(bool forcedSearch){
     if(loadFromFileGroupBox->isChecked()) {
         stopCurrentSearchTask();
         if(filePathLineEdit->text().isEmpty()){
@@ -1529,7 +1531,7 @@ void FindPatternWidget::sl_activateNewSearch(){
             nameList.append(np.first);
         }
         
-        if(isSearchPatternsDifferent(newPatterns)){
+        if(isSearchPatternsDifferent(newPatterns) || forcedSearch){
             patternList.clear();
             for(int i = 0; i < newPatterns.size();i++){
                 newPatterns[i].first = QString::number(i);

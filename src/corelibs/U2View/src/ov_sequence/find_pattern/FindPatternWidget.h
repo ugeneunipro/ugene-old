@@ -111,7 +111,7 @@ private slots:
     void sl_onUsePatternNamesClicked();
     void sl_onAnotationNameEdited();
 
-    void sl_activateNewSearch();
+    void sl_activateNewSearch(bool forcedSearch = true);
     void sl_getAnnotationsButtonClicked();
     void sl_prevButtonClicked();
     void sl_nextButtonClicked();
