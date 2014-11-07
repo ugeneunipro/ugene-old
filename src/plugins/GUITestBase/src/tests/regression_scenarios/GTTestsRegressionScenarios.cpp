@@ -4779,6 +4779,72 @@ GUI_TEST_CLASS_DEFINITION( test_2612 ) {
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", GTGlobals::FindOptions(false))==NULL, "Annotations document not deleted");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2622) {
+    // 1. Open "_common_data/fasta/mylty_fa.fa".
+    // 2. Choose "Merge sequences ..." with 100 bases.
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge, 100));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "mylty_fa.fa");
+
+    // 3. Press Ctrl + F.
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    // 4. Choose "Regular expression" algorithm.
+    QComboBox *boxAlgorithm = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxAlgorithm"));
+    GTWidget::click(os, boxAlgorithm);
+    GTComboBox::setCurrentIndex(os, boxAlgorithm, 1);
+
+    // 5. Write "X+" in the pattern string.
+    QWidget *textPattern = GTWidget::findWidget(os, "textPattern");
+    GTWidget::click(os, textPattern);
+    GTKeyboardDriver::keyClick(os, 'X');
+    GTKeyboardDriver::keyClick(os, '=', GTKeyboardDriver::key["shift"]);
+
+    // UGENE does not hang.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2622_1) {
+    // 1. Open "_common_data/fasta/mylty_fa.fa".
+    // 2. Choose "Merge sequences ..." with 100 bases.
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge, 100));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "mylty_fa.fa");
+
+    // 3. Press Ctrl + F.
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    // 4. Choose "Regular expression" algorithm.
+    QComboBox *boxAlgorithm = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxAlgorithm"));
+    GTWidget::click(os, boxAlgorithm);
+    GTComboBox::setCurrentIndex(os, boxAlgorithm, 1);
+
+    // 5. Write "X+" in the pattern string.
+    QWidget *textPattern = GTWidget::findWidget(os, "textPattern");
+    GTWidget::click(os, textPattern);
+    GTKeyboardDriver::keyClick(os, 'X');
+    GTKeyboardDriver::keyClick(os, '=', GTKeyboardDriver::key["shift"]);
+
+    // 6. Check "Results no longer than" and set the value 1.
+    QCheckBox *boxUseMaxResultLen = qobject_cast<QCheckBox *>(GTWidget::findWidget(os, "boxUseMaxResultLen"));
+    GTCheckBox::setChecked(os, boxUseMaxResultLen, true);
+
+    QSpinBox *boxMaxResultLen = qobject_cast<QSpinBox *>(GTWidget::findWidget(os, "boxMaxResultLen"));
+    GTSpinBox::setValue(os, boxMaxResultLen, 1, GTGlobals::UseKeyBoard);
+
+    // UGENE does not hang and all results are 1 bp length (100 results).
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsLog::check(os, l);
+
+    QLabel *resultLabel = qobject_cast<QLabel *>(GTWidget::findWidget(os, "resultLabel"));
+    CHECK_SET_ERR(resultLabel->text() == "Results: 1/100", "Unexpected find algorithm results");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2667 ) {
 //    1. Open {/data/samples/genbank/murine.gb}.
 //    Expected state: a document was added, it contains two object: an annotation and a sequence

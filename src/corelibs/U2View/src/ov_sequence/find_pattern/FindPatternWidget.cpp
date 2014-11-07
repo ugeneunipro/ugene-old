@@ -554,12 +554,14 @@ void FindPatternWidget::initMaxResultLenContainer() {
     layoutUseMaxResultLen->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
     boxUseMaxResultLen = new QCheckBox();
+    boxUseMaxResultLen->setObjectName("boxUseMaxResultLen");
     QLabel *labelUseMaxResultLen = new QLabel(tr("Results no longer than:"));
     labelUseMaxResultLen->setWordWrap(true);
     layoutUseMaxResultLen->addWidget(boxUseMaxResultLen, 0);
     layoutUseMaxResultLen->addWidget(labelUseMaxResultLen, 1);
 
     boxMaxResultLen = new QSpinBox();
+    boxMaxResultLen->setObjectName("boxMaxResultLen");
     boxMaxResultLen->setMinimum(REG_EXP_MIN_RESULT_LEN);
     boxMaxResultLen->setMaximum(REG_EXP_MAX_RESULT_LEN);
     boxMaxResultLen->setSingleStep(REG_EXP_MAX_RESULT_SINGLE_STEP);

@@ -54,7 +54,7 @@ void SequenceReadingModeSelectorDialogFiller::run()
 
         QSpinBox *mergeSpinBox = dialog->findChild<QSpinBox*>(QString::fromUtf8("mergeSpinBox"));
         GT_CHECK(mergeSpinBox != NULL, "merge spin box not found");
-        GTSpinBox::setValue(os, mergeSpinBox, bases);
+        GTSpinBox::setValue(os, mergeSpinBox, bases, GTGlobals::UseKeyBoard);
     }
     if (readingMode == Join) {
         QRadioButton *malignmentRB = dialog->findChild<QRadioButton*>(QString::fromUtf8("malignmentRB"));
