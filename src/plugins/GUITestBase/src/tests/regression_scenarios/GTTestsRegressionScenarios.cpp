@@ -5781,6 +5781,27 @@ GUI_TEST_CLASS_DEFINITION(test_2962_2) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2971) {
+/*  1. Open "COI.aln".
+    2. Context menu -> Add -> Sequence from file...
+    3. Choose a file with a large sequence (~50mb), e.g human chr21.
+    Expected: UGENE does not crash.
+*/
+    GTFileDialog::openFile(os, dataDir +"samples/CLUSTALW/", "COI.aln");
+    GTGlobals::sleep(500);
+
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/regression/2971", "hg18_21.fa" ));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_LOAD_SEQ" << "Sequence from file"));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep(500);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+//Close file - UGENE does not crash.
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "abcd.fa"));
+    GTMouseDriver::click( os );
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(500);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2972){
 //    1. Open "samples/FASTA/human_T1.fa".
     GTLogTracer l;
