@@ -1253,7 +1253,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0012, "native separator problem");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0013, "native separator problem");
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0014, "native separator problem");
-    REGISTER_TEST_IGNORED(GUITest_Assembly_browser::test_0015, "ignored because of bugs in GTComboBox");
+    REGISTER_TEST(GUITest_Assembly_browser::test_0015);
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_Assembly_browser::test_0016, "native separator problem");
 
 /////////////////////////////////////////////////////////////////////////
