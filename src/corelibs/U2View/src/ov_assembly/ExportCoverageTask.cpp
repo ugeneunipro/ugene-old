@@ -147,6 +147,7 @@ void ExportCoverageHistogramTask::processRegion(qint64 startPos) {
     QVector<CoveragePerBaseInfo> *regionCoverage = calculateTask->takeResult(startPos);
     foreach (const CoveragePerBaseInfo &info, *regionCoverage) {
         histogramData[info.coverage] = histogramData[info.coverage]++;
+        alreadyProcessed++;
     }
     delete regionCoverage;
 }

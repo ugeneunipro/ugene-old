@@ -108,7 +108,17 @@ void ExportCoverageDialog::sl_browseFiles() {
         additionalOptions = QFileDialog::DontUseNativeDialog;
     }
 #endif
-    const QString filter = DialogUtils::prepareFileFilter(cbFormat->currentText(), QStringList() << cbFormat->itemData(cbFormat->currentIndex()).toString().mid(1), true, QStringList());
+    QString filterName;
+    QString extension;
+    if (chbCompress->isChecked()) {
+        filterName = tr("Compressed ") + cbFormat->currentText().toLower();
+        extension = cbFormat->itemData(cbFormat->currentIndex()).toString().mid(1) + ExportCoverageSettings::COMPRESSED_EXTENSION;
+    } else {
+        filterName = cbFormat->currentText();
+        extension = cbFormat->itemData(cbFormat->currentIndex()).toString().mid(1);
+    }
+
+    const QString filter = DialogUtils::prepareFileFilter(filterName, QStringList() << extension, true, QStringList());
     LastUsedDirHelper dirHelper(DIR_HELPER_NAME);
     QString filePath = U2FileDialog::getSaveFileName(this,
                                                      tr("Export to..."),
