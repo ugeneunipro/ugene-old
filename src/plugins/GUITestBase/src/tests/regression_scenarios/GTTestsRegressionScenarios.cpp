@@ -4509,6 +4509,19 @@ GUI_TEST_CLASS_DEFINITION( test_2496 ) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/assembly/", "example-alignment.bam");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2498 ) {
+    // 1. Open the /test/_common_data/fasta/empty.fa empty msa file.
+    // 2. Open context menu on the sequence area. Go to the {Export -> amino translation}
+    // 
+
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "empty.fa");
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT, GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    //TODO: Expected state: this menu item is disabled for the empty msa.
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2506 ) {
     // 1. Open file _common_data/vcf_consensus/vcf_cons_out_damaged_1.vcf
     // Expected state: error message appears.
@@ -4688,6 +4701,44 @@ GUI_TEST_CLASS_DEFINITION( test_2566 ) {
      CHECK_SET_ERR(97 == matchingBox->value(), "Entered and actual values don't match");
 
 //Expected state: the task finished successfully.
+    CHECK_SET_ERR( !l.hasError( ), "Unexpected error in log!: " + l.getError() );
+}
+GUI_TEST_CLASS_DEFINITION( test_2567 ) {
+
+    //1. Open "samples/Genbank/murine.gb".
+    GTLogTracer l;
+    GTFileDialog::openFile( os, dataDir + "samples/Genbank/", "murine.gb" );
+
+    //2. Press Ctrl+F.
+    GTKeyboardDriver::keyClick( os, 'f', GTKeyboardDriver::key["ctrl"] );
+    GTGlobals::sleep( );
+
+    //3. Enter the pattern: GCTAGCTTAAGTAACGCCAC
+    QWidget *patternInputLine = QApplication::focusWidget( );
+    CHECK_SET_ERR( NULL != patternInputLine && patternInputLine->objectName( ) == "textPattern",
+        "Focus is not on FindPattern widget" );
+
+    GTKeyboardDriver::keySequence( os, "GCTAGCTTAAGTAACGCCAC" );
+    GTGlobals::sleep( 1000 );
+
+    //4. Choose the algorithm: Substitute.
+    QComboBox *algoBox = static_cast<QComboBox *>( GTWidget::findWidget( os, "boxAlgorithm" ) );
+    CHECK_SET_ERR( NULL != algoBox, "Algorithm combobox not found!" );
+
+    GTComboBox::setIndexWithText( os, algoBox, "Substitute" );
+
+    //5. Enter the "Should match" value: 30%
+    QSpinBox *matchingBox = static_cast<QSpinBox *>( GTWidget::findWidget( os, "spinBoxMatch" ) );
+    CHECK_SET_ERR( NULL != matchingBox, "Algorithm match spinbox not found!" );
+
+    GTSpinBox::setValue( os, matchingBox, 30, GTGlobals::UseKeyBoard );
+
+    //6. Click "Search".
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
+    GTGlobals::sleep(500);
+
+    //Expected state: the task finished successfully.
     CHECK_SET_ERR( !l.hasError( ), "Unexpected error in log!: " + l.getError() );
 }
 
