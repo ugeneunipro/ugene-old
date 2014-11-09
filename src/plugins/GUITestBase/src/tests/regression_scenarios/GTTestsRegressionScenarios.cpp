@@ -860,6 +860,7 @@ GUI_TEST_CLASS_DEFINITION(test_1189){
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region"));
     GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
 //4) Select "Selected region" in "Region" combobox of "Search in" area.
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
     QComboBox *regBox =(QComboBox*)GTWidget::findWidget(os, "boxRegion");
     GTComboBox::setCurrentIndex(os,regBox,2);
 //5) Ensure that two lineedits became visible and contain correct region
@@ -889,6 +890,7 @@ GUI_TEST_CLASS_DEFINITION(test_1189_1){
     GTMouseDriver::moveTo(os,p);
     GTMouseDriver::release(os);
 //4) Select "Selected region" in "Region" combobox of "Search in" area.
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
     QComboBox *regBox =(QComboBox*)GTWidget::findWidget(os, "boxRegion");
     GTComboBox::setCurrentIndex(os,regBox,2);
 //5) Ensure that two lineedits became visible and contain correct region
@@ -4681,6 +4683,7 @@ GUI_TEST_CLASS_DEFINITION( test_2566 ) {
     GTGlobals::sleep( 1000 );
 
 //4. Choose the algorithm: Substitute.
+     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search algorithm"));
      QComboBox *algoBox = static_cast<QComboBox *>( GTWidget::findWidget( os, "boxAlgorithm" ) );
      CHECK_SET_ERR( NULL != algoBox, "Algorithm combobox not found!" );
 

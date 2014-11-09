@@ -98,6 +98,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003){
     GTUtilsOptionPanelSequenceView::enterPatternFromFile(os, testDir + "_common_data/FindAlgorithm/", "find_pattern_op_1.fa");
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/40"), "Results string not match");
 
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
     GTUtilsOptionPanelSequenceView::setStrand(os, "Direct");
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/16"), "Results string not match");
 }
@@ -124,6 +125,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     GTUtilsOptionPanelSequenceView::enterPattern(os, "AAAAAAAAAAAAAAAAAAAA");
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/40"), "Results string not match");
 
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search algorithm"));
     GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Substitute");
     GTUtilsOptionPanelSequenceView::setMatchPercentage(os, 75);
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/1649"), "Results string not match");
