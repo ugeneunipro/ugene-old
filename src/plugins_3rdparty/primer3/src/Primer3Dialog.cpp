@@ -73,7 +73,7 @@ Primer3Dialog::Primer3Dialog(const Primer3TaskSettings &defaultSettings, ADVSequ
         selection = context->getSequenceSelection()->getSelectedRegions().first();
     }
     sequenceLength = context->getSequenceLength();
-    rs=new RegionSelector(this, sequenceLength, false, context->getSequenceSelection());
+    rs=new RegionSelector(this, sequenceLength, false, context->getSequenceSelection(), true);
     ui.rangeSelectorLayout->addWidget(rs);
 
     repeatLibraries.append(QPair<QString, QByteArray>(tr("NONE"), ""));

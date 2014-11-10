@@ -63,20 +63,22 @@ const QString RegionSelector::WHOLE_SEQUENCE = QObject::tr("Whole sequence");
 const QString RegionSelector::SELECTED_REGION = QObject::tr("Selected region");
 const QString RegionSelector::CUSTOM_REGION = QObject::tr("Custom region");
 
-RegionSelector::RegionSelector(QWidget* p, qint64 len, bool isVertical, DNASequenceSelection* selection, QList<RegionPreset> presetRegions) :
+RegionSelector::RegionSelector(QWidget* p, qint64 len, bool isVertical,
+                               DNASequenceSelection* selection,
+                               bool isCircularSelectionAvailable,
+                               QList<RegionPreset> presetRegions) :
     QWidget(p),
     maxLen(len),
     startEdit(NULL),
     endEdit(NULL),
     isVertical(isVertical),
-    selection(selection)
+    selection(selection),
+    isCircularSelectionAvailable(isCircularSelectionAvailable)
 {
     defaultItemText = WHOLE_SEQUENCE;
 
     if (selection != NULL && !selection->isEmpty()) {
-        U2Region region;
-        region.startPos = selection->getSelectedRegions().first().startPos;
-        region.length = selection->getSelectedRegions().first().endPos() - region.startPos;
+        U2Region region = getOneRegionFromSelection();
         presetRegions.prepend(RegionPreset(SELECTED_REGION, region));
         defaultItemText = SELECTED_REGION;
     }
@@ -93,7 +95,7 @@ U2Region RegionSelector::getRegion(bool *_ok) const {
     bool ok = false;
     qint64 v1 = startEdit->text().toLongLong(&ok) - 1;
 
-    if (!ok || v1 < 0) {
+    if (!ok || v1 < 0 || v1 > maxLen) {
         if (_ok != NULL) {
             *_ok = false;
         }
@@ -101,6 +103,7 @@ U2Region RegionSelector::getRegion(bool *_ok) const {
     }
 
     int v2 = endEdit->text().toLongLong(&ok);
+
     if (!ok || v2 <= 0 || v2 > maxLen) {
         if (_ok != NULL) {
             *_ok = false;
@@ -108,7 +111,7 @@ U2Region RegionSelector::getRegion(bool *_ok) const {
         return U2Region();
     }
 
-    if (v1 > v2 ) { // start > end
+    if (v1 > v2 && !isCircularSelectionAvailable) { // start > end
         if (_ok != NULL) {
             *_ok = false;
         }
@@ -119,7 +122,11 @@ U2Region RegionSelector::getRegion(bool *_ok) const {
         *_ok = true;
     }
 
-    return U2Region(v1, v2 - v1);
+    if (v1 < v2) {
+        return U2Region(v1, v2 - v1);
+    } else {
+        return U2Region(v1, v2 + maxLen - v1);
+    }
 }
 
 void RegionSelector::setMaxLength(qint64 length) {
@@ -163,6 +170,10 @@ void RegionSelector::setWholeRegionSelected() {
     comboBox->setCurrentIndex(comboBox->findText(WHOLE_SEQUENCE));
 }
 
+void RegionSelector::setCircularSelectionAvailable(bool allowCircSelection) {
+    isCircularSelectionAvailable = allowCircSelection;
+}
+
 void RegionSelector::reset() {
     comboBox->setCurrentIndex(comboBox->findText(defaultItemText));
 }
@@ -173,7 +184,7 @@ void RegionSelector::showErrorMessage() {
     //set focus to error field
     bool ok = false;
     qint64 v1 = startEdit->text().toLongLong(&ok) - 1;
-    if (!ok || v1 < 0) {
+    if (!ok || v1 <= 0 || v1 > maxLen) {
         msgBox.setInformativeText(tr("Invalid Start position of region"));
         msgBox.exec();
         startEdit->setFocus();
@@ -188,7 +199,7 @@ void RegionSelector::showErrorMessage() {
         return;
     }
 
-    if ( v1 > v2 ) { // start > end
+    if ( v1 > v2 && !isCircularSelectionAvailable) { // start > end
         msgBox.setInformativeText(tr("Start position is greater than End position"));
         msgBox.exec();
         startEdit->setFocus();
@@ -207,7 +218,7 @@ void RegionSelector::sl_onComboBoxIndexChanged(int index) {
     qint64 start = region.startPos + 1;
     qint64 end = region.endPos();
     startEdit->setText(QString::number(start));
-    endEdit->setText(QString::number(end));
+    endEdit->setText(QString::number(end > maxLen ? end - maxLen : end));
     sl_onValueEdited();
     sl_onRegionChanged();
 }
@@ -221,11 +232,19 @@ void RegionSelector::sl_onRegionChanged() {
     }
 
     int v2 = endEdit->text().toInt(&ok);
-    if (!ok || v2 < v1 || v2 > maxLen) {
+    if (!ok || v2 < 1 || v2 > maxLen) {
+        return;
+    }
+    if (!isCircularSelectionAvailable && v2 < v1) {
         return;
     }
 
-    U2Region r(v1 - 1, v2 - (v1 - 1));
+    U2Region r;
+    if (v1 < v2) {
+        r = U2Region(v1 - 1, v2 - (v1 - 1));
+    } else {
+        r = U2Region(v1 - 1, v2 + maxLen - (v1 - 1));
+    }
     emit si_regionChanged(r);
 }
 
@@ -262,7 +281,7 @@ void RegionSelector::sl_onSelectionChanged(GSelection *_selection) {
         comboBox->insertItem(selectedRegionIndex, SELECTED_REGION);
     }
 
-    const U2Region region = selection->getSelectedRegions().isEmpty() ? U2Region(0, maxLen) : selection->getSelectedRegions().first();
+    U2Region region = getOneRegionFromSelection();
     if (region != comboBox->itemData(selectedRegionIndex).value<U2Region>()) {
         comboBox->setItemData(selectedRegionIndex, qVariantFromValue(region));
         if (selectedRegionIndex == comboBox->currentIndex()) {
@@ -328,7 +347,8 @@ void RegionSelector::init(const QList<RegionPreset> &presetRegions) {
 
     const U2Region region = comboBox->itemData(comboBox->findText(defaultItemText)).value<U2Region>();
     startEdit->setText(QString::number(region.startPos + 1));
-    endEdit->setText(QString::number(region.endPos()));
+
+    endEdit->setText(QString::number(region.endPos() > maxLen ? region.endPos() - maxLen : region.endPos()));
 }
 
 void RegionSelector::connectSignals() {
@@ -340,6 +360,27 @@ void RegionSelector::connectSignals() {
     if (NULL != selection) {
         connect(selection, SIGNAL(si_onSelectionChanged(GSelection*)), SLOT(sl_onSelectionChanged(GSelection*)));
     }
+}
+
+U2Region RegionSelector::getOneRegionFromSelection() const {
+    U2Region region = selection->getSelectedRegions().isEmpty()
+            ? U2Region(0, maxLen)
+            : selection->getSelectedRegions().first();
+    if (selection->getSelectedRegions().size() == 2) {
+        U2Region secondReg = selection->getSelectedRegions().last();
+        bool circularSelection = (region.startPos == 0 && secondReg.endPos() == maxLen)
+                || (region.endPos() == maxLen && secondReg.startPos == 0);
+        if (circularSelection) {
+            if (secondReg.startPos == 0) {
+                region.length += secondReg.length;
+            } else {
+                region.startPos = secondReg.startPos;
+                region.length += secondReg.length;
+            }
+        }
+    }
+
+    return region;
 }
 
 ///////////////////////////////////////

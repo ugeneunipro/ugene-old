@@ -51,7 +51,10 @@ struct RegionPreset {
 class U2GUI_EXPORT RegionSelector : public QWidget {
     Q_OBJECT
 public:
-    RegionSelector(QWidget* p, qint64 len, bool isVertical = false, DNASequenceSelection* selection = NULL, QList<RegionPreset> presetRegions = QList<RegionPreset>());
+    RegionSelector(QWidget* p, qint64 len, bool isVertical = false,
+                   DNASequenceSelection* selection = NULL,
+                   bool isCircularSelectionAvailable = false,
+                   QList<RegionPreset> presetRegions = QList<RegionPreset>());
 
     U2Region getRegion(bool *ok = NULL) const;
 
@@ -60,6 +63,7 @@ public:
     void setSequenceSelection(DNASequenceSelection* selection);
     void updateSelectedRegion(const U2Region &selectedRegion);
     void setWholeRegionSelected();
+    void setCircularSelectionAvailable(bool allowCircSelection);
     void reset();
 
     void showErrorMessage();
@@ -78,6 +82,9 @@ private:
     void init(const QList<RegionPreset> &presetRegions);
     void connectSignals();
 
+    // Returns circular region or the first selected. If none is selected, returns full sequence range.
+    U2Region getOneRegionFromSelection() const;
+
     qint64                maxLen;
     RegionLineEdit *      startEdit;
     RegionLineEdit *      endEdit;
@@ -85,6 +92,7 @@ private:
     bool                  isVertical;
     QString               defaultItemText;
     DNASequenceSelection *selection;
+    bool                  isCircularSelectionAvailable;
 
     static const QString WHOLE_SEQUENCE;
     static const QString SELECTED_REGION;

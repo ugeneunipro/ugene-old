@@ -671,12 +671,27 @@ Primer3SWTask::Primer3SWTask(const Primer3TaskSettings &settingsArg):
 void Primer3SWTask::prepare()
 {
     if((settings.getIncludedRegion().startPos < settings.getFirstBaseIndex()) ||
-       (settings.getIncludedRegion().length <= 0) ||
-       (settings.getIncludedRegion().endPos() >
-        settings.getSequenceSize() + settings.getFirstBaseIndex()))
+       (settings.getIncludedRegion().length <= 0))
     {
         setError("invalid included region");
         return;
+    }
+
+    // selected region covers circular junction
+    if (settings.getIncludedRegion().endPos() > settings.getSequenceSize() + settings.getFirstBaseIndex()) {
+        if (!settings.isSequenceCircular()) {
+            U2Region endRegion(settings.getIncludedRegion().startPos,
+                               settings.getSequenceSize() - settings.getIncludedRegion().startPos + 1);
+            U2Region startRegion(1, settings.getIncludedRegion().endPos() - settings.getSequenceSize());
+
+            addPrimer3Subtasks(settings, startRegion, regionTasks);
+            addPrimer3Subtasks(settings, endRegion, regionTasks);
+            return;
+        } else {
+            QByteArray seq = settings.getSequence();
+            seq.append( seq.left(settings.getIncludedRegion().endPos() - settings.getSequenceSize() - settings.getFirstBaseIndex() ));
+            settings.setSequence(seq);
+        }
     }
 
     addPrimer3Subtasks(settings, regionTasks);
@@ -732,6 +747,7 @@ Task::ReportResult Primer3SWTask::report()
             }
         }
     }
+
     if (regionTasks.size() + circRegionTasks.size() > 1)
     {
         qStableSort(bestPairs);
@@ -747,8 +763,8 @@ Task::ReportResult Primer3SWTask::report()
     return Task::ReportResult_Finished;
 }
 
-void Primer3SWTask::addPrimer3Subtasks(const Primer3TaskSettings &settings, QList<Primer3Task*> &list) {
-    QVector<U2Region> regions = SequenceWalkerTask::splitRange(settings.getIncludedRegion(),
+void Primer3SWTask::addPrimer3Subtasks(const Primer3TaskSettings &settings, const U2Region& rangeToSplit, QList<Primer3Task*> &list) {
+    QVector<U2Region> regions = SequenceWalkerTask::splitRange(rangeToSplit,
                                                                CHUNK_SIZE, 0, CHUNK_SIZE/2, false);
     foreach(const U2Region& region, regions)
     {
@@ -759,6 +775,11 @@ void Primer3SWTask::addPrimer3Subtasks(const Primer3TaskSettings &settings, QLis
         addSubTask(task);
     }
 }
+
+void Primer3SWTask::addPrimer3Subtasks(const Primer3TaskSettings &settings, QList<Primer3Task*> &list) {
+    addPrimer3Subtasks(settings, settings.getIncludedRegion(), list);
+}
+
 
 void Primer3SWTask::relocatePrimerOverMedian(Primer *primer) {
     primer->setStart( primer->getStart() + median *( primer->getStart() > median ? -1 : 1));
@@ -952,13 +973,23 @@ AnnotationData Primer3ToAnnotationsTask::oligoToAnnotation(const QString& title,
 {
     AnnotationData annotationData;
     annotationData.name = title;
-    int start = primer.getStart();
+    qint64 seqLen = seqObj->getSequenceLength();
+    // primer can be found on circular extension of the sequence
+    int start = primer.getStart() + (primer.getStart() > seqLen ?  (- seqLen) : 0);
     int length = primer.getLength();
+    if (start + length < seqLen) {
+        annotationData.location->regions << U2Region(start, length);
+    } else {
+        // primer covers circular junction
+        annotationData.location->regions << U2Region(start, seqLen - start) << U2Region(1, start + length - seqLen);
+        annotationData.location.data()->op = U2LocationOperator_Join;
+    }
+
     if (strand == U2Strand::Complementary) {
         start -= length - 1;
     }
     annotationData.setStrand(strand);
-    annotationData.location->regions << U2Region(start, length);
+
     annotationData.qualifiers.append(U2Qualifier("tm", QString::number(primer.getMeltingTemperature())));
     annotationData.qualifiers.append(U2Qualifier("gc%", QString::number(primer.getGcContent())));
     annotationData.qualifiers.append(U2Qualifier("any", QString::number(0.01*primer.getSelfAny())));

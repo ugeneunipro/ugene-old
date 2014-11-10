@@ -143,6 +143,8 @@ public:
     const QList<PrimerPair>& getBestPairs() const  { return bestPairs; }
     const QList<Primer>& getSinglePrimers() const { return singlePrimers; }
 private:
+    void addPrimer3Subtasks(const Primer3TaskSettings &settings, const U2Region& rangeToSplit,
+                            QList<Primer3Task*> &listToRemember);
     void addPrimer3Subtasks(const Primer3TaskSettings &settings, QList<Primer3Task*> &listToRemember);
     void relocatePrimerOverMedian(Primer* primer);
 

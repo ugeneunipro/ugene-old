@@ -53,7 +53,7 @@ ExportConsensusVariationsDialog::ExportConsensusVariationsDialog(QWidget *p, con
     //hide for this dialog
     sequenceNameLabel->hide();
     sequenceNameLineEdit->hide();
-   
+
     SaveDocumentGroupControllerConfig conf;
     conf.dfc.supportedObjectTypes += GObjectTypes::VARIANT_TRACK;
     conf.dfc.addFlagToSupport(DocumentFormatFlag_SupportWriting);
@@ -68,7 +68,7 @@ ExportConsensusVariationsDialog::ExportConsensusVariationsDialog(QWidget *p, con
 
     U2OpStatus2Log os;
     QList<RegionPreset> presets = QList<RegionPreset>() << RegionPreset(tr("Visible"), visibleRegion);
-    regionSelector = new RegionSelector(this, settings.model->getModelLength(os), false, NULL, presets);
+    regionSelector = new RegionSelector(this, settings.model->getModelLength(os), false, NULL, false, presets);
 
     int insertPos = verticalLayout->count() - 3;
     verticalLayout->insertWidget(insertPos, regionSelector);
