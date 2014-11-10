@@ -114,7 +114,6 @@ PLUGIN_LIST="annotator \
             repeat_finder \
             sitecon \
             smith_waterman \
-            snp_effect \
             umuscle \
             variants \
             weight_matrix \
