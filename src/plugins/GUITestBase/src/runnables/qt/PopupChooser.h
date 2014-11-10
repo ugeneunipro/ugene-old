@@ -27,6 +27,7 @@
 namespace U2 {
 
     class PopupChooser : public Filler {
+        friend class PopupChecker;
     public:
         PopupChooser(U2OpStatus &_os, const QStringList &_namePath, GTGlobals::UseMethod _useMethod = GTGlobals::UseKey) //UseKey need for Ubuntu
             :Filler(_os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)), namePath(_namePath), useMethod(_useMethod){}
@@ -48,6 +49,28 @@ namespace U2 {
         QStringList namePath;
         GTGlobals::UseMethod useMethod;
     };
+
+    class PopupChecker : public Filler {
+    public:
+        enum CheckOption{
+            NotExists = 0,
+            Exists = 1,
+            IsEnabled = 2 | Exists,
+            IsDisabled = 4 | Exists,
+            IsChecable = 8 | Exists,
+            IsChecked = 16 | Exists | IsChecable
+        };
+        Q_DECLARE_FLAGS(CheckOptions, CheckOption)
+        PopupChecker(U2OpStatus &_os, const QStringList &_namePath, CheckOptions _options = CheckOptions(IsEnabled),
+                     GTGlobals::UseMethod _useMethod = GTGlobals::UseKey) //UseKey need for Ubuntu
+            :Filler(_os, GUIDialogWaiter::WaitSettings(QString(), GUIDialogWaiter::Popup)), namePath(_namePath), options(_options), useMethod(_useMethod){}
+        virtual void run();
+    protected:
+        QStringList namePath;
+        CheckOptions options;
+        GTGlobals::UseMethod useMethod;
+    };
+    Q_DECLARE_OPERATORS_FOR_FLAGS(PopupChecker::CheckOptions)
 }
 
 #endif

@@ -75,5 +75,67 @@ void PopupChooserbyText::run()
     GTMenu::clickMenuItemByText(os, activePopupMenu, namePath, useMethod);
 }
 
+
+#define GT_CLASS_NAME "PopupChecker"
+
+#define GT_METHOD_NAME "run"
+void PopupChecker::run() {
+    GTGlobals::sleep(1000);
+    GTMouseDriver::release(os);
+    QMenu* activePopupMenu = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+    GT_CHECK(NULL != activePopupMenu, "Active popup menu is NULL");
+
+    QAction* act;
+    if (!namePath.isEmpty()) {
+        QString actName;
+        int escCount = namePath.size();
+        if(namePath.size()>1){
+            actName = namePath.takeLast();
+            GTMenu::clickMenuItemByName(os, activePopupMenu, namePath, useMethod);
+            QMenu* activePopupMenuToCheck = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+            act = GTMenu::getMenuItem(os, activePopupMenuToCheck, actName);
+        }else{
+            QMenu* activePopupMenuToCheck = qobject_cast<QMenu*>(QApplication::activePopupWidget());
+            actName = namePath.last();
+            act = GTMenu::getMenuItem(os, activePopupMenuToCheck, actName);
+        }
+
+        if(options.testFlag(Exists)){
+            GT_CHECK(act != NULL, "action" + actName + "not found");
+            uiLog.trace("options.testFlag(Exists)");
+        }else{
+            GT_CHECK(act == NULL, "action" + actName + "unexpectidly found");
+        }
+        if(options.testFlag(IsEnabled)){
+            GT_CHECK(act->isEnabled(), "action" + act->objectName() + " is not enabled");
+            uiLog.trace("options.testFlag(IsEnabled)");
+        }
+        if(options.testFlag(IsDisabled)){
+            GT_CHECK(!act->isEnabled(), "action" + act->objectName() + " is enabled");
+            uiLog.trace("options.testFlag(IsDisabled");
+        }
+        if(options.testFlag(IsChecable)){
+            GT_CHECK(act->isCheckable(), "action" + act->objectName() + " is not checkable");
+            uiLog.trace("options.testFlag(IsChecable)");
+        }
+        if(options.testFlag(IsChecked)){
+            GT_CHECK(act->isCheckable(), "action" + act->objectName() + "is not checked");
+            uiLog.trace("options.testFlag(IsChecked)");
+        }
+        for(int i = 0; i<escCount; i++){
+            PopupChooser::clickEsc();
+            GTGlobals::sleep(300);
+        }
+    } else {
+        PopupChooser::clickEsc();
+    }
+
+    if (os.hasError()) {
+        PopupChooser::clickEsc();
+    }
+}
+#undef GT_METHOD_NAME
+
+#undef GT_CLASS_NAME
 }
 

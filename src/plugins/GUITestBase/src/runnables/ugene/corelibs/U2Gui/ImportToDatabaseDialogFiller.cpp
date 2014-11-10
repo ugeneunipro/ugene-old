@@ -312,7 +312,7 @@ QTreeWidgetItem *ImportToDatabaseDialogFiller::findItem(const QString &text) {
     QTreeWidget* treeWidget = qobject_cast<QTreeWidget*>(GTWidget::findWidget(os, "twOrders", dialog));
     GT_CHECK_RESULT(NULL != treeWidget, "treeWidget is NULL", NULL);
 
-    QList<QTreeWidgetItem*> items = treeWidget->findItems(text, Qt::MatchExactly | Qt::MatchRecursive);
+    QList<QTreeWidgetItem*> items = treeWidget->findItems(text, Qt::MatchFlags(Qt::MatchExactly | Qt::MatchRecursive));
     GT_CHECK_RESULT(!items.isEmpty(), "Item was not found", NULL);
     GT_CHECK_RESULT(items.size() == 1, "Several items were found unexpectedly", NULL);
     return items.first();

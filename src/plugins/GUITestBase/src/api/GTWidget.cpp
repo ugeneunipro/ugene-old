@@ -45,7 +45,7 @@ void GTWidget::click(U2OpStatus &os, QWidget *w, Qt::MouseButton mouseButton, QP
 
     GTGlobals::sleep(100);
     GT_CHECK(w != NULL, "widget is NULL");
-    GT_CHECK(w->isEnabled() == true, "widget is not enabled");
+    GT_CHECK(w->isEnabled() == true, "widget " + w->objectName() + "is not enabled");
 
     if (p.isNull()) {
         p = w->rect().center();

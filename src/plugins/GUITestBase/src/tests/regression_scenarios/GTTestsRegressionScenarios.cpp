@@ -4519,7 +4519,9 @@ GUI_TEST_CLASS_DEFINITION( test_2498 ) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "empty.fa");
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_EXPORT, GTGlobals::UseMouse));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << MSAE_MENU_EXPORT << "amino_translation_of_alignment_rows",
+                                                      PopupChecker::IsDisabled, GTGlobals::UseMouse));
     GTMouseDriver::click(os, Qt::RightButton);
 
     //TODO: Expected state: this menu item is disabled for the empty msa.
@@ -5299,6 +5301,7 @@ GUI_TEST_CLASS_DEFINITION(test_2811) {
 //    1. Open WD.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::toggleDebugMode(os);
+    GTGlobals::sleep(1000);
     GTUtilsWorkflowDesigner::toggleBreakpointManager(os);
 
 //    2. Open any workflow, create a breakpoint for any element.
@@ -5845,13 +5848,15 @@ GUI_TEST_CLASS_DEFINITION(test_2971) {
     GTFileDialog::openFile(os, dataDir +"samples/CLUSTALW/", "COI.aln");
     GTGlobals::sleep(500);
 
+    GTWidget::click(os, GTAction::button(os, "Show overview"));//needed to swith off rendering overview
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/regression/2971", "hg18_21.fa" ));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "MSAE_MENU_LOAD_SEQ" << "Sequence from file"));
     GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
     GTGlobals::sleep(500);
     GTUtilsTaskTreeView::waitTaskFinished(os);
 //Close file - UGENE does not crash.
-    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "abcd.fa"));
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "COI.aln"));
     GTMouseDriver::click( os );
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep(500);
