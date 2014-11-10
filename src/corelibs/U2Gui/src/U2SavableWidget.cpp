@@ -114,6 +114,8 @@ void setTableWidgetContent(QTableWidget *tableWidget, const QVector<QVector<QStr
     }
 }
 
+Q_DECLARE_METATYPE(QVector<QVector<QString> >)
+
 }
 
 QVariant U2SavableWidget::getChildValue(const QString &childId) const {
