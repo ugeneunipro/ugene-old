@@ -36,6 +36,10 @@
 
 static const QString PCR_PRODUCTS_TABLE_NAME = "productsTable";
 
+typedef QPair<U2::ADVSequenceObjectContext *, QList<U2::InSilicoPcrProduct> > AdvContextPcrProductPair;
+
+Q_DECLARE_METATYPE(AdvContextPcrProductPair)
+
 namespace U2 {
 
 PcrOptionsPanelSavableTab::PcrOptionsPanelSavableTab(QWidget *wrappedWidget, MWMDIWindow *contextWindow)
@@ -54,8 +58,8 @@ QVariant PcrOptionsPanelSavableTab::getChildValue(const QString &childId) const 
 
     if (NULL != productTable) {
         const QList<InSilicoPcrProduct> &products = qobject_cast<InSilicoPcrProductsTable *>(productTable)->getAllProducts();
-        QPair<ADVSequenceObjectContext *, QList<InSilicoPcrProduct> > data(productTable->getCurrentSequenceContext(), products);
-        return QVariant::fromValue<QPair<ADVSequenceObjectContext *, QList<InSilicoPcrProduct> > >(data);
+        AdvContextPcrProductPair data(productTable->getCurrentSequenceContext(), products);
+        return QVariant::fromValue<AdvContextPcrProductPair>(data);
     } else {
         return U2SavableWidget::getChildValue(childId);
     }
@@ -67,7 +71,7 @@ void PcrOptionsPanelSavableTab::setChildValue(const QString &childId, const QVar
     if (NULL != productTable) {
         originalWrappedWidget->setResultTableShown(true);
 
-        const QPair<ADVSequenceObjectContext *, QList<InSilicoPcrProduct> > data = value.value<QPair<ADVSequenceObjectContext *, QList<InSilicoPcrProduct> > >();
+        const AdvContextPcrProductPair data = value.value<AdvContextPcrProductPair>();
         productTable->showProducts(data.second, data.first);
     } else {
         return U2SavableWidget::setChildValue(childId, value);
@@ -76,7 +80,7 @@ void PcrOptionsPanelSavableTab::setChildValue(const QString &childId, const QVar
 
 bool PcrOptionsPanelSavableTab::childValueIsAcceptable(const QString &childId, const QVariant &value) const {
     if (PCR_PRODUCTS_TABLE_NAME == childId) {
-        const QPair<ADVSequenceObjectContext *, QList<InSilicoPcrProduct> > data = value.value<QPair<ADVSequenceObjectContext *, QList<InSilicoPcrProduct> > >();
+        const AdvContextPcrProductPair data = value.value<AdvContextPcrProductPair>();
 
         AnnotatedDNAView *dnaView = originalWrappedWidget->getDnaView();
         SAFE_POINT(NULL != dnaView, "Invalid sequence view detected", false);

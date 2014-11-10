@@ -31,6 +31,27 @@
 
 static const QString CHANGE_MODE_LABEL_NAME = "lblShowMoreLess";
 
+struct ListWidgetItemData {
+    ListWidgetItemData()
+        : checkState(Qt::Unchecked)
+    {
+
+    }
+
+    ListWidgetItemData(const QString &text, const QString &userData, const QString &toolTip, Qt::CheckState checkState)
+        : text(text), userData(userData), toolTip(toolTip), checkState(checkState)
+    {
+
+    }
+
+    QString text;
+    QString userData;
+    QString toolTip;
+    Qt::CheckState checkState;
+};
+
+Q_DECLARE_METATYPE(QVector<ListWidgetItemData>)
+
 namespace U2 {
 
 DasOptionsPanelSavableTab::DasOptionsPanelSavableTab(QWidget *wrappedWidget, MWMDIWindow *contextWindow)
@@ -45,27 +66,6 @@ DasOptionsPanelSavableTab::~DasOptionsPanelSavableTab() {
 }
 
 namespace {
-
-struct ListWidgetItemData {
-    ListWidgetItemData()
-        : checkState(Qt::Unchecked)
-    {
-    
-    }
-
-    ListWidgetItemData(const QString &text, const QString &userData, const QString &toolTip, Qt::CheckState checkState)
-        : text(text), userData(userData), toolTip(toolTip), checkState(checkState)
-    {
-    
-    }
-
-    QString text;
-    QString userData;
-    QString toolTip;
-    Qt::CheckState checkState;
-};
-
-Q_DECLARE_METATYPE(ListWidgetItemData)
 
 QVector<ListWidgetItemData> getListWidgetContent(QListWidget *listWidget) {
     QVector<ListWidgetItemData> result;

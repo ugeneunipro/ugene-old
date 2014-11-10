@@ -37,6 +37,8 @@
 
 #include "U2SavableWidget.h"
 
+Q_DECLARE_METATYPE(QVector<QVector<QString> >)
+
 namespace U2 {
 
 U2SavableWidget::U2SavableWidget(QWidget *wrappedWidget, MWMDIWindow *contextWindow)
@@ -113,8 +115,6 @@ void setTableWidgetContent(QTableWidget *tableWidget, const QVector<QVector<QStr
         }
     }
 }
-
-Q_DECLARE_METATYPE(QVector<QVector<QString> >)
 
 }
 
