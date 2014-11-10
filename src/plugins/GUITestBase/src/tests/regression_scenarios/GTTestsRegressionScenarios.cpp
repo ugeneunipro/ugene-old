@@ -1040,6 +1040,7 @@ GUI_TEST_CLASS_DEFINITION(test_1255){
     GTGlobals::sleep(200);
     GTKeyboardDriver::keySequence(os, "TA");
 //3. Input invalid annotation name (empty, too long, illegal)
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Annotation parameters"));
     GTWidget::click(os, GTWidget::findWidget(os, "titleWidget"));
     for (int i=0; i<15; i++){
         GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["down"]);
