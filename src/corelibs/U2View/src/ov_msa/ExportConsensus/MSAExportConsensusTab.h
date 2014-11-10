@@ -43,6 +43,7 @@ private slots:
     void sl_formatChanged();
     void sl_consensusChanged(const QString& algoId);
 private:
+    void checkEmptyFilepath() const;
     MSAEditor *msa;
     U2SavableWidget savableWidget;
 };

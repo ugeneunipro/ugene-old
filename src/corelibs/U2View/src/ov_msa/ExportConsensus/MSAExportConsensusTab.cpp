@@ -84,6 +84,7 @@ void MSAExportConsensusTab::sl_browseClicked() {
 }
 
 void MSAExportConsensusTab::sl_exportClicked(){
+    checkEmptyFilepath();
     ExportMSAConsensusTaskSettings settings;
     settings.format = formatCb->itemData(formatCb->currentIndex()).toString();
     settings.keepGaps = keepGapsChb->isChecked();
@@ -140,6 +141,19 @@ void MSAExportConsensusTab::sl_consensusChanged(const QString& algoId) {
         }else{
             SAFE_POINT(formatCb->count() == 1, "Count of supported 'text' formats is not equal one", );
         }
+    }
+}
+
+void MSAExportConsensusTab::checkEmptyFilepath() const {
+    if(pathLe->text().isEmpty()) {
+        DocumentFormatId id = formatCb->itemData(formatCb->currentIndex()).toString();
+        DocumentFormatRegistry *dfr = AppContext::getDocumentFormatRegistry();
+        DocumentFormat *df = dfr->getFormatById(id);
+        SAFE_POINT(df, "Cant get document format by id", );
+        QString fileExt = df->getSupportedDocumentFileExtensions().first();
+        
+        pathLe->setText(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + QDir::separator()
+            + msa->getMSAObject()->getGObjectName() + "_consensus." + fileExt);
     }
 }
 
