@@ -26,6 +26,8 @@
 #include <U2Core/ServiceModel.h>
 #include <U2Core/Task.h>
 
+#include <U2Gui/WelcomePageAction.h>
+
 #include <U2Remote/RemoteWorkflowRunTask.h>
 
 class QAction;
@@ -66,8 +68,10 @@ protected:
 
     virtual void serviceStateChangedCallback(ServiceState oldState, bool enabledStateChanged);
 
-private slots:
+public slots:
     void sl_showDesignerWindow();
+
+private slots:
     void sl_showManagerWindow();
     void sl_startWorkflowPlugin();
 
@@ -81,6 +85,15 @@ private:
     QAction*        newWorkflowAction;
 };
 
+
+class WorkflowWelcomePageAction : public WelcomePageAction {
+public:
+    WorkflowWelcomePageAction(WorkflowDesignerService *service);
+    void perform();
+
+private:
+    QPointer<WorkflowDesignerService> service;
+};
 
 } //namespace
 

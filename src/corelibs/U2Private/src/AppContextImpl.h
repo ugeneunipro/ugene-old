@@ -98,6 +98,7 @@ public:
         credentialsAsker = NULL;
         passwordStorage = NULL;
         cfr = NULL;
+        welcomePageActionRegistry = NULL;
     }
 
     ~AppContextImpl();
@@ -311,6 +312,11 @@ public:
         cfr = _cfr;
     }
 
+    void setWelcomePageActionRegistry(IdRegistry<WelcomePageAction> *value) {
+        assert(welcomePageActionRegistry == NULL || value == NULL);
+        welcomePageActionRegistry = value;
+    }
+
     void setGUIMode(bool v) {
         guiMode = v;
     }
@@ -398,6 +404,7 @@ protected:
     virtual CredentialsAsker*               _getCredentialsAsker() const { return credentialsAsker; }
     virtual PasswordStorage*                _getPasswordStorage() const { return passwordStorage; }
     virtual ConvertFactoryRegistry*         _getConvertFactoryRegistry() const { return cfr; }
+    virtual IdRegistry<WelcomePageAction>* _getWelcomePageActionRegistry() const { return welcomePageActionRegistry; }
     virtual void _registerGlobalObject(AppGlobalObject* go);
     virtual void _unregisterGlobalObject(const QString& id);
     virtual AppGlobalObject* _getGlobalObjectById(const QString& id) const;
@@ -473,6 +480,7 @@ private:
     CredentialsAsker* credentialsAsker;
     PasswordStorage* passwordStorage;
     ConvertFactoryRegistry *cfr;
+    IdRegistry<WelcomePageAction> *welcomePageActionRegistry;
     bool guiMode;
     QString activeWindow;
     QString workingDirectoryPath;

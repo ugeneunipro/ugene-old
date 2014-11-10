@@ -38,6 +38,7 @@
 
 #include <U2Core/AppContext.h>
 #include <U2Gui/MainWindow.h>
+#include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
 #include <U2Core/Task.h>
 #include <U2Core/ServiceTypes.h>
@@ -225,9 +226,12 @@ WorkflowDesignerService::WorkflowDesignerService()
 : Service(Service_WorkflowDesigner, tr("Workflow Designer"), ""),
 designerAction(NULL), managerAction(NULL), newWorkflowAction(NULL)
 {
+
 }
 
 void WorkflowDesignerService::serviceStateChangedCallback(ServiceState , bool enabledStateChanged) {
+    IdRegistry<WelcomePageAction> *welcomePageActions = AppContext::getWelcomePageActionRegistry();
+    SAFE_POINT(NULL != welcomePageActions, L10N::nullPointerError("Welcome Page Actions"), );
 
     if (!enabledStateChanged) {
         return;
@@ -241,7 +245,10 @@ void WorkflowDesignerService::serviceStateChangedCallback(ServiceState , bool en
         } else {
             sl_startWorkflowPlugin();
         }
+
+        welcomePageActions->registerEntry(new WorkflowWelcomePageAction(this));
     } else {
+        welcomePageActions->unregisterEntry(BaseWelcomePageActions::CREATE_WORKFLOW);
         delete newWorkflowAction;
         newWorkflowAction = NULL;
         delete designerAction;
@@ -309,4 +316,19 @@ Task* WorkflowDesignerService::createServiceEnablingTask()
 
     return SampleRegistry::init(QStringList(defaultDir));
 }
+
+/************************************************************************/
+/* WorkflowWelcomePageAction */
+/************************************************************************/
+WorkflowWelcomePageAction::WorkflowWelcomePageAction(WorkflowDesignerService *service)
+: WelcomePageAction(BaseWelcomePageActions::CREATE_WORKFLOW), service(service)
+{
+
+}
+
+void WorkflowWelcomePageAction::perform() {
+    SAFE_POINT(!service.isNull(), L10N::nullPointerError("Workflow Service"), );
+    service->sl_showDesignerWindow();
+}
+
 }//namespace

@@ -44,5 +44,20 @@
         <file>images/down.png</file>
         <file>images/ugene_splash.gif</file>
         <file>images/ugene_splash.png</file>
+        <file>images/welcome_page/line.png</file>
+        <file>images/welcome_page/social_icon_facebook.png</file>
+        <file>images/welcome_page/social_icon_google_plus.png</file>
+        <file>images/welcome_page/social_icon_linkedin.png</file>
+        <file>images/welcome_page/social_icon_mendeley.png</file>
+        <file>images/welcome_page/social_icon_rss.png</file>
+        <file>images/welcome_page/social_icon_twitter.png</file>
+        <file>images/welcome_page/social_icon_vkontakte.png</file>
+        <file>images/welcome_page/social_icon_youtube.png</file>
+        <file>images/welcome_page/welcome_btn_create_seq.png</file>
+        <file>images/welcome_page/welcome_btn_help.png</file>
+        <file>images/welcome_page/welcome_btn_open.png</file>
+        <file>images/welcome_page/welcome_btn_workflow.png</file>
+        <file>html/welcome_page.css</file>
+        <file>html/welcome_page.html</file>
     </qresource>
 </RCC>

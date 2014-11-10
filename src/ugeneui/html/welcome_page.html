@@ -1,0 +1,170 @@
+<!--
+ UGENE - Integrated Bioinformatics Tools.
+ Copyright (C) 2008-2013 UniPro <ugene@unipro.ru>
+ http://ugene.unipro.ru
+ 
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ MA 02110-1301, USA.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to UGENE</title>
+    <link rel="stylesheet" type="text/css" href="qrc:javascript/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="qrc:ugene/html/welcome_page.css">
+    <script type="text/javascript" src="qrc:javascript/jquery/jquery.js"></script>
+    <script type="text/javascript" src="qrc:javascript/bootstrap/js/bootstrap.js"></script>
+</head>
+<body>
+	<table class="main_table">
+		<tr>
+			<td class="header_block" colspan="2">
+				<div class="welcome_header">
+					Welcome to UGENE
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="middle_block_left">
+				<table class="buttons_table">
+					<tr>
+						<td class="middle">
+                            <div class="button_block">
+                                <a href="#" onclick="ugene.performAction('load_data')">
+                                    <div class="button_image">
+                                        <img align="middle" src="qrc:ugene/images/welcome_page/welcome_btn_open.png"/>
+                                    </div>
+                                    <div class="button_caption">
+                                        Open File(s)
+                                    </div>
+                                </a>
+                            </div>
+						</td>
+						<td class="middle">
+                            <div class="button_block">
+                                <a href="#" onclick="ugene.performAction('create_sequence')">
+                                    <div class="button_image">
+                                        <img src="qrc:ugene/images/welcome_page/welcome_btn_create_seq.png"/>
+                                    </div>
+                                    <div class="button_caption">
+                                        Create Sequence
+                                    </div>
+                                </a>
+                            </div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="button_block">
+                                <a href="#" onclick="ugene.performAction('create_workflow')">
+                                    <div class="button_image">
+                                        <img src="qrc:ugene/images/welcome_page/welcome_btn_workflow.png"/>
+                                    </div>
+                                    <div class="button_caption">
+                                        Create Workflow
+                                    </div>
+                                </a>
+							</div>
+						</td>
+						<td>
+							<div class="button_block">
+                                <a href="#" onclick="ugene.openUrl('quick_start')">
+                                    <div class="button_image">
+                                        <img src="qrc:ugene/images/welcome_page/welcome_btn_help.png"/>
+                                    </div>
+                                    <div class="button_caption">
+                                        Quick Start Guide
+                                    </div>
+                                </a>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td class="middle_block_right">
+				<div class="recent_items_block pad">
+                    <div class="half_height">
+                        <div class="recent_items_header">
+                            Recent files
+                        </div>
+                        <div id="recent_files" class="recent_items_content">
+                        </div>
+                    </div>
+                    <div class="half_height">
+                        <div class="recent_items_header">
+                            Recent projects
+                        </div>
+                        <div id="recent_projects" class="recent_items_content"/>
+                        </div>
+                    </div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="footer_block" colspan="2">
+				<table class="footer_table">
+					<tr>
+						<td class="stripped_line" colspan="2">
+						</td>
+					</tr>
+					<tr>
+						<td class="cite_ugene_block">
+							<div class="footer_header">
+								Cite UGENE:
+							</div>
+							<div class="footer_content">
+								"Unipro UGENE: a unified bioinformatics toolkit"<br/>
+								Okonechnikov; Golosova; Fursov; the UGENE team<br/>
+								Bioinformatics 2012 28: 1166-1167
+							</div>
+						</td>
+						<td class="follow_ugene_block">
+							<div class="footer_header">
+								Follow UGENE:
+							</div>
+							<div class="footer_content">
+								<div class="social_icon">
+									<a href="#" onclick="ugene.openUrl('facebook')"> <img src="qrc:ugene/images/welcome_page/social_icon_facebook.png"/> </a>
+								</div>
+								<div class="social_icon">
+									<a href="#" onclick="ugene.openUrl('twitter')"> <img src="qrc:ugene/images/welcome_page/social_icon_twitter.png"/> </a>
+								</div>
+								<div class="social_icon">
+									<a href="#" onclick="ugene.openUrl('linkedin')"> <img src="qrc:ugene/images/welcome_page/social_icon_linkedin.png"/> </a>
+								</div>
+								<div class="social_icon">
+									<a href="#" onclick="ugene.openUrl('google_plus')"> <img src="qrc:ugene/images/welcome_page/social_icon_google_plus.png"/> </a>
+								</div>
+								<div class="social_icon">
+									<a href="#" onclick="ugene.openUrl('youtube')"> <img src="qrc:ugene/images/welcome_page/social_icon_youtube.png"/> </a>
+								</div>
+								<div class="social_icon">
+									<a href="#" onclick="ugene.openUrl('vkontakte')"> <img src="qrc:ugene/images/welcome_page/social_icon_vkontakte.png"/> </a>
+								</div>
+								<div class="social_icon">
+									<a href="#" onclick="ugene.openUrl('mendeley')"> <img src="qrc:ugene/images/welcome_page/social_icon_mendeley.png"/> </a>
+								</div>
+								<div class="social_icon">
+									<a href=#" onclick="ugene.openUrl('rss')"> <img src="qrc:ugene/images/welcome_page/social_icon_rss.png"/> </a>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

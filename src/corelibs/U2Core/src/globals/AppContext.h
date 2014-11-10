@@ -23,6 +23,7 @@
 #define _U2_APPCONTEXT_H_
 
 #include "global.h"
+#include <U2Core/IdRegistry.h>
 
 namespace U2 {
 
@@ -93,6 +94,7 @@ class ScriptingToolRegistry;
 class CredentialsAsker;
 class PasswordStorage;
 class ConvertFactoryRegistry;
+class WelcomePageAction;
 
 class U2CORE_EXPORT AppContext  : public QObject {
     Q_OBJECT
@@ -245,6 +247,8 @@ public:
 
     static ConvertFactoryRegistry* getConvertFactoryRegistry() { return getInstance()->_getConvertFactoryRegistry(); }
 
+    static IdRegistry<WelcomePageAction>* getWelcomePageActionRegistry() { return getInstance()->_getWelcomePageActionRegistry(); }
+
     static QString getWorkingDirectoryPath() { return getInstance()->_getWorkingDirectoryPath(); }
 
     static CredentialsAsker* getCredentialsAsker() { return getInstance()->_getCredentialsAsker(); }
@@ -321,6 +325,7 @@ protected:
     virtual CredentialsAsker* _getCredentialsAsker() const = 0;
     virtual PasswordStorage* _getPasswordStorage() const = 0;
     virtual ConvertFactoryRegistry* _getConvertFactoryRegistry() const = 0;
+    virtual IdRegistry<WelcomePageAction>* _getWelcomePageActionRegistry() const = 0;
 
     virtual void _registerGlobalObject(AppGlobalObject* go) = 0;
     virtual void _unregisterGlobalObject(const QString& id) = 0;

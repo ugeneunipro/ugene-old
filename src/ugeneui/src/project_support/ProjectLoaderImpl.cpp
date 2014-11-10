@@ -161,6 +161,11 @@ ProjectLoaderImpl::ProjectLoaderImpl() {
     tb->addAction(openProjectAction);
 
     updateState();
+
+    IdRegistry<WelcomePageAction> *welcomePageActions = AppContext::getWelcomePageActionRegistry();
+    CHECK(NULL != welcomePageActions, );
+    welcomePageActions->registerEntry(new LoadDataWelcomePageAction(this));
+    welcomePageActions->registerEntry(new CreateSequenceWelcomePageAction(this));
 }
 
 
@@ -258,6 +263,7 @@ void ProjectLoaderImpl::prependToRecentProjects(const QString& url) {
         recentFiles.pop_back();
     }
     AppContext::getSettings()->setValue(SETTINGS_DIR + RECENT_PROJECTS_SETTINGS_NAME, recentFiles, true);
+    emit si_recentListChanged();
 }
 
 void ProjectLoaderImpl::updateRecentProjectsMenu() {
@@ -580,7 +586,7 @@ void ProjectLoaderImpl::prependToRecentItems( const QString& url )
         recentFiles.pop_back();
     }
     AppContext::getSettings()->setValue(SETTINGS_DIR + RECENT_ITEMS_SETTINGS_NAME, recentFiles, true);
-    
+    emit si_recentListChanged();
 }
 
 // QT 4.5.0 bug workaround
@@ -654,6 +660,31 @@ void ProjectLoaderImpl::sl_searchGenbankEntry()
     dlg.exec();
 
 
+}
+
+//////////////////////////////////////////////////////////////////////////
+//WelcomePageActions
+//////////////////////////////////////////////////////////////////////////
+LoadDataWelcomePageAction::LoadDataWelcomePageAction(ProjectLoaderImpl *loader)
+: WelcomePageAction(BaseWelcomePageActions::LOAD_DATA), loader(loader)
+{
+
+}
+
+void LoadDataWelcomePageAction::perform() {
+    SAFE_POINT(!loader.isNull(), L10N::nullPointerError("Project Loader"), );
+    loader->sl_openProject();
+}
+
+CreateSequenceWelcomePageAction::CreateSequenceWelcomePageAction(ProjectLoaderImpl *loader)
+: WelcomePageAction(BaseWelcomePageActions::CREATE_SEQUENCE), loader(loader)
+{
+
+}
+
+void CreateSequenceWelcomePageAction::perform() {
+    SAFE_POINT(!loader.isNull(), L10N::nullPointerError("Project Loader"), );
+    loader->sl_newDocumentFromText();
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -27,6 +27,7 @@
 
 #include <U2Core/ProjectModel.h>
 #include <U2Core/ProjectService.h>
+#include <U2Gui/WelcomePageAction.h>
 #include <assert.h>
 
 #if (QT_VERSION < 0x050000) //Qt 5
@@ -61,8 +62,14 @@ public:
     
     static QString getLastProjectURL();
 
-private:
+signals:
+    void si_recentListChanged();
 
+public slots:
+    void sl_newDocumentFromText();
+    void sl_openProject();
+
+private:
     void updateState();
     void updateRecentProjectsMenu();
     void prependToRecentProjects(const QString& pFile);
@@ -73,8 +80,6 @@ private:
 
 private slots:
     void sl_newProject();
-    void sl_newDocumentFromText();
-    void sl_openProject();
     void sl_openRecentFile();
     void sl_openRecentProject();
     void sl_serviceStateChanged(Service* s, ServiceState prevState);
@@ -104,6 +109,27 @@ private:
 
     QMenu* recentProjectsMenu;
     QMenu* recentItemsMenu;
+};
+
+//////////////////////////////////////////////////////////////////////////
+/// WelcomePageActions
+
+class LoadDataWelcomePageAction : public WelcomePageAction {
+public:
+    LoadDataWelcomePageAction(ProjectLoaderImpl *loader);
+    void perform();
+
+private:
+    QPointer<ProjectLoaderImpl> loader;
+};
+
+class CreateSequenceWelcomePageAction : public WelcomePageAction {
+public:
+    CreateSequenceWelcomePageAction(ProjectLoaderImpl *loader);
+    void perform();
+
+private:
+    QPointer<ProjectLoaderImpl> loader;
 };
 
 

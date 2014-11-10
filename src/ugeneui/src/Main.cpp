@@ -129,6 +129,7 @@
 #include "main_window/CheckUpdatesTask.h"
 #include "main_window/SplashScreen.h"
 #include "project_view/ProjectViewImpl.h"
+#include "welcome_page/WelcomePageController.h"
 
 #include "task_view/TaskViewController.h"
 #include "shtirlitz/Shtirlitz.h"
@@ -629,6 +630,9 @@ int main(int argc, char **argv)
     ConvertFactoryRegistry* convertFactoryRegistry = new ConvertFactoryRegistry();
     appContext->setConvertFactoryRegistry(convertFactoryRegistry);
 
+    IdRegistry<WelcomePageAction> *welcomePageActions = new IdRegistry<WelcomePageAction>();
+    appContext->setWelcomePageActionRegistry(welcomePageActions);
+
     Workflow::WorkflowEnv::init(new Workflow::WorkflowEnvImpl());
     Workflow::WorkflowEnv::getDomainRegistry()->registerEntry(new LocalWorkflow::LocalDomainFactory());
 
@@ -705,6 +709,12 @@ int main(int argc, char **argv)
     QObject::connect(ts, SIGNAL(si_noTasksInScheduler()), splashScreen, SLOT(sl_close()));
     QObject::connect(ts, SIGNAL(si_noTasksInScheduler()), mw, SLOT(sl_show()));
 
+    WelcomePageController *wpc = new WelcomePageController();
+    QObject::connect(ts, SIGNAL(si_noTasksInScheduler()), wpc, SLOT(sl_showPage()));
+    QObject::connect(wpc, SIGNAL(si_loadData()), pli, SLOT(sl_openProject()));
+    QObject::connect(wpc, SIGNAL(si_createSequence()), pli, SLOT(sl_newDocumentFromText()));
+    QObject::connect(pli, SIGNAL(si_recentListChanged()), wpc, SLOT(sl_onRecentChanged()));
+
     QList<Task*> tasks;
 
     if(AppContext::getSettings()->getValue(ASK_VESRION_SETTING, true).toBool()) {
@@ -727,6 +737,8 @@ int main(int argc, char **argv)
     if ( !envList.contains(ENV_UGENE_DEV+QString("=1")) ) {
         Shtirlitz::saveGatheredInfo();
     }
+
+    delete wpc;
 
     delete dcu;
 
@@ -793,6 +805,9 @@ int main(int argc, char **argv)
 
     appContext->setSecStructPedictAlgRegistry(NULL);
     delete sspar;
+
+    appContext->setWelcomePageActionRegistry(NULL);
+    delete welcomePageActions;
 
     appContext->setConvertFactoryRegistry(NULL);
     delete convertFactoryRegistry;

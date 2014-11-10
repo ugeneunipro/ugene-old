@@ -15,6 +15,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/U2SavableWidget.h \
            src/U2WidgetStateStorage.h \
            src/UnloadDocumentTask.h \
+           src/WelcomePageAction.h \
            src/options_panel/GroupHeaderImageWidget.h \
            src/options_panel/GroupOptionsWidget.h \
            src/options_panel/OptionsPanel.h \
@@ -130,6 +131,7 @@ SOURCES += src/MainWindow.cpp \
            src/UnloadDocumentTask.cpp \
            src/U2SavableWidget.cpp \
            src/U2WidgetStateStorage.cpp \
+           src/WelcomePageAction.cpp \
            src/options_panel/GroupHeaderImageWidget.cpp \
            src/options_panel/GroupOptionsWidget.cpp \
            src/options_panel/OptionsPanel.cpp \

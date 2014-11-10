@@ -34,7 +34,10 @@ HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/app_settings/network_settings/NetworkSettingsGUIController.h \
            src/app_settings/resource_settings/ResourceSettingsGUIController.h \
            src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.h \
-           src/main_window/TmpDirChangeDialogController.h
+           src/main_window/TmpDirChangeDialogController.h \
+           src/welcome_page/WelcomePageController.h \
+           src/welcome_page/WelcomePageMdi.h \
+           src/welcome_page/WelcomePageWidget.h
 FORMS += src/app_settings/ui/AppSettingsDialog.ui \
          src/main_window/ui/AboutDialog.ui \
          src/plugin_viewer/ui/PluginViewerWidget.ui \
@@ -51,7 +54,8 @@ FORMS += src/app_settings/ui/AppSettingsDialog.ui \
          src/app_settings/resource_settings/ui/ResourceSettingsWidget.ui \
          src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui \
          src/project_support/ui/MultipleSequenceFilesReadingMode.ui \
-    src/main_window/ui/TmpDirChangeDialog.ui
+         src/main_window/ui/TmpDirChangeDialog.ui \
+         src/welcome_page/ui/WelcomePageWidget.ui
 SOURCES += src/Main.cpp \
            src/app_settings/AppSettingsDialogController.cpp \
            src/app_settings/AppSettingsGUIImpl.cpp \
@@ -86,7 +90,10 @@ SOURCES += src/Main.cpp \
            src/app_settings/network_settings/NetworkSettingsGUIController.cpp \
            src/app_settings/resource_settings/ResourceSettingsGUIController.cpp \
            src/app_settings/user_apps_settings/UserApplicationsSettingsGUIController.cpp \
-           src/main_window/TmpDirChangeDialogController.cpp
+           src/main_window/TmpDirChangeDialogController.cpp \
+           src/welcome_page/WelcomePageController.cpp \
+           src/welcome_page/WelcomePageMdi.cpp \
+           src/welcome_page/WelcomePageWidget.cpp
 RESOURCES += ugeneui.qrc
 TRANSLATIONS += transl/chinese.ts \
                 transl/czech.ts \
