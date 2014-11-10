@@ -98,7 +98,8 @@ SplashScreenWidget::SplashScreenWidget(){
 
     dots_number = 0;
     task = "";
-    startTimer(500);
+    dots_timer_id = startTimer(500);
+    startTimer(50);
 
     getTask();
     getDots();
@@ -133,7 +134,9 @@ void SplashScreenWidget::getDots(){
 
 void SplashScreenWidget::timerEvent(QTimerEvent *e){
     getTask();
-    getDots();
+    if(e->timerId()==dots_timer_id){
+        getDots();
+    }
     drawInfo();
 
     update();

@@ -60,6 +60,7 @@ private:
     void drawInfo();
 
     int			    dots_number;
+    int			    dots_timer_id;
     QString		    version;
     QString		    task;
     QImage          image1;
