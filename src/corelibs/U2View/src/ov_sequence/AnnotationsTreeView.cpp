@@ -479,6 +479,19 @@ void AnnotationsTreeView::sl_onAnnotationObjectRenamed( const QString & ) {
     gi->updateVisual( );
 }
 
+namespace {
+
+bool doesGroupPresentInList(const QList<AnnotationGroup> &list, const AnnotationGroup &group) {
+    foreach (const AnnotationGroup &groupFromList, list) {
+        if (groupFromList == group || groupFromList.isParentOf(group)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+}
+
 void AnnotationsTreeView::sl_onAnnotationsAdded( const QList<Annotation> &as ) {
     TreeSorter ts(this);
 
@@ -486,7 +499,7 @@ void AnnotationsTreeView::sl_onAnnotationsAdded( const QList<Annotation> &as ) {
     QList<AnnotationGroup> createdGroups;
     foreach(const Annotation &a, as) {
         const AnnotationGroup &ag = a.getGroup( );
-        if (createdGroups.contains(ag)) {
+        if (doesGroupPresentInList(createdGroups, ag)) {
             continue;
         }
         AVGroupItem* gi = findGroupItem(ag);

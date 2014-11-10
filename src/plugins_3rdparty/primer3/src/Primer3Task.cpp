@@ -20,11 +20,14 @@
  */
 
 #include <cstdlib>
+
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
-#include <U2Core/SequenceWalkerTask.h>
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/MultiTask.h>
+#include <U2Core/SequenceWalkerTask.h>
+
 #include "primer3_main.h"
 #include "boulder_input.h"
 #include "Primer3Task.h"
@@ -931,6 +934,7 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
 
     const QList<PrimerPair>& bestPairs = searchTask->getBestPairs();
 
+    QList<Task *> createAnnotationTasks;
     int index = 0;
     foreach(const PrimerPair& pair, bestPairs)
     {
@@ -947,8 +951,7 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
         {
             annotations.append(oligoToAnnotation(annName, *pair.getRightPrimer(), pair.getProductSize(), U2Strand::Complementary));
         }
-        AppContext::getTaskScheduler()->registerTopLevelTask(
-                new CreateAnnotationsTask(aobj, groupName + "/pair " + QString::number(index + 1), annotations));
+        createAnnotationTasks << new CreateAnnotationsTask(aobj, groupName + "/pair " + QString::number(index + 1), annotations);
         index++;
     }
 
@@ -961,10 +964,11 @@ Task::ReportResult Primer3ToAnnotationsTask::report()
         }
 
         if ( !annotations.isEmpty( ) ) {
-            AppContext::getTaskScheduler()->registerTopLevelTask(
-                new CreateAnnotationsTask(aobj, groupName, annotations));
+            createAnnotationTasks << new CreateAnnotationsTask(aobj, groupName, annotations);
         }
     }
+
+    AppContext::getTaskScheduler()->registerTopLevelTask(new SequentialMultiTask("Create primer annotations", createAnnotationTasks));
 
     return ReportResult_Finished;
 }
