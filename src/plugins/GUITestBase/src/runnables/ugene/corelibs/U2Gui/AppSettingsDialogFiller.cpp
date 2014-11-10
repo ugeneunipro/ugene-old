@@ -58,7 +58,7 @@ AppSettingsDialogFiller::AppSettingsDialogFiller(U2OpStatus &os, CustomScenario 
 }
 
 #define GT_METHOD_NAME "run"
-void AppSettingsDialogFiller::run(){
+void AppSettingsDialogFiller::commonScenario(){
 
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");

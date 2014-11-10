@@ -34,7 +34,7 @@ public:
     AppSettingsDialogFiller(U2OpStatus &_os, int _r,int _g, int _b):Filler(_os,"AppSettingsDialog"),
         itemStyle(none),r(_r),g(_g),b(_b){}
     AppSettingsDialogFiller(U2OpStatus &os, CustomScenario *customScenario);
-    void run();
+    void commonScenario();
 private:
     style itemStyle;
     int r,g,b;
