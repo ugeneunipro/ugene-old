@@ -2538,7 +2538,10 @@ void MSAEditorSequenceArea::reverseComplementModification(ModificationType& type
             maObj->updateRow(i, name, seqBytes, gapModel, os);
             modifiedRowIds << currentRow.getRowId( );
         }
-        maObj->updateCachedMAlignment( MAlignmentModInfo( ), modifiedRowIds );
+
+        MAlignmentModInfo modInfo;
+        modInfo.modifiedRowIds = modifiedRowIds;
+        maObj->updateCachedMAlignment(modInfo);
     }
 }
 

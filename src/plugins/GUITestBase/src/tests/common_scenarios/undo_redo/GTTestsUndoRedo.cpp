@@ -815,16 +815,16 @@ GUI_TEST_CLASS_DEFINITION(test_0012){//ClustalW aligner undo test
     GTGlobals::sleep(500);
     QString initAln = GTClipboard::text(os);
 
-    QString expectedAln("---AAGACTTCTTTTAA---\n"
-                        "---AAGCTT---ACTAA---\n"
-                        "---TAGT---TTATTAA---\n"
-                        "---AAGTC---TATTAA---\n"
-                        "---TAGCTT---ATTAA---\n"
-                        "---TAGCTT---ATTAA---\n"
-                        "---TAGCTT---ATTAA---\n"
-                        "---AAGTCTTT---TAA---\n"
-                        "A---AGAAT--AATTA----\n"
-                        "---AAGCCT---TTTAA---");
+    QString expectedAln("---AAGACTTCTTTTAA\n"
+                        "---AAGCTT---ACTAA\n"
+                        "---TAGT---TTATTAA\n"
+                        "---AAGTC---TATTAA\n"
+                        "---TAGCTT---ATTAA\n"
+                        "---TAGCTT---ATTAA\n"
+                        "---TAGCTT---ATTAA\n"
+                        "---AAGTCTTT---TAA\n"
+                        "A---AGAAT--AATTA-\n"
+                        "---AAGCCT---TTTAA");
 
     //Use context {Edit->Align with Kalign}
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<MSAE_MENU_ALIGN<<"Align with ClustalW", GTGlobals::UseMouse));
@@ -832,7 +832,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012){//ClustalW aligner undo test
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 
     GTWidget::click(os, GTUtilsMdi::activeWindow(os));
-    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(20,10));
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(17,10));
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
     QString changedAln = GTClipboard::text(os);
@@ -852,7 +852,7 @@ GUI_TEST_CLASS_DEFINITION(test_0012){//ClustalW aligner undo test
     //redo
     GTWidget::click(os,redo);
     GTWidget::click(os, GTUtilsMdi::activeWindow(os));
-    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(20,10));
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(17,10));
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
     changedAln = GTClipboard::text(os);
