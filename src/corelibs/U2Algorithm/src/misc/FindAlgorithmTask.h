@@ -37,10 +37,11 @@ class U2ALGORITHM_EXPORT FindAlgorithmTaskSettings : public FindAlgorithmSetting
 public:
     FindAlgorithmTaskSettings()
         : searchIsCircular(false) {}
-    FindAlgorithmTaskSettings(const FindAlgorithmSettings& f) : FindAlgorithmSettings(f) {}
+    FindAlgorithmTaskSettings(const FindAlgorithmSettings& f) : FindAlgorithmSettings(f), searchIsCircular(false),countTask(true) {}
     QByteArray  sequence;
     bool        searchIsCircular;
     QString     name;
+    bool        countTask;
 };
 
 class U2ALGORITHM_EXPORT FindAlgorithmTask : public Task, public FindAlgorithmResultsListener {

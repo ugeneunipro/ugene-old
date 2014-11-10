@@ -43,7 +43,9 @@ class StrandContext;
 FindAlgorithmTask::FindAlgorithmTask(const FindAlgorithmTaskSettings& s)
 : Task (tr("Find in sequence task"), TaskFlag_None), config(s)
 {
-    GCOUNTER(cvar, tvar, "FindAlgorithmTask");
+    if(s.countTask){
+        GCOUNTER(cvar, tvar, "FindAlgorithmTask");
+    }
     tpm = Progress_Manual;
     complementRun = false;
     assert(config.strand == FindAlgorithmStrand_Direct || config.complementTT!=NULL);

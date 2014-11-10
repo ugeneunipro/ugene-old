@@ -171,6 +171,7 @@ void FindPatternListTask::prepare(){
         subTaskSettings.pattern = pattern.second.toLocal8Bit().toUpper();
         subTaskSettings.maxErr = getMaxError( subTaskSettings.pattern );
         subTaskSettings.name = pattern.first;
+        subTaskSettings.countTask = false;
         FindPatternTask* task = new FindPatternTask(subTaskSettings, removeOverlaps);
         addSubTask(task);
     }

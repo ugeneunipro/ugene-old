@@ -26,6 +26,7 @@
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
@@ -1562,7 +1563,7 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
             findPatternResults[i].name = annotModel.data.name;
         }
     }
-
+    GCOUNTER(cvar, tvar, "FindAlgorithmTask");
     AppContext::getTaskScheduler()->registerTopLevelTask(new CreateAnnotationsTask(aTableObj, group, findPatternResults));
     
     annotModelPrepared = false;
