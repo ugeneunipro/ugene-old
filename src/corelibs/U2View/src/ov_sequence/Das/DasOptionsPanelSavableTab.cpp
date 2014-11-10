@@ -115,7 +115,7 @@ void DasOptionsPanelSavableTab::setChildValue(const QString &childId, const QVar
 
     QWidget *child = getChildWidgetById(childId);
     if (NULL != qobject_cast<QListWidget *>(child)) {
-        setListWidgetContent(qobject_cast<QListWidget *>(child), value.value<QVector<ListWidgetItemData>>());
+        setListWidgetContent(qobject_cast<QListWidget *>(child), value.value<QVector<ListWidgetItemData> >());
     } else if (CHANGE_MODE_LABEL_NAME == child->objectName()) {
         qobject_cast<DasOptionsPanelWidget *>(wrappedWidget)->setExtendedMode(value.toBool());
     } else {
