@@ -24,7 +24,7 @@
 
 #include <QScrollArea>
 
-#include <U2Gui/U2SavableWidget.h>
+#include <U2Core/global.h>
 
 class QVBoxLayout;
 

@@ -24,10 +24,8 @@
 
 #include <QWidget>
 
-#include <U2Core/global.h>
-#include <U2Core/U2Region.h>
-
 #include <U2Gui/OPWidgetFactory.h>
+#include <U2Gui/U2SavableWidget.h>
 
 class QComboBox;
 class QLabel;
@@ -35,14 +33,12 @@ class QLabel;
 namespace U2 {
 
 class AssemblyBrowserUi;
-class AssemblyOptionsPanelSavableTab;
 
 class AssemblySettingsWidget : public QWidget
 {
     Q_OBJECT
 public:
     AssemblySettingsWidget(AssemblyBrowserUi * ui);
-    ~AssemblySettingsWidget();
 
 private slots:
     void sl_cellRendererChanged();
@@ -63,7 +59,7 @@ private:
     QComboBox *algorithmCombo;
     QLabel *hint;
 
-    AssemblyOptionsPanelSavableTab *savableTab;
+    U2SavableWidget savableTab;
 };
 
 

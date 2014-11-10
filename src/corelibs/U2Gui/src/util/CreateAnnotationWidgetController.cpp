@@ -391,6 +391,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     usePatternNamesCheckBox = new QCheckBox(tr("Use pattern name"));
     usePatternNamesCheckBox->setToolTip(tr("Use names of patterns as annotations names. In case the patterns are in FASTA format"));
     usePatternNamesCheckBox->setVisible(false);
+    usePatternNamesCheckBox->setObjectName("usePatternNamesCheckBox");
     connect(usePatternNamesCheckBox, SIGNAL(clicked(bool)), annotationNameEdit, SLOT(setDisabled(bool)));
 
     if (layoutMode ==  normal) {

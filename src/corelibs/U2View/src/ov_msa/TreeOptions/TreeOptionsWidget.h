@@ -22,9 +22,8 @@
 #ifndef _U2_TREE_OPTIONS_WIDGET_H_
 #define _U2_TREE_OPTIONS_WIDGET_H_
 
-#include <U2Core/global.h>
+#include <U2Gui/U2SavableWidget.h>
 
-#include "../MsaOptionsPanelSavableTab.h"
 #include "ov_phyltree/TreeSettings.h"
 
 #include "ui/ui_TreeOptionsWidget.h"
@@ -107,7 +106,7 @@ private:
 
     QWidget* contentWidget;
 
-    MsaOptionsPanelSavableTab savableTab;
+    U2SavableWidget savableTab;
 
     static const QString COLOR_BOX_STYLE;
 };

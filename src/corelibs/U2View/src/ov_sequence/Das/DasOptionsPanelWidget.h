@@ -22,25 +22,26 @@
 #ifndef _U2_DAS_OPTIONS_PANEL_WIDGET_CONTROLLER_H_
 #define _U2_DAS_OPTIONS_PANEL_WIDGET_CONTROLLER_H_
 
-#include <QListWidget>
-
 #include <U2Core/AnnotationData.h>
 
-#include <U2Gui/RegionSelector.h>
+#include "DasOptionsPanelSavableTab.h"
 
 #include "ui/ui_DasOptionsPanelWidget.h"
 #include "ui/ui_DasBlastSettingsWidget.h"
+
+class QListWidget;
 
 namespace U2 {
 
 class ADVSequenceObjectContext;
 class ADVSequenceWidget;
 class AnnotatedDNAView;
+class ConvertIdAndLoadDasFeaturesTask;
 class CreateAnnotationWidgetController;
 class DASSource;
 class DNASequenceSelection;
 class LRegionsSelection;
-class ConvertIdAndLoadDasFeaturesTask;
+class RegionSelector;
 class ShowHideSubgroupWidget;
 class Task;
 class UniprotBlastSettings;
@@ -62,6 +63,9 @@ public:
     void clear();
 
     double getMinIdentity() { return minimumIdentityDoubleSpinBox->value(); }
+
+    bool isExtendedMode() const;
+    void setExtendedMode(bool extended);
 
 private slots:
     void sl_searchTypeChanged(int type);
@@ -90,6 +94,7 @@ private:
     U2Region getRegion();
     bool regionIsOk() const;
     bool isAccessionsUniprotLike(const QString &accessionNumber) const;
+    void cancelActiveTasks();
 
     AnnotatedDNAView* annotatedDnaView;
     ADVSequenceObjectContext* ctx;
@@ -109,6 +114,8 @@ private:
     Task* getIdsTask; 
 
     QMap<QString, QList<AnnotationData> > annotationData;
+
+    DasOptionsPanelSavableTab savableWidget;
 
     const static QString BLAST_SEARCH;
     const static QString ALGORITHM_SETTINGS;

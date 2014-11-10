@@ -22,12 +22,13 @@
 #ifndef _U2_IN_SILICO_PCR_OPTION_PANEL_WIDGET_H_
 #define _U2_IN_SILICO_PCR_OPTION_PANEL_WIDGET_H_
 
-#include <QWidget>
+#include "PcrOptionsPanelSavableTab.h"
 
 #include "ui_InSilicoPcrOptionPanelWidget.h"
 
 namespace U2 {
 
+class ADVSequenceObjectContext;
 class AnnotatedDNAView;
 class InSilicoPcrTask;
 
@@ -36,6 +37,11 @@ class InSilicoPcrOptionPanelWidget : public QWidget, public Ui::InSilicoPcrOptio
 public:
     InSilicoPcrOptionPanelWidget(AnnotatedDNAView *annotatedDnaView);
     ~InSilicoPcrOptionPanelWidget();
+
+    AnnotatedDNAView * getDnaView() const;
+
+    bool isResultTableShown() const;
+    void setResultTableShown(bool show);
 
 private slots:
     void sl_onPrimerChanged();
@@ -55,6 +61,8 @@ private:
 private:
     AnnotatedDNAView *annotatedDnaView;
     InSilicoPcrTask *pcrTask;
+    bool resultTableShown;
+    PcrOptionsPanelSavableTab savableWidget;
 };
 
 } // U2

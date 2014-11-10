@@ -78,10 +78,7 @@ AnnotHighlightWidget::AnnotHighlightWidget(AnnotatedDNAView* _annotatedDnaView)
     loadAnnotTypes();
 }
 
-void AnnotHighlightWidget::initLayout()
-{
-//    setMinimumSize(QSize(170, 150));
-
+void AnnotHighlightWidget::initLayout() {
     QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(10);

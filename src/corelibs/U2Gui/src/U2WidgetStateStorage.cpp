@@ -82,7 +82,9 @@ void U2WidgetStateStorage::restoreWidgetState(U2SavableWidget &widget) {
 
     const QVariantMap params = snapshot.getParameters();
     foreach (const QString &paramName, params.keys()) {
-        widget.setChildValue(paramName, params[paramName]);
+        if (widget.childValueIsAcceptable(paramName, params[paramName])) {
+            widget.setChildValue(paramName, params[paramName]);
+        }
     }
 }
 

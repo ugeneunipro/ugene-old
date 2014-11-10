@@ -19,30 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#include "AnnotHighlightWidget.h"
-#include "AnnotHighlightWidgetFactory.h"
+#include <QPixmap>
 
 #include <U2Core/U2SafePoints.h>
 
-#include <QObject>
+#include <U2View/AnnotatedDNAView.h>
 
+#include "AnnotHighlightWidget.h"
+
+#include "AnnotHighlightWidgetFactory.h"
 
 namespace U2 {
 
 const QString AnnotHighlightWidgetFactory::GROUP_ID = "OP_ANNOT_HIGHLIGHT";
 const QString AnnotHighlightWidgetFactory::GROUP_ICON_STR = ":core/images/annotation_settings.png";
-const QString AnnotHighlightWidgetFactory::GROUP_TITLE = QString(QObject::tr("Annotations Highlighting"));
+const QString AnnotHighlightWidgetFactory::GROUP_TITLE = QObject::tr("Annotations Highlighting");
 const QString AnnotHighlightWidgetFactory::GROUP_DOC_PAGE = "4227350";
 
-
-AnnotHighlightWidgetFactory::AnnotHighlightWidgetFactory()
-{
+AnnotHighlightWidgetFactory::AnnotHighlightWidgetFactory() {
     objectViewOfWidget = ObjViewType_SequenceView;
 }
 
-
-QWidget* AnnotHighlightWidgetFactory::createWidget(GObjectView* objView)
-{
+QWidget * AnnotHighlightWidgetFactory::createWidget(GObjectView* objView) {
     SAFE_POINT(NULL != objView,
         QString("Internal error: unable to create widget for group '%1', object view is NULL.").arg(GROUP_ID),
         NULL);
@@ -56,11 +54,8 @@ QWidget* AnnotHighlightWidgetFactory::createWidget(GObjectView* objView)
     return widget;
 }
 
-
-OPGroupParameters AnnotHighlightWidgetFactory::getOPGroupParameters()
-{
+OPGroupParameters AnnotHighlightWidgetFactory::getOPGroupParameters() {
     return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE, GROUP_DOC_PAGE);
 }
 
-
-} // namespace
+} // namespace U2

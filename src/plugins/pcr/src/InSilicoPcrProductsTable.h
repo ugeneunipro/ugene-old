@@ -37,19 +37,24 @@ class InSilicoPcrProductsTable : public QTableWidget {
 public:
     InSilicoPcrProductsTable(QWidget *parent);
 
-    void showProducts(InSilicoPcrTask *task, ADVSequenceObjectContext *sequenceContext);
+    void showProducts(const QList<InSilicoPcrProduct> &products, ADVSequenceObjectContext *sequenceContext);
     /* Returns if current context is the modified one */
     bool onSequenceChanged(ADVSequenceObjectContext *sequenceContext);
 
     ADVSequenceObjectContext * productsContext() const;
+
     QList<InSilicoPcrProduct> getSelectedProducts() const;
+    const QList<InSilicoPcrProduct> & getAllProducts() const;
+
+    ADVSequenceObjectContext * getCurrentSequenceContext() const;
 
 private slots:
     void sl_selectionChanged();
 
 private:
-    void replaceContext(ADVSequenceObjectContext *sequenceContext);
     QVector<U2Region> getSelection() const;
+    void replaceContext(ADVSequenceObjectContext *sequenceContext);
+    void setCurrentProducts(const QList<InSilicoPcrProduct> &products);
 
 private:
     ADVSequenceObjectContext *sequenceContext;

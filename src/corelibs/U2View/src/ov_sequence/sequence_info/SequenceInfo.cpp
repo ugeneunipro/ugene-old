@@ -19,7 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#include "SequenceInfo.h"
+#include <QLabel>
+#include <QVBoxLayout>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/DNAAlphabet.h>
@@ -29,14 +30,15 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/U2WidgetStateStorage.h>
 
 #include <U2View/ADVSequenceWidget.h>
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
 
+#include "SequenceInfo.h"
 
 namespace U2 {
-
 
 const int SequenceInfo::COMMON_STATISTICS_VALUE_MAX_WIDTH = 90;
 const QString SequenceInfo::CAPTION_SEQ_REGION_LENGTH = "Length: ";
@@ -58,9 +60,8 @@ const QString SequenceInfo::CHAR_OCCUR_GROUP_ID = "char_occur_group";
 const QString SequenceInfo::DINUCL_OCCUR_GROUP_ID = "dinucl_occur_group";
 const QString SequenceInfo::STAT_GROUP_ID = "stat_group";
 
-
 SequenceInfo::SequenceInfo(AnnotatedDNAView* _annotatedDnaView)
-    : annotatedDnaView(_annotatedDnaView)
+    : annotatedDnaView(_annotatedDnaView), savableWidget(this, GObjectViewUtils::findViewByName(_annotatedDnaView->getName()))
 {
     SAFE_POINT(0 != annotatedDnaView, "AnnotatedDNAView is NULL!",);
 
@@ -68,6 +69,8 @@ SequenceInfo::SequenceInfo(AnnotatedDNAView* _annotatedDnaView)
     initLayout();
     connectSlots();
     launchCalculations();
+
+    U2WidgetStateStorage::restoreWidgetState(savableWidget);
 }
 
 void SequenceInfo::initLayout()

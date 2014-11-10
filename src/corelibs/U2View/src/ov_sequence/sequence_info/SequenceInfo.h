@@ -22,19 +22,18 @@
 #ifndef _U2_SEQUENCE_INFO_H_
 #define _U2_SEQUENCE_INFO_H_
 
-#include "CharOccurTask.h"
-#include "DinuclOccurTask.h"
-#include "DNAStatisticsTask.h"
+#include <QWidget>
 
 #include <U2Core/BackgroundTaskRunner.h>
 #include <U2Core/U2Region.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QtGui>
-#else
-#include <QtWidgets/QtWidgets>
-#endif
+#include <U2Gui/U2SavableWidget.h>
 
+#include "CharOccurTask.h"
+#include "DinuclOccurTask.h"
+#include "DNAStatisticsTask.h"
+
+class QLabel;
 
 namespace U2 {
 
@@ -42,12 +41,9 @@ class ADVSequenceObjectContext;
 class ADVSequenceWidget;
 class AnnotatedDNAView;
 class LRegionsSelection;
-class U2Region;
 class ShowHideSubgroupWidget;
 
-
-class U2VIEW_EXPORT SequenceInfo : public QWidget
-{
+class U2VIEW_EXPORT SequenceInfo : public QWidget {
     Q_OBJECT
 public:
     SequenceInfo(AnnotatedDNAView*);
@@ -123,6 +119,8 @@ private:
 
     U2Region currentRegion;
 
+    U2SavableWidget savableWidget;
+
     static const int COMMON_STATISTICS_VALUE_MAX_WIDTH;
     static const QString CAPTION_SEQ_REGION_LENGTH;
 
@@ -144,7 +142,6 @@ private:
     static const QString STAT_GROUP_ID;
 };
 
-
-} // namespace
+} // namespace U2
 
 #endif

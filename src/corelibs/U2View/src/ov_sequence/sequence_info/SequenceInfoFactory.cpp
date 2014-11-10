@@ -19,28 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#include "SequenceInfo.h"
-#include "SequenceInfoFactory.h"
+#include <QPixmap>
 
 #include <U2Core/U2SafePoints.h>
 
-#include <QObject>
+#include <U2View/AnnotatedDNAView.h>
+
+#include "SequenceInfo.h"
+
+#include "SequenceInfoFactory.h"
 
 namespace U2 {
 
 const QString SequenceInfoFactory::GROUP_ID = "OP_SEQ_INFO";
 const QString SequenceInfoFactory::GROUP_ICON_STR = ":core/images/chart_bar.png";
-const QString SequenceInfoFactory::GROUP_TITLE = QString(QObject::tr("Statistics"));
+const QString SequenceInfoFactory::GROUP_TITLE = QObject::tr("Statistics");
 const QString SequenceInfoFactory::GROUP_DOC_PAGE = "4227298";
 
-SequenceInfoFactory::SequenceInfoFactory()
-{
+SequenceInfoFactory::SequenceInfoFactory() {
     objectViewOfWidget = ObjViewType_SequenceView;
 }
 
-
-QWidget* SequenceInfoFactory::createWidget(GObjectView* objView)
-{
+QWidget * SequenceInfoFactory::createWidget(GObjectView* objView) {
     SAFE_POINT(NULL != objView,
         QString("Internal error: unable to create widget for group '%1', object view is NULL.").arg(GROUP_ID),
         NULL);
@@ -54,11 +54,8 @@ QWidget* SequenceInfoFactory::createWidget(GObjectView* objView)
     return seqInfoWidget;
 }
 
-
-OPGroupParameters SequenceInfoFactory::getOPGroupParameters()
-{
+OPGroupParameters SequenceInfoFactory::getOPGroupParameters() {
     return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE, GROUP_DOC_PAGE);
 }
 
-
-} // namespace
+} // namespace U2

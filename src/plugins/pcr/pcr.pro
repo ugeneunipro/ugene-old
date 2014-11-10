@@ -6,6 +6,7 @@ HEADERS += src/AddPrimerDialog.h \
            src/InSilicoPcrOptionPanelWidget.h \
            src/InSilicoPcrProductsTable.h \
            src/InSilicoPcrTask.h \
+           src/PcrOptionsPanelSavableTab.h \
            src/PcrPlugin.h \
            src/Primer.h \
            src/PrimerGroupBox.h \
@@ -31,6 +32,7 @@ SOURCES += src/AddPrimerDialog.cpp \
            src/InSilicoPcrOptionPanelWidget.cpp \
            src/InSilicoPcrProductsTable.cpp \
            src/InSilicoPcrTask.cpp \
+           src/PcrOptionsPanelSavableTab.cpp \
            src/PcrPlugin.cpp \
            src/Primer.cpp \
            src/PrimerGroupBox.cpp \

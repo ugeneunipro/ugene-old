@@ -31,7 +31,7 @@ class U2VIEW_EXPORT SeqStatisticsWidgetFactory : public OPWidgetFactory {
 public:
     SeqStatisticsWidgetFactory();
 
-    QWidget* createWidget(GObjectView* objView);
+    QWidget * createWidget(GObjectView* objView);
     OPGroupParameters getOPGroupParameters();
 
 private:

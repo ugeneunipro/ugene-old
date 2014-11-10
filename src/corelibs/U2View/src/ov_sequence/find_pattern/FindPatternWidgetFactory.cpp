@@ -19,13 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "FindPatternWidget.h"
-#include "FindPatternWidgetFactory.h"
+#include <QPixmap>
 
 #include <U2Core/U2SafePoints.h>
 
-#include <QObject>
+#include <U2View/AnnotatedDNAView.h>
 
+#include "FindPatternWidget.h"
+
+#include "FindPatternWidgetFactory.h"
 
 namespace U2 {
 
@@ -34,15 +36,11 @@ const QString FindPatternWidgetFactory::GROUP_ICON_STR = ":core/images/find_dial
 const QString FindPatternWidgetFactory::GROUP_TITLE = QString(QObject::tr("Search in Sequence"));
 const QString FindPatternWidgetFactory::GROUP_DOC_PAGE = "4227320";
 
-
-FindPatternWidgetFactory::FindPatternWidgetFactory()
-{
+FindPatternWidgetFactory::FindPatternWidgetFactory() {
     objectViewOfWidget = ObjViewType_SequenceView;
 }
 
-
-QWidget* FindPatternWidgetFactory::createWidget(GObjectView* objView)
-{
+QWidget * FindPatternWidgetFactory::createWidget(GObjectView* objView) {
     SAFE_POINT(NULL != objView,
         QString("Internal error: unable to create widget for group '%1', object view is NULL.").arg(GROUP_ID),
         NULL);
@@ -56,11 +54,12 @@ QWidget* FindPatternWidgetFactory::createWidget(GObjectView* objView)
     return widget;
 }
 
-
-OPGroupParameters FindPatternWidgetFactory::getOPGroupParameters()
-{
+OPGroupParameters FindPatternWidgetFactory::getOPGroupParameters() {
     return OPGroupParameters(GROUP_ID, QPixmap(GROUP_ICON_STR), GROUP_TITLE, GROUP_DOC_PAGE);
 }
 
+const QString & FindPatternWidgetFactory::getGroupId() {
+    return GROUP_ID;
+}
 
-} // namespace
+} // namespace U2

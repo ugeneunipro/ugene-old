@@ -22,18 +22,13 @@
 #ifndef _U2_CIRCULAR_VIEW_SETTINGS_WIDGET_H_
 #define _U2_CIRCULAR_VIEW_SETTINGS_WIDGET_H_
 
-#include <qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QWidget>
-#else
-#include <QtWidgets/QWidget>
-#endif
+#include <U2Gui/U2SavableWidget.h>
 
 #include "ui/ui_CircularViewSettingsWidget.h"
-#include "CircularView.h"
 
 namespace U2 {
 
+struct CircularViewSettings;
 class CircularViewSplitter;
 
 class CircularViewSettingsWidget : public QWidget, private Ui_CircularViewSettingsWidget {
@@ -55,9 +50,10 @@ private:
     void connectSlots();
 
 private:
-    CircularViewSplitter* circularViewSplitter;
-    CircularViewSettings* settings;
-    QWidget*             settingsWidget;
+    CircularViewSplitter *circularViewSplitter;
+    CircularViewSettings *settings;
+    QWidget *             settingsWidget;
+    U2SavableWidget       savableWidget;
 };
 
 } // namepace

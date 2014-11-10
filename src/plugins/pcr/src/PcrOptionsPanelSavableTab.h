@@ -19,22 +19,28 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_MSA_OPTIONS_PANEL_SAVABLE_TAB_H_
-#define _U2_MSA_OPTIONS_PANEL_SAVABLE_TAB_H_
+#ifndef _U2_PCR_OPTIONS_PANEL_SAVABLE_TAB_H_
+#define _U2_PCR_OPTIONS_PANEL_SAVABLE_TAB_H_
 
 #include <U2Gui/U2SavableWidget.h>
 
 namespace U2 {
 
-class MsaOptionsPanelSavableTab : public U2SavableWidget {
-public:
-    MsaOptionsPanelSavableTab(QWidget *wrappedWidget, MWMDIWindow *contextWindow);
-    ~MsaOptionsPanelSavableTab();
+class InSilicoPcrOptionPanelWidget;
 
-protected:
-    QSet<QWidget *> getCompoundChildren() const;
+class PcrOptionsPanelSavableTab : public U2SavableWidget {
+public:
+    PcrOptionsPanelSavableTab(QWidget *wrappedWidget, MWMDIWindow *contextWindow);
+    ~PcrOptionsPanelSavableTab();
+
+    QVariant getChildValue(const QString &childId) const;
+    void setChildValue(const QString &childId, const QVariant &value);
+    bool childValueIsAcceptable(const QString &childId, const QVariant &value) const;
+
+private:
+    InSilicoPcrOptionPanelWidget *originalWrappedWidget;
 };
 
 } // namespace U2
 
-#endif // _U2_MSA_OPTIONS_PANEL_SAVABLE_TAB_H_
+#endif // _U2_PCR_OPTIONS_PANEL_SAVABLE_TAB_H_

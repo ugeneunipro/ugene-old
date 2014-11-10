@@ -17,7 +17,6 @@ HEADERS += src/LicenseDialog.h \
            src/ov_assembly/AssemblyInfoWidget.h \
            src/ov_assembly/AssemblyModel.h \
            src/ov_assembly/AssemblyNavigationWidget.h \
-           src/ov_assembly/AssemblyOptionsPanelSavableTab.h \
            src/ov_assembly/AssemblyReadsArea.h \
            src/ov_assembly/AssemblyReadsAreaHint.h \
            src/ov_assembly/AssemblyReferenceArea.h \
@@ -68,7 +67,6 @@ HEADERS += src/LicenseDialog.h \
            src/ov_msa/MSAEditorStatusBar.h \
            src/ov_msa/MSAEditorTasks.h \
            src/ov_msa/MSAEditorUndoFramework.h \
-           src/ov_msa/MsaOptionsPanelSavableTab.h \
            src/ov_msa/MSASelectSubalignmentDialog.h \
            src/ov_msa/MsaEditorUserModStepController.h \
            src/ov_msa/Overview/MSAGraphCalculationTask.h \
@@ -79,6 +77,7 @@ HEADERS += src/LicenseDialog.h \
            src/ov_msa/Overview/MSASimpleOverview.h \
            src/ov_msa/PairAlign/PairAlign.h \
            src/ov_msa/PairAlign/PairAlignFactory.h \
+           src/ov_msa/PairAlign/PairAlignOpSavableTab.h \
            src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.h \
            src/ov_msa/PhyTrees/MSAEditorTreeManager.h \
            src/ov_msa/PhyTrees/MSAEditorTreeViewer.h \
@@ -145,6 +144,9 @@ HEADERS += src/LicenseDialog.h \
            src/ov_sequence/annot_highlight/AnnotHighlightWidget.h \
            src/ov_sequence/annot_highlight/AnnotHighlightWidgetFactory.h \
            src/ov_sequence/codon_table/CodonTable.h \
+           src/ov_sequence/Das/DasWidgetFactory.h \
+           src/ov_sequence/Das/DasOptionsPanelSavableTab.h \
+           src/ov_sequence/Das/DasOptionsPanelWidget.h \
            src/ov_sequence/find_pattern/FindPatternTask.h \
            src/ov_sequence/find_pattern/FindPatternWidget.h \
            src/ov_sequence/find_pattern/FindPatternWidgetFactory.h \
@@ -226,7 +228,6 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_assembly/AssemblyInfoWidget.cpp \
            src/ov_assembly/AssemblyModel.cpp \
            src/ov_assembly/AssemblyNavigationWidget.cpp \
-           src/ov_assembly/AssemblyOptionsPanelSavableTab.cpp \
            src/ov_assembly/AssemblyReadsArea.cpp \
            src/ov_assembly/AssemblyReadsAreaHint.cpp \
            src/ov_assembly/AssemblyReferenceArea.cpp \
@@ -275,7 +276,6 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_msa/MSAEditorStatusBar.cpp \
            src/ov_msa/MSAEditorTasks.cpp \
            src/ov_msa/MSAEditorUndoFramework.cpp \
-           src/ov_msa/MsaOptionsPanelSavableTab.cpp \
            src/ov_msa/MSASelectSubalignmentDialog.cpp \
            src/ov_msa/MsaEditorUserModStepController.cpp \
            src/ov_msa/ExportConsensus/MSAExportConsensusTab.cpp \
@@ -288,9 +288,12 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_msa/Overview/MSASimpleOverview.cpp \
            src/ov_msa/PairAlign/PairAlign.cpp \
            src/ov_msa/PairAlign/PairAlignFactory.cpp \
+           src/ov_msa/PairAlign/PairAlignOpSavableTab.cpp \
+           src/ov_msa/TreeOptions/TreeOptionsWidget.cpp \
+           src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.cpp \
+           src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp \
            src/ov_msa/PhyTrees/MSAEditorMultiTreeViewer.cpp \
            src/ov_msa/PhyTrees/MSAEditorTreeManager.cpp \
-           src/ov_msa/PhyTrees/MSAEditorTreeViewer.cpp \
            src/ov_msa/SaveSelectedSequenceFromMSADialogController.cpp \
            src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp \
            src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.cpp \
@@ -354,6 +357,9 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_sequence/find_pattern/FindPatternTask.cpp \
            src/ov_sequence/find_pattern/FindPatternWidget.cpp \
            src/ov_sequence/find_pattern/FindPatternWidgetFactory.cpp \
+           src/ov_sequence/Das/DasWidgetFactory.cpp \
+           src/ov_sequence/Das/DasOptionsPanelSavableTab.cpp \
+           src/ov_sequence/Das/DasOptionsPanelWidget.cpp \
            src/ov_sequence/sequence_info/CharOccurTask.cpp \
            src/ov_sequence/sequence_info/DinuclOccurTask.cpp \
            src/ov_sequence/sequence_info/DNAStatisticsTask.cpp \

@@ -26,7 +26,6 @@
 
 #include "AssemblyInfoWidget.h"
 #include "AssemblyBrowser.h"
-#include "AssemblyOptionsPanelSavableTab.h"
 
 #include <U2Core/FormatUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -66,7 +65,7 @@ namespace {
 }
 
 AssemblyInfoWidget::AssemblyInfoWidget(AssemblyBrowser *browser, QWidget *p)
-    : QWidget(p), savableTab(new AssemblyOptionsPanelSavableTab(this, GObjectViewUtils::findViewByName(browser->getName())))
+    : QWidget(p), savableTab(this, GObjectViewUtils::findViewByName(browser->getName()))
 {
     QVBoxLayout* mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -112,11 +111,7 @@ AssemblyInfoWidget::AssemblyInfoWidget(AssemblyBrowser *browser, QWidget *p)
         mainLayout->addWidget(refGroup);
     }
 
-    U2WidgetStateStorage::restoreWidgetState(*savableTab);
-}
-
-AssemblyInfoWidget::~AssemblyInfoWidget() {
-    delete savableTab;
+    U2WidgetStateStorage::restoreWidgetState(savableTab);
 }
 
 //

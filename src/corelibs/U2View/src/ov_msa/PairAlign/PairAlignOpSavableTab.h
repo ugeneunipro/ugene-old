@@ -19,40 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef __ASSEMBLY_INFO_WIDGET_H__
-#define __ASSEMBLY_INFO_WIDGET_H__
+#ifndef _U2_MSA_OPTIONS_PANEL_SAVABLE_TAB_H_
+#define _U2_MSA_OPTIONS_PANEL_SAVABLE_TAB_H_
 
-#include <U2Gui/OPWidgetFactory.h>
 #include <U2Gui/U2SavableWidget.h>
 
 namespace U2 {
 
-class AssemblyBrowser;
-
-class AssemblyInfoWidget : public QWidget {
-    Q_OBJECT
+class PairAlignOpSavableTab : public U2SavableWidget {
 public:
-    AssemblyInfoWidget(AssemblyBrowser * browser, QWidget *p = NULL);
+    PairAlignOpSavableTab(QWidget *wrappedWidget, MWMDIWindow *contextWindow);
+    ~PairAlignOpSavableTab();
 
-private:
-    U2SavableWidget savableTab;
+protected:
+    QSet<QWidget *> getCompoundChildren() const;
 };
 
-class U2VIEW_EXPORT AssemblyInfoWidgetFactory : public OPWidgetFactory {
-    Q_OBJECT
-public:
-    AssemblyInfoWidgetFactory();
+} // namespace U2
 
-    QWidget* createWidget(GObjectView* objView);
-    OPGroupParameters getOPGroupParameters();
-
-private:
-    static const QString GROUP_ID;
-    static const QString GROUP_ICON_STR;
-    static const QString GROUP_TITLE;
-    static const QString GROUP_DOC_PAGE;
-};
-
-} // namespace
-
-#endif // #ifndef __ASSEMBLY_INFO_WIDGET_H__
+#endif // _U2_MSA_OPTIONS_PANEL_SAVABLE_TAB_H_

@@ -55,7 +55,6 @@ private:
     bool showAllIsSelected;
 };
 
-
 class AnnotHighlightWidget : public QWidget
 {
     Q_OBJECT
@@ -160,6 +159,5 @@ private:
 };
 
 } // namespace
-
 
 #endif

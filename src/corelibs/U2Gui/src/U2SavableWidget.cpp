@@ -22,9 +22,11 @@
 #include <QAbstractButton>
 #include <QComboBox>
 #include <QFontComboBox>
+#include <QGroupBox>
 #include <QLineEdit>
 #include <QSlider>
 #include <QSpinBox>
+#include <QTableWidget>
 #include <QTextEdit>
 
 #include <U2Core/L10n.h>
@@ -76,9 +78,47 @@ bool U2SavableWidget::childValueIsAcceptable(const QString &childId, const QVari
     return childExists(childId);
 }
 
+namespace {
+
+QVector<QVector<QString> > getTableWidgetContent(QTableWidget *tableWidget) {
+    const int columnCount = tableWidget->columnCount();
+    const int rowCount = tableWidget->rowCount();
+
+    QVector<QVector<QString> > result;
+    result.reserve(rowCount);
+    for (int i = 0; i < rowCount; ++i) {
+        QVector<QString> rowContent;
+        rowContent.reserve(columnCount);
+        for (int j = 0; j < columnCount; ++j) {
+            rowContent.append(tableWidget->item(i, j)->text());
+        }
+        result.prepend(rowContent);
+    }
+    return result;
+}
+
+void setTableWidgetContent(QTableWidget *tableWidget, const QVector<QVector<QString> > &content) {
+    CHECK(!content.isEmpty() && !content[0].isEmpty(), );
+
+    const int rowCount = content.size();
+    const int columnCount = content[0].size();
+
+    tableWidget->setRowCount(rowCount);
+    tableWidget->setColumnCount(columnCount);
+
+    for (int i = 0; i < rowCount; ++i) {
+        for (int j = 0; j < columnCount; ++j) {
+            QTableWidgetItem *newItem = new QTableWidgetItem(content[i][j]);
+            tableWidget->setItem(i, j, newItem);
+        }
+    }
+}
+
+}
+
 QVariant U2SavableWidget::getChildValue(const QString &childId) const {
     QVariant result;
-    SAFE_POINT(childExists(childId), "Child widget expected", false);
+    SAFE_POINT(childExists(childId), "Child widget expected", result);
 
     QWidget *child = getChildWidgetById(childId);
     if (NULL != qobject_cast<QLineEdit *>(child)) {
@@ -89,12 +129,16 @@ QVariant U2SavableWidget::getChildValue(const QString &childId) const {
         result = qobject_cast<QComboBox *>(child)->currentIndex();
     } else if (NULL != qobject_cast<QAbstractButton *>(child)) {
         result = qobject_cast<QAbstractButton *>(child)->isChecked();
+    } else if (NULL != qobject_cast<QGroupBox *>(child)) {
+        result = qobject_cast<QGroupBox *>(child)->isChecked();
     } else if (NULL != qobject_cast<QSpinBox *>(child)) {
         result = qobject_cast<QSpinBox *>(child)->value();
     } else if (NULL != qobject_cast<QDoubleSpinBox *>(child)) {
         result = qobject_cast<QDoubleSpinBox *>(child)->value();
     } else if (NULL != qobject_cast<QSlider *>(child)) {
         result = qobject_cast<QSlider *>(child)->value();
+    } else if (NULL != qobject_cast<QTableWidget *>(child)) {
+        return QVariant::fromValue<QVector<QVector<QString> > >(getTableWidgetContent(qobject_cast<QTableWidget *>(child)));
     } else if (NULL != qobject_cast<ShowHideSubgroupWidget *>(child)) {
         result = qobject_cast<ShowHideSubgroupWidget *>(child)->isSubgroupOpened();
     } else {
@@ -115,12 +159,16 @@ void U2SavableWidget::setChildValue(const QString &childId, const QVariant &valu
         qobject_cast<QComboBox *>(child)->setCurrentIndex(value.toInt());
     } else if (NULL != qobject_cast<QAbstractButton *>(child)) {
         qobject_cast<QAbstractButton *>(child)->setChecked(value.toBool());
+    } else if (NULL != qobject_cast<QGroupBox *>(child)) {
+        qobject_cast<QGroupBox *>(child)->setChecked(value.toBool());
     } else if (NULL != qobject_cast<QSpinBox *>(child)) {
         qobject_cast<QSpinBox *>(child)->setValue(value.toInt());
     } else if (NULL != qobject_cast<QDoubleSpinBox *>(child)) {
         qobject_cast<QDoubleSpinBox *>(child)->setValue(value.toDouble());
     } else if (NULL != qobject_cast<QSlider *>(child)) {
         qobject_cast<QSlider *>(child)->setValue(value.toInt());
+    } else if (NULL != qobject_cast<QTableWidget *>(child)) {
+        setTableWidgetContent(qobject_cast<QTableWidget *>(child), value.value<QVector<QVector<QString> > >());
     } else if (NULL != qobject_cast<ShowHideSubgroupWidget *>(child)) {
         qobject_cast<ShowHideSubgroupWidget *>(child)->setSubgroupOpened(value.toBool());
     } else {
@@ -137,15 +185,19 @@ QSet<QWidget *> U2SavableWidget::getCompoundChildren() const {
 }
 
 bool U2SavableWidget::childCanBeSaved(QWidget *child) const {
-    return ((NULL != qobject_cast<QLineEdit *>(child) && NULL == qobject_cast<QFontComboBox *>(child->parent()))
+    const QString widgetName = child->objectName();
+    return ((NULL != qobject_cast<QLineEdit *>(child)
+        && NULL == qobject_cast<QFontComboBox *>(child->parent()) && widgetName != "qt_spinbox_lineedit") // skip fake line edit inside a spin box
         || NULL != qobject_cast<QTextEdit *>(child)
         || NULL != qobject_cast<QComboBox *>(child)
         || (NULL != qobject_cast<QAbstractButton *>(child) && qobject_cast<QAbstractButton *>(child)->isCheckable())
+        || (NULL != qobject_cast<QGroupBox *>(child) && qobject_cast<QGroupBox *>(child)->isCheckable())
         || NULL != qobject_cast<QSpinBox *>(child)
         || NULL != qobject_cast<QDoubleSpinBox *>(child)
         || NULL != qobject_cast<QSlider *>(child)
+        || NULL != qobject_cast<QTableWidget *>(child)
         || NULL != qobject_cast<ShowHideSubgroupWidget *>(child))
-        && child->objectName() != "qt_spinbox_lineedit"; // skip fake line edit inside a spin box
+        && !widgetName.isEmpty();
 }
 
 QString U2SavableWidget::getChildId(QWidget *child) const {
@@ -159,7 +211,7 @@ QWidget * U2SavableWidget::getChildWidgetById(const QString &childId) const {
 
 bool U2SavableWidget::childExists(const QString &childId) const {
     QList<QWidget *> allChildWidgets = wrappedWidget->findChildren<QWidget *>(childId);
-    SAFE_POINT(allChildWidgets.size() < 2, "Widget name duplicated", false);
+    SAFE_POINT(allChildWidgets.size() < 2, "Widget ID duplicated", false);
     return 1 == allChildWidgets.size();
 }
 

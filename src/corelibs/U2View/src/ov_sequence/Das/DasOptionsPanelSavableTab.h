@@ -19,17 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_ASSEMBLY_OPTIONS_PANEL_SAVABLE_TAB_H_
-#define _U2_ASSEMBLY_OPTIONS_PANEL_SAVABLE_TAB_H_
+#ifndef _U2_DAS_OPTIONS_PANEL_SAVABLE_TAB_H_
+#define _U2_DAS_OPTIONS_PANEL_SAVABLE_TAB_H_
 
 #include <U2Gui/U2SavableWidget.h>
 
 namespace U2 {
 
-class AssemblyOptionsPanelSavableTab : public U2SavableWidget {
+class DasOptionsPanelSavableTab : public U2SavableWidget {
 public:
-    AssemblyOptionsPanelSavableTab(QWidget *wrappedWidget, MWMDIWindow *contextWindow);
-    ~AssemblyOptionsPanelSavableTab();
+    DasOptionsPanelSavableTab(QWidget *wrappedWidget, MWMDIWindow *contextWindow);
+    ~DasOptionsPanelSavableTab();
+
+    QVariant getChildValue(const QString &childId) const;
+    void setChildValue(const QString &childId, const QVariant &value);
 
 protected:
     bool childCanBeSaved(QWidget *child) const;
@@ -37,4 +40,4 @@ protected:
 
 } // namespace U2
 
-#endif // _U2_ASSEMBLY_OPTIONS_PANEL_SAVABLE_TAB_H_
+#endif // _U2_DAS_OPTIONS_PANEL_SAVABLE_TAB_H_

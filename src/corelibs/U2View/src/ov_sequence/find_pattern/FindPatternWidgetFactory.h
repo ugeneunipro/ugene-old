@@ -22,29 +22,20 @@
 #ifndef _U2_FIND_PATTERN_WIDGET_FACTORY_H_
 #define _U2_FIND_PATTERN_WIDGET_FACTORY_H_
 
-#include <U2Core/global.h>
-
 #include <U2Gui/OPWidgetFactory.h>
-
-#include <U2View/AnnotatedDNAView.h>
-
-#include <QtGui/QPixmap>
-
 
 namespace U2 {
 
-class U2VIEW_EXPORT FindPatternWidgetFactory : public OPWidgetFactory
-{
+class GObjectView;
+
+class U2VIEW_EXPORT FindPatternWidgetFactory : public OPWidgetFactory {
     Q_OBJECT
 public:
     FindPatternWidgetFactory();
-    virtual ~FindPatternWidgetFactory(){}
 
-    virtual QWidget* createWidget(GObjectView* objView);
-
+    virtual QWidget * createWidget(GObjectView* objView);
     virtual OPGroupParameters getOPGroupParameters();
-
-    static const QString& getGroupId() { return GROUP_ID; }
+    static const QString & getGroupId();
 
 private:
     static const QString GROUP_ID;

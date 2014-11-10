@@ -26,7 +26,6 @@
 
 #include "AssemblyBrowser.h"
 #include "AssemblyConsensusArea.h"
-#include "AssemblyOptionsPanelSavableTab.h"
 #include "AssemblyReadsArea.h"
 #include "AssemblySettingsWidget.h"
 
@@ -51,7 +50,7 @@ static inline QVBoxLayout * initLayout(QWidget * w) {
 }
 
 AssemblySettingsWidget::AssemblySettingsWidget(AssemblyBrowserUi * ui_)
-    : QWidget(ui_), ui(ui_), savableTab(new AssemblyOptionsPanelSavableTab(this, GObjectViewUtils::findViewByName(ui_->getWindow()->getName())))
+    : QWidget(ui_), ui(ui_), savableTab(this, GObjectViewUtils::findViewByName(ui_->getWindow()->getName()))
 {
     QVBoxLayout* mainLayout = initLayout(this);
     mainLayout->setSpacing(0);
@@ -65,11 +64,7 @@ AssemblySettingsWidget::AssemblySettingsWidget(AssemblyBrowserUi * ui_)
     QWidget * rulerGroup = new ShowHideSubgroupWidget("RULER", tr("Ruler"), createRulerSettings(), true);
     mainLayout->addWidget(rulerGroup);
 
-    U2WidgetStateStorage::restoreWidgetState(*savableTab);
-}
-
-AssemblySettingsWidget::~AssemblySettingsWidget() {
-    delete savableTab;
+    U2WidgetStateStorage::restoreWidgetState(savableTab);
 }
 
 static inline void createTwoWayBinding(QCheckBox * checkBox, QAction * action) {

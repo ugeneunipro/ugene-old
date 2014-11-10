@@ -46,17 +46,27 @@ void InSilicoPcrProductsTable::replaceContext(ADVSequenceObjectContext *newSeque
     sequenceContext = newSequenceContext;
 }
 
-void InSilicoPcrProductsTable::showProducts(InSilicoPcrTask *task, ADVSequenceObjectContext *newSequenceContext) {
+void InSilicoPcrProductsTable::showProducts(const QList<InSilicoPcrProduct> &products, ADVSequenceObjectContext *newSequenceContext) {
     replaceContext(newSequenceContext);
-    currentProducts = task->getResults();
+    setCurrentProducts(products);
+}
+
+ADVSequenceObjectContext * InSilicoPcrProductsTable::getCurrentSequenceContext() const {
+    return sequenceContext;
+}
+
+void InSilicoPcrProductsTable::setCurrentProducts(const QList<InSilicoPcrProduct> &products) {
+    currentProducts = products;
     setRowCount(currentProducts.size());
 
+    const qint64 seqLength = sequenceContext->getSequenceLength();
+    SAFE_POINT(seqLength > 0, "Invalid sequence length", );
     int row = 0;
-    foreach (const InSilicoPcrProduct &product, currentProducts) {
+    foreach(const InSilicoPcrProduct &product, currentProducts) {
         qint64 startPos = product.region.startPos + 1;
         qint64 endPos = product.region.endPos();
-        if (endPos > task->getSettings().sequence.length()) {
-            endPos = endPos % task->getSettings().sequence.length();
+        if (endPos > seqLength) {
+            endPos = endPos % seqLength;
         }
 
         QTableWidgetItem *regionItem = new QTableWidgetItem(QString("%1 - %2").arg(startPos).arg(endPos));
@@ -85,6 +95,10 @@ QList<InSilicoPcrProduct> InSilicoPcrProductsTable::getSelectedProducts() const 
         result << currentProducts[index.row()];
     }
     return result;
+}
+
+const QList<InSilicoPcrProduct> & InSilicoPcrProductsTable::getAllProducts() const {
+    return currentProducts;
 }
 
 QVector<U2Region> InSilicoPcrProductsTable::getSelection() const {

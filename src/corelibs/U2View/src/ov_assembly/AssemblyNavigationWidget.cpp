@@ -32,14 +32,13 @@
 #include <U2Gui/U2WidgetStateStorage.h>
 
 #include "AssemblyBrowser.h"
-#include "AssemblyOptionsPanelSavableTab.h"
 
 #include "AssemblyNavigationWidget.h"
 
 namespace U2 {
 
 AssemblyNavigationWidget::AssemblyNavigationWidget(AssemblyBrowser *_browser, QWidget *p)
-    : QWidget(p), browser(_browser), savableTab(new AssemblyOptionsPanelSavableTab(this, GObjectViewUtils::findViewByName(_browser->getName())))
+    : QWidget(p), browser(_browser), savableTab(this, GObjectViewUtils::findViewByName(_browser->getName()))
 {
     QVBoxLayout* mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -65,11 +64,7 @@ AssemblyNavigationWidget::AssemblyNavigationWidget(AssemblyBrowser *_browser, QW
     QWidget * coveredGroup = new ShowHideSubgroupWidget("COVERED", tr("Most Covered Regions"), coveredLabel, true);
     mainLayout->addWidget(coveredGroup);
 
-    U2WidgetStateStorage::restoreWidgetState(*savableTab);
-}
-
-AssemblyNavigationWidget::~AssemblyNavigationWidget() {
-    delete savableTab;
+    U2WidgetStateStorage::restoreWidgetState(savableTab);
 }
 
 void AssemblyNavigationWidget::sl_updateZoomingState(){

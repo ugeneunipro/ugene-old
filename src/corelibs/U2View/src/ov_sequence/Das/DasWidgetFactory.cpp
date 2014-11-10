@@ -19,13 +19,15 @@
  * MA 02110-1301, USA.
  */
 
-#include "DasWidgetFactory.h"
-#include "DasOptionsPanelWidget.h"
+#include <QPixmap>
 
 #include <U2Core/U2SafePoints.h>
 
-#include <QObject>
+#include <U2View/AnnotatedDNAView.h>
 
+#include "DasOptionsPanelWidget.h"
+
+#include "DasWidgetFactory.h"
 
 namespace U2 {
 
@@ -73,6 +75,8 @@ bool DasWidgetFactory::passFiltration( OPFactoryFilterVisitorInterface* filter )
     return res;
 }
 
-
+const QString & DasWidgetFactory::getGroupId() {
+    return GROUP_ID;
+}
 
 } // namespace

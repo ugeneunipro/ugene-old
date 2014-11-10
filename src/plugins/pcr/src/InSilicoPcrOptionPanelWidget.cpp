@@ -26,6 +26,8 @@
 #include <U2Core/MultiTask.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/U2WidgetStateStorage.h>
+
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/AnnotatedDNAView.h>
 
@@ -43,11 +45,16 @@ namespace {
 }
 
 InSilicoPcrOptionPanelWidget::InSilicoPcrOptionPanelWidget(AnnotatedDNAView *annotatedDnaView)
-: QWidget(), annotatedDnaView(annotatedDnaView), pcrTask(NULL)
+    : QWidget(), annotatedDnaView(annotatedDnaView), pcrTask(NULL), resultTableShown(false),
+    savableWidget(this, GObjectViewUtils::findViewByName(annotatedDnaView->getName()))
 {
     setupUi(this);
     forwardPrimerBox->setTitle(tr("Forward primer"));
+    forwardPrimerBox->primerEdit->setObjectName("forwardPrimerEdit");
+    forwardPrimerBox->mismatchesSpinBox->setObjectName("forwardMismatchesSpinBox");
     reversePrimerBox->setTitle(tr("Reverse primer"));
+    reversePrimerBox->primerEdit->setObjectName("reversePrimerEdit");
+    reversePrimerBox->mismatchesSpinBox->setObjectName("reverseMismatchesSpinBox");
 
     connect(forwardPrimerBox, SIGNAL(si_primerChanged()), SLOT(sl_onPrimerChanged()));
     connect(reversePrimerBox, SIGNAL(si_primerChanged()), SLOT(sl_onPrimerChanged()));
@@ -60,7 +67,10 @@ InSilicoPcrOptionPanelWidget::InSilicoPcrOptionPanelWidget(AnnotatedDNAView *ann
     connect(productsTable, SIGNAL(doubleClicked(const QModelIndex &)), SLOT(sl_onProductDoubleClicked()));
     connect(warningLabel, SIGNAL(linkActivated(const QString &)), SLOT(sl_showDetails(const QString &)));
 
-    productsWidget->hide();
+    setResultTableShown(false);
+
+    U2WidgetStateStorage::restoreWidgetState(savableWidget);
+
     sl_onFocusChanged();
     sl_onPrimerChanged();
 }
@@ -69,6 +79,19 @@ InSilicoPcrOptionPanelWidget::~InSilicoPcrOptionPanelWidget() {
     if (NULL != pcrTask) {
         pcrTask->cancel();
     }
+}
+
+AnnotatedDNAView * InSilicoPcrOptionPanelWidget::getDnaView() const {
+    return annotatedDnaView;
+}
+
+bool InSilicoPcrOptionPanelWidget::isResultTableShown() const {
+    return resultTableShown;
+}
+
+void InSilicoPcrOptionPanelWidget::setResultTableShown(bool show) {
+    resultTableShown = show;
+    productsWidget->setVisible(show);
 }
 
 void InSilicoPcrOptionPanelWidget::sl_onPrimerChanged() {
@@ -116,7 +139,7 @@ void InSilicoPcrOptionPanelWidget::sl_findProduct() {
     connect(pcrTask, SIGNAL(si_stateChanged()), SLOT(sl_onFindTaskFinished()));
     AppContext::getTaskScheduler()->registerTopLevelTask(pcrTask);
     setDisabled(true);
-    productsWidget->setVisible(false);
+    setResultTableShown(false);
 }
 
 void InSilicoPcrOptionPanelWidget::sl_onFindTaskFinished() {
@@ -138,8 +161,8 @@ void InSilicoPcrOptionPanelWidget::showResults(InSilicoPcrTask *task) {
     ADVSequenceObjectContext *sequenceContext = annotatedDnaView->getSequenceContext(task->getSettings().sequenceObject);
     CHECK(NULL != sequenceContext, );
 
-    productsTable->showProducts(task, sequenceContext);
-    productsWidget->show();
+    productsTable->showProducts(task->getResults(), sequenceContext);
+    setResultTableShown(true);
 }
 
 void InSilicoPcrOptionPanelWidget::sl_extractProduct() {
@@ -163,7 +186,7 @@ void InSilicoPcrOptionPanelWidget::sl_extractProduct() {
 void InSilicoPcrOptionPanelWidget::sl_onSequenceChanged(ADVSequenceObjectContext *sequenceContext) {
     bool tableChanged = productsTable->onSequenceChanged(sequenceContext);
     if (tableChanged) {
-        productsWidget->hide();
+        setResultTableShown(false);
     }
     CHECK(NULL != pcrTask, );
     bool taskChanged = GObjectReference(sequenceContext->getSequenceGObject()) == pcrTask->getSettings().sequenceObject;

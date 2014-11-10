@@ -22,26 +22,16 @@
 #ifndef _U2_ANNOT_HIGHLIGHT_WIDGET_FACTORY_H_
 #define _U2_ANNOT_HIGHLIGHT_WIDGET_FACTORY_H_
 
-#include <U2Core/global.h>
-
 #include <U2Gui/OPWidgetFactory.h>
-
-#include <U2View/AnnotatedDNAView.h>
-
-#include <QtGui/QPixmap>
-
 
 namespace U2 {
 
-class U2VIEW_EXPORT AnnotHighlightWidgetFactory : public OPWidgetFactory
-{
+class U2VIEW_EXPORT AnnotHighlightWidgetFactory : public OPWidgetFactory {
     Q_OBJECT
 public:
     AnnotHighlightWidgetFactory();
-    virtual ~AnnotHighlightWidgetFactory(){}
 
-    virtual QWidget* createWidget(GObjectView* objView);
-
+    virtual QWidget * createWidget(GObjectView* objView);
     virtual OPGroupParameters getOPGroupParameters();
 
 private:
@@ -51,6 +41,6 @@ private:
     static const QString GROUP_DOC_PAGE;
 };
 
-} // namespace
+} // namespace U2
 
-#endif
+#endif // _U2_ANNOT_HIGHLIGHT_WIDGET_FACTORY_H_

@@ -20,15 +20,16 @@
  */
 
 #include <QFlags>
+#include <QKeyEvent>
 
 #include <U2Algorithm/FindAlgorithmTask.h>
 
-#include <U2Core/AnnotationData.h>
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/CreateAnnotationTask.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
+#include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/L10n.h>
@@ -43,10 +44,12 @@
 #include <U2Formats/FastaFormat.h>
 #include <U2Formats/GenbankFeatures.h>
 
+#include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/DialogUtils.h>
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/ShowHideSubgroupWidget.h>
 #include <U2Gui/U2FileDialog.h>
+#include <U2Gui/U2WidgetStateStorage.h>
 
 #include <U2View/ADVSequenceObjectContext.h>
 #include <U2View/ADVSequenceWidget.h>
@@ -368,7 +371,8 @@ const QString FindPatternWidget::SEARCH_IN_SETTINGS = QObject::tr("Search in");
 const QString FindPatternWidget::OTHER_SETTINGS = QObject::tr("Other settings");
 
 FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
-    : annotatedDnaView(_annotatedDnaView),iterPos(1),searchTask(NULL),previousPatternString("")
+    : annotatedDnaView(_annotatedDnaView), iterPos(1), searchTask(NULL), previousPatternString(""),
+    savableWidget(this, GObjectViewUtils::findViewByName(_annotatedDnaView->getName()))
 {
     setupUi(this);
 
@@ -418,6 +422,8 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
     getAnnotationsPushButton->setDisabled(true);
     resultLabel->setText(tr("Results: 0/0"));
     QWidget::setTabOrder(nextPushButton, boxAlgorithm);
+
+    U2WidgetStateStorage::restoreWidgetState(savableWidget);
 }
 
 void FindPatternWidget::initLayout() {
@@ -532,6 +538,7 @@ void FindPatternWidget::initUseAmbiguousBasesContainer() {
     useAmbiguousBasesContainer->setLayout(useAmbiguousBasesLayout);
 
     useAmbiguousBasesBox = new QCheckBox();
+    useAmbiguousBasesBox->setObjectName("useAmbiguousBasesBox");
     QLabel *useAmbiguousBasesLabel = new QLabel(tr("Search with ambiguous bases"));
     useAmbiguousBasesLabel->setWordWrap(true);
 
@@ -1021,7 +1028,7 @@ void FindPatternWidget::verifyPatternAlphabet()
 
     QStringList patternNoNames;
     QList<NamePattern > patternsWithNames = getPatternsFromTextPatternField(os);
-    foreach(const NamePattern& name_pattern, patternsWithNames ){
+    foreach (const NamePattern &name_pattern, patternsWithNames) {
         patternNoNames.append(name_pattern.second);
     }
 
@@ -1227,16 +1234,12 @@ void FindPatternWidget::sl_onFileSelectorToggled(bool on)
     sl_activateNewSearch(true);
 }
 
-void FindPatternWidget::initFindPatternTask( const QList<NamePattern>& patterns){
-    if(patterns.isEmpty()){
-        return;
-    }
+void FindPatternWidget::initFindPatternTask(const QList<NamePattern> &patterns) {
+    CHECK(!patterns.isEmpty(), );
 
-    if(selectedAlgorithm == FindAlgorithmPatternSettings_RegExp){
+    if (selectedAlgorithm == FindAlgorithmPatternSettings_RegExp) {
         QRegExp regExp(textPattern->toPlainText());
-        if(!regExp.isValid()){
-            return;
-        }
+        CHECK(regExp.isValid(), );
     }
     ADVSequenceObjectContext* activeContext = annotatedDnaView->getSequenceInFocus();
     SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus!",);
@@ -1318,45 +1321,28 @@ void FindPatternWidget::initFindPatternTask( const QList<NamePattern>& patterns)
     AppContext::getTaskScheduler()->registerTopLevelTask(searchTask);
 }
 
-void FindPatternWidget::sl_loadPatternTaskStateChanged(){
-    LoadPatternsFileTask* loadTask = qobject_cast<LoadPatternsFileTask*>(sender());
-    if (!loadTask){
-        return;
-    }
-    if(!loadTask->isFinished() || loadTask->isCanceled()){
-        return;
-    }
-    if (loadTask->hasError()){
+void FindPatternWidget::sl_loadPatternTaskStateChanged() {
+    LoadPatternsFileTask *loadTask = qobject_cast<LoadPatternsFileTask *>(sender());
+    CHECK(NULL != loadTask, );
+    CHECK(loadTask->isFinished() && !loadTask->isCanceled(), );
+    CHECK(!loadTask->hasError(), );
 
-        return;
-    }
-    bool noBadRegion = true;
-    bool noBadAlphabet = true;
-
-    const QList<NamePattern>& namesPatterns = loadTask->getNamesPatterns();
+    const QList<NamePattern> namesPatterns = loadTask->getNamesPatterns();
     initFindPatternTask(namesPatterns);
 
-    if(!noBadAlphabet){
-        showHideMessage(true, PatternsWithBadAlphabetInFile);
-    }
-    if(!noBadRegion){
-        showHideMessage(true, PatternsWithBadRegionInFile);
-    }
     annotModelPrepared = false;
     updateAnnotationsWidget();
 }
 
 void FindPatternWidget::sl_findPatrernTaskStateChanged() {
     FindPatternListTask* findTask = qobject_cast<FindPatternListTask*>(sender());
-    if (!findTask) {
-        return;
-    }
-    
-    if(findTask->isFinished() || findTask->isCanceled() || findTask->hasError()){
+    CHECK(NULL != findTask, );
+
+    if (findTask->isFinished() || findTask->isCanceled() || findTask->hasError()) {
         findPatternResults = findTask->getResults();
-        if (findPatternResults.isEmpty()){
+        if (findPatternResults.isEmpty()) {
             resultLabel->setText(tr("Results: 0/0"));
-        }else{
+        } else {
             iterPos = 1;
             qSort(findPatternResults.begin(), findPatternResults.end());
             resultLabel->setText(tr("Results: %1/%2").arg(QString::number(iterPos)).arg(QString::number(findPatternResults.size())));
@@ -1366,11 +1352,11 @@ void FindPatternWidget::sl_findPatrernTaskStateChanged() {
             checkState();
             showCurrentResult();
         }
-        if(findTask == searchTask){
+        if (findTask == searchTask) {
             disconnect(this, SLOT(sl_loadPatternTaskStateChanged()));
             searchTask = NULL;
         }
-    } 
+    }
 }
 
 bool FindPatternWidget::checkAlphabet( const QString& pattern ){
@@ -1527,7 +1513,7 @@ void FindPatternWidget::sl_activateNewSearch(bool forcedSearch){
         QList<NamePattern> newPatterns = getPatternsFromTextPatternField(os);
 
         nameList.clear();
-        foreach(const NamePattern &np, newPatterns){
+        foreach (const NamePattern &np, newPatterns) {
             nameList.append(np.first);
         }
         
@@ -1636,8 +1622,8 @@ bool FindPatternWidget::isSearchPatternsDifferent(const QList<NamePattern> &newP
     if(patternList.size() != newPatterns.size()){
         return true;
     }
-    foreach(const NamePattern &s, newPatterns){
-        if(!patternList.contains(s.second)){
+    foreach (const NamePattern &s, newPatterns) {
+        if (!patternList.contains(s.second)) {
             return true;
         }
     }

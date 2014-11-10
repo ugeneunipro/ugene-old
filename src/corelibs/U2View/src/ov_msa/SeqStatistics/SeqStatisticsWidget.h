@@ -22,7 +22,7 @@
 #ifndef _U2_SEQ_STATISTICS_WIDGET_H_
 #define _U2_SEQ_STATISTICS_WIDGET_H_
 
-#include "../MsaOptionsPanelSavableTab.h"
+#include <U2Gui/U2SavableWidget.h>
 
 #include "ui/ui_MSADistancesColumnSettingsWidget.h"
 
@@ -66,7 +66,7 @@ private:
     SimilarityStatisticsSettings *settings;
     bool    statisticsIsShown;
 
-    MsaOptionsPanelSavableTab savableTab;
+    U2SavableWidget savableTab;
 };
 
 } // namespace

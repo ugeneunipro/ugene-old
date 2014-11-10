@@ -122,7 +122,7 @@ Task *BaseShortReadsAlignerWorker::tick() {
 
     bool bothData = inChannel->hasMessage() && inPairedChannel->hasMessage();
 
-    if (!pairedReadsInput && inChannel->hasMessage() || pairedReadsInput && bothData) {
+    if ((!pairedReadsInput && inChannel->hasMessage()) || (pairedReadsInput && bothData)) {
         U2OpStatus2Log os;
 
         Message m = getMessageAndSetupScriptValues(inChannel);

@@ -19,21 +19,25 @@
  * MA 02110-1301, USA.
  */
 
-#include "CircularViewSettingsWidget.h"
+#include <QtGui/QFontDatabase>
+
+#include <U2Core/U2SafePoints.h>
+
+#include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/U2WidgetStateStorage.h>
+
 #include "CircularViewSplitter.h"
 #include "CircularViewPlugin.h"
 
-#include <U2Core/U2SafePoints.h>
-#include <U2Gui/ShowHideSubgroupWidget.h>
-
-#include <QtGui/QFontDatabase>
+#include "CircularViewSettingsWidget.h"
 
 namespace U2 {
 
 CircularViewSettingsWidget::CircularViewSettingsWidget(CircularViewSettings* s, CircularViewSplitter* cv)
     : circularViewSplitter(cv),
       settings(s),
-      settingsWidget(NULL)
+      settingsWidget(NULL),
+      savableWidget(this, GObjectViewUtils::getActiveObjectViewWindow())
 {
     SAFE_POINT(s != NULL, tr("Circular view settings is NULL"), );
     setupUi(this);
@@ -42,6 +46,8 @@ CircularViewSettingsWidget::CircularViewSettingsWidget(CircularViewSettings* s, 
     openCvWidget->setVisible(cv == NULL);
     settingsWidget->setVisible(cv != NULL);
     connectSlots();
+
+    U2WidgetStateStorage::restoreWidgetState(savableWidget);
 }
 
 void CircularViewSettingsWidget::sl_modifySettings() {

@@ -24,7 +24,7 @@
 
 #include <QWidget>
 
-#include "../MsaOptionsPanelSavableTab.h"
+#include <U2Gui/U2SavableWidget.h>
 
 class QCheckBox;
 class QComboBox;
@@ -60,7 +60,7 @@ private:
     QCheckBox *useDots;
     QToolButton *exportHighlightning;
 
-    MsaOptionsPanelSavableTab savableTab;
+    U2SavableWidget savableTab;
 };
 
 } // namespace

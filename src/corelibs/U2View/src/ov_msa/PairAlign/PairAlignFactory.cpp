@@ -19,12 +19,11 @@
  * MA 02110-1301, USA.
  */
 
-#include "PairAlign.h"
-#include "PairAlignFactory.h"
-
 #include <U2Core/U2SafePoints.h>
 
-#include <QObject>
+#include "PairAlign.h"
+
+#include "PairAlignFactory.h"
 
 namespace U2 {
 

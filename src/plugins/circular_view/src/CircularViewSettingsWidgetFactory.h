@@ -22,7 +22,6 @@
 #ifndef _U2_CIRCULAR_VIEW_SETTINGS_WIDGET_FACTORY_H_
 #define _U2_CIRCULAR_VIEW_SETTINGS_WIDGET_FACTORY_H_
 
-#include <U2Core/global.h>
 #include <U2Gui/OPWidgetFactory.h>
 
 namespace U2 {

@@ -22,16 +22,13 @@
 #ifndef _U2_FIND_PATTERN_WIDGET_H_
 #define _U2_FIND_PATTERN_WIDGET_H_
 
-#include <U2Gui/CreateAnnotationWidgetController.h>
+#include <U2Core/AnnotationData.h>
+#include <U2Core/U2Region.h>
 
-#include <U2Core/DNASequenceSelection.h>
-#include <U2Core/Task.h>
-#include <U2Core/U2OpStatusUtils.h>
+#include <U2Gui/U2SavableWidget.h>
 
-#include <QtGui/QtGui>
-
-#include "ui/ui_FindPatternForm.h"
 #include "FindPatternTask.h"
+#include "ui/ui_FindPatternForm.h"
 
 namespace U2 {
 
@@ -39,6 +36,9 @@ class ADVSequenceObjectContext;
 class ADVSequenceWidget;
 class AnnotatedDNAView;
 class CreateAnnotationWidgetController;
+class DNASequenceSelection;
+class Task;
+class U2OpStatus;
 
 enum SeqTranslIndex {
     SeqTranslIndex_Sequence,
@@ -222,9 +222,10 @@ private:
     QString previousPatternString;
     QStringList patternList;
     QStringList nameList;
+
+    U2SavableWidget savableWidget;
 };
 
-} // namespace
+} // namespace U2
 
-
-#endif
+#endif // _U2_FIND_PATTERN_WIDGET_H_

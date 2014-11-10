@@ -25,18 +25,17 @@
 #include <QLabel>
 
 #include <U2Gui/OPWidgetFactory.h>
+#include <U2Gui/U2SavableWidget.h>
 
 namespace U2 {
 
 class AssemblyBrowser;
-class AssemblyOptionsPanelSavableTab;
 class PositionSelector;
 
 class AssemblyNavigationWidget : public QWidget {
     Q_OBJECT
 public:
     AssemblyNavigationWidget(AssemblyBrowser *browser, QWidget *p = NULL);
-    ~AssemblyNavigationWidget();
 
 public slots:
     void sl_updateZoomingState();
@@ -44,7 +43,7 @@ public slots:
 private:
     AssemblyBrowser *browser;
     PositionSelector *posSelector;
-    AssemblyOptionsPanelSavableTab *savableTab;
+    U2SavableWidget savableTab;
 };
 
 class CoveredRegionsLabel : public QLabel {

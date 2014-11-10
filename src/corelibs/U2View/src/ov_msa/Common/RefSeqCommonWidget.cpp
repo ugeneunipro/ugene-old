@@ -22,6 +22,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/U2WidgetStateStorage.h>
 
 #include <U2View/MSAEditor.h>
 
@@ -32,7 +33,7 @@
 namespace U2 {
 
 RefSeqCommonWidget::RefSeqCommonWidget(MSAEditor *_msaEditor)
-    : msaEditor(_msaEditor)
+    : msaEditor(_msaEditor), savableWidget(this, GObjectViewUtils::findViewByName(_msaEditor->getName()))
 {
     connect(msaEditor, SIGNAL(si_referenceSeqChanged(qint64)), SLOT(sl_refSeqChanged(qint64)));
 
@@ -45,6 +46,8 @@ RefSeqCommonWidget::RefSeqCommonWidget(MSAEditor *_msaEditor)
     mainLayout->addWidget(refSeqGroup);
 
     setLayout(mainLayout);
+
+    U2WidgetStateStorage::restoreWidgetState(savableWidget);
 }
 
 QWidget* RefSeqCommonWidget::createReferenceGroup(){

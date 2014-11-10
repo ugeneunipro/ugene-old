@@ -19,34 +19,36 @@
  * MA 02110-1301, USA.
  */
 
-#include "DasOptionsPanelWidget.h"
+#include <QListWidget>
 
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/PicrApiTask.h>
-#include <U2Core/UniprotBlastTask.h>
-#include <U2Core/LoadDASDocumentTask.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/GObjectRelationRoles.h>
-#include <U2Core/MultiTask.h>
-#include <U2Core/DocumentModel.h>
-#include <U2Core/DNASequenceSelection.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/Settings.h>
-#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/DNASequenceSelection.h>
+#include <U2Core/DocumentModel.h>
+#include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/L10n.h>
+#include <U2Core/LoadDASDocumentTask.h>
+#include <U2Core/MultiTask.h>
+#include <U2Core/PicrApiTask.h>
+#include <U2Core/Settings.h>
 #include <U2Core/TaskSignalMapper.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/UniprotBlastTask.h>
 
-
-#include <U2View/AnnotatedDNAView.h>
-#include <U2View/ADVSequenceObjectContext.h>
-
-#include <U2Gui/OpenViewTask.h>
-#include <U2Gui/ShowHideSubgroupWidget.h>
 #include <U2Gui/CreateAnnotationWidgetController.h>
 #include <U2Gui/GUIUtils.h>
+#include <U2Gui/OpenViewTask.h>
+#include <U2Gui/RegionSelector.h>
+#include <U2Gui/ShowHideSubgroupWidget.h>
+#include <U2Gui/U2WidgetStateStorage.h>
 
+#include <U2View/ADVSequenceObjectContext.h>
+#include <U2View/AnnotatedDNAView.h>
+
+#include "DasOptionsPanelWidget.h"
 
 namespace U2 {
 
@@ -102,20 +104,10 @@ U2::UniprotBlastSettings DasBlastSettingsWidget::getSettings( const QString& db 
 }
 
 DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv)
-:annotatedDnaView(adv)
-,ctx(adv->getSequenceInFocus())
-,selection(NULL)
-,settingsShowHideWidget(NULL)
-,blastSettingsWidget(NULL)
-,dasFeaturesListWidget(NULL)
-,annotationsWidgetController(NULL)
-,regionSelector(NULL)
-,showMore(true)
-,loadDasFeaturesTask(NULL)
-,fetchIdsAction(NULL)
-,fetchAnnotationsAction(NULL)
-,openInNewViewAction(NULL)
-,getIdsTask(NULL)
+    : annotatedDnaView(adv), ctx(adv->getSequenceInFocus()), selection(NULL), settingsShowHideWidget(NULL), blastSettingsWidget(NULL),
+    dasFeaturesListWidget(NULL), annotationsWidgetController(NULL), regionSelector(NULL), showMore(true), loadDasFeaturesTask(NULL),
+    fetchIdsAction(NULL), fetchAnnotationsAction(NULL), openInNewViewAction(NULL), getIdsTask(NULL),
+    savableWidget(this, GObjectViewUtils::findViewByName(adv->getName()))
 {
     setupUi(this);
 
@@ -124,6 +116,8 @@ DasOptionsPanelWidget::DasOptionsPanelWidget(AnnotatedDNAView* adv)
     checkState();
     updateShowOptions();
     setObjectName("DasOptionsPanelWidget");
+
+    U2WidgetStateStorage::restoreWidgetState(savableWidget);
 }
 
 void DasOptionsPanelWidget::sl_searchTypeChanged(int type) {
@@ -335,6 +329,7 @@ void DasOptionsPanelWidget::initialize() {
 
     // DAS sources
     dasFeaturesListWidget = new QListWidget();
+    dasFeaturesListWidget->setObjectName("dasFeaturesListWidget");
     dasFeaturesListWidget->setMaximumHeight(100);
     dasFeaturesListWidget->setMinimumHeight(100);
     sourcesContainerLayout->addWidget(new ShowHideSubgroupWidget(SOURCES, SOURCES, dasFeaturesListWidget, false));
@@ -545,6 +540,15 @@ bool DasOptionsPanelWidget::isAccessionsUniprotLike(const QString &accessionNumb
     return 0 == pattern.indexIn(accessionNumber);
 }
 
+bool DasOptionsPanelWidget::isExtendedMode() const {
+    return !showMore;
+}
+
+void DasOptionsPanelWidget::setExtendedMode(bool extended) {
+    showMore = extended;
+    updateShowOptions();
+}
+
 void DasOptionsPanelWidget::updateShowOptions() {
     // Change the label
     QString linkText = showMore ? tr("Show more options") : tr("Show less options");
@@ -560,8 +564,7 @@ void DasOptionsPanelWidget::updateShowOptions() {
         settingsContainerWidget->hide();
         sourcesContainerWidget->hide();
         annotationsSettingsContainerWidget->hide();
-    }
-    else {
+    } else {
         settingsContainerWidget->show();
         sourcesContainerWidget->show();
         annotationsSettingsContainerWidget->show();
@@ -580,23 +583,26 @@ void DasOptionsPanelWidget::clearTableContent(){
 }
 
 DasOptionsPanelWidget::~DasOptionsPanelWidget(){
-    clear();
+    cancelActiveTasks();
+    annotationData.clear();
 }
 
-void DasOptionsPanelWidget::clear(){
-    clearTableContent();
-
-    if(NULL != loadDasFeaturesTask && !loadDasFeaturesTask->isFinished()) {
+void DasOptionsPanelWidget::cancelActiveTasks() {
+    if (NULL != loadDasFeaturesTask && !loadDasFeaturesTask->isFinished()) {
         loadDasFeaturesTask->cancel();
         loadDasFeaturesTask = NULL;
     }
-
-    annotationData.clear();
 
     if (getIdsTask != NULL && !getIdsTask->isFinished()){
         getIdsTask->cancel();
         getIdsTask = NULL;
     }
+}
+
+void DasOptionsPanelWidget::clear() {
+    clearTableContent();
+    cancelActiveTasks();
+    annotationData.clear();
 }
 
 void DasOptionsPanelWidget::sl_onRegionChanged( const U2Region& r){
