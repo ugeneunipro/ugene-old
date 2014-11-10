@@ -119,6 +119,7 @@ HEADERS += src/LicenseDialog.h \
            src/ov_sequence/AnnotationsTreeView.h \
            src/ov_sequence/AutoAnnotationUtils.h \
            src/ov_sequence/CreateRulerDialogController.h \
+           src/ov_sequence/Das/DasOptionsPanelSavableTab.h \
            src/ov_sequence/Das/DasOptionsPanelWidget.h \
            src/ov_sequence/Das/DasWidgetFactory.h \
            src/ov_sequence/DetView.h \
@@ -144,9 +145,6 @@ HEADERS += src/LicenseDialog.h \
            src/ov_sequence/annot_highlight/AnnotHighlightWidget.h \
            src/ov_sequence/annot_highlight/AnnotHighlightWidgetFactory.h \
            src/ov_sequence/codon_table/CodonTable.h \
-           src/ov_sequence/Das/DasWidgetFactory.h \
-           src/ov_sequence/Das/DasOptionsPanelSavableTab.h \
-           src/ov_sequence/Das/DasOptionsPanelWidget.h \
            src/ov_sequence/find_pattern/FindPatternTask.h \
            src/ov_sequence/find_pattern/FindPatternWidget.h \
            src/ov_sequence/find_pattern/FindPatternWidgetFactory.h \
@@ -298,8 +296,6 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_msa/SeqStatistics/SeqStatisticsWidget.cpp \
            src/ov_msa/SeqStatistics/SeqStatisticsWidgetFactory.cpp \
            src/ov_msa/SequenceSelectorWidgetController.cpp \
-           src/ov_msa/TreeOptions/TreeOptionsWidget.cpp \
-           src/ov_msa/TreeOptions/TreeOptionsWidgetFactory.cpp \
            src/ov_phyltree/CreateCircularBranchesTask.cpp \
            src/ov_phyltree/CreateRectangularBranchesTask.cpp \
            src/ov_phyltree/CreateUnrootedBranchesTask.cpp \
@@ -330,6 +326,7 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_sequence/AnnotationsTreeView.cpp \
            src/ov_sequence/AutoAnnotationUtils.cpp \
            src/ov_sequence/CreateRulerDialogController.cpp \
+           src/ov_sequence/Das/DasOptionsPanelSavableTab.cpp \
            src/ov_sequence/Das/DasOptionsPanelWidget.cpp \
            src/ov_sequence/Das/DasWidgetFactory.cpp \
            src/ov_sequence/DetView.cpp \
@@ -357,9 +354,6 @@ SOURCES += src/LicenseDialog.cpp \
            src/ov_sequence/find_pattern/FindPatternTask.cpp \
            src/ov_sequence/find_pattern/FindPatternWidget.cpp \
            src/ov_sequence/find_pattern/FindPatternWidgetFactory.cpp \
-           src/ov_sequence/Das/DasWidgetFactory.cpp \
-           src/ov_sequence/Das/DasOptionsPanelSavableTab.cpp \
-           src/ov_sequence/Das/DasOptionsPanelWidget.cpp \
            src/ov_sequence/sequence_info/CharOccurTask.cpp \
            src/ov_sequence/sequence_info/DinuclOccurTask.cpp \
            src/ov_sequence/sequence_info/DNAStatisticsTask.cpp \
