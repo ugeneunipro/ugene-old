@@ -23,10 +23,10 @@
 #define _U2_APPCONTEXT_H_
 
 #include "global.h"
-#include <U2Core/IdRegistry.h>
 
 namespace U2 {
 
+template<class T> class IdRegistry;
 class PluginSupport;
 class ServiceRegistry;
 class ProjectLoader;
