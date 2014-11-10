@@ -4834,12 +4834,12 @@ GUI_TEST_CLASS_DEFINITION( test_2612 ) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2622) {
-    // 1. Open "_common_data/fasta/mylty_fa.fa".
+    // 1. Open "_common_data/fasta/multy_fa.fa".
     // 2. Choose "Merge sequences ..." with 100 bases.
     GTLogTracer l;
 
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge, 100));
-    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "mylty_fa.fa");
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "multy_fa.fa");
 
     // 3. Press Ctrl + F.
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
@@ -4862,12 +4862,12 @@ GUI_TEST_CLASS_DEFINITION(test_2622) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2622_1) {
-    // 1. Open "_common_data/fasta/mylty_fa.fa".
+    // 1. Open "_common_data/fasta/multy_fa.fa".
     // 2. Choose "Merge sequences ..." with 100 bases.
     GTLogTracer l;
 
     GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Merge, 100));
-    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "mylty_fa.fa");
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "multy_fa.fa");
 
     // 3. Press Ctrl + F.
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
