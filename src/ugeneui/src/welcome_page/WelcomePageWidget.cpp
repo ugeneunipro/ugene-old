@@ -49,6 +49,7 @@ bool WelcomePageWidget::isLoaded() const {
 }
 
 void WelcomePageWidget::sl_loaded(bool ok) {
+    disconnect(webView, SIGNAL(loadFinished(bool)), this, SLOT(sl_loaded(bool)));
     SAFE_POINT(ok, "Can not load page", );
     loaded = true;
     webView->page()->mainFrame()->addToJavaScriptWindowObject("ugene", controller);
