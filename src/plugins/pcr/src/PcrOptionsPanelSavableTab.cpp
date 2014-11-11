@@ -95,9 +95,8 @@ bool PcrOptionsPanelSavableTab::childValueIsAcceptable(const QString &childId, c
 }
 
 QString PcrOptionsPanelSavableTab::getChildId(QWidget *child) const {
-    QWidget *parentWidget = qobject_cast<QWidget *>(child->parent());
-    if (NULL != parentWidget && NULL != qobject_cast<PrimerGroupBox *>(parentWidget->parent())) {
-        QWidget *parentGroupBox = qobject_cast<QWidget *>(parentWidget->parent());
+    if (NULL != qobject_cast<PrimerGroupBox *>(child->parent())) {
+        QWidget *parentGroupBox = qobject_cast<QWidget *>(child->parent());
         return U2SavableWidget::getChildId(parentGroupBox) + WIDGET_ID_SEPARATOR + child->objectName();
     } else {
         return U2SavableWidget::getChildId(child);

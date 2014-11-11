@@ -22,8 +22,6 @@
 #ifndef _U2_PCR_GROUP_BOX_H_
 #define _U2_PCR_GROUP_BOX_H_
 
-#include <U2Gui/ShowHideSubgroupWidget.h>
-
 #include "ui_PrimerGroupBox.h"
 
 namespace U2 {
