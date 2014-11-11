@@ -40,7 +40,7 @@
 namespace U2{
 
 #define VERSION_HEIGHT_PX 15
-#define TASK_HEIGHT_PX 10
+#define TASK_HEIGHT_PX 13
 
 SplashScreen::SplashScreen( QWidget *parent /* = NULL*/ ):QDialog(parent) {
     setEnabled(false);
@@ -168,7 +168,6 @@ void SplashScreenWidget::drawInfo(){
     p.drawText(17,285, text);
 
     if(!task.isEmpty()){
-        font.setItalic(true);
         font.setPixelSize(TASK_HEIGHT_PX);
         font.setBold(false);
         p.setFont( font );
