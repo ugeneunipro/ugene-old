@@ -23,10 +23,12 @@
 #define _U2_PRIMER_LINE_EDIT_H_
 
 #include <QLineEdit>
+#include <QValidator>
 
 namespace U2 {
 
 class PrimerLineEdit : public QLineEdit {
+    Q_OBJECT
 public:
     PrimerLineEdit(QWidget *parent);
 

@@ -57,10 +57,6 @@ InSilicoPcrOptionPanelWidget::InSilicoPcrOptionPanelWidget(AnnotatedDNAView *ann
     reversePrimerBoxSubgroup->init(REVERSE_SUBGROUP_ID, tr("Reverse primer"), reversePrimerBox, true);
     settingsSubgroup->init(SETTINGS_SUBGROUP_ID, tr("Settings"), settingsWidget, true);
 
-    forwardPrimerBox->primerEdit->setObjectName("forwardPrimerEdit");
-    forwardPrimerBox->mismatchesSpinBox->setObjectName("forwardMismatchesSpinBox");
-    reversePrimerBox->primerEdit->setObjectName("reversePrimerEdit");
-    reversePrimerBox->mismatchesSpinBox->setObjectName("reverseMismatchesSpinBox");
 
     connect(forwardPrimerBox, SIGNAL(si_primerChanged()), SLOT(sl_onPrimerChanged()));
     connect(reversePrimerBox, SIGNAL(si_primerChanged()), SLOT(sl_onPrimerChanged()));

@@ -37,7 +37,14 @@ public:
     void setChildValue(const QString &childId, const QVariant &value);
     bool childValueIsAcceptable(const QString &childId, const QVariant &value) const;
 
+protected:
+    QString getChildId(QWidget *child) const;
+    QWidget * getChildWidgetById(const QString &childId) const;
+    bool childExists(const QString &childId) const;
+
 private:
+    QWidget * getPrimerEditWidgetById(const QString &childId) const;
+
     InSilicoPcrOptionPanelWidget *originalWrappedWidget;
 };
 

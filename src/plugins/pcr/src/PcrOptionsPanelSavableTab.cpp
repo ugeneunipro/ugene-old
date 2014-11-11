@@ -31,10 +31,13 @@
 
 #include "InSilicoPcrOptionPanelWidget.h"
 #include "InSilicoPcrProductsTable.h"
+#include "PrimerGroupBox.h"
+#include "PrimerLineEdit.h"
 
 #include "PcrOptionsPanelSavableTab.h"
 
 static const QString PCR_PRODUCTS_TABLE_NAME = "productsTable";
+static const QString WIDGET_ID_SEPARATOR = "__";
 
 typedef QPair<U2::ADVSequenceObjectContext *, QList<U2::InSilicoPcrProduct> > AdvContextPcrProductPair;
 
@@ -88,6 +91,40 @@ bool PcrOptionsPanelSavableTab::childValueIsAcceptable(const QString &childId, c
         return dnaView->getSequenceContexts().contains(data.first);
     } else {
         return U2SavableWidget::childValueIsAcceptable(childId, value);
+    }
+}
+
+QString PcrOptionsPanelSavableTab::getChildId(QWidget *child) const {
+    QWidget *parentWidget = qobject_cast<QWidget *>(child->parent());
+    if (NULL != parentWidget && NULL != qobject_cast<PrimerGroupBox *>(parentWidget->parent())) {
+        QWidget *parentGroupBox = qobject_cast<QWidget *>(parentWidget->parent());
+        return U2SavableWidget::getChildId(parentGroupBox) + WIDGET_ID_SEPARATOR + child->objectName();
+    } else {
+        return U2SavableWidget::getChildId(child);
+    }
+}
+
+QWidget * PcrOptionsPanelSavableTab::getPrimerEditWidgetById(const QString &childId) const {
+    const QStringList ids = childId.split(WIDGET_ID_SEPARATOR);
+    SAFE_POINT(2 == ids.size(), "Invalid widget ID", NULL);
+    QWidget *primerGroup = wrappedWidget->findChild<QWidget *>(ids.first());
+    SAFE_POINT(NULL != primerGroup, "Invalid parent widget", NULL);
+    return primerGroup->findChild<QWidget *>(ids.last());
+}
+
+QWidget * PcrOptionsPanelSavableTab::getChildWidgetById(const QString &childId) const {
+    if (childId.contains(WIDGET_ID_SEPARATOR)) {
+        return getPrimerEditWidgetById(childId);
+    } else {
+        return U2SavableWidget::getChildWidgetById(childId);
+    }
+}
+
+bool PcrOptionsPanelSavableTab::childExists(const QString &childId) const {
+    if (childId.contains(WIDGET_ID_SEPARATOR)) {
+        return NULL != getPrimerEditWidgetById(childId);
+    } else {
+        return U2SavableWidget::childExists(childId);
     }
 }
 
