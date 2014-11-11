@@ -26,6 +26,7 @@
 #include <U2View/MSAEditor.h>
 #include <U2View/MSAEditorConsensusArea.h>
 #include <U2View/MSAEditorConsensusCache.h>
+#include <U2View/MSAEditorNameList.h>
 #include <U2View/MSAEditorSequenceArea.h>
 #include <U2View/MSAColorScheme.h>
 
@@ -64,6 +65,10 @@ MSAGraphOverview::MSAGraphOverview(MSAEditorUI *ui)
     connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(MAlignment,MAlignmentModInfo)),
             SLOT(sl_drawGraph()));
 
+	connect(ui->getEditorNameList(), SIGNAL(si_startMSAChanging()),
+			SLOT(sl_blockRendering()));
+	connect(ui->getEditorNameList(), SIGNAL(si_stopMSAChanging(bool)),
+			SLOT(sl_unblockRendering(bool)));
     connect(sequenceArea, SIGNAL(si_startMSAChanging()),
              SLOT(sl_blockRendering()));
     connect(sequenceArea, SIGNAL(si_stopMSAChanging(bool)),

@@ -201,6 +201,7 @@ void TaskStatusBar::sl_taskStateChanged(Task* t) {
 
 void TaskStatusBar::setTaskToTrack(Task* t) { 
     assert(taskToTrack == NULL);
+	taskToTrack->disconnect(this);
     taskToTrack = t;
     connect(taskToTrack, SIGNAL(si_stateChanged()), SLOT(sl_taskStateChanged()));
     connect(taskToTrack, SIGNAL(si_progressChanged()), SLOT(sl_taskProgressChanged()));

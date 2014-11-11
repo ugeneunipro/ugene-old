@@ -392,6 +392,8 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
     }
 
     if ((e->button() == Qt::LeftButton)) {
+		emit si_startMsaChanging();
+
         seqArea->setSelectionHighlighting( false );
         if(Qt::ShiftModifier == e->modifiers()) {
             QWidget::mousePressEvent(e);
@@ -497,6 +499,8 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
             }
             moveSelectedRegion(shift);
             shifting = false;
+
+			emit si_stopMsaChanging(true);
         } else {
             int firstVisibleRow = ui->seqArea->getFirstVisibleSequence();
             int lastVisibleRow = ui->seqArea->getNumDisplayedSequences( ) + firstVisibleRow - 1;
@@ -515,6 +519,7 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
                 }
                 updateSelection(newSeq);
             }
+			emit si_stopMsaChanging(false);
         }
         scribbling = false;
     }

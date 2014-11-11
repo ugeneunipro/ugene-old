@@ -106,6 +106,8 @@ public:
 
 signals:
     void si_sequenceNameChanged(QString prevName, QString newName);
+	void si_startMsaChanging();
+	void si_stopMsaChanging(bool modified);
 
 private:
     bool isRowInSelection(int row);
