@@ -6,7 +6,7 @@ workflow "Spades Single Tags"{
 
     get-file-list {
         type:get-file-list;
-        name:"File List";
+        name:"Read Short Reads";
         url-in {
             dataset:"Dataset 1";
         }
@@ -44,13 +44,15 @@ workflow "Spades Single Tags"{
             get-file-list {
                 pos:"-900 -481";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 72 77";
                 out-url.angle:360;
             }
             spades-id {
-                pos:"-707 -479";
+                pos:"-679 -480";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"67 156 208 64";
+                bounds:"-30 -30 103.375 79";
                 in-data.angle:180;
                 out-data.angle:360;
             }

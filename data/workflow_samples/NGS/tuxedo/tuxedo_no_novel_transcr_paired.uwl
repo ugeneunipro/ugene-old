@@ -7,14 +7,14 @@ workflow "Multiple datasets Tuxedo: paired-end reads"{
     tophat {
         type:tophat;
         name:"Find Splice Junctions with TopHat";
-		no-novel-junctions:true;
+        no-novel-junctions:true;
         out-dir:tools_output;
     }
     cuffdiff {
         type:cuffdiff;
         name:"Test for Diff. Expression with Cuffdiff";
-        out-dir:tools_output;
         multi-read-correct:true;
+        out-dir:tools_output;
     }
     multiplexer {
         type:multiplexer;
@@ -57,34 +57,33 @@ workflow "Multiple datasets Tuxedo: paired-end reads"{
     }
     files-conversion {
         type:files-conversion;
-        name:"File Conversion 2";
+        name:"Convert File 2";
         document-format:fastq;
         excluded-formats:fasta;
     }
     files-conversion-1 {
         type:files-conversion;
-        name:"File Conversion 1";
+        name:"Convert File 1";
         document-format:fastq;
         excluded-formats:fasta;
     }
 
-
     .actor-bindings {
-        read-sequence.out-url->files-conversion-1.in-file
         read-annotations.out-annotations->cuffdiff.in-annotations
-        tophat.out-assembly->cuffdiff.in-assembly
-        multiplexer.output-data->tophat.in-sequence
-        files-conversion-1.out-file->multiplexer.input-data-1
-        files-conversion.out-file->multiplexer.input-data-2
+        read-sequence.out-url->files-conversion-1.in-file
         read-sequence-1.out-url->files-conversion.in-file
+        multiplexer.output-data->tophat.in-sequence
+        files-conversion.out-file->multiplexer.input-data-2
+        files-conversion-1.out-file->multiplexer.input-data-1
+        tophat.out-assembly->cuffdiff.in-assembly
     }
 
     read-sequence.dataset->tophat.in-sequence.dataset
     files-conversion-1.url->tophat.in-sequence.in-url
     files-conversion.url->tophat.in-sequence.paired-url
     read-annotations.annotations->cuffdiff.in-annotations.annotations
-    tophat.hits-url->cuffdiff.in-assembly.url
     tophat.sample->cuffdiff.in-assembly.sample
+    tophat.hits-url->cuffdiff.in-assembly.url
     read-sequence-1.url->files-conversion.in-file.url
     read-sequence.url->files-conversion-1.in-file.url
 
@@ -121,79 +120,81 @@ workflow "Multiple datasets Tuxedo: paired-end reads"{
         }
         visual {
             cuffdiff {
-                pos:"-274 -440";
+                pos:"-394 -432";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 147.25 118";
+                bg-color-ext:"128 0 0 64";
+                bounds:"-30 -30 147.25 73";
                 in-annotations.angle:218.66;
-                in-assembly.angle:25.1593;
+                in-assembly.angle:23.5523;
             }
             files-conversion {
-                pos:"-714 -558";
+                pos:"-720 -578";
                 style:simple;
+                bg-color-simple:"84 84 84 255";
                 in-file.angle:198.435;
                 out-file.angle:15.3885;
             }
             files-conversion-1 {
-                pos:"-715 -654";
+                pos:"-718 -659";
                 style:simple;
-                in-file.angle:162.814;
-                out-file.angle:347.8;
+                bg-color-simple:"84 84 84 255";
+                in-file.angle:171.87;
+                out-file.angle:339.075;
             }
             multiplexer {
-                pos:"-571 -635";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 149 88";
-                input-data-1.angle:190.008;
-                input-data-2.angle:238.339;
+                pos:"-590 -617";
+                style:simple;
+                bg-color-simple:"84 84 84 255";
+                input-data-1.angle:155.854;
+                input-data-2.angle:209.982;
                 output-data.angle:351.68;
             }
             read-annotations {
-                pos:"-523 -424";
+                pos:"-705 -434";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                out-annotations.angle:355.601;
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 82.5 75";
+                out-annotations.angle:341.761;
             }
             read-sequence {
-                pos:"-1011 -703";
+                pos:"-930 -694";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 147 61";
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 83 70";
                 out-url.angle:351.506;
             }
             read-sequence-1 {
-                pos:"-1013 -535";
+                pos:"-930 -552";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 148 59";
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 79 70";
                 out-url.angle:357.447;
             }
             tophat {
-                pos:"-274 -637";
+                pos:"-389 -636";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 149.75 89";
+                bg-color-ext:"0 128 0 64";
+                bounds:"-30 -30 149.75 71";
                 in-sequence.angle:218.589;
-                out-assembly.angle:305.172;
+                out-assembly.angle:311.589;
             }
             files-conversion-1.out-file->multiplexer.input-data-1 {
-                text-pos:"-12 -24";
+                text-pos:"-12 -18";
             }
             files-conversion.out-file->multiplexer.input-data-2 {
-                text-pos:"-12 -24";
+                text-pos:"-13 -15";
             }
             multiplexer.output-data->tophat.in-sequence {
-                text-pos:"-44.5 -60";
+                text-pos:"-50.5 -37";
             }
             read-annotations.out-annotations->cuffdiff.in-annotations {
-                text-pos:"-39 -26";
+                text-pos:"-40 -24";
             }
             read-sequence-1.out-url->files-conversion.in-file {
-                text-pos:"-43 -25";
+                text-pos:"-32 -16";
             }
             read-sequence.out-url->files-conversion-1.in-file {
-                text-pos:"-37 -24";
+                text-pos:"-26 -22";
             }
             tophat.out-assembly->cuffdiff.in-assembly {
                 text-pos:"-42.5 -22";
@@ -269,8 +270,10 @@ function tophatTime(reads, idx) {
                         title:"TopHat input";
                         label-size:180;
                         bowtie-index {
-                            tophat.bowtie-index-dir {}
-                            tophat.bowtie-index-basename {}
+                            tophat.bowtie-index-dir {
+                            }
+                            tophat.bowtie-index-basename {
+                            }
                         }
                         tophat.bowtie-version {
                         }

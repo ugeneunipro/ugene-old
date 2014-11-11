@@ -1,6 +1,8 @@
 #@UGENE_WORKFLOW
 #Uses input assemblies to extract the consensus sequences and save them to a FASTA.
 
+
+
 workflow "Extract consensus from assembly"{
 
     read-assembly {
@@ -19,7 +21,6 @@ workflow "Extract consensus from assembly"{
         type:extract-consensus;
         name:"Extract Consensus from Assembly";
     }
-
 
     .actor-bindings {
         extract-consensus.out-sequence->write-sequence.in-sequence
@@ -48,20 +49,20 @@ workflow "Extract consensus from assembly"{
             extract-consensus {
                 pos:"-645 -585";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"0 129 94 64";
                 in-assembly.angle:180;
                 out-sequence.angle:360;
             }
             read-assembly {
                 pos:"-840 -585";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"24 102 175 64";
                 out-assembly.angle:360;
             }
             write-sequence {
                 pos:"-360 -585";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"64 26 96 64";
                 in-sequence.angle:180;
             }
             extract-consensus.out-sequence->write-sequence.in-sequence {
@@ -81,10 +82,10 @@ workflow "Extract consensus from assembly"{
                         title:"Input parameters";
                         label-size:120;
                         read-assembly.url-in {
-                            label:"Assembly";
+                            label:Assembly;
                         }
                         extract-consensus.algorithm {
-                            label:"Algorithm";
+                            label:Algorithm;
                         }
                         extract-consensus.keep-gaps {
                             label:"Keep gaps";

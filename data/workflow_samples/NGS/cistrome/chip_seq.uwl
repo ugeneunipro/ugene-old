@@ -93,6 +93,7 @@ workflow "ChIP-seq analysis"{
     }
 
     .actor-bindings {
+        get-file-list.out-url->macs-id.in-data
         macs-id.out-data->ceas-report.in-data
         macs-id.out-data->conservation_plot-id.in-data
         macs-id.out-data->seqpos-id.in-data
@@ -100,7 +101,6 @@ workflow "ChIP-seq analysis"{
         peak2gene-id.out-data->conduct-go-id.in-data
         peak2gene-id.out-data->write-annotations.in-annotations
         peak2gene-id.out-data->write-annotations-1.in-annotations
-        get-file-list.out-url->macs-id.in-data
     }
 
     get-file-list.url->macs-id.in-data._treatment-ann
@@ -114,51 +114,33 @@ workflow "ChIP-seq analysis"{
     peak2gene-id.peak-annotation->write-annotations-1.in-annotations.annotations
 
     .meta {
-        estimations {
-            function cistromeTime(tagsSize, dbCount) {
-                return 240*tagsSize*dbCount;
-            }
-            var db = new String(utils.attributeValue("seqpos-id.motif_db"));
-            var dbCount = db.split(',').length;
-            var sets = utils.attributeValue("get-file-list.url-in");
-            var time = 0;
-            var ram = 0;
-            for (var i=0; i<sets.length; i++) {
-                var set = sets[i];
-                for (var j=0; j<set.length; j++) {
-                    var tagsSize = utils.fileSize(set[j]) / (1024*1024);
-                    time += cistromeTime(tagsSize, dbCount);
-                }
-            }
-            [time];
-        }
         parameter-aliases {
             macs-id.output-dir {
-                alias: out_macs;
+                alias:out_macs;
             }
             macs-id.tag-size {
-                alias: tag_size;
+                alias:tag_size;
             }
             ceas-report.anns-file {
-                alias: out_ceas_ann;
+                alias:out_ceas_ann;
             }
             ceas-report.image-file {
-                alias: out_ceas_report;
+                alias:out_ceas_report;
             }
             conservation_plot-id.output-file {
-                alias: out_plot;
+                alias:out_plot;
             }
             seqpos-id.output-dir {
-                alias: out_seqpos;
+                alias:out_seqpos;
             }
             conduct-go-id.output-dir {
-                alias: out_conduct_go;
+                alias:out_conduct_go;
             }
             write-annotations.url-out {
-                alias: out_peak2gene_genes;
+                alias:out_peak2gene_genes;
             }
             write-annotations-1.url-out {
-                alias: out_peak2gene_peaks;
+                alias:out_peak2gene_peaks;
             }
             get-file-list.url-in {
                 alias:in;
@@ -169,59 +151,59 @@ workflow "ChIP-seq analysis"{
             ceas-report {
                 pos:"-1062 -564";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"128 128 0 64";
                 bounds:"-30 -30 148.25 84";
                 in-data.angle:18.6279;
             }
             conduct-go-id {
                 pos:"-1061 -338";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"128 0 0 64";
                 in-data.angle:19.6538;
             }
             conservation_plot-id {
-                pos:"-462 -790";
+                pos:"-465.333 -756.667";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-data.angle:250.56;
+                bg-color-ext:"128 128 0 64";
+                in-data.angle:242.13;
             }
             get-file-list {
                 pos:"-1055.56 -788.889";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 102.292 81.8889";
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 102.292 68.5556";
                 out-url.angle:360;
             }
             macs-id {
                 pos:"-822 -789";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"0 128 0 64";
                 in-data.angle:180;
                 out-data.angle:322.481;
             }
             peak2gene-id {
                 pos:"-822 -564";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-data.angle:15.8192;
+                bg-color-ext:"128 128 0 64";
+                in-data.angle:19.2339;
                 out-data.angle:289.204;
             }
             seqpos-id {
                 pos:"-462 -594";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"128 128 0 64";
                 in-data.angle:180;
             }
             write-annotations {
                 pos:"-652 -308";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"64 26 96 64";
                 in-annotations.angle:42.0492;
             }
             write-annotations-1 {
                 pos:"-854 -306";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"64 26 96 64";
                 in-annotations.angle:25.7693;
             }
             get-file-list.out-url->macs-id.in-data {
@@ -248,6 +230,24 @@ workflow "ChIP-seq analysis"{
             peak2gene-id.out-data->write-annotations.in-annotations {
                 text-pos:"3 -24";
             }
+        }
+        estimations {
+function cistromeTime(tagsSize, dbCount) {
+                return 240*tagsSize*dbCount;
+            }
+            var db = new String(utils.attributeValue("seqpos-id.motif_db"));
+            var dbCount = db.split(',').length;
+            var sets = utils.attributeValue("get-file-list.url-in");
+            var time = 0;
+            var ram = 0;
+            for (var i=0; i<sets.length; i++) {
+                var set = sets[i];
+                for (var j=0; j<set.length; j++) {
+                    var tagsSize = utils.fileSize(set[j]) / (1024*1024);
+                    time += cistromeTime(tagsSize, dbCount);
+                }
+            }
+            [time];
         }
         wizard {
             name:"ChIP-seq Analysis Wizard";

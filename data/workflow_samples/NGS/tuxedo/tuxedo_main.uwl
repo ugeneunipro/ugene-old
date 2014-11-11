@@ -22,8 +22,8 @@ workflow "Main Tuxedo: single-end reads"{
     cuffdiff {
         type:cuffdiff;
         name:"Test for Diff. Expression with Cuffdiff";
-        out-dir:tools_output;
         multi-read-correct:true;
+        out-dir:tools_output;
     }
     read-sequence {
         type:get-file-list;
@@ -41,18 +41,17 @@ workflow "Main Tuxedo: single-end reads"{
     }
     files-conversion {
         type:files-conversion;
-        name:"File Conversion";
+        name:"Convert File";
         document-format:fastq;
         excluded-formats:fasta;
     }
 
-
     .actor-bindings {
+        read-sequence.out-url->files-conversion.in-file
         tophat.out-assembly->cufflinks.in-assembly
         tophat.out-assembly->cuffdiff.in-assembly
         cufflinks.out-annotations->cuffmerge.in-annotations
         cuffmerge.out-annotations->cuffdiff.in-annotations
-        read-sequence.out-url->files-conversion.in-file
         files-conversion.out-file->tophat.in-sequence
     }
 
@@ -61,8 +60,8 @@ workflow "Main Tuxedo: single-end reads"{
     tophat.hits-url->cufflinks.in-assembly.url
     cufflinks.isolevel.slot->cuffmerge.in-annotations.annotations
     cuffmerge.annotations->cuffdiff.in-annotations.annotations
-    tophat.hits-url->cuffdiff.in-assembly.url
     tophat.sample->cuffdiff.in-assembly.sample
+    tophat.hits-url->cuffdiff.in-assembly.url
     read-sequence.url->files-conversion.in-file.url
 
     .meta {
@@ -75,12 +74,12 @@ workflow "Main Tuxedo: single-end reads"{
                 alias:bowtie_index_dir;
                 description:"The directory with the Bowtie index for the reference sequence.";
             }
+            tophat.bowtie-version {
+                alias:bowtie_version;
+            }
             tophat.out-dir {
                 alias:tophat_out_dir;
                 description:"The directory to store TopHat output files.";
-            }
-            tophat.bowtie-version {
-                alias:bowtie_version;
             }
             tophat.samples {
                 alias:samples_map;
@@ -104,66 +103,68 @@ workflow "Main Tuxedo: single-end reads"{
         }
         visual {
             cuffdiff {
-                pos:"-319 -354";
+                pos:"-832 -581";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 119.25 136";
-                in-annotations.angle:34.249;
-                in-assembly.angle:221.424;
+                bg-color-ext:"128 0 0 64";
+                bounds:"-30 -30 119.25 94";
+                in-annotations.angle:303.69;
+                in-assembly.angle:25.887;
             }
             cufflinks {
-                pos:"-319 -774";
+                pos:"-608 -581";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 116.875 119";
-                in-assembly.angle:180;
-                out-annotations.angle:289.911;
+                bg-color-ext:"128 128 0 64";
+                bounds:"-30 -30 120.875 73";
+                in-assembly.angle:29.2192;
+                out-annotations.angle:307.117;
             }
             cuffmerge {
-                pos:"-319 -552";
+                pos:"-603 -383";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 118.625 85";
-                in-annotations.angle:33.9765;
-                out-annotations.angle:297.3;
+                bg-color-ext:"112 34 0 64";
+                bounds:"-30 -30 118.625 59";
+                in-annotations.angle:31.1225;
+                out-annotations.angle:180;
             }
             files-conversion {
-                pos:"-723 -774";
+                pos:"-744 -772";
                 style:simple;
+                bg-color-simple:"84 84 84 255";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             read-sequence {
-                pos:"-944 -773";
+                pos:"-959 -773";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 73.25 70";
                 out-url.angle:360;
             }
             tophat {
                 pos:"-604 -774";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 120.75 102";
-                in-sequence.angle:180;
-                out-assembly.angle:360;
+                bg-color-ext:"0 128 0 64";
+                bounds:"-30 -30 120.75 78";
+                in-sequence.angle:183.691;
+                out-assembly.angle:302.735;
             }
             cufflinks.out-annotations->cuffmerge.in-annotations {
-                text-pos:"-46.5 -21";
+                text-pos:"-3.5 -24";
             }
             cuffmerge.out-annotations->cuffdiff.in-annotations {
-                text-pos:"-44.5 -26";
+                text-pos:"-44.5 -19";
             }
             files-conversion.out-file->tophat.in-sequence {
-                text-pos:"-12 -30";
+                text-pos:"-14 -22";
             }
             read-sequence.out-url->files-conversion.in-file {
-                text-pos:"-41 -28";
+                text-pos:"-32 -22";
             }
             tophat.out-assembly->cuffdiff.in-assembly {
-                text-pos:"-38.5 -24";
+                text-pos:"-54.5 -13";
             }
             tophat.out-assembly->cufflinks.in-assembly {
-                text-pos:"-50 -40";
+                text-pos:"-5 -13";
             }
         }
         estimations {
@@ -233,8 +234,10 @@ function tophatTime(reads, idx) {
                         title:"TopHat input";
                         label-size:180;
                         bowtie-index {
-                            tophat.bowtie-index-dir {}
-                            tophat.bowtie-index-basename {}
+                            tophat.bowtie-index-dir {
+                            }
+                            tophat.bowtie-index-basename {
+                            }
                         }
                         tophat.bowtie-version {
                         }

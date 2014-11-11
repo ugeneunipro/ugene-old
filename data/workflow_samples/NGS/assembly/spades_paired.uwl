@@ -6,7 +6,7 @@ workflow "Spades Paired Tags"{
 
     get-file-list {
         type:get-file-list;
-        name:"File List";
+        name:"Read Paired Reads 1";
         url-in {
             dataset:"Dataset 1";
         }
@@ -17,7 +17,7 @@ workflow "Spades Paired Tags"{
     }
     get-file-list-1 {
         type:get-file-list;
-        name:"File List 1";
+        name:"Read Paired Reads 2";
         url-in {
             dataset:"Dataset 1";
         }
@@ -61,27 +61,30 @@ workflow "Spades Paired Tags"{
             get-file-list {
                 pos:"-999 -484";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 73 62";
                 out-url.angle:360;
             }
             get-file-list-1 {
-                pos:"-1002 -342";
+                pos:"-1002 -344";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 74 63";
                 out-url.angle:360;
             }
             multiplexer {
-                pos:"-826 -439";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
+                pos:"-786 -401";
+                style:simple;
+                bg-color-simple:"84 84 84 255";
                 input-data-1.angle:150;
                 input-data-2.angle:210;
                 output-data.angle:360;
             }
             spades-id {
-                pos:"-550 -439";
+                pos:"-570 -402";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"67 156 208 64";
+                bounds:"-30 -30 97.375 77";
                 in-data.angle:180;
                 out-data.angle:360;
             }
@@ -92,7 +95,7 @@ workflow "Spades Paired Tags"{
                 text-pos:"-35.7578 -24";
             }
             multiplexer.output-data->spades-id.in-data {
-                text-pos:"-45 -50";
+                text-pos:"-49 -36";
             }
         }
         wizard {

@@ -48,15 +48,16 @@ workflow "Extract coverage from assembly"{
         }
         visual {
             extract-assembly-coverage {
-                pos:"-435 -480";
+                pos:"-420 -465";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"0 129 94 64";
                 in-assembly.angle:180;
             }
             read-assembly {
-                pos:"-720 -480";
+                pos:"-704 -465";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 109 58";
                 out-assembly.angle:360;
             }
             read-assembly.out-assembly->extract-assembly-coverage.in-assembly {
@@ -97,8 +98,8 @@ workflow "Extract coverage from assembly"{
                 title:"Output data";
                 parameters-area {
                     group {
-                        label-size:120;
                         title:"Output data";
+                        label-size:120;
                         extract-assembly-coverage.url-out {
                             label:"Result file";
                         }

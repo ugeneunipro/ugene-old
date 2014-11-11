@@ -141,16 +141,16 @@ workflow "ChIP-seq analysis with control"{
     }
 
     .actor-bindings {
-        macs-id.out-data->ceas-report.in-data
-        macs-id.out-data->conservation_plot-id.in-data
-        macs-id.out-data->seqpos-id.in-data
-        macs-id.out-data->peak2gene-id.in-data
+        get-file-list.out-url->multiplexer.input-data-1
+        get-file-list-1.out-url->multiplexer.input-data-2
         multiplexer.output-data->macs-id.in-data
         peak2gene-id.out-data->conduct-go-id.in-data
         peak2gene-id.out-data->write-annotations.in-annotations
         peak2gene-id.out-data->write-annotations-1.in-annotations
-        get-file-list-1.out-url->multiplexer.input-data-2
-        get-file-list.out-url->multiplexer.input-data-1
+        macs-id.out-data->ceas-report.in-data
+        macs-id.out-data->conservation_plot-id.in-data
+        macs-id.out-data->seqpos-id.in-data
+        macs-id.out-data->peak2gene-id.in-data
     }
 
     get-file-list.url->macs-id.in-data._treatment-ann
@@ -165,24 +165,6 @@ workflow "ChIP-seq analysis with control"{
     peak2gene-id.peak-annotation->write-annotations-1.in-annotations.annotations
 
     .meta {
-        estimations {
-            function cistromeTime(tagsSize, dbCount) {
-                return 240*tagsSize*dbCount;
-            }
-            var db = new String(utils.attributeValue("seqpos-id.motif_db"));
-            var dbCount = db.split(',').length;
-            var sets = utils.attributeValue("get-file-list.url-in");
-            var time = 0;
-            var ram = 0;
-            for (var i=0; i<sets.length; i++) {
-                var set = sets[i];
-                for (var j=0; j<set.length; j++) {
-                    var tagsSize = utils.fileSize(set[j]) / (1024*1024);
-                    time += cistromeTime(tagsSize, dbCount);
-                }
-            }
-            [time];
-        }
         parameter-aliases {
             macs-id.output-dir {
                 alias:macs_out;
@@ -209,95 +191,97 @@ workflow "ChIP-seq analysis with control"{
         visual {
             scale:85;
             ceas-report {
-                pos:"-777 -523";
+                pos:"-746.412 -554.765";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"128 128 0 64";
                 in-data.angle:14.3148;
             }
             conduct-go-id {
-                pos:"-777 -299";
+                pos:"-775.824 -335.471";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"112 34 0 64";
                 in-data.angle:14.6383;
             }
             conservation_plot-id {
-                pos:"-150 -807";
+                pos:"-165.294 -689.353";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"128 128 0 64";
                 in-data.angle:180;
             }
             get-file-list {
-                pos:"-958.824 -855.294";
+                pos:"-858.824 -851.765";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 70.5882 66";
                 out-url.angle:360;
             }
             get-file-list-1 {
-                pos:"-958.824 -694.118";
+                pos:"-860 -715.294";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 68.2353 58.9412";
                 out-url.angle:360;
             }
             macs-id {
                 pos:"-453 -806";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-data.angle:180;
+                bg-color-ext:"0 128 0 64";
+                in-data.angle:220.601;
                 out-data.angle:300.069;
             }
             multiplexer {
-                pos:"-747 -805";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
+                pos:"-634.059 -781.471";
+                style:simple;
+                bg-color-simple:"84 84 84 255";
                 input-data-1.angle:150;
                 input-data-2.angle:210;
                 output-data.angle:360;
             }
             peak2gene-id {
-                pos:"-550 -517";
+                pos:"-481.765 -538.176";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-data.angle:16.1722;
+                bg-color-ext:"128 128 0 64";
+                in-data.angle:27.8321;
                 out-data.angle:292.805;
             }
             seqpos-id {
-                pos:"-150 -597";
+                pos:"-173.529 -547.588";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"128 128 0 64";
                 in-data.angle:180;
             }
             write-annotations {
-                pos:"-347 -266";
+                pos:"-316.412 -330.706";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"64 26 96 64";
                 in-annotations.angle:53.9726;
             }
             write-annotations-1 {
-                pos:"-568 -266";
+                pos:"-539.765 -328.353";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"64 26 96 64";
                 in-annotations.angle:23.9625;
             }
             get-file-list-1.out-url->multiplexer.input-data-2 {
-                text-pos:"-42.3047 -28";
+                text-pos:"-29.3047 -15";
             }
             get-file-list.out-url->multiplexer.input-data-1 {
-                text-pos:"-42.3047 -28";
+                text-pos:"-31.3047 -9";
             }
             macs-id.out-data->ceas-report.in-data {
-                text-pos:"-87 -22";
+                text-pos:"-79 -4";
             }
             macs-id.out-data->conservation_plot-id.in-data {
-                text-pos:"-7 -47";
+                text-pos:"-12 -16";
             }
             macs-id.out-data->peak2gene-id.in-data {
-                text-pos:"-40 -14";
+                text-pos:"-60 1";
             }
             macs-id.out-data->seqpos-id.in-data {
-                text-pos:"-20 -19";
+                text-pos:"-18 6";
             }
             multiplexer.output-data->macs-id.in-data {
-                text-pos:"-44 -60";
+                text-pos:"-47 -25";
             }
             peak2gene-id.out-data->conduct-go-id.in-data {
                 text-pos:"-74 -26";
@@ -306,8 +290,26 @@ workflow "ChIP-seq analysis with control"{
                 text-pos:"-40 -6";
             }
             peak2gene-id.out-data->write-annotations.in-annotations {
-                text-pos:"4 -27";
+                text-pos:"-9 -14";
             }
+        }
+        estimations {
+function cistromeTime(tagsSize, dbCount) {
+                return 240*tagsSize*dbCount;
+            }
+            var db = new String(utils.attributeValue("seqpos-id.motif_db"));
+            var dbCount = db.split(',').length;
+            var sets = utils.attributeValue("get-file-list.url-in");
+            var time = 0;
+            var ram = 0;
+            for (var i=0; i<sets.length; i++) {
+                var set = sets[i];
+                for (var j=0; j<set.length; j++) {
+                    var tagsSize = utils.fileSize(set[j]) / (1024*1024);
+                    time += cistromeTime(tagsSize, dbCount);
+                }
+            }
+            [time];
         }
         wizard {
             name:"ChIP-seq Analysis Wizard";

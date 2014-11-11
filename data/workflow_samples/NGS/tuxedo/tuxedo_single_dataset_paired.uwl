@@ -34,24 +34,23 @@ workflow "Single dataset Tuxedo: paired-end reads"{
     }
     files-conversion-1 {
         type:files-conversion;
-        name:"File Conversion 1";
+        name:"Convert File 1";
         document-format:fastq;
         excluded-formats:fasta;
     }
     files-conversion-2 {
         type:files-conversion;
-        name:"File Conversion 2";
+        name:"Convert File 2";
         document-format:fastq;
         excluded-formats:fasta;
     }
 
-
     .actor-bindings {
-        tophat.out-assembly->cufflinks.in-assembly
         read-sequence.out-url->files-conversion-1.in-file
-        files-conversion-2.out-file->multiplexer.input-data-2
+        tophat.out-assembly->cufflinks.in-assembly
         multiplexer.output-data->tophat.in-sequence
         read-sequence-1.out-url->files-conversion-2.in-file
+        files-conversion-2.out-file->multiplexer.input-data-2
         files-conversion-1.out-file->multiplexer.input-data-1
     }
 
@@ -91,55 +90,56 @@ workflow "Single dataset Tuxedo: paired-end reads"{
         }
         visual {
             cufflinks {
-                pos:"-206 -412";
+                pos:"-190 -410";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 149.875 89";
+                bg-color-ext:"128 128 0 64";
+                bounds:"-30 -30 149.875 63";
                 in-assembly.angle:25.5377;
-                out-annotations.angle:304.042;
+                out-annotations.angle:315.401;
             }
             files-conversion-1 {
-                pos:"-657 -637";
+                pos:"-546 -626";
                 style:simple;
+                bg-color-simple:"84 84 84 255";
                 in-file.angle:162.814;
                 out-file.angle:347.8;
             }
             files-conversion-2 {
-                pos:"-659 -548";
+                pos:"-548 -536";
                 style:simple;
-                in-file.angle:198.435;
-                out-file.angle:15.3885;
+                bg-color-simple:"84 84 84 255";
+                in-file.angle:194.47;
+                out-file.angle:14.0362;
             }
             multiplexer {
-                pos:"-516 -614";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 149 88";
+                pos:"-389 -590";
+                style:simple;
+                bg-color-simple:"84 84 84 255";
                 input-data-1.angle:173.089;
-                input-data-2.angle:232.696;
-                output-data.angle:351.68;
+                input-data-2.angle:214.114;
+                output-data.angle:353.29;
             }
             read-sequence {
-                pos:"-947 -685";
+                pos:"-784 -674";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 147 61";
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 88 72";
                 out-url.angle:351.506;
             }
             read-sequence-1 {
-                pos:"-948 -525";
+                pos:"-784 -523";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 148 59";
-                out-url.angle:358.08;
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 88 79";
+                out-url.angle:346.691;
             }
             tophat {
-                pos:"-206 -614";
+                pos:"-189 -609";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 149.75 89";
+                bg-color-ext:"0 128 0 64";
+                bounds:"-30 -30 149.75 76";
                 in-sequence.angle:216.87;
-                out-assembly.angle:305.172;
+                out-assembly.angle:309.359;
             }
             files-conversion-1.out-file->multiplexer.input-data-1 {
                 text-pos:"-18 -30";
@@ -148,16 +148,16 @@ workflow "Single dataset Tuxedo: paired-end reads"{
                 text-pos:"-20 -25";
             }
             multiplexer.output-data->tophat.in-sequence {
-                text-pos:"-45.5 -60";
+                text-pos:"-50.5 -38";
             }
             read-sequence-1.out-url->files-conversion-2.in-file {
                 text-pos:"-45 -26";
             }
             read-sequence.out-url->files-conversion-1.in-file {
-                text-pos:"-37 -26";
+                text-pos:"-34 -14";
             }
             tophat.out-assembly->cufflinks.in-assembly {
-                text-pos:"-46 -18";
+                text-pos:"-38 -16";
             }
         }
         estimations {
@@ -216,8 +216,10 @@ function tophatTime(reads, idx) {
                         title:"TopHat input";
                         label-size:180;
                         bowtie-index {
-                            tophat.bowtie-index-dir {}
-                            tophat.bowtie-index-basename {}
+                            tophat.bowtie-index-dir {
+                            }
+                            tophat.bowtie-index-basename {
+                            }
                         }
                         tophat.bowtie-version {
                         }

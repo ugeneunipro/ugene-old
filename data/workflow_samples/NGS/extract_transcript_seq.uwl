@@ -40,13 +40,12 @@ workflow "Extract transcript sequences"{
         document-format:gtf;
     }
 
-
     .actor-bindings {
-        multiplexer-1.output-data->gffread.in-data
-        files-conversion-1.out-file->multiplexer-1.input-data-2
         get-file-list.out-url->files-conversion.in-file
         get-file-list-1.out-url->files-conversion-1.in-file
+        multiplexer-1.output-data->gffread.in-data
         files-conversion.out-file->multiplexer-1.input-data-1
+        files-conversion-1.out-file->multiplexer-1.input-data-2
     }
 
     files-conversion.url->gffread.in-data.genome
@@ -59,45 +58,49 @@ workflow "Extract transcript sequences"{
             files-conversion {
                 pos:"-734 -673";
                 style:simple;
+                bg-color-simple:"84 84 84 255";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             files-conversion-1 {
                 pos:"-737 -506";
                 style:simple;
+                bg-color-simple:"84 84 84 255";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             get-file-list {
                 pos:"-940 -672";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 87 73";
                 out-url.angle:360;
             }
             get-file-list-1 {
-                pos:"-940 -505";
+                pos:"-940 -507";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 86 63";
                 out-url.angle:360;
             }
             gffread {
-                pos:"-260 -582";
+                pos:"-420 -644";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 153 120";
-                extracted-data.angle:360;
-                in-data.angle:180;
+                bg-color-ext:"208 69 0 64";
+                bounds:"-30 -30 153 99";
+                extracted-data.angle:342.973;
+                in-data.angle:237.6;
             }
             multiplexer-1 {
-                pos:"-553 -582";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
+                pos:"-614 -597";
+                style:simple;
+                bg-color-simple:"84 84 84 255";
                 input-data-1.angle:150;
                 input-data-2.angle:210;
                 output-data.angle:360;
             }
             files-conversion-1.out-file->multiplexer-1.input-data-2 {
-                text-pos:"-16.3828 -28";
+                text-pos:"-15.3828 -12";
             }
             files-conversion.out-file->multiplexer-1.input-data-1 {
                 text-pos:"-16.3828 -28";
@@ -106,36 +109,10 @@ workflow "Extract transcript sequences"{
                 text-pos:"-42.3047 -28";
             }
             get-file-list.out-url->files-conversion.in-file {
-                text-pos:"-42.3047 -28";
+                text-pos:"-35.3047 -23";
             }
             multiplexer-1.output-data->gffread.in-data {
-                text-pos:"-44 -62";
-            }
-        }
-        wizard {
-            name:"Extract Transcript Sequences Wizard";
-            page {
-                id:1;
-                title:"Extract Transcript Sequences";
-                parameters-area {
-                    group {
-                        title:"Input parameters";
-                        label-size:120;
-                        get-file-list.url-in {
-                            label:"Genomic sequences";
-                        }
-                        get-file-list-1.url-in {
-                            label:Transcripts;
-                        }
-                    }
-                    group {
-                        title:"Extracted sequences";
-                        label-size:120;
-                        gffread.url-out {
-                            label:"Output file";
-                        }
-                    }
-                }
+                text-pos:"-49 -34";
             }
         }
     }

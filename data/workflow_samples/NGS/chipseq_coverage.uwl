@@ -33,8 +33,8 @@ workflow "ChIP-Seq Coverage"{
     }
 
     .actor-bindings {
-        genomecov.out-file->bgtbw-bam.in-file
         slopbed.out-file->genomecov.in-file
+        genomecov.out-file->bgtbw-bam.in-file
         get-file-list.out-url->slopbed.in-file
     }
 
@@ -73,7 +73,7 @@ workflow "ChIP-Seq Coverage"{
             get-file-list {
                 pos:"-795 -586";
                 style:ext;
-                bg-color-ext:"85 255 0 64";
+                bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 54 53";
                 out-url.angle:360;
             }
@@ -113,10 +113,10 @@ workflow "ChIP-Seq Coverage"{
             page {
                 id:2;
                 next:3;
-                title:"Parameters";
+                title:Parameters;
                 parameters-area {
                     group {
-                        title:"Slopbed";
+                        title:Slopbed;
                         label-size:120;
                         slopbed.genome-id {
                         }
@@ -170,7 +170,7 @@ workflow "ChIP-Seq Coverage"{
                         }
                     }
                     group {
-                        title:"BedGraphToBigWig";
+                        title:BedGraphToBigWig;
                         label-size:120;
                         bgtbw-bam.genome {
                         }

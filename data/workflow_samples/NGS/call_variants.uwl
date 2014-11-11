@@ -36,12 +36,11 @@ workflow "Call variants with SAMtools"{
         document-format:bam;
     }
 
-
     .actor-bindings {
-        read-sequence.out-url->files-conversion-1.in-file
-        read-assembly.out-url->files-conversion-2.in-file
         files-conversion-2.out-file->call_variants.in-assembly
+        read-sequence.out-url->files-conversion-1.in-file
         files-conversion-1.out-file->call_variants.in-sequence
+        read-assembly.out-url->files-conversion-2.in-file
     }
 
     read-assembly.dataset->call_variants.in-assembly.dataset
@@ -91,37 +90,41 @@ workflow "Call variants with SAMtools"{
         }
         visual {
             call_variants {
-                pos:"-460 -495";
+                pos:"-391 -468";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-assembly.angle:150;
-                in-sequence.angle:207.181;
-                out-variations.angle:360;
+                bg-color-ext:"0 129 94 64";
+                bounds:"-30 -30 123.125 72";
+                in-assembly.angle:176.73;
+                in-sequence.angle:235.098;
+                out-variations.angle:351.674;
             }
             files-conversion-1 {
-                pos:"-587 -456";
+                pos:"-542 -406";
                 style:simple;
+                bg-color-simple:"84 84 84 255";
                 in-file.angle:196.858;
-                out-file.angle:15.3885;
+                out-file.angle:6.5198;
             }
             files-conversion-2 {
-                pos:"-590 -532";
+                pos:"-539 -511";
                 style:simple;
+                bg-color-simple:"84 84 84 255";
                 in-file.angle:170.538;
-                out-file.angle:343.856;
+                out-file.angle:334.799;
             }
             read-assembly {
                 pos:"-801 -554";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 111.375 66";
                 out-url.angle:360;
             }
             read-sequence {
-                pos:"-801 -419";
+                pos:"-802 -392";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                bounds:"-30 -30 71.25 84";
-                out-url.angle:360;
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 110.25 62";
+                out-url.angle:349.061;
             }
             files-conversion-1.out-file->call_variants.in-sequence {
                 text-pos:"-19 -31";
@@ -130,10 +133,10 @@ workflow "Call variants with SAMtools"{
                 text-pos:"-12 -24";
             }
             read-assembly.out-url->files-conversion-2.in-file {
-                text-pos:"-31 -24";
+                text-pos:"-37 -11";
             }
             read-sequence.out-url->files-conversion-1.in-file {
-                text-pos:"-31 -24";
+                text-pos:"-31 -21";
             }
         }
         estimations {
