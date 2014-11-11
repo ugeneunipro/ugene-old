@@ -41,6 +41,7 @@ WelcomePageWidget::WelcomePageWidget(QWidget *parent, WelcomePageController *con
 : QWidget(parent), loaded(false), controller(controller)
 {
     setupUi(this);
+    webView->setContextMenuPolicy(Qt::NoContextMenu);
     loadPage();
 }
 

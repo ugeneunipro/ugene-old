@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>203</width>
-    <height>657</height>
+    <height>656</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,43 +30,72 @@
        <number>0</number>
       </property>
       <item>
+       <widget class="U2::ShowHideSubgroupWidget" name="forwardPrimerBoxSubgroup" native="true"/>
+      </item>
+      <item>
        <widget class="U2::PrimerGroupBox" name="forwardPrimerBox" native="true"/>
+      </item>
+      <item>
+       <widget class="U2::ShowHideSubgroupWidget" name="reversePrimerBoxSubgroup" native="true"/>
       </item>
       <item>
        <widget class="U2::PrimerGroupBox" name="reversePrimerBox" native="true"/>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <widget class="QLabel" name="label_10">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Maximum product size</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QSpinBox" name="productSizeSpinBox">
-          <property name="suffix">
-           <string> bp</string>
-          </property>
-          <property name="minimum">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <number>999999</number>
-          </property>
-          <property name="value">
-           <number>5000</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="U2::ShowHideSubgroupWidget" name="settingsSubgroup" native="true"/>
+      </item>
+      <item>
+       <widget class="QWidget" name="settingsWidget" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="label_10">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Maximum product</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="productSizeSpinBox">
+             <property name="suffix">
+              <string> bp</string>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>999999</number>
+             </property>
+             <property name="value">
+              <number>5000</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="detailsLinkLabel">
+        <property name="styleSheet">
+         <string notr="true">color: red;
+</string>
+        </property>
+        <property name="text">
+         <string>&lt;a href=&quot;details&quot;&gt;Show primers details&lt;/a&gt;</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="warningLabel">
@@ -89,6 +118,22 @@ font-weight: 600;</string>
        </widget>
       </item>
       <item>
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>10</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
        <widget class="QPushButton" name="findProductButton">
         <property name="text">
          <string>Find product(s)</string>
@@ -96,10 +141,6 @@ font-weight: 600;</string>
        </widget>
       </item>
      </layout>
-     <zorder>forwardPrimerBox</zorder>
-     <zorder>reversePrimerBox</zorder>
-     <zorder>findProductButton</zorder>
-     <zorder>warningLabel</zorder>
     </widget>
    </item>
    <item>
@@ -255,6 +296,12 @@ font-weight: 600;</string>
    <class>U2::InSilicoPcrProductsTable</class>
    <extends>QTableWidget</extends>
    <header>InSilicoPcrProductsTable.h</header>
+  </customwidget>
+  <customwidget>
+   <class>U2::ShowHideSubgroupWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">U2Gui/ShowHideSubgroupWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

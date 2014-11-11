@@ -24,6 +24,8 @@
 
 #include <QWidget>
 
+#include <U2Gui/ShowHideSubgroupWidget.h>
+
 #include "ui_PrimerGroupBox.h"
 
 namespace U2 {
@@ -32,8 +34,6 @@ class PrimerGroupBox : public QWidget, public Ui::PrimerGroupBox {
     Q_OBJECT
 public:
     PrimerGroupBox(QWidget *parent);
-
-    void setTitle(const QString &title);
 
     QByteArray getPrimer() const;
     uint getMismatches() const;

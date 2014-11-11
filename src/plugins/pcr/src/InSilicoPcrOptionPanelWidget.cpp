@@ -33,6 +33,7 @@
 
 #include "ExtractProductTask.h"
 #include "InSilicoPcrTask.h"
+#include "PrimerGroupBox.h"
 #include "PrimerStatistics.h"
 #include "PrimersDetailsDialog.h"
 
@@ -41,7 +42,10 @@
 namespace U2 {
 
 namespace {
-    const QString DETAILS_LINK("details");
+    const QString DETAILS_LINK = "details";
+    const QString FORWARD_SUBGROUP_ID = "forward";
+    const QString REVERSE_SUBGROUP_ID = "reverse";
+    const QString SETTINGS_SUBGROUP_ID = "settings";
 }
 
 InSilicoPcrOptionPanelWidget::InSilicoPcrOptionPanelWidget(AnnotatedDNAView *annotatedDnaView)
@@ -49,10 +53,12 @@ InSilicoPcrOptionPanelWidget::InSilicoPcrOptionPanelWidget(AnnotatedDNAView *ann
     savableWidget(this, GObjectViewUtils::findViewByName(annotatedDnaView->getName()))
 {
     setupUi(this);
-    forwardPrimerBox->setTitle(tr("Forward primer"));
+    forwardPrimerBoxSubgroup->init(FORWARD_SUBGROUP_ID, tr("Forward primer"), forwardPrimerBox, true);
+    reversePrimerBoxSubgroup->init(REVERSE_SUBGROUP_ID, tr("Reverse primer"), reversePrimerBox, true);
+    settingsSubgroup->init(SETTINGS_SUBGROUP_ID, tr("Settings"), settingsWidget, true);
+
     forwardPrimerBox->primerEdit->setObjectName("forwardPrimerEdit");
     forwardPrimerBox->mismatchesSpinBox->setObjectName("forwardMismatchesSpinBox");
-    reversePrimerBox->setTitle(tr("Reverse primer"));
     reversePrimerBox->primerEdit->setObjectName("reversePrimerEdit");
     reversePrimerBox->mismatchesSpinBox->setObjectName("reverseMismatchesSpinBox");
 
@@ -65,7 +71,10 @@ InSilicoPcrOptionPanelWidget::InSilicoPcrOptionPanelWidget(AnnotatedDNAView *ann
     connect(annotatedDnaView, SIGNAL(si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*)), SLOT(sl_onFocusChanged()));
     connect(productsTable->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)), SLOT(sl_onProductsSelectionChanged()));
     connect(productsTable, SIGNAL(doubleClicked(const QModelIndex &)), SLOT(sl_onProductDoubleClicked()));
-    connect(warningLabel, SIGNAL(linkActivated(const QString &)), SLOT(sl_showDetails(const QString &)));
+    connect(detailsLinkLabel, SIGNAL(linkActivated(const QString &)), SLOT(sl_showDetails(const QString &)));
+
+    static const QString linkText = QString("<a href=\"%1\" style=\"color: %2\">%3</a>").arg(DETAILS_LINK).arg(L10N::linkColorLabelStr()).arg(tr("Show primers details"));
+    detailsLinkLabel->setText(linkText);
 
     setResultTableShown(false);
 
@@ -97,9 +106,10 @@ void InSilicoPcrOptionPanelWidget::setResultTableShown(bool show) {
 void InSilicoPcrOptionPanelWidget::sl_onPrimerChanged() {
     QByteArray forward = forwardPrimerBox->getPrimer();
     QByteArray reverse = reversePrimerBox->getPrimer();
-    bool disabled = forward.isEmpty() || reverse.isEmpty();
-    findProductButton->setDisabled(disabled);
-    if (disabled) {
+    bool emptyPrimer = forward.isEmpty() || reverse.isEmpty();
+    findProductButton->setDisabled(emptyPrimer);
+    detailsLinkLabel->setVisible(!emptyPrimer);
+    if (emptyPrimer) {
         warningLabel->hide();
         return;
     }
@@ -110,9 +120,8 @@ void InSilicoPcrOptionPanelWidget::sl_onPrimerChanged() {
         warningLabel->hide();
         findProductButton->setText(tr("Find product(s)"));
     } else {
-        static const QString linkText = QString("<a href=\"%1\" style=\"color: %2\">%3</a>").arg(DETAILS_LINK).arg(L10N::linkColorLabelStr()).arg(tr("Show details"));
         warningLabel->show();
-        warningLabel->setText(message + ". " + linkText);
+        warningLabel->setText(tr("Warning: ") + message);
         findProductButton->setText(tr("Find product(s) anyway"));
     }
 }

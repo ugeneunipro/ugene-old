@@ -31,6 +31,7 @@ namespace U2 {
 class ADVSequenceObjectContext;
 class AnnotatedDNAView;
 class InSilicoPcrTask;
+class PrimerGroupBox;
 
 class InSilicoPcrOptionPanelWidget : public QWidget, public Ui::InSilicoPcrOptionPanelWidget {
     Q_OBJECT

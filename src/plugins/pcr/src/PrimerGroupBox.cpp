@@ -43,10 +43,6 @@ PrimerGroupBox::PrimerGroupBox(QWidget *parent)
     connect(browseButton, SIGNAL(clicked()), SLOT(sl_browse()));
 }
 
-void PrimerGroupBox::setTitle(const QString &title) {
-    groupBox->setTitle(title);
-}
-
 void PrimerGroupBox::sl_onPrimerChanged(const QString &sequence) {
     QString characteristics;
     if (!sequence.isEmpty()) {

@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QPainter>
+
 #include <U2Core/L10n.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -148,10 +150,12 @@ QVariant PrimerLibraryModel::displayData(const QModelIndex &index) const {
 /* PrimerLibraryTable */
 /************************************************************************/
 PrimerLibraryTable::PrimerLibraryTable(QWidget *parent)
-: QTableView(parent)
+: QTableView(parent), mode(Browser)
 {
     model = new PrimerLibraryModel(this);
     setModel(model);
+
+    viewport()->installEventFilter(this);
 }
 
 QList<Primer> PrimerLibraryTable::getSelection() const {
@@ -176,6 +180,23 @@ void PrimerLibraryTable::addPrimer(Primer &primer, U2OpStatus &os) {
 
 void PrimerLibraryTable::removePrimer(const QModelIndex &index, U2OpStatus &os) {
     model->removePrimer(index, os);
+}
+
+bool PrimerLibraryTable::eventFilter(QObject *watched, QEvent *event) {
+    CHECK(Selector == mode, false);
+    CHECK(event->type() == QEvent::Paint, false);
+    CHECK(viewport() == watched, false);
+    CHECK(0 == model->rowCount(QModelIndex()), false);
+
+    QPainter p(viewport());
+    Qt::Alignment centerAlignment = QStyle::visualAlignment(Qt::LeftToRight, Qt::AlignHCenter) | Qt::AlignTop;
+    p.drawText(viewport()->geometry(), centerAlignment, tr("Your primer library is empty.\nUse \"Tools -> Primer -> Primer Library\" for managing the library."));
+
+    return false;
+}
+
+void PrimerLibraryTable::setMode(Mode value) {
+    mode = value;
 }
 
 } // U2

@@ -31,9 +31,21 @@
 
 namespace U2 {
 
+ShowHideSubgroupWidget::ShowHideSubgroupWidget(QWidget *parent)
+: QWidget(parent), arrowHeaderWidget(NULL), innerWidget(NULL)
+{
+
+}
+
 ShowHideSubgroupWidget::ShowHideSubgroupWidget(const QString &_id, const QString &caption, QWidget* _innerWidget, bool isOpened)
     : subgroupId(_id), innerWidget(_innerWidget)
 {
+    init(subgroupId, caption, innerWidget, isOpened);
+}
+
+void ShowHideSubgroupWidget::init(const QString &subgroupId, const QString &caption, QWidget *innerWidget, bool isOpened) {
+    this->subgroupId = subgroupId;
+    this->innerWidget = innerWidget;
     QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->setContentsMargins(0, 10, 0, 0);
     mainLayout->setSpacing(0);

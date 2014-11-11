@@ -36,7 +36,10 @@ class ArrowHeaderWidget;
 class U2GUI_EXPORT ShowHideSubgroupWidget : public QWidget {
     Q_OBJECT
 public:
+    ShowHideSubgroupWidget(QWidget *parent);
     ShowHideSubgroupWidget(const QString &id, const QString &caption, QWidget *innerWidget, bool isOpened);
+
+    void init(const QString &id, const QString &caption, QWidget *innerWidget, bool isOpened);
 
     bool isSubgroupOpened() const;
     void setSubgroupOpened(bool open);

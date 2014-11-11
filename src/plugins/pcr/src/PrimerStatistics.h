@@ -37,7 +37,8 @@ public:
 
 class PrimerStatisticsCalculator {
 public:
-    PrimerStatisticsCalculator(const QByteArray &sequence);
+    enum Direction {Forward, Reverse, DoesntMatter};
+    PrimerStatisticsCalculator(const QByteArray &sequence, Direction direction = DoesntMatter);
 
     double getGC() const;
     double getTm() const;
@@ -57,7 +58,11 @@ public:
     static const int RUNS_TOP;
 
 private:
+    QString getMessage(const QString &error) const;
+
+private:
     const QByteArray sequence;
+    Direction direction;
     int nA;
     int nC;
     int nG;

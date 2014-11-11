@@ -63,7 +63,13 @@ public:
     void addPrimer(Primer &primer, U2OpStatus &os);
     void removePrimer(const QModelIndex &index, U2OpStatus &os);
 
+    bool eventFilter(QObject *watched, QEvent *event);
+
+    enum Mode {Browser, Selector};
+    void setMode(Mode value);
+
 private:
+    Mode mode;
     PrimerLibraryModel *model;
 };
 

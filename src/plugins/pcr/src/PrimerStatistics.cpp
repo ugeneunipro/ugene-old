@@ -54,8 +54,8 @@ const double PrimerStatisticsCalculator::TM_TOP = 80.0;
 const int PrimerStatisticsCalculator::CLAMP_BOTTOM = 1;
 const int PrimerStatisticsCalculator::RUNS_TOP = 4;
 
-PrimerStatisticsCalculator::PrimerStatisticsCalculator(const QByteArray &sequence)
-: sequence(sequence), nA(0), nC(0), nG(0), nT(0), maxRun(0)
+PrimerStatisticsCalculator::PrimerStatisticsCalculator(const QByteArray &sequence, Direction direction)
+: sequence(sequence), direction(direction), nA(0), nC(0), nG(0), nT(0), maxRun(0)
 {
     CHECK(!sequence.isEmpty(), );
 
@@ -118,28 +118,39 @@ int PrimerStatisticsCalculator::getRuns() const {
 
 bool PrimerStatisticsCalculator::isValidGC(QString &error) const {
     double value = getGC();
-    CHECK_EXT(value >= GC_BOTTOM, error = PrimerStatistics::tr("Low GC-content"), false);
-    CHECK_EXT(value <= GC_TOP, error = PrimerStatistics::tr("High GC-content"), false);
+    CHECK_EXT(value >= GC_BOTTOM, error = getMessage(PrimerStatistics::tr("low GC-content")), false);
+    CHECK_EXT(value <= GC_TOP, error = getMessage(PrimerStatistics::tr("high GC-content")), false);
     return true;
 }
 
 bool PrimerStatisticsCalculator::isValidTm(QString &error) const {
     double value = getTm();
-    CHECK_EXT(value >= TM_BOTTOM, error = PrimerStatistics::tr("Low melting temperature"), false);
-    CHECK_EXT(value <= TM_TOP, error = PrimerStatistics::tr("High melting temperature"), false);
+    CHECK_EXT(value >= TM_BOTTOM, error = getMessage(PrimerStatistics::tr("low melting temperature")), false);
+    CHECK_EXT(value <= TM_TOP, error = getMessage(PrimerStatistics::tr("high melting temperature")), false);
     return true;
 }
 
 bool PrimerStatisticsCalculator::isValidGCClamp(QString &error) const {
     int value = getGCClamp();
-    CHECK_EXT(value >= CLAMP_BOTTOM, error = PrimerStatistics::tr("Low GC clamp"), false);
+    CHECK_EXT(value >= CLAMP_BOTTOM, error = getMessage(PrimerStatistics::tr("low GC clamp")), false);
     return true;
 }
 
 bool PrimerStatisticsCalculator::isValidRuns(QString &error) const {
     int value = getRuns();
-    CHECK_EXT(value <= RUNS_TOP, error = PrimerStatistics::tr("High base runs value"), false);
+    CHECK_EXT(value <= RUNS_TOP, error = getMessage(PrimerStatistics::tr("high base runs value")), false);
     return true;
+}
+
+QString PrimerStatisticsCalculator::getMessage(const QString &error) const {
+    switch (direction) {
+        case Forward:
+            return PrimerStatistics::tr("forward primer has %1.").arg(error);
+        case Reverse:
+            return PrimerStatistics::tr("reverse primer has %1.").arg(error);
+        default:
+            return error;
+    }
 }
 
 /************************************************************************/
@@ -155,46 +166,43 @@ namespace {
 }
 
 PrimersPairStatistics::PrimersPairStatistics(const QByteArray &forward, const QByteArray &reverse)
-: forward(forward), reverse(reverse)
+: forward(forward, PrimerStatisticsCalculator::Forward), reverse(reverse, PrimerStatisticsCalculator::Reverse)
 {
 
 }
 
 QString PrimersPairStatistics::getFirstError() const {
-    static const QString forwardPrimer = PrimerStatistics::tr("Forward primer warning: ");
-    static const QString reversePrimer = PrimerStatistics::tr("Reverse primer warning: ");
-
     QString result;
     // GC
     if (!forward.isValidGC(result)) {
-        return forwardPrimer + result;
+        return result;
     }
     if (!reverse.isValidGC(result)) {
-        return reversePrimer + result;
+        return result;
     }
 
     // Tm
     if (!forward.isValidTm(result)) {
-        return forwardPrimer + result;
+        return result;
     }
     if (!reverse.isValidTm(result)) {
-        return reversePrimer + result;
+        return result;
     }
 
     // GC clamp
     if (!forward.isValidGCClamp(result)) {
-        return forwardPrimer + result;
+        return result;
     }
     if (!reverse.isValidGCClamp(result)) {
-        return reversePrimer + result;
+        return result;
     }
 
     // Runs
     if (!forward.isValidRuns(result)) {
-        return forwardPrimer + result;
+        return result;
     }
     if (!reverse.isValidRuns(result)) {
-        return reversePrimer + result;
+        return result;
     }
     return "";
 }

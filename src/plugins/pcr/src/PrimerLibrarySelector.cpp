@@ -36,6 +36,12 @@ PrimerLibrarySelector::PrimerLibrarySelector(QWidget *parent)
     connect(primerTable, SIGNAL(doubleClicked(const QModelIndex &)), SLOT(accept()));
     connect(primerTable->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)), SLOT(sl_selectionChanged()));
     sl_selectionChanged();
+
+    primerTable->setMode(PrimerLibraryTable::Selector);
+
+    QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
+    CHECK(NULL != okButton, );
+    okButton->setText(tr("Choose"));
 }
 
 Primer PrimerLibrarySelector::getResult() const {
