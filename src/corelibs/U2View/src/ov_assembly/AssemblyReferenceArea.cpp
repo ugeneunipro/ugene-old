@@ -31,7 +31,7 @@
 namespace U2 {
 
 AssemblySequenceArea::AssemblySequenceArea(AssemblyBrowserUi * ui_, char skipChar_) :
-    QWidget(ui_), ui(ui_), browser(ui_->getWindow()), model(ui_->getModel()), cellRenderer(NULL), skipChar(skipChar_)
+    QWidget(ui_), browser(ui_->getWindow()), ui(ui_), model(ui_->getModel()), cellRenderer(NULL), skipChar(skipChar_)
 {
     setFixedHeight(FIXED_HEIGHT);
     connectSlots();
