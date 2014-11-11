@@ -1910,8 +1910,29 @@ GUI_TEST_CLASS_DEFINITION(export_consensus_test_0003){
 }
 
 GUI_TEST_CLASS_DEFINITION(export_consensus_test_0004){
-    Q_UNUSED(os);
-    //forbidden charecters
+//    1. Open data/samples/CLUSTALW/COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Open export consensus option panel tab
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::ExportConsensus);
+//    3. Set empty path
+    setConsensusOutputPath(os, "");
+
+    class exportConsensusTest0004Filler: public CustomScenario{
+    public:
+        exportConsensusTest0004Filler(){}
+        virtual void run(U2::U2OpStatus &os){
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, new exportConsensusTest0004Filler()));
+    GTWidget::click(os, GTWidget::findWidget(os, "exportBtn"));
+
+    QLineEdit* pathLe = GTWidget::findExactWidget<QLineEdit*>(os, "pathLe");
+    QString pathLeText = pathLe->text();
+    CHECK_SET_ERR(!pathLeText.isEmpty() && pathLeText.contains("COI_consensus.txt"), "wrong lineEdit text");
 }
 
 GUI_TEST_CLASS_DEFINITION(export_consensus_test_0005){

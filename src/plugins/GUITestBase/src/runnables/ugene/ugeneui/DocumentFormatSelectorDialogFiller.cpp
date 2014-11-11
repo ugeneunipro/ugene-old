@@ -76,7 +76,7 @@ QRadioButton* DocumentFormatSelectorDialogFiller::getButton(U2OpStatus &os){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "run"
-void DocumentFormatSelectorDialogFiller::run()
+void DocumentFormatSelectorDialogFiller::commonScenario()
 {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");

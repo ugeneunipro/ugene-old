@@ -33,7 +33,9 @@ class DocumentFormatSelectorDialogFiller : public Filler
 public:
     DocumentFormatSelectorDialogFiller(U2OpStatus &os, const QString &_format):
         Filler(os, "DocumentFormatSelectorDialog"), format(_format){}
-    virtual void run();
+    DocumentFormatSelectorDialogFiller(U2OpStatus &os, CustomScenario* custom):
+        Filler(os, "DocumentFormatSelectorDialog", custom){}
+    virtual void commonScenario();
 private:
     QString format;
     QRadioButton* getButton(U2OpStatus &os);

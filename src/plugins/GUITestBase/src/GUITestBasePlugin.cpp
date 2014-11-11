@@ -319,8 +319,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2622_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_2656);
     REGISTER_TEST(GUITest_regression_scenarios::test_2667);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2690);
     REGISTER_TEST(GUITest_regression_scenarios::test_2701);
     REGISTER_TEST(GUITest_regression_scenarios::test_2709);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2711);
     REGISTER_TEST(GUITest_regression_scenarios::test_2729);
     REGISTER_TEST(GUITest_regression_scenarios::test_2730);
     REGISTER_TEST(GUITest_regression_scenarios::test_2778);
@@ -1219,6 +1221,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::export_consensus_test_0001);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::export_consensus_test_0002);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::export_consensus_test_0003);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::export_consensus_test_0004);
 
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::statistics_test_0001);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_MSA::statistics_test_0002);

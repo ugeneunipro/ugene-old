@@ -29,15 +29,24 @@ class AppSettingsDialogFiller: public Filler
 {
 public:
     enum style{minimal,extended,none};
+    enum Tabs{General, Resourses, Network, FileFormat, Directories, Logging, AlignmentColorScheme, GenomeAligner,
+             WorkflowDesigner, ExternalTools, OpenCL};
     AppSettingsDialogFiller(U2OpStatus &_os, style _itemStyle=extended):Filler(_os,"AppSettingsDialog"),
         itemStyle(_itemStyle),r(-1),g(-1),b(-1){}
     AppSettingsDialogFiller(U2OpStatus &_os, int _r,int _g, int _b):Filler(_os,"AppSettingsDialog"),
         itemStyle(none),r(_r),g(_g),b(_b){}
     AppSettingsDialogFiller(U2OpStatus &os, CustomScenario *customScenario);
     void commonScenario();
+
+    static void setExternalToolPath(U2OpStatus &os, const QString& toolName, const QString& toolPath);
+    static QString getExternalToolPath(U2OpStatus &os, const QString& toolName);
+    static void openTab(U2OpStatus &os, Tabs tab);
+    static bool isExternalToolValid(U2OpStatus &os, const QString& toolName);
 private:
     style itemStyle;
     int r,g,b;
+    static const QMap<Tabs, QString> tabMap;
+    static QMap<Tabs, QString> initMap();
 };
 
 class NewColorSchemeCreator: public Filler{

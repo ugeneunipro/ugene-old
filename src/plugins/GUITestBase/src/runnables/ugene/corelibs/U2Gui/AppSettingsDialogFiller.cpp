@@ -45,9 +45,29 @@
 #include <QtWidgets/QAbstractButton>
 #endif
 
+#include <QTextBrowser>
+
 namespace U2{
 
 #define GT_CLASS_NAME "AppSettingsDialogFiller"
+QMap<AppSettingsDialogFiller::Tabs, QString> AppSettingsDialogFiller::initMap(){
+        QMap<Tabs, QString> result;
+        result.insert(General, "  General");
+        result.insert(Resourses, "  Resources");
+        result.insert(Network, "  Network");
+        result.insert(FileFormat, "  File Format");
+        result.insert(Directories, "  Directories");
+        result.insert(Logging, "  Logging");
+        result.insert(AlignmentColorScheme, "  Alignment Color Scheme");
+        result.insert(GenomeAligner, "  Genome Aligner");
+        result.insert(WorkflowDesigner, "  Workflow Designer");
+        result.insert(ExternalTools, "  External Tools");
+        result.insert(OpenCL, "  OpenCL");
+        return result;
+}
+
+const QMap<AppSettingsDialogFiller::Tabs, QString> AppSettingsDialogFiller::tabMap = initMap();
+
 AppSettingsDialogFiller::AppSettingsDialogFiller(U2OpStatus &os, CustomScenario *customScenario) :
     Filler(os, "AppSettingsDialog", customScenario),
     itemStyle(none),
@@ -91,6 +111,91 @@ void AppSettingsDialogFiller::commonScenario(){
     GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setExternalToolPath"
+void AppSettingsDialogFiller::setExternalToolPath(U2OpStatus &os, const QString &toolName, const QString &toolPath){
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    openTab(os, ExternalTools);
+
+    QTreeWidget* treeWidget = GTWidget::findExactWidget<QTreeWidget*>(os, "treeWidget", dialog);
+    QList<QTreeWidgetItem*> listOfItems = treeWidget->findItems("", Qt::MatchContains | Qt::MatchRecursive);
+    bool set = false;
+    foreach (QTreeWidgetItem* item, listOfItems){
+        if(item->text(0) == toolName){
+            QWidget* itemWid = treeWidget->itemWidget(item, 1);
+            QLineEdit* lineEdit = itemWid->findChild<QLineEdit*>("PathLineEdit");
+            treeWidget->scrollToItem(item);
+            GTLineEdit::setText(os, lineEdit, toolPath);
+            GTMouseDriver::moveTo(os, GTMouseDriver::getMousePosition() + QPoint(0, -30));
+            GTMouseDriver::click(os);
+            set = true;
+        }
+    }
+    GT_CHECK(set, "tool " + toolName + " not found in tree view");
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getExternalToolPath"
+QString AppSettingsDialogFiller::getExternalToolPath(U2OpStatus &os, const QString &toolName){
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK_RESULT(dialog, "activeModalWidget is NULL", "");
+
+    openTab(os, ExternalTools);
+
+    QTreeWidget* treeWidget = GTWidget::findExactWidget<QTreeWidget*>(os, "treeWidget", dialog);
+    QList<QTreeWidgetItem*> listOfItems = treeWidget->findItems("", Qt::MatchContains | Qt::MatchRecursive);
+
+    foreach (QTreeWidgetItem* item, listOfItems){
+        if(item->text(0) == toolName){
+            QWidget* itemWid = treeWidget->itemWidget(item, 1);
+            QLineEdit* lineEdit = itemWid->findChild<QLineEdit*>("PathLineEdit");
+            return lineEdit->text();
+        }
+    }
+    return "";
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isExternalToolValid"
+bool AppSettingsDialogFiller::isExternalToolValid(U2OpStatus &os, const QString &toolName){
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK_RESULT(dialog, "activeModalWidget is NULL", false);
+
+    openTab(os, ExternalTools);
+
+    QTreeWidget* treeWidget = GTWidget::findExactWidget<QTreeWidget*>(os, "treeWidget", dialog);
+    QList<QTreeWidgetItem*> listOfItems = treeWidget->findItems("", Qt::MatchContains | Qt::MatchRecursive);
+    foreach (QTreeWidgetItem* item, listOfItems){
+        if(item->text(0) == toolName){
+            GTTreeWidget::click(os, item);
+            GTMouseDriver::doubleClick(os);
+            QTextBrowser *descriptionTextBrowser = GTWidget::findExactWidget<QTextBrowser*>(os, "descriptionTextBrowser", dialog);
+            return descriptionTextBrowser->toPlainText().contains("Version:");
+        }
+    }
+    GT_CHECK_RESULT(false, "external tool " + toolName + " not found in tree view", false);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "OpenTab"
+void AppSettingsDialogFiller::openTab(U2OpStatus &os, Tabs tab){
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    QString itemText = tabMap.value(tab);
+    GT_CHECK(!itemText.isEmpty(), "tree element for item not found");
+
+    QTreeWidget* mainTree = GTWidget::findExactWidget<QTreeWidget *>(os, "tree");
+
+    if(mainTree->selectedItems().first()->text(0) != itemText){
+        GTTreeWidget::click(os, GTTreeWidget::findItem(os, mainTree, itemText));
+    }
+    GTGlobals::sleep(300);
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "NewColorSchemeCreator"

@@ -4962,6 +4962,40 @@ GUI_TEST_CLASS_DEFINITION( test_2667 ) {
     GTUtilsProjectTreeView::findIndex(os, "NC_001363 features", options);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2690){
+//    1. Open "human_t1.fa".
+    GTFileDialog::openFile( os, dataDir + "samples/FASTA", "human_T1.fa" );
+//    2. Create an annotation: Group name - "1", location - "1..1".
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "1", "ann1", "1..1"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+//    3. Create an annotation: Group name - "2", location - "5..5, 6..7".
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, true, "2", "ann2", "5..5, 6..7"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ADD" << "create_annotation_action"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+//    4. Open the "Annotation highlighting" OP widget.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_ANNOT_HIGHLIGHT"));
+//    5. Select the first annotation.
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "ann1"));
+    GTMouseDriver::click(os);
+//    6. Click the "next annotation" button.
+    QWidget* nextAnnotationButton = GTWidget::findWidget(os, "nextAnnotationButton");
+    GTWidget::click(os, nextAnnotationButton);
+    GTGlobals::sleep(500);
+//    Expected state: the first location of the second annotation is selected.
+    QString str = GTUtilsAnnotationsTreeView::getSelectedItem(os);
+    CHECK_SET_ERR(str == "ann2", "unexpected selected annotation: " + str);
+    CHECK_SET_ERR(nextAnnotationButton->isEnabled(), "nextAnnotationButton is unexpectidly disabled")
+//    7. Click the "next annotation" button.
+    GTWidget::click(os, nextAnnotationButton);
+    GTGlobals::sleep(500);
+    str = GTUtilsAnnotationsTreeView::getSelectedItem(os);
+    CHECK_SET_ERR(str == "ann2", "unexpected selected annotation after click: " + str);
+    CHECK_SET_ERR(!nextAnnotationButton->isEnabled(), "nextAnnotationButton is unexpectidly enabled");
+//    Expected state: the second location of the second annotation is selected, "next" button is disabled.
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2701) {
 //    1. Open {/data/samples/genbank/CVU55762.gb}.
 //    Expected state: a document was added, circular view is opened
@@ -5042,6 +5076,37 @@ GUI_TEST_CLASS_DEFINITION(test_2709) {
     QString result = GTUtilsWorkflowDesigner::getParameter(os, "No novel junctions");
     CHECK_SET_ERR(result == "True", "No novel junctions parameter is " + result);
 
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2711){
+//    1. Open "Settings"->"preferences"->"External tools"
+
+//    2. Set path to R tool as path to Rscript
+
+
+    class test_2711DialogFiller : public CustomScenario {
+    public:
+        test_2711DialogFiller(){}
+        virtual void run(U2::U2OpStatus &os){
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QString rScriptPath = AppSettingsDialogFiller::getExternalToolPath(os, "Rscript");
+            QString rPath = rScriptPath.left(rScriptPath.length() - QString("script").length());
+            AppSettingsDialogFiller::setExternalToolPath(os, "Rscript", rPath);
+            GTGlobals::sleep(500);
+
+            bool valid = AppSettingsDialogFiller::isExternalToolValid(os, "Rscript");
+            CHECK_SET_ERR(!valid, "Rscript is unexpectidly valid");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+//    Expected state: Rscript doesn't pass validation
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new test_2711DialogFiller()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+    GTGlobals::sleep(500);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2729) {
