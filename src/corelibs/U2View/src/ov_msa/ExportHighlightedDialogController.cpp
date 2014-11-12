@@ -22,8 +22,10 @@
 #include <QtCore/qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPushButton>
+#include <QtGui/QMessageBox>
 #else
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
 #endif
 
 #include <U2Gui/HelpButton.h>
@@ -84,6 +86,10 @@ void ExportHighligtningDialogController::accept(){
         startingIndex = 1;
     }else{
         startingIndex = 0;
+    }
+    if(fileNameEdit->text().isEmpty()){
+        QMessageBox::warning(this, tr("Warning"), tr("Export to file URL is empty!"));
+        return;
     }
     keepGaps = keepGapsBox->isChecked();
     dots = dotsBox->isChecked();
