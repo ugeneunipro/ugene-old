@@ -171,7 +171,7 @@ void SplashScreenWidget::drawInfo(){
         font.setPixelSize(TASK_HEIGHT_PX);
         font.setBold(false);
         p.setFont( font );
-        p.drawText(17,290 + VERSION_HEIGHT_PX, task);
+        p.drawText(18,290 + VERSION_HEIGHT_PX, task);
     }
     p.end();
 }
