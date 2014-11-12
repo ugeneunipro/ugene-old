@@ -5110,6 +5110,42 @@ GUI_TEST_CLASS_DEFINITION(test_2711){
     GTGlobals::sleep(500);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2713) {
+//    1. Open file {data/samples/Genbank/murine.gb}
+    QDir().mkpath(sandBoxDir + "test_2713");
+    GTFile::copy(os, dataDir + "samples/Genbank/murine.gb", sandBoxDir + "test_2713/murine.gb");
+    GTFileDialog::openFile(os, sandBoxDir + "test_2713", "murine.gb");
+
+//    2. Open file {data/samples/FASTA/human_T1.fa}
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+//    3. Drag and drop annotation object "NC_001363 features" from project view to sequence view
+//    Expected state: the "Edit Object Relations" dialog has appeared
+//    4. Press "OK"
+//    Expected state: annotations has appeared on the sequence view
+    GTUtilsDialog::waitForDialog(os, new CreateObjectRelationDialogFiller(os));
+    GTUtilsProjectTreeView::dragAndDrop(os, GTUtilsProjectTreeView::findIndex(os, "NC_001363 features"), GTUtilsAnnotationsTreeView::getTreeWidget(os));
+
+//    5. Open file {data/samples/Genbank/murine.gb} with text editor, then make some identical modification (i.e. delete and type the same character) and save file
+//    Expected state: dialog about detected file modification has appeared in UGENE window
+//    6. Press "Yes"
+//    Expected state: "human_T1" view has disappeared from the "Bookmarks" list, "murine.gb" has been reloaded.
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+
+    QFile murineFile(sandBoxDir + "test_2713/murine.gb");
+    const bool opened = murineFile.open(QFile::Append);
+    CHECK_SET_ERR(opened, "Can't open the file: " + sandBoxDir + "test_2713/murine.gb");
+    murineFile.write(" ");
+    murineFile.close();
+
+    GTGlobals::sleep();
+
+//    7. Open "human_T1" sequence view
+//    Expected state: annotations from "murine.gb" present on the sequence view
+    GTUtilsProjectTreeView::doubleClickItem(os, "human_T1.fa");
+    GTUtilsAnnotationsTreeView::findFirstAnnotation(os);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2729) {
 //    1. Open {_common_data/fasta/AMINO.fa}
 //    Expected state: there is a "Graphs" button on the sequence toolbar, it is enabled.
