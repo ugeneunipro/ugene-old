@@ -1,6 +1,9 @@
 #@UGENE_WORKFLOW
+#Processing of Illumina raw DNA-Seq NGS data. Reads are filtered to reduce alignment time, aligned with BWA-MEM, filtered with SAMTools, sorted and indexed. If a number of input FASTQ files is given - they are merged after the alignment in one BAM file. The result of the processing is filtered, sorted and indexed BAM file
 
-workflow dna_paired{
+
+
+workflow DNA-Seq{
 
     CASAVAFilter {
         type:CASAVAFilter;
@@ -12,7 +15,6 @@ workflow dna_paired{
         name:"FASTQ Quality Trimmer";
         custom-dir:filtered_fastq;
         len-id:1;
-        out-mode:2;
         qual-id:20;
     }
     get-file-list {
@@ -25,7 +27,7 @@ workflow dna_paired{
     bwamem-id {
         type:bwamem-id;
         name:"Align reads with BWA MEM";
-        output-dir:filtered_fastq;
+        library:Paired-end;
     }
     files-conversion {
         type:files-conversion;
@@ -48,73 +50,61 @@ workflow dna_paired{
         name:"Remove Duplicates in BAM Files";
         remove-single-end:true;
     }
-    files-conversion-1 {
-        type:files-conversion;
-        name:"File Format Conversion 1";
-        document-format:bed;
-    }
     Sort-bam {
         type:Sort-bam;
         name:"Sort BAM Files";
-    }
-    get-file-list-1 {
-        type:get-file-list;
-        name:"File List 1";
-        url-in {
-            dataset:"Dataset 1";
-        }
-    }
-    CASAVAFilter-1 {
-        type:CASAVAFilter;
-        name:"CASAVA FASTQ Filter 1";
-        custom-dir:filtered_fastq;
-    }
-    QualityTrim-1 {
-        type:QualityTrim;
-        name:"FASTQ Quality Trimmer 1";
-        custom-dir:filtered_fastq;
-        len-id:1;
-        qual-id:20;
-    }
-    multiplexer {
-        type:multiplexer;
-        name:Multiplexer;
     }
     Sort-bam-1 {
         type:Sort-bam;
         name:"Sort BAM Files 1";
     }
+    CASAVAFilter-1 {
+        type:CASAVAFilter;
+        name:"CASAVA FASTQ Filter";
+        custom-dir:filtered_fastq;
+    }
+    get-file-list-1 {
+        type:get-file-list;
+        name:"File List";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    QualityTrim-1 {
+        type:QualityTrim;
+        name:"FASTQ Quality Trimmer";
+        custom-dir:filtered_fastq;
+        len-id:1;
+        qual-id:20;
+    }
 
     .actor-bindings {
-        bwamem-id.out-data->files-conversion.in-file
-        CASAVAFilter-1.out-file->QualityTrim-1.in-file
-        files-conversion.out-file->merge-bam.in-file
-        CASAVAFilter.out-file->QualityTrim.in-file
-        get-file-list.out-url->CASAVAFilter.in-file
-        QualityTrim-1.out-file->multiplexer.input-data-2
-        filter-bam.out-file->Sort-bam-1.in-file
-        Sort-bam.out-file->files-conversion-1.in-file
         get-file-list-1.out-url->CASAVAFilter-1.in-file
-        rmdup-bam.out-file->Sort-bam.in-file
-        QualityTrim.out-file->multiplexer.input-data-1
+        get-file-list.out-url->CASAVAFilter.in-file
+        filter-bam.out-file->Sort-bam-1.in-file
         merge-bam.out-file->filter-bam.in-file
-        multiplexer.output-data->bwamem-id.in-data
         Sort-bam-1.out-file->rmdup-bam.in-file
+        CASAVAFilter.out-file->QualityTrim.in-file
+        rmdup-bam.out-file->Sort-bam.in-file
+        QualityTrim.out-file->bwamem-id.in-data
+        bwamem-id.out-data->files-conversion.in-file
+        files-conversion.out-file->merge-bam.in-file
+        CASAVAFilter-1.out-file->QualityTrim-1.in-file
+        QualityTrim-1.out-file->bwamem-id.in-data-paired
     }
 
     get-file-list.url->CASAVAFilter.in-file.url
     CASAVAFilter.url->QualityTrim.in-file.url
-    QualityTrim-1.url->bwamem-id.in-data.readspairedurl
     QualityTrim.url->bwamem-id.in-data.readsurl
+    QualityTrim-1.url->bwamem-id.in-data-paired.readspairedurl
     bwamem-id.assembly-out->files-conversion.in-file.url
     files-conversion.url->merge-bam.in-file.url
     merge-bam.url->filter-bam.in-file.url
     Sort-bam-1.url->rmdup-bam.in-file.url
-    Sort-bam.url->files-conversion-1.in-file.url
     rmdup-bam.url->Sort-bam.in-file.url
+    filter-bam.url->Sort-bam-1.in-file.url
     get-file-list-1.url->CASAVAFilter-1.in-file.url
     CASAVAFilter-1.url->QualityTrim-1.in-file.url
-    filter-bam.url->Sort-bam-1.in-file.url
 
     .meta {
         parameter-aliases {
@@ -130,48 +120,45 @@ workflow dna_paired{
             bwamem-id.threads {
                 alias:bwa_t;
             }
-            get-file-list-1.url-in {
-                alias:in_mate;
-            }
         }
         visual {
             CASAVAFilter {
-                pos:"-885 -600";
+                pos:"-635 -533";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             CASAVAFilter-1 {
-                pos:"-884 -377";
+                pos:"-633 -361";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             QualityTrim {
-                pos:"-621 -601";
+                pos:"-371 -534";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             QualityTrim-1 {
-                pos:"-618 -380";
+                pos:"-369 -362";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             Sort-bam {
-                pos:"1070 -308";
+                pos:"1566 -535";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-file.angle:180;
                 out-file.angle:360;
             }
             Sort-bam-1 {
-                pos:"786 -335";
+                pos:"978 -531";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-file.angle:180;
@@ -182,17 +169,11 @@ workflow dna_paired{
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-data.angle:180;
+                in-data-paired.angle:210;
                 out-data.angle:360;
             }
             files-conversion {
                 pos:"137 -533";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-file.angle:180;
-                out-file.angle:360;
-            }
-            files-conversion-1 {
-                pos:"1197 -534";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-file.angle:180;
@@ -206,34 +187,26 @@ workflow dna_paired{
                 out-file.angle:360;
             }
             get-file-list {
-                pos:"-1084 -601";
+                pos:"-835 -534";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-url.angle:360;
             }
             get-file-list-1 {
-                pos:"-1094 -380";
+                pos:"-833 -362";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 out-url.angle:360;
             }
             merge-bam {
-                pos:"401 -534";
+                pos:"381 -535";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-file.angle:180;
                 out-file.angle:360;
             }
-            multiplexer {
-                pos:"-423 -458";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                input-data-1.angle:150;
-                input-data-2.angle:210;
-                output-data.angle:360;
-            }
             rmdup-bam {
-                pos:"907 -533";
+                pos:"1252 -534";
                 style:ext;
                 bg-color-ext:"0 128 128 64";
                 in-file.angle:180;
@@ -245,16 +218,13 @@ workflow dna_paired{
             CASAVAFilter.out-file->QualityTrim.in-file {
                 text-pos:"-35.75 -24";
             }
-            QualityTrim-1.out-file->multiplexer.input-data-2 {
+            QualityTrim-1.out-file->bwamem-id.in-data-paired {
                 text-pos:"-35.75 -24";
             }
-            QualityTrim.out-file->multiplexer.input-data-1 {
+            QualityTrim.out-file->bwamem-id.in-data {
                 text-pos:"-35.75 -24";
             }
             Sort-bam-1.out-file->rmdup-bam.in-file {
-                text-pos:"-45 -37";
-            }
-            Sort-bam.out-file->files-conversion-1.in-file {
                 text-pos:"-45 -37";
             }
             bwamem-id.out-data->files-conversion.in-file {
@@ -275,9 +245,6 @@ workflow dna_paired{
             merge-bam.out-file->filter-bam.in-file {
                 text-pos:"-45 -37";
             }
-            multiplexer.output-data->bwamem-id.in-data {
-                text-pos:"-45 -50";
-            }
             rmdup-bam.out-file->Sort-bam.in-file {
                 text-pos:"-45 -37";
             }
@@ -285,7 +252,7 @@ workflow dna_paired{
         wizard {
             name:"Raw DNA-seq Processing Wizard";
             page {
-                id:1;       
+                id:1;
                 next:2;
                 title:"Input data";
                 parameters-area {
@@ -293,10 +260,10 @@ workflow dna_paired{
                         title:"Short Reads";
                         label-size:120;
                         get-file-list.url-in {
-                            label:"FASTQ Files 1";
+                            label:"FASTQ Files";
                         }
                         get-file-list-1.url-in {
-                            label:"FASTQ Files 2";
+                            label:"FASTQ Files with Pairs";
                         }
                     }
                 }
@@ -304,22 +271,22 @@ workflow dna_paired{
             page {
                 id:2;
                 next:3;
-                title:"Pre-processing";
+                title:Pre-processing;
                 parameters-area {
                     group {
-                        title:"Filtration 1";
+                        title:Filtration;
                         label-size:120;
                         QualityTrim.qual-id {
+	      label:"Base quality";
                         }
                         QualityTrim.len-id {
+	      label:"Reads length";
                         }
-                    }
-                    group {
-                        title:"Filtration 2";
-                        label-size:120;
                         QualityTrim-1.qual-id {
+	      label:"Base quality for pairs";
                         }
                         QualityTrim-1.len-id {
+	      label:"Reads length for pairs";
                         }
                     }
                 }
@@ -327,7 +294,7 @@ workflow dna_paired{
             page {
                 id:3;
                 next:4;
-                title:"Mapping";
+                title:Mapping;
                 parameters-area {
                     group {
                         title:"BWA-MEM Mapping";
@@ -379,10 +346,10 @@ workflow dna_paired{
             page {
                 id:4;
                 next:5;
-                title:"Post-processing";
+                title:Post-processing;
                 parameters-area {
                     group {
-                        title:"Filtration";
+                        title:Filtration;
                         label-size:120;
                         filter-bam.mapq {
                         }
@@ -412,7 +379,7 @@ workflow dna_paired{
                         }
                     }
                     group {
-                        title:"Filtered FASTQ 1";
+                        title:"Filtered FASTQ";
                         label-size:130;
                         type:hideable;
                         CASAVAFilter.out-mode {
@@ -420,16 +387,6 @@ workflow dna_paired{
                         CASAVAFilter.custom-dir {
                         }
                     }
-                    group {
-                        title:"Filtered FASTQ 2";
-                        label-size:130;
-                        type:hideable;
-                        CASAVAFilter-1.out-mode {
-                        }
-                        CASAVAFilter-1.custom-dir {
-                        }
-                    }
-
                 }
             }
         }

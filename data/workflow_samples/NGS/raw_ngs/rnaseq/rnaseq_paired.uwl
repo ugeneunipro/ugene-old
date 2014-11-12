@@ -1,8 +1,9 @@
 #@UGENE_WORKFLOW
+#Processing of Illumina raw RNA-Seq NGS data. Reads are filtered to reduce alignment time and aligned with TopHat. The result of the processing is TopHat output. If there is a number of input FASTQ files they are merged in single FASTQ file (one for each paired tag) before TopHat alignment
 
 
 
-workflow rnaseq_paired{
+workflow RNA-Seq{
 
     CASAVAFilter {
         type:CASAVAFilter;

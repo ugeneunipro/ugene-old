@@ -1,6 +1,7 @@
 #@UGENE_WORKFLOW
+#Processing of Illumina raw DNA-Seq NGS data. Reads are filtered to reduce alignment time, aligned with BWA-MEM, filtered with SAMTools, sorted and indexed. If a number of input FASTQ files is given - they are merged after the alignment in one BAM file. The result of the processing is filtered, sorted and indexed BAM file
 
-workflow dna_single{
+workflow DNA-Seq{
     CASAVAFilter {
         type:CASAVAFilter;
         name:"CASAVA FASTQ Filter";

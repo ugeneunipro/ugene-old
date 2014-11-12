@@ -1,8 +1,9 @@
 #@UGENE_WORKFLOW
+#Processing of Illumina raw ChIP-Seq NGS data. Reads are filtered to reduce alignment time, aligned with BWA-MEM, filtered with SAMTools, sorted and indexed. If a number of input FASTQ files is given - they are merged after the alignment in one BAM file. The result of the processing is a BED file with aligned and filtered tags. To call peaks, use the resulting file and Cistrome ChIP-Seq analysis in UGENE. To see coverage use the ChIP-Seq coverage sample
 
 
 
-workflow hg19_base{
+workflow ChIP-Seq{
 
     CASAVAFilter {
         type:CASAVAFilter;
