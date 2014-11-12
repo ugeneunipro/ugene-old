@@ -853,52 +853,60 @@ GUI_TEST_CLASS_DEFINITION(test_1165){
 GUI_TEST_CLASS_DEFINITION(test_1189){
 //1) Open samples/FASTA/human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
 //2) Press Ctrl+F
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
+
 //3) Select any region of the sequence
-    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os,100,200));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<<"Select"<< "Sequence region"));
-    GTMenu::showContextMenu(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 100, 200));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+
 //4) Select "Selected region" in "Region" combobox of "Search in" area.
     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
-    QComboBox *regBox =(QComboBox*)GTWidget::findWidget(os, "boxRegion");
-    GTComboBox::setCurrentIndex(os,regBox,2);
-//5) Ensure that two lineedits became visible and contain correct region
-    QLineEdit *start = (QLineEdit*)GTWidget::findWidget(os,"editStart");
-    CHECK_SET_ERR(start->isVisible(), "editStart line is not visiable");
-    CHECK_SET_ERR(start->text()=="100","Wrong startValue. Current value is: "+start->text());
+    QComboBox *regBox = (QComboBox *)GTWidget::findWidget(os, "boxRegion");
+    GTComboBox::setCurrentIndex(os, regBox, 2);
 
-    QLineEdit *end = (QLineEdit*)GTWidget::findWidget(os,"editEnd");
+//5) Ensure that two lineedits became visible and contain correct region
+    QLineEdit *start = (QLineEdit *)GTWidget::findWidget(os, "editStart");
+    CHECK_SET_ERR(start->isVisible(), "editStart line is not visiable");
+    CHECK_SET_ERR(start->text() == "100", "Wrong startValue. Current value is: " + start->text());
+
+    QLineEdit *end = (QLineEdit *)GTWidget::findWidget(os, "editEnd");
     CHECK_SET_ERR(end->isVisible(), "editEnd line is not visiable");
-    CHECK_SET_ERR(end->text()=="200","Wrong endValue. Current value is: "+end->text());
+    CHECK_SET_ERR(end->text() == "200", "Wrong endValue. Current value is: " + end->text());
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1189_1){
 //1) Open samples/FASTA/human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
 //2) Press Ctrl+F
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
+
 //3) Select any region of the sequence
-    GTWidget::click(os, GTWidget::findWidget(os,"ADV_single_sequence_widget_0"));
+    GTWidget::click(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
     QPoint p;
     p=GTMouseDriver::getMousePosition();
-    p.setX(p.x()-100);
-    GTMouseDriver::moveTo(os,p);
+    p.setX(p.x() - 100);
+    GTMouseDriver::moveTo(os, p);
     GTMouseDriver::press(os);
-    p.setX(p.x()+200);
-    GTMouseDriver::moveTo(os,p);
+    p.setX(p.x() + 200);
+    GTMouseDriver::moveTo(os, p);
     GTMouseDriver::release(os);
+
 //4) Select "Selected region" in "Region" combobox of "Search in" area.
     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
-    QComboBox *regBox =(QComboBox*)GTWidget::findWidget(os, "boxRegion");
-    GTComboBox::setCurrentIndex(os,regBox,2);
+    QComboBox *regBox =(QComboBox *)GTWidget::findWidget(os, "boxRegion");
+    GTComboBox::setCurrentIndex(os, regBox, 2);
+
 //5) Ensure that two lineedits became visible and contain correct region
-    QLineEdit *start = (QLineEdit*)GTWidget::findWidget(os,"editStart");
+    QLineEdit *start = (QLineEdit *)GTWidget::findWidget(os, "editStart");
     CHECK_SET_ERR(start->isVisible(), "editStart line is not visiable");
 
-    QLineEdit *end = (QLineEdit*)GTWidget::findWidget(os,"editEnd");
+    QLineEdit *end = (QLineEdit *)GTWidget::findWidget(os,"editEnd");
     CHECK_SET_ERR(end->isVisible(), "editEnd line is not visiable");
 }
 
@@ -1035,16 +1043,18 @@ GUI_TEST_CLASS_DEFINITION(test_1252_1){
 
 GUI_TEST_CLASS_DEFINITION(test_1255){
 //1. Open human_T1.fa sequence
-    GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
 //2. Open Find Pattern on the Option Panel. Enter a vaild pattern
     GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(200);
     GTKeyboardDriver::keySequence(os, "TA");
+
 //3. Input invalid annotation name (empty, too long, illegal)
     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Annotation parameters"));
     GTWidget::click(os, GTWidget::findWidget(os, "titleWidget"));
-    for (int i=0; i<15; i++){
-        GTKeyboardDriver::keyClick(os,GTKeyboardDriver::key["down"]);
+    for (int i = 0; i < 15; i++) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
         GTGlobals::sleep(50);
     }
 
@@ -4670,84 +4680,70 @@ GUI_TEST_CLASS_DEFINITION( test_2565 ) {
 
 }
 
-GUI_TEST_CLASS_DEFINITION( test_2566 ) {
+GUI_TEST_CLASS_DEFINITION(test_2566) {
 //1. Open "samples/Genbank/murine.gb".
     GTLogTracer l;
-    GTFileDialog::openFile( os, dataDir + "samples/Genbank/", "murine.gb" );
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
 
 //2. Press Ctrl+F.
-    GTKeyboardDriver::keyClick( os, 'f', GTKeyboardDriver::key["ctrl"] );
-    GTGlobals::sleep( );
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
 
 //3. Enter the pattern: GCTAGCTTAAGTAACGCCAC
-    QWidget *patternInputLine = QApplication::focusWidget( );
-    CHECK_SET_ERR( NULL != patternInputLine && patternInputLine->objectName( ) == "textPattern",
-        "Focus is not on FindPattern widget" );
+    QWidget *patternInputLine = QApplication::focusWidget();
+    CHECK_SET_ERR(NULL != patternInputLine && patternInputLine->objectName() == "textPattern", "Focus is not on FindPattern widget");
 
-    GTKeyboardDriver::keySequence( os, "GCTAGCTTAAGTAACGCCAC" );
-    GTGlobals::sleep( 1000 );
+    GTKeyboardDriver::keySequence(os, "GCTAGCTTAAGTAACGCCAC");
+    GTGlobals::sleep(1000);
 
 //4. Choose the algorithm: Substitute.
-     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search algorithm"));
-     QComboBox *algoBox = static_cast<QComboBox *>( GTWidget::findWidget( os, "boxAlgorithm" ) );
-     CHECK_SET_ERR( NULL != algoBox, "Algorithm combobox not found!" );
-
-     GTComboBox::setIndexWithText( os, algoBox, "Substitute" );
+    GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Substitute");
 
 //5. Enter the "Should match" value: 97%
-     QSpinBox *matchingBox = static_cast<QSpinBox *>( GTWidget::findWidget( os, "spinBoxMatch" ) );
-     CHECK_SET_ERR( NULL != matchingBox, "Algorithm match spinbox not found!" );
-
-     GTSpinBox::setValue( os, matchingBox, 97, GTGlobals::UseKeyBoard );
+    GTUtilsOptionPanelSequenceView::setMatchPercentage(os, 97);
 
 //6. Click "Search".
-     GTGlobals::sleep(500);
-     GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
-     GTGlobals::sleep(500);
+    // There is no "Search buttons since UGENE-3483 was done, the task is already launched
+    GTGlobals::sleep(500);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //Expected: 97% is entered.
-     CHECK_SET_ERR(97 == matchingBox->value(), "Entered and actual values don't match");
+    const int matchPercentage = GTUtilsOptionPanelSequenceView::getMatchPercentage(os);
+     CHECK_SET_ERR(97 == matchPercentage, "Entered and actual values don't match");
 
 //Expected state: the task finished successfully.
-    CHECK_SET_ERR( !l.hasError( ), "Unexpected error in log!: " + l.getError() );
+     CHECK_SET_ERR(!l.hasError(), "Unexpected error in log!: " + l.getError());
 }
-GUI_TEST_CLASS_DEFINITION( test_2567 ) {
 
+GUI_TEST_CLASS_DEFINITION( test_2567 ) {
     //1. Open "samples/Genbank/murine.gb".
     GTLogTracer l;
-    GTFileDialog::openFile( os, dataDir + "samples/Genbank/", "murine.gb" );
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank/", "murine.gb");
 
     //2. Press Ctrl+F.
-    GTKeyboardDriver::keyClick( os, 'f', GTKeyboardDriver::key["ctrl"] );
-    GTGlobals::sleep( );
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
 
     //3. Enter the pattern: GCTAGCTTAAGTAACGCCAC
-    QWidget *patternInputLine = QApplication::focusWidget( );
-    CHECK_SET_ERR( NULL != patternInputLine && patternInputLine->objectName( ) == "textPattern",
-        "Focus is not on FindPattern widget" );
+    QWidget *patternInputLine = QApplication::focusWidget();
+    CHECK_SET_ERR(NULL != patternInputLine && patternInputLine->objectName() == "textPattern", "Focus is not on FindPattern widget");
 
-    GTKeyboardDriver::keySequence( os, "GCTAGCTTAAGTAACGCCAC" );
-    GTGlobals::sleep( 1000 );
+    GTKeyboardDriver::keySequence(os, "GCTAGCTTAAGTAACGCCAC");
+    GTGlobals::sleep(1000);
 
     //4. Choose the algorithm: Substitute.
-    QComboBox *algoBox = static_cast<QComboBox *>( GTWidget::findWidget( os, "boxAlgorithm" ) );
-    CHECK_SET_ERR( NULL != algoBox, "Algorithm combobox not found!" );
-
-    GTComboBox::setIndexWithText( os, algoBox, "Substitute" );
+    GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Substitute");
 
     //5. Enter the "Should match" value: 30%
-    QSpinBox *matchingBox = static_cast<QSpinBox *>( GTWidget::findWidget( os, "spinBoxMatch" ) );
-    CHECK_SET_ERR( NULL != matchingBox, "Algorithm match spinbox not found!" );
-
-    GTSpinBox::setValue( os, matchingBox, 30, GTGlobals::UseKeyBoard );
+    GTUtilsOptionPanelSequenceView::setMatchPercentage(os, 30);
 
     //6. Click "Search".
+    // There is no "Search buttons since UGENE-3483 was done, the task is already launched
     GTGlobals::sleep(500);
-    GTWidget::click(os, GTWidget::findWidget(os, "getAnnotationsPushButton"));
-    GTGlobals::sleep(500);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     //Expected state: the task finished successfully.
-    CHECK_SET_ERR( !l.hasError( ), "Unexpected error in log!: " + l.getError() );
+    CHECK_SET_ERR(!l.hasError(), "Unexpected error in log!: " + l.getError());
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2577 ) {

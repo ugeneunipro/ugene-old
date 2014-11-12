@@ -262,6 +262,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
     QWidget* saveAnnotsWgt = new QWidget(w);
     saveAnnotsWgt->setToolTip(tr("Chose a file to store the annotations"));
     saveAnnotsWgt->setContentsMargins(0, 0, 0, 0);
+    saveAnnotsWgt->setObjectName("saveAnnotationsToWidget");
 
     QGridLayout* gridLayout = new QGridLayout(saveAnnotsWgt);
     gridLayout->setContentsMargins(0, 0, 0, 0);
@@ -334,6 +335,7 @@ void CreateAnnotationWidgetController::initLayout(AnnotationWidgetMode layoutMod
 
     // Annotation parameters group
     QWidget *annotParams = new QWidget(w);
+    annotParams->setObjectName("annotationParametersWidget");
     annotParamsWidget = new ShowHideSubgroupWidget("annotparams", "Annotation parameters", annotParams, isOpenedSubgroup);
 
     QGridLayout* gridLayoutParams = new QGridLayout(annotParams);

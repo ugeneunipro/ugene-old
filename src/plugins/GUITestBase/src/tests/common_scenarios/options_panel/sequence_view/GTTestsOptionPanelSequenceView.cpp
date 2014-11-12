@@ -131,6 +131,21 @@ GUI_TEST_CLASS_DEFINITION(test_0005){
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/1649"), "Results string not match");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_0006) {
+//    1. Open "data/samples/FASTA/human_T1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+//    2. Open "Search In Sequence" options panel tab.
+//    Expected state: all show/hide widgetsare collapsed.
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+
+    CHECK_SET_ERR(!GTUtilsOptionPanelSequenceView::isSearchAlgorithmShowHideWidgetOpened(os), "'Search algorithm' subwidget is unexpectedly opened");
+    CHECK_SET_ERR(!GTUtilsOptionPanelSequenceView::isSearchInShowHideWidgetOpened(os), "'Search in' subwidget is unexpectedly opened");
+    CHECK_SET_ERR(!GTUtilsOptionPanelSequenceView::isOtherSettingsShowHideWidgetOpened(os), "'Other settings' subwidget is unexpectedly opened");
+    CHECK_SET_ERR(!GTUtilsOptionPanelSequenceView::isSaveAnnotationToShowHideWidgetOpened(os), "'Save annotations to' subwidget is unexpectedly opened");
+    CHECK_SET_ERR(!GTUtilsOptionPanelSequenceView::isAnnotationParametersShowHideWidgetOpened(os), "'Annotation parameters' subwidget is unexpectedly opened");
+}
+
 }
 
 }

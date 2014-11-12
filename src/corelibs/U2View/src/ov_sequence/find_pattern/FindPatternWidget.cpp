@@ -392,6 +392,7 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
         setContentsMargins(0, 0, 0, 0);
 
         annotsWidget = annotController->getWidget();
+        annotsWidget->setObjectName("annotationsWidget");
         usePatternNamesCheckBox = annotController->getUsePatternNameCheckBox();
         annotController->setUsePatternNameCheckBoxVisible();
 

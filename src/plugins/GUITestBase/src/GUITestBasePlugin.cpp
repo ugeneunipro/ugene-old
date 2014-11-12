@@ -168,15 +168,15 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1165);
 
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1189, "UGENE-3691");
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1189_1, "UGENE-3691");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1189);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1189_1);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1190);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1212);
     REGISTER_TEST(GUITest_regression_scenarios::test_1212_1);
 
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1255, "UGENE-3691");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1255);
 
     REGISTER_TEST(GUITest_regression_scenarios::test_1475);
 
@@ -309,8 +309,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2542);
     REGISTER_TEST(GUITest_regression_scenarios::test_2543);
     REGISTER_TEST(GUITest_regression_scenarios::test_2565);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2566, "UGENE-3691");
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2567, "UGENE-3691");
+    REGISTER_TEST(GUITest_regression_scenarios::test_2566);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2567);
     REGISTER_TEST(GUITest_regression_scenarios::test_2577);
     REGISTER_TEST(GUITest_regression_scenarios::test_2578);
     REGISTER_TEST(GUITest_regression_scenarios::test_2605);
@@ -544,12 +544,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002_1);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0002_2);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_view::test_0003, "UGENE-3691");
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0003_1);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0003_2);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0004_1);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_sequence_view::test_0005, "UGENE-3691");
+    REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0006);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0006_1);
     REGISTER_TEST(GUITest_common_scenarios_sequence_view::test_0006_2);
@@ -1505,6 +1505,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0005);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0006);
 
 /////////////////////////////////////////////////////////////////////////
 // common_scenarios/workflow_designer/shared_db

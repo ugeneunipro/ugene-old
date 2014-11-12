@@ -44,7 +44,7 @@ public:
     enum AddRefMethod{Button, Completer};
 
     static const QMap<Tabs,QString> tabsNames;
-    //Openes option panel tab. TODO: check if tab is already opened
+    //Opens option panel tab. TODO: check if tab is already opened
     static void openTab(U2OpStatus &os, Tabs tab);
 
     static void enterPattern(U2OpStatus &os, QString pattern);
@@ -56,6 +56,7 @@ public:
 
     static void setAlgorithm(U2OpStatus &os, QString algorithm);
     
+    static int getMatchPercentage(U2OpStatus &os);
     static void setMatchPercentage(U2OpStatus &os, int percentage);
 
     static void enterFilepathForSavingAnnotations(U2OpStatus &os, QString filepath);
@@ -69,6 +70,18 @@ public:
     static void clickGetAnnotation(U2OpStatus &os);
     static bool isPrevNextEnabled(U2OpStatus &os);
     static bool isGetAnnotationsEnabled(U2OpStatus &os);
+
+    static bool isSearchAlgorithmShowHideWidgetOpened(U2OpStatus &os);
+    static bool isSearchInShowHideWidgetOpened(U2OpStatus &os);
+    static bool isOtherSettingsShowHideWidgetOpened(U2OpStatus &os);
+    static bool isSaveAnnotationToShowHideWidgetOpened(U2OpStatus &os);
+    static bool isAnnotationParametersShowHideWidgetOpened(U2OpStatus &os);
+
+    static void openSearchAlgorithmShowHideWidget(U2OpStatus &os, bool open = true);
+    static void openSearchInShowHideWidget(U2OpStatus &os, bool open = true);
+    static void openOtherSettingsShowHideWidget(U2OpStatus &os, bool open = true);
+    static void openSaveAnnotationToShowHideWidget(U2OpStatus &os, bool open = true);
+    static void openAnnotationParametersShowHideWidget(U2OpStatus &os, bool open = true);
     
 private:
     static QMap<Tabs,QString> initNames();

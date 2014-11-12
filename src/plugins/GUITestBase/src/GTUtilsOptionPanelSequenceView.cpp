@@ -128,12 +128,89 @@ bool GTUtilsOptionPanelSequenceView::isPrevNextEnabled(U2OpStatus &os){
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "isGetAnnotationsEnabled"
-
 bool GTUtilsOptionPanelSequenceView::isGetAnnotationsEnabled(U2OpStatus &os){
     QPushButton *getAnnotations = qobject_cast<QPushButton*>(GTWidget::findWidget(os, "getAnnotationsPushButton"));
     return getAnnotations->isEnabled();
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "isSearchAlgorithmShowHideWidgetOpened"
+bool GTUtilsOptionPanelSequenceView::isSearchAlgorithmShowHideWidgetOpened(U2OpStatus &os) {
+    QWidget *algorithmInnerWidget = GTWidget::findWidget(os, "widgetAlgorithm");
+    GT_CHECK_RESULT(NULL != algorithmInnerWidget, "algorithmInnerWidget is NULL", false);
+    return algorithmInnerWidget->isVisible();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isSearchInShowHideWidgetOpened"
+bool GTUtilsOptionPanelSequenceView::isSearchInShowHideWidgetOpened(U2OpStatus &os) {
+    QWidget *searchInInnerWidget = GTWidget::findWidget(os, "widgetSearchIn");
+    GT_CHECK_RESULT(NULL != searchInInnerWidget, "searchInInnerWidget is NULL", false);
+    return searchInInnerWidget->isVisible();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isOtherSettingsShowHideWidgetOpened"
+bool GTUtilsOptionPanelSequenceView::isOtherSettingsShowHideWidgetOpened(U2OpStatus &os) {
+    QWidget *otherSettingsInnerWidget = GTWidget::findWidget(os, "widgetOther");
+    GT_CHECK_RESULT(NULL != otherSettingsInnerWidget, "otherSettingsInnerWidget is NULL", false);
+    return otherSettingsInnerWidget->isVisible();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isSaveAnnotationToShowHideWidgetOpened"
+bool GTUtilsOptionPanelSequenceView::isSaveAnnotationToShowHideWidgetOpened(U2OpStatus &os) {
+    QWidget *annotationsWidget = GTWidget::findWidget(os, "annotationsWidget");
+    GT_CHECK_RESULT(NULL != annotationsWidget, "annotationsWidget is NULL", false);
+    QWidget *saveAnnotationsToInnerWidget = GTWidget::findWidget(os, "saveAnnotationsToWidget", annotationsWidget);
+    GT_CHECK_RESULT(NULL != saveAnnotationsToInnerWidget, "saveAnnotationsToInnerWidget is NULL", false);
+    return saveAnnotationsToInnerWidget->isVisible();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "isAnnotationParametersShowHideWidgetOpened"
+bool GTUtilsOptionPanelSequenceView::isAnnotationParametersShowHideWidgetOpened(U2OpStatus &os) {
+    QWidget *annotationsWidget = GTWidget::findWidget(os, "annotationsWidget");
+    GT_CHECK_RESULT(NULL != annotationsWidget, "annotationsWidget is NULL", false);
+    QWidget *annotationsParametersInnerWidget = GTWidget::findWidget(os, "annotationParametersWidget", annotationsWidget);
+    GT_CHECK_RESULT(NULL != annotationsParametersInnerWidget, "annotationsParametersInnerWidget is NULL", false);
+    return annotationsParametersInnerWidget->isVisible();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "openSearchAlgorithmShowHideWidget"
+void GTUtilsOptionPanelSequenceView::openSearchAlgorithmShowHideWidget(U2OpStatus &os, bool open) {
+    CHECK(open != isSearchAlgorithmShowHideWidgetOpened(os), );
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search algorithm"));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "openSearchInShowHideWidget"
+void GTUtilsOptionPanelSequenceView::openSearchInShowHideWidget(U2OpStatus &os, bool open) {
+    CHECK(open != isSearchInShowHideWidgetOpened(os), );
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "openOtherSettingsShowHideWidget"
+void GTUtilsOptionPanelSequenceView::openOtherSettingsShowHideWidget(U2OpStatus &os, bool open) {
+    CHECK(open != isOtherSettingsShowHideWidgetOpened(os), );
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Other settings"));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "openSaveAnnotationToShowHideWidget"
+void GTUtilsOptionPanelSequenceView::openSaveAnnotationToShowHideWidget(U2OpStatus &os, bool open) {
+    CHECK(open != isSaveAnnotationToShowHideWidgetOpened(os), );
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Save annotation(s) to"));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "openAnnotationParametersShowHideWidget"
+void GTUtilsOptionPanelSequenceView::openAnnotationParametersShowHideWidget(U2OpStatus &os, bool open) {
+    CHECK(open != isAnnotationParametersShowHideWidgetOpened(os), );
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Annotation parameters"));
+}
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "toggleInputFromFilePattern"
@@ -206,6 +283,14 @@ void GTUtilsOptionPanelSequenceView::setAlgorithm( U2OpStatus &os, QString algor
     }
     GTComboBox::setIndexWithText(os, algoBox, algorithm);
     GTGlobals::sleep(2500);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getMatchPercentage"
+int GTUtilsOptionPanelSequenceView::getMatchPercentage(U2OpStatus &os) {
+    QSpinBox *spinMatchBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "spinBoxMatch"));
+    GT_CHECK_RESULT(NULL != spinMatchBox, "Match percentage spinbox is NULL", -1);
+    return spinMatchBox->value();
 }
 #undef GT_METHOD_NAME
 
