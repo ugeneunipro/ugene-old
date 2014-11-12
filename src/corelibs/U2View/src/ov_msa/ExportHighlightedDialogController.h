@@ -45,6 +45,7 @@ public:
 
 private slots:
     void sl_fileButtonClicked();
+    void endPosValueChanged();
 private:
     MSAEditorUI *msaui;
 };

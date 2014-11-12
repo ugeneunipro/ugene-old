@@ -51,6 +51,7 @@ ExportHighligtningDialogController::ExportHighligtningDialogController(MSAEditor
     fileNameEdit->setText(QDir::toNativeSeparators(AppContext::getAppSettings()->getUserAppsSettings()->getDefaultDataDirPath() + "/" + msaui->getEditor()->getMSAObject()->getGObjectName() + "_highlighting.txt"));
 
     connect(fileButton, SIGNAL(clicked()), SLOT(sl_fileButtonClicked()));
+    connect(endPosBox, SIGNAL(valueChanged(int)), SLOT(endPosValueChanged()));
 
     int alignLength = msaui->getEditor()->getMSAObject()->getLength();
     QRect selection = msaui->getSequenceArea()->getSelection().getRect();
@@ -65,8 +66,11 @@ ExportHighligtningDialogController::ExportHighligtningDialogController(MSAEditor
         endPos = selection.x() + selection.width();
     }
 
-    startPosBox->setMaximum(alignLength);
+    startPosBox->setMaximum(endPos);
     endPosBox->setMaximum(alignLength);
+    
+    startPosBox->setMinimum(1);
+    endPosBox->setMinimum(2);
 
     startPosBox->setValue(startPos);
     endPosBox->setValue(endPos);
@@ -98,6 +102,10 @@ void ExportHighligtningDialogController::sl_fileButtonClicked(){
 void ExportHighligtningDialogController::lockKeepGaps(){
     keepGapsBox->setChecked(true);
     keepGapsBox->setDisabled(true);
+}
+
+void ExportHighligtningDialogController::endPosValueChanged(){
+    startPosBox->setMaximum(endPosBox->value() - 1);
 }
 
 }
