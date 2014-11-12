@@ -56,6 +56,7 @@
 #include "GTUtilsNotifications.h"
 #include "GTUtilsOptionPanelMSA.h"
 #include "GTUtilsOptionsPanel.h"
+#include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsPhyTree.h"
 #include "GTUtilsProject.h"
 #include "GTUtilsProjectTreeView.h"
@@ -5147,6 +5148,43 @@ GUI_TEST_CLASS_DEFINITION(test_2730) {
     GTMouseDriver::click( os );
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
     GTGlobals::sleep(500);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2737) {
+    //1. Open any sequence without annotations (e.g. "_common_data/fasta/AMINO.fa")
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "AMINO.fa");
+
+    //2. Add few annotations with different names.
+    GTUtilsAnnotationsTreeView::createAnnotation(os, "group", "name1", "1..10");
+    GTUtilsAnnotationsTreeView::createAnnotation(os, "group", "name2", "11..20", false);
+    GTUtilsAnnotationsTreeView::createAnnotation(os, "group", "name3", "21..30", false);
+
+    //3. Open Annotation Highlighting tab.
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::AnnotationsHighlighting);
+
+    //4. Delete all annotations one by one.
+    GTUtilsAnnotationsTreeView::deleteItem(os, "name1");
+    GTUtilsAnnotationsTreeView::deleteItem(os, "name2");
+    GTUtilsAnnotationsTreeView::deleteItem(os, "name3");
+
+    //Expected state: there is no annotations is annotation tree.
+    QWidget *annotationsTree = GTWidget::findWidget(os, "OP_ANNOT_HIGHLIGHT_TREE");
+    CHECK_SET_ERR(!annotationsTree->isVisible(), "Annotations tree is shown");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2737_1) {
+    GTLogTracer l;
+    //1. Open "murine.gb";
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    //2. Delete all annotations in random order;
+    QTreeWidgetItem *annotation = NULL;
+    while (NULL != (annotation = GTUtilsAnnotationsTreeView::findFirstAnnotation(os, GTGlobals::FindOptions(false)))) {
+        GTUtilsAnnotationsTreeView::deleteItem(os, annotation);
+    }
+
+    //Expected state: no errors in the log
+    CHECK_SET_ERR(!l.hasError(), "Errors in log");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2778) {

@@ -38,6 +38,7 @@
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
 #include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
 
 namespace U2 {
@@ -103,8 +104,27 @@ QString GTUtilsAnnotationsTreeView::getQualifierValue(U2OpStatus &os, const QStr
 }
 #undef GT_METHOD_NAME
 
+
+#define GT_METHOD_NAME "findFirstAnnotation"
+QTreeWidgetItem * GTUtilsAnnotationsTreeView::findFirstAnnotation(U2OpStatus &os, const GTGlobals::FindOptions &options) {
+    QTreeWidget *treeWidget = getTreeWidget(os);
+    GT_CHECK_RESULT(treeWidget != NULL, "Tree widget is NULL", NULL);
+
+    QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(treeWidget->invisibleRootItem());
+    foreach (QTreeWidgetItem *item, treeItems) {
+        AVItem *avItem = dynamic_cast<AVItem*>(item);
+        GT_CHECK_RESULT(NULL != avItem, "Cannot convert QTreeWidgetItem to AVItem", NULL);
+        if (AVItemType_Annotation == avItem->type) {
+            return item;
+        }
+    }
+    GT_CHECK_RESULT(options.failIfNull == false, "No items in tree widget", NULL);
+    return NULL;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "findItem"
-QTreeWidgetItem* GTUtilsAnnotationsTreeView::findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions &options) {
+QTreeWidgetItem * GTUtilsAnnotationsTreeView::findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions &options) {
 
     GT_CHECK_RESULT(itemName.isEmpty() == false, "Item name is empty", NULL);
 
@@ -257,6 +277,33 @@ void GTUtilsAnnotationsTreeView::selectItems(U2OpStatus &os, const QStringList &
     }
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "createAnnotation"
+void GTUtilsAnnotationsTreeView::createAnnotation(U2OpStatus &os, const QString &groupName, const QString &annotationName, const QString &location, bool createNewTable, const QString &saveTo) {
+    QTreeWidget *annotationsTreeView = getTreeWidget(os);
+    GT_CHECK(NULL != annotationsTreeView, "No annotation tree view");
+    GTWidget::click(os, annotationsTreeView);
+
+    GTUtilsDialog::waitForDialog(os, new CreateAnnotationWidgetFiller(os, createNewTable, groupName, annotationName, location, saveTo));
+    GTKeyboardDriver::keyClick(os, 'n', GTKeyboardDriver::key["ctrl"]);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "deleteItem"
+void GTUtilsAnnotationsTreeView::deleteItem(U2OpStatus &os, const QString &itemName) {
+    deleteItem(os, findItem(os, itemName));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "deleteItem"
+void GTUtilsAnnotationsTreeView::deleteItem(U2OpStatus &os, QTreeWidgetItem *item) {
+    GT_CHECK(item != NULL, "Item is NULL");
+    GTTreeWidget::getItemCenter(os, item);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(100);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 #undef GT_METHOD_NAME
 

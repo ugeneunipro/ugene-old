@@ -40,7 +40,8 @@ public:
     // fails if the item wasn't found
     static QPoint getItemCenter(U2OpStatus &os, const QString &itemName);
 
-    static QTreeWidgetItem* findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
+    static QTreeWidgetItem * findFirstAnnotation(U2OpStatus &os, const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
+    static QTreeWidgetItem * findItem(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
     static QList<QTreeWidgetItem*> findItems(U2OpStatus &os, const QString &itemName, const GTGlobals::FindOptions& = GTGlobals::FindOptions());
 
     static QStringList getAnnotationNamesOfGroup(U2OpStatus &os, const QString &groupName);
@@ -56,6 +57,12 @@ public:
     static void createQualifier(U2OpStatus &os, const QString &qualName, const QString &qualValue, const QString &parentName);
 
     static void selectItems(U2OpStatus &os, const QStringList& items);
+
+    // location string format: 1..51
+    static void createAnnotation(U2OpStatus &os, const QString &groupName, const QString &annotationName, const QString &location, bool createNewTable = true, const QString &saveTo = "");
+
+    static void deleteItem(U2OpStatus &os, const QString &itemName);
+    static void deleteItem(U2OpStatus &os, QTreeWidgetItem *item);
 
     static const QString widgetName;
 };
