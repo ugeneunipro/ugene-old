@@ -101,6 +101,7 @@ BAMImporter::BAMImporter() : DocumentImporter("bam-importer", tr("BAM/SAM file i
     formatIds << BaseDocumentFormats::BAM << BaseDocumentFormats::SAM;
     extensions << exts;
     importerDescription = tr("BAM files importer is used to convert conventional BAM and SAM files into UGENE database format. Having BAM or SAM file converted into UGENE DB format you get an fast and efficient interface to your data with an option to change the content");
+    supportedObjectTypes << GObjectTypes::ASSEMBLY;
 }
 
 #define SAM_HINT "bam-importer-sam-hint"

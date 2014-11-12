@@ -153,7 +153,6 @@ public:
 
 private:
     CAP3SupportTask*        cap3Task;
-    DocumentProviderTask*   loadTask;
     bool                    openView;
 };
 

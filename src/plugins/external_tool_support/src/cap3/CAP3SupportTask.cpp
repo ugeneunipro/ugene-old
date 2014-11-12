@@ -139,7 +139,6 @@ Task::ReportResult CAP3SupportTask::report() {
 RunCap3AndOpenResultTask::RunCap3AndOpenResultTask(const CAP3SupportTaskSettings &settings) :
     Task(tr("CAP3 run and open result task"), TaskFlags_NR_FOSE_COSC),
     cap3Task(new CAP3SupportTask(settings)),
-    loadTask(NULL),
     openView(settings.openView)
 {
     GCOUNTER( cvar, tvar, "RunCap3AndOpenResultTask" );
@@ -161,28 +160,14 @@ QList<Task*> RunCap3AndOpenResultTask::onSubTaskFinished(Task *subTask) {
 
     if (subTask == cap3Task) {
         GUrl url(cap3Task->getOutputFile());
-        loadTask = LoadDocumentTask::getCommonLoadDocTask(url);
-        SAFE_POINT_EXT(loadTask, setError(tr("Load document task is NULL")), subTasks);
+
+        ProjectLoader* loader = AppContext::getProjectLoader();
+        SAFE_POINT_EXT(loader, setError(tr("Project loader is NULL")), subTasks);
+        QVariantMap hints;
+        hints[ProjectLoaderHint_LoadWithoutView] = !openView;
+        Task *loadTask = loader->openWithProjectTask(url, hints);
+        SAFE_POINT_EXT(NULL != loadTask, setError(tr("Load document task is NULL")), subTasks);
         subTasks << loadTask;
-    } else if (subTask == loadTask) {
-        Document* doc = loadTask->takeDocument();
-        SAFE_POINT(doc, "Failed loading result document", subTasks);
-
-        if (doc->getObjects().size() == 0) {
-            delete doc;
-            setError(tr("No assembly is found for provided reads"));
-            return subTasks;
-        }
-
-        if (openView) {
-            if (!AppContext::getProject()) {
-                ProjectLoader* loader = AppContext::getProjectLoader();
-                SAFE_POINT_EXT(loader, setError(tr("Project loader is NULL")), subTasks);
-                subTasks << loader->createNewProjectTask();
-            }
-
-            subTasks << new AddDocumentAndOpenViewTask(doc);
-        }
     }
 
     return subTasks;

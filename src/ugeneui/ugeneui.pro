@@ -16,6 +16,7 @@ HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/plugin_viewer/PluginViewerController.h \
            src/plugin_viewer/PluginViewerImpl.h \
            src/project_support/DocumentFormatSelectorController.h \
+           src/project_support/DocumentProviderSelectorController.h \
            src/project_support/DocumentReadingModeSelectorController.h \
            src/project_support/MultipleDocumentsReadingModeSelectorController.h \
            src/project_support/ExportProjectDialogController.h \
@@ -38,23 +39,24 @@ HEADERS += src/app_settings/AppSettingsDialogController.h \
            src/welcome_page/WelcomePageController.h \
            src/welcome_page/WelcomePageMdi.h \
            src/welcome_page/WelcomePageWidget.h
-FORMS += src/app_settings/ui/AppSettingsDialog.ui \
-         src/main_window/ui/AboutDialog.ui \
-         src/plugin_viewer/ui/PluginViewerWidget.ui \
-         src/project_support/ui/CreateNewProjectWidget.ui \
-         src/project_support/ui/DocumentFormatSelectorDialog.ui \
-         src/project_support/ui/ExportProjectDialog.ui \
-         src/project_support/ui/SequenceReadingModeSelectorDialog.ui \
-         src/project_support/ui/SaveProjectDialog.ui \
-         src/project_view/ui/ProjectViewWidget.ui \
-         src/app_settings/directories_settings/ui/DirectoriesSettingsWidget.ui \
+FORMS += src/app_settings/directories_settings/ui/DirectoriesSettingsWidget.ui \
          src/app_settings/format_settings/ui/FormatSettingsWidget.ui \
          src/app_settings/logview_settings/ui/LogSettingsWidget.ui \
          src/app_settings/network_settings/ui/NetworkSettingsWidget.ui \
          src/app_settings/resource_settings/ui/ResourceSettingsWidget.ui \
+         src/app_settings/ui/AppSettingsDialog.ui \
          src/app_settings/user_apps_settings/ui/UserApplicationsSettingsWidget.ui \
-         src/project_support/ui/MultipleSequenceFilesReadingMode.ui \
+         src/main_window/ui/AboutDialog.ui \
          src/main_window/ui/TmpDirChangeDialog.ui \
+         src/plugin_viewer/ui/PluginViewerWidget.ui \
+         src/project_support/ui/CreateNewProjectWidget.ui \
+         src/project_support/ui/DocumentFormatSelectorDialog.ui \
+         src/project_support/ui/DocumentProviderSelectorDialog.ui \
+         src/project_support/ui/ExportProjectDialog.ui \
+         src/project_support/ui/MultipleSequenceFilesReadingMode.ui \
+         src/project_support/ui/SequenceReadingModeSelectorDialog.ui \
+         src/project_support/ui/SaveProjectDialog.ui \
+         src/project_view/ui/ProjectViewWidget.ui \
          src/welcome_page/ui/WelcomePageWidget.ui
 SOURCES += src/Main.cpp \
            src/app_settings/AppSettingsDialogController.cpp \
@@ -71,6 +73,7 @@ SOURCES += src/Main.cpp \
            src/plugin_viewer/PluginViewerController.cpp \
            src/plugin_viewer/PluginViewerImpl.cpp \
            src/project_support/DocumentFormatSelectorController.cpp \
+           src/project_support/DocumentProviderSelectorController.cpp \
            src/project_support/DocumentReadingModeSelectorController.cpp \
            src/project_support/MultipleDocumentsReadingModeSelectorController.cpp \
            src/project_support/ExportProjectDialogController.cpp \

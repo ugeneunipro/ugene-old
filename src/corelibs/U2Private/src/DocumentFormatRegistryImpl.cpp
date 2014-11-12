@@ -27,37 +27,38 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include <U2Formats/PlainTextFormat.h>
-#include <U2Formats/FastaFormat.h>
-#include <U2Formats/GenbankPlainTextFormat.h>
-#include <U2Formats/EMBLPlainTextFormat.h>
 #include <U2Formats/ABIFormat.h>
-#include <U2Formats/SCFFormat.h>
-#include <U2Formats/RawDNASequenceFormat.h>
-#include <U2Formats/ClustalWAlnFormat.h>
-#include <U2Formats/StockholmFormat.h>
-#include <U2Formats/NewickFormat.h>
-#include <U2Formats/PDBFormat.h>
-#include <U2Formats/FastqFormat.h>
 #include <U2Formats/ASNFormat.h>
-#include <U2Formats/MSFFormat.h>
+#include <U2Formats/AceFormat.h>
+#include <U2Formats/AceImporter.h>
 #include <U2Formats/BedFormat.h>
+#include <U2Formats/ClustalWAlnFormat.h>
+#include <U2Formats/DatabaseConnectionFormat.h>
+#include <U2Formats/DifferentialFormat.h>
+#include <U2Formats/EMBLPlainTextFormat.h>
+#include <U2Formats/FastaFormat.h>
+#include <U2Formats/FastqFormat.h>
+#include <U2Formats/FpkmTrackingFormat.h>
 #include <U2Formats/GFFFormat.h>
 #include <U2Formats/GTFFormat.h>
-#include <U2Formats/FpkmTrackingFormat.h>
-#include <U2Formats/SAMFormat.h>
-#include <U2Formats/NEXUSFormat.h>
+#include <U2Formats/GenbankPlainTextFormat.h>
+#include <U2Formats/MSFFormat.h>
 #include <U2Formats/MegaFormat.h>
 #include <U2Formats/MysqlDbi.h>
+#include <U2Formats/NEXUSFormat.h>
+#include <U2Formats/NewickFormat.h>
+#include <U2Formats/PDBFormat.h>
 #include <U2Formats/PDWFormat.h>
-#include <U2Formats/SwissProtPlainTextFormat.h>
+#include <U2Formats/PhylipFormat.h>
+#include <U2Formats/PlainTextFormat.h>
+#include <U2Formats/RawDNASequenceFormat.h>
+#include <U2Formats/SAMFormat.h>
+#include <U2Formats/SCFFormat.h>
 #include <U2Formats/SQLiteDbi.h>
 #include <U2Formats/SimpleSNPVariationFormat.h>
+#include <U2Formats/StockholmFormat.h>
+#include <U2Formats/SwissProtPlainTextFormat.h>
 #include <U2Formats/VCF4VariationFormat.h>
-#include <U2Formats/DifferentialFormat.h>
-#include <U2Formats/AceImporter.h>
-#include <U2Formats/PhylipFormat.h>
-#include <U2Formats/DatabaseConnectionFormat.h>
 
 namespace U2 {
 
@@ -189,7 +190,11 @@ void DocumentFormatRegistryImpl::init() {
     MegaFormat *meg = new MegaFormat(this);
     registerFormat(meg);
 
-    importSupport.addDocumentImporter(new AceImporter());
+    ACEFormat *aceFormat = new ACEFormat(this);
+    registerFormat(aceFormat);
+
+    AceImporter *aceImporter = new AceImporter();
+    importSupport.addDocumentImporter(aceImporter);
 
     PDWFormat *pdw = new PDWFormat(this);
     registerFormat(pdw);

@@ -54,6 +54,10 @@ void DocumentImporter::setDialogFactory(ImportDialogFactory* factory) {
     dialogFactory = factory;
 }
 
+const QSet<GObjectType> &DocumentImporter::getSupportedObjectTypes() const {
+    return supportedObjectTypes;
+}
+
 void ImportDialog::accept() {
     if (!isValid()) {
         return;

@@ -59,6 +59,7 @@
 #include <U2View/DnaAssemblyGUIExtension.h>
 
 #include "DocumentFormatSelectorController.h"
+#include "DocumentProviderSelectorController.h"
 #include "DocumentReadingModeSelectorController.h"
 #include "MultipleDocumentsReadingModeSelectorController.h"
 #include "ProjectImpl.h"
@@ -310,6 +311,87 @@ void prepareDocTab(const QList<AD2P_DocumentInfo> &docsInfo, const QList<AD2P_Pr
         AppContext::getSettings()->setValue(ProjectViewImpl::SETTINGS_ROOT + "firstShow", false);
     }
 }
+
+bool haveFormatsRelations(const FormatDetectionResult &firstFormat, const FormatDetectionResult &secondFormat) {
+    if (NULL != firstFormat.format && NULL != secondFormat.format) {
+        return false;
+    }
+    if (NULL != firstFormat.format && NULL != secondFormat.importer) {
+        return secondFormat.importer->getFormatIds().contains(firstFormat.format->getFormatId());
+    }
+    if (NULL != firstFormat.importer && NULL != secondFormat.format) {
+        return firstFormat.importer->getFormatIds().contains(secondFormat.format->getFormatId());
+    }
+    if (NULL != firstFormat.importer && NULL != secondFormat.importer) {
+        return !firstFormat.importer->getFormatIds().toSet().intersect(secondFormat.importer->getFormatIds().toSet()).isEmpty();
+    }
+    return false;
+}
+
+FormatDetectionResult getFirstUnrelatedFormat(const QList<FormatDetectionResult> &formats) {
+    CHECK(formats.size() > 1, FormatDetectionResult());
+    const FormatDetectionResult firstFormat = formats[0];
+
+    for (int i = 1; i < formats.size(); i++) {
+        if (!haveFormatsRelations(firstFormat, formats[i])) {
+            return formats[i];
+        }
+    }
+    return FormatDetectionResult();
+}
+
+bool shouldFormatBeSelected(const QList<FormatDetectionResult> &formats, bool forceSelectFormat) {
+    CHECK(formats.size() > 1, false);
+
+    const FormatDetectionResult firstFormat = formats[0];
+    const FormatDetectionResult firstUnrelatedFormat = getFirstUnrelatedFormat(formats);
+    CHECK(FormatDetection_NotMatched != firstUnrelatedFormat.score(), false);
+
+    return firstFormat.score() == firstUnrelatedFormat.score()
+            || (firstUnrelatedFormat.score() > FormatDetection_AverageSimilarity && firstFormat.score() < FormatDetection_Matched)
+            || (firstFormat.score() <= FormatDetection_AverageSimilarity)
+            || forceSelectFormat;
+}
+
+QList<FormatDetectionResult> getRelatedFormats(const QList<FormatDetectionResult> &formats, int idx) {
+    SAFE_POINT(0 <= idx && idx < formats.size(), "Format index is out of range", QList<FormatDetectionResult>());
+    QList<FormatDetectionResult> result;
+    result << formats[idx];
+    for (int i = 0; i < formats.size(); i++) {
+        if (Q_LIKELY(idx != i) && haveFormatsRelations(formats[idx], formats[i])) {
+            result << formats[i];
+        }
+    }
+    return result;
+}
+
+bool detectFormat(const GUrl &url, QList<FormatDetectionResult> &formats, const QVariantMap &hints, FormatDetectionResult &selectedResult) {
+    CHECK(!formats.isEmpty(), false);
+    int idx = 0;
+    if (shouldFormatBeSelected(formats, hints.value(ProjectLoaderHint_ForceFormatOptions, false).toBool())) {
+        idx = DocumentFormatSelectorController::selectResult(url, formats.first().rawData, formats);
+        if (idx >= 0) {
+            selectedResult = formats[idx];
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        const QList<FormatDetectionResult> relatedFormats = getRelatedFormats(formats, idx);
+        if (relatedFormats.size() > 1) {
+            int indexInRelatedList = DocumentProviderSelectorController::selectResult(url, relatedFormats);
+            if (indexInRelatedList >= 0) {
+                selectedResult = relatedFormats[indexInRelatedList];
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    selectedResult = formats[0];
+    return true;
+}
+
 }
 
 #define MAX_DOCS_TO_OPEN_VIEWS 5
@@ -411,17 +493,9 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
             }
 
             if (!formats.isEmpty()) {
-                int idx = 0;
-                if (formats.size() > 1 && 
-                    (formats[0].score() == formats[1].score() 
-                    || (formats[1].score() > FormatDetection_AverageSimilarity && formats[0].score() < FormatDetection_Matched) 
-                    || (formats[0].score() <= FormatDetection_AverageSimilarity)
-                    || (hints.value(ProjectLoaderHint_ForceFormatOptions).toBool() == true))) 
-                {
-                    idx = DocumentFormatSelectorController::selectResult(url, formats.first().rawData, formats);
-                }
-                if (idx >= 0) {
-                    FormatDetectionResult& dr =  formats[idx];
+                FormatDetectionResult dr;
+                const bool accepted = detectFormat(url, formats, hints, dr);
+                if (accepted) {
                     dr.rawDataCheckResult.properties.unite(hints);
                     dr.rawDataCheckResult.properties.unite(hintsOverDocuments);
                     if (dr.format != NULL ) {
@@ -436,7 +510,7 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
                             continue;
                         }
                         AD2P_DocumentInfo info;
-                        if(hints.value(ProjectLoaderHint_LoadWithoutView, true).toBool() == false){
+                        if(hints.value(ProjectLoaderHint_LoadWithoutView, false).toBool() == true){
                             info.openView = false;
                         }else{
                             info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
@@ -461,7 +535,11 @@ Task* ProjectLoaderImpl::openWithProjectTask(const QList<GUrl>& _urls, const QVa
                     } else {
                         assert(dr.importer != NULL);
                         AD2P_ProviderInfo info;
-                        info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
+                        if(hints.value(ProjectLoaderHint_LoadWithoutView, false).toBool() == true){
+                            info.openView = false;
+                        }else{
+                            info.openView = nViews++ < MAX_DOCS_TO_OPEN_VIEWS;
+                        }
                         QVariantMap hints;
                         info.dp = dr.importer->createImportTask(dr, true, hints);
                         docProviders << info;

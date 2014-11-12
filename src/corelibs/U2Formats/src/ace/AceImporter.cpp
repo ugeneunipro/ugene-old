@@ -163,6 +163,7 @@ AceImporter::AceImporter() :
     importerDescription = tr("ACE files importer is used to convert conventional ACE files into UGENE database format." \
                              "Having ACE file converted into UGENE DB format you get an fast and efficient interface " \
                              "to your data with an option to change the content");
+    supportedObjectTypes << GObjectTypes::ASSEMBLY;
 }
 
 FormatCheckResult AceImporter::checkRawData(const QByteArray& rawData, const GUrl& url) {

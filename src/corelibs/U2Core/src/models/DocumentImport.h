@@ -106,6 +106,8 @@ public:
 
     void setDialogFactory(ImportDialogFactory* factory);
 
+    const QSet<GObjectType> &getSupportedObjectTypes() const;
+
     // NOTE: it is hint, it should be true by default
     static const QString LOAD_RESULT_DOCUMENT;
     
@@ -116,6 +118,7 @@ protected:
     QList<QString>          extensions;
     QString                 importerDescription;
     ImportDialogFactory*    dialogFactory;
+    QSet<GObjectType>       supportedObjectTypes;
 };
 
 } //namespace

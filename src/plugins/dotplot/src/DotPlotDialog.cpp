@@ -252,7 +252,7 @@ void DotPlotDialog::sl_loadSequenceButton(){
         //DotPlotLoadDocumentsTask *t = new DotPlotLoadDocumentsTask(lod.url, -1, NULL, -1, false);
         //tasks->addSubTask(t);
         QVariantMap hints;
-        hints[ProjectLoaderHint_LoadWithoutView] = true;
+        hints[ProjectLoaderHint_LoadWithoutView] = false;
         hints[ProjectLoaderHint_LoadUnloadedDocument] = true;
         openSequenceTask = AppContext::getProjectLoader()->openWithProjectTask(lod.url, hints);
         if(openSequenceTask == NULL){
