@@ -52,6 +52,14 @@ namespace LocalWorkflow {
  ****************************/
 const QString BlastAllWorkerFactory::ACTOR_ID("blast");
 
+QString BlastAllWorkerFactory::getHitsName() {
+    return BlastAllWorker::tr("Best hits limit");
+}
+
+QString BlastAllWorkerFactory::getHitsDescription() {
+    return BlastAllWorker::tr("Number of best hits from a region to keep. 0 turns it off. If used, 100 is recommended.");
+}
+
 #define BLASTALL_PROGRAM_NAME   QString("blast-type")
 #define BLASTALL_DATABASE_PATH  QString("db-path")
 #define BLASTALL_DATABASE_NAME  QString("db-name")
@@ -95,8 +103,7 @@ void BlastAllWorkerFactory::init() {
                    BlastAllWorker::tr("Base name for BLAST DB files."));
     Descriptor ev(BLASTALL_EXPECT_VALUE, BlastAllWorker::tr("Expected value"),
                    BlastAllWorker::tr("This setting specifies the statistical significance threshold for reporting matches against database sequences."));
-    Descriptor mh(BLASTALL_MAX_HITS, BlastAllWorker::tr("Max hits"),
-                   BlastAllWorker::tr("Specifies the number of best hits from a region of the query to keep. 0 turns it off. If used, 100 is recommended."));
+    Descriptor mh(BLASTALL_MAX_HITS, getHitsName(), getHitsDescription());
     Descriptor gn(BLASTALL_GROUP_NAME, BlastAllWorker::tr("Annotate as"),
                    BlastAllWorker::tr("Name for annotations."));
     Descriptor etp(BLASTALL_EXT_TOOL_PATH, BlastAllWorker::tr("Tool Path"),

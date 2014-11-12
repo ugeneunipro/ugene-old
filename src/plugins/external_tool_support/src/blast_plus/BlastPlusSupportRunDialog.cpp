@@ -62,7 +62,7 @@ namespace U2 {
 ////////////////////////////////////////
 //BlastAllSupportRunDialog
 BlastPlusSupportRunDialog::BlastPlusSupportRunDialog(U2SequenceObject* _dnaso, QString &_lastDBPath, QString &_lastDBName, QWidget* _parent) :
-        BlastRunCommonDialog(_parent), dnaso(_dnaso), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
+        BlastRunCommonDialog(_parent, BlastPlus), dnaso(_dnaso), lastDBPath(_lastDBPath), lastDBName(_lastDBName)
 {
     CreateAnnotationModel ca_m;
     ca_m.data.name = "misc_feature";
@@ -213,7 +213,7 @@ void BlastPlusSupportRunDialog::sl_runQuery(){
 ////////////////////////////////////////
 //BlastPlusWithExtFileSpecifySupportRunDialog
 BlastPlusWithExtFileSpecifySupportRunDialog::BlastPlusWithExtFileSpecifySupportRunDialog(QString &_lastDBPath, QString &_lastDBName, QWidget *_parent) :
-        BlastRunCommonDialog(_parent), lastDBPath(_lastDBPath), lastDBName(_lastDBName), hasValidInput(false)
+        BlastRunCommonDialog(_parent, BlastPlus), lastDBPath(_lastDBPath), lastDBName(_lastDBName), hasValidInput(false)
 {
     ca_c=NULL;
     wasNoOpenProject=false;

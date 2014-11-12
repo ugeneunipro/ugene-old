@@ -61,6 +61,10 @@ protected:
 class BlastAllWorkerFactory : public DomainFactory {
 public:
     static const QString ACTOR_ID;
+
+    static QString getHitsName();
+    static QString getHitsDescription();
+
     static void init();
     BlastAllWorkerFactory() : DomainFactory(ACTOR_ID) {}
     virtual Worker* createWorker(Actor* a) {return new BlastAllWorker(a);}

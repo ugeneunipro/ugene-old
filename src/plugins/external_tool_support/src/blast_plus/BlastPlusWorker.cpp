@@ -54,6 +54,14 @@ namespace LocalWorkflow {
  ****************************/
 const QString BlastPlusWorkerFactory::ACTOR_ID("blast-plus");
 
+QString BlastPlusWorkerFactory::getHitsName() {
+    return BlastPlusWorker::tr("Culling limit");
+}
+
+QString BlastPlusWorkerFactory::getHitsDescription() {
+    return BlastPlusWorker::tr("If the query range of a hit is enveloped by that of at least this many higher-scoring hits, delete the hit");
+}
+
 #define BLASTPLUS_PROGRAM_NAME  "blast-type"
 #define BLASTPLUS_DATABASE_PATH "db-path"
 #define BLASTPLUS_DATABASE_NAME "db-name"
@@ -91,8 +99,7 @@ void BlastPlusWorkerFactory::init() {
                    BlastPlusWorker::tr("Base name for BLAST+ DB files."));
     Descriptor ev(BLASTPLUS_EXPECT_VALUE, BlastPlusWorker::tr("Expected value"),
                    BlastPlusWorker::tr("This setting specifies the statistical significance threshold for reporting matches against database sequences."));
-    Descriptor mh(BLASTPLUS_MAX_HITS, BlastPlusWorker::tr("Max hits"),
-                   BlastPlusWorker::tr("If the query range of a hit is enveloped by that of at least this many higher-scoring hits, delete the hit."));
+    Descriptor mh(BLASTPLUS_MAX_HITS, getHitsName(), getHitsDescription());
     Descriptor gn(BLASTPLUS_GROUP_NAME, BlastPlusWorker::tr("Annotate as"),
                    BlastPlusWorker::tr("Name for annotations."));
     Descriptor etp(BLASTPLUS_EXT_TOOL_PATH, BlastPlusWorker::tr("Tool Path"),

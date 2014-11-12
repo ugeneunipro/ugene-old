@@ -47,13 +47,19 @@
 #include <U2Gui/LastUsedDirHelper.h>
 #include <U2Gui/U2FileDialog.h>
 
+#include "blast/BlastAllWorker.h"
+#include "blast_plus/BlastPlusWorker.h"
+
 #include "BlastRunCommonDialog.h"
 
 namespace U2 {
 
+using namespace LocalWorkflow;
+
+
 ////////////////////////////////////////
 //BlastAllSupportRunCommonDialog
-BlastRunCommonDialog::BlastRunCommonDialog(QWidget* _parent) :
+BlastRunCommonDialog::BlastRunCommonDialog(QWidget* _parent, BlastType blastType) :
             QDialog(_parent), ca_c(NULL)
 {
     setupUi(this);
@@ -61,6 +67,23 @@ BlastRunCommonDialog::BlastRunCommonDialog(QWidget* _parent) :
     buttonBox->button(QDialogButtonBox::Yes)->setText(tr("Restore to default"));
     buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Search"));
     buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
+    QString hitsToolTip;
+    switch (blastType) {
+        case BlastAll:
+            hitsLabel->setText(BlastAllWorkerFactory::getHitsName() + ":");
+            hitsToolTip = BlastAllWorkerFactory::getHitsDescription();
+            numberOfHitsSpinBox->setValue(100); // recommended -K value
+            break;
+        case BlastPlus:
+            hitsLabel->setText(BlastPlusWorkerFactory::getHitsName() + ":");
+            hitsToolTip = BlastPlusWorkerFactory::getHitsDescription();
+            break;
+        default:
+            FAIL("Unknown BLAST type", );
+    }
+    hitsLabel->setToolTip(hitsToolTip);
+    numberOfHitsSpinBox->setToolTip(hitsToolTip);
 
     optionsTab->setCurrentIndex(0);
 

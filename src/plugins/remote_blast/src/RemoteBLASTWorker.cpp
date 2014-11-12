@@ -68,8 +68,8 @@ void RemoteBLASTWorkerFactory::init() {
         RemoteBLASTWorker::tr("Select the database to search through."));
     Descriptor evalueDescriptor(EVALUE_ATTR,RemoteBLASTWorker::tr("Expected value"),
         RemoteBLASTWorker::tr("This parameter specifies the statistical significance threshold of reporting matches against the database sequences."));
-    Descriptor hitsDescriptor(HITS_ATTR,RemoteBLASTWorker::tr("Max hits"),
-        RemoteBLASTWorker::tr("Maximum number of hits."));
+    Descriptor hitsDescriptor(HITS_ATTR,RemoteBLASTWorker::tr("Results limit"),
+        RemoteBLASTWorker::tr("The maximum number of results."));
     Descriptor mbDescriptor(MEGABLAST_ATTR, RemoteBLASTWorker::tr("Megablast"),
         RemoteBLASTWorker::tr("Use megablast."));
     Descriptor shortSeqDescriptor(SHORTSEQ_ATTR,RemoteBLASTWorker::tr("Short sequence"),
