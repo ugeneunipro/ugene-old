@@ -167,6 +167,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
     connect(copyQualifierURLAction, SIGNAL(triggered()), SLOT(sl_onCopyQualifierURL()));
 
     toggleQualifierColumnAction = new QAction(tr("Toggle column"), this);
+    toggleQualifierColumnAction->setObjectName("toggle_column");
     connect(toggleQualifierColumnAction, SIGNAL(triggered()), SLOT(sl_onToggleQualifierColumn()));
 
     removeColumnByHeaderClickAction = new QAction(tr("Hide column"), this);
@@ -195,6 +196,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
     editAction = new QAction(tr("Edit qualifier"), this);
     editAction->setShortcut(QKeySequence(Qt::Key_F4));
     editAction->setShortcutContext(Qt::WindowShortcut);
+    editAction->setObjectName("edit_qualifier_action");
     connect(editAction, SIGNAL(triggered()), SLOT(sl_edit()));
     tree->addAction(editAction);
 

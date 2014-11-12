@@ -4837,6 +4837,21 @@ GUI_TEST_CLASS_DEFINITION( test_2612 ) {
     CHECK_SET_ERR(GTUtilsAnnotationsTreeView::findItem(os, "misc_feature", GTGlobals::FindOptions(false))==NULL, "Annotations document not deleted");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2619) {
+//    1. Open file samples/genbank/sars.gb
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "sars.gb");
+
+//    2. Open context menu for any qualifier on annotation table view.
+//    Expected state: submenu "Copy" didn't contains items "Edit qualifier" and "Add 'evidence' column"
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << ADV_MENU_COPY << "edit_qualifier_action", PopupChecker::NotExists));
+    GTUtilsAnnotationsTreeView::callContextMenuOnQualifier(os, "5'UTR", "evidence");
+    GTGlobals::sleep(500);
+
+    GTUtilsDialog::waitForDialog(os, new PopupChecker(os, QStringList() << ADV_MENU_COPY << "toggle_column", PopupChecker::NotExists));
+    GTUtilsAnnotationsTreeView::callContextMenuOnQualifier(os, "5'UTR", "evidence");
+    GTGlobals::sleep(500);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2622) {
     // 1. Open "_common_data/fasta/multy_fa.fa".
     // 2. Choose "Merge sequences ..." with 100 bases.

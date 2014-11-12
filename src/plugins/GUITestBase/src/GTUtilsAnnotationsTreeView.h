@@ -64,6 +64,9 @@ public:
     static void deleteItem(U2OpStatus &os, const QString &itemName);
     static void deleteItem(U2OpStatus &os, QTreeWidgetItem *item);
 
+    static void callContextMenuOnItem(U2OpStatus &os, const QString &itemName);
+    static void callContextMenuOnQualifier(U2OpStatus &os, const QString &parentName, const QString &qualifierName);
+
     static const QString widgetName;
 };
 

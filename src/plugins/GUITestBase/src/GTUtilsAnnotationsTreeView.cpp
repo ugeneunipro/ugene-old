@@ -307,6 +307,20 @@ void GTUtilsAnnotationsTreeView::deleteItem(U2OpStatus &os, QTreeWidgetItem *ite
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "callContextMenuOnItem"
+void GTUtilsAnnotationsTreeView::callContextMenuOnItem(U2OpStatus &os, const QString &itemName) {
+    GTMouseDriver::moveTo(os, getItemCenter(os, itemName));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "callContextMenuOnQualifier"
+void GTUtilsAnnotationsTreeView::callContextMenuOnQualifier(U2OpStatus &os, const QString &parentName, const QString &qualifierName) {
+    getItemCenter(os, parentName);
+    callContextMenuOnItem(os, qualifierName);
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }
