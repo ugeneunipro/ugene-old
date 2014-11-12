@@ -19,18 +19,19 @@
  * MA 02110-1301, USA.
  */
 
-#include "AddSequencesToAlignmentTask.h"
-
-#include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DNASequenceObject.h>
-#include <U2Core/LoadDocumentTask.h>
-#include <U2Core/MSAUtils.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/IOAdapter.h>
+#include <U2Core/LoadDocumentTask.h>
+#include <U2Core/MSAUtils.h>
+#include <U2Core/MsaDbiUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2MsaDbi.h>
+
+#include "AddSequencesToAlignmentTask.h"
 
 namespace U2 {
 
@@ -70,13 +71,9 @@ void AddSequencesToAlignmentTask::prepare()
             setError("Unknown format");
         }
     }
-
 }
 
-
-
-QList<Task*> AddSequencesToAlignmentTask::onSubTaskFinished( Task* subTask )
-{
+QList<Task*> AddSequencesToAlignmentTask::onSubTaskFinished(Task* subTask) {
     QList<Task*> subTasks;
 
     propagateSubtaskError();
@@ -104,8 +101,7 @@ QList<Task*> AddSequencesToAlignmentTask::onSubTaskFinished( Task* subTask )
     return subTasks;
 }
 
-Task::ReportResult AddSequencesToAlignmentTask::report()
-{
+Task::ReportResult AddSequencesToAlignmentTask::report() {
     if (stateLock) {
         maObj->unlockState(stateLock);
         delete stateLock;
@@ -127,7 +123,10 @@ QList<U2MsaRow> AddSequencesToAlignmentTask::createRows() {
     QList<U2MsaRow> rows;
     U2EntityRef entityRef = maObj.data()->getEntityRef();
     foreach (U2SequenceObject *seqObj, seqList) {
-        rows << MSAUtils::copyRowFromSequence(seqObj, entityRef.dbiRef, stateInfo);
+        U2MsaRow row = MSAUtils::copyRowFromSequence(seqObj, entityRef.dbiRef, stateInfo);
+        if (0 < row.gend) {
+            rows << row;
+        }
         CHECK_OP(stateInfo, rows);
     }
     return rows;

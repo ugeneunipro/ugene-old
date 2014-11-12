@@ -39,6 +39,7 @@ namespace U2 {
 
 /** Gap character */
 #define MAlignment_GapChar '-'
+#define MAlignment_TailedGapsPattern "\\-+$"
 
 class DNAAlphabet;
 class MAlignment;

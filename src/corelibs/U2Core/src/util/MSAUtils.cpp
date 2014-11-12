@@ -298,7 +298,13 @@ U2MsaRow MSAUtils::copyRowFromSequence(U2SequenceObject *seqObj, const U2DbiRef 
     row.rowId = -1; // set the ID automatically
 
     DNASequence dnaSeq = seqObj->getWholeSequence();
+
     QByteArray oldSeqData = dnaSeq.seq;
+    int tailGapsIndex = QRegExp(MAlignment_TailedGapsPattern).indexIn(oldSeqData);
+    if (tailGapsIndex >= 0) {
+        oldSeqData.chop(oldSeqData.length() - tailGapsIndex);
+    }
+
     dnaSeq.seq.clear();
     MsaDbiUtils::splitBytesToCharsAndGaps(oldSeqData, dnaSeq.seq, row.gaps);
     U2Sequence seq = U2SequenceUtils::copySequence(dnaSeq, dstDbi, U2ObjectDbi::ROOT_FOLDER, os);
