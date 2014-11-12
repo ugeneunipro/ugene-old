@@ -249,9 +249,10 @@ void SequenceInfo::sl_onSequenceModified(ADVSequenceObjectContext* /* seqContext
 }
 
 
-void SequenceInfo::sl_onFocusChanged(ADVSequenceWidget* /* prevWidget */, ADVSequenceWidget* currentWidget)
+void SequenceInfo::sl_onFocusChanged(ADVSequenceWidget * /*from*/, ADVSequenceWidget *to)
 {
-    if (0 != currentWidget) { // i.e. the sequence has been deleted
+    if (0 != to) { // i.e. the sequence has been deleted
+        updateLayout();
         updateCurrentRegion();
         launchCalculations();
     }

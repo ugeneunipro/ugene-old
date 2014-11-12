@@ -191,7 +191,7 @@ signals:
     void si_sequenceWidgetAdded(ADVSequenceWidget* w);
     void si_sequenceWidgetRemoved(ADVSequenceWidget* w);
 
-    void si_focusChanged(ADVSequenceWidget*, ADVSequenceWidget*);
+    void si_focusChanged(ADVSequenceWidget *from, ADVSequenceWidget *to);
 
     /** Emitted when a part was added to a sequence, or it was removed or replaced */
     void si_sequenceModified(ADVSequenceObjectContext*);

@@ -55,7 +55,7 @@ private slots:
     * Focus is changed e.g. when a user selects another sequence or deletes the sequence in focus
     * Verifies either a region is selected on the sequence in focus.
     */
-    void sl_onFocusChanged(ADVSequenceWidget*, ADVSequenceWidget*);
+    void sl_onFocusChanged(ADVSequenceWidget *from, ADVSequenceWidget *to);
 
     /** A sequence part was added, removed or replaced */
     void sl_onSequenceModified(ADVSequenceObjectContext*);
