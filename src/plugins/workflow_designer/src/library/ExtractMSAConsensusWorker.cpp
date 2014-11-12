@@ -264,15 +264,20 @@ void ExtractMSAConsensusSequenceWorkerFactory::init() {
 
     QList<PortDescriptor*> ports;
     {
+        Descriptor inD(BasePorts::IN_MSA_PORT_ID(), 
+            ExtractMSAConsensusStringWorker::tr("Input alignment"),
+            ExtractMSAConsensusStringWorker::tr("A alignment which consensus should be extracted"));
         QMap<Descriptor, DataTypePtr> inData;
         inData[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
-        DataTypePtr inType(new MapDataType(BasePorts::IN_MSA_PORT_ID(), inData));
-        ports << new PortDescriptor(BasePorts::IN_MSA_PORT_ID(), inType, true);
+        ports << new PortDescriptor(inD, DataTypePtr(new MapDataType(BasePorts::IN_MSA_PORT_ID(), inData)), true);
+
+        Descriptor outD(BasePorts::OUT_SEQ_PORT_ID(), 
+            ExtractMSAConsensusSequenceWorker::tr("Consensus sequence"),
+            ExtractMSAConsensusSequenceWorker::tr("Provides resulting consensus as a sequence"));
 
         QMap<Descriptor, DataTypePtr> outData;
         outData[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
-        DataTypePtr outType(new MapDataType(BasePorts::OUT_SEQ_PORT_ID(), outData));
-        ports << new PortDescriptor(BasePorts::OUT_SEQ_PORT_ID(), outType, false, true);
+        ports << new PortDescriptor(outD, DataTypePtr(new MapDataType(BasePorts::OUT_SEQ_PORT_ID(), outData)), false, true);
     }
 
     QList<Attribute*> attrs;
@@ -340,15 +345,21 @@ void ExtractMSAConsensusStringWorkerFactory::init() {
 
     QList<PortDescriptor*> ports;
     {
+        Descriptor inD(BasePorts::IN_MSA_PORT_ID(), 
+            ExtractMSAConsensusStringWorker::tr("Input alignment"),
+            ExtractMSAConsensusStringWorker::tr("A alignment which consensus should be extracted"));
+
         QMap<Descriptor, DataTypePtr> inData;
         inData[BaseSlots::MULTIPLE_ALIGNMENT_SLOT()] = BaseTypes::MULTIPLE_ALIGNMENT_TYPE();
-        DataTypePtr inType(new MapDataType(BasePorts::IN_MSA_PORT_ID(), inData));
-        ports << new PortDescriptor(BasePorts::IN_MSA_PORT_ID(), inType, true);
+        ports << new PortDescriptor(inD, DataTypePtr(new MapDataType(BasePorts::IN_MSA_PORT_ID(), inData)), true);
+
+        Descriptor outD(BasePorts::OUT_TEXT_PORT_ID(), 
+            ExtractMSAConsensusStringWorker::tr("Consensus"),
+            ExtractMSAConsensusStringWorker::tr("Provides resulting consensus as a text"));
 
         QMap<Descriptor, DataTypePtr> outData;
         outData[BaseSlots::TEXT_SLOT()] = BaseTypes::STRING_TYPE();
-        DataTypePtr outType(new MapDataType(BasePorts::OUT_TEXT_PORT_ID(), outData));
-        ports << new PortDescriptor(BasePorts::OUT_TEXT_PORT_ID(), outType, false, true);
+        ports << new PortDescriptor(outD, DataTypePtr(new MapDataType(BasePorts::OUT_TEXT_PORT_ID(), outData)) , false, true);
     }
 
     QList<Attribute*> attrs;
