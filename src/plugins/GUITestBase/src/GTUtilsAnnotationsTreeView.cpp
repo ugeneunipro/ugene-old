@@ -263,8 +263,11 @@ void GTUtilsAnnotationsTreeView::selectItems(U2OpStatus &os, const QStringList &
     QPoint p = getItemCenter(os, items.first());
     GTMouseDriver::moveTo(os, p);
     GTMouseDriver::click(os);
-
+#ifdef Q_OS_MAC
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["cmd"]);
+#else
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+#endif
     foreach (const QString& item, items) {
         QPoint p = getItemCenter(os, item);
         GTMouseDriver::moveTo(os, p);
@@ -275,7 +278,11 @@ void GTUtilsAnnotationsTreeView::selectItems(U2OpStatus &os, const QStringList &
             GTMouseDriver::click(os);
         }
     }
+#ifdef Q_OS_MAC
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["cmd"]);
+#else
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+#endif
     GTGlobals::sleep();
 }
 #undef GT_METHOD_NAME
