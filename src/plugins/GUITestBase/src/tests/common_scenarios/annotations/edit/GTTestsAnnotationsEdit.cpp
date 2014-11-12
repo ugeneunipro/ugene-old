@@ -54,7 +54,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 //     2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE - [Welcome Page]");
 
 // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -89,8 +89,6 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
 // Expected state: 
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-//     2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -138,8 +136,6 @@ GUI_TEST_CLASS_DEFINITION(test_0001_2) {
 // Expected state: 
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-//     2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -187,8 +183,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 // Expected state: 
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-//     2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -218,8 +212,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 // Expected state: 
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-//     2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -262,8 +254,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 // Expected state: 
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-//     2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -306,8 +296,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 // Expected state: 
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-//     2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -340,8 +328,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
 // Expected state: 
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-//     2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -386,8 +372,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
 // Expected state: 
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-//     2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -430,8 +414,6 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 // Expected state: 
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-//     2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -464,8 +446,6 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
 // Expected state: 
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-//     2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -498,8 +478,6 @@ GUI_TEST_CLASS_DEFINITION(test_0004_2) {
 // Expected state: 
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-//     2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));

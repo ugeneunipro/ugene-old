@@ -67,7 +67,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 //     1) Project view with document "1CF7.PDB" is opened
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 //     2) UGENE window titled with text "proj1 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
+    GTUtilsApp::checkUGENETitle(os, "proj1 UGENE - [Welcome Page]");
 
 // 2. Use menu {File->Export Project}
 // Expected state: "Export Project" dialog has appeared
@@ -94,7 +94,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 //     1) project view with document "1CF7.PDB" has been opened, 
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 //     2) UGENE window titled with text "proj1 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
+    GTUtilsApp::checkUGENETitle(os, "proj1 UGENE - [Welcome Page]");
 
 //     3) File path at tooltip for "1CF7.PDB" must be "_common_data/scenarios/sandbox/1CF7.PDB"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7.PDB"));
@@ -115,7 +115,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 GUI_TEST_CLASS_DEFINITION(test_0005) {
 
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj1.uprj");
-    GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
+    GTUtilsApp::checkUGENETitle(os, "proj1 UGENE - [Welcome Page]");
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
     GTUtilsDialog::waitForDialog(os, new SaveProjectAsDialogFiller(os, "proj2", testDir+"_common_data/scenarios/sandbox", "proj2"));
@@ -126,7 +126,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
     GTGlobals::sleep();
 
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/sandbox/proj2.uprj");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE - [Welcome Page]");
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7.PDB"));
@@ -135,7 +135,7 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
-    GTUtilsApp::checkUGENETitle(os, "UGENE");
+    GTUtilsApp::checkUGENETitle(os, "UGENE - [Welcome Page]");
 
     QMenu *m = GTMenu::showMainMenu(os, MWMENU_FILE);
     QAction *result = GTMenu::getMenuItem(os, m, ACTION_PROJECTSUPPORT__EXPORT_PROJECT, false);
@@ -149,7 +149,6 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 GUI_TEST_CLASS_DEFINITION(test_0007) {
 
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj1.uprj");
-    GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
     GTUtilsDocument::removeDocument(os, "1CF7.PDB", GTGlobals::UseMouse);
@@ -224,7 +223,6 @@ GUI_TEST_CLASS_DEFINITION(test_0013) {
 
     //1. Open project _common_data\scenario\project\proj1.uprj
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj1.uprj");
-    GTUtilsApp::checkUGENETitle(os, "proj1 UGENE");
     GTUtilsProject::checkProject(os);
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxOpenAnotherProject(os));

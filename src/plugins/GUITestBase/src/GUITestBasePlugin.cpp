@@ -131,7 +131,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
 // Regression scenarios/
 //////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_regression_scenarios::test_0734);
-    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_0928, "UGENE-3587");
+    REGISTER_TEST(GUITest_regression_scenarios::test_0928);
     REGISTER_TEST(GUITest_regression_scenarios::test_0986);
     REGISTER_TEST(GUITest_regression_scenarios::test_0986_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_0986_2);
@@ -1537,7 +1537,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::run_workflow_gui_test_0001_1);
     REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::run_workflow_gui_test_0001_2);
     REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::run_workflow_gui_test_0002);
-    REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::run_workflow_gui_test_0003);
+    REGISTER_TEST_IGNORED(GUITest_common_scenarios_shared_db_wd::run_workflow_gui_test_0003, "UGENE-3707");
     REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::run_workflow_gui_test_0004);
     REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::run_workflow_gui_test_0005_1);
     REGISTER_TEST(GUITest_common_scenarios_shared_db_wd::run_workflow_gui_test_0005_2);

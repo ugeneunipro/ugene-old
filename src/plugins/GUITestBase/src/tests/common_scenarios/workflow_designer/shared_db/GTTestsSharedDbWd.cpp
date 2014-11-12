@@ -597,6 +597,7 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0003) {
     GTUtilsWorkflowDesigner::setParameter(os, "Data storage", 1, GTUtilsWorkflowDesigner::comboValue);
     GTUtilsWorkflowDesigner::setParameter(os, "Database", 1, GTUtilsWorkflowDesigner::comboValue);
     GTUtilsWorkflowDesigner::setParameter(os, "Output path", "/test", GTUtilsWorkflowDesigner::textValue);
+    GTGlobals::sleep(600000);
     GTUtilsWorkflowDesigner::setParameter(os, "Annotations name", "run_workflow_gui_test_0003", GTUtilsWorkflowDesigner::textValue);
 
     GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Annotations"),

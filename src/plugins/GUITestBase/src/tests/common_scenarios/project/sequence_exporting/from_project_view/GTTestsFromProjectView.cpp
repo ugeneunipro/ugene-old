@@ -63,9 +63,6 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTUtilsDocument::checkDocument(os, "1.gb", GTUtilsDocument::DocumentUnloaded);
     GTUtilsDocument::checkDocument(os, "2.gb", GTUtilsDocument::DocumentUnloaded);
 
-//     2) UGENE window titled with text "proj4 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
-
 // 2. Double click on [a] Annotations sequence object, in project view tree
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "Annotations");
     GTMouseDriver::moveTo(os, itemPos);
@@ -113,8 +110,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 //     1) Project view with document "1.gb" and "2.gb" is opened, both documents are unloaded
     GTUtilsDocument::checkDocument(os, "1.gb", GTUtilsDocument::DocumentUnloaded);
     GTUtilsDocument::checkDocument(os, "2.gb", GTUtilsDocument::DocumentUnloaded);
-//     2) UGENE window titled with text "proj4 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
 
 // 2. Double click on [a] Annotations sequence object, in project view tree
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "Annotations");
@@ -337,9 +332,6 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
         return;
     }
 
-//     2) UGENE window titled with text "proj4 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
-
 // 2. Double click on [a] Annotations sequence object, in project view tree
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "Annotations");
     GTMouseDriver::moveTo(os, itemPos);
@@ -396,9 +388,6 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
         os.setError("Documents is not unload");
         return;
         }
-
-    //     2) UGENE window titled with text "proj4 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
 
     // 2. Double click on [a] Annotations sequence object, in project view tree
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "Annotations");
@@ -457,9 +446,6 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
         return;
         }
 
-    //     2) UGENE window titled with text "proj4 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
-
     // 2. Double click on [a] Annotations sequence object, in project view tree
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "Annotations");
     GTMouseDriver::moveTo(os, itemPos);
@@ -516,9 +502,6 @@ GUI_TEST_CLASS_DEFINITION(test_0007_2) {
         os.setError("Documents is not unload");
         return;
         }
-
-    //     2) UGENE window titled with text "proj4 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
 
     // 2. Double click on [a] Annotations sequence object, in project view tree
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "Annotations");

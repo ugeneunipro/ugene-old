@@ -78,7 +78,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
     CHECK_SET_ERR(!doc1->isLoaded(), "1.gb is loaded");
     CHECK_SET_ERR(!doc2->isLoaded(), "2.gb is loaded");
 //     2) UGENE window titled with text "proj4 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
+    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE - [Welcome Page]");
 
 // 2. Double click on "[a] Annotations" sequence object, in project view tree
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
@@ -127,9 +127,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
     GTUtilsDocument::checkDocument(os, "1.gb");
     GTUtilsDocument::checkDocument(os, "2.gb");
 
-//     2) UGENE window titled with text "proj4 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
-
 // 2. Double click on "[a] Annotations" sequence object, in project view tree
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     GTMouseDriver::doubleClick(os);
@@ -174,8 +171,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003)
 //     1) Project view with document "1.gb" and "2.gb" is opened
     GTUtilsProjectTreeView::findIndex(os, doc1);//checks inside
     GTUtilsProjectTreeView::findIndex(os, doc2);
-//     2) UGENE window titled with text "proj4 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
 
 // 2. Double click on "[a] Annotations" sequence object, in project view tree
     QPoint itemPos = GTUtilsProjectTreeView::getItemCenter(os, "Annotations");
@@ -220,7 +215,6 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj4.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
     GTUtilsDocument::checkDocument(os, "2.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "Annotations"));
     GTMouseDriver::doubleClick(os);

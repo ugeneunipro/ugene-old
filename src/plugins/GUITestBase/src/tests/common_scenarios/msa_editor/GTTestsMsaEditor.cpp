@@ -231,6 +231,7 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0002_3) {
+    GTUtilsMdi::click(os, GTGlobals::Close);
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "revcompl.aln");
     GTGlobals::sleep(1000);
 
@@ -364,6 +365,7 @@ GUI_TEST_CLASS_DEFINITION(test_0003_3) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0003_4) {
+    GTUtilsMdi::click(os, GTGlobals::Close);
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/" , "ma.aln");
     GTGlobals::sleep();
 

@@ -36,6 +36,7 @@ namespace U2 {
 namespace GUITest_common_scenarios_primer_library {
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
+    GTUtilsMdi::click(os, GTGlobals::Close);
     //The library is the singleton MDI window
 
     //1. Click the menu Tools -> Primer -> Primer Library.

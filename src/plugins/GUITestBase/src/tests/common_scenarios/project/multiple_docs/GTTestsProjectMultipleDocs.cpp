@@ -44,8 +44,6 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 // Expected state: 
 // 	1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-// 	2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 2. Use menu {File->Save Project As}
 // Expected state: "Save project as" dialog has appeared

@@ -76,9 +76,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 //     1) project view with document "1CF7.PDB" has been opened, 
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
 
-//     2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
-
 //     3) File path at tooltip for "1CF7.PDB" must be "_common_data/scenarios/sandbox/1CF7.PDB"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7.PDB"));
     GTGlobals::sleep();
@@ -119,8 +116,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 // Expected state: 
 //     1) project view with document "1CF7.PDB" has been opened, 
     GTUtilsDocument::checkDocument(os, "1CF7.PDB");
-//     2) UGENE window titled with text "proj2"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 //     3) File path at tooltip for "1CF7.PDB" must be "samples/PDB/1CF7.PDB"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1CF7.PDB"));
     GTGlobals::sleep(2000);

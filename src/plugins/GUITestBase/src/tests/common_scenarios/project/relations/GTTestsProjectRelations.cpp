@@ -35,7 +35,6 @@ namespace GUITest_common_scenarios_project_relations{
 GUI_TEST_CLASS_DEFINITION(test_0001) {
 
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj2.uprj");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -46,7 +45,6 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 GUI_TEST_CLASS_DEFINITION(test_0002) {
 
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj4.uprj");
-    GTUtilsApp::checkUGENETitle(os, "proj4 UGENE");
     GTUtilsDocument::checkDocument(os, "1.gb");
     GTUtilsDocument::checkDocument(os, "2.gb");
 

@@ -50,7 +50,6 @@ namespace GUITest_common_scenarios_annotations_qualifiers {
 GUI_TEST_CLASS_DEFINITION(test_0001) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -72,7 +71,6 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 GUI_TEST_CLASS_DEFINITION(test_0001_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -104,7 +102,6 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) {
 GUI_TEST_CLASS_DEFINITION(test_0001_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -138,7 +135,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -161,7 +157,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002_1) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -184,7 +179,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002_2) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -217,7 +211,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -239,7 +232,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003_1) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -261,7 +253,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -294,7 +285,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003_2) {
 GUI_TEST_CLASS_DEFINITION(test_0004) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -315,7 +305,6 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
 GUI_TEST_CLASS_DEFINITION(test_0004_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -336,7 +325,6 @@ GUI_TEST_CLASS_DEFINITION(test_0004_1) {
 GUI_TEST_CLASS_DEFINITION(test_0004_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -368,7 +356,6 @@ GUI_TEST_CLASS_DEFINITION(test_0005) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -389,7 +376,6 @@ GUI_TEST_CLASS_DEFINITION(test_0005_1) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -410,7 +396,6 @@ GUI_TEST_CLASS_DEFINITION(test_0005_2) {
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -538,7 +523,6 @@ GUI_TEST_CLASS_DEFINITION(test_0006_2) {
 GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -569,7 +553,6 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
 GUI_TEST_CLASS_DEFINITION(test_0007_1) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);
@@ -600,7 +583,6 @@ GUI_TEST_CLASS_DEFINITION(test_0007_1) {
 GUI_TEST_CLASS_DEFINITION(test_0007_2) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);

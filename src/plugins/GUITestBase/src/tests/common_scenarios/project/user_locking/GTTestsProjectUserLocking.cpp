@@ -95,7 +95,6 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 #undef GT_CLASS_NAME
 
     GTFileDialog::openFile(os, testDir+"_common_data/scenarios/project/", "proj5.uprj");
-    GTUtilsApp::checkUGENETitle(os, "proj5 UGENE");
     GTUtilsDocument::checkDocument(os, "1.gb");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
@@ -153,7 +152,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002)
 
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/project/", "proj3.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj3 UGENE");
 
     QModelIndex item = GTUtilsProjectTreeView::findIndex(os, "1.gb");
 
@@ -197,7 +195,6 @@ GUI_TEST_CLASS_DEFINITION(test_0003) {
 
     GTUtilsProject::openFiles(os, testDir+"_common_data/scenarios/project/proj2.uprj");
     GTUtilsDocument::checkDocument(os, "1.gb");
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
     GTMouseDriver::doubleClick(os);

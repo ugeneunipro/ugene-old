@@ -460,7 +460,7 @@ GUI_TEST_CLASS_DEFINITION(test_1015_4) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1021) {
-
+    GTUtilsMdi::click(os, GTGlobals::Close);
     for (int i=0; i<2; i++) {
         // 1) Open data\samples\FASTA\human_T1.fa
         GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
@@ -497,7 +497,7 @@ GUI_TEST_CLASS_DEFINITION(test_1021) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1021_1) {
-
+    GTUtilsMdi::click(os, GTGlobals::Close);
     for (int i=0; i<3; i++) {
         // 1) Open data\samples\FASTA\human_T1.fa
         GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
@@ -534,7 +534,7 @@ GUI_TEST_CLASS_DEFINITION(test_1021_1) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1021_2) {
-
+    GTUtilsMdi::click(os, GTGlobals::Close);
     for (int i=0; i<2; i++) {
         // 1) Open data\samples\FASTA\human_T1.fa
         GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
@@ -573,7 +573,7 @@ GUI_TEST_CLASS_DEFINITION(test_1021_2) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1021_3) {
-
+    GTUtilsMdi::click(os, GTGlobals::Close);
     for (int i=0; i<2; i++) {
         // 1) Open data\samples\FASTA\human_T1.fa
         GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
@@ -617,7 +617,7 @@ GUI_TEST_CLASS_DEFINITION(test_1021_3) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1021_4) {
-
+    GTUtilsMdi::click(os, GTGlobals::Close);
     for (int i=0; i<2; i++) {
         // 1) Open data\samples\FASTA\human_T1.fa
         GTFileDialog::openFile(os, dataDir+"samples/FASTA/", "human_T1.fa");
@@ -1251,6 +1251,7 @@ GUI_TEST_CLASS_DEFINITION( test_1701 ) {
     CHECK_SET_ERR( NULL != pdb1, "No 1A5H view");
     CHECK_SET_ERR( NULL != pdb2, "No 1CF7 view");
 
+    GTUtilsProjectTreeView::click(os, "1CF7.pdb");
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()<< "Render Style"<< "Ball-and-Stick"));
     GTMenu::showContextMenu(os, pdb2);
 
@@ -5841,6 +5842,7 @@ GUI_TEST_CLASS_DEFINITION(test_2910_3) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2923) {
+    GTUtilsMdi::click(os, GTGlobals::Close);
     //1. Open "samples/FASTA/human_T1.fa".
     //Expected: the sequence view is opened.
     //2. Press Ctrl+W.

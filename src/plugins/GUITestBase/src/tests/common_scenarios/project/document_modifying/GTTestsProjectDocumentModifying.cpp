@@ -50,9 +50,6 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 
-//     2) UGENE window titled with text "proj2-1 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2-1 UGENE");
-
 // 2. Open view for 1.gb document.
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse));
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "1.gb"));
@@ -76,9 +73,6 @@ GUI_TEST_CLASS_DEFINITION(test_0001_1) { //CHANGES another annotation created
     // Expected state: 
     //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-
-    //     2) UGENE window titled with text "proj2-1 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2-1 UGENE");
 
     // 2. Open view for 1.gb document.
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse));
@@ -104,8 +98,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 // Expected state: 
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-//     2) UGENE window has title "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 2. Use menu {File->Export Project}
 // Expected state: "Export project" dialog has appeared
@@ -126,8 +118,6 @@ GUI_TEST_CLASS_DEFINITION(test_0002) {
 // Expected state: 
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
-//     2) UGENE window has title "proj2"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE");
 
 // 6. Load 1.gb document using context menu.
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_load_selected_documents", GTGlobals::UseMouse));
