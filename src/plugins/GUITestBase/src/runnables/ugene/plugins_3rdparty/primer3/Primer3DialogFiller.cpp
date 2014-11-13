@@ -32,7 +32,7 @@
 #include <QtGui/QTabWidget>
 #else
 #include <QtWidgets/QApplication>
-#include <QtWidget/QLineEdit>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QTabWidget>
 #endif
