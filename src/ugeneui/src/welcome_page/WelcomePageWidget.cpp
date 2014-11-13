@@ -42,6 +42,7 @@ WelcomePageWidget::WelcomePageWidget(QWidget *parent, WelcomePageController *con
 {
     setupUi(this);
     webView->setContextMenuPolicy(Qt::NoContextMenu);
+    webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     loadPage();
 }
 
