@@ -31,6 +31,7 @@
 namespace U2 {
 
 class DNATranslation;
+class TaskStateInfo;
 
 class U2ALGORITHM_EXPORT ORFFindResult {
 public:
@@ -140,6 +141,21 @@ public:
         U2EntityRef& entityRef,
         int& stopFlag,
         int& percentsCompleted);
+private:
+    static void addStartCodonsFromJunction(const U2SequenceObject &seq,
+                                           const ORFAlgorithmSettings &cfg,
+                                           ORFAlgorithmStrand strand,
+                                           QList<int> *start);
+    static void checkStopCodonOnJunction(const U2SequenceObject &dnaSeq,
+                                         const ORFAlgorithmSettings &cfg,
+                                         ORFAlgorithmStrand strand,
+                                         ORFFindResultsListener* rl,
+                                         QList<int> *start,
+                                         TaskStateInfo &os);
+    static char* getCodonFromJunction(const U2SequenceObject &dnaSeq,
+                                      ORFAlgorithmStrand strand,
+                                       // points to number of characters that are located in the end of the sequence
+                                      int symbolsFromEnd);
 };
 
 }//namespace
