@@ -785,7 +785,7 @@ void Primer3SWTask::addPrimer3Subtasks(const Primer3TaskSettings &settings, QLis
 
 
 void Primer3SWTask::relocatePrimerOverMedian(Primer *primer) {
-    primer->setStart( primer->getStart() + median *( primer->getStart() > median ? -1 : 1));
+    primer->setStart( primer->getStart() + ( primer->getStart() >= median ? -median : settings.getSequenceSize() - median));
 }
 
 
@@ -981,11 +981,11 @@ AnnotationData Primer3ToAnnotationsTask::oligoToAnnotation(const QString& title,
     // primer can be found on circular extension of the sequence
     int start = primer.getStart() + (primer.getStart() > seqLen ?  (- seqLen) : 0);
     int length = primer.getLength();
-    if (start + length < seqLen) {
+    if (start + length <= seqLen) {
         annotationData.location->regions << U2Region(start, length);
     } else {
         // primer covers circular junction
-        annotationData.location->regions << U2Region(start, seqLen - start) << U2Region(1, start + length - seqLen);
+        annotationData.location->regions << U2Region(start, seqLen - start) << U2Region(0, start + length - seqLen);
         annotationData.location.data()->op = U2LocationOperator_Join;
     }
 

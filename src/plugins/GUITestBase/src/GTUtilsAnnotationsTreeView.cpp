@@ -179,6 +179,47 @@ QStringList GTUtilsAnnotationsTreeView::getAnnotationNamesOfGroup(U2OpStatus &os
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "getAnnotatedRegionsOfGroup"
+QList<U2Region> GTUtilsAnnotationsTreeView::getAnnotatedRegionsOfGroup(U2OpStatus &os, const QString &groupName) {
+    Q_UNUSED(os);
+    QList<U2Region> regions;
+    QTreeWidgetItem *groupItem = findItem(os, groupName);
+    GT_CHECK_RESULT(groupItem != NULL, QString("Cannot find group item '%1'").arg(groupName), regions);
+    for (int i = 0; i < groupItem->childCount(); i++) {
+        AVItem *avItem = dynamic_cast<AVItem *>(groupItem->child(i));
+        GT_CHECK_RESULT(NULL != avItem, "Cannot convert QTreeWidgetItem to AVItem", QList<U2Region>());
+        AVAnnotationItem* item = (AVAnnotationItem*)avItem;
+        GT_CHECK_RESULT(item != NULL, "sdf", regions);
+        regions << item->annotation.getRegions().toList();
+    }
+    return regions;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getAnnotatedRegionsOfGroup"
+QList<U2Region> GTUtilsAnnotationsTreeView::getAnnotatedRegionsOfGroup(U2OpStatus &os, const QString &groupName, const QString &parentName) {
+    Q_UNUSED(os);
+    QList<U2Region> regions;
+    QTreeWidgetItem *parentItem = findItem(os, parentName);
+    GT_CHECK_RESULT( parentItem != NULL, "Parent item not found!", regions);
+
+    QList<QTreeWidgetItem*> treeItems = GTTreeWidget::getItems(parentItem);
+    foreach (QTreeWidgetItem* childItem, treeItems) {
+        QString treeItemName = childItem->text(0);
+        if (treeItemName == groupName) {
+            for (int i = 0; i < childItem->childCount(); i++) {
+                AVItem *avItem = dynamic_cast<AVItem *>(childItem->child(i));
+                GT_CHECK_RESULT(NULL != avItem, "Cannot convert QTreeWidgetItem to AVItem", QList<U2Region>());
+                AVAnnotationItem* item = (AVAnnotationItem*)avItem;
+                GT_CHECK_RESULT(item != NULL, "sdf", regions);
+                regions << item->annotation.getRegions().toList();
+            }
+        }
+    }
+    return regions;
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "findRegion"
 bool GTUtilsAnnotationsTreeView::findRegion(U2OpStatus &os, const QString &itemName, const U2Region& r) {
 
