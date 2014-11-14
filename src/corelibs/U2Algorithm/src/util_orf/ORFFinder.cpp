@@ -341,7 +341,7 @@ void ORFFindAlgorithm::addStartCodonsFromJunction(const U2SequenceObject &dnaSeq
             if (strand == ORFAlgorithmStrand_Direct) {
                 start[(seqLen - i) % 3].append(seqLen - i);
             } else {
-                start[(seqLen - i - 1) % 3].append(2 - i);
+                start[3 - i].append(2 - i);
             }
         }
     }
