@@ -340,7 +340,7 @@ void ExtractMSAConsensusStringWorkerFactory::init() {
     SAFE_POINT(NULL != reg, "NULL registry", );
 
     const Descriptor desc(ACTOR_ID,
-        ExtractMSAConsensusSequenceWorker::tr("Extract Consensus from Alignment as String"),
+        ExtractMSAConsensusSequenceWorker::tr("Extract Consensus from Alignment as Text"),
         ExtractMSAConsensusSequenceWorker::tr("Extract the consensus string from the incoming multiple sequence alignment."));
 
     QList<PortDescriptor*> ports;

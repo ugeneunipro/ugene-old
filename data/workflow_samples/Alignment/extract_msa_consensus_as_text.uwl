@@ -1,9 +1,9 @@
 #@UGENE_WORKFLOW
-#For each input multiple alignment the workflow calculates the consensus and saves it to the "consensus.txt" text file.  
+#For each input multiple alignment the workflow calculates the consensus and saves it to the "consensus.txt" text file.
 #
-#The JalView algorithm (denoted as "default") is used by default to calculate the consensus. For each column of the alignment it returns either "+", if there are 2 characters with high frequency in this column, or a character in uppercase or lowercase. The case of the character depends on the percentage value of the character in the column and the "threshold" value. 
+#The JalView algorithm (denoted as "default") is used by default to calculate the consensus. For each column of the alignment it returns either "+", if there are 2 characters with high frequency in this column, or a character in uppercase or lowercase. The case of the character depends on the percentage value of the character in the column and the "threshold" value.
 #
-#Alternatively, you can use the ClustalW algorithm to calculate the consensus. If all characters in a column are exactly the same, the algorithm sets asterisk value ("*") to the corresponding position of the consensus. Otherwise, it inserts space. The "threshold" parameter is not applied to this algorithm. 
+#Alternatively, you can use the ClustalW algorithm to calculate the consensus. If all characters in a column are exactly the same, the algorithm sets asterisk value ("*") to the corresponding position of the consensus. Otherwise, it inserts space. The "threshold" parameter is not applied to this algorithm.
 
 
 
@@ -19,7 +19,15 @@ workflow "Extract consensus as text"{
     write-text {
         type:write-text;
         name:"Write Plain Text";
-        url-out:consensus.txt;
+        url-out {
+var re = /[\\\/]/;
+var tokens = url.toString().split(re);
+var dir = "";
+if (tokens.length > 0) {
+    dir = tokens[tokens.length-1];
+}
+url_out = dir + "_consensus.txt"
+        };
     }
     extract-msa-consensus-string {
         type:extract-msa-consensus-string;
@@ -28,8 +36,8 @@ workflow "Extract consensus as text"{
     }
 
     .actor-bindings {
-        read-msa.out-msa->extract-msa-consensus-string.in-msa
         extract-msa-consensus-string.out-text->write-text.in-text
+        read-msa.out-msa->extract-msa-consensus-string.in-msa
     }
 
     extract-msa-consensus-string.text->write-text.in-text.text
@@ -38,21 +46,21 @@ workflow "Extract consensus as text"{
     .meta {
         visual {
             extract-msa-consensus-string {
-                pos:"-518 -644";
+                pos:"-510 -630";
                 style:ext;
                 bg-color-ext:"0 128 0 64";
                 in-msa.angle:180;
                 out-text.angle:360;
             }
             read-msa {
-                pos:"-758 -644";
+                pos:"-750 -630";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 68.25 69";
                 out-msa.angle:360;
             }
             write-text {
-                pos:"-209 -644";
+                pos:"-195 -630";
                 style:ext;
                 bg-color-ext:"64 26 96 64";
                 bounds:"-30 -30 102 73";
@@ -63,6 +71,44 @@ workflow "Extract consensus as text"{
             }
             read-msa.out-msa->extract-msa-consensus-string.in-msa {
                 text-pos:"-45 -50";
+            }
+        }
+        wizard {
+            name:"Extract Alignment Consensus as Text";
+            page {
+                id:1;
+                next:2;
+                title:"Input Multiple Alighments";
+                parameters-area {
+                    read-msa.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Extracting Consensus Settings";
+                parameters-area {
+                    group {
+                        title:"Extracting Consensus as Text Worker Settings";
+                        label-size:120;
+                        extract-msa-consensus-string.algorithm {
+                        }
+                        extract-msa-consensus-string.threshold {
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                title:"Output Files";
+                parameters-area {
+                    label {
+                        text:"For each input alignment the workflow outputs separate text file with consensus in it.";
+                        background-color:rgb(203,222,228);
+                    }
+                }
             }
         }
     }

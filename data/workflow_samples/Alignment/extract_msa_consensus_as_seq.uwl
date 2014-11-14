@@ -27,12 +27,20 @@ workflow "Extract consensus as sequence"{
     write-sequence {
         type:write-sequence;
         name:"Write Sequence";
-        url-out:consensus.fa;
+        url-out {
+var re = /[\\\/]/;
+var tokens = url.toString().split(re);
+var dir = "";
+if (tokens.length > 0) {
+    dir = tokens[tokens.length-1];
+}
+url_out = dir + "_consensus.fa"
+        };
     }
 
     .actor-bindings {
-        read-msa.out-msa->extract-msa-consensus-sequence.in-msa
         extract-msa-consensus-sequence.out-sequence->write-sequence.in-sequence
+        read-msa.out-msa->extract-msa-consensus-sequence.in-msa
     }
 
     read-msa.msa->extract-msa-consensus-sequence.in-msa.msa
@@ -41,21 +49,21 @@ workflow "Extract consensus as sequence"{
     .meta {
         visual {
             extract-msa-consensus-sequence {
-                pos:"-452 -1103";
+                pos:"-435 -1095";
                 style:ext;
                 bg-color-ext:"0 128 0 64";
                 in-msa.angle:180;
                 out-sequence.angle:360;
             }
             read-msa {
-                pos:"-703 -1105";
+                pos:"-690 -1095";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 75.25 80";
                 out-msa.angle:360;
             }
             write-sequence {
-                pos:"-142 -1103";
+                pos:"-135 -1095";
                 style:ext;
                 bg-color-ext:"64 26 96 64";
                 in-sequence.angle:180;
@@ -67,40 +75,46 @@ workflow "Extract consensus as sequence"{
                 text-pos:"-45 -50";
             }
         }
-		wizard {
-			name:"Extract Alignment Consensus as Sequence";
-			page {
-				id:1;
-				next:2;
-				title:"Input Multiple Alighments";
-				parameters-area {
+        wizard {
+            name:"Extract Alignment Consensus as Sequence";
+            page {
+                id:1;
+                next:2;
+                title:"Input Multiple Alighments";
+                parameters-area {
                     read-msa.url-in {
                         type:datasets;
                     }
                 }
-			}
-			page {
-				id:2;
-				title:"Extracting Consensus Settings and Output";
-				group {
-					title:"Consensus Settings";
-					label-size:120;
-					extract-msa-consensus-sequence.algorithm {
-					}
-					extract-msa-consensus-sequence.threshold {
-					}
-					extract-msa-consensus-sequence.keep-gaps {
-					}
-				}
-				group {
-					title:"Output File";
-					label-size:120;
-					write-msa.url-out {
-                        label:"Save result to";
+            }
+            page {
+                id:2;
+                next:3;
+                title:"Extracting Consensus Settings";
+                parameters-area {
+                    group {
+                        title:"Extracting Consensus as Sequence Worker Settings";
+                        label-size:120;
+                        extract-msa-consensus-sequence.algorithm {
+                        }
+                        extract-msa-consensus-sequence.threshold {
+                        }
+                        extract-msa-consensus-sequence.keep-gaps {
+                        }
                     }
-				}
-			}
-		}
+                }
+            }
+            page {
+                id:3;
+                title:"Output Files";
+                parameters-area {
+                    label {
+                        text:"For each input alignment the workflow outputs separate sequence file with consensus in it.";
+                        background-color:rgb(203,222,228);
+                    }
+                }
+            }
+        }
     }
 }
 
