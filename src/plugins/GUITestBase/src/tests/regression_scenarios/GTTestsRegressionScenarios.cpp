@@ -7975,6 +7975,17 @@ GUI_TEST_CLASS_DEFINITION(test_3439){
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Write Alignment") == 3, "Errors count dont match, should be 2 validation errors");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3441) {
+    //    Open file test_common_data\fasta\empty.fa
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "empty.fa");
+    //    Open "Statistics" options panel tab.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_GENERAL"));
+    //Sequence count is 0
+
+    QLabel *seqCount = GTWidget::findExactWidget<QLabel*>(os, "alignmentHeight");
+    CHECK_SET_ERR(seqCount->text() == "0", "Sequence count don't match");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3443) {
     GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
     GTGlobals::sleep();
