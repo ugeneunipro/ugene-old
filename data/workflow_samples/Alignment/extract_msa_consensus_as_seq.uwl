@@ -1,0 +1,106 @@
+#@UGENE_WORKFLOW
+#For each input multiple alignment the workflow calculates the consensus sequence and saves it to the "consensus.fa" file.
+#
+#The "strict" algorithm with the "threshold" parameter set to "100%" is used by default to calculate the consensus. It means that the consensus will only contain characters that are the same in ALL sequences of the alignment.
+#
+#Decreasing the threshold will result in taking into account only the specified percentage number of the sequences, i.e. if the threshold is "80%" and 82% of the sequences have "A" at a certain column position, the consensus will also contain "A" at this position.
+#
+#Also, you may select another algorithm to calculate the consensus. The algorithm, proposed by Victor Levitsky, uses extended DNA alphabet. The greater the "threshold" value selected for this algorithm, the more rarest characters are taken into account. The specified value must be between 50% and 100%.
+#
+#Finally, there is "Keep gaps" parameter that specifies whether the result sequence must contain gaps, or they must be skipped. By default, the gaps are kept in the result consensus sequence.
+
+
+
+workflow "Extract consensus as sequence"{
+
+    read-msa {
+        type:read-msa;
+        name:"Read Alignment";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    extract-msa-consensus-sequence {
+        type:extract-msa-consensus-sequence;
+        name:"Extract Consensus from Alignment as Sequence";
+    }
+    write-sequence {
+        type:write-sequence;
+        name:"Write Sequence";
+        url-out:consensus.fa;
+    }
+
+    .actor-bindings {
+        read-msa.out-msa->extract-msa-consensus-sequence.in-msa
+        extract-msa-consensus-sequence.out-sequence->write-sequence.in-sequence
+    }
+
+    read-msa.msa->extract-msa-consensus-sequence.in-msa.msa
+    extract-msa-consensus-sequence.sequence->write-sequence.in-sequence.sequence
+
+    .meta {
+        visual {
+            extract-msa-consensus-sequence {
+                pos:"-452 -1103";
+                style:ext;
+                bg-color-ext:"0 128 0 64";
+                in-msa.angle:180;
+                out-sequence.angle:360;
+            }
+            read-msa {
+                pos:"-703 -1105";
+                style:ext;
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 75.25 80";
+                out-msa.angle:360;
+            }
+            write-sequence {
+                pos:"-142 -1103";
+                style:ext;
+                bg-color-ext:"64 26 96 64";
+                in-sequence.angle:180;
+            }
+            extract-msa-consensus-sequence.out-sequence->write-sequence.in-sequence {
+                text-pos:"-46 -37";
+            }
+            read-msa.out-msa->extract-msa-consensus-sequence.in-msa {
+                text-pos:"-45 -50";
+            }
+        }
+		wizard {
+			name:"Extract Alignment Consensus as Sequence";
+			page {
+				id:1;
+				next:2;
+				title:"Input Multiple Alighments";
+				parameters-area {
+                    read-msa.url-in {
+                        type:datasets;
+                    }
+                }
+			}
+			page {
+				id:2;
+				title:"Extracting Consensus Settings and Output";
+				group {
+					title:"Consensus Settings";
+					label-size:120;
+					extract-msa-consensus-sequence.algorithm {
+					}
+					extract-msa-consensus-sequence.threshold {
+					}
+					extract-msa-consensus-sequence.keep-gaps {
+					}
+				}
+				group {
+					title:"Output File";
+					label-size:120;
+					write-msa.url-out {
+                        label:"Save result to";
+                    }
+				}
+			}
+		}
+    }
+}
+

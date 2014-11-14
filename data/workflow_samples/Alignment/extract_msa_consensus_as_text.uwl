@@ -1,0 +1,70 @@
+#@UGENE_WORKFLOW
+#For each input multiple alignment the workflow calculates the consensus and saves it to the "consensus.txt" text file.  
+#
+#The JalView algorithm (denoted as "default") is used by default to calculate the consensus. For each column of the alignment it returns either "+", if there are 2 characters with high frequency in this column, or a character in uppercase or lowercase. The case of the character depends on the percentage value of the character in the column and the "threshold" value. 
+#
+#Alternatively, you can use the ClustalW algorithm to calculate the consensus. If all characters in a column are exactly the same, the algorithm sets asterisk value ("*") to the corresponding position of the consensus. Otherwise, it inserts space. The "threshold" parameter is not applied to this algorithm. 
+
+
+
+workflow "Extract consensus as text"{
+
+    read-msa {
+        type:read-msa;
+        name:"Read Alignment";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    write-text {
+        type:write-text;
+        name:"Write Plain Text";
+        url-out:consensus.txt;
+    }
+    extract-msa-consensus-string {
+        type:extract-msa-consensus-string;
+        name:"Extract Consensus from Alignment as Text";
+        algorithm:Clustal;
+    }
+
+    .actor-bindings {
+        read-msa.out-msa->extract-msa-consensus-string.in-msa
+        extract-msa-consensus-string.out-text->write-text.in-text
+    }
+
+    extract-msa-consensus-string.text->write-text.in-text.text
+    read-msa.msa->extract-msa-consensus-string.in-msa.msa
+
+    .meta {
+        visual {
+            extract-msa-consensus-string {
+                pos:"-518 -644";
+                style:ext;
+                bg-color-ext:"0 128 0 64";
+                in-msa.angle:180;
+                out-text.angle:360;
+            }
+            read-msa {
+                pos:"-758 -644";
+                style:ext;
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 68.25 69";
+                out-msa.angle:360;
+            }
+            write-text {
+                pos:"-209 -644";
+                style:ext;
+                bg-color-ext:"64 26 96 64";
+                bounds:"-30 -30 102 73";
+                in-text.angle:180;
+            }
+            extract-msa-consensus-string.out-text->write-text.in-text {
+                text-pos:"-30 -24";
+            }
+            read-msa.out-msa->extract-msa-consensus-string.in-msa {
+                text-pos:"-45 -50";
+            }
+        }
+    }
+}
+
