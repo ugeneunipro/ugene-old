@@ -111,6 +111,7 @@ DownloadRemoteFileDialog::DownloadRemoteFileDialog( const QString& id, const QSt
     ui->dasBox->hide();
     ui->formatBox->addItem(GENBANK_FORMAT);
     ui->formatBox->addItem(FASTA_FORMAT);
+    connect(ui->formatBox, SIGNAL(currentIndexChanged(const QString &)), SLOT(sl_formatChanged(const QString &)));
     adjustSize();
 
     ui->databasesBox->clear();
@@ -203,8 +204,12 @@ void DownloadRemoteFileDialog::accept()
         if (ui->formatBox->count() > 0) {
             fileFormat = ui->formatBox->currentText();
         }
+
+        QVariantMap hints;
+        hints.insert(FORCE_DOWNLOAD_SEQUENCE_HINT, ui->chbForceDownloadSequence->isVisible() && ui->chbForceDownloadSequence->isChecked());
+
         foreach (const QString& resId, resIds) {
-            tasks.append( new LoadRemoteDocumentAndOpenViewTask(resId, dbId, fullPath, fileFormat) );
+            tasks.append( new LoadRemoteDocumentAndOpenViewTask(resId, dbId, fullPath, fileFormat, hints) );
         }
 
         AppContext::getTaskScheduler()->registerTopLevelTask( new MultiTask("DownloadRemoteDocuments", tasks) );
@@ -248,10 +253,17 @@ bool DownloadRemoteFileDialog::isDefaultDb(const QString& dbId){
     return registry.hasDbId(dbId);
 }
 
+bool DownloadRemoteFileDialog::isNcbiDb(const QString &dbId) const {
+    return dbId == RemoteDBRegistry::GENBANK_DNA || dbId == RemoteDBRegistry::GENBANK_PROTEIN;
+}
+
 void DownloadRemoteFileDialog::sl_onDbChanged(){
     QString dbId = getDBId();
     QString hint;
     QString description;
+
+    ui->chbForceDownloadSequence->setVisible(isNcbiDb(dbId));
+
     if (isDefaultDb(dbId)) {
         RemoteDBRegistry& registry = RemoteDBRegistry::getRemoteDBRegistry();
         hint = description = registry.getHint(dbId);
@@ -281,6 +293,10 @@ void DownloadRemoteFileDialog::sl_onDbChanged(){
 
     setupHintText( hint );
     ui->idLineEdit->setToolTip(description);
+}
+
+void DownloadRemoteFileDialog::sl_formatChanged(const QString &format) {
+    ui->chbForceDownloadSequence->setVisible(GENBANK_FORMAT == format);
 }
 
 void DownloadRemoteFileDialog::sl_linkActivated( const QString& link ){

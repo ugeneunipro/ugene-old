@@ -27,10 +27,12 @@
 #include <U2Core/FailTask.h>
 #include <U2Core/GObjectRelationRoles.h>
 #include <U2Core/GObjectUtils.h>
+#include <U2Core/L10n.h>
 #include <U2Core/LoadRemoteDocumentTask.h>
 
 #include <U2Designer/DelegateEditors.h>
 
+#include <U2Gui/DialogUtils.h>
 #include <U2Gui/GUIUtils.h>
 
 #include <U2Lang/ActorModel.h>
@@ -41,6 +43,7 @@
 #include <U2Lang/BaseSlots.h>
 #include <U2Lang/BaseTypes.h>
 #include <U2Lang/WorkflowEnv.h>
+#include <U2Lang/WorkflowMonitor.h>
 
 #include "RemoteDBFetcherWorker.h"
 
@@ -52,6 +55,8 @@ namespace LocalWorkflow {
 const QString RemoteDBFetcherFactory::ACTOR_ID("fetch-sequence");
 static const QString TYPE("remote.seq");
 static const QString DBID_ID("database");
+static const QString SOURCE_CHOOSER_ID("ids-source");
+static const QString SOURCE_FILE_ID("ids-file");
 static const QString SEQID_ID("resource-id");
 static const QString PATH_ID("save-dir");
 static const QString DEFAULT_PATH("default");
@@ -61,11 +66,26 @@ static const QString DEFAULT_PATH("default");
 QString RemoteDBFetcherPrompter::composeRichDoc()
 {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
-    QStringList seqids = getParameter(SEQID_ID).value<QString>().split(";", QString::SkipEmptyParts);
-    QString seq = seqids.size() > 1 ?
-        RemoteDBFetcherWorker::tr("sequences identified with") :
-        RemoteDBFetcherWorker::tr("sequence identified with");
-    QString seqidsStr = seqids.isEmpty() ? unsetStr : QString("<u>%1</u>").arg(seqids.join(", "));
+
+    QString sourceId;
+    QString sourceDescString;
+    QString sourceLinkStr;
+    QStringList sourceValues;
+    if (RemoteDBFetcherFactory::idsListString == getParameter(SOURCE_CHOOSER_ID).toString()) {
+        sourceId = SEQID_ID;
+        sourceValues = getParameter(SEQID_ID).value<QString>().split(";", QString::SkipEmptyParts);
+        sourceDescString = sourceValues.size() > 1 ?
+                    RemoteDBFetcherWorker::tr("sequences identified with") :
+                    RemoteDBFetcherWorker::tr("sequence identified with");
+    } else {
+        sourceId = SOURCE_FILE_ID;
+        sourceValues = getParameter(SOURCE_FILE_ID).toString().split(";", QString::SkipEmptyParts);
+        sourceDescString = sourceValues.size() > 1 ?
+                    RemoteDBFetcherWorker::tr("sequences identified with resource IDs that will be read from files") :
+                    RemoteDBFetcherWorker::tr("sequences identified with resource IDs that will be read from file");
+    }
+    sourceLinkStr = sourceValues.isEmpty() ? unsetStr : QString("<u>%1</u>").arg(sourceValues.join(", "));
+
     
     QString dbid = getParameter(DBID_ID).value<QString>();
     dbid = RemoteDBFetcherFactory::cuteDbNames.key(dbid, dbid);
@@ -75,8 +95,8 @@ QString RemoteDBFetcherPrompter::composeRichDoc()
     QString saveDirStr = RemoteDBFetcherWorker::tr("Save result to <u>%1</u> directory.").arg(saveDir);
     
     return RemoteDBFetcherWorker::tr("Reads %1 %2 from <u>%3</u> remote database. %4").
-        arg(seq).
-        arg(getHyperlink(SEQID_ID, seqidsStr)).
+        arg(sourceDescString).
+        arg(getHyperlink(sourceId, sourceLinkStr)).
         arg(getHyperlink(DBID_ID, dbid)).
         arg(saveDirStr);
 }
@@ -97,7 +117,13 @@ void RemoteDBFetcherWorker::init()
         dbid = RemoteDBFetcherFactory::cuteDbNames.key(dbid.toLower());
         assert(!dbid.isEmpty());
     }
-    seqids = actor->getParameter(SEQID_ID)->getAttributeValue<QString>(context).split(";", QString::SkipEmptyParts);
+
+    idsSource = actor->getParameter(SOURCE_CHOOSER_ID)->getAttributeValue<QString>(context);
+    if (RemoteDBFetcherFactory::idsListString == idsSource) {
+        seqids = actor->getParameter(SEQID_ID)->getAttributeValue<QString>(context).split(";", QString::SkipEmptyParts);
+    } else {
+        idsFilePaths = actor->getParameter(SOURCE_FILE_ID)->getAttributeValue<QString>(context).split(";", QString::SkipEmptyParts);
+    }
     
     fullPathDir = actor->getParameter(PATH_ID)->getAttributeValue<QString>(context);
     if (fullPathDir == DEFAULT_PATH) {
@@ -119,27 +145,20 @@ Task* RemoteDBFetcherWorker::tick() {
         }
     }
     
-    Task *ret = 0;
     // fetch and load next file
-    QString seqId = "";
-    while (seqId.isEmpty()) {
-        if (seqids.isEmpty()) {
-            return ret;
-        }
-
-        seqId = seqids.takeFirst().trimmed();
-    }
+    const QString seqId = nextId();
 
     QVariantMap hints;
     hints[DocumentFormat::DBI_REF_HINT] = qVariantFromValue(context->getDataStorage()->getDbiRef());
-    ret = new LoadRemoteDocumentTask(seqId, dbid, fullPathDir, "", hints);
+    hints[FORCE_DOWNLOAD_SEQUENCE_HINT] = true;
+    Task *ret = new LoadRemoteDocumentTask(seqId, dbid, fullPathDir, GENBANK_FORMAT, hints);
     connect(ret, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
 
     return ret;
 }
 
 bool RemoteDBFetcherWorker::isDone() {
-    return (!dbid.isEmpty() && seqids.isEmpty());
+    return (!dbid.isEmpty() && seqids.isEmpty() && idsFilePaths.isEmpty());
 }
 
 void RemoteDBFetcherWorker::cleanup() {
@@ -153,8 +172,7 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
         return;
     }
 
-    if (loadTask->hasError())
-    {
+    if (loadTask->hasError()) {
         loadTask->setError(tr("failed to load item '%1' from '%2' DB : %3").arg(loadTask->getAccNumber(), loadTask->getDBName(), loadTask->getError()));
         return;
     }
@@ -162,9 +180,9 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
     Document *doc = loadTask->getDocument();
     SAFE_POINT(NULL != doc, "NULL document", );
     doc->setDocumentOwnsDbiResources(false);
+    monitor()->addOutputFile(doc->getURLString(), getActorId());
 
-    foreach(GObject *gobj, doc->findGObjectByType(GObjectTypes::SEQUENCE))
-    {
+    foreach(GObject *gobj, doc->findGObjectByType(GObjectTypes::SEQUENCE)) {
         U2SequenceObject *dnao = qobject_cast<U2SequenceObject*>(gobj);
         SAFE_POINT(NULL != dnao, "NULL sequence", );
 
@@ -194,15 +212,66 @@ void RemoteDBFetcherWorker::sl_taskFinished() {
         output->put(Message(messageType, messageData));
     }
 
-    if (seqids.isEmpty())
-    {
+    if (seqids.isEmpty() && idsFilePaths.isEmpty()) {
         output->setEnded();
     }
+}
+
+QString RemoteDBFetcherWorker::nextId() {
+    if (RemoteDBFetcherFactory::idsListString == idsSource) {
+        return getIdFromList();
+    } else {
+        return getIdFromFile();
+    }
+
+    return "";
+}
+
+QString RemoteDBFetcherWorker::getIdFromList() {
+    QString seqId;
+    while (seqId.isEmpty()) {
+        if (seqids.isEmpty()) {
+            return "";
+        }
+        seqId = seqids.takeFirst().trimmed();
+    }
+    return seqId;
+}
+
+QString RemoteDBFetcherWorker::getIdFromFile() {
+    QString seqId = getIdFromList();
+    if (!seqId.isEmpty()) {
+        return seqId;
+    }
+
+    bool hasError = false;
+    do {
+        hasError = false;
+        if (idsFilePaths.isEmpty()) {
+            return "";
+        }
+
+        QFile idsFile(idsFilePaths.takeFirst().trimmed());
+        hasError = !idsFile.open(QIODevice::ReadOnly);
+        if (hasError) {
+            monitor()->addError(L10N::errorOpeningFileRead(idsFile.fileName()), getActorId());
+            continue;
+        }
+
+        QString idsString = idsFile.readAll();
+        idsFile.close();
+        seqids = idsString.split("\n", QString::SkipEmptyParts);
+        return getIdFromList();
+    } while (hasError);
+
+    return seqId;
 }
 
 /* class RemoteDBFetcherFactory : public DomainFactory */
 
 const QMap<QString, QString> RemoteDBFetcherFactory::cuteDbNames = RemoteDBFetcherFactory::initCuteDbNames();
+const QString RemoteDBFetcherFactory::idsListString = RemoteDBFetcherWorker::tr("List of IDs");
+const QString RemoteDBFetcherFactory::localFileString = RemoteDBFetcherWorker::tr("File with IDs");
 
 QMap<QString, QString> RemoteDBFetcherFactory::initCuteDbNames() {
     QMap<QString, QString> ret;
@@ -248,10 +317,24 @@ void RemoteDBFetcherFactory::init()
                          RemoteDBFetcherWorker::tr("The database to read from."));
         attrs << new Attribute(dbidd, BaseTypes::STRING_TYPE(), true, cuteDbNames.value(defaultDB, defaultDB));
 
+        Descriptor sourceChooserDesc(SOURCE_CHOOSER_ID,
+                                     RemoteDBFetcherWorker::tr("Read resource ID(s) from source"),
+                                     RemoteDBFetcherWorker::tr("The source to read resource IDs from: the list or a local file."));
+        attrs << new Attribute(sourceChooserDesc, BaseTypes::STRING_TYPE(), true, idsListString);
+
+        Descriptor sourceFileDesc(SOURCE_FILE_ID,
+                                  RemoteDBFetcherWorker::tr("File with resource IDs"),
+                                  RemoteDBFetcherWorker::tr("A file with a list of resource ID`s in the database (one per line)."));
+        Attribute *sourceFileAttr = new Attribute(sourceFileDesc, BaseTypes::STRING_TYPE(), true, "");
+        sourceFileAttr->addRelation(new VisibilityRelation(SOURCE_CHOOSER_ID, localFileString));
+        attrs << sourceFileAttr;
+
         Descriptor seqidd(SEQID_ID,
                          RemoteDBFetcherWorker::tr("Resource ID(s)"),
                          RemoteDBFetcherWorker::tr("Semicolon-separated list of resource ID`s in the database."));
-        attrs << new Attribute(seqidd, BaseTypes::STRING_TYPE(), true, "");
+        Attribute *idsListAttr = new Attribute(seqidd, BaseTypes::STRING_TYPE(), true, "");
+        idsListAttr->addRelation(new VisibilityRelation(SOURCE_CHOOSER_ID, idsListString));
+        attrs << idsListAttr;
 
         Descriptor fullpathd(PATH_ID, 
                          RemoteDBFetcherWorker::tr("Save file to directory"), 
@@ -270,6 +353,12 @@ void RemoteDBFetcherFactory::init()
         }
         delegates[DBID_ID] = new ComboBoxDelegate(values);
 
+        QVariantMap sourceItems;
+        sourceItems.insert(idsListString, idsListString);
+        sourceItems.insert(localFileString, localFileString);
+        delegates[SOURCE_CHOOSER_ID] = new ComboBoxDelegate(sourceItems);
+
+        delegates[SOURCE_FILE_ID] = new URLDelegate(DialogUtils::prepareDocumentsFileFilter(true), QString(), true, false, false);
         delegates[SEQID_ID] = new StringListDelegate();
         delegates[PATH_ID] = new URLDelegate(QString(), QString(), false, true);
     }
@@ -321,10 +410,8 @@ QString FetchSequenceByIdFromAnnotationPrompter::composeRichDoc()
 
 Task* FetchSequenceByIdFromAnnotationWorker::tick() {
 
-    if(!QDir(fullPathDir).exists()) {
-        if(!QDir().mkpath(fullPathDir)) {
-            return new FailTask(tr("Cannot create directory '%1'").arg(fullPathDir));
-        }
+    if (!QDir(fullPathDir).exists() && !QDir().mkpath(fullPathDir)) {
+        return new FailTask(tr("Cannot create directory '%1'").arg(fullPathDir));
     }
 
     if (input->hasMessage()) {
@@ -346,9 +433,14 @@ Task* FetchSequenceByIdFromAnnotationWorker::tick() {
             }
         }
 
+        if (accIds.isEmpty()) {
+            return NULL;
+        }
+
         QVariantMap hints;
         hints[DocumentFormat::DBI_REF_HINT] = qVariantFromValue(context->getDataStorage()->getDbiRef());
-        Task* task = new LoadRemoteDocumentTask(accIds.join(","), dbId, "", "", hints);
+        hints[FORCE_DOWNLOAD_SEQUENCE_HINT] = true;
+        Task* task = new LoadRemoteDocumentTask(accIds.join(","), dbId, "", GENBANK_FORMAT, hints);
         connect(task, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return task;
     } else if (input->isEnded()) {
@@ -380,6 +472,7 @@ void FetchSequenceByIdFromAnnotationWorker::sl_taskFinished() {
     Document *doc = loadTask->getDocument();
     SAFE_POINT(NULL != doc, "NULL document", );
     doc->setDocumentOwnsDbiResources(false);
+    monitor()->addOutputFile(doc->getURLString(), getActorId());
 
     foreach(GObject *gobj, doc->findGObjectByType(GObjectTypes::SEQUENCE))
     {

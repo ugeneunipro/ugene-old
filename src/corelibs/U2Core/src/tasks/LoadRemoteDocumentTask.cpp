@@ -212,7 +212,7 @@ void LoadRemoteDocumentTask::prepare(){
                 setError(tr("Undefined database: '%1'").arg(dbName));
                 return;
             } else {
-                loadDataFromEntrezTask = new LoadDataFromEntrezTask(dbId, accNumber,format,fullPath);
+                loadDataFromEntrezTask = new LoadDataFromEntrezTask(dbId, accNumber, getRetType(), fullPath);
                 addSubTask(loadDataFromEntrezTask);
             }
         }
@@ -283,6 +283,15 @@ QList<Task*> LoadRemoteDocumentTask::onSubTaskFinished( Task* subTask ){
     }
     return subTasks;
 }
+
+QString LoadRemoteDocumentTask::getRetType() const {
+    if (hints.value(FORCE_DOWNLOAD_SEQUENCE_HINT, false).toBool()) {
+        return GENBANK_WITH_PARTS;
+    }
+
+    return format;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 RecentlyDownloadedCache::RecentlyDownloadedCache() {
     QStringList fileNames = AppContext::getAppSettings()->getUserAppsSettings()->getRecentlyDownloadedFileNames();

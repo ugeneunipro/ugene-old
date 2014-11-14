@@ -93,6 +93,7 @@ SearchGenbankSequenceDialogController::~SearchGenbankSequenceDialogController()
 void SearchGenbankSequenceDialogController::addQueryBlockWidget(QWidget *w)
 {
     ui->queryBuilderBox->layout()->addWidget(w);
+    w->setObjectName("query_block_widget_" + QString::number(ui->queryBuilderBox->children().size()));
 }
 
 void SearchGenbankSequenceDialogController::removeQueryBlockWidget(QWidget *w)
@@ -193,12 +194,14 @@ QueryBlockWidget::QueryBlockWidget(QueryBuilderController* controller, bool firs
         conditionBox->addItems(ctx.rules);
         connect(conditionBox, SIGNAL(currentIndexChanged(int)), controller, SLOT(sl_updateQuery()) );
         layout->addWidget(conditionBox);
+        conditionBox->setObjectName("condition_box");
     }
 
     termBox = new QComboBox(this);
     termBox->addItem("All fields");
     termBox->addItems(ctx.fields);
     connect(termBox, SIGNAL(currentIndexChanged(int)), controller, SLOT(sl_updateQuery()) );
+    termBox->setObjectName("term_box");
 
     queryEdit = new QLineEdit(this);
     queryEdit->setObjectName("queryEditLineEdit");
@@ -214,12 +217,13 @@ QueryBlockWidget::QueryBlockWidget(QueryBuilderController* controller, bool firs
         addBlockButton->setText("+");
         layout->addWidget(addBlockButton);
         connect(addBlockButton,  SIGNAL(clicked()), controller, SLOT(sl_addQueryBlockWidget()) );
-
+        addBlockButton->setObjectName("add_block_button");
     } else {
         QToolButton* removeBlockButton = new QToolButton();
         removeBlockButton->setText("-");
         layout->addWidget(removeBlockButton);
         connect(removeBlockButton,  SIGNAL(clicked()), controller, SLOT(sl_removeQueryBlockWidget()) );
+        removeBlockButton->setObjectName("remove_block_button");
     }
 
     setLayout(layout);

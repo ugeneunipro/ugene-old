@@ -42,6 +42,8 @@ namespace U2 {
 #define GENBANK_PROTEIN_ID "protein"
 #define GENBANK_FORMAT "gb"
 #define FASTA_FORMAT "fasta"
+#define GENBANK_WITH_PARTS "gbwithparts"
+#define FORCE_DOWNLOAD_SEQUENCE_HINT "gbwithparts"
 
 class Document;
 class CopyDataTask;
@@ -157,6 +159,8 @@ protected:
     QList<Task*> onSubTaskFinished(Task* subTask);
 
 private:
+    QString getRetType() const;
+
     GUrl fileUrl;
     bool openView;
     LoadDataFromEntrezTask* loadDataFromEntrezTask;
@@ -191,8 +195,10 @@ protected:
 class U2CORE_EXPORT LoadDataFromEntrezTask : public BaseEntrezRequestTask {
     Q_OBJECT
 public:
-    LoadDataFromEntrezTask(const QString& dbId, const QString& accNumber, const QString& retType,
-        const QString& fullPath);
+    LoadDataFromEntrezTask(const QString& dbId,
+                           const QString& accNumber,
+                           const QString& retType,
+                           const QString& fullPath);
 
     void run();
 

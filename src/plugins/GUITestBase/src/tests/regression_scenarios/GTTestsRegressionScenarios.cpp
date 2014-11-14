@@ -1348,7 +1348,7 @@ GUI_TEST_CLASS_DEFINITION(test_1708){
 
 GUI_TEST_CLASS_DEFINITION(test_1720){
 //1. Use menu {File->Access remote database...}
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "D11266", 0));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "D11266", 0));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     GTLogTracer l;
@@ -1356,7 +1356,7 @@ GUI_TEST_CLASS_DEFINITION(test_1720){
 //2. Fill field "Resource ID" with value D11266. Click "OK"
 
 //3. Use menu {File->Access remote database...}
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "D11266", 0));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "D11266", 0));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     GTGlobals::sleep(8000);
@@ -1370,7 +1370,7 @@ GUI_TEST_CLASS_DEFINITION(test_1786){
     // 1. Use menu {File->Access remote database...}
     // 2. Select database UniProt(DAS)
     // 3. Fill resource id: 1CRN. Press ok
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "1CRN", 7));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "1CRN", 7));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state: document P01542_das.gb appeared in project
@@ -1406,13 +1406,13 @@ GUI_TEST_CLASS_DEFINITION(test_1808) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1811) {
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "Q9IGQ6", 8));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "Q9IGQ6", 8));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
     GTGlobals::sleep(8000);//some time needed for request
 }
 GUI_TEST_CLASS_DEFINITION(test_1811_1) {
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "A0N8V2", 5));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "A0N8V2", 5));
     GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
 
@@ -1427,7 +1427,7 @@ GUI_TEST_CLASS_DEFINITION( test_1813 )
     //      Resource ID: I7G8J3
     //      Database: UniProt (DAS)
     // 3) Press "OK"
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "I7G8J3", 7));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "I7G8J3", 7));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseMouse);
 
     // Expected: the sequence view with I7G8J3 sequence is opened. UGENE does not crash.
@@ -2262,7 +2262,7 @@ GUI_TEST_CLASS_DEFINITION( test_2049 ){
 
 GUI_TEST_CLASS_DEFINITION( test_2070 ){
     GTLogTracer lt;
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFiller(os, "Q9IGQ6", 7));
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "Q9IGQ6", 7));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTGlobals::sleep();
     GTUtilsTaskTreeView::waitTaskFinished(os);
@@ -2832,7 +2832,7 @@ GUI_TEST_CLASS_DEFINITION( test_1924 )
 GUI_TEST_CLASS_DEFINITION(test_1986){
 //1. Run UGENE
 //2. Use main toolbar { File -> Search NCBI Genbank }
-    GTUtilsDialog::waitForDialog(os, new NCBISearchDialogFiller(os, "human", false,5));
+    GTUtilsDialog::waitForDialog(os, new NCBISearchDialogFillerDeprecated(os, "human", false,5));
 
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__SEARCH_GENBANK);
     GTGlobals::sleep();
@@ -3322,7 +3322,7 @@ GUI_TEST_CLASS_DEFINITION( test_2224_flow )
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2225_1 ){
-    Runnable *filler = new NCBISearchDialogFiller(os, "rat", true);
+    Runnable *filler = new NCBISearchDialogFillerDeprecated(os, "rat", true);
 
     GTUtilsDialog::waitForDialog(os, filler);
 
@@ -3331,7 +3331,7 @@ GUI_TEST_CLASS_DEFINITION( test_2225_1 ){
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2225_2 ){
-    Runnable *filler = new NCBISearchDialogFiller(os, "rat", true);
+    Runnable *filler = new NCBISearchDialogFillerDeprecated(os, "rat", true);
 
     GTUtilsDialog::waitForDialog(os, filler);
 
@@ -5490,7 +5490,7 @@ GUI_TEST_CLASS_DEFINITION(test_2829) {
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2853 ){
-    Runnable *filler = new NCBISearchDialogFiller(os, "rat");
+    Runnable *filler = new NCBISearchDialogFillerDeprecated(os, "rat");
 
     GTUtilsDialog::waitForDialog(os, filler);
 

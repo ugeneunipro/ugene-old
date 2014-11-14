@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>501</width>
-    <height>357</height>
+    <width>533</width>
+    <height>389</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -128,6 +128,19 @@
       <widget class="QComboBox" name="formatBox"/>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="chbForceDownloadSequence">
+     <property name="toolTip">
+      <string>Some entries in the NCBI databases contain features without a sequence. You can download both sequence and features by checking this parameter. Note that some sequences are rather big.</string>
+     </property>
+     <property name="text">
+      <string>Force download the appropriate sequence</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="dasBox">

@@ -20,6 +20,9 @@
    <string>NCBI Sequence Search</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinAndMaxSize</enum>
+   </property>
    <item>
     <widget class="QGroupBox" name="queryBuilderBox">
      <property name="title">

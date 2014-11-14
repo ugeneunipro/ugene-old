@@ -55,18 +55,23 @@ class U2GUI_EXPORT LoadRemoteDocumentAndOpenViewTask : public Task {
     Q_OBJECT
 public:
     LoadRemoteDocumentAndOpenViewTask(const QString& accId, const QString& dbName);
-    LoadRemoteDocumentAndOpenViewTask(const QString& accId, const QString& dbName, const QString& fullpath, 
-        const QString& format = QString());
+    LoadRemoteDocumentAndOpenViewTask(const QString& accId,
+                                      const QString& dbName,
+                                      const QString& fullpath,
+                                      const QString& format = QString(),
+                                      const QVariantMap& hints = QVariantMap());
     LoadRemoteDocumentAndOpenViewTask(const GUrl& url);
     virtual void prepare();
 protected:
     QList<Task*> onSubTaskFinished(Task* subTask);
 private:
-    QString accNumber, databaseName, fileFormat;
-    QString fullpath;
-    GUrl    docUrl;
+    QString     accNumber;
+    QString     databaseName;
+    QString     fileFormat;
+    QString     fullpath;
+    GUrl        docUrl;
+    QVariantMap hints;
     LoadRemoteDocumentTask* loadRemoteDocTask;
-
 };
 
 class U2GUI_EXPORT LoadDASDocumentsAndOpenViewTask : public Task {

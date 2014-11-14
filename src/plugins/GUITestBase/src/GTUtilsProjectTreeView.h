@@ -75,6 +75,7 @@ public:
     static bool checkItem(U2OpStatus &os, QTreeView *treeView, const QString &itemName, const QModelIndex& parent, const GTGlobals::FindOptions& options = GTGlobals::FindOptions());
 
     // the method does nothing if `acceptableTypes` is an empty set
+    static void checkObjectTypes(U2OpStatus &os, const QSet<GObjectType> &acceptableTypes, const QModelIndex &parent = QModelIndex());
     static void checkObjectTypes(U2OpStatus &os, QTreeView *treeView, const QSet<GObjectType> &acceptableTypes, const QModelIndex &parent = QModelIndex());
 
     static QString getSelectedItem(U2OpStatus &os);

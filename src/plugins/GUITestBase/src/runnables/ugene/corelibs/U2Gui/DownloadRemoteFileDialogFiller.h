@@ -26,26 +26,72 @@
 
 namespace U2 {
 
-    class RemoteDBDialogFiller : public Filler {
-    public:
-        RemoteDBDialogFiller(U2OpStatus &_os, const QString _resID, int _DBItemNum, bool _pressCancel = false, const QString _saveDirPath = QString(),
-                             GTGlobals::UseMethod _useMethod = GTGlobals::UseMouse, int _outFormatVal = -1)
-            :Filler(_os, "DownloadRemoteFileDialog"),
-              resID(_resID),
-              DBItemNum(_DBItemNum),
-              pressCancel(_pressCancel),
-              saveDirPath(_saveDirPath),
-              useMethod(_useMethod),
-              outFormatVal(_outFormatVal){}
-        virtual void run();
-    private:
-        QString resID;
-        int DBItemNum;
-        bool pressCancel;
-        QString saveDirPath;
-        GTGlobals::UseMethod useMethod;
-        int outFormatVal;
+class DownloadRemoteFileDialogFiller : public Filler {
+public:
+    enum ActionType {                           // An appropriate action data:
+        SetResourceIds,                         // QStringList with IDs
+        SetDatabase,                            // QString with exact database name
+        EnterSaveToDirectoryPath,               // QString with path
+        SelectSaveToDirectoryPath,              // QString with path
+        SetOutputFormat,                        // QString with format
+        SetForceSequenceDownload,               // bool value
+        SetDasFeatures,                         // QStringList with items to be checked
+        CheckForceSequenceDownloadVisibility,   // bool expected state (is visible)
+        CheckDasFeaturesVisibility,             // bool expected state (is visible)
+        ClickOk,                                // ignored
+        ClickCancel                             // ignored
     };
-}
 
-#endif
+    typedef QPair<ActionType, QVariant> Action;
+
+    DownloadRemoteFileDialogFiller(U2OpStatus &os, const QList<Action> &actions);
+
+    void run();
+
+private:
+    void setResourceIds(const QVariant &actionData);
+    void setDatabase(const QVariant &actionData);
+    void enterSaveToDirectoryPath(const QVariant &actionData);
+    void selectSaveToDirectoryPath(const QVariant &actionData);
+    void setOutputFormat(const QVariant &actionData);
+    void setForceSequenceDownload(const QVariant &actionData);
+    void setDasFeatures(const QVariant &actionData);
+    void checkForceSequenceDownloadVisibility(const QVariant &actionData);
+    void checkDasFeaturesVisibility(const QVariant &actionData);
+    void clickOk();
+    void clickCancel();
+
+    const QList<Action> actions;
+    QWidget *dialog;
+};
+
+// Use DownloadRemoteFileDialogFiller instead
+class RemoteDBDialogFillerDeprecated : public Filler {
+public:
+    RemoteDBDialogFillerDeprecated(U2OpStatus &_os, const QString _resID, int _DBItemNum, bool forceGetSequence = true, bool _pressCancel = false, const QString _saveDirPath = QString(),
+                         GTGlobals::UseMethod _useMethod = GTGlobals::UseMouse, int _outFormatVal = -1)
+        :Filler(_os, "DownloadRemoteFileDialog"),
+          resID(_resID),
+          DBItemNum(_DBItemNum),
+          forceGetSequence(forceGetSequence),
+          pressCancel(_pressCancel),
+          saveDirPath(_saveDirPath),
+          useMethod(_useMethod),
+          outFormatVal(_outFormatVal){}
+    virtual void run();
+private:
+    QString resID;
+    int DBItemNum;
+    bool forceGetSequence;
+    bool pressCancel;
+    QString saveDirPath;
+    GTGlobals::UseMethod useMethod;
+    int outFormatVal;
+};
+
+}   // namespace U2
+
+typedef QList<U2::DownloadRemoteFileDialogFiller::Action> DownloadRemoteFileDialogFillerAction;
+Q_DECLARE_METATYPE(DownloadRemoteFileDialogFillerAction)
+
+#endif // _U2_GT_RUNNABLES_DOWNLOAD_REMOTE_FILE_DIALOG_FILLER_H_

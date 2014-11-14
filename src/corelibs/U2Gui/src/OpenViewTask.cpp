@@ -233,18 +233,21 @@ LoadRemoteDocumentAndOpenViewTask::LoadRemoteDocumentAndOpenViewTask( const GUrl
     docUrl = url;
 }
 
-LoadRemoteDocumentAndOpenViewTask::LoadRemoteDocumentAndOpenViewTask(const QString& accId, const QString& dbName, const QString & fp, const QString& format) 
-: Task(tr("Load remote document and open view"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText), loadRemoteDocTask(NULL) {
-    accNumber = accId;
-    databaseName = dbName;
-    fullpath = fp;
-    fileFormat = format;
+LoadRemoteDocumentAndOpenViewTask::LoadRemoteDocumentAndOpenViewTask(const QString& accId, const QString& dbName, const QString & fp, const QString& format, const QVariantMap &hints) 
+: Task(tr("Load remote document and open view"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText),
+  accNumber(accId),
+  databaseName(dbName),
+  fileFormat(format),
+  fullpath(fp),
+  hints(hints),
+  loadRemoteDocTask(NULL)
+{
 }
 
 void LoadRemoteDocumentAndOpenViewTask::prepare()
 {
     if (docUrl.isEmpty()) {
-        loadRemoteDocTask = new LoadRemoteDocumentTask(accNumber, databaseName, fullpath, fileFormat);
+        loadRemoteDocTask = new LoadRemoteDocumentTask(accNumber, databaseName, fullpath, fileFormat, hints);
     } else {
         loadRemoteDocTask = new LoadRemoteDocumentTask(docUrl); 
     }

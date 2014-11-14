@@ -19,16 +19,69 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef NCBISEARCHDIALOGFILLER_H
-#define NCBISEARCHDIALOGFILLER_H
+#ifndef _U2_NCBI_SEARCH_DIALOG_FILLER_H_
+#define _U2_NCBI_SEARCH_DIALOG_FILLER_H_
 
 #include "GTUtilsDialog.h"
 
 namespace U2 {
-class NCBISearchDialogFiller : public Filler
-{
+
+class NcbiSearchDialogFiller : public Filler {
 public:
-    NCBISearchDialogFiller(U2OpStatus &os, QString _query, bool _doubleEnter = false, int _resultLimit=-1) :
+    enum ActionType {                   // An appropriate action data (as QVariant)
+        SetField,                       // QPair<int, QString> with a number of block and the combobox visible text
+        SetTerm,                        // QPair<int, QString> with a number of block and a query term
+        AddTerm,                        // ignored
+        RemoveTerm,                     // int with a 0-based number of term (including the primary term, the primary term cannot be removed)
+        SetDatabase,                    // QString with the combobox value
+        CheckQuery,                     // QString with the expected query
+        ClickResultByNum,               // int with a result's number (0-based)
+        ClickResultById,                // QString with a result's ID
+        ClickResultByDesc,              // QString with a result's description (exact case sensitive comparison)
+        ClickResultBySize,              // int with a result's size (the first results with this size will be clicked)
+        SelectResultsByNumbers,         // QList<int> with results numbers (0-based)
+        SelectResultsByIds,             // QStringList with results IDs
+        SelectResultsByDescs,           // QStringList with results descriptions (exact case sensitive comparison)
+        SelectResultsBySizes,           // QList<int> with results sizes
+        SetResultLimit,                 // int with the limit
+        ClickSearch,                    // ignored
+        ClickDownload,                  // QList with actions for the "Fetch from remote database" dialog filler
+        ClickClose                      // ignored
+    };
+    typedef QPair<ActionType, QVariant> Action;
+
+    NcbiSearchDialogFiller(U2OpStatus &os, const QList<Action> &actions);
+
+    void run();
+
+private:
+    void setField(const QVariant &actionData);
+    void setTerm(const QVariant &actionData);
+    void addTerm();
+    void removeTerm(const QVariant &actionData);
+    void setDatabase(const QVariant &actionData);
+    void checkQuery(const QVariant &actionData);
+    void clickResultByNum(const QVariant &actionData);
+    void clickResultById(const QVariant &actionData);
+    void clickResultByDesc(const QVariant &actionData);
+    void clickResultBySize(const QVariant &actionData);
+    void selectResultsByNumbers(const QVariant &actionData);
+    void selectResultsByIds(const QVariant &actionData);
+    void selectResultsByDescs(const QVariant &actionData);
+    void selectResultsBySizes(const QVariant &actionData);
+    void setResultLimit(const QVariant &actionData);
+    void clickSearch();
+    void clickDownload(const QVariant &actionData);
+    void clickClose();
+
+    QWidget *dialog;
+    QList<Action> actions;
+};
+
+// use NCBISearchDialogFillerDeprecated instead
+class NCBISearchDialogFillerDeprecated : public Filler {
+public:
+    NCBISearchDialogFillerDeprecated(U2OpStatus &os, QString _query, bool _doubleEnter = false, int _resultLimit=-1) :
         Filler(os, "SearchGenbankSequenceDialog"),
         query(_query),
         doubleEnter(_doubleEnter),
@@ -45,6 +98,10 @@ private:
     int getResultNumber();
 };
 
-}//namespace
+}   // namespace U2
 
-#endif // NCBISEARCHDIALOGFILLER_H
+typedef QPair<int, QString> intStringPair;
+Q_DECLARE_METATYPE(intStringPair)
+Q_DECLARE_METATYPE(QList<int>)
+
+#endif // _U2_NCBI_SEARCH_DIALOG_FILLER_H_

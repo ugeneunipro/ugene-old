@@ -56,11 +56,19 @@ private slots:
     void sl_taskFinished();
 
 protected:
+    QString nextId();
+    QString getIdFromList();
+    QString getIdFromFile();
+
     CommunicationChannel *output;
 
     QString dbid;
-    QString fullPathDir;
+
+    QString idsSource;
+    QStringList idsFilePaths;
     QStringList seqids;
+
+    QString fullPathDir;
 };
 
 class RemoteDBFetcherFactory : public DomainFactory
@@ -68,6 +76,8 @@ class RemoteDBFetcherFactory : public DomainFactory
 public:
     static const QString ACTOR_ID;
     static const QMap<QString, QString> cuteDbNames;
+    static const QString idsListString;
+    static const QString localFileString;
     
 private:
     static QMap<QString, QString> initCuteDbNames();
@@ -108,7 +118,8 @@ private slots:
 protected:
     IntegralBus *input;
     IntegralBus *output;
-    QString fullPathDir, dbId;
+    QString fullPathDir;
+    QString dbId;
 };
 
 class FetchSequenceByIdFromAnnotationFactory : public DomainFactory

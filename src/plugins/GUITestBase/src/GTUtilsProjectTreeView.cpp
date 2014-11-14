@@ -313,6 +313,12 @@ bool GTUtilsProjectTreeView::checkItem(U2OpStatus &os, QTreeView *treeView, cons
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "checkObjectTypes"
+void GTUtilsProjectTreeView::checkObjectTypes(U2OpStatus &os, const QSet<GObjectType> &acceptableTypes, const QModelIndex &parent) {
+    checkObjectTypes(os, getTreeView(os),  acceptableTypes, parent);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkObjectTypes"
 void GTUtilsProjectTreeView::checkObjectTypes(U2OpStatus &os, QTreeView *treeView, const QSet<GObjectType> &acceptableTypes, const QModelIndex &parent) {
     CHECK_SET_ERR(NULL != treeView, "Invalid tree view detected");
     CHECK(!acceptableTypes.isEmpty(), );
