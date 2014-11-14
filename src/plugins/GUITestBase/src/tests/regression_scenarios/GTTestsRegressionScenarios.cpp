@@ -4350,6 +4350,28 @@ GUI_TEST_CLASS_DEFINITION( test_2424 ) {
     GTUtilsWorkflowDesigner::checkErrorList(os, "Quality Filter Example: Empty script text");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2430 ) {
+//    1. Check the debug mode checkbox in the applications settings
+//    2. Add an element to the scene
+//    3. Open breakpoints manager
+//    4. Try to add the breakpoint to the element by shortcut (Ctrl+B)
+//    Current: nothing happens
+//    Expected: the breakpoint appears
+
+    GTUtilsWorkflowDesigner::toggleDebugMode(os);
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read sequence");
+    GTUtilsWorkflowDesigner::toggleBreakpointManager(os);
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read sequence"));
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyClick(os, 'b', GTKeyboardDriver::key["ctrl"]);
+
+    GTGlobals::sleep();
+    QStringList breakpoints = GTUtilsWorkflowDesigner::getBreakpointList(os);
+    CHECK_SET_ERR(breakpoints.size() == 1, "Wrong amount of breakpoints!");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2449 ) {
 //    1. Open "COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");
@@ -4527,7 +4549,7 @@ GUI_TEST_CLASS_DEFINITION( test_2496 ) {
 GUI_TEST_CLASS_DEFINITION( test_2498 ) {
     // 1. Open the /test/_common_data/fasta/empty.fa empty msa file.
     // 2. Open context menu on the sequence area. Go to the {Export -> amino translation}
-    // 
+    //
 
     GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "empty.fa");
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
@@ -4795,6 +4817,36 @@ GUI_TEST_CLASS_DEFINITION( test_2578 ) {
     exportButton = GTWidget::findWidget(os, "exportHighlightning");
     CHECK_SET_ERR(NULL != exportButton, "exportButton not found");
     CHECK_SET_ERR(exportButton->isEnabled(), "exportButton is disabled unexpectedly");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2579 ) {
+//  Linux:
+//  1. Click the menu Settings -> Preferences -> External Tools.
+//  2. Find the MAFFT item and if it has the active red cross, click it.
+//  3. Click the MAFFT's browse button and add the MAFFT executable from UGENE external tools package.
+//  Expected: there are no errors in the log.
+
+    class MafftInactivation : public CustomScenario {
+    public:
+        MafftInactivation() {}
+        virtual void run(U2::U2OpStatus &os) {
+            QString path = AppSettingsDialogFiller::getExternalToolPath(os, "MAFFT");
+            AppSettingsDialogFiller::clearToolPath(os, "MAFFT");
+            AppSettingsDialogFiller::setExternalToolPath(os, "MAFFT", path);
+
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new MafftInactivation()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+
+    GTUtilsLog::check(os, l);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2605 ) {

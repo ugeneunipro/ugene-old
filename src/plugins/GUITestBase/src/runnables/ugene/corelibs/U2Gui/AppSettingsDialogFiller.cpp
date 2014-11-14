@@ -32,6 +32,7 @@
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
 #include <QtGui/QListWidget>
+#include <QtGui/QToolButton>
 #include <QtGui/QTreeWidget>
 #include <QtGui/QComboBox>
 #include <QtGui/QDialogButtonBox>
@@ -39,6 +40,7 @@
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QListWidget>
+#include <QtWidget/QToolButton>
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialogButtonBox>
@@ -176,6 +178,29 @@ bool AppSettingsDialogFiller::isExternalToolValid(U2OpStatus &os, const QString 
         }
     }
     GT_CHECK_RESULT(false, "external tool " + toolName + " not found in tree view", false);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "clearToolPath"
+void AppSettingsDialogFiller::clearToolPath(U2OpStatus &os, const QString &toolName) {
+    QWidget *dialog = QApplication::activeModalWidget();
+    GT_CHECK(dialog, "activeModalWidget is NULL");
+
+    openTab(os, ExternalTools);
+
+    QTreeWidget* treeWidget = GTWidget::findExactWidget<QTreeWidget*>(os, "treeWidget", dialog);
+    QList<QTreeWidgetItem*> listOfItems = treeWidget->findItems("", Qt::MatchContains | Qt::MatchRecursive);
+    foreach (QTreeWidgetItem* item, listOfItems){
+        if(item->text(0) == "MAFFT"){
+            QWidget* itemWid = treeWidget->itemWidget(item, 1);
+            QToolButton* clearPathButton = itemWid->findChild<QToolButton*>("ClearToolPathButton");
+            CHECK_SET_ERR(clearPathButton != NULL, "Clear path button not found");
+            treeWidget->scrollToItem(item);
+            if (clearPathButton->isEnabled()) {
+                GTWidget::click(os, clearPathButton);
+            }
+        }
+    }
 }
 #undef GT_METHOD_NAME
 

@@ -687,6 +687,7 @@ void WorkflowView::createActions() {
 
     toggleBreakpointManager = new QAction("Show or hide breakpoint manager", this);
     toggleBreakpointManager->setIcon(QIcon(":workflow_designer/images/show_breakpoint_manager.png"));
+    toggleBreakpointManager->setObjectName("Show or hide breakpoint manager");
     connect(toggleBreakpointManager, SIGNAL(triggered()), SLOT(sl_toggleBreakpointManager()));
 
 

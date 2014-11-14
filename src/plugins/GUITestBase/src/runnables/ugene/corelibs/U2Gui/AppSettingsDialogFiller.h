@@ -42,6 +42,7 @@ public:
     static QString getExternalToolPath(U2OpStatus &os, const QString& toolName);
     static void openTab(U2OpStatus &os, Tabs tab);
     static bool isExternalToolValid(U2OpStatus &os, const QString& toolName);
+    static void clearToolPath(U2OpStatus &os, const QString& toolName);
 private:
     style itemStyle;
     int r,g,b;
