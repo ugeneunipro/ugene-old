@@ -8102,6 +8102,63 @@ GUI_TEST_CLASS_DEFINITION(test_3443) {
     CHECK_SET_ERR(!codonTableWidget->isVisible(), "Codon table is expected to be invisible");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3450) {
+//    1. Open file "COI.aln"
+//    2. Open "Highlighting" options panel tab
+//    3. Set reference sequence
+//    4. Set highlighting scheme
+//    5. Press "Export" button in the tab
+//    Expected state: "Export highlighted to file" dialog appeared, there is default file in "Export to file"
+//    6. Delete the file path and press "Export" button
+//    Expected state: message box appeared
+//    6. Set the result file and press "Export" button
+//    Current state: file is empty, but error is not appeared
+
+    GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTWidget::click(os, GTWidget::findWidget(os, "sequenceLineEdit"));
+    GTKeyboardDriver::keySequence(os, "Montana_montana");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep(300);
+
+    QComboBox* combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
+    CHECK_SET_ERR(combo != NULL, "highlightingScheme not found!");
+    GTComboBox::setIndexWithText(os, combo , "Agreements");
+
+    QWidget* exportButton = GTWidget::findWidget(os, "exportHighlightning");
+    CHECK_SET_ERR(exportButton != NULL, "exportButton not found");
+
+    class ExportHighlightedDialogFiller : public Filler {
+    public:
+        ExportHighlightedDialogFiller(U2OpStatus &os)
+            : Filler(os, "ExportHighlightedDialog") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR( dialog, "activeModalWidget is NULL");
+
+            QLineEdit *filePath = dialog->findChild<QLineEdit*>("fileNameEdit");
+            CHECK_SET_ERR( filePath != NULL, "fileNameEdit is NULL");
+            CHECK_SET_ERR( !GTLineEdit::copyText(os, filePath).isEmpty(), "Default file path is empty");
+            GTLineEdit::setText(os, filePath, "");
+
+            QPushButton *exportButton = dialog->findChild<QPushButton*>();
+            CHECK_SET_ERR(exportButton != NULL, "ExportButton is NULL");
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Ok"));
+            GTWidget::click(os, exportButton);
+
+            GTLineEdit::setText(os, filePath, sandBoxDir + "test_3450_export_hl.txt");
+            GTWidget::click(os, exportButton);
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new ExportHighlightedDialogFiller(os));
+    GTWidget::click(os, exportButton);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(GTFile::getSize(os, sandBoxDir + "test_3450_export_hl.txt") != 0, "Exported file is empty!");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3452) {
     //1. Open "samples/Genbank/murine.gb".
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
