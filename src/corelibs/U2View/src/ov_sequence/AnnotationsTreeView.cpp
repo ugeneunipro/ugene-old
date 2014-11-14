@@ -107,7 +107,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
     tree->setSelectionMode(QAbstractItemView::ExtendedSelection);
     tree->viewport()->installEventFilter(this);
     tree->setMouseTracking(true);
-    tree->setAutoScroll(false);
+    tree->setAutoScroll(true);
 
     connect(tree, SIGNAL(itemEntered(QTreeWidgetItem*, int)), SLOT(sl_itemEntered(QTreeWidgetItem*, int)));
     connect(tree, SIGNAL(itemClicked(QTreeWidgetItem*, int)), SLOT(sl_itemClicked(QTreeWidgetItem*, int)));
