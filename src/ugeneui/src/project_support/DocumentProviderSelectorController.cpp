@@ -75,14 +75,17 @@ int DocumentProviderSelectorController::selectResult(const GUrl& url, const QLis
         QHBoxLayout *blockLayout = new QHBoxLayout();
 
         QRadioButton *rbFormat = new QRadioButton();
+        rbFormat->setObjectName(text + "_radio");
         rbFormat->setChecked(i == 0);
         d.formatsRadioButtons << rbFormat;
 
         QLabel *lblDescription = new QLabel(text);
+        lblDescription->setObjectName(text + "_label");
         lblDescription->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         lblDescription->setSizePolicy(QSizePolicy::Expanding, lblDescription->sizePolicy().verticalPolicy());
 
         QToolButton* tbMore = new QToolButton();
+        tbMore->setObjectName(text + "_more");
         tbMore->setText(tr("more.."));
         tbMore->setEnabled(!result.getFormatDescriptionText().isEmpty());
 

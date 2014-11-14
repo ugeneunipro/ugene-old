@@ -119,6 +119,7 @@
 #include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
 #include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
+#include "runnables/ugene/ugeneui/DocumentProviderSelectorDialogFiller.h"
 #include "runnables/ugene/ugeneui/NCBISearchDialogFiller.h"
 #include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
 #include "runnables/ugene/ugeneui/SelectDocumentFormatDialogFiller.h"
@@ -3577,6 +3578,8 @@ GUI_TEST_CLASS_DEFINITION( test_2292 ){
     GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, destName));
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "There is opened view with destination file"));
     GTFileDialog::openFile(os, testDir+"_common_data/ugenedb/", "example-alignment.ugenedb");
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller
+                                 (os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
     GTFileDialog::openFile(os, dataDir+"samples/ACE", "K26.ace");
 
 
@@ -4087,6 +4090,8 @@ GUI_TEST_CLASS_DEFINITION( test_2382 ) {
 
     QString sandboxDir = testDir + "_common_data/scenarios/sandbox/";
     QString assDocName = "test_2382.ugenedb";
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller
+                                 (os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
     GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandboxDir + assDocName));
     GTFileDialog::openFile(os, testDir + "_common_data/ace/", "capres4.ace");
 
@@ -4104,6 +4109,8 @@ GUI_TEST_CLASS_DEFINITION( test_2382_1 ) {
 
     QString sandboxDir = testDir + "_common_data/scenarios/sandbox/";
     QString assDocName = "test_2382_1.ugenedb";
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller
+                                 (os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
     GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandboxDir + assDocName));
     GTFileDialog::openFile(os, testDir + "_common_data/ace/", "test_new.cap.ace");
 
@@ -4132,6 +4139,8 @@ GUI_TEST_CLASS_DEFINITION( test_2401 ) {
     QString sandbox = testDir + "_common_data/scenarios/sandbox/";
     QString fileName = "2401.ugenedb";
     QString ugenedb = sandbox + fileName;
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller
+                                 (os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
     GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, ugenedb));
     GTFileDialog::openFile(os, testDir + "_common_data/ace/", "ace_test_1.ace");
 
@@ -4150,6 +4159,8 @@ GUI_TEST_CLASS_DEFINITION( test_2401 ) {
     // 6. Set the same ugenedb path for import: "_common_data/scenarios/sandbox/2401.ugenedb".
     // 7. Click OK.
     // 8. Click Append.
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller
+                                 (os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
     GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, ugenedb, ConvertAceToSqliteDialogFiller::APPEND));
     GTFileDialog::openFile(os, testDir + "_common_data/ace/", "ace_test_11_(error).ace");
 
@@ -5934,6 +5945,8 @@ GUI_TEST_CLASS_DEFINITION(test_2924) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2930){
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller
+                                 (os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
     GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandBoxDir + "test_2930"));
     GTFileDialog::openFile(os, dataDir+"samples/ACE", "K26.ace");
 
@@ -6527,6 +6540,8 @@ GUI_TEST_CLASS_DEFINITION(test_3126) {
 //    Expected: the file is imported, UGENE does not crash.
     GTLogTracer l;
 
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller
+                                 (os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
     GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os,
                                                                         sandBoxDir + "test_3126"));
     GTFileDialog::openFile(os, testDir + "_common_data/ace/", "ace_test_1.ace");
