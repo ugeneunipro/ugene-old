@@ -59,23 +59,6 @@ GUI_TEST_CLASS_DEFINITION(test_0000) {
 #ifdef Q_OS_WIN
     QProcess::execute("closeAllErrors.exe"); //this exe file, compiled Autoit script
 #endif
-    //temporary code for tracking file content
-    uiLog.trace("ma2_gapped.aln content");
-    QFile f(testDir + "/_common_data/scenarios/msa/ma2_gapped.aln");
-    QString s;
-    if(f.open(QFile::ReadOnly)){
-        while(1){
-            QByteArray b = f.readLine(1024);
-            if(b.isEmpty()){
-                break;
-            }
-            s.append(b);
-        }
-        uiLog.trace(s);
-    }else{
-        uiLog.error("FILE NOT FOUND");
-    }
-
     GTUtilsDialog::cleanup(os);
 }
 
@@ -116,7 +99,9 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
     }
 }
 GUI_TEST_CLASS_DEFINITION(test_0005){
+#ifdef Q_OS_WIN
     GTUtilsTaskTreeView::waitTaskFinished(os);
+#endif
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
@@ -147,6 +132,21 @@ GUI_TEST_CLASS_DEFINITION(post_test_0000){
 GUI_TEST_CLASS_DEFINITION(post_test_0001) {
     GTUtilsDialog::cleanup(os);
     GTClipboard::text(os);
+//#ifdef Q_OS_WIN
+    TaskScheduler* scheduller = AppContext::getTaskScheduler();
+    QString s;
+    foreach (Task* t, scheduller->getTopLevelTasks()) {
+        s.append(t->getTaskName() + '\n');
+    }
+    if(!s.isEmpty()){
+        QFile f(testDir + QDateTime::currentDateTime().toString() + ".txt");
+        f.open(QFile::ReadWrite);
+        f.write(s.toUtf8());
+        f.close();
+    }
+
+//#endif
+
 }
 
 GUI_TEST_CLASS_DEFINITION(post_test_0002) {
