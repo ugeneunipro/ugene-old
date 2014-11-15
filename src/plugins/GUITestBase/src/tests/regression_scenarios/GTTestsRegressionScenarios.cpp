@@ -8272,6 +8272,66 @@ GUI_TEST_CLASS_DEFINITION(test_3450) {
     CHECK_SET_ERR(GTFile::getSize(os, sandBoxDir + "test_3450_export_hl.txt") != 0, "Exported file is empty!");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3451) {
+    //    1. Open file "COI.aln"
+    //    2. Open "Highlighting" options panel tab
+    //    3. Set reference sequence
+    //    4. Set highlighting scheme
+    //    5. Press "Export" button in the tab
+    //    Expected state: "Export highlighted to file" dialog appeared, there is default file in "Export to file"
+    //    6. Set the "from" as 5, "to" as 6
+    //    7. Set the "to" as 5
+    //    Expected state: "from" is 4
+
+
+    GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+    GTWidget::click(os, GTWidget::findWidget(os, "sequenceLineEdit"));
+    GTKeyboardDriver::keySequence(os, "Montana_montana");
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+    GTGlobals::sleep(300);
+
+    QComboBox* combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "highlightingScheme"));
+    CHECK_SET_ERR(combo != NULL, "highlightingScheme not found!");
+    GTComboBox::setIndexWithText(os, combo , "Agreements");
+
+    QWidget* exportButton = GTWidget::findWidget(os, "exportHighlightning");
+    CHECK_SET_ERR(exportButton != NULL, "exportButton not found");
+
+    class CancelExportHighlightedDialogFiller : public Filler {
+    public:
+        CancelExportHighlightedDialogFiller(U2OpStatus &os)
+            : Filler(os, "ExportHighlightedDialog") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR( dialog, "activeModalWidget is NULL");
+
+            QSpinBox *startPos = dialog->findChild<QSpinBox*>("startPosBox");
+            CHECK_SET_ERR( startPos != NULL, "startPosBox is NULL");
+
+            QSpinBox *endPos = dialog->findChild<QSpinBox*>("endPosBox");
+            CHECK_SET_ERR( endPos != NULL, "endPosBox is NULL");
+
+            GTSpinBox::checkLimits(os, startPos, 1, 603);
+            GTSpinBox::checkLimits(os, endPos, 2, 604); 
+
+            //GTGlobals::sleep();
+
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+            QPushButton* button = box->button(QDialogButtonBox::Cancel);
+            CHECK_SET_ERR(button !=NULL, "Cancel button is NULL");
+            GTWidget::click(os, button);
+
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new CancelExportHighlightedDialogFiller(os));
+    GTWidget::click(os, exportButton);
+    GTGlobals::sleep();
+
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3452) {
     //1. Open "samples/Genbank/murine.gb".
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
