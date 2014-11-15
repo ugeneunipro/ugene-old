@@ -116,6 +116,7 @@
 #include "runnables/ugene/plugins_3rdparty/hmm3/UHMM3PhmmerDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.h"
 #include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
 #include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
 #include "runnables/ugene/ugeneui/DocumentFormatSelectorDialogFiller.h"
@@ -4859,6 +4860,91 @@ GUI_TEST_CLASS_DEFINITION( test_2579 ) {
 
     GTUtilsLog::check(os, l);
 }
+GUI_TEST_CLASS_DEFINITION(test_2581) {
+
+    // 1. Open file "_common_data/scenarios/msa/ma2_gapped_same_names.aln"
+    // 2. Use context menu { Align -> Align with MUSCLE }
+    // Expected state: the "Align with MUSCLE" dialog has appeared
+    // 3. Press the "Align" button
+    // Expected state: after a few seconds alignment has finished, UGENE does not crash
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped_same_names.aln");
+
+    GTUtilsDialog::waitForDialog(os, new MuscleDialogFiller(os, MuscleDialogFiller::Default));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with muscle", GTGlobals::UseMouse));
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTGlobals::sleep();
+    GTUtilsLog::check(os, l);
+
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2581_1) {
+    // 1. Open file "_common_data/scenarios/msa/ma2_gapped_same_names.aln"
+    // 2. Use context menu { Align -> Align with ClustalW }
+    // Expected state: the "Align with ClustalW" dialog has appeared
+    // 3. Press the "Align" button
+    // Expected state: after a few seconds alignment has finished, UGENE does not crash
+
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped_same_names.aln");
+
+    GTUtilsDialog::waitForDialog(os, new ClustalWDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with ClustalW", GTGlobals::UseMouse));
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTGlobals::sleep();
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2581_4) {
+    // 1. Open file "_common_data/scenarios/msa/ma2_gapped_same_names.aln"
+    // 2. Use context menu { Align -> Align with T-Coffee }
+    // Expected state: the "Align with T-Coffee" dialog has appeared
+    // 3. Press the "Align" button
+    // Expected state: after a few seconds alignment has finished, UGENE does not crash
+
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped_same_names.aln");
+
+    GTUtilsDialog::waitForDialog(os, new TCoffeeDailogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with T-Coffee", GTGlobals::UseMouse));
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTGlobals::sleep();
+    GTUtilsLog::check(os, l);  
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2581_5) {
+    // 1. Open file "_common_data/scenarios/msa/ma2_gapped_same_names.aln"
+    // 2. Use context menu { Align -> Align with Kalign }
+    // Expected state: the "Align with Kalign" dialog has appeared
+    // 3. Press the "Align" button
+    // Expected state: after a few seconds alignment has finished, UGENE does not crash
+
+    GTLogTracer l;
+
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped_same_names.aln");
+
+    GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with Kalign", GTGlobals::UseMouse));
+
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    GTGlobals::sleep();
+    GTUtilsLog::check(os, l);  
+}
+
 
 GUI_TEST_CLASS_DEFINITION( test_2605 ) {
     GTLogTracer logTracer;
@@ -5297,7 +5383,34 @@ GUI_TEST_CLASS_DEFINITION(test_2737_1) {
     //Expected state: no errors in the log
     CHECK_SET_ERR(!l.hasError(), "Errors in log");
 }
+GUI_TEST_CLASS_DEFINITION(test_2773) {
 
+    // 1. Open file test/_common_data/cmdline/custom-script-worker-functions/translateTest/translateTest.uwl
+    // 2. Set parameters:
+    // input: _common_data/cmdline/DNA.fa
+    // offset: sss
+    // out: some/valid/path
+    // 3. run sheme.
+    // Expected state: UGENE doesn't crash, error message appears.
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/cmdline/custom-script-worker-functions/translateTest/", "translateTest.uwl");
+
+    GTUtilsWorkflowDesigner::click(os, "Read Sequence");
+    GTUtilsWorkflowDesigner::setDatasetInputFile( os, testDir + "_common_data/cmdline/", "DNA.fa" );
+
+    GTUtilsWorkflowDesigner::click(os, "translateTest");
+    GTUtilsWorkflowDesigner::setParameter( os, "offset", "sss", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::click(os, "Write sequence");
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", "_common_data/cmdline/result_test_offset", GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTWidget::click(os,GTAction::button(os,"Run workflow"));
+    GTGlobals::sleep();
+
+    GTUtilsLog::check(os, l);
+}
 GUI_TEST_CLASS_DEFINITION(test_2778) {
     //1. Use main menu : tools->align to reference->align short reads
     //2. Set input parameters
