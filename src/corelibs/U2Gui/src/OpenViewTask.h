@@ -78,9 +78,13 @@ class U2GUI_EXPORT LoadDASDocumentsAndOpenViewTask : public Task {
     Q_OBJECT
 public:
     LoadDASDocumentsAndOpenViewTask(const QString& accId, const QString& fullPath, const DASSource& referenceSource, const QList<DASSource>& featureSources, bool convertId = true);
+
     virtual void prepare();
+    QString generateReport() const;
+
 protected:
     QList<Task*> onSubTaskFinished(Task* subTask);
+
 private:
     QString                             accNumber;
     QString                             fullpath;

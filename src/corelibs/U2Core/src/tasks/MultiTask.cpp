@@ -63,6 +63,18 @@ Task::ReportResult MultiTask::report(){
     return Task::ReportResult_Finished;
 }
 
+QString MultiTask::generateReport() const {
+    QString report = "<hr><br>";
+    foreach (Task *subtask, tasks) {
+        if (subtask->hasFlags(TaskFlags(TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled))) {
+            report += QString("Subtask <b>'%1'</b>:<br><br>").arg(subtask->getTaskName());
+            report += subtask->generateReport();
+            report += "<br><hr><br>";
+        }
+    }
+    return report;
+}
+
 //////////////////////////////////////////////////////////////////////////
 //SequentialMultiTask
 SequentialMultiTask::SequentialMultiTask( const QString & name, const QList<Task *>& taskz, TaskFlags f )
@@ -81,6 +93,10 @@ void SequentialMultiTask::prepare(){
 
 QList<Task*> SequentialMultiTask::onSubTaskFinished( Task* subTask ){
     QList<Task*> res;
+
+    if (!hasFlags(TaskFlags(TaskFlag_FailOnSubtaskError))) {
+        taskLog.error(tr("Task has finished with an error: ") + subTask->getError());
+    }
 
     int idx = tasks.indexOf(subTask);
     if (( idx != -1 ) && (idx + 1 < tasks.size())){

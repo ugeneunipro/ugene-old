@@ -188,11 +188,12 @@ class U2CORE_EXPORT ConvertIdAndLoadDasDocumentTask : public Task {
     Q_OBJECT
 public:
     ConvertIdAndLoadDasDocumentTask(const QString& accId, const QString& fullPath, const DASSource& referenceSource, const QList<DASSource>& featureSources, bool convertId = false);
+
+    QString getConvertedAccessionNumber() const;
     Document* getDocument() { return loadDasDocumentTask->getDocument(); }
     Document* takeDocument() { return loadDasDocumentTask->takeDocument(); }
     QString getLocalUrl() { return loadDasDocumentTask->getLocalUrl(); }
 
-    virtual void run() {}
     virtual void prepare();
     virtual QList<Task*> onSubTaskFinished(Task *subTask);
 

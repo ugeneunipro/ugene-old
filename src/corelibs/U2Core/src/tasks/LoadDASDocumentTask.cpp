@@ -445,7 +445,7 @@ ConvertIdAndLoadDasDocumentTask::ConvertIdAndLoadDasDocumentTask(const QString& 
                                                                  const DASSource& _referenceSource,
                                                                  const QList<DASSource>& _featureSources,
                                                                  bool _convertId) :
-    Task(QString("Convert ID and load DAS document for: %1").arg(accId), TaskFlags(TaskFlag_CancelOnSubtaskCancel | TaskFlag_MinimizeSubtaskErrorText)),
+    Task(QString("Convert ID and load DAS document for: %1").arg(accId), TaskFlags(TaskFlag_NoRun | TaskFlag_CancelOnSubtaskCancel | TaskFlag_MinimizeSubtaskErrorText)),
     convertDasIdTask(NULL),
     loadDasDocumentTask(NULL),
     accessionNumber(accId),
@@ -455,6 +455,12 @@ ConvertIdAndLoadDasDocumentTask::ConvertIdAndLoadDasDocumentTask(const QString& 
     convertId(_convertId)
 {
 
+}
+
+QString ConvertIdAndLoadDasDocumentTask::getConvertedAccessionNumber() const {
+    CHECK(NULL != convertDasIdTask && convertDasIdTask->isFinished(), "");
+    CHECK(!convertDasIdTask->isCanceled() && !convertDasIdTask->hasError(), "");
+    return convertDasIdTask->getAccessionNumber();
 }
 
 void ConvertIdAndLoadDasDocumentTask::prepare() {

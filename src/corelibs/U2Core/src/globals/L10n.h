@@ -22,6 +22,8 @@
 #ifndef _U2_L10N_H_
 #define _U2_L10N_H_
 
+#include <QColor>
+
 #include <U2Core/global.h>
 #include <U2Core/GUrl.h>
 
@@ -76,6 +78,10 @@ public:
 
     static QString errorColorTextFieldStr() { return "rgb(255, 152, 142)"; }
     static QString errorColorLabelStr() { return "rgb(166, 57, 46)"; }
+    static QString errorColorLabelHtmlStr() { return "#A6392E"; }   // the same as errorColorLabelStr()
+    static QColor successColor() { return QColor("green"); }
+    static QString successColorLabelHtmlStr() { return successColor().name(); }
+    static QString successColorLabelStr() { return QString("rgb(%1, %2, %2)").arg(successColor().red()).arg(successColor().green()).arg(successColor().blue()); }
     static QString linkColorLabelStr() {
 #ifdef Q_OS_MAC
         return "gray";

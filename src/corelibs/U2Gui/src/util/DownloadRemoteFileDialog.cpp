@@ -234,7 +234,7 @@ void DownloadRemoteFileDialog::accept()
                 foreach (const QString& resId, resIds) {
                     tasks.append( new LoadDASDocumentsAndOpenViewTask(resId, fullPath, refSource, featureSources));
                 }
-                AppContext::getTaskScheduler()->registerTopLevelTask( new MultiTask("LoadDASDocuments", tasks, false, TaskFlags(TaskFlag_FailOnSubtaskCancel | TaskFlag_NoRun)) );
+                AppContext::getTaskScheduler()->registerTopLevelTask( new MultiTask("LoadDASDocuments", tasks, false, TaskFlags(TaskFlag_NoRun | TaskFlag_ReportingIsEnabled | TaskFlag_ReportingIsSupported)) );
             }
         }
     }

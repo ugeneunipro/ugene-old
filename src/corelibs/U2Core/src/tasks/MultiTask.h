@@ -39,6 +39,7 @@ public:
     QList<Task*> getTasks() const;
 
     ReportResult report();
+    QString generateReport() const;
 
 private:
     StateLock *l;

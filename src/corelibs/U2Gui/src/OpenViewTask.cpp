@@ -21,6 +21,7 @@
 
 #include "OpenViewTask.h"
 
+#include <U2Core/L10n.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/ProjectModel.h>
@@ -354,7 +355,7 @@ QList<Task*> AddDocumentAndOpenViewTask::onSubTaskFinished(Task* t) {
 //////////////////////////////////////////////////////////////////////////
 //LoadDASDocumentsAndOpenViewTask
 LoadDASDocumentsAndOpenViewTask::LoadDASDocumentsAndOpenViewTask( const QString& accId, const QString& _fullPath, const DASSource& _referenceSource, const QList<DASSource>& _featureSources, bool _convertId )
-: Task(tr("Load DAS documents and open view"), TaskFlags_NR_FOSCOE | TaskFlag_MinimizeSubtaskErrorText)
+: Task(tr("Load DAS documents and open view"), TaskFlags_NR_FOSE_COSC | TaskFlag_MinimizeSubtaskErrorText | TaskFlag_ReportingIsSupported | TaskFlag_ReportingIsEnabled)
 ,accNumber(accId)
 ,fullpath(_fullPath)
 ,referenceSource(_referenceSource)
@@ -371,14 +372,36 @@ void LoadDASDocumentsAndOpenViewTask::prepare(){
     addSubTask(loadDasDocumentTask);
 }
 
+QString LoadDASDocumentsAndOpenViewTask::generateReport() const {
+    QString result = tr("Resource ID: %1").arg(accNumber);
+    result += "<br>";
+
+    if (NULL != loadDasDocumentTask) {
+        const QString convertedAccessionNumber = loadDasDocumentTask->getConvertedAccessionNumber();
+        if (!convertedAccessionNumber.isEmpty()) {
+            result += tr("Converted resource ID: %2").arg(convertedAccessionNumber);
+            result += "<br>";
+        }
+    }
+
+    result += tr("Resolution: ");
+    if (isCanceled()) {
+        result += tr("<font color=\'%1\'>cancelled</font>").arg(L10N::errorColorLabelHtmlStr());
+    } else if (hasError()) {
+        result += tr("<font color=\'%1\'>error</font>").arg(L10N::errorColorLabelHtmlStr());
+        result += "<br>";
+        result += getError();
+    } else {
+        result += tr("<font color=\'%1\'>success</font>").arg(L10N::successColorLabelHtmlStr());
+    }
+
+    return result;
+}
+
 QList<Task*> LoadDASDocumentsAndOpenViewTask::onSubTaskFinished( Task* subTask ){
     QList<Task*> subTasks;
 
-    if (subTask->hasError()) {
-        return subTasks;
-    }
-
-    if (subTask->isCanceled()) {
+    if (subTask->hasError() || subTask->isCanceled()) {
         return subTasks;
     }
 
