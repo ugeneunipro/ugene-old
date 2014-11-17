@@ -21,12 +21,31 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QWebView" name="webView">
-     <property name="url">
-      <url>
-       <string>about:blank</string>
-      </url>
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
      </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QWebView" name="webView">
+        <property name="styleSheet">
+         <string notr="true">border-width: 2px;
+border-color: beige;</string>
+        </property>
+        <property name="url">
+         <url>
+          <string>about:blank</string>
+         </url>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
