@@ -199,7 +199,7 @@ void DownloadRemoteFileDialog::accept()
     QStringList resIds = resourceId.split(QRegExp("[\\s,;]+"));
     QList<Task*> tasks;
 
-    if (isDefaultDb(dbId)){
+    if (isDefaultDb(dbId)) {
         QString fileFormat;
         if (ui->formatBox->count() > 0) {
             fileFormat = ui->formatBox->currentText();
@@ -213,7 +213,7 @@ void DownloadRemoteFileDialog::accept()
         }
 
         AppContext::getTaskScheduler()->registerTopLevelTask( new MultiTask("DownloadRemoteDocuments", tasks) );
-    }else{ //DAS ID
+    } else { //DAS ID
         DASSourceRegistry * dasRegistry = AppContext::getDASSourceRegistry();
         if (dasRegistry){
             //get features
@@ -230,11 +230,13 @@ void DownloadRemoteFileDialog::accept()
             }
             //get sequence
             DASSource refSource = dasRegistry->findById(dbId);
-            if (refSource.isValid()){
+            if (refSource.isValid()) {
                 foreach (const QString& resId, resIds) {
-                    tasks.append( new LoadDASDocumentsAndOpenViewTask(resId, fullPath, refSource, featureSources));
+                    tasks.append(new LoadDASDocumentsAndOpenViewTask(resId, fullPath, refSource, featureSources));
                 }
-                AppContext::getTaskScheduler()->registerTopLevelTask( new MultiTask("LoadDASDocuments", tasks, false, TaskFlags(TaskFlag_NoRun | TaskFlag_ReportingIsEnabled | TaskFlag_ReportingIsSupported)) );
+                TaskFlags multiTaskFlags(TaskFlag_NoRun | TaskFlag_ReportingIsEnabled | TaskFlag_ReportingIsSupported);
+                Task *multiTask = new MultiTask("Load DAS Documents", tasks, false, multiTaskFlags);
+                AppContext::getTaskScheduler()->registerTopLevelTask(multiTask);
             }
         }
     }

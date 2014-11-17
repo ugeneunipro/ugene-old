@@ -4700,6 +4700,72 @@ GUI_TEST_CLASS_DEFINITION( test_2543 ) {
     GTGlobals::sleep( 2000 );
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2562) {
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "swiss-prot"));
+    // 1. Open any amino sequence, e.g. "data/samples/Swiss-Prot/D0VTW9.txt" in the Sequence View.
+    GTFileDialog::openFile(os, dataDir + "samples/Swiss-Prot/", "D0VTW9.txt");
+
+    // 2. Open "DAS Annotations" options panel widget.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_DAS"));
+
+    // 3. Press "Fetch IDs" button
+    // Expected state : task "Get an ID for the sequence" started
+    GTWidget::click(os, GTWidget::findWidget(os, "searchIdsButton"));
+    GTGlobals::sleep(500);
+
+    GTUtilsTaskTreeView::checkTask(os, "Get an ID for the sequence");
+
+    // 4. Cancel the task
+    // Expected state : the task has been canceled
+    GTUtilsTaskTreeView::cancelTask(os, "Get an ID for the sequence");
+    CHECK_SET_ERR(0 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "Uniprot BLAST task has not been cancelled");
+    GTUtilsLog::check(os, l);
+
+    // 5. Press "Fetch IDs" again
+    // Expected state : task "Get an ID for the sequence" started
+    // 6. Wait until the task is completed
+    GTWidget::click(os, GTWidget::findWidget(os, "searchIdsButton"));
+    GTGlobals::sleep(500);
+
+    GTUtilsTaskTreeView::checkTask(os, "Get an ID for the sequence");
+    GTUtilsTaskTreeView::waitTaskFinished(os, 240000);
+
+    // 7. Choose any id and press "Fetch Annotations" button
+    // Expected state : task "Load DAS annotations for current sequence" started
+    QTableWidget *idTable = qobject_cast<QTableWidget *>(GTWidget::findWidget(os, "idList"));
+    const QString selectedFeatureId = idTable->selectionModel()->selectedRows().first().data(Qt::DisplayRole).toString();
+
+    GTWidget::click(os, GTWidget::findWidget(os, "annotateButton"));
+    const QString annotateTaskName = "Convert ID and load DAS features for: " + selectedFeatureId;
+    GTUtilsTaskTreeView::checkTask(os, annotateTaskName);
+
+    // 9. Cancel the task
+    // Expected state : the task cancelled
+    GTUtilsTaskTreeView::cancelTask(os, annotateTaskName);
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(0 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "Load DAS annotations task has not been cancelled");
+    GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2562_1) {
+    GTLogTracer l;
+    // 1. Open "File -> Access Remote Database..." from the main menu.
+    // 2. Get something adequate from the Uniprot(DAS) database(e.g.use example ID : P05067).
+    // Expected state : "DownloadRemoteDocuments" task has been started
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "P05067", 7));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB);
+    GTUtilsTaskTreeView::checkTask(os, "Load DAS Documents");
+
+    // 3. Cancel task
+    // Expected state : task has been canceled.
+    GTUtilsTaskTreeView::cancelTask(os, "Load DAS Documents");
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(0 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "Load DAS documents task has not been cancelled");
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2565 ) {
     //    1. Open "samples/Genbank/murine.gb".
     //    2. Press Ctrl+F.
