@@ -8840,6 +8840,63 @@ GUI_TEST_CLASS_DEFINITION(test_3563_2) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3571_1) {
+    // 1. Open file "test/_common_data/fasta/numbers_in_the_middle.fa" in sequence view
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "numbers_in_the_middle.fa");
+
+    // 2. Select first sequence
+    ADVSingleSequenceWidget *firstSeqWidget = GTUtilsSequenceView::getSeqWidgetByNumber(os, 0);
+    GTWidget::click(os, firstSeqWidget);
+
+    // 3. Open statistics option panel tab.
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Statistics);
+
+    // Expected state : only length info appears
+    QWidget *commonStatisticsWidget = GTWidget::findWidget(os, "ArrowHeader_Common Statistics");
+
+    GTGlobals::FindOptions widgetFindSafeOptions(false);
+    QWidget *charOccurWidget = GTWidget::findWidget(os, "ArrowHeader_Characters Occurrence", NULL, widgetFindSafeOptions);
+    CHECK_SET_ERR(!charOccurWidget->isVisible(), "Character Occurrence section is unexpectedly visible");
+
+    // 4. Select second sequence
+    ADVSingleSequenceWidget *secondSeqWidget = GTUtilsSequenceView::getSeqWidgetByNumber(os, 1);
+    GTWidget::click(os, secondSeqWidget);
+
+    // Expected state : length and characters occurrence info appears
+    commonStatisticsWidget = GTWidget::findWidget(os, "ArrowHeader_Common Statistics");
+    charOccurWidget = GTWidget::findWidget(os, "ArrowHeader_Characters Occurrence");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3571_2) {
+    // 1. Open file test/_common_data/fasta/numbers_in_the_middle.fa in sequence view
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os));
+    //GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTFileDialog::openFile(os, testDir + "_common_data/fasta/", "numbers_in_the_middle.fa");
+
+    // 2. Select second sequence
+    ADVSingleSequenceWidget *secondSeqWidget = GTUtilsSequenceView::getSeqWidgetByNumber(os, 1);
+    GTWidget::click(os, secondSeqWidget);
+
+    // 3. Open statistics option panel tab.
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Statistics);
+
+    // Expected state : length and characters occurrence info appears
+    QWidget *commonStatisticsWidget = GTWidget::findWidget(os, "ArrowHeader_Common Statistics");
+    QWidget *charOccurWidget = GTWidget::findWidget(os, "ArrowHeader_Characters Occurrence");
+
+    // 4. Select first sequence
+    ADVSingleSequenceWidget *firstSeqWidget = GTUtilsSequenceView::getSeqWidgetByNumber(os, 0);
+    GTWidget::click(os, firstSeqWidget);
+
+    // Expected state : only length info appears
+    commonStatisticsWidget = GTWidget::findWidget(os, "ArrowHeader_Common Statistics");
+    GTGlobals::FindOptions widgetFindSafeOptions(false);
+    charOccurWidget = GTWidget::findWidget(os, "ArrowHeader_Characters Occurrence", NULL, widgetFindSafeOptions);
+    CHECK_SET_ERR(!charOccurWidget->isVisible(), "Character Occurrence section is unexpectedly visible");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3603) {
 //    1. Open "data/samples/FASTA/human_T1.fa".
 //    2. Open "Find Pattern" options panel tab.

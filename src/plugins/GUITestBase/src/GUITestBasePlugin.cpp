@@ -470,6 +470,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3557);
     REGISTER_TEST(GUITest_regression_scenarios::test_3563_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_3563_2);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3571_1, "Ignored due to incorrect processing of a message box");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3571_2, "Ignored due to incorrect processing of a message box");
 
     REGISTER_TEST(GUITest_regression_scenarios::test_3603);
     REGISTER_TEST(GUITest_regression_scenarios::test_3609_1);

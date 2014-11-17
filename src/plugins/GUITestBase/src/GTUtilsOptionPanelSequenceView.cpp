@@ -46,11 +46,11 @@
 
 namespace U2{
 
-QMap<GTUtilsOptionPanelSequenceView::Tabs, QString> GTUtilsOptionPanelSequenceView::initNames(){
+QMap<GTUtilsOptionPanelSequenceView::Tabs, QString> GTUtilsOptionPanelSequenceView::initNames() {
     QMap<Tabs,QString> result;
     result.insert(Search, "OP_FIND_PATTERN");
     result.insert(AnnotationsHighlighting, "OP_ANNOT_HIGHLIGHT");
-    result.insert(Statistics, "OP_PAIRALIGN");
+    result.insert(Statistics, "OP_SEQ_INFO");
     return result;
 }
 

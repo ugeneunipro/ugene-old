@@ -270,8 +270,8 @@ QString RemoteDBFetcherWorker::getIdFromFile() {
 /* class RemoteDBFetcherFactory : public DomainFactory */
 
 const QMap<QString, QString> RemoteDBFetcherFactory::cuteDbNames = RemoteDBFetcherFactory::initCuteDbNames();
-const QString RemoteDBFetcherFactory::idsListString = RemoteDBFetcherWorker::tr("List of IDs");
-const QString RemoteDBFetcherFactory::localFileString = RemoteDBFetcherWorker::tr("File with IDs");
+const QString RemoteDBFetcherFactory::idsListString = QCoreApplication::translate("RemoteDBFetcherWorker", "List of IDs");
+const QString RemoteDBFetcherFactory::localFileString = QCoreApplication::translate("RemoteDBFetcherWorker", "File with IDs");
 
 QMap<QString, QString> RemoteDBFetcherFactory::initCuteDbNames() {
     QMap<QString, QString> ret;

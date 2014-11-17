@@ -40,7 +40,7 @@
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QListWidget>
-#include <QtWidget/QToolButton>
+#include <QtWidgets/QToolButton>
 #include <QtWidgets/QTreeWidget>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialogButtonBox>

@@ -134,9 +134,7 @@ public:
     virtual Worker* createWorker(Actor *a) { return new FetchSequenceByIdFromAnnotationWorker(a); }
 };
 
-
-
-}   // namespace U2
 }   // namespace LocalWorkflow
+}   // namespace U2
 
 #endif  // #ifndef _U2_REMOTE_DB_FETCHER_H_
