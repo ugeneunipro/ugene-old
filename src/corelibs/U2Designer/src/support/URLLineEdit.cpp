@@ -76,7 +76,6 @@ public:
         const QString curExt = f.suffix();
         const QString baseName = f.completeBaseName();
         const QString completeFileName = f.fileName();
-        choices << completeFileName;
 
         const QString fileFormat = DelegateTags::getString(widget->tags(), "format");
         DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(fileFormat);
