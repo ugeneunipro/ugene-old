@@ -94,10 +94,6 @@ void SequentialMultiTask::prepare(){
 QList<Task*> SequentialMultiTask::onSubTaskFinished( Task* subTask ){
     QList<Task*> res;
 
-    if (!hasFlags(TaskFlags(TaskFlag_FailOnSubtaskError))) {
-        taskLog.error(tr("Task has finished with an error: ") + subTask->getError());
-    }
-
     int idx = tasks.indexOf(subTask);
     if (( idx != -1 ) && (idx + 1 < tasks.size())){
         res.append(tasks.at(idx+1));
