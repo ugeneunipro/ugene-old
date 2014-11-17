@@ -35,6 +35,12 @@ public:
 
     void updateRecent(const QStringList &recentProjects, const QStringList &recentFiles);
     bool isLoaded() const;
+    bool eventFilter(QObject *watched, QEvent *event);
+
+protected:
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
 
 private slots:
     void sl_loaded(bool ok);

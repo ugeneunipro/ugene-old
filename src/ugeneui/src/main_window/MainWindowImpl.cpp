@@ -46,6 +46,7 @@
 
 #include <U2Core/DocumentSelection.h>
 #include <U2Core/L10n.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Gui/GUIUtils.h>
 
@@ -106,15 +107,21 @@ void MWStub::closeEvent(QCloseEvent* e) {
     }
 }
 
-void MWStub::dragEnterEvent(QDragEnterEvent *event)
-{
+void MWStub::dragEnterEvent(QDragEnterEvent *event) {
+    MainWindowDragNDrop::dragEnterEvent(event);
+}
+
+void MainWindowDragNDrop::dragEnterEvent(QDragEnterEvent *event) {
     if (event->mimeData()->hasUrls() || event->mimeData()->hasFormat(DocumentMimeData::MIME_TYPE)) {
         event->acceptProposedAction();
     }
 }
 
-void MWStub::dropEvent(QDropEvent *event)
-{
+void MWStub::dropEvent(QDropEvent *event) {
+    MainWindowDragNDrop::dropEvent(event);
+}
+
+void MainWindowDragNDrop::dropEvent(QDropEvent *event) {
     if (event->source() == NULL) {
         QList<GUrl> urls;
         if (event->mimeData()->hasUrls()) {
@@ -153,12 +160,19 @@ bool MWStub::focusNextPrevChild(bool /*next*/) {
     return false;
 }
 
-void MWStub::dragMoveEvent( QDragMoveEvent * event ){
+void MWStub::dragMoveEvent(QDragMoveEvent *event) {
+    MainWindowDragNDrop::dragMoveEvent(event);
+}
+
+void MainWindowDragNDrop::dragMoveEvent(QDragMoveEvent *event) {
+    MainWindow *mainWindow = AppContext::getMainWindow();
+    SAFE_POINT(NULL != mainWindow, L10N::nullPointerError("Main Window"), );
+
     if(event->mimeData()->hasUrls()) return;
     if(event->source() != NULL){
         QObject *par = event->source()->parent();
         while(par != NULL){
-            if(par == this) {
+            if(par == mainWindow->getQMainWindow()) {
                 return;
             }
             par = par->parent();

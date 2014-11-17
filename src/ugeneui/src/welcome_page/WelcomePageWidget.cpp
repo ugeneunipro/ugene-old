@@ -19,6 +19,9 @@
  * MA 02110-1301, USA.
  */
 
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
 #include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
@@ -28,6 +31,7 @@
 #include <U2Core/U2SafePoints.h>
 
 #include "WelcomePageController.h"
+#include "main_window/MainWindowImpl.h"
 
 #include "WelcomePageWidget.h"
 
@@ -44,6 +48,7 @@ WelcomePageWidget::WelcomePageWidget(QWidget *parent, WelcomePageController *con
     webView->setContextMenuPolicy(Qt::NoContextMenu);
     webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     loadPage();
+    webView->installEventFilter(this);
 }
 
 bool WelcomePageWidget::isLoaded() const {
@@ -99,6 +104,35 @@ void WelcomePageWidget::updateRecentFilesContainer(const QString &id, const QStr
         result = links.join("<br>");
     }
     recentFilesDiv.setOuterXml(divTemplate.arg(id).arg(result));
+}
+
+void WelcomePageWidget::dragEnterEvent(QDragEnterEvent *event) {
+    MainWindowDragNDrop::dragEnterEvent(event);
+}
+
+void WelcomePageWidget::dropEvent(QDropEvent *event) {
+    MainWindowDragNDrop::dropEvent(event);
+}
+
+void WelcomePageWidget::dragMoveEvent(QDragMoveEvent *event) {
+    MainWindowDragNDrop::dragMoveEvent(event);
+}
+
+bool WelcomePageWidget::eventFilter(QObject *watched, QEvent *event) {
+    CHECK(webView == watched, false);
+    switch (event->type()) {
+        case QEvent::DragEnter:
+            dragEnterEvent(dynamic_cast<QDragEnterEvent*>(event));
+            return true;
+        case QEvent::DragMove:
+            dragMoveEvent(dynamic_cast<QDragMoveEvent*>(event));
+            return true;
+        case QEvent::Drop:
+            dropEvent(dynamic_cast<QDropEvent*>(event));
+            return true;
+        default:
+            return false;
+    }
 }
 
 } // U2

@@ -138,6 +138,13 @@ private:
     QList<Notification*>    startupNotificationsList;
 };
 
+class MainWindowDragNDrop {
+public:
+    static void dragEnterEvent(QDragEnterEvent *event);
+    static void dropEvent(QDropEvent *event);
+    static void dragMoveEvent(QDragMoveEvent *event);
+};
+
 }//namespace
 
 #endif
