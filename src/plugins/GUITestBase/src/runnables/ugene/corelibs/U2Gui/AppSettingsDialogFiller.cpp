@@ -191,7 +191,7 @@ void AppSettingsDialogFiller::clearToolPath(U2OpStatus &os, const QString &toolN
     QTreeWidget* treeWidget = GTWidget::findExactWidget<QTreeWidget*>(os, "treeWidget", dialog);
     QList<QTreeWidgetItem*> listOfItems = treeWidget->findItems("", Qt::MatchContains | Qt::MatchRecursive);
     foreach (QTreeWidgetItem* item, listOfItems){
-        if(item->text(0) == "MAFFT"){
+        if(item->text(0) == toolName){
             QWidget* itemWid = treeWidget->itemWidget(item, 1);
             QToolButton* clearPathButton = itemWid->findChild<QToolButton*>("ClearToolPathButton");
             CHECK_SET_ERR(clearPathButton != NULL, "Clear path button not found");

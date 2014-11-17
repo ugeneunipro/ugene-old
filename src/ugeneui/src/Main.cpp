@@ -715,7 +715,7 @@ int main(int argc, char **argv)
 
     QList<Task*> tasks;
 
-    if(AppContext::getSettings()->getValue(ASK_VESRION_SETTING, true).toBool()) {
+    if(AppContext::getSettings()->getValue(ASK_VESRION_SETTING, true).toBool() && qgetenv("UGENE_GUI_TEST").toInt() != 1) {
         tasks << new CheckUpdatesTask(true);
     }
     if ( !envList.contains(ENV_UGENE_DEV+QString("=1")) ) {
