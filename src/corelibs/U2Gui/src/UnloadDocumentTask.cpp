@@ -167,9 +167,9 @@ QString UnloadDocumentTask::checkSafeUnload(Document* doc) {
     }
 
     QList<StateLock*> locks = doc->findLocks(StateLockableTreeFlags_ItemAndChildren, StateLockFlag_LiveLock);
-    bool liveLocked = (locks.size() != 1);
-    if (!liveLocked) {
-        liveLocked &= (locks.first()->getUserDesc() == Document::UNLOAD_LOCK_NAME);
+    bool liveLocked = (locks.size() != 1) && (locks.size() != 0);
+    if (locks.size() == 1) {
+        liveLocked = (locks.first()->getUserDesc() != Document::UNLOAD_LOCK_NAME);
     }
     if (liveLocked) {
         return tr("Document is locked by some algorithm and cannot be unloaded");

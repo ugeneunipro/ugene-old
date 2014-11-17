@@ -365,8 +365,7 @@ void DocumentUpdater::reloadDocuments( QList<Document*> docs2Reload ){
         if (!unloadErr.isEmpty()) {
             QMessageBox::warning(QApplication::activeWindow(),
                 U2_APP_TITLE,
-                tr("Unable to unload '%1'").arg(doc->getName())
-                );
+                tr("Unable to unload '%1'. Unload error: '%2'").arg(doc->getName(), unloadErr));
             doc->setLastUpdateTime();
             continue;
         }
