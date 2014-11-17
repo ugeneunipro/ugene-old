@@ -257,6 +257,7 @@ void ProjectLoaderImpl::sl_openRecentFile() {
 
 void ProjectLoaderImpl::prependToRecentProjects(const QString& url) {
     assert(!url.isEmpty());
+    CHECK(GUrl(url).isLocalFile(), );
     QStringList recentFiles = AppContext::getSettings()->getValue(SETTINGS_DIR + RECENT_PROJECTS_SETTINGS_NAME, QStringList(), true).toStringList();
     recentFiles.removeAll(QString()); //remove all empty tokens if fount (a kind of cleanup)
     recentFiles.removeAll(url); // remove URL from the old position
@@ -658,6 +659,7 @@ QString ProjectLoaderImpl::getLastProjectURL() {
 void ProjectLoaderImpl::prependToRecentItems( const QString& url )
 {
     SAFE_POINT( !url.isEmpty( ), "Invalid URL string!", );
+    CHECK(GUrl(url).isLocalFile(), );
     QStringList recentFiles =AppContext::getSettings()->getValue(SETTINGS_DIR + RECENT_ITEMS_SETTINGS_NAME, QStringList(), true).toStringList();
     recentFiles.removeAll(url);
     recentFiles.prepend(url);
