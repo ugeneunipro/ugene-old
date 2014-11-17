@@ -105,7 +105,7 @@ private slots:
 private:
     QString prepareText(const LogMessage& msg) const;
     void init();
-
+    bool eventFilter(QObject *object, QEvent *event);
 
     QTimer                   updateViewTimer;
     QPlainTextEdit*          edit;

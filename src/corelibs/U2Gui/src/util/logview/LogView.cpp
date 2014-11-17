@@ -101,6 +101,7 @@ void LogViewWidget::init() {
     edit->setContextMenuPolicy(Qt::CustomContextMenu);
     edit->setTextInteractionFlags(Qt::NoTextInteraction|Qt::TextSelectableByMouse|Qt::TextSelectableByKeyboard);
     edit->setMaximumBlockCount(MAX_VISIBLE_MESSAGES);
+    edit->installEventFilter(this);
 
     searchEdit = new QLineEdit(); 
     searchEdit->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -115,6 +116,14 @@ void LogViewWidget::init() {
     QObject::connect(shortcut, SIGNAL(activated()),this,SLOT(sl_showHideEdit()));
     QObject::connect(searchEdit, SIGNAL(textEdited(const QString &)),this,SLOT(sl_onTextEdited(const QString &)));
     resetView();
+}
+
+bool LogViewWidget::eventFilter(QObject *object, QEvent *event) {
+    if (edit == object && event->type() == QEvent::ShortcutOverride) {
+        event->accept();
+        return true;
+    }
+    return false;
 }
 
 void LogViewWidget::popupMenu(const QPoint& pos) {
