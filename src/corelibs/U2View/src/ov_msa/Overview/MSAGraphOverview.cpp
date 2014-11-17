@@ -65,10 +65,10 @@ MSAGraphOverview::MSAGraphOverview(MSAEditorUI *ui)
     connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(MAlignment,MAlignmentModInfo)),
             SLOT(sl_drawGraph()));
 
-	connect(ui->getEditorNameList(), SIGNAL(si_startMSAChanging()),
-			SLOT(sl_blockRendering()));
-	connect(ui->getEditorNameList(), SIGNAL(si_stopMSAChanging(bool)),
-			SLOT(sl_unblockRendering(bool)));
+    connect(ui->getEditorNameList(), SIGNAL(si_startMSAChanging()),
+            SLOT(sl_blockRendering()));
+    connect(ui->getEditorNameList(), SIGNAL(si_stopMSAChanging(bool)),
+            SLOT(sl_unblockRendering(bool)));
     connect(sequenceArea, SIGNAL(si_startMSAChanging()),
              SLOT(sl_blockRendering()));
     connect(sequenceArea, SIGNAL(si_stopMSAChanging(bool)),
@@ -299,24 +299,30 @@ void MSAGraphOverview::drawOverview(QPainter &p) {
         return;
     }
 
+    QPolygonF resultPolygon = graphCalculationTaskRunner.getResult();
+    if (resultPolygon.last().x() != width()) {
+        sl_drawGraph();
+        return;
+    }
+
     // area graph
     if (displaySettings->type == MSAGraphOverviewDisplaySettings::Area) {
-        p.drawPolygon( graphCalculationTaskRunner.getResult() );
+        p.drawPolygon( resultPolygon );
     }
 
     // line graph
     if (displaySettings->type == MSAGraphOverviewDisplaySettings::Line) {
-        p.drawPolyline(graphCalculationTaskRunner.getResult());
+        p.drawPolyline( resultPolygon );
     }
 
     // hystogram
     if (displaySettings->type == MSAGraphOverviewDisplaySettings::Hystogram) {
         int size = graphCalculationTaskRunner.getResult().size();
         for (int i = 0; i < size; i++) {
-            const QPointF point = graphCalculationTaskRunner.getResult().at(i);
+            const QPointF point = resultPolygon.at(i);
             QPointF nextPoint;
             if (i != size - 1) {
-                nextPoint = graphCalculationTaskRunner.getResult().at(i + 1);
+                nextPoint = resultPolygon.at(i + 1);
             } else {
                 nextPoint = QPointF(width(), point.y());
             }

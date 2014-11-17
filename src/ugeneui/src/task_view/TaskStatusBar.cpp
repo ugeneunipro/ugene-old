@@ -24,6 +24,7 @@
 #include "TaskViewController.h"
 
 #include <U2Core/AppContext.h>
+#include <U2Core/U2SafePoints.h>
 #include <U2Gui/MainWindow.h>
 
 #include <QtCore/QEvent>
@@ -83,10 +84,10 @@ TaskStatusBar::TaskStatusBar() {
     connect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), SLOT(sl_taskStateChanged(Task*)));
     connect(AppContext::getTaskScheduler(), SIGNAL(si_topLevelTaskUnregistered(Task*)), SLOT(sl_newReport(Task*)));
 
-	nStack = AppContext::getMainWindow()->getNotificationStack();
-	//nStack = new NotificationStack;
+    nStack = AppContext::getMainWindow()->getNotificationStack();
+    //nStack = new NotificationStack;
     connect(nStack, SIGNAL(si_changed()), SLOT(sl_notificationChanged()));
-    
+
     lampLabel->installEventFilter(this);
     taskCountLabel->installEventFilter(this);
     notificationLabel->installEventFilter(this);
@@ -146,7 +147,7 @@ void TaskStatusBar::sl_showReport() {
     }
 }
 
-void TaskStatusBar::updateState() {    
+void TaskStatusBar::updateState() {
     QString reportsString = nReports == 0 ? QString("") : tr("num_reports_%1").arg(nReports);
     if (taskToTrack ==  NULL) {
         taskInfoLabel->setText("");
@@ -199,9 +200,9 @@ void TaskStatusBar::sl_taskStateChanged(Task* t) {
     disconnect(AppContext::getTaskScheduler(), SIGNAL(si_stateChanged(Task*)), this, SLOT(sl_taskStateChanged(Task*)));
 }
 
-void TaskStatusBar::setTaskToTrack(Task* t) { 
+void TaskStatusBar::setTaskToTrack(Task* t) {
     assert(taskToTrack == NULL);
-	taskToTrack->disconnect(this);
+    taskToTrack->disconnect(this);
     taskToTrack = t;
     connect(taskToTrack, SIGNAL(si_stateChanged()), SLOT(sl_taskStateChanged()));
     connect(taskToTrack, SIGNAL(si_progressChanged()), SLOT(sl_taskProgressChanged()));
@@ -275,7 +276,7 @@ void TaskStatusBar::sl_notificationChanged() {
 
         if(nStack->hasError()) {
             iconWithNumber = notificationError;
-        
+
         } else {
             iconWithNumber = notificationReport;
         }
@@ -293,7 +294,8 @@ void TaskStatusBar::sl_notificationChanged() {
 }
 
 void TaskStatusBar::sl_taskProgressChanged() {
-    assert(taskToTrack == sender());
+    CHECK( sender() != NULL, );
+    SAFE_POINT(taskToTrack == sender(), tr("Wrong signal sender!"), );
     updateState();
 }
 
@@ -304,7 +306,7 @@ void TaskStatusBar::sl_taskDescChanged() {
 
 void TaskStatusBar::drawProgress(QLabel* label) {
     static QColor piecolor("#fdc689");
-    
+
     int percent = taskToTrack->getStateInfo().progress;
     int h = height()-2;
     //float radius = h / 2;
@@ -312,7 +314,7 @@ void TaskStatusBar::drawProgress(QLabel* label) {
     QPainter p(&pix);
 
     p.fillRect(pix.rect(), palette().window().color());
-    
+
     p.setPen(piecolor);
     p.setBrush(piecolor);
     p.drawPie(pix.rect(), -90, qRound(- percent * 57.60));
