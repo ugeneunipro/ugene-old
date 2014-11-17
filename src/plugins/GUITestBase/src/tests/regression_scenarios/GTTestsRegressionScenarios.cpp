@@ -5064,6 +5064,62 @@ GUI_TEST_CLASS_DEFINITION(test_2622_1) {
     CHECK_SET_ERR(resultLabel->text() == "Results: 1/100", "Unexpected find algorithm results");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2651) {
+    // 1. File->Search NCBI Genbank...
+    // 2. In the search field paste
+    // AB797204.1 AB797210.1 AB797201.1
+    // 3. Click Search
+    // 4. Select three results and download them
+    // 5. Close the dialog
+    GTLogTracer l;
+
+    QList<int> resultNumbersToSelect;
+    resultNumbersToSelect << 0 << 1 << 2;
+    const QVariant variantNumbers = QVariant::fromValue<QList<int> >(resultNumbersToSelect);
+    const QVariant searchField = QVariant::fromValue<QPair<int, QString> >(QPair<int, QString>(0, "AB797204.1 AB797210.1 AB797201.1"));
+
+    QList<DownloadRemoteFileDialogFiller::Action> remoteDialogActions;
+    remoteDialogActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::ClickOk, QVariant());
+    const QVariant remoteDialogActionsVariant = QVariant::fromValue<QList<DownloadRemoteFileDialogFiller::Action> >(remoteDialogActions);
+
+    QList<NcbiSearchDialogFiller::Action> actions;
+    actions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::SetTerm, searchField)
+        << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::ClickSearch, QVariant())
+        << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::WaitTasksFinish, QVariant())
+        << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::SelectResultsByNumbers, variantNumbers)
+        << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::ClickDownload, remoteDialogActionsVariant)
+        << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::ClickClose, QVariant());
+    GTUtilsDialog::waitForDialog(os, new NcbiSearchDialogFiller(os, actions));
+
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__SEARCH_GENBANK);
+
+    GTGlobals::sleep();
+
+    // 6. With Ctrl pressed, select all three annotation objects in the project view
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+
+    GTUtilsProjectTreeView::click(os, "AB797210 features");
+    GTUtilsProjectTreeView::click(os, "AB797204 features");
+    GTUtilsProjectTreeView::click(os, "AB797201 features");
+
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+
+    // 7. delete this objects through context menu
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action_project__remove_selected_action"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // Expected state : the objects are deleted, the popup is shown
+    GTGlobals::FindOptions safeOptions(false);
+    const QModelIndex firstIndex = GTUtilsProjectTreeView::findIndex(os, "AB797210 features", safeOptions);
+    CHECK_SET_ERR(!firstIndex.isValid(), "The \"AB797210 features\" item has not been deleted");
+    const QModelIndex secondIndex = GTUtilsProjectTreeView::findIndex(os, "AB797204 features", safeOptions);
+    CHECK_SET_ERR(!firstIndex.isValid(), "The \"AB797204 features\" item has not been deleted");
+    const QModelIndex thirdIndex = GTUtilsProjectTreeView::findIndex(os, "AB797201 features", safeOptions);
+    CHECK_SET_ERR(!firstIndex.isValid(), "The \"AB797201 features\" item has not been deleted");
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2656 ) {
 //    0. Create a file with an empty sequence. A FASTA file with the first line ">seq1" and the empty second line
 //    1. Open any sequence

@@ -44,6 +44,12 @@ namespace U2 {
         QString buttonText,message;
     };
 
+    class AppCloseMessageBoxDialogFiller : public Filler {
+    public:
+        AppCloseMessageBoxDialogFiller(U2OpStatus &_os) : Filler(_os, QString()) {}
+        void run();
+    };
+
     class MessageBoxNoToAllOrNo : public Filler {
     public:
         MessageBoxNoToAllOrNo(U2OpStatus &_os) : Filler(_os, ""){}

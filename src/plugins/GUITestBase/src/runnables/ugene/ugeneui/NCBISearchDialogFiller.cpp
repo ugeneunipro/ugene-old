@@ -36,6 +36,7 @@
 #include "api/GTComboBox.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTextEdit.h"
 #include "api/GTTreeWidget.h"
@@ -190,6 +191,9 @@ void NcbiSearchDialogFiller::clickResultByNum(const QVariant &actionData) {
     QList<QTreeWidgetItem*> resultItems = GTTreeWidget::getItems(os, treeWidget);
     GT_CHECK(actionData.toInt() < resultItems.size(), "Result number is out of range");
     GTTreeWidget::click(os, resultItems[actionData.toInt()]);
+
+    GTGlobals::sleep();
+    GTMouseDriver::click(os);
 }
 #undef GT_METHOD_NAME
 

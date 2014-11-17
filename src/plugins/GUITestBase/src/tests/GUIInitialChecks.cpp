@@ -167,7 +167,7 @@ GUI_TEST_CLASS_DEFINITION(post_test_0002) {
         GTGlobals::sleep(100);
 
         GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
-        GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+        GTUtilsDialog::waitForDialog(os, new AppCloseMessageBoxDialogFiller(os));
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
         GTGlobals::sleep(500);
 #ifdef Q_OS_MAC

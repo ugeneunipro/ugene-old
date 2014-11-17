@@ -47,7 +47,7 @@ void MessageBoxDialogFiller::run() {
                  QString("Expected: %1, found: %2").arg(message).arg(actualText));
     }
 
-    if(buttonText!=""){
+    if (buttonText!="") {
         QList<QAbstractButton*> list = messageBox->buttons();
         foreach(QAbstractButton* but, list){
             QString s = but->text();
@@ -66,6 +66,26 @@ void MessageBoxDialogFiller::run() {
 #undef GT_METHOD_NAME
 #undef GT_CLASS_NAME
 
+#define GT_CLASS_NAME "GTUtilsDialog::AppCloseMessageBoxDialogFiller"
+#define GT_METHOD_NAME "run"
+void AppCloseMessageBoxDialogFiller::run() {
+    QWidget* activeModal = QApplication::activeModalWidget();
+    QMessageBox *messageBox = qobject_cast<QMessageBox*>(activeModal);
+    GT_CHECK(messageBox != NULL, "messageBox is NULL");
+
+    QAbstractButton* noButton = messageBox->button(QMessageBox::No);
+    QAbstractButton* noToAllButton = messageBox->button(QMessageBox::NoToAll);
+
+    if (NULL != noToAllButton) {
+        GTWidget::click(os, noToAllButton);
+    } else if (NULL != noButton) {
+        GTWidget::click(os, noButton);
+    } else {
+        GT_CHECK(false, "There are neither \"No\" or \"No to all\" buttons in the message box");
+    }
+}
+#undef GT_METHOD_NAME
+#undef GT_CLASS_NAME
 
 #define GT_CLASS_NAME "GTUtilsDialog::MessageBoxNoToAllOrNo"
 #define GT_METHOD_NAME "run"
