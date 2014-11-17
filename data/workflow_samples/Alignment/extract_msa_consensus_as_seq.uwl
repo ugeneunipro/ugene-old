@@ -36,6 +36,7 @@ if (tokens.length > 0) {
 }
 url_out = dir + "_consensus.fa"
         };
+        write-mode:0;
     }
 
     .actor-bindings {
@@ -47,23 +48,37 @@ url_out = dir + "_consensus.fa"
     extract-msa-consensus-sequence.sequence->write-sequence.in-sequence.sequence
 
     .meta {
+        parameter-aliases {
+            read-msa.url-in {
+                alias:in;
+            }
+            extract-msa-consensus-sequence.algorithm {
+                alias:algorithm;
+            }
+            extract-msa-consensus-sequence.keep-gaps {
+                alias:keep_gaps;
+            }
+            extract-msa-consensus-sequence.threshold {
+                alias:threshold;
+            }
+        }
         visual {
             extract-msa-consensus-sequence {
-                pos:"-435 -1095";
+                pos:"-405 -1065";
                 style:ext;
                 bg-color-ext:"0 128 0 64";
                 in-msa.angle:180;
                 out-sequence.angle:360;
             }
             read-msa {
-                pos:"-690 -1095";
+                pos:"-660 -1065";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
                 bounds:"-30 -30 75.25 80";
                 out-msa.angle:360;
             }
             write-sequence {
-                pos:"-135 -1095";
+                pos:"-105 -1065";
                 style:ext;
                 bg-color-ext:"64 26 96 64";
                 in-sequence.angle:180;
