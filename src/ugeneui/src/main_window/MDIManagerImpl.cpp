@@ -88,16 +88,24 @@ void MWMDIManagerImpl::prepareGUI() {
 	cascadeAct->setStatusTip(tr("cascade_mdi_windows_statustip"));
 	connect(cascadeAct, SIGNAL(triggered()), mdiArea, SLOT(cascadeSubWindows()));
 
+#ifdef Q_OS_MAC
+    QKeySequence nextActKeySequence(Qt::META + Qt::Key_Tab);
+    QKeySequence prevActKeySequence(Qt::META + Qt::SHIFT + Qt::Key_Tab);
+#else
+    QKeySequence nextActKeySequence(Qt::CTRL + Qt::Key_Tab);
+    QKeySequence prevActKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab);
+#endif
+
 	nextAct = new QAction(QIcon(":ugene/images/window_next.png"), tr("next_mdi_window"), this);
     nextAct->setObjectName("Next window");
 	nextAct->setStatusTip(tr("next_mdi_window_statustip"));
-	nextAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab));
+    nextAct->setShortcut(nextActKeySequence);
 	connect(nextAct, SIGNAL(triggered()), mdiArea, SLOT(activateNextSubWindow()));
 
 	previousAct = new QAction(QIcon(":ugene/images/window_prev.png"), tr("previous_mdi_window"), this);
     previousAct->setObjectName("Previous window");
 	previousAct->setStatusTip(tr("previous_mdi_window_statustip"));
-	previousAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
+    previousAct->setShortcut(prevActKeySequence);
 	connect(previousAct, SIGNAL(triggered()),mdiArea, SLOT(activatePreviousSubWindow()));
 
 	separatorAct = new QAction("-", this);
