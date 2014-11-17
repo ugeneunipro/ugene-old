@@ -31,6 +31,7 @@
 #include <QtWidgets/QDialogButtonBox>
 #endif
 
+#include "GTUtilsTaskTreeView.h"
 #include "NCBISearchDialogFiller.h"
 #include "api/GTComboBox.h"
 #include "api/GTKeyboardDriver.h"
@@ -113,6 +114,9 @@ void NcbiSearchDialogFiller::run() {
         case ClickClose:
             clickClose();
             break;
+        case WaitTasksFinish:
+            waitTasksFinish();
+            break;
         }
     }
 }
@@ -184,7 +188,7 @@ void NcbiSearchDialogFiller::clickResultByNum(const QVariant &actionData) {
     QTreeWidget *treeWidget = GTWidget::findExactWidget<QTreeWidget *>(os, "treeWidget", dialog);
     GT_CHECK(NULL != treeWidget, "Tree widget is NULL");
     QList<QTreeWidgetItem*> resultItems = GTTreeWidget::getItems(os, treeWidget);
-    GT_CHECK(actionData.toInt() < resultItems.size(), "Result number is put of range");
+    GT_CHECK(actionData.toInt() < resultItems.size(), "Result number is out of range");
     GTTreeWidget::click(os, resultItems[actionData.toInt()]);
 }
 #undef GT_METHOD_NAME
@@ -288,7 +292,7 @@ void NcbiSearchDialogFiller::clickSearch() {
 void NcbiSearchDialogFiller::clickDownload(const QVariant &actionData) {
     CHECK_OP(os, );
     GT_CHECK(actionData.canConvert<QList<DownloadRemoteFileDialogFiller::Action> >(), "Can't get actions for the DownloadRemoteFileDialogFiller from the action data");
-    GTUtilsDialog::waitForDialog(os, new DownloadRemoteFileDialogFiller(os, actionData.value<QList<DownloadRemoteFileDialogFiller::Action> >()));
+    GTUtilsDialog::waitForDialog(os, new DownloadRemoteFileDialogFiller(os, actionData.value<QList<U2::DownloadRemoteFileDialogFiller::Action> >()));
     GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
 }
 #undef GT_METHOD_NAME
@@ -297,6 +301,12 @@ void NcbiSearchDialogFiller::clickDownload(const QVariant &actionData) {
 void NcbiSearchDialogFiller::clickClose() {
     CHECK_OP(os, );
     GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "waitTasksFinish"
+void NcbiSearchDialogFiller::waitTasksFinish() {
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 #undef GT_METHOD_NAME
 

@@ -33,6 +33,7 @@
 #include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
 #include "GTUtilsToolTip.h"
+#include "GTUtilsWorkflowDesigner.h"
 #include "api/GTFileDialog.h"
 #include "api/GTGlobals.h"
 #include "api/GTKeyboardDriver.h"
@@ -41,6 +42,7 @@
 #include "api/GTSequenceReadingModeDialogUtils.h"
 #include "api/GTTreeWidget.h"
 #include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
+#include "runnables/ugene/ugeneui/NCBISearchDialogFiller.h"
 
 namespace U2{
 
@@ -214,6 +216,119 @@ GUI_TEST_CLASS_DEFINITION(test_0007) {
     GTUtilsDialog::waitForDialog(os, new DownloadRemoteFileDialogFiller(os, actions));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0008) {
+//    1. Select {File -> Search NCBI Genbak} menu item in the main menu.
+
+//    2. Search "human" in the "nucleotide" database. Download the first result.
+//    Expected state: the "Fetch Data from Remote Database" appears. It is filled with:
+//        Database: "NCBI GenBank (DNA sequence)", it the only database in the combobox.
+//        Output format: "gb".
+//        "Force download the appropriate sequence" checkbox is visible and checked.
+
+//    3. Set "fasta" format.
+//    Expected state: "Force download the appropriate sequence" checkbox becomes invisible.
+    QList<NcbiSearchDialogFiller::Action> searchActions;
+    QList<DownloadRemoteFileDialogFiller::Action> downloadActions;
+
+    searchActions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::SetTerm, qVariantFromValue(intStringPair(0, "human")));
+    searchActions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::SetDatabase, "nucleotide");
+    searchActions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::ClickSearch, "");
+    searchActions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::WaitTasksFinish, "");
+    searchActions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::ClickResultByNum, 0);
+
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::CheckDatabase, "NCBI GenBank (DNA sequence)");
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::CheckDatabasesCount, 1);
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::CheckOutputFormat, "gb");
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::CheckForceSequenceDownloadVisibility, true);
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::CheckForceSequenceDownload, true);
+
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::SetOutputFormat, "fasta");
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::CheckForceSequenceDownloadVisibility, false);
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::ClickCancel, "");
+
+    searchActions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::ClickDownload, qVariantFromValue(downloadActions));
+    searchActions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::ClickClose, "");
+
+    GTUtilsDialog::waitForDialog(os, new NcbiSearchDialogFiller(os, searchActions));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__SEARCH_GENBANK, GTGlobals::UseKey);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0009) {
+//    1. Select {File -> Search NCBI Genbak} menu item in the main menu.
+
+//    2. Search "human" in the "protein" database. Download the first result.
+//    Expected state: the "Fetch Data from Remote Database" appears. It is filled with:
+//        Database: "NCBI protein sequence database", it the only database in the combobox.
+//        Output format: "gb".
+//        "Force download the appropriate sequence" checkbox is visible and checked.
+
+//    3. Set "fasta" format.
+//    Expected state: "Force download the appropriate sequence" checkbox becomes invisible.
+    QList<NcbiSearchDialogFiller::Action> searchActions;
+    QList<DownloadRemoteFileDialogFiller::Action> downloadActions;
+
+    searchActions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::SetTerm, qVariantFromValue(intStringPair(0, "human")));
+    searchActions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::SetDatabase, "protein");
+    searchActions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::ClickSearch, "");
+    searchActions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::WaitTasksFinish, "");
+    searchActions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::ClickResultByNum, 0);
+
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::CheckDatabase, "NCBI protein sequence database");
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::CheckDatabasesCount, 1);
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::CheckOutputFormat, "gb");
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::CheckForceSequenceDownloadVisibility, true);
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::CheckForceSequenceDownload, true);
+
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::SetOutputFormat, "fasta");
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::CheckForceSequenceDownloadVisibility, false);
+    downloadActions << DownloadRemoteFileDialogFiller::Action(DownloadRemoteFileDialogFiller::ClickCancel, "");
+
+    searchActions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::ClickDownload, qVariantFromValue(downloadActions));
+    searchActions << NcbiSearchDialogFiller::Action(NcbiSearchDialogFiller::ClickClose, "");
+
+    GTUtilsDialog::waitForDialog(os, new NcbiSearchDialogFiller(os, searchActions));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__SEARCH_GENBANK, GTGlobals::UseKey);
+    GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010) {
+//    Test worker's GUI
+
+//    1. Open WD, set "Read from Remote Database" element to the scene, select it.
+//    Expected state:
+//        Database: required, "NCBI GenBank (DNA sequence)";
+//        Read resource ID(s) from source: required, "List of IDs";
+//        Resource ID(s): required, visible;
+//        File with resource IDs: invisible;
+//        Save file to directory: required.
+
+//    2. Set parameter "Read resource ID(s) from source" to "File with IDs".
+//    Expected state:
+//        Resource ID(s): invisible;
+//        File with resource IDs: required, visible.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read from Remote Database");
+    GTUtilsWorkflowDesigner::click(os, "Read from Remote Database");
+
+    const QString database = GTUtilsWorkflowDesigner::getParameter(os, "Database");
+    const QString source = GTUtilsWorkflowDesigner::getParameter(os, "Read resource ID(s) from source");
+    CHECK_SET_ERR("NCBI GenBank (DNA sequence)" == database, QString("An unexpected default 'Database' value: expect '%1', got'%2'").arg("NCBI GenBank (DNA sequence)").arg(database));
+    CHECK_SET_ERR("List of IDs" == source, QString("An unexpected default 'Read resource ID(s) from source' value: expect '%1', got'%2'").arg("List of IDs").arg(source));
+
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterRequired(os, "Database"), "The 'Database' parameter is not required unexpectedly");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterRequired(os, "Read resource ID(s) from source"), "The 'Read resource ID(s) from source' parameter is not required unexpectedly");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterRequired(os, "Resource ID(s)"), "The 'Resource ID(s)' parameter is not required unexpectedly");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterRequired(os, "Save file to directory"), "The 'Save file to directory' parameter is not required unexpectedly");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "Resource ID(s)"), "The 'Resource ID(s)' parameter is not visible unexpectedly");
+    CHECK_SET_ERR(!GTUtilsWorkflowDesigner::isParameterVisible(os, "File with resource IDs"), "The 'File with resource IDs' parameter is visible unexpectedly");
+
+    GTUtilsWorkflowDesigner::setParameter(os, "Read resource ID(s) from source", 0, GTUtilsWorkflowDesigner::comboValue);
+    CHECK_SET_ERR(!GTUtilsWorkflowDesigner::isParameterVisible(os, "Resource ID(s)"), "The 'Resource ID(s)' parameter is visible unexpectedly");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterRequired(os, "File with resource IDs"), "The 'File with resource IDs' parameter is not required unexpectedly");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isParameterVisible(os, "File with resource IDs"), "The 'File with resource IDs' parameter is not visible unexpectedly");
 }
 
 } // namespace

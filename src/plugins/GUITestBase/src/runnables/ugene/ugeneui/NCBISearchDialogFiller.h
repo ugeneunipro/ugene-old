@@ -46,7 +46,8 @@ public:
         SetResultLimit,                 // int with the limit
         ClickSearch,                    // ignored
         ClickDownload,                  // QList with actions for the "Fetch from remote database" dialog filler
-        ClickClose                      // ignored
+        ClickClose,                     // ignored
+        WaitTasksFinish                 // ignored
     };
     typedef QPair<ActionType, QVariant> Action;
 
@@ -73,6 +74,7 @@ private:
     void clickSearch();
     void clickDownload(const QVariant &actionData);
     void clickClose();
+    void waitTasksFinish();
 
     QWidget *dialog;
     QList<Action> actions;

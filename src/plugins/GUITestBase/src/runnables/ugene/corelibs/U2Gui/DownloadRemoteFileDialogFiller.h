@@ -36,7 +36,12 @@ public:
         SetOutputFormat,                        // QString with format
         SetForceSequenceDownload,               // bool value
         SetDasFeatures,                         // QStringList with items to be checked
+        CheckDatabase,                          // QString with expected database name
+        CheckDatabasesCount,                    // int with expected databases count
+        CheckOutputFormatVisibility,            // bool expected state (is visible)
+        CheckOutputFormat,                      // QString with expected format name
         CheckForceSequenceDownloadVisibility,   // bool expected state (is visible)
+        CheckForceSequenceDownload,             // bool expected state (is checked)
         CheckDasFeaturesVisibility,             // bool expected state (is visible)
         ClickOk,                                // ignored
         ClickCancel                             // ignored
@@ -56,7 +61,12 @@ private:
     void setOutputFormat(const QVariant &actionData);
     void setForceSequenceDownload(const QVariant &actionData);
     void setDasFeatures(const QVariant &actionData);
+    void checkDatabase(const QVariant &actionData);
+    void checkDatabasesCount(const QVariant &actionData);
+    void checkOutputFormatVisibility(const QVariant &actionData);
+    void checkOutputFormat(const QVariant &actionData);
     void checkForceSequenceDownloadVisibility(const QVariant &actionData);
+    void checkForceSequenceDownload(const QVariant &actionData);
     void checkDasFeaturesVisibility(const QVariant &actionData);
     void clickOk();
     void clickCancel();
@@ -91,7 +101,6 @@ private:
 
 }   // namespace U2
 
-typedef QList<U2::DownloadRemoteFileDialogFiller::Action> DownloadRemoteFileDialogFillerAction;
-Q_DECLARE_METATYPE(DownloadRemoteFileDialogFillerAction)
+Q_DECLARE_METATYPE(QList<U2::DownloadRemoteFileDialogFiller::Action>)
 
 #endif // _U2_GT_RUNNABLES_DOWNLOAD_REMOTE_FILE_DIALOG_FILLER_H_

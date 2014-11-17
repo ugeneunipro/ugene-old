@@ -93,7 +93,7 @@ SearchGenbankSequenceDialogController::~SearchGenbankSequenceDialogController()
 void SearchGenbankSequenceDialogController::addQueryBlockWidget(QWidget *w)
 {
     ui->queryBuilderBox->layout()->addWidget(w);
-    w->setObjectName("query_block_widget_" + QString::number(ui->queryBuilderBox->children().size()));
+    w->setObjectName("query_block_widget_" + QString::number(ui->queryBuilderBox->findChildren<QWidget *>(QRegExp("query_block_widget_\\d+")).size()));
 }
 
 void SearchGenbankSequenceDialogController::removeQueryBlockWidget(QWidget *w)

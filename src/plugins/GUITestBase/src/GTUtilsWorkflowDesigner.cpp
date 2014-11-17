@@ -640,7 +640,7 @@ int getParameterRow(QTableView *table, const QString &parameter) {
     int iMax = model->rowCount();
     for (int i = 0; i < iMax; i++) {
         QString s = model->data(model->index(i, 0)).toString();
-        if (s.contains(parameter, Qt::CaseInsensitive)) {
+        if (s == parameter) {
             return i;
         }
     }
