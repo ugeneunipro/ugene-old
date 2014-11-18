@@ -299,12 +299,9 @@ void ExtractMSAConsensusSequenceWorkerFactory::init() {
 
         QVariantMap algos;
         QVariantMap m; 
-        QVariantMap algoThreshMinMaxMap;
         QVariantList visibleRelationList;
-        /*
         m["minimum"] = 0; 
         m["maximum"] = 100;
-        */
         SpinBoxDelegate *thrDelegate = new SpinBoxDelegate(m);
         foreach (const QString &algoId, reg->getAlgorithmIds()) {
             MSAConsensusAlgorithmFactory *f = reg->getAlgorithmFactory(algoId);
@@ -312,14 +309,11 @@ void ExtractMSAConsensusSequenceWorkerFactory::init() {
                 algos[f->getName()] = algoId;
                 if (f->supportsThreshold()) {
                     visibleRelationList.append(algoId);
-                    algoThreshMinMaxMap.clear();
-                    algoThreshMinMaxMap.insert("minimum", f->getMinThreshold());
-                    algoThreshMinMaxMap.insert("maximum", f->getMaxThreshold());
-                    algo->addRelation(new SpinBoxDelegatePropertyRelation(THRESHOLD_ATTR_ID, thrDelegate, algoThreshMinMaxMap));
                 }
             }
         }
         thr->addRelation(new VisibilityRelation(ALGO_ATTR_ID, visibleRelationList));
+        algo->addRelation(new SpinBoxDelegatePropertyRelation(THRESHOLD_ATTR_ID));
         delegates[ALGO_ATTR_ID] = new ComboBoxDelegate(algos);
         delegates[THRESHOLD_ATTR_ID] = thrDelegate;
     }
@@ -385,15 +379,11 @@ void ExtractMSAConsensusStringWorkerFactory::init() {
         Attribute *algo = new Attribute(algoDesc, BaseTypes::STRING_TYPE(), true, BuiltInConsensusAlgorithms::DEFAULT_ALGO);
         attrs << algo << thr;
 
-        QVariantMap algoThreshMinMaxMap;
         QVariantList visibleRelationList;
-
         QVariantMap algos;
         QVariantMap m; 
-        /*
         m["minimum"] = 0; 
         m["maximum"] = 100;
-        */
         SpinBoxDelegate *thrDelegate = new SpinBoxDelegate(m);
         foreach (const QString &algoId, reg->getAlgorithmIds()) {
             MSAConsensusAlgorithmFactory *f = reg->getAlgorithmFactory(algoId);
@@ -401,14 +391,11 @@ void ExtractMSAConsensusStringWorkerFactory::init() {
                 algos[f->getName()] = algoId;
                 if (f->supportsThreshold()) {
                     visibleRelationList.append(algoId);
-                    algoThreshMinMaxMap.clear();
-                    algoThreshMinMaxMap.insert("minimum", f->getMinThreshold());
-                    algoThreshMinMaxMap.insert("maximum", f->getMaxThreshold());
-                    thr->addRelation(new SpinBoxDelegatePropertyRelation(THRESHOLD_ATTR_ID, thrDelegate, algoThreshMinMaxMap));
                 }
             }
         }
         thr->addRelation(new VisibilityRelation(ALGO_ATTR_ID, visibleRelationList));
+        algo->addRelation(new SpinBoxDelegatePropertyRelation(THRESHOLD_ATTR_ID));
         delegates[ALGO_ATTR_ID] = new ComboBoxDelegate(algos);
         delegates[THRESHOLD_ATTR_ID] = thrDelegate;
     }
@@ -438,20 +425,19 @@ QString ExtractMSAConsensusWorkerPrompter::composeRichDoc() {
 
 QVariant SpinBoxDelegatePropertyRelation::getAffectResult( const QVariant &influencingValue, const QVariant &dependentValue, DelegateTags *infTags, DelegateTags *depTags ) const {
     updateDelegateTags(influencingValue, depTags);
-    return dependentValue;
+    int res = qBound(depTags->get("minimum").toInt(), dependentValue.toInt(), depTags->get("maximum").toInt());
+    return res;
 }
 
 void SpinBoxDelegatePropertyRelation::updateDelegateTags( const QVariant &influencingValue, DelegateTags *dependentTags ) const {
-    /*
-    for(QVariantMap::const_iterator iter = dependencies.begin(); iter != dependencies.end(); ++iter) {
-        delegate->setEditorProperty(iter.key().toAscii(), iter.value());
+    MSAConsensusAlgorithmRegistry *reg = AppContext::getMSAConsensusAlgorithmRegistry();
+    SAFE_POINT(NULL != reg, "NULL registry", );
+    MSAConsensusAlgorithmFactory *consFactory = reg->getAlgorithmFactory(influencingValue.toString());
+    if(!consFactory){
+        return;
     }
-    delegate->update();
-    */
-    for(QVariantMap::const_iterator iter = dependencies.begin(); iter != dependencies.end(); ++iter) {
-        dependentTags->set(iter.key().toAscii(), iter.value());
-        delegate->setEditorProperty(iter.key().toAscii(), iter.value());
-    }
+    dependentTags->set("minimum", consFactory->getMinThreshold());
+    dependentTags->set("maximum", consFactory->getMaxThreshold());
 }
 
 } // LocalWorkflow
