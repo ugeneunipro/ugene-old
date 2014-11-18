@@ -46,7 +46,7 @@ namespace U2 {
 
     class AppCloseMessageBoxDialogFiller : public Filler {
     public:
-        AppCloseMessageBoxDialogFiller(U2OpStatus &_os) : Filler(_os, QString()) {}
+        AppCloseMessageBoxDialogFiller(U2OpStatus &_os) : Filler(_os, "") {}
         void run();
     };
 
