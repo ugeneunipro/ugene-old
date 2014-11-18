@@ -9282,6 +9282,28 @@ GUI_TEST_CLASS_DEFINITION(test_3640) {
     CHECK_SET_ERR(!humanT1Doc.isValid(), "The document is not removed");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3658){
+//    1. Open the WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+//    2. Add "Call Varinats with Samtools" workflow element
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Write Annotations");
+//    3. Press on the toolbar
+//    {Scripting mode->Show scripting options}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Show scripting options"));
+    GTWidget::click(os, GTAction::button(os, GTAction::findActionByText(os, "Scripting mode")));
+//    4. Click on the workflow element
+    GTUtilsWorkflowDesigner::click(os, "Write Annotations");
+//    Expected state: property editor appeared
+//    5. Press on the toolbar
+//    {Scripting mode->Hide scripting options}
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Hide scripting options"));
+    GTWidget::click(os, GTAction::button(os, GTAction::findActionByText(os, "Scripting mode")));
+//    Expected state: scripting column is hidden
+    QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
+    int count = table->model()->columnCount();
+    CHECK_SET_ERR(count == 2, QString("wrong columns number. expected 2, actual: %1").arg(count));
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
