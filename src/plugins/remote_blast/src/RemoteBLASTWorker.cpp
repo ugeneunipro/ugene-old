@@ -200,14 +200,6 @@ void RemoteBLASTWorkerFactory::init() {
     localDomain->registerEntry(new RemoteBLASTWorkerFactory());
 }
 
-void RemoteBLASTWorkerFactory::addParametersSetToMap(QVariantMap& map, const QString& attrValue, const QStringList& paremetersList) {
-    QVariantMap paremetersMap;
-    foreach(const QString& curStr, paremetersList) {
-        paremetersMap[curStr] = curStr;
-    }
-    map.insert(attrValue, paremetersMap);
-}
-
 QString RemoteBLASTPrompter::composeRichDoc() {
     IntegralBusPort* input = qobject_cast<IntegralBusPort*>(target->getPort(BasePorts::IN_SEQ_PORT_ID()));
     Actor* producer = input->getProducer(BaseSlots::DNA_SEQUENCE_SLOT().getId());

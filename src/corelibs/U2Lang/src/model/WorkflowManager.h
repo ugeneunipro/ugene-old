@@ -131,6 +131,13 @@ public:
     virtual CommunicationChannel* createConnection(Link*) {return NULL;}
     virtual Scheduler* createScheduler(Schema*) {return NULL;}
     virtual void destroy(Scheduler*, Schema*) {}
+    static void addParametersSetToMap(QVariantMap& map, const QString& attrValue, const QStringList& parametersList){
+        QVariantMap parametersMap;
+        foreach(const QString& curStr, parametersList) {
+            parametersMap[curStr] = curStr;
+        }
+        map.insert(attrValue, parametersMap);
+    }
     
 }; // DomainFactory
 

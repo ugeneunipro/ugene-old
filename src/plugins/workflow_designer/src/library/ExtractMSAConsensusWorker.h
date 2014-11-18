@@ -28,6 +28,7 @@
 namespace U2 {
     class MSAConsensusAlgorithm;
     class ExportConsensusTask;
+    class SpinBoxDelegate;
 namespace LocalWorkflow {
 using namespace Workflow;
 
@@ -127,6 +128,20 @@ public:
 
 protected:
     QString composeRichDoc();
+};
+
+class SpinBoxDelegatePropertyRelation : public AttributeRelation {
+public:
+    SpinBoxDelegatePropertyRelation(const QString &relatedAttrId, SpinBoxDelegate *_delegate, const QVariantMap &_dependencies)
+        : AttributeRelation(relatedAttrId), dependencies(_dependencies), delegate(_delegate){}
+    virtual RelationType getType() const {return PROPERTY_CHANGER;}
+
+    virtual QVariant getAffectResult(const QVariant &influencingValue, const QVariant &dependentValue,
+        DelegateTags *infTags, DelegateTags *depTags) const;
+    virtual void updateDelegateTags(const QVariant &influencingValue, DelegateTags *dependentTags) const;
+private:
+    QVariantMap dependencies;
+    SpinBoxDelegate *delegate;
 };
 
 } // LocalWorkflow

@@ -31,7 +31,8 @@ class DelegateTags;
 enum RelationType {
     VISIBILITY,
     FILE_EXTENSION,
-    CUSTOM_VALUE_CHANGER
+    CUSTOM_VALUE_CHANGER,
+    PROPERTY_CHANGER
 };
 
 /**

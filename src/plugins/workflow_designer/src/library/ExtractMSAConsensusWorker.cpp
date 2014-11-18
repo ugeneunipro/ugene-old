@@ -281,6 +281,7 @@ void ExtractMSAConsensusSequenceWorkerFactory::init() {
     }
 
     QList<Attribute*> attrs;
+    QMap<QString, PropertyDelegate*> delegates;
     {
         const Descriptor algoDesc(ALGO_ATTR_ID,
             ExtractMSAConsensusSequenceWorker::tr("Algorithm"),
@@ -292,26 +293,35 @@ void ExtractMSAConsensusSequenceWorkerFactory::init() {
             ExtractMSAConsensusSequenceWorker::tr("Keep gaps"),
             ExtractMSAConsensusSequenceWorker::tr("Set this parameter if the result consensus must keep the gaps."));
 
-        attrs << new Attribute(algoDesc, BaseTypes::STRING_TYPE(), true, BuiltInConsensusAlgorithms::STRICT_ALGO);
-        attrs << new Attribute(thresholdDesc, BaseTypes::NUM_TYPE(), true, 100);
-        attrs << new Attribute(gapsDesc, BaseTypes::BOOL_TYPE(), true, true);
-    }
+        Attribute *thr = new Attribute(thresholdDesc, BaseTypes::NUM_TYPE(), true, 100);
+        Attribute *algo = new Attribute(algoDesc, BaseTypes::STRING_TYPE(), true, BuiltInConsensusAlgorithms::STRICT_ALGO);
+        attrs << algo << thr << new Attribute(gapsDesc, BaseTypes::BOOL_TYPE(), true, true);
 
-    QMap<QString, PropertyDelegate*> delegates;
-    {
         QVariantMap algos;
+        QVariantMap m; 
+        QVariantMap algoThreshMinMaxMap;
+        QVariantList visibleRelationList;
+        /*
+        m["minimum"] = 0; 
+        m["maximum"] = 100;
+        */
+        SpinBoxDelegate *thrDelegate = new SpinBoxDelegate(m);
         foreach (const QString &algoId, reg->getAlgorithmIds()) {
             MSAConsensusAlgorithmFactory *f = reg->getAlgorithmFactory(algoId);
             if(f->isSequenceLikeResult()){
                 algos[f->getName()] = algoId;
+                if (f->supportsThreshold()) {
+                    visibleRelationList.append(algoId);
+                    algoThreshMinMaxMap.clear();
+                    algoThreshMinMaxMap.insert("minimum", f->getMinThreshold());
+                    algoThreshMinMaxMap.insert("maximum", f->getMaxThreshold());
+                    algo->addRelation(new SpinBoxDelegatePropertyRelation(THRESHOLD_ATTR_ID, thrDelegate, algoThreshMinMaxMap));
+                }
             }
         }
+        thr->addRelation(new VisibilityRelation(ALGO_ATTR_ID, visibleRelationList));
         delegates[ALGO_ATTR_ID] = new ComboBoxDelegate(algos);
-
-        QVariantMap m; 
-        m["minimum"] = 0; 
-        m["maximum"] = 100;
-        delegates[THRESHOLD_ATTR_ID] = new SpinBoxDelegate(m);
+        delegates[THRESHOLD_ATTR_ID] = thrDelegate;
     }
 
     ActorPrototype *proto = new IntegralBusActorPrototype(desc, ports, attrs);
@@ -363,6 +373,7 @@ void ExtractMSAConsensusStringWorkerFactory::init() {
     }
 
     QList<Attribute*> attrs;
+    QMap<QString, PropertyDelegate*> delegates;
     {
         const Descriptor algoDesc(ALGO_ATTR_ID,
             ExtractMSAConsensusSequenceWorker::tr("Algorithm"),
@@ -370,26 +381,36 @@ void ExtractMSAConsensusStringWorkerFactory::init() {
         const Descriptor thresholdDesc(THRESHOLD_ATTR_ID,
             ExtractMSAConsensusSequenceWorker::tr("Threshold"),
             ExtractMSAConsensusSequenceWorker::tr("The threshold of the algorithm."));
+        Attribute *thr = new Attribute(thresholdDesc, BaseTypes::NUM_TYPE(), true, 100);
+        Attribute *algo = new Attribute(algoDesc, BaseTypes::STRING_TYPE(), true, BuiltInConsensusAlgorithms::DEFAULT_ALGO);
+        attrs << algo << thr;
 
-        attrs << new Attribute(algoDesc, BaseTypes::STRING_TYPE(), true, BuiltInConsensusAlgorithms::DEFAULT_ALGO);
-        attrs << new Attribute(thresholdDesc, BaseTypes::NUM_TYPE(), true, 100);
-    }
+        QVariantMap algoThreshMinMaxMap;
+        QVariantList visibleRelationList;
 
-    QMap<QString, PropertyDelegate*> delegates;
-    {
         QVariantMap algos;
+        QVariantMap m; 
+        /*
+        m["minimum"] = 0; 
+        m["maximum"] = 100;
+        */
+        SpinBoxDelegate *thrDelegate = new SpinBoxDelegate(m);
         foreach (const QString &algoId, reg->getAlgorithmIds()) {
             MSAConsensusAlgorithmFactory *f = reg->getAlgorithmFactory(algoId);
             if(!f->isSequenceLikeResult()){
                 algos[f->getName()] = algoId;
+                if (f->supportsThreshold()) {
+                    visibleRelationList.append(algoId);
+                    algoThreshMinMaxMap.clear();
+                    algoThreshMinMaxMap.insert("minimum", f->getMinThreshold());
+                    algoThreshMinMaxMap.insert("maximum", f->getMaxThreshold());
+                    thr->addRelation(new SpinBoxDelegatePropertyRelation(THRESHOLD_ATTR_ID, thrDelegate, algoThreshMinMaxMap));
+                }
             }
         }
+        thr->addRelation(new VisibilityRelation(ALGO_ATTR_ID, visibleRelationList));
         delegates[ALGO_ATTR_ID] = new ComboBoxDelegate(algos);
-
-        QVariantMap m; 
-        m["minimum"] = 0; 
-        m["maximum"] = 100;
-        delegates[THRESHOLD_ATTR_ID] = new SpinBoxDelegate(m);
+        delegates[THRESHOLD_ATTR_ID] = thrDelegate;
     }
 
     ActorPrototype *proto = new IntegralBusActorPrototype(desc, ports, attrs);
@@ -413,6 +434,24 @@ QString ExtractMSAConsensusWorkerPrompter::composeRichDoc() {
     QString algorithm = getParameter(ALGO_ATTR_ID).toString();
     QString link = getHyperlink(ALGO_ATTR_ID, algorithm);
     return ExtractMSAConsensusSequenceWorker::tr("Extracts the consensus sequence from the incoming alignment(s) using the %1 algorithm.").arg(link);
+}
+
+QVariant SpinBoxDelegatePropertyRelation::getAffectResult( const QVariant &influencingValue, const QVariant &dependentValue, DelegateTags *infTags, DelegateTags *depTags ) const {
+    updateDelegateTags(influencingValue, depTags);
+    return dependentValue;
+}
+
+void SpinBoxDelegatePropertyRelation::updateDelegateTags( const QVariant &influencingValue, DelegateTags *dependentTags ) const {
+    /*
+    for(QVariantMap::const_iterator iter = dependencies.begin(); iter != dependencies.end(); ++iter) {
+        delegate->setEditorProperty(iter.key().toAscii(), iter.value());
+    }
+    delegate->update();
+    */
+    for(QVariantMap::const_iterator iter = dependencies.begin(); iter != dependencies.end(); ++iter) {
+        dependentTags->set(iter.key().toAscii(), iter.value());
+        delegate->setEditorProperty(iter.key().toAscii(), iter.value());
+    }
 }
 
 } // LocalWorkflow
