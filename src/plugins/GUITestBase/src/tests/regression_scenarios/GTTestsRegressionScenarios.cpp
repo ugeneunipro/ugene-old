@@ -5040,7 +5040,7 @@ GUI_TEST_CLASS_DEFINITION(test_2581_4) {
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTGlobals::sleep();
-    GTUtilsLog::check(os, l);  
+    GTUtilsLog::check(os, l);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2581_5) {
@@ -5061,7 +5061,7 @@ GUI_TEST_CLASS_DEFINITION(test_2581_5) {
     GTMouseDriver::click(os, Qt::RightButton);
 
     GTGlobals::sleep();
-    GTUtilsLog::check(os, l);  
+    GTUtilsLog::check(os, l);
 }
 
 
@@ -6501,10 +6501,10 @@ GUI_TEST_CLASS_DEFINITION(test_3014) {
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Molecular Surface" << "SES"));
     QWidget *widget3d = GTWidget::findWidget(os, "1-2Q41");
     GTWidget::click(os, widget3d, Qt::RightButton);
+    GTGlobals::sleep(10000);
 
     //    Expected state: Moleculaar surface calculated and showed. Program not crached.
     GTUtilsLog::check(os, l);
-
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3017) {
@@ -8488,7 +8488,7 @@ GUI_TEST_CLASS_DEFINITION(test_3451) {
             CHECK_SET_ERR( endPos != NULL, "endPosBox is NULL");
 
             GTSpinBox::checkLimits(os, startPos, 1, 603);
-            GTSpinBox::checkLimits(os, endPos, 2, 604); 
+            GTSpinBox::checkLimits(os, endPos, 2, 604);
 
             //GTGlobals::sleep();
 

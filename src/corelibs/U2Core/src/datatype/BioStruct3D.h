@@ -197,6 +197,7 @@ public:
 
     QByteArray getRawSequenceByChainId(int id) const;
     int getNumberOfAtoms() const;
+    QList<SharedAtom> getAllAtoms() const;
     int getNumberOfResidues() const;
     static int residueIndexToInt(const ResidueIndex& idx);
     const SharedAtom getAtomById(int index, int modelIndex) const;

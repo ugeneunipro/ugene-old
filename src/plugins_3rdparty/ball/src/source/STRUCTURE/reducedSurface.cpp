@@ -1900,6 +1900,9 @@ namespace BALL
             double radius_i = rs_->atom_[i].radius;
             bool too_close = false;
             box = grid.getBox(pos);
+            if (box->isEmpty()) {
+                continue;
+            }
             for (b = box->beginBox(); b != box->endBox() && !too_close; b++)
             {
                 for (d = b->beginData(); d != b->endData() && !too_close; d++)

@@ -107,6 +107,11 @@ int BioStruct3D::getNumberOfAtoms() const
     return coordSet.count();
 }
 
+QList<SharedAtom> BioStruct3D::getAllAtoms() const {
+    const AtomCoordSet& coordSet = modelMap.begin().value();
+    return coordSet.values();
+}
+
 QMap<int, QList<SharedAnnotationData> > BioStruct3D::generateAnnotations() const
 {
     QMap<int, QList<SharedAnnotationData> > result = generateChainAnnotations();

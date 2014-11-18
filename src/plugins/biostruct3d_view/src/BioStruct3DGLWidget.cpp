@@ -995,9 +995,8 @@ void BioStruct3DGLWidget::sl_exportImage()
 void BioStruct3DGLWidget::sl_showSurface()
 {
     QList<SharedAtom> atoms;
-    foreach (const AtomCoordSet &act, contexts.first().biostruct->modelMap) {
-        atoms += act.values();
-    }
+    BioStruct3DRendererContext ctx = contexts.first();
+    atoms = ctx.biostruct->getAllAtoms();
 
     QString surfaceType = qobject_cast<QAction *>( sender() )->text();
     surfaceCalcTask = new MolecularSurfaceCalcTask(surfaceType, atoms);

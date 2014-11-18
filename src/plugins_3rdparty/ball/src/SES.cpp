@@ -90,7 +90,7 @@ static void calcSES( BALL::Surface& surface, const QList<SharedAtom>& atoms, dou
 }
 
 
-void SolventExcludedSurface::calculate(const QList<SharedAtom>& atoms, int& progress)
+void SolventExcludedSurface::calculate(const QList<SharedAtom>& atoms, int& /*progress*/)
 {
 //        std::vector<BALL::TSphere3<double> > spheres;
 //         foreach(const SharedAtom a, atoms)
@@ -122,7 +122,6 @@ void SolventExcludedSurface::calculate(const QList<SharedAtom>& atoms, int& prog
     BALL::Surface surface;
     calcSES(surface, atoms, TOLERANCE);
 
-    progress = 100;
     for(unsigned int faceIndex=0;faceIndex < surface.getNumberOfTriangles();faceIndex++)
     {
         const BALL::Surface::Triangle &triangle=surface.getTriangle(faceIndex);

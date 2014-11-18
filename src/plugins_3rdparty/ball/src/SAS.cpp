@@ -35,7 +35,7 @@ SolventAccessibleSurface::SolventAccessibleSurface()
     GCOUNTER( cvar, tvar, "SolventAccessibleSurface" );
 }
 
-void SolventAccessibleSurface::calculate(const QList<SharedAtom>& atoms, int& progress)
+void SolventAccessibleSurface::calculate(const QList<SharedAtom>& atoms, int& /*progress*/)
 {
     BALL::Surface surface;
     {
