@@ -287,10 +287,10 @@ workflow ChIP-Seq{
                         title:"Short Reads";
                         label-size:120;
                         get-file-list.url-in {
-                            label:"FASTQ Files";
+                            label:"FASTQ files";
                         }
                         get-file-list-1.url-in {
-                            label:"FASTQ Files with Pairs";
+                            label:"FASTQ files with pairs";
                         }
                     }
                 }

@@ -223,10 +223,10 @@ workflow RNA-Seq{
                         title:"Short Reads";
                         label-size:120;
                         get-file-list.url-in {
-                            label:"FASTQ Files 1";
+                            label:"FASTQ files 1";
                         }
                         get-file-list-1.url-in {
-                            label:"FASTQ Files 2";
+                            label:"FASTQ files 2";
                         }
                     }
                 }
@@ -242,6 +242,7 @@ workflow RNA-Seq{
                         QualityTrim.qual-id {
                         }
                         QualityTrim.len-id {
+	       label:"Min length";
                         }
                     }
                     group {
@@ -250,6 +251,7 @@ workflow RNA-Seq{
                         QualityTrim-1.qual-id {
                         }
                         QualityTrim-1.len-id {
+	       label:"Min length";
                         }
                     }
                 }

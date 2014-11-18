@@ -225,7 +225,7 @@ workflow ChIP-Seq{
                         title:"Short Reads";
                         label-size:120;
                         get-file-list.url-in {
-                            label:"FASTQ Files";
+                            label:"FASTQ files";
                         }
                     }
                 }
@@ -241,6 +241,7 @@ workflow ChIP-Seq{
                         QualityTrim.qual-id {
                         }
                         QualityTrim.len-id {
+	       label:"Min length";
                         }
                     }
                 }
