@@ -1825,6 +1825,32 @@ GUI_TEST_CLASS_DEFINITION( test_2007 )
     CHECK_SET_ERR( initialMsaContent == finalMsaContent, "MSA has changed unexpectedly!" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2009 ){
+//    1) Open Settings/Preferences/External tools
+//    2) Set correct BWA or any other tool path (preferably just executable)
+    class BWAInactivation : public CustomScenario {
+    public:
+        BWAInactivation() {}
+        virtual void run(U2::U2OpStatus &os) {
+            //    3) Clear set path
+            AppSettingsDialogFiller::clearToolPath(os, "BWA");
+
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new BWAInactivation()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+//    4) Look at UGENE log
+    GTUtilsLog::check(os, l);
+//    Expected state: UGENE doesn't write any error to log
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2012 ){
     //1. Open {data/samples/CLUSTALW/COI.aln}.
     GTFileDialog::openFile( os, dataDir + "samples/CLUSTALW/", "COI.aln" );
@@ -4615,6 +4641,33 @@ GUI_TEST_CLASS_DEFINITION( test_2519 ) {
     GTUtilsDialog::waitForDialog(os, new RemovePartFromSequenceDialogFiller(os, "1..8999"));
     GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
     GTGlobals::sleep(5000);
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2538 ){
+//    1. Open file "_common_data/scenarios/tree_view/COI.nwk"
+    GTFileDialog::openFile(os, dataDir + "/samples/Newick/", "COI.nwk");
+//    2. Call context menu on node just near root. Click "Collapse"
+    GTGlobals::sleep(1000);
+    GTMouseDriver::moveTo(os, GTUtilsPhyTree::getGlobalCoord(os, GTUtilsPhyTree::getNodes(os).at(1)));
+    GTMouseDriver::click(os);
+    GTGlobals::sleep(1000);
+
+    QWidget* treeView = GTWidget::findWidget(os, "treeView");
+
+    QPixmap pixmap = QPixmap::grabWidget(treeView, treeView->rect());
+    QImage initImg = pixmap.toImage();
+
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep(1000);
+//    3. Call context menu on node just near root. Click "Expand"
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep(1000);
+//    Expected state: tree has the same view as at the beginning
+    pixmap = QPixmap::grabWidget(treeView, treeView->rect());
+    QImage finalImg = pixmap.toImage();
+
+    //images have several pixels differ. so sizes are compared
+    CHECK_SET_ERR(initImg.size() == finalImg.size(), "different images");
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2542 ) {
