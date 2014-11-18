@@ -86,19 +86,19 @@ workflow ChIP-Seq{
     }
 
     .actor-bindings {
-        CASAVAFilter-1.out-file->QualityTrim-1.in-file
-        CASAVAFilter.out-file->QualityTrim.in-file
         QualityTrim.out-file->bwamem-id.in-data
-        rmdup-bam.out-file->Sort-bam.in-file
         Sort-bam.out-file->files-conversion-1.in-file
-        bwamem-id.out-data->files-conversion.in-file
-        get-file-list-1.out-url->CASAVAFilter-1.in-file
+        CASAVAFilter.out-file->QualityTrim.in-file
+        get-file-list.out-url->CASAVAFilter.in-file
+        CASAVAFilter-1.out-file->QualityTrim-1.in-file
+        QualityTrim-1.out-file->bwamem-id.in-data-paired
+        merge-bam.out-file->filter-bam.in-file
         filter-bam.out-file->Sort-bam-1.in-file
         Sort-bam-1.out-file->rmdup-bam.in-file
-        merge-bam.out-file->filter-bam.in-file
-        get-file-list.out-url->CASAVAFilter.in-file
         files-conversion.out-file->merge-bam.in-file
-        QualityTrim-1.out-file->bwamem-id.in-data-paired
+        bwamem-id.out-data->files-conversion.in-file
+        rmdup-bam.out-file->Sort-bam.in-file
+        get-file-list-1.out-url->CASAVAFilter-1.in-file
     }
 
     get-file-list.url->CASAVAFilter.in-file.url
@@ -128,6 +128,9 @@ workflow ChIP-Seq{
             }
             bwamem-id.threads {
                 alias:bwa_t;
+            }
+            get-file-list-1.url-in {
+                alias:in_mate;
             }
         }
         visual {
@@ -301,16 +304,16 @@ workflow ChIP-Seq{
                         title:Filtration;
                         label-size:120;
                         QualityTrim.qual-id {
-	      label:"Base quality";
+                            label:"Base quality";
                         }
                         QualityTrim.len-id {
-	      label:"Reads length";
+                            label:"Reads length";
                         }
                         QualityTrim-1.qual-id {
-	      label:"Base quality for pairs";
+                            label:"Base quality for pairs";
                         }
                         QualityTrim-1.len-id {
-	      label:"Reads length for pairs";
+                            label:"Reads length for pairs";
                         }
                     }
                 }
@@ -386,6 +389,7 @@ workflow ChIP-Seq{
                         title:"Remove Duplicates";
                         label-size:120;
                         rmdup-bam.remove-single-end {
+                            label:"For single-end reads";
                         }
                     }
                 }
@@ -395,7 +399,7 @@ workflow ChIP-Seq{
                 title:"Output data";
                 parameters-area {
                     group {
-                        title:"Alignmed data";
+                        title:"Aligned data";
                         label-size:130;
                         bwamem-id.outname {
                         }

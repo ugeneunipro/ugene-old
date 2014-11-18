@@ -39,10 +39,10 @@ workflow RNA-Seq{
     }
 
     .actor-bindings {
+        CASAVAFilter.out-file->QualityTrim.in-file
         get-file-list.out-url->CASAVAFilter.in-file
         MergeFastq.out-file->tophat.in-sequence
         QualityTrim.out-file->MergeFastq.in-file
-        CASAVAFilter.out-file->QualityTrim.in-file
     }
 
     get-file-list.url->CASAVAFilter.in-file.url
@@ -53,6 +53,9 @@ workflow RNA-Seq{
 
     .meta {
         parameter-aliases {
+            CASAVAFilter.out-mode {
+                alias:out_mode;
+            }
             get-file-list.url-in {
                 alias:in;
             }
@@ -61,6 +64,9 @@ workflow RNA-Seq{
             }
             tophat.bowtie-index-dir {
                 alias:idx_dir;
+            }
+            tophat.out-dir {
+                alias:out_dir;
             }
         }
         visual {
@@ -114,7 +120,7 @@ workflow RNA-Seq{
         wizard {
             name:"Raw RNA-Seq Processing Wizard";
             page {
-                id:1;       
+                id:1;
                 next:2;
                 title:"Input data";
                 parameters-area {
@@ -130,10 +136,10 @@ workflow RNA-Seq{
             page {
                 id:2;
                 next:3;
-                title:"Pre-processing";
+                title:Pre-processing;
                 parameters-area {
                     group {
-                        title:"Filtration";
+                        title:Filtration;
                         label-size:120;
                         QualityTrim.qual-id {
                         }
@@ -145,14 +151,16 @@ workflow RNA-Seq{
             page {
                 id:3;
                 next:4;
-                title:"Mapping";
+                title:Mapping;
                 parameters-area {
                     group {
                         title:"TopHat input";
                         label-size:180;
                         bowtie-index {
-                            tophat.bowtie-index-dir {}
-                            tophat.bowtie-index-basename {}
+                            tophat.bowtie-index-dir {
+                            }
+                            tophat.bowtie-index-basename {
+                            }
                         }
                         tophat.bowtie-version {
                         }
@@ -232,7 +240,6 @@ workflow RNA-Seq{
                         CASAVAFilter.custom-dir {
                         }
                     }
-
                 }
             }
         }

@@ -316,6 +316,7 @@ workflow ChIP-Seq{
                         title:"Remove Duplicates";
                         label-size:120;
                         rmdup-bam.remove-single-end {
+	   label:"For single-end reads";
                         }
                     }
                 }
@@ -325,7 +326,7 @@ workflow ChIP-Seq{
                 title:"Output data";
                 parameters-area {
                     group {
-                        title:"Alignmed data";
+                        title:"Aligned data";
                         label-size:130;
                         bwamem-id.outname {
                         }
