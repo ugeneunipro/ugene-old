@@ -361,6 +361,10 @@ QMap<Attribute *, bool> ActorCfgModel::getAttributeRelatedVisibility(Attribute *
             foreach (const AttributeRelation *rel, a->getRelations()) {
                 if (rel->getRelatedAttrId() == changedAttr->getId()) {
                     relatedAttributesVisibility.insert(a, isVisible(a));
+                    const QMap<Attribute *, bool> dependentAttributeVisibility = getAttributeRelatedVisibility(a);
+                    foreach (Attribute *dependentAttr, dependentAttributeVisibility.keys()) {
+                        relatedAttributesVisibility[dependentAttr] = dependentAttributeVisibility[dependentAttr];
+                    }
                 }
             }
         }

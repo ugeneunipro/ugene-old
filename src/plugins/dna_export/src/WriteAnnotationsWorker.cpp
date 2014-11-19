@@ -62,6 +62,7 @@ const QString WriteAnnotationsWorkerFactory::ACTOR_ID("write-annotations");
 static const QString WRITE_ANNOTATIONS_IN_TYPE_ID("write-annotations-in-type");
 static const QString CSV_FORMAT_ID("csv");
 static const QString ANNOTATIONS_NAME("annotations-name");
+static const QString ANN_OBJ_NAME("ann-obj-name");
 static const QString ANNOTATIONS_NAME_DEF_VAL("unknown features");
 static const QString SEPARATOR("separator");
 static const QString SEPARATOR_DEFAULT_VALUE (",");
@@ -153,7 +154,17 @@ QString WriteAnnotationsWorker::fetchIncomingSequenceName(const QVariantMap &inc
 }
 
 QString WriteAnnotationsWorker::getAnnotationName() const {
-    QString objName = getValue<QString>(ANNOTATIONS_NAME);
+    const QString storageStr = getValue<QString>(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId());
+
+    QString objName;
+    if (BaseAttributes::LOCAL_FS_DATA_STORAGE() == storageStr) {
+        objName = getValue<QString>(ANNOTATIONS_NAME);
+    } else if (BaseAttributes::SHARED_DB_DATA_STORAGE() == storageStr) {
+        objName = getValue<QString>(ANN_OBJ_NAME);
+    } else {
+        FAIL("Invalid worker data storage attribute", ANNOTATIONS_NAME_DEF_VAL);
+    }
+
     if (objName.isEmpty()) {
         objName = ANNOTATIONS_NAME_DEF_VAL;
         coreLog.details(tr("Annotations name not specified. Default value used: '%1'").arg(objName));
@@ -293,11 +304,16 @@ void WriteAnnotationsWorkerFactory::init() {
             WriteAnnotationsWorker::tr("Annotations name: Name of the saved"
             " annotations. This option is only available for document formats"
             " that support saving of annotations names."));
-        Attribute *nameAttr = new Attribute(annotationsNameDesc, BaseTypes::STRING_TYPE(), false, QVariant(ANNOTATIONS_NAME_DEF_VAL));
+        Attribute *nameAttr = new Attribute(annotationsNameDesc, BaseTypes::STRING_TYPE(), false, ANNOTATIONS_NAME_DEF_VAL);
         attrs << nameAttr;
-        Descriptor separatorDesc(SEPARATOR, WriteAnnotationsWorker::tr("CSV separator"), 
+        Descriptor annObjNameDesc(ANN_OBJ_NAME, WriteAnnotationsWorker::tr("Annotation object name"),
+            WriteAnnotationsWorker::tr("Annotations name: Name of the saved annotation object."));
+        Attribute *objNameAttr = new Attribute(annObjNameDesc, BaseTypes::STRING_TYPE(), false, ANNOTATIONS_NAME_DEF_VAL);
+        attrs << objNameAttr;
+        objNameAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::SHARED_DB_DATA_STORAGE()));
+        Descriptor separatorDesc(SEPARATOR, WriteAnnotationsWorker::tr("CSV separator"),
             WriteAnnotationsWorker::tr("String which separates values in CSV files."));
-        Attribute *csvSeparatorAttr = new Attribute(separatorDesc, BaseTypes::STRING_TYPE(), false, QVariant(SEPARATOR_DEFAULT_VALUE));
+        Attribute *csvSeparatorAttr = new Attribute(separatorDesc, BaseTypes::STRING_TYPE(), false, SEPARATOR_DEFAULT_VALUE);
         csvSeparatorAttr->addRelation(new VisibilityRelation(BaseAttributes::DATA_STORAGE_ATTRIBUTE().getId(), BaseAttributes::LOCAL_FS_DATA_STORAGE()));
         attrs << csvSeparatorAttr;
 

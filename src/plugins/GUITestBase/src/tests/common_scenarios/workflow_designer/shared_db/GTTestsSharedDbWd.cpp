@@ -597,16 +597,17 @@ GUI_TEST_CLASS_DEFINITION(run_workflow_gui_test_0003) {
     GTUtilsWorkflowDesigner::setParameter(os, "Data storage", 1, GTUtilsWorkflowDesigner::comboValue);
     GTUtilsWorkflowDesigner::setParameter(os, "Database", 1, GTUtilsWorkflowDesigner::comboValue);
     GTUtilsWorkflowDesigner::setParameter(os, "Output path", "/test", GTUtilsWorkflowDesigner::textValue);
-    GTGlobals::sleep(600000);
-    GTUtilsWorkflowDesigner::setParameter(os, "Annotations name", "run_workflow_gui_test_0003", GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Annotation object name", "run_workflow_gui_test_0003", GTUtilsWorkflowDesigner::textValue);
 
     GTUtilsWorkflowDesigner::connect(os, GTUtilsWorkflowDesigner::getWorker(os, "Read Annotations"),
         GTUtilsWorkflowDesigner::getWorker(os, "Write Annotations"));
 
     GTWidget::click(os, GTAction::button(os, "Run workflow"));
-    GTGlobals::sleep(10000);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
     GTUtilsLog::check(os, l);
+
+    GTGlobals::sleep(10000);
 
     GTGlobals::FindOptions projectTreefindOptions;
     projectTreefindOptions.depth = GTGlobals::FindOptions::INFINITE_DEPTH;

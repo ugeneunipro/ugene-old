@@ -87,10 +87,6 @@ customWidget(NULL), subject(NULL), actor(NULL)
     table->setModel(proxyModel);
     
     table->horizontalHeader()->setStretchLastSection(true);
-    //table->horizontalHeader()->setStretchLastSection(false);
-    //table->horizontalHeader()->setResizeMode(0, QHeaderView::ResizeToContents);
-    //table->horizontalHeader()->setResizeMode(1, QHeaderView::Interactive);
-    //table->horizontalHeader()->setResizeMode(2, QHeaderView::Stretch);
     
 #if (QT_VERSION < 0x050000) //Qt 5
     table->horizontalHeader()->setClickable(false);
@@ -102,7 +98,6 @@ customWidget(NULL), subject(NULL), actor(NULL)
     table->verticalHeader()->hide();
     table->verticalHeader()->setDefaultSectionSize(QFontMetrics(QFont()).height() + 6);
     table->setItemDelegate(new SuperDelegate(this));
-    //table->setMinimumHeight(height()/2);
 
     reset();
 
