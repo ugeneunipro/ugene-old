@@ -119,6 +119,10 @@ DelegateTags::DelegateTags(const DelegateTags &other) : QObject(NULL) {
     tags = other.tags;
 }
 
+QStringList DelegateTags::names() const {
+    return tags.keys();
+}
+
 QVariant DelegateTags::get(const QString &name) const {
     return tags.value(name);
 }

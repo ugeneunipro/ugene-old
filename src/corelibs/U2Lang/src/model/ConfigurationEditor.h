@@ -155,6 +155,7 @@ public:
     DelegateTags(QObject *parent = NULL);
     DelegateTags(const DelegateTags &other);
 
+    QStringList names() const;
     QVariant get(const QString &name) const;
     void set(const QString &name, const QVariant &value);
     void set(const DelegateTags &other);

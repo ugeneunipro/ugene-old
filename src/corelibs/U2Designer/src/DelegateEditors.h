@@ -142,6 +142,8 @@ public:
 
     void getItems( QVariantMap &items ) const;
 
+    QVariantMap getProperties() const;
+
 signals:
     void si_valueChanged(int);
 private slots:

@@ -61,14 +61,14 @@ void DelegateEditor::updateDelegate( const QString & name ) {
  * SpinBoxDelegate
  ********************************/
 PropertyWidget * SpinBoxDelegate::createWizardWidget(U2OpStatus & /*os*/, QWidget *parent) const {
-    return new SpinBoxWidget(spinProperties, parent);
+    return new SpinBoxWidget(getProperties(), parent);
 }
 
 QWidget * SpinBoxDelegate::createEditor(QWidget *parent,
     const QStyleOptionViewItem &/* option */,
     const QModelIndex &/* index */) const
 {
-    SpinBoxWidget *editor = new SpinBoxWidget(spinProperties, parent);
+    SpinBoxWidget *editor = new SpinBoxWidget(getProperties(), parent);
     connect(editor, SIGNAL(valueChanged(int)), SIGNAL(si_valueChanged(int)));
     connect(editor, SIGNAL(valueChanged(int)), SLOT(sl_commit()));
 
@@ -95,7 +95,7 @@ void SpinBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 
 QVariant SpinBoxDelegate::getDisplayValue( const QVariant& v) const {
     QSpinBox editor;
-    WorkflowUtils::setQObjectProperties(editor, spinProperties);
+    WorkflowUtils::setQObjectProperties(editor, getProperties());
     editor.setValue(v.toInt());
     return editor.text();
 }
@@ -109,6 +109,16 @@ void SpinBoxDelegate::setEditorProperty(const char* name, const QVariant& val) {
 
 void SpinBoxDelegate::getItems(QVariantMap &items ) const {
     items = this->spinProperties;
+}
+
+QVariantMap SpinBoxDelegate::getProperties() const {
+    QVariantMap result = spinProperties;
+    DelegateTags *t = tags();
+    CHECK(t != NULL, result);
+    foreach (const QString &tagName, t->names()) {
+        result[key] = t->get(tagName);
+    }
+    return result;
 }
 
 void SpinBoxDelegate::sl_commit() {
