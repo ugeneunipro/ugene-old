@@ -39,6 +39,7 @@ WebWindow::WebWindow(const QString& title, const QString& content)
     setLayout(l);
 
     QWebView* textEdit = new QWebView(this);
+    textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     textEdit->setHtml(content);
 
     l->addWidget(textEdit);
