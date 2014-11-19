@@ -48,8 +48,14 @@ BlastAllSupportDialogFiller::BlastAllSupportDialogFiller(const Parameters &param
 
 }
 
-#define GT_METHOD_NAME "run"
-void BlastAllSupportDialogFiller::run() {
+BlastAllSupportDialogFiller::BlastAllSupportDialogFiller(U2OpStatus &os, CustomScenario *scenario)
+: Filler(os, "BlastAllSupportDialog", scenario)
+{
+
+}
+
+#define GT_METHOD_NAME "commonScenario"
+void BlastAllSupportDialogFiller::commonScenario() {
     dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 

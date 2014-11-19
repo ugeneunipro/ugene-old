@@ -50,8 +50,9 @@ public:
     };
 
     BlastAllSupportDialogFiller(const Parameters &parameters, U2OpStatus &os);
+    BlastAllSupportDialogFiller(U2OpStatus &os, CustomScenario *scenario);
 
-    void run();
+    void commonScenario();
 
 private:
     void test_3211();

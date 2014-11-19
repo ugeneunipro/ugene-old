@@ -30,14 +30,19 @@ namespace U2 {
 class FormatDBSupportRunDialogFiller : public Filler {
 public:
     class Parameters {
-        public:
+    public:
         Parameters():
             justCancel(false), customFiller_3551(false)
         {
 
         }
+        enum Type {Nucleotide, Protein};
 
         bool justCancel;
+        QString inputFilePath;
+        Type alphabetType;
+        QString outputDirPath;
+
         bool customFiller_3551;
     };
 

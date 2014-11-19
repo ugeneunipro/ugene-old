@@ -4411,6 +4411,47 @@ GUI_TEST_CLASS_DEFINITION( test_2430 ) {
     CHECK_SET_ERR(breakpoints.size() == 1, "Wrong amount of breakpoints!");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2437) {
+    //1. Select {Tools -> BLAST -> FormatDB...} in the main menu.
+    //2. Fill the dialog:
+    //    {Select input file(s) for formatting database} : "%datadir%/samples/FASTA/human_T1.fa"
+    //    {Type of file(s)} : nucleotide
+    //    {Select the path to save database into} : "%testdir%/_common_data/scenarios/sandbox/test_2437"
+    //Click the "Format" button.
+    FormatDBSupportRunDialogFiller::Parameters p;
+    p.inputFilePath = dataDir + "samples/FASTA/human_T1.fa";
+    p.alphabetType = FormatDBSupportRunDialogFiller::Parameters::Nucleotide;
+    p.outputDirPath = sandBoxDir + "test_2437";
+    QDir().mkpath(p.outputDirPath);
+    GTUtilsDialog::waitForDialog(os, new FormatDBSupportRunDialogFiller(os, p));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "BLAST" << "FormatDB"));
+    GTMenu::showMainMenu(os, MWMENU_TOOLS);
+
+    //3. Wait for the task end.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //4. Select {Tools -> BLAST -> BLAST Search...} in the main menu.
+    //5. Click the "Select a database file" button and select ""%testdir%/_common_data/scenarios/sandbox/test_2437/human_T1formatDB.log".
+    //Expected state: {Database path} and {Base name for BLAST DB files} fields are correctly filled.
+    class Scenario : public CustomScenario {
+    public:
+        void run(U2OpStatus &os) {
+            GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, sandBoxDir + "test_2437/human_T1formatDB.log"));
+            GTWidget::click(os, GTWidget::findWidget(os, "selectDatabasePushButton"));
+
+            QLineEdit *path = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "databasePathLineEdit"));
+            CHECK_SET_ERR(!path->text().isEmpty(), "Empty database path");
+            QLineEdit *name = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "baseNameLineEdit"));
+            CHECK_SET_ERR(name->text() == "human_T1", "Wrong database name");
+
+            GTUtilsDialog::clickButtonBox(os, QApplication::activeModalWidget(), QDialogButtonBox::Cancel);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new BlastAllSupportDialogFiller(os, new Scenario()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "BLAST" << "BLAST Search"));
+    GTMenu::showMainMenu(os, MWMENU_TOOLS);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2449 ) {
 //    1. Open "COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW/", "COI.aln");

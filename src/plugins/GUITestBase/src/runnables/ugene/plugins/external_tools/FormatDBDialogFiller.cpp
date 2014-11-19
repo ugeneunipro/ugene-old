@@ -71,24 +71,48 @@ void FormatDBSupportRunDialogFiller::run() {
     QToolButton *inputDirToolButton = qobject_cast<QToolButton*>(GTWidget::findWidget(os, "inputDirToolButton", dialog));
     GT_CHECK(inputDirLineEdit, "inputDirToolButton is NULL");
 
+    QRadioButton *proteinTypeRadioButton = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "proteinTypeRadioButton", dialog));
+    GT_CHECK(proteinTypeRadioButton, "proteinTypeRadioButton not found");
+    QRadioButton *nucleotideTypeRadioButton = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "nucleotideTypeRadioButton", dialog));
+    GT_CHECK(nucleotideTypeRadioButton, "nucleotideTypeRadioButton not found");
+
     if (parameters.customFiller_3551) {
-        GTWidget::click(os, inputFilesRadioButton);
+        GTRadioButton::click(os, inputFilesRadioButton);
         CHECK_SET_ERR(inputFilesRadioButton->isChecked(), "Files radio button is unchecked");
         CHECK_SET_ERR(inputFilesLineEdit->isEnabled(), "Files lineedit is disabled");
         CHECK_SET_ERR(inputFilesToolButton->isEnabled(), "Files button is disabled");
 
         GTGlobals::sleep(500);
 
-        GTWidget::click(os, inputDirRadioButton);
+        GTRadioButton::click(os, inputDirRadioButton);
         CHECK_SET_ERR(inputDirRadioButton->isChecked(), "Dir radio button is unchecked");
         CHECK_SET_ERR(inputDirLineEdit->isEnabled(), "Dir lineedit is disabled");
         CHECK_SET_ERR(inputDirToolButton->isEnabled(), "Dir button is disabled");
         GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        return;
     }
 
     if (parameters.justCancel) {
         GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+        return;
     }
+
+    if (!parameters.inputFilePath.isEmpty()) {
+        GTRadioButton::click(os, inputFilesRadioButton);
+        GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, parameters.inputFilePath));
+        GTWidget::click(os, GTWidget::findWidget(os, "inputFilesToolButton"));
+    }
+
+    if (Parameters::Protein == parameters.alphabetType) {
+        GTRadioButton::click(os, proteinTypeRadioButton);
+    } else {
+        GTRadioButton::click(os, nucleotideTypeRadioButton);
+    }
+
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, parameters.outputDirPath, "", GTFileDialogUtils::Choose));
+    GTWidget::click(os, GTWidget::findWidget(os, "databasePathToolButton"));
+
+    GTWidget::click(os, GTWidget::findButtonByText(os, "Format", GTUtilsDialog::buttonBox(os, dialog)));
 }
 
 #undef GT_METHOD_NAME
