@@ -4405,6 +4405,25 @@ GUI_TEST_CLASS_DEFINITION( test_2430 ) {
     CHECK_SET_ERR(breakpoints.size() == 1, "Wrong amount of breakpoints!");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2432) {
+//    1. Check the debug mode checkbox in the applications settings
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::toggleDebugMode(os);
+    GTUtilsWorkflowDesigner::toggleBreakpointManager(os);
+
+//    2. Add an element to the scene
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "File List");
+
+//    3. Add the breakpoint to the element
+    GTUtilsWorkflowDesigner::setBreakpoint(os, "File List");
+
+//    4. Delete the element
+//    Expected: there are no breakpoints in the breakpoints manager
+    GTUtilsWorkflowDesigner::removeItem(os, "File List");
+    const QStringList breakpoints = GTUtilsWorkflowDesigner::getBreakpointList(os);
+    CHECK_SET_ERR(breakpoints.isEmpty(), "There are breakpoints in the workflow");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2437) {
     //1. Select {Tools -> BLAST -> FormatDB...} in the main menu.
     //2. Fill the dialog:

@@ -276,6 +276,13 @@ QPoint GTUtilsWorkflowDesigner::getItemCenter(U2OpStatus &os,QString itemName){
     return p;
 }
 
+#define GT_METHOD_NAME "removeItem"
+void GTUtilsWorkflowDesigner::removeItem(U2OpStatus &os, QString itemName) {
+    click(os, itemName);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+}
+#undef GT_METHOD_NAME
+
 int GTUtilsWorkflowDesigner::getItemLeft(U2OpStatus &os, QString itemName){
     QRect r = getItemRect(os, itemName);
     int i = r.left();
