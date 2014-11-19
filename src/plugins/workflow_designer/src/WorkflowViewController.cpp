@@ -2642,20 +2642,20 @@ void WorkflowScene::clearScene() {
 }
 
 void WorkflowScene::setupLinkCtxMenu(const QString& href, Actor* actor, const QPoint& pos) {
-    const QString& attributeId = WorkflowUtils::getParamIdFromHref(href);
+    const QString attributeId = WorkflowUtils::getParamIdFromHref(href);
     bool isInput = attributeId == BaseAttributes::URL_IN_ATTRIBUTE().getId();
     bool isOutput = attributeId == BaseAttributes::URL_OUT_ATTRIBUTE().getId();
     if (isInput || isOutput) {
         Attribute *attribute = actor->getParameter(attributeId);
         QString urlStr;
-        QStringList urlList = WorkflowUtils::getAttributeUrls(attribute);
+        const QStringList urlList = WorkflowUtils::getAttributeUrls(attribute);
 
-        foreach(QString url, urlList){
-            if(!QFileInfo(url).isDir()){
+        foreach (const QString &url, urlList) {
+            if (QFileInfo(url).isFile()) {
                 urlStr.append(url).append(';');
             }
         }
-        urlStr = urlStr.left(urlStr.size()-1);
+        urlStr = urlStr.left(urlStr.size() - 1);
 
         if (!urlStr.isEmpty()) {
             QMenu menu;
