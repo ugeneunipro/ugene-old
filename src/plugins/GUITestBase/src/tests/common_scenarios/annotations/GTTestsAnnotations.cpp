@@ -741,6 +741,8 @@ GUI_TEST_CLASS_DEFINITION(test_0010_3) {
     GTUtilsAnnotationsTreeView::createQualifier(os, "transcript_id", "001T", "ann_1");
     GTUtilsAnnotationsTreeView::createQualifier(os, "gene_id", "YT496", "ann_2");
     GTUtilsAnnotationsTreeView::createQualifier(os, "transcript_id", "0012", "ann_2");
+
+    GTGlobals::sleep(120000);
     GTUtilsAnnotationsTreeView::selectItems(os, annList);
 
     GTUtilsDialog::waitForDialog(os, new ExportAnnotationsFiller(sandBoxDir + "ann_export_test_0010_3.gtf",

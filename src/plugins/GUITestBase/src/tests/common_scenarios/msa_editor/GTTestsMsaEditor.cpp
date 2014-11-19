@@ -2616,7 +2616,7 @@ GUI_TEST_CLASS_DEFINITION(test_0024){
 //Expected state: MSA is zoomed
 
 //4. press toolbar button "Reset zoom"
-    GTGlobals::sleep(500);
+    GTGlobals::sleep();
     QAbstractButton* reset_zoom = GTAction::button(os,"Reset Zoom");
     GTWidget::click(os,reset_zoom);
     CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getRightOffset(os)==initOffset, "MSA is not zoomed back");
@@ -3282,7 +3282,7 @@ GUI_TEST_CLASS_DEFINITION(test_0037_1){
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",0,50));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
-    GTGlobals::sleep(500);
+    GTGlobals::sleep();
 //Expected state: build tree dialog appeared
 
 //3. Fill dialog:
@@ -3302,7 +3302,7 @@ GUI_TEST_CLASS_DEFINITION(test_0037_2){
     GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/COI.nwk",0,99));
     QAbstractButton *tree= GTAction::button(os,"Build Tree");
     GTWidget::click(os,tree);
-    GTGlobals::sleep(500);
+    GTGlobals::sleep();
 //Expected state: build tree dialog appeared
 
 //3. Fill dialog:

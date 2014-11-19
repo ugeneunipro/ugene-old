@@ -290,6 +290,8 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
 
     GTUtilsDialog::waitForDialog(os, new ImportBAMFileFiller(os));
     GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
 }
 
 } // GUITest_Bowtie2

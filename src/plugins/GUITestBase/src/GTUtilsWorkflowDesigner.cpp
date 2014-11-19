@@ -508,7 +508,7 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
     int row = -1;
     for(int i = 0; i<iMax; i++){
         QString s = model->data(model->index(i,0)).toString();
-        if (s.contains(parameter,Qt::CaseInsensitive)){
+        if (s.compare(parameter,Qt::CaseInsensitive) == 0){
             row = i;
             break;
         }

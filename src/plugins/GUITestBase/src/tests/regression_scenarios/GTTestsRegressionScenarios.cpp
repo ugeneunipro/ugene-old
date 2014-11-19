@@ -1408,12 +1408,6 @@ GUI_TEST_CLASS_DEFINITION(test_1808) {
     GTWidget::click( os,GTAction::button( os,"Validate workflow" ) );
 }
 
-GUI_TEST_CLASS_DEFINITION(test_1811) {
-    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "Q9IGQ6", 8));
-    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
-
-    GTGlobals::sleep(8000);//some time needed for request
-}
 GUI_TEST_CLASS_DEFINITION(test_1811_1) {
     GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "A0N8V2", 5));
     GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
@@ -5115,12 +5109,12 @@ GUI_TEST_CLASS_DEFINITION(test_2581_5) {
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa/", "ma2_gapped_same_names.aln");
 
     GTUtilsDialog::waitForDialog(os, new KalignDialogFiller(os));
-    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with Kalign", GTGlobals::UseMouse));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "align_with_kalign", GTGlobals::UseMouse));
 
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(0, 0));
     GTMouseDriver::click(os, Qt::RightButton);
 
-    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
     GTUtilsLog::check(os, l);
 }
 
@@ -7630,8 +7624,9 @@ GUI_TEST_CLASS_DEFINITION(test_3263){
     QRect geometry = CV_ADV_single_sequence_widget_1->geometry();
     for(int i = 0; i<5; i++){
         GTWidget::click(os, cvButton1);
-        GTGlobals::sleep(200);
+        GTGlobals::sleep(500);
         GTWidget::click(os, cvButton1);
+        GTGlobals::sleep(500);
         CHECK_SET_ERR(geometry == CV_ADV_single_sequence_widget_1->geometry(), "geometry changed");
     }
 //    See the result on the attached screenshot.
@@ -8903,6 +8898,35 @@ GUI_TEST_CLASS_DEFINITION(test_3545){
     GTUtilsDialog::waitForDialog(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
     GTKeyboardDriver::keyClick(os, 's', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(5000);
+
+    //close project
+    if (AppContext::getProject() != NULL) {
+        int key;
+#ifdef Q_OS_MAC
+        key = GTKeyboardDriver::key["cmd"];
+#else
+        key = GTKeyboardDriver::key["ctrl"];
+#endif
+
+        GTGlobals::sleep();
+        GTWidget::click(os, GTUtilsProjectTreeView::getTreeView(os));
+        GTKeyboardDriver::keyClick(os, 'a', key);
+        GTGlobals::sleep(100);
+
+        //GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new SaveProjectDialogFiller(os, QDialogButtonBox::No));
+        //GTUtilsDialog::waitForDialogWhichMayRunOrNot(os, new AppCloseMessageBoxDialogFiller(os));
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+        GTGlobals::sleep(500);
+#ifdef Q_OS_MAC
+        QMenu *menu = GTMenu::showMainMenu(os, MWMENU_FILE);
+        GTMenu::clickMenuItem(os, menu, ACTION_PROJECTSUPPORT__CLOSE_PROJECT);
+#else
+        GTKeyboardDriver::keyClick(os, 'q', key);
+        GTGlobals::sleep(100);
+#endif
+        GTGlobals::sleep(500);
+    }
+    GTGlobals::sleep(20000);
 //    Current state: UGENE crashes
 }
 
