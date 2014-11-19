@@ -90,8 +90,8 @@ public:
 
     static void                             getAnnotationSequence( QByteArray &res,
                                                 const AnnotationSelectionData &ad, char gapSym,
-                                                const U2EntityRef &ref, DNATranslation *complTT,
-                                                DNATranslation *aminoTT, U2OpStatus &os );
+                                                const U2EntityRef &ref, const DNATranslation *complTT,
+                                                const DNATranslation *aminoTT, U2OpStatus &os );
     /**
      * Returns list of locations of all selected annotations that belongs to the objects in list
      */

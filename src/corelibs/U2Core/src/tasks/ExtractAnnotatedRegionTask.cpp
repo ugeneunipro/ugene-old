@@ -30,7 +30,7 @@
 namespace U2{ 
 
 ExtractAnnotatedRegionTask::ExtractAnnotatedRegionTask( const DNASequence & sequence_, const AnnotationData &sd_, const ExtractAnnotatedRegionTaskSettings & cfg_ ) :
-Task( tr("Extract annotated regions"), TaskFlag_None ), inputSeq(sequence_), inputAnn(sd_), cfg(cfg_), complT(0), aminoT(0)
+Task( tr("Extract annotated regions"), TaskFlag_None ), inputSeq(sequence_), inputAnn(sd_), cfg(cfg_), complT(NULL), aminoT(NULL)
 {
 }
 
@@ -45,19 +45,19 @@ void ExtractAnnotatedRegionTask::prepareTranslations() {
         return;
     }
     if (cfg.complement && inputAnn.getStrand().isCompementary()) {
-        DNATranslation* compTT = AppContext::getDNATranslationRegistry()->
-            lookupComplementTranslation( inputSeq.alphabet);
+        DNATranslation* compTT = AppContext::getDNATranslationRegistry()->lookupComplementTranslation( inputSeq.alphabet);
         if (compTT != NULL) {
             complT = compTT; 
         }
     }
 
     if (cfg.translate) {
-        DNATranslationType dnaTranslType = (inputSeq.alphabet->getType() == DNAAlphabet_NUCL) ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
+        DNATranslationType dnaTranslType = (inputSeq.alphabet->getType() == DNAAlphabet_NUCL)
+            ? DNATranslationType_NUCL_2_AMINO : DNATranslationType_RAW_2_AMINO;
         QList<DNATranslation*> aminoTTs = AppContext::getDNATranslationRegistry()->lookupTranslation( inputSeq.alphabet, dnaTranslType );
         if( !aminoTTs.isEmpty() ) {
              aminoT = AppContext::getDNATranslationRegistry()->getStandardGeneticCodeTranslation(inputSeq.alphabet);
-        } 
+        }
     }
 }
 

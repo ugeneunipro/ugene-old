@@ -47,13 +47,15 @@ public:
         Note: the order of complemented regions is also reversed
     */
     static QList<QByteArray> extractRegions(const U2EntityRef& seqRef, const QVector<U2Region>& regions,
-        DNATranslation* complTT, DNATranslation* aminoTT, bool join, U2OpStatus& os);
+        const DNATranslation* complTT, const DNATranslation* aminoTT, bool join, U2OpStatus& os);
 
 
     static DNAAlphabetType alphabetType(const U2EntityRef& ref, U2OpStatus& os);
 
     static qint64 length(const U2EntityRef& ref, U2OpStatus& os);
 
+    // the two methods below don't use transactions so invalid objects can be created in DBI in case of an error.
+    // client code, using these methods, must take care of transactions.
     static U2Sequence copySequence(const DNASequence& srcSeq, const U2DbiRef& dstDbi, const QString &dstFolder, U2OpStatus& os);
     static U2Sequence copySequence(const U2EntityRef& srcSeq, const U2DbiRef& dstDbi, const QString &dstFolder, U2OpStatus& os);
 

@@ -44,7 +44,7 @@ struct U2CORE_EXPORT ExtractAnnotatedRegionTaskSettings {
 class U2CORE_EXPORT ExtractAnnotatedRegionTask : public Task {
     Q_OBJECT
 public:
-    ExtractAnnotatedRegionTask( const DNASequence & sequence, const AnnotationData &sd, const ExtractAnnotatedRegionTaskSettings & cfg);
+    ExtractAnnotatedRegionTask(const DNASequence &sequence, const AnnotationData &sd, const ExtractAnnotatedRegionTaskSettings & cfg);
     void prepare();
     void run();
     const QList<DNASequence>& getResultedSequences() const;
@@ -58,8 +58,8 @@ private:
     ExtractAnnotatedRegionTaskSettings cfg;
 
     QVector<U2Region> extendedRegions;
-    DNATranslation * complT;
-    DNATranslation * aminoT;
+    const DNATranslation *complT;
+    const DNATranslation *aminoT;
 
     QList<DNASequence> resultedSeqList;
 };

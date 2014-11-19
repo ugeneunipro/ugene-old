@@ -31,6 +31,7 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNAChromatogramObject.h>
 #include <U2Core/DNASequenceObject.h>
@@ -59,15 +60,16 @@
 #include <U2Gui/MainWindow.h>
 #include <U2Gui/ProjectView.h>
 
-#include "ExportProjectViewItems.h"
-#include "ExportSequenceTask.h"
-#include "ExportSequencesDialog.h"
-#include "ExportSequences2MSADialog.h"
+#include "ExportChromatogramDialog.h"
 #include "ExportMSA2SequencesDialog.h"
 #include "ExportMSA2MSADialog.h"
-#include "ExportChromatogramDialog.h"
-#include "ExportUtils.h"
+#include "ExportProjectViewItems.h"
 #include "ExportQualityScoresTask.h"
+#include "ExportSequences2MSADialog.h"
+#include "ExportSequencesDialog.h"
+#include "ExportSequenceTask.h"
+#include "ExportTasks.h"
+#include "ExportUtils.h"
 #include "ImportAnnotationsFromCSVDialog.h"
 #include "ImportAnnotationsFromCSVTask.h"
 
@@ -216,7 +218,9 @@ void ExportProjectViewItemsContoller::addExportImportMenu(QMenu& m) {
     }
 }
 
-static bool hasComplementForAll(const QList<GObject*>& set) {
+namespace {
+
+bool hasComplementForAll(const QList<GObject*>& set) {
     foreach(GObject* o, set) {
         U2SequenceObject* so = qobject_cast<U2SequenceObject*>(o);
         if (o == NULL || GObjectUtils::findComplementTT(so->getAlphabet()) == NULL) {
@@ -226,7 +230,7 @@ static bool hasComplementForAll(const QList<GObject*>& set) {
     return true;
 }
 
-static bool hasAminoForAll(const QList<GObject*>& set) {
+bool hasAminoForAll(const QList<GObject*>& set) {
     foreach(GObject* o, set) {
         U2SequenceObject* so = qobject_cast<U2SequenceObject*>(o);
         if (o == NULL || GObjectUtils::findAminoTT(so, false, NULL) == NULL) {
@@ -236,7 +240,7 @@ static bool hasAminoForAll(const QList<GObject*>& set) {
     return true;
 }
 
-static bool hasNucleicForAll(const QList<GObject*>& set) {
+bool hasNucleicForAll(const QList<GObject*>& set) {
     foreach(GObject* o, set) {
         U2SequenceObject* so = qobject_cast<U2SequenceObject*>(o);
         if (o == NULL || GObjectUtils::findBackTranslationTT(so) == NULL) {
@@ -246,14 +250,52 @@ static bool hasNucleicForAll(const QList<GObject*>& set) {
     return true;
 }
 
+QList<SharedAnnotationData> getAllRelatedAnnotations(const U2SequenceObject *so, const QList<GObject *> &annotationTables) {
+    QList<GObject *> relatedAnnotationTables = GObjectUtils::findObjectsRelatedToObjectByRole(so, GObjectTypes::ANNOTATION_TABLE,
+        ObjectRole_Sequence, annotationTables, UOF_LoadedOnly);
+    QList<SharedAnnotationData> anns;
+    foreach (GObject *aObj, relatedAnnotationTables) {
+        AnnotationTableObject *annObj = qobject_cast<AnnotationTableObject *>(aObj);
+        annObj->ref(); // fetch all annotations to cache to prevent their one-by-one fetching
+        foreach(const Annotation &ann, annObj->getAnnotations()) {
+            anns.append(SharedAnnotationData(new AnnotationData(ann.getData())));
+        }
+        annObj->deref();
+    }
+    return anns;
+}
+
+void addExportItemsToSettings(const ExportSequencesDialog &d, const QList<GObject *> seqObjs, ExportSequenceTaskSettings &s) {
+    QList<GObject *> allAnnotationTables;
+    if (s.saveAnnotations) {
+        allAnnotationTables = GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::ANNOTATION_TABLE);
+    }
+    foreach (GObject *o, seqObjs) {
+        U2SequenceObject* so = qobject_cast<U2SequenceObject *>(o);
+        SAFE_POINT(NULL != so, "Invalid sequence object", );
+        QList<SharedAnnotationData> anns;
+        if (s.saveAnnotations) {
+            anns = getAllRelatedAnnotations(so, allAnnotationTables);
+        }
+        ExportSequenceItem ei;
+        ei.setSequenceInfo(so);
+        ei.annotations = anns;
+        ei.complTT = GObjectUtils::findComplementTT(so->getAlphabet());
+        ei.aminoTT = d.translate ? GObjectUtils::findAminoTT(so, false, d.useSpecificTable ? d.translationTable : NULL) : NULL;
+        ei.backTT = d.backTranslate ? GObjectUtils::findBackTranslationTT(so, d.translationTable) : NULL;
+        s.items.append(ei);
+    }
+}
+
+}
 
 void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
-    ProjectView* pv = AppContext::getProjectView();
+    ProjectView *pv = AppContext::getProjectView();
     SAFE_POINT(NULL != pv, "Project view is NULL", );
 
     MultiGSelection ms;
     ms.addSelection(pv->getGObjectSelection()); ms.addSelection(pv->getDocumentSelection());
-    QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
+    QList<GObject *> set = SelectionUtils::findObjects(GObjectTypes::SEQUENCE, &ms, UOF_LoadedOnly);
     if (set.isEmpty()) {
         QMessageBox::critical(NULL, L10N::errorTitle(), tr("No sequence objects selected!"));
         return;
@@ -266,15 +308,12 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
 
     QString defaultFileNameDir;
     QString fileBaseName;
-    GUrlUtils::getLocalPathFromUrl((*set.constBegin())->getDocument()->getURL(),
-                                     (*set.constBegin())->getGObjectName(),
-                                     defaultFileNameDir,
-                                     fileBaseName);
+    GUrlUtils::getLocalPathFromUrl((*set.constBegin())->getDocument()->getURL(), (*set.constBegin())->getGObjectName(),
+        defaultFileNameDir, fileBaseName);
 
     QString defaultFileName = defaultFileNameDir + QDir::separator() + fileBaseName + "_new.fa";
-    ExportSequencesDialog d(allowMerge, allowComplement, allowTranslate, allowBackTranslate,
-        defaultFileName, fileBaseName, BaseDocumentFormats::FASTA,
-        AppContext::getMainWindow()->getQMainWindow());
+    ExportSequencesDialog d(allowMerge, allowComplement, allowTranslate, allowBackTranslate, defaultFileName, fileBaseName,
+       BaseDocumentFormats::FASTA, AppContext::getMainWindow()->getQMainWindow());
 
     int rc = d.exec();
     if (rc == QDialog::Rejected) {
@@ -284,30 +323,7 @@ void ExportProjectViewItemsContoller::sl_saveSequencesToSequenceFormat() {
 
     ExportSequenceTaskSettings s;
     ExportUtils::loadDNAExportSettingsFromDlg(s, d);
-
-    QList<GObject*> allAnnotationTables = s.saveAnnotations ? GObjectUtils::findAllObjects(UOF_LoadedOnly, GObjectTypes::ANNOTATION_TABLE) 
-                                                            : QList<GObject*>();
-    foreach(GObject* o, set) {
-        U2SequenceObject* so = qobject_cast<U2SequenceObject*>(o);
-        QList<SharedAnnotationData> anns;
-        if (s.saveAnnotations) {
-            foreach(GObject* aObj, allAnnotationTables) {
-                if (aObj->hasObjectRelation(so, ObjectRole_Sequence)) {
-                    AnnotationTableObject *annObj = qobject_cast<AnnotationTableObject *>(aObj);
-                    foreach ( const Annotation &ann, annObj->getAnnotations( ) ) {
-                        anns.append( SharedAnnotationData( new AnnotationData( ann.getData( ) ) ) );
-                    }
-                }
-            }
-        }
-        ExportSequenceItem ei;
-        ei.sequence = so->getWholeSequence();
-        ei.annotations = anns;
-        ei.complTT = GObjectUtils::findComplementTT(so->getAlphabet());
-        ei.aminoTT = d.translate ? GObjectUtils::findAminoTT(so, false, d.useSpecificTable ? d.translationTable : NULL) : NULL;
-        ei.backTT = d.backTranslate ? GObjectUtils::findBackTranslationTT(so, d.translationTable) : NULL;
-        s.items.append(ei);
-    }
+    addExportItemsToSettings(d, set, s);
 
     Task* t = ExportUtils::wrapExportTask(new ExportSequenceTask(s), d.addToProject);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
@@ -338,7 +354,7 @@ void ExportProjectViewItemsContoller::sl_saveSequencesAsAlignment() {
     MemoryLocker memoryLocker(os);
 
     // checking memory consumption
-    foreach(GObject* obj, sequenceObjects) {
+    foreach (GObject* obj, sequenceObjects) {
         U2SequenceObject* dnaObj = qobject_cast<U2SequenceObject*>(obj);
         if (dnaObj == NULL) {
             continue;
@@ -469,22 +485,20 @@ void ExportProjectViewItemsContoller::sl_exportAnnotations() {
     
     QList<GObject*> set = SelectionUtils::findObjects(GObjectTypes::ANNOTATION_TABLE, &ms, UOF_LoadedOnly);
     if (set.size() != 1 ) {
-        QMessageBox::warning(QApplication::activeWindow(), exportAnnotations2CSV->text(),
-            tr("Select one annotation object to export"));
+        QMessageBox::warning(QApplication::activeWindow(), exportAnnotations2CSV->text(), tr("Select one annotation object to export"));
         return;
     }
     
     GObject* obj = set.first();
     AnnotationTableObject *aObj = qobject_cast<AnnotationTableObject *>(obj);
-    SAFE_POINT( NULL != aObj, "Invalid annotation table detected!", );
-    QList<Annotation> annotations = aObj->getAnnotations( );
-    if(!annotations.isEmpty()) {
-        SAFE_POINT( NULL != aObj->getDocument( ), "Invalid document detected!", );
-        ExportObjectUtils::exportAnnotations( annotations, aObj->getDocument( )->getURL( ) );
+    SAFE_POINT(NULL != aObj, "Invalid annotation table detected!", );
+    QList<Annotation> annotations = aObj->getAnnotations();
+    if (!annotations.isEmpty()) {
+        SAFE_POINT(NULL != aObj->getDocument(), "Invalid document detected!", );
+        ExportObjectUtils::exportAnnotations(annotations, aObj->getDocument()->getURL());
         return;
     }
-    QMessageBox::warning( QApplication::activeWindow( ), exportAnnotations2CSV->text( ),
-        tr( NO_ANNOTATIONS_MESSAGE ) );
+    QMessageBox::warning(QApplication::activeWindow(), exportAnnotations2CSV->text(), tr(NO_ANNOTATIONS_MESSAGE));
 }
 
 void ExportProjectViewItemsContoller::sl_exportSequenceQuality() {
@@ -505,20 +519,19 @@ void ExportProjectViewItemsContoller::sl_exportSequenceQuality() {
     }
     
     QList<Task*> exportTasks;
-    foreach(GObject* gObj, sequenceObjects) {
-            if (gObj->getDocument()->getDocumentFormatId() != BaseDocumentFormats::FASTQ) {
+    foreach (GObject* gObj, sequenceObjects) {
+        if (gObj->getDocument()->getDocumentFormatId() != BaseDocumentFormats::FASTQ) {
             continue;
         }
-        U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*> (gObj);
+        U2SequenceObject* seqObj = qobject_cast<U2SequenceObject*>(gObj);
         ExportQualityScoresConfig cfg;
         cfg.dstFilePath = lod.url;
-        Task* exportTask = new ExportPhredQualityScoresTask( seqObj, cfg );
+        Task* exportTask = new ExportPhredQualityScoresTask(seqObj, cfg);
         exportTasks.append(exportTask);
     }
     
     Task* t = new MultiTask("ExportQualityScoresFromProjectView", exportTasks);
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
-    
 }
 
 void ExportProjectViewItemsContoller::sl_exportObject() {

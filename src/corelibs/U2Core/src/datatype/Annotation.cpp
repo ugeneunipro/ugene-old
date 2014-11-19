@@ -53,8 +53,7 @@ AnnotationTableObject * Annotation::getGObject( ) const {
 
 AnnotationData Annotation::getData( ) const {
     U2OpStatusImpl os;
-    const AnnotationData result = U2FeatureUtils::getAnnotationDataFromFeature( id,
-        parentObject->getEntityRef( ).dbiRef, os );
+    const AnnotationData result = U2FeatureUtils::getAnnotationDataFromFeature( id, parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, result );
     return result;
 }

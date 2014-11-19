@@ -69,7 +69,6 @@ private:
     U2EntityRef                         entityRef;
 };
  
- 
 class ORFAutoAnnotationsUpdater : public AutoAnnotationsUpdater {
     Q_OBJECT
 public:

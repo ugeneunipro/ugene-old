@@ -101,6 +101,39 @@ QDataStream & operator >>(QDataStream &in, U2DbiRef &dbiRef) {
     return in;
 }
 
+//////////////////////////////////////////////////////////////////////////
+/// U2EntityRef implementation
+//////////////////////////////////////////////////////////////////////////
+
+U2EntityRef::U2EntityRef()
+    : version(0)
+{
+
+}
+
+U2EntityRef::U2EntityRef(const U2DbiRef &dbiRef, const U2DataId &entityId)
+    : dbiRef(dbiRef), entityId(entityId), version(0)
+{
+
+}
+
+bool U2EntityRef::isValid() const {
+    return dbiRef.isValid() && !entityId.isEmpty();
+}
+
+bool U2EntityRef::operator == (const U2EntityRef &other) const {
+    return (entityId == other.entityId) && (version == other.version) && (dbiRef == other.dbiRef);
+}
+
+bool U2EntityRef::operator !=(const U2EntityRef &other) const {
+    return !(operator ==(other));
+}
+
+bool U2EntityRef::operator <(const U2EntityRef &other) const {
+    return dbiRef.dbiFactoryId + dbiRef.dbiId + entityId + QString::number(version)
+        < other.dbiRef.dbiFactoryId + other.dbiRef.dbiId + other.entityId + QString::number(other.version);
+}
+
 namespace {
 
 bool registerMetaInfo() {

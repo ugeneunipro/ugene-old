@@ -19,21 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#include <U2Core/U2DbiUtils.h>
-#include <U2Core/U2SequenceDbi.h>
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/U2SafePoints.h>
 #include <U2Core/AppContext.h>
-#include <U2Core/U2AlphabetUtils.h>
-#include <U2Core/U2ObjectDbi.h>
-#include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/DNASequence.h>
 #include <U2Core/DNATranslation.h>
+#include <U2Core/GObject.h>
 #include <U2Core/SequenceUtils.h>
 #include <U2Core/U1AnnotationUtils.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/AppSettings.h>
+#include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2AttributeDbi.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceDbi.h>
 
 #include "U2SequenceUtils.h"
 
@@ -72,10 +71,14 @@ U2Sequence U2SequenceUtils::copySequence(const DNASequence& srcSeq, const U2DbiR
     res.length = srcSeq.length();
     res.visualName = srcSeq.getName();
 
+    TmpDbiObjects tmpObjects(dstDbi, os);
+
     DbiConnection dstCon(dstDbi, os);
     CHECK_OP(os, res);
     dstCon.dbi->getSequenceDbi()->createSequenceObject(res, dstFolder, os);
     CHECK_OP(os, res);
+
+    tmpObjects.objects.append(res.id);
 
     dstCon.dbi->getSequenceDbi()->updateSequenceData(res.id, U2Region(0, 0), srcSeq.seq, QVariantMap(), os);
     CHECK_OP(os, res);
@@ -84,36 +87,45 @@ U2Sequence U2SequenceUtils::copySequence(const DNASequence& srcSeq, const U2DbiR
 }
 
 U2Sequence U2SequenceUtils::copySequence(const U2EntityRef& srcSeq, const U2DbiRef& dstDbi, const QString &dstFolder, U2OpStatus& os) {
-    //TODO: use small blocks
     U2Sequence res;
     DbiConnection srcCon(srcSeq.dbiRef, os);
     CHECK_OP(os, res);
 
-    U2Sequence seq = srcCon.dbi->getSequenceDbi()->getSequenceObject(srcSeq.entityId, os);
+    U2SequenceDbi *srcSeqDbi = srcCon.dbi->getSequenceDbi();
+    SAFE_POINT_EXT(NULL != srcSeqDbi, os.setError(tr("Invalid sequence DBI")), res);
+    U2Sequence seq = srcSeqDbi->getSequenceObject(srcSeq.entityId, os);
     CHECK_OP(os, res);
 
     res = seq;
     res.id.clear();
     res.length = 0;
 
+    TmpDbiObjects tmpObjects(dstDbi, os);
+
     DbiConnection dstCon(dstDbi, os);
     CHECK_OP(os, res);
-    dstCon.dbi->getSequenceDbi()->createSequenceObject(res, dstFolder, os);
+    U2SequenceDbi *dstSeqDbi = dstCon.dbi->getSequenceDbi();
+    SAFE_POINT_EXT(NULL != dstSeqDbi, os.setError(tr("Invalid sequence DBI")), res);
+    dstSeqDbi->createSequenceObject(res, dstFolder, os);
     CHECK_OP(os, res);
 
-    //TODO: optimize and insert by small chunks! ~2-4 mb
-    QByteArray wholeSeq = srcCon.dbi->getSequenceDbi()->getSequenceData(srcSeq.entityId, U2_REGION_MAX, os);
-    CHECK_OP(os, res);
-    QVariantMap hints;
-    dstCon.dbi->getSequenceDbi()->updateSequenceData(res.id, U2Region(0, 0), wholeSeq, hints, os);
-    CHECK_OP(os, res);
-    res.length += wholeSeq.length();
+    tmpObjects.objects.append(res.id);
 
+    const qint64 MAX_CHUNK_LENGTH = 4194304; // 4 MiB chunk
+    for (qint64 pos = 0; pos < seq.length; pos += MAX_CHUNK_LENGTH) {
+        const qint64 currentChunkSize = qMin(MAX_CHUNK_LENGTH, seq.length - pos);
+        const U2Region chunkRegion(pos, currentChunkSize);
+        const QByteArray chunkContent = srcSeqDbi->getSequenceData(srcSeq.entityId, chunkRegion, os);
+        CHECK_OP(os, res);
+        dstSeqDbi->updateSequenceData(res.id, chunkRegion, chunkContent, QVariantMap(), os);
+        CHECK_OP(os, res);
+        res.length += currentChunkSize;
+    }
     return res;
 }
 
-
-static QList<QByteArray> _extractRegions(const U2EntityRef& seqRef, const QVector<U2Region>& regions, DNATranslation* complTT, U2OpStatus& os)
+static QList<QByteArray> _extractRegions(const U2EntityRef& seqRef, const QVector<U2Region>& regions, const DNATranslation* complTT,
+    U2OpStatus& os)
 {
     QList<QByteArray> res;
 
@@ -144,7 +156,7 @@ static QList<QByteArray> _extractRegions(const U2EntityRef& seqRef, const QVecto
 }
 
 QList<QByteArray> U2SequenceUtils::extractRegions(const U2EntityRef& seqRef, const QVector<U2Region>& origLocation,
-                                                DNATranslation* complTT, DNATranslation* aminoTT, bool join, U2OpStatus& os)
+                                                const DNATranslation* complTT, const DNATranslation* aminoTT, bool join, U2OpStatus& os)
 {
     QList<QByteArray> res = _extractRegions(seqRef, origLocation, complTT, os);
     CHECK_OP(os, res)
@@ -241,8 +253,7 @@ void U2SequenceUtils::setQuality(const U2EntityRef& entityRef, const DNAQuality&
  */
 static CaseAnnotationsMode getCaseAnnotationsModeHint(const QVariantMap& fs)
 {
-    if (fs.keys().contains(GObjectHint_CaseAnns))
-    {
+    if (fs.keys().contains(GObjectHint_CaseAnns)) {
         QVariant caseAnnsVariant = fs.value(GObjectHint_CaseAnns);
         SAFE_POINT(caseAnnsVariant.canConvert<int>(), "Can't convert a case annotations hint!", NO_CASE_ANNS);
 
@@ -303,7 +314,6 @@ void U2SequenceImporter::startSequence(const U2DbiRef& dbiRef,
 
     folder = dstFolder;
 
-    sequence = U2Sequence();
     sequence.visualName = visualName;
     sequence.circular = circular;
     sequence.alphabet.id = DNAAlphabet_NUCL;

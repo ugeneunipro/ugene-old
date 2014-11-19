@@ -139,9 +139,13 @@ QDataStream & operator >>(QDataStream &in, U2DbiRef &dbiRef);
 */
 class U2CORE_EXPORT U2EntityRef {
 public:
-    U2EntityRef() : version(0) {}
-    U2EntityRef(const U2DbiRef& _dbiRef, const U2DataId& _entityId) : dbiRef(_dbiRef),entityId(_entityId),version(0){}
-    bool isValid() const {return dbiRef.isValid() && !entityId.isEmpty();}
+                    U2EntityRef();
+                    U2EntityRef(const U2DbiRef &dbiRef, const U2DataId &entityId);
+    bool            isValid() const;
+
+    bool            operator ==(const U2EntityRef &other) const;
+    bool            operator !=(const U2EntityRef &other) const;
+    bool            operator <(const U2EntityRef &other) const;
 
     /** database  id */
     U2DbiRef         dbiRef;
@@ -151,11 +155,6 @@ public:
 
     /** Object version number this reference is valid for */
     qint64          version;
-
-    bool operator == (const U2EntityRef &other) const {
-        return (entityId == other.entityId) && (version == other.version)
-            && (dbiRef == other.dbiRef);
-    }
 };
 
 /** 

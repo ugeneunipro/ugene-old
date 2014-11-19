@@ -46,8 +46,7 @@ U2SequenceObjectConstraints::U2SequenceObjectConstraints(QObject* p)
 //////////////////////////////////////////////////////////////////////////
 // U2SequenceObject
 U2SequenceObject::U2SequenceObject(const QString& name, const U2EntityRef& seqRef, const QVariantMap& hintsMap) 
-: GObject(GObjectTypes::SEQUENCE, name, hintsMap),  
-cachedAlphabet(NULL), cachedLength(-1), cachedCircular(TriState_Unknown)
+    : GObject(GObjectTypes::SEQUENCE, name, hintsMap), cachedAlphabet(NULL), cachedLength(-1), cachedCircular(TriState_Unknown)
 {
     entityRef = seqRef;
 }
@@ -215,7 +214,7 @@ void U2SequenceObject::replaceRegion(const U2Region& region, const DNASequence& 
     emit si_sequenceChanged();
 }
 
-GObject* U2SequenceObject::clone(const U2DbiRef& dbiRef, U2OpStatus& os, const QVariantMap &hints) const {
+GObject * U2SequenceObject::clone(const U2DbiRef &dbiRef, U2OpStatus &os, const QVariantMap &hints) const {
     DbiConnection srcCon(this->entityRef.dbiRef, os);
     CHECK_OP(os, NULL);
     DbiConnection dstCon(dbiRef, true, os);
@@ -230,15 +229,13 @@ GObject* U2SequenceObject::clone(const U2DbiRef& dbiRef, U2OpStatus& os, const Q
 
     U2SequenceObject* res = new U2SequenceObject(seq.visualName, U2EntityRef(dbiRef, seq.id), gHints.getMap());
 
-    U2AttributeUtils::copyObjectAttributes(entityRef.entityId, seq.id,
-        srcCon.dbi->getAttributeDbi(), dstCon.dbi->getAttributeDbi(), os);
+    U2AttributeUtils::copyObjectAttributes(entityRef.entityId, seq.id, srcCon.dbi->getAttributeDbi(), dstCon.dbi->getAttributeDbi(), os);
     CHECK_OP(os, NULL);
 
     return res;
 }
 
 void U2SequenceObject::setCircular(bool isCircular) {
-
     TriState newVal = isCircular ? TriState_Yes : TriState_No;
     if ( newVal == cachedCircular ){
         return;

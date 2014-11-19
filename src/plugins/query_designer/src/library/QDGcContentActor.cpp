@@ -222,7 +222,7 @@ void QDFindGcRegionsActor::sl_onTaskFinished(Task* t) {
 
 QDFindGcActorPrototype::QDFindGcActorPrototype() {
     descriptor.setId("gc-content");
-    descriptor.setDisplayName(QDFindGcRegionsActor::tr("Gc Content"));
+    descriptor.setDisplayName(QDFindGcRegionsActor::tr("GC Content"));
     descriptor.setDocumentation(QDFindGcRegionsActor::tr(
         "Searches regions in a sequence with GC content in the specified range."));
 

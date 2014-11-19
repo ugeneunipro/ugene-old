@@ -41,7 +41,7 @@ public:
 
     qint64 getSequenceLength() const;
 
-    QString getSequenceName() const ;
+    QString getSequenceName() const;
 
     DNASequence getSequence(const U2Region &region) const;
     DNASequence getWholeSequence() const;

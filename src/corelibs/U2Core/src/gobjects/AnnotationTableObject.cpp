@@ -61,8 +61,7 @@ QList<Annotation> AnnotationTableObject::getAnnotations( ) const {
     ensureDataLoaded();
 
     U2OpStatusImpl os;
-    const QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( rootFeatureId,
-        entityRef.dbiRef, os );
+    const QList<U2Feature> subfeatures = U2FeatureUtils::getSubAnnotations( rootFeatureId, entityRef.dbiRef, os );
     SAFE_POINT_OP( os, result );
 
     foreach ( const U2Feature &feature, subfeatures ) {

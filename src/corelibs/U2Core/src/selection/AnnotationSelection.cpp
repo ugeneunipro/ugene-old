@@ -208,7 +208,7 @@ const AnnotationSelectionData * AnnotationSelection::getAnnotationData( const An
 }
 
 void AnnotationSelection::getAnnotationSequence( QByteArray &res, const AnnotationSelectionData &ad,
-    char gapSym, const U2EntityRef &seqRef, DNATranslation *complTT, DNATranslation *aminoTT,
+    char gapSym, const U2EntityRef &seqRef, const DNATranslation *complTT, const DNATranslation *aminoTT,
     U2OpStatus &os )
 {
     QVector<U2Region> regions;
@@ -217,8 +217,7 @@ void AnnotationSelection::getAnnotationSequence( QByteArray &res, const Annotati
     } else {
         regions << ad.annotation.getLocation( )->regions.at( ad.locationIdx );
     }
-    QList<QByteArray> parts  = U2SequenceUtils::extractRegions( seqRef, regions, complTT, aminoTT,
-        false, os );
+    QList<QByteArray> parts  = U2SequenceUtils::extractRegions(seqRef, regions, complTT, aminoTT, false, os);
     CHECK_OP( os, );
     qint64 resLen = 0;
     foreach ( const QByteArray &p, parts ) {

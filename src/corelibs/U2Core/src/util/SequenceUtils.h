@@ -22,9 +22,7 @@
 #ifndef _U1_SEQUENCE_UTILS_H_
 #define _U1_SEQUENCE_UTILS_H_
 
-#include <U2Core/global.h>
 #include <U2Core/U2Region.h>
-#include <U2Core/GObject.h>
 
 #include <QtCore/QVariant>
 
@@ -32,29 +30,30 @@ namespace U2 {
 
 class DNATranslation;
 class Document;
+class GObject;
+class U2DbiRef;
 class U2OpStatus;
 
-class U2CORE_EXPORT U1SequenceUtils : public QObject {
-    Q_OBJECT
+class U2CORE_EXPORT U1SequenceUtils {
 public:
     /** Extract sequence parts marked by the regions
         Note: the order of complemented regions is also reversed
     */
     static QList<QByteArray> extractRegions(const QByteArray& seq, const QVector<U2Region>& regions, 
-        DNATranslation* complTT, DNATranslation* aminoTT = NULL, bool circular = false, bool join = false);
+        const DNATranslation* complTT, const DNATranslation* aminoTT = NULL, bool circular = false, bool join = false);
 
     /** Joins sequence parts into a single sequence, with given gap */
     static QByteArray joinRegions(const QList<QByteArray>& parts, int gapSize = 0);
 
     /** Translates sequence parts, if  join == true -> joins parts before translation is started
     */
-    static QList<QByteArray> translateRegions(const QList<QByteArray>& origParts, DNATranslation* aminoTT, bool join);
+    static QList<QByteArray> translateRegions(const QList<QByteArray>& origParts, const DNATranslation* aminoTT, bool join);
 
     /** Returns regions locations as if they were joined */
     static QVector<U2Region> getJoinedMapping(const QList<QByteArray>& seqParts);
 
-    static QList<GObject*> mergeSequences(const QList<Document*> doc, const U2DbiRef& ref, const QString& newStringUrl, QVariantMap& hints, U2OpStatus& os);
-    static QList<GObject*> mergeSequences(Document* doc, const U2DbiRef& ref, QVariantMap& hints, U2OpStatus& os);
+    static QList<GObject *> mergeSequences(const QList<Document*> doc, const U2DbiRef& ref, const QString& newStringUrl, QVariantMap& hints, U2OpStatus& os);
+    static QList<GObject *> mergeSequences(Document* doc, const U2DbiRef& ref, QVariantMap& hints, U2OpStatus& os);
 };
 
 

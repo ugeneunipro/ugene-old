@@ -63,7 +63,7 @@ AddExportedDocumentAndOpenViewTask::AddExportedDocumentAndOpenViewTask(DocumentP
 
 QList<Task*> AddExportedDocumentAndOpenViewTask::onSubTaskFinished( Task* subTask ) {
     QList<Task*> subTasks;
-    if (subTask == exportTask && !subTask->hasError()) {
+    if (subTask == exportTask && !subTask->hasError() && !subTask->isCanceled()) {
         Document* doc = exportTask->getDocument();
         const GUrl& fullPath = doc->getURL();
         Project* prj = AppContext::getProject();
@@ -168,7 +168,7 @@ void ExportMSA2MSATask::run() {
 
     QList<DNASequence> lst = MSAUtils::ma2seq(ma, true);
     QList<DNASequence> seqList;
-    for (int i = offset; i < offset + len; i++) {    
+    for (int i = offset; i < offset + len; i++) {
         DNASequence& s = lst[i];
         QString name = s.getName();
         if (!aminoTranslations.isEmpty()) {
@@ -190,7 +190,7 @@ void ExportMSA2MSATask::run() {
             seqList << rs;
         } else {
             seqList << s;
-        }                
+        }
     }
     MAlignment ma = MSAUtils::seq2ma(seqList, stateInfo);
     CHECK_OP(stateInfo, );

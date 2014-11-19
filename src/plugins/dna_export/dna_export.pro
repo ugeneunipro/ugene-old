@@ -15,6 +15,7 @@ HEADERS += src/CSVColumnConfiguration.h \
            src/ExportProjectViewItems.h \
            src/ExportQualityScoresTask.h \
            src/ExportQualityScoresWorker.h \
+           src/ExportSelectedSeqRegionsTask.h \
            src/ExportSequences2MSADialog.h \
            src/ExportSequencesDialog.h \
            src/ExportSequenceTask.h \
@@ -52,6 +53,7 @@ SOURCES += src/CSVColumnConfigurationDialog.cpp \
            src/ExportProjectViewItems.cpp \
            src/ExportQualityScoresTask.cpp \
            src/ExportQualityScoresWorker.cpp \
+           src/ExportSelectedSeqRegionsTask.cpp \
            src/ExportSequences2MSADialog.cpp \
            src/ExportSequencesDialog.cpp \
            src/ExportSequenceTask.cpp \

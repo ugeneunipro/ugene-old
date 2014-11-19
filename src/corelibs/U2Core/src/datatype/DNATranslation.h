@@ -75,7 +75,7 @@ public:
     
     virtual bool isThree2One() const {return false;}
 
-       virtual bool isOne2Three() const {return false;}
+    virtual bool isOne2Three() const {return false;}
 
     virtual QByteArray getOne2OneMapper() const {
         assert(0); return QByteArray(256, 0);

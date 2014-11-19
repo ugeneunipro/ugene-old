@@ -29,6 +29,7 @@
 
 #include "ExportSequenceTask.h"
 #include "ExportSequencesDialog.h"
+#include "ExportTasks.h"
 #include "ExportUtils.h"
 
 namespace U2 {
@@ -51,8 +52,6 @@ Task* ExportUtils::wrapExportTask(DocumentProviderTask* t, bool addToProject) {
     }
     return new AddExportedDocumentAndOpenViewTask(t);
 }
-
-
 
 QString ExportUtils::genUniqueName(const QSet<QString>& names, QString prefix) {
     if (!names.contains(prefix)) {
