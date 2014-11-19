@@ -366,8 +366,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     etRegistry->registerEntry(bwaSupport);
 
     // SPAdes
+#if (defined(Q_OS_UNIX) || defined(Q_OS_MAC)) && defined(UGENE_X86_64)
     SpadesSupport* spadesSupport = new SpadesSupport(ET_SPADES);
     etRegistry->registerEntry(spadesSupport);
+#endif
 
     // SAMtools (external tool)
     SamToolsExtToolSupport* samToolsExtToolSupport = new SamToolsExtToolSupport(ET_SAMTOOLS_EXT);
