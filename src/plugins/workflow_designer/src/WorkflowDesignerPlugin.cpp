@@ -37,6 +37,7 @@
 #include <U2Lang/WorkflowTasksRegistry.h>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/ExternalToolRegistry.h>
 #include <U2Gui/MainWindow.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
@@ -123,7 +124,12 @@ void WorkflowDesignerPlugin::processCMDLineOptions() {
         } else {
             t = new WorkflowRunFromCMDLineTask();
         }
-        connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(t), SLOT(registerTask()));
+        ExternalToolManager *externalToolManager = AppContext::getExternalToolRegistry()->getManager();
+        if (NULL != externalToolManager) {
+            connect(externalToolManager, SIGNAL(si_startupChecksFinish()), new TaskStarter(t), SLOT(registerTask()));
+        } else {
+            connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(t), SLOT(registerTask()));
+        }
     }
     else{
         if( cmdlineReg->hasParameter(GalaxyConfigTask::GALAXY_CONFIG_OPTION) && consoleMode ) {
