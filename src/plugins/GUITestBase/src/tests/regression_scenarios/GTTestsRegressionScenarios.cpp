@@ -49,6 +49,7 @@
 #include "GTUtilsCircularView.h"
 #include "GTUtilsDialog.h"
 #include "GTUtilsEscClicker.h"
+#include "GTUtilsExternalTools.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditor.h"
@@ -4751,6 +4752,24 @@ GUI_TEST_CLASS_DEFINITION( test_2543 ) {
     QAbstractButton *tree= GTAction::button( os, "Build Tree" );
     GTWidget::click( os, tree );
     GTGlobals::sleep( 2000 );
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2545) {
+    //1. Remove the "spidey" external tool, if it exists.
+    GTUtilsExternalTools::removeTool(os, "Spidey");
+
+    //2. Open "human_t1.fa".
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    //3. Call context menu, select the {Align -> Align sequence to mRna} menu item.
+    //Expected state: UGENE offers to select the "spidey" external tool.
+    //4. Refuse the offering.
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "ADV_MENU_ALIGN" << "Align sequence to mRNA"));
+    GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
+
+    //Expected state: align task is cancelled.
+    CHECK_SET_ERR(0 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "The task is not canceled");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2562) {

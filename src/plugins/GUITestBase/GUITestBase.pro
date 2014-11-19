@@ -121,6 +121,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/GTUtilsDialog.h \
             src/GTUtilsDocument.h \
             src/GTUtilsEscClicker.h \
+            src/GTUtilsExternalTools.h \
             src/GTUtilsLog.h \
             src/GTUtilsMdi.h \
             src/GTUtilsMsaEditor.h \
@@ -351,6 +352,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/GTUtilsDialog.cpp \
             src/GTUtilsDocument.cpp \
             src/GTUtilsEscClicker.cpp \
+            src/GTUtilsExternalTools.cpp \
             src/GTUtilsLog.cpp \
             src/GTUtilsMdi.cpp \
             src/GTUtilsMsaEditor.cpp \
