@@ -54,6 +54,14 @@ EditConnectionDialog::~EditConnectionDialog() {
     delete ui;
 }
 
+void EditConnectionDialog::setReadOnly(bool readOnly) {
+    ui->leName->setDisabled(readOnly);
+    ui->leHost->setDisabled(readOnly);
+    ui->lePort->setDisabled(readOnly);
+    ui->leDatabase->setDisabled(readOnly);
+    ui->authenticationWidget->setDisabled(readOnly);
+}
+
 QString EditConnectionDialog::getName() const {
     if (!ui->leName->text().isEmpty()) {
         return ui->leName->text();

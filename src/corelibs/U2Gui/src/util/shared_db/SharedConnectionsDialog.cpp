@@ -142,6 +142,8 @@ void SharedConnectionsDialog::sl_editClicked() {
     const QString connectionName = ui->lwConnections->currentItem()->text();
 
     EditConnectionDialog editDialog(this, dbiUrl, userName, connectionName);
+    editDialog.setReadOnly(U2DbiUtils::PUBLIC_DATABASE_URL == U2DbiUtils::createFullDbiUrl(userName, dbiUrl));
+
     if (QDialog::Accepted == editDialog.exec()) {
         QListWidgetItem* item = ui->lwConnections->currentItem();
         if (connectionName != editDialog.getName()) {

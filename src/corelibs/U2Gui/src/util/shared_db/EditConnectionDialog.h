@@ -46,6 +46,7 @@ public:
     EditConnectionDialog(QWidget *parent = 0, const QString &dbiUrl = "", const QString &userName = "", const QString &connectionName = "");
     ~EditConnectionDialog();
 
+    void        setReadOnly(bool readOnly);
     QString     getName()       const;
     QString     getUserName()   const;
     QString     getShortDbiUrl() const;
