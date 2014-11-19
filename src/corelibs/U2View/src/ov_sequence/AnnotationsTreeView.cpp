@@ -317,7 +317,9 @@ QList<AVAnnotationItem *> AnnotationsTreeView::findAnnotationItems( const Annota
 
     const AnnotationGroup g = a.getGroup( );
     AVGroupItem *gItem = findGroupItem( g );
+	SAFE_POINT(gItem != NULL, "AnnotationItemGroup not found!", res);
     AVAnnotationItem *aItem = findAnnotationItem( gItem, a );
+	SAFE_POINT(aItem != NULL, "AnnotationItem not found!", res);
     res.append( aItem );
 
     return res;
