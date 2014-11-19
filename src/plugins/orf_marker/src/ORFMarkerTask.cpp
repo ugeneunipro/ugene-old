@@ -41,7 +41,6 @@ const QString ORFSettingsKeys::AMINO_TRANSL("orf_finder/amino_transl");
 const QString ORFSettingsKeys::MIN_LEN("orf_finder/min_length");
 const QString ORFSettingsKeys::MUST_FIT("orf_finder/must_fit");
 const QString ORFSettingsKeys::MUST_INIT("orf_finder/must_init");
-const QString ORFSettingsKeys::SEARCH_REGION("orf_finder/region");
 const QString ORFSettingsKeys::INCLUDE_STOP_CODON("orf_finder/incldue_stop_codon");
 const QString ORFSettingsKeys::MAX_RESULT("orf_finder/max_result");
 const QString ORFSettingsKeys::IS_RESULT_LIMITED("orf_finder/is_result_limited");
@@ -53,7 +52,6 @@ void ORFSettingsKeys::save(const ORFAlgorithmSettings& cfg, Settings* s) {
     s->setValue(ORFSettingsKeys::ALLOW_ALT_START, cfg.allowAltStart);
     s->setValue(ORFSettingsKeys::ALLOW_OVERLAP, cfg.allowOverlap);
     s->setValue(ORFSettingsKeys::MIN_LEN, cfg.minLen);
-    s->setValue(ORFSettingsKeys::SEARCH_REGION, QVariant::fromValue(cfg.searchRegion));
     s->setValue(ORFSettingsKeys::STRAND, ORFAlgorithmSettings::getStrandStringId(cfg.strand));
     s->setValue(ORFSettingsKeys::INCLUDE_STOP_CODON, cfg.includeStopCodon);
     s->setValue(ORFSettingsKeys::MAX_RESULT,cfg.maxResult2Search);
@@ -78,7 +76,6 @@ void ORFSettingsKeys::read(ORFAlgorithmSettings& cfg, const Settings* s) {
     }
 
     cfg.includeStopCodon = s->getValue(ORFSettingsKeys::INCLUDE_STOP_CODON, false).toBool();
-    cfg.searchRegion = s->getValue(ORFSettingsKeys::SEARCH_REGION).value<U2Region>();
 }
 
 
@@ -133,10 +130,7 @@ Task* ORFAutoAnnotationsUpdater::createAutoAnnotationsUpdateTask( const AutoAnno
     if (cfg.proteinTT == NULL) {
         cfg.proteinTT = GObjectUtils::findAminoTT(dnaObj,false);
     }
-    qint64 seqLen = dnaObj->getSequenceLength();
-    if (cfg.searchRegion.isEmpty() || cfg.searchRegion.endPos() >= seqLen + 1 ) {
-        cfg.searchRegion = U2Region(0, dnaObj->getSequenceLength());
-    }
+    cfg.searchRegion = U2Region(0, dnaObj->getSequenceLength());
 
     Task* task = new FindORFsToAnnotationsTask(aObj, dnaObj->getSequenceRef(), cfg );
 
