@@ -711,6 +711,7 @@ int main(int argc, char **argv)
 
     WelcomePageController *wpc = new WelcomePageController();
     QObject::connect(ts, SIGNAL(si_noTasksInScheduler()), wpc, SLOT(sl_showPage()));
+    QObject::connect(mw, SIGNAL(si_showWelcomePage()), wpc, SLOT(sl_showPage()));
     QObject::connect(pli, SIGNAL(si_recentListChanged()), wpc, SLOT(sl_onRecentChanged()));
 
     QList<Task*> tasks;

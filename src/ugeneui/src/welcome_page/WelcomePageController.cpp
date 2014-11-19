@@ -43,12 +43,6 @@ namespace U2 {
 WelcomePageController::WelcomePageController()
 : QObject(NULL), welcomePage(NULL)
 {
-    MainWindow *mainWindow = AppContext::getMainWindow();
-    SAFE_POINT(NULL != mainWindow, L10N::nullPointerError("Main Window"), );
-
-    QToolBar *toolBar = mainWindow->getToolbar(MWTOOLBAR_MAIN);
-    toolBar->addAction(QIcon(":/core/images/todo.png"), tr("Welcome Screen"), this, SLOT(sl_showPage()));
-
     MWMDIManager *mdiManager = getMdiManager();
     CHECK(NULL != mdiManager, );
 
@@ -88,7 +82,7 @@ void WelcomePageController::sl_showPage() {
         return;
     }
 
-    welcomePage = new WelcomePageMdi(tr("Welcome Page"), this);
+    welcomePage = new WelcomePageMdi(tr("Start Page"), this);
     if (welcomePage->isLoaded()) { // it is for the case of synchronous page loading
         onPageLoaded();
     }

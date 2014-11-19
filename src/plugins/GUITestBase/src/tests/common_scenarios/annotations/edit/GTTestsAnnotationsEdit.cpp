@@ -54,7 +54,7 @@ GUI_TEST_CLASS_DEFINITION(test_0001) {
 //     1) Project view with document "1.gb" has been opened
     GTUtilsDocument::checkDocument(os, "1.gb");
 //     2) UGENE window titled with text "proj2 UGENE"
-    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE - [Welcome Page]");
+    GTUtilsApp::checkUGENETitle(os, "proj2 UGENE - [Start Page]");
 
 // 2. Open view for "1.gb"
     GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));

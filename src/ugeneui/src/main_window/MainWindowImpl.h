@@ -89,6 +89,7 @@ public:
     void addNotification(const QString& message, NotificationType type);
 signals:
     void si_show();
+    void si_showWelcomePage();
 public slots:
     void sl_tempDirPathCheckFailed(QString  path);
 
@@ -129,6 +130,7 @@ private:
     QAction*                openManualAction;
     QAction*                openWDManualAction;
     QAction*                openQDManualAction;
+    QAction*                welcomePageAction;
 #ifdef _INSTALL_TO_PATH_ACTION
     QAction*                installToPathAction;
 #endif

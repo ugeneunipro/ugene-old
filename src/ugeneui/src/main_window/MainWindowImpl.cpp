@@ -199,6 +199,7 @@ MainWindowImpl::MainWindowImpl() {
     openManualAction = NULL;
     openWDManualAction = NULL;
     openQDManualAction = NULL;
+    welcomePageAction = NULL;
     shutDownInProcess = false;
 #ifdef _INSTALL_TO_PATH_ACTION
     installToPathAction = NULL;
@@ -266,6 +267,10 @@ void MainWindowImpl::createActions() {
     openQDManualAction->setObjectName("Open Query Designer Manual");
     connect(openQDManualAction, SIGNAL(triggered()),SLOT(sl_openQDManualAction()));
 
+    welcomePageAction = new QAction(tr("Open Start Page"), this);
+    welcomePageAction->setObjectName("welcome_page");
+    connect(welcomePageAction, SIGNAL(triggered()), SIGNAL(si_showWelcomePage()));
+
 #ifdef _INSTALL_TO_PATH_ACTION
     installToPathAction = new QAction(tr("Enable Terminal Usage..."), this);
     connect(installToPathAction, SIGNAL(triggered()), SLOT(sl_installToPathAction()));
@@ -328,6 +333,7 @@ void MainWindowImpl::prepareGUI() {
     menuManager->getTopLevelMenu(MWMENU_HELP)->addSeparator();
     menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(visitWebAction);
     menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(checkUpdateAction);
+    menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(welcomePageAction);
     menuManager->getTopLevelMenu(MWMENU_HELP)->addAction(aboutAction);
 
     mdiManager = new MWMDIManagerImpl(this, mdi);
