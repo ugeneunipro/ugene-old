@@ -116,7 +116,7 @@ QVariantMap SpinBoxDelegate::getProperties() const {
     DelegateTags *t = tags();
     CHECK(t != NULL, result);
     foreach (const QString &tagName, t->names()) {
-        result[key] = t->get(tagName);
+        result[tagName] = t->get(tagName);
     }
     return result;
 }
