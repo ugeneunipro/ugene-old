@@ -5987,6 +5987,21 @@ GUI_TEST_CLASS_DEFINITION(test_2894){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2895){
+    //1. Open "_common_data/fasta/amino_multy.fa" as multiple alignment.
+    //2. Open "_common_data/fasta/amino_multy_ext.fa" as separate sequences.
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
+    GTFileDialog::openFile(os, testDir+"_common_data/fasta/", "amino_multy_ext.fa");
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Join));
+    GTFileDialog::openFile(os, testDir+"_common_data/fasta/", "amino_multy.fa");
+    //3. Try to add to the amino_multy.fa document, any sequence from the amino_multy_ext.fa document.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from current project"));
+    GTUtilsDialog::waitForDialog(os, new ProjectTreeItemSelectorDialogFiller(os, "amino_multy_ext.fa", "chr1_gl000191_random Amino translation 0 direct"));
+    GTMenu::showMainMenu(os, MWMENU_ACTIONS);
+    GTGlobals::sleep();
+    //Expected: an object will be added.
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2897) {
     //    1. Open {data/samples/CLUSTALW/COI.aln}.
     GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
