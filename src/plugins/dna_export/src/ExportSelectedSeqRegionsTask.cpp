@@ -106,7 +106,6 @@ void CreateExportItemsFromSeqRegionsTask::run() {
     SAFE_POINT_OP(stateInfo, );
 
     CHECK(isSeqObjectValid(seqObject, stateInfo), );
-    const DNAAlphabet *al = seqObject->getAlphabet();
 
     DbiOperationsBlock dbiBlock(dbiRef, stateInfo);
     Q_UNUSED(dbiBlock);
@@ -152,7 +151,7 @@ void CreateExportItemsFromSeqRegionsTask::run() {
         }
         exportSettings.items.append(ei);
 
-        stateInfo.setProgress(100 * ++regionCount / regions.length());
+        stateInfo.setProgress(100 * ++regionCount / regions.size());
     }
 }
 
