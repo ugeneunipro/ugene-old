@@ -35,7 +35,7 @@
 namespace U2{
 
 
-DocumentFormatSelectorController::DocumentFormatSelectorController(QList<FormatDetectionResult>& results, QWidget *p) 
+DocumentFormatSelectorController::DocumentFormatSelectorController(QList<FormatDetectionResult>& results, QWidget *p)
 : QDialog(p), formatDetectionResults(results)
 {
     setupUi(this);
@@ -106,9 +106,12 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
         label->setSizePolicy(QSizePolicy::Expanding, label->sizePolicy().verticalPolicy());
         d.userSelectedFormat = new QComboBox();
         const DocumentFormatRegistry *formatRegistry = AppContext::getDocumentFormatRegistry();
-        foreach ( const DocumentFormatId &id, detectedIds) {
-            const QString formatName = formatRegistry->getFormatById(id)->getFormatName();
-            d.userSelectedFormat->insertItem(0, formatName, id);
+        SAFE_POINT(formatRegistry != NULL, "FormatRegistry is NULL!", -1);
+        foreach ( const DocumentFormatId &id, formatRegistry->getRegisteredFormats()) {
+            if (!detectedIds.contains(id)) {
+                const QString formatName = formatRegistry->getFormatById(id)->getFormatName();
+                d.userSelectedFormat->insertItem(0, formatName, id);
+            }
         }
 
         hbox->addWidget(rb);
