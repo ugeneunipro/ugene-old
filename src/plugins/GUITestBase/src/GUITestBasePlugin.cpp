@@ -348,8 +348,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2778);
     REGISTER_TEST(GUITest_regression_scenarios::test_2784);
     REGISTER_TEST(GUITest_regression_scenarios::test_2796);
-    REGISTER_TEST_WINDOWS(GUITest_regression_scenarios::test_2801);
-    REGISTER_TEST_WINDOWS(GUITest_regression_scenarios::test_2801_1);
+    REGISTER_TEST_WINDOWS(GUITest_regression_scenarios::test_2801, "Specific API should be written for Linux and Mac");
+    REGISTER_TEST_WINDOWS(GUITest_regression_scenarios::test_2801_1, "Specific API should be written for Linux and Mac");
     REGISTER_TEST(GUITest_regression_scenarios::test_2808);
     REGISTER_TEST(GUITest_regression_scenarios::test_2809);
     REGISTER_TEST(GUITest_regression_scenarios::test_2811);
