@@ -92,6 +92,11 @@ void FormatDBSupportRunDialogFiller::run() {
         return;
     }
 
+    if(parameters.checkAlphabetType) {
+        bool isProtein = Parameters::Protein == parameters.alphabetType;
+        CHECK_SET_ERR(isProtein == proteinTypeRadioButton->isChecked(), "Incorrect alphabet is set");
+    }
+
     if (parameters.justCancel) {
         GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
         return;

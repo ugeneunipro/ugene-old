@@ -100,6 +100,9 @@ class QMainWindow;
 #define ACTION_PROJECT__EXPORT_AS_SEQUENCES_ACTION  "action_project__export_as_sequence_action"
 #define ACTION_PROJECT__EXPORT_TO_AMINO_ACTION      "action_project__export_to_amino_action"
 
+#define ACTION_BLAST_SUBMENU                        "BLAST"
+#define ACTION_BLAST_FORMAT_DB                      "FormatDB"
+
 #define ACTION_EXPORT_SEQUENCE                      "export sequences"
 #define ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT         "export sequences as alignment"
 #define ACTION_EXPORT_ANNOTATIONS                   "action_export_annotations"

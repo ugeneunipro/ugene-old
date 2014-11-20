@@ -32,13 +32,14 @@ public:
     class Parameters {
     public:
         Parameters():
-            justCancel(false), customFiller_3551(false)
+            justCancel(false), checkAlphabetType(false), customFiller_3551(false)
         {
 
         }
         enum Type {Nucleotide, Protein};
 
         bool justCancel;
+        bool checkAlphabetType;
         QString inputFilePath;
         Type alphabetType;
         QString outputDirPath;

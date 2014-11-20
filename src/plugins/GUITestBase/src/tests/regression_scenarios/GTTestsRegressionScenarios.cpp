@@ -4142,6 +4142,7 @@ GUI_TEST_CLASS_DEFINITION( test_2382_1 ) {
     GTUtilsProjectTreeView::findIndex(os, assDocName);
 }
 
+
 GUI_TEST_CLASS_DEFINITION( test_2392 ) {
     // 1. Open file _common_data/genbank/multi.gb
     // Expected state: Open dialog "Sequence reading options"
@@ -4970,6 +4971,23 @@ GUI_TEST_CLASS_DEFINITION( test_2567 ) {
 
     //Expected state: the task finished successfully.
     CHECK_SET_ERR(!l.hasError(), "Unexpected error in log!: " + l.getError());
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2570 ) {
+    GTLogTracer l;
+    GTFileDialog::openFile( os, dataDir + "samples/FASTA/", "human_T1.fa" );
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_BLAST_SUBMENU << ACTION_BLAST_FORMAT_DB));
+    FormatDBSupportRunDialogFiller::Parameters p;
+    p.justCancel = true;
+    p.checkAlphabetType = true;
+    p.alphabetType = FormatDBSupportRunDialogFiller::Parameters::Nucleotide;
+    GTUtilsDialog::waitForDialog(os, new FormatDBSupportRunDialogFiller(os, p));
+    GTMouseDriver::click(os, Qt::RightButton);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2577 ) {

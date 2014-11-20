@@ -82,7 +82,7 @@ void ETSProjectViewItemsContoller::sl_addToProjectViewMenu(QMenu& m) {
     }
     if (hasFastaDocs) {
         QMenu* subMenu = m.addMenu(tr("BLAST"));
-        subMenu->menuAction()->setObjectName("BLAST");
+        subMenu->menuAction()->setObjectName(ACTION_BLAST_SUBMENU);
         subMenu->setIcon(QIcon(":external_tool_support/images/ncbi.png"));
         subMenu->addAction(formatDBOnSelectionAction);
         subMenu->addAction(makeBLASTDBOnSelectionAction);
