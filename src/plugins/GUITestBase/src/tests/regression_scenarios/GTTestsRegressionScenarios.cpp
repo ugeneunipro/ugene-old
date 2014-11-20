@@ -4227,6 +4227,27 @@ GUI_TEST_CLASS_DEFINITION(test_2402) {
     GTWidget::click( os,GTAction::button( os,"Validate workflow" ) );
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2403) {
+    //1. Open "human_T1.fa".
+    //    2. Resize the main UGENE window that not all buttons will be visible on the sequence toolbar.
+    //    3. Click on the "Show full toolbar" button.
+    //Expected: all toolbar actions appears.
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa" );
+    QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    mw->resize(300, mw->size().height());
+
+    QWidget *toolbarWidget = GTWidget::findWidget(os, "mwtoolbar_activemdi");
+    CHECK_SET_ERR( NULL != toolbarWidget, "Toolbar  is not present");
+    QWidget *expandWidget = GTWidget::findWidget(os, "qt_toolbar_ext_button", toolbarWidget);
+    CHECK_SET_ERR( NULL != expandWidget, "\"Show full toolbar\" button  is not present");
+
+    GTWidget::click( os, expandWidget);
+    GTGlobals::sleep();
+    QWidget *toggleWidget = GTWidget::findWidget(os, "toggleViewButton", toolbarWidget);
+    CHECK_SET_ERR( NULL != toggleWidget, "\"Toggle view\" button  is not present");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2406 ) {
 //    1. Create the {Read Sequence -> Write Sequence} workflow.
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
