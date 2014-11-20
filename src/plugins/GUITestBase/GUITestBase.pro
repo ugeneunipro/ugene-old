@@ -74,6 +74,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h \
             src/runnables/ugene/plugins_3rdparty/primer3/Primer3DialogFiller.h \
             src/runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h \
+			src/runnables/ugene/plugins_3rdparty/MAFFT/MAFFTSupportRunDialogFiller.h \
 #   Runnables / UGENE / plugins
 #   Runnables / UGENE / plugins / annotator
             src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.h \
@@ -306,6 +307,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.cpp \
             src/runnables/ugene/plugins_3rdparty/primer3/Primer3DialogFiller.cpp \
             src/runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.cpp \
+			src/runnables/ugene/plugins_3rdparty/MAFFT/MAFFTSupportRunDialogFiller.cpp \
 #   Runnables / UGENE / plugins
 #   Runnables / UGENE / plugins / annotator
             src/runnables/ugene/plugins/annotator/FindAnnotationCollocationsDialogFiller.cpp \
