@@ -39,6 +39,18 @@
 
 namespace U2 {
 
+class LabelClickProvider : public QObject {
+    Q_OBJECT
+public:
+    LabelClickProvider(QLabel *label, QRadioButton *rb);
+
+private:
+    bool eventFilter(QObject *object, QEvent *event);
+
+    QLabel *label;
+    QRadioButton *rb;
+};
+
 class DocumentFormatSelectorController: public QDialog, public Ui_DocumentFormatSelectorDialog {
 	Q_OBJECT
 
@@ -48,13 +60,12 @@ public:
     static int selectResult(const GUrl& url, QByteArray& rawData, QList<FormatDetectionResult>& results);
     static QString score2Text(int score);
 
-private:
-    int getSelectedFormatIdx() const;
-
 private slots:
     void sl_moreFormatInfo();
 
 private:
+    int getSelectedFormatIdx() const;
+
     QList<QRadioButton*>    radioButtons;
     QList<QToolButton*>     moreButtons;
     QComboBox *userSelectedFormat;

@@ -36,16 +36,13 @@ class DocumentProviderSelectorController : public QDialog, private Ui_DocumentPr
 public:
     static int selectResult(const GUrl& url, const QList<FormatDetectionResult>& results);
 
-private slots:
-    void sl_moreFormatInfo();
-
 private:
     DocumentProviderSelectorController(const QList<FormatDetectionResult>& results, QWidget *parent);
     int getSelectedFormatIdx() const;
     static QString getViewName(const GObjectType &objectType);
+    static QString getTypeName(const GObjectType &objectType);
 
     QList<QRadioButton *> formatsRadioButtons;
-    QList<QToolButton *> moreInfoButtons;
     const QList<FormatDetectionResult> formatDetectionResults;
 };
 

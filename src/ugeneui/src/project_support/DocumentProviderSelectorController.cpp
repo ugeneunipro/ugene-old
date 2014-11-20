@@ -46,57 +46,38 @@ int DocumentProviderSelectorController::selectResult(const GUrl& url, const QLis
     }
 
     DocumentProviderSelectorController d(results, QApplication::activeModalWidget());
-    d.gbFormats->setTitle(tr("Open '%1' with").arg(url.fileName()));
+    d.gbFormats->setTitle(tr("Open '%1' as").arg(url.fileName()));
     d.buttonBox->button(QDialogButtonBox::Cancel)->setAutoDefault(false);
+    d.buttonBox->button(QDialogButtonBox::Cancel)->setDefault(false);
     d.buttonBox->button(QDialogButtonBox::Ok)->setAutoDefault(true);
     d.buttonBox->button(QDialogButtonBox::Ok)->setDefault(true);
 
-    QVBoxLayout *formatsLayout = qobject_cast<QVBoxLayout *>(d.gbFormats->layout());
     for (int i = 0; i < results.size(); i++) {
         const FormatDetectionResult &result = results[i];
+        QList<GObjectType> supportedTypes;
         QString text;
         if (result.format != NULL) {
-            QList<GObjectType> supportedTypes = result.format->getSupportedObjectTypes().toList();
-            if (supportedTypes.isEmpty()) {
-                continue;
-            }
-            text = tr("Open in <b>%1</b> with the <b>%2</b> format.").arg(getViewName(supportedTypes.first())).arg(result.format->getFormatName());
+            supportedTypes = result.format->getSupportedObjectTypes().toList();
         } else if (result.importer != NULL) {
-            QList<GObjectType> supportedTypes = result.importer->getSupportedObjectTypes().toList();
-            if (supportedTypes.isEmpty()) {
-                continue;
-            }
-            text = tr("Open in <b>%1</b> with the <b>%2</b> format.").arg(getViewName(supportedTypes.first())).arg(result.importer->getImporterName());
+            supportedTypes = result.importer->getSupportedObjectTypes().toList();
         } else {
             assert(0);
             continue;
         }
 
-        QHBoxLayout *blockLayout = new QHBoxLayout();
+        if (supportedTypes.isEmpty()) {
+            continue;
+        }
+        text = tr("%1 in the %2").arg(getTypeName(supportedTypes.first())).arg(getViewName(supportedTypes.first()));
 
-        QRadioButton *rbFormat = new QRadioButton();
+        QRadioButton *rbFormat = new QRadioButton(text);
         rbFormat->setObjectName(text + "_radio");
         rbFormat->setChecked(i == 0);
         d.formatsRadioButtons << rbFormat;
 
-        QLabel *lblDescription = new QLabel(text);
-        lblDescription->setObjectName(text + "_label");
-        lblDescription->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        lblDescription->setSizePolicy(QSizePolicy::Expanding, lblDescription->sizePolicy().verticalPolicy());
-
-        QToolButton* tbMore = new QToolButton();
-        tbMore->setObjectName(text + "_more");
-        tbMore->setText(tr("more.."));
-        tbMore->setEnabled(!result.getFormatDescriptionText().isEmpty());
-
-        d.moreInfoButtons << tbMore;
-        QObject::connect(tbMore, SIGNAL(clicked()), &d, SLOT(sl_moreFormatInfo()));
-
-        blockLayout->addWidget(rbFormat);
-        blockLayout->addWidget(lblDescription);
-        blockLayout->addWidget(tbMore);
-        formatsLayout->addLayout(blockLayout);
+        d.formatsLayout->addWidget(rbFormat);
     }
+    d.adjustSize();
 
     int rc = d.exec();
     if (rc == QDialog::Rejected) {
@@ -104,14 +85,6 @@ int DocumentProviderSelectorController::selectResult(const GUrl& url, const QLis
     }
 
     return d.getSelectedFormatIdx();
-}
-
-void DocumentProviderSelectorController::sl_moreFormatInfo() {
-    QToolButton* tb = qobject_cast<QToolButton*>(sender());
-    SAFE_POINT(tb != NULL, "Failed to derive selected format info!", );
-    int idx = moreInfoButtons.indexOf(tb);
-    const FormatDetectionResult& dr = formatDetectionResults[idx];
-    QMessageBox::information(this, tr("Format details for '%1' format").arg(dr.getFormatOrImporterName()), dr.getFormatDescriptionText());
 }
 
 DocumentProviderSelectorController::DocumentProviderSelectorController(const QList<FormatDetectionResult> &formatDetectionResults, QWidget *parent) :
@@ -144,6 +117,15 @@ QString DocumentProviderSelectorController::getViewName(const GObjectType &objec
     GObjectViewFactory *factory = objectViewFactoriesRegistry->getFactoryById(id);
     SAFE_POINT(NULL != factory, L10N::nullPointerError("GObject View Factory"), "");
     return factory->getName();
+}
+
+QString DocumentProviderSelectorController::getTypeName(const GObjectType &objectType) {
+    if (GObjectTypes::ASSEMBLY == objectType) {
+        return "Short reads assembly";
+    } else if (GObjectTypes::MULTIPLE_ALIGNMENT == objectType) {
+        return "Multiple sequence alignment";
+    }
+    FAIL("An unexpected type", "");
 }
 
 }   // namespace U2

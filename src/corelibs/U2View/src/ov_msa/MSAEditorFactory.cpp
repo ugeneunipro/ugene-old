@@ -41,7 +41,7 @@ namespace U2 {
 const GObjectViewFactoryId MSAEditorFactory::ID("MSAEditor");
 
 MSAEditorFactory::MSAEditorFactory() 
-: GObjectViewFactory(ID, tr("Alignment editor"))
+: GObjectViewFactory(ID, tr("Alignment Editor"))
 {
 }
 

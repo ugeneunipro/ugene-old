@@ -19,21 +19,39 @@
  * MA 02110-1301, USA.
  */
 
-#include "DocumentFormatSelectorController.h"
+#include <QMessageBox>
+#include <QMouseEvent>
 
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/TextUtils.h>
 #include <U2Core/DocumentImport.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U2SafePoints.h>
+
 #include <U2Gui/HelpButton.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QMessageBox>
-#endif
+#include "DocumentFormatSelectorController.h"
 
 namespace U2{
 
+LabelClickProvider::LabelClickProvider(QLabel *label, QRadioButton *rb) :
+    QObject(label),
+    label(label),
+    rb(rb)
+{
+}
+
+bool LabelClickProvider::eventFilter(QObject *object, QEvent *event) {
+    CHECK(NULL != label, false);
+    CHECK(NULL != rb, false);
+    CHECK(label == object, false);
+
+    CHECK(QEvent::MouseButtonPress == event->type(), false);
+    QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>(event);
+    CHECK(NULL != event, false);
+    CHECK(Qt::LeftButton == mouseEvent->button(), false);
+
+    rb->toggle();
+    return false;
+}
 
 DocumentFormatSelectorController::DocumentFormatSelectorController(QList<FormatDetectionResult>& results, QWidget *p)
 : QDialog(p), formatDetectionResults(results)
@@ -43,8 +61,6 @@ DocumentFormatSelectorController::DocumentFormatSelectorController(QList<FormatD
 
     setObjectName("DocumentFormatSelectorDialog");
 }
-
-
 
 int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& rawData, QList<FormatDetectionResult>& results){
     SAFE_POINT(!results.isEmpty(), "Results list is empty!", -1);
@@ -80,9 +96,12 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
         QHBoxLayout* hbox = new QHBoxLayout();
         QRadioButton* rb = new QRadioButton();
         rb->setChecked(i == 0);
+
         QLabel* label = new QLabel(text);
         label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         label->setSizePolicy(QSizePolicy::Expanding, label->sizePolicy().verticalPolicy());
+        label->installEventFilter(new LabelClickProvider(label, rb));
+
         QToolButton* moreButton = new QToolButton();
         moreButton->setText("more..");
         moreButton->setEnabled(!r.getFormatDescriptionText().isEmpty());
@@ -101,9 +120,12 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
         QString text(tr("Choose format manually"));
         QHBoxLayout* hbox = new QHBoxLayout();
         QRadioButton* rb = new QRadioButton();
+
         QLabel* label = new QLabel(text);
         label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         label->setSizePolicy(QSizePolicy::Expanding, label->sizePolicy().verticalPolicy());
+        label->installEventFilter(new LabelClickProvider(label, rb));
+
         d.userSelectedFormat = new QComboBox();
         const DocumentFormatRegistry *formatRegistry = AppContext::getDocumentFormatRegistry();
         SAFE_POINT(formatRegistry != NULL, "FormatRegistry is NULL!", -1);

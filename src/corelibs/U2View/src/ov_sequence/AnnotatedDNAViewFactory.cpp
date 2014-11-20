@@ -43,7 +43,7 @@ namespace U2 {
 const GObjectViewFactoryId AnnotatedDNAViewFactory::ID(ANNOTATED_DNA_VIEW_FACTORY_ID);
 
 AnnotatedDNAViewFactory::AnnotatedDNAViewFactory() 
-: GObjectViewFactory(ID, tr("Sequence view"))
+: GObjectViewFactory(ID, tr("Sequence View"))
 {
 }
 
