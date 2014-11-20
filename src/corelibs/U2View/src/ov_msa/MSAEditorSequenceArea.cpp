@@ -387,7 +387,9 @@ void MSAEditorSequenceArea::sl_customColorSettingsChanged(){
     }
     if(!a){
         QAction* a = GUIUtils::findActionByData(QList<QAction*>() << colorSchemeMenuActions << customColorSchemeMenuActions, atype == DNAAlphabet_AMINO ? MSAColorScheme::UGENE_AMINO : MSAColorScheme::UGENE_NUCL);
-        if(a){a->setChecked(true);}
+        if (a != NULL) {
+            a->setChecked(true);
+        }
     }
 
     emit si_highlightingChanged();
@@ -403,7 +405,9 @@ void MSAEditorSequenceArea::deleteOldCustomSchemes(){
 
 void MSAEditorSequenceArea::sl_changeColorSchemeOutside( const QString &name ){
     QAction* a = GUIUtils::findAction(QList<QAction*>() << colorSchemeMenuActions << customColorSchemeMenuActions << highlightingSchemeMenuActions, name);
-    if(a){a->trigger();}
+    if (a != NULL) {
+        a->trigger();
+    }
 }
 
 void MSAEditorSequenceArea::sl_doUseDots(){
@@ -469,7 +473,7 @@ void MSAEditorSequenceArea::sl_changeHighlightScheme(){
     CHECK(ui->getEditor()->getOptionsPanel(), );
 
     if(!f->isRefFree() && refSeq == -1 && ui->getEditor()->getOptionsPanel()->getActiveGroupId() != msaHighlightingId) {
-        QMessageBox::warning(ui, tr("No reference sequence selected"), 
+        QMessageBox::warning(ui, tr("No reference sequence selected"),
             tr("Reference sequence for current highlighting scheme is not selected.\r\nUse context menu or Highlighting tab on Options panel to select it"));
     }
 

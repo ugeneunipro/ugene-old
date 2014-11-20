@@ -3,7 +3,7 @@
  * Copyright (C) 2008-2014 UniPro <ugene@unipro.ru>
  * http://ugene.unipro.ru
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
@@ -60,8 +60,8 @@ QWidget* MSAHighlightingTab::createColorGroup(){
     colorScheme = new QComboBox();
     colorScheme->setObjectName("colorScheme");
     colorScheme->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
-    
-    layout->addSpacing(TITLE_SPACING);  
+
+    layout->addSpacing(TITLE_SPACING);
     layout->addWidget(colorScheme);
     layout->addSpacing(ITEMS_SPACING);
 
@@ -91,7 +91,7 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
     layout2->addSpacerItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
     layout->setSpacing(ITEMS_SPACING);
-    layout->addSpacing(TITLE_SPACING);  
+    layout->addSpacing(TITLE_SPACING);
     layout->addWidget(highlightingScheme);
     layout->addWidget(hint);
     layout->addWidget(useDots);
@@ -154,9 +154,13 @@ void MSAHighlightingTab::sl_sync(){
     }
 
     MSAColorScheme *s = seqArea->getCurrentColorScheme();
+    SAFE_POINT(s != NULL, "Current scheme is NULL", );
+    SAFE_POINT(s->getFactory() != NULL, "Current scheme color factory is NULL", );
     colorScheme->setCurrentIndex(colorScheme->findText(s->getFactory()->getName()));
 
     MSAHighlightingScheme *sh = seqArea->getCurrentHighlightingScheme();
+    SAFE_POINT(sh != NULL, "Current highlighting scheme is NULL!", );
+    SAFE_POINT(sh->getFactory() != NULL, "Current highlighting scheme factory is NULL!", );
     highlightingScheme->setCurrentIndex(highlightingScheme->findText(sh->getFactory()->getName()));
 
 

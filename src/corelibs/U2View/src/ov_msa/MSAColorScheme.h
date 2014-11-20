@@ -29,6 +29,7 @@
 
 namespace U2 {
 
+class CustomColorSchema;
 class MAlignmentObject;
 class MSAColorScheme;
 class MAlignment;
@@ -67,6 +68,8 @@ class U2VIEW_EXPORT MSAColorSchemeCustomSettingsFactory : public MSAColorSchemeF
 public:
     MSAColorSchemeCustomSettingsFactory(QObject* p, const QString& id, const QString& name, DNAAlphabetType atype, const QVector<QColor>& colorsPerChar);
     virtual MSAColorScheme* create(QObject* p, MAlignmentObject* obj);
+    bool isEqualTo(const CustomColorSchema& schema) const;
+    static QVector<QColor> colorMapToColorVector(const QMap<char, QColor> &map);
 private:
     QVector<QColor> colorsPerChar;
 };
@@ -181,7 +184,7 @@ private slots:
 protected:
     void updateCache();
     int getCacheIdx(int seq, int pos, bool& low) const {
-        assert(objVersion == cacheVersion); 
+        assert(objVersion == cacheVersion);
         int res = seq * aliLen + pos;
         low = !(res & 0x1);
         return res / 2;
@@ -219,18 +222,19 @@ public:
 
     const QList<MSAColorSchemeFactory*>& getMSAColorSchemes() const {return colorers;}
     const QList<MSAColorSchemeFactory*>& getCustomColorSchemes() const {return customColorers;}
-    
+
     QList<MSAColorSchemeFactory*> getMSAColorSchemes(DNAAlphabetType atype) const;
     QList<MSAColorSchemeFactory*> getMSACustomColorSchemes(DNAAlphabetType atype) const;
 
     MSAColorSchemeFactory* getMSAColorSchemeFactoryById(const QString& id) const;
 
+    void addCustomSchema(const CustomColorSchema& schema);
     void addMSAColorSchemeFactory(MSAColorSchemeFactory* cs);
     void addMSACustomColorSchemeFactory(MSAColorSchemeFactory* cs);
 signals:
     void si_customSettingsChanged();
 private slots:
-   void sl_onCustomSettingsChanged();
+    void sl_onCustomSettingsChanged();
 private:
     void deleteOldCustomFactories();
     void initBuiltInSchemes();
@@ -260,7 +264,7 @@ public:
     MSAHighlightingSchemeFactory* getMSAHighlightingSchemeFactoryById(const QString& id) const;
     QList<MSAHighlightingSchemeFactory*> getMSAHighlightingSchemes(DNAAlphabetType atype);
 
-private:   
+private:
     QList<MSAHighlightingSchemeFactory*> schemes;
 };
 

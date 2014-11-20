@@ -41,8 +41,8 @@ MSAColorSchemeFactory::MSAColorSchemeFactory(QObject* p, const QString& _id, con
 {
 }
 
-MSAColorSchemeStaticFactory::MSAColorSchemeStaticFactory(QObject* p, const QString& _id, const QString& _name, 
-                                                         DNAAlphabetType _atype, const QVector<QColor>& _colorsPerChar) 
+MSAColorSchemeStaticFactory::MSAColorSchemeStaticFactory(QObject* p, const QString& _id, const QString& _name,
+                                                         DNAAlphabetType _atype, const QVector<QColor>& _colorsPerChar)
 : MSAColorSchemeFactory(p, _id, _name, _atype), colorsPerChar(_colorsPerChar)
 {
 }
@@ -51,19 +51,40 @@ MSAColorScheme* MSAColorSchemeStaticFactory::create(QObject* p, MAlignmentObject
     return new MSAColorSchemeStatic(p, this, o, colorsPerChar);
 }
 
-MSAColorSchemeCustomSettingsFactory::MSAColorSchemeCustomSettingsFactory(QObject* p, const QString& _id, const QString& _name, 
-                                                         DNAAlphabetType _atype, const QVector<QColor>& _colorsPerChar) 
+MSAColorSchemeCustomSettingsFactory::MSAColorSchemeCustomSettingsFactory(QObject* p, const QString& _id, const QString& _name,
+                                                         DNAAlphabetType _atype, const QVector<QColor>& _colorsPerChar)
                                                          : MSAColorSchemeFactory(p, _id, _name, _atype), colorsPerChar(_colorsPerChar)
-{    
+{
 }
 
 MSAColorScheme* MSAColorSchemeCustomSettingsFactory::create(QObject* p, MAlignmentObject* o) {
     return new MSAColorSchemeStatic(p, this, o, colorsPerChar);
 }
 
+bool MSAColorSchemeCustomSettingsFactory::isEqualTo(const CustomColorSchema &schema) const {
+    bool result = true;
+    result &= getName()== schema.name;
+    result &= getAlphabetType() == schema.type;
+    result &= colorsPerChar == colorMapToColorVector(schema.alpColors);
+
+    return result;
+}
+
+static void fillEmptyCS(QVector<QColor> &colorsPerChar);
+QVector<QColor> MSAColorSchemeCustomSettingsFactory::colorMapToColorVector(const QMap<char, QColor> &map) {
+    QVector<QColor> colorsPerChar;
+    fillEmptyCS(colorsPerChar);
+    QMapIterator<char, QColor> it(map);
+    while(it.hasNext()){
+        it.next();
+        SET_C(it.key(), it.value());
+    }
+    return colorsPerChar;
+}
 
 
-MSAColorSchemePercIdentFactory::MSAColorSchemePercIdentFactory(QObject* p, const QString& _id, const QString& _name, DNAAlphabetType _atype) 
+
+MSAColorSchemePercIdentFactory::MSAColorSchemePercIdentFactory(QObject* p, const QString& _id, const QString& _name, DNAAlphabetType _atype)
 : MSAColorSchemeFactory(p, _id, _name, _atype)
 {
 }
@@ -72,7 +93,7 @@ MSAColorScheme* MSAColorSchemePercIdentFactory::create(QObject* p, MAlignmentObj
     return new MSAColorSchemePercIdent(p, this, o);
 }
 
-MSAColorSchemePercIdentGrayscaleFactory::MSAColorSchemePercIdentGrayscaleFactory(QObject* p, const QString& _id, const QString& _name, DNAAlphabetType _atype) 
+MSAColorSchemePercIdentGrayscaleFactory::MSAColorSchemePercIdentGrayscaleFactory(QObject* p, const QString& _id, const QString& _name, DNAAlphabetType _atype)
 : MSAColorSchemeFactory(p, _id, _name, _atype)
 {
 }
@@ -81,7 +102,7 @@ MSAColorScheme* MSAColorSchemePercIdentGrayscaleFactory::create(QObject* p, MAli
     return new MSAColorSchemePercIdentGrayscale(p, this, o);
 }
 
-MSAColorSchemeClustalXFactory::MSAColorSchemeClustalXFactory(QObject* p, const QString& _id, const QString& _name, DNAAlphabetType _atype) 
+MSAColorSchemeClustalXFactory::MSAColorSchemeClustalXFactory(QObject* p, const QString& _id, const QString& _name, DNAAlphabetType _atype)
 : MSAColorSchemeFactory(p, _id, _name, _atype)
 {
 }
@@ -109,7 +130,7 @@ QColor MSAColorSchemeStatic::getColor(int /*seq*/, int /*pos*/, char c) {
 
 
 /// PERCENT
-MSAColorSchemePercIdent::MSAColorSchemePercIdent(QObject* p, MSAColorSchemeFactory* f, MAlignmentObject* o) 
+MSAColorSchemePercIdent::MSAColorSchemePercIdent(QObject* p, MSAColorSchemeFactory* f, MAlignmentObject* o)
 : MSAColorScheme(p, f, o)
 {
     cacheVersion = 0;
@@ -124,7 +145,7 @@ MSAColorSchemePercIdent::MSAColorSchemePercIdent(QObject* p, MSAColorSchemeFacto
     colorsByRange[2] = QColor("#CCCCFF");
     colorsByRange[3] = QColor();
 
-    connect(maObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), 
+    connect(maObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
                   SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
 }
 
@@ -165,7 +186,7 @@ MSAColorSchemePercIdentGrayscale::MSAColorSchemePercIdentGrayscale( QObject* p, 
 }
 
 /// CLUSTAL
-MSAColorSchemeClustalX::MSAColorSchemeClustalX(QObject* p, MSAColorSchemeFactory* f, MAlignmentObject* maObj) 
+MSAColorSchemeClustalX::MSAColorSchemeClustalX(QObject* p, MSAColorSchemeFactory* f, MAlignmentObject* maObj)
 : MSAColorScheme(p, f, maObj)
 {
     objVersion = 1;
@@ -181,7 +202,7 @@ MSAColorSchemeClustalX::MSAColorSchemeClustalX(QObject* p, MSAColorSchemeFactory
     colorByIdx[ClustalColor_CYAN]    = "#15a4a4";
     colorByIdx[ClustalColor_YELLOW]  = "#c0c000";
 
-    connect(maObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), 
+    connect(maObj, SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)),
         SLOT(sl_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)));
 }
 
@@ -213,7 +234,7 @@ void MSAColorSchemeClustalX::setColorIdx(int seq, int pos, int colorIdx) {
     } else {
         val = (val & 0x0F) | (colorIdx << 4);
     }
-    colorsCache[cacheIdx] = val; 
+    colorsCache[cacheIdx] = val;
 }
 
 static int basesContent(const int* freqs, const char* str, int len) {
@@ -264,14 +285,14 @@ void MSAColorSchemeClustalX::updateCache() {
             (H,Y):          {50%, P}{60%, WLVIMAFCYHP}
         YELLOW
             (P):            {ALWAYS}
-    
+
         WARN: do not count gaps in percents!
     */
 
 
     QVector<int> freqsByChar(256);
     const int* freqs = freqsByChar.data();
-    
+
     for (int pos = 0; pos < aliLen; pos++) {
         int nonGapChars = 0;
         MSAConsensusUtils::getColumnFreqs(ma, pos, freqsByChar, nonGapChars);
@@ -303,18 +324,18 @@ void MSAColorSchemeClustalX::updateCache() {
                     break;
 
                 case 'K': //{60%, KR}{85%, Q} -> RED
-                case 'R': 
+                case 'R':
                     if ((freqs['K'] + freqs['R'] > content60) || freqs['Q'] > content85) {
                         colorIdx = ClustalColor_RED;
                     }
                     break;
-                
+
                 case 'T': // {50%, TS}{60%, WLVIMAFCYHP} -> GREEN
                     if ((freqs['T'] + freqs['S'] > content50) || basesContent(freqs, "WLVIMAFCYHP", 11) > content60) {
                         colorIdx = ClustalColor_GREEN;
                     }
                     break;
-                
+
                 case 'S': // {50%, TS}{80%, WLVIMAFCYHP} -> GREEN
                     if ((freqs['T'] + freqs['S'] > content50) || basesContent(freqs, "WLVIMAFCYHP", 11) > content80) {
                         colorIdx = ClustalColor_GREEN;
@@ -340,7 +361,7 @@ void MSAColorSchemeClustalX::updateCache() {
                     } else if (freqs['P'] > content50 || basesContent(freqs, "WLVIMAFCYHP", 11) > content60 || freqs['S'] > content85) {
                         colorIdx = ClustalColor_BLUE;
                     }
-                    break;                          
+                    break;
 
                 case 'D': //{50%, DE,N} -> MAGENTA
                     if ((freqs['D'] + freqs['E']) > content50 || freqs['N'] > content50) {
@@ -356,7 +377,7 @@ void MSAColorSchemeClustalX::updateCache() {
                     colorIdx = ClustalColor_ORANGE;
                     break;
 
-                case 'H': // {50%, P}{60%, WLVIMAFCYHP} -> CYAN 
+                case 'H': // {50%, P}{60%, WLVIMAFCYHP} -> CYAN
                 case 'Y':
                     if (freqs['P'] > content50 || basesContent(freqs, "WLVIMAFCYHP", 11) > content60) {
                         colorIdx = ClustalColor_CYAN;
@@ -366,7 +387,7 @@ void MSAColorSchemeClustalX::updateCache() {
                 case 'P': //{ALWAYS} -> YELLOW
                     colorIdx = ClustalColor_YELLOW;
                     break;
-                default: 
+                default:
                     break;
 
             }
@@ -448,6 +469,11 @@ static bool compareNames(const MSAColorSchemeFactory* a1, const MSAColorSchemeFa
     return a1->getName() < a2->getName();
 }
 
+void MSAColorSchemeRegistry::addCustomSchema(const CustomColorSchema &schema) {
+    addMSACustomColorSchemeFactory(new MSAColorSchemeCustomSettingsFactory(NULL, schema.name, schema.name, schema.type,
+                                                                           MSAColorSchemeCustomSettingsFactory::colorMapToColorVector(schema.alpColors)));
+}
+
 void MSAColorSchemeRegistry::addMSAColorSchemeFactory(MSAColorSchemeFactory* csf) {
     assert(getMSAColorSchemeFactoryById(csf->getId()) == NULL);
     colorers.append(csf);
@@ -515,204 +541,204 @@ static void addUGENENucl(QVector<QColor>& colorsPerChar) {
 
 static void addZappoAmino(QVector<QColor>& colorsPerChar) {
     //Aliphatic/hydrophobic:    ILVAM       #ffafaf
-    SET_C('I', "#ffafaf"); 
-    SET_C('L', "#ffafaf"); 
-    SET_C('V', "#ffafaf"); 
-    SET_C('A', "#ffafaf"); 
-    SET_C('M', "#ffafaf"); 
+    SET_C('I', "#ffafaf");
+    SET_C('L', "#ffafaf");
+    SET_C('V', "#ffafaf");
+    SET_C('A', "#ffafaf");
+    SET_C('M', "#ffafaf");
 
     //Aromatic:  FWY         #ffc800
-    SET_C('F', "#ffc800"); 
-    SET_C('W', "#ffc800"); 
-    SET_C('Y', "#ffc800"); 
+    SET_C('F', "#ffc800");
+    SET_C('W', "#ffc800");
+    SET_C('Y', "#ffc800");
 
     //Positive   KRH         #6464ff
-    SET_C('K', "#6464ff"); 
-    SET_C('R', "#6464ff"); 
-    SET_C('H', "#6464ff"); 
+    SET_C('K', "#6464ff");
+    SET_C('R', "#6464ff");
+    SET_C('H', "#6464ff");
 
     //Negative   DE          #ff0000
-    SET_C('D', "#ff0000"); 
-    SET_C('E', "#ff0000"); 
-    
+    SET_C('D', "#ff0000");
+    SET_C('E', "#ff0000");
+
     //Hydrophil  STNQ        #00ff00
-    SET_C('S', "#00ff00"); 
-    SET_C('T', "#00ff00"); 
-    SET_C('N', "#00ff00"); 
-    SET_C('Q', "#00ff00"); 
-    
+    SET_C('S', "#00ff00");
+    SET_C('T', "#00ff00");
+    SET_C('N', "#00ff00");
+    SET_C('Q', "#00ff00");
+
     //conformat  PG          #ff00ff
-    SET_C('P', "#ff00ff"); 
-    SET_C('G', "#ff00ff"); 
+    SET_C('P', "#ff00ff");
+    SET_C('G', "#ff00ff");
 
     //Cysteine   C           #ffff00
-    SET_C('C', "#ffff00"); 
+    SET_C('C', "#ffff00");
 }
 
 static void addTailorAmino(QVector<QColor>& colorsPerChar) {
-    SET_C('A', "#ccff00"); 
-    SET_C('V', "#99ff00"); 
-    SET_C('I', "#66ff00"); 
-    SET_C('L', "#33ff00"); 
-    SET_C('M', "#00ff00"); 
-    SET_C('F', "#00ff66"); 
-    SET_C('Y', "#00ffcc"); 
-    SET_C('W', "#00ccff"); 
-    SET_C('H', "#0066ff"); 
-    SET_C('R', "#0000ff"); 
-    SET_C('K', "#6600ff"); 
-    SET_C('N', "#cc00ff"); 
-    SET_C('Q', "#ff00cc"); 
-    SET_C('E', "#ff0066"); 
-    SET_C('D', "#ff0000"); 
-    SET_C('S', "#ff3300"); 
-    SET_C('T', "#ff6600"); 
-    SET_C('G', "#ff9900"); 
-    SET_C('P', "#ffcc00"); 
-    SET_C('C', "#ffff00"); 
+    SET_C('A', "#ccff00");
+    SET_C('V', "#99ff00");
+    SET_C('I', "#66ff00");
+    SET_C('L', "#33ff00");
+    SET_C('M', "#00ff00");
+    SET_C('F', "#00ff66");
+    SET_C('Y', "#00ffcc");
+    SET_C('W', "#00ccff");
+    SET_C('H', "#0066ff");
+    SET_C('R', "#0000ff");
+    SET_C('K', "#6600ff");
+    SET_C('N', "#cc00ff");
+    SET_C('Q', "#ff00cc");
+    SET_C('E', "#ff0066");
+    SET_C('D', "#ff0000");
+    SET_C('S', "#ff3300");
+    SET_C('T', "#ff6600");
+    SET_C('G', "#ff9900");
+    SET_C('P', "#ffcc00");
+    SET_C('C', "#ffff00");
 }
 
 static void addHydroAmino(QVector<QColor>& colorsPerChar) {
 //The most hydrophobic residues according to this table are colored red and the most hydrophilic ones are colored blue.
-    SET_C('I', "#ff0000"); 
-    SET_C('V', "#f60009"); 
-    SET_C('L', "#ea0015"); 
-    SET_C('F', "#cb0034"); 
-    SET_C('C', "#c2003d"); 
-    SET_C('M', "#b0004f"); 
-    SET_C('A', "#ad0052"); 
-    SET_C('G', "#6a0095"); 
-    SET_C('X', "#680097"); 
-    SET_C('T', "#61009e"); 
-    SET_C('S', "#5e00a1"); 
-    SET_C('W', "#5b00a4"); 
-    SET_C('Y', "#4f00b0"); 
-    SET_C('P', "#4600b9"); 
-    SET_C('H', "#1500ea"); 
-    SET_C('E', "#0c00f3"); 
-    SET_C('Z', "#0c00f3"); 
-    SET_C('Q', "#0c00f3"); 
-    SET_C('D', "#0c00f3"); 
-    SET_C('B', "#0c00f3"); 
-    SET_C('N', "#0c00f3"); 
-    SET_C('K', "#0000ff"); 
-    SET_C('R', "#0000ff"); 
+    SET_C('I', "#ff0000");
+    SET_C('V', "#f60009");
+    SET_C('L', "#ea0015");
+    SET_C('F', "#cb0034");
+    SET_C('C', "#c2003d");
+    SET_C('M', "#b0004f");
+    SET_C('A', "#ad0052");
+    SET_C('G', "#6a0095");
+    SET_C('X', "#680097");
+    SET_C('T', "#61009e");
+    SET_C('S', "#5e00a1");
+    SET_C('W', "#5b00a4");
+    SET_C('Y', "#4f00b0");
+    SET_C('P', "#4600b9");
+    SET_C('H', "#1500ea");
+    SET_C('E', "#0c00f3");
+    SET_C('Z', "#0c00f3");
+    SET_C('Q', "#0c00f3");
+    SET_C('D', "#0c00f3");
+    SET_C('B', "#0c00f3");
+    SET_C('N', "#0c00f3");
+    SET_C('K', "#0000ff");
+    SET_C('R', "#0000ff");
 }
 
 static void addHelixAmino(QVector<QColor>& colorsPerChar) {
-    SET_C('E', "#ff00ff"); 
-    SET_C('M', "#ef10ef"); 
-    SET_C('A', "#e718e7"); 
-    SET_C('Z', "#c936c9"); 
-    SET_C('L', "#ae51ae"); 
-    SET_C('K', "#a05fa0"); 
-    SET_C('F', "#986798"); 
-    SET_C('Q', "#926d92"); 
-    SET_C('I', "#8a758a"); 
-    SET_C('W', "#8a758a"); 
-    SET_C('V', "#857a85"); 
-    SET_C('D', "#778877"); 
-    SET_C('X', "#758a75"); 
-    SET_C('H', "#758a75"); 
-    SET_C('R', "#6f906f"); 
-    SET_C('B', "#49b649"); 
-    SET_C('T', "#47b847"); 
-    SET_C('S', "#36c936"); 
-    SET_C('C', "#23dc23"); 
-    SET_C('Y', "#21de21"); 
-    SET_C('N', "#1be41b"); 
-    SET_C('G', "#00ff00"); 
-    SET_C('P', "#00ff00"); 
+    SET_C('E', "#ff00ff");
+    SET_C('M', "#ef10ef");
+    SET_C('A', "#e718e7");
+    SET_C('Z', "#c936c9");
+    SET_C('L', "#ae51ae");
+    SET_C('K', "#a05fa0");
+    SET_C('F', "#986798");
+    SET_C('Q', "#926d92");
+    SET_C('I', "#8a758a");
+    SET_C('W', "#8a758a");
+    SET_C('V', "#857a85");
+    SET_C('D', "#778877");
+    SET_C('X', "#758a75");
+    SET_C('H', "#758a75");
+    SET_C('R', "#6f906f");
+    SET_C('B', "#49b649");
+    SET_C('T', "#47b847");
+    SET_C('S', "#36c936");
+    SET_C('C', "#23dc23");
+    SET_C('Y', "#21de21");
+    SET_C('N', "#1be41b");
+    SET_C('G', "#00ff00");
+    SET_C('P', "#00ff00");
 }
 
 static void addStrandAmino(QVector<QColor>& colorsPerChar) {
-    SET_C('V', "#ffff00"); 
-    SET_C('I', "#ecec13"); 
-    SET_C('Y', "#d3d32c"); 
-    SET_C('F', "#c2c23d"); 
-    SET_C('W', "#c0c03f"); 
-    SET_C('L', "#b2b24d"); 
-    SET_C('T', "#9d9d62"); 
-    SET_C('C', "#9d9d62"); 
-    SET_C('Q', "#8c8c73"); 
-    SET_C('M', "#82827d"); 
-    SET_C('X', "#797986"); 
-    SET_C('R', "#6b6b94"); 
-    SET_C('N', "#64649b"); 
-    SET_C('H', "#60609f"); 
-    SET_C('A', "#5858a7"); 
-    SET_C('S', "#4949b6"); 
-    SET_C('G', "#4949b6"); 
-    SET_C('Z', "#4747b8"); 
-    SET_C('K', "#4747b8"); 
-    SET_C('B', "#4343bc"); 
-    SET_C('P', "#2323dc"); 
-    SET_C('D', "#2121de"); 
-    SET_C('E', "#0000ff"); 
+    SET_C('V', "#ffff00");
+    SET_C('I', "#ecec13");
+    SET_C('Y', "#d3d32c");
+    SET_C('F', "#c2c23d");
+    SET_C('W', "#c0c03f");
+    SET_C('L', "#b2b24d");
+    SET_C('T', "#9d9d62");
+    SET_C('C', "#9d9d62");
+    SET_C('Q', "#8c8c73");
+    SET_C('M', "#82827d");
+    SET_C('X', "#797986");
+    SET_C('R', "#6b6b94");
+    SET_C('N', "#64649b");
+    SET_C('H', "#60609f");
+    SET_C('A', "#5858a7");
+    SET_C('S', "#4949b6");
+    SET_C('G', "#4949b6");
+    SET_C('Z', "#4747b8");
+    SET_C('K', "#4747b8");
+    SET_C('B', "#4343bc");
+    SET_C('P', "#2323dc");
+    SET_C('D', "#2121de");
+    SET_C('E', "#0000ff");
 }
 
 static void addTurnAmino(QVector<QColor>& colorsPerChar) {
-    SET_C('N', "#ff0000"); 
-    SET_C('G', "#ff0000"); 
-    SET_C('P', "#f60909"); 
-    SET_C('B', "#f30c0c"); 
-    SET_C('D', "#e81717"); 
-    SET_C('S', "#e11e1e"); 
-    SET_C('C', "#a85757"); 
-    SET_C('Y', "#9d6262"); 
-    SET_C('K', "#7e8181"); 
-    SET_C('X', "#7c8383"); 
-    SET_C('Q', "#778888"); 
-    SET_C('W', "#738c8c"); 
-    SET_C('T', "#738c8c"); 
-    SET_C('R', "#708f8f"); 
-    SET_C('H', "#708f8f"); 
-    SET_C('Z', "#5ba4a4"); 
-    SET_C('E', "#3fc0c0"); 
-    SET_C('A', "#2cd3d3"); 
-    SET_C('F', "#1ee1e1"); 
-    SET_C('M', "#1ee1e1"); 
-    SET_C('L', "#1ce3e3"); 
-    SET_C('V', "#07f8f8"); 
-    SET_C('I', "#00ffff"); 
+    SET_C('N', "#ff0000");
+    SET_C('G', "#ff0000");
+    SET_C('P', "#f60909");
+    SET_C('B', "#f30c0c");
+    SET_C('D', "#e81717");
+    SET_C('S', "#e11e1e");
+    SET_C('C', "#a85757");
+    SET_C('Y', "#9d6262");
+    SET_C('K', "#7e8181");
+    SET_C('X', "#7c8383");
+    SET_C('Q', "#778888");
+    SET_C('W', "#738c8c");
+    SET_C('T', "#738c8c");
+    SET_C('R', "#708f8f");
+    SET_C('H', "#708f8f");
+    SET_C('Z', "#5ba4a4");
+    SET_C('E', "#3fc0c0");
+    SET_C('A', "#2cd3d3");
+    SET_C('F', "#1ee1e1");
+    SET_C('M', "#1ee1e1");
+    SET_C('L', "#1ce3e3");
+    SET_C('V', "#07f8f8");
+    SET_C('I', "#00ffff");
 }
 
 static void addBuriedAmino(QVector<QColor>& colorsPerChar) {
-    SET_C('C', "#0000ff"); 
-    SET_C('I', "#0054ab"); 
-    SET_C('V', "#005fa0"); 
-    SET_C('L', "#007b84"); 
-    SET_C('F', "#008778"); 
-    SET_C('M', "#009768"); 
-    SET_C('G', "#009d62"); 
-    SET_C('A', "#00a35c"); 
-    SET_C('W', "#00a857"); 
-    SET_C('X', "#00b649"); 
-    SET_C('S', "#00d52a"); 
-    SET_C('H', "#00d52a"); 
-    SET_C('T', "#00db24"); 
-    SET_C('P', "#00e01f"); 
-    SET_C('Y', "#00e619"); 
-    SET_C('N', "#00eb14"); 
-    SET_C('B', "#00eb14"); 
-    SET_C('D', "#00eb14"); 
-    SET_C('Q', "#00f10e"); 
-    SET_C('Z', "#00f10e"); 
-    SET_C('E', "#00f10e"); 
-    SET_C('R', "#00fc03"); 
-    SET_C('K', "#00ff00"); 
+    SET_C('C', "#0000ff");
+    SET_C('I', "#0054ab");
+    SET_C('V', "#005fa0");
+    SET_C('L', "#007b84");
+    SET_C('F', "#008778");
+    SET_C('M', "#009768");
+    SET_C('G', "#009d62");
+    SET_C('A', "#00a35c");
+    SET_C('W', "#00a857");
+    SET_C('X', "#00b649");
+    SET_C('S', "#00d52a");
+    SET_C('H', "#00d52a");
+    SET_C('T', "#00db24");
+    SET_C('P', "#00e01f");
+    SET_C('Y', "#00e619");
+    SET_C('N', "#00eb14");
+    SET_C('B', "#00eb14");
+    SET_C('D', "#00eb14");
+    SET_C('Q', "#00f10e");
+    SET_C('Z', "#00f10e");
+    SET_C('E', "#00f10e");
+    SET_C('R', "#00fc03");
+    SET_C('K', "#00ff00");
 }
 
 static void addJalviewNucl(QVector<QColor>& colorsPerChar) {
-    SET_C('A', "#64F73F"); 
-    SET_C('C', "#FFB340"); 
-    SET_C('G', "#EB413C"); 
-    SET_C('T', "#3C88EE"); 
-    SET_C('U', colorsPerChar['T'].lighter(105)); 
+    SET_C('A', "#64F73F");
+    SET_C('C', "#FFB340");
+    SET_C('G', "#EB413C");
+    SET_C('T', "#3C88EE");
+    SET_C('U', colorsPerChar['T'].lighter(105));
 }
 
 
-//SET_C('', "#"); 
+//SET_C('', "#");
 
 QString MSAColorScheme::EMPTY_NUCL      = "COLOR_SCHEME_EMPTY_NUCL";
 QString MSAColorScheme::UGENE_NUCL      = "COLOR_SCHEME_UGENE_NUCL";
@@ -737,23 +763,40 @@ QString MSAColorScheme::CUSTOM_AMINO      = "COLOR_SCHEME_CUSTOM_AMINO";
 
 
 void MSAColorSchemeRegistry::initCustomSchema(){
-    QVector<QColor> colorsPerChar;
-
     foreach(const CustomColorSchema& schema, ColorSchemaSettingsUtils::getSchemas()){
-        fillEmptyCS(colorsPerChar);
-        QMapIterator<char, QColor> it(schema.alpColors);
-        while(it.hasNext()){
-            it.next();
-            SET_C(it.key(), it.value());
-        }
-        addMSACustomColorSchemeFactory(new MSAColorSchemeCustomSettingsFactory(NULL, schema.name, schema.name, schema.type, colorsPerChar));
+        addCustomSchema(schema);
     }
 }
 
 void MSAColorSchemeRegistry::sl_onCustomSettingsChanged(){
-    deleteOldCustomFactories();
-    initCustomSchema();
-    emit si_customSettingsChanged(); 
+    QList<MSAColorSchemeFactory*> factoriesToRemove = customColorers;
+    foreach(const CustomColorSchema& schema, ColorSchemaSettingsUtils::getSchemas()){
+        bool factoryExist = false;
+        foreach (MSAColorSchemeFactory* factory, customColorers) {
+            MSAColorSchemeCustomSettingsFactory* customSchemaFactory = qobject_cast<MSAColorSchemeCustomSettingsFactory*>(factory);
+            SAFE_POINT(customSchemaFactory != NULL,
+                       "Failed to convert MSAColorSchemeFactory to MSAColorSchemeCustomSettingsFactory", );
+            if (customSchemaFactory->isEqualTo(schema)) {
+                factoryExist = true;
+                factoriesToRemove.removeOne(factory);
+                break;
+            }
+        }
+        if (factoryExist) {
+            // no need to delete the factory if it was not changed
+            continue;
+        }
+        else {
+            // new schema
+            addCustomSchema(schema);
+        }
+    }
+    foreach(MSAColorSchemeFactory* factory, factoriesToRemove) {
+        customColorers.removeOne(factory);
+        delete factory;
+    }
+
+    emit si_customSettingsChanged();
 }
 
 void MSAColorSchemeRegistry::initBuiltInSchemes() {
@@ -781,7 +824,7 @@ void MSAColorSchemeRegistry::initBuiltInSchemes() {
     fillLightColorsCS(colorsPerChar);
     addUGENEAmino(colorsPerChar);
     addMSAColorSchemeFactory(new MSAColorSchemeStaticFactory(this, MSAColorScheme::UGENE_AMINO, U2_APP_TITLE, DNAAlphabet_AMINO, colorsPerChar));
-    
+
     fillEmptyCS(colorsPerChar);
     addZappoAmino(colorsPerChar);
     addMSAColorSchemeFactory(new MSAColorSchemeStaticFactory(this, MSAColorScheme::ZAPPO_AMINO, tr("Zappo"), DNAAlphabet_AMINO, colorsPerChar));
@@ -812,8 +855,8 @@ void MSAColorSchemeRegistry::initBuiltInSchemes() {
 
     addMSAColorSchemeFactory(new MSAColorSchemePercIdentFactory(this, MSAColorScheme::IDENTPERC_AMINO, tr("Percentage Identity"), DNAAlphabet_AMINO));
     addMSAColorSchemeFactory(new MSAColorSchemePercIdentGrayscaleFactory(this, MSAColorScheme::IDENTPERC_AMINO_GRAY, tr("Percentage Identity (gray)"), DNAAlphabet_AMINO));
-    
-    addMSAColorSchemeFactory(new MSAColorSchemeClustalXFactory(this, MSAColorScheme::CLUSTALX_AMINO,  tr("Clustal X"), DNAAlphabet_AMINO));   
+
+    addMSAColorSchemeFactory(new MSAColorSchemeClustalXFactory(this, MSAColorScheme::CLUSTALX_AMINO,  tr("Clustal X"), DNAAlphabet_AMINO));
 
 }
 ////////////
@@ -883,9 +926,9 @@ MSAHighlightingScheme* MSAHighlightingSchemeGapsFactory::create( QObject* p, MAl
 
 //Schemes
 
-MSAHighlightingScheme::MSAHighlightingScheme( QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o ): 
+MSAHighlightingScheme::MSAHighlightingScheme( QObject* p, MSAHighlightingSchemeFactory* f, MAlignmentObject* o ):
     QObject(p), factory(f), maObj(o), useDots(false){
-    
+
 }
 
 void MSAHighlightingScheme::process( const char /*refChar*/, char &seqChar, bool &color ){
