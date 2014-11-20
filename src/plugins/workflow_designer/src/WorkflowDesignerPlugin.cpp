@@ -105,6 +105,7 @@ WorkflowDesignerPlugin::WorkflowDesignerPlugin()
     //}
     
     registerCMDLineHelp();
+    processCMDLineOptions();
     WorkflowEnv::getActorValidatorRegistry()->addValidator(DatasetsCountValidator::ID, new DatasetsCountValidator());
 
     CHECK(AppContext::getPluginSupport(), );
@@ -127,15 +128,18 @@ void WorkflowDesignerPlugin::processCMDLineOptions() {
         if (NULL != externalToolManager) {
             connect(externalToolManager, SIGNAL(si_startupChecksFinish()), new TaskStarter(t), SLOT(registerTask()));
         } else {
-            AppContext::getTaskScheduler()->registerTopLevelTask(t);
+            connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(t), SLOT(registerTask()));
         }
     }
     else{
         if( cmdlineReg->hasParameter(GalaxyConfigTask::GALAXY_CONFIG_OPTION) && consoleMode ) {
+            Task *t = NULL;
             const QString schemePath =  cmdlineReg->getParameterValue( GalaxyConfigTask::GALAXY_CONFIG_OPTION );
             const QString ugenePath = cmdlineReg->getParameterValue( GalaxyConfigTask::UGENE_PATH_OPTION );
             const QString galaxyPath = cmdlineReg->getParameterValue( GalaxyConfigTask::GALAXY_PATH_OPTION );
-            AppContext::getTaskScheduler()->registerTopLevelTask(new GalaxyConfigTask(schemePath, ugenePath, galaxyPath, QString()));
+            const QString destinationPath = NULL;
+            t = new GalaxyConfigTask( schemePath, ugenePath, galaxyPath, destinationPath );
+            connect(AppContext::getPluginSupport(), SIGNAL(si_allStartUpPluginsLoaded()), new TaskStarter(t), SLOT(registerTask()));
         }
     }
 }   
@@ -202,8 +206,6 @@ void WorkflowDesignerPlugin::sl_initWorkers() {
     Workflow::CoreLib::init();
     registerWorkflowTasks();
     Workflow::CoreLib::initIncludedWorkers();
-
-    processCMDLineOptions();
 }
 
 class CloseDesignerTask : public Task {
