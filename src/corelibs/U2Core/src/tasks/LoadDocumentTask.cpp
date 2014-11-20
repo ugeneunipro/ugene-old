@@ -142,13 +142,13 @@ Task::ReportResult LoadUnloadedDocumentTask::report() {
         res = ReportResult_CallMeAgain; //wait until project is unlocked
     } else {
         assert(unloadedDoc->isStateLocked()); // all unloaded docs are always state locked
-        
+
         //todo: move to utility method?
         const QList<StateLock*>& locks = unloadedDoc->getStateLocks();
         bool readyToLoad = true;
         foreach(StateLock* lock, locks) {
             if  (  lock != unloadedDoc->getDocumentModLock(DocumentModLock_IO)
-                && lock != unloadedDoc->getDocumentModLock(DocumentModLock_USER) 
+                && lock != unloadedDoc->getDocumentModLock(DocumentModLock_USER)
                 && lock != unloadedDoc->getDocumentModLock(DocumentModLock_FORMAT_AS_CLASS)
                 && lock != unloadedDoc->getDocumentModLock(DocumentModLock_FORMAT_AS_INSTANCE)
                 && lock != unloadedDoc->getDocumentModLock(DocumentModLock_UNLOADED_STATE))
@@ -212,7 +212,7 @@ Document* LoadUnloadedDocumentTask::getDocument(bool ) {
 // Load Document
 
 
-LoadDocumentTask::LoadDocumentTask(DocumentFormatId f, const GUrl& u, 
+LoadDocumentTask::LoadDocumentTask(DocumentFormatId f, const GUrl& u,
                                    IOAdapterFactory* i, const QVariantMap& map, const LoadDocumentTaskConfig& _config)
 : DocumentProviderTask("", TaskFlag_None), format(NULL), url(u), iof(i), hints(map), config(_config)
 {
@@ -222,7 +222,7 @@ LoadDocumentTask::LoadDocumentTask(DocumentFormatId f, const GUrl& u,
     init();
 }
 
-LoadDocumentTask::LoadDocumentTask(DocumentFormat* f, const GUrl& u, 
+LoadDocumentTask::LoadDocumentTask(DocumentFormat* f, const GUrl& u,
                                    IOAdapterFactory* i, const QVariantMap& map, const LoadDocumentTaskConfig& _config)
                                    : DocumentProviderTask("", TaskFlag_None), format(NULL), url(u), iof(i), hints(map), config(_config)
 {
@@ -234,7 +234,7 @@ LoadDocumentTask::LoadDocumentTask(DocumentFormat* f, const GUrl& u,
 
 static bool isLoadFromMultipleFiles(QVariantMap& hints){
     if(hints.value(ProjectLoaderHint_MultipleFilesMode_Flag, false).toBool() == true){ // if that document was/is collected from different files
-        if(!QFile::exists(hints[ProjectLoaderHint_MultipleFilesMode_Flag].toString())){// if not exist - load as collected 
+        if(!QFile::exists(hints[ProjectLoaderHint_MultipleFilesMode_Flag].toString())){// if not exist - load as collected
             return true;
         }
         hints.remove(ProjectLoaderHint_MultipleFilesMode_Flag); // if exist - remove hints indicated that document is collected . Now document is genbank or clustalw
@@ -316,14 +316,14 @@ void LoadDocumentTask::prepare() {
     if(hasError() || isCanceled()) {
         return;
     }
-    
+
     int memUseMB = calculateMemory();
     if (memUseMB > 0) {
         addTaskResource(TaskResourceUsage(RESOURCE_MEMORY, memUseMB, false));
     }
 }
 
-static QList<Document*> loadMulti(IOAdapterFactory* iof, const QVariantMap& fs, U2OpStatus& os){
+static QList<Document*> loadMulti(const QVariantMap& fs, U2OpStatus& os){
     QList<Document*> docs;
 
     os.setProgress(0);
@@ -335,7 +335,7 @@ static QList<Document*> loadMulti(IOAdapterFactory* iof, const QVariantMap& fs, 
         FormatDetectionConfig conf;
         conf.useImporters = true;
         conf.bestMatchesOnly = false;
-        GUrl gurl(url); 
+        GUrl gurl(url);
         QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(gurl, conf);
         CHECK_OPERATION(!formats.isEmpty(), continue);
 
@@ -346,8 +346,13 @@ static QList<Document*> loadMulti(IOAdapterFactory* iof, const QVariantMap& fs, 
         QVariantMap fsLocal;
         fsLocal.unite(fs);
         fsLocal.remove(DocumentReadingMode_SequenceMergeGapSize);
+        SAFE_POINT(AppContext::getDocumentFormatRegistry() != NULL, "DocumentFormatRegistry is NULL", docs);
         DocumentFormat* df = AppContext::getDocumentFormatRegistry()->getFormatById(formats[0].format->getFormatId());
-        docs << df->loadDocument(iof ,gurl, fsLocal, localOs);
+        SAFE_POINT(AppContext::getIOAdapterRegistry() != NULL, "IOAdapterRegistry is NULL", docs);
+        IOAdapterFactory *factory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById( IOAdapterUtils::url2io(gurl) );
+        SAFE_POINT(factory != NULL, "IOAdapterFactory is NULL", docs);
+        docs << df->loadDocument(factory, gurl, fsLocal, localOs);
+
         CHECK_OP(os, docs);
         curentDocIdx++;
     }
@@ -373,14 +378,14 @@ void loadHintsNewDocument(bool saveDoc, IOAdapterFactory* iof, Document* doc, U2
 }
 
 static Document* loadFromMultipleFiles(IOAdapterFactory* iof, QVariantMap& fs, U2OpStatus& os){
-    QList<Document*> docs = loadMulti(iof, fs, os);
+    QList<Document*> docs = loadMulti(fs, os);
     if(os.isCoR()){
         foreach(Document* doc, docs){
             delete doc;
         }
         return NULL;
     }
-   
+
     Document* doc = NULL;
     QString newStringUrl = fs[ProjectLoaderHint_MultipleFilesMode_URLDocument].toString();
     GUrl newUrl(newStringUrl, GUrl_File);
@@ -395,7 +400,7 @@ static Document* loadFromMultipleFiles(IOAdapterFactory* iof, QVariantMap& fs, U
     else if(fs.value(DocumentReadingMode_SequenceAsAlignmentHint).toBool()){
         newObjects << MSAUtils::seqDocs2msaObj(docs, fs, os);
         ref = U2DbiRef();
-    }    
+    }
     else{
         os.setError("Multiple files reading mode: unsupported flags");
     }
@@ -418,7 +423,7 @@ void LoadDocumentTask::run() {
         CHECK_EXT(iof->isIOModeSupported(IOAdapterMode_Write), setError(tr("Document not found %1").arg(url.getURLString())), );
         resultDocument = format->createNewLoadedDocument(iof, url, stateInfo, hints);
         return;
-    } 
+    }
 
     QStringList renameList = hints.value(GObjectHint_NamesList).toStringList();
     // removing this value from hints -> name list changes are not tracked in runtime
@@ -431,7 +436,7 @@ void LoadDocumentTask::run() {
         }
         else{
             resultDocument = format->loadDocument(iof, url, hints, stateInfo);
-        }             
+        }
     }
     catch(std::bad_alloc) {
         resultDocument = NULL;
@@ -528,7 +533,7 @@ void LoadDocumentTask::renameObjects(Document* doc, const QStringList& names) {
         coreLog.trace(QString("Objects renaming failed! Objects in doc: %1, names: %2").arg(doc->getObjects().size()).arg(names.size()));
         return;
     }
-    
+
     //drop names first
     QSet<QString> usedNames;
     QSet<GObject*> notRenamedObjects;
