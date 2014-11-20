@@ -9499,6 +9499,17 @@ GUI_TEST_CLASS_DEFINITION(test_3613) {
 
     GTUtilsLog::check(os, l);
 }
+GUI_TEST_CLASS_DEFINITION(test_3623) {
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "AAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    GTUtilsOptionPanelSequenceView::toggleSaveAnnotationsTo(os);
+    GTUtilsOptionPanelSequenceView::enterFilepathForSavingAnnotations(os, sandBoxDir + "op_seqview_test_0001.gb");
+    GTUtilsOptionPanelSequenceView::clickGetAnnotation(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::isPrevNextEnabled(os), "Next and prev buttons are disabled");
+}
 
 GUI_TEST_CLASS_DEFINITION(test_3629) {
 //    1. Open "data/samples/FASTA/human_T1.fa".
