@@ -61,7 +61,7 @@ RangeSelector::RangeSelector(QWidget* p, int s, int e)
     init();
     
     QToolButton* goButton = new QToolButton(this);
-    goButton->setText(tr("Ok"));
+    goButton->setText(tr("OK"));
     connect(goButton, SIGNAL(clicked(bool)), SLOT(sl_onGoButtonClicked(bool)));
 
     layout()->addWidget(goButton);
@@ -150,7 +150,7 @@ RangeSelector::RangeSelector(QDialog* d, int s, int e, int _len, bool a)
     init();
 
     QPushButton* okButton = new QPushButton(this);
-    okButton->setText(tr("Ok"));
+    okButton->setText(tr("OK"));
     okButton->setDefault(true);
     okButton->setObjectName("ok_button");
     connect(okButton, SIGNAL(clicked(bool)), SLOT(sl_onGoButtonClicked(bool)));

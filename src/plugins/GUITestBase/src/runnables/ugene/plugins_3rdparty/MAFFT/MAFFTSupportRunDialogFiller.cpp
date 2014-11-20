@@ -18,7 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  */
- 
+
+#include <QApplication>
+#include <QGroupBox>
+#include <QComboBox>
+
 #include "MAFFTSupportRunDialogFiller.h"
 #include "api/GTWidget.h"
 #include "api/GTSpinBox.h"
@@ -27,9 +31,6 @@
 #include "api/GTLineEdit.h"
 #include "api/GTComboBox.h"
 #include "api/GTRadioButton.h"
-#include <QtGui/QApplication>
-#include <QtGui/QGroupBox>
-#include <QtGui/QComboBox>
 
 namespace U2 {
 

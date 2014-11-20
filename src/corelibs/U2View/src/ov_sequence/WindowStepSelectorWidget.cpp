@@ -154,7 +154,7 @@ WindowStepSelectorDialog::WindowStepSelectorDialog(QWidget* p, const U2Region& w
     QHBoxLayout* buttonsLayout = new QHBoxLayout();
     buttonsLayout->addStretch(10);
     QPushButton* cancelButton = new QPushButton(tr("Cancel"), this);
-    QPushButton* okButton = new QPushButton(tr("Ok"), this);
+    QPushButton* okButton = new QPushButton(tr("OK"), this);
     buttonsLayout->addWidget(okButton);
     buttonsLayout->addWidget(cancelButton);
 

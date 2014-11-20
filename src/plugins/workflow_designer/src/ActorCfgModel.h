@@ -80,7 +80,8 @@ private:
     void setupAttributesScripts();
     bool canSetData(Attribute *attr, const QVariant &value);
 
-    QMap<Attribute *, bool> getAttributeRelatedVisibility(Attribute *changedAttr) const;
+    QMap<Attribute *, bool> getAttributeRelatedVisibility(Attribute *changedAttr,
+        const QMap<Attribute *, bool> &foundRelatedAttrs = QMap<Attribute *, bool>()) const;
     void checkIfAttributeVisibilityChanged(const QMap<Attribute *, bool> &attributeVisibility);
 
 private:

@@ -346,6 +346,8 @@ bool ActorCfgModel::canSetData(Attribute *attr, const QVariant &value) {
     return rfs->canAdd(value.toString(), dir);
 }
 
+namespace {
+
 DelegateTags * getTags(Actor *subject, const QString &attrId) {
     ConfigurationEditor *editor = subject->getEditor();
     CHECK(NULL != editor, NULL);
@@ -354,14 +356,16 @@ DelegateTags * getTags(Actor *subject, const QString &attrId) {
     return delegate->tags();
 }
 
-QMap<Attribute *, bool> ActorCfgModel::getAttributeRelatedVisibility(Attribute *changedAttr) const {
-    QMap<Attribute *, bool> relatedAttributesVisibility;
+}
+
+QMap<Attribute *, bool> ActorCfgModel::getAttributeRelatedVisibility(Attribute *changedAttr, const QMap<Attribute *, bool> &foundRelatedAttrs) const {
+    QMap<Attribute *, bool> relatedAttributesVisibility = foundRelatedAttrs;
     foreach (Attribute *a, attrs) {
-        if (a != changedAttr) {
+        if (a != changedAttr && !relatedAttributesVisibility.contains(a)) {
             foreach (const AttributeRelation *rel, a->getRelations()) {
                 if (rel->getRelatedAttrId() == changedAttr->getId()) {
                     relatedAttributesVisibility.insert(a, isVisible(a));
-                    const QMap<Attribute *, bool> dependentAttributeVisibility = getAttributeRelatedVisibility(a);
+                    const QMap<Attribute *, bool> dependentAttributeVisibility = getAttributeRelatedVisibility(a, relatedAttributesVisibility);
                     foreach (Attribute *dependentAttr, dependentAttributeVisibility.keys()) {
                         relatedAttributesVisibility[dependentAttr] = dependentAttributeVisibility[dependentAttr];
                     }

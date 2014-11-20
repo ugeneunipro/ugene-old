@@ -162,7 +162,7 @@ void Notification::mousePressEvent(QMouseEvent *ev) {
             QPushButton ok;
             QCheckBox isDelete;
 
-            ok.setText("Ok");
+            ok.setText(tr("OK"));
             isDelete.setText(tr("Remove notification after closing"));
             isDelete.setChecked(true);
             connect(&ok, SIGNAL(clicked()), &dlg, SLOT(accept()));

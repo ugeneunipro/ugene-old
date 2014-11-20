@@ -625,7 +625,7 @@ void StingListEdit::sl_onExpand()
     QDialog editor(0);
     editor.setWindowTitle(StringListDelegate::tr("Enter items"));
 
-    QPushButton *accept = new QPushButton(StringListDelegate::tr("Ok"), &editor);
+    QPushButton *accept = new QPushButton(StringListDelegate::tr("OK"), &editor);
     connect(accept, SIGNAL(clicked()), &editor, SLOT(accept()));
     QPushButton *reject = new QPushButton(StringListDelegate::tr("Cancel"), &editor);
     connect(reject, SIGNAL(clicked()), &editor, SLOT(reject()));
