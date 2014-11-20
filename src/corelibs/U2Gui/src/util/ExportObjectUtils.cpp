@@ -159,7 +159,9 @@ Task * ExportObjectUtils::saveAnnotationsTask(const QString &filepath, const Doc
     CHECK_EXT( NULL != df,
         coreLog.error( QObject::tr( "Unknown document format I/O factory: " ) + format ), NULL );
     U2OpStatus2Log os;
-    Document *doc = df->createNewLoadedDocument( iof, filepath, os );
+    QVariantMap hints;
+    hints.insert(DocumentReadingMode_DontMakeUniqueNames, QVariant(true));
+    Document *doc = df->createNewLoadedDocument( iof, filepath, os, hints);
     CHECK_OP( os, NULL );
 
     // object and annotations will be deleted when savedoc task will delete doc
