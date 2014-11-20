@@ -4226,7 +4226,30 @@ GUI_TEST_CLASS_DEFINITION(test_2402) {
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Well done!"));
     GTWidget::click( os,GTAction::button( os,"Validate workflow" ) );
 }
-
+GUI_TEST_CLASS_DEFINITION( test_2404 ) {
+/*  1. Open human_T1.fa
+    2. Open Search in sequence OP tab
+    3. Input "AAAAA" pattern to the Search for: field
+    4. Expand all available parameters
+    5. Resize the main UGENE window
+    Expected: scrollbar appears
+    Current: layout breaks
+*/
+    GTFileDialog::openFile( os, dataDir + "samples/FASTA/", "human_T1.fa" );
+    GTGlobals::sleep(500);
+    GTUtilsOptionsPanel::runFindPatternWithHotKey("AAAAA", os);
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search algorithm"));
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Other settings"));
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Save annotation(s) to"));
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Annotation parameters"));
+    QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    mw->resize(800,600);
+    QScrollArea* sa = qobject_cast<QScrollArea*>(GTWidget::findWidget( os, "OP_SCROLL_AREA" ));
+    QScrollBar* scroll = sa->verticalScrollBar();
+    CHECK_SET_ERR( scroll != NULL, "Scroll bar is NULL");
+    CHECK_SET_ERR( !scroll->isVisible(), "Scroll bar is visible!");
+}
 GUI_TEST_CLASS_DEFINITION(test_2403) {
     //1. Open "human_T1.fa".
     //    2. Resize the main UGENE window that not all buttons will be visible on the sequence toolbar.
