@@ -60,6 +60,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2View/ov_assembly/ExportCoverageDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2View/ov_msa/ExportHighlightedDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.h \
             src/runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h \
@@ -292,6 +293,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2View/ov_assembly/ExportCoverageDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2View/ov_msa/ExportHighlightedDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.cpp \

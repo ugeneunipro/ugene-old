@@ -91,6 +91,7 @@
 #include "runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/ExportHighlightedDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/utils_smith_waterman/SmithWatermanDialogBaseFiller.h"
@@ -4495,6 +4496,29 @@ GUI_TEST_CLASS_DEFINITION( test_2449 ) {
     }
 
     CHECK_SET_ERR(0 < sizeSpinBox->value(), "Invalid size spin box bound");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2459) {
+//    1. Open "COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+//    2. Set any reference sequence.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Set this sequence as reference"));
+    GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton, QPoint(10, 10));
+
+//    3. Open context menu, open the "Highlighting" submenu, set the "Agreements" type.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Highlighting" << "Agreements"));
+    GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
+
+//    4. Open context menu again, open the "Export" submenu, choose the "Export highlighted" menu item.
+//    Expected state: the "Export highlighted to file" dialog appears.
+
+//    5. Set any valid filename, other settings should be default. Click "Export".
+//    Expected state: exporting successfully completes, UGENE doesn't crash.
+//    Current state: UGENE crashes.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Export highlighted"));
+    GTUtilsDialog::waitForDialog(os, new ExportHighlightedDialogFiller(os, sandBoxDir + "test_2459.txt"));
+    GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_2460 ) {
