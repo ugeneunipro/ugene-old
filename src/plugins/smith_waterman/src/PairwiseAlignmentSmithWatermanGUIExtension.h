@@ -49,9 +49,11 @@ public:
     PairwiseAlignmentSmithWatermanMainWidget(QWidget* parent, QVariantMap* s);
     virtual ~PairwiseAlignmentSmithWatermanMainWidget();
     virtual QVariantMap getPairwiseAlignmentCustomSettings(bool append);
+    virtual void updateWidget();
 
 private:
     void initParameters();
+    void addScoredMatrixes();
     virtual void fillInnerSettings();
 
 protected:

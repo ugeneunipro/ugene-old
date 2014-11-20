@@ -56,13 +56,14 @@
 
 namespace U2 {
 
-class PairwiseAlignmentMainWidget;
-class PairwiseAlignmentTaskSettings;
 class MAlignment;
 class MAlignmentModInfo;
-class MSAEditor;
-class ShowHideSubgroupWidget;
 class MSADistanceAlgorithm;
+class MSAEditor;
+class PairwiseAlignmentAlgorithm;
+class PairwiseAlignmentMainWidget;
+class PairwiseAlignmentTaskSettings;
+class ShowHideSubgroupWidget;
 
 class U2VIEW_EXPORT PairAlign : public QWidget, public Ui_PairwiseAlignmentOptionsPanelWidget {
     Q_OBJECT
@@ -78,6 +79,7 @@ private:
     void checkState();
     void updatePercentOfSimilarity();
     bool checkSequenceNames();
+    PairwiseAlignmentAlgorithm* getAlgorithmById(const QString& algorithmId);
 
 private slots:
     void sl_algorithmSelected(const QString& algorithmName);
@@ -91,6 +93,7 @@ private slots:
     void sl_alignComplete();
     void sl_selectorTextChanged();
     void sl_checkState();
+    void sl_alignmentChanged();
 
 private:
     MSAEditor* msa;

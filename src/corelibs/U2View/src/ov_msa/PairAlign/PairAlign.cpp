@@ -162,10 +162,28 @@ void PairAlign::connectSignals() {
     connect(firstSeqSelectorWC,         SIGNAL(si_selectionChanged()),         SLOT(sl_selectorTextChanged()));
     connect(secondSeqSelectorWC,        SIGNAL(si_selectionChanged()),         SLOT(sl_selectorTextChanged()));
     connect(msa->getMSAObject(),        SIGNAL(si_lockedStateChanged()),       SLOT(sl_checkState()));
+    connect(msa->getMSAObject(),        SIGNAL(si_alignmentChanged(const MAlignment&, const MAlignmentModInfo&)), SLOT(sl_alignmentChanged()));
 }
 
 void PairAlign::sl_checkState(){
     checkState();
+}
+
+void PairAlign::sl_alignmentChanged() {
+    const DNAAlphabet* dnaAlphabet = msa->getMSAObject()->getAlphabet();
+    SAFE_POINT(NULL != dnaAlphabet, "Alignment alphabet is not defined.", );
+    if(dnaAlphabet->getId() != pairwiseAlignmentWidgetsSettings->customSettings.value(PairwiseAlignmentTaskSettings::PA_ALPHABET, "").toString()) {
+        pairwiseAlignmentWidgetsSettings->customSettings.insert("alphabet", dnaAlphabet->getId());
+
+        QString curAlgorithmId = pairwiseAlignmentWidgetsSettings->algorithmName;
+        PairwiseAlignmentAlgorithm* alg = getAlgorithmById(curAlgorithmId);
+        SAFE_POINT(NULL != alg, QString("Algorithm %1 not found.").arg(curAlgorithmId), );
+        alphabetIsOk = alg->checkAlphabet(dnaAlphabet);
+
+        if(NULL != settingsWidget) {
+            settingsWidget->updateWidget();
+        }
+    }
 }
 
 void PairAlign::checkState() {
@@ -239,15 +257,19 @@ bool PairAlign::checkSequenceNames( ) {
         && rowIds.contains( secondSeqSelectorWC->sequenceId( ) ) );
 }
 
+PairwiseAlignmentAlgorithm* PairAlign::getAlgorithmById(const QString& algorithmId) {
+    PairwiseAlignmentRegistry* par = AppContext::getPairwiseAlignmentRegistry();
+    SAFE_POINT(NULL != par, "PairwiseAlignmentRegistry is NULL.", NULL);
+    return par->getAlgorithm(algorithmId);
+}
+
 void PairAlign::sl_algorithmSelected(const QString& algorithmName) {
     if (settingsWidget != NULL) {
         delete settingsWidget;
         settingsWidget = NULL;
     }
 
-    PairwiseAlignmentRegistry* par = AppContext::getPairwiseAlignmentRegistry();
-    SAFE_POINT(NULL != par, "PairwiseAlignmentRegistry is NULL.", );
-    PairwiseAlignmentAlgorithm* alg = par->getAlgorithm(algorithmName);
+    PairwiseAlignmentAlgorithm* alg = getAlgorithmById(algorithmName);
     SAFE_POINT(NULL != alg, QString("Algorithm %1 not found.").arg(algorithmName), );
     QString firstAlgorithmRealization = alg->getRealizationsList().first();
     alphabetIsOk = alg->checkAlphabet(msa->getMSAObject()->getAlphabet());

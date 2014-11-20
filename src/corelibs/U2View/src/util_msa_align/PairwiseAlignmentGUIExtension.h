@@ -55,6 +55,8 @@ public:
 
     virtual QVariantMap getPairwiseAlignmentCustomSettings(bool append);
 
+    virtual void updateWidget(){}
+
 public slots:
     void sl_externSettingsInvalide();
 
