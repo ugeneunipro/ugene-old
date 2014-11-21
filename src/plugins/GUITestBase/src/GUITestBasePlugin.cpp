@@ -1607,6 +1607,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0002);
     REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0003);
     REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0004);
+    REGISTER_TEST(GUITest_common_scenarios_primer_library::test_0005);
 }
 
 void GUITestBasePlugin::registerAdditionalChecks(GUITestBase *guiTestBase) {

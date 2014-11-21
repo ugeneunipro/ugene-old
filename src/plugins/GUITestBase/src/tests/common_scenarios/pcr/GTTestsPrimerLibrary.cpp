@@ -25,6 +25,7 @@
 #include "GTUtilsMdi.h"
 #include "GTUtilsPcr.h"
 #include "GTUtilsPrimerLibrary.h"
+#include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
 #include "api/GTMouseDriver.h"
 #include "runnables/ugene/plugins/pcr/AddPrimerDialogFiller.h"
@@ -179,6 +180,63 @@ GUI_TEST_CLASS_DEFINITION(test_0004) {
     //Expected: the dialog is closed, the chosen primer sequence is in the forward primer line edit.
     QLineEdit *primerEdit = GTWidget::findExactWidget<QLineEdit*>(os, "primerEdit", GTUtilsPcr::primerBox(os, U2Strand::Direct));
     CHECK_SET_ERR(primerEdit->text() == "AAAAAAAAAAAAAA", "Wrong primer");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0005) {
+    //Edit primer:
+    //    Availability of the button
+
+    //1. Click the menu Tools -> Primer -> Primer Library.
+    GTUtilsPrimerLibrary::openLibrary(os);
+
+    //2. Add a new primer if the library is empty.
+    for (int i=0; i<3; i++) {
+        AddPrimerDialogFiller::Parameters parameters;
+        parameters.primer = "AAAAAAAAAAAAAA";
+        GTUtilsDialog::waitForDialog(os, new AddPrimerDialogFiller(os, parameters));
+        GTUtilsPrimerLibrary::clickButton(os, GTUtilsPrimerLibrary::Add);
+    }
+    int lastPrimer = GTUtilsPrimerLibrary::librarySize(os) - 1;
+
+    //3. Click the empty place of the table.
+    QPoint emptyPoint = GTUtilsPrimerLibrary::getPrimerPoint(os, lastPrimer);
+    emptyPoint.setY(emptyPoint.y() + 40);
+    GTMouseDriver::moveTo(os, emptyPoint);
+    GTMouseDriver::click(os);
+
+    //Expected: The edit button is disabled.
+    QAbstractButton *editButton = GTUtilsPrimerLibrary::getButton(os, GTUtilsPrimerLibrary::Edit);
+    CHECK_SET_ERR(!editButton->isEnabled(), "The remove button is enabled");
+
+    //4. Select several primers.
+    GTMouseDriver::moveTo(os, GTUtilsPrimerLibrary::getPrimerPoint(os, lastPrimer));
+    GTMouseDriver::click(os);
+    GTMouseDriver::moveTo(os, GTUtilsPrimerLibrary::getPrimerPoint(os, lastPrimer - 2));
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    GTMouseDriver::click(os);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+
+    //Expected: The edit button is disabled.
+    CHECK_SET_ERR(!editButton->isEnabled(), "The remove button is enabled");
+
+    //5. Select the primer P.
+    GTMouseDriver::moveTo(os, GTUtilsPrimerLibrary::getPrimerPoint(os, lastPrimer));
+    GTMouseDriver::click(os);
+
+    //Expected: The edit button is enabled.
+    CHECK_SET_ERR(editButton->isEnabled(), "The remove button is disabled");
+
+    //6. Double click the primer P.
+    //Expected: the dialog appears. The P's data is written.
+    //7. Edit primer and name and click OK.
+    AddPrimerDialogFiller::Parameters parameters;
+    parameters.primer = "CCCCCCCCCCCCCC";
+    parameters.name = "test_0005";
+    GTUtilsDialog::waitForDialog(os, new AddPrimerDialogFiller(os, parameters));
+    GTMouseDriver::doubleClick(os);
+
+    //Expected: the primer is changed in the table.
+    CHECK_SET_ERR("CCCCCCCCCCCCCC" == GTUtilsPrimerLibrary::getPrimerSequence(os, lastPrimer), "The sequence is not changed");
 }
 
 } // GUITest_common_scenarios_primer_library

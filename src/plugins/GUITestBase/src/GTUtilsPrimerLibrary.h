@@ -31,7 +31,7 @@ namespace U2 {
 
 class GTUtilsPrimerLibrary {
 public:
-    enum Button {Add, Remove, Close};
+    enum Button {Add, Edit, Remove, Close};
     static QWidget * openLibrary(U2OpStatus &os);
     static void clickButton(U2OpStatus &os, Button button);
     static QAbstractButton * getButton(U2OpStatus &os, Button button);

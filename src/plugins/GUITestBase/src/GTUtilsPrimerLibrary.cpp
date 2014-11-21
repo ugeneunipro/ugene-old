@@ -48,10 +48,12 @@ QAbstractButton * GTUtilsPrimerLibrary::getButton(U2OpStatus &os, Button button)
     switch (button) {
         case Add:
             return box->buttons()[1];
+        case Edit:
+            return box->buttons()[2];
         case Close:
             return box->button(QDialogButtonBox::Close);
         case Remove:
-            return box->buttons()[2];
+            return box->buttons()[3];
         default:
             return NULL;
     }
