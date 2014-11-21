@@ -1,6 +1,6 @@
 include (pcr.pri)
 
-HEADERS += src/AddPrimerDialog.h \
+HEADERS += src/EditPrimerDialog.h \
            src/ExtractProductTask.h \
            src/InSilicoPcrOPWidgetFactory.h \
            src/InSilicoPcrOptionPanelWidget.h \
@@ -19,14 +19,14 @@ HEADERS += src/AddPrimerDialog.h \
            src/PrimerStatistics.h \
            src/PrimersDetailsDialog.h
 
-FORMS += src/ui/AddPrimerDialog.ui \
+FORMS += src/ui/EditPrimerDialog.ui \
          src/ui/InSilicoPcrOptionPanelWidget.ui \
          src/ui/PrimerGroupBox.ui \
          src/ui/PrimerLibrarySelector.ui \
          src/ui/PrimerLibraryWidget.ui \
          src/ui/PrimersDetailsDialog.ui
 
-SOURCES += src/AddPrimerDialog.cpp \
+SOURCES += src/EditPrimerDialog.cpp \
            src/ExtractProductTask.cpp \
            src/InSilicoPcrOPWidgetFactory.cpp \
            src/InSilicoPcrOptionPanelWidget.cpp \
@@ -44,8 +44,6 @@ SOURCES += src/AddPrimerDialog.cpp \
            src/PrimerLineEdit.cpp \
            src/PrimerStatistics.cpp \
            src/PrimersDetailsDialog.cpp
-
-RESOURCES += pcr.qrc
 
 TRANSLATIONS += transl/czech.ts \
                 transl/english.ts \

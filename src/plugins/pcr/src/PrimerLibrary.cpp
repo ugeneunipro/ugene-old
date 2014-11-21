@@ -119,6 +119,16 @@ void PrimerLibrary::addPrimer(Primer &primer, U2OpStatus &os) {
     primer.id = record.getRecordId();
 }
 
+void PrimerLibrary::updatePrimer(const Primer &primer, U2OpStatus &os) {
+    QList<UdrValue> values;
+    values << UdrValue(primer.name);
+    values << UdrValue(primer.sequence);
+    values << UdrValue(primer.gc);
+    values << UdrValue(primer.tm);
+    UdrRecordId recordId(PRIMER_UDR_ID, primer.id);
+    udrDbi->updateRecord(recordId, values, os);
+}
+
 QList<Primer> PrimerLibrary::getPrimers(U2OpStatus &os) const {
     QList<Primer> result;
 

@@ -33,6 +33,7 @@ public:
     MysqlUdrDbi(MysqlDbi *dbi);
 
     UdrRecordId addRecord(const UdrSchemaId &schemaId, const QList<UdrValue> &data, U2OpStatus &os);
+    void updateRecord(const UdrRecordId &recordId, const QList<UdrValue> &data, U2OpStatus &os);
     UdrRecord getRecord(const UdrRecordId &recordId, U2OpStatus &os);
     void createObject(const UdrSchemaId &schemaId, U2Object &udrObject, const QString &folder, U2OpStatus &os);
     QList<UdrRecord> getObjectRecords(const UdrSchemaId &schemaId, const U2DataId &objectId, U2OpStatus &os);
@@ -51,6 +52,7 @@ private:
     /* Utilities */
     static const UdrSchema * udrSchema(const UdrSchemaId &schemaId, U2OpStatus &os);
     static QString insertDef(const UdrSchema *schema, U2OpStatus &os);
+    static QString updateDef(const UdrSchema *schema, U2OpStatus &os);
     static QString selectAllDef(const UdrSchema *schema, U2OpStatus &os);
     static QString selectDef(const UdrSchema *schema, U2OpStatus &os);
     static QString tableStartDef(const UdrSchemaId &schemaId);

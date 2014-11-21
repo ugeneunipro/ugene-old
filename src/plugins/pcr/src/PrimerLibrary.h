@@ -43,6 +43,7 @@ public:
     static void release();
 
     void addPrimer(Primer &primer, U2OpStatus &os);
+    void updatePrimer(const Primer &primer, U2OpStatus &os);
     QList<Primer> getPrimers(U2OpStatus &os) const;
     void removePrimer(const Primer &primer, U2OpStatus &os);
 

@@ -61,6 +61,22 @@ UdrRecordId SQLiteUdrDbi::addRecord(const UdrSchemaId &schemaId, const QList<Udr
     return UdrRecordId(schemaId, recordId);
 }
 
+void SQLiteUdrDbi::updateRecord(const UdrRecordId &recordId, const QList<UdrValue> &data, U2OpStatus &os) {
+    const UdrSchema *schema = udrSchema(recordId.getSchemaId(), os);
+    CHECK_OP(os, );
+    CHECK_EXT(data.size() == schema->size(), os.setError("Size mismatch"), );
+
+    SQLiteQuery q(updateDef(schema, os), db, os);
+    CHECK_OP(os, );
+
+    bindData(data, schema, q, os);
+    CHECK_OP(os, );
+
+    q.bindDataId(schema->size() + 1, recordId.getRecordId());
+
+    q.update();
+}
+
 UdrRecord SQLiteUdrDbi::getRecord(const UdrRecordId &recordId, U2OpStatus &os) {
     UdrRecord result(recordId, QList<UdrValue>(), os);
     const UdrSchema *schema = udrSchema(recordId.getSchemaId(), os);
@@ -237,6 +253,19 @@ QString SQLiteUdrDbi::insertDef(const UdrSchema *schema, U2OpStatus &os) {
     return "INSERT INTO " + tableName(schema->getId())
         + "(" + UdrSchema::fieldNames(schema, os).join(", ") + ") "
         + "VALUES(" + nums.join(", ") + ")";
+}
+
+QString SQLiteUdrDbi::updateDef(const UdrSchema *schema, U2OpStatus &os) {
+    QStringList assignments;
+    for (int i=0; i<schema->size(); i++) {
+        UdrSchema::FieldDesc field = schema->getField(i, os);
+        CHECK_OP(os, "");
+        assignments << QString("%1 = ?%2").arg(field.getName().constData()).arg(i+1);
+    }
+
+    return "UPDATE " + tableName(schema->getId())
+        + " SET " + assignments.join(", ")
+        + " WHERE " + UdrSchema::RECORD_ID_FIELD_NAME + QString(" = ?%1").arg(schema->size() + 1);
 }
 
 QString SQLiteUdrDbi::selectAllDef(const UdrSchema *schema, U2OpStatus &os) {

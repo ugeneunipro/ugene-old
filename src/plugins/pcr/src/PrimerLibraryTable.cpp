@@ -117,6 +117,21 @@ void PrimerLibraryModel::addPrimer(Primer &primer, U2OpStatus &os) {
     endInsertRows();
 }
 
+void PrimerLibraryModel::updatePrimer(Primer &primer, U2OpStatus &os) {
+    PrimerLibrary *primerLibrary = PrimerLibrary::getInstance(os);
+    CHECK_OP(os, );
+
+    // Append statistics
+    PrimerStatisticsCalculator calc(primer.sequence.toLocal8Bit());
+    primer.gc = calc.getGC();
+    primer.tm = calc.getTm();
+
+    primerLibrary->updatePrimer(primer, os);
+    CHECK_OP(os, );
+
+    onPrimerChanged(primer);
+}
+
 void PrimerLibraryModel::removePrimer(const QModelIndex &index, U2OpStatus &os) {
     PrimerLibrary *primerLibrary = PrimerLibrary::getInstance(os);
     CHECK_OP(os, );
@@ -144,6 +159,27 @@ QVariant PrimerLibraryModel::displayData(const QModelIndex &index) const {
         default:
             return QVariant();
     }
+}
+
+int PrimerLibraryModel::getRow(const U2DataId &primerId) const {
+    int row = 0;
+    foreach (const Primer &primer, primers) {
+        if (primer.id == primerId) {
+            return row;
+        }
+        row++;
+    }
+    return -1;
+}
+
+void PrimerLibraryModel::onPrimerChanged(const Primer &newPrimer) {
+    int row = getRow(newPrimer.id);
+    CHECK(row >= 0, );
+
+    primers.replace(row, newPrimer);
+    QModelIndex leftIndex = index(row, 0, QModelIndex());
+    QModelIndex rightIndex = index(row, columnCount(QModelIndex()) - 1, QModelIndex());
+    emit dataChanged(leftIndex, rightIndex);
 }
 
 /************************************************************************/
@@ -176,6 +212,10 @@ QList<Primer> PrimerLibraryTable::getSelection() const {
 
 void PrimerLibraryTable::addPrimer(Primer &primer, U2OpStatus &os) {
     model->addPrimer(primer, os);
+}
+
+void PrimerLibraryTable::updatePrimer(Primer &primer, U2OpStatus &os) {
+    model->updatePrimer(primer, os);
 }
 
 void PrimerLibraryTable::removePrimer(const QModelIndex &index, U2OpStatus &os) {

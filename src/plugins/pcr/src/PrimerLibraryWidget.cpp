@@ -26,7 +26,7 @@
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 
-#include "AddPrimerDialog.h"
+#include "EditPrimerDialog.h"
 #include "PrimerLibraryTable.h"
 
 #include "PrimerLibraryWidget.h"
@@ -40,29 +40,48 @@
 namespace U2 {
 
 PrimerLibraryWidget::PrimerLibraryWidget(QWidget *parent)
-: QWidget(parent), removePrimersButton(NULL)
+: QWidget(parent), editPrimerButton(NULL), removePrimersButton(NULL)
 {
     setupUi(this);
     QPushButton *newPrimerButton = buttonBox->addButton(tr("New primer"), QDialogButtonBox::ActionRole);
     connect(newPrimerButton, SIGNAL(clicked()), SLOT(sl_newPrimer()));
+
+    editPrimerButton = buttonBox->addButton(tr("Edit primer"), QDialogButtonBox::ActionRole);
+    connect(editPrimerButton, SIGNAL(clicked()), SLOT(sl_editPrimer()));
 
     removePrimersButton = buttonBox->addButton(tr("Remove primer(s)"), QDialogButtonBox::ActionRole);
     connect(removePrimersButton, SIGNAL(clicked()), SLOT(sl_removePrimers()));
 
     connect(buttonBox, SIGNAL(rejected()), SIGNAL(si_close()));
 
+    connect(primerTable, SIGNAL(doubleClicked(const QModelIndex &)), SLOT(sl_editPrimer()));
     connect(primerTable->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)), SLOT(sl_selectionChanged()));
     sl_selectionChanged();
 }
 
 void PrimerLibraryWidget::sl_newPrimer() {
-    AddPrimerDialog dlg(this);
+    EditPrimerDialog dlg(this);
     const int result = dlg.exec();
     CHECK(QDialog::Accepted == result, );
 
     U2OpStatusImpl os;
     Primer primer = dlg.getPrimer();
     primerTable->addPrimer(primer, os);
+    CHECK_OP_UI(os, );
+}
+
+void PrimerLibraryWidget::sl_editPrimer() {
+    QList<Primer> selection = primerTable->getSelection();
+    CHECK(1 == selection.size(), );
+    Primer primerToEdit = selection.first();
+    EditPrimerDialog dlg(this, primerToEdit);
+    const int result = dlg.exec();
+    CHECK(QDialog::Accepted == result, );
+
+    U2OpStatusImpl os;
+    Primer primer = dlg.getPrimer();
+    primer.id = primerToEdit.id;
+    primerTable->updatePrimer(primer, os);
     CHECK_OP_UI(os, );
 }
 
@@ -80,7 +99,9 @@ void PrimerLibraryWidget::sl_removePrimers() {
 }
 
 void PrimerLibraryWidget::sl_selectionChanged() {
-    removePrimersButton->setDisabled(primerTable->getSelection().isEmpty());
+    QList<Primer> selection = primerTable->getSelection();
+    editPrimerButton->setEnabled(1 == selection.size());
+    removePrimersButton->setDisabled(selection.isEmpty());
 }
 
 } // U2

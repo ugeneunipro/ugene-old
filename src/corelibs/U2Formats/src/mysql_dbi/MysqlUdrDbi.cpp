@@ -67,6 +67,25 @@ UdrRecordId MysqlUdrDbi::addRecord(const UdrSchemaId &schemaId, const QList<UdrV
     return UdrRecordId(schemaId, recordId);
 }
 
+void MysqlUdrDbi::updateRecord(const UdrRecordId &recordId, const QList<UdrValue> &data, U2OpStatus &os) {
+    const UdrSchema *schema = udrSchema(recordId.getSchemaId(), os);
+    CHECK_OP(os, );
+    CHECK_EXT(data.size() == schema->size(), os.setError("Size mismatch"), );
+
+    MysqlTransaction t(db, os);
+    Q_UNUSED(t);
+
+    U2SqlQuery q(updateDef(schema, os), db, os);
+    CHECK_OP(os, );
+
+    bindData(data, schema, q, os);
+    CHECK_OP(os, );
+
+    q.bindDataId(PLACEHOLDER_MARK + UdrSchema::RECORD_ID_FIELD_NAME, recordId.getRecordId());
+
+    q.update();
+}
+
 UdrRecord MysqlUdrDbi::getRecord(const UdrRecordId &recordId, U2OpStatus &os) {
     UdrRecord result(recordId, QList<UdrValue>(), os);
     const UdrSchema *schema = udrSchema(recordId.getSchemaId(), os);
@@ -270,6 +289,19 @@ QString MysqlUdrDbi::insertDef(const UdrSchema *schema, U2OpStatus &os) {
     return "INSERT INTO " + tableName(schema->getId())
         + "(" + fieldNames.join(", ") + ") "
         + "VALUES(" + placeholders.join(", ") + ")";
+}
+
+QString MysqlUdrDbi::updateDef(const UdrSchema *schema, U2OpStatus &os) {
+    QStringList assignments;
+    for (int i=0; i<schema->size(); i++) {
+        UdrSchema::FieldDesc field = schema->getField(i, os);
+        CHECK_OP(os, "");
+        assignments << QString("%1 = :%1").arg(field.getName().constData());
+    }
+
+    return "UPDATE " + tableName(schema->getId())
+        + " SET " + assignments.join(", ")
+        + " WHERE " + QString("%1 = :%1").arg(UdrSchema::RECORD_ID_FIELD_NAME.constData());
 }
 
 QString MysqlUdrDbi::selectAllDef(const UdrSchema *schema, U2OpStatus &os) {

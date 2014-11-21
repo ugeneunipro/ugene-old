@@ -45,10 +45,13 @@ public:
 
     Primer getPrimer(const QModelIndex &index, U2OpStatus &os) const;
     void addPrimer(Primer &primer, U2OpStatus &os);
+    void updatePrimer(Primer &primer, U2OpStatus &os);
     void removePrimer(const QModelIndex &index, U2OpStatus &os);
 
 private:
     QVariant displayData(const QModelIndex &index) const;
+    int getRow(const U2DataId &primerId) const;
+    void onPrimerChanged(const Primer &primer);
 
 private:
     QList<Primer> primers;
@@ -61,6 +64,7 @@ public:
 
     QList<Primer> getSelection() const;
     void addPrimer(Primer &primer, U2OpStatus &os);
+    void updatePrimer(Primer &primer, U2OpStatus &os);
     void removePrimer(const QModelIndex &index, U2OpStatus &os);
 
     bool eventFilter(QObject *watched, QEvent *event);

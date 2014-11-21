@@ -19,21 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_ADD_PRIMER_DIALOG_H_
-#define _U2_ADD_PRIMER_DIALOG_H_
+#ifndef _U2_EDIT_PRIMER_DIALOG_H_
+#define _U2_EDIT_PRIMER_DIALOG_H_
 
 #include <QDialog>
 
 #include "Primer.h"
 
-#include "ui_AddPrimerDialog.h"
+#include "ui_EditPrimerDialog.h"
 
 namespace U2 {
 
-class AddPrimerDialog : public QDialog, private Ui::AddPrimerDialog {
+class EditPrimerDialog : public QDialog, private Ui::EditPrimerDialog {
     Q_OBJECT
 public:
-    AddPrimerDialog(QWidget *parent);
+    EditPrimerDialog(QWidget *parent);
+    EditPrimerDialog(QWidget *parent, const Primer &editPrimer);
 
     Primer getPrimer() const;
 
@@ -42,9 +43,10 @@ private slots:
     void sl_validate();
 
 private:
+    void init();
     void validate(bool isValid);
 };
 
 } // U2
 
-#endif // _U2_ADD_PRIMER_DIALOG_H_
+#endif // _U2_EDIT_PRIMER_DIALOG_H_

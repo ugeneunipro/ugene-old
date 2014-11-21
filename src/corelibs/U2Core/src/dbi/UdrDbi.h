@@ -40,6 +40,11 @@ public:
     virtual UdrRecordId addRecord(const UdrSchemaId &schemaId, const QList<UdrValue> &data, U2OpStatus &os) = 0;
 
     /**
+     * Updates the record's data.
+     */
+    virtual void updateRecord(const UdrRecordId &recordId, const QList<UdrValue> &data, U2OpStatus &os) = 0;
+
+    /**
      * Returns the record with the given identifier.
      */
     virtual UdrRecord getRecord(const UdrRecordId &recordId, U2OpStatus &os) = 0;

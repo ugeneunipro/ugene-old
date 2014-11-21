@@ -25,13 +25,26 @@
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
-#include "AddPrimerDialog.h"
+#include "EditPrimerDialog.h"
 
 namespace U2 {
 
-AddPrimerDialog::AddPrimerDialog(QWidget *parent)
+EditPrimerDialog::EditPrimerDialog(QWidget *parent)
 : QDialog(parent)
 {
+    init();
+}
+
+EditPrimerDialog::EditPrimerDialog(QWidget *parent, const Primer &editToPrimer)
+: QDialog(parent)
+{
+    init();
+    setWindowTitle(tr("Edit Primer"));
+    primerEdit->setText(editToPrimer.sequence);
+    nameEdit->setText(editToPrimer.name);
+}
+
+void EditPrimerDialog::init() {
     setupUi(this);
     primerEdit->setValidator(new QRegExpValidator(QRegExp("[acgtACGT]+")));
     connect(primerEdit, SIGNAL(textEdited(const QString &)), SLOT(sl_onPrimerChanged(const QString &)));
@@ -42,24 +55,24 @@ AddPrimerDialog::AddPrimerDialog(QWidget *parent)
     sl_validate();
 }
 
-Primer AddPrimerDialog::getPrimer() const {
+Primer EditPrimerDialog::getPrimer() const {
     Primer result;
     result.name = nameEdit->text();
     result.sequence = primerEdit->text();
     return result;
 }
 
-void AddPrimerDialog::sl_onPrimerChanged(const QString &primerSequence) {
+void EditPrimerDialog::sl_onPrimerChanged(const QString &primerSequence) {
     primerEdit->setText(primerSequence.toUpper());
 }
 
-void AddPrimerDialog::sl_validate() {
+void EditPrimerDialog::sl_validate() {
     CHECK_EXT(!primerEdit->text().isEmpty(), validate(false), );
     CHECK_EXT(!nameEdit->text().isEmpty(), validate(false), );
     validate(true);
 }
 
-void AddPrimerDialog::validate(bool isValid) {
+void EditPrimerDialog::validate(bool isValid) {
     QPushButton *okButton = buttonBox->button(QDialogButtonBox::Ok);
     SAFE_POINT(NULL != okButton, L10N::nullPointerError("OK button"), );
     okButton->setEnabled(isValid);

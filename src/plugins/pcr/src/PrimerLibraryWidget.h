@@ -44,10 +44,12 @@ signals:
 
 private slots:
     void sl_newPrimer();
+    void sl_editPrimer();
     void sl_removePrimers();
     void sl_selectionChanged();
 
 private:
+    QPushButton *editPrimerButton;
     QPushButton *removePrimersButton;
 };
 
