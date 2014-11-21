@@ -30,6 +30,7 @@
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/HelpButton.h>
 #include <U2Gui/ObjectViewModel.h>
 
 #include <U2View/AssemblyBrowserFactory.h>
@@ -92,6 +93,7 @@ DocumentProviderSelectorController::DocumentProviderSelectorController(const QLi
     formatDetectionResults(formatDetectionResults)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "invalid_link");
 }
 
 int DocumentProviderSelectorController::getSelectedFormatIdx() const {
