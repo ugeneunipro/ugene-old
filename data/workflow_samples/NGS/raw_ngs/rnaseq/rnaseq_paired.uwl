@@ -7,58 +7,58 @@ workflow RNA-Seq{
 
     CASAVAFilter {
         type:CASAVAFilter;
-        name:"CASAVA FASTQ Filter";
+        name:"Filter Reads by CASAVA Header";
         custom-dir:filtered_fastq;
     }
     QualityTrim {
         type:QualityTrim;
-        name:"FASTQ Quality Trimmer";
+        name:"Trim Reads by Quality";
         custom-dir:filtered_fastq;
         len-id:10;
         qual-id:20;
     }
     get-file-list {
         type:get-file-list;
-        name:"File List";
+        name:"Read FASTQ Files with Reads 1";
         url-in {
             dataset:"Dataset 1";
         }
     }
     MergeFastq {
         type:MergeFastq;
-        name:"FASTQ Merger";
+        name:"Merge FASTQ Files";
         custom-dir:filtered_fastq;
         out-name:in_1.fq;
     }
     tophat {
         type:tophat;
-        name:"Find Splice Junctions with TopHat";
+        name:"Align Reads with TopHat";
         bowtie-version:1;
         mate-inner-distance:170;
         no-novel-junctions:true;
     }
     get-file-list-1 {
         type:get-file-list;
-        name:"File List 1";
+        name:"Read FASTQ Files with Reads 2";
         url-in {
             dataset:"Dataset 1";
         }
     }
     CASAVAFilter-1 {
         type:CASAVAFilter;
-        name:"CASAVA FASTQ Filter 1";
+        name:"Filter Reads by CASAVA Header";
         custom-dir:filtered_fastq;
     }
     QualityTrim-1 {
         type:QualityTrim;
-        name:"FASTQ Quality Trimmer 1";
+        name:"Trim Reads by Quality";
         custom-dir:filtered_fastq;
         len-id:10;
         qual-id:20;
     }
     MergeFastq-1 {
         type:MergeFastq;
-        name:"FASTQ Merger 1";
+        name:"Merge FASTQ Files";
         custom-dir:filtered_fastq;
         out-name:in_2.fq;
     }
@@ -68,15 +68,15 @@ workflow RNA-Seq{
     }
 
     .actor-bindings {
-        get-file-list.out-url->CASAVAFilter.in-file
-        CASAVAFilter.out-file->QualityTrim.in-file
         QualityTrim.out-file->MergeFastq.in-file
+        MergeFastq.out-file->multiplexer.input-data-1
         QualityTrim-1.out-file->MergeFastq-1.in-file
-        MergeFastq-1.out-file->multiplexer.input-data-2
+        CASAVAFilter.out-file->QualityTrim.in-file
+        get-file-list.out-url->CASAVAFilter.in-file
         CASAVAFilter-1.out-file->QualityTrim-1.in-file
         multiplexer.output-data->tophat.in-sequence
+        MergeFastq-1.out-file->multiplexer.input-data-2
         get-file-list-1.out-url->CASAVAFilter-1.in-file
-        MergeFastq.out-file->multiplexer.input-data-1
     }
 
     get-file-list.url->CASAVAFilter.in-file.url
@@ -115,86 +115,91 @@ workflow RNA-Seq{
         }
         visual {
             CASAVAFilter {
-                pos:"-635 -533";
+                pos:"-1005 -553";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-file.angle:180;
-                out-file.angle:360;
+                bg-color-ext:"194 0 0 64";
+                bounds:"-30 -30 123.875 82";
+                in-file.angle:97.4959;
+                out-file.angle:268.768;
             }
             CASAVAFilter-1 {
-                pos:"-631 -360";
+                pos:"-671 -795";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-file.angle:180;
-                out-file.angle:360;
+                bg-color-ext:"194 0 0 64";
+                bounds:"-30 -30 119.875 81";
+                in-file.angle:181.79;
+                out-file.angle:359.076;
             }
             MergeFastq {
-                pos:"-94 -529";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-file.angle:180;
-                out-file.angle:360;
+                pos:"-725 -450";
+                style:simple;
+                bg-color-simple:"78 151 184 255";
+                in-file.angle:203.629;
+                out-file.angle:8.61565;
             }
             MergeFastq-1 {
-                pos:"-87 -360";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-file.angle:180;
-                out-file.angle:360;
+                pos:"-566 -582";
+                style:simple;
+                bg-color-simple:"78 151 184 255";
+                in-file.angle:29.8989;
+                out-file.angle:271.432;
             }
             QualityTrim {
-                pos:"-371 -534";
+                pos:"-1004 -371";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-file.angle:180;
-                out-file.angle:360;
+                bg-color-ext:"204 68 102 64";
+                in-file.angle:95.0425;
+                out-file.angle:353.437;
             }
             QualityTrim-1 {
-                pos:"-372 -360";
+                pos:"-399 -797";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                in-file.angle:180;
-                out-file.angle:360;
+                bg-color-ext:"204 68 102 64";
+                bounds:"-30 -30 107.125 96";
+                in-file.angle:188.13;
+                out-file.angle:274.214;
             }
             get-file-list {
-                pos:"-834 -534";
+                pos:"-1053 -740";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                out-url.angle:360;
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 72.25 90";
+                out-url.angle:296.095;
             }
             get-file-list-1 {
-                pos:"-829 -359";
+                pos:"-883 -841";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
-                out-url.angle:360;
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 75 92";
+                out-url.angle:328.062;
             }
             multiplexer {
-                pos:"85 -439";
-                style:ext;
-                bg-color-ext:"0 128 128 64";
-                input-data-1.angle:150;
-                input-data-2.angle:210;
-                output-data.angle:360;
+                pos:"-567 -459";
+                style:simple;
+                bg-color-simple:"84 84 84 255";
+                input-data-1.angle:186.911;
+                input-data-2.angle:88.2643;
+                output-data.angle:319.574;
             }
             tophat {
-                pos:"362 -437";
+                pos:"-416 -343";
                 style:ext;
-                bg-color-ext:"0 128 128 64";
+                bg-color-ext:"0 128 0 64";
                 bounds:"-30 -30 135.375 66";
-                in-sequence.angle:180;
+                in-sequence.angle:139.97;
                 out-assembly.angle:0.33703;
             }
             CASAVAFilter-1.out-file->QualityTrim-1.in-file {
-                text-pos:"-35.75 -24";
+                text-pos:"-29.75 -25";
             }
             CASAVAFilter.out-file->QualityTrim.in-file {
-                text-pos:"-35.75 -24";
+                text-pos:"-32.75 -12";
             }
             MergeFastq-1.out-file->multiplexer.input-data-2 {
-                text-pos:"-35.75 -24";
+                text-pos:"5.25 -14";
             }
             MergeFastq.out-file->multiplexer.input-data-1 {
-                text-pos:"-35.75 -24";
+                text-pos:"-31.75 -24";
             }
             QualityTrim-1.out-file->MergeFastq-1.in-file {
                 text-pos:"-35.75 -24";
@@ -203,13 +208,13 @@ workflow RNA-Seq{
                 text-pos:"-35.75 -24";
             }
             get-file-list-1.out-url->CASAVAFilter-1.in-file {
-                text-pos:"-35.7578 -24";
+                text-pos:"-38.7578 -25";
             }
             get-file-list.out-url->CASAVAFilter.in-file {
-                text-pos:"-35.7578 -24";
+                text-pos:"7.2422 -14";
             }
             multiplexer.output-data->tophat.in-sequence {
-                text-pos:"-45 -50";
+                text-pos:"-32 -22";
             }
         }
         wizard {
@@ -242,7 +247,7 @@ workflow RNA-Seq{
                         QualityTrim.qual-id {
                         }
                         QualityTrim.len-id {
-	       label:"Min length";
+                            label:"Min length";
                         }
                     }
                     group {
@@ -251,7 +256,7 @@ workflow RNA-Seq{
                         QualityTrim-1.qual-id {
                         }
                         QualityTrim-1.len-id {
-	       label:"Min length";
+                            label:"Min length";
                         }
                     }
                 }

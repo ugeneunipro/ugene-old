@@ -3,7 +3,7 @@
 
 
 
-workflow "ChIP-Seq Coverage"{
+workflow "ChIP-Seq coverage"{
 
     slopbed {
         type:slopbed;

@@ -20,7 +20,7 @@ workflow ChIP-Seq{
     }
     get-file-list {
         type:get-file-list;
-        name:"Read FASTQ Files with Reads";
+        name:"Read FASTQ Files with Reads 1";
         url-in {
             dataset:"Dataset 1";
         }
@@ -66,7 +66,7 @@ workflow ChIP-Seq{
     }
     get-file-list-1 {
         type:get-file-list;
-        name:"Read FASTQ Files with Reads Pairs";
+        name:"Read FASTQ Files with Reads 2";
         url-in {
             dataset:"Dataset 1";
         }
@@ -86,19 +86,19 @@ workflow ChIP-Seq{
     }
 
     .actor-bindings {
-        QualityTrim.out-file->bwamem-id.in-data
-        Sort-bam.out-file->files-conversion-1.in-file
-        CASAVAFilter.out-file->QualityTrim.in-file
         get-file-list.out-url->CASAVAFilter.in-file
-        CASAVAFilter-1.out-file->QualityTrim-1.in-file
-        QualityTrim-1.out-file->bwamem-id.in-data-paired
+        CASAVAFilter.out-file->QualityTrim.in-file
+        QualityTrim.out-file->bwamem-id.in-data
+        bwamem-id.out-data->files-conversion.in-file
+        files-conversion.out-file->merge-bam.in-file
         merge-bam.out-file->filter-bam.in-file
         filter-bam.out-file->Sort-bam-1.in-file
-        Sort-bam-1.out-file->rmdup-bam.in-file
-        files-conversion.out-file->merge-bam.in-file
-        bwamem-id.out-data->files-conversion.in-file
         rmdup-bam.out-file->Sort-bam.in-file
+        Sort-bam.out-file->files-conversion-1.in-file
+        Sort-bam-1.out-file->rmdup-bam.in-file
         get-file-list-1.out-url->CASAVAFilter-1.in-file
+        CASAVAFilter-1.out-file->QualityTrim-1.in-file
+        QualityTrim-1.out-file->bwamem-id.in-data-paired
     }
 
     get-file-list.url->CASAVAFilter.in-file.url
@@ -145,7 +145,7 @@ workflow ChIP-Seq{
                 pos:"-627 -494";
                 style:ext;
                 bg-color-ext:"194 0 0 64";
-                bounds:"-30 -30 153.375 92";
+                bounds:"-30 -30 125.375 81";
                 in-file.angle:192.529;
                 out-file.angle:356.112;
             }
@@ -157,11 +157,11 @@ workflow ChIP-Seq{
                 out-file.angle:356.558;
             }
             QualityTrim-1 {
-                pos:"-392 -496";
+                pos:"-395 -496";
                 style:ext;
                 bg-color-ext:"204 68 102 64";
-                bounds:"-30 -30 148.375 66";
-                in-file.angle:190.305;
+                bounds:"-30 -30 104.375 95";
+                in-file.angle:199.983;
                 out-file.angle:356.558;
             }
             Sort-bam {
@@ -172,20 +172,20 @@ workflow ChIP-Seq{
                 out-file.angle:360;
             }
             Sort-bam-1 {
-                pos:"-598 -148";
+                pos:"-595 -146";
                 style:simple;
                 bg-color-simple:"84 84 84 255";
                 in-file.angle:88.5312;
                 out-file.angle:2.38594;
             }
             bwamem-id {
-                pos:"-133 -530";
+                pos:"-131 -571";
                 style:ext;
                 bg-color-ext:"0 128 0 64";
                 bounds:"-30 -30 105 92";
                 in-data.angle:188.366;
                 in-data-paired.angle:210;
-                out-data.angle:297.474;
+                out-data.angle:296.565;
             }
             files-conversion {
                 pos:"-87 -318";
@@ -219,7 +219,7 @@ workflow ChIP-Seq{
                 pos:"-842 -494";
                 style:ext;
                 bg-color-ext:"24 102 175 64";
-                bounds:"-30 -30 74 94";
+                bounds:"-30 -30 75 94";
                 out-url.angle:354.447;
             }
             merge-bam {
@@ -237,16 +237,16 @@ workflow ChIP-Seq{
                 out-file.angle:356.424;
             }
             CASAVAFilter-1.out-file->QualityTrim-1.in-file {
-                text-pos:"-35.75 -24";
+                text-pos:"-31.75 -24";
             }
             CASAVAFilter.out-file->QualityTrim.in-file {
                 text-pos:"-33.75 -18";
             }
             QualityTrim-1.out-file->bwamem-id.in-data-paired {
-                text-pos:"-35.75 -24";
+                text-pos:"-31.75 -14";
             }
             QualityTrim.out-file->bwamem-id.in-data {
-                text-pos:"-31.75 -23";
+                text-pos:"-33.75 -12";
             }
             Sort-bam-1.out-file->rmdup-bam.in-file {
                 text-pos:"-41 -24";

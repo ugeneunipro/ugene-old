@@ -122,7 +122,7 @@ workflow ChIP-Seq{
                 pos:"-84 -148";
                 style:simple;
                 bg-color-simple:"84 84 84 255";
-                in-file.angle:176.82;
+                in-file.angle:180;
                 out-file.angle:360;
             }
             Sort-bam-1 {
@@ -177,10 +177,10 @@ workflow ChIP-Seq{
                 out-file.angle:176.987;
             }
             rmdup-bam {
-                pos:"-322 -147";
+                pos:"-323 -150";
                 style:simple;
                 bg-color-simple:"218 98 98 255";
-                in-file.angle:180;
+                in-file.angle:181.736;
                 out-file.angle:356.424;
             }
             CASAVAFilter.out-file->QualityTrim.in-file {
@@ -241,7 +241,7 @@ workflow ChIP-Seq{
                         QualityTrim.qual-id {
                         }
                         QualityTrim.len-id {
-	       label:"Min length";
+                            label:"Min length";
                         }
                     }
                 }
@@ -317,7 +317,7 @@ workflow ChIP-Seq{
                         title:"Remove Duplicates";
                         label-size:120;
                         rmdup-bam.remove-single-end {
-	   label:"For single-end reads";
+                            label:"For single-end reads";
                         }
                     }
                 }
