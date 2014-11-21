@@ -42,7 +42,7 @@ public:
 
 class BaseDimersFinder {
 public:
-    BaseDimersFinder(const QByteArray &forwardPrimer, const QByteArray &reversePrimer, double energyThreshold, int maxBaseCounts = 0);
+    BaseDimersFinder(const QByteArray &forwardPrimer, const QByteArray &reversePrimer, double energyThreshold);
 
     DimerFinderResult getResult() const;
 
@@ -62,7 +62,6 @@ protected:
     double      energyThreshold;
     qreal       maximumDeltaG;
     QString     dimersOverlap;
-    int         maxBaseCounts;
 };
 
 class SelfDimersFinder : public BaseDimersFinder {

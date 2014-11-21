@@ -73,10 +73,10 @@ static QMap<QByteArray, qreal> initEnergyMap() {
     return initializedEnergyMap;
 }
 
-QMap<QByteArray, qreal> SelfDimersFinder::energyMap = initEnergyMap();
+QMap<QByteArray, qreal> BaseDimersFinder::energyMap = initEnergyMap();
 
-BaseDimersFinder::BaseDimersFinder(const QByteArray &forwardPrimer, const QByteArray &reversePrimer, double energyThreshold, int maxBaseCounts)
-    : forwardPrimer(forwardPrimer), reversePrimer(reversePrimer), energyThreshold(energyThreshold), maxBaseCounts(maxBaseCounts), maximumDeltaG(0)
+BaseDimersFinder::BaseDimersFinder(const QByteArray &forwardPrimer, const QByteArray &reversePrimer, double energyThreshold)
+    : forwardPrimer(forwardPrimer), reversePrimer(reversePrimer), energyThreshold(energyThreshold), maximumDeltaG(0)
 {
     DNATranslationRegistry* tr = AppContext::getDNATranslationRegistry();
     DNATranslation* dnaTranslation = tr->lookupTranslation(BaseDNATranslationIds::NUCL_DNA_DEFAULT_COMPLEMENT);
