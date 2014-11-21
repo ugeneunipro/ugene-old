@@ -159,7 +159,7 @@ void FindPrimerPairsWorkerFactory::init() {
 /* FindPrimersTask */
 /************************************************************************/
 FindPrimersTask::FindPrimersTask(const QString& outputFileUrl, const QList<DNASequence>& sequences)
-: Task(tr("FindPrimersTask"), TaskFlag_None), outputUrl(outputFileUrl), sequences(sequences){}
+: Task(tr("FindPrimersTask"), TaskFlag_None), sequences(sequences), outputUrl(outputFileUrl){}
 
 void FindPrimersTask::run() {
     CHECK(sequences.size() > 0, );
