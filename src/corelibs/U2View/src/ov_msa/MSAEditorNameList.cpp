@@ -392,7 +392,7 @@ void MSAEditorNameList::mousePressEvent(QMouseEvent *e) {
     }
 
     if ((e->button() == Qt::LeftButton)) {
-		emit si_startMsaChanging();
+        emit si_startMsaChanging();
 
         seqArea->setSelectionHighlighting( false );
         if(Qt::ShiftModifier == e->modifiers()) {
@@ -500,7 +500,7 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
             moveSelectedRegion(shift);
             shifting = false;
 
-			emit si_stopMsaChanging(true);
+            emit si_stopMsaChanging(true);
         } else {
             int firstVisibleRow = ui->seqArea->getFirstVisibleSequence();
             int lastVisibleRow = ui->seqArea->getNumDisplayedSequences( ) + firstVisibleRow - 1;
@@ -519,7 +519,7 @@ void MSAEditorNameList::mouseReleaseEvent( QMouseEvent *e )
                 }
                 updateSelection(newSeq);
             }
-			emit si_stopMsaChanging(false);
+            emit si_stopMsaChanging(false);
         }
         scribbling = false;
     }
@@ -814,7 +814,7 @@ QString MSAEditorNameList::getSeqName(int s) {
 void MSAEditorNameList::drawSelection(QPainter& p) {
     MSAEditorSelection sel = ui->seqArea->getSelection();
 
-    if ((sel.height() == editor->getNumSequences()) || (sel.height() == 0)) {
+    if (sel.height() == 0) {
         return;
     }
 
