@@ -47,8 +47,8 @@ public:
     ~EditConnectionDialog();
 
     void        setReadOnly(bool readOnly);
-    QString     getName()       const;
-    QString     getUserName()   const;
+    QString     getName() const;
+    QString     getUserName() const;
     QString     getShortDbiUrl() const;
     QString     getFullDbiUrl() const;
 

@@ -80,7 +80,7 @@ private:
 
     bool checkDatabaseAvailability(const U2DbiRef &ref, bool &initializationRequired);
     bool isConnected(QListWidgetItem *item) const;
-    bool alreadyExists(const QString& dbiUrl, const QString &userName) const;
+    bool alreadyExists(const QString& dbiUrl, const QString &userName, QString &existingName) const;
     QListWidgetItem* insertConnection(const QString& preferredName, const QString& fullDbiUrl);
     QListWidgetItem* insertConnection(const QString& preferredName, const QString& dbiUrl, const QString &userName);
     void cancelConnection(QListWidgetItem* item);
