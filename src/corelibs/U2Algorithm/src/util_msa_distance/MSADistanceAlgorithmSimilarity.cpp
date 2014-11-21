@@ -25,7 +25,7 @@
 
 namespace U2 {
 
-MSADistanceAlgorithmFactorySimilarity::MSADistanceAlgorithmFactorySimilarity(QObject* p) 
+MSADistanceAlgorithmFactorySimilarity::MSADistanceAlgorithmFactorySimilarity(QObject* p)
 : MSADistanceAlgorithmFactory(BuiltInDistanceAlgorithms::SIMILARITY_ALGO, DistanceAlgorithmFlags_NuclAmino, p)
 {
 
@@ -60,6 +60,9 @@ void MSADistanceAlgorithmSimilarity::run() {
         for (int j = i; j < nSeq; j++) {
             int sim = 0;
             for (int k = 0; k < ma.getLength(); k++) {
+                if (isCanceled()) {
+                    return;
+                }
                 bool similar = (ma.charAt(i, k) == ma.charAt(j, k));
 
                 if(!excludeGaps){
@@ -67,7 +70,7 @@ void MSADistanceAlgorithmSimilarity::run() {
                 }else{
                     if (similar && ma.charAt(i, k)!=MAlignment_GapChar) sim++;
                 }
-                
+
             }
             lock.lock();
             setDistanceValue(i, j, sim);

@@ -49,7 +49,7 @@
 #include <U2Algorithm/MSADistanceAlgorithmRegistry.h>
 #include <U2Algorithm/MSADistanceAlgorithm.h>
 
-namespace U2 
+namespace U2
 {
 
 const QString MSAEditorAlignmentDependentWidget::DataIsOutdatedMessage(QString("<FONT COLOR=#FF0000>%1</FONT>").arg(QObject::tr("Data is outdated")));
@@ -57,7 +57,10 @@ const QString MSAEditorAlignmentDependentWidget::DataIsValidMessage(QString("<FO
 const QString MSAEditorAlignmentDependentWidget::DataIsBeingUpdatedMessage(QString("<FONT COLOR=#0000FF>%1</FONT>").arg(QObject::tr("Data is being updated")));
 
 MSAEditorSimilarityColumn::MSAEditorSimilarityColumn(MSAEditorUI* ui, QScrollBar* nhBar, const SimilarityStatisticsSettings* _settings)
-: MSAEditorNameList(ui, nhBar), algo(NULL), autoUpdate(true) {
+    : MSAEditorNameList(ui, nhBar),
+      algo(NULL),
+      autoUpdate(true)
+{
     newSettings = curSettings = *_settings;
     updateDistanceMatrix();
     setObjectName("msa_editor_similarity_column");
@@ -69,7 +72,7 @@ MSAEditorSimilarityColumn::~MSAEditorSimilarityColumn() {
 }
 
 QString MSAEditorSimilarityColumn::getTextForRow( int s ) {
-    if (NULL == algo) {
+    if (NULL == algo || state == DataIsBeingUpdated) {
         return tr("-");
     }
 
@@ -99,7 +102,7 @@ void MSAEditorSimilarityColumn::setSettings(const UpdatedWidgetSettings* _settin
     const SimilarityStatisticsSettings* set= static_cast<const SimilarityStatisticsSettings*>(_settings);
     CHECK(NULL != set,);
     autoUpdate = set->autoUpdate;
-    state = DataIsValid; 
+    state = DataIsValid;
     if(curSettings.algoName != set->algoName) {
         state = DataIsOutdated;
     }
@@ -123,10 +126,13 @@ void MSAEditorSimilarityColumn::setSettings(const UpdatedWidgetSettings* _settin
 }
 
 void MSAEditorSimilarityColumn::updateDistanceMatrix() {
-    TaskScheduler* scheduler = AppContext::getTaskScheduler();
-    Task* createMatrix = new CreateDistanceMatrixTask(newSettings);
-    connect(new TaskSignalMapper(createMatrix), SIGNAL(si_taskFinished(Task*)), this, SLOT(sl_createMatrixTaskFinished(Task*)));
-    scheduler->registerTopLevelTask(createMatrix);
+    createDistanceMatrixTaskRunner.cancel();
+
+    CreateDistanceMatrixTask* createDistanceMatrixTask = new CreateDistanceMatrixTask(newSettings);
+    connect(new TaskSignalMapper(createDistanceMatrixTask), SIGNAL(si_taskFinished(Task*)), this, SLOT(sl_createMatrixTaskFinished(Task*)));
+
+    state = DataIsBeingUpdated;
+    createDistanceMatrixTaskRunner.run( createDistanceMatrixTask );
 }
 
 void MSAEditorSimilarityColumn::onAlignmentChanged(const MAlignment&, const MAlignmentModInfo&) {
@@ -157,8 +163,10 @@ void MSAEditorSimilarityColumn::sl_createMatrixTaskFinished(Task* t) {
     emit si_dataStateChanged(state);
 }
 
-CreateDistanceMatrixTask::CreateDistanceMatrixTask(const SimilarityStatisticsSettings& _s) 
-: Task(tr("Generate distance matrix"), TaskFlags_NR_FOSE_COSC), s(_s), resMatrix(NULL) {
+CreateDistanceMatrixTask::CreateDistanceMatrixTask(const SimilarityStatisticsSettings& _s)
+    : BackgroundTask<MSADistanceMatrix*>(tr("Generate distance matrix"), TaskFlags_NR_FOSE_COSC),
+      s(_s),
+      resMatrix(NULL) {
     SAFE_POINT(NULL != s.ma, QString("Incorrect MAlignment in MSAEditorSimilarityColumnTask ctor!"), );
     SAFE_POINT(NULL != s.ui, QString("Incorrect MSAEditorUI in MSAEditorSimilarityColumnTask ctor!"), );
     setVerboseLogMode(true);
@@ -178,8 +186,11 @@ void CreateDistanceMatrixTask::prepare() {
     addSubTask(algo);
 }
 
-QList<Task*> CreateDistanceMatrixTask::onSubTaskFinished(Task* subTask){ 
+QList<Task*> CreateDistanceMatrixTask::onSubTaskFinished(Task* subTask){
     QList<Task*> res;
+    if (isCanceled()) {
+        return res;
+    }
     MSADistanceAlgorithm* algo = qobject_cast<MSADistanceAlgorithm*>(subTask);
     MSADistanceMatrix *matrix = new MSADistanceMatrix(algo, s.usePercents && s.excludeGaps);
     if(NULL != algo) {
@@ -191,7 +202,7 @@ QList<Task*> CreateDistanceMatrixTask::onSubTaskFinished(Task* subTask){
     }
     return res;
 }
-MSAEditorAlignmentDependentWidget::MSAEditorAlignmentDependentWidget(UpdatedWidgetInterface* _contentWidget) 
+MSAEditorAlignmentDependentWidget::MSAEditorAlignmentDependentWidget(UpdatedWidgetInterface* _contentWidget)
 : contentWidget(_contentWidget), automaticUpdating(true){
     SAFE_POINT(NULL != _contentWidget, QString("Argument is NULL in constructor MSAEditorAlignmentDependentWidget()"),);
 
@@ -234,7 +245,7 @@ void MSAEditorAlignmentDependentWidget::createHeaderWidget() {
 }
 
 void MSAEditorAlignmentDependentWidget::setSettings(const UpdatedWidgetSettings* _settings) {
-    settings = _settings; 
+    settings = _settings;
     automaticUpdating = settings->autoUpdate;
     contentWidget->setSettings(settings);
 }
@@ -287,7 +298,7 @@ void UpdatedTabWidget::buildMenu()
     connect(refreshAllAction, SIGNAL(triggered(bool)), SLOT(sl_refreshAllTriggered()));
 
     tabsMenu->addSeparator();
-    
+
     closeOtherTabs = tabsMenu->addAction(tr("Close other tabs"));
     connect(closeOtherTabs, SIGNAL(triggered(bool)), SLOT(sl_closeOtherTabsTriggered()));
     closeAllTabs = tabsMenu->addAction(tr("Close all tabs"));
@@ -312,21 +323,21 @@ int UpdatedTabWidget::addTab(QWidget *page, const QString &label ) {
     return QTabWidget::addTab(page, label);
 }
 
-bool UpdatedTabWidget::eventFilter(QObject *target, QEvent *event) 
-{ 
-    if (target == tabBar()) { 
-        QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>(event); 
+bool UpdatedTabWidget::eventFilter(QObject *target, QEvent *event)
+{
+    if (target == tabBar()) {
+        QMouseEvent *mouseEvent = dynamic_cast<QMouseEvent *>(event);
         if(NULL == mouseEvent) {
             return QTabWidget::eventFilter(target, event);
         }
-        if (mouseEvent->button() == Qt::RightButton) { 
+        if (mouseEvent->button() == Qt::RightButton) {
             updateActionsState();
             menuPos = mouseEvent->pos();
             tabsMenu->popup( mouseEvent->globalPos());
             return true;
-        } 
-    } 
-    return QTabWidget::eventFilter(target, event); 
+        }
+    }
+    return QTabWidget::eventFilter(target, event);
 }
 
 void UpdatedTabWidget::sl_refreshTriggered() {
@@ -375,7 +386,7 @@ void UpdatedTabWidget::sl_addVSplitterTriggered() {
         emit si_addSplitterTriggered(Qt::Horizontal, pageWidget, tabText(index));
     }
 }
-TabWidgetArea::TabWidgetArea(QWidget* parent) 
+TabWidgetArea::TabWidgetArea(QWidget* parent)
 : QWidget(parent), tabsCount(0), currentWidget(NULL), currentLayout(NULL) {
 }
 void TabWidgetArea::initialize() {
@@ -424,7 +435,7 @@ void TabWidgetArea::sl_addSplitter(Qt::Orientation splitterOrientation, QWidget*
     oldArea->setLayout(currentLayout);
     UpdatedTabWidget* newTabs = createTabWidget();
     newTabs->addTab(page, label);
-    newSplitter->addWidget(oldArea); 
+    newSplitter->addWidget(oldArea);
     newSplitter->addWidget(newTabs);
     splitters << newSplitter;
 
@@ -474,7 +485,7 @@ UpdatedTabWidget* MSAEditorTabWidgetArea::createTabWidget()
 }
 
 void MSAEditorTabWidgetArea::deleteTab(QWidget *page) {
-    GObjectViewWindow* win = qobject_cast<GObjectViewWindow*>(page); 
+    GObjectViewWindow* win = qobject_cast<GObjectViewWindow*>(page);
     const GObject* obj = win->getObjectView()->getObjects().at(0);
     Document* doc = obj->getDocument();
     GObjectReference treeRef(doc->getURLString(), "", GObjectTypes::PHYLOGENETIC_TREE);

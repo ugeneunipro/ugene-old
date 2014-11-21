@@ -35,22 +35,24 @@
 #include <QtWidgets/QSplitter>
 #endif
 
+#include <U2Core/BackgroundTaskRunner.h>
 #include <U2Core/Task.h>
 #include <U2Core/MAlignment.h>
 #include <U2Core/MAlignmentObject.h>
 #include "MSAEditorNameList.h"
 
-namespace U2 
+namespace U2
 {
 
-class MSADistanceMatrix;
+class CreateDistanceMatrixTask;
 class MAlignmentRow;
-class Task;
+class MSADistanceMatrix;
 class MSAWidget;
+class Task;
 
 class UpdatedWidgetSettings {
 public:
-    UpdatedWidgetSettings() 
+    UpdatedWidgetSettings()
         : ma(NULL), ui(NULL), autoUpdate(true) {}
     const MAlignmentObject* ma;
     MSAEditorUI*            ui;
@@ -74,8 +76,8 @@ class SimilarityStatisticsSettings : public UpdatedWidgetSettings {
 public:
     SimilarityStatisticsSettings() : usePercents(false), excludeGaps(false){}
     QString                         algoName;// selected algorithm
-    bool                            usePercents; 
-    bool                            excludeGaps; 
+    bool                            usePercents;
+    bool                            excludeGaps;
 };
 
 class MSAEditorSimilarityColumn : public MSAEditorNameList, public UpdatedWidgetInterface {
@@ -111,16 +113,18 @@ private:
     SimilarityStatisticsSettings newSettings;
     SimilarityStatisticsSettings curSettings;
 
+    BackgroundTaskRunner<MSADistanceMatrix*> createDistanceMatrixTaskRunner;
+
     DataState state;
     bool      autoUpdate;
 };
 
 
-class CreateDistanceMatrixTask : public Task {
+class CreateDistanceMatrixTask : public BackgroundTask<MSADistanceMatrix*> {
     Q_OBJECT
 public:
     CreateDistanceMatrixTask(const SimilarityStatisticsSettings& _s);
-    
+
     virtual void prepare();
 
     MSADistanceMatrix* getResult() const {return resMatrix;}
@@ -141,7 +145,7 @@ public:
 
     void setSettings(const UpdatedWidgetSettings* _settings);
     const DataState& getDataState() const{return state;}
-    const UpdatedWidgetSettings* getSettings() const {return settings;} 
+    const UpdatedWidgetSettings* getSettings() const {return settings;}
 
 private slots:
     void sl_onAlignmentChanged(const MAlignment& maBefore, const MAlignmentModInfo& modInfo);

@@ -25,7 +25,7 @@
 
 namespace U2 {
 
-MSADistanceAlgorithmFactoryHamming::MSADistanceAlgorithmFactoryHamming(QObject* p) 
+MSADistanceAlgorithmFactoryHamming::MSADistanceAlgorithmFactoryHamming(QObject* p)
 : MSADistanceAlgorithmFactory(BuiltInDistanceAlgorithms::HAMMING_ALGO, DistanceAlgorithmFlags_NuclAmino, p)
 {
 
@@ -60,6 +60,9 @@ void MSADistanceAlgorithmHamming::run() {
         for (int j = i; j < nSeq; j++) {
             int sim = 0;
             for (int k = 0; k < ma.getLength(); k++) {
+                if (isCanceled()) {
+                    return;
+                }
                 bool dissimilar = (ma.charAt(i, k) != ma.charAt(j, k));
 
                 if(!excludeGaps){

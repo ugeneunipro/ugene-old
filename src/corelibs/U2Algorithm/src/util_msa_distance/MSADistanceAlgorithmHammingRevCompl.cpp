@@ -31,7 +31,7 @@
 
 namespace U2 {
 
-MSADistanceAlgorithmFactoryHammingRevCompl::MSADistanceAlgorithmFactoryHammingRevCompl(QObject* p) 
+MSADistanceAlgorithmFactoryHammingRevCompl::MSADistanceAlgorithmFactoryHammingRevCompl(QObject* p)
 : MSADistanceAlgorithmFactory(BuiltInDistanceAlgorithms::HAMMING_REVCOMPL_ALGO, DistanceAlgorithmFlag_Nucleic, p)
 {
 
@@ -66,10 +66,13 @@ void MSADistanceAlgorithmHammingRevCompl::run() {
     revtransl.setAlphabet(ma.getAlphabet());
     U2OpStatus2Log os;
     for (int i = 0; i < nSeq; i++) {
+        if (isCanceled()) {
+            return;
+        }
         QByteArray arr = ma.getRow(i).toByteArray(ma.getLength(), os);
         trans->translate(arr.data(), arr.length());
         TextUtils::reverse(arr.data(), arr.length());
-        
+
         revtransl.addRow(ma.getRow(i).getName(), arr, os);
 
         CHECK_OP_EXT(os, setError(tr("An unexpected error has occurred during running"
@@ -80,7 +83,12 @@ void MSADistanceAlgorithmHammingRevCompl::run() {
         for (int j = i; j < nSeq; j++) {
             int sim = 0;
             for (int k = 0; k < ma.getLength(); k++) {
-                if (ma.charAt(i, k) == revtransl.charAt(j, k)) sim++;
+                if (isCanceled()) {
+                    return;
+                }
+                if (ma.charAt(i, k) == revtransl.charAt(j, k)) {
+                    sim++;
+                }
             }
             lock.lock();
             setDistanceValue(i, j, sim);
