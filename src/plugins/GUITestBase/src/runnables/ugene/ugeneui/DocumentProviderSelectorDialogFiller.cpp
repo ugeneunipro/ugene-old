@@ -31,9 +31,9 @@ namespace U2 {
 QMap<DocumentProviderSelectorDialogFiller::OpenWith, QString> DocumentProviderSelectorDialogFiller::initMap(){
     QMap<DocumentProviderSelectorDialogFiller::OpenWith, QString> result;
     result.insert(DocumentProviderSelectorDialogFiller::AlignmentEditor,
-                  "Open in <b>Alignment editor</b> with the <b>ACE</b> format._radio");
+                  "Multiple sequence alignment in the Alignment Editor_radio");
     result.insert(DocumentProviderSelectorDialogFiller::AssemblyBrowser,
-                  "Open in <b>Assembly Browser</b> with the <b>ACE file importer</b> format._radio");
+                  "Short reads assembly in the Assembly Browser_radio");
     return result;
 }
 const QMap<DocumentProviderSelectorDialogFiller::OpenWith, QString> DocumentProviderSelectorDialogFiller::openWithMap =

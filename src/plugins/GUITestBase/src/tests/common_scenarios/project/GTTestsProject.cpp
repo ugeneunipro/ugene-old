@@ -19,42 +19,41 @@
  * MA 02110-1301, USA.
  */
 
-#include "GTTestsProject.h"
-#include "api/GTGlobals.h"
-#include "api/GTKeyboardDriver.h"
-#include "api/GTMouseDriver.h"
-#include "api/GTMenu.h"
-#include "api/GTFile.h"
-#include "api/GTFileDialog.h"
-#include "api/GTLineEdit.h"
-#include "GTUtilsProject.h"
-#include "GTUtilsDocument.h"
-#include "GTUtilsLog.h"
-#include "GTUtilsApp.h"
-#include "GTUtilsToolTip.h"
-#include "GTUtilsMdi.h"
-#include "GTUtilsProjectTreeView.h"
-#include "GTUtilsSequenceView.h"
-#include "GTUtilsMdi.h"
-#include "GTUtilsTaskTreeView.h"
-#include "runnables/qt/PopupChooser.h"
-#include "runnables/qt/MessageBoxFiller.h"
-#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
-#include "runnables/ugene/ugeneui/ExportProjectDialogFiller.h"
-#include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
-#include "runnables/ugene/ugeneui/ExportProjectDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
-#include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
-#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
+#include <QMdiSubWindow>
 
 #include <U2View/AnnotatedDNAViewFactory.h>
+#include <U2View/AssemblyBrowserFactory.h>
 #include <U2View/MSAEditorFactory.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QMdiSubWindow>
-#else
-#include <QtWidgets/QMdiSubWindow>
-#endif
+
+#include "GTTestsProject.h"
+#include "GTUtilsApp.h"
+#include "GTUtilsDocument.h"
+#include "GTUtilsLog.h"
+#include "GTUtilsMdi.h"
+#include "GTUtilsProject.h"
+#include "GTUtilsProjectTreeView.h"
+#include "GTUtilsSequenceView.h"
+#include "GTUtilsTaskTreeView.h"
+#include "GTUtilsToolTip.h"
+#include "api/GTFile.h"
+#include "api/GTFileDialog.h"
+#include "api/GTGlobals.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTLineEdit.h"
+#include "api/GTMenu.h"
+#include "api/GTMouseDriver.h"
+#include "runnables/qt/MessageBoxFiller.h"
+#include "runnables/qt/PopupChooser.h"
+#include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/DownloadRemoteFileDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
+#include "runnables/ugene/ugeneui/ConvertAceToSqliteDialogFiller.h"
+#include "runnables/ugene/ugeneui/CreateNewProjectWidgetFiller.h"
+#include "runnables/ugene/ugeneui/DocumentProviderSelectorDialogFiller.h"
+#include "runnables/ugene/ugeneui/ExportProjectDialogFiller.h"
+#include "runnables/ugene/ugeneui/ExportProjectDialogFiller.h"
+#include "runnables/ugene/ugeneui/SaveProjectDialogFiller.h"
+#include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
 
 namespace U2{
 
@@ -447,6 +446,37 @@ GUI_TEST_CLASS_DEFINITION(test_0032) {
     GTUtilsDialog::waitForDialog(os, new ExportProjectDialogSizeChecker(os, "project.uprj"));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__EXPORT_PROJECT);
     GTGlobals::sleep();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0033) {
+//    ACE format can be opened both as assembly and as alignment
+
+//    1. Open "_common_data/ACE/ace_test_1.ace".
+//    Expected state: a dialog appears, it offers to select a view to open the file with.
+
+//    2. Select "Open as multiple sequence alignment" item, accept the dialog.
+//    Expected state: file opens, document contains two malignment objects, the MSA Editor is shown.
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AlignmentEditor));
+    GTFileDialog::openFile(os, testDir + "_common_data/ACE/", "ace_test_1.ace");
+
+    GTUtilsDocument::checkDocument(os, "ace_test_1.ace", MSAEditorFactory::ID);
+    GTUtilsProjectTreeView::checkObjectTypes(os,
+                                             QSet<GObjectType>() << GObjectTypes::MULTIPLE_ALIGNMENT,
+                                             GTUtilsProjectTreeView::findIndex(os, "ace_test_1.ace"));
+
+//    3. Open "_common_data/ACE/ace_test_2.ace".
+//    Expected state: a dialog appears, it offers to select a view to open the file with.
+
+//    4. Select "Open as assembly" item, accept the dialog.
+//    Expected state: file opens, document contains two assembly objects and two sequence objects, the Assembly Browser is shown.
+    GTUtilsDialog::waitForDialog(os, new DocumentProviderSelectorDialogFiller(os, DocumentProviderSelectorDialogFiller::AssemblyBrowser));
+    GTUtilsDialog::waitForDialog(os, new ConvertAceToSqliteDialogFiller(os, sandBoxDir + "project_test_0033.ugenedb"));
+    GTFileDialog::openFile(os, testDir + "_common_data/ACE/", "ace_test_2.ace");
+
+    GTUtilsDocument::checkDocument(os, "project_test_0033.ugenedb", AssemblyBrowserFactory::ID);
+    GTUtilsProjectTreeView::checkObjectTypes(os,
+                                             QSet<GObjectType>() << GObjectTypes::SEQUENCE << GObjectTypes::ASSEMBLY,
+                                             GTUtilsProjectTreeView::findIndex(os, "project_test_0033.ugenedb"));
 }
 
 }
