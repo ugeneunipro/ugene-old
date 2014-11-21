@@ -59,7 +59,7 @@ private:
     bool checkCurrentState(bool saveStateInItem, bool showError);
     bool turnPage(AppSettingsTreeItem* page);
     void registerPage(AppSettingsGUIPageController* page);
-    
+
     AppSettingsTreeItem* findPageItem(const QString& id) const;
 
 private:

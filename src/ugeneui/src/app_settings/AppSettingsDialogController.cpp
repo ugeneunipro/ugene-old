@@ -43,17 +43,17 @@ AppSettingsDialogController::AppSettingsDialogController(const QString& pageId, 
 
     currentPage = NULL;
     helpButton = new HelpButton(this, buttonBox, QString());
-    
+
     QHBoxLayout *pageLayout = new QHBoxLayout();
     settingsBox->setLayout(pageLayout);
 
     connect(tree, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), SLOT(sl_currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
-    
+
     QList<AppSettingsGUIPageController*> pages = AppContext::getAppSettingsGUI()->getRegisteredPages();
     foreach(AppSettingsGUIPageController* page, pages) {
         registerPage(page);
     }
-    
+
     if (tree->topLevelItemCount() >  0) {
         if (!pageId.isEmpty()) {
             AppSettingsTreeItem* item = findPageItem(pageId);
@@ -109,12 +109,10 @@ bool AppSettingsDialogController::turnPage(AppSettingsTreeItem* page) {
     }
     if (page!=NULL) {
         assert(currentPage == NULL);
-        
         settingsBox->setTitle(page->pageController->getPageName());
         page->pageState = page->pageState == NULL ? page->pageController->getSavedState() : page->pageState;
         page->pageState->setParent(this);
         page->pageWidget = page->pageController->createWidget(page->pageState);
-//        page->pageWidget->setState(page->pageState);
         settingsBox->layout()->addWidget(page->pageWidget);
         delete page->pageState;
         page->pageState = NULL;
@@ -127,7 +125,7 @@ bool AppSettingsDialogController::turnPage(AppSettingsTreeItem* page) {
 
 void AppSettingsDialogController::registerPage(AppSettingsGUIPageController* page) {
     assert(findPageItem(page->getPageId()) == NULL);
-    tree->addTopLevelItem(new AppSettingsTreeItem(page));    
+    tree->addTopLevelItem(new AppSettingsTreeItem(page));
 }
 
 AppSettingsTreeItem* AppSettingsDialogController::findPageItem(const QString& id) const {
