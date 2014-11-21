@@ -34,6 +34,8 @@
 
 #include "PcrPlugin.h"
 
+#include "FindPrimerPairsWorker.h"
+
 namespace U2 {
 
 extern "C" Q_DECL_EXPORT Plugin* U2_PLUGIN_INIT_FUNC() {
@@ -59,6 +61,7 @@ PcrPlugin::PcrPlugin()
             toolsSubmenu->addAction(QIcon(":/core/images/db/database_go.png"), tr("Primer library"), this, SLOT(sl_primerLibrary()));
         }
     }
+    LocalWorkflow::FindPrimerPairsWorkerFactory::init();
 }
 
 PcrPlugin::~PcrPlugin() {

@@ -72,6 +72,7 @@ InSilicoPcrOptionPanelWidget::InSilicoPcrOptionPanelWidget(AnnotatedDNAView *ann
     static const QString linkText = QString("<a href=\"%1\" style=\"color: %2\">%3</a>").arg(DETAILS_LINK).arg(L10N::linkColorLabelStr()).arg(tr("Show primers details"));
     detailsLinkLabel->setText(linkText);
     warningLabel->setStyleSheet(warningLabel->styleSheet() + "color: " + L10N::errorColorLabelStr());
+    warningLabel->setAlignment(Qt::AlignLeft);
 
     setResultTableShown(false);
 

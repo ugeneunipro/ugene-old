@@ -41,11 +41,11 @@ private slots:
     void sl_newOutputFile(const U2::Workflow::Monitor::FileInfo &info);
 
 private:
-    QString createFileButton(const QString &url) const;
+    QString createFileButton(const Monitor::FileInfo& info) const;
     void createFileListButton(const QString &actorId);
     void createFilesButton(const QString &actorId, const QList<Monitor::FileInfo> &files);
-    QString createFileSubMenu(const QString &url) const;
-    QString createActionsSubMenu(const QString &url, bool fullWidth) const;
+    QString createFileSubMenu(const Monitor::FileInfo& info) const;
+    QString createActionsSubMenu(const Monitor::FileInfo& info, bool fullWidth) const;
     QStringList createRow(const Monitor::FileInfo &info) const;
     void collapse();
     QString id(const QString &actorId) const;
@@ -53,6 +53,7 @@ private:
     void addFileMenu(const Monitor::FileInfo &info);
     QString buttonLabel(int filesCount) const;
     QString relative(const QString &absolute) const;
+    QString onClickAction(const Monitor::FileInfo& info) const;
 
 private:
     bool collapsed;

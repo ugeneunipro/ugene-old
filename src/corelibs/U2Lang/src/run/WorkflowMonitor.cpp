@@ -96,9 +96,10 @@ QString WorkflowMonitor::actorName(const QString &id) const {
     return procMap[id]->getLabel();
 }
 
-void WorkflowMonitor::addOutputFile(const QString &url, const QString &producer) {
+void WorkflowMonitor::addOutputFile(const QString &url, const QString &producer, bool openBySystem) {
     CHECK(!url.isEmpty(), );
-    FileInfo info(url, producer);
+    FileInfo info(url, producer, openBySystem);
+
     CHECK(!outputFiles.contains(info), );
 
     outputFiles << info;
@@ -250,13 +251,13 @@ void WorkflowMonitor::onLogChanged(const WDListener* listener, int messageType, 
 /* FileInfo */
 /************************************************************************/
 FileInfo::FileInfo( )
-    : url( ), actor( )
+    : url( ), actor( ), openBySystem(false)
 {
 
 }
 
-FileInfo::FileInfo(const QString &_url, const QString &_producer)
-: url(_url), actor(_producer)
+FileInfo::FileInfo(const QString &_url, const QString &_producer, bool _openBySystem)
+: url(_url), actor(_producer), openBySystem(_openBySystem)
 {
 
 }

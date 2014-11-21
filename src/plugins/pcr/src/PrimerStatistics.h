@@ -23,6 +23,7 @@
 #define _U2_PRIMER_STATISTICS_H_
 
 #include <QObject>
+#include "PrimerDimersFinder.h"
 
 namespace U2 {
 
@@ -44,11 +45,15 @@ public:
     double getTm() const;
     int getGCClamp() const;
     int getRuns() const;
+    const DimerFinderResult& getDimersInfo() const;
+
+    QString getFirstError() const;
 
     bool isValidGC(QString &error) const;
     bool isValidTm(QString &error) const;
     bool isValidGCClamp(QString &error) const;
     bool isValidRuns(QString &error) const;
+    bool isSelfDimer(QString &error) const;
 
     static const double GC_BOTTOM;
     static const double GC_TOP;
@@ -56,11 +61,13 @@ public:
     static const double TM_TOP;
     static const int CLAMP_BOTTOM;
     static const int RUNS_TOP;
+    static const double DIMERS_ENERGY_THRESHOLD;
 
 private:
     QString getMessage(const QString &error) const;
 
 private:
+    DimerFinderResult dimersInfo;
     const QByteArray sequence;
     Direction direction;
     int nA;
@@ -75,12 +82,19 @@ public:
     PrimersPairStatistics(const QByteArray &forward, const QByteArray &reverse);
 
     QString getFirstError() const;
+    
     QString generateReport() const;
 
     static const QString TmString;
     static QString toString(double value);
 
+    const PrimerStatisticsCalculator& getForwardCalculator(){return forward;}
+    const PrimerStatisticsCalculator& getReverseCalculator(){return reverse;}
+
 private:
+    void addDimersToReport(QString& report) const;
+private:
+    DimerFinderResult dimersInfo;
     PrimerStatisticsCalculator forward;
     PrimerStatisticsCalculator reverse;
 };

@@ -2,6 +2,7 @@ include (pcr.pri)
 
 HEADERS += src/EditPrimerDialog.h \
            src/ExtractProductTask.h \
+           src/FindPrimerPairsWorker.h \
            src/InSilicoPcrOPWidgetFactory.h \
            src/InSilicoPcrOptionPanelWidget.h \
            src/InSilicoPcrProductsTable.h \
@@ -9,6 +10,7 @@ HEADERS += src/EditPrimerDialog.h \
            src/PcrOptionsPanelSavableTab.h \
            src/PcrPlugin.h \
            src/Primer.h \
+           src/PrimerDimersFinder.h \
            src/PrimerGroupBox.h \
            src/PrimerLibrary.h \
            src/PrimerLibraryMdiWindow.h \
@@ -28,6 +30,7 @@ FORMS += src/ui/EditPrimerDialog.ui \
 
 SOURCES += src/EditPrimerDialog.cpp \
            src/ExtractProductTask.cpp \
+           src/FindPrimerPairsWorker.cpp \
            src/InSilicoPcrOPWidgetFactory.cpp \
            src/InSilicoPcrOptionPanelWidget.cpp \
            src/InSilicoPcrProductsTable.cpp \
@@ -35,6 +38,7 @@ SOURCES += src/EditPrimerDialog.cpp \
            src/PcrOptionsPanelSavableTab.cpp \
            src/PcrPlugin.cpp \
            src/Primer.cpp \
+           src/PrimerDimersFinder.cpp \
            src/PrimerGroupBox.cpp \
            src/PrimerLibrary.cpp \
            src/PrimerLibraryMdiWindow.cpp \

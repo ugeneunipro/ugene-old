@@ -39,9 +39,10 @@ namespace Monitor {
     class U2LANG_EXPORT FileInfo {
     public:
         FileInfo( );
-        FileInfo(const QString &url, const QString &producer);
+        FileInfo(const QString &url, const QString &producer, bool openBySystem = false);
         QString url;
         QString actor;
+        bool    openBySystem;
 
         bool operator== (const FileInfo &other) const;
     };
@@ -101,7 +102,7 @@ public:
     QString actorName(const QString &id) const;
     int getDataProduced(const QString &actor) const;
 
-    void addOutputFile(const QString &url, const QString &producer);
+    void addOutputFile(const QString &url, const QString &producer, bool openBySystem = false);
     void addError(const QString &message, const QString &actor ,const QString &type = Problem::U2_ERROR);
     /** Can be called only one time for the task */
     void addTaskError(Task *task, const QString &message = "");

@@ -53,6 +53,7 @@ const double PrimerStatisticsCalculator::TM_BOTTOM = 55.0;
 const double PrimerStatisticsCalculator::TM_TOP = 80.0;
 const int PrimerStatisticsCalculator::CLAMP_BOTTOM = 1;
 const int PrimerStatisticsCalculator::RUNS_TOP = 4;
+const double PrimerStatisticsCalculator::DIMERS_ENERGY_THRESHOLD = -6.0;
 
 PrimerStatisticsCalculator::PrimerStatisticsCalculator(const QByteArray &sequence, Direction direction)
 : sequence(sequence), direction(direction), nA(0), nC(0), nG(0), nT(0), maxRun(0)
@@ -83,6 +84,9 @@ PrimerStatisticsCalculator::PrimerStatisticsCalculator(const QByteArray &sequenc
     if (currentRun > maxRun) {
         maxRun = currentRun;
     }
+
+    HeteroDimersFinder dimersFinder(sequence, sequence);
+    dimersInfo = dimersFinder.getResult();
 }
 
 double PrimerStatisticsCalculator::getGC() const {
@@ -115,6 +119,42 @@ int PrimerStatisticsCalculator::getGCClamp() const {
 int PrimerStatisticsCalculator::getRuns() const {
     return maxRun;
 }
+
+const DimerFinderResult& PrimerStatisticsCalculator::getDimersInfo() const {
+    return dimersInfo;
+}
+
+QString PrimerStatisticsCalculator::getFirstError() const {
+    QString result;
+
+    // GC
+    if (!isValidGC(result)) {
+        return result;
+    }
+
+    // Tm
+    if (!isValidTm(result)) {
+        return result;
+    }
+
+    // GC clamp
+    if (!isValidGCClamp(result)) {
+        return result;
+    }
+
+    // Runs
+    if (!isValidRuns(result)) {
+        return result;
+    }
+
+    // Self dimers
+    if (!isSelfDimer(result)) {
+        return result;
+    }
+
+    return result;
+}
+
 
 bool PrimerStatisticsCalculator::isValidGC(QString &error) const {
     double value = getGC();
@@ -153,6 +193,12 @@ QString PrimerStatisticsCalculator::getMessage(const QString &error) const {
     }
 }
 
+bool PrimerStatisticsCalculator::isSelfDimer(QString &error) const {
+    CHECK_EXT(!dimersInfo.canBeFormed, error = "<br>Self-dimer can be formed:<br>" + dimersInfo.getShortReport(), false);
+    return true;
+}
+
+
 /************************************************************************/
 /* PrimersPairStatistics */
 /************************************************************************/
@@ -163,47 +209,32 @@ namespace {
     const QString TM_RANGE = QString("%1-%2").arg(PrimerStatisticsCalculator::TM_BOTTOM).arg(PrimerStatisticsCalculator::TM_TOP);
     const QString CLAMP_RANGE = QString("&gt;=%1 G or C at 3' end").arg(PrimerStatisticsCalculator::CLAMP_BOTTOM);
     const QString RUNS_RANGE = QString("&lt;=%1 base runs").arg(PrimerStatisticsCalculator::RUNS_TOP);
+    const QString DIMERS_RANGE = QString("&Delta;G &gt;=%1 kcal/mol").arg(PrimerStatisticsCalculator::DIMERS_ENERGY_THRESHOLD);
 }
 
 PrimersPairStatistics::PrimersPairStatistics(const QByteArray &forward, const QByteArray &reverse)
 : forward(forward, PrimerStatisticsCalculator::Forward), reverse(reverse, PrimerStatisticsCalculator::Reverse)
 {
-
+    HeteroDimersFinder dimersFinder(forward, reverse);
+    dimersInfo = dimersFinder.getResult();
 }
 
 QString PrimersPairStatistics::getFirstError() const {
-    QString result;
-    // GC
-    if (!forward.isValidGC(result)) {
-        return result;
-    }
-    if (!reverse.isValidGC(result)) {
+    QString result = forward.getFirstError();
+
+    if(!result.isEmpty()) {
         return result;
     }
 
-    // Tm
-    if (!forward.isValidTm(result)) {
-        return result;
-    }
-    if (!reverse.isValidTm(result)) {
+    result = reverse.getFirstError();
+    if(!result.isEmpty()) {
         return result;
     }
 
-    // GC clamp
-    if (!forward.isValidGCClamp(result)) {
-        return result;
-    }
-    if (!reverse.isValidGCClamp(result)) {
-        return result;
+    if(dimersInfo.canBeFormed) {
+        return dimersInfo.getShortReport();
     }
 
-    // Runs
-    if (!forward.isValidRuns(result)) {
-        return result;
-    }
-    if (!reverse.isValidRuns(result)) {
-        return result;
-    }
     return "";
 }
 
@@ -237,7 +268,24 @@ QString PrimersPairStatistics::generateReport() const {
     CREATE_ROW("GC Clamp",  CLAMP_RANGE,    QString::number(forward.getGCClamp()),  QString::number(reverse.getGCClamp()),  forward.isValidGCClamp(e),    reverse.isValidGCClamp(e));
     CREATE_ROW("Runs",      RUNS_RANGE,     QString::number(forward.getRuns()),     QString::number(reverse.getRuns()),     forward.isValidRuns(e),       reverse.isValidRuns(e));
     result += "</table>";
+    addDimersToReport(result);
     return result;
+}
+
+void PrimersPairStatistics::addDimersToReport(QString& report) const {
+    if(forward.getDimersInfo().canBeFormed || reverse.getDimersInfo().canBeFormed) {
+        report += "<h4>Self-dimers: </h4>";
+        if(forward.getDimersInfo().canBeFormed) {
+            report += "<p>" + forward.getDimersInfo().getFullReport() + "</p>";
+        }
+        if(reverse.getDimersInfo().canBeFormed) {
+            report += "<p>" + reverse.getDimersInfo().getFullReport() + "</p>";
+        }
+    }
+    if(dimersInfo.canBeFormed) {
+        report += "<h4>Hetero-dimers: </h4>";
+        report += "<p>" + dimersInfo.getFullReport() + "</p>";
+    }
 }
 
 QString PrimersPairStatistics::toString(double value) {

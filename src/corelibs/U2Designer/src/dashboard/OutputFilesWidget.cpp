@@ -76,19 +76,20 @@ QList<QStringList> OutputFilesWidget::data() {
     return result;
 }
 
-QString OutputFilesWidget::createActionsSubMenu(const QString &url, bool fullWidth) const {
-    QFileInfo info(url);
+QString OutputFilesWidget::createActionsSubMenu(const Monitor::FileInfo& info, bool fullWidth) const {
+    QString openFileByOsAction = QString("<li><a href=\"#\" onclick=\"agent.openByOS('%1')\">%2</a></li>")
+        .arg(relative(info.url))
+        .arg(tr("Open by operating system"));
     return QString(
-        "<ul class=\"dropdown-menu %1\">"
+        "<ul class=\"dropdown-menu %1\">" 
             "<li><a href=\"#\" onclick=\"agent.openByOS('%2')\">%3</a></li>"
-            "<li><a href=\"#\" onclick=\"agent.openByOS('%4')\">%5</a></li>"
+            "%4"
         "</ul>"
         )
         .arg(fullWidth ? "full-width" : "")
-        .arg(relative(info.dir().absolutePath() + "/"))
+        .arg(relative(QFileInfo(info.url).dir().absolutePath() + "/"))
         .arg(tr("Open containing directory"))
-        .arg(relative(url))
-        .arg(tr("Open by operating system"));
+        .arg(info.openBySystem ? "" : openFileByOsAction);
 }
 
 static const int MAX_LEN = 25;
@@ -101,33 +102,34 @@ static QString fileName(const QString &url) {
     return name;
 }
 
-QString OutputFilesWidget::createFileButton(const QString &url) const {
+QString OutputFilesWidget::createFileButton(const Monitor::FileInfo& info) const {
     return QString(
         "<div class=\"file-button-ctn\">"
         "<div class=\"btn-group full-width file-btn-group\">"
-        "<button class=\"btn full-width long-text\" onclick=\"agent.openUrl('%1')\" onmouseover=\"this.title=agent.absolute('%1')\">%2</button>"
+        "<button class=\"btn full-width long-text\" onclick=%1 onmouseover=\"this.title=agent.absolute('%2')\">%3</button>"
             "<button class=\"btn dropdown-toggle\" data-toggle=\"dropdown\">"
                 "<span class=\"caret\"></span>"
             "</button>"
-            "%3"
+            "%4"
         "</div>"
         "</div>"
     )
-    .arg(relative(url))
-    .arg(fileName(url))
-    .arg(createActionsSubMenu(url, true));
+    .arg(onClickAction(info))
+    .arg(relative(info.url))
+    .arg(fileName(info.url))
+    .arg(createActionsSubMenu(info, true));
 }
 
-QString OutputFilesWidget::createFileSubMenu(const QString &url) const {
+QString OutputFilesWidget::createFileSubMenu(const Monitor::FileInfo& info) const {
     return QString(
         "<li class=\"file-sub-menu dropdown-submenu left-align\">"
         "<a tabindex=\"-1\" href=\"#\" onclick=\"agent.openUrl('%1')\" title=\"%1\">%2</a>"
             "%3"
         "</li>"
     )
-    .arg(relative(url))
-    .arg(fileName(url))
-    .arg(createActionsSubMenu(url, false));
+    .arg(relative(info.url))
+    .arg(fileName(info.url))
+    .arg(createActionsSubMenu(info, false));
 }
 
 QStringList OutputFilesWidget::createRow(const Monitor::FileInfo &info) const {
@@ -135,7 +137,7 @@ QStringList OutputFilesWidget::createRow(const Monitor::FileInfo &info) const {
     const WorkflowMonitor *m = dashboard->monitor();
     CHECK(NULL != m, result);
 
-    result << createFileButton(info.url);
+    result << createFileButton(info);
     result << wrapLongText(m->actorName(info.actor));
     return result;
 }
@@ -198,7 +200,7 @@ void OutputFilesWidget::addFileMenu(const Monitor::FileInfo &info) {
         QWebElement menu = row.findFirst(".files-menu");
         int count = filesCount(menu) + 1;
         button.setInnerXml(buttonLabel(count));
-        menu.appendInside(createFileSubMenu(info.url));
+        menu.appendInside(createFileSubMenu(info));
     }
 }
 
@@ -211,6 +213,10 @@ QString OutputFilesWidget::relative(const QString &absolute) const {
         return absolute.mid(dashboard->directory().size());
     }
     return absolute;
+}
+
+QString OutputFilesWidget::onClickAction(const Monitor::FileInfo& info) const {
+    return QString(info.openBySystem ? "\"agent.openByOS('%1')\"" : "\"agent.openUrl('%1')\"").arg(relative(info.url));
 }
 
 QString OutputFilesWidget::id(const QString &actorId) const {
