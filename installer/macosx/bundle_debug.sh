@@ -101,6 +101,7 @@ add-plugin kalign
 add-plugin linkdata_support
 add-plugin opencl_support
 add-plugin orf_marker
+add-plugin pcr
 #add-plugin perf_monitor
 add-plugin phylip
 add-plugin primer3

@@ -104,6 +104,7 @@ PLUGIN_LIST="annotator \
             linkdata_support \
             opencl_support \
             orf_marker \
+            pcr \
             phylip \
             primer3 \
             psipred \
