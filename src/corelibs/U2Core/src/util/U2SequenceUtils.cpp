@@ -314,6 +314,7 @@ void U2SequenceImporter::startSequence(const U2DbiRef& dbiRef,
 
     folder = dstFolder;
 
+    sequence = U2Sequence();
     sequence.visualName = visualName;
     sequence.circular = circular;
     sequence.alphabet.id = DNAAlphabet_NUCL;
