@@ -32,7 +32,8 @@ public:
 
     enum ConnectionType {FROM_SETTINGS, MANUAL};
     EditConnectionDialogFiller(U2OpStatus &os, const Parameters &parameters, ConnectionType type);
-    void run();
+    EditConnectionDialogFiller(U2OpStatus &os, CustomScenario *scenario);
+    void commonScenario();
 
 private:
     Parameters parameters;

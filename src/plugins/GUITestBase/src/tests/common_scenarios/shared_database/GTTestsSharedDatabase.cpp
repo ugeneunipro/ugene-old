@@ -429,6 +429,57 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0013) {
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
 }
 
+GUI_TEST_CLASS_DEFINITION(cm_test_0014) {
+    //1. File -> Shared databases.
+    //Expected: The dialog appears, it contains a predefined connection to the public database
+    //2. Select the connection to the public database, click the "edit" button.
+    //Expecteds state: all fields are disabled.
+    {
+        QList<SharedConnectionsDialogFiller::Action> actions;
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::CLICK, "UGENE public database");
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::EDIT);
+        GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
+    }
+    {
+        class ReadOnlyCheckScenario : public CustomScenario {
+            void run(U2::U2OpStatus &os) {
+                QWidget *dialog = QApplication::activeModalWidget();
+                CHECK_SET_ERR(NULL != dialog, "Dialog is NULL");
+
+                QWidget *leName = GTWidget::findWidget(os, "leName", dialog);
+                QWidget *leHost = GTWidget::findWidget(os, "leHost", dialog);
+                QWidget *lePort = GTWidget::findWidget(os, "lePort", dialog);
+                QWidget *leDatabase = GTWidget::findWidget(os, "leDatabase", dialog);
+                QWidget *leLogin = GTWidget::findWidget(os, "leLogin", dialog);
+                QWidget *lePassword = GTWidget::findWidget(os, "lePassword", dialog);
+                QWidget *cbRememberMe = GTWidget::findWidget(os, "cbRemember", dialog);
+
+                CHECK_SET_ERR(NULL != leName, "Connection name field is NULL");
+                CHECK_SET_ERR(NULL != leHost, "Host field is NULL");
+                CHECK_SET_ERR(NULL != lePort, "Port field is NULL");
+                CHECK_SET_ERR(NULL != leDatabase, "Database name field is NULL");
+                CHECK_SET_ERR(NULL != leLogin, "Login field is NULL");
+                CHECK_SET_ERR(NULL != lePassword, "Password field is NULL");
+                CHECK_SET_ERR(NULL != cbRememberMe, "Remember me checkbox is NULL");
+
+                CHECK_SET_ERR(!leName->isEnabled(), "Connection name field is unexpectedly enabled");
+                CHECK_SET_ERR(!leHost->isEnabled(), "Host field is unexpectedly enabled");
+                CHECK_SET_ERR(!lePort->isEnabled(), "Port field is unexpectedly enabled");
+                CHECK_SET_ERR(!leDatabase->isEnabled(), "Database name field is unexpectedly enabled");
+                CHECK_SET_ERR(!leLogin->isEnabled(), "Login field is unexpectedly enabled");
+                CHECK_SET_ERR(!lePassword->isEnabled(), "Password field is unexpectedly enabled");
+                CHECK_SET_ERR(!cbRememberMe->isEnabled(), "Remember me checkbox is unexpectedly enabled");
+
+                GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Cancel);
+            }
+        };
+
+        GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, new ReadOnlyCheckScenario));
+    }
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(proj_test_0001) {
     //1. Connect to the "ugene_gui_test" database.
     //2. Double click the folder "/proj_test_0001".

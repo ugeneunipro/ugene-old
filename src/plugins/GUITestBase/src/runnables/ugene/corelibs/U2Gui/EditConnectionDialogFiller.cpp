@@ -35,10 +35,15 @@ EditConnectionDialogFiller::EditConnectionDialogFiller(U2OpStatus &os, const Par
     }
 }
 
+EditConnectionDialogFiller::EditConnectionDialogFiller(U2OpStatus &os, CustomScenario *scenario) :
+    Filler(os, "EditConnectionDialog", scenario)
+{
+}
+
 #define GT_CLASS_NAME "GTUtilsDialog::EditConnectionDialogFiller"
 #define GT_METHOD_NAME "run"
 
-void EditConnectionDialogFiller::run() {
+void EditConnectionDialogFiller::commonScenario() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
     QLineEdit* leName = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "leName", dialog));
