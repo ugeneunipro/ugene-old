@@ -35,6 +35,7 @@
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GObjectUtils.h>
 #include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/Settings.h>
 #include <U2View/ADVSequenceObjectContext.h>
@@ -62,15 +63,15 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
 
     okButton = buttonBox->button(QDialogButtonBox::Ok);
     tabWidget->setCurrentIndex(0);
-        
+
     dnaObj = qobject_cast<U2SequenceObject*>(ctx->getSequenceGObject());
     sourceObj = NULL;
     assert(dnaObj != NULL);
     hintLabel->setText(QString());
-    
+
     addAnnotationWidget();
     searchForAnnotatedEnzymes(ctx);
-    
+
     availableEnzymeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
     selectedEnzymeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
@@ -82,8 +83,9 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
     connect(removeAnnBtn, SIGNAL(clicked()), SLOT(sl_removeAnnBtnClicked()));
     connect(removeAllAnnsBtn, SIGNAL(clicked()), SLOT(sl_removeAllAnnsBtnClicked()));
 
-    
+
     updateAvailableEnzymeWidget();
+
     seqNameLabel->setText(dnaObj->getGObjectName());
     circularBox->setChecked(dnaObj->isCircular());
 
@@ -91,6 +93,7 @@ DigestSequenceDialog::DigestSequenceDialog( ADVSequenceObjectContext* ctx, QWidg
     foreach(Task* t, topLevelTasks) {
         if (t->getTaskName() == AutoAnnotationsUpdateTask::NAME) {
             connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskStateChanged()));
+            hintLabel->setStyleSheet("");
             hintLabel->setText(WAIT_MESSAGE);
             animationCounter = 0;
             setUiEnabled(false);
@@ -121,7 +124,7 @@ void DigestSequenceDialog::accept()
         QMessageBox::information(this, windowTitle(), tr("No enzymes are selected! Please select enzymes."));
         return;
     }
-    
+
     bool ok = loadEnzymesFile();
     if (!ok) {
         QMessageBox::critical(this, windowTitle(), tr("Cannot load enzymes library"));
@@ -166,11 +169,11 @@ void DigestSequenceDialog::accept()
             cfg.conservedRegions.insertMulti(aName, region);
         }
     }
-    
+
     DigestSequenceTask* task = new DigestSequenceTask(dnaObj, sourceObj, aObj, cfg);
 
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
-    
+
     QDialog::accept();
 }
 
@@ -228,7 +231,7 @@ void DigestSequenceDialog::searchForAnnotatedEnzymes(ADVSequenceObjectContext* c
 void DigestSequenceDialog::updateAvailableEnzymeWidget()
 {
     availableEnzymeWidget->clear();
-    
+
     QList<QString> enzymesList(availableEnzymes.values());
     qSort(enzymesList);
 
@@ -244,6 +247,8 @@ void DigestSequenceDialog::updateAvailableEnzymeWidget()
     bool empty = availableEnzymes.isEmpty();
     setUiEnabled(!empty);
     if (empty) {
+        QString style = "QLabel { color: " + L10N::infoHintColor().name() + "; font: bold; }";
+        hintLabel->setStyleSheet(style);
         hintLabel->setText(HINT_MESSAGE);
     }
 }
@@ -264,7 +269,7 @@ void DigestSequenceDialog::sl_addPushButtonClicked()
         QString enzymeId = item->text().split(":").first().trimmed();
         selectedEnzymes.insert(enzymeId);
     }
-    
+
     updateSelectedEnzymeWidget();
 }
 
@@ -308,9 +313,10 @@ void DigestSequenceDialog::sl_timerUpdate()
     if (animationCounter > MAX_COUNT) {
         animationCounter = 1;
     }
-    
+
     QString dots;
     dots.fill('.', animationCounter);
+    hintLabel->setStyleSheet("");
     hintLabel->setText(WAIT_MESSAGE + dots);
 }
 
@@ -318,7 +324,7 @@ void DigestSequenceDialog::sl_taskStateChanged()
 {
     Task* task = qobject_cast<Task*> ( sender() );
     SAFE_POINT(task != NULL, tr("Auto-annotations update task is NULL."),);
-    
+
     if (task->getState() == Task::State_Finished) {
         timer->stop();
         hintLabel->setText(QString());

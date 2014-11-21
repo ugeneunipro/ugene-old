@@ -80,6 +80,7 @@ public:
     static QString errorColorLabelStr() { return "rgb(166, 57, 46)"; }
     static QString errorColorLabelHtmlStr() { return "#A6392E"; }   // the same as errorColorLabelStr()
     static QColor successColor() { return QColor("green"); }
+    static QColor infoHintColor() { return QColor("green"); }
     static QString successColorLabelHtmlStr() { return successColor().name(); }
     static QString successColorLabelStr() { return QString("rgb(%1, %2, %2)").arg(successColor().red()).arg(successColor().green()).arg(successColor().blue()); }
     static QString linkColorLabelStr() {

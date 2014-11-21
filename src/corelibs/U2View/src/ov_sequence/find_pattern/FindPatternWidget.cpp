@@ -59,7 +59,6 @@
 #include "FindPatternWidget.h"
 
 const QString NEW_LINE_SYMBOL = "\n";
-const QString COLOR_NAME_FOR_INFO_MESSAGES = "green";
 const QString STYLESHEET_COLOR_DEFINITION = "color: ";
 const QString STYLESHEET_DEFINITIONS_SEPARATOR = ";";
 
@@ -620,7 +619,7 @@ void FindPatternWidget::connectSlots()
     connect(nextPushButton, SIGNAL(clicked()), SLOT(sl_nextButtonClicked()));
 
     connect(useAmbiguousBasesBox, SIGNAL(toggled(bool)), SLOT(sl_activateNewSearch()));
-    connect(spinMatch, SIGNAL(valueChanged(int)), SLOT(sl_activateNewSearch()));    
+    connect(spinMatch, SIGNAL(valueChanged(int)), SLOT(sl_activateNewSearch()));
 }
 
 void FindPatternWidget::sl_onAlgorithmChanged(int index)
@@ -862,7 +861,7 @@ void FindPatternWidget::showHideMessage( bool show, MessageFlag messageFlag, con
                         text += "\n";
                     }
                     text += QString(tr("Info: please input at least one sequence pattern to search for. Use Ctrl+Enter to input multiple patterns.\r\nAlternatively, load patterns from a FASTA file."));
-                    changeColorOfMessageText(COLOR_NAME_FOR_INFO_MESSAGES);
+                    changeColorOfMessageText(L10N::infoHintColor().name());
                     break;
                 case AnnotationNotValidName:
                     if (!text.isEmpty()) {
@@ -1196,7 +1195,7 @@ QList <QPair<QString, QString> > FindPatternWidget::getPatternsFromTextPatternFi
             result[i].first = model.data.name;
         }
     }
-    
+
     return result;
 }
 
@@ -1511,20 +1510,20 @@ void FindPatternWidget::sl_activateNewSearch(bool forcedSearch){
         AppContext::getTaskScheduler()->registerTopLevelTask(loadTask);
     } else {
         U2OpStatus2Log os;
-        
+
         QList<NamePattern> newPatterns = getPatternsFromTextPatternField(os);
 
         nameList.clear();
         foreach (const NamePattern &np, newPatterns) {
             nameList.append(np.first);
         }
-        
+
         if(isSearchPatternsDifferent(newPatterns) || forcedSearch){
             patternList.clear();
             for(int i = 0; i < newPatterns.size();i++){
                 newPatterns[i].first = QString::number(i);
                 patternList.append(newPatterns[i].second);
-            }   
+            }
         }else{
             checkState();
             return;
@@ -1566,7 +1565,7 @@ void FindPatternWidget::sl_getAnnotationsButtonClicked() {
     }
     GCOUNTER(cvar, tvar, "FindAlgorithmTask");
     AppContext::getTaskScheduler()->registerTopLevelTask(new CreateAnnotationsTask(aTableObj, group, findPatternResults));
-    
+
     annotModelPrepared = false;
     updateAnnotationsWidget();
 }
