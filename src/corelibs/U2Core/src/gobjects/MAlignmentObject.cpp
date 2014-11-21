@@ -81,29 +81,29 @@ void MAlignmentObject::updateCachedMAlignment(const MAlignmentModInfo &mi, const
     QString oldName = maBefore.getName();
 
     U2OpStatus2Log os;
-    if (mi.modifiedRowIds.isEmpty( ) && removedRowIds.isEmpty( ) ) { // suppose that in this case all the alignment has changed
+    if (mi.modifiedRowIds.isEmpty() && removedRowIds.isEmpty()) { // suppose that in this case all the alignment has changed
         loadAlignment(os);
         SAFE_POINT_OP(os, );
     } else { // only specified rows were changed
-        if ( !removedRowIds.isEmpty( ) ) {
-            foreach ( qint64 rowId, removedRowIds ) {
-                const int rowIndex = cachedMAlignment.getRowIndexByRowId( rowId, os );
+        if (!removedRowIds.isEmpty()) {
+            foreach (qint64 rowId, removedRowIds) {
+                const int rowIndex = cachedMAlignment.getRowIndexByRowId(rowId, os);
                 SAFE_POINT_OP(os, );
-                cachedMAlignment.removeRow( rowIndex, os );
+                cachedMAlignment.removeRow(rowIndex, os);
                 SAFE_POINT_OP(os, );
             }
         }
-        if ( !mi.modifiedRowIds.isEmpty( ) ) {
+        if (!mi.modifiedRowIds.isEmpty()) {
             MAlignmentExporter alExporter;
-            QList<MAlignmentRowReplacementData> rowsAndSeqs = alExporter.getAlignmentRows(
-                entityRef.dbiRef, entityRef.entityId, mi.modifiedRowIds, os);
+            QList<MAlignmentRowReplacementData> rowsAndSeqs = alExporter.getAlignmentRows(entityRef.dbiRef, entityRef.entityId,
+                mi.modifiedRowIds, os);
             SAFE_POINT_OP(os, );
-            foreach ( const MAlignmentRowReplacementData &data, rowsAndSeqs ) {
-                const int rowIndex = cachedMAlignment.getRowIndexByRowId( data.row.rowId, os );
+            foreach (const MAlignmentRowReplacementData &data, rowsAndSeqs) {
+                const int rowIndex = cachedMAlignment.getRowIndexByRowId(data.row.rowId, os);
                 SAFE_POINT_OP(os, );
-                cachedMAlignment.setRowContent( rowIndex, data.sequence.seq );
-                cachedMAlignment.setRowGapModel( rowIndex, data.row.gaps );
-                cachedMAlignment.renameRow( rowIndex, data.sequence.getName( ) );
+                cachedMAlignment.setRowContent(rowIndex, data.sequence.seq);
+                cachedMAlignment.setRowGapModel(rowIndex, data.row.gaps);
+                cachedMAlignment.renameRow(rowIndex, data.sequence.getName());
             }
         }
     }
@@ -118,9 +118,9 @@ void MAlignmentObject::updateCachedMAlignment(const MAlignmentModInfo &mi, const
             emit si_alignmentBecomesEmpty(false);
         }
 
-        QString newName = cachedMAlignment.getName();
-        if (newName != oldName) {
-            setGObjectNameNotDbi(cachedMAlignment.getName());
+        const QString newName = cachedMAlignment.getName();
+        if (oldName != newName) {
+            setGObjectNameNotDbi(newName);
         }
     }
     if (!removedRowIds.isEmpty()) {
@@ -364,14 +364,18 @@ void MAlignmentObject::updateRow(int rowIdx, const QString& name, const QByteArr
 
 void MAlignmentObject::setGObjectName(const QString& newName) {
     ensureDataLoaded();
+    CHECK(cachedMAlignment.getName() != newName, );
 
-    U2OpStatus2Log os;
-    MsaDbiUtils::renameMsa(entityRef, newName, os);
-    CHECK_OP(os, );
+    if (!isStateLocked()) {
+        U2OpStatus2Log os;
+        MsaDbiUtils::renameMsa(entityRef, newName, os);
+        CHECK_OP(os, );
 
-    updateCachedMAlignment();
-
-    setGObjectNameNotDbi(newName);
+        updateCachedMAlignment();
+    } else {
+        GObject::setGObjectName(newName);
+        cachedMAlignment.setName(newName);
+    }
 }
 
 QList<qint64> getRowsAffectedByDeletion( const MAlignment &msa,

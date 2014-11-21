@@ -65,9 +65,7 @@ void GObject::setGHints(GHints* s) {
 }
 
 void GObject::setGObjectName(const QString& newName) {
-    if (name == newName) {
-        return;
-    }
+    CHECK(name != newName, );
 
     if (entityRef.dbiRef.isValid()) {
         U2OpStatus2Log os;
@@ -85,6 +83,8 @@ void GObject::setGObjectName(const QString& newName) {
 }
 
 void GObject::setGObjectNameNotDbi(const QString &newName) {
+    CHECK(name != newName, );
+
     QString oldName = name;
     name = newName;
     hints->set(GObjectHint_LastUsedObjectName, name);

@@ -447,10 +447,8 @@ void U2SequenceObject::updateCachedValues() const {
     SAFE_POINT(cachedAlphabet != NULL, "Invalid sequence alphabet", );
 }
 
-void U2SequenceObject::setGObjectName( const QString& newName ){
-    if (cachedName == newName){
-        return;
-    }
+void U2SequenceObject::setGObjectName(const QString &newName) {
+    CHECK(cachedName != newName, );
 
     GObject::setGObjectName(newName);
     cachedName = GObject::getGObjectName();
