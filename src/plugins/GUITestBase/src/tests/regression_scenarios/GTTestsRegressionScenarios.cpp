@@ -7068,6 +7068,8 @@ GUI_TEST_CLASS_DEFINITION(test_3128) {
     GTUtilsDialog::waitForDialog(os, new StartupDialogFiller(os));
     GTLogTracer l;
     GTFileDialog::openFile(os, testDir + "_common_data/cmdline/read-write/", "read_db_write_gen.uws");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
 
     // 2. Set parameters:     db="NCBI protein sequence database", id="AAA59172.1"
     GTUtilsWorkflowDesigner::click(os, "Read from remote database", QPoint(-20, -20));
@@ -7232,6 +7234,7 @@ GUI_TEST_CLASS_DEFINITION(test_3139) {
 GUI_TEST_CLASS_DEFINITION(test_3140) {
 //    1. Open "_common_data/clustal/big.aln".
     GTFileDialog::openFile(os, testDir + "_common_data/clustal", "big.aln");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 
 //    2. Select the first symbol of the first line.
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(0, 0));

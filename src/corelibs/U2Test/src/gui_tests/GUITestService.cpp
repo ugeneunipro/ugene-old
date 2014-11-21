@@ -329,13 +329,15 @@ void GUITestService::runGUITest(GUITest* t) {
             }
         }
     } catch(GUITestOpStatus *) {
+
+    }
+
 #if (QT_VERSION < 0x050000) // deprecated method
     QPixmap originalPixmap = QPixmap::grabWindow(QApplication::desktop()->winId());
 #else
     QPixmap originalPixmap = QGuiApplication::primaryScreen()->grabWindow(QApplication::desktop()->winId());
 #endif
     originalPixmap.save(GUITest::screenshotDir + t->getName() + ".jpg");
-    }
 
     foreach(GUITest* t, postChecks()){
         TaskStateInfo os1;

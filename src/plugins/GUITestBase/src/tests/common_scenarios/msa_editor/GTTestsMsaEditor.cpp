@@ -2137,7 +2137,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016_1) {
 
     QString clipboardText = GTClipboard::text(os);
 
-    CHECK_SET_ERR(clipboardText == "CTT", "MSA part differs from expected");
+    CHECK_SET_ERR(clipboardText == "CTT", "MSA part differs from expected. Expected: CTT, actual: " + clipboardText);
     GTGlobals::sleep(3000);
 }
 
