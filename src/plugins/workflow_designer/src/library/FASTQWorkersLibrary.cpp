@@ -395,7 +395,7 @@ QString MergeFastqPrompter::composeRichDoc() {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
 
-    QString doc = tr("Merges input sequences from %1.").arg(producerName);
+    QString doc = tr("Merges input sequences %1.").arg(producerName);
     return doc;
 }
 

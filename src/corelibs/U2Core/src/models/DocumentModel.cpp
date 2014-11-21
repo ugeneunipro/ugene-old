@@ -227,7 +227,7 @@ Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,
 
     initModLocks(instanceModLockDesc, false);
     checkUnloadedState();
-    assert(!isModified());
+//    assert(!isModified());
 }
 
 Document::Document(DocumentFormat* _df, IOAdapterFactory* _io, const GUrl& _url,

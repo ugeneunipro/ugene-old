@@ -93,6 +93,7 @@ void ExportHighligtningDialogController::accept(){
     }
     keepGaps = keepGapsBox->isChecked();
     dots = dotsBox->isChecked();
+    transpose = transposeBox->isChecked();
     url = GUrl(fileNameEdit->text());
     
     QDialog::accept();

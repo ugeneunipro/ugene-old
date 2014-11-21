@@ -2631,12 +2631,21 @@ int MSAEditorSequenceArea::getHeight(){
     return editor->getRowHeight() * (getNumVisibleSequences(true) - 1);
 }
 
-QString MSAEditorSequenceArea::exportHighligtning( int startPos, int endPos, int startingIndex, bool keepGaps, bool dots ){
+QString MSAEditorSequenceArea::exportHighligtning( int startPos, int endPos, int startingIndex, bool keepGaps, bool dots, bool transpose){
     QStringList result;
 
     MAlignmentObject* maObj = editor->getMSAObject();
-
     assert(maObj!=NULL);
+
+    const MAlignment& msa = maObj->getMAlignment();
+    const MSAEditor *editor = ui->getEditor();
+    const MAlignment alignment = editor->getMSAObject()->getMAlignment();
+    U2OpStatusImpl os;
+    const int refSeq = alignment.getRowIndexByRowId(editor->getReferenceRowId(), os);
+    const MAlignmentRow *r = NULL;
+    if (MAlignmentRow::invalidRowId() != refSeq) {
+        r = &(msa.getRow(refSeq));
+    }
 
     QString header;
     header.append("Position\t");
@@ -2652,15 +2661,6 @@ QString MSAEditorSequenceArea::exportHighligtning( int startPos, int endPos, int
     header.remove(header.length()-1,1);
     result.append(header);
 
-    const MAlignment& msa = maObj->getMAlignment();
-    const MSAEditor *editor = ui->getEditor();
-    const MAlignment alignment = editor->getMSAObject()->getMAlignment();
-    U2OpStatusImpl os;
-    const int refSeq = alignment.getRowIndexByRowId(editor->getReferenceRowId(), os);
-    const MAlignmentRow *r = NULL;
-    if (MAlignmentRow::invalidRowId() != refSeq) {
-        r = &(msa.getRow(refSeq));
-    }
 
     int posInResult = startingIndex;
 
@@ -2698,6 +2698,12 @@ QString MSAEditorSequenceArea::exportHighligtning( int startPos, int endPos, int
         posInResult++;
     }
 
+
+    if (!transpose){
+        QStringList transposedRows = TextUtils::transposeCSVRows(result, "\t");
+        return transposedRows.join("\n");
+    }
+
     return result.join("\n");
 }
 
@@ -2718,11 +2724,12 @@ ExportHighligtningTask::ExportHighligtningTask( ExportHighligtningDialogControll
     startingIndex = dialog->startingIndex;
     keepGaps = dialog->keepGaps;
     dots = dialog->dots;
+    transpose = dialog->transpose;
     url = dialog->url;
 }
 
 void ExportHighligtningTask::run(){
-    QString exportedData = msaese->exportHighligtning(startPos, endPos, startingIndex, keepGaps, dots);
+    QString exportedData = msaese->exportHighligtning(startPos, endPos, startingIndex, keepGaps, dots, transpose);
 
     QFile resultFile(url.getURLString());
     CHECK_EXT(resultFile.open( QFile::WriteOnly | QFile::Truncate ), url.getURLString(),);

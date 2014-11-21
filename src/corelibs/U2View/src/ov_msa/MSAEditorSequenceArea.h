@@ -303,7 +303,7 @@ public:
     void drawContent(QPainter &p, const QRect &area);
     void drawContent(QPainter &p, const U2Region& region, const QList<qint64> &seqIdx);
 
-    QString exportHighligtning(int startPos, int endPos, int startingIndex, bool keepGaps, bool dots);
+    QString exportHighligtning(int startPos, int endPos, int startingIndex, bool keepGaps, bool dots, bool transpose);
 
     MSAColorScheme* getCurrentColorScheme(){return colorScheme;}
     MSAHighlightingScheme* getCurrentHighlightingScheme(){return highlightingScheme;}
@@ -514,6 +514,7 @@ private:
     int startingIndex;
     bool keepGaps;
     bool dots;
+    bool transpose;
     GUrl url;
     MSAEditorSequenceArea *msaese;
 };

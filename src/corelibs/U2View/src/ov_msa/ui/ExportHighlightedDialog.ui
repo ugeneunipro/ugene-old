@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>345</width>
-    <height>227</height>
+    <width>356</width>
+    <height>276</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -149,6 +149,16 @@
     <widget class="QCheckBox" name="dotsBox">
      <property name="text">
       <string>Dots instead not highlighted</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="transposeBox">
+     <property name="text">
+      <string>Transpose output</string>
      </property>
      <property name="checked">
       <bool>true</bool>

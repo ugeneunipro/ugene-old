@@ -41,6 +41,7 @@ public:
     int startingIndex;
     bool keepGaps;
     bool dots;
+    bool transpose;
     GUrl url;
 
 private slots:

@@ -27,6 +27,7 @@
 #include <QtCore/QBitArray>
 #include <QtCore/QSet>
 #include <QtCore/QVector>
+#include <QtCore/QStringList>
 #include <assert.h>
 
 namespace U2 {
@@ -104,6 +105,8 @@ public:
 
     // Wraps input string for valid output to CSV following RFC 4180
     inline static void wrapForCSV(QString& str);
+
+    inline static QStringList transposeCSVRows(const QStringList& rows, const QString& delimiter="\t");
 };
 
 template <typename T>
@@ -310,6 +313,30 @@ inline void TextUtils::wrapForCSV(QString& str) {
     str.replace("\"", "\"\"");
     str.prepend("\"");
     str.append("\"");
+}
+
+inline QStringList TextUtils::transposeCSVRows(const QStringList& rows, const QString& delimiter){
+    QStringList transposedRows;
+    if(rows.length() == 0){
+        return transposedRows;
+    }
+    int columnNumber = rows.at(0).split(delimiter).length();
+    for (int i = 0; i < columnNumber; i++){
+        transposedRows.append("");
+    }
+
+    foreach (const QString& originalRow, rows){
+        QStringList originalColumns = originalRow.split(delimiter);
+        for (int i = 0; i < originalColumns.length() && i < columnNumber; i++){
+            transposedRows[i].append(originalColumns.at(i));
+            transposedRows[i].append(delimiter);
+        }
+    }
+
+    for (int i = 0; i < columnNumber; i++){
+        transposedRows[i].remove(transposedRows[i].length()-1,1);
+    }
+    return transposedRows;
 }
 
 } //namespace
