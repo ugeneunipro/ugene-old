@@ -233,8 +233,6 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
     sequence.reserve(predictedSize);
     qualityScores.reserve(predictedSize);
 
-    TmpDbiObjects dbiObjects(dbiRef, os);
-
     // for lower case annotations
     GObjectReference sequenceRef;
     qint64 sequenceStart = 0;
@@ -243,9 +241,6 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
     const QString folder = hints.value(DocumentFormat::DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
     int seqNumber = 0;
     int progressUpNum = 0;
-
-    MemoryLocker memoryLocker(os);
-    Q_UNUSED(memoryLocker);
 
     const bool settingsMakeUniqueName = !hints.value(DocumentReadingMode_DontMakeUniqueNames, false).toBool();
     while (!os.isCoR()) {
@@ -313,7 +308,6 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
         }
         else {
             U2Sequence u2seq = seqImporter.finalizeSequenceAndValidate(os);
-            dbiObjects.objects << u2seq.id;
             CHECK_OP_BREAK(os);
             sequenceRef = GObjectReference(io->getURL().getURLString(), u2seq.visualName, GObjectTypes::SEQUENCE, U2EntityRef(dbiRef, u2seq.id));
 
@@ -329,15 +323,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
             os.setProgress(io->getProgress());
         }
     }
-    if (os.hasError()) {
-        foreach (GObject* o, objects) {
-            delete o;
-        }
 
-        objects.clear();
-    }
-
-    CHECK_OP(os,);
+    CHECK_OP_EXT(os, qDeleteAll(objects); objects.clear(), );
     bool emptyObjects = objects.isEmpty();
     CHECK_EXT(!emptyObjects || merge, os.setError(Document::tr("Document is empty.")), );
     SAFE_POINT(headers.size() == mergedMapping.size(), "headers <-> regions mapping failed!", );
@@ -346,7 +333,6 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& hints
         return;
     }
     U2Sequence u2seq = seqImporter.finalizeSequenceAndValidate(os);
-    dbiObjects.objects << u2seq.id;
     CHECK_OP(os,);
 
     sequenceRef = GObjectReference(io->getURL().getURLString(), u2seq.visualName, GObjectTypes::SEQUENCE, U2EntityRef(dbiRef, u2seq.id));

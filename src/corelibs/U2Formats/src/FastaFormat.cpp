@@ -133,6 +133,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     static char fastaCommentStartChar = FastaFormat::FASTA_COMMENT_START_SYMBOL;
 
     MemoryLocker memoryLocker(os, 1);
+    CHECK_OP(os, );
 
     writeLockReason.clear();
     QByteArray readBuff(READ_BUFF_SIZE + 1, 0);
@@ -143,8 +144,6 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     QStringList headers;
     QSet<QString> uniqueNames;
     QVector<U2Region> mergedMapping;
-
-    TmpDbiObjects dbiObjects(dbiRef, os);
 
     // for lower case annotations
     GObjectReference sequenceRef;
@@ -189,6 +188,7 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
                 objName = (merge) ? "Sequence" : TextUtils::variate(objName, "_", uniqueNames);
                 objName.squeeze();
                 memoryLocker.tryAcquire(2*objName.size());
+                CHECK_OP_BREAK(os);
                 uniqueNames.insert(objName);
             }
             seqImporter.startSequence(dbiRef, folder, objName, false, os);
@@ -229,12 +229,13 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
 
         if (merge) {
             memoryLocker.tryAcquire(headerLine.size());
+            CHECK_OP_BREAK(os);
             headers.append(headerLine);
             mergedMapping.append(U2Region(sequenceStart, sequenceLen));
         } else {
             memoryLocker.tryAcquire(800);
+            CHECK_OP_BREAK(os);
             U2Sequence seq = seqImporter.finalizeSequenceAndValidate(os);
-            dbiObjects.objects << seq.id;
             CHECK_OP_BREAK(os);
             sequenceRef.entityRef = U2EntityRef(dbiRef, seq.id);
             
@@ -252,14 +253,8 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
         sequenceNumber++;
         ioLog.trace(QString("Sequence #%1 is processed").arg(sequenceNumber));
     }
-    if (os.hasError()) {
-        foreach (GObject* o, objects) {
-            delete o;
-        }
 
-        objects.clear();
-    }
-    CHECK_OP(os, );
+    CHECK_OP_EXT(os, qDeleteAll(objects); objects.clear(), );
     CHECK_EXT(!objects.isEmpty() || merge, os.setError(Document::tr("Document is empty.")), );
     SAFE_POINT(headers.size() == mergedMapping.size(), "headers <-> regions mapping failed!", );
     ioLog.trace("All sequences are processed");
@@ -269,7 +264,6 @@ static void load(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, Q
     }
 
     U2Sequence seq = seqImporter.finalizeSequenceAndValidate(os);
-    dbiObjects.objects << seq.id;
     CHECK_OP(os, );
     sequenceRef.entityRef = U2EntityRef(dbiRef, seq.id);
 
@@ -372,6 +366,7 @@ void FastaFormat::storeEntry( IOAdapter *io, const QMap<GObjectType, QList<GObje
 DNASequence *FastaFormat::loadSequence(IOAdapter* io, U2OpStatus& os) {
     try {
         MemoryLocker l(os);
+        CHECK_OP(os, NULL);
 
         static QBitArray fastaHeaderStart = TextUtils::createBitMap(FASTA_HEADER_START_SYMBOL);
         static QBitArray nonWhites = ~TextUtils::WHITES;
