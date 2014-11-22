@@ -44,6 +44,7 @@ HEADERS +=  src/GUITestBasePlugin.h \
             src/runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h \
+            src/runnables/ugene/corelibs/U2Gui/FindQualifierDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ImportOptionsWidgetFiller.h \
             src/runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.h \
@@ -278,6 +279,7 @@ SOURCES +=  src/GUITestBasePlugin.cpp \
             src/runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.cpp \
+            src/runnables/ugene/corelibs/U2Gui/FindQualifierDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ImportOptionsWidgetFiller.cpp \
             src/runnables/ugene/corelibs/U2Gui/ImportToDatabaseDialogFiller.cpp \

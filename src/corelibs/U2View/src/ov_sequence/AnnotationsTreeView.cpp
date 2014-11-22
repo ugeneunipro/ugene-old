@@ -175,6 +175,7 @@ AnnotationsTreeView::AnnotationsTreeView(AnnotatedDNAView* _ctx) : ctx(_ctx), dn
     connect(removeColumnByHeaderClickAction, SIGNAL(triggered()), SLOT(sl_onRemoveColumnByHeaderClick()));
 
     searchQualifierAction = new QAction(tr("Find qualifier..."), this);
+    searchQualifierAction->setObjectName("find_qualifier_action");
     searchQualifierAction->setIcon(QIcon(":core/images/zoom_whole.png"));
     connect (searchQualifierAction, SIGNAL(triggered()), SLOT(sl_searchQualifier()));
 

@@ -80,6 +80,7 @@
 #include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/FindQualifierDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/FindTandemsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ImportBAMFileDialogFiller.h"
@@ -5718,6 +5719,22 @@ GUI_TEST_CLASS_DEFINITION(test_2737_1) {
     //Expected state: no errors in the log
     CHECK_SET_ERR(!l.hasError(), "Errors in log");
 }
+
+GUI_TEST_CLASS_DEFINITION(test_2754) {
+    //1. Open "murine.gb";
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "murine.gb");
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "NC_001363 features"));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new FindQualifierFiller(os));
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "find_qualifier_action"));
+    GTMouseDriver::moveTo(os, GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS"));
+    GTMouseDriver::click(os, Qt::RightButton);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2773) {
 
     // 1. Open file test/_common_data/cmdline/custom-script-worker-functions/translateTest/translateTest.uwl
