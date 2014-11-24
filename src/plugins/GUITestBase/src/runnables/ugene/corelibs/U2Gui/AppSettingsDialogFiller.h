@@ -54,13 +54,14 @@ class NewColorSchemeCreator: public Filler{
 public:
     enum alphabet{amino,nucl};
     enum Action{Create, Delete};
-    NewColorSchemeCreator(U2OpStatus &_os, QString _schemeName, alphabet _al, Action _act = Create): Filler(_os,"AppSettingsDialog"),
-        schemeName(_schemeName), al(_al), act(_act){}
+    NewColorSchemeCreator(U2OpStatus &_os, QString _schemeName, alphabet _al, Action _act = Create, bool cancel = false);
     virtual void run();
+
 private:
     QString schemeName;
     alphabet al;
     Action act;
+    bool cancel;
 };
 
 class CreateAlignmentColorSchemeDialogFiller: public Filler{

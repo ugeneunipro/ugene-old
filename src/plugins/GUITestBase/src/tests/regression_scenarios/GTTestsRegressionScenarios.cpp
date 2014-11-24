@@ -7758,6 +7758,48 @@ GUI_TEST_CLASS_DEFINITION(test_3226) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3245) {
+    // 1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
+
+    // 2. Ensure that there is a single menu item (Create new color scheme) in the {Colors -> Custom schemes}
+    // submenu of the context menu. Click it.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_MSA_HIGHLIGHTING"));
+
+    QComboBox *combo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "colorScheme"));
+    const int initialItemsNumber = combo->count();
+
+    // 3. Create a new color scheme, accept the preferences dialog.
+    const QString colorSchemeName = "test scheme";
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Colors" << "Custom schemes" << "Create new color scheme"));
+    GTUtilsDialog::waitForDialog(os, new NewColorSchemeCreator(os, colorSchemeName, NewColorSchemeCreator::nucl));
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 1));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // 4. Ensure that the new scheme is added to the context menu. Call the preferences dialog again.
+    // 5. Remove the custom scheme and cancel the preferences dialog.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Colors" << "Custom schemes" << colorSchemeName));
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 1));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    combo = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "colorScheme"));
+    CHECK_SET_ERR(combo->count() - 1 == initialItemsNumber, "color scheme hasn't been added to the Options Panel");
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Colors" << "Custom schemes" << "Create new color scheme"));
+    GTUtilsDialog::waitForDialog(os, new NewColorSchemeCreator(os, colorSchemeName, NewColorSchemeCreator::nucl,
+        NewColorSchemeCreator::Delete, true));
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 1));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    // Expected state: the scheme presents in the context menu, it is shown in the preferences dialog.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Colors" << "Custom schemes" << colorSchemeName));
+    GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 1));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    combo = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "colorScheme"));
+    CHECK_SET_ERR(combo->count() - 1 == initialItemsNumber, "color scheme hasn't been added to the Options Panel");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3250) {
     //1. Connect to a shared database.
     //2. Right click on the document in the project view.
@@ -7977,6 +8019,23 @@ GUI_TEST_CLASS_DEFINITION(test_3305) {
     CHECK_SET_ERR(bedFile.exists() && bedFile.size() != 0, "The result file is empty or does not exist!");
 
     GTUtilsLog::check(os, logTracer);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3306) {
+    GTFileDialog::openFile(os, dataDir + "samples/Genbank", "sars.gb");
+
+    GTUtilsAnnotationsTreeView::getItemCenter(os, "misc_feature  (0, 16)");
+
+    QTreeWidget *annotTreeWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
+    QScrollBar *scrollBar = annotTreeWidget->verticalScrollBar();
+    const int initialPos = scrollBar->value();
+
+    for (int i = 0; i < 15; ++i) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+        GTGlobals::sleep(200);
+    }
+
+    CHECK_SET_ERR(initialPos != scrollBar->value(), "ScrollBar hasn't moved");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3307){

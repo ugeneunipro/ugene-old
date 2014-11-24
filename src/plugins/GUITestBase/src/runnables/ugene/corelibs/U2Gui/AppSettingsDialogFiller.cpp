@@ -220,12 +220,17 @@ void AppSettingsDialogFiller::openTab(U2OpStatus &os, Tabs tab){
     GTGlobals::sleep(300);
 }
 #undef GT_METHOD_NAME
-
 #undef GT_CLASS_NAME
+
+NewColorSchemeCreator::NewColorSchemeCreator(U2OpStatus &_os, QString _schemeName, alphabet _al, Action _act, bool cancel)
+    : Filler(_os, "AppSettingsDialog"), schemeName(_schemeName), al(_al), act(_act), cancel(cancel)
+{
+
+}
 
 #define GT_CLASS_NAME "NewColorSchemeCreator"
 #define GT_METHOD_NAME "run"
-void NewColorSchemeCreator::run(){
+void NewColorSchemeCreator::run() {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
@@ -264,8 +269,8 @@ void NewColorSchemeCreator::run(){
 
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
     GT_CHECK(box != NULL, "buttonBox is NULL");
-    QPushButton* button = box->button(QDialogButtonBox::Ok);
-    GT_CHECK(button !=NULL, "ok button is NULL");
+    QPushButton* button = cancel ? box->button(QDialogButtonBox::Cancel) : box->button(QDialogButtonBox::Ok);
+    GT_CHECK(button !=NULL, "button is NULL");
     GTWidget::click(os, button);
 }
 #undef GT_METHOD_NAME
