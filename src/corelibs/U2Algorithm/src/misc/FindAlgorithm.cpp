@@ -502,7 +502,7 @@ static void regExpSearch(   const QString &refSequence,
         }
 
         // try to find smaller substrings starting from the same position
-        int substrLength = foundLength - 1;
+        int substrLength = qMin(foundLength - 1, maxResultLen);
         while ( 0 == stopFlag && 0 < substrLength
             && foundStartPos == ( regExp.indexIn( refSequence.left( foundStartPos + substrLength ), foundStartPos ) ) )
         {
