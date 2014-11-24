@@ -1108,7 +1108,14 @@ int ProjectViewModel::getChildrenCount(Document *doc, const QString &path) const
 
     QList<Folder*> subFolders = folders[doc]->getSubFolders(path);
     QList<GObject*> subObjects = folders[doc]->getObjects(path);
-    return subFolders.size() + subObjects.size();
+
+    int visibleObjectCount = 0;
+    foreach (GObject *subObj, subObjects) {
+        if (isVisibleObject(subObj)) {
+            ++visibleObjectCount;
+        }
+    }
+    return subFolders.size() + visibleObjectCount;
 }
 
 int ProjectViewModel::docRow(Document *doc) const {
@@ -1289,10 +1296,6 @@ QVariant ProjectViewModel::data(GObject *obj, int role) const {
         return obj->getGObjectName();
     case Qt::DecorationRole :
         return getObjectDecorationData(obj, itemIsEnabled);
-    case Qt::SizeHintRole :
-        if (!settings.isObjectShown(obj)) {
-            return 0;
-        }
     default:
         return QVariant();
     }

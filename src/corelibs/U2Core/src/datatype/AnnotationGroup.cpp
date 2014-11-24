@@ -187,8 +187,7 @@ void AnnotationGroup::removeSubgroup( AnnotationGroup &g ) {
 
 QString AnnotationGroup::getName( ) const {
     U2OpStatusImpl os;
-    const U2Feature feature = U2FeatureUtils::getFeatureById( id,
-        parentObject->getEntityRef( ).dbiRef, os );
+    const U2Feature feature = U2FeatureUtils::getFeatureById( id, parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, QString( ) );
     return feature.name;
 }
@@ -231,8 +230,7 @@ AnnotationTableObject * AnnotationGroup::getGObject( ) const {
 
 AnnotationGroup AnnotationGroup::getParentGroup( ) const {
     U2OpStatusImpl os;
-    const U2Feature feature = U2FeatureUtils::getFeatureById( id,
-        parentObject->getEntityRef( ).dbiRef, os );
+    const U2Feature feature = U2FeatureUtils::getFeatureById( id, parentObject->getEntityRef( ).dbiRef, os );
     SAFE_POINT_OP( os, *this );
 
     if ( 0 == U2DbiUtils::toDbiId( feature.parentFeatureId ) ) {
