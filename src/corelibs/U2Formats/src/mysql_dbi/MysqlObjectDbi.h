@@ -72,6 +72,9 @@ public:
     virtual QHash<U2Object, QString> getObjectFolders(U2OpStatus &os);
     virtual void renameFolder(const QString &oldPath, const QString &newPath, U2OpStatus &os);
 
+    /** Returns the folder's previous path if it is set or an empty string if folder has not been moved. */
+    virtual QString getFolderPreviousPath(const QString &currentPath, U2OpStatus &os);
+
     /** Returns number of top-level U2Objects in folder */
     virtual qint64 countObjects(const QString& folder, U2OpStatus& os);
 

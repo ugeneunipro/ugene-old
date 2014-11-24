@@ -50,9 +50,6 @@ public:
 
     static bool isDbInitialized(const U2DbiRef &dbiRef, U2OpStatus& os);
 
-    static bool dbSatisfiesAppVersion(const U2DbiRef &dbiRef, QString &minRequiredVersion,
-        U2OpStatus& os);
-
     /**
      * Updates the object name and increments the version.
      * The changes are tracked if it is needed.
@@ -62,6 +59,8 @@ public:
         U2OpStatus& os);
     static void renameObject(MysqlModificationAction& updateAction, MysqlDbi* dbi,
         U2Object& object, const QString& newName, U2OpStatus& os);
+
+    static void upgrade(const U2DbiRef &dbiRef, U2OpStatus &os);
 };
 
 }   // namespace U2

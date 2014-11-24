@@ -202,6 +202,9 @@ public:
     static QString makeFolderCanonical(const QString& folder);
 
     static bool isDbiReadOnly(const U2DbiRef &dbiRef);
+    static Version getDbMinRequiredVersion(const U2DbiRef &dbiRef, U2OpStatus &os);
+    static bool isDatabaseTooNew(const U2DbiRef &dbiRef, const Version &ugeneVersion, QString &minRequiredVersionString, U2OpStatus &os);
+    static bool isDatabaseTooOld(const U2DbiRef &dbiRef, const Version &ugeneVersion, U2OpStatus &os);
 
     static const QString PUBLIC_DATABASE_NAME;
     static const QString PUBLIC_DATABASE_URL;

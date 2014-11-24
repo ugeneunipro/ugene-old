@@ -62,6 +62,7 @@ private slots:
     void sl_addClicked();
     void sl_deleteClicked();
     void sl_connectionComplete();
+    void sl_upgradeComplete(Task *upgradeTask);
 
 private:
     void init();
@@ -80,6 +81,7 @@ private:
 
     bool checkDatabaseAvailability(const U2DbiRef &ref, bool &initializationRequired);
     bool isConnected(QListWidgetItem *item) const;
+    void setUpgradedMark(QListWidgetItem *item, bool isUpgraded);
     bool alreadyExists(const QString& dbiUrl, const QString &userName, QString &existingName) const;
     QListWidgetItem* insertConnection(const QString& preferredName, const QString& fullDbiUrl);
     QListWidgetItem* insertConnection(const QString& preferredName, const QString& dbiUrl, const QString &userName);
@@ -88,9 +90,16 @@ private:
     void countConnectionsToPublicDatabase(const QString &dbiUrl);
     QString getCurrentFullDbiUrl() const;
     QString getFullDbiUrl(const QListWidgetItem *item) const;
+    void findUpgradeTasks();
+    QListWidgetItem *findItemByDbiUrl(const QString &dbiUrl) const;
+
+    bool checkDbInitializationState(const U2DbiRef &ref, bool &initializationRequired);
+    bool checkDbIsTooNew(const U2DbiRef &ref);
+    bool checkDbShouldBeUpgraded(const U2DbiRef &ref);
 
     Ui::SharedConnectionsDialog *ui;
     QMap<QListWidgetItem*, Task*> connectionTasks;
+    QMap<QListWidgetItem*, Task*> upgradeTasks;
 
     static const QString SETTINGS_RECENT; // TODO: move this identifier to another class, since it is to be used
                                           // not only within the dialog. After that search through the code,

@@ -636,11 +636,21 @@ bool ProjectViewModel::restoreObjectItemFromRecycleBin(Document *doc, GObject *o
 }
 
 bool ProjectViewModel::restoreFolderItemFromRecycleBin(Document *doc, const QString &oldPath) {
-    const QString orginPath = recoverRemovedFolderPath(oldPath);
-    if (!folders[doc]->hasFolder(Folder::getFolderParentPath(orginPath))) {
+    U2OpStatus2Log os;
+    DbiOperationsBlock opBlock(doc->getDbiRef(), os);
+    Q_UNUSED(opBlock);
+    CHECK_OP(os, false);
+
+    ConnectionHelper con(doc->getDbiRef(), os);
+    CHECK_OP(os, false);
+
+    const QString originPath = con.oDbi->getFolderPreviousPath(oldPath, os);
+    CHECK_OP(os, false);
+
+    if (!folders[doc]->hasFolder(Folder::getFolderParentPath(originPath))) {
         return false;
     }
-    return renameFolder(doc, oldPath, orginPath);
+    return renameFolder(doc, oldPath, originPath);
 }
 
 QList<GObject*> ProjectViewModel::getFolderContent(Document *doc, const QString &path) const {
@@ -705,6 +715,7 @@ void ProjectViewModel::createFolder(Document *doc, QString &path) {
 bool ProjectViewModel::renameFolderInDb(Document *doc, const QString &oldPath, QString &newPath) const {
     U2OpStatus2Log os;
     DbiOperationsBlock opBlock(doc->getDbiRef(), os);
+    Q_UNUSED(opBlock);
     CHECK_OP(os, false);
     DbiConnection con(doc->getDbiRef(), os);
     CHECK_OP(os, false);
@@ -1397,16 +1408,6 @@ bool ProjectViewModel::isAcceptableFolder(Document *targetDoc, const QString &ta
             && !Folder::isSubFolder(srcPath, targetFolderPath);
     }
     return false;
-}
-
-QString ProjectViewModel::recoverRemovedFolderPath(const QString &path) {
-    QString result;
-    SAFE_POINT(ProjectUtils::isFolderInRecycleBin(path), "Invalid folder path detected!", result);
-
-    result = path.mid(ProjectUtils::RECYCLE_BIN_FOLDER_PATH.size());
-    SAFE_POINT(!result.isEmpty(), "Invalid folder path detected!", result);
-
-    return result;
 }
 
 void ProjectViewModel::connectDocument(Document *doc) {

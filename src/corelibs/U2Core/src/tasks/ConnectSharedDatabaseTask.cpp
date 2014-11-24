@@ -44,6 +44,7 @@ void ConnectSharedDatabaseTask::run() {
         DbiConnection con(dbiRef, stateInfo);
         CHECK_OP(stateInfo, );
         con.dbi->populateDefaultSchema(stateInfo);
+        CHECK_OP(stateInfo, );
     }
 
     IOAdapterFactory* ioAdapterFactory = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::DATABASE_CONNECTION);

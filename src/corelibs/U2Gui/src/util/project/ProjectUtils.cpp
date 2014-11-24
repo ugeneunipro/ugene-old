@@ -30,7 +30,7 @@
 namespace U2 {
 
 const int ProjectUtils::MAX_OBJS_TO_SHOW_LOAD_PROGRESS = 100;
-const QString ProjectUtils::RECYCLE_BIN_FOLDER_PATH = U2ObjectDbi::PATH_SEP + U2ObjectDbi::RECYCLE_BIN_FOLDER;
+const QString ProjectUtils::RECYCLE_BIN_FOLDER_PATH = U2ObjectDbi::ROOT_FOLDER + U2ObjectDbi::RECYCLE_BIN_FOLDER;
 
 bool ProjectUtils::isConnectedDatabaseDoc(const Document *doc) {
     CHECK(NULL != doc, false);

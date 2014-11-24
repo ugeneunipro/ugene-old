@@ -224,6 +224,7 @@ HEADERS += src/cmdline/CMDLineCoreOptions.h \
            src/util/U2AssemblyUtils.h \
            src/util/U2AttributeUtils.h \
            src/util/U2Bits.h \
+           src/util/U2DbiUpgrader.h \
            src/util/U2FeatureUtils.h \
            src/util/U2OpStatusUtils.h \
            src/util/U2SequenceUtils.h \
@@ -410,6 +411,7 @@ SOURCES += src/cmdline/CMDLineCoreOptions.cpp \
            src/util/U2AssemblyUtils.cpp \
            src/util/U2AttributeUtils.cpp \
            src/util/U2Bits.cpp \
+           src/util/U2DbiUpgrader.cpp \
            src/util/U2FeatureUtils.cpp \
            src/util/U2SequenceUtils.cpp \
            src/util/U2VariationUtils.cpp

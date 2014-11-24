@@ -120,7 +120,7 @@ public:
     virtual void initSqlSchema(U2OpStatus& os);
     virtual void shutdown(U2OpStatus& os);
 
-    void upgrade(U2OpStatus &os);
+    static QString getCreateAssemblyTableQuery(const QString &tableAlias = "Assembly");
 
 private:
     virtual void addReads(AssemblyAdapter* a, U2DbiIterator<U2AssemblyRead>* it, U2AssemblyReadsImportInfo& ii, U2OpStatus& os);

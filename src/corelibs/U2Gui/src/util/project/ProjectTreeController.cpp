@@ -45,6 +45,7 @@
 #include <U2Core/ProjectModel.h>
 #include <U2Core/RemoveDocumentTask.h>
 #include <U2Core/ResourceTracker.h>
+#include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -1159,7 +1160,7 @@ bool ProjectTreeController::removeFolders(const QList<Folder> &folders, const QL
             folders2Delete << folder;
             model->addToIgnoreFolderFilter(doc, folderPath);
         } else {
-            const QString dstPath = ProjectUtils::RECYCLE_BIN_FOLDER_PATH + folderPath;
+            const QString dstPath = ProjectUtils::RECYCLE_BIN_FOLDER_PATH + U2ObjectDbi::PATH_SEP + Folder::getFolderName(folderPath);
             model->renameFolder(doc, folderPath, dstPath);
         }
         relatedDocs.insert(doc);

@@ -57,9 +57,6 @@ class Version;
 
 class U2CORE_EXPORT U2DbiOptions {
 public :
-    /** Application version number that created the database */
-    static const QString APP_CREATOR_VERSION;
-
     /** Application version number that is supposed to be minimum version required to make use of the database */
     static const QString APP_MIN_COMPATIBLE_VERSION;
 
@@ -137,11 +134,11 @@ enum U2DbiFeature {
     /** DBI supports changing/storing custom properties */
     U2DbiFeature_WriteProperties                = 108,
     /** DBI supports changing/storing of objects modification tracks */
-    U2DbiFeature_WriteModifications            = 109,
+    U2DbiFeature_WriteModifications             = 109,
     /** DBI supports changing/storing UDR */
-    U2DbiFeature_WriteUdr                      = 110,
+    U2DbiFeature_WriteUdr                       = 110,
     /** DBI supports writing of object relations */
-    U2DbiFeature_WriteRelations                = 111,
+    U2DbiFeature_WriteRelations                 = 111,
 
     /** DBI supports removal of objects */
     U2DbiFeature_RemoveObjects                  = 200,
@@ -364,7 +361,7 @@ public:
     virtual bool isReadOnly() const = 0;
 
 protected:
-    /** Stores to database the following properties: U2DbiOptions::APP_CREATOR_VERSION
+    /** Stores to database the following properties:
         U2DbiOptions::APP_MIN_COMPATIBLE_VERSION */
     void setVersionProperties(const Version &minVersion, U2OpStatus &os);
 };

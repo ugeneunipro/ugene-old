@@ -30,6 +30,7 @@
 #include "SQLiteFeatureDbi.h"
 #include "SQLiteModDbi.h"
 #include "SQLiteUdrDbi.h"
+#include "util/SqliteUpgraderFrom_0_To_1_13.h"
 
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/U2SqlHelpers.h>
@@ -61,6 +62,8 @@ SQLiteDbi::SQLiteDbi()
     featureDbi = new SQLiteFeatureDbi(this);
     operationsBlockTransaction = NULL;
     udrDbi = new SQLiteUdrDbi(this);
+
+    upgraders << new SqliteUpgraderFrom_0_To_1_13(this);
 }
 
 SQLiteDbi::~SQLiteDbi() {
@@ -126,6 +129,10 @@ UdrDbi* SQLiteDbi::getUdrDbi() {
 
 SQLiteObjectDbi* SQLiteDbi::getSQLiteObjectDbi() const {
     return objectDbi;
+}
+
+SQLiteObjectRelationsDbi *SQLiteDbi::getSQLiteObjectRelationsDbi() const {
+    return objectRelationsDbi;
 }
 
 SQLiteMsaDbi* SQLiteDbi::getSQLiteMsaDbi() const {
@@ -244,28 +251,6 @@ void SQLiteDbi::populateDefaultSchema(U2OpStatus& os) {
     modDbi->initSqlSchema(os);
     udrDbi->initSqlSchema(os);
 
-    setVersionProperties(Version::minVersionForSQLite(), os);
-}
-
-void SQLiteDbi::upgrade(U2OpStatus &os) {
-    SQLiteTransaction t(db, os);
-
-    const QString dbAppVersionText = getProperty(U2DbiOptions::APP_MIN_COMPATIBLE_VERSION, "", os);
-    CHECK_OP(os, );
-    Version dbAppVersion = Version::parseVersion(dbAppVersionText);
-    Version currentVersion = Version::appVersion();
-    if (!dbAppVersionText.isEmpty() && dbAppVersion > currentVersion) {
-        QString msg = QObject::tr("Incompatible database version. Try to use %1 or higher UGENE version for opening it.").arg(dbAppVersionText);
-        os.setError(msg);
-        return;
-    }
-
-    objectDbi->upgrade(os);
-    CHECK_OP(os, );
-    objectRelationsDbi->upgrade(os);
-    CHECK_OP(os, );
-    assemblyDbi->upgrade(os);
-    CHECK_OP(os, );
     setVersionProperties(Version::minVersionForSQLite(), os);
 }
 

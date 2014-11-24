@@ -118,17 +118,6 @@ bool MysqlDbiUtils::isDbInitialized(const U2DbiRef &dbiRef, U2OpStatus& os) {
     return con.dbi->isInitialized(os);
 }
 
-bool MysqlDbiUtils::dbSatisfiesAppVersion(const U2DbiRef &dbiRef, QString &minRequiredVersion,
-    U2OpStatus& os)
-{
-    DbiConnection con(dbiRef, os);
-    CHECK_OP(os, false);
-    minRequiredVersion = con.dbi->getProperty(U2DbiOptions::APP_MIN_COMPATIBLE_VERSION, QString(), os);
-    CHECK_OP(os, false);
-
-    return Version::appVersion() >= Version::parseVersion(minRequiredVersion);
-}
-
 void MysqlDbiUtils::renameObject(MysqlDbi* dbi, U2Object &object, const QString &newName, U2OpStatus &os) {
     CHECK_OP(os, );
     SAFE_POINT(NULL != dbi, "NULL dbi", );
@@ -162,6 +151,16 @@ void MysqlDbiUtils::renameObject(MysqlModificationAction& updateAction, MysqlDbi
     CHECK_OP(os, );
 
     updateAction.addModification(object.id, U2ModType::objUpdatedName, modDetails, os);
+}
+
+void MysqlDbiUtils::upgrade(const U2DbiRef &dbiRef, U2OpStatus &os) {
+    DbiConnection con(dbiRef, os);
+    CHECK_OP(os, );
+
+    MysqlDbi *mysqlDbi = dynamic_cast<MysqlDbi *>(con.dbi);
+    SAFE_POINT_EXT(NULL != mysqlDbi, os.setError("The proposed dbi reference doesn't corresponds a mysql database"), );
+
+    mysqlDbi->upgrade(os);
 }
 
 }   // namespace U2

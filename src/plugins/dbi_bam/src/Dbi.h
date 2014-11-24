@@ -103,8 +103,6 @@ public:
 
     virtual QStringList getFolders(U2OpStatus &os);
 
-    virtual void renameFolder(const QString &oldPath, const QString &newPath, U2OpStatus &os);
-
     virtual qint64 countObjects(const QString &folder, U2OpStatus &os);
 
     virtual QList<U2DataId> getObjects(const QString &folder, qint64 offset, qint64 count, U2OpStatus &os);

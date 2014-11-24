@@ -39,25 +39,6 @@ SQLiteObjectDbi::SQLiteObjectDbi(SQLiteDbi* dbi) : U2ObjectDbi(dbi), SQLiteChild
 
 }
 
-void SQLiteObjectDbi::upgrade(U2OpStatus &os) {
-    SQLiteQuery q("PRAGMA table_info(Object)", db, os);
-    CHECK_OP(os, );
-
-    bool hasModTrack = false;
-    while (q.step()) {
-        QString colName = q.getString(1);
-        if ("trackMod" == colName) {
-            hasModTrack = true;
-            break;
-        }
-    }
-    if (hasModTrack) {
-        return;
-    }
-
-    SQLiteQuery("ALTER TABLE Object ADD trackMod INTEGER NOT NULL DEFAULT 0", db, os).execute();
-}
-
 void SQLiteObjectDbi::initSqlSchema(U2OpStatus& os) {
     // objects table - stores IDs and types for all objects. It also stores 'top_level' flag to simplify queries
     // rank: see U2DbiObjectRank
@@ -385,6 +366,11 @@ void SQLiteObjectDbi::renameFolder(const QString &oldPath, const QString &newPat
             CHECK_OP(os, );
         }
     }
+}
+
+QString SQLiteObjectDbi::getFolderPreviousPath(const QString & /*currentPath*/, U2OpStatus &os) {
+    os.setError("Operation is not supported");
+    return "";
 }
 
 qint64 SQLiteObjectDbi::countObjects(const QString& folder, U2OpStatus& os) {

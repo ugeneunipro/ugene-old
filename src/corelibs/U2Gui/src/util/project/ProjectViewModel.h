@@ -116,7 +116,6 @@ private:
     static bool isAcceptableFolder(Document *targetDoc, const QString &targetFolderPath, const Folder &folder);
     /** NOTE: the method supposes that @oldFolders and @newFolders are sorted */
     static void findFoldersDiff(const QStringList &oldFolders, const QStringList &newFolders, QStringList &added, QStringList &deleted);
-    static QString recoverRemovedFolderPath(const QString &path);
 
     Document * getObjectDocument(GObject *obj) const;
 

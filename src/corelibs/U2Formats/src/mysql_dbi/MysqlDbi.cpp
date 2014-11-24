@@ -27,8 +27,8 @@
 
 #include "MysqlAssemblyDbi.h"
 #include "MysqlAttributeDbi.h"
-#include "MysqlDbi.h"
 #include "MysqlCrossDatabaseReferenceDbi.h"
+#include "MysqlDbi.h"
 #include "MysqlFeatureDbi.h"
 #include "MysqlModDbi.h"
 #include "MysqlMsaDbi.h"
@@ -39,6 +39,7 @@
 #include "MysqlVariantDbi.h"
 #include "util/MysqlDbiUtils.h"
 #include "util/MysqlHelpers.h"
+#include "util/upgraders/MysqlUpgraderFrom_1_14_To_1_15.h"
 
 namespace U2 {
 
@@ -60,6 +61,8 @@ MysqlDbi::MysqlDbi()
     sequenceDbi =           new MysqlSequenceDbi(this);
     udrDbi =                new MysqlUdrDbi(this);
     variantDbi =            new MysqlVariantDbi(this);
+
+    upgraders << new MysqlUpgraderFrom_1_14_To_1_15(this);
 }
 
 MysqlDbi::~MysqlDbi() {
@@ -212,6 +215,10 @@ void MysqlDbi::setProperty(const QString& name, const QString& value, U2OpStatus
     q2.bindString(":name", name);
     q2.bindString(":value", value);
     q2.execute();
+
+    if (U2DbiOptions::APP_MIN_COMPATIBLE_VERSION == name) {
+        minCompatibleAppVersion = value;
+    }
 }
 
 void MysqlDbi::startOperationsBlock(U2OpStatus& os) {

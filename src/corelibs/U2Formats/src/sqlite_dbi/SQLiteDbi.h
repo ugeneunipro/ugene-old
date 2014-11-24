@@ -124,6 +124,8 @@ public:
 
     SQLiteObjectDbi* getSQLiteObjectDbi() const;
 
+    SQLiteObjectRelationsDbi *getSQLiteObjectRelationsDbi() const;
+
     SQLiteMsaDbi* getSQLiteMsaDbi() const;
 
     SQLiteSequenceDbi* getSQLiteSequenceDbi() const;
@@ -157,11 +159,6 @@ private:
     void setState(U2DbiState state);
 
     void internalInit(const QHash<QString, QString>& props, U2OpStatus& os);
-    /**
-     * If the database was created by a previous version of UGENE
-     * then it must be upgraded up to the current version.
-     */
-    void upgrade(U2OpStatus &os);
 
     QString                             url;
     DbRef*                              db;

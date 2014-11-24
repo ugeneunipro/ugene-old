@@ -43,10 +43,6 @@ void SQLiteObjectRelationsDbi::initSqlSchema( U2OpStatus &os ) {
     SQLiteQuery( "CREATE INDEX IF NOT EXISTS ObjectRelationRole ON ObjectRelation(role)", db, os ).execute( );
 }
 
-void SQLiteObjectRelationsDbi::upgrade(U2OpStatus &os) {
-    initSqlSchema(os);
-}
-
 void SQLiteObjectRelationsDbi::createObjectRelation( U2ObjectRelation &relation, U2OpStatus &os ) {
     static const QString queryString( "INSERT INTO ObjectRelation (object, reference, role) VALUES(?1, ?2, ?3)" );
     SQLiteQuery q( queryString, db, os );

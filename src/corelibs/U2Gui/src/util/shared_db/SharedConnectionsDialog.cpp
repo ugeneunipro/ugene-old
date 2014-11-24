@@ -35,14 +35,18 @@
 #include <U2Core/PasswordStorage.h>
 #include <U2Core/ConnectSharedDatabaseTask.h>
 #include <U2Core/Counter.h>
+#include <U2Core/L10n.h>
 #include <U2Core/ProjectModel.h>
 #include <U2Core/Settings.h>
+#include <U2Core/TaskSignalMapper.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2DbiUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
+#include <U2Core/Version.h>
 
 #include <U2Formats/MysqlDbiUtils.h>
+#include <U2Formats/MysqlUpgradeTask.h>
 
 #include <U2Gui/AuthenticationDialog.h>
 #include <U2Gui/HelpButton.h>
@@ -61,6 +65,17 @@ static const char * UNABLE_TO_CONNECT_TEXT = "The database has been set up "
     "for a more recent version of UGENE, this means that this version of UGENE is not compatible "
     "with the database and will not connect to it. Upgrade UGENE to at least %1 version "
     "to make use of the database";
+
+static const char * DATABASE_UPGRADE_TITLE = "Database Upgrade";
+static const char * DATABASE_UPGRADE_TEXT = "The database you are trying to connect to was created by an older UGENE version. "
+        "It has to be upgraded to be compatible with your current UGENE version. You may need administration privileges to perform "
+        "the upgrade. Note that after it has been completed previous UGENE versions may not be able to work with the database.";
+
+static const char * DATABASE_UPGRADE_ERROR_TITLE = "Database Upgrade Error";
+static const char * DATABASE_UPGRADE_ERROR_TEXT = "UGENE has failed to upgrade the database. Probably, you don't have enough permissions."
+        "\n\n"
+        "An error message:"
+        "\n";
 
 static const char * CONNECTION_DUPLICATE_TITLE = "Connection Duplicate Detected";
 static const char * CONNECTION_DUPLICATE_TEXT = "You already have a connection to the database that you have specified. "
@@ -165,6 +180,9 @@ void SharedConnectionsDialog::sl_editClicked() {
         item->setData(UrlRole, editDialog.getShortDbiUrl());
         item->setData(LoginRole, login);
 
+        connectionTasks.remove(item);
+        findUpgradeTasks();
+
         saveRecentConnection(item);
         updateState();
     }
@@ -178,6 +196,7 @@ void SharedConnectionsDialog::sl_addClicked() {
         CHECK(NULL != item, );
         ui->lwConnections->setCurrentItem(item);
         saveRecentConnection(item);
+        findUpgradeTasks();
         updateState();
     }
 }
@@ -192,7 +211,10 @@ void SharedConnectionsDialog::sl_deleteClicked() {
     cancelConnection(item);
 
     removeRecentConnection(item);
+    connectionTasks.remove(item);
+    upgradeTasks.remove(item);
     delete item;
+
     updateState();
 }
 
@@ -202,14 +224,29 @@ void SharedConnectionsDialog::sl_connectionComplete() {
         return;
     }
 
-    connectionTasks.remove(connectionTasks.key(task));
+    connectionTasks.remove(connectionTasks.key(task, NULL));
     updateState();
     emit si_connectionCompleted();
+}
+
+void SharedConnectionsDialog::sl_upgradeComplete(Task *upgradeTask) {
+    SAFE_POINT(NULL != upgradeTask, L10N::nullPointerError("upgradeTask"), );
+
+    upgradeTasks.remove(upgradeTasks.key(upgradeTask, NULL));
+    updateState();
+
+    if (upgradeTask->hasError()) {
+        QMessageBox::critical(this,
+                              tr(DATABASE_UPGRADE_ERROR_TITLE),
+                              tr(DATABASE_UPGRADE_ERROR_TEXT) + upgradeTask->getError());
+        coreLog.details(tr("Can't upgrade the shared database: ") + upgradeTask->getError());
+    }
 }
 
 void SharedConnectionsDialog::init() {
     restoreRecentConnections();
     saveRecentConnections();
+    findUpgradeTasks();
 }
 
 void SharedConnectionsDialog::connectSignals() {
@@ -232,10 +269,11 @@ void SharedConnectionsDialog::updateButtonsState() {
     QListWidgetItem* currentItem = ui->lwConnections->currentItem();
     const bool isSomethingSelected = (NULL != currentItem);
     const bool isCurrentConnected = isConnected(currentItem);
+    const bool isCurrentUpgradedNow = upgradeTasks.contains(currentItem);
 
     ui->pbDelete->setEnabled(isSomethingSelected);
     ui->pbEdit->setEnabled(isSomethingSelected && !isCurrentConnected);
-    ui->pbConnect->setEnabled(isSomethingSelected && !isCurrentConnected);
+    ui->pbConnect->setEnabled(isSomethingSelected && !isCurrentConnected && !isCurrentUpgradedNow);
     ui->pbDisconnect->setEnabled(isSomethingSelected && isCurrentConnected);
 }
 
@@ -243,6 +281,7 @@ void SharedConnectionsDialog::updateConnectionsState() {
     for (int i = 0; i < ui->lwConnections->count(); i++) {
         QListWidgetItem* item = ui->lwConnections->item(i);
         updateItemIcon(item, isConnected(item));
+        setUpgradedMark(item, upgradeTasks.contains(item));
     }
 }
 
@@ -296,40 +335,10 @@ void SharedConnectionsDialog::saveRecentConnections() const {
 }
 
 bool SharedConnectionsDialog::checkDatabaseAvailability(const U2DbiRef &ref, bool &initializationRequired) {
-    U2OpStatusImpl os;
-    const bool dbInitialized = MysqlDbiUtils::isDbInitialized(ref, os);
-    if (os.isCoR()) {
-        QMessageBox::critical(this,
-                              tr("Connection Error"),
-                              tr("Unable to connect to the database:\n"
-                                 "check the connection settings"));
-        coreLog.details(tr("Can't connect to the shared database: ") + os.getError());
-        return false;
-    }
+    CHECK(checkDbInitializationState(ref, initializationRequired), false);
+    CHECK(checkDbIsTooNew(ref), false);
+    CHECK(checkDbShouldBeUpgraded(ref), false);
 
-    if (!dbInitialized) {
-        int userInput = QMessageBox::question(this, tr(NON_INITED_DB_MB_TITLE),
-            tr(NON_INITED_DB_MB_TEXT), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-        QMessageBox::StandardButton answer = static_cast<QMessageBox::StandardButton>(userInput);
-        switch (answer) {
-        case QMessageBox::No :
-            initializationRequired = false;
-            return false;
-        case QMessageBox::Yes :
-            initializationRequired = true;
-            return true;
-        default:
-            FAIL("Unexpected user answer detected!", false);
-        }
-    }
-
-    QString minRequiredVersion;
-    const bool isAppVersionSufficient = MysqlDbiUtils::dbSatisfiesAppVersion(ref, minRequiredVersion, os);
-    SAFE_POINT_OP(os, false);
-    if (!isAppVersionSufficient) {
-        QMessageBox::critical(this, tr(UNABLE_TO_CONNECT_TITLE), tr(UNABLE_TO_CONNECT_TEXT).arg(minRequiredVersion));
-        return false;
-    }
     return true;
 }
 
@@ -342,6 +351,12 @@ bool SharedConnectionsDialog::isConnected(QListWidgetItem* item) const {
     Document* connectionDoc = AppContext::getProject()->findDocumentByURL(GUrl(getFullDbiUrl(item), GUrl_Network));
 
     return ((NULL != connectionDoc) && (connectionDoc->isLoaded())) || connectionIsInProcess;
+}
+
+void SharedConnectionsDialog::setUpgradedMark(QListWidgetItem *item, bool isUpgraded) {
+    QFont font = item->font();
+    font.setBold(isUpgraded);
+    item->setFont(font);
 }
 
 bool SharedConnectionsDialog::alreadyExists(const QString &dbiUrl, const QString &userName, QString &existingName) const {
@@ -407,6 +422,94 @@ QString SharedConnectionsDialog::getCurrentFullDbiUrl() const {
 
 QString SharedConnectionsDialog::getFullDbiUrl(const QListWidgetItem *item) const {
     return U2DbiUtils::createFullDbiUrl(item->data(LoginRole).toString(), item->data(UrlRole).toString());
+}
+
+void SharedConnectionsDialog::findUpgradeTasks() {
+    upgradeTasks.clear();
+    const QList<Task *> tasks = AppContext::getTaskScheduler()->getTopLevelTasks();
+    foreach (Task *task, tasks) {
+        MysqlUpgradeTask *upgradeTask = qobject_cast<MysqlUpgradeTask *>(task);
+        if (NULL != upgradeTask) {
+            const QString dbiUrl = U2DbiUtils::ref2Url(upgradeTask->getDbiRef());
+            QListWidgetItem *item = findItemByDbiUrl(dbiUrl);
+            if (NULL != item) {
+                upgradeTasks.insert(item, upgradeTask);
+            }
+        }
+    }
+}
+
+QListWidgetItem *SharedConnectionsDialog::findItemByDbiUrl(const QString &dbiUrl) const {
+    for (int i = 0; i < ui->lwConnections->count(); i++) {
+        QListWidgetItem *item = ui->lwConnections->item(i);
+        if (dbiUrl == item->data(UrlRole)) {
+            return item;
+        }
+    }
+    return NULL;
+}
+
+bool SharedConnectionsDialog::checkDbInitializationState(const U2DbiRef &ref, bool &initializationRequired) {
+    U2OpStatusImpl os;
+    const bool dbInitialized = MysqlDbiUtils::isDbInitialized(ref, os);
+    if (os.isCoR()) {
+        QMessageBox::critical(this,
+                              tr("Connection Error"),
+                              tr("Unable to connect to the database:\n"
+                                 "check connection settings"));
+        coreLog.details(tr("Cannot connect to the shared database: ") + os.getError());
+        return false;
+    }
+
+    if (!dbInitialized) {
+        int userInput = QMessageBox::question(this, tr(NON_INITED_DB_MB_TITLE),
+            tr(NON_INITED_DB_MB_TEXT), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+        QMessageBox::StandardButton answer = static_cast<QMessageBox::StandardButton>(userInput);
+        switch (answer) {
+        case QMessageBox::No :
+            initializationRequired = false;
+            return false;
+        case QMessageBox::Yes :
+            initializationRequired = true;
+            return true;
+        default:
+            FAIL("Unexpected user answer detected!", false);
+        }
+    }
+    return true;
+}
+
+bool SharedConnectionsDialog::checkDbIsTooNew(const U2DbiRef &ref) {
+    U2OpStatusImpl os;
+    QString minRequiredVersion;
+    const bool isDbTooNew = U2DbiUtils::isDatabaseTooNew(ref, Version::appVersion(), minRequiredVersion, os);
+    SAFE_POINT_OP(os, false);
+    if (isDbTooNew) {
+        QMessageBox::critical(this, tr(UNABLE_TO_CONNECT_TITLE), tr(UNABLE_TO_CONNECT_TEXT).arg(minRequiredVersion));
+        return false;
+    }
+    return true;
+}
+
+bool SharedConnectionsDialog::checkDbShouldBeUpgraded(const U2DbiRef &ref) {
+    U2OpStatusImpl os;
+    const bool upgradeDatabase = U2DbiUtils::isDatabaseTooOld(ref, Version::minVersionForMySQL(), os);
+    CHECK_OP(os, false);
+    if (upgradeDatabase) {
+        QMessageBox question(QMessageBox::Question, tr(DATABASE_UPGRADE_TITLE), tr(DATABASE_UPGRADE_TEXT), QMessageBox::Ok | QMessageBox::Cancel| QMessageBox::Help, this);
+        question.button(QMessageBox::Ok)->setText(tr("Upgrade"));
+        HelpButton(&question, question.button(QMessageBox::Help), "1234567");
+        question.setDefaultButton(QMessageBox::Cancel);
+        if (QMessageBox::Ok == question.exec()) {
+            MysqlUpgradeTask *upgradeTask = new MysqlUpgradeTask(ref);
+            upgradeTasks.insert(ui->lwConnections->currentItem(), upgradeTask);
+            connect(new TaskSignalMapper(upgradeTask), SIGNAL(si_taskFinished), SLOT(sl_upgradeComplete()));
+            AppContext::getTaskScheduler()->registerTopLevelTask(upgradeTask);
+        }
+        return false;
+    }
+
+    return true;
 }
 
 }   // namespace U2

@@ -33,7 +33,6 @@ public :
                                 SQLiteObjectRelationsDbi( SQLiteDbi *dbi );
 
     void                        initSqlSchema( U2OpStatus &os );
-    void                        upgrade(U2OpStatus &os);
 
     void                        createObjectRelation( U2ObjectRelation &relation, U2OpStatus &os );
     QList<U2ObjectRelation>     getObjectRelations( const U2DataId &object, U2OpStatus &os );

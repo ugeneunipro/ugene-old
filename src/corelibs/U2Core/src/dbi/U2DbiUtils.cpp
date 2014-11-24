@@ -19,15 +19,17 @@
  * MA 02110-1301, USA.
  */
 
-#include "U2DbiUtils.h"
-#include <U2Core/U2DbiRegistry.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/AppContext.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/U2OpStatus.h>
-#include <U2Core/U2ObjectDbi.h>
-
 #include <QtCore/QFile>
+
+#include <U2Core/AppContext.h>
+#include <U2Core/U2DbiRegistry.h>
+#include <U2Core/U2ObjectDbi.h>
+#include <U2Core/U2OpStatus.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/Version.h>
+
+#include "U2DbiUtils.h"
 
 namespace U2 {
 
@@ -213,6 +215,25 @@ bool U2DbiUtils::isDbiReadOnly(const U2DbiRef &dbiRef) {
     CHECK_OP(os, true);
 
     return con.dbi->isReadOnly();
+}
+
+Version U2DbiUtils::getDbMinRequiredVersion(const U2DbiRef &dbiRef, U2OpStatus &os) {
+    DbiConnection con(dbiRef, os);
+    CHECK_OP(os, Version());
+    return Version::parseVersion(con.dbi->getProperty(U2DbiOptions::APP_MIN_COMPATIBLE_VERSION, "", os));
+}
+
+bool U2DbiUtils::isDatabaseTooNew(const U2DbiRef &dbiRef, const Version &ugeneVersion, QString &minRequiredVersionString, U2OpStatus &os) {
+    const Version minRequiredVersion = getDbMinRequiredVersion(dbiRef, os);
+    CHECK_OP(os, false);
+    minRequiredVersionString = minRequiredVersion.text;
+    return minRequiredVersion > ugeneVersion;
+}
+
+bool U2DbiUtils::isDatabaseTooOld(const U2DbiRef &dbiRef, const Version &ugeneVersion, U2OpStatus &os) {
+    const Version minRequiredVersion = getDbMinRequiredVersion(dbiRef, os);
+    CHECK_OP(os, false);
+    return minRequiredVersion < ugeneVersion;
 }
 
 //////////////////////////////////////////////////////////////////////////

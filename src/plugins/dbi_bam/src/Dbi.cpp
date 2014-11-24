@@ -451,10 +451,6 @@ QStringList ObjectDbi::getFolders(U2OpStatus &os) {
     }
 }
 
-void ObjectDbi::renameFolder(const QString &/*oldPath*/, const QString &/*newPath*/, U2OpStatus &os) {
-    os.setError("Not supported");
-}
-
 qint64 ObjectDbi::countObjects(const QString &folder, U2OpStatus &os) {
     try {
         if(U2DbiState_Ready != dbi.getState()) {

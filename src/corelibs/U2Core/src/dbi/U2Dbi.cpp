@@ -26,7 +26,6 @@
 
 namespace U2 {
 
-const QString U2DbiOptions::APP_CREATOR_VERSION(QString("Version of ") + U2_PRODUCT_KEY + " created the schema");
 const QString U2DbiOptions::APP_MIN_COMPATIBLE_VERSION(QString("Minimum version of ") + U2_PRODUCT_KEY + " compatible with the schema");
 
 const int U2DbiOptions::U2_DBI_NO_LIMIT = -1;
@@ -88,8 +87,6 @@ QMutex * U2Dbi::getDbMutex( ) const {
 }
 
 void U2Dbi::setVersionProperties(const Version &minVersion, U2OpStatus &os) {
-    setProperty(U2DbiOptions::APP_CREATOR_VERSION, Version::appVersion().text, os);
-    CHECK_OP(os, );
     setProperty(U2DbiOptions::APP_MIN_COMPATIBLE_VERSION, minVersion.text, os);
 }
 

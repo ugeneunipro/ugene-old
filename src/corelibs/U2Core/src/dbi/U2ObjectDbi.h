@@ -161,6 +161,9 @@ public:
     */
     virtual void renameFolder(const QString &oldPath, const QString &newPath, U2OpStatus &os) = 0;
 
+    /** Returns the folder's previous path if it is set or an empty string if folder has not been moved. */
+    virtual QString getFolderPreviousPath(const QString &currentPath, U2OpStatus &os) = 0;
+
     /** Adds objects to the specified folder.
         All objects must exist and have a top-level type.
         Requires: U2DbiFeature_ChangeFolders feature support

@@ -21,17 +21,19 @@
 
 #include <QtCore/QCryptographicHash>
 
-#include <U2Core/U2DbiPackUtils.h>
-#include <U2Core/U2FeatureUtils.h>
-#include <U2Core/U2SafePoints.h>
-
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
 
+#include <U2Core/Folder.h>
+#include <U2Core/U2DbiPackUtils.h>
+#include <U2Core/U2FeatureUtils.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/Version.h>
+
 #include "MysqlFeatureDbi.h"
-#include "MysqlObjectDbi.h"
 #include "MysqlModDbi.h"
 #include "MysqlMsaDbi.h"
+#include "MysqlObjectDbi.h"
 #include "MysqlSequenceDbi.h"
 #include "MysqlUdrDbi.h"
 #include "util/MysqlHelpers.h"
@@ -74,7 +76,7 @@ void MysqlObjectDbi::initSqlSchema(U2OpStatus& os) {
     CHECK_OP(os, );
 
     // folders
-    U2SqlQuery("CREATE TABLE Folder (id BIGINT PRIMARY KEY AUTO_INCREMENT, path LONGTEXT NOT NULL, hash VARCHAR(32) UNIQUE NOT NULL, "
+    U2SqlQuery("CREATE TABLE Folder (id BIGINT PRIMARY KEY AUTO_INCREMENT, path LONGTEXT NOT NULL, hash VARCHAR(32) UNIQUE NOT NULL, previousPath LONGTEXT, "
                "vlocal BIGINT NOT NULL DEFAULT 1, vglobal BIGINT NOT NULL DEFAULT 1) ENGINE=InnoDB DEFAULT CHARSET=utf8", db, os).execute();
     CHECK_OP(os, );
 
@@ -187,11 +189,12 @@ void MysqlObjectDbi::renameFolder(const QString &oldPath, const QString &newPath
     const QStringList allFolders = getFolders(os);
     CHECK_OP(os, );
 
-    static const QString queryString = "UPDATE Folder SET path = :newPath, hash = :newHash WHERE hash = :oldHash";
+    static const QString queryString = "UPDATE Folder SET path = :newPath, hash = :newHash, previousPath = :oldPath WHERE hash = :oldHash";
     if (allFolders.contains(oldCPath)) {
         U2SqlQuery q(queryString, db, os);
         q.bindString(":newPath", newCPath);
         q.bindBlob(":newHash", newHash);
+        q.bindString(":oldPath", oldPath);
         q.bindBlob(":oldHash", oldHash);
         q.update();
         CHECK_OP(os, );
@@ -207,11 +210,24 @@ void MysqlObjectDbi::renameFolder(const QString &oldPath, const QString &newPath
             U2SqlQuery q(queryString, db, os);
             q.bindString(":newPath", newSubfolderPath);
             q.bindBlob(":newHash", newSubfolderHash);
+            q.bindString(":oldPath", path);
             q.bindBlob(":oldHash", oldSubfolderHash);
             q.update();
             CHECK_OP(os, );
         }
     }
+}
+
+QString MysqlObjectDbi::getFolderPreviousPath(const QString &currentPath, U2OpStatus &os) {
+    const QString canonicalFolder = U2DbiUtils::makeFolderCanonical(currentPath);
+    const QByteArray hash = QCryptographicHash::hash(canonicalFolder.toLatin1(), QCryptographicHash::Md5).toHex();
+
+    static const QString queryString = "SELECT previousPath FROM Folder WHERE hash = :hash";
+    U2SqlQuery query(queryString, db, os);
+    query.bindBlob(":hash", hash);
+    const QStringList result = query.selectStrings();
+    SAFE_POINT_EXT(1 == result.size(), os.setError("Unconsistent data about folders in the database"), "");
+    return result.first();
 }
 
 qint64 MysqlObjectDbi::countObjects(const QString& folder, U2OpStatus& os) {

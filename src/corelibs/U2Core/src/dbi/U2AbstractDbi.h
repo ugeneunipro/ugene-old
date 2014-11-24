@@ -26,18 +26,19 @@
 #ifndef _U2_ABSTRACT_DBI_H_
 #define _U2_ABSTRACT_DBI_H_
 
-#include <U2Core/U2DbiUtils.h>
-
-#include <U2Core/U2FeatureDbi.h>
 #include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2AttributeDbi.h>
-#include <U2Core/U2SequenceDbi.h>
-#include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2CrossDatabaseReferenceDbi.h>
+#include <U2Core/U2DbiUpgrader.h>
+#include <U2Core/U2DbiUtils.h>
+#include <U2Core/U2FeatureDbi.h>
+#include <U2Core/U2ModDbi.h>
+#include <U2Core/U2MsaDbi.h>
 #include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2ObjectRelationsDbi.h>
+#include <U2Core/U2SafePoints.h>
+#include <U2Core/U2SequenceDbi.h>
 #include <U2Core/U2VariantDbi.h>
-#include <U2Core/U2ModDbi.h>
 #include <U2Core/UdrDbi.h>
 
 namespace U2 {
@@ -48,6 +49,10 @@ protected:
     U2AbstractDbi(const U2DbiFactoryId& fid) {
         state = U2DbiState_Void;
         factoryId = fid;
+    }
+
+    ~U2AbstractDbi() {
+        qDeleteAll(upgraders);
     }
 
 public:
@@ -98,6 +103,16 @@ public:
         U2DbiUtils::logNotSupported(U2DbiFeature_WriteProperties, this, os);
     }
 
+    virtual void upgrade(U2OpStatus &os) {
+        qSort(upgraders);
+        foreach (const U2DbiUpgrader *upgrader, upgraders) {
+            if (upgrader->isAppliable(Version::parseVersion(getProperty(U2DbiOptions::APP_MIN_COMPATIBLE_VERSION, "0.0.0", os)))) {
+                upgrader->upgrade(os);
+                CHECK_OP(os, );
+            }
+        }
+    }
+
 protected:
     U2DbiState                  state;
     U2DbiId                     dbiId;
@@ -105,6 +120,7 @@ protected:
     QSet<U2DbiFeature>          features;
     QHash<QString, QString>     initProperties;
     QHash<QString, QString>     metaInfo;
+    QList<U2DbiUpgrader *>      upgraders;
 };
 
 /** Default no-op implementation for write  methods of U2ObjectDbi */
@@ -139,6 +155,15 @@ public:
     virtual bool removeFolder(const QString&, U2OpStatus& os) {
         U2DbiUtils::logNotSupported(U2DbiFeature_ChangeFolders, getRootDbi(), os);
         return false;
+    }
+
+    virtual void renameFolder(const QString &, const QString &, U2OpStatus &os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_ChangeFolders, getRootDbi(), os);
+    }
+
+    virtual QString getFolderPreviousPath(const QString &, U2OpStatus &os) {
+        U2DbiUtils::logNotSupported(U2DbiFeature_ChangeFolders, getRootDbi(), os);
+        return "";
     }
 
     virtual void addObjectsToFolder(const QList<U2DataId>&, const QString&, U2OpStatus& os) {

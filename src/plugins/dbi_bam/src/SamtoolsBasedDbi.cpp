@@ -287,10 +287,6 @@ QStringList SamtoolsBasedObjectDbi::getFolders(U2OpStatus &os) {
     return QStringList(U2ObjectDbi::ROOT_FOLDER);
 }
 
-void SamtoolsBasedObjectDbi::renameFolder(const QString &/*oldPath*/, const QString &/*newPath*/, U2OpStatus &os) {
-    os.setError("Not supported");
-}
-
 qint64 SamtoolsBasedObjectDbi::countObjects(const QString &folder, U2OpStatus &os) {
     CHECK_EXT(U2DbiState_Ready == dbi.getState(),
         os.setError(BAMDbiPlugin::tr("Invalid samtools DBI state")), 0);

@@ -70,6 +70,8 @@ HEADERS += src/ABIFormat.h \
            src/mysql_dbi/util/MysqlModificationAction.h \
            src/mysql_dbi/util/MysqlMultiTableAssemblyAdapter.h \
            src/mysql_dbi/util/MysqlSingleTableAssemblyAdapter.h \
+           src/mysql_dbi/util/upgraders/MysqlUpgrader.h \
+           src/mysql_dbi/util/upgraders/MysqlUpgraderFrom_1_14_To_1_15.h \
            src/sqlite_dbi/SQLiteAssemblyDbi.h \
            src/sqlite_dbi/SQLiteAttributeDbi.h \
            src/sqlite_dbi/SQLiteBlobInputStream.h \
@@ -86,10 +88,13 @@ HEADERS += src/ABIFormat.h \
            src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.h \
            src/sqlite_dbi/assembly/RTreeAssemblyAdapter.h \
            src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.h \
+           src/sqlite_dbi/util/SqliteUpgrader.h \
+           src/sqlite_dbi/util/SqliteUpgraderFrom_0_To_1_13.cpp \
            src/tasks/BgzipTask.h \
            src/tasks/ConvertAssemblyToSamTask.h \
            src/tasks/ConvertFileTask.h \
            src/tasks/MergeBamTask.h \
+           src/tasks/MysqlUpgradeTask.h \
            src/util/AssemblyAdapter.h \
            src/util/AssemblyPackAlgorithm.h
 SOURCES += src/ABIFormat.cpp \
@@ -159,6 +164,8 @@ SOURCES += src/ABIFormat.cpp \
            src/mysql_dbi/util/MysqlModificationAction.cpp \
            src/mysql_dbi/util/MysqlMultiTableAssemblyAdapter.cpp \
            src/mysql_dbi/util/MysqlSingleTableAssemblyAdapter.cpp \
+           src/mysql_dbi/util/upgraders/MysqlUpgrader.cpp \
+           src/mysql_dbi/util/upgraders/MysqlUpgraderFrom_1_14_To_1_15.cpp \
            src/sqlite_dbi/SQLiteAssemblyDbi.cpp \
            src/sqlite_dbi/SQLiteAttributeDbi.cpp \
            src/sqlite_dbi/SQLiteBlobInputStream.cpp \
@@ -175,10 +182,13 @@ SOURCES += src/ABIFormat.cpp \
            src/sqlite_dbi/assembly/MultiTableAssemblyAdapter.cpp \
            src/sqlite_dbi/assembly/RTreeAssemblyAdapter.cpp \
            src/sqlite_dbi/assembly/SingleTableAssemblyAdapter.cpp \
+           src/sqlite_dbi/util/SqliteUpgrader.cpp \
+           src/sqlite_dbi/util/SqliteUpgraderFrom_0_To_1_13.cpp \
            src/tasks/BgzipTask.cpp \
            src/tasks/ConvertAssemblyToSamTask.cpp \
            src/tasks/ConvertFileTask.cpp \
            src/tasks/MergeBamTask.cpp \
+           src/tasks/MysqlUpgradeTask.cpp \
            src/util/AssemblyPackAlgorithm.cpp
 RESOURCES += U2Formats.qrc
 TRANSLATIONS += transl/chinese.ts \

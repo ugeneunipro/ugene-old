@@ -48,7 +48,6 @@ public:
     virtual QList<U2DataId> getObjects(U2DataType type, qint64 offset, qint64 count, U2OpStatus &os);
     virtual QList<U2DataId> getParents(const U2DataId& entityId, U2OpStatus &os);
     virtual QStringList getFolders(U2OpStatus &os);
-    virtual void renameFolder(const QString &oldPath, const QString &newPath, U2OpStatus &os);
     virtual qint64 countObjects(const QString &folder, U2OpStatus &os);
     virtual QList<U2DataId> getObjects(const QString &folder, qint64 offset, qint64 count, U2OpStatus &os);
     virtual QStringList getObjectFolders(const U2DataId& objectId, U2OpStatus &os);
