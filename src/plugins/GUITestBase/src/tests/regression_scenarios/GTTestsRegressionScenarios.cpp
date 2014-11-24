@@ -2160,7 +2160,7 @@ GUI_TEST_CLASS_DEFINITION(test_2024){
     GTMouseDriver::click(os);
 
 //    Expected state: element has parameters "gap cost" and "match score"
-    GTUtilsWorkflowDesigner::setParameter(os, "gap cost", 2, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Gap costs", 2, GTUtilsWorkflowDesigner::comboValue);
     GTUtilsWorkflowDesigner::setParameter(os, "Match scores", 1, GTUtilsWorkflowDesigner::comboValue);
 
 }
@@ -4468,6 +4468,7 @@ GUI_TEST_CLASS_DEFINITION(test_2432) {
 //    4. Delete the element
 //    Expected: there are no breakpoints in the breakpoints manager
     GTUtilsWorkflowDesigner::removeItem(os, "File List");
+    GTGlobals::sleep();
     const QStringList breakpoints = GTUtilsWorkflowDesigner::getBreakpointList(os);
     CHECK_SET_ERR(breakpoints.isEmpty(), "There are breakpoints in the workflow");
 }

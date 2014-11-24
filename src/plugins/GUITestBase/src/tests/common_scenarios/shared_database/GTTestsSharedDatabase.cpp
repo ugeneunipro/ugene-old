@@ -35,6 +35,7 @@
 #include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsLog.h"
+#include "GTUtilsMdi.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
@@ -403,6 +404,9 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0013) {
     //          3) There are no errors in the log.
     //          4) The "Edit" button is disabled.
     GTLogTracer lt;
+    if(GTUtilsMdi::activeWindow(os, GTGlobals::FindOptions(false)) != NULL){
+        GTUtilsMdi::click(os, GTGlobals::Close);
+    }
     QString conName = "cm_test_0013: new shared database";
     {
         QList<SharedConnectionsDialogFiller::Action> actions;
