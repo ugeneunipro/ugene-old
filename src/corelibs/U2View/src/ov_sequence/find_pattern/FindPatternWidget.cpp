@@ -1353,7 +1353,7 @@ void FindPatternWidget::sl_findPatrernTaskStateChanged() {
             prevPushButton->setEnabled(true);
             getAnnotationsPushButton->setEnabled(true);
             checkState();
-            correctSearchinCombo();
+            correctSearchInCombo();
             showCurrentResult();
         }
         if (findTask == searchTask) {
