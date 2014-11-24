@@ -25,6 +25,8 @@
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/HelpButton.h>
+
 #include "EditPrimerDialog.h"
 
 namespace U2 {
@@ -46,6 +48,8 @@ EditPrimerDialog::EditPrimerDialog(QWidget *parent, const Primer &editToPrimer)
 
 void EditPrimerDialog::init() {
     setupUi(this);
+    new HelpButton(this, buttonBox, "13435073");
+
     primerEdit->setValidator(new QRegExpValidator(QRegExp("[acgtACGT]+")));
     connect(primerEdit, SIGNAL(textEdited(const QString &)), SLOT(sl_onPrimerChanged(const QString &)));
 

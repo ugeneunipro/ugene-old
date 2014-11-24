@@ -24,6 +24,8 @@
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
+#include <U2Gui/HelpButton.h>
+
 #include "PrimerLibrarySelector.h"
 
 namespace U2 {
@@ -32,6 +34,7 @@ PrimerLibrarySelector::PrimerLibrarySelector(QWidget *parent)
 : QDialog(parent)
 {
     setupUi(this);
+    new HelpButton(this, buttonBox, "13435069");
 
     connect(primerTable, SIGNAL(doubleClicked(const QModelIndex &)), SLOT(accept()));
     connect(primerTable->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)), SLOT(sl_selectionChanged()));
