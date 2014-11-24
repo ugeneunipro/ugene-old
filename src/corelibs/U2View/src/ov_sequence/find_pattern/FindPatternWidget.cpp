@@ -590,13 +590,12 @@ void FindPatternWidget::connectSlots()
     connect(boxAlgorithm, SIGNAL(currentIndexChanged(int)), SLOT(sl_onAlgorithmChanged(int)));
     connect(boxRegion, SIGNAL(currentIndexChanged(int)), SLOT(sl_onRegionOptionChanged(int)));
     connect(textPattern, SIGNAL(textChanged()), SLOT(sl_onSearchPatternChanged()));
-    connect(editStart, SIGNAL(textEdited(QString)), SLOT(sl_onRegionValueEdited()));
-    connect(editEnd, SIGNAL(textEdited(QString)), SLOT(sl_onRegionValueEdited()));
+    connect(editStart, SIGNAL(textChanged(QString)), SLOT(sl_onRegionValueEdited()));
+    connect(editEnd, SIGNAL(textChanged(QString)), SLOT(sl_onRegionValueEdited()));
     connect(boxSeqTransl, SIGNAL(currentIndexChanged(int)), SLOT(sl_onSequenceTranslationChanged(int)));
 
     connect(boxStrand, SIGNAL(currentIndexChanged(int)), SLOT(sl_activateNewSearch()));
     connect(boxSeqTransl, SIGNAL(currentIndexChanged(int)), SLOT(sl_activateNewSearch()));
-    connect(boxRegion, SIGNAL(currentIndexChanged(int)), SLOT(sl_activateNewSearch()));
 
     connect(removeOverlapsBox, SIGNAL(stateChanged(int)), SLOT(sl_activateNewSearch()));
     connect(boxMaxResult, SIGNAL(valueChanged(int)), SLOT(sl_activateNewSearch()));
@@ -645,8 +644,8 @@ void FindPatternWidget::sl_onRegionOptionChanged(int index)
         editEnd->hide();
         regionIsCorrect = true;
         checkState();
-    }
-    else if (boxRegion->itemData(index).toInt() == RegionSelectionIndex_CustomRegion) {
+        setRegionToWholeSequence();
+    }else if (boxRegion->itemData(index).toInt() == RegionSelectionIndex_CustomRegion) {
         editStart->show();
         lblStartEndConnection->show();
         editEnd->show();
@@ -657,7 +656,6 @@ void FindPatternWidget::sl_onRegionOptionChanged(int index)
         SAFE_POINT(NULL != activeContext, "Internal error: there is no sequence in focus!",);
         getCompleteSearchRegion(regionIsCorrect, activeContext->getSequenceLength());
         checkState();
-
     }else if(boxRegion->itemData(index).toInt() == RegionSelectionIndex_CurrentSelectedRegion) {
         currentSelection = annotatedDnaView->getSequenceInFocus()->getSequenceSelection();
         connect(currentSelection, SIGNAL(si_selectionChanged(LRegionsSelection* , const QVector<U2Region>&, const QVector<U2Region>&)),
@@ -718,6 +716,9 @@ void FindPatternWidget::sl_onRegionValueEdited()
     boxRegion->setCurrentIndex(boxRegion->findData(RegionSelectionIndex_CustomRegion));
 
     checkState();
+    if(regionIsCorrect){
+        sl_activateNewSearch();
+    }
 }
 
 
@@ -1313,6 +1314,7 @@ void FindPatternWidget::initFindPatternTask(const QList<NamePattern> &patterns) 
     SAFE_POINT(searchTask == NULL, "Search task is not NULL", );
     nextPushButton->setDisabled(true);
     prevPushButton->setDisabled(true);
+    
     searchTask = new FindPatternListTask(settings,
         patterns,
         removeOverlaps,
@@ -1351,6 +1353,7 @@ void FindPatternWidget::sl_findPatrernTaskStateChanged() {
             prevPushButton->setEnabled(true);
             getAnnotationsPushButton->setEnabled(true);
             checkState();
+            correctSearchinCombo();
             showCurrentResult();
         }
         if (findTask == searchTask) {
@@ -1643,6 +1646,12 @@ void FindPatternWidget::stopCurrentSearchTask(){
     nextPushButton->setDisabled(true);
     prevPushButton->setDisabled(true);
     getAnnotationsPushButton->setDisabled(true);
+}
+
+void FindPatternWidget::correctSearchInCombo(){
+    if(boxRegion->itemData(boxRegion->currentIndex()).toInt() == RegionSelectionIndex_CurrentSelectedRegion){
+        boxRegion->setCurrentIndex(boxRegion->findData(RegionSelectionIndex_CustomRegion));
+    }
 }
 
 } // namespace
