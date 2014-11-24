@@ -443,7 +443,7 @@ void ORFDialog::findStartedAAUpdateTask(){
         QString taskName = t->getTaskName();
         if(taskName == AutoAnnotationsUpdateTask::NAME){
             AutoAnnotationsUpdateTask *aaTask = qobject_cast<AutoAnnotationsUpdateTask*>(t);
-            SAFE_POINT(aaTask != NULL, "Bad conversion from Task to AutoAnnotationsUpdateTask");
+            SAFE_POINT(aaTask != NULL, "Bad conversion from Task to AutoAnnotationsUpdateTask", );
             if(ctx->getSequenceObject()->getEntityRef() == aaTask->getSequenceObject()->getEntityRef()){
                 aaUpdateTask = aaTask;
                 pbFindAll->setDisabled(true);
