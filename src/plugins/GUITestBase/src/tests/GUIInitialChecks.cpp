@@ -99,9 +99,7 @@ GUI_TEST_CLASS_DEFINITION(test_0004){
     }
 }
 GUI_TEST_CLASS_DEFINITION(test_0005){
-#ifndef Q_OS_WIN
     GTUtilsTaskTreeView::waitTaskFinished(os);
-#endif
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0006) {
