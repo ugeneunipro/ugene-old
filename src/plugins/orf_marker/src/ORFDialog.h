@@ -44,6 +44,7 @@
 namespace U2 {
 
 class ADVSequenceObjectContext;
+class AutoAnnotationsUpdateTask;
 class U2SequenceObject;
 class CreateAnnotationWidgetController;
 class ORFFindTask;
@@ -92,12 +93,13 @@ private:
 
 private:
     void createAnnotationWidget();
+    void findStartedAAUpdateTask();
     ADVSequenceObjectContext* ctx;
-    U2SequenceObject* sequence;
     CreateAnnotationWidgetController* ac;
 
     U2Region panViewSelection;
     ORFFindTask* task;
+    AutoAnnotationsUpdateTask *aaUpdateTask;
     QTimer* timer;
     RegionSelector* rs;
     bool isRegionOk;

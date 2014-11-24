@@ -127,6 +127,7 @@ public:
     ReportResult            report( );
     void                    setAutoAnnotationInvalid() { aaObjectInvalid = true; }
     AutoAnnotationObject *  getAutoAnnotationObject( ) { return aa; }
+    U2SequenceObject*       getSequenceObject() const;
 
     static const QString    NAME;
 

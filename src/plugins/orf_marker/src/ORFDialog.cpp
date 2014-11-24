@@ -76,7 +76,7 @@ public:
 
 
 ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
-: QDialog(_ctx->getAnnotatedDNAView()->getWidget())
+: QDialog(_ctx->getAnnotatedDNAView()->getWidget()), aaUpdateTask(NULL)
 {
     setupUi(this);
     new HelpButton(this, buttonBox, "4227619");
@@ -114,6 +114,7 @@ ORFDialog::ORFDialog(ADVSequenceObjectContext* _ctx)
     sl_translationChanged();
 
     createAnnotationWidget();
+    findStartedAAUpdateTask();
 }
 
 static QString triplet2str(const Triplet& t) {
@@ -270,21 +271,23 @@ void ORFDialog::runTask() {
         return;
     }
 
+    
     task = new ORFFindTask(s, ctx->getSequenceObject()->getEntityRef());
-
     AppContext::getTaskScheduler()->registerTopLevelTask(task);
     updateState();
     timer->start(400);
 }
 
 void ORFDialog::sl_onTaskFinished(Task* t) {
-    if (t != task || t->getState()!= Task::State_Finished) {
-        return;
+    if (t == task && t->getState() == Task::State_Finished) {
+        importResults();
+        task = NULL;
+        updateState();
+        timer->stop();
     }
-    importResults();
-    task = NULL;
-    updateState();
-    timer->stop();
+    if (t == aaUpdateTask && t->getState() == Task::State_Finished) {
+        findStartedAAUpdateTask();
+    }
 }
 
 void ORFDialog::sl_onTimer() {
@@ -433,6 +436,23 @@ void ORFDialog::createAnnotationWidget()
     annotationsWidget->setLayout(l);
     annotationsWidget->setMinimumSize(caw->layout()->minimumSize());
 
+}
+
+void ORFDialog::findStartedAAUpdateTask(){
+    foreach(Task *t, AppContext::getTaskScheduler()->getTopLevelTasks()){
+        QString taskName = t->getTaskName();
+        if(taskName == AutoAnnotationsUpdateTask::NAME){
+            AutoAnnotationsUpdateTask *aaTask = qobject_cast<AutoAnnotationsUpdateTask*>(t);
+            SAFE_POINT(aaTask != NULL, "Bad conversion from Task to AutoAnnotationsUpdateTask");
+            if(ctx->getSequenceObject()->getEntityRef() == aaTask->getSequenceObject()->getEntityRef()){
+                aaUpdateTask = aaTask;
+                pbFindAll->setDisabled(true);
+                return;
+            }
+        }
+    }
+    aaUpdateTask = NULL;
+    pbFindAll->setEnabled(true);
 }
 
 

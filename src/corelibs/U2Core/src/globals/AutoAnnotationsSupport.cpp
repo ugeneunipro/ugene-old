@@ -250,4 +250,8 @@ Task::ReportResult AutoAnnotationsUpdateTask::report( ) {
     return ReportResult_Finished;
 }
 
+U2SequenceObject* AutoAnnotationsUpdateTask::getSequenceObject() const {
+    return aaSeqObj;
+}
+
 } //namespace U2
