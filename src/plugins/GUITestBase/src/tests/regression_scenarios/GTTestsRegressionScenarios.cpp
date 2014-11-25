@@ -1477,6 +1477,40 @@ GUI_TEST_CLASS_DEFINITION( test_1821 ) {
     CHECK_SET_ERR( scaleCombo->currentText( ) == "75%", "Unexpected scale value!" );
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1831) {
+    // 1) Create a schema with shrunk elements state.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "Align sequences with MUSCLE");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Align with MUSCLE"));
+    GTMouseDriver::doubleClick(os);
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Write alignment"));
+    GTMouseDriver::doubleClick(os);
+
+    CHECK_SET_ERR(!GTUtilsWorkflowDesigner::isWorkerExtended(os, "Align with MUSCLE"), "\"Align with MUSCLE\" unexpectedly has extended style");
+    CHECK_SET_ERR(!GTUtilsWorkflowDesigner::isWorkerExtended(os, "Write alignment"), "\"Write alignment\" unexpectedly has extended style");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isWorkerExtended(os, "Read alignment"), "\"Read alignment\" unexpectedly has simple style");
+
+    // 2) Save the schema.
+    const QString workflowOutputDirPath(testDir + "_common_data/scenarios/sandbox");
+    QDir workflowOutputDir(workflowOutputDirPath);
+
+    GTUtilsDialog::waitForDialog(os, new WorkflowMetaDialogFiller(os, workflowOutputDir.absolutePath() + "/" + "test.uwl", "Workflow"));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() << "Save workflow action", GTGlobals::UseKey);
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTMouseDriver::click(os);
+
+    // 3) Reopen UGENE WD.
+    GTFileDialog::openFile(os, workflowOutputDirPath, "test.uwl");
+
+    // Expected: the state is saved.
+    CHECK_SET_ERR(!GTUtilsWorkflowDesigner::isWorkerExtended(os, "Align with MUSCLE"), "\"Align with MUSCLE\" unexpectedly has extended style");
+    CHECK_SET_ERR(!GTUtilsWorkflowDesigner::isWorkerExtended(os, "Write alignment"), "\"Write alignment\" unexpectedly has extended style");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::isWorkerExtended(os, "Read alignment"), "\"Read alignment\" unexpectedly has simple style");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1859 ) {
     QString workflowOutputDirPath( testDir + "_common_data/scenarios/sandbox" );
     QDir workflowOutputDir( workflowOutputDirPath );

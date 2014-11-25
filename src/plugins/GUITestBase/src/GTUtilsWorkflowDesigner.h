@@ -83,6 +83,8 @@ public:
     //returs worker placed on workflow scene which contains item name
     static WorkflowProcessItem* getWorker(U2OpStatus &os, QString itemName,const GTGlobals::FindOptions &options = GTGlobals::FindOptions());
 
+    static bool isWorkerExtended(U2OpStatus &os, const QString &itemName);
+
     //returns WorkflowPortItem of worker which with ID "id"
     static WorkflowPortItem* getPortById(U2OpStatus &os,WorkflowProcessItem* worker, QString id);
 

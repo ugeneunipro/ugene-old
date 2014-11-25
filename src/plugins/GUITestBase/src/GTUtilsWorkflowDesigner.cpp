@@ -341,6 +341,12 @@ WorkflowProcessItem* GTUtilsWorkflowDesigner::getWorker(U2OpStatus &os,QString i
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "isWorkerExtended"
+bool GTUtilsWorkflowDesigner::isWorkerExtended(U2OpStatus &os, const QString &itemName) {
+    return "ext" == getWorker(os,itemName)->getStyle();
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getPortById"
 WorkflowPortItem* GTUtilsWorkflowDesigner::getPortById(U2OpStatus &os, WorkflowProcessItem *worker, QString id){
     QGraphicsView* sceneView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os,"sceneView"));
