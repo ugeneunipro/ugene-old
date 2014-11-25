@@ -155,7 +155,7 @@ void MACSWorker::sl_taskFinished() {
     }else{
         data[WIGGLE_TREAT_SLOT_ID] = qVariantFromValue<QString>(QString(""));
     }
-    
+
     output->put(Message(output->getBusType(), data));
 
     const QStringList& resFileNames = t->getOutputFiles();
@@ -192,7 +192,7 @@ U2::MACSSettings MACSWorker::createMACSSettings( U2OpStatus & /*os*/ ){
             settings.modelFold = l->regions.first();
         }
     }
-    
+
     settings.shiftSize = getValue<int>(SHIFT_SIZE_ATTR_ID);
 
     settings.keepDublicates = getValue<QString>(KEEP_DUBLICATES_ATTR_ID);
@@ -231,7 +231,7 @@ class MACSInputSlotsValidator : public PortValidator {
             return false;
         }
 
-        
+
         QString slot1Val = busMap.value<QStrStrMap>().value(TREATMENT_SLOT_ID);
         QString slot2Val = busMap.value<QStrStrMap>().value(CONTROL_SLOT_ID);
         U2OpStatusImpl os;
@@ -263,7 +263,7 @@ class MACSInputSlotsValidator : public PortValidator {
 
 void MACSWorkerFactory::init() {
     QList<PortDescriptor*> portDescs;
-    
+
     //in port
     QMap<Descriptor, DataTypePtr> inTypeMap;
     Descriptor treatDesc(TREATMENT_SLOT_ID,
@@ -304,8 +304,8 @@ void MACSWorkerFactory::init() {
 
     DataTypePtr outTypeSet(new MapDataType(OUT_TYPE_ID, outTypeMap));
     portDescs << new PortDescriptor(outPortDesc, outTypeSet, false, true);
-    
- 
+
+
      QList<Attribute*> attrs;
      {
          Descriptor outDir(OUTPUT_DIR,
@@ -421,7 +421,7 @@ void MACSWorkerFactory::init() {
         attrs << new Attribute(wiggleOut, BaseTypes::BOOL_TYPE(), true, QVariant(true));
 
         Attribute* wspaceAttr = new Attribute(wiggleSpace, BaseTypes::NUM_TYPE(), true, QVariant(10));
-        wspaceAttr ->addRelation(new VisibilityRelation(WIGGLE_OUTPUT, "True"));
+        wspaceAttr ->addRelation(new VisibilityRelation(WIGGLE_OUTPUT, QVariant(true)));
         attrs << wspaceAttr;
 
         attrs << new Attribute(gsizeDesc, BaseTypes::NUM_TYPE(), false, QVariant(2700));
@@ -429,22 +429,22 @@ void MACSWorkerFactory::init() {
         attrs << new Attribute(tagSizeDesc, BaseTypes::NUM_TYPE(), false, QVariant(0));
         attrs << new Attribute(keepDupDesc, BaseTypes::STRING_TYPE(), false, QVariant("1"));
         //attrs << new Attribute(qvalueDesc, BaseTypes::NUM_TYPE(), false, QVariant(0.1));    //(MACS 2)
-        attrs << new Attribute(useModelDesc, BaseTypes::BOOL_TYPE(), false, QVariant(true));    
-        
+        attrs << new Attribute(useModelDesc, BaseTypes::BOOL_TYPE(), false, QVariant(true));
+
         Attribute* foldAttr = new Attribute(modelFoldDesc, BaseTypes::STRING_TYPE(), false, QVariant(Genbank::LocationParser::buildLocationString(QVector<U2Region>()<<U2Region(9, 21))));
-        foldAttr ->addRelation(new VisibilityRelation(USE_MODEL_ATTR_ID, "True"));
+        foldAttr ->addRelation(new VisibilityRelation(USE_MODEL_ATTR_ID, QVariant(true)));
         attrs << foldAttr;
 
         Attribute* shiftAttr = new Attribute(shiftSizeDesc, BaseTypes::NUM_TYPE(), false, QVariant(100));
-        foldAttr ->addRelation(new VisibilityRelation(USE_MODEL_ATTR_ID, "False"));
+        shiftAttr ->addRelation(new VisibilityRelation(USE_MODEL_ATTR_ID, QVariant(false)));
         //TODO:Available if: “Use model” is False OR building model by MACSis failed
         attrs << shiftAttr;
 
-        
+
         attrs << new Attribute(bandWDesc, BaseTypes::NUM_TYPE(), false, QVariant(300));
         //attrs << new Attribute(extFrDesc, BaseTypes::BOOL_TYPE(), false, QVariant(false));    //(???)
         //optional
-        
+
         //advanced
         attrs << new Attribute(useLambdaDesc, BaseTypes::BOOL_TYPE(), false, QVariant(true));
         attrs << new Attribute(smallNearbyDesc, BaseTypes::NUM_TYPE(), false, QVariant(1000));
@@ -460,6 +460,8 @@ void MACSWorkerFactory::init() {
      QMap<QString, PropertyDelegate*> delegates;
      {
          delegates[OUTPUT_DIR] = new URLDelegate("", "", false, true);
+         delegates[USE_MODEL_ATTR_ID] = new ComboBoxWithBoolsDelegate();
+         delegates[WIGGLE_OUTPUT] = new ComboBoxWithBoolsDelegate();
          {
             QVariantMap vm;
             vm["minimum"] = QVariant(1);
@@ -554,7 +556,7 @@ Worker *MACSWorkerFactory::createWorker(Actor *a) {
 }
 
 QString MACSPrompter::composeRichDoc() {
-    QString res = ""; 
+    QString res = "";
 
     Actor* treatProducer = qobject_cast<IntegralBusPort*>(target->getPort(IN_PORT_DESCR))->getProducer(TREATMENT_SLOT_ID);
     Actor* controlProducer = qobject_cast<IntegralBusPort*>(target->getPort(IN_PORT_DESCR))->getProducer(CONTROL_SLOT_ID);
@@ -562,23 +564,23 @@ QString MACSPrompter::composeRichDoc() {
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString treatUrl = treatProducer ? treatProducer->getLabel() : unsetStr;
     QString conUrl = controlProducer ? controlProducer->getLabel() : unsetStr;
-    int wiggleSpan = getParameter(WIGGLE_SPACE).toInt();
-    
+    QString wiggleSpan = getHyperlink(WIGGLE_SPACE, getParameter(WIGGLE_SPACE).toInt());
+
     QString dir = getHyperlink(OUTPUT_DIR, getURL(OUTPUT_DIR));
 
     res.append(tr("Uses <u>%1</u> as treatment").arg(treatUrl));
     if (controlProducer){
         res.append(tr(" and <u>%1</u> as control").arg(conUrl));
     }
- 
+
     res.append(tr(" to call peaks."));
- 
+
     res.append(tr(" Outputs all files to <u>%1</u> directory").arg(dir));
     if (getParameter(WIGGLE_OUTPUT).toBool()){
         res.append(tr(" and pileup with <u>%1</u> span").arg(wiggleSpan));
     }
     res.append(".");
-    
+
 
     return res;
 }

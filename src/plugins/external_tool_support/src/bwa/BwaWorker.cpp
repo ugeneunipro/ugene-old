@@ -180,7 +180,7 @@ void BwaWorkerFactory::init() {
              BwaWorker::tr("Indel offset"),
              BwaWorker::tr("Indel offset (-i)"));
 
-         Descriptor maxLongDeletions(LONG_DELETIONS, 
+         Descriptor maxLongDeletions(LONG_DELETIONS,
              BwaWorker::tr("Max long deletions extensions"),
              BwaWorker::tr("Max long deletions extensions(-d)"));
 
@@ -268,6 +268,8 @@ void BwaWorkerFactory::init() {
          delegates[GAP_OPEN_PENALTY] = new SpinBoxDelegate(spinMap);
          delegates[GAP_EXTENSION_PENALTY] = new SpinBoxDelegate(spinMap);
          delegates[QUALITY_THRESHOLD] = new SpinBoxDelegate(spinMap);
+         delegates[USE_MISS_PROB] = new ComboBoxWithBoolsDelegate();
+         delegates[ENABLE_LONG_GAPS] = new ComboBoxWithBoolsDelegate();
 
          QVariantMap vm;
          vm["bwtsw"] = "bwtsw";

@@ -121,7 +121,7 @@ private:
 class U2DESIGNER_EXPORT SpinBoxDelegate : public PropertyDelegate {
     Q_OBJECT
 public:
-    SpinBoxDelegate(const QVariantMap& props = QVariantMap(), QObject *parent = 0) : 
+    SpinBoxDelegate(const QVariantMap& props = QVariantMap(), QObject *parent = 0) :
       PropertyDelegate(parent), spinProperties(props), currentEditor(NULL) {}
     virtual ~SpinBoxDelegate() {}
 
@@ -297,6 +297,18 @@ protected:
     QVariantMap items;
 };
 
+class U2DESIGNER_EXPORT ComboBoxWithBoolsDelegate: public ComboBoxDelegate {
+    Q_OBJECT
+public:
+    ComboBoxWithBoolsDelegate(QObject *parent = 0);
+    virtual PropertyDelegate *clone() {
+        return new ComboBoxWithBoolsDelegate(parent());
+    }
+
+private:
+    static QVariantMap boolMap();
+};
+
 class U2DESIGNER_EXPORT FileModeDelegate : public ComboBoxDelegate {
 public:
     FileModeDelegate(bool appendSupported, QObject *parent = 0);
@@ -312,7 +324,7 @@ class U2DESIGNER_EXPORT SchemaRunModeDelegate : public ComboBoxDelegate {
 public:
     static const QString THIS_COMPUTER_STR;
     static const QString REMOTE_COMPUTER_STR;
-    
+
 public:
     SchemaRunModeDelegate(QObject * parent = 0);
     virtual ~SchemaRunModeDelegate() {}
@@ -323,10 +335,10 @@ public:
 
 public slots:
     void sl_valueChanged( const QString & val );
-    
+
 signals:
     void si_showOpenFileButton( bool show );
-    
+
 }; // SchemaRunModeDelegate
 
 class ScriptSelectionWidget : public PropertyWidget {
@@ -353,7 +365,7 @@ class U2DESIGNER_EXPORT AttributeScriptDelegate : public PropertyDelegate {
 public:
     AttributeScriptDelegate(QObject *parent = 0);
     virtual ~AttributeScriptDelegate();
-    
+
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     void setEditorData(QWidget *editor, const QModelIndex &index) const;
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
@@ -435,7 +447,7 @@ public:
 class U2DESIGNER_EXPORT StringSelectorDelegate: public PropertyDelegate {
     Q_OBJECT
 public:
-    StringSelectorDelegate(const QString& _initValue, SelectorDialogHandler *_f, QObject *o = NULL): 
+    StringSelectorDelegate(const QString& _initValue, SelectorDialogHandler *_f, QObject *o = NULL):
         PropertyDelegate(o), initValue(_initValue), f(_f) {}
     virtual ~StringSelectorDelegate() {}
 
@@ -466,7 +478,7 @@ class U2DESIGNER_EXPORT CharacterDelegate : public PropertyDelegate {
 public:
     CharacterDelegate(QObject *parent = 0) : PropertyDelegate(parent) {}
     virtual ~CharacterDelegate() {}
-    
+
     virtual QWidget * createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     virtual PropertyWidget * createWizardWidget(U2OpStatus &os, QWidget *parent) const;
     virtual void setEditorData(QWidget *editor, const QModelIndex &index) const;
@@ -475,7 +487,7 @@ public:
     virtual PropertyDelegate *clone() {
         return new CharacterDelegate(parent());
     }
-    
+
 }; // CharacterDelegate
 
 }//namespace U2

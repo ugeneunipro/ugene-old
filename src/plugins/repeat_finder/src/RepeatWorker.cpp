@@ -71,9 +71,9 @@ void RepeatWorkerFactory::init() {
     QList<PortDescriptor*> p; QList<Attribute*> a;
 
     {
-        Descriptor id(BasePorts::IN_SEQ_PORT_ID(), RepeatWorker::tr("Input sequences"), 
+        Descriptor id(BasePorts::IN_SEQ_PORT_ID(), RepeatWorker::tr("Input sequences"),
                         RepeatWorker::tr("A nucleotide sequence to search repeats in."));
-        Descriptor od(BasePorts::OUT_ANNOTATIONS_PORT_ID(), RepeatWorker::tr("Repeat annotations"), 
+        Descriptor od(BasePorts::OUT_ANNOTATIONS_PORT_ID(), RepeatWorker::tr("Repeat annotations"),
                         RepeatWorker::tr("A set of annotations marking repeats found in the sequence."));
         QMap<Descriptor, DataTypePtr> inM;
         inM[BaseSlots::DNA_SEQUENCE_SLOT()] = BaseTypes::DNA_SEQUENCE_TYPE();
@@ -132,11 +132,13 @@ void RepeatWorkerFactory::init() {
         a << aa;
     }
 
-    Descriptor desc(ACTOR_ID, RepeatWorker::tr("Find Repeats"), 
+    Descriptor desc(ACTOR_ID, RepeatWorker::tr("Find Repeats"),
         RepeatWorker::tr("Finds repeats in each supplied sequence, stores found regions as annotations.")
         );
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
-    QMap<QString, PropertyDelegate*> delegates;    
+    QMap<QString, PropertyDelegate*> delegates;
+    delegates[USE_MIN_DISTANCE_ATTR] = new ComboBoxWithBoolsDelegate();
+    delegates[USE_MAX_DISTANCE_ATTR] = new ComboBoxWithBoolsDelegate();
     {
         QVariantMap m; m["minimum"] = 0; m["maximum"] = INT_MAX; m["suffix"] = L10N::suffixBp();
         delegates[MIN_DIST_ATTR] = new SpinBoxDelegate(m);
@@ -154,14 +156,14 @@ void RepeatWorkerFactory::init() {
         delegates[THREADS_ATTR] = new SpinBoxDelegate(m);
     }
     {
-        QVariantMap m; 
+        QVariantMap m;
         m["Auto"] = RFAlgorithm_Auto;
         m["Diagonals"] = RFAlgorithm_Diagonal;
         m["Suffix index"] = RFAlgorithm_Suffix;
         delegates[ALGO_ATTR] = new ComboBoxDelegate(m);
     }
     {
-        QVariantMap m; 
+        QVariantMap m;
         m["Disjoint repeats"] = DisjointRepeats;
         m["No filtering"] = NoFiltering;
         m["Unique repeats"] = UniqueRepeats;
@@ -185,7 +187,7 @@ QString RepeatPrompter::composeRichDoc() {
     Actor* producer = input->getProducer(BaseSlots::DNA_SEQUENCE_SLOT().getId());
     QString unsetStr = "<font color='red'>"+tr("unset")+"</font>";
     QString producerName = tr(" from <u>%1</u>").arg(producer ? producer->getLabel() : unsetStr);
-    
+
     // TODO extend ?
     QString resultName = getRequiredParam(NAME_ATTR);
     QString inverted = getParameter(INVERT_ATTR).toBool() ? tr("inverted") : tr("direct");
@@ -198,7 +200,7 @@ QString RepeatPrompter::composeRichDoc() {
         .arg(getHyperlink(IDENTITY_ATTR, getParameter(IDENTITY_ATTR).toInt()))
         .arg(getHyperlink(LEN_ATTR, getParameter(LEN_ATTR).toInt()))
         .arg(getHyperlink(NAME_ATTR, resultName));
-    
+
     return doc;
 }
 
@@ -254,12 +256,12 @@ Task* RepeatWorker::tick() {
             return NULL;
         }
         DNASequence seq = seqObj->getWholeSequence();
-        
+
         if(cfg.minDist < 0){
             algoLog.error(tr("Incorrect value: minimal distance must be greater then zero"));
             return new FailTask(tr("Incorrect value: minimal distance must be greater then zero"));
         }
-        
+
         if (!seq.alphabet->isNucleic()) {
             QString err = tr("Sequence alphabet is not nucleic!");
             return new FailTask(err);

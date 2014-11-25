@@ -191,7 +191,7 @@ DnaAssemblyToRefTaskSettings GenomeAlignerWorker::getSettings(U2OpStatus &os) {
 }
 
 QString GenomeAlignerPrompter::composeRichDoc() {
-    QString res = ""; 
+    QString res = "";
 
     Actor* readsProducer = qobject_cast<IntegralBusPort*>(target->getPort(IN_PORT_DESCR))->getProducer(READS_URL_SLOT_ID);
 
@@ -301,24 +301,24 @@ void GenomeAlignerWorkerFactory::init() {
         Descriptor refGenome(REFERENCE_GENOME,
             GenomeAlignerWorker::tr("Reference genome"),
             GenomeAlignerWorker::tr("Path to indexed reference genome."));
-        Descriptor absMismatches(ABS_OR_PERC_MISMATCHES_ATTR, 
+        Descriptor absMismatches(ABS_OR_PERC_MISMATCHES_ATTR,
             GenomeAlignerWorker::tr("Is absolute mismatches values?"),
             GenomeAlignerWorker::tr("<html><body><p><b>true</b> - absolute mismatches mode is used</p><p><b>false</b> - percentage mismatches mode is used</p>\
                                     You can choose absolute or percentage mismatches values mode.</body></html>"));
         Descriptor mismatches(MISMATCHES_ATTR,
-            GenomeAlignerWorker::tr("Absolute mismatches"), 
+            GenomeAlignerWorker::tr("Absolute mismatches"),
             GenomeAlignerWorker::tr("<html><body>Number of mismatches allowed while aligning reads.</body></html>"));
         Descriptor ptMismatches(PERCENT_MISMATCHES_ATTR,
             GenomeAlignerWorker::tr("Percentage mismatches"),
             GenomeAlignerWorker::tr("<html><body>Percentage of mismatches allowed while aligning reads.</body></html>"));
-        Descriptor reverse(REVERSE_ATTR, 
-            GenomeAlignerWorker::tr("Align reverse complement reads"), 
+        Descriptor reverse(REVERSE_ATTR,
+            GenomeAlignerWorker::tr("Align reverse complement reads"),
             GenomeAlignerWorker::tr("<html><body>Set this option to align both direct and reverse complement reads.</body></html>"));
         Descriptor best(BEST_ATTR,
-            GenomeAlignerWorker::tr("Use \"best\"-mode"), 
+            GenomeAlignerWorker::tr("Use \"best\"-mode"),
             GenomeAlignerWorker::tr("<html><body>Report only the best alignment for each read (in terms of mismatches).</body></html>"));
         Descriptor qual(QUAL_ATTR,
-            GenomeAlignerWorker::tr("Omit reads with qualities lower than"), 
+            GenomeAlignerWorker::tr("Omit reads with qualities lower than"),
             GenomeAlignerWorker::tr("<html><body>Omit reads with qualities lower than the specified value. Reads that have no qualities are not omited.\
                                     <p>Set <b>\"0\"</b> to switch off this option.</p></body></html>"));
 
@@ -326,7 +326,7 @@ void GenomeAlignerWorkerFactory::init() {
         openclEnabled = !AppContext::getOpenCLGpuRegistry()->getEnabledGpus().empty();
 #endif
         if(openclEnabled) {
-            Descriptor gpu(GPU_ATTR, GenomeAlignerWorker::tr("Use GPU-optimization"), 
+            Descriptor gpu(GPU_ATTR, GenomeAlignerWorker::tr("Use GPU-optimization"),
                 GenomeAlignerWorker::tr("<html><body>Use GPU-calculatings while aligning reads. This option requires OpenCL-enable GPU-device.</body></html>"));
 
             attrs << new Attribute(gpu, BaseTypes::BOOL_TYPE(), false/*required*/, false);
@@ -337,25 +337,26 @@ void GenomeAlignerWorkerFactory::init() {
         attrs << new Attribute(refGenome, BaseTypes::STRING_TYPE(), true, QVariant(""));
         attrs << new Attribute(absMismatches, BaseTypes::BOOL_TYPE(), true/*required*/, true);
         Attribute* mismatchesAttr = new Attribute(mismatches, BaseTypes::NUM_TYPE(), false, 0);
-        mismatchesAttr->addRelation(new VisibilityRelation(ABS_OR_PERC_MISMATCHES_ATTR, "True"));
+        mismatchesAttr->addRelation(new VisibilityRelation(ABS_OR_PERC_MISMATCHES_ATTR, QVariant(true)));
         attrs << mismatchesAttr;
         Attribute* ptMismatchesAttr = new Attribute(ptMismatches, BaseTypes::NUM_TYPE(), false, 0);
-        ptMismatchesAttr->addRelation(new VisibilityRelation(ABS_OR_PERC_MISMATCHES_ATTR, "False"));
+        ptMismatchesAttr->addRelation(new VisibilityRelation(ABS_OR_PERC_MISMATCHES_ATTR, QVariant(false)));
         attrs << ptMismatchesAttr;
         attrs << new Attribute(reverse, BaseTypes::BOOL_TYPE(), false/*required*/, false);
         attrs << new Attribute(best, BaseTypes::BOOL_TYPE(), false/*required*/, true);
         attrs << new Attribute(qual, BaseTypes::NUM_TYPE(), false/*required*/, 0);
     }
 
-    Descriptor desc(ACTOR_ID, GenomeAlignerWorker::tr("Align Reads with UGENE Genome Aligner"), 
+    Descriptor desc(ACTOR_ID, GenomeAlignerWorker::tr("Align Reads with UGENE Genome Aligner"),
         GenomeAlignerWorker::tr("Unique UGENE algorithm for aligning short reads to reference genome"));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, attrs);
 
-    QMap<QString, PropertyDelegate*> delegates;    
+    QMap<QString, PropertyDelegate*> delegates;
 
     {
         delegates[OUTPUT_DIR] = new URLDelegate("", "", false, true);
         delegates[REFERENCE_GENOME] = new URLDelegate("", "", false, false, false);
+        delegates[ABS_OR_PERC_MISMATCHES_ATTR] = new ComboBoxWithBoolsDelegate();
 
         QVariantMap m;
         m["minimum"] = 0;

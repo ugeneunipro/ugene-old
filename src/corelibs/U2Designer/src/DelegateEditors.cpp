@@ -390,6 +390,20 @@ QVariant ComboBoxWithChecksDelegate::getDisplayValue(const QVariant& val) const 
     return QVariant( display );
 }
 
+/********************************
+* ComboBoxWithBoolsDelegate
+********************************/
+
+ComboBoxWithBoolsDelegate::ComboBoxWithBoolsDelegate(QObject *parent)
+    : ComboBoxDelegate(boolMap(), parent) {}
+
+QVariantMap ComboBoxWithBoolsDelegate::boolMap() {
+    QVariantMap map;
+    map["False"] = false;
+    map["True"] = true;
+    return map;
+}
+
 
 /********************************
 * URLDelegate
@@ -481,7 +495,7 @@ PropertyDelegate::Type URLDelegate::type() const {
 /********************************
 * FileModeDelegate
 ********************************/
-FileModeDelegate::FileModeDelegate(bool appendSupported, QObject *parent) 
+FileModeDelegate::FileModeDelegate(bool appendSupported, QObject *parent)
 : ComboBoxDelegate(QVariantMap(), parent) {
     items.insert(U2::WorkflowUtils::tr("Overwrite"), SaveDoc_Overwrite);
     items.insert(U2::WorkflowUtils::tr("Rename"), SaveDoc_Roll);
@@ -500,8 +514,8 @@ SchemaRunModeDelegate::SchemaRunModeDelegate( QObject * parent )
 : ComboBoxDelegate( QVariantMap(), parent ) {
     items.insert( THIS_COMPUTER_STR, true );
     items.insert( REMOTE_COMPUTER_STR, false );
-    
-    connect( this, SIGNAL( si_valueChanged( const QString & ) ), this, 
+
+    connect( this, SIGNAL( si_valueChanged( const QString & ) ), this,
         SLOT( sl_valueChanged( const QString & ) ) );
 }
 
@@ -716,7 +730,7 @@ void StringListDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 void StringListDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
     StingListWidget *lineEdit = dynamic_cast<StingListWidget*>(editor);
-    
+
     QString val = lineEdit->value().toString();
     model->setData(index, val, ConfigurationEditor::ItemValueRole);
 
@@ -753,7 +767,7 @@ QWidget *StringSelectorDelegate::createEditor(QWidget *parent, const QStyleOptio
 
     currentEditor = editor;
     connect(valueEdit, SIGNAL(editingFinished()), SLOT(sl_commit()));
-    
+
     return editor;
 }
 
