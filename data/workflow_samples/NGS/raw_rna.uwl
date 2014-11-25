@@ -1,5 +1,5 @@
 #@UGENE_WORKFLOW
-#Processing of Illumina raw RNA-Seq NGS data. Reads are filtered to reduce alignment time and aligned with TopHat. The result of the processing is TopHat output. If there is a number of input FASTQ files they are merged in single FASTQ file (one for each paired tag) before TopHat alignment
+#Processing of Illumina raw RNA-Seq NGS data. Reads are filtered to reduce alignment time and aligned with TopHat. The result of the processing is TopHat output. For the filtration onIy mode, the data is just filtered, without the alignment. If there is a number of input FASTQ files they are merged in single FASTQ file (one for each paired tag) before TopHat alignment
 
 workflow "Raw RNA-Seq processing" {
     .meta {
@@ -12,6 +12,8 @@ workflow "Raw RNA-Seq processing" {
             result {
                 NGS/raw_ngs/rnaseq/rnaseq_single.uwl: pipeline.single;
                 NGS/raw_ngs/rnaseq/rnaseq_paired.uwl: pipeline.paired;
+                NGS/raw_ngs/rnaseq/rnaseq_filtration_single.uwl: pipeline.singlefiltration;
+                NGS/raw_ngs/rnaseq/rnaseq_filtration_paired.uwl: pipeline.pairedfiltration;
             }
             page {
                 id: 1;
@@ -23,11 +25,19 @@ workflow "Raw RNA-Seq processing" {
                             id: pipeline;
                             value {
                                 id: single;
-                                label: "Single tags";
+                                label: "Single tags. With TopHat alignment";
                             }
                             value {
                                 id: paired;
-                                label: "Paired tags";
+                                label: "Paired tags. With TopHat alignment";
+                            }
+                            value {
+                                id: singlefiltration;
+                                label: "Single tags. Filtration only. Without TopHat alignment";
+                            }
+                            value {
+                                id: pairedfiltration;
+                                label: "Paired tags. Filtration only. Without TopHat alignment";
                             }
                         }
                     }

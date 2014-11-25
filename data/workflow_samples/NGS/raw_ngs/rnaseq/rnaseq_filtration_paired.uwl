@@ -1,0 +1,260 @@
+#@UGENE_WORKFLOW
+#Processing of Illumina raw RNA-Seq NGS data. Reads are filtered to reduce alignment time. The result of the processing is a filtered FASTQ file as a ready-to-use TopHat input. If there is a number of input FASTQ files they are merged in single FASTQ file (one for each paired tag)
+
+
+
+workflow RNA-Seq{
+
+    CASAVAFilter {
+        type:CASAVAFilter;
+        name:"Filter Reads by CASAVA Header";
+        custom-dir:filtered_fastq;
+    }
+    QualityTrim {
+        type:QualityTrim;
+        name:"Trim Reads by Quality";
+        custom-dir:filtered_fastq;
+        len-id:10;
+        qual-id:20;
+    }
+    get-file-list {
+        type:get-file-list;
+        name:"Read FASTQ Files with Reads 1";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    MergeFastq {
+        type:MergeFastq;
+        name:"Merge FASTQ Files";
+        custom-dir:filtered_fastq;
+        out-name:in_1.fq;
+    }
+    get-file-list-1 {
+        type:get-file-list;
+        name:"Read FASTQ Files with Reads 2";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    CASAVAFilter-1 {
+        type:CASAVAFilter;
+        name:"Filter Reads by CASAVA Header";
+        custom-dir:filtered_fastq;
+    }
+    QualityTrim-1 {
+        type:QualityTrim;
+        name:"Trim Reads by Quality";
+        custom-dir:filtered_fastq;
+        len-id:10;
+        qual-id:20;
+    }
+    MergeFastq-1 {
+        type:MergeFastq;
+        name:"Merge FASTQ Files";
+        custom-dir:filtered_fastq;
+        out-name:in_2.fq;
+    }
+    multiplexer {
+        type:multiplexer;
+        name:Multiplexer;
+    }
+
+    .actor-bindings {
+        get-file-list-1.out-url->CASAVAFilter-1.in-file
+        MergeFastq-1.out-file->multiplexer.input-data-2
+        CASAVAFilter-1.out-file->QualityTrim-1.in-file
+        QualityTrim.out-file->MergeFastq.in-file
+        get-file-list.out-url->CASAVAFilter.in-file
+        MergeFastq.out-file->multiplexer.input-data-1
+        CASAVAFilter.out-file->QualityTrim.in-file
+        QualityTrim-1.out-file->MergeFastq-1.in-file
+    }
+
+    get-file-list.url->CASAVAFilter.in-file.url
+    CASAVAFilter.url->QualityTrim.in-file.url
+    QualityTrim.url->MergeFastq.in-file.url
+    get-file-list-1.url->CASAVAFilter-1.in-file.url
+    CASAVAFilter-1.url->QualityTrim-1.in-file.url
+    QualityTrim-1.url->MergeFastq-1.in-file.url
+
+    .meta {
+        parameter-aliases {
+            CASAVAFilter.out-mode {
+                alias:out_mode;
+            }
+            get-file-list.url-in {
+                alias:in;
+            }
+            get-file-list-1.url-in {
+                alias:in_mate;
+            }
+            CASAVAFilter-1.out-mode {
+                alias:out_mode1;
+            }
+        }
+        visual {
+            CASAVAFilter {
+                pos:"-1005 -553";
+                style:ext;
+                bg-color-ext:"194 0 0 64";
+                bounds:"-30 -30 123.875 82";
+                in-file.angle:97.4959;
+                out-file.angle:268.768;
+            }
+            CASAVAFilter-1 {
+                pos:"-671 -795";
+                style:ext;
+                bg-color-ext:"194 0 0 64";
+                bounds:"-30 -30 119.875 81";
+                in-file.angle:181.79;
+                out-file.angle:359.076;
+            }
+            MergeFastq {
+                pos:"-725 -450";
+                style:simple;
+                bg-color-simple:"78 151 184 255";
+                in-file.angle:203.629;
+                out-file.angle:8.61565;
+            }
+            MergeFastq-1 {
+                pos:"-566 -582";
+                style:simple;
+                bg-color-simple:"78 151 184 255";
+                in-file.angle:29.8989;
+                out-file.angle:271.432;
+            }
+            QualityTrim {
+                pos:"-1004 -371";
+                style:ext;
+                bg-color-ext:"204 68 102 64";
+                in-file.angle:95.0425;
+                out-file.angle:353.437;
+            }
+            QualityTrim-1 {
+                pos:"-399 -797";
+                style:ext;
+                bg-color-ext:"204 68 102 64";
+                bounds:"-30 -30 107.125 96";
+                in-file.angle:188.13;
+                out-file.angle:274.214;
+            }
+            get-file-list {
+                pos:"-1053 -740";
+                style:ext;
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 72.25 90";
+                out-url.angle:296.095;
+            }
+            get-file-list-1 {
+                pos:"-883 -841";
+                style:ext;
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 75 92";
+                out-url.angle:328.062;
+            }
+            multiplexer {
+                pos:"-567 -459";
+                style:simple;
+                bg-color-simple:"84 84 84 255";
+                input-data-1.angle:186.911;
+                input-data-2.angle:88.2643;
+                output-data.angle:319.574;
+            }
+            CASAVAFilter-1.out-file->QualityTrim-1.in-file {
+                text-pos:"-29.75 -25";
+            }
+            CASAVAFilter.out-file->QualityTrim.in-file {
+                text-pos:"-32.75 -12";
+            }
+            MergeFastq-1.out-file->multiplexer.input-data-2 {
+                text-pos:"5.25 -14";
+            }
+            MergeFastq.out-file->multiplexer.input-data-1 {
+                text-pos:"-31.75 -24";
+            }
+            QualityTrim-1.out-file->MergeFastq-1.in-file {
+                text-pos:"-35.75 -24";
+            }
+            QualityTrim.out-file->MergeFastq.in-file {
+                text-pos:"-35.75 -24";
+            }
+            get-file-list-1.out-url->CASAVAFilter-1.in-file {
+                text-pos:"-38.7578 -25";
+            }
+            get-file-list.out-url->CASAVAFilter.in-file {
+                text-pos:"7.2422 -14";
+            }
+        }
+        wizard {
+            name:"Raw RNA-Seq Processing Wizard";
+            page {
+                id:1;
+                next:2;
+                title:"Input data";
+                parameters-area {
+                    group {
+                        title:"Short Reads";
+                        label-size:120;
+                        get-file-list.url-in {
+                            label:"FASTQ files 1";
+                        }
+                        get-file-list-1.url-in {
+                            label:"FASTQ files 2";
+                        }
+                    }
+                }
+            }
+            page {
+                id:2;
+                next:3;
+                title:Pre-processing;
+                parameters-area {
+                    group {
+                        title:"Filtration 1";
+                        label-size:120;
+                        QualityTrim.qual-id {
+                        }
+                        QualityTrim.len-id {
+                            label:"Min length";
+                        }
+                    }
+                    group {
+                        title:"Filtration 2";
+                        label-size:120;
+                        QualityTrim-1.qual-id {
+                        }
+                        QualityTrim-1.len-id {
+                            label:"Min length";
+                        }
+                    }
+                }
+            }
+            page {
+                id:3;
+                title:"Output data";
+                parameters-area {
+                    group {
+                        title:"Filtered FASTQ 1";
+                        label-size:130;
+                        type:hideable;
+                        CASAVAFilter.out-mode {
+                        }
+                        CASAVAFilter.custom-dir {
+                        }
+                    }
+                    group {
+                        title:"Filtered FASTQ 2";
+                        label-size:130;
+                        type:hideable;
+                        CASAVAFilter-1.out-mode {
+                        }
+                        CASAVAFilter-1.custom-dir {
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
