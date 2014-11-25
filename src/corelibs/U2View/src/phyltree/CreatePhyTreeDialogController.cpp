@@ -41,6 +41,7 @@
 #include <U2Core/PluginModel.h>
 #include <U2Core/Settings.h>
 #include <U2Core/TmpDirChecker.h>
+#include <U2Core/U2OpStatusUtils.h>
 
 #include <U2Gui/HelpButton.h>
 #include <U2Gui/LastUsedDirHelper.h>
@@ -140,10 +141,12 @@ void CreatePhyTreeDialogController::sl_okClicked(){
         return;
     }
     settings.fileUrl = fileName;
-    QFileInfo fileInfo(fileName);
-    if(!TmpDirChecker::checkWritePermissions(fileInfo.path())) {
-        QMessageBox::warning(this, tr("Warning"), tr("You don't have permission to write to the folder"));
-        ui->fileNameEdit->setFocus();
+
+    U2OpStatus2Log os;
+    GUrlUtils::validateLocalFileUrl(GUrl(fileName), os);
+    if (os.hasError()) {
+        QMessageBox::warning(this, tr("Error"), tr("Please, change the output file.") + "\n" + os.getError());
+        ui->fileNameEdit->setFocus(Qt::MouseFocusReason);
         return;
     }
 
