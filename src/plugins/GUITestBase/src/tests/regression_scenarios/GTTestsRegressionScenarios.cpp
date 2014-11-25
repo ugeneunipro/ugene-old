@@ -4932,6 +4932,19 @@ GUI_TEST_CLASS_DEFINITION(test_2545) {
     CHECK_SET_ERR(0 == GTUtilsTaskTreeView::getTopLevelTasksCount(os), "The task is not canceled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2549) {
+    GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "dock_log_view"));
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+
+    const QString clipboardContent = GTClipboard::text(os);
+    CHECK_SET_ERR(!clipboardContent.isEmpty(), "Clipboard is empty");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2562) {
     GTLogTracer l;
 

@@ -187,7 +187,7 @@ bool checkFrame(const QVector<U2Region> &regions, int frame) {
     return true;
 }
 
-ExportSequenceItem toRevComplement(ExportSequenceItem &ei, const U2DbiRef &resultDbiRef, bool deleteOriginalSeq, U2OpStatus &os) {
+ExportSequenceItem toRevComplement(ExportSequenceItem &ei, const U2DbiRef &resultDbiRef, U2OpStatus &os) {
     ExportSequenceItem complEi = ei;
     CHECK_EXT(NULL != ei.complTT, os.setError(ExportSequenceTask::tr("Complement translation not found")), complEi);
 
@@ -447,13 +447,11 @@ void ExportSequenceTask::run() {
         ExportSequenceItem &ei0 = config.items[i];
 
         QList<ExportSequenceItem> r1Items;
-        bool removeOriginalSeq = true;
         if (config.strand == TriState_Yes || config.strand == TriState_Unknown) {
             r1Items.append(ei0);
-            removeOriginalSeq = false;
         }
         if (config.strand == TriState_No || config.strand == TriState_Unknown) { 
-            r1Items.append(toRevComplement(ei0, dbiRef, removeOriginalSeq, stateInfo));
+            r1Items.append(toRevComplement(ei0, dbiRef, stateInfo));
             CHECK_OP(stateInfo, );
         }
         CHECK_OP(stateInfo, );
