@@ -71,6 +71,7 @@
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/ugene/corelibs/U2Gui/AlignShortReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/BuildIndexDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ConvertAssemblyToSAMDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateAnnotationWidgetFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/CreateObjectRelationDialogFiller.h"
@@ -2889,6 +2890,34 @@ GUI_TEST_CLASS_DEFINITION( test_1924 )
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1984){
+//    1) Run UGENE
+//    2) Open Settings/Preferences/External tools
+//    3) Set incorrect path for any external tool (cistrome toolkit, cufflinks toolkit, samtools toolkit, Rscript with its modules, python, perl, tophat)
+//    4) Press OK
+//    Expected state: UGENE doesn't show any warning to user. Error should be at UGENE log ("Details" columns should be enabled)
+
+    class CuffDiffIncorrectPath : public CustomScenario {
+    public:
+        CuffDiffIncorrectPath() {}
+        virtual void run(U2::U2OpStatus &os) {
+            AppSettingsDialogFiller::setExternalToolPath(os, "Cuffdiff", "./");
+            GTGlobals::sleep(2000);
+
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new CuffDiffIncorrectPath()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+
+    CHECK_SET_ERR(l.checkMessage("Cuffdiff validate task failed: Tool does not start."), "No error in the log!");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1986){
 //1. Run UGENE
 //2. Use main toolbar { File -> Search NCBI Genbank }
@@ -3645,6 +3674,58 @@ GUI_TEST_CLASS_DEFINITION( test_2292 ){
     GTGlobals::sleep();
     //CHECK_SET_ERR( l.hasError( ), "Error message expected!" );
 }
+
+GUI_TEST_CLASS_DEFINITION( test_2293 ){
+//    0. Ensure that Bowtie2 Build index tool is not set. Remove it, if it is.
+//    1. Do {main menu -> Tools -> ALign to reference -> Build index}.
+//    Expected state: a "Build index" dialog appeared.
+//    2. Fill the dialog:
+//        {Align short reads method}: Bowtie2
+//        {Reference sequence}:       data/samples/FASTA/human_T1.fa
+//        {Index file name}:          set any valid data or use default
+//    Click a "Start" button.
+
+//    Expected state: a message box appeared: an offer to set "Bowtie2 Build index" tool in UGENE preferences.
+    GTUtilsExternalTools::removeTool(os, "Bowtie 2");
+
+    class CheckBowtie2Filler : public Filler {
+    public:
+        CheckBowtie2Filler(U2OpStatus &os)
+            : Filler (os, "BuildIndexFromRefDialog") {}
+        virtual void run() {
+            QWidget* dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+
+            QComboBox* methodNamesBox = dialog->findChild<QComboBox*>("methodNamesBox");
+            for(int i=0; i < methodNamesBox->count();i++){
+                if(methodNamesBox->itemText(i) == "Bowtie2"){
+                    GTComboBox::setCurrentIndex(os, methodNamesBox, i);
+                }
+            }
+
+            GTFileDialogUtils *ob = new GTFileDialogUtils(os, dataDir + "samples/FASTA/", "human_T1.fa");
+            GTUtilsDialog::waitForDialog(os, ob);
+            GTWidget::click(os, GTWidget::findWidget(os, "addRefButton",dialog));
+
+            QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
+            CHECK_SET_ERR(box != NULL, "buttonBox is NULL");
+
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "No"));
+            QPushButton* okButton = box->button(QDialogButtonBox::Ok);
+            CHECK_SET_ERR(okButton !=NULL, "ok button is NULL");
+            GTWidget::click(os, okButton);
+
+            QPushButton* cancelButton = box->button(QDialogButtonBox::Cancel);
+            CHECK_SET_ERR(cancelButton !=NULL, "Cancel button is NULL");
+            GTWidget::click(os, cancelButton);
+        }
+    };
+
+
+    GTUtilsDialog::waitForDialog(os, new CheckBowtie2Filler(os));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_TOOLS), QStringList() << "Align to reference" << "Build index");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_2282 ) {
     // 1. Open "chrM.sorted.bam" file using {File->Open} menu in UGENE.
     //    Expected state: "Import BAM file" dialog has appeared.
