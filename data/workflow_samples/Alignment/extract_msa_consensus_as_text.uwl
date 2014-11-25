@@ -1,5 +1,5 @@
 #@UGENE_WORKFLOW
-#For each input multiple alignment the workflow calculates the consensus and saves it to the "consensus.txt" text file.
+#For each input multiple alignment the workflow calculates the consensus and saves it to a text file, named according to the name of the input alignment.
 #
 #The JalView algorithm (denoted as "default") is used by default to calculate the consensus. For each column of the alignment it returns either "+", if there are 2 characters with high frequency in this column, or a character in uppercase or lowercase. The case of the character depends on the percentage value of the character in the column and the "threshold" value.
 #
