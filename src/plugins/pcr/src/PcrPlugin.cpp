@@ -34,6 +34,7 @@
 
 #include "PcrPlugin.h"
 
+#include "PrimersGrouperWorker.h"
 #include "FindPrimerPairsWorker.h"
 
 namespace U2 {
@@ -62,6 +63,7 @@ PcrPlugin::PcrPlugin()
         }
     }
     LocalWorkflow::FindPrimerPairsWorkerFactory::init();
+    LocalWorkflow::PrimersGrouperWorkerFactory::init();
 }
 
 PcrPlugin::~PcrPlugin() {

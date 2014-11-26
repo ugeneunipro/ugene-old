@@ -19,7 +19,8 @@ HEADERS += src/EditPrimerDialog.h \
            src/PrimerLibraryWidget.h \
            src/PrimerLineEdit.h \
            src/PrimerStatistics.h \
-           src/PrimersDetailsDialog.h
+           src/PrimersDetailsDialog.h \
+           src/PrimersGrouperWorker.h 
 
 FORMS += src/ui/EditPrimerDialog.ui \
          src/ui/InSilicoPcrOptionPanelWidget.ui \
@@ -47,7 +48,8 @@ SOURCES += src/EditPrimerDialog.cpp \
            src/PrimerLibraryWidget.cpp \
            src/PrimerLineEdit.cpp \
            src/PrimerStatistics.cpp \
-           src/PrimersDetailsDialog.cpp
+           src/PrimersDetailsDialog.cpp \
+           src/PrimersGrouperWorker.cpp 
 
 TRANSLATIONS += transl/czech.ts \
                 transl/english.ts \

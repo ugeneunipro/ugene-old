@@ -91,6 +91,8 @@ public:
     const PrimerStatisticsCalculator& getForwardCalculator(){return forward;}
     const PrimerStatisticsCalculator& getReverseCalculator(){return reverse;}
 
+    bool isHeteroDimers() {return dimersInfo.canBeFormed;}
+
 private:
     void addDimersToReport(QString& report) const;
 private:
