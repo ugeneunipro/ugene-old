@@ -1740,6 +1740,43 @@ GUI_TEST_CLASS_DEFINITION( test_1897 ) {
     CHECK_SET_ERR( action->isChecked( ), "Action has to be checked!" );
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1918) {
+    //1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    //2. Place to the empty scheme "File List" and "File Conversion" elements
+    WorkflowProcessItem *fileList = GTUtilsWorkflowDesigner::addElement(os, "File List");
+    WorkflowProcessItem *converter = GTUtilsWorkflowDesigner::addElement(os, "File Format Conversion");
+
+    //3. Bind the elements
+    GTUtilsWorkflowDesigner::connect(os, fileList, converter);
+
+    //4. Add the following input files to the "File List" dataset: "test/_common_data/mega/MegaTest_1.meg",
+    //                                                             "test/_common_data/mega/MegaTest_2.meg",
+    //                                                             "test/_common_data/clustal/align.aln"
+    GTUtilsWorkflowDesigner::addInputFile(os, "File List", testDir + "_common_data/mega/MegaTest_1.meg");
+    GTUtilsWorkflowDesigner::addInputFile(os, "File List", testDir + "_common_data/mega/MegaTest_2.meg");
+    GTUtilsWorkflowDesigner::addInputFile(os, "File List", testDir + "_common_data/clustal/align.aln");
+
+    //5. Set the following parameters of the "File Conversion" element: { Document format : nexus },
+    //                                                                  { Excluded formats : clustal }
+    GTUtilsWorkflowDesigner::click(os, "File Format Conversion");
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", 16, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Excluded formats", QStringList("clustal"), GTUtilsWorkflowDesigner::ComboChecks);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output directory", 0, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Custom directory", sandBoxDir + "regression_1918", GTUtilsWorkflowDesigner::textValue);
+
+    //6. Run the scheme.
+    GTWidget::click(os, GTAction::button(os, "Run workflow"));
+
+    //Expected state: After workflow finish there are two output files in the dashboard: "MegaTest_1.meg.nexus",
+    //                                                                                   "MegaTest_2.meg.nexus"
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    CHECK_SET_ERR(QFile::exists(sandBoxDir + "regression_1918/MegaTest_1.meg.nex"), "File 1 does not exist");
+    CHECK_SET_ERR(QFile::exists(sandBoxDir + "regression_1918/MegaTest_2.meg.nex"), "File 2 does not exist");
+    CHECK_SET_ERR(!QFile::exists(sandBoxDir + "regression_1918/align.aln.nex"), "File 3 exists");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1919 )
 {
     //1) Create the WD scheme: File list -> File conversions.

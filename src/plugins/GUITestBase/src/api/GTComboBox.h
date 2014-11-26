@@ -40,6 +40,8 @@ public:
     // Fails if the comboBox is NULL, combobox doesn't contain an item with text
     // or a comboBox current item's text differs from a given text in the end of method's execution
     static void setIndexWithText(U2OpStatus& os, QComboBox *comboBox, const QString& text, bool checkVal = true, GTGlobals::UseMethod method = GTGlobals::UseKey);
+
+    static void checkValues(U2OpStatus& os, QComboBox *comboBox, const QStringList &values);
 };
 
 }

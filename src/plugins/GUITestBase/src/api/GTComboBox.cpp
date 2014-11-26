@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QStandardItemModel>
 #include <QtCore/qglobal.h>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QListView>
@@ -101,6 +102,38 @@ void GTComboBox::setIndexWithText(U2OpStatus& os, QComboBox *comboBox, const QSt
     }
 }
 
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "checkValues"
+void GTComboBox::checkValues(U2OpStatus& os, QComboBox *comboBox, const QStringList &values) {
+    GT_CHECK(NULL != comboBox, "comboBox is NULL");
+
+    GTWidget::setFocus(os, comboBox);
+    GTGlobals::sleep();
+
+    QListView *view = comboBox->findChild<QListView*>();
+    GT_CHECK(NULL != view, "list view is not found");
+    QStandardItemModel *model = dynamic_cast<QStandardItemModel*>(view->model());
+    GT_CHECK(NULL != model, "model is not found");
+
+    foreach (const QString &value, values) {
+        int index = comboBox->findText(value, Qt::MatchContains);
+        GT_CHECK(index != -1, "Unknown value: " + value);
+        QModelIndex modelIndex = model->index(index, 0);
+        GT_CHECK(modelIndex.isValid(), "invalid model index: " + value);
+        QStandardItem *item = model->item(index);
+        GT_CHECK(NULL != item, "NULL item: " + value);
+        view->scrollTo(modelIndex);
+        GTGlobals::sleep(500);
+
+        QRect itemRect = view->visualRect(modelIndex);
+        QPoint checkPoint(itemRect.left() + 10, itemRect.center().y());
+        GTMouseDriver::moveTo(os, view->viewport()->mapToGlobal(checkPoint));
+        GTMouseDriver::click(os);
+        GTGlobals::sleep(500);
+        GT_CHECK(item->checkState() == Qt::Checked, "Item is not checked: " + value);
+    }
+}
 #undef GT_METHOD_NAME
 
 #undef GT_CLASS_NAME

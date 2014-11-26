@@ -41,7 +41,7 @@ class WorkflowPortItem;
 class GTUtilsWorkflowDesigner {
 public:
     enum tab {algoriths,samples};
-    enum valueType{spinValue, doubleSpinValue, comboValue, textValue};
+    enum valueType{spinValue, doubleSpinValue, comboValue, textValue, ComboChecks};
 
     //returns algoriths or samples
     static tab currentTab(U2OpStatus &os);
@@ -66,6 +66,8 @@ public:
 
     //adds alogritm with worker with name algName to workflow scene
     static void addAlgorithm(U2OpStatus &os, QString algName);
+
+    static WorkflowProcessItem * addElement(U2OpStatus &os, const QString &algName);
 
     //adds sample scheme with name sampName to workflow scene
     static void addSample(U2OpStatus &os, QString sampName);
@@ -98,6 +100,8 @@ public:
     //sets input file with path "filePath" and name "filename" dataset
     //this method should be called after selecting worker which contains dataset on scene
     static void setDatasetInputFile(U2OpStatus &os, QString filePath, QString fileName);
+
+    static void addInputFile(U2OpStatus &os, const QString &elementName, const QString &url);
 
     //sets input folder with path "filePath" to dataset
     static void setDatasetInputFolder(U2OpStatus &os, QString filePath);

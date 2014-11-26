@@ -197,6 +197,13 @@ void GTUtilsWorkflowDesigner::addAlgorithm(U2OpStatus &os, QString algName){
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "addElement"
+WorkflowProcessItem * GTUtilsWorkflowDesigner::addElement(U2OpStatus &os, const QString &algName) {
+    addAlgorithm(os, algName);
+    CHECK_OP(os, NULL);
+    return getWorker(os, algName);
+}
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "selectAlgorithm"
 void GTUtilsWorkflowDesigner::selectAlgorithm(U2OpStatus &os, QTreeWidgetItem* algorithm){
@@ -481,6 +488,15 @@ void GTUtilsWorkflowDesigner::setDatasetInputFile(U2OpStatus &os, QString filePa
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "addInputFile"
+void GTUtilsWorkflowDesigner::addInputFile(U2OpStatus &os, const QString &elementName, const QString &url) {
+    click(os, elementName);
+    CHECK_OP(os, );
+    QFileInfo info(url);
+    setDatasetInputFile(os, info.path(), info.fileName());
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "createDataset"
 void GTUtilsWorkflowDesigner::createDataset(U2OpStatus &os, QString datasetName){
     QWidget* DatasetWidget = GTWidget::findWidget(os, "DatasetWidget");
@@ -570,6 +586,14 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
         GT_CHECK(line, "QLineEdit not found. Widget in this cell might be not QLineEdit");
         GTLineEdit::setText(os, line, lineVal);
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
+        break;
+    }
+    case ComboChecks: {
+        QStringList values = value.value<QStringList>();
+        QComboBox *box = qobject_cast<QComboBox*>(table->findChild<QComboBox*>());
+        GT_CHECK(box, "QComboBox not found");
+        GTComboBox::checkValues(os, box, values);
+        break;
     }
     }
 }
