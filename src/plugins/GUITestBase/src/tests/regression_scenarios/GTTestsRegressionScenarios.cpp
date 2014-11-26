@@ -9914,6 +9914,29 @@ GUI_TEST_CLASS_DEFINITION(test_3658){
     CHECK_SET_ERR(count == 2, QString("wrong columns number. expected 2, actual: %1").arg(count));
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3702){
+    // 1. Open human_T1.fa
+    // 2. Drag'n' drop it from the project to welcome screen
+    // Expected state: sequence view is opened
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsMdi::closeWindow(os, "human_T1 [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)");
+
+    QWidget* welcomePage = GTUtilsMdi::findWindow(os, "Start Page");
+    CHECK_SET_ERR(welcomePage != NULL, "WelcomePage widget not found");
+    GTWidget::click(os, welcomePage);
+
+    QPoint p  = AppContext::getMainWindow()->getQMainWindow()->geometry().center();
+
+    QModelIndex idx = GTUtilsProjectTreeView::findIndex(os, "human_T1.fa");
+    CHECK_SET_ERR(idx.isValid(), "Index is invalid!");
+    GTMouseDriver::dragAndDrop(os, GTUtilsProjectTreeView::getItemCenter(os, "human_T1.fa"), p);
+
+    QWidget* wgt = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(wgt != NULL, "ActiveWindow is NULL");
+    CHECK_SET_ERR(wgt->windowTitle() == "human_T1 [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)", "human_T1.fa should be opened!");
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace

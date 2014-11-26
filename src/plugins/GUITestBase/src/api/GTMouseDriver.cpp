@@ -60,7 +60,7 @@ void GTDragger::sl_execDrag(){
 #ifdef Q_OS_WIN
     GTMouseDriver::release(os);
 #else
-	GTMouseDriver::click(os);
+    GTMouseDriver::click(os);
 #endif
 }
 
