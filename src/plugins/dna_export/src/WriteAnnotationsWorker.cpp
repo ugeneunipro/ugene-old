@@ -127,7 +127,7 @@ Task * WriteAnnotationsWorker::tick() {
             resultPath = context->absolutePath(resultPath);
         }
 
-        fetchIncomingAnnotations(qm, resultPath);
+        fetchIncomingAnnotations(qm, resultPath, storage);
     }
 
     bool done = annotationsPort->isEnded();
@@ -172,31 +172,45 @@ QString WriteAnnotationsWorker::getAnnotationName() const {
     return objName;
 }
 
-void WriteAnnotationsWorker::fetchIncomingAnnotations(const QVariantMap &incomingData, const QString &resultPath) {
-    const QString annObjName = getAnnotationName();
+void WriteAnnotationsWorker::fetchIncomingAnnotations(const QVariantMap &incomingData, const QString &resultPath, DataStorage storage) {
+    const QVariant annVar = incomingData[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
+    QList<AnnotationTableObject *> annTables = StorageUtils::getAnnotationTableObjects(context->getDataStorage(), annVar);
 
-    AnnotationTableObject *att = NULL;
-    if (annotationsByUrl.contains(resultPath)) {
-        att = annotationsByUrl.value(resultPath);
-    } else {
-        att = new AnnotationTableObject(annObjName, context->getDataStorage()->getDbiRef());
-        annotationsByUrl.insert(resultPath, att);
+    if (LocalFs == storage && shouldAnnotationTablesBeMerged()) {
+        AnnotationTableObject *mergedTable = mergeAnnotationTables(annTables, getAnnotationName());
+        qDeleteAll(annTables);
+        annTables.clear();
+        annTables << mergedTable;
     }
 
-    const QVariant annVar = incomingData[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-    const QList<AnnotationData> inputAnns = StorageUtils::getAnnotationTable(context->getDataStorage(), annVar);
+    annotationsByUrl[resultPath] << annTables;
 
     const QString seqObjName = fetchIncomingSequenceName(incomingData);
     bool isWriteNames = getValue<bool>(WRITE_NAMES);
-    foreach (AnnotationData ad, inputAnns) {
-        if (isWriteNames && !seqObjName.isEmpty()) {
-            U2Qualifier seqNameQual;
-            seqNameQual.name = "Sequence Name";
-            seqNameQual.value = seqObjName;
-            ad.qualifiers.append(seqNameQual);
+    if (isWriteNames && !seqObjName.isEmpty()) {
+        foreach (AnnotationTableObject *annTable, annTables) {
+            foreach (Annotation annotation, annTable->getAnnotations()) {
+                U2Qualifier seqNameQual;
+                seqNameQual.name = "Sequence Name";
+                seqNameQual.value = seqObjName;
+                annotation.addQualifier(seqNameQual);
+            }
         }
-        att->addAnnotation(ad);
     }
+}
+
+bool WriteAnnotationsWorker::shouldAnnotationTablesBeMerged() const {
+    return actor->isAttributeVisible(actor->getParameter(ANNOTATIONS_NAME));
+}
+
+AnnotationTableObject * WriteAnnotationsWorker::mergeAnnotationTables(const QList<AnnotationTableObject *> &annTables, const QString &mergedTableName) const {
+    AnnotationTableObject *mergedTable = new AnnotationTableObject(mergedTableName, context->getDataStorage()->getDbiRef());
+    foreach (AnnotationTableObject *annTable, annTables) {
+        foreach (const Annotation &annotation, annTable->getAnnotations()) {
+            mergedTable->addAnnotation(annotation.getData());
+        }
+    }
+    return mergedTable;
 }
 
 Task * WriteAnnotationsWorker::createWriteMultitask(const QList<Task *> &taskList) const {
@@ -212,7 +226,9 @@ Task * WriteAnnotationsWorker::createWriteMultitask(const QList<Task *> &taskLis
 Task * WriteAnnotationsWorker::getSaveObjTask(const U2DbiRef &dstDbiRef) const {
     QList<Task *> taskList;
     foreach (const QString &path, annotationsByUrl.keys()) {
-        taskList << new ImportObjectToDatabaseTask(annotationsByUrl[path], dstDbiRef, path);
+        foreach (AnnotationTableObject *annTable, annotationsByUrl[path]) {
+            taskList << new ImportObjectToDatabaseTask(annTable, dstDbiRef, path);
+        }
     }
     return createWriteMultitask(taskList);
 }
@@ -223,17 +239,22 @@ Task * WriteAnnotationsWorker::getSaveDocTask(const QString &formatId, SaveDocFl
     QList<Task*> taskList;
     QSet<QString> excludeFileNames = DocumentUtils::getNewDocFileNameExcludesHint();
     foreach (const QString &filepath, annotationsByUrl.keys()) {
-        AnnotationTableObject *att = annotationsByUrl.value(filepath);
+        QList<AnnotationTableObject *> annTables = annotationsByUrl.value(filepath);
 
         if(formatId == CSV_FORMAT_ID) {
-            createdAnnotationObjects << att; // will delete in destructor
+            createdAnnotationObjects << annTables; // will delete in destructor
             TaskStateInfo ti;
             if(fl.testFlag(SaveDoc_Roll) && !GUrlUtils::renameFileWithNameRoll(filepath, ti, excludeFileNames, &coreLog)) {
                 return new FailTask(ti.getError());
             }
-            taskList << new ExportAnnotations2CSVTask(att->getAnnotations(), QByteArray(), QString(), NULL, false, 
-                false, filepath, fl.testFlag(SaveDoc_Append)
-                , getValue<QString>(SEPARATOR));
+
+            QList<Annotation> annotations;
+            foreach (AnnotationTableObject *annTable, annTables) {
+                annotations << annTable->getAnnotations();
+            }
+
+            taskList << new ExportAnnotations2CSVTask(annotations, QByteArray(), QString(), NULL, false,
+                false, filepath, fl.testFlag(SaveDoc_Append), getValue<QString>(SEPARATOR));
         } else {
             fl |= SaveDoc_DestroyAfter;
             IOAdapterFactory* iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(IOAdapterUtils::url2io(filepath));
@@ -245,8 +266,11 @@ Task * WriteAnnotationsWorker::getSaveDocTask(const QString &formatId, SaveDocFl
             hints[DocumentRemovalMode_Synchronous] = QString();
             Document * doc = df->createNewLoadedDocument(iof, filepath, os, hints);
             CHECK_OP(os, new FailTask(os.getError()));
-            att->setModified(false);
-            doc->addObject(att); // savedoc task will delete doc -> doc will delete att
+
+            foreach (AnnotationTableObject *annTable, annTables) {
+                annTable->setModified(false);
+                doc->addObject(annTable); // savedoc task will delete doc -> doc will delete att
+            }
             taskList << new SaveDocumentTask(doc, fl, excludeFileNames);
         }
     }

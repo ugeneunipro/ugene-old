@@ -62,7 +62,10 @@ private:
     Task * takeParameters(QString &formatId, SaveDocFlags &fl, QString &resultPath, U2DbiRef &dstDbiRef, DataStorage &storage);
     QString fetchIncomingSequenceName(const QVariantMap &incomingData);
     QString getAnnotationName() const;
-    void fetchIncomingAnnotations(const QVariantMap &incomingData, const QString &resultPath);
+    void fetchIncomingAnnotations(const QVariantMap &incomingData, const QString &resultPath, DataStorage storage);
+
+    bool shouldAnnotationTablesBeMerged() const;
+    AnnotationTableObject *mergeAnnotationTables(const QList<AnnotationTableObject *> &annTables, const QString &mergedTableName) const;
 
     Task * getSaveDocTask(const QString &formatId, SaveDocFlags &fl);
     Task * getSaveObjTask(const U2DbiRef &dstDbiRef) const;
@@ -70,7 +73,7 @@ private:
 
     IntegralBus * annotationsPort;
     QList<AnnotationTableObject *> createdAnnotationObjects;
-    QMap<QString, AnnotationTableObject *> annotationsByUrl;
+    QMap<QString, QList<AnnotationTableObject *> > annotationsByUrl;
     
 }; // WriteAnnotationsWorker
 

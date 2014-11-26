@@ -26,18 +26,20 @@
 #include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/Task.h>
 
+#include <U2Lang/DbiDataStorage.h>
+
 #include "ConservationPlotSettings.h"
 
 namespace U2 {
 
 class Document;
-class SaveDocumentTask;
 class LoadDocumentTask;
+class SaveDocumentTask;
 
 class ConservationPlotTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
-    ConservationPlotTask(const ConservationPlotSettings& _settings, const QList<QList<AnnotationData> >& plotData);
+    ConservationPlotTask(const ConservationPlotSettings& _settings, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler>& plotData);
     virtual ~ConservationPlotTask();
 
     virtual void prepare();
@@ -56,8 +58,8 @@ private:
 
     QMap<Document* , SaveDocumentTask* > docTaskMap;
 
-    QList<QList<AnnotationData> > plotData;
-
+    Workflow::DbiDataStorage *storage;
+    QList<Workflow::SharedDbiDataHandler> plotData;
 
     int activeSubtasks;
 
@@ -69,7 +71,7 @@ private:
     static const QString TREAT_NAME;
 
 private:
-    Document* createDoc(const QList<AnnotationData>& annData, const QString& name);
+    Document* createDoc(const Workflow::SharedDbiDataHandler &annTableHandler, const QString& name);
     bool copyFile(const QString &src, const QString &dst);
 };
 

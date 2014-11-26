@@ -26,22 +26,27 @@
 #include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/Task.h>
 
+#include <U2Lang/DbiDataHandler.h>
+
 #include "CEASSettings.h"
 
 namespace U2 {
 
+class AnnotationTableObject;
 class Document;
 class SaveDocumentTask;
 
 class CEASTaskSettings {
 public:
     CEASTaskSettings();
-    CEASTaskSettings(const CEASSettings &ceas, const QList<AnnotationData> &bedData, const QString &wigData);
+    CEASTaskSettings(const CEASSettings &ceas, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler> &bedData, const QString &wigData);
 
     CEASSettings & getCeasSettings();
     const CEASSettings & getCeasSettings() const;
 
-    const QList<AnnotationData> & getBedData() const;
+    Workflow::DbiDataStorage *getStorage() const;
+    const QList<Workflow::SharedDbiDataHandler> &getBedData() const;
+
     const QString & getWigData() const;
 
     static const QString PDF_FORMAT;
@@ -49,7 +54,8 @@ public:
 
 private:
     CEASSettings ceas;
-    QList<AnnotationData> bedData;
+    Workflow::DbiDataStorage *storage;
+    QList<Workflow::SharedDbiDataHandler> bedData;
     QString wigData;
 
     QString outFilePath;

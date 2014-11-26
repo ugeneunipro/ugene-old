@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/AnnotationTableObject.h>
+#include <U2Core/L10n.h>
 #include <U2Core/FailTask.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
@@ -83,17 +84,12 @@ Task *ConservationPlotWorker::tick() {
         Message m = getMessageAndSetupScriptValues(inChannel);
         QVariantMap data = m.getData().toMap();
 
-        QVariant treatVar;
         if (!data.contains(ANNOT_SLOT_ID)) {
             os.setError("Annotations slot is empty");
             return new FailTask(os.getError());
         }
 
-        treatVar = data[ANNOT_SLOT_ID];
-        const QList<AnnotationData> treatData = StorageUtils::getAnnotationTable(
-            context->getDataStorage( ), treatVar );
-
-        plotData.append(treatData);
+        plotData = StorageUtils::getAnnotationTableHandlers(data[ANNOT_SLOT_ID]);
     }
 
     if (!inChannel->isEnded()) {
@@ -105,7 +101,7 @@ Task *ConservationPlotWorker::tick() {
         return new FailTask(os.getError());
     }
 
-    ConservationPlotTask* t = new ConservationPlotTask(settings, plotData);
+    ConservationPlotTask* t = new ConservationPlotTask(settings, context->getDataStorage(), plotData);
     t->addListeners(createLogListeners());
     connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
     return t;

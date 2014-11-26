@@ -186,11 +186,6 @@ QList<AnnotationData> DifferentialFormat::parseAnnotations( const ColumnDataPars
     return anns;
 }
 
-QList<AnnotationData> DifferentialFormat::getAnnotationData( IOAdapter *io, U2OpStatus &os ) {
-    DifferentialFormat format(NULL);
-    return format.parseAnnotations(io, os);
-}
-
 Document * DifferentialFormat::loadDocument( IOAdapter *io, const U2DbiRef &targetDb,
     const QVariantMap &hints, U2OpStatus &os )
 {

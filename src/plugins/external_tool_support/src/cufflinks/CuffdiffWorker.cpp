@@ -400,14 +400,13 @@ CuffdiffSettings CuffdiffWorker::takeSettings() {
     QVariantMap data = m.getData().toMap();
     SAFE_POINT(data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId()),
         "No annotations in a message", result);
-    const QVariant annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-    const QList<AnnotationData> anns = StorageUtils::getAnnotationTable(
-        context->getDataStorage( ), annsVar );
+    const QVariant packedHandlers = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
+    const QList<SharedDbiDataHandler> annTableHandlers = StorageUtils::getAnnotationTableHandlers(packedHandlers);
 
     result.groupBySamples = groupBySamples;
     result.assemblyUrls = assemblyUrls;
-    result.transcript = anns;
     result.storage = context->getDataStorage();
+    result.transcript = annTableHandlers;
 
     return result;
 }

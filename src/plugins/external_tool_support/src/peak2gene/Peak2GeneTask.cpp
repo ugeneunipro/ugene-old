@@ -28,20 +28,20 @@
 #include <U2Core/Counter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/L10n.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/SaveDocumentTask.h>
 #include <U2Core/TextObject.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/GObjectTypes.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
 
 #include "Peak2GeneSupport.h"
-
 #include "Peak2GeneTask.h"
 
 namespace U2 {
@@ -49,9 +49,10 @@ namespace U2 {
 const QString Peak2GeneTask::BASE_DIR_NAME("peak2gene_tmp");
 const QString Peak2GeneTask::TREAT_NAME("treatment");
 
-Peak2GeneTask::Peak2GeneTask(const Peak2GeneSettings& _settings, const QList<AnnotationData>& _treatAnn)
+Peak2GeneTask::Peak2GeneTask(const Peak2GeneSettings& _settings, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler>& _treatAnn)
 : ExternalToolSupportTask("Peak2gene annotation", TaskFlag_None)
 , settings(_settings)
+, storage(storage)
 , treatAnn(_treatAnn)
 , treatDoc(NULL)
 , geneDoc(NULL)
@@ -63,6 +64,7 @@ Peak2GeneTask::Peak2GeneTask(const Peak2GeneSettings& _settings, const QList<Ann
 , logParser(NULL)
 {
     GCOUNTER(cvar, tvar, "NGS:Peak2GeneTask");
+    SAFE_POINT_EXT(NULL != storage, setError(L10N::nullPointerError("workflow data storage")), );
 }
 
 Peak2GeneTask::~Peak2GeneTask() {
@@ -99,7 +101,7 @@ void Peak2GeneTask::prepare() {
     addSubTask(treatTask);
 }
 
-Document* Peak2GeneTask::createDoc( const QList<AnnotationData>& annData, const QString& name){
+Document* Peak2GeneTask::createDoc( const QList<Workflow::SharedDbiDataHandler>& annData, const QString& name){
     Document* doc = NULL;
 
     QString docUrl = workingDir + "/" + name +".bed";
@@ -112,10 +114,10 @@ Document* Peak2GeneTask::createDoc( const QList<AnnotationData>& annData, const 
     CHECK_OP(stateInfo, doc);
     doc->setDocumentOwnsDbiResources(false);
 
-    AnnotationTableObject *ato = new AnnotationTableObject( name, doc->getDbiRef( ) );
-    U2OpStatusImpl os;
-    ato->addAnnotations( annData, os );
-    doc->addObject(ato);
+    QList<AnnotationTableObject *> annTables = Workflow::StorageUtils::getAnnotationTableObjects(storage, annData);
+    foreach (AnnotationTableObject *annTable, annTables) {
+        doc->addObject(annTable);
+    }
 
     return doc;
 }
@@ -169,48 +171,33 @@ const Peak2GeneSettings& Peak2GeneTask::getSettings(){
     return settings;
 }
 
-QList<AnnotationData> Peak2GeneTask::getGenes(){
-    QList<AnnotationData> res;
+QList<AnnotationTableObject *> Peak2GeneTask::getGenes() const {
+    QList<AnnotationTableObject *> res;
 
-    if (geneDoc == NULL){
+    if (geneDoc == NULL) {
         return res;
     }
 
-    const QList<GObject*> objects = geneDoc->getObjects();
-
+    const QList<GObject*> objects = geneDoc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
     foreach(GObject* ao, objects) {
-        if (ao->getGObjectType() == GObjectTypes::ANNOTATION_TABLE){
-            AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>(ao);
-            if (ao){
-                const QList<Annotation> annots = aobj->getAnnotations();
-                foreach ( const Annotation &a, annots ) {
-                    res << a.getData( );
-                }
-            }
-        }
+        res << qobject_cast<AnnotationTableObject *>(ao);
+        geneDoc->removeObject(ao, DocumentObjectRemovalMode_Release);
     }
 
     return res;
 }
 
-QList<AnnotationData> Peak2GeneTask::getPeaks(){
-    QList<AnnotationData> res;
+QList<AnnotationTableObject *> Peak2GeneTask::getPeaks() const {
+    QList<AnnotationTableObject *> res;
 
     if (peaksDoc == NULL){
         return res;
     }
-    const QList<GObject*> objects = peaksDoc->getObjects();
 
+    const QList<GObject*> objects = peaksDoc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
     foreach(GObject* ao, objects) {
-        if (ao->getGObjectType() == GObjectTypes::ANNOTATION_TABLE){
-            AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>(ao);
-            if (ao){
-                const QList<Annotation> annots = aobj->getAnnotations( );
-                foreach ( const Annotation &a, annots ) {
-                    res << a.getData( );
-                }
-            }
-        }
+        res << qobject_cast<AnnotationTableObject *>(ao);
+        peaksDoc->removeObject(ao, DocumentObjectRemovalMode_Release);
     }
 
     return res;

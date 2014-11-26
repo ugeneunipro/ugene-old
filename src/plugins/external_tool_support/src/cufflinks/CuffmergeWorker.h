@@ -61,7 +61,7 @@ protected:
     IntegralBus *input;
     IntegralBus *output;
 
-    QList<QList<AnnotationData> > anns;
+    QList<SharedDbiDataHandler> annTableHandlers;
 
 private:
     CuffmergeSettings scanParameters() const;

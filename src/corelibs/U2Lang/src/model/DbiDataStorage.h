@@ -34,6 +34,8 @@
 
 namespace U2 {
 
+class AnnotationTableObject;
+
 namespace Workflow {
 
 class U2LANG_EXPORT DbiDataStorage {
@@ -48,7 +50,12 @@ public:
     virtual U2Object *getObject(const SharedDbiDataHandler &handler, const U2DataType &type);
     virtual SharedDbiDataHandler putSequence(const DNASequence &sequence);
     virtual SharedDbiDataHandler putAlignment(const MAlignment &al);
-    virtual SharedDbiDataHandler putAnnotationTable( const QList<AnnotationData> &anns );
+    virtual SharedDbiDataHandler putAnnotationTable(const QList<AnnotationData> &anns);
+    virtual SharedDbiDataHandler putAnnotationTable(AnnotationTableObject *annTable);
+
+    // returns QVariant with QVariantList inside, which have SharedDbiDataHandler in each QVariant
+    virtual QVariantList putAnnotationTables(QList<AnnotationTableObject *> annTables);
+
     virtual bool deleteObject(const U2DataId &objectId, const U2DataType &type);
 
     /* If @useGC is true then the data will be removed from the database by GC */
@@ -69,16 +76,20 @@ private:
 
 class U2LANG_EXPORT StorageUtils {
 public:
-    /* NOTE: deallocate memory! */
+    /**
+     * Memory should be deallocated by caller
+     * Do not forget to move the object to thread you need
+     **/
     static U2SequenceObject *getSequenceObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
-    /* NOTE: deallocate memory! */
     static VariantTrackObject *getVariantTrackObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
-    /* NOTE: deallocate memory! */
     static AssemblyObject *getAssemblyObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
-    /* NOTE: deallocate memory! */
     static MAlignmentObject *getMsaObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
-    /* NOTE: deallocate memory! */
-    static QList<AnnotationData> getAnnotationTable( DbiDataStorage *storage, const QVariant &annObjList );
+
+    static AnnotationTableObject *getAnnotationTableObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler);
+    static QList<AnnotationTableObject *> getAnnotationTableObjects(DbiDataStorage *storage, const QList<SharedDbiDataHandler> &handlers);
+    static QList<AnnotationTableObject *> getAnnotationTableObjects(DbiDataStorage *storage, const QVariant &packedHandlers);
+    static QList<AnnotationData> getAnnotationTable(DbiDataStorage *storage, const QVariant &annObjList);
+    static QList<SharedDbiDataHandler> getAnnotationTableHandlers(const QVariant &annObjList);
 
     static QString getText(DbiDataStorage *storage, const QVariant &data);
 };

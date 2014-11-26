@@ -117,7 +117,7 @@ CEASTaskSettings CEASReportWorker::createTaskSettings(U2OpStatus &os) {
     Message m = getMessageAndSetupScriptValues(inChannel);
     QVariantMap data = m.getData().toMap();
 
-    QList<AnnotationData> bedData;
+    QList<SharedDbiDataHandler> bedData;
     QString wigData = "";
 
     if (!(data.contains(BED_SLOT_ID) || data.contains(WIG_SLOT_ID))) {
@@ -125,8 +125,7 @@ CEASTaskSettings CEASReportWorker::createTaskSettings(U2OpStatus &os) {
         return CEASTaskSettings();
     }else{
         if (data.contains(BED_SLOT_ID)) {
-            bedData << StorageUtils::getAnnotationTable( context->getDataStorage( ),
-                data[BED_SLOT_ID] );
+            bedData = StorageUtils::getAnnotationTableHandlers(data[BED_SLOT_ID]);
         }
 
         if (data.contains(WIG_SLOT_ID)){
@@ -139,6 +138,7 @@ CEASTaskSettings CEASReportWorker::createTaskSettings(U2OpStatus &os) {
 
     CEASTaskSettings settings(
         ceas,
+        context->getDataStorage(),
         bedData,
         wigData);
 

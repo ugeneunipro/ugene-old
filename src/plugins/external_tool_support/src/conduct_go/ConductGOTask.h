@@ -26,18 +26,21 @@
 #include <U2Core/ExternalToolRunTask.h>
 #include <U2Core/Task.h>
 
+#include <U2Lang/DbiDataStorage.h>
+
 #include "ConductGOSettings.h"
 
 namespace U2 {
 
+class AnnotationTableObject;
 class Document;
-class SaveDocumentTask;
 class LoadDocumentTask;
+class SaveDocumentTask;
 
 class ConductGOTask : public ExternalToolSupportTask {
     Q_OBJECT
 public:
-    ConductGOTask(const ConductGOSettings& _settings, const QList<AnnotationData>& _treatAnn);
+    ConductGOTask(const ConductGOSettings& _settings, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler>& _treatAnn);
     virtual ~ConductGOTask();
 
     virtual void prepare();
@@ -53,7 +56,8 @@ private:
     ConductGOSettings settings;
     QString workingDir;
 
-    QList<AnnotationData> treatAnn;
+    Workflow::DbiDataStorage *storage;
+    QList<Workflow::SharedDbiDataHandler> treatAnn;
 
     Document *treatDoc;
 
@@ -67,7 +71,7 @@ private:
     static const QString TREAT_NAME;
 
 private:
-    Document* createDoc(const QList<AnnotationData>& annData, const QString& name);
+    Document* createDoc(const QList<Workflow::SharedDbiDataHandler> &annData, const QString& name);
     bool copyFile(const QString &src, const QString &dst);
 };
 

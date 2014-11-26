@@ -34,6 +34,8 @@
 
 namespace U2 {
 
+class AnnotationTableObject;
+
 struct CuffdiffSettings {
     CuffdiffSettings();
     void cleanup();
@@ -62,8 +64,8 @@ struct CuffdiffSettings {
 
     bool groupBySamples;
     QMap<QString, QStringList> assemblyUrls;
-    QList<AnnotationData> transcript;
     Workflow::DbiDataStorage *storage;
+    QList<Workflow::SharedDbiDataHandler> transcript;
     QString workingDir;
 };
 
@@ -100,7 +102,6 @@ private:
 private:
     Task * createTranscriptTask();
 
-    void addTranscriptObject();
     void createTranscriptDoc();
     Task * createCuffdiffTask();
     void addOutFiles();

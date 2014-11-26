@@ -32,6 +32,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/SaveDocumentTask.h>
+#include <U2Core/L10n.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/TextObject.h>
 #include <U2Core/GObjectUtils.h>
@@ -50,9 +51,10 @@ const QString ConductGOTask::BASE_DIR_NAME("ConductGO_tmp");
 const QString ConductGOTask::BASE_SUBDIR_NAME("ConductGO");
 const QString ConductGOTask::TREAT_NAME("treatment");
 
-ConductGOTask::ConductGOTask(const ConductGOSettings& _settings, const QList<AnnotationData>& _treatAnn)
+ConductGOTask::ConductGOTask(const ConductGOSettings& _settings, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler>& _treatAnn)
 : ExternalToolSupportTask("ConductGO annotation", TaskFlag_None)
 , settings(_settings)
+, storage(storage)
 , treatAnn(_treatAnn)
 , treatDoc(NULL)
 , treatTask(NULL)
@@ -60,6 +62,7 @@ ConductGOTask::ConductGOTask(const ConductGOSettings& _settings, const QList<Ann
 , logParser(NULL)
 {
     GCOUNTER(cvar, tvar, "NGS:ConductGOTask");
+    SAFE_POINT_EXT(NULL != storage, setError(L10N::nullPointerError("workflow data storage")), );
 }
 
 ConductGOTask::~ConductGOTask() {
@@ -100,7 +103,7 @@ void ConductGOTask::prepare() {
     
 }
 
-Document* ConductGOTask::createDoc( const QList<AnnotationData>& annData, const QString& name){
+Document* ConductGOTask::createDoc(const QList<Workflow::SharedDbiDataHandler>& annData, const QString& name) {
     Document* doc = NULL;
 
     QString docUrl = workingDir + "/" + name +".bed";
@@ -108,16 +111,14 @@ Document* ConductGOTask::createDoc( const QList<AnnotationData>& annData, const 
     DocumentFormat *bedFormat = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::BED);
     CHECK_EXT(NULL != bedFormat, stateInfo.setError("NULL bed format"), doc);
 
-    doc = bedFormat->createNewLoadedDocument(
-        IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), docUrl, stateInfo);
+    doc = bedFormat->createNewLoadedDocument(IOAdapterUtils::get(BaseIOAdapters::LOCAL_FILE), docUrl, stateInfo);
     CHECK_OP(stateInfo, doc);
     doc->setDocumentOwnsDbiResources(false);
 
-    AnnotationTableObject *ato = new AnnotationTableObject( name, doc->getDbiRef( ) );
-    foreach (const AnnotationData &ad, annData) {
-        ato->addAnnotation( ad, QString( ) );
+    QList<AnnotationTableObject *> annTables = Workflow::StorageUtils::getAnnotationTableObjects(storage, annData);
+    foreach (AnnotationTableObject *annTable, annTables) {
+        doc->addObject(annTable);
     }
-    doc->addObject(ato);
 
     return doc;
 }

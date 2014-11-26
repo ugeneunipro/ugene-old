@@ -24,13 +24,14 @@
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
-#include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/GUrlUtils.h>
+#include <U2Core/L10n.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/RawDataUdrSchema.h>
 #include <U2Core/TextObject.h>
+#include <U2Core/U2AssemblyDbi.h>
 #include <U2Core/U2DbiRegistry.h>
 #include <U2Core/U2FeatureDbi.h>
 #include <U2Core/U2FeatureUtils.h>
@@ -186,6 +187,35 @@ SharedDbiDataHandler DbiDataStorage::putAnnotationTable( const QList<AnnotationD
     return handler;
 }
 
+SharedDbiDataHandler DbiDataStorage::putAnnotationTable(AnnotationTableObject *annTable) {
+    SAFE_POINT(NULL != dbiHandle, "Invalid DBI handle!", SharedDbiDataHandler());
+    SAFE_POINT(NULL != annTable, L10N::nullPointerError("annotation table object"), SharedDbiDataHandler());
+
+    U2OpStatusImpl os;
+
+    U2EntityRef entityRef = annTable->getEntityRef();
+    if (annTable->getEntityRef().dbiRef != dbiHandle->getDbiRef()) {
+        AnnotationTableObject *clonedTable = qobject_cast<AnnotationTableObject *>(annTable->clone(dbiHandle->getDbiRef(), os));
+        SAFE_POINT_OP(os, SharedDbiDataHandler());
+        clonedTable->ref();
+        entityRef = clonedTable->getEntityRef();
+        delete clonedTable;
+    }
+
+    DbiConnection *connection = getConnection(dbiHandle->getDbiRef(), os);
+    SAFE_POINT_OP(os, SharedDbiDataHandler());
+
+    return SharedDbiDataHandler(new DbiDataHandler(entityRef, connection->dbi->getObjectDbi(), true));
+}
+
+QVariantList DbiDataStorage::putAnnotationTables(QList<AnnotationTableObject *> annTables) {
+    QVariantList result;
+    foreach (AnnotationTableObject *annTable, annTables) {
+        result << QVariant::fromValue(putAnnotationTable(annTable));
+    }
+    return result;
+}
+
 bool DbiDataStorage::deleteObject(const U2DataId &, const U2DataType &) {
     assert(NULL != dbiHandle);
     return true;
@@ -292,39 +322,81 @@ MAlignmentObject *StorageUtils::getMsaObject(DbiDataStorage *storage, const Shar
     return new MAlignmentObject(objName, msaRef);
 }
 
-QList<AnnotationData> StorageUtils::getAnnotationTable( DbiDataStorage *storage,
-    const QVariant &annObjList )
-{
+AnnotationTableObject *StorageUtils::getAnnotationTableObject(DbiDataStorage *storage, const SharedDbiDataHandler &handler) {
+    CHECK(NULL != handler, NULL);
+    QScopedPointer<U2AnnotationTable> annotationTable(dynamic_cast<U2AnnotationTable *>(storage->getObject(handler, 10 /*U2Type::AnnotationTable*/)));
+    CHECK(NULL != annotationTable, NULL);
+
+    U2EntityRef annotationTableRef(handler->getDbiRef(), annotationTable->id);
+    QString objName = annotationTable->visualName;
+
+    return new AnnotationTableObject(objName, annotationTableRef);
+}
+
+QList<AnnotationTableObject *> StorageUtils::getAnnotationTableObjects(DbiDataStorage *storage, const QList<SharedDbiDataHandler> &handlers) {
+    QList<AnnotationTableObject *> result;
+    foreach (const SharedDbiDataHandler &handler, handlers) {
+        AnnotationTableObject *annTable = getAnnotationTableObject(storage, handler);
+        if (Q_UNLIKELY(NULL == annTable)) {
+            coreLog.error(L10N::internalError("an unexpected object, skip the object"));
+            Q_ASSERT(false);
+            continue;
+        }
+        result << annTable;
+    }
+    return result;
+}
+
+QList<AnnotationTableObject *> StorageUtils::getAnnotationTableObjects(DbiDataStorage *storage, const QVariant &packedHandlers) {
+    const QList<SharedDbiDataHandler> handlers = getAnnotationTableHandlers(packedHandlers);
+    return getAnnotationTableObjects(storage, handlers);
+}
+
+QList<AnnotationData> StorageUtils::getAnnotationTable(DbiDataStorage *storage, const QVariant &annObjList) {
     QList<AnnotationData> result;
+    const QList<SharedDbiDataHandler> handlers = getAnnotationTableHandlers(annObjList);
+
+    foreach (const SharedDbiDataHandler &annTableId, handlers) {
+        //U2Object *dbObject = storage->getObject( annTableId, U2Type::AnnotationTable );
+        U2Object *dbObject = storage->getObject(annTableId, 10);
+        QScopedPointer<U2AnnotationTable> table(dynamic_cast<U2AnnotationTable *>(dbObject));
+        SAFE_POINT(NULL != table, "Invalid annotation table object referenced!", result);
+
+        U2EntityRef tableRef(annTableId->getDbiRef(), table->id);
+        QString objName = table->visualName;
+
+        AnnotationTableObject annTableObj(objName, tableRef);
+        foreach (const Annotation &a, annTableObj.getAnnotations()) {
+            result << a.getData();
+        }
+    }
+    return result;
+}
+
+QList<SharedDbiDataHandler> StorageUtils::getAnnotationTableHandlers(const QVariant &annObjList) {
+    QList<SharedDbiDataHandler> result;
 
     QVariantList objectList;
-    if ( annObjList.canConvert<QVariantList>( ) ) {
-        objectList << annObjList.toList( );
-    } else if ( annObjList.canConvert<SharedDbiDataHandler>( ) ) {
-        objectList << QVariant::fromValue( annObjList );
+    if (annObjList.canConvert<QVariantList>()) {
+        const QVariantList packedHandlers = annObjList.toList();
+        foreach (const QVariant &packedHandler, packedHandlers) {
+            if (packedHandler.canConvert<SharedDbiDataHandler>()) {
+                objectList << packedHandler;
+            }
+        }
+    } else if (annObjList.canConvert<SharedDbiDataHandler>()) {
+        objectList << annObjList;
     } else {
         return result;
     }
-    CHECK( !objectList.isEmpty( ), result );
+    CHECK(!objectList.isEmpty(), result);
 
-    foreach ( const QVariant &varObj, objectList ) {
-        const SharedDbiDataHandler annTableId = varObj.value<SharedDbiDataHandler>( );
-
-        SAFE_POINT( NULL != annTableId.constData( ), "Invalid annotation table object reference!",
-            result );
-        //U2Object *dbObject = storage->getObject( annTableId, U2Type::AnnotationTable );
-        U2Object *dbObject = storage->getObject( annTableId, 10 );
-        QScopedPointer<U2AnnotationTable> table( dynamic_cast<U2AnnotationTable *>( dbObject ) );
-        SAFE_POINT( NULL != table.data( ), "Invalid annotation table object referenced!", result );
-
-        U2EntityRef tableRef( annTableId->getDbiRef( ), table->id );
-        QString objName = table->visualName;
-
-        AnnotationTableObject annTableObj( objName, tableRef );
-        foreach ( const Annotation &a, annTableObj.getAnnotations( ) ) {
-            result << a.getData( );
-        }
+    foreach (const QVariant &varObj, objectList) {
+        const SharedDbiDataHandler annTableId = varObj.value<SharedDbiDataHandler>();
+        SAFE_POINT(NULL != annTableId.constData(), "Invalid annotation table object reference!", result);
+        result << annTableId;
     }
+
     return result;
 }
 

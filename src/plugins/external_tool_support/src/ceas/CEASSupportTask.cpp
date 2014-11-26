@@ -21,6 +21,7 @@
 
 #include <QtCore/QDir>
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
@@ -28,20 +29,21 @@
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
 #include <U2Core/ExternalToolRunTask.h>
-#include <U2Core/AnnotationTableObject.h>
+#include <U2Core/FailTask.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/L10n.h>
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/TextObject.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
-#include <U2Core/FailTask.h>
+
+#include <U2Lang/DbiDataStorage.h>
 
 #include "CEASSupport.h"
-#include "R/RSupport.h"
-
 #include "CEASSupportTask.h"
+#include "R/RSupport.h"
 
 namespace U2 {
 
@@ -51,13 +53,12 @@ namespace U2 {
 const QString CEASTaskSettings::PDF_FORMAT("PDF");
 const QString CEASTaskSettings::PNG_FORMAT("PNG");
 
-CEASTaskSettings::CEASTaskSettings() {
-
+CEASTaskSettings::CEASTaskSettings()
+{
 }
     
-CEASTaskSettings::CEASTaskSettings(const CEASSettings &_ceas, const QList<AnnotationData> &_bedData,
-                                   const QString &_wigData)
-: ceas(_ceas), bedData(_bedData), wigData(_wigData)
+CEASTaskSettings::CEASTaskSettings(const CEASSettings &_ceas, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler> &_bedData, const QString &_wigData)
+: ceas(_ceas), storage(storage), bedData(_bedData), wigData(_wigData)
 {
 
 }
@@ -70,7 +71,11 @@ const CEASSettings & CEASTaskSettings::getCeasSettings() const {
     return ceas;
 }
 
-const QList<AnnotationData> & CEASTaskSettings::getBedData() const {
+Workflow::DbiDataStorage *CEASTaskSettings::getStorage() const {
+    return storage;
+}
+
+const QList<Workflow::SharedDbiDataHandler> &CEASTaskSettings::getBedData() const {
     return bedData;
 }
 
@@ -89,6 +94,7 @@ settings(_settings), bedDoc(NULL),
 bedTask(NULL), wigTask(NULL), etTask(NULL), activeSubtasks(0), logParser(NULL)
 {
     GCOUNTER(cvar, tvar, "NGS:CEASTask");
+    SAFE_POINT_EXT(NULL != settings.getStorage() || settings.getBedData().isEmpty(), setError(L10N::nullPointerError("workflow data storage")), );
 }
 
 CEASSupportTask::~CEASSupportTask() {
@@ -96,7 +102,6 @@ CEASSupportTask::~CEASSupportTask() {
 }
 
 void CEASSupportTask::cleanup() {
-
     delete bedDoc; bedDoc = NULL;
     delete logParser; logParser = NULL;
 
@@ -146,17 +151,17 @@ void CEASSupportTask::createBedDoc() {
         CHECK_OP(stateInfo, );
         bedDoc->setDocumentOwnsDbiResources(false);
 
-        AnnotationTableObject *ato = new AnnotationTableObject( "bed_anns", bedDoc->getDbiRef( ) );
-        foreach (const AnnotationData &ad, settings.getBedData( ) ) {
-            ato->addAnnotation( ad );
+        const QList<AnnotationTableObject *> annTables = Workflow::StorageUtils::getAnnotationTableObjects(settings.getStorage(), settings.getBedData());
+        foreach (AnnotationTableObject *annTable, annTables) {
+            bedDoc->addObject(annTable);
         }
-        bedDoc->addObject(ato);
     }
 }
 
 bool CEASSupportTask::canStartETTask() const {
     return (0 == activeSubtasks);
 }
+
 Task* CEASSupportTask::createETTask(){
     Task* res;
     if (bedDoc){

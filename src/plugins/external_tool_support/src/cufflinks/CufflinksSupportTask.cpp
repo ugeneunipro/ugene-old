@@ -22,6 +22,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/AssemblyObject.h>
@@ -41,9 +42,9 @@
 #include <U2Formats/GTFFormat.h>
 
 #include "CufflinksSupport.h"
+#include "CufflinksSupportTask.h"
 #include "../ExternalToolSupportL10N.h"
 #include "tophat/TopHatSettings.h"
-#include "CufflinksSupportTask.h"
 
 namespace U2 {
 
@@ -55,7 +56,8 @@ CufflinksSupportTask::CufflinksSupportTask(const CufflinksSettings& _settings)
       logParser(NULL),
       tmpDoc(NULL),
       convertAssToSamTask(NULL),
-      cufflinksExtToolTask(NULL)
+      cufflinksExtToolTask(NULL),
+      loadIsoformAnnotationsTask(NULL)
 {
     GCOUNTER(cvar, tvar, "NGS:CufflinksTask");
 }
@@ -195,38 +197,53 @@ QList<Task*> CufflinksSupportTask::onSubTaskFinished(Task* subTask)
         cufflinksExtToolTask = runCufflinks();
         result.append(cufflinksExtToolTask);
     }
+
     else if (subTask == cufflinksExtToolTask) {
         ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/transcripts.gtf", outputFiles);
         ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/isoforms.fpkm_tracking", outputFiles);
         ExternalToolSupportUtils::appendExistingFile(settings.outDir + "/genes.fpkm_tracking", outputFiles);
-        isoformLevelAnnots = getAnnotationsFromFile("transcripts.gtf", CufflinksOutputGtf);
+        initLoadIsoformAnnotationsTask("transcripts.gtf", CufflinksOutputGtf);
+        CHECK(NULL != loadIsoformAnnotationsTask, result);
+        result << loadIsoformAnnotationsTask;
+    }
+
+    else if (subTask == loadIsoformAnnotationsTask) {
+        QScopedPointer<Document> doc(loadIsoformAnnotationsTask->takeDocument());
+        SAFE_POINT_EXT(NULL != doc, setError(L10N::nullPointerError("document with annotations")), result);
+        doc->setDocumentOwnsDbiResources(false);
+        foreach (GObject *object, doc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE)) {
+            doc->removeObject(object, DocumentObjectRemovalMode_Release);
+            isoformLevelAnnotationTables << qobject_cast<AnnotationTableObject *>(object);
+        }
     }
 
     return result;
 }
 
-
-QList<AnnotationData> CufflinksSupportTask::getAnnotationsFromFile( QString fileName,
-    CufflinksOutputFormat format )
-{
-    const QString filePath = settings.outDir + "/" + fileName;
-    DocumentFormatId formatId;
-    switch ( format ) {
-    case CufflinksOutputFpkm :
-        formatId = BaseDocumentFormats::FPKM_TRACKING_FORMAT;
-        break;
-    case CufflinksOutputGtf :
-        formatId = BaseDocumentFormats::GTF;
-        break;
+DocumentFormatId CufflinksSupportTask::getFormatId(CufflinksOutputFormat format) {
+    switch (format) {
+    case CufflinksOutputFpkm:
+        return BaseDocumentFormats::FPKM_TRACKING_FORMAT;
+    case CufflinksOutputGtf:
+        return BaseDocumentFormats::GTF;
     default:
-        FAIL( "Internal error: unexpected format of the Cufflinks output!", QList<AnnotationData>( ) );
+        FAIL("Internal error: unexpected format of the Cufflinks output!", "");
     }
-
-    return getAnnotationsFromFile(filePath, formatId, ET_CUFFLINKS, stateInfo);
 }
 
-Task::ReportResult CufflinksSupportTask::report()
-{
+void CufflinksSupportTask::initLoadIsoformAnnotationsTask(const QString &fileName, CufflinksOutputFormat format) {
+    const QString filePath = settings.outDir + "/" + fileName;
+
+    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+    SAFE_POINT_EXT(NULL != iof, setError(tr("An internal error occurred during getting annotations from a %1 output file!").arg(ET_CUFFLINKS)), );
+
+    QVariantMap hints;
+    hints[DocumentFormat::DBI_REF_HINT] = QVariant::fromValue(settings.storage->getDbiRef());
+
+    loadIsoformAnnotationsTask = new LoadDocumentTask(getFormatId(format), filePath, iof, hints);
+}
+
+Task::ReportResult CufflinksSupportTask::report() {
     if (settings.url.isEmpty()) {
         return ReportResult_Finished;
     }
@@ -235,43 +252,12 @@ Task::ReportResult CufflinksSupportTask::report()
     return ReportResult_Finished;
 }
 
-QStringList CufflinksSupportTask::getOutputFiles() const {
-    return outputFiles;
+QList<AnnotationTableObject *> CufflinksSupportTask::getIsoformAnnotationTables() const {
+    return isoformLevelAnnotationTables;
 }
 
-QList<AnnotationData> CufflinksSupportTask::getAnnotationsFromFile(const QString &filePath,
-    const DocumentFormatId &format, const QString &toolName, U2OpStatus &os)
-{
-    QList<AnnotationData> result;
-
-    IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
-    if (NULL == iof) {
-        os.setError(QObject::tr("An internal error occurred during getting annotations from a %1 output file!").arg(toolName));
-        return result;
-    }
-
-    if(!QFile::exists(filePath)){
-        os.setError(tr("%1 output file '%2' is not found!").arg(toolName).arg(filePath));
-        return result;
-    }
-
-    QScopedPointer<IOAdapter> io(iof->createIOAdapter());
-    if (!io.data()->open(GUrl(filePath), IOAdapterMode_Read)) {
-        os.setError(L10N::errorOpeningFileRead(filePath));
-        return result;
-    }
-
-    if ( BaseDocumentFormats::FPKM_TRACKING_FORMAT == format ) {
-        result = FpkmTrackingFormat::getAnnotData(io.data(), os);
-    } else if ( BaseDocumentFormats::GTF == format ) {
-        result = GTFFormat::getAnnotData(io.data(), os);
-    } else if ( BaseDocumentFormats::DIFF == format ) {
-        result = DifferentialFormat::getAnnotationData(io.data(), os);
-    } else {
-        FAIL(QObject::tr("Internal error: unexpected format of the %1 output!").arg(toolName), result);
-    }
-
-    return result;
+const QStringList &CufflinksSupportTask::getOutputFiles() const {
+    return outputFiles;
 }
 
 } // namespace U2

@@ -218,38 +218,36 @@ Task * CuffmergeWorker::tick() {
     return NULL;
 }
 
-void CuffmergeWorker::sl_taskFinished( ) {
-    CuffmergeSupportTask *t = dynamic_cast<CuffmergeSupportTask *>( sender( ) );
-    if ( !t->isFinished( ) || t->isCanceled( ) || t->hasError( ) ) {
+void CuffmergeWorker::sl_taskFinished() {
+    CuffmergeSupportTask *task = dynamic_cast<CuffmergeSupportTask *>(sender());
+    if (!task->isFinished() || task->isCanceled() || task->hasError()) {
         return;
     }
 
     QVariantMap data;
-    const SharedDbiDataHandler tableId = context->getDataStorage( )
-        ->putAnnotationTable( t->takeResult( ) );
-    data[BaseSlots::ANNOTATION_TABLE_SLOT( ).getId( )]
-        = qVariantFromValue<SharedDbiDataHandler>( tableId );
-    Message m( output->getBusType( ), data );
-    output->put( m );
-    output->setEnded( );
-    foreach ( const QString &url, t->getOutputFiles( ) ) {
-        context->getMonitor( )->addOutputFile( url, getActor( )->getId( ) );
+    QList<AnnotationTableObject *> annTables = task->takeResult();
+    data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()] = QVariant::fromValue(context->getDataStorage()->putAnnotationTables(annTables));
+    Message m(output->getBusType(), data);
+    output->put(m);
+    qDeleteAll(annTables);
+
+    output->setEnded();
+    foreach (const QString &url, task->getOutputFiles()) {
+        context->getMonitor()->addOutputFile(url, getActor()->getId());
     }
-    setDone( );
+    setDone();
 }
 
-void CuffmergeWorker::cleanup( ) {
-    anns.clear( );
+void CuffmergeWorker::cleanup() {
+    annTableHandlers.clear();
 }
 
 void CuffmergeWorker::takeAnnotations() {
     Message m = getMessageAndSetupScriptValues(input);
     QVariantMap data = m.getData().toMap();
-    SAFE_POINT(data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId()),
-        "No annotations in a message", );
-
+    SAFE_POINT(data.contains(BaseSlots::ANNOTATION_TABLE_SLOT().getId()), "No annotations in a message",);
     QVariant annsVar = data[BaseSlots::ANNOTATION_TABLE_SLOT().getId()];
-    anns << StorageUtils::getAnnotationTable( context->getDataStorage( ), annsVar );
+    annTableHandlers << StorageUtils::getAnnotationTableHandlers(annsVar);
 }
 
 CuffmergeSettings CuffmergeWorker::scanParameters() const {
@@ -264,7 +262,8 @@ CuffmergeSettings CuffmergeWorker::scanParameters() const {
 
 Task * CuffmergeWorker::createCuffmergeTask() {
     CuffmergeSettings result = scanParameters();
-    result.anns = anns;
+    result.storage = context->getDataStorage();
+    result.annotationTables = annTableHandlers;
     CuffmergeSupportTask* supportTask = new CuffmergeSupportTask(result);
     supportTask->addListeners(createLogListeners());
     return supportTask;

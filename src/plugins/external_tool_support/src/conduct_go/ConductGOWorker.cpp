@@ -21,12 +21,14 @@
 
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/FailTask.h>
+#include <U2Core/L10n.h>
+#include <U2Core/QVariantUtils.h>
 #include <U2Core/U2OpStatusUtils.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/QVariantUtils.h>
-#include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Designer/DelegateEditors.h>
+
+#include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Gui/DialogUtils.h>
 
@@ -76,19 +78,15 @@ Task *ConductGOWorker::tick() {
         Message m = getMessageAndSetupScriptValues(inChannel);
         QVariantMap data = m.getData().toMap();
 
-        QVariant treatVar;
         if (!data.contains(ANNOT_SLOT_ID)) {
             os.setError("Annotations slot is empty");
             return new FailTask(os.getError());
         }
 
-        treatVar = data[ANNOT_SLOT_ID];
-        const QList<AnnotationData> treatData = StorageUtils::getAnnotationTable(
-            context->getDataStorage( ), treatVar );
-
+        QList<SharedDbiDataHandler> treatData = StorageUtils::getAnnotationTableHandlers(data[ANNOT_SLOT_ID]);
         ConductGOSettings settings = createConductGOSettings();
 
-        ConductGOTask* t = new ConductGOTask(settings, treatData);
+        ConductGOTask* t = new ConductGOTask(settings, context->getDataStorage(), treatData);
         t->addListeners(createLogListeners());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
@@ -119,7 +117,7 @@ void ConductGOWorker::sl_taskFinished() {
     }
 }
 
-U2::ConductGOSettings ConductGOWorker::createConductGOSettings(){
+ConductGOSettings ConductGOWorker::createConductGOSettings(){
     ConductGOSettings settings;
 
     settings.outDir = getValue<QString>(OUTPUT_DIR);

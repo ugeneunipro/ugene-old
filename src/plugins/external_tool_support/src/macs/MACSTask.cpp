@@ -32,6 +32,7 @@
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/SaveDocumentTask.h>
+#include <U2Core/L10n.h>
 #include <U2Core/LoadDocumentTask.h>
 #include <U2Core/TextObject.h>
 #include <U2Core/GObjectUtils.h>
@@ -144,48 +145,31 @@ const MACSSettings& MACSTask::getSettings(){
     return settings;
 }
 
-QList<AnnotationData> MACSTask::getPeaks( ) {
-    QList<AnnotationData> res;
+QList<AnnotationTableObject *> MACSTask::getPeaks() const {
+    QList<AnnotationTableObject *> res;
+    CHECK(NULL != peaksDoc, res);
 
-    if ( NULL == peaksDoc ) {
-        return res;
-    }
-
-    const QList<GObject *> objects = peaksDoc->getObjects( );
-
+    const QList<GObject *> objects = peaksDoc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
     foreach ( GObject *ao, objects ) {
-        if ( ao->getGObjectType( ) == GObjectTypes::ANNOTATION_TABLE ) {
-            AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>( ao );
-            if ( NULL != ao ) {
-                const QList<Annotation> annots = aobj->getAnnotations( );
-                foreach ( const Annotation &a, annots ) {
-                    res << a.getData( );
-                }
-            }
-        }
+        AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>(ao);
+        SAFE_POINT(NULL != aobj, L10N::nullPointerError("annotation table object"), res);
+        res << aobj;
+        peaksDoc->removeObject(aobj, DocumentObjectRemovalMode_Release);
     }
 
     return res;
 }
 
-QList<AnnotationData> MACSTask::getPeakSummits( ) {
-    QList<AnnotationData> res;
+QList<AnnotationTableObject *> MACSTask::getPeakSummits() const {
+    QList<AnnotationTableObject *> res;
+    CHECK(NULL != summitsDoc, res);
 
-    if ( NULL == summitsDoc ) {
-        return res;
-    }
-    const QList<GObject *> objects = summitsDoc->getObjects( );
-
-    foreach ( GObject *ao, objects ) {
-        if ( ao->getGObjectType( ) == GObjectTypes::ANNOTATION_TABLE ) {
-            AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>( ao );
-            if ( NULL != ao ) {
-                const QList<Annotation> &annots = aobj->getAnnotations( );
-                foreach ( const Annotation &a, annots ) {
-                    res << a.getData( );
-                }
-            }
-        }
+    const QList<GObject *> objects = summitsDoc->findGObjectByType(GObjectTypes::ANNOTATION_TABLE);
+    foreach (GObject *ao, objects) {
+        AnnotationTableObject *aobj = qobject_cast<AnnotationTableObject *>(ao);
+        SAFE_POINT(NULL != aobj, L10N::nullPointerError("annotation table object"), res);
+        res << aobj;
+        summitsDoc->removeObject(aobj, DocumentObjectRemovalMode_Release);
     }
 
     return res;

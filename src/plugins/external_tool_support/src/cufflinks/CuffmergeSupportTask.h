@@ -27,7 +27,12 @@
 #include <U2Core/SaveDocumentTask.h>
 #include <U2Core/Task.h>
 
+#include <U2Lang/DbiDataStorage.h>
+
 namespace U2 {
+
+class AnnotationTableObject;
+class LoadDocumentTask;
 
 struct CuffmergeSettings {
     CuffmergeSettings();
@@ -38,7 +43,8 @@ struct CuffmergeSettings {
     QString outDir;
     QString workingDir;
 
-    QList< QList<AnnotationData> > anns;
+    Workflow::DbiDataStorage *storage;
+    QList<Workflow::SharedDbiDataHandler> annotationTables;
 };
 
 class CuffmergeSupportTask : public ExternalToolSupportTask {
@@ -50,10 +56,9 @@ public:
     void prepare();
     QList<Task*> onSubTaskFinished(Task *subTask);
     void run();
-    ReportResult report();
     QStringList getOutputFiles() const;
 
-    QList<AnnotationData> takeResult();
+    QList<AnnotationTableObject *> takeResult();
 
 private:
     CuffmergeSettings settings;
@@ -63,15 +68,18 @@ private:
     QList<Document*> docs;
     QList<Task*> writeTasks;
     ExternalToolRunTask *mergeTask;
-    QList<AnnotationData> result;
+    LoadDocumentTask *loadResultTask;
+    QList<AnnotationTableObject *> result;
     QScopedPointer<ExternalToolLogParser> logParser;
     QStringList outputFiles;
 
     static const QString outSubDirBaseName;
 
 private:
-    Task * createWriteTask(const QList<AnnotationData> &anns, const QString &filePath);
-    Task * createCuffmergeTask();
+    Document *prepareDocument(const Workflow::SharedDbiDataHandler &annTableHandler, const QString &filePath);
+    Task *createWriteTask(const Workflow::SharedDbiDataHandler &annTableHandler, const QString &filePath);
+    Task *createCuffmergeTask();
+    LoadDocumentTask *createLoadResultDocumentTask(const QString &fileName);
     QString getAnnsFilePath();
     void setupWorkingDirPath();
     void writeFileList();

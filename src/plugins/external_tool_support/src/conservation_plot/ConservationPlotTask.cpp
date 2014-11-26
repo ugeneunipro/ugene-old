@@ -28,14 +28,15 @@
 #include <U2Core/Counter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/L10n.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/SaveDocumentTask.h>
 #include <U2Core/TextObject.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/GObjectTypes.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
 
@@ -48,17 +49,19 @@ namespace U2 {
 
 const QString ConservationPlotTask::BASE_DIR_NAME("ConservationPlot_tmp");
 
-ConservationPlotTask::ConservationPlotTask(const ConservationPlotSettings& _settings, const QList<QList<AnnotationData> >& _plotData)
+ConservationPlotTask::ConservationPlotTask(const ConservationPlotSettings& _settings, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler> &_plotData)
 : ExternalToolSupportTask("ConservationPlot annotation", TaskFlag_None)
 , settings(_settings)
 , treatDoc(NULL)
 , treatTask(NULL)
+, storage(storage)
 , plotData(_plotData)
 , activeSubtasks(0)
 , etTask(NULL)
 , logParser(NULL)
 {
     GCOUNTER(cvar, tvar, "NGS:ConservationPlotTask");
+    SAFE_POINT_EXT(NULL != storage, setError(L10N::nullPointerError("workflow data storage")), );
 }
 
 ConservationPlotTask::~ConservationPlotTask() {
@@ -90,7 +93,7 @@ void ConservationPlotTask::prepare() {
     workingDir = appSettings->createCurrentProcessTemporarySubDir(stateInfo, BASE_DIR_NAME);
     CHECK_OP(stateInfo, );
 
-    foreach(const QList<AnnotationData>& bedData, plotData){
+    foreach (const Workflow::SharedDbiDataHandler &annTableHandler, plotData) {
         Document *bedDoc = NULL;
         SaveDocumentTask *saveTask = NULL;
 
@@ -99,7 +102,7 @@ void ConservationPlotTask::prepare() {
         if (activeSubtasks != 0){
             name += QString("_%1").arg(activeSubtasks);
         }
-        bedDoc = createDoc(bedData, name);
+        bedDoc = createDoc(annTableHandler, name);
         CHECK_OP(stateInfo, );
 
         saveTask = new SaveDocumentTask(bedDoc);
@@ -111,7 +114,7 @@ void ConservationPlotTask::prepare() {
     }
 }
 
-Document* ConservationPlotTask::createDoc( const QList<AnnotationData>& annData, const QString& name){
+Document* ConservationPlotTask::createDoc(const Workflow::SharedDbiDataHandler &annTableHandler, const QString& name){
     Document* doc = NULL;
 
     QString docUrl = workingDir + "/" + name +".bed";
@@ -124,11 +127,9 @@ Document* ConservationPlotTask::createDoc( const QList<AnnotationData>& annData,
     CHECK_OP(stateInfo, doc);
     doc->setDocumentOwnsDbiResources(false);
 
-    AnnotationTableObject *ato = new AnnotationTableObject( name, doc->getDbiRef( ) );
-    foreach (const AnnotationData &ad, annData) {
-        ato->addAnnotation( ad, QString( ) );
-    }
-    doc->addObject(ato);
+    AnnotationTableObject *annTable = Workflow::StorageUtils::getAnnotationTableObject(storage, annTableHandler);
+    SAFE_POINT_EXT(NULL != annTable, setError(tr("An annotation table object wasn't found in the workflow data storage")), NULL);
+    doc->addObject(annTable);
 
     return doc;
 }

@@ -144,16 +144,19 @@ void MACSWorker::sl_taskFinished() {
     }
 
     QVariantMap data;
-    const SharedDbiDataHandler peaksTableId = context->getDataStorage( )
-        ->putAnnotationTable( t->getPeaks( ) );
-    data[PEAK_REGIONS_SLOT_ID] = qVariantFromValue<SharedDbiDataHandler>( peaksTableId );
-    const SharedDbiDataHandler peakSummitsTableId = context->getDataStorage( )
-        ->putAnnotationTable( t->getPeakSummits( ) );
-    data[PEAK_SUMMITS_SLOT_ID] = qVariantFromValue<SharedDbiDataHandler>( peakSummitsTableId );
+
+    const QList<AnnotationTableObject *> peaksTables = t->getPeaks();
+    data[PEAK_REGIONS_SLOT_ID] = QVariant::fromValue(context->getDataStorage()->putAnnotationTables(peaksTables));
+    qDeleteAll(peaksTables);
+
+    const QList<AnnotationTableObject *> summitsTables = t->getPeakSummits();
+    data[PEAK_SUMMITS_SLOT_ID] = QVariant::fromValue(context->getDataStorage()->putAnnotationTables(summitsTables));
+    qDeleteAll(summitsTables);
+
     if (t->getSettings().wiggleOut){
         data[WIGGLE_TREAT_SLOT_ID] = qVariantFromValue<QString>(t->getWiggleUrl());
     }else{
-        data[WIGGLE_TREAT_SLOT_ID] = qVariantFromValue<QString>(QString(""));
+        data[WIGGLE_TREAT_SLOT_ID] = qVariantFromValue<QString>("");
     }
 
     output->put(Message(output->getBusType(), data));

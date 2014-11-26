@@ -350,26 +350,6 @@ QString ExternalToolSupportUtils::createTmpDir(const QString& domain, U2OpStatus
     return createTmpDir(tmpDirPath, domain, os);
 }
 
-Document * ExternalToolSupportUtils::createAnnotationsDocument( const QString &filePath,
-    const DocumentFormatId &format,const QList<AnnotationData> &anns, U2OpStatus &os )
-{
-     Document *doc = NULL;
-     { // create document
-         DocumentFormat *f = AppContext::getDocumentFormatRegistry( )->getFormatById( format );
-         IOAdapterFactory *iof = AppContext::getIOAdapterRegistry( )->getIOAdapterFactoryById( BaseIOAdapters::LOCAL_FILE );
-         doc = f->createNewLoadedDocument( iof, filePath, os );
-         CHECK_OP( os, NULL );
-         doc->setDocumentOwnsDbiResources( false );
-     }
-
-     { // add annotations object
-         AnnotationTableObject *aobj = new AnnotationTableObject( "anns", doc->getDbiRef( ) );
-         aobj->addAnnotations( anns, os );
-         doc->addObject( aobj );
-     }
-     return doc;
-}
-
 void ExternalToolSupportUtils::appendExistingFile(const QString &path, QStringList &files) {
     GUrl url(path);
     if (QFile::exists(url.getURLString())) {

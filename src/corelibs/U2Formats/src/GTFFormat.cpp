@@ -133,18 +133,6 @@ int readGTFLine( QString &buffer, IOAdapter *io, QScopedArrayPointer<char> &char
     return buffer.length( );
 }
 
-QList<AnnotationData> GTFFormat::getAnnotData( IOAdapter *io, U2OpStatus &os ) {
-    GTFFormat gtfFormat( NULL );
-    QMap<QString, QList<AnnotationData> > annsMap = gtfFormat.parseDocument( io, os );
-
-    QList<AnnotationData> result;
-    foreach ( const QList<AnnotationData> &annList, annsMap ) {
-        result += annList;
-    }
-
-    return result;
-}
-
 QMap<QString, QList<AnnotationData> > GTFFormat::parseDocument( IOAdapter *io, U2OpStatus &os ) {
     QMap<QString, QList<AnnotationData> > result;
 

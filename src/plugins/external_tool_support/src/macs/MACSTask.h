@@ -30,9 +30,10 @@
 
 namespace U2 {
 
+class AnnotationTableObject;
 class Document;
-class SaveDocumentTask;
 class LoadDocumentTask;
+class SaveDocumentTask;
 
 class MACSTask : public ExternalToolSupportTask {
     Q_OBJECT
@@ -48,8 +49,10 @@ public:
 
     const MACSSettings & getSettings();
 
-    QList<AnnotationData> getPeaks();
-    QList<AnnotationData> getPeakSummits();
+    // Memory should be released by caller
+    QList<AnnotationTableObject *> getPeaks() const;
+    QList<AnnotationTableObject *> getPeakSummits() const;
+
     QString getWiggleUrl();
     QStringList getOutputFiles();
 

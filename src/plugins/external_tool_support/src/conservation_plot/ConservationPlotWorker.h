@@ -45,7 +45,7 @@ public:
 
 private:
     IntegralBus *inChannel;
-    QList<QList<AnnotationData> > plotData;
+    QList<SharedDbiDataHandler> plotData;
 
 private:
     ConservationPlotSettings createConservationPlotSettings(U2OpStatus &os);

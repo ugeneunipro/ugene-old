@@ -20,17 +20,18 @@
  */
 
 #include <U2Core/AnnotationTableObject.h>
-#include <U2Core/FailTask.h>
-#include <U2Core/U2OpStatusUtils.h>
-#include <U2Core/U2SafePoints.h>
-#include <U2Core/QVariantUtils.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/DataPathRegistry.h>
+#include <U2Core/FailTask.h>
+#include <U2Core/L10n.h>
+#include <U2Core/QVariantUtils.h>
 #include <U2Core/Settings.h>
-
-#include <U2Formats/GenbankLocationParser.h>
+#include <U2Core/U2OpStatusUtils.h>
+#include <U2Core/U2SafePoints.h>
 
 #include <U2Designer/DelegateEditors.h>
+
+#include <U2Formats/GenbankLocationParser.h>
 
 #include <U2Gui/DialogUtils.h>
 
@@ -89,22 +90,19 @@ Task *Peak2GeneWorker::tick() {
         Message m = getMessageAndSetupScriptValues(inChannel);
         QVariantMap data = m.getData().toMap();
 
-        QVariant treatVar;
         if (!data.contains(TREAT_SLOT_ID)) {
             os.setError("Treatment slot is empty");
             return new FailTask(os.getError());
         }
 
-        treatVar = data[TREAT_SLOT_ID];
-        const QList<AnnotationData> treatData = StorageUtils::getAnnotationTable(
-            context->getDataStorage( ), treatVar );
+        const QList<SharedDbiDataHandler> treatData = StorageUtils::getAnnotationTableHandlers(data[TREAT_SLOT_ID]);
 
         Peak2GeneSettings settings = createPeak2GeneSettings(os);
         if (os.hasError()) {
             return new FailTask(os.getError());
         }
 
-        Peak2GeneTask* t = new Peak2GeneTask(settings, treatData);
+        Peak2GeneTask* t = new Peak2GeneTask(settings, context->getDataStorage(), treatData);
         t->addListeners(createLogListeners());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
@@ -126,10 +124,14 @@ void Peak2GeneWorker::sl_taskFinished() {
     }
 
     QVariantMap data;
-    const SharedDbiDataHandler geneTableId = context->getDataStorage( )->putAnnotationTable( t->getGenes( ) );
-    data[GENE_ANNOTATION] = qVariantFromValue<SharedDbiDataHandler>( geneTableId );
-    const SharedDbiDataHandler peakTableId = context->getDataStorage( )->putAnnotationTable( t->getPeaks( ) );
-    data[PEAK_ANNOTATION] = qVariantFromValue<SharedDbiDataHandler>( peakTableId );
+
+    QList<AnnotationTableObject *> genesTables = t->getGenes();
+    data[GENE_ANNOTATION] = QVariant::fromValue(context->getDataStorage()->putAnnotationTables(genesTables));
+    qDeleteAll(genesTables);
+
+    QList<AnnotationTableObject *> peaksTables = t->getPeaks();
+    data[PEAK_ANNOTATION] = QVariant::fromValue(context->getDataStorage()->putAnnotationTables(peaksTables));
+    qDeleteAll(peaksTables);
 
     output->put(Message(output->getBusType(), data));
 

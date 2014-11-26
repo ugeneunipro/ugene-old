@@ -134,14 +134,6 @@ void FpkmTrackingFormat::addQualifierIfValuePresent( AnnotationData& annotData, 
     }
 }
 
-
-QList<AnnotationData> FpkmTrackingFormat::getAnnotData(IOAdapter* io, U2OpStatus& os) {
-    FpkmTrackingFormat fpkmTrackingFormat( NULL );
-    QString seqName;
-    QString annotName = "misc_feature";
-    return fpkmTrackingFormat.parseDocument(io, seqName, annotName, os);
-}
-
 QList<AnnotationData> FpkmTrackingFormat::parseDocument(IOAdapter* io, QString& seqName,
     QString annotName, U2OpStatus &os )
 {

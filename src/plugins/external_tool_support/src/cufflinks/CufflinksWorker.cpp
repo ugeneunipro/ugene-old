@@ -22,6 +22,7 @@
 #include "CufflinksSupportTask.h"
 #include "CufflinksWorker.h"
 
+#include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/L10n.h>
@@ -379,22 +380,18 @@ Task * CufflinksWorker::tick() {
 
 void CufflinksWorker::sl_cufflinksTaskFinished() {
     CufflinksSupportTask* cufflinksSupportTask = qobject_cast<CufflinksSupportTask*>(sender());
-    if (Task::State_Finished != cufflinksSupportTask->getState()) {
-        return;
-    }
+    CHECK(cufflinksSupportTask->isFinished(), );
 
-    if (output) {
-        DataTypePtr outputMapDataType =
-            WorkflowEnv::getDataTypeRegistry()->getById(CufflinksWorkerFactory::OUT_MAP_DESCR_ID);
+    if (NULL != output) {
+        DataTypePtr outputMapDataType = WorkflowEnv::getDataTypeRegistry()->getById(CufflinksWorkerFactory::OUT_MAP_DESCR_ID);
         SAFE_POINT(0 != outputMapDataType, "Internal error: can't get DataTypePtr for output map!",);
 
         QVariantMap messageData;
-        const SharedDbiDataHandler tableId = context->getDataStorage( )
-            ->putAnnotationTable( cufflinksSupportTask->getIsoformAnnots( ) );
-        messageData[CufflinksWorkerFactory::ISO_LEVEL_SLOT_DESCR_ID] =
-            qVariantFromValue<SharedDbiDataHandler>( tableId );
-
+        QList<AnnotationTableObject *> isoformTables = cufflinksSupportTask->getIsoformAnnotationTables();
+        messageData[CufflinksWorkerFactory::ISO_LEVEL_SLOT_DESCR_ID] = QVariant::fromValue(context->getDataStorage()->putAnnotationTables(isoformTables));
         output->put(Message(outputMapDataType, messageData));
+        qDeleteAll(isoformTables);
+
         foreach (const QString &url, cufflinksSupportTask->getOutputFiles()) {
             context->getMonitor()->addOutputFile(url, getActor()->getId());
         }

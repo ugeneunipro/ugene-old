@@ -19,12 +19,8 @@
  * MA 02110-1301, USA.
  */
 
-#ifndef _U2_CUFFLINKS_SUPPORT_TASK_H
-#define _U2_CUFFLINKS_SUPPORT_TASK_H
-
-
-#include "CufflinksSettings.h"
-#include "CufflinksSupport.h"
+#ifndef _U2_CUFFLINKS_SUPPORT_TASK_H_
+#define _U2_CUFFLINKS_SUPPORT_TASK_H_
 
 #include <U2Core/AnnotationData.h>
 #include <U2Core/DocumentModel.h>
@@ -33,36 +29,34 @@
 
 #include <U2Formats/ConvertAssemblyToSamTask.h>
 
+#include "CufflinksSettings.h"
+#include "CufflinksSupport.h"
 
 namespace U2 {
 
+class AnnotationTableObject;
 
-enum CufflinksOutputFormat {CufflinksOutputFpkm, CufflinksOutputGtf};
+enum CufflinksOutputFormat {
+    CufflinksOutputFpkm,
+    CufflinksOutputGtf
+};
 
-
-class CufflinksSupportTask : public ExternalToolSupportTask
-{
+class CufflinksSupportTask : public ExternalToolSupportTask {
     Q_OBJECT
-
 public:
     CufflinksSupportTask(const CufflinksSettings& settings);
     ~CufflinksSupportTask();
 
     void prepare();
     QList<Task*> onSubTaskFinished(Task* subTask);
-    Task::ReportResult report();
+    ReportResult report();
 
-    QList<AnnotationData> getIsoformAnnots() const { return isoformLevelAnnots; }
-    QStringList getOutputFiles() const;
-
-    static QList<AnnotationData> getAnnotationsFromFile( const QString &filePath,
-        const DocumentFormatId &format,
-        const QString &toolName,
-        U2OpStatus &os);
+    QList<AnnotationTableObject *> getIsoformAnnotationTables() const;
+    const QStringList &getOutputFiles() const;
 
 private:
-    // "fileName" is the file name relatively to the working directory
-    QList<AnnotationData> getAnnotationsFromFile(QString fileName, CufflinksOutputFormat format);
+    static DocumentFormatId getFormatId(CufflinksOutputFormat format);
+    void initLoadIsoformAnnotationsTask(const QString &fileName, CufflinksOutputFormat format);
 
     CufflinksSettings                   settings;
 
@@ -71,10 +65,11 @@ private:
     QString                             workingDirectory;
     QString                             url;
 
-    ConvertAssemblyToSamTask*           convertAssToSamTask;
-    ExternalToolRunTask*                cufflinksExtToolTask;
+    ConvertAssemblyToSamTask *          convertAssToSamTask;
+    ExternalToolRunTask *               cufflinksExtToolTask;
+    LoadDocumentTask *                  loadIsoformAnnotationsTask;
 
-    QList<AnnotationData>         isoformLevelAnnots;
+    QList<AnnotationTableObject *>      isoformLevelAnnotationTables;
     QStringList                         outputFiles;
 
     static const QString outSubDirBaseName;
@@ -86,7 +81,7 @@ private:
 
 
 
-} // namespace U2
+}   // namespace U2
 
 
-#endif
+#endif // _U2_CUFFLINKS_SUPPORT_TASK_H_

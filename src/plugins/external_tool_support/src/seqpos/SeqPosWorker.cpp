@@ -83,22 +83,19 @@ Task *SeqPosWorker::tick() {
         Message m = getMessageAndSetupScriptValues(inChannel);
         QVariantMap data = m.getData().toMap();
 
-        QVariant treatVar;
         if (!data.contains(ANNOT_SLOT_ID)) {
             os.setError("Annotations slot is empty");
             return new FailTask(os.getError());
         }
 
-        treatVar = data[ANNOT_SLOT_ID];
-        const QList<AnnotationData> treatData = StorageUtils::getAnnotationTable(
-            context->getDataStorage( ), treatVar );
+        QList<SharedDbiDataHandler> treatData = StorageUtils::getAnnotationTableHandlers(data[ANNOT_SLOT_ID]);
 
         SeqPosSettings settings = createSeqPosSettings(os);
         if (os.hasError()) {
             return new FailTask(os.getError());
         }
 
-        SeqPosTask* t = new SeqPosTask(settings, treatData);
+        SeqPosTask* t = new SeqPosTask(settings, context->getDataStorage(), treatData);
         t->addListeners(createLogListeners());
         connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskFinished()));
         return t;
@@ -128,7 +125,7 @@ void SeqPosWorker::sl_taskFinished() {
     }
 }
 
-U2::SeqPosSettings SeqPosWorker::createSeqPosSettings( U2OpStatus &/*os*/ ){
+SeqPosSettings SeqPosWorker::createSeqPosSettings( U2OpStatus &/*os*/ ){
     SeqPosSettings settings;
 
     settings.outDir = getValue<QString>(OUTPUT_DIR);

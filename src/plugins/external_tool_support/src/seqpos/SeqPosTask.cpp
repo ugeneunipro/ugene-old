@@ -28,21 +28,22 @@
 #include <U2Core/Counter.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/DocumentUtils.h>
+#include <U2Core/GObjectTypes.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
-#include <U2Core/SaveDocumentTask.h>
+#include <U2Core/L10n.h>
 #include <U2Core/LoadDocumentTask.h>
+#include <U2Core/SaveDocumentTask.h>
 #include <U2Core/TextObject.h>
-#include <U2Core/GObjectUtils.h>
-#include <U2Core/GObjectTypes.h>
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/UserApplicationsSettings.h>
 
 #include "SeqPosSupport.h"
+#include "SeqPosTask.h"
 #include "R/RSupport.h"
 
-#include "SeqPosTask.h"
 
 namespace U2 {
 
@@ -50,9 +51,10 @@ const QString SeqPosTask::BASE_DIR_NAME("SeqPos_tmp");
 const QString SeqPosTask::BASE_SUBDIR_NAME("SeqPos");
 const QString SeqPosTask::TREAT_NAME("treatment");
 
-SeqPosTask::SeqPosTask(const SeqPosSettings& _settings, const QList<AnnotationData>& _treatAnn)
+SeqPosTask::SeqPosTask(const SeqPosSettings& _settings, Workflow::DbiDataStorage *storage, const QList<Workflow::SharedDbiDataHandler> &_treatAnn)
 : ExternalToolSupportTask("SeqPos annotation", TaskFlag_None)
 , settings(_settings)
+, storage(storage)
 , treatAnn(_treatAnn)
 , treatDoc(NULL)
 , treatTask(NULL)
@@ -60,6 +62,7 @@ SeqPosTask::SeqPosTask(const SeqPosSettings& _settings, const QList<AnnotationDa
 , logParser(NULL)
 {
     GCOUNTER(cvar, tvar, "NGS:SeqPosTask");
+    SAFE_POINT_EXT(NULL != storage, setError(L10N::nullPointerError("workflow data storage")), );
 }
 
 SeqPosTask::~SeqPosTask() {
@@ -67,8 +70,6 @@ SeqPosTask::~SeqPosTask() {
 }
 
 void SeqPosTask::cleanup() {
-    treatAnn.clear();
-
     delete treatDoc; treatDoc = NULL;
     delete logParser; logParser = NULL;
 
@@ -96,15 +97,15 @@ void SeqPosTask::prepare() {
         "_", stateInfo);
     CHECK_OP(stateInfo, );
 
-
     treatDoc = createDoc(treatAnn, TREAT_NAME);
     CHECK_OP(stateInfo, );
+    treatAnn.clear();
 
     treatTask = new SaveDocumentTask(treatDoc);
     addSubTask(treatTask);
 }
 
-Document* SeqPosTask::createDoc( const QList<AnnotationData>& annData, const QString& name){
+Document* SeqPosTask::createDoc( const QList<Workflow::SharedDbiDataHandler>& annTableHandlers, const QString& name){
     Document* doc = NULL;
 
     QString docUrl = workingDir + "/" + name +".bed";
@@ -117,11 +118,10 @@ Document* SeqPosTask::createDoc( const QList<AnnotationData>& annData, const QSt
     CHECK_OP(stateInfo, doc);
     doc->setDocumentOwnsDbiResources(false);
 
-    AnnotationTableObject *ato = new AnnotationTableObject( name, doc->getDbiRef( ) );
-    foreach (const AnnotationData &ad, annData) {
-        ato->addAnnotation( ad );
+    QList<AnnotationTableObject *> annTables = Workflow::StorageUtils::getAnnotationTableObjects(storage, annTableHandlers);
+    foreach (AnnotationTableObject *annTable, annTables) {
+        doc->addObject(annTable);
     }
-    doc->addObject(ato);
 
     return doc;
 }

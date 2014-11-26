@@ -19,30 +19,31 @@
  * MA 02110-1301, USA.
  */
 
-#include "CufflinksSupport.h"
-
 #include <U2Core/AnnotationTableObject.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AssemblyObject.h>
 #include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/GUrlUtils.h>
 #include <U2Core/IOAdapterUtils.h>
+#include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
 #include <U2Lang/DbiDataStorage.h>
 
-#include "tophat/TopHatSettings.h"
-
 #include "CuffdiffSupportTask.h"
+#include "CufflinksSupport.h"
+#include "tophat/TopHatSettings.h"
 
 namespace U2 {
 
 const QString CuffdiffSupportTask::outSubDirBaseName("cuffdiff_out");
 
 CuffdiffSupportTask::CuffdiffSupportTask(const CuffdiffSettings &_settings)
-: ExternalToolSupportTask(tr("Running Cuffdiff task"), TaskFlags_NR_FOSE_COSC), settings(_settings)
+: ExternalToolSupportTask(tr("Running Cuffdiff task"), TaskFlags_NR_FOSE_COSC),
+  settings(_settings),
+  diffTask(NULL)
 {
-    diffTask = NULL;
+    SAFE_POINT_EXT(NULL != settings.storage, setError(tr("Workflow data storage is NULL")), );
 }
 
 namespace {
@@ -125,7 +126,6 @@ Task::ReportResult CuffdiffSupportTask::report() {
 Task * CuffdiffSupportTask::createTranscriptTask() {
     createTranscriptDoc();
     CHECK_OP(stateInfo, NULL);
-    addTranscriptObject();
 
     SaveDocumentTask *t = new SaveDocumentTask(transcriptDoc.data(), transcriptDoc->getIOAdapterFactory(), transcriptUrl);
     saveTasks << t;
@@ -205,26 +205,21 @@ void CuffdiffSupportTask::addOutFiles() {
 }
 
 void CuffdiffSupportTask::createTranscriptDoc() {
-    DocumentFormat *f = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::GTF);
+    DocumentFormat *format = AppContext::getDocumentFormatRegistry()->getFormatById(BaseDocumentFormats::GTF);
+    SAFE_POINT_EXT(NULL != format, setError(L10N::nullPointerError("GTF format")), );
+
     IOAdapterFactory *iof = AppContext::getIOAdapterRegistry()->getIOAdapterFactoryById(BaseIOAdapters::LOCAL_FILE);
+    SAFE_POINT_EXT(NULL != iof, setError(L10N::nullPointerError("I/O adapter factory")), );
+
     transcriptUrl = workingDir + "/transcripts.gtf";
-    transcriptDoc.reset(f->createNewLoadedDocument(iof, transcriptUrl, stateInfo));
+    transcriptDoc.reset(format->createNewLoadedDocument(iof, transcriptUrl, stateInfo));
     CHECK_OP(stateInfo, );
     transcriptDoc->setDocumentOwnsDbiResources(false);
-}
 
-void CuffdiffSupportTask::addTranscriptObject() {
-    AnnotationTableObject *aobj = new AnnotationTableObject( "anns", transcriptDoc->getDbiRef( ) );
-    bool first = true;
-    foreach ( const AnnotationData& ann, settings.transcript ) {
-        if (first) {
-            aobj->setGObjectName( ann.name );
-            first = false;
-        }
-        QStringList list;
-        aobj->addAnnotation( ann );
+    QList<AnnotationTableObject *> annTables = Workflow::StorageUtils::getAnnotationTableObjects(settings.storage, settings.transcript);
+    foreach (AnnotationTableObject *annTable, annTables) {
+        transcriptDoc->addObject(annTable);
     }
-    transcriptDoc->addObject(aobj);
 }
 
 QStringList CuffdiffSupportTask::getOutputFiles() const {
@@ -262,7 +257,6 @@ CuffdiffSettings::CuffdiffSettings() {
     fdr = 0.05;
     maxMleIterations = 5000;
     emitCountTables = false;
-    storage = NULL;
     workingDir = "default";
     groupBySamples = false;
 }
