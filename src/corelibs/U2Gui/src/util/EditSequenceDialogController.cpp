@@ -93,21 +93,21 @@ SeqPasterEventFilter::SeqPasterEventFilter( QObject* parent )
         ui->insertPositionSpin->setValue(cfg.position);
     }
 
-    if (cfg.mode == EditSequenceMode_Insert) { 
+    if (cfg.mode == EditSequenceMode_Insert) {
         setWindowTitle(tr("Insert Sequence"));
         if (!cfg.selectionRegions.isEmpty()){
             ui->selectionGroupBox->setEnabled(true);
             sl_beforeSlectionClicked();
         }
     } else {
-        setWindowTitle(tr("Replace sequence")); 
+        setWindowTitle(tr("Replace sequence"));
         ui->splitRB->setEnabled(false);
         ui->split_separateRB->setEnabled(false);
         //ui->insertPositionSpin->setEnabled(false);
         ui->insertPositionBox->setEnabled(false);
         w->selectText();
     }
-    
+
     connect(ui->formatBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sl_indexChanged(int)));
 
     ui->formatBox->addItem("FASTA", BaseDocumentFormats::FASTA);
@@ -167,7 +167,7 @@ void EditSequenceDialogController::addSeqpasterWidget(){
 
 void EditSequenceDialogController::sl_browseButtonClicked(){
     LastUsedDirHelper h;
-    
+
     h.url = U2FileDialog::getSaveFileName(this, tr("Select file to save..."), h.dir, filter);
     ui->filepathEdit->setText(h.url);
     sl_indexChanged(ui->formatBox->currentIndex());

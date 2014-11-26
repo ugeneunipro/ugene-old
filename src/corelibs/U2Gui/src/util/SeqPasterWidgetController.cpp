@@ -29,8 +29,8 @@
 
 namespace U2{
 
-SeqPasterWidgetController::SeqPasterWidgetController( QWidget *p, const QByteArray& initText, bool needWarning ): 
-QWidget(p), preferred(0), additionalWarning(needWarning) 
+SeqPasterWidgetController::SeqPasterWidgetController( QWidget *p, const QByteArray& initText, bool needWarning ):
+QWidget(p), preferred(0), additionalWarning(needWarning)
 {
     ui = new Ui_SeqPasterWidget;
     //TODO: add not null project checking
@@ -79,7 +79,7 @@ QString SeqPasterWidgetController::validate(){
     if(ui->sequenceEdit->toPlainText().isEmpty()){
         return tr("Input sequence is empty");
     }
- 
+
     QByteArray seq = ((ui->sequenceEdit->document())->toPlainText()).toUtf8();
     seq = QString(seq).remove(QRegExp("\\s")).toLatin1();
     const DNAAlphabet *alph = NULL;
@@ -104,7 +104,7 @@ QString SeqPasterWidgetController::validate(){
         char cc = ui->symbolToReplaceEdit->text().at(0).toLatin1();
         if(!alph->contains(cc)){
             return tr("Replace symbol is not belongs to selected alphabet");
-        }        
+        }
     }
 
     QChar replaceChar = replace ? ui->symbolToReplaceEdit->text().at(0) : QChar();
@@ -118,6 +118,10 @@ QString SeqPasterWidgetController::validate(){
             message.append(tr("removed"));
         }
         QMessageBox::critical(this, parentWidget()->windowTitle(), message);
+    }
+
+    if (normSequence.isEmpty()) {
+        return tr("Input sequence is empty");
     }
     resultSeq = DNASequence("New Sequence", normSequence, alph);
     return QString();
@@ -139,8 +143,8 @@ void SeqPasterWidgetController::sl_currentindexChanged( const QString& newText){
 void SeqPasterWidgetController::disableCustomSettings(){
     ui->groupBox->setChecked(false);
     ui->groupBox->setDisabled(true);
-	ui->groupBox->hide();
-	//ui->groupBox->hide();
+    ui->groupBox->hide();
+    //ui->groupBox->hide();
 }
 
 void SeqPasterWidgetController::setPreferredAlphabet( const DNAAlphabet *alp ){
