@@ -25,9 +25,11 @@
 #include <U2Core/U2SafePoints.h>
 #include <U2Core/Version.h>
 
+#include <U2Gui/ProjectUtils.h>
+
 #include "MysqlUpgraderFrom_1_14_To_1_15.h"
-#include "mysql_dbi/MysqlDbi.h";
-#include "mysql_dbi/util/MysqlHelpers.h";
+#include "mysql_dbi/MysqlDbi.h"
+#include "mysql_dbi/util/MysqlHelpers.h"
 
 namespace U2 {
 
@@ -74,6 +76,8 @@ void MysqlUpgraderFrom_1_14_To_1_15::upgradeObjectDbi(U2OpStatus &os, MysqlDbRef
             } else {
                 newPath = recycleBinPrefix + Folder::getFolderName(folder);
             }
+
+            rollNewFolderPath(newPath, oldAndNewPathes.values());
             oldAndNewPathes.insert(folder, newPath);
         }
     }
@@ -102,6 +106,15 @@ QString MysqlUpgraderFrom_1_14_To_1_15::getParentFolderFromList(const QStringLis
     }
 
     return parentFolder;
+}
+
+void MysqlUpgraderFrom_1_14_To_1_15::rollNewFolderPath(QString &originalPath, const QStringList &allFolders) {
+    QString resultPath = originalPath;
+    int sameFolderNameCount = 0;
+    while (allFolders.contains(resultPath)) {
+        resultPath = QString("%1 (%2)").arg(originalPath).arg(++sameFolderNameCount);
+    }
+    originalPath = resultPath;
 }
 
 }   // namespace U2

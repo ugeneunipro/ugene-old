@@ -37,6 +37,7 @@ public:
 private:
     void upgradeObjectDbi(U2OpStatus &os, MysqlDbRef *dbRef) const;
     static QString getParentFolderFromList(const QStringList &folders, const QString &folder);
+    static void rollNewFolderPath(QString &originalPath, const QStringList &allFolders);
 };
 
 }   // namespace U2
