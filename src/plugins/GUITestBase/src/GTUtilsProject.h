@@ -83,6 +83,7 @@ public:
     static QList<ADVSingleSequenceWidget *> openFileExpectSequences(U2OpStatus &os, const QString &path, const QString &fileName,
         const QList<QString> &seqNames);
 
+    static void openMultiSequenceFileAsSequences(U2OpStatus &os, const QString &path, const QString &fileName);
     static void openMultiSequenceFileAsMalignment(U2OpStatus &os, const QString &path, const QString &fileName);
 
 

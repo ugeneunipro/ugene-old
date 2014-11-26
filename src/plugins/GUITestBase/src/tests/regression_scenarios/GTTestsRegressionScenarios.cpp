@@ -10063,6 +10063,31 @@ GUI_TEST_CLASS_DEFINITION(test_3702){
     CHECK_SET_ERR(wgt->windowTitle() == "human_T1 [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)", "human_T1.fa should be opened!");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3732) {
+//    1. Open UGENE preferences, open "Resources" tab, set UGENE memory limit to 200Mb.
+    class MemoryLimitSetScenario : public CustomScenario {
+        void run(U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(NULL != dialog, "Active modal widget is NULL");
+
+            AppSettingsDialogFiller::openTab(os, AppSettingsDialogFiller::Resourses);
+            GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "memBox", dialog), "200");
+
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new MemoryLimitSetScenario));
+
+//    2. Open file "_common_data/scenarios/_regression/1688/sr100.000.fa" as separate sequences.
+//    Expected state: there is an error in the log: "MemoryLocker - Not enough memory error, 41 megabytes are required".
+    GTLogTracer logTracer;
+
+    GTUtilsProject::openMultiSequenceFileAsMalignment(os, testDir + "_common_data/scenarios/_regression/1688", "sr100.000.fa");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    CHECK_SET_ERR(logTracer.checkMessage("MemoryLocker - Not enough memory error, 41 megabytes are required"), "An expected error message not found");
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
