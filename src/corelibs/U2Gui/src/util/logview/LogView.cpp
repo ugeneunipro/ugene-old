@@ -131,7 +131,7 @@ void LogViewWidget::popupMenu(const QPoint& pos) {
 
     QMenu popup;
     QAction* copyAction = popup.addAction(tr("Copy"), edit, SLOT(copy()));
-    copyAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_C));
+    copyAction->setShortcut(QKeySequence::Copy);
     copyAction->setEnabled(edit->textCursor().hasSelection());
     popup.addAction(dumpCountersAction);
     popup.addAction(addSeparatorAction);
