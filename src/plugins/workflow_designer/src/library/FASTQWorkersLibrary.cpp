@@ -107,7 +107,7 @@ void CASAVAFilterWorkerFactory::init() {
 
         a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
-        customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, CASAVAFilterWorker::tr("Custom")));
+        customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
         a << customDirAttr;
         a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(BaseNGSWorker::DEFAULT_NAME));
     }
@@ -264,7 +264,7 @@ void QualityTrimWorkerFactory::init() {
 
         a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
-        customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, QualityTrimWorker::tr("Custom")));
+        customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
         a << customDirAttr;
         a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(BaseNGSWorker::DEFAULT_NAME));
         a << new Attribute( qualT, BaseTypes:: NUM_TYPE(), false, QVariant(30));
@@ -438,7 +438,7 @@ void MergeFastqWorkerFactory::init() {
 
         a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
-        customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, MergeFastqWorker::tr("Custom")));
+        customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
         a << customDirAttr;
         a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(BaseNGSWorker::DEFAULT_NAME));
     }

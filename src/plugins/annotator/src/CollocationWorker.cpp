@@ -91,11 +91,11 @@ void CollocationWorkerFactory::init() {
     dr->registerEntry(inSet);
 
     QList<PortDescriptor*> p; QList<Attribute*> a;
-    p << new PortDescriptor(Descriptor(BasePorts::IN_SEQ_PORT_ID(), CollocationWorker::tr("Input data"), 
+    p << new PortDescriptor(Descriptor(BasePorts::IN_SEQ_PORT_ID(), CollocationWorker::tr("Input data"),
         CollocationWorker::tr("An input sequence and a set of annotations to search in.")), inSet, true /*input*/);
-    QMap<Descriptor, DataTypePtr> outM; 
+    QMap<Descriptor, DataTypePtr> outM;
     outM[BaseSlots::ANNOTATION_TABLE_SLOT()] = BaseTypes::ANNOTATION_TABLE_TYPE();
-    p << new PortDescriptor(Descriptor(BasePorts::OUT_ANNOTATIONS_PORT_ID(), 
+    p << new PortDescriptor(Descriptor(BasePorts::OUT_ANNOTATIONS_PORT_ID(),
         CollocationWorker::tr("Group annotations"), CollocationWorker::tr("Annotated regions containing found collocations.")),
         DataTypePtr(new MapDataType(Descriptor("collocation.annotations"), outM)), false /*input*/, true/*multi*/);
 
@@ -123,24 +123,25 @@ void CollocationWorkerFactory::init() {
         a << new Attribute(ld, BaseTypes::NUM_TYPE(), false, QVariant(1000));
         a << new Attribute(fd, BaseTypes::BOOL_TYPE(), false, QVariant(false));
 
-        nameAttr->addRelation(new VisibilityRelation(TYPE_ATTR, newAnnsStr));
-        boundAttr->addRelation(new VisibilityRelation(TYPE_ATTR, newAnnsStr));
+        nameAttr->addRelation(new VisibilityRelation(TYPE_ATTR, NEW_TYPE_ATTR));
+        boundAttr->addRelation(new VisibilityRelation(TYPE_ATTR, NEW_TYPE_ATTR));
     }
 
-    Descriptor desc(ACTOR_ID, CollocationWorker::tr("Collocation Search"), 
+    Descriptor desc(ACTOR_ID, CollocationWorker::tr("Collocation Search"),
         CollocationWorker::tr("Finds groups of specified annotations in each supplied set of annotations, stores found regions as annotations."));
     ActorPrototype* proto = new IntegralBusActorPrototype(desc, p, a);
     QMap<QString, PropertyDelegate*> delegates;
     {
         QVariantMap lenMap; lenMap["minimum"] = QVariant(0); lenMap["maximum"] = QVariant(INT_MAX);
         delegates[LEN_ATTR] = new SpinBoxDelegate(lenMap);
+        delegates[FIT_ATTR] = new ComboBoxWithBoolsDelegate();
 
         QVariantMap typeMap;
         typeMap[CollocationWorker::tr("Copy original annotations")] = COPY_TYPE_ATTR;
         typeMap[newAnnsStr] = NEW_TYPE_ATTR;
         delegates[TYPE_ATTR] = new ComboBoxDelegate(typeMap);
     }
-       
+
     proto->setEditor(new DelegateEditor(delegates));
     proto->setValidator(new CollocationValidator());
     proto->setIconPath(":annotator/images/regions.png");
@@ -210,7 +211,7 @@ Task* CollocationWorker::tick() {
             return NULL;
         }
         cfg.distance = actor->getParameter(LEN_ATTR)->getAttributeValue<int>(context);
-        cfg.st = actor->getParameter(FIT_ATTR)->getAttributeValue<bool>(context) ? 
+        cfg.st = actor->getParameter(FIT_ATTR)->getAttributeValue<bool>(context) ?
             CollocationsAlgorithm::NormalSearch : CollocationsAlgorithm::PartialSearch;
         cfg.resultAnnotationsName = actor->getParameter(NAME_ATTR)->getAttributeValue<QString>(context);
         QString annotations = actor->getParameter(ANN_ATTR)->getAttributeValue<QString>(context);

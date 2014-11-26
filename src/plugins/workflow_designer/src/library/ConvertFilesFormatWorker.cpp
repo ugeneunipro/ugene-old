@@ -277,7 +277,7 @@ QString ConvertFilesFormatWorker::createWorkingDir( const QString& fileUrl ){
     }else{
         useInternal = true;
     }
-    
+
     if (useInternal){
         result = context->workingDir();
         if (!result.endsWith("/")) {

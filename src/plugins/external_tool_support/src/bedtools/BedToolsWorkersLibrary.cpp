@@ -137,7 +137,7 @@ void SlopbedWorkerFactory::init() {
 
         a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
-        customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, SlopbedWorker::tr("Custom")));
+        customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
         a << customDirAttr;
         a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(BaseNGSWorker::DEFAULT_NAME));
 
@@ -540,7 +540,7 @@ void GenomecovWorkerFactory::init() {
 
         a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
-        customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, GenomecovWorker::tr("Custom")));
+        customDirAttr->addRelation(new VisibilityRelation(BaseNGSWorker::OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
         a << customDirAttr;
         a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(BaseNGSWorker::DEFAULT_NAME));
 

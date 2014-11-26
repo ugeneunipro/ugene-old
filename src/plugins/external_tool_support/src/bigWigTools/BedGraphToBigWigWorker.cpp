@@ -139,7 +139,7 @@ void BedGraphToBigWigFactory::init() {
 
         a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
-        customDirAttr->addRelation(new VisibilityRelation(BedGraphToBigWigWorker::OUT_MODE_ID, BedGraphToBigWigWorker::tr("Custom")));
+        customDirAttr->addRelation(new VisibilityRelation(BedGraphToBigWigWorker::OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
         a << customDirAttr;
         Attribute* genomeAttr = NULL;
         if (dataPath){

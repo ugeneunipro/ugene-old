@@ -146,10 +146,9 @@ void BlastAllWorkerFactory::init() {
     a << new Attribute(gn, BaseTypes::STRING_TYPE(), false, QVariant("blast_result"));
 
     Attribute* gaAttr= new Attribute(ga, BaseTypes::BOOL_TYPE(), false, QVariant(true));
-    gaAttr->addRelation(new VisibilityRelation(BLASTALL_PROGRAM_NAME, "blastn"));
-    gaAttr->addRelation(new VisibilityRelation(BLASTALL_PROGRAM_NAME, "blastp"));
-    gaAttr->addRelation(new VisibilityRelation(BLASTALL_PROGRAM_NAME, "blastx"));
-    gaAttr->addRelation(new VisibilityRelation(BLASTALL_PROGRAM_NAME, "tblastn"));
+    QVariantList gaVisibilitylist;
+    gaVisibilitylist << "blastn" << "blastp" << "blastx" << "tblastn";
+    gaAttr->addRelation(new VisibilityRelation(BLASTALL_PROGRAM_NAME, gaVisibilitylist));
     a << gaAttr;
 //    Attribute* umbAttr= new Attribute(umb, BaseTypes::BOOL_TYPE(), false, QVariant(false));
 //    umbAttr->addRelation(PROGRAM_NAME,"blastn");

@@ -115,7 +115,7 @@ void SortBamWorkerFactory::init() {
 
         a << new Attribute( outDir, BaseTypes::NUM_TYPE(), false, QVariant(FileAndDirectoryUtils::FILE_DIRECTORY));
         Attribute* customDirAttr = new Attribute(customDir, BaseTypes::STRING_TYPE(), false, QVariant(""));
-        customDirAttr->addRelation(new VisibilityRelation(OUT_MODE_ID, SortBamWorker::tr("Custom")));
+        customDirAttr->addRelation(new VisibilityRelation(OUT_MODE_ID, FileAndDirectoryUtils::CUSTOM));
         a << customDirAttr;
         a << new Attribute( outName, BaseTypes::STRING_TYPE(), false, QVariant(DEFAULT_NAME));
         a << new Attribute( index, BaseTypes::BOOL_TYPE(), false, QVariant(true));
