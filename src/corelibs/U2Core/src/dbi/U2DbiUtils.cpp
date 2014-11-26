@@ -43,7 +43,7 @@ static U2DataId emptyId;
 const QString U2DbiUtils::PUBLIC_DATABASE_NAME = QObject::tr("UGENE public database");
 const QString U2DbiUtils::PUBLIC_DATABASE_LOGIN = "public";
 const QString U2DbiUtils::PUBLIC_DATABASE_PASSWORD = "public";
-const QString U2DbiUtils::PUBLIC_DATABASE_URL = U2DbiUtils::createFullDbiUrl(PUBLIC_DATABASE_LOGIN, "5.9.139.103", 3306, "public_ugene");
+const QString U2DbiUtils::PUBLIC_DATABASE_URL = U2DbiUtils::createFullDbiUrl(PUBLIC_DATABASE_LOGIN, "5.9.139.103", 3306, "public_ugene_1_15");
 
 void U2DbiUtils::logNotSupported(U2DbiFeature f, U2Dbi* dbi, U2OpStatus& os) {
     QString msg = tr("Feature is not supported: %1, dbi: %2").arg(int(f)).arg(dbi == NULL ? QString("<unknown>") : dbi->getDbiId());

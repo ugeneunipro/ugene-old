@@ -503,7 +503,7 @@ bool SharedConnectionsDialog::checkDbShouldBeUpgraded(const U2DbiRef &ref) {
         if (QMessageBox::Ok == question.exec()) {
             MysqlUpgradeTask *upgradeTask = new MysqlUpgradeTask(ref);
             upgradeTasks.insert(ui->lwConnections->currentItem(), upgradeTask);
-            connect(new TaskSignalMapper(upgradeTask), SIGNAL(si_taskFinished), SLOT(sl_upgradeComplete()));
+            connect(new TaskSignalMapper(upgradeTask), SIGNAL(si_taskFinished()), SLOT(sl_upgradeComplete()));
             AppContext::getTaskScheduler()->registerTopLevelTask(upgradeTask);
         }
         return false;
