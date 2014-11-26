@@ -366,6 +366,11 @@ void DnaAssemblyDialog::addGuiExtension() {
     // insert new extension widget
     DnaAssemblyAlgorithmEnv* env = assemblyRegistry->getAlgorithm(methodNamesBox->currentText());
     
+    if (NULL == env) {
+        adjustSize();
+        return;
+    }
+
     if (!env->supportsPairedEndLibrary()) {
         libraryComboBox->setEnabled(false);
         libraryComboBox->setCurrentIndex(0);
@@ -373,10 +378,6 @@ void DnaAssemblyDialog::addGuiExtension() {
         libraryComboBox->setEnabled(true);
     }
     
-    if (NULL == env) {
-        adjustSize();
-        return;
-    }
     if (!env->isDbiSupported()) {
         samBox->setChecked(true);
         samBox->setEnabled(false);
