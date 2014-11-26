@@ -21,6 +21,7 @@
 
 #include <QtCore/QDir>
 
+#include <U2Core/Counter.h>
 #include <U2Core/IOAdapterUtils.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2Assembly.h>
@@ -120,6 +121,7 @@ void ExportCoverageTask::write(const QByteArray &dataToWrite) {
 ExportCoverageHistogramTask::ExportCoverageHistogramTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings) :
     ExportCoverageTask(dbiRef, assemblyId, settings, TaskFlags_FOSE_COSC)
 {
+    GCOUNTER(c, t, "ExportCoverageHistogramTask");
 }
 
 void ExportCoverageHistogramTask::run() {
@@ -163,6 +165,7 @@ QByteArray ExportCoverageHistogramTask::toByteArray(int coverage, qint64 assembl
 ExportCoveragePerBaseTask::ExportCoveragePerBaseTask(const U2DbiRef &dbiRef, const U2DataId &assemblyId, const ExportCoverageSettings &settings) :
     ExportCoverageTask(dbiRef, assemblyId, settings)
 {
+    GCOUNTER(c, t, "ExportCoveragePerBaseTask");
 }
 
 void ExportCoveragePerBaseTask::prepare() {
@@ -234,6 +237,7 @@ ExportCoverageBedgraphTask::ExportCoverageBedgraphTask(const U2DbiRef &dbiRef, c
     ExportCoverageTask(dbiRef, assemblyId, settings),
     currentCoverage(U2Region(), -1)
 {
+    GCOUNTER(c, t, "ExportCoverageBedgraphTask");
 }
 
 void ExportCoverageBedgraphTask::prepare() {
