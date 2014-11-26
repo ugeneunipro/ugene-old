@@ -109,6 +109,7 @@
 #include "runnables/ugene/plugins/enzymes/DigestSequenceDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/FindEnzymesDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/BlastAllSupportDialogFiller.h"
+#include "runnables/ugene/plugins/external_tools/ClustalOSupportRunDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/FormatDBDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/RemoteBLASTDialogFiller.h"
 #include "runnables/ugene/plugins/external_tools/TCoffeeDailogFiller.h"
@@ -5375,6 +5376,41 @@ GUI_TEST_CLASS_DEFINITION(test_2581_1) {
 
     GTGlobals::sleep();
     GTUtilsLog::check(os, l);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2581_2) {
+//    1. Open file "_common_data/scenarios/msa/ma2_gapped_same_names.aln"
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped_same_names.aln");
+
+//    2. Use context menu { Align -> Align with ClustalO }
+//    Expected state: the "Align with Clustal Omega" dialog has appeared
+
+//    3. Press the "Align" button
+//    Expected state: after a few seconds alignment has finished, UGENE does not crash
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Align" << "Align with ClustalO..."));
+    GTUtilsDialog::waitForDialog(os, new ClustalOSupportRunDialogFiller(os));
+    GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
+
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_2581_3) {
+//    1. Open file "_common_data/scenarios/msa/ma2_gapped_same_names.aln"
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/msa", "ma2_gapped_same_names.aln");
+
+//    2. Use context menu { Align -> Align with MAFFT }
+//    Expected state: the "Align with MAFFT" dialog has appeared
+
+//    3. Press the "Align" button
+//    Expected state: after a few seconds alignment has finished, UGENE does not crash
+    MAFFTSupportRunDialogFiller::Parameters parameters;
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Align" << "Align with MAFFT..."));
+    GTUtilsDialog::waitForDialog(os, new MAFFTSupportRunDialogFiller(os, &parameters));
+    GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
+
+    GTGlobals::sleep();
+    GTUtilsTaskTreeView::waitTaskFinished(os);
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2581_4) {
