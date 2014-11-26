@@ -45,13 +45,12 @@
 namespace U2 {
 
 ProjectTreeItemSelectorDialogImpl::ProjectTreeItemSelectorDialogImpl(QWidget* p, const ProjectTreeControllerModeSettings& s) 
-: QDialog(p)
+    : QDialog(p)
 {
     setupUi(this);
     controller = new ProjectTreeController(treeView, s, this);
     connect(controller, SIGNAL(si_doubleClicked(GObject*)), this, SLOT(sl_objectClicked(GObject*)));
     acceptByDoubleClick = false;
-
 }
 
 void ProjectTreeItemSelectorDialogImpl::sl_objectClicked(GObject* obj) {

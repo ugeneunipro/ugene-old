@@ -101,6 +101,7 @@ QVariant ProjectViewModel::data(const QModelIndex &index, int role) const {
 
 bool ProjectViewModel::setData(const QModelIndex &index, const QVariant &value, int /*role*/) {
     CHECK(index.isValid(), false);
+    CHECK(value.isValid() && !value.toString().isEmpty(), false);
 
     Document *doc = NULL;
     bool renameSuccessful = false;
@@ -281,13 +282,15 @@ Qt::ItemFlags ProjectViewModel::flags(const QModelIndex &index) const {
         case FOLDER: {
             Folder *folder = toFolder(index);
             SAFE_POINT(NULL != folder, "NULL folder", result);
-            if (!ProjectUtils::isFolderInRecycleBin(folder->getFolderPath())) {
+            const QString path = folder->getFolderPath();
+            Document *doc = folder->getDocument();
+            if (!ProjectUtils::isFolderInRecycleBin(path) && isDropEnabled(doc)) {
                 result |= Qt::ItemIsDropEnabled;
             }
-            if (ProjectUtils::RECYCLE_BIN_FOLDER_PATH != folder->getFolderPath()) {
+            if (ProjectUtils::RECYCLE_BIN_FOLDER_PATH != path) {
                 result |= Qt::ItemIsDragEnabled;
             }
-            if (!ProjectUtils::isFolderInRecycleBinSubtree(folder->getFolderPath())) {
+            if (!ProjectUtils::isFolderInRecycleBinSubtree(path) && isWritableDoc(doc)) {
                 result |= Qt::ItemIsEditable;
             }
             return result;
@@ -298,9 +301,10 @@ Qt::ItemFlags ProjectViewModel::flags(const QModelIndex &index) const {
             if (!settings.isObjectShown(obj)) {
                 return Qt::NoItemFlags;
             }
+            Document *doc = obj->getDocument();
             if ((GObjectTypes::UNLOADED == obj->getGObjectType()) && !settings.allowSelectUnloaded) {
                 result &= ~QFlags<Qt::ItemFlag>(Qt::ItemIsEnabled);
-            } else {
+            } else if (isWritableDoc(doc)) {
                 result |= QFlags<Qt::ItemFlag>(Qt::ItemIsEditable);
             }
             if (!isFilterActive() && isDropEnabled(obj->getDocument())) {
@@ -361,10 +365,10 @@ QStringList ProjectViewModel::mimeTypes() const {
 bool ProjectViewModel::dropMimeData(const QMimeData *data, Qt::DropAction /*action*/, int row, int /*column*/, const QModelIndex &parent) {
     Folder target = getDropFolder(parent);
     const QString folderPath = target.getFolderPath();
-    SAFE_POINT(-1 == row || ProjectUtils::isFolderInRecycleBinSubtree(folderPath), "Wrong insertion row", false);
     Document *targetDoc = target.getDocument();
     SAFE_POINT(NULL != targetDoc, "NULL document", false);
     CHECK(!targetDoc->isStateLocked(), false);
+    SAFE_POINT(-1 == row || ProjectUtils::isFolderInRecycleBinSubtree(folderPath), "Wrong insertion row", false);
 
     MimeDataIterator iter(data);
 

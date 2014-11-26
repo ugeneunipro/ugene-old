@@ -82,6 +82,7 @@ ProjectTreeController::ProjectTreeController(QTreeView *tree, const ProjectTreeC
     connect(project, SIGNAL(si_documentAdded(Document*)), SLOT(sl_onDocumentAdded(Document*)));
     connect(project, SIGNAL(si_documentRemoved(Document*)), SLOT(sl_onDocumentRemoved(Document*)));
 
+    tree->setDragDropMode(QAbstractItemView::InternalMove);
     tree->setModel(model);
     updater->start();
     timer->start();
@@ -866,7 +867,7 @@ bool ProjectTreeController::eventFilter(QObject *o, QEvent *e) {
     CHECK(NULL != tree, false);
 
     if (QEvent::KeyPress == e->type()) {
-        QKeyEvent *kEvent = dynamic_cast<QKeyEvent*>(e);
+        QKeyEvent *kEvent = dynamic_cast<QKeyEvent *>(e);
         CHECK(NULL != kEvent, false);
         int key = kEvent->key();
         bool hasSelection = !documentSelection.isEmpty() || !objectSelection.isEmpty() || !folderSelection.isEmpty();

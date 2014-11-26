@@ -96,6 +96,7 @@ private:
     bool checkDbInitializationState(const U2DbiRef &ref, bool &initializationRequired);
     bool checkDbIsTooNew(const U2DbiRef &ref);
     bool checkDbShouldBeUpgraded(const U2DbiRef &ref);
+    void checkDbConnectionDuplicate(const QString &shortDbiUrl, const QString &userName, const QString &allowedDuplicateName = QString());
 
     Ui::SharedConnectionsDialog *ui;
     QMap<QListWidgetItem*, Task*> connectionTasks;

@@ -22,13 +22,7 @@
 #ifndef _U2_PROJECT_TREE_ITEM_SELECTOR_DIALOG_IMPL_H_
 #define _U2_PROJECT_TREE_ITEM_SELECTOR_DIALOG_IMPL_H_
 
-#include <ui/ui_ProjectTreeItemSelectorDialogBase.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDialog>
-#else
-#include <QtWidgets/QDialog>
-#endif
+#include "ui/ui_ProjectTreeItemSelectorDialogBase.h"
 
 namespace U2 {
 
@@ -40,7 +34,6 @@ class GObject;
 class ProjectTreeItemSelectorDialogImpl: public QDialog, public Ui::ProjectTreeItemSelectorDialogBase {
     Q_OBJECT
 public:
-
     bool acceptByDoubleClick;
 
 private slots:
@@ -53,5 +46,6 @@ private:
     ProjectTreeController* controller;
 };
 
-}//namespace
+} // namespace U2
+
 #endif

@@ -166,18 +166,16 @@ void SharedConnectionsDialog::sl_editClicked() {
     if (QDialog::Accepted == editDialog.exec()) {
         QListWidgetItem* item = ui->lwConnections->currentItem();
         const QString login = editDialog.getUserName();
+        const QString shortDbUrl = editDialog.getShortDbiUrl();
 
-        QString existingConnectionName;
-        if (alreadyExists(dbiUrl, login, existingConnectionName) && existingConnectionName != item->data(Qt::DisplayRole).toString()) {
-            QMessageBox::information(this, tr(CONNECTION_DUPLICATE_TITLE), tr(CONNECTION_DUPLICATE_TEXT).arg(existingConnectionName));
-        }
+        checkDbConnectionDuplicate(shortDbUrl, login, item->data(Qt::DisplayRole).toString());
 
         if (connectionName != editDialog.getName()) {
             removeRecentConnection(item);
         }
 
         item->setText(editDialog.getName());
-        item->setData(UrlRole, editDialog.getShortDbiUrl());
+        item->setData(UrlRole, shortDbUrl);
         item->setData(LoginRole, login);
 
         connectionTasks.remove(item);
@@ -188,10 +186,22 @@ void SharedConnectionsDialog::sl_editClicked() {
     }
 }
 
+void SharedConnectionsDialog::checkDbConnectionDuplicate(const QString &shortDbiUrl, const QString &userName,
+    const QString &allowedDuplicateName)
+{
+    QString existingConnectionName;
+    if (alreadyExists(shortDbiUrl, userName, existingConnectionName)
+        && (allowedDuplicateName.isEmpty() || existingConnectionName != allowedDuplicateName))
+    {
+        QMessageBox::information(this, tr(CONNECTION_DUPLICATE_TITLE), tr(CONNECTION_DUPLICATE_TEXT).arg(existingConnectionName));
+    }
+}
+
 void SharedConnectionsDialog::sl_addClicked() {
     EditConnectionDialog editDialog(this);
 
     if (QDialog::Accepted == editDialog.exec()) {
+        checkDbConnectionDuplicate(editDialog.getShortDbiUrl(), editDialog.getUserName());
         QListWidgetItem* item = insertConnection(editDialog.getName(), editDialog.getShortDbiUrl(), editDialog.getUserName());
         CHECK(NULL != item, );
         ui->lwConnections->setCurrentItem(item);
@@ -378,11 +388,6 @@ QListWidgetItem *SharedConnectionsDialog::insertConnection(const QString &prefer
 }
 
 QListWidgetItem* SharedConnectionsDialog::insertConnection(const QString& preferredName, const QString& dbiUrl, const QString &userName) {
-    QString existingConnectionName;
-    if (alreadyExists(dbiUrl, userName, existingConnectionName)) {
-        QMessageBox::information(this, tr(CONNECTION_DUPLICATE_TITLE), tr(CONNECTION_DUPLICATE_TEXT).arg(existingConnectionName));
-    }
-
     const QString name = rollName(preferredName);
 
     QListWidgetItem* item = new QListWidgetItem(name);
