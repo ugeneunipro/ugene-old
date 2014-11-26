@@ -106,6 +106,7 @@ QWidget* MSAHighlightingTab::createHighlightingGroup() {
 MSAHighlightingTab::MSAHighlightingTab(MSAEditor* m)
     : msa(m), savableTab(this, GObjectViewUtils::findViewByName(m->getName()))
 {
+    setObjectName("HighlightingOptionsPanelWidget");
     QVBoxLayout* mainLayout = initVBoxLayout(this);
     mainLayout->setSpacing(0);
 

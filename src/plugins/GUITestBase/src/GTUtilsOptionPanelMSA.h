@@ -37,7 +37,8 @@ public:
     enum Tabs{General, Highlighting, PairwiseAlignment, TreeSettings, ExportConsensus, Statistics};
     enum AddRefMethod{Button, Completer};
 
-    static const QMap<Tabs,QString> tabsNames;
+    static const QMap<Tabs, QString> tabsNames;
+    static const QMap<Tabs, QString> innerWidgetNames;
     //Opens option panel tab. TODO: check if tab is already opened
     static void openTab(U2OpStatus &os, Tabs tab);
     static void addReference(U2OpStatus &os, QString seqName, AddRefMethod method = Button);
@@ -46,6 +47,9 @@ public:
     static void removeReference(U2OpStatus &os);
     static int getLength(U2OpStatus &os);
     static int getHeight(U2OpStatus &os);
+
+    static void setColorScheme(U2OpStatus &os, const QString &colorSchemeName);
+    static QString getColorScheme(U2OpStatus &os);
 
     //functions for accessing PA gui elements
     static QToolButton* getAddButton(U2OpStatus &os, int number);
@@ -61,7 +65,8 @@ private:
 
 
 private:
-    static QMap<Tabs,QString> initNames();
+    static QMap<Tabs, QString> initNames();
+    static QMap<Tabs, QString> initInnerWidgetNames();
 };
 
 

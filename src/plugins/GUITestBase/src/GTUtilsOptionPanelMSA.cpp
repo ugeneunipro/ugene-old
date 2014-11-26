@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <QComboBox>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QToolButton>
@@ -32,8 +33,9 @@
 #include "api/GTTreeWidget.h"
 #include "api/GTWidget.h"
 
-namespace U2{
-QMap<GTUtilsOptionPanelMsa::Tabs, QString> GTUtilsOptionPanelMsa::initNames(){
+namespace U2 {
+
+QMap<GTUtilsOptionPanelMsa::Tabs, QString> GTUtilsOptionPanelMsa::initNames() {
     QMap<Tabs,QString> result;
     result.insert(General, "OP_MSA_GENERAL");
     result.insert(Highlighting, "OP_MSA_HIGHLIGHTING");
@@ -43,14 +45,32 @@ QMap<GTUtilsOptionPanelMsa::Tabs, QString> GTUtilsOptionPanelMsa::initNames(){
     result.insert(Statistics, "OP_SEQ_STATISTICS_WIDGET");
     return result;
 }
-const QMap<GTUtilsOptionPanelMsa::Tabs,QString> GTUtilsOptionPanelMsa::tabsNames = initNames();
+
+QMap<GTUtilsOptionPanelMsa::Tabs, QString> GTUtilsOptionPanelMsa::initInnerWidgetNames() {
+    QMap<Tabs, QString> result;
+    result.insert(General, "MsaGeneralTab");
+    result.insert(Highlighting, "HighlightingOptionsPanelWidget");
+    result.insert(PairwiseAlignment, "PairwiseAlignmentOptionsPanelWidget");
+    result.insert(TreeSettings, "AddTreeWidget");
+    result.insert(ExportConsensus, "ExportConsensusWidget");
+    result.insert(Statistics, "SequenceStatisticsOptionsPanelTab");
+    return result;
+}
+const QMap<GTUtilsOptionPanelMsa::Tabs, QString> GTUtilsOptionPanelMsa::tabsNames = initNames();
+const QMap<GTUtilsOptionPanelMsa::Tabs, QString> GTUtilsOptionPanelMsa::innerWidgetNames = initInnerWidgetNames();
 
 #define GT_CLASS_NAME "GTUtilsOptionPanelMSA"
 
 #define GT_METHOD_NAME "openTab"
-void GTUtilsOptionPanelMsa::openTab(U2OpStatus &os, Tabs tab){
-    GTWidget::click(os, GTWidget::findWidget(os, tabsNames[tab]));
-    GTGlobals::sleep(200);
+void GTUtilsOptionPanelMsa::openTab(U2OpStatus &os, Tabs tab) {
+    GTGlobals::FindOptions options;
+    options.failIfNull = false;
+    QWidget *innerWidget = GTWidget::findWidget(os, innerWidgetNames[tab], NULL, options);
+
+    if (NULL == innerWidget || !innerWidget->isVisible()) {
+        GTWidget::click(os, GTWidget::findWidget(os, tabsNames[tab]));
+        GTGlobals::sleep(200);
+    }
 }
 #undef GT_METHOD_NAME
 
@@ -106,6 +126,22 @@ int GTUtilsOptionPanelMsa::getHeight(U2OpStatus &os){
     int result = alignmentHeightLabel->text().toInt(&ok);
     GT_CHECK_RESULT(ok == true, "label text is not int", -1);
     return result;
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setColorScheme"
+void GTUtilsOptionPanelMsa::setColorScheme(U2OpStatus &os, const QString &colorSchemeName) {
+    openTab(os, Highlighting);
+    GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "colorScheme"), colorSchemeName);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getColorScheme"
+QString GTUtilsOptionPanelMsa::getColorScheme(U2OpStatus &os) {
+    openTab(os, Highlighting);
+    QComboBox *colorScheme = GTWidget::findExactWidget<QComboBox *>(os, "colorScheme");
+    GT_CHECK_RESULT(NULL != colorScheme, "ColorSCheme combobox is NULL", "");
+    return colorScheme->currentText();
 }
 #undef GT_METHOD_NAME
 

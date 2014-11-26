@@ -503,6 +503,7 @@ void GTUtilsMSAEditorSequenceArea::renameSequence(U2OpStatus &os, const QString 
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "createColorScheme"
 void GTUtilsMSAEditorSequenceArea::createColorScheme(U2OpStatus &os, const QString &colorSchemeName, const NewColorSchemeCreator::alphabet al){
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 1));
     GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
@@ -510,7 +511,9 @@ void GTUtilsMSAEditorSequenceArea::createColorScheme(U2OpStatus &os, const QStri
     GTUtilsDialog::waitForDialog( os, new NewColorSchemeCreator( os, colorSchemeName, al) );
     GTMouseDriver::click( os, Qt::RightButton );
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "deleteColorScheme"
 void GTUtilsMSAEditorSequenceArea::deleteColorScheme(U2OpStatus &os, const QString &colorSchemeName){
     GTUtilsMSAEditorSequenceArea::moveTo(os, QPoint(1, 1));
     GTUtilsDialog::waitForDialog( os, new PopupChooser( os, QStringList( ) << "Colors"
@@ -519,6 +522,7 @@ void GTUtilsMSAEditorSequenceArea::deleteColorScheme(U2OpStatus &os, const QStri
                                                                  NewColorSchemeCreator::Delete) );
     GTMouseDriver::click( os, Qt::RightButton );
 }
+#undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "renameSequence"
 void GTUtilsMSAEditorSequenceArea::checkSelection(U2OpStatus &os, const QPoint &start, const QPoint &end, const QString &expected){
