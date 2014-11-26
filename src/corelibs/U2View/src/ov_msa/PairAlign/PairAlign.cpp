@@ -147,6 +147,7 @@ void PairAlign::initParameters() {
     lblMessage->setText( tr("Warning: Current alphabet does not correspond the requirements."));
 
     sl_outputFileChanged("");
+    sl_alignmentChanged();
 }
 
 void PairAlign::connectSignals() {
