@@ -22,6 +22,7 @@
 #include <QPushButton>
 #include <QValidator>
 
+#include <U2Core/Counter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -47,6 +48,7 @@ EditPrimerDialog::EditPrimerDialog(QWidget *parent, const Primer &editToPrimer)
 }
 
 void EditPrimerDialog::init() {
+    GCOUNTER(cvar, tvar, "Add primer in library");
     setupUi(this);
     new HelpButton(this, buttonBox, "13435073");
 

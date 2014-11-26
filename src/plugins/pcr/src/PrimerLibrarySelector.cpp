@@ -21,6 +21,7 @@
 
 #include <QPushButton>
 
+#include <U2Core/Counter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -33,6 +34,7 @@ namespace U2 {
 PrimerLibrarySelector::PrimerLibrarySelector(QWidget *parent)
 : QDialog(parent)
 {
+    GCOUNTER(cvar, tvar, "PrimerLibrarySelector");
     setupUi(this);
     new HelpButton(this, buttonBox, "13435069");
 

@@ -26,6 +26,7 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
 #include <U2Core/BaseDocumentFormats.h>
+#include <U2Core/Counter.h>
 #include <U2Core/DNASequenceObject.h>
 #include <U2Core/DocumentModel.h>
 #include <U2Core/GUrlUtils.h>
@@ -62,7 +63,7 @@ QString getProductName(const QString &sequenceName, qint64 sequenceLength, const
 ExtractProductTask::ExtractProductTask(const InSilicoPcrProduct &product, const U2EntityRef &sequenceRef, const QString &outputFile)
 : Task(tr("Extract PCR product"), TaskFlags_FOSE_COSC), product(product), sequenceRef(sequenceRef), outputFile(outputFile), result(NULL)
 {
-
+    GCOUNTER(cvar, tvar, "ExtractProductTask");
 }
 
 ExtractProductTask::~ExtractProductTask() {

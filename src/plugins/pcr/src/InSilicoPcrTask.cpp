@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
 #include <U2Core/DNAAlphabet.h>
 #include <U2Core/DNATranslation.h>
 #include <U2Core/L10n.h>
@@ -46,7 +47,7 @@ InSilicoPcrTask::InSilicoPcrTask(const InSilicoPcrTaskSettings &settings)
 : Task(tr("In Silico PCR"), TaskFlags(TaskFlag_ReportingIsSupported) | TaskFlag_ReportingIsEnabled | TaskFlags_FOSE_COSC),
 settings(settings), forwardSearch(NULL), reverseSearch(NULL)
 {
-
+    GCOUNTER(cvar, tvar, "InSilicoPcrTask");
 }
 
 namespace {

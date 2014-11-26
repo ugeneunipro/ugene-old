@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/Counter.h>
+
 #include <U2Gui/HelpButton.h>
 
 #include "PrimersDetailsDialog.h"
@@ -28,6 +30,7 @@ namespace U2 {
 PrimersDetailsDialog::PrimersDetailsDialog(QWidget *parent, const QString &details)
 : QDialog(parent)
 {
+    GCOUNTER(cvar, tvar, "PrimersDetailsDialog");
     setupUi(this);
     new HelpButton(this, buttonBox, "13435071");
     textEdit->setText(details);

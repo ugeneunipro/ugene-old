@@ -20,6 +20,7 @@
  */
 
 #include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
 #include <U2Core/L10n.h>
 #include <U2Core/U2SafePoints.h>
 
@@ -30,6 +31,7 @@
 namespace U2 {
 
 void PrimerLibraryMdiWindow::showLibrary() {
+    GCOUNTER(cvar, tvar, "Primer Library");
     MWMDIManager *mdiManager = AppContext::getMainWindow()->getMDIManager();
     SAFE_POINT(NULL != mdiManager, L10N::nullPointerError("MDI Manager"), );
 
