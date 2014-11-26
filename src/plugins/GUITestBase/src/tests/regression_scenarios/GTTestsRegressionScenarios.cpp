@@ -1386,6 +1386,15 @@ GUI_TEST_CLASS_DEFINITION(test_1786){
     GTUtilsProjectTreeView::findIndex(os, "P01542_das.gb");
     }
 
+GUI_TEST_CLASS_DEFINITION(test_1797){
+    // 1) Open _common_data\scenarios\formats\test_1797 file
+    // 2) Choose "BED" format at appeared format dialog
+    // Expected state: UGENE doesn't crash - it shows error: "BED parsing error: incorrect number of fields at line 1!"
+
+    GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/formats", "test_1797");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1808) {
     QDir outputDir(testDir + "_common_data/scenarios/sandbox");
     const QString outputFilePath = outputDir.absolutePath( ) + "/test_1808.gb";
@@ -1767,6 +1776,24 @@ GUI_TEST_CLASS_DEFINITION( test_1897 ) {
     QAction *action = GTAction::findActionByText( os, "Gaps" );
     //Expected state: It must be checked
     CHECK_SET_ERR( action->isChecked( ), "Action has to be checked!" );
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1908){
+
+    // 1. Open WD
+    // 2. Add "Call variants" sample
+    // Expected state: datasets are avaluable
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addSample(os, "Call variants with SAMtools");
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Assembly (BAM/SAM)"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Assembly/", "chrM.sam");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read Sequence"));
+    GTMouseDriver::click(os);
+    GTUtilsWorkflowDesigner::setDatasetInputFile(os, dataDir + "samples/Assembly/", "chrM.fa");
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1918) {
