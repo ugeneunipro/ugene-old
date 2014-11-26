@@ -102,6 +102,7 @@
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/enzymes/ConstructMoleculeDialogFiller.h"
@@ -9892,6 +9893,38 @@ GUI_TEST_CLASS_DEFINITION(test_3640) {
     CHECK_SET_ERR(!humanT1Doc.isValid(), "The document is not removed");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3656) {
+//    1. Connect to the public database
+//    2. Go to /genomes/Human (hg 19)
+//    3. Right click on "chr2", then choose { Export/Import -> Export Sequences... }
+//    Expected state: the "Export Sequences" dialog has appeared.
+//    4. Press "OK"
+//    Expected state: Export task has launched and successfully finished.
+//    Current state: UGENE hangs for a half of minute, then Export task is launched.
+
+    GTLogTracer lt;
+    GTUtilsSharedDatabaseDocument::connectToUgenePublicDatabase(os);
+    CHECK_OP(os, );
+
+    QTreeView *treeView = GTUtilsProjectTreeView::getTreeView(os);
+    CHECK_SET_ERR(NULL != treeView, "Invalid project tree view");
+
+    QModelIndex prnt = GTUtilsProjectTreeView::findIndex(os, "Human (hg19)");
+    QModelIndex idx = GTUtilsProjectTreeView::findIndex(os, "chr2", prnt);
+
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, idx));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE));
+    GTUtilsDialog::waitForDialog(os, new ExportSelectedRegionFiller(os, testDir + "_common_data/scenarios/sandbox/", "test_3656.fa", GTGlobals::UseMouse));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(GTUtilsTaskTreeView::checkTask(os, "Export sequence to document"), "Task is not running!");
+    GTGlobals::sleep();
+
+    GTUtilsTaskTreeView::cancelTask(os, "Export sequence to document");
+    GTGlobals::sleep();
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3658){
 //    1. Open the WD
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
@@ -9912,6 +9945,36 @@ GUI_TEST_CLASS_DEFINITION(test_3658){
     QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
     int count = table->model()->columnCount();
     CHECK_SET_ERR(count == 2, QString("wrong columns number. expected 2, actual: %1").arg(count));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3690){
+//    1. Open human_T1.fa
+//    Expected state: there are two opened windows - start page and human_T1
+//    2. Use short cut - Ctrl+Tab
+//    Expected state: current active MDI window is changed to start page
+//    3. Use short cut - Ctrl+Shift+Tab
+//    Expected state: current active MDI window is changed back to human_T1
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    QWidget* wgt = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(wgt != NULL, "ActiveWindow is NULL");
+    CHECK_SET_ERR(wgt->windowTitle() == "human_T1 [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)", "human_T1.fa should be opened!");
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    wgt = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(wgt != NULL, "ActiveWindow is NULL");
+    CHECK_SET_ERR(wgt->windowTitle() == "Start Page", "Start Page should be opened!");
+
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["tab"], GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep();
+
+    wgt = GTUtilsMdi::activeWindow(os);
+    CHECK_SET_ERR(wgt != NULL, "ActiveWindow is NULL");
+    CHECK_SET_ERR(wgt->windowTitle() == "human_T1 [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)", "human_T1.fa should be opened!");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3702){
