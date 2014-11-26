@@ -191,7 +191,7 @@ bool PrimerGrouperTask::isCompatiblePairs(int firstPairIndex, int secondPairInde
 
 
 void PrimerGrouperTask::findCompatibleGroups() {
-    QList<QList<int>> compatiblePrimersGroups;
+    QList<QList<int> > compatiblePrimersGroups;
 
     for(int primerIndex = 0; primerIndex < primerPairs.size(); primerIndex++) {
         if (isCanceled()) {
@@ -227,7 +227,7 @@ void PrimerGrouperTask::findCompatibleGroups() {
     }
 }
 
-void PrimerGrouperTask::generateReport(const QList<QList<int>>& correctPrimersGroups) {
+void PrimerGrouperTask::generateReport(const QList<QList<int> >& correctPrimersGroups) {
     CHECK(correctPrimersGroups.size() > 0, );
 
     report += "<!DOCTYPE html>\n";
@@ -252,7 +252,7 @@ void PrimerGrouperTask::generateReport(const QList<QList<int>>& correctPrimersGr
     report += "</html>\n";
 }
 
-void PrimerGrouperTask::fillReportTable(const QList<QList<int>>& correctPrimersGroups) {
+void PrimerGrouperTask::fillReportTable(const QList<QList<int> >& correctPrimersGroups) {
     int index = 1;
     foreach(const QList<int>& curGroup, correctPrimersGroups) {
         QString column1, column2, column3, column4;

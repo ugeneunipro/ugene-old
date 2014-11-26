@@ -78,8 +78,8 @@ public:
     void run();
     QString getReport() const { return report; }
 private:
-    void generateReport(const QList<QList<int>>& groups);
-    void fillReportTable(const QList<QList<int>>& groups);
+    void generateReport(const QList<QList<int> >& groups);
+    void fillReportTable(const QList<QList<int> >& groups);
     void writeReportToFile();
 
     QString createRow(const QString& groupName, const QString& forwardName, const QString& reverseName, const QString& forwardTm, const QString& reverseTm);
