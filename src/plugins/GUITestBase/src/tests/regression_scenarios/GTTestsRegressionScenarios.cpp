@@ -1512,6 +1512,33 @@ GUI_TEST_CLASS_DEFINITION(test_1831) {
     CHECK_SET_ERR(GTUtilsWorkflowDesigner::isWorkerExtended(os, "Read alignment"), "\"Read alignment\" unexpectedly has simple style");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1834) {
+    //1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    //2. Drag the "Read Alignment" and "File Format Conversion" elements to the scene and link them.
+    WorkflowProcessItem *reader = GTUtilsWorkflowDesigner::addElement(os, "Read Alignment");
+    WorkflowProcessItem *converter = GTUtilsWorkflowDesigner::addElement(os, "File Format Conversion");
+    GTUtilsWorkflowDesigner::connect(os, reader, converter);
+
+    //3. Set the input file for the "Read Alignment" element to "data/samples/COI.aln".
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Alignment", dataDir + "samples/CLUSTALW/COI.aln");
+
+    //4. Set the "Document format" parameter of the "File Format Conversion" element to "mega".
+    GTUtilsWorkflowDesigner::click(os, "File Format Conversion");
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", 13, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Output directory", 0, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Custom directory", sandBoxDir + "regression_1834", GTUtilsWorkflowDesigner::textValue);
+
+    //5. Run the scheme.
+    GTWidget::click(os, GTAction::button(os, "Run workflow"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected state: Scheme ran successfully, the "COI.aln.mega" output file has appeared on the "Output Files" panel of the dashboard.
+    //The output file is valid, might be opened with MSA editor and has the same content as the source file.
+    CHECK_SET_ERR(QFile::exists(sandBoxDir + "regression_1834/COI.aln.meg"), "File does not exist");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1859 ) {
     QString workflowOutputDirPath( testDir + "_common_data/scenarios/sandbox" );
     QDir workflowOutputDir( workflowOutputDirPath );
