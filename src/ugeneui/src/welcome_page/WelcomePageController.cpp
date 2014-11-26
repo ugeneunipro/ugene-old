@@ -24,6 +24,7 @@
 #include <QMessageBox>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/Counter.h>
 #include <U2Core/IdRegistry.h>
 #include <U2Core/L10n.h>
 #include <U2Core/Settings.h>
@@ -101,6 +102,7 @@ void WelcomePageController::sl_onRecentChanged() {
 }
 
 void WelcomePageController::performAction(const QString &actionId) {
+    GRUNTIME_NAMED_COUNTER(cvar, tvar, "Welcome Page: " + actionId, "");
     IdRegistry<WelcomePageAction> *welcomePageActions = AppContext::getWelcomePageActionRegistry();
     SAFE_POINT(NULL != welcomePageActions, L10N::nullPointerError("Welcome Page Actions"), );
 
@@ -116,12 +118,14 @@ void WelcomePageController::performAction(const QString &actionId) {
 }
 
 void WelcomePageController::openUrl(const QString &urlId) {
+    GRUNTIME_NAMED_COUNTER(cvar, tvar, "Welcome Page: " + urlId, "");
     QString url = getUrlById(urlId);
     SAFE_POINT(!url.isEmpty(), "Unknown URL ID: " + urlId, );
     QDesktopServices::openUrl(QUrl(url));
 }
 
 void WelcomePageController::openFile(const QString &url) {
+    GCOUNTER(cvar, tvar, "Welcome Page: recent files");
     QList<GUrl> urls;
     urls << url;
     Task *t = AppContext::getProjectLoader()->openWithProjectTask(urls);
