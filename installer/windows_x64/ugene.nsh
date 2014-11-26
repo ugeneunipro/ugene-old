@@ -223,6 +223,7 @@ SetRegView 64
     !insertmacro AddPlugin phylip
     !insertmacro AddPlugin primer3
     !insertmacro AddPlugin psipred
+    !insertmacro AddPlugin pcr
     !insertmacro AddPlugin ptools
     !insertmacro AddPlugin query_designer
     !insertmacro AddPlugin remote_blast

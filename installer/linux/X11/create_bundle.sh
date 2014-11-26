@@ -195,6 +195,7 @@ add-plugin kalign
 add-plugin linkdata_support
 add-plugin orf_marker
 add-plugin opencl_support
+add-plugin pcr
 add-plugin phylip
 add-plugin primer3
 add-plugin psipred

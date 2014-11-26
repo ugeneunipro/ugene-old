@@ -212,6 +212,7 @@ Section "Build"
     !insertmacro AddPlugin linkdata_support
     !insertmacro AddPlugin opencl_support
     !insertmacro AddPlugin orf_marker
+    !insertmacro AddPlugin pcr
     !insertmacro AddPlugin phylip
     !insertmacro AddPlugin primer3
     !insertmacro AddPlugin psipred
