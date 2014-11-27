@@ -9,20 +9,17 @@ workflow "ChIP-Seq coverage"{
         type:slopbed;
         name:Slopbed;
         filter-id:true;
-        genome-id:/Users/pro/Documents/ugene/trunk/installer/macosx/debug_bundle/ugeneuid.app/Contents/MacOS/data/genome_lengths/hg19.genome;
         r-id:160;
         s-id:true;
     }
     genomecov {
         type:genomecov;
         name:"Genome Coverage";
-        genome-id:/Users/pro/Documents/ugene/trunk/installer/macosx/debug_bundle/ugeneuid.app/Contents/MacOS/data/genome_lengths/hg19.genome;
         mode-id:3;
     }
     bgtbw-bam {
         type:bgtbw-bam;
         name:"Convert bedGraph Files to bigWig";
-        genome:/Users/pro/Documents/ugene/trunk/installer/macosx/debug_bundle/ugeneuid.app/Contents/MacOS/data/genome_lengths/hg19.genome;
     }
     get-file-list {
         type:get-file-list;
