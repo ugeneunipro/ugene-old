@@ -1384,7 +1384,7 @@ GUI_TEST_CLASS_DEFINITION(test_1786){
     GTUtilsTaskTreeView::waitTaskFinished(os);
     // Expected state: document P01542_das.gb appeared in project
     GTUtilsProjectTreeView::findIndex(os, "P01542_das.gb");
-    }
+}
 
 GUI_TEST_CLASS_DEFINITION(test_1797){
     // 1) Open _common_data\scenarios\formats\test_1797 file
@@ -1393,6 +1393,29 @@ GUI_TEST_CLASS_DEFINITION(test_1797){
 
     GTUtilsDialog::waitForDialog(os, new SelectDocumentFormatDialogFiller(os));
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/formats", "test_1797");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1798){
+    //1. Open file _common_data\scenarios\_regression\1798\1.4k.aln.
+    GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1798", "1.4k.aln");
+    //2. Start aligning with MAFFT.
+
+    //2. Start MAFFT with default values.
+    GTUtilsDialog::waitForDialog(os, new MAFFTSupportRunDialogFiller(os, new MAFFTSupportRunDialogFiller::Parameters()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with MAFFT", GTGlobals::UseMouse));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTGlobals::sleep(3000);
+
+    //3. Open Tasks tab
+    //   Expected state: check tasks progress perecentage is correct
+    QProgressBar* taskProgressBar = GTWidget::findExactWidget<QProgressBar*>(os, "taskProgressBar");
+    QString text = taskProgressBar->text();
+    CHECK_SET_ERR(text.contains("%"), "unexpected text: " + text);
+    text = text.left(text.length() - 1);
+    bool isNumber = false;
+    int progress = text.toInt(&isNumber);
+    CHECK_SET_ERR(isNumber, QString("The progress must be a number: %1").arg(text));
+    CHECK_SET_ERR(progress >= 0 && progress <= 100, QString("Incorrect progress: %1").arg(progress));
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1808) {
