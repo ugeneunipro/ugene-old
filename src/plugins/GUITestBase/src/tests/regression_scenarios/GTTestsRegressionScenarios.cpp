@@ -10061,6 +10061,65 @@ GUI_TEST_CLASS_DEFINITION(test_3690){
     CHECK_SET_ERR(wgt->windowTitle() == "human_T1 [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)", "human_T1.fa should be opened!");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3697){
+//    1. Create a connection to some shared database
+//    2. Create the second connection with the same parameters except connection name
+//    Current state: the second connection is not created, after acceptance of the 'Connection settings' dialog nothing had happened - no connection, no message.
+//    Extected state: message is shown
+
+//    Additional scenario:
+//    1. Open WD
+//    2. Add Read Sequence element and
+//    3. Deselect Read Sequence element (click on empty space) and select it again
+//    Current state: Connection Duplicate Detected dialog appeared.
+//    Expected state: no message
+
+    GTLogTracer l;
+
+    QString conName1 = "test_3697: ugene_gui_test I";
+    {
+        QList<SharedConnectionsDialogFiller::Action> actions;
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::ADD);
+
+        GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
+    }
+
+    EditConnectionDialogFiller::Parameters params1;
+    params1.connectionName = conName1;
+    params1.host = GTDatabaseConfig::host();
+    params1.port = QString::number(GTDatabaseConfig::port());
+    params1.database = GTDatabaseConfig::database();
+    params1.login = "login";
+    params1.password = "password";
+    GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, params1, EditConnectionDialogFiller::MANUAL));
+
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+
+    QString conName2 = "test_3697: ugene_gui_test II";
+    {
+        QList<SharedConnectionsDialogFiller::Action> actions;
+        actions << SharedConnectionsDialogFiller::Action(SharedConnectionsDialogFiller::Action::ADD);
+
+        GTUtilsDialog::waitForDialog(os, new SharedConnectionsDialogFiller(os, actions));
+    }
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, "Ok"));
+    EditConnectionDialogFiller::Parameters params2 = params1;
+    params2.connectionName = conName2;
+    GTUtilsDialog::waitForDialog(os, new EditConnectionDialogFiller(os, params2, EditConnectionDialogFiller::MANUAL));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
+
+    GTUtilsDialog::waitForDialogWhichMustNotBeRunned(os, new MessageBoxDialogFiller(os, "Ok"));
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addElement(os, "Read alignment");
+    GTUtilsWorkflowDesigner::addElement(os, "Read sequence");
+    GTUtilsWorkflowDesigner::click(os, "Read alignment");
+    GTUtilsWorkflowDesigner::click(os, "Read sequence");
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3702){
     // 1. Open human_T1.fa
     // 2. Drag'n' drop it from the project to welcome screen
