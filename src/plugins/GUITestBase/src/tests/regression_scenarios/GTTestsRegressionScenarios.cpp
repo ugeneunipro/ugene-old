@@ -1405,7 +1405,7 @@ GUI_TEST_CLASS_DEFINITION(test_1798){
     GTGlobals::sleep(3000);
 
     //3. Open Tasks tab
-    //   Expected state: check tasks progress perecentage is correct
+    //   Expected state: check tasks progress percentage is correct
     QProgressBar* taskProgressBar = GTWidget::findExactWidget<QProgressBar*>(os, "taskProgressBar");
     QString text = taskProgressBar->text();
     CHECK_SET_ERR(text.contains("%"), "unexpected text: " + text);
