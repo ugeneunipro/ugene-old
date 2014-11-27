@@ -35,6 +35,8 @@
 #include "api/GTLineEdit.h"
 #include "api/GTMenu.h"
 #include "api/GTMouseDriver.h"
+#include "api/GTSequenceReadingModeDialog.h"
+#include "api/GTSequenceReadingModeDialogUtils.h"
 #include "api/GTSpinBox.h"
 #include "api/GTTabWidget.h"
 #include "api/GTTableView.h"
@@ -4375,6 +4377,34 @@ GUI_TEST_CLASS_DEFINITION( test_2382_1 ) {
     GTUtilsProjectTreeView::findIndex(os, assDocName);
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2387 ) {
+    //1) Click Open button in UGENE
+    //2) Select any two valid files, for example data/samples/Genbank/ PBR322.gb and sars.gb
+    //3) Click Open
+    //Expected state: MultipleDocumentsReadingModeDialog appears
+    //4) Select merge option
+    //5) Replace one of the files with any binary file
+    //6) Click OK in MultipleDocumentsReadingModeDialog.
+    //Expected state: UGENE not crashed
+
+    QString sandbox = testDir + "_common_data/scenarios/sandbox/";
+
+    GTFile::copy(os, dataDir + "samples/Genbank/PBR322.gb", sandbox + "PBR322.gb");
+    GTFile::copy(os, dataDir + "samples/Genbank/sars.gb", sandbox + "sars.gb");
+
+    class SequenceReadingModeDialogUtils : public GTSequenceReadingModeDialogUtils {
+    public:
+        SequenceReadingModeDialogUtils(U2OpStatus& _os) : GTSequenceReadingModeDialogUtils(_os){}
+        virtual void run() {
+            GTSequenceReadingModeDialog::mode = GTSequenceReadingModeDialog::Merge;
+            GTFile::copy(os, testDir + "_common_data/scenarios/_regression/2387/binary.dll", testDir + "_common_data/scenarios/sandbox/sars.gb");
+            GTSequenceReadingModeDialogUtils::run();
+        }
+    };
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeDialogUtils(os));
+    GTFileDialog::openFileList(os, sandbox, QStringList() << "PBR322.gb" << "sars.gb");
+}
 
 GUI_TEST_CLASS_DEFINITION( test_2392 ) {
     // 1. Open file _common_data/genbank/multi.gb

@@ -38,7 +38,7 @@ public:
     enum Button {Ok, Cancel};
 
     GTSequenceReadingModeDialogUtils(U2OpStatus&);
-    void run();
+    virtual void run();
 private:
     void selectMode();
     void setNumSymbolsParts();
