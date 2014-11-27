@@ -1,0 +1,96 @@
+#@UGENE_WORKFLOW
+#The workflow helps determining different primer pairs that can be used in the same experiment.
+#
+#First, you input a set of primers' sequences in the following order: pair1_direct_primer, pair1_reverse_primer, pair2_direct_primer, pair2_reverse_primer, etc. This could be a multifasta file, for example.
+#
+#Second, the primers are checked for heterodimer formations. If there is no such formations between all primers in two or more primer pairs, it means that these pairs can be put simultaneously in the same reaction tube, so the workflow GROUPS these primer pairs.
+#However, please note that this workflow doesn't check the correctness of the primers themselves, for example for hairpins, selfdimers, etc.
+#
+#The result report of the analysis is stored, by default, in the "report.html" file.
+
+
+
+workflow "Group primer pairs"{
+
+    read-sequence {
+        type:read-sequence;
+        name:"Read Primers";
+        url-in {
+            dataset:"Dataset 1";
+        }
+    }
+    primers-grouper {
+        type:primers-grouper;
+        name:"Group Primer Pairs";
+        output-file:report.html;
+    }
+
+    .actor-bindings {
+        read-sequence.out-sequence->primers-grouper.in-sequence
+    }
+
+    read-sequence.sequence->primers-grouper.in-sequence.sequence
+
+    .meta {
+        parameter-aliases {
+            read-sequence.url-in {
+                alias:in-sequence;
+                description:"File with set of primers";
+            }
+            primers-grouper.output-file {
+                alias:url-out;
+                description:"An URL to the output file";
+            }
+        }
+        visual {
+            primers-grouper {
+                pos:"-420 -465";
+                style:ext;
+                bg-color-ext:"0 128 0 64";
+                bounds:"-30 -30 199.625 70";
+                in-sequence.angle:180;
+            }
+            read-sequence {
+                pos:"-710 -466";
+                style:ext;
+                bg-color-ext:"24 102 175 64";
+                bounds:"-30 -30 109 58";
+                out-sequence.angle:360;
+            }
+            read-sequence.out-sequence->primers-grouper.in-sequence {
+                text-pos:"-28.1406 -25";
+            }
+        }
+        wizard {
+            name:"Group Primer Pairs";
+            page {
+                id:1;
+                next:2;
+                title:"Input Primers";
+                parameters-area {
+                    label {
+                        text:"<div align='left'>Please input a set of primers' sequences in the following order: <br/>&nbsp;&nbsp;-&nbsp;pair1_direct_primer<br/>&nbsp;&nbsp;-&nbsp;pair1_reverse_primer<br/>&nbsp;&nbsp;-&nbsp;pair2_direct_primer<br/>&nbsp;&nbsp;-&nbsp;pair2_reverse_primer<br/>&nbsp;&nbsp;-&nbsp;etc.</div>";
+                        background-color:rgb(203,222,228);
+                    }
+                    read-sequence.url-in {
+                        type:datasets;
+                    }
+                }
+            }
+            page {
+                id:2;
+                title:"Output Report File";
+                parameters-area {
+                    group {
+                        title:"Report file";
+                        label-size:120;
+                        primers-grouper.output-file {
+                            label:"File name";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

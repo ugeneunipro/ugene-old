@@ -56,7 +56,11 @@ QString PrimersGrouperPromter::composeRichDoc() {
     QString unsetStr = "<font color='red'>" + tr("unset") + "</font>";
     QString readsUrl = readsProducer ? readsProducer->getLabel() : unsetStr;
 
-    return tr("Select groups of primers, which can be simultaneously used in one test-tube, over primers from <u>%1</u>.").arg(readsUrl);
+    QString resultFile = getParameter(PrimersGrouperWorkerFactory::OUT_FILE).toString();
+    resultFile = resultFile.isEmpty() ? unsetStr : resultFile;
+
+    return tr("Read primers from <u>%1</u> by pairs. Select groups of primer pairs, which can be simultaneously used in one reaction tube."
+        " Save result to <u>%2</u>.").arg(readsUrl).arg(resultFile);
 }
 
 /************************************************************************/
@@ -125,8 +129,10 @@ void PrimersGrouperWorkerFactory::init() {
     }
 
     Descriptor desc( PrimersGrouperWorkerFactory::ACTOR_ID, 
-        PrimersGrouperWorker::tr("Group Primers"), 
-        PrimersGrouperWorker::tr("Select groups of primers, which can be simultaneously used in one test-tube.") );
+        PrimersGrouperWorker::tr("Group Primer Pairs"), 
+        PrimersGrouperWorker::tr("Select groups of primer pairs, which can be simultaneously used in one reaction tube."
+        "<p>The primers must be supplied in the following order: pair1_direct_primer, pair1_reverse_primer, "
+        "pair2_direct_primer, pair2_reverse_primer, etc.") );
 
     Descriptor reportFileDesc(PrimersGrouperWorkerFactory::OUT_FILE,
         PrimersGrouperWorker::tr("Output report file"),
