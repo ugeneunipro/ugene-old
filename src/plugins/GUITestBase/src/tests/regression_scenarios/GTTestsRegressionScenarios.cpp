@@ -1398,8 +1398,6 @@ GUI_TEST_CLASS_DEFINITION(test_1797){
 GUI_TEST_CLASS_DEFINITION(test_1798){
     //1. Open file _common_data\scenarios\_regression\1798\1.4k.aln.
     GTFileDialog::openFile(os, testDir + "_common_data/scenarios/_regression/1798", "1.4k.aln");
-    //2. Start aligning with MAFFT.
-
     //2. Start MAFFT with default values.
     GTUtilsDialog::waitForDialog(os, new MAFFTSupportRunDialogFiller(os, new MAFFTSupportRunDialogFiller::Parameters()));
     GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_ALIGN << "Align with MAFFT", GTGlobals::UseMouse));
