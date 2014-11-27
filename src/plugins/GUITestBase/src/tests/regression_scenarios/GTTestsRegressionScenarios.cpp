@@ -93,6 +93,7 @@
 #include "runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExportHighlightedDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/ExtractSelectedAsMSADialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/LicenseAgreemntDialogFiller.h"
@@ -10141,6 +10142,28 @@ GUI_TEST_CLASS_DEFINITION(test_3702){
     QWidget* wgt = GTUtilsMdi::activeWindow(os);
     CHECK_SET_ERR(wgt != NULL, "ActiveWindow is NULL");
     CHECK_SET_ERR(wgt->windowTitle() == "human_T1 [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)", "human_T1.fa should be opened!");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3724) {
+//    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+//    2. Use sequence area context menu:
+//    { Statistics -> Generate distance matrix }
+//    Expected state: the "Generate Distance Matrix" dialog has appeared.
+
+//    3. Click "Generate".
+//    Expected state: the "Multiple Sequence Alignment Distance Matrix" view has appeared.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Statistics" << "Generate distance matrix"));
+    GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+
+//    4. Click right mouse button on the view.
+//    Expected state: nothing happens.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsDialog::waitForDialogWhichMustNotBeRunned(os, new PopupChecker(os, QStringList()));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3730) {
