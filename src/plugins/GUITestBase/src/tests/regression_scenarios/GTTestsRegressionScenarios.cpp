@@ -10174,6 +10174,23 @@ GUI_TEST_CLASS_DEFINITION(test_3702){
     CHECK_SET_ERR(wgt->windowTitle() == "human_T1 [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)", "human_T1.fa should be opened!");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3723) {
+//    1. Open simultaneously two files: "_common_data/fasta/fa1.fa.gz" and "_common_data/fasta/fa3.fa.gz".
+//    Expected state: "Multiple Sequence Reading Mode" dialog appears.
+//    2. Open them with "Merge" option.
+//    Expected state: sequences are merged and opened, there are no errors in the log.
+    GTLogTracer logTracer;
+
+    GTSequenceReadingModeDialog::mode = GTSequenceReadingModeDialog::Merge;
+    GTUtilsDialog::waitForDialog(os, new GTSequenceReadingModeDialogUtils(os));
+    GTFileDialog::openFileList(os, testDir + "_common_data/fasta", QStringList() << "fa1.fa.gz" << "fa3.fa.gz");
+
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsDocument::checkDocument(os, "merged_document.gb");
+    GTUtilsDocument::isDocumentLoaded(os, "merged_document.gb");
+    GTUtilsLog::check(os, logTracer);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3724) {
 //    1. Open "data/samples/CLUSTALW/COI.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
