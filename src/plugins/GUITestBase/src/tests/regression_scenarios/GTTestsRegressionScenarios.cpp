@@ -8390,6 +8390,30 @@ GUI_TEST_CLASS_DEFINITION(test_3308) {
     GTWidget::click(os, widget3d, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3312){
+    GTLogTracer logTracer;
+
+    //1. Connect to a shared database.
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    //2. Get any msa object in it.
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, "/test_3312/COI_3312");
+
+    QWidget* msaView = GTWidget::findWidget(os, " [m] COI_3312");
+    CHECK_SET_ERR(NULL != msaView, "View wasn't opened");
+
+    //3. Rename the object.
+    //Expected state: object is successfully renamed, there are no errors in the log.
+    GTUtilsProjectTreeView::rename(os, "COI_3312", "COI_3312_renamed");
+    GTGlobals::sleep(3000);
+    GTUtilsProjectTreeView::rename(os, "COI_3312_renamed", "COI_3312");
+    GTGlobals::sleep(2000);
+
+    GTUtilsSharedDatabaseDocument::disconnectDatabase(os, databaseDoc);
+
+    GTUtilsLog::check(os, logTracer);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3313){
     //1. Open "data/samples/CLUSTALW/ty3.aln".
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
