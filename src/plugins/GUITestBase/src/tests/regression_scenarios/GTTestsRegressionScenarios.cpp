@@ -8390,6 +8390,31 @@ GUI_TEST_CLASS_DEFINITION(test_3308) {
     GTWidget::click(os, widget3d, Qt::RightButton);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3313){
+    //1. Open "data/samples/CLUSTALW/ty3.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
+    //2. Open "Statistics" options panel tab.
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_SEQ_STATISTICS_WIDGET"));
+    //3. Set any reference sequence.
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-5, 5));
+    GTWidget::click(os, GTWidget::findWidget(os, "addSeq"));
+    //4. Check the "Show distances column" option.
+    QCheckBox* showDistancesColumnCheck = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "showDistancesColumnCheck"));
+    GTCheckBox::setChecked(os, showDistancesColumnCheck, true);
+    //5. Edit the msa fast enough, e.g. insert several gaps somewhere.
+
+    GTUtilsMSAEditorSequenceArea::click( os, QPoint(10, 10));
+    GTGlobals::sleep(200);
+
+    for(int i = 0; i < 10; i++) {
+        GTKeyboardDriver::keyClick( os, GTKeyboardDriver::key["space"] );
+        GTGlobals::sleep(200);
+    }
+    GTGlobals::sleep();
+    CHECK_SET_ERR(2 >= GTUtilsTaskTreeView::getTopLevelTasksCount(os), "There are several \"Generate distance matrix\" tasks");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3318) {
     // 1. Open human_T1.fa
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
