@@ -9765,6 +9765,18 @@ GUI_TEST_CLASS_DEFINITION(test_3571_2) {
     CHECK_SET_ERR(!charOccurWidget->isVisible(), "Character Occurrence section is unexpectedly visible");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3585) {
+    GTLogTracer l;
+    // 1. Open "File -> Access Remote Database..." from the main menu.
+    // 2. Get something adequate from the Uniprot(DAS) database(e.g.use example ID : P05067).
+    // Expected state : "DownloadRemoteDocuments" task has been started
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "P05067", 7));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB);
+    GTUtilsTaskTreeView::checkTask(os, "Load DAS Documents");
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3603) {
 //    1. Open "data/samples/FASTA/human_T1.fa".
 //    2. Open "Find Pattern" options panel tab.
