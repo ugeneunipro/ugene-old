@@ -1218,6 +1218,29 @@ GUI_TEST_CLASS_DEFINITION( test_1622 )
         "Undo works wrong. Found text is: " + undoneContent );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1628 ) {
+//    1. Open COI.aln
+//    2. Renames any row in an alignment, use a non-english characters in the alignment name.
+//    3. Undo and redo.
+//    Expected state: renamed named with name given at step 2
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsMSAEditorSequenceArea::renameSequence(os, "Montana_montana", "йцукен123");
+
+    QAbstractButton *undo = GTAction::button( os, "msa_action_undo" );
+    CHECK_SET_ERR(undo != NULL, "Undo button is NULL");
+    GTWidget::click(os, undo);
+
+    QAbstractButton *redo = GTAction::button( os, "msa_action_redo" );
+    CHECK_SET_ERR(redo != NULL, "Redo button is NULL");
+    GTWidget::click(os, redo);
+
+    GTGlobals::sleep();
+    QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);
+
+    CHECK_SET_ERR(names.contains("йцукен123") && !names.contains("Montana_montana"), "Undo-redo worked incorrectly");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1688 ) {
     // 1) Open file "_common_data/scenarios/_regression/1688/sr100.000.fa"
     // Expected state: UGENE show error, not crashed
@@ -1356,6 +1379,42 @@ GUI_TEST_CLASS_DEFINITION(test_1708){
     changedAln = GTClipboard::text(os);
 
     CHECK_SET_ERR(changedAln==initAln, "Undo works wrong\n" + changedAln);
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1714){
+//    1. Open the "external tools" configuration window using Settings/Preferences menu
+//    2. Select path for external tools package (if not set). External tools package can be downloaded from http://ugene.unipro.ru/external.html
+//    3. Deselect all Cistrome tools
+//    4. Deselect python external tool
+//    Expected state: the python tool is deselected. UGENE doesn't hangs up (or crashes)
+
+    class DeselectCistromeAndPython : public CustomScenario {
+    public:
+        DeselectCistromeAndPython() {}
+        virtual void run(U2::U2OpStatus &os) {
+            QStringList cistromeTools;
+            cistromeTools << "go_analysis" << "seqpos" << "conservation_plot" << "peak2gene"
+                          << "MACS" << "CEAS Tools";
+
+            foreach (QString toolName, cistromeTools) {
+                AppSettingsDialogFiller::clearToolPath(os, toolName);
+            }
+            GTGlobals::sleep(2000);
+
+            AppSettingsDialogFiller::clearToolPath(os, "python");
+            GTGlobals::sleep(2000);
+
+            QWidget *dialog = QApplication::activeModalWidget();
+            CHECK_SET_ERR(dialog, "activeModalWidget is NULL");
+            GTUtilsDialog::clickButtonBox(os, dialog, QDialogButtonBox::Ok);
+        }
+    };
+
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new AppSettingsDialogFiller(os, new DeselectCistromeAndPython()));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "action__settings"));
+    GTMenu::showMainMenu(os, MWMENU_SETTINGS);
+    GTGlobals::sleep();
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1720){
