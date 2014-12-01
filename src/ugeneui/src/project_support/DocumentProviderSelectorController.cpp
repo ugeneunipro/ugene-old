@@ -80,6 +80,9 @@ int DocumentProviderSelectorController::selectResult(const GUrl& url, const QLis
     }
     d.adjustSize();
 
+    CHECK(!d.formatsRadioButtons.isEmpty(), -1);
+    d.formatsRadioButtons[0]->setFocus();
+
     int rc = d.exec();
     if (rc == QDialog::Rejected) {
         return -1;
