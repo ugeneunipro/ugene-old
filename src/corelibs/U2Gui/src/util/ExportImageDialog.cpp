@@ -41,9 +41,10 @@
 #include "imageExport/WidgetScreenshotExportTask.h"
 #include "ui/ui_ExportImageDialog.h"
 
-namespace U2 {
-
 static const QString IMAGE_DIR = "image";
+static const char *DIALOG_ACCEPT_ERROR_TITLE = "Unable to save file";
+
+namespace U2 {
 
 ExportImageDialog::ExportImageDialog(QWidget *screenShotWidget,
                                      InvokedFrom invoSource,
@@ -104,7 +105,13 @@ int ExportImageDialog::getQuality() const {
 void ExportImageDialog::accept() {
     filename = ui->fileNameEdit->text();
     if (filename.isEmpty()) {
-        QMessageBox::warning(this, tr("Error"), tr("The filename is empty!"));
+        QMessageBox::warning(this, tr(DIALOG_ACCEPT_ERROR_TITLE), tr("The image file path is empty."));
+        return;
+    }
+
+    if (!GUrlUtils::canWriteFile(filename)) {
+        QMessageBox::warning(this, tr(DIALOG_ACCEPT_ERROR_TITLE), tr("The image file cannot be created. This can be caused that "
+            "the file name contains illegal characters or it's too long."));
         return;
     }
 

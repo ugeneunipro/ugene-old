@@ -59,8 +59,8 @@ bool ImageExportTaskSettings::isPDFFormat() const {
     return (PS_FORMAT == format || PDF_FORMAT == format);
 }
 
-const QString ImageExportTask::WRONG_FORMAT_MESSAGE = QObject::tr("Format %1 is not supported by %2");
-const QString ImageExportTask::EXPORT_FAIL_MESSAGE = QObject::tr("Failed to export image to %1");
+const QString ImageExportTask::WRONG_FORMAT_MESSAGE = QObject::tr("Format %1 is not supported by %2.");
+const QString ImageExportTask::EXPORT_FAIL_MESSAGE = QObject::tr("Failed to export image to %1.");
 
 Task::ReportResult ImageExportTask::report() {
     ioLog.info(tr("Done!"));

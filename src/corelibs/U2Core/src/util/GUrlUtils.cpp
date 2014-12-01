@@ -350,16 +350,24 @@ void GUrlUtils::removeFile( const QString& filePath, U2OpStatus& os ){
     
 }
 
-bool GUrlUtils::canWriteFile( const QString& path ){
+bool GUrlUtils::canWriteFile(const QString &path) {
     bool res = false;
 
+#ifdef Q_OS_WIN // a workaround of that files with a colon in names can be created but are not accessible on Windows
+    if (QFileInfo(path).fileName().contains(':')) {
+        return false;
+    }
+#endif
+
     QFile tmpFile(path);
-    tmpFile.open(QIODevice::WriteOnly);
-    if(tmpFile.isWritable()){
+    if (!tmpFile.open(QIODevice::WriteOnly)) {
+        return false;
+    }
+    if (tmpFile.isWritable()) {
         res = true;
         tmpFile.close();
         tmpFile.remove();
-    }else{
+    } else {
         res = false;
     }
     return res;
@@ -452,7 +460,7 @@ QString GUrlUtils::getNewLocalUrlByExtention(const GUrl &url, const QString &def
 void GUrlUtils::validateLocalFileUrl(const GUrl &url, U2OpStatus &os, const QString &urlName) {
     QString urlStr = url.getURLString();
     if (!url.isLocalFile()) {
-        os.setError(tr("%1 is not a local file [%2]").arg(urlName).arg(urlStr));
+        os.setError(tr("%1 is not a local file [%2].").arg(urlName).arg(urlStr));
         return;
     }
 
@@ -461,12 +469,12 @@ void GUrlUtils::validateLocalFileUrl(const GUrl &url, U2OpStatus &os, const QStr
         QString dirUrl = info.dir().absolutePath();
         bool created = QDir().mkpath(dirUrl);
         if (!created) {
-            os.setError(tr("Can not create a directory [%1]").arg(dirUrl));
+            os.setError(tr("Can not create a directory [%1].").arg(dirUrl));
         }
         return;
     }
     if (info.isDir()) {
-        os.setError(tr("%1 is a directory [%2]").arg(urlName).arg(urlStr));
+        os.setError(tr("%1 is a directory [%2].").arg(urlName).arg(urlStr));
         return;
     }
 }

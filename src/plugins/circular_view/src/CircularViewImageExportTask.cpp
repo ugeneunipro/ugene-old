@@ -19,10 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include "CircularViewImageExportTask.h"
-#include "CircularView.h"
-
-
+#include <QtXml/QDomDocument>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QPrinter>
 #include <QtGui/QLabel>
@@ -36,10 +33,13 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QVBoxLayout>
 #endif
-#include <QtXml/QDomDocument>
 #include <QtSvg/QSvgGenerator>
 
 #include <U2Core/U2SafePoints.h>
+
+#include "CircularView.h"
+
+#include "CircularViewImageExportTask.h"
 
 namespace U2 {
 
@@ -91,8 +91,7 @@ void CircularViewImageExportToSVGTask::run() {
 }
 
 void CircularViewImageExportToPDFTask::run() {
-    SAFE_POINT_EXT( settings.isPDFFormat(),
-                    setError(WRONG_FORMAT_MESSAGE.arg(settings.format).arg("CircularViewImageExportToPDFTask")), );
+    SAFE_POINT_EXT( settings.isPDFFormat(), setError(WRONG_FORMAT_MESSAGE.arg(settings.format).arg("CircularViewImageExportToPDFTask")), );
 
     QPainter painter;
     QPrinter printer;
@@ -100,26 +99,20 @@ void CircularViewImageExportToPDFTask::run() {
 
     painter.setRenderHint(QPainter::Antialiasing);
     painter.begin(&printer);
-    cvWidget->paint(painter, cvWidget->width(), cvWidget->height(),
-                    cvExportSettings.includeSelection,
-                    cvExportSettings.includeMarker);
+    cvWidget->paint(painter, cvWidget->width(), cvWidget->height(), cvExportSettings.includeSelection, cvExportSettings.includeMarker);
 
     CHECK_EXT( painter.end(), setError(EXPORT_FAIL_MESSAGE.arg(settings.fileName)), );
 }
 
 void CircularViewImageExportToBitmapTask::run() {
-    SAFE_POINT_EXT( settings.isBitmapFormat(),
-                    setError(WRONG_FORMAT_MESSAGE.arg(settings.format).arg("CircularViewImageExportToBitmapTask")), );
+    SAFE_POINT_EXT( settings.isBitmapFormat(), setError(WRONG_FORMAT_MESSAGE.arg(settings.format).arg("CircularViewImageExportToBitmapTask")), );
 
     QPixmap *im = new QPixmap(settings.imageSize);
     im->fill(Qt::white);
     QPainter *painter = new QPainter(im);
-    cvWidget->paint(*painter, settings.imageSize.width(), settings.imageSize.height(),
-                    cvExportSettings.includeSelection,
-                    cvExportSettings.includeMarker);
+    cvWidget->paint(*painter, settings.imageSize.width(), settings.imageSize.height(), cvExportSettings.includeSelection, cvExportSettings.includeMarker);
 
-    CHECK_EXT( im->save(settings.fileName, qPrintable(settings.format), settings.imageQuality),
-               setError(EXPORT_FAIL_MESSAGE.arg(settings.fileName)), );
+    CHECK_EXT( im->save(settings.fileName, qPrintable(settings.format), settings.imageQuality), setError(EXPORT_FAIL_MESSAGE.arg(settings.fileName)), );
 }
 
 CircularViewImageExportTaskFactory::CircularViewImageExportTaskFactory(CircularView *cv)

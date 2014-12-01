@@ -107,7 +107,7 @@ public:
     //checks if filePath is writable
     //creates and deletes a tmp file to check permissions
     //it seems the only way to check permissions correctly on all platforms
-    static bool canWriteFile(const QString& path);
+    static bool canWriteFile(const QString &path);
 
     //returns default path for UGENE data
     //returns empty string if path is not ready
