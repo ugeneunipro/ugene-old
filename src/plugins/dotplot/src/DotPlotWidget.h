@@ -98,7 +98,6 @@ public slots:
 
 private slots:
     void sl_taskStateChanged();
-    void sl_closeDotplotTaskStateChanged();
     void sl_filteringTaskStateChanged();
     void sl_buildDotplotTaskStateChanged();
     void sl_showSaveImageDialog();

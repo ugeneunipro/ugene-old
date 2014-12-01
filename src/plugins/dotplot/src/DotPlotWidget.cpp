@@ -369,15 +369,10 @@ void DotPlotWidget::sl_taskStateChanged() {
         return;
     }
     dotPlotTask = NULL;
-}
 
-void DotPlotWidget::sl_closeDotplotTaskStateChanged() {
-    if (!dotPlotTask || (dotPlotTask && dotPlotTask->getState() != Task::State_Finished)) {
-        return;
+    if (deleteDotPlotFlag) {
+        emit si_removeDotPlot();
     }
-    dotPlotTask = NULL;
-
-    emit si_removeDotPlot();
 }
 
 void DotPlotWidget::sl_filteringTaskStateChanged() {
@@ -480,8 +475,7 @@ void DotPlotWidget::sl_sequenceWidgetRemoved(ADVSequenceWidget* w) {
         deleteDotPlotFlag = true;
         if (dotPlotTask) {
             cancelRepeatFinderTask();
-        }
-        else {
+        } else {
             addCloseDotPlotTask();
         }
     }
@@ -827,7 +821,7 @@ void DotPlotWidget::addCloseDotPlotTask() {
     }
 
     AppContext::getTaskScheduler()->registerTopLevelTask(t);
-    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_closeDotplotTaskStateChanged()));
+    connect(t, SIGNAL(si_stateChanged()), SLOT(sl_taskStateChanged()));
 }
 
 // dotplot results updated, need to update picture
