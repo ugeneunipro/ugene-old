@@ -65,9 +65,9 @@ MSAGraphOverview::MSAGraphOverview(MSAEditorUI *ui)
     connect(editor->getMSAObject(), SIGNAL(si_alignmentChanged(MAlignment,MAlignmentModInfo)),
             SLOT(sl_drawGraph()));
 
-    connect(ui->getEditorNameList(), SIGNAL(si_startMSAChanging()),
+    connect(ui->getEditorNameList(), SIGNAL(si_startMsaChanging()),
             SLOT(sl_blockRendering()));
-    connect(ui->getEditorNameList(), SIGNAL(si_stopMSAChanging(bool)),
+    connect(ui->getEditorNameList(), SIGNAL(si_stopMsaChanging(bool)),
             SLOT(sl_unblockRendering(bool)));
     connect(sequenceArea, SIGNAL(si_startMSAChanging()),
              SLOT(sl_blockRendering()));
