@@ -61,7 +61,6 @@ PluginRef::PluginRef(Plugin* _plugin, QLibrary* _library, const PluginDesc& desc
 PluginSupportImpl::PluginSupportImpl(bool testingMode): allLoaded(false) {
     //read plugin names from settings
     Settings* settings = AppContext::getSettings();
-    QString pluginListSettingsDir = settings->toVersionKey(PLUGINS_LIST_SETTINGS);
 
     QSet<QString> pluginFiles = getPluginPaths();
 
@@ -80,6 +79,7 @@ PluginSupportImpl::PluginSupportImpl(bool testingMode): allLoaded(false) {
     QString openclCheckingVersion = settings->getValue(OPENCL_CHECKED_SETTINGS, "").toString();
 
     Task* loadStartUpPlugins = NULL;
+#ifndef Q_OS_MAC
     if(openclCheckingVersion != Version::appVersion().text && !testingMode) {
         loadStartUpPlugins = new LoadAllPluginsTask(this, pluginFiles.toList(), QStringList("opencl_support"));
     }
@@ -87,6 +87,10 @@ PluginSupportImpl::PluginSupportImpl(bool testingMode): allLoaded(false) {
         loadStartUpPlugins = new LoadAllPluginsTask(this, pluginFiles.toList(), QStringList());
         settings->setValue(OPENCL_CHECKED_SETTINGS, Version::appVersion().text);
     }
+#else
+    Q_UNUSED(openclCheckingVersion);
+    loadStartUpPlugins = new LoadAllPluginsTask(this, pluginFiles.toList(), QStringList());
+#endif
 
     AppContext::getTaskScheduler()->registerTopLevelTask(loadStartUpPlugins);
 }
