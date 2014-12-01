@@ -398,7 +398,7 @@ void TreeOptionsWidget::updateButtonColor(QPushButton* button, const QColor& new
 }
 
 void TreeOptionsWidget::updateShowFontOpLabel(QString newText) {
-    newText = QString("<a href=\"%1\" style=\"color: palette(shadow)\">").arg(SHOW_FONT_OPTIONS_LINK)/*.arg(L10N::showMoreColorLabelStr())*/
+    newText = QString("<a href=\"%1\" style=\"color: %2\">").arg(SHOW_FONT_OPTIONS_LINK).arg(L10N::linkColorLabelStr())
         + newText
         + QString("</a>");
 
