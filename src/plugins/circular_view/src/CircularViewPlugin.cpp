@@ -46,6 +46,8 @@
 
 #include <U2Gui/GUIUtils.h>
 
+#include <QApplication>
+
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMessageBox>
 #include <QtGui/QMenu>
@@ -77,8 +79,7 @@ CircularViewSettings::CircularViewSettings()
       labelMode(Mixed),
       labelFontSize(11)
 {
-    QPainter p;
-    titleFont = p.fontInfo().family();
+    titleFont = QApplication::font().family();
 }
 
 
