@@ -10314,6 +10314,29 @@ GUI_TEST_CLASS_DEFINITION(test_3702){
     CHECK_SET_ERR(wgt->windowTitle() == "human_T1 [s] human_T1 (UCSC April 2002 chr7:115977709-117855134)", "human_T1.fa should be opened!");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3715) {
+    //1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    //2. Activate samples.
+    GTUtilsWorkflowDesigner::setCurrentTab(os, GTUtilsWorkflowDesigner::samples);
+
+    //3. Choose a sample (but not open it).
+    QTreeWidgetItem *sample = GTUtilsWorkflowDesigner::findTreeItem(os, "call variants", GTUtilsWorkflowDesigner::samples);
+    sample->parent()->setExpanded(true);
+    GTGlobals::sleep();
+    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, sample));
+    GTMouseDriver::doubleClick(os);
+    CHECK_OP(os, );
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
+    GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Call Variants") != 0, "Workflow errors list cant be empty");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3723) {
 //    1. Open simultaneously two files: "_common_data/fasta/fa1.fa.gz" and "_common_data/fasta/fa3.fa.gz".
 //    Expected state: "Multiple Sequence Reading Mode" dialog appears.
