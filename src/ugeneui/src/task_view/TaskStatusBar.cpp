@@ -202,7 +202,9 @@ void TaskStatusBar::sl_taskStateChanged(Task* t) {
 
 void TaskStatusBar::setTaskToTrack(Task* t) {
     assert(taskToTrack == NULL);
-    taskToTrack->disconnect(this);
+    if (Q_UNLIKELY(NULL != taskToTrack)) {
+        disconnect(taskToTrack, NULL, this, NULL);
+    }
     taskToTrack = t;
     connect(taskToTrack, SIGNAL(si_stateChanged()), SLOT(sl_taskStateChanged()));
     connect(taskToTrack, SIGNAL(si_progressChanged()), SLOT(sl_taskProgressChanged()));
@@ -294,7 +296,7 @@ void TaskStatusBar::sl_notificationChanged() {
 }
 
 void TaskStatusBar::sl_taskProgressChanged() {
-    CHECK( sender() != NULL, );
+    CHECK(sender() != NULL, );
     SAFE_POINT(taskToTrack == sender(), tr("Wrong signal sender!"), );
     updateState();
 }
