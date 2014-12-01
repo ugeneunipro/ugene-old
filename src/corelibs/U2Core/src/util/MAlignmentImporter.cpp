@@ -19,6 +19,7 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/L10n.h>
 #include <U2Core/MsaDbiUtils.h>
 #include <U2Core/U2AlphabetUtils.h>
 #include <U2Core/U2AttributeDbi.h>
@@ -30,7 +31,6 @@
 
 #include "MAlignmentImporter.h"
 
-
 namespace U2 {
 
 U2EntityRef MAlignmentImporter::createAlignment(const U2DbiRef& dbiRef, const MAlignment& al, U2OpStatus& os) {
@@ -40,6 +40,7 @@ U2EntityRef MAlignmentImporter::createAlignment(const U2DbiRef& dbiRef, const MA
 U2EntityRef MAlignmentImporter::createAlignment(const U2DbiRef& dbiRef, const QString& folder, const MAlignment& al, U2OpStatus& os) {
     DbiConnection con(dbiRef, true, os);
     SAFE_POINT_OP(os, U2EntityRef());
+    SAFE_POINT(NULL != con.dbi, L10N::nullPointerError("dbi"), U2EntityRef());
 
     TmpDbiObjects objs(dbiRef, os); // remove the MSA object if opStatus is incorrect
 
