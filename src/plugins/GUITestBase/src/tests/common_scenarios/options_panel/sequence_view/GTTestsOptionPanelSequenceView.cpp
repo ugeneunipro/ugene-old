@@ -46,12 +46,13 @@
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/qt/ColorDialogFiller.h"
 
+#include "GTUtilsAnnotationsTreeView.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsOptionPanelSequenceView.h"
 #include "GTUtilsProjectTreeView.h"
+#include "GTUtilsSequenceView.h"
 #include "GTUtilsTaskTreeView.h"
-#include "GTUtilsAnnotationsTreeView.h"
 
 #include <U2Core/AppContext.h>
 
@@ -148,6 +149,73 @@ GUI_TEST_CLASS_DEFINITION(test_0006) {
     CHECK_SET_ERR(!GTUtilsOptionPanelSequenceView::isOtherSettingsShowHideWidgetOpened(os), "'Other settings' subwidget is unexpectedly opened");
     CHECK_SET_ERR(!GTUtilsOptionPanelSequenceView::isSaveAnnotationToShowHideWidgetOpened(os), "'Save annotations to' subwidget is unexpectedly opened");
     CHECK_SET_ERR(!GTUtilsOptionPanelSequenceView::isAnnotationParametersShowHideWidgetOpened(os), "'Annotation parameters' subwidget is unexpectedly opened");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0007){
+    //checking results with searching in translation
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "FFFFFFFFF");
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 0/0"), "Results string not match");
+
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
+    GTUtilsOptionPanelSequenceView::setSearchInTranslation(os, true);
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/2"), "Results string not match");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0008){
+    //checking results with searching in translation
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "AAAAAAAAAAAAAAAAAAAA");
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/40"), "Results string not match");
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 1, 9000);
+
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
+    GTUtilsOptionPanelSequenceView::setSearchInLocation(os, "Selected Region");
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/2"), "Results string not match");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0009){
+    //checking results with searching in translation
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "AAAAAAAAAAAAAAAAAAAA");
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/40"), "Results string not match");
+
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
+    GTUtilsOptionPanelSequenceView::setSearchInLocation(os, "Custom Region");
+    
+    QLineEdit *regLE = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "editEnd", NULL, GTGlobals::FindOptions(false)));
+    CHECK_SET_ERR(regLE != NULL, "LineEdit is NULL");
+    GTLineEdit::setText(os, regLE, "40000");
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/12"), "Results string not match");
+
+    regLE = NULL;
+    regLE = qobject_cast<QLineEdit*>(GTWidget::findWidget(os, "editStart", NULL, GTGlobals::FindOptions(false)));
+    CHECK_SET_ERR(regLE != NULL, "LineEdit is NULL");
+    GTLineEdit::setText(os, regLE, "9000");
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/10"), "Results string not match");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0010){
+    //checking results with searching in translation
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "A");
+
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Other settings"));
+    GTUtilsOptionPanelSequenceView::setSetMaxResults(os, 99900);
+    CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/99900"), "Results string not match");
 }
 
 }

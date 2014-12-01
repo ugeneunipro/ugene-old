@@ -53,6 +53,9 @@ public:
     static bool checkResultsText(U2OpStatus &os, QString expectedText);
 
     static void setStrand(U2OpStatus &os, QString strandStr);
+    static void setSearchInTranslation(U2OpStatus &os, bool inTranslation = true);
+    static void setSearchInLocation(U2OpStatus &os, QString strandStr);
+    static void setSetMaxResults(U2OpStatus &os, int maxResults);
 
     static void setAlgorithm(U2OpStatus &os, QString algorithm);
     

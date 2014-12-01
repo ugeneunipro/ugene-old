@@ -1568,7 +1568,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_circular_view::general_avail_8);
 
 /////////////////////////////////////////////////////////////////////////
-// common_scenarios/circular_view
+// common_scenarios/options_panel/sequence_view
 /////////////////////////////////////////////////////////////////////////
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0001);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0002);
@@ -1576,6 +1576,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0004);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0005);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0006);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0007);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0008);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0009);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0010);
 
 /////////////////////////////////////////////////////////////////////////
 // common_scenarios/workflow_designer/shared_db

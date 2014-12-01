@@ -301,6 +301,49 @@ void GTUtilsOptionPanelSequenceView::setMatchPercentage( U2OpStatus &os, int per
     GTSpinBox::setValue(os, spinMatchBox, percentage);
     GTGlobals::sleep(2500);
 }
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setSearchInTranslation"
+void GTUtilsOptionPanelSequenceView::setSearchInTranslation( U2OpStatus &os, bool inTranslation /*= true*/ ){
+    QComboBox *searchIn = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "boxSeqTransl", NULL, GTGlobals::FindOptions(false)));
+    GT_CHECK(searchIn != NULL, "combobox is NULL");
+
+    if(!searchIn->isVisible()){
+        GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
+    }
+    if(inTranslation){
+        GTComboBox::setIndexWithText(os, searchIn, "Translation");
+    }else{
+        GTComboBox::setIndexWithText(os, searchIn, "Sequence");
+    }
+    GTGlobals::sleep(2500);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setSearchInLocation"
+void GTUtilsOptionPanelSequenceView::setSearchInLocation( U2OpStatus &os, QString locationStr ){
+    QComboBox *region = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "boxRegion", NULL, GTGlobals::FindOptions(false)));
+    GT_CHECK(region != NULL, "combobox is NULL");
+
+    if(!region->isVisible()){
+        GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
+    }
+    GTComboBox::setIndexWithText(os, region, locationStr, false);
+    GTGlobals::sleep(2500);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setSetMaxResults"
+void GTUtilsOptionPanelSequenceView::setSetMaxResults( U2OpStatus &os, int maxResults ){
+    QSpinBox *limit = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "boxMaxResult", NULL, GTGlobals::FindOptions(false)));
+    GT_CHECK(limit != NULL, "spinbox is NULL");
+
+    if(!limit->isVisible()){
+        GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Other settings"));
+    }
+    GTSpinBox::setValue(os, limit, maxResults);
+    GTGlobals::sleep(2500);
+}
 
 #undef GT_METHOD_NAME
 
