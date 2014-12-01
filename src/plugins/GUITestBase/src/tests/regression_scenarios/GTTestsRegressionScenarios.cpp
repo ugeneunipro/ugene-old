@@ -7972,6 +7972,26 @@ GUI_TEST_CLASS_DEFINITION(test_3211) {
     //Expected state: there is a single annotation widget.
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3214) {
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Extract Consensus from Alignment as Sequence");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Extract Consensus from Alignment as Sequence"));
+    GTMouseDriver::click(os);
+
+    GTUtilsWorkflowDesigner::setParameter(os, "Threshold", 49, GTUtilsWorkflowDesigner::spinValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Algorithm", 0, GTUtilsWorkflowDesigner::comboValue);
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::getParameter(os, "Threshold") == "50", "Wrong parameter");
+
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Extract Consensus from Alignment as Text");
+
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Extract Consensus from Alignment as Text"));
+    GTMouseDriver::click(os);
+
+    GTUtilsWorkflowDesigner::setParameter(os, "Algorithm", 0, GTUtilsWorkflowDesigner::comboValue);
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::getAllParameters(os).size() == 1, "Too many parameters");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3216_1) {
 //    1. Open "test/_common_data/genbank/1anot_1seq.gen" file.
     QDir().mkpath(sandBoxDir + "test_3216");
