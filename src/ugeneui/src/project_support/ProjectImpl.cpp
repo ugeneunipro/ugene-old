@@ -19,22 +19,20 @@
  * MA 02110-1301, USA.
  */
 
-#include "ProjectImpl.h"
-
-#include <U2Core/ServiceTypes.h>
-#include <U2Gui/ObjectViewModel.h>
-#include <U2Core/DocumentModel.h>
 #include <U2Core/AppContext.h>
 #include <U2Core/AppSettings.h>
+#include <U2Core/DocumentModel.h>
 #include <U2Core/GHints.h>
+#include <U2Core/GObjectUtils.h>
 #include <U2Core/Log.h>
+#include <U2Core/ServiceTypes.h>
 
 #include <U2Gui/MainWindow.h>
+#include <U2Gui/ObjectViewModel.h>
+
+#include "ProjectImpl.h"
 
 namespace U2 {
-
-/* TRANSLATOR U2::ProjectImpl */
-
 
 ProjectImpl::ProjectImpl(const QString& _name, const QString& _url, const QList<Document*>& _docs, const QList<GObjectViewState*>& _states)
 : name(_name), url(_url) 
@@ -285,10 +283,26 @@ int ProjectImpl::updateReferenceFields(const QString& stateName, QVariantMap& ma
 }
 
 void ProjectImpl::updateObjectRelations(const GObjectReference& oldRef, const GObjectReference& newRef) {
-    foreach(Document* d, getDocuments()) {
-        foreach(GObject* obj, d->getObjects()) {
-            obj->updateRefInRelations(oldRef, newRef);
-        }
+    QList<GObject *> allObjs;
+    foreach (Document* d, getDocuments()) {
+        allObjs << d->getObjects();
+    }
+
+    GObject *changedObj = GObjectUtils::selectObjectByReference(newRef, UOF_LoadedOnly);
+    GObjectRelationRole objRole;
+    if (newRef.objType == GObjectTypes::SEQUENCE) {
+        objRole = ObjectRole_Sequence;
+    } else if (newRef.objType == GObjectTypes::ANNOTATION_TABLE) {
+        objRole = ObjectRole_AnnotationTable;
+    } else if (newRef.objType == GObjectTypes::PHYLOGENETIC_TREE) {
+        objRole = ObjectRole_PhylogeneticTree;
+    } else {
+        return; // other object types cannot be referenced
+    }
+    const QList<GObject *> dependentObjs = GObjectUtils::findObjectsRelatedToObjectByRole(changedObj, "", objRole, allObjs, UOF_LoadedAndUnloaded);
+
+    foreach(GObject* obj, dependentObjs) {
+        obj->updateRefInRelations(oldRef, newRef);
     }
 }
 void ProjectImpl::removeRelations(const QString& removedDocUrl) {

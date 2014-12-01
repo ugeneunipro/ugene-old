@@ -232,9 +232,8 @@ QList<GObject*> GObjectUtils::findObjectsRelatedToObjectByRole(const GObject* ob
     return res;
 }
 
-QList<GObject*> GObjectUtils::selectObjectsWithRelation(const QList<GObject*>& objs,
-    GObjectType type, GObjectRelationRole relationRole, UnloadedObjectFilter f,
-    bool availableObjectsOnly)
+QList<GObject*> GObjectUtils::selectObjectsWithRelation(const QList<GObject*>& objs, GObjectType type, GObjectRelationRole relationRole,
+    UnloadedObjectFilter f, bool availableObjectsOnly)
 {
     QList<GObject*> res;
     foreach(GObject* obj, objs) {
