@@ -401,7 +401,7 @@ void AnnotationsTreeView::sl_onAnnotationSelectionChanged( AnnotationSelection *
     }
     
     if( !selectedItems.isEmpty( ) ) {
-        tree->setCurrentItem( selectedItems.first( ) );
+        tree->setCurrentItem( selectedItems.last( ), 0, QItemSelectionModel::NoUpdate );
     }
     
     connect( tree, SIGNAL( itemSelectionChanged( ) ), SLOT( sl_onItemSelectionChanged( ) ) );
