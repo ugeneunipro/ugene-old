@@ -274,6 +274,11 @@ QList<ExportSequenceItem> toAmino(ExportSequenceItem &ei, bool allFrames, const 
         const U2Sequence frameSeq = frameImporters[frameNumber].finalizeSequence(os);
         CHECK_OP(os, res);
 
+        if (0 == frameSeq.length) { // no translation was produced
+            coreLog.info(ExportSequenceTask::tr("The \"%1\" translation is empty due to small source sequence length").arg(frameSeq.visualName));
+            continue;
+        }
+
         ExportSequenceItem transEi = ei;
         transEi.setOwnershipOverSeq(frameSeq, resultDbiRef);
 
@@ -462,6 +467,7 @@ void ExportSequenceTask::run() {
 
         //TODO: if we do not need to merge items, here we can use streaming & save the doc!
     }
+    CHECK_EXT(!notMergedItems.isEmpty(), stateInfo.setError(tr("No sequences have been produced.")), );
 
     QList<ExportSequenceItem> resultItems;
     if (config.merge && notMergedItems.size() > 1) {
