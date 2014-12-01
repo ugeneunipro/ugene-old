@@ -1290,7 +1290,9 @@ bool AnnotationsTreeView::initiateDragAndDrop(QMouseEvent* ) {
     dndCopyOnly = false; // allow 'move' by default first
     for (int i = 0, n = initialSelItems.size(); i < n; i++) {
         AVItem *itemi = dynamic_cast<AVItem*>(initialSelItems[i]);
+        SAFE_POINT(NULL != itemi, L10N::nullPointerError("Annotation tree item"), false);
         AnnotationTableObject *ao = itemi->getAnnotationTableObject();
+        SAFE_POINT(NULL != ao, L10N::nullPointerError("annotation table object"), false);
         if (AutoAnnotationsSupport::isAutoAnnotation(ao)) {
             //  only allow to drag top-level auto annotations groups
             if (!(itemi->type == AVItemType_Group && itemi->parent() != NULL)) {
@@ -1315,11 +1317,11 @@ bool AnnotationsTreeView::initiateDragAndDrop(QMouseEvent* ) {
         } else if (itemi->type == AVItemType_Qualifier) { // remove qualifiers from selection
             itemi->setSelected(false); 
         } else {
-            assert(itemi->type == AVItemType_Group);
+            SAFE_POINT(itemi->type == AVItemType_Group, "An unexpected tree item type", false);
             if (itemi->parent() == NULL) { // object level group -> add all subgroups
                 for (int j = 0, m = itemi->childCount(); j < m; j++) {
                     AVItem* citem = dynamic_cast<AVItem*>(itemi->child(j));
-                    assert(citem->type == AVItemType_Group || citem->type == AVItemType_Annotation);
+                    SAFE_POINT(citem->type == AVItemType_Group || citem->type == AVItemType_Annotation, "An unexpected child tree item type", false);
                     dndSelItems.append(citem);
                 }
             } else {
