@@ -273,6 +273,21 @@ QString GTUtilsMSAEditorSequenceArea::getSimilarityValue(U2OpStatus &os, int row
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "clickCollapceTriangle"
+void GTUtilsMSAEditorSequenceArea::clickCollapceTriangle(U2OpStatus &os, QString seqName){
+    MSAEditorSequenceArea *msaEditArea = qobject_cast<MSAEditorSequenceArea*>(GTWidget::findWidget(os, "msa_editor_sequence_area"));
+    GT_CHECK(msaEditArea != NULL, "MsaEditorSequenceArea not found");
+
+    int rowNum = getVisibaleNames(os).indexOf(seqName);
+    GT_CHECK(rowNum != -1, "sequence not found in nameList");
+    QWidget* nameList = GTWidget::findWidget(os, "msa_editor_name_list");
+    QPoint localCoord = QPoint(15, msaEditArea->getYBySequenceNum(rowNum));
+    QPoint globalCoord = nameList->mapToGlobal(localCoord);
+    GTMouseDriver::moveTo(os, globalCoord);
+    GTMouseDriver::click(os);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getLeftOffset"
 int GTUtilsMSAEditorSequenceArea::getLeftOffset(U2OpStatus &os)
 {

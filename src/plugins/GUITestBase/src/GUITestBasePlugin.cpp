@@ -162,8 +162,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1113_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_1107);
     REGISTER_TEST(GUITest_regression_scenarios::test_1165);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1189);
-    REGISTER_TEST(GUITest_regression_scenarios::test_1189_1);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1189, "UGENE-3746");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_1189_1, "UGENE-3746");
     REGISTER_TEST(GUITest_regression_scenarios::test_1190);
     REGISTER_TEST(GUITest_regression_scenarios::test_1199);
 
@@ -188,6 +188,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_1700);
     REGISTER_TEST(GUITest_regression_scenarios::test_1701);
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_1703, "UGENE-3693");
+    REGISTER_TEST(GUITest_regression_scenarios::test_1704);
     REGISTER_TEST(GUITest_regression_scenarios::test_1708);
     REGISTER_TEST(GUITest_regression_scenarios::test_1714);
     REGISTER_TEST(GUITest_regression_scenarios::test_1720);
@@ -278,10 +279,12 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2268, "bad permission setting");
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2282, "https://ugene.unipro.ru/tracker/browse/UGENE-2454");
     REGISTER_TEST(GUITest_regression_scenarios::test_2284);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2285);
     REGISTER_TEST(GUITest_regression_scenarios::test_2316);
     //REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2269, "impossible to catch expected error in opStatus without stopping test");
     REGISTER_TEST(GUITest_regression_scenarios::test_2270);
     REGISTER_TEST(GUITest_regression_scenarios::test_2292);
+    REGISTER_TEST(GUITest_regression_scenarios::test_2298);
     REGISTER_TEST(GUITest_regression_scenarios::test_2293);
     REGISTER_TEST(GUITest_regression_scenarios::test_2306);
     REGISTER_TEST(GUITest_regression_scenarios::test_2281);
@@ -347,7 +350,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2619);
     REGISTER_TEST(GUITest_regression_scenarios::test_2622);
     REGISTER_TEST(GUITest_regression_scenarios::test_2622_1);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2651);
+    REGISTER_TEST_IGNORED_MAC(GUITest_regression_scenarios::test_2651, "this test seems to break mac testing");
     REGISTER_TEST(GUITest_regression_scenarios::test_2656);
     REGISTER_TEST(GUITest_regression_scenarios::test_2667);
     REGISTER_TEST(GUITest_regression_scenarios::test_2690);

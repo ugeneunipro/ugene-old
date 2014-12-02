@@ -44,6 +44,7 @@ public:
     static QStringList getNameList(U2OpStatus &os);
     static QStringList getVisibaleNames(U2OpStatus &os);
     static QString getSimilarityValue(U2OpStatus &os, int row);
+    static void clickCollapceTriangle(U2OpStatus &os, QString seqName);
 
     static int getLeftOffset(U2OpStatus &os);
     static int getRightOffset(U2OpStatus &os);

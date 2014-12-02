@@ -82,6 +82,7 @@
 #include "runnables/ugene/corelibs/U2Gui/EditConnectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditQualifierDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/EditSequenceDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ExportDocumentDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/FindQualifierDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/FindRepeatsDialogFiller.h"
@@ -123,6 +124,7 @@
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WorkflowMetadialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/hmm3/UHMM3PhmmerDialogFiller.h"
+#include "runnables/ugene/plugins_3rdparty/hmm3/UHMM3SearchDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/kalign/KalignDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/umuscle/MuscleDialogFiller.h"
 #include "runnables/ugene/plugins_3rdparty/clustalw/ClustalWDialogFiller.h"
@@ -1455,6 +1457,32 @@ GUI_TEST_CLASS_DEFINITION( test_1703 )
     GTGlobals::sleep(500);
     GTKeyboardDriver::keyRelease(os,GTKeyboardDriver::key["shift"]);
     GTUtilsMSAEditorSequenceArea::checkSelectedRect( os, QRect( 0, 6, 12, 2 ) );
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1704 ){
+//    1. Open _common_data\_regession\1704\lrr_test_new.gb
+    GTFileDialog::openFile( os, testDir + "_common_data/regression/1704", "lrr_test_new.gb" );
+//    2. Search HMM3 signals with _common_data\_regession\1704\LRR_4.hmm model
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList()
+                                                      << "ADV_MENU_ANALYSE"
+                                                      << "Search HMM signals with HMMER3"));
+    GTUtilsDialog::waitForDialog(os, new UHMM3SearchDialogFiller(os, testDir + "_common_data/regression/1704/LRR_4.hmm",
+                                                                 sandBoxDir + "1704.gb"));
+
+    GTMenu::showMainMenu(os, "mwmenu_actions");
+    GTGlobals::sleep(1000);
+//    3. Export document with annotations into genbank format. Do not add to the project
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Export document"));
+    GTUtilsDialog::waitForDialog(os, new ExportDocumentDialogFiller(os, sandBoxDir, "1704_exported.gb"));
+    GTUtilsProjectTreeView::click(os, "1704.gb", Qt::RightButton);
+    GTGlobals::sleep();
+//    4. Open the exported file with UGENE
+    GTFileDialog::openFile(os, sandBoxDir, "1704_exported.gb");
+    GTUtilsProjectTreeView::doubleClickItem(os, "1704_exported.gb");
+    GTGlobals::sleep(1000);
+//    Expected state: all the annotations of the new file are identical to annotations of the old file
+    GTUtilsAnnotationsTreeView::findItem(os, "hmm_signal  (0, 27)");
+//    Bug state: only the first annotations without qualifiers is opened
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1708){
@@ -3965,6 +3993,29 @@ GUI_TEST_CLASS_DEFINITION( test_2292 ){
     //CHECK_SET_ERR( l.hasError( ), "Error message expected!" );
 }
 
+GUI_TEST_CLASS_DEFINITION( test_2298 ){
+//    1. Open the file "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Build the tree and make it view together with msa
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, testDir + "_common_data/scenarios/sandbox/2298.nwk", 0, 0, true));
+    QAbstractButton *tree = GTAction::button(os,"Build Tree");
+    GTWidget::click(os, tree);
+    GTGlobals::sleep();
+//    3. Collapse any node on the tree
+    QGraphicsItem* node = GTUtilsPhyTree::getNodes(os).at(1);
+    QGraphicsView* treeView = qobject_cast<QGraphicsView*>(GTWidget::findWidget(os, "treeView"));
+    treeView->ensureVisible(node);
+    GTMouseDriver::moveTo(os, GTUtilsPhyTree::getGlobalCoord(os, node));
+    GTMouseDriver::doubleClick(os);
+    GTGlobals::sleep();
+//    Expected state: the appropriate sequences on the msa has collapsed into a group as well
+    QStringList l = GTUtilsMSAEditorSequenceArea::getVisibaleNames(os);
+    int num = l.count();
+    CHECK_SET_ERR(num == 3, QString("Unexpected visiable sequences number. Expected: 3, actual: %1").arg(num));
+    GTGlobals::sleep();
+}
+
+
 GUI_TEST_CLASS_DEFINITION( test_2293 ){
 //    0. Ensure that Bowtie2 Build index tool is not set. Remove it, if it is.
 //    1. Do {main menu -> Tools -> ALign to reference -> Build index}.
@@ -4066,6 +4117,40 @@ GUI_TEST_CLASS_DEFINITION( test_2284 ){
         GTGlobals::sleep(200);
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
     }
+}
+
+GUI_TEST_CLASS_DEFINITION( test_2285 ){
+//    1. Open {data/samples/CLUSTALW/COI.aln}
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+//    2. Click the "Switch on/off collapsing" button on the toolbar.
+    GTWidget::click(os, GTToolbar::getWidgetForActionName(os, GTToolbar::getToolbar(os, "mwtoolbar_activemdi"), "Enable collapsing"));
+//    Expected state: Collapsed mode is switched on, there are one collapsed group.
+    int visableNamesNum = GTUtilsMSAEditorSequenceArea::getVisibaleNames(os).count();
+    CHECK_SET_ERR(visableNamesNum == 17,
+                  QString("unexpected visable sequences number. Expected 17, actual: %1").arg(visableNamesNum));
+//    3. Expand the collapsed group ("Mecopoda_elongata__Ishigaki__J" is the head sequence).
+    GTUtilsMSAEditorSequenceArea::clickCollapceTriangle(os, "Mecopoda_elongata__Ishigaki__J");
+    GTGlobals::sleep(1000);
+
+//    4. Set the cursor to the 14 line (the "Mecopoda_elongata__Ishigaki__J" sequence), 45 base.
+
+    QWidget *documentTreeWidget = GTWidget::findWidget(os, GTUtilsProjectTreeView::widgetName, NULL, GTGlobals::FindOptions(false));
+    if (documentTreeWidget != NULL) {
+        GTUtilsProjectTreeView::toggleView(os);
+    }
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(44, 13));
+//    5. Press Backspace.
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["back"]);
+
+//    Expected state: each sequence in the group loose one gap.
+    GTUtilsMSAEditorSequenceArea::click(os);
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(43, 13), QPoint(43, 14));
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    QString clipboardText = GTClipboard::text(os);
+
+    CHECK_SET_ERR(clipboardText == "T\nT", "Unexpected selection. Expected: T\nT, actual: " + clipboardText);
+
 }
 
 
@@ -4678,11 +4763,13 @@ GUI_TEST_CLASS_DEFINITION( test_2404 ) {
     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Save annotation(s) to"));
     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Annotation parameters"));
     QMainWindow* mw = AppContext::getMainWindow()->getQMainWindow();
+    mw->showNormal();
     mw->resize(800,600);
+    GTGlobals::sleep();
     QScrollArea* sa = qobject_cast<QScrollArea*>(GTWidget::findWidget( os, "OP_SCROLL_AREA" ));
     QScrollBar* scroll = sa->verticalScrollBar();
     CHECK_SET_ERR( scroll != NULL, "Scroll bar is NULL");
-    CHECK_SET_ERR( !scroll->isVisible(), "Scroll bar is visible!");
+    CHECK_SET_ERR( scroll->isVisible(), "Scroll bar is visible!");
 }
 GUI_TEST_CLASS_DEFINITION(test_2403) {
     //1. Open "human_T1.fa".
