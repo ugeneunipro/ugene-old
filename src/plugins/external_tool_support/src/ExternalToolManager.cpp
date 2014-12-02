@@ -276,7 +276,7 @@ void ExternalToolManagerImpl::sl_searchTaskStateChanged() {
 
     if (task->isFinished()) {
         QStringList toolPaths = task->getPaths();
-        if (!task->getPaths().isEmpty()) {
+        if (!toolPaths.isEmpty()) {
             setToolPath(task->getToolName(), toolPaths.first());
             toolStates.insert(task->getToolName(), dependenciesAreOk(task->getToolName()) ? NotValidByDependency : NotValid);
         } else {
