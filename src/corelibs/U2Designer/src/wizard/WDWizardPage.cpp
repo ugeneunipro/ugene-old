@@ -58,6 +58,7 @@ void WDWizardPage::showEvent(QShowEvent *event) {
 }
 
 void WDWizardPage::setupDialogSize() {
+    adjustSize();
     wizard()->setFixedSize(wizard()->sizeHint());
 }
 
