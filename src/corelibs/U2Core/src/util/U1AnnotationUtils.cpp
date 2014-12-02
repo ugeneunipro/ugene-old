@@ -73,7 +73,7 @@ QList<QVector<U2Region> > U1AnnotationUtils::fixLocationsForReplacedRegion(
             continue;
         }
         // if location starts after the modification
-        if ( r.startPos >= region2Remove.endPos( ) ) { 
+        if ( r.startPos >= region2Remove.endPos( ) ) {
             r.startPos += dLen;
             updated << r;
             continue;
@@ -174,10 +174,11 @@ bool U1AnnotationUtils::isSplitted( const U2Location &location, const U2Region &
     QVector<U2Region> regions = location->regions;
     if ( 2 != regions.size( ) ) {
         return false;
-    } else if ( regions[0].endPos( ) == seqRange.endPos( )
-        && regions[1].startPos == seqRange.startPos )
+    } else if (( regions[0].endPos( ) == seqRange.endPos( )
+        && regions[1].startPos == seqRange.startPos ) || ( regions[1].endPos( ) == seqRange.endPos( )
+            && regions[0].startPos == seqRange.startPos ))
     {
-        return true; 
+        return true;
     }
 
     return false;
@@ -280,7 +281,7 @@ void U1AnnotationUtils::addAnnotations( QList<GObject *> &objects,
 {
     U2OpStatusImpl os;
     if ( !annList.isEmpty( ) ) {
-        if ( NULL == annotationsObject ) {            
+        if ( NULL == annotationsObject ) {
             U2DbiRef dbiRef;
             if (hints.contains(DocumentFormat::DBI_REF_HINT)) {
                 dbiRef = hints.value(DocumentFormat::DBI_REF_HINT).value<U2DbiRef>();

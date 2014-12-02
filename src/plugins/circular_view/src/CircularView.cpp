@@ -903,6 +903,10 @@ void CircularViewRenderArea::redraw() {
     repaint();
 }
 
+bool isGreater(U2Region r1, U2Region r2) {
+    return r1.startPos > r2.startPos;
+};
+
 #define REGION_MIN_LEN 3
 void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const Annotation &a,
     bool selected /* = false */, const AnnotationSettings* as /* = NULL */)
@@ -916,7 +920,8 @@ void CircularViewRenderArea::buildAnnotationItem(DrawAnnotationPass pass, const 
 
     int seqLen = ctx->getSequenceLength();
 
-    const QVector<U2Region>& location = aData.getRegions();
+    QVector<U2Region> location = aData.getRegions();
+    qStableSort(location.begin(), location.end(), isGreater);
 
     U2Region generalLocation(location.first().startPos, location.last().startPos - location.first().startPos + location.last().length);
 
