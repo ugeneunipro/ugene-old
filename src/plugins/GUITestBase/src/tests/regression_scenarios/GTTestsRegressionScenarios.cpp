@@ -1241,6 +1241,67 @@ GUI_TEST_CLASS_DEFINITION( test_1628 ) {
     CHECK_SET_ERR(names.contains("йцукен123") && !names.contains("Montana_montana"), "Undo-redo worked incorrectly");
 }
 
+
+GUI_TEST_CLASS_DEFINITION( test_1654 ) {
+    // 1. Open some sequence
+    // 2. Copy some subsequence(for example first 10 symbols)
+    // 3. Open find pattern option panel
+    // 4. Use ctrl+v to paste subsequence to find pattern text area
+    // 5. Collapse option panel
+    // 6. Expand it and paste subsequence again
+    // Expected state: {Search} button is enabled
+    // Actual: {Search} button is disabled
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 15));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
+    GTGlobals::sleep(500);
+
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+
+    QWidget *createAnnotationsButton = GTWidget::findWidget(os, "getAnnotationsPushButton");
+    GTGlobals::sleep(500);
+    CHECK_SET_ERR(createAnnotationsButton->isEnabled(), "Create annotations button is disabled!");
+
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1660 ) {
+    // 1. Open any sequence
+    // 2. Open find pattern option panel
+    // 3. Enter any valid pattern
+    // 4. Click "Show more options" and select "custom region" in "Region" combobox
+    // 5. Delete default value from right edge line edit
+    // Expected state: lineedit became red Actual: UGENE crashes
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 15));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
+    GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+
+    GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+
+    //TODO setSearchInregion method checking
+}
 GUI_TEST_CLASS_DEFINITION( test_1688 ) {
     // 1) Open file "_common_data/scenarios/_regression/1688/sr100.000.fa"
     // Expected state: UGENE show error, not crashed
