@@ -5023,6 +5023,24 @@ GUI_TEST_CLASS_DEFINITION( test_2430 ) {
     CHECK_SET_ERR(breakpoints.size() == 1, "Wrong amount of breakpoints!");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2431) {
+    //1. Check the debug mode checkbox in the applications settings
+    //2. Add an element to the scene
+    //3. Try to delete the element by delete button
+    //Current: nothing happens
+    //Expected: the element will be deleted
+
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+    GTUtilsWorkflowDesigner::toggleDebugMode(os);
+    GTGlobals::sleep(1000);
+    
+    GTUtilsWorkflowDesigner::addAlgorithm(os, "Read sequence");
+    GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read sequence"));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
+    GTGlobals::sleep(1000);
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::getItemCenter(os, "Read sequence") == QRect().center(), "Item didn't deleted");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2432) {
 //    1. Check the debug mode checkbox in the applications settings
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
