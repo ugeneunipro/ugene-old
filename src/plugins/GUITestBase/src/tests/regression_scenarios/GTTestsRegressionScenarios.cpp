@@ -1302,6 +1302,59 @@ GUI_TEST_CLASS_DEFINITION( test_1660 ) {
 
     //TODO setSearchInregion method checking
 }
+GUI_TEST_CLASS_DEFINITION(test_1661) {
+    // 1. Open human_T1.fa
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+
+    // 2. Open find pattern option panel
+    GTKeyboardDriver::keyClick(os, 'f', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(500);
+
+    // 3. Enter pattern ACAATGTATGCCTCTTGGTTTCTTCTATC
+    GTKeyboardDriver::keySequence(os, "ACAATGTATGCCTCTTGGTTTCTTCTATC");
+
+    // 4. Use settings : Region - custom region; 1 - 10000.
+    QComboBox *boxRegion = qobject_cast<QComboBox *>(GTWidget::findWidget(os, "boxRegion"));
+    GTWidget::click(os, boxRegion);
+    GTComboBox::setCurrentIndex(os, boxRegion, 1);
+    GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editStart")), "1");
+    GTLineEdit::setText(os, qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "editEnd")), "10000");
+
+    // Expected state : nothing found
+    QLabel *resultLabel = qobject_cast<QLabel *>(GTWidget::findWidget(os, "resultLabel"));
+    CHECK_SET_ERR(resultLabel->text() == "Results: 0/0", "Unexpected find algorithm result count");
+
+    // 5. Use settings : Region - Whole sequence.
+    GTComboBox::setCurrentIndex(os, boxRegion, 0);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // Expected state : One match found
+    CHECK_SET_ERR(resultLabel->text() == "Results: 1/1", "Unexpected find algorithm result count");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1687) {
+    // 1. open samples / clustalW / COI.aln
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+    // 2. Open 'statistic tab'
+    GTUtilsOptionPanelMsa::openTab(os, GTUtilsOptionPanelMsa::Statistics);
+
+    // 3. Be sure here is no reference sequence selected.
+    QLineEdit *refSeqEdit = qobject_cast<QLineEdit *>(GTWidget::findWidget(os, "sequenceLineEdit"));
+    CHECK_SET_ERR(refSeqEdit->text().isEmpty(), "Unexpected reference sequence in MSA");
+
+    QLabel *refSeqWarning = qobject_cast<QLabel *>(GTWidget::findWidget(os, "refSeqWarning"));
+    CHECK_SET_ERR(refSeqWarning->isHidden(), "Warning label is unexpectedly visible");
+
+    // 4. Set 'Set distance column' checked
+    QCheckBox *check = qobject_cast<QCheckBox *>(GTWidget::findWidget(os, "showDistancesColumnCheck"));
+    GTCheckBox::setChecked(os, check);
+
+    // Expected state : hint with green text appears at the bottom of the tab.
+    CHECK_SET_ERR(refSeqWarning->isVisible(), "Warning label is unexpectedly invisible");
+    CHECK_SET_ERR(!refSeqWarning->text().isEmpty(), "Warning label contains no text");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1688 ) {
     // 1) Open file "_common_data/scenarios/_regression/1688/sr100.000.fa"
     // Expected state: UGENE show error, not crashed
