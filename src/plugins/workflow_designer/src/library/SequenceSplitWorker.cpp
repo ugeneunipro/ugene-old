@@ -102,7 +102,7 @@ QString SequenceSplitPromter::composeRichDoc() {
     //merge result
     QString doc = tr("Extract each annotated sequence region %5 %2 %3%4")
         //.arg(filterText)
-        .arg(complementText) 
+        .arg(complementText)
         .arg(translateText)
         .arg(expandText)
         .arg(seqProducerText);
@@ -132,7 +132,7 @@ Task * SequenceSplitWorker::tick() {
         cfg.splitJoined = actor->getParameter(SPLIT_ATTR)->getAttributeValue<bool>(context);
         cfg.gapSym = '-'; //FIXME
         QVariantMap qm = inputMessage.getData().toMap();
-        
+
         SharedDbiDataHandler seqId = qm.value(BaseSlots::DNA_SEQUENCE_SLOT().getId()).value<SharedDbiDataHandler>();
         QScopedPointer<U2SequenceObject> seqObj(StorageUtils::getSequenceObject(context->getDataStorage(), seqId));
         CHECK( NULL != seqObj.data(), NULL );
@@ -149,12 +149,12 @@ Task * SequenceSplitWorker::tick() {
             } else {
                 coreLog.info(tr("Nothing to extract. Sequence '%1' has no annotations.").arg(inputSeq.getName()));
             }
-            
+
             if( seqPort->isEnded() ) {
                 outPort->setEnded();
             }
             return NULL;
-        } 
+        }
 
         ssTasks.clear();
 
@@ -165,7 +165,7 @@ Task * SequenceSplitWorker::tick() {
         if( ssTasks.isEmpty() ) {
             return new FailTask(tr("Nothing to extract: no sequence region match the constraints"));
         }
-        
+
         Task * t = new MultiTask( "Sequence split tasks", ssTasks );
         connect( new TaskSignalMapper(t), SIGNAL(si_taskFinished(Task*)), SLOT(sl_onTaskFinished(Task*)) );
         return t;
@@ -189,7 +189,9 @@ void SequenceSplitWorker::sl_onTaskFinished( Task * ) {
         QList<DNASequence>::Iterator iter(sequences.begin());
         for(;iter != sequences.end(); iter++){
             DNASequence &resSeq = *iter;
-            QString name = resSeq.getName() + " " + ssT->getInputAnnotation().name;
+            QString name = resSeq.getName() + " "
+                    + Genbank::LocationParser::buildLocationString(ssT->getInputAnnotation().getRegions()) + " "
+                    + ssT->getInputAnnotation().name;
             if(sequences.size() > 1){
                 name += " " + QString::number(seqCount++);
             }
@@ -212,7 +214,7 @@ void SequenceSplitWorker::sl_onTaskFinished( Task * ) {
 }
 
 void SequenceSplitWorkerFactory::init() {
-    QList<PortDescriptor*> portDescs; 
+    QList<PortDescriptor*> portDescs;
     QList<Attribute*> attribs;
 
     //accept sequence and annotated regions as input
@@ -231,17 +233,17 @@ void SequenceSplitWorkerFactory::init() {
     DataTypePtr outSet(new MapDataType(Descriptor(REGIONED_SEQ_TYPE), outMap));
     dr->registerEntry(outSet);
 
-    { //Create input port descriptors 
-        Descriptor seqDesc( BasePorts::IN_SEQ_PORT_ID(), SequenceSplitWorker::tr("Input sequence"), 
+    { //Create input port descriptors
+        Descriptor seqDesc( BasePorts::IN_SEQ_PORT_ID(), SequenceSplitWorker::tr("Input sequence"),
             SequenceSplitWorker::tr("A sequence which will be split into annotated regions.") );
-        Descriptor outDesc( BasePorts::OUT_SEQ_PORT_ID(), SequenceSplitWorker::tr("Annotated regions"), 
+        Descriptor outDesc( BasePorts::OUT_SEQ_PORT_ID(), SequenceSplitWorker::tr("Annotated regions"),
             SequenceSplitWorker::tr("Resulted subsequences, translated and complemented according to corresponding annotations.") );
-        
+
         portDescs << new PortDescriptor( seqDesc, inSet, /*input*/ true );
         portDescs << new PortDescriptor( outDesc, outSet, /*input*/false, /*multi*/true );
     }
 
-    { //Create attributes descriptors    
+    { //Create attributes descriptors
         Descriptor translateDesc( TRANSLATE_ATTR,
                                   SequenceSplitWorker::tr("Translate"),
                                   SequenceSplitWorker::tr("Translate the annotated regions.") );
@@ -257,7 +259,7 @@ void SequenceSplitWorkerFactory::init() {
         Descriptor extendRightDesc( EXTEND_RIGHT_ATTR,
                                     SequenceSplitWorker::tr("Extend right"),
                                     SequenceSplitWorker::tr("Extend the resulted regions to right.") );
-        Descriptor gapLengthDesc( GAP_LENGTH_ATTR, 
+        Descriptor gapLengthDesc( GAP_LENGTH_ATTR,
                                   SequenceSplitWorker::tr("Gap length"),
                                   SequenceSplitWorker::tr("Insert gap of specified length between merged locations of annotation.") );
 
@@ -269,13 +271,13 @@ void SequenceSplitWorkerFactory::init() {
         attribs << new Attribute( gapLengthDesc, BaseTypes::NUM_TYPE(), false, QVariant(0) );
     }
 
-    Descriptor desc( SequenceSplitWorkerFactory::ACTOR, 
-                     SequenceSplitWorker::tr("Get Sequences by Annotations"), 
+    Descriptor desc( SequenceSplitWorkerFactory::ACTOR,
+                     SequenceSplitWorker::tr("Get Sequences by Annotations"),
                      SequenceSplitWorker::tr("Creates sequences from annotated regions of input sequence.") );
     ActorPrototype * proto = new IntegralBusActorPrototype( desc, portDescs, attribs );
 
     //create delegates for attribute editing
-    QMap<QString, PropertyDelegate *> delegates;   
+    QMap<QString, PropertyDelegate *> delegates;
     {
         QVariantMap eMap; eMap["minimum"] = (0); eMap["maximum"] = (INT_MAX);
         delegates[EXTEND_LEFT_ATTR] = new SpinBoxDelegate( eMap );
