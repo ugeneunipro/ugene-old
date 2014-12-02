@@ -93,8 +93,8 @@ namespace U2 {
 #define SETTINGS_HIGHGHLIGHT_AMINO     "highghligh_amino"
 
 MSAEditorSequenceArea::MSAEditorSequenceArea(MSAEditorUI* _ui, GScrollBar* hb, GScrollBar* vb)
-    : editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb),
-    changeTracker( editor->getMSAObject( )->getEntityRef( ) )
+    : editor(_ui->editor), ui(_ui), shBar(hb), svBar(vb), prevPressedButton(Qt::NoButton),
+    changeTracker(editor->getMSAObject()->getEntityRef())
 {
     setObjectName("msa_editor_sequence_area");
     setFocusPolicy(Qt::WheelFocus);
@@ -1136,8 +1136,7 @@ void MSAEditorSequenceArea::mouseMoveEvent( QMouseEvent* e )
     QWidget::mouseMoveEvent(e);
 }
 
-void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
-{
+void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e) {
     rubberBand->hide();
     if (shifting) {
         changeTracker.finishTracking();
@@ -1147,25 +1146,25 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
     QPoint newCurPos = coordToAbsolutePos(e->pos());
 
     int firstVisibleSeq = ui->seqArea->getFirstVisibleSequence();
-    int visibleRowsNums = getNumDisplayedSequences( ) - 1;
+    int visibleRowsNums = getNumDisplayedSequences() - 1;
 
     int yPosWithValidations = qMax(firstVisibleSeq, newCurPos.y());
-    yPosWithValidations     = qMin(yPosWithValidations, visibleRowsNums + firstVisibleSeq);
+    yPosWithValidations = qMin(yPosWithValidations, visibleRowsNums + firstVisibleSeq);
 
     newCurPos.setY(yPosWithValidations);
 
     if (shifting) {
-        const int shift = ( !shiftingWasPerformed )
-            ? newCurPos.x( ) - ui->seqArea->getSelection( ).getRect( ).center( ).x( )
-            : newCurPos.x( ) - cursorPos.x( );
-        if ( 0 != shift && !isAlignmentLocked()) {
+        const int shift = (!shiftingWasPerformed)
+            ? newCurPos.x() - ui->seqArea->getSelection().getRect().center().x()
+            : newCurPos.x() - cursorPos.x();
+        if (0 != shift && !isAlignmentLocked()) {
             U2OpStatus2Log os;
-            U2UseCommonUserModStep userModStep( editor->getMSAObject( )->getEntityRef( ), os );
+            U2UseCommonUserModStep userModStep(editor->getMSAObject()->getEntityRef(), os);
             Q_UNUSED(userModStep);
             shiftSelectedRegion(shift);
         }
         emit si_stopMSAChanging(true);
-    } else if ( Qt::LeftButton == e->button( ) ) {
+    } else if (Qt::LeftButton == e->button() && Qt::LeftButton == prevPressedButton) {
         updateSelection(newCurPos);
     }
     shifting = false;
@@ -1179,35 +1178,39 @@ void MSAEditorSequenceArea::mouseReleaseEvent(QMouseEvent *e)
 }
 
 void MSAEditorSequenceArea::mousePressEvent(QMouseEvent *e) {
+    prevPressedButton = e->button();
+
     if (!hasFocus()) {
         setFocus();
     }
 
-    if ((e->button() == Qt::LeftButton)){
-        if(Qt::ShiftModifier == e->modifiers()) {
+    if ((e->button() == Qt::LeftButton)) {
+        if (Qt::ShiftModifier == e->modifiers()) {
             QWidget::mousePressEvent(e);
             return;
         }
+
         origin = e->pos();
         QPoint p = coordToPos(e->pos());
         if(isInRange(p)) {
             setCursorPos(p);
 
-            const MSAEditorSelection &s = ui->seqArea->getSelection( );
-            if ( s.getRect().contains(cursorPos) && !isAlignmentLocked()) {
+            const MSAEditorSelection &s = ui->seqArea->getSelection();
+            if (s.getRect().contains(cursorPos) && !isAlignmentLocked()) {
                 shifting = true;
                 U2OpStatus2Log os;
-                changeTracker.startTracking( os );
-                CHECK_OP( os, );
+                changeTracker.startTracking(os);
+                CHECK_OP(os, );
                 editor->getMSAObject()->saveState();
                 emit si_startMSAChanging();
             }
         }
+
         if (!shifting) {
             selecting = true;
             origin = e->pos();
             QPoint q = coordToAbsolutePos(e->pos());
-            if(isInRange(q)) {
+            if (isInRange(q)) {
                 setCursorPos(q);
             }
             rubberBand->setGeometry(QRect(origin, QSize()));

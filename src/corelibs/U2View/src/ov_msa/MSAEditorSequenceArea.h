@@ -455,6 +455,7 @@ private:
     bool                shifting;
     bool                selecting;
     bool                shiftingWasPerformed; // specifies whether a user has shifted a selection
+    Qt::MouseButton     prevPressedButton;
     QPoint              origin; // global window coordinates
     QPoint              cursorPos; // mouse cursor position in alignment coordinates
     MSAEditorSelection  selection; // selection with rows indexes in collapsible model coordinates
