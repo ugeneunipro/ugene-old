@@ -6262,6 +6262,22 @@ GUI_TEST_CLASS_DEFINITION(test_2713) {
     GTUtilsAnnotationsTreeView::findFirstAnnotation(os);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_2726) {
+    //1. Open the file "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
+
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(1,0), QPoint(1,0));
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["backspace"]);
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["backspace"]);
+
+    //Expected state : MSA view has opened, the "Undo" button is disabled.
+    QAbstractButton *undoButton = GTAction::button(os, "msa_action_undo");
+    CHECK_SET_ERR(!undoButton->isEnabled(), "'Undo' button is unexpectedly enabled");
+
+    QAbstractButton *redoButton = GTAction::button(os, "msa_action_undo");
+    CHECK_SET_ERR(!redoButton->isEnabled(), "'Redo' button is unexpectedly enabled");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_2729) {
 //    1. Open {_common_data/fasta/AMINO.fa}
 //    Expected state: there is a "Graphs" button on the sequence toolbar, it is enabled.

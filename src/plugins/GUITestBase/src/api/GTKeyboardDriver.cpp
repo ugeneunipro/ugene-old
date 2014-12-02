@@ -67,6 +67,10 @@ void GTKeyboardDriver::keySequence(U2::U2OpStatus &os, const QString &str, int m
 int GTKeyboardDriver::keys::operator [] (const QString &str) const
 {
     QString lowerStr = str.toLower();
+    //backspace alias
+    if (lowerStr == "backspace"){
+        lowerStr = "back";
+    }
     return value(lowerStr);
 }
 
