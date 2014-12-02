@@ -172,6 +172,7 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
         }
         arguments <<url;
         logParser = new MAFFTLogParser(inputMsa.getNumRows(), settings.maxNumberIterRefinement, outputUrl);
+        connect(logParser, SIGNAL(si_progressUndefined()), SLOT(sl_progressUndefined()));
         mAFFTTask = new ExternalToolRunTask(ET_MAFFT, arguments, logParser);
         setListenerForTask(mAFFTTask);
         mAFFTTask->setSubtaskProgressWeight(95);
@@ -278,7 +279,13 @@ QList<Task*> MAFFTSupportTask::onSubTaskFinished(Task* subTask) {
     }
     return res;
 }
-Task::ReportResult MAFFTSupportTask::report(){
+
+void MAFFTSupportTask::sl_progressUndefined() {
+    tpm = Progress_Manual;
+    stateInfo.setProgress(-1);
+}
+
+Task::ReportResult MAFFTSupportTask::report() {
     //Remove subdir for temporary files, that created in prepare
     if(!url.isEmpty()){
         QDir tmpDir(QFileInfo(url).absoluteDir());
@@ -379,11 +386,14 @@ Task::ReportResult MAFFTWithExtFileSpecifySupportTask::report(){
 
 ////////////////////////////////////////
 //MAFFTLogParser
+const QString MAFFTLogParser::MEM_SAVE_MODE_MESSAGE = "Switching to the memsave mode";
+
 MAFFTLogParser::MAFFTLogParser(int _countSequencesInMSA, int _countRefinementIter, const QString& _outputFileName) :
         countSequencesInMSA(_countSequencesInMSA),
         countRefinementIter(_countRefinementIter),
         outputFileName(_outputFileName),
         isOutputFileCreated(false),
+        isMemSaveModeEnabled(false),
         firstDistanceMatrix(false),
         secondDistanceMatrix(false),
         firstUPGMATree(false),
@@ -398,27 +408,34 @@ MAFFTLogParser::MAFFTLogParser(int _countSequencesInMSA, int _countRefinementIte
     }
 }
 
-void MAFFTLogParser::parseOutput(const QString& partOfLog){
+void MAFFTLogParser::parseOutput(const QString& partOfLog) {
     outFile.write(partOfLog.toLatin1());
 }
 
-void MAFFTLogParser::parseErrOutput(const QString& partOfLog){
-    lastPartOfLog=partOfLog.split(QRegExp("(\n|\r)"));
-    lastPartOfLog.first()=lastErrLine+lastPartOfLog.first();
-    lastErrLine=lastPartOfLog.takeLast();
-    foreach(QString buf, lastPartOfLog){
-        if(buf.contains("WARNING")
-            ||buf.contains("rejected.")
-            ||buf.contains("identical.")
-            ||buf.contains("accepted.")){
+void MAFFTLogParser::parseErrOutput(const QString& partOfLog) {
+    if (Q_UNLIKELY(partOfLog.contains(MEM_SAVE_MODE_MESSAGE))) {
+        isMemSaveModeEnabled = true;
+        algoLog.info(tr("MAFFT has switched to the memsave mode. UGENE is unable to track its progress."));
+        emit si_progressUndefined();
+    }
+
+    lastPartOfLog = partOfLog.split(QRegExp("(\n|\r)"));
+    lastPartOfLog.first() = lastErrLine+lastPartOfLog.first();
+    lastErrLine = lastPartOfLog.takeLast();
+
+    foreach (const QString &buf, lastPartOfLog) {
+        if (buf.contains("WARNING")
+                || buf.contains("rejected.")
+                || buf.contains("identical.")
+                || buf.contains("accepted.")) {
             algoLog.info("MAFFT: " + buf);
-        }else if(!buf.isEmpty()){
+        } else if(!buf.isEmpty()) {
             algoLog.trace("MAFFT: " + buf);
         }
     }
 }
 
-int MAFFTLogParser::getProgress(){
+int MAFFTLogParser::getProgress() {
     /*
      Making a distance matrix - 5%
      Constructing a UPGMA tree - 10%
@@ -428,6 +445,8 @@ int MAFFTLogParser::getProgress(){
      Progressive alignment - 30-80%
      STEP 001-002-3 - 80-100%
     */
+    CHECK(!isMemSaveModeEnabled, -1);
+
     if (!lastPartOfLog.isEmpty()) {
         foreach (QString buf, lastPartOfLog) {
             if (buf.contains("Making")) {

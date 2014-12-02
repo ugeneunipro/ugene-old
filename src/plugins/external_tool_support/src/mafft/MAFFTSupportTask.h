@@ -74,6 +74,10 @@ public:
     QList<Task*> onSubTaskFinished(Task* subTask);
 
     MAlignment                  resultMA;
+
+private slots:
+    void sl_progressUndefined();
+
 private:
     MAlignment                  inputMsa;
     GObjectReference            objRef;
@@ -112,6 +116,7 @@ private:
 };
 
 class MAFFTLogParser : public ExternalToolLogParser {
+    Q_OBJECT
     Q_DISABLE_COPY(MAFFTLogParser)
 public:
     MAFFTLogParser(int countSequencesInMSA, int countRefinementIter, const QString& outputFileName);
@@ -122,6 +127,10 @@ public:
 
     bool isOutFileCreated(){ return isOutputFileCreated; }
     void cleanup();
+
+signals:
+    void si_progressUndefined();
+
 private:
     int     countSequencesInMSA;
     int     countRefinementIter;
@@ -130,6 +139,7 @@ private:
     bool    isOutputFileCreated;
     QString lastErrLine;
 
+    bool    isMemSaveModeEnabled;   // there is no progress in the memsave mode
     bool    firstDistanceMatrix;
     bool    secondDistanceMatrix;
     bool    firstUPGMATree;
@@ -137,6 +147,8 @@ private:
     bool    firstProAlign;
     bool    secondProAlign;
     int     progress;
+
+    static const QString MEM_SAVE_MODE_MESSAGE;
 };
 
 }//namespace
