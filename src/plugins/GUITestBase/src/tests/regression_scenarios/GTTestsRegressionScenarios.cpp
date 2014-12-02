@@ -1579,6 +1579,42 @@ GUI_TEST_CLASS_DEFINITION(test_1720){
 //Expected state: project view with document "D11266.gb", no error messages in log appear
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1747){
+    //    1. Open "data/samples/CLUSTALW/COI.aln".
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
+
+    //    2. Use sequence area context menu:
+    //    { Statistics -> Generate distance matrix }
+    //    Expected state: the "Generate Distance Matrix" dialog has appeared.
+
+    //    3. Click "Generate".
+    //    Expected state: the "Multiple Sequence Alignment Distance Matrix" view has appeared.
+    GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Statistics" << "Generate distance matrix"));
+    GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os));
+    GTUtilsMSAEditorSequenceArea::callContextMenu(os);
+
+    QProgressBar* taskProgressBar = GTWidget::findExactWidget<QProgressBar*>(os, "taskProgressBar");
+    QString text = taskProgressBar->text();
+    CHECK_SET_ERR(text.contains("%"), "unexpected text: " + text);
+    text = text.left(text.length() - 1);
+    bool isNumber = false;
+    int progress = text.toInt(&isNumber);
+    CHECK_SET_ERR(isNumber, QString("The progress must be a number: %1").arg(text));
+    CHECK_SET_ERR(progress >= 0 && progress <= 100, QString("Incorrect progress: %1").arg(progress));
+
+    GTGlobals::sleep(15000);
+    int oldProgress = progress;
+    text = taskProgressBar->text();
+    CHECK_SET_ERR(text.contains("%"), "unexpected text: " + text);
+    text = text.left(text.length() - 1);
+    isNumber = false;
+    progress = text.toInt(&isNumber);
+    CHECK_SET_ERR(isNumber, QString("The progress must be a number: %1").arg(text));
+    CHECK_SET_ERR(progress >= 0 && progress <= 100, QString("Incorrect progress: %1").arg(progress));
+
+    CHECK_SET_ERR(progress > oldProgress, "Progress didn't groving up");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1786){
     // 1. Use menu {File->Access remote database...}
     // 2. Select database UniProt(DAS)
