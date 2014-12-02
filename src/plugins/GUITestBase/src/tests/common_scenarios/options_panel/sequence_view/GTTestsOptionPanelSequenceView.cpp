@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
+#include <QTableWidget>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QGraphicsItem>
 #include <QtGui/QMainWindow>
@@ -39,6 +39,7 @@
 #include "api/GTFileDialog.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTRadioButton.h"
 #include "api/GTSlider.h"
 #include "api/GTWidget.h"
@@ -216,6 +217,72 @@ GUI_TEST_CLASS_DEFINITION(test_0010){
     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Other settings"));
     GTUtilsOptionPanelSequenceView::setSetMaxResults(os, 99900);
     CHECK_SET_ERR(GTUtilsOptionPanelSequenceView::checkResultsText(os, "Results: 1/99900"), "Results string not match");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0011) {
+    // "DAS Annotations" widget multiple annotations downloading.
+    // Test may fail if DAS server does not respond
+
+    // 1. Open file "test/_common_data/pdb/1FSC.pdb"
+    GTFileDialog::openFile(os, testDir + "_common_data/pdb/", "1FSC.pdb");
+
+    // Expected state : Options panel has the "DAS Annotations" tab
+    // 2. Open the "DAS Annotations" tab
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Das);
+
+    // 3. Press the "Fetch IDs" button
+    GTWidget::click(os, GTWidget::findWidget(os, "searchIdsButton"));
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    // Expected state : In a few seconds some content has appeared in the table with IDs / Identity
+    QTableWidget *idList = qobject_cast<QTableWidget *>(GTWidget::findWidget(os, "idList"));
+    CHECK_SET_ERR(idList->rowCount() > 0, "DAS annotations not found");
+
+    // 4. Select a few rows with left mouse button holding Shift,
+    // then add to selection a few rows with left mouse button holding Ctrl
+    // Expected state : appropriate rows has added to selection
+    GTMouseDriver::moveTo(os, idList->viewport()->mapToGlobal(idList->visualItemRect(idList->item(idList->rowCount() - 1, 0)).center()));
+    GTMouseDriver::click(os);
+
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(200);
+
+    GTMouseDriver::moveTo(os, idList->viewport()->mapToGlobal(idList->visualItemRect(idList->item(idList->rowCount() - 3, 0)).center()));
+    GTMouseDriver::click(os);
+
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(200);
+
+    CHECK_SET_ERR(idList->selectedItems().size() == 6, QString("Incorrect selection size. Expected 6, actual %1").arg(idList->selectedItems().size()));
+
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(200);
+
+    GTMouseDriver::moveTo(os, idList->viewport()->mapToGlobal(idList->visualItemRect(idList->item(idList->rowCount() - 2, 0)).center()));
+    GTMouseDriver::click(os);
+
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep(200);
+
+    CHECK_SET_ERR(idList->selectedItems().size() == 4, QString("Incorrect selection size. Expected 4, actual %1").arg(idList->selectedItems().size()));
+
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+
+    GTMouseDriver::moveTo(os, idList->viewport()->mapToGlobal(idList->visualItemRect(idList->item(0, 0)).center()));
+    GTMouseDriver::click(os);
+
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(200);
+
+    CHECK_SET_ERR(idList->selectedItems().size() == 6, QString("Incorrect selection size. Expected 6, actual %1").arg(idList->selectedItems().size()));
+
+    // 5. Press the "Fetch Annotations" button
+    GTWidget::click(os, GTWidget::findWidget(os, "annotateButton"));
+
+    // Expected state : New annotations were downloaded and added to the annotation object
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTUtilsProjectTreeView::checkItem(os, "Annotations");
 }
 
 }

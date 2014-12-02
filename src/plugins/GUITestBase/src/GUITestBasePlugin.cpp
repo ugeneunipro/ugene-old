@@ -1590,6 +1590,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0008);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0009);
     REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0010);
+    REGISTER_TEST(GUITest_common_scenarios_options_panel_sequence_view::test_0011);
 
 /////////////////////////////////////////////////////////////////////////
 // common_scenarios/workflow_designer/shared_db

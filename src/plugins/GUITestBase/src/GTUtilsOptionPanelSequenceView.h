@@ -40,7 +40,7 @@ class U2OpStatus;
 
 class GTUtilsOptionPanelSequenceView{
 public:
-    enum Tabs{Search, AnnotationsHighlighting, Statistics};
+    enum Tabs{Search, AnnotationsHighlighting, Statistics, Das};
     enum AddRefMethod{Button, Completer};
 
     static const QMap<Tabs,QString> tabsNames;

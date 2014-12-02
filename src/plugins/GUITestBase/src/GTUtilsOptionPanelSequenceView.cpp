@@ -51,6 +51,7 @@ QMap<GTUtilsOptionPanelSequenceView::Tabs, QString> GTUtilsOptionPanelSequenceVi
     result.insert(Search, "OP_FIND_PATTERN");
     result.insert(AnnotationsHighlighting, "OP_ANNOT_HIGHLIGHT");
     result.insert(Statistics, "OP_SEQ_INFO");
+    result.insert(Das, "OP_DAS");
     return result;
 }
 
