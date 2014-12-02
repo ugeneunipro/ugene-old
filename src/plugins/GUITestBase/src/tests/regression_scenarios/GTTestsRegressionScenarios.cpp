@@ -1334,6 +1334,26 @@ GUI_TEST_CLASS_DEFINITION(test_1661) {
     CHECK_SET_ERR(resultLabel->text() == "Results: 1/1", "Unexpected find algorithm result count");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1672) {
+    //1. Open "COI.aln".
+    //2. Set the "Zychia_baranovi" sequence as reference.
+    //3. Open the "Statistics" options panel tab.
+    //4. Set checked "Show distance algorithm" box, select the "Identity" algorithm.
+    //Expected state: the reference sequence has 100% match with itself.
+    //Bug state: the reference sequence has 103% match with itself.
+
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_SEQ_STATISTICS_WIDGET"));
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-8, 8));
+    GTWidget::click(os, GTWidget::findWidget(os, "addSeq"));
+    QCheckBox* showDistancesColumnCheck = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "showDistancesColumnCheck"));
+    GTCheckBox::setChecked(os, showDistancesColumnCheck, true);
+    QComboBox *algoCombo = qobject_cast<QComboBox*>(GTWidget::findWidget(os, "algoComboBox"));
+    GTComboBox::setIndexWithText(os, algoCombo, "Identity");
+    QString num1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 8);
+    CHECK_SET_ERR(num1 == "100%", "unexpected sumilarity value an line 1: " + num1);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1687) {
     // 1. open samples / clustalW / COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
@@ -1580,15 +1600,10 @@ GUI_TEST_CLASS_DEFINITION(test_1720){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1747){
-    //    1. Open "data/samples/CLUSTALW/COI.aln".
+    //1. Open \data\samples\CLUSTALW\ty3.aln.gz
+    //2. Enable the distances column in options panel or create distances matrix by using menu {statistics->Generate distance matrix}
+    //Expected state: progress for "Generete distance matrix" correctly displays current state of calculation 
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
-
-    //    2. Use sequence area context menu:
-    //    { Statistics -> Generate distance matrix }
-    //    Expected state: the "Generate Distance Matrix" dialog has appeared.
-
-    //    3. Click "Generate".
-    //    Expected state: the "Multiple Sequence Alignment Distance Matrix" view has appeared.
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Statistics" << "Generate distance matrix"));
     GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
@@ -1616,6 +1631,15 @@ GUI_TEST_CLASS_DEFINITION(test_1747){
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1731){
+    //1. Open \data\samples\CLUSTALW\ty3.aln.gz
+
+    //2. Select CopCinTy34 as a reference
+
+    //3. Enable the distances column
+
+    //4. Select the Identity algorithm
+    //Expected state: identity of CopCinTy34 with each sequence is shown in the column
+
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
     GTWidget::click(os, GTWidget::findWidget(os, "OP_SEQ_STATISTICS_WIDGET"));
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(-5, 5));
@@ -6281,7 +6305,10 @@ GUI_TEST_CLASS_DEFINITION(test_2713) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2726) {
-    //1. Open the file "data/samples/CLUSTALW/COI.aln"
+    //1. Open "COI.aln".
+    //2. Select the second symbol at the first line.
+    //3. Press backspace twice.
+    //Expected state: undo and redo buttons are disabled.
     GTFileDialog::openFile(os, dataDir + "/samples/CLUSTALW/", "COI.aln");
 
     GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(1,0), QPoint(1,0));
