@@ -6318,7 +6318,7 @@ GUI_TEST_CLASS_DEFINITION(test_2726) {
     //Expected state : MSA view has opened, the "Undo" button is disabled.
     QAbstractButton *undoButton = GTAction::button(os, "msa_action_undo");
     CHECK_SET_ERR(!undoButton->isEnabled(), "'Undo' button is unexpectedly enabled");
-
+    //Expected state : MSA view has opened, the "Redo" button is disabled.
     QAbstractButton *redoButton = GTAction::button(os, "msa_action_undo");
     CHECK_SET_ERR(!redoButton->isEnabled(), "'Redo' button is unexpectedly enabled");
 }
