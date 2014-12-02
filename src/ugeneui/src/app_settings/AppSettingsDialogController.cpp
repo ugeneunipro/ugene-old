@@ -19,22 +19,18 @@
  * MA 02110-1301, USA.
  */
 
-#include "AppSettingsDialogController.h"
-#include "AppSettingsDialogTree.h"
+#include <QHBoxLayout>
+#include <QTreeWidget>
+#include <QMessageBox>
 
 #include <U2Core/AppContext.h>
+#include <U2Core/Settings.h>
+
 #include <U2Gui/AppSettingsGUI.h>
 #include <U2Gui/HelpButton.h>
 
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTreeWidget>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QMessageBox>
-#else
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QMessageBox>
-#endif
+#include "AppSettingsDialogController.h"
+#include "AppSettingsDialogTree.h"
 
 namespace U2 {
 
@@ -142,6 +138,7 @@ void AppSettingsDialogController::accept() {
     if (!checkCurrentState(false, true)) {
         return;
     }
+
     turnPage(NULL);//make current state saved in item
     for(int i=0, n = tree->topLevelItemCount(); i < n; i++) {
         AppSettingsTreeItem* item = static_cast<AppSettingsTreeItem*>(tree->topLevelItem(i));
@@ -149,6 +146,9 @@ void AppSettingsDialogController::accept() {
             item->pageController->saveState(item->pageState);
         }
     }
+
+    AppContext::getSettings()->sync();
+
     QDialog::accept();
 }
 

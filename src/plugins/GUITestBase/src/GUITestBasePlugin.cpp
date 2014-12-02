@@ -1539,9 +1539,10 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0014);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0015);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0016);
-    REGISTER_TEST_IGNORED(GUITest_common_scenarios_shared_database::import_test_0017, "UGENE-3733");
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0017);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0018);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0019);
+    REGISTER_TEST(GUITest_common_scenarios_shared_database::import_test_0020);
 
     REGISTER_TEST(GUITest_common_scenarios_shared_database::view_test_0001);
     REGISTER_TEST(GUITest_common_scenarios_shared_database::view_test_0002);

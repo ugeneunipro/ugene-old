@@ -323,6 +323,8 @@ void AceReader::parseAfTag(U2::IOAdapter *io, char *buff, int count, QMap<QByteA
     int readPos = 0;
     int complStrand = 0;
 
+    CHECK(0 < readsCount, );
+
     do {    // skip unused BQ part
         skipBreaks(io, buff, &len);
         CHECK_OP((*os), );

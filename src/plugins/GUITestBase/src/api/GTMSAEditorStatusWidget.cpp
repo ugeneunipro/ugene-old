@@ -43,6 +43,22 @@ int GTMSAEditorStatusWidget::length(U2OpStatus& os, QWidget* w) {
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "count"
+int GTMSAEditorStatusWidget::getSequencesCount(U2OpStatus &os, QWidget *w) {
+    QLabel* label = GTWidget::findExactWidget<QLabel *>(os, "Line", w);
+    GT_CHECK_RESULT(label != NULL, "label is NULL", -1);
+
+    QString labelText = label->text();
+    QString countString = labelText.section('/', -1, -1);
+
+    bool ok = false;
+    int countInt = countString.toInt(&ok);
+    GT_CHECK_RESULT(ok == true, "toInt returned false", -1);
+
+    return countInt;
+}
+#undef GT_METHOD_NAME
+
 #undef GT_CLASS_NAME
 
 }

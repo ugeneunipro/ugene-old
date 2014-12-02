@@ -34,6 +34,7 @@ const QString ImportToDatabaseOptions::CREATE_SUBFOLDER_FOR_TOP_LEVEL_FOLDER = "
 const QString ImportToDatabaseOptions::CREATE_SUBFOLDER_FOR_EACH_FILE = "create_subfolder_for_each_file";
 const QString ImportToDatabaseOptions::IMPORT_UNKNOWN_AS_UDR = "import_unknown_as_udr";
 const QString ImportToDatabaseOptions::MULTI_SEQUENCE_POLICY = "multi_sequence_policy";
+const QString ImportToDatabaseOptions::PREFERRED_FORMATS = "preferred_formats";
 const QString ImportToDatabaseOptions::CREATE_SUBFOLDER_FOR_DOCUMENT = "create_subfolder_for_document";
 const QString ImportToDatabaseOptions::MERGE_MULTI_SEQUENCE_POLICY_SEPARATOR_SIZE = "merge_multi_sequence_policy_separator_size";
 
@@ -51,7 +52,7 @@ ImportToDatabaseOptions::ImportToDatabaseOptions() :
 }
 
 bool ImportToDatabaseOptions::operator == (const ImportToDatabaseOptions &other) const {
-    return  createSubfolderForEachDocument == other.createSubfolderForEachDocument &&
+    return createSubfolderForEachDocument == other.createSubfolderForEachDocument &&
             createSubfolderForEachFile == other.createSubfolderForEachFile &&
             createSubfolderForTopLevelFolder == other.createSubfolderForTopLevelFolder &&
             importUnknownAsUdr == other.importUnknownAsUdr &&
@@ -59,6 +60,7 @@ bool ImportToDatabaseOptions::operator == (const ImportToDatabaseOptions &other)
             keepFoldersStructure == other.keepFoldersStructure &&
             mergeMultiSequencePolicySeparatorSize == other.mergeMultiSequencePolicySeparatorSize &&
             multiSequencePolicy == other.multiSequencePolicy &&
+            preferredFormats == other.preferredFormats &&
             processFoldersRecursively == other.processFoldersRecursively;
 }
 

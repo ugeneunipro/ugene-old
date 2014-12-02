@@ -45,7 +45,7 @@ protected:
    
 private:
     QString formatName;
-    void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, U2OpStatus& ti);
+    void load(IOAdapter* io, const U2DbiRef& dbiRef, QList<GObject*>& objects, const QVariantMap &hints, U2OpStatus& ti);
 
     static const QString CO;
     static const QString RD;

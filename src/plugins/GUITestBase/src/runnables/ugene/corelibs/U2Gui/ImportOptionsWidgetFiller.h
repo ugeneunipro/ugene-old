@@ -41,6 +41,7 @@ private:
     static void setCreateSubfolderForEachFile(U2OpStatus& os, ImportOptionsWidget* optionsWidget, const QVariantMap& data);
     static void setImportUnknownAsUdr(U2OpStatus& os, ImportOptionsWidget* optionsWidget, const QVariantMap& data);
     static void setMultiSequencePolicy(U2OpStatus& os, ImportOptionsWidget* optionsWidget, const QVariantMap& data);
+    static void setAceFormatPolicy(U2OpStatus& os, ImportOptionsWidget* optionsWidget, const QVariantMap& data);
     static void setCreateSubfolderForDocument(U2OpStatus& os, ImportOptionsWidget* optionsWidget, const QVariantMap& data);
     static void setMergeMultiSequencePolicySeparatorSize(U2OpStatus& os, ImportOptionsWidget* optionsWidget, const QVariantMap& data);
 };

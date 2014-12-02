@@ -32,6 +32,10 @@
 #include <QtWidgets/QSpinBox>
 #endif
 
+#include <U2Core/BaseDocumentFormats.h>
+
+#include <U2Formats/AceImporter.h>
+
 #include <U2Gui/ImportOptionsWidget.h>
 
 #include "GTUtilsDialog.h"
@@ -58,6 +62,7 @@ void ImportOptionsWidgetFiller::fill(U2OpStatus &os, ImportOptionsWidget *option
     setCreateSubfolderForEachFile(os, optionsWidget, data);
     setImportUnknownAsUdr(os, optionsWidget, data);
     setMultiSequencePolicy(os, optionsWidget, data);
+    setAceFormatPolicy(os, optionsWidget, data);
     setCreateSubfolderForDocument(os, optionsWidget, data);
 }
 #undef GT_METHOD_NAME
@@ -141,6 +146,24 @@ void ImportOptionsWidgetFiller::setMultiSequencePolicy(U2OpStatus &os, ImportOpt
         GTRadioButton::click(os, malignment);
         break;
     }
+    }
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setAceFormatPolicy"
+void ImportOptionsWidgetFiller::setAceFormatPolicy(U2OpStatus &os, ImportOptionsWidget *optionsWidget, const QVariantMap &data) {
+    CHECK(data.contains(ImportToDatabaseOptions::PREFERRED_FORMATS), );
+
+    const QStringList preferredFormats = data.value(ImportToDatabaseOptions::PREFERRED_FORMATS).toStringList();
+
+    if (preferredFormats.contains(BaseDocumentFormats::ACE)) {
+        QRadioButton* rbAceAsMalignment = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "rbAceAsMalignment", optionsWidget));
+        GT_CHECK(NULL != rbAceAsMalignment, "rbAceAsMalignment is NULL");
+        GTRadioButton::click(os, rbAceAsMalignment);
+    } else if (preferredFormats.contains(AceImporter::ID)) {
+        QRadioButton* rbAceAsAssembly = qobject_cast<QRadioButton*>(GTWidget::findWidget(os, "rbAceAsAssembly", optionsWidget));
+        GT_CHECK(NULL != rbAceAsAssembly, "rbAceAsAssembly is NULL");
+        GTRadioButton::click(os, rbAceAsAssembly);
     }
 }
 #undef GT_METHOD_NAME

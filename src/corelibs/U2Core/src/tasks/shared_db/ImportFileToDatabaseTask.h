@@ -22,6 +22,7 @@
 #ifndef _U2_IMPORT_FILE_TO_DATABASE_TASK_H_
 #define _U2_IMPORT_FILE_TO_DATABASE_TASK_H_
 
+#include <U2Core/DocumentUtils.h>
 #include <U2Core/ImportToDatabaseOptions.h>
 #include <U2Core/Task.h>
 #include <U2Core/U2Type.h>
@@ -45,6 +46,7 @@ private:
     DocumentProviderTask *detectFormat();
     QVariantMap prepareHints() const;
     QString getFolderName() const;
+    FormatDetectionResult getPreferredFormat(const QList<FormatDetectionResult> &detectedFormats) const;
 
     QString srcUrl;
     U2DbiRef dstDbiRef;

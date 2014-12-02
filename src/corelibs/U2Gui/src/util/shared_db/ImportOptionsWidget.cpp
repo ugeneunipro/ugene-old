@@ -19,7 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include <U2Core/BaseDocumentFormats.h>
 #include <U2Core/U2DbiUtils.h>
+
+#include <U2Formats/AceImporter.h>
 
 #include "ImportOptionsWidget.h"
 #include "ui/ui_ImportOptionsWidget.h"
@@ -59,6 +62,14 @@ void ImportOptionsWidget::init(const QString& baseFolder, const ImportToDatabase
             ui->rbMalignment->setChecked(true);
             break;
     }
+
+    foreach (const QString &formatId, options.preferredFormats) {
+        if (BaseDocumentFormats::ACE == formatId) {
+            ui->rbAceAsMalignment->setChecked(true);
+        } else  if (AceImporter::ID == formatId) {
+            ui->rbAceAsAssembly->setChecked(true);
+        }
+    }
 }
 
 QString ImportOptionsWidget::getFolder() const {
@@ -82,6 +93,12 @@ ImportToDatabaseOptions ImportOptionsWidget::getOptions() const {
         options.mergeMultiSequencePolicySeparatorSize = ui->sbMerge->value();
     } else if (ui->rbMalignment->isChecked()) {
         options.multiSequencePolicy = ImportToDatabaseOptions::MALIGNMENT;
+    }
+
+    if (ui->rbAceAsMalignment->isChecked()) {
+        options.preferredFormats << BaseDocumentFormats::ACE;
+    } else if (ui->rbAceAsAssembly->isChecked()) {
+        options.preferredFormats << AceImporter::ID;
     }
 
     return options;

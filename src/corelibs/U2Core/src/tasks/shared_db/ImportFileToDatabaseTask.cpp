@@ -24,7 +24,6 @@
 #include <U2Core/AppContext.h>
 #include <U2Core/Counter.h>
 #include <U2Core/DocumentImport.h>
-#include <U2Core/DocumentUtils.h>
 #include <U2Core/GUrl.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/IOAdapterUtils.h>
@@ -105,14 +104,16 @@ DocumentProviderTask* ImportFileToDatabaseTask::detectFormat() {
     QList<FormatDetectionResult> formats = DocumentUtils::detectFormat(GUrl(srcUrl), detectionConfig);
     CHECK_EXT(!formats.isEmpty(), setError(tr("File format is not recognized")), NULL);
 
-    format = formats.first().format;
+    const FormatDetectionResult preferredFormat = getPreferredFormat(formats);
+
+    format = preferredFormat.format;
     CHECK(NULL == format, NULL);
 
-    DocumentImporter* importer = formats.first().importer;
+    DocumentImporter* importer = preferredFormat.importer;
     CHECK(NULL != importer, NULL);  // do something with unrecognized files here
 
     QVariantMap hints = prepareHints();
-    return importer->createImportTask(formats.first(), false, hints);
+    return importer->createImportTask(preferredFormat, false, hints);
 }
 
 QVariantMap ImportFileToDatabaseTask::prepareHints() const {
@@ -156,6 +157,31 @@ QString ImportFileToDatabaseTask::getFolderName() const {
     }
 
     return result;
+}
+
+FormatDetectionResult ImportFileToDatabaseTask::getPreferredFormat(const QList<FormatDetectionResult> &detectedFormats) const {
+    CHECK(!detectedFormats.isEmpty(), FormatDetectionResult());
+    CHECK(!options.preferredFormats.isEmpty(), detectedFormats.first());
+
+    QStringList detectedFormatIds;
+    foreach (const FormatDetectionResult &detectedFormat, detectedFormats) {
+        if (NULL != detectedFormat.format) {
+            detectedFormatIds << detectedFormat.format->getFormatId();
+        } else if (NULL != detectedFormat.importer) {
+            detectedFormatIds << detectedFormat.importer->getId();
+        } else {
+            detectedFormatIds << "";   // to keep the numeration
+        }
+    }
+
+    foreach (const QString &formatId, options.preferredFormats) {
+        int i = detectedFormatIds.indexOf(formatId);
+        if (i >= 0) {
+            return detectedFormats[i];
+        }
+    }
+
+    return detectedFormats.first();
 }
 
 }   // namespace U2

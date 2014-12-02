@@ -36,6 +36,7 @@
 #include "GTUtilsAssemblyBrowser.h"
 #include "GTUtilsLog.h"
 #include "GTUtilsMdi.h"
+#include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "GTUtilsProjectTreeView.h"
 #include "GTUtilsSequenceView.h"
@@ -1674,8 +1675,8 @@ GUI_TEST_CLASS_DEFINITION(import_test_0015) {
 
     qint64 length = GTUtilsAssemblyBrowser::getLength(os, " [as] " + assemblyObjectName);
     qint64 readsCount = GTUtilsAssemblyBrowser::getReadsCount(os, " [as] " + assemblyObjectName);
-    CHECK_SET_ERR(expectedLength == length, QString("The assembly length is incorrect: expect %1, got %1").arg(expectedLength).arg(length));
-    CHECK_SET_ERR(expectedReadsCount == readsCount, QString("The assembly reads count is incorrect: expect %1, got %1").arg(expectedReadsCount).arg(readsCount));
+    CHECK_SET_ERR(expectedLength == length, QString("The assembly length is incorrect: expect %1, got %2").arg(expectedLength).arg(length));
+    CHECK_SET_ERR(expectedReadsCount == readsCount, QString("The assembly reads count is incorrect: expect %1, got %2").arg(expectedReadsCount).arg(readsCount));
 
     GTUtilsLog::check(os, lt);
 }
@@ -1723,27 +1724,31 @@ GUI_TEST_CLASS_DEFINITION(import_test_0016) {
 
     qint64 length = GTUtilsAssemblyBrowser::getLength(os, " [as] " + assemblyObjectName);
     qint64 readsCount = GTUtilsAssemblyBrowser::getReadsCount(os, " [as] " + assemblyObjectName);
-    CHECK_SET_ERR(expectedLength == length, QString("The assembly length is incorrect: expect %1, got %1").arg(expectedLength).arg(length));
-    CHECK_SET_ERR(expectedReadsCount == readsCount, QString("The assembly reads count is incorrect: expect %1, got %1").arg(expectedReadsCount).arg(readsCount));
+    CHECK_SET_ERR(expectedLength == length, QString("The assembly length is incorrect: expect %1, got %2").arg(expectedLength).arg(length));
+    CHECK_SET_ERR(expectedReadsCount == readsCount, QString("The assembly reads count is incorrect: expect %1, got %2").arg(expectedReadsCount).arg(readsCount));
 
     GTUtilsLog::check(os, lt);
 }
 
 GUI_TEST_CLASS_DEFINITION(import_test_0017) {
-//    Import an ACE file via import dialog.
+//    Import an ACE file via import dialog as assembly.
 
 //    1. Connect to the "ugene_gui_test" database.
 
 //    2. Call context menu on the {/import_test_0017} folder in the database connection document, select {Add -> Import to the folder...} item.
 //    Expected state: an import dialog appears.
 
-//    3. Click the "Add files" button, select the {_common_data/ace/ace_test_2.ace} file.
+//    3. Click a "General options" button and set a specific option:
+//        Import ACE files as: Short reads assembly;
+//    and accept the dialog.
+
+//    4. Click the "Add files" button, select the {_common_data/ace/ace_test_2.ace} file.
 //    Expected state: the document is added to the orders list, it will be imported into the {/import_test_0017} folder.
 
-//    4. Click the "Import" button.
+//    5. Click the "Import" button.
 //    Expected state: an import task is started, there are two assembly objects and two sequence objects in the {/import_test_0017/ace_test_2/} folder after the task has finished.
 
-//    5. Check the assembly object length, count of reads and check the reference is set.
+//    6. Check the assembly object length, count of reads and check the reference is set.
 //    Expected state: the first assembly: the length is 871, there are 2 reads, reference is shown;
 //                    the second assembly: the length is 3296, there are 14 reads, reference is shown.
 
@@ -1769,7 +1774,9 @@ GUI_TEST_CLASS_DEFINITION(import_test_0017) {
 
     Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
 
-    GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, dstFolderPath, QStringList() << testDir + "_common_data/ace/ace_test_2.ace");
+    QVariantMap options;
+    options.insert(ImportToDatabaseOptions::PREFERRED_FORMATS, QStringList() << "ace-importer");
+    GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, dstFolderPath, QStringList() << testDir + "_common_data/ace/ace_test_2.ace", options);
 
     const QStringList expectedItems = QStringList() << objectFolderPath
                                                     << databaseAssemblyFirstObjectPath
@@ -1783,8 +1790,8 @@ GUI_TEST_CLASS_DEFINITION(import_test_0017) {
     qint64 lengthFirst = GTUtilsAssemblyBrowser::getLength(os, " [as] " + assemblyFirstObjectName);
     qint64 readsCountFirst = GTUtilsAssemblyBrowser::getReadsCount(os, " [as] " + assemblyFirstObjectName);
     bool hasReferenceFirst = GTUtilsAssemblyBrowser::hasReference(os, " [as] " + assemblyFirstObjectName);
-    CHECK_SET_ERR(expectedLengthFirst == lengthFirst, QString("The assembly length is incorrect: expect %1, got %1").arg(expectedLengthFirst).arg(lengthFirst));
-    CHECK_SET_ERR(expectedReadsCountFirst == readsCountFirst, QString("The assembly reads count is incorrect: expect %1, got %1").arg(expectedReadsCountFirst).arg(readsCountFirst));
+    CHECK_SET_ERR(expectedLengthFirst == lengthFirst, QString("The assembly length is incorrect: expect %1, got %2").arg(expectedLengthFirst).arg(lengthFirst));
+    CHECK_SET_ERR(expectedReadsCountFirst == readsCountFirst, QString("The assembly reads count is incorrect: expect %1, got %2").arg(expectedReadsCountFirst).arg(readsCountFirst));
     CHECK_SET_ERR(hasReferenceFirst, "The assembly reference is not set");
 
     GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseAssemblySecondObjectPath);
@@ -1792,8 +1799,8 @@ GUI_TEST_CLASS_DEFINITION(import_test_0017) {
     qint64 lengthSecond = GTUtilsAssemblyBrowser::getLength(os, " [as] " + assemblySecondObjectName);
     qint64 readsCountSecond = GTUtilsAssemblyBrowser::getReadsCount(os, " [as] " + assemblySecondObjectName);
     bool hasReferenceSecond = GTUtilsAssemblyBrowser::hasReference(os, " [as] " + assemblySecondObjectName);
-    CHECK_SET_ERR(expectedLengthSecond == lengthSecond, QString("The assembly length is incorrect: expect %1, got %1").arg(expectedLengthSecond).arg(lengthSecond));
-    CHECK_SET_ERR(expectedReadsCountSecond == readsCountSecond, QString("The assembly reads count is incorrect: expect %1, got %1").arg(expectedReadsCountSecond).arg(readsCountSecond));
+    CHECK_SET_ERR(expectedLengthSecond == lengthSecond, QString("The assembly length is incorrect: expect %1, got %2").arg(expectedLengthSecond).arg(lengthSecond));
+    CHECK_SET_ERR(expectedReadsCountSecond == readsCountSecond, QString("The assembly reads count is incorrect: expect %1, got %2").arg(expectedReadsCountSecond).arg(readsCountSecond));
     CHECK_SET_ERR(hasReferenceSecond, "The assembly reference is not set");
 
     GTUtilsLog::check(os, lt);
@@ -1918,6 +1925,66 @@ GUI_TEST_CLASS_DEFINITION(import_test_0019) {
     CHECK_SET_ERR(assemblyObjectIndex.isValid(), "Result item wasn't found");
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
+}
+
+GUI_TEST_CLASS_DEFINITION(import_test_0020) {
+//    Import an ACE file via import dialog as malignment.
+
+//    1. Connect to the "ugene_gui_test" database.
+
+//    2. Call context menu on the {/import_test_0020} folder in the database connection document, select {Add -> Import to the folder...} item.
+//    Expected state: an import dialog appears.
+
+//    3. Click the "Add files" button, select the {_common_data/ace/ace_test_2.ace} file.
+//    Expected state: the document is added to the orders list, it will be imported into the {/import_test_0020} folder.
+
+//    4. Click the "Import" button.
+//    Expected state: an import task is started, there are two malignment objects in the {/import_test_0020/ace_test_2.ace/} folder after the task has finished.
+
+//    5. Check the malignment object length, count of sequences.
+//    Expected state: the first msa: the length is 871, there are 3 sequences;
+//                    the second msa: the length is 3296, there are 15 sequences.
+    GTLogTracer lt;
+
+    const QString parentFolderPath = U2ObjectDbi::ROOT_FOLDER;
+    const QString dstFolderName = "import_test_0020";
+    const QString dstFolderPath = U2ObjectDbi::ROOT_FOLDER + dstFolderName;
+    const QString objectFolderName = "ace_test_2";
+    const QString objectFolderPath = dstFolderPath + U2ObjectDbi::ROOT_FOLDER + objectFolderName;
+    const QString malignmentFirstObjectName = "Contig1";
+    const QString malignmentSecondObjectName = "Contig2";
+    const QString databaseMalignmentFirstObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + malignmentFirstObjectName;
+    const QString databaseMalignmentSecondObjectPath = objectFolderPath + U2ObjectDbi::PATH_SEP + malignmentSecondObjectName;
+    const qint64 expectedLengthFirst = 871;
+    const qint64 expectedSequencesCountFirst = 3;
+    const qint64 expectedLengthSecond = 3296;
+    const qint64 expectedSequencesCountSecond = 15;
+
+    Document* databaseDoc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    GTUtilsSharedDatabaseDocument::importFiles(os, databaseDoc, dstFolderPath, QStringList() << testDir + "_common_data/ace/ace_test_2.ace");
+
+    const QStringList expectedItems = QStringList() << objectFolderPath
+                                                    << databaseMalignmentFirstObjectPath
+                                                    << databaseMalignmentSecondObjectPath;
+    GTUtilsSharedDatabaseDocument::ensureThereAreNoItemsExceptListed(os, databaseDoc, dstFolderPath, expectedItems);
+
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseMalignmentFirstObjectPath);
+
+    qint64 lengthFirst = GTUtilsMSAEditorSequenceArea::getLength(os);
+    qint64 sequenceCountFirst = GTUtilsMsaEditor::getSequencesCount(os);
+    CHECK_SET_ERR(expectedLengthFirst == lengthFirst, QString("The malignment length is incorrect: expect %1, got %2").arg(expectedLengthFirst).arg(lengthFirst));
+    CHECK_SET_ERR(expectedSequencesCountFirst == sequenceCountFirst, QString("The malignment sequences count is incorrect: expect %1, got %2").arg(expectedSequencesCountFirst).arg(sequenceCountFirst));
+
+    GTUtilsMdi::click(os, GTGlobals::Close);
+    GTUtilsSharedDatabaseDocument::openView(os, databaseDoc, databaseMalignmentSecondObjectPath);
+
+    qint64 lengthSecond = GTUtilsMSAEditorSequenceArea::getLength(os);
+    qint64 sequenceCountSecond = GTUtilsMsaEditor::getSequencesCount(os);
+    CHECK_SET_ERR(expectedLengthSecond == lengthSecond, QString("The malignment length is incorrect: expect %1, got %2").arg(expectedLengthSecond).arg(lengthSecond));
+    CHECK_SET_ERR(expectedSequencesCountSecond == sequenceCountSecond, QString("The malignment sequences count is incorrect: expect %1, got %2").arg(expectedSequencesCountSecond).arg(sequenceCountSecond));
+
+    GTUtilsLog::check(os, lt);
 }
 
 GUI_TEST_CLASS_DEFINITION(view_test_0001) {

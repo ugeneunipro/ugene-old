@@ -45,6 +45,8 @@ public:
 
     static void toggleCollapsingMode(U2OpStatus &os);
     static void toggleCollapsingGroup(U2OpStatus &os, const QString &groupName);
+
+    static int getSequencesCount(U2OpStatus &os);
 };
 
 }   // namespace U2

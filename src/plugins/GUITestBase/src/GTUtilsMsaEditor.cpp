@@ -29,6 +29,7 @@
 #include "GTUtilsMsaEditor.h"
 #include "GTUtilsMsaEditorSequenceArea.h"
 #include "api/GTMouseDriver.h"
+#include "api/GTMSAEditorStatusWidget.h"
 #include "api/GTToolbar.h"
 
 namespace U2 {
@@ -104,6 +105,13 @@ void GTUtilsMsaEditor::toggleCollapsingGroup(U2OpStatus &os, const QString &grou
     const QPoint magicExpandButtonOffset(15, 5);
     GTMouseDriver::moveTo(os, sequenceNameRect.topLeft() + magicExpandButtonOffset);
     GTMouseDriver::click(os);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getSequencesCount"
+int GTUtilsMsaEditor::getSequencesCount(U2OpStatus &os) {
+    QWidget *statusWidget = GTWidget::findWidget(os, "msa_editor_status_bar");
+    return GTMSAEditorStatusWidget::getSequencesCount(os, statusWidget);
 }
 #undef GT_METHOD_NAME
 

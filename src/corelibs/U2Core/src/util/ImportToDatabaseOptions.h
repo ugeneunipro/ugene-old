@@ -22,6 +22,8 @@
 #ifndef _U2_IMPORT_TO_DATABASE_OPTIONS_H_
 #define _U2_IMPORT_TO_DATABASE_OPTIONS_H_
 
+#include <QStringList>
+
 #include <U2Core/global.h>
 
 namespace U2 {
@@ -44,6 +46,7 @@ public:
     bool                    keepFoldersStructure;
     int                     mergeMultiSequencePolicySeparatorSize;
     MultiSequencePolicy     multiSequencePolicy;
+    QStringList             preferredFormats;
     bool                    processFoldersRecursively;
 
     bool operator == (const ImportToDatabaseOptions& other) const;
@@ -56,6 +59,7 @@ public:
     static const QString    CREATE_SUBFOLDER_FOR_EACH_FILE;
     static const QString    IMPORT_UNKNOWN_AS_UDR;
     static const QString    MULTI_SEQUENCE_POLICY;
+    static const QString    PREFERRED_FORMATS;
     static const QString    CREATE_SUBFOLDER_FOR_DOCUMENT;
     static const QString    MERGE_MULTI_SEQUENCE_POLICY_SEPARATOR_SIZE;
 };

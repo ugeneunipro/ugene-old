@@ -19,19 +19,22 @@
  * MA 02110-1301, USA.
  */
 
-#include "AceFormat.h"
-#include <U2Formats/DocumentFormatUtils.h>
+#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/GObjectTypes.h>
 #include <U2Core/IOAdapter.h>
 #include <U2Core/L10n.h>
-#include <U2Core/GObjectTypes.h>
 #include <U2Core/MAlignmentImporter.h>
 #include <U2Core/MAlignmentObject.h>
-#include <U2Core/TextUtils.h>
 #include <U2Core/MSAUtils.h>
-#include <U2Core/GObjectRelationRoles.h>
+#include <U2Core/TextUtils.h>
+#include <U2Core/U2AlphabetUtils.h>
+#include <U2Core/U2ObjectDbi.h>
 #include <U2Core/U2OpStatus.h>
 #include <U2Core/U2SafePoints.h>
-#include <U2Core/U2AlphabetUtils.h>
+
+#include <U2Formats/DocumentFormatUtils.h>
+
+#include "AceFormat.h"
 
 namespace U2 {
 
@@ -399,7 +402,7 @@ static inline int getSmallestOffset(const QMap<QString, int>& posMap) {
     return smallestOffset;
 }
 
-void ACEFormat::load(IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*> &objects, U2OpStatus &os) {
+void ACEFormat::load(IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*> &objects, const QVariantMap &hints, U2OpStatus &os) {
     QByteArray readBuff(READ_BUFF_SIZE+1, 0);
     char* buff = readBuff.data();
     qint64 len = 0;
@@ -506,7 +509,9 @@ void ACEFormat::load(IOAdapter *io, const U2DbiRef& dbiRef, QList<GObject*> &obj
         U2AlphabetUtils::assignAlphabet(al);
         CHECK_EXT(al.getAlphabet() != NULL, ACEFormat::tr("Alphabet unknown"), );
 
-        U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, al, os);
+        const QString folder = hints.value(DBI_FOLDER_HINT, U2ObjectDbi::ROOT_FOLDER).toString();
+
+        U2EntityRef msaRef = MAlignmentImporter::createAlignment(dbiRef, folder, al, os);
         CHECK_OP(os, );
 
         MAlignmentObject* obj = new MAlignmentObject(al.getName(), msaRef);
@@ -525,7 +530,7 @@ FormatCheckResult ACEFormat::checkRawData(const QByteArray& rawData, const GUrl&
 
 Document* ACEFormat::loadDocument(IOAdapter* io, const U2DbiRef& dbiRef, const QVariantMap& fs, U2OpStatus& os) {
     QList <GObject*> objs;
-    load(io, dbiRef, objs, os);
+    load(io, dbiRef, objs, fs, os);
 
     CHECK_OP_EXT(os, qDeleteAll(objs), NULL);
     
