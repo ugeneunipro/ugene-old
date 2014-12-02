@@ -1615,6 +1615,20 @@ GUI_TEST_CLASS_DEFINITION(test_1747){
     CHECK_SET_ERR(progress > oldProgress, "Progress didn't groving up");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1731){
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_SEQ_STATISTICS_WIDGET"));
+    GTUtilsMSAEditorSequenceArea::click(os, QPoint(-5, 5));
+    GTWidget::click(os, GTWidget::findWidget(os, "addSeq"));
+    QCheckBox* showDistancesColumnCheck = qobject_cast<QCheckBox*>(GTWidget::findWidget(os, "showDistancesColumnCheck"));
+    GTCheckBox::setChecked(os, showDistancesColumnCheck, true);
+    GTGlobals::sleep(200000);
+    QString num1 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 1);
+    QString num3 = GTUtilsMSAEditorSequenceArea::getSimilarityValue(os, 3);
+    CHECK_SET_ERR(num1 != "100%", "unexpected sumilarity value an line 1: " + num1);
+    CHECK_SET_ERR(num3 != "100%", "unexpected sumilarity value an line 3: " + num3);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1786){
     // 1. Use menu {File->Access remote database...}
     // 2. Select database UniProt(DAS)
