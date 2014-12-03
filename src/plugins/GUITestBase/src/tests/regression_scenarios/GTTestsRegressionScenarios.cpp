@@ -10584,7 +10584,20 @@ GUI_TEST_CLASS_DEFINITION(test_3658){
     int count = table->model()->columnCount();
     CHECK_SET_ERR(count == 2, QString("wrong columns number. expected 2, actual: %1").arg(count));
 }
-
+GUI_TEST_CLASS_DEFINITION(test_3675){
+/*  1. Open file COI.aln
+    2. Press "build tree" button on main toolbar
+    3. In build tree dialog set path like this: some_existing_folder/some_not_existing_folder/COI.nwk
+    4. Press build.
+    Expected state: new folder created, COI.nwk writter there
+    Actual state: error messagebox appeares: "you don't have permission to write to this folder"
+*/
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+    GTUtilsDialog::waitForDialog(os, new BuildTreeDialogFiller(os, sandBoxDir + "some_not_existing_folder/COI.nwk", 0, 0, true));
+    GTWidget::click(os, GTAction::button(os, GTAction::findAction(os, "Build Tree")));
+    GTGlobals::sleep();
+    CHECK_SET_ERR(QFile::exists(sandBoxDir + "some_not_existing_folder/COI.nwk"), "File sandBoxDir/some_not_existing_folder/COI.nwk does not exist");
+}
 GUI_TEST_CLASS_DEFINITION(test_3690){
 //    1. Open human_T1.fa
 //    Expected state: there are two opened windows - start page and human_T1
