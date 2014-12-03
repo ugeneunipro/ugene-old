@@ -28,6 +28,7 @@
 #include <QtWidgets/QLabel>
 #endif
 
+#include "api/GTComboBox.h"
 #include "api/GTRadioButton.h"
 #include "api/GTWidget.h"
 
@@ -70,8 +71,11 @@ QRadioButton* DocumentFormatSelectorDialogFiller::getButton(U2OpStatus &os){
         pos++;
     }
 
-    QRadioButton* result = radioMap.values().at(pos);
-    return result;
+    if (pos < radioMap.size()) {
+        return radioMap.values().at(pos);
+    }
+
+    return NULL;
 }
 #undef GT_METHOD_NAME
 
@@ -82,8 +86,16 @@ void DocumentFormatSelectorDialogFiller::commonScenario()
     GT_CHECK(dialog, "activeModalWidget is NULL");
 
     QRadioButton* radio = getButton(os);
-    GT_CHECK(radio != NULL, "radio button not found");
-    GTRadioButton::click(os, radio);
+    if (NULL != radio) {
+        GTRadioButton::click(os, radio);
+    } else {
+        QList<QRadioButton*> radioList = dialog->findChildren<QRadioButton*>();
+        GT_CHECK(radioList.size() > 0, "radio button not found");
+        GTRadioButton::click(os, radioList.last());
+        QList<QComboBox*> comboList = dialog->findChildren<QComboBox*>();
+        GT_CHECK(1 == comboList.size(), "combobox not found");
+        GTComboBox::setIndexWithText(os, comboList.first(), format);
+    }
 
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));
     GT_CHECK(box != NULL, "buttonBox is NULL");

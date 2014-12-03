@@ -10398,6 +10398,19 @@ GUI_TEST_CLASS_DEFINITION(test_3645) {
     GTGlobals::sleep();
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3634) {
+    //1. File -> Open as -> "_common_data/gtf/invalid/AB375112_annotations.gtf".
+    //Expected: the "Select correct document format" dialog appears.
+    //2. Choose "GTF" in the combobox.
+    //3. Click OK.
+    // Expected: the file is not opened.
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/gtf/invalid", "AB375112_annotations.gtf"));
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "GTF"));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__OPEN_AS);
+    CHECK_SET_ERR(l.hasError(), "No error about opening the file");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3639) {
     GTLogTracer logTracer;
 
