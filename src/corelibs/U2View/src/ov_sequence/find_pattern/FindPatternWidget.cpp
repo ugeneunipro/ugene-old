@@ -507,7 +507,6 @@ void FindPatternWidget::sl_onRegionOptionChanged(int index)
         editStart->show();
         lblStartEndConnection->show();
         editEnd->show();
-
         sl_onSelectedRegionChanged();
     }
 }
@@ -843,6 +842,7 @@ void FindPatternWidget::setRegionToWholeSequence()
     editStart->setText(QString::number(1));
     editEnd->setText(QString::number(activeContext->getSequenceLength()));
     regionIsCorrect = true;
+    boxRegion->setCurrentIndex(boxRegion->findData(RegionSelectionIndex_WholeSequence));
 }
 
 
@@ -1252,6 +1252,7 @@ void FindPatternWidget::sl_onSelectedRegionChanged(){
         editEnd->setText(QString::number(annotatedDnaView->getSequenceInFocus()->getSequenceLength()));
     }
     regionIsCorrect = true;
+    boxRegion->setCurrentIndex(boxRegion->findData(RegionSelectionIndex_CustomRegion));
     checkState();
 }
 
