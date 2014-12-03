@@ -147,8 +147,6 @@ void AppSettingsDialogController::accept() {
         }
     }
 
-    AppContext::getSettings()->sync();
-
     QDialog::accept();
 }
 

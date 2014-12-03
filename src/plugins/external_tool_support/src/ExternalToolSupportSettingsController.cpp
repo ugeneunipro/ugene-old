@@ -60,6 +60,7 @@ AppSettingsGUIPageState* ExternalToolSupportSettingsPageController::getSavedStat
 
 void ExternalToolSupportSettingsPageController::saveState(AppSettingsGUIPageState* s) {
     Q_UNUSED(s);
+    ExternalToolSupportSettings::setExternalTools();
 }
 
 AppSettingsGUIPageWidget* ExternalToolSupportSettingsPageController::createWidget(AppSettingsGUIPageState* state) {

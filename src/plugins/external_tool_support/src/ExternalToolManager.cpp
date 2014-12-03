@@ -81,6 +81,7 @@ void ExternalToolManagerImpl::checkStartupTasksState() {
     CHECK(startupChecks, );
     CHECK(!toolStates.values().contains(ValidationIsInProcess) && !toolStates.values().contains(SearchingIsInProcess), );
     startupChecks = false;
+    ExternalToolSupportSettings::setExternalTools();
     emit si_startupChecksFinish();
 }
 
@@ -383,6 +384,8 @@ void ExternalToolManagerImpl::validateTools(const QStrStrMap& toolPaths, Externa
             listener->validationFinished();
         }
     }
+
+    checkStartupTasksState();
 }
 
 void ExternalToolManagerImpl::searchTools() {
@@ -404,6 +407,8 @@ void ExternalToolManagerImpl::searchTools() {
         SAFE_POINT(scheduler, "Task scheduler is NULL", );
         scheduler->registerTopLevelTask(searchTask);
     }
+
+    checkStartupTasksState();
 }
 
 void ExternalToolManagerImpl::setToolPath(const QString& toolName, const QString& toolPath) {
