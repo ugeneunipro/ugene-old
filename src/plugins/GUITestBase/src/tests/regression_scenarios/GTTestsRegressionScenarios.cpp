@@ -1355,6 +1355,69 @@ GUI_TEST_CLASS_DEFINITION(test_1672) {
     CHECK_SET_ERR(num1 == "100%", "unexpected sumilarity value an line 1: " + num1);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1680) {
+//    For Mac only
+
+//    1. Open "data/samples/CLUSTALW/COI.aln"
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+
+//    2. Choose some sequence by mouse in the name list area
+    GTUtilsMsaEditor::clickSequenceName(os, "Tettigonia_viridissima");
+
+//    3. Press "Shift"+"Arrow Up" a few times, then "Shift"+"Arrow Down" a few times
+//    Expected state: The selection changes on every keystroke, for "Arrow Up" it grows to
+//    the top of sequences list, for "Arrow Down" it does to the bottom
+    GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["shift"]);
+
+    int expectedSelectionSize = 1;
+    for (int i = 0; i < 9; i++) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
+        expectedSelectionSize++;
+        const int currentSelectionSize = GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os);
+        CHECK_SET_ERR(expectedSelectionSize == currentSelectionSize, QString("An unexpected selection size: expect %1, got %2").arg(expectedSelectionSize).arg(currentSelectionSize));
+        GTGlobals::sleep(100);
+    }
+
+    {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
+        const int currentSelectionSize = GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os);
+        CHECK_SET_ERR(10 == currentSelectionSize, QString("An unexpected selection size: expect %1, got %2").arg(10).arg(currentSelectionSize));
+        GTGlobals::sleep(100);
+    }
+
+    for (int i = 0; i < 9; i++) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+        expectedSelectionSize--;
+        const int currentSelectionSize = GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os);
+        CHECK_SET_ERR(expectedSelectionSize == currentSelectionSize, QString("An unexpected selection size: expect %1, got %2").arg(expectedSelectionSize).arg(currentSelectionSize));
+        GTGlobals::sleep(100);
+    }
+
+    for (int i = 0; i < 8; i++) {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+        expectedSelectionSize++;
+        const int currentSelectionSize = GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os);
+        CHECK_SET_ERR(expectedSelectionSize == currentSelectionSize, QString("An unexpected selection size: expect %1, got %2").arg(expectedSelectionSize).arg(currentSelectionSize));
+        GTGlobals::sleep(100);
+    }
+
+    {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["down"]);
+        const int currentSelectionSize = GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os);
+        CHECK_SET_ERR(9 == currentSelectionSize, QString("An unexpected selection size: expect %1, got %2").arg(9).arg(currentSelectionSize));
+        GTGlobals::sleep(100);
+    }
+
+    {
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["up"]);
+        const int currentSelectionSize = GTUtilsMSAEditorSequenceArea::getSelectedSequencesNum(os);
+        CHECK_SET_ERR(8 == currentSelectionSize, QString("An unexpected selection size: expect %1, got %2").arg(8).arg(currentSelectionSize));
+        GTGlobals::sleep(100);
+    }
+
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["shift"]);
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1687) {
     // 1. open samples / clustalW / COI.aln
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
