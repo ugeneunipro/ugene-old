@@ -194,6 +194,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_regression_scenarios::test_1703, "UGENE-3693");
     REGISTER_TEST(GUITest_regression_scenarios::test_1704);
     REGISTER_TEST(GUITest_regression_scenarios::test_1708);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1710_1);
+    REGISTER_TEST(GUITest_regression_scenarios::test_1710_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_1714);
     REGISTER_TEST(GUITest_regression_scenarios::test_1720);
     REGISTER_TEST(GUITest_regression_scenarios::test_1731);

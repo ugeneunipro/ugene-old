@@ -1651,6 +1651,49 @@ GUI_TEST_CLASS_DEFINITION(test_1708){
     CHECK_SET_ERR(changedAln==initAln, "Undo works wrong\n" + changedAln);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1710_1){
+    //1. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    //2. Add the "Find Patterns" sample.
+    GTUtilsWorkflowDesigner::addSample(os, "Find patterns");
+
+    //3. Setup inputs and outputs.
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsWorkflowDesigner::click(os, "Find Pattern");
+    GTUtilsWorkflowDesigner::setParameter(os, "Pattern(s)", "AAA", GTUtilsWorkflowDesigner::textValue);
+
+    //4) Press the validate button.
+    //Expected state: The message appeared saying "Well done!".
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "Well done!"));
+    GTWidget::click( os,GTAction::button(os, "Validate workflow"));
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1710_2){
+    //1. Open Settings -> Preferences -> External Tools.
+    //2. Select any invalid file for Blast -> BlastAll.
+    GTUtilsExternalTools::setToolUrl(os, "BlastAll", dataDir + "samples/FASTA/human_T1.fa");
+
+    //3. Open WD.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    //4. Add the "Gene-by-gene approach" sample.
+    GTUtilsWorkflowDesigner::addSample(os, "Gene-by-gene approach");
+
+    //5. Setup inputs and outputs.
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "samples/FASTA/human_T1.fa");
+    GTUtilsWorkflowDesigner::click(os, "Local BLAST Search");
+    GTUtilsWorkflowDesigner::setParameter(os, "Database Path", sandBoxDir, GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Database Name", "test", GTUtilsWorkflowDesigner::textValue);
+
+    //6. Press the validate button.
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok, "non-critical warnings"));
+    GTWidget::click( os,GTAction::button(os, "Validate workflow"));
+
+    //Expected state: there must be a warning "External tool is invalid. UGENE may not support this version of the tool or a wrong path to the tools is selected".
+    GTUtilsWorkflowDesigner::checkErrorList(os, "External tool \"BlastAll\" is invalid. UGENE may not support this version of the tool or a wrong path to the tools is selected");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_1714){
 //    1. Open the "external tools" configuration window using Settings/Preferences menu
 //    2. Select path for external tools package (if not set). External tools package can be downloaded from http://ugene.unipro.ru/external.html
