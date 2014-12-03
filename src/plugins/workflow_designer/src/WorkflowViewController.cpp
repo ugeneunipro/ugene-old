@@ -215,7 +215,7 @@ static void addToggleDashboardAction(QToolBar *toolBar, QAction *action) {
                      "border-radius: 6px;"
                      "margin-right: 5px;"
                      "height: 25px;"
-                     "width: 152px;"
+                     "width: 168px;"
                      "}");
 #endif
 }
