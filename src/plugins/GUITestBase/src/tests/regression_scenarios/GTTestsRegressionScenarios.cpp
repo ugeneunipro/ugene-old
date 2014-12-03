@@ -106,6 +106,7 @@
 #include "runnables/ugene/plugins/dna_export/ExportAnnotationsDialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportMSA2SequencesDialogFiller.h"
+#include "runnables/ugene/plugins/dna_export/ExportSequences2MSADialogFiller.h"
 #include "runnables/ugene/plugins/dna_export/ExportSequencesDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/BuildDotPlotDialogFiller.h"
 #include "runnables/ugene/plugins/dotplot/DotPlotDialogFiller.h"
@@ -10471,6 +10472,35 @@ GUI_TEST_CLASS_DEFINITION(test_3640) {
     options.failIfNull = false;
     humanT1Doc = GTUtilsProjectTreeView::findIndex(os, "human_T1.fa", options);
     CHECK_SET_ERR(!humanT1Doc.isValid(), "The document is not removed");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_3649) {
+    //1. Open "_common_data/smith-waterman2/simple/05/search.txt".
+    GTFileDialog::openFile(os, testDir + "_common_data/smith_waterman2/simple/05", "search.txt");
+
+    //2. Export the sequence object as alignment.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__EXPORT_IMPORT_MENU_ACTION << ACTION_EXPORT_SEQUENCE_AS_ALIGNMENT));
+    GTUtilsDialog::waitForDialog(os, new ExportSequenceAsAlignmentFiller(os, testDir + "_common_data/scenarios/sandbox", "test_3649.aln", ExportSequenceAsAlignmentFiller::Clustalw, true));
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "S"));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    //3. Add a sequence from the file "_common_data/smith-waterman2/simple/05/query.txt" in the alignment.
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << MSAE_MENU_LOAD << "Sequence from file"));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/smith_waterman2/simple/05", "query.txt"));
+    GTWidget::click(os, GTUtilsMdi::activeWindow(os), Qt::RightButton);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //4. Select both sequences.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0, 0), QPoint(1, 1));
+
+    //5. Open pairwise alignment option panel tab.
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_PAIRALIGN"));
+
+    //6. Align using the Smith-Waterman algorithm.
+    GTUtilsOptionPanelMsa::setPairwiseAlignmentAlgorithm(os, "Smith-Waterman");
+    GTWidget::click(os, GTUtilsOptionPanelMsa::getAlignButton(os));
+
+    //Expected: UGENE does not crash.
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3656) {
