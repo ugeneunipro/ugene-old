@@ -1244,6 +1244,22 @@ GUI_TEST_CLASS_DEFINITION( test_1628 ) {
     CHECK_SET_ERR(names.contains("йцукен123") && !names.contains("Montana_montana"), "Undo-redo worked incorrectly");
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1653 ) {
+/*  1. Open some sequence
+    2. Open find pattern option panel
+    3. click "Show more options"
+    Expected state: Algorithm - exact
+    "should match" spinbox is not shown
+    Actual: spinbox is shown
+*/
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTWidget::click(os, GTWidget::findWidget(os, "OP_FIND_PATTERN"));
+    GTGlobals::sleep(500);
+    GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search algorithm"));
+    QSpinBox* spin = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "spinBoxMatch"));
+    CHECK_SET_ERR(spin != NULL, "spinBoxMatch not found!");
+    CHECK_SET_ERR(spin->isHidden(), "Warning spinbox is unexpectedly visible");
+}
 
 GUI_TEST_CLASS_DEFINITION( test_1654 ) {
     // 1. Open some sequence
