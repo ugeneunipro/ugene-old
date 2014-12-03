@@ -35,6 +35,8 @@ QWidget(p), preferred(0), additionalWarning(needWarning)
     ui = new Ui_SeqPasterWidget;
     //TODO: add not null project checking
     ui->setupUi(this);
+    ui->symbolToReplaceEdit->setMaximumSize(ui->symbolToReplaceEdit->height(), ui->symbolToReplaceEdit->height());
+
     if (!initText.isEmpty()) {
         ui->sequenceEdit->setPlainText(initText);
     }

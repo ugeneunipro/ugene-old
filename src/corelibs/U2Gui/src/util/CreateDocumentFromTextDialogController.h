@@ -46,7 +46,7 @@ public:
 
     virtual void accept();
     virtual void reject();
-    Document* getDocument(){return doc;};
+    Document* getDocument(){return doc;}
 
 private slots:
     void sl_browseButtonClicked();

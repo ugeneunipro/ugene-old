@@ -14,9 +14,6 @@
    <string>Create annotation</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>6</number>
-   </property>
    <property name="margin">
     <number>0</number>
    </property>
@@ -86,30 +83,6 @@
        <widget class="QLineEdit" name="symbolToReplaceEdit">
         <property name="enabled">
          <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>1</width>
-          <height>1</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="baseSize">
-         <size>
-          <width>9</width>
-          <height>9</height>
-         </size>
         </property>
         <property name="maxLength">
          <number>1</number>
