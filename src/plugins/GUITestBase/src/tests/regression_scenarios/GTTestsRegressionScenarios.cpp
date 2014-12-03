@@ -8703,6 +8703,37 @@ GUI_TEST_CLASS_DEFINITION(test_3263){
 
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3266){
+    //1. Connect to a shared database.
+    Document *doc = GTUtilsSharedDatabaseDocument::connectToTestDatabase(os);
+
+    //2. Create a folder "1" somewhere.
+    GTUtilsSharedDatabaseDocument::createFolder(os, doc, "/", "regression_3266_1");
+
+    //3. Create a folder "2" in the folder "1".
+    GTUtilsSharedDatabaseDocument::createFolder(os, doc, "/regression_3266_1", "regression_3266_2");
+
+    //4. Remove the folder "2".
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "regression_3266_2"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_SELECTED));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    //Expected state: the folder "2" is in the Recycle bin.
+    GTUtilsSharedDatabaseDocument::ensureItemExists(os, doc, "/Recycle bin/regression_3266_2");
+
+    //5. Create another folder "2" in the folder "1".
+    GTUtilsSharedDatabaseDocument::createFolder(os, doc, "/regression_3266_1", "regression_3266_2");
+
+    //6. Remove the folder "1".
+    GTMouseDriver::moveTo(os, GTUtilsProjectTreeView::getItemCenter(os, "regression_3266_1"));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ACTION_PROJECT__REMOVE_SELECTED));
+    GTMouseDriver::click(os, Qt::RightButton);
+
+    //Expected state: folders "1" and "2" both are in the Recycle bin.
+    GTUtilsSharedDatabaseDocument::ensureItemExists(os, doc, "/Recycle bin/regression_3266_1");
+    GTUtilsSharedDatabaseDocument::ensureItemExists(os, doc, "/Recycle bin/regression_3266_2");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3274) {
     QStringList expectedNames;
     QList<ADVSingleSequenceWidget*> seqWidgets;
