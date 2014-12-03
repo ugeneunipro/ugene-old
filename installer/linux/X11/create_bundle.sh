@@ -52,6 +52,11 @@ cp -v ../../source/LICENSE "$TARGET_APP_DIR"
 echo copying LICENSE.3rd_party file
 cp -v ../../source/LICENSE.3rd_party "$TARGET_APP_DIR"
 
+echo copying file association script files
+cp -v ../../_common_data/Associate_files_to_UGENE.sh "$TARGET_APP_DIR"
+cp -v ../../_common_data/icons.tar.gz "$TARGET_APP_DIR"
+cp -v ../../_common_data/application-x-ugene.xml "$TARGET_APP_DIR"
+cp -v ../../_common_data/ugene.desktop "$TARGET_APP_DIR"
 
 mkdir "${TARGET_APP_DIR}/plugins"
 
