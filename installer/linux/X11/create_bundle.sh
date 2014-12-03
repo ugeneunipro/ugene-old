@@ -34,6 +34,9 @@ cp -v $RELEASE_DIR/ugeneui "$TARGET_APP_DIR"
 echo copying ugene startup script
 cp -v $RELEASE_DIR/ugenem "$TARGET_APP_DIR"
 
+echo copying plugins_checker
+cp -v $RELEASE_DIR/plugins_checker "$TARGET_APP_DIR"
+
 echo copying ugene startup script
 cp -v $RELEASE_DIR/ugene "$TARGET_APP_DIR"
 
@@ -61,6 +64,11 @@ cp -v $RELEASE_DIR/transl_zh.qm "$TARGET_APP_DIR"
 
 echo copying data dir
 cp -R "$RELEASE_DIR/../../data"  "${TARGET_APP_DIR}"
+if [ ! -z $UGENE_CISTROME_PATH ]; then
+  echo "Copying cistrome data"
+  mkdir -p "${TARGET_APP_DIR}/data/cistrome"
+  mv $UGENE_CISTROME_PATH/* ${TARGET_APP_DIR}/data/cistrome/
+fi
 echo
 
 #include external tools package if applicable
@@ -69,6 +77,10 @@ if [ -e "$RELEASE_DIR/../../tools" ]; then
     cp -R "$RELEASE_DIR/../../tools" "${TARGET_APP_DIR}/"
     find $TARGET_APP_DIR -name ".svn" | xargs rm -rf
     PACKAGE_TYPE="linux-full" 
+    if [ ! -z $UGENE_R_DIST_PATH ]; then
+      echo "Copying R tool"
+      cp -R $UGENE_R_DIST_PATH "${TARGET_APP_DIR}/tools"
+    fi
 fi
 
 echo
@@ -210,7 +222,6 @@ add-plugin workflow_designer
 add-plugin weight_matrix
 add-plugin remote_service
 add-plugin variants
-add-plugin snp_effect
 
 if [ "$1" == "-test" ]; then
   add-plugin test_runner
@@ -232,7 +243,9 @@ fi
 
 PACKAGE_NAME=$PRODUCT_NAME"-"$VERSION"-$PACKAGE_TYPE-"$ARCH"-r"$REVISION$TEST
 
-tar -cf $PACKAGE_NAME.tar $TARGET_APP_DIR/
-gzip -v $PACKAGE_NAME.tar
+tar -czf $PACKAGE_NAME.tar.gz $TARGET_APP_DIR/
+if [ ! -z $UGENE_CISTROME_PATH ]; then
+  echo "Copying cistrome data"
+  mv ${TARGET_APP_DIR}/data/cistrome/* $UGENE_CISTROME_PATH
+fi
 
- 

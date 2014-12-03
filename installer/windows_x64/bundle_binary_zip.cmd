@@ -18,11 +18,15 @@ REM copy includes
 xcopy /E %INSTALL_DIR%\includes\* %OUTPUT_DIR%
 REM copy external tools if exists
 xcopy /E %U_ROOT%\tools\* %OUTPUT_DIR%\tools\
+if DEFINED UGENE_R_DIST_PATH (
+    xcopy /E %UGENE_R_DIST_PATH% %OUTPUT_DIR%\tools\
+)
 
 REM copy executables
 copy %RELEASE_DIR%\ugeneui.exe %OUTPUT_DIR%
 copy %RELEASE_DIR%\ugenecl.exe %OUTPUT_DIR%
 copy %RELEASE_DIR%\ugenem.exe %OUTPUT_DIR%
+copy %RELEASE_DIR%\plugins_checker.exe %OUTPUT_DIR%
 copy %RELEASE_DIR%\ugeneui.map %OUTPUT_DIR%
 copy %RELEASE_DIR%\ugenecl.map %OUTPUT_DIR%
 echo. > %OUTPUT_DIR%\UGENE.ini
@@ -36,6 +40,9 @@ copy %RELEASE_DIR%\transl_zh.qm %OUTPUT_DIR%
 REM copy data
 xcopy /I /S %U_ROOT%\data %OUTPUT_DIR%\data
 copy %U_ROOT%\data\manuals\*.pdf %OUTPUT_DIR%\data\manuals\
+if DEFINED UGENE_CISTROME_PATH (
+    move %UGENE_CISTROME_PATH% %OUTPUT_DIR%\data\
+)
 
 REM copy libs 
 copy %RELEASE_DIR%\ugenedb.dll %OUTPUT_DIR%
@@ -104,11 +111,17 @@ call %INSTALL_DIR%/copy_plugin.cmd pcr
 call %INSTALL_DIR%/copy_plugin.cmd ptools
 call %INSTALL_DIR%/copy_plugin.cmd dna_flexibility
 call %INSTALL_DIR%/copy_plugin.cmd variants
-call %INSTALL_DIR%/copy_plugin.cmd snp_effect
 
 
 cd %INSTALL_DIR%
+if NOT DEFINED UGENE_CISTROME_PATH (
 zip -r %BINARY_ZIPFILE% ugene-%U_VERSION%\*
+)
+
+if DEFINED UGENE_CISTROME_PATH (
+    7z a -r %BINARY_ZIPFILE% ugene-%U_VERSION%/*
+    move %OUTPUT_DIR%\data\cistrome %UGENE_CISTROME_PATH%
+)
 cd %U_ROOT%
 
 

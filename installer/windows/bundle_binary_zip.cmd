@@ -23,6 +23,7 @@ REM copy executables
 copy %RELEASE_DIR%\ugeneui.exe %OUTPUT_DIR%
 copy %RELEASE_DIR%\ugenecl.exe %OUTPUT_DIR%
 copy %RELEASE_DIR%\ugenem.exe %OUTPUT_DIR%
+copy %RELEASE_DIR%\plugins_checker.exe %OUTPUT_DIR%
 copy %RELEASE_DIR%\ugeneui.map %OUTPUT_DIR%
 copy %RELEASE_DIR%\ugenecl.map %OUTPUT_DIR%
 echo. > %OUTPUT_DIR%\UGENE.ini
@@ -104,7 +105,6 @@ call %INSTALL_DIR%/copy_plugin.cmd pcr
 call %INSTALL_DIR%/copy_plugin.cmd ptools
 call %INSTALL_DIR%/copy_plugin.cmd dna_flexibility
 call %INSTALL_DIR%/copy_plugin.cmd variants
-call %INSTALL_DIR%/copy_plugin.cmd snp_effect
 
 
 

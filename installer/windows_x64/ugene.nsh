@@ -148,6 +148,7 @@ SetRegView 64
     File "${ReleaseBuildDir}\ugeneui.map"
     File "${ReleaseBuildDir}\ugenecl.map"
     File "${ReleaseBuildDir}\ugenem.exe"
+    File "${ReleaseBuildDir}\plugins_checker.exe"
     Rename ugenecl.exe ugene.exe
     File "${ReleaseBuildDir}\U2Algorithm.dll"
     File "${ReleaseBuildDir}\U2Core.dll"
@@ -235,7 +236,7 @@ SetRegView 64
     !insertmacro AddPlugin weight_matrix
     !insertmacro AddPlugin workflow_designer
     !insertmacro AddPlugin variants
-    !insertmacro AddPlugin snp_effect
+
   
     SetOutPath $INSTDIR\tools
     File /r /x .svn "includes\tools\*.*"

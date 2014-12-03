@@ -121,8 +121,6 @@ install-arch:
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/sitecon.plugin
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/smith_waterman.license
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/smith_waterman.plugin
-	rm debian/ugene-non-free/usr/lib/ugene/plugins/snp_effect.license
-	rm debian/ugene-non-free/usr/lib/ugene/plugins/snp_effect.plugin
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/umuscle.license
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/umuscle.plugin
 	rm debian/ugene-non-free/usr/lib/ugene/plugins/weight_matrix.license
