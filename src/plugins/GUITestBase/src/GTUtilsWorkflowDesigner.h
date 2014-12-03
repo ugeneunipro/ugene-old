@@ -55,6 +55,9 @@ public:
     //opens a workflow from a file
     static void loadWorkflow(U2OpStatus &os, const QString &fileUrl);
 
+    static void runWorkflow(U2OpStatus &os);
+    static void returnToWorkflow(U2OpStatus &os);
+
     //reterns item from samples or algorithms tab
     static QTreeWidgetItem* findTreeItem(U2OpStatus &os, QString itemName,tab t);
 

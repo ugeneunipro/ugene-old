@@ -1389,8 +1389,36 @@ GUI_TEST_CLASS_DEFINITION( test_1688 ) {
     GTUtilsLog::check( os, l );
 }
 
-GUI_TEST_CLASS_DEFINITION( test_1700 )
-{
+GUI_TEST_CLASS_DEFINITION(test_1693) {
+//    1. Open WD.
+//    2. Launch tuxedo pipeline.
+//    3. Try to open any other sample while pipeline is running.
+//    Expected state: UGENE doesn't crash.
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    WizardFiller::pairValList parameters;
+    WizardFiller::lineEditValue bowtieIndexFolder(testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/bowtie2_index/", true);
+    WizardFiller::lineEditValue bowtieIndexBasename("NC_010473", false);
+    parameters << WizardFiller::pairValLabel("Bowtie index directory", &bowtieIndexFolder);
+    parameters << WizardFiller::pairValLabel("Bowtie index basename", &bowtieIndexBasename);
+    GTUtilsDialog::waitForDialog(os, new ConfigureTuxedoWizardFiller(os, ConfigureTuxedoWizardFiller::full, ConfigureTuxedoWizardFiller::singleReads));
+    GTUtilsDialog::waitForDialog(os, new TuxedoWizardFiller(os, testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq1/", "exp_1_1.fastq", testDir + "_common_data/NIAID_pipelines/tuxedo_pipeline/data/test_0004/fastq2/", "exp_2_1.fastq", parameters));
+
+    GTUtilsWorkflowDesigner::addSample(os, "RNA-seq analysis with Tuxedo tools");
+    GTUtilsWorkflowDesigner::setCurrentTab(os, GTUtilsWorkflowDesigner::samples);
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+
+    GTGlobals::sleep();
+    const int tasksCount = GTUtilsTaskTreeView::getTopLevelTasksCount(os);
+    CHECK_SET_ERR(1 == tasksCount, QString("An unexpected top level tasks count: expect %1, got %2. Workflow didn't launch?").arg(1).arg(tasksCount));
+
+    GTUtilsWorkflowDesigner::returnToWorkflow(os);
+    QWidget *samplesWidget = GTWidget::findWidget(os, "samples");
+    CHECK_SET_ERR(NULL != samplesWidget, "Samples widget is NULL");
+    CHECK_SET_ERR(!samplesWidget->isEnabled(), "Samples widget is unexpectedly enabled");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1700) {
     //    1. Open file "https://ugene.unipro.ru/tracker/secure/attachment/12864/pdb1a07.ent.gz".
     GTFileDialog::openFile(os, testDir + "_common_data/pdb/", "pdb1a07.ent.gz");
 

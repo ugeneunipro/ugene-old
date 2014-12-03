@@ -19,26 +19,15 @@
  * MA 02110-1301, USA.
  */
 
+#include <QApplication>
+#include <QDialogButtonBox>
+#include <QGraphicsView>
+#include <QListWidget>
+#include <QSpinBox>
+#include <QTableView>
+#include <QToolButton>
+#include <QTreeWidget>
 #include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QApplication>
-#include <QtGui/QDialogButtonBox>
-#include <QtGui/QGraphicsView>
-#include <QtGui/QListWidget>
-#include <QtGui/QSpinBox>
-#include <QtGui/QTableView>
-#include <QtGui/QToolButton>
-#include <QtGui/QTreeWidget>
-#else
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QDialogButtonBox>
-#include <QtWidgets/QGraphicsView>
-#include <QtWidgets/QListWidget>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QTableView>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QTreeWidget>
-#endif
 
 #include <U2Core/AppContext.h>
 
@@ -47,6 +36,7 @@
 #include "../../workflow_designer/src/WorkflowViewItems.h"
 #include "GTUtilsMdi.h"
 #include "GTUtilsWorkflowDesigner.h"
+#include "api/GTAction.h"
 #include "api/GTCheckBox.h"
 #include "api/GTComboBox.h"
 #include "api/GTDoubleSpinBox.h"
@@ -104,6 +94,18 @@ void GTUtilsWorkflowDesigner::loadWorkflow(U2OpStatus &os, const QString &fileUr
     GT_CHECK(loadButton, "Load button is not found");
     GTWidget::click(os, loadButton);
     GTGlobals::sleep();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "runWorkflow"
+void GTUtilsWorkflowDesigner::runWorkflow(U2OpStatus &os) {
+    GTWidget::click(os, GTAction::button(os, "Run workflow"));
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "returnToWorkflow"
+void GTUtilsWorkflowDesigner::returnToWorkflow(U2OpStatus &os) {
+    GTWidget::click(os, GTAction::button(os, GTAction::findActionByText(os, "To Workflow Designer")));
 }
 #undef GT_METHOD_NAME
 

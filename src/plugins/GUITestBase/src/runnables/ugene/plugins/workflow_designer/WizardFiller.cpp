@@ -80,7 +80,7 @@ void WizardFiller::setParameters(U2OpStatus &os, pairValList list,int i){
 
             QList<QWidget*> yList;
             foreach (QWidget* w, widgetList){
-                if(abs(w->mapTo(wizard,w->rect().center()).y() - label->mapTo(wizard,label->rect().center()).y())==0){
+                if(abs(w->mapTo(wizard,w->rect().center()).y() - label->mapTo(wizard,label->rect().center()).y()) <= 5){
                     yList.append(w);
                 }
             }
