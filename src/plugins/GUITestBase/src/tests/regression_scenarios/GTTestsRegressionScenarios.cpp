@@ -9134,6 +9134,28 @@ GUI_TEST_CLASS_DEFINITION(test_3332) {
     CHECK_SET_ERR(GTUtilsMSAEditorSequenceArea::getLength(os) == 604, "Wrong msa length");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3333) {
+//    1. Connect to the UGENE public database.
+
+//    2. Drag and drop the object "/genomes/Arabidopsis thaliana (TAIR 10)/INFO" to the "/genomes/Arabidopsis thaliana (TAIR 10)" folder.
+//    Expected state: nothing happens, there are no errors in the log.
+    Document *connection = GTUtilsSharedDatabaseDocument::connectToUgenePublicDatabase(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    GTLogTracer logTracer;
+
+    const QModelIndex object = GTUtilsSharedDatabaseDocument::getItemIndex(os, connection, "/genomes/Arabidopsis thaliana (TAIR 10)/INFO");
+    const QModelIndex folder = GTUtilsSharedDatabaseDocument::getItemIndex(os, connection, "/genomes/Arabidopsis thaliana (TAIR 10)");
+    GTUtilsProjectTreeView::dragAndDrop(os, object, folder);
+
+    GTUtilsLog::check(os, logTracer);
+
+    GTGlobals::FindOptions options;
+    options.depth = 1;
+    const int objectsCount = GTUtilsProjectTreeView::findIndecies(os, "", GTUtilsSharedDatabaseDocument::getItemIndex(os, connection, "/genomes/Arabidopsis thaliana (TAIR 10)"), 0, options).size();
+    CHECK_SET_ERR(8 == objectsCount, QString("An unexpected objects count in the folder: expect %1, got %2").arg(8).arg(objectsCount));
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3335) {
     GTLogTracer lt;
 
