@@ -267,8 +267,7 @@ FindPatternWidget::FindPatternWidget(AnnotatedDNAView* _annotatedDnaView)
     prevPushButton->setDisabled(true);
     getAnnotationsPushButton->setDisabled(true);
     resultLabel->setText(tr("Results: 0/0"));
-    QWidget::setTabOrder(nextPushButton, boxAlgorithm);
-
+    setUpTabOrder();
     U2WidgetStateStorage::restoreWidgetState(savableWidget);
 }
 
@@ -1475,6 +1474,23 @@ void FindPatternWidget::correctSearchInCombo(){
     if(boxRegion->itemData(boxRegion->currentIndex()).toInt() == RegionSelectionIndex_CurrentSelectedRegion){
         boxRegion->setCurrentIndex(boxRegion->findData(RegionSelectionIndex_CustomRegion));
     }
+}
+
+void FindPatternWidget::setUpTabOrder() const {
+    CreateAnnotationWidgetController *annotWidget = qobject_cast<CreateAnnotationWidgetController*>(annotController);
+    SAFE_POINT(annotWidget != NULL, "Bad casting to CreateAnnotationWidgetController", );
+
+    QWidget::setTabOrder(nextPushButton, boxAlgorithm);
+    QWidget::setTabOrder(boxAlgorithm, boxStrand);
+    QWidget::setTabOrder(boxStrand, boxSeqTransl);
+    QWidget::setTabOrder(boxSeqTransl, boxRegion);
+    QWidget::setTabOrder(boxRegion, editStart);
+    QWidget::setTabOrder(editStart, editEnd);
+    QWidget::setTabOrder(editEnd, removeOverlapsBox);
+    QWidget::setTabOrder(removeOverlapsBox, boxMaxResult);
+    QWidget::setTabOrder(boxMaxResult, annotWidget->getTaborderEntryAndExitPoints().first);
+    QWidget::setTabOrder(annotWidget->getTaborderEntryAndExitPoints().second, usePatternNamesCheckBox);
+    QWidget::setTabOrder(usePatternNamesCheckBox, getAnnotationsPushButton);
 }
 
 } // namespace

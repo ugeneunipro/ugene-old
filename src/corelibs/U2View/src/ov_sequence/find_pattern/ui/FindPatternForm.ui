@@ -447,6 +447,7 @@
   <tabstop>boxRegion</tabstop>
   <tabstop>editStart</tabstop>
   <tabstop>editEnd</tabstop>
+  <tabstop>removeOverlapsBox</tabstop>
   <tabstop>boxMaxResult</tabstop>
   <tabstop>getAnnotationsPushButton</tabstop>
  </tabstops>

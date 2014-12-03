@@ -112,6 +112,7 @@ public:
     void commonWidgetUpdate(const CreateAnnotationModel& model);
 
     void setUsePatternNameCheckBoxVisible();
+    QPair<QWidget*, QWidget*> getTaborderEntryAndExitPoints() const;
 
 signals:
     void si_annotationNamesEdited();

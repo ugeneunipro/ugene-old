@@ -731,4 +731,8 @@ bool CreateAnnotationWidgetController::getEnabledNameEdit() const {
     return annotationNameEdit->isEnabled();
 }
 
+QPair<QWidget*, QWidget*> CreateAnnotationWidgetController::getTaborderEntryAndExitPoints() const {
+    return QPair<QWidget*, QWidget*>(existingObjectRB, complementButton);
+}
+
 } // namespace

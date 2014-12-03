@@ -135,6 +135,7 @@ private:
     bool isSearchPatternsDifferent(const QList<NamePattern> &newPatterns) const;
     void stopCurrentSearchTask();
     void correctSearchInCombo();
+    void setUpTabOrder() const;
 
     /**
      * Enables or disables the Search button depending on
