@@ -10544,6 +10544,88 @@ GUI_TEST_CLASS_DEFINITION(test_3613) {
 
     GTUtilsLog::check(os, l);
 }
+
+GUI_TEST_CLASS_DEFINITION(test_3622) {
+//    1. Open "data/samples/FASTA/human_T1.fa".
+
+//    2. Open "Find pattern" options panel tab.
+
+//    3. Enter any valid pattern.
+//    Expected state: a new search task is launched.
+
+//    4. Set "InsDel" algorithm.
+//    Expected state: a new search task is launched.
+
+//    5. Set any another match value.
+//    Expected state: a new search task is launched.
+
+//    6. Set "Substitute" algorithm.
+//    Expected state: a new search task is launched.
+
+//    7. Set any another match value.
+//    Expected state: a new search task is launched.
+
+//    8. Turn on "Search with ambiguous bases" option.
+//    Expected state: a new search task is launched.
+
+//    9. Select any sequence region.
+
+//    10. Set "Selected region" region type.
+//    Expected state: a new search task is launched, the region type is set to "Custom region", the region is the same as the selected one.
+
+//    11. Change the region.
+//    Expected state: a new search task is launched.
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);
+    SchedulerListener listener;
+
+    GTUtilsOptionPanelSequenceView::enterPattern(os, "ACGT");
+    CHECK_SET_ERR(0 < listener.getRegisteredTaskCount(), "The search task wasn't registered");
+    listener.reset();
+    GTGlobals::sleep(200);
+
+    GTUtilsOptionPanelSequenceView::setAlgorithm(os, "InsDel");
+    CHECK_SET_ERR(0 < listener.getRegisteredTaskCount(), "The search task wasn't registered");
+    listener.reset();
+    GTGlobals::sleep(200);
+
+    GTUtilsOptionPanelSequenceView::setMatchPercentage(os, 80);
+    CHECK_SET_ERR(0 < listener.getRegisteredTaskCount(), "The search task wasn't registered");
+    listener.reset();
+    GTGlobals::sleep(200);
+
+    GTUtilsOptionPanelSequenceView::setAlgorithm(os, "Substitute");
+    CHECK_SET_ERR(0 < listener.getRegisteredTaskCount(), "The search task wasn't registered");
+    listener.reset();
+    GTGlobals::sleep(200);
+
+    GTUtilsOptionPanelSequenceView::setMatchPercentage(os, 90);
+    CHECK_SET_ERR(0 < listener.getRegisteredTaskCount(), "The search task wasn't registered");
+    listener.reset();
+    GTGlobals::sleep(200);
+
+    GTUtilsOptionPanelSequenceView::setSearchWithAmbiguousBases(os);
+    CHECK_SET_ERR(0 < listener.getRegisteredTaskCount(), "The search task wasn't registered");
+    listener.reset();
+    GTGlobals::sleep(200);
+
+    GTUtilsSequenceView::selectSequenceRegion(os, 100, 200);
+    GTUtilsOptionPanelSequenceView::setRegionType(os, "Selected region");
+    CHECK_SET_ERR(0 < listener.getRegisteredTaskCount(), "The search task wasn't registered");
+    listener.reset();
+    GTGlobals::sleep(200);
+
+    const QString currentRegionType = GTUtilsOptionPanelSequenceView::getRegionType(os);
+    CHECK_SET_ERR("Custom region" == currentRegionType, QString("An unexpected region type: expect '%1', got '%2'").arg("Custom region").arg(currentRegionType));
+
+    const QPair<int, int> currentRegion = GTUtilsOptionPanelSequenceView::getRegion(os);
+    CHECK_SET_ERR(qMakePair(100, 200) == currentRegion, QString("An unexpected region: expect [%1, %2], got [%3, %4]").arg(100).arg(200).arg(currentRegion.first).arg(currentRegion.second));
+
+    GTUtilsOptionPanelSequenceView::setRegion(os, 500, 1000);
+    CHECK_SET_ERR(0 < listener.getRegisteredTaskCount(), "The search task wasn't registered");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3623) {
     GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
     GTUtilsOptionPanelSequenceView::openTab(os, GTUtilsOptionPanelSequenceView::Search);

@@ -211,6 +211,25 @@ int GTUtilsTaskTreeView::countTasks(U2OpStatus &os, const QString &itemName){
 }
 #undef GT_METHOD_NAME
 
+SchedulerListener::SchedulerListener() :
+    QObject(NULL),
+    registeredTaskCount(0)
+{
+    connect(AppContext::getTaskScheduler(), SIGNAL(si_topLevelTaskRegistered(Task *)), SLOT(sl_taskRegistered()));
+}
+
+int SchedulerListener::getRegisteredTaskCount() const {
+    return registeredTaskCount;
+}
+
+void SchedulerListener::reset() {
+    registeredTaskCount = 0;
+}
+
+void SchedulerListener::sl_taskRegistered() {
+    registeredTaskCount++;
+}
+
 #undef GT_CLASS_NAME
 
 }

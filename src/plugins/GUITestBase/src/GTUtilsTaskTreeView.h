@@ -27,9 +27,23 @@
 class QTreeWidget;
 class QTreeWidgetItem;
 
-
 namespace U2 {
 class Task;
+
+class SchedulerListener : public QObject {
+    Q_OBJECT
+public:
+    SchedulerListener();
+
+    int getRegisteredTaskCount() const;
+    void reset();
+
+private slots:
+    void sl_taskRegistered();
+
+private:
+    int registeredTaskCount;
+};
 
 class GTUtilsTaskTreeView {
 public:

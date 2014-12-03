@@ -21,21 +21,15 @@
 
 #include "GTUtilsOptionPanelSequenceView.h"
 
-#include <QtCore/qglobal.h>
-#include <QtCore/QDir>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QTreeWidget>
-#include <QtGui/QTextEdit>
-#include <QtGui/QLabel>
-#else
-#include <QtWidgets/QTreeWidget>
-#include <QtWidgets/QTextEdit>
-#include <QtWidgets/QLabel>
-#endif
+#include <QDir>
+#include <QLabel>
+#include <QTextEdit>
+#include <QTreeWidget>
 
 #include "api/GTWidget.h"
 #include "api/GTTextEdit.h"
 #include "api/GTClipboard.h"
+#include "api/GTCheckBox.h"
 #include "api/GTComboBox.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTLineEdit.h"
@@ -89,6 +83,12 @@ bool GTUtilsOptionPanelSequenceView::checkResultsText(U2OpStatus &os, QString ex
     return label->text() == expectedText;
 }
 
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setSearchWithAmbiguousBases"
+void GTUtilsOptionPanelSequenceView::setSearchWithAmbiguousBases(U2OpStatus &os, bool searchWithAmbiguousBases) {
+    GTCheckBox::setChecked(os, GTWidget::findExactWidget<QCheckBox *>(os, "useAmbiguousBasesBox"), searchWithAmbiguousBases);
+}
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "clickNext"
@@ -261,7 +261,21 @@ void GTUtilsOptionPanelSequenceView::setStrand(U2OpStatus &os, QString strandStr
     GTComboBox::setIndexWithText(os, strand, strandStr);
     GTGlobals::sleep(2500);
 }
+#undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "setRegionType"
+void GTUtilsOptionPanelSequenceView::setRegionType(U2OpStatus &os, const QString &regionType) {
+    openSearchInShowHideWidget(os);
+    GTComboBox::setIndexWithText(os, GTWidget::findExactWidget<QComboBox *>(os, "boxRegion"), regionType, false);
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setRegion"
+void GTUtilsOptionPanelSequenceView::setRegion(U2OpStatus &os, int from, int to) {
+    openSearchInShowHideWidget(os);
+    GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "editStart"), QString::number(from));
+    GTLineEdit::setText(os, GTWidget::findExactWidget<QLineEdit *>(os, "editEnd"), QString::number(to));
+}
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "enterFilepathForSavingAnnotations"
@@ -292,6 +306,35 @@ int GTUtilsOptionPanelSequenceView::getMatchPercentage(U2OpStatus &os) {
     QSpinBox *spinMatchBox = qobject_cast<QSpinBox*>(GTWidget::findWidget(os, "spinBoxMatch"));
     GT_CHECK_RESULT(NULL != spinMatchBox, "Match percentage spinbox is NULL", -1);
     return spinMatchBox->value();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "getRegionType"
+QString GTUtilsOptionPanelSequenceView::getRegionType(U2OpStatus &os) {
+    openSearchInShowHideWidget(os);
+    QComboBox *cbRegionType = GTWidget::findExactWidget<QComboBox *>(os, "boxRegion");
+    GT_CHECK_RESULT(NULL != cbRegionType, "Region type combobox is NULL", "");
+    return cbRegionType->currentText();
+}
+#undef GT_METHOD_NAME
+
+#define GT_METHOD_NAME "setMatchPercentage"
+QPair<int, int> GTUtilsOptionPanelSequenceView::getRegion(U2OpStatus &os) {
+    openSearchInShowHideWidget(os);
+
+    QPair<int, int> result;
+    QLineEdit *leRegionStart = GTWidget::findExactWidget<QLineEdit *>(os, "editStart");
+    QLineEdit *leRegionEnd = GTWidget::findExactWidget<QLineEdit *>(os, "editEnd");
+    GT_CHECK_RESULT(NULL != leRegionStart, "Region start line edit is NULL", result);
+    GT_CHECK_RESULT(NULL != leRegionEnd, "Region end line edit is NULL", result);
+
+    bool ok = false;
+    const int regionStart = leRegionStart->text().toInt(&ok);
+    GT_CHECK_RESULT(ok, QString("Can't convert the string to int: %1").arg(leRegionStart->text()), result);
+    const int regionEnd = leRegionEnd->text().toInt(&ok);
+    GT_CHECK_RESULT(ok, QString("Can't convert the string to int: %1").arg(leRegionEnd->text()), result);
+
+    return qMakePair(regionStart, regionEnd);
 }
 #undef GT_METHOD_NAME
 

@@ -52,15 +52,19 @@ public:
     static void enterPatternFromFile(U2OpStatus &os, QString filepath, QString filename);
     static bool checkResultsText(U2OpStatus &os, QString expectedText);
 
+    static void setSearchWithAmbiguousBases(U2OpStatus &os, bool searchWithAmbiguousBases = true);
     static void setStrand(U2OpStatus &os, QString strandStr);
+    static void setRegionType(U2OpStatus &os, const QString &regionType);
+    static void setRegion(U2OpStatus &os, int from, int to);
     static void setSearchInTranslation(U2OpStatus &os, bool inTranslation = true);
     static void setSearchInLocation(U2OpStatus &os, QString strandStr);
     static void setSetMaxResults(U2OpStatus &os, int maxResults);
-
     static void setAlgorithm(U2OpStatus &os, QString algorithm);
+    static void setMatchPercentage(U2OpStatus &os, int percentage);
     
     static int getMatchPercentage(U2OpStatus &os);
-    static void setMatchPercentage(U2OpStatus &os, int percentage);
+    static QString getRegionType(U2OpStatus &os);
+    static QPair<int, int> getRegion(U2OpStatus &os);
 
     static void enterFilepathForSavingAnnotations(U2OpStatus &os, QString filepath);
 
