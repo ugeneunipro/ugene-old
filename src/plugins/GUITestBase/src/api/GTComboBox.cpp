@@ -115,23 +115,34 @@ void GTComboBox::checkValues(U2OpStatus& os, QComboBox *comboBox, const QStringL
     GT_CHECK(NULL != view, "list view is not found");
     QStandardItemModel *model = dynamic_cast<QStandardItemModel*>(view->model());
     GT_CHECK(NULL != model, "model is not found");
+    QList<QStandardItem *> items = model->findItems("",Qt::MatchContains);
 
-    foreach (const QString &value, values) {
-        int index = comboBox->findText(value, Qt::MatchContains);
-        GT_CHECK(index != -1, "Unknown value: " + value);
-        QModelIndex modelIndex = model->index(index, 0);
-        GT_CHECK(modelIndex.isValid(), "invalid model index: " + value);
-        QStandardItem *item = model->item(index);
-        GT_CHECK(NULL != item, "NULL item: " + value);
-        view->scrollTo(modelIndex);
-        GTGlobals::sleep(500);
-
-        QRect itemRect = view->visualRect(modelIndex);
-        QPoint checkPoint(itemRect.left() + 10, itemRect.center().y());
-        GTMouseDriver::moveTo(os, view->viewport()->mapToGlobal(checkPoint));
-        GTMouseDriver::click(os);
-        GTGlobals::sleep(500);
-        GT_CHECK(item->checkState() == Qt::Checked, "Item is not checked: " + value);
+    foreach (QStandardItem *item, items) {
+        if (values.contains(item->data().toString())){
+            if(item->checkState() != Qt::Checked){
+                QModelIndex modelIndex = item->index();
+                view->scrollTo(modelIndex);
+                GTGlobals::sleep(500);
+                QRect itemRect = view->visualRect(modelIndex);
+                QPoint checkPoint(itemRect.left() + 10, itemRect.center().y());
+                GTMouseDriver::moveTo(os, view->viewport()->mapToGlobal(checkPoint));
+                GTMouseDriver::click(os);
+                GTGlobals::sleep(500);
+                GT_CHECK(item->checkState() == Qt::Checked, "Item is not checked: " + item->data().toString());
+            }
+        }else{
+            if(item->checkState() == Qt::Checked){
+                QModelIndex modelIndex = item->index();
+                view->scrollTo(modelIndex);
+                GTGlobals::sleep(500);
+                QRect itemRect = view->visualRect(modelIndex);
+                QPoint checkPoint(itemRect.left() + 10, itemRect.center().y());
+                GTMouseDriver::moveTo(os, view->viewport()->mapToGlobal(checkPoint));
+                GTMouseDriver::click(os);
+                GTGlobals::sleep(500);
+                GT_CHECK(item->checkState() != Qt::Checked, "Item is checked: " + item->data().toString());
+            }
+        }
     }
 }
 #undef GT_METHOD_NAME
