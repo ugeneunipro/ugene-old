@@ -92,6 +92,7 @@
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RemovePartFromSequenceDialogFiller.h"
+#include "runnables/ugene/corelibs/U2Gui/ReplaceSubsequenceDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/SharedConnectionsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_assembly/ExportReadsDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
@@ -10505,6 +10506,37 @@ GUI_TEST_CLASS_DEFINITION(test_3609_3) {
     GTWidget::click(os, seqWidget, Qt::RightButton);
 
     GTUtilsLog::check(os, l);
+}
+GUI_TEST_CLASS_DEFINITION(test_3610) {
+    // Open "data/samples/FASTA/human_T1.fa".
+    // Select whole sequence.
+    // Call context menu, select {Edit sequence -> Replace subsequence...}menu item.
+    // Replace whole sequence with any inappropriate symbol, e.g. '='. Accept the dialog, agree with message box.
+    // Expected state: UGENE doesn't crash.
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA/", "human_T1.fa");
+
+    GTUtilsDialog::waitForDialog(os, new selectSequenceRegionDialogFiller(os, 1, 197350));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Select" << "Sequence region"));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+    
+    //GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
+
+    Runnable *filler = new ReplaceSubsequenceDialogFiller(os,
+        "atcgtac"
+        );
+    GTUtilsDialog::waitForDialog(os, filler);
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << ADV_MENU_EDIT << ACTION_EDIT_REPLACE_SUBSEQUENCE));
+    GTMouseDriver::click(os, Qt::RightButton);
+    GTGlobals::sleep(1000);
+
+//    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_ACTIONS), QStringList() <<  ADV_MENU_EDIT << ACTION_EDIT_INSERT_SUBSEQUENCE, GTGlobals::UseKey);
+  //GTGlobals::sleep();
+//    GTUtilsDialog::waitForDialog(os, new ReplaceSubsequenceDialogFiller(os));
+//    GTWidget::click(os, seqWidget, Qt::RightButton);
+
+
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3612) {
