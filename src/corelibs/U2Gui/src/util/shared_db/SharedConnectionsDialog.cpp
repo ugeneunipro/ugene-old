@@ -128,7 +128,8 @@ void SharedConnectionsDialog::sl_connectClicked() {
     const U2DbiRef dbiRef(MYSQL_DBI_ID, fullDbiUrl);
 
     bool initializeDb = false;
-    if (!checkDatabaseAvailability(dbiRef, initializeDb)) {
+    bool isInitialized = checkDatabaseAvailability(dbiRef, initializeDb);
+    if (!isInitialized && !initializeDb) {
         return;
     }
     
@@ -473,13 +474,14 @@ bool SharedConnectionsDialog::checkDbInitializationState(const U2DbiRef &ref, bo
         switch (answer) {
         case QMessageBox::No :
             initializationRequired = false;
-            return false;
+            break;
         case QMessageBox::Yes :
             initializationRequired = true;
-            return true;
+            break;
         default:
             FAIL("Unexpected user answer detected!", false);
         }
+        return false;
     }
     return true;
 }
