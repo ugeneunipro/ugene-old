@@ -290,6 +290,9 @@ QList<PhyTree> NewickPhyTreeSerializer::parseTrees(IOAdapter *io, U2OpStatus& si
                     }
                 }
                 continue;
+            } else if(state == RS_QUOTED_NAME) {
+                lastStr.append(c);
+                continue;
             }
 
             if (state == RS_NAME) {
