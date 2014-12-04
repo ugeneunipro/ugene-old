@@ -261,6 +261,7 @@ void UHMM3ADVContext::initViewContext( GObjectView * view ) {
     
     ADVGlobalAction * searchAction = new ADVGlobalAction( av, QIcon( ":/hmm3/images/hmmer_16.png" ), 
                                                           tr( "Search HMM signals with HMMER3..." ), 70 );
+    searchAction->setObjectName("Search HMM signals with HMMER3");
     connect( searchAction, SIGNAL( triggered() ), SLOT( sl_search() ) );
 }
 

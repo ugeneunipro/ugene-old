@@ -882,7 +882,7 @@ GUI_TEST_CLASS_DEFINITION(test_1189){
 //4) Select "Selected region" in "Region" combobox of "Search in" area.
     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
     QComboBox *regBox = (QComboBox *)GTWidget::findWidget(os, "boxRegion");
-    GTComboBox::setCurrentIndex(os, regBox, 2);
+    GTComboBox::setCurrentIndex(os, regBox, 2, false);
 
 //5) Ensure that two lineedits became visible and contain correct region
     QLineEdit *start = (QLineEdit *)GTWidget::findWidget(os, "editStart");
@@ -916,7 +916,7 @@ GUI_TEST_CLASS_DEFINITION(test_1189_1){
 //4) Select "Selected region" in "Region" combobox of "Search in" area.
     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
     QComboBox *regBox =(QComboBox *)GTWidget::findWidget(os, "boxRegion");
-    GTComboBox::setCurrentIndex(os, regBox, 2);
+    GTComboBox::setCurrentIndex(os, regBox, 2, false);
 
 //5) Ensure that two lineedits became visible and contain correct region
     QLineEdit *start = (QLineEdit *)GTWidget::findWidget(os, "editStart");
@@ -1350,6 +1350,20 @@ GUI_TEST_CLASS_DEFINITION(test_1661) {
 
     // Expected state : One match found
     CHECK_SET_ERR(resultLabel->text() == "Results: 1/1", "Unexpected find algorithm result count");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1664){
+//    1. Open COI.aln.
+    GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+//    2. Select something in the sequence area.
+    GTUtilsMSAEditorSequenceArea::selectArea(os, QPoint(0,0), QPoint(5,5));
+//    3. Try to modify the selection with SHIFT+arrows.
+    GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["right"], GTKeyboardDriver::key["shift"]);
+    GTGlobals::sleep();
+//    Expected state: selection changes its size.
+    QRect expected = QRect(0, 0, 7, 6);
+    GTUtilsMSAEditorSequenceArea::checkSelectedRect(os, expected);
+//    Bug state: UGENE crashes.
 }
 
 GUI_TEST_CLASS_DEFINITION(test_1672) {
