@@ -341,9 +341,6 @@ void LogViewWidget::addText(const QString& txt) {
         return;
     }
     edit->appendHtml(txt);
-    edit->moveCursor(QTextCursor::End);
-    edit->moveCursor(QTextCursor::StartOfLine);
-    edit->ensureCursorVisible();
 }
 
 void LogViewWidget::sl_dumpCounters() {
