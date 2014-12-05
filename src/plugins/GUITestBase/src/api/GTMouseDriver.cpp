@@ -34,12 +34,16 @@ void GTMouseDriver::click(U2::U2OpStatus &os, Qt::MouseButton button)
     GTGlobals::sleep(100);
 }
 
-void GTMouseDriver::dragAndDrop(U2OpStatus &os, const QPoint& start, const QPoint& end) {
+void GTMouseDriver::dragAndDrop(U2OpStatus &os, const QPoint& start, const QPoint& end, const QPoint extraShift) {
     moveTo(os, start);
-    press(os);
     GTDragger d(os, end);
+    press(os);
+
     Q_UNUSED(d);
     GTMouseDriver::moveTo(os, start + QPoint(QApplication::startDragDistance(),0));
+    GTMouseDriver::moveTo(os, start + extraShift);
+    GTGlobals::sleep(200);
+    GTGlobals::sleep(200);
 }
 
 #ifndef Q_OS_MAC
@@ -53,6 +57,7 @@ void GTMouseDriver::doubleClick(U2OpStatus &os)
 GTDragger::GTDragger(U2OpStatus &_os, const QPoint& _to):QObject(), os(_os), to(_to){
     timer = new QTimer(this);
     timer->singleShot(2000, this, SLOT(sl_execDrag()));
+    GTGlobals::sleep(500);
 }
 
 void GTDragger::sl_execDrag(){
@@ -61,6 +66,7 @@ void GTDragger::sl_execDrag(){
     GTMouseDriver::release(os);
 #else
     GTMouseDriver::click(os);
+    GTGlobals::sleep();
 #endif
 }
 

@@ -2027,7 +2027,7 @@ GUI_TEST_CLASS_DEFINITION(test_1834) {
     GTUtilsWorkflowDesigner::click(os, "File Format Conversion");
     GTUtilsWorkflowDesigner::setParameter(os, "Document format", 13, GTUtilsWorkflowDesigner::comboValue);
     GTUtilsWorkflowDesigner::setParameter(os, "Output directory", 0, GTUtilsWorkflowDesigner::comboValue);
-    GTUtilsWorkflowDesigner::setParameter(os, "Custom directory", sandBoxDir + "regression_1834", GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Custom directory", QDir().absoluteFilePath(sandBoxDir + "regression_1834"), GTUtilsWorkflowDesigner::textValue);
 
     //5. Run the scheme.
     GTWidget::click(os, GTAction::button(os, "Run workflow"));
@@ -2308,7 +2308,8 @@ GUI_TEST_CLASS_DEFINITION(test_1918) {
     GTUtilsWorkflowDesigner::setParameter(os, "Document format", 16, GTUtilsWorkflowDesigner::comboValue);
     GTUtilsWorkflowDesigner::setParameter(os, "Excluded formats", QStringList("clustal"), GTUtilsWorkflowDesigner::ComboChecks);
     GTUtilsWorkflowDesigner::setParameter(os, "Output directory", 0, GTUtilsWorkflowDesigner::comboValue);
-    GTUtilsWorkflowDesigner::setParameter(os, "Custom directory", sandBoxDir + "regression_1918", GTUtilsWorkflowDesigner::textValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Custom directory", QDir().absoluteFilePath(sandBoxDir + "regression_1918")
+                                          , GTUtilsWorkflowDesigner::textValue);
 
     //6. Run the scheme.
     GTWidget::click(os, GTAction::button(os, "Run workflow"));
@@ -4402,6 +4403,7 @@ GUI_TEST_CLASS_DEFINITION( test_2285 ){
     if (documentTreeWidget != NULL) {
         GTUtilsProjectTreeView::toggleView(os);
     }
+    GTGlobals::sleep();
     GTUtilsMSAEditorSequenceArea::click(os, QPoint(44, 13));
 //    5. Press Backspace.
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["back"]);

@@ -455,28 +455,40 @@ void GTUtilsProjectTreeView::dragAndDropSeveralElements(U2OpStatus &os, QModelIn
 }
 
 void GTUtilsProjectTreeView::sendDragAndDrop(U2OpStatus &os, QMimeData *mimeData, QPoint enterPos, QPoint dropPos){
-    QTreeView *treeView = getTreeView(os);
-    QAbstractItemModel *model = treeView->model();
-    QWidget* veiwPort = treeView->findChild<QWidget*>("qt_scrollarea_viewport");
+//    QTreeView *treeView = getTreeView(os);
+//    QAbstractItemModel *model = treeView->model();
+//    QString s = model->metaObject()->className();
+//    QWidget* veiwPort = treeView->viewport();//treeView->findChild<QWidget*>("qt_scrollarea_viewport");
 
-    QPoint localEnterPos = treeView->mapFromGlobal(enterPos);
-    QPoint localDropPos = treeView->mapFromGlobal(dropPos);
+//    QPoint localEnterPos = treeView->mapFromGlobal(enterPos);
+//    QPoint localDropPos = treeView->mapFromGlobal(dropPos);
 
-    GTMouseDriver::moveTo(os, enterPos);
+/**
+*OLD CODE IS COMMENTED 05.12.14. IF EVERYTHING WORKS FINE AND YOU ARE THINKING ABOUT REMOVING IT, DO IT
+*/
+
+    GTMouseDriver::dragAndDrop(os, enterPos, dropPos, QPoint(100, -100));
+    //GTGlobals::sleep(20000);
+
+    /*GTMouseDriver::moveTo(os, enterPos);
+    GTMouseDriver::click(os);
     Qt::DropActions dropActions = model->supportedDropActions();
 
     QDragEnterEvent* dragEnterEvent = new QDragEnterEvent(localEnterPos, dropActions, mimeData, Qt::LeftButton, 0);
-    GTGlobals::sendEvent(veiwPort, dragEnterEvent);
+    //GTGlobals::sendEvent(veiwPort, dragEnterEvent);
 
 
     GTMouseDriver::moveTo(os, dropPos);
 
 
     QDragMoveEvent* dragmoveEvent = new QDragMoveEvent(localDropPos, dropActions, mimeData, Qt::LeftButton, 0);
-    GTGlobals::sendEvent(veiwPort, dragmoveEvent );
+    //GTGlobals::sendEvent(veiwPort, dragmoveEvent );
 
     QDropEvent* dropEvent = new QDropEvent(localDropPos, dropActions, mimeData, Qt::LeftButton, 0);
+    //dropEvent->
     GTGlobals::sendEvent(veiwPort, dropEvent);
+    //model->dropMimeData(mimeData, dropActions,)
+    GTGlobals::sleep();*/
 }
 
 void GTUtilsProjectTreeView::sendDragAndDrop(U2OpStatus &os, QMimeData *mimeData, QPoint enterPos, QWidget *dropWidget){

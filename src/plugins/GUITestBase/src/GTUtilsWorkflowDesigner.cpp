@@ -595,6 +595,9 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
         QComboBox *box = qobject_cast<QComboBox*>(table->findChild<QComboBox*>());
         GT_CHECK(box, "QComboBox not found");
         GTComboBox::checkValues(os, box, values);
+#ifdef Q_OS_LINUX
+        GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["esc"]);
+#endif
         break;
     }
     }
