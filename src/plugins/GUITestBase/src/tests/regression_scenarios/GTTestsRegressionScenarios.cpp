@@ -882,7 +882,7 @@ GUI_TEST_CLASS_DEFINITION(test_1189){
 //4) Select "Selected region" in "Region" combobox of "Search in" area.
     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
     QComboBox *regBox = (QComboBox *)GTWidget::findWidget(os, "boxRegion");
-    GTComboBox::setCurrentIndex(os, regBox, 2, false);
+    GTComboBox::setCurrentIndex(os, regBox, 2);
 
 //5) Ensure that two lineedits became visible and contain correct region
     QLineEdit *start = (QLineEdit *)GTWidget::findWidget(os, "editStart");
@@ -916,7 +916,7 @@ GUI_TEST_CLASS_DEFINITION(test_1189_1){
 //4) Select "Selected region" in "Region" combobox of "Search in" area.
     GTWidget::click(os, GTWidget::findWidget(os, "ArrowHeader_Search in"));
     QComboBox *regBox =(QComboBox *)GTWidget::findWidget(os, "boxRegion");
-    GTComboBox::setCurrentIndex(os, regBox, 2, false);
+    GTComboBox::setCurrentIndex(os, regBox, 2);
 
 //5) Ensure that two lineedits became visible and contain correct region
     QLineEdit *start = (QLineEdit *)GTWidget::findWidget(os, "editStart");
