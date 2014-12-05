@@ -8384,6 +8384,46 @@ GUI_TEST_CLASS_DEFINITION(test_3180) {
     CHECK_SET_ERR(AppContext::getTaskScheduler()->getTopLevelTasks().isEmpty(), "Task is not cancelled");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3187) {
+    FormatDBSupportRunDialogFiller::Parameters p;
+    p.inputFilePath = dataDir + "samples/FASTA/human_T1.fa";
+    p.alphabetType = FormatDBSupportRunDialogFiller::Parameters::Nucleotide;
+    p.outputDirPath = sandBoxDir + "test_3187";
+    QDir().mkpath(p.outputDirPath);
+    GTUtilsDialog::waitForDialog(os, new FormatDBSupportRunDialogFiller(os, p));
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "BLAST" << "FormatDB"));
+    GTMenu::showMainMenu(os, MWMENU_TOOLS);
+
+    //GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
+    QMainWindow *mw = AppContext::getMainWindow()->getQMainWindow();
+    QPoint botRight = mw->rect().bottomRight();
+    botRight.setX(botRight.x() - 7);
+    botRight.setY(botRight.y() + 10);
+    
+    GTMouseDriver::moveTo(os, botRight);
+    GTMouseDriver::doubleClick(os);
+
+    botRight.setX(botRight.x() - 35);
+    botRight.setY(botRight.y() - 55);
+
+    GTMouseDriver::moveTo(os, botRight);
+    GTMouseDriver::click(os); 
+
+    QWidget *reportWidget = GTWidget::findWidget(os, "qt_scrollarea_viewport");
+    GTMouseDriver::moveTo(os, reportWidget->rect().center());
+    GTMouseDriver::click(os); 
+
+    GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
+    QString reportText = GTClipboard::text(os);
+
+    CHECK_SET_ERR(reportText.contains("Blast database has been successfully created"), "report didn't contain expected text");    
+    CHECK_SET_ERR(reportText.contains("Type: nucleotide"), "report didn't contain expected text");    
+    CHECK_SET_ERR(reportText.contains("Source sequences:"), "report didn't contain expected text");
+    CHECK_SET_ERR(reportText.contains("Formatdb log file path:"), "report didn't contain expected text");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3207){
 //    Steps to reproduce:
 //    1. Open "\samples\PDB\1CF7.PDB"
