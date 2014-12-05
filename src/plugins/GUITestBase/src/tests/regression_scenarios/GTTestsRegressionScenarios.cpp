@@ -1185,6 +1185,30 @@ GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_da
 GTMenu::showContextMenu(os, GTUtilsMdi::activeWindow(os));
 }
 
+GUI_TEST_CLASS_DEFINITION( test_1606 ) {
+//    1.  File->Access remote database...
+//    2.  Fill    "Resource ID": 1ezg
+//                "Database": PDB
+//        Open.
+//    3.  Build SAS molecular surface.
+//    4.  Close UGENE.
+//    Expected state: UGENE doesn't crash on closing.
+    GTLogTracer l;
+
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "1ezg", 3, true, false,
+                                                                        sandBoxDir));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE),
+                                QStringList() << ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new PopupChooser(os, QStringList() << "Molecular Surface" << "SES"));
+    QWidget *widget3d = GTWidget::findWidget(os, "1-1EZG");
+    GTWidget::click(os, widget3d, Qt::RightButton);
+    GTGlobals::sleep();
+
+    GTUtilsLog::check(os, l);
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1622 )
 {
     // 1. Open document "ma.aln"
@@ -1243,6 +1267,23 @@ GUI_TEST_CLASS_DEFINITION( test_1628 ) {
     QStringList names = GTUtilsMSAEditorSequenceArea::getNameList(os);
 
     CHECK_SET_ERR(names.contains("йцукен123") && !names.contains("Montana_montana"), "Undo-redo worked incorrectly");
+}
+
+GUI_TEST_CLASS_DEFINITION( test_1644 ) {
+//    1) Run UGENE
+//    2) Choose File/Access remote database
+//    3) Choose UniProt (DAS) or Ensembl Human Genes (DAS) from combobox
+//    4) Enter Resourse Id
+//    State: if Ensembl Human Genes is choosen and example ID (ENSG00000139618) is entered then UGENE crashes
+//    trying to recognize .gb format ( failed to detect ...)
+    GTLogTracer l;
+    GTUtilsDialog::waitForDialog(os, new RemoteDBDialogFillerDeprecated(os, "ENSG00000139618", 7, true, false,
+                                                                        sandBoxDir));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE),
+                                QStringList() << ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
+    GTGlobals::sleep(5000);
+
+    GTUtilsLog::check(os, l);
 }
 
 GUI_TEST_CLASS_DEFINITION( test_1653 ) {
@@ -1768,7 +1809,7 @@ GUI_TEST_CLASS_DEFINITION(test_1720){
 GUI_TEST_CLASS_DEFINITION(test_1747){
     //1. Open \data\samples\CLUSTALW\ty3.aln.gz
     //2. Enable the distances column in options panel or create distances matrix by using menu {statistics->Generate distance matrix}
-    //Expected state: progress for "Generete distance matrix" correctly displays current state of calculation 
+    //Expected state: progress for "Generete distance matrix" correctly displays current state of calculation
     GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "ty3.aln.gz");
     GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Statistics" << "Generate distance matrix"));
     GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os));
@@ -5248,7 +5289,7 @@ GUI_TEST_CLASS_DEFINITION(test_2431) {
     GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
     GTUtilsWorkflowDesigner::toggleDebugMode(os);
     GTGlobals::sleep(1000);
-    
+
     GTUtilsWorkflowDesigner::addAlgorithm(os, "Read sequence");
     GTMouseDriver::moveTo(os, GTUtilsWorkflowDesigner::getItemCenter(os, "Read sequence"));
     GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["delete"]);
@@ -8402,7 +8443,7 @@ GUI_TEST_CLASS_DEFINITION(test_3187) {
     QPoint botRight = mw->rect().bottomRight();
     botRight.setX(botRight.x() - 7);
     botRight.setY(botRight.y() + 10);
-    
+
     GTMouseDriver::moveTo(os, botRight);
     GTMouseDriver::doubleClick(os);
 
@@ -8410,18 +8451,18 @@ GUI_TEST_CLASS_DEFINITION(test_3187) {
     botRight.setY(botRight.y() - 55);
 
     GTMouseDriver::moveTo(os, botRight);
-    GTMouseDriver::click(os); 
+    GTMouseDriver::click(os);
 
     QWidget *reportWidget = GTWidget::findWidget(os, "qt_scrollarea_viewport");
     GTMouseDriver::moveTo(os, reportWidget->rect().center());
-    GTMouseDriver::click(os); 
+    GTMouseDriver::click(os);
 
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTKeyboardDriver::keyClick(os, 'c', GTKeyboardDriver::key["ctrl"]);
     QString reportText = GTClipboard::text(os);
 
-    CHECK_SET_ERR(reportText.contains("Blast database has been successfully created"), "report didn't contain expected text");    
-    CHECK_SET_ERR(reportText.contains("Type: nucleotide"), "report didn't contain expected text");    
+    CHECK_SET_ERR(reportText.contains("Blast database has been successfully created"), "report didn't contain expected text");
+    CHECK_SET_ERR(reportText.contains("Type: nucleotide"), "report didn't contain expected text");
     CHECK_SET_ERR(reportText.contains("Source sequences:"), "report didn't contain expected text");
     CHECK_SET_ERR(reportText.contains("Formatdb log file path:"), "report didn't contain expected text");
 }
@@ -10576,7 +10617,7 @@ GUI_TEST_CLASS_DEFINITION(test_3610) {
     GTMouseDriver::click(os, Qt::RightButton);
     GTGlobals::sleep(1000);
 
-    
+
     //GTMenu::showContextMenu(os, GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
 
     Runnable *filler = new ReplaceSubsequenceDialogFiller(os,
