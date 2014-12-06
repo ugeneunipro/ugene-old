@@ -34,7 +34,7 @@
 #include "GUITestService.h"
 #include "GUITestTeamcityLogger.h"
 
-#define TIMEOUT 720000
+#define TIMEOUT 240000
 
 #ifdef Q_OS_LINUX
 #define NUMBER_OF_TESTS_IN_SUTIE 450

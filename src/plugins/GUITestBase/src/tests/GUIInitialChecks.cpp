@@ -32,6 +32,7 @@
 
 #include "GUIInitialChecks.h"
 #include "api/GTClipboard.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTKeyboardDriver.h"
 #include "api/GTWidget.h"
 #include "api/GTGlobals.h"
@@ -60,6 +61,13 @@ GUI_TEST_CLASS_DEFINITION(test_0000) {
     QProcess::execute("closeAllErrors.exe"); //this exe file, compiled Autoit script
 #endif
     GTUtilsDialog::cleanup(os);
+#ifdef Q_OS_MAC
+    GTMouseDriver::release(os, Qt::RightButton);
+    GTMouseDriver::release(os);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["shift"]);
+    GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["alt"]);
+#endif
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0001) {
