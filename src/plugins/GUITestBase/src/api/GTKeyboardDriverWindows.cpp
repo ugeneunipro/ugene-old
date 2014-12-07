@@ -80,7 +80,11 @@ void GTKeyboardDriver::keyPress(U2::U2OpStatus &os, char key, int modifiers)
             keyPress(os, VK_OEM_6, modifiers);
             break;
 
-        case '[':
+	    case '\\':
+            keyPress(os, VK_OEM_5, modifiers);
+            break;
+
+		case '[':
             keyPress(os, VK_OEM_4, modifiers);
             break;
 
@@ -177,6 +181,10 @@ void GTKeyboardDriver::keyRelease(U2OpStatus &os, char key, int modifiers)
 
         case ']':
             keyRelease(os, VK_OEM_6, modifiers);
+            break;
+
+        case '\\':
+            keyRelease(os, VK_OEM_5, modifiers);
             break;
 
         case '[':
