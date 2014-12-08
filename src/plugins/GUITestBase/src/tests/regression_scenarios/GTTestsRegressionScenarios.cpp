@@ -9297,7 +9297,7 @@ GUI_TEST_CLASS_DEFINITION(test_3342) {
 
     GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
     const GTGlobals::FindOptions fo(false);
-    QWidget* dotplotWgt = GTWidget::findWidget(os, "dotplot widget", __null, fo);
+    QWidget* dotplotWgt = GTWidget::findWidget(os, "dotplot widget", NULL, fo);
     CHECK_SET_ERR(dotplotWgt == NULL, "There should be NO dotpot widget");
 
     GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os));
@@ -9311,7 +9311,7 @@ GUI_TEST_CLASS_DEFINITION(test_3342) {
     GTWidget::click(os, GTWidget::findWidget(os, "exitButton"));
     GTGlobals::sleep();
 
-    dotplotWgt = GTWidget::findWidget(os, "dotplot widget", __null, fo);
+    dotplotWgt = GTWidget::findWidget(os, "dotplot widget", NULL, fo);
     CHECK_SET_ERR(dotplotWgt == NULL, "There should be NO dotpot widget");
 }
 
