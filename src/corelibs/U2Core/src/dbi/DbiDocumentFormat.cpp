@@ -92,7 +92,8 @@ Document* DbiDocumentFormat::loadDocument(IOAdapter* io, const U2DbiRef& dstDbiR
         renameObjectsIfNamesEqual(objects);
     }
     
-    Document* d = new Document(this, io->getFactory(), io->getURL(), dstDbiRef, objects, fs);
+    QString lockReason = handle.dbi->isReadOnly() ? "The database is read-only" : "";
+    Document* d = new Document(this, io->getFactory(), io->getURL(), dstDbiRef, objects, fs, lockReason);
     d->setDocumentOwnsDbiResources(false);
 
     return d;

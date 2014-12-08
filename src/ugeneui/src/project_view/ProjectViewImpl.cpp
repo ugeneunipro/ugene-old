@@ -149,11 +149,6 @@ void DocumentUpdater::update() {
             removedDocs.append(doc);
         }
 
-        QFile::Permissions perm= DocumentUtils::getPermissions(doc);
-        if (perm==0) {// the document was not loaded or saved
-            continue;
-        }
-
         DbiDocumentFormat* dbiFormat = qobject_cast<DbiDocumentFormat*>(doc->getDocumentFormat());
         if (dbiFormat) {
             continue;

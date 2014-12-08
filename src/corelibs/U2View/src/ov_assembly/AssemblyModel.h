@@ -92,7 +92,8 @@ public:
 
     const QList<VariantTrackObject*> &getTrackList() const;
     void addTrackObject(VariantTrackObject *trackObj);
-    bool checkPermissions(QFile::Permission, bool showDialog=true);
+    bool checkPermissions(QFile::Permission permission, bool showDialog = true) const;
+    void dissociateReference();
     
 private:
     /**
@@ -120,7 +121,6 @@ private slots:
     void sl_docRemoved(Document*);
     void sl_docAdded(Document *);
     void sl_referenceObjRemoved(GObject* o);
-    void sl_unassociateReference();
     
 private:
     const static qint64 NO_VAL = -1;

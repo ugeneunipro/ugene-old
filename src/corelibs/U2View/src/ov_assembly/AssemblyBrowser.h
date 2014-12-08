@@ -156,6 +156,7 @@ private slots:
     void sl_showAssemblyInfo();
     void sl_exportToSam();
     void sl_exportCoverage();
+    void sl_unassociateReference();
     
 private:
     void initFont();
@@ -164,6 +165,7 @@ private:
     void clear();
     // returns error string
     QString tryAddObject(GObject * obj);
+    bool isAssemblyObjectLocked(bool showDialog = true) const;
 
     // utility functions for zooming
     int zoomInFromSize(int oldCellSize);

@@ -20,6 +20,7 @@
  */
 
 #include <QtCore/QFile>
+#include <QtCore/QFileInfo>
 
 #include <U2Core/AppContext.h>
 #include <U2Core/AppResources.h>
@@ -212,7 +213,7 @@ U2AttributeDbi *SamtoolsBasedDbi::getAttributeDbi() {
 }
 
 bool SamtoolsBasedDbi::isReadOnly() const {
-    FAIL(QObject::tr("Not implemented"), false);
+    return !QFileInfo(url.getURLString()).permission(QFile::WriteUser);
 }
 
 /************************************************************************/

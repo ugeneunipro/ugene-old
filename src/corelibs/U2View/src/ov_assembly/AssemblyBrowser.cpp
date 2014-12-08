@@ -227,7 +227,8 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
         //    }
         //}
 
-        bool setRef = model->checkPermissions(QFile::WriteUser);
+        bool setRef = !isAssemblyObjectLocked(true);
+        setRef &= model->checkPermissions(QFile::WriteUser, setRef);
         if(!errs.isEmpty() && setRef) {
             errs << tr("\n  Continue?");
             QMessageBox::StandardButtons fl = QMessageBox::Ok | QMessageBox::Cancel;
@@ -275,6 +276,15 @@ QString AssemblyBrowser::tryAddObject(GObject * obj) {
     }
 
     return "";
+}
+
+bool AssemblyBrowser::isAssemblyObjectLocked(bool showDialog) const {
+    const bool isLocked = gobject->isStateLocked();
+    if (showDialog && isLocked) {
+        QMessageBox::warning(ui, tr("Warning"),
+                             tr("This action requires changing the assembly object that is locked for editing"));
+    }
+    return isLocked;
 }
 
 void AssemblyBrowser::buildStaticToolbar(QToolBar* tb) {
@@ -741,6 +751,14 @@ void AssemblyBrowser::sl_exportCoverage() {
     }
 }
 
+void AssemblyBrowser::sl_unassociateReference() {
+    bool unsetRef = !isAssemblyObjectLocked(true);
+    unsetRef &= model->checkPermissions(QFile::WriteUser, unsetRef);
+    if (unsetRef) {
+        model->dissociateReference();
+    }
+}
+
 void AssemblyBrowser::sl_onShowCoordsOnRulerChanged(bool checked) {
     ui->getRuler()->setShowCoordsOnRuler(checked);
 }
@@ -1002,7 +1020,7 @@ referenceArea(0), coverageGraph(0), ruler(0), readsArea(0), annotationsArea(0), 
         connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), readsArea, SLOT(sl_redraw()));
         connect(browser->getModel().data(), SIGNAL(si_referenceChanged()), consensusArea, SLOT(sl_redraw()));
         connect(zoomableOverview, SIGNAL(si_coverageReady()), readsArea, SLOT(sl_redraw()));
-        connect(referenceArea, SIGNAL(si_unassociateReference()), browser->getModel().data(), SLOT(sl_unassociateReference()));
+        connect(referenceArea, SIGNAL(si_unassociateReference()), browser, SLOT(sl_unassociateReference()));
     }
     // do not how to show them
     else {

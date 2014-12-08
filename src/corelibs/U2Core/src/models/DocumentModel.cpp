@@ -461,6 +461,7 @@ void Document::loadFrom(Document* sourceDoc) {
     SAFE_POINT(!isLoaded(), QString("Document is already loaded: ").arg(getURLString()), )
 
     DocumentChildEventsHelper eventsHelper(this);
+    Q_UNUSED(eventsHelper);
 
     sourceDoc->checkLoadedState();
     checkUnloadedState();

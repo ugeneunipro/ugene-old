@@ -86,6 +86,24 @@ void AssemblyModel::unsetReference() {
     refObj = NULL;
 }
 
+void AssemblyModel::dissociateReference() {
+    if(!assembly.referenceId.isEmpty()) {
+        CHECK(checkPermissions(QFile::WriteUser, false), );
+
+        const U2DataId refId = assembly.referenceId;
+
+        U2OpStatusImpl status;
+        assembly.referenceId.clear();
+        assemblyDbi->updateAssemblyObject(assembly, status);
+        LOG_OP(status);
+        unsetReference();
+
+        removeCrossDatabaseReference(refId);
+
+        emit si_referenceChanged();
+    }
+}
+
 bool AssemblyModel::isEmpty() const {
     return assemblyDbi == NULL;
 }
@@ -303,8 +321,7 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
                                              tr("A file '%1' with the reference sequence '%2' not found!\n"
                                                 "Try to open another file with a reference sequence and associate it with the assembly.").arg(refUrl).arg(refName),
                                              QMessageBox::Ok, QMessageBox::Ok);
-                        if (checkPermissions(QFile::WriteUser,false))
-                            sl_unassociateReference();
+                        dissociateReference();
                     }
                 }
 
@@ -317,7 +334,7 @@ void AssemblyModel::setAssembly(U2AssemblyDbi * dbi, const U2Assembly & assm) {
             }
 
             default: {
-                sl_unassociateReference();
+                dissociateReference();
                 FAIL(tr("Unexected object is set as reference"), );
             }
         }
@@ -356,7 +373,7 @@ void AssemblyModel::onReferenceRemoved() {
     QMessageBox::StandardButton btn = QMessageBox::question(QApplication::activeWindow(), tr("Errors"),
         tr("The '%1' sequence is associated with the '%2' assembly?\nDo you want to remove the association?").arg(refObj->getGObjectName()).arg(assembly.visualName),fl, QMessageBox::Yes);
     if (btn == QMessageBox::Yes) {
-        sl_unassociateReference();
+        dissociateReference();
     } else {
         refObj->getDocument()->disconnect(this);
         unsetReference();
@@ -617,26 +634,7 @@ QString AssemblyModel::getReferenceUri(U2OpStatus & os) {
     return referenceUri;
 }
 
-void AssemblyModel::sl_unassociateReference() {
-    if(!assembly.referenceId.isEmpty()) {
-        if(!checkPermissions(QFile::WriteUser))
-            return;
-
-        const U2DataId refId = assembly.referenceId;
-
-        U2OpStatusImpl status;
-        assembly.referenceId.clear();
-        assemblyDbi->updateAssemblyObject(assembly, status);
-        LOG_OP(status);
-        unsetReference();
-
-        removeCrossDatabaseReference(refId);
-
-        emit si_referenceChanged();
-    }
-}
-
-bool AssemblyModel::checkPermissions(QFile::Permission permission, bool showDialog){
+bool AssemblyModel::checkPermissions(QFile::Permission permission, bool showDialog) const {
     bool res = assemblyDbi->getRootDbi()->isReadOnly();
     QFile f(assembly.dbiId);
     QFile::Permissions perm = f.permissions();
