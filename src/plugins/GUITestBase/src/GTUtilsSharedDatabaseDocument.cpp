@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/QSortFilterProxyModel>
+#include <QSortFilterProxyModel>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeView>
 #else

@@ -97,7 +97,6 @@ bool ProjectViewModel::setData(const QModelIndex &index, const QVariant &value, 
     CHECK(index.isValid(), false);
     CHECK(value.isValid() && !value.toString().isEmpty(), false);
 
-    Document *doc = NULL;
     bool renameSuccessful = false;
     switch (itemType(index)) {
     case DOCUMENT:
@@ -106,14 +105,12 @@ bool ProjectViewModel::setData(const QModelIndex &index, const QVariant &value, 
             Folder *folder = toFolder(index);
             SAFE_POINT(NULL != folder, "Invalid folder detected", false);
             renameSuccessful = setFolderData(folder, value.toString());
-            doc = folder->getDocument();
         }
         break;
     case OBJECT: {
             GObject *obj = toObject(index);
             SAFE_POINT(NULL != obj, "NULL object", false);
             renameSuccessful = setObjectData(obj, value.toString());
-            doc = obj->getDocument();
         }
         break;
     default:

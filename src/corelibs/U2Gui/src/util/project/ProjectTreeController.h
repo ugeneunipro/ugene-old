@@ -30,6 +30,7 @@
 
 class QAction;
 class QMenu;
+class QModelIndex;
 class QTreeView;
 
 namespace U2 {

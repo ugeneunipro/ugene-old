@@ -291,15 +291,15 @@ void ProjectTreeController::sl_updateActions() {
         }
     }
 
-    const bool canRestore = selectedModifiableFoldersExist && allSelectedFoldersAreInRecycleBin
-        || selectedModifiableObjectsExist && allObjectsAreInRecycleBin;
+    const bool canRestore = (selectedModifiableFoldersExist && allSelectedFoldersAreInRecycleBin)
+        || (selectedModifiableObjectsExist && allObjectsAreInRecycleBin);
     restoreSelectedItemsAction->setEnabled(canRestore);
     createFolderAction->setEnabled(canCreateSubFolder());
 
     const bool selectedDocsExist = !getDocsInSelection(false).isEmpty();
 
-    const bool canRemoveItems = selectedModifiableObjectsExist && canRemoveObjectFromDocument
-        || selectedDocsExist || selectedModifiableFoldersExist && !modifiableRecycleBinSelected;
+    const bool canRemoveItems = (selectedModifiableObjectsExist && canRemoveObjectFromDocument)
+        || selectedDocsExist || (selectedModifiableFoldersExist && !modifiableRecycleBinSelected);
     removeSelectedItemsAction->setEnabled(canRemoveItems);
 
     const bool canEmptyRecycleBin = modifiableRecycleBinSelected && 1 == selectedFolders.size()
@@ -570,22 +570,10 @@ void ProjectTreeController::sl_onRename() {
     ProjectViewModel::Type indexType = model->itemType(selectedIndex);
     CHECK(ProjectViewModel::DOCUMENT != indexType, );
 
-    Document *doc = NULL;
-    switch (indexType) {
-    case ProjectViewModel::OBJECT :
-        doc = model->toObject(selectedIndex)->getDocument();
-        break;
-    case ProjectViewModel::FOLDER :
-        doc = model->toFolder(selectedIndex)->getDocument();
-        break;
-    default:
-        FAIL("Unexpected project view item type", );
-    }
     tree->edit(selectedProxyIndex);
 }
 
 void ProjectTreeController::sl_onProjectItemRenamed(const QModelIndex &index) {
-    tree->selectionModel()->clear();
     Document *doc = NULL;
     switch (model->itemType(index)) {
     case ProjectViewModel::OBJECT :
