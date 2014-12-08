@@ -2950,6 +2950,7 @@ GUI_TEST_CLASS_DEFINITION( test_2070 ){
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList()<<ACTION_PROJECTSUPPORT__ACCESS_REMOTE_DB, GTGlobals::UseKey);
     GTGlobals::sleep();
     GTUtilsTaskTreeView::waitTaskFinished(os);
+    GTGlobals::sleep();
 
     GTUtilsDocument::isDocumentLoaded(os, "Q9IGQ6_das.gb");
     GTUtilsDocument::checkDocument(os, "Q9IGQ6_das.gb", AnnotatedDNAViewFactory::ID);
@@ -5743,8 +5744,9 @@ GUI_TEST_CLASS_DEFINITION(test_2545) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2549) {
+    GTGlobals::sleep();
     GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
-    GTGlobals::sleep(500);
+    GTGlobals::sleep();
     GTWidget::click(os, GTWidget::findWidget(os, "dock_log_view"));
 
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
@@ -5758,7 +5760,7 @@ GUI_TEST_CLASS_DEFINITION(test_2549) {
 GUI_TEST_CLASS_DEFINITION(test_2562) {
     GTLogTracer l;
 
-    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "swiss-prot"));
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "Swiss-Prot"));
     // 1. Open any amino sequence, e.g. "data/samples/Swiss-Prot/D0VTW9.txt" in the Sequence View.
     GTFileDialog::openFile(os, dataDir + "samples/Swiss-Prot/", "D0VTW9.txt");
 
@@ -6671,7 +6673,7 @@ GUI_TEST_CLASS_DEFINITION(test_2773) {
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));
     GTWidget::click(os,GTAction::button(os,"Run workflow"));
-    GTGlobals::sleep();
+    GTGlobals::sleep(5000);
 
     GTUtilsLog::check(os, l);
 }
@@ -10878,6 +10880,7 @@ GUI_TEST_CLASS_DEFINITION(test_3634) {
     GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/gtf/invalid", "AB375112_annotations.gtf"));
     GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "GTF"));
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__OPEN_AS);
+    GTGlobals::sleep();
     CHECK_SET_ERR(l.hasError(), "No error about opening the file");
 }
 
@@ -11158,13 +11161,8 @@ GUI_TEST_CLASS_DEFINITION(test_3715) {
     //2. Activate samples.
     GTUtilsWorkflowDesigner::setCurrentTab(os, GTUtilsWorkflowDesigner::samples);
 
-    //3. Choose a sample (but not open it).
-    QTreeWidgetItem *sample = GTUtilsWorkflowDesigner::findTreeItem(os, "call variants", GTUtilsWorkflowDesigner::samples);
-    sample->parent()->setExpanded(true);
-    GTGlobals::sleep();
-    GTMouseDriver::moveTo(os, GTTreeWidget::getItemCenter(os, sample));
-    GTMouseDriver::doubleClick(os);
-    CHECK_OP(os, );
+    //3. Choose a sample
+    GTUtilsWorkflowDesigner::addSample(os, "call variants");
     GTGlobals::sleep();
 
     GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Ok));

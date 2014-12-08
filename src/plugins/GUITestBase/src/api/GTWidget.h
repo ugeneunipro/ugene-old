@@ -60,8 +60,10 @@ public:
         T result = NULL;
         QWidget* w = findWidget(os, widgetName, parentWidget, options);
         result = qobject_cast<T>(w);
-        GT_CHECK_RESULT(w != NULL, "widget not found", result);        
-        GT_CHECK_RESULT(w != NULL, "widget of specefied class not found", result);
+        if(options.failIfNull == true){
+            GT_CHECK_RESULT(w != NULL, "widget " + widgetName + " not found", result);
+            GT_CHECK_RESULT(result != NULL, "widget of specefied class not found", result);
+        }
         return result;
     }
     #undef GT_METHOD_NAME

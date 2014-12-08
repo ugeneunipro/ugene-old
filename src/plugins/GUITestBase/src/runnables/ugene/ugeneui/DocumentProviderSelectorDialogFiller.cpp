@@ -39,7 +39,7 @@ QMap<DocumentProviderSelectorDialogFiller::OpenWith, QString> DocumentProviderSe
 const QMap<DocumentProviderSelectorDialogFiller::OpenWith, QString> DocumentProviderSelectorDialogFiller::openWithMap =
         DocumentProviderSelectorDialogFiller::initMap();
 
-#define GT_CLASS_NAME "DocumentFormatSelectorDialogFiller"
+#define GT_CLASS_NAME "DocumentProviderSelectorDialogFiller"
 #define GT_METHOD_NAME "commonScenario"
 void DocumentProviderSelectorDialogFiller::commonScenario(){
     QWidget* dialog = QApplication::activeModalWidget();

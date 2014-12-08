@@ -84,8 +84,10 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
             detectedIds.append(r.format->getFormatId());
         }
         QString text;
+        QString objName;
         if (r.format != NULL) {
             text = tr("<b>%1</b> format. Score: %2 <i>(%3)</i>").arg(r.format->getFormatName()).arg(r.score()).arg(score2Text(r.score()));
+            objName = r.format->getFormatName();
         } else if (r.importer != NULL) {
             // #A6392E is the same color as L10N::errorColorLabelStr(). For some reason Qt's HTML parser cannot handle this value as rgb.
             text = tr("<b><font color=#A6392E>Import: </font>%1</b>. Score: %2 (<i>%3</i>)").arg(r.importer->getImporterName()).arg(r.score()).arg(score2Text(r.score()));
@@ -95,6 +97,7 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
         }
         QHBoxLayout* hbox = new QHBoxLayout();
         QRadioButton* rb = new QRadioButton();
+        rb->setObjectName(objName);
         rb->setChecked(i == 0);
 
         QLabel* label = new QLabel(text);
@@ -120,6 +123,7 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
         QString text(tr("Choose format manually"));
         QHBoxLayout* hbox = new QHBoxLayout();
         QRadioButton* rb = new QRadioButton();
+        rb->setObjectName("chooseFormatManuallyRadio");
 
         QLabel* label = new QLabel(text);
         label->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
@@ -127,6 +131,7 @@ int DocumentFormatSelectorController::selectResult(const GUrl& url, QByteArray& 
         label->installEventFilter(new LabelClickProvider(label, rb));
 
         d.userSelectedFormat = new QComboBox();
+        d.userSelectedFormat->setObjectName("userSelectedFormat");
         const DocumentFormatRegistry *formatRegistry = AppContext::getDocumentFormatRegistry();
         SAFE_POINT(formatRegistry != NULL, "FormatRegistry is NULL!", -1);
         foreach ( const DocumentFormatId &id, formatRegistry->getRegisteredFormats()) {

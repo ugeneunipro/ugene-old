@@ -30,6 +30,7 @@
 
 #include "api/GTComboBox.h"
 #include "api/GTRadioButton.h"
+#include "api/GTMouseDriver.h"
 #include "api/GTWidget.h"
 
 #include "DocumentFormatSelectorDialogFiller.h"
@@ -42,40 +43,9 @@ namespace U2{
 QRadioButton* DocumentFormatSelectorDialogFiller::getButton(U2OpStatus &os){
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK_RESULT(dialog, "activeModalWidget is NULL", NULL);
+    QRadioButton* result = GTWidget::findExactWidget<QRadioButton*>(os, format, dialog, GTGlobals::FindOptions(false));
 
-    QList<QRadioButton*> radioList = dialog->findChildren<QRadioButton*>();
-    QList<QLabel*> labelList = dialog->findChildren<QLabel*>();
-
-    QMap<int, QRadioButton*> radioMap;
-    QMap<int, QString> labelMap;
-
-
-
-    foreach(QRadioButton* r, radioList){
-        int y = r->mapToGlobal(r->geometry().topLeft()).y();
-        radioMap.insert(y, r);
-    }
-
-    foreach(QLabel* l, labelList){
-        int y = l->mapToGlobal(l->geometry().topLeft()).y();
-        QString lText = l->text();
-        labelMap.insert(y, lText);
-
-     }
-
-    int pos = 0;
-    foreach(QString s, labelMap){
-        if(s.contains(format, Qt::CaseInsensitive)){
-            break;
-        }
-        pos++;
-    }
-
-    if (pos < radioMap.size()) {
-        return radioMap.values().at(pos);
-    }
-
-    return NULL;
+    return result;
 }
 #undef GT_METHOD_NAME
 
@@ -84,17 +54,18 @@ void DocumentFormatSelectorDialogFiller::commonScenario()
 {
     QWidget* dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog, "activeModalWidget is NULL");
+    GTGlobals::sleep(500);
 
     QRadioButton* radio = getButton(os);
     if (NULL != radio) {
         GTRadioButton::click(os, radio);
     } else {
-        QList<QRadioButton*> radioList = dialog->findChildren<QRadioButton*>();
-        GT_CHECK(radioList.size() > 0, "radio button not found");
-        GTRadioButton::click(os, radioList.last());
-        QList<QComboBox*> comboList = dialog->findChildren<QComboBox*>();
-        GT_CHECK(1 == comboList.size(), "combobox not found");
-        GTComboBox::setIndexWithText(os, comboList.first(), format);
+        QRadioButton* chooseFormatManuallyRadio = GTWidget::findExactWidget<QRadioButton*>(os, "chooseFormatManuallyRadio", dialog);
+        GTRadioButton::click(os, chooseFormatManuallyRadio);
+        GTGlobals::sleep();
+
+        QComboBox* userSelectedFormat = GTWidget::findExactWidget<QComboBox*>(os, "userSelectedFormat", dialog);
+        GTComboBox::setIndexWithText(os, userSelectedFormat, format, true, GTGlobals::UseMouse);
     }
 
     QDialogButtonBox* box = qobject_cast<QDialogButtonBox*>(GTWidget::findWidget(os, "buttonBox", dialog));

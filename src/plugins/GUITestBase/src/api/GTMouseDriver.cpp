@@ -43,7 +43,6 @@ void GTMouseDriver::dragAndDrop(U2OpStatus &os, const QPoint& start, const QPoin
     GTMouseDriver::moveTo(os, start + QPoint(QApplication::startDragDistance(),0));
     GTMouseDriver::moveTo(os, start + extraShift);
     GTGlobals::sleep(200);
-    GTGlobals::sleep(200);
 }
 
 #ifndef Q_OS_MAC
