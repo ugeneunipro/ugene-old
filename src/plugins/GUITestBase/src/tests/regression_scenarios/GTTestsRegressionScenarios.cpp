@@ -9283,6 +9283,38 @@ GUI_TEST_CLASS_DEFINITION(test_3335) {
     GTUtilsLog::check(os, lt);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3342) {
+//    1. Open "human_T1.fa"
+//    2. Press "Build dotlpot" toolbar button
+//    Expected state: "DotPlot" dialog appeared
+//    3. Press "Ok" button in the dialog
+//    Expected state: Dotplot view has appeared
+//    4. Close dotplot view
+//    Expected state: "Save dot-plot" dialog has appeared
+//    5. Press "Yes" button
+//    Expected state: the view has been closed
+//    Current state: the view can't be closed
+
+    GTFileDialog::openFile(os, dataDir + "samples/FASTA", "human_T1.fa");
+    const GTGlobals::FindOptions fo(false);
+    QWidget* dotplotWgt = GTWidget::findWidget(os, "dotplot widget", __null, fo);
+    CHECK_SET_ERR(dotplotWgt == NULL, "There should be NO dotpot widget");
+
+    GTUtilsDialog::waitForDialog(os, new DotPlotFiller(os));
+    GTWidget::click(os, GTWidget::findWidget(os, "build_dotplot_action_widget"));
+    GTGlobals::sleep();
+
+    dotplotWgt = GTWidget::findWidget(os, "dotplot widget");
+    CHECK_SET_ERR(dotplotWgt != NULL, "No dotpot widget");
+
+    GTUtilsDialog::waitForDialog(os, new MessageBoxNoToAllOrNo(os));
+    GTWidget::click(os, GTWidget::findWidget(os, "exitButton"));
+    GTGlobals::sleep();
+
+    dotplotWgt = GTWidget::findWidget(os, "dotplot widget", __null, fo);
+    CHECK_SET_ERR(dotplotWgt == NULL, "There should be NO dotpot widget");
+}
+
 GUI_TEST_CLASS_DEFINITION(test_3344) {
 //    Steps to reproduce:
 //    1. Open "human_T1"
