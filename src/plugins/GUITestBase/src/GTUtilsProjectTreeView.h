@@ -22,6 +22,8 @@
 #ifndef _U2_GUI_PROJECT_TREE_VIEW_UTILS_H_
 #define _U2_GUI_PROJECT_TREE_VIEW_UTILS_H_
 
+#include <QAbstractItemModel>
+
 #include "api/GTGlobals.h"
 #include <U2Gui/ProjectTreeController.h>
 

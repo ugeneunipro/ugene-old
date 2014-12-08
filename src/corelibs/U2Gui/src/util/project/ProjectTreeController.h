@@ -26,7 +26,7 @@
 #include <U2Core/FolderSelection.h>
 #include <U2Core/GObjectSelection.h>
 
-#include <U2Gui/ProjectViewModel.h>
+#include <U2Gui/ProjectTreeControllerModeSettings.h>
 
 class QAction;
 class QMenu;
@@ -36,7 +36,9 @@ namespace U2 {
 
 class GObjectView;
 class MWMDIWindow;
+class ProjectFilterProxyModel;
 class ProjectUpdater;
+class ProjectViewModel;
 class Task;
 
 class U2GUI_EXPORT ProjectTreeController : public QObject {
@@ -145,6 +147,7 @@ private:
     ProjectTreeControllerModeSettings settings;
     ProjectUpdater *updater;
     ProjectViewModel *model;
+    ProjectFilterProxyModel *proxyModel;
 
     // Actions
     QAction *createFolderAction;

@@ -3569,7 +3569,7 @@ GUI_TEST_CLASS_DEFINITION(test_1986){
 //9. Press "OK"
     GTUtilsTaskTreeView::waitTaskFinished(os);
     QTreeView* treeView = GTUtilsProjectTreeView::getTreeView(os);
-    ProjectViewModel* model = qobject_cast<ProjectViewModel*>(treeView->model());
+    QAbstractItemModel* model = treeView->model();
     QString text = model->data(model->index(0,0, QModelIndex()), Qt::DisplayRole).toString();
 
     CHECK_SET_ERR(text.contains(".fasta"),text);
@@ -8257,7 +8257,7 @@ GUI_TEST_CLASS_DEFINITION(test_3144) {
     GTMouseDriver::click(os, Qt::RightButton);
 
     // Expected state : the folder "regression_test_3144_2" is moved to the "Recycle bin".
-    const QModelIndex rbIndex = GTUtilsProjectTreeView::findIndex(os, "Recycle bin");
+    QModelIndex rbIndex = GTUtilsProjectTreeView::findIndex(os, "Recycle bin");
     const QModelIndex innerFolderIndex = GTUtilsProjectTreeView::findIndex(os, "regression_test_3144_2", rbIndex);
 
     // 5. Remove the folder "regression_test_3144_1".
@@ -8266,9 +8266,9 @@ GUI_TEST_CLASS_DEFINITION(test_3144) {
     GTMouseDriver::click(os, Qt::RightButton);
 
     // Expected state : folders "regression_test_3144_1" is shown in the "Recycle bin", folder "regression_test_3144_2" disappears.
+    rbIndex = GTUtilsProjectTreeView::findIndex(os, "Recycle bin");
     const QModelIndex outerFolderIndex = GTUtilsProjectTreeView::findIndex(os, "regression_test_3144_1", rbIndex);
-    const QModelIndex innerFolderNotFoundIndex = GTUtilsProjectTreeView::findIndex(os, "regression_test_3144_2", rbIndex, GTGlobals::FindOptions(false));
-    CHECK_SET_ERR(!innerFolderNotFoundIndex.isValid(), "The 'regression_test_3144_2' folder was found in Recycle Bin but expected to disappear");
+    const QModelIndex innerFolderNotFoundIndex = GTUtilsProjectTreeView::findIndex(os, "regression_test_3144_2", rbIndex);
 
     GTUtilsLog::check(os, l);
 }

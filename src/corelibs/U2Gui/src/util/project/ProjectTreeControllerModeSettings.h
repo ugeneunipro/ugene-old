@@ -89,7 +89,8 @@ public:
     
     bool isDocumentShown(Document* doc) const;
     bool isTypeShown(GObjectType t) const;
-    bool isObjectShown(GObject* o) const ;
+    bool isObjectShown(GObject* o) const;
+    bool isObjectFilterActive() const;
 };
 
 } // U2

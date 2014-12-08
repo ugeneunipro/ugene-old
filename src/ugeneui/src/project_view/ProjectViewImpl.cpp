@@ -19,6 +19,10 @@
  * MA 02110-1301, USA.
  */
 
+#include <QTimer>
+
+#include <QMessageBox>
+
 #include <AppContextImpl.h>
 
 #include <U2Core/CopyDocumentTask.h>
@@ -48,7 +52,6 @@
 #include <U2Core/DNAAlphabet.h>
 
 #include <U2Gui/OpenViewTask.h>
-#include <U2Gui/ProjectViewModel.h>
 #include <U2Gui/UnloadDocumentTask.h>
 #include <U2Gui/ObjectViewModel.h>
 #include <U2Gui/GUIUtils.h>
@@ -61,12 +64,6 @@
 #include <U2View/AnnotatedDNAView.h>
 #include <U2View/ADVSequenceWidget.h>
 #include <U2View/ADVSingleSequenceWidget.h>
-
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QtGui>
-#else
-#include <QtWidgets/QtWidgets>
-#endif
 
 #include "ProjectViewImpl.h"
 

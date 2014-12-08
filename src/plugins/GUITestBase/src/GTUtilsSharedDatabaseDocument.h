@@ -68,6 +68,7 @@ public:
 
 private:
     static const QVariant convertProjectItemsPaths(const QMap<QString, QStringList>& projectItems);
+    static QModelIndex mapFromProxyToSource(U2OpStatus &os, const QModelIndex &index);
 };
 
 }   // namespace U2

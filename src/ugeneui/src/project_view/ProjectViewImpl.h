@@ -22,13 +22,6 @@
 #ifndef _U2_PROJECT_VIEW_WIDGET_
 #define _U2_PROJECT_VIEW_WIDGET_
 
-#include <QtCore/qglobal.h>
-#if (QT_VERSION < 0x050000) //Qt 5
-#include <QtGui/QDockWidget>
-#else
-#include <QtWidgets/QDockWidget>
-#endif
-
 #include <U2Core/DocumentSelection.h>
 #include <U2Core/GObjectSelection.h>
 #include <U2Core/Task.h>

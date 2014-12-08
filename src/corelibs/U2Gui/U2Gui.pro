@@ -83,6 +83,7 @@ HEADERS += src/AppSettingsGUI.h \
            src/util/project/DocumentFolders.h \
            src/util/project/FolderNameDialog.h \
            src/util/project/LoadDocumentTaskProvider.h \
+           src/util/project/ProjectFilterProxyModel.h \
            src/util/project/ProjectTreeController.h \
            src/util/project/ProjectTreeControllerModeSettings.h \
            src/util/project/ProjectUpdater.h \
@@ -196,6 +197,7 @@ SOURCES += src/MainWindow.cpp \
            src/util/project/ConnectionHelper.cpp \
            src/util/project/DocumentFolders.cpp \
            src/util/project/FolderNameDialog.cpp \
+           src/util/project/ProjectFilterProxyModel.cpp \
            src/util/project/ProjectTreeController.cpp \
            src/util/project/ProjectTreeControllerModeSettings.cpp \
            src/util/project/ProjectUpdater.cpp \

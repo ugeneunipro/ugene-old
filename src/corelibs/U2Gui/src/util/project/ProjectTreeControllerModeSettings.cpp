@@ -51,36 +51,27 @@ bool ProjectTreeControllerModeSettings::isDocumentShown(Document* doc) const {
     }
 
     //filter by object types
-    if (!objectTypesToShow.isEmpty()) { 
-        const QList<GObject*>& docObjs = doc->getObjects();
-        if (!docObjs.isEmpty()) { //ok we have mapping about document objects -> apply filter to the objects
-            bool found = false;
-            foreach(GObject* o, docObjs) {
-                found = isObjectShown(o);
-                if (found) {
-                    break;
-                }
-            }
-            if (!found) {
-                return false;
-            }
-        } else {
-            if (!doc->isLoaded()) {
-                DocumentFormatConstraints c;
-                c.supportedObjectTypes += objectTypesToShow;
-                res = doc->getDocumentFormat()->checkConstraints(c);
-            } else {
-                res = false;
-            }
-            if (!res) {
-                return false;
+    const QList<GObject *> &docObjs = doc->getObjects();
+    if (!docObjs.isEmpty()) { //ok we have mapping about document objects -> apply filter to the objects
+        bool found = false;
+        foreach (GObject *o, docObjs) {
+            found = isObjectShown(o);
+            if (found) {
+                break;
             }
         }
-    }
-
-    //filter by name
-    foreach(const QString& token, tokensToShow) {
-        if (!doc->getURLString().contains(token)) {
+        if (!found) {
+            return false;
+        }
+    } else {
+        if (!doc->isLoaded()) {
+            DocumentFormatConstraints c;
+            c.supportedObjectTypes += objectTypesToShow;
+            res = doc->getDocumentFormat()->checkConstraints(c);
+        } else {
+            res = false;
+        }
+        if (!res) {
             return false;
         }
     }
@@ -158,6 +149,11 @@ bool ProjectTreeControllerModeSettings::isTypeShown(GObjectType t) const {
         return true;
     }
     return objectTypesToShow.contains(t);
+}
+
+bool ProjectTreeControllerModeSettings::isObjectFilterActive() const {
+    return !tokensToShow.isEmpty() || !objectConstraints.isEmpty() || !excludeObjectList.isEmpty()
+        || !objectTypesToShow.isEmpty() || NULL != objectFilter;
 }
 
 } // U2

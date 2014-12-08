@@ -24,8 +24,6 @@
 
 #include <QtCore/QAbstractItemModel>
 
-#include <U2Core/global.h>
-
 #include <U2Gui/ProjectTreeControllerModeSettings.h>
 
 #include "DocumentFolders.h"
@@ -66,7 +64,8 @@ public:
     void moveObject(Document *doc, GObject *obj, const QString &newFolder);
     bool restoreObjectItemFromRecycleBin(Document *doc, GObject *obj);
     bool restoreFolderItemFromRecycleBin(Document *doc, const QString &oldPath);
-    QList<GObject*> getFolderContent(Document *doc, const QString &path) const;
+    QList<GObject *> getFolderObjects(Document *doc, const QString &path) const;
+    QList<Folder *> getSubfolders(Document *doc, const QString &path) const;
     void removeFolder(Document *doc, const QString &path);
 
     QString getObjectFolder(Document *doc, GObject *obj) const;
@@ -105,6 +104,7 @@ private slots:
     void sl_documentURLorNameChanged();
     void sl_objectModifiedStateChanged();
     void sl_objectImported();
+    void sl_documentImported();
 
 private:
     static QObject * toQObject(const QModelIndex &index);
@@ -165,7 +165,6 @@ private:
     void dropDocument(Document *doc, Document *targetDoc, const QString &targetFolderPath);
 
     bool renameFolderInDb(Document *doc, const QString &oldPath, QString &newPath) const;
-    bool isFilterActive() const;
     bool isFolderVisible(Document *doc, const QString &path) const;
 
     int beforeInsertDocument(Document *doc);
@@ -178,14 +177,10 @@ private:
     int beforeRemoveObject(Document *doc, GObject *obj);
     void afterRemove(int row);
 
-    bool isVisibleObject(GObject *obj, const QString &path = "") const;
-    void onFilterChanged(const ProjectTreeControllerModeSettings &newSettings);
-
     QList<Document*> docs;
     QSet<Document *> justAddedDocs; // documents that have been added to a project but not loaded yet
     mutable QHash<Document*, DocumentFolders *> folders;
     ProjectTreeControllerModeSettings settings;
-    QList<GObject*> filteredObjects;
 
     static const QString MODIFIED_ITEM_COLOR;
 };

@@ -19,6 +19,8 @@
  * MA 02110-1301, USA.
  */
 
+#include <QtCore/QSortFilterProxyModel>
+
 #include <QtGui/QDropEvent>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QMainWindow>
@@ -27,6 +29,8 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QTreeView>
 #endif
+
+#include <U2Gui/ProjectViewModel.h>
 
 #include "GTUtilsProjectTreeView.h"
 #include "api/GTMouseDriver.h"
@@ -70,8 +74,6 @@ void GTUtilsProjectTreeView::toggleView(U2OpStatus& os) {
     GT_CHECK(qmw != NULL, "QMainWindow is NULL");
 
     qmw->setFocus();
-//    GTMouseDriver::moveTo(os, qmw->mapToGlobal(qmw->rect().center()));
-//    GTMouseDriver::click(os);
 
     GTKeyboardDriver::keyClick(os, '1', GTKeyboardDriver::key["alt"]);
 }
@@ -241,15 +243,17 @@ QModelIndexList GTUtilsProjectTreeView::findIndecies(U2OpStatus &os,
     QModelIndexList foundIndecies;
     CHECK(GTGlobals::FindOptions::INFINITE_DEPTH == options.depth || parentDepth < options.depth, foundIndecies);
 
-    ProjectViewModel *model = qobject_cast<ProjectViewModel*>(treeView->model());
+    QSortFilterProxyModel *proxyModel = qobject_cast<QSortFilterProxyModel *>(treeView->model());
+    CHECK_SET_ERR_RESULT(NULL != proxyModel, "Model is NULL", foundIndecies);
+    ProjectViewModel *model = qobject_cast<ProjectViewModel *>(proxyModel->sourceModel());
     CHECK_SET_ERR_RESULT(NULL != model, "Model is NULL", foundIndecies);
 
-    int rowcount = model->rowCount(parent);
+    int rowcount = proxyModel->rowCount(parent);
     for (int i = 0; i < rowcount; i++) {
-        const QModelIndex index = model->index(i, 0, parent);
+        const QModelIndex index = proxyModel->index(i, 0, parent);
         QString s = index.data(Qt::DisplayRole).toString();
 
-        GObject* object = model->toObject(index);
+        GObject* object = model->toObject(proxyModel->mapToSource(index));
         if (NULL != object) {
             const QString prefix = "[" + GObjectTypes::getTypeInfo(object->getGObjectType()).treeSign + "]";
             if (s.startsWith(prefix) || prefix == "[u]") {
@@ -323,13 +327,15 @@ void GTUtilsProjectTreeView::checkObjectTypes(U2OpStatus &os, QTreeView *treeVie
     CHECK_SET_ERR(NULL != treeView, "Invalid tree view detected");
     CHECK(!acceptableTypes.isEmpty(), );
 
-    ProjectViewModel *model = qobject_cast<ProjectViewModel *>(treeView->model());
-    CHECK_SET_ERR(NULL != model, "Invalid view model detected");
+    QSortFilterProxyModel *proxyModel = qobject_cast<QSortFilterProxyModel *>(treeView->model());
+    CHECK_SET_ERR_RESULT(NULL != proxyModel, "Model is NULL", );
+    ProjectViewModel *model = qobject_cast<ProjectViewModel *>(proxyModel->sourceModel());
+    CHECK_SET_ERR_RESULT(NULL != model, "Invalid view model detected", );
 
-    const int rowCount = model->rowCount(parent);
+    const int rowCount = proxyModel->rowCount(parent);
     for (int i = 0; i < rowCount; i++) {
-        const QModelIndex index = model->index(i, 0, parent);
-        GObject *object = model->toObject(index);
+        const QModelIndex index = proxyModel->index(i, 0, parent);
+        GObject *object = model->toObject(proxyModel->mapToSource(index));
         if (NULL != object && Qt::NoItemFlags != model->flags(index) && !acceptableTypes.contains(object->getGObjectType()))
             CHECK_SET_ERR(NULL == object || Qt::NoItemFlags == model->flags(index) || acceptableTypes.contains(object->getGObjectType()), "Object has unexpected type");
 

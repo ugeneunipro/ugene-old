@@ -286,7 +286,7 @@ void MysqlAttributeDbi::createStringAttribute(U2StringAttribute& a, U2OpStatus& 
     static const QString queryString("INSERT INTO StringAttribute(attribute, value) VALUES(:attribute, :value)");
     U2SqlQuery q(queryString, db, os);
     q.bindInt64(":attribute", id);
-    q.bindString(":value", (a.value.isNull()) ? "" : a.value);
+    q.bindString(":value", a.value.isNull() ? "" : a.value);
     q.execute();
 }
 
@@ -305,7 +305,7 @@ void MysqlAttributeDbi::createByteArrayAttribute(U2ByteArrayAttribute& a, U2OpSt
     static const QString queryString("INSERT INTO ByteArrayAttribute(attribute, value) VALUES(:attribute, :value)");
     U2SqlQuery q(queryString, db, os);
     q.bindInt64(":attribute", id);
-    q.bindBlob(":value", a.value);
+    q.bindBlob(":value", a.value.isNull() ? "" : a.value); // not null field
     q.execute();
 }
 

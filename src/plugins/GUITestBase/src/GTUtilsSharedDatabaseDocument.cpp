@@ -19,7 +19,7 @@
  * MA 02110-1301, USA.
  */
 
-#include <QtCore/qglobal.h>
+#include <QtCore/QSortFilterProxyModel>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QTreeView>
 #else
@@ -29,6 +29,7 @@
 #include <U2Core/U2ObjectDbi.h>
 
 #include <U2Gui/MainWindow.h>
+#include <U2Gui/ProjectViewModel.h>
 
 #include "GTDatabaseConfig.h"
 #include "GTUtilsDialog.h"
@@ -94,7 +95,7 @@ Document *GTUtilsSharedDatabaseDocument::getDatabaseDocumentByName(U2OpStatus &o
     const QModelIndex databaseDocIndex = GTUtilsProjectTreeView::findIndex(os, name);
     GT_CHECK_RESULT(databaseDocIndex.isValid(), QString("Can't find the document with name '%1'").arg(name), NULL);
 
-    return ProjectViewModel::toDocument(databaseDocIndex);
+    return ProjectViewModel::toDocument(mapFromProxyToSource(os, databaseDocIndex));
 }
 #undef GT_METHOD_NAME
 
@@ -174,18 +175,27 @@ void GTUtilsSharedDatabaseDocument::createPath(U2OpStatus &os, Document *databas
 }
 #undef GT_METHOD_NAME
 
+#define GT_METHOD_NAME "mapFromProxyToSource"
+QModelIndex GTUtilsSharedDatabaseDocument::mapFromProxyToSource(U2OpStatus &os, const QModelIndex &index) {
+    QSortFilterProxyModel *proxyModel = qobject_cast<QSortFilterProxyModel *>(GTUtilsProjectTreeView::getTreeView(os)->model());
+    CHECK_SET_ERR_RESULT(NULL != proxyModel, "Invalid project proxy model", QModelIndex());
+    return proxyModel->mapToSource(index);
+}
+#undef GT_METHOD_NAME
+
 #define GT_METHOD_NAME "getItemPath"
 QString GTUtilsSharedDatabaseDocument::getItemPath(U2OpStatus &os, const QModelIndex &itemIndex) {
     Q_UNUSED(os);
     GT_CHECK_RESULT(itemIndex.isValid(), "Item index is invalid", QString());
 
-    ProjectViewModel::Type itemType = ProjectViewModel::itemType(itemIndex);
+    const QModelIndex realIndex = mapFromProxyToSource(os, itemIndex);
+    ProjectViewModel::Type itemType = ProjectViewModel::itemType(realIndex);
     switch (itemType) {
     case ProjectViewModel::DOCUMENT:
         return U2ObjectDbi::ROOT_FOLDER;
 
     case ProjectViewModel::FOLDER: {
-        Folder* folder = ProjectViewModel::toFolder(itemIndex);
+        Folder* folder = ProjectViewModel::toFolder(realIndex);
         GT_CHECK_RESULT(NULL != folder, "Can't convert item to folder", QString());
         return folder->getFolderPath();
     }
@@ -195,18 +205,19 @@ QString GTUtilsSharedDatabaseDocument::getItemPath(U2OpStatus &os, const QModelI
         const QModelIndex parentItemIndex = itemIndex.parent();
         GT_CHECK_RESULT(parentItemIndex.isValid(), "Parent item index of the object item is invalid", QString());
 
-        ProjectViewModel::Type parentItemType = ProjectViewModel::itemType(parentItemIndex);
+        const QModelIndex realParentIndex = mapFromProxyToSource(os, parentItemIndex);
+        ProjectViewModel::Type parentItemType = ProjectViewModel::itemType(realParentIndex);
         if (ProjectViewModel::DOCUMENT == parentItemType) {
             folderPath = U2ObjectDbi::ROOT_FOLDER;
         } else if (ProjectViewModel::FOLDER == parentItemType) {
-            Folder* folder = ProjectViewModel::toFolder(parentItemIndex);
+            Folder* folder = ProjectViewModel::toFolder(realParentIndex);
             GT_CHECK_RESULT(NULL != folder, "Can't convert parent item to folder", QString());
             folderPath = folder->getFolderPath();
         } else {
             GT_CHECK_RESULT(false, "Can't recognize the parent item", QString());
         }
 
-        GObject* object = ProjectViewModel::toObject(itemIndex);
+        GObject* object = ProjectViewModel::toObject(realIndex);
         GT_CHECK_RESULT(NULL != object, "Can't convert item to object", QString());
         return folderPath + U2ObjectDbi::PATH_SEP + object->getGObjectName();
     }
