@@ -51,10 +51,11 @@
 #include "runnables/ugene/corelibs/U2Gui/ExportImageDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/ProjectTreeItemSelectorDialogFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/RangeSelectionDialogFiller.h"
-#include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
-#include "runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h"
-#include "runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.h"
 #include "runnables/ugene/corelibs/U2View/ov_msa/BuildTreeDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/DeleteGapsDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/DistanceMatrixDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/ExportHighlightedDialogFiller.h"
+#include "runnables/ugene/corelibs/U2View/ov_msa/GenerateAlignmentProfileDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 
 
@@ -2098,7 +2099,7 @@ GUI_TEST_CLASS_DEFINITION(test_0016) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_0016_1) {
-// 1. Run Ugene. Open file _common_data\scenarios\msa\ma2_gapped.aln    
+// 1. Run Ugene. Open file _common_data\scenarios\msa\ma2_gapped.aln
     GTFile::copy(os, testDir + "_common_data/scenarios/msa/ma2_gapped.aln", sandBoxDir + "ma2_gapped.aln");
     GTFile::copy(os, testDir + "_common_data/scenarios/msa/ma2_gapped_edited.aln", sandBoxDir + "ma2_gapped_edited.aln");
     GTFileDialog::openFile(os, sandBoxDir, "ma2_gapped.aln");
@@ -3821,6 +3822,44 @@ GUI_TEST_CLASS_DEFINITION(test_0049){
 
     GTFileDialog::openFile(os, sandBoxDir, "COI_test_0049.aln");
     GTUtilsMSAEditorSequenceArea::checkSelection(os, QPoint(0,0), QPoint(10,0), "ATTCGAGCCGA");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0050){
+    //    1. Open "COI.aln"
+    //    2. Set any reference sequence
+    //    3. Open context menu, open the "Highlighting" submenu, set the "Agreements" type
+    //    4. Open context menu again, open the "Export" submenu, choose the "Export highlighted" menu item
+    //    Expected state: the "Export highlighted to file" dialog appears - there is a checkbox 'transpose output'
+    //    5. Click "Export"
+    //    Expected state: result file contain columns of sequences
+    //    6. Repeat 3-4
+    //    7. Deselect 'Transpose output' and click 'Export'
+    //    Expected state: result file contain rowa of sequences
+
+        GTFileDialog::openFile(os, dataDir + "samples/CLUSTALW", "COI.aln");
+        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Set this sequence as reference"));
+        GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton, QPoint(10, 10));
+
+        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Highlighting" << "Agreements"));
+        GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
+
+        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Export highlighted"));
+        GTUtilsDialog::waitForDialog(os, new ExportHighlightedDialogFiller(os, sandBoxDir + "common_msa_test_0050_1.txt"));
+        GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
+        GTGlobals::sleep();
+
+        CHECK_SET_ERR( GTFile::equals(os, sandBoxDir + "common_msa_test_0050_1.txt",
+                                      testDir + "_common_data/clustal/COI_highlighted_1"),
+                       "Transposed export is incorrect");
+
+        GTUtilsDialog::waitForDialog(os, new PopupChooserbyText(os, QStringList() << "Export" << "Export highlighted"));
+        GTUtilsDialog::waitForDialog(os, new ExportHighlightedDialogFiller(os, sandBoxDir + "common_msa_test_0050_2.txt", false));
+        GTWidget::click(os, GTUtilsMSAEditorSequenceArea::getSequenceArea(os), Qt::RightButton);
+        GTGlobals::sleep();
+
+        CHECK_SET_ERR( GTFile::equals(os, sandBoxDir + "common_msa_test_0050_2.txt",
+                                      testDir + "_common_data/clustal/COI_highlighted_2"),
+                       "Export is incorrect");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_fake) {

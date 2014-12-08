@@ -28,12 +28,14 @@ namespace U2 {
 
 class ExportHighlightedDialogFiller : public Filler {
 public:
-    ExportHighlightedDialogFiller(U2OpStatus &os, const QString &filePath);
+    ExportHighlightedDialogFiller(U2OpStatus &os, const QString &filePath,
+                                  bool invertredExport = true);
 
     void run();
 
 private:
     const QString filePath;
+    bool invertedExport;
 };
 
 }   // namespace U2

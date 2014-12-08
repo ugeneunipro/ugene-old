@@ -932,6 +932,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0047);
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0048);
     REGISTER_TEST_IGNORED_WINDOWS(GUITest_common_scenarios_msa_editor::test_0049, "UGENE-3680");
+    REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_0050);
 
     REGISTER_TEST(GUITest_common_scenarios_msa_editor::test_fake);
 /////////////////////////////////////////////////////////////////////////
