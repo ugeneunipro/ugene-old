@@ -466,7 +466,7 @@ qint64 AssemblyBrowser::calcPixelCoord(qint64 xAsmCoord) const {
     qint64 width = ui->getReadsArea()->width();
 
     SAFE_POINT(modelLen != 0, "modelLen == 0, cannot divide to find pixel coordinate", 0);
-    qint64 xPixelCoord = (double(width) / modelLen * double(xAsmCoord)) / zoomFactor + 0.5;
+    qint64 xPixelCoord = (double(width) / modelLen * double(xAsmCoord)) / zoomFactor + 0.05;
     return xPixelCoord;
 }
 
@@ -867,6 +867,7 @@ void AssemblyBrowser::sl_zoomOut(const QPoint & pos) {
         } else {
             zoomOutFromSize(oldCellSize);
         }
+        zoomFactor = qMin(zoomFactor, INITIAL_ZOOM_FACTOR);
     }
 
     // calculate new offsets
@@ -914,7 +915,7 @@ int AssemblyBrowser::zoomOutFromSize(int oldCellSize) {
     do {
         zoomFactor *= ZOOM_MULT;
         cellWidth = getCellWidth();
-    } while(cellWidth == oldCellSize);
+    } while(cellWidth == oldCellSize && zoomFactor < INITIAL_ZOOM_FACTOR);
     return cellWidth;
 }
 
