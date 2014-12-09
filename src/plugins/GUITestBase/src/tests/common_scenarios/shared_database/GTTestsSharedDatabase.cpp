@@ -711,10 +711,21 @@ GUI_TEST_CLASS_DEFINITION(proj_test_0007) {
     CHECK(NULL != filterEdit, );
 
     GTLineEdit::setText(os, filterEdit, "pt0007");
-    int objCount = model->rowCount(QModelIndex());
-    CHECK_SET_ERR(2 == objCount, "Invalid filtered objects count");
-    QString objName1 = model->index(0, 0, QModelIndex()).data().toString();
-    QString objName2 = model->index(1, 0, QModelIndex()).data().toString();
+
+    const QModelIndex invisibleIndex = QModelIndex();
+    int objCount1 = model->rowCount(invisibleIndex);
+    CHECK_SET_ERR(1 == objCount1, "Invalid filtered objects count");
+
+    const QModelIndex index1st = model->index(0, 0, invisibleIndex);
+    int objCount2 = model->rowCount(index1st);
+    CHECK_SET_ERR(1 == objCount2, "Invalid filtered objects count");
+
+    const QModelIndex index2nd = model->index(0, 0, index1st);
+    int objCount3 = model->rowCount(index2nd);
+    CHECK_SET_ERR(2 == objCount3, "Invalid filtered objects count");
+
+    QString objName1 = model->index(0, 0, index2nd).data().toString();
+    QString objName2 = model->index(1, 0, index2nd).data().toString();
     CHECK_SET_ERR("[m] pt0007_COI" == objName1, "Wrong object name 1");
     CHECK_SET_ERR("[s] pt0007_human_T1" == objName2, "Wrong object name 2");
 

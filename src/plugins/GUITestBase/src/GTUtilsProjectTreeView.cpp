@@ -335,9 +335,10 @@ void GTUtilsProjectTreeView::checkObjectTypes(U2OpStatus &os, QTreeView *treeVie
     const int rowCount = proxyModel->rowCount(parent);
     for (int i = 0; i < rowCount; i++) {
         const QModelIndex index = proxyModel->index(i, 0, parent);
-        GObject *object = model->toObject(proxyModel->mapToSource(index));
-        if (NULL != object && Qt::NoItemFlags != model->flags(index) && !acceptableTypes.contains(object->getGObjectType()))
-            CHECK_SET_ERR(NULL == object || Qt::NoItemFlags == model->flags(index) || acceptableTypes.contains(object->getGObjectType()), "Object has unexpected type");
+        const QModelIndex realIndex = proxyModel->mapToSource(index);
+        GObject *object = model->toObject(realIndex);
+        if (NULL != object && Qt::NoItemFlags != model->flags(realIndex) && !acceptableTypes.contains(object->getGObjectType()))
+            CHECK_SET_ERR(NULL == object || Qt::NoItemFlags == model->flags(realIndex) || acceptableTypes.contains(object->getGObjectType()), "Object has unexpected type");
 
         if (NULL == object) {
             checkObjectTypes(os, treeView, acceptableTypes, index);

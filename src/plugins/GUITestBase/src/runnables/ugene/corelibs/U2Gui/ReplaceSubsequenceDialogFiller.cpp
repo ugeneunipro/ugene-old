@@ -19,14 +19,6 @@
  * MA 02110-1301, USA.
  */
 
-#include "ReplaceSubsequenceDialogFiller.h"
-#include "api/GTWidget.h"
-#include "api/GTLineEdit.h"
-#include "api/GTComboBox.h"
-#include "api/GTRadioButton.h"
-#include "api/GTPlainTextEdit.h"
-
-
 #include <QtCore/QDir>
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -34,8 +26,6 @@
 #include <QtGui/QRadioButton>
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QGroupBox>
-#include "api/GTKeyboardDriver.h"
-
 #else
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QPushButton>
@@ -43,6 +33,15 @@
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QGroupBox>
 #endif
+
+#include "api/GTWidget.h"
+#include "api/GTLineEdit.h"
+#include "api/GTComboBox.h"
+#include "api/GTKeyboardDriver.h"
+#include "api/GTRadioButton.h"
+#include "api/GTPlainTextEdit.h"
+
+#include "ReplaceSubsequenceDialogFiller.h"
 
 namespace U2 {
 

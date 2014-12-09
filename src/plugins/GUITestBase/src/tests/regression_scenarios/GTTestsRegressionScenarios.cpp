@@ -2903,10 +2903,10 @@ GUI_TEST_CLASS_DEFINITION( test_2032 ) {
     // Expected result: order of sequences in the project view is {d, a, c, b}
     QModelIndex documentItem = GTUtilsProjectTreeView::findIndex(os,"abcd.fa");
 
-    CHECK_SET_ERR("[s] d" == documentItem.child(0,0).data(), "Unexpected name of the object in the project view!");
-    CHECK_SET_ERR("[s] a" == documentItem.child(1,0).data(), "Unexpected name of the object in the project view!");
+    CHECK_SET_ERR("[s] a" == documentItem.child(0, 0).data(), "Unexpected name of the object in the project view!");
+    CHECK_SET_ERR("[s] b" == documentItem.child(1, 0).data(), "Unexpected name of the object in the project view!");
     CHECK_SET_ERR("[s] c" == documentItem.child(2,0).data(), "Unexpected name of the object in the project view!");
-    CHECK_SET_ERR("[s] b" == documentItem.child(3,0).data(), "Unexpected name of the object in the project view!");
+    CHECK_SET_ERR("[s] d" == documentItem.child(3, 0).data(), "Unexpected name of the object in the project view!");
 
     // Expected result: order of sequences in the sequences view is {d, a, c, b}
     ADVSingleSequenceWidget *seq0 = dynamic_cast<ADVSingleSequenceWidget*>(GTWidget::findWidget(os, "ADV_single_sequence_widget_0"));
@@ -9028,6 +9028,9 @@ GUI_TEST_CLASS_DEFINITION(test_3305) {
 GUI_TEST_CLASS_DEFINITION(test_3306) {
     GTFileDialog::openFile(os, dataDir + "samples/Genbank", "sars.gb");
 
+    GTUtilsAnnotationsTreeView::getItemCenter(os, "CDS  (0, 14)");
+    GTUtilsAnnotationsTreeView::getItemCenter(os, "gene  (0, 13)");
+    GTUtilsAnnotationsTreeView::getItemCenter(os, "mat_peptide  (0, 16)");
     GTUtilsAnnotationsTreeView::getItemCenter(os, "misc_feature  (0, 16)");
 
     QTreeWidget *annotTreeWidget = GTUtilsAnnotationsTreeView::getTreeWidget(os);
