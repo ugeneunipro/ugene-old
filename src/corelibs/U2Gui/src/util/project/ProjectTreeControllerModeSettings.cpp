@@ -69,7 +69,7 @@ bool ProjectTreeControllerModeSettings::isDocumentShown(Document* doc) const {
             c.supportedObjectTypes += objectTypesToShow;
             res = doc->getDocumentFormat()->checkConstraints(c);
         } else {
-            res = false;
+            res = true;
         }
         if (!res) {
             return false;
@@ -84,7 +84,6 @@ bool ProjectTreeControllerModeSettings::isDocumentShown(Document* doc) const {
     //TODO: make document visible in GroupByDoc mode if any of its objects is visible and avoid flattening?
 
     return true;
-
 }
 
 bool ProjectTreeControllerModeSettings::isObjectShown(GObject* o) const {

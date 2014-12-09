@@ -100,6 +100,8 @@ GUI_TEST_CLASS_DEFINITION(cm_test_0001) {
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__ACCESS_SHARED_DB);
 
     CHECK_SET_ERR(!lt.hasError(), "errors in log");
+
+    GTUtilsProjectTreeView::findIndex(os, "Recycle bin");
 }
 
 GUI_TEST_CLASS_DEFINITION(cm_test_0002) {
