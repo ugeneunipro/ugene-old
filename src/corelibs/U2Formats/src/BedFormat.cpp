@@ -680,7 +680,9 @@ QHash<QString, QList<SharedAnnotationData> > BedFormat::parseDocument(
 
         // Create the annotation
         SharedAnnotationData annotData(new AnnotationData());
-        annotData->name = defaultAnnotName;
+        annotData->name = bedLineData.additionalFields[ANNOT_QUALIFIER_NAME].isEmpty()
+                ? defaultAnnotName
+                : bedLineData.additionalFields[ANNOT_QUALIFIER_NAME];
         annotData->location->regions << bedLineData.region;
 
         // Add qualifiers
