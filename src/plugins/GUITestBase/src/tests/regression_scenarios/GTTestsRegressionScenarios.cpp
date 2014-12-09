@@ -1209,6 +1209,58 @@ GUI_TEST_CLASS_DEFINITION( test_1606 ) {
     GTUtilsLog::check(os, l);
 }
 
+GUI_TEST_CLASS_DEFINITION(test_1607) {
+    GTLogTracer l;
+    //1. Open WD
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    //2. Create schema read variations->write variations
+    WorkflowProcessItem *reader = GTUtilsWorkflowDesigner::addElement(os, "Read Variations");
+    WorkflowProcessItem *writer = GTUtilsWorkflowDesigner::addElement(os, "Write Variations");
+    GTUtilsWorkflowDesigner::connect(os, reader, writer);
+
+    //3. Use input file "_common_data/NIAID_pipelines/Call_variants/data_to_compare_with/test_0001/out.vcf"
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Variations", testDir + "_common_data/NIAID_pipelines/Call_variants/data_to_compare_with/test_0001/out.vcf");
+
+    GTUtilsWorkflowDesigner::click(os, "Write Variations");
+    QFile outputFile(sandBoxDir + "out.vcf");
+    const QString outputFilePath = QFileInfo(outputFile).absoluteFilePath();
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", outputFilePath, GTUtilsWorkflowDesigner::textValue);
+
+    //4. Run schema
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTUtilsTaskTreeView::waitTaskFinished(os);
+
+    //Expected state : output file not empty
+    CHECK_SET_ERR(outputFile.exists() && outputFile.size() > 0, "Workflow output file is invalid");
+    GTUtilsLog::check(os, l);
+    outputFile.remove();
+}
+
+GUI_TEST_CLASS_DEFINITION(test_1609) {
+    // 1) Open any file in UGENE
+    QFile::copy(dataDir + "samples/FASTA/human_T1.fa", sandBoxDir + "human_T1.fa");
+    GTFileDialog::openFile(os, sandBoxDir, "human_T1.fa");
+
+    class CustomFileDialogUtils : public CustomScenario {
+    public:
+        CustomFileDialogUtils() {}
+        virtual void run(U2::U2OpStatus &os) {
+            QWidget *dialog = QApplication::activeModalWidget();
+            GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::No));
+            GTWidget::click(os, GTWidget::findButtonByText(os, "Cancel"));
+        }
+    };
+
+    // 2) Delete that file from the file system
+    // 3) Press "Yes" in appeared UGENE "Do you wish to save" dialog
+    // 4) Press "Cancel" in appeared "Save as" dialog
+    // Expected state : "Do you wish to save" dialog appeared
+    GTUtilsDialog::waitForDialog(os, new MessageBoxDialogFiller(os, QMessageBox::Yes));
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, "sandBoxDir", "human_T1.fa", GTFileDialogUtils::Cancel, GTGlobals::UseMouse));
+    QFile::remove(sandBoxDir + "human_T1.fa");
+}
+
 GUI_TEST_CLASS_DEFINITION( test_1622 )
 {
     // 1. Open document "ma.aln"

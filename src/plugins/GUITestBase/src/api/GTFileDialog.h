@@ -35,8 +35,9 @@ public:
 
     GTFileDialogUtils(U2OpStatus &os, const QString &folderPath, const QString &fileName, Button b = Open, GTGlobals::UseMethod = GTGlobals::UseMouse);
     GTFileDialogUtils(U2OpStatus &os, const QString &filePath, GTGlobals::UseMethod method = GTGlobals::UseMouse);
+    GTFileDialogUtils(U2OpStatus &os, CustomScenario *customScenario);
     void openFileDialog();
-    void run();
+    void commonScenario();
 
 private:
 

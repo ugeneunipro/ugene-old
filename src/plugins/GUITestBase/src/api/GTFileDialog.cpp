@@ -81,8 +81,14 @@ GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &os, const QString &filePath, GT
     }
 }
 
+GTFileDialogUtils::GTFileDialogUtils(U2OpStatus &os, CustomScenario *customScenario)
+    : Filler(os, "QFileDialog", customScenario)
+{
+
+}
+
 #define GT_METHOD_NAME "run"
-void GTFileDialogUtils::run()
+void GTFileDialogUtils::commonScenario()
 {
     QWidget *dialog = QApplication::activeModalWidget();
     GT_CHECK(dialog != NULL && QString(dialog->metaObject()->className()) == "QFileDialog",
