@@ -36,14 +36,17 @@
 #include "runnables/qt/PopupChooser.h"
 #include "runnables/qt/MessageBoxFiller.h"
 #include "runnables/ugene/corelibs/U2Gui/AppSettingsDialogFiller.h"
+#include "runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/WizardFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/StartupDialogFiller.h"
 #include "runnables/ugene/plugins/workflow_designer/AliasesDialogFiller.h"
 #include "runnables/ugene/ugeneui/SequenceReadingModeSelectorDialogFiller.h"
-#include "GTUtilsWorkflowDesigner.h"
-#include "GTUtilsMdi.h"
 #include "GTUtilsApp.h"
 #include "GTUtilsLog.h"
+#include "GTUtilsMdi.h"
+#include "GTUtilsProjectTreeView.h"
+#include "GTUtilsWorkflowDesigner.h"
+
 
 #if (QT_VERSION < 0x050000) //Qt 5
 #include <QtGui/QApplication>
@@ -62,8 +65,8 @@
 #include <QProcess>
 #include "../../workflow_designer/src/WorkflowViewItems.h"
 #include <U2Lang/WorkflowSettings.h>
+#include <QtCore/QFileInfo>
 
-#include "runnables/ugene/plugins/workflow_designer/CreateElementWithScriptDialogFiller.h"
 namespace U2 {
 
 //8 - text
@@ -547,6 +550,41 @@ GUI_TEST_CLASS_DEFINITION(test_0058){
     QWidget *wdView = GTUtilsMdi::activeWindow(os);
     CHECK_OP(os, );
     CHECK_SET_ERR(wdView->objectName() == "Workflow Designer", "Wrong mdi window");
+}
+
+GUI_TEST_CLASS_DEFINITION(test_0059){
+    // Test for UGENE-1505
+    // 1. Open WD
+    // 2. Create scheme: Read sequence --> Get seq.by annotation --> Write sequence
+    // 3. Input data: sars.gb
+    // 4. Run workflow
+    // 5. Open result file
+    // Expected state: all sequence objects has the corresponding region in its name
+    GTUtilsWorkflowDesigner::openWorkflowDesigner(os);
+
+    WorkflowProcessItem* readSeq = GTUtilsWorkflowDesigner::addElement(os, "Read Sequence");
+    WorkflowProcessItem* seqByAnns = GTUtilsWorkflowDesigner::addElement(os, "Get Sequences by Annotations");
+    WorkflowProcessItem* writeSeq = GTUtilsWorkflowDesigner::addElement(os, "Write Sequence");
+
+    GTUtilsWorkflowDesigner::connect(os, readSeq, seqByAnns);
+    GTUtilsWorkflowDesigner::connect(os, seqByAnns, writeSeq);
+
+    GTUtilsWorkflowDesigner::addInputFile(os, "Read Sequence", dataDir + "/samples/Genbank/sars.gb");
+    GTUtilsWorkflowDesigner::click(os, "Write Sequence");
+    QFileInfo sandBoxInfo(sandBoxDir);
+    sandBoxInfo.makeAbsolute();
+    GTUtilsWorkflowDesigner::setParameter(os, "Output file", sandBoxInfo.absolutePath() + "/wd_test_0059.fa",
+                                          GTUtilsWorkflowDesigner::textValue);
+
+    GTUtilsWorkflowDesigner::runWorkflow(os);
+    GTGlobals::sleep();
+
+    GTUtilsDialog::waitForDialog(os, new SequenceReadingModeSelectorDialogFiller(os, SequenceReadingModeSelectorDialogFiller::Separate));
+    GTFileDialog::openFile(os, sandBoxDir, "wd_test_0059.fa");
+    GTGlobals::sleep();
+
+    CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "NC_004718 1..29751 source"), "Sequence not found" );
+    CHECK_SET_ERR( GTUtilsProjectTreeView::checkItem(os, "NC_004718 27638..27772 gene"), "Sequence not found" );
 }
 
 } // namespace GUITest_common_scenarios_workflow_designer
