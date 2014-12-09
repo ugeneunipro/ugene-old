@@ -139,6 +139,9 @@
 #include "spades/SpadesTask.h"
 #include "spades/SpadesWorker.h"
 
+#include "snpeff/SnpEffSupport.h"
+#include "snpeff/SnpEffWorker.h"
+
 
 #include <U2Algorithm/CDSearchTaskFactoryRegistry.h>
 #include <U2Algorithm/DnaAssemblyAlgRegistry.h>
@@ -444,6 +447,10 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     VcfutilsSupport *vcfutils = new VcfutilsSupport(VcfutilsSupport::TOOL_NAME);
     etRegistry->registerEntry(vcfutils);
 
+    //SnpEff
+    SnpEffSupport *snpeff = new SnpEffSupport(ET_SNPEFF);
+    etRegistry->registerEntry(snpeff);
+
     if (AppContext::getMainWindow()) {
         ExternalToolSupportAction* formatDBAction= new ExternalToolSupportAction(tr("FormatDB..."), this, QStringList(ET_FORMATDB));
         formatDBAction->setObjectName("FormatDB");
@@ -623,6 +630,7 @@ ExternalToolSupportPlugin::ExternalToolSupportPlugin() :
     LocalWorkflow::GenomecovWorkerFactory::init();
     LocalWorkflow::BedGraphToBigWigFactory::init();
     LocalWorkflow::SpadesWorkerFactory::init();
+    LocalWorkflow::SnpEffFactory::init();
 
     if (AppContext::getMainWindow()) {
         //Add project view service

@@ -115,6 +115,9 @@ HEADERS += src/ETSProjectViewItemsContoller.h \
            src/seqpos/SeqPosSupport.h \
            src/seqpos/SeqPosTask.h \
            src/seqpos/SeqPosWorker.h \
+           src/snpeff/SnpEffSupport.h \
+           src/snpeff/SnpEffTask.h \
+           src/snpeff/SnpEffWorker.h \
            src/spades/SpadesSupport.h \
            src/spades/SpadesTask.h \
            src/spades/SpadesSettingsWidget.h \
@@ -275,6 +278,9 @@ SOURCES += src/ETSProjectViewItemsContoller.cpp \
            src/seqpos/SeqPosSupport.cpp \
            src/seqpos/SeqPosTask.cpp \
            src/seqpos/SeqPosWorker.cpp \
+           src/snpeff/SnpEffSupport.cpp \
+           src/snpeff/SnpEffTask.cpp \
+           src/snpeff/SnpEffWorker.cpp \
            src/spades/SpadesSupport.cpp \
            src/spades/SpadesTask.cpp \
            src/spades/SpadesSettingsWidget.cpp \
