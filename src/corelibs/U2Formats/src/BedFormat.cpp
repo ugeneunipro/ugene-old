@@ -687,8 +687,10 @@ QHash<QString, QList<SharedAnnotationData> > BedFormat::parseDocument(
 
         // Add qualifiers
         foreach (QString qualifierName, bedLineData.additionalFields.keys()) {
-            annotData->qualifiers.push_back(
-                U2Qualifier(qualifierName, bedLineData.additionalFields.value(qualifierName)));
+            if (!bedLineData.additionalFields.value(qualifierName).isEmpty()) {
+                annotData->qualifiers.push_back(
+                            U2Qualifier(qualifierName, bedLineData.additionalFields.value(qualifierName)));
+            }
         }
 
         // Add a qualifier with the sequence name
