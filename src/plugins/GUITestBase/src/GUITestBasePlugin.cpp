@@ -558,6 +558,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3730);
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3732, "big data");
 
+    REGISTER_TEST(GUITest_regression_scenarios::test_3816);
+
 //////////////////////////////////////////////////////////////////////////
 // Common scenarios/project/
 //////////////////////////////////////////////////////////////////////////

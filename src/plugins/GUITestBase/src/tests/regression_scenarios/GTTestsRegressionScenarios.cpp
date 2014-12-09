@@ -11321,6 +11321,14 @@ GUI_TEST_CLASS_DEFINITION(test_3732) {
     CHECK_SET_ERR(logTracer.checkMessage("MemoryLocker - Not enough memory error, 41 megabytes are required"), "An expected error message not found");
 }
 
+GUI_TEST_CLASS_DEFINITION(test_3816) {
+    // Open some specific file with a tree and ensure that UGENE doesn't crash
+    GTLogTracer l;
+    GTFileDialog::openFile(os, testDir + "_common_data/newick/", "arb-silva.nwk");
+    GTUtilsProjectTreeView::findIndex(os, "arb-silva.nwk", QModelIndex());
+    GTUtilsLog::check(os, l);
+}
+
 } // GUITest_regression_scenarios namespace
 
 } // U2 namespace
