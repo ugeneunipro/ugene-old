@@ -1385,6 +1385,7 @@ GUI_TEST_CLASS_DEFINITION( test_1654 ) {
     GTGlobals::sleep(500);
 
     GTKeyboardDriver::keyClick(os, 'v', GTKeyboardDriver::key["ctrl"]);
+    GTGlobals::sleep(5000);
 
     QWidget *createAnnotationsButton = GTWidget::findWidget(os, "getAnnotationsPushButton");
     GTGlobals::sleep(500);
