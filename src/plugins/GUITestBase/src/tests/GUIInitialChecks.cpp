@@ -61,7 +61,7 @@ GUI_TEST_CLASS_DEFINITION(test_0000) {
     QProcess::execute("closeAllErrors.exe"); //this exe file, compiled Autoit script
 #endif
     GTUtilsDialog::cleanup(os);
-#ifdef Q_OS_MAC
+#ifndef Q_OS_WIN
     GTMouseDriver::release(os, Qt::RightButton);
     GTMouseDriver::release(os);
     GTKeyboardDriver::keyRelease(os, GTKeyboardDriver::key["ctrl"]);

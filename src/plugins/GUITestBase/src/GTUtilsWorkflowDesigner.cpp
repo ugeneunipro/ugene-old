@@ -529,7 +529,7 @@ void GTUtilsWorkflowDesigner::setDatasetInputFolder(U2OpStatus &os, QString file
 #undef GT_METHOD_NAME
 
 #define GT_METHOD_NAME "setParameter"
-void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QVariant value, valueType type){
+void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QVariant value, valueType type, GTGlobals::UseMethod method){
     QTableView* table = qobject_cast<QTableView*>(GTWidget::findWidget(os,"table"));
     CHECK_SET_ERR(table,"tableView not found");
 
@@ -572,10 +572,15 @@ void GTUtilsWorkflowDesigner::setParameter(U2OpStatus &os, QString parameter, QV
     }
     case(comboValue):{
         int comboVal = value.toInt(&ok);
-        GT_CHECK(ok,"Wrong input. Int required for GTUtilsWorkflowDesigner::ComboValue")
         QComboBox* box = qobject_cast<QComboBox*>(table->findChild<QComboBox*>());
         GT_CHECK(box, "QComboBox not found. Widget in this cell might be not QComboBox");
-        GTComboBox::setCurrentIndex(os, box, comboVal);
+
+        if(!ok){
+            QString comboString = value.toString();
+            GTComboBox::setIndexWithText(os, box, comboString, true, method);
+        }else{
+            GTComboBox::setCurrentIndex(os, box, comboVal);
+        }
 #ifdef Q_OS_WIN
         //added to fix UGENE-3597
         GTKeyboardDriver::keyClick(os, GTKeyboardDriver::key["enter"]);
@@ -753,6 +758,7 @@ void GTUtilsWorkflowDesigner::setParameterScripting(U2OpStatus &os, QString para
 int GTUtilsWorkflowDesigner::checkErrorList(U2OpStatus &os, QString error){
     QListWidget* w = qobject_cast<QListWidget*>(GTWidget::findWidget(os,"infoList"));
     GT_CHECK_RESULT(w, "ErrorList widget not found", 0);
+
 
     QList<QListWidgetItem *> list =  w->findItems(error,Qt::MatchContains);
     return list.size();

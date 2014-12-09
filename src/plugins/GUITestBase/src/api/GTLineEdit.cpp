@@ -57,7 +57,8 @@ void GTLineEdit::setText(U2OpStatus& os, QLineEdit* lineEdit, const QString &str
     if(s!=str){
         s = lineEdit->text();
     }
-    GT_CHECK(s == str, "Can't set text, set text differs from a given string in lineEdit " + lineEdit->objectName());
+    GT_CHECK(s == str, "Can't set text, set text differs from a given string in lineEdit " + lineEdit->objectName() +
+             ". Expected: " + str + " Actual: " + s);
 }
 #undef GT_METHOD_NAME
 

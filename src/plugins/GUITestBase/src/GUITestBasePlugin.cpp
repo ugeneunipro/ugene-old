@@ -345,8 +345,8 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_2543);
     REGISTER_TEST(GUITest_regression_scenarios::test_2545);
     REGISTER_TEST(GUITest_regression_scenarios::test_2549);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2562);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2562_1);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2562, "tasks api needed");
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2562_1, "tasks api needed");
     REGISTER_TEST(GUITest_regression_scenarios::test_2565);
     REGISTER_TEST(GUITest_regression_scenarios::test_2566);
     REGISTER_TEST(GUITest_regression_scenarios::test_2567);
@@ -393,7 +393,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_NOT_FOR_WINDOWS(GUITest_regression_scenarios::test_2866);
     REGISTER_TEST(GUITest_regression_scenarios::test_2891);
     REGISTER_TEST(GUITest_regression_scenarios::test_2891_1);
-    REGISTER_TEST(GUITest_regression_scenarios::test_2894);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_2894, "task api needed");
     REGISTER_TEST(GUITest_regression_scenarios::test_2895);
     REGISTER_TEST(GUITest_regression_scenarios::test_2884);
     REGISTER_TEST(GUITest_regression_scenarios::test_2887);
@@ -485,7 +485,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_regression_scenarios::test_3318);
     REGISTER_TEST(GUITest_regression_scenarios::test_3332);
     REGISTER_TEST(GUITest_regression_scenarios::test_3333);
-    REGISTER_TEST(GUITest_regression_scenarios::test_3335);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3335, "UGENE-3833");
     REGISTER_TEST(GUITest_regression_scenarios::test_3342);
     REGISTER_TEST(GUITest_regression_scenarios::test_3344);
     REGISTER_TEST(GUITest_regression_scenarios::test_3346);
@@ -530,7 +530,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3571_2, "Ignored due to incorrect processing of a message box");
     REGISTER_TEST(GUITest_regression_scenarios::test_3585);
 
-    REGISTER_TEST(GUITest_regression_scenarios::test_3603);
+    REGISTER_TEST_IGNORED(GUITest_regression_scenarios::test_3603, "UGENE-3830");
     REGISTER_TEST(GUITest_regression_scenarios::test_3609_1);
     REGISTER_TEST(GUITest_regression_scenarios::test_3609_2);
     REGISTER_TEST(GUITest_regression_scenarios::test_3609_3);
@@ -1433,9 +1433,7 @@ void GUITestBasePlugin::registerTests(GUITestBase *guiTestBase) {
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0013);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0015);
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0017);
-
     REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0058);
-    REGISTER_TEST(GUITest_common_scenarios_workflow_designer::test_0059);
 
 /////////////////////////////////////////////////////////////////////////
 // Common scenarios/Workflow designer/Workflow parameters validation

@@ -110,7 +110,7 @@ public:
     static void setDatasetInputFolder(U2OpStatus &os, QString filePath);
 
     //sets oneparameter worker parameter
-    static void setParameter(U2OpStatus& os, QString parameter, QVariant value, valueType type);
+    static void setParameter(U2OpStatus& os, QString parameter, QVariant value, valueType type, GTGlobals::UseMethod method = GTGlobals::UseMouse);
     static QStringList getAllParameters(U2OpStatus& os);
 
     //gets oneparameter worker parameter

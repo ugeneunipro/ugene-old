@@ -1867,6 +1867,7 @@ GUI_TEST_CLASS_DEFINITION(test_1747){
     GTUtilsDialog::waitForDialog(os, new DistanceMatrixDialogFiller(os));
     GTUtilsMSAEditorSequenceArea::callContextMenu(os);
 
+
     QProgressBar* taskProgressBar = GTWidget::findExactWidget<QProgressBar*>(os, "taskProgressBar");
     QString text = taskProgressBar->text();
     CHECK_SET_ERR(text.contains("%"), "unexpected text: " + text);
@@ -1875,9 +1876,9 @@ GUI_TEST_CLASS_DEFINITION(test_1747){
     int progress = text.toInt(&isNumber);
     CHECK_SET_ERR(isNumber, QString("The progress must be a number: %1").arg(text));
     CHECK_SET_ERR(progress >= 0 && progress <= 100, QString("Incorrect progress: %1").arg(progress));
-
-    GTGlobals::sleep(15000);
     int oldProgress = progress;
+
+    GTGlobals::sleep(5000);
     text = taskProgressBar->text();
     CHECK_SET_ERR(text.contains("%"), "unexpected text: " + text);
     text = text.left(text.length() - 1);
@@ -2398,7 +2399,7 @@ GUI_TEST_CLASS_DEFINITION(test_1918) {
     //5. Set the following parameters of the "File Conversion" element: { Document format : nexus },
     //                                                                  { Excluded formats : clustal }
     GTUtilsWorkflowDesigner::click(os, "File Format Conversion");
-    GTUtilsWorkflowDesigner::setParameter(os, "Document format", 16, GTUtilsWorkflowDesigner::comboValue);
+    GTUtilsWorkflowDesigner::setParameter(os, "Document format", "nexus", GTUtilsWorkflowDesigner::comboValue, GTGlobals::UseMouse);
     GTUtilsWorkflowDesigner::setParameter(os, "Excluded formats", QStringList("clustal"), GTUtilsWorkflowDesigner::ComboChecks);
     GTUtilsWorkflowDesigner::setParameter(os, "Output directory", 0, GTUtilsWorkflowDesigner::comboValue);
     GTUtilsWorkflowDesigner::setParameter(os, "Custom directory", QDir().absoluteFilePath(sandBoxDir + "regression_1918")
@@ -5796,10 +5797,16 @@ GUI_TEST_CLASS_DEFINITION(test_2545) {
 }
 
 GUI_TEST_CLASS_DEFINITION(test_2549) {
+    //this needed to ensure that log view has text
+    GTUtilsDialog::waitForDialog(os, new GTFileDialogUtils(os, testDir + "_common_data/gtf/invalid", "AB375112_annotations.gtf"));
+    GTUtilsDialog::waitForDialog(os, new DocumentFormatSelectorDialogFiller(os, "GTF"));
+    GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__OPEN_AS);
     GTGlobals::sleep();
+
     GTKeyboardDriver::keyClick(os, '3', GTKeyboardDriver::key["alt"]);
     GTGlobals::sleep();
     GTWidget::click(os, GTWidget::findWidget(os, "dock_log_view"));
+    GTKeyboardDriver::keySequence(os, "this sequence needed to ensure that log view has text");
 
     GTKeyboardDriver::keyClick(os, 'a', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep(500);
@@ -6320,9 +6327,10 @@ GUI_TEST_CLASS_DEFINITION(test_2651) {
 
     GTMenu::clickMenuItemByName(os, GTMenu::showMainMenu(os, MWMENU_FILE), QStringList() << ACTION_PROJECTSUPPORT__SEARCH_GENBANK);
 
-    GTGlobals::sleep();
+    GTGlobals::sleep(5000);
 
     // 6. With Ctrl pressed, select all three annotation objects in the project view
+    GTUtilsProjectTreeView::openView(os);
     GTKeyboardDriver::keyPress(os, GTKeyboardDriver::key["ctrl"]);
 
     GTUtilsProjectTreeView::click(os, "AB797210 features");
@@ -9334,6 +9342,7 @@ GUI_TEST_CLASS_DEFINITION(test_3335) {
 
      GTUtilsMdi::click(os, GTGlobals::Close);
      GTUtilsProjectTreeView::doubleClickItem(os, "Annotations");
+     GTGlobals::sleep(60000);
     QWidget *relatedSequenceView = GTUtilsMdi::findWindow(os, "human_T1 [s] renamed sequence");
     CHECK_SET_ERR(NULL != relatedSequenceView, "A view for the related sequence was not opened");
 
@@ -11224,7 +11233,7 @@ GUI_TEST_CLASS_DEFINITION(test_3715) {
     GTKeyboardDriver::keyClick(os, 'r', GTKeyboardDriver::key["ctrl"]);
     GTGlobals::sleep();
 
-    CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Call Variants") != 0, "Workflow errors list cant be empty");
+    CHECK_SET_ERR(GTUtilsWorkflowDesigner::checkErrorList(os, "Read Assembly") != 0, "Workflow errors list cant be empty");
 }
 
 GUI_TEST_CLASS_DEFINITION(test_3723) {
